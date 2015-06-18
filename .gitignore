@@ -8,7 +8,8 @@
 *.docx
 *.doc
 Thumbs.db
-
+connect.inc
+connect.php
 surasak3/connect.inc
 surasak3/connect.inc.php
 surasak3/connect.php
