@@ -1,0 +1,3 @@
+#php_value default_charset "tis620"
+
+#AddDefaultCharset tis620
