@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+// $cYot = urldecode($_GET['cYot']);
+// $cName = $_GET['cName'];
+// $cSurname = $_GET['cSurname'];
+
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }

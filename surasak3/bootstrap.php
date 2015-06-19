@@ -9,6 +9,7 @@ session_start();
 if(!defined('NEW_SITE')){
 	require "connect.php";
 }else{
+	
 	header('Content-Type: text/html; charset=utf-8');
 	$Conn = mysql_connect('localhost', 'root', '1234') or die( mysql_error() );
 	mysql_select_db('smdb', $Conn) or die( mysql_error() );
@@ -16,29 +17,14 @@ if(!defined('NEW_SITE')){
 	mysql_query("SET character_set_results=utf8");
 	mysql_query("SET character_set_client=utf8");
 	mysql_query("SET character_set_connection=utf8");
+	
 }
 
-require "includes/functions.php";
-
-
-// include 'connect.inc';
-// include 'common.php';
-// if(PHP_VERSION_ID >= 50217){
-	// include 'connect.inc.php';
-
-// }else{
-	
-	
-	
-	// For DB Calss 
-	// define('HOST', $ServerName);
-	// define('PORT', '3306');
-	// define('DB', $DatabaseName);
-	// define('USER', $User);
-	// define('PASS', $Password);
-// }
-
-
+define('HOST', 'localhost');
+define('PORT', '3306');
+define('DB', 'smdb');
+define('USER', 'root');
+define('PASS', '1234');
 
 class DB{
 	
@@ -54,6 +40,14 @@ class DB{
 			print "Error!: " . $e->getMessage() . "<br/>";
 			die();
 		}
+	}
+	
+	/**
+	 * NOT COMPLETE FUNCTION
+	 */
+	public static function load(){
+		$db = self::init();
+		return $db;
 	}
 	
 	private static function init(){
@@ -89,7 +83,7 @@ class DB{
 		return $result;
 	}
 	
-	public static function exec($sql){
+	public static function exec($sql, $data = null){
 		
 		if($sql === null){
 			echo 'STATEMENT IS NULL';
@@ -97,13 +91,19 @@ class DB{
 		}
 		
 		$db = self::init();
-		$result = $db->run_exec($sql);
+		$result = $db->run_exec($sql, $data);
 		return $result;
 	}
 	
-	private function run_exec($sql){
+	private function run_exec($sql, $data){
 		try {
-			$query = $this->db->exec($sql);
+			if($data === null){
+				$query = $this->db->exec($sql);
+			}else{
+				$sth = $this->db->prepare($sql);
+				$query = $sth->execute($data);
+			}
+			
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 			exit;
@@ -111,3 +111,6 @@ class DB{
 		return $query;
 	}
 }
+
+
+require "includes/functions.php";

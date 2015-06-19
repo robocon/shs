@@ -2,8 +2,13 @@
 
 require 'bootstrap.php';
 
+if(authen() === false ){ die('กรุณา Login อีกครั้ง'); }
+
+$hn = isset($_POST['hn']) ? trim($_POST['hn']) : ( isset($_GET['hn']) ? trim($_GET['hn']) : false ) ;
+$action = isset($_POST['action']) ? trim($_POST['action']) :  ( isset($_GET['action']) ? trim($_GET['action']) : false ) ;
+
 // Ajax
-if(isset($_POST['action']) && $_POST['action'] == 'search'){
+if($action == 'search'){
 	
 	$word = iconv("UTF-8", "TIS-620", trim($_POST['word']));
 	if(empty($word)){
@@ -11,27 +16,54 @@ if(isset($_POST['action']) && $_POST['action'] == 'search'){
 	}
 	
 	$sql = "
-SELECT `row_id`,`genname`,`tradname` FROM `druglst` WHERE `genname` LIKE '%$word%';
+SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` LIKE '%$word%';
 	";
-	// var_dump($sql);
 	$query = mysql_query($sql);
-	// $res = array();
 	$pre_res = array();
 	while($item = mysql_fetch_assoc($query)){
-		// $res[] = array(
-			// 'row_id' => $item['row_id'],
-			// 'genname' => iconv("TIS-620", "UTF-8", $item['genname']),
-			// 'tradname' => iconv("TIS-620", "UTF-8", $item['tradname']),
-		// );
-		$pre_res[] = '{"row_id":"'.$item['row_id'].'","genname":"'.iconv("TIS-620", "UTF-8", $item['genname']).'","tradname":"'.iconv("TIS-620", "UTF-8", $item['tradname']).'"}';
+		$pre_res[] = '{"row_id":"'.$item['row_id'].'","code":"'.trim($item['drugcode']).'","genname":"'.iconv("TIS-620", "UTF-8", $item['genname']).'","tradname":"'.iconv("TIS-620", "UTF-8", $item['tradname']).'"}';
 	}
 	$res = implode(',', $pre_res);
-	header('Content-Type: text/html; charset=utf-8');
-	// var_dump($res);
 	
+	// jQuery accept only utf-8
+	header('Content-Type: text/html; charset=utf-8');
 	echo "[$res]";
-	// header('Content-Type: application/json');
-	// echo json_encode($res);
+	exit;
+	
+}else if($action == 'add_drugreact'){
+	
+	$count = count($_POST['ids']);
+	
+	if($count > 0){
+		
+		for($i = 0; $i<$count; $i++){
+			$sql = "INSERT INTO `drugreact` VALUES (:id, :hn, :drugcode, :tradname, :advreact, :asses, :reporter, :ondate, :officer);";
+			
+			$data = array(
+				':id' => null,
+				':hn' => $hn,
+				':drugcode' => $_POST['codes'][$i],
+				':tradname' => $_POST['tradnames'][$i],
+				':advreact' => $_POST['advreact'][$i],
+				':asses' => $_POST['asses'][$i],
+				':reporter' => $_POST['reporter'][$i],
+				':ondate' => $_POST['ondate'][$i],
+				':officer' => $_SESSION['sOfficer'],
+			);
+		
+			$exec = DB::exec($sql, $data);
+			// dump($exec);
+		}
+	}
+	
+	$_SESSION['x-msg'] = 'บันทึกข้อมูลเสร็จเรียบร้อย';
+	
+	header('Location: drugreact_test.php?hn='.$hn);
+	exit;
+}else if($action == 'delete'){
+	
+	$exec = DB::exec("DELETE FROM `drugreact` WHERE `row_id` = :id LIMIT 1", array(':id' => trim($_GET['item'])));
+	header('Location: drugreact_test.php?hn='.$hn);
 	exit;
 }
 
@@ -42,177 +74,273 @@ SELECT `row_id`,`genname`,`tradname` FROM `druglst` WHERE `genname` LIKE '%$word
 		<meta charset="TIS-620">
 		<title></title>
 		<style>
+		table, tr, td{
+			padding: 0;
+			margin: 0;
+			border-collapse: collapse;
+		}
+		hr{
+			margin: 1.7em 0;
+			border: 0;
+			height: 0;
+			border-top: 1px solid rgba(0, 0, 0, 0.1);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+		}
 		#test_contain{
 			height: 400px;
 			overflow: auto;
 			width: 800px;
 			display: none;
 			position: absolute;
-			top: 10px;
-			left: 270px;
+			top: 0;
+			right: 0;
 			background-color: rgb(250, 250, 250);
 			border: 2px solid;
 			padding: 0.5em;
 		}
-		#test_display{.
-			position: relative;
+		#react_list_items li{
+			line-height: 1.7em;
 		}
-		#test_close{
-			position: absolute;
-			top: 0;
-			right: 20px;
-			cursor: pointer;
-			color: red;
+		.sm-table{
+			width: 100%;
 		}
-		.drg_lists{
-			color: #333333;
-			margin-bottom: 0.5em;
-			cursor: pointer;
+		.sm-tr{
+			height: 1.8em;
+			
 		}
-		.drg_lists:hover{
-			color: red;
+		.sm-tr td{
+			padding: 0.5em;
 		}
+		.container{
+			width: 1024px;
+			margin: 0 auto;
+		}
+		
+		.msg-notify{
+			padding: 1em;
+			border: 1px solid #B8B8B8;
+			margin: 1em;
+		}
+		
 		.remove-item{
 			color: red;
 			cursor: pointer;
 		}
-		.container{
-			width: 50%;
-		}
 		</style>
-		
 	</head>
 	<body>
 
-<h3>Just a prototype :p</h3>
 <div class="container">
-	<fieldset>
-		<legend>รายการแพ้ยาผู้ป่วย HN 58-2733(ตัวอย่าง)</legend>
-		<div id="">
-			<ol>
-				<li>KKU-OF 100 TESTS (OF 100 TESTS)</li>
-				<li>REDIVAC 200 ML. (REDIVAC 200 ML.)</li>
-			</ol>
-		</div>
-	</fieldset>
-</div>
-<br>
-<form method="post" action="drugreact_test.php" class="container">
-	<div>
-		ค้นหาชื่อยาสามัญ: <input type="text" id="test_word" name="test_word" value="">
-	</div>
-	<fieldset>
-		<legend>รายการแพ้ยา</legend>
-		<div id="test_select">
-			<ul id="react_list_items"></ul>
-		</div>
-	</fieldset>
-	<div>
-		<button type="submit">เพิ่มรายการแพ้ยา</button>
-	</div>
-</form>
-
-<div id="test_contain">
-	<div style="border-bottom: 1px solid">
-		<div style="text-align:center;">ชื่อการค้า(ชื่อสามัญ)</div>
-		<div id="test_close">[ปิดหน้าต่าง]</div>
-	</div>
-	<div id="test_display"></div>
-</div>
-
-<script type="text/template" id="demo__tab">
-<div class="drg_lists" data-id="{{item_id}}" data-name="{{item_name}}"><p>{{item_ii}}.)&nbsp;{{item_tradname}}&nbsp;<b>({{item_genname}})</b></p></div>
-</script>
-<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
-<script type="text/javascript">
-
-var drugreact_list = [];
-
-$(function(){
-	$(document).on('keyup', '#test_word', function(){
-		var word = $('#test_word').val();
-		word = $.trim(word);
-		if(word.length < 3){
-			return false;
+	<h3>ระบบจัดการผู้ป่วยที่แพ้ยา</h3>
+	
+	<form method="post" action="drugreact_test.php">
+		<label>
+			<span>ค้นหาผู้ป่วยจาก HN</span>
+			<input type="text" name="hn" value="<?php echo $hn;?>">
+		</label>
+		<button type="submit">ค้นหา</button>
+	</form>
+	<?php
+	if(isset($_SESSION['x-msg'])){
+		?>
+		<div class="msg-notify"><?php echo $_SESSION['x-msg'];?></div>
+		<?php
+		unset($_SESSION['x-msg']);
+	}
+	
+	if($hn !== false){
+		
+		$user = DB::select("SELECT name, surname, yot FROM opcard WHERE hn = :hn", array(':hn' => $hn));
+		if(empty($user)){
+			
+			$_SESSION['x-msg'] = 'ไม่พบข้อมูลผู้ป่วย';
+			header('Location: drugreact_test.php');
+			exit;
 		}
 		
-		$.ajax({
-			method: "POST",
-			// dataType: 'json',
-			url: "drugreact_test.php",
-			data: { 'word': word, 'action': 'search'},
-			success: function(res){
-				res = $.parseJSON(res);
-				if(res.length == 0){
-					return false;
+		$sql = "
+		SELECT a.`hn`, a.`name`, a.`surname`, b.`row_id`, b.`drugcode`, b.`tradname`, b.`advreact`, c.`genname` 
+		FROM `opcard` AS a, `drugreact` AS b, `druglst` AS c
+		WHERE a.`hn` = :hn AND b.`hn` = a.`hn` AND c.`drugcode` = b.`drugcode`
+		";
+		$items = DB::select($sql, array(':hn' => $hn));
+	?>
+	<fieldset>
+		<legend>รายการแพ้ยาของ <?php echo $user['yot'].' '.$user['name'].' '.$user['surname'];?></legend>
+		<div>
+			<?php
+			if(count($items) > 0){
+			?>
+			<ul>
+				<?php
+				foreach($items as $item){
+					?>
+					<li>
+						<?php echo $item['tradname'].' [ '.$item['genname'].' ]';?>
+						<?php
+						if($item['advreact'] != ''){
+							echo ' ( '.$item['advreact'].' )';
+						}
+						?>
+						<a class="remove-drug" href="drugreact_test.php?action=delete&item=<?php echo $item['row_id']?>&hn=<?php echo $hn; ?>">[ลบ]</a>
+					</li>
+					<?php
 				}
-				
-				$('#test_contain').show();
-				$('#test_display').html('');
-				
-				for(var i=1; i<=res.length; i++){
-					var ii = i - 1;
-					
-					var html = document.getElementById('demo__tab').innerHTML;
-					html = html.replace(/\{\{item_id\}\}/g, res[ii].row_id);
-					html = html.replace(/\{\{item_name\}\}/g, res[ii].tradname);
-					html = html.replace(/\{\{item_ii\}\}/g, i);
-					html = html.replace(/\{\{item_tradname\}\}/g, res[ii].tradname);
-					html = html.replace(/\{\{item_genname\}\}/g, res[ii].genname);
-					
-					$('#test_display').append(html);
-				}
+				?>
+			</ul>
+			<?php
+			}else{
+				echo '<p>มีรายการแพ้ยา</p>';
 			}
-		});
-	});
+			?>
+		</div>
+	</fieldset>
 	
-	// ตอนคลิกเลือกจากรายการ popup
-	$(document).on('click', '.drg_lists', function(){
-		// alert($(this).attr('data-id'));
-		var data_id = $(this).attr('data-id');
+	<hr>
+
+	<form method="post" action="drugreact_test.php">
+		<div>
+			ค้นหาชื่อยาสามัญ: <input type="text" id="test_word" name="test_word" value="">
+		</div>
+		<fieldset>
+			<legend>รายการแพ้ยาที่ต้องการจะเพิ่ม</legend>
+			<div id="test_select">
+				
+			</div>
+			<span style="font-size: 12px; color: #ff2020">*การประเมิน :   (1=ใช่แน่นอน, 2=น่าจะใช่, 3=อาจจะใช่, 4=สงสัย )</span>
+		</fieldset>
+		<div>
+			<button type="submit">เพิ่มรายการแพ้ยา</button>
+			<input type="hidden" name="action" value="add_drugreact">
+			<input type="hidden" name="hn" value="<?php echo $hn;?>">
+		</div>
+	</form>
+	
+	<hr>
+
+	<form method="post" action="drugreact_test.php">
+		<div>
+			ค้นหาชื่อยาสามัญ: <input type="text" id="test_word" name="test_word" value="">
+		</div>
+		<fieldset>
+			<legend>รายการแพ้ยาข้างเคียง</legend>
+			<div id="drug_react_side">
+			</div>
+		</fieldset>
+		<div>
+			<button type="submit">เพิ่มรายการ</button>
+			<input type="hidden" name="action" value="add_drugreact_side">
+			<input type="hidden" name="hn" value="<?php echo $hn;?>">
+		</div>
+	</form>
+	
+	<!-- template -->
+	<script type="text/template" id="drug-template">
+		<tr class="sm-tr" {{dr_color}}>
+			<td style="vertical-align: top;">
+				<input type="hidden" name=ids[] value="{{dr_id}}">
+				<input type="hidden" name=codes[] value="{{dr_code}}">
+				<input type="hidden" name=tradnames[] value="{{dr_tradname}}">
+				{{dr_tradname}}
+			</td>
+			<td>{{dr_genname}}</td>
+			<td align="center"><input type="text" name="advreact[]" style="width: 80px;"></td>
+			<td align="center"><input type="text" name="asses[]" style="width: 80px;"></td>
+			<td align="center"><input type="text" name="reporter[]" style="width: 70px;" value="OPD"></td>
+			<td align="center"><input type="text" name="ondate[]" style="width: 120px;" value="{{dr_date}}"></td>
+			<td><span class="remove-item">[ลบ]</span></td>
+		</tr>
+	</script>
+	<!-- template -->
+	<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		var on_date = '<?php echo (date('Y')+543).date('-m-d H:i:s');?>';
 		
-		// indexOf not work on IE 7, 8
-		var test_lists = drugreact_list.slice();
-		// console.log(test_lists);
-		for(var iv=0; iv<test_lists.length; iv++ ){
-			if(test_lists[iv] == data_id){
+		$(document).on('keyup', '#test_word', function(){
+			var word = $('#test_word').val();
+			word = $.trim(word);
+			if(word.length < 3){
+				$('#test_select').html('');
 				return false;
 			}
-		}
-		// var test_id = drugreact_list.indexOf(data_id);
-		// if(test_id > -1){
-			// return false;
-		// }
-		
-		var html = '<li><input type="hidden" name=items[] value="'+data_id+'">'+$(this).attr('data-name')+'&nbsp;<span class="remove-item" data-id="'+data_id+'">[ลบ]</span></li>';
-		$('#react_list_items').append(html);
-		
-		drugreact_list.push(data_id);
-	});
-	
-	// ปิดหน้าต่าง
-	$(document).on('click', '#test_close', function(){
-		$('#test_contain').hide();
-	});
-	
-	// ลบรายการจากที่เลือกเอาไว้
-	$(document).on('click', '.remove-item', function(){
-		
-		var data_id = $(this).attr('data-id');
-		
-		var test_lists = drugreact_list.slice();
-		for(var iv=0; iv<test_lists.length; iv++ ){
 			
-			if(test_lists[iv] == data_id){
-				drugreact_list.splice(iv, 1)
-			}
+			$.ajax({
+				method: "POST",
+				url: "drugreact_test.php",
+				data: { 'word': word, 'action': 'search'},
+				success: function(res){
+					res = $.parseJSON(res);
+					if(res.length == 0){
+						return false;
+					}
+					
+					$('#test_select').html('');
+					var html = '<table class="sm-table">';
+					html += '<tr>';
+					html += '<th>ชื่อการค้า</th>';
+					html += '<th>ชื่อสามัญ</th>';
+					html += '<th>อาการแพ้ยา</th>';
+					html += '<th style="width: 20%;">การประเมิน*</th>';
+					html += '<th>ผู้รายงาน</th>';
+					html += '<th>วันที่รายงาน</th>';
+					html += '<th>&nbsp;</th>';
+					html += '</tr>';
+					
+					for(var i=1; i<=res.length; i++){
+						var ii = i - 1;
+						
+						var tr_mod = i % 2;
+						var tr_color = '';
+						if(tr_mod == 0){
+							tr_color = 'style="background-color: #f2f2f2;"';
+						}
+						
+						var template = document.getElementById('drug-template').innerHTML;
+						
+						template = template.replace(/{{dr_color}}/g, tr_color);
+						template = template.replace(/{{dr_id}}/g, res[ii].row_id);
+						template = template.replace(/{{dr_code}}/g, res[ii].code);
+						template = template.replace(/{{dr_tradname}}/g, res[ii].tradname);
+						template = template.replace(/{{dr_genname}}/g, res[ii].genname);
+						template = template.replace(/{{dr_date}}/g, on_date);
+						
+						html += template;
+					}
+					
+					html += '</table>';
+					html += '';
+					
+					$('#test_select').append(html);
+				}
+			});
+		});
+		
+		// ลบรายการจากที่เลือกเอาไว้
+		$(document).on('click', '.remove-item', function(){
+			var data_id = $(this).attr('data-id');
+			$(this).parents('.sm-tr').remove();
+		});
+		
+		// ยืนยันการลบยา
+		if($('.remove-drug').length > 0){
+			$(document).on('click', '.remove-drug', function(){
+				var c = confirm('ยืนยันที่จะลบรายการแพ้ยา');
+				if(c == false){
+					return false;
+				}
+			});
 		}
 		
-		$(this).parent('li').remove();
+		
+		
 	});
-	
-});
-</script>
+	</script>
+
+	<?php
+	} // End check HN
+	?>
+</div>
 
 	</body>
 </html>

@@ -48,7 +48,7 @@ If (!empty($hn)){
 
     while (list ($hn,$yot,$name,$surname,$dbirth,$ptright,$note,$idguard) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
-           "  <td BGCOLOR=F5DEB3><a   href=\"preappoi1.php? cHn=$hn&cYot=$yot & cName=$name &cSurname=$surname&Age=$dbirth&ptright=$ptright&note=$note&idguard=$idguard\">$hn</a></td>\n".
+           "  <td BGCOLOR=F5DEB3><a href=\"preappoi1.php?cHn=$hn&cYot=$yot&cName=$name&cSurname=$surname&Age=$dbirth&ptright=$ptright&note=$note&idguard=$idguard\">$hn</a></td>\n".
            "  <td BGCOLOR=F5DEB3>$yot</td>\n".
            "  <td BGCOLOR=F5DEB3><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">$name</td>\n".
            "  <td BGCOLOR=F5DEB3>$surname</td>\n".
