@@ -3,6 +3,7 @@ session_start();
 include("connect.inc");
 include("checklogin.php");
 
+$_SESSION['close_popup'] = false;
 
 $sql = "Select a.name From doctor as a INNER JOIN inputm as b ON a.doctorcode = b.codedoctor where idname = '".$_SESSION["sIdname"]."' limit 1";
 

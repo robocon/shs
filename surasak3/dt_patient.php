@@ -175,11 +175,13 @@ if($rows > 0){
 <?php
 // ดึงข้อมูลผู้ป่วยคลินิกเบาหวาน
 $hn = $_SESSION['hn_now'];
-$sql = "SELECT * FROM diabetes_clinic WHERE hn = '$hn'";
+$year = date('Y');
+$sql = "SELECT * FROM diabetes_clinic WHERE hn = '$hn' AND `dateN` LIKE '$year-%'";
 $query = mysql_query($sql);
 $row = mysql_num_rows($query);
+
 if($row > 0){
-	$item = mysql_fetch_assoc($query);
+	
 	?>
 	<style type="text/css">
 	#dialog-contain{
@@ -209,9 +211,26 @@ if($row > 0){
 	.tb-bold{
 		font-weight: bold;
 	}
-	</style>
 	
-	<div id="dialog-contain">
+	#btn-dialog{
+		display: inline-block;
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  border: 2px solid red;
+  padding: 0.4em;
+	}
+	</style>
+	<?php
+	$style = '';
+	if(isset($_SESSION['close_popup']) && $_SESSION['close_popup'] == true){
+		$style = 'style="display: none;"';
+	}
+	?>
+	<div id="btn-dialog">
+		เปิดดูข้อมูลผู้ป่วยคลินิกเบาหวาน
+	</div>
+	<div id="dialog-contain" <?php echo $style;?>>
 		<div id="msg-contain">
 			<div title="ปิดหน้าต่าง" id="div-close">[ ปิดหน้าต่าง ]</div>
 			<h2>รายละเอียดผู้ป่วยคลินิกเบาหวาน</h2>
@@ -482,7 +501,24 @@ if($row > 0){
 	<script type="text/javascript">
 	$(function(){
 		$(document).on('click', '#div-close', function(){
+			
+			$.ajax({
+				url: "ajax_functions.php",
+				method: "post",
+				data: {'action':'close_popup','do':'true'},
+				success: function(res){
+					console.log(res);
+				}
+			});
+			
 			$('#dialog-contain').hide();
+			$('#btn-dialog').show();
+		});
+		
+		$(document).on('click', '#btn-dialog', function(){
+			$('#btn-dialog').hide();
+			$('#dialog-contain').show();
+			
 		});
 	});
 	</script>
