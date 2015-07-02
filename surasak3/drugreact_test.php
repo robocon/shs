@@ -37,25 +37,30 @@ SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` L
 	if($count > 0){
 		
 		for($i = 0; $i<$count; $i++){
-			$sql = "INSERT INTO `drugreact` VALUES (:id, :hn, :drugcode, :tradname, :advreact, :asses, :reporter, :ondate, :officer);";
 			
-			$data = array(
-				':id' => null,
-				':hn' => $hn,
-				':drugcode' => $_POST['codes'][$i],
-				':tradname' => $_POST['tradnames'][$i],
-				':advreact' => $_POST['advreact'][$i],
-				':asses' => $_POST['asses'][$i],
-				':reporter' => $_POST['reporter'][$i],
-				':ondate' => $_POST['ondate'][$i],
-				':officer' => $_SESSION['sOfficer'],
-			);
-		
-			$exec = DB::exec($sql, $data);
-			// dump($exec);
+			$sql = "SELECT row_id FROM `drugreact` WHERE hn = :hn AND drugcode = :drugcode ;";
+			$test = DB::select($sql, array( ':hn' => $hn, ':drugcode' => $_POST['codes'][$i]));
+			if(empty($test)){
+				$sql = "INSERT INTO `drugreact` VALUES (:id, :hn, :drugcode, :tradname, :advreact, :asses, :reporter, :ondate, :officer);";
+				
+				$data = array(
+					':id' => null,
+					':hn' => $hn,
+					':drugcode' => $_POST['codes'][$i],
+					':tradname' => $_POST['tradnames'][$i],
+					':advreact' => $_POST['advreact'][$i],
+					':asses' => $_POST['asses'][$i],
+					':reporter' => $_POST['reporter'][$i],
+					':ondate' => $_POST['ondate'][$i],
+					':officer' => $_SESSION['sOfficer'],
+				);
+			
+				$exec = DB::exec($sql, $data);
+				// dump($exec);
+			}
 		}
 	}
-	
+	// exit;
 	$_SESSION['x-msg'] = 'บันทึกข้อมูลเสร็จเรียบร้อย';
 	
 	header('Location: drugreact_test.php?hn='.$hn);
@@ -161,7 +166,7 @@ SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` L
 		$sql = "
 		SELECT a.`hn`, a.`name`, a.`surname`, b.`row_id`, b.`drugcode`, b.`tradname`, b.`advreact`, c.`genname` 
 		FROM `opcard` AS a, `drugreact` AS b, `druglst` AS c
-		WHERE a.`hn` = :hn AND b.`hn` = a.`hn` AND c.`drugcode` = b.`drugcode`
+		WHERE a.`hn` = :hn AND b.`hn` = a.`hn` AND c.`drugcode` = b.`drugcode` ORDER BY `row_id` DESC
 		";
 		$items = DB::select($sql, array(':hn' => $hn));
 	?>
@@ -176,10 +181,10 @@ SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` L
 				foreach($items as $item){
 					?>
 					<li>
-						<?php echo $item['tradname'].' [ '.$item['genname'].' ]';?>
+						<?php echo $item['tradname'].' [ <b>'.$item['genname'].'</b> ]';?>
 						<?php
 						if($item['advreact'] != ''){
-							echo ' ( '.$item['advreact'].' )';
+							echo ' ( <span style="color: red;">'.$item['advreact'].'</span> )';
 						}
 						?>
 						<a class="remove-drug" href="drugreact_test.php?action=delete&item=<?php echo $item['row_id']?>&hn=<?php echo $hn; ?>">[ลบ]</a>
@@ -217,7 +222,8 @@ SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` L
 	</form>
 	
 	<hr>
-
+	
+	<?php /* ?>
 	<form method="post" action="drugreact_test.php">
 		<div>
 			ค้นหาชื่อยาสามัญ: <input type="text" id="test_word" name="test_word" value="">
@@ -233,6 +239,7 @@ SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` L
 			<input type="hidden" name="hn" value="<?php echo $hn;?>">
 		</div>
 	</form>
+	<?php */ ?>
 	
 	<!-- template -->
 	<script type="text/template" id="drug-template">

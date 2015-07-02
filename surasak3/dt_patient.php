@@ -172,7 +172,10 @@ if($rows > 0){
 <?php }?>
 <div id = "tooltip" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
-<?php
+
+<?
+if($_SESSION["sIdname"] != "md19921" && $_SESSION["sIdname"] != "monchai"){
+
 // ดึงข้อมูลผู้ป่วยคลินิกเบาหวาน
 $hn = $_SESSION['hn_now'];
 $year = date('Y');
@@ -523,5 +526,6 @@ if($row > 0){
 	});
 	</script>
 <?php
-}
+	}
+}  //close if session
 ?>

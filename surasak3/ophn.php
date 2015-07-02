@@ -171,12 +171,13 @@ where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn
 		
 		$sql = sprintf("SELECT `hn`,`dcdate`, `my_ward`
 		FROM `ipcard` 
-		WHERE `hn` = '%s' 
+		WHERE `hn` = '%s'
+		AND `dcdate` = '0000-00-00 00:00:00'
 		ORDER BY `row_id` DESC LIMIT 1", $hn);
 		$query = mysql_query($sql);
 		$item = mysql_fetch_assoc($query);
 		
-		if( $item != false && ( $item['dcdate'] == '0000-00-00 00:00:00' && $item['my_ward'] != '' ) ) {
+		if( $item != false && $item['my_ward'] != '' ) {
 			$alert_msg = 'ผู้ป่วยยังอยู่ที่ '.$item['my_ward'];
 		}
 	}

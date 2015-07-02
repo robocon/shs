@@ -345,7 +345,7 @@ for($i=0;$i<$count;$i++){
 
 	}
 	if($i >0)
-	if(substr($_SESSION["ptright_now"],0,3) == "R36"){
+/*	if(substr($_SESSION["ptright_now"],0,3) == "R36"){
 	$sql="select sum(price),hn,ptname from patdata where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
 	//echo "==>".$sql;
 	$query=mysql_query($sql);
@@ -369,7 +369,7 @@ for($i=0;$i<$count;$i++){
 			echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"      ตกลง      \" ></div></TD>
 		</TR>";			
 		}
-	}else{
+	}else{*/
 	echo "<TR class='tb_detail'>
 					<TD   colspan=\"6\">&nbsp;&nbsp;รวมค่ายา : $total_price บาท, ค่าบริการ : 50 บาท <BR>&nbsp;&nbsp;ค่ายาที่เบิกได้ : ".($pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DPY"]).", ค่ายาที่เบิกไม่ได้ : ".($pricetype["DSY"]+$pricetype["DDN"]+$pricetype["DSN"]+$pricetype["DPN"]).", รวมทั้งหมด : ".($total_price+50)." บาท</TD>
 	</TR>";
@@ -381,7 +381,7 @@ for($i=0;$i<$count;$i++){
 
 	echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"      ตกลง      \" ></div></TD>
 	</TR>";
-	}
+	//}
 	$phar = $pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DDN"];
 	echo "</TABLE>
 
@@ -2654,23 +2654,6 @@ if($rowdg){
 	alert("ผู้ป่วยรายการแพ้ยา\n<?=$txtdrugreact?>");
 </script>
     <?
-}
-?>
-<?
-if(substr($_SESSION["ptright_now"],0,3) == "R36"){
-include("connect.inc");
-$sql="select sum(price),hn,ptname from patdata where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
-//echo "==>".$sql;
-$query=mysql_query($sql);
-list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
-//echo "-->".$sumprice;
-$pay=700;
-$rest=$pay-$sumprice;
-?>
-<script>
-	alert("ผู้ป่วย HN: <?=$hn." ชื่อ : ".$ptname;?>\nสิทธิ : <?=$_SESSION["ptright_now"];?>\nค่าใช้จ่ายก่อนสั่งยา: <?=$sumprice;?> บาท\nสั่งยาได้อีก : <?=number_format($rest,2);?> บาท");
-</script>	
-<?
 }
 ?>
 </body>
