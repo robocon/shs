@@ -488,7 +488,7 @@ $hnid = $hn;
            "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n";
 		
 		if($topay>0&&$price!=$topay||$cunt6>15){
-		   		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"oprxitem.php? sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
+		   		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"oprxitem2.php? sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
 		}else{
 				print "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</td>\n";
 		}

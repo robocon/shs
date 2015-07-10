@@ -119,7 +119,7 @@ $_GET['y'] = $_GET['y']-543;
 	for($i=0;$i<3;$i++){
 		
 		echo "<TR><TD align='center'>";
-		$get_time = mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']);
+		$get_time = mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']);
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
 		$ycheck = date('Y', $get_time)+543;
@@ -187,7 +187,7 @@ $_GET['y'] = $_GET['y']-543;
 	for($i=0;$i<3;$i++){
 		
 		echo "<TR><TD align='center'>";
-		$get_time = mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']);
+		$get_time = mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']);
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
 		$ycheck = date('Y', $get_time)+543;

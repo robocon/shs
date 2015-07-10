@@ -3,7 +3,7 @@
  * This file is using for UTF-8 encoding only
  */
 session_start();
-
+define('NEW_SITE', true);
 require "bootstrap.php";
 
 $action = isset($_POST['action']) ? trim($_POST['action']) : false ;
@@ -30,6 +30,12 @@ SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` L
 		
 		$pre_res[] = '{"row_id":"'.$item['row_id'].'","code":"'.trim($item['drugcode']).'","genname":"'.$item['genname'].'","tradname":"'.$item['tradname'].'"}';
 	}
+	
+	if(empty($pre_res)){
+		echo '[]';
+		exit;
+	}
+	
 	$res = implode(',', $pre_res);
 	
 	// @todo

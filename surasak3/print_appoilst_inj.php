@@ -13,7 +13,7 @@ $Thidate2 = (date("Y")+543).date("-m-d");
 	$aDSN=array();
 	
 // แก้ไขให้รองรับการเปลี่ยนวันที่นัดฉีดยาได้
-// Override list_date กับ list_date2
+Override list_date กับ list_date2
 $rows = count($_POST['day']);
 $i = 0;
 $month = array(
