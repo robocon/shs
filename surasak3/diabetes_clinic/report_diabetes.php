@@ -227,7 +227,7 @@ ORDER BY thidate ASC
 			$sql = "
 SELECT COUNT(hn) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_orderdate
 FROM diabetes_temp
-WHERE l_microal != ''
+WHERE l_microal != '' OR l_ua != ''
 GROUP BY MONTH(thidate) 
 ORDER BY thidate ASC 
 ";

@@ -48,12 +48,12 @@ if( isset($_GET['do']) && $_GET['do'] == 'save'){
 	$strSQL .=",bmi = '".$_POST["bmi"]."' ";
 	$strSQL .=",retinal = '$retinal' ";
 	$strSQL .=",foot = '$foot' ";
-	$strSQL .=",l_bs = '".$_POST["bs"]."' ";
-	$strSQL .=",l_hbalc = '".$_POST["hba"]."' ";
-	$strSQL .=",l_ldl = '".$_POST["ldl"]."' ";
-	$strSQL .=",l_creatinine = '".$_POST["cr"]."' ";
-	$strSQL .=",l_urine = '".$_POST["ur"]."' ";
-	$strSQL .=",l_microal = '".$_POST["micro"]."' ";
+	// $strSQL .=",l_bs = '".$_POST["bs"]."' ";
+	// $strSQL .=",l_hbalc = '".$_POST["hba"]."' ";
+	// $strSQL .=",l_ldl = '".$_POST["ldl"]."' ";
+	// $strSQL .=",l_creatinine = '".$_POST["cr"]."' ";
+	// $strSQL .=",l_urine = '".$_POST["ur"]."' ";
+	// $strSQL .=",l_microal = '".$_POST["micro"]."' ";
 	$strSQL .=",foot_care = '".$_POST["foot_care"]."' ";
 	$strSQL .=",nutrition = '".$_POST["Nutrition"]."' ";
 	$strSQL .=",exercise = '".$_POST["Exercise"]."' ";
@@ -698,6 +698,36 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 <hr />
 </td>
 </tr>
+<!-- START UA -->
+<tr>
+	<td class="tb_font_2">
+		<table border="0">
+			<tr>
+				<td colspan="3" ><div class="tb_font_2"><span class="tb_font_2">UA</span></div></td>
+			</tr>
+			<tr>
+				<td>
+					<?php
+					$sql = sprintf("SELECT result_lab, dateY 
+					FROM diabetes_lab 
+					WHERE dummy_no = '%s' 
+					AND labname = 'Protein'", $item['dummy_no']);
+					$query = mysql_query($sql);
+					$ua_item = mysql_fetch_assoc($query);
+					
+					if($ua_item !== false){
+						echo $ua_item['result_lab'].' '.$ua_item['unit'].' '.$ua_item['dateY'];
+					}else{
+						echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
+					}
+					?>
+				</td>
+			</tr>
+		</table>
+		<hr />
+	</td>
+</tr>
+<!-- END UA -->
 <?
 $laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 $result_laball5=mysql_query($laball5);

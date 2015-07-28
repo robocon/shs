@@ -109,6 +109,55 @@ exit();
 }
 
 
+if(!isset($_GET['action'])){
+	global $doctor;
+	$doctor = trim($doctor);
+	if($doctor == 'กรุณาเลือกแพทย์'){
+		?>
+		<p>กรุณาเลือกแพทย์ก่อนทำการนัดผู้ป่วย</p>
+		<p><a href="#" onclick="window.history.back(); return false;">คลิกที่นี่</a> เพื่อกลับไปกรอกข้อมูลใหม่</p>
+		<?php
+		exit;
+	}
+
+	/*** จำกัดจำนวนผู้ป่วยนัด ***/
+	// นับจำนวนที่นัดผู้ป่วย
+	$query = mysql_query("SELECT hn FROM appoint WHERE appdate = '{$_POST['date_appoint']}' AND doctor = '{$_POST['doctor']}'");
+	$rows = mysql_num_rows($query);
+	
+	$month = array(
+		'มกราคม' => '01', 'กุมภาพันธ์' => '02',
+		'มีนาคม' => '03', 'เมษายน' => '04',
+		'พฤษภาคม' => '05', 'มิถุนายน' => '06',
+		'กรกฎาคม' => '07', 'สิงหาคม' => '08',
+		'กันยายน' => '09', 'ตุลาคม' => '10',
+		'พฤศจิกายน' => '11', 'ธันวาคม' => '12',
+	);
+	$th_day = array(
+		0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์',
+	);
+	
+	list($day, $th_month, $th_year) = explode(' ', $_POST['date_appoint']);
+	$new_date = ($th_year-543).'-'.$month[$th_month].'-'.$day;
+	$check_date = date('w', strtotime($new_date));
+	
+	$sql = "SELECT dr_name,date,user_row FROM dr_limit_appoint WHERE dr_name = '{$_POST['doctor']}' AND date = '$check_date'";
+	
+	$query = mysql_query($sql);
+	$item = mysql_fetch_assoc($query);
+	
+	if($item !== false && $rows >= (int) $item['user_row']){
+		
+		$get_day = (int) $item['date'];
+		echo 'วัน'.$th_day[$get_day].' '.$item['dr_name'].' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อห้องตา';
+		echo '<br>';
+		echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
+		exit;
+	}
+	/*** จำกัดจำนวนผู้ป่วยนัด ***/
+	
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

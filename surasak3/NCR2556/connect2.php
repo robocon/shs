@@ -10,7 +10,7 @@ $Conn = mysql_connect($ServerName,$User,$Password) or die ("ไม่สามารถติดต่อกับเซ
 
 //เลือกชื่อฐานข้อมูล คือ smdb
 mysql_select_db($DatabaseName,$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
-mysql_query("set names tis620");
+
 /*
 code เดิม
 $link = mysql_pconnect("localhost", "sith", "")or die("Could not connect");

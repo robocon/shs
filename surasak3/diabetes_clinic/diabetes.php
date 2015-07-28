@@ -1,10 +1,15 @@
 <?php 
 session_start();
+
+error_reporting(1);
+ini_set('display_errors', 1);
+
+
 require "../connect.php";
 require "../includes/functions.php";
 
 // Verify user before load content
-if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
+if(!authen()) die('Session หมดอายุ กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
 
 if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	
@@ -47,11 +52,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	unset($_POST['ht_etc']);
 	
 	// Filter ส่วนที่ฟอร์มส่งมา
-	// dump($_POST);
 	$post = post2null($_POST);
-	
-	// dump($post);
-	// exit;
 
 	// Filter ส่วนที่ต้องเก็บตก อย่างเช่นพวก input type radio แล้วมันไม่ได้เลือกมันจะไม่มีใน $_POST
 	/**
@@ -72,11 +73,16 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	if(!isset($post['admit_dia'])){ $post['admit_dia'] = filter2null('admit_dia'); }
 	if(!isset($post['dt_heart'])){ $post['dt_heart'] = filter2null('dt_heart'); }
 	if(!isset($post['dt_brain'])){ $post['dt_brain'] = filter2null('dt_brain'); }
+	
+	$post['l_ua'] = $_POST['protein']['0'];
+	
+	// dump($_POST['protein']);
+	// exit;
 
 	$strSQL = "INSERT INTO diabetes_clinic 
-	(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,ht_etc,retinal_date,foot_date,tooth_date,tooth) 
+	(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,ht_etc,retinal_date,foot_date,tooth_date,tooth,l_ua) 
 	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}','{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}','{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}','{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}','{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}','{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}','{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}','{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer','$register','$ht_etc','$retinal_date','$foot_date','$tooth_date','$tooth')";
+	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}','{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}','{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}','{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}','{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}','{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}','{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}','{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer','$register','$ht_etc','$retinal_date','$foot_date','$tooth_date','$tooth','{$post['l_ua']}')";
 	
 	// dump($strSQL);
 	// exit;
@@ -174,6 +180,23 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 			//  echo $strSQL6."<br>";		
 		}
 	}
+	
+	/* UA */
+	if(isset($_POST['protein']) && count($_POST['protein']) > 0){
+		$ua_row = count($_POST['protein']);
+		$sql = "INSERT INTO `diabetes_lab` (dm_no,labname,dateY,result_lab,dummy_no) VALUES ";
+		$data = array();
+		for($iua = 0; $iua<$ua_row; $iua++){
+			$result = $_POST['protein'][$iua];
+			$unit = $_POST['protein-unit'][$iua];
+			$date = $_POST['protein-date'][$iua];
+			
+			$data[] = "('".$_POST["dm_no"]."','Protein','$date','$result','$dummy_no')";
+		}
+		
+		$sql .= implode(',', $data);
+		mysql_query($sql);
+	}
 
 	$sIdname = isset($_SESSION['sIdname']) ? $_SESSION['sIdname'] : null ;
 	if($sIdname === null){
@@ -184,9 +207,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	// บันทึกข้อมูลประวัติย้อนหลัง
 	////////////////////
 	$insert = "INSERT INTO diabetes_clinic_history 
-	(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth) 
+	(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth,l_ua) 
 	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}','{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}','{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}','{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}','{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}','{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}','{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}','{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer','$register','$register','$register','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth')";
+	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}','{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}','{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}','{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}','{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}','{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}','{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}','{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer','$register','$register','$register','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth','{$post['l_ua']}')";
 	$insert_query = mysql_query($insert);
 	
 
@@ -1003,8 +1026,65 @@ C&deg;</td>
    ?>
    </table>
    <hr />
+
    </td>
    </tr>
+	<tr>
+		<td class="tb_font_2">
+			<table>
+				<tr>
+					<td colspan="3">
+						<div class="tb_font_2">
+							<span class="tb_font">UA</span>
+						</div>
+					</td>
+				</tr>
+				<?php
+				
+				/**
+				 * @todo ALTER TABLE `diabetes_clinic` ADD `l_ua` VARCHAR( 255 ) NOT NULL ;
+				 */
+				$sql = "
+				SELECT a. * , b. *
+				FROM `resulthead` AS a, `resultdetail` AS b
+				WHERE a.`hn` = '".$arr_view['hn']."'
+				AND b.`autonumber` = a.`autonumber`
+				AND b.`labname` = 'Protein'
+				AND b.`authoriseby` != ''
+				AND a.`profilecode` = 'UA'
+				AND a.`orderdate` LIKE '$year%%'
+				ORDER BY a.`orderdate` DESC
+				";
+				$query = mysql_query($sql);
+				$count = mysql_num_rows($query);
+				if($count > 0){
+					
+					while($item = mysql_fetch_assoc($query)){
+						?>
+						<tr>
+							<td>
+								<div class="tb_font_2">
+									<?php
+									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
+									?>
+								</div>
+								<input type="hidden" name="protein[]" value="<?php echo $item['result'];?>">
+								<input type="hidden" name="protein-unit[]" value="<?php echo $item['unit'];?>">
+								<input type="hidden" name="protein-date[]" value="<?php echo $item['orderdate'];?>">
+							</td>
+						</tr>
+						<?php
+					}
+				}else{
+					?>
+					<tr><td><span class="tb_font_2">ยังไม่เคยตรวจ</span></td></tr>
+					<?php
+				}
+				?>
+			</table>
+			<hr />
+		</td>
+	</tr>
    <?
       $laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc ";
 	  $result_laball5=mysql_query($laball5);

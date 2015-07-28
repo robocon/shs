@@ -85,7 +85,7 @@ $thaidate = (date("Y")+543).date("-m-d");
 </style>
 <h1 class="forntsarabun1">แก้ไขข้อมูลผู้ป่วยเบาหวาน และเพิ่มข้อมูลประวัติผู้ป่วย</h1>
 <?php $hn = isset($_POST['p_hn']) ? trim($_POST['p_hn']) : null ; ?>
-<form action="" method="post">
+<form action="diabetes_edit.php" method="post">
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
 <TR>
 	<TD>
@@ -735,6 +735,62 @@ ORDER BY dateY DESC
    <hr />
    </td>
    </tr>
+    <tr>
+		<td class="tb_font_2">
+			<table>
+				<tr>
+					<td colspan="3">
+						<div class="tb_font_2">
+							<span class="tb_font">UA</span>
+						</div>
+					</td>
+				</tr>
+				<?php
+				
+				/**
+				 * @todo ALTER TABLE `diabetes_clinic` ADD `l_ua` VARCHAR( 255 ) NOT NULL ;
+				 */
+				$sql = "
+				SELECT a.* , b.*
+				FROM `resulthead` AS a, `resultdetail` AS b
+				WHERE a.`hn` = '".$arr_view['hn']."'
+				AND b.`autonumber` = a.`autonumber`
+				AND b.`labname` = 'Protein'
+				AND b.`authoriseby` != ''
+				AND a.`profilecode` = 'UA'
+				AND a.`orderdate` LIKE '$year%%'
+				ORDER BY a.`orderdate` DESC
+				";
+				$query = mysql_query($sql);
+				$count = mysql_num_rows($query);
+				if($count > 0){
+					
+					while($item = mysql_fetch_assoc($query)){
+						?>
+						<tr>
+							<td>
+								<div class="tb_font_2">
+									<?php
+									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
+									?>
+								</div>
+								<input type="hidden" name="protein[]" value="<?php echo $item['result'];?>">
+								<input type="hidden" name="protein-unit[]" value="<?php echo $item['unit'];?>">
+								<input type="hidden" name="protein-date[]" value="<?php echo $item['orderdate'];?>">
+							</td>
+						</tr>
+						<?php
+					}
+				}else{
+					?>
+					<tr><td><span class="tb_font_2">ยังไม่เคยตรวจ</span></td></tr>
+					<?php
+				}
+				?>
+			</table>
+			<hr />
+		</td>
+	</tr>
    <?
       $laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 	  $result_laball5=mysql_query($laball5);
@@ -903,17 +959,18 @@ $dateN=date("Y-m-d");
 $ht_etc = isset($_POST['ht_etc']) ? implode(',', $_POST['ht_etc']) : '' ;
 unset($_POST['ht_etc']);
 
+$_POST['l_ua'] = $_POST['protein']['0'];
+
 // Filter $_POST with white list
 $items = array(
 'dm_no','thaidate','hn','doctor','ptright','dbirth','sex','dia1','nosis_d','ht','ht_d','cigarette','bw','bmi',
 'bs','hba','ldl','cr','ur','micro','foot_care','Nutrition','Exercise','Smoking',
 'admit_dia','dt_heart','dt_brain','height','weight','round','temperature','pause','rate','bp1',
-'bp2','retinal_date','retinal','foot_date','foot','tooth_date','tooth',
+'bp2','retinal_date','retinal','foot_date','foot','tooth_date','tooth', 'l_ua'
 );
 $_POST = filter_post($items);
 
 // Retinal and Foot Exam
-
 	
 // อัพเดทข้อมูลในตาราง
 $strSQL = "UPDATE diabetes_clinic  SET ";
@@ -961,11 +1018,8 @@ $strSQL .=",retinal_date = '{$_POST['retinal_date']}' ";
 $strSQL .=",foot_date = '{$_POST['foot_date']}' ";
 $strSQL .=",tooth_date = '{$_POST['tooth_date']}' ";
 $strSQL .=",tooth = '{$_POST['tooth']}' ";
+$strSQL .=",l_ua = '{$_POST['l_ua']}' ";
 $strSQL .="WHERE hn = '".$_POST['hn']."' ";
-
-// dump($strSQL);
-// exit;
-
 $objQuery = mysql_query($strSQL);
 
 $dm_no = $_POST["dm_no"];
@@ -987,13 +1041,11 @@ if($sIdname === null){
 // บันทึกข้อมูลประวัติย้อนหลัง
 ////////////////////
 $insert = "INSERT INTO diabetes_clinic_history 
-(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth) 
+(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth,l_ua) 
 VALUES 
-('$dm_no','".$_POST["thaidate"]."','".$dateN."','".$_POST["hn"]."','".$_POST["doctor"]."','".$_POST["ptname"]."','".$_POST["ptright"]."','".$_POST["dbirth"]."','".$_POST["sex"]."','".$_POST["dia1"]."','".$_POST["nosis_d"]."','".$_POST["ht"]."','".$_POST["ht_d"]."','".$_POST["cigarette"]."','".$_POST["bw"]."','".$_POST["bmi"]."','$retinal','$foot','".$_POST["bs"]."','".$_POST["hba"]."','".$_POST["ldl"]."','".$_POST["cr"]."','".$_POST["ur"]."','".$_POST["micro"]."','".$_POST["foot_care"]."','".$_POST["Nutrition"]."','".$_POST["Exercise"]."','".$_POST["Smoking"]."','".$_POST["admit_dia"]."','".$_POST["dt_heart"]."','".$_POST["dt_brain"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$sOfficer."','','$added_date','$added_date','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth')";
+('$dm_no','".$_POST["thaidate"]."','".$dateN."','".$_POST["hn"]."','".$_POST["doctor"]."','".$_POST["ptname"]."','".$_POST["ptright"]."','".$_POST["dbirth"]."','".$_POST["sex"]."','".$_POST["dia1"]."','".$_POST["nosis_d"]."','".$_POST["ht"]."','".$_POST["ht_d"]."','".$_POST["cigarette"]."','".$_POST["bw"]."','".$_POST["bmi"]."','$retinal','$foot','".$_POST["bs"]."','".$_POST["hba"]."','".$_POST["ldl"]."','".$_POST["cr"]."','".$_POST["ur"]."','".$_POST["micro"]."','".$_POST["foot_care"]."','".$_POST["Nutrition"]."','".$_POST["Exercise"]."','".$_POST["Smoking"]."','".$_POST["admit_dia"]."','".$_POST["dt_heart"]."','".$_POST["dt_brain"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$sOfficer."','','$added_date','$added_date','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth','".$_POST['l_ua']."')";
 $insert_query = mysql_query($insert);
 
-// var_dump($insert_query);
-// exit;
 
 // $dm_no = $_POST["dm_no"];
 if(isset($_POST['bs'])){
@@ -1043,6 +1095,16 @@ if(isset($_POST['micro'])){
 	('$dm_no','Urine Microalbumin','".$_POST["datemicro$i6"]."','".$_POST["micro"]."','$dummy_no')";
 	$objQuery6 = mysql_query($strSQL6);
 }
+
+// Update ua
+if(isset($_POST['l_ua'])){
+	$strSQL6  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','Protein','".$_POST['protein-date']['0']."','".$_POST['protein']['0']."','$dummy_no')";
+	$objQuery6 = mysql_query($strSQL6);
+}
+
 
 if($objQuery)
 {

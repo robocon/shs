@@ -488,6 +488,34 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 								</td>
 							</tr>
 							<tr>
+								<td>
+									<table border="0">
+										<tr>
+											<td colspan="3" ><div class="tb_font_2"><span class="tb_font">UA</span></div></td>
+										</tr>
+										<tr>
+											<td>
+												<?php
+												$sql = sprintf("SELECT result_lab, dateY 
+												FROM diabetes_lab 
+												WHERE dummy_no = '%s' 
+												AND labname = 'Protein'", $item['dummy_no']);
+												$query = mysql_query($sql);
+												$ua_item = mysql_fetch_assoc($query);
+							
+												if($ua_item === false){
+													echo 'ยังไม่เคยตรวจ';
+												}else{
+													echo $ua_item['result_lab'].' วันที่  '.$ua_item['dateY'];
+												}
+												?>
+											</td>
+										</tr>
+									</table>
+									<hr />
+								</td>
+							</tr>
+							<tr>
 								<td class="">
 									<table border="0">
 										<tr>

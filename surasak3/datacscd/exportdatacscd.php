@@ -429,7 +429,7 @@ $dsy=number_format($dsy, 2, '.', '');
 $thimonth=$_POST["thiyr"]."-".$_POST["rptmo"]."-".$_POST["rptdate"];
 $numcscd=0;
 $cscd='จ่ายตรง';
-    $query="CREATE TEMPORARY TABLE reportcscd02 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd' AND depart='PHAR' " ;
+    $query="CREATE TEMPORARY TABLE reportcscd02 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd' AND depart='PHAR' AND paidcscd > 0 " ;
 	//echo $query;
 	
     $result = mysql_query($query) or die("Query failed billdisp 379");

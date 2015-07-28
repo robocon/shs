@@ -18,3 +18,8 @@ surasak3/Connections/connect.inc.php
 surasak3/Connections/dbconfig.php
 surasak3/NCR2556/connect.inc
 surasak3/NCR2556/connect2.inc
+surasak3/datacscd/*.txt
+surasak3/datacscd/cscd/*.zip
+
+# Visual Studio Code
+.settings/*

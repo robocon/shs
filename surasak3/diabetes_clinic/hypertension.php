@@ -1,137 +1,18 @@
-<? 
-session_start();
-?>
-<html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-    <!-- InstanceBeginEditable name="doctitle" -->
-    <title>Clinic hypertension</title>
-    <!-- InstanceEndEditable -->
-    <link type="text/css" href="menu.css" rel="stylesheet" />
-    <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="menu.js"></script> 
-    <!-- InstanceBeginEditable name="head" -->
-    <!-- InstanceEndEditable -->
-</head>
-<style>
-.font1{
-	font-family:"TH SarabunPSK";
-	font-size:20pt;
-}
-.table_font1{
-	font-family:"TH SarabunPSK";
-	font-size:18pt;
-	font-weight:bold;
-	color:#600;	
-}
-.table_font2{
-	font-family:"TH SarabunPSK";
-	font-size:18pt;
-}
-legend{
-	
-font-family:"TH SarabunPSK";
-font-size: 18pt;
-font-weight: bold;
-color:#600;	
-padding:0px 3px;
-}
-fieldset{
-display:inline;
-background-color:#FEFDDE;
-/*width:300px;*/
-border-color:#000;
-
-}
-</style>
-
-<style type="text/css">
-* { margin:0;
-    padding:0;
-}
-ody { /*background:rgb(74,81,85); */}
-div#menu { margin:5px auto; }
-div#copyright {
-    font:11px 'Trebuchet MS';
-    color:#fff;
-    text-indent:30px;
-    padding:40px 0 0 0;
-}
-td,th {
-	font-family:"TH SarabunPSK";
-	font-size: 20 px;
-}
-.fontsara {
-	font-family:"TH SarabunPSK";
-	font-size: 18 px;
-}
-@media print{
-#no_print{display:none;}
-}
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
-} 
-
-/*div#copyright a { color:#00bfff; }
-div#copyright a:hover { color:#fff; }*/
-</style>
-<body>
-
-
-<div id="no_print">
-<div id="menu">
-  <ul class="menu">
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>โปรแกรมโรงพยาบาล</span></a></li>
-         <li><a href="#"><span>ลงทะเบียน</span></a></li>
-          <ul>
-		 <li class="last"><a href="diabetes.php"><span>ลงทะเบียน DM</span></a></li>
-         <li class="last"><a href="hypertension.php"><span>ลงทะเบียน HT</span></a></li>
-       	</ul>
-     	  <li><a href="diabetes_edit.php"><span>แก้ไขข้อมูล</span></a></li>
-           <ul>
-		 <li class="last"><a href="diabetes_edit.php"><span>แก้ไขข้อมูล DM</span></a></li>
-         <li class="last"><a href="hypertension_edit.php"><span>แก้ไขข้อมูล HT</span></a></li>
-       	</ul>
-         <li><a href="#"><span>รายชื่อผู้ป่วย DM</span></a></li>
-         <ul>
-		 <li class="last"><a href="diabetes_list.php"><span>รายชื่อทั้งหมด</span></a></li>
-         <li class="last"><a href="diabetes_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
-       	</ul>
-       <li><a href="#"><span>รายชื่อผู้ป่วย HT</span></a></li>
-         <ul>
-		 <li class="last"><a href="hypertension_list.php"><span>รายชื่อทั้งหมด</span></a></li>
-         <li class="last"><a href="hypertension_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
-       	</ul>
-     <li><a href="report_diabetes.php"><span>สถิติ</span></a></li>
- 		<ul>
-		 <li class="last"><a href="report_diabetes.php"><span>สถิติ DM</span></a></li>
-         <li class="last"><a href="report_hypertension.php"><span>สถิติ HT</span></a></li>
-       	</ul>
-     <li><a href="#"><span>รายงาน</span></a></li>
- 		<ul>
-		 <li class="last"><a href="report_diabetesofyear.php"><span>รายงาน DM</span></a></li>
-         <li class="last"><a href="report_hypertensionofyear.php"><span>รายงาน HT</span></a></li>
-       	</ul>  
-		<li><a href="history.php"><span>ค้นหาประวัติ</span></a></li>
-    </ul>
-</div>
-
-<div style="visibility: hidden">
- <br />
- <a href="http://apycom.com/">a</a><br />
-</div>
-
-</div>
-
-
-<div><!-- InstanceBeginEditable name="detail" -->
-
 <?php
+	
+session_start();
+
+error_reporting(1);
+ini_set('display_errors', 1);
+
+
+require "../connect.php";
+require "../includes/functions.php";
+	
+require "header.php";
+
 $date_now = date("Y-m-d");
-include("../connect.php");
+// include("../connect.php");
 
 function calcage($birth){
 
@@ -200,85 +81,77 @@ $thaidate = (date("Y")+543).date("-m-d");
 </style>
 
 
-<h1 class="forntsarabun1">Hypertension</h1>
-
+<h1 class="forntsarabun1">ลงทะเบียนผู้ป่วย Hypertension</h1>
 
 <form action="" method="post">
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
-	</TR>
-	<TR>
-		<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1" id="p_hn"  value="<?php echo $_POST["p_hn"];?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
-	</TR>
-	<TR>
-		<TD></TD>
-	</TR>
+	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
+		<TR>
+			<TD>
+				<TABLE border="0" cellpadding="0" cellspacing="0">
+					<TR>
+						<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
+					</TR>
+					<TR>
+						<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1" id="p_hn"  value="<?php echo $_POST["p_hn"];?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
+					</TR>
+					<TR>
+						<TD></TD>
+					</TR>
+				</TABLE>
+			</TD>
+		</TR>
 	</TABLE>
-	</TD>
-</TR>
-</TABLE>
 </form>
-
 
 <?php 
 $hn=trim($_POST["p_hn"]);
 if(!empty($_POST["p_hn"]) != ""){
 	
-	  $sqlht="select *,concat(yot,name,' ',surname)as ptname from opcard where hn='$hn' ";
-	  $queryht=mysql_query($sqlht);
-	  $row=mysql_num_rows($queryht);
-	  
-	  if(!$row){
-		  
-		  print "<br> <font class='forntsarabun1'>ไม่พบ  HN  <b>$hn</b>  ในระบบทะเบียน </font>";
-		  
- }else{
-
-$select="select hn from hypertension_clinic WHERE  hn ='".$hn."' ";
-$q=mysql_query($select)or die (mysql_error());
-$rows=mysql_num_rows($q);
-
-	if($rows){
+	$sqlht="select *,concat(yot,name,' ',surname)as ptname from opcard where hn='$hn' ";
+	$queryht=mysql_query($sqlht);
+	$row=mysql_num_rows($queryht);
 	
-	print "<BR><font class='forntsarabun1'> HN  ".$hn." ได้ลงทะเบียนแล้ว </font>";
-	print "<BR><font class='forntsarabun1'> ต้องการ <a href='hypertension_edit.php?p_hn=$hn'>แก้ไข</a> หรือไม่</font>";
-	//print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+	if(!$row){
+	
+		print "<br> <font class='forntsarabun1'>ไม่พบ  HN  <b>$hn</b>  ในระบบทะเบียน </font>";
+	
 	}else{
-?>
 
-<?
+		$select="select hn from hypertension_clinic WHERE  hn ='".$hn."' ";
+		$q=mysql_query($select)or die (mysql_error());
+		$rows=mysql_num_rows($q);
+
+		if($rows){
+		
+			print "<BR><font class='forntsarabun1'> HN  ".$hn." ได้ลงทะเบียนแล้ว </font>";
+			print "<BR><font class='forntsarabun1'> ต้องการ <a href='hypertension_edit.php?p_hn=$hn'>แก้ไข</a> หรือไม่</font>";
+			//print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+		}else{
 	
-	$arr_view = mysql_fetch_assoc($queryht);
-	$y=date("Y")+543;
-	$d=date("d");
-	$m=date("m");
-	$date1=$y.'-'.$m.'-'.$d;
+			$arr_view = mysql_fetch_assoc($queryht);
+			$y=date("Y")+543;
+			$d=date("d");
+			$m=date("m");
+			$date1=$y.'-'.$m.'-'.$d;
+			
+			$opd = "Select * From  opd where  hn='".$arr_view["hn"]."' ORDER BY `thidate` DESC limit 0,1 ";
+			$result_opd = mysql_query($opd);
+			$arr_opd = mysql_fetch_array($result_opd);
+			$arr_view["age"] = calcage($arr_view["dbirth"]);
 	
-	$opd = "Select * From  opd where  hn='".$arr_view["hn"]."' ORDER BY `thidate` DESC limit 0,1 ";
-	$result_opd = mysql_query($opd);
-	$arr_opd = mysql_fetch_array($result_opd);
-	$arr_view["age"] = calcage($arr_view["dbirth"]);
-	
-
-$height = $arr_opd["height"];
-$weight = $arr_opd["weight"];
-
-$cigarette=$arr_opd["cigarette"];
-////////////////////////////////////////
-
-$datenow=date("Y-m-d");
+			$height = $arr_opd["height"];
+			$weight = $arr_opd["weight"];
+			
+			$cigarette=$arr_opd["cigarette"];
+			////////////////////////////////////////
+			
+			$datenow=date("Y-m-d");
 	 
-
-  
-	  $sqlht="select max(ht_no)as htnumber from hypertension_clinic";
-	  $queryht=mysql_query($sqlht);
-	  $arrht=mysql_fetch_array($queryht);
-	  $ht=$arrht['htnumber']+1;
-	  $ht_no=$ht;
+			$sqlht="select max(ht_no)as htnumber from hypertension_clinic";
+			$queryht=mysql_query($sqlht);
+			$arrht=mysql_fetch_array($queryht);
+			$ht=$arrht['htnumber']+1;
+			$ht_no=$ht;
 	  
 	 
 ?>
@@ -286,81 +159,90 @@ $datenow=date("Y-m-d");
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM METHOD="post" ACTION="hypertension.php?do=save" name="F1">
 
-<input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<br />
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;<span class="forntsarabun">&nbsp;&nbsp;ข้อมูลผู้ป่วย</span></TD>
-	</TR>
-	<TR>
-		<TD>
-	<table border="0">
-		<tr>
-		  <td align="right" class="tb_font_2">วันที่ลงทะเบียน</td>
-		  <td><span class="data_show">
-		    <input name="thaidate" type="text" class="forntsarabun1" id="thaidate"  value="<?=date("Y-m-d");?>"/>
-		  </span></td>
-		  <td colspan="2" class="tb_font_2">// รูปแบบ ปี ค.ศ.-เดือน-วัน</td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">HT  number :</td>
-		  <td><span class="data_show">
-		    <input name="ht_no" type="text" class="forntsarabun1" id="ht_no"  value="<?=$ht_no;?>" readonly/>
-		  </span></td>
-		  <td align="right"><span class="tb_font_2">HN :</span></td>
-		  <td align="left" class="forntsarabun1"><?php echo $arr_view["hn"];?>
-		    <input name="hn" type="hidden" id="hn" value="<?php echo $arr_view["hn"];?>"/></td>
-		  </tr>
-		<tr>
-		  <td  align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
-		  <td class="forntsarabun1"><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
-		  <td  align="right" class="tb_font_2">อายุ :</td>
-		  <td align="left" class="forntsarabun1"><?php echo $arr_view["age"];?><input name="dbirth" type="hidden" id="dbirth" value="<?php echo $arr_view["dbirth"];?>"/> </td>
-		  </tr>
-		<tr class="forntsarabun1">
-		  <td  align="right" class="tb_font_2">เพศ :</td>
-		  <td >
-          <? if($arr_view['sex']=='ช'){ $sex1="checked"; }elseif($arr_view['sex']=='ญ'){ $sex2="checked"; } ?>
-		    <input name="sex" type="radio" value="0" <?=$sex1;?>/>
-		    ชาย
-		    <input name="sex" type="radio" value="1" <?=$sex2;?>/> 
-		    หญิง
-</td>
-		  <td  align="right" class="tb_font_2">&nbsp;</td>
-		  <td align="left"><input name="pension" type="hidden" id="pension" value="<?php echo $arr_view["pension_status"];?>"/></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">แพทย์ :</td>
-		  <td><select name="doctor" id="doctor" class="forntsarabun1">
-            <?php 
-		echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
-		//echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
-		$sql = "Select name From doctor where status = 'y' ";
-		$result = mysql_query($sql);
-		while($dbarr2= mysql_fetch_array($result)){
-			
-			$sub1=substr($arr_opd['doctor'],0,5);
-			$sub2=substr($dbarr2['name'],0,5);
-			
-		
-			if($dbarr2['name']==$arr_opd['doctor']){
-			
-			echo "<option value='".$dbarr2['name']."'  selected>".$dbarr2['name']."</option>";	
-			}else{
-			echo "<option value='".$dbarr2['name']."' >".$dbarr2['name']."</option>";
-			}
-		}
-		?>
-            </select> </td>
-		  <td align="right" class="tb_font_2">สิทธิ :</td>
-		  <td align="left" class="forntsarabun1"><?php echo $arr_view["ptright"];?><input name="ptright" type="hidden" id="ptright" value="<?php echo $arr_view["ptright"];?>"/> </td>
-		  </tr>
-	</table>
-	<hr />
+	<input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
+	<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
+	<br />
+	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
+		<TR>
+			<TD>
+				<TABLE border="0" cellpadding="0" cellspacing="0">
+					<TR>
+						<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;<span class="forntsarabun">&nbsp;&nbsp;ข้อมูลผู้ป่วย</span></TD>
+					</TR>
+					<TR>
+						<TD>
+							<table border="0">
+							<tr>
+								<td align="right" class="tb_font_2">วันที่ลงทะเบียน: </td>
+								<td><span class="data_show">
+								<input name="thaidate" type="text" class="forntsarabun1" id="thaidate"  value="<?=date("Y-m-d");?>"/>
+								</span></td>
+								<td colspan="2" class="tb_font_2">// รูปแบบ ปี ค.ศ.-เดือน-วัน</td>
+							</tr>
+							<tr>
+								<td align="right" class="tb_font_2">HT  number :</td>
+								<td><span class="data_show">
+								<input name="ht_no" type="text" class="forntsarabun1" id="ht_no"  value="<?=$ht_no;?>" readonly/>
+								</span></td>
+								<td align="right"><span class="tb_font_2">HN :</span></td>
+								<td align="left" class="forntsarabun1"><?php echo $arr_view["hn"];?>
+								<input name="hn" type="hidden" id="hn" value="<?php echo $arr_view["hn"];?>"/></td>
+							</tr>
+							<tr>
+								<td  align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
+								<td class="forntsarabun1"><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
+								<td  align="right" class="tb_font_2">อายุ :</td>
+								<td align="left" class="forntsarabun1">
+									<?php echo $arr_view["age"];?>
+									<input name="age" type="hidden" id="age" value="<?php echo $arr_view["age"];?>"/>
+									<input name="dbirth" type="hidden" id="dbirth" value="<?php echo $arr_view["dbirth"];?>"/>
+								</td>
+							</tr>
+							<tr class="forntsarabun1">
+								<td  align="right" class="tb_font_2">เพศ :</td>
+								<td >
+								<?php
+									$sex1 = $sex2 = "";
+									if($arr_view['sex']=='ช'){ 
+										$sex1="checked"; 
+									}elseif($arr_view['sex']=='ญ'){ 
+										$sex2="checked"; 
+									}
+								?>
+								<input name="sex" type="radio" value="0" <?=$sex1;?>/>
+								ชาย
+								<input name="sex" type="radio" value="1" <?=$sex2;?>/> 
+								หญิง
+								</td>
+								<td  align="right" class="tb_font_2">&nbsp;</td>
+								<td align="left"><input name="pension" type="hidden" id="pension" value="<?php echo $arr_view["pension_status"];?>"/></td>
+							</tr>
+							<tr>
+								<td align="right" class="tb_font_2">แพทย์ :</td>
+								<td><select name="doctor" id="doctor" class="forntsarabun1">
+								<?php 
+								echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
+								//echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
+								$sql = "Select name From doctor where status = 'y' ";
+								$result = mysql_query($sql);
+								while($dbarr2= mysql_fetch_array($result)){
+								
+									$sub1=substr($arr_opd['doctor'],0,5);
+									$sub2=substr($dbarr2['name'],0,5);
+									
+									if($dbarr2['name']==$arr_opd['doctor']){
+									
+										echo "<option value='".$dbarr2['name']."'  selected>".$dbarr2['name']."</option>";	
+									}else{
+										echo "<option value='".$dbarr2['name']."' >".$dbarr2['name']."</option>";
+									}
+								} // End while
+								?>
+								</select> </td>
+								<td align="right" class="tb_font_2">สิทธิ :</td>
+								<td align="left" class="forntsarabun1"><?php echo $arr_view["ptright"];?><input name="ptright" type="hidden" id="ptright" value="<?php echo $arr_view["ptright"];?>"/> </td>
+							</tr>
+							</table>
         <script>
 	function calbmi(a,b){
 		//alert(a);
@@ -374,9 +256,9 @@ $datenow=date("Y-m-d");
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
     <table border="0" class="forntsarabun1">
-      <TR>
-        <TD align="left" bgcolor="#0000CC" class="forntsarabun" colspan="12">การตรวจร่างกาย</TD>
-      </TR>
+	  <TR>
+		<TD align="left" bgcolor="#0000CC" class="tb_font_1" colspan="12">&nbsp;<span class="forntsarabun">&nbsp;&nbsp;การตรวจร่างกาย</span></TD>
+	</TR>
       <tr>
         <td width="70" align="right" class="tb_font_2">ส่วนสูง : </td>
         <td><input name="height" type="text" class="forntsarabun1" value="<?php echo $height; ?>" size="1" maxlength="5" onBlur="calbmi(this.value,document.F1.weight.value)"/>
@@ -458,7 +340,6 @@ Uncertain type
 	      </table></td>
     </tr>
 	  </table>
-<HR>
 
 	<input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล"  />
 	&nbsp;
@@ -477,46 +358,40 @@ Uncertain type
  }
  } //ปิด ค้นหา hn ใน opcard
 }
-include("../unconnect.inc");
- ?>
- 
-<?
- if($_REQUEST['do']=='save'){
- if($_POST['submit']=='บันทึกข้อมูล'){
+
+// include("../unconnect.inc");
+
+if($_REQUEST['do']=='save'){
 	 
-include("../connect.inc");
-
-$dateN=date("Y-m-d");
-$register=date("Y-m-d H:i:s");
-
-
-$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension  )
-VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."');";
-$objQuery = mysql_query($strSQL);
-
-if($objQuery)
-{
-	echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
-print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+	// include("../connect.inc");
+	
+	$dateN=date("Y-m-d");
+	$register=date("Y-m-d H:i:s");
+	
+	$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str` )
+	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."');";
+	$objQuery = mysql_query($strSQL);
+	
+	// เพิ่มเข้าไปใน ประวัติผู้ป่วย
+	$strSQL="INSERT INTO `hypertension_history` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str` )
+	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."');";
+	$objQuery = mysql_query($strSQL);
+	
+	
+	if($objQuery)
+	{
+		echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
+		print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+	}
+	else
+	{
+		echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกได้ [".mysql_error($Conn)."]</font>";
+		print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+	}
+	
+		 
+	// include("../unconnect.inc");	 
 }
-else
-{
-	echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกได้ [".$strSQL."]</font>";
-print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
-}
 
-	 
-include("../unconnect.inc");	 
- }
- }
-
-
- ?>
-<!-- InstanceEndEditable -->
-
-</div>
-
-
-
-</body>
-<!-- InstanceEnd --></html>
+require "footer.php";
+?>

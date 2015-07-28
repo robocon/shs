@@ -14,9 +14,9 @@ if(!defined('NEW_SITE')){
 	$Conn = mysql_connect('localhost', 'root', '1234') or die( mysql_error() );
 	mysql_select_db('smdb', $Conn) or die( mysql_error() );
 	mysql_query("SET NAMES UTF8", $Conn);
-	mysql_query("SET character_set_results=utf8");
-	mysql_query("SET character_set_client=utf8");
-	mysql_query("SET character_set_connection=utf8");
+	// mysql_query("SET character_set_results=utf8");
+	// mysql_query("SET character_set_client=utf8");
+	// mysql_query("SET character_set_connection=utf8");
 	
 }
 
@@ -30,11 +30,13 @@ class DB{
 	
 	private static $connect = null;
 	private $db = null;
+	private static $set_names = 'tis620';
 	
 	public function __construct(){
 		try{
 			$this->db = new PDO('mysql:host='.HOST.';port='.PORT.';dbname='.DB, USER, PASS);
-			$this->db->exec("set names tis620;");
+			$names = self::$set_names;
+			$this->db->exec("set names $names;");
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";
@@ -45,7 +47,12 @@ class DB{
 	/**
 	 * NOT COMPLETE FUNCTION
 	 */
-	public static function load(){
+	public static function load($names = null){
+		
+		if($names !== null){
+			self::$set_names = $names;
+		}
+		
 		$db = self::init();
 		return $db;
 	}

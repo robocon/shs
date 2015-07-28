@@ -878,7 +878,7 @@ print "<CENTER><font face='Angsana New'  size='5'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำ
 
    print "<CENTER>&nbsp;&nbsp;&nbsp;<font face='Angsana New'  size='4'><b>ผู้ป่วยชื่อ $cPtname</b>";
    
-   
+   $doctor = ( isset($doctor) ) ? $doctor : $cDoctor ;
    $sql3 = "Select doctorcode  FROM doctor WHERE name like '%$doctor%'  ";
 $result3 = Mysql_Query($sql3) or die(mysql_error());
 list($doctorcode ) = Mysql_fetch_row($result3);

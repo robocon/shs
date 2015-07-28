@@ -50,7 +50,11 @@ function post2null($args, $method = 'post'){
 	if(is_array($args)){
 		$items = array();
 		foreach($args as $key => $val){
-			$items[$key] = filter2null($key, $method);
+			if(!is_array($val)){
+				$items[$key] = filter2null($key, $method);
+			}else{
+				$items[$key] = $val;
+			}
 		}
 	}
 	return $items;
@@ -70,10 +74,24 @@ function filter_post($items){
 	foreach($items as $name){
 		
 		if(isset($_POST[$name])){
-			$_POST[$name] = strip_tags(trim($_POST[$name]));
+			if(gettype($_POST[$name]) == 'string'){
+				$_POST[$name] = strip_tags(trim($_POST[$name]));
+			}
 		}else{
 			$_POST[$name] = null;
 		}
 	}
 	return $_POST;
+}
+
+function get_session($name){
+	return $_SESSION[$name];
+}
+
+function redirect($to = 'index.php', $msg = null){
+	if(!empty($msg)){
+		$_SESSION['x-msg'] = $msg ;
+	}
+	header("Location: $to");
+	exit;
 }

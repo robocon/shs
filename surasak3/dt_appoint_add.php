@@ -274,6 +274,9 @@ $_SESSION["dt_drugstk"] .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"2
 			";
 }
 
+header('Location: dt_printstker.php');
+exit;
+
 echo "
 	<html>
 	<head>

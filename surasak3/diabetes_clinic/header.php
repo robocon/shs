@@ -124,7 +124,13 @@ label{
 				<li class="last"><a href="report_hypertensionofyear.php"><span>รายงาน HT</span></a></li>
 			</ul> 
 		</li>
-		<li><a href="history.php"><span>ค้นหาประวัติ</span></a></li>
+		<li>
+			<a href="#"><span>ค้นหาประวัติ</span></a>
+			<ul>
+				<li class="last"><a href="history.php"><span>ค้นหาประวัติ DM</span></a></li>
+				<li class="last"><a href="hypertension_history.php"><span>ค้นหาประวัติ HT</span></a></li>
+			</ul>
+		</li>
 	</ul>
 </div>
 <div style="visibility: hidden"><a href="http://apycom.com/">a</a></div>

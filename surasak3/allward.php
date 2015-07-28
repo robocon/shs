@@ -17,7 +17,6 @@
 	
 	
 	$lbedcode=substr($_GET['code'],0,2);
-	
 	if($lbedcode=='42'){
 $wardname="หอผู้ป่วยรวม";	
 $sortname="รวม";
@@ -31,7 +30,7 @@ $sortname="ICU";
 $wardname="หอผู้ป่วยพิเศษ";	
 $sortname="พิเศษ";
 	}
-	
+	//echo "==>$lbedcode";
 	$bbbbcode=$lbedcode;
 	include("calroom.php");
 	include("alert_booking.php");
@@ -77,7 +76,7 @@ $sortname="พิเศษ";
 		echo"</tr></table>";*/
 	
     $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
-  
+  //echo "==>".$query;
     $result = mysql_query($query)or die("Query failed");
 
 $i=1;

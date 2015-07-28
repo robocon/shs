@@ -1,29 +1,27 @@
 <?php
 session_start();
 if($_SESSION["sIdname"] == "md19921"){
-	$time = "2000";
+	$time = 2000;
+}else if($_SESSION['sIdname'] == 'md38220'){ // หมอพิพิธ
+	$time = 30000;
 }else{
-	$time = "10000";
+	$time = 10000;
 }
 ?>
 <html>
 	<head>
-		<SCRIPT LANGUAGE="JavaScript">
-		
+		<script type="text/javascript">
 		window.onload = function(){
-			
 			print();
-			setTimeout("window.location.href='dt_index.php';",<?php echo $time;?>);
-
+			setTimeout(function(){
+				window.location.href='dt_index.php';
+			},<?php echo $time;?>);
 		}
-		
-		</SCRIPT>
+		</script>
 	</head>
 	<body leftmargin="0" topmargin="0">
-
 	<?php 
-	echo $_SESSION["dt_drugstk"];
+		echo $_SESSION["dt_drugstk"];
 	?>
-
 	</body>
-	</html>
+</html>
