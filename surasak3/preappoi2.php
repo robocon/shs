@@ -120,9 +120,11 @@ if(!isset($_GET['action'])){
 		exit;
 	}
 
-	/*** จำกัดจำนวนผู้ป่วยนัด ***/
+	// จำกัดจำนวนผู้ป่วยนัด
 	// นับจำนวนที่นัดผู้ป่วย
-	$query = mysql_query("SELECT hn FROM appoint WHERE appdate = '{$_POST['date_appoint']}' AND doctor = '{$_POST['doctor']}'");
+	list($code, $dr_name) = explode(' ', $_POST['doctor']);
+	$sql = "SELECT hn FROM appoint WHERE appdate = '{$_POST['date_appoint']}' AND doctor LIKE '$code%' AND apptime != 'ยกเลิกการนัด';";
+	$query = mysql_query($sql);
 	$rows = mysql_num_rows($query);
 	
 	$month = array(
@@ -154,8 +156,7 @@ if(!isset($_GET['action'])){
 		echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
 		exit;
 	}
-	/*** จำกัดจำนวนผู้ป่วยนัด ***/
-	
+	// จำกัดจำนวนผู้ป่วยนัด
 }
 
 ?>

@@ -342,7 +342,7 @@ Uncertain type
 // include("../unconnect.inc");
 
  if($_REQUEST['do']=='save'){
- if(isset($_POST['submit'])){
+//  if(isset($_POST['submit'])){
 	 
 include("../connect.inc");
 
@@ -374,7 +374,7 @@ $strSQL="UPDATE `hypertension_clinic` SET `thidate` = '".$_POST["thaidate"]."',
 `bp1` = '".$_POST["bp1"]."',
 `bp2` = '".$_POST["bp2"]."',
 `officer_edit` = '".$sOfficer."' WHERE `row_id` = '".$_POST["row_id"]."' ";
-$objQuery = mysql_query($strSQL);
+$objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
 
 // เพิ่มเข้าไปใน ประวัติผู้ป่วย
 $register=date("Y-m-d H:i:s");
@@ -385,30 +385,25 @@ $strSQL="INSERT INTO `hypertension_history` ( `ht_no` , `thidate` , `dateN` , `h
 `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , 
 `smork` , `bmi` , `height` , `weight` , `round` , 
 `temperature` , `pause` , `rate` , `bp1` , `bp2` , 
-`officer` , `register_date`,pension,`dbirth` )
+`officer` , `register_date`,pension,`age_str` )
 VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', 
 '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', 
 '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', 
 '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', 
 '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', 
 '".$sOfficer."', '".$register."','".$pension."','".$_POST['age']."');";
-$objQuery = mysql_query($strSQL);
+$objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
 
-
-if($objQuery)
-{
+if($objQuery){
 	echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
-print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
-}
-else
-{
+	print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
+}else{
 	echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกได้ [".$strSQL."]</font>";
-print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
+	print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
 }
-
 	 
 // include("../unconnect.inc");	 
- }
+//  }
  }
 
 include 'footer.php';
