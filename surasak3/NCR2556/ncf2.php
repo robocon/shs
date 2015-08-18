@@ -412,9 +412,11 @@ function textdisabled(){
 	<TD>
 <TABLE border="0" width="800">
 <TR valign="top">
-	<TD bgcolor="#CCCCCC">เลขที่ NCR : <INPUT TYPE="text" NAME="ncr" size="10" value="">
-      <!--<INPUT TYPE="hidden" NAME="ncr" size="10" value="<?php//echo $nRunno;?>">-->
+	<TD bgcolor="#CCCCCC">เลขที่ NCR : เลขที่ NCR จะรันให้โดยอัตโนมัต 
+      <!-- input ตัวเดิม -->
+      <!-- <INPUT TYPE="text" NAME="ncr" size="10" value=""> -->
       
+      <!--<INPUT TYPE="hidden" NAME="ncr" size="10" value="<?php//echo $nRunno;?>">-->
       <!--<INPUT TYPE="hidden" NAME="ncr" size="10" value="000">-->
       <br>
       หน่วยงาน / ทีม :

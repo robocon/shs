@@ -139,7 +139,9 @@ $sql_update="UPDATE `ncr2556` SET `ncr` = '".$_POST['ncr']."',
 `head_name` = '".$_POST['head_name']."' ,
 `free_event` = '".$_POST['free_event']."' ,
 `return` = '".$_POST['return']."' ,
-`accept` = '".$_POST['accept']."'  WHERE `nonconf_id` = '".$_POST['nonconf_id']."' ";
+`accept` = '".$_POST['accept']."', 
+`date_edit` = NOW()
+WHERE `nonconf_id` = '".$_POST['nonconf_id']."' ";
 $query_update=mysql_query($sql_update) or die (mysql_error());
 
 

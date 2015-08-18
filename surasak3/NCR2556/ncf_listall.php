@@ -181,6 +181,14 @@ $objResult = mysql_fetch_array($objQuery);
 	color: #FFF; 
 	} 
 	-->
+	
+	table.forntsarabun a{
+		color: #1800FF;
+	}
+	table.forntsarabun a.action-done{
+		color: #10AA00;
+	}
+	
 	</style>
 	<script language="JavaScript" type="text/JavaScript">
 	<!--
@@ -204,7 +212,7 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 						$sql = "SELECT date_format(`nonconf_date`, '%Y') as `years` FROM `ncr2556` GROUP BY `years` ORDER BY `years` DESC";
 						$q = mysql_query($sql);
 						?>
-						<select id="year_select" name="set_year" onchange="javascript: this.form.submit();">
+						<select id="year_select" name="set_year">
 							<option value="0" >เลือกปี</option>
 							<?php 
 							$default_year = isset($_POST['set_year']) ? $_POST['set_year'] : 0;
@@ -225,7 +233,7 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 						</select>
 						
 						<span>เลือกการแสดงผลตามเดือน</span>
-						<select id="month_select" name="set_month" onchange="month_change()">
+						<select id="month_select" name="set_month">
 							<option value="0" >เลือกเดือน</option>
 							<?php 
 							$default_month = isset($_POST['set_month']) ? $_POST['set_month'] : 0 ;
@@ -239,21 +247,30 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 							}
 							?>
 						</select>
+						<?php 
+							$late = isset($_POST['late']) ? 'checked="checked"' : '' ;
+						?>
+						<input type="checkbox" id="id_late" name="late" value="1" <?php echo $late;?>> <label for="id_late">แสดงเฉพาะรายงานย้อนหลัง</label>
+						<button id="btn_submit" onclick="test_submit(this.form); return false;">แสดงผลรายงาน</button>
 					</form>
 					<script type="text/javascript">
-						function month_change(){
+						
+						function test_submit(form){
 							var year_selectd = document.getElementById('year_select').value;
-							var month_selectd = document.getElementById('month_select');
+							var month_selectd = document.getElementById('month_select').value;
 							
-							if(year_selectd == 0 && month_selectd.value != 0){
-								month_selectd.value = 0;
-								alert('กรุณาเลือกปีที่ต้องการให้แสดงผล');
-								return false;
+							if(year_selectd == 0 || month_selectd == 0){
+								
+								// alert('กรุณาเลือกปีและเดือนที่ต้องการให้แสดงผล');
+								// return false;
+								
 							}else{
 								
-								var form = document.getElementById('yearForm')
-								form.submit();
+								
 							}
+							
+							var form = document.getElementById('yearForm')
+								form.submit();
 						}
 					</script>
 				</td>
@@ -262,6 +279,9 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 	</table>
 	<br>
 <?php
+
+// $default_year = ( $default_year === 0 ) ? date('Y-m-d')
+
 
 if($default_year != 0 && $default_month != 0){
 	
@@ -287,7 +307,6 @@ if($default_year != 0 && $default_month != 0){
 	$end_nonconf = "$default_year-12-31";
 }
 
-
 // แสดงใบรายงานทั้งหมด !!!! ตัวที่ NCR เป็น 000 !!!!
 // $sql1="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') as date1, date_format(nonconf_date,'%Y') as date2, left(nonconf_time,5) as time, nonconf_dategroup, `return`   
 // FROM  ncr2556 
@@ -297,7 +316,7 @@ if($default_year != 0 && $default_month != 0){
 	// or (risk1=0 and risk2=0 and risk3=0 and risk4=0 and risk5=0 and risk6=0 and risk7=0 and risk8=0 and risk9=0)
 // ) 
 // order by ncr desc, nonconf_date desc, nonconf_time desc ";
-$sql1="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') AS date1, date_format(nonconf_date,'%Y') AS date2, left(nonconf_time,5) AS time, nonconf_dategroup, `return`   
+$sql1="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') AS date1, date_format(nonconf_date,'%Y') AS date2, left(nonconf_time,5) AS time, nonconf_dategroup, `return`,`insert_date`, `date_edit`,`date_print`   
 FROM  `ncr2556` 
 WHERE ncr = '000' AND ( 
 	( risk1=1  OR risk4=1 OR risk5=1 OR risk6=1 OR risk7=1 OR risk8=1 OR risk9=1) 
@@ -306,6 +325,7 @@ WHERE ncr = '000' AND (
 ) 
 AND (nonconf_date >= '$start_nonconf' AND nonconf_date <= '$end_nonconf')
 ORDER BY until ASC, nonconf_date DESC";
+
 	$query1 = mysql_query($sql1) or die (mysql_error());
 	$row=mysql_num_rows($query1);
 	
@@ -320,7 +340,17 @@ ORDER BY until ASC, nonconf_date DESC";
 // ) 
 // order by ncr desc, nonconf_date desc, nonconf_time desc ";
 
-$sql2="SELECT `nonconf_id`, `ncr`, `until`, `nonconf_date`, date_format(nonconf_date,'%d/%m/') AS date1, date_format(nonconf_date,'%Y') AS date2, left(nonconf_time,5) AS time, `nonconf_dategroup`, `return`, b.`name`, a.`insert_date`  
+$and_late_condition = '';
+if ( isset($_POST['late']) ) {
+	$and_late_condition = "
+	AND UNIX_TIMESTAMP( 
+		CONCAT( ( date_format( nonconf_date, '%Y' ) -543 ) , date_format( nonconf_date, '-%m-%d' ) )
+	) < UNIX_TIMESTAMP( date_format( insert_date, '%Y-%m-01' ) ) 
+	";
+}
+
+
+$sql2="SELECT `nonconf_id`, `ncr`, `until`, `nonconf_date`, date_format(nonconf_date,'%d/%m/') AS date1, date_format(nonconf_date,'%Y') AS date2, left(nonconf_time,5) AS time, `nonconf_dategroup`, `return`, b.`name`, a.`insert_date`, a.`date_edit`,a.`date_print`  
 FROM `ncr2556` AS a 
 LEFT JOIN `departments` AS b ON b.`code` = a.`until` 
 WHERE b.`status` = 'y' 
@@ -331,6 +361,7 @@ AND (
 	OR ( risk1=0 AND risk2=0 AND risk3=0 AND risk4=0 AND risk5=0 AND risk6=0 AND risk7=0 AND risk8=0 AND risk9=0)
 ) 
 AND (nonconf_date >= '$start_nonconf' AND nonconf_date <= '$end_nonconf')
+$and_late_condition
 ORDER BY until ASC, nonconf_date DESC";
 // echo "<pre>";
 // var_dump($sql2);
@@ -395,11 +426,15 @@ ORDER BY until ASC, nonconf_date DESC";
       <td><?=$arr1['return']?></td>
       <?
 	 if($_SESSION["statusncr"]=='admin'){
+		 
+		 $color_edit = !empty($arr1['date_edit']) ? 'class="action-done"' : '' ;
+		 $color_print = !empty($arr1['date_print']) ? 'class="action-done"' : '' ;
+		 
 	?>
-      <td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr1['nonconf_id'];?>" target="_blank">แก้ไข</a></td>
+      <td align="center"><a href="ncf2_edit.php?nonconf_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
       <td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr1['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr1['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
       <?  } ?>
-      <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank">พิมพ์</a></td>
+      <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
      </tr>
     <?
 	}  // End while
@@ -439,7 +474,7 @@ ORDER BY until ASC, nonconf_date DESC";
 			$nonconf_ad = strtotime(($y-543)."-$m-$d");
 			
 			if($nonconf_ad < $first_of_month){
-				$check_nonconf = 'style="color: #FFFFFF; background-color: #FF3E3E; font-weight: bold;"';
+				$check_nonconf = 'style="color: #FFFFFF; background-color: #FF6E6E; font-weight: bold;"';
 			}
 		}
 		
@@ -454,11 +489,13 @@ ORDER BY until ASC, nonconf_date DESC";
       <td><?=$arr2['return']?></td>
       <?
 	 if($_SESSION["statusncr"]=='admin'){
+		 $color_edit = !empty($arr2['date_edit']) ? 'class="action-done"' : '' ;
+		 $color_print = !empty($arr2['date_print']) ? 'class="action-done"' : '' ;
 	?>
-      <td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr2['nonconf_id'];?>" target="_blank">แก้ไข</a></td>
+      <td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
       <td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr2['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr2['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
       <?  } ?>
-      <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr2['nonconf_id'];?>" target="_blank">พิมพ์</a></td>
+      <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
      </tr>
     <?
 	}  
