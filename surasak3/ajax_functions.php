@@ -20,9 +20,7 @@ if($action == 'close_popup'){
 		exit;
 	}
 	
-	$sql = "
-SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` LIKE '%$word%';
-	";
+	$sql = "SELECT `row_id`,`drugcode`,`genname`,`tradname` FROM `druglst` WHERE `genname` LIKE '%$word%';";
 	
 	$query = mysql_query($sql);
 	$pre_res = array();

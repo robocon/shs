@@ -67,8 +67,8 @@ if(isset($_POST['y_start'])){
 $sql_temp = "
 CREATE TEMPORARY TABLE diabetes_temp 
 ( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dbbirt DATE NOT NULL  ) 
-SELECT *
-FROM diabetes_clinic 
+SELECT * 
+FROM diabetes_clinic_history 
 WHERE thidate LIKE '$date1-%';
 ";
 // var_dump($sql_temp);
@@ -292,7 +292,10 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+					<span><?php echo $item_row;?></span>
+					<?php if( $item_row > 0 ): ?>
+					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
+					<?php endif; ?>
 				</td>
 				<?php
 			}
@@ -331,7 +334,10 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+					<span><?php echo $item_row;?></span>
+					<?php if( $item_row > 0 ): ?>
+					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
+					<?php endif; ?>
 				</td>
 				<?php
 			}
@@ -370,7 +376,10 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+					<span><?php echo $item_row;?></span>
+					<?php if( $item_row > 0 ): ?>
+					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
+					<?php endif; ?>
 				</td>
 				<?php
 			}
@@ -448,7 +457,10 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+					<span><?php echo $item_row;?></span>
+					<?php if( $item_row > 0 ): ?>
+					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
+					<?php endif; ?>
 				</td>
 				<?php
 			}
@@ -487,7 +499,10 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+					<span><?php echo $item_row;?></span>
+					<?php if( $item_row > 0 ): ?>
+					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
+					<?php endif; ?>
 				</td>
 				<?php
 			}
@@ -737,7 +752,43 @@ ORDER BY thidate ASC
 			}
 			?>
 		</tr>
-		
+		<tr>
+			<td class="forntsarabun">22. ผู้ป่วยที่มี HbA1c มากกว่า 7% ในเดือนนั้น</td>
+			<td align="center" class="forntsarabun">&gt;80%</td>
+			<?php
+				
+			$sql = "
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+FROM `diabetes_temp` 
+WHERE `l_hbalc` !=  '' AND `l_hbalc` >=  '7' 
+GROUP BY MONTH( thidate ) 
+ORDER BY thidate ASC 
+			";
+			$query = mysql_query($sql) or die( mysql_error($Conn) );
+			$hba1c7_items = array();
+			while($item = mysql_fetch_assoc($query)){
+				$hba1c7_items[$item['new_daten']] = $item;
+			}
+			
+			foreach($months AS $key => $value){
+				$item_row = 0;
+				$find_key = "$key_year-$key";
+				
+				$pre_row = 0;
+				$pre_total = 0;
+				if(isset($hba1c7_items[$find_key])){
+					$pre_row = $hba1c7_items[$find_key]['rows'];
+					$pre_total = $user_total_items[$find_key]['rows'];
+					$item_row = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+				</td>
+				<?php
+			}	
+			?>
+		</tr>
 		<?php 
 		/*
 		?>

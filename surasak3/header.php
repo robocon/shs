@@ -18,10 +18,13 @@ $content = isset($content) ? $content : '' ;
         <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
+        <script src="assets/js/app.js"></script>
+        
+        <!--
+           @todo - fix app.js load late 
+        -->
         <script src="assets/js/module/jquery/jquery-1.11.1.min.js"></script>
         <script src="jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.js"></script>
         
-        <style type="text/css">
-        </style>
     </head>
     <body class="documentation">

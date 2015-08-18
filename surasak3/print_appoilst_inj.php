@@ -1,19 +1,20 @@
 <?php
 session_start();
 include("connect.inc");
+
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 $Thidate2 = (date("Y")+543).date("-m-d"); 
 
-	$aEssd=array();
-	$aNessdy=array();
-	$aNessdn=array();
-	$aDPY=array();
-	$aDPN=array();
-	$aDSY=array(); 
-	$aDSN=array();
-	
+$aEssd=array();
+$aNessdy=array();
+$aNessdn=array();
+$aDPY=array();
+$aDPN=array();
+$aDSY=array(); 
+$aDSN=array();
+
 // แก้ไขให้รองรับการเปลี่ยนวันที่นัดฉีดยาได้
-Override list_date กับ list_date2
+// Override list_date กับ list_date2 ตัวเดิม
 $rows = count($_POST['day']);
 $i = 0;
 $month = array(
@@ -29,10 +30,14 @@ for($i; $i<$rows; $i++){
 	$new_listdate[] = $_POST['year'][$i].'-'.$_POST['month'][$i].'-'.$_POST['day'][$i];
 	$new_listdate2[] = $_POST['day'][$i].' '.$month[$m].' '.$_POST['year'][$i];
 }
+unset($_POST['day']);
+unset($_POST['month']);
+unset($_POST['year']);
 
 $_POST['list_date'] = $new_listdate;
 $_POST['list_date2'] = $new_listdate2;
-// Override list_date กับ list_date2
+
+// จบ Override list_date กับ list_date2
 
 function calcage($birth){
 
@@ -55,7 +60,7 @@ function calcage($birth){
 		$pAge="$ageY ปี $ageM เดือน";
 	}
 
-return $pAge;
+	return $pAge;
 }
 
  if(substr($_POST["drug_inj"],0,-2) == "VERORAB"){
@@ -76,8 +81,8 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 //$sql = "Select inputm.name From inputm where mdcode = '".substr($_POST["doctor"],0,5)."' limit 1 ";
 //list($name_doctor) = mysql_fetch_row(mysql_query($sql));
 
+// ถ้า status ไม่ใช่ y จะออกใบนัดไม่ได้
 $sql = "Select idno From drugrx where hn = '".$_POST['hn']."' AND date like '".$Thidate2."%' AND drugcode = '".$dgcode."' AND status = 'Y' limit 1";
-
 $result = mysql_query($sql);
 $rows_drugrx = mysql_num_rows($result);
 if($rows_drugrx==0){
@@ -92,76 +97,83 @@ if($rows_drugrx > 0){
 	list($row_id_phardep, $diag, $ptright, $name_doctor) = mysql_fetch_row(mysql_query($sql));
 
 
-$sql_ddrugrx = "INSERT INTO ddrugrx(date,hn,drugcode,tradname,amount,price,item,slcode,part,idno, salepri, freepri, drug_inject_amount, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,injno) VALUES";
-
-if($_POST["drug_inj"] == "Tetanus Toxoid"){
-	$dgcode = "0DT";//0TT
-}else if($_POST["drug_inj"] == "VERORAB"){
-	$dgcode = "0VERO";
-}else if($_POST["drug_inj"] == "Engerix-B"){
-	$dgcode = "0EB1.0";
-}else if($_POST["drug_inj"] == "Hepavax"){
-	$dgcode = "0HB1.0";
-}
-
-$sql = "Select drugcode, tradname, part, salepri, freepri From druglst where drugcode = '".$dgcode."'  ";
-//OR drugcode = 'inj'
-
-$result = mysql_query($sql);
-$item = 0;
-$x = 0;
-$Netprice = 0;
-while(list($drugcode, $tradname, $part, $money, $freepri) = mysql_fetch_row($result)){
-$item++;
-
-	$Free = $freepri;
-	$Pay = $money - $freepri;
-
-	$aEssd[$x]=0;
-	$aNessdy[$x]=0;
-	$aNessdn[$x]=0;
-	$aDPY[$x]=0;
-	$aDPN[$x]=0;
-	$aDSY[$x]=0; 
-	$aDSN[$x]=0;
-
-	if (substr($part,0,3)=="DDL"){
-		$aEssd[$x]=$money;
-	}else if (substr($part,0,3)=="DDY"){
-		$aNessdy[$x]=$money;
-	}else  if (substr($part,0,3)=="DDN"){
-		$aNessdn[$x]=$money;
-	}else if (substr($part,0,3)=="DPY"){
-		$aDPY[$x]=$Free;  
-		$aDPN[$x]=$Pay;  
-	}else if (substr($part,0,3)=="DPN"){
-		$aDPN[$x]=$money;  
-	}else if (substr($part,0,3)=="DSY"){
-		$aDSY[$x]=$Free;  
-		$aDSN[$x]=$Pay;  
-	}else if(substr($part,0,3)=="DSN"){
-		$aDSN[$x]=$money;  
+	$sql_ddrugrx = "INSERT INTO ddrugrx(date,hn,drugcode,tradname,amount,price,item,slcode,part,idno, salepri, freepri, drug_inject_amount, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,injno) VALUES";
+	
+	if($_POST["drug_inj"] == "Tetanus Toxoid"){
+		$dgcode = "0DT";//0TT
+	}else if($_POST["drug_inj"] == "VERORAB"){
+		$dgcode = "0VERO";
+	}else if($_POST["drug_inj"] == "Engerix-B"){
+		$dgcode = "0EB1.0";
+	}else if($_POST["drug_inj"] == "Hepavax"){
+		$dgcode = "0HB1.0";
 	}
-$Netprice = $Netprice+$money;
 
-$sql = "Select slcode, drug_inject_amount, drug_inject_slip, drug_inject_type, drug_inject_etc, reason From drugrx where idno = '".$row_id_phardep."' AND drugcode = '".$drugcode."' limit 1";
-list($drugslip, $drug_inject_amount, $drug_inject_slip, $drug_inject_type, $drug_inject_etc, $reason) = mysql_fetch_row(mysql_query($sql));
+	$sql = "Select drugcode, tradname, part, salepri, freepri From druglst where drugcode = '".$dgcode."'  ";
+	//OR drugcode = 'inj'
 
-$sql_ddrugrx .= "$commar ('[Thidate]','".$_POST['hn']."','".$drugcode."','".$tradname."', '1','".( 1 * $money)."','2','".$_SESSION["list_drugslip"][$i]."','".$part."','[idno]','".$money."','".$freepri."','".$drug_inject_amount."','".$drug_inject_slip."','".$drug_inject_type."','".$drug_inject_etc."','".$reason."','[INJNO]')";
+	$result = mysql_query($sql);
+	$item = 0;
+	$x = 0;
+	$Netprice = 0;
+	$commar = '';
+	while(list($drugcode, $tradname, $part, $money, $freepri) = mysql_fetch_row($result)){
+		$item++;
+	
+		$Free = $freepri;
+		$Pay = $money - $freepri;
+	
+		$aEssd[$x]=0;
+		$aNessdy[$x]=0;
+		$aNessdn[$x]=0;
+		$aDPY[$x]=0;
+		$aDPN[$x]=0;
+		$aDSY[$x]=0; 
+		$aDSN[$x]=0;
+	
+		if (substr($part,0,3)=="DDL"){
+			$aEssd[$x]=$money;
+		}else if (substr($part,0,3)=="DDY"){
+			$aNessdy[$x]=$money;
+		}else  if (substr($part,0,3)=="DDN"){
+			$aNessdn[$x]=$money;
+		}else if (substr($part,0,3)=="DPY"){
+			$aDPY[$x]=$Free;  
+			$aDPN[$x]=$Pay;  
+		}else if (substr($part,0,3)=="DPN"){
+			$aDPN[$x]=$money;  
+		}else if (substr($part,0,3)=="DSY"){
+			$aDSY[$x]=$Free;  
+			$aDSN[$x]=$Pay;  
+		}else if(substr($part,0,3)=="DSN"){
+			$aDSN[$x]=$money;  
+		}
+		
+		$Netprice = $Netprice+$money;
+		
+		$sql = "
+		Select slcode, drug_inject_amount, drug_inject_slip, drug_inject_type, drug_inject_etc, reason 
+		From drugrx 
+		where idno = '".$row_id_phardep."' 
+		AND drugcode = '".$drugcode."' limit 1
+		";
+		list($drugslip, $drug_inject_amount, $drug_inject_slip, $drug_inject_type, $drug_inject_etc, $reason) = mysql_fetch_row(mysql_query($sql));
+		
+		// ต่อ string จาก $sql_ddrugrx
+		$sql_ddrugrx .= "$commar ('[Thidate]','".$_POST['hn']."','".$drugcode."','".$tradname."', '1','".( 1 * $money)."','2','".$_SESSION["list_drugslip"][$i]."','".$part."','[idno]','".$money."','".$freepri."','".$drug_inject_amount."','".$drug_inject_slip."','".$drug_inject_type."','".$drug_inject_etc."','".$reason."','[INJNO]')";
+		
+		$commar = ",";
+		$x++;
+	
+	} // end while
 
-$commar = ",";
-$x++;
-
-}
-
-	$Essd    =array_sum($aEssd);   //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
-    $Nessdy=array_sum($aNessdy);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
-    $Nessdn=array_sum($aNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
-    $DSY     =array_sum($aDSY);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกได้
-    $DSN     =array_sum($aDSN);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกไม่ได้  
-    $DPY     =array_sum($aDPY);   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกได้
-    $DPN     =array_sum($aDPN);   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกไม่ได้  
-
+	$Essd   = array_sum($aEssd);   //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
+    $Nessdy = array_sum($aNessdy);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
+    $Nessdn = array_sum($aNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
+    $DSY    = array_sum($aDSY);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกได้
+    $DSN    = array_sum($aDSN);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกไม่ได้  
+    $DPY    = array_sum($aDPY);   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกได้
+    $DPN    = array_sum($aDPN);   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกไม่ได้  
 
 
 
@@ -171,7 +183,6 @@ $sql_dphardep = "INSERT INTO dphardep(chktranx,date,ptname,hn,price,doctor,item,
 $count = count($_POST["list_date"]);
 
 for($i=0;$i<$count;$i++){
-
 
 	//******************************* บันทึกข้อมูล  การนัด**************************************************************
 	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno)VALUES('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 น. - 11.00 น.','แผนกทะเบียน','FU22 นัดฉีดยา','นัดฉีดยา ".$_POST["drug_inj"]."','','','','นัดฉีดยา ".$_POST["drug_inj"]."','U22 ห้องจ่ายยา','เข็มที่ ".($i+1)."');";
@@ -189,25 +200,21 @@ for($i=0;$i<$count;$i++){
 
 		$xx = array("[idno]", "[Thidate]");
 		$yy = array($runno, $_POST["list_date"][$i]." 00:00:00");
-
 		$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
-		
 
 		if($rows_drugrx > 0){
-				$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
-				$idno = mysql_insert_id();
-				$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
-				$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
-				$k=$i+2;
-				$qq = array("[INJNO]");
-				$zz = array("เข็มที่ $k");
-				$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
-				$result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
+			$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
+			$idno = mysql_insert_id();
+			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
+			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
+			$k=$i+2;
+			$qq = array("[INJNO]");
+			$zz = array("เข็มที่ $k");
+			$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
+			$result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
 		}
 	}
-
-
-}
+} // End for
 ?>
 
 <HTML>
@@ -352,7 +359,7 @@ for($i=0;$i<$count;$i++)
 </TABLE>
 
 <?
-}
+} // End $rows_drugrx
 ?>
 </BODY>
 </HTML>

@@ -7,8 +7,8 @@ session_start();
 
 if(!defined('NEW_SITE')){
 	header('Content-Type: text/html; charset=tis-620');
-	require_once 'connect.php';
-	mysql_query("SET NAMES TIS620", $Conn);
+	require_once 'includes/connect.php';
+	
 }else{
 	
 	header('Content-Type: text/html; charset=utf-8');
@@ -50,13 +50,19 @@ class DB{
 	
 	private static $connect = null;
 	private $db = null;
+	
+	/**
+	 * !!!! CUTION !!!!
+	 * for windows (mysql version 14.12 Distrib 5.0.51b) using TIS620
+	 * for linux (Ver 14.12 Distrib 5.0.77) using TIS-620
+	 */
 	private static $set_names = 'TIS620';
 	
 	public function __construct(){
 		try{
 			$this->db = new PDO('mysql:host='.HOST.';port='.PORT.';dbname='.DB, USER, PASS);
 			$names = self::$set_names;
-			$this->db->exec("set names $names;");
+			$this->db->exec("SET NAMES $names ;");
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";

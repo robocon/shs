@@ -11,7 +11,6 @@ DB::load();
 $hn = isset($_REQUEST['hn']) ? trim($_REQUEST['hn']) : false ;
 $action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
 
-
 if($action === 'search'){
 	
 	// Ajax
@@ -96,7 +95,8 @@ if($action === 'search'){
 	
 	$sql = "SELECT `hn` FROM `druginteraction_info` WHERE `hn` = :hn";
 	$check_item = DB::select($sql, array(':hn' => $hn), true);
-	if( $check_item !== false ){
+
+	if( !empty($check_item) ){
 		$sql = "
 		UPDATE `druginteraction_info` SET 
 		`detail` = :detail ,
@@ -149,15 +149,11 @@ include 'header.php';
                         </div>
                     </div>
                 </div>
-                <div class="col width-1of4">
-                    <div class="cell menu">
-                        <span class="tiny">เมนูย่อย - เภสัช</span>
-                        <ul class="left nav links">
-                            <li class="active"><a href="#">จัดการผู้ป่วยแพ้ยา</a></li>
-                            <li><a href="manage_interaction.php">จัดการแพ้ยาข้ามกลุ่ม</a></li>
-                        </ul>
-                    </div>
-                </div>
+                
+				<!-- left menu -->
+				<?php include 'templates/default/left_menu.php'; ?>
+				<!-- left menu -->
+				
                 <div class="col width-fill">
                     <div class="col">
                         <div class="cell">
@@ -169,10 +165,8 @@ include 'header.php';
 	                                    <span class="label">Warning</span> <?php echo $_SESSION['x-msg'];?>
 	                                </div>
 	                            </div>
-							<?php 
-								unset($_SESSION['x-msg']); 
-								} 
-							?>
+							<?php unset($_SESSION['x-msg']); ?>
+							<?php } ?>
 							
 							<div class="col">
 								<div class="cell">
@@ -214,7 +208,6 @@ include 'header.php';
 								
 								$q = DB::select("SELECT `detail` FROM `druginteraction_info` WHERE `hn` = :hn", array(':hn' => $hn), true);
 								$info = unserialize($q['detail']);
-								// dump($info);
 							?>
 							<div class="col">
 								<div class="panel cell">
@@ -283,7 +276,7 @@ include 'header.php';
 												<?php if($count > 0){ ?>
 												<ol>
 													<?php foreach($items as $item){ ?>
-														<li>
+														<li style="margin-bottom: 1em;">
 															<?php echo $item['tradname'].' [ <b>'.$item['genname'].'</b> ]';?>
 															<?php
 															if($item['advreact'] != ''){
@@ -292,8 +285,39 @@ include 'header.php';
 															if( $item['asses'] != '' ){
 																echo ' ระดับ '.$item['asses'];
 															}
+															
+															// ค้นหาแพ้ยาข้ามกลุ่ม
+															$sql = "SELECT `children` FROM `druginteraction_cross` WHERE `parent` = :parent ";
+															$check = DB::select($sql, array('parent' => $item['drugcode']), true);
+															$children_li = array();
+															
+															if( !empty($check) ){
+																
+																$children = unserialize($check['children']);
+																
+																// Prepare statement in one query
+																$prepare_child = array();
+																foreach($children as $key => $child){
+																	$prepare_child[] = "'".$child."'";
+																}
+																$child_list_str = implode(',', $prepare_child);
+																
+																// Search gruglst with IN()
+																$sql = "SELECT `drugcode`,`tradname`,`genname` FROM `druglst` WHERE `drugcode` IN ($child_list_str)";
+																$children_lists = DB::select($sql);
+																
+																foreach($children_lists as $child){
+																	$children_li[] = '<li>'.$child['genname'].' (<b>'.$child['tradname'].'</b>)</li>';
+																}
+															}
 															?>
 															<a class="remove-drug" href="drugreact_test.php?action=delete&item=<?php echo $item['row_id']?>&hn=<?php echo $hn; ?>">[ลบ]</a>
+															<?php
+																// แสดงรายการยาข้ามกลุ่ม
+																if( count($children_li) > 0 ){
+																	echo '<ol>'.implode('', $children_li).'</ol>';
+																}
+															?>
 														</li>
 													<?php } ?>
 												</ol>
@@ -363,7 +387,7 @@ include 'header.php';
 									</td>
 									<td>{{dr_genname}}</td>
 									<td align="center"><input type="text" name="advreact[]"></td>
-									<td align="center"><input type="text" name="asses[]"></td>
+									<td align="center"><input type="text" maxlength="1" name="asses[]"></td>
 									<td align="center"><span class="remove-item"><b class="color-red">[ลบ]</b></span></td>
 								</tr>
 							</script>

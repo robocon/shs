@@ -704,11 +704,15 @@ window.Detector = (function( window, document, undefined ) {
     } else if ( Detector.browser.opera ) {
         classes.push('opera');
     } 
-    if(Detector.browser.msie && Detector.browser.version < 9){
-        Detector.jquerylegacy = true;
-    } else {
-        Detector.jquerylegacy = false;
-    }
+    // if(Detector.browser.msie && Detector.browser.version < 9){
+    //     Detector.jquerylegacy = true;
+    // } else {
+    //     Detector.jquerylegacy = false;
+    // }
+    
+    // Force to load legacy
+    Detector.jquerylegacy = true;
+    
     docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2') +
     (enableClasses ? ' js ' + classes.join(' ') : '');
     return Detector;

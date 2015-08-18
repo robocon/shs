@@ -5,6 +5,7 @@ if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "v
 
 include("connect.inc");
 
+// Set default variable for day, month, year
 $days = array();
 for($i=1; $i<=31; $i++){
 	$i = (strlen($i) == 1) ? "0$i" : $i ; 
@@ -61,6 +62,20 @@ $_GET['y'] = $_GET['y']-543;
 	for($i=0;$i<$count;$i++){
 		
 		echo "<TR><TD align='center'>";
+		
+		/*
+		echo date('d ',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])),'&nbsp;',
+		$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))],'&nbsp;',
+		date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543;
+		
+		echo "<INPUT TYPE=\"hidden\" name=\"list_date[]\" value=\"".(date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543)."-".(date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])))."-".(date('d ',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])))."\">";
+
+		echo "<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
+		date('d ',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])),'&nbsp;',
+		$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))],'&nbsp;',
+		date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543,"\">";
+		*/
+		
 		$get_time = mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']);
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
@@ -87,21 +102,7 @@ $_GET['y'] = $_GET['y']-543;
 			<?php } ?>
 		</select>
 		<?php
-		echo "</TD></TR>";
-			
-		// echo date('d ',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])),'&nbsp;',
-		// $month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))],'&nbsp;',
-		// date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543;
-		
-		
-		
-		echo "<INPUT TYPE=\"hidden\" class='verorab$i' name=\"list_date[]\" value=\"".(date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543)."-".(date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])))."-".(date('d ',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])))."\">";
-
-		echo "<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
-		date('d ',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y'])),'&nbsp;',
-		$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))],'&nbsp;',
-		date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543,"\">";
-
+			echo "</TD></TR>";
 	}
 		
 	echo "</TABLE>";
@@ -118,7 +119,27 @@ $_GET['y'] = $_GET['y']-543;
 
 	for($i=0;$i<3;$i++){
 		
-		echo "<TR><TD align='center'>";
+		echo "
+		<TR>
+			<TD align='center'>";
+			
+			/*
+		echo date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
+		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
+		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543;
+		
+		echo "	<INPUT TYPE=\"hidden\" name=\"list_date[]\" value=\"".
+			(date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543)."-".
+			(date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."-".
+			(date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."\">
+
+			<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
+		date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
+		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
+		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"\">
+			";
+		*/
+		
 		$get_time = mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']);
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
@@ -145,30 +166,9 @@ $_GET['y'] = $_GET['y']-543;
 			<?php } ?>
 		</select>
 		<?php
-		echo "</TD></TR>";
 		
 		
-		// echo "
-		// <TR>
-			// <TD align='center'>",
-		// date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
-		// $month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
-		// date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"</TD>
-		// </TR>";
-		echo "
-			<INPUT TYPE=\"hidden\" name=\"list_date[]\" value=\"".
-			(date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543)."-".
-			(date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."-".
-			(date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."\">
-
-			<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
-		date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
-		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
-		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"\">
-
-			";
-		
-
+			echo "</TD></TR>";
 	}
 		
 	echo "</TABLE>";
@@ -187,6 +187,23 @@ $_GET['y'] = $_GET['y']-543;
 	for($i=0;$i<3;$i++){
 		
 		echo "<TR><TD align='center'>";
+		/*
+		echo date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
+		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
+		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543;
+		
+		echo "<INPUT TYPE=\"hidden\" name=\"list_date[]\" value=\"".
+			(date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543)."-".
+			(date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."-".
+			(date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."\">
+
+			<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
+		date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
+		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
+		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"\">
+
+			";
+		*/
 		$get_time = mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']);
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
@@ -213,29 +230,7 @@ $_GET['y'] = $_GET['y']-543;
 			<?php } ?>
 		</select>
 		<?php
-		echo "</TD></TR>";
-		
-		// echo "
-		// <TR>
-			// <TD align='center'>",
-		// date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
-		// $month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
-		// date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"</TD>
-		// </TR>";
-		
-		echo "
-			<INPUT TYPE=\"hidden\" name=\"list_date[]\" value=\"".
-			(date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543)."-".
-			(date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."-".
-			(date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."\">
-
-			<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
-		date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
-		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
-		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"\">
-
-			";
-		
+			echo "</TD></TR>";
 
 	}
 		
@@ -468,15 +463,6 @@ return stat;
 </TABLE>
 </TD></TR></TABLE></TD></TR></TABLE>
 </FORM>
-<script type="text/javascript" src="js/vendor/jquery-1.11.2.min"></script>
-<script type="text/javascript">
-$(function(){
-	
-	$(document).on('change', '.change-date', function(){
-		console.log($(this));
-	});
-	
-});
-</script>
+
 </BODY>
 </HTML>
