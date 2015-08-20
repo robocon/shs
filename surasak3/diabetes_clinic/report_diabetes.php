@@ -49,29 +49,24 @@ if(isset($_POST['y_start'])){
 	$date1 = date('Y');
 }
 
-// echo "<pre>";
-
-// Build a temp
-// $sql_temp = "
-// CREATE TEMPORARY TABLE hn_merge 
-// SELECT a.hn, b.orderdate, b.profilecode, a.smork, a.retinal
-// FROM diabetes_clinic AS a, resulthead AS b 
-// WHERE a.hn = b.hn 
-// AND b.orderdate LIKE '$date1-%';
-// ";
-// var_dump($sql_temp);
-// $query_temp = mysql_query($sql_temp);
-
-
-// Create temp for diabetes_clinic only
+// สร้าง temp สำหรับแสดงผลรายปี (ภายใน 1 ปี จะนับเพียงครั้งเดียว)
 $sql_temp = "
 CREATE TEMPORARY TABLE diabetes_temp 
-( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dbbirt DATE NOT NULL  ) 
+( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL, retinal_date DATE NOT NULL, foot_date DATE NOT NULL, tooth_date DATE NOT NULL ) 
+SELECT * 
+FROM diabetes_clinic 
+WHERE dateN LIKE '$date1-%';
+";
+mysql_query($sql_temp);
+
+// temp สำหรับแสดงผลรายเดือน (ภายใน 1 ปี ผู้ป่วยมาตรวจกี่ครั้งก็จะนับไปตามจำนวนนั้น)
+$sql_temp = "
+CREATE TEMPORARY TABLE diabetes_history_temp 
+( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
 SELECT * 
 FROM diabetes_clinic_history 
-WHERE thidate LIKE '$date1-%';
+WHERE dateN LIKE '$date1-%';
 ";
-// var_dump($sql_temp);
 mysql_query($sql_temp);
 
 // จำนวนผู้ป่วยทั้งหมดในปีนี้
@@ -80,16 +75,12 @@ $all_user = mysql_fetch_assoc($query);
 
 if(isset($_POST['search']) && $_POST['search'] == 'search'){
 	
-	// Testing new code
-	// echo "<pre>";
-	// $test_time = microtime(true);
-	
-	// Total user in each month
+	// Total user in each month สำหรับแสดงผลรายปี
 	$sql = "
-SELECT COUNT(hn) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_orderdate
+SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 FROM diabetes_temp
-GROUP BY MONTH(thidate) 
-ORDER BY thidate ASC 
+GROUP BY MONTH(dateN) 
+ORDER BY dateN ASC 
 ";
 	$query = mysql_query($sql) or die( mysql_error($Conn) );
 	$user_total_items = array();
@@ -97,8 +88,18 @@ ORDER BY thidate ASC
 		$user_total_items[$item['new_orderdate']] = $item;
 	}
 	
-	// var_dump(microtime(true) - $test_time);
-	// Ending new code
+	// Total user in each month สำหรับแสดงผลรายเดือน
+	$sql = "
+SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
+FROM diabetes_history_temp
+GROUP BY MONTH(dateN) 
+ORDER BY dateN ASC 
+";
+	$query = mysql_query($sql) or die( mysql_error($Conn) );
+	$user_total_items2 = array();
+	while($item = mysql_fetch_assoc($query)){
+		$user_total_items2[$item['new_orderdate']] = $item;
+	}
 	
 	// Set default variable
 	$months = array(
@@ -147,11 +148,11 @@ ORDER BY thidate ASC
 			<td align="center" class="forntsarabun">&gt;80%</td>
 			<?php 
 			$sql = "
-SELECT COUNT(hn) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_orderdate
+SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 FROM diabetes_temp
 WHERE l_hbalc != ''
-GROUP BY MONTH(thidate) 
-ORDER BY thidate ASC 
+GROUP BY MONTH(dateN) 
+ORDER BY dateN ASC 
 ";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c_items = array();
@@ -185,11 +186,11 @@ ORDER BY thidate ASC
 			<td align="center" class="forntsarabun">&gt;80%</td>
 			<?php 
 			$sql = "
-SELECT COUNT(hn) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_orderdate
+SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 FROM diabetes_temp
 WHERE l_ldl != ''
-GROUP BY MONTH(thidate) 
-ORDER BY thidate ASC 
+GROUP BY MONTH(dateN) 
+ORDER BY dateN ASC 
 ";
 
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
@@ -225,11 +226,11 @@ ORDER BY thidate ASC
 			<!-- <td align="center" class="forntsarabun"><?=$malb_total;?></td> -->
 			<?php 
 			$sql = "
-SELECT COUNT(hn) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_orderdate
+SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 FROM diabetes_temp
 WHERE l_microal != '' OR l_ua != ''
-GROUP BY MONTH(thidate) 
-ORDER BY thidate ASC 
+GROUP BY MONTH(dateN) 
+ORDER BY dateN ASC 
 ";
 
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
@@ -263,15 +264,16 @@ ORDER BY thidate ASC
 			<td class="forntsarabun">4. อัตราผู้ป่วย DM ที่ได้รับการตรวจจอประสาทตา</td>
 			<td align="center" class="forntsarabun">&gt;80%</td>
 			<?php 
-			
+			$date1_th = $date1 + 543;
 			// ตรวจจอประสาทตา
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
-WHERE `retinal` !=  '' OR `retinal_date` != '0000-00-00'
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+WHERE `retinal` != '' OR `retinal_date` != '0000-00-00' AND `retinal_date` LIKE '$date1_th-%'
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
+			
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$retinal_items = array();
 			
@@ -308,11 +310,11 @@ ORDER BY thidate ASC
 			
 			// ตรวจจอประสาทตา
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
-WHERE `tooth` =  '1' OR `tooth_date` != '0000-00-00'
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+WHERE `tooth` = 1 OR `tooth_date` != '0000-00-00' AND `tooth_date` LIKE '$date1_th-%'
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$tooth_items = array();
@@ -350,11 +352,11 @@ ORDER BY thidate ASC
 			
 			// ตรวจเท้า
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
-WHERE `foot` !=  '' AND `foot` != '-'
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+WHERE `foot` != '' OR `foot_date` != '0000-00-00' AND `foot_date` LIKE '$date1_th-%'
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$foot_items = array();
@@ -362,7 +364,7 @@ ORDER BY thidate ASC
 			while($item = mysql_fetch_assoc($query)){
 				$foot_items[$item['new_daten']] = $item;
 			}
-	
+
 			foreach($months AS $key => $value){
 				$item_row = 0;
 				$find_key = "$key_year-$key";
@@ -392,11 +394,11 @@ ORDER BY thidate ASC
 			
 			// DM ที่ไม่สูบบุหรี่
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
 WHERE `smork` =  '' OR `smork` = '0'
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$smoke_items = array();
@@ -431,11 +433,11 @@ ORDER BY thidate ASC
 			
 			// Nutrition คำแนะนำด้านโภชนาการ
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
 WHERE `nutrition` !=  '' AND `nutrition` = 1
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$nutrition_items = array();
@@ -473,11 +475,11 @@ ORDER BY thidate ASC
 			
 			// Nutrition คำแนะนำด้านอาหารการกิน
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
 WHERE `exercise` !=  '' AND `exercise` = 1
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$exercise_items = array();
@@ -517,23 +519,30 @@ ORDER BY thidate ASC
 			<td align="center" class="forntsarabun">&gt;60%</td>
 			<?php 
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
-FROM `diabetes_temp` 
-WHERE ( `l_bs` < 130 AND ( `ht` = '' OR `ht` = 0 ) ) 
-OR (
-	`l_bs` < 150 AND `l_bs` != '' AND ( `ht_etc` != '' OR `ht` = 1 OR `ht` = 3 ) 
-)
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `l_bs` != '' AND `l_bs` < 130 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+				GROUP BY MONTH( `dateN` )
+			UNION ALL
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `l_bs` != '' AND `l_bs` < 150 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )  
+				GROUP BY MONTH( dateN ) 
 			";
-			// echo "<pre>";
-			// var_dump($sql);
 			
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$fbg_items = array();
 			
 			while($item = mysql_fetch_assoc($query)){
-				$fbg_items[$item['new_daten']] = $item;
+				
+				$key = $item['new_daten'];
+				$rows = $item['rows'];
+
+				if ( !isset($fbg_items[$key]) ) {
+					$fbg_items[$key] = $rows;
+				} else {
+					$fbg_items[$key] += $rows;
+				}
 			}
 			
 			foreach($months AS $key => $value){
@@ -543,8 +552,8 @@ ORDER BY thidate ASC
 				$pre_row = 0;
 				$pre_total = 0;
 				if(isset($fbg_items[$find_key])){
-					$pre_row = $fbg_items[$find_key]['rows'];
-					$pre_total = $user_total_items[$find_key]['rows'];
+					$pre_row = $fbg_items[$find_key];
+					$pre_total = $user_total_items2[$find_key]['rows'];
 					$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
 					
 					if($item_percent > 0){
@@ -567,20 +576,30 @@ ORDER BY thidate ASC
 			<td align="center" class="forntsarabun">&gt;60%</td>
 			<?php 
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
-FROM `diabetes_temp` 
-WHERE (`l_hbalc` <  7 AND `l_hbalc` > 0 AND ( `ht` = 0 OR `ht` = '' ) )
-OR (
-	`l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' ) 
-) 
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `l_hbalc` != '' AND `l_hbalc` < 7 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' ) 
+				GROUP BY MONTH( dateN ) 
+			UNION ALL 
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `l_hbalc` != '' AND `l_hbalc` < 8 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )
+				GROUP BY MONTH( dateN ) 
 			";
+			
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c_dm_items = array();
 			
 			while($item = mysql_fetch_assoc($query)){
-				$hba1c_dm_items[$item['new_daten']] = $item;
+				
+				$key = $item['new_daten'];
+				$rows = $item['rows'];
+
+				if ( !isset($hba1c_dm_items[$key]) ) {
+					$hba1c_dm_items[$key] = $rows;
+				} else {
+					$hba1c_dm_items[$key] += $rows;
+				}
 			}
 			
 			foreach($months AS $key => $value){
@@ -590,8 +609,8 @@ ORDER BY thidate ASC
 				$pre_row = 0;
 				$pre_total = 0;
 				if(isset($hba1c_dm_items[$find_key])){
-					$pre_row = $hba1c_dm_items[$find_key]['rows'];
-					$pre_total = $user_total_items[$find_key]['rows'];
+					$pre_row = $hba1c_dm_items[$find_key];
+					$pre_total = $user_total_items2[$find_key]['rows'];
 					$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
 					
 					if($item_percent > 0){
@@ -614,20 +633,29 @@ ORDER BY thidate ASC
 			<td align="center" class="forntsarabun">&gt;60%</td>
 			<?php 
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
-FROM `diabetes_temp` 
-WHERE ( `l_ldl` <  100 AND `l_ldl` > 0 AND ( `ht` = 0 OR `ht` = '' ) )
-OR (
-	`l_ldl` < 70 AND `l_ldl` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' )
-)
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `l_ldl` != '' AND `l_ldl` < 100 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+				GROUP BY MONTH( dateN ) 
+			UNION ALL 
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `l_ldl` != '' AND `l_ldl` < 70 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )
+				GROUP BY MONTH( dateN ) 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c_dm_items = array();
 			
 			while($item = mysql_fetch_assoc($query)){
-				$hba1c_dm_items[$item['new_daten']] = $item;
+				
+				$key = $item['new_daten'];
+				$rows = $item['rows'];
+
+				if ( !isset($hba1c_dm_items[$key]) ) {
+					$hba1c_dm_items[$key] = $rows;
+				} else {
+					$hba1c_dm_items[$key] += $rows;
+				}
 			}
 			
 			foreach($months AS $key => $value){
@@ -637,8 +665,8 @@ ORDER BY thidate ASC
 				$pre_row = 0;
 				$pre_total = 0;
 				if(isset($hba1c_dm_items[$find_key])){
-					$pre_row = $hba1c_dm_items[$find_key]['rows'];
-					$pre_total = $user_total_items[$find_key]['rows'];
+					$pre_row = $hba1c_dm_items[$find_key];
+					$pre_total = $user_total_items2[$find_key]['rows'];
 					$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
 					
 					if($item_percent > 0){
@@ -669,28 +697,52 @@ ORDER BY thidate ASC
 			$year_current = intval($_POST['y_start']).date('-m-d');
 			
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
-FROM `diabetes_temp` 
-WHERE ( `bp1` < 140 AND `bp1` > 0 AND ( `ht` = '' OR `ht` = 0 ) )
-OR ( `bp2` < 90 AND `bp2` > 0 AND ( `ht` = '' OR `ht` = 0 ) )
-OR ( `bp1` < 130 AND `bp1` > 0 AND `l_creatinine` >= 1.30 )
-OR ( `bp2` < 80 AND `bp2` > 0 AND `l_creatinine` >= 1.30 )
-OR (
-	`bp1` < 150 AND `bp1` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' ) AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60
-)
-OR (
-	`bp2` < 80 AND `bp2` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' ) AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60
-)
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+			SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten 
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `bp1` != '' AND `bp1` < 140 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' ) 
+				GROUP BY MONTH( dateN ) 
+			UNION ALL
+				SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `bp2` != '' AND `bp2` < 90 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+				GROUP BY MONTH( dateN )
+			UNION ALL
+				SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `bp1` < 130 AND `bp1` != '' AND `l_creatinine` >= 1.30 
+				GROUP BY MONTH( dateN )
+			UNION ALL
+				SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `bp2` < 80 AND `bp2` != '' AND `l_creatinine` >= 1.30 
+				GROUP BY MONTH( dateN )
+			UNION ALL
+				SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `bp1` < 150 AND `bp1` != '' AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 ) AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60 
+				GROUP BY MONTH( dateN )
+			UNION ALL
+				SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+				FROM `diabetes_clinic_history` 
+				WHERE `dateN` LIKE '$date1%' AND `bp2` < 80 AND `bp2` != '' AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 ) AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60 
+				GROUP BY MONTH( dateN )
 			";
+
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c_dm_items = array();
 			
 			while($item = mysql_fetch_assoc($query)){
-				$hba1c_dm_items[$item['new_daten']] = $item;
+				
+				$key = $item['new_daten'];
+				$rows = $item['rows'];
+
+				if ( !isset($hba1c_dm_items[$key]) ) {
+					$hba1c_dm_items[$key] = $rows;
+				} else {
+					$hba1c_dm_items[$key] += $rows;
+				}
 			}
-			
+
 			foreach($months AS $key => $value){
 				$item_row = 0;
 				$find_key = "$key_year-$key";
@@ -698,8 +750,8 @@ ORDER BY thidate ASC
 				$pre_row = 0;
 				$pre_total = 0;
 				if(isset($hba1c_dm_items[$find_key])){
-					$pre_row = $hba1c_dm_items[$find_key]['rows'];
-					$pre_total = $user_total_items[$find_key]['rows'];
+					$pre_row = $hba1c_dm_items[$find_key];
+					$pre_total = $user_total_items2[$find_key]['rows']; // จำนวนทั้งหมดของเดือน
 					$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
 					
 					if($item_percent > 0){
@@ -720,11 +772,11 @@ ORDER BY thidate ASC
 			
 			// DM ที่สูบบุหรี่
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
 WHERE `smork` !=  '' AND `smork` = '1'
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$smoke_items = array();
@@ -753,17 +805,18 @@ ORDER BY thidate ASC
 			?>
 		</tr>
 		<tr>
-			<td class="forntsarabun">22. ผู้ป่วยที่มี HbA1c มากกว่า 7% ในเดือนนั้น</td>
+			<td class="forntsarabun">21. ตรวจ foot exam อย่างน้อย 1 ครั้งและมี HbA1c > 7% ของปีนี้ </td>
 			<td align="center" class="forntsarabun">&gt;80%</td>
 			<?php
 				
 			$sql = "
-SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
+SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 FROM `diabetes_temp` 
-WHERE `l_hbalc` !=  '' AND `l_hbalc` >=  '7' 
-GROUP BY MONTH( thidate ) 
-ORDER BY thidate ASC 
+WHERE ( `foot` != '' OR `foot_date` != '0000-00-00' ) AND `foot_date` LIKE '$date1_th-%' AND `l_hbalc` != '' AND `l_hbalc` >=  '7' 
+GROUP BY MONTH( dateN ) 
+ORDER BY dateN ASC 
 			";
+			
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c7_items = array();
 			while($item = mysql_fetch_assoc($query)){
@@ -778,7 +831,7 @@ ORDER BY thidate ASC
 				$pre_total = 0;
 				if(isset($hba1c7_items[$find_key])){
 					$pre_row = $hba1c7_items[$find_key]['rows'];
-					$pre_total = $user_total_items[$find_key]['rows'];
+					$pre_total = $foot_items[$find_key]['rows'];
 					$item_row = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
 				}
 				?>

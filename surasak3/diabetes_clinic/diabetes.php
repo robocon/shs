@@ -714,7 +714,10 @@ C&deg;</td>
 		
 	    <td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
 	    <td colspan="7" class="">
-			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" />
+			<?php
+				$th_date = ( date('Y') + 543 ).'-'.date('m-d');
+			?>
+			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" value="<?php echo $th_date;?>"/>
 			<label>
 				<input type="radio" name="retinal" value="No DR"> No DR
 			</label>
@@ -739,12 +742,13 @@ C&deg;</td>
 	    <td align="right" class="tb_font_2">BW :</td>
 	    <td><input name="bw" type="text"class="forntsarabun1" id="bw" size="3" /></td>
 		<?php */ ?>
+		
 		<td><input name="bw" type="hidden" class="forntsarabun1" id="bw" size="3" /></td>
 	    </tr>
 		<tr>
 			<td colspan="2" align="right" class="tb_font_2">Foot Exam:</td>
 			<td align="left" class="" colspan="8">
-				<input name="foot_date" type="text" class="forntsarabun1" id="foot" size="10" />
+				<input name="foot_date" type="text" class="forntsarabun1" id="foot" size="10" value="<?php echo $th_date;?>"/>
 				<label>
 					<input type="radio" name="foot" value="Low Risk"> Low Risk
 				</label>
@@ -759,7 +763,7 @@ C&deg;</td>
 		<tr>
 			<td colspan="2" align="right" class="tb_font_2">ตรวจสุขภาพฟัน:</td>
 			<td align="left" class="" colspan="8">
-				<input name="tooth_date" type="text" class="forntsarabun1" id="tooth" size="10" />
+				<input name="tooth_date" type="text" class="forntsarabun1" id="tooth" size="10" value="<?php echo $th_date;?>"/>
 				<label>
 					<input type="radio" name="tooth" value="1"> ได้รับการตรวจ
 				</label>

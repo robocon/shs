@@ -73,10 +73,10 @@ include("../connect.inc");
 
 // Create temp for diabetes_clinic only
 $sql_temp = "CREATE TEMPORARY TABLE diabetes_temp 
-( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dbbirt DATE NOT NULL  ) 
+( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
 SELECT *
-FROM diabetes_clinic 
-WHERE thidate LIKE '$year-$month-%';";
+FROM diabetes_clinic_history 
+WHERE dateN LIKE '$year-$month-%';";
 $query = mysql_query($sql_temp) or die(mysql_error($Conn));
 
 // จำนวนผู้ป่วยทั้งหมดในปีนี้
@@ -121,10 +121,10 @@ td{
 	<?php
 	if( $type == 'fbg' ){
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( `dateN`, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `l_bs` < 130 AND ( `ht` = '' OR `ht` = 0 )
-		GROUP BY DAY( thidate ) 
+		WHERE `l_bs` != '' AND `l_bs` < 130 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+		GROUP BY DAY( `dateN` );
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$fbg_items = array();
@@ -151,10 +151,10 @@ td{
 		</tr>
 		<?php
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `l_bs` < 150 AND `l_bs` != '' AND ( `ht_etc` != '' OR `ht` = 1 OR `ht` = 3 ) 
-		GROUP BY DAY( thidate ) 
+		WHERE `l_bs` != '' AND `l_bs` < 150 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )  
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$fbg_items = array();
@@ -182,10 +182,10 @@ td{
 	}else if( $type == 'hba1c' ){
 		
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `l_hbalc` <  7 AND `l_hbalc` > 0 AND ( `ht` = 0 OR `ht` = '' )
-		GROUP BY DAY( thidate ) 
+		WHERE `l_hbalc` != '' AND `l_hbalc` < 7 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' ) 
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$hba1c_items = array();
@@ -211,10 +211,10 @@ td{
 		</tr>
 		<?php
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' )
-		GROUP BY DAY( thidate ) 
+		WHERE `l_hbalc` != '' AND `l_hbalc` < 8 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$hba1c_items = array();
@@ -240,10 +240,10 @@ td{
 		<?php
 	}else if( $type =='ldl' ){
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `l_ldl` <  100 AND `l_ldl` > 0 AND ( `ht` = 0 OR `ht` = '' )
-		GROUP BY DAY( thidate ) 
+		WHERE `l_ldl` != '' AND `l_ldl` < 100 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$ldl_items = array();
@@ -269,10 +269,10 @@ td{
 		</tr>
 		<?php
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `l_ldl` < 70 AND `l_ldl` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' )
-		GROUP BY DAY( thidate ) 
+		WHERE `l_ldl` != '' AND `l_ldl` < 70 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$ldl_items = array();
@@ -298,10 +298,10 @@ td{
 		<?php
 	}else if( $type =='bp' ){
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `bp1` < 140 AND `bp1` > 0 AND ( `ht` = '' OR `ht` = 0 )
-		GROUP BY DAY( thidate ) 
+		WHERE `bp1` != '' AND `bp1` < 140 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$bp_items = array();
@@ -327,10 +327,10 @@ td{
 		</tr>
 		<?php 
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `bp2` < 90 AND `bp1` > 0 AND ( `ht` = '' OR `ht` = 0 )
-		GROUP BY DAY( thidate ) 
+		WHERE `bp2` != '' AND `bp2` < 90 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$bp_items = array();
@@ -355,10 +355,10 @@ td{
 		</tr>
 		<?php 
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `bp1` < 130 AND `bp1` > 0 AND `l_creatinine` >= 1.30
-		GROUP BY DAY( thidate ) 
+		WHERE `bp1` < 130 AND `bp1` != '' AND `l_creatinine` >= 1.30
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$bp_items = array();
@@ -383,10 +383,10 @@ td{
 		</tr>
 		<?php 
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `bp2` < 80 AND `bp2` > 0 AND `l_creatinine` >= 1.30
-		GROUP BY DAY( thidate ) 
+		WHERE `bp2` < 80 AND `bp2` != '' AND `l_creatinine` >= 1.30
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$bp_items = array();
@@ -415,10 +415,14 @@ td{
 		$year_current = $th_year.date('-m-d');
 			
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `bp1` < 150 AND `bp1` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' ) AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60
-		GROUP BY DAY( thidate ) 
+		WHERE `bp1` < 150 
+		AND `bp1` != '' 
+		AND `ht_etc` != '' 
+		AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 ) 
+		AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$bp_items = array();
@@ -443,10 +447,14 @@ td{
 		</tr>
 		<?php 
 		$sql = "
-		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
+		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
-		WHERE `bp2` < 80 AND `bp2` > 0 AND ( `ht` = 1 OR `ht` = 3 OR `ht_etc` != '' ) AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60
-		GROUP BY DAY( thidate ) 
+		WHERE `bp2` < 80 
+		AND `bp2` != '' 
+		AND `ht_etc` != '' 
+		AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 ) 
+		AND TIMESTAMPDIFF( YEAR, dbbirt, '$year_current' ) > 60
+		GROUP BY DAY( dateN ) 
 		";
 		$query = mysql_query($sql) or die( mysql_error($Conn) );
 		$bp_items = array();
