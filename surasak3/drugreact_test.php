@@ -132,10 +132,10 @@ if($action === 'search'){
 }
 
 define('CHARSET', 'TIS-620');
-include 'header.php';
+include 'templates/default/header.php';
 ?>
 <!-- Navigation bar -->
-<?php include 'nav.php'; ?>
+<?php include 'templates/default/nav.php'; ?>
 
 <!-- Body -->
 <div class="site-center">
@@ -495,5 +495,5 @@ include 'header.php';
     <!-- Footer -->
 </div>
 <?php 
-include 'footer.php';
+include 'templates/default/footer.php';
 ?>

@@ -805,7 +805,7 @@ ORDER BY dateN ASC
 			?>
 		</tr>
 		<tr>
-			<td class="forntsarabun">21. ตรวจ foot exam อย่างน้อย 1 ครั้งและมี HbA1c > 7% ของปีนี้ </td>
+			<td class="forntsarabun">21. กลุ่มผู้ป่วย DM ที่ได้รับการตรวจเท้าอย่างน้อย 1 ครั้งและมี HbA1c > 7% ของปีนี้ </td>
 			<td align="center" class="forntsarabun">&gt;80%</td>
 			<?php
 				

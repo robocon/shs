@@ -1466,8 +1466,9 @@ function newXmlHttp(){
 //}
 function searchSuggest(action,str,len) {
 	
-		str = str+String.fromCharCode(event.keyCode);
-
+		// str = str+String.fromCharCode(event.keyCode);
+		var len = 3;
+		
 		if(str.length >= len){
 			url = 'dt_drug.php?action='+action+'&search=' + str;
 

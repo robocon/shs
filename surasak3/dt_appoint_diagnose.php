@@ -47,7 +47,7 @@ if($action == 'save'){
 }
 
 $title = 'ระบบจำกัดนัดผู้ป่วย';
-include 'header.php';
+include 'templates/default/header.php';
 ?>
 <div class="site-body centered-content">
 	<div class="site-center">
@@ -164,4 +164,4 @@ include 'header.php';
 	</div>
 </div>
 <?php
-include 'footer.php';
+include 'templates/default/footer.php';

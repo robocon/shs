@@ -144,10 +144,10 @@ if( $action === 'save' ){
 }
 
 define('CHARSET', 'TIS-620');
-include 'header.php';
+include 'templates/default/header.php';
 ?>
 <!-- Navigation bar -->
-<?php include 'nav.php'; ?>
+<?php include 'templates/default/nav.php'; ?>
 
 <style>
 	#drug-selected, 
@@ -475,4 +475,4 @@ jQuery.noConflict();
 })(jQuery);
 
 </script>
-<?php include 'footer.php'; ?>
+<?php include 'templates/default/footer.php'; ?>

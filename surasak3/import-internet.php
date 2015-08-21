@@ -1,21 +1,21 @@
 <?php
-define('NEW_SITE', true);
+// define('NEW_SITE', true);
 include 'bootstrap.php';
-include 'header.php';
+include 'templates/default/header.php';
 
 $action = ( isset($_POST['action']) ) ? trim($_POST['action']) : false ;
 if($action == 'add'){
 	$file = $_FILES['internet'];
-	
+		
 	if($file['error'] > 0){
-		$_SESSION['x-msg'] = '‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡πÑ‡∏ü‡∏•‡πå';
+		$_SESSION['x-msg'] = '°√ÿ≥“‡≈◊Õ°‰ø≈Ï∑’Ë®–Õ—æ‚À≈¥';
 		$_SESSION['type'] = 'warning';
 		header('Location: import-internet.php');
 		exit;
 	}
 	
 	if(strrchr($file['name'], ".") != '.csv'){
-		$_SESSION['x-msg'] = '‡∏≠‡∏ô‡∏∏‡∏ç‡∏≤‡∏ï‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡πÑ‡∏ü‡∏•‡πå .csv ‡πÄ‡∏ó‡πà‡∏≤‡∏ô‡∏±‡πâ‡∏ô';
+		$_SESSION['x-msg'] = 'Õπÿ≠“µ‡©æ“–‰ø≈Ï .csv ‡∑Ë“π—Èπ';
 		$_SESSION['type'] = 'warning';
 		header('Location: import-internet.php');
 		exit;
@@ -24,7 +24,7 @@ if($action == 'add'){
 	$content = file_get_contents($file['tmp_name']);
 	$items = explode("\r\n", $content);
 	
-	$day_type = if($_POST['day'] == 1) ? '1day' : '7day' ;
+	$day_type = ($_POST['day'] == 1) ? '1day' : '7day' ;
 	
 	$i = 0;
 	$sql = "INSERT INTO `internet` (`register`, `type_net`, `user`, `pass`) VALUE ";
@@ -46,10 +46,10 @@ if($action == 'add'){
 	$db = DB::load('utf8');
 	$insert = $db->exec($sql);
 	if($insert != false){
-		$_SESSION['x-msg'] = '‡∏ô‡∏≥‡πÄ‡∏Ç‡πâ‡∏≤‡∏ú‡∏π‡πâ‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢';
+		$_SESSION['x-msg'] = '‡æ‘Ë¡®”π«πºŸÈ„™Èß“πÕ‘π‡µÕ√Ï‡πÁµ‡√’¬∫√ÈÕ¬';
 		$_SESSION['type'] = 'success';
 	}else{
-		$_SESSION['x-msg'] = '‡∏Å‡∏≤‡∏£‡∏ô‡∏≥‡πÄ‡∏Ç‡πâ‡∏≤‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏°‡∏µ‡∏õ‡∏±‡∏ç‡∏´‡∏≤';
+		$_SESSION['x-msg'] = '‡æ‘Ë¡®”π«πºŸÈ„™Èß“πÕ‘π‡µÕ√Ï‡πÁµ≈È¡‡À≈« °√ÿ≥“µ‘¥µËÕºŸÈ¥Ÿ·≈√–∫∫';
 		$_SESSION['type'] = 'warning';
 	}
 	
@@ -64,7 +64,7 @@ if($action == 'add'){
 		<div class="cell">
 			<div class="col">
 				<div class="page-header">
-					<h1>‡∏£‡∏∞‡∏ö‡∏ö‡∏ô‡∏≥‡πÄ‡∏Ç‡πâ‡∏≤‡∏≠‡∏¥‡∏ô‡πÄ‡∏ï‡∏≠‡∏£‡πå‡πÄ‡∏ô‡πá‡∏ï 1‡∏ß‡∏±‡∏ô 7‡∏ß‡∏±‡∏ô</h1>
+					<h1>√–∫∫‡æ‘Ë¡ºŸÈ„™Èß“πÕ‘π‡µÕ√Ï‡πÁµ·∫∫ 1«—π ·≈– 7«—π</h1>
 				</div>
 			</div>
 			<div class="col width-2of4">
@@ -82,7 +82,7 @@ if($action == 'add'){
 					?>
 					<form method="post" action="import-internet.php" enctype="multipart/form-data">
 						<div class="col">
-							<div class="col width-1of4">‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÑ‡∏ü‡∏•‡πå‡∏≠‡∏±‡∏û‡πÇ‡∏´‡∏•‡∏î</div>
+							<div class="col width-1of4">‡≈◊Õ°‰ø≈Ï</div>
 							<div class="col width-fill">
 								<div class="cell">
 									<input type="file" name="internet">
@@ -90,13 +90,13 @@ if($action == 'add'){
 							</div>
 						</div>
 						<div class="col">
-							<div class="col width-1of4">‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏£‡∏π‡∏õ‡πÅ‡∏ö‡∏ö</div>
+							<div class="col width-1of4">‡≈◊Õ°√Ÿª·∫∫¢Õß«—π∑’Ë</div>
 							<div class="col width-fill">
 								<div class="cell">
 									<input name="day" id="1day" class="day" type="radio" value="1">
-									<label for="1day">1‡∏ß‡∏±‡∏ô</label>
+									<label for="1day">1«—π</label>
 									<input name="day" id="7day" class="day" type="radio" value="7" checked>
-									<label for="7day">7‡∏ß‡∏±‡∏ô</label>
+									<label for="7day">7«—π</label>
 								</div>
 							</div>
 						</div>
@@ -104,7 +104,7 @@ if($action == 'add'){
 							<div class="col width-1of4"></div>
 							<div class="col width-fill">
 								<div class="cell">
-									<button class="button" type="submit">‡∏™‡πà‡∏á‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</button>
+									<button class="button" type="submit">‡æ‘Ë¡¢ÈÕ¡Ÿ≈</button>
 									<input type="hidden" name="action" value="add">
 								</div>
 							</div>
@@ -117,11 +117,6 @@ if($action == 'add'){
 	</div>
 	
 </div>
-				
-
-
-
-
 
 <?php
-include 'footer.php';
+include 'templates/default/footer.php';
