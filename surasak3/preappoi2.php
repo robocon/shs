@@ -28,7 +28,7 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	//************************** แสดงรายการ lab  ********************************************************
 
 	$array_new = array($_GET["code"]);
-var_dump($_SESSION["list_code"]);
+
 	$result = array_intersect($_SESSION["list_code"], $array_new);
 
 	if(count($result) ==0){
@@ -108,8 +108,9 @@ var_dump($_SESSION["list_code"]);
 exit();
 }
 
-
-if(!isset($_GET['action'])){
+// ถ้าไม่ใช่เจ้าหน้าที่ห้องตาจะเพิ่มไม่ได้
+$user_code = isset($_SESSION['smenucode']) ? $_SESSION['smenucode'] : false ;
+if(!isset($_GET['action']) && $user_code !== 'ADMEYE'){
 	global $doctor;
 	$doctor = trim($doctor);
 	if($doctor == 'กรุณาเลือกแพทย์'){
