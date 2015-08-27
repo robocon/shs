@@ -61,6 +61,7 @@ class DB{
 	public function __construct(){
 		try{
 			$this->db = new PDO('mysql:host='.HOST.';port='.PORT.';dbname='.DB, USER, PASS);
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$names = self::$set_names;
 			$this->db->exec("SET NAMES $names ;");
 
@@ -110,20 +111,31 @@ class DB{
 	}
 	
 	private function run($sql, $data){
-		$sth = $this->db->prepare($sql);
 		
-		foreach($data as $key => $value){
-			$sth->bindParam( $key, $value);
+		try {
+			
+			$sth = $this->db->prepare($sql);
+			foreach($data as $key => &$value){
+				$sth->bindValue( $key, $value);
+			}
+			
+			// Exec prepareing
+			$sth->execute();
+			$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+			
+		} catch(exception $e) {
+			
+			// Keep error into log file
+			$data = array(
+				'date' => '['.date('Y-m-d H:i:s').'] ',
+				'request' => $_SERVER['REQUEST_URI'].' - ',
+				'msg' => $e->getMessage()."\n"
+			);
+			
+			file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
+			$result = false;
 		}
-		
-		$sth->execute();
-		$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-		
-		// if(count($result) === 1){
-		// 	return $result['0'];
-		// }
-		
-		return $result;
 	}
 	
 	public static function exec($sql, $data = null){
@@ -140,12 +152,21 @@ class DB{
 				$sth = $this->db->prepare($sql);
 				$query = $sth->execute($data);
 			}
+			return $query;
 			
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			exit;
+		} catch(Exception  $e) {
+
+			// Keep error into log file
+			$data = array(
+				'date' => '['.date('Y-m-d H:i:s').'] ',
+				'request' => $_SERVER['REQUEST_URI'].' - ',
+				'msg' => $e->getMessage()."\n"
+			);
+			
+			file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
+			return false;
+			
 		}
-		return $query;
 	}
 }
 

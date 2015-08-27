@@ -185,9 +185,10 @@ $count = count($_POST["list_date"]);
 for($i=0;$i<$count;$i++){
 
 	//******************************* บันทึกข้อมูล  การนัด**************************************************************
-	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno)VALUES('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 น. - 11.00 น.','แผนกทะเบียน','FU22 นัดฉีดยา','นัดฉีดยา ".$_POST["drug_inj"]."','','','','นัดฉีดยา ".$_POST["drug_inj"]."','U22 ห้องจ่ายยา','เข็มที่ ".($i+1)."');";
+	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno,detail_etc)VALUES
+	('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 น. - 11.00 น.','แผนกทะเบียน','FU22 นัดฉีดยา','นัดฉีดยา ".$_POST["drug_inj"]."','','','','นัดฉีดยา ".$_POST["drug_inj"]."','U22 ห้องจ่ายยา','เข็มที่ ".($i+1)."','".$_POST['detail_etc']."');";
 	
-	$result = Mysql_Query($sql);
+	// $result = Mysql_Query($sql);
 	
 	if($i > 0){
 		$query = "SELECT runno FROM runno WHERE title = 'phardep' limit 0,1";
@@ -196,14 +197,14 @@ for($i=0;$i<$count;$i++){
 		$runno++;
 			
 		$query ="UPDATE runno SET runno = ".$runno." WHERE title='phardep' limit 1 ";
-		$result2 = mysql_query($query) or die("Query failed");
+		// $result2 = mysql_query($query) or die("Query failed");
 
 		$xx = array("[idno]", "[Thidate]");
 		$yy = array($runno, $_POST["list_date"][$i]." 00:00:00");
 		$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
 
 		if($rows_drugrx > 0){
-			$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
+			// $result = Mysql_Query($sql_dphardep2) or die(mysql_error());
 			$idno = mysql_insert_id();
 			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
 			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
@@ -211,7 +212,7 @@ for($i=0;$i<$count;$i++){
 			$qq = array("[INJNO]");
 			$zz = array("เข็มที่ $k");
 			$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
-			$result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
+			// $result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
 		}
 	}
 } // End for
@@ -315,6 +316,11 @@ for($i=0;$i<$count;$i++)
 
 		</TD>
 	</TR>
+	<tr>
+		<td colspan="2">
+			รายละเอียด: <?php echo str_replace(array("\n","\n\r"), '<br>', $_POST['detail_etc']); ?>
+		</td>
+	</tr>
 	</TABLE>
 	
 	

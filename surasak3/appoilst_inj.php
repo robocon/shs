@@ -458,6 +458,12 @@ return stat;
 	</TD>
 </TR>
 <TR>
+	<TD  align="right" valign="top">รายละเอียด : </TD>
+	<TD>
+		<textarea name="detail_etc" id="detail_etc" cols="40" rows="5"></textarea>
+	</TD>
+</TR>
+<TR>
 	<TD colspan="2" align="center" ><INPUT TYPE="submit" value="ออกใบนัด"></TD>
 </TR>
 </TABLE>
