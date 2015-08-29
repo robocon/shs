@@ -127,13 +127,7 @@ class DB{
 		} catch(exception $e) {
 			
 			// Keep error into log file
-			$data = array(
-				'date' => '['.date('Y-m-d H:i:s').'] ',
-				'request' => $_SERVER['REQUEST_URI'].' - ',
-				'msg' => $e->getMessage()."\n"
-			);
-			
-			file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
+			$this->set_log();
 			$result = false;
 		}
 	}
@@ -157,16 +151,20 @@ class DB{
 		} catch(Exception  $e) {
 
 			// Keep error into log file
-			$data = array(
-				'date' => '['.date('Y-m-d H:i:s').'] ',
-				'request' => $_SERVER['REQUEST_URI'].' - ',
-				'msg' => $e->getMessage()."\n"
-			);
-			
-			file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
+			$this->set_log();
 			return false;
 			
 		}
+	}
+	
+	private function set_log(){
+		$data = array(
+			'date' => '['.date('Y-m-d H:i:s').'] ',
+			'request' => $_SERVER['REQUEST_URI'].' - ',
+			'msg' => $e->getMessage()."\n"
+		);
+		
+		file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
 	}
 }
 
