@@ -197,14 +197,14 @@ for($i=0;$i<$count;$i++){
 		$runno++;
 			
 		$query ="UPDATE runno SET runno = ".$runno." WHERE title='phardep' limit 1 ";
-		// $result2 = mysql_query($query) or die("Query failed");
+		$result2 = mysql_query($query) or die("Query failed");
 
 		$xx = array("[idno]", "[Thidate]");
 		$yy = array($runno, $_POST["list_date"][$i]." 00:00:00");
 		$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
 
 		if($rows_drugrx > 0){
-			// $result = Mysql_Query($sql_dphardep2) or die(mysql_error());
+			$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
 			$idno = mysql_insert_id();
 			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
 			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
@@ -212,7 +212,7 @@ for($i=0;$i<$count;$i++){
 			$qq = array("[INJNO]");
 			$zz = array("à¢çÁ·Õè $k");
 			$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
-			// $result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
+			$result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
 		}
 	}
 } // End for
