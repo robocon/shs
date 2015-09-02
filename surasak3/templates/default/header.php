@@ -1,5 +1,5 @@
 <?php 
-$charset = defined('CHARSET') ? CHARSET : 'utf-8' ; 
+$charset = (defined('CHARSET') !== false) ? CHARSET : 'utf-8' ; 
 $title = isset($title) ? $title : '' ;
 $content = isset($content) ? $content : '' ;
 ?>

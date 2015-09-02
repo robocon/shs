@@ -1,7 +1,7 @@
 <?php 
 // Set about php.ini
-// error_reporting(1);
-// ini_set('display_errors', 1);
+error_reporting(1);
+ini_set('display_errors', 1);
 
 session_start();
 
@@ -50,6 +50,7 @@ class DB{
 	
 	private static $connect = null;
 	private $db = null;
+	private static $lastId = 0;
 	
 	/**
 	 * !!!! CUTION !!!!
@@ -145,6 +146,7 @@ class DB{
 			}else{
 				$sth = $this->db->prepare($sql);
 				$query = $sth->execute($data);
+				self::$lastId = $this->db->lastInsertId();
 			}
 			return $query;
 			
@@ -166,7 +168,81 @@ class DB{
 		
 		file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
 	}
+	
+	public static function get_lastId(){
+		return self::$lastId;
+	}
 }
+
+/**
+ * 
+ */
+class Mysql
+{
+	private $db = null;
+	private static $connect = null;
+	private $item = null;
+	private $items = array();
+	private $rows = 0;
+	
+	function __construct(){
+			
+		$this->db = mysql_connect(HOST, USER, PASS) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
+		mysql_select_db(DB, $this->db) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+		
+		// mysql_query("SET NAMES TIS620", $this->db);
+
+	}
+	
+	public static function load(){
+		
+		if (self::$connect === null) {
+			self::$connect = new self();
+		}
+		
+		return self::$connect;
+	}
+	
+	public function select($sql, $items){
+		
+		if( !empty($items) ){
+			foreach($items as $key => &$item){
+				$sql = str_replace($key, "'$item'", $sql);
+			}
+		}
+		
+		$query = mysql_query($sql, $this->db);
+		$this->rows = mysql_num_rows($query);
+		if( $this->rows > 1 ){
+			
+			while($item = mysql_fetch_assoc($query)){
+				$this->items[] = $item;
+			}
+			
+		}else{
+			$this->item = mysql_fetch_assoc($query);
+		}
+	}
+	
+	public function get_item(){
+		return $this->item;
+	}
+	
+	public function get_items(){
+		return $this->items;
+	}
+	
+	public function get_rows(){
+		return $this->rows;
+	}
+	
+}
+
+// $db = Mysql::load();
+// $sql = "SELECT * FROM `opcard` WHERE `hn` LIKE :hn";
+// $data = array(':hn' => '58-27%');
+// $db->select($sql, $data);
+// $item = $db->get_item();
 
 
 require "includes/functions.php";

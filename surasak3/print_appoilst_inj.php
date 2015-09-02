@@ -188,7 +188,7 @@ for($i=0;$i<$count;$i++){
 	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno,detail_etc)VALUES
 	('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 น. - 11.00 น.','แผนกทะเบียน','FU22 นัดฉีดยา','นัดฉีดยา ".$_POST["drug_inj"]."','','','','นัดฉีดยา ".$_POST["drug_inj"]."','U22 ห้องจ่ายยา','เข็มที่ ".($i+1)."','".$_POST['detail_etc']."');";
 	
-	// $result = Mysql_Query($sql);
+	$result = Mysql_Query($sql);
 	
 	if($i > 0){
 		$query = "SELECT runno FROM runno WHERE title = 'phardep' limit 0,1";
@@ -204,14 +204,19 @@ for($i=0;$i<$count;$i++){
 		$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
 
 		if($rows_drugrx > 0){
+			
+			// เพิ่มใน dphardep
 			$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
 			$idno = mysql_insert_id();
 			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
 			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
-			$k=$i+2;
+			
+			$k=$i+1;
 			$qq = array("[INJNO]");
 			$zz = array("เข็มที่ $k");
 			$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
+			
+			// เพิ่มใน ddrugrx
 			$result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
 		}
 	}
