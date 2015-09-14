@@ -1,0 +1,179 @@
+/* CSS Rest */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Default style */
+table{
+	width: 100%;
+	border-left: 1px solid #000000;
+	border-top: 1px solid #000000;
+}
+table td,
+table th{
+	border-right: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+	column-span: none;
+	padding: 0.3em;
+}
+table th{
+	background-color: #EDEDED;
+	font-weight: bold;
+}
+a{
+	text-decoration: none;
+	color: #3B5998;
+}
+a:hover{
+	text-decoration: underline;
+}
+h1{
+	font-size: 32px;
+	line-height: 40px;
+}
+h3{
+	font-size: 24px;
+	line-height: 32px;
+}
+.header{
+	font-size: 18px;
+	font-weight: bold;
+}
+.col{
+	width: 100%;
+}
+.cell{
+	padding: 0.3em;
+}
+.width-1of5{
+	width: 20%;
+}
+.width-2of5{
+	width: 40%;
+}
+.width-3of5{
+	width: 60%;
+}
+.label{
+	padding: 0.2em;
+	color: #ffffff;
+}
+.background-yellow{
+	background-color: #f0ad4e;
+}
+
+ol{
+	padding-left: 2em;
+	list-style: number;
+}
+ol ol{
+	list-style: disc;
+}
+
+/* Navigation menu */
+.nav{
+	
+}
+.nav li{
+	display: inline;
+}
+.nav li a{
+	padding: 0.5em;
+	line-height: 37px;
+	background-color: #ECECEC;
+}
+.nav li.active a{
+	background-color: #6B6B6B;
+	color: #ffffff;	
+}
+
+/* Template CSS Config */
+
+/* If screen between 1200 - 1600 fix width at 1280px */
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px){
+	.site-center{
+		width: 1200px;
+	}
+}
+/* Set center column */
+.site-center{
+	margin: 0 auto;
+}
+
+/* Your custom code below */
+/*
+.icon-circle-blank{
+	width: 27px;
+	height: 27px;
+	background-image: url("circle.png");
+	background-size: 27px auto;
+	background-repeat: no-repeat;
+	_background:none;
+	_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='circle.png',sizingMethod='crop');
+}
+.color-green{
+	border-color: #5BD15B;
+}
+.icon-check-empty{
+	width: 10px;
+	height: 10px;
+	border: 1px solid black;
+}
+*/
+.color-green{
+	color: #5BD15B;
+}
+
+/* HACK Calendar width */
+table#popup1_calendar{
+	width: 320px!important;
+	font-size: 16px!important;
+}
+table#popup1_calendar td{
+	padding: 0;
+}

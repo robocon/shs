@@ -189,7 +189,9 @@ if($action === 'save'){
 
 
 define('CHARSET', 'TIS-620');
-include 'templates/default/header.php';
+include 'templates/classic/header.php';
+
+include 'templates/classic/nav.php';
 ?>
 <style type="text/css">
 @media print {
@@ -219,7 +221,7 @@ include 'templates/default/header.php';
 }
 
 .input_form{
-	display: inline-block;
+	display: inline;
 	margin-bottom: 0.5em;
 }
 .input_form label{
@@ -240,30 +242,6 @@ include 'templates/default/header.php';
 	margin: 0;
 }
 
-/* Fix calendar CSS */
-#popup1_calendar{
-	width: 26%;
-}
-select, input{
-	width: auto!important;
-	height: auto !important;
-}
-
-/* Show circle around number */
-.circle-contain{
-	position: relative;
-	min-height: 32px;
-	vertical-align: middle;
-}
-.cirble-block{
-	position: absolute;
-	top: 0px;
-	left: 0px;
-}
-.circle-number{
-	vertical-align: middle;
-	line-height: 32px;
-}
 </style>
 <link type="text/css" href="diabetes_clinic/epoch_styles.css" rel="stylesheet" />
 <script type="text/javascript" src="diabetes_clinic/epoch_classes.js"></script>
@@ -291,12 +269,13 @@ select, input{
 							$home_active = ( $task === false ) ? 'class="active"' : false ;
 							$form_active = ( $task === 'form' ) ? 'class="active"' : false ;
 							$form_category = ( $task === 'category_form' ) ? 'class="active"' : false ;
+							$den_report = ( $task === 'report' ) ? 'class="active"' : false ;
 						?>
 						<ul class="nav">
 							<li <?php echo $home_active;?>><a href="survey_oral.php">หน้าหลัก</a></li>
 							<li <?php echo $form_active;?>><a href="survey_oral.php?task=form">เพิ่มข้อมูลแบบสำรวจ</a></li>
 							<li <?php echo $form_category;?>><a href="survey_oral.php?task=category_form">จัดการข้อมูลหน่วยงาน</a></li>
-							<li><a href="survey_oral.php?task=report">รายงานผลการสำรวจ</a></li>
+							<li <?php echo $den_report;?>><a href="survey_oral.php?task=report">รายงานผลการสำรวจ</a></li>
 						</ul>
 					</div>
 				</div>
@@ -390,14 +369,14 @@ select, input{
 						</div>
 						<h3>รายละเอียดผู้ป่วย</h3>
 						<form action="survey_oral.php?action=save" method="post">
-							<div>
+							<div class="cell">
 								<div class="input_form">
 									<label for="hn">HN: </label><?php echo $item['hn'];?>
 									<input id="hn" name="hn" type="hidden" value="<?php echo $item['hn'];?>">
 									</div>
-								<div class="input_form"><label for="date">วันที่ตรวจ</label><input class="text width-2of5" id="date" name="date" type="text" value="<?php echo $th_date;?>"></div>
+								<div class="input_form"><label for="date">วันที่ตรวจ:</label>&nbsp;<input class="text" id="date" name="date" type="text" value="<?php echo $th_date;?>"></div>
 								<div class="input_form">
-									<label for="section">หน่วย</label>
+									<label for="section">หน่วย:</label>&nbsp;
 									<select name="section" id="section">
 										<?php
 											$sql = "SELECT `id`,`name` FROM `survey_oral_category` ORDER BY `id` ASC;";
@@ -411,7 +390,7 @@ select, input{
 									</select>
 								</div>
 							</div>
-							<div>
+							<div class="cell">
 								<div class="input_form">
 									<label for="prefix">คำนำหน้า: </label><?php echo $item['yot'];?>
 									<input id="prefix" name="prefix" type="hidden" value="<?php echo $item['yot'];?>">
@@ -426,7 +405,7 @@ select, input{
 									</div>
 								
 							</div>
-							<div>
+							<div class="cell">
 								<div class="input_form">
 									<label for="age">อายุ: </label><?php echo $age;?> ปี
 									<input id="age" name="age" type="hidden" value="<?php echo $age;?>">
@@ -436,7 +415,7 @@ select, input{
 									<input id="id_card" name="id_card" type="hidden" value="<?php echo $item['idcard'];?>">
 								</div>
 							</div>
-							<div>
+							<div >
 								<table class="custom-table outline-header border box-header outline">
 									<thead>
 										<tr>
@@ -575,15 +554,15 @@ select, input{
 							} else {
 						?>
 							<h3>แสดงรายละเอียดผู้ป่วยที่ได้รับการตรวจสภาวะช่องปาก</h3>
-							<div>
+							<div class="cell">
 								<div class="input_form">
 									<label for="hn">HN: </label><?php echo $item['hn'];?>
 								</div>
-								<div class="input_form"><label for="date">วันที่ตรวจ</label><?php echo $item['date'];?></div>
-								<div class="input_form"><label for="section">หน่วย</label><?php echo $item['name'];?></div>
+								<div class="input_form"><label for="date">วันที่ตรวจ:</label>&nbsp;<?php echo $item['date'];?></div>
+								<div class="input_form"><label for="section">หน่วย:</label>&nbsp;<?php echo $item['name'];?></div>
 								
 							</div>
-							<div>
+							<div class="cell">
 								<div class="input_form">
 									<label for="prefix">ชื่อ-สกุล: </label><?php echo $item['fullname'];?>
 								</div>
@@ -594,7 +573,7 @@ select, input{
 									<label for="id_card">เลขบัตรประจำตัวประชาชน: </label><?php echo $item['id_card'];?>
 								</div>
 							</div>
-							<div>
+							<div class="cell">
 								<?php
 								$status = unserialize($item['mouth_detail']);
 								?>
@@ -609,8 +588,8 @@ select, input{
 									<tbody>
 										<tr>
 											<td>
-												<?php $check = ( $status['1_1'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['1_1'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="1_1">1. สุขภาพช่องปากดี</label>
 											</td>
 											<td class="align-center">
@@ -618,9 +597,9 @@ select, input{
 													if( $item['max_status'] == '1' ){
 														?>
 														<div class="circle-contain">
-															<span class="icon icon-32 icon-circle-blank color-green cirble-block"></span>
+															<input type="checkbox" checked="checked">
 															<span class="circle-number">1</span>
-														</div>
+															
 														<?php
 													}else{
 														?>1<?php
@@ -632,8 +611,8 @@ select, input{
 										
 										<tr>
 											<td>
-												<?php $check = ( $status['2_1'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['2_1'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="2_1">2. มีหินปูน มีเหงือกอักเสบ</label>
 											</td>
 											<td class="align-center">
@@ -641,8 +620,9 @@ select, input{
 													if( $item['max_status'] == '2' ){
 														?>
 														<div class="circle-contain">
-															<span class="icon icon-32 icon-circle-blank color-green cirble-block"></span>
+															<input type="checkbox" checked="checked">
 															<span class="circle-number">2</span>
+															
 														</div>
 														<?php
 													}else{
@@ -654,8 +634,8 @@ select, input{
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['3_1'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['3_1'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="3_1">3. มีฟันผุที่อุดได้</label>
 											</td>
 											<td class="align-center" rowspan="3">
@@ -663,7 +643,7 @@ select, input{
 													if( $item['max_status'] == '3' ){
 														?>
 														<div class="circle-contain">
-															<span class="icon icon-32 icon-circle-blank color-green cirble-block"></span>
+															<input type="checkbox" checked="checked">
 															<span class="circle-number">3</span>
 														</div>
 														<?php
@@ -676,24 +656,24 @@ select, input{
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['3_2'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['3_2'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="3_2">4. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
 											</td>
 											<td class="align-center">รักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['3_3'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['3_3'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="3_3">5. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
 											</td>
 											<td class="align-center">ใส่ฟัน</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_1'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['4_1'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="4_1">6. มีฟันผุทะลุโพรงประสาทที่รักษาคลองรากฟันได้</label>
 											</td>
 											<td class="align-center" rowspan="5">
@@ -701,7 +681,7 @@ select, input{
 													if( $item['max_status'] == '4' ){
 														?>
 														<div class="circle-contain">
-															<span class="icon icon-32 icon-circle-blank color-green cirble-block"></span>
+															<input type="checkbox" checked="checked">
 															<span class="circle-number">4</span>
 														</div>
 														<?php
@@ -714,32 +694,32 @@ select, input{
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_2'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['4_2'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="4_2">7. มีฟันผุทะลุโพรงประสาทที่ต้องถอน / มี RR</label>
 											</td>
 											<td class="align-center">ถอนฟัน</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_3'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['4_3'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="4_3">8. มีฟันคุด</label>
 											</td>
 											<td class="align-center">ผ่าฟันคุด</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_4'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['4_4'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="4_4">9. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
 											</td>
 											<td class="align-center">ถอนฟันและรักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_5'] == 1 ) ? 'icon-check' : 'icon-check-empty' ;?>
-												<span class="icon icon-16 <?php echo $check;?>"></span>
+												<?php $check = ( $status['4_5'] == 1 ) ? 'checked="checked"' : '' ;?>
+												<input type="checkbox" <?php echo $check;?>>
 												<label for="4_5">10. มีอาการ บวม ปวดฟัน ปวดเหงือก</label>
 											</td>
 											<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
@@ -757,7 +737,7 @@ select, input{
 							</div>
 							<div class="col">
 								<div class="cell">
-									<label for=""><b>ผู้ตรวจ</b></label><?php echo $item['officer'];?>
+									<label for=""><b>ผู้ตรวจ:</b></label>&nbsp;<?php echo $item['officer'];?>
 								</div>
 							</div>
 							<div class="col">
@@ -938,5 +918,5 @@ $(function() {
 })(jQuery);
 </script>
 <?php
-include 'templates/default/footer.php';
+include 'templates/classic/footer.php';
 ?>

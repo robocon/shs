@@ -87,11 +87,11 @@ if($active_year !== false OR $year !== false){
 		
 		if( $match ){
 			
-			if( $matchs['1'] < 60 ){
+			if( $matchs['1'] < 50 ){
 				$lesssixty_lists[$set_key][] = $item;
-			}else if( $matchs['1'] >= 60 &&  $matchs['1'] <= 65 ){
+			}else if( $matchs['1'] >= 50 &&  $matchs['1'] <= 65 ){
 				$equalsixty_lists[$set_key][] = $item;
-			}else if( $matchs['1'] > 60 ){
+			}else if( $matchs['1'] > 65 ){
 				$moresixty_lists[$set_key][] = $item;
 			}
 			
@@ -179,7 +179,7 @@ if($active_year !== false OR $year !== false){
 				</td>
 			</tr>
 			<tr>
-				<td>2.) ช่วงอายุน้อยกว่า 60ปี</td>
+				<td>2.) ช่วงอายุน้อยกว่า 50ปี</td>
 				<?php
 				$final_from_all = 0;
 				$final_from_list = 0;
@@ -210,7 +210,7 @@ if($active_year !== false OR $year !== false){
 				</td>
 			</tr>
 			<tr>
-				<td>3.) ช่วงอายุระหว่าง 60 ถึง 65ปี</td>
+				<td>3.) ช่วงอายุระหว่าง 50 ถึง 65ปี</td>
 				<?php
 				$final_from_all = 0;
 				$final_from_list = 0;
@@ -241,7 +241,7 @@ if($active_year !== false OR $year !== false){
 				</td>
 			</tr>
 			<tr>
-				<td>4.) ช่วงอายุมากกว่า 60ปี</td>
+				<td>4.) ช่วงอายุมากกว่า 65ปี</td>
 				<?php
 				$final_from_all = 0;
 				$final_from_list = 0;

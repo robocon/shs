@@ -324,7 +324,7 @@ $dpn1=number_format($dpn1, 2, '.', '');
 $dpydpn=$dpy+$dpn;
 $dpydpn=number_format($dpydpn, 2, '.', '');
 
-				$strText15="$date2$row_id1$vn|2|$dpy|0.00\r\n";
+				$strText15="$date2$row_id1$vn|2|$dpy1|0.00\r\n";
 				
 				$strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 				$objFopen1 = fopen($strFileName1, 'a');
@@ -429,7 +429,7 @@ $dsy=number_format($dsy, 2, '.', '');
 $thimonth=$_POST["thiyr"]."-".$_POST["rptmo"]."-".$_POST["rptdate"];
 $numcscd=0;
 $cscd='จ่ายตรง';
-    $query="CREATE TEMPORARY TABLE reportcscd02 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd' AND depart='PHAR' AND paidcscd > 0 " ;
+    $query="CREATE TEMPORARY TABLE reportcscd02 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd' AND depart='PHAR' " ;
 	//echo $query;
 	
     $result = mysql_query($query) or die("Query failed billdisp 379");
@@ -863,6 +863,7 @@ $strText25="</DispensedItems>\n
 	
 	$zip->save();
 	
+	echo "<p style='color:#FF0000; font-weight:bold;'>โปรแกรมส่งเบิกเงิน CSCD</p>";
 	echo "ดาวน์โหลดข้อมูลเบิก CSCD... <a href=$ZipName>คลิกที่นี่</a> <br>";
 	echo "<a href='../exportcscd_data.php'><< กลับหน้าเดิม</a>";	
 //-------------------- Close add to zip --------------------//

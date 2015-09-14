@@ -72,8 +72,11 @@
     print "แพทย์ :$sDoctor<br>";
 	if($detailbydr != "")
 	print "รายละเอียดเพิ่มเติม :".nl2br($detailbydr)."<br>";
-	print "<A HREF=\"runnolab.php? sDate=$date&gRow_id=$row_id\" target=\"_blank\">พิมพ์ Stiker</A> ";
-    print "<A HREF=\"invdetail1.php? sDate=$date&gRow_id=$row_id\" target=\"_blank\">พิมพ์ ใบแจ้งหนี้</A> ";
+    echo '<br>';
+	print "<A HREF=\"runnolab.php? sDate=$date&gRow_id=$row_id\" target=\"_blank\">คิดค่าใช้จ่าย(การเงิน)</A><br>";
+    print "<A HREF=\"labslip4bc_from_er.php?sDate=$date&cHn=$sHn\" target=\"_blank\">พิมพ์ Stiker บาร์โค้ด</A><br>";
+    echo '<span style="color: red">* ให้คลิกที่ <u>คิดค่าใช้จ่าย(การเงิน)</u> เพื่อคิดค่าใช้จ่าย <br>จากนั้นคลิกที่ <u>พิมพ์ Sticker บาร์โค้ด</u> เพื่อพิมพ์สติกเกอร์แบบบาร์โค้ด ตามลำดับ<span><br>';
+    print "<A HREF=\"invdetail1.php? sDate=$date&gRow_id=$row_id\" target=\"_blank\">พิมพ์ ใบแจ้งหนี้</A><br>";
 ?>
 
 

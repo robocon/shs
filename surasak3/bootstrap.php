@@ -6,7 +6,11 @@ ini_set('display_errors', 1);
 session_start();
 
 if(!defined('NEW_SITE')){
-	header('Content-Type: text/html; charset=tis-620');
+	
+	if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
+		header('Content-Type: text/html; charset=tis-620');
+	}
+	
 	require_once 'includes/connect.php';
 	
 }else{
@@ -64,7 +68,10 @@ class DB{
 			$this->db = new PDO('mysql:host='.HOST.';port='.PORT.';dbname='.DB, USER, PASS);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$names = self::$set_names;
-			$this->db->exec("SET NAMES $names ;");
+			
+			if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
+				$this->db->exec("SET NAMES $names ;");
+			}
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";
@@ -128,7 +135,7 @@ class DB{
 		} catch(exception $e) {
 			
 			// Keep error into log file
-			$this->set_log();
+			$this->set_log($e);
 			$result = false;
 		}
 	}
@@ -153,13 +160,13 @@ class DB{
 		} catch(Exception  $e) {
 
 			// Keep error into log file
-			$this->set_log();
+			$this->set_log($e);
 			return false;
 			
 		}
 	}
 	
-	private function set_log(){
+	private function set_log($e){
 		$data = array(
 			'date' => '['.date('Y-m-d H:i:s').'] ',
 			'request' => $_SERVER['REQUEST_URI'].' - ',
@@ -190,7 +197,9 @@ class Mysql
 		$this->db = mysql_connect(HOST, USER, PASS) or die ("äÁèÊÒÁÒÃ¶µÔ´µèÍ¡Ñºà«ÔÃì¿àÇÍÃìä´é");
 		mysql_select_db(DB, $this->db) or die ("äÁèÊÒÁÒÃ¶µÔ´µèÍ¡Ñº°Ò¹¢éÍÁÙÅä´é");
 		
-		// mysql_query("SET NAMES TIS620", $this->db);
+		if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
+			mysql_query("SET NAMES TIS620", $this->db);
+		}
 
 	}
 	

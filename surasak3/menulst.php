@@ -142,7 +142,7 @@ if($sLevel=="admin"){
                 "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
 				" </tr>\n");	
 }								 
-					 
+
 if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
  $query = "SELECT menu,script,target FROM menulst WHERE menucode LIKE '$menucode%' AND status='Y'  ".$sort;
  $result = mysql_query($query) or die( mysql_error($Conn) );
@@ -153,15 +153,24 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
                   " </tr>\n");
                   };
 }elseif($sOfficer=='¿Ÿ¿Ÿ¡‘ «ÿ≤‘∏“¥“ («.33906)'){
-	 $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
-	 $result = mysql_query($query) or die( mysql_error($Conn) );
-	 
-	 
-			while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-				   print (" <tr>\n".
-					  "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-					  " </tr>\n");
-}}elseif($sOfficer=='∏π∫¥‘π∑√Ï º≈»√’π“§ («.19921)'){
+    $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
+    $result = mysql_query($query) or die( mysql_error($Conn) );
+    
+    while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+        print (" <tr>\n".
+        "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+        " </tr>\n");
+    }
+}elseif($sOfficer=='«√‘∑∏‘Ï æ ÿ∏“¥≈ («.38228)'){
+    $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
+    $result = mysql_query($query) or die( mysql_error($Conn) );
+    
+    while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+        print (" <tr>\n".
+        "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+        " </tr>\n");
+    }
+}elseif($sOfficer=='∏π∫¥‘π∑√Ï º≈»√’π“§ («.19921)'){
 	 $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADM19921' AND status='Y' ".$where_search." ".$sort;
 	 $result = mysql_query($query) or die( mysql_error($Conn) );
 	

@@ -71,7 +71,9 @@ switch($xxx[1]){
 
 }
 
-	
+// หาคำจาก Y-m-d
+$th_day = array(1 => 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์');
+$test_n = date('N', strtotime(( $xxx['2'] - 543 ).'-'.$month.'-'.$xxx['0']));
 
 if(count($_POST["list_lab_appoint"]) > 0)
 $lab_appoint_implode = @implode(", ",$_POST["list_lab_appoint"]);
@@ -180,7 +182,10 @@ $_SESSION["dt_drugstk"] .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"2
 				<TD><font face='Angsana New' size= 2>ชื่อ : ".$cPtname." &nbsp;&nbsp; HN : ".$_SESSION["hn_now"]."</TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 3 ><B><U>นัดวันที่ : ".$_POST["date_appoint"]."<font face='Angsana New' size= 2 >&nbsp;เวลา : ".$_POST["capptime"]."</U></B></TD>
+				<TD><font face='Angsana New' size= 3 ><B><U>นัดวัน ".$th_day[$test_n]." ที่".$_POST["date_appoint"]."</U></B></font></TD>
+			</TR>
+			<TR>
+				<TD><font face='Angsana New' size= 3 ><B><U>เวลา : ".$_POST["capptime"]."</U></B></font></TD>
 			</TR>
 			<TR>
 				<TD><font face='Angsana New' size= 2 ><B>เพื่อ :</B> ".$_POST["detail"]." ".(trim($_POST["detail2"]) !=''?"(".$_POST["detail2"].")":"")." <font face='Angsana New' size= 2 >&nbsp;<B>แพทย์ :</B> ".$doctor."</TD>
