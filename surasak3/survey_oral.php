@@ -197,6 +197,7 @@ include 'templates/classic/nav.php';
 @media print {
 	body{
 		background-color: #ffffff;
+		font-size: 14px;
 	}
 	.site-center,
 	.site-body panel{
@@ -217,6 +218,10 @@ include 'templates/classic/nav.php';
 	.nav-menu-col,
 	.page-header-col{
 		display: none!important;
+	}
+	#print_btn,
+	.site-header-fixture{
+		display: none;
 	}
 }
 
@@ -270,12 +275,14 @@ include 'templates/classic/nav.php';
 							$form_active = ( $task === 'form' ) ? 'class="active"' : false ;
 							$form_category = ( $task === 'category_form' ) ? 'class="active"' : false ;
 							$den_report = ( $task === 'report' ) ? 'class="active"' : false ;
+							$report_mouth = ( $task === 'report_mouth' ) ? 'class="active"' : false ;
 						?>
 						<ul class="nav">
 							<li <?php echo $home_active;?>><a href="survey_oral.php">หน้าหลัก</a></li>
 							<li <?php echo $form_active;?>><a href="survey_oral.php?task=form">เพิ่มข้อมูลแบบสำรวจ</a></li>
 							<li <?php echo $form_category;?>><a href="survey_oral.php?task=category_form">จัดการข้อมูลหน่วยงาน</a></li>
 							<li <?php echo $den_report;?>><a href="survey_oral.php?task=report">รายงานผลการสำรวจ</a></li>
+							<li <?php echo $report_mouth;?>><a href="survey_oral.php?task=report_mouth">รายงานสภาวะช่องปากและระดับ</a></li>
 						</ul>
 					</div>
 				</div>
@@ -552,8 +559,10 @@ include 'templates/classic/nav.php';
 								<p>ไม่พบข้อมูลผู้ป่วย</p>
 								<?php
 							} else {
+								
+								$img_checked = '<img src="assets/img/den/box-checked.png" style="width: 16px;">';
 						?>
-							<h3>แสดงรายละเอียดผู้ป่วยที่ได้รับการตรวจสภาวะช่องปาก</h3>
+							<h3>ผลตรวจสภาวะช่องปาก กำลังพล ทบ.</h3>
 							<div class="cell">
 								<div class="input_form">
 									<label for="hn">HN: </label><?php echo $item['hn'];?>
@@ -588,8 +597,8 @@ include 'templates/classic/nav.php';
 									<tbody>
 										<tr>
 											<td>
-												<?php $check = ( $status['1_1'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['1_1'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="1_1">1. สุขภาพช่องปากดี</label>
 											</td>
 											<td class="align-center">
@@ -597,7 +606,7 @@ include 'templates/classic/nav.php';
 													if( $item['max_status'] == '1' ){
 														?>
 														<div class="circle-contain">
-															<input type="checkbox" checked="checked">
+															<?php echo $img_checked;?>
 															<span class="circle-number">1</span>
 															
 														<?php
@@ -611,8 +620,8 @@ include 'templates/classic/nav.php';
 										
 										<tr>
 											<td>
-												<?php $check = ( $status['2_1'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['2_1'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="2_1">2. มีหินปูน มีเหงือกอักเสบ</label>
 											</td>
 											<td class="align-center">
@@ -620,7 +629,7 @@ include 'templates/classic/nav.php';
 													if( $item['max_status'] == '2' ){
 														?>
 														<div class="circle-contain">
-															<input type="checkbox" checked="checked">
+															<?php echo $img_checked;?>
 															<span class="circle-number">2</span>
 															
 														</div>
@@ -634,8 +643,8 @@ include 'templates/classic/nav.php';
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['3_1'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['3_1'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="3_1">3. มีฟันผุที่อุดได้</label>
 											</td>
 											<td class="align-center" rowspan="3">
@@ -643,7 +652,7 @@ include 'templates/classic/nav.php';
 													if( $item['max_status'] == '3' ){
 														?>
 														<div class="circle-contain">
-															<input type="checkbox" checked="checked">
+															<?php echo $img_checked;?>
 															<span class="circle-number">3</span>
 														</div>
 														<?php
@@ -656,24 +665,24 @@ include 'templates/classic/nav.php';
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['3_2'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['3_2'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="3_2">4. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
 											</td>
 											<td class="align-center">รักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['3_3'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['3_3'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="3_3">5. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
 											</td>
 											<td class="align-center">ใส่ฟัน</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_1'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['4_1'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="4_1">6. มีฟันผุทะลุโพรงประสาทที่รักษาคลองรากฟันได้</label>
 											</td>
 											<td class="align-center" rowspan="5">
@@ -681,7 +690,7 @@ include 'templates/classic/nav.php';
 													if( $item['max_status'] == '4' ){
 														?>
 														<div class="circle-contain">
-															<input type="checkbox" checked="checked">
+															<?php echo $img_checked;?>
 															<span class="circle-number">4</span>
 														</div>
 														<?php
@@ -694,32 +703,32 @@ include 'templates/classic/nav.php';
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_2'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['4_2'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="4_2">7. มีฟันผุทะลุโพรงประสาทที่ต้องถอน / มี RR</label>
 											</td>
 											<td class="align-center">ถอนฟัน</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_3'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['4_3'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="4_3">8. มีฟันคุด</label>
 											</td>
 											<td class="align-center">ผ่าฟันคุด</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_4'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['4_4'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="4_4">9. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
 											</td>
 											<td class="align-center">ถอนฟันและรักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
-												<?php $check = ( $status['4_5'] == 1 ) ? 'checked="checked"' : '' ;?>
-												<input type="checkbox" <?php echo $check;?>>
+												<?php $check = ( $status['4_5'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
 												<label for="4_5">10. มีอาการ บวม ปวดฟัน ปวดเหงือก</label>
 											</td>
 											<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
@@ -729,10 +738,8 @@ include 'templates/classic/nav.php';
 							</div>
 							<div class="col">
 								<div class="cell">
-									<label for="etc">11. อื่นๆ (ระบุ)</label>
-									<div>
-										<p><?php echo str_replace("\n", '<br>', $item['etc']);?></p>
-									</div>
+									<label for="etc">11. อื่นๆ (ระบุ)</label>&nbsp;<?php echo str_replace("\n", '<br>', $item['etc']);?>
+									
 								</div>
 							</div>
 							<div class="col">
@@ -740,7 +747,7 @@ include 'templates/classic/nav.php';
 									<label for=""><b>ผู้ตรวจ:</b></label>&nbsp;<?php echo $item['officer'];?>
 								</div>
 							</div>
-							<div class="col">
+							<div class="col" id="print_btn">
 								<div class="cell">
 									<button onclick="force_print()">สั่ง Print</button>
 								</div>
@@ -885,6 +892,85 @@ ORDER BY `date` DESC, `max_status` ASC
 						</table>
 					</div>
 				</div>
+				<?php } elseif( $task === 'report_mouth' ){ ?>
+				<?php
+				$mouth_items = array(
+					'1_1' => '1. สุขภาพช่องปากดี',
+					'2_1' => '2. มีหินปูน มีเหงือกอักเสบ',
+					'3_1' => '3. มีฟันผุที่อุดได้',
+					'3_2' => '4. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด',
+					'3_3' => '5. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน',
+					'4_1' => '6. มีฟันผุทะลุโพรงประสาทที่รักษาคลองรากฟันได้',
+					'4_2' => '7. มีฟันผุทะลุโพรงประสาทที่ต้องถอน / มี RR',
+					'4_3' => '8. มีฟันคุด',
+					'4_4' => '9. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน',
+					'4_5' => '10. มีอาการ บวม ปวดฟัน ปวดเหงือก',
+				);
+				?>
+				<div class="col">
+					<div class="cell">
+						<h3>รายงานสภาวะช่องปาก ปี 2558</h3>
+						<table class="custom-table outline-header border box-header outline width-2of5">
+							<thead>
+								<tr>
+									<th>สภาวะช่องปาก</th>
+									<th align="center">จำนวน</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach($mouth_items as $key => $mouth): ?>
+								<?php
+								$sql = "SELECT COUNT(`hn`) AS `count` 
+								FROM `survey_oral` 
+								WHERE `date` LIKE '2558%' AND `mouth_detail` LIKE '%$key\";i:1%'";
+								$item = DB::select($sql, null, true);
+								?>
+								<tr>
+									<td><?php echo $mouth;?></td>
+									<td align="center"><?php echo $item['count'];?></td>
+								</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+						<br>
+						<?php 
+						$violences = array(1,2,3,4);
+						?>
+						<table class="custom-table outline-header border box-header outline width-2of5">
+							<thead>
+								<tr>
+									<th>ระดับความรุนแรง</th>
+									<th>จำนวน</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach($violences as $key => $vio): ?>
+								<?php
+								$sql = "SELECT COUNT(`hn`) AS `count` 
+								FROM `survey_oral` 
+								WHERE `date` LIKE '2558%' AND `max_status` = '$vio'";
+								$item = DB::select($sql, null, true);
+								?>
+								<tr>
+									<td>ความรุนแรงระดับ <?php echo $vio;?></td>
+									<td align="center"><?php echo $item['count'];?></td>
+								</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+						<div class="col" id="print_btn">
+							<div class="cell">
+								<button onclick="force_print()">สั่ง Print</button>
+							</div>
+						</div>
+						<script type="text/javascript">
+						function force_print(){
+							window.print();
+						}
+						</script>
+					</div>
+				</div>
+				
 				<?php } // End task ?>
 			</div>
 		</div>
