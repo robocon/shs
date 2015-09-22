@@ -1,4 +1,4 @@
-<? 
+<?php
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
@@ -15,150 +15,7 @@ session_start();
 </head>
 <body>
 
-<style type="text/css">
-* { margin:0;
-    padding:0;
-}
-ody { /*background:rgb(74,81,85); */}
-div#menu { margin:5px auto; }
-div#copyright {
-    font:11px 'Trebuchet MS';
-    color:#fff;
-    text-indent:30px;
-    padding:40px 0 0 0;
-}
-td,th {
-	font-family:"TH SarabunPSK";
-	font-size: 16 pt;
-}
-.fontsara {
-	font-family:"TH SarabunPSK";
-	font-size: 16 pt;
-}
-
-@media print{
-#no_print{display:none;}
-}
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
-} 
-
-/*div#copyright a { color:#00bfff; }
-div#copyright a:hover { color:#fff; }*/
-</style>
-<div id="no_print">
-<div id="menu">
-  <ul class="menu">
- 
-  <!--http://10.0.1.4/sm3/nindex.htm-->
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน้าแรก</span></a></li>
-        <li><a href="ncf2.php" class="parent"><span>บันทึกรายงานเหตุการณ์สำคัญ</span></a></li>
-		<li><a href="fha_from.php" class="parent"><span>บันทึกรายงานความคลาดเคลื่อนทางยา</span></a></li>
-        <li><a href="report_ift.php" class="parent"><span>แบบบันทึกการติดตามภาวะการติดเชื้อ</span></a></li>
-        <li><a href="report_accident.php" class="parent"><span>แบบรายงานการได้รับอุบัติเหตุ</span></a></li>
-      <?
-		if($_SESSION["statusncr"]=='admin'){
-	  ?>    
-    
-    	<li><a href="#"><span>ใบรายงานเหตุการณ์ฯ</span></a></li>
-        <ul>
-		<li class="last"><a href="ncf_list_clinic.php"><span>ใบรายงานที่ยังไม่ได้บันทึกระดับความรุนแรง</a></span></li>
-        <li class="last"><a href="ncf_list_risk.php"><span>ใบรายงานที่ยังไม่ได้บันทึกความเสี่ยง</a></span></li>
-        <li class="last"><a href="ncf_list_ic.php"><span>ใบรายงาน เฉพาะ IC และ MR </span></a></li>
-    	<li class="last"><a href="ncf_listall.php"><span>ใบรายงานทั้งหมด</span></a></li>
-        <li class="last"><a href="ncf_list_riskmore2.php"><span>ตรวจสอบใบรายงาน</span></a></li>
-        </ul>
-        <li><a href="#"><span>รายงานสรุป</span></a></li>
-     	<ul>
-        <li class="last"><a href="ncr_report_all.php"><span>รายงานสรุปอุบัติการณ์ รวมทั้งหมด</span></a></li>
-	  	<li class="last"><a href="ncr_report_progarm.php"><span>รายงานสรุปอุบัติการณ์จำแนกตามโปรแกรม</span></a></li>
-        <li class="last"><a href="ncr_report_event.php"><span>รายงานสรุปอุบัติการณ์จำแนกตามเหตุการณ์</span></a></li>
-        <li class="last"><a href="ncf_report_departall.php"><span>รายงานสรุปอุบัติการณ์จำแนกตามแผนก</span></a></li>
-        <li class="last"><a href="ncr_report_progarmdepart2.php"><span>รายงานสรุปความเสี่ยงแต่ละแผนก</span></a></li>
-        <li class="last"><a href="ncr_report_clinic.php"><span>รายงานสรุประดับความรุนแรง</span></a></li>
-	  	<li class="last"><a href="ncf_report_depart.php"><span>หน่วยงานที่รายงานอุบัติการณ์</a></span></li>
-        <li class="last"><a href="fha_report_depart.php"><span>รายงานสรุป ความคลาดเคลื่อนทางยา</a></span></li>
-        <li class="last"><a href="report_ic_accident.php"><span>รายงานอุบัติการณ์ IC</span></a></li>
-        <li class="last"><a href="ic_report_depart.php"><span>สรุปอุบัติการณ์ IC  ประจำปี</span></a></li>
-       	</ul>
-        <li><a href="#"><span>รายงานความคลาดเคลื่อนทางยา</span></a></li>
-     
-     <ul>
-	  	<li class="last"><a href="fha_data_old.php"><span>ข้อมูลเก่า หลังเดือน ม.ค.2555</span></a></li>
-	  	<li class="last"><a href="report_fha.php"><span>ข้อมูลใหม่ ตั้งแต่ ม.ค.2555 ขึ้นไป</a></span></li>
-       	</ul>
-        <li><a href="ncf_member.php"><span>รายชื่อผู้ใช้ในระบบ</span></a></li>
-        <li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
-        
-       <? } if($_SESSION["statusncr"]=='staff'){?>
-       <li><a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ</span></a></li>
-        <ul>
-	  	<li class="last"><a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ  (โปรแกรมใหม่ 2556)</span></a></li>
-	  	<li class="last"><a href="ncf_list_old.php"><span>ใบรายงานเหตุการณ์ฯ (โปรแกรมเก่า < 2556)</a></span></li>
-       	</ul>
-       <li><a href="#"><span>สถิติ</span></a></li> 
-       
-       <ul>
-	  	<li class="last"><a href="ncr_report_progarmdepart.php"><span>สถิติความเสี่ยงของแผนก</span></a></li> 
-	  	<li class="last"><a href="ncr_report_all_depart.php"><span>สถิติอุบัติการณ์ </a></span></li>
-       	</ul>
-       <li><a href="ncf_member.php"><span>รายชื่อผู้ใช้ในระบบ</span></a></li>
-        <li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
-        
-     <? } if($_SESSION["statusncr"]=='phar'){?>
-     
-     <li><a href="#"><span>รายงานความคลาดเคลื่อนทางยา</span></a></li>
-     
-     <ul>
-	  	<li class="last"><a href="fha_data_old.php"><span>ข้อมูลเก่า หลังเดือน ม.ค.2555</span></a></li>
-	  	<li class="last"><a href="report_fha.php"><span>ข้อมูลใหม่ ตั้งแต่ ม.ค.2555 ขึ้นไป</a></span></li>
-       	</ul>
-       
-        <li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
-        <? } if($_SESSION["statusncr"]!='admin' && $_SESSION["statusncr"]!='staff' && $_SESSION["statusncr"]!='phar'  && $_SESSION["Userncr"]!=""){ ?>
-        <li><a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ</span></a></li>
-        <ul>
-	  	<li class="last"><a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ  (โปรแกรมใหม่ 2556)</span></a></li>
-	  	<li class="last"><a href="ncf_list_old.php"><span>ใบรายงานเหตุการณ์ฯ (โปรแกรมเก่า < 2556)</a></span></li>
-       	</ul>
-        <li><a href="#"><span>รายงานสรุป</span></a></li>
-     	<ul>
-	  	<li class="last"><a href="ncr_report_progarm.php"><span>รายงานสรุปอุบัติการณ์จำแนกตามโปรแกรม</span></a></li>
-        <? if($_SESSION["statusncr"]=='IC'){ ?>
-        <li class="last"><a href="report_ic_accident.php"><span>รายงานอุบัติการณ์ IC</span></a></li>
-        <li class="last"><a href="ic_report_depart.php"><span>สรุปอุบัติการณ์ IC  ประจำปี</span></a></li>
-        <? } ?>
-	  <!--	<li class="last"><a href="ncf_report_depart.php"><span>หน่วยงานที่รายงานอุบัติการณ์</a></span></li>-->
-       	</ul>
-        <!--<li><a href="ncf_member.php"><span>สถิติความเสี่ยง</span></a></li>--> 
-        <li><a href="ncf_member.php"><span>รายชื่อผู้ใช้ในระบบ</span></a></li>
-        <li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
-      <?  }   if(!$_SESSION["Userncr"]){?>
-        <li class="last"><a href="login.php"><span>เข้าสู่ระบบ</span></a></li>
-        <? } ?>
-         
-	
-
-    </ul>
-</div>
-<?
-if(isset($_SESSION["Userncr"])){
-include("connect.inc");
-
-$strSQL = "SELECT * FROM member WHERE  username = '".$_SESSION["Userncr"]."'";
-$objQuery = mysql_query($strSQL);
-$objResult = mysql_fetch_array($objQuery);
-?>
-<span class="fontsara">ผู้ใช้งานขณะนี้ ::  <strong><?=$objResult['name']?></strong> &nbsp;&nbsp;<strong><?=$_SESSION["Untilncr"]?></strong></span> <? } ?>
-<div style="visibility: hidden">
- <br />
- <a href="http://apycom.com/">aaa</a><br />
-</div>
-</div>
-
+<?php include 'menu.php'; ?>
 
 <div><!-- InstanceBeginEditable name="detail" -->
 	<link rel="stylesheet" type="text/css" href="epoch_styles.css" />
@@ -205,6 +62,9 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 	<table>
 		<tbody>
 			<tr>
+				<td><h1 class="forntsarabun">ใบรายงานทั้งหมด</h1></td>
+			</tr>
+			<tr>
 				<td>
 					<span>เลือกการแสดงผลตามปีที่เขียนรายงาน</span>
 					<form action="ncf_listall.php" method="post" id="yearForm" style="display: inline;">
@@ -224,7 +84,6 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 								// }
 								
 								$select = $default_year == $item['years'] ? 'selected="selected"' : '' ;
-								
 								?>
 								<option value="<?php echo $item['years'];?>" <?php echo $select;?>><?php echo $item['years'];?></option>
 								<?php
@@ -254,23 +113,22 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 						<button id="btn_submit" onclick="test_submit(this.form); return false;">แสดงผลรายงาน</button>
 					</form>
 					<script type="text/javascript">
-						
 						function test_submit(form){
-							var year_selectd = document.getElementById('year_select').value;
-							var month_selectd = document.getElementById('month_select').value;
+							// var year_selectd = document.getElementById('year_select').value;
+							// var month_selectd = document.getElementById('month_select').value;
 							
-							if(year_selectd == 0 || month_selectd == 0){
+							// if(year_selectd == 0 || month_selectd == 0){
 								
 								// alert('กรุณาเลือกปีและเดือนที่ต้องการให้แสดงผล');
 								// return false;
 								
-							}else{
+							// }else{
 								
 								
-							}
+							// }
 							
 							var form = document.getElementById('yearForm')
-								form.submit();
+							form.submit();
 						}
 					</script>
 				</td>
@@ -307,7 +165,9 @@ if($default_year != 0 && $default_month != 0){
 	$end_nonconf = "$default_year-12-31";
 }
 
-// แสดงใบรายงานทั้งหมด !!!! ตัวที่ NCR เป็น 000 !!!!
+/**
+ * แสดงใบรายงานทั้งหมด !!!! ตัวที่ NCR เป็น 000 !!!!
+ */
 // $sql1="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') as date1, date_format(nonconf_date,'%Y') as date2, left(nonconf_time,5) as time, nonconf_dategroup, `return`   
 // FROM  ncr2556 
 // WHERE ncr='000' and ( 
@@ -325,11 +185,12 @@ WHERE ncr = '000' AND (
 ) 
 AND (nonconf_date >= '$start_nonconf' AND nonconf_date <= '$end_nonconf')
 ORDER BY until ASC, nonconf_date DESC";
-
-	$query1 = mysql_query($sql1) or die (mysql_error());
-	$row=mysql_num_rows($query1);
+$query1 = mysql_query($sql1) or die (mysql_error());
+$row = mysql_num_rows($query1);
 	
-	// แสดงใบรายงานทั้งหมด !!!! ตัวที่ NCR ไม่เป็น 000 !!!!
+/**
+ * แสดงใบรายงานทั้งหมด !!!! ตัวที่ NCR ไม่เป็น 000 !!!!
+ */
 // $sql2="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') as date1, date_format(nonconf_date,'%Y') as date2, left(nonconf_time,5) as time, nonconf_dategroup, `return`, b.name 
 // FROM ncr2556 AS a LEFT JOIN departments AS b ON (b.code = a.until) 
 // WHERE ncr!='000' 
@@ -349,7 +210,6 @@ if ( isset($_POST['late']) ) {
 	";
 }
 
-
 $sql2="SELECT `nonconf_id`, `ncr`, `until`, `nonconf_date`, date_format(nonconf_date,'%d/%m/') AS date1, date_format(nonconf_date,'%Y') AS date2, left(nonconf_time,5) AS time, `nonconf_dategroup`, `return`, b.`name`, a.`insert_date`, a.`date_edit`,a.`date_print`  
 FROM `ncr2556` AS a 
 LEFT JOIN `departments` AS b ON b.`code` = a.`until` 
@@ -367,82 +227,84 @@ ORDER BY until ASC, nonconf_date DESC";
 // var_dump($sql2);
 //echo $sql2;
 //and ( ( risk1=1  or risk4=1 or risk5=1 or risk6=1 or risk7=1 or risk8=1 or risk9=1) and (risk2 !=1 or risk3 !=1) ) 
-	$query2 = mysql_query($sql2) or die (mysql_error());
-	$row2=mysql_num_rows($query2);
+$query2 = mysql_query($sql2) or die (mysql_error());
+$row2 = mysql_num_rows($query2);
 	
 	/*if($row){*/
 	
 // print "<div><font class='forntsarabun' >สถิติผู้ป่วยในจำแนกตาม แพทย์ $_POST[doctor]  $ประจำ$day  $dateshow </font></div><br>";
 	?>
-   <table width="100%" border="1" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000" class="forntsarabun"> 
-    <tr bgcolor="#0099FF">
-    <td width="5%" align="center">ลำดับ</td>
-    <td width="35%" align="center">หน่วยงาน/ทีม</td>
-    <td align="center">วันที่เขียนรายงาน</td>
-    <?php /* ?><td align="center">วันที่รายงานจริง</td><?php */ ?>
-    <td align="center">เวลา</td>
-    <td align="center">NCR </td>
-    <td align="center">สถานะส่งกลับ</td>
-    <?
-	 if($_SESSION["statusncr"]=='admin'){
-	?>
-    <td width="5%" align="center">แก้ไข</td>
-    <td width="5%" align="center">ลบ</td>
-    <? } ?>
-    <td width="5%" align="center">พิมพ์</td>
+<table width="100%" border="1" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000" class="forntsarabun"> 
+	<tr bgcolor="#0099FF">
+		<td width="5%" align="center">ลำดับ</td>
+		<td width="35%" align="center">หน่วยงาน/ทีม</td>
+		<td align="center">วันที่เขียนรายงาน</td>
+		<?php /* ?><td align="center">วันที่รายงานจริง</td><?php */ ?>
+		<td align="center">เวลา</td>
+		<td align="center">NCR </td>
+		<td align="center">สถานะส่งกลับ</td>
+		<?php if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){ ?>
+		<td width="5%" align="center">แก้ไข</td>
+		<td width="5%" align="center">ลบ</td>
+		<?php } ?>
+    	<td width="5%" align="center">พิมพ์</td>
     </tr>
-    <?
+    <?php
+	/**
+	 * LOOP ตัวที่ NCR เป็น 000 !!!!
+	 */
 	$i=0;
-	while($arr1=mysql_fetch_array($query1)){
+	while( $arr1 = mysql_fetch_array($query1) ){
 	//for($n=1;$n<=$sumrow;$n++){	
 		
 		$sql="SELECT * FROM `departments` where code='".$arr1['until']."' and status='y' ";
 		$query=mysql_query($sql)or die (mysql_error());
 		$arr=mysql_fetch_array($query);
 		
-	$i++;
-	if($i%2==0){
-		$bg = "#CCCCCC";
-	}else{
-		$bg = "#FFFFFF";
-	}
+		$i++;
+		if($i%2==0){
+			$bg = "#CCCCCC";
+		}else{
+			$bg = "#FFFFFF";
+		}
 
-	$dategroup=explode("-",$arr1['nonconf_dategroup']);
-
-	if($arr1['return']==1){
-		$arr1['return']="ศูนย์คุณภาพ";
-	}else{
-		$arr1['return']="";
-	}
+		$dategroup=explode("-",$arr1['nonconf_dategroup']);
+	
+		if($arr1['return']==1){
+			$arr1['return']="ศูนย์คุณภาพ";
+		}else{
+			$arr1['return']="";
+		}
 	
 	?>
-    <tr bgcolor="<?=$bg;?>">
-      <td align="center"><?=$i?></td>
-      <td><?=$arr['name']?></td>
-      <td><?=$arr1['date1'].($arr1['date2'])?></td>
-      <?php /* ?><td><?=$dategroup[1].'-'.$dategroup[0]?></td><?php */ ?>
-      <td><?=$arr1['time']?></td>
-      <td><?=$arr1['ncr']?></td>
-      <td><?=$arr1['return']?></td>
-      <?
-	 if($_SESSION["statusncr"]=='admin'){
-		 
-		 $color_edit = !empty($arr1['date_edit']) ? 'class="action-done"' : '' ;
-		 $color_print = !empty($arr1['date_print']) ? 'class="action-done"' : '' ;
-		 
-	?>
-      <td align="center"><a href="ncf2_edit.php?nonconf_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
-      <td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr1['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr1['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
-      <?  } ?>
-      <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
-     </tr>
-    <?
+	<tr bgcolor="<?=$bg;?>">
+		<td align="center"><?=$i?></td>
+		<td><?=$arr['name']?></td>
+		<td><?=$arr1['date1'].($arr1['date2'])?></td>
+		<?php /* ?><td><?=$dategroup[1].'-'.$dategroup[0]?></td><?php */ ?>
+		<td><?=$arr1['time']?></td>
+		<td><?=$arr1['ncr']?></td>
+		<td><?=$arr1['return']?></td>
+		<?php
+		if( $_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
+			$color_edit = !empty($arr1['date_edit']) ? 'class="action-done"' : '' ;
+			$color_print = !empty($arr1['date_print']) ? 'class="action-done"' : '' ;
+		?>
+		<td align="center"><a href="ncf2_edit.php?nonconf_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
+		<td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr1['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr1['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
+		<?php } ?>
+		<td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
+	</tr>
+    <?php
 	}  // End while
 	
+	/**
+	 * LOOP ตัวที่ NCR ไม่ใช่ 000 !!!!
+	 */
 	$i+1;
 	$ii=0;
-	while($arr2=mysql_fetch_array($query2)){
-	//for($n=1;$n<=$sumrow;$n++){	
+	while( $arr2 = mysql_fetch_array($query2) ){
+		//for($n=1;$n<=$sumrow;$n++){	
 		
 		// $sql="SELECT * FROM `departments` where code='".$arr2['until']."' and status='y' ";
 		// $query=mysql_query($sql)or die (mysql_error());
@@ -455,7 +317,7 @@ ORDER BY until ASC, nonconf_date DESC";
 		}else{
 			$bg = "#FFFFFF";
 		}
-
+		
 		$dategroup=explode("-",$arr2['nonconf_dategroup']);
 		if($arr2['return']==1){
 			$arr2['return']="ศูนย์คุณภาพ";
@@ -467,41 +329,37 @@ ORDER BY until ASC, nonconf_date DESC";
 		$check_nonconf = null;
 		$convert_insert_date = strtotime($arr2['insert_date']);
 		if($convert_insert_date != false){
-			
 			$first_of_month = strtotime(date('Y', $convert_insert_date).date('-m-01', $convert_insert_date));
-			
 			list($y, $m, $d) = explode('-', $arr2['nonconf_date']);
 			$nonconf_ad = strtotime(($y-543)."-$m-$d");
-			
 			if($nonconf_ad < $first_of_month){
 				$check_nonconf = 'style="color: #FFFFFF; background-color: #FF6E6E; font-weight: bold;"';
 			}
 		}
-		
-	?>
-    <tr bgcolor="<?=$bg;?>" <?=$check_nonconf;?>>
-      <td align="center"><?=$i?></td>
-      <td><?=$arr2['name']?></td>
-      <td><?=$arr2['date1'].($arr2['date2'])?></td>
-      <?php /* ?><td><?=$dategroup[1].'-'.$dategroup[0]?></td><?php */ ?>
-      <td><?=$arr2['time']?></td>
-      <td><?=$arr2['ncr']?></td>
-      <td><?=$arr2['return']?></td>
-      <?
-	 if($_SESSION["statusncr"]=='admin'){
-		 $color_edit = !empty($arr2['date_edit']) ? 'class="action-done"' : '' ;
-		 $color_print = !empty($arr2['date_print']) ? 'class="action-done"' : '' ;
-	?>
-      <td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
-      <td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr2['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr2['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
-      <?  } ?>
-      <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
-     </tr>
-    <?
-	}  
+		?>
+		<tr bgcolor="<?=$bg;?>" <?=$check_nonconf;?>>
+			<td align="center"><?=$i?></td>
+			<td><?=$arr2['name']?></td>
+			<td><?=$arr2['date1'].($arr2['date2'])?></td>
+			<?php /* ?><td><?=$dategroup[1].'-'.$dategroup[0]?></td><?php */ ?>
+			<td><?=$arr2['time']?></td>
+			<td><?=$arr2['ncr']?></td>
+			<td><?=$arr2['return']?></td>
+			<?php
+			if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
+			$color_edit = !empty($arr2['date_edit']) ? 'class="action-done"' : '' ;
+			$color_print = !empty($arr2['date_print']) ? 'class="action-done"' : '' ;
+			?>
+			<td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
+			<td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr2['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr2['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
+			<?php } ?>
+			<td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
+		</tr>
+	<?php
+	} // End while 
 	?>
     </table>
-<?
+<?php
 
 /*}else{
 	echo "<font class=\"forntsarabun\">ไม่มีข้อมูลของ $_POST[doctor]  $day  $dateshow</font>";
@@ -509,8 +367,6 @@ ORDER BY until ASC, nonconf_date DESC";
 ?><!-- InstanceEndEditable -->
 
 </div>
-
-
-
 </body>
-<!-- InstanceEnd --></html>
+<!-- InstanceEnd -->
+</html>

@@ -268,7 +268,7 @@ ORDER BY dateN ASC
 			// ตรวจจอประสาทตา
 			$sql = "
 SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
-FROM `diabetes_temp` 
+FROM `diabetes_temp_history` 
 WHERE `retinal` != '' OR `retinal_date` != '0000-00-00' AND `retinal_date` LIKE '$date1_th-%'
 GROUP BY MONTH( dateN ) 
 ORDER BY dateN ASC 
@@ -294,10 +294,7 @@ ORDER BY dateN ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span><?php echo $item_row;?></span>
-					<?php if( $item_row > 0 ): ?>
-					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
-					<?php endif; ?>
+					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
 				<?php
 			}
@@ -336,10 +333,7 @@ ORDER BY dateN ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span><?php echo $item_row;?></span>
-					<?php if( $item_row > 0 ): ?>
-					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
-					<?php endif; ?>
+					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
 				<?php
 			}
@@ -353,7 +347,7 @@ ORDER BY dateN ASC
 			// ตรวจเท้า
 			$sql = "
 SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
-FROM `diabetes_temp` 
+FROM `diabetes_temp_history` 
 WHERE `foot` != '' OR `foot_date` != '0000-00-00' AND `foot_date` LIKE '$date1_th-%'
 GROUP BY MONTH( dateN ) 
 ORDER BY dateN ASC 
@@ -378,10 +372,7 @@ ORDER BY dateN ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span><?php echo $item_row;?></span>
-					<?php if( $item_row > 0 ): ?>
-					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
-					<?php endif; ?>
+					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
 				<?php
 			}
@@ -420,7 +411,7 @@ ORDER BY dateN ASC
 				}
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
+					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
 				<?php
 			}
