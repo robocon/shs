@@ -1,5 +1,7 @@
 <?php
 
+global $detail, $user_code;
+
 include("connect.inc");
 $Thidate = date("d-m-").(date("Y")+543).date(" H:i:s"); 
 
@@ -56,8 +58,13 @@ $drugstk .="<TR style=\"line-height: 14px;\">
 				<TD><font face='Angsana New' size= 1 >วันเวลาออกใบนัด : ".date("d/m/Y H:i:s")."</TD>
 			</TR>";
 
+$phone_intra = '1100';
+if( $user_code === 'ADMDEN' ){
+	$phone_intra = '1230';
+}
+
 $drugstk .= "<TR style=\"line-height: 14px;\">
-				<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ 1100</TD>
+				<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ $phone_intra</TD>
 			</TR>
 			</TABLE>
 			";
