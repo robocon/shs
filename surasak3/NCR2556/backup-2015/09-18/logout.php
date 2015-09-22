@@ -1,0 +1,9 @@
+<?
+	session_start();
+	unset($_SESSION["Userncr"]);
+	unset($_SESSION["statusncr"]);
+	unset($_SESSION["Untilncr"]);
+	unset($_SESSION["Namencr"]);
+	unset($_SESSION["Codencr"]);
+	header("location:ncf2.php");
+?>
