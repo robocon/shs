@@ -169,11 +169,12 @@ where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn
 	$hn = isset($_POST['hn']) ? $_POST['hn'] : null ;
 	if($hn !== null){
 		
-		$sql = sprintf("SELECT `hn`,`dcdate`, `my_ward`
-		FROM `ipcard` 
-		WHERE `hn` = '%s'
-		AND `dcdate` = '0000-00-00 00:00:00'
-		ORDER BY `row_id` DESC LIMIT 1", $hn);
+		$sql_pre = "
+		SELECT b.`my_ward` FROM `bed` AS a 
+		LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
+		WHERE a.`hn` = '%s' ;
+		";
+		$sql = sprintf($sql_pre, $hn);
 		$query = mysql_query($sql);
 		$item = mysql_fetch_assoc($query);
 		

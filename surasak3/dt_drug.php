@@ -94,8 +94,7 @@ $rows3 = mysql_fetch_array($result3);
 		echo "0";
 	}elseif($rows3['doctor']==$_SESSION["dt_doctor"]){
 		echo "0";
-	}
-	else{
+	}else{
 		//list($tradname, $amount, $slcode) = mysql_fetch_row($result2);
 		echo "คำเตือน : มีการจ่ายยา ".$tradname2." จากแพทย์ท่านอื่นแล้ว\nกรุณาตรวจสอบการจ่ายยาด้านล่าง เพื่อมิให้การจ่ายยาซ้ำซ้อน\nท่านต้องการสั่งยาหรือไม่?";
 	}
@@ -378,14 +377,30 @@ for($i=0;$i<$count;$i++){
 				<TD  colspan=\"5\">";
 	if($_SESSION["dt_special"])
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
-
-	echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"      ตกลง      \" ></div></TD>
+	$totalbalm=0;
+	for($i=0;$i<$count;$i++){
+		if($_SESSION["list_drugcode"][$i]=="4MET25"){
+			$totalbalm=$totalbalm+$_SESSION["list_drugamount"][$i];
+			if($totalbalm > 10){
+				echo "<INPUT TYPE=\"hidden\" NAME=\"chk4met25\" id=\"chk4met25\" value=\"11\">";
+			}
+		}	
+	}
+	echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div></TD>
 	</TR>";
-	//}
+	//}	
 	$phar = $pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DDN"];
+	$totalbalm=0;
+	for($i=0;$i<$count;$i++){
+		if($_SESSION["list_drugcode"][$i]=="4MET25"){
+			$totalbalm=$totalbalm+$_SESSION["list_drugamount"][$i];
+			if($totalbalm > 10){
+				echo "<strong style='color:#FF0000;'>!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด กรุณาลบจำนวนยาส่วนที่เกินออก<strong>";
+			}
+		}	
+	}
 	echo "</TABLE>
-
-
+			
 		<INPUT TYPE=\"hidden\" name=\"DDL\" value=\"",$pricetype["DDL"],"\">
 		<INPUT TYPE=\"hidden\" name=\"DDY\" value=\"",$pricetype["DDY"],"\">
 		<INPUT TYPE=\"hidden\" name=\"DPY\" value=\"",$pricetype["DPY"],"\">
@@ -1466,9 +1481,8 @@ function newXmlHttp(){
 //}
 function searchSuggest(action,str,len) {
 	
-		// str = str+String.fromCharCode(event.keyCode);
-		var len = 3;
-		
+		str = str+String.fromCharCode(event.keyCode);
+
 		if(str.length >= len){
 			url = 'dt_drug.php?action='+action+'&search=' + str;
 
@@ -1921,7 +1935,7 @@ function checkForm1(){
 		alert("กรุณาใส่วิธีใช้ยา ใหม่");
 		document.form1.drug_slip.focus();
 	}
-		else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่ดห้องยาเพื่อลบการแพ้ยา")){
+		else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
 	document.form1.drug_code.focus();
 	//else if(txt == "3" && !confirm("ผู้ป่วยมีการแพ้ยาตัวนี้ ต้องการจ่ายยาหรือไม่?")){
 	//	document.form1.drug_code.focus();
@@ -1953,6 +1967,9 @@ function checkForm1(){
 		document.form1.drug_code.focus();
 	}else if(return_drug_interaction.substring(0,1) == "1" && !confirm(return_drug_interaction)){  //popup
 		document.form1.drug_code.focus();	
+	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
+		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
+		document.form1.drug_amount.focus();	
 	}else{
 		
 			if(check_inject(document.form1.drug_code.value) == false){
@@ -2029,7 +2046,7 @@ function checkForm1(){
 
 function listdrugprov(){
 
-	if(confirm('ท่านต้องการแก้ไขข้อมูลใช้การจ่ายยาใช้หรือไม่')){
+	if(confirm('ท่านต้องการแก้ไขข้อมูลการจ่ายยาใช่หรือไม่')){
 		xmlhttp = newXmlHttp();
 		url = 'dt_drug.php?action=listdrugprov';
 		xmlhttp.open("GET", url, false);
@@ -2657,6 +2674,20 @@ if($rowdg){
     <?
 }
 ?>
+<script type="text/javascript">
+function chklist(){
+	// เช็กก่อนว่ามี ID chk4met25 จริงๆ รึป่าว
+	if(document.getElementById("chk4met25")){
+		if(document.getElementById("chk4met25").value=="11"){		
+			alert("!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด กรุณาลบจำนวนยาส่วนที่เกินออก");
+			document.getElementById("chk4met25").focus()
+			return false;										
+		}else{
+			return true;
+		}
+	}
+}
+</script>
 </body>
 <?php include("unconnect.inc");?>
 </html>

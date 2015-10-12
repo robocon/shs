@@ -40,6 +40,7 @@ if($action === 'save'){
 		'4_3' => 1,
 		'4_4' => 1,
 		'4_5' => 1,
+		'4_6' => 1,
 	);
 	
 	$test_max_value = 0;
@@ -54,27 +55,6 @@ if($action === 'save'){
 		if( !empty($match['0']) && $mouth_list[$key] == 1 ){
 			$test_max_value = $match['0'];
 		}
-		/*
-		if( $key == '1_1' && $mouth_list[$key] == 1 ){
-			$test_max_value = 1;
-			
-		}else if( $key == '2_1' && $mouth_list[$key] == 1 ){
-			$test_max_value = 2;
-			
-		}else if( ($key == '3_1' && $mouth_list[$key] == 1) OR ($key == '3_2' && $mouth_list[$key] == 1) OR ($key == '3_3' && $mouth_list[$key] == 1) ){
-			$test_max_value = 3;
-			
-		}else if(
-			($key == '4_1' && $mouth_list[$key] == 1) 
-			OR ($key == '4_2' && $mouth_list[$key] == 1) 
-			OR ($key == '4_3' && $mouth_list[$key] == 1) 
-			OR ($key == '4_4' && $mouth_list[$key] == 1) 
-			OR ($key == '4_5' && $mouth_list[$key] == 1) 
-		){
-			$test_max_value = 4;
-			
-		}
-		*/
 	}
 	
 	$lists = serialize($mouth_list);
@@ -222,6 +202,13 @@ include 'templates/classic/nav.php';
 	#print_btn,
 	.site-header-fixture{
 		display: none;
+	}
+	#detail_header_print{
+		font-size: 16px;
+		text-align: center;
+	}
+	#officer-print{
+		text-align: right;
 	}
 }
 
@@ -435,7 +422,7 @@ include 'templates/classic/nav.php';
 										<tr>
 											<td>
 												<input name="mouth_detail[1_1]" id="1_1" class="checkbox" type="checkbox" value="1">
-												<label for="1_1">1. สุขภาพช่องปากดี</label>
+												<label for="1_1">A. สุขภาพช่องปากดี</label>
 											</td>
 											<td class="align-center">1</td>
 											<td class="align-center">ควรมารักษาทุก 6 เดือน</td>
@@ -444,7 +431,7 @@ include 'templates/classic/nav.php';
 										<tr>
 											<td>
 												<input name="mouth_detail[2_1]" id="2_1" class="checkbox" type="checkbox" value="1">
-												<label for="2_1">2. มีหินปูน มีเหงือกอักเสบ</label>
+												<label for="2_1">B. มีหินปูน มีเหงือกอักเสบ</label>
 											</td>
 											<td class="align-center">2</td>
 											<td class="align-center">ขูดหินปูน</td>
@@ -452,58 +439,63 @@ include 'templates/classic/nav.php';
 										<tr>
 											<td>
 												<input name="mouth_detail[3_1]" id="3_1" class="checkbox" type="checkbox" value="1">
-												<label for="3_1">3. มีฟันผุที่อุดได้</label>
+												<label for="3_1">C. มีฟันผุที่ต้องได้รับการอุดฟัน</label>
 											</td>
 											<td class="align-center" rowspan="3">3</td>
-											<td class="align-center">อุดฟัน</td>
+											<td class="align-center" rowspan="2">อุดฟัน</td>
 										</tr>
 										<tr>
 											<td>
 												<input name="mouth_detail[3_2]" id="3_2" class="checkbox" type="checkbox" value="1">
-												<label for="3_2">4. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
+												<label for="3_2">D. มีฟันสึกที่ต้องได้รับการอุดฟัน</label>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<input name="mouth_detail[3_2]" id="3_2" class="checkbox" type="checkbox" value="1">
+												<label for="3_3">E. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
 											</td>
 											<td class="align-center">รักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
-												<input name="mouth_detail[3_3]" id="3_3" class="checkbox" type="checkbox" value="1">
-												<label for="3_3">5. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
-											</td>
-											<td class="align-center">ใส่ฟัน</td>
-										</tr>
-										<tr>
-											<td>
 												<input name="mouth_detail[4_1]" id="4_1" class="checkbox" type="checkbox" value="1">
-												<label for="4_1">6. มีฟันผุทะลุโพรงประสาทที่รักษาคลองรากฟันได้</label>
+												<label for="4_1">F. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR</label>
 											</td>
-											<td class="align-center" rowspan="5">4</td>
-											<td class="align-center">รักษาคลองรากฟัน</td>
+											<td class="align-center" rowspan="6">4</td>
+											<td class="align-center" rowspan="2">อุดฟัน/รักษาคลองรากฟัน/ถอนฟัน</td>
 										</tr>
 										<tr>
 											<td>
 												<input name="mouth_detail[4_2]" id="4_2" class="checkbox" type="checkbox" value="1">
-												<label for="4_2">7. มีฟันผุทะลุโพรงประสาทที่ต้องถอน / มี RR</label>
+												<label for="4_2">G. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน</label>
 											</td>
-											<td class="align-center">ถอนฟัน</td>
 										</tr>
 										<tr>
 											<td>
 												<input name="mouth_detail[4_3]" id="4_3" class="checkbox" type="checkbox" value="1">
-												<label for="4_3">8. มีฟันคุด</label>
-											</td>
-											<td class="align-center">ผ่าฟันคุด</td>
-										</tr>
-										<tr>
-											<td>
-												<input name="mouth_detail[4_4]" id="4_4" class="checkbox" type="checkbox" value="1">
-												<label for="4_4">9. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
+												<label for="4_3">H. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
 											</td>
 											<td class="align-center">ถอนฟันและรักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
+												<input name="mouth_detail[4_4]" id="4_4" class="checkbox" type="checkbox" value="1">
+												<label for="4_4">I. มีฟันคุด</label>
+											</td>
+											<td class="align-center">ผ่าฟันคุด</td>
+										</tr>
+										<tr>
+											<td>
 												<input name="mouth_detail[4_5]" id="4_5" class="checkbox" type="checkbox" value="1">
-												<label for="4_5">10. มีอาการ บวม ปวดฟัน ปวดเหงือก</label>
+												<label for="4_5">J. สุญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
+											</td>
+											<td class="align-center">ใส่ฟัน</td>
+										</tr>
+										<tr>
+											<td>
+												<input name="mouth_detail[4_6]" id="4_6" class="checkbox" type="checkbox" value="1">
+												<label for="4_6">K. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก</label>
 											</td>
 											<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
 										</tr>
@@ -512,7 +504,7 @@ include 'templates/classic/nav.php';
 							</div>
 							<div class="col">
 								<div class="cell">
-									<label for="etc">11. อื่นๆ (ระบุ)</label>
+									<label for="etc">บันทึกเพิ่มเติม</label>
 									<div>
 										<textarea name="etc" id="etc" class="col width-3of5" rows="5"></textarea>
 									</div>
@@ -562,22 +554,18 @@ include 'templates/classic/nav.php';
 								
 								$img_checked = '<img src="assets/img/den/box-checked.png" style="width: 16px;">';
 						?>
-							<h3>ผลตรวจสภาวะช่องปาก กำลังพล ทบ.</h3>
+							<h3 id="detail_header_print">ผลตรวจสภาวะช่องปาก กำลังพล ทบ.</h3>
 							<div class="cell">
-								<div class="input_form">
-									<label for="hn">HN: </label><?php echo $item['hn'];?>
-								</div>
 								<div class="input_form"><label for="date">วันที่ตรวจ:</label>&nbsp;<?php echo $item['date'];?></div>
+								<div class="input_form"><label for="hn">HN: </label><?php echo $item['hn'];?></div>
+								<div class="input_form">
+									<label for="prefix">ชื่อ-สกุล: </label><?php echo $item['fullname'];?>
+								</div>
 								<div class="input_form"><label for="section">หน่วย:</label>&nbsp;<?php echo $item['name'];?></div>
 								
 							</div>
 							<div class="cell">
-								<div class="input_form">
-									<label for="prefix">ชื่อ-สกุล: </label><?php echo $item['fullname'];?>
-								</div>
-								<div class="input_form">
-									<label for="age">อายุ: </label><?php echo $item['age'];?> ปี
-								</div>
+								
 								<div class="input_form">
 									<label for="id_card">เลขบัตรประจำตัวประชาชน: </label><?php echo $item['id_card'];?>
 								</div>
@@ -591,7 +579,7 @@ include 'templates/classic/nav.php';
 										<tr>
 											<th class="align-center">สภาวะช่องปาก</th>
 											<th class="align-center" width="5%">ระดับ</th>
-											<th class="align-center" width="15%">คำแนะนำในการรักษา</th>
+											<th class="align-center" width="30%">คำแนะนำในการรักษา</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -599,7 +587,7 @@ include 'templates/classic/nav.php';
 											<td>
 												<?php $check = ( $status['1_1'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="1_1">1. สุขภาพช่องปากดี</label>
+												<label for="1_1">A. สุขภาพช่องปากดี</label>
 											</td>
 											<td class="align-center">
 												<?php
@@ -622,7 +610,7 @@ include 'templates/classic/nav.php';
 											<td>
 												<?php $check = ( $status['2_1'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="2_1">2. มีหินปูน มีเหงือกอักเสบ</label>
+												<label for="2_1">B. มีหินปูน มีเหงือกอักเสบ</label>
 											</td>
 											<td class="align-center">
 												<?php
@@ -645,7 +633,7 @@ include 'templates/classic/nav.php';
 											<td>
 												<?php $check = ( $status['3_1'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="3_1">3. มีฟันผุที่อุดได้</label>
+												<label for="3_1">C. มีฟันผุที่ต้องได้รับการอุดฟัน</label>
 											</td>
 											<td class="align-center" rowspan="3">
 												<?php
@@ -661,31 +649,31 @@ include 'templates/classic/nav.php';
 													}
 												?>
 											</td>
-											<td class="align-center">อุดฟัน</td>
+											<td class="align-center" rowspan="2">อุดฟัน</td>
 										</tr>
 										<tr>
 											<td>
 												<?php $check = ( $status['3_2'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="3_2">4. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
+												<label for="3_2">D. มีฟันสึกที่ต้องได้รับการอุดฟัน</label>
 											</td>
-											<td class="align-center">รักษาโรคเหงือก</td>
+											
 										</tr>
 										<tr>
 											<td>
 												<?php $check = ( $status['3_3'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="3_3">5. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
+												<label for="3_3">E. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
 											</td>
-											<td class="align-center">ใส่ฟัน</td>
+											<td class="align-center">รักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
 												<?php $check = ( $status['4_1'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="4_1">6. มีฟันผุทะลุโพรงประสาทที่รักษาคลองรากฟันได้</label>
+												<label for="4_1">F. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR</label>
 											</td>
-											<td class="align-center" rowspan="5">
+											<td class="align-center" rowspan="6">
 												<?php
 													if( $item['max_status'] == '4' ){
 														?>
@@ -699,37 +687,44 @@ include 'templates/classic/nav.php';
 													}
 												?>
 											</td>
-											<td class="align-center">รักษาคลองรากฟัน</td>
+											<td class="align-center" rowspan="2">อุดฟัน/รักษาคลองรากฟัน/ถอนฟัน</td>
 										</tr>
 										<tr>
 											<td>
 												<?php $check = ( $status['4_2'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="4_2">7. มีฟันผุทะลุโพรงประสาทที่ต้องถอน / มี RR</label>
+												<label for="4_2">G. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน</label>
 											</td>
-											<td class="align-center">ถอนฟัน</td>
 										</tr>
 										<tr>
 											<td>
 												<?php $check = ( $status['4_3'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="4_3">8. มีฟันคุด</label>
-											</td>
-											<td class="align-center">ผ่าฟันคุด</td>
-										</tr>
-										<tr>
-											<td>
-												<?php $check = ( $status['4_4'] == 1 ) ? $img_checked : '' ;?>
-												<?php echo $check;?>
-												<label for="4_4">9. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
+												<label for="4_3">H. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
 											</td>
 											<td class="align-center">ถอนฟันและรักษาโรคเหงือก</td>
 										</tr>
 										<tr>
 											<td>
+												<?php $check = ( $status['4_4'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
+												<label for="4_4">I. มีฟันคุด</label>
+											</td>
+											<td class="align-center">ผ่าฟันคุด</td>
+										</tr>
+										<tr>
+											<td>
 												<?php $check = ( $status['4_5'] == 1 ) ? $img_checked : '' ;?>
 												<?php echo $check;?>
-												<label for="4_5">10. มีอาการ บวม ปวดฟัน ปวดเหงือก</label>
+												<label for="4_5">J. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
+											</td>
+											<td class="align-center">ใส่ฟัน</td>
+										</tr>
+										<tr>
+											<td>
+												<?php $check = ( $status['4_6'] == 1 ) ? $img_checked : '' ;?>
+												<?php echo $check;?>
+												<label for="4_6">K. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก</label>
 											</td>
 											<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
 										</tr>
@@ -738,12 +733,12 @@ include 'templates/classic/nav.php';
 							</div>
 							<div class="col">
 								<div class="cell">
-									<label for="etc">11. อื่นๆ (ระบุ)</label>&nbsp;<?php echo str_replace("\n", '<br>', $item['etc']);?>
+									<label for="etc">บันทึกเพิ่มเติม</label>&nbsp;<?php echo str_replace("\n", '<br>', $item['etc']);?>
 									
 								</div>
 							</div>
 							<div class="col">
-								<div class="cell">
+								<div class="cell" id="officer-print">
 									<label for=""><b>ผู้ตรวจ:</b></label>&nbsp;<?php echo $item['officer'];?>
 								</div>
 							</div>
@@ -895,18 +890,26 @@ ORDER BY `date` DESC, `max_status` ASC
 				<?php } elseif( $task === 'report_mouth' ){ ?>
 				<?php
 				$mouth_items = array(
-					'1_1' => '1. สุขภาพช่องปากดี',
-					'2_1' => '2. มีหินปูน มีเหงือกอักเสบ',
-					'3_1' => '3. มีฟันผุที่อุดได้',
-					'3_2' => '4. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด',
-					'3_3' => '5. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน',
-					'4_1' => '6. มีฟันผุทะลุโพรงประสาทที่รักษาคลองรากฟันได้',
-					'4_2' => '7. มีฟันผุทะลุโพรงประสาทที่ต้องถอน / มี RR',
-					'4_3' => '8. มีฟันคุด',
-					'4_4' => '9. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน',
-					'4_5' => '10. มีอาการ บวม ปวดฟัน ปวดเหงือก',
+					'1_1' => 'A. สุขภาพช่องปากดี',
+					'2_1' => 'B. มีหินปูน มีเหงือกอักเสบ',
+					'3_1' => 'C. มีฟันผุที่ต้องได้รับการอุดฟัน',
+					'3_2' => 'D. มีฟันสึกที่ต้องได้รับการอุดฟัน',
+					'3_3' => 'E. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด',
+					'4_1' => 'F. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR',
+					'4_2' => 'G. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน',
+					'4_3' => 'H. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน',
+					'4_4' => 'I. มีฟันคุด',
+					'4_5' => 'J. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน',
+					'4_6' => 'K. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก',
 				);
 				?>
+				<style>
+					@media print{
+						table.custom-table{
+							width: 100% !important;
+						}
+					}
+				</style>
 				<div class="col">
 					<div class="cell">
 						<h3>รายงานสภาวะช่องปาก ปี 2558</h3>

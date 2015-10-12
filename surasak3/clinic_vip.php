@@ -15,7 +15,7 @@
 <script language="JavaScript">
 	   var HttPRequest = false;
 
-	   function doCallAjax(thn,tptname) {
+	   function doCallAjax(thn,tptname,str_num) {
 		  HttPRequest = false;
 		  if (window.XMLHttpRequest) { // Mozilla, Safari,...
 			 HttPRequest = new XMLHttpRequest();
@@ -65,7 +65,7 @@
 					{
 						var myArr = myProduct.split("|");
 						document.getElementById(tptname).value = myArr[0];
-						<!--document.getElementById(ttan).value = myArr[1];-->
+                        document.getElementById('ptright'+str_num).innerHTML = myArr[1];
 					}
 				}
 				
@@ -98,7 +98,7 @@
 	   
 	</script>
 <form name="frmMain" action="clinic_vipadd.php" method="post" onSubmit="JavaScript:return fncSubmit2();">
-  <table width="390" border="0" align="center" cellpadding="1" cellspacing="1">
+  <table width="550" border="0" align="center" cellpadding="1" cellspacing="1">
   <tr>
     <th>&nbsp;</th>
     <th colspan="2">&nbsp;</th>
@@ -209,17 +209,19 @@
     <th colspan="2">&nbsp;</th>
   </tr>
   <tr>
-    <th width="84" bgcolor="#CCCCCC">HN</th>
-    <th width="185" bgcolor="#CCCCCC">ชื่อ - สกุล  </th>
-    <th width="99" bgcolor="#CCCCCC">AN</th>
+    <th bgcolor="#CCCCCC" style="width:10%;">HN</th>
+    <th bgcolor="#CCCCCC" style="width:10%;">ชื่อ - สกุล</th>
+    <th bgcolor="#CCCCCC" style="width:10%;">AN</th>
+    <th bgcolor="#CCCCCC">สิทธ์</th>
   </tr>
   <? for($i=1;$i<=15;$i++){?>
   <tr>
     <th>
-<input type="text" name="thn<?=$i?>" id="thn<?=$i?>" size="20" OnChange="JavaScript:doCallAjax('thn<?=$i;?>','tptname<?=$i;?>');">
+<input type="text" name="thn<?=$i?>" id="thn<?=$i?>" size="10" OnChange="JavaScript:doCallAjax('thn<?=$i;?>','tptname<?=$i;?>','<?=$i;?>');">
 	</th>
-    <th><input type="text" name="tptname<?=$i?>" id="tptname<?=$i?>" size="40"></th>
-    <th><input type="text" name="ttan<?=$i?>" id="ttan<?=$i?>" size="20"></th>
+    <th><input type="text" name="tptname<?=$i?>" id="tptname<?=$i?>" size="30"></th>
+    <th><input type="text" name="ttan<?=$i?>" id="ttan<?=$i?>" size="10"></th>
+    <th><span id="ptright<?=$i;?>" style="font-size: 10px; font-weight: normal;"></span>
   </tr>
   <? } ?>
   <tr>

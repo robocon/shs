@@ -49,6 +49,7 @@ table {
 }
 
 /* Default style */
+b{ font-weight: bold; }
 table{
 	width: 100%;
 	border-left: 1px solid #000000;
@@ -138,6 +139,12 @@ ol ol{
 @media screen and (min-device-width: 1200px) and (max-device-width: 1600px){
 	.site-center{
 		width: 1200px;
+	}
+}
+@media print{
+	#no-print,
+	.no-print{
+		display: none;
 	}
 }
 /* Set center column */

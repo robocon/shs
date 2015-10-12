@@ -1,5 +1,6 @@
 <?php 
 session_start();
+if($_SESSION["statusncr"] !== 'admin'){ echo 'สิทธิ์การใช้งานไม่ถูกต้อง'; exit; }
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -185,12 +186,12 @@ if( $row === 0 ){
         <td align="center">เวลา</td>
         <td align="center">NCR </td>
         <?php
-            if($_SESSION["statusncr"]=='admin'){
+            if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
         ?>
         <td width="5%" align="center">แก้ไข</td>
         <td width="5%" align="center">ลบ</td>
-        <?php } ?>
         <td width="5%" align="center">พิมพ์</td>
+        <?php } ?>
     </tr>
 <?php
 $i=0;
@@ -214,12 +215,12 @@ while($arr1=mysql_fetch_array($query1)){
         <td><?=$arr1['time']?></td>
         <td><?=$arr1['ncr']?></td>
         <?php
-        if($_SESSION["statusncr"]=='admin'){
+        if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
         ?>
         <td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr1['nonconf_id'];?>" target="_blank">แก้ไข</a></td>
         <td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr1['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr1['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
-        <?php } ?>
         <td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank">พิมพ์</a></td>
+        <?php } ?>
     </tr>
     <?php
 }

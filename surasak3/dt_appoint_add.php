@@ -219,11 +219,16 @@ $_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
 			</TABLE>
 			";
 }else{
-$_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
-				<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ 1125</TD>
-			</TR>
-			</TABLE>
-			";
+	$default_phone = '1100, 1125';
+	if( $_SESSION['sIdname'] == 'md32166' OR $_SESSION['sIdname'] == 'md29268' ){
+		$default_phone = '2111, 2112';
+	}
+	
+	$_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
+		<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ $default_phone</TD>
+	</TR>
+	</TABLE>
+	";
 }
 
 if($i){

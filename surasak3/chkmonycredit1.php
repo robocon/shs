@@ -110,6 +110,7 @@ session_unregister("ptname");
     $aHemopd  =array("hemopd");
     $aOther      =array("other");
     $aOtherpd  =array("otherpd");
+    $medical_service  =array("medical_service");
     $aWard      =array("Ward");
     $aWardpd  =array("Wardpd");
 	 $aNid      =array("Nid");
@@ -242,11 +243,11 @@ session_register("ptname");
    <th bgcolor=6495ED><font size='2'>#</th>
   <th bgcolor=6495ED><font size='2'>เวลา</th>
   <th bgcolor=6495ED><font size='2'>HN</th>
-  <?
+  <?php
   if($doctor1=="ตรวจสุขภาพ" || $doctor1==$chkup){
 	?>
 	<th bgcolor=6495ED><font size='2'>ชื่อ-สกุล</th>
-	<? 
+	<?php
 	}
   ?>
   <th bgcolor=6495ED><font size='2'>AN</th>
@@ -338,8 +339,16 @@ if ($row->depart=="PHAR"){
             array_push($aHemo,$row->price);  
             array_push($aHemopd,$row->paid);
 }else if ($row->depart=="OTHER"){
-            array_push($aOther,$row->price);  
-            array_push($aOtherpd,$row->paid);
+    $paid = (int)$row->paid;
+    if( strpos($row->ptright, 'R03') !== false && $paid == 30 ){
+        
+        array_push($aOther,$row->price);  
+        array_push($aOtherpd,$row->paid);
+    }else{
+        
+        array_push($medical_service, $row->paid);
+    }
+    
 }else if($row->depart=="NID"){
             array_push($aNid,$row->price);  
             array_push($aNidpd,$row->paid);
@@ -397,7 +406,7 @@ for ($n=$x; $n>=1; $n--){
   if($doctor1=="ตรวจสุขภาพ"  || $doctor1==$chkup){
 	?>
 	<td bgcolor=F5DEB3><font face='Angsana New'><?=$ptname[$n]?></td>
-	<? 
+	<?php 
 	}
 	print("<td bgcolor=F5DEB3><font face='Angsana New'>$aAn[$n]</td>\n".    
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$aVn[$n]</td>\n".    
@@ -419,7 +428,7 @@ for ($n=$x; $n>=1; $n--){
 	$num++;
 }       
 //แสดงรายการคืนเงิน
-
+$_SESSION['medical_service'] = $medical_service;
 print "</table><INPUT TYPE=\"submit\" value=\"แก้ไขข้อมูลเลขที่ใบเสร็จทั้งหมด\">
 </FORM>";
     print "<table>";

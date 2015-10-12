@@ -4,7 +4,7 @@ ini_set('display_errors', 0);
 header('Content-Type: text/html; charset=tis-620');
 session_start();
 include 'connect.inc';
-mysql_query("SET NAMES TIS620");
+// mysql_query("SET NAMES TIS620");
 // mysql_query("SET NAMES UTF8");
 ?>
 <html>
@@ -58,22 +58,19 @@ window.onload = function(){
 	
 	// ค้นหา doctor จาก hn
 	$sql = sprintf("SELECT `doctor` FROM `dxofyear_emp` WHERE `hn` = '%s'", $_GET['hn']);
-	// var_dump($sql);
 	$query = mysql_query($sql);
 	$user_doctor = mysql_fetch_assoc($query);
 	
 	// แสดงรายการ doctor
 	$strSQL = "SELECT name FROM doctor  where status='y' order by name "; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-	// var_dump($objQuery);
-	// var_dump($user_doctor);
-	// exit;
+	
 	?>
 	<select name="doctor" id="doctor"> 
 	<?php
 	while($objResult = mysql_fetch_assoc($objQuery)) {
 		
-		$selected = $user_doctor['doctor']==$objResult['name'] ? 'selected="selected"' : '' ;
+		$selected = $user_doctor['doctor']==$objResult["name"] ? 'selected="selected"' : '' ;
 		?>
 		<option value="<?=$objResult["name"]?>" <?php echo $selected;?> ><?=$objResult["name"]?></option>
 		<?php

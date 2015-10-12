@@ -1439,16 +1439,16 @@ function newXmlHttp(){
 	//alert(document.write(a[0]));
 	//return false;
 //}
-function searchSuggest(event,action,str,len) {
+function searchSuggest(action,str,len) {
 	
-		// str = str+String.fromCharCode(event.keyCode);
+		str = str+String.fromCharCode(event.keyCode);
 
-		if(str.length >= 3){
+		if(str.length >= len){
 			url = 'dt_drug_pt.php?action='+action+'&search=' + str;
-			
+
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
-			xmlhttp.send();
+			xmlhttp.send(null);
 
 			document.getElementById("list").innerHTML = xmlhttp.responseText;
 		}
@@ -2407,7 +2407,7 @@ function viatch(ing,code){
 <TABLE border="0">
 <TR>
 	<TD align="right" class="tb_detail">ยา : </TD>
-	<TD><INPUT NAME="drug_code" TYPE="text" ID="drug_code" onkeyup="searchSuggest(event, 'drug',this.value,3); " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10">
+	<TD><INPUT NAME="drug_code" TYPE="text" ID="drug_code" onKeyPress="searchSuggest('drug',this.value,3); " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10">
 	  <!--<INPUT NAME="drug_code2" TYPE="text" ID="drug_code2"  size="20" disabled>--></TD>
 
 </TR>
@@ -2417,7 +2417,7 @@ function viatch(ing,code){
 </TR>
 <TR ID="slip_detail" style="display:">
 	<TD align="right" class="tb_detail">วิธีใช้ : </TD>
-	<TD><INPUT NAME="drug_slip" TYPE="text" ID="drug_slip" onKeyPress="if(event.keyCode == 13){ checkForm1(); return false; }else{ searchSuggest(event, 'slip',this.value,2);} " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10" value="b"></TD>
+	<TD><INPUT NAME="drug_slip" TYPE="text" ID="drug_slip" onKeyPress="if(event.keyCode == 13){ checkForm1(); return false; }else{ searchSuggest('slip',this.value,2);} " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10" value="b"></TD>
 </TR>
 <TR ID="drug_inject_slip" style="display:none">
 	<TD align="right" class="tb_detail" id="">วิธีฉีด : </TD>

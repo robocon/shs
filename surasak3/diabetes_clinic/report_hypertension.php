@@ -1,139 +1,176 @@
-<? 
+<?php
 session_start();
+require "../connect.php";
+require "../includes/functions.php";
+
+// Verify user before load content
+if(!authen()) die('หมดระยะเวลาการใช้งาน <a href="login.php">คลิกที่นี่</a> เพื่อเข้าสู่ระบบอีกครั้ง');
+
+require "header.php";
 ?>
-<html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-    <!-- InstanceBeginEditable name="doctitle" -->
-    <title>Clinic hypertension</title>
-    <!-- InstanceEndEditable -->
-    <link type="text/css" href="menu.css" rel="stylesheet" />
-    <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="menu.js"></script> 
-    <!-- InstanceBeginEditable name="head" -->
-    <!-- InstanceEndEditable -->
-</head>
-<style>
-.font1{
-	font-family:"TH SarabunPSK";
-	font-size:20pt;
-}
-.table_font1{
-	font-family:"TH SarabunPSK";
-	font-size:18pt;
-	font-weight:bold;
-	color:#600;	
-}
-.table_font2{
-	font-family:"TH SarabunPSK";
-	font-size:18pt;
-}
-legend{
-	
-font-family:"TH SarabunPSK";
-font-size: 18pt;
-font-weight: bold;
-color:#600;	
-padding:0px 3px;
-}
-fieldset{
-display:inline;
-background-color:#FEFDDE;
-/*width:300px;*/
-border-color:#000;
+<div><h3>สถิติ HT</h3></div>
+<div id="no_print" >
+	<form name="f1" action="report_hypertension.php" method="post">
+		<table  border="0" cellpadding="3" cellspacing="3">
+			<tr class="forntsarabun">
+				<td  align="right">
+					เลือกปีในการค้นหา
+					<select name="y_start" class="forntsarabun">
+					<?php 
+						$Y = date("Y")+543;
+						$date = date("Y")+543+5;
+						$dates = range(2547,$date);
 
-}
-</style>
-
-<style type="text/css">
-* { margin:0;
-    padding:0;
-}
-ody { /*background:rgb(74,81,85); */}
-div#menu { margin:5px auto; }
-div#copyright {
-    font:11px 'Trebuchet MS';
-    color:#fff;
-    text-indent:30px;
-    padding:40px 0 0 0;
-}
-td,th {
-	font-family:"TH SarabunPSK";
-	font-size: 20 px;
-}
-.fontsara {
-	font-family:"TH SarabunPSK";
-	font-size: 18 px;
-}
-@media print{
-#no_print{display:none;}
-}
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
-} 
-
-/*div#copyright a { color:#00bfff; }
-div#copyright a:hover { color:#fff; }*/
-</style>
-<body>
-
-
-<div id="no_print">
-<div id="menu">
-  <ul class="menu">
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>โปรแกรมโรงพยาบาล</span></a></li>
-         <li><a href="#"><span>ลงทะเบียน</span></a></li>
-          <ul>
-		 <li class="last"><a href="diabetes.php"><span>ลงทะเบียน DM</span></a></li>
-         <li class="last"><a href="hypertension.php"><span>ลงทะเบียน HT</span></a></li>
-       	</ul>
-     	  <li><a href="diabetes_edit.php"><span>แก้ไขข้อมูล</span></a></li>
-           <ul>
-		 <li class="last"><a href="diabetes_edit.php"><span>แก้ไขข้อมูล DM</span></a></li>
-         <li class="last"><a href="hypertension_edit.php"><span>แก้ไขข้อมูล HT</span></a></li>
-       	</ul>
-         <li><a href="#"><span>รายชื่อผู้ป่วย DM</span></a></li>
-         <ul>
-		 <li class="last"><a href="diabetes_list.php"><span>รายชื่อทั้งหมด</span></a></li>
-         <li class="last"><a href="diabetes_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
-       	</ul>
-       <li><a href="#"><span>รายชื่อผู้ป่วย HT</span></a></li>
-         <ul>
-		 <li class="last"><a href="hypertension_list.php"><span>รายชื่อทั้งหมด</span></a></li>
-         <li class="last"><a href="hypertension_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
-       	</ul>
-     <li><a href="report_diabetes.php"><span>สถิติ</span></a></li>
- 		<ul>
-		 <li class="last"><a href="report_diabetes.php"><span>สถิติ DM</span></a></li>
-         <li class="last"><a href="report_hypertension.php"><span>สถิติ HT</span></a></li>
-       	</ul>
-     <li><a href="#"><span>รายงาน</span></a></li>
- 		<ul>
-		 <li class="last"><a href="report_diabetesofyear.php"><span>รายงาน DM</span></a></li>
-         <li class="last"><a href="report_hypertensionofyear.php"><span>รายงาน HT</span></a></li>
-       	</ul>        
-		<li><a href="history.php"><span>ค้นหาประวัติ</span></a></li>
-    </ul>
+						foreach($dates as $i){
+							if(isset($_POST['y_start'])){
+								$select = ($i == $_POST['y_start']) ? 'selected' : '' ;
+							}else{
+								$select = ($i == $Y) ? 'selected' : '' ;
+							}
+							?>
+							<option value="<?=$i?>" <?php echo $select; ?>><?=$i;?></option>
+							<?php
+						}
+					?>
+					<select>
+					<button type="submit">ทำการค้นหา</button>
+					<input type="hidden" name="search" value="search">
+				</td>
+			</tr>
+		</table>
+	</form>
 </div>
+<?php
 
-<div style="visibility: hidden">
- <br />
- <a href="http://apycom.com/">a</a><br />
-</div>
+if(isset($_POST['y_start'])){
+	$date1 = intval($_POST['y_start']) - 543;
+}else{
+	$date1 = date('Y');
+}
 
-</div>
+// temp สำหรับแสดงผลรายเดือน (ภายใน 1 ปี ผู้ป่วยมาตรวจกี่ครั้งก็จะนับไปตามจำนวนนั้น)
+$sql_temp = "
+CREATE TEMPORARY TABLE hyper_temp 
+( thidate DATE NOT NULL ) 
+SELECT * 
+FROM hypertension_history 
+WHERE thidate >= '$date1-01' AND thidate <= '$date1-12';
+";
+mysql_query($sql_temp);
 
+// จำนวนผู้ป่วยทั้งหมดในปีนี้
+$query = mysql_query("SELECT COUNT(row_id) AS total FROM hyper_temp");
+$all_user = mysql_fetch_assoc($query);
 
-<div><!-- InstanceBeginEditable name="detail" -->
-!!!..........ยังไม่ได้จัดทำข้อมูลทางด้านสถิติ HT..........!!!
-<!-- InstanceEndEditable -->
-
-</div>
-
-
-
-</body>
-<!-- InstanceEnd --></html>
+if(isset($_POST['search']) && $_POST['search'] == 'search'){
+    
+    // Set default variable
+	$months = array(
+		'01' => 'ม.ค.', 
+		'02' => 'ก.พ.', 
+		'03' => 'มี.ค', 
+		'04' => 'เม.ษ.', 
+		'05' => 'พ.ค.', 
+		'06' => 'มิ.ย.', 
+		'07' => 'ก.ค.', 
+		'08' => 'ส.ค.', 
+		'09' => 'ก.ย.', 
+		'10' => 'ต.ค.', 
+		'11' => 'พ.ย.', 
+		'12' => 'ธ.ค.'
+	);
+	$key_year = $date1;
+    
+?>
+	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+		<tr>
+			<td rowspan="2" align="center" class="forntsarabun"><p>เครื่องชี้วัด</p></td>
+			<td rowspan="2" align="center" class="forntsarabun">เป้า</td>
+			<!-- <td rowspan="2" align="center" class="forntsarabun">ปี<br><?=($date1+543)?></td> -->
+			<td colspan="12" align="center" class="forntsarabun">ปี <?=($date1+543)?></td>
+		</tr>
+		<tr>
+			<td align="center" class="forntsarabun">ม.ค.</td>
+			<td align="center" class="forntsarabun">ก.พ.</td>
+			<td align="center" class="forntsarabun">มี.ค.</td>
+			<td align="center" class="forntsarabun">เม.ย.</td>
+			<td align="center" class="forntsarabun">พ.ค.</td>
+			<td align="center" class="forntsarabun">มิ.ย.</td>
+			<td align="center" class="forntsarabun">ก.ค.</td>
+			<td align="center" class="forntsarabun">ส.ค.</td>
+			<td align="center" class="forntsarabun">ก.ย.</td>
+			<td align="center" class="forntsarabun">ต.ค.</td>
+			<td align="center" class="forntsarabun">พ.ย.</td>
+			<td align="center" class="forntsarabun">ธ.ค.</td>
+		</tr>
+		<tr>
+			<td>1. มีโรคร่วมค่าความดันโลหิต &lt; 130/80 mmHg.</td>
+			<td></td>
+			<?php
+			$sql = "
+			SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
+FROM hyper_temp
+WHERE (`bp1` != '' OR `bp2` != '') AND bp1 <130 
+AND bp2 <80 
+AND (joint_disease_dm = 'Y' OR joint_disease_nephritic = 'Y' OR joint_disease_myocardial = 'Y' OR joint_disease_paralysis = 'Y')
+GROUP BY MONTH( thidate );
+			";
+			$q = mysql_query($sql);
+			$lists = array();
+			while($item = mysql_fetch_assoc($q)){
+				$lists[$item['thidate']] = $item['rows'];
+			}
+			
+			foreach($months AS $key => $value){
+				$key_search = "$date1-$key";
+				
+				$real_val = '';
+				if( !is_null($lists[$key_search]) ){
+					$real_val = $lists[$key_search];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
+				</td>
+				<?php
+			}
+			?>
+		<tr/>
+		<tr>
+			<td>2. ไม่มีโรคร่วมค่าความดันโลหิต &lt; 140/90 mmHg.</td>
+			<td></td>
+			<?php
+			$sql = "
+			SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
+FROM hyper_temp
+WHERE (`bp1` != '' OR `bp2` != '') AND bp1 < 140 
+AND bp2 < 90 
+AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '')
+GROUP BY MONTH( thidate );
+			";
+			$q = mysql_query($sql);
+			$lists = array();
+			while($item = mysql_fetch_assoc($q)){
+				$lists[$item['thidate']] = $item['rows'];
+			}
+			
+			foreach($months AS $key => $value){
+				$key_search = "$date1-$key";
+				
+				$real_val = '';
+				if( !is_null($lists[$key_search]) ){
+					$real_val = $lists[$key_search];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
+				</td>
+				<?php
+			}
+			?>
+		<tr/>
+	</table>
+<?php } // End if submit ?>
+<?php
+require "footer.php";
+?>

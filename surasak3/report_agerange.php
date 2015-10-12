@@ -3,45 +3,35 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
-
-$months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.' );
-				
+$months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.' );			
 ?>
-
 <html>
 	<head>
-		
+		<title>รายงานผู้ป่วยนอกแบ่งตามสิทธิ์และช่วงอายุ</title>
 	</head>
 	<body>
+		<link type="text/css" href="templates/classic/default.css" rel="stylesheet" />
 		<style>
-		@media print{
-			#no-print{
-				display: none;
+			@media print{
+				body{
+					padding-left: 10px;
+				}
 			}
-		}
-		body{
-			font-size:12px;
-		}
-		table{
-			border-left: 1px solid #aaaaaa;
-			border-top: 1px solid #aaaaaa;
-			width: 100%;
-			border-collapse: collapse;
-		}
-		th, td{
-			border-right: 1px solid #aaaaaa;
-			border-bottom: 1px solid #aaaaaa;
-			padding: 0.3em;
-			margin: 0;
-			font-size:12px;
-		}
-		.percent{
-			font-size: 14px;
-			color: #838383;
-		}
-	</style>
-		<div id="no-print">
-			<h1>รายงานผู้ป่วยนอกแบ่งตามสิทธิ์และช่วงอายุ</h1>
+			body{
+				font-size:12px;
+			}
+		</style>
+		<div class="col width-fill mobile-width-fill no-print">
+            <div class="cell">
+                <ul class="col nav">
+                    <li class="active"><a href="../nindex.htm">หน้าหลักโปรแกรม SHS</a></li>
+					<li class="active"><a href="report_agerange.php">ดูแบบรายเดือน</a></li>
+					<li class="active"><a href="report_agerange_year.php">ดูแบบรายปี</a></li>
+                </ul>
+            </div>
+        </div>
+		<h3>รายงานผู้ป่วยนอกแบ่งตามสิทธิ์และช่วงอายุ</h3>
+		<div class="no-print">
 			<form action="report_agerange.php" method="post">
 				<span>เลือกปี</span>
 				<select name="year">
@@ -72,8 +62,17 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 			
 			if( $select_month !== false && $select_year !== false ){
 					
+				$sql = "CREATE TEMPORARY TABLE opday_temp 
+				SELECT a.`hn`,a.`thidate`,a.`ptright`, LEFT(b.`ptright`,3) AS `code`, TIMESTAMPDIFF(YEAR, b.`dbirth`, CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d %H:%i:%s' ) ) ) AS age 
+FROM `opday` AS a LEFT JOIN `opcard` AS b ON b.`hn`=a.`hn`
+WHERE a.`thidate` LIKE '$select_year-$select_month%'";
+				$db->select($sql);
 				
-				$sql = "SELECT `hn`,`thidate`,`ptright`,`age` FROM `opday` WHERE `thidate` LIKE '$select_year-$select_month%'";
+				$sql = "SELECT * 
+				FROM opday_temp 
+				WHERE `code` IN ('R01','R03','R07','R09','R10','R11','R12','R13','R14','R15','R35','R33')
+				AND `age` > 0 
+				";
 				$db->select($sql);
 				$all_items = $db->get_items();
 				$all_rows = $db->get_rows();
@@ -82,6 +81,9 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 					echo 'ไม่มีข้อมูลผู้ป่วยในช่วงปี และ เดือนที่ท่านค้นหา กรุณาเลือกข้อมูลใหม่';
 					exit;
 				}
+				
+				$r01_items = array();
+				$r01_rows = 0;
 				
 				$r03_items = array();
 				$r03_rows = 0;
@@ -115,48 +117,60 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 					$set_key = $thidate;
 					
 					// แยกตามสิทธิ
-					if(preg_match('/เบิกจ่ายตรง/', $item['ptright'])){
+					if( $item['code'] === 'R01' ){
+						$r01_items[$set_key][] = $item;
+						$r01_rows++;
+					}
+					
+					if( $item['code'] === 'R03' ){
 						$r03_items[$set_key][] = $item;
 						$r03_rows++;
 					}
 					
-					if(preg_match('/ประกันสังคม/', $item['ptright'])){
+					if( $item['code'] === 'R07' ){
 						$r07_items[$set_key][] = $item;
 						$r07_rows++;
 					}
 					
-					if(preg_match('/(ประกันสุขภาพ)|(โครงการตา)/', $item['ptright'])){
+					if( $item['code'] === 'R09' 
+					OR $item['code'] === 'R10' 
+					OR $item['code'] === 'R11'
+					OR $item['code'] === 'R12'
+					OR $item['code'] === 'R13'
+					OR $item['code'] === 'R14'
+					OR $item['code'] === 'R15'
+					OR $item['code'] === 'R35'){
 						$mixed_items[$set_key][] = $item;
 						$mixed_rows++;
 					}
 					
-					if(preg_match('/อปท/', $item['ptright'])){
+					if( $item['code'] === 'R33' ){
 						$r33_items[$set_key][] = $item;
 						$r33_rows++;
 					}
 					
 					// แยกตามช่วงอายุ
-					$match = preg_match('/(\d+).+/', $item['age'], $matchs);
-					if( $match ){
+					// $match = preg_match('/(\d+).+/', $item['age'], $matchs);
+					// if( $match ){
 						
-						if( $matchs['1'] < 10 ){
+						if( $item['age'] > 0 AND $item['age'] < 10 ){
 							$newborn_items[$set_key][] = $item;
 							$newborn_rows++;
 							
-						}else if( $matchs['1'] >= 10 && $matchs['1'] < 20 ){
+						}else if( $item['age'] >= 10 && $item['age'] <= 19 ){
 							$teenage_items[$set_key][] = $item;
 							$teenage_rows++;
 							
-						}else if( $matchs['1'] >= 20 && $matchs['1'] < 60 ){
+						}else if( $item['age'] >= 20 && $item['age'] <= 60 ){
 							$oldman_itmes[$set_key][] = $item;
 							$oldman_rows++;
 							
-						}else{
+						}else if( $item['age'] > 60 ){
 							$older_items[$set_key][] = $item;
 							$older_rows++;
 						}
 						
-					}
+					// }
 					
 				}
 				
@@ -179,7 +193,7 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 			<table>
 				<thead>
 					<tr>
-						<th rowspan="2">ตัวชี้วัด</th>
+						<th rowspan="2" width="15%">ตัวชี้วัด</th>
 						<th rowspan="2" width="8%">จำนวนผู้ป่วยทั้งหมด(คน)</th>
 						<th colspan="<?php echo $row_days;?>">ประจำเดือน <?php echo $months[$select_month];?> แบ่งตามวัน(คน)</th>
 					</tr>
@@ -194,6 +208,19 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 					</tr>
 				</thead>
 				<tbody>
+					<tr>
+						<td>สิทธิ์เงินสด</td>
+						<td align="center"><?php echo $r01_rows;?></td>
+						<?php
+						foreach($days as $day){
+							$find_key = "$select_year-$select_month-$day";
+							$per_day = count($r01_items[$find_key]);
+							?>
+							<td align="right"><?php echo $per_day;?></td>
+							<?php
+						}
+						?>
+					</tr>
 					<tr>
 						<td>สิทธิจ่ายตรง</td>
 						<td align="center"><?php echo $r03_rows;?></td>
@@ -300,7 +327,7 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 					</tr>
 				</tbody>
 			</table>
-			<button onclick="force_print()">สั่ง Print</button>
+			<button onclick="force_print()" class="no-print">สั่ง Print</button>
 			<script type="text/javascript">
 			function force_print(){ window.print(); }
 			</script>

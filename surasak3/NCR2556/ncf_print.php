@@ -2,9 +2,11 @@
 session_start();
 include("connect.inc");
 
-// Set time to print 
-$sql = "UPDATE `ncr2556` SET `date_print` = NOW() WHERE `nonconf_id` = '".$_GET['ncr_id']."';";
-$query = mysql_query($sql) or die( mysql_error($Conn) );
+// Set time to print only admin
+if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
+    $sql = "UPDATE `ncr2556` SET `date_print` = NOW() WHERE `nonconf_id` = '".$_GET['ncr_id']."';";
+    $query = mysql_query($sql) or die( mysql_error($Conn) );
+}
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

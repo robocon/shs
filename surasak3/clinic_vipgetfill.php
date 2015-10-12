@@ -1,12 +1,8 @@
 <?php
- include("connect.inc");
- 
- 
+include("connect.inc");
 $strHn = trim($_POST["strHn"]);
-
 /*if($strMode == "ADD")
 {
-	
 	$update=date("Y-m-d H:i:s");
 	
 	$strSQL = "INSERT INTO  clinic_vip ";
@@ -16,14 +12,10 @@ $strHn = trim($_POST["strHn"]);
 	$strSQL .=",'".$_POST["tName"]."','".$_POST["ttan"]."','".$_POST["officer"]."','".$update."') ";
 	$objQuery = mysql_query($strSQL);
 }*/
-
-
-	$strSQL = "SELECT  CONCAT(yot,name,' ',surname)as ptname  FROM opcard  WHERE hn = '".$strHn."' ";
-	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-	$objResult = mysql_fetch_array($objQuery);
-	if($objResult)
-	{
-		echo $objResult["ptname"];
-	}
-	
-	?>
+$sql = "SELECT CONCAT(yot,name,' ',surname)as ptname,ptright FROM opcard  WHERE hn = '$strHn'";
+$q = mysql_query($sql) or die ( mysql_error() );
+$item = mysql_fetch_assoc($q);
+if($item){
+	echo trim($item["ptname"].'|'.$item['ptright']);
+}
+exit;

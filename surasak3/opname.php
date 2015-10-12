@@ -59,10 +59,12 @@ If (!empty($name)){
 		
 		$alert_msg = '-';
 		
-		$sql = sprintf("SELECT `hn`,`dcdate`, `my_ward`
-		FROM `ipcard` 
-		WHERE `hn` = '%s' 
-		ORDER BY `row_id` DESC LIMIT 1", $hn);
+		$sql_pre = "
+        SELECT b.`my_ward` FROM `bed` AS a 
+        LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
+        WHERE a.`hn` = '%s' ;
+        ";
+        $sql = sprintf($sql_pre, $hn);
 		$query = mysql_query($sql);
 		$item = mysql_fetch_assoc($query);
 		
