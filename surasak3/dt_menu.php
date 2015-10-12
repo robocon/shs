@@ -91,8 +91,8 @@ menu5[0]='<a href="dt_chkup.php" >ใบรับรองแพทย์</a>'
 menu5[1]='<a href="dt_refer.php" >ใบ Refer</a>'
 
 var menu6=new Array();
-menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพทหาร</a>'
-menu6[1]='<a href="dxdr_ofyear_emp.php" >ตรวจสุขภาพลูกจ้าง</a>'
+menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพทหารประจำปี</a>'
+menu6[1]='<a href="dxdr_ofyear_emp.php" >ตรวจสุขภาพลูกจ้าง รพ.</a>'
 menu6[2]='<a href="dxdr_ofyearout_dr.php" >ตรวจสุขภาพ</a>'
 
 var menuwidth='170px' //default menu width

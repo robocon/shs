@@ -204,19 +204,14 @@ for($i=0;$i<$count;$i++){
 		$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
 
 		if($rows_drugrx > 0){
-			
-			// เพิ่มใน dphardep
 			$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
 			$idno = mysql_insert_id();
 			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
 			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
-			
-			$k=$i+1;
+			$k=$i+2;
 			$qq = array("[INJNO]");
 			$zz = array("เข็มที่ $k");
 			$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
-			
-			// เพิ่มใน ddrugrx
 			$result = Mysql_Query($sql_ddrugrx2) or die(mysql_error());
 		}
 	}

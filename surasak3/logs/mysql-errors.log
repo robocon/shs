@@ -1,0 +1,141 @@
+[2015-09-28 15:00:14] /sm3/surasak3/show_user_appoint_drug.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'ptname' in 'field list'
+[2015-09-28 15:50:10] /sm3/surasak3/search_hn_from_drug.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.date' in 'where clause'
+[2015-09-28 15:51:15] /sm3/surasak3/search_hn_from_drug.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.date' in 'where clause'
+[2015-09-28 15:52:08] /sm3/surasak3/search_hn_from_drug.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.date' in 'where clause'
+[2015-09-28 15:52:28] /sm3/surasak3/search_hn_from_drug.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.date' in 'where clause'
+[2015-10-02 15:50:00] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so' doesn't exist
+[2015-10-02 15:55:41] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so' doesn't exist
+[2015-10-02 17:06:49] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NULL
+AND (
+	a.`camp` LIKE '%√.æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’' 
+	OR a.`camp` LIKE '%.¡∑∫' at line 6
+[2015-10-02 17:49:52] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 17:51:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 17:54:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 17:56:04] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 18:01:18] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 18:02:40] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 18:03:24] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 18:03:58] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-02 18:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 08:58:05] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:18:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:19:24] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:19:32] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:20:19] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:20:41] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:24:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:45:53] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:46:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' a.`yearcheck` = '2558'
+ORDER BY a.`row_id` DESC' at line 7
+[2015-10-05 10:46:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' a.`yearcheck` = '2558'
+ORDER BY a.`row_id` DESC' at line 7
+[2015-10-05 10:46:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' a.`yearcheck` = '2558'
+ORDER BY a.`row_id` DESC' at line 7
+[2015-10-05 10:46:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:59] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' a.`yearcheck` = '2558'
+ORDER BY a.`row_id` DESC' at line 7
+[2015-10-05 10:46:59] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:59] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:59] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:59] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:46:59] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 10:47:34] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:48:01] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:55:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 10:55:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 10:55:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 10:55:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 10:55:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 10:55:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:07:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 11:07:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:07:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:07:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:07:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:07:47] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:58:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 11:58:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:58:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:58:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:58:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 11:58:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:08:54] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 13:08:54] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:08:54] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:08:54] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:08:54] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:08:54] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:02] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 13:19:02] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:02] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:02] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:02] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:02] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 13:19:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'camp1' in 'where clause'
+[2015-10-05 13:19:43] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 13:59:39] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:00:06] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:00:19] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:00:38] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:02:01] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:02:24] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:02:53] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:03:17] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:03:22] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:03:30] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:03:48] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:03:55] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:05:12] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:05:44] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:06:08] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.name' in 'where clause'
+[2015-10-05 14:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:07:42] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:08:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S22]: Column not found: 1054 Unknown column 'a.name' in 'where clause'
+[2015-10-05 14:08:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:08:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:08:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:08:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:08:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[42S02]: Base table or view not found: 1146 Table 'smdb.condxofyear_so_temp' doesn't exist
+[2015-10-05 14:08:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:08:57] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:09:21] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:09:41] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:11:40] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:15:49] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:20:01] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:20:45] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:20:56] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:21:05] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:21:27] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:23:11] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 14:33:36] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 16:28:28] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 16:29:20] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 16:32:06] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 16:32:26] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 16:33:57] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error
+[2015-10-05 16:37:41] /sm3/surasak3/report_health_soldier.php - SQLSTATE[HY000]: General error

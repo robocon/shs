@@ -9,6 +9,8 @@ $xx = explode("-",$yy[0]);
 
 $thidate_now = ($xx[0]+543)."-".$xx[1]."-".$xx[2]." ".$yy[1];
 
+$_SESSION['other2_1'] = isset($_POST['other2_1']) ? $_POST['other2_1'] : false ;
+$_SESSION['other2_1_1'] = isset($_POST['other2_1_1']) ? $_POST['other2_1_1'] : false ;
 
 ?>
 

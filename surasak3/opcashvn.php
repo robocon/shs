@@ -25,6 +25,7 @@ print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash.ph
 		$vn = $_POST['vn'];
 	}
 	include("connect.inc");
+		
 	$query = "select hn,ptname from opday where vn='$vn' and thidate like '$dateid%' ";
 	$result = mysql_query($query) or die("Query failed");
 	list($hn,$cPtname) = mysql_fetch_row($result);
@@ -182,6 +183,7 @@ $hnid = $hn;
 		$sqlf = "select toborow from opday where hn='".$hn."' and thidate like '$today%' ";
 		list($toborow) = mysql_fetch_array(mysql_query($sqlf));
 $totalpaid1=$sumnprice;
+
 
 
         print " <tr>\n".
@@ -354,6 +356,7 @@ $totalpri=$totalpri1+$totalpri2;
 $totalpri2=$totalpri11+$totalpri22;
 $totalpri3=$totalpri-$totalpri2;
 $totaltopay1=$totalpaid1+$totalpaid2;
+
  print "<center><font face='AngsanaUPC' size='5' COLOR='#000066'>รวมค่ารักษาพยาบาลทั้งสิ้น<b>  $totalpri</b> บาท</FONT>";
   print "  &nbsp;&nbsp&nbsp;&nbsp  <font face='AngsanaUPC' size='5' COLOR='#FF0033'><U>**เบิกไม่ได้ &nbsp;&nbsp $totaltopay1 &nbsp;&nbsp บาท**</U> </b></FONT>";
  print " <BR><font face='AngsanaUPC' size='5' COLOR='#000066'><b>ชำระเงินแล้ว <b>$totalpri2 </b>บาท</FONT>";
@@ -554,6 +557,7 @@ $totaltopay1=$totalpaid1+$totalpaid2;
 	$date=(date("Y")+543).date("-m-d");
 
 	$strsql1="select  * from  dphardep  where date like '$date%' and  hn='".$hnid."' and stkcutdate  IS NULL and dr_cancle IS NULL";
+	//echo $strsql1;
 	$strresult1= mysql_query($strsql1);
 	$strrow1=mysql_num_rows($strresult1);
 

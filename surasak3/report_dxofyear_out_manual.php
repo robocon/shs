@@ -94,7 +94,7 @@ include("connect.inc");
   $da = explode(" ",$result["thidate"]);
   $daten = explode("-",$da[0]);
   ?>
-    <? echo "20 พฤษภาคม 2558";?>
+    <? echo "17 สิงหาคม 2558";?>
   </span></span></span></td>
   <td align="center" valign="top" class="text3">&nbsp;</td>
 </tr>
@@ -650,6 +650,22 @@ mmHg.</u></span></td>
       </span></td>
       </tr>
 	<? }
+  
+  if( $_SESSION['other2_1'] ){
+    ?>
+    <tr>
+      <td valign="top"><span class="text3"><strong>
+        เป็นโรค :
+      </strong></span></td>
+      <td colspan="5" valign="top"><span class="text3">
+        <?php echo $_SESSION['other2_1']; ?> คำแนะนำ... <?php echo $_SESSION['other2_1_1'];?>
+      </span></td>
+      </tr>
+    <?php
+  }
+  
+  
+  
 	if($result['other3']!=""){?>
     <tr>
       <td valign="top"><span class="text3"><strong>
@@ -722,6 +738,6 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
         <?=$authorisename?>
         <strong> (
           <?=$authorisedate?>
-          ) CXR : </strong>พ.ต.ภูภูมิ วุฒิธาดา (ว.33906) รังสีแพทย์<strong> (21-05-2015) Doctor :พ.ต.เลอปรัชญ์ มังกรกนกพงศ์ (22-05-2015)</strong></td>
+          ) CXR : </strong>พ.ต.ภูภูมิ วุฒิธาดา (ว.33906) รังสีแพทย์<strong> (17-08-2015) Doctor :พ.ต.เลอปรัชญ์ มังกรกนกพงศ์ (17-08-2015)</strong></td>
   </tr>
 </table>

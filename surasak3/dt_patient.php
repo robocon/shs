@@ -183,11 +183,7 @@ $sql = "SELECT * FROM diabetes_clinic WHERE hn = '$hn' AND `dateN` LIKE '$year-%
 $query = mysql_query($sql);
 $row = mysql_num_rows($query);
 
-$sql_his = "SELECT * FROM diabetes_clinic_history WHERE hn = '$hn' AND `dateN` LIKE '$year-%'";
-$query_his = mysql_query($sql_his);
-$row_his = mysql_num_rows($query_his);
-
-if($row > 0 && $row_his > 0){
+if($row > 0){
 	
 	?>
 	<style type="text/css">

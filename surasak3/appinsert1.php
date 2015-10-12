@@ -9,16 +9,15 @@
 <SCRIPT LANGUAGE="JavaScript">
 
 window.onload = function(){
-	// window.print();
-	// opener.location.href='hnappoi1.php';
-	// window.close();
+	window.print();
+	opener.location.href='hnappoi1.php';
+	window.close();
 }
 
 </SCRIPT>
 </head>
 
 <?php
-global $patho2, $doctor;
  function jschars($str)
 {
     $str = str_replace("\\\\", "\\\\", $str);
@@ -374,9 +373,9 @@ else  {
  
 
 			include("unconnect.inc");
-			// session_unregister("cHn");  
-			// session_unregister("cPtname");
-			// session_unregister("cAge");
+			session_unregister("cHn");  
+			session_unregister("cPtname");
+			session_unregister("cAge");
         } 
 
 

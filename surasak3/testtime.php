@@ -1,4 +1,5 @@
 <?php
+	/*
 $time1 = strtotime('2015-07-17 08:00:00');
 $time2 = strtotime('2015-07-17 08:10:00');
 $time3 = strtotime('2015-07-17 08:40:00');
@@ -19,3 +20,5 @@ if($tttt > 60){
 	echo $tttt." Minutes";
 }
 
+*/
+echo date('Y-m-d H:i:s');

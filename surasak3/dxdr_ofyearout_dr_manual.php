@@ -1340,6 +1340,12 @@ $bsult = mysql_fetch_array($brow);
 	      <input name="ch54" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
 	      </div></td>
 	    </tr>
+    <tr>
+      <td align="right" class="tb_font_2">เป็นโรค:</td>
+      <td class="labfont"><input name="other2_1" type="text" size="20" /></td>
+      <td class="labfont">คำแนะนำ: <input name="other2_1_1" type="text" size="40" value="ควรพบแพทย์ เพื่อการรักษาต่อเนื่อง"/></td>
+      <td colspan="2"></td>
+    </tr>
 	  </table></td>
 </tr>
 </table>

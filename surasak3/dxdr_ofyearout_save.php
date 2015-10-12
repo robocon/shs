@@ -184,7 +184,8 @@ if($result && isset($_POST["submit"])){
 	$result = Mysql_Query($detail);
 	$arrs = Mysql_fetch_assoc($result);
 	?>
-<div style="page-break-after:always">
+<!--<div style="page-break-after:always">-->
+<div>
 <table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
 	<tr>
 	  <td>ผลการตรวจสุขภาพประจำปี <?=$nPrefix;?></td>
@@ -232,7 +233,7 @@ if($result && isset($_POST["submit"])){
       </tr>
       <? }?>
 	  <tr>
-		<td>แพทย์ : <?php echo $arrs["doctor"];?></td>
+		<td>แพทย์ : <?php echo $_POST['doctorn'];?></td>
 	  </tr>
 </table>
 </div>
@@ -241,9 +242,9 @@ if($result && isset($_POST["submit"])){
 		window.opener.location.href='dt_index.php';
 		//setTimeout("window.close();",3000);
 	</script>
-<script>
-window.open("report_dxofyear_out_hukgun.php?hn=<?=$arrs["hn"];?>", "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=500, left=500, width=800, height=600", "onload=window.print()");
-</script>    
+<!--<script>
+window.open("report_dxofyear_out_hukgun.php?hn=<?//=$arrs["hn"];?>", "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=500, left=500, width=800, height=600", "onload=window.print()");
+</script> -->   
 	<?
 		}else{
 		echo "<CENTER><FONT COLOR=\"red\">ไม่สามารถบันทึกข้อมูลได้</FONT></CENTER>";

@@ -78,20 +78,97 @@ if($action === 'search'){
 }else if( $action === 'information_save' ){
 	
 	$data = array();
-	$data['g6pd'] = ( isset($_POST['g6pd']) ) ? $_POST['g6pd'] : 0 ;
+	$data['g6pd'] = ( isset($_POST['g6pd']) ) ? intval($_POST['g6pd']) : 0 ;
 	$data['adr'] = ( isset($_POST['adr']) ) ? $_POST['adr'] : 0 ;
-	$data['adr_detail'] = ( isset($_POST['adr_detail']) ) ? $_POST['adr_detail'] : '' ;	
+	$data['adr_detail'] = ( isset($_POST['adr_detail']) ) ? $_POST['adr_detail'] : '' ;
 	$data['detail1'] = ( isset($_POST['detail1']) ) ? $_POST['detail1'] : 0 ;
-	$data['detail1_1'] = ( isset($_POST['detail1_1']) ) ? $_POST['detail1_1'] : '' ;	
+	$data['detail1_1'] = ( isset($_POST['detail1_1']) ) ? $_POST['detail1_1'] : '' ;
 	$data['detail2'] = ( isset($_POST['detail2']) ) ? $_POST['detail2'] : 0 ;
 	$data['detail3'] = ( isset($_POST['detail3']) ) ? $_POST['detail3'] : 0 ;
-	$data['detail3_1'] = ( isset($_POST['detail3_1']) ) ? $_POST['detail3_1'] : '' ;	
+	$data['detail3_1'] = ( isset($_POST['detail3_1']) ) ? $_POST['detail3_1'] : '' ;
 	$data['detail4'] = ( isset($_POST['detail4']) ) ? $_POST['detail4'] : 0 ;
-	$data['detail4_1'] = ( isset($_POST['detail4_1']) ) ? $_POST['detail4_1'] : '' ;	
+	$data['detail4_1'] = ( isset($_POST['detail4_1']) ) ? $_POST['detail4_1'] : '' ;
 	
 	$hn = $_POST['hn'];
-	$data = serialize($data);
+	$data_serialize = serialize($data);
 	$date_add = $date_edit = date('Y-m-d H:i:s');
+	
+	// เพิ่มข้อมูลยาที่เกี่ยวกับ G6PD
+	if( $data['g6pd'] === 1 ){
+		$sql = "
+		SELECT `drugcode`,`tradname` FROM `druglst` WHERE `drugcode` LIKE '%1CIPR-C*?%' 
+		OR `drugcode` LIKE '%2CIPR%' 
+		OR `drugcode` LIKE '%1AVEL%' 
+		OR `drugcode` LIKE '%6VIGA%' 
+		OR `drugcode` LIKE '%1LEX400-C%' 
+		OR `drugcode` LIKE '%1TARI-C%' 
+		OR `drugcode` LIKE '%6TARI*%' 
+		OR `drugcode` LIKE '%1TAR300%' 
+		OR `drugcode` LIKE '%1TARI-N%' 
+		OR `drugcode` LIKE '%2CHLORA%' 
+		OR `drugcode` LIKE '%6CHLEYE10%' 
+		OR `drugcode` LIKE '%6CHLOO%' 
+		OR `drugcode` LIKE '%1PYRI%' 
+		OR `drugcode` LIKE '%2QUIN%' 
+		OR `drugcode` LIKE '%1DAPS%' 
+		OR `drugcode` LIKE '%1COTR4%' 
+		OR `drugcode` LIKE '%1COTR8%' 
+		OR `drugcode` LIKE '%2BACT%' 
+		OR `drugcode` LIKE '%2BACT-C%' 
+		OR `drugcode` LIKE '%1SALA%';
+		";
+		$g6pd_items = DB::select($sql);
+		$g6pd_pre_insert = array();
+		foreach($g6pd_items as $key => $item){
+			$drug_code = trim($item['drugcode']);
+			$check = DB::select("SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$hn' AND `drugcode` LIKE '%$drug_code%' ", null, true);
+			
+			if( $check === null ){
+				$g6pd_pre_insert[] = "('$hn','$drug_code','".trim($item['tradname'])."','กองเภสัชกรรม', NOW(),'".$_SESSION['sOfficer']."')";
+			}
+			
+		}
+		
+		if( count($g6pd_pre_insert) > 0){
+			$g6pd_insert = implode(',', $g6pd_pre_insert);
+			$sql = "INSERT INTO `drugreact` (`hn`,`drugcode`,`tradname`,`reporter`,`date`,`officer`) VALUES ".$g6pd_insert;
+			$insert = DB::exec($sql);
+		}
+		
+	} else { // ลบข้อมูลยาที่เกี่ยวกับ G6PD
+		$g6pd_code_lists = array(
+			'1CIPR-C*?',
+			'2CIPR',
+			'1AVEL',
+			'6VIGA',
+			'1LEX400-C',
+			'1TARI-C',
+			'6TARI*',
+			'1TAR300',
+			'1TARI-N',
+			'2CHLORA',
+			'6CHLEYE10',
+			'6CHLOO',
+			'1PYRI',
+			'2QUIN',
+			'1DAPS',
+			'1COTR4',
+			'1COTR8',
+			'2BACT',
+			'2BACT-C',
+			'1SALA',
+		);
+		foreach($g6pd_code_lists as $key => $item){
+			
+			$check = DB::select("SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$hn' AND `drugcode` LIKE '%$item%' ", null, true);
+			if( $check !== null ){
+				$sql = "DELETE FROM `drugreact` WHERE `drugcode` = '$item' AND `hn` = '$hn' LIMIT 1;";
+				$delete = DB::exec($sql);
+			}
+			
+		}
+	}
+	
 	
 	$sql = "SELECT `hn` FROM `druginteraction_info` WHERE `hn` = :hn";
 	$check_item = DB::select($sql, array(':hn' => $hn), true);
@@ -103,7 +180,7 @@ if($action === 'search'){
 		`date_edit` = :date_edit
 		WHERE `hn` = :hn LIMIT 1 ;
 		";
-		$update = DB::exec($sql, array( ':detail' => $data, ':date_edit' => $date_edit, ':hn' => $hn ));
+		$update = DB::exec($sql, array( ':detail' => $data_serialize, ':date_edit' => $date_edit, ':hn' => $hn ));
 		$msg = 'บันทึกข้อมูลเสร็จเรียบร้อย';
 		if($update === false){
 			$msg = 'ไม่สามารถบันทึกข้อมูลได้';
@@ -116,7 +193,7 @@ if($action === 'search'){
 		";
 		$insert = DB::exec($sql, array(
 			':hn' => $hn,
-			':data' => $data,
+			':data' => $data_serialize,
 			':date_add' => $date_add,
 			':date_edit' => $date_edit,
 		));
@@ -132,10 +209,10 @@ if($action === 'search'){
 }
 
 define('CHARSET', 'TIS-620');
-include 'templates/default/header.php';
+include 'templates/classic/header.php';
 ?>
 <!-- Navigation bar -->
-<?php include 'templates/default/nav.php'; ?>
+<?php include 'templates/classic/nav.php'; ?>
 
 <!-- Body -->
 <div class="site-center">
@@ -151,7 +228,7 @@ include 'templates/default/header.php';
                 </div>
                 
 				<!-- left menu -->
-				<?php include 'templates/default/left_menu.php'; ?>
+				<?php include 'templates/classic/left_menu.php'; ?>
 				<!-- left menu -->
 				
                 <div class="col width-fill">
@@ -240,7 +317,9 @@ include 'templates/default/header.php';
 														</div>
 														<div class="col">
 															<input type="checkbox" name="detail4" id="detail4" value="1" <?php echo ($info['detail4'] == 1) ? 'checked' : '' ; ?>><label for="detail4">บันทึกจากบุคลากรทางการแพทย์ อื่นๆ</label>
+															<!--
 															<input type="text" name="detail4_1" value="<?php echo $info['detail4_1'];?>">
+															-->
 														</div>
 													</div>
 												</div>
@@ -287,8 +366,8 @@ include 'templates/default/header.php';
 															}
 															
 															// ค้นหาแพ้ยาข้ามกลุ่ม
-															$sql = "SELECT `children` FROM `druginteraction_cross` WHERE `parent` = :parent ";
-															$check = DB::select($sql, array('parent' => $item['drugcode']), true);
+															$sql = "SELECT `children` FROM `druginteraction_cross` WHERE `hn` = :hn AND `parent` = :parent ";
+															$check = DB::select($sql, array(':hn' => $hn, 'parent' => $item['drugcode']), true);
 															$children_li = array();
 															
 															if( !empty($check) ){
@@ -495,5 +574,5 @@ include 'templates/default/header.php';
     <!-- Footer -->
 </div>
 <?php 
-include 'templates/default/footer.php';
+include 'templates/classic/footer.php';
 ?>
