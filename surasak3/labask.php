@@ -1,94 +1,94 @@
 <?php
-   session_start();
-   if(isset($sIdname)){} else {die;}
-    include("connect.inc");
-
-  
-    ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
-	$strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
-	$strresult = mysql_query($strsql);
-	$strrow=mysql_num_rows($strresult);
-	
+session_start();
+if(isset($sIdname)){} else {die;}
+include("connect.inc");
 
 
-	if($strrow>0){
-		echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
-		//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
+////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
+$strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
+$strresult = mysql_query($strsql);
+$strrow=mysql_num_rows($strresult);
 
-	}
+
+
+if($strrow>0){
+	echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
+	//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
+
+}
 //////////////////////////////////////////
-   
-   function calcage($birth){
-		$today = getdate();   
-		$nY  = $today['year']; 
-		$nM = $today['mon'] ;
-		$bY=substr($birth,0,4)-543;
-		$bM=substr($birth,5,2);
-		$ageY=$nY-$bY;
-		$ageM=$nM-$bM;
+
+function calcage($birth){
+	$today = getdate();   
+	$nY  = $today['year']; 
+	$nM = $today['mon'] ;
+	$bY=substr($birth,0,4)-543;
+	$bM=substr($birth,5,2);
+	$ageY=$nY-$bY;
+	$ageM=$nM-$bM;
 	
-		if ($ageM<0) {
-			$ageY=$ageY-1;
-			$ageM=12+$ageM;
-		}
+	if ($ageM<0) {
+		$ageY=$ageY-1;
+		$ageM=12+$ageM;
+	}
 	
-		if ($ageM==0){
-			$pAge="$ageY ปี";
-		}else{
-			$pAge="$ageY ปี $ageM เดือน";
-		}
+	if ($ageM==0){
+		$pAge="$ageY ปี";
+	}else{
+		$pAge="$ageY ปี $ageM เดือน";
+	}
 	
 	return $pAge;
 }
-		$sqlage = "select idcard,dbirth,idguard,goup   from opcard where hn ='".$cHn."'";
-		$arr_age = mysql_fetch_array(mysql_query($sqlage));
-		$age = calcage($arr_age['dbirth']);
-		
-		
-		$idcard=$arr_age['idcard'];
-				$idguard=$arr_age['idguard'];
-				$goup=$arr_age['goup'];
-		
-		if($idcard=="" || $idcard=="-"){
-		$img=$cHn.'.jpg';
-		}else{
-		$img=$idcard.'.jpg';
-		}
+
+$sqlage = "select idcard,dbirth,idguard,goup   from opcard where hn ='".$cHn."'";
+$arr_age = mysql_fetch_array(mysql_query($sqlage));
+$age = calcage($arr_age['dbirth']);
+
+
+$idcard=$arr_age['idcard'];
+$idguard=$arr_age['idguard'];
+$goup=$arr_age['goup'];
+
+if($idcard=="" || $idcard=="-"){
+	$img=$cHn.'.jpg';
+}else{
+	$img=$idcard.'.jpg';
+}
 	
-	if(file_exists("../image_patient/$img")){
-		
-		$image="<IMG SRC='../image_patient/$img' WIDTH='100' HEIGHT='150' BORDER='1' ALT=''>";
-	}else{
-		$image="";
-	}
+if(file_exists("../image_patient/$img")){
+
+	$image="<IMG SRC='../image_patient/$img' WIDTH='100' HEIGHT='150' BORDER='1' ALT=''>";
+}else{
+	$image="";
+}
 	
 ?>		
 <table  border="0">
-  <tr>
-    <td>ผู้ป่วยนอก</td>
-   <td rowspan="5" valign="top">
-   <?=$image;?>
- 
- </td>
-  </tr>
-  <tr>
-     <td>HN :<?=$cHn;?></td>
-    </tr>
-  <tr>
-    <td>VN :<?=$tvn;?></td>
-    </tr>
-  <tr>
-   <td><?=$cPtname;?></td>
-    </tr>
-  <tr>
-    <td><font color='#FF0000' style='font-size:18px'>อายุ: <?=$age;?></font></td>
-    </tr>
-    <tr>
-    <td><font color='#FF0000' style='font-size:18px'><?=$idguard;?></font></td>
-    </tr>
-      <tr>
-    <td><font color='#FF0000' style='font-size:18px'><?=$goup;?></font></td>
-    </tr>
+	<tr>
+		<td>ผู้ป่วยนอก</td>
+		<td rowspan="5" valign="top">
+		<?=$image;?>
+		</td>
+	</tr>
+	<tr>
+		<td>HN :<?=$cHn;?></td>
+	</tr>
+	<tr>
+		<td>VN :<?=$tvn;?></td>
+	</tr>
+	<tr>
+		<td><?=$cPtname;?></td>
+	</tr>
+	<tr>
+		<td><font color='#FF0000' style='font-size:18px'>อายุ: <?=$age;?></font></td>
+	</tr>
+	<tr>
+		<td><font color='#FF0000' style='font-size:18px'><?=$idguard;?></font></td>
+	</tr>
+	<tr>
+		<td><font color='#FF0000' style='font-size:18px'><?=$goup;?></font></td>
+	</tr>
 </table>
 
  <? 

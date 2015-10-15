@@ -37,9 +37,8 @@ class Mainpage extends Controller
 			$_SESSION['sOfficer'] = $user['name'];
 			$_SESSION['sRowid'] = $user['row_id'];
 			$_SESSION['sLevel'] = $user['level'];
-		
+			
 			$this->redirect('hellos');
 		}
-		
 	}
 }

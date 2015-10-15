@@ -58,9 +58,34 @@ WHERE thidate >= '$date1-01' AND thidate <= '$date1-12';
 ";
 mysql_query($sql_temp);
 
-// จำนวนผู้ป่วยทั้งหมดในปีนี้
-$query = mysql_query("SELECT COUNT(row_id) AS total FROM hyper_temp");
-$all_user = mysql_fetch_assoc($query);
+/*
+// จำนวนผู้ป่วยทั้งหมดที่เข้าเคส
+$sql = "
+SELECT COUNT(id) AS total 
+FROM hyper_temp
+WHERE (`bp1` != '' OR `bp2` != '') 
+AND (
+	( bp1 <130 AND bp2 <80 AND (joint_disease_dm = 'Y' OR joint_disease_nephritic = 'Y' OR joint_disease_myocardial = 'Y' OR joint_disease_paralysis = 'Y') )
+	OR
+	( bp1 < 140 AND bp2 < 90 AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '') )
+)
+";
+$query = mysql_query($sql);
+$test = mysql_fetch_assoc($query);
+*/
+
+// จำนวนผู้ป่วย HT ทั้งหมดที่ไม่สนใจเคสต่างๆ
+$sql = "
+SELECT COUNT(`hn`) AS `rows`, DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`
+FROM hyper_temp
+GROUP BY MONTH(`thidate`)
+";
+$q = mysql_query($sql);
+$all_year = array();
+while($item = mysql_fetch_assoc($q)){
+	$all_year[$item['thidate']] = $item['rows'];
+}
+
 
 if(isset($_POST['search']) && $_POST['search'] == 'search'){
     
@@ -117,8 +142,10 @@ GROUP BY MONTH( thidate );
 			";
 			$q = mysql_query($sql);
 			$lists = array();
+			$in_month = array();
 			while($item = mysql_fetch_assoc($q)){
 				$lists[$item['thidate']] = $item['rows'];
+				$in_month[$item['thidate']] = $item['rows'];
 			}
 			
 			foreach($months AS $key => $value){
@@ -152,6 +179,7 @@ GROUP BY MONTH( thidate );
 			$lists = array();
 			while($item = mysql_fetch_assoc($q)){
 				$lists[$item['thidate']] = $item['rows'];
+				$in_month[$item['thidate']] += $item['rows'];
 			}
 			
 			foreach($months AS $key => $value){
@@ -169,6 +197,46 @@ GROUP BY MONTH( thidate );
 			}
 			?>
 		<tr/>
+		<tr>
+			<td>จำนวนผู้ป่วยที่เข้าเคสในแต่ละเดือน</td>
+			<td></td>
+			<?php
+			
+			foreach($months AS $key => $value){
+				$key_search = "$date1-$key";
+				
+				$real_val = '';
+				if( !is_null($in_month[$key_search]) ){
+					$real_val = $in_month[$key_search];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
+				</td>
+				<?php
+			}
+			?>
+		</tr>
+		<tr>
+			<td>จำนวนผู้ป่วย HT ในแต่ละเดือน</td>
+			<td></td>
+			<?php
+			
+			foreach($months AS $key => $value){
+				$key_search = "$date1-$key";
+				
+				$real_val = '';
+				if( !is_null($all_year[$key_search]) ){
+					$real_val = $all_year[$key_search];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
+				</td>
+				<?php
+			}
+			?>
+		</tr>
 	</table>
 <?php } // End if submit ?>
 <?php
