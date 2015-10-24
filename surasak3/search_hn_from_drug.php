@@ -1,27 +1,19 @@
 <?php
 include 'bootstrap.php';
 
-$drug_name = isset($_REQUEST['drug_name']) ? trim($_REQUEST['drug_name']) : false ;
+$search = isset($_REQUEST['search']) ? trim($_REQUEST['search']) : false ;
 $year = isset($_REQUEST['year']) ? trim($_REQUEST['year']) : date('Y') + 543 ;
 
-$title = 'ระบบแสดงจำนวนผู้ใช้ยา';
+$title = 'ระบบแสดงราชื่อผู้ป่วยที่ใช้ยา Warfarin';
 include 'templates/classic/header.php';
 include 'templates/classic/nav.php';
 
 ?>
 <div class="site-center">
-	<div class="col">
+	<div class="col" class="no-print">
 		<div class="cell">
 			<form class="col" action="search_hn_from_drug.php" method="post">
-				<div><h3>จำนวนผู้ป่วยที่ใช้ยาใน รพ.</h3></div>
-				<div class="col">
-					<div class="width-2of5">
-						ค้นหาตามชื่อสามัญ: 
-					</div>
-					<div>
-						<input type="text" name="drug_name" id="drug_name" value="<?php echo $drug_name;?>">
-					</div>
-				</div>
+				<div><h3>ระบบแสดงราชื่อผู้ป่วยที่ใช้ยา Warfarin</h3></div>
 				<div class="col">
 					<div class="width-2of5">
 						เลือกปีแสดงผล: 
@@ -38,6 +30,7 @@ include 'templates/classic/nav.php';
 					<div class="width-2of5"></div>
 					<div>
 						<button type="submit">ค้นหา</button>
+						<input type="hidden" name="search" value="search">
 					</div>
 				</div>
 			</form>
@@ -45,37 +38,39 @@ include 'templates/classic/nav.php';
 	</div>
 	<?php
 	DB::load();
-	if( $drug_name ){
-		
-		if( strlen($drug_name) < 3 ){
-			echo 'กรุณาใช้คำค้นที่มากกว่า 3 ตัวอักษร';
-			exit;
-		}
+	if( $search ){
 	?>
 	<div class="col">
 		<div class="cell">
 			<div class="col">
-				<h3>ปี <?php echo $year; ?></h3>
+				<h3>รายชื่อผู้ป่วยที่ใช้ยา Warfarin ปี <?php echo $year; ?></h3>
 			</div>
 			<table>
 				<thead>
 					<tr>
 						<th>#</th>
 						<th>ชื่อยา</th>
-						<th>จำนวนผู้ใช้ยา</th>
+						<th>วันที่หมอจ่ายยา</th>
+						<th>HN</th>
+						<th>ชื่อผู้ป่วย</th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
+					
 					$sql = "
-					SELECT a.`drugcode`,a.`tradname`,a.`genname`,COUNT(b.`row_id`) AS `row`
-					FROM `druglst` AS a
-					LEFT JOIN `ddrugrx` AS b ON b.`drugcode` = a.`drugcode`
-					WHERE a.`genname` LIKE :drug_name AND b.`date` LIKE :year_select
-					GROUP BY a.`genname`
+					SELECT b.`drugcode`,b.`tradname`,b.`hn`,b.`date` AS `doctor_date`,c.`yot`,c.`name`,c.`surname`
+					FROM 
+					`ddrugrx` AS b  
+					LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`
+					LEFT JOIN `dphardep` AS a ON a.`date` = b.`date`
+					WHERE b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
+					AND a.`dr_cancle` IS NULL 
+					AND b.`date` LIKE :year_select 
+					ORDER BY b.`date` ASC
 					";
+					
 					$items = DB::select($sql, array(
-						':drug_name' => "%$drug_name%",
 						':year_select' => "$year%"
 					));
 					
@@ -85,8 +80,10 @@ include 'templates/classic/nav.php';
 					?>
 					<tr>
 						<td align="center"><?php echo $i;?></td>
-						<td><?php echo $item['genname'].' ('.$item['tradname'].')'; ?></td>
-						<td><?php echo $item['row'];?></td>
+						<td><?php echo $item['tradname']; ?></td>
+						<td><?php echo $item['doctor_date']; ?></td>
+						<td><?php echo $item['hn']; ?></td>
+						<td><?php echo $item['yot'].' '.$item['name'].' '.$item['surname'];?></td>
 					</tr>
 					<?php $i++; ?>
 					<?php } ?>

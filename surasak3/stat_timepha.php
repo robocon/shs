@@ -15,13 +15,22 @@ include("connect.php");
 </style>
 </head>
 <body>
-<form name="timeline" method="post" action="<?php echo $_SERVER['PHP_SELF']?>">
-	<span class="font1">โปรแกรมสรุปเวลาประจำวันทั้งหมด || <a href="stat_timephaarmy.php">โปรแกรมสรุปเวลาประจำวันทหารและครอบครัว</a> || <a href="stat_timephaarmymount.php">สรุปเวลาประจำเดือนทหารและครอบครัว</a><br />
-	<br />
+	<div class="font1">
+		<a href="../nindex.htm" class="forntsarabun"><< ไปเมนูหลัก >></a>
+	</div>
+	<div class="font1">
+		โปรแกรมสรุปเวลาประจำวันทั้งหมด 
+		|| <a href="stat_timephaarmy.php">โปรแกรมสรุปเวลาประจำวันทหารและครอบครัว</a> 
+		|| <a href="stat_timephaarmymount.php">สรุปเวลาประจำเดือนทหารและครอบครัว</a> 
+		|| <a href="stat_timepha11.php">สรุปเวลาประจำเดือนทั้งหมดช่วงเวลา 11:30-13:00 น.</a> 
+	</div>
+	<div>&nbsp;</div>
+	
+<form name="timeline" method="post" action="<?php echo $_SERVER['PHP_SELF']?>" class="font1">
 	<?php
-	$d=date("d");
-	$m=date("m");
-	$year=date("Y");
+	$d = isset($_POST['d1']) ? trim($_POST['d1']) : date("d") ;
+	$m = isset($_POST['m1']) ? trim($_POST['m1']) : date("m") ;
+	$year = isset($_POST['yr1']) ? trim($_POST['yr1']) : date("Y") ;
 	?>
 	วันที่ 
 	<select name="d1">
@@ -50,7 +59,7 @@ include("connect.php");
 		}
 		?>
 	</select>
-	พ.ศ.
+	ปีพ.ศ.
 	<select name="yr1">
 		<?php
 		$year = date("Y")+543;
@@ -68,6 +77,7 @@ include("connect.php");
 		<?php 
 		$user_idguard = isset($_POST['idguard']) ? $_POST['idguard'] : false ; 
 		$guard_lists = array('mx01' => 'ทหาร/ครอบครัว', 'mx00' => 'พลเรือน');
+		$ptright = isset($_POST['ptright']) ? ( !empty($_POST['ptright']) ? $_POST['ptright'] : false ) : false ;
 		?>
 		<span>กลุ่ม:&nbsp;</span>
 		<select name="idguard" id="idguard">
@@ -77,11 +87,21 @@ include("connect.php");
 			<option value="<?php echo $key;?>" <?php echo $select; ?>><?php echo $item;?></option>
 			<?php } ?>
 		</select>
+		<?php
+		$ptrights = array('R01' => 'เงินสด','R03' => 'โครงการเบิกจ่ายตรง','R07' => 'ประกันสังคม',);
+		?>
+		<span>สิทธิ์การรักษา</span>
+		<select name="ptright" id="ptright">
+			<option value="">ทั้งหมด</option>
+			<?php
+			foreach ($ptrights as $key => $item) {
+				$select = ( $key == $ptright ) ? 'selected="selected"' : '' ;
+				?><option value="<?php echo $key;?>" <?php echo $select;?>><?php echo $item;?></option><?php
+			}
+			?>
+		</select>
 	</div>
-	<a href="../nindex.htm" class="forntsarabun"><< ไปเมนูหลัก >></a>
-	<br />
-	<br />
-	<input name="okbtn" type="submit" value="  ตกลง  " class="font1"/>
+	<input name="okbtn" type="submit" value="ตกลง" class="font1"/>
 </form>
 
 <?php
@@ -89,11 +109,16 @@ if(isset($_POST['okbtn'])){
 	
 	$group_txt = '';
 	if( !empty($user_idguard) ){
-		$group_txt = ( $user_idguard == 'mx01' ) ? 'ทหาร/ครอบครัว' : 'พลเรือน' ;
+		$group_txt = 'กลุ่ม'.$guard_lists[$user_idguard];
+	}
+	
+	$pt_txt = '';
+	if( $ptright !== false ){
+		$pt_txt = 'สิทธิ์'.$ptrights[$ptright];
 	}
 	
 ?>
-	<center>โปรแกรมสรุปเวลาห้องจ่ายยาประจำวันที่ <?=$d1?>-<?=$m1?>-<?=$yr1?> <?php echo $group_txt;?></center> 
+	<center>โปรแกรมสรุปเวลาห้องจ่ายยาประจำวันที่ <?=$d1?>-<?=$m1?>-<?=$yr1?> <?php echo $group_txt;?> <?php echo $pt_txt;?></center> 
 	<table width="100%" class="font1" border="1" cellpadding="0" cellspacing="0">
 		<tr>
 			<td width="2%" rowspan="2" align="center">VN</td>
@@ -113,43 +138,81 @@ if(isset($_POST['okbtn'])){
 		
 		$ymd = $_POST['yr1']."-".$_POST['m1']."-".$_POST['d1'];
 		
-		if( !empty($user_idguard) ){
+		if( !empty($user_idguard) ){ // ถ้ามีการเลือกสิทธิ์
 			$pt = strtoupper($user_idguard);
 			
 			$query = "CREATE TEMPORARY TABLE `opday1` 
 			SELECT a.* 
-			FROM `opday` AS a LEFT JOIN `opcard` AS b ON b.`hn`=a.`hn`
+			FROM `opday` AS a 
+			LEFT JOIN `opcard` AS b ON b.`hn`=a.`hn`
 			WHERE a.`thidate` LIKE '$ymd%'
 			AND b.`idguard` LIKE '$pt%'";
 			
+			
 		}else{
 			$query = "CREATE TEMPORARY TABLE `opday1` 
-			SELECT * FROM `opday` 
-			WHERE `thidate` LIKE '$ymd%'";
+			SELECT * FROM `opday` AS a 
+			WHERE a.`thidate` LIKE '$ymd%'";
+			
 		}
 		
+		if($ptright !== false){
+			$query .= " AND a.`ptright` LIKE '$ptright%'";
+		}
+			
+		// Temp opd
+		// $sql = "
+		// CREATE TEMPORARY TABLE `opd_temp`
+		// SELECT * FROM `opd`
+		// WHERE `thidate` LIKE '$ymd%'
+		// ";
+		// echo "<pre>";
+		// var_dump($sql);
+		// mysql_query($sql);
+		
+		// Temp dphardep
+		$sql = "
+		CREATE TEMPORARY TABLE `dphardep_temp`
+		SELECT *
+		FROM `dphardep`
+		WHERE `date` LIKE '$ymd%'
+		";
+		mysql_query($sql);
 		$resultopday = mysql_query($query);
 		
-		$sql = "select * from opday1 order by thidate asc ";
+		$sql = "SELECT * FROM opday1 ORDER BY thidate ASC ";
 		$rows = mysql_query($sql);
 		$n=0;
 		$hh=0;
 		$ii=0;
 		$ss=0;
 		$countmx=0;
+		
+		$sum_all_time = 0;
+		
 		while($result = mysql_fetch_array($rows)){
-			$sql2 = "select thidate,dc_diag from opd  where thidate like '".$_POST['yr1']."-".$_POST['m1']."-".$_POST['d1']."%' and hn='".$result['hn']."' ";
 			
-			$rows2 = mysql_query($sql2);
-			$result2 = mysql_fetch_array($rows2);
+			// ตัวนี้ไม่ได้ใช้แล้ว
+			// $sql2 = "SELECT thidate,dc_diag 
+			// FROM opd_temp 
+			// WHERE hn='".$result['hn']."' ";
+			// $rows2 = mysql_query($sql2);
+			// $result2 = mysql_fetch_array($rows2);
 			
-			$sql3 = "select date,pharin,stkcutdate,pharout,pharout1 from dphardep where  dr_cancle is null and date like '".$_POST['yr1']."-".$_POST['m1']."-".$_POST['d1']."%' and hn='".$result['hn']."' ";
-			
+			// date=เวลาที่หมอตรวจเสร็จ
+			// pharin=รับใบสั่งยา
+			// pharout=เรียกรับ
+			$sql3 = "SELECT date,pharin,stkcutdate,pharout,pharout1 
+			FROM dphardep_temp 
+			WHERE dr_cancle is null 
+			AND hn='".$result['hn']."' ";
 			$rows3 = mysql_query($sql3);
 			$result3 = mysql_fetch_array($rows3);
 			
-			
-			$sql4 = "select  hn,idguard  from opcard where   hn='".$result['hn']."' and substring(idguard,1,4)='MX01' ";
+			$sql4 = "SELECT hn,idguard 
+			FROM opcard 
+			WHERE hn='".$result['hn']."' 
+			AND substring(idguard,1,4)='MX01' ";
 			$query4 = mysql_query($sql4);
 			$row4 = mysql_num_rows($query4);
 			if($row4 > 0){
@@ -162,7 +225,9 @@ if(isset($_POST['okbtn'])){
 				if($starttime && $lasttime!=""){
 					$n++;
 					$stringtime3=strtotime($lasttime) - strtotime($starttime);
-					$time3 = date("H:i:s",mktime(0,0,0+$stringtime3,date("m"),date("d"),date("Y")));	
+					$time3 = date("H:i:s",mktime(0,0,0+$stringtime3,date("m"),date("d"),date("Y")));
+					
+					$sum_all_time += $stringtime3;
 				}else{
 					$time3 = "-";
 				}
@@ -212,10 +277,11 @@ if(isset($_POST['okbtn'])){
 			<?php
 		}
 		//echo "$hh, $ii, $ss <br>";
-		$sumss=$ss/60;
-		$sumhh=$hh*60;
-		$sumtime=$sumhh+$ii+$sumss;
-		$avgtime=$sumtime/$count1;
+		$sumss = $ss / 60;
+		$sumhh = $hh * 60;
+		$sumtime = $sumhh + $ii + $sumss;
+		$avgtime = $sum_all_time / $count1;
+		$time_avg = date("H:i:s",mktime(0,0,0+($avgtime),date("m"),date("d"),date("Y"))); 
 		?>
 	</table>
 	<BR />
@@ -233,7 +299,7 @@ if(isset($_POST['okbtn'])){
 	
 	echo "จำนวนใบสั่งยาที่ใช้เวลาไม่เกิน 30 นาที จำนวน ".$sumtime2." คน";
 	echo "<br>";
-	echo "เฉลี่ยใช้เวลาการให้บริการ/คน ".number_format($avgtime,2)." นาที";
+	echo "เฉลี่ยใช้เวลาการให้บริการ/คน $time_avg นาที";
 }
 ?>
 </body>

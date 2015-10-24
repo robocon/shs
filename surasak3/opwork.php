@@ -487,91 +487,113 @@ $structure = '../image_patient';
 ?>
  
 
-<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
+<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target="_blank" href="kewadd.php" onclick="add_queue(event);">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php">คิวตรวจทันตกรรม(<?php $sql = "Select runno From runno where title ='kew2' ";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="kewadd2.php">คิวตรวจทันตกรรม(<?php $sql = "Select runno From runno where title ='kew2' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>) </a>
 &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd3.php">คิวสูติ(<?php $sql = "Select runno From runno where title ='kew3' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewadd3.php">คิวสูติ(<?php $sql = "Select runno From runno where title ='kew3' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
 
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd7.php">คิวตรวจตา(<?php $sql = "Select runno From runno where title ='kew7' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewadd7.php">คิวตรวจตา(<?php $sql = "Select runno From runno where title ='kew7' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php">คิวตรวจสุขภาพ(<?php $sql = "Select runno From runno where title ='kewchild' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewadd_chkup.php">คิวตรวจสุขภาพ(<?php $sql = "Select runno From runno where title ='kewchild' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
 
 <BR>
 &nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd6.php">คิวฝั่งเข็ม(<?php $sql = "Select runno From runno where title ='kew6' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewadd6.php">คิวฝั่งเข็ม(<?php $sql = "Select runno From runno where title ='kew6' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd5.php">มวลกระดูก(<?php $sql = "Select runno From runno where title ='kew5' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewadd5.php">มวลกระดูก(<?php $sql = "Select runno From runno where title ='kew5' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd4.php">ลบคิว</a>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;คิวคลินิกพิเศษ&nbsp;&nbsp;&nbsp;<a target=_TOP href="keweye.php">จักษุ(พ) </a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewmed.php">อยุรกรรม(พ)(<?php $sql = "Select runno From runno where title ='kewmed' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewadd4.php">ลบคิว</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;คิวคลินิกพิเศษ&nbsp;&nbsp;&nbsp;<a target="_blank" href="keweye.php">จักษุ(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewmed.php">อยุรกรรม(พ)(<?php $sql = "Select runno From runno where title ='kewmed' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
-&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewsurg.php">ศัลยกรรม(พ) </a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewogb.php">สูติ(พ)(<?php $sql = "Select runno From runno where title ='kewogb' ";
+&nbsp;&nbsp;&nbsp;<a target="_blank" href="kewsurg.php">ศัลยกรรม(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewogb.php">สูติ(พ)(<?php $sql = "Select runno From runno where title ='kewogb' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewent.php">หู คอ จมูก(พ)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewchild.php">กุมารเวช(พ)</a>
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewent.php">หู คอ จมูก(พ)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewchild.php">กุมารเวช(พ)</a>
 &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewortho.php">ศัลยกรรมกระดูก(พ)(<?php $sql = "Select runno From runno where title ='kewortho' ";
+&nbsp;&nbsp;&nbsp<a target="_blank" href="kewortho.php">ศัลยกรรมกระดูก(พ)(<?php $sql = "Select runno From runno where title ='kewortho' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
 <br>2...ส่งข้อมูล&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="sentkew.php">ส่งข้อมูลค้นบัตร </a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="sentopd.php">ส่งข้อมูลคัดแยกกรณีออกใบสั่งยาเอง</a>
+<a target="_blank" href="sentkew.php">ส่งข้อมูลค้นบัตร </a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="sentopd.php">ส่งข้อมูลคัดแยกกรณีออกใบสั่งยาเอง</a>
 
 <br> <br>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="rxform.php">พิมพ์ใบสั่งยา </a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="rxform9.php">พิมพ์ใบสั่งยาไม่มีแพ้ยา </a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="rxform.php">พิมพ์ใบสั่งยา </a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="rxform9.php">พิมพ์ใบสั่งยาไม่มีแพ้ยา </a>&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint2.php?cHn=<?=$cHn;?>">พิมพ์บัตรต่อประวัติผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint4.php">พิมพ์บัตรต่อประวัติผู้ป่วยใบแรก</a>
+<a target="_blank" href="opdprint2.php?cHn=<?=$cHn;?>">พิมพ์บัตรต่อประวัติผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="opdprint4.php">พิมพ์บัตรต่อประวัติผู้ป่วยใบแรก</a>
 <br>
 &nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>
+<a target="_blank" href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>
 &nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint1bc.php">พิมพ์บัตรผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint6.php">พิมพ์ กท.16/1</a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="opdprint1bc.php">พิมพ์บัตรผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="opdprint6.php">พิมพ์ กท.16/1</a>&nbsp;&nbsp;&nbsp;
 
-<a target=_TOP href="edprint.php">พิมพ์ใบใช้ยานอกบัญชี</a>
+<a target="_blank" href="edprint.php">พิมพ์ใบใช้ยานอกบัญชี</a>
 &nbsp;&nbsp;&nbsp;<a target=_blank href="FR-IPC-001_8.php?cHn=<?=$cHn;?>">แบบการรับนอนรักษาต่อ</a><br>
 &nbsp;&nbsp;&nbsp;
-<a target=_TOP href="vnprint.php">พิมพ์ใบ ตรวจโรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="vnprint_l.php">ใบติด OPDCARD</a>
+<a target="_blank" href="vnprint.php">พิมพ์ใบ ตรวจโรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="vnprint_l.php">ใบติด OPDCARD</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_blank href="opdfullprint.php">ใบประวัติแบบเต็ม</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint7.php">สำเนาประวัติการรักษาพยาบาล</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target="_top" href="report_opt.php?cHn=<?=$cHn;?>">สมัครจ่ายตรง อปท.</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdcard_reg.php?cHn=<?=$cHn;?>&cVn=<?=$nVn;?>">ใบต่อรายวัน</a><br><br><br>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="opdprint7.php">สำเนาประวัติการรักษาพยาบาล</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="report_opt.php?cHn=<?=$cHn;?>">สมัครจ่ายตรง อปท.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="opdcard_reg.php?cHn=<?=$cHn;?>&cVn=<?=$nVn;?>">ใบต่อรายวัน</a><br><br><br>&nbsp;&nbsp;&nbsp;
 
 <a  href="opipcard.php" onclick="return chType();">รับป่วยเป็นคนไข้ใน (admit)</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
+<a target="_blank" href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
-
+<a target="_blank" href="otherpage.php">เก็บเงินอื่นๆ</a>
+<script type="text/javascript">
+	var queue = 0,
+	find_doc = 0;
+	
+	function add_queue(event){
+		if(find_doc == 0){
+			find_doc = 1;
+		}else{
+			var c = confirm('คุณได้เพิ่มคิวไปเรียบร้อยแล้ว คลิก OK เพื่อออกคิวใหม่');
+			if( c == false ){
+				
+				event.returnValue = false;
+				
+				// if(event.returnValue){ // Support IE7
+				// 	event.returnValue = false;
+				// }else{
+				// 	event.preventDefault();
+				// }
+				return false;
+			}
+		}
+	}
+</script>
 <?php
 include("unconnect.inc");
 ?>

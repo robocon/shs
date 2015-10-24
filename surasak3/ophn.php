@@ -84,6 +84,11 @@ $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
 			}
 	}else{
 			echo"<FONT SIZE='' COLOR='#FF0033'>ผู้ป่วยไม่มีเลขประจำตัวประชาชน</FONT>";
+			?>
+			<script type="text/javascript">
+				alert('ผู้ป่วยไม่มีเลขประจำตัวประชาชน');
+			</script>
+			<?php
 		}
 
 
