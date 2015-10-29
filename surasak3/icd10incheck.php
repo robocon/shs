@@ -21,7 +21,10 @@
 <TABLE>
 <TR>
 	<TD align="right">ICD10 หลัก :</TD>
-	<TD><input type="text" name="icd10" size="20"></TD>
+	<TD>
+		<input type="text" name="icd10" size="20" value="<?php echo isset( $_POST['icd10'] ) ?  $_POST['icd10'] : '' ;?>">
+		<span>* ตัวอย่างการเลือกตามช่วง เช่น D00-D22</span>
+	</TD>
 </TR>
 <TR>
 	<TD align="right">ICD10 รอง :</TD>
@@ -37,7 +40,7 @@
 </TR>
 <TR id="row1">
 	<TD align="right" valign="top">ปี :</TD>
-	<TD><input type="text" name="thiyr" size="10"> <BR>*ถ้าต้องการเลือกเดือนหรือวันด้วย ให้ใส่ปีและตามด้วยเดือนและวัน เช่น 2550-06-03 เป็นต้น
+	<TD><input type="text" name="thiyr" size="10" value="<?php echo isset($_POST['thiyr']) ? $_POST['thiyr'] : date('Y')+543 ;?>"> <BR>*ถ้าต้องการเลือกเดือนหรือวันด้วย ให้ใส่ปีและตามด้วยเดือนและวัน เช่น 2550-06-03 เป็นต้น
 </TD>
 </TR>
 <TR id="row2" style="display:none">
@@ -149,46 +152,87 @@
 </tr>
 
 <?php
- 
-
-  $num=0;
+$num=0;
 If (!empty($B1)){
-    include("connect.inc");
-    global $icd10;
 	
-	$icd101=$_POST['icd101'];
-	$icd102=$_POST['icd102'];
+include("connect.inc");
+global $icd10, $thiyr;
+
+$icd10 = trim(strtoupper($_POST['icd10']));
+$icd101 = $_POST['icd101'];
+$icd102 = $_POST['icd102'];
+
+if( empty($icd10) AND empty($icd101) AND empty($icd102) ){
+	echo '<p style="color: red;">กรุณาเลือก ICD10 หลัก, รอง หรือ โรคแทรก</p>';
+	exit;
+}
+
+
+// เงื่อนไขการดู ICD10
+$statement = array();
+if( $icd10 != '' ){ 
 	
+	$match = preg_match('/\-/', $icd10);
 	
-   
+	// If not match range format
+	if( $match === 0 ){
+		$statement[] = " `icd10` LIKE '%$icd10%' " ;
+	}else{
+		list($min_txt, $max_txt) = explode('-', $icd10);
+		
+		$key_txt = substr($min_txt, 0, 1);
+		$num_start = (float) substr($min_txt, 1);
+		$num_end = (float) substr($max_txt, 1);
+		$sprint_len = strlen(substr($max_txt, 1));
+		
+		$filter_lists = array();
+		for ($num_start; $num_start <= $num_end; $num_start++) { 
+			$test_icd10 = sprintf('%0'.$sprint_len.'d', $num_start);
+			$filter_lists[] = " `icd10` LIKE '$key_txt$test_icd10%' ";
+		}
+		$test_final = implode( ' OR ', $filter_lists);
+		
+		$statement[] = ' ( '.$test_final.' ) ';
+	}
+}
+
+if( $icd101 != '' ){
+	$statement[] = " `comorbid` LIKE '%$icd101%'";
+}
+
+if( $icd102 != '' ){
+	$statement[] = " `complica` LIKE '%$icd102%'";
+}
+
+$where1 = '';
+if( !empty($statement) ){
+	$where1 = '( '.implode(' AND ', $statement).' )';
+}
+
+// Filter ตามวันที่
+$where = ( empty($where1) ? '' : ' AND ' );
 if($_POST["type"] == "2"){
-	$where = " and (date between '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND '".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:00' ) ";
+	$where .= " ( `date` between '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND '".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59' ) ";
 }else{
-	$where = " and date LIKE '$thiyr%' ";
+	$where .= " `date` LIKE '$thiyr%' ";
 }
 
 if($_POST["ptright"] != ""){
-	$where = " and ptright LIKE '".$_POST["ptright"]."%' ";
-}
-/*
-else if($icd10!='' && $icd101!=''){ // ช่อง 1,2 ไม่ว่าง
-$where1="(icd10 LIKE '%$icd10%'' AND  comorbid LIKE '%$icd101%')" ;	
-}else if($icd101!='' && $icd102!=''){// ช่อง 2,3 ไม่ว่าง
-$where1="(comorbid LIKE '%$icd101%'' AND  complica LIKE '%$icd102%')" ;	
-}else if($icd10!='' && $icd102!=''){// ช่อง1,3 ไม่ว่าง
-$where1="(icd10 LIKE '%$icd10%'' AND  complica LIKE '%$icd102%')" ;	
-}*/
-
-if( $icd10!='' || $icd101!='' || $icd102!=''){ 
-$where1="(icd10 LIKE '%$icd10%' AND  comorbid LIKE '%$icd101%' AND  complica LIKE '%$icd102%')" ;	
-}else{
-$where1="1 ";
+	$where .= " AND `ptright` LIKE '".$_POST["ptright"]."%' ";
 }
 
+$query = "
+SELECT MAX( `date` ) AS `date2`,`date`,`hn`,`an`,`ptname`,`diag`,`icd10`,`comorbid`,`dcdate`,`dctype`,`complica`
+FROM `ipcard` 
+WHERE $where1 $where 
+GROUP BY `hn`
+ORDER BY `date` ASC 
+";
 
-$query = "SELECT date,hn,an,ptname,diag,icd10, comorbid,dcdate, dctype ,complica FROM ipcard WHERE ".$where1."  ".$where." Order by  date ASC ";
 
-$result = mysql_query($query)or die("Query failed");
+// $query = "SELECT date,hn,an,ptname,diag,icd10, comorbid,dcdate, dctype ,complica FROM ipcard WHERE ".$where1."  ".$where." ORDER BY `date` ASC ";
+
+$result = mysql_query($query)or die( mysql_error() );
 
    
  while (list ($date,$hn,$an,$ptname,$diag,$icd10, $comorbid,$dcdate, $dctype ,$complica) = mysql_fetch_row ($result)) 
