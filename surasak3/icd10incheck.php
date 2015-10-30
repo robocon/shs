@@ -162,10 +162,10 @@ $icd10 = trim(strtoupper($_POST['icd10']));
 $icd101 = $_POST['icd101'];
 $icd102 = $_POST['icd102'];
 
-if( empty($icd10) AND empty($icd101) AND empty($icd102) ){
-	echo '<p style="color: red;">กรุณาเลือก ICD10 หลัก, รอง หรือ โรคแทรก</p>';
-	exit;
-}
+// if( empty($icd10) AND empty($icd101) AND empty($icd102) ){
+// 	echo '<p style="color: red;">กรุณาเลือก ICD10 หลัก, รอง หรือ โรคแทรก</p>';
+// 	exit;
+// }
 
 
 // เงื่อนไขการดู ICD10
@@ -235,7 +235,7 @@ ORDER BY `date` ASC
 $result = mysql_query($query)or die( mysql_error() );
 
    
- while (list ($date,$hn,$an,$ptname,$diag,$icd10, $comorbid,$dcdate, $dctype ,$complica) = mysql_fetch_row ($result)) 
+ while (list ($date2,$date,$hn,$an,$ptname,$diag,$icd10, $comorbid,$dcdate, $dctype ,$complica) = mysql_fetch_row ($result)) 
 {
         $Total =$Total+$amount; 
 

@@ -211,46 +211,80 @@ $month["01"] = "มกราคม";
 If (!empty($icd10)){
     include("connect.inc");
     global $icd10;
-   
+	
+	$icd10 = trim(strtoupper($_POST['icd10']));
+	$icd101 = $_POST['icd101'];
 
-if($_POST["list_age"] != "" && $_POST["age"] != ""){
+	if($_POST["list_age"] != "" && $_POST["age"] != ""){
 		$str_age = mktime(0,0,0,date("m"),date("d"),date("Y")-$_POST["age"]);
 		$ste = (date("Y",$str_age)+543).date("-m-d",$str_age);
-		$where_age = " AND hn in (Select hn From opcard where dbirth ".$_POST["list_age"]." '".$ste."') ";
-
-   }
+		$where_age = " AND `hn` IN (SELECT `hn` FROM `opcard` WHERE `dbirth` ".$_POST["list_age"]." '".$ste."') ";
+	}
 	
 	if($_POST["type"] == "2"){
-		$where = " and (thidate between '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND '".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:00' ) ";
+		$where = " AND ( `thidate` BETWEEN '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND '".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59' ) ";
 	}else{
-		$where = " and thidate LIKE '$thiyr%' ";
+		$where = " AND `thidate` LIKE '$thiyr%' ";
 	}
 	
-	if($_POST["search1"] == "2"){
-		$where2 = "group by hn  ";
-	}else{
-		$where2 = "";
+	// ICD10 หลัก
+	$statement = array();
+	if( $icd10 != '' ){ 
+		
+		$match = preg_match('/\-/', $icd10);
+		
+		// If not match range format
+		if( $match === 0 ){
+			$statement[] = " `icd10` LIKE '%$icd10%' " ;
+		}else{
+			list($min_txt, $max_txt) = explode('-', $icd10);
+			
+			$key_txt = substr($min_txt, 0, 1);
+			$num_start = (float) substr($min_txt, 1);
+			$num_end = (float) substr($max_txt, 1);
+			$sprint_len = strlen(substr($max_txt, 1));
+			
+			$filter_lists = array();
+			for ($num_start; $num_start <= $num_end; $num_start++) { 
+				$test_icd10 = sprintf('%0'.$sprint_len.'d', $num_start);
+				$filter_lists[] = " `icd10` LIKE '$key_txt$test_icd10%' ";
+			}
+			$test_final = implode( ' OR ', $filter_lists);
+			
+			$statement[] = ' ( '.$test_final.' ) ';
+		}
 	}
 	
+	// ICD10 รอง
+	if( $icd101 != '' ){
+		$statement[] = " `icd101` LIKE '%$icd101%'";
+	}
 	
+	$icd_where = ' 1 ';
+	if( !empty($statement) ){
+		$icd_where = '( '.implode(' AND ', $statement).' )';
+	}
 
- $query = "SELECT thidate,hn,ptname,diag,icd10,icd101, ptright FROM opday WHERE icd10 LIKE '%$icd10%'  and icd101 LIKE '%$icd101%' AND ptright like '".$_POST["ptright"]."%' ".$where." ".$where_age." ".$where2 ;
-
-    $result = mysql_query($query)
-        or die("Query failed");
+	$query = "SELECT MAX(`thidate`) AS `date`, `thidate`,`hn`,`ptname`,`diag`,`icd10`,`icd101`,`ptright` 
+	FROM `opday` 
+	WHERE $icd_where 
+	AND `ptright` LIKE '".$_POST["ptright"]."%' $where $where_age 
+	GROUP BY `hn`
+	ORDER BY `thidate` ASC 
+	";
+	$result = mysql_query($query) or die( mysql_error() );
 
    
- while (list ($thidate,$hn, $ptname,$diag,$icd10,$icd101,$ptright) = mysql_fetch_row ($result)) 
+while (list ($date,$thidate,$hn, $ptname,$diag,$icd10,$icd101,$ptright) = mysql_fetch_row ($result)) 
 {
-        $Total =$Total+$amount; 
-
-
- $num++;
-
-
- $sql = "SELECT idcard,address,tambol,ampur,changwat,phone,dbirth FROM opcard WHERE  hn = '".$hn."' limit 1";
-
-   list($idcard,$address,$tambol,$ampur,$changwat,$phone,$dbirth) = mysql_fetch_row(Mysql_Query($sql));
+	$Total =$Total+$amount; 
+	$num++;
+	
+	$sql = "SELECT idcard,address,tambol,ampur,changwat,phone,dbirth 
+	FROM opcard 
+	WHERE  hn = '$hn' limit 1";
+	
+	list($idcard,$address,$tambol,$ampur,$changwat,$phone,$dbirth) = mysql_fetch_row(Mysql_Query($sql));
 
 
  print (" <tr>\n".       
