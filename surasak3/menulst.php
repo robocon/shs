@@ -1,19 +1,25 @@
 <?php
     session_start();
-    $sOfficer="";
-	$smenucode = "";
-	$sRowid="";
-	$sLevel="";
-    session_register("sOfficer");
-	session_register("smenucode");
-	session_register("sRowid");
-	session_register("sLevel");
+    
+    
+    $sOfficer = $_SESSION['sOfficer'];
+	$smenucode = $_SESSION['smenucode'];
+	$sRowid = $_SESSION['sRowid'];
+	$sLevel = $_SESSION['sLevel'];
+    // session_register("sOfficer");
+	// session_register("smenucode");
+	// session_register("sRowid");
+	// session_register("sLevel");
+    
+    // $_SESSION[''];
+    
 //error_reporting (E_ALL ^ E_NOTICE);
 
     include("connect.inc");
 //    print "$username<br>";
 //    print "$password<br>";
     $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+    
     $result = mysql_query($query) or die( mysql_error($Conn) );
         for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
@@ -24,6 +30,7 @@
         if(!($row = mysql_fetch_object($result)))
             continue;
          }
+         
     if(mysql_num_rows($result)){
          $sOfficer=$row->name;
          $menucode=$row->menucode;

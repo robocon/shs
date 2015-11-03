@@ -1,4 +1,13 @@
 <?php
+session_start();
+function cal_date_diff($str_start, $str_end){
+	$str_start = strtotime($str_start);
+	$str_end = strtotime($str_end);
+	$nseconds = $str_end-$str_start;
+	$ndays = round($nseconds/86400);
+	return $ndays;
+}
+
 // error_reporting(0);
 if(!isset($username)){
 	$username = $_POST['username'];
@@ -10,17 +19,12 @@ if(!isset($password)){
 
     $sIdname = $username;
     $sPword = $password;
-    session_register("sIdname");
-    session_register("sPword");
-	session_register("sRowid");
-	function date_diff($str_start, $str_end){
-		$str_start=strtotime($str_start);
-		$str_end=strtotime($str_end);
-		$nseconds=$str_end-$str_start;
-		$ndays=round($nseconds/86400);
-		
-		return $ndays;
-	}
+	
+	$_SESSION['sIdname'] = '';
+	$_SESSION['sPword'] = '';
+	$_SESSION['sRowid'] = '';
+	
+	
     print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
     print "<br>";
     print "<font face='THSarabunPSK'><CENTER><br>";
@@ -48,14 +52,22 @@ if(!isset($password)){
 		
 	// มีชื่อและรหัสผ่านอยู่ในฐานข้อมูล
     if(mysql_num_rows($result)){
-		$sRowid=$row->row_id;
+		$sRowid = $row->row_id;
 		//$sql=mysql_query("UPDATE inputm SET date_pword='".date("Y-m-d H:s:i")."' WHERE row_id='$sRowid'");
-		$sDatepass=$row->date_pword;
-		$sPass=$row->pword;
-		$datepass=substr($sDatepass,0,10);
-		$datenow=date("Y-m-d");
+		$sDatepass = $row->date_pword;
+		$sPass = $row->pword;
+		$datepass = substr($sDatepass,0,10);
+		$datenow = date("Y-m-d");
 		
-		$df=date_diff($datepass,$datenow);
+		// $df = cal_date_diff($datepass, $datenow);
+		
+		// 
+		$_SESSION['sIdname'] = $row->idname;
+		$_SESSION['sPword'] = $row->pword;
+		$_SESSION['smenucode'] = $row->menucode;
+		$_SESSION['sOfficer'] = $row->name;
+		$_SESSION['sRowid'] = $row->row_id;
+		$_SESSION['sLevel'] = $row->level;
 		
 		// เพิ่ม log กรณีที่ login ผ่านเรียบร้อยแล้ว
 		$user = mysql_fetch_assoc(mysql_query($query));

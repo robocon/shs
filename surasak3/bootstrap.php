@@ -161,7 +161,7 @@ class DB{
 
 			// Keep error into log file
 			$this->set_log($e);
-			return false;
+			return $e;
 			
 		}
 	}
