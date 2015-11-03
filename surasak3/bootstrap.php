@@ -4,7 +4,7 @@ error_reporting(1);
 ini_set('display_errors', 1);
 session_start();
 
-if(!defined(NEW_SITE)){
+if(!defined('NEW_SITE')){
 	
 	if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
 		header('Content-Type: text/html; charset=tis-620');
@@ -136,7 +136,7 @@ class DB{
 			
 			// Keep error into log file
 			$this->set_log($e);
-			$result = false;
+			return $e->getMessage();
 		}
 	}
 	
@@ -161,7 +161,7 @@ class DB{
 
 			// Keep error into log file
 			$this->set_log($e);
-			return $e;
+			return $e->getMessage();
 			
 		}
 	}
