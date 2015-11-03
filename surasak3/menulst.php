@@ -1,51 +1,57 @@
 <?php
-session_start ();
-include ("connect.inc");
+    session_start();
+    
+    
+    $sOfficer = $_SESSION['sOfficer'];
+	$smenucode = $_SESSION['smenucode'];
+	$sRowid = $_SESSION['sRowid'];
+	$sLevel = $_SESSION['sLevel'];
+    // session_register("sOfficer");
+	// session_register("smenucode");
+	// session_register("sRowid");
+	// session_register("sLevel");
+    
+    // $_SESSION[''];
+    
+//error_reporting (E_ALL ^ E_NOTICE);
 
-$sOfficer = "";
-$smenucode = "";
-$sRowid = "";
-$sLevel = "";
+    include("connect.inc");
+//    print "$username<br>";
+//    print "$password<br>";
+    $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+    
+    $result = mysql_query($query) or die( mysql_error($Conn) );
+        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+        if (!mysql_data_seek($result, $i)) {
+            echo "Cannot seek to row $i\n";
+            continue;
+        }
 
-$_SESSION ['sOfficer'] = NULL;
-$_SESSION ['smenucode'] = NULL;
-$_SESSION ['sRowid'] = NULL;
-$_SESSION ['sLevel'] = NULL;
-
-$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
-$result = mysql_query ( $query ) or die ( mysql_error ( $Conn ) );
-for($i = mysql_num_rows ( $result ) - 1; $i >= 0; $i --) {
-	if (! mysql_data_seek ( $result, $i )) {
-		echo "Cannot seek to row $i\n";
-		continue;
-	}
-	
-	if (! ($row = mysql_fetch_object ( $result )))
-		continue;
-}
-if (mysql_num_rows ( $result )) {
-	$sOfficer = $row->name;
-	$menucode = $row->menucode;
-	$_SESSION ["smenucode"] = $row->menucode;
-	$sRowid = $row->row_id;
-	$sLevel = $row->level;
-	$where_search = "";
-	// if($_SESSION["smenucode"] == "ADM"){
-	// /////แบบสอบถาม//////
-	/*
-	 * $query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
-	 * $result3 = mysql_query($query3) or die("Query failed");
-	 * $nrow3 = mysql_num_rows($result3);
-	 * if($nrow3==0){
-	 * ?>
-	 * <script>
-	 * window.open("assess/question_com.php",null,'height=550,width=850,scrollbars=1');
-	 * </script>
-	 * <?
-	 * }
-	 */
-	// //////////////////////////////
-	echo "
+        if(!($row = mysql_fetch_object($result)))
+            continue;
+         }
+         
+    if(mysql_num_rows($result)){
+         $sOfficer=$row->name;
+         $menucode=$row->menucode;
+		  $_SESSION["smenucode"]=$row->menucode;
+		$sRowid=$row->row_id;
+		 $sLevel=$row->level;
+$where_search= "";
+//if($_SESSION["smenucode"] == "ADM"){
+///////แบบสอบถาม//////
+/*$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
+$result3 = mysql_query($query3) or die("Query failed");
+$nrow3 = mysql_num_rows($result3);
+if($nrow3==0){
+	?>
+	<script>
+    window.open("assess/question_com.php",null,'height=550,width=850,scrollbars=1');
+    </script>
+	<?
+}*/
+////////////////////////////////
+echo "
 <FORM METHOD=POST ACTION=\"\">
 	<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
 </FORM>

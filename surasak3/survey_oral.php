@@ -70,7 +70,7 @@ function serialize_and_setmax($mouth_detail){
 if($action === 'save'){
 	
 	$item = serialize_and_setmax($_POST['mouth_detail']);
-	$list = $item['details'];
+	$lists = $item['details'];
 	$test_max_value = $item['max'];
 	
 	$sql = "
@@ -107,19 +107,17 @@ if($action === 'save'){
 		':mouth_detail' => $lists,
 		':max_status' => $test_max_value
 	);
+	
 	$insert = DB::exec($sql, $data);
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
-	if($insert === false){
-		$msg = 'บันทึกข้อมูลไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ';
-	}
+	// if($insert === false){
+	// 	$msg = 'บันทึกข้อมูลไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ';
+	// }
 	
 	$last_id = DB::get_lastId();
-	
 	redirect('survey_oral.php?task=fulldetail&id='.$last_id.'&print=yes', $msg);
 	exit;
 } else if( $action === 'save_edit' ){
-	
-	echo "<pre>";
 	
 	$item = serialize_and_setmax($_POST['mouth_detail']);
 	$list = $item['details'];
