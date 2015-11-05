@@ -84,10 +84,16 @@ function filter_post($items){
 	return $_POST;
 }
 
+/**
+ * ดึงค่า Session
+ */
 function get_session($name){
 	return $_SESSION[$name];
 }
 
+/**
+ * Redirect Page to any location
+ */
 function redirect($to = 'index.php', $msg = null){
 	if(!empty($msg)){
 		$_SESSION['x-msg'] = $msg ;
@@ -95,3 +101,80 @@ function redirect($to = 'index.php', $msg = null){
 	header("Location: $to");
 	exit;
 }
+
+
+function getDateList(){
+	
+}
+
+function getMonthList(){
+	
+}
+
+/**
+ * แสดงปีเป็น Dropdown
+ * $name	string	ชื่อของ input
+ * $thai	bool	เป็นตัวบอกว่าจะให้แสดงเป็นปี พศ หรือไม่
+ * $year	int		เป็นตัวกำหนดการแสดง selected
+ * range	mixed	กำหนดค่าน้อยสุดไปจนถึงมากสุดโดยใช้ปี คศ เป็นหลัก
+ * 
+ * @example
+ * getYearList('new_name', true, 2558, array(2556,2557,2558,2559));
+ * เป็นการตั้งชื่อ input ชื่อ new_name แสดงเป็นปี พศ และแสดงปี 2558 เป็นค่าเริ่มต้นโดยมีช่วงการแสดงผลตั้งแต่ปี 2556 ถึง 2559
+ */
+function getYearList($name = 'years', $thai = false, $year = null, $range = array()){
+	?>
+	<select name="$name">
+		<?php
+		$th_int = ( $thai === true ) ? 543 : 0 ;
+		if( !empty($range) ){
+			
+		}else{
+			$y_min = ( date("Y")+$th_int ) - 5 ;
+			$y_max = ( date("Y")+$th_int ) + 5 ;
+		}
+		for($a=$y_min;$a<$y_max;$a++){
+			?>
+			<option value="<?=$a?>" <?php if($year==$a) echo "selected='selected'"?>>
+				<?=$a?>
+			</option>
+			<?php
+		}
+		?>
+	</select>
+	<?php
+}
+
+/**
+ * ค.ศ. เป็น พ.ศ.
+ */
+if( !function_exists('ad_to_bc') ){
+	function ad_to_bc($time = null){
+		$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
+		return $time;
+	}
+}
+	
+if( !function_exists('cal_to_bc') ){
+	function cal_to_bc($match){
+		return ( $match['0'] + 543 );
+	}
+}
+
+/**
+ * พ.ศ. เป็น ค.ศ.
+ */
+if( !function_exists('bc_to_ad') ){
+	function bc_to_ad($time = null){
+		$time = preg_replace_callback('/^\d{4,}/', 'cal_to_ad', $time);
+		return $time;
+	}
+}
+	
+if( !function_exists('cal_to_ad') ){
+	function cal_to_ad($match){
+		return ( $match['0'] - 543 );
+	}
+}
+
+	

@@ -75,8 +75,18 @@ include 'templates/classic/nav.php';
 					));
 					
 					$i = 1;
+					$count_drugs = array();
 					foreach ($items as $key => $item) {
-						$drug_code = trim($item['drugcode']);
+						// $drug_code = trim($item['drugcode']);
+						
+						
+						$trade_key = trim($item['tradname']);
+						
+						if( !$count_drugs[$trade_key] ){
+							$count_drugs[$trade_key] = 1;
+						}else{
+							$count_drugs[$trade_key] += 1;
+						}
 					?>
 					<tr>
 						<td align="center"><?php echo $i;?></td>
@@ -89,6 +99,14 @@ include 'templates/classic/nav.php';
 					<?php } ?>
 				</tbody>
 			</table>
+			<div style="margin-top: 1em;">
+				<p>จำนวนรวมของยาแต่ละชนิด</p>
+				<?php 
+				foreach($count_drugs as $key => $item_rows){
+					?><p><b><?php echo $key;?></b>: <?php echo $item_rows;?></p><?php
+				}
+				?>
+			</div>
 		</div>
 	</div>
 	<?php } ?>
