@@ -6,7 +6,7 @@
       &#3627;&#3609;&#3656;&#3623;&#3618;&#3648;&#3610;&#3636;&#3585;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <?php
     include("connect.inc");
-    $q = mysql_query("SELECT `id`,`name` FROM `departments` WHERE `status` = 'y' ");
+    $q = mysql_query("SELECT `id`,`name` FROM `departments` WHERE `status` = 'y' AND `phar` = 'y' ");
     ?>
     <select size="1" name="depcode">
         <?php while($item = mysql_fetch_assoc($q)){ ?>
