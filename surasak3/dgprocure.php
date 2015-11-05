@@ -139,6 +139,7 @@ if(!empty($dgcode)){
 	$cPackpri=$row->packpri;
 	$cPackpri_vat=$row->packpri_vat;
 	$cAmountfree=$row->amountfree;
+    $edprice = $row->edpri;
                          }  
           if(!mysql_num_rows($result)){
                 die("ไม่พบรหัส  : $dgcode  อาจมีสาเหตุจาก<br>
@@ -198,8 +199,8 @@ if(!empty($dgcode)){
         <td align="right">&nbsp;</td>
         <td align="left">&nbsp;</td>
         <td align="right">&nbsp;</td>
-        <td align="right">&nbsp;</td>
-        <td>&nbsp;</td>
+        <td align="right">ราคากลาง : </td>
+        <td><?php echo $edprice;?></td>
       </tr>
       <tr>
         <td align="right">รหัสยา <a target="_BLANK" href="drugcode.php">(ช่วยเหลือ)</a> :</td>
