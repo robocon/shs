@@ -2,7 +2,6 @@
 // Set about php.ini
 error_reporting(1);
 ini_set('display_errors', 1);
-
 session_start();
 
 if(!defined('NEW_SITE')){
@@ -11,7 +10,7 @@ if(!defined('NEW_SITE')){
 		header('Content-Type: text/html; charset=tis-620');
 	}
 	
-	require_once 'includes/connect.php';
+	include 'includes/connect.php';
 	
 }else{
 	
@@ -26,6 +25,7 @@ define('PORT', '3306');
 define('DB', 'smdb');
 define('USER', 'root');
 define('PASS', '1234');
+
 
 /**
  * HOW TO USED
@@ -136,7 +136,7 @@ class DB{
 			
 			// Keep error into log file
 			$this->set_log($e);
-			$result = false;
+			return $e->getMessage();
 		}
 	}
 	
@@ -161,7 +161,7 @@ class DB{
 
 			// Keep error into log file
 			$this->set_log($e);
-			return $e;
+			return $e->getMessage();
 			
 		}
 	}

@@ -21,6 +21,8 @@ surasak3/NCR2556/connect.inc
 surasak3/NCR2556/connect2.inc
 surasak3/datacscd/*.txt
 surasak3/datacscd/cscd/*.zip
+surasak3/patient_files/*
+surasak3/tmp/*
 
 # Visual Studio Code
 .settings/*
