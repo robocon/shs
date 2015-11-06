@@ -67,64 +67,74 @@
  <INPUT TYPE="button" value="Print" Onclick="window.open('mc_soldier_print.php?sd='+document.ff1.start_year.value+'-'+document.ff1.start_month.value+'-'+document.ff1.start_day.value+'&ed='+document.ff1.end_year.value+'-'+document.ff1.end_month.value+'-'+document.ff1.end_day.value+'');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
 </form>
-<table>
- <tr class="font_hd">
-<th height="58">ลำดับ</th>
-<th>ชื่อ-สกุล</th>
-<th>โรคที่ตรวจพบ</th>
-<th>ตามกฏทรวงฉบับที่ ๗๔ พ.ศ. ๒๕๔๐<br />
-  และฉบับแก้ไขที่ ๗๖ พ.ศ. ๒๕๕๕</th>
-<th>คณะแพทย์ผู้ตรวจ</th>
-<th>ภูมิลำเนาทหาร</th>
-<th>ว.ด.ป. ที่รับการตรวจ</th>
-<th>เพิ่ม/แก้ไขข้อมูล</th>
-</tr>
-
+<style type="text/css">
+	table, tr, td, th{
+		border: 1px solid black;
+	}
+	table{
+		border-collapse: collapse; 
+		border-spacing: 0; 
+	}
+	
+</style>
+<table style="">
+	<tr class="font_hd">
+		<th width="2%">ลำดับ</th>
+		<th width="15%">ชื่อ-สกุล</th>
+		<th>โรคที่ตรวจพบ</th>
+		<th width="15%">ตามกฏทรวงฉบับที่ ๗๔ พ.ศ. ๒๕๔๐<br />
+		และฉบับแก้ไขที่ ๗๖ พ.ศ. ๒๕๕๕</th>
+		<th width="12%">คณะแพทย์ผู้ตรวจ</th>
+		<th width="15%">ภูมิลำเนาทหาร</th>
+		<th width="5%">ว.ด.ป. ที่รับการตรวจ</th>
+		<th>เพิ่ม/แก้ไขข้อมูล</th>
+	</tr>
 <?php
-
-  $num=0;
-If (!empty($B1)){
-    include("connect.inc");
-
-
-$where = " AND (thidate between '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND '".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59' ) ";
-
- $sql = "SELECT row_id, date_format(thidate,'%d-%m-%Y'), hn, ptname, organ, dx_mc_soldier, dr1_mc_soldier, dr2_mc_soldier, dr3_mc_soldier,address,thdatehn,rule FROM opd WHERE ((organ LIKE '%รับรอง%' AND organ LIKE '%ทหาร%' AND organ LIKE '%เกณ%' ) OR (organ LIKE '%รับรอง%' AND organ LIKE '%เลือกทหาร%' ) OR toborow like 'EX30%') ".$where." Order by  thidate ASC ";
-//echo $sql;
-    $result = mysql_query($sql) or die("Query failed ".mysql_error());
-
-   
- while (list ($row_id, $date,$hn,$ptname,$organ, $dx_mc_soldier, $dr1_mc_soldier, $dr2_mc_soldier, $dr3_mc_soldier,$address1,$thdatehn,$rule) = mysql_fetch_row ($result)) 
-{
-        $Total =$Total+$amount; 
-	list($address) = mysql_fetch_row(mysql_query("Select concat(address,' ', tambol,' ',  ampur,' ',  changwat  ) From opcard where hn = '".$hn."' limit 0,1 "));
-	$thdatehn=substr($thdatehn,0,10);
- $num++;
-
- print (" <tr class=\"font_tr\">\n".
-"  <td>$num</td>\n".
-"  <td>$ptname</a></td>\n".
-"  <td>$dx_mc_soldier</td>\n".
-"  <td>$rule</td>\n".
-"  <td>".substr($dr1_mc_soldier,5)."<BR>".substr($dr2_mc_soldier,5)."<BR>".substr($dr3_mc_soldier,5)."</td>\n".
-"  <td>$address1</td>\n".
-"  <td>$thdatehn</td>\n".
-"  <td><A HREF=\"edit_report_mc.php?id=".$row_id."\" target=\"_blank\">เพิ่ม/แก้ไขข้อมูล</A></td>\n".
- " </tr>\n");
-
-	      
-
- }
-
-
-include("unconnect.inc");
+$num=0;
+if( !empty($B1) ){
+	include("connect.inc");
+	$ymd_start = $_POST["start_year"]."-".$_POST["start_month"]."-".$_POST["start_day"];
+	$ymd_end = $_POST["end_year"]."-".$_POST["end_month"]."-".$_POST["end_day"];
+	
+	$where = " AND (a.thidate between '$ymd_start 00:00:00' AND '$ymd_end 23:59:59' ) ";
+	$sql = "
+		SELECT a.row_id, date_format(a.thidate,'%d-%m-%Y'), a.hn, a.ptname, a.organ, a.dx_mc_soldier, a.dr1_mc_soldier, a.dr2_mc_soldier, a.dr3_mc_soldier, a.address, a.thdatehn, a.rule 
+		, b.idcard
+	FROM opd AS a
+	LEFT JOIN opcard AS b ON b.hn = a.hn 
+	WHERE (
+		( a.organ LIKE '%รับรอง%' AND a.organ LIKE '%ทหาร%' AND a.organ LIKE '%เกณ%' ) 
+		OR ( a.organ LIKE '%รับรอง%' AND a.organ LIKE '%เลือกทหาร%' ) 
+		OR a.toborow like 'EX30%'
+	) 
+	".$where." ORDER BY thidate ASC ";
+	
+	$result = mysql_query($sql) or die("Query failed ".mysql_error());
+	while (list ($row_id, $date,$hn,$ptname,$organ, $dx_mc_soldier, $dr1_mc_soldier, $dr2_mc_soldier, $dr3_mc_soldier,$address1,$thdatehn,$rule,$idcard) = mysql_fetch_row ($result)) 
+	{
+		$Total = $Total+$amount; 
+		list($address) = mysql_fetch_row(mysql_query("Select concat(address,' ', tambol,' ',  ampur,' ',  changwat  ) From opcard where hn = '".$hn."' limit 0,1 "));
+		$thdatehn = substr($thdatehn,0,10);
+		$num++;
+		
+		$dr1 = preg_replace('/MD\d+\s/', '', $dr1_mc_soldier);
+		$dr2 = preg_replace('/MD\d+\s/', '', $dr2_mc_soldier);
+		$dr3 = preg_replace('/MD\d+\s/', '', $dr3_mc_soldier);
+		
+		?>
+		<tr class="font_tr">
+			<td align="center"><?php echo $num;?></td>
+			<td><?php echo $ptname;?><br><?php echo $idcard;?></td>
+			<td><?php echo $dx_mc_soldier;?></td>
+			<td><?php echo $rule;?></td>
+			<td><?php echo $dr1."<br>".$dr2."<br>".$dr3;?></td>
+			<td><?php echo $address1;?></td>
+			<td><?php echo $thdatehn;?></td>
+			<td><a href="edit_report_mc.php?id=<?php echo $row_id;?>" target="_blank">เพิ่ม/แก้ไขข้อมูล</a></td>
+		</tr>
+		<?php
+	}
+	include("unconnect.inc");
 }
 ?>
 </table>
-<?php
-
-//include("add_report_mc.php");
-
-?>
-
-

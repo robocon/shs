@@ -176,22 +176,22 @@ $doctor = $xxx[0];
 
 $_SESSION["dt_drugstk"] .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"290\" font style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
 			<TR>
-				<TD align=\"center\"><font face='Angsana New' size= 3 ><B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B></TD>
+				<TD align=\"center\"><font face='Angsana New' size=\"3\" ><B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B></font></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 2>ชื่อ : ".$cPtname." &nbsp;&nbsp; HN : ".$_SESSION["hn_now"]."</TD>
+				<TD><font face='Angsana New' size=\"2\" >ชื่อ : ".$cPtname." &nbsp;&nbsp; HN : ".$_SESSION["hn_now"]."</font></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 3 ><B><U>นัดวัน ".$th_day[$test_n]." ที่".$_POST["date_appoint"]."</U></B></font></TD>
+				<TD><font face='Angsana New' size=\"3\" ><B><U>วันนัด ".$th_day[$test_n]." ที่ ".$_POST["date_appoint"]."</U></B></font></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 3 ><B><U>เวลา : ".$_POST["capptime"]."</U></B></font></TD>
+				<TD><font face='Angsana New' size=\"3\" ><B><U>เวลา : ".$_POST["capptime"]."</U></B></font></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 2 ><B>เพื่อ :</B> ".$_POST["detail"]." ".(trim($_POST["detail2"]) !=''?"(".$_POST["detail2"].")":"")." <font face='Angsana New' size= 2 >&nbsp;<B>แพทย์ :</B> ".$doctor."</TD>
+				<TD><font face='Angsana New' size=\"2\" ><U><B>ยื่นใบนัดที่ :</B> ".$_POST["room"]."</U> <B>เพื่อ:</B>".$_POST["detail"]." ".(trim($_POST["detail2"]) !=''?"(".$_POST["detail2"].")":"")."</font></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 3 ><U><B>ยื่นใบนัดที่ :</B> ".$_POST["room"]."</U></TD>
+				<TD><font face='Angsana New' size=\"2\" ><B>แพทย์ :</B> ".$doctor."</font></TD>
 			</TR>";
 
 if($i){
@@ -213,8 +213,8 @@ $_SESSION["dt_drugstk"] .="<TR style=\"line-height: 14px;\">
 			</TR>";
 			
 if($_POST['room']=="กองสูติ-นารี"){
-$_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
-				<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ 5111</TD>
+	$_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
+				<TD><font face='Angsana New' size= 1 > มีข้อสงสัยติดต่อจุดบริการนัด โทร 054-839305 ต่อ 5111</TD>
 			</TR>
 			</TABLE>
 			";
@@ -225,7 +225,7 @@ $_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
 	}
 	
 	$_SESSION["dt_drugstk"] .= "<TR style=\"line-height: 14px;\">
-		<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ $default_phone</TD>
+		<TD><font face='Angsana New' size= 1 > มีข้อสงสัยติดต่อจุดบริการนัด โทร 054-839305 ต่อ $default_phone</TD>
 	</TR>
 	</TABLE>
 	";

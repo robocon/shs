@@ -4,7 +4,7 @@
     หน่วยเบิก
     <?php
     include("connect.inc");
-    $q = mysql_query("SELECT `id`,`name` FROM `departments` WHERE `status` = 'y' AND `phar` = 'y' ");
+    $q = mysql_query("SELECT `id`,`name` FROM `departments` WHERE `phar` = 'y' ");
     ?>
     <select size="1" name="depcode">
         <?php while($item = mysql_fetch_assoc($q)){ ?>
