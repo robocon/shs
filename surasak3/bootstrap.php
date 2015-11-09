@@ -2,6 +2,7 @@
 // Set about php.ini
 error_reporting(1);
 ini_set('display_errors', 1);
+ini_set('session.gc_maxlifetime', 60*60*24);
 session_start();
 
 if(!defined('NEW_SITE')){
@@ -55,6 +56,7 @@ class DB{
 	private static $connect = null;
 	private $db = null;
 	private static $lastId = 0;
+	public static $rows = 0;
 	
 	/**
 	 * !!!! CUTION !!!!
@@ -101,17 +103,21 @@ class DB{
 		return $db;
 	}
 	
-	public static function select($sql = null, $data = array(), $single = false){
-		if($sql === null){
+	/**
+	 * 
+	 * @param string $sql		SQL Statement
+	 * @param array $data		Data for binding
+	 * @param string $single	Return in single?
+	 */
+	public static function select($sql = false, $data = array(), $single = false){
+		if($sql === false){
 			echo 'STATEMENT IS NULL';
 			exit;
 		}
 		
-
 		$db = self::init();
 		$result = $db->run($sql, $data);
-		
-		if($single !== false){
+		if($single !== false && !isset($result['error'])){
 			return $result['0'];
 		}
 		
@@ -130,13 +136,15 @@ class DB{
 			// Exec prepareing
 			$sth->execute();
 			$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+			self::$rows = count($result);
 			return $result;
 			
 		} catch(exception $e) {
 			
 			// Keep error into log file
 			$this->set_log($e);
-			return $e->getMessage();
+			$res_msg = array('error' => $e->getMessage());
+			return $res_msg;
 		}
 	}
 	
@@ -160,8 +168,8 @@ class DB{
 		} catch(Exception  $e) {
 
 			// Keep error into log file
-			$this->set_log($e);
-			return $e->getMessage();
+			$res_msg = array('error' => $e->getMessage());
+			return $res_msg;
 			
 		}
 	}

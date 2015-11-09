@@ -149,7 +149,6 @@ if( !$action ){
 		  <?php $i++; ?>
 		  <?php endforeach; ?>
 		</table>
-
 		<?php 
 	}
 	?>

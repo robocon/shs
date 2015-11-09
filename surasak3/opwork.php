@@ -1,6 +1,6 @@
 <?php
-session_start();
-if (isset($sOfficer)){} else {die;} //for security
+include 'bootstrap.php';
+if (isset($_SESSION['sOfficer'])){} else {die('Invalid Session');} //for security
 
 $thdatehn="";
 $thidate2 = (date("Y")).date("-m-d H:i:s"); 
@@ -8,17 +8,16 @@ $thidate = (date("Y")+543).date("-m-d H:i:s");
 $thidate3 = (date("Y")+543).date("-m-d"); 
 
 $time=date("H:i:s");
-session_register("thdatehn"); 
-session_register("admit_vn"); 
+$_SESSION['thdatehn'] = '';
+$_SESSION['admit_vn'] = '';
 
-include("connect.inc");   
+// include("connect.inc");   
 $code21 = '21';
 
 if(substr($_POST["case"],0,4) == "EX19"||substr($_POST["case"],0,4) == "EX35")
 	$ok = 'Y';
 else
 	$ok = 'N';   
-
 
 if(substr($_POST["case"],0,4) == "EX03"){
 	$R03true1 = "'1'";
@@ -67,7 +66,7 @@ $result = mysql_query($sql);
 		alert('เลขบัตรประชาชน $idcard ถูกใช้โดย HN : $chk_idcard กรุณาตรวจสอบว่าเป็นคนๆเดียวกันหรือไม่');
 
 		</SCRIPT>";
-}
+	}
 $where4="";
 if($_POST['lockptright5']=="lock"){
 	$where4 = ",ptright2='".$_POST['ptright']."' ";
@@ -79,16 +78,61 @@ if($_POST['lockptright5']=="lock"){
 	$ptrcode=$_POST['rdo1'];
 	//$note=$_POST['note'].'/'.$hospcode;
 
+var_dump($_POST);
+$idcard = get_post('idcard');
+$mid = get_post('mid');
+$cHn = get_post('');
+$yot = get_post('yot');
+$name = get_post('name');
+$surname = get_post('surname');
+$education = get_post('');
+$goup = get_post('goup');
+$married = get_post('married');
+$dbirth = get_post('y').'-'.get_post('m').'-'.get_post('d');
+$guardian = get_post('guardian');
+$idguard = get_post('idguard');
+$nation = get_post('nation');
+$religion = get_post('religion');
+$career = get_post('career');
+$ptright = get_post('ptright');
+$ptright1 = get_post('ptright1');
+$ptrightdetail = get_post('ptrightdetail');
+$address = get_post('address');
+$tambol = get_post('tambol');
+$ampur = get_post('ampur');
+$changwat = get_post('changwat');
+$hphone = get_post('hphone');
+$phone = get_post('phone');
+$father = get_post('father');
+$mother = get_post('mother');
+$couple = get_post('couple');
+$note = get_post('');
+$sex = get_post('');
+$camp = get_post('');
+$race = get_post('race');
+$ptf = get_post('ptf');
+$ptfadd = get_post('ptfadd');
+$ptffone = get_post('ptffone');
+$ptfmon = get_post('ptfmon');
+$thidate = get_post('');
+$blood = get_post('blood');
+$drugreact = get_post('drugreact');
+// $opcardstatus = get_post('');
 
-$sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',
+$sql = "UPDATE opcard SET idcard='$idcard', mid='$mid',hn='$cHn',
 yot='$yot',name='$name',surname='$surname',education='$education',goup='$goup',married='$married',
 dbirth='$dbirth',guardian='$guardian',idguard='$idguard',
 nation='$nation',religion='$religion',career='$career',ptright='$ptright',ptright1='$ptright1',ptrightdetail='$ptrightdetail',address='$address',
 tambol='$tambol',ampur='$ampur',changwat='$changwat',hphone='$hphone',
 phone='$phone',father='$father',mother='$mother',couple='$couple',
-note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
+note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
+ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
+officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
+opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
 
-
+echo "<pre>";
+print_r($sql);
+exit;
 $result = mysql_query($sql) or die("Query failed ipcard");
 
 If (!$result){
@@ -216,7 +260,7 @@ $today = date("Y-m-d");
 		var text5='<?=$_POST['case']?>';
 		var text6 =text5.substring(0,4);
 		if(text6=="EX12"){
-			return confirm('ยืนยันการ admit ผู้ป่วย\nan:<?=$vAN?>\nhn:<?=$cHn?> \nชื่อ:<? echo $yot?> <? echo $name?> <? echo $surname?>\nสิทธิ:<?=$ptright?>');
+			return confirm('ยืนยันการ admit ผู้ป่วย\nan:<?=$vAN?>\nhn:<?=$cHn?> \nชื่อ:<?php  echo $yot?> <?php  echo $name?> <?php  echo $surname?>\nสิทธิ:<?=$ptright?>');
 		}
 		else{
 			alert('กรุณาเลือกประเภทการลงทะเบียนผู้ป่วยให้ถูกต้อง\nในกรณีรับป่วยให้เลือกประเภท การนอนโรงพยาบาล');
@@ -224,7 +268,7 @@ $today = date("Y-m-d");
 		}
 	}
  </script>
-<?
+<?php 
 
 //กรณีขอ vn ใหม่
 If ($_POST["new_vn"] == "1"){
@@ -582,5 +626,5 @@ $structure = '../image_patient';
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
 
 <?php
-include("unconnect.inc");
+// include("unconnect.inc");
 ?>

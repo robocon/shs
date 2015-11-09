@@ -91,6 +91,10 @@ function get_session($name){
 	return $_SESSION[$name];
 }
 
+function get_post($name){
+	return ( isset($_POST[$name]) ) ? trim($_POST[$name]) : false ;
+}
+
 /**
  * Redirect Page to any location
  */

@@ -1,6 +1,7 @@
 <?php
 session_start();
 session_destroy();
+header('Content-Type: text/html; charset=tis-620');
 ?>
 <body bgcolor='#008080' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
 	<form method="POST" action="forlogin.php">
