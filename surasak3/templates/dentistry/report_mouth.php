@@ -33,6 +33,23 @@ $mouth_items = array(
 				<span style="font-size: 12px; ">* ใส่เดือนและวันที่เพื่อแสดงผลที่เฉพาะเจาะจงได้ ตัวอย่างเช่น 2558-10-26 เป็นต้น</span>
 			</div>
 			<div>
+				แสดงผลตามหน่วย
+				<?php $sql = "SELECT `id`,`name` FROM `survey_oral_category`"; ?>
+				<?php $cattxt_lists = array(); ?>
+				<select name="fix_category" id="">
+					<option value="">ทุกหน่วย</option>
+					<option value="fix_mtb" <?php echo ( $_POST['fix_category'] == 'fix_mtb' ) ? 'selected="selected"' : ''; ?>>หน่วยที่เป็น มทบ.32</option>
+					<?php
+					$items = DB::select($sql);
+					foreach ($items as $key => $item) {
+						$select = !empty($_POST['fix_category']) ? ( $_POST['fix_category'] === $item['id'] ? 'selected="selected"' : '' ) : '' ;
+						?><option value="<?php echo $item['id'];?>" <?php echo $select;?>><?php echo $item['name'];?></option><?php
+						$cattxt_lists[$item['id']] = $item['name'];
+					}
+					?>
+				</select>
+			</div>
+			<div>
 				<button type="submit">เลือกการแสดงผล</button>
 			</div>
 		</form>
@@ -50,8 +67,17 @@ $mouth_items = array(
 		}else{ // only year
 			$at_date = "ปี $date";
 		}
+		
+		$category_text = '';
+		if( !empty($_POST['fix_category']) && $_POST['fix_category'] !== 'fix_mtb' ){
+			$category_text = '('.$cattxt_lists[$_POST['fix_category']].')';
+		}else{
+			if( $_POST['fix_category'] === 'fix_mtb' ){
+				$category_text = '(หน่วยที่เป็น มทบ.32)';
+			}
+		}
 		?>
-		<h3>รายงานสภาวะช่องปาก <?php echo $at_date;?></h3>
+		<h3>รายงานสภาวะช่องปาก <?php echo $at_date;?> <?php echo $category_text;?></h3>
 		<table class="custom-table outline-header border box-header outline width-2of5">
 			<thead>
 				<tr>
@@ -60,12 +86,36 @@ $mouth_items = array(
 				</tr>
 			</thead>
 			<tbody>
+				<?php
+				$where_is = '';
+				$filter_category = !empty($_POST['fix_category']) ? $_POST['fix_category'] : false ;
+				if( $filter_category !== false ){
+					if( $filter_category !== 'fix_mtb'){
+						$where[] = " `section` = '$filter_category'";
+					}else{
+						$sql = "SELECT `id` FROM `survey_oral_category` WHERE `name` LIKE '%มทบ.32%';";
+						$mtb_lists = DB::select($sql);
+						
+						$set_mtb_where = array();
+						foreach($mtb_lists AS $key => $list){
+							$set_mtb_where[] = "'".$list['id']."'";
+						}
+						$test = implode(',', $set_mtb_where);
+						$where[] = " `section` IN ($test) ";
+					}
+					
+					$where_is = ' AND '.implode(' AND ', $where);
+				}
+					
+				?>
 				<?php foreach($mouth_items as $key => $mouth): ?>
 				<?php
 				$sql = "SELECT COUNT(`hn`) AS `count` 
 				FROM `survey_oral` 
-				WHERE `date` LIKE '$date%' AND `mouth_detail` LIKE '%$key\";i:1%'";
-				
+				WHERE `date` LIKE '$date%' 
+				AND `mouth_detail` LIKE '%$key\";i:1%'
+				$where_is
+				";
 				$item = DB::select($sql, null, true);
 				?>
 				<tr>
@@ -89,9 +139,13 @@ $mouth_items = array(
 			<tbody>
 				<?php foreach($violences as $key => $vio): ?>
 				<?php
-				$sql = "SELECT COUNT(`hn`) AS `count` 
+				$sql = "
+				SELECT COUNT(`hn`) AS `count` 
 				FROM `survey_oral` 
-				WHERE `date` LIKE '$date%' AND `max_status` = '$vio'";
+				WHERE `date` LIKE '$date%' 
+				AND `max_status` = '$vio'
+				$where_is
+				";
 				$item = DB::select($sql, null, true);
 				?>
 				<tr>
