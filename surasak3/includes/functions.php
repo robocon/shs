@@ -173,6 +173,9 @@ if( !function_exists('bc_to_ad') ){
 	
 if( !function_exists('cal_to_ad') ){
 	function cal_to_ad($match){
+		if( intval($match['0']) === 0 ){
+			return $match['0'];
+		}
 		return ( $match['0'] - 543 );
 	}
 }
