@@ -1,7 +1,9 @@
 <?php
 // define('NEW_SITE', true);
 include 'bootstrap.php';
-include 'templates/default/header.php';
+include 'templates/classic/header.php';
+
+if( !isset($_SESSION['smenucode']) && ( $_SESSION['smenucode'] !== 'ADM' && $_SESSION['smenucode'] !== 'ADMCOM' ) ) die ('ระบบเฉพาะเจ้าหน้าที่ศูนย์คอมพิวเตอร์เท่านั้น');
 
 $action = ( isset($_POST['action']) ) ? trim($_POST['action']) : false ;
 if($action == 'add'){
@@ -82,7 +84,7 @@ if($action == 'add'){
 					?>
 					<form method="post" action="import-internet.php" enctype="multipart/form-data">
 						<div class="col">
-							<div class="col width-1of4">เลือกไฟล์</div>
+							<div class="col width-1of4">เลือกไฟล์ (รองรับไฟล์ .csv เท่านั้น)</div>
 							<div class="col width-fill">
 								<div class="cell">
 									<input type="file" name="internet">
@@ -110,6 +112,9 @@ if($action == 'add'){
 							</div>
 						</div>
 					</form>
+					<div class="col">
+						ตัวอย่างไฟล์ .csv <a href="assets/example-internet-import.csv" target="_blank">คลิกเพื่อดาวโหลด</a>
+					</div>
 				</div>
 			</div>
 			<div class="col width-fill"></div>
@@ -119,4 +124,4 @@ if($action == 'add'){
 </div>
 
 <?php
-include 'templates/default/footer.php';
+include 'templates/classic/footer.php';
