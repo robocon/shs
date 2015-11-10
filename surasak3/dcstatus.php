@@ -2,6 +2,7 @@
 //Update 31 พค. 53 bbm
 session_start();
 
+/** Ajax Response Start **/
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
@@ -37,35 +38,29 @@ if(isset($_GET["actiondc"]) && $_GET["actiondc"] != ""){
 	echo $fullname;
 exit();
 }
+/** Ajax Response End **/
 
 ?>
 <html>
 <head>
 <title>บันทึกสถานะประวัติผู้ป่วยใน</title>
 <style type="text/css">
-
-
 a:link {color:#FF0000; text-decoration:underline;}
 a:visited {color:#FF0000; text-decoration:underline;}
 a:active {color:#FF0000; text-decoration:underline;}
 a:hover {color:#FF0000; text-decoration:underline;}
-
 body,td,th {
 	font-family:  MS Sans Serif;
 	font-size: 16 px;
 }
-
 .font_title{
 	font-family:  MS Sans Serif;
 	font-size: 16 px;
 	color:#FFFFFF;
 	font-weight: bold;
-
 }
 </style>
-
 <SCRIPT LANGUAGE="JavaScript">
-	
 	function newXmlHttp(){
 	var xmlhttp = false;
 
@@ -86,7 +81,9 @@ body,td,th {
 }
 
 function checkname(an) {
-	
+	if(an === ''){
+		return false;
+	}
 	var an_value = "";
 
 			url = 'dcstatus.php?action='+an;
@@ -99,7 +96,9 @@ function checkname(an) {
 
 }
 function checkdc(an) {
-	
+	if(an === ''){
+		return false;
+	}
 	var an_value = "";
 
 			url = 'dcstatus.php?actiondc='+an;
@@ -113,7 +112,9 @@ function checkdc(an) {
 }
 
 function checkdcno(an) {
-	
+	if(an === ''){
+		return false;
+	}
 	var an_value = "";
 
 			url = 'dcstatus.php?actiondcno='+an;
@@ -153,75 +154,73 @@ function checkdcno(an) {
 
 </head>
 <body>
-
-&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>&nbsp;&nbsp;<a target=_top  href="../surasak3/anchkstatus.php">&lt;&lt; ตรวจสอบสถานะ</a>
+<?php $an = isset($_GET['an']) ? trim($_GET['an']) : false ; ?>
+&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
+&nbsp;&nbsp;<a target=_top  href="../surasak3/anchkstatus.php">&lt;&lt; ตรวจสอบสถานะ</a>
 <TABLE width="100%" align="center">
-<TR valign="top">
-	<TD align="center">
-	
-	<TABLE  border="1" bordercolor="#3366FF">
-<TR>
-	<TD>
-
-<TABLE>
-<TR>
-	<TD align="right">
-	AN : 
-	</TD>
-	<TD>
-	<INPUT TYPE="text" ID="AN" NAME="AN" onkeypress = "if(event.keyCode == 13){ add_an(); }">
-	</TD>
-</TR>
-<TR>
-	<TD colspan="2" align="center">
-		<INPUT TYPE="button" value="ตกลง" Onclick="add_an();">
-	</TD>
-</TR>
-</TABLE>
-
-</TD>
-</TR>
-</TABLE>
-
-
-<?php
-
-	$sql = "Select distinct hn, ptname  From appoint where officer in (Select name From inputm where menucode in (Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' )) Order by row_id DESC limit 20";
-	//$result = @Mysql_Query($sql);
-	//if(@Mysql_num_rows($result) > 0){
-	$result = 0;
-	if($result > 0){
-?>
-
-<TABLE  border="1" bordercolor="#3366FF">
-<TR>
-	<TD>
-<TABLE>
-<?php
-while(list($hn,$ptname) = Mysql_fetch_row($result)){	
-
- echo "
- <TR>
-	<TD>
-	 <A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('an').value='".$an."';add_an(); \">",$an,"</A>
-	</TD>
-	<TD>
-	",$ptname,"
-	</TD>
-</TR>
- ";
- 
- 
- }?>
-
-</TABLE>
-</TD>
-</TR>
-</TABLE>
-
-<?php } ?>
-	</TD>
-	<TD align="center">
+	<TR valign="top">
+		<TD align="center">
+			<TABLE  border="1" bordercolor="#3366FF">
+				<TR>
+					<TD>
+						<TABLE>
+							<TR>
+								<TD align="right">AN : </TD>
+								<TD>
+									<INPUT TYPE="text" ID="AN" NAME="AN" onkeypress = "if(event.keyCode == 13){ add_an(); }" value="<?php echo $an; ?>">
+								</TD>
+							</TR>
+							<TR>
+								<TD colspan="2" align="center">
+									<INPUT TYPE="button" value="ตกลง" Onclick="add_an();">
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+			<?php
+			$sql = "
+			Select distinct hn, ptname 
+			From appoint 
+			where officer in (
+				Select name 
+				From inputm 
+				where menucode in (
+					Select menucode 
+					From inputm 
+					where idname = '".$_SESSION["sIdname"]."'
+				)
+			) 
+			Order by row_id 
+			DESC limit 20";
+			$result = 0;
+			if($result > 0){
+			?>
+			<TABLE  border="1" bordercolor="#3366FF">
+				<TR>
+					<TD>
+						<TABLE>
+						<?php
+						while(list($hn,$ptname) = Mysql_fetch_row($result)){	
+						echo "
+						<TR>
+						<TD>
+						<A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('an').value='".$an."';add_an(); \">",$an,"</A>
+						</TD>
+						<TD>
+						",$ptname,"
+						</TD>
+						</TR>
+						";
+						}?>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+			<?php } ?>
+		</TD>
+		<TD align="center">
 
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -251,64 +250,72 @@ while(list($hn,$ptname) = Mysql_fetch_row($result)){
 	}
 
 </SCRIPT>
-<FORM Name="f1" METHOD=POST ACTION="dcstatus2.php" Onsubmit="return checkForm();">
+<?php
+$an_txt = '';
+if( $an !== false ){
+	$sql = "SELECT `an`,`ptname`,`dcnumber` FROM `ipcard` WHERE `an` = '$an' LIMIT 1 ";
+	$q = mysql_query($sql);
+	$item = mysql_fetch_assoc($q);
 	
-<TABLE  border="1" bordercolor="#3366FF">
-<TR>
-	<TD>
-<TABLE>
-<TR bgcolor="#3366FF">
-	<TD colspan="2" align="center" class="font_title">ระบบบันทึกสถานะประวัติผู้ป่วยใน</TD>
-</TR>
-<TR valign="top">
-	<TD align="right">AN : </TD>
-	<TD colspan="2"><DIV ID="list_an"></Div></TD>
+	$an_txt = '<input name="list_an[]" value="'.$item['an'].'" checked="" type="checkbox">
+	'.$item['an'].' '.$item['ptname'].' DC No: '.$item['dcnumber'].'<br>';
+}
 
-</TR>
-<TR>
-	<TD align="right">สถานะ</TD>
-	<TD>
-	<? 
-	 $strSQL = "SELECT name FROM departments where statusdc='y'  order by name"; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 ?>
-<select name="status" id="status" onChange="statuschange()"> 
-<? 
-while($objResult = mysql_fetch_array($objQuery)) 
-{ 
-?> 
-<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>  
-<? 
-} 
-?> 
-<option value='ยืม'>ยืม</option>
-<option value='ยืมเพื่อทบทวน'>ยืมเพื่อทบทวน</option>
-</select>
-   </TD>
- <TD>
-	<INPUT TYPE="text" NAME="status1" id="status1">
-    <select name="status2"  id="status2" style="display:none">
-    	<option>ทบทวน Case วิจัย/ค้นคว้า</option>
-        <option>ทบทวน Dead</option>
-        <option>ทบทวน Refer</option>
-        <option>ทบทวนกรณีฟ้องร้อง/คดี</option>
-    </select>
-	</TD>
-</TR>
-<TR>
-	<TD colspan="3" align="center"><INPUT TYPE="submit" value="  ตกลง  "></TD>
-</TR>
-</TABLE>
-</TD>
-</TR>
-</TABLE>
+<FORM Name="f1" METHOD=POST ACTION="dcstatus2.php" Onsubmit="return checkForm();">
+	<TABLE  border="1" bordercolor="#3366FF">
+		<TR>
+			<TD>
+				<TABLE>
+					<TR bgcolor="#3366FF">
+						<TD colspan="2" align="center" class="font_title">ระบบบันทึกสถานะประวัติผู้ป่วยใน</TD>
+					</TR>
+					<TR valign="top">
+						<TD align="right">AN : </TD>
+						<TD colspan="2">
+							<DIV ID="list_an"><?php echo $an_txt;?></Div>
+						</TD>
+					</TR>
+					<TR>
+						<TD align="right">สถานะ</TD>
+						<TD>
+							<? 
+							$strSQL = "SELECT name FROM departments where statusdc='y' order by name"; 
+							$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+							?>
+							<select name="status" id="status" onChange="statuschange()"> 
+								<? 
+								while($objResult = mysql_fetch_array($objQuery)) { 
+									?> 
+									<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>  
+									<? 
+								} 
+								?> 
+								<option value='ยืม'>ยืม</option>
+								<option value='ยืมเพื่อทบทวน'>ยืมเพื่อทบทวน</option>
+							</select>
+   						</TD>
+ 						<TD>
+							<INPUT TYPE="text" NAME="status1" id="status1">
+							<select name="status2"  id="status2" style="display:none">
+								<option>ทบทวน Case วิจัย/ค้นคว้า</option>
+								<option>ทบทวน Dead</option>
+								<option>ทบทวน Refer</option>
+								<option>ทบทวนกรณีฟ้องร้อง/คดี</option>
+							</select>
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="3" align="center"><INPUT TYPE="submit" value="  ตกลง  "></TD>
+					</TR>
+				</TABLE>
+			</TD>
+		</TR>
+	</TABLE>
 </FORM>
-
-	</TD>
-</TR>
+		</TD>
+	</TR>
 </TABLE>
-
-
 </body>
 </html>
 <?php include("unconnect.inc");?>
