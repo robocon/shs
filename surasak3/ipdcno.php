@@ -75,7 +75,7 @@ if(isset($_POST['search'])){
 	<th align="center">HN</th>
 	<th align="center">AN</th>
 	<th align="center">ชื่อ-สกุล</th>
-	<th align="center" width="12%" class="hide">สถานะ</th>
+	<th align="center" width="15%">สถานะ</th>
 	</tr>
 	<?php 
 	$date_filter = $_POST['yr']."-".$_POST['m'];
@@ -131,7 +131,7 @@ if(isset($_POST['search'])){
 			<td align="center"><?php echo $result['hn'];?></td>
 			<td align="center"><?php echo $result['an'];?></td>
 			<td><?php echo $result['ptname'];?></td>
-			<td align="center" class="hide">
+			<td align="center">
 				<?php echo $status_txt;?>
 				<?php
 				if( $status_txt === 'N' ){

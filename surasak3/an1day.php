@@ -51,7 +51,8 @@ p{
         // $time = substr($thidate,11);
         
         $date = bc_to_ad($pdcdate);
-        if( strtotime($date) === false ){
+        // var_dump(strtotime($date));
+        if( preg_match('/(0000\-00\-00)/', $date) > 0 ){
             $notdc_count++;
             $ndc_lists[] = array($an, $hn, $ptname, $age, $ptright, $bedcode, $datea, $dcdate, $diag, $doctor);
         }
