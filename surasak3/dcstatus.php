@@ -251,6 +251,7 @@ function checkdcno(an) {
 
 </SCRIPT>
 <?php
+// สร้าง input เพื่อแสดง checkbox
 $an_txt = '';
 if( $an !== false ){
 	$sql = "SELECT `an`,`ptname`,`dcnumber` FROM `ipcard` WHERE `an` = '$an' LIMIT 1 ";
@@ -259,6 +260,18 @@ if( $an !== false ){
 	
 	$an_txt = '<input name="list_an[]" value="'.$item['an'].'" checked="" type="checkbox">
 	'.$item['an'].' '.$item['ptname'].' DC No: '.$item['dcnumber'].'<br>';
+	
+	$sql = "SELECT `status`
+	FROM `dcstatus`
+	WHERE `an` LIKE '$an' ORDER BY `date` DESC LIMIT 1";
+	$q = mysql_query($sql);
+	$section = mysql_fetch_assoc($q);
+	$find_split = strpos($section['status'], ' ');
+	if( $find_split !== false ){
+		list($depart, $etc_txt) = explode(' ', $section['status']);
+	}else{
+		$depart = $section['status'];
+	}
 }
 
 ?>
@@ -286,8 +299,9 @@ if( $an !== false ){
 							<select name="status" id="status" onChange="statuschange()"> 
 								<? 
 								while($objResult = mysql_fetch_array($objQuery)) { 
+									$selected = ( $depart === $objResult['name'] ) ? 'selected="selected"' : '' ;
 									?> 
-									<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>  
+									<option value="<?=$objResult["name"];?>" <?php echo $selected;?>><?=$objResult["name"];?></option>  
 									<? 
 								} 
 								?> 
