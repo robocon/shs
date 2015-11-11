@@ -3,6 +3,8 @@
 error_reporting(1);
 ini_set('display_errors', 1);
 ini_set('session.gc_maxlifetime', 60*60*24);
+ini_set('date.timezone', 'Asia/Bangkok');
+
 session_start();
 
 if(!defined('NEW_SITE')){
