@@ -1,5 +1,6 @@
 <?php 
-session_start();
+// session_start();
+include 'bootstrap.php';
 ?>
 <html>
 <head>
@@ -21,7 +22,7 @@ body,td,th {
 
 $today = (date("Y")+543)."-".date("m-d");
 $thiday = date("d-m-").(date("Y")+543);
-include("connect.inc");
+// include("connect.inc");
 
 Function calcage($birth){
 
@@ -53,50 +54,48 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 
 	$result = Mysql_Query($sql);
 	if(mysql_num_rows($result) > 0){
-		session_register("time_opday");
-		session_register("time_opd");
+		$_SESSION['time_opday'] = '';
+		$_SESSION['time_opd'] = '';
 
-		session_register("vn_now");
-		session_register("hn_now");
-		session_register("idcard_now");
-		session_register("yot_now");
-		session_register("name_now");
-		session_register("surname_now");
-		session_register("age_now");
-		session_register("ptright_now");
+		$_SESSION['vn_now'] = '';
+		$_SESSION['hn_now'] = '';
+		$_SESSION['idcard_now'] = '';
+		$_SESSION['yot_now'] = '';
+		$_SESSION['name_now'] = '';
+		$_SESSION['surname_now'] = '';
+		$_SESSION['age_now'] = '';
+		$_SESSION['ptright_now'] = '';
 		
-		session_register("dt_diag_detail");
-		session_register("dt_diag");
-		session_register("diag_thai");
-		session_register("dt_icd10");
+		$_SESSION['dt_diag_detail'] = '';
+		$_SESSION['dt_diag'] = '';
+		$_SESSION['diag_thai'] = '';
+		$_SESSION['dt_icd10'] = '';
 
-		session_register("list_drugcode");
-		session_register("list_drugamount");
-		session_register("list_drugslip");
+		$_SESSION['list_drugcode'] = '';
+		$_SESSION['list_drugamount'] = '';
+		$_SESSION['list_drugslip'] = '';
 		
-		session_register("nRunno");
-		session_register("dt_drugstk");
+		$_SESSION['nRunno'] = '';
+		$_SESSION['dt_drugstk'] = '';
 
-		session_register("alert500");
+		$_SESSION['alert500'] = '';
 
-		session_register("temperature");
-		session_register("pause");
-		session_register("rate");
-		session_register("weight");
-		session_register("height");
-		session_register("bp");
-		session_register("congenital_disease");
-		session_register("organ");
-		session_register("staff");
-		session_register("drugreact");
-		session_register("list_drugreact");
-		session_register("type");
-		session_register("dt_doctor");
-		session_register("dt_dental");
-		session_register("dt_special");
-		session_register("S_listxray");
-	
-
+		$_SESSION['temperature'] = '';
+		$_SESSION['pause'] = '';
+		$_SESSION['rate'] = '';
+		$_SESSION['weight'] = '';
+		$_SESSION['height'] = '';
+		$_SESSION['bp'] = '';
+		$_SESSION['congenital_disease'] = '';
+		$_SESSION['organ'] = '';
+		$_SESSION['staff'] = '';
+		$_SESSION['drugreact'] = '';
+		$_SESSION['list_drugreact'] = '';
+		$_SESSION['type'] = '';
+		$_SESSION['dt_doctor'] = '';
+		$_SESSION['dt_dental'] = '';
+		$_SESSION['dt_special'] = '';
+		$_SESSION['S_listxray'] = '';
 
 		$query = "SELECT runno FROM runno WHERE title = 'phardep' limit 0,1";
 		$result2 = mysql_query($query) or die("Query failed");
@@ -223,25 +222,24 @@ if($_SESSION["sIdname"] == "md19921"){
 		
 
 	}else{
-		
-		session_unregister("vn_now");
-		session_unregister("hn_now");
-		session_unregister("idcard_now");
-		session_unregister("yot_now");
-		session_unregister("name_now");
-		session_unregister("surname_now");
-		session_unregister("age_now");
-		session_unregister("ptright_now");
+		unset($_SESSION['vn_now']);
+		unset($_SESSION['hn_now']);
+		unset($_SESSION['idcard_now']);
+		unset($_SESSION['yot_now']);
+		unset($_SESSION['name_now']);
+		unset($_SESSION['surname_now']);
+		unset($_SESSION['age_now']);
+		unset($_SESSION['ptright_now']);
 
-		session_unregister("temperature");
-		session_unregister("pause");
-		session_unregister("rate");
-		session_unregister("weight");
-		session_unregister("bp");
-		session_unregister("congenital_disease");
-		session_unregister("organ");
-		session_unregister("dt_doctor");
-		session_unregister("dt_dental");
+		unset($_SESSION['temperature']);
+		unset($_SESSION['pause']);
+		unset($_SESSION['rate']);
+		unset($_SESSION['weight']);
+		unset($_SESSION['bp']);
+		unset($_SESSION['congenital_disease']);
+		unset($_SESSION['organ']);
+		unset($_SESSION['dt_doctor']);
+		unset($_SESSION['dt_dental']);
 
 		if(isset($_POST["doctor"])){
 			$first_page = "dt_dental.php";
@@ -255,7 +253,7 @@ if($_SESSION["sIdname"] == "md19921"){
 	}
 
 
-include("unconnect.inc");
+// include("unconnect.inc");
 ?>
 </body>
 </html>

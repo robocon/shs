@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
+<meta http-equiv="Content-Type" content="text/html; charset=tis-620">
 <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
 <title>New Page 5</title>
@@ -38,6 +38,8 @@
 	<center>************************************</center>
 	<br>
 <?php
+
+exit;
 include ("connect.inc");
 $sql = "select * from dr_offline where dateoffline = '" . date ( "d-m-" ) . (date ( "Y" ) + 543) . "'";
 echo "<font color=#00FFFF  face='THSarabunPSK' size='4'>**รายชื่อแพทย์ไม่ออกตรวจวันนี้ (" . date ( "d-m-" ) . (date ( "Y" ) + 543) . ")**<br>";

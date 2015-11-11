@@ -1,10 +1,11 @@
 <?php
-session_start();
+include 'bootstrap.php';
+// session_start();
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
-include("connect.inc");
-include("checklogin.php");
+// include("connect.inc");
+// include("checklogin.php");
 
 $choose = array();
 
@@ -248,7 +249,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	<INPUT TYPE="hidden" name="totalcheck" value="<?php echo $i;?>">
         </table>
 		</FORM>
-<?
+<?php 
 exit();
 }
 
@@ -626,15 +627,13 @@ function addtolist_muli(){
 </TR>
 </TABLE>
 </div>
-<SCRIPT LANGUAGE="JavaScript">
 
+<?php /* echo $list_onload;*/ ?>
+<script type="text/javascript">
 window.onload = function(){
-
 	document.getElementById("dt_diag_detail").focus();
-	<?php echo $list_onload;?>
 }
-
-</SCRIPT>
+</script>
 </body>
-<?php include("unconnect.inc");?>
+
 </html>

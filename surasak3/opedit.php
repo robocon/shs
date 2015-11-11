@@ -1050,6 +1050,7 @@ if ($arrg3 > 0) {
 ?>
 <p align="center">
 			<input type='submit' value='บันทึก/ลงทะเบียน' name='B1'>
+			<input type="hidden" name="cHn" value="<?php echo $cHn;?>">
 		</p>
 
 		</td>

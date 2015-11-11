@@ -31,7 +31,7 @@ font-weight: bold;
 
 </style>
 <?php
-	if($_SESSION["dt_dental"] == true){
+	if( isset($_SESSION["dt_dental"]) && $_SESSION["dt_dental"] == true){
 		$first_page = "dt_dental.php";
 		$lab_page = "dt_lab_dental.php";
 	}else{
@@ -89,6 +89,7 @@ menu4[2]='<a href="orderbmd.php" >สั่งตรวจ BMD</a>'
 var menu5=new Array();
 menu5[0]='<a href="dt_chkup.php" >ใบรับรองแพทย์</a>'
 menu5[1]='<a href="dt_refer.php" >ใบ Refer</a>'
+menu5[2]='<a href="dt_history_patient.php" >ดูประวัติผู้ป่วย</a>'
 
 var menu6=new Array();
 menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพทหารประจำปี</a>'
@@ -233,7 +234,7 @@ document.onclick=hidemenu
 
 	<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu2, '190px')" onMouseout="delayhidemenu()">จ่ายยา</A></TD>
 
-<?php if($_SESSION["smenucode"] !="ADMPHA" && $_SESSION["smenucode"] !="ADMPHARX" && $_SESSION["smenucode"] !="ADMER"){ ?>
+<?php if( isset($_SESSION["smenucode"]) && $_SESSION["smenucode"] !="ADMPHA" && $_SESSION["smenucode"] !="ADMPHARX" && $_SESSION["smenucode"] !="ADMER"){ ?>
 	<TD width="100"align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu3, '190px')" onMouseout="delayhidemenu()">LAB</A></TD>
 	
 	<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu4, '190px')" onMouseout="delayhidemenu()">X-RAY</A></TD>

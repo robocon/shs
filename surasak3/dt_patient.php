@@ -27,12 +27,7 @@ function handlerMMY(e){
 }
 
 </SCRIPT>
-
-
 <?php
-
-	
-
 $sql = "Select toborow,diag From opday where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
 
 list($toborow,$diag) = Mysql_fetch_row(Mysql_Query($sql));
@@ -173,7 +168,7 @@ if($rows > 0){
 <div id = "tooltip" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
 
-<?
+<?php 
 if($_SESSION["sIdname"] != "md19921" && $_SESSION["sIdname"] != "monchai"){
 
 // ดึงข้อมูลผู้ป่วยคลินิกเบาหวาน

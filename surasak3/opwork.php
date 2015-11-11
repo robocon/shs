@@ -55,6 +55,7 @@ return $pAge;
 //$dbirth="$Y-$m-$d";
 $dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
 $cAge=calcage($dbirth);
+$cHn = get_post('cHn');
 
 //ตรวจสอบเลขบัตรประชาชน
 $sql = "Select hn From opcard where idcard='$idcard' AND hn<>'$cHn' limit 0,1 ";
@@ -73,15 +74,12 @@ if($_POST['lockptright5']=="lock"){
 }else{
 	$where4 = ",ptright2='' ";
 }
-//update opdcard table
-	$hospcode=$_POST['hospcode'];
-	$ptrcode=$_POST['rdo1'];
-	//$note=$_POST['note'].'/'.$hospcode;
 
-var_dump($_POST);
+//update opdcard table
+$hospcode = $_POST['hospcode'];
+$ptrcode = $_POST['rdo1'];
 $idcard = get_post('idcard');
 $mid = get_post('mid');
-$cHn = get_post('');
 $yot = get_post('yot');
 $name = get_post('name');
 $surname = get_post('surname');
@@ -130,16 +128,9 @@ ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugre
 officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
 opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
 
-echo "<pre>";
-print_r($sql);
-exit;
-$result = mysql_query($sql) or die("Query failed ipcard");
+$result = mysql_query($sql) or die( mysql_error() );
 
-If (!$result){
-	echo "update opcard fail";
-	echo mysql_errno() . ": " . mysql_error(). "\n";
-	echo "<br>";
-} else {
+If ( $result ){
 	print " แก้ไขข้อมูลเรียบร้อย: ";
 }
 
