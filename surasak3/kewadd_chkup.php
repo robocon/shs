@@ -17,7 +17,7 @@ global $regisdate,$an,$sex,$married,$idcard,
             $tambol,$ampur,$changwat,$parent,$couple,$guardian;
  include("connect.inc");
 
- $query = "SELECT title,prefix,runno FROM runno WHERE title = 'kewsold'";
+ $query = "SELECT title,prefix,runno FROM runno WHERE title = 'chekup'";
     $result = mysql_query($query)
         or die("Query failed runno ask");
 
@@ -42,7 +42,7 @@ global $regisdate,$an,$sex,$married,$idcard,
 
 
 // update kew to table runno
-    $query ="UPDATE runno SET runno = $nRunno WHERE title='kewsold'";
+    $query ="UPDATE runno SET runno = $nRunno WHERE title='chekup'";
     // var_dump($query);
     $result = mysql_query($query);
 //        or die("Query failed runno update");
@@ -54,7 +54,7 @@ global $regisdate,$an,$sex,$married,$idcard,
 //echo mysql_errno() . ": " . mysql_error(). "\n";
 //echo "<br>";
 print "<center><font size=5><b> ลำดับที่:$vkew1 </b><br> ";
-print "<center><font size=4><b>ตรวจสุขภาพทหารพราน</b><br> ";
+print "<center><font size=4><b>ตรวจสุขภาพทหาร</b><br> ";
 print "<center><font size=2><b>วันที่$Thaidate</b><br> ";
 print "<center>$cPtname<br>"; 
 print "<center>HN:$cHn.....VN:$nVn<br>";

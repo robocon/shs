@@ -506,7 +506,7 @@ $structure = '../image_patient';
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php">คิวตรวจสุขภาพ(<?php $sql = "Select runno From runno where title ='kewchild' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php">คิวตรวจสุขภาพทหารในสังกัดประจำปี(<?php $sql = "Select runno From runno where title ='chekup' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
@@ -527,7 +527,7 @@ $structure = '../image_patient';
 	$q = mysql_query("SELECT * FROM `runno` WHERE `title` = 'kewsold' ");
 	$item = mysql_fetch_assoc($q);
 	?>
-	<a target="_target" href="kewadd_soldier.php">คิวตรวจสุขภาพทหาร(<?php echo $item['runno'];?>)</a>
+	<a target="_target" href="kewadd_soldier.php">คิวตรวจสุขภาพทหารพรานประจำปี(<?php echo $item['runno'];?>)</a>
 	&nbsp;&nbsp;&nbsp
 	
 &nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd4.php">ลบคิว</a>
