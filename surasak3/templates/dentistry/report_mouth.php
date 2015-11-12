@@ -11,6 +11,7 @@ $mouth_items = array(
 	'4_4' => 'I. ÁÕ¿Ñ¹¤Ø´',
 	'4_5' => 'J. ÊÙ­àÊÕÂ¿Ñ¹áÅĞ¨Óà»ç¹µéÍ§ãÊè¿Ñ¹·´á·¹',
 	'4_6' => 'K. ÁÕÍÒ¡ÒÃ »Ç´,ºÇÁ Í×è¹æ / ÃÍÂâÃ¤ã¹ªèÍ§»Ò¡',
+	'5_1' => 'L. äÁèä´éÃÑº¡ÒÃµÃÇ¨',
 );
 ?>
 <style>
@@ -127,7 +128,7 @@ $mouth_items = array(
 		</table>
 		<br>
 		<?php 
-		$violences = array(1,2,3,4);
+		$violences = array(1,2,3,4,5);
 		?>
 		<table class="custom-table outline-header border box-header outline width-2of5">
 			<thead>

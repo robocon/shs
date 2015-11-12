@@ -193,6 +193,28 @@
 							</td>
 							<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
 						</tr>
+						<tr>
+							<td>
+								<?php $check = ( $status['5_1'] == 1 ) ? $img_checked : '' ;?>
+								<?php echo $check;?>
+								<label for="5_1">L. ไม่ได้รับการตรวจ</label>
+							</td>
+							<td class="align-center">
+								<?php
+									if( $item['max_status'] == '5' ){
+										?>
+										<div class="circle-contain">
+											<?php echo $img_checked;?>
+											<span class="circle-number">5</span>
+										</div>
+										<?php
+									}else{
+										?>5<?php
+									}
+								?>
+							</td>
+							<td class="align-center">ไม่มีข้อมูล</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

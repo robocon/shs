@@ -206,6 +206,14 @@ if( $id !== false ){
 							</td>
 							<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
 						</tr>
+						<tr>
+							<td>
+								<input name="mouth_detail[5_1]" id="5_1" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['5_1'] == 1 ) ? 'checked="checked"' : '' ;?>>
+								<label for="5_1">L. ไม่ได้รับการตรวจ</label>
+							</td>
+							<td class="align-center" >5</td>
+							<td class="align-center" >ไม่มีข้อมูล</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
