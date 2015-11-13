@@ -2,6 +2,12 @@
 //Update 31 พค. 53 bbm
 session_start();
 
+
+
+
+
+
+
 /** Ajax Response Start **/
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	header("content-type: application/x-javascript; charset=TIS-620");
@@ -154,7 +160,7 @@ function checkdcno(an) {
 
 </head>
 <body>
-<?php $an = isset($_GET['an']) ? trim($_GET['an']) : false ; ?>
+
 &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
 &nbsp;&nbsp;<a target=_top  href="../surasak3/anchkstatus.php">&lt;&lt; ตรวจสอบสถานะ</a>
 <TABLE width="100%" align="center">
@@ -167,7 +173,7 @@ function checkdcno(an) {
 							<TR>
 								<TD align="right">AN : </TD>
 								<TD>
-									<INPUT TYPE="text" ID="AN" NAME="AN" onkeypress = "if(event.keyCode == 13){ add_an(); }" value="<?php echo $an; ?>">
+									<INPUT TYPE="text" ID="AN" NAME="AN" onkeypress = "if(event.keyCode == 13){ add_an(); }" value="">
 								</TD>
 							</TR>
 							<TR>
@@ -179,49 +185,8 @@ function checkdcno(an) {
 					</TD>
 				</TR>
 			</TABLE>
-			<?php
-			$sql = "
-			Select distinct hn, ptname 
-			From appoint 
-			where officer in (
-				Select name 
-				From inputm 
-				where menucode in (
-					Select menucode 
-					From inputm 
-					where idname = '".$_SESSION["sIdname"]."'
-				)
-			) 
-			Order by row_id 
-			DESC limit 20";
-			$result = 0;
-			if($result > 0){
-			?>
-			<TABLE  border="1" bordercolor="#3366FF">
-				<TR>
-					<TD>
-						<TABLE>
-						<?php
-						while(list($hn,$ptname) = Mysql_fetch_row($result)){	
-						echo "
-						<TR>
-						<TD>
-						<A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('an').value='".$an."';add_an(); \">",$an,"</A>
-						</TD>
-						<TD>
-						",$ptname,"
-						</TD>
-						</TR>
-						";
-						}?>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-			<?php } ?>
 		</TD>
 		<TD align="center">
-
 
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -251,26 +216,21 @@ function checkdcno(an) {
 
 </SCRIPT>
 <?php
+$back = isset($_REQUEST['back']) ? $_REQUEST['back'] : false ;
+$an = isset($_REQUEST['an']) ? ( is_array($an) ? $an : array($an) ) : false ;
+
 // สร้าง input เพื่อแสดง checkbox
 $an_txt = '';
 if( $an !== false ){
-	$sql = "SELECT `an`,`ptname`,`dcnumber` FROM `ipcard` WHERE `an` = '$an' LIMIT 1 ";
-	$q = mysql_query($sql);
-	$item = mysql_fetch_assoc($q);
 	
-	$an_txt = '<input name="list_an[]" value="'.$item['an'].'" checked="" type="checkbox">
-	'.$item['an'].' '.$item['ptname'].' DC No: '.$item['dcnumber'].'<br>';
 	
-	$sql = "SELECT `status`
-	FROM `dcstatus`
-	WHERE `an` LIKE '$an' ORDER BY `date` DESC LIMIT 1";
-	$q = mysql_query($sql);
-	$section = mysql_fetch_assoc($q);
-	$find_split = strpos($section['status'], ' ');
-	if( $find_split !== false ){
-		list($depart, $etc_txt) = explode(' ', $section['status']);
-	}else{
-		$depart = $section['status'];
+	foreach($an as $key => $item_an){
+		$sql = "SELECT `an`,`ptname`,`dcnumber` FROM `ipcard` WHERE `an` = '$item_an' LIMIT 1 ";
+		$q = mysql_query($sql);
+		$item = mysql_fetch_assoc($q);
+		
+		$an_txt .= '<input name="list_an[]" value="'.$item['an'].'" checked="" type="checkbox">
+		'.$item['an'].' '.$item['ptname'].' DC No: '.$item['dcnumber'].'<br>';
 	}
 }
 
@@ -299,9 +259,8 @@ if( $an !== false ){
 							<select name="status" id="status" onChange="statuschange()"> 
 								<? 
 								while($objResult = mysql_fetch_array($objQuery)) { 
-									$selected = ( $depart === $objResult['name'] ) ? 'selected="selected"' : '' ;
 									?> 
-									<option value="<?=$objResult["name"];?>" <?php echo $selected;?>><?=$objResult["name"];?></option>  
+									<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>  
 									<? 
 								} 
 								?> 
@@ -320,7 +279,10 @@ if( $an !== false ){
 						</TD>
 					</TR>
 					<TR>
-						<TD colspan="3" align="center"><INPUT TYPE="submit" value="  ตกลง  "></TD>
+						<TD colspan="3" align="center">
+							<INPUT TYPE="submit" value="  ตกลง  ">
+							<input type="hidden" name="back" value="<?php echo $back;?>">
+						</TD>
 					</TR>
 				</TABLE>
 			</TD>

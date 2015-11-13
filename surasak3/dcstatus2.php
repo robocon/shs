@@ -65,8 +65,11 @@ print "<b><font face='Angsana New' size='3'><U>สถานะ:</b> ".$statusall."</U></FO
 	}
  }
     
-include("unconnect.inc");
+// include("unconnect.inc");
+list($thiyr, $mo) = explode('-', $_POST['back']);
+
 
 ?>
+<p><a href="rechkipd1.php?thiyr=<?php echo $thiyr;?>&mo=<?php echo $mo;?>">กลับไปหน้า OPD-rechkOPD</a></p>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
   print "โปรดเลือก เดือน ปี ที่จะดูผู้ป่วยในจำหน่าย<br>";
 ?>
-<form method="POST" action="rechkipd1.php">
+<form method="GET" action="rechkipd1.php">
   <p><font face="Angsana New">&nbsp;&nbsp;&nbsp; ผู้ป่วยในจำหน่ายของเดือน&nbsp;
   <? $m=date('m'); ?>
       <select name="mo" >
@@ -18,7 +18,7 @@
         <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
         <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
         </select>&nbsp;&nbsp; พ.ศ.<input type="text" name="thiyr" size="4" value="<?=date("Y")+543;?>"></font></p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="     ตกลง     " name="B1">
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="     ตกลง     ">
        &nbsp;&nbsp;&nbsp;&nbsp <a target=_self  href="../nindex.htm"><< ยกเลิก</a></td>
 </form>
 
