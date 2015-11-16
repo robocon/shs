@@ -23,6 +23,9 @@ surasak3/datacscd/*.txt
 surasak3/datacscd/cscd/*.zip
 surasak3/patient_files/*
 surasak3/tmp/*
+surasak3/Backup*/*
+surasak3/logs/*
+surasak3/dataupdate/*
 
 # Visual Studio Code
 .settings/*
