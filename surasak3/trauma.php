@@ -381,16 +381,47 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj"){
 		exit();
 	}
 	
+	/** If not json **/
+	if( !function_exists('json_encode') ){
+		function json_encode($items, $test = false){
+			
+			$new_items = array();
+			foreach( $items as $key => $item){
+				$new_items[] = '"'.$key.'":'.real_type($item);
+			}
+			$final = '{'.implode(',', $new_items).'}';
+			return $final;
+		}
+	}
+	
+	function real_type($item){
+		$type = gettype($item);
+		if( $type === 'integer' ){
+			$item = intval($item);
+		} /*else if( $type === 'NULL' ){
+			$item = 'NULL';
+		}*/ else {
+			$item = '"'.$item.'"';
+		}
+		return $item;
+	}
+	/** If not json **/
+	
 	if( isset($_GET['action']) && $_GET['action'] === 'get_hn_an' ){
 		
 		$hn = $_GET['hn'];
 		$date = ( date('Y') + 543 ).'-'.date('m-d');
 		$sql = "
 		SELECT a.`hn`,a.`vn`,b.`an`
-		FROM `opday` AS a LEFT JOIN `ipcard` AS b ON b.`hn` = a.`hn`
+		FROM `opday` AS a 
+		LEFT JOIN (
+			SELECT `hn`,`an`,`date` FROM `ipcard` WHERE `hn` = '$hn' AND `date` LIKE '$date%'
+		)
+		AS b ON b.`hn` = a.`hn`
 		WHERE a.`hn` = '$hn' 
-		AND a.`thidate` LIKE '$date%'
+		AND a.`thidate` LIKE '$date%' 
 		";
+		
 		$query = mysql_query($sql);
 		$item = mysql_fetch_assoc($query);
 		
@@ -427,7 +458,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj"){
 	if(isset($_POST["submit"]) && $_POST["submit"] == "เพิ่มข้อมูล"){
 
 	include("class_file/class_refer.php");
-	$obj = New refer;
+	$obj = New refer();
 
 		$thaidate = (date("Y")+543).date("-m-d H:i:s");
 		
@@ -661,8 +692,66 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		$time_in = substr($_POST["time_in1"],0,2).":".substr($_POST["time_in1"],-2).":00";
 		$time_out = substr($_POST["time_out1"],0,2).":".substr($_POST["time_out1"],-2).":00";
 
-		$sql ="UPDATE `trauma` SET `date` = '".$thaidate."',`vn` = '".$_POST["vn"]."',`an` = '".$_POST["an"]."' , `list_ptright` = '".$_POST["list_ptright"]."', `list_ptright2` = '".$_POST["list_ptright2"]."' ,`disease_people` = '".jschars($_POST["disease_people"])."',`drug_alert` = '".jschars($_POST["drug_alert"])."',`dx` = '".jschars($_POST["dx"])."',`type_accident` = '".$_POST["type_accident"]."',`wounded_vehicle` = '".$_POST["wounded_vehicle"]."',`wounded_detail` = '".$_POST["wounded_detail"]."',`cause_accident` = '".$_POST["cause_accident"]."',`belt` = '".$_POST["belt"]."',`helmet` = '".$_POST["helmet"]."',`sender` = '".$_POST["sender"]."',`cure` = '".$_POST["cure"]."',`time_diag` = '".$time_diag."',`time_in` = '".$time_in."',`time_out` = '".$time_out."',`officer` = '".$_POST["officer"]."', `trauma` = '".$_POST["trauma"]."', `obs` = '".$_POST["obs"]."', `type_wounded` = '".$_POST["type_wounded"]."', `type_wounded2` = '".$_POST["type_wounded2"]."', `accident_detail` = '".$_POST["accident_detail"]."', `date_in`='".$_POST["date_in"]."',`etc_sender`='".$_POST["etc_sender"]."', `with_cause_accident`='".$_POST["with_cause_accident"]."', `list_with_cause_accident`='".$_POST["list_with_cause_accident"]."', `hn` = '".$_POST["hn"]."', `organ` = '".$_POST["organ"]."', `maintenance` = '".jschars($_POST["maintenance"])."', `age` = '".calcage($dbirth)."' , `doctor` = '".$_POST["doctor"]."' , `refer_hospital` = '".$_POST["refer_hospital"]."' , `admit_ward` = '".$_POST["admit_ward"]."', `repeat` = '".$_POST["repeat"]."' , `cause_refer` = '".$_POST["cause_refer"]."', `type_patient` = '".$_POST["type_patient"]."', `means_refer` = '".$_POST["means_refer"]."', `take_care` = '".$_POST["take_care"]."', `doc_refer` = '".$_POST["doc_refer"]."', `nurse` = '".$_POST["nurse"]."', `assistant_nurse` = '".$_POST["assistant_nurse"]."', `estimate` = '".$_POST["estimate"]."', `no_estimate` = '".$_POST["no_estimate"]."', `cradle` = '".$_POST["cradle"]."', `doc_txt` = '".$_POST["doc_txt"]."', `consult` = '".$_POST["consult"]."', `to_or` = '".$_POST["to_or"]."', `to_lr` = '".$_POST["to_lr"]."', `to_etc` = '".$_POST["to_etc"]."', `er_tell` = '".$_POST["er_tell"]."', `problem_refer` = '".$_POST["problem_refer"]."', `suggestion` = '".$_POST["suggestion"]."', `to_hpt_lp` = '".$_POST["to_hpt_lp"]."', `out_changwat` = '".$_POST["out_changwat"]."'  WHERE `row_id` = '".$_POST["row_id"]."' LIMIT 1 ;
-		
+		$sql ="UPDATE `trauma` SET 
+		`date` = '".$thaidate."',
+		`vn` = '".$_POST["vn"]."',
+		`an` = '".$_POST["an"]."',
+		`list_ptright` = '".$_POST["list_ptright"]."', 
+		`list_ptright2` = '".$_POST["list_ptright2"]."' ,
+		`disease_people` = '".jschars($_POST["disease_people"])."',
+		`drug_alert` = '".jschars($_POST["drug_alert"])."',
+		`dx` = '".jschars($_POST["dx"])."',
+		`type_accident` = '".$_POST["type_accident"]."',
+		`wounded_vehicle` = '".$_POST["wounded_vehicle"]."',
+		`wounded_detail` = '".$_POST["wounded_detail"]."',
+		`cause_accident` = '".$_POST["cause_accident"]."',
+		`belt` = '".$_POST["belt"]."',
+		`helmet` = '".$_POST["helmet"]."',
+		`sender` = '".$_POST["sender"]."',
+		`als_sender` = '".$_POST['als_sender']."',
+		`cure` = '".$_POST["cure"]."',
+		`time_diag` = '".$time_diag."',
+		`time_in` = '".$time_in."',
+		`time_out` = '".$time_out."',
+		`officer` = '".$_POST["officer"]."', 
+		`trauma` = '".$_POST["trauma"]."', 
+		`obs` = '".$_POST["obs"]."', 
+		`type_wounded` = '".$_POST["type_wounded"]."', 
+		`type_wounded2` = '".$_POST["type_wounded2"]."', 
+		`accident_detail` = '".$_POST["accident_detail"]."', 
+		`date_in`='".$_POST["date_in"]."',
+		`etc_sender`='".$_POST["etc_sender"]."', 
+		`with_cause_accident`='".$_POST["with_cause_accident"]."', 
+		`list_with_cause_accident`='".$_POST["list_with_cause_accident"]."', 
+		`hn` = '".$_POST["hn"]."', 
+		`organ` = '".$_POST["organ"]."', 
+		`maintenance` = '".jschars($_POST["maintenance"])."', 
+		`age` = '".calcage($dbirth)."' , 
+		`doctor` = '".$_POST["doctor"]."' , 
+		`refer_hospital` = '".$_POST["refer_hospital"]."' , 
+		`admit_ward` = '".$_POST["admit_ward"]."', 
+		`repeat` = '".$_POST["repeat"]."' , 
+		`cause_refer` = '".$_POST["cause_refer"]."', 
+		`type_patient` = '".$_POST["type_patient"]."', 
+		`means_refer` = '".$_POST["means_refer"]."', 
+		`take_care` = '".$_POST["take_care"]."', 
+		`doc_refer` = '".$_POST["doc_refer"]."', 
+		`nurse` = '".$_POST["nurse"]."', 
+		`assistant_nurse` = '".$_POST["assistant_nurse"]."', 
+		`estimate` = '".$_POST["estimate"]."', 
+		`no_estimate` = '".$_POST["no_estimate"]."', 
+		`cradle` = '".$_POST["cradle"]."', 
+		`doc_txt` = '".$_POST["doc_txt"]."', 
+		`consult` = '".$_POST["consult"]."', 
+		`to_or` = '".$_POST["to_or"]."', 
+		`to_lr` = '".$_POST["to_lr"]."', 
+		`to_etc` = '".$_POST["to_etc"]."', 
+		`er_tell` = '".$_POST["er_tell"]."', 
+		`problem_refer` = '".$_POST["problem_refer"]."', 
+		`suggestion` = '".$_POST["suggestion"]."', 
+		`to_hpt_lp` = '".$_POST["to_hpt_lp"]."', 
+		`out_changwat` = '".$_POST["out_changwat"]."'  
+		WHERE `row_id` = '".$_POST["row_id"]."' LIMIT 1 ;
 		";
 		//echo "--->".$sql;
 

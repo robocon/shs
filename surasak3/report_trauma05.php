@@ -138,7 +138,7 @@ body,td,th {
 	if(isset($_POST["submit"])){
 		
 		
-		$sql = "Create Temporary table trauma2 Select list_ptright, hn, an, dx, age, maintenance, cure, date_in, sender ,etc_sender From trauma where sender in ('2','4','5','6')  AND ( date_in between '".$select_day." 00:00:00' AND '".$select_day2." 23:59:59' ) Order by  date_in DESC ";
+		$sql = "Create Temporary table trauma2 Select list_ptright, hn, an, dx, age, maintenance, cure, date_in, sender ,etc_sender, als_sender From trauma where sender in ('2','4','5','6')  AND ( date_in between '".$select_day." 00:00:00' AND '".$select_day2." 23:59:59' ) Order by  date_in DESC ";
 		$result = Mysql_Query($sql);
 
 		$sql = "Create Temporary table opcard2 Select hn, yot, name, surname, idcard From opcard  where hn in (Select hn From trauma2) ";
@@ -167,7 +167,7 @@ body,td,th {
   </tr>
   <?php
 
-$sql = "Select a.hn, a.an, date_format(date_in,'%d/%m/%Y') as date_in2, b.yot, b.name, b.surname, a.age, a.list_ptright , a.dx , a.maintenance, a.cure, a.sender,a.etc_sender, b.idcard   From trauma2 as a , opcard2 as b where a.hn=b.hn  Group by a.hn Order by date_in ASC ";
+$sql = "Select a.hn, a.an, date_format(date_in,'%d/%m/%Y') as date_in2, b.yot, b.name, b.surname, a.age, a.list_ptright , a.dx , a.maintenance, a.cure, a.sender,a.etc_sender, b.idcard, a.als_sender  From trauma2 as a , opcard2 as b where a.hn=b.hn  Group by a.hn Order by date_in ASC ";
 $result = Mysql_Query($sql);
 $i=1;
 
@@ -177,6 +177,9 @@ while($arr = Mysql_fetch_assoc($result)){
 	
 	if($arr["sender"]=='2'){
 		$sender="ALS";
+		if( !empty($arr['als_sender']) ){
+			$sender .= ' '.$arr['als_sender'];
+		}
 	}elseif($arr["sender"]=='3'){
 		$sender="BLS";
 	}elseif($arr["sender"]=='4'){
