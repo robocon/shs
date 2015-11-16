@@ -380,6 +380,33 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj"){
 
 		exit();
 	}
+	
+	if( isset($_GET['action']) && $_GET['action'] === 'get_hn_an' ){
+		
+		$hn = $_GET['hn'];
+		$date = ( date('Y') + 543 ).'-'.date('m-d');
+		$sql = "
+		SELECT a.`hn`,a.`vn`,b.`an`
+		FROM `opday` AS a LEFT JOIN `ipcard` AS b ON b.`hn` = a.`hn`
+		WHERE a.`hn` = '$hn' 
+		AND a.`thidate` LIKE '$date%'
+		";
+		$query = mysql_query($sql);
+		$item = mysql_fetch_assoc($query);
+		
+		$data = array( 'status' => 500 );
+		if( $item !== false ){
+			$data = array(
+				'hn' => $hn,
+				'vn' => $item['vn'],
+				'an' => $item['an'],
+				'status' => 200
+			);
+		}
+		
+		echo json_encode($data);
+		exit(0);
+	}
 /********************************************* END AJAX *********************************************************************/
 
 	function jschars($str)
@@ -1072,10 +1099,12 @@ body,td,th {
 </style>
 </head>
 <body>
-<script language="JavaScript" src="calendar/calendar2.js">
-</script>
+<!--[if IE]>
+<script type="text/javascript" src="assets/js/json2.js"></script>
+<![endif]-->
+<script language="JavaScript" src="calendar/calendar2.js"></script>
 <link href="calendar/calendar.css" rel="stylesheet" type="text/css">
-<SCRIPT LANGUAGE="JavaScript">
+<script LANGUAGE="JavaScript">
 	
 	function newXmlHttp(){
 	var xmlhttp = false;
@@ -1306,7 +1335,7 @@ function view_expenses(an) {
 	}
 	
 
-</SCRIPT>
+</script>
 <div id = "tooltip" onMouseOver="tooltip.style.display=''; " onMouseOut="hid_tooltip();" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
 <?php
@@ -1422,7 +1451,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	}
 ?>
 
-<SCRIPT LANGUAGE="JavaScript">
+<script LANGUAGE="JavaScript">
 	window.onload = function(){
 		block1.style.display="<?php echo $hdd;?>";
 		block2.style.display="<?php echo $hdd;?>";
@@ -1720,22 +1749,29 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	}
 
 
-</SCRIPT>
+</script>
 
-<SCRIPT LANGUAGE="JavaScript">
-	function check_number_hn() {
-	e_k=event.keyCode
-		if (((e_k >= 48) && (e_k <= 57)) || e_k ==45 ) {
+<script type="text/javascript">
+	function check_number_hn(event) {
+		e_k = event.which || event.keyCode;
+		if ( ((e_k >= 48) && (e_k <= 57)) || e_k == 45 || e_k == 8 ) {
 			return true;
 		}else{
-			event.returnValue = false;
-			alert("สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้นครับ");
+			
+			if( event.preventDefault ){
+				event.preventDefault();
+			}else{
+				event.returnValue = false;
+			}
+			
+			// event.returnValue = false;
+			// alert("สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้นครับ");
 			return false;
 		}
 	}
 
 	function check_number_vn() {
-	e_k=event.keyCode
+		e_k = event.which || event.keyCode;
 		if (((e_k >= 48) && (e_k <= 57)) ) {
 			return true;
 		}else{
@@ -1755,8 +1791,8 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 			return false;
 		}
 	}
-
-</SCRIPT>
+	
+</script>
 
 <TABLE width="100%" border="0">
 <TR valign="top">
@@ -1771,9 +1807,39 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 </TR>
 <TR>
 	<TD align="right">Hn</TD><TD colspan="7">
-	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?php echo $arr["hn"];?>" onKeyPress="check_number_hn();">&nbsp;<INPUT TYPE="button" value="View" Onclick="if(checksom()){viewdetail('view',document.getElementById('hn').value);document.getElementById('vn').value='';}">
+	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?php echo $arr["hn"];?>" onKeyPress="check_number_hn(event);" title="สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้น">&nbsp;<INPUT TYPE="button" value="View" Onclick="if(checksom()){viewdetail('view',document.getElementById('hn').value);document.getElementById('vn').value='';}">
 	&nbsp;<INPUT TYPE="button" value="ซักประวัติ" Onclick="window.open('basic_opd.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);">
+	
+	<script type="text/javascript">
+		var input_hn = document.getElementById("hn");
+		if( input_hn.addEventListener ){
+			input_hn.addEventListener("blur", hn_blur, true);
+		} else { // สำหรับ IE
+			input_hn.attachEvent("onblur", hn_blur, true);
+		}
+	
+		function hn_blur(){
+			
+			if( input_hn.value === '' ){
+				return false;
+			}
+			
+			// ส่งค่าไปตรวจสอบ AN กับ VN
+			url = 'trauma.php?action=get_hn_an&hn=' + input_hn.value;
+			xmlhttp = newXmlHttp();
+			xmlhttp.open("GET", url, false);
+			xmlhttp.send(null);
+			txt = xmlhttp.responseText;
+			
+			var res = JSON.parse(txt);
+			if( res.status  === 200 ){
+				document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
+				document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
+			}
+		}
+	</script>
+	
 	</TD>
 </TR>
 <TR>
@@ -1785,7 +1851,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 </TR>
 <TR>
 	<TD align="right">AN</TD><TD colspan="7">
-	<INPUT TYPE="text" NAME="an" size="6" value="<?php echo $arr["an"];?>" onKeyPress="check_number_an();">&nbsp;<INPUT TYPE="button" value="คิดเงิน ผป. ใน" onClick="if(document.f1.an.value !=''){window.open('eripage.php?get_hn='+document.f1.an.value,'_blank');} else{alert('กรุณากรอก AN');}">&nbsp;
+	<INPUT TYPE="text" id="an" NAME="an" size="6" value="<?php echo $arr["an"];?>" onKeyPress="check_number_an();">&nbsp;<INPUT TYPE="button" value="คิดเงิน ผป. ใน" onClick="if(document.f1.an.value !=''){window.open('eripage.php?get_hn='+document.f1.an.value,'_blank');} else{alert('กรุณากรอก AN');}">&nbsp;
 	<INPUT TYPE="button" value="ค่าใช้จ่าย" onClick="view_expenses(document.f1.an.value);">
 	</TD>
 </TR>
@@ -2359,7 +2425,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 </FORM>
 <a name="cf"></a>
 
-<SCRIPT LANGUAGE="JavaScript">
+<script LANGUAGE="JavaScript">
 
 function rediv(xx){
 	if(xx == "inj"){
@@ -2370,7 +2436,7 @@ function rediv(xx){
 
 }
 
-</SCRIPT>
+</script>
 
 <FORM name="form_confirn_inject" METHOD=POST ACTION="confirn_inject2.php" onSubmit=" rediv('inj')" target="_blank">
 <DIV ID="Div_Confirm_inject">
