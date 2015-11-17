@@ -892,7 +892,16 @@ C&deg;</td>
    </tr>
    
      <?
-      $laball2="Select  result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='LDL'  and b.orderdate like '$year%' Order by b.orderdate desc";
+      $laball2="
+	  SELECT result,unit,orderdate 
+	  FROM resultdetail AS a, 
+	  resulthead AS b   
+	  WHERE  a.autonumber = b.autonumber 
+	  AND b.hn='".$arr_view["hn"]."' 
+	  AND ( a.labname='LDL' OR a.labname='LDLC' )
+	  AND b.orderdate 
+	  LIKE '$year%' 
+	  ORDER BY b.orderdate desc";
 	  $result_laball2=mysql_query($laball2);
 	  $rowall2=mysql_num_rows($result_laball2);
 	  

@@ -595,7 +595,15 @@ ORDER BY dateY DESC
    </tr>
    
      <?
-      $laball2="Select  result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='LDL'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+      $laball2="SELECT result,unit,orderdate 
+	  FROM  resultdetail AS a, 
+	  resulthead AS b 
+	  WHERE  a.autonumber = b.autonumber 
+	  AND b.hn='".$arr_view["hn"]."' 
+	  AND ( a.labname='LDL' OR a.labname='LDLC' )
+	  AND b.orderdate like '$year%' 
+	  ORDER BY b.orderdate DESC 
+	  LIMIT 1";
 	  $result_laball2=mysql_query($laball2);
 	  $rowall2=mysql_num_rows($result_laball2);
 	  

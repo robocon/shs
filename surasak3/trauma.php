@@ -1942,6 +1942,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	<TD align="right">AN</TD><TD colspan="7">
 	<INPUT TYPE="text" id="an" NAME="an" size="6" value="<?php echo $arr["an"];?>" onKeyPress="check_number_an();">&nbsp;<INPUT TYPE="button" value="คิดเงิน ผป. ใน" onClick="if(document.f1.an.value !=''){window.open('eripage.php?get_hn='+document.f1.an.value,'_blank');} else{alert('กรุณากรอก AN');}">&nbsp;
 	<INPUT TYPE="button" value="ค่าใช้จ่าย" onClick="view_expenses(document.f1.an.value);">
+	&nbsp;
 	<button onclick="print_sticker_an(event)">Stick ผป.นอก</button>
 	
 	<script tyep="text/javascript">
