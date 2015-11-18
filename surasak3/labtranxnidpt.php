@@ -50,21 +50,22 @@ $thidate5 = (date("Y")+543).date("-m-d H:i:s");
 
 
 
-$cDoctor1=substr($cDoctor,5,50);
+$cDoctor1 = trim(substr($cDoctor,5,50));
 $cDoctor2=substr($cDoctor,0,5);
 /*if($cDoctor2=='MD054'){$doctorcode='ว.13553';}else
 if($cDoctor2=='MD052'){$doctorcode='ว.14286';}else
 if($cDoctor2=='MD037'){$doctorcode='ว.10212';}else
 if($cDoctor2=='MD089'){$doctorcode='ว.32166';}else{$doctorcode='';};*/
-if($cDoctor1=="  แพทย์แผนไทย"){
+
+if($cDoctor1=="แพทย์แผนไทย"){
   
   // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
-  $check_date = date('N');
-  if( $old_doctor < 6 ){
+  $subDoctor = (int) $_GET['subDoctor'];
+  if( $subDoctor === 1 ){
     $cDoctor1="ศิริพร อินปัน";
     $doctorcode = "พท.ป. 1272";
   }else{
-    $cDoctor1="ธัญญาวดี  มูลรัตน์";
+    $cDoctor1="ธัญญาวดี มูลรัตน์";
     $doctorcode = "พท.ป. 1038";
   }
 
