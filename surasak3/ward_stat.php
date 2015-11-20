@@ -2,23 +2,46 @@
 include 'bootstrap.php';
 DB::load();
 
-include 'templates/classic/header.php';
+/**
+ * จัดการข้อมูล
+ */
+// การกระทำต่างๆ เช่น บันทึก, แก้ไข, ลบ
+$action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false;
 
-// include class เข้ามาจัดการ route เท่าจะดี
-include 'templates/ward/nav.php';
+// หน้าต่างการแสดงผลต่างๆ เช่น หน้ารายการ, หน้าฟอร์ม
+$page = isset($_REQUEST['page']) ? trim($_REQUEST['page']) : false;
 
-class WardController{
+// จุดการแสดงผลในหน้านั้นๆ
+$view = isset($_REQUEST['view']) ? trim($_REQUEST['view']) : false;
+if( $action === 'save' ){
 	
 }
-?>
 
-เมนู
-หน้าหลัก รพ.
-หน้ารายงาน
-	+ เลือก เดือน, ปี, หน่วยได้
-	+ แก้ไข, ลบ, ดูรายงานเต็ม
-ฟอร์ม
-	- หอผู้ป่วย
-	- สูติ
+
+/**
+ * แสดงในส่วนของ view
+ */
+include 'templates/classic/header.php';
+
+?>
+<div class="site-center">
+	<div class="site-body panel">
+		<div class="body">
+			<div class="cell">
+			<?php
+			// เมนู
+			include 'templates/ward/nav.php';
+			if( $page === false ){ // Home && Default page
+				?>
+				<h3>รายการ</h3>
+				<?php
+			}elseif( $page === 'form' ){
+				include 'templates/ward/form.php';
+			}
+			?>
+			</div>
+		</div>
+	</div>
+</div>
 <?php
 include 'templates/classic/footer.php';

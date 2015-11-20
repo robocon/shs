@@ -91,15 +91,13 @@ h3{
 .cell{
 	padding: 0.3em;
 }
-.width-1of5{
-	width: 20%;
-}
-.width-2of5{
-	width: 40%;
-}
-.width-3of5{
-	width: 60%;
-}
+.width-1of5{ width: 20%; }
+.width-2of5{ width: 40%; }
+.width-3of5{ width: 60%; }
+.width-4of5{ width: 80%; }
+.width-5of5{ width: 100%; }
+.width-1of24{ width: 4.16%; }
+.width-2of24{ width: 8.33%; }
 .label{
 	padding: 0.2em;
 	color: #ffffff;
