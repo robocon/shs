@@ -116,19 +116,33 @@ ol ol{
 
 /* Navigation menu */
 .nav{
-	
+	padding: 0;
+	margin: 0;
+	list-style: none;
 }
 .nav li{
-	display: inline;
+	display: inline-block;
+	line-height: 40px;
 }
-.nav li a{
-	padding: 0.5em;
-	line-height: 37px;
+.nav a{
+	padding: 0 0.5em;
 	background-color: #ECECEC;
+	color: #6B6B6B;
+	display: block;
 }
 .nav li.active a{
 	background-color: #6B6B6B;
-	color: #ffffff;	
+	color: #ffffff;
+}
+.nav li ul{
+	display: none;
+	position: absolute;
+}
+.nav li:hover ul{
+	display: block;
+}
+.nav li:hover ul li{
+	display: block;
 }
 
 /* Template CSS Config */
