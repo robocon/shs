@@ -75,7 +75,9 @@ function filter_post($items){
 	foreach($items as $key => $name){
 		if(isset($_POST[$key])){
 			if(gettype($_POST[$key]) == 'string'){
-				$post[$key] = strip_tags(trim($_POST[$key]));
+				$post[$key] = strip_tags(trim($name));
+			}else{
+				$post[$key] = $name;
 			}
 		}else{
 			$post[$key] = null;

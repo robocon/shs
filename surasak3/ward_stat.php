@@ -23,8 +23,21 @@ if( $action === 'add' ){
 	$post = filter_post($_POST);
 
 	// ข้อมูลผู้เสียชีวิต
-	$dead_rows = ( isset($post['dead_hn']) && !empty($post['dead_hn']) ) ? count($post['dead_hn']) : 0 ;
-
+	$dead_lists = array();
+	$test_count = count($post['dead_hn']);
+	for( $i=0; $i<$test_count; $i++ ){
+		
+		// skip if empty
+		if( empty($post['dead_hn'][$i]) ) continue ;
+		
+		$dead_lists[] = array(
+			'dead_hn' => $post['dead_hn'][$i],
+			'dead_name' => $post['dead_name'][$i],
+			'dead_an' => $post['dead_an'][$i],
+		);
+	}
+	$dead_rows = count($dead_lists);
+	
 	// สำหรับสูติ
 	$newborn_active = isset($post['newborn_active']) ? intval($post['newborn_active']) : false ;
 
@@ -75,17 +88,15 @@ if( $action === 'add' ){
 		$sql = "INSERT INTO `smdb`.`ward_dead_stat` (`id` ,`ward_stat_id` ,`name` ,`hn` ,`an`)
 		VALUES (NULL , :ward_stat_id, :name, :hn, :an);";
 
-		for ($i=0; $i < $dead_rows; $i++) {
-
+		foreach($dead_lists as $key => $list ){
 			$data = array(
 				':ward_stat_id' => $id,
-				':name' => $post['dead_name'][$i],
-				':hn' => $post['dead_hn'][$i],
-				':an' => $post['dead_an'][$i],
+				':name' => $list['dead_name'],
+				':hn' => $list['dead_hn'],
+				':an' => $list['dead_an'],
 			);
 			DB::exec($sql, $data);
 		}
-
 	}
 
 	// เพิ่มข้อมูลสำหรับสูติ
@@ -175,15 +186,15 @@ include 'templates/classic/header.php';
 				if( $id !== false ){
 					$sql = "SELECT *
 					FROM `ward_stat` AS a
-					LEFT JOIN `ward_dead_stat` AS b ON b.`ward_stat_id` = a.`id`
 					LEFT JOIN `ward_baby_stat` AS c ON c.`ward_stat_id` = a.`id`
-					WHERE a.`id` = :id
-					";
+					WHERE a.`id` = :id ";
 					$item = DB::select($sql, array(':id' => $id), true);
 					if( empty($item) ){
 						redirect( 'ward_stat.php', 'ไม่มีข้อมูล');
 					}
-					dump($item);
+					
+					$sql = "SELECT `name`,`hn`,`an` FROM `ward_dead_stat` WHERE `ward_stat_id` = :id ";
+					$lists = DB::select($sql, array(':id' => $id));
 				}
 
 				include 'templates/ward/form.php';
