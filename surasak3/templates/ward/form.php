@@ -1,5 +1,6 @@
 <?php
-$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
+if( !defined('WARD_STAT') ) die('Access denied');
+
 if( $view === 'obgyn' ){
 	$departs = array('หอผู้ป่วยสูติ');
 }else{
@@ -141,7 +142,7 @@ $th_year = date('Y') + 543 ;
 			<?php endif; ?>
 			<div class="col">
 				<div class="cell">
-					<button type="submit">บันทึกแบบฟอร์ม</button>
+					<button type="submit">บันทึกข้อมูล</button>
 				</div>
 			</div>
 		</form>
@@ -159,7 +160,6 @@ $(function(){
 	$(document).on('click', '.add_dead_patient', function(e){
 		e.preventDefault();
 		var dt = $('#dead_temp').html();
-		// console.log(dt);
 		$('.dead_patient_lists').append(dt);
 	});
 });
