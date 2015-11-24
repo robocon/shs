@@ -16,6 +16,10 @@ if( isset($item['date_write']) ){
 }
 
 ?>
+<!-- กำหนด Cursor -->
+<style type="text/css">
+.delete-remove:hover{ text-decoration: underline; cursor: pointer; }
+</style>
 <div class="col">
 	<div class="cell">
 		<div class="col">
@@ -124,9 +128,10 @@ if( isset($item['date_write']) ){
 					</label>
 					<div class="dead_patient_lists">
 						<?php foreach( $lists as $key => $list ): ?>
-						<div class="col">
+						<div class="col delete-contain">
 							<div class="cell">
-								ชื่อ - สกุล: <input type="text" name="dead_name[]" value="<?=$list['name'];?>"> HN: <input type="text" class="width-2of24" name="dead_hn[]" value="<?=$list['hn'];?>"> AN: <input type="text" class="width-2of24" name="dead_an[]" value="<?=$list['an'];?>">
+								ชื่อ - สกุล: <input type="text" name="dead_name[]" value="<?=$list['name'];?>"> HN: <input type="text" class="width-2of24" name="dead_hn[]" value="<?=$list['hn'];?>"> AN: <input type="text" class="width-2of24" name="dead_an[]" value="<?=$list['an'];?>"> <span class="delete-remove">[ลบ]</span>
+								<input type="hidden" name="dead_id[]" value="<?=$list['id'];?>">
 							</div>
 						</div>
 						<?php endforeach; ?>
@@ -159,9 +164,9 @@ if( isset($item['date_write']) ){
 	</div>
 </div>
 <script type="text/template" id="dead_temp">
-	<div class="col">
+	<div class="col delete-contain">
 		<div class="cell">
-			ชื่อ - สกุล: <input type="text" name="dead_name[]" value=""> HN: <input type="text" class="width-2of24" name="dead_hn[]" value=""> AN: <input type="text" class="width-2of24" name="dead_an[]" value="">
+			ชื่อ - สกุล: <input type="text" name="dead_name[]" value=""> HN: <input type="text" class="width-2of24" name="dead_hn[]" value=""> AN: <input type="text" class="width-2of24" name="dead_an[]" value=""> <span class="delete-remove">[ลบ]</span>
 		</div>
 	</div>
 </script>
@@ -172,5 +177,11 @@ $(function(){
 		var dt = $('#dead_temp').html();
 		$('.dead_patient_lists').append(dt);
 	});
+	
+	if( $('.delete-remove').length > 0 ){
+		$(document).on('click', '.delete-remove', function(){
+			$(this).parents('div.delete-contain').remove();
+		});
+	}
 });
 </script>

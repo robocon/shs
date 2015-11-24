@@ -17,25 +17,41 @@ $page = isset($_REQUEST['page']) ? trim($_REQUEST['page']) : false;
 
 // จุดการแสดงผลในหน้านั้นๆ
 $view = isset($_REQUEST['view']) ? trim($_REQUEST['view']) : false;
+
+
+if( !function_exists('clean_dead_hn') ){
+	function clean_dead_hn($post){
+		$dead_lists = array();
+		$test_count = count($post['dead_hn']);
+		for( $i=0; $i<$test_count; $i++ ){
+			
+			// skip if empty
+			if( empty($post['dead_hn'][$i]) ) continue ;
+			
+			$pre_item = array(
+				'dead_hn' => $post['dead_hn'][$i],
+				'dead_name' => $post['dead_name'][$i],
+				'dead_an' => $post['dead_an'][$i],
+			);
+			
+			if( isset($post['dead_id'][$i]) ){
+				$pre_item['dead_id'] = $post['dead_id'][$i];
+			}
+			
+			$dead_lists[] = $pre_item;
+		}
+		return $dead_lists;
+	}
+}
+
+
 if( $action === 'add' ){
 
 	//
 	$post = filter_post($_POST);
 
 	// ข้อมูลผู้เสียชีวิต
-	$dead_lists = array();
-	$test_count = count($post['dead_hn']);
-	for( $i=0; $i<$test_count; $i++ ){
-		
-		// skip if empty
-		if( empty($post['dead_hn'][$i]) ) continue ;
-		
-		$dead_lists[] = array(
-			'dead_hn' => $post['dead_hn'][$i],
-			'dead_name' => $post['dead_name'][$i],
-			'dead_an' => $post['dead_an'][$i],
-		);
-	}
+	$dead_lists = clean_dead_hn($post);
 	$dead_rows = count($dead_lists);
 	
 	// สำหรับสูติ
@@ -150,10 +166,98 @@ if( $action === 'add' ){
 } elseif ( $action === 'edit' ) {
 	/**
 	 * @todo
-	 * [] อัพเดท ward_stat
-	 * [] อัพเดท ward_stat dead
-	 * [] อัพเดท ward_stat baby
+	 * [x] อัพเดท ward_stat
+	 *		[] ขาด edit date
+	 * [x] อัพเดท ward_stat dead
+	 * [x] อัพเดท ward_stat baby
 	 */
+	
+	$id = isset($_POST['id']) ? intval($_POST['id']) : false ;
+	
+	//
+	$post = filter_post($_POST);
+	
+	// ข้อมูลผู้เสียชีวิต
+	$dead_lists = clean_dead_hn($post);
+	$dead_rows = count($dead_lists);
+	
+	$date_write = $post['date_year'].'-'.$post['date_month'];
+	$newborn_active = isset($post['newborn_active']) ? intval($post['newborn_active']) : false ;
+	
+	$sql = "UPDATE `ward_stat` SET `department`=:department, 
+	`date_write`=:date_write, `all_patient`=:all_patient, 
+	`new_patient`=:new_patient, `all_admit`=:all_admit, 
+	`prev_admit`=:prev_admit, `new_admit`=:new_admit, 
+	`avg_bed`=:avg_bed, `all_bed`=:all_bed, 
+	`refer_patient`=:refer_patient, `disc_patient`=:disc_patient 
+	WHERE `id`=:id;";
+	$data = array(
+		':department' => $post['department'], ':date_write' => $date_write, 
+		':all_patient' => $post['all_patient'], ':new_patient' => $post['new_patient'], 
+		':all_admit' => $post['all_admit'], ':prev_admit' => $post['prev_admit'], 
+		':new_admit' => $post['new_admit'], ':avg_bed' => $post['avg_bed'], 
+		':all_bed' => $post['all_bed'], ':refer_patient' => $post['refer_patient'], 
+		':disc_patient' => $post['disc_patient'], ':id' => $id, 
+	);
+	DB::exec($sql, $data);
+
+	if( $dead_rows > 0 ){
+		foreach($dead_lists as $key => $list ){
+			$sql = "UPDATE `ward_dead_stat` SET `name`=:name, 
+			`hn`=:hn, 
+			`an`=:an 
+			WHERE `id`=:id;";
+			$data = array(
+				':name' => $list['dead_name'],
+				':hn' => $list['dead_hn'],
+				':an' => $list['dead_an'],
+				':id' => $list['dead_id'],
+			);
+			DB::exec($sql, $data);
+		}
+	}
+	
+	if( $newborn_active > 0 ){
+		$sql = "UPDATE `ward_baby_stat` SET 
+		`all_baby`=:all_baby ,
+		`dead_baby`=:dead_baby ,
+		`dead_baby_reason`=:dead_baby_reason ,
+		`baby_seven`=:baby_seven ,
+		`baby_seven_reason`=:baby_seven_reason ,
+		`dead_mother`=:dead_mother ,
+		`dead_mother_reason`=:dead_mother_reason ,
+		`all_mother`=:all_mother ,
+		`all_cs`=:all_cs ,
+		`prev_cs`=:prev_cs ,
+		`first_cs`=:first_cs ,
+		`mother_cp`=:mother_cp ,
+		`eclampsia`=:eclampsia ,
+		`embolism`=:embolism ,
+		`blood_cp`=:blood_cp ,
+		`broke_cp`=:broke_cp ,
+		`infected_cp`=:infected_cp ,
+		`placenta_cp`=:placenta_cp ,
+		`etc_cp`=:etc_cp ,
+		`etc_cp_reason`=:etc_cp_reason ,
+		`hypoxia`=:hypoxia ,
+		`milk`=:milk ,
+		`nl`=:nl ,
+		`ve`=:ve ,
+		`fe`=:fe
+		WHERE `ward_stat_id` = :ward_id
+		";
+		$data = array(
+			':all_baby' => $post['all_baby'], ':dead_baby' => $post['dead_baby'], ':dead_baby_reason' => $post['dead_baby_reason'], ':baby_seven' => $post['baby_seven'],
+			':baby_seven_reason' => $post['baby_seven_reason'], ':dead_mother' => $post['dead_mother'], ':dead_mother_reason' => $post['dead_mother_reason'], ':all_mother' => $post['all_mother'], ':all_cs' => $post['all_cs'],
+			':prev_cs' => $post['prev_cs'], ':first_cs' => $post['first_cs'], ':mother_cp' => $post['mother_cp'], ':eclampsia' => $post['eclampsia'], ':embolism' => $post['embolism'],
+			':blood_cp' => $post['blood_cp'], ':broke_cp' => $post['broke_cp'], ':infected_cp' => $post['infected_cp'], ':placenta_cp' => $post['placenta_cp'], ':etc_cp' => $post['etc_cp'],
+			':etc_cp_reason' => $post['etc_cp_reason'], ':hypoxia' => $post['hypoxia'], ':milk' => $post['milk'], ':nl' => $post['nl'], ':ve' => $post['ve'], ':fe' => $post['fe'], 
+			':ward_id' => $id, 
+		);
+		DB::exec($sql, $data);
+		
+	}
+	
 	exit;
 }
 
@@ -161,6 +265,7 @@ if( $action === 'add' ){
 /**
  * แสดงในส่วนของ view
  */
+$title = 'รายงานผู้มาใช้บริการ';
 include 'templates/classic/header.php';
 
 ?>
@@ -193,7 +298,7 @@ include 'templates/classic/header.php';
 						redirect( 'ward_stat.php', 'ไม่มีข้อมูล');
 					}
 					
-					$sql = "SELECT `name`,`hn`,`an` FROM `ward_dead_stat` WHERE `ward_stat_id` = :id ";
+					$sql = "SELECT `id`,`name`,`hn`,`an` FROM `ward_dead_stat` WHERE `ward_stat_id` = :id ";
 					$lists = DB::select($sql, array(':id' => $id));
 				}
 
