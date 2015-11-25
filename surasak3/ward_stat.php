@@ -172,7 +172,7 @@ if( $action === 'add' ){
 		DB::exec($sql, $data);
 	}
 
-	redirect('ward_stat', 'บันทึกข้อมูลเรียบร้อย');
+	redirect('ward_stat.php', 'บันทึกข้อมูลเรียบร้อย');
 } elseif ( $action === 'edit' ) {
 	
 	$id = isset($_POST['id']) ? intval($_POST['id']) : false ;
