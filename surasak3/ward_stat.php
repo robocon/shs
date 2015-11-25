@@ -208,19 +208,23 @@ if( $action === 'add' ){
 	DB::exec($sql, $data);
 
 	if( $dead_rows > 0 ){
+		
+		//ลบตัวเดิมออกไปก่อน
+		$sql = "DELETE FROM `ward_dead_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
+		DB::exec($sql, array(':ward_stat_id' => $id));
+		
+		$sql = "INSERT INTO `smdb`.`ward_dead_stat` (`id` ,`ward_stat_id` ,`name` ,`hn` ,`an`)
+		VALUES (NULL , :ward_stat_id, :name, :hn, :an);";
 		foreach($dead_lists as $key => $list ){
-			$sql = "UPDATE `ward_dead_stat` SET `name`=:name, 
-			`hn`=:hn, 
-			`an`=:an 
-			WHERE `id`=:id;";
 			$data = array(
+				':ward_stat_id' => $id,
 				':name' => $list['dead_name'],
 				':hn' => $list['dead_hn'],
 				':an' => $list['dead_an'],
-				':id' => $list['dead_id'],
 			);
 			DB::exec($sql, $data);
 		}
+		
 	}
 	
 	if( $newborn_active > 0 ){
