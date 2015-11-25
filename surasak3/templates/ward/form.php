@@ -18,7 +18,7 @@ if( isset($item['date_write']) ){
 ?>
 <!-- กำหนด Cursor -->
 <style type="text/css">
-.delete-remove:hover{ text-decoration: underline; cursor: pointer; }
+.dead-remove:hover{ text-decoration: underline; cursor: pointer; }
 </style>
 <div class="col">
 	<div class="cell">
@@ -160,13 +160,18 @@ if( isset($item['date_write']) ){
 					<button type="submit">บันทึกข้อมูล</button>
 				</div>
 			</div>
+			<div class="col">
+				<div class="cell">
+					<span style="color: red;">* เว้นว่างหรือใส่เป็น 0(ศูนย์) ถ้าไม่มีข้อมูลในช่องนั้นๆ</span>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>
 <script type="text/template" id="dead_temp">
 	<div class="col delete-contain">
 		<div class="cell">
-			ชื่อ - สกุล: <input type="text" name="dead_name[]" value=""> HN: <input type="text" class="width-2of24" name="dead_hn[]" value=""> AN: <input type="text" class="width-2of24" name="dead_an[]" value=""> <span class="delete-remove">[ลบ]</span>
+			ชื่อ - สกุล: <input type="text" name="dead_name[]" value=""> HN: <input type="text" class="width-2of24" name="dead_hn[]" value=""> AN: <input type="text" class="width-2of24" name="dead_an[]" value=""> <span class="dead-remove">[ลบ]</span>
 		</div>
 	</div>
 </script>
@@ -178,10 +183,9 @@ $(function(){
 		$('.dead_patient_lists').append(dt);
 	});
 	
-	if( $('.delete-remove').length > 0 ){
-		$(document).on('click', '.delete-remove', function(){
-			$(this).parents('div.delete-contain').remove();
-		});
-	}
+	$(document).on('click', '.dead-remove', function(){
+		var c = confirm('ยืนยันที่จะลบข้อมูล?');
+		$(this).parents('div.delete-contain').remove();
+	});
 });
 </script>

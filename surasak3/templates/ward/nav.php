@@ -1,11 +1,11 @@
-<div class="col page-header-col">
+<div class="col page-header-col no-print">
 	<div class="cell">
 		<div class="page-header">
 			<h1>รายงานผู้มาใช้บริการ</h1>
 		</div>
 	</div>
 </div>
-<div class="col nav-menu-col">
+<div class="col nav-menu-col no-print">
 	<div class="menu cell">
 		<?php 
 			$home = ( $page === false ) ? 'class="active"' : false ;

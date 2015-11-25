@@ -14,6 +14,7 @@ if( isset($_SESSION['x-msg']) ){
         <th>หอผู้ป่วย</th>
         <th>ประจำเดือน</th>
         <th>วันที่บันทึก</th>
+        <th>จัดการ</th>
     </tr>
     <?php
     $i = 1;
@@ -26,13 +27,29 @@ if( isset($_SESSION['x-msg']) ){
             $section = '';
             if( $item['type'] === 'obgyn' ) $section = '&view=obgyn';
             ?>
-            <a href="ward_stat.php?page=form<?=$section;?>&id=<?=$item['id'];?>"><?=$item['department'];?></a>
+            <a href="ward_stat.php?page=detail<?=$section;?>&id=<?=$item['id'];?>"><?=$item['department'];?></a>
         </td>
         <td><?=$item['date_write'];?></td>
-        <td><?=$item['date_add'];?></td>
+        <td><span title="บันทึกข้อมูลโดย <?=$item['author'];?>"><?=$item['date_add'];?></span></td>
+        <td>
+            <a href="ward_stat.php?page=form<?=$section;?>&id=<?=$item['id'];?>">[แก้ไข]</a>&nbsp;
+            <a class="remove_link" href="ward_stat.php?action=delete&id=<?=$item['id'];?>">[ลบ]</a>
+        </td>
     </tr>
     <?php
     $i++;
     }
     ?>
 </table>
+<script type="text/javascript">
+    $(function(){
+        if( $('.remove_link').length > 0 ){
+            $(document).on('click', '.remove_link', function(){
+                var c = confirm('ยืนยันที่จะลบข้อมูล?');
+                if( c === false ){
+                    return false;
+                }
+            });
+        }
+    });
+</script>

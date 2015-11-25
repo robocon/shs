@@ -70,7 +70,7 @@ function filter2null($name, $method_type = 'post'){
 /**
  * Filter from white lists
  */
-function filter_post($items){
+function filter_post($items, $default = null){
 	$post = array();
 	foreach($items as $key => $name){
 		if(isset($_POST[$key])){
@@ -80,7 +80,7 @@ function filter_post($items){
 				$post[$key] = $name;
 			}
 		}else{
-			$post[$key] = null;
+			$post[$key] = $default;
 		}
 	}
 	return $post;

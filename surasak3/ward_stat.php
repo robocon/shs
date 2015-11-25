@@ -1,5 +1,6 @@
 <?php
 include 'bootstrap.php';
+if( !authen() ) die ('กรุณาเข้าสู่ระบบ <a href="login_page.php">คลิกที่นี่เพื่อเข้าสู่ระบบอีกครั้ง</a>');
 
 define('WARD_STAT', 1);
 
@@ -48,7 +49,9 @@ if( !function_exists('clean_dead_hn') ){
 if( $action === 'add' ){
 
 	//
-	$post = filter_post($_POST);
+	$post = filter_post($_POST, '');
+	$officer = get_session('sOfficer');
+	$officer_id = get_session('sRowid');
 
 	// ข้อมูลผู้เสียชีวิต
 	$dead_lists = clean_dead_hn($post);
@@ -74,10 +77,14 @@ if( $action === 'add' ){
 	`refer_patient` ,
 	`disc_patient` ,
 	`date_add` ,
+	`author` ,
+	`author_id` ,
 	`type`
 	)
 	VALUES (
-	NULL , :department, :date_write, :all_patient, :prev_patient, :new_patient, :all_admit, :prev_admit, :new_admit, :avg_bed, :all_bed, :refer_patient, :disc_patient, NOW(), :type
+	NULL , :department, :date_write, :all_patient, :prev_patient, :new_patient, 
+	:all_admit, :prev_admit, :new_admit, :avg_bed, :all_bed, :refer_patient, 
+	:disc_patient, NOW(), :author, :author_id, :type
 	);";
 
 	$data = array(
@@ -93,8 +100,11 @@ if( $action === 'add' ){
 		':all_bed' => $post['all_bed'],
 		':refer_patient' => $post['refer_patient'],
 		':disc_patient' => $post['disc_patient'],
+		'author' => $officer,
+		'author_id' => $officer_id,
 		':type' => $type,
 	);
+	
 	DB::exec($sql, $data);
 	$id = DB::get_lastId();
 
@@ -164,18 +174,12 @@ if( $action === 'add' ){
 
 	redirect('ward_stat', 'บันทึกข้อมูลเรียบร้อย');
 } elseif ( $action === 'edit' ) {
-	/**
-	 * @todo
-	 * [x] อัพเดท ward_stat
-	 *		[] ขาด edit date
-	 * [x] อัพเดท ward_stat dead
-	 * [x] อัพเดท ward_stat baby
-	 */
 	
 	$id = isset($_POST['id']) ? intval($_POST['id']) : false ;
+	$officer = get_session('sOfficer');
 	
 	//
-	$post = filter_post($_POST);
+	$post = filter_post($_POST, '');
 	
 	// ข้อมูลผู้เสียชีวิต
 	$dead_lists = clean_dead_hn($post);
@@ -189,7 +193,8 @@ if( $action === 'add' ){
 	`new_patient`=:new_patient, `all_admit`=:all_admit, 
 	`prev_admit`=:prev_admit, `new_admit`=:new_admit, 
 	`avg_bed`=:avg_bed, `all_bed`=:all_bed, 
-	`refer_patient`=:refer_patient, `disc_patient`=:disc_patient 
+	`refer_patient`=:refer_patient, `disc_patient`=:disc_patient, 
+	`date_edit`=NOW(), `author_edit`=:author_edit
 	WHERE `id`=:id;";
 	$data = array(
 		':department' => $post['department'], ':date_write' => $date_write, 
@@ -197,7 +202,8 @@ if( $action === 'add' ){
 		':all_admit' => $post['all_admit'], ':prev_admit' => $post['prev_admit'], 
 		':new_admit' => $post['new_admit'], ':avg_bed' => $post['avg_bed'], 
 		':all_bed' => $post['all_bed'], ':refer_patient' => $post['refer_patient'], 
-		':disc_patient' => $post['disc_patient'], ':id' => $id, 
+		':disc_patient' => $post['disc_patient'], ':author_edit' => $officer, 
+		':id' => $id, 
 	);
 	DB::exec($sql, $data);
 
@@ -258,7 +264,20 @@ if( $action === 'add' ){
 		
 	}
 	
-	exit;
+	redirect('ward_stat.php', 'บันทึกข้อมูลเรียบร้อย');
+} elseif ( $action === 'delete' ) {
+	
+	$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
+	$sql = "DELETE FROM `ward_stat` WHERE `id`=:id ;";
+	DB::exec($sql, array(':id' => $id));
+	
+	$sql = "DELETE FROM `ward_dead_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
+	DB::exec($sql, array(':ward_stat_id' => $id));
+	
+	$sql = "DELETE FROM `ward_baby_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
+	DB::exec($sql, array(':ward_stat_id' => $id));
+	
+	redirect('ward_stat.php', 'ลบข้อมูลเรียบร้อย');
 }
 
 
@@ -279,7 +298,7 @@ include 'templates/classic/header.php';
 			if( $page === false ){ // Home && Default page
 
 				$limit = 20;
-				$sql = "SELECT `id`,`department`,`date_write`,`date_add`,`type` FROM `ward_stat` ORDER BY `date_add` DESC LIMIT $limit";
+				$sql = "SELECT `id`,`department`,`date_write`,`date_add`,`author`,`type` FROM `ward_stat` ORDER BY `id` DESC LIMIT $limit";
 				$items = DB::select($sql);
 
 				include 'templates/ward/home.php';
@@ -304,6 +323,23 @@ include 'templates/classic/header.php';
 
 				include 'templates/ward/form.php';
 
+			}elseif( $page === 'detail' ){
+				
+				$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
+				
+				$sql = "SELECT *
+				FROM `ward_stat` AS a
+				LEFT JOIN `ward_baby_stat` AS c ON c.`ward_stat_id` = a.`id`
+				WHERE a.`id` = :id ";
+				$item = DB::select($sql, array(':id' => $id), true);
+				if( empty($item) ){
+					redirect( 'ward_stat.php', 'ไม่มีข้อมูล');
+				}
+				
+				$sql = "SELECT `id`,`name`,`hn`,`an` FROM `ward_dead_stat` WHERE `ward_stat_id` = :id ";
+				$lists = DB::select($sql, array(':id' => $id));
+					
+				include 'templates/ward/detail.php';
 			}
 			?>
 			</div>
