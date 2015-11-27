@@ -1,0 +1,32 @@
+@charset "windows-874";
+/* CSS Document */
+
+.tablefont{ /*  */
+	font-family:AngsanaUPC;
+	font-size:24px;
+	color:#00F;
+}
+.tablefontt1{
+	font-family:AngsanaUPC;
+	font-size:22px;
+	color:#000;
+	font-weight:bold;
+}
+.tablefontt2{
+	font-family:AngsanaUPC;
+	font-size:25px;
+	color:#00F;
+	font-weight:bold;
+}
+.tablefont3{ /*  */
+	font-family:AngsanaUPC;
+	font-size:18px;
+	color:#00F;
+}
+.bed{ /*  */
+	font-family:AngsanaUPC;
+	font-size:36px;
+	color:#00F;
+	font-weight:bold;
+}
+#toTop {width:100px;background:#00F;center -30px;border:1px solid #333;text-align:center;padding:5px;position:fixed;bottom:10px;right:10px;cursor:pointer;color:#fff;text-decoration:none; }

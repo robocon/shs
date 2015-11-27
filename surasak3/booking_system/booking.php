@@ -104,7 +104,7 @@ function fncSubmit()
 
 <?php 
 if($_POST['button']){
-	include("../Connections/connect.inc.php"); 
+	include("../connect.php"); 
 	
 	function calcage($birth){
 
@@ -269,7 +269,7 @@ if($_POST['button']){
 
 if($_POST['b2']){
 if($_REQUEST['do']=="save"){
-include("../Connections/connect.inc.php"); 
+include("../connect.php"); 
 
 if($_POST['date_in']==""){
 	echo "ไม่ได้กรอกวันที่ Admit กรุณาทำรายการใหม่ค่ะ";
