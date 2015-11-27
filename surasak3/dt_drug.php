@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-
-
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
@@ -101,7 +99,7 @@ $rows3 = mysql_fetch_array($result3);
 
 exit();
 }
-///////////////////////////////////////////////////////////////////
+/////////////////////////////  รายการยา  //////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	$count = count($_SESSION["list_drugcode"]);
 	$sql ="select toborow from opday where hn='".$_SESSION["hn_now"]."' AND thidate like '".((date("Y")+543).date("-m-d"))."%' ";
@@ -115,6 +113,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	}else{
 		$code = "OTHER";
 	}
+	
+	echo "<pre>";
+var_dump($_SESSION);
+
 	echo "<FORM name=\"form_list\" METHOD=POST ACTION=\"dt_drug_reason.php\" onsubmit=\"return viatch($count,'$code');\">
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
 	echo "| <A HREF=\"javascript:showremed2();checkall4(false);\">Remedผป.ใน</A> ";
@@ -894,7 +896,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		$_GET["drug_inject_etc"] = "";
 
 	}*/
-
+	
 	if($_GET["addoredit"] != "E"){
 		$add = false;
 		
@@ -914,6 +916,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 				$_SESSION["list_drug_reason"][$_GET["addoredit"]] = $_GET["reason"];
 				
 				$_SESSION["list_drug_reason2"][$_GET["addoredit"]] = $_GET["reason2"];
+				
+				$_SESSION["list_drug_inject_unit3"][$_GET["addoredit"]] = $_GET["drug_inject_unit3"];
+				$_SESSION["list_drug_inject_amount3"][$_GET["addoredit"]] = $_GET["drug_inject_amount3"];
 
 	}else{
 		$add = true;
@@ -929,6 +934,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		array_push($_SESSION["list_drug_inject_unit"],$_GET["drug_inject_unit"]);
 		array_push($_SESSION["list_drug_inject_amount2"],$_GET["drug_inject_amount2"]);
 		array_push($_SESSION["list_drug_inject_unit2"],$_GET["drug_inject_unit2"]);
+		
+		array_push($_SESSION["list_drug_inject_amount3"],$_GET["drug_inject_amount3"]);
+		array_push($_SESSION["list_drug_inject_unit3"],$_GET["drug_inject_unit3"]);
+		
 		array_push($_SESSION["list_drug_inject_time"],$_GET["drug_inject_time"]);
 		array_push($_SESSION["list_drug_inject_slip"],$_GET["drug_inject_slip"]);
 		array_push($_SESSION["list_drug_inject_type"],$_GET["drug_inject_type"]);
@@ -1481,9 +1490,9 @@ function newXmlHttp(){
 //}
 function searchSuggest(action,str,len) {
 	
-		str = str+String.fromCharCode(event.keyCode);
+		// str = str+String.fromCharCode(event.keyCode);
 
-		if(str.length >= len){
+		if(str.length >= 2){
 			url = 'dt_drug.php?action='+action+'&search=' + str;
 
 			xmlhttp = newXmlHttp();
@@ -1776,14 +1785,16 @@ function viewlist(){
 
 function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
 	
+	var f = document.form1;
+	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount;
+	url += '&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount;
+	url += '&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2;
+	url += '&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time;
+	url += '&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type;
+	url += '&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2;
+	url += '&drug_inject_unit3='+f.d_am3.value+'&drug_inject_amount3='+f.d_unit3.value;
+	
 	xmlhttp = newXmlHttp();
-	
-	//alert(reason2);
-
-	
-	
-	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2
-	;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	viewlist();
@@ -2008,11 +2019,14 @@ function checkForm1(){
 				 if (document.getElementById('reason22').checked==true) {
 				 var rate_value = document.form1.reason2.value;
 				}*/
-				
-			addtolist(document.form1.drug_code.value,document.form1.drug_amount.value,document.form1.drug_slip.value,document.form1.addoredit.value,document.form1.drug_inject_amount.value,document.form1.drug_inject_unit.value,document.form1.drug_inject_amount2.value,document.form1.drug_inject_unit2.value,document.form1.drug_inject_time.value,document.form1.drug_inject_slip.value,document.form1.drug_inject_type.value,document.form1.drug_inject_etc.value,lockpt,document.form1.reason2.value);
+			
+			var f = document.form1;
+			addtolist( f.drug_code.value, f.drug_amount.value, f.drug_slip.value, f.addoredit.value, f.drug_inject_amount.value, f.drug_inject_unit.value, f.drug_inject_amount2.value, f.drug_inject_unit2.value, f.drug_inject_time.value, f.drug_inject_slip.value, f.drug_inject_type.value, f.drug_inject_etc.value, lockpt, f.reason2.value);
 			}	
 		document.getElementById('drug_inject_amount').style.display = 'none';
 		document.getElementById('drug_inject_amount2').style.display = 'none';
+		document.getElementById('drug_inject_amount3').style.display = 'none';
+		
 		document.getElementById('drug_inject_time').style.display = 'none';
 		document.getElementById('drug_inject_slip').style.display = 'none';
 		document.getElementById('drug_inject_type').style.display = 'none';
@@ -2131,9 +2145,9 @@ function addtolist_muli2(){
 
 }
 
-function check_number() {
-e_k=event.keyCode
-	//if (e_k != 47 && e_k != 46 && (e_k < 48) || (e_k > 57)) {
+function check_number(event) {
+	e_k = ( event.which ) ? event.which : event.keyCode ;
+	
 	if ((e_k < 48) || (e_k > 57)) {
 		event.returnValue = false;
 		alert("กรุณากรอกเป็นตัวเลขเท่านั้นค่ะ");
@@ -2463,18 +2477,56 @@ function viatch(ing,code){
 <TR ID="drug_inject_slip" style="display:none">
 	<TD align="right" class="tb_detail" id="">วิธีฉีด : </TD>
 	<TD>
-		<SELECT NAME="drug_inject_slip"  onChange="if(this.value=='1ins'){document.getElementById('drug_inject_time').style.display='none';document.getElementById('drug_inject_type').style.display='none';document.getElementById('d_unit').selectedIndex=7;document.getElementById('drug_inject_amount2').style.display='none';document.getElementById('d_am2').value='';document.getElementById('d_unit2').selectedIndex=0;}
-else if(this.value=='2ins'){document.getElementById('drug_inject_time').style.display='none';document.getElementById('drug_inject_type').style.display='none';document.getElementById('d_unit').selectedIndex=7;document.getElementById('drug_inject_amount2').style.display='';document.getElementById('d_unit2').selectedIndex=1;document.getElementById('d_am2').value='1'}
-else{document.getElementById('drug_inject_time').style.display='';document.getElementById('drug_inject_type').style.display='';document.getElementById('d_unit').selectedIndex=1;document.getElementById('drug_inject_amount2').style.display='none';document.getElementById('d_am2').value='';document.getElementById('d_unit2').selectedIndex=0;}">
-		<Option value="IM">IM</Option>
-		<Option value="IV">IV</Option>	
+		<SELECT NAME="drug_inject_slip"  onchange="update_druginject(this)">
+			<Option value="IM">IM</Option>
+			<Option value="IV">IV</Option>	
 			<Option value="SC">SC</Option>
 			<Option value="A">A</Option>
             <Option value="1ins">1ins</Option>
             <Option value="2ins">2ins</Option>
+			<Option value="3ins">3ins</Option>
 			<Option value="">----</Option>
 			
 		</SELECT>
+		<script type="text/javascript">
+		function update_druginject(item){
+			
+			if(item.value=='1ins'){
+				document.getElementById('drug_inject_time').style.display='none';
+				document.getElementById('drug_inject_type').style.display='none';
+				document.getElementById('d_unit').selectedIndex=7;
+				document.getElementById('drug_inject_amount2').style.display='none';
+				document.getElementById('d_am2').value='';
+				document.getElementById('d_unit2').selectedIndex=0;
+			}else if(item.value=='2ins'){
+				document.getElementById('drug_inject_time').style.display='none';
+				document.getElementById('drug_inject_type').style.display='none';
+				document.getElementById('d_unit').selectedIndex=7;
+				document.getElementById('drug_inject_amount2').style.display='';
+				document.getElementById('d_unit2').selectedIndex=1;
+				document.getElementById('d_am2').value='1';
+			}else if(item.value=='3ins'){
+				document.getElementById('drug_inject_time').style.display='none';
+				document.getElementById('drug_inject_type').style.display='none';
+				document.getElementById('d_unit').selectedIndex=7;
+				
+				document.getElementById('drug_inject_amount2').style.display='';
+				document.getElementById('d_unit2').selectedIndex=1;
+				document.getElementById('d_am2').value='1';
+				
+				document.getElementById('drug_inject_amount3').style.display='';
+				document.getElementById('d_unit3').selectedIndex=1;
+				document.getElementById('d_am3').value='1';
+			}else{
+				document.getElementById('drug_inject_time').style.display='';
+				document.getElementById('drug_inject_type').style.display='';
+				document.getElementById('d_unit').selectedIndex=1;
+				document.getElementById('drug_inject_amount2').style.display='none';
+				document.getElementById('d_am2').value='';
+				document.getElementById('d_unit2').selectedIndex=0;
+			}
+		}
+		</script>
 	</TD>
 </TR>
 <TR ID="drug_inject_amount"  style="display:none">
@@ -2489,15 +2541,28 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
         <Option value="UNIT">UNIT</Option>
         <Option value="ล้านUNIT">ล้านUNIT</Option>
         <Option value="UNIT ก่อนอาหารเช้า">UNIT ก่อนอาหารเช้า</Option>
+		<Option value="UNIT ก่อนอาหารเย็น">UNIT ก่อนอาหารเย็น</Option>
 	  </SELECT></TD>
 </TR>
 <TR ID="drug_inject_amount2"  style="display:none">
 	<TD align="right" class="tb_detail" >&nbsp;</TD>
-	<TD><INPUT TYPE="text" NAME="drug_inject_amount2" onkeypress = "if(event.keyCode == 13){ checkForm1(); return false; }"  size="3" id="d_am2">
-    <SELECT NAME="drug_inject_unit2" id="d_unit2">
-    	<Option value=""></Option>
-        <Option value="UNIT ก่อนอาหารเย็น">UNIT ก่อนอาหารเย็น</Option>
-	  </SELECT></TD>
+	<TD>
+		<INPUT TYPE="text" NAME="drug_inject_amount2" onkeypress = "if(event.keyCode == 13){ checkForm1(); return false; }"  size="3" id="d_am2">
+		<SELECT NAME="drug_inject_unit2" id="d_unit2">
+			<Option value=""></Option>
+			<Option value="UNIT ก่อนอาหารเย็น">UNIT ก่อนอาหารเย็น</Option>
+		</SELECT>
+	</TD>
+</TR>
+<TR ID="drug_inject_amount3"  style="display:none">
+	<TD align="right" class="tb_detail" >&nbsp;</TD>
+	<TD>
+		<INPUT TYPE="text" NAME="drug_inject_amount3" onkeypress = "if(event.keyCode == 13){ checkForm1(); return false; }"  size="3" id="d_am3">
+		<SELECT NAME="drug_inject_unit3" id="d_unit3">
+			<Option value=""></Option>
+			<Option value="UNIT ก่อนอาหารกลางวัน">UNIT ก่อนอาหารกลางวัน</Option>
+		</SELECT>
+	</TD>
 </TR>
 <TR  ID="drug_inject_time"  style="display:none">
   <TD align="right" class="tb_detail" >เวลา : </TD>
