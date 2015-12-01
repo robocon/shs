@@ -250,7 +250,7 @@ function searchSuggest(str,len,getto1,getto2,getto3) {
 				document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
 			}
 		}
-		xmlhttp.open("GET","gethint.php?q="+str,true);
+		// xmlhttp.open("GET","gethint.php?q="+str,true);
 		xmlhttp.send();
 		
 		

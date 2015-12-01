@@ -61,6 +61,8 @@ $sql = "
 		OR ( a.organ LIKE '%รับรอง%' AND a.organ LIKE '%เลือกทหาร%' ) 
 		OR a.toborow like 'EX30%'
 	) 
+	AND dx_mc_soldier IS NOT NULL 
+	AND dx_mc_soldier != ''
 	".$where." ORDER BY thidate ASC ";
 $result = mysql_query($sql) or die("Query failed ".mysql_error());
 
