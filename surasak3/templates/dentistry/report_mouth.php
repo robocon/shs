@@ -28,6 +28,7 @@ $mouth_items = array(
 			<?php
 			// ค่าปริยายในการแสดงผลวันที่ กรณีที่ไม่มี POST
 			$date = !empty($_POST['date']) ? trim($_POST['date']) : ( date('Y') + 543 ).'-'.date('m') ;
+			$so_date = !empty($_POST['date']) ? trim($_POST['date']) : date('Y-m') ;
 			?>
 			<div>
 				แสดงผลตามวันที่ <input type="text" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : $date ;?>">
@@ -108,9 +109,8 @@ $mouth_items = array(
 					$where_is = ' AND '.implode(' AND ', $where);
 				}
 					
-				?>
-				<?php foreach($mouth_items as $key => $mouth): ?>
-				<?php
+				$total = 0;
+				foreach($mouth_items as $key => $mouth):
 				$sql = "SELECT COUNT(`hn`) AS `count` 
 				FROM `survey_oral` 
 				WHERE `date` LIKE '$date%' 
@@ -118,12 +118,17 @@ $mouth_items = array(
 				$where_is
 				";
 				$item = DB::select($sql, null, true);
+				$total += (int) $item['count'];
 				?>
 				<tr>
 					<td><?php echo $mouth;?></td>
 					<td align="center"><?php echo $item['count'];?></td>
 				</tr>
 				<?php endforeach; ?>
+				<tr>
+					<td>ยอดทั้งหมด</td>
+					<td align="center"><?=$total;?></td>
+				</tr>
 			</tbody>
 		</table>
 		<br>
@@ -138,8 +143,9 @@ $mouth_items = array(
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($violences as $key => $vio): ?>
 				<?php
+				$total = 0;
+				foreach($violences as $key => $vio):
 				$sql = "
 				SELECT COUNT(`hn`) AS `count` 
 				FROM `survey_oral` 
@@ -148,12 +154,17 @@ $mouth_items = array(
 				$where_is
 				";
 				$item = DB::select($sql, null, true);
+				$total += (int) $item['count'];
 				?>
 				<tr>
 					<td>ความรุนแรงระดับ <?php echo $vio;?></td>
 					<td align="center"><?php echo $item['count'];?></td>
 				</tr>
 				<?php endforeach; ?>
+				<tr>
+					<td>ยอดทั้งหมด</td>
+					<td align="center"><?=$total;?></td>
+				</tr>
 			</tbody>
 		</table>
 		<div class="col" id="print_btn">
