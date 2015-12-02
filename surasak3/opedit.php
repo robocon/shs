@@ -682,52 +682,61 @@ return $pAge;
     </tr>
     <tr>
     <td align="right" class="fonthead">สิทธิการรักษา</td>
-    <td>
-		
-	<select size="1" name="ptright1" id="ptright1">
-		<?php
-		//////////////////////////////////การอัพเดทสิทธิปัจจุบัน//////////////////////////////////////
-		if($cIdcard != "" || $cIdcard != "-"){
-			if(substr($cPtright1,0,3)=='R03'||substr($cPtright1,0,3)=='R07'){
-				$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
-				if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-					?><option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option><?php
-				}else{
-					$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-					if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
-						?><option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option><?php
-					}else{
-						?><option  value="0" selected>กรุณาเลือกสิทธิการรักษา</option><?php
-					}
-				}
-			}else{
-				$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
-				if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-					?><option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option><?php
-				}else{
-					$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-					if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
-						?><option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option><?php
-					}else{
-						?><option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option><?php
-					}
-				}
-			}
-		}  // if check idcard
+    <td><select size="1" name="ptright1" id="ptright1">
+    <?
+	//////////////////////////////////การอัพเดทสิทธิปัจจุบัน//////////////////////////////////////
+	if($cIdcard !="" || $cIdcard !="-"){
+	if(substr($cPtright1,0,3)=='R03'||substr($cPtright1,0,3)=='R07'){
+		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
+		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 		?>
-		<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
+			<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
 		<?
-		/*******/////////////////////////////////////////////////////////////////////////////////**********/
-		
-		include("connect.inc");
-		$sql = "Select * From ptright Order by code ASC ";
-		$result = mysql_query($sql) or die(mysql_error());
-		while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
-			print " <option value='$ptright_code&nbsp;$ptright_name'>$ptright_code&nbsp;$ptright_name</option>";
+		}else{
+			$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
+			if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
+			?>
+				<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
+			<?
+			}else{
+			?>
+				<option  value="0" selected>กรุณาเลือกสิทธิการรักษา</option>
+			<?
+			}
 		}
+	}else{
+		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
+		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 		?>
-	</select>
+			<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
+		<?
+		}else{
+			$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
+			if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
+			?>
+				<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
+			<?
+			}else{
+			?>
+				<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
+			<?
+			}
+		}
+	}
+	}  // if check idcard
+	?>
+				<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
+	<?
+	/*******/////////////////////////////////////////////////////////////////////////////////**********/
 	
+	include("connect.inc");
+	$sql = "Select * From ptright Order by code ASC ";
+	$result = mysql_query($sql) or die(mysql_error());
+	while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
+		print " <option value='$ptright_code&nbsp;$ptright_name'>$ptright_code&nbsp;$ptright_name</option>";
+}
+?>
+    </select>
     </td>
     <td class="fonthead">ประเภทสิทธิ :</td>
     <td><select name="ptrightdetail" size="1" id="ptrightdetail">

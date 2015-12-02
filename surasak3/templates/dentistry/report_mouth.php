@@ -11,7 +11,6 @@ $mouth_items = array(
 	'4_4' => 'I. มีฟันคุด',
 	'4_5' => 'J. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน',
 	'4_6' => 'K. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก',
-	'5_1' => 'L. ไม่ได้รับการตรวจ',
 );
 ?>
 <style>
@@ -23,16 +22,16 @@ $mouth_items = array(
 </style>
 <div class="col">
 	<div class="cell">
-		
 		<form action="survey_oral.php?task=report_mouth" method="post" style="margin: 1em 0;" class="no-print">
 			<?php
 			// ค่าปริยายในการแสดงผลวันที่ กรณีที่ไม่มี POST
 			$date = !empty($_POST['date']) ? trim($_POST['date']) : ( date('Y') + 543 ).'-'.date('m') ;
-			$so_date = !empty($_POST['date']) ? trim($_POST['date']) : date('Y-m') ;
+			$so_date = bc_to_ad($date) ;
+			$yearcheckup = !empty($_POST['yearcheckup']) ? trim($_POST['yearcheckup']) : date('Y') + 543 ;
 			?>
 			<div>
 				แสดงผลตามวันที่ <input type="text" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : $date ;?>">
-				<span style="font-size: 12px; ">* ใส่เดือนและวันที่เพื่อแสดงผลที่เฉพาะเจาะจงได้ ตัวอย่างเช่น 2558-10-26 เป็นต้น</span>
+				<span style="font-size: 12px;">* ใส่เดือนและวันที่เพื่อแสดงผลที่เฉพาะเจาะจงได้ ตัวอย่างเช่น 2558-10-26 เป็นต้น</span>
 			</div>
 			<div>
 				แสดงผลตามหน่วย
@@ -51,13 +50,10 @@ $mouth_items = array(
 					?>
 				</select>
 			</div>
-			<div>
 				<button type="submit">เลือกการแสดงผล</button>
 			</div>
 		</form>
-		
 		<?php
-		
 		if( strpos($date, '-') !== false ){
 			$d_list = explode('-', $date);
 			if( count($d_list) === 2 ){
@@ -133,7 +129,7 @@ $mouth_items = array(
 		</table>
 		<br>
 		<?php 
-		$violences = array(1,2,3,4,5);
+		$violences = array(1,2,3,4);
 		?>
 		<table class="custom-table outline-header border box-header outline width-2of5">
 			<thead>
@@ -146,21 +142,43 @@ $mouth_items = array(
 				<?php
 				$total = 0;
 				foreach($violences as $key => $vio):
-				$sql = "
-				SELECT COUNT(`hn`) AS `count` 
-				FROM `survey_oral` 
-				WHERE `date` LIKE '$date%' 
-				AND `max_status` = '$vio'
-				$where_is
-				";
-				$item = DB::select($sql, null, true);
-				$total += (int) $item['count'];
+					$sql = "
+					SELECT COUNT(`hn`) AS `count` 
+					FROM `survey_oral` 
+					WHERE `date` LIKE '$date%' 
+					AND `max_status` = '$vio'
+					$where_is
+					";
+					$item = DB::select($sql, null, true);
+					$total += (int) $item['count'];
+					?>
+					<tr>
+						<td>ความรุนแรงระดับ <?php echo $vio;?></td>
+						<td align="center"><?php echo $item['count'];?></td>
+					</tr>
+					<?php
+				endforeach;
+				
+				$sql = "SELECT COUNT(`hn`) AS `rows` 
+				FROM `condxofyear_so` 
+				WHERE `thidate` LIKE '$so_date%'";
+				$item = DB::select($sql, false, true);
 				?>
 				<tr>
-					<td>ความรุนแรงระดับ <?php echo $vio;?></td>
-					<td align="center"><?php echo $item['count'];?></td>
+					<td>ความรุนแรงระดับ 5</td>
+					<td align="center">
+					<?php 
+					if( $item['rows'] > 0 ){
+						$damage5 = (int)$item['rows'] - $total;
+						echo $damage5;
+						$total += $damage5;
+					}else{
+						echo '-';
+					}
+					
+					?>
+					</td>
 				</tr>
-				<?php endforeach; ?>
 				<tr>
 					<td>ยอดทั้งหมด</td>
 					<td align="center"><?=$total;?></td>
