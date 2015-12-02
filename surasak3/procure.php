@@ -119,9 +119,9 @@ function newXmlHttp(){
 }
 function searchSuggest(str,len,getto) {
 	
-		str = str+String.fromCharCode(event.keyCode);
+		// str = str+String.fromCharCode(event.keyCode);
 
-		if(str.length >= len){
+		if(str.length >= 2){
 
 			url = 'procure.php?action=dgcode&search1=' + str+'&getto=' + getto;
 
