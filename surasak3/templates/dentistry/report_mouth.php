@@ -129,7 +129,10 @@ $mouth_items = array(
 		</table>
 		<br>
 		<?php 
-		$violences = array(1,2,3,4);
+		$violences = array(1 => 'ระดับ 1 สุขภาพช่องปากดี ไม่มีฟันผุ ไม่มีหินปูน ควรมาตรวจตามระยะเวลา',
+		'ระดับ 2 ไม่มีฟันผุที่ต้องอุด มีหินปูนแต่ไม่เป็นโรคปริทันต์ ควรได้รับการทำความสะอาดช่องปากและคำแนะนำในการดูแลสุขภาพช่องปาก',
+		'ระดับ 3 มีฟันผุ มีโรคปริทันต์ แต่ไม่มีอาการแสดง ควรได้รับการรักษาภายใน 12 เดือน',
+		'ระดับ 4 ฟันผุทะลุโพรงประสาท ฟันเป็นโรคปริทันต์ มีอาการแสดงฟันโยก ปวด เหงือกบวมเป็นหนอง รากฟันค้าง ฟันคุดที่ปรากฏในช่องปาก ควรได้รับการรักษาเร่งด่วน');
 		?>
 		<table class="custom-table outline-header border box-header outline width-2of5">
 			<thead>
@@ -146,14 +149,14 @@ $mouth_items = array(
 					SELECT COUNT(`hn`) AS `count` 
 					FROM `survey_oral` 
 					WHERE `date` LIKE '$date%' 
-					AND `max_status` = '$vio'
+					AND `max_status` = '$key'
 					$where_is
 					";
 					$item = DB::select($sql, null, true);
 					$total += (int) $item['count'];
 					?>
 					<tr>
-						<td>ความรุนแรงระดับ <?php echo $vio;?></td>
+						<td><?php echo $vio;?></td>
 						<td align="center"><?php echo $item['count'];?></td>
 					</tr>
 					<?php
@@ -165,7 +168,7 @@ $mouth_items = array(
 				$item = DB::select($sql, false, true);
 				?>
 				<tr>
-					<td>ความรุนแรงระดับ 5</td>
+					<td>ระดับ 5 ไม่มีข้อมูล(ไม่ได้รับการตรวจสุขภาพช่องปาก)</td>
 					<td align="center">
 					<?php 
 					if( $item['rows'] > 0 ){
