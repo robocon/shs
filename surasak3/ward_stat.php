@@ -282,13 +282,31 @@ if( $action === 'add' ){
 	DB::exec($sql, array(':ward_stat_id' => $id));
 	
 	redirect('ward_stat.php', 'ลบข้อมูลเรียบร้อย');
+} elseif ( $action === 'acu_save' ) {
+	
+	
+	
+	$sql = "INSERT INTO `smdb`.`ward_acu` (
+`id` ,
+`date_write` ,
+`patient_num` ,
+`porjai` ,
+`auther` ,
+`auther_id` ,
+`auther_edit` ,
+`date_add` ,
+`date_edit`
+)
+VALUES (
+NULL , '2558-11', 'test', 'test', 'test', '111', NULL , '2015-12-03 13:38:18', NULL
+)";
+	exit;
 }
-
 
 /**
  * แสดงในส่วนของ view
  */
-$title = 'รายงานผู้มาใช้บริการ';
+$title = 'สถิติของผู้ป่วยประจำเดือน';
 include 'templates/classic/header.php';
 
 ?>
@@ -344,6 +362,9 @@ include 'templates/classic/header.php';
 				$lists = DB::select($sql, array(':id' => $id));
 					
 				include 'templates/ward/detail.php';
+			}elseif( $page === 'form_acu' ){
+				
+				include 'templates/ward/form_acu.php';
 			}
 			?>
 			</div>

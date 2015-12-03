@@ -1,4 +1,4 @@
-<body Onload="window.print();">
+<body Onload="">
 <?php
     session_start();
     if (isset($sIdname)){} else {die;} //for security
@@ -57,6 +57,8 @@ if($cDoctor2=='MD052'){$doctorcode='ว.14286';}else
 if($cDoctor2=='MD037'){$doctorcode='ว.10212';}else
 if($cDoctor2=='MD089'){$doctorcode='ว.32166';}else{$doctorcode='';};*/
 
+//
+$acu = 0;
 if($cDoctor1=="แพทย์แผนไทย"){
   
   // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
@@ -73,6 +75,7 @@ if($cDoctor1=="แพทย์แผนไทย"){
   $position="แพทย์แผนไทยประยุกต์";
   $certificate="ใบอนุญาตประกอบโรคศิลปะ สาขา การแพทย์แผนไทยประยุกต์";
   $licen="แพทย์แผนไทยประยุกต์";
+  $acu = 1;
 
 }else{
   $sql="select * from doctor where name like '%$cDoctor1%'";
@@ -94,8 +97,13 @@ if($cDoctor1=="แพทย์แผนไทย"){
 
 	  print "<font face='Angsana New' size ='3'>$certificate เลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B><BR>"; 
 	  print "<font face='Angsana New' size ='3'>ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;เป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
-	  print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการ ด้วยการนวดพร้อมประคบสมุนไพร เพื่อ.............................................................................<BR>"; 
-	  print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>"; 	  
+	  print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการ ด้วยการนวดพร้อมประคบสมุนไพร "; 
+	  if( $acu === 0 ){
+          print "เพื่อ.............................................................................<BR>";
+          print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>";
+      }else{
+          print "<br>";
+      }
     
 	  print "<font face='Angsana New' size ='3'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 	  $Thaidate1=substr($Thaidate,0,10);

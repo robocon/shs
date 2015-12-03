@@ -19,7 +19,6 @@ if( isset($item['date_write']) ){
 <!-- กำหนด Cursor -->
 <style type="text/css">
 .delete-remove:hover{ text-decoration: underline; cursor: pointer; }
-.box-underline{ border-bottom: 1px solid #000000; padding: 0px 0.5em; }
 .subtrack{ padding-left: 1em; }
 </style>
 <div class="col">
