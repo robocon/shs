@@ -10,6 +10,7 @@ $content = isset($content) ? $content : '' ;
   <head>
         
         <meta http-equiv="Content-type" content="text/html; charset=<?php echo $charset;?>" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         
         <link rel="stylesheet" type="text/css" media="all"  href="templates/classic/default.css" />
         <!--[if lt IE 8]><link rel="stylesheet" href="assets/css/cascade/production/icons-ie7.min.css"><![endif]-->

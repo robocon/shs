@@ -119,16 +119,19 @@ ol ol{
 	padding: 0;
 	margin: 0;
 	list-style: none;
+	height: 32px;
 }
 .nav li{
-	display: inline;
+	display: block;
 	position: relative;
+	float: left;
+	border-right: 1px solid #dddddd;
 }
 .nav a{
 	padding: 0.5em;
 	background-color: #ECECEC;
 	color: #6B6B6B;
-	display: inline;
+	display: block;
 }
 .nav li.active a{
 	background-color: #6B6B6B;

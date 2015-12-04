@@ -284,6 +284,46 @@ if( $action === 'add' ){
 	redirect('ward_stat.php', 'ลบข้อมูลเรียบร้อย');
 } elseif ( $action === 'acu_save' ) {
 	
+	$default_acu = array(
+		'1_1' => 0, '1_2' => 0, 
+		'2_1' => 0, '2_2' => 0, 
+		'3_1' => 0, '3_2' => 0, 
+		'4_1' => 0, '4_2' => 0, 
+		'5_1' => 0, '5_2' => 0, 
+		'6_1' => 0, '6_2' => 0, 
+		'7_1' => 0, '7_2' => 0, 
+		'8_1' => 0, '8_2' => 0, 
+		'9_1' => 0, '9_2' => 0, 
+		'10_1' => 0, '10_2' => 0, 
+		'11_1' => 0, '11_2' => 0, 
+		'12_1' => 0, '12_2' => 0, 
+		'13_1' => 0, '13_2' => 0, 
+		'14_1' => 0, '14_2' => 0, 
+		'15_1' => 0, '15_2' => 0, 
+		'16_1' => 0, '16_2' => 0, 
+	);
+	
+	$default_porjai = array(
+		'porjai1' => 0, 'porjai2' => 0, 'porjai3' => 0
+	);
+	
+	$post = filter_post($_POST, '');
+	$officer = get_session('sOfficer');
+	$officer_id = get_session('sRowid');
+	$date_write = $post['date_year'].'-'.$post['date_month'];
+	
+	// Clean data
+	$pre_patient_num = array();
+	foreach($default_acu as $key => $item){
+		$pre_patient_num[$key] = (!empty($post[$key])) ? $post[$key] : $item ;
+	}
+	$patient_num = serialize($pre_patient_num);
+	
+	$pre_porjai = array();
+	foreach($default_porjai as $key => $item){
+		$pre_porjai[$key] = (!empty($post[$key])) ? $post[$key] : $item ;
+	}
+	$porjai = serialize($pre_porjai);
 	
 	
 	$sql = "INSERT INTO `smdb`.`ward_acu` (
@@ -298,9 +338,23 @@ if( $action === 'add' ){
 `date_edit`
 )
 VALUES (
-NULL , '2558-11', 'test', 'test', 'test', '111', NULL , '2015-12-03 13:38:18', NULL
+NULL , :date_write1, :patient_num, :porjai, :auther, :auther_id, NULL , NOW(), NULL
 )";
-	exit;
+	$data = array(
+		':date_write' => $date_write,
+		':patient_num' => $patient_num,
+		':porjai' => $porjai,
+		':auther' => $officer,
+		':auther_id' => $officer_id,
+	);
+	
+	$insert = DB::exec($sql, $data);
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $insert['error'] ){
+		$msg = 'ไม่สามารถบันทึกข้อมูลได้ กรุณาติดต่อโปรแกรมเมอร์';
+	}
+	
+	redirect('ward_stat.php', $msg);
 }
 
 /**

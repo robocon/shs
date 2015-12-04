@@ -136,7 +136,8 @@ class DB{
 			
 			// Keep error into log file
 			$this->set_log($e);
-			return $e->getMessage();
+			$msg = array('error' => $e->getMessage());
+			return $msg;
 		}
 	}
 	
@@ -161,7 +162,8 @@ class DB{
 
 			// Keep error into log file
 			$this->set_log($e);
-			return $e->getMessage();
+			$msg = array('error' => $e->getMessage());
+			return $msg;
 			
 		}
 	}

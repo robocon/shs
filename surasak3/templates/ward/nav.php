@@ -16,8 +16,8 @@
 			<li <?php echo $home;?>><a href="ward_stat.php">หน้ารายการ</a></li>
 			
 			<li><a href="ward_stat.php?page=form">Ward ต่างๆ</a></li>
-					<li><a href="ward_stat.php?page=form&view=obgyn">Ward สูติ</a></li>
-					<li><a href="ward_stat.php?page=form_acu">ฝังเข็ม</a></li>
+			<li><a href="ward_stat.php?page=form&view=obgyn">Ward สูติ</a></li>
+			<li><a href="ward_stat.php?page=form_acu">ฝังเข็ม</a></li>
 		</ul>
 	</div>
 </div>

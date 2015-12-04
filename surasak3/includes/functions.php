@@ -104,13 +104,30 @@ function redirect($to = 'index.php', $msg = null){
 	exit;
 }
 
+$def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
 
-function getDateList(){
-
+function getDateList($name = 'months', $match = null){
+	
 }
 
+/**
+ * แสดงเดือนเป็น Dropdown
+ *
+ */
 function getMonthList(){
-
+	global $def_month_th;
+	if( empty($def_month_th) ){
+		echo 'กรุณาเปิด global variable ใน php.ini';
+		exit;
+	}
+	?>
+	<select name="<?=$name;?>">
+		<?php foreach($def_month_th as $key => $month): ?>
+		<?php $select = ( $match == $key ) ? 'selected="selected"' : '' ; ?>
+		<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
+		<?php endforeach; ?>
+	</select>
+	<?php
 }
 
 /**
@@ -126,7 +143,7 @@ function getMonthList(){
  */
 function getYearList($name = 'years', $thai = false, $year = null, $range = array()){
 	?>
-	<select name="$name">
+	<select name="<?=$name;?>">
 		<?php
 		$th_int = ( $thai === true ) ? 543 : 0 ;
 		if( !empty($range) ){
