@@ -76,7 +76,8 @@ $doctorcode = "ว. ".$rows["doctorcode"];
 
 	  print "<font face='Angsana New' size ='3'>ใบอนุญาตประกอบอาชีพเวชกรรมเลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B><BR>"; 
 	  print "<font face='Angsana New' size ='3'>ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;เป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
-	  print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;ตั้งแต่เวลา........................ถึง........................น.<BR>"; 
+    //   print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;ตั้งแต่เวลา........................ถึง........................น.<BR>";
+	  print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;เพื่อ................................................<BR>"; 
 	  print "<font face='Angsana New' size ='3'><CENTER>&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 	  $Thaidate1=substr($Thaidate,0,10);
 	  print "<font face='Angsana New' size ='3'><CENTER>($cDoctor1)&nbsp;$Thaidate1</CENTER>"; 

@@ -19,7 +19,7 @@ $page = isset($_REQUEST['page']) ? trim($_REQUEST['page']) : false;
 // จุดการแสดงผลในหน้านั้นๆ
 $view = isset($_REQUEST['view']) ? trim($_REQUEST['view']) : false;
 
-
+// 
 if( !function_exists('clean_dead_hn') ){
 	function clean_dead_hn($post){
 		$dead_lists = array();
@@ -43,6 +43,35 @@ if( !function_exists('clean_dead_hn') ){
 		}
 		return $dead_lists;
 	}
+}
+
+function getAcuList(){
+	$default_acu = array(
+		'1_1' => 0, '1_2' => 0, 
+		'2_1' => 0, '2_2' => 0, 
+		'3_1' => 0, '3_2' => 0, 
+		'4_1' => 0, '4_2' => 0, 
+		'5_1' => 0, '5_2' => 0, 
+		'6_1' => 0, '6_2' => 0, 
+		'7_1' => 0, '7_2' => 0, 
+		'8_1' => 0, '8_2' => 0, 
+		'9_1' => 0, '9_2' => 0, 
+		'10_1' => 0, '10_2' => 0, 
+		'11_1' => 0, '11_2' => 0, 
+		'12_1' => 0, '12_2' => 0, 
+		'13_1' => 0, '13_2' => 0, 
+		'14_1' => 0, '14_2' => 0, 
+		'15_1' => 0, '15_2' => 0, 
+		'16_1' => 0, '16_2' => 0, 
+	);
+	return $default_acu;
+}
+	
+function getPorjaiList(){
+	$default_porjai = array(
+		'porjai1' => 0, 'porjai2' => 0, 'porjai3' => 0
+	);
+	return $default_porjai;
 }
 
 
@@ -79,12 +108,13 @@ if( $action === 'add' ){
 	`date_add` ,
 	`author` ,
 	`author_id` ,
-	`type`
+	`type`,
+	`status`
 	)
 	VALUES (
 	NULL , :department, :date_write, :all_patient, :prev_patient, :new_patient, 
 	:all_admit, :prev_admit, :new_admit, :avg_bed, :all_bed, :refer_patient, 
-	:disc_patient, NOW(), :author, :author_id, :type
+	:disc_patient, NOW(), :author, :author_id, :type, 1
 	);";
 
 	$data = array(
@@ -173,6 +203,7 @@ if( $action === 'add' ){
 	}
 
 	redirect('ward_stat.php', 'บันทึกข้อมูลเรียบร้อย');
+	exit;
 } elseif ( $action === 'edit' ) {
 	
 	$id = isset($_POST['id']) ? intval($_POST['id']) : false ;
@@ -269,43 +300,28 @@ if( $action === 'add' ){
 	}
 	
 	redirect('ward_stat.php', 'บันทึกข้อมูลเรียบร้อย');
+	exit;
 } elseif ( $action === 'delete' ) {
 	
-	$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
-	$sql = "DELETE FROM `ward_stat` WHERE `id`=:id ;";
+	$id = getId();
+	$sql = "UPDATE `ward_stat` SET `status` = '0' WHERE `id`=:id LIMIT 1 ;";
 	DB::exec($sql, array(':id' => $id));
 	
-	$sql = "DELETE FROM `ward_dead_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
-	DB::exec($sql, array(':ward_stat_id' => $id));
+	// $sql = "DELETE FROM `ward_stat` WHERE `id`=:id ;";
+	// DB::exec($sql, array(':id' => $id));
 	
-	$sql = "DELETE FROM `ward_baby_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
-	DB::exec($sql, array(':ward_stat_id' => $id));
+	// $sql = "DELETE FROM `ward_dead_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
+	// DB::exec($sql, array(':ward_stat_id' => $id));
+	
+	// $sql = "DELETE FROM `ward_baby_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
+	// DB::exec($sql, array(':ward_stat_id' => $id));
 	
 	redirect('ward_stat.php', 'ลบข้อมูลเรียบร้อย');
+	exit;
 } elseif ( $action === 'acu_save' ) {
 	
-	$default_acu = array(
-		'1_1' => 0, '1_2' => 0, 
-		'2_1' => 0, '2_2' => 0, 
-		'3_1' => 0, '3_2' => 0, 
-		'4_1' => 0, '4_2' => 0, 
-		'5_1' => 0, '5_2' => 0, 
-		'6_1' => 0, '6_2' => 0, 
-		'7_1' => 0, '7_2' => 0, 
-		'8_1' => 0, '8_2' => 0, 
-		'9_1' => 0, '9_2' => 0, 
-		'10_1' => 0, '10_2' => 0, 
-		'11_1' => 0, '11_2' => 0, 
-		'12_1' => 0, '12_2' => 0, 
-		'13_1' => 0, '13_2' => 0, 
-		'14_1' => 0, '14_2' => 0, 
-		'15_1' => 0, '15_2' => 0, 
-		'16_1' => 0, '16_2' => 0, 
-	);
-	
-	$default_porjai = array(
-		'porjai1' => 0, 'porjai2' => 0, 'porjai3' => 0
-	);
+	$default_acu = getAcuList();
+	$default_porjai = getPorjaiList();
 	
 	$post = filter_post($_POST, '');
 	$officer = get_session('sOfficer');
@@ -336,9 +352,10 @@ if( $action === 'add' ){
 `auther_edit` ,
 `date_add` ,
 `date_edit`
+`status`
 )
 VALUES (
-NULL , :date_write1, :patient_num, :porjai, :auther, :auther_id, NULL , NOW(), NULL
+NULL , :date_write, :patient_num, :porjai, :auther, :auther_id, NULL , NOW(), NULL, 1
 )";
 	$data = array(
 		':date_write' => $date_write,
@@ -354,7 +371,66 @@ NULL , :date_write1, :patient_num, :porjai, :auther, :auther_id, NULL , NOW(), N
 		$msg = 'ไม่สามารถบันทึกข้อมูลได้ กรุณาติดต่อโปรแกรมเมอร์';
 	}
 	
-	redirect('ward_stat.php', $msg);
+	redirect('ward_stat.php?page=home_acu', $msg);
+	exit;
+} elseif ( $action === 'acu_edit' ) {
+	
+	$default_acu = getAcuList();
+	$default_porjai = getPorjaiList();
+	
+	$post = filter_post($_POST, '');
+	$officer = get_session('sOfficer');
+	$date_write = $post['date_year'].'-'.$post['date_month'];
+	
+	// Clean data
+	$pre_patient_num = array();
+	foreach($default_acu as $key => $item){
+		$pre_patient_num[$key] = (!empty($post[$key])) ? $post[$key] : $item ;
+	}
+	$patient_num = serialize($pre_patient_num);
+	
+	$pre_porjai = array();
+	foreach($default_porjai as $key => $item){
+		$pre_porjai[$key] = (!empty($post[$key])) ? $post[$key] : $item ;
+	}
+	$porjai = serialize($pre_porjai);
+	
+	
+	$id = isset($_POST['id']) ? intval($_POST['id']) : false ;
+	
+	$sql = "UPDATE `smdb`.`ward_acu` SET `date_write` = :date_write,
+`patient_num` = :patient_num,
+`porjai` = :porjai,
+`auther_edit` = :auther_edit,
+`date_edit` = NOW() WHERE `id` = :ward_id LIMIT 1 ;";
+
+	$data = array(
+		':date_write' => $date_write,
+		':patient_num' => $patient_num,
+		':porjai' => $porjai,
+		':auther_edit' => $officer,
+		':ward_id' => $id,
+	);
+	$update = DB::exec($sql, $data);
+	
+	$msg = "บันทึกข้อมูลเรียบร้อย";
+	if( $update['error'] ){
+		$msg = "ไม่สามารถบันทึกข้อมูลได้";
+	}
+	
+	redirect('ward_stat.php?page=home_acu', $msg);
+	exit;
+} elseif ( $action === 'delete_acu' ) {
+	
+	$id = getId();
+	$sql = "UPDATE `ward_acu` SET `status` = '0' WHERE `ward_acu`.`id` = :id LIMIT 1 ;";
+	$delete = DB::exec($sql, array(':id' => $id));
+	$msg = 'ลบข้อมูลเรียบร้อย';
+	if( $delete['error'] ){
+		$msg = 'ไม่สามารถลบข้อมูลได้';
+	}
+	redirect('ward_stat.php?page=home_acu', $msg);
+	exit;
 }
 
 /**
@@ -369,18 +445,24 @@ include 'templates/classic/header.php';
 		<div class="body">
 			<div class="cell">
 			<?php
-			// เมนู
+			// เมนู กับ notification
 			include 'templates/ward/nav.php';
+			
 			if( $page === false ){ // Home && Default page
 
 				$limit = 20;
-				$sql = "SELECT `id`,`department`,`date_write`,`date_add`,`author`,`type` FROM `ward_stat` ORDER BY `id` DESC LIMIT $limit";
+				$sql = "SELECT `id`,`department`,`date_write`,`date_add`,`author`,`type` 
+				FROM `ward_stat` 
+				WHERE `status` = 1
+				ORDER BY `id` DESC 
+				LIMIT $limit";
 				$items = DB::select($sql);
 
 				include 'templates/ward/home.php';
 
 			}elseif( $page === 'form' ){
-				$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
+				
+				$id = getId();
 
 				// ถ้ามี id แสดงว่าเป็นการ edit
 				if( $id !== false ){
@@ -401,7 +483,7 @@ include 'templates/classic/header.php';
 
 			}elseif( $page === 'detail' ){
 				
-				$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
+				$id = getId();
 				
 				$sql = "SELECT *
 				FROM `ward_stat` AS a
@@ -416,9 +498,37 @@ include 'templates/classic/header.php';
 				$lists = DB::select($sql, array(':id' => $id));
 					
 				include 'templates/ward/detail.php';
+			}elseif( $page === 'home_acu' ){
+				
+				$limit = 20;
+				
+				$sql = "SELECT `id`,`date_write`,`auther`,`date_add` 
+				FROM `ward_acu` 
+				WHERE `status` = 1 
+				LIMIT $limit";
+				$items = DB::select($sql);
+				
+				include 'templates/ward/home_acu.php';
 			}elseif( $page === 'form_acu' ){
 				
+				$id = getId();
+				if( $id !== false ){
+					$sql = "SELECT * FROM `ward_acu` WHERE `id` = :id; ";
+					$item = DB::select($sql, array(':id' => $id), true);
+				}
+				
 				include 'templates/ward/form_acu.php';
+			}elseif( $page === 'detail_acu' ){
+				
+				$id = getId();
+				$sql = "SELECT * FROM `ward_acu` WHERE `id` = :id; ";
+				$item = DB::select($sql, array(':id' => $id), true);
+				if( $item === null){
+					redirect('ward_stat.php?page=home_acu', 'ไม่มีข้อมูล');
+					exit;
+				}
+				
+				include 'templates/ward/detail_acu.php';
 			}
 			?>
 			</div>

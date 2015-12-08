@@ -3,8 +3,8 @@
 <table>
     <tr>
         <th>#</th>
-        <th>หอผู้ป่วย</th>
         <th>ประจำเดือน</th>
+        <th>ผู้บันทึก</th>
         <th>วันที่บันทึก</th>
         <th>จัดการ</th>
     </tr>
@@ -14,18 +14,12 @@
     ?>
     <tr>
         <td><?php echo $i;?></td>
+        <td><a href="ward_stat.php?page=detail_acu&id=<?=$item['id'];?>"><?=$item['date_write'];?></a></td>
+        <td><?=$item['auther'];?></td>
+        <td><?=$item['date_add'];?></span></td>
         <td>
-            <?php
-            $section = '';
-            if( $item['type'] === 'obgyn' ) $section = '&view=obgyn';
-            ?>
-            <a href="ward_stat.php?page=detail<?=$section;?>&id=<?=$item['id'];?>"><?=$item['department'];?></a>
-        </td>
-        <td><?=$item['date_write'];?></td>
-        <td><span title="บันทึกข้อมูลโดย <?=$item['author'];?>"><?=$item['date_add'];?></span></td>
-        <td>
-            <a href="ward_stat.php?page=form<?=$section;?>&id=<?=$item['id'];?>">[แก้ไข]</a>&nbsp;
-            <a class="remove_link" href="ward_stat.php?action=delete&id=<?=$item['id'];?>">[ลบ]</a>
+            <a href="ward_stat.php?page=form_acu<?=$section;?>&id=<?=$item['id'];?>">[แก้ไข]</a>&nbsp;
+            <a class="remove_link" href="ward_stat.php?action=delete_acu&id=<?=$item['id'];?>">[ลบ]</a>
         </td>
     </tr>
     <?php

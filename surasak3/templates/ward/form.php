@@ -37,12 +37,7 @@ if( isset($item['date_write']) ){
 						<?php endforeach; ?>
 						</select>
 
-					ประจำเดือน <select name="date_month">
-						<?php foreach( $short_months as $key => $month ): ?>
-						<?php $select = ( $this_month == $key ) ? 'selected="selected"' : '' ; ?>
-						<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
-						<?php endforeach; ?>
-					</select>
+					ประจำเดือน <?=getMonthList('date_month', $this_month);?>
 					<label for="date_year">
 						พ.ศ. <input type="text" id="date_year" class="width-1of24" name="date_year" value="<?php echo $th_year;?>">
 					</label>

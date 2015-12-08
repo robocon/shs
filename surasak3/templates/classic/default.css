@@ -49,6 +49,11 @@ table {
 }
 
 /* Default style */
+@font-face{
+	font-family:THSarabunNew;
+	src: url(fonts/THSarabunNew.eot);
+}
+
 b{ font-weight: bold; }
 table{
 	width: 100%;
@@ -61,10 +66,12 @@ table th{
 	border-bottom: 1px solid #000000;
 	column-span: none;
 	padding: 0.3em;
+	vertical-align: bottom;
 }
 table th{
 	background-color: #EDEDED;
 	font-weight: bold;
+	vertical-align: middle;
 }
 a{
 	text-decoration: none;
@@ -174,6 +181,10 @@ ol ol{
 	#no-print,
 	.no-print{
 		display: none;
+	}
+	table{
+		font-family: THSarabunNew;
+		font-size: 16px;
 	}
 }
 /* Set center column */

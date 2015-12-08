@@ -7,6 +7,14 @@ if (!defined('PHP_VERSION_ID')) {
 }
 
 /**
+ * ดึงค่าจาก id ที่เป็น method GET
+ */
+function getId(){
+	$id = isset($_GET['id']) ? intval($_GET['id']) : false ;
+	return $id;
+}
+
+/**
  * Clean single quote and double quote with mysql escape string ... some thing like Injection
  *
  * Example
@@ -106,7 +114,13 @@ function redirect($to = 'index.php', $msg = null){
 
 $def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
 
-function getDateList($name = 'months', $match = null){
+function getMonthValue($keyMatch){
+	global $def_month_th;
+	$val = $def_month_th[$keyMatch];
+	return $val;
+}
+
+function getDateList($name = 'days', $match = null){
 	
 }
 
@@ -114,7 +128,7 @@ function getDateList($name = 'months', $match = null){
  * แสดงเดือนเป็น Dropdown
  *
  */
-function getMonthList(){
+function getMonthList($name = 'months', $match = null){
 	global $def_month_th;
 	if( empty($def_month_th) ){
 		echo 'กรุณาเปิด global variable ใน php.ini';
