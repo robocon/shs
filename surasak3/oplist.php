@@ -262,58 +262,70 @@ if($stringtime > 600){
 	   ?>
 </table>
 
-<? 
+<?php 
+$list = array(
+    'EX 91' => 'ออก VN โดย กายภาพ',
+    'EX 92' => 'ออก VN โดย ฝังเข็ม',
+    'EX 92' => 'ฝังเข็ม',
+    'EX91' => 'ออก VN โดย กายภาพ',
+    'EX92' => 'ออก VN โดย ฝังเข็ม',
+    'EX92' => 'ฝังเข็ม',
+    
+    'EX01' => 'รักษาโรคทั่วไปในเวลาราชการ',
+    
+    'EX02' => 'ผู้ป่วยฉุกเฉิน',
+    'EX03' => 'สมัครโครงการจ่ายตรง',
+    'EX04' => 'ผู้ป่วยนัด',
+    
+    'EX05' => 'ยืม',
+    
+    'EX06' => 'คัดกรองแพ้ยา',
+    'EX07' => 'ทันตกรรม',
+    'EX10' => 'ไตเทียม',
+    'EX11' => 'รักษาโรคนอกเวลาราชการ',
+    'EX12' => 'นอนโรงพยาบาล',
+    'EX13' => 'เลื่อนนัด',
+    'EX15' => 'ออก VN',
+    'EX16' => 'ตรวจสุขภาพ',
+    'EX17' => 'กายภาพบำบัด',
+    'EX19' => 'ออก VN ทำแผล',
+    'EX20' => 'นวดแผนไทย'
+);
 
-$list["EX 91"]= "ออก VN โดย กายภาพ";
-$list["EX 92"]= "ออก VN โดย ฝังเข็ม";
-$list["EX 92"]= "ฝังเข็ม";
-$list["EX01"]= "รักษาโรคทั่วไปในเวลาราชการ";
+// เวลาโดยเฉลี่ย คัดเอาเฉพาะ EX01, EX02 และเวลาที่น้อยกว่า 1ชั่วโมง
+$sql = "SELECT `toborow`,`time2`,`time1`,
+LEFT(`toborow`,4) AS `toborow2`,
+TIME_TO_SEC(SUBTIME( `time2`, `time1` )) AS `time3`
+FROM `opday` WHERE `thidate` 
+LIKE '$today%' 
+AND `time1` != '' 
+AND `time2` != '' 
+AND LEFT(`toborow`,4) IN ('EX01','EX02') 
+AND TIME_TO_SEC(SUBTIME( `time2`, `time1` )) <= 3600
+ORDER BY `toborow2` ASC";
 
-$list["EX02"]= "ผู้ป่วยฉุกเฉิน";
-$list["EX03"]= "สมัครโครงการจ่ายตรง";
-$list["EX04"]= "ผู้ป่วยนัด";
-
-$list["EX05"]= "ยืม";
-
-$list["EX06"]= "คัดกรองแพ้ยา";
-$list["EX07"]= "ทันตกรรม";
-$list["EX10"]= "ไตเทียม";
-$list["EX11"]= "รักษาโรคนอกเวลาราชการ";
-$list["EX12"]= "นอนโรงพยาบาล";
-$list["EX13"]= "เลื่อนนัด";
-$list["EX15"]= "ออก VN";
-$list["EX16"]= "ตรวจสุขภาพ";
-$list["EX17"]= "กายภาพบำบัด";
-$list["EX19"]= "ออก VN ทำแผล";
-$list["EX20"]= "นวดแผนไทย";
-
-
-
-$sql = "SELECT left(toborow,4) as toborow2,  sum( TIME_TO_SEC( SUBTIME( time2, time1 ) ) ) as time_s, count(toborow) as c_total FROM opday WHERE thidate LIKE '$today%' AND time1 != '' AND time2 != '' AND left(toborow,4) in ('EX01','EX02') group by toborow2 Order by toborow2 ASC ";
-// echo $sql;
-$result = Mysql_Query($sql) or die(Mysql_error());
-print "<table>";
-while($arr = Mysql_fetch_assoc($result)){
-	
-	$name_ex = trim($arr["toborow2"]);
-	
-	//echo $arr["time_s"];
-	$avg = $arr["time_s"]/$arr["c_total"];
-	//echo $avg;
-	$showavg=gmdate("H:i:s", $avg);
-	print "<tr><td>".$list[$name_ex]."</td><td>".$showavg."</td></tr>";
-
+$lists = array();
+$row_lists = array();
+$q = mysql_query($sql);
+while($item = mysql_fetch_assoc($q)){
+    $key = $item['toborow2'];
+    $lists[$key] += $item['time3'];
+    $row_lists[$key] += 1;
 }
-print "</table>";
 
-
-
-
-
-
-
-    include("unconnect.inc");
-?>
+?><table><?php
+foreach($lists as $key => $item){
+    ?>
+    <tr>
+        <td><?=$list[$key];?></td>
+        <td><?php
+        $avg = ($item / $row_lists[$key]);
+        echo gmdate("H:i:s", $avg);
+        ?></td>
+    </tr>
+    <?php
+}
+?></table>
 </table>
 
 
