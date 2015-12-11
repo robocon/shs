@@ -26,8 +26,8 @@ $mouth_items = array(
 			<?php
 			// ค่าปริยายในการแสดงผลวันที่ กรณีที่ไม่มี POST
 			$date = !empty($_POST['date']) ? trim($_POST['date']) : ( date('Y') + 543 ).'-'.date('m') ;
-			$so_date = bc_to_ad($date) ;
-			$yearcheckup = !empty($_POST['yearcheckup']) ? trim($_POST['yearcheckup']) : date('Y') + 543 ;
+			// $so_date = bc_to_ad($date) ;
+			// $yearcheckup = !empty($_POST['yearcheckup']) ? trim($_POST['yearcheckup']) : date('Y') + 543 ;
 			?>
 			<div>
 				แสดงผลตามวันที่ <input type="text" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : $date ;?>">
@@ -42,10 +42,12 @@ $mouth_items = array(
 					<option value="fix_mtb" <?php echo ( $_POST['fix_category'] == 'fix_mtb' ) ? 'selected="selected"' : ''; ?>>หน่วยที่เป็น มทบ.32</option>
 					<?php
 					$items = DB::select($sql);
+					$section_lists = array();
 					foreach ($items as $key => $item) {
 						$select = !empty($_POST['fix_category']) ? ( $_POST['fix_category'] === $item['id'] ? 'selected="selected"' : '' ) : '' ;
 						?><option value="<?php echo $item['id'];?>" <?php echo $select;?>><?php echo $item['name'];?></option><?php
 						$cattxt_lists[$item['id']] = $item['name'];
+						$section_lists[$item['id']] = $item['name'];
 					}
 					?>
 				</select>
@@ -162,9 +164,23 @@ $mouth_items = array(
 					<?php
 				endforeach;
 				
+				
+				/*
+				if( strpos($date, '-') > 0 ){
+					list($date, $month) = explode($date);
+				}
+				$sub_year = substr($date, 2);
+				
+				dump(strpos($date, '-'));
+				
+				
 				$sql = "SELECT COUNT(`hn`) AS `rows` 
-				FROM `condxofyear_so` 
-				WHERE `thidate` LIKE '$so_date%'";
+				FROM `chkup_solider` 
+				WHERE `yearchkup` LIKE '$sub_year%'
+				AND `camp` LIKE '%{$section_lists[$filter_category]}%'";
+				
+				dump($section_lists[$filter_category]);
+				dump($sql);
 				$item = DB::select($sql, false, true);
 				?>
 				<tr>
@@ -178,10 +194,12 @@ $mouth_items = array(
 					}else{
 						echo '-';
 					}
-					
 					?>
 					</td>
 				</tr>
+				<?php
+				*/
+				?>
 				<tr>
 					<td>ยอดทั้งหมด</td>
 					<td align="center"><?=$total;?></td>
