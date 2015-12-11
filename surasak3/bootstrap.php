@@ -55,6 +55,7 @@ class DB{
 	private static $connect = null;
 	private $db = null;
 	private static $lastId = 0;
+	private static $rows = 0;
 	
 	/**
 	 * !!!! CUTION !!!!
@@ -130,6 +131,7 @@ class DB{
 			// Exec prepareing
 			$sth->execute();
 			$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+			self::$rows = count($result);
 			return $result;
 			
 		} catch(exception $e) {
@@ -139,6 +141,10 @@ class DB{
 			$msg = array('error' => $e->getMessage());
 			return $msg;
 		}
+	}
+	
+	public static function rows(){
+		return self::$rows;
 	}
 	
 	public static function exec($sql, $data = null){
