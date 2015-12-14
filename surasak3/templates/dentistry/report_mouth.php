@@ -165,23 +165,30 @@ $mouth_items = array(
 				endforeach;
 				
 				
-				/*
+				/**
+				 * @todo
+				 * [] หายอดของข้อ 5 จาก OPD
+				 * 
+				 */
+				
 				if( strpos($date, '-') > 0 ){
-					list($date, $month) = explode($date);
+					list($date, $month) = explode('-', $date);
 				}
 				$sub_year = substr($date, 2);
-				
-				dump(strpos($date, '-'));
 				
 				
 				$sql = "SELECT COUNT(`hn`) AS `rows` 
 				FROM `chkup_solider` 
 				WHERE `yearchkup` LIKE '$sub_year%'
-				AND `camp` LIKE '%{$section_lists[$filter_category]}%'";
+				";
 				
-				dump($section_lists[$filter_category]);
+				// ถ้ามีการเลือกหน่วย
+				if( $filter_category !== false ){
+					$sql .= " AND `camp` LIKE '%{$section_lists[$filter_category]}%' ";
+				}
 				dump($sql);
 				$item = DB::select($sql, false, true);
+				dump($item);
 				?>
 				<tr>
 					<td>ระดับ 5 ไม่มีข้อมูล(ไม่ได้รับการตรวจสุขภาพช่องปาก)</td>
@@ -198,7 +205,7 @@ $mouth_items = array(
 					</td>
 				</tr>
 				<?php
-				*/
+				
 				?>
 				<tr>
 					<td>ยอดทั้งหมด</td>

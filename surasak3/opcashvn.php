@@ -273,12 +273,15 @@ $date="";
 	
 	if( $price>0){  $totalpri2=$totalpri2+$price;} else { $totalpri2=$totalpri2+$price;};
 // $totalpri2=$totalpri2+$price;
+	//echo "$totalpri2=$totalpri2+$price;<br>";
 
- if($paid!=0){
+if($paid != 0){
 
-if($price>0){$paid1=$price;};
-if($price<0){$paid1=$price;};
-;}else {$paid1=0;};
+	if( $price > 0 ){ $paid1 = $price; }
+	if( $price < 0 ){ $paid1 = $price; }
+}else{ 
+	$paid1 = 0;
+}
 
  //$rowid=$row_id; //report
  $totalpri22=$totalpri22+$paid1;
@@ -353,7 +356,10 @@ $hnid = $hn;
 //$totalpri1=$totalpri1+50;
 $totalpri=$totalpri1+$totalpri2;
 //$totalpri=$totalpri+50;
+//echo "===>$totalpri1+$totalpri2";
+
 $totalpri2=$totalpri11+$totalpri22;
+
 $totalpri3=$totalpri-$totalpri2;
 $totaltopay1=$totalpaid1+$totalpaid2;
 
@@ -512,7 +518,9 @@ $hnid = $hn;
 		echo "<input name='nAccno$num' value='$accno' type='hidden' />";
        }
 //$totalpri1=$totalpri1+50;
-$totalpri=$totalpri1+$totalpri2;
+//$totalpri=$totalpri1+$totalpri2; ใช้สูตรนี้ก่อน 09/10/58
+//echo "--->$totalpri1+$totalpri2";
+$totalpri=$totalpri2;  //ใช้สูตรนี้หลัง 09/10/58
 //$totalpri=$totalpri+50;
 $totalpri2=$totalpri11+$totalpri22;
 $totalpri3=$totalpri-$totalpri2;
