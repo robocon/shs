@@ -7,7 +7,9 @@
 *.ttf
 *.docx
 *.doc
-Thumbs.db
+*.log
+*.db
+
 connect.inc
 connect.php
 surasak3/connect.inc
@@ -19,11 +21,9 @@ surasak3/Connections/dbconfig.php
 surasak3/NCR2556/connect.inc
 surasak3/NCR2556/connect2.inc
 surasak3/datacscd/*.txt
-surasak3/datacscd/cscd/*.zip
 surasak3/patient_files/*
 surasak3/tmp/*
 surasak3/Backup*/*
-surasak3/logs/*.log
 surasak3/dataupdate/*
 
 # Visual Studio Code

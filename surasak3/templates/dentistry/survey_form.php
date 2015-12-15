@@ -247,3 +247,43 @@ if( $id !== false ){
 		<?php } ?>
 	</div>
 </div>
+<script type="text/javascript">
+	
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	
+	// ตรวจสอบว่ามีการเช็กใน checkbox แล้วรึยัง
+	function check_radio(){
+		var test_check = false;
+		$('.checkbox').each(function(){
+			if( this.checked === true ){
+				test_check = true;
+			}
+		});
+		
+		return test_check;
+	}
+	
+	
+	if( $('.add_form_btn').length > 0 ){
+		
+		$(document).on('click', '.add_form_btn', function(){
+			
+			var do_check = check_radio()
+			if( do_check === false ){
+				alert('กรุณาเลือกระดับสภาวะช่องปาก');
+				return false;
+			}
+			
+			var c = confirm('ยืนยันยืนยันการเพิ่มข้อมูล?');
+			if( c == false ){
+				return false;
+			}
+		});
+	}
+		
+	
+});
+})(jQuery);
+</script>

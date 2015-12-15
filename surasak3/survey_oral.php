@@ -361,15 +361,6 @@ $(function() {
 			}
 		});
 	}
-	
-	if( $('.add_form_btn').length > 0 ){
-		$(document).on('click', '.add_form_btn', function(){
-			var c = confirm('ยืนยันยืนยันการเพิ่มข้อมูล?');
-			if( c == false ){
-				return false;
-			}
-		});
-	}
 		
 	
 });

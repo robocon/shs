@@ -154,7 +154,9 @@ $mouth_items = array(
 					AND `max_status` = '$key'
 					$where_is
 					";
+					// dump($sql);
 					$item = DB::select($sql, null, true);
+					// dump($item);
 					$total += (int) $item['count'];
 					?>
 					<tr>
@@ -171,31 +173,75 @@ $mouth_items = array(
 				 * 
 				 */
 				
-				if( strpos($date, '-') > 0 ){
-					list($date, $month) = explode('-', $date);
+				
+				// รายชื่อ HN ที่มีอยู่ในระบบของตรวจสุขภาพฟัน
+				$sql = "SELECT `hn` 
+					FROM `survey_oral` 
+					WHERE `date` LIKE '$date%' 
+					$where_is
+					";
+				$items = DB::select($sql);
+				$notin_hn = array();
+				
+				$test_count = 0;
+				foreach($items as $key => $item){
+					$notin_hn[] = " '{$item['hn']}' ";
+					$test_count++;
 				}
-				$sub_year = substr($date, 2);
+				// var_dump($test_count);
+				$notin_txt = ' AND `hn` NOT IN ('.implode(',', $notin_hn).')';
 				
 				
+				function get_year_checkup($long = false, $en = false){
+					$d = date('d');
+					$m = date('m');
+					$y = date('Y') + 543 ;
+					
+					if( $m >= 10 && $d >= 1 ){
+						$y += 1;
+					}
+					
+					if( $en === true ){
+						$y -= 543 ;
+					}
+					
+					if( $long === true ){
+						return $y;
+					}
+					
+					$y = substr($y, 2);
+					return $y;
+				}
+				
+				$year_checkup = get_year_checkup();
+				
+				// จำนวนคนที่มาตรวจ
 				$sql = "SELECT COUNT(`hn`) AS `rows` 
 				FROM `chkup_solider` 
-				WHERE `yearchkup` LIKE '$sub_year%'
+				WHERE `yearchkup` LIKE '$year_checkup'
+				AND `dr` LIKE '$date%'
 				";
 				
 				// ถ้ามีการเลือกหน่วย
 				if( $filter_category !== false ){
 					$sql .= " AND `camp` LIKE '%{$section_lists[$filter_category]}%' ";
 				}
-				dump($sql);
-				$item = DB::select($sql, false, true);
-				dump($item);
+				
+				// $sql .= $notin_txt;
+				// $sql .= " GROUP BY `hn`";
+				
+				// dump($sql);
+				$item = DB::select($sql, null, true);
+				// dump($item['rows']);
+				
+				
 				?>
 				<tr>
 					<td>ระดับ 5 ไม่มีข้อมูล(ไม่ได้รับการตรวจสุขภาพช่องปาก)</td>
 					<td align="center">
 					<?php 
 					if( $item['rows'] > 0 ){
-						$damage5 = (int)$item['rows'] - $total;
+						$damage5 = (int)$item['rows'] - $test_count;
 						echo $damage5;
 						$total += $damage5;
 					}else{
