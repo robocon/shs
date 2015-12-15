@@ -351,12 +351,13 @@ if( $action === 'add' ){
 `auther_id` ,
 `auther_edit` ,
 `date_add` ,
-`date_edit`
+`date_edit`,
 `status`
 )
 VALUES (
 NULL , :date_write, :patient_num, :porjai, :auther, :auther_id, NULL , NOW(), NULL, 1
 )";
+
 	$data = array(
 		':date_write' => $date_write,
 		':patient_num' => $patient_num,

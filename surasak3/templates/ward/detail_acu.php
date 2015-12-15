@@ -148,7 +148,21 @@ if( $id !== false ){
 							<td align="center"><?=$patient['16_1'];?></td>
 							<td align="center"><?=$patient['16_2'];?></td>
 						</tr>
-						
+						<tr>
+							<td align="center" colspan="2">รวมทั้งสิ้น</td>
+							<td align="center">
+								<?php
+								$sum = ( $patient['1_1'] + $patient['2_1'] + $patient['3_1'] + $patient['4_1'] + $patient['5_1'] + $patient['6_1'] + $patient['7_1'] + $patient['8_1'] + $patient['9_1'] + $patient['10_1'] + $patient['11_1'] + $patient['12_1'] + $patient['13_1'] + $patient['14_1'] + $patient['15_1'] + $patient['16_1'] );
+								echo $sum;
+								?>
+							</td>
+							<td align="center">
+								<?php
+								$sum = ( $patient['1_2'] + $patient['2_2'] + $patient['3_2'] + $patient['4_2'] + $patient['5_2'] + $patient['6_2'] + $patient['7_2'] + $patient['8_2'] + $patient['9_2'] + $patient['10_2'] + $patient['11_2'] + $patient['12_2'] + $patient['13_2'] + $patient['14_2'] + $patient['15_2'] + $patient['16_2'] );
+								echo $sum;
+								?>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
