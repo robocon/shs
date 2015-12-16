@@ -188,16 +188,19 @@ $mouth_items = array(
 					$notin_hn[] = " '{$item['hn']}' ";
 					$test_count++;
 				}
-				// var_dump($test_count);
 				$notin_txt = ' AND `hn` NOT IN ('.implode(',', $notin_hn).')';
 				
-				$year_checkup = get_year_checkup();
+				$year_checkup = get_year_checkup(true);
 				
 				// จำนวนคนที่มาตรวจ
-				$sql = "SELECT COUNT(`hn`) AS `rows` 
-				FROM `chkup_solider` 
-				WHERE `yearchkup` LIKE '$year_checkup'
-				AND `dr` LIKE '$date%'
+
+				// dump($date);
+				$ad_date = bc_to_ad($date);
+				// dump($ad_date);
+				$sql = "SELECT  COUNT(`hn`) AS `rows`
+FROM  `condxofyear_so` 
+WHERE  `yearcheck` LIKE  '$year_checkup' 
+AND `thidate` LIKE '$ad_date%'
 				";
 				
 				// ถ้ามีการเลือกหน่วย
@@ -205,32 +208,27 @@ $mouth_items = array(
 					$sql .= " AND `camp` LIKE '%{$section_lists[$filter_category]}%' ";
 				}
 				
-				// $sql .= $notin_txt;
-				// $sql .= " GROUP BY `hn`";
+				$sql .= $notin_txt;
+				$sql .= " GROUP BY `hn`";
 				
-				// dump($sql);
+				dump($sql);
 				$item = DB::select($sql, null, true);
-				// dump($item['rows']);
 				
-				
+				// มาตรวจที่ OPD แต่ไม่ได้ตรวจฟัน
 				?>
 				<tr>
 					<td>ระดับ 5 ไม่มีข้อมูล(ไม่ได้รับการตรวจสุขภาพช่องปาก)</td>
 					<td align="center">
 					<?php 
 					if( $item['rows'] > 0 ){
-						$damage5 = (int)$item['rows'] - $test_count;
-						echo $damage5;
-						$total += $damage5;
+						echo $item['rows'];
+						$total += $item['rows'];
 					}else{
 						echo '-';
 					}
 					?>
 					</td>
 				</tr>
-				<?php
-				
-				?>
 				<tr>
 					<td>ยอดทั้งหมด</td>
 					<td align="center"><?=$total;?></td>
