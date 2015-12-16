@@ -1,16 +1,5 @@
 <div class="col">
 	<div class="cell">
-		
-		<?php // Notification ?>
-		<?php if( isset($_SESSION['x-msg']) ): ?>
-		<div class="col">
-			<div class="cell">
-				<span class="label">แจ้งจากระบบ</span> <?php echo $_SESSION['x-msg']; ?>
-			</div>
-		</div>
-		<?php unset($_SESSION['x-msg']); ?>
-		<?php endif; ?>
-		
 		<h3>รายชื่อผู้ที่ทำการตรวจ</h3>
 		<form action="survey_oral.php" method="post" style="margin: 1em 0;" class="no-print">
 			<?php

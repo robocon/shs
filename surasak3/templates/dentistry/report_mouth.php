@@ -191,28 +191,6 @@ $mouth_items = array(
 				// var_dump($test_count);
 				$notin_txt = ' AND `hn` NOT IN ('.implode(',', $notin_hn).')';
 				
-				
-				function get_year_checkup($long = false, $en = false){
-					$d = date('d');
-					$m = date('m');
-					$y = date('Y') + 543 ;
-					
-					if( $m >= 10 && $d >= 1 ){
-						$y += 1;
-					}
-					
-					if( $en === true ){
-						$y -= 543 ;
-					}
-					
-					if( $long === true ){
-						return $y;
-					}
-					
-					$y = substr($y, 2);
-					return $y;
-				}
-				
 				$year_checkup = get_year_checkup();
 				
 				// จำนวนคนที่มาตรวจ

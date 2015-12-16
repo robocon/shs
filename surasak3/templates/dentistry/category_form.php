@@ -1,17 +1,33 @@
+<?php
+if( !defined('_SURVEY') ) die('asdfasdf');
+
+// Default value is for save
+$def_action = 'section_form_save';
+$title = 'เพิ่มชื่อหน่วยงาน';
+if( $id !== false ){
+	$def_action = 'section_form_edit';
+	$title = 'แก้ไขชื่อหน่วยงาน';
+}
+?>
 <div class="col">
 	<div class="cell">
 		<div>
-			<form action="survey_oral.php?action=section_form_save" method="post">
-				<h3>เพิ่มชื่อหน่วยงาน</h3>
+			<form action="survey_oral.php" method="post">
+				<h3><?=$title;?></h3>
 				<div class="col">
 					<label for="section">ชื่อ</label>
-					<input type="text" id="section" name="section">
+					<input type="text" id="section" name="section" value="<?=$item['name'];?>">
 				</div>
 				<div class="col">
-					<button type="submit">เพิ่ม</button>
+					<button type="submit">บันทึกข้อมูล</button>
+					<input type="hidden" name="action" value="<?=$def_action?>">
+					<?php if( !empty($id) ){ ?>
+					<input type="hidden" name="id" value="<?=$id;?>">
+					<?php } ?>
 				</div>
 			</form>
 		</div>
+		<?php if( empty($id) ){ ?>
 		<div class="col"><div class="cell"></div></div>
 		<div class="col width-3of5 ">
 			<h3>รายชื่อหน่วยงาน</h3>
@@ -33,7 +49,7 @@
 					<tr>
 						<td><?php echo $item['name'];?></td>
 						<td>
-							<a href="#">แก้ไข</a>
+							<a href="survey_oral.php?task=category_edit&id=<?php echo $item['id'];?>">แก้ไข</a>
 								| 
 							<a href="survey_oral.php?action=delete_category&id=<?php echo $item['id'];?>" class="survey_remove">ลบ</a>
 						</td>
@@ -44,5 +60,6 @@
 				</tbody>
 			</table>
 		</div>
+		<?php } ?>
 	</div>
 </div>

@@ -2,6 +2,8 @@
 include 'bootstrap.php';
 if(authen() === false ){ die('Session หมดอายุ <a href="login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
 
+define('_SURVEY', 1);
+
 // Load Databse
 DB::load();
 
@@ -199,11 +201,29 @@ if($action === 'save'){
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
 	if($insert === false){
-		$msg = 'บันทึกข้อมูลไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ';
+		$msg = 'ไม่สามารถบันทึกข้อมูลได้ กรุณาเก็บรหัส '.$insert['id'].' นี้เพื่อแจ้งผู้ดูแลระบบเพื่อทำการแก้ไขต่อไป';
 	}
 	
 	redirect('survey_oral.php?task=category_form', $msg);
 	exit;
+} else if( $action === 'section_form_edit' ){
+	
+	$name = isset($_POST['section']) ? trim($_POST['section']) : '' ;
+	$sql = "
+	UPDATE `survey_oral_category` SET 
+	`name`=:name,
+	`date_edit`=NOW()
+	WHERE `id` = :id;
+	";
+	$update = DB::exec($sql, array(':name' => $name, ':id' => $id));
+	
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $update['error'] ){
+		$msg = 'ไม่สามารถบันทึกข้อมูลได้ กรุณาเก็บรหัส '.$update['id'].' นี้ เพื่อแจ้งผู้ดูแลระบบเพื่อทำการแก้ไขต่อไป';
+	}
+	redirect('survey_oral.php?task=category_form', $msg);
+	exit;
+	
 } else if( $action === 'delete_category' ){
 	
 	if( $id === false ){
@@ -300,31 +320,9 @@ include 'templates/classic/nav.php';
     <div class="site-body panel">
         <div class="body">
             <div class="cell">
-                <div class="col page-header-col">
-                    <div class="cell">
-                        <div class="page-header">
-                            <h1>ระบบสำรวจสภาวะช่องปาก</h1>
-                        </div>
-                    </div>
-                </div>
-				<div class="col nav-menu-col">
-					<div class="menu cell">
-						<?php 
-							$home_active = ( $task === false ) ? 'class="active"' : false ;
-							$form_active = ( $task === 'form' ) ? 'class="active"' : false ;
-							$form_category = ( $task === 'category_form' ) ? 'class="active"' : false ;
-							$den_report = ( $task === 'report' ) ? 'class="active"' : false ;
-							$report_mouth = ( $task === 'report_mouth' ) ? 'class="active"' : false ;
-						?>
-						<ul class="nav">
-							<li <?php echo $home_active;?>><a href="survey_oral.php">หน้าหลัก</a></li>
-							<li <?php echo $form_active;?>><a href="survey_oral.php?task=form">เพิ่มข้อมูลแบบสำรวจ</a></li>
-							<li <?php echo $form_category;?>><a href="survey_oral.php?task=category_form">จัดการข้อมูลหน่วยงาน</a></li>
-							<li <?php echo $den_report;?>><a href="survey_oral.php?task=report">รายงานผลการสำรวจ</a></li>
-							<li <?php echo $report_mouth;?>><a href="survey_oral.php?task=report_mouth">รายงานสภาวะช่องปากและระดับ</a></li>
-						</ul>
-					</div>
-				</div>
+                
+				<?php include 'templates/dentistry/nav.php'; ?>
+				
 				<?php if( $task === false ){ ?>
 				<?php include 'templates/dentistry/survey_home.php'; ?>
 				
@@ -337,7 +335,21 @@ include 'templates/classic/nav.php';
 				<?php } else if( $task === 'category_form' ) { ?>
 				<?php include 'templates/dentistry/category_form.php'; ?>
 				
-				<?php } else if( $task === 'report' ) { // รายงานผลการสำรวจ ?>
+				<?php } else if( $task === 'category_edit' ) { ?>
+				<?php 
+				$id = ( isset($_GET['id']) ) ? intval(trim($_GET['id'])) : false ;
+				
+				if( $id !== false ){
+					$sql = "SELECT * FROM `survey_oral_category` WHERE `id` = :id;";
+					$item = DB::select($sql, array(':id' => $id), true);
+					
+				}
+				
+				include 'templates/dentistry/category_form.php'; 
+				
+				?>
+				
+				<?php }else if( $task === 'report' ) { // รายงานผลการสำรวจ ?>
 				<?php include 'templates/dentistry/survey_report.php'; ?>
 				
 				<?php } elseif( $task === 'report_mouth' ){ // รายงานสภาวะช่องปากและระดับ ?>
