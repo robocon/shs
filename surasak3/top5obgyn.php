@@ -31,6 +31,7 @@ body{
 					<div class="col">
 						<div class="cell">
 							ปี-เดือน <input type="text" name="year_select" value="<?php echo $th_date;?>">
+							<span>* สามารถเลือกการแสดงผลตามเดือนได้ เช่น 2558-12</span>
 						</div>
 					</div>
 					<div class="col">
@@ -74,21 +75,6 @@ body{
 					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
 					GROUP BY a.`diag`
 					
-					UNION ALL
-					
-					SELECT a.`date`,a.`diag`,a.`doctor`,CONCAT('out') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
-					TIMESTAMPDIFF( 
-						YEAR, 
-						b.`dbirth`, 
-						CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d' ) ) 
-					)  AS `age`
-					FROM `ipcard` AS a 
-					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-					WHERE a.`date` LIKE '$th_date%' 
-					AND a.`doctor` LIKE '%$name%' 
-					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
-					GROUP BY a.`diag`
-					
 					ORDER BY `diag_row` DESC
 					";
 					$items = DB::select($sql);
@@ -97,6 +83,10 @@ body{
 					<div class="col">
 						<div class="cell">
 							<table>
+								<tr>
+									<td style="vertical-align: top!important;">
+										<h3>ผู้ป่วยนอก</h3>
+										<table>
 								<thead>
 									<tr>
 										<th>#</th>
@@ -131,6 +121,76 @@ body{
 									?>
 								</tbody>
 							</table>
+									</td>
+									<td style="vertical-align: top!important;">
+										
+										
+										<?php
+										$sql = "
+										SELECT a.`date`,a.`diag`,a.`doctor`,CONCAT('out') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
+					TIMESTAMPDIFF( 
+						YEAR, 
+						b.`dbirth`, 
+						CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d' ) ) 
+					)  AS `age`
+					FROM `ipcard` AS a 
+					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+					WHERE a.`date` LIKE '$th_date%' 
+					AND a.`doctor` LIKE '%$name%' 
+					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
+					GROUP BY a.`diag`
+					
+					ORDER BY `diag_row` DESC
+										";
+										
+										
+										$items = DB::select($sql);
+					$all_rows = DB::rows();
+										?>
+										
+										
+										
+										<h3>ผู้ป่วยใน</h3>
+										<table>
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>ICD 10</th>
+										<th>Diag</th>
+										<th>จำนวน(คน)</th>
+										<th>%</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									$i = 1;
+									foreach ($items as $key => $item) {
+										
+										// หมอวรวิทย์ จะคัดเอาเฉพาะคนที่อายุไม่เกิน 15ปี
+										if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
+									?>
+									<tr>
+										<td><?=$i;?></td>
+										<td><?=$item['icd10'];?></td>
+										<td><?=$item['diag'];?></td>
+										<td><?=$item['diag_row'];?></td>
+										<td>
+											<?php 
+											echo round( ( $item['diag_row'] * 100 ) / $all_rows, 2 );
+											?>
+										</td>
+									</tr>
+									<?php 
+										$i++;
+									}
+									?>
+								</tbody>
+							</table>
+									</td>
+								</tr>
+							</table>
+							
+							
 						</div>
 					</div>
 					<?php
