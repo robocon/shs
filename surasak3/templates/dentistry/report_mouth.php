@@ -145,6 +145,12 @@ $mouth_items = array(
 			</thead>
 			<tbody>
 				<?php
+				$year_checkup = get_year_checkup(true);
+				$sh_year = get_year_checkup();
+				$cat = 'n';
+				if( $filter_category !== false ){
+					$cat = $filter_category;
+				}
 				$total = 0;
 				foreach($violences as $key => $vio):
 					$sql = "
@@ -158,52 +164,79 @@ $mouth_items = array(
 					$total += (int) $item['count'];
 					?>
 					<tr>
-						<td><?php echo $vio;?></td>
-						<td align="center"><a href="survey_oral.php?task="><?php echo $item['count'];?></a></td>
+						<td><?=$vio;?></td>
+						<td align="center"><a href="survey_oral.php?task=hn_lists&date=<?=$date;?>&category=<?=$cat;?>&max=<?=$key;?>&yearcheck=<?=$year_checkup;?>" target="_blank"><?=$item['count'];?></a></td>
 					</tr>
 					<?php
 				endforeach;
 				
 				
 				// รายชื่อ HN ที่มีอยู่ในระบบของตรวจสุขภาพฟัน
-				$sql = "SELECT `hn` 
-					FROM `survey_oral` 
-					WHERE `date` LIKE '$date%' 
-					$where_is
-					";
-				$items = DB::select($sql);
-				$notin_hn = array();
+				// $sql = "SELECT `hn` 
+				// 	FROM `survey_oral` 
+				// 	WHERE `date` LIKE '$date%' 
+				// 	$where_is
+				// 	";
+				// $items = DB::select($sql);
+				// $notin_hn = array();
 				
-				$test_count = 0;
-				foreach($items as $key => $item){
-					$notin_hn[] = " '{$item['hn']}' ";
-					$test_count++;
-				}
-				$notin_txt = ' AND `hn` NOT IN ('.implode(',', $notin_hn).')';
+				// $test_count = 0;
+				// foreach($items as $key => $item){
+				// 	$notin_hn[] = " '{$item['hn']}' ";
+				// 	$test_count++;
+				// }
+				// $notin_txt = ' AND `hn` NOT IN ('.implode(',', $notin_hn).')';
 				
-				$year_checkup = get_year_checkup(true);
 				
-				// จำนวนคนที่มาตรวจ
+				
+				// จำนวนคนที่มาตรวจจาก OPD
+				// $ad_date = bc_to_ad($date);
+// 				$sql = "SELECT  COUNT(`hn`) AS `rows`
+// FROM  `condxofyear_so` 
+// WHERE  `yearcheck` LIKE  '$year_checkup' 
+// AND `thidate` LIKE '$ad_date%'
+// 				";
+				
+				
+				
+				// $sql .= $notin_txt;
+				// $sql .= " GROUP BY `hn`";
+				
+$sql = "SELECT COUNT(a.`hn`) AS `rows`
+FROM (
+	SELECT c.*
+	FROM `condxofyear_so` AS c
+	WHERE c.`yearcheck` LIKE  '$year_checkup' 
+	
+	";
 
-				// dump($date);
-				$ad_date = bc_to_ad($date);
-				// dump($ad_date);
-				$sql = "SELECT  COUNT(`hn`) AS `rows`
-FROM  `condxofyear_so` 
-WHERE  `yearcheck` LIKE  '$year_checkup' 
-AND `thidate` LIKE '$ad_date%'
-				";
+// ถ้ามีการเลือกหน่วย
+if( $filter_category !== false ){
+	$sql .= " AND c.`camp` LIKE '%{$section_lists[$filter_category]}%' ";
+}
+	
+$sql .= "AND c.`hn` NOT IN (
+
+SELECT b.`hn` FROM `survey_oral` AS b
+WHERE b.`yearcheck` = '$sh_year' 
+";
+
+// ถ้ามีการเลือกหน่วย
+if( $filter_category !== false ){
+	$sql .= " AND b.`section` = '$filter_category' ";
+}
+		 
+$sql .= "GROUP BY b.`hn`
+		
+	)
+	
+	GROUP BY c.`hn`
+) AS a";
 				
-				// ถ้ามีการเลือกหน่วย
-				if( $filter_category !== false ){
-					$sql .= " AND `camp` LIKE '%{$section_lists[$filter_category]}%' ";
-				}
-				
-				$sql .= $notin_txt;
-				$sql .= " GROUP BY `hn`";
 				
 				// dump($sql);
 				$item = DB::select($sql, null, true);
+				// dump($item);
 				
 				// มาตรวจที่ OPD แต่ไม่ได้ตรวจฟัน
 				?>
@@ -212,7 +245,7 @@ AND `thidate` LIKE '$ad_date%'
 					<td align="center">
 					<?php 
 					if( $item['rows'] > 0 ){
-						echo $item['rows'];
+						?><a href="survey_oral.php?task=hn_lists&date=<?=$date;?>&category=<?=$cat;?>&max=5&yearcheck=<?=$year_checkup;?>&shyear=<?=$sh_year;?>" target="_blank"><?=$item['rows'];?></a><?php
 						$total += $item['rows'];
 					}else{
 						echo '-';

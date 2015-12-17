@@ -359,6 +359,9 @@ include 'templates/classic/nav.php';
 				} elseif( $task === 'report_mouth' ){ // รายงานสภาวะช่องปากและระดับ
 					include 'templates/dentistry/report_mouth.php';
 					
+				} elseif( $task === 'hn_lists' ){ // รายชื่อ hn ของระดับความรุนแรง
+					include 'templates/dentistry/hn_lists.php';
+					
 				} // End task
 				?>
 			</div>
