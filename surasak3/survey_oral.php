@@ -29,6 +29,7 @@ $full_months = array(
 	"12" => "ธันวาคม"
 );
 
+// จัดการข้อมูล Checkbox และหาค่าสูงสุด
 function serialize_and_setmax($mouth_detail){
 	
 	$details_filter = array(
@@ -72,12 +73,20 @@ function serialize_and_setmax($mouth_detail){
 
 if($action === 'save'){
 	
+	$year_checkup = get_year_checkup();
+	$sql = "SELECT `id`,`hn` FROM `survey_oral` WHERE `hn` = :hn AND `yearcheck` = '$year_checkup';";
+	DB::select($sql, array(':hn' => $_POST['hn']));
+	$rows = DB::rows();
+	if( $rows > 0 ){
+		redirect('survey_oral.php', 'HN: '.$_POST['hn'].' เคยบันทึกข้อมูลไปเรียบร้อยแล้วในรอบปีงบประมาณ '.$year_checkup);
+		exit;
+	}
+	
 	$item = serialize_and_setmax($_POST['mouth_detail']);
 	$lists = $item['details'];
 	$test_max_value = $item['max'];
 	
-	$sql = "
-	INSERT INTO `survey_oral` (
+	$sql = "INSERT INTO `survey_oral` (
 		`id` ,
 		`hn` ,
 		`date` ,
@@ -91,12 +100,12 @@ if($action === 'save'){
 		`date_add` ,
 		`date_edit` ,
 		`status`,
-		`max_status`
+		`max_status`,
+		`yearcheck`
 	)
 	VALUES (
-		NULL , :hn, :date, :section, :fullname, :age, :id_card, :etc, :officer, :mouth_detail, NOW(), NULL, '1', :max_status
-	);
-	";
+		NULL , :hn, :date, :section, :fullname, :age, :id_card, :etc, :officer, :mouth_detail, NOW(), NULL, '1', :max_status, :yearcheck
+	);";
 	
 	$data = array(
 		':hn' => $_POST['hn'],
@@ -108,14 +117,15 @@ if($action === 'save'){
 		':etc' => $_POST['etc'],
 		':officer' => $_POST['officer'],
 		':mouth_detail' => $lists,
-		':max_status' => $test_max_value
+		':max_status' => $test_max_value,
+		':yearcheck' => $year_checkup
 	);
 	
 	$insert = DB::exec($sql, $data);
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
-	// if($insert === false){
-	// 	$msg = 'บันทึกข้อมูลไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ';
-	// }
+	if( $insert['error'] ){
+		$msg = errorMsg(false, $insert['id']);
+	}
 	
 	$last_id = DB::get_lastId();
 	redirect('survey_oral.php?task=fulldetail&id='.$last_id.'&print=yes', $msg);
@@ -152,8 +162,8 @@ if($action === 'save'){
 	$update = DB::exec($sql, $data);
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
-	if($insert === false){
-		$msg = 'บันทึกข้อมูลไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ';
+	if( $update['error'] ){
+		$msg = errorMsg('update', $update['id']);
 	}
 	
 	redirect('survey_oral.php?task=fulldetail&id='.$_POST['id'].'&print=yes', $msg);
@@ -171,8 +181,8 @@ if($action === 'save'){
 	";
 	$delete = DB::exec($sql, array(':id' => $id) );
 	$msg = 'ลบข้อมูลเรียบร้อย';
-	if($delete === false){
-		$msg = 'ลบข้อมูลไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ';
+	if( $delete['error'] ){
+		$msg = errorMsg('delete', $delete['id']);
 	}
 	
 	redirect('survey_oral.php', $msg);
@@ -180,15 +190,6 @@ if($action === 'save'){
 } else if( $action === 'section_form_save' ){
 	
 	$name = isset($_POST['section']) ? trim($_POST['section']) : false ;
-	if($name === false){
-		?>
-		<script type="text/javascript">
-		alert('กรุณากรอกชื่อหน่วยงาน');
-		window.history.back();
-		</script>
-		<?php
-		exit;
-	}
 	
 	$sql = "
 	INSERT INTO `smdb`.`survey_oral_category` (`id` ,`name` ,`date_add` ,`date_edit` )
@@ -197,11 +198,11 @@ if($action === 'save'){
 	);
 	";
 	
-	$insert = DB::exec($sql, array(':name' => $_POST['section']));
+	$insert = DB::exec($sql, array(':name' => $name));
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
-	if($insert === false){
-		$msg = 'ไม่สามารถบันทึกข้อมูลได้ กรุณาเก็บรหัส '.$insert['id'].' นี้เพื่อแจ้งผู้ดูแลระบบเพื่อทำการแก้ไขต่อไป';
+	if( $insert['error'] ){
+		$msg = errorMsg(NULL, $insert['id']);
 	}
 	
 	redirect('survey_oral.php?task=category_form', $msg);
@@ -219,7 +220,7 @@ if($action === 'save'){
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
 	if( $update['error'] ){
-		$msg = 'ไม่สามารถบันทึกข้อมูลได้ กรุณาเก็บรหัส '.$update['id'].' นี้ เพื่อแจ้งผู้ดูแลระบบเพื่อทำการแก้ไขต่อไป';
+		$msg = errorMsg('update', $update['id']);
 	}
 	redirect('survey_oral.php?task=category_form', $msg);
 	exit;
@@ -228,18 +229,23 @@ if($action === 'save'){
 	
 	if( $id === false ){
 		redirect('survey_oral.php?task=category_form', 'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบใหม่');
-	}else{
-		$sql = "
-		DELETE FROM `survey_oral_category` 
-		WHERE `id` = :id LIMIT 1
-		";
-		DB::exec($sql, array(':id' => $id));
-		redirect('survey_oral.php?task=category_form', 'ลบข้อมูลเรียบร้อย');
+		exit;
 	}
 	
+	$sql = "
+	DELETE FROM `survey_oral_category` 
+	WHERE `id` = :id LIMIT 1
+	";
+	$delete = DB::exec($sql, array(':id' => $id));
+	
+	$msg = 'ลบข้อมูลเรียบร้อย';
+	if( $delete['error'] ){
+		$msg = errorMsg('delete', $delete['id']);
+	}
+	
+	redirect('survey_oral.php?task=category_form', 'ลบข้อมูลเรียบร้อย');
 	exit;
 }
-
 
 define('CHARSET', 'TIS-620');
 include 'templates/classic/header.php';
@@ -323,39 +329,38 @@ include 'templates/classic/nav.php';
                 
 				<?php include 'templates/dentistry/nav.php'; ?>
 				
-				<?php if( $task === false ){ ?>
-				<?php include 'templates/dentistry/survey_home.php'; ?>
-				
-				<?php } elseif( $task === 'form' ){ ?>
-				<?php include 'templates/dentistry/survey_form.php'; ?>
-				
-				<?php } elseif( $task === 'fulldetail' ){ ?>
-				<?php include 'templates/dentistry/fulldetail.php'; ?>
-				
-				<?php } else if( $task === 'category_form' ) { ?>
-				<?php include 'templates/dentistry/category_form.php'; ?>
-				
-				<?php } else if( $task === 'category_edit' ) { ?>
 				<?php 
-				$id = ( isset($_GET['id']) ) ? intval(trim($_GET['id'])) : false ;
-				
-				if( $id !== false ){
-					$sql = "SELECT * FROM `survey_oral_category` WHERE `id` = :id;";
-					$item = DB::select($sql, array(':id' => $id), true);
+				if( $task === false ){ // หน้าแรก
+					include 'templates/dentistry/survey_home.php';
 					
-				}
+				} elseif( $task === 'form' ){ //หน้าฟอร์มเพิ่มข้อมูล
+					include 'templates/dentistry/survey_form.php';
+					
+				} elseif( $task === 'fulldetail' ){ //หน้าแสดงรายละเอียดพร้อมปริ้นท์
+					include 'templates/dentistry/fulldetail.php';
+					
+				} else if( $task === 'category_form' ) { // หน้าเพิ่มหมวดหมู่
+					include 'templates/dentistry/category_form.php';
 				
-				include 'templates/dentistry/category_form.php'; 
+				} else if( $task === 'category_edit' ) { //แก้ไขหมวดหมู่
+					$id = ( isset($_GET['id']) ) ? intval(trim($_GET['id'])) : false ;
+					
+					if( $id !== false ){
+						$sql = "SELECT * FROM `survey_oral_category` WHERE `id` = :id;";
+						$item = DB::select($sql, array(':id' => $id), true);
+						
+					}
+					
+					include 'templates/dentistry/category_form.php'; 
+					
+				}else if( $task === 'report' ) { // รายงานผลการสำรวจ
+					include 'templates/dentistry/survey_report.php';
 				
+				} elseif( $task === 'report_mouth' ){ // รายงานสภาวะช่องปากและระดับ
+					include 'templates/dentistry/report_mouth.php';
+					
+				} // End task
 				?>
-				
-				<?php }else if( $task === 'report' ) { // รายงานผลการสำรวจ ?>
-				<?php include 'templates/dentistry/survey_report.php'; ?>
-				
-				<?php } elseif( $task === 'report_mouth' ){ // รายงานสภาวะช่องปากและระดับ ?>
-				<?php include 'templates/dentistry/report_mouth.php'; ?>
-				
-				<?php } // End task ?>
 			</div>
 		</div>
 	</div>
@@ -373,11 +378,9 @@ $(function() {
 			}
 		});
 	}
-		
 	
 });
 })(jQuery);
 </script>
 <?php
 include 'templates/classic/footer.php';
-?>

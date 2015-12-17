@@ -14,6 +14,17 @@ function getId(){
 	return $id;
 }
 
+function errorMsg($status = NULL, $id = ''){
+	$msg = 'บันทึก';
+	if( $status === 'edit' ){
+		$msg = 'แก้ไข';
+	} elseif( $status === 'delete' ) {
+		$msg = 'ลบ';
+	}
+	
+	return "ไม่สามารถ$msgข้อมูลได้ กรุณาเก็บรหัส $id นี้เพื่อแจ้งผู้ดูแลระบบเพื่อทำการแก้ไขต่อไป";
+}
+
 /**
  * Clean single quote and double quote with mysql escape string ... some thing like Injection
  *

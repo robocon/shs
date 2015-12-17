@@ -154,24 +154,15 @@ $mouth_items = array(
 					AND `max_status` = '$key'
 					$where_is
 					";
-					// dump($sql);
 					$item = DB::select($sql, null, true);
-					// dump($item);
 					$total += (int) $item['count'];
 					?>
 					<tr>
 						<td><?php echo $vio;?></td>
-						<td align="center"><?php echo $item['count'];?></td>
+						<td align="center"><a href="survey_oral.php?task="><?php echo $item['count'];?></a></td>
 					</tr>
 					<?php
 				endforeach;
-				
-				
-				/**
-				 * @todo
-				 * [] หายอดของข้อ 5 จาก OPD
-				 * 
-				 */
 				
 				
 				// รายชื่อ HN ที่มีอยู่ในระบบของตรวจสุขภาพฟัน
@@ -211,7 +202,7 @@ AND `thidate` LIKE '$ad_date%'
 				$sql .= $notin_txt;
 				$sql .= " GROUP BY `hn`";
 				
-				dump($sql);
+				// dump($sql);
 				$item = DB::select($sql, null, true);
 				
 				// มาตรวจที่ OPD แต่ไม่ได้ตรวจฟัน

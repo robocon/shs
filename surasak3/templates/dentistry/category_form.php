@@ -12,7 +12,7 @@ if( $id !== false ){
 <div class="col">
 	<div class="cell">
 		<div>
-			<form action="survey_oral.php" method="post">
+			<form action="survey_oral.php" method="post" id="adminForm">
 				<h3><?=$title;?></h3>
 				<div class="col">
 					<label for="section">ชื่อ</label>
@@ -26,6 +26,24 @@ if( $id !== false ){
 					<?php } ?>
 				</div>
 			</form>
+			<script type="text/javascript">
+			
+				jQuery.noConflict();
+				(function( $ ) {
+				$(function() {
+					
+					$(document).on('submit','#adminForm', function(){
+						var section = $('#section').val();
+						if( section == '' ){
+							alert('กรุณากรอกชื่อหน่วยงาน');
+							return false;
+						}
+					});
+					
+				});
+				})(jQuery);
+				
+			</script>
 		</div>
 		<?php if( empty($id) ){ ?>
 		<div class="col"><div class="cell"></div></div>
