@@ -78,7 +78,15 @@ body{
 					ORDER BY `diag_row` DESC
 					";
 					$items = DB::select($sql);
-					$all_rows = DB::rows();
+					// $all_rows = DB::rows();
+					
+					$all_rows = 0;
+					foreach ($items as $key => $item) {
+						if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
+
+						$all_rows += (int) $item['diag_row'];
+					}
+					
 					?>
 					<div class="col">
 						<div class="cell">
@@ -119,6 +127,11 @@ body{
 										$i++;
 									}
 									?>
+									<tr>
+										<td colspan="3">รวม</td>
+										<td><?=$all_rows;?></td>
+										<td></td>
+									</tr>
 								</tbody>
 							</table>
 									</td>
@@ -145,7 +158,13 @@ body{
 										
 										
 										$items = DB::select($sql);
-					$all_rows = DB::rows();
+					// $all_rows = DB::rows();
+					$all_rows = 0;
+					foreach ($items as $key => $item) {
+						if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
+						
+						$all_rows += (int) $item['diag_row'];
+					}
 										?>
 										
 										
@@ -184,6 +203,11 @@ body{
 										$i++;
 									}
 									?>
+									<tr>
+										<td colspan="3">รวม</td>
+										<td><?=$all_rows;?></td>
+										<td></td>
+									</tr>
 								</tbody>
 							</table>
 									</td>
