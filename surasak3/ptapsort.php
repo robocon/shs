@@ -19,7 +19,7 @@ include("connect.inc");
 <style type="text/css">
 *{
 	font-family: Angsana New;
-	font-size: 18px;
+	font-size: 22px;
 }
 table{
 	width: 100%;
