@@ -17,32 +17,58 @@ include("connect.inc");
 
 ?>
 <style type="text/css">
-<!--
-@media print{
-#no_print{display:none;}
+*{
+	font-family: Angsana New;
+	font-size: 18px;
 }
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
+table{
+	width: 100%;
+	border-left: 1px solid #ffffff;
+	border-top: 1px solid #ffffff;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+table td,
+table th{
+	border-right: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
+	column-span: none;
+	vertical-align: bottom;
+}
+table th{
+	background-color: #EDEDED;
+	font-weight: bold;
+	vertical-align: middle;
+}
+.theBlocktoPrint {
+	background-color: #000; 
+	color: #FFF; 
+}
+a{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+@media print{
+	#no_print{display:none;}
 } 
--->
 </style>
 <br />
 
 <table>
- <tr>
+ <tr style="background-color: #6495ED;">
   <th bgcolor=6495ED>#</th>
 
   <th bgcolor=6495ED width='80'>HN</th>
   <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</font></th>
   <th bgcolor=6495ED><font face='Angsana New'><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></font></th>
   <th bgcolor=6495ED><font face='Angsana New'>นัดเพื่อ</font></th>
-
- 
+  <!-- <th bgcolor="6495ED">อื่นๆ</th>
+  <th bgcolor="6495ED">diag</th> -->
   <th bgcolor=6495ED>ซ้ำ</th>
-  <!-- <th bgcolor=6495ED>วันที่นัด</th> -->
+  <th bgcolor="6495ED">ยื่นบัตร</th>
+  <th bgcolor="6495ED">Admit</th>
   </tr>
 
 <?php
@@ -85,7 +111,7 @@ color: #FFF;
 	else
 		$doctor2 = "doctor = '".$doctor."' ";
 
-    $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5) FROM appoint WHERE appdate = '$appd' and (".$doctor2.") and detail='FU18 ไตเทียม' order by  hn asc ";
+    $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room FROM appoint WHERE appdate = '$appd' and (".$doctor2.") and detail='FU18 ไตเทียม' and apptime != 'ยกเลิกการนัด' order by  hn asc ";
     $result = mysql_query($query1)or die("Query failed");
 	
     $num=0;
@@ -97,7 +123,7 @@ color: #FFF;
 	$detail_array = array();
 
 	$date_now = date("d-m-").(date("Y")+543);
-    while (list ($hn,$ptname,$apptime,$detail,$came,$row_id,$age,$date,$officer,$left5) = mysql_fetch_row ($result)) {
+    while (list ($hn,$ptname,$apptime,$detail,$came,$row_id,$age,$date,$officer,$left5,$diag,$other,$room) = mysql_fetch_row ($result)) {
 
         $num++;
 		$left5 = str_replace(".",":",$left5);
@@ -131,9 +157,8 @@ color: #FFF;
 			"  <td BGCOLOR=$bgcolor style='font-size:20px;'><font face='Angsana New'>$ptname</td>\n".
 			"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$apptime</td>\n".
 			"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$detail</td>\n";
-
-			// "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>$officer</td>\n".
-			//    "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>ค้นพบ////ไม่พบ</td>\n"
+			// "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$other</td>\n".
+			//  " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$diag</td>\n";
 			
 	if(isset($listhn[$hn])){
 		 $detail_array[$x][$j[$x]] .= " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>".$listhn[$hn]."</td>\n";
@@ -141,7 +166,21 @@ color: #FFF;
 		 $detail_array[$x][$j[$x]] .= " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>&nbsp;</td>\n";
 	 }
 
-	// print " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$date</td>\n";
+	if($room=="แผนกทะเบียน"){
+		$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$room</td>\n";
+	}else{
+		$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>&nbsp;</td>\n";
+	}
+	
+	$sql5 = "select * from bed where hn='$hn' ";
+	$row5 = mysql_query($sql5);
+	$rep5 = mysql_num_rows($row5);
+	if($rep5>0){
+		$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>Admit</td>\n";
+	}else{
+		$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>&nbsp;</td>\n";
+	}
+	
 
            $detail_array[$x][$j[$x]] .= " </tr>\n";
 
@@ -213,6 +252,69 @@ for($i=0;$i<$j[$x];$i++){
 	echo "",$detail_array[$x][$i];
 
 }
-    include("unconnect.inc");
 ?>
 </table>
+<?php
+$sql = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room 
+FROM appoint 
+WHERE appdate = '$appd' 
+and (".$doctor2.") 
+and detail = 'FU18 ไตเทียม'
+and apptime = 'ยกเลิกการนัด' 
+order by hn asc ";
+$q = mysql_query($sql) or die( mysql_error() );
+$rows = mysql_num_rows($q);
+if( $rows > 0 ){
+?>
+<div style="page-break-before: always;"></div>
+<p>รายชื่อคนไข้ยกเลิกนัด</p>
+<table>
+	<thead>
+		<tr style="background-color: #6495ED;">
+			<th>#</th>
+			<th width='80'>HN</th>
+			<th>ชื่อ</th>
+			<th><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
+			<th>นัดเพื่อ</th>
+			<!-- <th>อื่นๆ</th>
+			<th>diag</th> -->
+			<th>ซ้ำ</th>
+			<th>ยื่นบัตร</th>
+			<th>Admit</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+		$i = 1;
+		while( $item = mysql_fetch_assoc($q) ){
+			$hn = $item['hn'];
+		?>
+		<tr>
+			<td><?=$i;?></td>
+			<td><?=$hn;?></td>
+			<td><?=$item['ptname'];?></td>
+			<td><?=$item['apptime'];?></td>
+			<td><?=$item['detail'];?></td>
+			<!-- <td><?=$item['other'];?></td>
+			<td><?=$item['diag'];?></td> -->
+			<td>
+				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ; ?>
+			</td>
+			<td><?=$item['diag'];?></td>
+			<td>
+				<?php
+				$sql5 = "SELECT * FROM `bed` WHERE `hn`='$hn' ";
+				$row5 = mysql_query($sql5);
+				$bed_row = mysql_num_rows($row5);
+				echo ( $bed_row > 0 ) ? 'Admit' : '' ;
+				?>
+			</td>
+		</tr>
+		<?php
+			$i++;
+		}
+		?>
+	</tbody>
+</table>
+<?php
+}

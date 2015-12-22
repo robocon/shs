@@ -2,50 +2,71 @@
 session_start();
 set_time_limit(5);
 include("connect.inc");
-  $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-    print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
-	
-	if(strlen($doctor) == 5){
-		$sql = "Select name From doctor where name like '".$doctor."%' limit 1";
-		list($dc) = mysql_fetch_row(mysql_query($sql));
-		print "<b>แพทย์:</b> $dc <br>"; 
-	}else{
-		print "<b>แพทย์:</b> $doctor <br>"; 
-	}
-   print "<b>นัดมาวันที่</b> $appd<br> ";
-   print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
+$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
+print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
+
+if(strlen($doctor) == 5){
+	$sql = "Select name From doctor where name like '".$doctor."%' limit 1";
+	list($dc) = mysql_fetch_row(mysql_query($sql));
+	print "<b>แพทย์:</b> $dc <br>"; 
+}else{
+	print "<b>แพทย์:</b> $doctor <br>"; 
+}
+print "<b>นัดมาวันที่</b> $appd<br> ";
+print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
 
 ?>
 <style type="text/css">
-<!--
-@media print{
-#no_print{display:none;}
+*{
+	font-family: Angsana New;
+	font-size: 18px;
 }
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
+table{
+	width: 100%;
+	border-left: 1px solid #ffffff;
+	border-top: 1px solid #ffffff;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+table td,
+table th{
+	border-right: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
+	column-span: none;
+	vertical-align: bottom;
+}
+table th{
+	background-color: #EDEDED;
+	font-weight: bold;
+	vertical-align: middle;
+}
+.theBlocktoPrint {
+	background-color: #000; 
+	color: #FFF; 
+}
+a{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+@media print{
+	#no_print{display:none;}
 } 
--->
 </style>
 <br />
-
 <table>
- <tr>
-  <th bgcolor=6495ED>#</th>
-
-  <th bgcolor=6495ED width='80'>HN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</font></th>
-  <th bgcolor=6495ED><font face='Angsana New'><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></font></th>
-  <th bgcolor=6495ED><font face='Angsana New'>นัดเพื่อ</font></th>
-
- 
-  <th bgcolor="6495ED">อื่นๆ</th>
-  <th bgcolor="6495ED">diag</th>
-  <th bgcolor="6495ED">ซ้ำ</th>
-  <th bgcolor="6495ED">ยื่นบัตร</th>
-  <th bgcolor="6495ED">Admit</th>
+ <tr style="background-color: #6495ED;">
+  <th>#</th>
+  <th width='80'>HN</th>
+  <th><font face='Angsana New'>ชื่อ</font></th>
+  <th><font face='Angsana New'><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></font></th>
+  <th><font face='Angsana New'>นัดเพื่อ</font></th>
+  <!-- <th>อื่นๆ</th>
+  <th>diag</th> -->
+  <th>ซ้ำ</th>
+  <th>ยื่นบัตร</th>
+  <th>Admit</th>
   <!-- <th bgcolor=6495ED>วันที่นัด</th> -->
   </tr>
 
@@ -55,26 +76,29 @@ color: #FFF;
 	$result = Mysql_Query($sql);
 	list($menucode) = Mysql_fetch_row($result);
 	
-		if(strlen($doctor) == 5){
-			$doctor2 = " doctor like '".$doctor."%' ";
-			$doctor3 = "AND left(doctor,5) <> '".$doctor."' ";
+	///////////////////////
+	// กรณีที่หมอคนอื่นนัดเหมือนกัน
+	///////////////////////
+	if(strlen($doctor) == 5){
+		$doctor2 = " doctor like '".$doctor."%' ";
+		$doctor3 = "AND left(doctor,5) <> '".$doctor."' ";
 
-		}else{
-			$doctor2 = " doctor = '".$doctor."' ";
-			$doctor3 = " AND doctor <> '".$doctor."' ";
-		}
+	}else{
+		$doctor2 = " doctor = '".$doctor."' ";
+		$doctor3 = " AND doctor <> '".$doctor."' ";
+	}
 
-		$query = "SELECT count( hn ) , hn, doctor   FROM `appoint` WHERE appdate = '$appd' ".$doctor3." AND apptime <> 'ยกเลิกการนัด' GROUP BY hn HAVING count( hn ) >= 1 ";
-		$result = mysql_query($query);
+	$query = "SELECT count( hn ) , hn, doctor   FROM `appoint` WHERE appdate = '$appd' ".$doctor3." AND apptime <> 'ยกเลิกการนัด' GROUP BY hn HAVING count( hn ) >= 1 ";
+	$result = mysql_query($query);
+	
+	while($arr = Mysql_fetch_assoc($result)){
+		$name_dc = substr($arr["doctor"],5);
+		if(substr($arr["doctor"],0,5) != "MD007"){
+			$arr["doctor"] = substr($arr["doctor"],0,5);
+		}			
 		
-		while($arr = Mysql_fetch_assoc($result)){
-			$name_dc = substr($arr["doctor"],5);
-			if(substr($arr["doctor"],0,5) != "MD007"){
-				$arr["doctor"] = substr($arr["doctor"],0,5);
-			}			
-			
-			$listhn[$arr["hn"]] .= "<A HREF=\"ptappoiall2.php?doctor=".urlencode($arr["doctor"])."&appd=".urlencode($appd)."\" target='_blank'>".$name_dc."</A> &nbsp; ";
-		}
+		$listhn[$arr["hn"]] .= "<A HREF=\"ptappoiall2.php?doctor=".urlencode($arr["doctor"])."&appd=".urlencode($appd)."\" target='_blank'>".$name_dc."</A> &nbsp; ";
+	}
 		
 	
 
@@ -89,8 +113,13 @@ color: #FFF;
 	else
 		$doctor2 = "doctor = '".$doctor."' ";
 
-    $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room FROM appoint WHERE appdate = '$appd' and (".$doctor2.") and detail!='FU18 ไตเทียม' and detail!='FU07 คลีนิกฝังเข็ม' order by  hn asc ";
-    $result = mysql_query($query1)or die("Query failed");
+    $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room 
+	FROM appoint 
+	WHERE appdate = '$appd' 
+	and (".$doctor2.") and detail!='FU18 ไตเทียม' 
+	and apptime != 'ยกเลิกการนัด' 
+	and detail!='FU07 คลีนิกฝังเข็ม' order by  hn asc ";
+    $result = mysql_query($query1) or die( mysql_error() );
 	
     $num=0;
 	$j[0]=0;
@@ -133,12 +162,9 @@ color: #FFF;
 			"  <td BGCOLOR=$bgcolor style='font-size:20px;'><font face='Angsana New'>$hn</td>\n".
 			"  <td BGCOLOR=$bgcolor style='font-size:20px;'><font face='Angsana New'>$ptname</td>\n".
 			"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$apptime</td>\n".
-			"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$detail</td>\n".
-			"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$other</td>\n".
-			 " <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>$diag</td>\n";
-
-			// "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>$officer</td>\n".
-			//    "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>ค้นพบ////ไม่พบ</td>\n"
+			"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$detail</td>\n";
+			// "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$other</td>\n".
+			//  " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$diag</td>\n";
 			
 	if(isset($listhn[$hn])){
 		 $detail_array[$x][$j[$x]] .= " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>".$listhn[$hn]."</td>\n";
@@ -231,6 +257,69 @@ for($i=0;$i<$j[$x];$i++){
 	echo "",$detail_array[$x][$i];
 
 }
-    include("unconnect.inc");
 ?>
 </table>
+
+<?php
+$sql = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room 
+FROM appoint 
+WHERE appdate = '$appd' 
+and (".$doctor2.") and ( detail!='FU18 ไตเทียม' OR detail!='FU07 คลีนิกฝังเข็ม' ) 
+and apptime = 'ยกเลิกการนัด' 
+order by  hn asc ";
+$q = mysql_query($sql) or die( mysql_error() );
+$rows = mysql_num_rows($q);
+if( $rows > 0 ){
+?>
+<div style="page-break-before: always;"></div>
+<p>รายชื่อคนไข้ยกเลิกนัด</p>
+<table>
+	<thead>
+		<tr style="background-color: #6495ED;">
+			<th>#</th>
+			<th width='80'>HN</th>
+			<th>ชื่อ</th>
+			<th><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
+			<th>นัดเพื่อ</th>
+			<!-- <th>อื่นๆ</th>
+			<th>diag</th> -->
+			<th>ซ้ำ</th>
+			<th>ยื่นบัตร</th>
+			<th>Admit</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+		$i = 1;
+		while( $item = mysql_fetch_assoc($q) ){
+			$hn = $item['hn'];
+		?>
+		<tr>
+			<td><?=$i;?></td>
+			<td><?=$hn;?></td>
+			<td><?=$item['ptname'];?></td>
+			<td><?=$item['apptime'];?></td>
+			<td><?=$item['detail'];?></td>
+			<!-- <td><?=$item['other'];?></td>
+			<td><?=$item['diag'];?></td> -->
+			<td>
+				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ; ?>
+			</td>
+			<td><?=$item['diag'];?></td>
+			<td>
+				<?php
+				$sql5 = "SELECT * FROM `bed` WHERE `hn`='$hn' ";
+				$row5 = mysql_query($sql5);
+				$bed_row = mysql_num_rows($row5);
+				echo ( $bed_row > 0 ) ? 'Admit' : '' ;
+				?>
+			</td>
+		</tr>
+		<?php
+			$i++;
+		}
+		?>
+	</tbody>
+</table>
+<?php
+}

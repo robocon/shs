@@ -22,25 +22,21 @@ print "<b>นัดมาวันที่</b> $appd<br> ";
 print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
 ?>
 <style type="text/css">
-@font-face{
-	font-family:THSarabunNew;
-	src: url(fonts/THSarabunNew.eot);
-}
 *{
-	font-family: THSarabunNew;
-	font-size: 16px;
+	font-family: Angsana New;
+	font-size: 18px;
 }
 table{
 	width: 100%;
-	border-left: 1px solid #000000;
-	border-top: 1px solid #000000;
+	border-left: 1px solid #ffffff
+	border-top: 1px solid #ffffff;
 	border-collapse: collapse;
 	border-spacing: 0;
 }
 table td,
 table th{
-	border-right: 1px solid #000000;
-	border-bottom: 1px solid #000000;
+	border-right: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
 	column-span: none;
 	vertical-align: bottom;
 }
@@ -59,9 +55,6 @@ a{
 a:hover{
 	text-decoration: underline;
 }
-font{
-	font-weight: normal;
-}
 @media print{
 	#no_print{display:none;}
 }
@@ -78,17 +71,14 @@ font{
 	<tr>
 		<th width="2%" >#</th>
 		<th width="7%" >HN</th>
-		<th width="18%" >ชื่อ</th>
-		<th width="10%" ><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
+		<th>ชื่อ</th>
+		<th><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
 		<th width="13%" >นัดเพื่อ</th>
-		<?php // if($doctor=="MD041"){?>
-		<th width="12%" >อื่นๆ</th>
-		<?php // } ?>
-		<th width="11%" >diag</th>
-		<th width="12%" >ซ้ำ</th>
-		<th width="10%" >ยื่นบัตร</th>
-		<th width="5%" >Admit</th>
-		<!-- <th bgcolor=6495ED>วันที่นัด</th> -->
+		<!-- <th>อื่นๆ</th>
+		<th>diag</th> -->
+		<th>ซ้ำ</th>
+		<th>ยื่นบัตร</th>
+		<th>Admit</th>
 	</tr>
 <?php
 $sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' limit 1 ";
@@ -179,9 +169,9 @@ while($arr = Mysql_fetch_assoc($result)){
 		$next_item = isset( $user_lists[$next_i] ) ? $user_lists[$next_i] : false ;
 		if( $next_item !== false && $next_item['hn'] == $hn ){
 			
-			$next_apptime[$hn][] = $item['apptime'];
+			// $next_apptime[$hn][] = $item['apptime'];
 			$i++; // ++เพื่อหาคนถัดไปก่อนทำการ continue
-			continue;
+			// continue;
 		}
 		
 		$ptname = $item['ptname'];
@@ -220,19 +210,19 @@ while($arr = Mysql_fetch_assoc($result)){
 		$title_array2[$x][$j[$x]] = $count_number;
 		$title_array2[$x][$j[$x]] = $title_array2[$x][$j[$x]]*1;
 
-		$time_txt = '';
-		if( isset($next_apptime[$hn]) ){
-			$apptime = ( count($next_apptime[$hn]) > 1 ) ? implode("<br>", $next_apptime[$hn]).'<br>'.$apptime : $next_apptime[$hn]['0'].'<br>'.$apptime ;
-		}
+		// $time_txt = '';
+		// if( isset($next_apptime[$hn]) ){
+		// 	$apptime = ( count($next_apptime[$hn]) > 1 ) ? implode("<br>", $next_apptime[$hn]).'<br>'.$apptime : $next_apptime[$hn]['0'].'<br>'.$apptime ;
+		// }
 		
         $detail_array[$x][$j[$x]] = " <tr>\n".
 			"  <td BGCOLOR=\"$bgcolor\">{#ii}</td>\n".
 			"  <td BGCOLOR=\"$bgcolor\"><a href='opdcard_vnprintday.php?act=show1&hn=$hn&nat=$_GET[appd]&amp;detail=$dc&amp;doctor' target='_blank'>$hn</a></td>\n".
 			"  <td BGCOLOR=\"$bgcolor\">$ptname</td>\n".
 			"  <td BGCOLOR=\"$bgcolor\">$apptime</td>\n".
-			"  <td BGCOLOR=\"$bgcolor\">$detail</td>\n".
-			"  <td BGCOLOR=\"$bgcolor\">$other</td>\n".
-			 "  <td BGCOLOR=\"$bgcolor\">$diag</td>\n";
+			"  <td BGCOLOR=\"$bgcolor\">$detail</td>\n";
+			// "  <td BGCOLOR=\"$bgcolor\">$other</td>\n".
+			//  "  <td BGCOLOR=\"$bgcolor\">$diag</td>\n";
 			//    "  <td BGCOLOR=66CDAA>ค้นพบ////ไม่พบ</td>\n"
 	
 	// ถ้ามีค่าใน Array ของกรณีที่หมอคนอื่นนัดเหมือนกัน
@@ -330,7 +320,20 @@ for($i=0;$i<$j[$x];$i++){
     // include("unconnect.inc");
 ?>
 </table>
+<?php
+$sql = "SELECT `hn`,`ptname`,`apptime`,`detail`,`came`,`row_id`,`age`,date_format(date,'%d-%m-%Y') AS `date`,`officer`,left(apptime,5) AS `left5`,`diag`,`other`,`room` 
+FROM `appoint` 
+WHERE `appdate` = '$appd' 
+AND (".$doctor2.") 
+AND `apptime` = 'ยกเลิกการนัด' 
+ORDER BY `date` DESC 
+";
+$q = mysql_query($sql);
+$row = mysql_num_rows($q);
+if( $row > 0 ){
+	
 
+?>
 <div style="page-break-before: always;"></div>
 <h3>รายชื่อคนไข้ยกเลิกนัด</h3>
 <table>
@@ -338,26 +341,18 @@ for($i=0;$i<$j[$x];$i++){
 		<tr>
 			<th width="2%">#</th>
 			<th width="7%">HN</th>
-			<th width="18%">ชื่อ</th>
-			<th width="10%">เวลานัด</th>
+			<th>ชื่อ</th>
+			<th>เวลานัด</th>
 			<th width="13%">นัดเพื่อ</th>
-			<th width="12%">อื่นๆ</th>
-			<th width="11%">diag</th>
-			<th width="12%">ซ้ำ</th>
-			<th width="10%">ยื่นบัตร</th>
-			<th width="5%">Admit</th>
+			<!-- <th>อื่นๆ</th>
+			<th>diag</th> -->
+			<th>ซ้ำ</th>
+			<th>ยื่นบัตร</th>
+			<th>Admit</th>
 		</tr>
 	</thead>
 	<tbody>
 		<?php
-		$sql = "SELECT `hn`,`ptname`,`apptime`,`detail`,`came`,`row_id`,`age`,date_format(date,'%d-%m-%Y') AS `date`,`officer`,left(apptime,5) AS `left5`,`diag`,`other`,`room` 
-		FROM `appoint` 
-		WHERE `appdate` = '$appd' 
-		AND (".$doctor2.") 
-		AND `apptime` = 'ยกเลิกการนัด' 
-		ORDER BY `date` DESC 
-		";
-		$q = mysql_query($sql);
 		$i = 1;
 		while( $item = mysql_fetch_assoc($q) ){
 			?>
@@ -367,8 +362,8 @@ for($i=0;$i<$j[$x];$i++){
 				<td><?=$item['ptname'];?></td>
 				<td><?=$item['apptime'];?></td>
 				<td><?=$item['detail'];?></td>
-				<td><?=$item['other'];?></td>
-				<td><?=$item['diag'];?></td>
+				<!-- <td><?=$item['other'];?></td>
+				<td><?=$item['diag'];?></td> -->
 				<td>
 					<?php
 					$hn = $item['hn'];
@@ -391,3 +386,4 @@ for($i=0;$i<$j[$x];$i++){
 		?>
 	</tbody>
 </table>
+<?php } ?>
