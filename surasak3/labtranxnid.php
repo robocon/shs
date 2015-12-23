@@ -51,21 +51,21 @@ $today = date("Y-m-d");
    $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab)VALUES('$nRunno','$Thidate','$cPtname','$cHn','$cAn','$cDoctor','$cDepart','$item','$aDetail',
                     '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab');";
 
-       $result = mysql_query($query) or 
-                die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
-	*โปรดตรวจสอบว่ามีรายการในเมนู [ดูการจ่ายเงิน] หรือไม่<br>
-	*ถ้ามีแสดงว่า ได้บันทึกไปก่อนแล้ว<br>
-	*ถ้าไม่มีแสดงว่า  การบันทึกล้มเหลว<br><br>
-                -------- รายการ ---------<br> 
-	$Thaidate<br>
-	$cPtname HN:$cHn AN:$cAn VN:$tvn<br>
-                สิทธิ: $cPtright<br>
-                โรค:$cDiag<br>
-                แพทย์:$cDoctor<br>
-                $aDetail<br>
-               จำนวน $item รายการ<br>
-               ราคารวม $Netprice บาท<br>
-               จนท. $sOfficer<br>");
+    //    $result = mysql_query($query) or 
+    //             die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
+	// *โปรดตรวจสอบว่ามีรายการในเมนู [ดูการจ่ายเงิน] หรือไม่<br>
+	// *ถ้ามีแสดงว่า ได้บันทึกไปก่อนแล้ว<br>
+	// *ถ้าไม่มีแสดงว่า  การบันทึกล้มเหลว<br><br>
+    //             -------- รายการ ---------<br> 
+	// $Thaidate<br>
+	// $cPtname HN:$cHn AN:$cAn VN:$tvn<br>
+    //             สิทธิ: $cPtright<br>
+    //             โรค:$cDiag<br>
+    //             แพทย์:$cDoctor<br>
+    //             $aDetail<br>
+    //            จำนวน $item รายการ<br>
+    //            ราคารวม $Netprice บาท<br>
+    //            จนท. $sOfficer<br>");
 
 //test 9/4/47 to find the last row
 //printf ("Last inserted record has id %d\n",mysql_insert_id());
@@ -79,7 +79,7 @@ $today = date("Y-m-d");
                 $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
                                  VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
                                  '$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright');";
-                $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+                // $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
         }
         }
 
@@ -90,7 +90,7 @@ IF (!empty($cAn)) {
                    $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
                                     idname,part,accno,idno)VALUES('$Thidate','$cAn','$aDgcode[$n]','$cDepart','$aTrade[$n]',
                                     '$aAmount[$n]','$aMoney[$n]','$sOfficer','$aPart[$n]','$cAccno','$idno');";
-                   $result = mysql_query($query) or die("Query failed,cannot insert into ipacc");
+                //    $result = mysql_query($query) or die("Query failed,cannot insert into ipacc");
         }
    }
 }
@@ -147,15 +147,14 @@ IF (!empty($cAn)) {
 																denta=denta+$dentapri,
 																other=other+$otherpri
 					   WHERE thdatehn= '$Thdhn' AND vn = '".$tvn."' ";
-        $result = mysql_query($query)
-                       or die("Query failed,update opday");
+        // $result = mysql_query($query) or die("Query failed,update opday");
 
 if ($cDepart == 'PATHO'){
 		$nLab++;
 		$query ="UPDATE runno SET runno = $nLab WHERE title='lab'";
-		$result = mysql_query($query) or die("Query failed");
+		// $result = mysql_query($query) or die("Query failed");
 }
-
+    
    include("unconnect.inc");
 //ใบแจ้งหนี้
   print "ใบแจ้งหนี้<br>";
@@ -199,25 +198,32 @@ $cDoctor2=substr($cDoctor,0,5);
 if($cDoctor2=='MD052'){$doctorcode='ว.14286';}else
 if($cDoctor2=='MD037'){$doctorcode='ว.10212';}else{$doctorcode='';};*/
 include("connect.inc");
-$dbsql="select * from doctor where name like '%$cDoctor1%'";
-$dbquery=mysql_query($dbsql);
-$num=mysql_num_rows($dbquery);
-$dbrow=mysql_fetch_array($dbquery);
-$yot=$dbrow["yot"];
-$doctorcode = "ว. ".$dbrow["doctorcode"];
 
+// แพทย์แผนจีน
+if( $cDoctor2 === 'MD115' ){
+    $yot = 'นาย';
+    $cDoctor1 = 'ภาคภูมิ พิสุทธิวงษ์';
+    $doctorcode = 'พจ. 714';
+    $position = 'แพทย์แผนจีน';
+}else{
+    $dbsql="select * from doctor where name like '%$cDoctor1%'";
+    $dbquery = mysql_query($dbsql);
+    $num = mysql_num_rows($dbquery);
+    $dbrow = mysql_fetch_array($dbquery);
+    $yot = $dbrow["yot"];
+    $doctorcode = "ว. ".$dbrow["doctorcode"];
+    $position = 'แพทย์';
+}
 
 	  print "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<CENTER><B>ใบรับรองการตรวจร่างกายของแพทย์</B> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<BR></CENTER></font>"; 
-	  print "ข้าพเจ้า <B>$yot$cDoctor1</B> ตำแหน่ง แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี<BR> "; 
-
-	  
-
+	  print "ข้าพเจ้า <B>$yot$cDoctor1</B> ตำแหน่ง "; 
+      print $position;
+      print "ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี<BR> ";
 	  print "ใบอนุญาตประกอบอาชีพเวชกรรมเลขที่ &nbsp;&nbsp;&nbsp;$doctorcode<BR>"; 
 	  print "ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;เป็นโรค:&nbsp;&nbsp;$cDiag<BR>"; 
 	  print "เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;ตั้งแต่เวลา........................ถึง........................น.<BR>"; 
 	  print "<CENTER>&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
-	  $Thaidate1=substr($Thaidate,0,10);
-	  print "<CENTER>($cDoctor1)&nbsp;$Thaidate1</CENTER>"; 
+	  print "<CENTER>($cDoctor1)</CENTER>"; 
 
 
 	    // print "<B>นำใบแจ้งหนี้ไปชำระเงินที่ห้องเก็บเงิน</B>";  
