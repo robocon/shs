@@ -104,7 +104,7 @@
 	$_SESSION['tDiag'] = array();
     
 	include("connect.inc");
-		$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+		$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$result = mysql_query($query) or die("Query failed");
 		
 		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -149,7 +149,7 @@ $sVn=$_POST['vnnow'];
 		//$nhn มาจากopcashvn hidden มา
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			$query = "SELECT * FROM depart WHERE row_id = '".$_SESSION['idnumber'][$r]."' and hn='$nhn' and tvn = '$sVn' ";			
-
+			//echo $query."<br>";
 			$result = mysql_query($query) or die(mysql_error());
 			$nrow = mysql_num_rows($result);
 			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -257,7 +257,8 @@ $sVn=$_POST['vnnow'];
 				$result = mysql_query($query) or die("Query failed");
 			
 				while (list ($code, $detail,$amount, $price,$yprice,$nprice) = mysql_fetch_row ($result)) {
-					$items++;
+					$items++;	
+								
 					print (" <tr>\n".
 			
 					   "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$items.($code)$detail</td>\n".
@@ -346,11 +347,16 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	
 				}
 	
+					if($drugcode=="4MET25"){
+						$bgcolor="FF6699";
+					}else{
+						$bgcolor="F5DEB3";
+					}		
 				print (" <tr>\n".
-				   "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$items.($drugcode)$tradname  $dpy_code</td>\n".
-				   "  <td BGCOLOR=F5DEB3>$amount</td>\n".
-				   "  <td BGCOLOR=F5DEB3>$price</td>\n".
-				   "  <td BGCOLOR=F5DEB3>$part</td>\n".
+				   "  <td BGCOLOR=$bgcolor><font face='Angsana New'>$items.($drugcode)$tradname  $dpy_code</td>\n".
+				   "  <td BGCOLOR=$bgcolor>$amount</td>\n".
+				   "  <td BGCOLOR=$bgcolor>$price</td>\n".
+				   "  <td BGCOLOR=$bgcolor>$part</td>\n".
 				   " </tr>\n");
 			}
 
@@ -373,26 +379,16 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 		var pt = '<?php echo substr($sPtright,0,3);?>';
 		var pt2 = '<?php echo substr($sPtright,3);?>';
 
-			if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15") && opt != "เงินสด"){
-				
+		if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15") && opt != "เงินสด"){
+			alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
+		}else if( pt == "R03"  && opt != 'จ่ายตรง' ){
+			alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
+		}else if( pt == "R33"  && opt != 'จ่ายตรง อปท.' ){
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
-			}else if( pt == "R03"  && opt != 'จ่ายตรง' ){
-
-				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
-			}else if( pt == "R33"  && opt != 'จ่ายตรง อปท.' ){
-
-				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
 			}else if(  pt == "R07" && opt != 'ประกันสังคม' ){
-
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
 			}else if(  (pt == "R09" || pt == "R13" || pt == "R11" || pt == "R10" || pt == "R17") && opt != '30บาท' ){
-
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
 			}
 
 	}
@@ -416,7 +412,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
@@ -538,7 +534,7 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		
 		print "<INPUT TYPE=\"hidden\" name=\"free_Paid\" value=\"".$sSumYprice."\">";
 		print "<INPUT TYPE=\"hidden\" name=\"aHn\" value=\"".$sHn."\">";
-		print "เก็บเงินทั้งหมด&nbsp;&nbsp;&nbsp; <input type='text' name='paid' size='10'		  value=$cPaid>&nbsp;&nbsp;บาท<br>";
+		print "เก็บเงินทั้งหมด&nbsp;&nbsp;&nbsp; <input type='text' name='paid' size='10'		  value=$cPaid>&nbsp;&nbsp;บาท<br>";   //ช่องระบุจำนวนเงินที่เก็บทั้งหมด
 		///////ใช้บัตรเครดิด
         print "<font face='Angsana New' size='3'>ใช้บัตรเครดิด ? &nbsp;&nbsp;&nbsp;";
 		  print "<TABLE>
@@ -577,13 +573,25 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ตรวจสุขภาพ' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ตรวจสุขภาพ</TD>		
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='CHKUP$nPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>ตรวจสุขภาพประจำปี$nPrefix</TD>			
+		 	<TD>ตรวจสุขภาพทหารประจำปี$nPrefix</TD>			
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='พรบ.' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>พรบ.</TD>	
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ยกเว้น' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ยกเว้น</TD>	
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>		
+		 </TR>
+		 <TR>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทันตสาธารณสุข' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ทันตสาธารณสุข</TD>		
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการนภา' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>โครงการนภา</TD>		
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='นอนโรงพยาบาล' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>นอนโรงพยาบาล</TD>			
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='HDLCHKUP$nPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>HDLCHKUP$nPrefix</TD>	
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>												 
 		 </TR>
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";
@@ -630,8 +638,7 @@ include("unconnect.inc");
 		////////
 		print "<input type='submit' value='เก็บเงินทั้งหมด  ออกใบเสร็จ' name='B1'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
 		print "</form>";
-			}			
-    else {/********************************************************else*/
+			}else {/********************************************************else*/
 print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return checkformf2()'>";
 		print "<INPUT TYPE=\"hidden\" name=\"free_Paid\" value=\"".$sSumYprice."\">";
 		print "เก็บเงิน&nbsp;&nbsp;&nbsp; <input type='text' name='paid' size='10'		  value=$cPaid>&nbsp;&nbsp;บาท<br>";

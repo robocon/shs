@@ -55,6 +55,7 @@
     include("connect.inc");
 //seek $an in bed
     $query = "SELECT * FROM opday WHERE an = '$an'";
+	//echo $query;
     $result = mysql_query($query)
         or die("Query failed");
 	$rows_an = mysql_num_rows($result);

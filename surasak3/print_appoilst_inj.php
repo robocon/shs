@@ -63,15 +63,18 @@ function calcage($birth){
 	return $pAge;
 }
 
- if(substr($_POST["drug_inj"],0,-2) == "VERORAB"){
+ if(substr($_POST["drug_inj"],0,-2) == "VERORAB" || substr($_POST["drug_inj"],0,-2) == "SPEEDA"){
 	$_POST["drug_inj"] = substr($_POST["drug_inj"],0,-2);
  }
+ 
 //******************************* บันทึกข้อมูล **************************************************************
 
 if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "0DT";
 }else if($_POST["drug_inj"] == "VERORAB"){
 	$dgcode = "0VERO";
+}else if($_POST["drug_inj"] == "SPEEDA"){
+	$dgcode = "0SPEE";	
 }else if($_POST["drug_inj"] == "Engerix-B"){
 	$dgcode = "0EB1.0";
 }else if($_POST["drug_inj"] == "Hepavax"){
@@ -83,6 +86,7 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 
 // ถ้า status ไม่ใช่ y จะออกใบนัดไม่ได้
 $sql = "Select idno From drugrx where hn = '".$_POST['hn']."' AND date like '".$Thidate2."%' AND drugcode = '".$dgcode."' AND status = 'Y' limit 1";
+//echo $sql;
 $result = mysql_query($sql);
 $rows_drugrx = mysql_num_rows($result);
 if($rows_drugrx==0){
@@ -103,6 +107,8 @@ if($rows_drugrx > 0){
 		$dgcode = "0DT";//0TT
 	}else if($_POST["drug_inj"] == "VERORAB"){
 		$dgcode = "0VERO";
+	}else if($_POST["drug_inj"] == "SPEEDA"){
+		$dgcode = "0SPEE";		
 	}else if($_POST["drug_inj"] == "Engerix-B"){
 		$dgcode = "0EB1.0";
 	}else if($_POST["drug_inj"] == "Hepavax"){

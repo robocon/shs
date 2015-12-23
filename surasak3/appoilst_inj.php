@@ -40,7 +40,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "view"){
 if(isset($_GET["action"]) && $_GET["action"] == "view_inj"){
 $_GET['y'] = $_GET['y']-543;
 
-	if($_GET["druginj"] == "VERORAB 2" || $_GET["druginj"] == "VERORAB 3" || $_GET["druginj"] == "VERORAB 5"){
+	if($_GET["druginj"] == "VERORAB 2" || $_GET["druginj"] == "VERORAB 3" || $_GET["druginj"] == "VERORAB 5" || $_GET["druginj"] == "SPEEDA 2" || $_GET["druginj"] == "SPEEDA 3" || $_GET["druginj"] == "SPEEDA 5"){
 	echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
 			<TD>«—π∑’Ëπ—¥©’¥</TD>
@@ -57,6 +57,9 @@ $_GET['y'] = $_GET['y']-543;
 		case "VERORAB 2" : $count = 2; break;
 		case "VERORAB 3" : $count = 3; break;
 		case "VERORAB 5" : $count = 5; break;
+		case "SPEEDA 2" : $count = 2; break;
+		case "SPEEDA 3" : $count = 3; break;
+		case "SPEEDA 5" : $count = 5; break;		
 	}
 
 	for($i=0;$i<$count;$i++){
@@ -425,6 +428,9 @@ return stat;
 			<Option value="VERORAB 2">VERORAB 2 ‡¢Á¡</Option>
 			<Option value="VERORAB 3">VERORAB 3 ‡¢Á¡</Option>
 			<Option value="VERORAB 5">VERORAB 5 ‡¢Á¡</Option>
+			<Option value="SPEEDA 2">SPEEDA 2 ‡¢Á¡</Option>
+			<Option value="SPEEDA 3">SPEEDA 3 ‡¢Á¡</Option>
+			<Option value="SPEEDA 5">SPEEDA 5 ‡¢Á¡</Option>            
 			<Option value="Engerix-B">Engerix-B</Option>
 			<Option value="Hepavax">Hepavax</Option>
 

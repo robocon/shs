@@ -96,25 +96,21 @@ if(isset($_POST['hn'])){
 	$result2 = mysql_fetch_array($row2);
 	$result2['HN']=$result2['hn'];
 	
-	if($_POST['hn']=="52-5762"){
-	$select = "select * from opd  where hn='".$result2['HN']."' and thidate like '2557-10-01%'";
-	}else{
-	$select = "select * from opd  where hn='".$result2['HN']."' and thidate like '2557-09-30%'";
-	}
+	
+	$select = "select * from out_result_chkup  where hn='".$result2['HN']."' and year_chk = '58'";
 	$row = mysql_query($select)or die (mysql_error());	
-
 	$result = mysql_fetch_array($row);
 	
 	$ht = $result['height']/100;
 	$bmi=number_format($result['weight'] /($ht*$ht),2);
 	
 	//and clinicalinfo ='ตรวจสุขภาพตำรวจ' 
-$sql1="CREATE TEMPORARY TABLE  result1  Select * from  resulthead  WHERE hn='".$result2['HN']."' and clinicalinfo ='ตรวจสุขภาพประจำปี58' ";
+$sql1="CREATE TEMPORARY TABLE  result1  Select * from  resulthead  WHERE hn='".$result2['HN']."' and clinicalinfo ='ตรวจสุขภาพประจำปี58' and orderdate like '2015-10-28%' ";
 $query1 = mysql_query($sql1); 
 
 
 ?>
-<table width="100%" border="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td colspan="2"><table width="100%">
       <tr>
@@ -127,13 +123,13 @@ $query1 = mysql_query($sql1);
         <td align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">ตรวจเมื่อวันที่ 30 กันยายน 2557</span></span></span></td>
+        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">ตรวจเมื่อวันที่ 28 ตุลาคม 2558</span></span></span></td>
         <td align="center" valign="top" class="text3">&nbsp;</td>
       </tr>
     </table></td>
   </tr>
   <tr>
-    <td colspan="2"><table width="100%" border="0">
+    <td colspan="2"><table width="100%" border="0" cellpadding="0" cellspacing="0">
         <tr>
           <td><table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
             <tr>
@@ -272,7 +268,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 			}
 			
 			
-				if($objResult['flag']=='L' || $objResult['flag']=='H'){
+			if($objResult['flag']=='L' || $objResult['flag']=='H'){
 				$objResult["result"]="<strong>".$objResult["result"]."</strong>";
 			}else{
 				$objResult["result"]=$objResult["result"];
@@ -482,7 +478,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
         <td align="center"><strong class="text" style="font-size:20px"><u>LAB : อื่นๆ</u></strong></td>
         </tr>
       <tr>
-        <td height="52" valign="top"><table width="95%" border="0" class="text3">
+        <td height="52" valign="top"><table width="95%" border="0" cellpadding="0" cellspacing="0" class="text3">
   <? /*$sql="SELECT * FROM result1 WHERE profilecode='METAMP'";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
@@ -697,6 +693,12 @@ if($objResult["labcode"]=='HIV'){
 	}
 }
 
+			if($objResult['flag']=='L' || $objResult['flag']=='H'){
+				$objResult["result"]="<strong>".$objResult["result"]."</strong>";
+			}else{
+				$objResult["result"]=$objResult["result"];
+			}
+
 		if($objResult["labcode"]=='ANTIHB' || $objResult["labcode"]=='HBSAG' || $objResult["labcode"]=='HIV'){					
 		?>
           <tr>
@@ -717,7 +719,13 @@ if($objResult["labcode"]=='HIV'){
 		  }  // close if labcode antihb hbsag hiv 
 		  } 
 		}
-	?>   
+	?> 
+           <tr>
+            <td width="37%">ตรวจสมรรถนะการมองเห็น</td>
+            <td width="6%">ปกติ</td>
+            <td width="8%"></td>
+            <td width="49%" style="font-size:12px;">ปกติ</td>
+            </tr>	     
 <?
 $outsql="SELECT * FROM `out_result_chkup` WHERE hn='".$result2['HN']."' and year_chk='58'";
 //echo $sqlchk;
@@ -726,7 +734,7 @@ $outarr=mysql_fetch_array($outquery);
 ?>    
 <?
 if(!empty($outarr["afp"])){
-	if($outarr["afp"] <= 12){
+	if($outarr["afp"] <= 12 || $outarr["afp"]=="ปกติ"){
 		$comment="ปกติ";
 	}else{
 		$comment="ผิดปกติ ควรพบแพทย์เพื่อตรวจซ้ำหรือรับการรักษา";
@@ -734,13 +742,13 @@ if(!empty($outarr["afp"])){
 	echo "<tr>
 				<td>สารชี้บ่งมะเร็งตับ</td>
 				<td>$outarr[afp]</td>
-				<td>0 -12</td>
+				<td>&nbsp;</td>
 				<td style='font-size:12px;'>$comment</td>
 		   </tr>";
 }
 
 if(!empty($outarr["cea"])){
-	if($outarr["cea"] <= 4.7){
+	if($outarr["cea"] <= 4.7 || $outarr["cea"]=="ปกติ"){
 		$comment="ปกติ";
 	}else{
 		$comment="ผิดปกติ ควรพบแพทย์เพื่อตรวจซ้ำหรือรับการรักษา";
@@ -748,13 +756,13 @@ if(!empty($outarr["cea"])){
 	echo "<tr>
 				<td>CEA (สารชี้บ่งมะเร็งลำไส้)</td>
 				<td>$outarr[cea]</td>
-				<td>0 - 4.7</td>
+				<td>&nbsp;</td>
 				<td style='font-size:12px;'>$comment</td>
 		   </tr>";
 }
 
 if(!empty($outarr["psa"])){
-	if($outarr["psa"] <= 4){
+	if($outarr["psa"] <= 4 || $outarr["psa"]=="ปกติ"){
 		$comment="ปกติ";
 	}else{
 		$comment="ผิดปกติ ควรพบแพทย์เพื่อตรวจซ้ำหรือรับการรักษา";
@@ -762,13 +770,13 @@ if(!empty($outarr["psa"])){
 	echo "<tr>
 				<td>PSA (สารชี้บ่งมะเร็งต่อมลูกหมาก)</td>
 				<td>$outarr[psa]</td>
-				<td>0 - 4</td>
+				<td>&nbsp;</td>
 				<td style='font-size:12px;'>$comment</td>
 		   </tr>";
 }
 
 if(!empty($outarr["ca125"])){
-	if($outarr["ca125"] <= 35){
+	if($outarr["ca125"] <= 35 || $outarr["ca125"]=="ปกติ"){
 		$comment="ปกติ";
 	}else{
 		$comment="ผิดปกติ ควรพบแพทย์เพื่อตรวจซ้ำหรือรับการรักษา";
@@ -776,13 +784,13 @@ if(!empty($outarr["ca125"])){
 	echo "<tr>
 				<td>CA125 (สารชี้บ่งมะเร็งรังไข่)</td>
 				<td>$outarr[ca125]</td>
-				<td>0 - 35</td>
+				<td>&nbsp;</td>
 				<td style='font-size:12px;'>$comment</td>
 		   </tr>";
 }
 
 if(!empty($outarr["testolerone"])){
-	if($outarr["testolerone"] >= 2.8 && $outarr["testolerone"] <= 8){
+	if(($outarr["testolerone"] >= 2.8 && $outarr["testolerone"] <= 8) || $outarr["testolerone"]=="ปกติ"){
 		$comment="ปกติ";
 	}else{
 		$comment="ผิดปกติ ควรพบแพทย์เพื่อตรวจซ้ำหรือรับการรักษา";
@@ -790,13 +798,13 @@ if(!empty($outarr["testolerone"])){
 	echo "<tr>
 				<td>Testolerone (ระดับฮอร์โมนเพศชาย)</td>
 				<td>$outarr[testolerone]</td>
-				<td>2.8 - 8.0</td>
+				<td>&nbsp;</td>
 				<td style='font-size:12px;'>$comment</td>
 		   </tr>";
 }
 
 if(!empty($outarr["estradiol"])){
-	if($outarr["estradiol"] >= 13.5 && $outarr["estradiol"] <= 59){
+	if(($outarr["estradiol"] >= 13.5 && $outarr["estradiol"] <= 59) || $outarr["estradiol"]=="ปกติ"){
 		$comment="ปกติ";
 	}else{
 		$comment="ผิดปกติ ควรพบแพทย์เพื่อตรวจซ้ำหรือรับการรักษา";
@@ -804,7 +812,7 @@ if(!empty($outarr["estradiol"])){
 	echo "<tr>
 				<td>Estradiol (ระดับฮอร์โมนเพศหญิง)</td>
 				<td>$outarr[estradiol]</td>
-				<td>13.5 - 59.0</td>
+				<td>&nbsp;</td>
 				<td style='font-size:12px;'>$comment</td>
 		   </tr>";
 }
@@ -876,9 +884,6 @@ if(!empty($outarr["altradown"])){
 		?>      
           <td><strong class="text" style="font-size:18px"><u>X-RAY</u>&nbsp;&nbsp;&nbsp;&nbsp;</u>CXR : <strong><? if($arr["cxr"]==""){ echo "NORMAL (ปกติ)"; }else{ echo $arr["cxr"]; } ?> </strong></u></strong></td>
         </tr>
-        <tr>
-          <td><strong class="text" style="font-size:18px">สรุปผลการตรวจ/คำแนะนำของแพทย์ : </strong><span class="text" style="font-size:16px;"><?=$arr["doctor_result"];?></span></td>
-        </tr>
     </table></td>
   </tr>
 </table>
@@ -891,7 +896,7 @@ $authorisedate  = $arr2["authorisedate2"];*/
 ?>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) CXR : </strong>พ.ต.ภูภูมิ วุฒิธาดา (ว.33906) รังสีแพทย์<strong> (21-02-2014) Doctor :พ.ต.เลอปรัชญ์ มังกรกนกพงศ์ (22-03-2014)</strong></td>
+    <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong> <span><strong> CXR : </strong>ร.ท.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (28-10-2015)</strong></span></strong><strong> Doctor : พ.ท.เลอปรัชญ์ มังกรกนกพงศ์ (ว.32166) (28-10-2015)</strong></td>
     
   </tr>
 </table>
