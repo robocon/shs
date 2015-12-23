@@ -137,10 +137,18 @@ a{
 	// สกรีนค่าที่ซ้ำออกไป
 	$user_lists = array();
 	while( $item = mysql_fetch_assoc($result) ){
-		// สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
-		$key = md5($item['hn'].$item['room']);
+		
+		list($key_year, $hn_key) = explode('-', $item['hn']);
+		$item['sort_hn'] = $key_year.sprintf("%08d", intval($hn_key)); // สร้าง key ขึ้นมาเอาไว้สำหรับ sort โดยเฉพาะ
+		$key = md5($item['hn'].md5($item['room'])); // สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
 		$user_lists[$key] = $item;
 	}
+	
+	// เรียงจากน้อยไปหามากตาม sort_hn
+	function sorthn($a, $b){
+		return $a['sort_hn'] - $b['sort_hn'];
+	}
+	usort($user_lists, "sorthn");
 	
 	$i = 1;
 	$unincome_lists = array();

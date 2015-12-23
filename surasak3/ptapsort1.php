@@ -117,39 +117,28 @@ a{
 	$doctor2
 	ORDER BY `hn` ASC ";
     $result = mysql_query($query1) or die( mysql_error() );
-	
-    // $num=0;
-	// $j[0]=0;
-	// $j[1]=0;
-	
-	// $title_array = array();
-	// $title_array2 = array();
-	// $detail_array = array();
 
 	$date_now = date("d-m-").(date("Y")+543);
 	
 	// สกรีนค่าที่ซ้ำออกไป
 	$user_lists = array();
 	while( $item = mysql_fetch_assoc($result) ){
-		// สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
-		$key = md5($item['hn'].$item['room']);
+		
+		list($key_year, $hn_key) = explode('-', $item['hn']);
+		$item['sort_hn'] = $key_year.sprintf("%08d", intval($hn_key)); // สร้าง key ขึ้นมาเอาไว้สำหรับ sort โดยเฉพาะ
+		$key = md5($item['hn'].md5($item['room'])); // สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
 		$user_lists[$key] = $item;
 	}
+	
+	// เรียงจากน้อยไปหามากตาม sort_hn
+	function sorthn($a, $b){
+		return $a['sort_hn'] - $b['sort_hn'];
+	}
+	usort($user_lists, "sorthn");
 	
 	$i = 1;
 	$unincome_lists = array();
 	foreach( $user_lists AS $item ){
-	
-	
-    //  while (list ($hn,$ptname,$apptime,$detail,$came,$row_id,$age,$date,$officer,$left5,$diag,$other,$room) = mysql_fetch_row ($result)) {
-        // $num++;
-		// $left5 = str_replace(".",":",$left5);
-		// if($left5 >= "07:00" && $left5 <= "14:00"){
-		// 	$x=0;
-		// }else{
-		// 	$x=1;
-			
-		// }
 		
 		// เก็บรายชื่อคนที่ยกเลิกนัด เอาไว้แสดงอีก 1 ตาราง
 		if( $item['apptime'] === 'ยกเลิกการนัด' ){
@@ -207,115 +196,8 @@ a{
 		</tr>
 		<?php
 		$i++;
-		
-		// list($firstyear,$count_number) = explode("-",$hn);
-		// $title_array[$x][$j[$x]] = $firstyear;
-		// $title_array[$x][$j[$x]] = $title_array[$x][$j[$x]]*1;
-		// $title_array2[$x][$j[$x]] = $count_number;
-		// $title_array2[$x][$j[$x]] = $title_array2[$x][$j[$x]]*1;
-
-        // $detail_array[$x][$j[$x]] = " <tr>\n".
-		// 	"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>{#ii}</td>\n".
-		// 	"  <td BGCOLOR=$bgcolor style='font-size:20px;'><font face='Angsana New'>$hn</td>\n".
-		// 	"  <td BGCOLOR=$bgcolor style='font-size:20px;'><font face='Angsana New'>$ptname</td>\n".
-		// 	"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$apptime</td>\n".
-		// 	"  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$detail</td>\n";
-			// "  <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$other</td>\n".
-			//  " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$diag</td>\n";
-			
-	// if(isset($listhn[$hn])){
-	// 	 $detail_array[$x][$j[$x]] .= " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>".$listhn[$hn]."</td>\n";
-	//  }else if(empty($listhn[$hn])){
-	// 	 $detail_array[$x][$j[$x]] .= " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>&nbsp;</td>\n";
-	//  }
-	//  if($room=="แผนกทะเบียน"){
-	// 	$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>$room</td>\n";
-	// }else{
-	// 	$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>&nbsp;</td>\n";
-	// }
-	// // print " <td BGCOLOR=$bgcolor style='font-size:18px;'><font face='Angsana New'>$date</td>\n";
-	// 	//$sql5 = "select * from ipcard where hn='$hn' and dcdate = '0000-00-00 00:00:00' and days is null and dcnumber ='' and ptname is not null ";
-	// $sql5 = "select * from bed where hn='$hn' ";
-	// $row5 = mysql_query($sql5);
-	// $rep5 = mysql_num_rows($row5);
-	// if($rep5>0){
-	// 	$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>Admit</td>\n";
-	// }else{
-	// 	$detail_array[$x][$j[$x]] .= "  <td BGCOLOR=66CDAA style='font-size:18px;'><font face='Angsana New'>&nbsp;</td>\n";
-	// }
-	
-    //        $detail_array[$x][$j[$x]] .= " </tr>\n";
-
-	// 	   $j[$x]++;
-	$i++;
-}
-
-// $x=0;
-
-// for($one=1;$one<$j[$x];$one++){
-
-// 	for($two=$one;$two>0;$two--){
-		
-// 		if(($title_array[$x][$two] < $title_array[$x][$two-1]) ||  ($title_array[$x][$two] == $title_array[$x][$two-1] &&  $title_array2[$x][$two] < $title_array2[$x][$two-1])){
-
-// 			$xxx = $title_array[$x][$two];
-// 			$title_array[$x][$two] = $title_array[$x][$two-1];
-// 			$title_array[$x][$two-1] = $xxx;
-
-// 			$xxx = $title_array2[$x][$two];
-// 			$title_array2[$x][$two] = $title_array2[$x][$two-1];
-// 			$title_array2[$x][$two-1] = $xxx;
-
-// 			$xxx = $detail_array[$x][$two];
-// 			$detail_array[$x][$two] = $detail_array[$x][$two-1];
-// 			$detail_array[$x][$two-1] = $xxx;
-
-// 		}
-
-// 	}
-// }
-
-// $x=1;
-// for($one=1;$one<$j[$x];$one++){
-
-// 	for($two=$one;$two>0;$two--){
-		
-// 		if(($title_array[$x][$two] < $title_array[$x][$two-1]) ||  ($title_array[$x][$two] == $title_array[$x][$two-1] &&  $title_array2[$x][$two] < $title_array2[$x][$two-1])){
-
-// 			$xxx = $title_array[$x][$two];
-// 			$title_array[$x][$two] = $title_array[$x][$two-1];
-// 			$title_array[$x][$two-1] = $xxx;
-
-// 			$xxx = $title_array2[$x][$two];
-// 			$title_array2[$x][$two] = $title_array2[$x][$two-1];
-// 			$title_array2[$x][$two-1] = $xxx;
-
-// 			$xxx = $detail_array[$x][$two];
-// 			$detail_array[$x][$two] = $detail_array[$x][$two-1];
-// 			$detail_array[$x][$two-1] = $xxx;
-
-// 		}
-
-// 	}
-// }
-
-// $x=0;
-// $y=0;
-// for($i=0;$i<$j[$x];$i++){
-	
-// 	$detail_array[$x][$i] = str_replace("{#ii}",$i+1,$detail_array[$x][$i]);
-// 	echo $detail_array[$x][$i];
-// $y++;
-// }
-
-// $x=1;
-// for($i=0;$i<$j[$x];$i++){
-	
-// 	$detail_array[$x][$i] = str_replace("{#ii}",$i+1+$y,$detail_array[$x][$i]);
-// 	echo "",$detail_array[$x][$i];
-
-// }
-?>
+	}
+	?>
 </table>
 
 <?php
