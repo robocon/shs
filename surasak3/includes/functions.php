@@ -6,6 +6,26 @@ if (!defined('PHP_VERSION_ID')) {
 	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
+function pagination($total, $page = 1, $base = false, $limit = 50){
+	
+	$total = ceil(( $total / $limit ));
+	
+	if( $total > 1 ){
+		
+		$base = ( $base === false ) ? DOMAIN_REQUEST : $base ;
+		
+		
+		?><div class="sm-pagging-contain"><?php
+		for( $i = 1; $i <= $total; $i++ ){
+			$active = ( $i == $page ) ? 'pagging-active' : '' ;
+			?>
+			<div class="sm-pagging <?=$active;?>"><a href="<?=$base;?>&page=<?=$i;?>"><?=$i;?></a></div>
+			<?php
+		}
+		?></div><?php
+	}
+}
+
 /**
  * ดึงค่าจาก id ที่เป็น method GET
  */

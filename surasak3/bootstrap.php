@@ -264,5 +264,14 @@ class Mysql
 // $db->select($sql, $data);
 // $item = $db->get_item();
 
+// E.g. http://localhost/
+define('DOMAIN', ( strtolower(getenv('HTTPS')) == 'on' ? 'https' : 'http' ).'://'.getenv('HTTP_HOST').'/');
+define('WEB_REQUEST', substr(getenv('REQUEST_URI'), 1));
+
+// E.g. http://localhost/sub_folder
+define('DOMAIN_PATH', DOMAIN.dirname(WEB_REQUEST));
+
+// E.g. http://localhost/sub_folder/file.php
+define('DOMAIN_REQUEST', DOMAIN.WEB_REQUEST);
 
 require "includes/functions.php";

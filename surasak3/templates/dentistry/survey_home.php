@@ -112,7 +112,7 @@
 				ORDER BY a.`id` DESC;
 				";
 				$items = DB::select($sql);
-				
+				$rows = DB::rows();
 				$i = 1;
 				foreach($items as $item){
 					
@@ -133,9 +133,10 @@
 				<?php $i++; } ?>
 			</tbody>
 		</table>
+		<?php
 		
-		
-		
-		
+		$page = isset($_GET['page']) ? trim($_GET['page']) : false ;
+		pagination($rows, $page);
+		?>
 	</div>
 </div>
