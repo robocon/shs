@@ -331,6 +331,8 @@ include 'templates/classic/nav.php';
 				
 				<?php 
 				if( $task === false ){ // หน้าแรก
+				
+					$by = isset($_POST['by']) ? trim($_POST['by']) : false ;
 					include 'templates/dentistry/survey_home.php';
 					
 				} elseif( $task === 'form' ){ //หน้าฟอร์มเพิ่มข้อมูล
