@@ -67,11 +67,11 @@ $part["DPN"] = "อุปกรณ์เบิกไม่ได้";
       print "<table>";
 
         $query = "SELECT row_id,drugcode,tradname,unitpri,salepri,stock,mainstk,rxaccum,rxrate,
-                            stkpmon, part, bcode,code24,tmt,comcode,comname,unit,pack,packpri_vat, edpri FROM druglst ORDER by part ";
+                            stkpmon, part, bcode,code24,tmt,comcode,comname,unit,pack,packpri_vat, edpri,genname FROM druglst ORDER by part ";
         $result = mysql_query($query) or die("Query druglst failed");
 
     while(list($row_id,$drugcode,$tradname,$unitpri,$salepri,$stock,$mainstk,$rxaccum,$rxrate,
-     $stkpmon,$part,$bcode,$code24,$tmt,$comcode,$comname,$unit,$pack,$packpri_vat, $edpri) = mysql_fetch_row ($result)) {
+     $stkpmon,$part,$bcode,$code24,$tmt,$comcode,$comname,$unit,$pack,$packpri_vat, $edpri, $genname) = mysql_fetch_row ($result)) {
 		$n++; 
 
 	
@@ -104,7 +104,8 @@ $part["DPN"] = "อุปกรณ์เบิกไม่ได้";
       print "  <th bgcolor=6495ED><font face='Angsana New'>#</th>";
       print "  <th bgcolor=6495ED><font face='Angsana New'>row</th>";
       print "  <th bgcolor=6495ED><font face='Angsana New'>รหัสยา</th>";
-      print "  <th bgcolor=6495ED><font face='Angsana New'>รายการ</th>";
+      print "  <th bgcolor=6495ED><font face='Angsana New'>ชื่อการค้า</th>";
+      print "  <th bgcolor=6495ED><font face='Angsana New'>ชื่อสามัญ</th>";
 	  print "  <th bgcolor=6495ED><font face='Angsana New'>จำนวนสุทธิ</th>";
       print "  <th bgcolor=6495ED><font face='Angsana New'>ในคลัง</th>";
       print "  <th bgcolor=6495ED><font face='Angsana New'>ในห้องจ่าย</th>";
@@ -227,6 +228,7 @@ print "stkpmon = Totalstk/Rate = $nTotalstk/$nRate = $nMonth<br>";
            "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$nRow_id</td>\n".
            "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$cDrugcode</td>\n".
            "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$cTradname</td>\n".
+           "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$genname</td>\n".
            "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$nTotalstk</td>\n".
            "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$nMainstk</td>\n".
            "  <td BGCOLOR=\"".$bgcolor."\"><font face='Angsana New'>$nStock</td>\n".
