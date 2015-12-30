@@ -15,6 +15,88 @@ window.onload = function(){
 	// window.close();
 }
 </script>
+<style type="text/css">
+/* CSS Rest */
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+/* Your CSS is below */
+u{
+    border-bottom: 2px solid #000000;
+    text-decoration: none;
+}
+b{ font-weight: bold; }
+.size1{
+    font-size: 8px;
+    line-height: 12px;
+}
+.size2{
+    font-size: 12px;
+    line-height: 16px;
+}
+.size3{
+    font-size: 16px;
+    line-height: 20px;
+}
+.size4{
+    font-size: 17px;
+    line-height: 21px;
+}
+.size5{
+    font-size: 24px;
+    line-height: 28px;
+}
+.center{
+    text-align: center;
+}
+</style>
 </head>
 <?php
 function jschars($str){
@@ -91,19 +173,19 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     
         $sql = "INSERT INTO `appoint_lab` ( `id` , `code` )  VALUES ";
             
-            $list = array();
-            for ($n=0; $n<$count; $n++){
+        $list = array();
+        for ($n=0; $n<$count; $n++){
             If (!empty($_SESSION["list_code"][$n])){
-                    $q = "('".$idno."', '".$_SESSION["list_code"][$n]."')  ";
-                    array_push($list,$q);
+                $q = "('".$idno."', '".$_SESSION["list_code"][$n]."')  ";
+                array_push($list,$q);
                 
             }
-            }
+        }
             
-            $sql .= implode(", ",$list);
+        $sql .= implode(", ",$list);
     
-            $result = Mysql_Query($sql) or die("Error appoint_lab ".Mysql_Error());
-            $patho = implode(", ",$_SESSION["list_code"]);
+        $result = Mysql_Query($sql) or die("Error appoint_lab ".Mysql_Error());
+        $patho = implode(", ",$_SESSION["list_code"]);
     }
 
     $pathoall=$patho.' '.$patho2;
@@ -159,82 +241,88 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     $doctor=substr($doctor,5);
     $depcode=substr($depcode,4);
     
-    print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";
-    print "&nbsp;&nbsp;&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง </b> </center>";
-    print "<font face='Angsana New' size='2'><center>FR-NUR-003/2,04, 25 ธ.ค. 54 </center>";
-    print "<b><font face='Angsana New' size='4'>ชื่อ: $cPtname  </b>&nbsp;&nbsp;&nbsp;<b>HN:</b> $cHn &nbsp;<b>อายุ:</b> $cAge&nbsp;<B>สิทธิ:$cptright&nbsp;:<u>$cidguard</u></font></B><br>";
-    print "<b><font face='Angsana New' size='5'><U>นัดมา: วัน$day ที่ $appd &nbsp;&nbsp;&nbsp; </b><b> เวลา:</b> $capptime</U></FONT><br>";
-    print "<font face='Angsana New' size='4'><b><U>ยื่นใบนัดที่:&nbsp; $room</U></b><font face='Angsana New' size='3'>&nbsp;&nbsp;&nbsp;";
+    print "<p class='size5 center'><b>ใบนัดผู้ป่วย โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</b></p>";
+    print "<p class='size2 center'>FR-NUR-003/2,04, 25 ธ.ค. 54</p>";
+    
+    print "<p class='size4'><b>ชื่อ:</b> $cPtname <b>HN:</b> $cHn <b>อายุ:</b> $cAge <b>สิทธิ:</b> $cptright</p>";
+    print "<p class='size3'><b>หมายเหตุ: <u>$cidguard</u></b></p>";
+    print "<p class='size5' style=\"line-height: 36px;\"><b><u>นัดมา: วัน$day ที่ $appd เวลา: $capptime</u></b></p>";
+    print "<p class='size4'><b><u>ยื่นใบนัดที่: $room</u></b>&nbsp;<b>เพื่อ:</b> $detail".( $detail2 != "" ? "($detail2)" : "" )."</p>";
     
     if ($detail !='NA') { 
-    print "<font face='Angsana New' size='4'><b>เพื่อ:</b>&nbsp; $detail".($detail2!=""?"($detail2)":"")."<br><font face='Angsana New' size='3'><b>แพทย์ผู้นัด:</b>&nbsp; $cdoctor</b><br>";
+        // print "&nbsp;<p class='size4'><b>เพื่อ:</b> $detail".( $detail2 != "" ? "($detail2)" : "" )."</p>";
+        print "<p class='size3'><b>แพทย์ผู้นัด:</b> $cdoctor</p>";
     }
     
     if ($advice != 'NA') {
-    print "<b>ข้อแนะนำ:</b> &nbsp;$advice<br>";
+        print "<p><b>ข้อแนะนำ:</b> $advice</p>";
     }
     
     if (trim($pathoall) != 'NA') {
-    print "<b>ตรวจพยาธิ:</b>&nbsp; $pathoall<br>";
+        print "<p><b>ตรวจพยาธิ:</b> $pathoall</p>";
     }
     
     if (!empty($labm)) { 
-    print "<b>คำสั่งพิเศษ:</b>&nbsp; $labm<br>";
+        print "<p><b>คำสั่งพิเศษ:</b> $labm</p>";
     }
     
     if (trim($xray) != 'NA') {
-    print "<b>ตรวจเอกซเรย์:</b>&nbsp; $xray<br>";
+        print "<p><b>ตรวจเอกซเรย์:</b> $xray</p>";
     }
     
     if (!empty($other)) { 
-    print "<b>อื่นๆ:</b>&nbsp; $other<br>";
+        print "<p><b>อื่นๆ:</b> $other</p>";
     }
     
-    print "<b>ผู้ออกใบนัด:</b>&nbsp; $sOfficer,&nbsp; $depcode "; 
-    print "&nbsp;&nbsp;<b>วันและเวลาที่ออกใบนัด&nbsp;:</b>$Thaidate<br>"; 
+    print "<p><b>ผู้ออกใบนัด:</b> $sOfficer, $depcode <b>วันและเวลาที่ออกใบนัด:</b> $Thaidate</p>"; 
     
     if ($detail =='FU01 ตรวจตามนัด' ){ 
-        print "<font face='Angsana New' size='3'><b>หมายเหตุ:<u>$cidguard</u></b><br>กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ยื่นใบนัดที่แผนกทะเบียน &nbsp; <br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>"; 
+        // print "<br>";
+        print "กรุณามาตรงตามวันและเวลานัด <b>ถ้าผิดนัด</b> ให้ยื่นใบนัดที่แผนกทะเบียน<br>";
+        print "<b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br>";
+        print "ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100, 1125</b></p>"; 
     } 
-    else  if  ($detail =='FU02 ตามผลตรวจ' ){
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>"; 
+    else if ($detail =='FU02 ตามผลตรวจ' ){
+        print "กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>"; 
     } 
-    else  if  ($detail =='FU03 นอนโรงพยาบาล') { 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><br>ผู้ป่วยนัดนอนโรงพยาบาลให้ยื่นใบนัดที่แผนกทะเบียน  &nbsp;&nbsp;
+    else if ($detail =='FU03 นอนโรงพยาบาล') { 
+        print "ผู้ป่วยนัดนอนโรงพยาบาลให้ยื่นใบนัดที่แผนกทะเบียน  &nbsp;&nbsp;
     กรุณามาตรงตามวันและเวลานัด <br>  เตรียมเอกสารที่ต้องใช้ในโรงพยาบาล เช่น สำเนาบัตรประจำตัว , หนังสือรับรองสิทธิต่างๆ  &nbsp;<b> </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>";  
     }
-    else IF ($detail =='FU04 ทันตกรรม') { 
-        print "<font face='Angsana New' size='2'><b>หมายเหตุ:<u>$cidguard</u></b><BR>1.ผู้ป่วยนัดทันตกรรม ให้ยื่นใบนัดที่แผนกทันตกรรม &nbsp;&nbsp;
-    2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B> <br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ โทร 054-839305-6 ต่อ 1230</b>"; 
+    else if ($detail =='FU04 ทันตกรรม') { 
+        print "1.ผู้ป่วยนัดทันตกรรม ให้ยื่นใบนัดที่แผนกทันตกรรม &nbsp;&nbsp;
+    2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B> <br>
+    <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> 
+    ในวันเวลาราชการ โทร 054-839305-6 ต่อ 1230</b>"; 
     } 
-    else if  ($detail =='FU05 ผ่าตัด') { 
-        print "<font face='Angsana New' size='3'><b>หมายเหตุ:<u>$cidguard</u></b><BR>1.ผู้ป่วยนัดตรวจผ่าตัดให้ยื่นใบนัดที่แผนกทะเบียน &nbsp;&nbsp;
+    else if ($detail =='FU05 ผ่าตัด') { 
+        print "1.ผู้ป่วยนัดตรวจผ่าตัดให้ยื่นใบนัดที่แผนกทะเบียน &nbsp;&nbsp;
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b> </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b> "; 
     } 
-    else if  ($detail =='FU06 สูติ') { 
-        print "<font face='Angsana New' size='3'><b>หมายเหตุ:<u>$cidguard</u></b><BR>1.ผู้ป่วยนัดตรวจสูติให้ยื่นใบนัดที่แผนกทะเบียน &nbsp;&nbsp;
+    else if ($detail =='FU06 สูติ') { 
+        print "1.ผู้ป่วยนัดตรวจสูติให้ยื่นใบนัดที่แผนกทะเบียน &nbsp;&nbsp;
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b> </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ โทร 054-839305-6 ต่อ 5111 </b>";  
     } 
-    else  if ($detail =='FU07 คลีนิกฝังเข็ม'){ 
-        print "<font face='Angsana New' size='3'>
+    else if ($detail =='FU07 คลีนิกฝังเข็ม'){ 
+        print "
         1.ทำความสะอาดร่างกายให้เรียบร้อย&nbsp;&nbsp;
         2.รับประทานอาหารได้ตามปกติ <br> 
         3.สวมเสื้อผ้าที่ไม่รัดแน่น ควรเป็นเสื้อแขนสั้นหรือกางเกงที่สามารถรูดขึ้นเหนือเข่าได้สะดวก<br> 
         4.เข้าห้องน้ำ ปัสสาวะให้เรียบร้อยก่อนเพื่อไม่ให้เกิดอาการปวดปัสสาวะขณะฝังเข็ม<br>
         5.ดื่มน้ำ 1 แก้วหลังฝังเข็มเสร็จ ถ้ามีการกระหายน้ำ&nbsp;&nbsp;
-        6.กรุณามาตรงตามวันและเวลานัด&nbsp;<br>  <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ  โทร 054-839305-6 ต่อ  2111</b>";
+        6.กรุณามาตรงตามวันและเวลานัด&nbsp;<br>  <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ  โทร 054-839305-6 ต่อ 2111</b>";
         }
-    else  if ($detail =='FU08 Echo'){ 
-        print "<font face='Angsana New' size='3'>1.ผู้ป่วยนัดตรวจ Echo ให้ยื่นใบนัดที่จุดนัด &nbsp;&nbsp;
+    else if ($detail =='FU08 Echo'){ 
+        print "1.ผู้ป่วยนัดตรวจ Echo ให้ยื่นใบนัดที่จุดนัด &nbsp;&nbsp;
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>";  
     }
-    else  if ($detail =='FU09 มวลกระดูก'){ 
-        print "<font face='Angsana New' size='3'>1.ผู้ป่วยนัดตรวจมวลกระดูกให้ยื่นใบนัดที่จุดนัด&nbsp;&nbsp;
+    else if ($detail =='FU09 มวลกระดูก'){ 
+        print "1.ผู้ป่วยนัดตรวจมวลกระดูกให้ยื่นใบนัดที่จุดนัด&nbsp;&nbsp;
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>"; 
     }
-    else  if ($detail =='FU12 นวดแผนไทย'){ 
+    else if ($detail =='FU12 นวดแผนไทย'){ 
         
-        print "<font face='Angsana New' size='3'>
+        print "
         1. กรณีนัดหมาย หากมาช้าเกิน 10 นาที โดยมิได้โทรแจ้งขอสงวนสิทธิ์ให้ผู้รับบริการท่านอื่นได้รับบริการก่อน<BR>
         2. หากท่านมีอาการ ไอ เจ็บคอ ไข้ อ่อนเพลีย ให้งดการนวด<br>
         3. ทางโรงพยาบาลไม่สามารถรับผิดชอบสิ่งของมีค่าของท่านได้<BR>
@@ -242,46 +330,46 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
         ";  
     
     } 
-    else  if ($detail =='FU10 กายภาพ'){ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+    else if ($detail =='FU10 กายภาพ'){ 
+        print "
     1.ผู้ป่วยนัดตรวจให้ยื่นใบนัดที่กายภาพบำบัด &nbsp;&nbsp;<BR>
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
     3.<b>ถ้าผิดนัด </b>ให้โทรแจ้งทางแผนกกายภาพบำบัด &nbsp;<br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 1 วันทำการ<br> ในวันเวลาราชการ เวลา 09.00 น. - 15.00 น. โทร 054-839305-6 ต่อ 8000</b>"; 
     }
-    else  if ($detail =='FU22 ตรวจตามนัดOPD เวชศาสตร์ฟื้นฟู'){ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+    else if ($detail =='FU22 ตรวจตามนัดOPD เวชศาสตร์ฟื้นฟู'){ 
+        print "
     1.ผู้ป่วยนัดตรวจให้ยื่นใบนัดที่กายภาพบำบัด &nbsp;&nbsp;<BR>
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
     3.<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp;<br>
     <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 1 วันทำการ<br> ในวันเวลาราชการ เวลา 09.00 น. - 15.00 น. โทร 054-839305-6 ต่อ 8001 หรือ 8000 </b>"; 
     }
-    else  if ($detail =='FU24 ตรวจตามนัด OPD จักษุ(ตา)'){ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+    else if ($detail =='FU24 ตรวจตามนัด OPD จักษุ(ตา)'){ 
+        print "
     1.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
     2.<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp;<br>
     <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 1 วันทำการ<br> ในวันเวลาราชการ เวลา 09.00 น. - 15.00 น. โทร 054-839305-6 ต่อ 2111</b>"; 
-    }else  if ($detail =='FU25 CT Scan'){ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+    }else if ($detail =='FU25 CT Scan'){ 
+        print "
         1.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
         2.ติดต่อจุดนัด ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305 ต่อ 1100 , 1125<BR>
         * ผู้ป่วยได้ทำการตรวจเลือดแล้ว ";
     }
-    else  if ($detail =='FU31 OPD PM&R'){ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+    else if ($detail =='FU31 OPD PM&R'){ 
+        print "
     1.ผู้ป่วยนัดตรวจให้ยื่นใบนัดที่กายภาพบำบัด ชั้น2 &nbsp;&nbsp;<BR>
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
     3.<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; <br>
     <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 1 วันทำการ<br> ในวันเวลาราชการ เวลา 09.00 น. - 15.00 น. โทร 054-839305-6 ต่อ 8002</b>"; 
     }
-    else  if($detail =='FU32 นัดตรวจBMD'){ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+    else if($detail =='FU32 นัดตรวจBMD'){ 
+        print "
     1.ผู้ป่วยนัดตรวจให้ยื่นใบนัดที่ห้องเอกซเรย์ &nbsp;&nbsp;<BR>
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
     3.<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; <br>
     <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 1 วันทำการ<br> ในวันเวลาราชการ เวลา 09.00 น. - 15.00 น. โทร 054-839305-6 ต่อ 8002</b>"; 
     }
     else{ 
-        print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>
+        print "
     1.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
     2.ติดต่อจุดนัด ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305 ต่อ 1100 , 1125"; 
     }
@@ -296,41 +384,41 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     $doctor=substr($doctor,5);
     $depcode=substr($depcode,4);
     
-    print "<font face='Angsana New' size='5'>&nbsp;&nbsp;<b>>>>>>>>>ใบนัดผู้ป่วย<<<<<<<<</b><br>";
-    print "<font face='Angsana New' size='1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;********FR-OPD-004/1,02, 23 ม.ค. 49 ********<br>";
-    print "<font face='Angsana New' size='3'&nbsp;&nbsp;>>>>>โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง  โทร 054 - 839305 - 6 <<<<<br>";
-    print "<b><font face='Angsana New' size='3'>ชื่อ:</b> $cPtname  &nbsp;&nbsp;&nbsp;<b>HN:</b> $cHn &nbsp;<b>อายุ:</b> $cAge&nbsp;<B>สิทธิ:$cptright<u>$cidguard</u></font></B><br>";
-    print "<b><FONT SIZE=4><U>นัดมา: วัน$day ที่ $appd &nbsp;&nbsp;&nbsp;</U> </FONT></b><b> เวลา:</b> $capptime<br>";
+    print "<p class='size5'>&nbsp;&nbsp;<b>>>>>>>>>ใบนัดผู้ป่วย<<<<<<<<</b><br>";
+    print "<p class='size1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;********FR-OPD-004/1,02, 23 ม.ค. 49 ********<br>";
+    print "<p class='size3'&nbsp;&nbsp;>>>>>โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง  โทร 054 - 839305 - 6 <<<<<br>";
+    print "<b><p class='size3'>ชื่อ:</b> $cPtname  &nbsp;&nbsp;&nbsp;<b>HN:</b> $cHn &nbsp;<b>อายุ:</b> $cAge&nbsp;<B>สิทธิ:$cptright<u>$cidguard</u></p></B><br>";
+    print "<b><p SIZE=4><U>นัดมา: วัน$day ที่ $appd &nbsp;&nbsp;&nbsp;</U> </p></b><b> เวลา:</b> $capptime<br>";
     print "<b>นัดมาที่ห้อง:</b>&nbsp; $room";
     print "&nbsp;&nbsp;&nbsp;<b>แพทย์ผู้นัด:</b>&nbsp; $cdoctor<br>";
     
-    IF ($detail !='NA') { 
+    if ($detail !='NA') { 
     print "<b>เพื่อ:</b>&nbsp; $detail";
     }
     
-    IF (!empty($detail2)) { 
+    if (!empty($detail2)) { 
     print "<b>:</b>&nbsp; $detail2<br>";
     }
     
-    IF ($advice != 'NA') {
+    if ($advice != 'NA') {
     print "<b>ข้อแนะนำ:</b> &nbsp;$advice<br>";
     }
     
-    IF ($patho != 'NA') {
+    if ($patho != 'NA') {
     print "<b>ตรวจพยาธิ:</b>&nbsp; $patho<br>";
     }
     
-    IF ($xray != 'NA') {
+    if ($xray != 'NA') {
     print "<b>ตรวจเอกซเรย์:</b>&nbsp; $xray<br>";
     }
     
-    IF (!empty($other)) { 
+    if (!empty($other)) { 
     print "<b>ตรวจ:</b>&nbsp; $other<br>";
     }
     
     print "<b>ผู้ออกใบนัด:</b>&nbsp; $sOfficer,&nbsp; $depcode "; 
     print "&nbsp;&nbsp;<b>วันและเวลาที่ออกใบนัด&nbsp;:</b>$Thaidate<br>"; 
-    print "<b>หมายเหตุ:<u>$cidguard</u></b><BR>1.ผู้ป่วยนัดตรวจยื่นใบนัดที่จุดบริการนัด &nbsp;&nbsp;2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ยื่นแผนกทะเบียน &nbsp; </B><br>3.ผู้ป่วยนัดผ่าตัด นอน และสูติ ให้ยื่นใบนัดที่แผนกทะเบียน  &nbsp;&nbsp;4.ผู้ป่วยนัดทันตกรรม ให้ยื่นใบนัดที่แผนกทันตกรรม<br>5.5.กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125 "; 
+    print "<b>หมายเหตุ: <u>$cidguard</u></b><BR>1.ผู้ป่วยนัดตรวจยื่นใบนัดที่จุดบริการนัด &nbsp;&nbsp;2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ยื่นแผนกทะเบียน &nbsp; </B><br>3.ผู้ป่วยนัดผ่าตัด นอน และสูติ ให้ยื่นใบนัดที่แผนกทะเบียน  &nbsp;&nbsp;4.ผู้ป่วยนัดทันตกรรม ให้ยื่นใบนัดที่แผนกทันตกรรม<br>5.5.กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125 "; 
     die("");
 } // End else
 ?>
