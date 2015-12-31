@@ -44,7 +44,7 @@ $cPart='nid';
 //insert data into depart
 $thidate5 = (date("Y")+543).date("-m-d H:i:s"); 
 $query = "INSERT INTO medicalcertificate  (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
-// $result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
+$result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
 
 $cDoctor1 = substr($cDoctor,5,50);
 $cDoctor2 = substr($cDoctor,0,5);

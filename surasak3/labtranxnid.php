@@ -51,21 +51,21 @@ $today = date("Y-m-d");
    $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab)VALUES('$nRunno','$Thidate','$cPtname','$cHn','$cAn','$cDoctor','$cDepart','$item','$aDetail',
                     '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab');";
 
-    //    $result = mysql_query($query) or 
-    //             die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
-	// *โปรดตรวจสอบว่ามีรายการในเมนู [ดูการจ่ายเงิน] หรือไม่<br>
-	// *ถ้ามีแสดงว่า ได้บันทึกไปก่อนแล้ว<br>
-	// *ถ้าไม่มีแสดงว่า  การบันทึกล้มเหลว<br><br>
-    //             -------- รายการ ---------<br> 
-	// $Thaidate<br>
-	// $cPtname HN:$cHn AN:$cAn VN:$tvn<br>
-    //             สิทธิ: $cPtright<br>
-    //             โรค:$cDiag<br>
-    //             แพทย์:$cDoctor<br>
-    //             $aDetail<br>
-    //            จำนวน $item รายการ<br>
-    //            ราคารวม $Netprice บาท<br>
-    //            จนท. $sOfficer<br>");
+       $result = mysql_query($query) or 
+                die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
+	*โปรดตรวจสอบว่ามีรายการในเมนู [ดูการจ่ายเงิน] หรือไม่<br>
+	*ถ้ามีแสดงว่า ได้บันทึกไปก่อนแล้ว<br>
+	*ถ้าไม่มีแสดงว่า  การบันทึกล้มเหลว<br><br>
+                -------- รายการ ---------<br> 
+	$Thaidate<br>
+	$cPtname HN:$cHn AN:$cAn VN:$tvn<br>
+                สิทธิ: $cPtright<br>
+                โรค:$cDiag<br>
+                แพทย์:$cDoctor<br>
+                $aDetail<br>
+               จำนวน $item รายการ<br>
+               ราคารวม $Netprice บาท<br>
+               จนท. $sOfficer<br>");
 
 //test 9/4/47 to find the last row
 //printf ("Last inserted record has id %d\n",mysql_insert_id());
@@ -79,7 +79,7 @@ $today = date("Y-m-d");
                 $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
                                  VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
                                  '$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright');";
-                // $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+                $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
         }
         }
 

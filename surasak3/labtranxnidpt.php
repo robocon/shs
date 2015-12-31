@@ -59,7 +59,7 @@ if($cDoctor2=='MD089'){$doctorcode='ว.32166';}else{$doctorcode='';};*/
 
 //
 $acu = 0;
-if($cDoctor1=="แพทย์แผนไทย"){
+if($cDoctor2 == "MD058"){
   
   // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
   $subDoctor = (int) $_GET['subDoctor'];
@@ -90,20 +90,33 @@ if($cDoctor1=="แพทย์แผนไทย"){
   print "<CENTER><img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'></CENTER><font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เลขที่&nbsp;$nRunno";
 
 	  print "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<CENTER><B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<BR></CENTER></font>"; 
-	    print "<font face='Angsana New' size ='3'><CENTER>วันที่&nbsp;&nbsp;&nbsp; <B> $Thaidate1</B><BR></CENTER> "; 
+	  print "<font face='Angsana New' size ='3'><CENTER>วันที่&nbsp;&nbsp;&nbsp; <B> $Thaidate1</B><BR></CENTER> "; 
 	  print "<font face='Angsana New' size ='3'>ข้าพเจ้า <B>$yot$cDoctor1</B> ตำแหน่ง $position<BR> "; 
-
-	  
-
 	  print "<font face='Angsana New' size ='3'>$certificate เลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B><BR>"; 
 	  print "<font face='Angsana New' size ='3'>ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;เป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
-	  print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการ ด้วยการนวดพร้อมประคบสมุนไพร "; 
-	  if( $acu === 0 ){
-          print "เพื่อ.............................................................................<BR>";
-          print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>";
+	  
+      $cold_lists = array('ไข้หวัด', 'ภูมิแพ้');
+      $nid_ext = 'ด้วยการนวดพร้อมประคบสมุนไพร';
+      if( in_array($cDiag, $cold_lists) === true ){
+          $nid_ext = 'ด้วยการอบไอน้ำสมุนไพร';
+      }
+      
+      print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการ $nid_ext "; 
+	  
+      // ถ้าเป็นแพทย์แผนไทย
+      if( $cDoctor2 === "MD058" ){
+          $diag_list = array('อัมพฤกษ์','อัมพาต','CVA');
+          $for_txt = 'เพื่อ การรักษา';
+          
+          if( in_array($cDiag, $diag_list) === true ){
+              $for_txt = 'เพื่อ ฟื้นฟูสมรรถภาพ';
+          }
+          
+          print $for_txt;
+          print "<br><br>";
       }else{
           print "เพื่อ.............................................................................<BR>";
-          print "<br>";
+          print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>";
       }
     
 	  print "<font face='Angsana New' size ='3'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
