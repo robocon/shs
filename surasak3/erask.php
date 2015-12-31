@@ -79,7 +79,7 @@
    $rowpt = mysql_query($sqlpt);
 ?>
 <form method="POST" action="prelab.php" onsubmit="return check();">
-<? echo "สิทธิการรักษา : ";?><select name="pt">
+	สิทธิการรักษา :<select name="pt">
    <?
    while($resultpt = mysql_fetch_array($rowpt)){
 	$re = $resultpt[0]." ".$resultpt[1];
@@ -104,8 +104,30 @@
 	}
    ?>
    </select>
-  <p><font face="Angsana New">&nbsp;&nbsp;<a target=_BLANK href='diaghlp.htm'>&#3650;&#3619;&#3588;</a>&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;<input type="text" name="diag" size="20">&nbsp;</font></p>
+  <p>
+	<style type="text/css">
+	.nid_diag{
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	</style>
+	<font face="Angsana New">&nbsp;&nbsp;
+		<a target=_BLANK href='diaghlp.htm'>โรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="text" name="diag" id="diag" size="20">
+		<span>คลิกเพื่อเพิ่ม Diag</span>&nbsp;
+		<span class="nid_diag" onclick="add_diag('อัมพฤกษ์')">อัมพฤกษ์</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('อัมพาต')" data-val="อัมพาต">อัมพาต</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('CVA')" data-val="CVA">CVA</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('ไข้หวัด')" data-val="CVA">ไข้หวัด</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('ภูมิแพ้')" data-val="CVA">ภูมิแพ้</span>
+  	</font>
+	<script type="text/javascript">
+		// เพิ่ม diag ลงในช่องว่าง
+		function add_diag(txt){
+			document.getElementById('diag').value = txt;
+		}
+	</script>
+  </p>
   <p><font face="Angsana New">&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
   </font><font face="Angsana New">
 
