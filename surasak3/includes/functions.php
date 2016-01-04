@@ -6,23 +6,35 @@ if (!defined('PHP_VERSION_ID')) {
 	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
-function pagination($total, $page = 1, $base = false, $limit = 50){
+function pagination($total, $page = 1, $params = false, $limit = 50){
 	
 	$total = ceil(( $total / $limit ));
 	
 	if( $total > 1 ){
 		
-		$base = ( $base === false ) ? DOMAIN_REQUEST : $base ;
 		
+		$base = ( $params !== false ) ? DOMAIN_REQUEST.'?'.$params.'&' : DOMAIN_REQUEST.'?' ;
+		dump($base);
+		// $base .= '?';
+		// if( count($_GET) > 0 ){
+		// 	$base .= '&';
+		// }
 		
 		?><div class="sm-pagging-contain"><?php
 		for( $i = 1; $i <= $total; $i++ ){
 			$active = ( $i == $page ) ? 'pagging-active' : '' ;
 			?>
-			<div class="sm-pagging <?=$active;?>"><a href="<?=$base;?>&page=<?=$i;?>"><?=$i;?></a></div>
+			<div class="sm-pagging <?=$active;?>"><a href="<?=$base;?>page=<?=$i;?>"><?=$i;?></a></div>
 			<?php
 		}
 		?></div><?php
+	}
+}
+
+if( !function_exists('input') ){
+	function input($t, $d = false){
+		$v = ( isset($_POST[$t]) ) ? trim($_POST[$t]) : ( ( isset($_GET[$t]) ) ? trim($_GET[$t]) : $d );
+		return htmlspecialchars(strip_tags($v));
 	}
 }
 

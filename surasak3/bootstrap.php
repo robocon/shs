@@ -143,8 +143,38 @@ class DB{
 		}
 	}
 	
+	/**
+	 * This function is calling after run() or exec()
+	 */
 	public static function rows(){
 		return self::$rows;
+	}
+	
+	public static function numRows($sql, $data){
+		$db = self::init();
+		$result = $db->execRows($sql, $data);
+		return $result;
+	}
+	
+	private function execRows($sql, $data){
+		try {
+			
+			$sth = $this->db->prepare($sql);
+			foreach($data as $key => &$value){
+				$sth->bindValue( $key, $value);
+			}
+			
+			// Exec prepareing
+			$sth->execute();
+			$count = $sth->rowCount();
+			return $count;
+			
+		} catch(exception $e) {
+			// Keep error into log file
+			$log_id = $this->set_log($e);
+			$msg = array('error' => $e->getMessage(), 'id' => $log_id);
+			return $msg;
+		}
 	}
 	
 	public static function exec($sql, $data = null){

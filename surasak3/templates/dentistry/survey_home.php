@@ -1,3 +1,12 @@
+<?php
+// ค่าปริยายในการแสดงผลวันที่ กรณีที่ไม่มี POST
+$default_date = ( date('Y') + 543 ).'-'.date('m');
+$filter_date = input('fix_date', $default_date);
+$filter_category = input('fix_category');
+
+$page = input('page', 1);
+?>
+
 <div class="col">
 	<div class="cell">
 		<h3>รายชื่อผู้ที่ทำการตรวจ</h3>
@@ -5,12 +14,11 @@
 			<fieldset>
 				<legend>ค้นหาตามหน่วยและวันที่</legend>
 				<?php
-				// ค่าปริยายในการแสดงผลวันที่ กรณีที่ไม่มี POST
-				$default_date = ( date('Y') + 543 ).'-'.date('m');
+				
 				?>
 				<div>
 					<label for="fix_date">แสดงผลตามวันที่ตรวจ</label>
-					<input type="text" id="fix_date" name="fix_date" value="<?php echo isset($_POST['fix_date']) ? $_POST['fix_date'] : $default_date ;?>">
+					<input type="text" id="fix_date" name="fix_date" value="<?=$filter_date?>">
 					<span style="font-size: 12px; ">* ใส่เดือนและวันที่เพื่อแสดงผลที่เฉพาะเจาะจงได้ ตัวอย่างเช่น 2558-10-26 เป็นต้น</span>
 				</div>
 				<div>
@@ -18,11 +26,11 @@
 					<?php $sql = "SELECT `id`,`name` FROM `survey_oral_category`"; ?>
 					<select name="fix_category" id="">
 						<option value="">ทุกหน่วย</option>
-						<option value="fix_mtb" <?php echo ( $_POST['fix_category'] == 'fix_mtb' ) ? 'selected="selected"' : ''; ?>>หน่วยที่เป็น มทบ.32</option>
+						<option value="fix_mtb" <?php echo ( $filter_category == 'fix_mtb' ) ? 'selected="selected"' : ''; ?>>หน่วยที่เป็น มทบ.32</option>
 						<?php
 						$items = DB::select($sql);
 						foreach ($items as $key => $item) {
-							$select = !empty($_POST['fix_category']) ? ( $_POST['fix_category'] === $item['id'] ? 'selected="selected"' : '' ) : '' ;
+							$select = !empty($filter_category) ? ( $filter_category === $item['id'] ? 'selected="selected"' : '' ) : '' ;
 							?><option value="<?php echo $item['id'];?>" <?php echo $select;?>><?php echo $item['name'];?></option><?php
 						}
 						?>
@@ -65,9 +73,6 @@
 			</thead>
 			<tbody>
 				<?php 
-				$filter_date = !empty($_POST['fix_date']) ? trim($_POST['fix_date']) : false ;
-				$filter_category = !empty($_POST['fix_category']) ? $_POST['fix_category'] : false ;
-				
 				$where = array();
 				if( $filter_date ){
 					$where[] = " a.`date` LIKE '$filter_date%'";
@@ -102,17 +107,26 @@
 				}else{
 					$where_is = "WHERE a.`hn` = '$hn' ";
 				}
-					
-			
+				
+				// LIMIT
+				$limit_at = 50;
+				$limit = " LIMIT 0, $limit_at";
+				if( $page > 1 ){
+					$limit_from = ( $page - 1 ) * $limit_at;
+					$limit = " LIMIT $limit_from, $limit_at";
+				}
+				
 				$sql = "
 				SELECT a.`id`,a.`hn`,a.`date`,a.`fullname`,b.`name` 
 				FROM `survey_oral` AS a 
 				LEFT JOIN `survey_oral_category` AS b ON b.`id` = a.`section`
 				$where_is
-				ORDER BY a.`id` DESC;
+				ORDER BY a.`id` DESC
 				";
-				$items = DB::select($sql);
-				$rows = DB::rows();
+				$rows = DB::numRows($sql); // All rows from query
+				
+				$items = DB::select($sql.$limit); // Rows with limit
+				// $rows = DB::rows();
 				$i = 1;
 				foreach($items as $item){
 					
@@ -134,9 +148,14 @@
 			</tbody>
 		</table>
 		<?php
+		dump(DOMAIN);
+		dump(WEB_REQUEST);
+		dump(DOMAIN_PATH);
+		dump(DOMAIN_REQUEST);
 		
+		$params = "fix_date=$filter_date&fix_category=$filter_category";
 		$page = isset($_GET['page']) ? trim($_GET['page']) : false ;
-		pagination($rows, $page);
+		pagination($rows, $page, $params);
 		?>
 	</div>
 </div>
