@@ -549,7 +549,7 @@ $structure = '../image_patient';
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
 <br>2...ส่งข้อมูล&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="sentkew.php">ส่งข้อมูลค้นบัตร </a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="sentkew.php" onclick="searchCard(event)" >ส่งข้อมูลค้นบัตร </a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="sentopd.php">ส่งข้อมูลคัดแยกกรณีออกใบสั่งยาเอง</a>
 
 <br> <br>&nbsp;&nbsp;&nbsp;
@@ -580,7 +580,25 @@ $structure = '../image_patient';
 <a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
+<script type="text/javascript">
+var addedKew = 0;
+function searchCard(ev){
+	if( addedKew === 0 ){
+		addedKew = 1;
+	}else{
+		alert('ส่งค้นบัตรเรียบร้อยแล้ว');
+		SMPreventDefault(ev);
+	}
+}
 
+function SMPreventDefault(ev){
+	if( !ev.returnValue ){
+		ev.returnValue = false; // For old IE(6,7,8,9)
+	}else{
+		ev.preventDefault();
+	}
+}
+</script>
 <?php
 include("unconnect.inc");
 ?>
