@@ -150,7 +150,6 @@ $page = input('page', 1);
 		<?php
 		// áºè§Ë¹éÒ
 		$params = "survey_oral.php?fix_date=$filter_date&fix_category=$filter_category";
-		$page = isset($_GET['page']) ? trim($_GET['page']) : false ;
 		pagination($rows, $page, $params, $limit_at);
 		?>
 	</div>

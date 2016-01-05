@@ -152,7 +152,8 @@ class DB{
 	
 	public static function numRows($sql, $data){
 		$db = self::init();
-		$result = $db->execRows($sql, $data);
+		$db->run($sql, $data); // @important execRows not work in PHP 5.1.x but the other version work well
+		$result = self::$rows;
 		return $result;
 	}
 	
