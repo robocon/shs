@@ -6,25 +6,23 @@ if (!defined('PHP_VERSION_ID')) {
 	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
+/**
+ * áºè§Ë¹éÒ
+ * $total	¨Ó¹Ç¹·Ñé§ËÁ´
+ * $page	Ë¹éÒ·Õè¡ÓÅÑ§áÊ´§
+ * $params	parameter µèÒ§æ
+ * $limit	¨Ó¹Ç¹·ÕèµéÍ§¡ÒÃãËéáÊ´§µèÍË¹éÒ
+ */
 function pagination($total, $page = 1, $params = false, $limit = 50){
-	
 	$total = ceil(( $total / $limit ));
-	
 	if( $total > 1 ){
-		
-		
-		$base = ( $params !== false ) ? DOMAIN_REQUEST.'?'.$params.'&' : DOMAIN_REQUEST.'?' ;
-		dump($base);
-		// $base .= '?';
-		// if( count($_GET) > 0 ){
-		// 	$base .= '&';
-		// }
-		
 		?><div class="sm-pagging-contain"><?php
 		for( $i = 1; $i <= $total; $i++ ){
 			$active = ( $i == $page ) ? 'pagging-active' : '' ;
+			
+			$url = DOMAIN_PATH.'/'.$params.'&page='.$i;
 			?>
-			<div class="sm-pagging <?=$active;?>"><a href="<?=$base;?>page=<?=$i;?>"><?=$i;?></a></div>
+			<div class="sm-pagging <?=$active;?>"><a href="<?=$url;?>"><?=$i;?></a></div>
 			<?php
 		}
 		?></div><?php

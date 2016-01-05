@@ -109,7 +109,8 @@ $page = input('page', 1);
 				}
 				
 				// LIMIT
-				$limit_at = 50;
+				$limit_from = 0;
+				$limit_at = 70;
 				$limit = " LIMIT 0, $limit_at";
 				if( $page > 1 ){
 					$limit_from = ( $page - 1 ) * $limit_at;
@@ -126,8 +127,7 @@ $page = input('page', 1);
 				$rows = DB::numRows($sql); // All rows from query
 				
 				$items = DB::select($sql.$limit); // Rows with limit
-				// $rows = DB::rows();
-				$i = 1;
+				$i = ( $limit_from > 0 ) ? $limit_from + 1 : 1 ;
 				foreach($items as $item){
 					
 					list($y, $m, $d) = explode('-', $item['date']);
@@ -148,14 +148,10 @@ $page = input('page', 1);
 			</tbody>
 		</table>
 		<?php
-		dump(DOMAIN);
-		dump(WEB_REQUEST);
-		dump(DOMAIN_PATH);
-		dump(DOMAIN_REQUEST);
-		
-		$params = "fix_date=$filter_date&fix_category=$filter_category";
+		// แบ่งหน้า
+		$params = "survey_oral.php?fix_date=$filter_date&fix_category=$filter_category";
 		$page = isset($_GET['page']) ? trim($_GET['page']) : false ;
-		pagination($rows, $page, $params);
+		pagination($rows, $page, $params, $limit_at);
 		?>
 	</div>
 </div>
