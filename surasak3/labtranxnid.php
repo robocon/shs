@@ -228,7 +228,7 @@ print "ใบอนุญาตประกอบอาชีพเวชกรรมเลขที่ &nbsp;$doctorcode<BR>";
 print "ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;เป็นโรค:&nbsp;&nbsp;$cDiag<BR>"; 
 print "เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;";
 $diag_list = array('อัมพฤกษ์','อัมพาต','CVA');
-if( $cDoctor2 === 'MD115' ){
+if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $cDoctor2 === 'MD089' ){
     if( in_array($cDiag, $diag_list) === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพ';
     }else{

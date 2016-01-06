@@ -87,7 +87,7 @@ print "<font face='Angsana New' size ='3'>ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname<
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
 
 $diag_list = array('อัมพฤกษ์','อัมพาต','CVA');
-if( $cDoctor2 === 'MD115' ){
+if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $cDoctor2 === 'MD089' ){
     if( in_array($cDiag, $diag_list) === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพ';
     }else{
