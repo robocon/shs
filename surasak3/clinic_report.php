@@ -255,7 +255,7 @@ div3.display = 'none';
       </td>
     </tr>
     <tr>
-      <td colspan="2" align="right">แพทย์: </td>
+      <td colspan="2" align="right">แพทย์ตรวจ: </td>
       <td><select name="doctor" id="doctor">
         <?php 
 		echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
@@ -270,6 +270,23 @@ div3.display = 'none';
 		?>
       </select></td>
     </tr>
+	<tr>
+		<td colspan="2" align="right">แพทย์ที่ใช้แสดงผล: </td>
+		<td>
+			<!-- ใช้เฉพาะกรณี เวรหมอคนที่ตรวจเต็มเท่านั้นเลยต้องใช้ชื่อหมอคนอื่นเบิก -->
+			<select name="doctor2" id="doctor2">
+				<option value="">-- กรุณาเลือกแพทย์ --</option>
+				<option value="ห้องตรวจโรคทั่วไป">ห้องตรวจโรคทั่วไป</option>
+				<?php 
+				$sql = "SELECT `name` FROM `doctor` WHERE `status` = 'y' ";
+				$result = mysql_query($sql);
+				while(list($name) = mysql_fetch_row($result)){
+					echo "<option value=\"$name\">$name</option>";
+				}
+				?>
+			</select>
+		</td>
+	</tr>
     <tr>
       <td colspan="3" align="center"><input name="button" type="submit" class="font1" id="button" value="ตกลง" />
       <a target=_self  href='../nindex.htm'> ไปเมนู </a> &nbsp;&nbsp; <a href="clinic_vip.php">เพิ่มข้อมูล</a></td>
@@ -361,13 +378,49 @@ switch($_POST['m_start']){
     <td colspan="2" align="center" id="no_print">จัดการ</td>
 
   </tr>
-  <? 
+  <?php
+  $doctor_replace = false;
+  $yot_replace = false;
+  $doctor2 = ( isset($_POST['doctor2']) && $_POST['doctor2'] != '' ) ? trim($_POST['doctor2']) : false ;
+	if( $doctor2 !== false ){
+		
+		$where = " `name` = '$doctor2'";
+		if( preg_match('/ว\.\d+/', $doctor2, $matchs) > 0 ){
+			$dr_code = substr($matchs['0'], 2);
+			
+			$where = " `doctorcode` = '$dr_code'";
+		}
+		
+		$sql = "SELECT `yot`,`yot2`,`name` FROM `doctor` WHERE $where";
+		$q = mysql_query($sql) or die( mysql_error() );
+		$item = mysql_fetch_assoc($q);
+		$doctor2 = $item['name'];
+		
+		$doctor_replace = substr($doctor2, 5);
+		$yot_replace = $item['yot'];
+		if(empty($item['yot'])){
+			$yot_replace = $item['yot2'];
+		}
+		
+	}
+  
   $run=1;
   $r=0;
    while($arr=@mysql_fetch_array($query)){ 
    
-   $yot=$arr['yot'];
-   $doctor=substr($arr['doctor'],5);
+   if( $yot_replace !== false ){
+	   $yot = $yot_replace;
+   }else{
+	   $yot = $arr['yot'];
+   }
+   
+   
+   if( $doctor_replace !== false ){
+	   $doctor = $doctor_replace;
+   }else{
+	   $doctor=substr($arr['doctor'],5);
+   }
+   
    
    global  $yot,$doctor;
 
