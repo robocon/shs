@@ -6,6 +6,7 @@ if( isset($_SESSION['sIdname']) ){
 	redirect('../nindex.htm');
 }
 
+// redirect to where are you from
 $match = preg_match('/login\_page/', $_SERVER['HTTP_REFERER']);
 if( isset($_SERVER['HTTP_REFERER']) && $match === 0 ){
 	$actual_link = "http://$_SERVER[HTTP_HOST]/sm3/surasak3/";
@@ -30,6 +31,10 @@ if( $action === 'login' ){
 	
 	$item = DB::select($sql, $data, true);
 	if( $item ){
+		
+		// Set session to one day
+		ini_set('session.gc_maxlifetime', 60*60*24);
+		
 		$_SESSION['sIdname'] = $item['idname'];
 		$_SESSION['sPword'] = $item['pword'];
 		$_SESSION['smenucode'] = $item['menucode'];
@@ -40,11 +45,11 @@ if( $action === 'login' ){
 		$refer = isset($_SESSION['refer']) ? $_SESSION['refer'] : '../nindex.htm';
 	
 		header('Location: '.$refer);
+		exit;
 	}else{
-		?>
-		<p>ชื่อผู้ใช้งาน หรือ รหัสผ่านผิดพลาด กรุณาตรวจสอบอีกครั้ง</p>
-		<p><a href="login_page.php">คลิกที่นี่</a> เพื่อเข้าสู่ระบบอีกครั้ง</p>
-		<?php
+		
+		$_SESSION['x-msg'] = 'ชื่อผู้ใช้งาน หรือ รหัสผ่านผิดพลาด กรุณาตรวจสอบอีกครั้ง';
+		redirect('login_page.php');
 		exit;
 	}
 	
@@ -71,36 +76,35 @@ include 'templates/classic/header.php';
 	<div class="site-body panel">
 		<div class="body">
 			<div class="cell">
-				
 				<div class="col">
 					<div class="cell">
-						
 						<div class="form-contain">
-							
-						
-						<h3>เข้าสู่ระบบ Intranet รพ.ค่ายฯ</h3>
-						<form action="login_page.php" method="post">
-							<div class="col">
-								<div class="cell">
-									<label for="">ชื่อผู้ใช้งาน</label>
-									<input type="text" name="username">
+							<h3>เข้าสู่ระบบ Intranet รพ.ค่ายฯ</h3>
+							<?php
+							if( isset($_SESSION['x-msg']) ){
+								?><div class="notify-warning"><?=$_SESSION['x-msg'];?></div><?php
+								unset($_SESSION['x-msg']);
+							}
+							?>
+							<form action="login_page.php" method="post">
+								<div class="col">
+									<div class="cell">
+										<label for="">ชื่อผู้ใช้งาน</label>
+										<input type="text" name="username">
+									</div>
 								</div>
-							</div>
-							<div class="col">
-								<div class="cell">
-									<label for="">รหัสผ่าน</label>
-									<input type="password" name="password">
+								<div class="col">
+									<div class="cell">
+										<label for="">รหัสผ่าน</label>
+										<input type="password" name="password">
+									</div>
 								</div>
-							</div>
-							<button type="submit">เข้าสู่ระบบ</button>
-							<input type="hidden" name="action" value="login">
-						</form>
-						
+								<button type="submit">เข้าสู่ระบบ</button>
+								<input type="hidden" name="action" value="login">
+							</form>
 						</div>
-						
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>

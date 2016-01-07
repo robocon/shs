@@ -21,7 +21,8 @@ $content = isset($content) ? $content : '' ;
         <meta name="description" content="<?php echo $content;?>">
         <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        
+        <script src="templates/classic/main.js"></script>
         <script src="assets/js/module/jquery/jquery-1.11.1.min.js"></script>
         <script src="jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.js"></script>
         
