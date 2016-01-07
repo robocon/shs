@@ -49,11 +49,22 @@ table {
 }
 
 /* Default style */
+/*
 @font-face{
-	font-family:THSarabunNew;
-	src: url(fonts/THSarabunNew.eot);
+	font-family: 'Trirong-Regular';
+	src: url('fonts/Trirong-Regular.eot');
+	src: url('fonts/Trirong-Regular.eot?#iefix') format('embedded-opentype'),
+	url('fonts/Trirong-Regular.woff2') format('woff2'),
+	url('fonts/Trirong-Regular.woff') format('woff'),
+	url('fonts/Trirong-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
-
+*/
+body{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12pt;
+}
 b{ font-weight: bold; }
 table{
 	width: 100%;
@@ -212,8 +223,8 @@ ol ol{
 		display: none;
 	}
 	table{
-		font-family: THSarabunNew;
-		font-size: 16px;
+		/*font-family: 'Trirong-Regular';*/
+		/*font-size: 16px;*/
 	}
 }
 /* Set center column */

@@ -1,5 +1,5 @@
 <?php
-if( !defined('_SURVEY') ) die('asdfasdf');
+if( !defined('_SURVEY') ) die('access deny');
 
 // Default value is for save
 $def_action = 'section_form_save';

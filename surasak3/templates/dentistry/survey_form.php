@@ -1,4 +1,3 @@
-<?php // include from survey_oral.php ?>
 <?php
 $title = 'เพิ่ม';
 $action = 'save';

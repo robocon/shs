@@ -1,35 +1,34 @@
 <?php
-$start_current_year = (date('Y')+543).'-01-01';
-$end_current_year = (date('Y')+543).'-12-31';
-$sql = "
-SELECT `date`, `max_status`, COUNT(`id`) AS `rows`
-FROM `survey_oral` 
-WHERE `date` >= :date_start AND `date` <= :date_end 
-GROUP BY `date` ,`max_status`
-ORDER BY `date` DESC
-";
-$items = DB::select($sql, array(':date_start' => $start_current_year, ':date_end' => $end_current_year));
 
-$new_item_lists = array();
-$total_item_list = array();
-
-foreach ($items as $key => $item) {
-	$set_key = $item['date']; // ตั้งคีย์เพื่อแยกตามวัน
-	$total_item_list[$set_key] += $item['rows']; // จำนวนรวมในแต่ละวัน
-	
-	$set_max_status = $item['max_status'];
-	$new_item_lists[$set_key][$set_max_status] = $item['rows'];
-	
-}
+$default_date = ( date('Y') + 543 );
+$year = input('year', $default_date);
+$show = input('show');
 
 ?>
 <div class="col">
 	<div class="cell">
 		<h3>ผลการสำรวจสภาวะสุขภาพช่องปากกำลังพล ทบ.</h3>
+		
+		<form class="no-print" action="survey_oral.php" method="post">
+			<div class="cell">
+				<div class="col">
+					<label for="year">ปีที่ต้องการแสดงผล</label>
+					<input type="text" id="year" name="year" value="<?=$year?>">
+				</div>
+			</div>
+			<div class="cell">
+				<div class="col">
+					<button type="submit">แสดงผล</button>
+					<input type="hidden" name="task" value="report">
+					<input type="hidden" name="show" value="true">
+				</div>
+			</div>
+		</form>
+		<?php if( $show === 'true' ){ ?>
 		<table class="custom-table outline-header border box-header outline">
 			<thead>
 				<tr>
-					<th rowspan="2">วันที่</th>
+					<th rowspan="2" width="25%">วันที่</th>
 					<th rowspan="2">จำนวนผู้ได้รับการตรวจสุขภาพช่องปาก (ราย)</th>
 					<th colspan="5" class="align-center">ระดับสภาวะสุขภาพช่องปาก(ราย)</th>
 				</tr>
@@ -43,13 +42,38 @@ foreach ($items as $key => $item) {
 			</thead>
 			<tbody>
 				<?php 
-					foreach($new_item_lists as $key => $items){
-						
-						list($y, $m, $d) = explode('-', $key);
-						$th_month = $full_months[$m];
-						$date = $d.' '.$th_month.' '.$y;
-						
-						$total = $total_item_list[$key];
+				
+				$start_current_year = $year.'-01-01';
+				$end_current_year = $year.'-12-31';
+				
+				$sql = "
+				SELECT `date`, `max_status`, COUNT(`id`) AS `rows`
+				FROM `survey_oral` 
+				WHERE `date` >= :date_start AND `date` <= :date_end 
+				GROUP BY `date` ,`max_status`
+				ORDER BY `date` DESC
+				";
+				$items = DB::select($sql, array(':date_start' => $start_current_year, ':date_end' => $end_current_year));
+				
+				$new_item_lists = array();
+				$total_item_list = array();
+				
+				foreach ($items as $key => $item) {
+					$set_key = $item['date']; // ตั้งคีย์เพื่อแยกตามวัน
+					$total_item_list[$set_key] += $item['rows']; // จำนวนรวมในแต่ละวัน
+					
+					$set_max_status = $item['max_status'];
+					$new_item_lists[$set_key][$set_max_status] = $item['rows'];
+					
+				}
+				
+				foreach($new_item_lists as $key => $items){
+					
+					list($y, $m, $d) = explode('-', $key);
+					$th_month = $full_months[$m];
+					$date = $d.' '.$th_month.' '.$y;
+					
+					$total = $total_item_list[$key];
 				?>
 				<tr>
 					<td><?php echo $date;?></td>
@@ -69,9 +93,10 @@ foreach ($items as $key => $item) {
 				?>
 				</tr>
 				<?php
-					}
+				}
 				?>
 			</tbody>
 		</table>
+		<?php } ?>
 	</div>
 </div>
