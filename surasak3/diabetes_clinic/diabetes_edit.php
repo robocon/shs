@@ -976,7 +976,7 @@ $items = array(
 'admit_dia','dt_heart','dt_brain','height','weight','round','temperature','pause','rate','bp1',
 'bp2','retinal_date','retinal','foot_date','foot','tooth_date','tooth', 'l_ua'
 );
-$_POST = filter_post($items);
+// $_POST = filter_post($items);
 
 // Retinal and Foot Exam
 	

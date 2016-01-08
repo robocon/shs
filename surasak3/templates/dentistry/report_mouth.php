@@ -26,8 +26,6 @@ $mouth_items = array(
 			<?php
 			// ค่าปริยายในการแสดงผลวันที่ กรณีที่ไม่มี POST
 			$date = !empty($_POST['date']) ? trim($_POST['date']) : ( date('Y') + 543 ).'-'.date('m') ;
-			// $so_date = bc_to_ad($date) ;
-			// $yearcheckup = !empty($_POST['yearcheckup']) ? trim($_POST['yearcheckup']) : date('Y') + 543 ;
 			?>
 			<div>
 				แสดงผลตามวันที่ <input type="text" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : $date ;?>">
@@ -53,9 +51,14 @@ $mouth_items = array(
 				</select>
 			</div>
 				<button type="submit">เลือกการแสดงผล</button>
+				<input type="hidden" name="show" value="true">
 			</div>
 		</form>
 		<?php
+		
+		$show = input('show');
+		if( $show !== false ){
+			
 		if( strpos($date, '-') !== false ){
 			$d_list = explode('-', $date);
 			if( count($d_list) === 2 ){
@@ -171,36 +174,33 @@ $mouth_items = array(
 				endforeach;
 				
 				
-				// รายชื่อ HN ที่มีอยู่ในระบบของตรวจสุขภาพฟัน
-				// $sql = "SELECT `hn` 
-				// 	FROM `survey_oral` 
-				// 	WHERE `date` LIKE '$date%' 
-				// 	$where_is
-				// 	";
-				// $items = DB::select($sql);
-				// $notin_hn = array();
 				
-				// $test_count = 0;
-				// foreach($items as $key => $item){
-				// 	$notin_hn[] = " '{$item['hn']}' ";
-				// 	$test_count++;
-				// }
-				// $notin_txt = ' AND `hn` NOT IN ('.implode(',', $notin_hn).')';
-				
-				
-				
-				// จำนวนคนที่มาตรวจจาก OPD
-				// $ad_date = bc_to_ad($date);
-// 				$sql = "SELECT  COUNT(`hn`) AS `rows`
-// FROM  `condxofyear_so` 
-// WHERE  `yearcheck` LIKE  '$year_checkup' 
-// AND `thidate` LIKE '$ad_date%'
-// 				";
+				/*
+				DROP TEMPORARY TABLE IF EXISTS `condxso_tmp`;
+CREATE TEMPORARY TABLE `condxso_tmp` 
+SELECT * FROM `condxofyear_so`;
+
+DROP TEMPORARY TABLE IF EXISTS `survey_tmp`;
+CREATE TEMPORARY TABLE `survey_tmp` 
+SELECT b.`hn` FROM `survey_oral` AS b
+WHERE b.`yearcheck` = '59' 
+GROUP BY b.`hn`;
+
+SELECT COUNT(c.`hn`) AS `rows`
+FROM `condxso_tmp` AS c
+WHERE c.`yearcheck` LIKE  '2559'
+AND c.`hn` NOT IN (
+	SELECT b.`hn` FROM `survey_tmp` AS b
+)
+
+*/
 				
 				
 				
-				// $sql .= $notin_txt;
-				// $sql .= " GROUP BY `hn`";
+				
+				
+				
+				
 				
 $sql = "SELECT COUNT(a.`hn`) AS `rows`
 FROM (
@@ -234,8 +234,8 @@ $sql .= "GROUP BY b.`hn`
 ) AS a";
 				
 				
-				// dump($sql);
-				$item = DB::select($sql, null, true);
+				dump($sql);
+				// $item = DB::select($sql, null, true);
 				// dump($item);
 				
 				// มาตรวจที่ OPD แต่ไม่ได้ตรวจฟัน
@@ -269,5 +269,6 @@ $sql .= "GROUP BY b.`hn`
 			window.print();
 		}
 		</script>
+		<?php } // End if show ?>
 	</div>
 </div>
