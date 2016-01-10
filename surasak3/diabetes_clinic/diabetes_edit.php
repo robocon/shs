@@ -6,6 +6,186 @@ require "../includes/functions.php";
 // Verify user before load content
 if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
 
+// บันทึกข้อมูล
+if(isset($_REQUEST['do']) && $_REQUEST['do']=='save'){
+
+$dateN = date("Y-m-d");
+
+// $ht_etc = filter_input(INPUT_POST, 'ht_etc', FILTER_SANITIZE_STRING);
+$ht_etc = isset($_POST['ht_etc']) ? implode(',', $_POST['ht_etc']) : '' ;
+unset($_POST['ht_etc']);
+
+$_POST['l_ua'] = $_POST['protein']['0'];
+
+	$date_footcare = input('date_footcare', NULL);
+	$date_nutrition = input('date_nutrition', NULL);
+	
+
+// Filter $_POST with white list
+// $items = array(
+// 'dm_no','thaidate','hn','doctor','ptright','dbirth','sex','dia1','nosis_d','ht','ht_d','cigarette','bw','bmi',
+// 'bs','hba','ldl','cr','ur','micro','foot_care','Nutrition','Exercise','Smoking',
+// 'admit_dia','dt_heart','dt_brain','height','weight','round','temperature','pause','rate','bp1',
+// 'bp2','retinal_date','retinal','foot_date','foot','tooth_date','tooth', 'l_ua'
+// );
+// $_POST = filter_post($items);
+
+// Retinal and Foot Exam
+	
+// อัพเดทข้อมูลในตาราง
+$strSQL = "UPDATE diabetes_clinic  SET ";
+$strSQL .="dm_no = '".$_POST["dm_no"]."' ";
+$strSQL .=",thidate = '".$_POST["thaidate"]."' ";
+$strSQL .=",dateN = '".$dateN."' ";
+$strSQL .=",hn = '".$_POST["hn"]."' ";
+$strSQL .=",doctor = '".$_POST["doctor"]."' ";
+$strSQL .=",ptright = '".$_POST["ptright"]."' ";
+$strSQL .=",dbbirt = '".$_POST["dbirth"]."' ";
+$strSQL .=",sex = '".$_POST["sex"]."' ";
+$strSQL .=",diagnosis = '".$_POST["dia1"]."' ";
+$strSQL .=",diagdetail = '".$_POST["nosis_d"]."' ";
+$strSQL .=",ht = '".$_POST["ht"]."' ";
+$strSQL .=",htdetail = '".$_POST["ht_d"]."' ";
+$strSQL .=",smork = '".$_POST["cigarette"]."' ";
+$strSQL .=",bw = '".$_POST["bw"]."' ";
+$strSQL .=",bmi = '".$_POST["bmi"]."' ";
+$strSQL .=",retinal = '{$_POST['retinal']}' ";
+$strSQL .=",foot = '{$_POST['foot']}' ";
+$strSQL .=",l_bs = '".$_POST["bs"]."' ";
+$strSQL .=",l_hbalc = '".$_POST["hba"]."' ";
+$strSQL .=",l_ldl = '".$_POST["ldl"]."' ";
+$strSQL .=",l_creatinine = '".$_POST["cr"]."' ";
+$strSQL .=",l_urine = '".$_POST["ur"]."' ";
+$strSQL .=",l_microal = '".$_POST["micro"]."' ";
+$strSQL .=",foot_care = '".$_POST["foot_care"]."' ";
+$strSQL .=",nutrition = '".$_POST["Nutrition"]."' ";
+$strSQL .=",exercise = '".$_POST["Exercise"]."' ";
+$strSQL .=",smoking = '".$_POST["Smoking"]."' ";
+$strSQL .=",admit_dia = '".$_POST["admit_dia"]."' ";
+$strSQL .=",dt_heart = '".$_POST["dt_heart"]."' ";
+$strSQL .=",dt_brain = '".$_POST["dt_brain"]."' ";
+$strSQL .=",height = '".$_POST["height"]."' ";
+$strSQL .=",weight = '".$_POST["weight"]."' ";
+$strSQL .=",round = '".$_POST["round"]."' ";
+$strSQL .=",temperature = '".$_POST["temperature"]."' ";
+$strSQL .=",pause = '".$_POST["pause"]."' ";
+$strSQL .=",rate = '".$_POST["rate"]."' ";
+$strSQL .=",bp1 = '".$_POST["bp1"]."' ";
+$strSQL .=",bp2 = '".$_POST["bp2"]."' ";
+$strSQL .=",officer_edit = '$sOfficer' ";
+$strSQL .=",ht_etc = '$ht_etc' ";
+$strSQL .=",retinal_date = '{$_POST['retinal_date']}' ";
+$strSQL .=",foot_date = '{$_POST['foot_date']}' ";
+$strSQL .=",tooth_date = '{$_POST['tooth_date']}' ";
+$strSQL .=",tooth = '{$_POST['tooth']}' ";
+$strSQL .=",l_ua = '{$_POST['l_ua']}' ";
+$strSQL .=",date_footcare = '$date_footcare' ";
+$strSQL .=",date_nutrition = '$date_nutrition' ";
+$strSQL .="WHERE hn = '".$_POST['hn']."' ";
+$objQuery = mysql_query($strSQL) or die( mysql_error() );
+
+$dm_no = $_POST["dm_no"];
+
+// Generate random number for history
+// $dummy_no = uniqid();
+$dummy_no = '';
+for($i = 0; $i < 8; $i++){
+	$dummy_no .= rand(0, 9);
+}
+
+$added_date = date('Y-m-d H:i:s');
+$sIdname = isset($_SESSION['sIdname']) ? $_SESSION['sIdname'] : null ;
+if($sIdname === null){
+	$sIdname =  isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
+}
+
+////////////////////
+// บันทึกข้อมูลประวัติย้อนหลัง
+////////////////////
+$insert = "INSERT INTO diabetes_clinic_history 
+(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth,l_ua,date_footcare,date_nutrition) 
+VALUES 
+('$dm_no','".$_POST["thaidate"]."','".$dateN."','".$_POST["hn"]."','".$_POST["doctor"]."','".$_POST["ptname"]."','".$_POST["ptright"]."','".$_POST["dbirth"]."','".$_POST["sex"]."','".$_POST["dia1"]."','".$_POST["nosis_d"]."','".$_POST["ht"]."','".$_POST["ht_d"]."','".$_POST["cigarette"]."','".$_POST["bw"]."','".$_POST["bmi"]."','$retinal','$foot','".$_POST["bs"]."','".$_POST["hba"]."','".$_POST["ldl"]."','".$_POST["cr"]."','".$_POST["ur"]."','".$_POST["micro"]."','".$_POST["foot_care"]."','".$_POST["Nutrition"]."','".$_POST["Exercise"]."','".$_POST["Smoking"]."','".$_POST["admit_dia"]."','".$_POST["dt_heart"]."','".$_POST["dt_brain"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$sOfficer."','','$added_date','$added_date','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth','".$_POST['l_ua']."','$date_footcare','$date_nutrition')";
+$insert_query = mysql_query($insert) or die( mysql_error() );
+
+
+// $dm_no = $_POST["dm_no"];
+if(isset($_POST['bs'])){
+	$strSQL1  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','BS','".$_POST["datebs0"]."','".$_POST["bs"]."','$dummy_no')";
+	$objQuery1 = mysql_query($strSQL1);
+}
+
+if(isset($_POST['hba'])){
+	$strSQL2  = "INSERT INTO diabetes_lab
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','HbA1c','".$_POST["datehba0"]."','".$_POST["hba"]."','$dummy_no')";
+	$objQuery2 = mysql_query($strSQL2);
+}
+
+if(isset($_POST['ldl'])){
+	$strSQL3  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','LDL','".$_POST["dateldl0"]."','".$_POST["ldl"]."','$dummy_no')";
+	$objQuery3 = mysql_query($strSQL3);	
+}
+
+if(isset($_POST['cr'])){
+	$strSQL4  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','Creatinine','".$_POST["datecr0"]."','".$_POST["cr"]."','$dummy_no')";
+	$objQuery4 = mysql_query($strSQL4);	
+}
+
+if(isset($_POST['ur'])){
+	$strSQL5  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','Urine protein','".$_POST["dateur0"]."','".$_POST["ur"]."','$dummy_no')";
+	$objQuery5 = mysql_query($strSQL5);
+}
+
+if(isset($_POST['micro'])){
+	$strSQL6  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','Urine Microalbumin','".$_POST["datemicro$i6"]."','".$_POST["micro"]."','$dummy_no')";
+	$objQuery6 = mysql_query($strSQL6);
+}
+
+// Update ua
+if(isset($_POST['l_ua'])){
+	$strSQL6  = "INSERT INTO diabetes_lab 
+	(dm_no,labname,dateY,result_lab,dummy_no) 
+	VALUES 
+	('$dm_no','Protein','".$_POST['protein-date']['0']."','".$_POST['protein']['0']."','$dummy_no')";
+	$objQuery6 = mysql_query($strSQL6);
+}
+
+
+if($objQuery){
+	echo "บันทึกข้อมูลเรียบร้อยแล้ว";
+	print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=diabetes_edit.php'>";
+}else{
+	echo "ไม่สามารถบันทึกข้อมูลได้  กรุณาตรวจสอบ Dm_number ว่ามีแล้วหรือยัง !! ";
+	print "<META HTTP-EQUIV='Refresh' CONTENT='5;URL=diabetes_edit.php'>";
+}
+
+}
+
+
+
+
+
+
+
+
+
 require "header.php";
 ?>
 <script type="text/javascript">
@@ -14,6 +194,8 @@ window.onload = function() {
 	popup1 = new Epoch('popup1','popup',document.getElementById('retinal'),false);
 	popup2 = new Epoch('popup2','popup',document.getElementById('foot'),false);
 	popup3 = new Epoch('popup3','popup',document.getElementById('tooth'),false);
+	popup4 = new Epoch('popup4','popup',document.getElementById('date_footcare'),false);
+	popup5 = new Epoch('popup5','popup',document.getElementById('date_nutrition'),false);
 };
 </script>
 <?php
@@ -594,7 +776,7 @@ ORDER BY dateY DESC
    </td>
    </tr>
    
-     <?
+     <?php
       $laball2="SELECT result,unit,orderdate 
 	  FROM  resultdetail AS a, 
 	  resulthead AS b 
@@ -858,19 +1040,57 @@ ORDER BY dateY DESC
 	              <td><table border="0" class="forntsarabun1">
 	                <tr>
 	                  <td class="tb_font_2">Foot care</td>
-	                  <td><input type="radio" name="foot_care" id="radio" value="1" <? if($arrdm['foot_care']=='1'){ echo "checked"; }?>/>
-	                  ให้ความรู้
-	                   
-	                        <input type="radio" name="foot_care" id="radio" value="0" <? if($arrdm['foot_care']=='0'){ echo "checked"; }?> />
-	                        ไม่ได้ให้ความรู้
+	                  <td>
+						  
+						<input type="radio" name="foot_care" id="radio" value="1" onclick="dateFootCare(this)" <?php if($arrdm['foot_care']=='1'){ echo "checked"; }?>/>
+						ให้ความรู้
+						
+						<input type="radio" name="foot_care" id="radio" value="0" onclick="dateFootCare(this)" <?php if($arrdm['foot_care']=='0'){ echo "checked"; }?> />
+						ไม่ได้ให้ความรู้
+						
+						<?php $display = ( $arrdm['foot_care']=='1' ) ? 'inline' : 'none' ; ?>
+						<div id="footcare-contain" style="display: <?=$display;?>;">
+							<label for="date_footcare">
+								&nbsp;เลือกวันที่ <input type="text" id="date_footcare" name="date_footcare" size="10" value="<?=$arrdm['date_footcare'];?>">
+							</label>
+						</div>
+						
+						<script type="text/javascript">
+							var dateFootCare = function(fc){
+								if(fc.value === '1'){
+									document.getElementById('footcare-contain').style.display = 'inline';
+								}else{
+									document.getElementById('footcare-contain').style.display = 'none';
+								}
+							}
+						</script>
 					</td>
 	                  </tr>
 	                <tr>
 	                  <td class="tb_font_2">Nutrition</td>
-	                  <td><input type="radio" name="Nutrition" id="radio1" value="1"  <? if($arrdm['nutrition']=='1'){ echo "checked"; }?> />
-	                    ให้ความรู้
-    <input type="radio" name="Nutrition" id="radio1" value="0"  <? if($arrdm['nutrition']=='0'){ echo "checked"; }?> />
-    ไม่ได้ให้ความรู้</td>
+					<td>
+						<input type="radio" name="Nutrition" id="radio1" value="1" onclick="dateFood(this)" <?php if($arrdm['nutrition']=='1'){ echo "checked"; }?> />
+						ให้ความรู้
+						
+						<input type="radio" name="Nutrition" id="radio1" value="0" onclick="dateFood(this)" <?php if($arrdm['nutrition']=='0'){ echo "checked"; }?> />
+						ไม่ได้ให้ความรู้
+						
+						<?php $display = ( $arrdm['foot_care']=='1' ) ? 'inline' : 'none' ; ?>
+						<div id="food-contain" style="display: <?=$display;?>;">
+							<label for="date_nutrition">
+								&nbsp;เลือกวันที่ <input type="text" id="date_nutrition" name="date_nutrition" size="10" value="<?=$arrdm['date_nutrition'];?>">
+							</label>
+						</div>
+						<script type="text/javascript">
+							var dateFood = function(fc){
+								if(fc.value === '1'){
+									document.getElementById('food-contain').style.display = 'inline';
+								}else{
+									document.getElementById('food-contain').style.display = 'none';
+								}
+							}
+						</script>
+					</td>
 	                  </tr>
 	                <tr>
 	                  <td class="tb_font_2">Exercise</td>
@@ -959,175 +1179,6 @@ ORDER BY dateY DESC
 }
 // include("../unconnect.inc");
 
-if(isset($_REQUEST['do']) && $_REQUEST['do']=='save'){
 
-$dateN=date("Y-m-d");
-
-// $ht_etc = filter_input(INPUT_POST, 'ht_etc', FILTER_SANITIZE_STRING);
-$ht_etc = isset($_POST['ht_etc']) ? implode(',', $_POST['ht_etc']) : '' ;
-unset($_POST['ht_etc']);
-
-$_POST['l_ua'] = $_POST['protein']['0'];
-
-// Filter $_POST with white list
-$items = array(
-'dm_no','thaidate','hn','doctor','ptright','dbirth','sex','dia1','nosis_d','ht','ht_d','cigarette','bw','bmi',
-'bs','hba','ldl','cr','ur','micro','foot_care','Nutrition','Exercise','Smoking',
-'admit_dia','dt_heart','dt_brain','height','weight','round','temperature','pause','rate','bp1',
-'bp2','retinal_date','retinal','foot_date','foot','tooth_date','tooth', 'l_ua'
-);
-// $_POST = filter_post($items);
-
-// Retinal and Foot Exam
-	
-// อัพเดทข้อมูลในตาราง
-$strSQL = "UPDATE diabetes_clinic  SET ";
-$strSQL .="dm_no = '".$_POST["dm_no"]."' ";
-$strSQL .=",thidate = '".$_POST["thaidate"]."' ";
-$strSQL .=",dateN = '".$dateN."' ";
-$strSQL .=",hn = '".$_POST["hn"]."' ";
-$strSQL .=",doctor = '".$_POST["doctor"]."' ";
-$strSQL .=",ptright = '".$_POST["ptright"]."' ";
-$strSQL .=",dbbirt = '".$_POST["dbirth"]."' ";
-$strSQL .=",sex = '".$_POST["sex"]."' ";
-$strSQL .=",diagnosis = '".$_POST["dia1"]."' ";
-$strSQL .=",diagdetail = '".$_POST["nosis_d"]."' ";
-$strSQL .=",ht = '".$_POST["ht"]."' ";
-$strSQL .=",htdetail = '".$_POST["ht_d"]."' ";
-$strSQL .=",smork = '".$_POST["cigarette"]."' ";
-$strSQL .=",bw = '".$_POST["bw"]."' ";
-$strSQL .=",bmi = '".$_POST["bmi"]."' ";
-$strSQL .=",retinal = '{$_POST['retinal']}' ";
-$strSQL .=",foot = '{$_POST['foot']}' ";
-$strSQL .=",l_bs = '".$_POST["bs"]."' ";
-$strSQL .=",l_hbalc = '".$_POST["hba"]."' ";
-$strSQL .=",l_ldl = '".$_POST["ldl"]."' ";
-$strSQL .=",l_creatinine = '".$_POST["cr"]."' ";
-$strSQL .=",l_urine = '".$_POST["ur"]."' ";
-$strSQL .=",l_microal = '".$_POST["micro"]."' ";
-$strSQL .=",foot_care = '".$_POST["foot_care"]."' ";
-$strSQL .=",nutrition = '".$_POST["Nutrition"]."' ";
-$strSQL .=",exercise = '".$_POST["Exercise"]."' ";
-$strSQL .=",smoking = '".$_POST["Smoking"]."' ";
-$strSQL .=",admit_dia = '".$_POST["admit_dia"]."' ";
-$strSQL .=",dt_heart = '".$_POST["dt_heart"]."' ";
-$strSQL .=",dt_brain = '".$_POST["dt_brain"]."' ";
-$strSQL .=",height = '".$_POST["height"]."' ";
-$strSQL .=",weight = '".$_POST["weight"]."' ";
-$strSQL .=",round = '".$_POST["round"]."' ";
-$strSQL .=",temperature = '".$_POST["temperature"]."' ";
-$strSQL .=",pause = '".$_POST["pause"]."' ";
-$strSQL .=",rate = '".$_POST["rate"]."' ";
-$strSQL .=",bp1 = '".$_POST["bp1"]."' ";
-$strSQL .=",bp2 = '".$_POST["bp2"]."' ";
-$strSQL .=",officer_edit = '$sOfficer' ";
-$strSQL .=",ht_etc = '$ht_etc' ";
-$strSQL .=",retinal_date = '{$_POST['retinal_date']}' ";
-$strSQL .=",foot_date = '{$_POST['foot_date']}' ";
-$strSQL .=",tooth_date = '{$_POST['tooth_date']}' ";
-$strSQL .=",tooth = '{$_POST['tooth']}' ";
-$strSQL .=",l_ua = '{$_POST['l_ua']}' ";
-$strSQL .="WHERE hn = '".$_POST['hn']."' ";
-$objQuery = mysql_query($strSQL);
-
-$dm_no = $_POST["dm_no"];
-
-// Generate random number for history
-// $dummy_no = uniqid();
-$dummy_no = '';
-for($i = 0; $i < 8; $i++){
-	$dummy_no .= rand(0, 9);
-}
-
-$added_date = date('Y-m-d H:i:s');
-$sIdname = isset($_SESSION['sIdname']) ? $_SESSION['sIdname'] : null ;
-if($sIdname === null){
-	$sIdname =  isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
-}
-
-////////////////////
-// บันทึกข้อมูลประวัติย้อนหลัง
-////////////////////
-$insert = "INSERT INTO diabetes_clinic_history 
-(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth,l_ua) 
-VALUES 
-('$dm_no','".$_POST["thaidate"]."','".$dateN."','".$_POST["hn"]."','".$_POST["doctor"]."','".$_POST["ptname"]."','".$_POST["ptright"]."','".$_POST["dbirth"]."','".$_POST["sex"]."','".$_POST["dia1"]."','".$_POST["nosis_d"]."','".$_POST["ht"]."','".$_POST["ht_d"]."','".$_POST["cigarette"]."','".$_POST["bw"]."','".$_POST["bmi"]."','$retinal','$foot','".$_POST["bs"]."','".$_POST["hba"]."','".$_POST["ldl"]."','".$_POST["cr"]."','".$_POST["ur"]."','".$_POST["micro"]."','".$_POST["foot_care"]."','".$_POST["Nutrition"]."','".$_POST["Exercise"]."','".$_POST["Smoking"]."','".$_POST["admit_dia"]."','".$_POST["dt_heart"]."','".$_POST["dt_brain"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$sOfficer."','','$added_date','$added_date','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth','".$_POST['l_ua']."')";
-$insert_query = mysql_query($insert);
-
-
-// $dm_no = $_POST["dm_no"];
-if(isset($_POST['bs'])){
-	$strSQL1  = "INSERT INTO diabetes_lab 
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','BS','".$_POST["datebs0"]."','".$_POST["bs"]."','$dummy_no')";
-	$objQuery1 = mysql_query($strSQL1);
-}
-
-if(isset($_POST['hba'])){
-	$strSQL2  = "INSERT INTO diabetes_lab
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','HbA1c','".$_POST["datehba0"]."','".$_POST["hba"]."','$dummy_no')";
-	$objQuery2 = mysql_query($strSQL2);
-}
-
-if(isset($_POST['ldl'])){
-	$strSQL3  = "INSERT INTO diabetes_lab 
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','LDL','".$_POST["dateldl0"]."','".$_POST["ldl"]."','$dummy_no')";
-	$objQuery3 = mysql_query($strSQL3);	
-}
-
-if(isset($_POST['cr'])){
-	$strSQL4  = "INSERT INTO diabetes_lab 
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','Creatinine','".$_POST["datecr0"]."','".$_POST["cr"]."','$dummy_no')";
-	$objQuery4 = mysql_query($strSQL4);	
-}
-
-if(isset($_POST['ur'])){
-	$strSQL5  = "INSERT INTO diabetes_lab 
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','Urine protein','".$_POST["dateur0"]."','".$_POST["ur"]."','$dummy_no')";
-	$objQuery5 = mysql_query($strSQL5);
-}
-
-if(isset($_POST['micro'])){
-	$strSQL6  = "INSERT INTO diabetes_lab 
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','Urine Microalbumin','".$_POST["datemicro$i6"]."','".$_POST["micro"]."','$dummy_no')";
-	$objQuery6 = mysql_query($strSQL6);
-}
-
-// Update ua
-if(isset($_POST['l_ua'])){
-	$strSQL6  = "INSERT INTO diabetes_lab 
-	(dm_no,labname,dateY,result_lab,dummy_no) 
-	VALUES 
-	('$dm_no','Protein','".$_POST['protein-date']['0']."','".$_POST['protein']['0']."','$dummy_no')";
-	$objQuery6 = mysql_query($strSQL6);
-}
-
-
-if($objQuery)
-{
-	echo "บันทึกข้อมูลเรียบร้อยแล้ว";
-	print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=diabetes_edit.php'>";
-}
-else
-{
-	echo "ไม่สามารถบันทึกข้อมูลได้  กรุณาตรวจสอบ Dm_number ว่ามีแล้วหรือยัง !! ";
-	print "<META HTTP-EQUIV='Refresh' CONTENT='5;URL=diabetes_edit.php'>";
-}
-
-	 
-// include("../unconnect.inc");	 
- // }
- }
  require "footer.php";
  ?>

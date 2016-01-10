@@ -30,12 +30,12 @@ function pagination($total, $page = 1, $params = false, $limit = 50){
 }
 
 if( !function_exists('input') ){
-	function input($t, $d = false){
+	function input($t, $d = false){+
 		$v = ( isset($_POST[$t]) ) ? trim($_POST[$t]) : ( ( isset($_GET[$t]) ) ? trim($_GET[$t]) : $d );
-		if( $v != false ){
+		if( $v !== false && $v !== NULL ){
 			return htmlspecialchars(strip_tags($v));
 		}else{
-			return false;
+			return $d;
 		}
 	}
 }

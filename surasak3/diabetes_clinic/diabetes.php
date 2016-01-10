@@ -4,37 +4,32 @@ session_start();
 error_reporting(1);
 ini_set('display_errors', 1);
 
+// require "../connect.php";
+// require "../includes/functions.php";
 
-require "../connect.php";
-require "../includes/functions.php";
+include '../bootstrap.php';
 
 // Verify user before load content
-if(!authen()) die('Session หมดอายุ กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
+if(authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
 
+// บันทึกข้อมูล
 if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	
-	$hn = isset($_POST['hn']) ? trim($_POST['hn']) : null ;
+	$hn = input('hn', NULL);
 	
 	$dateN = date("Y-m-d");
 	$register = date("Y-m-d H:i:s");
 	
-	// Retinal and Foot Exam
-	if(PHP_VERSION_ID <= 50106){
-		$retinal_date = $_POST['retinal_date'];
-		$retinal = $_POST['retinal'];
-		$foot_date = $_POST['foot_date'];
-		$foot = $_POST['foot'];
-		$tooth_date = $_POST['tooth_date'];
-		$tooth = $_POST['tooth'];
-	}else{
-		$retinal_date = filter_input(INPUT_POST, 'retinal_date');
-		$retinal = filter_input(INPUT_POST, 'retinal');
-		$foot_date = filter_input(INPUT_POST, 'foot_date');
-		$foot = filter_input(INPUT_POST, 'foot');
-		$tooth_date = filter_input(INPUT_POST, 'tooth_date');
-		$tooth = filter_input(INPUT_POST, 'tooth');
-	}
-
+	$retinal_date = input('retinal_date');
+	$retinal = input('retinal', NULL);
+	$foot_date = input('foot_date');
+	$foot = input('foot', NULL);
+	$tooth_date = input('tooth_date');
+	$tooth = input('tooth', NULL);
+	
+	$date_footcare = input('date_footcare', NULL);
+	$date_nutrition = input('date_nutrition', NULL);
+	
 	// ตรวจสอบว่าเคยมีข้อมูลแล้วรึยัง
 	$select = "select hn from diabetes_clinic Where hn ='$hn' ";
 	$q = mysql_query($select);
@@ -44,10 +39,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 		echo "ผู้ป่วย HN $hn มีข้อมูลในคลินิกเบาหวานอยู่แล้ว ";
 		echo '<a href="diabetes_edit.php">คลิกที่นี่</a> เพื่อไปยังหน้าเพิ่มประวัติผู้ป่วย';
 		exit;
+		
 	}else{
 
-	// Filter input
-	// $ht_etc = filter_input(INPUT_POST, 'ht_etc', FILTER_SANITIZE_STRING);
+	// โรคร่วม อื่นๆ:
 	$ht_etc = isset($_POST['ht_etc']) ? implode(',', $_POST['ht_etc']) : '' ;
 	unset($_POST['ht_etc']);
 	
@@ -80,14 +75,28 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	// exit;
 
 	$strSQL = "INSERT INTO diabetes_clinic 
-	(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,ht_etc,retinal_date,foot_date,tooth_date,tooth,l_ua) 
+	( dm_no,thidate,dateN,hn,doctor,
+	ptname,ptright,dbbirt,sex,diagnosis,
+	diagdetail,ht,htdetail,smork,bw,
+	bmi,retinal,foot,l_bs,l_hbalc,
+	l_ldl,l_creatinine,l_urine,l_microal,foot_care,
+	nutrition,exercise,smoking,admit_dia,dt_heart,
+	dt_brain,height,weight,round,temperature,
+	pause,rate,bp1,bp2,officer,
+	register_date,ht_etc,retinal_date,foot_date,tooth_date,
+	tooth,l_ua,date_footcare,date_nutrition ) 
 	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}','{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}','{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}','{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}','{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}','{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}','{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}','{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer','$register','$ht_etc','$retinal_date','$foot_date','$tooth_date','$tooth','{$post['l_ua']}')";
-	
-	// dump($strSQL);
-	// exit;
-	
-	$objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
+	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
+	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}',
+	'{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
+	'{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}',
+	'{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}',
+	'{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}',
+	'{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
+	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
+	'$register','$ht_etc','$retinal_date','$foot_date','$tooth_date',
+	'$tooth','{$post['l_ua']}','$date_footcare','$date_nutrition')";
+	$objQuery = mysql_query($strSQL) or die( mysql_error() );
 	
 	// Generate random number
 	$dummy_no = '';
@@ -207,10 +216,31 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	// บันทึกข้อมูลประวัติย้อนหลัง
 	////////////////////
 	$insert = "INSERT INTO diabetes_clinic_history 
-	(dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth,l_ua) 
+	( dm_no,thidate,dateN,hn,doctor,
+	ptname,ptright,dbbirt,sex,diagnosis,
+	diagdetail,ht,htdetail,smork,bw,
+	bmi,retinal,foot,l_bs,l_hbalc,
+	l_ldl,l_creatinine,l_urine,l_microal,foot_care,
+	nutrition,exercise,smoking,admit_dia,dt_heart,
+	dt_brain,height,weight,round,temperature,
+	pause,rate,bp1,bp2,officer,
+	register_date,added_date,edited_date,ht_etc,edited_user,
+	retinal_date,foot_date,dummy_no,tooth_date,tooth,
+	l_ua,date_footcare,date_nutrition 
+	) 
 	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}','{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}','{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}','{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}','{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}','{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}','{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}','{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer','$register','$register','$register','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth','{$post['l_ua']}')";
-	$insert_query = mysql_query($insert);
+	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
+	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}',
+	'{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
+	'{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}',
+	'{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}',
+	'{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}',
+	'{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
+	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
+	'$register','$register','$register','$ht_etc','$sIdname',
+	'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
+	'{$post['l_ua']}','$date_footcare','$date_nutrition')";
+	$insert_query = mysql_query($insert) or die( mysql_error() );;
 	
 
 	if($objQuery){
@@ -237,6 +267,8 @@ require "header.php";
 		popup1 = new Epoch('popup1','popup',document.getElementById('retinal'),false);
 		popup2 = new Epoch('popup2','popup',document.getElementById('foot'),false);
 		popup3 = new Epoch('popup3','popup',document.getElementById('tooth'),false);
+		popup4 = new Epoch('popup4','popup',document.getElementById('date_footcare'),false);
+		popup5 = new Epoch('popup5','popup',document.getElementById('date_nutrition'),false);
 	};
 </script>
 <?php
@@ -305,52 +337,51 @@ $thaidate = (date("Y")+543).date("-m-d");
 	font-size: 22px;
 }
 </style>
-<?php $hn = isset($_POST['p_hn']) ? trim($_POST['p_hn']) : null ; ?>
+
+<?php $hn = input('p_hn', NULL); ?>
+
 <h1 class="forntsarabun1">เพิ่มข้อมูลผู้ป่วยเบาหวาน</h1>
-<form action="diabetes.php" method="post">
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
-	</TR>
-	<TR>
-		<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1" id="p_hn"  value="<?php echo $hn;?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
-	</TR>
-	<TR>
-		<TD></TD>
-	</TR>
-	</TABLE>
-	</TD>
-</TR>
-</TABLE>
-</form>
+	<form action="diabetes.php" method="post">
+		<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
+			<TR>
+				<TD>
+					<TABLE border="0" cellpadding="0" cellspacing="0">
+						<TR>
+							<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
+						</TR>
+						<TR>
+							<TD class="tb_font">
+								<input name="p_hn" type="text" class="forntsarabun1" id="p_hn"  value="<?php echo $hn;?>"/>&nbsp;
+								<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" />
+							</TD>
+						</TR>
+						<TR>
+							<TD></TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+		</TABLE>
+	</form>
 <?php
 if(isset($_SESSION['msg'])){
-	?>
-	<p><?php echo $_SESSION['msg']; ?></p>
-	<?php
+	?><p><?php echo $_SESSION['msg']; ?></p><?php
 	unset($_SESSION['msg']);
 }
-?>
-
-
-<?php 
 
 if($hn !== null){
 	
 	$sqldm = "SELECT `row_id` FROM `opcard` WHERE `hn`='$hn' ";
-	$querydm = mysql_query($sqldm);
+	$querydm = mysql_query($sqldm) or die( mysql_error() );
 	$row = mysql_num_rows($querydm);
 	if(!$row){
 		echo "<br> <font class='forntsarabun1'>ไม่พบ  HN  <b>$hn</b>  ในระบบทะเบียน </font>";
-
+		exit;
 	}else{
 		
 		// ตรวจสอบว่าเคยมีข้อมูลแล้วรึยัง
 		$select = "SELECT hn FROM diabetes_clinic WHERE hn ='$hn' ";
-		$q = mysql_query($select);
+		$q = mysql_query($select) or die( mysql_error() );
 		$rows = mysql_num_rows($q);
 
 		if($rows > 0){
@@ -361,12 +392,7 @@ if($hn !== null){
 	
 	//ค้นหา hn จาก opday ****************************************************************************************
 	$sql = "SELECT *, concat(yot,' ',name,' ',surname) as ptname FROM opcard WHERE  hn = '$hn' LIMIT 0,1";
-	//echo $sql;
-	$result = mysql_query($sql) or die("".mysql_error()." -->");
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
+	$result = mysql_query($sql) or die( mysql_error() );
 	$arr_view = mysql_fetch_assoc($result);
 
 	// Query ตัวเดิมจะมีปัญหาในกรณีที่ ไม่ได้กรอกข้อมูลในวันเดียวกัน
@@ -1149,32 +1175,67 @@ C&deg;</td>
    </td>
    </tr>
               </table>
-	          <table width="100%" border="0">
-	            <tr>
-	              <td bgcolor="#0000CC" class="forntsarabun">การให้ความรู้ / คำแนะนำ</td>
-                </tr>
-	            <tr>
-	              <td><table border="0" class="forntsarabun1">
-	                <tr>
-	                  <td class="tb_font_2">Foot care</td>
-	                  <td><input type="radio" name="foot_care" id="radio" value="1" />
-	                  ให้ความรู้
-	                   
-	                        <input type="radio" name="foot_care" id="radio" value="0" />
-	                        ไม่ได้ให้ความรู้
+<table width="100%" border="0">
+	<tr>
+		<td bgcolor="#0000CC" class="forntsarabun">การให้ความรู้ / คำแนะนำ</td>
+	</tr>
+	<tr>
+		<td>
+			<table border="0" class="forntsarabun1">
+				<tr>
+					<td class="tb_font_2">Foot care</td>
+					<td>
+						<label for="radio">
+							<input type="radio" name="foot_care" id="radio" value="1" onclick="dateFootCare(this)" /> ให้ความรู้
+						</label>
+						<label for="radio22">
+							<input type="radio" name="foot_care" id="radio22" value="0" onclick="dateFootCare(this)" /> ไม่ได้ให้ความรู้
+						</label>
+						<div id="footcare-contain" style="display: none;">
+							<label for="date_footcare">
+								&nbsp;เลือกวันที่ <input type="text" id="date_footcare" name="date_footcare" size="10" >
+							</label>
+						</div>
+						<script type="text/javascript">
+							var dateFootCare = function(fc){
+								if(fc.value === '1'){
+									document.getElementById('footcare-contain').style.display = 'inline';
+								}else{
+									document.getElementById('footcare-contain').style.display = 'none';
+								}
+							}
+						</script>
 					</td>
-	                  </tr>
-	                <tr>
-	                  <td class="tb_font_2">Nutrition</td>
-	                  <td><input type="radio" name="Nutrition" id="radio1" value="1" />
-	                    ให้ความรู้
-    <input type="radio" name="Nutrition" id="radio1" value="0" />
-    ไม่ได้ให้ความรู้</td>
-	                  </tr>
-	                <tr>
-	                  <td class="tb_font_2">Exercise</td>
-	                  <td><input type="radio" name="Exercise" id="radio2" value="1" />
-	                    ให้ความรู้
+				</tr>
+				<tr>
+					<td class="tb_font_2">Nutrition</td>
+						<td>
+							<label for="radio1">
+								<input type="radio" name="Nutrition" id="radio1" value="1" onclick="dateFood(this)" /> ให้ความรู้
+							</label>
+							<label for="radio11">
+								<input type="radio" name="Nutrition" id="radio11" value="0" onclick="dateFood(this)" /> ไม่ได้ให้ความรู้
+							</label>
+							<div id="food-contain" style="display: none;">
+								<label for="date_nutrition">
+									&nbsp;เลือกวันที่ <input type="text" id="date_nutrition" name="date_nutrition" size="10" >
+								</label>
+							</div>
+							<script type="text/javascript">
+								var dateFood = function(fc){
+									if(fc.value === '1'){
+										document.getElementById('food-contain').style.display = 'inline';
+									}else{
+										document.getElementById('food-contain').style.display = 'none';
+									}
+								}
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td class="tb_font_2">Exercise</td>
+						<td>
+							<input type="radio" name="Exercise" id="radio2" value="1" /> ให้ความรู้
 	                   
     <input type="radio" name="Exercise" id="radio2" value="0" />
     ไม่ได้ให้ความรู้
