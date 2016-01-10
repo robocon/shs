@@ -1,5 +1,4 @@
-<?php
-define('NEW_SITE', true);
+<?php define('NEW_SITE', true);
 include '../bootstrap.php';
 
 $sql = "

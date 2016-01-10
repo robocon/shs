@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -110,16 +109,13 @@ td{
 		<td colspan="<?php echo $last_day_of_month;?>" align="center">ปี <?php echo $th_year;?> เดือน <?php echo $months[$month];?></td>
 	</tr>
 	<tr>
-		<?php
-		foreach($days AS $key => $value){
+		<?php 		foreach($days AS $key => $value){
 			?>
 			<td align="center"><?php echo (int) $value;?></td>
-			<?php
-		}
+			<?php 		}
 		?>
 	</tr>
-	<?php
-	if( $type == 'fbg' ){
+	<?php 	if( $type == 'fbg' ){
 		$sql = "
 		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( `thidate`, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
@@ -135,8 +131,7 @@ td{
 		<tr>
 			<td>FBG &lt; 130 mg % ในผู้ป่วย DM ปกติ</td>
 			<td rowspan="2">60%</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				
@@ -145,12 +140,10 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-		$sql = "
+		<?php 		$sql = "
 		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
 		WHERE `l_bs` < 150 AND `l_bs` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' )  
@@ -164,8 +157,7 @@ td{
 		?>
 		<tr>
 			<td>FBG &lt; 150 mg % ในผู้ป่วย DM มีภาวะแทรกซ้อน</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($fbg_items[$find_key])){
@@ -173,12 +165,10 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-	
+		<?php 	
 	}else if( $type == 'hba1c' ){
 		
 		$sql = "
@@ -196,8 +186,7 @@ td{
 		<tr>
 			<td>HbA1c &lt; 7% ในผู้ป่วยปกติ</td>
 			<td rowspan="2">60%</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($hba1c_items[$find_key])){
@@ -205,12 +194,10 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-		$sql = "
+		<?php 		$sql = "
 		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
 		WHERE `l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' )
@@ -224,8 +211,7 @@ td{
 		?>
 		<tr>
 			<td>HbA1c &lt; 8% ในผู้ป่วย DM ที่มีภาวะแทรกซ้อน</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($hba1c_items[$find_key])){
@@ -233,12 +219,10 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-	}else if( $type =='ldl' ){
+		<?php 	}else if( $type =='ldl' ){
 		$sql = "
 		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
@@ -254,8 +238,7 @@ td{
 		<tr>
 			<td>LDL &lt; 100 mg/dl ในผู้ป่วย DM ปกติ</td>
 			<td rowspan="2">60%</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($ldl_items[$find_key])){
@@ -263,12 +246,10 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-		$sql = "
+		<?php 		$sql = "
 		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
 		WHERE `l_ldl` != '' AND `l_ldl` < 70 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )
@@ -282,8 +263,7 @@ td{
 		?>
 		<tr>
 			<td>LDL &lt; 70 mg/dl ในผู้ป่วย DM มีภาวะแทรกซ้อน</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($ldl_items[$find_key])){
@@ -291,12 +271,10 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-	}else if( $type =='bp' ){
+		<?php 	}else if( $type =='bp' ){
 		$sql = "
 		SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_temp` 
@@ -312,8 +290,7 @@ td{
 		<tr>
 			<td>SBP &lt; 140 mmHg ในผู้ป่วย DM ปกติ</td>
 			<td rowspan="6">60%</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($bp_items[$find_key])){
@@ -321,8 +298,7 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<?php 
@@ -340,8 +316,7 @@ td{
 		?>
 		<tr>
 			<td>DBP &lt; 90 mmHg ในผู้ป่วย DM ปกติ</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($bp_items[$find_key])){
@@ -349,8 +324,7 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<?php 
@@ -368,8 +342,7 @@ td{
 		?>
 		<tr>
 			<td>SBP &lt; 130 mmHg ในผู้ป่วย DM ที่มีโปรตีนรั่วในปัสสาวะ</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($bp_items[$find_key])){
@@ -377,8 +350,7 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<?php 
@@ -396,8 +368,7 @@ td{
 		?>
 		<tr>
 			<td>DBP &lt; 80 mmHg ในผู้ป่วย DM ที่มีโปรตีนรั่วในปัสสาวะ</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($bp_items[$find_key])){
@@ -405,8 +376,7 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<?php 
@@ -432,8 +402,7 @@ td{
 		?>
 		<tr>
 			<td>SBP &lt; 150 mmHg ในผู้ป่วย DM ที่มีภาวะแทรกซ้อนและอายุมากกว่า 60 ปี</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($bp_items[$find_key])){
@@ -441,8 +410,7 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<?php 
@@ -464,8 +432,7 @@ td{
 		?>
 		<tr>
 			<td>DBP &lt; 80 mmHg ในผู้ป่วย DM ที่มีภาวะแทรกซ้อนและอายุมากกว่า 60 ปี</td>
-			<?php
-			foreach($days AS $key => $value){
+			<?php 			foreach($days AS $key => $value){
 				$item_row = 0;
 				$find_key = "$year-$month-$value";
 				if(isset($bp_items[$find_key])){
@@ -473,11 +440,9 @@ td{
 				}
 				?>
 				<td><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
-		<?php
-	}
+		<?php 	}
 	?>
 </table>

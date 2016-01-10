@@ -1,25 +1,17 @@
 <?php 
-session_start();
-
-error_reporting(1);
-ini_set('display_errors', 1);
-
-// require "../connect.php";
-// require "../includes/functions.php";
-
 include '../bootstrap.php';
 
 // Verify user before load content
 if(authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
 
 // บันทึกข้อมูล
-if(isset($_GET['do']) && $_GET['do'] == 'save'){
-	
-	$hn = input('hn', NULL);
+$do = input('do');
+if($do === 'save'){
 	
 	$dateN = date("Y-m-d");
 	$register = date("Y-m-d H:i:s");
-	
+    
+	$hn = input('hn', NULL);
 	$retinal_date = input('retinal_date');
 	$retinal = input('retinal', NULL);
 	$foot_date = input('foot_date');
@@ -48,31 +40,23 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	
 	// Filter ส่วนที่ฟอร์มส่งมา
 	$post = post2null($_POST);
-
-	// Filter ส่วนที่ต้องเก็บตก อย่างเช่นพวก input type radio แล้วมันไม่ได้เลือกมันจะไม่มีใน $_POST
-	/**
-	 * @todo 
-	 * ทำเป็น Filter เหมือนของหนุ่ยน่าจะดี
-	 */
-	if(!isset($post['dia1'])){ $post['dia1'] = filter2null('dia1'); }
-	if(!isset($post['ht'])){ $post['ht'] = filter2null('ht'); }
-	if(!isset($post['bs'])){ $post['bs'] = filter2null('bs'); }
-	if(!isset($post['hba'])){ $post['hba'] = filter2null('hba'); }
-	if(!isset($post['ldl'])){ $post['ldl'] = filter2null('ldl'); }
-	if(!isset($post['cr'])){ $post['cr'] = filter2null('cr'); }
-	if(!isset($post['ur'])){ $post['ur'] = filter2null('ur'); }
-	if(!isset($post['micro'])){ $post['micro'] = filter2null('micro'); }
-	if(!isset($post['foot_care'])){ $post['foot_care'] = filter2null('foot_care'); }
-	if(!isset($post['Nutrition'])){ $post['Nutrition'] = filter2null('Nutrition'); }
-	if(!isset($post['Exercise'])){ $post['Exercise'] = filter2null('Exercise'); }
-	if(!isset($post['admit_dia'])){ $post['admit_dia'] = filter2null('admit_dia'); }
-	if(!isset($post['dt_heart'])){ $post['dt_heart'] = filter2null('dt_heart'); }
-	if(!isset($post['dt_brain'])){ $post['dt_brain'] = filter2null('dt_brain'); }
 	
+    $dia1 = input('dia1', NULL);
+    $ht = input('ht', NULL);
+    $bs = input('bs', NULL);
+    $hba = input('hba', NULL);
+    $ldl = input('ldl', NULL);
+    $cr = input('cr', NULL);
+    $ur = input('ur', NULL);
+    $micro = input('micro', NULL);
+    $foot_care = input('foot_care', NULL);
+    $Nutrition = input('Nutrition', NULL);
+    $Exercise = input('Exercise', NULL);
+    $admit_dia = input('admit_dia', NULL);
+    $dt_heart = input('dt_heart', NULL);
+    $dt_brain = input('dt_brain', NULL);
+    
 	$post['l_ua'] = $_POST['protein']['0'];
-	
-	// dump($_POST['protein']);
-	// exit;
 
 	$strSQL = "INSERT INTO diabetes_clinic 
 	( dm_no,thidate,dateN,hn,doctor,
@@ -87,12 +71,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	tooth,l_ua,date_footcare,date_nutrition ) 
 	VALUES 
 	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
-	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}',
-	'{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
-	'{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}',
-	'{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}',
-	'{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}',
-	'{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
+	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
+	'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
+	'{$post['bmi']}','$retinal','$foot','$bs','$hba',
+	'$ldl','$cr','$ur','$micro','$foot_care',
+	'$Nutrition','$Exercise','{$post['Smoking']}','$admit_dia','$dt_heart',
+	'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
 	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
 	'$register','$ht_etc','$retinal_date','$foot_date','$tooth_date',
 	'$tooth','{$post['l_ua']}','$date_footcare','$date_nutrition')";
@@ -103,6 +87,37 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 	for($i = 0; $i < 8; $i++){
 		$dummy_no .= rand(0, 9);
 	}
+    
+    ////////////////////
+	// บันทึกข้อมูลประวัติย้อนหลัง
+	////////////////////
+	$insert = "INSERT INTO diabetes_clinic_history 
+	( dm_no,thidate,dateN,hn,doctor,
+	ptname,ptright,dbbirt,sex,diagnosis,
+	diagdetail,ht,htdetail,smork,bw,
+	bmi,retinal,foot,l_bs,l_hbalc,
+	l_ldl,l_creatinine,l_urine,l_microal,foot_care,
+	nutrition,exercise,smoking,admit_dia,dt_heart,
+	dt_brain,height,weight,round,temperature,
+	pause,rate,bp1,bp2,officer,
+	register_date,added_date,edited_date,ht_etc,edited_user,
+	retinal_date,foot_date,dummy_no,tooth_date,tooth,
+	l_ua,date_footcare,date_nutrition 
+	) 
+	VALUES 
+	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
+	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
+	'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
+	'{$post['bmi']}','$retinal','$foot','$bs','$hba',
+	'$ldl','$cr','$ur','$micro','$foot_care',
+	'$Nutrition','$Exercise','{$post['Smoking']}','$admit_dia','$dt_heart',
+	'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
+	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
+	'$register','$register','$register','$ht_etc','$sIdname',
+	'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
+	'{$post['l_ua']}','$date_footcare','$date_nutrition')";
+	$insert_query = mysql_query($insert) or die( mysql_error() );
+    
 
 	/* BS */
 	for($i1=0; $i1<$_POST["total1"]; $i1++){
@@ -212,37 +227,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'save'){
 		$sIdname =  isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
 	}
 
-	////////////////////
-	// บันทึกข้อมูลประวัติย้อนหลัง
-	////////////////////
-	$insert = "INSERT INTO diabetes_clinic_history 
-	( dm_no,thidate,dateN,hn,doctor,
-	ptname,ptright,dbbirt,sex,diagnosis,
-	diagdetail,ht,htdetail,smork,bw,
-	bmi,retinal,foot,l_bs,l_hbalc,
-	l_ldl,l_creatinine,l_urine,l_microal,foot_care,
-	nutrition,exercise,smoking,admit_dia,dt_heart,
-	dt_brain,height,weight,round,temperature,
-	pause,rate,bp1,bp2,officer,
-	register_date,added_date,edited_date,ht_etc,edited_user,
-	retinal_date,foot_date,dummy_no,tooth_date,tooth,
-	l_ua,date_footcare,date_nutrition 
-	) 
-	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
-	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','{$post['dia1']}',
-	'{$post['nosis_d']}','{$post['ht']}','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
-	'{$post['bmi']}','$retinal','$foot','{$post['bs']}','{$post['hba']}',
-	'{$post['ldl']}','{$post['cr']}','{$post['ur']}','{$post['micro']}','{$post['foot_care']}',
-	'{$post['Nutrition']}','{$post['Exercise']}','{$post['Smoking']}','{$post['admit_dia']}','{$post['dt_heart']}',
-	'{$post['dt_brain']}','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
-	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
-	'$register','$register','$register','$ht_etc','$sIdname',
-	'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
-	'{$post['l_ua']}','$date_footcare','$date_nutrition')";
-	$insert_query = mysql_query($insert) or die( mysql_error() );;
-	
-
 	if($objQuery){
 		// echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
 		// echo '<script type="text/javascript">alert("บันทึกข้อมูลเรียบร้อยแล้ว");</script>';
@@ -271,8 +255,7 @@ require "header.php";
 		popup5 = new Epoch('popup5','popup',document.getElementById('date_nutrition'),false);
 	};
 </script>
-<?php
-$date_now = date("Y-m-d");
+<?php $date_now = date("Y-m-d");
 
 function calcage($birth){
 	$today=getdate();   
@@ -363,10 +346,8 @@ $thaidate = (date("Y")+543).date("-m-d");
 			</TR>
 		</TABLE>
 	</form>
-<?php
-if(isset($_SESSION['msg'])){
-	?><p><?php echo $_SESSION['msg']; ?></p><?php
-	unset($_SESSION['msg']);
+<?php if(isset($_SESSION['msg'])){
+	?><p><?php echo $_SESSION['msg']; ?></p><?php 	unset($_SESSION['msg']);
 }
 
 if($hn !== null){
@@ -582,10 +563,10 @@ $datenow=date("Y-m-d");
 			<?php 
 			// echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
 			//echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
-			$sql = "Select name From doctor where status = 'y' ";
+			$sql = "SELECT name FROM doctor WHERE status = 'y' ";
 			$result = mysql_query($sql);
-			while($dbarr2= mysql_fetch_array($result)){
-
+			while($dbarr2 = mysql_fetch_array($result)){
+                
 			// $sub1=substr($arr_dxofyear['doctor'],0,5);
 			// $sub2=substr($dbarr2['name'],0,5);
 
@@ -598,8 +579,7 @@ $datenow=date("Y-m-d");
 				$selected = $dbarr2['name']==$arr_dxofyear['doctor'] ? 'selected="selected"' : '' ;
 				?>
 					<option value="<?php echo $dbarr2['name'];?>" <?php echo $selected;?>><?php echo $dbarr2['name'];?></option>
-				<?php
-			}
+				<?php 			}
 			?>
 			</select>
 			
@@ -694,7 +674,7 @@ $datenow=date("Y-m-d");
 		document.F1.bmi.value=bmi.toFixed(2);
 	}
 	</script>
-     <? 
+     <?php 
 		 $ht = $height/100;
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
@@ -740,8 +720,7 @@ C&deg;</td>
 		
 	    <td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
 	    <td colspan="7" class="">
-			<?php
-				$th_date = ( date('Y') + 543 ).'-'.date('m-d');
+			<?php 				$th_date = ( date('Y') + 543 ).'-'.date('m-d');
 			?>
 			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" value="<?php echo $th_date;?>"/>
 			<label>
@@ -805,8 +784,7 @@ C&deg;</td>
  <tr>
 	        <td align="left" bgcolor="#0000CC" class="forntsarabun">ผลการตรวจทางพยาธิ</td>
 	        </tr>
-   <?
-   $year=date("Y");
+   <?php    $year=date("Y");
    
       $laball="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Blood Sugar'  and b.orderdate like '$year%' Order by b.orderdate desc ";
 	  $result_laball=mysql_query($laball);
@@ -820,7 +798,7 @@ C&deg;</td>
            <tr>
              <td colspan="3" ><div class="tb_font_2"><span class="tb_font">BS</span></div></td>
              </tr>
-           <?  
+           <?php  
 		   $listbs = array();
 		   $listbs1 = array();
 		  
@@ -836,8 +814,7 @@ C&deg;</td>
 			   ?>
            <tr>
              <td class="forntsarabun"><div class='tb_font_2'>
-			 <?
-			  echo $dall['result']; ?>   <?=$dall['unit'];?>  <?="วันที่  ".$dall['orderdate'];   if($orderdate==$datenow){ 
+			 <?php 			  echo $dall['result']; ?>   <?=$dall['unit'];?>  <?="วันที่  ".$dall['orderdate'];   if($orderdate==$datenow){ 
 			  echo "   lab วันนี้";
 			  
 			  }
@@ -848,8 +825,7 @@ C&deg;</td>
              <input type='hidden' name='bs<?=$i1?>'  value='<?=$dall['result'];?>'>
              <input type='hidden' name='datebs<?=$i1?>'  value='<?=$dall['orderdate'];?>'>
              
-      <?
-	  $i1++;
+      <?php 	  $i1++;
 	  }
 	  }else{
 	 echo "<tr><td><font class=\"tb_font_2\">ยังไม่เคยตรวจ</font></td></tr>";
@@ -893,8 +869,7 @@ C&deg;</td>
 				<tr>
 					<td>
 						<div class="tb_font_2">
-						<?
-						echo $dall1['result']; ?>  <?=$dall1['unit'];?>  <?="วันที่  ".$dall1['orderdate']; if($orderdate1==$datenow){ 
+						<?php 						echo $dall1['result']; ?>  <?=$dall1['unit'];?>  <?="วันที่  ".$dall1['orderdate']; if($orderdate1==$datenow){ 
 						echo "   lab วันนี้";
 
 						}
@@ -905,7 +880,7 @@ C&deg;</td>
 				<input type='hidden' name='hba'  value='<?=$listh1[0];?>'> 
 				<input type='hidden' name='hba<?=$i2?>'  value='<?=$dall1['result'];?>'>
 				<input type='hidden' name='datehba<?=$i2?>'  value='<?=$dall1['orderdate'];?>'>
-				<?	
+				<?php 
 				$i2++;  
 			} // End while HBA1C
 		}else{
@@ -917,8 +892,7 @@ C&deg;</td>
    </td>
    </tr>
    
-     <?
-      $laball2="
+     <?php       $laball2="
 	  SELECT result,unit,orderdate 
 	  FROM resultdetail AS a, 
 	  resulthead AS b   
@@ -937,7 +911,7 @@ C&deg;</td>
      <tr>
        <td colspan="3" ><div class="tb_font_2"><span class="tb_font">LDL</span></div></td>
        </tr>
-     <?  
+     <?php  
 	 $listldl1=array();
 	 $listldl2=array();
 	 $i3=0;
@@ -953,8 +927,7 @@ C&deg;</td>
 	 ?>
      <tr>
        <td><div class="tb_font_2">
-       <?
-           	echo $dall2['result']; ?>  <?=$dall2['unit'];?>  <?="วันที่  ".$dall2['orderdate']; if($orderdate2==$datenow){ 
+       <?php            	echo $dall2['result']; ?>  <?=$dall2['unit'];?>  <?="วันที่  ".$dall2['orderdate']; if($orderdate2==$datenow){ 
 			echo "   lab วันนี้";
 		 }?>
          </div></td>
@@ -962,7 +935,7 @@ C&deg;</td>
        <input type='hidden' name='ldl'  value='<?=$listldl1[0];?>'>
        <input type='hidden' name='ldl<?=$i3?>'  value='<?=$dall2['result'];?>'>
        <input type='hidden' name='dateldl<?=$i3?>'  value='<?=$dall2['orderdate'];?>'>
-     <?	 
+     <?php  
 	 $i3++; 
 	  }
 	}else{
@@ -973,8 +946,7 @@ C&deg;</td>
    <hr />
    </td>
    </tr>
-    <?
-      $laball3="Select   result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc";
+    <?php       $laball3="Select   result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc";
 	  $result_laball3=mysql_query($laball3);
 	  $rowall3=mysql_num_rows($result_laball3);
 	?> 
@@ -984,7 +956,7 @@ C&deg;</td>
      <tr>
        <td colspan="3" ><div class="tb_font_2"><span class="tb_font">Creatinine</span></div></td>
        </tr>
-     <?  
+     <?php  
 	 $listcr1=array();
 	 $listcr2=array();
 	 $i4=0;
@@ -1000,8 +972,7 @@ C&deg;</td>
 		 ?>
      <tr>
        <td><div class="tb_font_2">
-        <?
-           	echo $dall3['result']; ?>  <?=$dall3['unit'];?>  <?="วันที่  ".$dall3['orderdate']; if($orderdate3==$datenow){ 
+        <?php            	echo $dall3['result']; ?>  <?=$dall3['unit'];?>  <?="วันที่  ".$dall3['orderdate']; if($orderdate3==$datenow){ 
 			echo "   lab วันนี้";
 		 }?>
          </div></td>
@@ -1009,7 +980,7 @@ C&deg;</td>
        <input type='hidden' name='cr'  value='<?=$listcr1[0];?>'>
        <input type='hidden' name='cr<?=$i4?>'  value='<?=$dall3['result'];?>'>
        <input type='hidden' name='datecr<?=$i4?>'  value='<?=$dall3['orderdate'];?>'>
-     <?	
+     <?php 
 	 $i4++;  
 	  }
 	}else{
@@ -1020,8 +991,7 @@ C&deg;</td>
    <hr />
    </td>
    </tr>
-    <?
-      $laball4="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine protein' and b.orderdate like '$year%' Order by b.orderdate desc";
+    <?php       $laball4="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine protein' and b.orderdate like '$year%' Order by b.orderdate desc";
 	  $result_laball4=mysql_query($laball4);
 	  $rowall4=mysql_num_rows($result_laball4);
 	?>  
@@ -1030,7 +1000,7 @@ C&deg;</td>
      <tr>
        <td colspan="3" ><div class="tb_font_2"><span class="tb_font">Urine protein</span></div></td>
        </tr>
-     <?  
+     <?php  
 	 $listur1=array();
 	 $listur2=array();
 	
@@ -1047,8 +1017,7 @@ C&deg;</td>
 	 ?>
      <tr>
        <td><div class="tb_font_2">
-         <?
-           	echo $dall4['result']; ?>  <?=$dall4['unit'];?>  <?="วันที่  ".$dall4['orderdate']; if($orderdate4==$datenow){ 
+         <?php            	echo $dall4['result']; ?>  <?=$dall4['unit'];?>  <?="วันที่  ".$dall4['orderdate']; if($orderdate4==$datenow){ 
 			echo "   lab วันนี้";
 		 }?>
          </div></td>
@@ -1056,8 +1025,7 @@ C&deg;</td>
        <input type='hidden' name='ur'  value='<?=$listur1[0];?>'>
        <input type='hidden' name='ur<?=$i5?>'  value='<?=$dall4['result'];?>'>
        <input type='hidden' name='dateur<?=$i5?>'  value='<?=$dall4['orderdate'];?>' />
-     <?
-	 $i5++;	  
+     <?php 	 $i5++;	  
 	  }
 	}else{
 	  echo "<tr><td><font class=\"tb_font_2\">ยังไม่เคยตรวจ</font></td></tr>";
@@ -1078,8 +1046,7 @@ C&deg;</td>
 						</div>
 					</td>
 				</tr>
-				<?php
-				
+				<?php 				
 				/**
 				 * @todo ALTER TABLE `diabetes_clinic` ADD `l_ua` VARCHAR( 255 ) NOT NULL ;
 				 */
@@ -1103,8 +1070,7 @@ C&deg;</td>
 						<tr>
 							<td>
 								<div class="tb_font_2">
-									<?php
-									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
+									<?php 									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
 									?>
 								</div>
 								<input type="hidden" name="protein[]" value="<?php echo $item['result'];?>">
@@ -1112,20 +1078,17 @@ C&deg;</td>
 								<input type="hidden" name="protein-date[]" value="<?php echo $item['orderdate'];?>">
 							</td>
 						</tr>
-						<?php
-					}
+						<?php 					}
 				}else{
 					?>
 					<tr><td><span class="tb_font_2">ยังไม่เคยตรวจ</span></td></tr>
-					<?php
-				}
+					<?php 				}
 				?>
 			</table>
 			<hr />
 		</td>
 	</tr>
-   <?
-      $laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc ";
+   <?php       $laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc ";
 	  $result_laball5=mysql_query($laball5);
 	  $rowall5=mysql_num_rows($result_laball5);
 	  
@@ -1137,7 +1100,7 @@ C&deg;</td>
        <td colspan="3" ><div class="tb_font_2"><span class="tb_font">Microalbuminuria</span></div></td>
        </tr>
        
-     <? 
+     <?php 
 	 $listm1=array();
 	 $listm2=array();
 	
@@ -1154,8 +1117,7 @@ C&deg;</td>
 	?>
      <tr>
        <td><div class="tb_font_2">
-       <?
-           	echo $dall5['result']; ?>  <?=$dall5['unit'];?>  <?="วันที่  ".$dall5['orderdate']; if($orderdate5==$datenow){ 
+       <?php            	echo $dall5['result']; ?>  <?=$dall5['unit'];?>  <?="วันที่  ".$dall5['orderdate']; if($orderdate5==$datenow){ 
 			echo "   lab วันนี้";
 		 }?>
          </div></td>
@@ -1163,7 +1125,7 @@ C&deg;</td>
        <input type='hidden' name='micro'  value='<?=$listm1[0];?>'>
        <input type='hidden' name='micro<?=$i6?>'  value='<?=$dall5['result'];?>'>
        <input type='hidden' name='datemicro<?=$i6?>'  value='<?=$dall5['orderdate'];?>' />
-     <?	 
+     <?php  
 	 $i6++; 
 	  }
 	}else{
@@ -1244,8 +1206,7 @@ C&deg;</td>
 	<input type="hidden" name="Smoking" id="radio3" value="0" />
 	</td>
 	                  </tr>
-					<?php
-					/*
+					<?php 					/*
 					?>
 	                <tr>
 	                  <td class="tb_font_2">Smoking</td>
@@ -1254,8 +1215,7 @@ C&deg;</td>
     <input type="radio" name="Smoking" id="radio3" value="0" />
     ไม่ได้ให้ความรู้</td>
 	                  </tr>
-					<?php
-					*/
+					<?php 					*/
 					?>
                   </table></td>
                 </tr>
@@ -1299,8 +1259,6 @@ C&deg;</td>
     <input type='hidden' name='total5' value='<?=$i5?>'>
     <input type='hidden' name='total6' value='<?=$i6?>'>
 	<input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล"  />
-	&nbsp;
-   <!-- <input name="submit2" type="submit" class="forntsarabun1" value="ตกลง&amp;สติกเกอร์ OPD" />-->
     <input type="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
     </p></TD>
 	</TR>
@@ -1314,9 +1272,10 @@ C&deg;</td>
 <BR>&nbsp;
 </FORM>
 
-<?php
- }
- } //ปิด ค้นหา hn ใน opcard
- 
- require "footer.php";
- ?>
+<?php 
+    } // End HN is in opcard
+
+} // End HN is not NULL
+
+require "footer.php";
+?>

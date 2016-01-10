@@ -1,5 +1,4 @@
-<?php
-	
+<?php 	
 session_start();
 
 error_reporting(1);
@@ -91,8 +90,7 @@ if(!empty($hn)){
 	$crow = mysql_num_rows($cquery);
 	
 	if(!$crow){
-		?><br> <font class='forntsarabun1'>ไม่พบ  HN  <b>$hn</b> ในทะเบียน HT</font><?php
-	}else{
+		?><br> <font class='forntsarabun1'>ไม่พบ  HN  <b>$hn</b> ในทะเบียน HT</font><?php 	}else{
 
 		// $arr_opd = mysql_fetch_array($cquery);
 	
@@ -148,8 +146,7 @@ if(!empty($hn)){
 			<tr class="forntsarabun1">
 				<td  align="right" class="tb_font_2">เพศ :</td>
 				<td >
-					<?php
-					if($arr_opd['sex']=='0'){ 
+					<?php 					if($arr_opd['sex']=='0'){ 
 						$sex="ชาย"; 
 					}elseif($arr_opd['sex']=='1'){ 
 						$sex="หญิง"; 
@@ -167,8 +164,7 @@ if(!empty($hn)){
 				<td align="left" class="forntsarabun1"><?php echo $arr_opd["ptright"];?></td>
 			</tr>
 		</table>
-		<?php
-		$ht = $height/100;
+		<?php 		$ht = $height/100;
 		$bmi = number_format($weight / ($ht*$ht) ,2);
 		?>
 		<table border="0" class="forntsarabun1">
@@ -213,13 +209,13 @@ if(!empty($hn)){
 		<TABLE class="forntsarabun1">
 		<tr>
 		<td align="right" class="tb_font_2">การวินิจฉัย : </td>
-		<td colspan="5" align="left" class="forntsarabun1"><input name="ht" type="radio" value="0" <? if($arr_opd["ht"]==0){ echo "checked"; } ?> />
+		<td colspan="5" align="left" class="forntsarabun1"><input name="ht" type="radio" value="0" <?php if($arr_opd["ht"]==0){ echo "checked"; } ?> />
 		No
-		<input name="ht" type="radio" value="1" <? if($arr_opd["ht"]==1){ echo "checked"; } ?>/>
+		<input name="ht" type="radio" value="1" <?php if($arr_opd["ht"]==1){ echo "checked"; } ?>/>
 		Essential HT
-		<input name="ht" type="radio" value="2" <? if($arr_opd["ht"]==2){ echo "checked"; } ?>/>
+		<input name="ht" type="radio" value="2" <?php if($arr_opd["ht"]==2){ echo "checked"; } ?>/>
 		Secondary HT 
-		<input name="ht" type="radio" value="3"  <? if($arr_opd["ht"]==3){ echo "checked"; } ?>/>
+		<input name="ht" type="radio" value="3"  <?php if($arr_opd["ht"]==3){ echo "checked"; } ?>/>
 		Uncertain type
 		</td>
 		</tr>
@@ -230,10 +226,10 @@ if(!empty($hn)){
 		<tr>
 		<td align="right" class="tb_font_2">โรคร่วม HT :</td>
 		<td colspan="5" align="left" class="forntsarabun1">
-		<input name="joint_disease_dm" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_dm"]=="Y"){ echo "checked"; } ?> />เบาหวาน 
-		<input name="joint_disease_nephritic" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_nephritic"]=="Y"){ echo "checked"; } ?>/>ไตเรื้อรัง
-		<input name="joint_disease_myocardial" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_myocardial"]=="Y"){ echo "checked"; } ?>/>กล้ามเนื้อหัวใจตาย 
-		<input name="joint_disease_paralysis" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_paralysis"]=="Y"){ echo "checked"; } ?>/>อัมพฤกษ์อัมพาต</td>
+		<input name="joint_disease_dm" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_dm"]=="Y"){ echo "checked"; } ?> />เบาหวาน 
+		<input name="joint_disease_nephritic" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_nephritic"]=="Y"){ echo "checked"; } ?>/>ไตเรื้อรัง
+		<input name="joint_disease_myocardial" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_myocardial"]=="Y"){ echo "checked"; } ?>/>กล้ามเนื้อหัวใจตาย 
+		<input name="joint_disease_paralysis" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_paralysis"]=="Y"){ echo "checked"; } ?>/>อัมพฤกษ์อัมพาต</td>
 		</tr>
 		<tr>
 		<td align="right" class="tb_font_2">&nbsp;</td>
@@ -283,8 +279,7 @@ if(!empty($hn)){
 			document.F1.bmi.value=bmi.toFixed(2);
 		}
 		</script>
-	<?php
-	} // end if row
+	<?php 	} // end if row
 } //ปิด ค้นหา hn ใน opcard
 
 

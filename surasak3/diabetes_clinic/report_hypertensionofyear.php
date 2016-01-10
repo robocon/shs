@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -57,8 +56,7 @@ $tbnum=mysql_num_rows($tbquery);
 		</td>
 		<td width="10%" align="center" bgcolor="#66CC99"><strong>ผป.มาตรวจตามนัด</strong></td>
 	</tr>
-<?php
-if($tbnum < 1){
+<?php if($tbnum < 1){
 	echo "<tr><td colspan='8' align='center' style='color:red;'>------------------------ ไม่มีข้อมูล ------------------------</td></tr>";
 }else{
 	$i=0;
@@ -80,8 +78,7 @@ if($tbnum < 1){
 		<td align="left" bgcolor="#CCFFCC"><?=$tbrows["ptright"];?></td>  
 		<td align="left" bgcolor="#CCFFCC"><?php if( $test_guard > 0 ) echo $idguard;?></td>
 		<td align="left" bgcolor="#CCFFCC">
-			<?php
-			/* โรคร่วม HT */
+			<?php 			/* โรคร่วม HT */
 			if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
 				
 				$joint_disease_list = array();
@@ -106,8 +103,7 @@ if($tbnum < 1){
 			?>
 		</td>
 		<td align="center" bgcolor="#CCFFCC">
-			<?php
-			if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
+			<?php 			if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
 				
 				$sql = "
 				SELECT thidate, bp1, bp2
@@ -155,8 +151,7 @@ if($tbnum < 1){
 			?>
 		</td>
 		<td align="center" bgcolor="#CCFFCC">
-		<?php
-		if($tbrows["joint_disease_dm"]=="" && $tbrows["joint_disease_nephritic"]=="" && $tbrows["joint_disease_myocardial"]=="" && $tbrows["joint_disease_paralysis"]==""){
+		<?php 		if($tbrows["joint_disease_dm"]=="" && $tbrows["joint_disease_nephritic"]=="" && $tbrows["joint_disease_myocardial"]=="" && $tbrows["joint_disease_paralysis"]==""){
 			
 			$sql = "
 			SELECT thidate, bp1, bp2
@@ -202,8 +197,7 @@ if($tbnum < 1){
 		?>
 		</td>
 		<td align="center" bgcolor="#CCFFCC">
-			<?php
-			$sql="
+			<?php 			$sql="
 			SELECT thidate, bp1, bp2, organ 
 			FROM opd_temp 
 			WHERE hn = '".$tbrows["hn"]."' 
@@ -219,10 +213,8 @@ if($tbnum < 1){
 			?>
 		</td>
 	</tr>
-	<?php
-	} // End While
+	<?php 	} // End While
 }
 ?>
-<?php
-require "footer.php";
+<?php require "footer.php";
 ?>

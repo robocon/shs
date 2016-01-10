@@ -1,5 +1,4 @@
-<?php
-	
+<?php 	
 session_start();
 
 error_reporting(1);
@@ -90,8 +89,7 @@ require "header.php";
 		</tr>
 	</table>
 </form>
-<?php
-$sql = "SELECT `ptname` FROM `opday` WHERE `hn` = '$hn';";
+<?php $sql = "SELECT `ptname` FROM `opday` WHERE `hn` = '$hn';";
 $q = mysql_query($sql);
 $item = mysql_fetch_assoc($q);
 
@@ -116,8 +114,7 @@ if($hn !== null){
 			<th>ดูรายละเอียด</th>
 			<th>แก้ไขข้อมูล</th>
 		</tr>
-	<?php
-	while($item = mysql_fetch_assoc($query)){
+	<?php 	while($item = mysql_fetch_assoc($query)){
 		
 		list($y, $m, $d) = explode('-', $item['thidate']);
 		$th_date = ($y+543)."-$m-$d";
@@ -133,12 +130,10 @@ if($hn !== null){
 			<td class="text_center"><a href="hypertension_detail.php?id=<?php echo $item['id'];?>" target="_blank">ดู</a></td>
 			<td class="text_center"><a href="hypertension_edithistory.php?id=<?php echo $item['id'];?>">แก้ไข</a></td>
 		</tr>
-		<?php
-	}
+		<?php 	}
 	?>
 	</table>
-	<?php
-}
+	<?php }
 	
 include 'footer.php';	
 ?>

@@ -1,5 +1,4 @@
-<?php
-include '../bootstrap.php';
+<?php include '../bootstrap.php';
 
 $match = preg_match('/login/', $_SERVER['HTTP_REFERER']);
 if( isset($_SERVER['HTTP_REFERER']) && $match === 0 ){
@@ -36,8 +35,7 @@ if( $action === 'login' ){
 		?>
 		<p>ชื่อผู้ใช้งาน หรือ รหัสผ่านผิดพลาด กรุณาตรวจสอบอีกครั้ง</p>
 		<p><a href="login.php">คลิกที่นี่</a> เพื่อเข้าสู่ระบบ</p>
-		<?php
-		exit;
+		<?php 		exit;
 	}
 	
 }
@@ -55,5 +53,4 @@ include 'header.php';
 	<button type="submit">เข้าสู่ระบบ</button>
 	<input type="hidden" name="action" value="login">
 </form>
-<?php
-include 'footer.php';
+<?php include 'footer.php';

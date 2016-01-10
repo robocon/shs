@@ -1,13 +1,13 @@
 <?php
-	
-session_start();
+include '../bootstrap.php';
+// session_start();
 
-error_reporting(1);
-ini_set('display_errors', 1);
+// error_reporting(1);
+// ini_set('display_errors', 1);
 
 
-require "../connect.php";
-require "../includes/functions.php";
+// require "../connect.php";
+// require "../includes/functions.php";
 	
 require "header.php";
 
@@ -201,8 +201,7 @@ if(!empty($_POST["p_hn"]) != ""){
 							<tr class="forntsarabun1">
 								<td  align="right" class="tb_font_2">เพศ :</td>
 								<td >
-								<?php
-									$sex1 = $sex2 = "";
+								<?php 									$sex1 = $sex2 = "";
 									if($arr_view['sex']=='ช'){ 
 										$sex1="checked"; 
 									}elseif($arr_view['sex']=='ญ'){ 
@@ -251,7 +250,7 @@ if(!empty($_POST["p_hn"]) != ""){
 		document.F1.bmi.value=bmi.toFixed(2);
 	}
 	</script>
-     <? 
+     <?php 
 		 $ht = $height/100;
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
@@ -354,8 +353,7 @@ Uncertain type
 <BR>&nbsp;
 </FORM>
 
-<?php
- }
+<?php  }
  } //ปิด ค้นหา hn ใน opcard
 }
 

@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 
 error_reporting(1);
 ini_set('display_errors', 1);
@@ -90,8 +89,7 @@ if($row > 0){
 								<tr class="forntsarabun1">
 									<td  align="right" class="tb_font_2">เพศ :</td>
 									<td >
-									<?php
-									if($item['sex']=='0'){ 
+									<?php 									if($item['sex']=='0'){ 
 										$sex="ชาย"; 
 									}elseif($item['sex']=='1'){ 
 										$sex="หญิง"; 
@@ -148,8 +146,7 @@ if($row > 0){
 	<tr>
 	<td align="right" class="tb_font_2">การวินิจฉัย : </td>
 	<td colspan="5" align="left" class="forntsarabun1">
-		<?php
-		if($item['ht'] == '1'){
+		<?php 		if($item['ht'] == '1'){
 			echo 'Essential HT';
 		}else if($item['ht'] == '2'){
 			echo 'Uncertain type';
@@ -168,8 +165,7 @@ if($row > 0){
 	<tr>
 		<td align="right" class="tb_font_2">โรคร่วม HT :</td>
 		<td colspan="5" align="left" class="forntsarabun1">
-			<?php
-			$disease = array();
+			<?php 			$disease = array();
 			if($item['joint_disease_dm'] == 'Y'){
 				$disease[] = 'เบาหวาน';
 			}
@@ -198,8 +194,7 @@ if($row > 0){
 	<tr>
 		<td align="right"  class="tb_font_2"> ประวัติบุหรี่ : </td>
 		<td colspan="5">
-			<?php
-			if($item['smork'] == '1'){
+			<?php 			if($item['smork'] == '1'){
 				echo 'สูบบุหรี่';
 			}else if($item['smork'] == '0'){
 				echo 'ไม่สูบบุหรี่';
@@ -223,8 +218,7 @@ if($row > 0){
 	</TR>
 	</TABLE>
 
-<?php
-}else{
+<?php }else{
 	echo "ไม่สามารถค้นหาข้อมูลได้";
 }
 

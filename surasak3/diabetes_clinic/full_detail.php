@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -55,8 +54,7 @@ td{
 	font-size: 24px;
 }
 </style>
-<?php
-
+<?php 
 // $id = filter_input(INPUT_GET, 'id');
 $id = intval($_GET['id']);
 
@@ -144,8 +142,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td align="right" class="tb_font_2">การวินิจฉัย : </td>
 								<td colspan="5" align="left" class="">
-									<?php
-									if($item['diagnosis'] == '0'){
+									<?php 									if($item['diagnosis'] == '0'){
 										echo 'DM type1';
 									}else if($item['diagnosis'] == '1'){
 										echo 'DM type2';
@@ -157,21 +154,18 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 									?>
 								</td>
 							</tr>
-							<?php
-							if($item['diagdetail'] != ''){
+							<?php 							if($item['diagdetail'] != ''){
 							?>
 							<tr>
 								<td align="right" class="">&nbsp;</td>
 								<td colspan="5" align="left" class="">การวินิจฉัยครั้งแรก ประมาณ พ.ศ. <?php echo $item['diagdetail'];?></td>
 							</tr>
-							<?php
-							}
+							<?php 							}
 							?>
 							<tr>
 								<td align="right" class="tb_font_2">โรคร่วม HT:</td>
 								<td colspan="5" align="left" class="">
-									<?php
-									if( $item['ht'] == '0' ){
+									<?php 									if( $item['ht'] == '0' ){
 										echo 'No';
 									}else if( $item['ht'] == '1' ){
 										echo 'Essential HT';
@@ -188,8 +182,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td align="right" valign="top" class="tb_font_2">โรคร่วม อื่นๆ:</td>
 								<td colspan="8" align="left" class="">
-									<?php
-									/*
+									<?php 									/*
 									if( $item['ht_etc'] == 'Neuropathy' ){
 										echo 'Neuropathy';
 									}else if( $item['ht_etc'] == 'Heart Failure' ){
@@ -218,21 +211,18 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 									?>
 								</td>
 							</tr>
-							<?php
-							if($item['htdetail'] != ''){
+							<?php 							if($item['htdetail'] != ''){
 							?>
 							<tr>
 								<td align="right" class="forntsarabun1">&nbsp;</td>
 								<td colspan="5" align="left" class="forntsarabun1">การวินิจฉัยครั้งแรก ประมาณ พ.ศ. <?php echo $item['htdetail']; ?></td>
 							</tr>
-							<?php
-							}
+							<?php 							}
 							?>
 							<tr>
 								<td align="right"  class="tb_font_2">ประวัติบุหรี่ : </td>
 								<td colspan="5">
-									<?php
-									if($item['smork'] == '0'){
+									<?php 									if($item['smork'] == '0'){
 										echo 'ไม่สูบบุหรี่';
 									} else if($item['smork'] == '1'){
 										echo 'สูบบุหรี่';
@@ -289,8 +279,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
 								<td colspan="7" class="">
-									<?php
-									if($item['retinal_date']){
+									<?php 									if($item['retinal_date']){
 										list($retinal_date, $etc) = explode(' ', $item['retinal_date']);
 										if($retinal_date == '0000-00-00'){
 											$retinal_date = '-';
@@ -316,8 +305,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td colspan="2" align="right" class="tb_font_2">Foot Exam:</td>
 								<td align="left" class="" colspan="8">
-									<?php
-									if($item['foot_date']){
+									<?php 									if($item['foot_date']){
 										list($foot_date, $etc) = explode(' ', $item['foot_date']);
 										if($foot_date == '0000-00-00'){
 											$foot_date = '-';
@@ -351,8 +339,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'BS'", $item['dummy_no']);
@@ -383,8 +370,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'HbA1c'", $item['dummy_no']);
@@ -411,8 +397,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'LDL'", $item['dummy_no']);
@@ -439,8 +424,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'Creatinine'", $item['dummy_no']);
@@ -467,8 +451,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'Urine protein'", $item['dummy_no']);
@@ -495,8 +478,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'Protein'", $item['dummy_no']);
@@ -523,8 +505,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										</tr>
 										<tr>
 											<td>
-												<?php
-												$sql = sprintf("SELECT result_lab, dateY 
+												<?php 												$sql = sprintf("SELECT result_lab, dateY 
 												FROM diabetes_lab 
 												WHERE dummy_no = '%s' 
 												AND labname = 'Urine Microalbumin'", $item['dummy_no']);
@@ -554,8 +535,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										<tr>
 											<td class="tb_font_2">Foot care: </td>
 											<td>
-												<?php
-												if($item['foot_care'] == '1'){
+												<?php 												if($item['foot_care'] == '1'){
 													echo 'ให้ความรู้';
 												}else{
 													echo 'ไม่ได้ให้ความรู้';
@@ -566,8 +546,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										<tr>
 											<td class="tb_font_2">Nutrition: </td>
 											<td>
-												<?php
-												if($item['nutrition'] == '1'){
+												<?php 												if($item['nutrition'] == '1'){
 													echo 'ให้ความรู้';
 												}else{
 													echo 'ไม่ได้ให้ความรู้';
@@ -578,8 +557,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										<tr>
 											<td class="tb_font_2">Exercise: </td>
 											<td>
-												<?php
-												if($item['exercise'] == '1'){
+												<?php 												if($item['exercise'] == '1'){
 													echo 'ให้ความรู้';
 												}else{
 													echo 'ไม่ได้ให้ความรู้';
@@ -591,8 +569,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 										<tr>
 											<td class="tb_font_2">Smoking: </td>
 											<td>
-												<?php
-												if($item['smoking'] == '1'){
+												<?php 												if($item['smoking'] == '1'){
 													echo 'ให้ความรู้';
 												}else{
 													echo 'ไม่ได้ให้ความรู้';
@@ -610,8 +587,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td class="tb_font_2">Admit ด้วยปัญหาเบาหวาน: </td>
 								<td>
-									<?php
-									if($item['admit_dia'] == '1'){
+									<?php 									if($item['admit_dia'] == '1'){
 										echo 'มี';
 									}else{
 										echo 'ไม่มี';
@@ -622,8 +598,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td class="tb_font_2">โรคแทรกซ้อนด้านหัวใจ: </td>
 								<td>
-									<?php
-									if($item['dt_heart'] == '1'){
+									<?php 									if($item['dt_heart'] == '1'){
 										echo 'มี';
 									}else{
 										echo 'ไม่มี';
@@ -634,8 +609,7 @@ $sql = sprintf("SELECT * FROM `diabetes_clinic_history` WHERE `row_id` = '%s'", 
 							<tr>
 								<td class="tb_font_2">โรคแทรกซ้อนด้านสมอง: </td>
 								<td>
-									<?php
-									if($item['dt_brain'] == '1'){
+									<?php 									if($item['dt_brain'] == '1'){
 										echo 'มี';
 									}else{
 										echo 'ไม่มี';

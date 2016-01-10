@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -84,8 +83,7 @@ require "header.php";
 		</TR>
 	</TABLE>
 </form>
-<?php
-
+<?php 
 // $hn = filter_input(INPUT_POST, 'p_hn');
 // $hn = $_POST['p_hn'];
 if($hn != null){
@@ -113,8 +111,7 @@ if($hn != null){
 			<th>ดูรายละเอียด</th>
 			<th>แก้ไขข้อมูล</th>
 		</tr>
-	<?php
-	while($item = mysql_fetch_assoc($query)){
+	<?php 	while($item = mysql_fetch_assoc($query)){
 		
 		list($y, $m, $d) = explode('-', $item['thidate']);
 		$th_date = ($y+543)."-$m-$d";
@@ -133,11 +130,9 @@ if($hn != null){
 			<td class="text_center"><a href="full_detail.php?id=<?php echo $item['row_id'];?>" target="_blank">ดู</a></td>
 			<td class="text_center"><a href="edit_detail.php?id=<?php echo $item['row_id'];?>">แก้ไข</a></td>
 		</tr>
-		<?php
-	}
+		<?php 	}
 	?>
 	</table>
-	<?php
-}
+	<?php }
 require "footer.php";
 ?>

@@ -1,4 +1,4 @@
-<? 
+<?php 
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
@@ -146,8 +146,7 @@ body,td,th {
 }
 -->
 </style>
-<?
-include("../connect.php");
+<?php include("../connect.php");
 $d=date('d');
 $m=date('m');
 $year=date("Y");
@@ -186,8 +185,7 @@ $year=date("Y");
     <td align="center" bgcolor="#66CC99"><strong>Creatinine</strong></td>
     <td align="center" bgcolor="#66CC99"><strong>Microalbuminuria</strong></td>
   </tr>
-  <?
-	if($tbnum < 1){
+  <?php 	if($tbnum < 1){
 		echo "<tr><td colspan='8' align='center' style='color:red;'>------------------------ ไม่มีข้อมูล ------------------------</td></tr>";
 	}else{
 		$i=0;
@@ -206,8 +204,7 @@ $year=date("Y");
     <td align="left" bgcolor="#CCFFCC"><?=$tbrows["ptright"];?></td>  
     <td align="left" bgcolor="#CCFFCC"><?=$idguard;?></td>
     <td align="center" bgcolor="#CCFFCC">
-	<?
-      $laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc";
+	<?php       $laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc";
 	  $result_laball1=mysql_query($laball1);
 	  $rowall1=mysql_num_rows($result_laball1);
 	  $resultall1=mysql_fetch_array($result_laball1);
@@ -222,8 +219,7 @@ $year=date("Y");
 	  }
 	?>    </td>
     <td align="center" bgcolor="#CCFFCC">
-	<?
-      $laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Blood Sugar' and b.orderdate like '$year%' Order by b.orderdate desc limit 3";
+	<?php       $laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Blood Sugar' and b.orderdate like '$year%' Order by b.orderdate desc limit 3";
 	  $result_laball1=mysql_query($laball1);
 	  $rowall1=mysql_num_rows($result_laball1);
 
@@ -248,8 +244,7 @@ $year=date("Y");
 	  } //close if
 	?>    </td>
     <td align="center" bgcolor="#CCFFCC">
-	<?
-      $labtest1="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Blood Sugar' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+	<?php       $labtest1="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Blood Sugar' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 	  $result_labtest1=mysql_query($labtest1);
 	  $rowlabtest1=mysql_num_rows($result_labtest1);
 		  if($rowlabtest1 < 1){
@@ -258,8 +253,7 @@ $year=date("Y");
 			echo "1";
 		  }
 	?>    </td>
-    <td align="center" bgcolor="#CCFFCC"><?
-      $labtest2="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+    <td align="center" bgcolor="#CCFFCC"><?php       $labtest2="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 	  $result_labtest2=mysql_query($labtest2);
 	  $rowlabtest2=mysql_num_rows($result_labtest2);
 		  if($rowlabtest2 < 1){
@@ -268,8 +262,7 @@ $year=date("Y");
 			echo "1";
 		  }
 	?></td>
-    <td align="center" bgcolor="#CCFFCC"><?
-      $labtest3="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='LDL' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+    <td align="center" bgcolor="#CCFFCC"><?php       $labtest3="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='LDL' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 	  $result_labtest3=mysql_query($labtest3);
 	  $rowlabtest3=mysql_num_rows($result_labtest3);
 		  if($rowlabtest3 < 1){
@@ -278,8 +271,7 @@ $year=date("Y");
 			echo "1";
 		  }
 	?></td>
-    <td align="center" bgcolor="#CCFFCC"><?
-      $labtest4="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+    <td align="center" bgcolor="#CCFFCC"><?php       $labtest4="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 	  $result_labtest4=mysql_query($labtest4);
 	  $rowlabtest4=mysql_num_rows($result_labtest4);
 		  if($rowlabtest4 < 1){
@@ -288,8 +280,7 @@ $year=date("Y");
 			echo "1";
 		  }
 	?></td>
-    <td align="center" bgcolor="#CCFFCC"><?
-      $labtest5="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Urine Microalbumin' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+    <td align="center" bgcolor="#CCFFCC"><?php       $labtest5="Select labname,result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$tbrows["hn"]."' and  a.labname='Urine Microalbumin' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 	  $result_labtest5=mysql_query($labtest5);
 	  $rowlabtest5=mysql_num_rows($result_labtest5);
 		  if($rowlabtest5 < 1){
@@ -299,8 +290,7 @@ $year=date("Y");
 		  }
 	?></td>
   </tr>
-  <?
-	  	}
+  <?php 	  	}
 	}
   ?>
 </table>

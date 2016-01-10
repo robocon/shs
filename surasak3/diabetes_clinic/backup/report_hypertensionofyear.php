@@ -1,4 +1,4 @@
-<? 
+<?php 
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
@@ -146,8 +146,7 @@ body,td,th {
 }
 -->
 </style>
-<?
-include("../connect.php");
+<?php include("../connect.php");
 $d=date('d');
 $m=date('m');
   	$startdate=$_POST["y_start"]."-".$_POST["m_start"]."-".$_POST["d_start"];
@@ -178,8 +177,7 @@ $m=date('m');
     </strong></td>
     <td width="10%" align="center" bgcolor="#66CC99"><strong>ผป.มาตรวจตามนัด</strong></td>
   </tr>
-  <?
-	if($tbnum < 1){
+  <?php 	if($tbnum < 1){
 		echo "<tr><td colspan='8' align='center' style='color:red;'>------------------------ ไม่มีข้อมูล ------------------------</td></tr>";
 	}else{
 		$i=0;
@@ -198,8 +196,7 @@ $m=date('m');
     <td align="left" bgcolor="#CCFFCC"><?=$tbrows["ptright"];?></td>  
     <td align="left" bgcolor="#CCFFCC"><?=$idguard;?></td>
     <td align="left" bgcolor="#CCFFCC">
-	<?
-	if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
+	<?php 	if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
 		echo "มีโรคร่วม (";
 		if($tbrows["joint_disease_dm"]=="Y"){
 			echo "เบาหวาน, ";
@@ -219,8 +216,7 @@ $m=date('m');
 	}
 	?>    </td>
     <td align="center" bgcolor="#CCFFCC">
-	<?
-	if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
+	<?php 	if($tbrows["joint_disease_dm"]=="Y" || $tbrows["joint_disease_nephritic"]=="Y" || $tbrows["joint_disease_myocardial"]=="Y" || $tbrows["joint_disease_paralysis"]=="Y"){
 		$sql="SELECT thidate, bp1, bp2 FROM opd WHERE hn = '".$tbrows["hn"]."' AND (bp1 !='' OR bp2 !='') AND thidate between '2558-07-01 00:00:00' and '2558-09-30 23:59:59' ORDER  BY thidate DESC LIMIT 3";
 		//echo $sql;
 		$query=mysql_query($sql);
@@ -250,8 +246,7 @@ $m=date('m');
 	}
 	?>    </td>
     <td align="center" bgcolor="#CCFFCC">
-	<?
-	if($tbrows["joint_disease_dm"]=="" && $tbrows["joint_disease_nephritic"]=="" && $tbrows["joint_disease_myocardial"]=="" && $tbrows["joint_disease_paralysis"]==""){
+	<?php 	if($tbrows["joint_disease_dm"]=="" && $tbrows["joint_disease_nephritic"]=="" && $tbrows["joint_disease_myocardial"]=="" && $tbrows["joint_disease_paralysis"]==""){
 		$sql="SELECT thidate, bp1, bp2 FROM opd WHERE hn = '".$tbrows["hn"]."' AND (bp1 !='' OR bp2 !='') AND thidate between '2558-07-01 00:00:00' and '2558-09-30 23:59:59' ORDER  BY thidate DESC LIMIT 3";
 		$query=mysql_query($sql);
 	    $rownum=mysql_num_rows($query);
@@ -280,8 +275,7 @@ $m=date('m');
 	}
 	?>    </td>
     <td align="center" bgcolor="#CCFFCC">
-    <?
-		$sql="SELECT thidate, bp1, bp2, organ FROM opd WHERE hn = '".$tbrows["hn"]."' AND (bp1 !='' OR bp2 !='') AND organ like '%ตรวจตามนัด%'   AND thidate between '2558-07-01 00:00:00' and '2558-09-30 23:59:59' ORDER  BY thidate DESC LIMIT 3";
+    <?php 		$sql="SELECT thidate, bp1, bp2, organ FROM opd WHERE hn = '".$tbrows["hn"]."' AND (bp1 !='' OR bp2 !='') AND organ like '%ตรวจตามนัด%'   AND thidate between '2558-07-01 00:00:00' and '2558-09-30 23:59:59' ORDER  BY thidate DESC LIMIT 3";
 		$query=mysql_query($sql);
 		$recode=mysql_num_rows($query);
 		if(!empty($recode)){
@@ -291,8 +285,7 @@ $m=date('m');
 		}
 	?>    </td>
   </tr>
-  <?
-	  	}
+  <?php 	  	}
 	}
   ?>
 </table>

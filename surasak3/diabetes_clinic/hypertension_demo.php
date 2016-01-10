@@ -231,8 +231,7 @@ if(!empty($_POST["p_hn"]) != ""){
 								<tr class="forntsarabun1">
 									<td align="right" class="tb_font_2">เพศ :</td>
 									<td>
-										<?php
-										if($arr_view['sex']=='ช'){ 
+										<?php 										if($arr_view['sex']=='ช'){ 
 											$sex1="checked"; 
 										} elseif ($arr_view['sex']=='ญ'){ 
 											$sex2="checked"; 
@@ -253,8 +252,7 @@ if(!empty($_POST["p_hn"]) != ""){
 									<td>
 										<select name="doctor" id="doctor" class="forntsarabun1">
 											<option value="" >-- กรุณาเลือกแพทย์ --</option>
-										<?php
-										$sql = "Select name From doctor where status = 'y' ";
+										<?php 										$sql = "Select name From doctor where status = 'y' ";
 										$result = mysql_query($sql);
 										while($dbarr2= mysql_fetch_array($result)){
 
@@ -407,8 +405,7 @@ if(!empty($_POST["p_hn"]) != ""){
 
 </FORM>
 
-<?php
-		}
+<?php 		}
 	} //ปิด ค้นหา hn ใน opcard
 } // end if p_hn
 

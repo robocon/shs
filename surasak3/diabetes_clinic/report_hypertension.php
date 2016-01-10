@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -29,8 +28,7 @@ require "header.php";
 							}
 							?>
 							<option value="<?=$i?>" <?php echo $select; ?>><?=$i;?></option>
-							<?php
-						}
+							<?php 						}
 					?>
 					<select>
 					<button type="submit">ทำการค้นหา</button>
@@ -40,8 +38,7 @@ require "header.php";
 		</table>
 	</form>
 </div>
-<?php
-
+<?php 
 if(isset($_POST['y_start'])){
 	$date1 = intval($_POST['y_start']) - 543;
 }else{
@@ -131,8 +128,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 		<tr>
 			<td>1. มีโรคร่วมค่าความดันโลหิต &lt; 130/80 mmHg.</td>
 			<td></td>
-			<?php
-			$sql = "
+			<?php 			$sql = "
 			SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
 FROM hyper_temp
 WHERE (`bp1` != '' OR `bp2` != '') AND bp1 <130 
@@ -159,15 +155,13 @@ GROUP BY MONTH( thidate );
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		<tr/>
 		<tr>
 			<td>2. ไม่มีโรคร่วมค่าความดันโลหิต &lt; 140/90 mmHg.</td>
 			<td></td>
-			<?php
-			$sql = "
+			<?php 			$sql = "
 			SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
 FROM hyper_temp
 WHERE (`bp1` != '' OR `bp2` != '') AND bp1 < 140 
@@ -193,15 +187,13 @@ GROUP BY MONTH( thidate );
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		<tr/>
 		<tr>
 			<td>จำนวนผู้ป่วยที่เข้าเคสในแต่ละเดือน</td>
 			<td></td>
-			<?php
-			
+			<?php 			
 			foreach($months AS $key => $value){
 				$key_search = "$date1-$key";
 				
@@ -213,15 +205,13 @@ GROUP BY MONTH( thidate );
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
 			<td>จำนวนผู้ป่วย HT ในแต่ละเดือน</td>
 			<td></td>
-			<?php
-			
+			<?php 			
 			foreach($months AS $key => $value){
 				$key_search = "$date1-$key";
 				
@@ -233,12 +223,10 @@ GROUP BY MONTH( thidate );
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 	</table>
 <?php } // End if submit ?>
-<?php
-require "footer.php";
+<?php require "footer.php";
 ?>

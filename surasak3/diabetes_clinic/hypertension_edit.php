@@ -1,5 +1,4 @@
-<?php
-	
+<?php 	
 session_start();
 
 error_reporting(1);
@@ -187,7 +186,7 @@ $datenow=date("Y-m-d");
 		<tr class="forntsarabun1">
 		  <td  align="right" class="tb_font_2">เพศ :</td>
 		  <td >
-          <? if($arr_view['sex']=='ช'){ $sex1="checked"; }elseif($arr_view['sex']=='ญ'){ $sex2="checked"; } ?>
+          <?php if($arr_view['sex']=='ช'){ $sex1="checked"; }elseif($arr_view['sex']=='ญ'){ $sex2="checked"; } ?>
 		    <input name="sex" type="radio" value="0" <?=$sex1;?>/>
 		    ชาย
 		    <input name="sex" type="radio" value="1" <?=$sex2;?>/> 
@@ -232,7 +231,7 @@ $datenow=date("Y-m-d");
 		document.F1.bmi.value=bmi.toFixed(2);
 	}
 	</script>
-     <? 
+     <?php 
 		 $ht = $height/100;
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
@@ -278,13 +277,13 @@ mmHg</td>
 <TABLE class="forntsarabun1">
   <tr>
            <td align="right" class="tb_font_2">การวินิจฉัย : </td>
-           <td colspan="5" align="left" class="forntsarabun1"><input name="ht" type="radio" value="0" <? if($arr_opd["ht"]==0){ echo "checked"; } ?> />
+           <td colspan="5" align="left" class="forntsarabun1"><input name="ht" type="radio" value="0" <?php if($arr_opd["ht"]==0){ echo "checked"; } ?> />
 No
-  <input name="ht" type="radio" value="1" <? if($arr_opd["ht"]==1){ echo "checked"; } ?>/>
+  <input name="ht" type="radio" value="1" <?php if($arr_opd["ht"]==1){ echo "checked"; } ?>/>
 Essential HT
-<input name="ht" type="radio" value="2" <? if($arr_opd["ht"]==2){ echo "checked"; } ?>/>
+<input name="ht" type="radio" value="2" <?php if($arr_opd["ht"]==2){ echo "checked"; } ?>/>
 Secondary HT 
-<input name="ht" type="radio" value="3"  <? if($arr_opd["ht"]==3){ echo "checked"; } ?>/>
+<input name="ht" type="radio" value="3"  <?php if($arr_opd["ht"]==3){ echo "checked"; } ?>/>
 Uncertain type
 </td>
           </tr>
@@ -295,10 +294,10 @@ Uncertain type
 	  <tr>
 	    <td align="right" class="tb_font_2">โรคร่วม HT :</td>
 	    <td colspan="5" align="left" class="forntsarabun1">
-<input name="joint_disease_dm" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_dm"]=="Y"){ echo "checked"; } ?> />เบาหวาน 
-<input name="joint_disease_nephritic" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_nephritic"]=="Y"){ echo "checked"; } ?>/>ไตเรื้อรัง
-<input name="joint_disease_myocardial" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_myocardial"]=="Y"){ echo "checked"; } ?>/>กล้ามเนื้อหัวใจตาย 
-<input name="joint_disease_paralysis" type="checkbox"  value="Y"  <? if($arr_opd["joint_disease_paralysis"]=="Y"){ echo "checked"; } ?>/>อัมพฤกษ์อัมพาต</td>
+<input name="joint_disease_dm" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_dm"]=="Y"){ echo "checked"; } ?> />เบาหวาน 
+<input name="joint_disease_nephritic" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_nephritic"]=="Y"){ echo "checked"; } ?>/>ไตเรื้อรัง
+<input name="joint_disease_myocardial" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_myocardial"]=="Y"){ echo "checked"; } ?>/>กล้ามเนื้อหัวใจตาย 
+<input name="joint_disease_paralysis" type="checkbox"  value="Y"  <?php if($arr_opd["joint_disease_paralysis"]=="Y"){ echo "checked"; } ?>/>อัมพฤกษ์อัมพาต</td>
 	    </tr>
 	  <tr>
 	    <td align="right" class="tb_font_2">&nbsp;</td>
@@ -336,8 +335,7 @@ Uncertain type
 <BR>&nbsp;
 </FORM>
 
-<?php
-	  }
+<?php 	  }
  } //ปิด ค้นหา hn ใน opcard	
 // include("../unconnect.inc");
 

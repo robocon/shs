@@ -1,4 +1,3 @@
-<?php
-header('Location: diabetes.php');
+<?php header('Location: diabetes.php');
 exit;
 ?>

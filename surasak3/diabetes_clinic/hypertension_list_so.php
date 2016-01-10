@@ -1,4 +1,4 @@
-<? 
+<?php 
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
@@ -165,8 +165,7 @@ color: #FFF;
   </table>
 </form>
 </div>
-<?
-
+<?php 
 	include("../connect.php");
 	
 	
@@ -234,30 +233,27 @@ LIKE 'MX01%' or b.idguard like '%ทหาร%' or b.idguard like '%ครอบครัว%')";
 		<th>สถานะบำนาญ</th>
 		<!--<th id="no_print"> <div align="center">ลบ </div></th>-->
 	  </tr>
-	<?
-	while($objResult = mysql_fetch_array($objQuery))
+	<?php 	while($objResult = mysql_fetch_array($objQuery))
 	{
 	?>
 	  <tr>
 		<td><div align="center"><?=$objResult["ht_no"];?></div></td>
 		<td><?=$objResult["hn"];?></td>
 		<td><?=$objResult["ptname"];?></td>
-		<!--<td align="left"><?//=$objResult["ptright"];?></td>
-		<td><?//=$objResult["doctor"];?>&nbsp;</td>
-		<td><?//=$objResult["officer"];?>&nbsp;</td>-->
+		<!--<td align="left"><?php //=$objResult["ptright"];?></td>
+		<td><?php //=$objResult["doctor"];?>&nbsp;</td>
+		<td><?php //=$objResult["officer"];?>&nbsp;</td>-->
 		<td><?=$objResult["goup"];?></td>
 		<td><?=$objResult["camp"];?></td>
 		<td><?=$objResult["pension_status"];?>&nbsp;</td>
 		<!--<td id="no_print"><a href="diabetes_del.php" onClick="return confirm('คุณต้องการลบข้อมูลนี้จริงหรือไม่')">ลบ</a></td>-->
 	  </tr>
-	<?
-	}
+	<?php 	}
 	?>
 	</table>
 	<br>
 	<font class="font" id="no_print">Total <?= $Num_Rows;?> Record : <?=$Num_Pages;?> Page :
-	<?
-	if($Prev_Page)
+	<?php 	if($Prev_Page)
 	{
 		echo " <a href='$_SERVER[SCRIPT_NAME]?Page=$Prev_Page&txtKeyword=$_GET[txtKeyword]'><< Back</a> ";
 	}

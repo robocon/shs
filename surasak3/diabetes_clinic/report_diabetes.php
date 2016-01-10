@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -30,8 +29,7 @@ require "header.php";
 							
 							?>
 							<option value="<?=$i?>" <?php echo $select; ?>><?=$i;?></option>
-							<?php
-						}
+							<?php 						}
 					?>
 					<select>
 					<button type="submit">ทำการค้นหา</button>
@@ -41,8 +39,7 @@ require "header.php";
 		</table>
 	</form>
 </div>
-<?php
-
+<?php 
 if(isset($_POST['y_start'])){
 	$date1 = intval($_POST['y_start']) - 543;
 }else{
@@ -178,8 +175,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -217,8 +213,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -257,8 +252,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -297,8 +291,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -336,8 +329,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -375,8 +367,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -414,8 +405,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $pre_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -456,8 +446,7 @@ ORDER BY thidate ASC
 					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
 					<?php endif; ?>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -498,8 +487,7 @@ ORDER BY thidate ASC
 					<br><span>(<?php echo $pre_row.'/'.$pre_total; ?>)</span>
 					<?php endif; ?>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -561,8 +549,7 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -638,8 +625,7 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -712,8 +698,7 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -821,8 +806,7 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -860,15 +844,13 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
 				</td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
 			<td class="forntsarabun">21. กลุ่มผู้ป่วย DM ที่ได้รับการตรวจเท้าอย่างน้อย 1 ครั้งและมี HbA1c > 7% ของปีนี้ </td>
 			<td align="center" class="forntsarabun">&gt;80%</td>
-			<?php
-				
+			<?php 				
 // 				SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( thidate, '%Y-%m' ) AS new_daten
 // FROM `diabetes_history_temp` 
 // WHERE `foot` != '' OR `foot_date` != '0000-00-00' AND `foot_date` LIKE '$date1_th-%'
@@ -907,8 +889,7 @@ ORDER BY thidate ASC
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo "$pre_row/$pre_total"; ?>"><?php echo $item_row;?></span>
 				</td>
-				<?php
-			}	
+				<?php 			}	
 			?>
 		</tr>
 		<?php 
@@ -943,8 +924,7 @@ ORDER BY thidate ASC
 				// }
 				?>
 				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<tr>
@@ -976,8 +956,7 @@ ORDER BY thidate ASC
 				}
 				?>
 				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
-				<?php
-			}
+				<?php 			}
 			?>
 		</tr>
 		<?php 
@@ -986,6 +965,5 @@ ORDER BY thidate ASC
 	</table>
 
 <?php } // End if submit ?>
-<?php
-require "footer.php";
+<?php require "footer.php";
 ?>

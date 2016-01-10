@@ -1,5 +1,4 @@
-<?php
-session_start();
+<?php session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -92,8 +91,7 @@ if( isset($_GET['do']) && $_GET['do'] == 'save'){
 				}, 2000);
 			};
 		</script>
-		<?php
-		exit;
+		<?php 		exit;
 	}
 }
 
@@ -244,11 +242,11 @@ td{
 								<tr>
 									<td align="right" class="tb_font_2">การวินิจฉัย : </td>
 									<td colspan="5" align="left" class="data_show">
-										<input name="dia1" type="radio" value="0" <? if($item['diagnosis']=='0'){ echo "checked"; }?>/>
+										<input name="dia1" type="radio" value="0" <?php if($item['diagnosis']=='0'){ echo "checked"; }?>/>
 										DM type1
-										<input name="dia1" type="radio" value="1"  <? if($item['diagnosis']=='1'){ echo "checked"; }?>/>
+										<input name="dia1" type="radio" value="1"  <?php if($item['diagnosis']=='1'){ echo "checked"; }?>/>
 										DM type2 
-										<input name="dia1" type="radio" value="2"  <? if($item['diagnosis']=='2'){ echo "checked"; }?>/> 
+										<input name="dia1" type="radio" value="2"  <?php if($item['diagnosis']=='2'){ echo "checked"; }?>/> 
 										Uncertain type
 									</td>
 								</tr>
@@ -262,21 +260,20 @@ td{
 								<tr>
 									<td align="right" class="tb_font_2">โรคร่วม HT :</td>
 									<td colspan="5" align="left" class="forntsarabun1">
-										<input name="ht" type="radio" value="0"  <? if($item['ht']=='0'){ echo "checked"; }?>/>
+										<input name="ht" type="radio" value="0"  <?php if($item['ht']=='0'){ echo "checked"; }?>/>
 										No
-										<input name="ht" type="radio" value="1"  <? if($item['ht']=='1'){ echo "checked"; }?>/>
+										<input name="ht" type="radio" value="1"  <?php if($item['ht']=='1'){ echo "checked"; }?>/>
 										Essential HT
-										<input name="ht" type="radio" value="3" <? if($item['ht']=='3'){ echo "checked"; }?>/>
+										<input name="ht" type="radio" value="3" <?php if($item['ht']=='3'){ echo "checked"; }?>/>
 										Secondary HT 
-										<input name="ht" type="radio" value="2" <? if($item['ht']=='2'){ echo "checked"; }?>/>
+										<input name="ht" type="radio" value="2" <?php if($item['ht']=='2'){ echo "checked"; }?>/>
 										Uncertain type
 									</td>
 								</tr>
 								<tr>
 									<td align="right" valign="top" class="tb_font_2">โรคร่วม อื่นๆ:</td>
 									<td colspan="8" align="left" class="forntsarabun1">
-										<?php
-										$etc_list = explode(',', $item['ht_etc']);
+										<?php 										$etc_list = explode(',', $item['ht_etc']);
 										?>
 										<label for="neuropathy">
 											<input id="neuropathy" name="ht_etc[]" type="checkbox" value="Neuropathy" <?php echo (in_array('Neuropathy', $etc_list)) ? 'checked' : '' ?>/>Neuropathy
@@ -316,11 +313,11 @@ td{
 								<tr>
 									<td align="right"  class="tb_font_2">ประวัติบุหรี่ : </td>
 									<td colspan="5">
-										<INPUT TYPE="radio" NAME="cigarette" value="0" <? if($item['smork']=='0'){ echo "checked"; }?> >
+										<INPUT TYPE="radio" NAME="cigarette" value="0" <?php if($item['smork']=='0'){ echo "checked"; }?> >
 										ไม่สูบบุหรี่&nbsp;&nbsp;&nbsp;
-										<INPUT TYPE="radio" NAME="cigarette" value="1" <? if($item['smork']=='1'){ echo "checked"; }?> >
+										<INPUT TYPE="radio" NAME="cigarette" value="1" <?php if($item['smork']=='1'){ echo "checked"; }?> >
 										สูบบุหรี่
-										<input type="radio" name="cigarette" value="2" <? if($item['smork']=='2'){ echo "checked"; }?> />
+										<input type="radio" name="cigarette" value="2" <?php if($item['smork']=='2'){ echo "checked"; }?> />
 										NA
 									</td>
 								</tr>
@@ -385,8 +382,7 @@ td{
 								<tr>
 									<td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
 									<td colspan="7" class="">
-										<?php
-										list($retinal_date, $retinal_time) = explode(' ', $item['retinal_date']);
+										<?php 										list($retinal_date, $retinal_time) = explode(' ', $item['retinal_date']);
 										if($retinal_date == '0000-00-00'){
 											$retinal_date = '';
 										}
@@ -410,8 +406,7 @@ td{
 								<tr>
 									<td colspan="2" align="right" class="tb_font_2">Foot Exam:</td>
 									<td align="left" class="" colspan="8">
-										<?php
-										list($foot_date, $foot_time) = explode(' ', $item['foot_date']);
+										<?php 										list($foot_date, $foot_time) = explode(' ', $item['foot_date']);
 										if($foot_date == '0000-00-00'){
 											$foot_date = '';
 										}
@@ -431,8 +426,7 @@ td{
 								<tr>
 									<td colspan="2" align="right" class="tb_font_2">ตรวจสุขภาพฟัน:</td>
 									<td align="left" class="" colspan="8">
-										<?php
-										if(empty($item['tooth_date']) OR $item['tooth_date'] == '0000-00-00'){
+										<?php 										if(empty($item['tooth_date']) OR $item['tooth_date'] == '0000-00-00'){
 											$tooth_date = '';
 										}else{
 											$tooth_date = $item['tooth_date'];
@@ -453,8 +447,7 @@ td{
 								<tr>
 									<td align="left" bgcolor="#572d6f" class="forntsarabun">ผลการตรวจทางพยาธิ</td>
 								</tr>
-								<?php
-								$year=date("Y");
+								<?php 								$year=date("Y");
 
 								$laball="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Blood Sugar'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 								$result_laball=mysql_query($laball);
@@ -484,8 +477,7 @@ td{
 													<tr>
 														<td class="">
 															<div class=''>
-																<?php
-																echo $dall['result']; ?>   <?=$dall['unit'];?>  <?="วันที่  ".$dall['orderdate'];   if($orderdate==$datenow){ 
+																<?php 																echo $dall['result']; ?>   <?=$dall['unit'];?>  <?="วันที่  ".$dall['orderdate'];   if($orderdate==$datenow){ 
 																echo "   lab วันนี้";
 																}
 																?>
@@ -495,8 +487,7 @@ td{
 													<input type='hidden' name='bs'  value='<?=$listbs[0];?>'> 
 													<input type='hidden' name='bs<?=$i1?>'  value='<?=$dall['result'];?>'>
 													<input type='hidden' name='datebs<?=$i1?>'  value='<?=$dall['orderdate'];?>'>
-													<?
-													$i1++;
+													<?php 													$i1++;
 												}
 											}else{
 												echo "<tr><td><font class=\"tb_font_2\">ยังไม่เคยตรวจ</font></td></tr>";
@@ -507,8 +498,7 @@ td{
 										<hr />
 									</td>
 								</tr>
-<?
-$laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc  LIMIT 1";
+<?php $laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc  LIMIT 1";
 $result_laball1=mysql_query($laball1);
 $rowall1=mysql_num_rows($result_laball1);
 ?>
@@ -518,7 +508,7 @@ $rowall1=mysql_num_rows($result_laball1);
 <tr>
 <td colspan="3" ><div class="tb_font_2"><span class="font_title"><span class="tb_font_2">HbA1c</span></span></div></td>
 </tr>
-<?  
+<?php  
 $listh1=array();
 $listh2=array();
 $i2=0;
@@ -534,8 +524,7 @@ array_push($listh2,$dall1[2]);
 ?>
 <tr>
 <td><div class="">
-<?
-echo $dall1['result']; ?>  <?=$dall1['unit'];?>  <?="วันที่  ".$dall1['orderdate']; if($orderdate1==$datenow){ 
+<?php echo $dall1['result']; ?>  <?=$dall1['unit'];?>  <?="วันที่  ".$dall1['orderdate']; if($orderdate1==$datenow){ 
 echo "   lab วันนี้";
 
 }
@@ -545,7 +534,7 @@ echo "   lab วันนี้";
 <input type='hidden' name='hba'  value='<?=$listh1[0];?>'> 
 <input type='hidden' name='hba<?=$i2?>'  value='<?=$dall1['result'];?>'>
 <input type='hidden' name='datehba<?=$i2?>'  value='<?=$dall1['orderdate'];?>'>
-<?	
+<?php 
 $i2++;  
 }
 }else{
@@ -557,8 +546,7 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 </td>
 </tr>
 
-<?
-$laball2="Select  result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='LDL'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+<?php $laball2="Select  result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='LDL'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 $result_laball2=mysql_query($laball2);
 $rowall2=mysql_num_rows($result_laball2);
 
@@ -568,7 +556,7 @@ $rowall2=mysql_num_rows($result_laball2);
 <tr>
 <td colspan="3" ><div class="tb_font_2"><span class="tb_font_2">LDL</span></div></td>
 </tr>
-<?  
+<?php  
 $listldl1=array();
 $listldl2=array();
 $i3=0;
@@ -584,8 +572,7 @@ array_push($listldl2,$dall2[2]);
 ?>
 <tr>
 <td><div class="">
-<?
-echo $dall2['result']; ?>  <?=$dall2['unit'];?>  <?="วันที่  ".$dall2['orderdate']; if($orderdate2==$datenow){ 
+<?php echo $dall2['result']; ?>  <?=$dall2['unit'];?>  <?="วันที่  ".$dall2['orderdate']; if($orderdate2==$datenow){ 
 echo "   lab วันนี้";
 }?>
 </div></td>
@@ -593,7 +580,7 @@ echo "   lab วันนี้";
 <input type='hidden' name='ldl'  value='<?=$listldl1[0];?>'>
 <input type='hidden' name='ldl<?=$i3?>'  value='<?=$dall2['result'];?>'>
 <input type='hidden' name='dateldl<?=$i3?>'  value='<?=$dall2['orderdate'];?>'>
-<?	 
+<?php  
 $i3++; 
 }
 }else{
@@ -604,8 +591,7 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 <hr />
 </td>
 </tr>
-<?
-$laball3="Select   result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+<?php $laball3="Select   result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 $result_laball3=mysql_query($laball3);
 $rowall3=mysql_num_rows($result_laball3);
 ?> 
@@ -615,7 +601,7 @@ $rowall3=mysql_num_rows($result_laball3);
 <tr>
 <td colspan="3" ><div class="tb_font_2"><span class="tb_font_2">Creatinine</span></div></td>
 </tr>
-<?  
+<?php  
 $listcr1=array();
 $listcr2=array();
 $i4=0;
@@ -631,8 +617,7 @@ array_push($listcr2,$dall3[2]);
 ?>
 <tr>
 <td><div class="">
-<?
-echo $dall3['result']; ?>  <?=$dall3['unit'];?>  <?="วันที่  ".$dall3['orderdate']; if($orderdate3==$datenow){ 
+<?php echo $dall3['result']; ?>  <?=$dall3['unit'];?>  <?="วันที่  ".$dall3['orderdate']; if($orderdate3==$datenow){ 
 echo "   lab วันนี้";
 }?>
 </div></td>
@@ -640,7 +625,7 @@ echo "   lab วันนี้";
 <input type='hidden' name='cr'  value='<?=$listcr1[0];?>'>
 <input type='hidden' name='cr<?=$i4?>'  value='<?=$dall3['result'];?>'>
 <input type='hidden' name='datecr<?=$i4?>'  value='<?=$dall3['orderdate'];?>'>
-<?	
+<?php 
 $i4++;  
 }
 }else{
@@ -651,8 +636,7 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 <hr />
 </td>
 </tr>
-<?
-$laball4="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Urine protein' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+<?php $laball4="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Urine protein' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 $result_laball4=mysql_query($laball4);
 $rowall4=mysql_num_rows($result_laball4);
 ?>  
@@ -661,7 +645,7 @@ $rowall4=mysql_num_rows($result_laball4);
 <tr>
 <td colspan="3" ><div class="tb_font_2"><span class="tb_font_2">Urine protein</span></div></td>
 </tr>
-<?  
+<?php  
 $listur1=array();
 $listur2=array();
 
@@ -678,8 +662,7 @@ array_push($listur2,$dall4[2]);
 ?>
 <tr>
 <td><div class="">
-<?
-echo $dall4['result']; ?>  <?=$dall4['unit'];?>  <?="วันที่  ".$dall4['orderdate']; if($orderdate4==$datenow){ 
+<?php echo $dall4['result']; ?>  <?=$dall4['unit'];?>  <?="วันที่  ".$dall4['orderdate']; if($orderdate4==$datenow){ 
 echo "   lab วันนี้";
 }?>
 </div></td>
@@ -687,8 +670,7 @@ echo "   lab วันนี้";
 <input type='hidden' name='ur'  value='<?=$listur1[0];?>'>
 <input type='hidden' name='ur<?=$i5?>'  value='<?=$dall4['result'];?>'>
 <input type='hidden' name='dateur<?=$i5?>'  value='<?=$dall4['orderdate'];?>' />
-<?
-$i5++;	  
+<?php $i5++;	  
 }
 }else{
 echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
@@ -707,8 +689,7 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 			</tr>
 			<tr>
 				<td>
-					<?php
-					$sql = sprintf("SELECT result_lab, dateY 
+					<?php 					$sql = sprintf("SELECT result_lab, dateY 
 					FROM diabetes_lab 
 					WHERE dummy_no = '%s' 
 					AND labname = 'Protein'", $item['dummy_no']);
@@ -728,8 +709,7 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 	</td>
 </tr>
 <!-- END UA -->
-<?
-$laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+<?php $laball5="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$item["hn"]."' and  a.labname='Urine Microalbumin'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 $result_laball5=mysql_query($laball5);
 $rowall5=mysql_num_rows($result_laball5);
 
@@ -741,7 +721,7 @@ $rowall5=mysql_num_rows($result_laball5);
 <td colspan="3" ><div class="tb_font_2"><span class="tb_font_2">Microalbuminuria</span></div></td>
 </tr>
 
-<? 
+<?php 
 $listm1=array();
 $listm2=array();
 
@@ -758,8 +738,7 @@ array_push($listm2,$dall5[2]);
 ?>
 <tr>
 <td><div class="">
-<?
-echo $dall5['result']; ?>  <?=$dall5['unit'];?>  <?="วันที่  ".$dall5['orderdate']; if($orderdate5==$datenow){ 
+<?php echo $dall5['result']; ?>  <?=$dall5['unit'];?>  <?="วันที่  ".$dall5['orderdate']; if($orderdate5==$datenow){ 
 echo "   lab วันนี้";
 }?>
 </div></td>
@@ -767,7 +746,7 @@ echo "   lab วันนี้";
 <input type='hidden' name='micro'  value='<?=$listm1[0];?>'>
 <input type='hidden' name='micro<?=$i6?>'  value='<?=$dall5['result'];?>'>
 <input type='hidden' name='datemicro<?=$i6?>'  value='<?=$dall5['orderdate'];?>' />
-<?	 
+<?php  
 $i6++; 
 }
 }else{
@@ -787,26 +766,26 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 <td><table border="0" class="forntsarabun1">
 <tr>
 <td class="tb_font_2">Foot care</td>
-<td><input type="radio" name="foot_care" id="radio" value="1" <? if($item['foot_care']=='1'){ echo "checked"; }?>/>
+<td><input type="radio" name="foot_care" id="radio" value="1" <?php if($item['foot_care']=='1'){ echo "checked"; }?>/>
 ให้ความรู้
 
-<input type="radio" name="foot_care" id="radio" value="0" <? if($item['foot_care']=='0'){ echo "checked"; }?> />
+<input type="radio" name="foot_care" id="radio" value="0" <?php if($item['foot_care']=='0'){ echo "checked"; }?> />
 ไม่ได้ให้ความรู้
 </td>
 </tr>
 <tr>
 <td class="tb_font_2">Nutrition</td>
-<td><input type="radio" name="Nutrition" id="radio1" value="1"  <? if($item['nutrition']=='1'){ echo "checked"; }?> />
+<td><input type="radio" name="Nutrition" id="radio1" value="1"  <?php if($item['nutrition']=='1'){ echo "checked"; }?> />
 ให้ความรู้
-<input type="radio" name="Nutrition" id="radio1" value="0"  <? if($item['nutrition']=='0'){ echo "checked"; }?> />
+<input type="radio" name="Nutrition" id="radio1" value="0"  <?php if($item['nutrition']=='0'){ echo "checked"; }?> />
 ไม่ได้ให้ความรู้</td>
 </tr>
 <tr>
 <td class="tb_font_2">Exercise</td>
-<td><input type="radio" name="Exercise" id="radio2" value="1" <? if($item['exercise']=='1'){ echo "checked"; }?> />
+<td><input type="radio" name="Exercise" id="radio2" value="1" <?php if($item['exercise']=='1'){ echo "checked"; }?> />
 ให้ความรู้
 
-<input type="radio" name="Exercise" id="radio2" value="0"  <? if($item['exercise']=='0'){ echo "checked"; }?>/>
+<input type="radio" name="Exercise" id="radio2" value="0"  <?php if($item['exercise']=='0'){ echo "checked"; }?>/>
 ไม่ได้ให้ความรู้
 
 <!-- Smooking ซ่อนเอาไว้ก่อน -->
@@ -817,9 +796,9 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 <?php /* ?>
 <tr>
 <td class="tb_font_2">Smoking</td>
-<td><input type="radio" name="Smoking" id="radio3" value="1" <? if($item['smoking']=='1'){ echo "checked"; }?>/>
+<td><input type="radio" name="Smoking" id="radio3" value="1" <?php if($item['smoking']=='1'){ echo "checked"; }?>/>
 ให้ความรู้
-<input type="radio" name="Smoking" id="radio3" value="0"  <? if($item['smoking']=='0'){ echo "checked"; }?>/>
+<input type="radio" name="Smoking" id="radio3" value="0"  <?php if($item['smoking']=='0'){ echo "checked"; }?>/>
 ไม่ได้ให้ความรู้</td>
 </tr>
 <?php */ ?>
@@ -832,23 +811,23 @@ echo "<tr><td><font class=\"\">ยังไม่เคยตรวจ</font></td></tr>";
 <table class="forntsarabun1">
 <tr>
 <td class="tb_font_2">Admit ด้วยปัญหาเบาหวาน</td>
-<td><input type="radio" name="admit_dia" id="radio4" value="1"  <? if($item['admit_dia']=='1'){ echo "checked"; }?>/>
+<td><input type="radio" name="admit_dia" id="radio4" value="1"  <?php if($item['admit_dia']=='1'){ echo "checked"; }?>/>
 มี
-<input type="radio" name="admit_dia" id="radio4" value="0"  <? if($item['admit_dia']=='0'){ echo "checked"; }?> />
+<input type="radio" name="admit_dia" id="radio4" value="0"  <?php if($item['admit_dia']=='0'){ echo "checked"; }?> />
 ไม่มี</td>
 </tr>
 <tr>
 <td class="tb_font_2">โรคแทรกซ้อนด้านหัวใจ</td>
-<td><input type="radio" name="dt_heart" id="radio5" value="1"   <? if($item['admit_dia']=='1'){ echo "checked"; }?>/>
+<td><input type="radio" name="dt_heart" id="radio5" value="1"   <?php if($item['admit_dia']=='1'){ echo "checked"; }?>/>
 มี
-<input type="radio" name="dt_heart" id="radio5" value="0" <? if($item['admit_dia']=='0'){ echo "checked"; }?> />
+<input type="radio" name="dt_heart" id="radio5" value="0" <?php if($item['admit_dia']=='0'){ echo "checked"; }?> />
 ไม่มี</td>
 </tr>
 <tr>
 <td class="tb_font_2">โรคแทรกซ้อนด้านสมอง</td>
-<td><input type="radio" name="dt_brain" id="radio6" value="1"  <? if($item['dt_brain']=='1'){ echo "checked"; }?>/>
+<td><input type="radio" name="dt_brain" id="radio6" value="1"  <?php if($item['dt_brain']=='1'){ echo "checked"; }?>/>
 มี
-<input type="radio" name="dt_brain" id="radio6" value="0" <? if($item['dt_brain']=='0'){ echo "checked"; }?>/>
+<input type="radio" name="dt_brain" id="radio6" value="0" <?php if($item['dt_brain']=='0'){ echo "checked"; }?>/>
 ไม่มี</td>
 </tr>
 </table>

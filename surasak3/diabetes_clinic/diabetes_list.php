@@ -1,4 +1,4 @@
-<? 
+<?php 
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
@@ -149,8 +149,7 @@ div#copyright a:hover { color:#fff; }*/
     </tr>
   </table>
 </form>
-<?
-
+<?php 
 	include("../connect.php");
 	
 	
@@ -208,8 +207,7 @@ div#copyright a:hover { color:#fff; }*/
 		<th>วันที่ลงทะเบียน</th>
 		<th> <div align="center">ลบ </div></th>
 	  </tr>
-	<?
-	while($objResult = mysql_fetch_array($objQuery))
+	<?php 	while($objResult = mysql_fetch_array($objQuery))
 	{
 	?>
 	  <tr>
@@ -222,14 +220,12 @@ div#copyright a:hover { color:#fff; }*/
 		<td><?=$objResult["register_date"];?></td>
 		<td><a href="diabetes_del.php" onClick="return confirm('คุณต้องการลบข้อมูลนี้จริงหรือไม่')">ลบ</a></td>
 	  </tr>
-	<?
-	}
+	<?php 	}
 	?>
 	</table>
 	<br>
 	<font class="font">Total <?= $Num_Rows;?> Record : <?=$Num_Pages;?> Page :
-	<?
-	if($Prev_Page)
+	<?php 	if($Prev_Page)
 	{
 		echo " <a href='$_SERVER[SCRIPT_NAME]?Page=$Prev_Page&txtKeyword=$_GET[txtKeyword]'><< Back</a> ";
 	}

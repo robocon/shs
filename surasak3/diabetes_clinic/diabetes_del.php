@@ -6,8 +6,7 @@
 </head>
 
 <body>
-<?
-include("../connect.php");
+<?php include("../connect.php");
 
 
 $strSQL = " DELETE FROM diabetes_clinic ";
