@@ -6,6 +6,7 @@ if(authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที
 
 // บันทึกข้อมูล
 $do = input('do');
+
 if($do === 'save'){
 	
 	$dateN = date("Y-m-d");
@@ -28,223 +29,372 @@ if($do === 'save'){
 	$rows = mysql_num_rows($q);
 
 	if($rows > 0){
-		echo "ผู้ป่วย HN $hn มีข้อมูลในคลินิกเบาหวานอยู่แล้ว ";
-		echo '<a href="diabetes_edit.php">คลิกที่นี่</a> เพื่อไปยังหน้าเพิ่มประวัติผู้ป่วย';
+		$_SESSION['msg'] = "ผู้ป่วย HN $hn มีข้อมูลในคลินิกเบาหวานอยู่แล้ว <a href=\"diabetes_edit.php\">คลิกที่นี่</a> เพื่อไปยังหน้าเพิ่มประวัติผู้ป่วย";
+		redirect('diabetes.php');
 		exit;
 		
 	}else{
 
-	// โรคร่วม อื่นๆ:
-	$ht_etc = isset($_POST['ht_etc']) ? implode(',', $_POST['ht_etc']) : '' ;
-	unset($_POST['ht_etc']);
-	
-	// Filter ส่วนที่ฟอร์มส่งมา
-	$post = post2null($_POST);
-	
-    $dia1 = input('dia1', NULL);
-    $ht = input('ht', NULL);
-    $bs = input('bs', NULL);
-    $hba = input('hba', NULL);
-    $ldl = input('ldl', NULL);
-    $cr = input('cr', NULL);
-    $ur = input('ur', NULL);
-    $micro = input('micro', NULL);
-    $foot_care = input('foot_care', NULL);
-    $Nutrition = input('Nutrition', NULL);
-    $Exercise = input('Exercise', NULL);
-    $admit_dia = input('admit_dia', NULL);
-    $dt_heart = input('dt_heart', NULL);
-    $dt_brain = input('dt_brain', NULL);
-    
-	$post['l_ua'] = $_POST['protein']['0'];
-
-	$strSQL = "INSERT INTO diabetes_clinic 
-	( dm_no,thidate,dateN,hn,doctor,
-	ptname,ptright,dbbirt,sex,diagnosis,
-	diagdetail,ht,htdetail,smork,bw,
-	bmi,retinal,foot,l_bs,l_hbalc,
-	l_ldl,l_creatinine,l_urine,l_microal,foot_care,
-	nutrition,exercise,smoking,admit_dia,dt_heart,
-	dt_brain,height,weight,round,temperature,
-	pause,rate,bp1,bp2,officer,
-	register_date,ht_etc,retinal_date,foot_date,tooth_date,
-	tooth,l_ua,date_footcare,date_nutrition ) 
-	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
-	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
-	'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
-	'{$post['bmi']}','$retinal','$foot','$bs','$hba',
-	'$ldl','$cr','$ur','$micro','$foot_care',
-	'$Nutrition','$Exercise','{$post['Smoking']}','$admit_dia','$dt_heart',
-	'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
-	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
-	'$register','$ht_etc','$retinal_date','$foot_date','$tooth_date',
-	'$tooth','{$post['l_ua']}','$date_footcare','$date_nutrition')";
-	$objQuery = mysql_query($strSQL) or die( mysql_error() );
-	
-	// Generate random number
-	$dummy_no = '';
-	for($i = 0; $i < 8; $i++){
-		$dummy_no .= rand(0, 9);
-	}
-    
-    ////////////////////
-	// บันทึกข้อมูลประวัติย้อนหลัง
-	////////////////////
-	$insert = "INSERT INTO diabetes_clinic_history 
-	( dm_no,thidate,dateN,hn,doctor,
-	ptname,ptright,dbbirt,sex,diagnosis,
-	diagdetail,ht,htdetail,smork,bw,
-	bmi,retinal,foot,l_bs,l_hbalc,
-	l_ldl,l_creatinine,l_urine,l_microal,foot_care,
-	nutrition,exercise,smoking,admit_dia,dt_heart,
-	dt_brain,height,weight,round,temperature,
-	pause,rate,bp1,bp2,officer,
-	register_date,added_date,edited_date,ht_etc,edited_user,
-	retinal_date,foot_date,dummy_no,tooth_date,tooth,
-	l_ua,date_footcare,date_nutrition 
-	) 
-	VALUES 
-	('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
-	'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
-	'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
-	'{$post['bmi']}','$retinal','$foot','$bs','$hba',
-	'$ldl','$cr','$ur','$micro','$foot_care',
-	'$Nutrition','$Exercise','{$post['Smoking']}','$admit_dia','$dt_heart',
-	'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
-	'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
-	'$register','$register','$register','$ht_etc','$sIdname',
-	'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
-	'{$post['l_ua']}','$date_footcare','$date_nutrition')";
-	$insert_query = mysql_query($insert) or die( mysql_error() );
-    
-
-	/* BS */
-	for($i1=0; $i1<$_POST["total1"]; $i1++){
+		// โรคร่วม อื่นๆ:
+		$ht_etc = isset($_POST['ht_etc']) ? implode(',', $_POST['ht_etc']) : '' ;
+		unset($_POST['ht_etc']);
 		
-		if($_POST["total1"]!=0){
-			$labname="BS";
-			$strSQL1  = "INSERT INTO diabetes_lab ";
-			$strSQL1 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
-			$strSQL1 .="VALUES ";
-			$strSQL1 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datebs$i1"]."','".$_POST["bs$i1"]."','$dummy_no')";
-			$objQuery1 = mysql_query($strSQL1);
+		// Filter ส่วนที่ฟอร์มส่งมา
+		$post = post2null($_POST);
+		
+		$dia1 = input('dia1', NULL);
+		$ht = input('ht', NULL);
+		$bs = input('bs', NULL);
+		$hba = input('hba', NULL);
+		$ldl = input('ldl', NULL);
+		$cr = input('cr', NULL);
+		$ur = input('ur', NULL);
+		$micro = input('micro', NULL);
+		$foot_care = input('foot_care', NULL);
+		$Nutrition = input('Nutrition', NULL);
+		$Exercise = input('Exercise', NULL);
+		$admit_dia = input('admit_dia', NULL);
+		$dt_heart = input('dt_heart', NULL);
+		$dt_brain = input('dt_brain', NULL);
+		
+		$post['l_ua'] = $_POST['protein']['0'];
+	
+		$strSQL = "INSERT INTO diabetes_clinic 
+		( dm_no,thidate,dateN,hn,doctor,
+		ptname,ptright,dbbirt,sex,diagnosis,
+		diagdetail,ht,htdetail,smork,bw,
+		bmi,retinal,foot,l_bs,l_hbalc,
+		l_ldl,l_creatinine,l_urine,l_microal,foot_care,
+		nutrition,exercise,smoking,admit_dia,dt_heart,
+		dt_brain,height,weight,round,temperature,
+		pause,rate,bp1,bp2,officer,
+		register_date,ht_etc,retinal_date,foot_date,tooth_date,
+		tooth,l_ua,date_footcare,date_nutrition ) 
+		VALUES 
+		('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
+		'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
+		'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
+		'{$post['bmi']}','$retinal','$foot','$bs','$hba',
+		'$ldl','$cr','$ur','$micro','$foot_care',
+		'$Nutrition','$Exercise','{$post['Smoking']}','$admit_dia','$dt_heart',
+		'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
+		'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
+		'$register','$ht_etc','$retinal_date','$foot_date','$tooth_date',
+		'$tooth','{$post['l_ua']}','$date_footcare','$date_nutrition')";
+		$objQuery = mysql_query($strSQL) or die( mysql_error() );
+		
+		// Generate random number
+		$dummy_no = '';
+		for($i = 0; $i < 8; $i++){
+			$dummy_no .= rand(0, 9);
 		}
-	}
-
-	/* hba */
-	for($i2=0;$i2<$_POST["total2"];$i2++){
 		
-		if($_POST["total2"]!=0){
-			$labname="HbA1c";
-			$strSQL2  = "INSERT INTO diabetes_lab ";
-			$strSQL2 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
-			$strSQL2 .="VALUES ";
-			$strSQL2 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datehba$i2"]."','".$_POST["hba$i2"]."','$dummy_no')";
-			$objQuery2 = mysql_query($strSQL2);
+		////////////////////
+		// บันทึกข้อมูลประวัติย้อนหลัง
+		////////////////////
+		$insert = "INSERT INTO diabetes_clinic_history 
+		( dm_no,thidate,dateN,hn,doctor,
+		ptname,ptright,dbbirt,sex,diagnosis,
+		diagdetail,ht,htdetail,smork,bw,
+		bmi,retinal,foot,l_bs,l_hbalc,
+		l_ldl,l_creatinine,l_urine,l_microal,foot_care,
+		nutrition,exercise,smoking,admit_dia,dt_heart,
+		dt_brain,height,weight,round,temperature,
+		pause,rate,bp1,bp2,officer,
+		register_date,added_date,edited_date,ht_etc,edited_user,
+		retinal_date,foot_date,dummy_no,tooth_date,tooth,
+		l_ua,date_footcare,date_nutrition 
+		) 
+		VALUES 
+		('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
+		'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
+		'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
+		'{$post['bmi']}','$retinal','$foot','$bs','$hba',
+		'$ldl','$cr','$ur','$micro','$foot_care',
+		'$Nutrition','$Exercise','{$post['Smoking']}','$admit_dia','$dt_heart',
+		'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
+		'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
+		'$register','$register','$register','$ht_etc','$sIdname',
+		'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
+		'{$post['l_ua']}','$date_footcare','$date_nutrition')";
+		$insert_query = mysql_query($insert) or die( mysql_error() );
+		
+		/* BS */
+		for($i1=0; $i1<$_POST["total1"]; $i1++){
+			
+			if($_POST["total1"]!=0){
+				$labname="BS";
+				$strSQL1  = "INSERT INTO diabetes_lab ";
+				$strSQL1 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
+				$strSQL1 .="VALUES ";
+				$strSQL1 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datebs$i1"]."','".$_POST["bs$i1"]."','$dummy_no')";
+				$objQuery1 = mysql_query($strSQL1);
+			}
 		}
-	}
-	/* ldl */
-	for($i3=0;$i3<$_POST["total3"];$i3++){
-		
-		if($_POST["total3"]!=0){
-				
-			$labname="LDL";
-			$strSQL3  = "INSERT INTO diabetes_lab ";
-			$strSQL3 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
-			$strSQL3 .="VALUES ";
-			$strSQL3 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["dateldl$i3"]."','".$_POST["ldl$i3"]."','$dummy_no')";
-			$objQuery3 = mysql_query($strSQL3);
+	
+		/* hba */
+		for($i2=0;$i2<$_POST["total2"];$i2++){
+			
+			if($_POST["total2"]!=0){
+				$labname="HbA1c";
+				$strSQL2  = "INSERT INTO diabetes_lab ";
+				$strSQL2 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
+				$strSQL2 .="VALUES ";
+				$strSQL2 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datehba$i2"]."','".$_POST["hba$i2"]."','$dummy_no')";
+				$objQuery2 = mysql_query($strSQL2);
+			}
+		}
+		/* ldl */
+		for($i3=0;$i3<$_POST["total3"];$i3++){
+			
+			if($_POST["total3"]!=0){
 					
-				  //  echo $strSQL3."<br>";		
+				$labname="LDL";
+				$strSQL3  = "INSERT INTO diabetes_lab ";
+				$strSQL3 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
+				$strSQL3 .="VALUES ";
+				$strSQL3 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["dateldl$i3"]."','".$_POST["ldl$i3"]."','$dummy_no')";
+				$objQuery3 = mysql_query($strSQL3);
+						
+					//  echo $strSQL3."<br>";		
+			}
 		}
-	 }
-	/* cr */
-	for($i4=0;$i4<$_POST["total4"];$i4++){
-		
-		if($_POST["total4"]!=0){
-		
-			$labname="Creatinine";
-			$strSQL4  = "INSERT INTO diabetes_lab ";
-			$strSQL4 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
-			$strSQL4 .="VALUES ";
-			$strSQL4 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datecr$i4"]."','".$_POST["cr$i4"]."','$dummy_no')";
-			$objQuery4 = mysql_query($strSQL4);
-				
-			//    echo $strSQL4."<br>";		
-		}
-	 }
-	/* ur */
-	for($i5=0;$i5<$_POST["total5"];$i5++){
-		
-		if($_POST["total5"]!=0){
+		/* cr */
+		for($i4=0;$i4<$_POST["total4"];$i4++){
 			
-			$labname="Urine protein";
-			$strSQL5  = "INSERT INTO diabetes_lab ";
-			$strSQL5 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
-			$strSQL5 .="VALUES ";
-			$strSQL5 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["dateur$i5"]."','".$_POST["ur$i5"]."','$dummy_no')";
-			$objQuery5 = mysql_query($strSQL5);
-				
-			//    echo $strSQL5."<br>";	
-		}
-	}
-	/* ur */
-	for($i6=0;$i6<$_POST["total6"];$i6++){
-		
-		if($_POST["total6"]!=0){
+			if($_POST["total4"]!=0){
 			
-			$labname="Urine Microalbumin";
-			$strSQL6  = "INSERT INTO diabetes_lab ";
-			$strSQL6 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
-			$strSQL6 .="VALUES ";
-			$strSQL6 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datemicro$i6"]."','".$_POST["micro$i6"]."','$dummy_no')";
-			$objQuery6 = mysql_query($strSQL6);
-				
-			//  echo $strSQL6."<br>";		
+				$labname="Creatinine";
+				$strSQL4  = "INSERT INTO diabetes_lab ";
+				$strSQL4 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
+				$strSQL4 .="VALUES ";
+				$strSQL4 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datecr$i4"]."','".$_POST["cr$i4"]."','$dummy_no')";
+				$objQuery4 = mysql_query($strSQL4);
+					
+				//    echo $strSQL4."<br>";		
+			}
 		}
-	}
+		/* ur */
+		for($i5=0;$i5<$_POST["total5"];$i5++){
+			
+			if($_POST["total5"]!=0){
+				
+				$labname="Urine protein";
+				$strSQL5  = "INSERT INTO diabetes_lab ";
+				$strSQL5 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
+				$strSQL5 .="VALUES ";
+				$strSQL5 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["dateur$i5"]."','".$_POST["ur$i5"]."','$dummy_no')";
+				$objQuery5 = mysql_query($strSQL5);
+					
+				//    echo $strSQL5."<br>";	
+			}
+		}
+		/* ur */
+		for($i6=0;$i6<$_POST["total6"];$i6++){
+			
+			if($_POST["total6"]!=0){
+				
+				$labname="Urine Microalbumin";
+				$strSQL6  = "INSERT INTO diabetes_lab ";
+				$strSQL6 .="(dm_no,labname,dateY,result_lab,dummy_no) ";
+				$strSQL6 .="VALUES ";
+				$strSQL6 .="('".$_POST["dm_no"]."','".$labname."','".$_POST["datemicro$i6"]."','".$_POST["micro$i6"]."','$dummy_no')";
+				$objQuery6 = mysql_query($strSQL6);
+					
+				//  echo $strSQL6."<br>";		
+			}
+		}
+		
+		/* UA */
+		if(isset($_POST['protein']) && count($_POST['protein']) > 0){
+			$ua_row = count($_POST['protein']);
+			$sql = "INSERT INTO `diabetes_lab` (dm_no,labname,dateY,result_lab,dummy_no) VALUES ";
+			$data = array();
+			for($iua = 0; $iua<$ua_row; $iua++){
+				$result = $_POST['protein'][$iua];
+				$unit = $_POST['protein-unit'][$iua];
+				$date = $_POST['protein-date'][$iua];
+				
+				$data[] = "('".$_POST["dm_no"]."','Protein','$date','$result','$dummy_no')";
+			}
+			
+			$sql .= implode(',', $data);
+			mysql_query($sql);
+		}
 	
-	/* UA */
-	if(isset($_POST['protein']) && count($_POST['protein']) > 0){
-		$ua_row = count($_POST['protein']);
-		$sql = "INSERT INTO `diabetes_lab` (dm_no,labname,dateY,result_lab,dummy_no) VALUES ";
-		$data = array();
-		for($iua = 0; $iua<$ua_row; $iua++){
-			$result = $_POST['protein'][$iua];
-			$unit = $_POST['protein-unit'][$iua];
-			$date = $_POST['protein-date'][$iua];
-			
-			$data[] = "('".$_POST["dm_no"]."','Protein','$date','$result','$dummy_no')";
+		$sIdname = isset($_SESSION['sIdname']) ? $_SESSION['sIdname'] : null ;
+		if($sIdname === null){
+			$sIdname =  isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
 		}
-		
-		$sql .= implode(',', $data);
-		mysql_query($sql);
-	}
-
-	$sIdname = isset($_SESSION['sIdname']) ? $_SESSION['sIdname'] : null ;
-	if($sIdname === null){
-		$sIdname =  isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
-	}
-
-	if($objQuery){
-		// echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
-		// echo '<script type="text/javascript">alert("บันทึกข้อมูลเรียบร้อยแล้ว");</script>';
-		// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=diabetes.php'>";
-		header('Location: diabetes.php');
-		$_SESSION['msg'] = 'บันทึกข้อมูลเรียบร้อยแล้ว';
-		exit;
-	}else{
-		echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกข้อมูลได้ กรุณาแจ้งผู้ดูแลระบบ</font>";
-		// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=diabetes.php'>";
-		exit;
-	}
+	
+		if($objQuery){
+			// echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
+			// echo '<script type="text/javascript">alert("บันทึกข้อมูลเรียบร้อยแล้ว");</script>';
+			// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=diabetes.php'>";
+			header('Location: diabetes.php');
+			$_SESSION['msg'] = 'บันทึกข้อมูลเรียบร้อยแล้ว';
+			exit;
+		}else{
+			echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกข้อมูลได้ กรุณาแจ้งผู้ดูแลระบบ</font>";
+			// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=diabetes.php'>";
+			exit;
+		}
 
 	}
 } // End save data
+elseif( $do === 'search' ){
+	
+	$hn = input('p_hn', NULL); 
+	$sqldm = "SELECT `row_id` FROM `opcard` WHERE `hn`='$hn' ";
+	$querydm = mysql_query($sqldm) or die( mysql_error() );
+	$row = mysql_num_rows($querydm);
+	if(!$row){
+		$_SESSION['msg'] = "ไม่พบ  HN  <b>$hn</b>  ในระบบทะเบียน";
+		redirect('diabetes.php');
+	}else{
+		
+		// ตรวจสอบว่าเคยมีข้อมูลแล้วรึยัง
+		$select = "SELECT hn FROM diabetes_clinic WHERE hn ='$hn' ";
+		$q = mysql_query($select) or die( mysql_error() );
+		$rows = mysql_num_rows($q);
+		
+		if($rows > 0){
+			$_SESSION['msg'] = "ผู้ป่วย HN $hn มีข้อมูลในคลินิกเบาหวานอยู่แล้ว <a href=\"diabetes_edit.php\">คลิกที่นี่</a> เพื่อไปยังหน้าเพิ่มประวัติผู้ป่วย";
+			redirect('diabetes.php');
+		}
+		
+		//ค้นหา hn จาก opday 
+		$sql = "SELECT *, concat(yot,' ',name,' ',surname) as ptname FROM opcard WHERE  hn = '$hn' LIMIT 0,1";
+		$result = mysql_query($sql) or die( mysql_error() );
+		$arr_view = mysql_fetch_assoc($result);
+		
+		// Query ตัวเดิมจะมีปัญหาในกรณีที่ ไม่ได้กรอกข้อมูลในวันเดียวกัน
+		// $sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
+		$sql = "SELECT vn FROM opday WHERE hn = '$hn' ORDER BY `row_id` DESC limit 1";
+		// list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
+		
+		$query = mysql_query($sql, $Conn);
+		$test_view = mysql_fetch_assoc($query) or die( mysql_error() );
+		$arr_view['vn'] = $test_view['vn'];
+		
+		$date_hn = date("Y-m-d").$arr_view["hn"];
+		$date_vn = date("Y-m-d").$arr_view["vn"];
+		
+		// ค้นหาความสูง และน้ำหนักจาก การซักประวัติ
+		$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+		$result = Mysql_Query($sql);
+		list($weight, $height) = Mysql_fetch_row($result);
+		
+		//ค้นหาวันเกิดจาก opcard 	
+		$arr_view["age"] = calcage($arr_view["dbirth"]);
+		
+		//ค้นหาผลการตรวจทางพยาธิ 
+		$y = date("Y")+543;
+		$d = date("d");
+		$m = date("m");
+		$date1=$y.'-'.$m.'-'.$d;
+		
+		// $opd = "Select * From  opd where thidate  like '$date1%' AND hn='".$arr_view["hn"]."' limit 0,1 ";
+		$opd = "Select * From  opd where hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
+		$result_opd = mysql_query($opd);
+		$arr_opd = mysql_fetch_array($result_opd);
+		
+		//ค้นหาข้อมูลเดิม
+		$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
+		$date_after= date("Y-m-d H:i:s",$times);
+		
+		// $sql = "Select * From  opd where `thdatehn` > '{ $date_after }' AND hn='".$arr_view["hn"]."' limit 0,1 ";
+		$sql = "Select * From  opd where hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
+		$result = mysql_query($sql);
+		$count = mysql_num_rows($result);
+		
+		if($count > 0){
+			$arr_dxofyear = mysql_fetch_assoc($result);
+			$height = $arr_dxofyear["height"];
+			$weight = $arr_dxofyear["weight"];
+			
+			$cigarette0 = $cigarette1 = $cigarette2 = '';
+			
+			if($arr_dxofyear["cigarette"] == '1'){ 
+				$cigarette1 = "Checked";
+			}else if($arr_dxofyear["cigarette"] == '0'){
+				$cigarette0 = "Checked";
+			}
+			if($arr_dxofyear["alcohol"] == '1'){ 
+				$alcohol1 = "Checked";
+			}else if($arr_dxofyear["alcohol"] == '0'){
+				$alcohol0 = "Checked";
+			}
+			if($arr_dxofyear["congenital_disease"] != ''){ 
+				$congenital_disease = $arr_dxofyear["congenital_disease"];
+			}else{
+				$congenital_disease = "ปฎิเสธโรคประจำตัว";
+			}
+		}else{
+			$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+			
+			$result = Mysql_Query($sql);
+			list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0) = Mysql_fetch_row($result);
+			if($congenital_disease == "")
+				$congenital_disease = "ปฎิเสธโรคประจำตัว";
+		}
+		
+		if($arr_dxofyear["rate"] == ""){
+			$arr_dxofyear["rate"] = 20;
+		}
+		
+		////////////////////////////////////////
+		
+		$datenow=date("Y-m-d");
+		
+		// เลือก dm_no สุดท้ายแล้วทำการ ++ เพื่อใช้ในการบันทึกข้อมูล
+		$sqldm = "SELECT MAX(dm_no) AS dmnumber FROM diabetes_clinic";
+		$querydm = mysql_query($sqldm);
+		$arrdm = mysql_fetch_array($querydm);
+		$dm = $arrdm['dmnumber']+1;
+		$dm_no = $dm;
+	}
+}
 
 require "header.php";
 ?>
+<style type="text/css">
+.font_title{
+font-family:"TH SarabunPSK"; 
+font-size:25px;
+}
+.tb_font{
+font-family:"TH SarabunPSK";
+font-size:24px;
+color: #09F;
+}
+.tb_font_1{
+font-family:"TH SarabunPSK"; 
+font-size:24px; 
+color:#FFFFFF;
+font-weight:bold;}
+.tb_col{
+font-family:"TH SarabunPSK"; 
+font-size:24px;
+background-color:#9FFF9F;
+}
+.tb_font_2 {
+font-family: "TH SarabunPSK";
+color: #B00000;
+font-size: 22px;
+font-weight: bold;
+}
+
+.forntsarabun {
+font-family: "TH SarabunPSK";
+font-size: 22px;
+color: #FFF;
+}
+.forntsarabun1 {
+font-family: "TH SarabunPSK";
+font-size: 22px;
+}
+</style>
 <script type="text/javascript">
 	var popup1, popup2, popup3;
 	window.onload = function() {
@@ -255,7 +405,7 @@ require "header.php";
 		popup5 = new Epoch('popup5','popup',document.getElementById('date_nutrition'),false);
 	};
 </script>
-<?php $date_now = date("Y-m-d");
+<?php 
 
 function calcage($birth){
 	$today=getdate();   
@@ -280,404 +430,208 @@ function calcage($birth){
 	return $pAge;
 }
 
+$date_now = date("Y-m-d");
 $thaidate = (date("Y")+543).date("-m-d");
+
+$hn = input('p_hn', NULL); 
 ?>
-
-<style>
-	.font_title{
-		font-family:"TH SarabunPSK"; 
-		font-size:25px;
-		}
-	.tb_font{
-	font-family:"TH SarabunPSK";
-	font-size:24px;
-	color: #09F;
-}
-	.tb_font_1{
-		font-family:"TH SarabunPSK"; 
-		font-size:24px; 
-		color:#FFFFFF;
-		 font-weight:bold;}
-	.tb_col{
-		font-family:"TH SarabunPSK"; 
-		font-size:24px;
-		 background-color:#9FFF9F;
-		 }
-.tb_font_2 {
-	font-family: "TH SarabunPSK";
-	color: #B00000;
-	font-size: 22px;
-	font-weight: bold;
-}
-
-.forntsarabun {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
-	color: #FFF;
-}
-.forntsarabun1 {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
-}
-</style>
-
-<?php $hn = input('p_hn', NULL); ?>
-
 <h1 class="forntsarabun1">เพิ่มข้อมูลผู้ป่วยเบาหวาน</h1>
-	<form action="diabetes.php" method="post">
-		<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
-			<TR>
-				<TD>
-					<TABLE border="0" cellpadding="0" cellspacing="0">
-						<TR>
-							<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
-						</TR>
-						<TR>
-							<TD class="tb_font">
-								<input name="p_hn" type="text" class="forntsarabun1" id="p_hn"  value="<?php echo $hn;?>"/>&nbsp;
-								<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" />
-							</TD>
-						</TR>
-						<TR>
-							<TD></TD>
-						</TR>
-					</TABLE>
-				</TD>
-			</TR>
-		</TABLE>
-	</form>
-<?php if(isset($_SESSION['msg'])){
-	?><p><?php echo $_SESSION['msg']; ?></p><?php 	unset($_SESSION['msg']);
+<form action="diabetes.php" method="post">
+	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
+		<TR>
+			<TD>
+				<TABLE border="0" cellpadding="0" cellspacing="0">
+					<TR>
+						<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
+					</TR>
+					<TR>
+						<TD class="tb_font">
+							<input name="p_hn" type="text" class="forntsarabun1" id="p_hn"  value="<?php echo $hn;?>"/>&nbsp;
+							<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" />
+							<input type="hidden" name="do" value="search">
+						</TD>
+					</TR>
+					<TR>
+						<TD></TD>
+					</TR>
+				</TABLE>
+			</TD>
+		</TR>
+	</TABLE>
+</form>
+<?php
+// Alert Message
+if(isset($_SESSION['msg'])){
+	?><p><?php echo $_SESSION['msg']; ?></p><?php 
+	unset($_SESSION['msg']);
 }
-
-if($hn !== null){
-	
-	$sqldm = "SELECT `row_id` FROM `opcard` WHERE `hn`='$hn' ";
-	$querydm = mysql_query($sqldm) or die( mysql_error() );
-	$row = mysql_num_rows($querydm);
-	if(!$row){
-		echo "<br> <font class='forntsarabun1'>ไม่พบ  HN  <b>$hn</b>  ในระบบทะเบียน </font>";
-		exit;
-	}else{
-		
-		// ตรวจสอบว่าเคยมีข้อมูลแล้วรึยัง
-		$select = "SELECT hn FROM diabetes_clinic WHERE hn ='$hn' ";
-		$q = mysql_query($select) or die( mysql_error() );
-		$rows = mysql_num_rows($q);
-
-		if($rows > 0){
-			echo "ผู้ป่วย HN $hn มีข้อมูลในคลินิกเบาหวานอยู่แล้ว ";
-			echo '<a href="diabetes_edit.php">คลิกที่นี่</a> เพื่อไปยังหน้าเพิ่มประวัติผู้ป่วย';
-			exit;
-		}
-	
-	//ค้นหา hn จาก opday ****************************************************************************************
-	$sql = "SELECT *, concat(yot,' ',name,' ',surname) as ptname FROM opcard WHERE  hn = '$hn' LIMIT 0,1";
-	$result = mysql_query($sql) or die( mysql_error() );
-	$arr_view = mysql_fetch_assoc($result);
-
-	// Query ตัวเดิมจะมีปัญหาในกรณีที่ ไม่ได้กรอกข้อมูลในวันเดียวกัน
-	// $sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
-	$sql = "SELECT vn FROM opday WHERE hn = '$hn' ORDER BY `row_id` DESC limit 1";
-	// list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
-	
-	$query = mysql_query($sql, $Conn);
-	$test_view = mysql_fetch_assoc($query) or die( mysql_error() );
-	$arr_view['vn'] = $test_view['vn'];
-
-	$date_hn = date("Y-m-d").$arr_view["hn"];
-	$date_vn = date("Y-m-d").$arr_view["vn"];
-
-	// ค้นหาความสูง และน้ำหนักจาก การซักประวัติ
-	$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-	$result = Mysql_Query($sql);
-	list($weight, $height) = Mysql_fetch_row($result);
-
-//ค้นหาวันเกิดจาก opcard ****************************************************************************************
-	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
-	//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
-	$arr_view["age"] = calcage($arr_view["dbirth"]);
-
-//ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
-	
-	$y=date("Y")+543;
-	$d=date("d");
-	$m=date("m");
-	$date1=$y.'-'.$m.'-'.$d;
-	
-	// $opd = "Select * From  opd where thidate  like '$date1%' AND hn='".$arr_view["hn"]."' limit 0,1 ";
-	$opd = "Select * From  opd where hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
-	$result_opd = mysql_query($opd);
-	$arr_opd = mysql_fetch_array($result_opd);
-	
-//ค้นหาข้อมูลเดิม
-	
-	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
-	$date_after= date("Y-m-d H:i:s",$times);
-	// $sql = "Select * From  opd where `thdatehn` > '{ $date_after }' AND hn='".$arr_view["hn"]."' limit 0,1 ";
-	$sql = "Select * From  opd where hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);
-	
-	if($count > 0){
-		$arr_dxofyear = mysql_fetch_assoc($result);
-		$height = $arr_dxofyear["height"];
-		$weight = $arr_dxofyear["weight"];
-		
-		$cigarette0 = $cigarette1 = $cigarette2 = '';
-		 
-		if($arr_dxofyear["cigarette"] == '1'){ $cigarette1 = "Checked";}else if($arr_dxofyear["cigarette"] == '0'){$cigarette0 = "Checked";}
-		if($arr_dxofyear["alcohol"] == '1'){ $alcohol1 = "Checked";}else if($arr_dxofyear["alcohol"] == '0'){$alcohol0 = "Checked";}
-		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
-		
-		
-	}else{
-		$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-
-		$result = Mysql_Query($sql);
-		list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0) = Mysql_fetch_row($result);
-			if($congenital_disease == "")
-				$congenital_disease = "ปฎิเสธโรคประจำตัว";
-	}
-	
-	if($arr_dxofyear["rate"] == ""){
-		$arr_dxofyear["rate"] = 20;
-	}
-
-////////////////////////////////////////
-
-$datenow=date("Y-m-d");
-	 
-	/* $sqltemp="CREATE TEMPORARY TABLE  lab1  Select * from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND a.authorisedate LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' ";
-	 $querytemp= mysql_query($sqltemp); 
-	 
-	  $sqllab1="Select * from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.orderdate LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' and  a.labname='Blood Sugar' ";
-	  $result_lab1=mysql_query($sqllab1);
-	  $dbarrlab1=mysql_fetch_array($result_lab1);
-	  
-	 // echo $sqllab1;
-	  
-/////////////////////////////////	 
-
-	  $sqllab2="Select * from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.orderdate  LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' and  a.labname='HBA1C' ";
-	  $result_lab2=mysql_query($sqllab2);
-	  $dbarrlab2=mysql_fetch_array($result_lab2);
-	  
-	  /////////////////////////////////	 
-
-	  $sqllab3="Select * from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.orderdate LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' and a.labname='LDL' ";
-	  $result_lab3=mysql_query($sqllab3);
-	  $dbarrlab3=mysql_fetch_array($result_lab3);
-	  /////////////////////////////////	 
-
-	  $sqllab4="Select * from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.orderdate LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' and  a.labname='Creatinine' ";
-	  $result_lab4=mysql_query($sqllab4);
-	  $dbarrlab4=mysql_fetch_array($result_lab4);
-	  /////////////////////////////////	 
-
-	  $sqllab5="Select * from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.orderdate LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine protein' ";
-	  $result_lab5=mysql_query($sqllab5);
-	  $dbarrlab5=mysql_fetch_array($result_lab5);
-	  
-	  /////////////////////////////////	 
-
-	  $sqllab6="Select  *  from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.orderdate LIKE  '$datenow%' AND b.hn='".$arr_view["hn"]."' and  a.labname='Urine Microalbumin' ";
-	  $result_lab6=mysql_query($sqllab6);
-	  $dbarrlab6=mysql_fetch_array($result_lab6);
-	  
-	  //////////////////////*/
-
-	  // เลือก dm_no สุดท้ายแล้วทำการ ++ เพื่อใช้ในการบันทึกข้อมูล
-	  $sqldm = "SELECT MAX(dm_no) AS dmnumber FROM diabetes_clinic";
-	  $querydm = mysql_query($sqldm);
-	  $arrdm = mysql_fetch_array($querydm);
-	  $dm = $arrdm['dmnumber']+1;
-	  $dm_no = $dm;
 ?>
-
+<div>&nbsp;</div>
+<?php 
+if($hn !== null){
+?>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM METHOD="post" ACTION="diabetes.php?do=save" name="F1">
+<FORM METHOD="post" ACTION="diabetes.php" name="F1">
 
-<input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<br />
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;<span class="forntsarabun">&nbsp;&nbsp;ข้อมูลผู้ป่วย</span></TD>
-	</TR>
+	<input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
+	<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
+	
+	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
 	<TR>
 		<TD>
-	<table border="0">
-		<tr>
-		  <td align="right" class="tb_font_2">วันที่ลงทะเบียน</td>
-		  <td><span class="data_show">
-		    <input name="thaidate" type="text" class="forntsarabun1" id="thaidate"  value="<?=date("Y-m-d");?>"/>
-		  </span>
-		  </td>
-		  <td colspan="2" class="tb_font_2">// รูปแบบ ปี ค.ศ.-เดือน-วัน</td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">DM number :</td>
-		  <td><span class="data_show">
-		    <input name="dm_no" type="text" class="forntsarabun1" id="dm_no"  value="<?=$dm_no;?>" readonly/>
-		  </span></td>
-		  <td align="right"><span class="tb_font_2">HN :</span></td>
-		  <td align="left" class="forntsarabun1"><?php echo $arr_view["hn"];?>
-		    <input name="hn" type="hidden" id="hn" value="<?php echo $arr_view["hn"];?>"/></td>
-		  </tr>
-		<tr>
-		  <td  align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
-		  <td class="forntsarabun1"><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
-		  <td  align="right" class="tb_font_2">อายุ :</td>
-		  <td align="left" class="forntsarabun1"><?php echo $arr_view["age"];?><input name="dbirth" type="hidden" id="dbirth" value="<?php echo $arr_view["dbirth"];?>"/> </td>
-		  </tr>
-		<tr class="forntsarabun1">
-		  <td  align="right" class="tb_font_2">เพศ :</td>
-		  <td >
-          <?php 
-		  
-		  $sex1 = $sex2 = '';
-		  if($arr_view['sex']=='ช'){ 
-			$sex1 = "checked"; 
-		  }elseif($arr_view['sex']=='ญ'){ 
-			$sex2 = "checked"; 
-		  } 
-		  ?>
-		    <input name="sex" type="radio" value="0" <?=$sex1;?>/>
-		    ชาย
-		    <input name="sex" type="radio" value="1" <?=$sex2;?>/> 
-		    หญิง
-</td>
-		  <td  align="right" class="tb_font_2">&nbsp;</td>
-		  <td align="left">&nbsp;</td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">แพทย์ :</td>
-		  <td>
-			<select name="doctor" id="doctor" class="forntsarabun1">
-				<option value='' >-- กรุณาเลือกแพทย์ --</option>
-			<?php 
-			// echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
-			//echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
-			$sql = "SELECT name FROM doctor WHERE status = 'y' ";
-			$result = mysql_query($sql);
-			while($dbarr2 = mysql_fetch_array($result)){
-                
-			// $sub1=substr($arr_dxofyear['doctor'],0,5);
-			// $sub2=substr($dbarr2['name'],0,5);
-
-				// if($dbarr2['name']==$arr_dxofyear['doctor']){
-					// echo "<option value='".$dbarr2['name']."'  selected>".$dbarr2['name']."</option>";	
-				// }else{
-					// echo "<option value='".$dbarr2['name']."' >".$dbarr2['name']."</option>";
-				// }
-			
-				$selected = $dbarr2['name']==$arr_dxofyear['doctor'] ? 'selected="selected"' : '' ;
-				?>
-					<option value="<?php echo $dbarr2['name'];?>" <?php echo $selected;?>><?php echo $dbarr2['name'];?></option>
-				<?php 			}
-			?>
-			</select>
-			
-			</td>
-		  <td align="right" class="tb_font_2">สิทธิ :</td>
-		  <td align="left" class="forntsarabun1"><?php echo $arr_view["ptright"];?><input name="ptright" type="hidden" id="ptright" value="<?php echo $arr_view["ptright"];?>"/> </td>
-		  </tr>
-	</table>
-	<hr />
-	<TABLE class="forntsarabun1">
-	  <tr>
-           <td align="right" class="tb_font_2">การวินิจฉัย : </td>
-           <td colspan="5" align="left" class="forntsarabun1"><input name="dia1" type="radio" value="0" />
-           DM type1
-             <input name="dia1" type="radio" value="1" />
-             DM type2 
-             <input name="dia1" type="radio" value="2" /> 
-             Uncertain type
-</td>
-          </tr>
-	  <tr>
-	    <td align="right" class="forntsarabun1">&nbsp;</td>
-	    <td colspan="5" align="left" class="forntsarabun1">การวินิจฉัยครั้งแรก ประมาณ พ.ศ. 
-		<input name="nosis_d" type="text" class="forntsarabun1" id="nosis_d" />
-		</td>
-	    </tr>
-	  <tr>
-	    <td align="right" class="tb_font_2">โรคร่วม HT:</td>
-		<td colspan="5" align="left" class="forntsarabun1">
-			
-			<input name="ht" type="radio" value="0" />No
-			<input name="ht" type="radio" value="1" />Essential HT
-			<input name="ht" type="radio" value="3" />Secondary HT 
-			<input name="ht" type="radio" value="2" />Uncertain type
-
-		</td>
-	    </tr>
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">โรคร่วม อื่นๆ:</td>
-			<td colspan="8" align="left" class="forntsarabun1">
-				<label for="neuropathy">
-					<input id="neuropathy" name="ht_etc[]" type="checkbox" value="Neuropathy" />Neuropathy
-				</label>
-				<label for="heart">
-					<input id="heart" name="ht_etc[]" type="checkbox" value="Heart Failure" />Heart Failure
-				</label>
-				<label for="nephropathy">
-					<input id="nephropathy" name="ht_etc[]" type="checkbox" value="Nephropathy" />Nephropathy
-				</label>
-				<br>
-				<label for="cvd">
-					<input id="cvd" name="ht_etc[]" type="checkbox" value="CVD" />CVD
-				</label>
-				<label for="ihd">
-					<input id="ihd" name="ht_etc[]" type="checkbox" value="IHD" />IHD
-				</label>
-				<label for="footulcer">
-					<input id="footulcer" name="ht_etc[]" type="checkbox" value="Foot ulcer" />Foot ulcer
-				</label>
-				<br>
-				<label for="retinopathy">
-					<input id="retinopathy" name="ht_etc[]" type="checkbox" value="Retinopathy" />Retinopathy
-				</label>
-				<label for="dyslipidemia">
-					<input id="dyslipidemia" name="ht_etc[]" type="checkbox" value="Dyslipidemia" />Dyslipidemia
-				</label>
-			</td>
-		</tr>
-	  <tr>
-	    <td align="right" class="forntsarabun1">&nbsp;</td>
-	    <td colspan="5" align="left" class="forntsarabun1">การวินิจฉัยครั้งแรก ประมาณ พ.ศ.
-			<input name="ht_d" type="text" class="forntsarabun1" id="ht_d" />
-		</td>
-	    </tr>
-		  <tr>
-           <td align="right"  class="tb_font_2">ประวัติบุหรี่ : </td>
-		   <td colspan="5">
-			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> >
-			ไม่สูบบุหรี่&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> >
-			สูบบุหรี่
-			<input type="radio" name="cigarette" value="2" <?php echo $cigarette2;?> />
-			NA</td>
-          </tr>
-	</TABLE>
-    <hr />
-    <script>
-	function calbmi(a,b){
-		//alert(a);
-		var h=a/100;
-		var bmi=b/(h*h);
-		document.F1.bmi.value=bmi.toFixed(2);
-	}
-	</script>
-     <?php 
-		 $ht = $height/100;
-		 $bmi=number_format($weight /($ht*$ht),2);
-		 ?>
+			<TABLE border="0" cellpadding="0" cellspacing="0">
+				<TR>
+					<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;<span class="forntsarabun">&nbsp;&nbsp;ข้อมูลผู้ป่วย</span></TD>
+				</TR>
+				<TR>
+					<TD>
+						<table border="0">
+							<tr>
+								<td align="right" class="tb_font_2">วันที่ลงทะเบียน</td>
+								<td>
+									<span class="data_show">
+										<input name="thaidate" type="text" class="forntsarabun1" id="thaidate"  value="<?=date("Y-m-d");?>"/>
+									</span>
+								</td>
+								<td colspan="2" class="tb_font_2">// รูปแบบ ปี ค.ศ.-เดือน-วัน</td>
+							</tr>
+							<tr>
+								<td align="right" class="tb_font_2">DM number :</td>
+								<td>
+									<span class="data_show">
+									<input name="dm_no" type="text" class="forntsarabun1" id="dm_no"  value="<?=$dm_no;?>" readonly/>
+									</span>
+								</td>
+								<td align="right"><span class="tb_font_2">HN :</span></td>
+								<td align="left" class="forntsarabun1">
+									<?php echo $arr_view["hn"];?>
+									<input name="hn" type="hidden" id="hn" value="<?php echo $arr_view["hn"];?>"/>
+								</td>
+							</tr>
+							<tr>
+								<td align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
+								<td class="forntsarabun1"><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
+								<td align="right" class="tb_font_2">อายุ :</td>
+								<td align="left" class="forntsarabun1"><?php echo $arr_view["age"];?><input name="dbirth" type="hidden" id="dbirth" value="<?php echo $arr_view["dbirth"];?>"/> </td>
+							</tr>
+							<tr class="forntsarabun1">
+								<td align="right" class="tb_font_2">เพศ :</td>
+								<td>
+									<?php 
+									$sex1 = $sex2 = '';
+									if($arr_view['sex']=='ช'){ 
+										$sex1 = "checked"; 
+									}elseif($arr_view['sex']=='ญ'){ 
+										$sex2 = "checked"; 
+									} 
+									?>
+									<input name="sex" type="radio" value="0" <?=$sex1;?>/>ชาย
+									<input name="sex" type="radio" value="1" <?=$sex2;?>/> หญิง
+								</td>
+								<td  align="right" class="tb_font_2">&nbsp;</td>
+								<td align="left">&nbsp;</td>
+							</tr>
+							<tr>
+								<td align="right" class="tb_font_2">แพทย์ :</td>
+								<td>
+									<select name="doctor" id="doctor" class="forntsarabun1">
+										<option value='' >-- กรุณาเลือกแพทย์ --</option>
+										<?php 
+										$sql = "SELECT name FROM doctor WHERE status = 'y' ";
+										$result = mysql_query($sql);
+										while($dbarr2 = mysql_fetch_array($result)){
+											$selected = $dbarr2['name']==$arr_dxofyear['doctor'] ? 'selected="selected"' : '' ;
+											?><option value="<?php echo $dbarr2['name'];?>" <?php echo $selected;?>><?php echo $dbarr2['name'];?></option>
+										<?php } ?>
+									</select>
+								</td>
+								<td align="right" class="tb_font_2">สิทธิ :</td>
+								<td align="left" class="forntsarabun1"><?php echo $arr_view["ptright"];?><input name="ptright" type="hidden" id="ptright" value="<?php echo $arr_view["ptright"];?>"/> </td>
+							</tr>
+						</table>
+						<hr />
+						<TABLE class="forntsarabun1">
+							<tr>
+								<td align="right" class="tb_font_2">การวินิจฉัย : </td>
+								<td colspan="5" align="left" class="forntsarabun1">
+									<input name="dia1" type="radio" value="0" />DM type1
+									<input name="dia1" type="radio" value="1" />DM type2 
+									<input name="dia1" type="radio" value="2" /> Uncertain type
+								</td>
+							</tr>
+							<tr>
+								<td align="right" class="forntsarabun1">&nbsp;</td>
+								<td colspan="5" align="left" class="forntsarabun1">การวินิจฉัยครั้งแรก ประมาณ พ.ศ. 
+									<input name="nosis_d" type="text" class="forntsarabun1" id="nosis_d" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right" class="tb_font_2">โรคร่วม HT:</td>
+								<td colspan="5" align="left" class="forntsarabun1">
+									<input name="ht" type="radio" value="0" />No
+									<input name="ht" type="radio" value="1" />Essential HT
+									<input name="ht" type="radio" value="3" />Secondary HT 
+									<input name="ht" type="radio" value="2" />Uncertain type
+								</td>
+							</tr>
+							<tr>
+								<td align="right" valign="top" class="tb_font_2">โรคร่วม อื่นๆ:</td>
+								<td colspan="8" align="left" class="forntsarabun1">
+									<label for="neuropathy">
+										<input id="neuropathy" name="ht_etc[]" type="checkbox" value="Neuropathy" />Neuropathy
+									</label>
+									<label for="heart">
+										<input id="heart" name="ht_etc[]" type="checkbox" value="Heart Failure" />Heart Failure
+									</label>
+									<label for="nephropathy">
+										<input id="nephropathy" name="ht_etc[]" type="checkbox" value="Nephropathy" />Nephropathy
+									</label>
+									<br>
+									<label for="cvd">
+										<input id="cvd" name="ht_etc[]" type="checkbox" value="CVD" />CVD
+									</label>
+									<label for="ihd">
+										<input id="ihd" name="ht_etc[]" type="checkbox" value="IHD" />IHD
+									</label>
+									<label for="footulcer">
+										<input id="footulcer" name="ht_etc[]" type="checkbox" value="Foot ulcer" />Foot ulcer
+									</label>
+									<br>
+									<label for="retinopathy">
+										<input id="retinopathy" name="ht_etc[]" type="checkbox" value="Retinopathy" />Retinopathy
+									</label>
+									<label for="dyslipidemia">
+										<input id="dyslipidemia" name="ht_etc[]" type="checkbox" value="Dyslipidemia" />Dyslipidemia
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td align="right" class="forntsarabun1">&nbsp;</td>
+								<td colspan="5" align="left" class="forntsarabun1">การวินิจฉัยครั้งแรก ประมาณ พ.ศ.
+									<input name="ht_d" type="text" class="forntsarabun1" id="ht_d" />
+								</td>
+							</tr>
+							<tr>
+								<td align="right"  class="tb_font_2">ประวัติบุหรี่ : </td>
+								<td colspan="5">
+									<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> >ไม่สูบบุหรี่&nbsp;&nbsp;&nbsp;
+									<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> >สูบบุหรี่
+									<input type="radio" name="cigarette" value="2" <?php echo $cigarette2;?> />NA
+								</td>
+							</tr>
+						</TABLE>
+    					<hr />
+						<script type="text/javascript">
+						function calbmi(a,b){
+							var h=a/100;
+							var bmi=b/(h*h);
+							document.F1.bmi.value=bmi.toFixed(2);
+						}
+						</script>
+						<?php 
+						$ht = $height/100;
+						$bmi = number_format($weight /($ht*$ht),2);
+						?>
 	<table border="0" class="forntsarabun1">
     <TR>
 		<TD align="left" bgcolor="#0000CC" class="forntsarabun" colspan="10">การตรวจร่างกาย</TD>
@@ -784,12 +738,11 @@ C&deg;</td>
  <tr>
 	        <td align="left" bgcolor="#0000CC" class="forntsarabun">ผลการตรวจทางพยาธิ</td>
 	        </tr>
-   <?php    $year=date("Y");
-   
-      $laball="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Blood Sugar'  and b.orderdate like '$year%' Order by b.orderdate desc ";
-	  $result_laball=mysql_query($laball);
-	  $rowall=mysql_num_rows($result_laball);
-	  			
+	<?php
+	$year=date("Y");
+	$laball="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Blood Sugar'  and b.orderdate like '$year%' Order by b.orderdate desc ";
+	$result_laball=mysql_query($laball);
+	$rowall=mysql_num_rows($result_laball);
 	?>
      <tr>
        <td class="forntsarabun1">
@@ -1070,7 +1023,8 @@ C&deg;</td>
 						<tr>
 							<td>
 								<div class="tb_font_2">
-									<?php 									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
+									<?php
+									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
 									?>
 								</div>
 								<input type="hidden" name="protein[]" value="<?php echo $item['result'];?>">
@@ -1252,14 +1206,16 @@ C&deg;</td>
     </tr>
 	  </table>
 	<p>
-    <input type='hidden' name='total1' value='<?=$i1?>'>
-    <input type='hidden' name='total2' value='<?=$i2?>'>
-    <input type='hidden' name='total3' value='<?=$i3?>'>
-    <input type='hidden' name='total4' value='<?=$i4?>'>
-    <input type='hidden' name='total5' value='<?=$i5?>'>
-    <input type='hidden' name='total6' value='<?=$i6?>'>
-	<input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล"  />
-    <input type="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
+		<input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล"  />
+		<input type="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
+		<input type='hidden' name='total1' value='<?=$i1?>'>
+		<input type='hidden' name='total2' value='<?=$i2?>'>
+		<input type='hidden' name='total3' value='<?=$i3?>'>
+		<input type='hidden' name='total4' value='<?=$i4?>'>
+		<input type='hidden' name='total5' value='<?=$i5?>'>
+		<input type='hidden' name='total6' value='<?=$i6?>'>
+		<input type="hidden" name="do" value="save">
+		
     </p></TD>
 	</TR>
 	<TR>
@@ -1273,7 +1229,7 @@ C&deg;</td>
 </FORM>
 
 <?php 
-    } // End HN is in opcard
+    //} // End HN is in opcard
 
 } // End HN is not NULL
 

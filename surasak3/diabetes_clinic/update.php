@@ -1,31 +1,43 @@
-<?php define('NEW_SITE', true);
+<?php 
+define('NEW_SITE', true);
 include '../bootstrap.php';
+// date_footcare date_nutrition
 
-$sql = "
-CREATE TEMPORARY TABLE `diabetes_mini`
-( `dateN` DATE NOT NULL, `orderdate` DATETIME NOT NULL )
-SELECT a.`dm_no`,a.`hn`,b.`profilecode`,b.`autonumber`,b.`orderdate`,c.`labname`,c.`result`,c.`unit`
-FROM `diabetes_clinic` as a 
-LEFT JOIN `resulthead` as b ON b.`hn` = a.`hn` 
-LEFT JOIN `resultdetail` as c ON c.`autonumber` = b.`autonumber`
-WHERE a.`dateN` >= '2014-07'
-AND b.`orderdate` >= '2014-07'
-AND b.`profilecode` = 'UA'
-AND c.`labname` = 'Protein';
-";
+// $sql = "SELECT `row_id`,`dateN`,`date_footcare` FROM `diabetes_clinic` ";
+// $q = mysql_query($sql);
+// while($item = mysql_fetch_assoc($q)){
+	
+// 	$id = $item['row_id'];
+// 	$date = $item['dateN'];
+	
+// 	$sql = "UPDATE `diabetes_clinic` SET `date_footcare` = '$date', `date_nutrition` = '$date'
+// 	WHERE `row_id` = '$id';";
+// 	$update = mysql_query($sql);
+// 	// var_dump($update);
+	
+// 	$sql = "UPDATE `diabetes_clinic` SET `date_footcare` = '$date', `date_nutrition` = '$date'
+// 	WHERE `row_id` = '$id';";
+// 	$update = mysql_query($sql);
+// 	// var_dump($update);
+	
+// } 
+
+
+$sql = "SELECT `row_id`,`dateN`,`date_footcare` FROM `diabetes_clinic_history` ";
 $q = mysql_query($sql);
-// dump($q);
-
-$sql = "SELECT dm_no,hn,orderdate,profilecode,autonumber,labname,result,unit FROM `diabetes_mini`;";
-$q = mysql_query($sql) or die( mysql_error($Conn) );
-// dump($q);
 while($item = mysql_fetch_assoc($q)){
 	
+	$id = $item['row_id'];
+	$date = $item['dateN'];
 	
-	// $sql = "INSERT INTO `diabetes_lab` (dm_no,labname,dateY,result_lab,dummy_no) VALUES 
-	// ('{$item['dm_no']}','Protein','{$item['orderdate']}','{$item['result']}','$dummy_no')";
+	$sql = "UPDATE `diabetes_clinic_history` SET `date_footcare` = '$date', `date_nutrition` = '$date'
+	WHERE `row_id` = '$id';";
+	$update = mysql_query($sql);
+	// var_dump($update);
 	
-	// dump($sql);
-	
+	$sql = "UPDATE `diabetes_clinic_history` SET `date_footcare` = '$date', `date_nutrition` = '$date'
+	WHERE `row_id` = '$id';";
+	$update = mysql_query($sql);
+	// var_dump($update);
 	
 } 

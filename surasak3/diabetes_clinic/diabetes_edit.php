@@ -223,62 +223,62 @@ $thaidate = (date("Y")+543).date("-m-d");
 ?>
 
 <style>
-	.font_title{
-		font-family:"TH SarabunPSK"; 
-		font-size:25px;
-		}
-	.tb_font{
-	font-family:"TH SarabunPSK";
-	font-size:24px;
-	color: #09F;
+.font_title{
+font-family:"TH SarabunPSK"; 
+font-size:25px;
 }
-	.tb_font_1{
-		font-family:"TH SarabunPSK"; 
-		font-size:24px; 
-		color:#FFFFFF;
-		 font-weight:bold;}
-	.tb_col{
-		font-family:"TH SarabunPSK"; 
-		font-size:24px;
-		 background-color:#9FFF9F;
-		 }
+.tb_font{
+font-family:"TH SarabunPSK";
+font-size:24px;
+color: #09F;
+}
+.tb_font_1{
+font-family:"TH SarabunPSK"; 
+font-size:24px; 
+color:#FFFFFF;
+font-weight:bold;}
+.tb_col{
+font-family:"TH SarabunPSK"; 
+font-size:24px;
+background-color:#9FFF9F;
+}
 .tb_font_2 {
-	font-family: "TH SarabunPSK";
-	color: #B00000;
-	font-size: 22px;
-	font-weight: bold;
+font-family: "TH SarabunPSK";
+color: #B00000;
+font-size: 22px;
+font-weight: bold;
 }
 
 .forntsarabun {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
-	color: #FFF;
+font-family: "TH SarabunPSK";
+font-size: 22px;
+color: #FFF;
 }
 .forntsarabun1 {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
+font-family: "TH SarabunPSK";
+font-size: 22px;
 }
 </style>
 <h1 class="forntsarabun1">แก้ไขข้อมูลผู้ป่วยเบาหวาน และเพิ่มข้อมูลประวัติผู้ป่วย</h1>
 <?php $hn = isset($_POST['p_hn']) ? trim($_POST['p_hn']) : null ; ?>
 <form action="diabetes_edit.php" method="post">
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="center" bgcolor="#33CC66" class="forntsarabun">กรอกหมายเลข HN</TD>
-	</TR>
-	<TR>
-		<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1"  value="<?php echo $hn;?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
-	</TR>
-	<TR>
-		<TD></TD>
-	</TR>
+	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
+		<TR>
+			<TD>
+				<TABLE border="0" cellpadding="0" cellspacing="0">
+					<TR>
+						<TD align="center" bgcolor="#33CC66" class="forntsarabun">กรอกหมายเลข HN</TD>
+					</TR>
+					<TR>
+						<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1"  value="<?php echo $hn;?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
+					</TR>
+					<TR>
+						<TD></TD>
+					</TR>
+				</TABLE>
+			</TD>
+		</TR>
 	</TABLE>
-	</TD>
-</TR>
-</TABLE>
 </form>
 
 <?php 
@@ -293,85 +293,77 @@ if(!empty($hn) != ""){
 		print "<br> <font class='forntsarabun1'>ผู้ป่วย HN  <b>$hn</b> ยังไม่ลงทะเบียนในคลินิกเบาหวาน </font>";
 	}else{
 
-//ค้นหา hn จาก opday ********************************************************
-
-	$sql = "SELECT *, concat(yot,' ',name,' ',surname) AS ptname FROM opcard WHERE  hn = '$hn' LIMIT 1";
-	$result = mysql_query($sql) or die( mysql_error() );
-	$arr_view = mysql_fetch_assoc($result);
+		//ค้นหา hn จาก opday ********************************************************
+		$sql = "SELECT *, concat(yot,' ',name,' ',surname) AS ptname FROM opcard WHERE  hn = '$hn' LIMIT 1";
+		$result = mysql_query($sql) or die( mysql_error() );
+		$arr_view = mysql_fetch_assoc($result);
 	
-	// var_dump($arr_view);
-
-$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' LIMIT 1";
-list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
-
-$date_hn = date("Y-m-d").$arr_view["hn"];
-$date_vn = date("Y-m-d").$arr_view["vn"];
-
-$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-$result = Mysql_Query($sql);
-list($weight, $height) = Mysql_fetch_row($result);
-
-//ค้นหาวันเกิดจาก opcard ****************************************************************************************
-	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
-	//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
-	$arr_view["age"] = calcage($arr_view["dbirth"]);
-
-//ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
-
-
-	
-//ค้นหาข้อมูลเดิม
-	
-	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
-	$date_after= date("Y-m-d H:i:s",$times);
-	$sql = "Select * From  opd where hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);
-	
-	if($count > 0){
-		$arr_dxofyear = mysql_fetch_assoc($result);
-		$height = $arr_dxofyear["height"];
-		$weight = $arr_dxofyear["weight"];
+		$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' LIMIT 1";
+		list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
 		
-		if($arr_dxofyear["cigarette"] == '1'){ 
-			$cigarette1 = "Checked";
-		}else if($arr_dxofyear["cigarette"] == '0'){
-			$cigarette0 = "Checked";
-		}
+		$date_hn = date("Y-m-d").$arr_view["hn"];
+		$date_vn = date("Y-m-d").$arr_view["vn"];
 		
-		if($arr_dxofyear["alcohol"] == '1'){ 
-			$alcohol1 = "Checked";
-		}else if($arr_dxofyear["alcohol"] == '0'){
-			$alcohol0 = "Checked";
-		}
-		
-		if($arr_dxofyear["congenital_disease"] != ''){ 
-			$congenital_disease = $arr_dxofyear["congenital_disease"];
-		}else{
-			$congenital_disease = "ปฎิเสธโรคประจำตัว";
-		}
-		
-		
-	}else{
-		$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-
+		// หาข้อมูลจากซักประวัติ
+		$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
 		$result = Mysql_Query($sql);
-		list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0) = Mysql_fetch_row($result);
-			if($congenital_disease == "")
+		list($weight, $height) = Mysql_fetch_row($result);
+	
+		//ค้นหาวันเกิดจาก opcard ****************************************************************************************
+		//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
+		//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
+		//list($arr_view["dbirth"]) = mysql_fetch_row($result);
+		$arr_view["age"] = calcage($arr_view["dbirth"]);
+	
+		//ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
+		//ค้นหาข้อมูลจาก OPD
+	
+		$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
+		$date_after= date("Y-m-d H:i:s",$times);
+		$sql = "Select * From opd where hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
+		$result = mysql_query($sql);
+		$count = mysql_num_rows($result);
+	
+		if($count > 0){ // ถ้ามีข้อมูลจาก OPD
+			$arr_dxofyear = mysql_fetch_assoc($result);
+			$height = $arr_dxofyear["height"];
+			$weight = $arr_dxofyear["weight"];
+			
+			if($arr_dxofyear["cigarette"] == '1'){ 
+				$cigarette1 = "Checked";
+			}else if($arr_dxofyear["cigarette"] == '0'){
+				$cigarette0 = "Checked";
+			}
+			
+			if($arr_dxofyear["alcohol"] == '1'){ 
+				$alcohol1 = "Checked";
+			}else if($arr_dxofyear["alcohol"] == '0'){
+				$alcohol0 = "Checked";
+			}
+			
+			if($arr_dxofyear["congenital_disease"] != ''){ 
+				$congenital_disease = $arr_dxofyear["congenital_disease"];
+			}else{
 				$congenital_disease = "ปฎิเสธโรคประจำตัว";
-	}
+			}
+			
+		}else{ // ถ้าไม่มีข้อมูลจาก OPD ให้มาค้นหาใน ....
+			$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
 	
-	if($arr_dxofyear["rate"] == ""){
-		$arr_dxofyear["rate"] = 20;
-	}
-
-////////////////////////////////////////
-
-$datenow=date("Y-m-d");
+			$result = Mysql_Query($sql);
+			list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0) = Mysql_fetch_row($result);
+				if($congenital_disease == "")
+					$congenital_disease = "ปฎิเสธโรคประจำตัว";
+		}
 	
-// echo "<pre>";
-// var_dump($arrdm);
+		if($arr_dxofyear["rate"] == ""){
+			$arr_dxofyear["rate"] = 20;
+		}
+
+		////////////////////////////////////////
+		
+		$datenow=date("Y-m-d");
+
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
@@ -415,7 +407,8 @@ $datenow=date("Y-m-d");
 		<tr>
 		  <td  align="right" class="tb_font_2">เพศ :</td>
 		  <td class="forntsarabun1">
-          <?php 		  $sex1 = $sex2 = '';
+          <?php 
+		  $sex1 = $sex2 = '';
 		  if($arrdm['sex']=='0'){ $sex1="checked"; }elseif($arrdm['sex']=='1'){ $sex2="checked"; } 
 		  ?>
 		    <input name="sex" type="radio" value="0" <?=$sex1;?>/>
