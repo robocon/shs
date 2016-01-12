@@ -157,7 +157,7 @@ include("connect.inc");
 			<Option value="">-- เวลา --</Option>
 			<Option value = '07:30:00-12:30:00'>08.00 - 12.00</Option>
 			<Option value = '16:20:00-21:00:00'>16.30 - 20.30</Option>
-			<Option value = '07:30:00-16:00:00'>08.00 - 15.30</Option>
+			<Option value = '07:30:00-16:00:00'>08.00 - 16:00</Option>
             <Option value = '13:00:01-16:00:00'>13.00 - 16.00</Option>
 			<Option value = '15:00:01-20:30:00'>16.00 - 20.00</Option>
 		</Select>

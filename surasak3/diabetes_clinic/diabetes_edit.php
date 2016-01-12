@@ -191,6 +191,7 @@ window.onload = function() {
 	popup3 = new Epoch('popup3','popup',document.getElementById('tooth'),false);
 	popup4 = new Epoch('popup4','popup',document.getElementById('date_footcare'),false);
 	popup5 = new Epoch('popup5','popup',document.getElementById('date_nutrition'),false);
+	popup6 = new Epoch('popup6','popup',document.getElementById('date_exercise'),false);
 };
 </script>
 <?php $date_now = date("Y-m-d");
@@ -576,51 +577,61 @@ C&deg;</td>
 	      mmHg</td>
 	    </tr>
 	  <tr>
-		<td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
+		<td colspan="2" align="right" class="tb_font_2" valign="top">Retinal Exam:</td>
 	    <td colspan="7" class="">
-			<?php 			list($retinal_date, $retinal_time) = explode(' ', $arrdm['retinal_date']);
+			<?php
+			list($retinal_date, $retinal_time) = explode(' ', $arrdm['retinal_date']);
 			if($retinal_date == '0000-00-00'){
 				$retinal_date = '';
 			}
 			?>
-			<input name="retinal_date" type="text"class="forntsarabun1" id="retinal" size="10" value="<?php echo $retinal_date;?>"/>
+			<input name="retinal_date" type="text"class="forntsarabun1" id="retinal" size="10" />
+			
 			<label>
-				<input type="radio" name="retinal" value="No DR" <?php echo ($arrdm['retinal'] == 'No DR') ? 'checked' : '' ?>> No DR
+				<input type="radio" name="retinal" value="No DR"> No DR
 			</label>
 			<label>
-				<input type="radio" name="retinal" value="Mind DR" <?php echo ($arrdm['retinal'] == 'Mind DR') ? 'checked' : '' ?>> Mind DR
+				<input type="radio" name="retinal" value="Mind DR"> Mind DR
 			</label>
 			<label>
-				<input type="radio" name="retinal" value="Moderate DR" <?php echo ($arrdm['retinal'] == 'Moderate DR') ? 'checked' : '' ?>> Moderate DR
+				<input type="radio" name="retinal" value="Moderate DR"> Moderate DR
 			</label>
 			<label>
-				<input type="radio" name="retinal" value="Severe DR" <?php echo ($arrdm['retinal'] == 'Severe DR') ? 'checked' : '' ?>> Severe DR
+				<input type="radio" name="retinal" value="Severe DR"> Severe DR
 			</label>
+			<div>
+				ตรวจครั้งล่าสุด <?php echo $retinal_date.' '.$arrdm['retinal'];?>
+			</div>
 		</td>
 	    <td><input name="bw" type="hidden"class="forntsarabun1" id="bw" size="3" /></td>
 	  </tr>
 		<tr>
-			<td colspan="2" align="right" class="tb_font_2">Foot Exam:</td>
+			<td colspan="2" align="right" class="tb_font_2" valign="top">Foot Exam:</td>
 			<td align="left" class="" colspan="8">
-				<?php 				list($foot_date, $foot_time) = explode(' ', $arrdm['foot_date']);
+				<?php 
+				list($foot_date, $foot_time) = explode(' ', $arrdm['foot_date']);
 				if($foot_date == '0000-00-00'){
 					$foot_date = '';
 				}
 				?>
-				<input name="foot_date" type="text"class="forntsarabun1" id="foot" size="10" value="<?php echo $foot_date;?>"/>
+				<input name="foot_date" type="text"class="forntsarabun1" id="foot" size="10"/>
 				<label>
-					<input type="radio" name="foot" value="Low Risk" <?php echo ($arrdm['foot'] == 'Low Risk') ? 'checked' : '' ?>> Low Risk
+					<input type="radio" name="foot" value="Low Risk"> Low Risk
 				</label>
 				<label>
-					<input type="radio" name="foot" value="Moderate Risk" <?php echo ($arrdm['foot'] == 'Moderate Risk') ? 'checked' : '' ?>> Moderate Risk
+					<input type="radio" name="foot" value="Moderate Risk"> Moderate Risk
 				</label>
 				<label>
-					<input type="radio" name="foot" value="Hight Risk" <?php echo ($arrdm['foot'] == 'Hight Risk') ? 'checked' : '' ?>> Hight Risk
+					<input type="radio" name="foot" value="Hight Risk"> Hight Risk
 				</label>
+				<div>
+					ตรวจครั้งล่าสุด <?php echo $foot_date.' '.$arrdm['foot'];?>
+				</div>
+			</div>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2" align="right" class="tb_font_2">ตรวจสุขภาพฟัน:</td>
+			<td colspan="2" align="right" class="tb_font_2" valign="top">ตรวจสุขภาพฟัน:</td>
 			<td align="left" class="" colspan="8">
 				<?php 				if(empty($arrdm['tooth_date']) OR $arrdm['tooth_date'] == '0000-00-00'){
 					$tooth_date = '';
@@ -628,13 +639,16 @@ C&deg;</td>
 					$tooth_date = $arrdm['tooth_date'];
 				}
 				?>
-				<input name="tooth_date" type="text" class="forntsarabun1" id="tooth" size="10" value="<?php echo $tooth_date; ?>"/>
+				<input name="tooth_date" type="text" class="forntsarabun1" id="tooth" size="10" />
 				<label>
-					<input type="radio" name="tooth" value="1" <?php echo ($arrdm['tooth'] == '1') ? 'checked' : '' ?>> ได้รับการตรวจ
+					<input type="radio" name="tooth" value="1"> ได้รับการตรวจ
 				</label>
 				<label>
-					<input type="radio" name="tooth" value="0" <?php echo ($arrdm['tooth'] == '0') ? 'checked' : '' ?>> ไม่ได้รับการตรวจ
+					<input type="radio" name="tooth" value="0"> ไม่ได้รับการตรวจ
 				</label>
+				<div>
+					ตรวจครั้งล่าสุด <?php echo $tooth_date.' '.( ($arrdm['tooth'] == '1') ? 'ได้รับการตรวจ' : 'ไม่ได้รับการตรวจ' );?>
+				</div>
 			</td>
 		</tr>
 	  </table>
@@ -928,7 +942,8 @@ ORDER BY dateY DESC
 						<tr>
 							<td>
 								<div class="tb_font_2">
-									<?php 									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
+									<?php 
+									echo $item['result'].' '.$item['unit'].' วันที่ '.$item['orderdate'];
 									?>
 								</div>
 								<input type="hidden" name="protein[]" value="<?php echo $item['result'];?>">
@@ -975,9 +990,13 @@ ORDER BY dateY DESC
 	?>
      <tr>
        <td><div class="tb_font_2">
-       <?php            	echo $dall5['result']; ?>  <?=$dall5['unit'];?>  <?="วันที่  ".$dall5['orderdate']; if($orderdate5==$datenow){ 
-			echo "   lab วันนี้";
-		 }?>
+       <?php 
+	   echo $dall5['result']; ?>
+	   <?=$dall5['unit'];?>
+	   <?php
+	   echo "วันที่  ".$dall5['orderdate']; 
+	   if($orderdate5==$datenow){ echo "   lab วันนี้"; }
+	   ?>
          </div></td>
        </tr>
        <input type='hidden' name='micro'  value='<?=$listm1[0];?>'>
@@ -997,72 +1016,114 @@ ORDER BY dateY DESC
               </table>
 	          <table width="100%" border="0">
 	            <tr>
-	              <td bgcolor="#33CC66" class="forntsarabun">การให้ความรู้ / คำแนะนำ</td>
+	              <td bgcolor="#33CC66" class="forntsarabun" >การให้ความรู้ / คำแนะนำ</td>
                 </tr>
 	            <tr>
 	              <td><table border="0" class="forntsarabun1">
 	                <tr>
-	                  <td class="tb_font_2">Foot care</td>
+	                  <td class="tb_font_2" valign="top">Foot care</td>
 	                  <td>
 						  
-						<input type="radio" name="foot_care" id="radio" value="1" onclick="dateFootCare(this)" <?php if($arrdm['foot_care']=='1'){ echo "checked"; }?>/>
+						<input type="radio" name="foot_care" id="radio" value="1" onclick="dateFootCare(this)" />
 						ให้ความรู้
 						
-						<input type="radio" name="foot_care" id="radio" value="0" onclick="dateFootCare(this)" <?php if($arrdm['foot_care']=='0'){ echo "checked"; }?> />
+						<input type="radio" name="foot_care" id="radio" value="0" onclick="dateFootCare(this)" checked="checked" />
 						ไม่ได้ให้ความรู้
 						
-						<?php $display = ( $arrdm['foot_care']=='1' ) ? 'inline' : 'none' ; ?>
-						<div id="footcare-contain" style="display: <?=$display;?>;">
+						<div id="footcare-contain" style="display: none;">
 							<label for="date_footcare">
-								&nbsp;เลือกวันที่ <input type="text" id="date_footcare" name="date_footcare" size="10" value="<?=$arrdm['date_footcare'];?>">
+								&nbsp;เลือกวันที่ <input type="text" id="date_footcare" name="date_footcare" size="10">
 							</label>
 						</div>
-						
+						<div>
+							ตรวจครั้งล่าสุด
+							<?php
+							if( $arrdm['foot_care'] == '1' ){
+								echo 'ให้ความรู้ '.$arrdm['date_footcare'];
+							}else{
+								echo 'ไม่ได้ให้ความรู้';
+							}
+							?>
+						</div>
 						<script type="text/javascript">
 							var dateFootCare = function(fc){
+								var cssDisplay = 'none';
 								if(fc.value === '1'){
-									document.getElementById('footcare-contain').style.display = 'inline';
-								}else{
-									document.getElementById('footcare-contain').style.display = 'none';
+									var cssDisplay = 'inline';
 								}
+								document.getElementById('footcare-contain').style.display = cssDisplay;
 							}
 						</script>
 					</td>
 	                  </tr>
 	                <tr>
-	                  <td class="tb_font_2">Nutrition</td>
+	                  <td class="tb_font_2" valign="top">Nutrition</td>
 					<td>
-						<input type="radio" name="Nutrition" id="radio1" value="1" onclick="dateFood(this)" <?php if($arrdm['nutrition']=='1'){ echo "checked"; }?> />
+						<input type="radio" name="Nutrition" id="radio1" value="1" onclick="dateFood(this)" />
 						ให้ความรู้
 						
-						<input type="radio" name="Nutrition" id="radio1" value="0" onclick="dateFood(this)" <?php if($arrdm['nutrition']=='0'){ echo "checked"; }?> />
+						<input type="radio" name="Nutrition" id="radio1" value="0" onclick="dateFood(this)" checked="checked" />
 						ไม่ได้ให้ความรู้
 						
-						<?php $display = ( $arrdm['foot_care']=='1' ) ? 'inline' : 'none' ; ?>
-						<div id="food-contain" style="display: <?=$display;?>;">
+						<div id="food-contain" style="display: none;">
 							<label for="date_nutrition">
-								&nbsp;เลือกวันที่ <input type="text" id="date_nutrition" name="date_nutrition" size="10" value="<?=$arrdm['date_nutrition'];?>">
+								&nbsp;เลือกวันที่ <input type="text" id="date_nutrition" name="date_nutrition" size="10" >
 							</label>
+						</div>
+						<div>
+							ตรวจครั้งล่าสุด
+							<?php
+							if( $arrdm['nutrition'] == '1' ){
+								echo 'ให้ความรู้ '.$arrdm['date_nutrition'];
+							}else{
+								echo 'ไม่ได้ให้ความรู้';
+							}
+							?>
 						</div>
 						<script type="text/javascript">
 							var dateFood = function(fc){
+								var cssDisplay = 'none';
 								if(fc.value === '1'){
-									document.getElementById('food-contain').style.display = 'inline';
-								}else{
-									document.getElementById('food-contain').style.display = 'none';
+									var cssDisplay = 'inline';
 								}
+								document.getElementById('food-contain').style.display = cssDisplay;
 							}
 						</script>
 					</td>
-	                  </tr>
-	                <tr>
-	                  <td class="tb_font_2">Exercise</td>
-	                  <td><input type="radio" name="Exercise" id="radio2" value="1" <?php if($arrdm['exercise']=='1'){ echo "checked"; }?> />
-	                    ให้ความรู้
-	                   
-    <input type="radio" name="Exercise" id="radio2" value="0"  <?php if($arrdm['exercise']=='0'){ echo "checked"; }?>/>
-    ไม่ได้ให้ความรู้
-	
+				</tr>
+				<tr>
+					<td class="tb_font_2" valign="top">Exercise</td>
+					<td>
+						<label for="radio3">
+							<input type="radio" name="Exercise" id="radio3" value="1" onclick="dateExercise(this)" /> ให้ความรู้
+						</label>
+						<label for="radio33">
+							<input type="radio" name="Exercise" id="radio33" value="0" onclick="dateExercise(this)" checked="checked"/> ไม่ได้ให้ความรู้
+						</label>
+						<div id="exercise-contain" style="display: none;">
+							<label for="date_nutrition">
+								&nbsp;เลือกวันที่ <input type="text" id="date_exercise" name="date_exercise" size="10" >
+							</label>
+						</div>
+						<div>
+							ตรวจครั้งล่าสุด
+							<?php
+							if( $arrdm['exercise'] == '1' ){
+								echo 'ให้ความรู้ '.$arrdm['date_exercise'];
+							}else{
+								echo 'ไม่ได้ให้ความรู้';
+							}
+							?>
+						</div>
+						<script type="text/javascript">
+							var dateExercise = function(fc){
+								var cssDisplay = 'none';
+								if(fc.value === '1'){
+									var cssDisplay = 'inline';
+								}
+								document.getElementById('exercise-contain').style.display = cssDisplay;
+							}
+						</script>
 		<!-- Smooking ซ่อนเอาไว้ก่อน -->
 		<input type="hidden" name="Smoking" id="radio3" value="0" />
 	</td>

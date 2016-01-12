@@ -172,72 +172,31 @@ $mouth_items = array(
 					</tr>
 					<?php
 				endforeach;
-				
-				
-				
-				/*
-				DROP TEMPORARY TABLE IF EXISTS `condxso_tmp`;
-CREATE TEMPORARY TABLE `condxso_tmp` 
-SELECT * FROM `condxofyear_so`;
 
-DROP TEMPORARY TABLE IF EXISTS `survey_tmp`;
-CREATE TEMPORARY TABLE `survey_tmp` 
-SELECT b.`hn` FROM `survey_oral` AS b
-WHERE b.`yearcheck` = '59' 
-GROUP BY b.`hn`;
-
-SELECT COUNT(c.`hn`) AS `rows`
-FROM `condxso_tmp` AS c
-WHERE c.`yearcheck` LIKE  '2559'
-AND c.`hn` NOT IN (
-	SELECT b.`hn` FROM `survey_tmp` AS b
-)
-
-*/
+				$sql = "DROP TEMPORARY TABLE IF EXISTS `condxso_tmp`; 
+				CREATE TEMPORARY TABLE `condxso_tmp` 
+				SELECT * FROM `condxofyear_so`; ";
+				mysql_query($sql);
 				
+				$sql = "DROP TEMPORARY TABLE IF EXISTS `survey_tmp`; 
+				CREATE TEMPORARY TABLE `survey_tmp` 
+				SELECT b.`hn` FROM `survey_oral` AS b 
+				WHERE b.`yearcheck` = '$sh_year' 
+				GROUP BY b.`hn` ;";
+				mysql_query($sql);
 				
+				$sql = "SELECT COUNT(c.`hn`) AS `rows` 
+				FROM `condxso_tmp` AS c 
+				WHERE c.`yearcheck` LIKE  '$year_checkup' ";
 				
+				if( $filter_category !== false ){
+					$sql .= "AND c.`camp` LIKE '%{$section_lists[$filter_category]}%' ";
+				}
 				
-				
-				
-				
-				
-$sql = "SELECT COUNT(a.`hn`) AS `rows`
-FROM (
-	SELECT c.*
-	FROM `condxofyear_so` AS c
-	WHERE c.`yearcheck` LIKE  '$year_checkup' 
-	
-	";
-
-// ถ้ามีการเลือกหน่วย
-if( $filter_category !== false ){
-	$sql .= " AND c.`camp` LIKE '%{$section_lists[$filter_category]}%' ";
-}
-	
-$sql .= "AND c.`hn` NOT IN (
-
-SELECT b.`hn` FROM `survey_oral` AS b
-WHERE b.`yearcheck` = '$sh_year' 
-";
-
-// ถ้ามีการเลือกหน่วย
-if( $filter_category !== false ){
-	$sql .= " AND b.`section` = '$filter_category' ";
-}
-		 
-$sql .= "GROUP BY b.`hn`
-		
-	)
-	
-	GROUP BY c.`hn`
-) AS a";
-				
-				
-				dump($sql);
-				// $item = DB::select($sql, null, true);
-				// dump($item);
-				
+				$sql .= "AND c.`hn` NOT IN (
+					SELECT b.`hn` FROM `survey_tmp` AS b
+				)";
+				$item = DB::select($sql, null, true);
 				// มาตรวจที่ OPD แต่ไม่ได้ตรวจฟัน
 				?>
 				<tr>

@@ -65,7 +65,7 @@ if( $max === 5 ){
 					<th>เวลาตรวจ OPD</th>
 					<th>HN</th>
 					<th>ชื่อ</th>
-					<th>หน่วยงาน</th>
+					<th>หน่วยงานตาม OPD</th>
 				</tr>
 			</thead>
 			<tbody>

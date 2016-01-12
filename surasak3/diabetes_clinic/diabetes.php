@@ -20,8 +20,20 @@ if($do === 'save'){
 	$tooth_date = input('tooth_date');
 	$tooth = input('tooth', NULL);
 	
+	// ุถ้ามีการเลือกวันที่ แต่ไม่มีการติ๊ก
+	if( $retinal_date !== false && $retinal === NULL ){
+		$retinal = 'No DR';
+	}
+	if( $foot_date !== false && $foot === NULL ){
+		$foot = 'Low Risk';
+	}
+	if( $tooth_date !== false && $tooth === NULL ){
+		$tooth = '1';
+	}
+	
 	$date_footcare = input('date_footcare', NULL);
 	$date_nutrition = input('date_nutrition', NULL);
+	$date_exercise = input('date_exercise', NULL);
 	
 	// ตรวจสอบว่าเคยมีข้อมูลแล้วรึยัง
 	$select = "select hn from diabetes_clinic Where hn ='$hn' ";
@@ -50,9 +62,9 @@ if($do === 'save'){
 		$cr = input('cr', NULL);
 		$ur = input('ur', NULL);
 		$micro = input('micro', NULL);
-		$foot_care = input('foot_care', NULL);
-		$Nutrition = input('Nutrition', NULL);
-		$Exercise = input('Exercise', NULL);
+		$foot_care = input('foot_care', 0);
+		$Nutrition = input('Nutrition', 0);
+		$Exercise = input('Exercise', 0);
 		$admit_dia = input('admit_dia', NULL);
 		$dt_heart = input('dt_heart', NULL);
 		$dt_brain = input('dt_brain', NULL);
@@ -69,7 +81,7 @@ if($do === 'save'){
 		dt_brain,height,weight,round,temperature,
 		pause,rate,bp1,bp2,officer,
 		register_date,ht_etc,retinal_date,foot_date,tooth_date,
-		tooth,l_ua,date_footcare,date_nutrition ) 
+		tooth,l_ua,date_footcare,date_nutrition,date_exercise ) 
 		VALUES 
 		('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
 		'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
@@ -80,7 +92,7 @@ if($do === 'save'){
 		'$dt_brain','{$post['height']}','{$post['weight']}','{$post['round']}','{$post['temperature']}',
 		'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
 		'$register','$ht_etc','$retinal_date','$foot_date','$tooth_date',
-		'$tooth','{$post['l_ua']}','$date_footcare','$date_nutrition')";
+		'$tooth','{$post['l_ua']}','$date_footcare','$date_nutrition','$date_exercise')";
 		$objQuery = mysql_query($strSQL) or die( mysql_error() );
 		
 		// Generate random number
@@ -103,7 +115,7 @@ if($do === 'save'){
 		pause,rate,bp1,bp2,officer,
 		register_date,added_date,edited_date,ht_etc,edited_user,
 		retinal_date,foot_date,dummy_no,tooth_date,tooth,
-		l_ua,date_footcare,date_nutrition 
+		l_ua,date_footcare,date_nutrition,date_exercise 
 		) 
 		VALUES 
 		('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
@@ -116,7 +128,7 @@ if($do === 'save'){
 		'{$post['pause']}','{$post['rate']}','{$post['bp1']}','{$post['bp2']}','$sOfficer',
 		'$register','$register','$register','$ht_etc','$sIdname',
 		'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
-		'{$post['l_ua']}','$date_footcare','$date_nutrition')";
+		'{$post['l_ua']}','$date_footcare','$date_nutrition','$date_exercise')";
 		$insert_query = mysql_query($insert) or die( mysql_error() );
 		
 		/* BS */
@@ -403,6 +415,7 @@ font-size: 22px;
 		popup3 = new Epoch('popup3','popup',document.getElementById('tooth'),false);
 		popup4 = new Epoch('popup4','popup',document.getElementById('date_footcare'),false);
 		popup5 = new Epoch('popup5','popup',document.getElementById('date_nutrition'),false);
+		popup6 = new Epoch('popup6','popup',document.getElementById('date_exercise'),false);
 	};
 </script>
 <?php 
@@ -674,9 +687,7 @@ C&deg;</td>
 		
 	    <td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
 	    <td colspan="7" class="">
-			<?php 				$th_date = ( date('Y') + 543 ).'-'.date('m-d');
-			?>
-			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" value="<?php echo $th_date;?>"/>
+			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" />
 			<label>
 				<input type="radio" name="retinal" value="No DR"> No DR
 			</label>
@@ -707,7 +718,7 @@ C&deg;</td>
 		<tr>
 			<td colspan="2" align="right" class="tb_font_2">Foot Exam:</td>
 			<td align="left" class="" colspan="8">
-				<input name="foot_date" type="text" class="forntsarabun1" id="foot" size="10" value="<?php echo $th_date;?>"/>
+				<input name="foot_date" type="text" class="forntsarabun1" id="foot" size="10"/>
 				<label>
 					<input type="radio" name="foot" value="Low Risk"> Low Risk
 				</label>
@@ -722,7 +733,7 @@ C&deg;</td>
 		<tr>
 			<td colspan="2" align="right" class="tb_font_2">ตรวจสุขภาพฟัน:</td>
 			<td align="left" class="" colspan="8">
-				<input name="tooth_date" type="text" class="forntsarabun1" id="tooth" size="10" value="<?php echo $th_date;?>"/>
+				<input name="tooth_date" type="text" class="forntsarabun1" id="tooth" size="10"/>
 				<label>
 					<input type="radio" name="tooth" value="1"> ได้รับการตรวจ
 				</label>
@@ -822,9 +833,8 @@ C&deg;</td>
 				<tr>
 					<td>
 						<div class="tb_font_2">
-						<?php 						echo $dall1['result']; ?>  <?=$dall1['unit'];?>  <?="วันที่  ".$dall1['orderdate']; if($orderdate1==$datenow){ 
+						<?php echo $dall1['result']; ?>  <?=$dall1['unit'];?>  <?="วันที่  ".$dall1['orderdate']; if($orderdate1==$datenow){ 
 						echo "   lab วันนี้";
-
 						}
 						?>
 						</div>
@@ -1105,7 +1115,7 @@ C&deg;</td>
 							<input type="radio" name="foot_care" id="radio" value="1" onclick="dateFootCare(this)" /> ให้ความรู้
 						</label>
 						<label for="radio22">
-							<input type="radio" name="foot_care" id="radio22" value="0" onclick="dateFootCare(this)" /> ไม่ได้ให้ความรู้
+							<input type="radio" name="foot_care" id="radio22" value="0" onclick="dateFootCare(this)" checked="checked"/> ไม่ได้ให้ความรู้
 						</label>
 						<div id="footcare-contain" style="display: none;">
 							<label for="date_footcare">
@@ -1114,11 +1124,11 @@ C&deg;</td>
 						</div>
 						<script type="text/javascript">
 							var dateFootCare = function(fc){
+								var cssDisplay = 'none';
 								if(fc.value === '1'){
-									document.getElementById('footcare-contain').style.display = 'inline';
-								}else{
-									document.getElementById('footcare-contain').style.display = 'none';
+									var cssDisplay = 'inline';
 								}
+								document.getElementById('footcare-contain').style.display = cssDisplay;
 							}
 						</script>
 					</td>
@@ -1130,7 +1140,7 @@ C&deg;</td>
 								<input type="radio" name="Nutrition" id="radio1" value="1" onclick="dateFood(this)" /> ให้ความรู้
 							</label>
 							<label for="radio11">
-								<input type="radio" name="Nutrition" id="radio11" value="0" onclick="dateFood(this)" /> ไม่ได้ให้ความรู้
+								<input type="radio" name="Nutrition" id="radio11" value="0" onclick="dateFood(this)" checked="checked"/> ไม่ได้ให้ความรู้
 							</label>
 							<div id="food-contain" style="display: none;">
 								<label for="date_nutrition">
@@ -1139,11 +1149,11 @@ C&deg;</td>
 							</div>
 							<script type="text/javascript">
 								var dateFood = function(fc){
+									var cssDisplay = 'none';
 									if(fc.value === '1'){
-										document.getElementById('food-contain').style.display = 'inline';
-									}else{
-										document.getElementById('food-contain').style.display = 'none';
+										var cssDisplay = 'inline';
 									}
+									document.getElementById('food-contain').style.display = cssDisplay;
 								}
 							</script>
 						</td>
@@ -1151,15 +1161,30 @@ C&deg;</td>
 					<tr>
 						<td class="tb_font_2">Exercise</td>
 						<td>
-							<input type="radio" name="Exercise" id="radio2" value="1" /> ให้ความรู้
-	                   
-    <input type="radio" name="Exercise" id="radio2" value="0" />
-    ไม่ได้ให้ความรู้
-	
-	<!-- Smooking ซ่อนเอาไว้ก่อน -->
-	<input type="hidden" name="Smoking" id="radio3" value="0" />
-	</td>
-	                  </tr>
+							<label for="radio3">
+								<input type="radio" name="Exercise" id="radio3" value="1" onclick="dateExercise(this)" /> ให้ความรู้
+							</label>
+							<label for="radio33">
+								<input type="radio" name="Exercise" id="radio33" value="0" onclick="dateExercise(this)" checked="checked"/> ไม่ได้ให้ความรู้
+							</label>
+							<div id="exercise-contain" style="display: none;">
+								<label for="date_nutrition">
+									&nbsp;เลือกวันที่ <input type="text" id="date_exercise" name="date_exercise" size="10" >
+								</label>
+							</div>
+							<script type="text/javascript">
+								var dateExercise = function(fc){
+									var cssDisplay = 'none';
+									if(fc.value === '1'){
+										var cssDisplay = 'inline';
+									}
+									document.getElementById('exercise-contain').style.display = cssDisplay;
+								}
+							</script>
+							<!-- Smooking ซ่อนเอาไว้ก่อน -->
+							<input type="hidden" name="Smoking" id="radio3" value="0" />
+						</td>
+					</tr>
 					<?php 					/*
 					?>
 	                <tr>
