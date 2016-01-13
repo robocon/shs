@@ -110,6 +110,8 @@ if( !empty($B1) ){
 	".$where." ORDER BY thidate ASC ";
 	
 	$result = mysql_query($sql) or die("Query failed ".mysql_error());
+	
+	$notPassed = 0;
 	while (list ($row_id, $date,$hn,$ptname,$organ, $dx_mc_soldier, $dr1_mc_soldier, $dr2_mc_soldier, $dr3_mc_soldier,$address1,$thdatehn,$rule,$idcard) = mysql_fetch_row ($result)) 
 	{
 		$Total = $Total+$amount; 
@@ -120,6 +122,10 @@ if( !empty($B1) ){
 		$dr1 = preg_replace('/MD\d+\s/', '', $dr1_mc_soldier);
 		$dr2 = preg_replace('/MD\d+\s/', '', $dr2_mc_soldier);
 		$dr3 = preg_replace('/MD\d+\s/', '', $dr3_mc_soldier);
+		
+		if( empty($dx_mc_soldier) ){
+			$notPassed++;
+		}
 		
 		?>
 		<tr class="font_tr">
@@ -138,3 +144,13 @@ if( !empty($B1) ){
 }
 ?>
 </table>
+<?php
+if( $num > 0 ){
+$passed = $num - $notPassed;
+?>
+<h3>สรุปยอด</h3>
+<p>จำนวนผู้ที่ได้รับยกเว้นเกฑณ์ทหาร  <?php echo $passed;?> คน</p>
+<p>จำนวนผู้ที่ไม่ได้รับยกเว้นเกฑณ์ทหาร  <?php echo $notPassed;?> คน</p>
+<?php
+}
+?>

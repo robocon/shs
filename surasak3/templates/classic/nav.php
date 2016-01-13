@@ -1,4 +1,4 @@
-<div class="site-header-fixture">
+<div class="site-header-fixture no-print">
     <div class="site-header">
         <div class="col width-fit mobile-width-fit">
             <div class="cell">
