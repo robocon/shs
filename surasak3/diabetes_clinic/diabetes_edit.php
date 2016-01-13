@@ -1023,13 +1023,12 @@ ORDER BY dateY DESC
 	                <tr>
 	                  <td class="tb_font_2" valign="top">Foot care</td>
 	                  <td>
-						  
-						<input type="radio" name="foot_care" id="radio" value="1" onclick="dateFootCare(this)" />
-						ให้ความรู้
-						
-						<input type="radio" name="foot_care" id="radio" value="0" onclick="dateFootCare(this)" checked="checked" />
-						ไม่ได้ให้ความรู้
-						
+						<label for="foot_care1">
+							<input type="radio" name="foot_care" id="foot_care1" value="1" onclick="dateFootCare(this)" />ให้ความรู้
+						</label>
+						<label for="foot_care2">
+							<input type="radio" name="foot_care" id="foot_care2" value="0" onclick="dateFootCare(this)" checked="checked" />ไม่ได้ให้ความรู้
+						</label>
 						<div id="footcare-contain" style="display: none;">
 							<label for="date_footcare">
 								&nbsp;เลือกวันที่ <input type="text" id="date_footcare" name="date_footcare" size="10">
@@ -1059,12 +1058,12 @@ ORDER BY dateY DESC
 	                <tr>
 	                  <td class="tb_font_2" valign="top">Nutrition</td>
 					<td>
-						<input type="radio" name="Nutrition" id="radio1" value="1" onclick="dateFood(this)" />
-						ให้ความรู้
-						
-						<input type="radio" name="Nutrition" id="radio1" value="0" onclick="dateFood(this)" checked="checked" />
-						ไม่ได้ให้ความรู้
-						
+						<label for="Nutrition1">
+							<input type="radio" name="Nutrition" id="Nutrition1" value="1" onclick="dateFood(this)" />ให้ความรู้
+						</label>
+						<label for="Nutrition2">
+							<input type="radio" name="Nutrition" id="Nutrition2" value="0" onclick="dateFood(this)" checked="checked" />ไม่ได้ให้ความรู้
+						</label>
 						<div id="food-contain" style="display: none;">
 							<label for="date_nutrition">
 								&nbsp;เลือกวันที่ <input type="text" id="date_nutrition" name="date_nutrition" size="10" >

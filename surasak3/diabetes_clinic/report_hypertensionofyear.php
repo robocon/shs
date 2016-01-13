@@ -240,6 +240,4 @@ if($tbnum < 1){
 	</tr>
 	<?php 	} // End While
 }
-?>
-<?php require "footer.php";
-?>
+require "footer.php";

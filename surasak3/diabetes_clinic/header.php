@@ -21,8 +21,14 @@ if(!isset($web_title)){
 </head>
 <style type="text/css">
 * { 
+	font-family:"TH SarabunPSK";
 	margin:0;
     padding:0;
+	font-size:16pt;
+}
+.font{
+	font-family:"TH SarabunPSK";
+	font-size:16pt;
 }
 .font1 { 
 	font-family:"TH SarabunPSK";
