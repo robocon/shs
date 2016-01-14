@@ -199,67 +199,75 @@ a{
 	}
 	?>
 </table>
-
+<style type="text/css">
+	@media print{
+		#cancel-appoint{
+			display: none;
+		}
+	}
+</style>
 <?php
 $row = count($unincome_lists);
 if( $row > 0 ){
 ?>
-<div style="page-break-before: always;"></div>
-<h3 style="margin-bottom: 0;">รายชื่อคนไข้ยกเลิกนัด</h3>
-<table>
-	<thead>
-		<tr>
-			<th width="2%">#</th>
-			<th>HN</th>
-			<th>ชื่อ</th>
-			<th>เวลานัด</th>
-			<th>นัดเพื่อ</th>
-			<!-- <th>อื่นๆ</th>
-			<th>diag</th> -->
-			<th>ซ้ำ</th>
-			<th>ยื่นบัตร</th>
-			<th>Admit</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php
-		$i = 1;
-		foreach( $unincome_lists as $key => $item ){
-			
-			if($date_now == $item['date']){
-				$bgcolor = "FFA8A8"; // สีแดง
-			}else{
-				$bgcolor = "66CDAA";
+<div id="cancel-appoint">
+	<div style="page-break-before: always;"></div>
+	<h3 style="margin-bottom: 0;">รายชื่อคนไข้ยกเลิกนัด</h3>
+	<table>
+		<thead>
+			<tr>
+				<th width="2%">#</th>
+				<th>HN</th>
+				<th>ชื่อ</th>
+				<th>เวลานัด</th>
+				<th>นัดเพื่อ</th>
+				<!-- <th>อื่นๆ</th>
+				<th>diag</th> -->
+				<th>ซ้ำ</th>
+				<th>ยื่นบัตร</th>
+				<th>Admit</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			$i = 1;
+			foreach( $unincome_lists as $key => $item ){
+				
+				if($date_now == $item['date']){
+					$bgcolor = "FFA8A8"; // สีแดง
+				}else{
+					$bgcolor = "66CDAA";
+				}
+				?>
+				<tr style="background-color: #<?=$bgcolor;?>;">
+					<td><?=$i;?></td>
+					<td><?=$item['hn'];?></td>
+					<td><?=$item['ptname'];?></td>
+					<td><?=$item['apptime'];?></td>
+					<td><?=$item['detail'];?></td>
+					<!-- <td><?=$item['other'];?></td>
+					<td><?=$item['diag'];?></td> -->
+					<td>
+						<?php
+						$hn = $item['hn'];
+						echo (isset($listhn[$hn])) ? $listhn[$hn] : '' ;
+						?>
+					</td>
+					<td><?=$item['room'];?></td>
+					<td>
+						<?php
+						$sql5 = "SELECT * FROM `bed` WHERE `hn` = '$hn' ";
+						$q2 = mysql_query($sql5) or die( mysql_error() );
+						$count = mysql_num_rows($q2);
+						echo ( $count > 0 ) ? 'Admit' : '' ;
+						?>
+					</td>
+				</tr>
+				<?php
+				$i++;
 			}
 			?>
-			<tr style="background-color: #<?=$bgcolor;?>;">
-				<td><?=$i;?></td>
-				<td><?=$item['hn'];?></td>
-				<td><?=$item['ptname'];?></td>
-				<td><?=$item['apptime'];?></td>
-				<td><?=$item['detail'];?></td>
-				<!-- <td><?=$item['other'];?></td>
-				<td><?=$item['diag'];?></td> -->
-				<td>
-					<?php
-					$hn = $item['hn'];
-					echo (isset($listhn[$hn])) ? $listhn[$hn] : '' ;
-					?>
-				</td>
-				<td><?=$item['room'];?></td>
-				<td>
-					<?php
-					$sql5 = "SELECT * FROM `bed` WHERE `hn` = '$hn' ";
-					$q2 = mysql_query($sql5) or die( mysql_error() );
-					$count = mysql_num_rows($q2);
-					echo ( $count > 0 ) ? 'Admit' : '' ;
-					?>
-				</td>
-			</tr>
-			<?php
-			$i++;
-		}
-		?>
-	</tbody>
-</table>
+		</tbody>
+	</table>
+</div>
 <?php } ?>

@@ -130,7 +130,7 @@ a{
 	}
 	usort($user_lists, "sorthn");
 	
-    $i = 0;
+    $i = 1;
 	$unincome_lists = array();
 	foreach( $user_lists AS $item ){
 		

@@ -6,8 +6,8 @@ $time = 10000;
 
 if($_SESSION["sIdname"] == "md19921"){
 	$time = 2000;
-}else if($_SESSION['sIdname'] == 'md38220'){ // หมอพิพิธ
-	$time = 30000;
+}else if($_SESSION['sIdname'] == 'md38220' OR $_SESSION['sIdname'] == 'md50814'){ // หมอพิพิธ
+	$time = 31536000;
 }
 ?>
 <html>

@@ -2,16 +2,11 @@
 //Update 31 ¾¤. 53 bbm
 session_start();
 
-
-
-
-
-
-
 /** Ajax Response Start **/
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
+
 include("connect.inc");
 
 if(isset($_GET["action"]) && $_GET["action"] != ""){
