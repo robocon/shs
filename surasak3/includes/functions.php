@@ -19,7 +19,7 @@ function pagination($total, $page = 1, $params = false, $limit = 50){
 		?><div class="sm-pagging-contain"><?php
 		for( $i = 1; $i <= $total; $i++ ){
 			$active = ( $i == $page ) ? 'pagging-active' : '' ;
-			
+
 			$url = DOMAIN_PATH.'/'.$params.'&page='.$i;
 			?>
 			<div class="sm-pagging <?=$active;?>"><a href="<?=$url;?>"><?=$i;?></a></div>
@@ -40,6 +40,13 @@ if( !function_exists('input') ){
 	}
 }
 
+if( !function_exists('input_post') ){
+	function input_post($t, $d = false){
+		$v = ( isset($_POST[$t]) ) ? trim($_POST[$t]) : $d ;
+		return htmlspecialchars(strip_tags($v), ENT_QUOTES);
+	}
+}
+
 /**
  * ดึงค่าจาก id ที่เป็น method GET
  */
@@ -55,7 +62,7 @@ function errorMsg($status = NULL, $id = ''){
 	} elseif( $status === 'delete' ) {
 		$msg = 'ลบ';
 	}
-	
+
 	return "ไม่สามารถ$msgข้อมูลได้ กรุณาเก็บรหัส $id นี้เพื่อแจ้งผู้ดูแลระบบเพื่อทำการแก้ไขต่อไป";
 }
 
@@ -166,7 +173,7 @@ function getMonthValue($keyMatch){
 }
 
 function getDateList($name = 'days', $match = null){
-	
+
 }
 
 /**
@@ -268,19 +275,19 @@ function get_year_checkup($long = false, $en = false){
 	$d = date('d');
 	$m = date('m');
 	$y = date('Y') + 543 ;
-	
+
 	if( $m >= 10 && $d >= 1 ){
 		$y += 1;
 	}
-	
+
 	if( $en === true ){
 		$y -= 543 ;
 	}
-	
+
 	if( $long === true ){
 		return $y;
 	}
-	
+
 	$y = substr($y, 2);
 	return $y;
 }

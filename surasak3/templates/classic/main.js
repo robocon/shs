@@ -1,11 +1,11 @@
 /**
  * Basic Ajax Request
- * 
+ *
  * @example
  * var newSm = new SmHttp();
  * newSm.ajax(
- * 	'test.php', 
- * 	{ name: 'TestName', email: 'test@mail.com' }, 
+ * 	'test.php',
+ * 	{ name: 'TestName', email: 'test@mail.com' },
  * 	function(res){
  * 		document.write(res);
  * 	}
@@ -26,7 +26,7 @@ SmHttp.prototype = {
 		if(!xHttp && document.createElement){
 			xHttp = new XMLHttpRequest();
 		}
-		
+
 		xHttp.onreadystatechange = function(){
 			if( xHttp.readyState == 4 && xHttp.status == 200 ){
 				callback(xHttp.responseText);
@@ -38,11 +38,11 @@ SmHttp.prototype = {
 		xHttp.send(data);
 	},
 	objToStr: function(data){
-		
+
 		if( data === null ){
 			return null;
 		}
-		
+
 		test_str = [];
 		for(var p in data){
 			test_str.push(encodeURIComponent(p)+"="+encodeURIComponent(data[p]));
@@ -50,3 +50,7 @@ SmHttp.prototype = {
 		return test_str.join("&");
 	}
 };
+
+function SmPreventDefault(event){
+	event.preventDefault ? event.preventDefault() : ( event.returnValue = false ) ;
+}
