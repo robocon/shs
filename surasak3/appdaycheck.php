@@ -70,31 +70,39 @@
         $year_now = (date("Y")+543);
 
         $select_day2 = $day_now." ".$month[$month_now]." ".$year_now;
-
+        
         include("connect.inc");
         global $hn;
-        $query = "SELECT row_id, hn,ptname,doctor,appdate,apptime,detail,patho,xray,other,date,(case when appdate = '".$select_day2."' then '#009966' else '#F5DEB3' end) AS color,injno FROM appoint WHERE hn = '$hn' ORDER BY date DESC ";
+        $query = "SELECT `row_id`,`hn`,`ptname`,`doctor`,`appdate`,`apptime`,`detail`,`patho`,`xray`,`other`,`date`,
+        (
+            CASE WHEN `appdate` = '".$select_day2."' THEN '#009966' ELSE '#F5DEB3' END 
+        ) AS `color`,`injno` 
+        FROM `appoint` 
+        WHERE `hn` = '$hn' 
+        ORDER BY `date` DESC ";
         $result = mysql_query($query) or die( mysql_error() );
-
         $items = array();
-        // echo "<pre>";
+        $i=1;
         while( $item = mysql_fetch_assoc($result) ){
-
+            list($testAppDate, $appTime) = explode(' ', $item['date']);
+            
             $appdate = str_replace($months_key, $months_val, trim($item['appdate']));
 
             list($d, $m, $y) = explode(' ', $appdate);
-            $new_date = strtotime(($y-543)."-$m-$d");
+            $i = sprintf('%03d',$i);
+            $new_date = strtotime(($y-543)."-$m-$d $appTime");
             $items[$new_date] = $item; // ตั้งคีย์ใหม่เอาไว้สำหรับ sort ตามวันนัด
+            $i++;
         }
 
         krsort($items); // ให้เรียงตามคีย์ที่ตั้งไว้
-
+        
         foreach( $items as $key => $item){
             print (" <tr>\n".
             "  <td BGCOLOR='".$item['color']."'><A HREF=\"appinsert2.php?row_id=".$item['row_id']."\" target=\"_blank\">{$item['hn']}</A></td>\n".
             "  <td BGCOLOR='".$item['color']."'><A HREF=\"appdayprint.php?row_id=".$item['row_id']."\" target=\"_blank\">{$item['ptname']}</A></td>\n".
             "  <td BGCOLOR='".$item['color']."'>".substr($item['doctor'],6)."</td>\n".
-            "  <td BGCOLOR='".$item['color']."'>{$item['appdate']}</td>\n".
+            "  <td BGCOLOR='".$item['color']."' title=\"ออกใบนัดเมื่อ {$item['date']}\">{$item['appdate']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['detail']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['apptime']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['patho']}</td>\n".

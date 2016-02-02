@@ -1,15 +1,66 @@
 <?php
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+session_start();
 
-include("connect.php");
+$month["01"] ="มกราคม";
+$month["02"] ="กุมภาพันธ์";
+$month["03"] ="มีนาคม";
+$month["04"] ="เมษายน";
+$month["05"] ="พฤษภาคม";
+$month["06"] ="มิถุนายน";
+$month["07"] ="กรกฎาคม";
+$month["08"] ="สิงหาคม";
+$month["09"] ="กันยายน";
+$month["10"] ="ตุลาคม";
+$month["11"] ="พฤศจิกายน";
+$month["12"] ="ธันวาคม";
 
-$thidate_now = (date("Y")+543).date("-m-d").date(" H:i:s");
-$thidate = date("d-m-").(date("Y")+543);
-$thidatehn = $_REQUEST["dthn"];
-	
-$sql = "Select date_format(thidate,'%d-%m-%Y %H:%i:%s'), hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic   From opd where thdatehn = '".$thidatehn."' limit 1 ";
+function calcage($birth){
+
+	$today = getdate();   
+	$nY = $today['year']; 
+	$nM = $today['mon'] ;
+	$bY = substr($birth,0,4)-543;
+	$bM = substr($birth,5,2);
+	$ageY = $nY-$bY;
+	$ageM = $nM-$bM;
+
+	if ($ageM <0 ) {
+		$ageY = $ageY-1;
+		$ageM = 12+$ageM;
+	}
+
+	if ($ageM == 0){
+		$pAge = "$ageY ปี";
+	}else{
+		$pAge = "$ageY ปี $ageM เดือน";
+	}
+
+	return $pAge;
+}
+
+include 'connect.inc'; 
+
+$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
+$thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
+if($cigarette==0){
+	$cigarette='ไม่สูบ';
+}else if($cigarette==1){
+	$cigarette='สูบ';
+}else{
+	$cigarette='เคยสูบ';
+}
 
+if($alcohol==0){
+	$alcohol='ไม่ดื่ม';
+}else if($alcohol==1){
+	$alcohol='ดื่ม';
+}else{
+	$alcohol='เคยดื่ม';
+}
 
 if($drugreact == 0){
 	$congenital_disease .=" , ผู้ป่วยไม่แพ้ยา";
@@ -24,29 +75,50 @@ if($drugreact == 0){
 	$list_drug = implode(", ",$list);
 	$congenital_disease .= " , แพ้ยา : ".$list_drug;
 }
-?>
-<script language="javascript">
-window.onload = function(){
-	window.print();
+
+if( empty($weight) ){
+	$weight = 0;
 }
+if( empty($height) ){
+	$height = 0;
+	$ht = 0;
+}else{
+	$ht = $height/100;
+}
+
+$bmi = number_format(($weight / ( $ht * $ht)), 2);
+$sql111 = "Select dbirth From opcard where hn='".$hn."' ";
+$result111 = Mysql_Query($sql111);
+list($dbirth) = Mysql_fetch_row($result111);
+
+$cAge = calcage($dbirth);
+
+?>
+<script type="text/javascript">
+	window.onload = function(){
+		window.print();
+	}
 </script>
-<table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
-<tr>
-    <td>HN :<?php echo $hn;?>&nbsp;&nbsp;<?php echo $thidate;?></td>
-  </tr>
-  <tr>
-    <td>T : <?php echo $temperature;?> C, P : <?php echo $pause;?> ครั้ง/นาที , R : <?php echo $rate;?> ครั้ง/นาที </td>
-  </tr>
-  <tr>
-    <td>BP : <?php echo $bp1;?> / <?php echo $bp2;?> mmHg, นน : <?php echo $weight;?> กก.,</td>
-  </tr>
-  <tr>
-    <td>ลักษณะ : <?php echo $type;?>, คลินิก : <?php echo substr($clinic,3);?></td>
-  </tr>
-  <tr>
-    <td>โรคประจำตัว : <?php echo $congenital_disease;?></td>
-  </tr>
-  <tr>
-    <td>อาการ : <?php echo $organ;?></td>
-  </tr>
+<table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
+	<tr>
+		<td>HN : <?=$hn;?> <?=$thidate;?> <?=$cAge;?></td>
+	</tr>
+	<tr>
+		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
+	</tr>
+	<tr>
+		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, นน : <?=$weight;?> กก., สส : <?=$height;?> ซม.</td>
+	</tr>
+	<tr>
+		<td>บุหรี่ : <?=$cigarette;?>, สุรา : <?=$alcohol;?> , bmi : <?=$bmi;?>, PS : <?=$painscore;?></td>
+	</tr>
+	<tr>
+		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=substr($clinic,3);?></td>
+	</tr>
+	<tr>
+		<td>โรคประจำตัว : <?=trim($congenital_disease);?></td>
+	</tr>
+	<tr>
+		<td>อาการ : <?=trim($organ);?></td>
+	</tr>
 </table>

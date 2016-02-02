@@ -4,13 +4,13 @@ session_start();
 <body>
 <html>
 <head>
-<title>add_user</title>
+<title>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 <link href="css/backoffice.css" rel="stylesheet" type="text/css">
 
 <script type="text/javascript">
 window.onload = function(){
-	// window.print();
+	window.print();
 	// opener.location.href='hnappoi1.php';
 	// window.close();
 }
@@ -68,30 +68,34 @@ table {
 
 
 /* Your CSS is below */
+html{
+    font-family: 'TH SarabunPSK'!important;
+    font-size: 16pt;
+}
 u{
     border-bottom: 2px solid #000000;
     text-decoration: none;
 }
 b{ font-weight: bold; }
 .size1{
-    font-size: 8px;
-    line-height: 12px;
+    font-size: 8pt;
+    line-height: 12pt;
 }
 .size2{
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 12pt;
+    line-height: 16pt;
 }
 .size3{
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 16pt;
+    line-height: 20pt;
 }
 .size4{
-    font-size: 17px;
-    line-height: 21px;
+    font-size: 17pt;
+    line-height: 21pt;
 }
 .size5{
-    font-size: 24px;
-    line-height: 28px;
+    font-size: 24pt;
+    line-height: 28pt;
 }
 .center{
     text-align: center;
@@ -249,7 +253,7 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     print "<p class='size5' style=\"line-height: 36px;\"><b><u>นัดมา: วัน$day ที่ $appd เวลา: $capptime</u></b></p>";
     print "<p class='size4'><b><u>ยื่นใบนัดที่: $room</u></b>&nbsp;<b>เพื่อ:</b> $detail".( $detail2 != "" ? "($detail2)" : "" )."</p>";
     
-    if ($detail !='NA') { 
+    if ($detail != 'NA') { 
         // print "&nbsp;<p class='size4'><b>เพื่อ:</b> $detail".( $detail2 != "" ? "($detail2)" : "" )."</p>";
         print "<p class='size3'><b>แพทย์ผู้นัด:</b> $cdoctor</p>";
     }

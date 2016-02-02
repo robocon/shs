@@ -18,12 +18,12 @@ print "<b>รายชื่อคนไข้นัดตรวจ</b><br>";
 if(strlen($doctor) == 5){
 	$sql = "Select name From doctor where name like '".$doctor."%' limit 1";
 	list($dc) = mysql_fetch_row(mysql_query($sql));
-	print "<b>แพทย์:</b> $dc <br>";
+	print "<b>แพทย์:</b> $dc <br>"; 
 }else{
-	print "<b>แพทย์:</b> $doctor <br>";
+	print "<b>แพทย์:</b> $doctor <br>"; 
 }
 print "<b>นัดมาวันที่</b> $appd<br> ";
-print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
+print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
 ?>
 <style type="text/css">
 *{
@@ -50,8 +50,8 @@ table th{
 	vertical-align: middle;
 }
 .theBlocktoPrint {
-	background-color: #000;
-	color: #FFF;
+	background-color: #000; 
+	color: #FFF; 
 }
 a{
 	text-decoration: underline;
@@ -62,7 +62,7 @@ a{
 </style>
 <br />
 <div id="no_print" >
-	<A HREF="ptapsort.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">ผู้ป่วยไตเทียม</A>
+	<A HREF="ptapsort.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">ผู้ป่วยไตเทียม</A> 
 	&nbsp;&nbsp;<A HREF="ptapsort1.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">ผู้ป่วยOPD</A>
 	&nbsp;&nbsp;<a href="ptapsort3.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">คลีนิกฝังเข็ม</a>
 	&nbsp;&nbsp;<a href="vnprintday.php?nat=<?=$_GET["appd"];?>&detail=<?=$dc;?>&doctor">พิมพ์ใบตรวจโรค</a>
@@ -85,19 +85,19 @@ a{
 	$sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' limit 1 ";
 	$result = Mysql_Query($sql) or die( mysql_error() );
 	list($menucode) = Mysql_fetch_row($result);
-
+	
 	///////////////////////
 	// กรณีที่หมอคนอื่นนัดเหมือนกัน
 	///////////////////////
 	if(strlen($doctor) == 5){
 		$doctor2 = " doctor like '".$doctor."%' ";
 		$doctor3 = "AND left(doctor,5) <> '".$doctor."' ";
-
+	
 	}else{
 		$doctor2 = " doctor = '".$doctor."' ";
 		$doctor3 = " AND doctor <> '".$doctor."' ";
 	}
-
+	
 	$query = "SELECT count( hn ) , hn, doctor   FROM `appoint` WHERE appdate = '$appd' ".$doctor3." GROUP BY hn HAVING count( hn ) >= 1 ";
 	$result = mysql_query($query);
 	while($arr = Mysql_fetch_assoc($result)){
@@ -110,21 +110,23 @@ a{
 	///////////////////////
 	// กรณีที่หมอคนอื่นนัดเหมือนกัน
 	///////////////////////
-
+	
 	// รายชื่อผู้ป่วยนัด
 	if(strlen($doctor) == 5){
 		$doctor2 = " AND `doctor` LIKE '".$doctor."%' ";
 	}else{
 		$doctor2 = " AND `doctor` = '".$doctor."' ";
 	}
-
-	$query1 = "SELECT `hn`,`ptname`,`apptime`,`detail`,`came`,`row_id`,`age`,date_format(`date`,'%d-%m-%Y') AS `date`,`officer`,left(`apptime`,5) AS `left5`,`diag`,`other`,`room`
-	FROM `appoint`
-	WHERE `appdate` = '$appd'
-	$doctor2
-	ORDER BY `hn` ASC
+		
+	$query1 = "SELECT `hn`,`ptname`,`apptime`,`detail`,`came`,`row_id`,`age`,date_format(`date`,'%d-%m-%Y') AS `date`,`officer`,left(`apptime`,5) AS `left5`,`diag`,`other`,`room` 
+	FROM `appoint` 
+	WHERE `appdate` = '$appd' 
+	$doctor2 
+	ORDER BY `hn` ASC 
 	";
-
+	?>
+	<div style="display: none;"><?php var_dump($query1);?></div>
+	<?php
 	if($_GET['sortby'] === 'time'){
 		$query1 .= ", apptime ASC";
 	}else{
@@ -137,31 +139,31 @@ a{
 	// สกรีนค่าที่ซ้ำออกไป
 	$user_lists = array();
 	while( $item = mysql_fetch_assoc($result) ){
-
+		
 		list($key_year, $hn_key) = explode('-', $item['hn']);
 		$item['sort_hn'] = $key_year.sprintf("%08d", intval($hn_key)); // สร้าง key ขึ้นมาเอาไว้สำหรับ sort โดยเฉพาะ
 		$key = md5($item['hn'].md5($item['room'])); // สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
 		$user_lists[$key] = $item;
 	}
-
+	
 	// เรียงจากน้อยไปหามากตาม sort_hn
 	function sorthn($a, $b){
 		return $a['sort_hn'] - $b['sort_hn'];
 	}
 	usort($user_lists, "sorthn");
-
+	
 	$i = 1;
 	$unincome_lists = array();
 	foreach( $user_lists AS $item ){
-
+		
 		// เก็บรายชื่อคนที่ยกเลิกนัด เอาไว้แสดงอีก 1 ตาราง
 		if( $item['apptime'] === 'ยกเลิกการนัด' ){
 			$unincome_lists[] = $item;
 			continue;
 		}
-
+		
 		$hn = $item['hn'];
-
+		
 		$ptname = $item['ptname'];
 		$apptime = $item['apptime'];
 		$detail = $item['detail'];
@@ -174,17 +176,17 @@ a{
 		$diag = $item['diag'];
 		$other = $item['other'];
 		$room = $item['room'];
-
+		
 		if($date_now == $date){
 			$bgcolor = "FFA8A8"; // สีแดง
 		}else{
 			$bgcolor = "66CDAA";
 		}
-
+		
 		if($menucode == 'ADMOPD'){
 			$detail = substr($detail,4);
 		}
-
+		
 		?>
 		<tr style="background-color: #<?=$bgcolor;?>;">
 			<td><?=$i;?></td>
@@ -238,7 +240,7 @@ if( $row > 0 ){
 		<?php
 		$i = 1;
 		foreach( $unincome_lists as $key => $item ){
-
+			
 			if($date_now == $item['date']){
 				$bgcolor = "FFA8A8"; // สีแดง
 			}else{

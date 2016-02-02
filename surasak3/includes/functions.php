@@ -43,7 +43,30 @@ if( !function_exists('input') ){
 if( !function_exists('input_post') ){
 	function input_post($t, $d = false){
 		$v = ( isset($_POST[$t]) ) ? trim($_POST[$t]) : $d ;
-		return htmlspecialchars(strip_tags($v), ENT_QUOTES);
+		if( $v !== false ){
+			$res = htmlspecialchars(strip_tags($v), ENT_QUOTES);
+		}else{
+			$res = $v;
+		}
+		return $res;
+	}
+}
+
+if( !function_exists('input_get') ){
+	function input_get($t, $d = false){
+		$v = ( isset($_GET[$t]) ) ? trim($_GET[$t]) : $d ;
+		if( $v !== false ){
+			$res = htmlspecialchars(strip_tags($v), ENT_QUOTES);
+		}else{
+			$res = $v;
+		}
+		return $res;
+	}
+}
+
+if( !function_exists('clean_input') ){
+	function clean_input(){
+		
 	}
 }
 
@@ -151,6 +174,12 @@ function filter_post($items, $default = null){
  */
 function get_session($name){
 	return $_SESSION[$name];
+}
+
+function set_session($n, $v){
+	if( isset($_SESSION[$n]) ){
+		$_SESSION[$n] = $v;
+	}
 }
 
 /**
