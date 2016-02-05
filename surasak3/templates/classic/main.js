@@ -13,7 +13,7 @@
  */
 var SmHttp = function(){}
 SmHttp.prototype = {
-	ajax: function(url, data, callback){
+	ajax: function(url, data, callback, sync){
 		try{
 			xHttp = new ActiveXObject("Msxml2.XMLHTTP");
 		}catch(e){
@@ -32,7 +32,12 @@ SmHttp.prototype = {
 				callback(xHttp.responseText);
 			}
 		};
-		xHttp.open("POST", url, true);
+		
+		if( typeof sync === 'undefined' ){
+			sync = true;
+		}
+		
+		xHttp.open("POST", url, sync);
 		xHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		data = this.objToStr(data);
 		xHttp.send(data);

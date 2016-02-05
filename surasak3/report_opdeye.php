@@ -38,7 +38,7 @@ $show = input_post('show');
 	<div class="cell">
 		<div class="col">
 			<label for="year">
-				เลือกปีที่่ต้องการแสดงผล <input type="text" id="year" class="width-1of24" name="year" value="<?=$year?>">
+				เลือกปีที่ต้องการแสดงผล <input type="text" id="year" class="width-1of24" name="year" value="<?=$year?>">
 			</label>
 		</div>
 	</div>
@@ -80,7 +80,7 @@ ORDER BY `date_eye`";
 		<thead>
 			<tr>
 				<th rowspan="2">ผล DR</th>
-				<th colspan="12">จำนวนผู้ป่วย ปี <?=$year;?></th>
+				<th colspan="13">จำนวนผู้ป่วย ปี <?=$year;?></th>
 			</tr>
 			<tr>
 				<?php
@@ -88,6 +88,7 @@ ORDER BY `date_eye`";
 					?><th><?=$month;?></th><?php
 				}
 				?>
+				<th>รวม</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -97,13 +98,16 @@ ORDER BY `date_eye`";
 				<tr>
 					<td><?=$list;?></td>
 					<?php
+					$ii = 0;
 					foreach( $def_month_th as $mKey => $month){
 						$find_key = $en_year.'-'.$mKey.'-'.$list;
 						?>
 						<td>
 						<?php
 							if( $new_items[$find_key] ){
-								?><a href="report_opdeye_details.php?date=<?=($en_year.'-'.$mKey);?>&dr=<?=$list;?>" target="_blank"><?=$new_items[$find_key]['rows'];?></a> <?php
+								$month_total = $new_items[$find_key]['rows'];
+								$ii += $month_total;
+								?><a href="report_opdeye_details.php?date=<?=($en_year.'-'.$mKey);?>&dr=<?=$list;?>" target="_blank"><?=$month_total;?></a> <?php
 							}else{
 								echo '-';
 							}
@@ -112,6 +116,7 @@ ORDER BY `date_eye`";
 						<?php
 					}
 					?>
+					<td><?=$ii;?></td>
 				</tr>
 				<?php
 			}

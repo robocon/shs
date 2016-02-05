@@ -25,7 +25,7 @@ if(isset($_GET["lab_date"])){
 <head>
 <title>พิมพ์ผล LAB</title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 16px;
@@ -60,7 +60,6 @@ body,td,th {
 }
 .style3 {font-size: 14px}
 
--->
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 </head>

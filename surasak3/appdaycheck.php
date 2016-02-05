@@ -83,13 +83,22 @@
         $result = mysql_query($query) or die( mysql_error() );
         $items = array();
         $i=1;
+        echo "<pre>";
         while( $item = mysql_fetch_assoc($result) ){
+            
             list($testAppDate, $appTime) = explode(' ', $item['date']);
             
-            $appdate = str_replace($months_key, $months_val, trim($item['appdate']));
+            //
+            if( !preg_match('/\d+\-\d+\-\d+/', $item['appdate']) ){
+                $appdate = str_replace($months_key, $months_val, trim($item['appdate']));
+                list($d, $m, $y) = explode(' ', $appdate);
+                
+            }else{
+                list($y, $m, $d) = explode('-', $item['appdate']);
+                
+            }
 
-            list($d, $m, $y) = explode(' ', $appdate);
-            $i = sprintf('%03d',$i);
+            // $appoint_date = strtotime(($y-543)."-$m-$d $appTime");
             $new_date = strtotime(($y-543)."-$m-$d $appTime");
             $items[$new_date] = $item; // ตั้งคีย์ใหม่เอาไว้สำหรับ sort ตามวันนัด
             $i++;

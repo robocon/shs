@@ -9,27 +9,40 @@
 	<link rel="stylesheet" type="text/css" href="js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
  	<link rel="stylesheet" href="css/style.css" />
 <style type="text/css">
+
 .font1 {
 	font-family:"TH SarabunPSK";
-	font-size:20px;
+	font-size:18pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 .font3 {
 	font-family:"TH SarabunPSK";
-	font-size:20px;
+	font-size:16pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 .font2 {
 	font-family:"TH SarabunPSK";
-	font-size:20px;
+	font-size:14pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 @media print{
 	body{
 		padding-left: 10px;
 	}
-#no_print{
-	display:none;
+	.font1 {
+		font-family:"TH SarabunPSK";
+		font-size:14pt;
+	}
+	.font3 {
+		font-family:"TH SarabunPSK";
+		font-size:12pt;
+	}
+	.font2 {
+		font-family:"TH SarabunPSK";
+		font-size:10pt;
+	}
+	#no_print{
+		display:none;
 	}
 }
 
@@ -374,7 +387,7 @@ switch($_POST['m_start']){
 
 
   $r++;
-  	  if($r=='36'){
+  	  if($r=='31'){
 $r=1;
 
 
@@ -403,8 +416,8 @@ echo "<table width='100%' border='0' align='center' class='font2'>
 
 		echo "</table>";
 		
-		//echo "<div style='page-break-after: always'> ";
-		echo "<div style='page-break-before: always'> ";
+		// echo "<div style='page-break-after: always'> ";
+		echo "<div style='page-break-before: always; position: relative;'> ";
 		echo "<h1 class='font1' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
 		echo "<h2 class='font3' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคกระดูกและข้อ</h2>";
 		

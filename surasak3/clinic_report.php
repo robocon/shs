@@ -7,29 +7,42 @@
 	<script type="text/javascript" src="js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 	<script type="text/javascript" src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<link rel="stylesheet" type="text/css" href="js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
- 	<link rel="stylesheet" href="css/style.css" />
+ 	<!--<link rel="stylesheet" href="css/style.css" />-->
 <style type="text/css">
+
 .font1 {
 	font-family:"TH SarabunPSK";
-	font-size:20px;
+	font-size:18pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 .font3 {
 	font-family:"TH SarabunPSK";
-	font-size:20px;
+	font-size:16pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 .font2 {
 	font-family:"TH SarabunPSK";
-	font-size:20px;
+	font-size:14pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 @media print{
 	body{
 		padding-left: 10px;
 	}
-#no_print{
-	display:none;
+	.font1 {
+		font-family:"TH SarabunPSK";
+		font-size:14pt;
+	}
+	.font3 {
+		font-family:"TH SarabunPSK";
+		font-size:12pt;
+	}
+	.font2 {
+		font-family:"TH SarabunPSK";
+		font-size:10pt;
+	}
+	#no_print{
+		display:none;
 	}
 }
 
@@ -270,10 +283,10 @@ div3.display = 'none';
 		?>
       </select></td>
     </tr>
+	<?php /* ?>
 	<tr>
 		<td colspan="2" align="right">แพทย์ที่ใช้แสดงผล: </td>
 		<td>
-			<!-- ใช้เฉพาะกรณี เวรหมอคนที่ตรวจเต็มเท่านั้นเลยต้องใช้ชื่อหมอคนอื่นเบิก -->
 			<select name="doctor2" id="doctor2">
 				<option value="">-- กรุณาเลือกแพทย์ --</option>
 				<option value="ห้องตรวจโรคทั่วไป">ห้องตรวจโรคทั่วไป</option>
@@ -287,6 +300,7 @@ div3.display = 'none';
 			</select>
 		</td>
 	</tr>
+	<?php */ ?>
     <tr>
       <td colspan="3" align="center"><input name="button" type="submit" class="font1" id="button" value="ตกลง" />
       <a target=_self  href='../nindex.htm'> ไปเมนู </a> &nbsp;&nbsp; <a href="clinic_vip.php">เพิ่มข้อมูล</a></td>
@@ -427,7 +441,7 @@ switch($_POST['m_start']){
 
 
   $r++;
-  	  if($r=='36'){
+  	  if($r=='31'){
 $r=1;
 
 
