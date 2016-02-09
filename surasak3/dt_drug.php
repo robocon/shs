@@ -383,10 +383,16 @@ for($i=0;$i<$count;$i++){
 			$totalbalm=$totalbalm+$_SESSION["list_drugamount"][$i];
 			if($totalbalm > 10){
 				echo "<INPUT TYPE=\"hidden\" NAME=\"chk4met25\" id=\"chk4met25\" value=\"11\">";
-			}
-		}	
+			}  //cloose if
+		}	// close if
+	}  //close for
+	//echo $totalbalm;
+	if($totalbalm < 11){
+		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";
+	}else{
+		echo "<div  align=\"center\"><INPUT TYPE=\"button\" value=\"จำนวนยาไม่ถูกต้อง\" onclick=\"return chklist()\"></div>";	
 	}
-	echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div></TD>
+	echo "	</TD>
 	</TR>";
 	//}	
 	$phar = $pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DDN"];
@@ -395,7 +401,7 @@ for($i=0;$i<$count;$i++){
 		if($_SESSION["list_drugcode"][$i]=="4MET25"){
 			$totalbalm=$totalbalm+$_SESSION["list_drugamount"][$i];
 			if($totalbalm > 10){
-				echo "<strong style='color:#FF0000;'>!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด กรุณาลบจำนวนยาส่วนที่เกินออก<strong>";
+				echo "<strong style='color:#FF0000;'>!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด/วัน กรุณาลบจำนวนยาส่วนที่เกินออก<strong>";
 			}
 		}	
 	}
@@ -1923,7 +1929,7 @@ function checkForm1(){
 		document.form1.drug_amount.focus();
 	}else if(document.form1.drug_slip.value == ""){
 		alert("กรุณาใส่วิธีใช้ยา");
-		document.form1.drug_slip.focus();
+		document.form1.drug_slip.focus();	
 	}else if(txt == "0"){
 		alert("กรุณาลองใส่รหัสยาใหม่");
 		document.form1.drug_code.focus();
@@ -1974,6 +1980,9 @@ function checkForm1(){
 		document.form1.drug_code.focus();	
 	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
+		document.form1.drug_amount.focus();	
+	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
+		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	
 	}else{
 		
@@ -2684,7 +2693,7 @@ function chklist(){
 	// เช็กก่อนว่ามี ID chk4met25 จริงๆ รึป่าว
 	if(document.getElementById("chk4met25")){
 		if(document.getElementById("chk4met25").value=="11"){		
-			alert("!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด กรุณาลบจำนวนยาส่วนที่เกินออก");
+			alert("!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด/วัน กรุณาลบจำนวนยาส่วนที่เกินออก");
 			document.getElementById("chk4met25").focus()
 			return false;										
 		}else{

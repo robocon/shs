@@ -26,6 +26,10 @@
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 @media print{
+	.new-page{
+		page-break-before: always; 
+		page-break-inside: avoid;
+	}
 	body{
 		padding-left: 10px;
 	}
@@ -186,7 +190,7 @@ div3.display = 'none';
 <div id="no_print">
 <h1 class="font1">คลินิกพิเศษนอกเวลาราชการ</h1>
 
-<fieldset class="font1" style="width:100%">
+<fieldset class="font1" style="width: 80%">
   <legend>ค้นหา  </legend><form id="form1" name="form1" method="post">
   <table border="0" align="center">
     <tr>
@@ -374,34 +378,27 @@ switch($_POST['m_start']){
 //	echo $sql;
 	?>
 
-  <h1 class="font1" align="center">คลินิกพิเศษนอกเวลาราชการ</h1>
-<? //if($fil=='thidate'){ ?>
-<h2 class="font3" align="center">วันที่ <?=$dateshow;?> เวลา <?=$_POST['time'];?>
-  ห้องตรวจโรคผู้ป่วยนอก</h2>
-<? //} ?>
-<!--<?//if($fil=='hn'){ ?>
-  <h2 class="font3" align="center">HN<?//=$key;?>ห้องตรวจโรคผู้ป่วยนอก</h2>
-<?//} ?>-->
-<table border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="font2" width="100%" align="center">
-  <tr bgcolor="#999999">
-    <td align="center"  width="7%">ลำดับ</td>
-    <td colspan="2" align="center" width="47%">ชื่อ - สกุล</td>
-    <td align="center" width="13%">HN</td>
-	<td align="center" width="20%">สิทธิ์</td>
-    <td align="center" width="13%">AN</td>
-    <td colspan="2" align="center" id="no_print">จัดการ</td>
+<h1 class="font1" align="center">คลินิกพิเศษนอกเวลาราชการ</h1>
+<h2 class="font3" align="center">วันที่ <?=$dateshow;?> เวลา <?=$_POST['time'];?> ห้องตรวจโรคผู้ป่วยนอก</h2>
 
-  </tr>
-  <?php
-  $doctor_replace = false;
-  $yot_replace = false;
-  $doctor2 = ( isset($_POST['doctor2']) && $_POST['doctor2'] != '' ) ? trim($_POST['doctor2']) : false ;
+<table border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="font2" width="100%" align="center">
+	<tr bgcolor="#999999">
+		<td align="center"  width="7%">ลำดับ</td>
+		<td colspan="2" align="center" width="47%">ชื่อ - สกุล</td>
+		<td align="center" width="13%">HN</td>
+		<td align="center" width="20%">สิทธิ์</td>
+		<td align="center" width="13%">AN</td>
+		<td colspan="2" align="center" id="no_print">จัดการ</td>
+	</tr>
+	<?php
+	$doctor_replace = false;
+	$yot_replace = false;
+	$doctor2 = ( isset($_POST['doctor2']) && $_POST['doctor2'] != '' ) ? trim($_POST['doctor2']) : false ;
 	if( $doctor2 !== false ){
-		
+	
 		$where = " `name` = '$doctor2'";
 		if( preg_match('/ว\.\d+/', $doctor2, $matchs) > 0 ){
 			$dr_code = substr($matchs['0'], 2);
-			
 			$where = " `doctorcode` = '$dr_code'";
 		}
 		
@@ -415,104 +412,94 @@ switch($_POST['m_start']){
 		if(empty($item['yot'])){
 			$yot_replace = $item['yot2'];
 		}
-		
 	}
-  
-  $run=1;
-  $r=0;
-   while($arr=@mysql_fetch_array($query)){ 
-   
-   if( $yot_replace !== false ){
-	   $yot = $yot_replace;
-   }else{
-	   $yot = $arr['yot'];
-   }
-   
-   
-   if( $doctor_replace !== false ){
-	   $doctor = $doctor_replace;
-   }else{
-	   $doctor=substr($arr['doctor'],5);
-   }
-   
-   
-   global  $yot,$doctor;
+	
+	$run=1;
+	$r=0;
+	
+	while($arr=@mysql_fetch_array($query)){
+	
+	if( $yot_replace !== false ){
+		$yot = $yot_replace;
+	}else{
+		$yot = $arr['yot'];
+	}
+	
+	if( $doctor_replace !== false ){
+		$doctor = $doctor_replace;
+	}else{
+		$doctor=substr($arr['doctor'],5);
+	}
+	
+	global  $yot,$doctor;
 
-
-
-  $r++;
-  	  if($r=='31'){
-$r=1;
-
-
-echo "<table width='100%' border='0' align='center' class='font2'>
-  <tr>
-    <td align='center' width='40%'><br>ผู้บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td align='center' width='40%' >&nbsp;</td>
-  </tr>
-  <tr>
-    <td align='center'>พ.ต.หญิง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td align='center'>$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-  </tr>
-  <tr>
-    <td align='center'>( บุญทิวา เนียมทอง )</td>
-    <td align='center'>($doctor)</td>
-  </tr>
-  <tr>
-    <td align='center'>หัวหน้าห้องตรวจโรคผู้ป่วยนอก</td>
-    <td align='center'>แพทย์ผู้รักษา</td>
-  </tr>
-  <tr>
-    <td align='center'>........./............/.........</td>
-    <td align='center'>........./............/.........</td>
-  </tr>
-</table>";
-
-		echo "</table>";
+	$r++;
+	if( $r=='31' ){
+		$r=1;
 		
-		//echo "<div style='page-break-after: always'> ";
-		echo "<div style='page-break-before: always'> ";
-		echo "<h1 class='font1' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
+		echo "<table width='100%' border='0' align='center' class='font2'>
+			<tr>
+				<td align='center' width='40%'><br>ผู้บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td align='center' width='40%' >&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='center'>พ.ต.หญิง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td align='center'>$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td align='center'>( บุญทิวา เนียมทอง )</td>
+				<td align='center'>($doctor)</td>
+			</tr>
+			<tr>
+				<td align='center'>หัวหน้าห้องตรวจโรคผู้ป่วยนอก</td>
+				<td align='center'>แพทย์ผู้รักษา</td>
+			</tr>
+			<tr>
+				<td align='center'>........./............/.........</td>
+				<td align='center'>........./............/.........</td>
+			</tr>
+		</table>";
+		
+		echo "</table>";
+		echo "</div>";
+		
+		// echo "<div style='page-break-after: always'> ";
+		echo "<div class=\"new-page\"> ";
+		echo "<h1 class='font1' align='center'>คลินิกพิเศษนอกเวลาราชการ2</h1>";
 		echo "<h2 class='font3' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคผู้ป่วยนอก</h2>";
 		
 		echo "<table width=\"100%\" border=\"1\" style=\"border-collapse:collapse; border-color:#000;\" cellpadding=\"0\" cellspacing=\"0\" class=\"font2\" align='center'>
-  <tr bgcolor=\"#999999\">
-    <td align=\"center\" width=\"7%\">ลำดับ</td>
-    <td colspan='2' align='center' width=\"47%\">ชื่อ - สกุล</td>
-    <td align=\"center\" width=\"13%\">HN</td>
-	<td align=\"center\" width=\"20%\">สิทธิ์</td>
-    <td align=\"center\" width=\"13%\">AN</td>
-    <td align=\"center\" id='no_print' colspan='2'>จัดการ</td>
+			<tr bgcolor=\"#999999\">
+				<td align=\"center\" width=\"7%\">ลำดับ</td>
+				<td colspan='2' align='center' width=\"47%\">ชื่อ - สกุล</td>
+				<td align=\"center\" width=\"13%\">HN</td>
+				<td align=\"center\" width=\"20%\">สิทธิ์</td>
+				<td align=\"center\" width=\"13%\">AN</td>
+				<td align=\"center\" id='no_print' colspan='2'>จัดการ</td>
+			</tr>";
 
-  </tr>";
-?>
-
-
-<? } 
-$name=explode(" ",$arr['ptname']);
-$fname=$name[0];
-$lname = substr($arr['ptname'],strlen($fname)+1);
-?>
-    <tr>
-    <td align="center"><?=$run;?></td>
-    <td  style='border-right-style:none'>&nbsp;<?=$fname?></td>
-    <td  style="border-left-style:none"><?=$lname?></td>
-    <td>&nbsp;<?=$arr['hn']?></td>
-	<td>&nbsp;<?php 
-		echo str_replace('โครงการ', '', substr($arr['ptright'], 4));
-	?></td>
-    <td>&nbsp;<?=$arr['an']?></td>
-    <td  align="center" id="no_print"><a id="edit" class="various iframe" href="clinic_editform.php?row_id=<?=$arr['row_id']?>">แก้ไข</a></td>
-    <td align="center" id="no_print"><a id="delete" class="various iframe" href="clinic_delete.php?row_id=<?=$arr['row_id']?>">ลบ</a></td>
-    </tr>
-  
-  <?
-  $run++;
-   }
+	} // End if
+	$name = explode(" ",$arr['ptname']);
+	$fname = $name[0];
+	$lname = substr($arr['ptname'],strlen($fname)+1);
+	?>
+	<tr>
+		<td align="center"><?=$run;?></td>
+		<td  style='border-right-style:none'>&nbsp;<?=$fname?></td>
+		<td  style="border-left-style:none"><?=$lname?></td>
+		<td>&nbsp;<?=$arr['hn']?></td>
+		<td>&nbsp;<?php echo str_replace('โครงการ', '', substr($arr['ptright'], 4)); ?></td>
+		<td>&nbsp;<?=$arr['an']?></td>
+		<td  align="center" id="no_print"><a id="edit" class="various iframe" href="clinic_editform.php?row_id=<?=$arr['row_id']?>">แก้ไข</a></td>
+		<td align="center" id="no_print"><a id="delete" class="various iframe" href="clinic_delete.php?row_id=<?=$arr['row_id']?>">ลบ</a></td>
+	</tr>
+	<?php
+	$run++;
+} // End while
 
 //echo "</div>";
 echo "</div>";
-   ?>
+?>
 </table>
 <BR />
 <table width="100%" border="0" align="center" class="font2">

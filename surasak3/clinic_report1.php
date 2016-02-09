@@ -7,7 +7,7 @@
 	<script type="text/javascript" src="js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
 	<script type="text/javascript" src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<link rel="stylesheet" type="text/css" href="js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
- 	<link rel="stylesheet" href="css/style.css" />
+ 	<!--<link rel="stylesheet" href="css/style.css" />-->
 <style type="text/css">
 
 .font1 {
@@ -186,7 +186,7 @@ div3.display = 'none';
 <div id="no_print">
 <h1 class="font1">คลินิกพิเศษนอกเวลาราชการ</h1>
 
-<fieldset class="font1" style="width:80%">
+<fieldset class="font1" style="width: 80%">
   <legend>ค้นหา  </legend><form id="form1" name="form1" method="post">
   <table border="0" align="center">
     <tr>

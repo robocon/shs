@@ -286,7 +286,7 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 		$numb=mysql_num_rows($queryb);
 		//echo "===>".$numb;
 		if($numb < 1){  //ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
-				$sql2="select * from ddrugrx where `date` like '$chkDate%' and hn='".$_SESSION["hn_now"]."' and drugcode='4MET25' and amount ='1' and part='DDL'";
+				$sql2="select * from ddrugrx as a inner join dphardep as b on a.idno=b.row_id where a.`date` like '$chkDate%' and a.hn='".$_SESSION["hn_now"]."' and a.drugcode='4MET25' and a.amount ='1' and a.part='DDL' and b.dr_cancle is null";
 				//echo "<br>".$sql2."<br>";
 				$query2=mysql_query($sql2)or die("Query failed");
 				$num2=mysql_num_rows($query2);
@@ -350,7 +350,7 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 		$numb=mysql_num_rows($queryb);
 		//echo "===>".$numb;
 		if($numb < 1){  //ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
-				$sql2="select * from ddrugrx where `date` like '$chkDate%' and hn='".$_SESSION["hn_now"]."' and drugcode='10H014' and amount ='1' and part='DDL'";
+				$sql2="select * from ddrugrx as a inner join dphardep as b on a.idno=b.row_id where a.`date` like '$chkDate%' and a.hn='".$_SESSION["hn_now"]."' and a.drugcode='10H014' and a.amount ='1' and a.part='DDL' and b.dr_cancle is null";
 				//echo "<br>".$sql2."<br>";
 				$query2=mysql_query($sql2)or die("Query failed");
 				$num2=mysql_num_rows($query2);
