@@ -1,0 +1,66 @@
+ @charset "windows-874";
+/*ให้ใช้ font ตามรายการข้างล่างในทุกตัวอักษรที่แสดงในเว็บเพจ */
+* {
+font-family:"TH SarabunPSK";
+}
+body {
+/*	margin-top: 1.5cm;
+	margin-left: 3cm;
+	margin-right: 2cm;*/
+	font-family: "TH SarabunPSK";
+
+
+}
+/*กำหนดส่วนแสดงภาพและสัญลักษณ์ด้านบนสุดของเว็บเพจ */
+/*
+#containner {
+width: 21cm;
+height:29.7cm;
+margin-top:1.5cm;
+margin-left:3cm;
+margin-right:2cm;
+margin-bottom:2cm;
+z-index:auto;
+*/
+
+/*padding-top:1.5cm;
+padding-bottom:2cm;
+padding-right:2cm;
+padding-left:3cm;*/
+}
+
+#text-indent12{
+	text-indent:1.2cm;
+}
+#text-indent15{
+	text-indent:1.5cm;
+
+}
+#text-indent2{
+	text-indent:2cm;
+
+}
+#text-indent25{
+	text-indent:2.5cm;
+
+}
+#text-indent23{
+	text-indent:2.3cm;
+
+}
+#text-indent27{
+	text-indent:2.7cm;
+
+}
+#text-indent3{
+	text-indent:3cm;
+
+}
+#text-indent35{
+	text-indent:3.5cm;
+
+}
+#text-indent4{
+	text-indent:4cm;
+
+}

@@ -1,0 +1,12 @@
+legend{
+font-size: 16px;
+font-weight: bold;
+color:#06F
+padding:0px 3px;
+
+}
+fieldset{
+display:inline;
+width:50%;
+margin-right:40px;
+}
