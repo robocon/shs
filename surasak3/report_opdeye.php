@@ -22,7 +22,7 @@ $show = input_post('show');
 
 <div class="col nav-menu-col">
 	<div class="menu cell">
-		<ul class="nav">
+		<ul class="nav clear">
 			<li><a href="../nindex.htm">หน้าหลักโปรแกรม SHS</a></li>
 			<li><a href="eye_from.php">สมุดทะเบียนตา</a></li>
 		</ul>

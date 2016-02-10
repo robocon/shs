@@ -7,7 +7,7 @@
         </div>
         <div class="col width-fill mobile-width-fill">
             <div class="cell">
-                <ul class="col nav">
+                <ul class="col nav clear">
                     <li class="active"><a href="../nindex.htm">หน้าหลักโปรแกรม SHS</a></li>
                 </ul>
             </div>

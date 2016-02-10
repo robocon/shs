@@ -19,8 +19,13 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 ?>
 <style type="text/css">
 *{
-	font-family: Angsana New;
+	font-family: 'TH SarabunPSK';
 	font-size: 20px;
+}
+@media print{
+	*{
+		font-size: 18px;
+	}
 }
 table{
 	width: 100%;

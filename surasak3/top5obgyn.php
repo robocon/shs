@@ -9,24 +9,22 @@ $th_date = !empty($_POST['year_select']) ? trim($_POST['year_select']) : date('Y
 $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 ?>
 
-<style type="text/css">
-body{
-	font-family: "TH SarabunPSK";
-	font-size:16px;
-}
-</style>
 <div class="site-center">
 	<div class="site-body panel">
 		<div class="body">
 			<div class="cell">
 				<div class="col width-fill mobile-width-fill no-print">
 					<div class="cell">
-						<ul class="col nav">
+						<ul class="col nav clear">
 							<li class="active"><a href="../nindex.htm">หน้าหลักโปรแกรม SHS</a></li>
 						</ul>
 					</div>
 				</div>
-				<h3>รายชื่อ Diag แพทย์เรียงตามจำนวนผู้ป่วย</h3>
+				<div class="col">
+					<div class="cell">
+						<h3>รายชื่อ Diag แพทย์เรียงตามจำนวนผู้ป่วย</h3>
+					</div>
+				</div>
 				<form action="top5obgyn.php" method="post" class="no-print">
 					<div class="col">
 						<div class="cell">

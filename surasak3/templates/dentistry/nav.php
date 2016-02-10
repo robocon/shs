@@ -14,7 +14,7 @@
 			$den_report = ( $task === 'report' ) ? 'class="active"' : false ;
 			$report_mouth = ( $task === 'report_mouth' ) ? 'class="active"' : false ;
 		?>
-		<ul class="nav">
+		<ul class="nav clear">
 			<li <?php echo $home_active;?>><a href="survey_oral.php">หน้าหลัก</a></li>
 			<li <?php echo $form_active;?>><a href="survey_oral.php?task=form">เพิ่มข้อมูลแบบสำรวจ</a></li>
 			<li <?php echo $form_category;?>><a href="survey_oral.php?task=category_form">จัดการข้อมูลหน่วยงาน</a></li>

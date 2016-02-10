@@ -49,21 +49,25 @@ table {
 }
 
 /* Default style */
-/*
 @font-face{
-	font-family: 'Trirong-Regular';
-	src: url('fonts/Trirong-Regular.eot');
-	src: url('fonts/Trirong-Regular.eot?#iefix') format('embedded-opentype'),
-	url('fonts/Trirong-Regular.woff2') format('woff2'),
-	url('fonts/Trirong-Regular.woff') format('woff'),
-	url('fonts/Trirong-Regular.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
+    font-family: 'THSarabunNew';
+    src: url('../../fonts/webfont/THSarabunNew.eot');
+    src: url('../../fonts/webfont/THSarabunNew.eot#iefix'),
+    url('../../fonts/webfont/THSarabunNew.woff') format('embedded-opentype'),
+    url('../../fonts/webfont/THSarabunNew.ttf') format('truetype'),
+    url('../../fonts/webfont/THSarabunNew.svg#ludger_duvernayregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
-*/
 body{
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12pt;
+	/*font-family: 'THSarabunNew',Arial, Helvetica, sans-serif;
+	font-size: 12pt;*/
+	font-family: 'THSarabunNew';
+	font-size: 1.4em;
+}
+input, button, select{
+	font-family: 'THSarabunNew';
+	font-size: 1em;
 }
 b{ font-weight: bold; }
 table{
@@ -94,10 +98,12 @@ a:hover{
 h1{
 	font-size: 32px;
 	line-height: 40px;
+	font-weight: bold;
 }
 h3{
 	font-size: 24px;
 	line-height: 32px;
+	font-weight: bold;
 }
 fieldset{
 	border: 1px solid #999999;
@@ -137,6 +143,11 @@ ol{
 }
 ol ol{
 	list-style: disc;
+}
+.clear{
+	clear: both;
+    content: "";
+    display: table;
 }
 
 /* Navigation menu */

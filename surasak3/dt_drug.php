@@ -1006,10 +1006,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$sql = "Select drugcode, amount, slcode, drug_inject_amount, drug_inject_unit, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' ";
 	$result = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
+		if($arr["drugcode"]=="4MET25"){
+		
+		$sql = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%'   order by row_id desc limit 1";
+		//echo "==>".$sql;
+		$result = Mysql_Query($sql);
+		$arr = Mysql_fetch_assoc($result);
 		array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
 		array_push($_SESSION["list_drugamount"],$arr["amount"]);
 		array_push($_SESSION["list_drugslip"],$arr["slcode"]);
-
 		array_push($_SESSION["list_drug_inject_amount"],$arr["drug_inject_amount"]);
 		array_push($_SESSION["list_drug_inject_unit"],$arr["drug_inject_unit"]);
 		array_push($_SESSION["list_drug_inject_amount2"],$arr["drug_inject_amount2"]);
@@ -1020,8 +1025,23 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
 		array_push($_SESSION["list_drug_reason"],$arr["reason"]);
 		array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
+		}else{
+		array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
+		array_push($_SESSION["list_drugamount"],$arr["amount"]);
+		array_push($_SESSION["list_drugslip"],$arr["slcode"]);
+		array_push($_SESSION["list_drug_inject_amount"],$arr["drug_inject_amount"]);
+		array_push($_SESSION["list_drug_inject_unit"],$arr["drug_inject_unit"]);
+		array_push($_SESSION["list_drug_inject_amount2"],$arr["drug_inject_amount2"]);
+		array_push($_SESSION["list_drug_inject_unit2"],$arr["drug_inject_unit2"]);
+		array_push($_SESSION["list_drug_inject_time"],$arr["drug_inject_time"]);
+		array_push($_SESSION["list_drug_inject_slip"],$arr["drug_inject_slip"]);
+		array_push($_SESSION["list_drug_inject_type"],$arr["drug_inject_type"]);
+		array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
+		array_push($_SESSION["list_drug_reason"],$arr["reason"]);
+		array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
+		}  //close if
+	}  //close while
 
-	}
 	
 	if($_SESSION["nRunno"] == ""){
 

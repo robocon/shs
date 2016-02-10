@@ -22,12 +22,6 @@ $dr = input_get('dr');
 list($y, $m) = explode('-', $date);
 
 ?>
-<style>
-	body{
-		font-family: 'TH SarabunPSK';
-		font-size: 16pt;
-	}
-</style>
 <div class="cell">
 	<div class="col">
 		<div class="cell">

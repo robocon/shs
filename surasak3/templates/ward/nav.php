@@ -1,6 +1,6 @@
 <div class="col width-fill mobile-width-fill no-print">
 	<div class="cell">
-		<ul class="col nav">
+		<ul class="col nav clear">
 			<li class="active"><a href="../nindex.htm">หน้าหลักโปรแกรม SHS</a></li>
 		</ul>
 	</div>
@@ -17,7 +17,7 @@
 		<?php 
 			$home = ( $page === false ) ? 'class="active"' : false ;
 		?>
-		<ul class="nav">
+		<ul class="nav clear">
 			<li <?php echo $home;?>><a href="ward_stat.php">รายการวอร์ด</a></li>
 			<li><a href="ward_stat.php?page=form">แบบฟอร์มวอร์ด</a></li>
 			<li><a href="ward_stat.php?page=form&view=obgyn">แบบฟอร์มสูติ</a></li>
