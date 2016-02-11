@@ -182,7 +182,7 @@ include("connect.inc");
     else  {
         $nVn=$row->vn;
 
-        $query ="UPDATE opday SET phaok='$ok' WHERE thdatehn = '$thdatehn' AND vn = '".$nVn."' ";
+        $query ="UPDATE opday SET phaok='$ok', opdreg='$ok' WHERE thdatehn = '$thdatehn' AND vn = '".$nVn."' ";
         $result = mysql_query($query)
         or die("Query failed,update opday");
 

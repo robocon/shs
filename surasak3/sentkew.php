@@ -13,7 +13,7 @@ CloseWindowsInTime(1/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */);
 $cy='X';
 
 //update kew in opday
-        $query ="UPDATE opday SET phaok='$cy' WHERE thdatehn = '$thdatehn'  AND vn = '".$_SESSION["nVn"]."' ";
+        $query ="UPDATE opday SET phaok='$cy', opdreg='$cy' WHERE thdatehn = '$thdatehn'  AND vn = '".$_SESSION["nVn"]."' ";
         $result = mysql_query($query)
                        or die("Query failed,update opday");
 //echo mysql_errno() . ": " . mysql_error(). "\n";
