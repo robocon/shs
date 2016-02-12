@@ -3,42 +3,42 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>รายงานสมุดทะเบียนใบรับรองแพทย์</title>
-	<script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
-	<script type="text/javascript" src="js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
-	<script type="text/javascript" src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-	<link rel="stylesheet" type="text/css" href="js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
- 	<!--<link rel="stylesheet" href="css/style.css" />-->
+	
 <style type="text/css">
 
 .font1 {
-	font-family:"TH SarabunPSK";
+	/*font-family:"TH SarabunPSK";*/
 	font-size:18pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 .font3 {
-	font-family:"TH SarabunPSK";
+	/*font-family:"TH SarabunPSK";*/
 	font-size:16pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 .font2 {
-	font-family:"TH SarabunPSK";
+	/*font-family:"TH SarabunPSK";*/
 	font-size:14pt;
 	/*src: url("surasak3/TH Niramit AS.ttf");*/
 }
 @media print{
+	.new-page{
+		page-break-before: always; 
+		page-break-inside: avoid;
+	}
 	body{
 		padding-left: 10px;
 	}
 	.font1 {
-		font-family:"TH SarabunPSK";
+		/*font-family:"TH SarabunPSK";*/
 		font-size:14pt;
 	}
 	.font3 {
-		font-family:"TH SarabunPSK";
+		/*font-family:"TH SarabunPSK";*/
 		font-size:12pt;
 	}
 	.font2 {
-		font-family:"TH SarabunPSK";
+		/*font-family:"TH SarabunPSK";*/
 		font-size:10pt;
 	}
 	#no_print{
@@ -417,7 +417,7 @@ echo "<table width='100%' border='0' align='center' class='font2'>
 		echo "</table>";
 		
 		// echo "<div style='page-break-after: always'> ";
-		echo "<div style='page-break-before: always; position: relative;'> ";
+		echo "<div class=\"new-page\"></div>";
 		echo "<h1 class='font1' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
 		echo "<h2 class='font3' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคกระดูกและข้อ</h2>";
 		
@@ -457,7 +457,7 @@ $lname = substr($arr['ptname'],strlen($fname)+1);
    } // End while
 
 //echo "</div>";
-echo "</div>";
+// echo "</div>";
    ?>
 </table>
 <BR />
