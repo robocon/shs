@@ -1,8 +1,11 @@
-<? session_start();?>
+<?php 
+session_start();
+include '../connect.php';
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=tis620" />
 <title>ตรวจสอบข้อมูลการจอง</title>
 </head>
 <style type="text/css">
@@ -90,7 +93,7 @@ if(isset($_POST['submit'])){
 	
 	echo "<hr>";
 	
-	include("../Connections/connect.inc.php"); 
+	
 	
 	if($_POST['d_start']=="00") {$_POST['d_start']="";}
 	
@@ -207,7 +210,7 @@ echo "</table>
 <br />
 <?
 
-include("../Connections/connect.inc.php"); 
+// include("../Connections/connect.inc.php"); 
 //////จองเตียงวันนี้//////
 $todayy1=date("Y")+543;
 $todaym1=date("m");

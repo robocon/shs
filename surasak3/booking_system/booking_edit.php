@@ -63,8 +63,8 @@ function fncSubmit()
 </script>
 
 <? 
-	include("../Connections/connect.inc.php"); 
-	
+	// include("../Connections/connect.inc.php"); 
+	include '../connect.php';
 	function calcage($birth){
 
 	$today = getdate();   
@@ -188,7 +188,8 @@ return $pAge;
 <?
 
 if(isset($_REQUEST['do']) && $_REQUEST['do']=="save"){
-include("../Connections/connect.inc.php"); 
+// include("../Connections/connect.inc.php"); 
+include '../connect.php';
 
 	$y=date('Y')+543;
 	$m=date('m');

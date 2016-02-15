@@ -84,7 +84,7 @@ file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
 			case "07:30:00-12:30:00" : $txt .= "08.00 - 12.00"; break;
 			case "16:20:00-21:00:00" : $txt .= "16.30 - 20.30"; break;
 
-			case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
+			case "08.00:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
 /*			case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;*/
 			case "15:00:01-20:30:00" : $txt .= "16.00 - 20.00"; break;
 

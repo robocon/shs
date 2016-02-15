@@ -58,12 +58,12 @@ table {
 
 /* Your Style */
 @font-face{
-	font-family: 'THSarabunNew';
-	src: url('fonts/webfont/THSarabunNew.eot');
-	src: url('fonts/webfont/THSarabunNew.eot#iefix'),
-	url('fonts/webfont/THSarabunNew.woff') format('embedded-opentype'),
-	url('fonts/webfont/THSarabunNew.ttf') format('truetype'),
-	url('fonts/webfont/THSarabunNew.svg#ludger_duvernayregular') format('svg');
+	font-family: 'Trirong-Regular';
+	src: url('fonts/webfont/Trirong-Regular.eot');
+	src: url('fonts/webfont/Trirong-Regular.eot#iefix'),
+	url('fonts/webfont/Trirong-Regular.woff') format('embedded-opentype'),
+	url('fonts/webfont/Trirong-Regular.ttf') format('truetype');
+	/*url('fonts/webfont/Trirong-Regular.svg#ludger_duvernayregular') format('svg');*/
 	font-weight: normal;
 	font-style: normal;
 }
@@ -72,11 +72,11 @@ body{
 	padding: 0;
 }
 body, td, th, h1, h2, h3, legend{
-	font-family: 'THSarabunNew', 'TH SarabunPSK';
-	font-size: 1.2em;
+	font-family: 'Trirong-Regular';
+	font-size: 1em;
 }
 select, input, button{
-	font-family: 'THSarabunNew', 'TH SarabunPSK';
+	font-family: 'Trirong-Regular';
 	font-size: 1em;
 }
 fieldset{
@@ -113,6 +113,9 @@ b, strong, h1, h2, h3{
 	font-size: 1.4em;
 	padding: 0.2em;
 }
+.footer-sign td{
+	padding: 0.2em;
+}
 
 @media print{
 	.new-page{
@@ -121,14 +124,18 @@ b, strong, h1, h2, h3{
 	}
 	body{
 		padding-left: 10px;
+		font-size: 0.8em;
 	}
 	
 	body, td, th, h1, h2, h3, legend{
 		padding-left: 10px;
-		font-family: 'THSarabunNew', 'TH SarabunPSK';
-		font-size: 1em;
+		/*font-family: 'Trirong-Regular';
+		font-size: 1em;*/
 	}
-	
+	.shs-header{
+		font-size: 1.2em;
+		padding: 0.2em;
+	}
 	#no_print{
 		display:none;
 	}
@@ -277,7 +284,7 @@ div3.display = 'none';
 <fieldset class="font1" style="width: 80%">
   <legend>ค้นหา  </legend>
   <form id="form1" name="form1" method="post" style="text-align: center;">
-  <table border="0" align="center" width="50%" style="margin-left: auto; margin-right: auto;">
+  <table border="0" align="center" style="margin-left: auto; margin-right: auto;">
     <tr>
       <td>ค้นหาจาก วันที่<!--<select name="seach" class="font1" id="seach"  disabled="disabled">
       <option value="">----กรุณาเลือก-----</option>
@@ -522,7 +529,7 @@ switch($_POST['m_start']){
 	if( $r=='31' ){
 		$r=1;
 		
-		echo "<table width='100%' border='0' align='center' class='font2'>
+		echo "<table width='100%' border='0' align='center' class='font2 footer-sign'>
 			<tr>
 				<td align='center' width='40%'><br>ผู้บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td align='center' width='40%' >&nbsp;</td>
@@ -550,10 +557,10 @@ switch($_POST['m_start']){
 		
 		// echo "<div style='page-break-after: always'> ";
 		echo "<div class=\"new-page\"></div>";
-		echo "<h1 class='font1' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
-		echo "<h2 class='font3' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคผู้ป่วยนอก</h2>";
+		echo "<h1 class='font1 shs-header' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
+		echo "<h2 class='font3 shs-header' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคผู้ป่วยนอก</h2>";
 		
-		echo "<table class=\"shs-table\" width=\"100%\" border=\"1\" style=\"border-collapse:collapse; border-color:#000;\" cellpadding=\"0\" cellspacing=\"0\" class=\"font2\" align='center'>
+		echo "<table class=\"font2 shs-table\" width=\"100%\" border=\"1\" style=\"border-collapse:collapse; border-color:#000;\" cellpadding=\"0\" cellspacing=\"0\" align='center'>
 			<tr bgcolor=\"#999999\">
 				<td align=\"center\" width=\"7%\">ลำดับ</td>
 				<td colspan='2' align='center' width=\"47%\">ชื่อ - สกุล</td>
@@ -587,7 +594,7 @@ switch($_POST['m_start']){
 ?>
 </table>
 <BR />
-<table width="100%" border="0" align="center" class="font2">
+<table width="100%" border="0" align="center" class="font2 footer-sign">
   <tr>
     <td align="center" width="40%">ผู้บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="center" width="40%" >&nbsp;</td>

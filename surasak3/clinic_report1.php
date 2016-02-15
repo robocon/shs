@@ -6,21 +6,117 @@
 	
 <style type="text/css">
 
-.font1 {
-	/*font-family:"TH SarabunPSK";*/
-	font-size:18pt;
-	/*src: url("surasak3/TH Niramit AS.ttf");*/
+/* CSS Rest */
+/* http://meyerweb.com/eric/tools/css/reset/
+v2.0 | 20110126
+License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
 }
-.font3 {
-	/*font-family:"TH SarabunPSK";*/
-	font-size:16pt;
-	/*src: url("surasak3/TH Niramit AS.ttf");*/
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
 }
-.font2 {
-	/*font-family:"TH SarabunPSK";*/
-	font-size:14pt;
-	/*src: url("surasak3/TH Niramit AS.ttf");*/
+body {
+	line-height: 1;
 }
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Your Style */
+@font-face{
+	font-family: 'Trirong-Regular';
+	src: url('fonts/webfont/Trirong-Regular.eot');
+	src: url('fonts/webfont/Trirong-Regular.eot#iefix'),
+	url('fonts/webfont/Trirong-Regular.woff') format('embedded-opentype'),
+	url('fonts/webfont/Trirong-Regular.ttf') format('truetype');
+	/*url('fonts/webfont/Trirong-Regular.svg#ludger_duvernayregular') format('svg');*/
+	font-weight: normal;
+	font-style: normal;
+}
+
+body{
+	padding: 0;
+}
+body, td, th, h1, h2, h3, legend{
+	font-family: 'Trirong-Regular';
+	font-size: 1em;
+}
+select, input, button{
+	font-family: 'Trirong-Regular';
+	font-size: 1em;
+}
+fieldset{
+	border: 1px solid #000000;
+	padding: 0.2em;
+}
+fieldset legend{
+	padding: 0.5em;
+	margin-left: 0.5em;
+}
+b, strong, h1, h2, h3{
+	font-weight: bold;
+}
+
+.shs-table{
+	width: 100%;
+	border-left: 1px solid #000000;
+	border-top: 1px solid #000000;
+}
+.shs-table td,
+.shs-table th{
+	border-right: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+	column-span: none;
+	padding: 0.3em;
+	vertical-align: bottom;
+}
+.shs-table th{
+	background-color: #EDEDED;
+	font-weight: bold;
+	vertical-align: middle;
+}
+.shs-header{
+	font-size: 1.4em;
+	padding: 0.2em;
+}
+.footer-sign td{
+	padding: 0.2em;
+}
+
 @media print{
 	.new-page{
 		page-break-before: always; 
@@ -28,18 +124,17 @@
 	}
 	body{
 		padding-left: 10px;
+		font-size: 0.8em;
 	}
-	.font1 {
-		/*font-family:"TH SarabunPSK";*/
-		font-size:14pt;
+	
+	body, td, th, h1, h2, h3, legend{
+		padding-left: 10px;
+		/*font-family: 'Trirong-Regular';
+		font-size: 1em;*/
 	}
-	.font3 {
-		/*font-family:"TH SarabunPSK";*/
-		font-size:12pt;
-	}
-	.font2 {
-		/*font-family:"TH SarabunPSK";*/
-		font-size:10pt;
+	.shs-header{
+		font-size: 1.2em;
+		padding: 0.2em;
 	}
 	#no_print{
 		display:none;
@@ -187,8 +282,8 @@ div3.display = 'none';
 <h1 class="font1">คลินิกพิเศษนอกเวลาราชการ</h1>
 
 <fieldset class="font1" style="width: 80%">
-  <legend>ค้นหา  </legend><form id="form1" name="form1" method="post">
-  <table border="0" align="center">
+  <legend>ค้นหา  </legend><form id="form1" name="form1" method="post" text-align: center;>
+  <table border="0" align="center" style="margin-left: auto; margin-right: auto;">
     <tr>
       <td>ค้นหาจาก วันที่<!--<select name="seach" class="font1" id="seach"  disabled="disabled">
       <option value="">----กรุณาเลือก-----</option>
@@ -357,14 +452,14 @@ switch($_POST['m_start']){
 //	echo $sql;
 	?>
 
-  <h1 class="font1" align="center">คลินิกพิเศษนอกเวลาราชการ</h1>
+  <h1 class="font1 shs-header" align="center">คลินิกพิเศษนอกเวลาราชการ</h1>
 <? //if($fil=='thidate'){ ?>
-<h2 class="font3" align="center">วันที่ <?=$dateshow;?> เวลา <?=$_POST['time'];?>  ห้องตรวจโรคกระดูกและข้อ</h2>
+<h2 class="font3 shs-header" align="center">วันที่ <?=$dateshow;?> เวลา <?=$_POST['time'];?>  ห้องตรวจโรคกระดูกและข้อ</h2>
 <? //} ?>
 <!--<?//if($fil=='hn'){ ?>
   <h2 class="font3" align="center">HN<?//=$key;?>ห้องตรวจโรคผู้ป่วยนอก</h2>
 <?//} ?>-->
-<table border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="font2" width="100%" align="center">
+<table border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="font2 shs-table" width="100%" align="center">
   <tr bgcolor="#999999">
     <td align="center"  width="7%">ลำดับ</td>
     <td colspan="2" align="center" width="47%">ชื่อ - สกุล</td>
@@ -391,7 +486,7 @@ switch($_POST['m_start']){
 $r=1;
 
 
-echo "<table width='100%' border='0' align='center' class='font2'>
+echo "<table width='100%' border='0' align='center' class='font2 footer-sign'>
   <tr>
     <td align='center' width='40%'><br>ผู้บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align='center' width='40%' >&nbsp;</td>
@@ -418,10 +513,10 @@ echo "<table width='100%' border='0' align='center' class='font2'>
 		
 		// echo "<div style='page-break-after: always'> ";
 		echo "<div class=\"new-page\"></div>";
-		echo "<h1 class='font1' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
-		echo "<h2 class='font3' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคกระดูกและข้อ</h2>";
+		echo "<h1 class='font1 shs-header' align='center'>คลินิกพิเศษนอกเวลาราชการ</h1>";
+		echo "<h2 class='font3 shs-header' align='center'>วันที่  $dateshow เวลา $_POST[time]  ห้องตรวจโรคกระดูกและข้อ</h2>";
 		
-		echo "<table width=\"100%\" border=\"1\" style=\"border-collapse:collapse; border-color:#000;\" cellpadding=\"0\" cellspacing=\"0\" class=\"font2\" align='center'>
+		echo "<table width=\"100%\" border=\"1\" style=\"border-collapse:collapse; border-color:#000;\" cellpadding=\"0\" cellspacing=\"0\" class=\"font2 shs-table\" align='center'>
   <tr bgcolor=\"#999999\">
     <td align=\"center\" width=\"7%\">ลำดับ</td>
     <td colspan='2' align='center' width=\"47%\">ชื่อ - สกุล</td>
@@ -461,7 +556,7 @@ $lname = substr($arr['ptname'],strlen($fname)+1);
    ?>
 </table>
 <BR />
-<table width="100%" border="0" align="center" class="font2">
+<table width="100%" border="0" align="center" class="font2 footer-sign">
   <tr>
     <td align="center" width="40%">ผู้บันทึก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="center" width="40%" >&nbsp;</td>

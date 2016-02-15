@@ -138,9 +138,9 @@ while($rowsloop=mysql_fetch_array($queryloop)){
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
-    <td colspan="5" align="left"><strong style="font-size:14px;"><u>
-      <?=$newtestgroupname;?></u>
-    </strong></td>
+    <td colspan="5" align="left">
+        <strong style="font-size:16px;"><u><?=$newtestgroupname;?></u></strong>
+    </td>
   </tr>
 		<?
 		$sql1="select * from resulthead where hn ='$gethn' and labnumber = '$getlabnumber' and testgroupname='$newtestgroupname'";
@@ -160,11 +160,11 @@ while($rowsloop=mysql_fetch_array($queryloop)){
 			}
 		?> 
   <tr bgcolor="<?php echo $bgcolor;?>">
-	<td width="416"><font color="#000000" size ="3">&nbsp;&nbsp;&nbsp;<?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["labname"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
-		<td align="left" width="248"><font  size ="3"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["result"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
-		<td align="center" width="117"><font color="red" size ="3"><B><?php if($arr2["flag"] != 'N'){  echo"[", $arr2["flag"],"]";};?></B></font></td>
-		<td align="left" width="195"><font  size ="3"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo "". ($arr2["unit"] !=""?"".$arr2["unit"]."":"")."";?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
-		<td align="left" width="325"><font  size ="3"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php if($arr2["normalrange"] != ""){ echo "[",$arr2["normalrange"],"]" ;};?><?php if($arr2["flag"] != 'N'){ echo "</B>";}?></font></td>
+	<td width="416"><font color="#000000" size ="1">&nbsp;&nbsp;&nbsp;<?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["labname"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
+		<td align="left" width="248"><font  size ="1"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["result"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
+		<td align="center" width="117"><font color="red" size ="1"><B><?php if($arr2["flag"] != 'N'){  echo"[", $arr2["flag"],"]";};?></B></font></td>
+		<td align="left" width="195"><font  size ="1"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo "". ($arr2["unit"] !=""?"".$arr2["unit"]."":"")."";?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
+		<td align="left" width="325"><font  size ="1"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php if($arr2["normalrange"] != ""){ echo "[",$arr2["normalrange"],"]" ;};?><?php if($arr2["flag"] != 'N'){ echo "</B>";}?></font></td>
   </tr>
       <?
 	  	}  // while result detail
