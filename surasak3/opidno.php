@@ -27,7 +27,8 @@ if(PHP_VERSION_ID <= 50217){
 	unset($_SESSION['cNote']);
 }
 ?>
-
+<script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="assets/js/json2.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -67,36 +68,35 @@ if(PHP_VERSION_ID <= 50217){
 </SCRIPT>
 
 <form name="f1" method="post" action="<?php echo $PHP_SELF ?>" Onsubmit="return checkForm();">
-  <p>&nbsp;&nbsp;&nbsp;ค้นหาคนไข้จากเลขบัตรประจำตัว13หลัก</p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ID&nbsp;&nbsp;&nbsp;
-  <input type="text" name="idcard" size="16" id="aLink"></p>
-<script type="text/javascript">
-document.getElementById('aLink').focus();
-</script>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="     ตกลง     " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ลบทิ้ง  " name="B2"></p>
+	<p>&nbsp;&nbsp;&nbsp;ค้นหาคนไข้จากเลขบัตรประจำตัว13หลัก</p>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ID&nbsp;&nbsp;&nbsp;
+	<input type="text" name="idcard" size="16" id="aLink"></p>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="submit" value="     ตกลง     " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ลบทิ้ง  " name="B2"></p>
 </form>
-
+<script type="text/javascript">
+	document.getElementById('aLink').focus();
+</script>
+		
 <table>
- <tr>
-  <th bgcolor=6495ED>เลขบัตร ปชช.</th>
-  <th bgcolor=6495ED>HN</th>
-  <th bgcolor=6495ED>ยศ</th>
-  <th bgcolor=6495ED>ชื่อ</th>
-  <th bgcolor=6495ED>สกุล</th>
-   <th bgcolor=6495ED>สิทธิ</th>
- <th bgcolor=6495ED>มา รพ.</th>
-  <th bgcolor=6495ED>ตรวจนัด</th>
-  <th bgcolor=6495ED>ตรวจนอน</th>
- </tr>
+	<tr bgcolor="6495ED">
+		<th>เลขบัตร ปชช.</th>
+		<th>HN</th>
+		<th>ยศ</th>
+		<th>ชื่อ</th>
+		<th>สกุล</th>
+		<th>สิทธิ</th>
+		<th>มา รพ.</th>
+		<th>ตรวจนัด</th>
+		<th>ตรวจนอน</th>
+	</tr>
 
 <?php
 $pre_hn = null;
 If (!empty($idcard)){
     include("connect.inc");
     $query = "SELECT idcard,hn,yot,name,surname,ptright1, idcard FROM opcard WHERE idcard = '$idcard'";
-    $result = mysql_query($query)
-        or die("query failed,opcard");
+    $result = mysql_query($query) or die("query failed,opcard");
 
     while (list ($idcard,$hn,$yot,$name,$surname,$ptright, $idcard) = mysql_fetch_row ($result)) {
 		
@@ -122,47 +122,42 @@ If (!empty($idcard)){
 			$color = "66CDAA";
 		}
 
-
-
-	if(!empty($idcard)){
-		$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
-		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo"ผู้ป่วยมีสิทธิประกันสังคม";
+		if(!empty($idcard)){
+			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+				echo"ผู้ป่วยมีสิทธิประกันสังคม";
+			}else{
+				echo"";
+			}
 		}else{
-			echo"";
+			echo"ผู้ป่วยไม่มีเลขประจำตัวประชาชน";
 		}
-	}else{
-		echo"ผู้ป่วยไม่มีเลขประจำตัวประชาชน";
-	}
 
-
-	if(!empty($hn)){
-		$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";			
-		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo"ผู้ป่วยมีสิทธิจ่ายตรง";
+		if(!empty($hn)){
+			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";			
+			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+				echo"ผู้ป่วยมีสิทธิจ่ายตรง";
+			}else{
+				echo"";
+			}
 		}else{
-			echo"";
+			echo"ผู้ป่วยไม่มี HN";
 		}
-	}else{
-		echo"ผู้ป่วยไม่มี HN";
-	}
 
+		print (" <tr>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cIdcard=$idcard&cHn=$hn & cName=$name &cSurname=$surname\">$idcard</a></td>\n".
+		"  <td BGCOLOR=".$color.">$hn</td>\n".
+		"  <td BGCOLOR=".$color.">$yot</td>\n".
+		"  <td BGCOLOR=".$color.">$name</td>\n".
+		"  <td BGCOLOR=".$color.">$surname</td>\n".
+		"  <td BGCOLOR=".$color.">$ptright</td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
+		" </tr>\n");
+	} // End while
 
-
-        print (" <tr>\n".
-           "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php? cIdcard=$idcard&cHn=$hn & cName=$name &cSurname=$surname\">$idcard</a></td>\n".
-           "  <td BGCOLOR=".$color.">$hn</td>\n".
-           "  <td BGCOLOR=".$color.">$yot</td>\n".
-           "  <td BGCOLOR=".$color.">$name</td>\n".
-           "  <td BGCOLOR=".$color.">$surname</td>\n".
-			    "  <td BGCOLOR=".$color.">$ptright</td>\n".
- "  <td BGCOLOR=".$color."><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
-         "  <td BGCOLOR=".$color."><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
-    "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-           " </tr>\n");
-       }
-
-       }
+} // End if
 ?>
 </table>
 <FONT SIZE="2" COLOR="#990000">***คำอธิบาย***</FONT> <BR>
@@ -172,15 +167,12 @@ If (!empty($idcard)){
 <FONT SIZE="" COLOR="#FF0033">สีแดง คือ ไม่มีสิทธิ</FONT><BR>
 
 <?php
-
 if($pre_hn !== null){
 	
-	$sql_pre = "
-	SELECT b.`my_ward` FROM `bed` AS a 
+	$sql_pre = "SELECT b.`my_ward`,b.`dcdate` FROM `bed` AS a 
 	LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
-	WHERE a.`hn` = '%s' ;
-	";
-	$sql = sprintf($sql_pre, $hn);
+	WHERE a.`hn` = '%s' ;";
+	$sql = sprintf($sql_pre, $pre_hn);
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
 	
@@ -191,7 +183,31 @@ if($pre_hn !== null){
 		</script>
 		<?php
 	}
-}	
-	
+}
+?>
+<script type="text/javascript">
+	/* checkIpd */
+	function checkIpd(link, ev, hn){
+		// SmPreventDefault(ev);
+		// var href = this.href;
+		var newSm = new SmHttp();
+		newSm.ajax(
+			'templates/regis/checkIpd.php',
+			{ id: hn },
+			function(res){
+				var txt = JSON.parse(res);
+				if( txt.state === 400 ){
+					alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
+					SmPreventDefault(ev);
+				}else{
+					// window.open(link.href, '_blank');
+				}
+			},
+			false // true is Syncronous and false is Assyncronous (Default by true)
+		);
+		
+	}
+</script>
+<?php
 include("unconnect.inc");
 ?>

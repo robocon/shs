@@ -23,41 +23,42 @@ if(PHP_VERSION_ID <= 50217){
 }
 	
 ?>
+<script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="assets/js/json2.js"></script>
 <form method="post" action="<?php echo $PHP_SELF ?>">
-  <p>ค้นหาคนไข้จาก&nbsp; ชื่อและนามสกุล</p>
+    <p>ค้นหาคนไข้จาก&nbsp; ชื่อและนามสกุล</p>
     <p>ให้ใส่ข้อมูลทั้งชื่อและนามสกุลทั้งสองข้อมูล</p>
-
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ชื่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="text" name="name" size="12" id="aLink"> <script type="text/javascript">
-document.getElementById('aLink').focus();
-</script>&nbsp;&nbsp;&nbsp;&nbsp; สกุล&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="text" name="sname" size="12"></p>
- 
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ลบทิ้ง  " name="B2"></p>
+    
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ชื่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="text" name="name" size="12" id="aLink">
+    &nbsp;&nbsp;&nbsp;&nbsp; สกุล&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="text" name="sname" size="12"></p>
+    
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ลบทิ้ง  " name="B2"></p>
 </form>
-
+<script type="text/javascript">
+    document.getElementById('aLink').focus();
+</script>
 <table>
- <tr>
-  <th bgcolor=6495ED>HN</th>
-  <th bgcolor=6495ED>ยศ</th>
-  <th bgcolor=6495ED>ชื่อ</th>
-  <th bgcolor=6495ED>สกุล</th>
-  <th bgcolor=6495ED>ว/ด/ป เกิด</th>
-  <th bgcolor=6495ED>บัตร ปชช.</th>
-  <th bgcolor=6495ED>มา รพ.</th>
-  <th bgcolor=6495ED>ตรวจนัด</th>
-  <th bgcolor=6495ED>ตรวจนอน</th>
-  <th bgcolor=6495ED>สถานะ ward</th>
- </tr>
-
+    <tr>
+        <th bgcolor=6495ED>HN</th>
+        <th bgcolor=6495ED>ยศ</th>
+        <th bgcolor=6495ED>ชื่อ</th>
+        <th bgcolor=6495ED>สกุล</th>
+        <th bgcolor=6495ED>ว/ด/ป เกิด</th>
+        <th bgcolor=6495ED>บัตร ปชช.</th>
+        <th bgcolor=6495ED>มา รพ.</th>
+        <th bgcolor=6495ED>ตรวจนัด</th>
+        <th bgcolor=6495ED>ตรวจนอน</th>
+        <th bgcolor=6495ED>สถานะ ward</th>
+    </tr>
 <?php
 If (!empty($name)){
     include("connect.inc");
     global $name;
     $query = "SELECT hn,yot,name,surname,dbirth,idcard FROM opcard WHERE name LIKE '%$name%' and surname LIKE '%$sname%' ";
-    $result = mysql_query($query)
-        or die("Query failed");
+    $result = mysql_query($query) or die("Query failed");
 
     while (list ($hn,$yot,$name,$surname,$dbirth,$idcard) = mysql_fetch_row ($result)) {
 		
@@ -76,20 +77,42 @@ If (!empty($name)){
 		
 		
         print (" <tr>\n".
-           "  <td BGCOLOR=66CDAA><a target=_BLANK  href=\"opedit.php? cHn=$hn \">$hn</a></td>\n".
-           "  <td BGCOLOR=66CDAA>$yot</td>\n".
-           "  <td BGCOLOR=66CDAA>$name</td>\n".
-           "  <td BGCOLOR=66CDAA>$surname</td>\n".
-         "  <td BGCOLOR=66CDAA>$dbirth</td>\n".
-         "  <td BGCOLOR=66CDAA>$idcard</td>\n".
-         "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
-         "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
-    "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-	"<td bgcolor='66cdaa' align='center'>$alert_msg</td>".
-           " </tr>\n");
-           }
-include("unconnect.inc");
-          }
+        "  <td BGCOLOR=66CDAA><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn \">$hn</a></td>\n".
+        "  <td BGCOLOR=66CDAA>$yot</td>\n".
+        "  <td BGCOLOR=66CDAA>$name</td>\n".
+        "  <td BGCOLOR=66CDAA>$surname</td>\n".
+        "  <td BGCOLOR=66CDAA>$dbirth</td>\n".
+        "  <td BGCOLOR=66CDAA>$idcard</td>\n".
+        "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
+        "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
+        "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
+        "<td bgcolor='66cdaa' align='center'>$alert_msg</td>".
+        " </tr>\n");
+    }
+    include("unconnect.inc");
+}
 ?>
-
 </table>
+<script type="text/javascript">
+	/* checkIpd */
+	function checkIpd(link, ev, hn){
+		// SmPreventDefault(ev);
+		// var href = this.href;
+		var newSm = new SmHttp();
+		newSm.ajax(
+			'templates/regis/checkIpd.php',
+			{ id: hn },
+			function(res){
+				var txt = JSON.parse(res);
+				if( txt.state === 400 ){
+					alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
+					SmPreventDefault(ev);
+				}else{
+					// window.open(link.href, '_blank');
+				}
+			},
+			false // true is Syncronous and false is Assyncronous (Default by true)
+		);
+		
+	}
+</script>

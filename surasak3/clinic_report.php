@@ -365,24 +365,25 @@ div3.display = 'none';
     </tr>
     <tr>
       <td colspan="2" align="right">แพทย์ตรวจ: </td>
-      <td><select name="doctor" id="doctor">
-        <?php 
-		echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
-		echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
-		$sql = "Select name From doctor where status = 'y' ";
-		$result = mysql_query($sql);
-		while(list($name) = mysql_fetch_row($result)){
-		
-		echo "<option value='".$name."' >".$name."</option>";
-		
-		}
-		?>
-      </select></td>
+      <td style="text-align: left;">
+			<select name="doctor" id="doctor">
+				<option value="">-- กรุณาเลือกแพทย์ --</option>
+				<option value="ห้องตรวจโรคทั่วไป">ห้องตรวจโรคทั่วไป</option>
+				<?php 
+				$sql = "Select name From doctor where status = 'y' ";
+				$result = mysql_query($sql);
+				while(list($name) = mysql_fetch_row($result)){
+				
+					echo "<option value='".$name."' >".$name."</option>";
+				
+				}
+				?>
+			</select>
+	  </td>
     </tr>
-	<?php /* ?>
 	<tr>
 		<td colspan="2" align="right">แพทย์ที่ใช้แสดงผล: </td>
-		<td>
+		<td style="text-align: left;">
 			<select name="doctor2" id="doctor2">
 				<option value="">-- กรุณาเลือกแพทย์ --</option>
 				<option value="ห้องตรวจโรคทั่วไป">ห้องตรวจโรคทั่วไป</option>
@@ -394,9 +395,9 @@ div3.display = 'none';
 				}
 				?>
 			</select>
+			* ใช้ในกรณีทำโอที
 		</td>
 	</tr>
-	<?php */ ?>
     <tr>
       <td colspan="3" align="center"><input name="button" type="submit" class="font1" id="button" value="ตกลง" />
       <a target=_self  href='../nindex.htm'> ไปเมนู </a> &nbsp;&nbsp; <a href="clinic_vip.php">เพิ่มข้อมูล</a></td>
