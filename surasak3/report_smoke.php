@@ -21,7 +21,7 @@ include("connect.inc");
   <tr>
     <td width="30%">
 		<?
-        $sql1="SELECT *
+        $sql1="SELECT `cigarette`, `cigok`
         FROM `opd` as a inner join opday as b on a.hn=b.hn
         WHERE b.`icd10` like 'J44%' AND b.`thidate` like '2558%' group by b.hn";
         $query1=mysql_query($sql1)or die ("Query Error");
@@ -37,7 +37,7 @@ include("connect.inc");
                 $cigarette0++;
             }else if($rows1["cigarette"]=="1"){  //สูบ
                 $cigarette1++;
-                if($rows1["cigok"]=="0"){  //ไม่อยากเลิก
+                if( $rows1["cigok"]=="0" OR empty($rows1["cigok"]) ){  //ไม่อยากเลิก
                     $cigok0++;
                 }else if($rows1["cigok"]=="1"){  //อยากเลิก
                     $cigok1++;
@@ -56,29 +56,29 @@ include("connect.inc");
             <td align="right"><?=$num1;?></td>
           </tr>
           <tr>
-            <td width="38%"><strong>- ไม่สูบบุหรี่</strong></td>
+            <td width="38%"><strong>1. ไม่สูบบุหรี่</strong></td>
             <td width="62%" align="right"><?=$cigarette0;?></td>
           </tr>
           <tr>
-            <td><strong>- เคยสูบบุหรี่</strong></td>
+            <td><strong>2. เคยสูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette2;?></td>
           </tr>
           <tr>
-            <td><strong> - สูบบุหรี่</strong></td>
+            <td><strong>3. สูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.1 อยากเลิก</strong></td>
             <td align="right"><?=$cigok1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- ไม่อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.2 ไม่อยากเลิก</strong></td>
             <td align="right"><?=$cigok0;?></td>
           </tr>
         </table>        </td>
     <td width="30%">
  		<?
-        $sql2="SELECT *
+        $sql2="SELECT `cigarette`, `cigok`
         FROM `opd` as a inner join opday as b on a.hn=b.hn
         WHERE (b.`icd10` like 'A15%' OR b.`icd10` like 'A16%')  AND b.`thidate` like '2558%' group by b.hn";
 		//echo $sql2;
@@ -95,7 +95,7 @@ include("connect.inc");
                 $cigarette0++;
             }else if($rows2["cigarette"]=="1"){  //สูบ
                 $cigarette1++;
-                if($rows2["cigok"]=="0"){  //ไม่อยากเลิก
+                if( $rows2["cigok"]=="0" OR empty($rows2["cigok"]) ){  //ไม่อยากเลิก
                     $cigok0++;
                 }else if($rows2["cigok"]=="1"){  //อยากเลิก
                     $cigok1++;
@@ -114,29 +114,29 @@ include("connect.inc");
             <td align="right"><?=$num2;?></td>
           </tr>
           <tr>
-            <td width="38%"><strong>- ไม่สูบบุหรี่</strong></td>
+            <td width="38%"><strong>1. ไม่สูบบุหรี่</strong></td>
             <td width="62%" align="right"><?=$cigarette0;?></td>
           </tr>
           <tr>
-            <td><strong>- เคยสูบบุหรี่</strong></td>
+            <td><strong>2. เคยสูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette2;?></td>
           </tr>
           <tr>
-            <td><strong> - สูบบุหรี่</strong></td>
+            <td><strong>3. สูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.1 อยากเลิก</strong></td>
             <td align="right"><?=$cigok1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- ไม่อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.2 ไม่อยากเลิก</strong></td>
             <td align="right"><?=$cigok0;?></td>
           </tr>
         </table>    </td>
     <td width="30%">
 		<?
-        $sql3="SELECT *
+        $sql3="SELECT `cigarette`, `cigok`
         FROM `opd` as a inner join opday as b on a.hn=b.hn
         WHERE (b.`icd10` like 'I10%' OR b.`icd10` like 'I251%')  AND b.`thidate` like '2558%' group by b.hn";
 		//echo $sql2;
@@ -153,7 +153,7 @@ include("connect.inc");
                 $cigarette0++;
             }else if($rows3["cigarette"]=="1"){  //สูบ
                 $cigarette1++;
-                if($rows3["cigok"]=="0"){  //ไม่อยากเลิก
+                if($rows3["cigok"]=="0" OR empty($rows3["cigok"]) ){  //ไม่อยากเลิก
                     $cigok0++;
                 }else if($rows3["cigok"]=="1"){  //อยากเลิก
                     $cigok1++;
@@ -172,23 +172,23 @@ include("connect.inc");
             <td align="right"><?=$num3;?></td>
           </tr>
           <tr>
-            <td width="38%"><strong>- ไม่สูบบุหรี่</strong></td>
+            <td width="38%"><strong>1. ไม่สูบบุหรี่</strong></td>
             <td width="62%" align="right"><?=$cigarette0;?></td>
           </tr>
           <tr>
-            <td><strong>- เคยสูบบุหรี่</strong></td>
+            <td><strong>2. เคยสูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette2;?></td>
           </tr>
           <tr>
-            <td><strong> - สูบบุหรี่</strong></td>
+            <td><strong>3. สูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.1 อยากเลิก</strong></td>
             <td align="right"><?=$cigok1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- ไม่อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.2 ไม่อยากเลิก</strong></td>
             <td align="right"><?=$cigok0;?></td>
           </tr>
         </table>    </td>
@@ -201,7 +201,7 @@ include("connect.inc");
   <tr>
     <td>
 		<?
-        $sql4="SELECT *
+        $sql4="SELECT `cigarette`, `cigok`
         FROM `opd` as a inner join opday as b on a.hn=b.hn
         WHERE (b.`icd10` like 'I61%' OR b.`icd10` like 'I63%' OR b.`icd10` like 'I64%' OR b.`icd10` like 'I69%') AND b.`thidate` like '2558%' group by b.hn";
         $query4=mysql_query($sql4)or die ("Query Error");
@@ -217,7 +217,7 @@ include("connect.inc");
                 $cigarette0++;
             }else if($rows4["cigarette"]=="1"){  //สูบ
                 $cigarette1++;
-                if($rows4["cigok"]=="0"){  //ไม่อยากเลิก
+                if($rows4["cigok"]=="0" OR empty($rows4["cigok"]) ){  //ไม่อยากเลิก
                     $cigok0++;
                 }else if($rows4["cigok"]=="1"){  //อยากเลิก
                     $cigok1++;
@@ -233,32 +233,32 @@ include("connect.inc");
           </tr>
           <tr>
             <td><strong>ทั้งหมด</strong></td>
-            <td align="right"><?=$num1;?></td>
+            <td align="right"><?=$num4;?></td>
           </tr>
           <tr>
-            <td width="38%"><strong>- ไม่สูบบุหรี่</strong></td>
+            <td width="38%"><strong>1. ไม่สูบบุหรี่</strong></td>
             <td width="62%" align="right"><?=$cigarette0;?></td>
           </tr>
           <tr>
-            <td><strong>- เคยสูบบุหรี่</strong></td>
+            <td><strong>2. เคยสูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette2;?></td>
           </tr>
           <tr>
-            <td><strong> - สูบบุหรี่</strong></td>
+            <td><strong>3. สูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.1 อยากเลิก</strong></td>
             <td align="right"><?=$cigok1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- ไม่อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.2 ไม่อยากเลิก</strong></td>
             <td align="right"><?=$cigok0;?></td>
           </tr>
         </table>        </td>
     <td width="30%">
  		<?
-        $sql5="SELECT *
+        $sql5="SELECT `cigarette`, `cigok` 
         FROM `opd` as a inner join opday as b on a.hn=b.hn
         WHERE (b.`icd10` like 'E10%' OR b.`icd10` like 'E11%' OR b.`icd10` like 'E14%')  AND b.`thidate` like '2558%' group by b.hn";
 		//echo $sql2;
@@ -275,7 +275,7 @@ include("connect.inc");
                 $cigarette0++;
             }else if($rows5["cigarette"]=="1"){  //สูบ
                 $cigarette1++;
-                if($rows5["cigok"]=="0"){  //ไม่อยากเลิก
+                if($rows5["cigok"]=="0" OR empty($rows5["cigok"]) ){  //ไม่อยากเลิก
                     $cigok0++;
                 }else if($rows5["cigok"]=="1"){  //อยากเลิก
                     $cigok1++;
@@ -291,33 +291,33 @@ include("connect.inc");
           </tr>
           <tr>
             <td><strong>ทั้งหมด</strong></td>
-            <td align="right"><?=$num2;?></td>
+            <td align="right"><?=$num5;?></td>
           </tr>
           <tr>
-            <td width="38%"><strong>- ไม่สูบบุหรี่</strong></td>
+            <td width="38%"><strong>1. ไม่สูบบุหรี่</strong></td>
             <td width="62%" align="right"><?=$cigarette0;?></td>
           </tr>
           <tr>
-            <td><strong>- เคยสูบบุหรี่</strong></td>
+            <td><strong>2. เคยสูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette2;?></td>
           </tr>
           <tr>
-            <td><strong> - สูบบุหรี่</strong></td>
+            <td><strong>3. สูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.1 อยากเลิก</strong></td>
             <td align="right"><?=$cigok1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- ไม่อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.2 ไม่อยากเลิก</strong></td>
             <td align="right"><?=$cigok0;?></td>
           </tr>
         </table>    
     </td>
     <td>
  		<?
-        $sql6="SELECT *
+        $sql6="SELECT `cigarette`, `cigok` 
         FROM `opd` as a inner join opday as b on a.hn=b.hn
         WHERE (b.`icd10` like 'F10%' OR b.`icd10` like 'F20%' OR b.`icd10` like 'F32%' OR b.`icd10` like 'F41%')  AND b.`thidate` like '2558%' group by b.hn";
 		//echo $sql2;
@@ -334,7 +334,7 @@ include("connect.inc");
                 $cigarette0++;
             }else if($rows6["cigarette"]=="1"){  //สูบ
                 $cigarette1++;
-                if($rows6["cigok"]=="0"){  //ไม่อยากเลิก
+                if($rows6["cigok"]=="0" OR empty($rows6["cigok"]) ){  //ไม่อยากเลิก
                     $cigok0++;
                 }else if($rows6["cigok"]=="1"){  //อยากเลิก
                     $cigok1++;
@@ -350,26 +350,26 @@ include("connect.inc");
           </tr>
           <tr>
             <td><strong>ทั้งหมด</strong></td>
-            <td align="right"><?=$num2;?></td>
+            <td align="right"><?=$num6;?></td>
           </tr>
           <tr>
-            <td width="38%"><strong>- ไม่สูบบุหรี่</strong></td>
+            <td width="38%"><strong>1. ไม่สูบบุหรี่</strong></td>
             <td width="62%" align="right"><?=$cigarette0;?></td>
           </tr>
           <tr>
-            <td><strong>- เคยสูบบุหรี่</strong></td>
+            <td><strong>2. เคยสูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette2;?></td>
           </tr>
           <tr>
-            <td><strong> - สูบบุหรี่</strong></td>
+            <td><strong>3. สูบบุหรี่</strong></td>
             <td align="right"><?=$cigarette1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.1 อยากเลิก</strong></td>
             <td align="right"><?=$cigok1;?></td>
           </tr>
           <tr>
-            <td><strong>&nbsp;&nbsp;- ไม่อยากเลิก</strong></td>
+            <td><strong>&nbsp;&nbsp;3.2 ไม่อยากเลิก</strong></td>
             <td align="right"><?=$cigok0;?></td>
           </tr>
         </table>    
