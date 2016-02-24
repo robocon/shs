@@ -18,6 +18,7 @@
 	  print "<th bgcolor=CD853F><font face='Angsana New'font size='2' font size='2' ><b>#</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'font size='2'><b>เตียง</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'font size='2'><b>ฉลาก</b></th>";
+    print "<th bgcolor=CD853F><font face='Angsana New'font size='2'><b>ฉลาก OR</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'font size='2'><b>วันรับป่วย</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'font size='2'><b>HN</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'font size='2'><b>AN</b></th>";
@@ -66,6 +67,7 @@ $color="#66CDAA";
 			"  <td ><font face='Angsana New'font size='2'>$num</td>\n".
            "  <td ><font face='Angsana New'font size='2'>$sortname เตียง$bed</td>\n".
    "  <td BGCOLOR=66CDAA><a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=..........................\">S</a></td>\n".
+"  <td BGCOLOR=66CDAA><a target=_blank  href=\"ipbed2.php?cAn=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=..........................\">พิมพ์</a></td>\n".
 
            "  <td ><font face='Angsana New'font size='2'>$date</td>\n".
            "  <td ><font face='Angsana New'font size='2'>$hn</td>\n".
