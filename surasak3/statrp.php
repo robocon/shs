@@ -65,7 +65,7 @@ include("connect.inc");
 			<Select name="code">
 			<Option value="">-- รายการ --</Option>
 			<?php 
-			$sql = "Select code, detail From labcare where code in ('58001', '56007', '58002', '58003', '58005', '58006','58008','11229','58007','11227') limit 0,8 ";
+			$sql = "Select code, detail From labcare where code in ('58000', '58001', '56007', '58002', '58003', '58005', '58006','58008','11229','58007','11227') limit 0,8 ";
 			$result  = Mysql_Query($sql);
 			while($arr = Mysql_fetch_assoc($result)){
 				echo "<Option value = '",$arr["code"],"' ";
@@ -137,7 +137,7 @@ include("connect.inc");
 			<Option value="">-- รายการ --</Option>
 			<?php 
 		//	$sql = "Select code, detail From labcare where code in ('58001', '58002') limit 0,2 ";
-		$sql = "Select code, detail From labcare where code in ('58001', '56007', '58002', '58003', '58005', '58006','58008','11229','11227') limit 0,7 ";
+		$sql = "Select code, detail From labcare where code in ('58000','58001', '56007', '58002', '58003', '58005', '58006','58008','11229','11227') limit 0,7 ";
 			$result  = Mysql_Query($sql);
 			while($arr = Mysql_fetch_assoc($result)){
 				echo "<Option value = '",$arr["code"],"' ";
@@ -159,7 +159,7 @@ include("connect.inc");
 			<Option value = '16:20:00-21:00:00'>16.30 - 20.30</Option>
 			<Option value = '08.00:00-16:00:00'>08.00 - 16:00</Option>
             <Option value = '13:00:01-16:00:00'>13.00 - 16.00</Option>
-			<Option value = '15:00:01-20:30:00'>16.00 - 20.00</Option>
+			<Option value = '16:00:01-20:30:00'>16.00 - 20.00</Option>
 		</Select>
 		</TD>
 	</TR>

@@ -4,21 +4,21 @@ require("fpdf/pdf.php");
 
 require("connect.php");
 
-	$month_["01"] = "มกราคม";
-	$month_["02"] = "กุมภาพันธ์";
-	$month_["03"] = "มีนาคม";
-	$month_["04"] = "เมษายน";
-	$month_["05"] = "พฤษภาคม";
-	$month_["06"] = "มิถุนายน";
-	$month_["07"] = "กรกฏาคม";
-	$month_["08"] = "สิงหาคม";
-	$month_["09"] = "กันยายน";
-	$month_["10"] = "ตุลาคม";
-	$month_["11"] = "พฤศจิกายน";
-	$month_["12"] = "ธันวาคม";
+$month_["01"] = "มกราคม";
+$month_["02"] = "กุมภาพันธ์";
+$month_["03"] = "มีนาคม";
+$month_["04"] = "เมษายน";
+$month_["05"] = "พฤษภาคม";
+$month_["06"] = "มิถุนายน";
+$month_["07"] = "กรกฏาคม";
+$month_["08"] = "สิงหาคม";
+$month_["09"] = "กันยายน";
+$month_["10"] = "ตุลาคม";
+$month_["11"] = "พฤศจิกายน";
+$month_["12"] = "ธันวาคม";
 
 if($_GET["day"] != "")
-		$_GET["day"] = sprintf("%02d",$_GET["day"]);
+	$_GET["day"] = sprintf("%02d",$_GET["day"]);
 
 
 $time_zone = explode("-",$_GET["time"]);
@@ -29,24 +29,24 @@ $time_zone = explode("-",$_GET["time"]);
 		$where = " AND code like '".$_GET["code"]."%'  ";
 
 
-if($_GET["code"] == "58001"){//ฝังเข็ม
+if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 
-$pdf = new PDF('P' ,'mm','A4');
+	$pdf = new PDF('P' ,'mm','A4');
+	
+	$pdf->SetThaiFont();
+	
+	$pdf->SetMargins(10, 10);
+	
+	$pdf->AddPage();
+	
+	$pdf->SetFont('AngsanaNew', '', 14);
 
-$pdf->SetThaiFont();
 
-$pdf->SetMargins(10, 10);
-
-$pdf->AddPage();
-
-$pdf->SetFont('AngsanaNew', '', 14);
-
-
-/*
-$sql = "
+	/*
+	$sql = "
 	SELECT DISTINCT a.hn, a.ptname
 	FROM (
-
+	
 	SELECT hn, ptname, date
 	FROM patdata
 	WHERE (
@@ -55,91 +55,95 @@ $sql = "
 	) AND doctor = '".$_GET["doctor"]."' ".$where."
 	) AS a
 	INNER JOIN (
-
+	
 	SELECT hn
 	FROM opacc
 	WHERE date
 	LIKE '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]."%' AND depart = 'NID'
 	) AS b ON a.hn = b.hn
 	Order by a.date ASC limit 70 
-";*/
+	";*/
 
-			$sql = "SELECT hn, ptname   
-			FROM patdata 
-			WHERE hn != '' 
-			AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  
-			".$where." 
-			Group by hn Having sum(amount) > 0 
-			Order by date ASC 
-			limit 70 ";
-			
-file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
+	$sql = "SELECT hn, ptname   
+	FROM patdata 
+	WHERE hn != '' 
+	AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  
+	".$where." 
+	Group by hn Having sum(amount) > 0 
+	Order by date ASC 
+	limit 70 ";
 
-			$result2  = Mysql_Query($sql);
+	file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
+	//echo $sql;
+	$result2  = Mysql_Query($sql);
 
 
-		$txt = "คลินิกนอกเวลาราชการ (ฝังเข็ม) เวลา ";
+	$txt = "คลินิกนอกเวลาราชการ (ฝังเข็ม) เวลา ";
 
-		switch($_GET["time"]){
-			case "07:30:00-12:30:00" : $txt .= "08.00 - 12.00"; break;
-			case "16:20:00-21:00:00" : $txt .= "16.30 - 20.30"; break;
-
-			case "08.00:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
-/*			case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;*/
-			case "15:00:01-20:30:00" : $txt .= "16.00 - 20.00"; break;
-
-		}
-
-		$pdf->Cell(0,7,$txt,0,0,'C');
-		$pdf->Ln();
+	switch($_GET["time"]){
+		case "07:30:00-12:30:00" : $txt .= "08.00 - 12.00"; break;
+		case "16:20:00-21:00:00" : $txt .= "16.30 - 20.30"; break;
 		
+		case "08.00:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
+		/*			case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;*/
+		case "16:00:01-20:30:00" : $txt .= "16.00 - 20.00"; break;
+	
+	}
 
-		$pdf->Cell(0,7,"วันที่ ".$_GET["day"]." ".$month_[$_GET["month"]]." ".$_GET["year"],0);
-		$pdf->Ln();
-
-		$pdf->Cell(10,7,"ลำดับ",1,0,'C');
-
-		$pdf->Cell(100,7,"ชื่อ - สกุล ผู้รับบริการ",1,0,'C');
-
-		$pdf->Cell(30,7,"HN",1,0,'C');
-
-		$pdf->Cell(30,7,"หมายเหตุ",1,0,'C');
-
-		$pdf->Ln();
-
-
-		$i=1;
-		while(list($hn,$ptname) = Mysql_fetch_row($result2)){	
-
+	$pdf->Cell(0,7,$txt,0,0,'C');
+	$pdf->Ln();
+	
+	
+	$pdf->Cell(0,7,"วันที่ ".$_GET["day"]." ".$month_[$_GET["month"]]." ".$_GET["year"],0);
+	$pdf->Ln();
+	
+	$pdf->Cell(10,7,"ลำดับ",1,0,'C');
+	
+	$pdf->Cell(100,7,"ชื่อ - สกุล ผู้รับบริการ",1,0,'C');
+	
+	$pdf->Cell(30,7,"HN",1,0,'C');
+	
+	$pdf->Cell(30,7,"หมายเหตุ",1,0,'C');
+	
+	$pdf->Ln();
+	
+	
+	$i=1;
+	while(list($hn,$ptname) = Mysql_fetch_row($result2)){	
+	
 		$pdf->Cell(10,7,$i,1,0,'C');
-
+		
 		$pdf->Cell(100,7,$ptname,1,0);
-
+		
 		$pdf->Cell(30,7,$hn,1,0,'C');
-
+		
 		$pdf->Cell(30,7,"",1,0,'C');
 		$pdf->Ln();
 		$i++;
-		}
-
-		$pdf->Ln();
-
-		$pdf->Cell(20,7,"ผู้บันทึก",0,0,'C');
+	}
+	
+	$pdf->Ln();
+	
+	$pdf->Cell(20,7,"ผู้บันทึก",0,0,'C');
+	if($_GET["doctor"]=="MD115"){
+		$pdf->Cell(100,7,"นาย",0,0,'R');
+	}else{
 		$pdf->Cell(100,7,"พ.อ.",0,0,'R');
-		$pdf->Ln();
-
-		$pdf->Cell(65,7,"(                                          )",0,0,'C');
-		$pdf->Cell(90,7,"(                                          )",0,0,'R');
-		$pdf->Ln();
-
-		$pdf->Cell(66,7,"เจ้าหน้าที่คลินิกฝังเข็ม",0,0,'C');
-		$pdf->Cell(140,7,"แพทย์ผู้รักษา",0,0,'C');
-		$pdf->Ln();
-
-		$pdf->Cell(65,7,"........../........../..........",0,0,'C');
-		$pdf->Cell(140,7,"........../........../..........",0,0,'C');
-		$pdf->Ln();
-		//ฝังเข็ม
+	}
+	$pdf->Ln();
+	
+	$pdf->Cell(65,7,"(                                          )",0,0,'C');
+	$pdf->Cell(90,7,"(                                          )",0,0,'R');
+	$pdf->Ln();
+	
+	$pdf->Cell(66,7,"เจ้าหน้าที่คลินิกฝังเข็ม",0,0,'C');
+	$pdf->Cell(140,7,"แพทย์ผู้รักษา",0,0,'C');
+	$pdf->Ln();
+	
+	$pdf->Cell(65,7,"........../........../..........",0,0,'C');
+	$pdf->Cell(140,7,"........../........../..........",0,0,'C');
+	$pdf->Ln();
+	//ฝังเข็ม
 }else{
 	
 	

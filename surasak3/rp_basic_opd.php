@@ -150,12 +150,12 @@ font-size:16px;
 		}else{
 			$search_date = $_POST["year"]."-".$_POST["month"]."-".$_POST["day"];
 		}
-			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore  From opd where thidate like '".$search_date."%' AND doctor like '".$_POST["doctor"]."%'  AND toborow like '".$_POST["case"]."%' ";
+			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn  From opd where thidate like '".$search_date."%' AND doctor like '".$_POST["doctor"]."%'  AND toborow like '".$_POST["case"]."%' ";
 
 			$result = Mysql_Query($sql);
 			$no=1;
 			$j=1;
-			while(list($thidate, $hn, $ptname,  $temperature,  $pause,  $rate,  $weight,  $bp1,  $bp2 ,  $doctor , $officer, $thidate2, $organ, $painscore) = mysql_fetch_row($result) ){
+			while(list($thidate, $hn, $ptname,  $temperature,  $pause,  $rate,  $weight,  $bp1,  $bp2 ,  $doctor , $officer, $thidate2, $organ, $painscore, $thdatehn) = mysql_fetch_row($result) ){
 
 				if($j==1){
 					$j = 2;
@@ -166,8 +166,8 @@ font-size:16px;
       <tr class="data_show<?php echo $j;?>">
         <td><?php echo $no;?></td>
         <td align="center"><?php echo $thidate;?></td>
-        <td><A HREF="stk_basic_opd.php?dthn=<?php echo $thidate2.$hn;?>" target="_blank"><?php echo $hn;?></A></td>
-        <td><A HREF="stk_basic_opd2.php?dthn=<?php echo $thidate2.$hn;?>" target="_blank"><?php echo $ptname;?></A></td>
+        <td><A HREF="stk_basic_opd.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $hn;?></A></td>
+        <td><A HREF="stk_basic_opd2.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $ptname;?></A></td>
         <td width="40" align="center"><?php echo $temperature;?></td>
         <td width="40" align="center"><?php echo $pause;?></td>
         <td width="40" align="center"><?php echo $rate;?></td>

@@ -38,7 +38,8 @@ a:active {
 -->
 </style>
 <div id="non-printable">
-	<form id="form1" name="form1" method="post" action="report_ptmonth.php">
+	<form id="form1" name="form1" method="post" action="report_ptmonth2.php">
+		<h1 style="text-align: center;">รายงานนวดแผนไทยตามห้วงเวลา(นอกเวลาราชการ)</h1>
 		<input name="act" type="hidden" value="show" />
 		<table width="100%" border="0" cellspacing="0" cellpadding="2">
 			<tr>
@@ -137,9 +138,9 @@ if($_POST["act"]=="show"){
 	// ห้วงเวลา
 	// รายชื่อผู้นวด
 	if($seldate=="1"){
-		$sql = "SELECT distinct(staf_massage) FROM depart WHERE staf_massage !='' AND date BETWEEN '$thyear-$selmon-01 00:00:00' AND '$thyear-$selmon-15 23:59:59'";
+		$sql = "SELECT distinct(staf_massage) FROM depart WHERE staf_massage !='' AND date BETWEEN '$thyear-$selmon-01 16:20:00' AND '$thyear-$selmon-15 20:20:00'";
 	}else{
-		$sql = "SELECT distinct(staf_massage) FROM depart WHERE staf_massage !='' AND date BETWEEN '$thyear-$selmon-16 00:00:00' AND '$thyear-$selmon-31 23:59:59'";
+		$sql = "SELECT distinct(staf_massage) FROM depart WHERE staf_massage !='' AND date BETWEEN '$thyear-$selmon-16 16:20:00' AND '$thyear-$selmon-31 20:20:00'";
 	}
 	
 	$query = mysql_query($sql);
@@ -165,18 +166,27 @@ if($_POST["act"]=="show"){
 				<tbody>
 				<?php
 				if($seldate=="1"){
-					$sql1 = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright,b.idname FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date between '$thyear-$selmon-01 00:00:00' AND '$thyear-$selmon-15 23:59:59') and  a.status='Y' and a.price >0  and staf_massage='$staf_massage' Group by b.date ,b.hn,a.code";
+					$sql1 = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright,b.idname,DATE_FORMAT(b.date, '%H:%i:%s') AS `test_time` FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date between '$thyear-$selmon-01 16:20:00' AND '$thyear-$selmon-15 20:20:00') and  a.status='Y' and a.price >0  and staf_massage='$staf_massage' Group by b.date ,b.hn,a.code";
 				}else{
-					$sql1 = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright,b.idname FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date between '$thyear-$selmon-16 00:00:00' AND '$thyear-$selmon-31 23:59:59') and  a.status='Y' and a.price >0  and staf_massage='$staf_massage' Group by b.date ,b.hn,a.code";	
+					$sql1 = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright,b.idname,DATE_FORMAT(b.date, '%H:%i:%s') AS `test_time` FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date between '$thyear-$selmon-16 16:20:00' AND '$thyear-$selmon-31 20:20:00') and  a.status='Y' and a.price >0  and staf_massage='$staf_massage' Group by b.date ,b.hn,a.code";	
 				}
+				// echo "<pre>";
+				// var_dump($sql1);
+				// echo "</pre>";
 				$result = mysql_query($sql1) or die("Query failed ".$sql1.""); 
-				$i=0;
-				while($rows=mysql_fetch_array($result)){
-					$i++;
-					$showdate=substr($rows["date"],0,10);
-					list($yy,$mm,$dd)=explode("-",$showdate);
-					$dateshow="$dd/$mm/$yy";
-					$showtime=substr($rows["date"],11,8);
+				$i = 0;
+				while($rows = mysql_fetch_array($result)){
+					
+					$qdate = substr($rows["date"],0,10);
+					list($yy,$mm,$dd) = explode("-",$qdate);
+					$dateshow = "$dd/$mm/$yy";
+					$showtime = substr($rows["date"],11,8);
+					// var_dump($rows['test_time']);
+					
+					if( $rows['test_time'] >= "16:20:00" AND $rows['test_time'] <= "20:20:00" ){
+						$i++;
+					// var_dump($rows['test_time']);
+					
 					?>
 					<tr>
 						<td align="center"><?=$i;?></td>
@@ -184,7 +194,7 @@ if($_POST["act"]=="show"){
 						<td><?=$rows["hn"];?></td>
 						<td align="left"><?=$rows["ptname"];?></td>
 						<?php
-						$sql3="select * from drugrx where date like '$showdate%' and hn='".$rows["hn"]."'";
+						$sql3="select * from drugrx where date like '$qdate%' and hn='".$rows["hn"]."'";
 						$query3=mysql_query($sql3);
 						$num3=mysql_num_rows($query3);
 						if(empty($num3)){
@@ -198,6 +208,7 @@ if($_POST["act"]=="show"){
 					<?php
 					if( $i % 32 === 0 ){
 						?> <tr><td><div style="page-break-after:always;"></div></td></tr> <?php
+					}
 					}
 				}
 				?>
