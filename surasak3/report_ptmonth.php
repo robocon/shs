@@ -196,9 +196,11 @@ if($_POST["act"]=="show"){
 						<td align="center"><?=$showdrug;?></td>
 					</tr>
 					<?php
+					/*
 					if( $i % 32 === 0 ){
 						?> <tr><td><div style="page-break-after:always;"></div></td></tr> <?php
 					}
+					*/
 				}
 				?>
 				</tbody>

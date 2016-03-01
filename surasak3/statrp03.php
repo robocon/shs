@@ -64,7 +64,7 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 	Order by a.date ASC limit 70 
 	";*/
 
-	$sql = "SELECT hn, ptname   
+	$sql = "SELECT hn, ptname, idno   
 	FROM patdata 
 	WHERE hn != '' 
 	AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  
@@ -75,9 +75,9 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 
 	file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
 	//echo $sql;
-	$result2  = Mysql_Query($sql);
-
-
+	$result2  = Mysql_Query($sql) or die( mysql_error() );
+	
+	
 	$txt = "คลินิกนอกเวลาราชการ (ฝังเข็ม) เวลา ";
 
 	switch($_GET["time"]){
@@ -103,13 +103,22 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 	
 	$pdf->Cell(30,7,"HN",1,0,'C');
 	
-	$pdf->Cell(30,7,"หมายเหตุ",1,0,'C');
+	$pdf->Cell(30,7,"โรค",1,0,'C');
 	
 	$pdf->Ln();
 	
 	
 	$i=1;
-	while(list($hn,$ptname) = Mysql_fetch_row($result2)){	
+	while(list($hn,$ptname, $idno) = Mysql_fetch_row($result2)){	
+		
+		$sql = "SELECT `diag` 
+FROM `depart` 
+WHERE `row_id` = '$idno'";
+	$query = mysql_query($sql) or die( mysql_error() );
+	$res = mysql_fetch_assoc($query);
+	// echo "<pre>";
+	// var_dump($res['diag']);
+	// exit;
 	
 		$pdf->Cell(10,7,$i,1,0,'C');
 		
@@ -117,7 +126,7 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 		
 		$pdf->Cell(30,7,$hn,1,0,'C');
 		
-		$pdf->Cell(30,7,"",1,0,'C');
+		$pdf->Cell(30,7,$res['diag'],1,0,'C');
 		$pdf->Ln();
 		$i++;
 	}
