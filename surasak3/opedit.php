@@ -185,7 +185,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cBlood=$row->blood;
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
-		
+		$employee = $row->employee;
 		
 		$hcode=explode("/",$cHospcode);
 		$hcode1=$hcode[0];
@@ -773,6 +773,19 @@ return $pAge;
     <td align="right" class="fonthead"></td>
     <td>&nbsp;</td>
     </tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td class="fonthead">
+			<label for="employee">ลูกจ้าง รพ.ค่ายฯ</label>
+		</td>
+		<td>
+			<?php
+			$checked = ( $employee === 'y' ) ? 'checked="checked"' : '' ;
+			?>
+			<input type="checkbox" id="employee" name="employee" value="y" <?=$checked;?>>
+		</td>
+	</tr>
     </table>
 
 </fieldset>

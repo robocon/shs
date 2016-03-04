@@ -78,7 +78,7 @@ if($_POST['lockptright5']=="lock"){
 	$hospcode=$_POST['hospcode'];
 	$ptrcode=$_POST['rdo1'];
 	//$note=$_POST['note'].'/'.$hospcode;
-
+$employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
 $sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',
 yot='$yot',name='$name',surname='$surname',education='$education',goup='$goup',married='$married',
@@ -86,8 +86,11 @@ dbirth='$dbirth',guardian='$guardian',idguard='$idguard',
 nation='$nation',religion='$religion',career='$career',ptright='$ptright',ptright1='$ptright1',ptrightdetail='$ptrightdetail',address='$address',
 tambol='$tambol',ampur='$ampur',changwat='$changwat',hphone='$hphone',
 phone='$phone',father='$father',mother='$mother',couple='$couple',
-note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
-
+note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
+ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
+officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
+employee='$employee', 
+opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
 
 $result = mysql_query($sql) or die("Query failed ipcard");
 
