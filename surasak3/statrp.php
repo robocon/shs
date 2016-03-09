@@ -2,18 +2,10 @@
 session_start();
 include("connect.inc");
 
-     $month_["01"] = "มกราคม";
-    $month_["02"] = "กุมภาพันธ์";
-    $month_["03"] = "มีนาคม";
-    $month_["04"] = "เมษายน";
-    $month_["05"] = "พฤษภาคม";
-    $month_["06"] = "มิถุนายน";
-    $month_["07"] = "กรกฏาคม";
-    $month_["08"] = "สิงหาคม";
-    $month_["09"] = "กันยายน";
-    $month_["10"] = "ตุลาคม";
-    $month_["11"] = "พฤศจิกายน";
-    $month_["12"] = "ธันวาคม";
+$month_ = array(
+	'01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', 
+	'07' => 'กรกฏาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม'
+);
 
 ?>
 
@@ -167,19 +159,14 @@ include("connect.inc");
 		<TD>แพทย์</TD>
 		<TD colspan="3">
         
-        	  <? 
-	 $strSQL = "SELECT name FROM doctor where (menucode='admnid' || menucode='admpt' ) order by name "; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-?>
-<select name="doctor" id="doctor"> 
-<? 
-while($objResult = mysql_fetch_array($objQuery)) 
-{ 
-?> 
-<option value="<?=substr($objResult["name"],0,5);?>"><?=$objResult["name"];?></option> 
-<? 
-} 
-?> 
+			<?php
+			$strSQL = "SELECT name FROM doctor where (menucode='admnid' || menucode='admpt' ) order by name "; 
+			$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+			?><select name="doctor" id="doctor"><?php
+			while($objResult = mysql_fetch_array($objQuery)) { 
+				?><option value="<?=substr($objResult["name"],0,5);?>"><?=$objResult["name"];?></option><?php
+			} 
+			?> 
 
             <Option value="MD058">แพทย์แผนไทย</Option>
       		</Select>
@@ -193,6 +180,89 @@ while($objResult = mysql_fetch_array($objQuery))
 </TR>
 </TABLE>
 </FORM>
+
+<form action="statrp05.php" method="post" target="_blanks" style="width: 500px">
+	<div style="border: 2px solid #3300FF; padding: 3px;">
+		<table border="0" bordercolor="#3300FF"  cellpadding="3" cellspacing="0" width="100%">
+			<tbody>
+				<tr >
+					<td colspan="2" bgcolor="#3300FF" align="center">
+						<b><span style="color: #ffffff">รายชื่อผู้ป่วยที่มาทำการตรวจ(รายเดือน)</span></b>
+					</td>
+				</tr>
+				<tr>
+					<td width="10%">เดือน: </td>
+					<td>
+						<select name="month" id="">
+						<?php
+						foreach($month_ as $key => $value){
+							?>
+							<option value="<?=$key;?>"><?=$value;?></option>
+							<?php
+						}
+						?>
+						</select>
+						&nbsp;ปี:&nbsp;
+						<select name="year" id="">
+						<?php
+						$Y = date("Y") + 543;
+						$date = date("Y") + 543 + 5;
+						$years = range(2547, $date);
+						foreach( $years as $key => $year ){
+							$sel = ( $year === $Y ) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$year;?>" <?=$sel;?> ><?=$year;?></option>
+							<?php
+						}
+						?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>รายการ: </td>
+					<td>
+						<select name="code" id="">
+							<option value="58000">(58000) ค่าฝังเข็มเพื่อสุขภาพ</option>
+							<option value="580xx">(58001, 58002, 58003) ค่าฝังเข็ม นวดประคบ ฯลฯ</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>เวลา: </td>
+					<td>
+						<select name="time" id="">
+							<option value="08:00:00-16:00:00">08:00 - 16:00 น.</option>
+							<option value="16:00:00-20:00:00">16:00 - 20:00 น.</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						แพทย์: 
+					</td>
+					<td>
+						<select name="doctor" id="doctor">
+						<?php
+						$sql = "SELECT name FROM doctor where (menucode='admnid' || menucode='admpt' ) order by name "; 
+						$query = mysql_query($sql) or die ( mysql_error() ); 
+						while($res = mysql_fetch_array($query)) { 
+							?><option value="<?=substr($res["name"],0,5);?>"><?=$res["name"];?></option><?php
+						} 
+						?> 
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<button type="submit">ตกลง</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>
+
+
 
 <FORM METHOD="GET" ACTION="statrp04.php" target="_blanks">
 <TABLE border="1" bordercolor="#3300FF"  cellpadding="0" cellspacing="0">

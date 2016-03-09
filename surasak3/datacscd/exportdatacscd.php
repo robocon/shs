@@ -246,12 +246,17 @@ $numcscd=0;
 			$dsy=0;
 			$ddn=0;
 			$dpn=0;
+			$dpy1 = 0;
 			$sql1 = "select * from phardep where date = '".$txdate."' and hn='$hn' ";
 			$row1 = mysql_query($sql1);
 			$result1 = mysql_fetch_array($row1);
 			
-			
-			$sql2 = "select sum(price) as suma,part,drugcode,DPY,DPN,amount  from drugrx where idno = '".$result1['row_id']."' group by part";
+			/**
+			 * @readme
+			 * ที่ต้องสร้าง SUM(`DPY`) ขึ้นมาอีก 1 ตัวมีปัญหามาจากการ group by part ในตัว Statement
+			 * ทำให้กรณีที่มี row ตั้งแต่ 2 ตัวขึ้นไปไม่ได้ค่าผลรวมตามจำนวน
+			 */
+			$sql2 = "select sum(price) as suma,part,drugcode,DPY,DPN,amount,SUM(`DPY`) AS `sum_dpy`  from drugrx where idno = '".$result1['row_id']."' group by part";
 			$row2 = mysql_query($sql2);
 			while($result2 = mysql_fetch_array($row2)){
 				if($result2['part']=="DDL"||$result2['part']=="DDY"){
@@ -259,29 +264,29 @@ $numcscd=0;
 				}elseif($result2['part']=="DDN"){
 					$ddn+=$result2['suma'];
 				}elseif($result2['part']=="DPY"){
+					
 					$dpy+=$result2['suma'];
-					$dpy1=$result2['DPY'];
+					
+					// $dpy1=$result2['DPY'];
+					$dpy1 = $result2['sum_dpy']; // ใช้แทน dpy ตัวเดิม
+					
 					$dpn1=$result2['DPN'];
+					
 				}elseif($result2['part']=="DPN"){
 					$dpn+=$result2['suma'];
 				}elseif($result2['part']=="DSN"){
 					$dsn+=$result2['suma'];
 				}elseif($result2['part']=="DSY"){
 
+					$sql3 = "select dsy,dsn from phardep where row_id = '".$result1['row_id']."' ";
+					$row3 = mysql_query($sql3);
+					list($dsy,$dsn) = mysql_fetch_array($row3);
+					$dsy=$dsy;
+					$dsn=$dsn;
 
-
-
-$sql3 = "select dsy,dsn from phardep where row_id = '".$result1['row_id']."' ";
-$row3 = mysql_query($sql3);
-list($dsy,$dsn) = mysql_fetch_array($row3);
-$dsy=$dsy;
-$dsn=$dsn;
-
-
-					
 				}
-			}
-
+			} // End while
+			
 
 
 
@@ -289,29 +294,30 @@ $dsn=$dsn;
 				$ddl = number_format($ddl,2);
 				//$ddl=number_format($ddl, 2, '.', '');
 				$ddl = str_replace(",","",$ddl);
-//$n=$dsn+dsy;
-//$ddl=$ddl+$n;
-			            $ddlddn=$ddl+$ddn;
+				//$n=$dsn+dsy;
+				//$ddl=$ddl+$n;
+				$ddlddn=$ddl+$ddn;
 				
 				$ddlddn=number_format($ddlddn, 2, '.', '');
 				$ddn=number_format($ddn, 2, '.', '');
 
-$n=number_format($n, 2, '.', '');
-$ddl1=$ddl+$ddn;
+				$n=number_format($n, 2, '.', '');
+				$ddl1=$ddl+$ddn;
 
-			$strText15="$date2$row_id1$vn|4|$ddl|0.00\r\n";
+				$strText15="$date2$row_id1$vn|4|$ddl|0.00\r\n";
 				
 				$strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 				$objFopen1 = fopen($strFileName1, 'a');
 				fwrite($objFopen1, $strText15);
 				
-					if($objFopen1){
-						/*echo "File writed.";*/
-					}else{
-						/*echo "File can not write";*/
-					}
-					fclose($objFopen1);
+				if($objFopen1){
+					/*echo "File writed.";*/
+				}else{
+					/*echo "File can not write";*/
+				}
+				fclose($objFopen1);
 			}
+			
 			if($dpy>0){
 				$dpy = number_format($dpy,2);
 				$dpy = str_replace(",","",$dpy);
@@ -319,10 +325,10 @@ $ddl1=$ddl+$ddn;
 				$dpydpn=number_format($dpydpn, 2, '.', '');
 				$dpn=number_format($dpn, 2, '.', '');
 
-$dpy1=number_format($dpy1, 2, '.', '');
-$dpn1=number_format($dpn1, 2, '.', '');
-$dpydpn=$dpy+$dpn;
-$dpydpn=number_format($dpydpn, 2, '.', '');
+				$dpy1=number_format($dpy1, 2, '.', '');
+				$dpn1=number_format($dpn1, 2, '.', '');
+				$dpydpn=$dpy+$dpn;
+				$dpydpn=number_format($dpydpn, 2, '.', '');
 
 				$strText15="$date2$row_id1$vn|2|$dpy1|0.00\r\n";
 				
@@ -563,9 +569,9 @@ $strText21="<?xml version=\"1.0\" encoding=\"windows-874\"?>\n
 	$row3 = mysql_query($query3);
 	list($datepx) = mysql_fetch_array($row3);
 	
-	$query4 = "select date,doctor,row_id from phardep where date = '$txdate' and hn='$hn' and price>0";
+	$query4 = "select date,doctor,row_id, hn, tvn, an from phardep where date = '$txdate' and hn='$hn' and price>0";
 	$row4 = mysql_query($query4);
-	list($dateop,$doctor,$xrow) = mysql_fetch_array($row4);
+	list($dateop,$doctor,$xrow, $pHn, $pVn, $pAn) = mysql_fetch_array($row4);
 	
 	$ddl=0;
 	$ddn=0;
@@ -600,47 +606,84 @@ $strText21="<?xml version=\"1.0\" encoding=\"windows-874\"?>\n
 		}
 	}
 	if($ddl>0){
+		
 //echo $doctor;
-	$posdr = strpos($doctor,"(ว.");
-	$posdrd = strpos($doctor,"(ท.");
-	$posdrd1 = strpos($doctor,"(พท.ป");
-	if($posdr==false){
-		if($posdrd==false){
-			if($posdrd1==false){
-			$seldr = "select doctorcode from doctor where name like '%".substr($doctor,0,9)."%' ";
-			$rowdr = mysql_query($seldr);
-			list($dr) = mysql_fetch_array($rowdr);
-			$dc="ว";
-			$dr1="$dc$dr";
+// echo "<pre>";
+// var_dump($doctor);
+// echo "</pre>";
+
+		$posdr = strpos($doctor,"(ว.");
+		$posdrd = strpos($doctor,"(ท.");
+		$posdrd1 = strpos($doctor,"(พท.ป");
+		
+		if($posdr==false){ // ไม่มี ว.
+			if($posdrd==false){ // ไม่มี ท.
+				if($posdrd1==false){ // ไม่มี พท.ป
+					$seldr = "select doctorcode from doctor where name like '%".substr($doctor,0,9)."%' ";
+					$rowdr = mysql_query($seldr);
+					
+					$numrow_dr = mysql_num_rows($rowdr);
+					
+					if( $numrow_dr > 0 ){
+						list($dr) = mysql_fetch_array($rowdr);
+						$dc="ว";
+						$dr1="$dc$dr";
+					}else{ // ถ้ายังไม่มีเลขหมอให้กลับไปหาใน opday
+						
+						list($opDate, $opTime) = explode(' ', $dateop);
+						
+						if( !empty($pVn) ){
+							$whereOpd = " `vn` = '$pVn'";
+						}else{
+							$whereOpd = " `an` = '$pAn'";
+						}
+						
+						// @todo ยังไม่ได้เช็กกรณีที่ vn ออกซ้ำ ไม่แน่ใจว่า doctor มันจะออกมาถูกต้องรึป่าว
+						$sql = "SELECT `doctor` 
+						FROM `opday` 
+						WHERE `thidate` LIKE '$opDate%' 
+						AND `hn` = '$pHn' 
+						AND $whereOpd ";
+						$query = mysql_query($sql);
+						$opday = mysql_fetch_assoc($query);
+						
+						$match = preg_match('/(MD\d+)/', $opday['doctor'], $word);
+						if( $match > 0 ){
+							$sql = "SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '".$word['1']."%'";
+							$query = mysql_query($sql);
+							$doc = mysql_fetch_assoc($query);
+							$dr1 = "ว".$doc['doctorcode'];
+						}
+						
+					}
+					
+				}else{
+					$dr = substr($doctor,($posdrd1+6),4);
+					$dc="-";
+					$dr1="$dc$dr";
+				
+				}
+				
+			}else{
+				$dr = substr($doctor,($posdrd+3),4);
+				$dc="ท";
+				$dr1="$dc$dr";
 			}
-		else{
-			$dr = substr($doctor,($posdrd1+6),4);
-			$dc="-";
-			$dr1="$dc$dr";
-		
-		}
-		}
-		else{
-			$dr = substr($doctor,($posdrd+3),4);
-			$dc="ท";
-			$dr1="$dc$dr";
-		}
-		
-	
-	}
-	
-	else{
-		$dr = substr($doctor,($posdr+3),5);
-		$dc="ว";
-		$dr1="$dc$dr";
-		if(strlen($dr)<4){
-			$seldr = "select doctorcode from doctor where name like '%".substr($doctor,0,9)."%' ";
-			$rowdr = mysql_query($seldr);
-			list($dr) = mysql_fetch_array($rowdr);
+			
+		}else{
+			$dr = substr($doctor,($posdr+3),5);
 			$dc="ว";
 			$dr1="$dc$dr";
+			if(strlen($dr)<4){
+				$seldr = "select doctorcode from doctor where name like '%".substr($doctor,0,9)."%' ";
+				$rowdr = mysql_query($seldr);
+				list($dr) = mysql_fetch_array($rowdr);
+				$dc="ว";
+				$dr1="$dc$dr";
+			}
 		}
-	}
+	
+	// exit;
 	$px1=substr($datepx,8,2); 
     $px2=substr($datepx,5,2); 
     $px3=substr($datepx,0,4)-543; 
@@ -689,8 +732,12 @@ $strText21="<?xml version=\"1.0\" encoding=\"windows-874\"?>\n
 			fclose($objFopen2);		
 		}
 
-	}
+	} // if ddl > 0
 }
+
+// exit;
+
+
 
 $strText23="</Dispensing>\n
 <DispensedItems>\r\n";		
