@@ -50,14 +50,18 @@ a:active {
 					</select> 
 					เดือน       
 					<?php
-					$thaimonthFull=array("มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม", "พฤศจิกายน","ธันวาคม");
+					$thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+					
+					$selmon = isset($_POST['selmon']) ? $_POST['selmon'] : date('m');
+					
 					echo "<select name='selmon' size='1'  class='txt'>";
-					for($i=0;$i<count($thaimonthFull);$i++){
-						echo "<option value='".($i+1)."' ";
-						if(date("m")==$i+1){
-							echo " selected";
-						}
-						echo ">".$thaimonthFull[$i]."</option>";
+					for($i=1; $i <= count($thaimonthFull); $i++){
+						
+						$i = sprintf('%02d', $i);
+						$selected = ( $selmon === $i ) ? 'selected="selected"' : '' ;
+						echo "<option value='$i' $selected>".$thaimonthFull[$i]."</option>";
 					}
 					echo "</select>";
 					?>
@@ -89,65 +93,33 @@ if($_POST["act"]=="show"){
 	$seldate = $_POST["seldate"];
 	
 	if($seldate == "1"){
-		$showdate="1-15";
+		$showdate = "1-15";
 	}else{
-		$showdate="16-30";
+		$showdate = "16-30";
 	}
 
-	$selmon = $_POST["selmon"];
-	if($selmon=="01"){
-		$mon ="มกราคม";
-		$selmon="01";
-	}else if($selmon=="02"){
-		$mon ="กุมภาพันธ์";
-		$selmon="02";
-	}else if($selmon=="03"){
-		$mon ="มีนาคม";
-		$selmon="03";
-	}else if($selmon=="04"){
-		$mon ="เมษายน";
-		$selmon="04";
-	}else if($selmon=="05"){
-		$mon ="พฤษภาคม";
-		$selmon="05";
-	}else if($selmon=="06"){
-		$mon ="มิถุนายน";
-		$selmon="06";
-	}else if($selmon=="07"){
-		$mon ="กรกฎาคม";
-		$selmon="07";
-	}else if($selmon=="08"){
-		$mon ="สิงหาคม";
-		$selmon="08";
-	}else if($selmon=="09"){
-		$mon ="กันยายน";
-		$selmon="09";
-	}else if($selmon=="10"){
-		$mon ="ตุลาคม";
-		$selmon="10";
-	}else if($selmon=="11"){
-		$mon ="พฤศจิกายน";
-		$selmon="11";
-	}else if($selmon=="12"){
-		$mon ="ธันวาคม";
-		$selmon="12";
-	}
+	$selmon = trim($_POST["selmon"]);
 	$thyear = $_POST["selyear"];
 	$ksyear = $_POST["selyear"]-543;
 	
 	// ห้วงเวลา
 	// รายชื่อผู้นวด
 	if($seldate=="1"){
-		$sql = "SELECT distinct(staf_massage) FROM depart WHERE staf_massage !='' AND date BETWEEN '$thyear-$selmon-01 16:20:00' AND '$thyear-$selmon-15 20:20:00'";
+		$date_between = " AND `date` >= '$thyear-$selmon-01' AND `date` <= '$thyear-$selmon-15'";
+		
 	}else{
-		$sql = "SELECT distinct(staf_massage) FROM depart WHERE staf_massage !='' AND date BETWEEN '$thyear-$selmon-16 16:20:00' AND '$thyear-$selmon-31 20:20:00'";
+		$date_between = " AND `date` >= '$thyear-$selmon-16' AND `date` <= '$thyear-$selmon-31'";
 	}
 	
+	$sql = "SELECT `staf_massage` 
+	FROM `depart` 
+	WHERE `staf_massage` !='' 
+	$date_between 
+	GROUP BY `staf_massage` ";
 	$query = mysql_query($sql);
 	$num = mysql_num_rows($query);
-	while($row = mysql_fetch_array($query)){
-		
-		$staf_massage=$row["staf_massage"];
+	while( $row = mysql_fetch_array($query) ){
+		$staf_massage = $row["staf_massage"];
 		?>
 		<div id="printable"> 
 			<p align="center"><strong>รายชื่อผู้มารับบริการนวดแผนไทย</strong></p>
@@ -165,27 +137,50 @@ if($_POST["act"]=="show"){
 				</thead>
 				<tbody>
 				<?php
-				if($seldate=="1"){
-					$sql1 = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright,b.idname,DATE_FORMAT(b.date, '%H:%i:%s') AS `test_time` FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date between '$thyear-$selmon-01 16:20:00' AND '$thyear-$selmon-15 20:20:00') and  a.status='Y' and a.price >0  and staf_massage='$staf_massage' Group by b.date ,b.hn,a.code";
-				}else{
-					$sql1 = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright,b.idname,DATE_FORMAT(b.date, '%H:%i:%s') AS `test_time` FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date between '$thyear-$selmon-16 16:20:00' AND '$thyear-$selmon-31 20:20:00') and  a.status='Y' and a.price >0  and staf_massage='$staf_massage' Group by b.date ,b.hn,a.code";	
-				}
+					
+					/* Condition เกี่ยวกับเวลา ควรเปลี่ยนเป็น ค.ศ. เพื่อให้ mysql คำนวณวันที่ได้ถูกต้อง */
+					$sql1 = "SELECT b.*, a.`code`
+FROM `patdata` AS a, (
+
+	SELECT *, DATE_FORMAT(`date`,'%H:%i:%s') AS `time`, 
+	CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) AS `date2`, 
+	DATE_FORMAT( CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name` 
+	FROM `depart` 
+	WHERE `staf_massage` !='' 
+	$date_between
+
+) AS b 
+WHERE b.`row_id` = a.`idno` 
+AND a.`code` in (
+	'58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a'
+) 
+AND b.`staf_massage` = '$staf_massage'
+AND a.`status` = 'Y'
+GROUP BY b.`hn`
+ORDER BY b.`date` ASC";
 				// echo "<pre>";
 				// var_dump($sql1);
-				// echo "</pre>";
-				$result = mysql_query($sql1) or die("Query failed ".$sql1.""); 
+				// echo "<pre>";
+				
+				$result = mysql_query($sql1) or die( mysql_error() ); 
 				$i = 0;
 				while($rows = mysql_fetch_array($result)){
+					
+					// 0 is Sunday
+					// 6 is Saturday
+					// ถ้าเข้าเคส จันทร์ ถึง ศุกร์ และอยู่ในช่วงเวลาราชการให้ผ่านไปเลย ไม่นับ
+					// @todo เซิฟเวอร์มีปัญหาเรื่องเวลาเร็วไป 20 นาที ถ้าเซิฟปรับแล้วโค้ดนี้ก็ต้องปรับเวลาตามด้วย
+					$dayNum = (int) $rows['day_name'];
+					if( ( $dayNum > 0 AND $dayNum < 6 ) AND ( $rows['time'] >= "08:20:00" AND $rows['time'] <= "16:20:00" ) ){
+						continue;
+					}
 					
 					$qdate = substr($rows["date"],0,10);
 					list($yy,$mm,$dd) = explode("-",$qdate);
 					$dateshow = "$dd/$mm/$yy";
-					$showtime = substr($rows["date"],11,8);
-					// var_dump($rows['test_time']);
+					// $showtime = substr($rows["date"],11,8);
 					
-					if( $rows['test_time'] >= "16:20:00" AND $rows['test_time'] <= "20:20:00" ){
-						$i++;
-					// var_dump($rows['test_time']);
+					$i++;
 					
 					?>
 					<tr>
@@ -200,16 +195,13 @@ if($_POST["act"]=="show"){
 						if(empty($num3)){
 							$showdrug="";
 						}else{
-							$showdrug="";
+							$item = mysql_fetch_assoc($query3);
+							$showdrug = $item['tradname'];
 						}
 						?>
 						<td align="center"><?=$showdrug;?></td>
 					</tr>
 					<?php
-					if( $i % 32 === 0 ){
-						?> <tr><td><div style="page-break-after:always;"></div></td></tr> <?php
-					}
-					}
 				}
 				?>
 				</tbody>
