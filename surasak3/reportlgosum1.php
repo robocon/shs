@@ -318,11 +318,31 @@ $list = array();
 $title_date = $start_day."-".$start_month."-".$start_year;
 $date1 ="$start_year-$start_month";
 
-$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price) From opacc as a where  ( a.date between '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND '".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง อปท.' group by date2, a.depart   ORDER by date";
+$sql = "SELECT DATE_FORMAT( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price),a.date 
+FROM opacc AS a 
+WHERE  ( 
+	a.date >= '$start_year-$start_month-$start_day 00:00:00' 
+	AND a.date <= '$end_year-$end_month-$end_day 23:59:59' 
+	)  
+AND a.credit ='จ่ายตรง อปท.' 
+GROUP BY date2, a.depart 
+ORDER by date";
+// echo "<pre>";
+// 	var_dump($sql);
+// 	echo "</pre>";
 $result = Mysql_Query($sql) or die(Mysql_Error());
 
-while(list($date, $depart, $paidcscd,$price) = Mysql_fetch_row($result)){
+while(list($date, $depart, $paidcscd,$price, $date2) = Mysql_fetch_row($result)){
+	
+	/* Override $date ตัวเดิม เพราะมีปัญหาวันที่ 29 เดือน ก.พ. ค่าจาก date_format จะเป็น null */
+	list($dd2, $tt2) = explode(' ', $date2);
+	list($y2, $m2, $d2) = explode('-', $dd2);
+	$date = "$d2-$m2-$y2";
+	// echo "<pre>";
+	// var_dump($date);
+	// echo "</pre>";
 //echo $depart,"<BR>";
+
 $row='0';
 	switch($depart){
 		case "PHAR" : $list[$date]['PHAR'] = $list[$date]['PHAR'] + $paidcscd; break;
