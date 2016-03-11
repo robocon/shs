@@ -1,4 +1,86 @@
-<?  session_start(); ?>
+<?php 
+session_start(); 
+
+$addfile = isset($_POST['addfile']) ? intval($_POST['addfile']) : 0 ;
+$task = isset($_GET['task']) ? trim($_GET['task']) : false ;
+
+// var_dump($addfile);
+// var_dump($task);
+
+// var_dump($_POST);
+
+if(isset($_POST['Submit'])){
+
+	include("connect.inc");
+
+	$id = $_POST['doc_id'];
+
+	$sql="INSERT INTO  `document` (  `row_id` ,  `doc_id` ,  `depart` ,  `doc_name` ,  `post_name` ,  `doc_date` ) 
+	VALUES ('',  '".$_POST['doc_id']."',  '".$_POST['depart']."',  '".$_POST['doc_name']."',  '".$_POST['post_name']."',  '".date("Y-m-d H:i:s")."')";
+	$sql_query = mysql_query($sql) or die(mysql_error());
+	
+//echo $sql;
+/////////////
+	$structure = 'document_file/'; 
+
+	$attach = $_FILES['attach'];
+
+/*if (!mkdir($structure, 0777, true)) {
+die('Failed to create folders...');
+}*/
+////////////
+	$n=1;
+	for($i=0;$i<count($attach['name']);$i++){
+	
+		$document=$attach['tmp_name'][$i];
+		$document_name=$attach['name'][$i];
+		$document_size=$attach['size'][$i]['size'];
+		$document_type=$attach['type'][$i];
+		
+		//ตรวจสอบว่ามีค่าหรือไม่
+		if(empty($document)) {
+			echo"<CENTER>คุณไม่ได้เลือกไฟล์เอกสารแนบ  หรือ <BR> ขนาดไฟล์ที่คุณทำการ Upload นั้นอาจมีขนาดใหญ่เกินไป . กรุณาเลือกไฟล์ใหม่  </CENTER>";
+		}else{
+			
+			$thai=explode('.',$document_name);
+			$ext=strtolower(end(explode('.',$document_name)));
+			
+			if($ext=="rar" or $ext=="zip" or $ext=="doc" or $ext=="xls" or $ext=="xlsx" or $ext=="pdf" or $ext=="ppt" or $ext=="pptx" or $ext=="docx" or $ext=="JPG"or $ext=="jpg")
+			{
+			
+				$filename=$id.'_'.$n.".". $ext;
+				
+				copy($document, "$structure/$filename");
+				
+				
+				$sql = "INSERT  INTO  document_file";
+				$sql .="(doc_id ,file_name,name_thai,file_type) ";
+				$sql .="VALUES";
+				$sql .="('".$_POST['doc_id']."','".$filename."','".$thai[0]."','".$ext."')";
+				$sql_query1 = mysql_query($sql) or die ("Error Query [".$sql."]"); 
+				
+				
+				//echo $sql;
+			}else{
+				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไฟล์ที่คุณเลือก ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .doc .docx .xls .ppt .pdf .rar .zip  </CENTER></B></FONT> ";
+				exit;
+			}
+		}			//ปิดไฟล์แนบ
+		
+		
+		$n++;	
+	} //for
+
+	if($sql_query && $sql_query1){
+		echo "<meta http-equiv=refresh content=5;URL=document_Search2.php>";
+		echo "<br><CENTER><B><FONT SIZE=\"+1\" COLOR=\"#CC0000\">อัพโหลดเอกสารเรียบร้อยแล้ว<BR> กรุณารอสักครู่เพื่อไปยังหน้าดาวน์โหลดไฟล์.......</FONT></B></CENTER><br>";	
+		exit;
+	}
+
+}//if 
+
+
+?>
 <style>
 .style2 {
 	color: #0033FF;
@@ -52,38 +134,42 @@
 		return false; 
 	} 
 </script>
-<script language="javascript">
+<script type="text/javascript">
 ////// เช็คค่าว่าง
 function fncSubmit(){
 
 	var fn = document.f1;
+	var invalid = 0;
 	
 	if(fn.depart.selectedIndex==0){
 		alert('กรุณาระบุแผนกด้วยครับ');
 		fn.depart.focus();
-		return false;
-	}
-	if(fn.doc_name.value==""){
+		invalid = 1;
+	}else if(fn.doc_name.value==""){
 		alert('กรุณาระบุชื่อเอกสารด้วยครับ');
 		fn.doc_name.focus();
-		return false;
-	}
-	
-	if(fn.attach_0.value==""){
+		invalid = 1;
+	}else if(fn.attach_0.value==""){
 		alert('อัพโหลดเอกสารด้วยครับ');
 		fn.attach_0.focus();
-		return false;
-	}
-	if(fn.post_name.value==""){
+		invalid = 1;
+	}else if(fn.post_name.value==""){
 		alert('กรุณาระบุชื่อผู้อัพโหลดด้วยครับ');
 		fn.post_name.focus();
-		return false;
+		invalid = 1;
 	}
-	fn.submit();
+	
+	if( invalid == 1 ){
+		return false;
+	}else{
+		document.getElementById("f1").submit();
+		// return true;
+	}
 }
 </script>
 <?
 include("connect.inc");
+// mysql_query("SET NAMES tis-620");
 
 /*$sql="select max(row_id) from document";
 $result=mysql_query($sql);
@@ -95,8 +181,9 @@ $num_result  = mysql_num_rows($result) ;
 $dbarr = mysql_fetch_row($result) ;
 $id_max = $dbarr[0]+1 ; // นำค่า id มาเพิ่มให้กับค่ารหัสครั้งละ1
 
+$tc = time();
 ?>
-<form action="" method="post"  enctype="multipart/form-data" name="f1" id="f1" onSubmit="JavaScript:return fncSubmit()">
+<form action="document_save.php?task=save&t=<?=$tc;?>" method="post"  enctype="multipart/form-data" name="f1" id="f1" >
 	<table width="765"  border="0" align="center" class="fontthai" bgcolor="#FFFFCC">
 		<tr>
 			<td colspan="2" align="center" class="style13">ระบบจัดเก็บองค์ความรู้</td>
@@ -162,8 +249,9 @@ $id_max = $dbarr[0]+1 ; // นำค่า id มาเพิ่มให้กับค่ารหัสครั้งละ1
 		<tr>
 			<td align="right">&nbsp;</td>
 			<td>
-				<input name="Submit" type="submit" class="style13" value="บันทึกข้อมูล" />
+				<input name="Submit" type="submit" class="style13" value="บันทึกข้อมูล" onclick="return fncSubmit()"/>
 				<input name="Reset" type="reset" class="style13" value="Reset" />
+				<input type="hidden" name="addfile" value="1">
 				<div align="center"><a href="../nindex.htm" class="forntsarabun">กลับเมนูหลัก </a> &nbsp;&nbsp; <a href="document_Search2.php" class="forntsarabun">ค้นหาเอกสาร </a> || <a href="document_list.php">เอกสารตามแผนก</a></div> 
 			</td>
 		</tr>
@@ -171,71 +259,5 @@ $id_max = $dbarr[0]+1 ; // นำค่า id มาเพิ่มให้กับค่ารหัสครั้งละ1
 </form>
 
 <?php
-if(isset($_POST['Submit'])){
 
-	include("connect.inc");
-
-	$id=$_POST['doc_id'];
-
-	$sql="INSERT INTO  `document` (  `row_id` ,  `doc_id` ,  `depart` ,  `doc_name` ,  `post_name` ,  `doc_date` ) 
-	VALUES ('',  '".$_POST['doc_id']."',  '".$_POST['depart']."',  '".$_POST['doc_name']."',  '".$_POST['post_name']."',  '".date("Y-m-d H:i:s")."')";
-	$sql_query= mysql_query($sql) or die(mysql_error());
-
-//echo $sql;
-/////////////
-	$structure = 'document_file/'; 
-
-	$attach = $_FILES['attach'];
-
-/*if (!mkdir($structure, 0777, true)) {
-die('Failed to create folders...');
-}*/
-////////////
-	$n=1;
-	for($i=0;$i<count($attach['name']);$i++){
-	
-		$document=$attach['tmp_name'][$i];
-		$document_name=$attach['name'][$i];
-		$document_size=$attach['size'][$i]['size'];
-		$document_type=$attach['type'][$i];
-		
-		
-		if(empty($document)) //ตรวจสอบว่ามีค่าหรือไม่
-		{
-			echo"<CENTER>คุณไม่ได้เลือกไฟล์เอกสารแนบ  หรือ <BR> ขนาดไฟล์ที่คุณทำการ Upload นั้นอาจมีขนาดใหญ่เกินไป . กรุณาเลือกไฟล์ใหม่  </CENTER>";
-		} else{
-			$thai=explode('.',$document_name);
-		
-			$ext=strtolower(end(explode('.',$document_name)));
-			if($ext=="rar" or $ext=="zip" or $ext=="doc" or $ext=="xls" or $ext=="xlsx" or $ext=="pdf" or $ext=="ppt" or $ext=="pptx" or $ext=="docx" or $ext=="JPG"or $ext=="jpg")
-			{
-			
-				$filename=$id.'_'.$n.".". $ext;
-				
-				copy($document, "$structure/$filename");
-				
-				
-				$sql = "INSERT  INTO  document_file";
-				$sql .="(doc_id ,file_name,name_thai,file_type) ";
-				$sql .="VALUES";
-				$sql .="('".$_POST['doc_id']."','".$filename."','".$thai[0]."','".$ext."')";
-				$sql_query1 = mysql_query($sql) or die ("Error Query [".$sql."]"); 
-				
-				
-				//echo $sql;
-			}else{
-				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไฟล์ที่คุณเลือก ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .doc .docx .xls .ppt .pdf .rar .zip  </CENTER></B></FONT> ";
-			}
-		}			//ปิดไฟล์แนบ
-		
-		
-		$n++;	
-	} //for
-
-	if($sql_query && $sql_query1){
-		echo "<meta http-equiv=refresh content=5;URL=document_Search2.php>";
-		echo "<br><CENTER><B><FONT SIZE=\"+1\" COLOR=\"#CC0000\">อัพโหลดเอกสารเรียบร้อยแล้ว<BR> กรุณารอสักครู่เพื่อไปยังหน้าดาวน์โหลดไฟล์.......</FONT></B></CENTER><br>";	
-	}
-
-}//if 
 ?>
