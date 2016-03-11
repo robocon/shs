@@ -21,10 +21,12 @@ surasak3/Connections/dbconfig.php
 surasak3/NCR2556/connect.inc
 surasak3/NCR2556/connect2.inc
 surasak3/datacscd/*.txt
+surasak3/datacscd/backup*
 surasak3/patient_files/*
 surasak3/tmp/*
 surasak3/Backup*/*
 surasak3/dataupdate/*
+surasak3/tests/*
 
 # Visual Studio Code
 .settings/*

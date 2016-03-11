@@ -292,7 +292,10 @@ $list = array(
     'EX20' => 'นวดแผนไทย'
 );
 
-// เวลาโดยเฉลี่ย คัดเอาเฉพาะ EX01, EX02 และเวลาที่น้อยกว่า 1ชั่วโมง
+?>
+<h3 style="margin: 0">เวลาที่ใช้โดยเฉลี่ย</h3>
+<?php
+// เวลาโดยเฉลี่ย คัดเอาเฉพาะ EX01, EX02 และเวลาที่น้อยกว่า 8นาที
 $sql = "SELECT `toborow`,`time2`,`time1`,
 LEFT(`toborow`,4) AS `toborow2`,
 TIME_TO_SEC(SUBTIME( `time2`, `time1` )) AS `time3`
@@ -301,27 +304,41 @@ LIKE '$today%'
 AND `time1` != '' 
 AND `time2` != '' 
 AND LEFT(`toborow`,4) IN ('EX01','EX02') 
-AND TIME_TO_SEC(SUBTIME( `time2`, `time1` )) <= 3600
+AND TIME_TO_SEC(SUBTIME( `time2`, `time1` )) <= 480
 ORDER BY `toborow2` ASC";
 
 $lists = array();
 $row_lists = array();
 $q = mysql_query($sql);
 while($item = mysql_fetch_assoc($q)){
-    $key = $item['toborow2'];
+    
+    $key = $item['toborow2']; // สร้างคีย์จาก ex01 ex02 เพื่อจะได้แบ่งกลุ่มได้
     $lists[$key] += $item['time3'];
     $row_lists[$key] += 1;
+    
 }
+
+// $date_time1 = date_create(date('Y-m-d H:i:s'));
 
 ?><table><?php
 foreach($lists as $key => $item){
     ?>
     <tr>
-        <td><?=$list[$key];?></td>
-        <td><?php
+        <td>
+            <p><?=$list[$key];?></p>
+        </td>
+        <td>
+        <?php
         $avg = ($item / $row_lists[$key]);
+        
+        // $time = time() + $avg;
+        // $date_time2 = date_create(date('Y-m-d H:i:s', $time));
+        // $diff = date_diff($date_time1, $date_time2);
+        // $test = $diff->format('%H:%I:%S');
+        
         echo gmdate("H:i:s", $avg);
-        ?></td>
+        ?>
+        </td>
     </tr>
     <?php
 }
