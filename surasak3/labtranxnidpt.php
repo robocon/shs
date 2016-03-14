@@ -118,9 +118,15 @@ if($cDoctor2 == "MD058"){
           print "เพื่อ.............................................................................<BR>";
           print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>";
       }
-    
-	  print "<font face='Angsana New' size ='3'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
-	  $Thaidate1=substr($Thaidate,0,10);
+      
+      if( $cDoctor2 === "MD058" ){
+          print "<font face='Angsana New' size ='3'><CENTER>$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+      } else {
+          print "<font face='Angsana New' size ='3'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+      }
+	  
+	  
+      $Thaidate1=substr($Thaidate,0,10);
 	  print "<font face='Angsana New' size ='3'><CENTER>($cDoctor1)</CENTER>"; 
 	    print "<font face='Angsana New' size ='3'><CENTER>$licen</CENTER>"; 
 

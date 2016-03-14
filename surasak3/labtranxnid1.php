@@ -98,7 +98,12 @@ if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $
 }
 print "<BR>";
 
-print "<font face='Angsana New' size ='3'><CENTER>&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+if( $cDoctor2 === 'MD115' ){
+    print "<font face='Angsana New' size ='3'><CENTER>&nbsp;$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+}else{
+    print "<font face='Angsana New' size ='3'><CENTER>&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+}
+
 print "<font face='Angsana New' size ='3'><CENTER>($cDoctor1)</CENTER>"; 
 if( $cDoctor2 === 'MD115' ){
     print "<font face='Angsana New' size ='3'><CENTER>$position</CENTER>"; 
