@@ -1,13 +1,22 @@
 <?php
 session_start();
 if (!isset($sIdname)){ exit(); } //for security
-$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
-$Thaidate = date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 
 if($cPtname == "" || $cHn == "" || $cDoctor == "" || $cDepart==""){
     echo "ขออภัยครับระบบมีความผิดพลาดเล็กน้อย กรุณาปิดโปรแกรมโรงพยาบาลและทำการเข้าระบบใหม่ครับ";
     exit();
 }
+
+// เลือกวันที่เริ่มตรวจ และสิ้นสุด
+$date_start_th = isset($_SESSION['date_start']) ? $_SESSION['date_start'] : false ;
+$date_end_th =  isset($_SESSION['date_end']) ? $_SESSION['date_end'] : false ;
+
+$thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
+$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
+$Thaidate = date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 
 //item count
 $item=0;
@@ -46,6 +55,40 @@ $thidate5 = (date("Y")+543).date("-m-d H:i:s");
 $query = "INSERT INTO medicalcertificate  (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
 $result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
 
+$dateNow = date('Y-m-d');
+$sql = "SELECT * FROM `medicalcertificate` 
+WHERE `hn` = '$cHn' 
+AND `part` = '$cPart' 
+AND ( `date_start` <= '$dateNow' AND `date_start` != '0000-00-00' ) 
+AND ( `date_end` >= '$dateNow' AND `date_end` != '0000-00-00' ) ";
+$q = mysql_query($sql) or die( mysql_error() );
+$rows = mysql_num_rows($q);
+
+$showStart = 0;
+
+// ถ้ายังไม่มีข้อมูลวันที่เริ่มตรวจ และวันที่สิ้นสุด
+if( $rows == 0 ){
+    list($sy, $sm, $sd) = explode('-', $date_start_th);
+    list($ey, $em, $ed) = explode('-', $date_end_th);
+    
+    $txt_date_start = $sd.' '.$thaimonthFull[$sm].' '.$sy;
+    $txt_date_end = $ed.' '.$thaimonthFull[$em].' '.$ey;
+    
+    $date_start = ( $sy - 543 )."-$sm-$sd";
+    $date_end = ( $ey - 543 )."-$em-$ed";
+    
+    $sql = "UPDATE `medicalcertificate` 
+    SET `date_start` = '$date_start', `date_end` = '$date_end' 
+    WHERE `number` = '$nRunno' ";
+    mysql_query($sql);
+    $showStart = 1;
+    
+    $_SESSION['date_start'] = null;
+    $_SESSION['date_end'] = null;
+}
+
+
+
 $cDoctor1 = substr($cDoctor,5,50);
 $cDoctor2 = substr($cDoctor,0,5);
 
@@ -72,42 +115,84 @@ if( $cDoctor2 === 'MD115' ){
     $position = 'แพทย์';
 }
 
-?><body Onload="window.print();"><?php
-print "<CENTER><img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'></CENTER><font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เลขที่&nbsp;$nRunno";
+list($d, $m, $y) = explode('-', $Thaidate1);
+$thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
 
-print "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<CENTER><B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<BR></CENTER></font>"; 
-print "<font face='Angsana New' size ='3'><CENTER>วันที่&nbsp;&nbsp;&nbsp; <B> $Thaidate1</B><BR></CENTER> "; 
-print "<font face='Angsana New' size ='3'>ข้าพเจ้า <B>$yot$cDoctor1</B> ตำแหน่ง "; 
+?><body Onload="window.print();"><?php
+print "<CENTER><img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'></CENTER>";
+
+echo "<div>";
+echo "<div style=\"display: inline;\">";
+echo "<font face='Angsana New' size ='4'>เลขที่&nbsp;$nRunno</font>";
+echo "</div>";
+echo "<div style=\"display: inline; float: right;\">";
+echo "<font face='Angsana New' size ='4'>วันที่&nbsp;<b>$thaiTxt</b></font>";
+echo "</div>";
+echo "</div>";
+
+// echo "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เลขที่&nbsp;$nRunno";
+
+print "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<CENTER><B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<BR></CENTER></font><br><br>"; 
+// print "<font face='Angsana New' size ='3'><CENTER>วันที่&nbsp;&nbsp;&nbsp; <B> $Thaidate1</B><BR></CENTER> "; 
+print "<font face='Angsana New' size ='3'>ข้าพเจ้า <B>$yot&nbsp;$cDoctor1</B> ตำแหน่ง "; 
 print $position;
-print "ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี<BR> ";
-print "<font face='Angsana New' size ='3'>ใบอนุญาตประกอบอาชีพเวชกรรมเลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B><BR>"; 
-print "<font face='Angsana New' size ='3'>ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;เป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
+print "&nbsp;ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี<BR> ";
+print "<font face='Angsana New' size ='3'>ใบอนุญาตประกอบอาชีพเวชกรรมเลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B> ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;วินิจฉัยว่าป่วยเป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
 //   print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;ตั้งแต่เวลา........................ถึง........................น.<BR>";
 //   print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;เพื่อ................................................<BR>"; 
-print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
+print "<font face='Angsana New' size ='3'>เห็นสมควรให้การการแพทย์แผนจีนด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
 
 $diag_list = array('อัมพฤกษ์','อัมพาต','CVA');
-if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $cDoctor2 === 'MD089' ){
-    if( in_array($cDiag, $diag_list) === true ){
-        print 'เพื่อ ฟื้นฟูสมรรถภาพ';
-    }else{
-        print 'เพื่อ การรักษา';
+
+// ทดสอบว่า diag มีคำเหล่านี้อยู่รึป่าว
+$diag_list = array('อัมพฤกษ์','อัมพาต','CVA','พากินสันต์');
+
+function test_diag($str, $diags){
+    foreach ($diags as $key => $lc) {
+        $test_pos = strpos($str, $lc);
+        if( $test_pos !== false ){
+            return true;
+        }
     }
+    return false;
+}
+
+$inList = test_diag($cDiag, $diag_list);
+
+if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $cDoctor2 === 'MD089' ){
+    if( $inList === true ){
+        print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';
+    }else{
+        // ถ้าเป็นโรคทั่วไปที่ไม่มีใน list
+        print 'เพื่อ บำบัดโรค';
+    }
+    
+    print "<br>";
+    if( $showStart > 0 && ( $date_start_th !== false && $date_end_th !== false ) ){
+        echo "ตั้งแต่วันที่ $txt_date_start ถึง $txt_date_end ";
+    }else{
+        echo "ตั้งแต่วันที่................................................ถึง................................................";
+    }
+    
 }else{
     print "เพื่อ................................................";
 }
-print "<BR>";
+print "<br><br>";
 
-if( $cDoctor2 === 'MD115' ){
-    print "<font face='Angsana New' size ='3'><CENTER>&nbsp;$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+// เช็กว่าจะให้ใส่ชื่อไปเลยรึป่าวใช้สำหรับการตั้งเบิก
+$auto_name = ( isset($_GET['auto']) && $_GET['auto'] == 1 ) ? 1 : 0 ;
+if( $auto_name > 0 ){
+    print "<font face='Angsana New' size ='3'><CENTER>ลงชื่อ&nbsp;$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 }else{
-    print "<font face='Angsana New' size ='3'><CENTER>&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+    print "<font face='Angsana New' size ='3'><CENTER>ลงชื่อ&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 }
 
-print "<font face='Angsana New' size ='3'><CENTER>($cDoctor1)</CENTER>"; 
-if( $cDoctor2 === 'MD115' ){
-    print "<font face='Angsana New' size ='3'><CENTER>$position</CENTER>"; 
+if( $cDoctor2 !== 'MD115' AND $cDoctor2 !== 'MD037' AND $cDoctor2 !== 'MD054' AND $cDoctor2 !== 'MD089' ){
+    print "<font face='Angsana New' size ='3'><CENTER>(&nbsp;$cDoctor1&nbsp;)</CENTER>"; 
 }
+
+print "<font face='Angsana New' size ='3'><CENTER>$position&nbsp;$doctorcode</CENTER>"; 
+
 $nNid++;
 $query ="UPDATE runno SET runno = $nNid WHERE title='nid_c'";
 $result = mysql_query($query) or die("Query failed");

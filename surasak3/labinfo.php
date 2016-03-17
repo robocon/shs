@@ -177,19 +177,29 @@ echo "  <font color =FF0000><b><u>เบิกไม่ได้   $aSumNprice บาท</u></b>)<br>
    
 <a target=_BLANK href="labslip4bc.php">สติ๊กเกอร์</a>&nbsp;&nbsp;<a target=_BLANK href="labslip4.1.php">สติ๊กเกอร์LAB ไม่ออกคิว</a>&nbsp;&nbsp;<a target=_BLANK href="labslip4pdf.php">สติ๊กเกอร์LAB PDF</a>&nbsp;&nbsp;<br><br><a target=_BLANK href="labslip4out.php">สติ๊กเกอร์ Lab นอก</a>&nbsp;&nbsp;<a target=_BLANK href="labslip5out.php">สติ๊กเกอร์ Lab นอก NAP</a>
 
-<br><br><a target=_BLANK href="labtranxnid.php"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
-<br><br><a target=_BLANK href="labtranxnid1.php">ใบรับรองแพทย์ ฝังเข็ม </a>
 <?php
-$doctor_type = trim(substr($cDoctor,5,50));
-if( $doctor_type === 'แพทย์แผนไทย' ){
-    // ฟิกเอาไว้ก่อน
+$cDoctor2 = substr($cDoctor,0,5);
+// เฉพาะแพทย์แผนจีน หมอการุณย์ หมอปฏิพงค์
+if( $cDoctor2 == 'MD037' OR $cDoctor2 == 'MD054' OR $cDoctor2 == 'MD115' ){
     ?>
-    <br><br><a target=_BLANK href="labtranxnidpt.php?subDoctor=1">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ (ศิริพร อินปัน)</a>
-    <br><br><a target=_BLANK href="labtranxnidpt.php?subDoctor=2">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ (ธัญญาวดี มูลรัตน์)</a>
-    <?php
-}else{
-    ?>
-    <br><br><a target=_BLANK href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>
+    <br><br>
+    <a target=_BLANK href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
+    <br><br>
+    <a target=_BLANK href="labtranxnid1.php">ใบรับรองแพทย์ ฝังเข็ม (สำหรับตั้งเบิก)</a><br>
+    <a target=_BLANK href="labtranxnid1.php?auto=1">ใบรับรองแพทย์ ฝังเข็ม </a>
     <?php
 }
-?>
+
+// เฉพาะแพทย์แผนไทย
+if( $cDoctor2 == 'MD058' ){
+    ?>
+    <br><br>
+    <a target=_BLANK href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ศิริพร อินปัน (สำหรับตั้งเบิก)</a><br>
+    <a target=_BLANK href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>&auto=1">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ศิริพร อินปัน</a>
+    <br><br>
+    <a target=_BLANK href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์ (สำหรับตั้งเบิก)</a><br>
+    <a target=_BLANK href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>&auto=1">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์</a>
+    <br><br>
+    <a target=_BLANK href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>
+    <?php
+}

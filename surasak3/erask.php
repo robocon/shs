@@ -60,17 +60,16 @@
 <?
 ////////////////////////////////////////// 
   ?>
-  <script>
+  <script type="text/javascript">
   function check()
-{
-	if(document.getElementById("doctor").selectedIndex=='0'){
-		alert("กรุณาเลือกแพทย์");
-		return false;
+	{
+		if(document.getElementById("doctor").selectedIndex=='0'){
+			alert("กรุณาเลือกแพทย์");
+			return false;
+		}else{
+			return true;
+		}
 	}
-	else{
-		return true;
-	}
-}
   </script>
   <? 
    //print "สิทธิการรักษา :$cPtright<br>";
@@ -114,21 +113,52 @@
 	<font face="Angsana New">&nbsp;&nbsp;
 		<a target=_BLANK href='diaghlp.htm'>โรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="text" name="diag" id="diag" size="20">
-		<span>คลิกเพื่อเพิ่ม Diag</span>&nbsp;
-		<span class="nid_diag" onclick="add_diag('อัมพฤกษ์')">อัมพฤกษ์</span>,&nbsp;
-		<span class="nid_diag" onclick="add_diag('อัมพาต')" data-val="อัมพาต">อัมพาต</span>,&nbsp;
-		<span class="nid_diag" onclick="add_diag('CVA')" data-val="CVA">CVA</span>,&nbsp;
-		<span class="nid_diag" onclick="add_diag('ไข้หวัด')" data-val="CVA">ไข้หวัด</span>,&nbsp;
-		<span class="nid_diag" onclick="add_diag('ภูมิแพ้')" data-val="CVA">ภูมิแพ้</span>
+		
+		<?php 
+		if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' ){
+			?>
+			<br>
+			<span>คลิกเพื่อเพิ่ม Diag</span>&nbsp;
+			<span class="nid_diag" onclick="add_diag('CVA')" data-val="CVA">CVA</span>,&nbsp;
+			<span class="nid_diag" onclick="add_diag('อัมพฤกษ์')">อัมพฤกษ์</span>,&nbsp;
+			<span class="nid_diag" onclick="add_diag('อัมพาต')" data-val="อัมพาต">อัมพาต</span>,&nbsp;
+			<span class="nid_diag" onclick="add_diag('พากินสันต์')" data-val="พากินสันต์">พากินสันต์</span>,&nbsp;
+			<span class="nid_diag" onclick="add_diag('หวัด')" data-val="CVA">หวัด</span>,&nbsp;
+			<span class="nid_diag" onclick="add_diag('ภูมิแพ้')" data-val="CVA">ภูมิแพ้</span>,&nbsp;
+			<span class="nid_diag" onclick="add_diag('โรคหอบหืด')" data-val="โรคหอบหืด">โรคหอบหืด</span>
+			<?php
+		}
+		?>
   	</font>
 	<script type="text/javascript">
 		// เพิ่ม diag ลงในช่องว่าง
+		var diag_txt = '';
 		function add_diag(txt){
-			document.getElementById('diag').value = txt;
+			var diag = document.getElementById('diag');
+			diag.value = diag.value+' '+txt;
 		}
 	</script>
   </p>
-  <p><font face="Angsana New">&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
+  <?php
+  if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' ){
+// เคลียร์ค่าที่เก็บวันที่
+$_SESSION['date_start'] = null;
+$_SESSION['date_end'] = null;
+  
+  $date_start = ( date('Y') + 543 ).date('-m-d');
+  $next_time = strtotime("+1 month");
+  $date_end = ( date('Y', $next_time) + 543 ).date('-m-d', $next_time);
+  
+  ?>
+  <p style="font-family: 'Angsana New';">
+	  รักษาตั้งแต่วันที่: <input type="text" name="date_start" value="<?=$date_start;?>"> <br>
+	  ถึงวันที่: <input type="text" name="date_end" value="<?=$date_end;?>">
+	</p>
+  <p>
+	<?php
+  }
+  ?>
+<font face="Angsana New">&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
   </font><font face="Angsana New">
 
    <?php
@@ -136,9 +166,7 @@
 list($menucode) = Mysql_fetch_row(Mysql_Query($sql));
 
   if($menucode == "ADMMAINOPD"){
-  ?>
-  
-  <? 
+
  include("connect.inc");
 $strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'   order by name"; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
