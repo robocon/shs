@@ -23,7 +23,7 @@ $action = input_get('action');
 	}
 </style>
 <div id="no-print">
-	<a href="#">กลับหน้าโปรแกรม รพ.</a>
+	<a href="../nindex.htm">กลับหน้าโปรแกรม รพ.</a>
 </div>
 <?php
 
@@ -44,7 +44,7 @@ if( $action === false ){
 					<tr>
 						<td></td>
 						<td>
-							<button>ค้นหา</button>
+							<button type="submit">ค้นหา</button>
 						</td>
 					</tr>
 				</tbody>
@@ -61,7 +61,7 @@ if( $action === false ){
 		$an = input_post('an');
 		DB::load();
 		
-		$sql = "SELECT * FROM `ipcard` WHERE `an` = :an";
+		$sql = "SELECT * FROM `opday` WHERE `an` = :an";
 		$user = DB::select($sql, array('an' => $an), true);
 		
 		if( empty($user) ){
@@ -100,7 +100,7 @@ if( $action === false ){
 	DB::load();
 	
 	$sql = "SELECT `hn`, `an`, `ptname`, `age`, `ptright` 
-	FROM `ipcard` 
+	FROM `opday` 
 	WHERE `an` = :an 
 	AND `hn` = :hn ";
 	
