@@ -59,7 +59,7 @@ $lab = mysql_fetch_assoc($q);
 
 $cPart = $lab['depart']; // อิงตาม labcare
 
-//
+// บันทึกข้อมูลการรักษา
 $thidate5 = (date("Y")+543).date("-m-d H:i:s"); 
 $query = "INSERT INTO medicalcertificate  (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
 $result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
@@ -70,9 +70,11 @@ WHERE `hn` = '$cHn'
 AND `part` = '$cPart' 
 AND ( `date_start` <= '$dateNow' AND `date_start` != '0000-00-00' ) 
 AND ( `date_end` >= '$dateNow' AND `date_end` != '0000-00-00' ) ";
+// echo "<pre>";
+// var_dump($sql);
 $q = mysql_query($sql) or die( mysql_error() );
 $rows = mysql_num_rows($q);
-
+// var_dump($rows);
 $showStart = 0;
 
 // ถ้ายังไม่มีข้อมูลวันที่เริ่มตรวจ และวันที่สิ้นสุด
@@ -101,6 +103,7 @@ $cDoctor2 = substr($cDoctor,0,5);
 
 //
 $acu = 0;
+$licen = '';
 if($cDoctor2 == "MD058"){
   
     // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
@@ -133,20 +136,46 @@ $Thaidate1=substr($Thaidate,0,10);
 list($d, $m, $y) = explode('-', $Thaidate1);
 $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
 
-print "<CENTER><img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'></CENTER>";
-
-echo "<div>";
-echo "<div style=\"display: inline;\">";
-echo "<font face='Angsana New' size ='4'>เลขที่&nbsp;$nRunno</font>";
-echo "</div>";
-echo "<div style=\"display: inline; float: right;\">";
-echo "<font face='Angsana New' size ='4'>วันที่&nbsp;<b>$thaiTxt</b></font>";
-echo "</div>";
-echo "</div>";
-
-print "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<CENTER><B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</CENTER></font><br><br>"; 
-print "<font face='Angsana New' size ='3'>ข้าพเจ้า <B>$yot&nbsp;$cDoctor1</B> ตำแหน่ง $position $certificate เลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B><BR> "; 
-print "<font face='Angsana New' size ='3'>ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;วินิจฉัยว่าป่วยเป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
+?>
+<style type="text/css">
+    .clearfix:after{
+        content: "";
+        display: table; 
+        clear: both;
+    }
+</style>
+<script type="text/javascript">
+    window.onload = function(){
+        window.print();
+    };
+</script>
+<div style="text-align: center;">
+    <img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'>
+</div>
+<div style="height: 24px;">
+    <div style="float: left; padding-left: 2em;">
+        <font face="Angsana New" size ="4">เลขที่&nbsp;<?=$nRunno;?></font>
+    </div>
+    <div style="float: right; padding-right: 4em;">
+        <font face="Angsana New" size ="4">วันที่&nbsp;<b><?=$thaiTxt;?></b></font>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div style="text-align: center;">
+    <font face='Angsana New' size ='4'>
+        <B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง
+    </font>
+</div>
+<br>
+<font face="Angsana New" size ="3">
+    ข้าพเจ้า <B><?=$yot;?>&nbsp;<?=$cDoctor1;?></B> ตำแหน่ง <?=$position;?>
+    <br>
+    <?=$certificate;?> เลขที่ &nbsp;<B><?=$doctorcode;?></B><BR>
+</font>
+<font face="Angsana New" size ="3">
+    ได้ทำการตรวจร่างกาย &nbsp;<B><?=$cPtname;?></B> &nbsp;HN:<?=$cHn;?>  &nbsp;&nbsp;วินิจฉัยว่าป่วยเป็นโรค:&nbsp;&nbsp;<B><?=$cDiag;?></B><BR>
+</font>
+<?php
 	  
 // ทดสอบว่า diag มีคำเหล่านี้อยู่รึป่าว
 $diag_list = array('อัมพฤกษ์','อัมพาต','CVA','พากินสันต์');
@@ -206,18 +235,18 @@ if( $cDoctor2 === "MD058" ){
 
 
 // เช็กว่าจะให้ใส่ชื่อไปเลยรึป่าวใช้สำหรับการตั้งเบิก
-$auto_name = ( isset($_GET['auto']) && $_GET['auto'] == 1 ) ? 1 : 0 ;
-if( $auto_name ){
-    print "<font face='Angsana New' size ='3'><CENTER>ลงชื่อ&nbsp;&nbsp;&nbsp;$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
-} else {
+// $auto_name = ( isset($_GET['auto']) && $_GET['auto'] == 1 ) ? 1 : 0 ;
+// if( $auto_name ){
+//     print "<font face='Angsana New' size ='3'><CENTER>ลงชื่อ&nbsp;&nbsp;&nbsp;$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+// } else {
     print "<font face='Angsana New' size ='3'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลงชื่อ&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
-}
+// }
 
 	  
 $Thaidate1=substr($Thaidate,0,10);
-if( $cDoctor2 !== "MD058" ){ //ถ้าไม่ใช่แพทย์แผนไทย
+// if( $cDoctor2 !== "MD058" ){ //ถ้าไม่ใช่แพทย์แผนไทย
     print "<font face='Angsana New' size ='3'><CENTER>(&nbsp;$cDoctor1&nbsp;)</CENTER>";
-}
+// }
  
 print "<font face='Angsana New' size ='3'><CENTER>$licen</CENTER>"; 
 

@@ -99,50 +99,75 @@ if($cDoctor2=='MD089'){$doctorcode='ว.32166';}else{$doctorcode='';};*/
 
 
 $Thaidate1=substr($Thaidate,0,10);
+$licen = '';
 
 // แพทย์แผนจีน
 if( $cDoctor2 === 'MD115' ){
     $yot = 'นาย';
     $cDoctor1 = 'ภาคภูมิ พิสุทธิวงษ์';
     $doctorcode = 'พจ. 714';
-    $position = 'แพทย์แผนจีน';
+
+    $position = "แพทย์แผนจีน";
+    $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขาการแพทย์แผนจีน";
+    
+    $licen = "$position $doctorcode";
+    
 }else{
     $sql = "select * from doctor where name like '%$cDoctor1%'";
     $query = mysql_query($sql);
     $rows = mysql_fetch_array($query);
     $yot = $rows["yot"];
     $doctorcode = "ว. ".$rows["doctorcode"];
-    $position = 'แพทย์';
+
+    $position = "แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี";
+    $certificate = "ใบอนุญาตประกอบอาชีพเวชกรรม";
+    
+    
 }
 
 list($d, $m, $y) = explode('-', $Thaidate1);
 $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
 
-?><body Onload="window.print();"><?php
-print "<CENTER><img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'></CENTER>";
-
-echo "<div>";
-echo "<div style=\"display: inline;\">";
-echo "<font face='Angsana New' size ='4'>เลขที่&nbsp;$nRunno</font>";
-echo "</div>";
-echo "<div style=\"display: inline; float: right;\">";
-echo "<font face='Angsana New' size ='4'>วันที่&nbsp;<b>$thaiTxt</b></font>";
-echo "</div>";
-echo "</div>";
-
-// echo "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เลขที่&nbsp;$nRunno";
-
-print "<font face='Angsana New' size ='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<CENTER><B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<BR></CENTER></font><br><br>"; 
-// print "<font face='Angsana New' size ='3'><CENTER>วันที่&nbsp;&nbsp;&nbsp; <B> $Thaidate1</B><BR></CENTER> "; 
-print "<font face='Angsana New' size ='3'>ข้าพเจ้า <B>$yot&nbsp;$cDoctor1</B> ตำแหน่ง "; 
-print $position;
-print "&nbsp;ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี<BR> ";
-print "<font face='Angsana New' size ='3'>ใบอนุญาตประกอบอาชีพเวชกรรมเลขที่ &nbsp;&nbsp;&nbsp;<B>$doctorcode</B> ได้ทำการตรวจร่างกาย &nbsp;<B>$cPtname</B> &nbsp;HN:$cHn  &nbsp;&nbsp;วินิจฉัยว่าป่วยเป็นโรค:&nbsp;&nbsp;<B>$cDiag</B><BR>"; 
-//   print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;ตั้งแต่เวลา........................ถึง........................น.<BR>";
-//   print "<font face='Angsana New' size ='3'>เห็นสมควรให้บริการรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;ครั้ง&nbsp;&nbsp;เพื่อ................................................<BR>"; 
-print "<font face='Angsana New' size ='3'>เห็นสมควรให้การการแพทย์แผนจีนด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
-
-$diag_list = array('อัมพฤกษ์','อัมพาต','CVA');
+?>
+<style type="text/css">
+    .clearfix:after{
+        content: "";
+        display: table; 
+        clear: both;
+    }
+</style>
+<script type="text/javascript">
+    window.onload = function(){
+        window.print();
+    };
+</script>
+<div style="text-align: center;">
+    <img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'>
+</div>
+<div style="height: 24px;">
+    <div style="float: left; padding-left: 2em;">
+        <font face="Angsana New" size ="4">เลขที่&nbsp;<?=$nRunno;?></font>
+    </div>
+    <div style="float: right; padding-right: 4em;">
+        <font face="Angsana New" size ="4">วันที่&nbsp;<b><?=$thaiTxt;?></b></font>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div style="text-align: center;">
+    <font face='Angsana New' size ='4'>
+        <B>ใบรับรองการตรวจร่างกายของแพทย์</B>&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง
+    </font>
+</div>
+<br>
+<font face="Angsana New" size ="3">
+    ข้าพเจ้า <B><?=$yot;?>&nbsp;<?=$cDoctor1;?></B> ตำแหน่ง <?=$position;?>
+    <br>
+    <?=$certificate;?> เลขที่ &nbsp;<B><?=$doctorcode;?></B><BR>
+</font>
+<font face="Angsana New" size ="3">
+    ได้ทำการตรวจร่างกาย &nbsp;<B><?=$cPtname;?></B> &nbsp;HN:<?=$cHn;?>  &nbsp;&nbsp;วินิจฉัยว่าป่วยเป็นโรค:&nbsp;&nbsp;<B><?=$cDiag;?></B><BR>
+</font>
+<?php
 
 // ทดสอบว่า diag มีคำเหล่านี้อยู่รึป่าว
 $diag_list = array('อัมพฤกษ์','อัมพาต','CVA','พากินสันต์');
@@ -158,6 +183,8 @@ function test_diag($str, $diags){
 }
 
 $inList = test_diag($cDiag, $diag_list);
+
+print "<font face='Angsana New' size ='3'>เห็นสมควรให้การการแพทย์แผนจีนด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
 
 if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $cDoctor2 === 'MD089' ){
     if( $inList === true ){
@@ -187,11 +214,12 @@ if( $auto_name > 0 ){
     print "<font face='Angsana New' size ='3'><CENTER>ลงชื่อ&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 }
 
-if( $cDoctor2 !== 'MD115' AND $cDoctor2 !== 'MD037' AND $cDoctor2 !== 'MD054' AND $cDoctor2 !== 'MD089' ){
+// if( $cDoctor2 !== 'MD115' AND $cDoctor2 !== 'MD037' AND $cDoctor2 !== 'MD054' AND $cDoctor2 !== 'MD089' ){
     print "<font face='Angsana New' size ='3'><CENTER>(&nbsp;$cDoctor1&nbsp;)</CENTER>"; 
-}
+// }
 
-print "<font face='Angsana New' size ='3'><CENTER>$position&nbsp;$doctorcode</CENTER>"; 
+// print "<font face='Angsana New' size ='3'><CENTER>$position&nbsp;$doctorcode</CENTER>"; 
+print "<font face='Angsana New' size ='3'><CENTER>$licen</CENTER>"; 
 
 $nNid++;
 $query ="UPDATE runno SET runno = $nNid WHERE title='nid_c'";
