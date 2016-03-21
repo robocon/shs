@@ -11,8 +11,8 @@ if($cPtname == "" || $cHn == "" || $cDoctor == "" || $cDepart==""){
 $code = isset($_GET['code']) ? trim($_GET['code']) : false ;
 
 // เลือกวันที่เริ่มตรวจ และสิ้นสุด
-$date_start_th = isset($_SESSION['date_start']) ? $_SESSION['date_start'] : false ;
-$date_end_th =  isset($_SESSION['date_end']) ? $_SESSION['date_end'] : false ;
+$date_start_th = ( isset($_SESSION['date_start']) && !empty($_SESSION['date_start']) ) ? $_SESSION['date_start'] : false ;
+$date_end_th =  ( isset($_SESSION['date_end']) && !empty($_SESSION['date_start']) ) ? $_SESSION['date_end'] : false ;
 
 $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
 '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
@@ -68,8 +68,8 @@ $dateNow = date('Y-m-d');
 $sql = "SELECT * FROM `medicalcertificate` 
 WHERE `hn` = '$cHn' 
 AND `part` = '$cPart' 
-AND ( `date_start` <= '$dateNow' AND `date_start` != '0000-00-00' ) 
-AND ( `date_end` >= '$dateNow' AND `date_end` != '0000-00-00' ) ";
+AND ( `date_start` <= '$dateNow' AND `date_start` IS NOT NULL ) 
+AND ( `date_end` >= '$dateNow' AND `date_end` IS NOT NULL ) ";
 // echo "<pre>";
 // var_dump($sql);
 $q = mysql_query($sql) or die( mysql_error() );
@@ -78,7 +78,7 @@ $rows = mysql_num_rows($q);
 $showStart = 0;
 
 // ถ้ายังไม่มีข้อมูลวันที่เริ่มตรวจ และวันที่สิ้นสุด
-if( $rows == 0 ){
+if( $rows == 0 && $date_start_th !== false && $date_end_th !== false ){
     list($sy, $sm, $sd) = explode('-', $date_start_th);
     list($ey, $em, $ed) = explode('-', $date_end_th);
     
@@ -193,9 +193,9 @@ function test_diag($str, $diags){
 
 // ถ้าอยู่ในเคสของ หวัด ภูมิแพ้ หอบหืด จะนับเป็นการอบด้วยสมุนไพร
 $inBy = test_diag($cDiag, $diag_list2);
-$nid_ext = 'ด้วยการนวดพร้อมประคบสมุนไพร';
+$nid_ext = 'นวดพร้อมประคบสมุนไพร';
 if( $inBy === true ){
-    $nid_ext = 'ด้วยการอบไอน้ำสมุนไพร';
+    $nid_ext = 'อบไอน้ำสมุนไพร';
 }
       
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทางแพทย์แผนไทยด้วยการ $nid_ext "; 
@@ -220,7 +220,7 @@ if( $cDoctor2 === "MD058" ){
     echo "<br>";
     
     if( $showStart > 0 && ( $date_start_th !== false && $date_end_th !== false ) ){
-        echo "ตั้งแต่วันที่ $txt_date_start ถึง $txt_date_end ";
+        echo "ตั้งแต่วันที่&nbsp;&nbsp;$txt_date_start&nbsp;&nbsp;ถึง&nbsp;&nbsp;$txt_date_end ";
     }else{
         echo "ตั้งแต่วันที่................................................ถึง................................................";
     }
