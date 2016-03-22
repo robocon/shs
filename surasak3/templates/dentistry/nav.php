@@ -25,6 +25,6 @@
 </div>
 <?php // Notification ?>
 <?php if( isset($_SESSION['x-msg']) ): ?>
-<div class="notify-warning"><?php echo $_SESSION['x-msg']; ?></div>
+<div class="notify-warning no-print"><?php echo $_SESSION['x-msg']; ?></div>
 <?php unset($_SESSION['x-msg']); ?>
 <?php endif; ?>

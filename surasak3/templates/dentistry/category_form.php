@@ -69,7 +69,9 @@ if( $id !== false ){
 						<td>
 							<a href="survey_oral.php?task=category_edit&id=<?php echo $item['id'];?>">·°È‰¢</a>
 								| 
+							<?php if( $item['id'] != '71' ): ?>
 							<a href="survey_oral.php?action=delete_category&id=<?php echo $item['id'];?>" class="survey_remove">≈∫</a>
+							<?php endif; ?>
 						</td>
 					</tr>
 					<?php

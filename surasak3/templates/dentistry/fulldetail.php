@@ -18,8 +18,13 @@
 			} else {
 				
 				$img_checked = '<img src="assets/img/den/box-checked.png" style="width: 16px;">';
+				
+				$header_txt = 'กำลังพล ทบ.';
+				if( $item['section'] == '71' ){
+					$header_txt = 'กลุ่มแม่บ้านทหารบก';
+				}
 		?>
-			<h3 id="detail_header_print">ผลตรวจสภาวะช่องปาก กำลังพล ทบ.</h3>
+			<h3 id="detail_header_print">ผลตรวจสภาวะช่องปาก <?=$header_txt;?></h3>
 			<div class="cell">
 				<div class="input_form"><label for="date">วันที่ตรวจ:</label>&nbsp;<?php echo $item['date'];?></div>
 				<div class="input_form"><label for="hn">HN: </label><?php echo $item['hn'];?></div>
@@ -43,7 +48,7 @@
 					<thead>
 						<tr>
 							<th class="align-center">สภาวะช่องปาก</th>
-							<th class="align-center" width="5%">ระดับ</th>
+							<th class="align-center" width="7%">ระดับ</th>
 							<th class="align-center" width="30%">คำแนะนำในการรักษา</th>
 						</tr>
 					</thead>
