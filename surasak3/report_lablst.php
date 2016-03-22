@@ -105,7 +105,7 @@ $month["12"] = "ธันวาคม";
 		</tr>
 		</TABLE>
 </FORM>
-<div><A HREF="..\nindex.htm">&lt;&lt; ไปเมนู</A></div>
+<div><A HREF="..\nindex.htm">&lt;&lt; ไปเมนู</A> | <a href="druginr.php" target="_blank">รายชื่อผู้ป่วยที่ INR > 6</a></div>
 <?php
 if(empty($_POST["search_hn"])){
 	 include("unconnect.inc");
