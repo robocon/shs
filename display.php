@@ -104,13 +104,31 @@
     <div class="news-contain">
         <h3 class="news-header">ข่าวประชาสัมพันธ์</h3>
         <div>
+            <?php
+            $last_day = date('Y-m-d', strtotime("-2 week"));
+            $new_date = date('Y-m-d', strtotime("-1 week"));
+            $sql = "SELECT * FROM `news` 
+            WHERE `status` = 1
+            AND `date_start` > '$last_day'
+            ORDER BY `date_start` DESC;
+            ";
+            $q = mysql_query($sql);
+            ?>
             <ol>
-                <li class="news-link">
-                    <a href="surasak3/news_detail.php">ด่วนที่สุด ที่ 0421.3/ว 106 ลงวันที่ 2 มีนาคม 2559 เรื่องขอความร่วมมือใช้สายการบินไทยสมายล์แอร์เวย์ ในการเดินทางไปราชการภายในประเทศ</a> <img height="15" src="new.gif" width="30"> 
-                </li>
-                <li class="news-link">
-                    <a href="surasak3/news_detail.php">ด่วนที่สุด ที่ กค 0421.5/ว 18 ลงวันที่ 14 มกราคม 2559 เรื่อง การจัดทำรายละเอียดประกอบการถอดแบบคำนวณราคากลางงานก่อสร้างที่เกี่ยวข้องกับค่าน้ำมันเพิ่มเติม</a> <img height="15" src="new.gif" width="30"> 
-                </li>
+                <?php
+                while( $item = mysql_fetch_assoc($q) ){
+                    ?>
+                    <li class="news-link">
+                        <a href="surasak3/news_detail.php?id=<?=$item['id'];?>"><?=$item['title'];?></a>
+                        <?php
+                        if( $new_date < $item['date_start'] ){
+                            ?><img height="15" src="new.gif" width="30"><?php
+                        }
+                        ?>
+                    </li>
+                    <?php
+                }
+                ?>
             </ol>
         </div>
     </div>

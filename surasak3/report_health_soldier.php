@@ -6,13 +6,15 @@ include 'bootstrap.php';
 
 DB::load();
 
-$camp_lists = array('312600' => 'รพ.ค่ายสุรศักดิ์มนตรี',
-'312601' => '.มทบ.32',
-'312602' => 'ร้อย.ฝรพ.3',
-'312603' => 'ร.17 พัน.2',
-'312604' => 'ช.พัน.4 ร้อย4');
+$camp_lists = array(
+	'312600' => 'รพ.ค่ายสุรศักดิ์มนตรี',
+	'312601' => '.มทบ.32',
+	'312602' => 'ร้อย.ฝรพ.3',
+	'312603' => 'ร.17 พัน.2',
+	'312604' => 'ช.พัน.4 ร้อย4'
+);
 
-echo "<pre>";
+// echo "<pre>";
 $sql = "
 CREATE TEMPORARY TABLE condxofyear_so_temp 
 SELECT a.`row_id`,a.`hn`,a.`thidate`,a.`camp1`,b.`yot`,b.`name`,b.`surname`,b.`idcard`,b.`dbirth`,a.`age`,b.`sex`,
