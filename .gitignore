@@ -27,6 +27,7 @@ surasak3/tmp/*
 surasak3/Backup*/*
 surasak3/dataupdate/*
 surasak3/tests/*
+surasak3/news/*
 
 # Visual Studio Code
 .settings/*

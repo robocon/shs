@@ -19,11 +19,12 @@ $sql = "
 CREATE TEMPORARY TABLE condxofyear_so_temp 
 SELECT a.`row_id`,a.`hn`,a.`thidate`,a.`camp1`,b.`yot`,b.`name`,b.`surname`,b.`idcard`,b.`dbirth`,a.`age`,b.`sex`,
 a.`cigarette`,a.`alcohol`,a.`exercise`,a.`weight`,a.`height`,a.`round_`,a.`bp1`,
-a.`bp2`,a.`bs`,a.`chol`,a.`tg`,a.`chunyot1`
+a.`bp2`,a.`bs`,a.`chol`,a.`tg`,a.`chunyot1`,a.`hdl`,a.`ldl`
 FROM `opcard` AS b
 LEFT JOIN `condxofyear_so` AS a ON a.`hn`=b.`hn`
-WHERE a.`yearcheck` = '2558' 
+WHERE a.`yearcheck` = '2559' 
 #AND b.`name` != ''
+GROUP BY a.`hn`
 ORDER BY a.`row_id` DESC
 ";
 DB::select($sql, null);
@@ -123,8 +124,8 @@ foreach ($new_itmes as $key => $item) {
 		<td><?php echo !empty($item['bs']) ? $item['bs'] : '' ; ?></td>
 		<td><?php echo !empty($item['chol']) ? $item['chol'] : '' ; ?></td>
 		<td><?php echo !empty($item['tg']) ? $item['tg'] : '' ; ?></td>
-		<td></td>
-		<td></td>
+		<td><?php echo !empty($item['hdl']) ? $item['hdl'] : '' ; ?></td>
+		<td><?php echo !empty($item['ldl']) ? $item['ldl'] : '' ; ?></td>
 	</tr>
 	<?php
 	$i++;
