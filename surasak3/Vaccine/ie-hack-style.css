@@ -1,0 +1,28 @@
+.left_nav .nav_head{
+		background:url(images/left-sidebar_header.png) no-repeat;
+		height:45px;
+		margin:0;padding:10px 0 0px 10px;
+		font-size:24px;
+		color:#111;
+		text-shadow:3px 3px 3px #1d9ec4;
+}
+
+#left_sidebar .left_nav_display form{
+		margin:0;
+		padding:0;
+		overflow:hidden;
+		font-size:12px;
+		font-family:Tahoma;
+}
+
+#left_sidebar .left_nav_display form .input-text{
+		margin:8px 0 10px 0;
+		padding:13px 5px 0 5px;
+		overflow:hidden;
+		background:url(images/form-input-bg.png) no-repeat;
+		display:block;
+		width:174px;
+		height:25px;
+		border:0;
+		color:#FFFFFF;
+}
