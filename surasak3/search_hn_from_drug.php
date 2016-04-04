@@ -13,7 +13,7 @@ include 'templates/classic/nav.php';
 	<div class="col" class="no-print">
 		<div class="cell">
 			<form class="col" action="search_hn_from_drug.php" method="post">
-				<div><h3>ระบบแสดงราชื่อผู้ป่วยที่ใช้ยา Warfarin</h3></div>
+				<div><h3>ระบบแสดงรายชื่อผู้ป่วยที่ใช้ยา Warfarin</h3></div>
 				<div class="col">
 					<div class="width-2of5">
 						เลือกปีแสดงผล: 
@@ -22,7 +22,9 @@ include 'templates/classic/nav.php';
 						<select name="year" id="year">
 							<option value="2556">2556</option>
 							<option value="2557">2557</option>
-							<option value="2558" selected="selected">2558</option>
+							<option value="2558">2558</option>
+							<option value="2559" selected="selected">2559</option>
+							<option value="2560">2560</option>
 						</select>
 					</div>
 				</div>
