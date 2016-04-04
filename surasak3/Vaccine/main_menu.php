@@ -4,7 +4,7 @@
 		<li><a href="service.php"><span>สมุดทะเบียนวัคซีนเด็ก</span></a></li>
 		<li><a href="clinic_well_baby.php"><span>คลินิก Well baby</span></a></li>
 		<li>
-			<a href="#"><span>รายงานการรับบริการวัคซีนเด็ก</span></a>
+			<a href="javascript:void(0);"><span>รายงานการรับบริการวัคซีนเด็ก</span></a>
 			<ul>
 				<li><a href="Report_m.php"><span>รายงานการรับบริการประจำเดือน</span></a></li>
 				<li><a href="Report_vac.php"><span>รายงานการรับบริการตามวัคซีน</span></a></li>
