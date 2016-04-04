@@ -198,10 +198,6 @@ if ( $task === false ) {
                     <div class="cell">
                         <label for="title">ชื่อเรื่อง</label>
                         <input type="text" name="title" value="<?=$item['title'];?>" class="width-2of5">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="cell">
                         <label for="">รายการไฟล์</label>
                         <?php
                         if( $id !== false ){
@@ -285,5 +281,4 @@ if ( $task === false ) {
     </script>
     <?php
 }
-
 include 'templates/classic/footer.php';
