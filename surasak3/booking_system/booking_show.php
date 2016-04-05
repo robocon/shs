@@ -1,6 +1,6 @@
-<?php
-session_start();
-include '../connect.php';
+<? 
+	session_start();
+	include("../Connections/connect.inc.php"); 
 ?>
 <title>รับทราบข้อมูลการจองเตียง</title>
 <style type="text/css">
@@ -12,23 +12,25 @@ include '../connect.php';
 	font-family: "TH SarabunPSK";
 	font-size: 16px;
 }
+
 </style>
-<?php
+<?
 //*******จองเตียงใหม่**********//
-	if(isset($_GET['code']) && substr($_GET['code'],0,2)=="42"){
-		$where1 = "หอผู้ป่วยรวม";
-	}elseif(isset($_GET['code']) && substr($_GET['code'],0,2)=="43"){
-		$where1 = "หอผู้ป่วยสูตินรี";
-	}elseif(isset($_GET['code']) && substr($_GET['code'],0,2)=="44"){
-		$where1 = "หอผู้ป่วยหนัก(icu)";
-	}elseif(isset($_GET['code']) && substr($_GET['code'],0,2)=="45"){
-		$where1 = "หอผู้ป่วยพิเศษ";
+	if(isset($_GET['code'])&&substr($_GET['code'],0,2)=="42"){
+		$where1 = "and ward='หอผู้ป่วยรวม' ";
+	}elseif(isset($_GET['code'])&&substr($_GET['code'],0,2)=="43"){
+		$where1 = "and ward='หอผู้ป่วยสูตินรี' ";
+	}elseif(isset($_GET['code'])&&substr($_GET['code'],0,2)=="44"){
+		$where1 = "and ward='หอผู้ป่วยหนัก(icu)' ";
+	}elseif(isset($_GET['code'])&&substr($_GET['code'],0,2)=="45"){
+		$where1 = "and ward='หอผู้ป่วยพิเศษ' ";
 	}
 	
-	$sql1="SELECT * FROM `booking` WHERE `status` = '' AND `ward` = '$where1'";
-    $query1 = mysql_query($sql1) or die( mysql_error() ); 
-	$row1 = mysql_num_rows($query1);
-	$i = 1;
+	$sql1="SELECT * FROM  booking  WHERE  status='' $where1";
+    $query1 = mysql_query($sql1); 
+	$row1=mysql_num_rows($query1);
+	$i=1;
+	
 	if($row1){
 		echo "<div class=\"forntsarabun\">การจองเตียงใหม่ทั้งหมด</div><hr>";
 		
@@ -54,7 +56,7 @@ include '../connect.php';
 	  }
 	  $date_in = substr($dbarr1['date_in'],8,2)."-".substr($dbarr1['date_in'],5,2)."-".substr($dbarr1['date_in'],0,4);
 	  $date_regis = substr($dbarr1['date_regis'],8,2)."-".substr($dbarr1['date_regis'],5,2)."-".substr($dbarr1['date_regis'],0,4);
-	echo"  <tr>
+echo"  <tr>
     <td align='center'>$i</td>
     <td>$date_regis</td>
     <td>$dbarr1[hn]</td>
@@ -70,7 +72,7 @@ include '../connect.php';
 	echo  "</tr>";
   	$i++;
     }// ปิด while
-	echo "</table>";
+echo "</table>";
 
   }else{
 	echo "<font class='forntsarabun'>ไม่พบการจองเตียงเพิ่มเติม </font><br>";
@@ -85,7 +87,9 @@ if(isset($_GET['confirm'])){
 		<script>
         	window.location.href="booking_show.php?code=<?=$_GET['code']?>";
         </script>
-		<?php
+		<?
 	}
 }
+
+mysql_close();
 ?>

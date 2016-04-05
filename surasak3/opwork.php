@@ -490,37 +490,37 @@ $structure = '../image_patient';
 ?>
  
 
-<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
+<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php" onclick="addQueue()">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php">คิวตรวจทันตกรรม(<?php $sql = "Select runno From runno where title ='kew2' ";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php" onclick="addQueue()">คิวตรวจทันตกรรม(<?php $sql = "Select runno From runno where title ='kew2' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>) </a>
 &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd3.php">คิวสูติ(<?php $sql = "Select runno From runno where title ='kew3' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd3.php" onclick="addQueue()">คิวสูติ(<?php $sql = "Select runno From runno where title ='kew3' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
 
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd7.php">คิวตรวจตา(<?php $sql = "Select runno From runno where title ='kew7' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd7.php" onclick="addQueue()">คิวตรวจตา(<?php $sql = "Select runno From runno where title ='kew7' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php">คิวตรวจสุขภาพทหารในสังกัดประจำปี(<?php $sql = "Select runno From runno where title ='chekup' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php" onclick="addQueue()">คิวตรวจสุขภาพทหารในสังกัดประจำปี(<?php $sql = "Select runno From runno where title ='chekup' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
 
 <BR>
 &nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd6.php">คิวฝั่งเข็ม(<?php $sql = "Select runno From runno where title ='kew6' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd6.php" onclick="addQueue()">คิวฝั่งเข็ม(<?php $sql = "Select runno From runno where title ='kew6' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd5.php">มวลกระดูก(<?php $sql = "Select runno From runno where title ='kew5' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd5.php" onclick="addQueue()">มวลกระดูก(<?php $sql = "Select runno From runno where title ='kew5' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
@@ -530,24 +530,24 @@ $structure = '../image_patient';
 	$q = mysql_query("SELECT * FROM `runno` WHERE `title` = 'kewsold' ");
 	$item = mysql_fetch_assoc($q);
 	?>
-	<a target="_target" href="kewadd_soldier.php">คิวตรวจสุขภาพทหารพรานประจำปี(<?php echo $item['runno'];?>)</a>
+	<a target="_target" href="kewadd_soldier.php" onclick="addQueue()">คิวตรวจสุขภาพทหารพรานประจำปี(<?php echo $item['runno'];?>)</a>
 	&nbsp;&nbsp;&nbsp
 	
 &nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd4.php">ลบคิว</a>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;คิวคลินิกพิเศษ&nbsp;&nbsp;&nbsp;<a target=_TOP href="keweye.php">จักษุ(พ) </a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewmed.php">อยุรกรรม(พ)(<?php $sql = "Select runno From runno where title ='kewmed' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewmed.php" onclick="addQueue()">อยุรกรรม(พ)(<?php $sql = "Select runno From runno where title ='kewmed' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
-&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewsurg.php">ศัลยกรรม(พ) </a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewogb.php">สูติ(พ)(<?php $sql = "Select runno From runno where title ='kewogb' ";
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewsurg.php" onclick="addQueue()">ศัลยกรรม(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewogb.php" onclick="addQueue()">สูติ(พ)(<?php $sql = "Select runno From runno where title ='kewogb' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewent.php">หู คอ จมูก(พ)</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewchild.php">กุมารเวช(พ)</a>
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewent.php" onclick="addQueue()">หู คอ จมูก(พ)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewchild.php" onclick="addQueue()">กุมารเวช(พ)</a>
 &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp<a target=_TOP href="kewortho.php">ศัลยกรรมกระดูก(พ)(<?php $sql = "Select runno From runno where title ='kewortho' ";
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewortho.php" onclick="addQueue()">ศัลยกรรมกระดูก(พ)(<?php $sql = "Select runno From runno where title ='kewortho' ";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>)</a>
@@ -584,14 +584,32 @@ $structure = '../image_patient';
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
 <script type="text/javascript">
-var addedKew = 0;
+
+var queue = 0;
+
+var card = 0;
 function searchCard(ev){
-	if( addedKew === 0 ){
-		addedKew = 1;
+	
+	if( queue === 0 ){
+		var c = confirm('ยังไม่ได้กดคิว ยืนยันที่จะส่งค้นบัตรหรือไม่?');
+		if( c === false ){
+			SMPreventDefault(ev);
+			return false;
+		}else{
+			queue = 1;
+		}
+	}
+	
+	if( card === 0 ){
+		card = 1;
 	}else{
 		alert('ส่งค้นบัตรเรียบร้อยแล้ว');
 		SMPreventDefault(ev);
 	}
+}
+
+function addQueue(){
+	queue = 1;
 }
 
 function SMPreventDefault(ev){

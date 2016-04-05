@@ -136,12 +136,18 @@ print "<DIV style='left:80PX;top:335PX;width:500PX;height:30PX;'><span class='fc
 //12
 print "<DIV style='left:90PX;top:355PX;width:500PX;height:30PX;'><span class='fc1-3'><b>ที่เบอร์โทร <u>054-839305 ต่อ 1120-1121</u></b></span></DIV>";
 
-//11
-print "<DIV style='left:80PX;top:390PX;width:500PX;height:30PX;'><span class='fc1-3'>.................................. ผู้ทบทวน</span></DIV>";
-//12
-print "<DIV style='left:230PX;top:390PX;width:500PX;height:30PX;'><span class='fc1-3'>.................................. ผู้ป่วย/ญาติ</span></DIV>";
 //13
-print "<DIV style='left:400PX;top:390PX;width:500PX;height:30PX;'><span class='fc1-3'>......../........../.........</span></DIV>";
+print "<DIV style='left:80PX;top:375PX;width:500PX;height:30PX;'><span class='fc1-3'>5.หากท่านไม่มาตามนัด <b>เกินเวลา 14.00 น.</b> ทางโรงพยาบาลขอสงวนสิทธิ์ยกเลิกการจองเตียง/ห้อง</span></DIV>";
+
+//14
+print "<DIV style='left:90PX;top:395PX;width:500PX;height:30PX;'><span class='fc1-3'>เพื่อบริหารเตียงสำหรับผู้ป่วยรายอื่นต่อไป</span></DIV>";
+
+//15
+print "<DIV style='left:80PX;top:415PX;width:500PX;height:30PX;'><span class='fc1-3'>.................................. ผู้ทบทวน</span></DIV>";
+//16
+print "<DIV style='left:230PX;top:415PX;width:500PX;height:30PX;'><span class='fc1-3'>.................................. ผู้ป่วย/ญาติ</span></DIV>";
+//17
+print "<DIV style='left:400PX;top:415PX;width:500PX;height:30PX;'><span class='fc1-3'>......../........../.........</span></DIV>";
 ?>
 
 

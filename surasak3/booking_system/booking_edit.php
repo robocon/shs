@@ -63,8 +63,8 @@ function fncSubmit()
 </script>
 
 <? 
-	// include("../Connections/connect.inc.php"); 
-	include '../connect.php';
+	include("../Connections/connect.inc.php"); 
+	
 	function calcage($birth){
 
 	$today = getdate();   
@@ -113,7 +113,7 @@ return $pAge;
       <input name="ptname" type="text" class="forntsarabun" id="ptname" value="<?=$dbarr['ptname'];?>"/></td>
     <td>อายุ</td>
     <td colspan="3"><label for="age"></label>
-      <input name="age" type="text" class="forntsarabun" id="age"  value="<?=calcage($dbarr['bdate']);?>"/></td>
+      <input name="age" type="text" class="forntsarabun" id="age"  value="<?=calcage($dbarr['dbirth']);?>"/></td>
     <td>&nbsp;</td>
   </tr>
   <tr>
@@ -187,9 +187,8 @@ return $pAge;
     
 <?
 
-if(isset($_REQUEST['do']) && $_REQUEST['do']=="save"){
-// include("../Connections/connect.inc.php"); 
-include '../connect.php';
+if($_REQUEST['do']=="save"){
+include("../Connections/connect.inc.php"); 
 
 	$y=date('Y')+543;
 	$m=date('m');

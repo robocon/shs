@@ -1,16 +1,16 @@
-<?php
+<?
 session_start();
-include("../connect.php"); 
+include("../Connections/connect.inc.php"); 
 
 if(isset($_POST['okok'])){ 
 
 		$sql = "update booking set status='อนุมัติ',comment='".$_POST['room']."',officer_con='".$_SESSION['sOfficer']."' where row_id= '".$_GET['row_id']."'  ";
-		mysql_query($sql) or die( mysql_error() );
+		mysql_query($sql);
 ?>
 		<script>
         	window.location.href="booking_confirm.php?code=<?=$_POST['code']?>";
         </script>
-<?php
+<?
 }else{
 	$sql2 = "select * from booking where row_id='".$_GET['row_id']."' "; 
 	$row2 = mysql_query($sql2);

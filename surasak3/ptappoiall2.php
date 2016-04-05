@@ -98,7 +98,11 @@ a{
 		$doctor3 = " AND doctor <> '".$doctor."' ";
 	}
 	
-	$query = "SELECT count( hn ) , hn, doctor   FROM `appoint` WHERE appdate = '$appd' ".$doctor3." GROUP BY hn HAVING count( hn ) >= 1 ";
+	$query = "SELECT count( hn ) , hn, doctor 
+	FROM `appoint` 
+	WHERE appdate = '$appd' ".$doctor3." 
+	GROUP BY hn 
+	HAVING count( hn ) >= 1 ";
 	$result = mysql_query($query);
 	while($arr = Mysql_fetch_assoc($result)){
 		$name_dc = substr($arr["doctor"],5);

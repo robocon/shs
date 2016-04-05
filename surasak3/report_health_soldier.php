@@ -8,13 +8,14 @@ DB::load();
 
 $camp_lists = array(
 	'312600' => 'รพ.ค่ายสุรศักดิ์มนตรี',
-	'312601' => '.มทบ.32',
+	'312601' => 'มทบ.32',
 	'312602' => 'ร้อย.ฝรพ.3',
 	'312603' => 'ร.17 พัน.2',
-	'312604' => 'ช.พัน.4 ร้อย4'
+	'312604' => 'ช.พัน.4 ร้อย4',
+	'312605' => 'สง.สด.จว.ล.ป.'
 );
 
-// echo "<pre>";
+
 $sql = "
 CREATE TEMPORARY TABLE condxofyear_so_temp 
 SELECT a.`row_id`,a.`hn`,a.`thidate`,a.`camp1`,b.`yot`,b.`name`,b.`surname`,b.`idcard`,b.`dbirth`,a.`age`,b.`sex`,
@@ -27,6 +28,8 @@ WHERE a.`yearcheck` = '2559'
 GROUP BY a.`hn`
 ORDER BY a.`row_id` DESC
 ";
+// echo "<pre>";
+// var_dump($sql);
 DB::select($sql, null);
 
 $new_itmes = array();

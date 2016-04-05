@@ -131,18 +131,8 @@ if($_POST['button']){
 	}
 	
 	$hn=trim($_POST['hn']);
-	$chkdate=(date("Y")+543)."-".date("m")."-".date("d");
-	$showdate=date("d")."/".date("m")."/".(date("Y")+543);
-	$str="select * from booking where hn='".$hn."' and date_in ='$chkdate'";
-	//echo $str;
-	$strquery=mysql_query($str);
-	$strnum=mysql_num_rows($strquery);
-	$strrows=mysql_fetch_array($strquery);
-	if($strnum > 0){
-		echo "<script>alert('!!! ผิดพลาด...ไม่สามารถจองเตียงได้ เนื่องจากคนไข้  HN : $hn จองเตียงวันที่ $showdate ไว้แล้ว สถานะ : $strrows[status] กรุณาตรวจสอบข้อมูลการจองเตียง');</script>";
-	}else{
+	
 	$sql="SELECT * FROM  opcard WHERE  hn ='".$hn."' ";
-	}
     $query = mysql_query($sql); 
 	$dbarr=mysql_fetch_array($query);
 	$row=mysql_num_rows($query);
@@ -253,7 +243,7 @@ if($_POST['button']){
 				<tr>
 					<td colspan="7">
 						<div style="padding: 8px; color: red; font-weight: bold; font-size: 24px;">
-							<p style="margin: 0;">ผู้ป่วยมีข้อมูลการจองเตียงไว้เรียบร้อยแล้ว Admit วันที่ <?php echo $item['date_in'].' '.$status; ?></p>
+							<p style="margin: 0;">ผู้ป่วยมีข้อมูลการจองเตียงไว้เรียบร้อยแล้ว Admitวันที่ <?php echo $item['date_in'].' '.$status; ?></p>
 						</div>
 					</td>
 				</tr>
@@ -272,7 +262,7 @@ if($_POST['button']){
 	</form> 
 	<?
 	}else{
-		echo "<div class=\"forntsarabun\">ไม่พบ HN กรุณาตรวจสอบใหม่อีกครั้ง</div>";
+		echo "<div class=\"forntsarabun\">ไม่พบ HN </div>";
 	}
 } // End ใบจองเตียงผู้ป่วยใน
 
@@ -290,17 +280,10 @@ if($_POST['date_in']==""){
 	$d=date('d');
 	$datetime=$y.'-'.$m.'-'.$d.' '.date('H:i:s');
 	///////////////////////////////
-	list($d, $m, $y) = explode("/",$_POST['date_in']);
-	
-	// ป้องกันเคสที่เจ้าหน้าที่ห้องทะเบียนกรอกข้อมูลเองแล้วใส่ผิด
-	// เช่น 2/4/2016 แทนที่จะกรอกเป็น 02/04/2016
-	$m = sprintf('%02d', $m);
-	$d = sprintf('%02d', $d);
-	
-	$stryear = $y + 543;
-	
-	// เรียงใหม่เป็น ปี-เดือน-วัน
-	$date_in = $stryear.'-'.$m.'-'.$d;
+	$strdate=explode("/",$_POST['date_in']);
+	$stryear=$strdate[2]+543;
+	$date_in=$stryear.'-'.$strdate[1].'-'.$strdate[0];
+
 	
 $sqlin="INSERT INTO  booking (`hn`,`ptname`,`bdate`,`age`,`diag`,`doctor`,`bed`,`ward`,`date_in`,`date_regis`,`ptright`) 
 VALUES ('".$_POST['hn']."','".$_POST['ptname']."','".$_POST['bdate']."','".$_POST['age']."','".$_POST['diag']."','".$_POST['doctor']."','".$_POST['bed']."','".$_POST['ward']."','".$date_in."','".$datetime."','".$_POST['ptright']."')";

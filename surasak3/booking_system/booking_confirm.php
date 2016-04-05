@@ -1,4 +1,4 @@
-<?php
+<? 
 	session_start();
 ?>
 <title>ตรวจสอบข้อมูลการจอง</title>
@@ -21,7 +21,7 @@
   <tr class="forntsarabun">
     <td  align="right" class="forntsarabun">วันที่</td>
     <td ><select name="d_start">
-	<?php
+	<?
 	$d=date("d");
 	for($i=1;$i<=31;$i++){
 		if($i<=9){
@@ -38,7 +38,7 @@
 	
 	?>
 	</select>
-	<?php $m=date('m'); ?>
+	<? $m=date('m'); ?>
       <select name="m_start" >
         <option value="01" <? if($m=='01'){ echo "selected"; }?>>มกราคม</option>
         <option value="02" <? if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
@@ -53,7 +53,7 @@
         <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
         <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
         </select>
-      <?php 
+      <? 
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
 			  
@@ -63,8 +63,8 @@
 
 				?>
       
-      <option value='<?=$i?>' <?php if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
-      <?php
+      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
+      <?
 				}
 				echo "<select>";
 				?></td>
@@ -77,10 +77,10 @@
 </form>
 <br />
 
-<?php
+<?
 if($_POST['submit']){
 
-	include("../connect.php"); 
+	include("../Connections/connect.inc.php"); 
 	
 	$date1=$_POST['y_start'].'-'.$_POST['m_start'].'-'.$_POST['d_start'];
 	
@@ -179,13 +179,13 @@ if($_POST['submit']){
 			?>
 				<td><a href='booking_ok.php?row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 				<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-            <?php
+            <?
 			}
 			elseif($dbarr['status']==""){
 			?>
 				<td><a href='booking_ok.php?row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 				<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-            <?php
+            <?
 			}elseif($dbarr['status']=="อนุมัติ"){
 				echo "<td colspan='2'>หมายเลขเตียง :$dbarr[comment]</td>";
 			}
@@ -204,10 +204,10 @@ if($_POST['submit']){
 mysql_close();
 ?>
 <br />
-<?php	
+<?	
 /////////////////////////การจองเตียงวันนี้///////////////////////////
 
-include("../connect.php"); 
+include("../Connections/connect.inc.php"); 
 
 	if(isset($_GET['code'])&&substr($_GET['code'],0,2)=="42"){
 		$where1 = "and ward='หอผู้ป่วยรวม' ";
@@ -301,13 +301,13 @@ $today5=$todayy1.'-'.$todaym1.'-'.$todayd1;
 			?>
 				<td><a href='booking_ok.php?row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 				<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-            <?php
+            <?
 			}
 			elseif($dbarr['status']==""){
 			?>
 				<td><a href='booking_ok.php?row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 				<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-            <?php
+            <?
 			}elseif($dbarr['status']=="อนุมัติ"){
 				echo "<td colspan='2'>หมายเลขเตียง :$dbarr[comment]</td>";
 			}
@@ -325,10 +325,10 @@ mysql_close();
 //////////////////////////////////จองเตียงวันนี้/////////////////////////////////
 ?>
 <br />
-<?php
+<?
 
 
-include("../connect.php"); 
+include("../Connections/connect.inc.php"); 
 
 //*******เตียงจองวันนี้**********//
 $todayy=date("Y")+543;
@@ -422,23 +422,23 @@ echo"  <tr bgcolor='$color'>
 		?>
 			<td><a href='booking_ok.php?row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 			<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}
 	elseif($dbarr1['status']==""){
 		?>
 			<td><a href='booking_ok.php?row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 			<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
         }elseif($dbarr1['status']=="ไม่อนุมัติ"){
 		?>
 			<td><a href='booking_ok.php?row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 			<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}elseif($dbarr1['status']=="อนุมัติ"){
 		echo "<td>หมายเลขเตียง :$dbarr1[comment]</td>";
 		?>
 	<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr1['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}
 	echo  "</tr>";
   	$i++;
@@ -541,22 +541,22 @@ echo"  <tr bgcolor='$color'>
 		?>
 			<td><a href='booking_ok.php?row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 			<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}elseif($dbarr2['status']==""){
 		?>
 			<td><a href='booking_ok.php?row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 			<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}elseif($dbarr2['status']=="ไม่อนุมัติ"){
 		?>
 			<td><a href='booking_ok.php?row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>'>อนุมัติ</a></td>
 			<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}elseif($dbarr2['status']=="อนุมัติ"){
 		echo "<td >หมายเลขเตียง :$dbarr2[comment]</td>";
 		?>
 	<td><a href='booking_confirm.php?confirm=0&row_id=<?=$dbarr2['row_id']?>&code=<?=$_GET['code']?>' onclick='return confirm("ไม่อนุมัติการจองเตียง?")'>ไม่อนุมัติ</a></td>
-		<?php
+		<?
 	}
 	echo  "</tr>";
   	$ii++;
@@ -579,7 +579,7 @@ if(isset($_GET['confirm'])){
 		<script>
         	window.location.href="booking_confirm.php?code=<?=$_GET['code']?>";
         </script>
-		<?php
+		<?
 	}
 }
 

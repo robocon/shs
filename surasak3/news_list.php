@@ -34,8 +34,8 @@ if( $action === 'save' ){
         $err = $files['error'][$i];
         $ext = strrchr($files['name'][$i], ".");
         if( $err === 0 && $ext === '.pdf' ){
-            
-            $file_name = $files['name'][$i];
+            $name_encrypt = md5($files['name'][$i]);
+            $file_name = $name_encrypt.$ext;
             move_uploaded_file($files['tmp_name'][$i], 'news/'.$folder_name.'/'.$file_name);
         }
     }
