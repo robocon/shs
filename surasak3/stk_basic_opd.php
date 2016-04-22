@@ -1,5 +1,6 @@
 <?php
-
+// README! 
+// พิมพ์สติกเกอร์แบบ PDF สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล และหน้าของ OPD แบบพิมพ์ย้อนหลัง
 require("fpdf_thai/fpdf_thai.php");
 include("connect.php");
 
@@ -29,9 +30,9 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
 
 
 $ht = $height/100;
@@ -103,7 +104,7 @@ $pdf->SetMargins(2, 2);
 // $pdf->SetLineWidth(80);
 $pdf->AddPage();
 
-$pdf->Cell(0, 6, "HN: $hn, $thidate, $cAge");
+$pdf->Cell(0, 6, "HN: $hn, VN: $vn, $thidate, $cAge");
 $pdf->Ln();
 $pdf->Cell(0, 6, "T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที");
 $pdf->Ln();

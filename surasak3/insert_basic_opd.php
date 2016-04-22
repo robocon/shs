@@ -1,4 +1,6 @@
 <?php
+// README! 
+// พิมพ์สติกเกอร์แบบ HTML สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล
 session_start();
 
 $month["01"] ="มกราคม";
@@ -40,10 +42,10 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 if($cigarette==0){$cigarette='ไม่สูบ';}
 else if($cigarette==1){$cigarette='สูบ';}
@@ -89,7 +91,7 @@ window.onload = function(){
 </script>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
-		<td>HN : <?=$hn;?> <?=$thidate;?> <?=$cAge;?></td>
+		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
 	<tr>
 		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>

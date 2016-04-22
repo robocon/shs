@@ -212,7 +212,7 @@ $count = count($_SESSION["list_drugcode"]);
 
 	$_SESSION["dt_drugstk"] .= "<TABLE cellpadding=\"0\" cellspacing=\"0\">
 	<TR>
-		<TD colspan=\"3\"><font style=\"font-family:'MS Sans Serif'; font-size:12px\"  >&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thidate2.";&nbsp;&nbsp;HN:".$_SESSION["hn_now"].", &nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_SESSION["yot_now"]." ".$_SESSION["name_now"]." ".$_SESSION["surname_now"]."&nbsp;&nbsp;‚√§ ".$_SESSION["dt_diag"]."</TD>
+		<TD colspan=\"3\"><font style=\"font-family:'MS Sans Serif'; font-size:12px\"  >&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thidate2.";&nbsp;&nbsp;HN:".$_SESSION["hn_now"].",&nbsp;VN:".$_SESSION["vn_now"].",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_SESSION["yot_now"]." ".$_SESSION["name_now"]." ".$_SESSION["surname_now"]."&nbsp;&nbsp;‚√§ ".$_SESSION["dt_diag"]."</TD>
 	</TR>";
 
 /*$dt_hn = date("d-m-").(date("Y")+543).$_SESSION["hn_now"];

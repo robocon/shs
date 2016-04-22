@@ -1,4 +1,6 @@
 <?php
+// ::DR- พิมพ์สติ๊กเกอร์ติดOPD
+// สำหรับ OPD เอาไว้พิมพ์ย้อนหลัง
 
 include("connect.inc");
 $Thidate = date("d-m-").(date("Y")+543).date(" H:i:s"); 
@@ -35,7 +37,7 @@ $drugstk = "
 
 <TABLE cellpadding=\"0\" cellspacing=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 	<TR>
-		<TD colspan=\"3\"><font style=\"font-family:'MS Sans Serif'; font-size:12px\"  >&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thidate.";&nbsp;&nbsp;HN:".$hn.", &nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$ptname."&nbsp;&nbsp;โรค ".$diag."</TD>
+		<TD colspan=\"3\"><font style=\"font-family:'MS Sans Serif'; font-size:12px\"  >&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thidate.";&nbsp;&nbsp;HN:".$hn.",&nbsp;VN:".$tvn.",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$ptname."&nbsp;&nbsp;โรค ".$diag."</TD>
 	</TR>
 ";
 

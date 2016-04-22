@@ -1,4 +1,7 @@
 <?php
+// README! 
+// หน้าของ OPD แบบพิมพ์ย้อนหลัง
+
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 session_start();
@@ -101,7 +104,7 @@ $cAge = calcage($dbirth);
 </script>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
-		<td>HN : <?=$hn;?> <?=$thidate;?> <?=$cAge;?></td>
+		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
 	<tr>
 		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
