@@ -38,17 +38,12 @@ a:active {
 -->
 </style>
 <div id="non-printable">
-	<form id="form1" name="form1" method="post" action="report_ptmonth2.php">
-		<h1 style="text-align: center;">รายงานนวดแผนไทยตามห้วงเวลา(นอกเวลาราชการ)</h1>
+	<form id="form1" name="form1" method="post" action="<?=$PHP_SELF;?>">
+		<h1 style="text-align: center;">รายงานนวดแผนไทย<u>ประจำเดือน</u>(นอกเวลาราชการ)</h1>
 		<input name="act" type="hidden" value="show" />
 		<table width="100%" border="0" cellspacing="0" cellpadding="2">
 			<tr>
-				<td align="center">เลือกห้วงเวลา
-					<select name="seldate" id="seldate" class="txt">
-						<option value="1" selected="selected">1-15</option>
-						<option value="2">16-31</option>
-					</select> 
-					เดือน       
+				<td align="center">เลือกเดือน       
 					<?php
 					$thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
 					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
@@ -83,20 +78,13 @@ a:active {
 				</td>
 			</tr>
 			<tr>
-				<td align="center"><a href="../nindex.htm">กลับเมนูหลัก</a>  || <a href="report_ptformonth2.php">รายงานนวดแผนไทยนอกเวลาราชการประจำเดือน</a></td>
+				<td align="center"><a href="../nindex.htm">กลับเมนูหลัก</a>  || <a href="report_ptmonth2.php">รายงานนวดแผนไทยตามห้วงเวลา (นอกเวลาราชการ)</a></td>
 			</tr>
 		</table>
 	</form>
 </div> 
 <?php
 if($_POST["act"]=="show"){
-	$seldate = $_POST["seldate"];
-	
-	if($seldate == "1"){
-		$showdate = "1-15";
-	}else{
-		$showdate = "16-30";
-	}
 
 	$selmon = trim($_POST["selmon"]);
 	if($selmon=="01"){
@@ -131,12 +119,7 @@ if($_POST["act"]=="show"){
 	
 	// ห้วงเวลา
 	// รายชื่อผู้นวด
-	if($seldate=="1"){
-		$date_between = " AND `date` >= '$thyear-$selmon-01' AND `date` <= '$thyear-$selmon-15'";
-		
-	}else{
-		$date_between = " AND `date` >= '$thyear-$selmon-16' AND `date` <= '$thyear-$selmon-31'";
-	}
+	$date_between = " AND `date` >= '$thyear-$selmon-01' AND `date` <= '$thyear-$selmon-31'";
 	
 	$sql = "SELECT `staf_massage` 
 	FROM `depart` 
@@ -151,7 +134,7 @@ if($_POST["act"]=="show"){
 		<div id="printable"> 
 			<p align="center"><strong>รายชื่อผู้มารับบริการนวดแผนไทย</strong></p>
 			<div style="margin-left: 5%;"><strong>ชื่อพนักงานนวด : </strong><?=$staf_massage;?></div>
-			<div style="margin-left: 5%;"><strong>ห้วงเวลาระหว่างวันที่ : </strong><?=$showdate;?> เดือน<?=$showmon;?> พ.ศ. <?=$thyear;?></div>
+			<div style="margin-left: 5%;"><strong>ประจำเดือน <?=$showmon;?> พ.ศ. <?=$thyear;?></div>
 			<table width="100%" border="1" cellpadding="2" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
 				<thead>
 					<tr bgcolor="#FFCCCC">

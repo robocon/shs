@@ -64,6 +64,8 @@ echo "สิทธิการรักษา: $sPtright<br>";
 FOR ($no=1; $no<=7; $no++){
 	IF (!empty($aTradname[$no])) {
 		
+		// Lock ให้ใส่โค้ดยาสำหรับการแพ้ยา(ใช้ใน 43แฟ้ม)
+		/*
 		$sql = "SELECT `drugcode` 
 		FROM `druglst` 
 		WHERE `drugcode` LIKE '".$aDrugcode[$no]."'";
@@ -78,6 +80,7 @@ FOR ($no=1; $no<=7; $no++){
 			<?php
 			exit;
 		}
+		*/
 		
 		echo "$aDrugcode[$no],$aTradname[$no],$aAdvreact[$no],$aAsses[$no],$aReporter[$no],$aRepdate[$no]<br>";
 		//insert data into drugreact
