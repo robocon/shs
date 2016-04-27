@@ -20,6 +20,7 @@ surasak3/Connections/connect.inc.php
 surasak3/Connections/dbconfig.php
 surasak3/NCR2556/connect.inc
 surasak3/NCR2556/connect2.inc
+surasak3/datacscd/cscd/*.txt
 surasak3/datacscd/*.txt
 surasak3/datacscd/backup*
 surasak3/patient_files/*
@@ -29,6 +30,7 @@ surasak3/dataupdate/*
 surasak3/tests/*
 surasak3/news/*
 surasak3/43file/files/*.txt
+surasak3/logs/*.log
 
 # Visual Studio Code
 .settings/*

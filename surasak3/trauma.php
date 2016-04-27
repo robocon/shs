@@ -2617,7 +2617,7 @@ function rediv(xx){
 		</TR>
 		<TR>
 			<TD>
-		วันที่ : <INPUT TYPE="text" NAME="search_date" size="10" readonly> <input type="button" name="calendar_button" value="....." onClick="showCalendar('search_date','YY-MM-DD')"><BR>
+		วันที่ : <INPUT TYPE="text" NAME="search_date" id="search_date" size="10" readonly> <input type="button" name="calendar_button" value="....." onClick="showCalendar('search_date','YY-MM-DD')"><BR>
 		HN : <INPUT TYPE="text" NAME="search_hn" size="10"><BR>
 		<CENTER><INPUT TYPE="submit" value="ค้นหา"></CENTER>
 		</TD>

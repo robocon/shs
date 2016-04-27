@@ -51,15 +51,16 @@ a:active {
 					
 					$selmon = isset($_POST['selmon']) ? $_POST['selmon'] : date('m');
 					
-					echo "<select name='selmon' size='1'  class='txt'>";
-					for($i=1; $i <= count($thaimonthFull); $i++){
-						
-						$i = sprintf('%02d', $i);
-						$selected = ( $selmon === $i ) ? 'selected="selected"' : '' ;
-						echo "<option value='$i' $selected>".$thaimonthFull[$i]."</option>";
-					}
-					echo "</select>";
 					?>
+					<select name="selmon" size="1" class="txt">
+					<?php
+						foreach( $thaimonthFull as $key => $val ){
+							$selected = ( $selmon === $key ) ? 'selected="selected"' : '' ;
+							?><option value="<?=$key;?>" <?=$selected;?>><?=$val;?></option><?php
+						}
+					?>
+					</select>
+					
 					ปี 
 					<?php
 					$y=date("Y")+543;
@@ -87,61 +88,98 @@ a:active {
 if($_POST["act"]=="show"){
 
 	$selmon = trim($_POST["selmon"]);
-	if($selmon=="01"){
-		$showmon="มกราคม";
-	}else if($selmon=="02"){
-		$showmon="กุมภาพันธ์";
-	}else if($selmon=="03"){
-		$showmon="มีนาคม";
-	}else if($selmon=="04"){
-		$showmon="เมษายน";
-	}else if($selmon=="05"){
-		$showmon="พฤษภาคม";
-	}else if($selmon=="06"){
-		$showmon="มิถุนายน";
-	}else if($selmon=="07"){
-		$showmon="กรกฎาคม";
-	}else if($selmon=="08"){
-		$showmon="สิงหาคม";
-	}else if($selmon=="09"){
-		$showmon="กันยายน";
-	}else if($selmon=="10"){
-		$showmon="ตุลาคม";
-	}else if($selmon=="11"){
-		$showmon="พฤศจิกายน";
-	}else if($selmon=="12"){
-		$showmon="ธันวาคม";																				
-	}
+	$showmon = $thaimonthFull[$selmon];
 	
-						
 	$thyear = $_POST["selyear"];
 	$ksyear = $_POST["selyear"]-543;
 	
+	
+	$sql = "SELECT a.`row_id`,a.`date`,a.`hn`,a.`ptname`,a.`detail`,a.`staf_massage`,a.`time`,a.`date2`,a.`day_name`,
+b.`row_id`,b.`date`,b.`code`,b.`idno` 
+FROM (
+    SELECT *, DATE_FORMAT(`date`,'%H:%i:%s') AS `time`, 
+	CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) AS `date2`, 
+	DATE_FORMAT( CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name` 
+	FROM `depart` 
+	WHERE `staf_massage` != '' 
+    AND `staf_massage` IS NOT NULL 
+	AND `date` LIKE '$thyear-$selmon%' 
+) AS a 
+RIGHT JOIN `patdata` AS b ON a.`row_id` = b.`idno` 
+WHERE a.`status` = 'Y' 
+AND b.`code` in (
+	'58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a','clinic50'
+) 
+ORDER BY a.`staf_massage` ASC, a.`date` ASC";
+
+$q = mysql_query($sql);
+
+$data = array();
+while( $item = mysql_fetch_assoc($q) ){
+	
+	$dayNum = (int) $item['day_name'];
+	// var_dump($item['code']);
+	if( ( $dayNum > 0 AND $dayNum < 6 ) AND ( $item['time'] >= "08:00:00" AND $item['time'] <= "16:00:00" ) ){
+		continue;
+	}
+	
+	if( $item['code'] !== 'clinic50' ){
+		continue;
+	}
+	
+	$user = array(
+		'date' => $item['date'],
+		'hn' => $item['hn'],
+		'ptname' => $item['ptname']
+	);
+	
+	$key = md5($item['staf_massage']);
+	// เฉพาะคนแรกของคนนวดคนนั้น
+	if( empty($data[$key]) ){ 
+		$data[$key] = array(
+			'staff' => $item['staf_massage'],
+			'patient' => array(
+				$user
+			)
+		);
+	}else{
+		$data[$key]['patient'][] = $user;
+	}
+
+}
+
+// echo "<pre>";
+// var_dump($data);
+
+// exit;
+	
 	// ห้วงเวลา
 	// รายชื่อผู้นวด
-	$date_between = " AND `date` >= '$thyear-$selmon-01' AND `date` <= '$thyear-$selmon-31'";
+	// $date_between = " AND `date` >= '$thyear-$selmon-01' AND `date` <= '$thyear-$selmon-31'";
 	
-	$sql = "SELECT `staf_massage` 
-	FROM `depart` 
-	WHERE `staf_massage` !='' 
-	$date_between 
-	GROUP BY `staf_massage` ";
-	$query = mysql_query($sql);
-	$num = mysql_num_rows($query);
-	while( $row = mysql_fetch_array($query) ){
-		$staf_massage = $row["staf_massage"];
+	// $sql = "SELECT `staf_massage` 
+	// FROM `depart` 
+	// WHERE `staf_massage` !='' 
+	// $date_between 
+	// GROUP BY `staf_massage` ";
+	// $query = mysql_query($sql);
+	// $num = mysql_num_rows($query);
+	// while( $row = mysql_fetch_array($query) ){
+		
+	foreach( $data as $key => $val ){
+		// $staf_massage = $row["staf_massage"];
 		?>
 		<div id="printable"> 
 			<p align="center"><strong>รายชื่อผู้มารับบริการนวดแผนไทย</strong></p>
-			<div style="margin-left: 5%;"><strong>ชื่อพนักงานนวด : </strong><?=$staf_massage;?></div>
+			<div style="margin-left: 5%;"><strong>ชื่อพนักงานนวด : </strong><?=$val['staff'];?></div>
 			<div style="margin-left: 5%;"><strong>ประจำเดือน <?=$showmon;?> พ.ศ. <?=$thyear;?></div>
 			<table width="100%" border="1" cellpadding="2" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
 				<thead>
 					<tr bgcolor="#FFCCCC">
 						<th width="8%" align="center"><strong>ลำดับ</strong></th>
-						<th align="center" bgcolor="#FFCCCC"><strong>วัน/เดือน/ปี</strong></th>
-						<th align="center"><strong>HN</strong></th>
-						<th align="center"><strong>ชื่อ - นามสกุล</strong></th>
+						<th width="12%" align="center" bgcolor="#FFCCCC"><strong>วัน/เดือน/ปี</strong></th>
+						<th width="20%" align="center"><strong>HN</strong></th>
+						<th width="30%" align="center"><strong>ชื่อ - นามสกุล</strong></th>
 						<th align="center" bgcolor="#FFCCCC"><strong>การจ่ายยา</strong></th>
 					</tr>
 				</thead>
@@ -149,42 +187,43 @@ if($_POST["act"]=="show"){
 				<?php
 					
 					/* Condition เกี่ยวกับเวลา ควรเปลี่ยนเป็น ค.ศ. เพื่อให้ mysql คำนวณวันที่ได้ถูกต้อง */
-					$sql1 = "SELECT b.*, a.`code`
-FROM `patdata` AS a, (
+// 					$sql1 = "SELECT b.*, a.`code`
+// FROM `patdata` AS a, (
 
-	SELECT *, DATE_FORMAT(`date`,'%H:%i:%s') AS `time`, 
-	CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) AS `date2`, 
-	DATE_FORMAT( CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name` 
-	FROM `depart` 
-	WHERE `staf_massage` !='' 
-	$date_between
+// 	SELECT *, DATE_FORMAT(`date`,'%H:%i:%s') AS `time`, 
+// 	CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) AS `date2`, 
+// 	DATE_FORMAT( CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name` 
+// 	FROM `depart` 
+// 	WHERE `staf_massage` !='' 
+// 	$date_between
 
-) AS b 
-WHERE b.`row_id` = a.`idno` 
-AND a.`code` in (
-	'58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a'
-) 
-AND b.`staf_massage` = '$staf_massage'
-AND a.`status` = 'Y'
-ORDER BY b.`date` ASC";
+// ) AS b 
+// WHERE b.`row_id` = a.`idno` 
+// AND a.`code` in (
+// 	'58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a'
+// ) 
+// AND a.`code` LIKE 'clinic50' 
+// AND b.`staf_massage` = '$staf_massage'
+// AND a.`status` = 'Y'
+// ORDER BY b.`date` ASC";
 				// echo "<pre>";
 				//var_dump($sql1);
 				// echo "<pre>";
 				
-				$result = mysql_query($sql1) or die( mysql_error() ); 
+				// $result = mysql_query($sql1) or die( mysql_error() ); 
 				$i = 0;
-				while($rows = mysql_fetch_array($result)){
-					
+				// while($rows = mysql_fetch_array($result)){
+					foreach( $val['patient'] as $k => $pt ){
 					// 0 is Sunday
 					// 6 is Saturday
 					// ถ้าเข้าเคส จันทร์ ถึง ศุกร์ และอยู่ในช่วงเวลาราชการให้ผ่านไปเลย ไม่นับ
 					// @todo เซิฟเวอร์มีปัญหาเรื่องเวลาเร็วไป 20 นาที ถ้าเซิฟปรับแล้วโค้ดนี้ก็ต้องปรับเวลาตามด้วย
-					$dayNum = (int) $rows['day_name'];
-					if( ( $dayNum > 0 AND $dayNum < 6 ) AND ( $rows['time'] >= "08:20:00" AND $rows['time'] <= "16:20:00" ) ){
-						continue;
-					}
+					// $dayNum = (int) $rows['day_name'];
+					// if( ( $dayNum > 0 AND $dayNum < 6 ) AND ( $rows['time'] >= "08:20:00" AND $rows['time'] <= "16:20:00" ) ){
+					// 	continue;
+					// }
 					
-					$qdate = substr($rows["date"],0,10);
+					$qdate = substr($pt["date"],0,10);
 					list($yy,$mm,$dd) = explode("-",$qdate);
 					$dateshow = "$dd/$mm/$yy";
 					// $showtime = substr($rows["date"],11,8);
@@ -195,14 +234,14 @@ ORDER BY b.`date` ASC";
 					<tr>
 						<td align="center"><?=$i;?></td>
 						<td align="center"><?=$dateshow;?></td>
-						<td><?=$rows["hn"];?></td>
-						<td align="left"><?=$rows["ptname"];?></td>
+						<td><?=$pt["hn"];?></td>
+						<td align="left"><?=$pt["ptname"];?></td>
 						<?php
-						$sql3="select * from drugrx where date like '$qdate%' and hn='".$rows["hn"]."'";
-						$query3=mysql_query($sql3);
-						$num3=mysql_num_rows($query3);
-						if(empty($num3)){
-							$showdrug="";
+						$sql3 = "select * from drugrx where date like '$qdate%' and hn='".$pt["hn"]."'";
+						$query3 = mysql_query($sql3);
+						$num3 = mysql_num_rows($query3);
+						if( empty($num3) ){
+							$showdrug = "";
 						}else{
 							$item = mysql_fetch_assoc($query3);
 							$showdrug = $item['tradname'];
