@@ -51,7 +51,7 @@ CREATE TEMPORARY TABLE hyper_temp
 ( thidate DATE NOT NULL ) 
 SELECT * 
 FROM hypertension_history 
-WHERE thidate >= '$date1-01' AND thidate <= '$date1-12';
+WHERE thidate LIKE '$date1%';
 ";
 mysql_query($sql_temp);
 
