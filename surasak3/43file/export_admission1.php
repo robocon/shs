@@ -4,14 +4,10 @@ $yrmonth="$thiyr-$rptmo";
 
 print "14. ฐานข้อมูลด้านการแพทย์และสุขภาพ ในรูปแบบ 43 แฟ้มมาตรฐาน แฟ้มที่14 ตาราง ADMISSION ประจำเดือน $yrmonth <a target=_self  href='../../nindex.htm'><<ไปเมนู</a><br> ";
 
-	$temp14="CREATE  TEMPORARY  TABLE report_admission 
-	SELECT *  From ipcard 
-	where dcdate like '$yrmonth%' 
-	and dcdate is not null";
+	$temp14="CREATE  TEMPORARY  TABLE report_admission SELECT *  From ipcard where dcdate like '$yrmonth%' and dcdate is not null";
 	$querytmp14 = mysql_query($temp14) or die("Query failed,Create temp14");
 		
-	$sql14="SELECT date,an,hn,ptright,clinic,my_ward,dcdate,dcstatus,dctype,doctor  
-	From report_admission";
+	$sql14="SELECT date,an,hn,ptright,clinic,my_ward,dcdate,dcstatus,dctype,doctor  From report_admission";
 	$result14 = mysql_query($sql14) or die("Query failed,Select report_admission");
     while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$doctor) = mysql_fetch_row ($result14)){	
 
@@ -49,8 +45,6 @@ print "14. ฐานข้อมูลด้านการแพทย์และสุขภาพ ในรูปแบบ 43 แฟ้มมาตรฐาน แฟ้มที่14 ตารา
 	if($newclinic=="12"){
 		$newclinic="99";
 	}
-	
-	// โค้ดเก่า
 	if(!empty($clinic)){
 		$wardadmit="1$newclinic00";
 		$warddisch="1$newclinic00";
@@ -84,63 +78,12 @@ print "14. ฐานข้อมูลด้านการแพทย์และสุขภาพ ในรูปแบบ 43 แฟ้มมาตรฐาน แฟ้มที่14 ตารา
 		$payprice=0;
 		$actualpay=0;	
 	}
-	
-	
-	$doctor = substr($doctor,0,5);
-	
-	// หา VN
-	$chkdate=substr($date,0,10);
-	$sqlopd1="select vn from opday where thidate like '$chkdate%' and hn='$hn'";
-	$resultopd1=mysql_query($sqlopd1);	
-	list($vn)=mysql_fetch_array($resultopd1);
-	
-	// date_serv สำหรับ provider
-	list($yy,$mm,$dd) = explode("-", $regis1);
-	$yy = $yy - 543;
-	$date_serv = "$yy$mm$dd";  //วันที่มารับบริการ
-	
-	// provider
-	$sqldoc = mysql_query("select doctorcode from doctor where name like'%$doctor%'");
-	list($doctorcode) = mysql_fetch_array($sqldoc);
-	if(empty($doctorcode)){
-		$provider = $date_serv.$vn."00000";
-	}else{
-		$provider = $date_serv.$vn.$doctorcode;
-	}
-	
-	// โค้ดเก่า
-	// $provider=$doctor.$an;
-	
-	/* แผนกที่รับผู้ป่วยจากโค้ดหมอ อิงตามมาตรฐาน สนย. */
-	// @todo สำหรับเทสเท่านั้น รอเพิ่มเติมหมอคนอื่น
-	$doctor_sny = array(
-		'MD100' => '01',
-		'MD007' => '01',
-		'MD006' => '01',
-		'MD009' => '01',
-		'MD056' => '02',
-		'MD054' => '02',
-		'MD101' => '03',
-		'MD041' => '05',
-		'MD036' => '06',
-		'MD065' => '07',
-		'MD089' => '07',
-		'MD079' => '08',
-		'MD013' => '08',
-	);
-	/**
-	 * Override wardadmit and warddisch from doctor code(MDxxx)
-	 */
-	$dr_code = trim($doctor);
-	$wardadmit = $warddisch = '1'.$doctor_sny[$dr_code].'00';
-	
-	$causein = "1";  //สาเหตุการส่งผู้ป่วย
-	$cost = "0.00";  //ราคาทุน
-	
+	$doctor=substr($doctor,0,5);
+	$provider=$doctor.$an;
 	
        echo  "$hospcode|$hn|$seq|$an|$dateserv|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update<br>";
 
-	} // End while
+          }
 		  
   //  print "<table>";
 	
