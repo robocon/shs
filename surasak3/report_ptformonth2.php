@@ -94,23 +94,34 @@ if($_POST["act"]=="show"){
 	$ksyear = $_POST["selyear"]-543;
 	
 	
+	$sql = "SELECT `date_holiday` 
+	FROM `holiday` 
+	WHERE `date_holiday` LIKE '$thyear-$selmon%'";
+	$q = mysql_query($sql);
+	$holidayLists = array();
+	while( $item = mysql_fetch_assoc($q) ){
+		$holidayLists[] = $item['date_holiday'];
+	}
+	
+	// Statement นี้จะได้ codeของนวด และตัวที่คิดค่า 50บาท
 	$sql = "SELECT a.`row_id`,a.`date`,a.`hn`,a.`ptname`,a.`detail`,a.`staf_massage`,a.`time`,a.`date2`,a.`day_name`,
-b.`row_id`,b.`date`,b.`code`,b.`idno` 
-FROM (
-    SELECT *, DATE_FORMAT(`date`,'%H:%i:%s') AS `time`, 
-	CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) AS `date2`, 
-	DATE_FORMAT( CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name` 
-	FROM `depart` 
-	WHERE `staf_massage` != '' 
-    AND `staf_massage` IS NOT NULL 
-	AND `date` LIKE '$thyear-$selmon%' 
-) AS a 
-RIGHT JOIN `patdata` AS b ON a.`row_id` = b.`idno` 
-WHERE a.`status` = 'Y' 
-AND b.`code` in (
-	'58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a','clinic50'
-) 
-ORDER BY a.`staf_massage` ASC, a.`date` ASC";
+	SUBSTRING(a.`date`, 1, 10) AS `date3`, 
+	b.`row_id`,b.`date`,b.`code`,b.`idno` 
+	FROM (
+		SELECT *, DATE_FORMAT(`date`,'%H:%i:%s') AS `time`, 
+		CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) AS `date2`, 
+		DATE_FORMAT( CONCAT((DATE_FORMAT(`date`,'%Y')-543), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name` 
+		FROM `depart` 
+		WHERE `staf_massage` != '' 
+		AND `staf_massage` IS NOT NULL 
+		AND `date` LIKE '$thyear-$selmon%' 
+	) AS a 
+	RIGHT JOIN `patdata` AS b ON a.`row_id` = b.`idno` 
+	WHERE a.`status` = 'Y' 
+	AND b.`code` in (
+		'58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a','clinic50'
+	) 
+	ORDER BY a.`staf_massage` ASC, a.`date` ASC";
 
 $q = mysql_query($sql);
 
@@ -118,14 +129,21 @@ $data = array();
 while( $item = mysql_fetch_assoc($q) ){
 	
 	$dayNum = (int) $item['day_name'];
-	// var_dump($item['code']);
-	if( ( $dayNum > 0 AND $dayNum < 6 ) AND ( $item['time'] >= "08:00:00" AND $item['time'] <= "16:00:00" ) ){
+	
+	$testHoliday = in_array($item['date3'], $holidayLists);
+	
+	// ถ้าไม่ได้อยู่ในช่วง Holiday และ เวลาอยู่ในช่วงวันธรรมดาตั้งแต่ 8.00 - 16.00 ให้ข้ามไปเลย
+	if( $testHoliday === false 
+	&& ( $dayNum > 0 && $dayNum < 6 ) && ( $item['time'] >= "08:00:00" && $item['time'] <= "16:00:00" ) ){
 		continue;
 	}
 	
+	// filter โค้ดหลักออกไปให้เหลือแต่ 50บาท
 	if( $item['code'] !== 'clinic50' ){
 		continue;
 	}
+	
+	
 	
 	$user = array(
 		'date' => $item['date'],
