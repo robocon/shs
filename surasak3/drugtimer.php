@@ -93,8 +93,13 @@ if ( $action === false ) {
 	$allMax8_2 = 0;
 	$allMax9_2 = 0;
 	
-	$time9Over30 = 0;
-	$time11Over30 = 0;
+	$time9From3To10 = 0;
+	$time9From10To13 = 0;
+	$time9From13To20 = 0;
+	
+	$time11From3To10 = 0;
+	$time11From10To13 = 0;
+	$time11From13To20 = 0;
 	
 	foreach( $items as $key => $item ){
 		
@@ -165,9 +170,14 @@ if ( $action === false ) {
 					$userMaxTime8_2 = ( $userMaxTime8_2 > $item['timediff'] ) ? $userMaxTime8_2 : $item['timediff'] ;
 					
 					// รอเกิน 30นาที
-					if( $item['timediff'] > 1800 ){
-						$time9Over30++;
+					if( $item['timediff'] > 1800 && $item['timediff'] <= 3600 ){
+						$time9From3To10++;
+					}elseif( $item['timediff'] > 3600 && $item['timediff'] <= 5400 ){
+						$time9From10To13++;
+					}elseif( $item['timediff'] > 5400 && $item['timediff'] <= 7200 ){
+						$time9From13To20++;
 					}
+					
 				} elseif( $item['pharin'] >= "11:01" && $item['pharin'] <= "13:00" ) {
 					
 					$user9_2++;
@@ -175,9 +185,14 @@ if ( $action === false ) {
 					$userMaxTime9_2 = ( $userMaxTime9_2 > $item['timediff'] ) ? $userMaxTime9_2 : $item['timediff'] ;
 					
 					// รอเกิน 30นาที
-					if( $item['timediff'] > 1800 ){
-						$time11Over30++;
+					if( $item['timediff'] > 1800 && $item['timediff'] <= 3600 ){
+						$time11From3To10++;
+					}elseif( $item['timediff'] > 3600 && $item['timediff'] <= 5400 ){
+						$time11From10To13++;
+					}elseif( $item['timediff'] > 5400 && $item['timediff'] <= 7200 ){
+						$time11From13To20++;
 					}
+					
 				}
 				$userTime8_2 += $item['timediff'];
 			}
@@ -367,15 +382,29 @@ if ( $action === false ) {
 					<p>ระยะเวลาเฉลี่ยในการรอรับยา<br>
 					ช่วงเวลา 09:00-11:00 น.<br>
 					จำนวนใบยา<span><?=$user8_2;?></span> เวลาโดยเฉลี่ย<span><?=$avgUserTime8_2;?></span><br>
-					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime8_2);?></span><br>
-					จำนวนใบยาที่รอเกิน 30 นาที <span><?=$time9Over30;?></span></p>
+					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime8_2);?></span></p>
+					
+					<div class="space"></div>
+					
+					<p>
+						จำนวนใบยาที่รอตั้งแต่ 30นาที ถึง 1ชั่วโมง <span><?=$time9From3To10;?></span><br>
+						จำนวนใบยาที่รอตั้งแต่ 1ชั่วโมง ถึง 1.30ชั่วโมง <span><?=$time9From10To13;?></span><br>
+						จำนวนใบยาที่รอตั้งแต่ 1.30นาที ถึง 2ชั่วโมง <span><?=$time9From13To20;?></span>
+					</p>
 					
 					<div class="space"></div>
 					
 					<p>ช่วงเวลา 11:00-13:00 น.<br>
 					จำนวนใบยา<span><?=$user9_2;?></span> เวลาโดยเฉลี่ย<span><?=$avgUserTime9_2;?></span><br>
-					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime9_2);?></span><br>
-					จำนวนใบยาที่รอเกิน 30 นาที <span><?=$time11Over30;?></span></p>
+					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime9_2);?></span></p>
+					
+					<div class="space"></div>
+					
+					<p>
+						จำนวนใบยาที่รอตั้งแต่ 30นาที ถึง 1ชั่วโมง <span><?=$time11From3To10;?></span><br>
+						จำนวนใบยาที่รอตั้งแต่ 1ชั่วโมง ถึง 1.30ชั่วโมง <span><?=$time11From10To13;?></span><br>
+						จำนวนใบยาที่รอตั้งแต่ 1.30นาที ถึง 2ชั่วโมง <span><?=$time11From13To20;?></span>
+					</p>
 					
 					<div class="space"></div>
 					
