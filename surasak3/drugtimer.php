@@ -93,6 +93,9 @@ if ( $action === false ) {
 	$allMax8_2 = 0;
 	$allMax9_2 = 0;
 	
+	$time9Over30 = 0;
+	$time11Over30 = 0;
+	
 	foreach( $items as $key => $item ){
 		
 		// แยกตามสิทธิ
@@ -161,12 +164,20 @@ if ( $action === false ) {
 					$user8Time_2 += $item['timediff'];
 					$userMaxTime8_2 = ( $userMaxTime8_2 > $item['timediff'] ) ? $userMaxTime8_2 : $item['timediff'] ;
 					
+					// รอเกิน 30นาที
+					if( $item['timediff'] > 1800 ){
+						$time9Over30++;
+					}
 				} elseif( $item['pharin'] >= "11:01" && $item['pharin'] <= "13:00" ) {
 					
 					$user9_2++;
 					$user9Time_2 += $item['timediff'];
 					$userMaxTime9_2 = ( $userMaxTime9_2 > $item['timediff'] ) ? $userMaxTime9_2 : $item['timediff'] ;
 					
+					// รอเกิน 30นาที
+					if( $item['timediff'] > 1800 ){
+						$time11Over30++;
+					}
 				}
 				$userTime8_2 += $item['timediff'];
 			}
@@ -356,13 +367,15 @@ if ( $action === false ) {
 					<p>ระยะเวลาเฉลี่ยในการรอรับยา<br>
 					ช่วงเวลา 09:00-11:00 น.<br>
 					จำนวนใบยา<span><?=$user8_2;?></span> เวลาโดยเฉลี่ย<span><?=$avgUserTime8_2;?></span><br>
-					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime8_2);?></span></p>
+					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime8_2);?></span><br>
+					จำนวนใบยาที่รอเกิน 30 นาที <span><?=$time9Over30;?></span></p>
 					
 					<div class="space"></div>
 					
 					<p>ช่วงเวลา 11:00-13:00 น.<br>
 					จำนวนใบยา<span><?=$user9_2;?></span> เวลาโดยเฉลี่ย<span><?=$avgUserTime9_2;?></span><br>
-					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime9_2);?></span></p>
+					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime9_2);?></span><br>
+					จำนวนใบยาที่รอเกิน 30 นาที <span><?=$time11Over30;?></span></p>
 					
 					<div class="space"></div>
 					
