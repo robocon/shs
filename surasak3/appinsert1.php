@@ -10,7 +10,7 @@ session_start();
 
 <script type="text/javascript">
 window.onload = function(){
-	// window.print();
+	window.print();
 	// opener.location.href='hnappoi1.php';
 	// window.close();
 }
@@ -68,44 +68,34 @@ table {
 
 
 /* Your CSS is below */
-@font-face{
-    font-family: 'THSarabunNew';
-    src: url('fonts/webfont/THSarabunNew.eot');
-    src: url('fonts/webfont/THSarabunNew.eot#iefix'),
-    url('fonts/webfont/THSarabunNew.woff') format('embedded-opentype'),
-    url('fonts/webfont/THSarabunNew.ttf') format('truetype'),
-    url('fonts/webfont/THSarabunNew.svg#ludger_duvernayregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
 html{
-    font-family: 'THSarabunNew'!important;
+    font-family: 'TH SarabunPSK'!important;
     font-size: 14pt;
 }
 u{
-    /*border-bottom: 2px solid #000000;*/
-    text-decoration: underline;
+    border-bottom: 2px solid #000000;
+    text-decoration: none;
 }
 b{ font-weight: bold; }
 .size1{
     font-size: 6pt;
-    line-height: 10pt;
+    line-height: 12pt;
 }
 .size2{
     font-size: 10pt;
-    line-height: 14pt;
+    line-height: 16pt;
 }
 .size3{
     font-size: 14pt;
-    line-height: 18pt;
+    line-height: 20pt;
 }
 .size4{
     font-size: 15pt;
-    line-height: 19pt;
+    line-height: 21pt;
 }
 .size5{
     font-size: 22pt;
-    line-height: 26pt;
+    line-height: 28pt;
 }
 .center{
     text-align: center;
@@ -260,7 +250,7 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     
     print "<p class='size4'><b>ชื่อ:</b> $cPtname <b>HN:</b> $cHn <b>อายุ:</b> $cAge <b>สิทธิ:</b> $cptright</p>";
     print "<p class='size3'><b>หมายเหตุ: <u>$cidguard</u></b></p>";
-    print "<p class='size5' style=\"line-height: 36px;\"><b><u>นัดมา: วัน$day ที่ $appd <br>เวลา: $capptime</u></b></p>";
+    print "<p class='size5' style=\"line-height: 36px;\"><b><u>นัดมา: วัน$day ที่ $appd<br>เวลา: $capptime</u></b></p>";
     print "<p class='size4'><b><u>ยื่นใบนัดที่: $room</u></b>&nbsp;<b>เพื่อ:</b> $detail".( $detail2 != "" ? "($detail2)" : "" )."</p>";
     
     if ($detail != 'NA') { 
@@ -290,7 +280,7 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     
     print "<p><b>ผู้ออกใบนัด:</b> $sOfficer, $depcode <b>วันและเวลาที่ออกใบนัด:</b> $Thaidate</p>"; 
     
-    if ($detail =='FU01 ตรวจตามนัด' ){ 
+    if ($detail =='FU01 ตรวจตามนัด' OR $detail == 'FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน' OR $detail == 'FU14 เจาะเลือดไม่พบแพทย์' ){
         // print "<br>";
         print "กรุณามาตรงตามวันและเวลานัด <b>ถ้าผิดนัด</b> ให้ยื่นใบนัดที่แผนกทะเบียน<br>";
         print "<b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br>";
