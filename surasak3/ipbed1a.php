@@ -17,15 +17,27 @@ $pdf->SetMargins(0, 0);
 $pdf->AddPage();
 $pdf->SetFont('AngsanaNew','',12);
 
-$pdf->Cell(0,6,"".$cbedname."/".$cBed1." AN :".$can." HN :".$chn." ",0,0);
+$exName = '';
+
+// เช็กว่าเป็นWardพิเศษรึป่าว
+$wardExTest = preg_match('/45.+/', $cbedcode);
+if( $wardExTest > 0 ){
+	
+	// เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
+	$wardEx2Test = preg_match('/R3\d+/', $cbedcode);
+	$exName = ( $wardEx2Test > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+	
+}
+
+$pdf->Cell(0, 6, $cbedname.$exName."/".$cBed1." AN :".$can." HN :".$chn." ",0,0);
 $pdf->Ln();
-$pdf->Cell(0,5,"".$cptname."  อายุ :".$cage."",0,0);
+$pdf->Cell(0, 5, $cptname."  อายุ :".$cage,0,0);
 $pdf->Ln();
-$pdf->Cell(0,5,"โรค : ".$cdiagnos."",0,0);
+$pdf->Cell(0,5,"โรค : ".$cdiagnos,0,0);
 $pdf->Ln();
-$pdf->Cell(0,5,"สิทธิ : ".$cptright."",0,0);
+$pdf->Cell(0,5,"สิทธิ : ".$cptright,0,0);
 $pdf->Ln();
-$pdf->Cell(0,5,"แพทย์ : ".$cdoctor."",0,0);
+$pdf->Cell(0,5,"แพทย์ : ".$cdoctor,0,0);
 //$pdf->MultiCell(0,6,"S : ".$organ,0,"L");
 
 
