@@ -24,8 +24,9 @@ $wardExTest = preg_match('/45.+/', $cbedcode);
 if( $wardExTest > 0 ){
 	
 	// เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-	$wardEx2Test = preg_match('/R3\d+/', $cbedcode);
-	$exName = ( $wardEx2Test > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+	$wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
+	$wardBxTest = preg_match('/B[0-9]+/', $cBed1);
+	$exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
 	
 }
 
