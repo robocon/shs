@@ -98,8 +98,7 @@ $total=$Essd+$Nessdy+$DSY+$DPY+$Nessdn+$DSN+$DPN;
                     '$Netprice','$cDoctor','$item','$sOfficer','".jschars($cDiag)."','$Essd','$Nessdy',
 	    '$Nessdn','$DPY','$DPN','$DSY','$DSN','$tvn','$cPtright','$sOfficer','$dr_date');";
 
-       $result = mysql_query($query) or 
-                die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้ตัด stock ไปก่อนแล้ว หรือการตัด stock ล้มเหลว<br>
+$msg = "**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้ตัด stock ไปก่อนแล้ว หรือการตัด stock ล้มเหลว<br>
 	*โปรดตรวจสอบว่ามีรายการยาในเมนู [ใบสั่งยา,การจ่ายเงิน] หรือไม่<br>
 	*ถ้ามีแสดงว่า ได้ตัด stock ไปก่อนแล้ว<br>
 	*ถ้าไม่มีแสดงว่า  การตัด stock ล้มเหลว<br><br>
@@ -109,7 +108,8 @@ $total=$Essd+$Nessdy+$DSY+$DPY+$Nessdn+$DSN+$DPN;
                 สิทธิ:$cPtright<br>
                 โรค $cDiag<br>
                 รวมเงินค่ายา  $total  บาท<br>
-                แพทย์ $cDoctor<br>");
+                แพทย์ $cDoctor<br>";
+       $result = mysql_query($query) or die($msg);
 
 //test 9/4/47 to find the last row
 //printf ("Last inserted record has id %d\n",mysql_insert_id());
@@ -125,8 +125,7 @@ $total=$Essd+$Nessdy+$DSY+$DPY+$Nessdn+$DSN+$DPN;
              			  rx1day   = rx1day +$aAmount[$n],
         			  totalstk = stock + mainstk
                        WHERE drugcode= '$aDgcode[$n]' ";
-        $result = mysql_query($query)
-                       or die("Query failed,update druglst");
+        $result = mysql_query($query)or die("Query failed,update druglst");
 			}
         };
 	$injectno=0;	
@@ -170,22 +169,26 @@ for ($n=1; $n<=$x; $n++){
 				 '$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','','$dr_date');";
 			$result = mysql_query($query) or die("Query failed,insert into drugrx");
 		}
-		////////////คิดเงิน20บาท
-		if($c2!='20'&&($c1=='2'||$c1=='0')){
-			if(isset($_GET['inject'])){
+		
+		//////////// นับจำนวนสำหรับการคิดเงินค่าฉีดยา
+		// ถ้าโค้ดยาขึ้นต้นด้วย 0 หรือ 2 และไม่ได้ตามด้วย20
+		if( $c2 != '20' && ( $c1 == '2' || $c1 == '0' ) ){
+			
+			// เพิ่มการนับจำนวนยาด้วย เพราะบางตัว amount เป็น0 แต่มีการคิดค่าฉีดยาเบิ้ล
+			if( isset($_GET['inject']) && $aAmount[$n] > 0 ){
 				$sqlopday = "select toborow from opday where hn='".$cHn."' and thdatehn = '".$Thdhn."' ";
 				$res= mysql_query($sqlopday) or die("Query failed");
 				list($toborow) = mysql_fetch_row($res);
 				$tob = substr($toborow,0,4);
-				if($tob!="EX10"){
+				if($tob!="EX10"){ // ถ้าไม่ใช่ไตเทียม
 					$injectno++;
 				}
 			}
 		}
-		
-		////////////////////////////////จบคิดเงิน 20บาท
+		////////////////////////////////จบนับจำนวนสำหรับการคิดเงินค่าฉีดยา
    }
-};
+}
+
 ////////////คิดเงิน20บาท
 if($injectno!=0){
 			//runno  for chktranx

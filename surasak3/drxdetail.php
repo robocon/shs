@@ -15,11 +15,11 @@
 		$fnum=mysql_num_rows($fquery);
 		if($fnum > 0){
 			//echo "<script>alert('ยา $cdrugcode เกิด INTERACTION กับยาดังต่อไปนี้ ";
-				while($frows=mysql_fetch_array($fquery)){
-					$bdrugcode=$frows["between_drugcode"];
-					echo "$bdrugcode,";
-				}
-			echo "');</script>";
+				// while($frows=mysql_fetch_array($fquery)){
+				// 	$bdrugcode=$frows["between_drugcode"];
+				// 	echo "$bdrugcode,";
+				// }
+			// echo "');</script>";
 		}else if($fnum < 1){
 			$bsql="select first_drugcode, between_drugcode from drug_interaction where first_drugcode='$cdrugcode'";
 			//echo $bsql;
@@ -27,17 +27,17 @@
 			$bnum=mysql_num_rows($bquery);		
 			if($bnum > 0){
 				//echo "<script>alert('ยา $cdrugcode เกิด INTERACTION กับยาดังต่อไปนี้ ";
-					while($frows=mysql_fetch_array($fquery)){
-						$fdrugcode=$frows["first_drugcode"];
-						echo "$fdrugcode,";
-					}
-				echo "');</script>";	
+				// 	while($frows=mysql_fetch_array($fquery)){
+				// 		$fdrugcode=$frows["first_drugcode"];
+				// 		echo "$fdrugcode,";
+				// 	}
+				// echo "');</script>";	
 			}else{
 				//echo "<script>alert('ยา $cdrugcode ไม่เกิด DRUGINTERACTION กับยาอื่นๆ";
-					while($frows=mysql_fetch_array($fquery)){
-						echo "";
-					}
-				echo "</script>";				
+				// 	while($frows=mysql_fetch_array($fquery)){
+				// 		echo "";
+				// 	}
+				// echo "</script>";				
 			}	//close if $bnum
 		} //close if $fnum
 	}  //close while $crows
@@ -95,6 +95,7 @@
 //end  runno  for chktranx
 
     $query = "SELECT * FROM dphardep WHERE row_id = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."'"; 
+	//echo $query."<br>";
     $result = mysql_query($query) or die("Query failed");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -133,15 +134,16 @@ if($rnum > 0){
 			$tradname=$rrows["tradname"];
 			$advreact=$rrows["advreact"];
 			$asses=$rrows["asses"];
-			echo "$tradname...$advreact($asses), ";			
+			echo "$tradname...$advreact($asses), \r\n";			
 	}
 	echo "');</script>";	
 }else{
-	//echo "<script>alert('ผู้ป่วย HN : $sHn ไม่มีประวัติแพ้ยา');</script>";
+	//echo "<script>alert('ผู้ป่วย HN : $sHn ไม่มีประวัติแพ้ยา');";  
 }
 //----------------------------จบเช็คแพ้ยา
 ?>
 <script>
+
 function chkin(){
 	if(document.getElementById('cut2').style.display=='none'){
 		document.getElementById('cut2').style.display='block';
@@ -176,6 +178,7 @@ $inject = false;
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
 	
 	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."'   AND a.date = '".$_GET["sDate"]."' ";
+	//echo $query;
     $result = mysql_query($query) or die("Query failed");
 $n='0';
     $d=substr($dDate,8,2);
@@ -214,6 +217,24 @@ $color="#00CCFF";
 $color="F5DEB3";
 }
 
+$ptright=substr($sPtright,0,3);
+//echo $ptright."...<br>";
+if($ptright=="R07" || $ptright=="R09"){
+	if($drugcode=="4MET25" || $drugcode=="10H014"){
+		if($part=="DDN"){
+			$comment="<strong style='color:#FF0000'>(เบิกไม่ได้)</strong>";
+		}else if($part=="DDL"){
+			$comment="<strong style='color:#0000FF'>(เบิกได้)</strong>";
+		}else{
+			$comment="";
+		}
+	}else{
+		$comment="";
+	}
+}else{
+	$comment="";
+}
+
 		if($count_row ==1)
 		$onclick= "<A HREF='#' onclick=\"alert('กรุณา เหลือรายการยาไว้อย่างน้อย 1 รายการครับ');\">";
 	else
@@ -227,7 +248,7 @@ $color="F5DEB3";
 		   "  <td><font face='Angsana New'>$n</td>\n".
 		   "  <td><font face='Angsana New'>$drugcode</td>\n".
            "  <td><font face='Angsana New'>$tradname $injectno</td>\n".
-			        "  <td><font face='Angsana New'>$part</td>\n".
+		   "  <td><font face='Angsana New'>$part<br>$comment</td>\n".
            "  <td><font face='Angsana New'><span id=\"amount_value".$x."\">$amount</span>
 		   <input type=\"text\" style=\"display:none\" name=\"amount".$x."\" value=\"".$amount."\" id=\"amount".$x."\" size=\"5\"></td>\n".
            "  <td><font face='Angsana New'>$price</td>");
