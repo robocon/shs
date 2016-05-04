@@ -45,9 +45,9 @@ function calcage($birth){
 
 include 'connect.inc'; 
 
-$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,vn From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql) or die( mysql_error() );
-list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$vn) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 if($cigarette==0){
 	$cigarette='ไม่สูบ';
@@ -104,10 +104,10 @@ $cAge = calcage($dbirth);
 </script>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
-		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
+		<td>HN : <?=$hn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
 	<tr>
-		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
+		<td>VN:<?=$vn;?>, T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
 	</tr>
 	<tr>
 		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, นน : <?=$weight;?> กก., สส : <?=$height;?> ซม.</td>

@@ -104,9 +104,9 @@ $pdf->SetMargins(2, 2);
 // $pdf->SetLineWidth(80);
 $pdf->AddPage();
 
-$pdf->Cell(0, 6, "HN: $hn, VN: $vn, $thidate, $cAge");
+$pdf->Cell(0, 6, "HN: $hn, $thidate, $cAge");
 $pdf->Ln();
-$pdf->Cell(0, 6, "T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที");
+$pdf->Cell(0, 6, "VN: $vn, T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที");
 $pdf->Ln();
 $pdf->Cell(0, 6, "BP: $bp1 / $bp2 mmHg, นน: $weight กก., สส: $height ซม.");
 $pdf->Ln();

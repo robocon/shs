@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+ini_set('display_errors', '1');
+error_reporting(1);
 
 
 if(isset($_GET["action"])){
@@ -1000,48 +1002,72 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	list($id, $item, $stkcutdate) = Mysql_fetch_row($result);
 	
 	if($stkcutdate)
-	session_register("cancle_row_id");
-	$_SESSION["cancle_row_id"] = $id;
+		session_register("cancle_row_id");
+		$_SESSION["cancle_row_id"] = $id;
 
-	$sql = "Select drugcode, amount, slcode, drug_inject_amount, drug_inject_unit, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' ";
-	$result = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result)){
-		if($arr["drugcode"]=="4MET25"){
+	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_time`,
+	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`   
+	FROM `ddrugrx` 
+	WHERE `idno` = '".$id."' 
+	AND `hn` = '".$_SESSION["hn_now"]."' 
+	AND `date` LIKE '".((date("Y")+543).date("-m-d"))."%' ";
+	
+	// เก็บ log หลังจากคลิกแก้ไขยา
+	$logs = "ddrugrx - edit\r\n";
+	$logs .= "[idno] : $id\r\n";
+	$logs .= "[mysql] : $sql\r\n";
+	
+	$result = mysql_query($sql) or die( mysql_error() );
+	while($arr = mysql_fetch_assoc($result)){
 		
-		$sql = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%'   order by row_id desc limit 1";
-		//echo "==>".$sql;
-		$result = Mysql_Query($sql);
-		$arr = Mysql_fetch_assoc($result);
-		array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
-		array_push($_SESSION["list_drugamount"],$arr["amount"]);
-		array_push($_SESSION["list_drugslip"],$arr["slcode"]);
-		array_push($_SESSION["list_drug_inject_amount"],$arr["drug_inject_amount"]);
-		array_push($_SESSION["list_drug_inject_unit"],$arr["drug_inject_unit"]);
-		array_push($_SESSION["list_drug_inject_amount2"],$arr["drug_inject_amount2"]);
-		array_push($_SESSION["list_drug_inject_unit2"],$arr["drug_inject_unit2"]);
-		array_push($_SESSION["list_drug_inject_time"],$arr["drug_inject_time"]);
-		array_push($_SESSION["list_drug_inject_slip"],$arr["drug_inject_slip"]);
-		array_push($_SESSION["list_drug_inject_type"],$arr["drug_inject_type"]);
-		array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
-		array_push($_SESSION["list_drug_reason"],$arr["reason"]);
-		array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
+		if($arr["drugcode"] === '4MET25'){
+		
+			$sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' GROUP BY amount  order by row_id desc limit 1";
+			$res = mysql_query($sql2) or die( mysql_error() ) ;
+			$arr2 = mysql_fetch_assoc($res);
+			
+			array_push($_SESSION["list_drugcode"],$arr2["drugcode"]);
+			array_push($_SESSION["list_drugamount"],$arr2["amount"]);
+			array_push($_SESSION["list_drugslip"],$arr2["slcode"]);
+			array_push($_SESSION["list_drug_inject_amount"],$arr2["drug_inject_amount"]);
+			array_push($_SESSION["list_drug_inject_unit"],$arr2["drug_inject_unit"]);
+			array_push($_SESSION["list_drug_inject_amount2"],$arr2["drug_inject_amount2"]);
+			array_push($_SESSION["list_drug_inject_unit2"],$arr2["drug_inject_unit2"]);
+			array_push($_SESSION["list_drug_inject_time"],$arr2["drug_inject_time"]);
+			array_push($_SESSION["list_drug_inject_slip"],$arr2["drug_inject_slip"]);
+			array_push($_SESSION["list_drug_inject_type"],$arr2["drug_inject_type"]);
+			array_push($_SESSION["list_drug_inject_etc"],$arr2["drug_inject_etc"]);
+			array_push($_SESSION["list_drug_reason"],$arr2["reason"]);
+			array_push($_SESSION["list_drug_reason2"],$arr2["reason2"]);
+			
 		}else{
-		array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
-		array_push($_SESSION["list_drugamount"],$arr["amount"]);
-		array_push($_SESSION["list_drugslip"],$arr["slcode"]);
-		array_push($_SESSION["list_drug_inject_amount"],$arr["drug_inject_amount"]);
-		array_push($_SESSION["list_drug_inject_unit"],$arr["drug_inject_unit"]);
-		array_push($_SESSION["list_drug_inject_amount2"],$arr["drug_inject_amount2"]);
-		array_push($_SESSION["list_drug_inject_unit2"],$arr["drug_inject_unit2"]);
-		array_push($_SESSION["list_drug_inject_time"],$arr["drug_inject_time"]);
-		array_push($_SESSION["list_drug_inject_slip"],$arr["drug_inject_slip"]);
-		array_push($_SESSION["list_drug_inject_type"],$arr["drug_inject_type"]);
-		array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
-		array_push($_SESSION["list_drug_reason"],$arr["reason"]);
-		array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
+			
+			array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
+			array_push($_SESSION["list_drugamount"],$arr["amount"]);
+			array_push($_SESSION["list_drugslip"],$arr["slcode"]);
+			array_push($_SESSION["list_drug_inject_amount"],$arr["drug_inject_amount"]);
+			array_push($_SESSION["list_drug_inject_unit"],$arr["drug_inject_unit"]);
+			array_push($_SESSION["list_drug_inject_amount2"],$arr["drug_inject_amount2"]);
+			array_push($_SESSION["list_drug_inject_unit2"],$arr["drug_inject_unit2"]);
+			array_push($_SESSION["list_drug_inject_time"],$arr["drug_inject_time"]);
+			array_push($_SESSION["list_drug_inject_slip"],$arr["drug_inject_slip"]);
+			array_push($_SESSION["list_drug_inject_type"],$arr["drug_inject_type"]);
+			array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
+			array_push($_SESSION["list_drug_reason"],$arr["reason"]);
+			array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
 		}  //close if
+		
 	}  //close while
 
+	$logSession = $_SESSION['dt_doctor']."\r\n";
+	$logSession .= implode(',', $_SESSION['list_drugcode'])."\r\n";
+	$logSession .= implode(',', $_SESSION['list_drugamount'])."\r\n";
+	$logSession .= implode(',', $_SESSION['list_drugslip'])."\r\n";
+	
+	$logs .= "[session] : $logSession\r\n";
+	$logs .= "---------------------------\r\n\r\n";
+	
+	file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
 	
 	if($_SESSION["nRunno"] == ""){
 
@@ -2001,9 +2027,9 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
 		document.form1.drug_amount.focus();	
-	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
+/*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
-		document.form1.drug_amount.focus();	
+		document.form1.drug_amount.focus();	*/
 	}else{
 		
 			if(check_inject(document.form1.drug_code.value) == false){

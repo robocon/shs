@@ -479,6 +479,14 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 		}
       }
 	$j = $j+5;
+	
+	// เก็บ log หลังจากเพิ่มจากลงใน ddrugrx
+	$logs = "ddrugrx - add\r\n";
+	$logs .= "[mysql] : $query\r\n";
+	$logs .= "---------------------------\r\n\r\n";
+	file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
+	
+	
 	//$_SESSION["dt_drugstk"] .="<DIV style='left:".$k2."px;top:".$j."PX;width:306PX;height:30PX;position:absolute'>
 	//					<font style=\"font-family:'MS Sans Serif'; font-size:8px\" >".$_SESSION["dt_doctor"]."
 	//					</DIV>";
