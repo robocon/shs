@@ -18,7 +18,21 @@ $appd=$appdate.' '.$appmo.' '.$thiyr;
 
 <?php
     include("connect.inc");
-    $query="CREATE TEMPORARY TABLE appoint1 SELECT *, left( `doctor` , 5 ) AS codedoctor FROM appoint WHERE appdate = '$appd' ";
+    // $query="CREATE TEMPORARY TABLE appoint1 
+	// SELECT *, left( `doctor` , 5 ) AS codedoctor 
+	// FROM appoint 
+	// WHERE appdate = '$appd' ";
+	
+	$query="CREATE TEMPORARY TABLE appoint1 
+	SELECT a.*, LEFT( a.`doctor` , 5 ) AS `codedoctor` 
+	FROM `appoint` AS a 
+	RIGHT JOIN (
+		SELECT MAX(`row_id`) AS `lastid`
+		FROM `appoint` 
+		WHERE `appdate` = '$appd' 
+		GROUP BY `hn` 
+	) AS b ON b.`lastid` = a.`row_id`
+	ORDER BY a.`date` ASC ";
 	
     $result = mysql_query($query) or die("Query failed,app");
 
@@ -65,31 +79,43 @@ $num= $duplicate+$num;
 
 
 <?php
-    include("connect.inc");
-    $query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' ";
-    $result = mysql_query($query) or die("Query failed,app");
+include("connect.inc");
+$query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' ";
+$result = mysql_query($query) or die("Query failed,app");
 
+print "จำนวนผู้ป่วยนัด<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
 
-  print "จำนวนผู้ป่วยนัด<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
-   $query="SELECT  detail,COUNT(*) AS duplicate FROM appoint1 GROUP BY detail HAVING duplicate > 0 ORDER BY doctor";
-   $result = mysql_query($query);
-     $n=0;
-	 $num=0;
- while (list ($detail,$duplicate) = mysql_fetch_row ($result)) {
-            $n++;
+// Query ตัวเก่า
+// $query="SELECT  detail,COUNT(*) AS duplicate 
+// FROM appoint1 
+// GROUP BY detail 
+// HAVING duplicate > 0 
+// ORDER BY doctor";
 
-$num= $duplicate+$num;
-            print (" <tr>\n".
-               "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
-              "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"ptappoiall3.php? detail=$detail&appd=$appd\">$detail&nbsp;&nbsp;</a></td>\n".
- 
-//    "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
-             //  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
-        "  <td BGCOLOR=66CDAA><font face='Angsana New'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
-               " </tr>\n<br>");
-               }
+$query = "SELECT a.`detail`, COUNT(a.`hn`) AS `duplicate` 
+FROM `appoint` AS a 
+INNER JOIN (
+	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`
+	FROM `appoint` 
+	WHERE `appdate` = '$appd' 
+	GROUP BY `hn` 
+) AS b ON b.`id` = a.`row_id` 
+GROUP BY `detail`";
+
+$result = mysql_query($query);
+$n=0;
+$num=0;
+while (list ($detail,$duplicate) = mysql_fetch_row ($result)) {
+    $n++;
+    $num= $duplicate+$num;
+    print (" <tr>\n".
+    "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
+    "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"ptappoiall3.php? detail=$detail&appd=$appd\">$detail&nbsp;&nbsp;</a></td>\n".
+    "  <td BGCOLOR=66CDAA><font face='Angsana New'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
+    " </tr>\n<br>");
+}
  print "จำนวนผู้ป่วยทั้งหมด.... $num..คน</a><br> ";
-   include("unconnect.inc");
+include("unconnect.inc");
 ?>
 
 
@@ -120,7 +146,19 @@ $num= $duplicate+$num;
 
 <?php
     include("connect.inc");
-    $query = "SELECT hn,ptname,apptime,came,row_id,age,doctor,depcode,officer,date FROM appoint WHERE appdate = '$appd' ORDER BY row_id ASC    ";
+    // $query = "SELECT hn,ptname,apptime,came,row_id,age,doctor,depcode,officer,date 
+	// FROM appoint 
+	// WHERE appdate = '$appd' 
+	// ORDER BY row_id ASC    ";
+	$query = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,a.`doctor`,a.`depcode`,a.`officer`,a.`date`
+	FROM `appoint` AS a 
+	RIGHT JOIN (
+		SELECT MAX(`row_id`) AS `lastid`
+		FROM `appoint` 
+		WHERE `appdate` = '$appd' 
+		GROUP BY `hn` 
+	) AS b ON b.`lastid` = a.`row_id`
+	ORDER BY a.`date` ASC";
   
  $result = mysql_query($query)
         or die("Query failed");
