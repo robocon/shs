@@ -309,6 +309,7 @@ ORDER BY `toborow2` ASC";
 
 $lists = array();
 $row_lists = array();
+
 $q = mysql_query($sql);
 while($item = mysql_fetch_assoc($q)){
     
@@ -318,33 +319,24 @@ while($item = mysql_fetch_assoc($q)){
     
 }
 
-// $date_time1 = date_create(date('Y-m-d H:i:s'));
-
-?><table><?php
-foreach($lists as $key => $item){
-    ?>
-    <tr>
-        <td>
-            <p><?=$list[$key];?></p>
-        </td>
-        <td>
-        <?php
-        $avg = ($item / $row_lists[$key]);
-        
-        // $time = time() + $avg;
-        // $date_time2 = date_create(date('Y-m-d H:i:s', $time));
-        // $diff = date_diff($date_time1, $date_time2);
-        // $test = $diff->format('%H:%I:%S');
-        
-        echo gmdate("H:i:s", $avg);
+if( empty($lists) ){
+    ?><p>ไม่มีข้อมูลการลงเวลา</p><?php
+}else{
+    ?><table><?php
+    foreach($lists as $key => $item){
         ?>
-        </td>
-    </tr>
-    <?php
+        <tr>
+            <td>
+                <p><?=$list[$key];?></p>
+            </td>
+            <td>
+            <?php
+            $avg = ($item / $row_lists[$key]);
+            echo gmdate("H:i:s", $avg);
+            ?>
+            </td>
+        </tr>
+        <?php
+    }
+    ?></table><?php
 }
-?></table>
-</table>
-
-
-
-
