@@ -72,7 +72,6 @@
 	session_register("tvn"); 
 	session_register("list_codeed");
 	
-	
 	$_SESSION['date_start'] = $_POST['date_start'];
 	$_SESSION['date_end'] = $_POST['date_end'];
 	

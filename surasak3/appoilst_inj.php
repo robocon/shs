@@ -428,9 +428,9 @@ return stat;
 			<Option value="VERORAB 2">VERORAB 2 ‡¢Á¡</Option>
 			<Option value="VERORAB 3">VERORAB 3 ‡¢Á¡</Option>
 			<Option value="VERORAB 5">VERORAB 5 ‡¢Á¡</Option>
-			<Option value="SPEEDA 2">SPEEDA 2 ‡¢Á¡</Option>
+			<!--<Option value="SPEEDA 2">SPEEDA 2 ‡¢Á¡</Option>
 			<Option value="SPEEDA 3">SPEEDA 3 ‡¢Á¡</Option>
-			<Option value="SPEEDA 5">SPEEDA 5 ‡¢Á¡</Option>            
+			<Option value="SPEEDA 5">SPEEDA 5 ‡¢Á¡</Option>-->
 			<Option value="Engerix-B">Engerix-B</Option>
 			<Option value="Hepavax">Hepavax</Option>
 

@@ -87,9 +87,9 @@ print "<STYLE>";
 
  print "DIV {position:absolute; z-index:25;}";
 
-print ".fc1-0 { COLOR:000000;FONT-SIZE:20PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}";
+print ".fc1-0 { COLOR:000000;FONT-SIZE:26PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}";
 
-print ".fc1-1 { COLOR:000000;FONT-SIZE:18PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}";
+print ".fc1-1 { COLOR:000000;FONT-SIZE:24PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}";
 
 print ".fc1-2 { COLOR:000000;FONT-SIZE:16PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}";
 print ".fc1-3 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}";
@@ -110,12 +110,12 @@ print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGI
 
 print "<DIV style='z-index:0'> &nbsp; </div>";
 //print "<DIV style='left:500PX;top:190PX;width:600PX;height:30PX;'><span class='fc1-1'>หอผู้ป่วย:&nbsp;&nbsp;$bed</span></DIV>";
-print "<DIV style='left:10PX;top:40PX;width:300PX;height:30PX;'><span class='fc1-0'>&nbsp;$cPtname </span></DIV>";
+print "<DIV style='left:10PX;top:40PX;width:500PX;height:30PX;'><span class='fc1-0'>$cPtname </span></DIV>";
 //print "<DIV style='left:300PX;top:100PX;width:200PX;height:30PX;'><span class='fc1-1'>อายุ:&nbsp;$cAge</span></DIV>";
 
 //print "<DIV style='left:70PX;top:70PX;width:600PX;height:30PX;'><span class='fc1-1'>ADMIT Date/Time:&nbsp;$adate&nbsp;เวลา:&nbsp;$tdate</span></DIV>";
 print "<DIV style='left:10PX;top:70PX;width:200PX;height:30PX;'><span class='fc1-1'>AN:&nbsp;$an</span></DIV>";
-print "<DIV style='left:100PX;top:70PX;width:200PX;height:30PX;'><span class='fc1-1'>HN:&nbsp;$hn</span></DIV>";
+print "<DIV style='left:100PX;top:70PX;width:200PX;height:30PX;margin-left:20px;'><span class='fc1-1'>HN:&nbsp;$hn</span></DIV>";
 
  }
 include("unconnect.inc");

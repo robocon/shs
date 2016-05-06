@@ -100,7 +100,7 @@ if(isset($_GET["page"]) && $_GET["page"] == "rxform3bc"){
     echo "<BR> <a target=_self  href='oplistexbc1.php'>ไปดูรายการที่ค้างอยู่ในระบบ<br> <a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู............</a><br> ";
     
 $today=(date("Y")+543).date("-m-d");
-$N='N';
+$N='X';
 
 ?>
 
@@ -115,10 +115,7 @@ $N='N';
 
 <?php
 
-    $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok 
-	FROM opday 
-	WHERE thidate 
-	LIKE '$today%'and opdreg='$N' ";
+    $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%'and opdreg='$N' ";
 
     $result = mysql_query($query) or die("Query failed");
 	if(Mysql_num_rows($result) > 0){

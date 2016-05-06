@@ -67,26 +67,30 @@ a{
 		$sort = "Order by hn ";
 	}
 	
-	$query = "SELECT hn,ptname,apptime,came,row_id,age,date_format(date,'%d-%m-%Y') 
-	FROM appoint 
-	WHERE appdate = '$appd' 
-	and detail = '$detail' ".$sort;
+	// Query ตัวเก่า
+	// $query = "SELECT hn,ptname,apptime,came,row_id,age,date_format(date,'%d-%m-%Y') 
+	// FROM appoint 
+	// WHERE appdate = '$appd' 
+	// and detail = '$detail' ".$sort;
 	
-	
-	$result = mysql_query($query)
-	or die("Query failed");
+	$query = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,date_format(a.`date`,'%d-%m-%Y')
+FROM `appoint` AS a 
+INNER JOIN (
+	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`
+	FROM `appoint` 
+	WHERE `appdate` = '$appd' 
+	GROUP BY `hn` 
+) AS b ON b.`id` = a.`row_id` 
+WHERE a.`detail` = '$detail' 
+";
+	$result = mysql_query($query) or die("Query failed");
 
-	$num=0;
-	$j=0;
-	$title_array = array();
-	$title_array2 = array();
-	$detail_array = array();
 	
 	$date_now = date("d-m-").(date("Y")+543);
 	
 	$cancel_date = array();
+	$user_lists = array();
 	while (list ($hn,$ptname,$apptime,$came,$row_id,$age, $date) = mysql_fetch_row ($result)) {
-		$num++;
 		
 		if($date_now == $date){
 			$bgcolor = "FFA8A8";
@@ -94,68 +98,54 @@ a{
 			$bgcolor = "66CDAA";
 		}
 		
+		list($key_year, $hn_key) = explode('-', $hn);
+		$key = $key_year.sprintf("%08d", intval($hn_key));
+		
+		$user_lists[$key] = array(
+			'hn' => $hn,
+			'ptname' => $ptname,
+			'apptime' => $apptime,
+			'detail' => 'ค้นพบ////ไม่พบ',
+			'other' => '...................................................',
+			'date' => $date,
+			'sort_hn' => $key
+		);
+	}
+	
+	// เรียงจากน้อยไปหามากตาม sort_hn
+	function sorthn($a, $b){
+		return $a['sort_hn'] - $b['sort_hn'];
+	}
+	usort($user_lists, "sorthn");
+	
+	$order = 1;
+	foreach($user_lists as $key => $user){
+		
 		// แยกยกเลิกนัด
-		if( $apptime === 'ยกเลิกการนัด' ){
-			$cancel_date[] = array(
-				'hn' => $hn,
-				'ptname' => $ptname,
-				'apptime' => $apptime,
-				'detail' => 'ค้นพบ////ไม่พบ',
-				'other' => '...................................................',
-				'date' => $date
-			);
+		if( $user['apptime'] === 'ยกเลิกการนัด' ){
+			$cancel_date[] = $user;
 			continue;
 		}
 		
-		list($firstyear,$count_number) = explode("-",$hn);
-		$title_array[$j] = $firstyear;
-		$title_array[$j] = $title_array[$j]*1;
-		$title_array2[$j] = $count_number;
-		$title_array2[$j] = $title_array2[$j]*1;
-		
-		$detail_array[$j] = " <tr>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>{#ii}</td>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>$hn</td>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>$ptname</td>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>$apptime</td>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>ค้นพบ////ไม่พบ</td>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>...................................................</a></td>\n".
-		"  <td BGCOLOR=$bgcolor><font face='Angsana New'>$date</a></td>\n".
-		" </tr>\n";
-		
-		$j++;
-	
+		?>
+		<tr bgcolor="66CDAA">
+			<td><?=$order;?></td>
+			<td><?=$user['hn'];?></td>
+			<td><?=$user['ptname'];?></td>
+			<td><?=$user['apptime'];?></td>
+			<td><?=$user['detail'];?></td>
+			<td><?=$user['other'];?></td>
+			<td><?=$user['date'];?></td>
+		</tr>
+		<?php
+		$order++;
 	}
-	
-	for($one=$j-1;$one>0;$one--){
-		for($two=$one;$two>0;$two--){
-			if(($title_array[$two] < $title_array[$two-1]) ||  ($title_array[$two] == $title_array[$two-1] &&  $title_array2[$two] < $title_array2[$two-1])){
-			
-				$xxx = $title_array[$two];
-				$title_array[$two] = $title_array[$two-1];
-				$title_array[$two-1] = $xxx;
-				
-				$xxx = $title_array2[$two];
-				$title_array2[$two] = $title_array2[$two-1];
-				$title_array2[$two-1] = $xxx;
-				
-				$xxx = $detail_array[$two];
-				$detail_array[$two] = $detail_array[$two-1];
-				$detail_array[$two-1] = $xxx;
-			}
-		}
-	}
-
-	for($i=0;$i<$j;$i++){
-		$detail_array[$i] = str_replace("{#ii}",$i+1,$detail_array[$i]);
-		echo $detail_array[$i];
-	}
-	
-	
-// include("unconnect.inc");
 ?>
 </table>
 
+<?php
+if ( count($cancel_date) > 0 ) {
+?>
 <h3>รายชื่อผู้ป่วยยกเลิกนัด</h3>
 <table>
 	<thead>
@@ -192,7 +182,7 @@ a{
 </table>
 
 <?php
-
+}
 
 if($detail=='FU18 ไตเทียม'){
 
