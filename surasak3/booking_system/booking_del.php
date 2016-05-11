@@ -7,13 +7,11 @@
 
 <body>
 <?
-include("../Connections/connect.inc.php"); 
+include("../connect.php"); 
 
-$id_del=$_GET['id_del'];
-$sql="delete from booking where row_id='$id_del' ";
-$result=mysql_query($sql);
-
-
+$id_del = $_GET['id_del'];
+$sql = "DELETE FROM `booking` WHERE `row_id` = '$id_del' ";
+$result = mysql_query($sql);
 if ($result) {
 	echo "ลบข้อมูลใบจองเตียงเรียบร้อยแล้ว";	
 	echo "<meta http-equiv='refresh' content='2; url=booking_chk.php'>" ;

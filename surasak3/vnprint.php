@@ -1,5 +1,5 @@
 <?php
-     session_start();
+session_start();
 
 include("opd/class_printvn.php");
 $classopd = new printvn();
@@ -19,7 +19,6 @@ $classopd = new printvn();
 </script>
 
 	<SCRIPT LANGUAGE="JavaScript">
-		
 		window.onload = function(){
 			window.print();
 			var t;

@@ -207,7 +207,7 @@ mysql_close();
 <br />
 <?
 
-include("../Connections/connect.inc.php"); 
+include("../connect.php"); 
 //////จองเตียงวันนี้//////
 $todayy1=date("Y")+543;
 $todaym1=date("m");
@@ -259,7 +259,7 @@ $today5=$todayy1.'-'.$todaym1.'-'.$todayd1;
 	<td>หมายเลขเตียง</td>
 	<td>ผู้อนุมัติ</td>
 	<td>แก้ไข</td>
-	<td>ลบ</td>
+	<td>ยกเลิกการจองเตียง</td>
 	<td>ใบจอง</td>
   </tr>";
   while($dbarr=mysql_fetch_array($query)){

@@ -87,13 +87,7 @@ class printvn{
 		if(Mysql_num_rows($result) > 0){
 			$this->drugreact = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>แพ้ยา</B></U></TD></TR>";
 				while($arr = Mysql_fetch_assoc($result)){
-					
-					$reaction = '';
-					if(!empty($arr['advreact'])){
-						$reaction = '&nbsp;&nbsp;อาการ: '.$arr['advreact'];
-					}
-					
-					$this->drugreact .= "<TR><TD>ยา: ".$arr["tradname"].$reaction."</TD></TR>";
+					$this->drugreact .= "<TR><TD>ยา:".$arr["tradname"]."<BR>อาการ:".$arr["advreact"]."</TD></TR>";
 				}
 			$this->drugreact .= "</Table>";
 			}
@@ -115,9 +109,9 @@ class printvn{
 
 		print "<center>";
 		print "<font style='line-height:24px;' face='Angsana New' size= 2 >ใบตรวจโรค โรงพยาบาลค่ายสุรศักดิ์มนตรี<br>";
-			print "<font style='line-height:24px;' face='Angsana New' size= 3 ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."";
+			print "<font style='line-height:24px;' face='Angsana New' size= 3 ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."<br>";
 				print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b><u>".$this->toborow."</b></u><br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 6 ><br><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
+		print "<font style='line-height:24px;' face='Angsana New' size= 6 ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
 		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><br>";
 		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>ชื่อ&nbsp;".$this->ptname."</b><br>";
 		print "<font style='line-height:24px;' face='Angsana New' size= 5 ><b>HN: &nbsp;".$this->hn."</b><br>";
@@ -135,14 +129,14 @@ class printvn{
 //		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
 
 		print "<font  style='line-height:24px;' face='Angsana New' size= 1 >".$this->noteall."<BR>";
-		print "<img src = \"printbcpha.php?cHn=".$this->hn."\">";
+		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
 		if($this->clinic != "")
 		print "<font face='Angsana New' size= 3 >คลินิก : ".$this->clinic."<BR>";
 		if($this->doctor != "")
 		print "<font face='Angsana New' size= 3 >แพทย์ : ".$this->doctor."<BR>";
 		if($this->room != "")
 		print "<font face='Angsana New' size= 3 >ห้องตรวจ : ".$this->room."<BR>";		
-print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."";
+print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
 //print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
 print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 >แพทย์..............................................<BR>";
 print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> รับยายื่นที่ช่องหมายเลข 6</u><BR>";
@@ -181,7 +175,7 @@ print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><IN
 			</TR>
 			<TR>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
-				<TD>............................................................</TD>
+				<TD>..........................................</TD>
 				<TD align='right' ></TD>
 				<TD colspan='4'></TD>
 			</TR>

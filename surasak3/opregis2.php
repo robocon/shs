@@ -109,7 +109,30 @@ if(!empty($hn_value)||!empty($firstname)||!empty($lastname)||!empty($id_value)){
 			}
 		
 		
-		
+			if(!empty($idcard)){
+				$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+				if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+					echo"<FONT SIZE='' COLOR='#FF0033'>ผู้ป่วยมีสิทธิประกันสังคม</FONT>";
+				}
+			}else{
+				echo"<FONT SIZE='' COLOR='#FF0033'>ผู้ป่วยไม่มีเลขประจำตัวประชาชน</FONT>";
+				?>
+				<script type="text/javascript">
+					alert('ผู้ป่วยไม่มีเลขประจำตัวประชาชน');
+				</script>
+				<?php
+			}
+
+
+			if(!empty($hn)){
+				$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
+				if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+					echo"<FONT SIZE='' COLOR='#FF0033'>ผู้ป่วยมีสิทธิจ่ายตรง</FONT>";
+				}
+			}else{
+				echo"<FONT SIZE='' COLOR='#FF0033'>ผู้ป่วยไม่มี HN</FONT>";
+			}
+					
 		
 			$sql = sprintf("SELECT `hn`,`dcdate`, `my_ward`
 			FROM `ipcard` 

@@ -48,30 +48,32 @@ function ch_null(){
 		alert("กรุณาระบุ HN ด้วยครับ");
 		return false;
 	}
+	
+	// document.getElementById('f1').submit();
+	
+	document.forms["f1"].submit();
 }
 
-function fncSubmit()
-{
-	if(document.f2.ptname.value=="")
-	{
+function fncSubmit(){
+	if(document.f2.ptname.value==""){
 		alert('กรุณาใส่ชื่อผู้ป่วย');
 		document.f2.ptname.focus();
 		return false;
 	}
+	
 	if(document.f2.doctor.selectedIndex==0) {
 		alert("กรุณาเลือกแพทย์") ;
 		document.f2.doctor.focus() ;
 		return false ;
 	}		
 
-	if(document.f2.ward.selectedIndex==0)
-	{
+	if(document.f2.ward.selectedIndex==0){
 		alert('กรุณาเลือกหอผู้ป่วย');
 		document.f2.ward.focus();		
 		return false;
 	}
-	if(document.f2.bed.selectedIndex==0)
-	{
+	
+	if(document.f2.bed.selectedIndex==0){
 		alert('กรุณาเลือก เตียง/ห้อง');
 		document.f2.bed.focus();		
 		return false;
@@ -79,32 +81,40 @@ function fncSubmit()
 	
 	document.f2.submit();
 }
-
 </script>
-
 
 <p><a href="booking_chk.php">&lt;&lt;&nbsp;กลับไปหน้า ตรวจสอบข้อมูลการจองเตียง</a></p>
 
-<form name="f1" method="post" action="" onsubmit="JavaScript:return ch_null();">
-<table border="1" class="forntsarabun" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000">
-  <tr>
-    <td colspan="4" align="center" bgcolor="#CC6699"><strong>โปรแกรมจองเตียงผู้ป่วยใน</strong></td>
-  </tr>
-  <tr>
-    <td>HN : 
-      <input type="text" name="hn"  class="forntsarabun" value="<?=trim($_POST['hn']);?>"/></td>
-    <td><input type="submit" name="button" value="ตกลง" class="forntsarabun" /></td>
-    <td> <input name="btnButton" type="button" value="ย้อนกลับ" onClick="JavaScript:history.back();" class="forntsarabun">
-     </td>
-    <td> <a href='../../nindex.htm' class='forntsarabun'>กลับเมนูหลัก</a></td>
-  </tr>
-</table>
+<form name="f1" method="post" id="f1" action="booking.php" onsubmit="return ch_null()">
+	<table border="1" class="forntsarabun" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000">
+		<tr>
+			<td colspan="4" align="center" bgcolor="#CC6699"><strong>โปรแกรมจองเตียงผู้ป่วยใน</strong></td>
+		</tr>
+		<tr>
+			<td>
+				HN : <input type="text" name="hn"  class="forntsarabun" value="<?=trim($_POST['hn']);?>"/>
+			</td>
+			<td> 
+				<input type="submit" name="button" value="ตกลง" class="forntsarabun" />
+			</td>
+			<td> 
+				<input name="btnButton" type="button" value="ย้อนกลับ" onClick="JavaScript:history.back();" class="forntsarabun">
+			</td>
+			<td> 
+				<a href='../../nindex.htm' class='forntsarabun'>กลับเมนูหลัก</a>
+			</td>
+		</tr>
+	</table>
 </form>
+
 <br />
 
 <?php 
-if($_POST['button']){
-	include("../Connections/connect.inc.php"); 
+
+$hn = $_POST['hn'];
+
+if( !empty($hn) ){
+	include("../connect.php"); 
 	
 	function calcage($birth){
 
@@ -209,7 +219,7 @@ if($_POST['button']){
 			<tr>
 				<td>แพทย์</td>
 				<td>
-					<select name="doctor"  id="doctor">
+					<select name="doctor"  id="doctor" class="forntsarabun">
 					<?php 
 					echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
 					echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
