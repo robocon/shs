@@ -74,6 +74,7 @@ top.window.outerWidth = screen.availWidth;
 
     include("connect.inc");
 
+
     $query = "SELECT * FROM opcard WHERE hn = '$cHn'";
     $result = mysql_query($query)
         or die("Query failed");
@@ -107,6 +108,7 @@ top.window.outerWidth = screen.availWidth;
 	$cCareer =$row->career;
 	$cPtright =$row->ptright;
 	$cPtright1 =$row->ptright1;
+	//echo "==>$cPtright - $cPtright1";
 	$cPtrightdetail=$row->ptrightdetail;
 	$cAddress =$row->address;
 	$cTambol =$row->tambol;
@@ -129,7 +131,12 @@ $cPtfmon=$row->ptfmon;
 $cLastupdate=$row->lastupdate;
 $cBlood=$row->blood;
 $cDrugreact=$row->drugreact;
+$cHospcode=$row->hospcode;
 $employee = $row->employee;
+
+		$hcode=explode("/",$cHospcode);
+		$hcode1=$hcode[0];
+		
 //$cCase=$row->case;
 //  2494-05-28
     $cD=substr($cDbirth,8,2);
@@ -163,13 +170,100 @@ $employee = $row->employee;
 
 //print "$cDbirth";
 ?>
+<SCRIPT LANGUAGE='JavaScript'>
+	function newXmlHttp(){
+	var xmlhttp = false;
 
+		try{
+			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		}catch(e){
+		try{
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}catch(e){
+				xmlhttp = false;
+			}
+		}
+
+		if(!xmlhttp && document.createElement){
+			xmlhttp = new XMLHttpRequest();
+		}
+	return xmlhttp;
+}
+
+function searchSuggest2(str,len,getto1) {
+	
+		str = str+String.fromCharCode(event.keyCode);
+
+		if(str.length >= len){
+			url = 'opdedit.php?action=hospcode&search2=' + str+'&getto1=' + getto1
+			//alert(url);
+			xmlhttp = newXmlHttp();
+			xmlhttp.open("GET", url, false);
+			xmlhttp.send(null);
+
+			document.getElementById("list3").innerHTML = xmlhttp.responseText;
+		}
+}
+</script>
+
+<?
+if(isset($_GET["action"]) && $_GET["action"] == "hospcode"){
+	$sql = "SELECT hospcode,hosptype,name  FROM hospcode WHERE  hospcode  like '".$_GET["search2"]."%' ";
+	//echo "==>".$sql;
+	
+	$result = Mysql_Query($sql)or die(Mysql_error());
+
+
+	if(Mysql_num_rows($result) > 0){
+		echo "<br><Div style=\"position: absolute;text-align: left; width:650px; height:300px; overflow:auto; \">";
+	
+		echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\"width=\"100%\">
+		<TR>
+			<TD>
+			<table bgcolor=\"#FFFFCC\" width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">
+			<tr align=\"center\" bgcolor=\"#336600\">
+				<td ><font style=\"color: #FFFFFF\"><strong>รหัส รพ.</strong></font></td>
+				<td ><font style=\"color: #FFFFFF\"><strong>ชื่อ รพ.</strong></font></td>
+				<td width=\"50\" bgcolor=\"#FF0000\"><font style=\"color: #000000\"><strong><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('list3').innerHTML ='';\">ปิด</A></strong></font></td>
+			</tr>";
+
+
+		$i=1;
+		while($arr = Mysql_fetch_assoc($result)){
+				
+			
+
+				if($i%2==0)
+					$bgcolor="#FFFFFF";
+				else
+					$bgcolor="#FFFFCC";
+
+echo "<tr bgcolor=\"$bgcolor\" >
+						<td  align=\"center\"><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto1"]."').value = '".$arr["hospcode"].'-'.$arr["hosptype"].' '.$arr["name"]."';document.getElementById('list3').innerHTML ='';\">",$arr["hospcode"],"</A></td>
+					<td>".$arr["hosptype"].' '.$arr["name"]."</td>	
+				</tr>
+				<tr bgcolor=\"#A45200\">
+					<td height=\"5\"></td>
+					<td height=\"5\"></td>
+					
+				</tr>
+			";
+
+		$i++;
+		}  //close while
+		echo "</TABLE></TD>
+		</TR>
+		</TABLE></Div>";
+	}  //close numrows
+		exit();
+}
+?>
 <title>แก้ไขข้อมูลเวชระเบียนผู้ป่วย</title>
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
-<form name='f1' method='POST' action='opdwork.php' onsubmit='return checkForm();'>
-
+<form name='f1' method='POST' action='opdwork.php' onsubmit='return checkForm();' >
+<input name="hn" type="hidden" value="<?=$cHn;?>">
 <fieldset>
     <legend>ข้อมูลประวัติส่วนตัว :  HN : <?=$cHn;?></legend>
     
@@ -556,8 +650,15 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
       <option value="เอบี">เอบี</option>
       <option value="โอ">โอ</option>
     </SELECT></td>
-    <td class="fonthead">แพ้ยา</td>
-    <td><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>"></td>
+    <td class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
+    <td><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">
+<input name="rdo1" type="radio"  id="rdo1" value="30 บาท" <? if($hcode1=="30 บาท"){ echo "checked"; }?>> 
+30 บาท 
+<input name="rdo1" type="radio" id="rdo2" value="ปส." <? if($hcode1=="ปส."){ echo "checked"; }?>> 
+ประกันสังคม  
+      รพ.ต้นสังกัด
+<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    
+    </td>
     </tr>
   <tr>
     <td align="right" class="fonthead">หมายเหตุ</td>

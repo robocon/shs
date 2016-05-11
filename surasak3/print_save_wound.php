@@ -70,13 +70,13 @@ include("unconnect.inc");
 <TR>
 	<TD valign="top">
 	
-	<TABLE border="0" style="font-family: Angsana New; font-size: 18px;">
+	<TABLE border="0" style="font-family: 'TH SarabunPSK'; font-size: 18px;">
 	<TR>
 		<TD><B>ใบนัดทำแผลห้องฉุกเฉิน<BR>รพ.ค่ายสุรศักดิ์มนตรี</B></TD>
 		<TD align="center">
 			<TABLE border="1" bordercolor="#000000" cellspacing="0" cellpadding="0">
 			<TR>
-				<TD style="font-family: Angsana New; font-size: 18px;" align="center">
+				<TD style="font-family: 'TH SarabunPSK'; font-size: 18px;" align="center">
 			&nbsp;<U>ขนาดแผล</U>&nbsp;<BR><B><?php echo $size_wound;?></B>
 				</TD>
 			</TR>
@@ -91,8 +91,8 @@ include("unconnect.inc");
 		<TD>ถึง<U>&nbsp;<?php echo $end;?></U></TD>
 	</TR>
 	<TR>
-		<TD><FONT style="font-family: Angsana New; font-size: 24px;">HN<U>&nbsp;<?php echo $hn;?></U></FONT></TD>
-		<TD><FONT style="font-family: Angsana New; font-size: 24px;">ID<U>&nbsp;<?php echo $idcard;?></U></FONT></TD>
+		<TD><FONT style="font-family: 'TH SarabunPSK'; font-size: 24px;">HN<U>&nbsp;<?php echo $hn;?></U></FONT></TD>
+		<TD><FONT style="font-family: 'TH SarabunPSK'; font-size: 24px;">ID<U>&nbsp;<?php echo $idcard;?></U></FONT></TD>
 	</TR>
 	<TR>
 		<TD colspan="2">ผู้นัด&nbsp;:&nbsp;<?php echo $inhaler;?></U>&nbsp; สิทธิ์&nbsp;:&nbsp;<B><?php echo $ptright;?></B></U></TD>
@@ -131,12 +131,12 @@ include("unconnect.inc");
 	<TR>
 		<TD colspan="2">
 		
-<TABLE border="1" align="center" width="300" bordercolor="#000000" cellspacing="0" cellpadding="0" style="font-family: Angsana New; font-size: 18px;">
+<TABLE border="1" align="center" width="300" bordercolor="#000000" cellspacing="0" cellpadding="0" style="font-family: 'TH SarabunPSK'; font-size: 18px;">
 <TR align="center">
-	<TD width="20%">ว/ด/ป</TD>
+	<TD width="25%">ว/ด/ป</TD>
 	<TD width="25%">เวลารับ<br>บัตรคิว</TD>
 	<td width="25%">เวลาเริ่ม<br>ทำแผล</td>
-	<TD width="30%">ผู้ทำแผล</TD>
+	<TD width="25%">ผู้ทำแผล</TD>
 </TR>
 <?php while($arr2 = Mysql_fetch_assoc($result2)){
 	$show="";
@@ -168,12 +168,12 @@ include("unconnect.inc");
 	
 	<CENTER>
 	<B>
-	<FONT style="font-family: Angsana New; font-size: 22px;">
+	<FONT style="font-family: 'TH SarabunPSK'; font-size: 22px;">
 	ข้อควรปฏิบัติสำหรับผู้ป่วย
 	</FONT></B><BR>
 	</CENTER>
 
-	<FONT style="font-family: Angsana New; font-size: 18px;">
+	<FONT style="font-family: 'TH SarabunPSK'; font-size: 18px;">
 	1. ต้องทำแผลวันละ 1 ครั้งที่รพ.หรือสถานพยาบาลใกล้บ้าน<BR>
 	2. ห้ามแผลโดนน้ำ, ป้องกันไม่ให้แผลติดเชื้อ<BR>
 	3. รับประทานยาแก้อักเสบตามเวลาที่แพทย์สั่ง<BR>
@@ -187,7 +187,7 @@ include("unconnect.inc");
 	* ถ้าท่านมีอาการ ไข้สูง บาดแผลมีบวมแดงร้อน,<BR> แผลเย็บแยก, แผลมีหนองและมีกลิ่นเหม็น ควรมาพบแพทย์
 	
 	</FONT>
-	<TABLE  style="font-family: Angsana New; font-size: 20px;">
+	<TABLE  style="font-family: 'TH SarabunPSK'; font-size: 20px;">
 			<TR>
 		<TD colspan='2' align="center" ><b><u>เวลาทำแผล</u></b></TD>
 	</TR>
@@ -203,7 +203,7 @@ include("unconnect.inc");
 	</TD>
 </TR>
 <TR>
-	<TD colspan="3" align="center" style="font-family: Angsana New; font-size: 14px;">
+	<TD colspan="3" align="center" style="font-family: 'TH SarabunPSK'; font-size: 14px;">
 	เอกสารหมายเลข FR-OPD-003/4
 	แก้ไขครั้งที่ 02 มีผลบังคับใช้ 9 มิ.ย. 51
 		

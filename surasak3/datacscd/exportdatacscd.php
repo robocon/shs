@@ -22,7 +22,12 @@ if(file_exists("$filename1") && file_exists("$filename2")){
 $thimonth=$_POST["thiyr"]."-".$_POST["rptmo"]."-".$_POST["rptdate"];
 $numcscd=0;
 $cscd="จ่ายตรง";
-    $query="CREATE TEMPORARY TABLE reportcscd01 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd'  AND paidcscd > $numcscd " ;
+    $query="CREATE TEMPORARY TABLE reportcscd01 
+	SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate 
+	FROM opacc 
+	WHERE date LIKE '$thimonth%' 
+	and credit = '$cscd' 
+	AND paidcscd > $numcscd " ;
     $result = mysql_query($query) or die("Query failed billtran 26");
 
 

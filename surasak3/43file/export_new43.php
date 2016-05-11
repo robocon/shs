@@ -27,6 +27,47 @@ if( $action === false ){
 			<input type="hidden" name="action" value="show">
 		</div>
 	</form>
+	
+	<div>
+		<div>
+			<h3>รายชื่อแฟ้มที่เคยดึงข้อมูลแล้ว</h3>
+		</div>
+		<div>
+			<?php 
+			$zipItems = glob('new43file/*.zip');
+			
+			$i = 1;
+			?>
+			<table>
+				<tr>
+					<th>#</th>
+					<th>ชื่อไฟล์(คลิกเพื่อดาวโหลดได้)</th>
+					<th>ครั้งล่าสุดที่ดึงข้อมูล</th>
+				</tr>
+				<?php
+				foreach( $zipItems as $key => $item ){
+				?>
+				<tr>
+					<td><?=$i;?></td>
+					<td>
+						<?php
+						preg_match('/\/(.+\.zip)/', $item, $matchs);
+						echo '<a href="'.$item.'">'.$matchs['1'].'</a>';
+						?>
+					</td>
+					<td>
+						<?php
+						echo date('Y-m-d H:i:s', filemtime($item));
+						?>
+					</td>
+				</tr>
+				<?php
+				$i++;
+				}
+				?>
+			</table>
+		</div>
+	</div>
 <?php
 } else if( $action === 'show' ){
 	$dateSelect = input_post('dateSelect');
@@ -810,11 +851,14 @@ if( $action === false ){
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม drug_opd เสร็จเรียบร้อย<br>";
 	
+	// สร้าง zip ไฟล์
 	$zipName = 'new43file/UPDATE_F43_11512_'.$thiyr.$rptmo.'.zip';
 	require_once("files/dZip.inc.php"); // include Class
 	$zip = new dZip($zipName); // New Class
-	// $zip->addDir($subfolder); // Add Folder
+	
 	foreach( $zipLists as $key => $list){
+		
+		// $zip->addFile(ชื่อไฟล์ที่ใช้สร้างในzipใหม่, pathไฟล์ปัจจุบัน);
 		$zip->addFile($list, $list);
 	}
 	$zip->save();

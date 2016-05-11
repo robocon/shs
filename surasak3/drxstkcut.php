@@ -20,9 +20,12 @@ function jschars($str)
     return $str;
 }
 
-    $query = "SELECT * FROM dphardep WHERE row_id = '$sRow_id' AND date = '".$_SESSION["session_Date"]."' "; 
-    $result = mysql_query($query)
-        or die("Query failed");
+    // ก่อนการตัดยา เพิ่มเงื่อนในการตรวจสอบว่าหมอได้ยกเลิกรายการนี้ไปแล้วรึยัง
+    $query = "SELECT * FROM `dphardep` 
+	WHERE `row_id` = '$sRow_id' 
+	AND `date` = '".$_SESSION["session_Date"]."' 
+	AND `dr_cancle` IS NULL"; 
+    $result = mysql_query($query) or die("Query failed");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
@@ -32,7 +35,14 @@ function jschars($str)
 
         if(!($row = mysql_fetch_object($result)))
             continue;
-         }
+	}
+	
+	// ถ้า $row จาก fetch object เป็น NULL
+	if( is_null($row) ){
+		?><p>รายการยาดังกล่าวหมอได้ยกเลิกไปแล้วกรุณาปิดหน้าจอนี้ และกลับไปRefreshหน้าจอ รายการใบสั่งยาจากแพทย์ อีกครั้ง</p><?php
+		exit;
+	}
+	
     $nRunno=$row->chktranx;
 	$dr_date=$row->date;
     $cHn=$row->hn;

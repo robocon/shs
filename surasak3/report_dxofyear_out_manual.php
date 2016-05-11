@@ -1,6 +1,11 @@
-<?
+<?php
 session_start();
 include("connect.inc");
+
+$thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+          
 ?>
 <style type="text/css">
 <!--
@@ -90,11 +95,15 @@ include("connect.inc");
 </tr>
 <tr>
   <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">ตรวจเมื่อวันที่ 
-  <?
+  <?php
   $da = explode(" ",$result["thidate"]);
-  $daten = explode("-",$da[0]);
+//   list($y, $m, $d) = explode("-",$da[0]);
+//   $shortDate = "$d-$m-$y";
+	$d = '15';
+	$m = '03';
+	$y = '2016';
   ?>
-    <? echo "17 สิงหาคม 2558";?>
+  <?php echo $d.' '.$thaimonthFull[$m].' '.( $y + 543 );?>
   </span></span></span></td>
   <td align="center" valign="top" class="text3">&nbsp;</td>
 </tr>
@@ -734,10 +743,8 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
   ?>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise  LAB:</strong>
-        <?=$authorisename?>
-        <strong> (
-          <?=$authorisedate?>
-          ) CXR : </strong>พ.ต.ภูภูมิ วุฒิธาดา (ว.33906) รังสีแพทย์<strong> (17-08-2015) Doctor :พ.ต.เลอปรัชญ์ มังกรกนกพงศ์ (17-08-2015)</strong></td>
+    <td width="50%" align="center"><strong>Authorise  LAB:</strong>
+        <?=$authorisename?> <strong> (<?=$authorisedate?>) CXR : </strong>ร.อ.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>) Doctor : พ.ท.เลอปรัชญ์ มังกรกนกพงศ์ (<?=$authorisedate;?>)</strong>
+	</td>
   </tr>
 </table>

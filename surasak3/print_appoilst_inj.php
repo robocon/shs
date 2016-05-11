@@ -70,7 +70,7 @@ function calcage($birth){
 //******************************* บันทึกข้อมูล **************************************************************
 
 if($_POST["drug_inj"] == "Tetanus Toxoid"){
-	$dgcode = "0DT";
+	$dgcode = "0DT-N";
 }else if($_POST["drug_inj"] == "VERORAB"){
 	$dgcode = "0VERO";
 }else if($_POST["drug_inj"] == "SPEEDA"){
@@ -104,7 +104,7 @@ if($rows_drugrx > 0){
 	$sql_ddrugrx = "INSERT INTO ddrugrx(date,hn,drugcode,tradname,amount,price,item,slcode,part,idno, salepri, freepri, drug_inject_amount, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,injno) VALUES";
 	
 	if($_POST["drug_inj"] == "Tetanus Toxoid"){
-		$dgcode = "0DT";//0TT
+		$dgcode = "0DT-N";//0TT
 	}else if($_POST["drug_inj"] == "VERORAB"){
 		$dgcode = "0VERO";
 	}else if($_POST["drug_inj"] == "SPEEDA"){
