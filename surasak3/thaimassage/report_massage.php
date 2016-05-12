@@ -105,6 +105,14 @@ color: #FFF;
       <td colspan="2" align="center">&nbsp;</td>
     </tr>
     <tr>
+      <td>ช่วงเวลา</td>
+      <td><select name="seltime" id="seltime">
+        <option value="1" selected>ในเวลาราชการ</option>
+        <option value="2">นอกเวลาราชการ</option>
+      </select>
+      </td>
+    </tr>
+    <tr>
       <td>วัน/เดือน/ปี</td>
       <td><select name='d_start' class="font1">
         <option value="" selected="selected">--ไม่เลือก---</option>
@@ -209,8 +217,24 @@ if($_POST['d_start']==''){ // ถ้าไม่ได้เลือกวันที่
 print "<div align=\"center\" class=\"forntsarabun\">ทะเบียนผู้รับบริการแพทย์แผนไทย  ($sh  $dateshow)</div>";
 print "<div align=\"center\" class=\"forntsarabun\">งานแพทย์แผนไทย เอกสารหมายเลข FR-TTM-001/3 แก้ไขครั้งที่ 01 วันที่มีผลบังคับใช้ 1 ต.ค.56</div><BR>";
 
-$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";
-	
+if($_POST["seltime"]=="1"){  //ในเวลาราชการ
+	if($_POST['d_start']==''){ // ถ้าไม่ได้เลือกวันที่
+	$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date BETWEEN '".$today."-01 08:00:00' AND '".$today."-31 16:00:00')  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";
+	}else{  //เลือกวันที่
+	$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date BETWEEN '".$today." 08:00:00' AND '".$today." 16:00:00')  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";	
+	}
+}else if($_POST["seltime"]=="2"){  //นอกเวลาราชการ
+	if($_POST['d_start']==''){ // ถ้าไม่ได้เลือกวันที่
+	$today=($_POST['y_start']-543).'-'.$_POST['m_start'].'-'.date("d");
+	$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date BETWEEN '".$today."-01 16:00:01' AND '".$today."-31 23:59:59')  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";
+	}else{  //เลือกวันที่
+	$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date BETWEEN '".$today." 16:00:01' AND '".$today." 23:59:59')  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";	
+	}
+}else{
+	$today=(date("Y")+543).'-'.date("m").'-'.date("d");
+$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND (b.date BETWEEN '".$today." 08:00:00' AND '".$today." 23:59:59')  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";
+}
+	//echo $query;
 	
 	$result = mysql_query($query) or die("Query failed ".$query."");
 
@@ -303,8 +327,8 @@ ORDER BY `row_id` DESC LIMIT 1
     <td align="center">( ........................................................................)</td>
   </tr>
   <tr>
+    <td align="center">เจ้าหน้าที่ธุรการ</td>
     <td align="center">แพทย์แผนไทย</td>
-    <td align="center">หัวหน้างานแพทย์แผนไทย</td>
   </tr>
   <tr>
     <td align="center">................/................../................../</td>

@@ -207,7 +207,7 @@ $shtodate=($_POST['y_start']-543).'-'.$_POST['m_start'].'-'.$_POST['d_start'];
 }
 	
 
-	$sql = "SELECT count(*)as count FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 ";
+	$sql = "SELECT count(*)as count FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 ";
 	$result = Mysql_Query($sql);
 	list($sum) = Mysql_fetch_row($result);
 
@@ -223,7 +223,7 @@ print "<div align=\"center\" class=\"forntsarabun\">สถิติงานแพทย์แผนไทย  $sh  $d
 	<TD colspan="2" bgcolor="#CCCCCC">จำนวนโรคที่ผู้ป่วยมาตรวจ (ครั้ง)</TD>
 </TR>
 <?php 
-$sql = "SELECT b.diag,count(b.hn) as cc FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0  Group by b.diag Order by cc DESC";
+$sql = "SELECT b.diag,count(b.hn) as cc FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0  Group by b.diag Order by cc DESC";
 	
 $result = Mysql_Query($sql);
 $sum=0;
@@ -251,7 +251,7 @@ while(list($diag,$count) = Mysql_fetch_row($result)){
 	<TD colspan="2" bgcolor="#CCCCCC">สิทธิการรักษา</TD>
 </TR>
 <?php 
-$sql2 = "SELECT b.ptright,count(b.hn) as cc FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 Group by substring(b.ptright,1,3) Order by cc DESC";
+$sql2 = "SELECT b.ptright,count(b.hn) as cc FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 Group by substring(b.ptright,1,3) Order by cc DESC";
 	
 $result2 = Mysql_Query($sql2);
 $sum2=0;
@@ -280,7 +280,7 @@ $sum2+=$count2;
 	<TD colspan="2" align="center" bgcolor="#CCCCCC">เพศ</TD>
 </TR>
 <?php 
-$sql2 = "SELECT  distinct(b.hn) FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
+$sql2 = "SELECT  distinct(b.hn) FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
 	
 $result2 = Mysql_Query($sql2);
 $sum2=0;
@@ -330,7 +330,7 @@ $sum3=$nsex+$nsex2;
 	<TD colspan="2" align="center" bgcolor="#CCCCCC">ICD10</TD>
 </TR>
 <?php 
-$sql2 = "SELECT  b.hn,b.date FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
+$sql2 = "SELECT  b.hn,b.date FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
 	
  // echo $sql2;
 $result2 = Mysql_Query($sql2);
@@ -375,7 +375,7 @@ $sum33+=$xvalue;
         <TD colspan="2" align="center" bgcolor="#CCCCCC">ICD9CM</TD>
       </TR>
       <?php 
-$sql2 = "SELECT  b.hn,b.date FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
+$sql2 = "SELECT  b.hn,b.date FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
 	
  // echo $sql2;
 $result2 = Mysql_Query($sql2);
