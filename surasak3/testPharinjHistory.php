@@ -109,12 +109,15 @@ if( empty($action) ){
 		<head>
 			<title> นัดฉีดยา </title>
 			<style type="text/css">
+			*{
+				font-family: "Angsana New";
+			}
 			a:link {color:#FF0000; text-decoration:underline;}
 			a:visited {color:#FF0000; text-decoration:underline;}
 			a:active {color:#FF0000; text-decoration:underline;}
 			a:hover {color:#FF0000; text-decoration:underline;}
-			body,td,th {font-family:  MS Sans Serif;font-size: 14 px;}
-			.font_title{font-family:  MS Sans Serif;font-size: 14 px;color:#FFFFFF;font-weight: bold;}
+			body,td,th {font-size: 16px;}
+			.font_title{font-size: 16px;color:#FFFFFF;font-weight: bold;}
 			</style>
 			<script type="text/javascript">
 				window.onload = function(){
@@ -132,13 +135,13 @@ if( empty($action) ){
 							<TR>
 								<TD valign="top">
 
-									<TABLE border="0" style="font-family: Angsana New; font-size: 18px;">
+									<TABLE border="0" style="font-size: 18px;">
 										<TR>
 											<TD><B>ใบนัดฉีดยา<BR>รพ.ค่ายสุรศักดิ์มนตรี</B></TD>
 											<TD align="center">
 												<TABLE border="1" bordercolor="#000000" cellspacing="0" cellpadding="0">
 													<TR>
-														<TD style="font-family: Angsana New; font-size: 24px;" align="center">
+														<TD style="font-size: 24px;" align="center">
 															<B>&nbsp;&nbsp;<?=$codeSelect;?>&nbsp;&nbsp;</B>
 														</TD>
 													</TR>
@@ -147,12 +150,12 @@ if( empty($action) ){
 										</TR>
 										<TR>
 											<TD colspan="2">
-												<FONT style="font-family: Angsana New; font-size: 24px;">ชื่อ<U>&nbsp;<?=$testUser['yot'].' '.$testUser['name'].' '.$testUser['surname'];?>&nbsp;</U></FONT>
+												<FONT style="font-size: 24px;">ชื่อ<U>&nbsp;<?=$testUser['yot'].' '.$testUser['name'].' '.$testUser['surname'];?>&nbsp;</U></FONT>
 											</TD>
 										</TR>
 										<TR>
-											<TD><FONT style="font-family: Angsana New; font-size: 24px;">HN<U>&nbsp;<?php echo $testUser["hn"];?></U></FONT></TD>
-											<TD><FONT style="font-family: Angsana New; font-size: 24px;">ID<U>&nbsp;<?php echo $testUser["idcard"];?></U></FONT></TD>
+											<TD><FONT style="font-size: 24px;">HN<U>&nbsp;<?php echo $testUser["hn"];?></U></FONT></TD>
+											<TD><FONT style="font-size: 24px;">ID<U>&nbsp;<?php echo $testUser["idcard"];?></U></FONT></TD>
 										</TR>
 										<TR>
 											<TD>สิทธิ์&nbsp;:&nbsp;<B><?php echo substr($testUser["ptright"],4);?></TD>
@@ -163,13 +166,13 @@ if( empty($action) ){
 										</TR>
 										<TR>
 											<TD colspan="2">
-												<TABLE border="1" align="center" width="300" bordercolor="#000000" cellspacing="0" cellpadding="0" style="font-family: Angsana New; font-size: 30px;">
+												<TABLE border="1" align="center" width="300" bordercolor="#000000" cellspacing="0" cellpadding="0" style="font-size: 30px;">
 													<TR align="center">
-														<TD width="30">	<FONT style="font-family: Angsana New; font-size: 22px;">เข็ม</FONT></TD>
-														<TD width="60">	<FONT style="font-family: Angsana New; font-size: 22px;">VN</FONT></TD>
-														<TD width="90">	<FONT style="font-family: Angsana New; font-size: 22px;">ว/ด/ป</FONT></TD>
-														<TD width="50">	<FONT style="font-family: Angsana New; font-size: 22px;">เวลา</FONT></TD>
-														<TD width="50">	<FONT style="font-family: Angsana New; font-size: 22px;">ผู้ฉีด</FONT></TD>
+														<TD width="30">	<FONT style="font-size: 22px;">เข็ม</FONT></TD>
+														<TD width="60">	<FONT style="font-size: 22px;">VN</FONT></TD>
+														<TD width="90">	<FONT style="font-size: 22px;">ว/ด/ป</FONT></TD>
+														<TD width="50">	<FONT style="font-size: 22px;">เวลา</FONT></TD>
+														<TD width="50">	<FONT style="font-size: 22px;">ผู้ฉีด</FONT></TD>
 													</TR>
 													<?php 
 													// for($i = 1; $i <= $count; $i++){
@@ -192,7 +195,7 @@ if( empty($action) ){
 																?>
 															</td>
 															<td align="center">
-																<font style="font-size: 14px;"><?=$d;?> <?=$month[$m];?> <?=$y;?></font>
+																<font><?=$d;?> <?=$month[$m];?> <?=$y;?></font>
 															</td>
 															<td>&nbsp;</td>
 															<td>&nbsp;</td>
@@ -215,12 +218,12 @@ if( empty($action) ){
 								<TD valign="top">
 									<CENTER>
 										<B>
-										<FONT style="font-family: Angsana New; font-size: 22px;">
+										<FONT style="font-size: 22px;">
 										ข้อควรปฏิบัติสำหรับผู้ป่วย
 										</FONT></B><BR>
 									</CENTER>
 
-									<FONT style="font-family: Angsana New; font-size: 20px;">
+									<FONT style="font-size: 20px;">
 										1. กรุณามาตรงตามวันนัด<BR>
 										2. <U><B>มาตรงนัด</B></U><BR>
 										&nbsp;&nbsp;&nbsp;&nbsp;ให้ยื่นใบนัดที่แผนกทะเบียนเพื่อออก VN<BR>
@@ -234,7 +237,7 @@ if( empty($action) ){
 										<CENTER>***************************</CENTER>
 										<CENTER><B>เวลาฉีดยา</B></CENTER>
 									</FONT>
-									<FONT style="font-family: Angsana New; font-size: 20px;">
+									<FONT style="font-size: 20px;">
 										&nbsp;&nbsp;&nbsp;&nbsp;<B>เช้า</B>&nbsp;&nbsp;08.30  - 12.00 
 										&nbsp;&nbsp;<B>บ่าย</B>&nbsp;&nbsp;13.00  - 16.00 
 										&nbsp;&nbsp;<B>เย็น</B>&nbsp;&nbsp;16.30  - 20.00

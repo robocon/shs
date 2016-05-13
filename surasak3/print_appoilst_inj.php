@@ -185,6 +185,24 @@ if($rows_drugrx > 0){
 
 $sql_dphardep = "INSERT INTO dphardep(chktranx,date,ptname,hn,price,doctor,item,idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,whokey,kew)VALUES('[idno]','[Thidate]','".$_POST['fullname']."','".$_POST['hn']."','".$Netprice."','".$name_doctor."','".$item."','".$_SESSION["sOfficer"]."','".$diag."','".$Essd."','".$Nessdy."','".$Nessdn."','".$DPY."','".$DPN."','".$DSY."','".$DSN."','','".$ptright."','DR','".$kew."');";
 
+//////////////////////// เก็บค่าการนัดฉีดยา ////////////////////////
+// เอา idno จาก ddrugrx ตัวล่าสุด
+$hn = $_POST['hn'];
+$sql = "SELECT `date`,`idno` 
+FROM `ddrugrx` 
+WHERE `date` LIKE '$Thidate2%' 
+AND `hn` = '$hn' 
+AND `drugcode` = '$dgcode' LIMIT 1";
+$query = mysql_query($sql) or die( mysql_error() );
+$item = mysql_fetch_assoc($query);
+	
+// เพิ่มข้อมูลใน history
+$sql = "INSERT INTO `pharinj_history` (`id` ,`hn` ,`dphardep_id`, `start_date`)
+VALUES (
+NULL ,  '$hn',  '".$item['idno']."', '".$item['date']."'
+);";
+mysql_query($sql) or die( mysql_error() );
+//////////////////////// เก็บค่าการนัดฉีดยา ////////////////////////
 
 $count = count($_POST["list_date"]);
 
@@ -215,6 +233,14 @@ for($i=0;$i<$count;$i++){
 			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
 			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
 			$k=$i+2;
+			
+			// เพิ่มข้อมูลใน history เพื่อเรียกดูข้อมูลนัดฉีดยาย้อนหลัง
+			$sql = "INSERT INTO `pharinj_history` (`id` ,`hn` ,`dphardep_id`, `start_date`)
+			VALUES (
+			NULL ,  '$hn',  '$idno', '".$item['date']."'
+			);";
+			mysql_query($sql) or die( mysql_error() );
+			
 			$qq = array("[INJNO]");
 			$zz = array("เข็มที่ $k");
 			$sql_ddrugrx2 = str_replace($qq,$zz,$sql_ddrugrx2);
@@ -253,7 +279,7 @@ body,td,th {
 <SCRIPT LANGUAGE="JavaScript">
 
 		window.onload = function(){
-			//print();
+			print();
 		}
 
 </SCRIPT>

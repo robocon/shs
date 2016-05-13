@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * ใช้เฉพาะการออกใบนัดฉีดยามีปัญหา
+ * Sources เอามาจาก print_appoilst_inj.php
+ */
 include 'bootstrap.php';
 
 function calcage($birth){
@@ -27,6 +30,7 @@ function calcage($birth){
 }
 
 
+// กำหนดวันนัดฉีดยา
 // format yyyy-mm-dd
 $list_date = array(
 	'2559-05-11',
@@ -34,15 +38,25 @@ $list_date = array(
 	'2559-12-11',
 );
 
+// กำหนด HN และค่าต่างๆ
 $hn = '59-3689';
 $birth_day = '2505-04-26';
 $full_name = 'นาย สมจิตร ดีปุกเปียง';
-
 
 $Thidate = '2559-05-11 '.date('H:i:s');
 $Thidate2 = '2559-05-11';
 $dgcode = '0DT';
 
+$sOfficer = 'พงศ์เจริญ  อึงขจรกุล (ว.50784)';
+$sDoctor = 'MD110  พงศ์เจริญ อึงขจรกุล';
+
+$injCode = array(
+	'0DT' => 'Tetanus Toxoid',
+	'0VERO' => 'VERORAB',
+	'0SPEE' => 'SPEEDA',
+	'0EB1.0' => 'Engerix-B',
+	'0HB1.0' => 'Hepavax',
+);
 
 $sql = "SELECT `idno` 
 FROM `drugrx` 
@@ -50,7 +64,6 @@ WHERE `hn` = '$hn'
 AND `date` LIKE '$Thidate2%' 
 AND `drugcode` = '$dgcode' 
 AND `status` = 'Y' LIMIT 1";
-// dump($sql);
 $result = mysql_query($sql);
 $rows_drugrx = mysql_num_rows($result);
 if($rows_drugrx === 0){
@@ -157,10 +170,6 @@ if($rows_drugrx > 0){
 		$x++;
 
 	} // end while
-	// dump($x);
-
-	// dump($sql_ddrugrx);
-	// exit;
 	
 	$Essd   = array_sum($aEssd); //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
 	$Nessdy = array_sum($aNessdy); //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
@@ -169,8 +178,6 @@ if($rows_drugrx > 0){
 	$DSN    = array_sum($aDSN); //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกไม่ได้  
 	$DPY    = array_sum($aDPY); //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกได้
 	$DPN    = array_sum($aDPN); //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกไม่ได้  
-	
-	
 	
 	$sql_dphardep = "INSERT INTO dphardep(chktranx,date,ptname,hn,price,doctor,item,idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,whokey,kew)VALUES
 	('[idno]',
@@ -211,29 +218,26 @@ if($rows_drugrx > 0){
 	);";
 	mysql_query($sql) or die( mysql_error() );
 	
-	
-
-	
 	$count = count($list_date);
 	for($i = 0; $i < $count; $i++){
 
-		//******************************* บันทึกข้อมูล  การนัด *******************************
+		// บันทึกข้อมูล  การนัด
 		$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno,detail_etc)VALUES
 		('$Thidate',
-		'พงศ์เจริญ  อึงขจรกุล (ว.50784)',
+		'$sOfficer',
 		'$hn',
 		'$full_name',
 		'".calcage($birth_day)."',
-		'MD110  พงศ์เจริญ อึงขจรกุล',
+		'$sDoctor',
 		'".$list_date[$i]."',
 		'08:00 น. - 11.00 น.',
 		'แผนกทะเบียน',
 		'FU22 นัดฉีดยา',
-		'นัดฉีดยา Tetanus Toxoid',
+		'นัดฉีดยา ".$injCode[$dgcode]."',
 		'',
 		'',
 		'',
-		'นัดฉีดยา Tetanus Toxoid',
+		'นัดฉีดยา ".$injCode[$dgcode]."',
 		'U22 ห้องจ่ายยา',
 		'เข็มที่ ".($i+1)."',
 		'');";
@@ -255,9 +259,6 @@ if($rows_drugrx > 0){
 			$yy = array($runno, $list_date[$i]." 00:00:00");
 			$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
 			
-			
-			
-
 			if($rows_drugrx > 0){
 				
 				//เพิ่มข้อมูลลงใน dphardep
@@ -266,14 +267,12 @@ if($rows_drugrx > 0){
 				$yy = array($idno, $list_date[$i]." 00:00:00");
 				$sql_ddrugrx2 = str_replace($xx, $yy, $sql_ddrugrx);
 				
-				
-				// เพิ่มข้อมูลใน history
+				// เพิ่มข้อมูลใน history เพื่อเรียกดูข้อมูลนัดฉีดยาย้อนหลัง
 				$sql = "INSERT INTO `pharinj_history` (`id` ,`hn` ,`dphardep_id`, `start_date`)
 				VALUES (
 				NULL ,  '$hn',  '$idno', '".$item['date']."'
 				);";
 				mysql_query($sql) or die( mysql_error() );
-				
 				
 				$k = $i+1;
 				$qq = array("[INJNO]");
@@ -284,7 +283,6 @@ if($rows_drugrx > 0){
 			}
 		}
 	} // End for
-	
 	
 	echo "อัพเดทข้อมูลเรียบร้อย";
 }

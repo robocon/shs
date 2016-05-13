@@ -126,13 +126,14 @@ print "<DIV style='left:100PX;top:580PX;width:500PX;height:30PX;'><span class='f
 print "<DIV style='left:80PX;top:620PX;width:200PX;height:30PX;'><span class='fc1-1'>$blood</span></DIV>";
 print "<DIV style='left:260PX;top:620PX;width:200PX;height:30PX;'><span class='fc1-1'>$cDrugreact</span></DIV>";
 print "<DIV style='left:500PX;top:580PX;width:200PX;height:30PX;'><span class='fc1-1'></span></DIV>";
-/*print "<DIV style='left:150PX;top:790PX;width:200PX;height:30PX;'><span class='fc1-0'>$vHN</span></DIV>";
+
+print "<DIV style='left:150PX;top:790PX;width:200PX;height:30PX;'><span class='fc1-0'>$vHN</span></DIV>";
 print "<DIV style='left:250PX;top:800PX;width:200PX;height:30PX;'><span class='fc1-1'>$Thaidate</span></DIV>";
-print "<DIV style='left:80PX;top:820PX;width:200PX;height:30PX;'><span class='fc1-1'>$ptname</span></DIV>";
-print "<DIV style='left:100PX;top:840PX;width:200PX;height:30PX;'><span class='fc1-1'>$ptright</span></DIV>";
+print "<DIV style='left:100PX;top:820PX;width:200PX;height:30PX;'><span class='fc1-1'>$ptname</span></DIV>";
+print "<DIV style='left:120PX;top:840PX;width:200PX;height:30PX;'><span class='fc1-1'>$ptright</span></DIV>";
 print "<DIV style='left:240PX;top:855PX;width:200PX;height:30PX;'><span class='fc1-3 '>ID:$idcard</span></DIV>";
 print "<DIV style='left:150PX;top:870PX;width:200PX;height:30PX;'><span class='fc1-1'>$idguard</span></DIV>";
-print "<DIV style='left:110PX;top:880PX;width:600PX;height:30PX;'><span class='fc1-0'><img src = \"opdprintbc.php?cHn=$idcard\"></span></DIV>";*/
+print "<DIV style='left:110PX;top:880PX;width:600PX;height:30PX;'><span class='fc1-0'><img src = \"opdprintbc.php?cHn=$idcard\"></span></DIV>";
 print "</BODY></HTML>";
 
 //end opdcard

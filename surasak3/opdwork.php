@@ -115,14 +115,15 @@ print " ปิดหน้าต่างนี้: <br>";
   include("unconnect.inc");
 ?>
 
-   <br>&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>.........&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprintbc1.php">พิมพ์บาร์โค้ดบัตรตรวจโรค</a><br>
+<br>&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>.........&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprintbc1.php">พิมพ์บาร์โค้ดบัตรตรวจโรค</a><br>
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint1bc.php">พิมพ์บัตรผู้ป่วยบาร์โค้ด</a><br>
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint2.php">พิมพ์บัตรต่อประวัติผู้ป่วย</a><br>
 
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint1bc.">พิมพ์บัตรผู้ป่วยบาร์โค้ด</a><br>
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="edprint.php">พิมพ์ใบรับรองยานอก</a><br>
- 
-
-  <br>&nbsp;&nbsp;&nbsp;<a target=_TOP href="rxformnvn.php">พิมพ์ใบสั่งยาไม่ออกVN</a>&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;<a target=_TOP href="vnprint.php">พิมพ์ใบตรวจโรคไม่ออก VN</a>&nbsp;&nbsp;&nbsp;
-
+<br>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="rxformnvn.php">พิมพ์ใบสั่งยาไม่ออกVN</a>&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="vnprint.php">พิมพ์ใบตรวจโรคไม่ออก VN</a>&nbsp;&nbsp;&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint7.php">สำเนาประวัติการรักษาพยาบาล</a><br>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
