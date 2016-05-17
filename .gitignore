@@ -15,6 +15,7 @@ connect.php
 surasak3/connect.inc
 surasak3/connect.inc.php
 surasak3/connect.php
+surasak3/connectlogin.inc
 surasak3/Connections/config.inc.php
 surasak3/Connections/connect.inc.php
 surasak3/Connections/dbconfig.php
