@@ -1,22 +1,22 @@
 <?php
 session_start();
-session_unregister("cHn");
-session_unregister("cPtname");
-session_unregister("cPtright");
-session_unregister("nVn");
-session_unregister("cAge");
-session_unregister("nRunno");
-session_unregister("vAN");
-session_unregister("thdatehn");
-session_unregister("cNote");
-session_unregister("Ptright1");
+$_SESSION['cHn'] = '';
+$_SESSION['cPtname'] = '';
+$_SESSION['cPtright'] = '';
+$_SESSION['nVn'] = '';
+$_SESSION['cAge'] = '';
+$_SESSION['nRunno'] = '';
+$_SESSION['vAN'] = '';
+$_SESSION['thdatehn'] = '';
+$_SESSION['cNote'] = '';
+$_SESSION['Ptright1'] = '';
 //    session_destroy();
 ?>
 
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 
-<form method="post" action="<?php echo $PHP_SELF ?>">
+<form method="post" action="ophn.php">
     <p>ค้นหาคนไข้จาก&nbsp; HN</p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="text" name="hn" size="12" id="aLink"></p>
@@ -46,6 +46,7 @@ session_unregister("Ptright1");
             </tr>
 
             <?php
+            $hn = $_POST['hn'];
             If (!empty($hn)){
                 include("connect.inc");
                 global $hn;

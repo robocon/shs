@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($sOfficer)){} else {die;} //for security
+if (isset($_SESSION['sOfficer'])){} else {die;} //for security
 
 $thdatehn="";
 $thidate2 = (date("Y")).date("-m-d H:i:s"); 
@@ -8,8 +8,8 @@ $thidate = (date("Y")+543).date("-m-d H:i:s");
 $thidate3 = (date("Y")+543).date("-m-d"); 
 
 $time=date("H:i:s");
-session_register("thdatehn"); 
-session_register("admit_vn"); 
+$_SESSION['thdatehn'] = ''; 
+$_SESSION['admit_vn'] = ''; 
 
 include("connect.inc");   
 $code21 = '21';

@@ -39,15 +39,15 @@ else if (document.layers||document.getElementById) {
 
 <?php
     session_start();
-    session_unregister("cHn");  
-    session_unregister("cPtname");
-    session_unregister("cPtright");
-    session_unregister("cPtright1");
-    session_unregister("nVn");  
-    session_unregister("cAge");  
-    session_unregister("cNote");  
- 	session_unregister("cIdcard"); 
- 	session_unregister("cIdguard"); 
+    $_SESSION['cHn'] = '';  
+    $_SESSION['cPtname'] = '';
+    $_SESSION['cPtright'] = '';
+    $_SESSION['cPtright1'] = '';
+    $_SESSION['nVn'] = '';  
+    $_SESSION['cAge'] = '';  
+    $_SESSION['cNote'] = '';  
+ 	$_SESSION['cIdcard'] = ''; 
+ 	$_SESSION['cIdguard'] = ''; 
     $nRunno="";
     $vAN="";
 
@@ -56,17 +56,17 @@ else if (document.layers||document.getElementById) {
     $nVn="";
     $cAge="";
 	$borow='';
-    session_register("nRunno");  
-    session_register("vAN");
-    session_register("cHn");  
-    session_register("cPtname");
-    session_register("cPtright");
-    session_register("cPtright1");
-    session_register("nVn");  
-    session_register("cAge");  
-    session_register("cNote");  
- 	session_register("cIdcard");  
-  	session_register("cIdguard");  
+    // session_register("nRunno");  
+    // session_register("vAN");
+    // session_register("cHn");  
+    // session_register("cPtname");
+    // session_register("cPtright");
+    // session_register("cPtright1");
+    // session_register("nVn");  
+    // session_register("cAge");  
+    // session_register("cNote");  
+ 	// session_register("cIdcard");  
+  	// session_register("cIdguard");  
     include("connect.inc");
 	
 	if(isset($_GET["action"]) && $_GET["action"] == "hospcode"){
@@ -126,8 +126,8 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$_SESSION["cHn"] = $_GET["cHn"];
 	}
 	
-
-
+	
+	$cHn = $_GET['cHn'];
     $query = "SELECT * FROM opcard WHERE hn = '$cHn' limit 0,1";
     $result = mysql_query($query)or die("Query failed");
  
@@ -160,7 +160,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cCareer =$row->career;
 		$cPtright =$row->ptright;
 		$cPtright1 =$row->ptright1;
-		//echo "==>$cPtright - $cPtright1";
+		echo "==>$cPtright - $cPtright1";
 		$cPtrightdetail=$row->ptrightdetail;
 		$cAddress =$row->address;
 		$cTambol =$row->tambol;
@@ -288,8 +288,7 @@ if($rows>0){
 		}
 	return xmlhttp;
 }
-
-function searchSuggest2(str,len,getto1) {
+	function searchSuggest2(str,len,getto1) {
 	
 		str = str+String.fromCharCode(event.keyCode);
 
@@ -617,7 +616,8 @@ return $pAge;
                                  }
 						  }
 						?>
-      </select></td>
+      </select>
+</td>
     <td align="right" class="fonthead">สังกัด:</td>
     <td><!--<select size="1" name="camp" id="camp">
       <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
@@ -677,7 +677,8 @@ return $pAge;
 	  		}
 		}
 	  ?>
-		</select>    </td>
+		</select>
+    </td>
     </tr>
     <tr>
     <td align="right" class="fonthead">สิทธิการรักษา</td>
@@ -735,7 +736,8 @@ return $pAge;
 		print " <option value='$ptright_code&nbsp;$ptright_name'>$ptright_code&nbsp;$ptright_name</option>";
 }
 ?>
-    </select>    </td>
+    </select>
+    </td>
     <td class="fonthead">ประเภทสิทธิ :</td>
     <td><select name="ptrightdetail" size="1" id="ptrightdetail">
       <option  value="<?=$cPtrightdetail;?>" selected><?=$cPtrightdetail;?></option>
@@ -772,13 +774,18 @@ return $pAge;
     <td>&nbsp;</td>
     </tr>
 	<tr>
-		<td class="fonthead"><label for="employee">ลูกจ้าง รพ.ค่ายฯ</label></td>
-	  <td colspan="3"><?php
+		<td></td>
+		<td></td>
+		<td class="fonthead">
+			<label for="employee">ลูกจ้าง รพ.ค่ายฯ</label>
+		</td>
+		<td>
+			<?php
 			$checked = ( $employee === 'y' ) ? 'checked="checked"' : '' ;
 			?>
 			<input type="checkbox" id="employee" name="employee" value="y" <?=$checked;?>>
-			<span class="fonthead" style="color:#FF3366;">(ถ้าเป็นลูกจ้าง รพ.ค่ายฯ ให้เลือก check box ด้วย)</span>		</td>
-	  </tr>
+		</td>
+	</tr>
     </table>
 
 </fieldset>
