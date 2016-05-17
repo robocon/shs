@@ -87,20 +87,20 @@ class printvn{
 
 
 		print "<center>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 3 >ใบติด OPDCARD<br>";
-			print "<font style='line-height:24px;' face='Angsana New' size= 3 ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."<br>";
-				print "<font  style='line-height:24px;' face='Angsana New' size= 5 ><b><u>".$this->toborow."</b></u><br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 6 ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
-		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><br>";
-		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>ชื่อ&nbsp;".$this->ptname."</b><br>";
+		print "<font style='line-height:24px;font-size: 16px;' face='Angsana New' >ใบติด OPDCARD<br>";
+		print "<font style='line-height:24px;font-size: 16px;' face='Angsana New' ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."<br>";
+		print "<font  style='line-height:24px;font-size: 24px;' face='Angsana New' ><b><u>".$this->toborow."</b></u><br>";
+		print "<font style='line-height:24px;font-size: 32px;' face='Angsana New' ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
+		print "<font style='line-height:24px;font-size: 16px;' face='Angsana New' ><br>";
+		print "<font style='line-height:35px;font-size: 18px;' face='Angsana New' ><b>ชื่อ&nbsp;".$this->ptname."</b><br>";
 		//print " <BR><IMG SRC='../image_patient/".$this->idcard.".jpg' WIDTH='100' HEIGHT='125' BORDER='0' ALT=''  style='position: absolute;'><BR><BR><BR><BR><BR><BR><BR>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 5 ><b>HN: &nbsp;".$this->hn."</b><br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 3 >อายุ &nbsp; ".$this->age."<br>";
+		print "<font style='line-height:24px;font-size: 24px;' face='Angsana New' ><b>HN: &nbsp;".$this->hn."</b><br>";
+		print "<font style='line-height:24px;font-size: 16px;' face='Angsana New' >อายุ &nbsp; ".$this->age."<br>";
 		if(trim($this->idguard) != "") 
-	    print "<font style='line-height:24px;' face='Angsana New' size= 2 >".$this->idguard."<br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
+	    print "<font style='line-height:24px;font-size: 13px;' face='Angsana New' >".$this->idguard."<br>";
+		print "<font style='line-height:24px;font-size: 16px;' face='Angsana New'  ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
 		
-		print "<font style='line-height:24px;' face='Angsana New' size= 2 >บัตร ปชช: &nbsp; ".$this->idcard."<br>";
+		print "<font style='line-height:24px;font-size: 13px;' face='Angsana New' >บัตร ปชช: &nbsp; ".$this->idcard."<br>";
 	
 	
 		
@@ -111,15 +111,15 @@ class printvn{
 		
 //		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
 
-		print "<font  style='line-height:24px;' face='Angsana New' size= 1 >หมายเหตุ ".$this->note."<BR>";
+		print "<font  style='line-height:24px;font-size: 10px;' face='Angsana New' >หมายเหตุ ".$this->note."<BR>";
 		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
-print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
+		print "<font face='Angsana New' style='font-size: 16px;' >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
 //print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
 //print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 >แพทย์..............................................<BR>";
 //print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u>รับยายื่นที่ช่องหมายเลข 6</u><BR><BR>";
 
 /*
-		print "<font face='Angsana New' size= 3 ><b>XRAY</b><BR>";
+		print "<font face='Angsana New'  ><b>XRAY</b><BR>";
 		
 		print "
 			

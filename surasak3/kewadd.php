@@ -41,13 +41,12 @@ function calcage($birth){
 <body>
 <Script Language="JavaScript">
 function CloseWindowsInTime(t){
-t = t*1000;
-setTimeout("window.close()",t);
+	window.print();
+	t = t*1000;
+	setTimeout("window.close()",t);
 }
 CloseWindowsInTime(2/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */); 
 </Script>
-
-
 <?php
 
 if(substr($cIdguard,0,4)=='MX01'){

@@ -92,7 +92,7 @@ return $pAge;
       <td><div align="center" class="style18">มทบ.32 จ.ลำปาง โทร (054)839305 </div></td>
     </tr>
     <tr>
-      <td><div align="center" class="style18">เวชระเบียน / <font size=4>MEDICAL RECORD </font></div></td>
+      <td><div align="center" class="style18">เวชระเบียน / <font style="font-size: 18px;">MEDICAL RECORD </font></div></td>
     </tr>
   </table>
 </div>
@@ -111,7 +111,7 @@ return $pAge;
   </tr>
   <tr>
     <td width="157" height="67" class="style9"style="border-right-style:none; border-left-style:none; border-bottom-style:none; "><strong>ชื่อ-สกุล</strong></td>
-    <td colspan="5" class="style9"style="border-right-style:none; border-left-style:none; border-bottom-style:none"><strong><font size="+1"><?=$show['yot'];?>
+    <td colspan="5" class="style9"style="border-right-style:none; border-left-style:none; border-bottom-style:none"><strong><font style="font-size: 16px;"><?=$show['yot'];?>
       <?=$show['name'];?>    
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$show['surname'];?>
    </strong></td>
