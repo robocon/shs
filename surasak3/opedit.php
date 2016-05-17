@@ -160,7 +160,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cCareer =$row->career;
 		$cPtright =$row->ptright;
 		$cPtright1 =$row->ptright1;
-		echo "==>$cPtright - $cPtright1";
+		//echo "==>$cPtright - $cPtright1";
 		$cPtrightdetail=$row->ptrightdetail;
 		$cAddress =$row->address;
 		$cTambol =$row->tambol;
@@ -288,7 +288,8 @@ if($rows>0){
 		}
 	return xmlhttp;
 }
-	function searchSuggest2(str,len,getto1) {
+
+function searchSuggest2(str,len,getto1) {
 	
 		str = str+String.fromCharCode(event.keyCode);
 
@@ -616,8 +617,7 @@ return $pAge;
                                  }
 						  }
 						?>
-      </select>
-</td>
+      </select></td>
     <td align="right" class="fonthead">สังกัด:</td>
     <td><!--<select size="1" name="camp" id="camp">
       <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
@@ -677,8 +677,7 @@ return $pAge;
 	  		}
 		}
 	  ?>
-		</select>
-    </td>
+		</select>    </td>
     </tr>
     <tr>
     <td align="right" class="fonthead">สิทธิการรักษา</td>
@@ -736,8 +735,7 @@ return $pAge;
 		print " <option value='$ptright_code&nbsp;$ptright_name'>$ptright_code&nbsp;$ptright_name</option>";
 }
 ?>
-    </select>
-    </td>
+    </select>    </td>
     <td class="fonthead">ประเภทสิทธิ :</td>
     <td><select name="ptrightdetail" size="1" id="ptrightdetail">
       <option  value="<?=$cPtrightdetail;?>" selected><?=$cPtrightdetail;?></option>
@@ -774,18 +772,13 @@ return $pAge;
     <td>&nbsp;</td>
     </tr>
 	<tr>
-		<td></td>
-		<td></td>
-		<td class="fonthead">
-			<label for="employee">ลูกจ้าง รพ.ค่ายฯ</label>
-		</td>
-		<td>
-			<?php
+		<td class="fonthead"><label for="employee">ลูกจ้าง รพ.ค่ายฯ</label></td>
+	  <td colspan="3"><?php
 			$checked = ( $employee === 'y' ) ? 'checked="checked"' : '' ;
 			?>
 			<input type="checkbox" id="employee" name="employee" value="y" <?=$checked;?>>
-		</td>
-	</tr>
+			<span class="fonthead" style="color:#FF3366;">(ถ้าเป็นลูกจ้าง รพ.ค่ายฯ ให้เลือก check box ด้วย)</span>		</td>
+	  </tr>
     </table>
 
 </fieldset>
