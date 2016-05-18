@@ -108,9 +108,9 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 exit();
 }
 
-// ถ้าไม่ใช่เจ้าหน้าที่ห้องตาจะเพิ่มไม่ได้
+// หมอเลอปรัชให้ล็อกนัดเอาไว้
 $user_code = isset($_SESSION['smenucode']) ? $_SESSION['smenucode'] : false ;
-if(!isset($_GET['action']) && $user_code !== 'ADMEYE'){
+if( !isset($_GET['action']) ){
 	global $doctor;
 	$doctor = trim($doctor);
 	if($doctor == 'กรุณาเลือกแพทย์'){
@@ -121,35 +121,37 @@ if(!isset($_GET['action']) && $user_code !== 'ADMEYE'){
 		exit;
 	}
 
-	// จำกัดจำนวนผู้ป่วยนัด
 	// นับจำนวนที่นัดผู้ป่วย
 	list($code, $dr_name) = explode(' ', $_POST['doctor']);
-	$sql = "SELECT hn FROM appoint WHERE appdate = '{$_POST['date_appoint']}' AND doctor LIKE '$code%' AND apptime != 'ยกเลิกการนัด';";
+	$sql = "SELECT `hn` 
+	FROM `appoint` 
+	WHERE `appdate` = '{$_POST['date_appoint']}' 
+	AND `doctor` LIKE '$code%' 
+	AND `apptime` != 'ยกเลิกการนัด';";
 	$query = mysql_query($sql);
 	$rows = mysql_num_rows($query);
 	
-	$month = array(
-		'มกราคม' => '01', 'กุมภาพันธ์' => '02',
-		'มีนาคม' => '03', 'เมษายน' => '04',
-		'พฤษภาคม' => '05', 'มิถุนายน' => '06',
-		'กรกฎาคม' => '07', 'สิงหาคม' => '08',
-		'กันยายน' => '09', 'ตุลาคม' => '10',
-		'พฤศจิกายน' => '11', 'ธันวาคม' => '12',
+	$months = array(
+		'มกราคม' => '01', 'กุมภาพันธ์' => '02','มีนาคม' => '03', 'เมษายน' => '04','พฤษภาคม' => '05', 'มิถุนายน' => '06',
+		'กรกฎาคม' => '07', 'สิงหาคม' => '08','กันยายน' => '09', 'ตุลาคม' => '10','พฤศจิกายน' => '11', 'ธันวาคม' => '12',
 	);
+	
 	$th_day = array(
 		0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์',
 	);
 	
 	list($day, $th_month, $th_year) = explode(' ', $_POST['date_appoint']);
-	$new_date = ($th_year-543).'-'.$month[$th_month].'-'.$day;
+	$new_date = ($th_year-543).'-'.$months[$th_month].'-'.$day;
 	$check_date = date('w', strtotime($new_date));
 	
-	$sql = "SELECT dr_name,date,user_row FROM dr_limit_appoint WHERE dr_name = '{$_POST['doctor']}' AND date = '$check_date'";
-	
+	$sql = "SELECT `dr_name`,`date`,`user_row` 
+	FROM `dr_limit_appoint` 
+	WHERE `dr_name` LIKE '$code%' 
+	AND `date` = '$check_date'";
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
-	
-	if($item !== false && $rows >= (int) $item['user_row']){
+	$dr_limit = (int) $item['user_row'];
+	if( $item !== false && $rows >= $dr_limit ){
 		
 		$get_day = (int) $item['date'];
 		echo 'วัน'.$th_day[$get_day].' '.$item['dr_name'].' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อห้องตา';
@@ -662,14 +664,14 @@ function fncSubmit(strPage)
 <TABLE border="0">
 <TR valign="top">
 	<TD>
-<form  name="form1" method="POST" action="appinsert1.php" target="_blank" onsubmit="return checktext();">
+<form  name="form1" method="POST" action="appinsert1.php" target="_blank" onSubmit="return checktext();">
 <font face="Angsana New" size = '4'>กรุณาระบุการนัดมาเพื่อ เพื่อที่แผนกทะเบียนจะทำการค้นหา OPD Card ได้ถูกต้อง
 <br>
 
 <table border="0">
   <tr><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
     <td width="311"><font face="Angsana New">
-      <select size="1" name="detail" onchange="listb(<?=$counter?>)" id="detail">
+      <select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
       <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
       <option value="NA"><<นัดมาเพื่อ>></option>  
 	  <? } ?>
@@ -805,6 +807,7 @@ function fncSubmit(strPage)
         <option>ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
         <option>คลีนิกโรคไต</option>
 		<option>กายภาพบำบัดชั้น 2</option>
+         <option>ห้อง CT SCAN</option>       
         <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
         <option selected="selected">ห้อง CT SCAN (ตรวจมวลกระดูก)</option>
         <? } ?>
@@ -905,7 +908,7 @@ function fncSubmit(strPage)
   <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
      <select size="1" name="advice" id="advice">
       <option value="ไม่มี" selected="selected">ไม่มี</option
-      </select> 
+      ></select> 
   <? }else{ ?>
     <select size="1" name="advice" id="advice">
       <option selected value="NA">&lt;&#3650;&#3611;&#3619;&#3604;&#3648;&#3621;&#3639;&#3629;&#3585;&#3619;&#3634;&#3618;&#3585;&#3634;&#3619;&gt;</option>
@@ -1353,7 +1356,7 @@ $i++;
 	<CENTER><B>รายการตรวจทางพยาธิ</B></CENTER>
 <TABLE width="100%" align="left" border="0">
 <TR  valign="top">
-	<TD  colspan="<?php echo $r*2;?>" align='left' >ตรวจLAB อื่นๆ ระบุ : <INPUT TYPE="text" NAME="" size="13" onkeypress="searchSuggest('lab',this.value,2);"><Div id="list"></Div></TD>
+	<TD  colspan="<?php echo $r*2;?>" align='left' >ตรวจLAB อื่นๆ ระบุ : <INPUT TYPE="text" NAME="" size="13" onKeyPress="searchSuggest('lab',this.value,2);"><Div id="list"></Div></TD>
 </TR>
 <TR>
 <?php

@@ -111,33 +111,24 @@ if($_POST['page']!=""){
 			nav4up = true;
     </script>
     <head>
-    <STYLE>
+    <style type="text/css">
 		*{
 			font-family: "Cordia New";
 			font-size: 24px;
 		}
-    A {text-decoration:none}
-    A IMG {border-style:none; border-width:0;}
-    /*DIV {position:absolute; z-index:25;}*/
-    .fc1-0 { COLOR:000000;FONT-SIZE:20PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}
-    .fc1-1 { COLOR:000000;FONT-SIZE:17PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}
-    .fc1-2 { COLOR:000000;FONT-SIZE:17PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}
-    .fc1-3 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}
-    .ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
-    .ad1-1 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
-    </STYLE>
+        A {text-decoration:none}
+        A IMG {border-style:none; border-width:0;}
+        
+        .fc1-0 { COLOR:000000; FONT-SIZE:20PT; FONT-WEIGHT:BOLD;}
+        .fc1-1 { COLOR:000000; FONT-SIZE:17PT; FONT-WEIGHT:NORMAL;}
+        .fc1-2 { COLOR:000000; FONT-SIZE:17PT; FONT-WEIGHT:BOLD;}
+        .fc1-3 { COLOR:000000; FONT-SIZE:15PT; FONT-WEIGHT:NORMAL;}
+        .ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
+        .ad1-1 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
+    </style>
     <TITLE>Crystal Report Viewer</TITLE>
     </head>
-	<!--
-    <BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>
-    <DIV style='z-index:0'> &nbsp; </div>
-    <DIV style='left:150PX;top:50PX;width:200PX;height:30PX;'><span class='fc1-0'><?=$vHN;?></span></DIV>
-    <DIV style='left:370PX;top:50PX;width:500PX;height:30PX;'><span class='fc1-0'><?=$ptname;?></span></DIV>
-    <DIV style='left:660PX;top:5PX;width:700PX;height:30PX;'><span class='fc1-0'><?=$page;?></span></DIV>
-    <DIV style='left:150PX;top:80PX;width:700PX;height:30PX;'><span class='fc1-1'>ว/ด/ป เกิด&nbsp;<?=$dbirth;?>&nbsp;&nbsp;ID:<?=$idcard;?>&nbsp;&nbsp;<?=$ptright;?></span></DIV>
-    -->
-	
-	<div style="width: 812px; margin-top: 22px;">
+	<div style="width: 812px; margin-top: 15px;">
 		<table width="100%">
 			<tr>
 				<td colspan="2">
