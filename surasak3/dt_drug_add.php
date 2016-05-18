@@ -246,70 +246,86 @@ $k1=10;
 $k2=$k1+150;
 $k3=$k2+50;
 
-	for($i=0;$i<$count;$i++){
+for($i=0;$i<$count;$i++){
 		
-		$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+	$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 
-		$result = Mysql_Query($sql);
-		list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
+	$result = Mysql_Query($sql);
+	list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
 		
-		if($part == "DPY"){
-			if($freepri > $salepri)
-					$freepri = $salepri;
-					$dg_dsy = $freepri;
-					$dg_dsn = $salepri - $freepri;
-			}else{
-					$dg_dsy = 0;
-					$dg_dsn = 0;
-			}
-		if(isset($_POST['ch'.$i])){
-			$_SESSION['list_drug_reason'][$i] = $_POST['ch'.$i];
+	if($part == "DPY"){
+		if($freepri > $salepri)
+			$freepri = $salepri;
+			$dg_dsy = $freepri;
+			$dg_dsn = $salepri - $freepri;
+	}else{
+		$dg_dsy = 0;
+		$dg_dsn = 0;
+	}
+	
+	if(isset($_POST['ch'.$i])){
+		$_SESSION['list_drug_reason'][$i] = $_POST['ch'.$i];
+	}
+	
+//	$_SESSION['list_drugamount'][$i] = $_POST['piece'.$i];
+//	$_SESSION['list_drugslip'][$i] = $_POST['act'.$i];
+	
+	if($part=="DDL" || $part=="DDY"){
+		if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
+			$part="DDN";
 		}
-	//	$_SESSION['list_drugamount'][$i] = $_POST['piece'.$i];
-	//	$_SESSION['list_drugslip'][$i] = $_POST['act'.$i];
+	}
+	
+	// format ที่ได้จะเป็น yyyy-mm
+	$chkDate=substr($Thidate,0,7);
+	$chkDate1=substr($Thidate,0,10);
+	$chkPtright=substr($_SESSION["ptright_now"],0,3);
+
+	if($_SESSION["list_drugcode"][$i]=="4MET25"){
 		
-		if($part=="DDL" || $part=="DDY"){
-			if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
-				$part="DDN";
-			}
-		}
-
-$chkDate=substr($Thidate,0,7);
-$chkDate1=substr($Thidate,0,10);
-$chkPtright=substr($_SESSION["ptright_now"],0,3);
-
-if($_SESSION["list_drugcode"][$i]=="4MET25"){
-	if($chkPtright=="R02" || $chkPtright=="R03" || $chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
-		$sqlb="select * from drugrx where `date` like '$chkDate%' and hn='".$_SESSION["hn_now"]."' and drugcode='".$_SESSION["list_drugcode"][$i]."' and amount !='0'";
-		//echo $sqlb."<br>";
-		$queryb=mysql_query($sqlb);
-		$numb=mysql_num_rows($queryb);
-		//echo "===>".$numb;
-		if($numb < 1){  //ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
+		// ถ้าเป็นสิทธิ เบิกคลัง เบิกจ่ายตรง ประกันสังคม ประกันสุขภาพถ้วนหน้า
+		if($chkPtright=="R02" || $chkPtright=="R03" || $chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
+			
+			// @todo หลุดตรงนี้ในเคสที่เดือนนั้น ยังไม่เคยได้รับยานวดเลย
+			// เพราะขณะที่รัน Statement ตอนนี้ ยังไม่ได้เพิ่มข้อมูลใน drugrx
+			// พอหมอสั่งยานวดมาสองครั้ง ครั้งละ 1 หลอด เลยหลุดการต่อ String ตอน INSERT INTO ddrugrx
+			$sqlb="select * from drugrx 
+			where `date` like '$chkDate%' 
+			and hn='".$_SESSION["hn_now"]."' 
+			and drugcode='".$_SESSION["list_drugcode"][$i]."' 
+			and amount !='0'";
+			$queryb=mysql_query($sqlb);
+			$numb=mysql_num_rows($queryb);
+			
+			//ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
+			if($numb < 1){  
 				$sql2="select * from ddrugrx as a inner join dphardep as b on a.idno=b.row_id where a.`date` like '$chkDate%' and a.hn='".$_SESSION["hn_now"]."' and a.drugcode='4MET25' and a.amount ='1' and a.part='DDL' and b.dr_cancle is null";
-				//echo "<br>".$sql2."<br>";
 				$query2=mysql_query($sql2)or die("Query failed");
 				$num2=mysql_num_rows($query2);
-				//echo ">>>>".$num2;
-				if($num2 < 1){  //ถ้ายังไม่มีการบันทึกข้อมูลฟรียา 4MET25 ในตาราง  ddrugrx
-					if($_SESSION["list_drugamount"][$i] == 1){  //ถ้าจำนวนที่สั่งมามี 1 หลอด
+				
+				//ถ้ายังไม่มีการบันทึกข้อมูลฟรียา 4MET25 ในตาราง  ddrugrx
+				if($num2 < 1){  
+					
+					//ถ้าจำนวนที่สั่งมามี 1 หลอด
+					if($_SESSION["list_drugamount"][$i] == 1){  
 						$ddlpart="DDL";
 						$ddlamount=1;  //จำนวนที่เบิกได้
 						$ddlprice=16.50;  //ราคาที่เบิกได้		
 									
 						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
 						
-							$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
-							//echo $str;
-							$strquery=mysql_query($str);
-							list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
-							$newessd=$chkessd+16.5;
-							$newnessdn=$chknessdn-16.5;
-							
-							$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
-							//echo "<br>".$update."<br>";
-							mysql_query($update);						
+						$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
+						//echo $str;
+						$strquery=mysql_query($str);
+						list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
+						$newessd=$chkessd+16.5;
+						$newnessdn=$chknessdn-16.5;
+						
+						$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
+						mysql_query($update);
+						
 					}else{	//else ถ้าสั่งมาหลายๆ หลอด	
+						
 						$ddlpart="DDL";
 						$ddnpart="DDN";
 						$ddlamount=1;  //จำนวนที่เบิกได้
@@ -319,60 +335,90 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 									
 						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddnamount."','".$ddnprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddnpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."') , ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";				
 					
-							$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
-							//echo $str;
-							$strquery=mysql_query($str);
-							list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
-							$newessd=$chkessd+16.5;
-							$newnessdn=$chknessdn-16.5;
-							
-							$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
-							//echo "<br>".$update."<br>";
-							mysql_query($update);							
+						$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
+						//echo $str;
+						$strquery=mysql_query($str);
+						list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
+						$newessd=$chkessd+16.5;
+						$newnessdn=$chknessdn-16.5;
+						
+						$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
+						//echo "<br>".$update."<br>";
+						mysql_query($update);							
 					
 					}
-					}else{  //ถ้ามีการบันทึกข้อมูลแถมฟรีไปแล้ว
-						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
-						//echo "==>".$query."<br>";
-					}
-		}else{  //ถ้าได้รับยาฟรีไปแล้ว
-		$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+					
+				}else{  //ถ้ามีการบันทึกข้อมูลแถมฟรีไปแล้ว
+					$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+					//echo "==>".$query."<br>";
+				}
+			}else{  //ถ้าได้รับยาฟรีไปแล้ว
+				$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+			}
+			
+		}else{  //ถ้าเป็น สิทธิอื่นๆ
+			$query .= "$commar (
+				'".$Thidate."',
+				'".$_SESSION["hn_now"]."',
+				'".$_SESSION["list_drugcode"][$i]."',
+				'".$tradname."', 
+				'".$_SESSION["list_drugamount"][$i]."',
+				'".( $_SESSION["list_drugamount"][$i] * $salepri)."',
+				'".$_POST["totalitem"]."',
+				'".$_SESSION["list_drugslip"][$i]."',
+				'".$part."',
+				'".$idno."',
+				'".$salepri."',
+				'".$freepri."',
+				'".$_SESSION["list_drug_inject_amount"][$i]."',
+				'".$_SESSION["list_drug_inject_unit"][$i]."',
+				'".$_SESSION["list_drug_inject_amount2"][$i]."',
+				'".$_SESSION["list_drug_inject_unit2"][$i]."',
+				'".$_SESSION["list_drug_inject_time"][$i]."',
+				'".$_SESSION["list_drug_inject_slip"][$i]."',
+				'".$_SESSION["list_drug_inject_type"][$i]."',
+				'".$_SESSION["list_drug_inject_etc"][$i]."',
+				'".$_SESSION["list_drug_reason"][$i]."',
+				'".($dg_dsy*$_SESSION["list_drugamount"][$i])."',
+				'".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,
+				'".$_SESSION["list_drug_reason2"][$i]."'
+			)";
 		}
-	}else{  //ถ้าเป็น สิทธิอื่นๆ
-	$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
-	}
 	
-}else if($_SESSION["list_drugcode"][$i]=="10H014"){
-	if($chkPtright=="R02" || $chkPtright=="R03" || $chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
-		$sqlb="select * from drugrx where `date` like '$chkDate%' and hn='".$_SESSION["hn_now"]."' and drugcode='".$_SESSION["list_drugcode"][$i]."' and amount !='0'";
-		//echo $sqlb."<br>";
-		$queryb=mysql_query($sqlb);
-		$numb=mysql_num_rows($queryb);
-		//echo "===>".$numb;
-		if($numb < 1){  //ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
+	}else if($_SESSION["list_drugcode"][$i]=="10H014"){
+		
+		if($chkPtright=="R02" || $chkPtright=="R03" || $chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
+			$sqlb="select * from drugrx where `date` like '$chkDate%' and hn='".$_SESSION["hn_now"]."' and drugcode='".$_SESSION["list_drugcode"][$i]."' and amount !='0'";
+			$queryb=mysql_query($sqlb);
+			$numb=mysql_num_rows($queryb);
+			
+			//ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
+			if($numb < 1){  
 				$sql2="select * from ddrugrx as a inner join dphardep as b on a.idno=b.row_id where a.`date` like '$chkDate%' and a.hn='".$_SESSION["hn_now"]."' and a.drugcode='10H014' and a.amount ='1' and a.part='DDL' and b.dr_cancle is null";
-				//echo "<br>".$sql2."<br>";
 				$query2=mysql_query($sql2)or die("Query failed");
 				$num2=mysql_num_rows($query2);
-				//echo ">>>>".$num2;
-				if($num2 < 1){  //ถ้ายังไม่มีการบันทึกข้อมูลฟรียา 10H014 ในตาราง  ddrugrx
-					if($_SESSION["list_drugamount"][$i] == 1){  //ถ้าจำนวนที่สั่งมามี 1 หลอด
+				
+				//ถ้ายังไม่มีการบันทึกข้อมูลฟรียา 10H014 ในตาราง  ddrugrx
+				if($num2 < 1){  
+					
+					//ถ้าจำนวนที่สั่งมามี 1 หลอด
+					if($_SESSION["list_drugamount"][$i] == 1){  
 						$ddlpart="DDL";
 						$ddlamount=1;  //จำนวนที่เบิกได้
 						$ddlprice=59.00;  //ราคาที่เบิกได้		
 									
 						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
 						
-							$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
-							//echo $str;
-							$strquery=mysql_query($str);
-							list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
-							$newessd=$chkessd+59;
-							$newnessdn=$chknessdn-59;
-							
-							$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
-							//echo "<br>".$update."<br>";
-							mysql_query($update);						
+						$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
+						//echo $str;
+						$strquery=mysql_query($str);
+						list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
+						$newessd=$chkessd+59;
+						$newnessdn=$chknessdn-59;
+						
+						$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
+						//echo "<br>".$update."<br>";
+						mysql_query($update);						
 					}else{	//else ถ้าสั่งมาหลายๆ หลอด	
 						$ddlpart="DDL";
 						$ddnpart="DDN";
@@ -383,101 +429,81 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 									
 						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddnamount."','".$ddnprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddnpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."') , ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";				
 					
-							$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
-							//echo $str;
-							$strquery=mysql_query($str);
-							list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
-							$newessd=$chkessd+59;
-							$newnessdn=$chknessdn-59;
-							
-							$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
-							//echo "<br>".$update."<br>";
-							mysql_query($update);							
+						$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
+						//echo $str;
+						$strquery=mysql_query($str);
+						list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
+						$newessd=$chkessd+59;
+						$newnessdn=$chknessdn-59;
+						
+						$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
+						//echo "<br>".$update."<br>";
+						mysql_query($update);							
 					
 					}
-					}else{  //ถ้ามีการบันทึกข้อมูลแถมฟรีไปแล้ว
-						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
-						//echo "==>".$query."<br>";
-					}
-		}else{  //ถ้าได้รับยาฟรีไปแล้ว
-		$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
-		}
-	}else{  //ถ้าเป็น สิทธิอื่นๆ
-	$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
-	}	
+				}else{  //ถ้ามีการบันทึกข้อมูลแถมฟรีไปแล้ว
+					$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+					//echo "==>".$query."<br>";
+				}
+			}else{  //ถ้าได้รับยาฟรีไปแล้ว
+				$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+			}
+		}else{  //ถ้าเป็น สิทธิอื่นๆ
+			$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+		}	
 	
-}else{  //else ถ้าเป็นยาอื่นๆ
-	$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
-}
-		$commar = ",";
+	}else{  //else ถ้าเป็นยาอื่นๆ
+		$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+	}
+	
+	$commar = ",";
 
 
 
-		$sub_drugcode1 = ord(substr($_SESSION["list_drugcode"][$i],0,1));
-		$sub_drugcode2 = ord(substr($_SESSION["list_drugcode"][$i],1,1));
+	$sub_drugcode1 = ord(substr($_SESSION["list_drugcode"][$i],0,1));
+	$sub_drugcode2 = ord(substr($_SESSION["list_drugcode"][$i],1,1));
 
-		if(($sub_drugcode1 == 50 || $sub_drugcode1 == 48 || $sub_drugcode1 == 55) && ( $sub_drugcode2 < 48 || $sub_drugcode2 > 57 ))
-			$tradname = "<U>".$tradname."</U>";
-		else if($_SESSION["list_drugcode"][$i] == "7VENN" || $_SESSION["list_drugcode"][$i] =="7BERSO")
-			$tradname = "<U>".$tradname."</U>";
+	if(($sub_drugcode1 == 50 || $sub_drugcode1 == 48 || $sub_drugcode1 == 55) && ( $sub_drugcode2 < 48 || $sub_drugcode2 > 57 ))
+		$tradname = "<U>".$tradname."</U>";
+	else if($_SESSION["list_drugcode"][$i] == "7VENN" || $_SESSION["list_drugcode"][$i] =="7BERSO")
+		$tradname = "<U>".$tradname."</U>";
 
-
-		//$_SESSION["dt_drugstk"] .="
-		//				<DIV style='left:".$k1."PX;top:".$j."PX;width:306PX;height:30PX; position:absolute'>
-		//					<font style=\"font-family:'MS Sans Serif'; font-size:10px\"> ".$tradname." ".$unit."
-		//				</DIV>
-		//				<DIV style='left:".$k2."px;top:".$j."PX;width:306PX;height:30PX;position:absolute'>
-		//					<font style=\"font-family:'MS Sans Serif'; font-size:10px\" >&nbsp;&nbsp;&nbsp;&nbsp;".$_SESSION["list_drugslip"][$i]."
-		//				</DIV>
-		//				<DIV style='left:".$k3."px;top:".$j."PX;width:306PX;height:30PX;position:absolute'>
-		//					<font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวน&nbsp;".$_SESSION["list_drugamount"][$i]."&nbsp;".$unit."
-		//				</DIV>
-				
-		//		";
 		
-		if($_SESSION["list_drugcode"][$i] != "INJ"){
-			if($_SESSION['list_drug_reason'][$i]==""){
-				$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
+	if($_SESSION["list_drugcode"][$i] != "INJ"){
+		
+		if($_SESSION['list_drug_reason'][$i]==""){
+			$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
 			<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\"> ".$tradname." ".$unit."</TD>";			
-			}else{
-				$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
+		}else{
+			$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
 			<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\"> ".$tradname." ".$unit."(".substr($_SESSION['list_drug_reason'][$i],0,1).")</TD>";		
-			}
-			$_SESSION["dt_drugstk"] .="<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\" >&nbsp;&nbsp;&nbsp;&nbsp;".$_SESSION["list_drugslip"][$i]."</TD>
-			<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวน&nbsp;".$_SESSION["list_drugamount"][$i]."&nbsp;".$unit."</TD>
-			</TR>";
-			// ชื่อยา หน่วย จำนวน หน่วย
-			
-			//ถ้ายาฉีด หรือ insurin
-			if($_SESSION["list_drug_inject_slip"][$i]!=""){
-				if($_SESSION["list_drug_inject_slip"][$i]=="1ins"||$_SESSION["list_drug_inject_slip"][$i]=="2ins"){
-					$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
-					<TD colspan='3'><font style=\"font-family:'MS Sans Serif'; font-size:10px\">(".$_SESSION["list_drug_inject_amount"][$i]." ".$_SESSION["list_drug_inject_unit"][$i]." ".$_SESSION["list_drug_inject_amount2"][$i]." ".$_SESSION["list_drug_inject_unit2"][$i].")</TD>
-					</TR>";
-				}
-				elseif(trim($_SESSION["list_drug_inject_amount"][$i]) != "" && trim($_SESSION["list_drug_inject_slip"][$i]) != "" && trim($_SESSION["list_drug_inject_type"][$i]) != "" ){
-
-					$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
-					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวนที่ฉีด ".$_SESSION["list_drug_inject_amount"][$i]."</TD>
-					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\" >".$_SESSION["list_drug_inject_slip"][$i]."</TD>
-					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">ฉีดแบบ ".$_SESSION["list_drug_inject_type"][$i]."&nbsp;</TD>
-					</TR>";
-				}
-			}
-
-
-				/*if(trim($_SESSION["list_drug_inject_amount"][$i]) != "" && trim($_SESSION["list_drug_inject_slip"][$i]) != "" && trim($_SESSION["list_drug_inject_type"][$i]) != "" ){
-
-					$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
-					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวนที่ฉีด ".$_SESSION["list_drug_inject_amount"][$i]."</TD>
-					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\" >".$_SESSION["list_drug_inject_slip"][$i]."</TD>
-					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">ฉีดแบบ ".$_SESSION["list_drug_inject_type"][$i]."&nbsp;</TD>
-					</TR>";
-				}*/
-
-			$j = $j+15;
 		}
-      }
+		
+		$_SESSION["dt_drugstk"] .="<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\" >&nbsp;&nbsp;&nbsp;&nbsp;".$_SESSION["list_drugslip"][$i]."</TD>
+		<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวน&nbsp;".$_SESSION["list_drugamount"][$i]."&nbsp;".$unit."</TD>
+		</TR>";
+		// ชื่อยา หน่วย จำนวน หน่วย
+			
+		//ถ้ายาฉีด หรือ insurin
+		if($_SESSION["list_drug_inject_slip"][$i]!=""){
+			if($_SESSION["list_drug_inject_slip"][$i]=="1ins"||$_SESSION["list_drug_inject_slip"][$i]=="2ins"){
+				$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
+				<TD colspan='3'><font style=\"font-family:'MS Sans Serif'; font-size:10px\">(".$_SESSION["list_drug_inject_amount"][$i]." ".$_SESSION["list_drug_inject_unit"][$i]." ".$_SESSION["list_drug_inject_amount2"][$i]." ".$_SESSION["list_drug_inject_unit2"][$i].")</TD>
+				</TR>";
+			}elseif(trim($_SESSION["list_drug_inject_amount"][$i]) != "" && trim($_SESSION["list_drug_inject_slip"][$i]) != "" && trim($_SESSION["list_drug_inject_type"][$i]) != "" ){
+
+				$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
+				<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวนที่ฉีด ".$_SESSION["list_drug_inject_amount"][$i]."</TD>
+				<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\" >".$_SESSION["list_drug_inject_slip"][$i]."</TD>
+				<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">ฉีดแบบ ".$_SESSION["list_drug_inject_type"][$i]."&nbsp;</TD>
+				</TR>";
+			}
+		}
+
+		$j = $j+15;
+	}
+} // End big loop for :p
+
 	$j = $j+5;
 	
 	// เก็บ log หลังจากเพิ่มจากลงใน ddrugrx

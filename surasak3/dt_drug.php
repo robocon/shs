@@ -997,13 +997,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$_SESSION["list_drug_reason"] = array() ;
 	$_SESSION["list_drug_reason2"] = array() ;
 
-	$sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1";
+	$sql = " Select row_id, item, stkcutdate 
+	From dphardep 
+	where hn = '".$_SESSION["hn_now"]."' 
+	AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' 
+	AND date like '".((date("Y")+543).date("-m-d"))."%' 
+	Order by row_id DESC limit 1";
 	$result = Mysql_Query($sql);
 	list($id, $item, $stkcutdate) = Mysql_fetch_row($result);
 	
-	if($stkcutdate)
-		session_register("cancle_row_id");
-		$_SESSION["cancle_row_id"] = $id;
+	if( $stkcutdate !== NULL ){
+		// เงื่อนไขเก่าแต่ไม่ได้ใช้ทำอะไร
+		// session_register("cancle_row_id");
+		// $_SESSION["cancle_row_id"] = $id;
+		
+		// แจ้งเตือนหมอ(function listdrugprov)ว่ารายการที่จะทำการแก้ไข ถูกห้องยาตัดไปเรียบร้อยแล้ว
+		echo 'drugcut';
+		exit;
+	}
 
 	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_time`,
 	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`   
@@ -2111,7 +2122,17 @@ function listdrugprov(){
 		url = 'dt_drug.php?action=listdrugprov';
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
-		viewlist();
+		
+		var testRes = xmlhttp.responseText;
+		if(testRes == 'drugcut'){
+			var msgAlert = "รายการยาได้ถูกตัดสต๊อกแล้ว\n";
+			msgAlert += "ให้ยกเลิกรายการยาที่ห้องยาก่อน จึงจะสามารถปรับปรุงรายการยาได้\n";
+			msgAlert += "จากนั้นทำการเลือกผู้ป่วยใหม่และใช้ VN เดิม";
+			alert(msgAlert);
+		}else{
+			viewlist();
+		}
+		
 	}
 }
 
