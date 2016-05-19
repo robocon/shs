@@ -106,48 +106,37 @@ class printvn{
 		print ".font05 { COLOR:000000;FONT-SIZE:16PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}";
 		print "</STYLE>";
 
-
 		print "<center>";
-		print "<font style='line-height:24px; font-size: 18px;' face='Angsana New' >ใบตรวจโรค โรงพยาบาลค่ายสุรศักดิ์มนตรี<br>";
-			print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."<br>";
-				print "<font  style='line-height:24px;font-size: 22px;' face='Angsana New' ><b><u>".$this->toborow."</b></u><br>";
-		print "<font style='line-height:24px;font-size: 32px;' face='Angsana New' ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
-		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' ><br>";
-		print "<font style='line-height:35px;font-size: 22px;' face='Angsana New' ><b>ชื่อ&nbsp;".$this->ptname."</b><br>";
-		print "<font style='line-height:24px;font-size: 28px;' face='Angsana New' ><b>HN: &nbsp;".$this->hn."</b><br>";
-		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' >อายุ &nbsp; ".$this->age."<br>";
+		print "<font style='line-height:24px; font-size: 18px;' face='Angsana New' >ใบตรวจโรค โรงพยาบาลค่ายสุรศักดิ์มนตรี</font><br>";
+		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' >".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."</font><br>";
+		print "<font style='line-height:24px;font-size: 22px;' face='Angsana New' ><b><u>".$this->toborow."</u></b></font><br>";
+		print "<font style='line-height:24px;font-size: 32px;' face='Angsana New' ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."</font>";
+		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' ></font><br>";
+		print "<font style='line-height:35px;font-size: 22px;' face='Angsana New' ><b>ชื่อ&nbsp;".$this->ptname."</b></font><br>";
+		print "<font style='line-height:24px;font-size: 28px;' face='Angsana New' ><b>HN: &nbsp;".$this->hn."</b></font><br>";
+		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' >อายุ &nbsp; ".$this->age."</font><br>";
+		
 		if(trim($this->idguard) != "") 
-	    print "<font style='line-height:24px;font-size: 17px;' face='Angsana New' >".$this->idguard."<br>";
-		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
+	    	print "<font style='line-height:24px;font-size: 17px;' face='Angsana New' >".$this->idguard."</font><br>";
 		
-		print "<font style='line-height:24px;font-size: 18px;' face='Angsana New' >บัตร ปชช: &nbsp; ".$this->idcard."<br>";
+		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' ><b>สิทธิ :&nbsp; ".$this->ptright."</b></font><br>";
+		print "<font style='line-height:24px;font-size: 18px;' face='Angsana New' >บัตร ปชช: &nbsp; ".$this->idcard."</font><br>";
+		print "<font  style='line-height:24px;font-size: 16px;' face='Angsana New' >".$this->noteall."</font><br>";
+		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><br>";
 		
-		
-		
-		
-		
-		// print "<font  style='line-height:24px;' face='Angsana New' ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
-
-		print "<font  style='line-height:24px;font-size: 16px;' face='Angsana New' >".$this->noteall."<BR>";
-		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
 		if($this->clinic != "")
-		print "<font face='Angsana New' style='font-size: 20px;' >คลินิก : ".$this->clinic."<BR>";
+			print "<font face='Angsana New' style='font-size: 20px;' >คลินิก : ".$this->clinic."</font><br>";
+		
 		if($this->doctor != "")
-		print "<font face='Angsana New' style='font-size: 20px;' >แพทย์ : ".$this->doctor."<BR>";
+			print "<font face='Angsana New' style='font-size: 20px;' >แพทย์ : ".$this->doctor."</font><BR>";
+		
 		if($this->room != "")
-		print "<font face='Angsana New' style='font-size: 20px;' >ห้องตรวจ : ".$this->room."<BR>";		
-print "<font face='Angsana New' style='font-size: 20px;' >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
-//print "<font <font  style='line-height:24px;' face='Angsana New' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
-print "<font <font  style='line-height:24px;font-size: 17px;' face='Angsana New' >แพทย์..............................................<BR>";
-print "<font <font  style='line-height:24px;font-size: 22px;' face='Angsana New' ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> รับยายื่นที่ช่องหมายเลข 6</u><BR>";
-
-	//print "<font style='line-height:24px;' face='Angsana New' size= 2>กรุณาเขียนจำนวนเงินทั้งหมด<BR>";
-		//print "<font face='Angsana New' size= 3 ><b>XRAY</b><BR>";
-	//	print "<font style='line-height:24px;' face='Angsana New' size= 4><B>ใบทำหัตถการ</B><br>";
-//print "<font style='line-height:24px;' face='Angsana New' size= 4 ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp;HN: &nbsp;".$this->hn."";
-		print "
-			
-			<TABLE style='font-size: 16px' border='0' width='200'>
+			print "<font face='Angsana New' style='font-size: 20px;' >ห้องตรวจ : ".$this->room."</font><BR>";		
+		
+		print "<font face='Angsana New' style='font-size: 20px;' >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."</font><BR>";
+		print "<font style='line-height:24px;font-size: 17px;' face='Angsana New' >แพทย์..............................................</font><BR>";
+		print "<font style='line-height:24px;font-size: 22px;' face='Angsana New' ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> รับยายื่นที่ช่องหมายเลข 6</u></font><BR>";
+		print "<TABLE style='font-size: 16px' border='0' width='200'>
 			<TR>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
 				<TD>LAB............</TD>
@@ -181,12 +170,7 @@ print "<font <font  style='line-height:24px;font-size: 22px;' face='Angsana New'
 			</TR>
 			</TABLE>
 		";
-		
-	//	print $this->inrxform;
-	//	print $this->drugreact;
-
 		print "</center>";
-	
 	}
 }
 
@@ -204,8 +188,7 @@ class printkew extends printvn{
 		print ".font04 { COLOR:000000;FONT-SIZE:16PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}";
 		print ".font05 { COLOR:000000;FONT-SIZE:16PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}";
 		print "</STYLE>";
-
-
+		
 		print "<center>";
 		print "<font face='Angsana New' size= 3 ><B>คิว ".$this->kew."</B><br>";
 		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>ชื่อ&nbsp;".$this->ptname."&nbsp;&nbsp;HN: &nbsp;".$this->hn."</b><br>";
@@ -216,10 +199,7 @@ class printkew extends printvn{
 			print "<font face='Angsana New' size= 3 >แพทย์ : ".substr($this->doctor,5)."<BR>";
 		if($this->room != "")
 			print "<font face='Angsana New' size= 3 >ห้องตรวจ : ".substr($this->doctor,5)."<BR>";			
-
-
 	}
-
 }
 
 ?>

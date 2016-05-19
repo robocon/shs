@@ -1,5 +1,6 @@
 <?php
 session_start();
+include("connect.inc");
 $_SESSION['cHn'] = '';
 $_SESSION['cPtname'] = '';
 $_SESSION['cPtright'] = '';
@@ -48,7 +49,7 @@ $_SESSION['Ptright1'] = '';
             <?php
             $hn = $_POST['hn'];
             If (!empty($hn)){
-                include("connect.inc");
+                
                 global $hn;
                 $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
                 $result = mysql_query($query)or die("Query failed");
@@ -107,7 +108,7 @@ $_SESSION['Ptright1'] = '';
                     }
 
                     print (" <tr>\n".
-                    "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn & cName=$name &cSurname=$surname\">$hn</a></td>\n".
+                    "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php?cHn=$hn&cName=$name&cSurname=$surname\">$hn</a></td>\n".
                     "  <td BGCOLOR=".$color.">$yot</td>\n".
                     "  <td BGCOLOR=".$color.">$name</td>\n".
                     "  <td BGCOLOR=".$color.">$surname</td>\n".
@@ -234,7 +235,7 @@ $_SESSION['Ptright1'] = '';
                                         while($dbarr= mysql_fetch_array($result_chkname)){
 
                                             print (" <tr>\n".
-                                            "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php? cHn=$dbarr[hn] & cName=$dbarr[name] &cSurname=$dbarr[surname]\">$dbarr[hn]</a></td>\n".
+                                            "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php?cHn=$dbarr[hn]&cName=$dbarr[name]&cSurname=$dbarr[surname]\">$dbarr[hn]</a></td>\n".
                                             "  <td BGCOLOR=".$color.">$dbarr[yot]</td>\n".
                                             "  <td BGCOLOR=".$color.">$dbarr[name]</td>\n".
                                             "  <td BGCOLOR=".$color.">$dbarr[surname]</td>\n".
@@ -250,9 +251,9 @@ $_SESSION['Ptright1'] = '';
                                             " </tr>\n");
                                         }
                                     }
-                                    session_unregister("hn");
-                                    session_unregister("name");
-                                    session_unregister("surname");
+                                    $_SESSION['hn'] = NULL;
+                                    $_SESSION['name'] = NULL;
+                                    $_SESSION['surname'] = NULL;
 
 
                                     include("unconnect.inc");

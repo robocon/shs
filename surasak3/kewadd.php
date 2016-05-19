@@ -39,14 +39,14 @@ function calcage($birth){
 
 <!--<body Onload="window.print();">-->
 <body>
-<Script Language="JavaScript">
+<script type="text/javascript">
 function CloseWindowsInTime(t){
 	window.print();
 	t = t*1000;
 	setTimeout("window.close()",t);
 }
 CloseWindowsInTime(2/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */); 
-</Script>
+</script>
 <?php
 
 if(substr($cIdguard,0,4)=='MX01'){
@@ -86,12 +86,12 @@ if(substr($cIdguard,0,4)=='MX01'){
 
 	//echo mysql_errno() . ": " . mysql_error(). "\n";
 	//echo "<br>";
-	print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew1 </b><br> ";
-	print "<center><font style='font-size: 18px;'><b>ทหารและครอบครัว  </b><br> ";
-	print "<center><font style='font-size: 13px;'><b>วันที่$Thaidate</b><br> ";
-	print "<center>$cPtname<br>"; 
-	print "<center>HN:$cHn.....VN:$nVn<br>";
-	print "<center><b>รอรับบริการที่จุดคัดแยก</b><br>";
+	print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew1 </b></font><br> ";
+	print "<font style='font-size: 18px;'><b>ทหารและครอบครัว  </b></font><br> ";
+	print "<font style='font-size: 13px;'><b>วันที่$Thaidate</b></font><br> ";
+	print "$cPtname<br>"; 
+	print "HN:$cHn.....VN:$nVn<br>";
+	print "<b>รอรับบริการที่จุดคัดแยก</b></center>";
 
 }else{
 	
@@ -135,12 +135,12 @@ if(substr($cIdguard,0,4)=='MX01'){
 		
 			//echo mysql_errno() . ": " . mysql_error(). "\n";
 			//echo "<br>";
-			print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew12 </b><br> ";
-			print "<center><font style='font-size: 18px;'><b>ผู้สูงอายุ  </b><br> ";
-			print "<center><font style='font-size: 13px;'><b>วันที่ $Thaidate</b><br> ";
-			print "<center>$cPtname<br>"; 
-			print "<center>HN:$cHn.....VN:$nVn<br>";
-			print "<center><b>รอรับบริการที่จุดคัดแยก</b><br>";
+			print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew12 </b></font><br> ";
+			print "<font style='font-size: 18px;'><b>ผู้สูงอายุ  </b></font><br> ";
+			print "<font style='font-size: 13px;'><b>วันที่ $Thaidate</b></font><br> ";
+			print "$cPtname<br>"; 
+			print "HN:$cHn.....VN:$nVn<br>";
+			print "<b>รอรับบริการที่จุดคัดแยก</b></center>";
 	}else{
 		$query = "SELECT title,prefix,runno FROM runno WHERE title = 'kew'";
 		$result = mysql_query($query)
@@ -174,12 +174,12 @@ if(substr($cIdguard,0,4)=='MX01'){
 		
 		//echo mysql_errno() . ": " . mysql_error(). "\n";
 		//echo "<br>";
-		print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew12 </b><br> ";
-		print "<center><font style='font-size: 18px;'><b>ตรวจโรคทั่วไป  </b><br> ";
-		print "<center><font style='font-size: 13px;'><b>วันที่ $Thaidate</b><br> ";
-		print "<center>$cPtname<br>"; 
-		print "<center>HN:$cHn.....VN:$nVn<br>";
-		print "<center><b>รอรับบริการที่จุดคัดแยก</b><br>";
+		print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew12 </b></font><br> ";
+		print "<font style='font-size: 18px;'><b>ตรวจโรคทั่วไป  </b></font><br> ";
+		print "<font style='font-size: 13px;'><b>วันที่ $Thaidate</b></font><br> ";
+		print "$cPtname<br>"; 
+		print "HN:$cHn.....VN:$nVn<br>";
+		print "<b>รอรับบริการที่จุดคัดแยก</b></center>";
 	}
 	
 }
