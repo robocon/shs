@@ -23,6 +23,11 @@ if( $action === false ){
 			<span style="color: red">* ตัวอย่าง 2559-01</span>
 		</div>
 		<div>
+			<label for="qof">
+				ส่งออกสำหรับ QOF: <input type="checkbox" name="qof" value="1">
+			</label>
+		</div>
+		<div>
 			<button type="submit">ส่งออก</button>
 			<input type="hidden" name="action" value="show">
 		</div>
@@ -70,6 +75,9 @@ if( $action === false ){
 	</div>
 <?php
 } else if( $action === 'show' ){
+	
+	$qof = (int)input_post('qof');
+	
 	$dateSelect = input_post('dateSelect');
 	list($thiyr, $rptmo) = explode('-', $dateSelect);
 	
@@ -207,6 +215,12 @@ if( $action === false ){
 	}
 	$filePath = $dirPath.'/charge_opd.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม charge_opd เสร็จเรียบร้อย<br>";
 	
@@ -344,6 +358,12 @@ if( $action === false ){
 	} // End while
 	$filePath = $dirPath.'/admission.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม admission เสร็จเรียบร้อย<br>";
 	
@@ -483,6 +503,12 @@ if( $action === false ){
 	}  //close while
 	$filePath = $dirPath.'/service.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|HN|SEQ|DATE_SERV|TIME_SERV|LOCATION|INTIME|INSTYPE|INSID|MAIN|TYPEIN|REFERINHOSP|CAUSEIN|CHIEFCOMP|SERVPLACE|BTEMP|SBP|DBP|PR|RR|TYPEOUT|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม service เสร็จเรียบร้อย<br>";
 	
@@ -547,6 +573,12 @@ if( $action === false ){
 	}  //close while
 	$filePath = $dirPath.'/drugallergy.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|DATERECORD|DRUGALLERGY|DNAME|TYPEDX|ALEVEL|SYMPTOM|INFORMANT|INFORMHOSP|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม drugallergy เสร็จเรียบร้อย<br>";
 	
@@ -610,6 +642,12 @@ if( $action === false ){
 	}  //close while
 	$filePath = $dirPath.'/epi.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|SEQ|DATE_SERV|VACCINETYPE|VACCINEPLACE|PROVIDER|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม epi เสร็จเรียบร้อย<br>";
 	
@@ -754,6 +792,12 @@ if( $action === false ){
 	}  //close if
 	$filePath = $dirPath.'/diagnosis_opd.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|SEQ|DATE_SERV|DIAGTYPE|DIAGCODE|CLINIC|PROVIDER|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม diagnosis_opd เสร็จเรียบร้อย<br>";
 	
@@ -848,11 +892,22 @@ if( $action === false ){
 	}  //close while
 	$filePath = $dirPath.'/drug_opd.txt';
 	$zipLists[] = $filePath;
+	
+	if( $qof === 1 ){
+		$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|DIDSTD|DNAME|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE\r\n";
+		$txt = $header.$txt;
+	}
+	
 	file_put_contents($filePath, $txt);
 	echo "สร้างแฟ้ม drug_opd เสร็จเรียบร้อย<br>";
 	
 	// สร้าง zip ไฟล์
-	$zipName = 'new43file/UPDATE_F43_11512_'.$thiyr.$rptmo.'.zip';
+	if( $qof === 1 ){
+		$zipName = 'new43file/QOF_UPDATE_F43_11512_'.$thiyr.$rptmo.'.zip';
+	}else{
+		$zipName = 'new43file/UPDATE_F43_11512_'.$thiyr.$rptmo.'.zip';
+	}
+	
 	require_once("files/dZip.inc.php"); // include Class
 	$zip = new dZip($zipName); // New Class
 	
