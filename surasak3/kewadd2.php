@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
@@ -6,11 +5,13 @@ $Thaidate=date("d-m-").(date("Y")+543)." เวลา  ".date("H:i:s");
 $time=date("H:i:s");
 global $regisdate,$an,$sex,$married,$idcard,
 $warcard,$camp,$goup,$dbirth,$race,$national,$religion,$career,$ptright,$address,
-$tambol,$ampur,$changwat,$parent,$couple,$guardian;
+$tambol,$ampur,$changwat,$parent,$couple,$guardian,$nVn;
+
 include("connect.inc");
 
-$query = "SELECT title,prefix,runno FROM runno WHERE title = 'kewsold'";
-$result = mysql_query($query) or die("Query failed runno ask");
+ $query = "SELECT title,prefix,runno FROM runno WHERE title = 'kew2'";
+    $result = mysql_query($query)
+        or die("Query failed runno ask");
 
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
     if (!mysql_data_seek($result, $i)) {
@@ -30,41 +31,43 @@ $vkew1=$nRunno;
 $vkew12=$vPrefix.$nRunno;
 
 // update kew to table runno
-$query ="UPDATE runno SET runno = $nRunno WHERE title='kewsold'";
+$query ="UPDATE runno SET runno = $nRunno WHERE title='kew2'";
 $result = mysql_query($query);
 //        or die("Query failed runno update");
 
 // ใส่ kew ใน opday table 
 $query ="UPDATE opday SET kew = '$vkew12' WHERE thdatehn = '$thdatehn' AND vn = '".$_SESSION["nVn"]."' "; 
 $result = mysql_query($query);
-
 ?>
 <!--<body Onload="window.print();">-->
 <body>
-<Script Language="JavaScript">
+    
+<script type="text/javascript">
 function CloseWindowsInTime(t){
     window.print();
     t = t*1000;
     setTimeout("window.close()",t);
 }
 CloseWindowsInTime(2/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */); 
-</Script>
+</script>
+
 <?php
 print "<center><font style='font-size: 24px;'><b> ลำดับที่:$vkew1 </b><br> ";
-print "<font style='font-size: 18px;'><b>ตรวจสุขภาพทหารพราน</b><br> ";
+print "<font style='font-size: 18px;'><b>ทันตกรรม  </b><br> ";
 print "<font style='font-size: 13px;'><b>วันที่$Thaidate</b><br> ";
 print "$cPtname<br>"; 
 print "HN:$cHn.....VN:$nVn<br>";
-print "<b>รอรับบริการที่จุดคัดแยก</b></center>";
+print "<b>รอรับบัตรที่ห้องทะเบียนบัตร</b><br>";
+print "<b>ได้รับบัตรแล้วยื่นที่แผนกทันตกรรม</b></center>";
 
 $cy='A';
 
 //update kew in opday
-$query ="UPDATE opday SET phaok='$cy' WHERE thdatehn = '$thdatehn'  AND vn = '".$_SESSION["nVn"]."' ";
+$query ="UPDATE opday SET phaok='$cy' WHERE thdatehn = '$thdatehn' AND vn = '".$_SESSION["nVn"]."'  ";
 $result = mysql_query($query) or die("Query failed,update opday");
-
 If (!$result){
     echo "insert into opday fail";
 }
 
 $_SESSION['sTdatehn'] = NULL;
+?>
