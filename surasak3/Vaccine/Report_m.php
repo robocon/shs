@@ -1,5 +1,7 @@
-<? 
+<?php
 session_start();
+
+include '../connect.php';
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -106,7 +108,7 @@ div#copyright a:hover { color:#fff; }*/
 <div><!-- InstanceBeginEditable name="detail" -->
 		
 <?
-include("Connections/connect.inc.php"); 
+// include("Connections/connect.inc.php"); 
 include("Connections/all_function.php"); 
 
 $showdate=date("Y-m");

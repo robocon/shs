@@ -120,23 +120,24 @@ function calcage($birth){
 	$today = getdate();   
 	$nY  = $today['year']; 
 	$nM = $today['mon'] ;
-	$bY=substr($birth,0,4)-543;
-	$bM=substr($birth,5,2);
-	$ageY=$nY-$bY;
-	$ageM=$nM-$bM;
+	$bY = substr($birth,0,4)-543;
+	$bM = substr($birth,5,2);
+	$ageY = $nY-$bY;
+	$ageM = $nM-$bM;
 
 	if ($ageM<0) {
-		$ageY=$ageY-1;
-		$ageM=12+$ageM;
+		$ageY = $ageY-1;
+		$ageM = 12+$ageM;
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ปี";
+		$pAge = "$ageY ปี";
 	}else{
-		$pAge="$ageY ปี $ageM เดือน";
+		$ageTH = ( $ageY == 0 ) ? '' : $ageY.' ปี';
+		$pAge = $ageTH." $ageM เดือน";
 	}
 
-return $pAge;
+	return $pAge;
 }
 
 function Average($arr) {

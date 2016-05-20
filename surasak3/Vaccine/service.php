@@ -1,5 +1,6 @@
-<? 
+<?php
 session_start();
+include '../connect.php';
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -112,7 +113,7 @@ window.onload = function () {
 
 <?
 
-include("Connections/connect.inc.php"); 
+// include("Connections/connect.inc.php"); 
 include("Connections/all_function.php"); 
 
 ?>
