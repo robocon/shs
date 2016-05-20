@@ -136,7 +136,7 @@ class printvn{
 		print "<font face='Angsana New' style='font-size: 20px;' >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."</font><BR>";
 		print "<font style='line-height:24px;font-size: 17px;' face='Angsana New' >แพทย์..............................................</font><BR>";
 		print "<font style='line-height:24px;font-size: 22px;' face='Angsana New' ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> รับยายื่นที่ช่องหมายเลข 6</u></font><BR>";
-		print "<TABLE style='font-size: 16px' border='0' width='200'>
+		print "<TABLE style='font-size: 16px; font-family: Angsana New;' border='0' width='200'>
 			<TR>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
 				<TD>LAB............</TD>
