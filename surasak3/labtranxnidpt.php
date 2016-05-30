@@ -111,9 +111,12 @@ if($cDoctor2 == "MD058"){
     if( $subDoctor === 1 ){
         $cDoctor1 = "ศิริพร อินปัน";
         $doctorcode = "พท.ป. 1272";
-    }else{
+    }else if( $subDoctor === 2 ){
         $cDoctor1 = "ธัญญาวดี มูลรัตน์";
         $doctorcode = "พท.ป. 1038";
+    }else if( $subDoctor === 3 ){
+        $cDoctor1 = "หทัยรัตน์ กุลชิงชัย";
+        $doctorcode = "พท.ป. 2252";
     }
 
     $yot = "น.ส.";

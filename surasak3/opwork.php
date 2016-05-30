@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if (isset($_SESSION['sOfficer'])){} else {die;} //for security
 
 $thdatehn="";
@@ -74,10 +75,16 @@ if($_POST['lockptright5']=="lock"){
 }else{
 	$where4 = ",ptright2='' ";
 }
+
+// Extrant $_POST to there variable
+// Some thing like you have $_POST = array('test' => aaa, 'var2' => bbb );
+// after you extract you can get $test and $var2 immediately
+extract($_POST);
+
 //update opdcard table
-	$hospcode=$_POST['hospcode'];
-	$ptrcode=$_POST['rdo1'];
-	//$note=$_POST['note'].'/'.$hospcode;
+$hospcode = $_POST['hospcode'];
+$ptrcode = $_POST['rdo1'];
+//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
 $sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',

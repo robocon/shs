@@ -196,6 +196,8 @@ if( $cDoctor2 == 'MD058' ){
     <a target=_BLANK href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ศิริพร อินปัน</a>
     <br><br>
     <a target=_BLANK href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์</a>
+	<br><br>
+    <a target=_BLANK href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - หทัยรัตน์ กุลชิงชัย</a>
     <!--<br><br>
     <a target=_BLANK href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
     <?php
