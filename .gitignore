@@ -33,6 +33,7 @@ surasak3/news/*
 surasak3/43file/files/*.txt
 surasak3/43file/new43file/*
 surasak3/logs/*.log
+surasak3/includes/config.php
 
 # Visual Studio Code
 .settings/*

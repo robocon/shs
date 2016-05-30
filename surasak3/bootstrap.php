@@ -4,6 +4,8 @@ error_reporting(1);
 ini_set('display_errors', 1);
 session_start();
 
+include 'includes/config.php';
+
 if(!defined('NEW_SITE')){
 	
 	if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
@@ -19,12 +21,6 @@ if(!defined('NEW_SITE')){
 	mysql_select_db('smdb', $Conn) or die( mysql_error() );
 	mysql_query("SET NAMES UTF8", $Conn);
 }
-
-define('HOST', 'localhost');
-define('PORT', '3306');
-define('DB', 'smdb');
-define('USER', 'root');
-define('PASS', '1234');
 
 
 /**
@@ -57,12 +53,20 @@ class DB{
 	private static $lastId = 0;
 	private static $rows = 0;
 	
+	
+	
 	/**
 	 * !!!! CUTION !!!!
 	 * for windows (mysql version 14.12 Distrib 5.0.51b) using TIS620
 	 * for linux (Ver 14.12 Distrib 5.0.77) using TIS-620
 	 */
 	private static $set_names = 'TIS620';
+	
+	public static $host = null;
+	public static $port = null;
+	public static $dbname = null;
+	public static $user = null;
+	public static $pass = null;
 	
 	public function __construct(){
 		try{
@@ -71,7 +75,7 @@ class DB{
 			$names = self::$set_names;
 			
 			if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-				$this->db->exec("SET NAMES $names ;");
+				// $this->db->exec("SET NAMES $names ;");
 			}
 
 		} catch (PDOException $e) {

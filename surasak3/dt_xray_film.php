@@ -80,7 +80,13 @@ body,td,th {
 	<TD>DATE</TD>
 	<TD>DOCTOR</TD>
 	<TD>DETAIL_ALL (°¥¥Ÿø‘≈¡Ï)</TD>
-	<!-- <TD>√–∫∫PACS„À¡Ë(DR)</TD>  -->
+	<?php
+	$sIdname = $_SESSION['sIdname'];
+	// «√‘∑∏‘Ï æ ÿ∏“¥≈ («.38228)
+	if( $sIdname === 'md38228' ){
+		?><TD>√–∫∫PACS„À¡Ë(DR)</TD><?php
+	}
+	?>
 </TR>
 <?
 $query="SELECT date,hn,vn,yot,name,sname,doctor,xrayno,detail_all FROM xray_doctor where hn='".$_SESSION["hn_now"]."' GROUP BY xrayno  ORDER  BY date DESC  ";
@@ -97,9 +103,14 @@ print (" <tr>".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$xrayno</td>\n".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$date</td>\n".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$doctor</td>\n".
-"  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'><a target=_BLANK href=\"http://192.168.1.252/hiteon/hosxplink.aspx?xn=$xrayno\">$detail_all</a></td>\n".
-// "  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'><a target=_BLANK href=\"http://192.168.1.236:18057/dicomPACS-MobileView/?login=mvuser&password=start&study_patid=$xrayno\">$detail_all</a></td>\n".
-" </tr>");
+"  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'><a target=_BLANK href=\"http://192.168.1.252/hiteon/hosxplink.aspx?xn=$xrayno\">$detail_all</a></td>\n");
+
+// «√‘∑∏‘Ï æ ÿ∏“¥≈ («.38228)
+if( $sIdname === 'md38228' ){
+	print("  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'><a target=_BLANK href=\"http://192.168.1.236:18057/dicomPACS-MobileView/?login=mvuser&password=start&study_patid=$xrayno\">$detail_all</a></td>\n");
+}
+
+print(" </tr>");
 }
 //<a target=_BLANK href=\"http://192.168.1.200/link/service.php?xrayno=$xrayno\">$detail_all</a>
 ?>
