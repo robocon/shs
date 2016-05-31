@@ -4,7 +4,15 @@ error_reporting(1);
 ini_set('display_errors', 1);
 session_start();
 
+<<<<<<< HEAD
 include 'includes/config.php';
+=======
+define('HOST', 'localhost');
+define('PORT', '3306');
+define('DB', 'smdb');
+define('USER', 'root');
+define('PASS', '12341234');
+>>>>>>> b83b691b1a1cb1cd3358cdb46733999ddc524e0c
 
 if(!defined('NEW_SITE')){
 	
@@ -17,11 +25,15 @@ if(!defined('NEW_SITE')){
 }else{
 	
 	header('Content-Type: text/html; charset=utf-8');
-	$Conn = mysql_connect('localhost', 'root', '1234') or die( mysql_error() );
-	mysql_select_db('smdb', $Conn) or die( mysql_error() );
+	$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+	mysql_select_db(DB, $Conn) or die( mysql_error() );
 	mysql_query("SET NAMES UTF8", $Conn);
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b83b691b1a1cb1cd3358cdb46733999ddc524e0c
 
 /**
  * HOW TO USED
@@ -241,8 +253,8 @@ class Mysql
 	
 	function __construct(){
 			
-		// $this->db = mysql_connect(HOST, USER, PASS) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
-		// mysql_select_db(DB, $this->db) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+		// $this->db = mysql_connect(HOST, USER, PASS) or die ( mysql_error() );
+		// mysql_select_db(DB, $this->db) or die ( mysql_error() );
 		
 		// if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
 		// 	mysql_query("SET NAMES TIS620", $this->db);

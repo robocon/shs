@@ -31,7 +31,7 @@ surasak3/dataupdate/*
 surasak3/tests/*
 surasak3/news/*
 surasak3/43file/files/*.txt
-surasak3/43file/new43file/*
+surasak3/new43file/export/*
 surasak3/logs/*.log
 surasak3/includes/config.php
 
