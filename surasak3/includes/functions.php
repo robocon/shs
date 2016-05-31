@@ -6,6 +6,11 @@ if (!defined('PHP_VERSION_ID')) {
 	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
+$def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
 /**
  * แบ่งหน้า
  * $total	จำนวนทั้งหมด
@@ -192,9 +197,7 @@ function redirect($to = 'index.php', $msg = null){
 	header("Location: $to");
 	exit;
 }
-
-$def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
-
+					
 function getMonthValue($keyMatch){
 	global $def_month_th;
 	$val = $def_month_th[$keyMatch];
@@ -292,6 +295,20 @@ if( !function_exists('cal_to_ad') ){
 		}
 		return ( $match['0'] - 543 );
 	}
+}
+
+
+function get_date_ad($full = true){
+	$format = ( $full === false ) ? 'Y-m-d' : 'Y-m-d H:i:s' ;
+	return date($format);
+}
+
+function get_date_bc($format = false){
+	
+	$format = ( $format !== false ) ? $format : 'Y-m-d H:i:s' ;
+	$date_bc = ad_to_bc(date($format));
+	
+	return $date_bc;
 }
 
 /**

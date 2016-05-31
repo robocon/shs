@@ -38,7 +38,7 @@ if ( $action === false ) {
 	$dateSelect = input_post('dateSelect');
 	list($yName, $mName) = explode('-', $dateSelect);
 	$sql = "
-	SELECT `date`, `tvn`, `pharin`, `pharout`, 
+	SELECT `date`,`hn`,`tvn`,`pharin`,`pharout`, 
 	TIMEDIFF(`pharout`, `pharin`) AS `phartime`, 
 	TIME_TO_SEC(TIMEDIFF(`pharout`, `pharin`)) AS `timediff`, 
 	SUBSTRING(`ptright`, 1, 3) AS `ptcode`
@@ -84,8 +84,8 @@ if ( $action === false ) {
 	$userTime8_2 = 0;
 	$user8Time_2 = 0;
 	$user9Time_2 = 0;
-	$userMaxTime8_2 = 0;
-	$userMaxTime9_2 = 0;
+	$maxTime9To11 = 0;
+	$maxTime11To13 = 0;
 	
 	$allMax8 = 0;
 	$allMax9 = 0;
@@ -96,10 +96,15 @@ if ( $action === false ) {
 	$time9From3To10 = 0;
 	$time9From10To13 = 0;
 	$time9From13To20 = 0;
+	$time9Morethan20 = 0;
 	
 	$time11From3To10 = 0;
 	$time11From10To13 = 0;
 	$time11From13To20 = 0;
+	
+	$user9to11Over13h = array();
+	$user11to13Over13h = array();
+	$user11to13Over20h = array();
 	
 	foreach( $items as $key => $item ){
 		
@@ -167,7 +172,7 @@ if ( $action === false ) {
 					
 					$user8_2++;
 					$user8Time_2 += $item['timediff'];
-					$userMaxTime8_2 = ( $userMaxTime8_2 > $item['timediff'] ) ? $userMaxTime8_2 : $item['timediff'] ;
+					$maxTime9To11 = ( $maxTime9To11 > $item['timediff'] ) ? $maxTime9To11 : $item['timediff'] ;
 					
 					// รอเกิน 30นาที
 					if( $item['timediff'] > 1800 && $item['timediff'] <= 3600 ){
@@ -175,6 +180,12 @@ if ( $action === false ) {
 					}elseif( $item['timediff'] > 3600 && $item['timediff'] <= 5400 ){
 						$time9From10To13++;
 					}elseif( $item['timediff'] > 5400 && $item['timediff'] <= 7200 ){
+						
+						$user9to11Over13h[] = array(
+							'hn' => $item['hn'],
+							'time' => $item['timediff']
+						);
+						
 						$time9From13To20++;
 					}
 					
@@ -182,7 +193,7 @@ if ( $action === false ) {
 					
 					$user9_2++;
 					$user9Time_2 += $item['timediff'];
-					$userMaxTime9_2 = ( $userMaxTime9_2 > $item['timediff'] ) ? $userMaxTime9_2 : $item['timediff'] ;
+					$maxTime11To13 = ( $maxTime11To13 > $item['timediff'] ) ? $maxTime11To13 : $item['timediff'] ;
 					
 					// รอเกิน 30นาที
 					if( $item['timediff'] > 1800 && $item['timediff'] <= 3600 ){
@@ -190,7 +201,21 @@ if ( $action === false ) {
 					}elseif( $item['timediff'] > 3600 && $item['timediff'] <= 5400 ){
 						$time11From10To13++;
 					}elseif( $item['timediff'] > 5400 && $item['timediff'] <= 7200 ){
+						
+						$user11to13Over13h[] = array(
+							'hn' => $item['hn'],
+							'time' => $item['timediff']
+						);
+						
 						$time11From13To20++;
+					}elseif( $item['timediff'] > 7200 ){
+						
+						$user11to13Over20h[] = array(
+							'hn' => $item['hn'],
+							'time' => $item['timediff']
+						);
+						
+						$time9Morethan20++;
 					}
 					
 				}
@@ -382,7 +407,7 @@ if ( $action === false ) {
 					<p>ระยะเวลาเฉลี่ยในการรอรับยา<br>
 					ช่วงเวลา 09:00-11:00 น.<br>
 					จำนวนใบยา<span><?=$user8_2;?></span> เวลาโดยเฉลี่ย<span><?=$avgUserTime8_2;?></span><br>
-					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime8_2);?></span></p>
+					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $maxTime9To11);?></span></p>
 					
 					<div class="space"></div>
 					
@@ -394,17 +419,69 @@ if ( $action === false ) {
 					
 					<div class="space"></div>
 					
+					<?php
+					if( $time9From13To20 > 0 ){
+						?>
+						<p>
+							<u>รายละเอียดที่ใช้เวลา 1.30นาที ถึง 2ชั่วโมง ช่วง 09:00-11:00 น.</u><br>
+							<?php
+							foreach( $user9to11Over13h as $key => $item ){
+								?>HN <?=$item['hn'];?> ใช้เวลา <?=gmdate('H:i:s', $item['time']);?><?php
+							}
+							?>
+						</p>
+						<?php
+					}
+					?>
+					
+					<div class="space"></div>
+					
 					<p>ช่วงเวลา 11:00-13:00 น.<br>
 					จำนวนใบยา<span><?=$user9_2;?></span> เวลาโดยเฉลี่ย<span><?=$avgUserTime9_2;?></span><br>
-					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $userMaxTime9_2);?></span></p>
+					เวลาที่ใช้มากสุด<span><?=gmdate('H:i:s', $maxTime11To13);?></span></p>
 					
 					<div class="space"></div>
 					
 					<p>
 						จำนวนใบยาที่รอตั้งแต่ 30นาที ถึง 1ชั่วโมง <span><?=$time11From3To10;?></span><br>
 						จำนวนใบยาที่รอตั้งแต่ 1ชั่วโมง ถึง 1.30ชั่วโมง <span><?=$time11From10To13;?></span><br>
-						จำนวนใบยาที่รอตั้งแต่ 1.30นาที ถึง 2ชั่วโมง <span><?=$time11From13To20;?></span>
+						จำนวนใบยาที่รอตั้งแต่ 1.30นาที ถึง 2ชั่วโมง <span><?=$time11From13To20;?></span><br>
+						จำนวนใบยาที่รอตั้งแต่ 2ชั่วโมง ขึ้นไป <span><?=$time9Morethan20;?></span>
 					</p>
+					
+					<div class="space"></div>
+					
+					<?php
+					if( $time11From13To20 > 0 ){
+						?>
+						<p>
+							<u>รายละเอียดที่ใช้เวลา 1.30นาที ถึง 2ชั่วโมง ช่วง 11:00-13:00 น.</u><br>
+							<?php
+							foreach( $user11to13Over13h as $key => $item ){
+								?>HN <?=$item['hn'];?> ใช้เวลา <?=gmdate('H:i:s', $item['time']);?><br><?php
+							}
+							?>
+						</p>
+						<?php
+					}
+					?>
+					
+					<div class="space"></div>
+					
+					<?php
+					if( $time9Morethan20 > 0 ){
+						?>
+						<p>
+							<u>รายละเอียดที่ใช้เวลา 2ชั่วโมง ขึ้นไป ช่วง 11:00-13:00 น.</u><br>
+							<?php
+							foreach( $user11to13Over20h as $key => $item ){
+								?>HN <?=$item['hn'];?> ใช้เวลา <?=gmdate('H:i:s', $item['time']);?><br><?php
+							}
+							?>
+						</p>
+						<?php
+					}
+					?>
 					
 					<div class="space"></div>
 					

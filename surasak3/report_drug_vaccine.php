@@ -6,6 +6,7 @@
 session_start();
 include 'connect.php';
 include 'Connections/all_function.php'; 
+include 'templates/classic/header.php';
 
 $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
 '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
@@ -18,25 +19,12 @@ $showdate = date("Y-m");
 $d =date('Y-m-d');
 $dateN = explode("-",$d);
 $mm = $dateN[0].'-'.$dateN[1];
-?>
 
-<style type="text/css">
-	table th, table td{
-		padding: 1px;
-	}
-	@media print{
-		#no_print{
-			display: none;
-		}
-	}
-</style>
-
-<?php
 $defMonth = empty($_POST['m_start']) ? date('m') : $_POST['m_start'];;
 ?>
 <div id="no_print">
 	<div>
-		<a href="../nindex.htm">&lt;&lt;หน้าหลักโปรแกรมSHS</a>
+		<a href="../nindex.htm">&lt;&lt;หน้าหลักโปรแกรมSHS</a> | <a href="report_vaccine_appoint.php">รายชื่อนัดฉีดวัคซีนเด็ก</a>
 	</div>
 	<h3>ค้นหารายชื่อเด็กที่ฉีดวัคซีน</h3>
     <form method="post" action="report_drug_vaccine.php" name="FrmR">
@@ -72,8 +60,6 @@ $defMonth = empty($_POST['m_start']) ? date('m') : $_POST['m_start'];;
 </div>
 <?php
 
-
-
 $show = $_POST['show'];
 if( $show === 'report' ){
 
@@ -89,9 +75,7 @@ if( $show === 'report' ){
 	INNER JOIN `vaccine` AS c ON c.`id_vac` = b.`id_vac` 
 	WHERE  b.`date_ser` LIKE '$today%' 
 	ORDER BY b.`date_ser` ASC ";
-	// echo "<pre>";
-	// var_dump($sql);
-	// echo "</pre>";
+	
 	$result = mysql_query($sql);
 	$rows = mysql_num_rows($result);
 	$n=1;
@@ -235,6 +219,4 @@ if( $show === 'report' ){
 	</table>
 	<?php
 }
-?>
-</body>
-</html>
+include 'templates/classic/footer.php';
