@@ -41,16 +41,17 @@ $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม',
 	font-size: 15px;
 }
 @media print{
-#no-print{ display:none;}
+	#no-print{ display:none;}
 }
 .text4 {	font-family: "TH SarabunPSK";
 	font-size: 14px;
 }
 -->
 </style>
-<script language="javascript">
-		window.print();
-	</script>
+<script type="text/javascript">
+	window.print();
+</script>
+
 <?
 	////*runno ตรวจสุขภาพ*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -99,8 +100,8 @@ $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม',
   $da = explode(" ",$result["thidate"]);
 //   list($y, $m, $d) = explode("-",$da[0]);
 //   $shortDate = "$d-$m-$y";
-	$d = '15';
-	$m = '03';
+	$d = '13';
+	$m = '05';
 	$y = '2016';
   ?>
   <?php echo $d.' '.$thaimonthFull[$m].' '.( $y + 543 );?>
@@ -729,22 +730,21 @@ mmHg.</u></span></td>
         <? if($result['stat_other7']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other7']."...";?>
       </span></td>
       </tr>
-      <? }?>
+      <? } ?>
     <tr>
       <td height="27" colspan="6" align="center" valign="top" class="text1"><hr /></td>
     </tr>
 </table></td></tr>
 </table>
-  <?
+<?php
 $strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'";
-//echo "===>".$strSQL1;
 $objQuery1 = mysql_query($strSQL1);
 list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
-  ?>
+?>
 <table width="100%" border="0" class="text4">
-  <tr>
-    <td width="50%" align="center"><strong>Authorise  LAB:</strong>
-        <?=$authorisename?> <strong> (<?=$authorisedate?>) CXR : </strong>ร.อ.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>) Doctor : พ.ท.เลอปรัชญ์ มังกรกนกพงศ์ (<?=$authorisedate;?>)</strong>
-	</td>
-  </tr>
+	<tr>
+		<td width="50%" align="center"><strong>Authorise  LAB:</strong>
+			<?=$authorisename?> <strong> (<?=$authorisedate?>) CXR : </strong>ร.อ.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>) Doctor : พ.ท.เลอปรัชญ์ มังกรกนกพงศ์ (<?=$authorisedate;?>)</strong>
+		</td>
+	</tr>
 </table>

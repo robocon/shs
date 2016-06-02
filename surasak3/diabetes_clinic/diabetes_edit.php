@@ -85,6 +85,13 @@ $strSQL .=",l_ua = '{$_POST['l_ua']}' ";
 $strSQL .=",date_footcare = '$date_footcare' ";
 $strSQL .=",date_nutrition = '$date_nutrition' ";
 $strSQL .="WHERE hn = '".$_POST['hn']."' ";
+
+
+$logs = $strSQL."\r\n";
+$logs .= "---------------------------\r\n\r\n";
+file_put_contents('../logs/diabet-edit.log', $logs, FILE_APPEND);
+
+
 $objQuery = mysql_query($strSQL) or die( mysql_error() );
 
 $dm_no = $_POST["dm_no"];
@@ -109,6 +116,11 @@ $insert = "INSERT INTO diabetes_clinic_history
 (dm_no,thidate,dateN,hn,doctor,ptname,ptright,dbbirt,sex,diagnosis,diagdetail,ht,htdetail,smork,bw,bmi,retinal,foot ,l_bs,l_hbalc,l_ldl,l_creatinine,l_urine,l_microal,foot_care,nutrition,exercise,smoking,admit_dia,dt_heart,dt_brain,height,weight,round,temperature,pause,rate,bp1,bp2,officer,register_date,added_date,edited_date,ht_etc,edited_user,retinal_date,foot_date,dummy_no,tooth_date,tooth,l_ua,date_footcare,date_nutrition) 
 VALUES 
 ('$dm_no','".$_POST["thaidate"]."','".$dateN."','".$_POST["hn"]."','".$_POST["doctor"]."','".$_POST["ptname"]."','".$_POST["ptright"]."','".$_POST["dbirth"]."','".$_POST["sex"]."','".$_POST["dia1"]."','".$_POST["nosis_d"]."','".$_POST["ht"]."','".$_POST["ht_d"]."','".$_POST["cigarette"]."','".$_POST["bw"]."','".$_POST["bmi"]."','$retinal','$foot','".$_POST["bs"]."','".$_POST["hba"]."','".$_POST["ldl"]."','".$_POST["cr"]."','".$_POST["ur"]."','".$_POST["micro"]."','".$_POST["foot_care"]."','".$_POST["Nutrition"]."','".$_POST["Exercise"]."','".$_POST["Smoking"]."','".$_POST["admit_dia"]."','".$_POST["dt_heart"]."','".$_POST["dt_brain"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$sOfficer."','','$added_date','$added_date','$ht_etc','$sIdname','$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth','".$_POST['l_ua']."','$date_footcare','$date_nutrition')";
+
+$logs = $insert."\r\n";
+$logs .= "---------------------------\r\n\r\n";
+file_put_contents('../logs/diabet-edit.log', $logs, FILE_APPEND);
+
 $insert_query = mysql_query($insert) or die( mysql_error() );
 
 

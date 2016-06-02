@@ -43,10 +43,8 @@ if ($action === 'display') {
 	FROM `appoint` 
 	WHERE `appdate` LIKE :date_select 
 	AND `apptime` != 'ยกเลิกการนัด' 
-	AND (
-		`detail2` LIKE '%OPV%' OR `detail2` LIKE '%HBV%' OR `other` LIKE '%MMR%' OR `other` LIKE '%JEV%'
-	)";
-	
+	AND `doctor` LIKE 'MD041%'";
+	// dump($sql);
 	$data = array(
 		':date_select' => '%'.$th_date_name.' '.$year
 	);
@@ -79,6 +77,13 @@ if ($action === 'display') {
 	usort($items, "sorttime");
 	
 	?>
+	<style type="text/css">
+		@media print{
+			body{
+				font-size: 16px;
+			}
+		}
+	</style>
 	<table>
 		<thead>
 			<tr>
@@ -94,6 +99,13 @@ if ($action === 'display') {
 			<?php
 			$i = 1;
 			foreach( $items as $key => $item ){
+				
+				$test_other = trim($item['other']);
+				$test_detail2 = trim($item['detail2']);
+				if( empty($test_other) && empty($test_detail2) ){
+					continue;
+				}
+				
 				?>
 				<tr>
 					<td><?=$i;?></td>

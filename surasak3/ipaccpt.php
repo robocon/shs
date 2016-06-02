@@ -9,12 +9,12 @@ $def_date = input_post('date', $date);
 <div class="col no-print">
 	<div class="cell">
 		<div>
-			<a href="../nindex.htm">&lt;&lt เมนูหลักโรงพยาบาล</a> | <a href="ipaccpt.php">รายรับผู้ป่วยในแบ่งตามสิทธิ</a> 
+			<a href="../nindex.htm">&lt;&lt เมนูหลักโรงพยาบาล</a> | <a href="opaccpt.php">รายรับผู้ป่วยนอกแบ่งตามสิทธิ</a> 
 		</div>
 		<div>
-			<h3>ระบบรายรับผู้ป่วยนอกแบ่งตามสิทธิ</h3>
+			<h3>ระบบรายรับผู้ป่วยในแบ่งตามสิทธิ</h3>
 		</div>
-		<form action="opaccpt.php" method="post">
+		<form action="ipaccpt.php" method="post">
 			<div>
 				<label for="date">เลือกเดือน</label>
 				<input type="text" id="date" name="date" value="<?=$def_date;?>">
@@ -36,14 +36,14 @@ if ($action === 'display') {
 	$date = input_post('date');
 	$sql = "
 	SELECT SUM(`paid`) AS `total`, SUBSTRING(`ptright`, 1, 3) AS `ptcode`
-	FROM `opacc` 
-	WHERE `date` LIKE :date_opacc 
-	AND ( `vn` IS NOT NULL AND `vn` != '' ) 
+	FROM `ipacc` 
+	WHERE `date` LIKE :date_ipacc 
+	AND ( `an` IS NOT NULL AND `an` != '' ) 
 	AND ( `ptright` IS NOT NULL AND `ptright` != '' ) 
 	GROUP BY `ptcode`";
 	
 	$data = array(
-		':date_opacc' => "$date%"
+		':date_ipacc' => "$date%"
 	);
 	$db->select($sql, $data);
 	$items = $db->get_items();
@@ -63,7 +63,7 @@ if ($action === 'display') {
 	
 	if( count($items) > 0 ){
 		?>
-		<h3>รายรับผู้ป่วยนอกแบ่งตามสิทธิ เดือน <?=$def_fullm_th[$month];?> ปี <?=$year;?></h3>
+		<h3>รายรับผู้ป่วยในแบ่งตามสิทธิ เดือน <?=$def_fullm_th[$month];?> ปี <?=$year;?></h3>
 		<table class="width-4of5">
 			<thead>
 				<tr>

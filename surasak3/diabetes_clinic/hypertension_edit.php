@@ -372,6 +372,12 @@ $strSQL="UPDATE `hypertension_clinic` SET `thidate` = '".$_POST["thaidate"]."',
 `bp1` = '".$_POST["bp1"]."',
 `bp2` = '".$_POST["bp2"]."',
 `officer_edit` = '".$sOfficer."' WHERE `row_id` = '".$_POST["row_id"]."' ";
+
+
+$logs = $strSQL."\r\n";
+$logs .= "---------------------------\r\n\r\n";
+file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
+
 $objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
 
 // เพิ่มเข้าไปใน ประวัติผู้ป่วย
@@ -390,6 +396,12 @@ VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST[
 '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', 
 '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', 
 '".$sOfficer."', '".$register."','".$pension."','".$_POST['age']."');";
+
+$logs = $strSQL."\r\n";
+$logs .= "---------------------------\r\n\r\n";
+file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
+
+
 $objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
 
 if($objQuery){

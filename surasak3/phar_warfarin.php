@@ -29,18 +29,59 @@ if( $action === 'save_intervention' ){
 
 //หน้าการแสดงผลต่างๆ
 include 'templates/classic/header.php';
-include 'templates/warfarin/nav.php';
+include 'templates/warfarin/nav.php'; 
+
+// Load Guide Navigation ถ้าไม่ใช่หน้าหลัก
+if( $page !== false ){
+	include 'templates/warfarin/form_nav.php';
+}
+
 if( $page === false ){
 	
 } else if( $page === 'intervention' ){
 	
 	$id = input_get('id');
 	$date_val = get_date_ad(false);
+	
+	
 	include 'templates/warfarin/intervention_form.php';
 	
 } else if( $page === 'inr' ){
 	
-	include 'templates/warfarin/intervention_form.php';
+	$id = input_get('id');
+	
+	
+	include 'templates/warfarin/inr_form.php';
+	
+} else if( $page === 'warfarin' ){
+	
+	$id = input_get('id');
+	
+	
+	
+} else if( $page === 'adr' ){
+	
+	$id = input_get('id');
+	
+	
+	
+} else if( $page === 'inr6' ){
+	
+	$id = input_get('id');
+	
+	
+	
+} else if( $page === 'inr1_5' ){
+	
+	$id = input_get('id');
+	
+	
+	
+} else if( $page === 'inr_range' ){
+	
+	$id = input_get('id');
+	
+	
 	
 }
 include 'templates/classic/footer.php';

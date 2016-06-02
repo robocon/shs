@@ -4,20 +4,13 @@ error_reporting(1);
 ini_set('display_errors', 1);
 session_start();
 
-<<<<<<< HEAD
 include 'includes/config.php';
-=======
-define('HOST', 'localhost');
-define('PORT', '3306');
-define('DB', 'smdb');
-define('USER', 'root');
-define('PASS', '12341234');
->>>>>>> b83b691b1a1cb1cd3358cdb46733999ddc524e0c
 
+// ถ้าไม่มีการประกาศ NEW_SITE ให้โหลดคอนฟิกตัวเดิมมาใช้งาน
 if(!defined('NEW_SITE')){
 	
 	if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-		header('Content-Type: text/html; charset=tis-620');
+		// header('Content-Type: text/html; charset=tis-620');
 	}
 	
 	include 'includes/connect.php';
@@ -29,11 +22,6 @@ if(!defined('NEW_SITE')){
 	mysql_select_db(DB, $Conn) or die( mysql_error() );
 	mysql_query("SET NAMES UTF8", $Conn);
 }
-
-<<<<<<< HEAD
-=======
-
->>>>>>> b83b691b1a1cb1cd3358cdb46733999ddc524e0c
 
 /**
  * HOW TO USED
