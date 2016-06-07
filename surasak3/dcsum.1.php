@@ -56,33 +56,33 @@ if($sex=='ª'){
 ?>
 <style type="text/css">
 
-@font-face{
+/*@font-face{
 	font-family: "THSarabunNew";
 	src: url("fonts/webfont/THSarabunNew.eot");
 	src: url("fonts/webfont/THSarabunNew.eot#iefix"),
 	url("fonts/webfont/THSarabunNew.woff") format('embedded-opentype'),
-	url("fonts/webfont/THSarabunNew.ttf") format('truetype'),
+	url("fonts/THSarabunNew.ttf") format('truetype'),
 	url("fonts/webfont/THSarabunNew.svg#ludger_duvernayregular") format('svg');
 	font-weight: normal;
 	font-style: normal;
-}
+}*/
 
 .head{
-	font-family:"THSarabunNew";
+	font-family:"TH SarabunPSK";
 	font-size:20px;
 	line-height: 20px;
 }
 .table2{
-	font-family:"THSarabunNew";
+	font-family:"TH SarabunPSK";
 	font-size:20px;
 	line-height: 20px;
 }
 .table{
-	font-family:"THSarabunNew";
+	font-family:"TH SarabunPSK";
 	font-size:16px;
 }
 .length{
-	font-family:"THSarabunNew";
+	font-family:"TH SarabunPSK";
 	font-size:14px;
 }
 </style>
@@ -144,11 +144,11 @@ OF STAY <br />
       </table>
     <p></p></td>
     <td align="center" valign="top"><p>BIRTH<br />
-      WEIGHT</p>
+WEIGHT</p>
     <p>GRAMS</p></td>
   </tr>
 </table>
-<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;"" class="table">
+<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;" class="table">
   <tr>
     <td width="26%">Diagnosis</td>
     <td width="10%" align="center">ICD</td>
@@ -179,7 +179,7 @@ OF STAY <br />
     <br>
     <br>
     <br>
-<br>
+    <br>
     <br /></td>
     <td align="center">&nbsp;</td>
     <td align="center"><br />
@@ -245,7 +245,7 @@ OF STAY <br />
     </table></td>
   </tr>
 </table>
-<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;"" class="table">
+<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;" class="table">
 <tr>
 <td width="50%"  align="center" valign="middle">DISCHARGE STATUS</td>
 <td width="40%"  align="center" valign="middle">TYPE OF DISCHARGE</td>

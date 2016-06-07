@@ -90,7 +90,7 @@ if($_POST['submit']){
 	
 	echo "<hr>";
 	
-	include("../Connections/connect.inc.php"); 
+	include("../includes/connect.php"); 
 	
 	if($_POST['d_start']=="00") {$_POST['d_start']="";}
 	
@@ -201,7 +201,7 @@ echo "</table>
 	
 }// »Ô´$_POST['submit']
 
-mysql_close();
+// mysql_close();
 ?>
 
 <br />
