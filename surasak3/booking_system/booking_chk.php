@@ -1,96 +1,98 @@
-<? session_start();?>
+<?php
+session_start();
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>ตรวจสอบข้อมูลการจอง</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+	<title>ตรวจสอบข้อมูลการจอง</title>
+	
+	<style type="text/css">
+	.forntsarabun {
+		font-family: "TH SarabunPSK";
+		font-size: 22px;
+	}
+	.forntsarabun1 {
+		font-family: "TH SarabunPSK";
+		font-size: 16px;
+	}
+	</style>
 </head>
-<style type="text/css">
-.forntsarabun {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
-}
-.forntsarabun1 {
-	font-family: "TH SarabunPSK";
-	font-size: 16px;
-}
-
-</style>
 <body>
 <form name="f1" action="" method="post">
-<table  border="0" cellpadding="3" cellspacing="3">
-  <tr class="forntsarabun" >
-    <td colspan="2"  align="center" bgcolor="#CCCCCC" class="forntsarabun">ตรวจสอบข้อมูลการจองเตียง</td>
-    </tr>
-  <tr class="forntsarabun">
-    <td  align="right" class="forntsarabun">วันที่</td>
-    <td ><select name="d_start">
-	<?
-	$d=date("d");
-	for($i=0;$i<=31;$i++){
-		if($i<=9){
-			$i="0".$i;		
-		}else{
-			$i=$i;
-		}
-		if($i==$d){
-		echo "<option value='$i' selected='selected'>$i</option>";
-		}else{
-		echo "<option value='$i' >$i</option>";
-		}
-	}
-	
-	?>
-	</select>
-	<? $m=date('m'); ?>
-      <select name="m_start" >
-        <option value="01" <? if($m=='01'){ echo "selected"; }?>>มกราคม</option>
-        <option value="02" <? if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
-        <option value="03" <? if($m=='03'){ echo "selected"; }?>>มีนาคม</option>
-        <option value="04" <? if($m=='04'){ echo "selected"; }?>>เมษายน</option>
-        <option value="05" <? if($m=='05'){ echo "selected"; }?>>พฤษภาคม</option>
-        <option value="06" <? if($m=='06'){ echo "selected"; }?>>มิถุนายน</option>
-        <option value="07" <? if($m=='07'){ echo "selected"; }?>>กรกฎาคม</option>
-        <option value="08" <? if($m=='08'){ echo "selected"; }?>>สิงหาคม</option>
-        <option value="09" <? if($m=='09'){ echo "selected"; }?>>กันยายน</option>
-        <option value="10" <? if($m=='10'){ echo "selected"; }?>>ตุลาคม</option>
-        <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
-        <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
-        </select>
-      <? 
-			   $Y=date("Y")+543;
-			   $date=date("Y")+543+5;
-			  
+	<table  border="0" cellpadding="3" cellspacing="3">
+		<tr class="forntsarabun" >
+			<td colspan="2"  align="center" bgcolor="#CCCCCC" class="forntsarabun">ตรวจสอบข้อมูลการจองเตียง</td>
+		</tr>
+		<tr class="forntsarabun">
+			<td align="right" class="forntsarabun">วันที่</td>
+			<td>
+				<select name="d_start">
+				<?php
+				$d=date("d");
+				for($i=0;$i<=31;$i++){
+					if($i<=9){
+						$i="0".$i;		
+					}else{
+						$i=$i;
+					}
+					if($i==$d){
+						echo "<option value='$i' selected='selected'>$i</option>";
+					}else{
+						echo "<option value='$i' >$i</option>";
+					}
+				}
+				?>
+				</select>
+				<?php $m=date('m'); ?>
+				<select name="m_start" >
+					<option value="01" <? if($m=='01'){ echo "selected"; }?>>มกราคม</option>
+					<option value="02" <? if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
+					<option value="03" <? if($m=='03'){ echo "selected"; }?>>มีนาคม</option>
+					<option value="04" <? if($m=='04'){ echo "selected"; }?>>เมษายน</option>
+					<option value="05" <? if($m=='05'){ echo "selected"; }?>>พฤษภาคม</option>
+					<option value="06" <? if($m=='06'){ echo "selected"; }?>>มิถุนายน</option>
+					<option value="07" <? if($m=='07'){ echo "selected"; }?>>กรกฎาคม</option>
+					<option value="08" <? if($m=='08'){ echo "selected"; }?>>สิงหาคม</option>
+					<option value="09" <? if($m=='09'){ echo "selected"; }?>>กันยายน</option>
+					<option value="10" <? if($m=='10'){ echo "selected"; }?>>ตุลาคม</option>
+					<option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
+					<option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
+				</select>
+				<?php
+				$Y=date("Y")+543;
+				$date=date("Y")+543+5;
+
 				$dates=range(2547,$date);
 				echo "<select name='y_start' >";
 				foreach($dates as $i){
-
-				?>
-      
-      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
-      <?
+					?>
+					<option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
+					<?php
 				}
 				echo "<select>";
-				?></td>
-    </tr>
-  <tr class="forntsarabun">
-    <td  align="right" class="forntsarabun">&nbsp;</td>
-    <td ><font style="font-size:18px">*ต้องการดูทั้งเดือนเลือก 00 คะ*</font></td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><input name="submit" type="submit" class="forntsarabun" value="ค้นหา"/>&nbsp;&nbsp;<a href="../../nindex.htm" class="forntsarabun">กลับเมนูหลัก</a>&nbsp;&nbsp;
-      </td>
-  </tr>
-</table>
+				?>
+			</td>
+		</tr>
+		<tr class="forntsarabun">
+			<td  align="right" class="forntsarabun">&nbsp;</td>
+			<td ><font style="font-size:18px">*ต้องการดูทั้งเดือนเลือก 00 คะ*</font></td>
+		</tr>
+		<tr>
+		<td colspan="2" align="center">
+			<input name="submit" type="submit" class="forntsarabun" value="ค้นหา"/>&nbsp;&nbsp;<a href="../../nindex.htm" class="forntsarabun">กลับเมนูหลัก</a>&nbsp;&nbsp;
+		</td>
+		</tr>
+	</table>
 </form>
 <br />
-
-<?
+<?php
 if($_POST['submit']){
 	
 	echo "<hr>";
 	
-	include("../Connections/connect.inc.php"); 
+	// include("../Connections/connect.inc.php"); 
+	include '../includes/connect.php';
 	
 	if($_POST['d_start']=="00") {$_POST['d_start']="";}
 	
@@ -114,12 +116,13 @@ if($_POST['submit']){
 		case "11": $printmonth = "พฤศจิกายน"; break;
 		case "12": $printmonth = "ธันวาคม"; break;
 	}
+	
 	if($_POST['d_start']==''){
-	$day="เดือน";
-	 $dateshow=$printmonth." ".$_POST['y_start'];
+		$day="เดือน";
+		$dateshow=$printmonth." ".$_POST['y_start'];
 	}else{
-	 $day="วันที่";
-	 $dateshow=$_POST['d_start'].' '.$printmonth." ".$_POST['y_start'];
+		$day="วันที่";
+		$dateshow=$_POST['d_start'].' '.$printmonth." ".$_POST['y_start'];
 	}
 	
 	
@@ -132,42 +135,51 @@ if($_POST['submit']){
 	$i=1;
 	if($row){
 		echo "<div class=\"forntsarabun\">ข้อมูลการจองเตียง $day : $dateshow      <a href='booking.php' class='forntsarabun' >จองเตียงผู้ป่วยใน</a></div><hr>";
+		echo "<table border='1' cellspacing='0' cellpadding='0' class='forntsarabun' style=\"border-collapse:collapse\" bordercolor=\"#000000\"> 
+		<tr bgcolor=\"#CCCCCC\" align=\"center\">
+		<td>#</td>
+		<td>ว/ด/ป ที่จอง</td>
+		<td>ว/ด/ป ที่นอน</td>
+		<td>HN</td>
+		<td>ชื่อ-สกุล</td>
+		<td>แพทย์</td>
+		<td>เตียง/ห้อง</td>
+		<td>หอผู้ป่วย</td>
+		<td>สถานะ</td>
+		<td>หมายเลขเตียง</td>
+		<td>ผู้อนุมัติ</td>
+		<td>แก้ไข</td>
+		<td>ลบ</td>
+		<td>ใบจอง</td>
+		</tr>";
 		
-		
-	echo "<table border='1' cellspacing='0' cellpadding='0' class='forntsarabun' style=\"border-collapse:collapse\" bordercolor=\"#000000\"> 
-  <tr bgcolor=\"#CCCCCC\" align=\"center\">
-    <td>#</td>
-    <td>ว/ด/ป ที่จอง</td>
-	<td>ว/ด/ป ที่นอน</td>
-	<td>HN</td>
-    <td>ชื่อ-สกุล</td>
-    <td>แพทย์</td>
-    <td>เตียง/ห้อง</td>
-    <td>หอผู้ป่วย</td>
-	<td>สถานะ</td>
-	<td>หมายเลขเตียง</td>
-	<td>ผู้อนุมัติ</td>
-	<td>แก้ไข</td>
-	<td>ลบ</td>
-	<td>ใบจอง</td>
-  </tr>";
-  while($dbarr=mysql_fetch_array($query)){
-	  
-	  if($dbarr['status']==""){
-		  $status1= "รอการอนุมัติ";
-		  $color="";
-	  }else if($dbarr['status']=="รับทราบ"){
-		  $status1=$dbarr['status'];
-		  $color="#84BC30";//เขียว
-	  }else if($dbarr['status']=="ยกเลิก"){
-		  	 $status1=$dbarr['status'];
-			 $color= "#FF9393";//แดง
-	 }else{
-	  	  $color="";
-		  $status1=$dbarr['status'];
-	  }
-	  $date_regis = substr($dbarr['date_regis'],8,2)."-".substr($dbarr['date_regis'],5,2)."-".substr($dbarr['date_regis'],0,4);
-	  $date_in = substr($dbarr['date_in'],8,2)."-".substr($dbarr['date_in'],5,2)."-".substr($dbarr['date_in'],0,4);
+		while($dbarr = mysql_fetch_array($query)){
+	
+			// if($dbarr['status']==""){
+			// 	$status1= "รอการอนุมัติ";
+			// 	$color="";
+			// }else if($dbarr['status']=="รับทราบ"){
+			// 	$status1=$dbarr['status'];
+			// 	$color="#84BC30";//เขียว
+			// }else if($dbarr['status']=="ยกเลิก"){
+			// 	$status1=$dbarr['status'];
+			// 	$color= "#FF9393";//แดง
+			// }else{
+			// 	$color="";
+			// 	$status1=$dbarr['status'];
+			// }
+			
+			$status1 = ( empty($dbarr['status']) ) ? 'รอการอนุมัติ' : $dbarr['status'] ;
+			
+			if( $status1 == 'อนุมัติ' ){ 
+				$color = "#84BC30"; //เขียว 
+			}else{
+				$color = '';
+			}
+	
+	
+	$date_regis = substr($dbarr['date_regis'],8,2)."-".substr($dbarr['date_regis'],5,2)."-".substr($dbarr['date_regis'],0,4);
+	$date_in = substr($dbarr['date_in'],8,2)."-".substr($dbarr['date_in'],5,2)."-".substr($dbarr['date_in'],0,4);
 echo"  <tr bgcolor='$color'>
     <td>$i</td>
     <td>$date_regis</td>
@@ -264,19 +276,30 @@ $today5=$todayy1.'-'.$todaym1.'-'.$todayd1;
   </tr>";
   while($dbarr=mysql_fetch_array($query)){
 	  
-	  if($dbarr['status']==""){
-		  $status1= "รอการอนุมัติ";
-		  $color="";
-	  }else if($dbarr['status']=="รับทราบ"){
-		  $status1=$dbarr['status'];
-		  $color="#84BC30";//เขียว
-	  }else if($dbarr['status']=="ยกเลิก"){
-		  	 $status1=$dbarr['status'];
-			 $color= "#FF9393";//แดง
-	 }else{
-	  	  $color="";
-		  $status1=$dbarr['status'];
-	  }
+	  
+	  $status1 = ( empty($dbarr['status']) ) ? 'รอการอนุมัติ' : $dbarr['status'] ;
+	  
+	// if($dbarr['status']==""){
+	// 	$status1= "รอการอนุมัติ";
+	// 	$color="";
+	// }else if($dbarr['status']=="รับทราบ"){
+	// 	$status1=$dbarr['status'];
+	// 	$color="#84BC30";//เขียว
+	// }else if($dbarr['status']=="ยกเลิก"){
+	// 	$status1=$dbarr['status'];
+	// 	$color= "#FF9393";//แดง
+	// }else{
+	// 	$color="";
+	// 	$status1=$dbarr['status'];
+	// }
+	
+	if( $status1 == 'อนุมัติ' ){ 
+		$color = "#84BC30"; //เขียว 
+	}else{
+		$color = '';
+	}
+	
+	
 	  $date_regis = substr($dbarr['date_regis'],8,2)."-".substr($dbarr['date_regis'],5,2)."-".substr($dbarr['date_regis'],0,4);
 	  $date_in = substr($dbarr['date_in'],8,2)."-".substr($dbarr['date_in'],5,2)."-".substr($dbarr['date_in'],0,4);
 echo"  <tr bgcolor='$color'>
@@ -328,7 +351,7 @@ $show_today=$todayd.'-'.$todaym.'-'.$todayy;
 	$i=1;
 	
 	if($row1){
-		echo "<div class=\"forntsarabun\">เตียงจองวันนี้ : $show_today</div><hr>";
+	echo "<div class=\"forntsarabun\">เตียงจองวันนี้ : $show_today</div><hr>";
 		
 	echo "<table border='1' cellspacing='0' cellpadding='0' class='forntsarabun' style=\"border-collapse:collapse\" bordercolor=\"#000000\" width=\"100%\"> 
   <tr bgcolor=\"#CCCCCC\" align=\"center\">
@@ -348,22 +371,31 @@ $show_today=$todayd.'-'.$todaym.'-'.$todayy;
   </tr>";
   while($dbarr1=mysql_fetch_array($query1)){
 	  
-	  if($dbarr1['status']==""){
-		  $status2= "รอการตอบรับ";
-		  $color="";
-	  }else if($dbarr1['status']=="รับทราบ"){
-		  $status2=$dbarr1['status'];
-		  $color="#FFFF99";//เหลือง
-	  }else if($dbarr1['status']=="อนุมัติ"){
-		  $status2=$dbarr1['status'];
-		  $color="#84BC30";//เขียว
-	  }else if($dbarr1['status']=="ไม่อนุมัติ"){
-		  $status2=$dbarr1['status'];
-		  $color= "#FF9393";//แดง
-	  }else if($dbarr['status']=="ยกเลิก"){
-		  $status2=$dbarr1['status'];
-		  $color= "#FF9393";//แดง
-	 }
+	  $status2 = ( empty($dbarr1['status']) ) ? 'รอการอนุมัติ' : $dbarr1['status'] ;
+	  
+	//   if($dbarr1['status']==""){
+	// 	  $status2= "รอการตอบรับ";
+	// 	  $color="";
+	//   }else if($dbarr1['status']=="รับทราบ"){
+	// 	  $status2=$dbarr1['status'];
+	// 	  $color="#FFFF99";//เหลือง
+	//   }else if($dbarr1['status']=="อนุมัติ"){
+	// 	  $status2=$dbarr1['status'];
+	// 	  $color="#84BC30";//เขียว
+	//   }else if($dbarr1['status']=="ไม่อนุมัติ"){
+	// 	  $status2=$dbarr1['status'];
+	// 	  $color= "#FF9393";//แดง
+	//   }else if($dbarr['status']=="ยกเลิก"){
+	// 	  $status2=$dbarr1['status'];
+	// 	  $color= "#FF9393";//แดง
+	//  }
+	
+	if( $status2 == 'อนุมัติ' ){ 
+		$color = "#84BC30"; //เขียว 
+	}else{
+		$color = '';
+	}
+	
 	  $date_regis1 = substr($dbarr1['date_regis'],8,2)."-".substr($dbarr1['date_regis'],5,2)."-".substr($dbarr1['date_regis'],0,4);
 
 echo"  <tr bgcolor='$color'>
@@ -438,22 +470,30 @@ $show_today1=$todayd1.'-'.$todaym1.'-'.$todayy1;
   </tr>";
   while($dbarr2=mysql_fetch_array($query2)){
 	  
-	  if($dbarr2['status']==""){
-		  $status3= "รอการตอบรับ";
-		  $color="";
-	  }else if($dbarr2['status']=="รับทราบ"){
-		  $status3=$dbarr2['status'];
-		  $color="#FFFF99";//เหลือง
-	  }else if($dbarr2['status']=="อนุมัติ"){
-		  $status3=$dbarr2['status'];
-		  $color="#84BC30";//เขียว
-	  }else if($dbarr2['status']=="ไม่อนุมัติ"){
-		  $status3=$dbarr2['status'];
-		  $color= "#FF9393";//แดง
-	  }else if($dbarr2['status']=="ยกเลิก"){
-		  	 $status3=$dbarr2['status'];
-			 $color= "#FF9393";//แดง
-	 }
+	  $status3 = ( empty($dbarr2['status']) ) ? 'รอการอนุมัติ' : $dbarr2['status'] ;
+	  
+	//   if($dbarr2['status']==""){
+	// 	  $status3= "รอการตอบรับ";
+	// 	  $color="";
+	//   }else if($dbarr2['status']=="รับทราบ"){
+	// 	  $status3=$dbarr2['status'];
+	// 	  $color="#FFFF99";//เหลือง
+	//   }else if($dbarr2['status']=="อนุมัติ"){
+	// 	  $status3=$dbarr2['status'];
+	// 	  $color="#84BC30";//เขียว
+	//   }else if($dbarr2['status']=="ไม่อนุมัติ"){
+	// 	  $status3=$dbarr2['status'];
+	// 	  $color= "#FF9393";//แดง
+	//   }else if($dbarr2['status']=="ยกเลิก"){
+	// 	  	 $status3=$dbarr2['status'];
+	// 		 $color= "#FF9393";//แดง
+	//  }
+	if( $status3 == 'อนุมัติ' ){ 
+		$color = "#84BC30"; //เขียว 
+	}else{
+		$color = '';
+	}
+	
 	  $date_regis2 = substr($dbarr2['date_regis'],8,2)."-".substr($dbarr2['date_regis'],5,2)."-".substr($dbarr2['date_regis'],0,4);
 echo"  <tr bgcolor='$color'>
     <td>$ii</td>
