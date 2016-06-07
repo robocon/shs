@@ -253,9 +253,9 @@ class Mysql
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			// $names = self::$set_names;
 			
-			// if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-			// 	// $this->db->exec("SET NAMES $names ;");
-			// }
+			if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
+				$this->db->exec("SET NAMES TIS620 ;");
+			}
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";
@@ -276,23 +276,8 @@ class Mysql
 	public function select($sql, $data = NULL){
 		
 		try {
-			
-			// $sth = $this->db->prepare($sql);
-			
-			// if( !is_null($data) ){
-			// 	foreach($data as $key => &$value){
-			// 		$sth->bindValue( $key, $value);
-			// 	}
-			// }
-			
-			// // Exec prepareing
-			// $sth->execute();
-			
 			$sth = $this->prepare($sql, $data);
-			
 			$this->items = $sth->fetchAll(PDO::FETCH_ASSOC);
-			// self::$rows = count($result);
-			// $this->items = $result;
 			return true;
 			
 		} catch(exception $e) {
@@ -320,18 +305,24 @@ class Mysql
 	public function insert($sql, $data = NULL ){
 		try {
 			
-			// $sth = $this->db->prepare($sql);
-			
-			// if( !is_null($data) ){
-			// 	foreach($data as $key => &$value){
-			// 		$sth->bindValue( $key, $value);
-			// 	}
-			// }
-			
-			// $query = $sth->execute();
 			$this->prepare($sql, $data);
-			
 			$this->lastId = $this->db->lastInsertId();
+			return true;
+			
+		} catch(Exception  $e) {
+
+			// Keep error into log file
+			$log_id = $this->set_log($e);
+			$msg = array('error' => $e->getMessage(), 'id' => $log_id);
+			return $msg;
+			
+		}
+	}
+
+	public function update($sql, $data = NULL ){
+		try {
+			
+			$this->prepare($sql, $data);
 			return true;
 			
 		} catch(Exception  $e) {
