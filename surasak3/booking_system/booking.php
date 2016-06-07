@@ -1,22 +1,30 @@
-<? session_start();?>
+<?php 
+// header('Content-Type: text/html; charset=tis-620');
+session_start();
+include("../includes/connect.php");
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>ใบจองเตียง</title>
-<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
-		<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=tis-620" />
+	<title>ใบจองเตียง</title>
+	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
 	
+	<style>
+	@font-face{
+		font-family: "THSarabunNew";
+		src: url("../fonts/THSarabunNew.ttf") format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	}
+	.forntsarabun {
+		font-family: THSarabunNew;
+		font-size: 22px;
+	}
+	</style>
 </head>
-
-<style>
-.forntsarabun {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
-}
-
-</style>
 <body>
 <link rel="stylesheet" type="text/css" href="epoch_styles.css" />
 <script type="text/javascript" src="epoch_classes.js"></script>
@@ -24,25 +32,12 @@
 
 	var bas_cal,dp_cal,ms_cal;
 
-window.onload = function () {
-	dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('datepicker-th-2'));
+	window.onload = function () {
+		dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('datepicker-th-2'));
 
-};
+	};
 
-</script>
-<!--<script type="text/javascript">
-		  $(function () {
-		    // Datepicker
-		    var d = new Date();
-		    var toDay = d.getDate() + '/' + (d.getMonth() + 1) + '/' + (d.getFullYear() + 543);
-		    $("#datepicker-th-2").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy', isBuddhist: true, defaultDate: toDay, dayNames: ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
-		      dayNamesMin: ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'],
-		      monthNames: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
-		      monthNamesShort: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
-		    });
-		  });
-		</script>-->
-<script>
+
 function ch_null(){
 	if(document.f1.hn.value==""){
 		alert("กรุณาระบุ HN ด้วยครับ");
@@ -114,7 +109,7 @@ function fncSubmit(){
 $hn = $_POST['hn'];
 
 if( !empty($hn) ){
-	include("../connect.php"); 
+	
 	
 	function calcage($birth){
 
@@ -289,7 +284,6 @@ if( !empty($hn) ){
 
 if($_POST['b2']){
 if($_REQUEST['do']=="save"){
-include("../Connections/connect.inc.php"); 
 
 if($_POST['date_in']==""){
 	echo "ไม่ได้กรอกวันที่ Admit กรุณาทำรายการใหม่ค่ะ";

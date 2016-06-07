@@ -1,5 +1,6 @@
 <?php
 session_start();
+include '../includes/connect.php';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -90,9 +91,6 @@ session_start();
 if($_POST['submit']){
 	
 	echo "<hr>";
-	
-	// include("../Connections/connect.inc.php"); 
-	include '../includes/connect.php';
 	
 	if($_POST['d_start']=="00") {$_POST['d_start']="";}
 	
@@ -213,13 +211,13 @@ echo "</table>
 	
 }// ปิด$_POST['submit']
 
-mysql_close();
+// mysql_close();
 ?>
 
 <br />
 <?
 
-include("../connect.php"); 
+// include("../connect.php"); 
 //////จองเตียงวันนี้//////
 $todayy1=date("Y")+543;
 $todaym1=date("m");
