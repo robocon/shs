@@ -2,11 +2,6 @@
 include 'bootstrap.php';
 
 $page = input_post('page');
-// var_dump($page);
-// $cHn = input_post('cHn');
-
-// exit;
-
 if( $page === false ){
 	$cHn = input_get('cHn');
 	$db = Mysql::load();
@@ -15,12 +10,6 @@ if( $page === false ){
 	$data = array(':cHn' => $cHn);
 	$db->select($sql, $data);
 	$row = $db->get_item();
-	
-
-	// exit;
-	// $result = mysql_query($query) or die("Query failed");
-	// $row = mysql_fetch_array($result);
-
 	
 	?>
 	<script>
@@ -50,6 +39,7 @@ if( $page === false ){
 		echo 'ไม่พบข้อมูล hn กรุณาเลือกข้อมูลใหม่อีกครั้ง';
 		exit;
 	}
+
 	include 'fpdf_thai/fpdf_thai.php';
 
 	class PDF_JavaScript extends FPDF_Thai {
@@ -132,10 +122,10 @@ if( $page === false ){
 
 		function LoadData($file){
 			//Read file lines
-			$lines=file($file);
-			$data=array();
+			$lines = file($file);
+			$data = array();
 			foreach($lines as $line)
-				$data[]=explode(';',chop($line));
+				$data[] = explode(';',chop($line));
 			return $data;
 		}
 	}
