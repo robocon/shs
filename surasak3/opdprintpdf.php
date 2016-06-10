@@ -173,9 +173,6 @@ if( $page === false ){
 	$db->select($sql, $data);
 	$item = $db->get_item();
 
-	// var_dump($cHn);
-	// var_dump($item);
-	// exit;
 
 	$pdf = new PDF_AutoPrint("P",'mm', "A4");
 	$pdf->SetThaiFont(); // à«çµ¿Í¹µì
@@ -187,19 +184,19 @@ if( $page === false ){
 
 	$pdf->SetFontSize(17);
 
-	$pdf->SetXY(185, 12);
+	$pdf->SetXY(185, 7);
 	$pdf->Cell(10, 6, $item['no_card'],0,1);
 
-	$pdf->SetXY(45, 24);
+	$pdf->SetXY(45, 19);
 	$pdf->Cell(40, 6, $item['hn'],0,1);
 
-	$pdf->SetXY(110, 24);
+	$pdf->SetXY(110, 19);
 	$pdf->Cell(100, 6, $item['yot'].' '.$item['name'].' '.$item['surname'],0,1);
 
-	$pdf->SetXY(45, 32);
+	$pdf->SetXY(45, 27);
 	$pdf->Cell(0, 6, "Ç/´/» à¡Ô´: ".$item['dbirth']." ID: ".$item['idcard']." ÊÔ·¸Ô: ".$item['ptright'],0,1);
 
-	// $pdf->AutoPrint(true);
+	$pdf->AutoPrint(true);
 	$pdf->Output();
 	exit;
 

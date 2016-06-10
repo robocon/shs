@@ -95,7 +95,13 @@ global   $regisdate,$idcard,$mid,$hn,$yot,$name,$surname,$education,$goup,$marri
            $tambol,$ampur,$changwat,$hphone,$phone,$father,$mother,$couple,$note,
            $sex,$camp,$race,$ptf,$ptfadd,$ptffone,$ptfmon,$blood,$drugreact,$phone2,$hospcode,$ptrcode,$typeservice;
 //   $Thaidate=date("d-m-").(date("Y")+543)."  ".date("G:i:s");
-    $Thaidate=date("d-m-").(date("Y")+543);
+
+// รับค่าจาก $_POST ดีที่สุด เพราะ global มีกาสที่ตัวแปรจะซ้ำได้จากการเปิด tab ซ้อน
+$name = trim($_POST['name']);
+$surname = trim($_POST['surname']);
+
+$Thaidate = date("d-m-").(date("Y")+543);
+
 if (!empty($name)){
     include("connect.inc");   
 
