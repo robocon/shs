@@ -130,7 +130,7 @@ list($sld) = mysql_fetch_row(mysql_query($sql));
 	if($rows > 0)
 		echo "| <A HREF=\"javascript:showsult();checkall3(true);\">สูตรยา</A>";
 
-
+	//หัวตารางรายการยาที่สั่งจ่ายผู้ป่วย
 	echo "<TABLE width='100%'>";
 	echo "
 			<TR class='tb_head'>
@@ -144,6 +144,8 @@ list($sld) = mysql_fetch_row(mysql_query($sql));
 			</TR>
 			";
 	$count = count($_SESSION["list_drugcode"]);
+	//echo $count;
+
 	$pricetype["DDL"] = 0;
 	$pricetype["DDY"] = 0;
 	$pricetype["DPY"] = 0;
@@ -151,6 +153,7 @@ list($sld) = mysql_fetch_row(mysql_query($sql));
 	$pricetype["DDN"] = 0;
 	$pricetype["DSN"] = 0;
 	$pricetype["DPN"] = 0;
+	
 	$total_item=0;
 	$Netprice = 0;
 
@@ -159,6 +162,7 @@ for($i=0;$i<$count;$i++){
 	$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
 	$date2 = (date("Y")+543).date("-m-d H:i:s");
 	$sql = " Select date_format(date,'%d/%m/%Y'), amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_SESSION["list_drugcode"][$i]."' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
+	//echo $sql;
 	$result = mysql_query($sql);
 	
 	$remark = array();
@@ -195,8 +199,9 @@ for($i=0;$i<$count;$i++){
 	}
 
 			$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+			//echo "$i==>".$sql."<br>";
 			$result = Mysql_Query($sql);
-			list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);
+			list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);		
 				
 				if($_SESSION["list_drugamount"][$i] > 0){
 					if($part == "DPY"){
@@ -221,13 +226,15 @@ for($i=0;$i<$count;$i++){
 
 					}else{
 						$pricetype[$part] = $pricetype[$part] + ($salepri * $_SESSION["list_drugamount"][$i]);
-					}
+					}  //close if $part
 
 					$total_price = $total_price+ ($salepri * $_SESSION["list_drugamount"][$i]);
 					if($_SESSION["list_drugcode"][$i] != "INJ");
 						$total_item++;
 					$Netprice = 	$Netprice + ($salepri * $_SESSION["list_drugamount"][$i]);
-				}
+			}  //close if $_SESSION["list_drugamount"][$i]
+			
+			
 			$c1 = substr($_SESSION["list_drugcode"][$i],0,1);
 			$c2 = substr($_SESSION["list_drugcode"][$i],0,2);
 			$sql = "Select detail1, detail2, detail3, detail4  From drugslip where slcode = '".$_SESSION["list_drugslip"][$i]."' limit 1";
@@ -235,8 +242,7 @@ for($i=0;$i<$count;$i++){
 			list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
 			if($c2!='20'&&($c1=='2'||$c1=='0')){
 				array_push($remark,"<FONT style=\"font-size: 20;\" color=\"#000000\"> ".$_SESSION["list_drug_inject_amount"][$i]." ".$_SESSION["list_drug_inject_unit"][$i]." ".$_SESSION["list_drug_inject_amount2"][$i]." ".$_SESSION["list_drug_inject_unit2"][$i]." ".$_SESSION["list_drug_inject_time"][$i]." ".$_SESSION["list_drug_inject_slip"][$i]." ".$_SESSION["list_drug_inject_etc"][$i]."</FONT>");
-			}
-			else{
+			}else{
 			array_push($remark,"<FONT style=\"font-size: 20;\" color=\"#000000\"> ".$detail1." ".$detail2." ".$detail3." ".$detail4."</FONT>");
 			}
 			
@@ -268,6 +274,12 @@ for($i=0;$i<$count;$i++){
 			}
 			//แก้ช่อง textbox จำนวน <TD align='right'><input name='piece$i' value='".$_SESSION["list_drugamount"][$i]."' type='text' size=3> &nbsp;&nbsp;</TD>
 			//แก้ช่องวิธีใช้ <input name='act$i' value='".$_SESSION["list_drugslip"][$i]."' type='text' size=5 onKeyPress=addslip2('slip2',this.value,2,$i); >
+			
+			
+			////////////////---------- รายการยาที่สั่งจ่ายให้ผู้ป่วย--------------////////////////
+			//print_r($_SESSION);
+			//echo $_SESSION["list_drugcode"][$i]." Amont :".$_SESSION["list_drugamount"][$i]."<br>";
+			
 			echo "
 			<TR  class='tb_detail' ".$style.">
 				<TD align=\"center\"><INPUT TYPE=\"checkbox\" NAME=\"check_list[]\" value=\"".$i."\"></TD>
@@ -1135,13 +1147,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') Order by drugcode ASC";
+	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
 		echo "<Div style=\"position: absolute;text-align: center; width:760px; height:320px; overflow:auto; \">";
 
 		
-		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr align=\"center\" bgcolor=\"#3333CC\"><td width=\"20\"><font style=\"color: #FFFFFF\"></font></td><td width=\"73\"><font style=\"color: #FFFFFF\"></font></td><td width=\"368\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td><td width=\"110\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td><td width=\"50\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td><td width=\"15\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td></tr>";
+		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr align=\"center\" bgcolor=\"#3333CC\"><td width=\"20\"><font style=\"color: #FFFFFF\"></font></td><td width=\"73\"><font style=\"color: #FFFFFF\"></font></td><td width=\"368\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td><td width=\"110\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td><td width=\"50\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td><td width=\"15\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td></tr>"; 
 
 
 		$i=1;
@@ -1340,6 +1353,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 	$sql = "SELECT count(drugcode) as amountcode FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
+
 	
 	$sql = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
@@ -1396,7 +1410,7 @@ exit();
 //******************************************** ตรวจสอบจำนวนยา *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugamount"){
 	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){
-	$sql = "SELECT limit_pay, limit_ptright FROM `druglst` where drugcode='".$_GET["chkdrugcode"]."'";
+	$sql = "SELECT limit_pay, limit_ptright, drug_condition, drug_minstock, drug_lacktime FROM `druglst` where drugcode='".$_GET["chkdrugcode"]."'";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
 		if($arr["limit_ptright"] !="" && $arr["limit_ptright"] !=0 && $arr["limit_ptright"] < $_GET["search"]){
@@ -1404,14 +1418,28 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugamount"){
 		}else if($arr["limit_pay"] !="" && $arr["limit_pay"] !=0 && $arr["limit_pay"] < $_GET["search"]){
 			echo "2";
 		}
+	if($arr["drug_condition"] > 0){
+		echo "4";
+	}else if($arr["drug_minstock"] > 0){
+		echo "5";
+	}else if($arr["drug_lacktime"] > 0){
+		echo "6";
+	}		
 	exit();
 	}else{
-	$sql = "SELECT limit_pay FROM `druglst` where drugcode='".$_GET["chkdrugcode"]."'";
+	$sql = "SELECT limit_pay, drug_condition, drug_minstock, drug_lacktime FROM `druglst` where drugcode='".$_GET["chkdrugcode"]."'";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
 		if($arr["limit_pay"] !="" && $arr["limit_pay"] !=0 && $arr["limit_pay"] < $_GET["search"]){
 				echo "3";
 		}
+	if($arr["drug_condition"] > 0){
+		echo "4";
+	}else if($arr["drug_minstock"] > 0){
+		echo "5";
+	}else if($arr["drug_lacktime"] > 0){
+		echo "6";
+	}		
 	exit();	
 	}
 }
@@ -1987,12 +2015,17 @@ function checkForm1(){
 		document.form1.drug_amount.focus();				
 	}else if(txt1 == "3"){
 		alert("ผิดพลาด ท่านใส่จำนวนยามากกว่าเงื่อนไขที่ LIMIT PAY ไว้");
-		document.form1.drug_amount.focus();				
+		document.form1.drug_amount.focus();		
+	}else if(txt1 == "4" && !alert("คำเตือน!!! ยาสั่งซื้อแล้ว แต่บริษัทยังไม่ได้จัดส่ง !!!")){
+		document.form1.drug_amount.focus();		
+	}else if(txt1 == "5" && !alert("คำเตือน!!! ยาใกล้หมด Stock แล้ว")){
+		document.form1.drug_amount.focus();			
+	}else if(txt1 == "6" && !alert("คำเตือน!!! ยาขาดคราวจากบริษัท")){
+		document.form1.drug_amount.focus();										
 	}else if(txt2 == "0"){
 		alert("กรุณาใส่วิธีใช้ยา ใหม่");
 		document.form1.drug_slip.focus();
-	}
-		else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
+	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
 	document.form1.drug_code.focus();
 	//else if(txt == "3" && !confirm("ผู้ป่วยมีการแพ้ยาตัวนี้ ต้องการจ่ายยาหรือไม่?")){
 	//	document.form1.drug_code.focus();
@@ -2003,6 +2036,9 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
 		document.form1.drug_amount.focus();
+	}else if((document.form1.drug_code.value == "1SUDO" || document.form1.drug_code.value == "1SUDO-N") && eval(document.form1.drug_amount.value) > 60 ){
+		alert("ยา PSEUDOEPHEDRINE  60 mg. 	วัตถุออกฤทธิ์ประเภท 2 \n ควบคุมการจ่ายได้ครั้งละไม่เกิน 60 เม็ด ครับ");  //ได้รับแจ้งจาก พี่ตู๋ หน.ห้องยา เมื่อ 25/05/2559
+		document.form1.drug_amount.focus();		
 	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
 		document.form1.drug_inject_amount.focus();
@@ -2267,6 +2303,7 @@ function selectins(){
 	//document.getElementById('drug_inject_amount').value='1';document.getElementById('drug_inject_unit').selectedIndex=7;document.getElementById('drug_inject_time').style='none';document.getElementById('drug_inject_type').style='none';document.getElementById('drug_inject_etc').style='none'; }else{}
 
 }
+
 function viatch(ing,code){
 	var return_drug500=0;
 	if(code=="ER"){
@@ -2278,11 +2315,9 @@ function viatch(ing,code){
 			return_drug500 = xmlhttp.responseText;
 			return_drug500 = return_drug500.substr(4);
 		}
-	}
-	else if(code=="VIP"){
+	}else if(code=="VIP"){
 		//อนุญาตไม่จำกัดจำนวนเงิน
-	}
-	else if(code =="OTHER"){
+	}else if(code =="OTHER"){
 		if(eval(document.getElementById("total_phar_price").value) > 500){
 			xmlhttp = newXmlHttp();
 			url = 'dt_drug.php?action=drug_500';

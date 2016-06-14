@@ -92,8 +92,8 @@ menu5[1]='<a href="dt_refer.php" >„∫ Refer</a>'
 
 var menu6=new Array();
 menu6[0]='<a href="dxdr_ofyear1_dr.php" >µ√«® ÿ¢¿“æ∑À“√ª√–®”ª’</a>'
-menu6[1]='<a href="dxdr_ofyear_emp.php" >µ√«® ÿ¢¿“æ≈Ÿ°®È“ß √æ.</a>'
-menu6[2]='<a href="dxdr_ofyearout_dr.php" >µ√«® ÿ¢¿“æ</a>'
+<!--menu6[1]='<a href="dxdr_ofyear_empsoldier.php">µ√«® ÿ¢¿“æ≈Ÿ°®È“ß √æ.</a>'-->
+menu6[2]='<a href="dxdr_ofyearout_dr.php" >µ√«® ÿ¢¿“æ∑—Ë«‰ª</a>'
 
 var menuwidth='170px' //default menu width
 var menubgcolor='#000097'  //menu bgcolor

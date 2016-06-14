@@ -4,12 +4,10 @@ session_start();
 // Default time
 $time = 10000;
 
-if($_SESSION["sIdname"] == "md19921"){ //หมอธนบดินทร์
+if($_SESSION["sIdname"] == "md19921"){
 	$time = 2000;
-	
 }else if($_SESSION['sIdname'] == 'md38220' OR $_SESSION['sIdname'] == 'md50814'){ // หมอพิพิธ
 	$time = 31536000;
-	
 }
 
 /*	if($_SESSION["sldname"]=="md12891" || $_SESSION["sldname"]=="HDเลือก"){  //หมอเลือก
@@ -32,6 +30,7 @@ if($_SESSION["sIdname"] == "md19921"){ //หมอธนบดินทร์
 		setTimeout(function(){
 			window.location.href = 'dt_index.php';
 		},<?php echo $time;?>);
+
 	}
 </script>
 </head>

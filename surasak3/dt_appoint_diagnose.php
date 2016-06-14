@@ -1,5 +1,4 @@
 <?php
-// ระบบจำกัดนัดผู้ป่วย
 define('NEW_SITE', true); // Tell bootstrap to use UTF-8
 
 include 'bootstrap.php';

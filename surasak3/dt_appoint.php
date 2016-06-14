@@ -1062,7 +1062,7 @@ function searchOther1(str,len) {
 }
 
 function listb(number){
-	// alert(number);
+	
 	if(document.getElementById("detail").value=='FU01 ตรวจตามนัด'){
 		if(number=="2"){
 			document.getElementById("room").selectedIndex=1;

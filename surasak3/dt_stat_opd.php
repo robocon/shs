@@ -29,6 +29,7 @@ if( $show !== false ){
 	GROUP BY a.`doctorcode`";
 	$items = DB::select($sql);
 	$rows = DB::rows();
+	dump($rows);
 	if( $rows > 0 ){
 	?>
 	<h3></h3>

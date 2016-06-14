@@ -1,8 +1,8 @@
-<?php 
+<?php
+session_start();
 error_reporting(0);
 ini_set('display_errors', 0);
 header('Content-Type: text/html; charset=tis-620');
-session_start();
 include 'connect.inc';
 // mysql_query("SET NAMES TIS620");
 // mysql_query("SET NAMES UTF8");
@@ -56,24 +56,23 @@ window.onload = function(){
 			<TD>
 	<?php
 	
-	// ค้นหา doctor จาก hn
-	$sql = sprintf("SELECT `doctor` FROM `dxofyear_emp` WHERE `hn` = '%s'", $_GET['hn']);
+	$sql = "SELECT `codedoctor` FROM `inputm` WHERE `idname` = '$_SESSION[sIdname]' and status='y'";
+	//echo $sql."<br>";
 	$query = mysql_query($sql);
-	$user_doctor = mysql_fetch_assoc($query);
+	list($codedoctor) = mysql_fetch_array($query);
 	
 	// แสดงรายการ doctor
-	$strSQL = "SELECT name FROM doctor  where status='y' order by name "; 
-	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-	
+	//echo "-->".$_SESSION["sOfficer"];
+	$strSQL = "SELECT doctorcode, name FROM doctor  where doctorcode='$codedoctor' and status='y' order by row_id"; 
+	//echo $strSQL;
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	?>
 	<select name="doctor" id="doctor"> 
 	<?php
-	while($objResult = mysql_fetch_assoc($objQuery)) {
-		
-		$selected = $user_doctor['doctor']==$objResult["name"] ? 'selected="selected"' : '' ;
-		?>
-		<option value="<?=$objResult["name"]?>" <?php echo $selected;?> ><?=$objResult["name"]?></option>
-		<?php
+	while($objResult = mysql_fetch_array($objQuery)){
+	?>
+		<option value="<?=$objResult["name"]?>" selected><?=$objResult["name"]?></option>
+	<?php
 	}
 	?>
 	</select>

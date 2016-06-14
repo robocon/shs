@@ -47,7 +47,7 @@ window.onload = function(){
 </SCRIPT>
 </head>
 </body>
-<a href='../nindex.htm'>&lt;&lt;ไปเมนู</a>
+<a href='../nindex.htm'>&lt;&lt;ไปเมนู</a>  || <a href="dt_emp_manual_index.php">ตรวจสุขภาพลูกจ้าง รพ.</a>
 <BR>
 <table width="100%" border="0">
   <tr>
