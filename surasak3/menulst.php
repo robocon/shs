@@ -1,15 +1,13 @@
 <?php
-session_start();
-include("connect.inc");
-	
-$sOfficer="";
-$smenucode = "";
-$sRowid="";
-$sLevel="";
-$_SESSION['sOfficer'] = '';
-$_SESSION['smenucode'] = '';
-$_SESSION['sRowid'] = '';
-$_SESSION['sLevel'] = '';
+    session_start();
+    $sOfficer="";
+	$smenucode = "";
+	$sRowid="";
+	$sLevel="";
+    session_register("sOfficer");
+	session_register("smenucode");
+	session_register("sRowid");
+	session_register("sLevel");
 //error_reporting (E_ALL ^ E_NOTICE);
 
 function displaydate($x) {
@@ -29,27 +27,27 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
+    include("connect.inc");
+//    print "$username<br>";
+//    print "$password<br>";
+    $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+    $result = mysql_query($query) or die( mysql_error($Conn) );
+        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+        if (!mysql_data_seek($result, $i)) {
+            echo "Cannot seek to row $i\n";
+            continue;
+        }
 
-$sIdname = $_SESSION['sIdname'];
-$sPword = $_SESSION['sPword'];
-$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
-$result = mysql_query($query) or die( mysql_error($Conn) );
-for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-	if (!mysql_data_seek($result, $i)) {
-		echo "Cannot seek to row $i\n";
-		continue;
-	}
-
-	if(!($row = mysql_fetch_object($result)))
-		continue;
-}
-if(mysql_num_rows($result)){
-	$sOfficer=$row->name;
-	$menucode=$row->menucode;
-	$_SESSION["smenucode"]=$row->menucode;
-	$sRowid=$row->row_id;
-	$sLevel=$row->level;
-	$where_search= "";
+        if(!($row = mysql_fetch_object($result)))
+            continue;
+         }
+    if(mysql_num_rows($result)){
+         $sOfficer=$row->name;
+         $menucode=$row->menucode;
+		  $_SESSION["smenucode"]=$row->menucode;
+		$sRowid=$row->row_id;
+		 $sLevel=$row->level;
+$where_search= "";
 //if($_SESSION["smenucode"] == "ADM"){
 ///////แบบสอบถาม//////
 /*$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
@@ -63,11 +61,11 @@ if($nrow3==0){
 	<?
 }*/
 ////////////////////////////////
-	echo "
-	<FORM METHOD=POST ACTION=\"\">
-		<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
-	</FORM>
-	";
+echo "
+<FORM METHOD=POST ACTION=\"menulst.php\">
+	<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
+</FORM>
+";
 
 	if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
 		$xxx = explode(" ",$_POST["search"]);
@@ -80,35 +78,25 @@ if($nrow3==0){
 		$where_search = " AND (menu like '%".$yyy."%')";
 		//echo $yyy;
 	//}
-	}
+}
 
 	/*//echo "<script>alert('ทดสอบ') </script>";*/
  //print (" <tr>\n".
  // "  <td BGCOLOR='#008400'><font face='THSarabunPSK' size='3' color='#FFFFFF' >   $sOfficer </font></td>\n".
 			//	" </tr>\n");
-			?>
-			<style type="text/css">
-				/*Override <font size="xx">*/
-				#left-menu table th,
-				#left-menu table td,
-				#left-menu font{
-					font-size: 20px;
-				}
-			</style>
-			<?php
-	print "<body id=\"left-menu\" bgcolor='#008080' text='#00FFFF' link='#FFFFFF' vlink='#FFFFFF' alink='#FFFFFF' onload='Realtime();'>";
-	print "<table>";
-	print "<tr>";
-	print "<th bgcolor=#005555><font face='THSarabunPSK' size='4'>เมนู</th>";
-	print "</tr>";
-		 
-	if($menucode=='ADM' ){
-		$sort = "ORDER BY menu ASC";
-	}elseif($menucode=='ADMPHA' ){
-		$sort = "ORDER BY menu_sort2 ASC ,menu ASC";
-	}else{
-		$sort = "ORDER BY menu_sort ASC ,menu ASC";
-	}
+         print "<body bgcolor='#008080' text='#00FFFF' link='#FFFFFF' vlink='#FFFFFF' alink='#FFFFFF' onload='Realtime();'>";
+         print "<table>";
+		
+         print "<tr>";
+         print "<th bgcolor=#005555><font face='THSarabunPSK' size='4'>เมนู</th>";
+         print "</tr>";
+if($menucode=='ADM' ){
+	$sort = "ORDER BY menu ASC";
+}elseif($menucode=='ADMPHA' ){
+	$sort = "ORDER BY menu_sort2 ASC ,menu ASC";
+}else{
+	$sort = "ORDER BY menu_sort ASC ,menu ASC";
+}
 
  		
 
@@ -277,6 +265,7 @@ if($rows){///  ถ้ามี rows
 		 print (" <tr>\n".
                 "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
                 " </tr>\n");
+        include("unconnect.inc");
 
         print "</table>";
         print "</body>";
@@ -289,12 +278,11 @@ if($rows){///  ถ้ามี rows
         print "...<br>";
         print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
         print "</body>";
-		
-       $_SESSION['sIdname'] = NULL;
-       $_SESSION['sPword'] = NULL;
-       $_SESSION['sOfficer'] = NULL;
-	   $_SESSION['sRowid'] = NULL;
-	   $_SESSION['sLevel'] = NULL;
+       session_unregister("sIdname");
+       session_unregister("sPword");
+       session_unregister("sOfficer");
+	   session_unregister("sRowid");
+	   session_unregister("sLevel");
             }
 ?>
 <style type="text/css" media="screen">

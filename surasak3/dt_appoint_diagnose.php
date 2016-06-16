@@ -1,36 +1,38 @@
 <?php
-define('NEW_SITE', true); // Tell bootstrap to use UTF-8
-
 include 'bootstrap.php';
 
+$login_code = get_session('smenucode');
 if(authen() === false){ die('Invalid User'); }
+if( $login_code !== 'ADM' ){ die('Õπÿ≠“µ‡©æ“–‚ª√·°√¡‡¡Õ√Ï‡∑Ë“π—Èπ∑’Ë‡¢È“∂÷ß‰¥È'); }
 
 $date_in_week = array(
-	0 => '‡∏≠‡∏≤‡∏ó‡∏¥‡∏ï‡∏¢‡πå', '‡∏à‡∏±‡∏ô‡∏ó‡∏£‡πå', '‡∏≠‡∏±‡∏á‡∏Ñ‡∏≤‡∏£', '‡∏û‡∏∏‡∏ò', '‡∏û‡∏§‡∏´‡∏±‡∏™', '‡∏®‡∏∏‡∏Å‡∏£‡πå', '‡πÄ‡∏™‡∏≤‡∏£‡πå',
+	0 => 'Õ“∑‘µ¬Ï', '®—π∑√Ï', 'Õ—ß§“√', 'æÿ∏', 'æƒÀ— ', '»ÿ°√Ï', '‡ “√Ï',
 );
 
-$db = DB::load('utf8');
+$action = input('action');
+$db = Mysql::load();
 
-$action = ( isset($_POST['action']) ) ? trim($_POST['action']) : ( ( isset($_GET['action']) ) ? trim($_GET['action']) : null ) ;
+if($action === 'save'){
 
-if($action == 'save'){
+	$id = input_post('id');
+	$date = $_POST['date'];
 	
-	$post = filter_post(array('id', 'date'));
-	$doctor = $db->select("SELECT name FROM doctor WHERE `row_id` = :id ", array(':id' => $post['id']));
+	$db->select("SELECT name FROM doctor WHERE `row_id` = :id ", array(':id' => $id));
+	$doctor = $db->get_item();
 	
 	$sql = "INSERT INTO `dr_limit_appoint` (`id`, `dr_id`, `dr_name`, `date`, `user_row`, `date_add`, `date_edit`, `create_by`, `edit_by`)
-	VALUES(:id, :dr_id, :dr_name, :date, :user_row, :date_add, :date_edit, :create_by, :edit_by)";
+	VALUES(:id, :dr_id, :dr_name, :date_inweek, :user_row, :date_add, :date_edit, :create_by, :edit_by)";
 	
 	$date_add = date('Y-m-d H:i:s');
 	
-	foreach($post['date'] as $key => $count){
+	foreach($date as $key => $count){
 		if($count != '-'){
 			
 			$data = array(
 				':id' => null,
-				':dr_id' => $post['id'],
+				':dr_id' => $id,
 				':dr_name' => $doctor['name'],
-				':date' => $key, 
+				':date_inweek' => $key, 
 				':user_row' => (int) $count,
 				':date_add' => $date_add,
 				':date_edit' => null,
@@ -38,7 +40,7 @@ if($action == 'save'){
 				':edit_by' => null
 			);
 
-			$insert = $db->exec($sql, $data);
+			$insert = $db->insert($sql, $data);
 		}
 	}
 
@@ -46,7 +48,7 @@ if($action == 'save'){
 	exit;
 }
 
-$title = '‡∏£‡∏∞‡∏ö‡∏ö‡∏à‡∏≥‡∏Å‡∏±‡∏î‡∏ô‡∏±‡∏î‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢';
+$title = '√–∫∫®”°—¥π—¥ºŸÈªË«¬';
 include 'templates/default/header.php';
 ?>
 <div class="site-body centered-content">
@@ -55,7 +57,7 @@ include 'templates/default/header.php';
 			<div class="col">
 				<div class="cell">
 					<div class="page-header">
-						<h1>‡∏£‡∏∞‡∏ö‡∏ö‡∏à‡∏≥‡∏Å‡∏±‡∏î‡∏ô‡∏±‡∏î‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</h1>
+						<h1>√–∫∫®”°—¥π—¥ºŸÈªË«¬</h1>
 					</div>
 				</div>
 			</div>
@@ -65,14 +67,20 @@ include 'templates/default/header.php';
 						<div class="col">
 							<div class="col width-1of4">
 								<div class="cell">
-									<label for="doctor">‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÅ‡∏û‡∏ó‡∏¢‡πå</label>
+									<label for="doctor">‡≈◊Õ°·æ∑¬Ï</label>
 								</div>
 							</div>
 							<div class="col width-fill">
 								<div class="cell">
 									<select id="doctor" name="id">
 									<?php
-									$items = $db->select("SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` != '00000'");
+									$sql = "SELECT `row_id`,`name` 
+									FROM `doctor` 
+									WHERE `status` = 'y'";
+									
+									$db->select($sql);
+									$items = $db->get_items();
+									
 									foreach($items as $key => $item){
 									?>
 										<option value="<?php echo $item['row_id'];?>"><?php echo $item['name'];?></option>
@@ -86,30 +94,30 @@ include 'templates/default/header.php';
 						<div class="col">
 							<div class="col width-1of4">
 								<div class="cell">
-									<label for="">‡∏à‡∏≥‡∏ô‡∏ß‡∏ô‡∏à‡∏≥‡∏Å‡∏±‡∏î‡∏Å‡∏≤‡∏£‡∏ô‡∏±‡∏î</label>
+									<label for="">®”π«π®”°—¥°“√π—¥</label>
 								</div>
 							</div>
 							<div class="col width-1of4">
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡∏≠‡∏≤‡∏ó‡∏¥‡∏ï‡∏¢‡πå<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—πÕ“∑‘µ¬Ï<input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡∏à‡∏±‡∏ô‡∏ó‡∏£‡πå<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—π®—π∑√Ï<input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡∏≠‡∏±‡∏á‡∏Ñ‡∏≤‡∏£<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—πÕ—ß§“√<input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡∏û‡∏∏‡∏ò<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—πæÿ∏<input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡∏û‡∏§‡∏´‡∏±‡∏™<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—πæƒÀ— <input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡∏®‡∏∏‡∏Å‡∏£‡πå<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—π»ÿ°√Ï<input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 								<div class="cell">
-									‡∏ß‡∏±‡∏ô‡πÄ‡∏™‡∏≤‡∏£‡πå<input class="text parsley-validated" name="date[]" type="text" value="-">
+									«—π‡ “√Ï<input class="text parsley-validated" name="date[]" type="text" value="-">
 								</div>
 							</div>
 						</div>
@@ -121,7 +129,7 @@ include 'templates/default/header.php';
 							</div>
 							<div class="col width-1of4">
 								<div class="cell">
-									<button>‡πÄ‡∏û‡∏¥‡πà‡∏°‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</button>
+									<button type="submit">‡æ‘Ë¡¢ÈÕ¡Ÿ≈</button>
 									<input type="hidden" name="action" value="save">
 								</div>
 							</div>
@@ -134,16 +142,16 @@ include 'templates/default/header.php';
 					<table class="block box-header outline-header uppercase-header outline">
 						<thead>
 							<tr>
-								<th>‡∏ä‡∏∑‡πà‡∏≠‡∏´‡∏°‡∏≠</th>
-								<th>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏à‡∏≥‡∏Å‡∏±‡∏î</th>
-								<th>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô‡∏ó‡∏µ‡πà‡∏à‡∏≥‡∏Å‡∏±‡∏î</th>
-								<th width="10%">‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£</th>
+								<th>™◊ËÕÀ¡Õ</th>
+								<th>«—π∑’Ë®”°—¥</th>
+								<th>®”π«π∑’Ë®”°—¥</th>
+								<th width="10%">®—¥°“√</th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php
-							$items = $db->select("SELECT * FROM `dr_limit_appoint` ORDER BY dr_id ASC;");
-							
+							$db->select("SELECT * FROM `dr_limit_appoint` ORDER BY id, dr_id ASC;");
+							$items = $db->get_items();
 							foreach($items as $key => $item){
 								$date_number = (int) $item['date'];
 							?>
@@ -151,7 +159,9 @@ include 'templates/default/header.php';
 								<td><?php echo $item['dr_name'];?></td>
 								<td><?php echo $date_in_week[$date_number];?></td>
 								<td><?php echo $item['user_row'];?></td>
-								<td><a href="">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a> / <a href="">‡∏•‡∏ö</a></td>
+								<td>
+									<a href="">·°È‰¢</a> / <a href="">≈∫</a>
+								</td>
 							</tr>
 							<?php
 							}

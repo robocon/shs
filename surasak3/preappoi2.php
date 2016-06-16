@@ -110,7 +110,9 @@ exit();
 
 // หมอเลอปรัชให้ล็อกนัดเอาไว้
 $user_code = isset($_SESSION['smenucode']) ? $_SESSION['smenucode'] : false ;
+// ถ้าไม่ใช่ การส่งค่าที่เป็น ajax 
 if( !isset($_GET['action']) ){
+
 	global $doctor;
 	$doctor = trim($doctor);
 	if($doctor == 'กรุณาเลือกแพทย์'){
@@ -151,12 +153,19 @@ if( !isset($_GET['action']) ){
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
 	$dr_limit = (int) $item['user_row'];
+
 	if( $item !== false && $rows >= $dr_limit ){
 		
+		// if( $code === '' ){
+		// 	$contact_txt = 'หากต้องการนัดเพิ่มกรุณาติดต่อห้องตา';
+		// }else{
+		// 	$contact_txt = 'หากต้องการนัดเพิ่ม เอิ่ม... ';
+		// }
+
 		$get_day = (int) $item['date'];
-		echo 'วัน'.$th_day[$get_day].' '.$item['dr_name'].' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อห้องตา';
+		echo 'วัน'.$th_day[$get_day].' ที่ '.$day.' เดือน '.$th_month.' '.$th_year.' ยอดนัดผู้ป่วยของหมอ '.$item['dr_name'].' เต็มแล้วที่ '.$item['user_row'].' คน ';
 		echo '<br>';
-		echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
+		echo '<a href="javascript: void(0);" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
 		exit;
 	}
 	// จำกัดจำนวนผู้ป่วยนัด
