@@ -21,7 +21,7 @@ include 'templates/classic/header.php';
 				<h3>ค้นหารายรับแบ่งตามรายการและช่วงเวลาของฝังเข็ม</h3>
 			</div>
 		</div>
-		<form action="report_physical.php" method="post">
+		<form action="report_income_nid.php" method="post">
 			<div class="col">
 				<div class="cell">
 					<label for="date_select">เลือกปี-เดือน</label>
@@ -39,23 +39,6 @@ include 'templates/classic/header.php';
 	</div>
 </div>
 <?php
-
-// นวดแผนไทย
-// $sql = "SELECT a.`row_id`,a.`date`,a.`hn`,a.`ptname`,a.`detail`,a.`staf_massage`,a.`time`,a.`date2`,a.`day_name`,a.`date3`,
-// b.`row_id`,b.`date`,b.`code`,b.`idno`,b.`yprice`,b.`nprice`
-// FROM (
-//     SELECT `row_id`,`date`,`hn`,`ptname`,`detail`,`staf_massage`,`status`, 
-//     SUBSTRING(`date`, 1, 10) AS `date3`, 
-//     SUBSTRING(`date`, 11, 9) AS `time`, 
-//     CONCAT(( DATE_FORMAT(`date`,'%Y') - 543 ), DATE_FORMAT(`date`, '-%m-%d') ) AS `date2`, 
-//     DATE_FORMAT( CONCAT(( DATE_FORMAT(`date`,'%Y') - 543 ), DATE_FORMAT(`date`, '-%m-%d')) , '%w') AS `day_name`
-//     FROM `depart` 
-//     WHERE `date` LIKE '2559-05%'  
-//     AND ( `staf_massage` != '' AND `staf_massage` IS NOT NULL ) 
-// ) AS a 
-// RIGHT JOIN `patdata` AS b ON a.`row_id` = b.`idno` 
-// WHERE a.`status` = 'Y'";
-
 
 if( $action === 'show_table' ){
 
@@ -114,7 +97,6 @@ if( $action === 'show_table' ){
 
 	}
 
-	// dump($new_items);
 	?>
 	<div class="col">
 		<div class="cell">
@@ -137,8 +119,14 @@ if( $action === 'show_table' ){
 		</thead>
 		<tbody>
 		<?php
+
+		$in_yprice = 0;
+		$in_nprice = 0;
+
+		$out_yprice = 0;
+		$out_nprice = 0;
+
 		foreach( $new_items as $key => $item ){
-			// dump($key);
 			$sql = "SELECT `detail`
 			FROM `labcare` WHERE `code` = '$key'";
 			$db->select($sql);
@@ -149,6 +137,8 @@ if( $action === 'show_table' ){
 				<td><span title="<?=$key;?>"><?=$key;?> - <?=$name['detail'];?></span></td>
 				<?php
 				if( isset($item['intime']) ){
+					$in_yprice += $item['intime']['yprice'];
+					$in_nprice += $item['intime']['nprice'];
 					?>
 					<td align="right"><?=number_format($item['intime']['yprice'], 2);?></td>
 					<td align="right"><?=number_format($item['intime']['nprice'], 2);?></td>
@@ -164,6 +154,8 @@ if( $action === 'show_table' ){
 					<td align="right">0.00</td><td align="right">0.00</td>
 					<?php
 				}else{
+					$out_yprice += $item['outtime']['yprice'];
+					$out_nprice += $item['outtime']['nprice'];
 					?>
 					<td align="right"><?=number_format($item['outtime']['yprice'], 2);?></td>
 					<td align="right"><?=number_format($item['outtime']['nprice'], 2);?></td>
@@ -174,6 +166,13 @@ if( $action === 'show_table' ){
 			<?php
 		}
 		?>
+			<tr>
+				<td align="center">รวม</td>
+				<td align="right"><?=number_format($in_yprice, 2);?></td>
+				<td align="right"><?=number_format($in_nprice, 2);?></td>
+				<td align="right"><?=number_format($out_yprice, 2);?></td>
+				<td align="right"><?=number_format($out_nprice, 2);?></td>
+			</tr>
 		</tbody>
 	</table>
 	<?php
