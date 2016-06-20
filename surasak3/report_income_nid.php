@@ -54,7 +54,8 @@ if( $action === 'show_table' ){
 	FROM `depart` AS a 
 	RIGHT JOIN `patdata` AS b ON b.`idno` = a.`row_id` 
 	WHERE a.`date` LIKE '$date_select%'  
-	AND a.`depart` = 'NID' ";
+	AND a.`depart` = 'NID' 
+	AND ( b.`code` LIKE '580%' OR b.`code` LIKE 'clinic%' )";
 	
 	$db = Mysql::load();
 	$db->select($sql);

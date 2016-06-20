@@ -23,7 +23,7 @@ include("connect.inc");
 		<?
         $sql1="SELECT `cigarette`, `cigok`
         FROM `opd` as a inner join opday as b on a.hn=b.hn
-        WHERE b.`icd10` like 'J44%' AND b.`thidate` like '2558%' group by b.hn";
+        WHERE b.`icd10` like 'J44%' AND b.`thidate` like '2559%' group by b.hn";
         $query1=mysql_query($sql1)or die ("Query Error");
         $num1=mysql_num_rows($query1);
         $cigarette0=0;

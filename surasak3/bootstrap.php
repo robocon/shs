@@ -278,6 +278,7 @@ class Mysql
 		try {
 			$sth = $this->prepare($sql, $data);
 			$this->items = $sth->fetchAll(PDO::FETCH_ASSOC);
+			$this->rows = count($this->items);
 			return true;
 			
 		} catch(exception $e) {
@@ -320,6 +321,22 @@ class Mysql
 	}
 
 	public function update($sql, $data = NULL ){
+		try {
+			
+			$this->prepare($sql, $data);
+			return true;
+			
+		} catch(Exception  $e) {
+
+			// Keep error into log file
+			$log_id = $this->set_log($e);
+			$msg = array('error' => $e->getMessage(), 'id' => $log_id);
+			return $msg;
+			
+		}
+	}
+
+	public function delete($sql, $data = NULL ){
 		try {
 			
 			$this->prepare($sql, $data);
