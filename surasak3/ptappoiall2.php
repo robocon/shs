@@ -117,14 +117,23 @@ a{
 	
 	// รายชื่อผู้ป่วยนัด
 	if(strlen($doctor) == 5){
-		$doctor2 = " AND `doctor` LIKE '".$doctor."%' ";
+		$doctor2 = " AND a.`doctor` LIKE '".$doctor."%' ";
 	}else{
-		$doctor2 = " AND `doctor` = '".$doctor."' ";
+		$doctor2 = " AND a.`doctor` = '".$doctor."' ";
 	}
-		
-	$query1 = "SELECT `hn`,`ptname`,`apptime`,`detail`,`came`,`row_id`,`age`,date_format(`date`,'%d-%m-%Y') AS `date`,`officer`,left(`apptime`,5) AS `left5`,`diag`,`other`,`room` 
-	FROM `appoint` 
-	WHERE `appdate` = '$appd' 
+	
+	
+	$query1 = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
+	date_format(a.`date`,'%d-%m-%Y') AS `date`,
+	left(a.`apptime`,5) AS `left5`
+	FROM `appoint` AS a 
+	INNER JOIN ( 
+		SELECT `row_id`,`hn`, MAX(`row_id`) AS `id` 
+		FROM `appoint` 
+		WHERE `appdate` = '$appd' 
+		GROUP BY `hn` 
+	) AS b ON b.`id` = a.`row_id` 
+	WHERE a.`appdate` = '$appd' 
 	$doctor2 
 	ORDER BY `hn` ASC 
 	";
@@ -132,12 +141,15 @@ a{
 	<div style="display: none;"><?php var_dump($query1);?></div>
 	<?php
 	if($_GET['sortby'] === 'time'){
-		$query1 .= ", apptime ASC";
+		$query1 .= ", a.`apptime` ASC";
 	}else{
-		$query1 .= ", detail DESC";
+		$query1 .= ", a.`detail` DESC";
 	}
-    $result = mysql_query($query1) or die( mysql_error() );
 
+	// echo "<pre>";
+	// var_dump($query1);
+
+    $result = mysql_query($query1) or die( mysql_error() );
 	$date_now = date("d-m-").(date("Y")+543);
 
 	// สกรีนค่าที่ซ้ำออกไป
