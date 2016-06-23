@@ -8,37 +8,36 @@ if($_SESSION["sIdname"] != "bbm"){
 }
 */
 $appd=$appdate.' '.$appmo.' '.$thiyr;
-    print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
-  
-  print "<b>นัดมาวันที่</b> $appd ";
-   
- print ".........<input type=button onclick='history.back()' value=' << กลับไป '>";
-?>
+print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
+print "<b>นัดมาวันที่</b> $appd ";
+print ".........<input type=button onclick='history.back()' value=' << กลับไป '>";
 
+include("connect.inc");
+// $query="CREATE TEMPORARY TABLE appoint1 
+// SELECT *, left( `doctor` , 5 ) AS codedoctor 
+// FROM appoint 
+// WHERE appdate = '$appd' ";
 
-<?php
-    include("connect.inc");
-    // $query="CREATE TEMPORARY TABLE appoint1 
-	// SELECT *, left( `doctor` , 5 ) AS codedoctor 
-	// FROM appoint 
-	// WHERE appdate = '$appd' ";
-	
-	$query="CREATE TEMPORARY TABLE appoint1 
-	SELECT a.*, LEFT( a.`doctor` , 5 ) AS `codedoctor` 
-	FROM `appoint` AS a 
-	RIGHT JOIN (
-		SELECT MAX(`row_id`) AS `lastid`
-		FROM `appoint` 
-		WHERE `appdate` = '$appd' 
-		GROUP BY `hn` 
-	) AS b ON b.`lastid` = a.`row_id`
-	ORDER BY a.`date` ASC ";
-	
-    $result = mysql_query($query) or die("Query failed,app");
+$query="CREATE TEMPORARY TABLE appoint1 
+SELECT a.*, LEFT( a.`doctor` , 5 ) AS `codedoctor` 
+FROM `appoint` AS a 
+RIGHT JOIN (
+	SELECT MAX(`row_id`) AS `lastid`, SUBSTRING(`doctor`, 1,5) AS `drcode`
+	FROM `appoint` 
+	WHERE `appdate` = '$appd' 
+	GROUP BY `hn`, `drcode`
+) AS b ON b.`lastid` = a.`row_id` 
+WHERE a.`apptime` != 'ยกเลิกการนัด' 
+ORDER BY a.`date` ASC ";
+$result = mysql_query($query) or die( mysql_error() );
 
 
   print "จำนวนผู้ป่วยนัดแต่ละแพทย์ กดเลือกแพทย์ = รายชื่อผู้ป่วย<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
-   $query="SELECT  codedoctor,COUNT(*) AS duplicate FROM appoint1 where codedoctor <> 'MD007' GROUP BY codedoctor HAVING duplicate > 0 ORDER BY doctor";
+   $query="SELECT  codedoctor,COUNT(*) AS duplicate 
+   FROM appoint1 where codedoctor <> 'MD007' 
+   GROUP BY codedoctor 
+   HAVING duplicate > 0 
+   ORDER BY doctor";
    $result = mysql_query($query);
      $n=0;
  while (list ($codedoctor,$duplicate) = mysql_fetch_row ($result)) {
@@ -80,7 +79,7 @@ $num= $duplicate+$num;
 
 <?php
 include("connect.inc");
-$query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' ";
+$query = "CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' ";
 $result = mysql_query($query) or die("Query failed,app");
 
 print "จำนวนผู้ป่วยนัด<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
@@ -92,15 +91,18 @@ print "จำนวนผู้ป่วยนัด<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
 // HAVING duplicate > 0 
 // ORDER BY doctor";
 
-$query = "SELECT a.`detail`, COUNT(a.`hn`) AS `duplicate` 
+$query = "
+SELECT a.`detail`, COUNT(a.`hn`) AS `duplicate` 
 FROM `appoint` AS a 
 INNER JOIN (
-	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`
+	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
 	FROM `appoint` 
 	WHERE `appdate` = '$appd' 
-	GROUP BY `hn` 
+	GROUP BY `hn`, `drcode`
 ) AS b ON b.`id` = a.`row_id` 
-GROUP BY `detail`";
+WHERE a.`apptime` != 'ยกเลิกการนัด' 
+GROUP BY `detail`
+";
 
 $result = mysql_query($query);
 $n=0;
@@ -151,14 +153,14 @@ include("unconnect.inc");
 	// WHERE appdate = '$appd' 
 	// ORDER BY row_id ASC    ";
 	$query = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,a.`doctor`,a.`depcode`,a.`officer`,a.`date`
-	FROM `appoint` AS a 
-	RIGHT JOIN (
-		SELECT MAX(`row_id`) AS `lastid`
-		FROM `appoint` 
-		WHERE `appdate` = '$appd' 
-		GROUP BY `hn` 
-	) AS b ON b.`lastid` = a.`row_id`
-	ORDER BY a.`date` ASC";
+FROM `appoint` AS a 
+RIGHT JOIN (
+    SELECT MAX(`row_id`) AS `lastid`, SUBSTRING(`doctor`, 1,5) AS `drcode`
+    FROM `appoint` 
+    WHERE `appdate` = '$appd' 
+    GROUP BY `hn`,`drcode`
+) AS b ON b.`lastid` = a.`row_id`
+ORDER BY a.`date` ASC";
   
  $result = mysql_query($query)
         or die("Query failed");

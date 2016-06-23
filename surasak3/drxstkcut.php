@@ -231,7 +231,8 @@ if($injectno!=0){
 ////////////จบคิดเงิน20บาท
 
 // เก็บข้อมูลผู้ป่วยที่ได้รับยาที่แพ้รุนแรง
-$hn = $_SESSION['hn'];
+// $hn = $_SESSION['hn'];
+$hn = $cHn;
 $dphardep_id = $_SESSION['sRow_id'];
 $date_now = date('Y-m-d H:i:s');
 
@@ -252,9 +253,9 @@ while( $item = mysql_fetch_assoc($q) ){
 
 	// ถ้ามีอยู่ในลิสที่แพ้รุนแรงให้เพิ่มข้อมูลลงใน phar_allergic
 	if( array_search($item['code'], $allergic_list) !== false && empty($item['check_code']) ){
-		$sql_insert = "INSERT INTO  `phar_allergic` (`id` ,`date_save` ,`hn` ,`drug_code`)
+		$sql_insert = "INSERT INTO  `phar_allergic` (`id` ,`date_save` ,`hn` ,`drug_code`,`phardep_id`)
 		VALUES (
-			NULL ,  '$date_now',  '$hn',  '".$item['code']."'
+			NULL ,  '$date_now',  '$hn',  '".$item['code']."', '$idno'
 		);
 		";
 		mysql_query($sql_insert);

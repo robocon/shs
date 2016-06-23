@@ -290,10 +290,10 @@ if( $view === false ){
 	$show = input_post('show');
 	if( $show === 'list' ){
 		$db = Mysql::load();
-		$sql = "SELECT a.*, b.`genname`
+		$sql = "SELECT a.*, b.`genname`,c.`yot`,c.`name`,c.`surname`
 		FROM `phar_allergic` AS a 
-		LEFT JOIN `druglst` AS b ON b.`drugcode` LIKE CONCAT(a.`drug_code`, '%')";
-
+		LEFT JOIN `druglst` AS b ON b.`drugcode` LIKE CONCAT(a.`drug_code`, '%') 
+		LEFT JOIN `opcard` AS c ON c.`hn` = a.`hn`";
 		$data = array();
 		if( !empty($hn) ){
 			$sql .= ' WHERE a.`hn` = :user_hn ';
@@ -302,8 +302,7 @@ if( $view === false ){
 
 		$db->select($sql, $data);
 		$items = $db->get_items();
-		$item_rows = $db->get_rows();
-		if( $item_rows > 0 ){
+		if( count($items) > 0 ){
 			?>
 			<div class="col">
 				<div class="cell">
@@ -312,6 +311,8 @@ if( $view === false ){
 							<tr>
 								<th>#</th>
 								<th>วันแรกที่เก็บข้อมูล</th>
+								<th>HN</th>
+								<th>ชื่อ</th>
 								<th>โค้ดยา</th>
 								<th>Genname</th>
 							</tr>
@@ -324,6 +325,10 @@ if( $view === false ){
 							<tr>
 								<td><?=$i;?></td>
 								<td><?=$item['date_save'];?></td>
+								<td><?=$item['hn'];?></td>
+								<td>
+									<?=$item['yot'].' '.$item['name'].' '.$item['surname'];?>
+								</td>
 								<td><?=$item['drug_code'];?></td>
 								<td><?=$item['genname'];?></td>
 							</tr>

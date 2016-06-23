@@ -123,19 +123,33 @@ a{
 	}
 	
 	
-	$query1 = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
-	date_format(a.`date`,'%d-%m-%Y') AS `date`,
-	left(a.`apptime`,5) AS `left5`
-	FROM `appoint` AS a 
-	INNER JOIN ( 
-		SELECT `row_id`,`hn`, MAX(`row_id`) AS `id` 
-		FROM `appoint` 
-		WHERE `appdate` = '$appd' 
-		GROUP BY `hn` 
-	) AS b ON b.`id` = a.`row_id` 
-	WHERE a.`appdate` = '$appd' 
-	$doctor2 
-	ORDER BY `hn` ASC 
+	// $query1 = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
+	// date_format(a.`date`,'%d-%m-%Y') AS `date`,
+	// left(a.`apptime`,5) AS `left5`
+	// FROM `appoint` AS a 
+	// INNER JOIN ( 
+	// 	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
+	// 	FROM `appoint` 
+	// 	WHERE `appdate` = '$appd' 
+	// 	GROUP BY `hn`, `drcode`
+	// ) AS b ON b.`id` = a.`row_id` 
+	// WHERE a.`appdate` = '$appd' 
+	// $doctor2 
+	// ORDER BY `hn` ASC 
+	// ";
+	$query1 = "
+SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
+date_format(a.`date`,'%d-%m-%Y') AS `date`,
+left(a.`apptime`,5) AS `left5`
+FROM `appoint` AS a 
+INNER JOIN ( 
+    SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
+    FROM `appoint` 
+    WHERE `appdate` = '$appd' 
+    AND `doctor` LIKE '$doctor%'
+    GROUP BY `hn`, `drcode`
+) AS b ON b.`id` = a.`row_id` 
+ORDER BY `hn` ASC
 	";
 	?>
 	<div style="display: none;"><?php var_dump($query1);?></div>

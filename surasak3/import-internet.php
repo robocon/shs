@@ -1,7 +1,7 @@
 <?php
 // define('NEW_SITE', true);
 include 'bootstrap.php';
-include 'templates/classic/header.php';
+
 
 if( !isset($_SESSION['smenucode']) && ( $_SESSION['smenucode'] !== 'ADM' && $_SESSION['smenucode'] !== 'ADMCOM' ) ) die ('ระบบเฉพาะเจ้าหน้าที่ศูนย์คอมพิวเตอร์เท่านั้น');
 
@@ -55,9 +55,12 @@ if($action == 'add'){
 		$_SESSION['type'] = 'warning';
 	}
 	
-	header('Location: import-internet.php');
+	// header('Location: import-internet.php');
+	redirect('import-internet.php');
 	exit;
 }
+
+include 'templates/classic/header.php';
 ?>
 
 <div class="site-body">
@@ -72,14 +75,19 @@ if($action == 'add'){
 			<div class="col width-2of4">
 				<div class="cell">
 					<?php
-					if(isset($_SESSION['x-msg'])){
+					$xMsg = get_session('x-msg');
+					if( isset($xMsg) ){
 						$color = ($_SESSION['type']=='warning') ? 'background-yellow' : 'background-green' ;
 					?>
-					<div class="col ">
-						<span class="label <?php echo $color;?>">Warning</span><?php echo $_SESSION['x-msg']; ?>
+					<div class="col">
+						<div class="cell">
+							<div class="notify-warning">
+								<?php echo $_SESSION['x-msg']; ?>
+							</div>
+						</div>
 					</div>
 					<?php
-						unset($_SESSION['x-msg']);
+						set_session('x-msg', NULL);
 					}
 					?>
 					<form method="post" action="import-internet.php" enctype="multipart/form-data">

@@ -2,7 +2,6 @@
 session_start();
 set_time_limit(5);
 include("connect.inc");
-$appd = isset($_GET['appd']) ? trim($_GET['appd']) : false ;
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
 
@@ -18,87 +17,71 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 
 ?>
 <style type="text/css">
+<!--
 *{
 	font-family: 'TH SarabunPSK';
 	font-size: 20px;
 }
 @media print{
-	*{
-		font-size: 18px;
-	}
-}
-table{
-	width: 100%;
-	border-left: 1px solid #ffffff
-	border-top: 1px solid #ffffff;
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-table td,
-table th{
-	border-right: 1px solid #ffffff;
-	border-bottom: 1px solid #ffffff;
-	column-span: none;
-	vertical-align: bottom;
-}
-table th{
-	background-color: #EDEDED;
-	font-weight: bold;
-	vertical-align: middle;
-}
-.theBlocktoPrint {
-	background-color: #000; 
-	color: #FFF; 
-}
-a{
-	text-decoration: underline;
-}
-@media print{
 	#no_print{display:none;}
 }
+
+.theBlocktoPrint 
+{ 
+	background-color: #000; 
+	color: #FFF; 
+} 
+-->
 </style>
 <br />
+
 <table>
-	<tr>
-		<th width="2%" >#</th>
-		<th>HN</th>
-		<th>ชื่อ</th>
-		<th><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
-		<th>นัดเพื่อ</th>
-		<!-- <th>อื่นๆ</th>
-		<th>diag</th> -->
-		<th>ซ้ำ</th>
-		<th>ยื่นบัตร</th>
-		<th>Admit</th>
-	</tr>
-	<?php
+ <tr>
+  <th bgcolor=6495ED>#</th>
+
+  <th bgcolor=6495ED width='80'>HN</th>
+  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</font></th>
+  <th bgcolor=6495ED><font face='Angsana New'><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></font></th>
+  <th bgcolor=6495ED><font face='Angsana New'>นัดเพื่อ</font></th>
+
+ 
+  <th bgcolor=6495ED>ซ้ำ</th>
+  <!-- <th bgcolor=6495ED>วันที่นัด</th> -->
+  </tr>
+
+<?php
+
 	$sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' limit 1 ";
 	$result = Mysql_Query($sql);
 	list($menucode) = Mysql_fetch_row($result);
 	
-	///////////////////////
-	// กรณีที่หมอคนอื่นนัดเหมือนกัน
-	///////////////////////
-	if(strlen($doctor) == 5){
-		$doctor2 = " doctor like '".$doctor."%' ";
-		$doctor3 = "AND left(doctor,5) <> '".$doctor."' ";
+		if(strlen($doctor) == 5){
+			$doctor2 = " doctor like '".$doctor."%' ";
+			$doctor3 = "AND left(doctor,5) <> '".$doctor."' ";
 
-	}else{
-		$doctor2 = " doctor = '".$doctor."' ";
-		$doctor3 = " AND doctor <> '".$doctor."' ";
-	}
+		}else{
+			$doctor2 = " doctor = '".$doctor."' ";
+			$doctor3 = " AND doctor <> '".$doctor."' ";
+		}
 
-	$query = "SELECT count( hn ) , hn, doctor   FROM `appoint` WHERE appdate = '$appd' ".$doctor3." AND apptime <> 'ยกเลิกการนัด' GROUP BY hn HAVING count( hn ) >= 1 ";
-	$result = mysql_query($query);
-	
-	while($arr = Mysql_fetch_assoc($result)){
-		$name_dc = substr($arr["doctor"],5);
-		if(substr($arr["doctor"],0,5) != "MD007"){
-			$arr["doctor"] = substr($arr["doctor"],0,5);
-		}			
+		$query = "SELECT count( hn ) , hn, doctor   
+		FROM `appoint` 
+		WHERE appdate = '$appd' 
+		".$doctor3." 
+		AND apptime <> 'ยกเลิกการนัด' 
+		GROUP BY hn 
+		HAVING count( hn ) >= 1 ";
+
+		$result = mysql_query($query);
 		
-		$listhn[$arr["hn"]] .= "<A HREF=\"ptappoiall2.php?doctor=".urlencode($arr["doctor"])."&appd=".urlencode($appd)."\" target='_blank'>".$name_dc."</A> &nbsp; ";
-	}
+		while($arr = Mysql_fetch_assoc($result)){
+			$name_dc = substr($arr["doctor"],5);
+			if(substr($arr["doctor"],0,5) != "MD007"){
+				$arr["doctor"] = substr($arr["doctor"],0,5);
+			}			
+			
+			$listhn[$arr["hn"]] .= "<A HREF=\"ptappoiall2.php?doctor=".urlencode($arr["doctor"])."&appd=".urlencode($appd)."\" target='_blank'>".$name_dc."</A> &nbsp; ";
+		}
 		
 	
 
@@ -108,39 +91,26 @@ a{
 		$sort = " detail asc  ASC";
 }*/
 	
-	if(strlen($doctor) == 5){
-		$doctor2 = " AND `doctor` LIKE '".$doctor."%' ";
-	}else{
-		$doctor2 = " AND `doctor` = '".$doctor."' ";
-	}
+	if(strlen($doctor) == 5)
+		$doctor2 = "doctor like '".$doctor."%' ";
+	else
+		$doctor2 = "doctor = '".$doctor."' ";
 
-    $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room 
+    // $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5) 
+	// FROM appoint 
+	// WHERE appdate = '$appd' 
+	// and (".$doctor2.") 
+	// and detail='FU07 คลีนิกฝังเข็ม'  
+	// AND apptime <> 'ยกเลิกการนัด' 
+	// order by  hn asc ";
+
+	$query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room 
 	FROM appoint 
 	WHERE appdate = '$appd' 
-	AND detail NOT LIKE 'FU18%' 
+	AND detail LIKE 'FU07%' 
 	$doctor2
 	ORDER BY `hn` ASC ";
-
-$query1 = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
-date_format(a.`date`,'%d-%m-%Y') AS `date`,
-left(a.`apptime`,5) AS `left5`
-FROM `appoint` AS a 
-INNER JOIN ( 
-    SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
-    FROM `appoint` 
-    WHERE `appdate` = '$appd' 
-    AND `doctor` LIKE '$doctor%' 
-	AND detail NOT LIKE 'FU18%' 
-    GROUP BY `hn`, `drcode`
-) AS b ON b.`id` = a.`row_id` 
-
-ORDER BY `hn` ASC
-";
-
-
-
-    $result = mysql_query($query1) or die( mysql_error() );
-
+	$result = mysql_query($query1) or die( mysql_error() );
 	$date_now = date("d-m-").(date("Y")+543);
 	
 	// สกรีนค่าที่ซ้ำออกไป
@@ -222,6 +192,7 @@ ORDER BY `hn` ASC
 	}
 	?>
 </table>
+
 <style type="text/css">
 	@media print{
 		#cancel-appoint{
