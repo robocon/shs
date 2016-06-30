@@ -160,7 +160,8 @@ RIGHT JOIN (
     WHERE `appdate` = '$appd' 
     GROUP BY `hn`,`drcode`
 ) AS b ON b.`lastid` = a.`row_id`
-ORDER BY a.`date` ASC";
+WHERE a.`apptime` != 'ยกเลิกการนัด' 
+ORDER BY a.`row_id` ASC";
   
  $result = mysql_query($query)
         or die("Query failed");
@@ -197,26 +198,7 @@ if(substr($ptright1,0,3)=='R07'){
 		}
 }
 
-/*
 
-else  if(substr($ptright1,0,3)=='R33'){
-		$sql = "Select flag From optdata where hn = '$hn'  order by row_id desc limit 1 ";
-
-	$result = Mysql_Query($sql);
-	list($flag) = Mysql_fetch_row($result);
-	
-					if($flag==""){
-									$color = "#66CDAA";
-		
-										}else{
-									$color = "#FF0000";
-		
-										}
-										
-}
-
-
-*/
 
 
 else if(substr($ptright1,0,3)=='R33'){

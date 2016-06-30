@@ -13,8 +13,8 @@ $camp_lists = array(
 	'312603' => 'ร.17 พัน.2',
 	'312604' => 'ช.พัน.4 ร้อย4',
 	'312605' => 'สง.สด.จว.ล.ป.',
-	'312606' => 'กทพ.33',
-	'312607' => 'หน่วยทหารอื่นๆ'
+	// '312606' => 'กทพ.33',
+	// '312607' => 'หน่วยทหารอื่นๆ'
 );
 
 $sql = "
@@ -32,6 +32,11 @@ ORDER BY a.`row_id` DESC
 // echo "<pre>";
 // var_dump($sql);
 DB::select($sql, null);
+
+$db = Mysql::load();
+
+$sql = "DROP TEMPORARY TABLE IF EXISTS `condxofyear_so_temp`;";
+$db->select($sql);
 
 $new_itmes = array();
 foreach($camp_lists as $key => $camp){
@@ -117,9 +122,9 @@ foreach ($new_itmes as $key => $item) {
 			<?php echo substr($item['age'], 0, 2);?>
 		</td>
 		<td><?php echo ( $item['sex'] == 'ช' ) ? 1 : 2 ; ?></td>
-		<td><?php echo $item['cigarette']; ?></td>
-		<td><?php echo $item['alcohol']; ?></td>
-		<td><?php echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
+		<td><?php // echo $item['cigarette']; ?></td>
+		<td><?php // echo $item['alcohol']; ?></td>
+		<td><?php // echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
 		<td><?php echo (float) $item['weight']; ?></td>
 		<td><?php echo $item['height']; ?></td>
 		<td><?php echo (float) $item['round_'];?></td>
