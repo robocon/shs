@@ -57,12 +57,14 @@ td,th { font-family:"TH SarabunPSK"; font-size: 16 pt; }
 			<li><a href="ncf_member.php"><span>รายชื่อผู้ใช้ในระบบ</span></a></li>
 			<li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
 			<?php
-			} if($_SESSION["statusncr"]=='staff') {
+			} 
+			
+			if($_SESSION["statusncr"]=='staff') {
 			?>
 			<li>
 				<a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ</span></a>
 				<ul>
-					<li class="last"><a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ  (โปรแกรมใหม่ 2556)</span></a></li>
+					<li class="last"><a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ (โปรแกรมใหม่ 2556)</span></a></li>
 					<li class="last"><a href="ncf_list_old.php"><span>ใบรายงานเหตุการณ์ฯ (โปรแกรมเก่า < 2556)</a></span></li>
 				</ul>
 			</li>
@@ -76,7 +78,9 @@ td,th { font-family:"TH SarabunPSK"; font-size: 16 pt; }
 			<li><a href="ncf_member.php"><span>รายชื่อผู้ใช้ในระบบ</span></a></li>
 			<li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
 			<?php 
-			} if($_SESSION["statusncr"]=='phar') { 
+			} 
+			
+			if($_SESSION["statusncr"]=='phar') { 
 			?>
 			<li>
 				<a href="#"><span>รายงานความคลาดเคลื่อนทางยา</span></a>
@@ -86,7 +90,11 @@ td,th { font-family:"TH SarabunPSK"; font-size: 16 pt; }
 				</ul>
 			</li>
 			<li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
-			<?php } if($_SESSION["statusncr"]!='admin' && $_SESSION["statusncr"]!='staff' && $_SESSION["statusncr"]!='phar'  && $_SESSION["Userncr"]!=""){ ?>
+			<?php 
+			} 
+			
+			if($_SESSION["statusncr"]!='admin' && $_SESSION["statusncr"]!='staff' && $_SESSION["statusncr"]!='phar'  && $_SESSION["Userncr"]!=""){ 
+			?>
 			<li>
 				<a href="ncf_list_depart.php"><span>ใบรายงานเหตุการณ์ฯ</span></a>
 				<ul>
@@ -94,7 +102,6 @@ td,th { font-family:"TH SarabunPSK"; font-size: 16 pt; }
 					<li class="last"><a href="ncf_list_old.php"><span>ใบรายงานเหตุการณ์ฯ (โปรแกรมเก่า < 2556)</a></span></li>
 				</ul>
 			</li>
-				
 			<li>
 				<a href="#"><span>รายงานสรุป</span></a>
 				<ul>
@@ -109,21 +116,29 @@ td,th { font-family:"TH SarabunPSK"; font-size: 16 pt; }
 			<!--<li><a href="ncf_member.php"><span>สถิติความเสี่ยง</span></a></li>--> 
 			<li><a href="ncf_member.php"><span>รายชื่อผู้ใช้ในระบบ</span></a></li>
 			<li><a href="logout.php"><span>ออกจากระบบ</span></a></li>
-			<?php } if(!$_SESSION["Userncr"]){ ?>
+			<?php 
+			}
+			
+			if(!$_SESSION["Userncr"]){ 
+			?>
 			<li class="last"><a href="login.php"><span>เข้าสู่ระบบ</span></a></li>
-			<?php } ?>
+			<?php 
+			}
+			?>
 		</ul>
 	</div>
 	<?php
 	if(isset($_SESSION["Userncr"])){
-	include("connect.inc");
-	
-	$strSQL = "SELECT * FROM member WHERE  username = '".$_SESSION["Userncr"]."'";
-	$objQuery = mysql_query($strSQL);
-	$objResult = mysql_fetch_array($objQuery);
+		include("connect.inc");
+		
+		$strSQL = "SELECT * FROM member WHERE  username = '".$_SESSION["Userncr"]."'";
+		$objQuery = mysql_query($strSQL);
+		$objResult = mysql_fetch_array($objQuery);
+		?>
+		<span class="fontsara">ผู้ใช้งานขณะนี้ ::  <strong><?=$objResult['name']?></strong> &nbsp;&nbsp;<strong><?=$_SESSION["Untilncr"]?></strong></span> 
+	<?php 
+	} 
 	?>
-	<span class="fontsara">ผู้ใช้งานขณะนี้ ::  <strong><?=$objResult['name']?></strong> &nbsp;&nbsp;<strong><?=$_SESSION["Untilncr"]?></strong></span> 
-	<? } ?>
 	<div style="visibility: hidden"><br /><a href="http://apycom.com/">aaa</a><br /></div>
 </div>
 <!-- END MENU -->
