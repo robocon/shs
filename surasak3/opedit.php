@@ -39,15 +39,15 @@ else if (document.layers||document.getElementById) {
 
 <?php
     session_start();
-    $_SESSION['cHn'] = '';  
-    $_SESSION['cPtname'] = '';
-    $_SESSION['cPtright'] = '';
-    $_SESSION['cPtright1'] = '';
-    $_SESSION['nVn'] = '';  
-    $_SESSION['cAge'] = '';  
-    $_SESSION['cNote'] = '';  
- 	$_SESSION['cIdcard'] = ''; 
- 	$_SESSION['cIdguard'] = ''; 
+    session_unregister("cHn");  
+    session_unregister("cPtname");
+    session_unregister("cPtright");
+    session_unregister("cPtright1");
+    session_unregister("nVn");  
+    session_unregister("cAge");  
+    session_unregister("cNote");  
+ 	session_unregister("cIdcard"); 
+ 	session_unregister("cIdguard"); 
     $nRunno="";
     $vAN="";
 
@@ -56,17 +56,17 @@ else if (document.layers||document.getElementById) {
     $nVn="";
     $cAge="";
 	$borow='';
-    // session_register("nRunno");  
-    // session_register("vAN");
-    // session_register("cHn");  
-    // session_register("cPtname");
-    // session_register("cPtright");
-    // session_register("cPtright1");
-    // session_register("nVn");  
-    // session_register("cAge");  
-    // session_register("cNote");  
- 	// session_register("cIdcard");  
-  	// session_register("cIdguard");  
+    session_register("nRunno");  
+    session_register("vAN");
+    session_register("cHn");  
+    session_register("cPtname");
+    session_register("cPtright");
+    session_register("cPtright1");
+    session_register("nVn");  
+    session_register("cAge");  
+    session_register("cNote");  
+ 	session_register("cIdcard");  
+  	session_register("cIdguard");  
     include("connect.inc");
 	
 	if(isset($_GET["action"]) && $_GET["action"] == "hospcode"){
@@ -126,8 +126,8 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$_SESSION["cHn"] = $_GET["cHn"];
 	}
 	
-	
-	$cHn = $_GET['cHn'];
+
+
     $query = "SELECT * FROM opcard WHERE hn = '$cHn' limit 0,1";
     $result = mysql_query($query)or die("Query failed");
  
@@ -160,7 +160,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cCareer =$row->career;
 		$cPtright =$row->ptright;
 		$cPtright1 =$row->ptright1;
-		echo "==>$cPtright - $cPtright1";
+		//echo "==>$cPtright - $cPtright1";
 		$cPtrightdetail=$row->ptrightdetail;
 		$cAddress =$row->address;
 		$cTambol =$row->tambol;
@@ -288,7 +288,8 @@ if($rows>0){
 		}
 	return xmlhttp;
 }
-	function searchSuggest2(str,len,getto1) {
+
+function searchSuggest2(str,len,getto1) {
 	
 		str = str+String.fromCharCode(event.keyCode);
 
@@ -616,8 +617,7 @@ return $pAge;
                                  }
 						  }
 						?>
-      </select>
-</td>
+      </select></td>
     <td align="right" class="fonthead">สังกัด:</td>
     <td><!--<select size="1" name="camp" id="camp">
       <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
@@ -677,67 +677,101 @@ return $pAge;
 	  		}
 		}
 	  ?>
-		</select>
-    </td>
+		</select>    </td>
     </tr>
     <tr>
     <td align="right" class="fonthead">สิทธิการรักษา</td>
-    <td><select size="1" name="ptright1" id="ptright1">
+    <td>
+	<select size="1" name="ptright1" id="ptright1">
     <?
+
 	//////////////////////////////////การอัพเดทสิทธิปัจจุบัน//////////////////////////////////////
+	/*
 	if($cIdcard !="" || $cIdcard !="-"){
-	if(substr($cPtright1,0,3)=='R03'||substr($cPtright1,0,3)=='R07'){
-		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
-		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-		?>
-			<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
-		<?
-		}else{
-			$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-			if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
+		if(substr($cPtright1,0,3)=='R03'||substr($cPtright1,0,3)=='R07'){
+			$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
+			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 			?>
-				<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
+				<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
 			<?
 			}else{
-			?>
-				<option  value="0" selected>กรุณาเลือกสิทธิการรักษา</option>
-			<?
+				$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
+				if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
+				?>
+					<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
+				<?
+				}else{
+				?>
+					<option  value="0" selected>กรุณาเลือกสิทธิการรักษา</option>
+				<?
+				}
 			}
-		}
-	}else{
-		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
-		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-		?>
-			<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
-		<?
 		}else{
-			$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-			if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
+			$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
+			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 			?>
-				<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
+				<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
 			<?
 			}else{
-			?>
-				<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
-			<?
+				$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
+				if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
+				?>
+					<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
+				<?
+				}else{
+				?>
+					<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
+				<?
+				}
 			}
 		}
-	}
 	}  // if check idcard
 	?>
-				<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
+		<option  value="<?=$cPtright1;?>" selected><?=$cPtright1;?></option>
 	<?
+	*/
 	/*******/////////////////////////////////////////////////////////////////////////////////**********/
 	
+	// รหัสหลักจาก ptright1
+	$ptCode = substr($cPtright1, 0, 3);
+
+	// ถ้ามีใน ssodata แสดงว่าเป็น ปกส
+	$q = mysql_query("SELECT id FROM ssodata WHERE id LIKE '$cIdcard%' LIMIT 1 ");
+	$sso_row = mysql_num_rows($q);
+	if( $sso_row > 0 ){
+		$ptCode = 'R07';
+	
+	}else{
+
+		// ถ้าไม่ใช่ ปกส เช็กใน cscd (เบิกจ่ายตรง)
+		$sql_cscd = "SELECT hn, status 
+		FROM cscddata 
+		WHERE hn = '$cHn' 
+		AND ( status LIKE '%U%' OR status = '\r' OR status LIKE '%V%' )  
+		LIMIT 1 ";
+		$q = mysql_query($sql_cscd);
+		$cscd_row = mysql_num_rows($q);
+		if( $cscd_row > 0 ){
+			$ptCode = 'R03';
+		}
+	}
+
 	include("connect.inc");
 	$sql = "Select * From ptright Order by code ASC ";
 	$result = mysql_query($sql) or die(mysql_error());
 	while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
-		print " <option value='$ptright_code&nbsp;$ptright_name'>$ptright_code&nbsp;$ptright_name</option>";
-}
-?>
-    </select>
-    </td>
+
+		$full_ptright = "$ptright_code $ptright_name";
+
+		$select = ( $ptright_code == $ptCode ) ? 'selected="selected"' : '' ;
+
+		?>
+		<option value='<?=$full_ptright;?>' <?=$select;?>><?=$full_ptright;?></option>
+		<?php
+	}
+	?>
+    </select>    
+	</td>
     <td class="fonthead">ประเภทสิทธิ :</td>
     <td><select name="ptrightdetail" size="1" id="ptrightdetail">
       <option  value="<?=$cPtrightdetail;?>" selected><?=$cPtrightdetail;?></option>
@@ -774,18 +808,13 @@ return $pAge;
     <td>&nbsp;</td>
     </tr>
 	<tr>
-		<td></td>
-		<td></td>
-		<td class="fonthead">
-			<label for="employee">ลูกจ้าง รพ.ค่ายฯ</label>
-		</td>
-		<td>
-			<?php
+		<td class="fonthead"><label for="employee">ลูกจ้าง รพ.ค่ายฯ</label></td>
+	  <td colspan="3"><?php
 			$checked = ( $employee === 'y' ) ? 'checked="checked"' : '' ;
 			?>
 			<input type="checkbox" id="employee" name="employee" value="y" <?=$checked;?>>
-		</td>
-	</tr>
+			<span class="fonthead" style="color:#FF3366;">(ถ้าเป็นลูกจ้าง รพ.ค่ายฯ ให้เลือก check box ด้วย)</span>		</td>
+	  </tr>
     </table>
 
 </fieldset>

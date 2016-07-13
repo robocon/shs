@@ -75,6 +75,7 @@ foreach($camp_lists as $key => $camp){
 	<tr>
 		<th>No.</th>
 		<th>rank</th>
+		<th>HN</th>
 		<th>name</th>
 		<th>ID</th>
 		<th>unit</th>
@@ -108,6 +109,7 @@ foreach ($new_itmes as $key => $item) {
 	<tr>
 		<td><?php echo $i; ?></td>
 		<td><?php echo $item['yot']; ?></td>
+		<td><?=$item['hn'];?></td>
 		<td><?php echo $item['name'].' '.$item['surname']; ?></td>
 		<td><?php echo $item['idcard']; ?></td>
 		<td><?php echo $item['camp_code'];?></td>

@@ -62,7 +62,7 @@ if($nrow3==0){
 }*/
 ////////////////////////////////
 echo "
-<FORM METHOD=POST ACTION=\"menulst.php\">
+<FORM METHOD=POST ACTION=\"\">
 	<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
 </FORM>
 ";

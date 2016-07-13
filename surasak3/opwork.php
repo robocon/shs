@@ -496,11 +496,12 @@ $structure = '../image_patient';
 
 ?>
  
-
-<br>1...§‘«µ√«®‚√§∑—Ë«‰ª&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php" onclick="addQueue()">§‘«µ√«®‚√§∑—Ë«‰ª (<?php $sql = "Select runno From runno where title ='kew' ";
-	$result = Mysql_Query($sql);
-	list($akew) = Mysql_fetch_row($result);
-	echo $akew ;   ?>)</a>
+<?php
+$sql = "Select runno From runno where title ='kew' ";
+$result = mysql_query($sql);
+list($akew) = mysql_fetch_row($result);
+?>
+<br>1...§‘«µ√«®‚√§∑—Ë«‰ª&nbsp;&nbsp;&nbsp;<a href="javascript: void(0);" target="_top" id="kewadd" onclick="addQueue(event,'kewadd.php','_blank')">§‘«µ√«®‚√§∑—Ë«‰ª (<span><?=$akew;?></span>)</a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php" onclick="addQueue()">§‘«µ√«®∑—πµ°√√¡(<?php $sql = "Select runno From runno where title ='kew2' ";
 	$result = Mysql_Query($sql);
@@ -615,8 +616,14 @@ function searchCard(ev){
 	}
 }
 
-function addQueue(){
+function addQueue(ev,target, name){
 	queue = 1;
+	if(typeof(target) !== 'undefined'){
+		var winObj = window.open(target, name, "fullscreen=yes");
+		SMPreventDefault(ev);
+		return false;
+	}
+	
 }
 
 function SMPreventDefault(ev){
