@@ -5,13 +5,19 @@ session_start();
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
 
-include("connect.inc");   
+include("connect.inc");
+
+if( !function_exists('dump') ){
+	function dump($str){
+		echo "<pre>";
+		var_dump($str);
+		echo "</pre>";
+	}
+}
 
 if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 
-	// var_dump($_SESSION);
 	$count = count($_SESSION["list_code"]);
-	//"<A HREF=\"javascript:show_bock();\">เจาะเลือด</A>
 	echo "<TABLE bgcolor='#FFFFD2'>
 	<TR>
 		<TD>";
@@ -107,70 +113,6 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 
 exit();
 }
-
-// หมอเลอปรัชให้ล็อกนัดเอาไว้
-$user_code = isset($_SESSION['smenucode']) ? $_SESSION['smenucode'] : false ;
-// ถ้าไม่ใช่ การส่งค่าที่เป็น ajax 
-if( !isset($_GET['action']) ){
-
-	global $doctor;
-	$doctor = trim($doctor);
-	if($doctor == 'กรุณาเลือกแพทย์'){
-		?>
-		<p>กรุณาเลือกแพทย์ก่อนทำการนัดผู้ป่วย</p>
-		<p><a href="#" onclick="window.history.back(); return false;">คลิกที่นี่</a> เพื่อกลับไปกรอกข้อมูลใหม่</p>
-		<?php
-		exit;
-	}
-
-	// นับจำนวนที่นัดผู้ป่วย
-	list($code, $dr_name) = explode(' ', $_POST['doctor']);
-	$sql = "SELECT `hn` 
-	FROM `appoint` 
-	WHERE `appdate` = '{$_POST['date_appoint']}' 
-	AND `doctor` LIKE '$code%' 
-	AND `apptime` != 'ยกเลิกการนัด';";
-	$query = mysql_query($sql);
-	$rows = mysql_num_rows($query);
-	
-	$months = array(
-		'มกราคม' => '01', 'กุมภาพันธ์' => '02','มีนาคม' => '03', 'เมษายน' => '04','พฤษภาคม' => '05', 'มิถุนายน' => '06',
-		'กรกฎาคม' => '07', 'สิงหาคม' => '08','กันยายน' => '09', 'ตุลาคม' => '10','พฤศจิกายน' => '11', 'ธันวาคม' => '12',
-	);
-	
-	$th_day = array(
-		0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์',
-	);
-	
-	list($day, $th_month, $th_year) = explode(' ', $_POST['date_appoint']);
-	$new_date = ($th_year-543).'-'.$months[$th_month].'-'.$day;
-	$check_date = date('w', strtotime($new_date));
-	
-	$sql = "SELECT `dr_name`,`date`,`user_row` 
-	FROM `dr_limit_appoint` 
-	WHERE `dr_name` LIKE '$code%' 
-	AND `date` = '$check_date'";
-	$query = mysql_query($sql);
-	$item = mysql_fetch_assoc($query);
-	$dr_limit = (int) $item['user_row'];
-
-	if( $item !== false && $rows >= $dr_limit ){
-		
-		// if( $code === '' ){
-		// 	$contact_txt = 'หากต้องการนัดเพิ่มกรุณาติดต่อห้องตา';
-		// }else{
-		// 	$contact_txt = 'หากต้องการนัดเพิ่ม เอิ่ม... ';
-		// }
-
-		$get_day = (int) $item['date'];
-		echo 'วัน'.$th_day[$get_day].' ที่ '.$day.' เดือน '.$th_month.' '.$th_year.' ยอดนัดผู้ป่วยของหมอ '.$item['dr_name'].' เต็มแล้วที่ '.$item['user_row'].' คน ';
-		echo '<br>';
-		echo '<a href="javascript: void(0);" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
-		exit;
-	}
-	// จำกัดจำนวนผู้ป่วยนัด
-}
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -200,13 +142,14 @@ if( !isset($_GET['action']) ){
 <?php
 
 if(isset($_POST['B1'])){
-	  $cdoctor=$dt_doctor;
+	$cdoctor = $dt_doctor;
 	$cdate_appoint = $_POST['date_appoint'];
-	  // session_register("cappdate");
-	 // session_register("cappmo");
-	 // session_register("cthiyr");
-	 session_register("cdoctor");
+	// session_register("cappdate");
+	// session_register("cappmo");
+	// session_register("cthiyr");
+	session_register("cdoctor");
 	session_register("appd");
+
 	//กรณีเลือกวันที่ย้อนหลัง
 	$yearnow = date("Y")+543;
 	$datenow =date("dm").$yearnow;
@@ -224,46 +167,46 @@ if(isset($_POST['B1'])){
 	$datenut = $day.$month.$year;
 	$datenut1 = $day."-".$month."-".$year;
 	$year -=543; 
-/*	if($datenut<$datenow){
-		?>
-		<script>
-		//alert("เลือกวันที่ไม่ถูกต้อง กรุณาเลือกวันใหม่");
-        //window.history.back();
-        </script>
-		<?
-	}
-	else{*/
 	
-		$dd = getdate ( mktime ( 0, 0, 0, $month, $day, $year ));
-			if($cdoctor=="MD022 (ไม่ทราบแพทย์)"){
-			
-			}
-			elseif($dd['weekday']=="Saturday"|$dd['weekday']=="Sunday"){
-				$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
-					$rowdr1 = mysql_query($droffline);
-					$showdr1 = mysql_fetch_array($rowdr1);
-					if($showdr1[0]=="1"){
-						?>
-							<script>
-								if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-									
-								}  
-								else{
-									window.history.back();
-								}
-							</script>
-						<?
+	$dd = getdate ( mktime ( 0, 0, 0, $month, $day, $year ));
+	if($cdoctor=="MD022 (ไม่ทราบแพทย์)"){
+	
+	}elseif($dd['weekday']=="Saturday"|$dd['weekday']=="Sunday"){
+		$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
+		$rowdr1 = mysql_query($droffline);
+		$showdr1 = mysql_fetch_array($rowdr1);
+		if($showdr1[0]=="1"){
+			?>
+				<script type="text/javascript">
+					var c = confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?");
+					if( c == false){
+						window.history.back();
 					}
-			}
-			else{
-				include("connect.inc");   
-				$droff = "select count(*) from doctor where name = '$cdoctor' and ".$dd['weekday']." = '1' ";
-				//echo $droff;
-				$rowdr = mysql_query($droff);
-				$showdr = mysql_fetch_array($rowdr);
-				//echo $showdr[0];
-				if($showdr[0]!='1'){
-					?>
+				</script>
+			<?php
+		}
+	}else{
+		include("connect.inc");   
+		$droff = "select count(*) from doctor where name = '$cdoctor' and ".$dd['weekday']." = '1' ";
+		$rowdr = mysql_query($droff);
+		$showdr = mysql_fetch_array($rowdr);
+		if($showdr[0]!='1'){
+			?>
+			<script>
+				if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
+					
+				}  
+				else{
+					window.history.back();
+				}
+			</script>
+			<?
+		}else{
+			$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
+			$rowdr1 = mysql_query($droffline);
+			$showdr1 = mysql_fetch_array($rowdr1);
+			if($showdr1[0]=="1"){
+				?>
 					<script>
 						if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
 							
@@ -272,78 +215,60 @@ if(isset($_POST['B1'])){
 							window.history.back();
 						}
 					</script>
-					<?
-				}
-				else{
-					$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
-					$rowdr1 = mysql_query($droffline);
-					$showdr1 = mysql_fetch_array($rowdr1);
-					if($showdr1[0]=="1"){
-						?>
-							<script>
-								if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-									
-								}  
-								else{
-									window.history.back();
-								}
-							</script>
-						<?
-					}
-				}
-		//}
+				<?
+			}
+		}
 	}
 }
 
-$cappdate=$appdate;
-$cappmo=$appmo;
-$cthiyr=$thiyr;
-  $cdoctor=$doctor;
+$cappdate = $appdate;
+$cappmo = $appmo;
+$cthiyr = $thiyr;
+$cdoctor = $doctor;
 $cdate_appoint = $_POST['date_appoint'];
-  session_register("cappdate");
- session_register("cappmo");
- session_register("cthiyr");
+
+session_register("cappdate");
+session_register("cappmo");
+session_register("cthiyr");
 session_register("cdoctor");
 session_register("appd");
-
 session_register("list_code");
 session_register("list_detail");
+
 $_SESSION["list_code"] = array();
 $_SESSION["list_detail"] = array();
 
- function jschars($str)
-{
-    $str = str_replace("\\\\", "\\\\", $str);
-    $str = str_replace("\"", "\\\"", $str);
-    //$str = str_replace("'", "\\'", $str);
-    $str = str_replace("\r\n", "\\n", $str);
-    $str = str_replace("\r", "\\n", $str);
-    $str = str_replace("\n", "\\n", $str);
-    $str = str_replace("\t", "\\t", $str);
-    $str = str_replace("<", "\\x3C", $str); // for inclusion in HTML
-    $str = str_replace(">", "\\x3E", $str);
-    return $str;
+ function jschars($str){
+	$str = str_replace("\\\\", "\\\\", $str);
+	$str = str_replace("\"", "\\\"", $str);
+	//$str = str_replace("'", "\\'", $str);
+	$str = str_replace("\r\n", "\\n", $str);
+	$str = str_replace("\r", "\\n", $str);
+	$str = str_replace("\n", "\\n", $str);
+	$str = str_replace("\t", "\\t", $str);
+	$str = str_replace("<", "\\x3C", $str); // for inclusion in HTML
+	$str = str_replace(">", "\\x3E", $str);
+	return $str;
 }
 
-   $codedr = substr($cdoctor,0,5);
-   //$arrdr1 = array(MD052,MD006,MD013,MD014);
-   $arrdr2 = array('MD008','MD009','MD007','MD072','MD036','MD041','MD016','MD047','MD088');
-   if(in_array($codedr,$arrdr2)){
-		 $counter='2'; //จุดนัดที่ 2
-	}
-	else{
-		$counter = '1'; //จุดนัดที่ 1
-	}
+$codedr = substr($cdoctor,0,5);
+//$arrdr1 = array(MD052,MD006,MD013,MD014);
+$arrdr2 = array('MD008','MD009','MD007','MD072','MD036','MD041','MD016','MD047','MD088');
+if(in_array($codedr,$arrdr2)){
+	$counter='2'; //จุดนัดที่ 2
+}else{
+	$counter = '1'; //จุดนัดที่ 1
+}
+
 //$dbirth="$y-$m-$d"; เก็บวันเกิดใน opcard= "$y-$m-$d" ซึ่ง=$birth in function
 // print "<p><b><font face='Angsana New' size = '3'>โรงพยาบาลค่ายสุรศักดิ์มนตรี</font></b></p>";
-   print "<p><font face='Angsana New' size = '4'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B><br>";
-  print "<font face='Angsana New' size = '4'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B></p>";
-   $queryT="SELECT phone FROM opcard where hn='$cHn'";
-   $resultT = mysql_query($queryT);
-   $rowT = mysql_fetch_array($resultT);
+print "<p><font face='Angsana New' size = '4'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B><br>";
+print "<font face='Angsana New' size = '4'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B></p>";
+$queryT="SELECT phone FROM opcard where hn='$cHn'";
+$resultT = mysql_query($queryT);
+$rowT = mysql_fetch_array($resultT);
 
- $appd=$cdate_appoint;
- 
+$appd=$cdate_appoint;
  
 $SqlStr = "SELECT  *  FROM  appoint  WHERE  hn = '".$cHn."' and doctor = '".$cdoctor."' and appdate ='".$cdate_appoint."' ";
 $OjbQuery = mysql_query($SqlStr);
@@ -359,70 +284,77 @@ if($Array['other']==""){
 	$Array['other']="-";
 }
 if($OjbRow>0){
-	
-	echo "<div style='background-color:#F99;  font-family:TH SarabunPSK; color:#000; font-size:20pt;'>ผู้ป่วยมีการนัดใน วันที่ $Array[appdate] เวลา  $Array[apptime]  ซ้ำ แพทย์ :  $Array[doctor]  <br>  LAB : $Array[patho] <br>  Xray : $Array[xray] <BR>อื่นๆ : $Array[other]</div>";
+	?>
+	<div style="background-color:#F99; font-family: TH SarabunPSK; color: #000000; font-size: 20pt; padding: 4px; border: 1px solid #ad0000;">
+		<p style="margin: 0;">ผู้ป่วยมีการนัดใน วันที่ <?=$Array['appdate'];?> เวลา  <?=$Array['apptime'];?>  ซ้ำ แพทย์:  <?=$Array['doctor'];?></p>
+		<p style="margin: 0;">LAB: <?=$Array['patho'];?></p>
+		<p style="margin: 0;">Xray: <?=$Array['xray'];?></p>
+		<p style="margin: 0;">อื่นๆ: <?=$Array['other'];?></p>
+	</div>
+	<?php
 }
 
- 
+// แสดงจำนวนผู้ป่วยที่นัด
+$query = "CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' and doctor = '$cdoctor' ";
+$result = mysql_query($query) or die("Query failed,app");
+$query = "SELECT  apptime,COUNT(*) AS duplicate FROM appoint1 GROUP BY apptime HAVING duplicate > 0 ORDER BY apptime";
+$result = mysql_query($query);
+$n = 0;
+$sum_morning = 0;
+$sum_afternoon = 0;
+while (list ($apptime, $duplicate) = mysql_fetch_row ($result)) {
+	$n++;
+	$num = ( $duplicate + $num );
 
-  
-    $query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' and doctor = '$cdoctor' ";
-    $result = mysql_query($query) or die("Query failed,app");
-   $query="SELECT  apptime,COUNT(*) AS duplicate FROM appoint1 GROUP BY apptime HAVING duplicate > 0 ORDER BY apptime";
-   $result = mysql_query($query);
-     $n=0;
- while (list ($apptime,$duplicate) = mysql_fetch_row ($result)) {
-            $n++;
-$num= $duplicate+$num;
-            print (" <tr>\n".
-           //  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
-              "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'><b>$apptime</b>&nbsp;&nbsp;</a></td>\n".
- 
-//    "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '4'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
-             //  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
-        "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
-               " </tr>\n&nbsp;");
-               }
- print "<br><font face='Angsana New' size = '5'><b>จำนวนผู้ป่วยทั้งหมด&nbsp;&nbsp; $num&nbsp;&nbsp;คน</b></a> ";
-  
+	preg_match('/\d+\:\d+/', $apptime, $match);
+	$time_appoint = $match['0'];
+	if( $time_appoint < "12:00" && $apptime !== 'ยกเลิกการนัด' ){
+		$sum_morning += $duplicate;
+	}elseif( $time_appoint >= "12:00" && $apptime !== 'ยกเลิกการนัด' ){
+		$sum_afternoon += $duplicate;
+	}
+
+	?>
+	<div style="font-family: Angsana New;">
+		<b><?=$apptime;?></b>&nbsp;&nbsp;นัดจำนวน&nbsp; = &nbsp;<?=$duplicate;?> &nbsp;&nbsp;คน
+	</div>
+	<?php
+}
 ?>
-
+<br>
+<font face="Angsana New" style="font-size: 24px;"><b>จำนวนผู้ป่วยทั้งหมด&nbsp;&nbsp;<?=$num;?>&nbsp;&nbsp;คน</b>
+<div style="font-family: Angsana New; font-size: 24px;"><b>รวมผู้ป่วยนัดช่วงเช้า</b>: <?=$sum_morning;?> คน</div>
+<div style="font-family: Angsana New; font-size: 24px;"><b>รวมผู้ป่วยนัดช่วงบ่าย</b>: <?=$sum_afternoon;?> คน</div>
 <script type="text/javascript">
 
 function newXmlHttp(){
 	var xmlhttp = false;
 
-		try{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}catch(e){
+	try{
+		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+	}catch(e){
 		try{
 			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}catch(e){
-				xmlhttp = false;
-			}
+		}catch(e){
+			xmlhttp = false;
 		}
+	}
 
-		if(!xmlhttp && document.createElement){
-			xmlhttp = new XMLHttpRequest();
-		}
+	if(!xmlhttp && document.createElement){
+		xmlhttp = new XMLHttpRequest();
+	}
 	return xmlhttp;
 }
 
 function addtolist(code){
-	
 	xmlhttp = newXmlHttp();
 	url = 'preappoi2.php?action=addtolist&code=' + code;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	viewlist();
-
-	//if(checkELyte() == "4"){
-	//	alert("ท่านได้สั่งรายการ Na, K, Cl, Co2 แยกทั้ง 4 รายการ \n กรุณาสั่งเป็น E'Lyte ");
-	//}
 }
 
 function viewlist(){
-
 	xmlhttp = newXmlHttp();
 	url = 'preappoi2.php?action=viewlist';
 	xmlhttp.open("GET", url, false);
@@ -432,22 +364,19 @@ function viewlist(){
 }
 
 function del_list(code){
-
 	url = 'preappoi2.php?action=delete&code=' + code;
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
+	xmlhttp = newXmlHttp();
+	xmlhttp.open("GET", url, false);
+	xmlhttp.send(null);
 	viewlist();
 }
 
 function show_bock(){
-	
 	if(document.getElementById("bock_lab").style.display=="none"){
 		document.getElementById("bock_lab").style.display ="";
 	}else{
 		document.getElementById("bock_lab").style.display ="none";
 	}
-
 }
 
 function listb(number){
@@ -455,6 +384,7 @@ function listb(number){
 	if(document.getElementById("detail").value!='FU05 ผ่าตัด'){
 		document.getElementById("setor").style.display='none';
 	}
+
 	if(document.getElementById("detail").value=='FU01 ตรวจตามนัด'){
 		if(number=="2"){
 			document.getElementById("room").selectedIndex=2;
@@ -611,37 +541,37 @@ function listb(number){
 
 function searchSuggest(action,str,len) {
 	
-		str = str+String.fromCharCode(event.keyCode);
+	str = str+String.fromCharCode(event.keyCode);
 
-		if(str.length >= len){
-			url = 'preappoi2.php?action='+action+'&search=' + str;
+	if(str.length >= len){
+		url = 'preappoi2.php?action='+action+'&search=' + str;
 
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
-			document.getElementById('list').style.display=''
-			document.getElementById("list").innerHTML = xmlhttp.responseText;
-		}
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
+		document.getElementById('list').style.display=''
+		document.getElementById("list").innerHTML = xmlhttp.responseText;
+	}
 }
 
 function checktext(){
-		if(document.getElementById('room').value=="NA"){
-			alert('กรุณาเลือกช่อง\"ยื่นใบนัดที่\"');
-			return false;
-		}
-		else if(document.getElementById('detail').value=="NA"){
-			alert('กรุณาเลือกช่อง\"นัดมาเพื่อ\"');
-			return false;
-		}
-		else if(document.getElementById('advice').value=="NA"){
-			alert('กรุณาเลือกช่อง\"ข้อควรปฏิบัติก่อนพบแพทย์\"');
-			return false;
-		}
-		else if(document.getElementById('depcode').value=="NA"){
-			alert('กรุณาเลือกช่อง\"แผนกที่นัด\"');
-			return false;
-		}
-		return true;
+	if(document.getElementById('room').value=="NA"){
+		alert('กรุณาเลือกช่อง\"ยื่นใบนัดที่\"');
+		return false;
+	}
+	else if(document.getElementById('detail').value=="NA"){
+		alert('กรุณาเลือกช่อง\"นัดมาเพื่อ\"');
+		return false;
+	}
+	else if(document.getElementById('advice').value=="NA"){
+		alert('กรุณาเลือกช่อง\"ข้อควรปฏิบัติก่อนพบแพทย์\"');
+		return false;
+	}
+	else if(document.getElementById('depcode').value=="NA"){
+		alert('กรุณาเลือกช่อง\"แผนกที่นัด\"');
+		return false;
+	}
+	return true;
 }
 
 </script>
@@ -654,143 +584,123 @@ function checktext(){
 		dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('date_surg'));
 	};
 
-function fncSubmit(strPage)
-{
-	if(strPage == "page1")
-	{
-		document.form1.action="appinsert_stricker.php";
+/* ใบนัดสติ๊กเกอร์ */
+function fncSubmit(strPage){
+	var testForm = checktext();
+	if( testForm === true ){
+		if(strPage == "page1"){
+			document.form1.action = "appinsert_stricker.php";
+		}
+		document.form1.submit();
 	}
-	
-	/*if(strPage == "page2")
-	{
-		document.form1.action="page2.cgi";
-	}	*/
-	
-	document.form1.submit();
 }
 </script>
 
 <TABLE border="0">
-<TR valign="top">
-	<TD>
-<form  name="form1" method="POST" action="appinsert1.php" target="_blank" onSubmit="return checktext();">
-<font face="Angsana New" size = '4'>กรุณาระบุการนัดมาเพื่อ เพื่อที่แผนกทะเบียนจะทำการค้นหา OPD Card ได้ถูกต้อง
-<br>
+	<TR valign="top">
+		<TD>
+			<form  name="form1" method="POST" action="appinsert1.php" target="_blank" onSubmit="return checktext();">
+				<font face="Angsana New" size = '4'>กรุณาระบุการนัดมาเพื่อ เพื่อที่แผนกทะเบียนจะทำการค้นหา OPD Card ได้ถูกต้อง
+				<br>
 
 <table border="0">
-  <tr><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
-    <td width="311"><font face="Angsana New">
-      <select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
-      <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
-      <option value="NA"><<นัดมาเพื่อ>></option>  
-	  <? } ?>
-<?
-      if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){
-	  $app = "select * from applist where status='Y' and applist ='มวลกระดูก'";
-	  }else{
-	  $app = "select * from applist where status='Y' ";
-	  }
-	  $row = mysql_query($app);
-	  while($result = mysql_fetch_array($row)){
-		  $str="";
-		if($result['applist']=="ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"){
-			$sql1 = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
-			$result1 = Mysql_Query($sql1);
-			$arr = Mysql_fetch_row($result1);
-			
-			if($arr[0] == "ADMICU" || $arr[0] == "ADMWF" || $arr[0] == "ADMVIP" || $arr[0] == "ADMOBG"){
-					$str= "  Selected  ";
-			}
-		}
-?>
-      	<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
-        <!--<option value="FU01 ตรวจตามนัด">ตรวจตามนัด</option>
-        <option value="FU02 ตามผลตรวจ">ตามผลตรวจ</option>
-        <option value="FU03 นอนโรงพยาบาล">นอนโรงพยาบาล</option>
-        <option value="FU04 ทันตกรรม">ทันตกรรม</option>
-        <option value="FU05 ผ่าตัด">ผ่าตัด</option>
-        <option value="FU06 สูติ">สูติ</option>
-        <option value="FU07 คลีนิกฝังเข็ม">คลีนิกฝังเข็ม</option>
-        <option value="FU08 Echo">Echo</option>
-        <option value="FU09 มวลกระดูก">มวลกระดูก</option>
-        <option value="FU10 กายภาพ">กายภาพ</option>
-        <option value="FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"
-
-
->ตรวจตามนัดพร้อมประวัติผู้ป่วยใน</option>-->
-       <!-- <option value="FU12 นวดแผนไทย">นวดแผนไทย</option>
-        //ไม่ได้ใช้ <option value="FU13 ส่องกระเพาะ">ส่องกระเพาะ</option>
-<option value="FU20 ส่องกระเพาะ(คลินิกพิเศษ)">ส่องกระเพาะ(คลินิกพิเศษ)</option>//ไม่ได้ใช้
-        <option value="FU13 ตรวจระบบทางเดินอาหาร">ตรวจระบบทางเดินอาหาร</option>
-        <option value="FU14 เจาะเลือดไม่พบแพทย์">เจาะเลือดไม่พบแพทย์</option>
-        <option value="FU15 OPD นอกเวลา">OPD นอกเวลาราชการ</option>
-        <option value="FU16 คลินิกพิเศษ">คลินิกศัลยกรรมนอกเวลาพิเศษ(ค่าบริการ 100 บาท)</option>
-        <option value="FU17 X-ray ไม่พบแพทย์">X-ray ไม่พบแพทย์</option>
-        <option value="FU18 ตัดไหมที่ ER ไม่พบแพทย์">ตัดไหมที่ ER ไม่พบแพทย์</option>
-        <option value="FU19 อัลตร้าซาวด์"> อัลตร้าซาวด์</option>
-        <option value="FU21 คลินิก COPD">คลินิก C OPD</option>
-        <option value="FU22 ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู">ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู</option>
-        <option value="FU23 OPD กายภาพ">OPD กายภาพ</option>
-        <option value="FU24 ตรวจตามนัด OPD จักษุ(ตา)">ตรวจตามนัด OPD จักษุ(ตา)</option>
-        <option value="FU25 CT Scan">CT Scan</option>
-        <option value="FU26 EMG">EMG</option>
-        <option value="FU27 X-ray ก่อนพบแพทย์">X-ray ก่อนพบแพทย์</option>
-        <option value="FU28 Lab ก่อนพบแพทย์">Lab ก่อนพบแพทย์</option>
-        <option value="FU29 X-ray + Lab ก่อนพบแพทย์">X-ray + Lab ก่อนพบแพทย์</option>
-        <option value="FU30 คลินิกโรคไต">คลินิกโรคไต</option>-->
-        <!-- นัดมาเพื่อ มีถึง FU30 -->
-        <?
-	  }
-		?>
-      </select>
-    </font></td>
-    <td width="280"><font face="Angsana New">
- <input type="text" id="detail2" name="detail2" size="20">
- <select size="1" name="detail_list" id="detail_list" style="display:none">
-<option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
-<option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
-<option value="ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่">ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่</option>
-</select></font></td></tr>
-
-  <tr style="display:none" id="setor">
-    <td>&nbsp;</td>
-    <td colspan="2">
-    <fieldset><legend>ใบเซตผ่าตัด</legend>
-    <table width="363">
-        <tr><td width="64">วัน/เดือน/ปี</td><td width="287"><input type="text" name="date_surg" id="date_surg" size="10">
-          เวลา
-          <select name="time1">
-            <option value="-" selected="selected">-</option>
-            <?php 
-				for($i=0;$i<=23;$i++){ 
-					echo "<Option value=\"".sprintf('%02d',$i)."\" ";
-						//if($nonconf_time1 == $i) echo " Selected ";
-					echo ">".sprintf('%02d',$i)."</Option>";
-				}?>
-          </select>
-:
-<select name="time2">
-  <option value="-" selected="selected">-</option>
-  <?php 
-			for($i=0;$i<=59;$i=$i+5){ 
-				echo "<Option value=\"".sprintf('%02d',$i)."\" ";
-					//	if($nonconf_time2 == $i) echo " Selected ";
-					echo ">".sprintf('%02d',$i)."</Option>";
-			}?>
-</select></td></tr>
-        <tr><td>การวินิจฉัย</td><td><font face="Angsana New">
-          <input type="text" id="ordetail1" name="ordetail1" size="30" />
-        </font></td></tr>
-        <tr><td>การผ่าตัด</td><td><font face="Angsana New">
-          <input type="text" id="ordetail2" name="ordetail2" size="30" />
-        </font></td></tr>
-        <tr><td>ชนิดดมยา</td><td><font face="Angsana New">
-          <input type="text" id="ordetail3" name="ordetail3" size="30" />
-        </font></td></tr>
-        <tr><td>หมายเหตุ</td><td><font face="Angsana New">
-          <textarea name="ordetail4" cols="30" rows="4" id="ordetail4"></textarea>
-        </font></td></tr>
-    </table>
+	<tr>
+		<td>
+			<font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font>
+		</td>
+		<td width="311">
+			<font face="Angsana New">
+			<select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
+				<?php if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
+				<option value="NA"><<นัดมาเพื่อ>></option>  
+				<?php } ?>
+				<?php
+				if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){
+					$app = "select * from applist where status='Y' and applist ='มวลกระดูก'";
+				}else{
+					$app = "select * from applist where status='Y' ";
+				}
+				$row = mysql_query($app);
+				
+				while($result = mysql_fetch_array($row)){
+					$str="";
+					if($result['applist']=="ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"){
+						$sql1 = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
+						$result1 = Mysql_Query($sql1);
+						$arr = Mysql_fetch_row($result1);
+						if($arr[0] == "ADMICU" || $arr[0] == "ADMWF" || $arr[0] == "ADMVIP" || $arr[0] == "ADMOBG"){
+							$str = "  Selected  ";
+						}
+					}
+					?>
+					<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
+					<?php
+				}
+				?>
+			</select>
+			</font>
+		</td>
+		<td width="280">
+			<font face="Angsana New">
+			<input type="text" id="detail2" name="detail2" size="20">
+			<select size="1" name="detail_list" id="detail_list" style="display:none">
+				<option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
+				<option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
+				<option value="ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่">ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่</option>
+			</select>
+			</font>
+		</td>
+	</tr>
+	<tr style="display:none" id="setor">
+		<td>&nbsp;</td>
+		<td colspan="2">
+		<fieldset><legend>ใบเซตผ่าตัด</legend>
+		<table width="363">
+			<tr>
+				<td width="64">วัน/เดือน/ปี</td><td width="287"><input type="text" name="date_surg" id="date_surg" size="10">
+					เวลา
+					<select name="time1">
+						<option value="-" selected="selected">-</option>
+						<?php 
+							for($i=0;$i<=23;$i++){ 
+								echo "<Option value=\"".sprintf('%02d',$i)."\" ";
+								echo ">".sprintf('%02d',$i)."</Option>";
+							}
+						?>
+					</select>
+					:
+					<select name="time2">
+						<option value="-" selected="selected">-</option>
+						<?php 
+							for($i=0;$i<=59;$i=$i+5){ 
+								echo "<Option value=\"".sprintf('%02d',$i)."\" ";
+								echo ">".sprintf('%02d',$i)."</Option>";
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>การวินิจฉัย</td>
+				<td>
+					<font face="Angsana New">
+						<input type="text" id="ordetail1" name="ordetail1" size="30" />
+					</font>
+				</td>
+			</tr>
+			<tr><td>การผ่าตัด</td><td><font face="Angsana New">
+				<input type="text" id="ordetail2" name="ordetail2" size="30" />
+				</font>
+			</td></tr>
+			<tr><td>ชนิดดมยา</td><td><font face="Angsana New">
+				<input type="text" id="ordetail3" name="ordetail3" size="30" />
+				</font>
+			</td></tr>
+			<tr><td>หมายเหตุ</td><td><font face="Angsana New">
+				<textarea name="ordetail4" cols="30" rows="4" id="ordetail4"></textarea>
+				</font>
+			</td></tr>
+    	</table>
     </fieldset>
     </td>
     </tr>
@@ -828,7 +738,7 @@ function fncSubmit(strPage)
 	   }
 
 	   ?>
-        <select size="1" name="capptime">
+        <select size="1" id="capptime" name="capptime">
           <option value="07:30 น. - 08:00 น.">07:30 น. - 08:00 น.</option>
           <option value="08:30 น. - 09:00 น.">08:30 น. - 09:00 น.</option>
           <option value="09:30 น. - 10:00 น.">09:30 น. - 10:00 น.</option>
@@ -841,12 +751,12 @@ function fncSubmit(strPage)
           <option value="18:30 น. - 19:00 น.">18:30 น. - 19:00 น.</option>
           </select>
          <? }else if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
-        <select size="1" name="capptime">
+        <select size="1" id="capptime" name="capptime">
           <option value="09:30 น.">09:30 น.</option>
           <option value="13:30 น.">13:30 น.</option>
           </select>         
         <?php }else{ ?>
-        <select size="1" name="capptime">
+        <select size="1" id="capptime" name="capptime">
           <option selected>&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3648;&#3623;&#3621;&#3634;&#3609;&#3633;&#3604;&gt;</option>
           <option selected>08:00 &#3609;. - 10.00 &#3609;.</option>
           <option>08:00 &#3609;. - 11.00 &#3609;.</option>
@@ -977,37 +887,199 @@ function fncSubmit(strPage)
       <option>U25&nbsp; CT Scan</option>
        <option>U26&nbsp; คลินิกโรคไต</option>
        <option>U27&nbsp; OPD PM&R</option>
-	<? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
-       <option selected="selected">U28&nbsp; ตรวจมวลกระดูก</option>
-     <? } ?>
-    </select>
-  </font></td>
-  <td>&nbsp;</td>
+		<?php if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
+		<option selected="selected">U28&nbsp; ตรวจมวลกระดูก</option>
+		<?php } ?>
+		</select>
+		</font>
+	</td>
+	<td>&nbsp;</td>
 </tr>
-<tr>
-  <td><font face="Angsana New">เบอร์โทรศัพท์ผู้ป่วย</font></td>
-  <td><font face="Angsana New">
-    <input type="text" name="telp" size="20" value="<?=$rowT['phone']?>" />
-  </font></td>
-  <td>&nbsp;</td>
-</tr>
-<tr>
-  <td colspan="2"><font face="Angsana New">*ถ้าผู้ป่วยเปลี่ยนแปลงหมายเลขโทรศัพท์ให้กรอกหมายเลขโทรศัพท์ใหม่แทนหมายเลขเดิม</font></td>
-  <td>&nbsp;</td>
-</tr>
-<tr>
-  <td colspan="2" align="center"><input type="submit" value="     ตกลง (A5)    " name="B1" /> <input name="btnButton1" type="button" value="ตกลง (ใบนัดสติ๊กเกอร์)"  onClick="JavaScript:fncSubmit('page1')">
-    <a target=_top  href="../nindex.htm"><< เมนู</a></td>
-  <td>&nbsp;</td>
-</tr>
+	<tr>
+		<td><font face="Angsana New">เบอร์โทรศัพท์ผู้ป่วย</font></td>
+		<td>
+			<font face="Angsana New">
+				<input type="text" name="telp" size="20" value="<?=$rowT['phone']?>" />
+			</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<font face="Angsana New">*ถ้าผู้ป่วยเปลี่ยนแปลงหมายเลขโทรศัพท์ให้กรอกหมายเลขโทรศัพท์ใหม่แทนหมายเลขเดิม</font>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="left" width="100%">
+<?php
+
+$months = array(
+	'มกราคม' => '01', 'กุมภาพันธ์' => '02','มีนาคม' => '03', 'เมษายน' => '04','พฤษภาคม' => '05', 'มิถุนายน' => '06',
+	'กรกฎาคม' => '07', 'สิงหาคม' => '08','กันยายน' => '09', 'ตุลาคม' => '10','พฤศจิกายน' => '11', 'ธันวาคม' => '12'
+);
+
+$th_day = array( 0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์' );
+
+// นับจำนวนที่นัดผู้ป่วย
+list($code, $dr_name) = explode(' ', $_POST['doctor']);
+$date_appoint = trim($_POST['date_appoint']);
+$sql = "SELECT `hn`,`apptime`
+FROM `appoint` 
+WHERE `appdate` = '$date_appoint' 
+AND `doctor` LIKE '$code%' 
+AND `apptime` != 'ยกเลิกการนัด';";
+$query = mysql_query($sql);
+
+// จำนวนนัดทั้งหมด
+$rows = mysql_num_rows($query);
+
+// แบ่งตามนัดเช้า-บ่าย
+$appoint_morning = 0;
+$appoint_afternoon = 0;
+while ( $item = mysql_fetch_assoc($query) ) {
+
+	preg_match('/\d+\:\d+/', $item['apptime'], $match);
+	$time_appoint = $match['0'];
+	if( $time_appoint < "12:00" ){
+		$appoint_morning++;
+	}elseif( $time_appoint >= "12:00" ){
+		$appoint_afternoon++;
+	}
+}
+
+// หาตำแหน่งของวันจาก $date_appoint
+list($day, $th_month, $th_year) = explode(' ', $date_appoint);
+$new_date = ($th_year-543).'-'.$months[$th_month].'-'.$day;
+$check_date = date('w', strtotime($new_date));
+
+// เช็กกับตารางที่จำกัดนัด
+$sql = "SELECT `dr_name`,`allday`,`date`,`user_row`,`morning`,`afternoon` 
+FROM `dr_limit_appoint` 
+WHERE `dr_name` LIKE '$code%' 
+AND `date` = '$check_date'";
+$query = mysql_query($sql);
+$item = mysql_fetch_assoc($query);
+$dr_limit_row = mysql_num_rows($query);
+
+$allday = (int) $item['allday'];
+$dr_limit = (int) $item['user_row'];
+$limit_morning = (int) $item['morning'];
+$limit_afternoon = (int) $item['afternoon'];
+
+// แจ้งเตือนข้อมูลการจำกัดนัด(ถ้ามีข้อมูล)
+if( $dr_limit_row > 0 ){
+	?>
+	<div style="border: 1px solid #c1bb00; text-align: center; background-color: #fffc99; margin-bottom: 4px;">
+		<p style="margin: 0;">จำกัดการนัดของ <?=$item['dr_name'];?></p>
+		<?php
+		if( $allday === 1 ){
+			?>
+			<p style="margin: 0;">วัน<?=$th_day[$check_date];?>ไม่เกิน <?=$dr_limit;?> คน</p>
+			<?php
+		}else{
+			?>
+			<p style="margin: 0;">วัน<?=$th_day[$check_date];?> ช่วงเช้าไม่เกิน <?=$limit_morning;?> คน และช่วงบ่ายไม่เกิน <?=$limit_afternoon;?> คน</p>
+			<?php
+		}
+		?>
+	</div>
+	<?php
+
+	// ถ้าจำกัดแบบทั้งวัน
+	if( $allday > 0 && $rows >= $dr_limit ){
+		
+		$get_day = (int) $item['date'];
+		?>
+		<span style="color: red;">
+			วัน<?=$th_day[$get_day];?> ที่ <?=$day;?> เดือน <?=$th_month.' '.$th_year;?> ยอดนัดผู้ป่วยของหมอ <?=$item['dr_name'];?> เต็มแล้วที่ <?=$dr_limit;?> คน
+		</span>
+		<br>
+		<a href="javascript: void(0);" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่
+		<?php
+		
+	}else{
+		?>
+		<input name="B1" type="submit" class="checkTimeRange" value="     ตกลง (A5)    " />
+		<!-- onClick="JavaScript:fncSubmit('page1')" -->
+		<input name="btnButton1" type="button" class="checkTimeRange" data="sticker" value="ตกลง (ใบนัดสติ๊กเกอร์)" >
+		<?php
+	}
+
+}else{
+	?>
+	<input name="B1" type="submit" class="checkTimeRange" value="     ตกลง (A5)    " />
+	<!-- onClick="JavaScript:fncSubmit('page1')" -->
+	<input name="btnButton1" type="button" class="checkTimeRange" data="sticker" value="ตกลง (ใบนัดสติ๊กเกอร์)" >
+	<?php
+}
+
+
+
+	
+
+	
+
+?>
+<script type="text/javascript">
+$(function(){
+	// ถ้าใน button หรือ input มันมี onclick สคริปจะทำงานหลัง eventhandler
+	$(document).on('click', '.checkTimeRange', function(ev){
+		
+		// ใบนัดสติ๊กเกอร์
+		var sticker = $(this).attr('data');
+		
+		// ตัดเฉพาะเวลาตัวแรก
+		var apptime = $('#capptime').val();
+		var patt = /\d+\:\d+/;
+		var testmatch = patt.exec(apptime);
+		
+		var dr_limit_row = parseInt('<?=$dr_limit_row;?>');
+
+		// นัดแบบทั้งวัน?
+		var allday = parseInt('<?=$allday;?>');
+
+		// จำนวนนัดเช้าและบ่าย
+		var appoint_morning = parseInt('<?=$appoint_morning;?>');
+		var appoint_afternoon = parseInt('<?=$appoint_afternoon;?>');
+
+		// จำนวนที่จำกัดเช้าและบ่าย
+		var limit_morning = parseInt('<?=$limit_morning;?>');
+		var limit_afternoon = parseInt('<?=$limit_afternoon;?>');
+
+		if( dr_limit_row > 0 && allday === 0 ){
+			if( testmatch['0'] < "12:00" && appoint_morning >= limit_morning ){
+				alert('ช่วงเช้านัดเต็มแล้ว กรุณาเลือกช่วงบ่าย หรือเปลี่ยนวันนัด');
+				ev.preventDefault();
+				return false;
+			}else if( testmatch['0'] > "12:00" && appoint_afternoon >= limit_afternoon ){
+				alert('ช่วงบ่ายนัดเต็มแล้ว กรุณาเลือกช่วงเช้า หรือเปลี่ยนวันนัด');
+				ev.preventDefault();
+				return false;
+			}
+		}
+		
+		// ถ้าคลิกจาก ออกใบนัดสติ๊กเกอร์
+		if( typeof(sticker) != 'undefined' ){
+			fncSubmit('page1');
+		}
+
+	});
+});
+</script>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
 </table>
 </font>
 <br />
 </p>
-
 	<input type="hidden" name="appd" value="<?php echo $appd; ?>">
-  </form>
-&nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a>
+</form>
+
+&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
+<br>
+&nbsp;&nbsp;&nbsp;<a target=_self  href='hnappoi1.php'>&lt;&lt; ออกใบนัดใหม่</a>
 </TD>
 	<TD>
 	
@@ -1020,340 +1092,7 @@ while($result2=mysql_fetch_array($rows2)){
 	$list_lab_check[$i]["detail"] = $result2['lab_listdetail'];
 	$i++;
 }
-/*$i=0;
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LIPID";
-	$list_lab_check[$i]["detail"] = "Lipid";
 
-$i++;
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TG";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-
-$i++;
-	$list_lab_check[$i]["code"] = "E";
-	$list_lab_check[$i]["detail"] = "E'Lyte";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGOT";
-	$list_lab_check[$i]["detail"] = "AST";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGPT";
-	$list_lab_check[$i]["detail"] = "ALT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALB";
-	$list_lab_check[$i]["detail"] = "Alb";
-	
-$i++;	
-	$list_lab_check[$i]["code"] = "CBC";
-	$list_lab_check[$i]["detail"] = "CBC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCT";
-	$list_lab_check[$i]["detail"] = "HCT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BG";
-	$list_lab_check[$i]["detail"] = "BG";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10530";
-	$list_lab_check[$i]["detail"] = "HIV VL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "VDRL";
-	$list_lab_check[$i]["detail"] = "VDRL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBSAG";
-	$list_lab_check[$i]["detail"] = "HBsAg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBSAB";
-	$list_lab_check[$i]["detail"] = "HBsAb";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBCAB";
-	$list_lab_check[$i]["detail"] = "HBcAb";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCV";
-	$list_lab_check[$i]["detail"] = "HCV";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10508";
-	$list_lab_check[$i]["detail"] = "HBeAg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10509";
-	$list_lab_check[$i]["detail"] = "HBeAg titer";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10517";
-	$list_lab_check[$i]["detail"] = "HBV VL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10522";
-	$list_lab_check[$i]["detail"] = "HCV VL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10523";
-	$list_lab_check[$i]["detail"] = "HCV genotype";
-
-$i++;
-	$list_lab_check[$i]["code"] = "HBTY";
-	$list_lab_check[$i]["detail"] = "Hb typing";
-		
-$i++;
-	$list_lab_check[$i]["code"] = "ESR";
-	$list_lab_check[$i]["detail"] = "ESR";	
-
-$i++;
-	$list_lab_check[$i]["code"] = "CRP";
-	$list_lab_check[$i]["detail"] = "CRP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "RF";
-	$list_lab_check[$i]["detail"] = "RF";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PSA";
-	$list_lab_check[$i]["detail"] = "PSA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFP";
-	$list_lab_check[$i]["detail"] = "AFP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CPK";
-	$list_lab_check[$i]["detail"] = "CPK";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10212";
-	$list_lab_check[$i]["detail"] = "Stool exam";
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Stool C/S";
-
-$i++;
-	$list_lab_check[$i]["code"] = "STOCB";
-	$list_lab_check[$i]["detail"] = "Stool occult blood";
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFB";
-	$list_lab_check[$i]["detail"] = "AFB";
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Sputum C/S";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PT";
-	$list_lab_check[$i]["detail"] = "PT,INR";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BLTI";
-	$list_lab_check[$i]["detail"] = "Bleeding time";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FER";
-	$list_lab_check[$i]["detail"] = "SF";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PTT";
-	$list_lab_check[$i]["detail"] = "PTT,Ratio";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "co2";
-	$list_lab_check[$i]["detail"] = "CO2";
-
-$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-$i++;
-	$list_lab_check[$i]["code"] = "k";
-	$list_lab_check[$i]["detail"] = "K";
-
-$i++;
-	$list_lab_check[$i]["code"] = "Cl";
-	$list_lab_check[$i]["detail"] = "Cl";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "Ca";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PH";
-	$list_lab_check[$i]["detail"] = "P";
-
-$i++;
-	$list_lab_check[$i]["code"] = "MAG";
-	$list_lab_check[$i]["detail"] = "Mg";
-
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN2";
-
-$i++;
-	$list_lab_check[$i]["code"] = "BUNHD";
-	$list_lab_check[$i]["detail"] = "BUN3";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10362";
-	$list_lab_check[$i]["detail"] = "Copper";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10360";
-	$list_lab_check[$i]["detail"] = "Cadmium";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "Iron";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10245";
-	$list_lab_check[$i]["detail"] = "Zinc";
-
-$i++;
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "SI";
-
-$i++;
-	$list_lab_check[$i]["code"] = "TIBC";
-	$list_lab_check[$i]["detail"] = "TIBC";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10979";
-	$list_lab_check[$i]["detail"] = "IPTH";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANCA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10617";
-	$list_lab_check[$i]["detail"] = "C3";
-	
-
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-CR";
-	$list_lab_check[$i]["detail"] = "Urine Cr";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10623";
-	$list_lab_check[$i]["detail"] = "C4";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ASO";
-	$list_lab_check[$i]["detail"] = "ASOtiter";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT";
-	$list_lab_check[$i]["detail"] = "Urine Protein";
-
-$i++;
-	$list_lab_check[$i]["code"] = "";
-	$list_lab_check[$i]["detail"] = "";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT24V";
-	$list_lab_check[$i]["detail"] = "24 hr. Urine Vol";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT24";
-	$list_lab_check[$i]["detail"] = "24 hr. Urine Protien";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10421";
-	$list_lab_check[$i]["detail"] = "Urine Microalbumin";
-	*/
 	$r=5;
 	$count = count($list_lab_check);
 
