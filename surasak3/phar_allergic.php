@@ -269,7 +269,7 @@ if( $view === false ){
 	
 	$hn = input_post('user_hn');
 	?>
-	<form action="phar_allergic.php" method="post">
+	<form action="phar_allergic.php?view=user" method="post">
 		<div class="col">
 			<div class="cell">
 				<label for="user_hn">HN: </label>
@@ -290,15 +290,20 @@ if( $view === false ){
 	$show = input_post('show');
 	if( $show === 'list' ){
 		$db = Mysql::load();
+		
+		$data = array();
+		$where = '';
+		if( !empty($hn) ){
+			$where = ' WHERE a.`hn` = :user_hn ';
+			$data = array(':user_hn' => $hn);
+		}
+
 		$sql = "SELECT a.*, b.`genname`,c.`yot`,c.`name`,c.`surname`
 		FROM `phar_allergic` AS a 
 		LEFT JOIN `druglst` AS b ON b.`drugcode` LIKE CONCAT(a.`drug_code`, '%') 
-		LEFT JOIN `opcard` AS c ON c.`hn` = a.`hn`";
-		$data = array();
-		if( !empty($hn) ){
-			$sql .= ' WHERE a.`hn` = :user_hn ';
-			$data = array(':user_hn' => $hn);
-		}
+		LEFT JOIN `opcard` AS c ON c.`hn` = a.`hn` 
+		$where
+		ORDER BY `date_save` DESC";
 
 		$db->select($sql, $data);
 		$items = $db->get_items();
