@@ -55,22 +55,6 @@ WHERE thidate LIKE '$date1%';
 ";
 mysql_query($sql_temp);
 
-/*
-// จำนวนผู้ป่วยทั้งหมดที่เข้าเคส
-$sql = "
-SELECT COUNT(id) AS total 
-FROM hyper_temp
-WHERE (`bp1` != '' OR `bp2` != '') 
-AND (
-	( bp1 <130 AND bp2 <80 AND (joint_disease_dm = 'Y' OR joint_disease_nephritic = 'Y' OR joint_disease_myocardial = 'Y' OR joint_disease_paralysis = 'Y') )
-	OR
-	( bp1 < 140 AND bp2 < 90 AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '') )
-)
-";
-$query = mysql_query($sql);
-$test = mysql_fetch_assoc($query);
-*/
-
 // จำนวนผู้ป่วย HT ทั้งหมดที่ไม่สนใจเคสต่างๆ
 $sql = "
 SELECT COUNT(`hn`) AS `rows`, DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`
@@ -128,18 +112,24 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 		<tr>
 			<td>1. มีโรคร่วมค่าความดันโลหิต &lt; 130/80 mmHg.</td>
 			<td></td>
-			<?php 			$sql = "
-			SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
-FROM hyper_temp
-WHERE (`bp1` != '' OR `bp2` != '') AND bp1 <130 
-AND bp2 <80 
-AND (joint_disease_dm = 'Y' OR joint_disease_nephritic = 'Y' OR joint_disease_myocardial = 'Y' OR joint_disease_paralysis = 'Y')
-GROUP BY MONTH( thidate );
-			";
+			<?php 
+			$sql = "SELECT COUNT(`hn`) AS rows, DATE_FORMAT(`thidate`,'%Y-%m') AS `thidate`,`bp1`,`bp2`,`joint_disease_dm`
+			FROM hyper_temp
+			WHERE (
+				`joint_disease_dm` = 'Y' 
+				OR `joint_disease_nephritic` = 'Y' 
+				OR `joint_disease_myocardial` = 'Y' 
+				OR `joint_disease_paralysis` = 'Y' 
+			) 
+			AND (`bp1` != '' OR `bp2` != '') 
+			AND bp1 <130 
+			AND bp2 <80 
+			GROUP BY MONTH(`thidate`);";
 			$q = mysql_query($sql);
 			$lists = array();
 			$in_month = array();
 			while($item = mysql_fetch_assoc($q)){
+				
 				$lists[$item['thidate']] = $item['rows'];
 				$in_month[$item['thidate']] = $item['rows'];
 			}
@@ -151,24 +141,61 @@ GROUP BY MONTH( thidate );
 				if( !is_null($lists[$key_search]) ){
 					$real_val = $lists[$key_search];
 				}
+
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
+					<span><?=$real_val;?></span>
 				</td>
-				<?php 			}
+				<?php 
+			}
 			?>
 		<tr/>
 		<tr>
+			<td>ที่มีโรคร่วมทั้งหมด</td>
+			<td></td>
+			<?php
+			// เอาเฉพาะโรคร่วมไม่สนใจความดัน
+			$sql = "SELECT COUNT(`hn`) AS rows, DATE_FORMAT(`thidate`,'%Y-%m') AS `thidate`,`bp1`,`bp2`,`joint_disease_dm`
+			FROM hyper_temp
+			WHERE (
+				`joint_disease_dm` = 'Y' 
+				OR `joint_disease_nephritic` = 'Y' 
+				OR `joint_disease_myocardial` = 'Y' 
+				OR `joint_disease_paralysis` = 'Y' 
+			) 
+			GROUP BY MONTH(`thidate`);";
+			$q = mysql_query($sql);
+			$disease_lists = array();
+			while($disease = mysql_fetch_assoc($q)){
+				$disease_lists[$disease['thidate']] = $disease['rows'];
+			}
+
+			foreach($months AS $key => $value){
+				$key_search = "$date1-$key";
+
+				$dis_txt = '';
+				if( !is_null($disease_lists[$key_search]) ){
+					$dis_txt = $disease_lists[$key_search];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span><?=$dis_txt;?></span>
+				</td>
+				<?php 
+			}
+			?>
+		</tr>
+		<tr>
 			<td>2. ไม่มีโรคร่วมค่าความดันโลหิต &lt; 140/90 mmHg.</td>
 			<td></td>
-			<?php 			$sql = "
-			SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
+			<?php 
+			$sql = "SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
 FROM hyper_temp
-WHERE (`bp1` != '' OR `bp2` != '') AND bp1 < 140 
+WHERE (`bp1` != '' OR `bp2` != '') 
+AND bp1 < 140 
 AND bp2 < 90 
 AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '')
-GROUP BY MONTH( thidate );
-			";
+GROUP BY MONTH( thidate );";
 			$q = mysql_query($sql);
 			$lists = array();
 			while($item = mysql_fetch_assoc($q)){
@@ -183,17 +210,54 @@ GROUP BY MONTH( thidate );
 				if( !is_null($lists[$key_search]) ){
 					$real_val = $lists[$key_search];
 				}
+				
 				?>
 				<td align="center" class="forntsarabun">
-					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
+					<span><?=$real_val;?></span>
 				</td>
-				<?php 			}
+				<?php 
+				}
 			?>
 		<tr/>
 		<tr>
+			<td>ที่ไม่มีโรคร่วมทั้งหมด</td>
+			<td></td>
+			<?php
+			// เอาเฉพาะโรคร่วมไม่สนใจความดัน
+			$sql = "SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
+			FROM hyper_temp
+			WHERE (
+				joint_disease_dm = '' 
+				AND joint_disease_nephritic = '' 
+				AND joint_disease_myocardial = '' 
+				AND joint_disease_paralysis = '' 
+			) GROUP BY MONTH( thidate );";
+			$q = mysql_query($sql);
+			$disease_lists = array();
+			while($disease = mysql_fetch_assoc($q)){
+				$disease_lists[$disease['thidate']] = $disease['rows'];
+			}
+
+			foreach($months AS $key => $value){
+				$key_search = "$date1-$key";
+
+				$dis_txt = '';
+				if( !is_null($disease_lists[$key_search]) ){
+					$dis_txt = $disease_lists[$key_search];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span><?=$dis_txt;?></span>
+				</td>
+				<?php 
+			}
+			?>
+		</tr>
+		<tr>
 			<td>จำนวนผู้ป่วยที่เข้าเคสในแต่ละเดือน</td>
 			<td></td>
-			<?php 			
+			<?php 
+			// จากข้อ1
 			foreach($months AS $key => $value){
 				$key_search = "$date1-$key";
 				
@@ -205,7 +269,8 @@ GROUP BY MONTH( thidate );
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
 				</td>
-				<?php 			}
+				<?php 
+			}
 			?>
 		</tr>
 		<tr>
@@ -223,7 +288,8 @@ GROUP BY MONTH( thidate );
 				<td align="center" class="forntsarabun">
 					<span title="<?php echo ""; ?>"><?php echo $real_val;?></span>
 				</td>
-				<?php 			}
+				<?php 
+			}
 			?>
 		</tr>
 	</table>

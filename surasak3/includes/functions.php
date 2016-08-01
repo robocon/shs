@@ -316,6 +316,9 @@ function get_date_bc($format = false){
  *
  * $long	bool	เป็นการเรียกดูปีแบบเต็มรูปแบบ
  * $en		bool	เรียกดูปีแบบ ค.ศ.
+ * 
+ * get_year_checkup(); // 59
+ * get_year_checkup(true); // 2559
  */
 function get_year_checkup($long = false, $en = false){
 	$d = date('d');

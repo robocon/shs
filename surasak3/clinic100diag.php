@@ -213,7 +213,8 @@ If (!empty($hn)){
 <option value="MD107 รวี อัศวกิติพงษ์" >MD107 รวี อัศวกิติพงษ์</option> 
 <option value="MD117 แสงระวี บุรีคำ" >MD117 แสงระวี บุรีคำ</option> 
 <option value="MD122 นวมน สุนทรวราภาส" >MD122 นวมน สุนทรวราภาส</option> 
-<option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option> 
+<option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option>
+<option value="MD125 จรรยวรรธน์  สร้างสมวงษ์" >MD125 จรรยวรรธน์  สร้างสมวงษ์</option> 
 </select>
 <?
 	print "<br><br>ราคา :";

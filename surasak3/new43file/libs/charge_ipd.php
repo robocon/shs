@@ -160,9 +160,9 @@ $zipLists[] = $filePath;
 
 
 $header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE\r\n";
-$txt = $header.$txt;
+$charge_ipd_txt = $header.$txt;
 $qofPath = $dirPath.'/qof_charge_ipd.txt';
-file_put_contents($qofPath, $txt);
+file_put_contents($qofPath, $charge_ipd_txt);
 $qofLists[] = $qofPath;
 
 

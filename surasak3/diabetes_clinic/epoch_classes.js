@@ -38,13 +38,13 @@ function Epoch(name,mode,targetelement,multiselect) {
 	function setLang() {
 		self.daylist = new Array('อ.','จ.','อ.','พ.','พฤ.','ศ.','ส.','อ.','จ.','อ.','พ.','พฤ.','ศ.','ส.');
 		self.months_sh = new Array('มค.','กพ.','มีค.','เมย.','พค.','มิย.','กค.','สค.','กย.','ตค.','พย.','ธค.');
-		self.monthup_title = 'Go to the next month';
-		self.monthdn_title = 'Go to the previous month';
-		self.clearbtn_caption = 'Clear';
-		self.clearbtn_title = 'Clears any dates selected on the calendar';
+		self.monthup_title = 'ไปเดือนก่อนหน้า';
+		self.monthdn_title = 'ไปเดือนถัดไป';
+		self.clearbtn_caption = 'ล้างค่า';
+		self.clearbtn_title = 'ลบข้อมูลในช่อง';
 		self.maxrange_caption = 'This is the maximum range';
-		self.closebtn_caption = 'Close';
-		self.closebtn_title = 'Close the calendar';
+		self.closebtn_caption = 'ปิด';
+		self.closebtn_title = 'ปิดหน้าต่างปฏิทิน';
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -53,7 +53,7 @@ function Epoch(name,mode,targetelement,multiselect) {
 	function setDays() {
 		self.daynames = new Array();
 		var j=0;
-		for(var i=self.startDay;i<self.startDay + 7;i++) {
+		for(var i=self.startDay; i < self.startDay + 7; i++) {
 			self.daynames[j++] = self.daylist[i];
 		}
 		self.monthDayCount = new Array(31,((self.curDate.getFullYear() - 2000) % 4 ? 28 : 29),31,30,31,30,31,31,30,31,30,31);
