@@ -1,17 +1,32 @@
-<a target=_self  href='../nindex.htm'><<ไปเมนู</a>
-<?
+<?php
 session_start();
-include("connect.inc");
+include 'connect.inc';
 
+$user_group = trim($_SESSION['smenucode']);
+$user_id = trim($_SESSION['sRowid']);
+if($user_group !== 'ADM' AND $user_group !== 'ADMPHAR' AND $user_group !== 'ADMPHARX'){
+	$sql = "SELECT * FROM `drug_user_ward` 
+	WHERE `user_id` = '$user_id'";
+	$query = mysql_query($sql);
+	$user_row = mysql_num_rows($query);
+	if( $user_row === 0 ){
+		echo 'ไม่สามารถเข้าใช้งานได้ กรุณาติดต่อห้องยา';
+		exit;
+	}
+}
+
+
+
+?>
+<p><a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a> | <a href='drug_user_ward.php'>จำกัดผู้ใช้ระบุยาประจำตัว</a></p>
+<?php
 if($_SESSION['sOfficer']!=''){
 	echo "<br><span class='font1'>".$_SESSION['sOfficer']."</span>";
 ?>
 <style type="text/css">
-<!--
 .font1 {
 	font-family: AngsanaUPC;
 }
--->
 </style>
 
 <form id="form1" name="form1" method="post" action="drug_control.php">

@@ -1,15 +1,13 @@
 <?php
 include 'bootstrap.php';
 
-/*
-DROP TABLE IF EXISTS `drug_user_ward`;
-
-CREATE TABLE `drug_user_ward` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-*/
+$user_session = get_session('sOfficer');
+if( empty($user_session) ){
+	?>
+	<p>Session หมดอายุ <a href="../nindex.htm">คลิกที่นี่</a>เพื่อ Login ใหม่</p>
+	<?php
+	exit;
+}
 
 $db = Mysql::load();
 $action = input('action');
@@ -27,7 +25,7 @@ if ( $action === false ) {
 	'ADMDR','ADMDR1','ADMMON','ADMNEW','ADMNHSO','ADMNURSE',
 	'ADMOPD','ADMqpha','ADMSCG','ADMSSO','ADMWIN',
 	'ADMMAINCHKUP','ADMMMM','CODER','ADMSTD','ADMcom1',
-	'ADMCT','ADMCMS'
+	'ADMCT','ADMCMS','ADMFINANCE','ADMSTD1'
 	)
 	ORDER BY `menucode`,`row_id` ASC";
 	$db->select($sql);
@@ -36,7 +34,6 @@ if ( $action === false ) {
 		'ADMDEN' => 'ทันตกรรม',
 		'ADMER' => 'ห้องฉุกเฉิน',
 		'ADMEYE' => 'ห้องตา',
-		'ADMFINANCE' => 'การเงิน',
 		'ADMFOD' => 'โรงครัว',
 		'ADMHEADWARD' => 'พยาบาล',
 		'ADMHEM' => 'ไตเทียม',
@@ -60,6 +57,26 @@ if ( $action === false ) {
 	);
 	
 	?>
+	<style type="text/css">
+	optgroup, option {
+		font-family: 'TH SarabunPSK';
+	}
+	#user{
+		width: 320px;
+		height: 200px;
+	}
+	</style>
+	<?php
+	include 'templates/classic/nav.php';
+	?>
+	<div class="col width-fill mobile-width-fill">
+		<div class="cell">
+			<ul class="col nav clear">
+				<li class="active"><a href="drug_control_index.php">ระบุยาประจำตัว</a></li>
+			</ul>
+		</div>
+	</div>
+	
 	<div class="col">
 		<div class="cell">
 			<form action="drug_user_ward.php" method="post">
@@ -71,8 +88,7 @@ if ( $action === false ) {
 				<div class="col">
 					<div class="cell">
 						<label for="">เลือกผู้ใช้งาน</label>
-						<select name="user" id="user">
-							<option value="">รายชื่อแยกตามหน่วยงาน</option>
+						<select name="user" id="user" multiple>
 							<?php
 							$items = $db->get_items();
 							// $prev_item = false;
@@ -95,7 +111,6 @@ if ( $action === false ) {
 								?>
 								<option value="<?=$item['row_id'];?>"><?=$item['name'];?></option>
 								<?php
-								
 								if ( $next_item !== $menu_code ) {
 									?>
 									</optgroup>
@@ -112,7 +127,7 @@ if ( $action === false ) {
 				</div>
 				<div class="col">
 					<div class="cell">
-						<button type="submit">บันทึก</button>
+						<button type="submit" id="sumitBtn">บันทึก</button>
 						<input type="hidden" name="action" value="save">
 					</div>
 				</div>
@@ -154,13 +169,12 @@ if ( $action === false ) {
 							$i = 1;
 							foreach( $items as $key => $item ){
 								$menucode = trim($item['menucode']);
-								
 								?>
 								<tr>
 									<td><?=$i;?></td>
 									<td><?=$item['name'];?></td>
 									<td><?=$checklist[$menucode];?></td>
-									<td><a href="drug_user_ward.php?action=delete&id=<?=$item['id'];?>">ลบ</a></td>
+									<td><a class="delete" href="drug_user_ward.php?action=delete&id=<?=$item['id'];?>">ลบ</a></td>
 								</tr>
 								<?php
 								$i++;
@@ -172,13 +186,30 @@ if ( $action === false ) {
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+	$(function(){
+		$(document).on('click', '#sumitBtn', function(){
+			var user_id = $('#user').val();
+			if( user_id == '' ){
+				return false;
+			}
+		});
+
+		$(document).on('click', '.delete', function(){
+			var c = confirm('ยืนยันลบข้อมูล?');
+			if( c === false ){
+				return false;
+			}
+		});
+	});
+	</script>
 	<?php
 	include 'templates/classic/footer.php';
 }elseif( $action === 'save' ){
 	
 	$user_id = input_post('user');
-	$sql = "INSERT INTO `smdb`.`drug_user_ward` (`user_id`) VALUES ( :user_id );";
-	$data = array(':user_id' => $user_id);
+	$sql = "INSERT INTO `smdb`.`drug_user_ward` (`user_id`,`author`) VALUES ( :user_id, :author );";
+	$data = array(':user_id' => $user_id, ':author' => $user_session);
 	$test_insert = $db->insert($sql, $data);
 
 	redirect('drug_user_ward.php', 'บันทึกข้อมูลเรียบร้อย');
