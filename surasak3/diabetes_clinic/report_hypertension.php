@@ -110,7 +110,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			<td align="center" class="forntsarabun">ธ.ค.</td>
 		</tr>
 		<tr>
-			<td>1. มีโรคร่วมค่าความดันโลหิต &lt; 130/80 mmHg.</td>
+			<td>1. มีโรคร่วมค่าความดันโลหิต &lt; 140/80 mmHg.</td>
 			<td></td>
 			<?php 
 			$sql = "SELECT COUNT(`hn`) AS rows, DATE_FORMAT(`thidate`,'%Y-%m') AS `thidate`,`bp1`,`bp2`,`joint_disease_dm`
@@ -122,8 +122,8 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				OR `joint_disease_paralysis` = 'Y' 
 			) 
 			AND (`bp1` != '' OR `bp2` != '') 
-			AND bp1 <130 
-			AND bp2 <80 
+			AND bp1 < 140 
+			AND bp2 < 80 
 			GROUP BY MONTH(`thidate`);";
 			$q = mysql_query($sql);
 			$lists = array();

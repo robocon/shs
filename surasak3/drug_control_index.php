@@ -4,18 +4,19 @@ include 'connect.inc';
 
 $user_group = trim($_SESSION['smenucode']);
 $user_id = trim($_SESSION['sRowid']);
-if($user_group !== 'ADM' AND $user_group !== 'ADMPHAR' AND $user_group !== 'ADMPHARX'){
-	$sql = "SELECT * FROM `drug_user_ward` 
-	WHERE `user_id` = '$user_id'";
+$allow_group = array('ADM', 'ADMPHA', 'ADMPHARX');
+
+if( in_array($user_group, $allow_group) === false ){
+
+	$sql = "SELECT * FROM `drug_user_ward` WHERE `user_id` = '$user_id'";
 	$query = mysql_query($sql);
 	$user_row = mysql_num_rows($query);
-	if( $user_row === 0 ){
+	if( empty($user_row) ){
 		echo 'ไม่สามารถเข้าใช้งานได้ กรุณาติดต่อห้องยา';
 		exit;
 	}
+	
 }
-
-
 
 ?>
 <p><a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a> | <a href='drug_user_ward.php'>จำกัดผู้ใช้ระบุยาประจำตัว</a></p>
@@ -54,7 +55,7 @@ if($_SESSION['sOfficer']!=''){
         <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
         <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
       </select>
-      <? 
+      <?php
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
 			  
@@ -66,7 +67,7 @@ if($_SESSION['sOfficer']!=''){
       <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>>
         <?=$i;?>
         </option>
-      <?
+      <?php
 				}
 				echo "<select>";
 				?>
@@ -88,7 +89,7 @@ if($_SESSION['sOfficer']!=''){
         <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
         <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
       </select>
-      <? 
+      <?php
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
 			  
@@ -100,7 +101,7 @@ if($_SESSION['sOfficer']!=''){
       <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>>
         <?=$i;?>
         </option>
-      <?
+      <?php
 				}
 				echo "<select>";
 				?>
@@ -114,7 +115,7 @@ if($_SESSION['sOfficer']!=''){
 </table>
 </form>
 <span class="font1">
-<?
+<?php
 }else{
 	echo "ชื่อ login หมดเวลากรุณา login ใหม่";
 	echo "<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";

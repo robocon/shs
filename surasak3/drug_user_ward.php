@@ -87,7 +87,7 @@ if ( $action === false ) {
 				</div>
 				<div class="col">
 					<div class="cell">
-						<label for="">เลือกผู้ใช้งาน</label>
+						<div>เลือกผู้ใช้งาน</div>
 						<select name="user" id="user" multiple>
 							<?php
 							$items = $db->get_items();
