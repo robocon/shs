@@ -69,8 +69,19 @@ include("connect.inc");
     <tr>
       <td colspan="11" align="center">
       <input type="hidden" name="sump" value="<?=$r?>" />
-      <input type="submit" name="save" id="save" value="ตกลง" />
-      <button id="shsBtn">ใบเบิกค่ายสุรศักดิ์</button>
+		<?php
+		$smenucode = trim($_SESSION['smenucode']);
+		if( $smenucode === 'ADMPHA' OR $smenucode === 'ADMPHARX' OR $smenucode === 'ADM' ){
+			?>
+			<input type="submit" name="save" id="save" value="ตกลง" />
+			<?php
+		}else{ // ถ้าเป็นแผนกอื่น
+			?>
+			<button id="shsBtn">ใบเบิกค่ายสุรศักดิ์</button>
+			<?php
+		}
+		?>
+		<button id="shsBtn">ใบเบิกค่ายสุรศักดิ์</button>
     </td>
     </tr>
   </table>
@@ -78,14 +89,15 @@ include("connect.inc");
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$(document).on('click', '#shsBtn', function(e){
-			e.preventDefault();
-			$('#form1').attr('action','drug_bill_lading.php').submit();
-			// var fname = $('#form1').attr('href');
-			
-			// console.log(fname);
-			return false;
-			// $('#form1').submit();
-		});
+
+		// เช็กดูก่อนว่ามีปุ่มนี้รึป่าว
+		if( $('#shsBtn').length > 0 ){
+			$(document).on('click', '#shsBtn', function(e){
+				e.preventDefault();
+				$('#form1').attr('action','drug_bill_lading.php').submit();
+				return false;
+			});
+		}
+		
 	});
 </script>

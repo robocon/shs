@@ -1,5 +1,4 @@
 <?php
-
 include 'bootstrap.php';
 
 include 'fpdf_thai/fpdf_thai.php';
@@ -166,16 +165,19 @@ $pdf->Cell(9, 7, 'บาท', 1, 1, 'C');
 $pdf->SetXY(172, 52);
 $pdf->Cell(6, 7, 'สต.', 1, 1, 'C');
 
-// ทดสอบสร้างตาราง
+// ทดสอบสร้างตารางด้านซ้าย
+// @todo
+// [] สร้าง Array List ที่เก็บข้อมูลเป็นรายการตามจำนวนของช่อง
+// [] เงื่อนไขคือ ถ้าใน Array List ยังมีค่าก็ให้ใส่รายละเอียดลงไป แต่ถ้าไม่มีให้เป็นค่าว่าง
 $line_start = 59;
 $line_height = 7;
 for( $i=1; $i<=17; $i++){
 
-    $pdf->Rect(8, $line_start, 50, $line_height);
-    $pdf->Rect(58, $line_start, 10, $line_height);
-    $pdf->Rect(68, $line_start, 10, $line_height);
-    $pdf->Rect(78, $line_start, 9, $line_height);
-    $pdf->Rect(87, $line_start, 6, $line_height);
+    $pdf->Rect(8, $line_start, 50, $line_height); //รายการ
+    $pdf->Rect(58, $line_start, 10, $line_height); //จำนวนเบิก
+    $pdf->Rect(68, $line_start, 10, $line_height); //จ่ายจริง
+    $pdf->Rect(78, $line_start, 9, $line_height); //เป็นเงิน(บาท)
+    $pdf->Rect(87, $line_start, 6, $line_height); //เป็นเงิน(สต.)
 
     $line_start += 7;
 }

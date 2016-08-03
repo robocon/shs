@@ -1,6 +1,15 @@
 <?php
-session_start();
-include("connect.inc");
+// session_start();
+// include 'connect.inc';
+// include 'includes/mysqli.php';
+
+include 'bootstrap.php';
+
+// $db = Mysql::load();
+// $db->select("CALL `drug_bill`('¡ÄÉ³ÐÈÑ¡´Ôì ¡Ñ¹¸ÃÊ','2559-01-03','2559-08-03');");
+// $test = $db->get_items();
+// dump($test);
+// exit;
 
 function jschars($str){
     $str = str_replace("\\\\", "\\\\", $str);
@@ -221,24 +230,13 @@ if($rptday1 != ""){
 		// var_dump($sel2);
 		// $row2 = mysql_query($sel2);
 
-		$dbi = mysqli_connect("localhost", "root", "1234", "smdb2", "3306");
-		$res = mysqli_query($dbi, "set names utf8", MYSQLI_USE_RESULT);
-		mysqli_free_result($res);
+		$db = Mysql::load();
+		$db->select("CALL `drug_bill`('".$_SESSION['sOfficer']."','$ymd1','$ymd2');");
+		$items = $db->get_items();
 
-		$sql = "CALL drug_bill();";
-		$res = mysqli_query($dbi, $sql, MYSQLI_STORE_RESULT) or die( mysqli_error($dbi) );
-		while ( $row = mysqli_fetch_all($res) ) {
-			# code...
-			echo "<pre>";
-			var_dump($row);
-			echo "</pre>";
-		}
-		mysqli_free_result($res);
-		mysqli_close($dbi);
-		exit;
-
-		// exit;
-		while($result2 = mysql_fetch_assoc($row2)){
+		// while($result2 = mysql_fetch_assoc($row2)){
+		foreach( $items as $key => $result2 ){
+			// dump();
 			
 			$amount = $result2['amount'];
 

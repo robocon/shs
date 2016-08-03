@@ -101,6 +101,7 @@ a{
 	$query = "SELECT count( hn ) , hn, doctor 
 	FROM `appoint` 
 	WHERE appdate = '$appd' ".$doctor3." 
+	AND apptime != 'ยกเลิกการนัด' 
 	GROUP BY hn 
 	HAVING count( hn ) >= 1 ";
 	$result = mysql_query($query);
