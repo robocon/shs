@@ -44,7 +44,6 @@ if ( $action === false ) {
 		'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
 		'ADMNID' => 'ฝังเข็ม',
 		'ADMOBG' => 'สูติ',
-		'ADMOPD' => '',
 		'ADMPH' => 'ห้องยา',
 		'ADMPHA' => 'ห้องยา',
 		'ADMPHARX' => 'เภสัช',
@@ -66,12 +65,10 @@ if ( $action === false ) {
 		height: 200px;
 	}
 	</style>
-	<?php
-	include 'templates/classic/nav.php';
-	?>
 	<div class="col width-fill mobile-width-fill">
 		<div class="cell">
 			<ul class="col nav clear">
+				<li class="active"><a href="../index.htm">หน้าหลัก</a></li>
 				<li class="active"><a href="drug_control_index.php">ระบุยาประจำตัว</a></li>
 			</ul>
 		</div>

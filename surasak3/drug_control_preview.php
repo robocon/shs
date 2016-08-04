@@ -46,7 +46,10 @@ include("connect.inc");
 				<td>
 					<input type="hidden" name="drx<?=$r?>" value="<?=$_POST['drx'.$p]?>" /><?=$_POST['drx'.$p]?>
 				</td>
-				<td><?=$result2['tradname']?></td>
+				<td>
+					<?=$result2['tradname']?>
+					<input type="hidden" name="tname<?=$r;?>" value="<?=$result2['tradname']?>">
+				</td>
 				<td align="center"><?=$result2['min']?></td>
 				<td align="center"><?=$result2['max']?></td>
 				<td align="center"><?=$result2['stock']?></td>
@@ -81,7 +84,6 @@ include("connect.inc");
 			<?php
 		}
 		?>
-		<button id="shsBtn">ใบเบิกค่ายสุรศักดิ์</button>
     </td>
     </tr>
   </table>

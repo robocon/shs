@@ -1,6 +1,19 @@
 <?php
 include 'bootstrap.php';
 
+$items_left = array();
+$items_right = array();
+$rows = (int) $_POST['sump'];
+$full_items = array();
+
+for ($i=1; $i <= $rows; $i++) { 
+    $full_items[$i] = array(
+        'tradename' => trim($_POST['tname'.$i]),
+        'rxdrug' => $_POST['rxdrug'.$i],
+        'num' => (int)$_POST['import'.$i]
+    );
+}
+
 include 'fpdf_thai/fpdf_thai.php';
 
 class PDF_JavaScript extends FPDF_Thai {
@@ -89,99 +102,212 @@ class PDF_AutoPrint extends PDF_JavaScript{
             $data[] = explode(';',chop($line));
         return $data;
     }
+
+    function Header(){
+
+        $date_serve = $GLOBALS['date_serve'];
+
+        $this->SetXY(8, 4);
+        $this->SetFont('THSarabun', 'B', 25);
+        $this->Cell(170, 15, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 0, 1, 'C');
+
+        $this->Rect(8, 19, 170, 11); // กรอบ
+        $this->SetXY(10, 19);
+        $this->SetFont('THSarabun', '', 17);
+        $this->Cell(50, 11, 'เลขที่ ..............................', 0, 1, 'L');
+        $this->SetXY(75, 19);
+        $this->SetFont('THSarabun', 'B', 38);
+        $this->Cell(30, 11, 'ใบเบิก', 0, 1, 'C');
+        $this->SetXY(108, 19);
+        $this->SetFont('THSarabun', '', 17);
+        $this->Cell(70, 11, 'วันที่ ...............'.$date_serve.'...............', 0, 1, 'R');
+
+        $this->Rect(8, 30, 170, 11); // กรอบ
+        $this->SetXY(10, 30);
+        $this->Cell(80, 11, 'หน่วยจ่าย ....................................................', 0, 1, 'L');
+        $this->SetXY(98, 30);
+        $this->Cell(80, 11, 'หน่วยเบิก ....................................................', 0, 1, 'R');
+
+        $this->SetFont('THSarabun', '', 17); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+
+        // หัวข้อรายการด้านซ้าย
+        $this->SetXY(8, 41);
+        $this->Cell(50, 18, 'รายการ', 1, 1, 'C');
+
+        $this->Rect(58, 41, 10, 18);
+        $this->SetFont('THSarabun', '', 12);
+        $this->SetXY(58, 45);
+        $this->MultiCell(10, 5, 'จำนวนเบิก', 0, 'C');
+
+        $this->Rect(68, 41, 10, 18);
+        $this->SetXY(68, 45);
+        $this->MultiCell(10, 5, 'จ่าย จริง', 0, 'C');
+
+        $this->SetXY(78, 41);
+        $this->Cell(15, 11, 'เป็นเงิน', 1, 1, 'C');
+        $this->SetXY(78, 52);
+        $this->Cell(9, 7, 'บาท', 1, 1, 'C');
+        $this->SetXY(87, 52);
+        $this->Cell(6, 7, 'สต.', 1, 1, 'C');
+
+        // หัวข้อรายการด้านขวา
+        $this->SetXY(93, 41);
+        $this->SetFont('THSarabun', '', 17);
+        $this->Cell(50, 18, 'รายการ', 1, 1, 'C');
+
+        $this->Rect(143, 41, 10, 18);
+        $this->SetFont('THSarabun', '', 12);
+        $this->SetXY(143, 45);
+        $this->MultiCell(10, 5, 'จำนวนเบิก', 0, 'C');
+
+        $this->Rect(153, 41, 10, 18);
+        $this->SetXY(153, 45);
+        $this->MultiCell(10, 5, 'จ่าย จริง', 0, 'C');
+
+        $this->SetXY(163, 41);
+        $this->Cell(15, 11, 'เป็นเงิน', 1, 1, 'C');
+        $this->SetXY(163, 52);
+        $this->Cell(9, 7, 'บาท', 1, 1, 'C');
+        $this->SetXY(172, 52);
+        $this->Cell(6, 7, 'สต.', 1, 1, 'C');
+    }
+
+    function Footer(){
+        $this->SetXY(8, 187);
+        $this->Cell(85, 6, 'ตรวจแล้วเห็นว่า', 0, 1);
+        $this->SetXY(93, 187);
+        $this->Cell(85, 6, 'ขอเบิก สป. ตามที่ระบุไว้ในช่อง "จำนวนเบิก" และขอมอบ', 0, 1, 'R');
+
+        $this->SetXY(8, 193);
+        $this->Cell(85, 6, 'ควรจ่าย สป. ให้ตามจำนวนในช่อง "จ่ายจริง"', 0, 1);
+        $this->SetXY(93, 193);
+        $this->Cell(85, 6, 'ให้.................................................................เป็นผู้รับแทน', 0, 1, 'R');
+
+        $this->SetXY(8, 199);
+        $this->Cell(45, 11, '...................................................', 0, 1, 'B');
+        $this->SetXY(58, 199);
+        $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
+        $this->SetXY(94, 199);
+        $this->Cell(45, 11, '...................................................', 0, 1, 'B');
+        $this->SetXY(144, 199);
+        $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
+
+        $this->SetXY(8, 210);
+        $this->Cell(45, 7, 'ผู้ตรวจจ่าย', 0, 1, 'C');
+        $this->SetXY(58, 210);
+        $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
+        $this->SetXY(94, 210);
+        $this->Cell(45, 7, 'ผู้เบิก', 0, 1, 'C');
+        $this->SetXY(144, 210);
+        $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
+
+        $this->Line(8, 219, 178, 219);
+
+        $this->SetXY(8, 219);
+        $this->Cell(170, 7, 'ได้จ่าย สป. ตามรายการจำนวนที่แจ้งไว้ในช่องจ่ายจริงแล้ว ได้รับ สป. ตามรายการและจำนวนที่แจ้งไว้ในช่องจ่ายจริงแล้ว', 0, 1, 'C');
+
+        $this->SetXY(8, 224);
+        $this->Cell(45, 11, '...................................................', 0, 1, 'B');
+        $this->SetXY(58, 224);
+        $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
+        $this->SetXY(94, 224);
+        $this->Cell(45, 11, '...................................................', 0, 1, 'B');
+        $this->SetXY(144, 224);
+        $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
+
+        $this->SetXY(8, 235);
+        $this->Cell(45, 7, 'ผู้จ่ายของ', 0, 1, 'C');
+        $this->SetXY(58, 235);
+        $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
+        $this->SetXY(94, 235);
+        $this->Cell(45, 7, 'ผู้รับของ', 0, 1, 'C');
+        $this->SetXY(144, 235);
+        $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
+    }
 }
 
-$db = Mysql::load();
+$m = date('m');
+$date_serve = date('d').' '.$def_fullm_th[$m].' '.( date('Y') + 543 );
 
 $pdf = new PDF_AutoPrint("P",'mm', "A4");
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
-$pdf->SetAutoPageBreak(false, 0);
+$pdf->SetAutoPageBreak(true, 0);
 $pdf->SetMargins(8, 4);
-// $pdf->SetTopMargin(2);
 $pdf->AddPage();
-$pdf->SetFont('THSarabun', '', 17); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
-// $pdf->SetFontSize(17);
+$pdf->SetFont('THSarabun', '', 15);
 
-$pdf->SetXY(8, 4);
-$pdf->SetFont('THSarabun', 'B', 25);
-$pdf->Cell(170, 15, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 0, 1, 'C');
+$max_row = 34; // จำนวนแถวต่อหนึ่งหน้ากระดาษ
 
-$pdf->Rect(8, 19, 170, 11); // กรอบ
-$pdf->SetXY(10, 19);
-$pdf->SetFont('THSarabun', '', 17);
-$pdf->Cell(50, 11, 'เลขที่ ..............................', 0, 1, 'L');
-$pdf->SetXY(75, 19);
-$pdf->SetFont('THSarabun', 'B', 38);
-$pdf->Cell(30, 11, 'ใบเบิก', 0, 1, 'C');
-$pdf->SetXY(108, 19);
-$pdf->SetFont('THSarabun', '', 17);
-$pdf->Cell(70, 11, 'วันที่ ....................................................', 0, 1, 'R');
+$y_start = 59;
+$line_height = 7.5;
 
-$pdf->Rect(8, 30, 170, 11); // กรอบ
-$pdf->SetXY(10, 30);
-$pdf->Cell(80, 11, 'หน่วยจ่าย ....................................................', 0, 1, 'L');
-$pdf->SetXY(98, 30);
-$pdf->Cell(80, 11, 'หน่วยเบิก ....................................................', 0, 1, 'R');
+// หาจำนวนเต็มของตาราง
+$item_rows = count($full_items);
+$full_rows = ( ceil(( $item_rows / $max_row )) ) * $max_row ;
 
-// รายการด้านซ้าย
-$pdf->SetXY(8, 41);
-$pdf->Cell(50, 18, 'รายการ', 1, 1, 'C');
+$row_i = 0;
+$line_num = 0; // นับจำนวนแถวของ column ซ้ายและขวา
+$item_i = 0;
 
-$pdf->Rect(58, 41, 10, 18);
-$pdf->SetFont('THSarabun', '', 12);
-$pdf->SetXY(58, 45);
-$pdf->MultiCell(10, 5, 'จำนวนเบิก', 0, 'C');
+for( $i=1; $i<=$full_rows; $i++){
+    ++$line_num;
+    ++$row_i;
 
-$pdf->Rect(68, 41, 10, 18);
-$pdf->SetXY(68, 45);
-$pdf->MultiCell(10, 5, 'จ่าย จริง', 0, 'C');
+    // ถ้าเป็น column ซ้ายมือจะใช้ค่า X ตามนี้
+    if( $row_i <= 17 ){
+        $x1 = 8;
+        $x2 = 58;
+        $x3 = 68;
+        $x4 = 78;
+        $x5 = 87;
+    }elseif( $row_i >= 18 && $row_i <= 34 ){ // ถ้าเป็น column ขวามือจะใช้ค่า X ตามนี้
+        $x1 = 93;
+        $x2 = 143;
+        $x3 = 153;
+        $x4 = 163;
+        $x5 = 172;
+    }
 
-$pdf->SetXY(78, 41);
-$pdf->Cell(15, 11, 'เป็นเงิน', 1, 1, 'C');
-$pdf->SetXY(78, 52);
-$pdf->Cell(9, 7, 'บาท', 1, 1, 'C');
-$pdf->SetXY(87, 52);
-$pdf->Cell(6, 7, 'สต.', 1, 1, 'C');
+    if( isset($full_items[$i]) ){
 
-// รายการด้านขวา
-$pdf->SetXY(93, 41);
-$pdf->SetFont('THSarabun', '', 17);
-$pdf->Cell(50, 18, 'รายการ', 1, 1, 'C');
+        ++$item_i;
 
-$pdf->Rect(143, 41, 10, 18);
-$pdf->SetFont('THSarabun', '', 12);
-$pdf->SetXY(143, 45);
-$pdf->MultiCell(10, 5, 'จำนวนเบิก', 0, 'C');
+        $item = $full_items[$i];
+        $pdf->SetXY($x1, $y_start);
+        $pdf->Cell(50, $line_height, $item['tradename'], 1, 1, 'L');
+        $pdf->SetXY($x2, $y_start);
+        $pdf->Cell(10, $line_height, $item['num'], 1, 1, 'R');
 
-$pdf->Rect(153, 41, 10, 18);
-$pdf->SetXY(153, 45);
-$pdf->MultiCell(10, 5, 'จ่าย จริง', 0, 'C');
+    }else{
+        $pdf->Rect($x1, $y_start, 50, $line_height); //รายการ
+        $pdf->Rect($x2, $y_start, 10, $line_height); //จำนวนเบิก
 
-$pdf->SetXY(163, 41);
-$pdf->Cell(15, 11, 'เป็นเงิน', 1, 1, 'C');
-$pdf->SetXY(163, 52);
-$pdf->Cell(9, 7, 'บาท', 1, 1, 'C');
-$pdf->SetXY(172, 52);
-$pdf->Cell(6, 7, 'สต.', 1, 1, 'C');
+    }
 
-// ทดสอบสร้างตารางด้านซ้าย
-// @todo
-// [] สร้าง Array List ที่เก็บข้อมูลเป็นรายการตามจำนวนของช่อง
-// [] เงื่อนไขคือ ถ้าใน Array List ยังมีค่าก็ให้ใส่รายละเอียดลงไป แต่ถ้าไม่มีให้เป็นค่าว่าง
-$line_start = 59;
-$line_height = 7;
-for( $i=1; $i<=17; $i++){
+    $pdf->Rect($x3, $y_start, 10, $line_height); //จ่ายจริง
+    $pdf->Rect($x4, $y_start, 9, $line_height); //เป็นเงิน(บาท)
+    $pdf->Rect($x5, $y_start, 6, $line_height); //เป็นเงิน(สต.)
 
-    $pdf->Rect(8, $line_start, 50, $line_height); //รายการ
-    $pdf->Rect(58, $line_start, 10, $line_height); //จำนวนเบิก
-    $pdf->Rect(68, $line_start, 10, $line_height); //จ่ายจริง
-    $pdf->Rect(78, $line_start, 9, $line_height); //เป็นเงิน(บาท)
-    $pdf->Rect(87, $line_start, 6, $line_height); //เป็นเงิน(สต.)
+    $y_start += 7.5;
+    
+    // เมื่อครบ 34 แถว(ซ้ายและขวา) ให้รีเซ็ตใหม่
+    if( $row_i === 34 ){
+        $row_i = 0;
+    }
 
-    $line_start += 7;
+    // นับจำนวนที่แท้จริงของแถวต่อหนึ่งหน้ากระดาษเพื่อไม่ให้มันเด้งแสดงหน้าใหม่
+    if( $item_i === 34 ){
+        $item_i = 0;
+        $pdf->AddPage();
+    }
+
+    // แถวซ้ายหรือขวาเมื่อครบ 17 แถวให้รีเซ็ตจุดที่จะเริ่มนับใหม่
+    if( $line_num === 17 ){
+        $y_start = 59;
+        $line_num = 0;
+    }
 }
-
 
 // $pdf->AutoPrint(true);
 $pdf->Output();
