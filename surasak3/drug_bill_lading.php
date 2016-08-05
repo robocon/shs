@@ -6,11 +6,49 @@ $items_right = array();
 $rows = (int) $_POST['sump'];
 $full_items = array();
 
+$datetime = get_session('datetime');
+$sOfficer = get_session('sOfficer');
+$yymall = get_session('yymall');
+
+$db = Mysql::load();
+$sql = "SELECT `runno` FROM `runno` WHERE title = 'drugimp';";
+$db->select($sql);
+$item = $db->get_item();
+$runno = (int) $item['runno'];
+++$runno;
+
+$sql = "UPDATE `runno` SET `runno` = '$runno' WHERE title = 'drugimp'; ";
+$db->update($sql);
+
 for ($i=1; $i <= $rows; $i++) { 
+
+	$drugcode = trim($_POST['drx'.$i]);
+	$tradename = trim($_POST['tname'.$i]);
+	$rxdrug = $_POST['rxdrug'.$i];
+	$num = (int) $_POST['import'.$i];
+
+	$sql = "SELECT `min`, `max`, `stock`, `mainstk` 
+	FROM `druglst` 
+	WHERE `drugcode` = '$drugcode'";
+	$db->select($sql);
+	$item = $db->get_item();
+
+	$insert_sql = "
+	INSERT INTO drugimport (
+	thidate,drugcode,tradname,min,max,
+	stock,mainstk,dispense,amountrx,idno,
+	usercontrol,datesearch
+	) values (
+	'$datetime','$drugcode','$tradename','".$item['min']."','".$item['max']."',
+	'".$item['stock']."','".$item['mainstk']."','$rxdrug','$num','$runno',
+	'$sOfficer','$yymall'
+	);";
+	$db->insert($insert_sql);
+
     $full_items[$i] = array(
-        'tradename' => trim($_POST['tname'.$i]),
-        'rxdrug' => $_POST['rxdrug'.$i],
-        'num' => (int)$_POST['import'.$i]
+        'tradename' => $tradename,
+        'rxdrug' => $rxdrug,
+        'num' => $num
     );
 }
 
@@ -285,18 +323,20 @@ for( $i=1; $i<=$full_rows; $i++){
 
     }
 
+    // สามช่องด้านขวาของแต่ละ column เป็นค่าว่าง
     $pdf->Rect($x3, $y_start, 10, $line_height); //จ่ายจริง
     $pdf->Rect($x4, $y_start, 9, $line_height); //เป็นเงิน(บาท)
     $pdf->Rect($x5, $y_start, 6, $line_height); //เป็นเงิน(สต.)
 
     $y_start += 7.5;
     
-    // เมื่อครบ 34 แถว(ซ้ายและขวา) ให้รีเซ็ตใหม่
+    // เมื่อครบ 34 แถว(ซ้าย+ขวา) ให้รีเซ็ตใหม่
     if( $row_i === 34 ){
         $row_i = 0;
     }
 
     // นับจำนวนที่แท้จริงของแถวต่อหนึ่งหน้ากระดาษเพื่อไม่ให้มันเด้งแสดงหน้าใหม่
+    // เช่นแถวทั้งหมดมี 34 แต่มีข้อมูลจริงๆ 25 เป็นต้น
     if( $item_i === 34 ){
         $item_i = 0;
         $pdf->AddPage();
@@ -309,6 +349,6 @@ for( $i=1; $i<=$full_rows; $i++){
     }
 }
 
-// $pdf->AutoPrint(true);
+$pdf->AutoPrint(true);
 $pdf->Output();
 exit;

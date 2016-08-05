@@ -231,12 +231,11 @@ if($rptday1 != ""){
 		// $row2 = mysql_query($sel2);
 
 		$db = Mysql::load();
-		$db->select("CALL `drug_bill`('".$_SESSION['sOfficer']."','$ymd1','$ymd2');");
+		$db->select("CALL `drug_bill`('".$_SESSION['sOfficer']."','$ymd1 00:00:00','$ymd2 23:59:59');");
 		$items = $db->get_items();
 
 		// while($result2 = mysql_fetch_assoc($row2)){
 		foreach( $items as $key => $result2 ){
-			// dump();
 			
 			$amount = $result2['amount'];
 
@@ -294,16 +293,25 @@ if($rptday1 != ""){
 					<td width="5%" align="center" bgcolor="#FF9966" class="font1"><strong>จำนวน (รายการ)</strong></td>
 				</tr>
 				<?php
-				$sel2 = "SELECT thidate,count(row_id) AS sum,idno 
+				// $sel2 = "SELECT thidate, count(row_id) AS sum, idno 
+				// FROM drugimport 
+				// WHERE usercontrol= '".$_SESSION['sOfficer']."' 
+				// GROUP BY idno 
+				// ORDER BY idno DESC";
+				// var_dump($sel2);
+				$sql = "SELECT thidate,count(row_id) AS sum,idno 
 				FROM drugimport 
 				WHERE usercontrol= '".$_SESSION['sOfficer']."' 
-				GROUP BY idno";
-				$row2 = mysql_query($sel2);
-				while($result2 = mysql_fetch_array($row2)){
-					$k++;
+				GROUP BY idno
+				ORDER BY idno DESC ";
+				$result = mysql_query($sql);
+				while($result2 = mysql_fetch_assoc($result)){
+					// $k++;
 					?>
 					<tr>
-						<td align="center" bgcolor="#FFFFCC" class="font1"><a target="_blank" href="print_drugimport.php?id=<?=$result2['idno']?>"><?=$result2['thidate']?></a></td>
+						<td align="center" bgcolor="#FFFFCC" class="font1">
+							<a target="_blank" href="print_drugimport.php?id=<?=$result2['idno']?>"><?=$result2['thidate']?></a>
+						</td>
 						<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['sum']?></td>
 					</tr>
 					<?php
