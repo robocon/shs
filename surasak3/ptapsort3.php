@@ -43,8 +43,6 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
   <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</font></th>
   <th bgcolor=6495ED><font face='Angsana New'><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></font></th>
   <th bgcolor=6495ED><font face='Angsana New'>นัดเพื่อ</font></th>
-
- 
   <th bgcolor=6495ED>ซ้ำ</th>
   <!-- <th bgcolor=6495ED>วันที่นัด</th> -->
   </tr>
@@ -92,9 +90,9 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 }*/
 	
 	if(strlen($doctor) == 5)
-		$doctor2 = "doctor like '".$doctor."%' ";
+		$doctor2 = "AND doctor like '".$doctor."%' ";
 	else
-		$doctor2 = "doctor = '".$doctor."' ";
+		$doctor2 = "AND doctor = '".$doctor."' ";
 
     // $query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5) 
 	// FROM appoint 
@@ -104,12 +102,19 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 	// AND apptime <> 'ยกเลิกการนัด' 
 	// order by  hn asc ";
 
-	$query1 = "SELECT hn,ptname,apptime,detail,came,row_id,age,date_format(date,'%d-%m-%Y'),officer, left(apptime,5),diag ,other,room 
-	FROM appoint 
-	WHERE appdate = '$appd' 
-	AND detail LIKE 'FU07%' 
-	$doctor2
-	ORDER BY `hn` ASC ";
+	$query1 = "SELECT a.hn, a.ptname, a.apptime, a.detail, a.came, a.row_id, a.age, date_format(a.date,'%d-%m-%Y'),
+	a.officer, left(a.apptime,5), a.diag, a.other, a.room 
+	FROM appoint AS a 
+	INNER JOIN (
+		SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
+		FROM `appoint` 
+		WHERE `appdate` = '$appd' 
+		AND `doctor` LIKE '$doctor%'
+		GROUP BY `hn`, `drcode`
+	) AS b ON b.`id` = a.`row_id`
+	WHERE a.detail LIKE 'FU07%' 
+	
+	ORDER BY a.`hn` ASC ";
 	$result = mysql_query($query1) or die( mysql_error() );
 	$date_now = date("d-m-").(date("Y")+543);
 	
@@ -175,6 +180,7 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 			<td>
 				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>
 			</td>
+			<!--
 			<td>
 				<?php echo ( $room === 'แผนกทะเบียน' ) ? $room : '' ;?>
 			</td>
@@ -186,6 +192,7 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 				echo ( $rep5 > 0 ) ? 'Admit' : '' ;
 				?>
 			</td>
+			-->
 		</tr>
 		<?php
 		$i++;

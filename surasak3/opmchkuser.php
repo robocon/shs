@@ -80,7 +80,7 @@ print "ส่วนเก็บเงินผู้ป่วยนอก:<br>";
 print "รายงานเงินรายรับของวันที่ $repdate";
 print "&nbsp;&nbsp;&nbsp;รับชำระโดย $doctor<br><br>";
 print "<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
-print "  <tr>";
+print "  <tr valign=\"top\">";
 print "    <td width='5%'>&nbsp;</td>";
 print "    <td width='50%'><font face='Angsana New'>1. เภสัชกรรม<br>";
 print "      .......1.1 ค่ายาในบัญชียาหลักแห่งชาติ<br>";

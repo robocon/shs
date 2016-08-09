@@ -231,9 +231,21 @@ if($rptday1 != ""){
 		// $row2 = mysql_query($sel2);
 
 		$db = Mysql::load();
-		$db->select("CALL `drug_bill`('".$_SESSION['sOfficer']."','$ymd1 00:00:00','$ymd2 23:59:59');");
+		$sql = "CALL `drug_bill`('".$_SESSION['sOfficer']."','$ymd1 00:00:00','$ymd2 23:59:59');";
+		// $sql = "SELECT TRIM(a.drugcode) AS drugcode, 
+		// SUM(a.amount) AS amount,
+		// b.row_id,b.drugcode,b.tradname,b.genname,b.min,b.max,b.stock,b.mainstk,b.pack 
+		// FROM drugrx AS a, 
+		// druglst AS b 
+		// WHERE b.drugcode = a.drugcode 
+		// AND a.date BETWEEN '$ymd1 00:00:00' AND '$ymd2 23:59:59' 
+		// AND b.usercontrol = '".$_SESSION['sOfficer']."' 
+		// GROUP BY a.drugcode 
+		// ORDER BY a.drugcode ASC;";
+		// var_dump($sql);
+		$db->select($sql);
 		$items = $db->get_items();
-
+		// var_dump($items);
 		// while($result2 = mysql_fetch_assoc($row2)){
 		foreach( $items as $key => $result2 ){
 			
@@ -293,6 +305,9 @@ if($rptday1 != ""){
 					<td width="5%" align="center" bgcolor="#FF9966" class="font1"><strong>จำนวน (รายการ)</strong></td>
 				</tr>
 				<?php
+				
+				$smenucode = $_SESSION['smenucode'];
+
 				// $sel2 = "SELECT thidate, count(row_id) AS sum, idno 
 				// FROM drugimport 
 				// WHERE usercontrol= '".$_SESSION['sOfficer']."' 
@@ -307,10 +322,13 @@ if($rptday1 != ""){
 				$result = mysql_query($sql);
 				while($result2 = mysql_fetch_assoc($result)){
 					// $k++;
+
+					$link = ( $smenucode === 'ADMPHA' OR $smenucode === 'ADMPHARX' ) ? 'print_drugimport.php?id='.$result2['idno'] : 'drug_bill_print.php?id='.$result2['idno'] ;
+
 					?>
 					<tr>
 						<td align="center" bgcolor="#FFFFCC" class="font1">
-							<a target="_blank" href="print_drugimport.php?id=<?=$result2['idno']?>"><?=$result2['thidate']?></a>
+							<a target="_blank" href="<?=$link;?>"><?=$result2['thidate']?></a>
 						</td>
 						<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['sum']?></td>
 					</tr>

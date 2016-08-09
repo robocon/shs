@@ -921,7 +921,7 @@ $months = array(
 
 $th_day = array( 0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์' );
 
-// นับจำนวนที่นัดผู้ป่วย
+// นับจำนวนที่นัดผู้ป่วยทั้งหมด
 list($code, $dr_name) = explode(' ', $_POST['doctor']);
 $date_appoint = trim($_POST['date_appoint']);
 $sql = "SELECT `hn`,`apptime`
@@ -930,8 +930,6 @@ WHERE `appdate` = '$date_appoint'
 AND `doctor` LIKE '$code%' 
 AND `apptime` != 'ยกเลิกการนัด';";
 $query = mysql_query($sql);
-
-// จำนวนนัดทั้งหมด
 $rows = mysql_num_rows($query);
 
 // แบ่งตามนัดเช้า-บ่าย
@@ -939,18 +937,24 @@ $appoint_morning = 0;
 $appoint_afternoon = 0;
 while ( $item = mysql_fetch_assoc($query) ) {
 
-	preg_match('/\d+\:\d+/', $item['apptime'], $match);
-	$time_appoint = $match['0'];
-	if( $time_appoint < "12:00" ){
-		$appoint_morning++;
-	}elseif( $time_appoint >= "12:00" ){
-		$appoint_afternoon++;
+	// หา format xx:xx ของเวลา
+	$match = preg_match('/\d+\:\d+/', $item['apptime'], $matchs);
+	if( $match > 0 ){
+		$time_appoint = $matchs['0'];
+
+		// นับจำนวนเช้าบ่าย
+		if( $time_appoint < "12:00" ){
+			$appoint_morning++;
+		}elseif( $time_appoint >= "12:00" ){
+			$appoint_afternoon++;
+		}
 	}
+	
 }
 
 // หาตำแหน่งของวันจาก $date_appoint
 list($day, $th_month, $th_year) = explode(' ', $date_appoint);
-$new_date = ($th_year-543).'-'.$months[$th_month].'-'.$day;
+$new_date = ( $th_year - 543 ).'-'.$months[$th_month].'-'.$day;
 $check_date = date('w', strtotime($new_date));
 
 // เช็กกับตารางที่จำกัดนัด
@@ -961,7 +965,7 @@ AND `date` = '$check_date'";
 $query = mysql_query($sql);
 $item = mysql_fetch_assoc($query);
 $dr_limit_row = mysql_num_rows($query);
-
+dump($item);
 $allday = (int) $item['allday'];
 $dr_limit = (int) $item['user_row'];
 $limit_morning = (int) $item['morning'];
@@ -985,7 +989,7 @@ if( $dr_limit_row > 0 ){
 		?>
 	</div>
 	<?php
-
+	$display = '';
 	// ถ้าจำกัดแบบทั้งวัน
 	if( $allday > 0 && $rows >= $dr_limit ){
 		
@@ -997,32 +1001,26 @@ if( $dr_limit_row > 0 ){
 		<br>
 		<a href="javascript: void(0);" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่
 		<?php
-		
-	}else{
+		$display = 'style="display: none;"';
+	}
+	/*else{
 		?>
 		<input name="B1" type="submit" class="checkTimeRange" value="     ตกลง (A5)    " />
 		<!-- onClick="JavaScript:fncSubmit('page1')" -->
 		<input name="btnButton1" type="button" class="checkTimeRange" data="sticker" value="ตกลง (ใบนัดสติ๊กเกอร์)" >
 		<?php
 	}
-
-}else{
-	?>
-	<input name="B1" type="submit" class="checkTimeRange" value="     ตกลง (A5)    " />
-	<!-- onClick="JavaScript:fncSubmit('page1')" -->
-	<input name="btnButton1" type="button" class="checkTimeRange" data="sticker" value="ตกลง (ใบนัดสติ๊กเกอร์)" >
-	<?php
+	*/
 }
 
-
-
-	
-
-	
-
 ?>
+<input name="B1" type="submit" class="checkTimeRange" value="     ตกลง (A5)    " <?=$display;?>/>
+<!-- onClick="JavaScript:fncSubmit('page1')" -->
+<input name="btnButton1" type="button" class="checkTimeRange" data="sticker" value="ตกลง (ใบนัดสติ๊กเกอร์)" <?=$display;?> >
+
 <script type="text/javascript">
 $(function(){
+
 	// ถ้าใน button หรือ input มันมี onclick สคริปจะทำงานหลัง eventhandler
 	$(document).on('click', '.checkTimeRange', function(ev){
 		
@@ -1077,9 +1075,7 @@ $(function(){
 	<input type="hidden" name="appd" value="<?php echo $appd; ?>">
 </form>
 
-&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
-<br>
-&nbsp;&nbsp;&nbsp;<a target=_self  href='hnappoi1.php'>&lt;&lt; ออกใบนัดใหม่</a>
+&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>&| <a target=_self  href='hnappoi1.php'>&lt;&lt; ออกใบนัดใหม่</a>
 </TD>
 	<TD>
 	
@@ -1119,30 +1115,11 @@ while($result2=mysql_fetch_array($rows2)){
 </TR>
 <TR>
 	<TD colspan="<?php echo $r*2;?>">
-	
 		<?php
-			/*$sql = "Select code, detail From labcare where left(code,3) ='DR@' ";
-			$result = Mysql_Query($sql);
-			if(Mysql_num_rows($result) > 0){
-				echo "สูตร LAB<BR>";
-			while($arr = Mysql_fetch_assoc($result)){
-				$i=0;
-				$list = array();
-				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
-				$result2 = Mysql_Query($sql2);
-				while($arr2 = Mysql_fetch_assoc($result2)){
-					$list[$i] = $arr2["code"];
-					$i++;
-				}
-
-				echo "<A HREF=\"#\" Onclick=\"addsuittolist('".implode("][",$list)."');\">".$arr["detail"]."</A><BR>";
-			}		
-			}*/
 		?>
 	</TD>
 </TR>
 </TABLE>
-	
 	</TD>
 </TR>
 </TABLE>

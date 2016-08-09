@@ -1,6 +1,13 @@
 <?php 
 session_start();
 include("connect.inc");
+
+function dump($txt){
+	echo "<pre>";
+	var_dump($txt);
+	echo "</pre>";
+}
+
 include("checklogin.php");
 
 $_SESSION['close_popup'] = false;
@@ -15,7 +22,12 @@ $sql = "Select vn, hn, ptname, toborow,thidate  From opd where thdatehn like '".
 $result_list_pt = Mysql_Query($sql);
 $num_list_pt = Mysql_num_rows($result_list_pt );
 
-$sql = "Select vn, hn, ptname, toborow ,thidate From opd where thdatehn like '".$thidate."%' AND doctor = 'ห้องตรวจโรคทั่วไป' AND dc_diag is NULL Order by vn ASC ";
+$sql = "Select vn, hn, ptname, toborow ,thidate 
+From opd 
+where thdatehn like '".$thidate."%' 
+AND room = 'ห้องตรวจโรคทั่วไป' 
+AND dc_diag is NULL 
+Order by vn ASC ";
 $result_list_pt2 = Mysql_Query($sql);
 $num_list_pt2 = Mysql_num_rows($result_list_pt2 );
 
@@ -33,7 +45,12 @@ body,td,th {
 .tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
 .tb_detail {background-color: #FFFFC1;  }
 .tb_detail2 {background-color: #FFFFFF;  }
-
+a{
+	text-decoration:none;
+}
+#dt_other:target{
+	text-decoration: underline;
+}
 -->
 </style>
 <SCRIPT LANGUAGE="JavaScript">
@@ -119,7 +136,7 @@ $depart1=Y;
 	}
 
 </SCRIPT>
-<A HREF="javascript:switch_div('2');" style="text-decoration:none;" >รายชื่อผู้ป่วยหน้าห้องตรวจ</A>  |  <A HREF="javascript:switch_div('1');" style="text-decoration:none;">รายชื่อผู้ป่วยตรวจโรคทั่วไป( <?php echo $num_list_pt2;?> )</A>
+<A HREF="javascript:switch_div('2');" id="dt_room" >รายชื่อผู้ป่วยหน้าห้องตรวจ</A>  |  <A HREF="javascript:switch_div('1');" id="dt_other">รายชื่อผู้ป่วยตรวจโรคทั่วไป( <?php echo $num_list_pt2;?> )</A>
 
 <div  id="first" style="text-align: left; width:800px; height:350px; overflow:auto; ">
 <TABLE width='600'>

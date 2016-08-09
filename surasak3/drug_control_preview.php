@@ -74,7 +74,7 @@ include("connect.inc");
       <input type="hidden" name="sump" value="<?=$r?>" />
 		<?php
 		$smenucode = trim($_SESSION['smenucode']);
-		if( $smenucode === 'ADMPHA' OR $smenucode === 'ADMPHARX' OR $smenucode === 'ADM' ){
+		if( $smenucode === 'ADMPHA' OR $smenucode === 'ADMPHARX' ){
 			?>
 			<input type="submit" name="save" id="save" value="ตกลง" />
 			<?php

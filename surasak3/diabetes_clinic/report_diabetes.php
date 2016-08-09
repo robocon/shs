@@ -616,14 +616,15 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			
 			
 			
-			$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
-			FROM `diabetes_history_temp`	
+			$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten 
+			FROM `diabetes_history_temp` 
 			WHERE 
-			( `l_hbalc` < 7 AND `l_hbalc` > 0 AND ( `ht` = 0 OR `ht` = '' ) AND `ht_etc` = '' )
-			OR
-			( `l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' ) )
-			GROUP BY MONTH( dateN )
+			( `l_hbalc` < 7 AND `l_hbalc` > 0 AND ( `ht` = 0 OR `ht` = '' ) AND `ht_etc` = '' ) 
+			OR 
+			( `l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' ) ) 
+			GROUP BY MONTH( dateN ) 
 			ORDER BY dateN ASC";
+			dump($sql);
 			
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c_dm_items = array();
@@ -670,6 +671,51 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				<?php 
 			}
 			?>
+		</tr>
+		<tr>
+			<td>
+				อัตราผู้ป่วย DM มีระดับ HbA1c อยู่ในเกณฑ์เหมาะสม ( HbA1c &lt; 7 % )
+			</td>
+			<td>
+				<?php
+				$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten 
+				FROM `diabetes_history_temp` 
+				WHERE `l_hbalc` < 7 AND `l_hbalc` > 0 
+				GROUP BY MONTH( dateN ) 
+				ORDER BY dateN ASC";
+				// dump($sql);
+
+				$query = mysql_query($sql) or die( mysql_error($Conn) );
+				$hba1c_dm_items = array();
+				
+				while($item = mysql_fetch_assoc($query)){
+					$hba1c_dm_items[$item['new_daten']] = $item;
+				}
+
+				foreach($budget_range AS $key => $value){
+					$item_row = 0;
+					$find_key = $key;
+
+					$pre_row = 0;
+					$pre_total = 0;
+					if(isset($hba1c_dm_items[$find_key])){
+						
+						$pre_row = $hba1c_dm_items[$find_key]['rows'];
+						$pre_total = $user_total_items[$find_key]['rows'];
+						
+						$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
+						
+						if($item_percent > 0){
+							$item_row = $item_percent;
+							$item_row .= "<br>($pre_row/$pre_total)";
+						}
+					}
+					?>
+					<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
+					<?php 
+				}
+				?>
+			</td>
 		</tr>
 		<tr>
 			<td class="forntsarabun">
