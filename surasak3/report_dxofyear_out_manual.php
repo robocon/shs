@@ -100,8 +100,8 @@ $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม',
   $da = explode(" ",$result["thidate"]);
 //   list($y, $m, $d) = explode("-",$da[0]);
 //   $shortDate = "$d-$m-$y";
-	$d = '13';
-	$m = '05';
+	$d = '04';
+	$m = '08';
 	$y = '2016';
   ?>
   <?php echo $d.' '.$thaimonthFull[$m].' '.( $y + 543 );?>
