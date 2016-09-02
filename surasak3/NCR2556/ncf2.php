@@ -320,12 +320,15 @@ function textdisabled(){
 				<INPUT TYPE="radio" NAME="come_from_id" value="1"  <?php if($arr_edit["come_from_id"] == "1") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;ENV ROUND<BR>
 				<INPUT TYPE="radio" NAME="come_from_id" value="2"  <?php if($arr_edit["come_from_id"] == "2") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;IC ROUND<BR>
 				<INPUT TYPE="radio" NAME="come_from_id" value="3"  <?php if($arr_edit["come_from_id"] == "3") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;RM ROUND<BR>
-			
+        <INPUT TYPE="radio" NAME="come_from_id" value="4"  <?php if($arr_edit["come_from_id"] == "4") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;12 กิจกรรมทบทวน<BR>
+				
 			</TD>
 			<TD>
-				<INPUT TYPE="radio" NAME="come_from_id" value="4"  <?php if($arr_edit["come_from_id"] == "4") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;12 กิจกรรมทบทวน<BR>
 				<INPUT TYPE="radio" NAME="come_from_id" value="5"  <?php if($arr_edit["come_from_id"] == "5") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;หน่วยรายงานเอง<BR>
-				<INPUT TYPE="radio" NAME="come_from_id" value="6"  <?php if($arr_edit["come_from_id"] == "6") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='';}">&nbsp;อื่นๆ&nbsp;&nbsp;<!--<INPUT TYPE="text" id="come_from_detail"NAME="come_from_detail" value="<?//phpecho $arr_edit["come_from_detail"];?>" style="display:none;">-->
+				<INPUT TYPE="radio" NAME="come_from_id" value="7"  <?php if($arr_edit["come_from_id"] == "7") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;เวรตรวจการพยาบาล<BR>
+        <INPUT TYPE="radio" NAME="come_from_id" value="8"  <?php if($arr_edit["come_from_id"] == "8") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;นายทหารเวรประจำวัน<BR>
+        <INPUT TYPE="radio" NAME="come_from_id" value="6"  <?php if($arr_edit["come_from_id"] == "6") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='';}">&nbsp;อื่นๆ&nbsp;&nbsp;<br>
+        <!--<INPUT TYPE="text" id="come_from_detail"NAME="come_from_detail" value="<?//phpecho $arr_edit["come_from_detail"];?>" style="display:none;">-->
                 <SELECT NAME="come_from_detail" style="display:none;">
   			<Option value="">--------------</Option>
   <?php
@@ -677,73 +680,88 @@ function textdisabled(){
 <TR valign="top">
   <TD colspan="3" align="center" bgcolor="#CCCCCC"  >&nbsp;</TD>
 </TR>
-<?
- if($_SESSION["statusncr"]=='admin'){
- ?>
-<TR valign="top">
-  <TD colspan="3" bgcolor="#CCCCCC"  ><strong>ฝ่ายคุณภาพ</strong></TD>
-</TR>
-<TR valign="top">
-  <TD colspan="3" bgcolor="#CCCCCC"  ><input name="quality" type="radio" id="quality1" onClick="javaScript:if(this.checked){document.all.cpno.style.display='none';}" value="1">
-    หาข้อมูลเพิ่มเติม 
-      <input name="quality" type="radio" id="quality2" onClick="javaScript:if(this.checked){document.all.cpno.style.display='none';}" value="2">
-ติดตามความถี่ของความไม่สอดคล้อง 
-<input name="quality" type="radio" id="quality3" onClick="javaScript:if(this.checked){document.all.cpno.style.display='';}" value="3"> 
-ออก CAR / PAR เลขที่ 
-<input type="text" name="cpno" id="cpno" style="display:none;"></TD>
-</TR>
-<TR valign="top">
-  <TD colspan="3" bgcolor="#CCCCCC"  >&nbsp;</TD>
-</TR>
-<TR valign="top">
-  <TD colspan="3" bgcolor="#CCCCCC"  ><strong>ชนิดของความเสี่ยง</strong></TD>
-</TR>
-<TR valign="top">
-  <TD colspan="3" bgcolor="#CCCCCC"  ><table border="0">
-    <tr>
-      <td><input name="risk1" type="checkbox" id="risk1" value="1"> 
-      1.Clinical Risk
-</td>
-      <td><input name="risk6" type="checkbox" id="risk6" value="1"> 
-        6.Customer Complaint Risk
-</td>
-    </tr>
-    <tr>
-      <td><input name="risk2" type="checkbox" id="risk2" value="1"> 
-        2.Infection control Risk
-</td>
-      <td><input name="risk7" type="checkbox" id="risk7" value="1"> 
-        7.Financial Risk
-</td>
-    </tr>
-    <tr>
-      <td><input name="risk3" type="checkbox" id="risk3" value="1"> 
-        3.Medication Risk
-</td>
-      <td><input name="risk8" type="checkbox" id="risk8" value="1"> 
-        8.Utilization Management Risk
-</td>
-    </tr>
-    <tr>
-      <td><input name="risk4" type="checkbox" id="risk4" value="1"> 
-        4.Medical Equipment Risk
-</td>
-      <td><input name="risk9" type="checkbox" id="risk9" value="1"> 
-        9.Information Risk</td>
-    </tr>
-    <tr>
-      <td><input name="risk5" type="checkbox" id="risk5" value="1"> 
-        5.Safety and Environment Risk
-</td>
-      <td>&nbsp;</td>
-    </tr>
-    <? } ?>
-  </table></TD>
-</TR>
-<TR valign="top">
-  <TD colspan="3"  >&nbsp;</TD>
-</TR>
-
+<?php
+if($_SESSION["statusncr"]=='admin'){
+	?>
+	<TR valign="top">
+		<TD colspan="3" bgcolor="#CCCCCC"  ><strong>ฝ่ายคุณภาพ</strong></TD>
+	</TR>
+	<TR valign="top">
+		<TD colspan="3" bgcolor="#CCCCCC"  >
+			<input name="quality" type="radio" id="quality1" onClick="javaScript:if(this.checked){document.all.cpno.style.display='none';}" value="1">
+			หาข้อมูลเพิ่มเติม 
+			<input name="quality" type="radio" id="quality2" onClick="javaScript:if(this.checked){document.all.cpno.style.display='none';}" value="2">
+			ติดตามความถี่ของความไม่สอดคล้อง 
+			<input name="quality" type="radio" id="quality3" onClick="javaScript:if(this.checked){document.all.cpno.style.display='';}" value="3"> 
+			ออก CAR / PAR เลขที่ 
+			<input type="text" name="cpno" id="cpno" style="display:none;">
+		</TD>
+	</TR>
+	<TR valign="top">
+		<TD colspan="3" bgcolor="#CCCCCC"  >&nbsp;</TD>
+	</TR>
+	<TR valign="top">
+		<TD colspan="3" bgcolor="#CCCCCC"  ><strong>ชนิดของความเสี่ยง</strong></TD>
+	</TR>
+	<TR valign="top">
+		<TD colspan="3" bgcolor="#CCCCCC"  >
+			<table border="0">
+				<tr>
+					<td>
+						<input name="risk1" type="checkbox" id="risk1" value="1"> 
+						1.Clinical Risk
+					</td>
+					<td>
+						<input name="risk6" type="checkbox" id="risk6" value="1"> 
+						6.Customer Complaint Risk
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input name="risk2" type="checkbox" id="risk2" value="1"> 
+						2.Infection control Risk
+					</td>
+					<td>
+						<input name="risk7" type="checkbox" id="risk7" value="1"> 
+						7.Financial Risk
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input name="risk3" type="checkbox" id="risk3" value="1"> 
+						3.Medication Risk
+					</td>
+					<td>
+						<input name="risk8" type="checkbox" id="risk8" value="1"> 
+						8.Utilization Management Risk
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input name="risk4" type="checkbox" id="risk4" value="1"> 
+						4.Medical Equipment Risk
+					</td>
+					<td>
+						<input name="risk9" type="checkbox" id="risk9" value="1"> 
+						9.Information Risk
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input name="risk5" type="checkbox" id="risk5" value="1"> 
+						5.Safety and Environment Risk
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</TD>
+	</TR>
+	<TR valign="top">
+		<TD colspan="3" bgcolor="#CCCCCC"  >&nbsp;</TD>
+	</TR>
+	<?php
+	}
+	?>
 <TR>
 	<TD colspan="3" align="center"><INPUT TYPE="submit" value="บันทึกข้อมูล" class="fontsara"></TD>
 </TR>

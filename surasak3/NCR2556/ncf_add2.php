@@ -50,8 +50,8 @@ $item = mysql_fetch_assoc($q);
 // }
 
 /**
-ALTER TABLE `ncr2556` ADD `date_edit` DATETIME NULL ,
-ADD `date_print` DATETIME NULL ;
+ *ALTER TABLE `ncr2556` ADD `date_edit` DATETIME NULL ,
+ * ADD `date_print` DATETIME NULL ;
 */
 
 $sql="INSERT INTO `ncr2556` (`ncr` , `until` , `nonconf_date` , `nonconf_time` , `event` , `come_from_id` , `come_from_detail` , `topic1_1` , `topic1_2` , `topic1_3` , `topic1_4` , `topic1_5` , `topic1_6` , `topic1_7` , `topic2_1` , `topic2_2` , `topic2_3` , `topic2_4` , `topic2_5` , `topic2_6` , `topic2_7` , `topic3_1` , `topic3_2` , `topic3_3` , `topic3_4` , `topic4_1` , `topic4_2` , `topic4_3` , `topic4_4` , `topic4_5` , `topic4_6` ,`topic5_1` , `topic5_2` , `topic5_3` , `topic5_4` , `topic5_5` , `topic5_6` , `topic5_7` , `topic5_8` , `topic5_9` , `topic5_10` , `topic5_11` , `topic6_1` , `topic6_2` , `topic6_3` , `topic6_4` , `topic6_5` , `topic7_1` , `topic7_2` , `topic7_3` , `topic7_4` , `topic7_5` , `topic7_6` , `topic7_7` , `topic8_1` , `topic8_2` , `topic8_3` , `topic8_4` , `topic8_5` , `topic8_6` , `topic8_7` , `topic8_8` , `topic8_9` , `topic8_10` , `topic8_11` , `clinic` , `quality` , `cpno` , `risk1` , `risk2` , `risk3` , `risk4` , `risk5` , `risk6` , `risk7` , `risk8` , `risk9` , `sum_up` , `problem` , `protect` , `head_name` , `menucode` , `officer`, `insert_date`)
