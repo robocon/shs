@@ -148,6 +148,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cYot=$row->yot;
 		$cName=$row->name;
 		$cSurname =$row->surname;
+		$cEducation =$row->education;
 		$cGoup =$row->goup;
 		$cMarried =$row->married;
 	//	$cCbirth (วันเกิดข้อความเก็บไว้ดู)
@@ -376,16 +377,13 @@ return $pAge;
       	<tr>
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td> 
-          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" >
-        </td>
+          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" >        </td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
-          <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >
-        </td>
+          <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
         <td align="right" class="fonthead">สกุล:</td>
         <td> 
-          <input name="surname" type="text" id="surname" value="<?=$cSurname;?>" size="15">
-        </td>
+          <input name="surname" type="text" id="surname" value="<?=$cSurname;?>" size="15">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -399,12 +397,10 @@ return $pAge;
             <option value="">เลือก</option>
             <option <? if($cSex=='ช' ||$cSex=='1' ){ echo "selected"; }?> value="ช">ชาย</option>
             <option <? if($cSex=='ญ' ||$cSex=='2' ){ echo "selected"; }?> value="ญ">หญิง</option>
-          </select>
-        </td>
+          </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13" <? if(!empty($cIdcard) && $cIdcard != '-'){ echo "readonly";}?>>
-        </td>
+          <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13" <? if(!empty($cIdcard) && $cIdcard != '-'){ echo "readonly";}?>>        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -447,8 +443,7 @@ return $pAge;
             <option value="คริสต์"<? if($cReligion=='คริสต์'){ echo "selected";}?>>คริสต์</option>
             <option value="อิสลาม"<? if($cReligion=='อิสลาม'){ echo "selected";}?>>อิสลาม</option>
             <option value="อื่นๆ"<? if($cReligion=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
-            </select>
-        </td>
+            </select>        </td>
         </tr>
       <tr>
         <td align="right" class="fonthead">สถานภาพ:</td>
@@ -462,8 +457,7 @@ return $pAge;
             <option value="แยก" <? if($cMarried=='แยก'){ echo "selected";}?>>แยก</option>
             <option value="สมณะ" <? if($cMarried=='สมณะ'){ echo "selected";}?>>สมณะ</option>
             <option value="อื่นๆ" <? if($cMarried=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
-		</select>
-        </td>
+		</select>        </td>
         <td class="fonthead">อาชีพ:</td>
         <td colspan="3"> 
         <select size="1" name="career" id="career">
@@ -482,8 +476,38 @@ return $pAge;
             <option value="11 ผู้เยาว์ไม่มีอาชีพ"<? if($cCareer=='11 ผู้เยาว์ไม่มีอาชีพ'){ echo "selected";}?>>11 ผู้เยาว์ไม่มีอาชีพ</option>
             <option value="12 นักบวช/งานด้านศาสนา"<? if($cCareer=='12 นักบวช/งานด้านศาสนา'){ echo "selected";}?>>12 นักบวช/งานด้านศาสนา</option>
             <option value="13 อื่นๆ"<? if($cCareer=='13 อื่นๆ'){ echo "selected";}?>>13 อื่นๆ</option>
-		</select>
-        </td>
+		</select>        </td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td align="right" class="fonthead">ระดับการศึกษา</td>
+        <td colspan="5"><select name="education" id="education">
+            <option value="">----- กรุณาเลือกข้อมูล -----</option>
+            <?
+        $sql="select * from education order by row_id asc";
+		$query=mysql_query($sql);
+		while($rows=mysql_fetch_array($query)){
+			if($cEducation==$rows["edu_code"]){
+		?>
+            <option value="<?=$rows["edu_code"];?>" selected="selected">
+              <?=$rows["edu_code"]."-".$rows["edu_name"];?>
+              </option>
+            <?
+			}else{
+		?>
+            <option value="<?=$rows["edu_code"];?>">
+              <?=$rows["edu_code"]."-".$rows["edu_name"];?>
+              </option>
+            <?
+			}
+		}
+		?>
+          </select>
+  &nbsp;<span style="color:#FF0000">***</span> </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -1041,12 +1065,26 @@ $list_month["12"] ="ธันวาคม";
 
 $today2 = date("d")." ".$list_month[date("m")]." ".(date("Y")+543); 
 
-$sql = "Select row_id From appoint where appdate = '".$today2."' AND hn = '".$cHn."' AND apptime != 'ยกเลิกการนัด' Order by row_id DESC limit 1 ";
-
-if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-
-
-echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"5\"  COLOR=\"#CCFFFF\"><BR>&nbsp;&nbsp;&nbsp;ผู้ป่วยมีนัดวันนี้ครับ&nbsp;&nbsp;&nbsp;</FONT></B></span>";
+$sql = "SELECT a.*
+FROM `appoint` AS a
+RIGHT JOIN (
+	SELECT MAX(`row_id`) AS `row_id` 
+	FROM `appoint` 
+	WHERE `hn` = '$cHn' 
+	AND `appdate` = '$today2' 
+	LIMIT 1
+) AS b ON b.`row_id` = a.`row_id` 
+WHERE a.`apptime` != 'ยกเลิกการนัด'";
+$query = mysql_query($sql);
+$appoint_num = mysql_num_rows($query);
+if( $appoint_num > 0){
+	echo "<span style=\"background-color: #FF0000\">
+	<B>
+	<FONT SIZE=\"5\"  COLOR=\"#CCFFFF\">
+	<BR>&nbsp;&nbsp;&nbsp;ผู้ป่วยมีนัดวันนี้ครับ&nbsp;&nbsp;&nbsp;
+	</FONT>
+	</B>
+	</span>";
 }
 
 if(substr($cPtright,0,3)=='R07'){
@@ -1155,11 +1193,14 @@ function checkForm(){
 
 		}else if(document.f1.ptright1.value == '0'||document.f1.ptright.value == '0'){
 			
-			alert("กรุณาเลือกสิทธิการรักษาด้วยคะ");
+			alert("กรุณาเลือกสิทธิการรักษาด้วยครับ");
 			if(document.f1.ptright1.value == '0') {document.f1.ptright1.focus();}
 			else if(document.f1.ptright.value == '0') {document.f1.ptright.focus();}
 			return false;
-
+		}else if(document.f1.education.value == ''){		
+			alert("กรุณาเลือกระดับการศึกษาด้วยครับ เพื่อความสมบูรณ์ของ 43 แฟ้ม");			
+			document.f1.education.focus();
+			return false;
 		}else{	
 			if(stat2 == true){
 				var ex = document.getElementById('case1').value;

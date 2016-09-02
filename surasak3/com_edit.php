@@ -1,0 +1,132 @@
+<style type="text/css">
+<!--
+.forntsarabun {
+	font-family: "TH SarabunPSK";
+	font-size: 22px;
+}
+-->
+</style>
+<body bgcolor="#FFFFFF" >
+<script language="javascript">
+function fncSubmit()
+{
+	if(document.edit.programmer.selectedIndex==0)
+	{
+		alert('กรุณาเลือกผู้รับผิดชอบ');
+		document.edit.programmer.focus();		
+		return false;
+	}	
+	
+	document.edit.submit();
+}
+
+</script>
+<?
+ include("connect.inc");
+ $row=$_GET['row'];
+ 
+ $query = "SELECT  *  FROM com_support   WHERE row ='$row'";
+ $result = mysql_query($query)or die("Query failed"); 
+ $dbarr=mysql_fetch_array($result);
+
+?>
+
+<form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
+<table class="forntsarabun">
+  <tr>
+    <td height="48" colspan="4" bgcolor="#CCCCCC"><span class="forntsarabun">ระบบแจ้ง เพิ่มแก้ไข/ปรับปรุง เพิ่มเติม โปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><--------- ไปเมนู</a></span></td>
+    </tr>
+  <tr>
+    <td width="80">แผนก</td>
+    <td colspan="4"><!--<input name="depart" type="text" class="forntsarabun" size="20">-->
+      <select name="depart" id="depart" class="forntsarabun">
+        <option value="0">เลือกแผนก</option>
+  <?
+/*$part = array('','กองบังคับการ','กองการพยาบาล','หอผู้ป่วยรวม','หอผู้ป่วยพิเศษ','หอผู้ป่วยสูตินรีเวชกรรม','หอผู้ป่วยหนัก','ห้องไตเทียม','ห้องผ่าตัด','กองเภสัชกรรม','กองทันตกรรม','ห้องฉุกเฉิน','ห้องทะเบียน','ห้องตรวจโรคผู้ป่วยนอก','ส่วนเก็บเงินรายได้','ห้องประกันสุขภาพฯ','แผนกพยาธิวิทยา','แผนกรังสีกรรม','แผนกส่งกำลังบำรุง','พลาธิการ','องค์กรแพทย์','ศูนย์พัฒนาคุณภาพ','ฝ่ายการเงิน','สำนักงานกิจการพิเศษ','ศูนย์บริการคอมพิวเตอร์','กายภาพบำบัด','เวชกรรมป้องกัน','ห้องจ่ายกลาง','ศูนย์ผู้ป่วยใน','ประกันสังคม','ศูนย์อบรมและพัฒนาบุคลากร','ส่งเสริมสุขภาพ','กองร้อยพลเสนารักษ์','ห้องฝังเข็ม','คณะกรรมการสิ่งแวดล้อมและความปลอดภัย');
+		$sql="select  *  from  ptright order by code asc";
+		$result=mysql_query($sql);
+			for($i=1;$i<35;$i++) {
+			
+    		<option value="<?//=$part[$i];?>"<?//if($dbarr['depart']==$part[$i]){ echo "selected"; } ?>><?//=$part[$i];?></option>
+           
+		}*/
+		$sql="select  *  from   departments where status='y' order by id asc";
+		$result=mysql_query($sql);
+			while($arr=mysql_fetch_array($result)) {
+				if($dbarr['depart']==$arr['name']){
+    				echo '<option value="'.$arr['name'].'" selected>'.$arr['name'].' </option>';
+				}else{
+					echo '<option value="'.$arr['name'].'">'.$arr['name'].' </option>';
+				}
+		}
+	  ?>
+      </select></td>
+    </tr>
+  <tr>
+    <td>หัวข้อ</td>
+    <td colspan="3"><input name="head" type="text" class="forntsarabun" value="<?=$dbarr['head'];?>" size="60" readonly></td>
+    </tr>
+  <tr>
+    <td valign="top">รายละเอียด</td>
+    <td colspan="3"><textarea name="detail" cols="100" rows="10" readonly class="forntsarabun"><?=$dbarr['detail'];?>
+    </textarea></td>
+    </tr>
+  <tr>
+    <td>ผู้แจ้ง</td>
+    <td width="201"><input name="user" type="text" class="forntsarabun" value="<?=$dbarr['user'];?>" size="20" readonly></td>
+    <td width="96">โทรศัพท์ภายใน</td>
+    <td width="518"><input name="phone" type="text" class="forntsarabun" value="<?=$dbarr['phone'];?>" size="20" readonly></td>
+  </tr>
+  <tr>
+    <td>ผู้รับผิดชอบ</td>
+    <td colspan="3"><select name="programmer" class="forntsarabun">
+     <option value="0" selected>==กรุณาเลือก==</option>
+    <option value="เทวิน">เทวิน</option>
+	<option value="กฤษณะศักดิ์">กฤษณะศักดิ์</option>
+    </select>
+    </td>
+    </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td colspan="3"><input name="B1" type="submit" class="forntsarabun" value="ตกลง">
+    <input type="hidden" name="row" value="<?=$row;?>">
+      <input name="B2" type="reset" class="forntsarabun" value="ลบทิ้ง"></td>
+    </tr>
+</table>
+</form>
+
+<?
+if($_REQUEST['do']=='edit'){
+	$row=$_POST['row'];
+	
+	$update="UPDATE com_support SET status='a', programmer='".$_REQUEST['programmer']."' Where row='$row' ";
+	$query=mysql_query($update);
+
+	 if($query){
+			echo"<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว</h1>";
+		//	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
+		?>
+        <script>
+
+window.open('','_self');
+setTimeout("self.close()",2000);
+window.opener.location.reload();
+</script>
+        <?
+			}else {
+			echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้</h1>";
+		//	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
+		?>
+        <script>
+
+window.open('','_self');
+setTimeout("self.close()",2000);
+window.opener.location.reload();
+</script>
+        <?
+			}
+	}
+?>
+
+</body>
+

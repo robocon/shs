@@ -70,16 +70,33 @@
         $year_now = (date("Y")+543);
 
         $select_day2 = $day_now." ".$month[$month_now]." ".$year_now;
-        
+
+///บวกวันที่เพิ่มขึ้นอีก 1 วัน
+$timestamp = strtotime ( "+1 days" );       
+$newtimestamp=date ( "Y-m-d", $timestamp);
+list($ty,$tm,$td)=explode("-",$newtimestamp);
+$ty=$ty+543;
+$select_tomorow = $td." ".$month[$tm]." ".$ty;
+
+	
         include("connect.inc");
         global $hn;
-        $query = "SELECT `row_id`,`hn`,`ptname`,`doctor`,`appdate`,`apptime`,`detail`,`patho`,`xray`,`other`,`date`,
-        (
-            CASE WHEN `appdate` = '".$select_day2."' THEN '#009966' ELSE '#F5DEB3' END 
-        ) AS `color`,`injno` 
-        FROM `appoint` 
-        WHERE `hn` = '$hn' 
-        ORDER BY `date` DESC ";
+        $query = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`doctor`,a.`appdate`,a.`apptime`,a.`detail`,a.`patho`,a.`xray`,a.`other`,a.`date`,a.`injno`, 
+		CASE WHEN `appdate` = '".$select_day2."'  THEN '#009966' 
+		    WHEN `appdate` = '".$select_tomorow."'  THEN '#FF6699' ELSE '#F5DEB3' 
+		END AS `color`  
+        FROM `appoint` AS a 
+
+        RIGHT JOIN (
+            SELECT MAX(`row_id`) AS `row_id` 
+            FROM `appoint` 
+            WHERE `hn` = '$hn' 
+            GROUP BY `appdate`
+        ) AS b ON b.`row_id` = a.`row_id` 
+
+        ORDER BY a.`date` DESC ";
+        // echo "<pre>";
+		// var_dump($query);
         $result = mysql_query($query) or die( mysql_error() );
         $items = array();
         $i=1;
