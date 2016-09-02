@@ -10,7 +10,7 @@
 
 
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
-SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard
+SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright
 FROM (
     SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
         FROM `opday` 
@@ -31,7 +31,7 @@ $sql1="SELECT *
 From report_person1";
 $result1 = mysql_query($sql1) or die("Query failed, Select report_person1 (person)");
 $txt = '';
-while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard) = mysql_fetch_row ($result1)) {		
+while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright) = mysql_fetch_row ($result1)) {		
 
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
@@ -86,12 +86,29 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
     else if($career=='13'){$occ_old="010";}
     else {$occ_old="901";};	
     
-    $sql ="select code from occupa where detail like '%$career%'  ";  //ตารางอาชีพใหม่
+/*    $sql ="select code from occupa where detail like '%$career%'  ";  //ตารางอาชีพใหม่
     $row = mysql_query($sql);
     list($occ_new) = mysql_fetch_array($row);
     if($occ_new==""){
-        $occ_new="9629";
-    }
+        $occ_new="9999";
+    }*/
+	
+	if(($career=="05   ทหาร/ตำรวจ" || $career=="05 ทหาร/ตำรวจ") && ($yot=="ส.ต.ต." || $yot=="ส.ต.ท." || $yot=="ส.ต.อ." || $yot=="ด.ต." ||  $yot=="ร.ต.ต."  || $yot=="ร.ต.ท." || $yot=="ร.ต.อ." || $yot=="พ.ต.ต." || $yot=="พ.ต.ท." || $yot=="พ.ต.อ." || $yot=="ส.ต.ต.หญิง" || $yot=="ส.ต.ท.หญิง" || $yot=="ส.ต.อ.หญิง" || $yot=="ด.ต.หญิง" ||  $yot=="ร.ต.ต.หญิง"  || $yot=="ร.ต.ท.หญิง" || $yot=="ร.ต.อ.หญิง" || $yot=="พ.ต.ต.หญิง" || $yot=="พ.ต.ท.หญิง" || $yot=="พ.ต.อ.หญิง")){
+		$occ_new="5412";   //เจ้าหน้าที่ตำรวจ
+	}else if(($career=="05   ทหาร/ตำรวจ" || $career=="05 ทหาร/ตำรวจ") && ($yot=="ร.ต."  || $yot=="ร.ต" || $yot=="ร.ท." || $yot=="ร.ท" || $yot=="ร.อ." || $yot=="ร.อ" || $yot=="พ.ต." || $yot=="พ.ท." || $yot=="พ.อ." || $yot=="พล.ต." || $yot=="พล.ท." || $yot=="พล.อ." || $yot=="พลตรี" || $yot=="พลโท" || $yot=="พลเอก" || $yot=="ร.ต.หญิง"  || $yot=="ร.ท.หญิง" || $yot=="ร.อ.หญิง" || $yot=="พ.ต.หญิง" || $yot=="พ.ท.หญิง" || $yot=="พ.อ.หญิง")){		
+		$occ_new="0110";   //นายทหารสัญญาบัตร
+	}else if(($career=="05   ทหาร/ตำรวจ" || $career=="05 ทหาร/ตำรวจ") && ($yot=="ส.ต."  || $yot=="ส.ท." || $yot=="ส.อ." || $yot=="จ.ส.ต."  || $yot=="จ.ส.ท." || $yot=="จ.ส.อ." || $yot=="ส.ต.หญิง"  || $yot=="ส.ท.หญิง" || $yot=="ส.อ.หญิง" | $yot=="จ.ส.ต.หญิง"  || $yot=="จ.ส.ท.หญิง" || $yot=="จ.ส.อ.หญิง")){		
+		$occ_new="0210";   //ทหารชั้นประทวน
+	}else if($career=="ทหารยศอื่นๆ"){
+		$occ_new="0310";
+	}else if($career=="09   ข้าราชการทั่วไป" || $career=="09 ข้าราชการทั่วไป"){
+		$occ_new="1111";	
+	}else if($career=="ชาวนาปลูกข้าว" || $career=="01 เกษตรกร" || $career=="01   เกษตรกร" || $career=="01 เกษตรกร"){
+		$occ_new="6111";										
+	}else{
+	   $occ_new="9629";	  
+	}
+	
 
     if($religion=="พุทธ"||$religion=="ศาสนาพุทธ"){
         $religion="01";
@@ -125,19 +142,82 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
     $row = mysql_query($sql);
     list($pername) = mysql_fetch_array($row);
 
-    $sql ="select code from bloodgroup where (detail='$blood' or detail2='$blood')   ";
+/*    $sql ="select code from bloodgroup where (detail='$blood' or detail2='$blood')   ";
     $row = mysql_query($sql);
-    list($abogroup) = mysql_fetch_array($row);
+    list($abogroup) = mysql_fetch_array($row);*/
+	
+	//กรุ๊ปเลือด
+	$blood=trim($blood);
+	if($blood=="เอ" || $blood=="A"){
+		$abogroup="1";
+	}else if($blood=="บี" || $blood=="B"){
+		$abogroup="2";
+	}else if($blood=="เอบี" || $blood=="AB"){
+		$abogroup="3";
+	}else if($blood=="โอ" || $blood=="O"){
+		$abogroup="4";
+	}else{
+		$abogroup="9";
+	}						
+	
 
 
     if(substr($idguard,0,4)== "MX04"){$dcstatus="1";}else{$dcstatus="9";}
 
-    $typearea="1";  //สถานะบุคคล
-    $race="999";  //เชื้อชาติ
-    $nation="999";  //สัญชาติ
-    $education="09";  //ระดับการศึกษา
+	$ptright=substr($ptright,0,2);
+	if($ptright=="R01"){
+		$typearea="4";
+	}else{
+    	$typearea="1";  //สถานะบุคคล
+	}
+   //เชื้อชาติ
+    if($race=="ไทย" || $race=="01 ไทย"){
+		$race="099";  
+	}else if($race=="พม่า"){
+		$race="048";  
+	}else if($race=="จีน"){
+		$race="044";  
+	}else if($race=="ลาว"){
+		$race="056";  
+	}else if($race=="กัมพูชา"){
+		$race="057";  
+	}else if($race=="อินเดีย"){
+		$race="045";  						
+	}else if($race=="เวียดนาม"){
+		$race="046";  						
+	}else{
+		$race="999";  
+	}
+
+   
+   //สัญชาติ
+    if($nation=="ไทย" || $nation=="01 ไทย"){
+		$nation="099";  
+	}else if($nation=="พม่า"){
+		$nation="048";  
+	}else if($nation=="จีน"){
+		$nation="044";  
+	}else if($nation=="ลาว"){
+		$nation="056";  
+	}else if($nation=="กัมพูชา"){
+		$nation="057";  
+	}else if($nation=="อินเดีย"){
+		$nation="045";  						
+	}else if($nation=="เวียดนาม"){
+		$nation="046";  						
+	}else{
+		$nation="999";  
+	}
+	
+	
+	if(!empty($education)){
+		$neweducation=sprintf("%02d",$education);
+	}else{
+    	$neweducation="09";  //ระดับการศึกษา
+	}
+	
     $discharge="9";  //สถานะ/สาเหตุการจำหน่าย
-    $inline = "$hospcode|$cid|$hn|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation1|$religion|$education|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update\r\n";
+    $inline = "$hospcode|$cid|$hn|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update\r\n";
     $txt .= $inline;
 
 } //close while

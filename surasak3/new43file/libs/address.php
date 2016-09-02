@@ -33,21 +33,33 @@ while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,
     $sql3 ="SELECT PROVINCE_CODE FROM `province_new`  where `PROVINCE_NAME` ='$province'";
     $row3 = mysql_query($sql3);
     list($cprovince) = mysql_fetch_array($row3);
-    if(empty($cprovince)){
+    
+	if(empty($cprovince)){
         $cprovince="99";
     }else{
         $cprovince=$cprovince;
     }
-    $subadd = explode(" ",$address); 
-    $num_address = $subadd[0];
-    $posmoo = strpos($address,"ม.");
-    if($posmoo!=false){
-        $moo = substr($address,$posmoo+2,2);
-        if($moo<=9){
-            $moo = "0".$moo;
-        }
-    }
-
+	
+	///echo "==>".$address;
+    list($address,$posmoo) = explode(" ",$address); 
+	//echo "==>".$address.",,,,".$posmoo;
+	$posmoo=trim($posmoo);
+	
+	list($textmoo,$numbermoo) = explode("ม.",$posmoo); 
+	list($newmoo,$road)=explode("ถ.",$numbermoo);
+   	
+	if(is_numeric($newmoo)){
+		if($newmoo<=100){	
+			$moo = sprintf("%02d",$newmoo);
+			$village=$moo;
+		}else{
+			$village="99";
+		}
+	}else{
+		$village="99";
+	}
+	//echo "==>".$village."<br>";
+	
     $addresstype="1";  //ประเภทของที่อยู่
     $housetype="9";  //ลักษณะของที่อยู่
     if(empty($hphone) || $hphone=="-"){
@@ -68,7 +80,7 @@ while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,
     list($hh,$ss,$ii)=explode(":",$regis2);
     $d_update=$yy.$mm.$dd.$hh.$ss.$ii;
 
-    $inline = "$hospcode|$hn|$addresstype|$house_id|$housetype|$roomno|$condo|$num_address|$soisub|$soimain|$road|$villaname|$moo|$cdistrict|$camphur|$cprovince|$telephone|$mobile|$d_update\r\n";			
+    $inline = "$hospcode|$hn|$addresstype|$house_id|$housetype|$roomno|$condo|$num_address|$soisub|$soimain|$road|$villaname|$village|$cdistrict|$camphur|$cprovince|$telephone|$mobile|$d_update\r\n";			
     $txt .= $inline;
 } //close while
 $filePath = $dirPath.'/address.txt';

@@ -43,14 +43,15 @@ while( $item = mysql_fetch_assoc($query) ){
 	$creditLists[$key] = $item['credit'];
 }
 
-
+$txt = '';
 $sql = "SELECT a.`date`,b.`hn`,b.`date`,b.`my_ward`,a.`an`,a.`depart`,a.`amount`,a.`price`,a.`paid`,a.`part` 
 FROM `ipacc` AS a, 
 `ipcard` AS b 
 WHERE a.`an` = b.`an` 
 AND b.`dcdate` LIKE '$thimonth%' 
 AND b.`dcdate` IS NOT NULL 
-AND a.`amount` > 0";
+AND a.`amount` > 0 
+AND a.`price` > 0";
 $result = mysql_query($sql) or die("Query failed,Select report_admission4 And ipacc");
 while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) = mysql_fetch_row ($result)) {
 	
@@ -87,14 +88,25 @@ while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) 
     $payprice = number_format($payprice,2);	
     $quantity = $amount;
 
-    if($depart=="PHAR"){
+//ปรับปรุง 17-08-59 BY AMP
+    if($depart=="WARD"){
+        if($part=="BFY" || $part=="BFN"){
+            $chargeitem="01";
+        }else{
+            $chargeitem="12";
+        }	
+    }else if($depart=="PHAR"){
         if($part=="dpy" || $part=="dpn"){
             $chargeitem="02";
         }else if($part=="dsy" || $part=="dsn"){
             $chargeitem="05";
         }else if($part=="nessdy" || $part=="nessdn"){
             $chargeitem="17";
-        }	
+        }else if($part=="DDL"){
+            $chargeitem="03";
+        }else if($part=="DDY" || $part=="DDN"){
+            $chargeitem="17";
+        }
     }else if($depart=="PATHO"){
         $chargeitem="07";
     }else if($depart=="XRAY"){
@@ -103,15 +115,33 @@ while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) 
         $chargeitem="09";
     }else if($depart=="SURG"){
         $chargeitem="11";
-    }else if($depart=="OTHER" || $depart=="EMER" || $depart=="WARD" || $depart=="EYE"){
+    }else if($depart=="OTHER" || $depart=="EMER" || $depart=="EYE"){
         $chargeitem="12";
     }else if($depart=="DENTA"){
         $chargeitem="13";
     }else if($depart=="PHYSI"){
         $chargeitem="14";
     }else if($depart=="NID"){
-        $chargeitem="16";
-    }
+        $chargeitem="15";
+    }else if($depart=="" || empty($depart)){
+        if($part=="TOOL" || $part=="TOOLY"){
+            $chargeitem="10";
+        }else if($part=="NCARE" || $part=="NCAREY"){
+            $chargeitem="12";
+        }else if($part=="LAB" || $part=="LABY"){
+            $chargeitem="06";
+        }else if($part=="SINV" || $part=="SINVY"){
+            $chargeitem="09";
+        }else if($part=="SURG" || $part=="SURGY"){
+            $chargeitem="11";
+        }else if($part=="MCY" || $part=="MCN"){
+            $chargeitem="16";
+        }else{
+			$chargeitem="16";
+		}
+	}else{
+		$chargeitem="16";
+	}
 	
 	$regis1=substr($admdate,0,10);
 	$regis2=substr($admdate,11,19);
