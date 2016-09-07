@@ -239,17 +239,26 @@ class Mysql
 	private $rows = 0;
 	private $lastId = 0;
 	
-	function __construct(){
-			
-		// $this->db = mysql_connect(HOST, USER, PASS) or die ( mysql_error() );
-		// mysql_select_db(DB, $this->db) or die ( mysql_error() );
+	function __construct($configs){
 		
-		// if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-		// 	mysql_query("SET NAMES TIS620", $this->db);
-		// }
+		// default config
+		$host = HOST;
+		$port = PORT;
+		$dbname = DB;
+		$user = USER;
+		$pass = PASS;
+
+		// Override config
+		if( $configs !== false ){
+			$host = $configs['host'];
+			$port = $configs['port'];
+			$dbname = $configs['dbname'];
+			$user = $configs['user'];
+			$pass = $configs['pass'];
+		}
 		
 		try{
-			$this->db = new PDO('mysql:host='.HOST.';port='.PORT.';dbname='.DB, USER, PASS);
+			$this->db = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $user, $pass);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			// $names = self::$set_names;
 			
@@ -264,10 +273,10 @@ class Mysql
 		
 	}
 	
-	public static function load(){
+	public static function load( $configs = false ){
 		
 		if (self::$connect === null) {
-			self::$connect = new self();
+			self::$connect = new self($configs);
 		}
 		
 		return self::$connect;
