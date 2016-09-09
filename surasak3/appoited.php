@@ -31,21 +31,33 @@ print "<b>นัดมาวันที่</b> $appd ";
 	</tr>
 
 <?php
-
-
+$OSB = "";
 if($_GET["sortby"] == "time"){
-	$OSB = "Order by apptime ASC ";
-}else{
-	$OSB = "";
+	$OSB = "ORDER BY a.`apptime` ASC ";
 }
 
-
 $doctor2 = substr($_REQUEST["doctor"],0,5);	
-$query = "SELECT row_id,hn,ptname,appdate,apptime,came,row_id,age,depcode,detail,officer,detail2,date,other FROM appoint WHERE appdate = '$appd' and doctor like '$doctor2%' AND detail like '".$_POST["detail"]."%' ".$OSB;
-echo "<!-- ",$query," -->";
+$query = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`appdate`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,a.`depcode`,a.`detail`,a.`officer`,a.`detail2`,a.`date`,a.`other` 
+FROM appoint AS a 
 
+RIGHT JOIN (
+	SELECT MAX(`row_id`) AS `row_id`, 
+	`hn`, `appdate`, 
+	TRIM(`doctor`) AS `doctor`, 
+	SUBSTRING(`doctor`, 1, 5) as `doctor_code`
+	FROM `appoint` 
+	WHERE `appdate` = '$appd'
+	AND `doctor` LIKE '$doctor2%' 
+	GROUP BY `hn`,`appdate`
+) AS b ON b.`row_id` = a.`row_id` 
 
-$result = mysql_query($query) or die("Query failed");
+#WHERE appdate = '$appd' 
+#AND doctor LIKE '$doctor2%' 
+WHERE a.`detail` LIKE '".$_POST["detail"]."%' 
+$OSB
+";
+
+$result = mysql_query($query) or die( mysql_error() );
 $num=0;
 
 while (list ($row_id,$hn,$ptname,$appdate,$apptime,$came,$row_id,$age,$depcode,$detail,$officer,$detail2,$date,$other) = mysql_fetch_row ($result)) {

@@ -23,12 +23,30 @@
 <?php
     include("connect.inc");
 		
-	if($_SESSION["sIdname"] == "ฝังเข็ม")
-		$where = " AND apptime != 'ยกเลิกการนัด' ";
+    $where = "";
+	if($_SESSION["sIdname"] == "ฝังเข็ม"){
+        $where = " WHERE a.`apptime` != 'ยกเลิกการนัด' ";
+    }
+	
+    $query = "SELECT a.`hn`,a.`ptname`,a.`appdate`,a.`apptime`,a.`diag`,a.`came`,a.`row_id`,a.`age`,a.`depcode`,a.`officer`  
+    FROM appoint AS a 
 
-    $query = "SELECT hn,ptname,appdate,apptime,diag,came,row_id,age,depcode,officer FROM appoint WHERE appdate = '$appd' and detail = '$detail'  $where order by apptime ASC ";
-    $result = mysql_query($query)
-        or die("Query failed");
+    RIGHT JOIN (
+        SELECT MAX(`row_id`) AS `row_id`, 
+        `hn`, `appdate`, 
+        TRIM(`doctor`) AS `doctor`, 
+        SUBSTRING(`doctor`, 1, 5) as `doctor_code` 
+        FROM `appoint` 
+        WHERE `appdate` = '$appd' 
+        AND `detail` = '$detail' 
+        GROUP BY `hn`,`appdate`
+    ) AS b ON b.`row_id` = a.`row_id` 
+
+    #WHERE `appdate` = '$appd' 
+    #AND `detail` = '$detail' 
+    $where 
+    ORDER BY a.`apptime` ASC ";
+    $result = mysql_query($query) or die( mysql_error() );
     $num=0;
     while (list ($hn,$ptname,$appdate,$apptime,$diag,$came,$row_id,$age,$depcode,$officer) = mysql_fetch_row ($result)) {
         $num++;
