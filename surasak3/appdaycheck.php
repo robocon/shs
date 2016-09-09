@@ -88,19 +88,19 @@ $select_tomorow = $td." ".$month[$tm]." ".$ty;
         FROM `appoint` AS a 
 
         RIGHT JOIN (
-            SELECT MAX(`row_id`) AS `row_id` 
+            SELECT MAX(`row_id`) AS `row_id`, SUBSTRING(`doctor`, 1, 5) as `doctor_code`
             FROM `appoint` 
             WHERE `hn` = '$hn' 
-            GROUP BY `appdate`
+            GROUP BY `appdate`,`doctor_code`
         ) AS b ON b.`row_id` = a.`row_id` 
 
         ORDER BY a.`date` DESC ";
         // echo "<pre>";
-		// var_dump($query);
+        // var_dump($query);
         $result = mysql_query($query) or die( mysql_error() );
         $items = array();
         $i=1;
-        echo "<pre>";
+        // echo "<pre>";
         while( $item = mysql_fetch_assoc($result) ){
             
             list($testAppDate, $appTime) = explode(' ', $item['date']);
