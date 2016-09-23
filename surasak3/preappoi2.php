@@ -122,15 +122,20 @@ if( !isset($_GET['action']) ){
 	}
 
 	// นับจำนวนที่นัดผู้ป่วย
-	list($code, $dr_name) = explode(' ', $_POST['doctor']);
-	$sql = "SELECT `hn` 
+	// รองรับ format ว.xxxxx และ MDxxxxx
+	$testmatch = preg_match('/(\d+|MD\d+)/', $_POST['doctor'], $match);
+	$code = $match['1'];
+	$date_appoint = $_POST['date_appoint'];
+
+	$sql = "SELECT COUNT(`hn`) 
 	FROM `appoint` 
-	WHERE `appdate` = '{$_POST['date_appoint']}' 
-	AND `doctor` LIKE '$code%' 
-	AND `apptime` != 'ยกเลิกการนัด';";
+	WHERE `appdate` = '$date_appoint' 
+	AND `doctor` LIKE '%$code%' 
+	AND `apptime` != 'ยกเลิกการนัด' 
+	GROUP BY `hn`;";
 	$query = mysql_query($sql);
-	$rows = mysql_num_rows($query);
-	
+	$appoint_rows = (int) mysql_num_rows($query);
+
 	$months = array(
 		'มกราคม' => '01', 'กุมภาพันธ์' => '02','มีนาคม' => '03', 'เมษายน' => '04','พฤษภาคม' => '05', 'มิถุนายน' => '06',
 		'กรกฎาคม' => '07', 'สิงหาคม' => '08','กันยายน' => '09', 'ตุลาคม' => '10','พฤศจิกายน' => '11', 'ธันวาคม' => '12',
@@ -151,7 +156,7 @@ if( !isset($_GET['action']) ){
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
 	$dr_limit = (int) $item['user_row'];
-	if( $item !== false && $rows >= $dr_limit ){
+	if( $item !== false && $appoint_rows >= $dr_limit ){
 		
 		$get_day = (int) $item['date'];
 		echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อ '.$item['dr_contact'];
@@ -160,6 +165,40 @@ if( !isset($_GET['action']) ){
 		exit;
 	}
 	// จำกัดจำนวนผู้ป่วยนัด
+
+
+	// กรณีนอกเหนือจาก dr_limit_appoint
+	if( $_POST['doctor'] == 'MD007 ณรงค์ ปรีดาอนันทสุข' OR $_POST['doctor'] == 'HD ณรงค์ (ว.12456)' ){
+		$dr_name = 'หมอ ณรงค์ ปรีดาอนันทสุข';
+		$manual_lock = array('07 ตุลาคม 2559' => 17);
+
+	}else if( $_POST['doctor'] == 'MD009 นภสมร ธรรมลักษมี' OR $_POST['doctor'] == 'HD นภสมร (ว.19364)' ){
+		$dr_name = 'หมอ นภสมร ธรรมลักษมี';
+		$manual_lock = array(
+			'27 ตุลาคม 2559' => 0,
+			'28 ตุลาคม 2559' => 0,
+			'31 ตุลาคม 2559' => 0,
+			'01 พฤศจิกายน 2559' => 0,
+			'24 พฤศจิกายน 2559' => 0,
+			'25 พฤศจิกายน 2559' => 0,
+			'28 พฤศจิกายน 2559' => 0
+		);
+	}
+
+	if( isset($manual_lock[$date_appoint]) === true ){
+		
+		$limit = (int) $manual_lock[$date_appoint];
+		if( $limit < $appoint_rows ){
+			
+			if( $limit === 0 ){
+				echo $dr_name.' ไม่ออกตรวจวันที่ '.$date_appoint.' กรุณาเลือกวันตรวจใหม่';
+				exit;
+			}else{
+				echo $dr_name.' ได้จำกัดนัดในวันที่ '.$date_appoint.' ไว้ที่ '.$manual_lock[$date_appoint].'คน กรุณาเลือกวันตรวจใหม่';
+				exit;
+			}
+		}
+	}
 }
 
 ?>

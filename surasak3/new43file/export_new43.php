@@ -11,7 +11,7 @@ $action = input('action');
 if( $action === false ){
 ?>
 	<div>
-		<a href="../../nindex.htm">&lt;&lt;&nbsp;กลับไปหน้าเมนู</a>
+		<a href="../../nindex.htm">&lt;&lt;&nbsp;กลับไปหน้าเมนู</a> | <a href="specialpp.php">เฉพาะแฟ้ม specialpp</a>
 	</div>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>

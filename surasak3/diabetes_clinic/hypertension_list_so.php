@@ -28,20 +28,24 @@ require "header.php";
 	include("../connect.php");
 	
 	
-	if($_GET["txtKeyword"] != "")
-	{
-	$strSQL = "SELECT a.ht_no ,a.hn, a.ptname, a.ptright, b.camp, b.goup, b.pension_status
-FROM `hypertension_clinic` AS a, opcard AS b
-WHERE a.hn = b.hn AND (b.idguard
-LIKE 'MX01%' or b.idguard like '%ทหาร%' or b.idguard like '%ครอบครัว%') and  hn = '".$_GET["txtKeyword"]."'  ";
-	
+	if($_GET["txtKeyword"] != ""){
+		$strSQL = "SELECT a.ht_no ,a.hn, a.ptname, a.ptright, b.camp, b.goup, b.pension_status
+		FROM `hypertension_clinic` AS a, opcard AS b
+		WHERE a.hn = b.hn 
+		AND ( 
+			b.idguard LIKE 'MX01%' 
+			OR b.idguard LIKE '%ทหาร%' 
+			OR b.idguard LIKE '%ครอบครัว%'
+		) AND  a.hn = '".$_GET["txtKeyword"]."'  ";
 	}else{
-		
-	$strSQL = "SELECT a.ht_no ,a.hn, a.ptname, a.ptright, b.camp, b.goup, b.pension_status
-FROM `hypertension_clinic` AS a, opcard AS b
-WHERE a.hn = b.hn AND (b.idguard
-LIKE 'MX01%' or b.idguard like '%ทหาร%' or b.idguard like '%ครอบครัว%')";
-	
+		$strSQL = "SELECT a.ht_no ,a.hn, a.ptname, a.ptright, b.camp, b.goup, b.pension_status
+		FROM `hypertension_clinic` AS a, opcard AS b
+		WHERE a.hn = b.hn 
+		AND (
+			b.idguard LIKE 'MX01%' 
+			OR b.idguard LIKE '%ทหาร%' 
+			OR b.idguard LIKE '%ครอบครัว%'
+		)";
 	}
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	$Num_Rows = mysql_num_rows($objQuery);
