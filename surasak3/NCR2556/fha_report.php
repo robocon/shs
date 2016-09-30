@@ -27,6 +27,14 @@ color: #FFF;
 <?
 include("connect.inc");
 
+  // สร้าง departments key
+  $q = mysql_query("SELECT `code`,`name` FROM `departments`");
+  $departs = array();
+  while ($item = mysql_fetch_assoc($q)) {
+    $key = $item['code'];
+    $departs[$key] = $item['name'];
+  }
+
 		$sql = "Select * From drug_fail_2  where row_id = '".$_GET["row_id"]."' limit  1 ";
 		$result = mysql_query($sql) or die(mysql_error());
 		$arr_edit = mysql_fetch_assoc($result);
@@ -84,6 +92,29 @@ include("connect.inc");
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>ที่มา</td>
+    <td colspan="7">
+    <?php
+    $lists = array('1' => 'ENV ROUND',
+    '2' => 'IC ROUND',
+    '3' => 'RM ROUND',
+    '4' => '12 กิจกรรมทบทวน',
+    '5' => 'หน่วยรายงานเอง',
+    '6' => 'อื่นๆ',
+    '7' => 'เวรตรวจการพยาบาล',
+    '8' => 'นายทหารเวรประจำวัน'
+    );
+    $from_id = $arr_edit['come_from_id'];
+    if( $from_id !== '6' ){
+      echo $lists[$from_id];
+    }else{
+      $from_detail_id = $arr_edit['come_from_detail'];
+      echo $departs[$from_detail_id];
+    }
+    ?>
+    </td>
   </tr>
 </table><br />
 <table border="1" align="center" cellpadding="0" cellspacing="0" class="font2" style="border-collapse:collapse" bordercolor="#000000">

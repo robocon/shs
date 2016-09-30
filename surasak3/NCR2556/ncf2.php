@@ -681,7 +681,7 @@ function textdisabled(){
   <TD colspan="3" align="center" bgcolor="#CCCCCC"  >&nbsp;</TD>
 </TR>
 <?php
-if($_SESSION["statusncr"]=='admin'){
+// if($_SESSION["statusncr"]=='admin'){
 	?>
 	<TR valign="top">
 		<TD colspan="3" bgcolor="#CCCCCC"  ><strong>ฝ่ายคุณภาพ</strong></TD>
@@ -760,7 +760,7 @@ if($_SESSION["statusncr"]=='admin'){
 		<TD colspan="3" bgcolor="#CCCCCC"  >&nbsp;</TD>
 	</TR>
 	<?php
-	}
+	// }
 	?>
 <TR>
 	<TD colspan="3" align="center"><INPUT TYPE="submit" value="บันทึกข้อมูล" class="fontsara"></TD>

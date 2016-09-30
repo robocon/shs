@@ -43,3 +43,6 @@ testsmdb/**
 # Visual Studio Code
 .settings/*
 .vscode/*
+
+tests/*
+vendor/*

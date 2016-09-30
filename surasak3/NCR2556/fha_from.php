@@ -324,6 +324,50 @@ include("connect.inc");
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
+  <tr>
+    <td>ที่มา</td>
+    <td>
+      <style type="text/css">
+      label{cursor: pointer;}
+      </style>
+      <label for="come1">
+        <input type="radio" id="come1" name="come_from_id" value="1" <?php if($arr_edit["come_from_id"] == "1") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;ENV ROUND<BR>
+      </label>
+      <label for="come2">
+        <input type="radio" id="come2" name="come_from_id" value="2" <?php if($arr_edit["come_from_id"] == "2") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;IC ROUND<BR>
+      </label>
+      <label for="come3">
+        <input type="radio" id="come3" name="come_from_id" value="3" <?php if($arr_edit["come_from_id"] == "3") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;RM ROUND<BR>
+      </label>
+      <label for="come4">
+        <input type="radio" id="come4" name="come_from_id" value="4" <?php if($arr_edit["come_from_id"] == "4") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;12 กิจกรรมทบทวน<BR>
+      </label>
+    </td>
+    <td>
+      <label for="come5">
+        <input type="radio" id="come5" name="come_from_id" value="5" <?php if($arr_edit["come_from_id"] == "5") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;หน่วยรายงานเอง<BR>
+      </label>
+      <label for="come6">
+        <input type="radio" id="come6" name="come_from_id" value="7" <?php if($arr_edit["come_from_id"] == "7") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;เวรตรวจการพยาบาล<BR>
+      </label>
+      <label for="come7">
+        <input type="radio" id="come7" name="come_from_id" value="8" <?php if($arr_edit["come_from_id"] == "8") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='none';}">&nbsp;นายทหารเวรประจำวัน<BR>
+      </label>
+      <label for="come8">
+        <input type="radio" id="come8" name="come_from_id" value="6" <?php if($arr_edit["come_from_id"] == "6") echo " Checked ";?> onClick="javaScript:if(this.checked){document.all.come_from_detail.style.display='';}">&nbsp;อื่นๆ&nbsp;&nbsp;<br>
+      </label>
+      <select name="come_from_detail" style="display:none;">
+        <option value="">--------------</option>
+        <?php
+        $sql2="SELECT * FROM `departments` where status='y' ";
+        $query2=mysql_query($sql2);
+        while($arr2=mysql_fetch_array($query2)){
+          echo "<option value='$arr2[code]'>$arr2[name]</option> ";
+        }
+        ?>
+      </select>
+    </td>
+  </tr>
 </table><br />
 <table border="1" align="center" cellpadding="0" cellspacing="0" class="font2" style="border-collapse:collapse" bordercolor="#000000">
   <tr>

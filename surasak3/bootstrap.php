@@ -228,7 +228,12 @@ class DB{
 }
 
 /**
- * 
+ * $db = Mysql::load();
+ * $db->select();
+ * $items = $db->get_items();
+ *
+ * $configs = array('host' => '', 'port' => '', 'dbname' => '', 'user' => '', 'pass' => '', 'charset' => '', );
+ * $db = Mysql::load();
  */
 class Mysql
 {
@@ -247,6 +252,7 @@ class Mysql
 		$dbname = DB;
 		$user = USER;
 		$pass = PASS;
+		$charset = 'TIS620';
 
 		// Override config
 		if( $configs !== false ){
@@ -255,6 +261,7 @@ class Mysql
 			$dbname = $configs['dbname'];
 			$user = $configs['user'];
 			$pass = $configs['pass'];
+			$charset = $configs['charset'];
 		}
 		
 		try{
@@ -262,15 +269,17 @@ class Mysql
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			// $names = self::$set_names;
 			
-			if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-				$this->db->exec("SET NAMES TIS620 ;");
-			}
+			$this->db->exec("SET NAMES $charset ;");
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";
 			die();
 		}
 		
+	}
+
+	public function set_charset($charset){
+		$this->db->exec("SET NAMES $charset ;");
 	}
 	
 	public static function load( $configs = false ){

@@ -67,6 +67,10 @@ else if (document.layers||document.getElementById) {
     session_register("cNote");  
  	session_register("cIdcard");  
   	session_register("cIdguard");  
+
+	// Reset new_vn
+	$_SESSION['check_vn'] = null;
+
     include("connect.inc");
 	
 	if(isset($_GET["action"]) && $_GET["action"] == "hospcode"){
@@ -622,7 +626,10 @@ return $pAge;
         <option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
         <?
 						include("connect.inc");
-						$query = "SELECT * from grouptype order by row_id asc";
+						$query = "SELECT * 
+						FROM `grouptype` 
+						WHERE `status` = 'y'
+						ORDER BY `row_id` ASC";
 						$result = mysql_query($query);
 						while($tbrows=mysql_fetch_assoc($result)){
 						$code = substr($cGoup,0,3);
@@ -1018,34 +1025,30 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 
 </fieldset>
 
-<? 
-
-
-$sql = "Select count(row_id) as crow_id From opday where thdatehn = '".$thdatehn."' limit 0,1 ";
+<?php
+// เช็กว่าใน opday มี thdatehn นี้แล้วรึยัง
+$sql = "SELECT COUNT(`row_id`) AS `crow_id` 
+FROM `opday` 
+WHERE `thdatehn` = '".$thdatehn."' 
+LIMIT 0,1 ";
 $result = Mysql_Query($sql);
 list($rows) = Mysql_fetch_row($result);
-
-if($rows > 0){
+if($rows > 0){ // ถ้ามีแสดงว่าเคยลงทะเบียนในวันนี้แล้ว
 
 	print "<BR><span style=\"background-color: #FFFFCC\"><FONT SIZE=\"3\" COLOR=\"red\">ผู้ป่วยเคยลงทะเบียนในวันนี้แล้ว ให้ออก VN ใหม่ในกรณีที่มารักษาครั้งใหม่ทุกครั้ง
 	<SELECT NAME=\"new_vn\">
 		<Option value=\"\">----------------</Option>
 		<Option value=\"0\">ใช้ VN เดิม</Option>
 		<Option value=\"1\">ออก VN ใหม่</Option>
-	</SELECT>
-	";
+	</SELECT>";
 	
-	
-$sql = "Select date_format(thidate,'%d-%m-%Y %H:%i:%s'),toborow,kew,vn From opday where hn = '".trim($_GET["cHn"])."' ORder by thidate DESC limit 1 ";
-$result = Mysql_Query($sql);
-list($thidate,$toborow,$kew,$vn) = Mysql_fetch_row($result);
+	$sql = "Select date_format(thidate,'%d-%m-%Y %H:%i:%s'),toborow,kew,vn From opday where hn = '".trim($_GET["cHn"])."' ORder by thidate DESC limit 1 ";
+	$result = Mysql_Query($sql);
+	list($thidate,$toborow,$kew,$vn) = Mysql_fetch_row($result);
 	echo "<BR>&nbsp;&nbsp;&nbsp;**มาครั้งสุดท้ายเมื่อ&nbsp; ".$thidate."&nbsp;VN&nbsp;".$vn."&nbsp;โดย&nbsp;".$toborow."&nbsp;&nbsp;ได้คิวที่&nbsp;".$kew."</FONT></span>";
 
 }else{
-	
 	print "<INPUT TYPE=\"hidden\" name=\"new_vn\" value=\"1\">";
-
-
 }
 //////////////////////////////
 
@@ -1072,9 +1075,10 @@ RIGHT JOIN (
 	FROM `appoint` 
 	WHERE `hn` = '$cHn' 
 	AND `appdate` = '$today2' 
-	LIMIT 1
+	GROUP BY `doctor` 
 ) AS b ON b.`row_id` = a.`row_id` 
 WHERE a.`apptime` != 'ยกเลิกการนัด'";
+
 $query = mysql_query($sql);
 $appoint_num = mysql_num_rows($query);
 if( $appoint_num > 0){

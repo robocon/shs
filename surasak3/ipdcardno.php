@@ -4,7 +4,9 @@ include 'bootstrap.php';
 include 'templates/classic/header.php';
 include 'templates/classic/nav.php';
 
-DB::load();
+// DB::load();
+
+$db = Mysql::load();
 
 $default_date = ad_to_bc(date('Y-m'));
 $date = input('date', $default_date);
@@ -64,7 +66,17 @@ if( $date !== false ){
 				</thead>
 				<tbody>
 					<?php 
-					$sql = "SELECT a.* 
+
+					// test format yyyy-mm-dd
+					$day_match = preg_match('/\d+\-\d+\-\d+/', $date);
+					if ( $day_match > 0 ) {
+						$date_checker = $date;
+						list($y, $m, $d) = explode('-', $date);
+						$date = $y.'-'.$m;
+						
+					}
+
+					$sql = "SELECT a.*, SUBSTRING(a.`date`, 1, 10) as `date_key` 
 					FROM `dcstatus` AS a , 
 					(
 						SELECT `an`, MAX(`date`) AS `date`
@@ -74,10 +86,17 @@ if( $date !== false ){
 						ORDER BY `date` DESC
 					) AS b 
 					WHERE b.`date` = a.`date` AND b.`an` = a.`an`";
-					$items = DB::select($sql);
+					// $items = DB::select($sql);
+					$db->select($sql);
+					$items = $db->get_items();
 					
 					$i = 1;
 					foreach($items as $key => $item){
+
+						// ถ้าคีย์มาเป็นวันที่มันจะ skip วันอื่นไปทำให้แสดงเฉพาะวันที่เราใส่วันที่เท่านั้น
+						if( $day_match > 0 && $item['date_key'] !== $date_checker ){
+							continue;
+						}
 					?>
 					<tr>
 						<td><?=$i;?></td>
