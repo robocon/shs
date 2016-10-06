@@ -20,7 +20,7 @@ include '../bootstrap.php';
 				$def_date = get_date_bc('Y');
 				$date_format = input_post('date_format', $def_date);
 				?>
-				<form action="report_from.php" method="post" id="userForm" class="no_print">
+				<form action="report_from_drug.php" method="post" id="userForm" class="no_print">
 					<div class="col">
 						<div class="cell">
 							<label for="">
@@ -74,16 +74,16 @@ include '../bootstrap.php';
 			);
 			$db = Mysql::load($conf);
 			
-			$sql = "SELECT (SUBSTRING(`nonconf_date`, 1, 4) - 543) AS `year`, 
-DATE_FORMAT( `nonconf_date`, '%m' ) AS `month`, 
-CONCAT((SUBSTRING(`nonconf_date`, 1, 4) - 543), '-', DATE_FORMAT( `nonconf_date`, '%m' )) AS `ad_date`, 
-COUNT(`nonconf_id`) AS `rows`, 
+			$sql = "SELECT (SUBSTRING(`fha_date`, 1, 4) - 543) AS `year`, 
+DATE_FORMAT( `fha_date`, '%m' ) AS `month`, 
+CONCAT((SUBSTRING(`fha_date`, 1, 4) - 543), '-', DATE_FORMAT( `fha_date`, '%m' )) AS `ad_date`, 
+COUNT(`row_id`) AS `rows`, 
 `come_from_id` 
-			FROM `ncr2556` 
-			WHERE `nonconf_date` LIKE :date_select 
+			FROM `drug_fail_2` 
+			WHERE `fha_date` LIKE :date_select 
             AND `come_from_id` != ''
             GROUP BY `ad_date`, `come_from_id`";
-
+			// dump($sql);
 			$data = array(
 				':date_select' => "$date%"
 			);
@@ -156,7 +156,7 @@ COUNT(`nonconf_id`) AS `rows`,
 						$href = 'date='.$ykey.'-'.$mkey.'&group='.$gkey;
 						?>
 						<td align="right">
-							<a href="report_from_detail.php?<?=$href;?>" target="_blank"><?=$item['rows'];?></a>
+							<a href="report_from_drug_detail.php?<?=$href;?>" target="_blank"><?=$item['rows'];?></a>
 						</td>
 						<?php
 					}else{

@@ -46,6 +46,7 @@ td,th { font-family:"TH SarabunPSK"; font-size: 16 pt; }
 					<li class="last"><a href="report_ic_accident.php"><span>รายงานอุบัติการณ์ IC</span></a></li>
 					<li class="last"><a href="ic_report_depart.php"><span>สรุปอุบัติการณ์ IC  ประจำปี</span></a></li>
 					<li class="last"><a href="report_from.php"><span>รายงานที่มาแยกตามเดือน</span></a></li>
+					<li class="last"><a href="report_from_drug.php"><span>รายงานที่มา(ยา)แยกตามเดือน</span></a></li>
 				</ul>
 			</li>
 			<li>
