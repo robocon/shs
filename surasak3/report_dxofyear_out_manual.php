@@ -75,7 +75,11 @@ $thaimonthFull = array('01' => '¡°√“§¡', '02' => '°ÿ¡¿“æ—π∏Ï', '03' => '¡’π“§¡',
 	$row = mysql_query($select);
 	$result = mysql_fetch_array($row);
 	
-	$sql1="CREATE TEMPORARY TABLE  result1  Select * from  resulthead  WHERE hn='".$result['hn']."' and clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’$nPrefix' ";
+	$sql1 = "CREATE TEMPORARY TABLE  result1  
+  Select * from  resulthead  
+  WHERE hn = '".$result['hn']."' 
+  and clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’$nPrefix' ";
+  echo "<!-- $sql1 -->";
 	$query1 = mysql_query($sql1); 	
 	?>	
 <div id="no-print">
@@ -100,8 +104,8 @@ $thaimonthFull = array('01' => '¡°√“§¡', '02' => '°ÿ¡¿“æ—π∏Ï', '03' => '¡’π“§¡',
   $da = explode(" ",$result["thidate"]);
 //   list($y, $m, $d) = explode("-",$da[0]);
 //   $shortDate = "$d-$m-$y";
-	$d = '04';
-	$m = '08';
+	$d = '13';
+	$m = '09';
 	$y = '2016';
   ?>
   <?php echo $d.' '.$thaimonthFull[$m].' '.( $y + 543 );?>
@@ -191,13 +195,17 @@ mmHg.</u></span></td>
             <td width="19%" align="center" bgcolor="#CCCCCC">result</td>
             <td width="20%" align="center" bgcolor="#CCCCCC">normalrange</td>
           </tr>
-          <? $sql="SELECT * FROM result1 WHERE profilecode='CBC' ";
+          <?php 
+  $sql="SELECT * FROM result1 
+  WHERE profilecode='CBC' ";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
-/////
+  /////
 
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
+		$strSQL = "SELECT * FROM resultdetail  
+    WHERE autonumber='".$arrresult['autonumber']."' 
+    and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
 		//echo "---->".$strSQL;
 		$objQuery = mysql_query($strSQL);
 		while($objResult = mysql_fetch_array($objQuery))
@@ -244,10 +252,10 @@ mmHg.</u></span></td>
 			
 			
 				if($objResult['flag']=='L' || $objResult['flag']=='H'){
-				$objResult["result"]="<strong>".$objResult["result"]."</strong>";
-			}else{
-				$objResult["result"]=$objResult["result"];
-			}
+          $objResult["result"]="<strong>".$objResult["result"]."</strong>";
+        }else{
+          $objResult["result"]=$objResult["result"];
+        }
 		?>
           <tr>
             <td><?=$objResult["labcode"]." ".$labmean;?></td>
@@ -659,8 +667,69 @@ mmHg.</u></span></td>
         <? if($result['stat_other2']=="º‘¥ª°µ‘") echo "§”·π–π”...".$result['reason_other2']."...";?>
       </span></td>
       </tr>
+
+
+      <? }
+	if($result['other3']!=""){?>
+    <tr>
+      <td valign="top"><span class="text3"><strong>
+        <?=$result['other3']?> :
+      </strong>      </span></td>
+      <td colspan="5" valign="top"><span class="text3">
+        <?=$result['stat_other3']?>
+        <? if($result['stat_other3']=="º‘¥ª°µ‘") echo "§”·π–π”...".$result['reason_other3']."...";?>
+      </span></td>
+      </tr>
+      
+      <? }
+	if($result['other4']!=""){?>
+    <tr>
+      <td valign="top"><span class="text3"><strong>
+        <?=$result['other4']?> :
+      </strong>      </span></td>
+      <td colspan="5" valign="top"><span class="text3">
+        <?=$result['stat_other4']?>
+        <? if($result['stat_other4']=="º‘¥ª°µ‘") echo "§”·π–π”...".$result['reason_other4']."...";?>
+      </span></td>
+      </tr>
+      
+      <? }
+	if($result['other5']!=""){?>
+    <tr>
+      <td valign="top"><span class="text3"><strong>
+        <?=$result['other5']?> :
+      </strong>      </span></td>
+      <td colspan="5" valign="top"><span class="text3">
+        <?=$result['stat_other5']?>
+        <? if($result['stat_other5']=="º‘¥ª°µ‘") echo "§”·π–π”...".$result['reason_other5']."...";?>
+      </span></td>
+      </tr>
+      
+      <? }
+	if($result['other6']!=""){?>
+    <tr>
+      <td valign="top"><span class="text3"><strong>
+        <?=$result['other6']?> :
+      </strong>      </span></td>
+      <td colspan="5" valign="top"><span class="text3">
+        <?=$result['stat_other6']?>
+        <? if($result['stat_other6']=="º‘¥ª°µ‘") echo "§”·π–π”...".$result['reason_other6']."...";?>
+      </span></td>
+      </tr>
+      
+      <? }
+	if($result['other7']!=""){?>
+    <tr>
+      <td valign="top"><span class="text3"><strong>
+        <?=$result['other7']?> :
+      </strong>      </span></td>
+      <td colspan="5" valign="top"><span class="text3">
+        <?=$result['stat_other7']?>
+        <? if($result['stat_other7']=="º‘¥ª°µ‘") echo "§”·π–π”...".$result['reason_other7']."...";?>
+      </span></td>
+      </tr>                              
+      
 	<? }
-  
   if( $_SESSION['other2_1'] ){
     ?>
     <tr>

@@ -1288,8 +1288,8 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="7">&nbsp;&nbsp;&nbsp;การตรวจอื่น ๆ</td>
 	  </tr>
 	  <tr bgcolor="#CCCCFF">
-	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">ตรวจเอ็กซ์เรย์ปอด : <a href="dxdr_xray_film.php" target="_blank">ดูฟิลม์</a> </td>
-	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ปกติ' onclick="togglediv2('acnormal51')" id="normal58"/>
+	    <td width="20%" align="right" bgcolor="#FFCC99" class="tb_font_2">ตรวจเอ็กซ์เรย์ปอด : <a href="dxdr_xray_film.php" target="_blank">ดูฟิลม์</a> </td>
+	    <td width="20%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ปกติ' onclick="togglediv2('acnormal51')" id="normal58"/>
 	      ปกติ
 	        <input name='normal51' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal51')" id="normal57"/>
 	      ผิดปกติ </td>
@@ -1318,33 +1318,124 @@ $bsult = mysql_fetch_array($brow);
 	        </select>
 	      </div></td>
 	    </tr>
-	  <tr>
-	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ :</td>
-	    <td class="labfont"><input name="other1" type="text" size="20" /></td>
-	    <td class="labfont"><input name='normal53' type='radio' value='ปกติ' onclick="togglediv2('acnormal53')"/>
-ปกติ
-  <input name='normal53' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal53')"/>
-ผิดปกติ </td>
-	    <td colspan="2"><div id="acnormal53" style='display: none;'>
-	      <input name="ch53" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
-	      </div></td>
-	    </tr>
-	  <tr>
-	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ :</td>
-	    <td class="labfont"><input name="other2" type="text" size="20" /></td>
-	    <td class="labfont"><input name='normal54' type='radio' value='ปกติ' onclick="togglediv2('acnormal54')"/>
-ปกติ
-  <input name='normal54' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal54')"/>
-ผิดปกติ </td>
-	    <td colspan="2"><div id="acnormal54" style='display: none;'>
-	      <input name="ch54" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
-	      </div></td>
-	    </tr>
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (1) :</td>
+		<td class="labfont">
+			<input name="other1" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal53' type='radio' value='ปกติ' onclick="togglediv2('acnormal53')"/>ปกติ
+			<input name='normal53' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal53')"/>ผิดปกติ
+		</td>
+		<td colspan="2">
+			<div id="acnormal53" style='display: none;'>
+				<input name="ch53" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (2) :</td>
+		<td class="labfont">
+			<input name="other2" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal54' type='radio' value='ปกติ' onclick="togglediv2('acnormal54')"/>ปกติ
+			<input name='normal54' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal54')"/>ผิดปกติ
+		</td>
+		<td colspan="2">
+			<div id="acnormal54" style='display: none;'>
+				<input name="ch54" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (3) :</td>
+		<td class="labfont">
+			<input name="other3" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal101' type='radio' value='ปกติ' onclick="togglediv2('acnormal101')"/>ปกติ
+			<input name='normal101' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal101')"/>ผิดปกติ 
+		</td>
+		<td colspan="2">
+			<div id="acnormal101" style='display: none;'>
+				<input name="ch101" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (4) :</td>
+		<td class="labfont">
+			<input name="other4" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal102' type='radio' value='ปกติ' onclick="togglediv2('acnormal102')"/>ปกติ
+			<input name='normal102' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal102')"/>ผิดปกติ 
+		</td>
+		<td colspan="2">
+			<div id="acnormal102" style='display: none;'>
+				<input name="ch102" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (5) :</td>
+		<td class="labfont">
+			<input name="other5" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal103' type='radio' value='ปกติ' onclick="togglediv2('acnormal103')"/>ปกติ
+			<input name='normal103' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal103')"/>ผิดปกติ
+		</td>
+		<td colspan="2">
+			<div id="acnormal103" style='display: none;'>
+				<input name="ch103" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (6) :</td>
+		<td class="labfont">
+			<input name="other6" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal104' type='radio' value='ปกติ' onclick="togglediv2('acnormal104')"/>ปกติ
+			<input name='normal104' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal104')"/>ผิดปกติ
+		</td>
+		<td colspan="2">
+			<div id="acnormal104" style='display: none;'>
+				<input name="ch104" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ (7) :</td>
+		<td class="labfont">
+			<input name="other7" type="text" size="20" />
+		</td>
+		<td class="labfont">
+			<input name='normal105' type='radio' value='ปกติ' onclick="togglediv2('acnormal105')"/>ปกติ
+			<input name='normal105' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal105')"/>ผิดปกติ 
+		</td>
+		<td colspan="2">
+			<div id="acnormal105" style='display: none;'>
+				<input name="ch105" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+			</div>
+		</td>
+	</tr>
+
     <tr>
       <td align="right" class="tb_font_2">เป็นโรค:</td>
       <td class="labfont"><input name="other2_1" type="text" size="20" /></td>
-      <td class="labfont">คำแนะนำ: <input name="other2_1_1" type="text" size="40" value="ควรพบแพทย์ เพื่อการรักษาต่อเนื่อง"/></td>
-      <td colspan="2"></td>
+      <td class="labfont" colspan="2">
+	  	คำแนะนำ: <input name="other2_1_1" type="text" size="40" value="ควรพบแพทย์ เพื่อการรักษาต่อเนื่อง"/>
+		</td>
     </tr>
 	  </table></td>
 </tr>
