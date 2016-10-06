@@ -340,3 +340,17 @@ function get_year_checkup($long = false, $en = false){
 	$y = substr($y, 2);
 	return $y;
 }
+
+function generate_token($name){
+	$session_id = session_id();
+	return hash('sha256', $session_id.$name.TOKEN_KEY);
+}
+
+function check_token($token, $name){
+	$check_token = false;
+	$get_token = generate_token($name);
+	if( $token === $get_token ){
+		$check_token = true;
+	}
+	return $check_token;
+}

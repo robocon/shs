@@ -4,3 +4,4 @@ define('PORT', '3306');
 define('DB', 'db_name');
 define('USER', 'username');
 define('PASS', 'password');
+define('TOKEN_KEY', 'test_token_key');

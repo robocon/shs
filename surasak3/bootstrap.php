@@ -261,9 +261,9 @@ class Mysql
 			$dbname = $configs['dbname'];
 			$user = $configs['user'];
 			$pass = $configs['pass'];
-			$charset = $configs['charset'];
+			$charset = ( !empty($configs['charset']) ) ? $configs['charset'] : $charset ;
 		}
-		
+
 		try{
 			$this->db = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $user, $pass);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
