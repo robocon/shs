@@ -9,7 +9,9 @@
 			FROM `survey_oral` AS a 
 			LEFT JOIN `survey_oral_category` AS b ON b.`id` = a.`section`
 			WHERE a.`id` = :id LIMIT 1;";
-			$item = DB::select($sql, array(':id' => $id), true);
+
+			$db->select($sql, array(':id' => $id));
+			$item = $db->get_item();
 			
 			if( $item === false || count($item) === 0 ){
 				?>
@@ -23,7 +25,7 @@
 				if( $item['section'] == '71' ){
 					$header_txt = 'กลุ่มแม่บ้านทหารบก';
 				}
-		?>
+			?>
 			<h3 id="detail_header_print">ผลตรวจสภาวะช่องปาก <?=$header_txt;?></h3>
 			<div class="cell">
 				<div class="input_form"><label for="date">วันที่ตรวจ:</label>&nbsp;<?php echo $item['date'];?></div>
@@ -43,13 +45,14 @@
 			<div class="cell">
 				<?php
 				$status = unserialize($item['mouth_detail']);
+				// dump($status);
 				?>
 				<table class="custom-table outline-header border box-header outline">
 					<thead>
 						<tr>
-							<th class="align-center">สภาวะช่องปาก</th>
-							<th class="align-center" width="7%">ระดับ</th>
-							<th class="align-center" width="30%">คำแนะนำในการรักษา</th>
+							<th class="align-center" width="75%">สภาวะช่องปาก</th>
+							<th class="align-center" width="5%">ระดับ</th>
+							<th class="align-center" width="20%">คำแนะนำในการรักษา</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -73,23 +76,22 @@
 									}
 								?>
 							</td>
-							<td class="align-center">ควรมารักษาทุก 6 เดือน</td>
+							<td>ควรมารักษาทุก 6 เดือน</td>
 						</tr>
 						
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['2_1'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
 								<label for="2_1">B. มีหินปูน มีเหงือกอักเสบ</label>
 							</td>
-							<td class="align-center">
+							<td class="align-center" rowspan="2">
 								<?php
 									if( $item['max_status'] == '2' ){
 										?>
 										<div class="circle-contain">
 											<?php echo $img_checked;?>
 											<span class="circle-number">2</span>
-											
 										</div>
 										<?php
 									}else{
@@ -97,15 +99,22 @@
 									}
 								?>
 							</td>
-							<td class="align-center">ขูดหินปูน</td>
+							<td>ขูดหินปูน</td>
 						</tr>
 						<tr>
 							<td>
+								<?php echo ( $status['2_2'] == 1 ) ? $img_checked : '' ;?>
+								C. อื่นๆ <span class="box-underline"><?=$status['2_2_detail'];?></span>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['3_1'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="3_1">C. มีฟันผุที่ต้องได้รับการอุดฟัน</label>
+								<label for="3_1">D. มีฟันผุที่ต้องได้รับการอุดฟัน</label>
 							</td>
-							<td class="align-center" rowspan="3">
+							<td class="align-center" rowspan="5">
 								<?php
 									if( $item['max_status'] == '3' ){
 										?>
@@ -119,29 +128,45 @@
 									}
 								?>
 							</td>
-							<td class="align-center" rowspan="2">อุดฟัน</td>
+							<td class="align-left" rowspan="2">อุดฟัน</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['3_2'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="3_2">D. มีฟันสึกที่ต้องได้รับการอุดฟัน</label>
+								<label for="3_2">E. มีฟันสึกที่ต้องได้รับการอุดฟัน</label>
 							</td>
 							
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['3_3'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="3_3">E. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
+								<label for="3_3">F. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
 							</td>
-							<td class="align-center">รักษาโรคเหงือก</td>
+							<td>รักษาโรคเหงือก</td>
+						</tr>
+						<tr>
+							<td class="tb-bottom-none">
+								<?php $check = ( $status['3_4'] == 1 ) ? $img_checked : '' ;?>
+								<?php echo $check;?>
+								<label for="3_4">G. สูญเสียฟัน และควรใส่ฟันทดแทน</label>
+							</td>
+							
+							<td>ใส่ฟัน</td>
 						</tr>
 						<tr>
 							<td>
+								<?php echo ( $status['3_5'] == 1 ) ? $img_checked : '' ;?>
+								H. อื่นๆ <span class="box-underline"><?=$status['3_5_detail'];?></span>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['4_1'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="4_1">F. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR</label>
+								<label for="4_1">I. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR</label>
 							</td>
 							<td class="align-center" rowspan="6">
 								<?php
@@ -157,75 +182,53 @@
 									}
 								?>
 							</td>
-							<td class="align-center" rowspan="2">อุดฟัน/รักษาคลองรากฟัน/ถอนฟัน</td>
+							<td rowspan="2">อุดฟัน/รักษาคลองรากฟัน/ถอนฟัน</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['4_2'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="4_2">G. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน</label>
+								<label for="4_2">J. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน</label>
 							</td>
+							
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['4_3'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="4_3">H. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
+								<label for="4_3">K. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
 							</td>
-							<td class="align-center">ถอนฟันและรักษาโรคเหงือก</td>
+							<td>ถอนฟันและรักษาโรคเหงือก</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['4_4'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="4_4">I. มีฟันคุด</label>
+								<label for="4_4">L. มีฟันคุด</label>
 							</td>
-							<td class="align-center">ผ่าฟันคุด</td>
+							<td>ผ่าฟันคุด</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<?php $check = ( $status['4_5'] == 1 ) ? $img_checked : '' ;?>
 								<?php echo $check;?>
-								<label for="4_5">J. สูญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
+								<label for="4_5">M. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก</label>
 							</td>
-							<td class="align-center">ใส่ฟัน</td>
+							<td>ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
 						</tr>
 						<tr>
 							<td>
-								<?php $check = ( $status['4_6'] == 1 ) ? $img_checked : '' ;?>
-								<?php echo $check;?>
-								<label for="4_6">K. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก</label>
+								<?php echo ( $status['4_6'] == 1 ) ? $img_checked : '' ;?>
+								N. อื่นๆ <span class="box-underline"><?=$status['4_6_detail'];?></span>
 							</td>
-							<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
-						</tr>
-						<tr>
-							<td>
-								<?php $check = ( $status['5_1'] == 1 ) ? $img_checked : '' ;?>
-								<?php echo $check;?>
-								<label for="5_1">L. ไม่ได้รับการตรวจ</label>
-							</td>
-							<td class="align-center">
-								<?php
-									if( $item['max_status'] == '5' ){
-										?>
-										<div class="circle-contain">
-											<?php echo $img_checked;?>
-											<span class="circle-number">5</span>
-										</div>
-										<?php
-									}else{
-										?>5<?php
-									}
-								?>
-							</td>
-							<td class="align-center">ไม่มีข้อมูล</td>
+							<td></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div class="col">
 				<div class="cell">
-					<label for="etc">บันทึกเพิ่มเติม</label>&nbsp;<?php echo str_replace("\n", '<br>', $item['etc']);?>
+					<label for="etc">บันทึกเพิ่มเติม</label>&nbsp;<span class="box-underline"><?php echo str_replace("\n", '<br>', $item['etc']);?></span>
 					
 				</div>
 			</div>

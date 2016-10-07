@@ -88,6 +88,9 @@ table th{
 	font-weight: bold;
 	vertical-align: middle;
 }
+.tb-bottom-none{
+	border-bottom: 0px;
+}
 a{
 	text-decoration: none;
 	color: #3B5998;

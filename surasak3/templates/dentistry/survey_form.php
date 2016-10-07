@@ -18,7 +18,11 @@ $officers = array(
 // ถ้ามีการแก้ไข
 if( $id !== false ){
 	$sql = "SELECT * FROM `survey_oral` WHERE id = :id;";
-	$item = DB::select($sql, array( ':id' => $id ), true);
+	// $item = DB::select($sql, array( ':id' => $id ), true);
+
+	$db->select($sql, array( ':id' => $id ));
+	$item = $db->get_item();
+
 	$hn = $item['hn'];
 	
 	$title = 'แก้ไข';
@@ -48,14 +52,9 @@ if( $id !== false ){
 		</form>
 		
 		<?php 
-		$sql = "SELECT *  FROM `opcard` WHERE `hn` = :hn LIMIT 1;";
-		// $item = DB::select($sql, array(':hn' => $hn), true);
-		
-		$q = mysql_query(str_replace(':hn', "'$hn'", $sql));
-		$item = mysql_fetch_assoc($q);
-		// var_dump($item);
-		if( $item ){
-			
+		$sql = "SELECT `dbirth`,`hn`,`yot`,`name`,`surname`,`idcard` FROM `opcard` WHERE `hn` = :hn LIMIT 1;";
+		$item = $db->get_single($sql, array(':hn' => $hn));
+		if( $item !== false ){
 			list($y, $m, $d) = explode('-', $item['dbirth']);
 			$user_bd = strtotime(( $y - 543 )."-$m-$d") ;
 			$age = floor( abs($user_bd - strtotime('now')) / ( 365*60*60*24 ) );
@@ -77,14 +76,15 @@ if( $id !== false ){
 					<label for="section">หน่วย:</label>&nbsp;
 					<select name="section" id="section">
 						<?php
-							$sql = "SELECT `id`,`name` FROM `survey_oral_category` ORDER BY `id` ASC;";
-							$categories = DB::select($sql);
-							foreach ($categories as $key => $value) {
-								$selected = ( $section == $value['id'] ) ? 'selected="selected"' : '' ;
-								?>
-								<option value="<?php echo $value['id'];?>" <?php echo $selected;?>><?php echo $value['name'];?></option>
-								<?php
-							}
+						$sql = "SELECT `id`,`name` FROM `survey_oral_category` ORDER BY `id` ASC;";
+						$db->select($sql);
+						$categories = $db->get_items();
+						foreach ($categories as $key => $value) {
+							$selected = ( $section == $value['id'] ) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?php echo $value['id'];?>" <?php echo $selected;?>><?php echo $value['name'];?></option>
+							<?php
+						}
 						?>
 					</select>
 				</div>
@@ -93,16 +93,15 @@ if( $id !== false ){
 				<div class="input_form">
 					<label for="prefix">คำนำหน้า: </label><?php echo $item['yot'];?>
 					<input id="prefix" name="prefix" type="hidden" value="<?php echo $item['yot'];?>">
-					</div>
+				</div>
 				<div class="input_form">
 					<label for="firstname">ชื่อ: </label><?php echo $item['name'];?>
 					<input id="firstname" name="firstname" type="hidden" value="<?php echo $item['name'];?>">
-					</div>
+				</div>
 				<div class="input_form">
 					<label for="lastname">สกุล: </label><?php echo $item['surname'];?>
 					<input id="lastname" name="lastname" type="hidden" value="<?php echo $item['surname'];?>">
-					</div>
-				
+				</div>
 			</div>
 			<div class="cell">
 				<div class="input_form">
@@ -118,9 +117,9 @@ if( $id !== false ){
 				<table class="custom-table outline-header border box-header outline">
 					<thead>
 						<tr>
-							<th class="align-center">สภาวะช่องปาก</th>
+							<th class="align-center" width="75%">สภาวะช่องปาก</th>
 							<th class="align-center" width="5%">ระดับ</th>
-							<th class="align-center" width="15%">คำแนะนำในการรักษา</th>
+							<th class="align-center" width="20%">คำแนะนำในการรักษา</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -130,87 +129,102 @@ if( $id !== false ){
 								<label for="1_1">A. สุขภาพช่องปากดี</label>
 							</td>
 							<td class="align-center">1</td>
-							<td class="align-center">ควรมารักษาทุก 6 เดือน</td>
+							<td>ควรมารักษาทุก 6 เดือน</td>
 						</tr>
-						
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[2_1]" id="2_1" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['2_1'] == 1 ) ? 'checked="checked"' : '' ;?>>
 								<label for="2_1">B. มีหินปูน มีเหงือกอักเสบ</label>
 							</td>
-							<td class="align-center">2</td>
-							<td class="align-center">ขูดหินปูน</td>
+							<td class="align-center" rowspan="2">2</td>
+							<td>ขูดหินปูน</td>
 						</tr>
 						<tr>
 							<td>
+								<input name="mouth_detail[2_2]" id="2_2" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['2_2'] == 1 ) ? 'checked="checked"' : '' ;?>>
+								<label for="2_2">C. อื่นๆ</label>
+								<input type="text" name="mouth_detail[2_2_detail]" class="width-2of5" onclick="document.getElementById('2_2').checked = true" value="<?=$detail['2_2_detail'];?>">
+							</td>
+							<td class="align-center"></td>
+						</tr>
+						<tr>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[3_1]" id="3_1" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['3_1'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="3_1">C. มีฟันผุที่ต้องได้รับการอุดฟัน</label>
+								<label for="3_1">D. มีฟันผุที่ต้องได้รับการอุดฟัน</label>
 							</td>
-							<td class="align-center" rowspan="3">3</td>
-							<td class="align-center" rowspan="2">อุดฟัน</td>
+							<td class="align-center" rowspan="5">3</td>
+							<td class="align-left" rowspan="2">อุดฟัน</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[3_2]" id="3_2" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['3_2'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="3_2">D. มีฟันสึกที่ต้องได้รับการอุดฟัน</label>
+								<label for="3_2">E. มีฟันสึกที่ต้องได้รับการอุดฟัน</label>
 							</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[3_3]" id="3_3" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['3_3'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="3_3">E. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
+								<label for="3_3">F. เป็นโรคปริทันต์อักเสบที่ยังรักษาได้ ไม่มีอาการปวด</label>
 							</td>
-							<td class="align-center">รักษาโรคเหงือก</td>
+							<td>รักษาโรคเหงือก</td>
+						</tr>
+						<tr>
+							<td class="tb-bottom-none">
+								<input name="mouth_detail[3_4]" id="3_4" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['3_4'] == 1 ) ? 'checked="checked"' : '' ;?>>
+								<label for="3_4">G. สูญเสียฟัน และควรใส่ฟันทดแทน</label>
+							</td>
+							<td>ใส่ฟัน</td>
 						</tr>
 						<tr>
 							<td>
+								<input name="mouth_detail[3_5]" id="3_5" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['3_5'] == 1 ) ? 'checked="checked"' : '' ;?>>
+								<label for="3_5">H. อื่นๆ</label>
+								<input type="text" name="mouth_detail[3_5_detail]" class="width-2of5" onclick="document.getElementById('3_5').checked = true" value="<?=$detail['3_5_detail'];?>">
+							</td>
+							<td class="align-center"></td>
+						</tr>
+						<tr>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[4_1]" id="4_1" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['4_1'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="4_1">F. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR</label>
+								<label for="4_1">I. มีฟันผุที่ใกล้หรือทะลุโพรงประสาทฟัน/RR</label>
 							</td>
 							<td class="align-center" rowspan="6">4</td>
-							<td class="align-center" rowspan="2">อุดฟัน/รักษาคลองรากฟัน/ถอนฟัน</td>
+							<td class="align-left" rowspan="2">อุดฟัน/รักษาคลองรากฟัน/ถอนฟัน</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[4_2]" id="4_2" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['4_2'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="4_2">G. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน</label>
+								<label for="4_2">J. มีฟันสึกที่ใกล้หรือทะลุโพรงประสาทฟัน</label>
 							</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[4_3]" id="4_3" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['4_3'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="4_3">H. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
+								<label for="4_3">K. เป็นโรคปริทันต์อักเสบ ฟันโยกมากต้องถอน</label>
 							</td>
-							<td class="align-center">ถอนฟันและรักษาโรคเหงือก</td>
+							<td>ถอนฟันและรักษาโรคเหงือก</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[4_4]" id="4_4" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['4_4'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="4_4">I. มีฟันคุด</label>
+								<label for="4_4">L. มีฟันคุด</label>
 							</td>
-							<td class="align-center">ผ่าฟันคุด</td>
+							<td>ผ่าฟันคุด</td>
 						</tr>
 						<tr>
-							<td>
+							<td class="tb-bottom-none">
 								<input name="mouth_detail[4_5]" id="4_5" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['4_5'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="4_5">J. สุญเสียฟันและจำเป็นต้องใส่ฟันทดแทน</label>
+								<label for="4_5">M. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก</label>
 							</td>
-							<td class="align-center">ใส่ฟัน</td>
+							<td>ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
 						</tr>
 						<tr>
 							<td>
 								<input name="mouth_detail[4_6]" id="4_6" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['4_6'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="4_6">K. มีอาการ ปวด,บวม อื่นๆ / รอยโรคในช่องปาก</label>
+								<label for="4_6">N. อื่นๆ</label>
+								<input type="text" name="mouth_detail[4_6_detail]" class="width-2of5" onclick="document.getElementById('4_6').checked = true" value="<?=$detail['4_6_detail'];?>">
 							</td>
-							<td class="align-center">ควรรับการตรวจเพิ่มเติมที่ รพ.</td>
-						</tr>
-						<tr>
-							<td>
-								<input name="mouth_detail[5_1]" id="5_1" class="checkbox" type="checkbox" value="1" <?php echo ( $detail['5_1'] == 1 ) ? 'checked="checked"' : '' ;?>>
-								<label for="5_1">L. ไม่ได้รับการตรวจ</label>
-							</td>
-							<td class="align-center" >5</td>
-							<td class="align-center" >ไม่มีข้อมูล</td>
+							<td></td>
 						</tr>
 					</tbody>
 				</table>

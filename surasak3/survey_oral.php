@@ -7,6 +7,9 @@ define('_SURVEY', 1);
 // Load Databse
 DB::load();
 
+$db = Mysql::load();
+// $db->set_charset('UTF8');
+
 $task = isset($_REQUEST['task']) ? trim($_REQUEST['task']) : false ;
 $action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
 $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : false ;
@@ -31,20 +34,25 @@ $full_months = array(
 
 // จัดการข้อมูล Checkbox และหาค่าสูงสุด
 function serialize_and_setmax($mouth_detail){
-	
+
 	$details_filter = array(
 		'1_1' => 1,
 		'2_1' => 1,
+		'2_2' => 1,
+		'2_2_detail' => $mouth_detail['2_2_detail'],
 		'3_1' => 1,
 		'3_2' => 1,
 		'3_3' => 1,
+		'3_4' => 1,
+		'3_5' => 1,
+		'3_5_detail' => $mouth_detail['3_5_detail'],
 		'4_1' => 1,
 		'4_2' => 1,
 		'4_3' => 1,
 		'4_4' => 1,
 		'4_5' => 1,
 		'4_6' => 1,
-		'5_1' => 1,
+		'4_6_detail' => $mouth_detail['4_6_detail']
 	);
 	
 	$test_max_value = 0;
@@ -53,7 +61,8 @@ function serialize_and_setmax($mouth_detail){
 	foreach($details_filter as $key => $val){
 		
 		// คีย์ตัวไหนไม่ถูกส่งมาจะถูกเซ็ตเป็น 0
-		$mouth_list[$key] = isset($mouth_detail[$key]) ? intval($val) : 0 ;
+		// เงื่อนไขใน preg_match จะเป็นของ xxx_detail ซึ่งเป็น string 
+		$mouth_list[$key] = isset($mouth_detail[$key]) ? ( preg_match('/\d/', $val) === true ? intval($val) : $val ) : 0 ;
 		
 		// หาค่าสูงสุดของ ระดับสภาวะสุขภาพช่องปาก
 		// เช่น user xxx ติ๊กช่อง E,E,F จะถือว่าความรุนแรงอยู่ในระดับ 4
@@ -75,14 +84,23 @@ if($action === 'save'){
 	
 	$year_checkup = get_year_checkup();
 	$sql = "SELECT `id`,`hn` FROM `survey_oral` WHERE `hn` = :hn AND `yearcheck` = '$year_checkup';";
-	DB::select($sql, array(':hn' => $_POST['hn']));
-	$rows = DB::rows();
+	// DB::select($sql, array(':hn' => $_POST['hn']));
+	$db->select($sql, array(':hn' => $_POST['hn']));
+	$item = $db->get_item();
+	$rows = count($item);
+
+	// $rows = DB::rows();
 	if( $rows > 0 ){
 		redirect('survey_oral.php', 'HN: '.$_POST['hn'].' เคยบันทึกข้อมูลไปเรียบร้อยแล้วในรอบปีงบประมาณ '.$year_checkup);
 		exit;
 	}
 	
 	$item = serialize_and_setmax($_POST['mouth_detail']);
+
+	// dump($_POST);
+	// dump($item);
+	// exit;
+
 	$lists = $item['details'];
 	$test_max_value = $item['max'];
 	
@@ -121,13 +139,15 @@ if($action === 'save'){
 		':yearcheck' => $year_checkup
 	);
 	
-	$insert = DB::exec($sql, $data);
+	$insert = $db->insert($sql, $data);
+	// $insert = DB::exec($sql, $data);
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
 	if( $insert['error'] ){
 		$msg = errorMsg(false, $insert['id']);
 	}
 	
-	$last_id = DB::get_lastId();
+	// $last_id = DB::get_lastId();
+	$last_id = $db->get_last_id();
 	redirect('survey_oral.php?task=fulldetail&id='.$last_id.'&print=yes', $msg);
 	exit;
 } else if( $action === 'save_edit' ){
@@ -136,8 +156,11 @@ if($action === 'save'){
 	$list = $item['details'];
 	$test_max_value = $item['max'];
 
-	$sql = "
-	UPDATE `survey_oral` SET 
+	// dump($_POST);
+	// dump($item);
+	// exit;
+
+	$sql = "UPDATE `survey_oral` SET 
 	`date`=:date,
 	`section`=:section,
 	`mouth_detail`=:mouth_detail,
@@ -146,8 +169,8 @@ if($action === 'save'){
 	`date_edit`=:date_edit,
 	`max_status`=:max_status,
 	`add_by`=:add_by 
-	WHERE  `id` = :id;
-	";
+	WHERE  `id` = :id;";
+
 	$data = array(
 		'date' => $_POST['date'],
 		'section' => $_POST['section'],
@@ -159,7 +182,9 @@ if($action === 'save'){
 		'add_by' => $_POST['add_by'],
 		'id' => $_POST['id'],
 	);
-	$update = DB::exec($sql, $data);
+
+	$update = $db->update($sql, $data);
+	// $update = DB::exec($sql, $data);
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
 	if( $update['error'] ){
@@ -176,10 +201,9 @@ if($action === 'save'){
 		exit;
 	}
 	
-	$sql = "
-	DELETE FROM `survey_oral` WHERE `survey_oral`.`id` = :id LIMIT 1
-	";
-	$delete = DB::exec($sql, array(':id' => $id) );
+	$sql = "DELETE FROM `survey_oral` WHERE `survey_oral`.`id` = :id LIMIT 1";
+	$delete = $db->delete( $sql, array(':id' => $id) );
+	// $delete = DB::exec($sql, array(':id' => $id) );
 	$msg = 'ลบข้อมูลเรียบร้อย';
 	if( $delete['error'] ){
 		$msg = errorMsg('delete', $delete['id']);
@@ -191,14 +215,11 @@ if($action === 'save'){
 	
 	$name = isset($_POST['section']) ? trim($_POST['section']) : false ;
 	
-	$sql = "
-	INSERT INTO `smdb`.`survey_oral_category` (`id` ,`name` ,`date_add` ,`date_edit` )
+	$sql = "INSERT INTO `smdb`.`survey_oral_category` (`id` ,`name` ,`date_add` ,`date_edit` )
 	VALUES (
 	NULL , :name, NOW(), NULL
-	);
-	";
-	
-	$insert = DB::exec($sql, array(':name' => $name));
+	);";
+	$insert = $db->insert($sql, array(':name' => $name));
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
 	if( $insert['error'] ){
@@ -210,13 +231,11 @@ if($action === 'save'){
 } else if( $action === 'section_form_edit' ){
 	
 	$name = isset($_POST['section']) ? trim($_POST['section']) : '' ;
-	$sql = "
-	UPDATE `survey_oral_category` SET 
+	$sql = "UPDATE `survey_oral_category` SET 
 	`name`=:name,
 	`date_edit`=NOW()
-	WHERE `id` = :id;
-	";
-	$update = DB::exec($sql, array(':name' => $name, ':id' => $id));
+	WHERE `id` = :id;";
+	$update = $db->update($sql, array(':name' => $name, ':id' => $id));
 	
 	$msg = 'บันทึกข้อมูลเรียบร้อย';
 	if( $update['error'] ){
@@ -232,11 +251,9 @@ if($action === 'save'){
 		exit;
 	}
 	
-	$sql = "
-	DELETE FROM `survey_oral_category` 
-	WHERE `id` = :id LIMIT 1
-	";
-	$delete = DB::exec($sql, array(':id' => $id));
+	$sql = "DELETE FROM `survey_oral_category` 
+	WHERE `id` = :id LIMIT 1";
+	$delete = $db->delete($sql, array(':id' => $id));
 	
 	$msg = 'ลบข้อมูลเรียบร้อย';
 	if( $delete['error'] ){
@@ -304,10 +321,11 @@ include 'templates/classic/nav.php';
 .align-right{
 	text-align: right;
 }
-
-.custom-table input{
-	width: auto;
+.align-left{
+	text-align: left;
+	vertical-align: middle;
 }
+
 .custom-table table{
 	margin: 0;
 }
@@ -349,8 +367,8 @@ include 'templates/classic/nav.php';
 					
 					if( $id !== false ){
 						$sql = "SELECT * FROM `survey_oral_category` WHERE `id` = :id;";
-						$item = DB::select($sql, array(':id' => $id), true);
-						
+						$db->select($sql, array(':id' => $id));
+						$item = $db->get_item();
 					}
 					
 					include 'templates/dentistry/category_form.php'; 

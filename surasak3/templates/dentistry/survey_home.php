@@ -28,7 +28,8 @@ $page = input('page', 1);
 						<option value="">ทุกหน่วย</option>
 						<option value="fix_mtb" <?php echo ( $filter_category == 'fix_mtb' ) ? 'selected="selected"' : ''; ?>>หน่วยที่เป็น มทบ.32</option>
 						<?php
-						$items = DB::select($sql);
+						$db->select($sql);
+						$items = $db->get_items();
 						foreach ($items as $key => $item) {
 							$select = !empty($filter_category) ? ( $filter_category === $item['id'] ? 'selected="selected"' : '' ) : '' ;
 							?><option value="<?php echo $item['id'];?>" <?php echo $select;?>><?php echo $item['name'];?></option><?php
@@ -84,10 +85,10 @@ $page = input('page', 1);
 					if( $filter_category !== 'fix_mtb'){
 						$where[] = " a.`section` = '$filter_category'";
 					}else{
-						$sql = "
-						SELECT `id` FROM `survey_oral_category` WHERE `name` LIKE '%มทบ.32%';
-						";
-						$mtb_lists = DB::select($sql);
+						$sql = "SELECT `id` FROM `survey_oral_category` WHERE `name` LIKE '%มทบ.32%';";
+						// $mtb_lists = DB::select($sql);
+						$db->select($sql);
+						$mtb_lists = $db->get_items();
 						
 						$set_mtb_where = array();
 						foreach($mtb_lists AS $key => $list){
@@ -117,16 +118,18 @@ $page = input('page', 1);
 					$limit = " LIMIT $limit_from, $limit_at";
 				}
 				
-				$sql = "
-				SELECT a.`id`,a.`hn`,a.`date`,a.`fullname`,b.`name` 
+				$sql = "SELECT a.`id`,a.`hn`,a.`date`,a.`fullname`,b.`name` 
 				FROM `survey_oral` AS a 
 				LEFT JOIN `survey_oral_category` AS b ON b.`id` = a.`section`
 				$where_is
-				ORDER BY a.`id` DESC
-				";
-				$rows = DB::numRows($sql); // All rows from query
-				
-				$items = DB::select($sql.$limit); // Rows with limit
+				ORDER BY a.`id` DESC";
+				// $rows = DB::numRows($sql); // All rows from query
+				// $items = DB::select($sql.$limit); // Rows with limit
+
+				$db->select($sql.$limit);
+				$items = $db->get_items();
+				$rows = count($items);
+
 				$i = ( $limit_from > 0 ) ? $limit_from + 1 : 1 ;
 				foreach($items as $item){
 					

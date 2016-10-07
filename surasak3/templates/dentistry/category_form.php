@@ -53,20 +53,19 @@ if( $id !== false ){
 				<thead>
 					<tr>
 						<th>ชื่อ</th>
-						<th width="20%">จัดการข้อมูล</th>
+						<th width="14%">จัดการข้อมูล</th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
-					$sql = "
-					SELECT `id`,`name` FROM `survey_oral_category` ORDER BY `id` ASC;
-					";
-					$items = DB::select($sql);
+					$sql = "SELECT `id`,`name` FROM `survey_oral_category` ORDER BY `id` ASC;";
+					$db->select($sql);
+					$items = $db->get_items();
 					foreach($items as $key => $item){
 					?>
 					<tr>
 						<td><?php echo $item['name'];?></td>
-						<td>
+						<td align="center">
 							<a href="survey_oral.php?task=category_edit&id=<?php echo $item['id'];?>">แก้ไข</a>
 								| 
 							<?php if( $item['id'] != '71' ): ?>
