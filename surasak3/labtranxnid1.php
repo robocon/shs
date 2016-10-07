@@ -52,7 +52,7 @@ $cPart='nid';
 
 //insert data into depart
 $thidate5 = (date("Y")+543).date("-m-d H:i:s"); 
-$query = "INSERT INTO medicalcertificate  (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
+$query = "INSERT INTO medicalcertificate (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
 $result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
 
 $dateNow = date('Y-m-d');
@@ -103,9 +103,17 @@ $licen = '';
 
 // แพทย์แผนจีน
 if( $cDoctor2 === 'MD115' ){
-    $yot = 'นาย';
-    $cDoctor1 = 'ภาคภูมิ พิสุทธิวงษ์';
-    $doctorcode = 'พจ. 714';
+
+    $subDoctor = (int) $_GET['subDoctor'];
+    if( $subDoctor === 1 ){
+        $yot = 'นาย';
+        $cDoctor1 = 'ภาคภูมิ พิสุทธิวงษ์';
+        $doctorcode = 'พจ. 714';
+    }else if( $subDoctor === 2 ){
+        $yot = 'น.ส.';
+        $cDoctor1 = "ศศิภา ศิริรัตน์";
+        $doctorcode = "พจ.819";
+    }
 
     $position = "แพทย์แผนจีน";
     $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขาการแพทย์แผนจีน";
@@ -122,8 +130,21 @@ if( $cDoctor2 === 'MD115' ){
     $position = "แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี";
     $certificate = "ใบอนุญาตประกอบอาชีพเวชกรรม";
     
-    
 }
+
+$date_log = date('Y-m-d H:i:s');
+$dt_log = "{\"yot\":\"$yot\",\"name\":\"$cDoctor1\",\"code\":\"$doctorcode\"}";
+$log = "INSERT INTO `smdb`.`medicalcertificate`
+(`thidate`,
+`hn`,
+`part`,
+`doctor`)
+VALUES
+('$date_log',
+'$cHn',
+'$cPart',
+'$dt_log');\n\n";
+file_put_contents('logs/doctor-cert.log', $log, FILE_APPEND);
 
 list($d, $m, $y) = explode('-', $Thaidate1);
 $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;

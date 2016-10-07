@@ -1,6 +1,9 @@
 <?php
    session_start();
 
+   // ยัดมันไว้ใน session แม่ง
+   $_SESSION['dr_nid'] = ( isset($_POST['dr_nid']) ) ? $_POST['dr_nid'] : null ;
+
     $x=0;
     $aDgcode = array("รหัส");
     $aTrade  = array("รายการ");

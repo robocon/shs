@@ -166,16 +166,33 @@ $nLab2=$row->runno;
 ?>
 </table>
 <?php
-     echo " <font face='Angsana New' size='4'><b>ราคารวม  $Netprice บาท </b> ";
+echo " <font face='Angsana New' size='4'><b>ราคารวม  $Netprice บาท </b> ";
 echo " (ราคาเบิกได้ $aSumYprice บาท ";
 echo "  <font color =FF0000><b><u>เบิกไม่ได้   $aSumNprice บาท</u></b>)<br>
 	 หมายเลข$nLab2";
 
+
 ?>
-<? echo "==>$cDiag---->$aDetail";?>
-    <br><a target=_BLANK href="labtranx.php" <?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>><font face='Angsana New' size='3'>หมดรายการ/ใบแจ้งหนี้</a>&nbsp;&nbsp; <a target=_BLANK href="labtranxlabno.php" <?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้ LAB ไม่ออกคิว</a><br><br>
-   
-<a target=_BLANK href="labslip4bc.php">สติ๊กเกอร์</a>&nbsp;&nbsp;<a target=_BLANK href="labslip4.1.php">สติ๊กเกอร์LAB ไม่ออกคิว</a>&nbsp;&nbsp;<a target=_BLANK href="labslip4pdf.php">สติ๊กเกอร์LAB PDF</a>&nbsp;&nbsp;<br><br><a target=_BLANK href="labslip4out.php">สติ๊กเกอร์ Lab นอก</a>&nbsp;&nbsp;<a target=_BLANK href="labslip5out.php">สติ๊กเกอร์ Lab นอก NAP</a>
+<?php 
+echo "==>$cDiag---->$aDetail";?>
+<br>
+<a target=_BLANK href="labtranx.php" <?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>
+	<font face='Angsana New' size='3'>หมดรายการ/ใบแจ้งหนี้
+</a>
+&nbsp;&nbsp;
+<a target=_BLANK href="labtranxlabno.php" <?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้ LAB ไม่ออกคิว</a>
+<br><br>
+<a target=_BLANK href="labslip4cbc.php">สติ๊กเกอร์ CBC</a>
+&nbsp;&nbsp;
+<a target=_BLANK href="labslip4bc.php">สติ๊กเกอร์</a>
+&nbsp;&nbsp;
+<a target=_BLANK href="labslip4.1.php">สติ๊กเกอร์LAB ไม่ออกคิว</a>
+&nbsp;&nbsp;
+<a target=_BLANK href="labslip4pdf.php">สติ๊กเกอร์LAB PDF</a>
+&nbsp;&nbsp;<br><br>
+<a target=_BLANK href="labslip4out.php">สติ๊กเกอร์ Lab นอก</a>
+&nbsp;&nbsp;
+<a target=_BLANK href="labslip5out.php">สติ๊กเกอร์ Lab นอก NAP</a>
 
 <?php
 $cDoctor2 = substr($cDoctor,0,5);
@@ -185,7 +202,9 @@ if( $cDoctor2 == 'MD037' OR $cDoctor2 == 'MD054' OR $cDoctor2 == 'MD115' ){
     <br><br>
     <a target=_BLANK href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
     <br><br>
-    <a target=_BLANK href="labtranxnid1.php">ใบรับรองแพทย์ ฝังเข็ม</a><br>
+    <a target=_BLANK href="labtranxnid1.php?subDoctor=1">ใบรับรองแพทย์ ฝังเข็ม(ภาคภูมิ พิสุทธิวงษ์)</a><br>
+	<br>
+    <a target=_BLANK href="labtranxnid1.php?subDoctor=2">ใบรับรองแพทย์ ฝังเข็ม(ศศิภา ศิริรัตน์)</a><br>
     <?php
 }
 

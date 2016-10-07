@@ -166,9 +166,22 @@ if($cDepart == 'XRAY'){
 
 //test 9/4/47 to find the last row
 //printf ("Last inserted record has id %d\n",mysql_insert_id());
-  $idno=mysql_insert_id();
+  $idno = mysql_insert_id();
 //print "<br>$idno <br>";
 //test 9/4/47 to find the last row
+
+// ‡°Á∫ ∂‘µ‘·æ∑¬Ï·ºπ®’π
+if( isset($_SESSION['dr_nid']) ){
+	$nid_name = $_SESSION['dr_nid'];
+	$sql = "INSERT INTO `smdb`.`dr_nid_log`
+	(`date_add`,`nid_name`,`depart_id`,`author`)
+	VALUES
+	(NOW(),'$nid_name','$idno','$sOfficer');";
+	mysql_query($sql) or die ( mysql_error() );
+}
+exit;
+
+// ‡°Á∫ ∂‘µ‘·æ∑¬Ï·ºπ®’π
 
 //insert data into patdata
     for ($n=1; $n<=$x; $n++){
