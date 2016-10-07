@@ -153,13 +153,13 @@ session_unregister("dDate");
 print "<DIV style='z-index:0'> &nbsp; </div>";
 
 
-    $sql1 = "SELECT mdcode FROM `inputm` WHERE 1 AND `name` LIKE '%$sDoctor%'";
-    $query1 = mysql_query($sql1)or die (mysql_error());
-    $arr1 = mysql_fetch_assoc($query1);
-    
-    $sql2 = "SELECT * FROM `doctor` WHERE 1 AND `name`LIKE '$arr1[mdcode]%'";	
-    $query2 = mysql_query($sql2)or die (mysql_error());
-    $arr2 = mysql_fetch_assoc($query2);
+  $sql1="SELECT mdcode FROM `inputm` WHERE 1 AND `name` LIKE '%$sDoctor%'";
+  $query1=mysql_query($sql1)or die (mysql_error());
+  $arr1=mysql_fetch_assoc($query1);
+  
+  		$sql2="SELECT * FROM `doctor` WHERE 1 AND `name`LIKE '$arr1[mdcode]%'";	
+		$query2=mysql_query($sql2)or die (mysql_error());
+ 		$arr2=mysql_fetch_assoc($query2);
   // $sDoctor
   
 /*  echo $sql1."<BR>";

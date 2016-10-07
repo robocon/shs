@@ -302,11 +302,24 @@ class Mysql
 		} catch(exception $e) {
 			
 			// Keep error into log file
-			$log_id = $this->set_log($e);
-			$msg = array('error' => $e->getMessage(), 'id' => $log_id);
-			return $msg;
+			return $this->set_error($e);
 		}
 		
+	}
+
+	public function get_single($sql, $data){
+		try{
+			$sth = $this->prepare($sql, $data);
+			return $sth->fetch(PDO::FETCH_ASSOC);
+		}catch( exception $e ){
+			return $this->set_error($e);
+		}
+	}
+
+	public function set_error($e){
+		$log_id = $this->set_log($e);
+		$msg = array('error' => $e->getMessage(), 'id' => $log_id);
+		return $msg;
 	}
 	
 	public function get_item(){
@@ -385,8 +398,11 @@ class Mysql
 		}
 		
 		$sth->execute();
-		return $sth;
-		
+		if( $sth !== false ){
+			return $sth;
+		}else{
+			return false;
+		}
 	}
 	
 	public function set_log($e){

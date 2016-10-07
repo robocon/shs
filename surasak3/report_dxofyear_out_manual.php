@@ -808,12 +808,28 @@ mmHg.</u></span></td>
 <?php
 $strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'";
 $objQuery1 = mysql_query($strSQL1);
-list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
+$num_result = mysql_num_rows($objQuery1);
+if( $num_result > 0 ){
+  list($authorisename, $authorisedate) = mysql_fetch_array($objQuery1);
+}else{
+  $sql = "SELECT b.`authorisename`, DATE_FORMAT(b.`authorisedate`, '%d-%m-%Y') AS `authorisedate` 
+  FROM `result1` AS a,
+  `resultdetail` AS b 
+  WHERE a.`autonumber` = b.`autonumber` 
+  LIMIT 1 ";
+  $q = mysql_query($sql);
+  $item = mysql_fetch_assoc($q);
+  
+  $authorisename = $item['authorisename'];
+  $authorisedate = $item['authorisedate'];
+}
 ?>
 <table width="100%" border="0" class="text4">
 	<tr>
-		<td width="50%" align="center"><strong>Authorise  LAB:</strong>
-			<?=$authorisename?> <strong> (<?=$authorisedate?>) CXR : </strong>ร.อ.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>) Doctor : พ.ท.เลอปรัชญ์ มังกรกนกพงศ์ (<?=$authorisedate;?>)</strong>
+		<td width="50%" align="center">
+    <strong>Authorise  LAB : </strong> <?=$authorisename?> (<?=$authorisedate?>) 
+    <strong> CXR : </strong>ร.อ.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์ (<?=$authorisedate;?>) 
+    <strong> Doctor : </strong>พ.ท.เลอปรัชญ์ มังกรกนกพงศ์ (<?=$authorisedate;?>)
 		</td>
 	</tr>
 </table>
