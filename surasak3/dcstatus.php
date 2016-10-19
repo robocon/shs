@@ -7,7 +7,8 @@ if(isset($_GET["action"]) && $_GET["action"] != ""){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
 
-include("connect.inc");
+include 'connect.inc';
+
 
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	
@@ -16,7 +17,7 @@ if(isset($_GET["action"]) && $_GET["action"] != ""){
 	list($fullname) = Mysql_fetch_row($result);
 	
 	echo $fullname;
-exit();
+	exit();
 }
 
 if(isset($_GET["actiondcno"]) && $_GET["actiondcno"] != ""){
@@ -26,18 +27,50 @@ if(isset($_GET["actiondcno"]) && $_GET["actiondcno"] != ""){
 	list($fullname) = Mysql_fetch_row($result);
 	
 	echo $fullname;
-exit();
+	exit();
 }
 
-if(isset($_GET["actiondc"]) && $_GET["actiondc"] != ""){
+if(isset($_POST["actiondc"]) && $_POST["actiondc"] != ""){
+
+	$an = trim($_POST["actiondc"]);
+
+	// AN นี้ยังไม่ได้จำหน่าย แสดงว่า dcdate ยังเป็น 0000-00-00 00:00:00
+	$sql = "SELECT `date`,`an`,`hn`,`dcdate`,`dcnumber`,`ptname`,`my_ward` 
+	FROM `ipcard` 
+	WHERE `an` = '$an' 
+	LIMIT 1 ";
+	$result = mysql_query($sql) or die( mysql_error() );
+	$item = mysql_fetch_assoc($result);
+
+	if( $item === false ){
+		
+		$txt = '{"state":400,"msg":"ไม่พบข้อมูลผู้ป่วย AN: '+$an+'"}';
+
+	}else if( $item['dcdate'] === '0000-00-00 00:00:00' ){
+
+		$ward = '';
+		if( !empty($item['my_ward']) ){
+			$ward = '('.$item['my_ward'].')';
+		}
+		
+		$message = 'หมายเลข AN '.$item['an'].' นี้ยังไม่ได้จำหน่าย กรุณาจำหน่ายก่อน'.$ward;
+		$txt = '{"state":400,"msg":"'.$message.'","dcnumber":200}';
+
+	}else if( empty($item['dcnumber']) ){
+
+		$message = 'หมายเลข AN '.$item['an'].' นี้ยังไม่ได้ให้เลขการจำหน่าย';
+		$txt = '{"state":400,"msg":"'.$message.'","dcnumber":400}';
 	
-	$sql = "Select days From ipcard where an = '".$_GET["actiondc"]."' limit 1 ";
-	$result = Mysql_Query($sql);
-	list($fullname) = Mysql_fetch_row($result);
-	if($fullname=="null") $fullname=0;
+	}else{
+
+		// ทุกอย่างโอเครรรรร ดีใจมั้ย... เอ้าาาา ดีจาาาาย
+		$txt = '{"state":200,"an":"'.$item['an'].'","ptname":"'.$item['ptname'].'","dcnumber":"'.$item['dcnumber'].'"}';
+
+	}
 	
-	echo $fullname;
-exit();
+    header('Content-Type:text/html; charset=tis-620');
+    echo $txt;
+	exit;
 }
 /** Ajax Response End **/
 
@@ -61,6 +94,8 @@ body,td,th {
 	font-weight: bold;
 }
 </style>
+<script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="assets/js/json2.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 	function newXmlHttp(){
 	var xmlhttp = false;
@@ -87,11 +122,11 @@ function checkname(an) {
 	}
 	var an_value = "";
 
-			url = 'dcstatus.php?action='+an;
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
-			an_value = xmlhttp.responseText;
+	url = 'dcstatus.php?action='+an;
+	xmlhttp = newXmlHttp();
+	xmlhttp.open("GET", url, false);
+	xmlhttp.send(null);
+	an_value = xmlhttp.responseText;
 	
 	return an_value;
 
@@ -118,65 +153,81 @@ function checkdcno(an) {
 	}
 	var an_value = "";
 
-			url = 'dcstatus.php?actiondcno='+an;
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
-			an_value = xmlhttp.responseText;
+	url = 'dcstatus.php?actiondcno='+an;
+	xmlhttp = newXmlHttp();
+	xmlhttp.open("GET", url, false);
+	xmlhttp.send(null);
+	an_value = xmlhttp.responseText;
 	
 	return an_value;
 
 }
 
-	function add_an(){
-		var an_true = "";
-		var an_dc = "";
-		an_true = checkname(document.getElementById('AN').value);
-		an_dc = checkdcno(document.getElementById('AN').value);
-		an_dc2 = checkdc(document.getElementById('AN').value);
-		//alert(an_dc2.length);
-		//alert(an_dc2);
-		if(an_true.length <= 4){
-			alert("ไม่มีหมายเลข AN "+document.getElementById('AN').value);
-		}else if(an_dc2.length<=4){
-			alert("หมายเลข AN นี้ยังไม่ได้จำหน่าย กรุณาจำหน่ายก่อน ");
-		}else if(an_dc.length <= 4){
-			//alert(an_dc2.length);
-			window.open("ipdcno_auto.php?an="+document.getElementById('AN').value);
-			//alert("AN นี้ยังไม่ได้ให้เลขการจำหน่ายผู้ป่วย กรุณาให้เลขการจำหน่ายผู้ป่วยก่อน");
-		}else if(an_true.length > 4){
-			document.getElementById('list_an').innerHTML = document.getElementById('list_an').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_an[]\" value=\""+document.getElementById('AN').value+"\" checked>&nbsp;"+document.getElementById('AN').value + " "+an_true+" DC No:"+an_dc+"<BR>";
-			document.getElementById("AN").select();
-		}
-
+if(typeof String.prototype.trim !== 'function'){
+	String.prototype.trim = function(){
+		return this.replace(/^\s+|\s+$/g, '');
 	}
+}
 
+function add_an(){
+
+	var an = document.getElementById('AN').value;
+	var newSm = new SmHttp();
+	newSm.ajax(
+		'dcstatus.php', 
+		{ 'actiondc': an }, 
+		function(res){
+			var txt = JSON.parse(res);
+			console.log(txt);
+			if( txt.state === 400 ){
+
+				alert(txt.msg);
+
+				if( txt.dcnumber === 400 ){
+					window.open("ipdcno_auto.php?an="+an);
+				}
+
+			}else{
+
+				var html_list = document.getElementById('list_an').innerHTML
+								+'<input type="checkbox" name="list_an[]" value="'+an+'" checked="checked"> '
+								+an+' '+txt.ptname+' DC No:'+txt.dcnumber+'<br>';
+
+				document.getElementById('list_an').innerHTML = html_list;
+				document.getElementById("AN").select();
+			}
+		}
+	);
+
+	return false;
+}
 </SCRIPT>
-
 </head>
 <body>
-
 &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
 &nbsp;&nbsp;<a target=_top  href="../surasak3/anchkstatus.php">&lt;&lt; ตรวจสอบสถานะ</a>
+
 <TABLE width="100%" align="center">
 	<TR valign="top">
 		<TD align="center">
 			<TABLE  border="1" bordercolor="#3366FF">
 				<TR>
 					<TD>
-						<TABLE>
-							<TR>
-								<TD align="right">AN : </TD>
-								<TD>
-									<INPUT TYPE="text" ID="AN" NAME="AN" onkeypress = "if(event.keyCode == 13){ add_an(); }" value="">
-								</TD>
-							</TR>
-							<TR>
-								<TD colspan="2" align="center">
-									<INPUT TYPE="button" value="ตกลง" Onclick="add_an();">
-								</TD>
-							</TR>
-						</TABLE>
+						<form action="dcstatus.php" method="post">
+							<TABLE>
+								<TR>
+									<TD align="right">AN : </TD>
+									<TD>
+										<INPUT type="text" id="AN" name="AN">
+									</TD>
+								</TR>
+								<TR>
+									<TD colspan="2" align="center">
+										<button type="button" onclick="return add_an()">ตกลง</button>
+									</TD>
+								</TR>
+							</TABLE>
+						</form>
 					</TD>
 				</TR>
 			</TABLE>
@@ -210,7 +261,9 @@ function checkdcno(an) {
 	}
 
 </SCRIPT>
+
 <?php
+
 $back = isset($_REQUEST['back']) ? $_REQUEST['back'] : false ;
 $an = isset($_REQUEST['an']) ? ( is_array($an) ? $an : array($an) ) : false ;
 
