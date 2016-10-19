@@ -269,7 +269,7 @@ class Mysql
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			// $names = self::$set_names;
 			
-			$this->db->exec("SET NAMES $charset ;");
+			// $this->db->exec("SET NAMES $charset ;");
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";
@@ -383,6 +383,16 @@ class Mysql
 		}
 	}
 	
+	public function exec($sql, $data = NULL){
+		try{
+			$this->prepare($sql, $data);
+		}catch(Exception  $e) {
+			$log_id = $this->set_log($e);
+			$msg = array('error' => $e->getMessage(), 'id' => $log_id);
+			return $msg;
+		}
+	}
+
 	public function get_last_id(){
 		return $this->lastId;
 	}

@@ -243,18 +243,19 @@ function getYearList($name = 'years', $thai = false, $year = null, $range = arra
 	?>
 	<select name="<?=$name;?>">
 		<?php
-		$th_int = ( $thai === true ) ? 543 : 0 ;
 		if( !empty($range) ){
-
+			$y_min = min($range);
+			$y_max = max($range);
 		}else{
-			$y_min = ( date("Y")+$th_int ) - 5 ;
-			$y_max = ( date("Y")+$th_int ) + 5 ;
+			$y_min = date("Y") - 5 ;
+			$y_max = date("Y") + 5 ;
 		}
-		for($a=$y_min;$a<$y_max;$a++){
+
+		for($a=$y_min; $a<=$y_max; $a++){
+
+			$y = ( $thai === true ) ? $a + 543 : $a ;
 			?>
-			<option value="<?=$a?>" <?php if($year==$a) echo "selected='selected'"?>>
-				<?=$a?>
-			</option>
+			<option value="<?=$a?>" <?php if($year==$a) echo "selected='selected'"?>><?=$y?></option>
 			<?php
 		}
 		?>
