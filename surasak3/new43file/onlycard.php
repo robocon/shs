@@ -13,9 +13,9 @@ if( $action === false ){
 ?>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
-		<p>อัพเดทเฉพาะ แฟ้ม charge_ipd </p>
+		<p>อัพเดทเฉพาะ แฟ้ม card </p>
 	</div>
-	<form action="onlycharge_ipd.php" method="post">
+	<form action="onlycard.php" method="post">
 		<div>
 			ปี <input type="text" name="dateSelect">
 			<span style="color: red">* ตัวอย่าง 2559-01</span>
@@ -34,7 +34,7 @@ if( $action === false ){
 	if( $testMatch === 0 ){
 		?>
 		<p>อนุญาตให้ใช้รูปแบบ ปี-เดือน เช่น 2559-04 เท่านั้น</p>
-		<a href="onlycharge_ipd.php">ย้อนกลับ</a>
+		<a href="onlycard.php">ย้อนกลับ</a>
 		<?php
 		exit;
 	}
@@ -60,9 +60,9 @@ if( $action === false ){
 	$qofLists = array();
 
 	// แฟ้มที่ 27
-	include 'libs/charge_ipd.php';
+	include 'libs/card.php';
 	
-	echo '<p><a href="'.$filePath.'">ดาวโหลดไฟล์</a></p>';
-	echo '<p><a href="'.$qofPath.'">ดาวโหลดไฟล์สำหรับ QOF</a></p>';
-	echo '<p><a href="onlycharge_ipd.php">&lt;&lt;&nbsp;กลับไปหน้ารายการ</a></p>';
+	echo '<p><a href="'.$filePath.'" target="_blank">ดาวโหลดไฟล์</a></p>';
+	echo '<p><a href="'.$qofPath.'" target="_blank">ดาวโหลดไฟล์สำหรับ QOF</a></p>';
+	echo '<p><a href="onlycard.php">&lt;&lt;&nbsp;กลับไปหน้ารายการ</a></p>';
 }

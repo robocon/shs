@@ -9,10 +9,8 @@ $selmon = isset($_POST['month']) ? $_POST['month'] : date('m');
 $action = input('action');
 
 if( $action === false ){
+	include 'menu.php';
 ?>
-	<div>
-		<a href="../../nindex.htm">&lt;&lt;&nbsp;กลับไปหน้าเมนู</a> | <a href="specialpp.php">เฉพาะแฟ้ม specialpp</a>
-	</div>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
 		<p>อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>

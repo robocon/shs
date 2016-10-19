@@ -15,13 +15,11 @@ $action = input('action');
 
 
 if( $action === false ){
+    include 'menu.php';
 ?>
 	<div>
-		<a href="../../nindex.htm">&lt;&lt;&nbsp;กลับไปหน้าเมนู</a> | <a href="export_new43.php">หน้าหลัก 43แฟ้ม</a>
-	</div>
-	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
-		<p>อัพเดทเฉพาะ แฟ้ม charge_ipd </p>
+		<p>อัพเดทเฉพาะ แฟ้ม specialpp </p>
 	</div>
 	<form action="specialpp.php" method="post">
 		<div>
