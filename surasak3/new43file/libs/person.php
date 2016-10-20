@@ -24,7 +24,7 @@ LEFT JOIN `opcard` AS d
     ON d.`hn` = c.`hn`
 GROUP BY d.`hn`
 ORDER BY c.`date2`";
-// dump($temp1);
+
 mysql_query($temp1) or die( mysql_error() );
 
 $sql1="SELECT * 

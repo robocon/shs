@@ -1,22 +1,19 @@
 <style type="text/css">
-<!--
 .forntsarabun {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
+  font-family: "TH SarabunPSK";
+  font-size: 22px;
 }
 @media print{
-#no_print{
-	display:none;
-	}
+  #no_print{
+    display:none;
+  }
 }
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
+.theBlocktoPrint { 
+  background-color: #000; 
+  color: #FFF; 
 } 
--->
 </style>
+
 <form name="f1" action="" method="post">
   <table  border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" style="border-collapse:collapse">
   <tr class="forntsarabun">
@@ -146,13 +143,14 @@ $tquery3 = mysql_query($tsql3);*/
     <td align="center">ICD10</td>
     <td align="center">หอผู้ป่วย</td>
     <td align="center">วันที่จำหน่าย</td>
+    <td align="center">วันนอน</td>
     </tr>
     <?
 	while($arr1=mysql_fetch_array($query1)){
 	?>
     <tr>
       <td align="center"><?=$i;?></td>
-        <? if($_POST['d_start']==''){?>
+      <? if($_POST['d_start']==''){?>
       <td><?=$arr1['date']?></td>
       <?  } ?>
       <td><?=$arr1['hn']?></td>
@@ -163,6 +161,29 @@ $tquery3 = mysql_query($tsql3);*/
       <td><?=$arr1['icd10']?></td>
       <td><?=$arr1['my_ward']?>&nbsp;</td>
       <td><?=$arr1['dcdate']?>&nbsp;</td>
+      <td align="right">
+        <?php
+        $ad_start_txt = ( substr($arr1['date'], 0, 4) - 543 ).( substr($arr1['date'], 4, 6) );
+        $ad_end_txt = ( substr($arr1['dcdate'], 0, 4) - 543 ).( substr($arr1['dcdate'], 4, 6) );
+
+        $date_start = strtotime($ad_start_txt);
+        $date_end = strtotime($ad_end_txt);
+
+        $diff_date = ( $date_end - $date_start );
+
+        $days = date('z', $diff_date);
+
+        // $date_start = date_create($ad_start_txt);
+        // $date_end = date_create($ad_end_txt);
+
+        // $date = date_diff($date_start, $date_end);
+        if( $days > 0 ){
+          echo $days;
+        }else{
+          echo 1; // default ไม่ถึง 1 วันก็ตีเป็น 1วัน เอ๊ะๆ 
+        }
+        ?>
+      </td>
     </tr>
     <? $i++;
 	}  

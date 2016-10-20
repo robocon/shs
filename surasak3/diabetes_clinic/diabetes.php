@@ -20,7 +20,7 @@ if($do === 'save'){
 	$tooth_date = input('tooth_date');
 	$tooth = input('tooth', NULL);
 	
-	// ุถ้ามีการเลือกวันที่ แต่ไม่มีการติ๊ก
+	//
 	if( $retinal_date !== false && $retinal === NULL ){
 		$retinal = 'No DR';
 	}
@@ -71,6 +71,10 @@ if($do === 'save'){
 		
 		$post['l_ua'] = $_POST['protein']['0'];
 	
+		/**
+		 * thaidate วันที่ลงทะเบียน DM User เลือกเอง
+		 * dateN วันที่บันทึกข้อมูลสู่ระบบ
+		 */
 		$strSQL = "INSERT INTO diabetes_clinic 
 		( dm_no,thidate,dateN,hn,doctor,
 		ptname,ptright,dbbirt,sex,diagnosis,

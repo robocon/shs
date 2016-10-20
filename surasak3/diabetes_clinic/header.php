@@ -14,12 +14,8 @@ if(!isset($web_title)){
 	<link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 	<script type="text/javascript" src="epoch_classes.js"></script>
 	
-    
-    
 	<!--
 	<script type="text/javascript" src="../js/vendor/jquery-1.11.2.min.js"></script>
-	
-	
 	-->
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="menu.js"></script>
@@ -126,6 +122,7 @@ label{
 }
 @media print { 
 	#no_print{ display:none; }
+	.no_print{ display:none; }
 }
 </style>
 

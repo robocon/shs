@@ -624,7 +624,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			( `l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' ) ) 
 			GROUP BY MONTH( dateN ) 
 			ORDER BY dateN ASC";
-			dump($sql);
+			// dump($sql);
 			
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$hba1c_dm_items = array();

@@ -44,7 +44,7 @@ if(isset($_POST["actiondc"]) && $_POST["actiondc"] != ""){
 
 	if( $item === false ){
 		
-		$txt = '{"state":400,"msg":"ไม่พบข้อมูลผู้ป่วย AN: '+$an+'"}';
+		$txt = '{"state":400,"msg":"ไม่พบข้อมูลผู้ป่วย AN: '.$an.'"}';
 
 	}else if( $item['dcdate'] === '0000-00-00 00:00:00' ){
 
@@ -178,13 +178,12 @@ function add_an(){
 		{ 'actiondc': an }, 
 		function(res){
 			var txt = JSON.parse(res);
-			console.log(txt);
 			if( txt.state === 400 ){
 
 				alert(txt.msg);
 
 				if( txt.dcnumber === 400 ){
-					window.open("ipdcno_auto.php?an="+an);
+					window.open("ipdcno_auto.php?an="+an, "_blank");
 				}
 
 			}else{
@@ -198,7 +197,7 @@ function add_an(){
 			}
 		}
 	);
-
+	
 	return false;
 }
 </SCRIPT>
@@ -213,7 +212,7 @@ function add_an(){
 			<TABLE  border="1" bordercolor="#3366FF">
 				<TR>
 					<TD>
-						<form action="dcstatus.php" method="post">
+						<form action="dcstatus.php" method="post" onsubmit="return add_an()">
 							<TABLE>
 								<TR>
 									<TD align="right">AN : </TD>
