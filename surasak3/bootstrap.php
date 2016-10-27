@@ -267,15 +267,32 @@ class Mysql
 		try{
 			$this->db = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $user, $pass);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			// $names = self::$set_names;
 			
-			// $this->db->exec("SET NAMES $charset ;");
+			$items = $this->get_sv_headers();
+			$match = preg_match('/(tis-620)/', $items['content-type']);
+			if( empty($match) ){
+				$this->db->exec("SET NAMES $charset ;");
+			}
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";
 			die();
 		}
 		
+	}
+
+	// Get response from header
+	public function get_sv_headers(){
+		$headers = get_headers('http://'.$_SERVER['SERVER_NAME']);
+		$items = array();
+		foreach( $headers as $val ){
+			$exp_str = explode(':', $val, 2);
+			if( count($exp_str) > 1 ){
+				$key = strtolower($exp_str['0']);
+				$items[$key] = strtolower($exp_str['1']);
+			}
+		}
+		return $items;
 	}
 
 	public function set_charset($charset){

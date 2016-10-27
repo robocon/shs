@@ -30,7 +30,12 @@ include("connect.inc");
 $depart1=$_GET['depart'];
 
 //count(b.doc_id) as count ,
-$strSQL = "SELECT count(b.doc_id) as count ,a.doc_name,a.doc_id,a.row_id,a. post_name FROM document as a ,document_file as b  where a.doc_id=b.doc_id AND depart='".$depart1."' Group by b.doc_id";
+$strSQL = "SELECT count(b.doc_id) as count ,a.doc_name,a.doc_id,a.row_id,a. post_name 
+FROM document as a ,document_file as b  
+where a.doc_id=b.doc_id 
+AND depart='".$depart1."' 
+Group by b.doc_id
+ORDER BY `doc_date` DESC";
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 $rows=mysql_num_rows($objQuery);		
 

@@ -126,7 +126,7 @@ $page = input('page', 1);
 				// $rows = DB::numRows($sql); // All rows from query
 				// $items = DB::select($sql.$limit); // Rows with limit
 
-				$db->select($sql.$limit);
+				$db->select($sql);
 				$items = $db->get_items();
 				$rows = count($items);
 
@@ -153,7 +153,7 @@ $page = input('page', 1);
 		<?php
 		// แบ่งหน้า
 		$params = "survey_oral.php?fix_date=$filter_date&fix_category=$filter_category";
-		pagination($rows, $page, $params, $limit_at);
+		// pagination($rows, $page, $params, $limit_at);
 		?>
 	</div>
 </div>

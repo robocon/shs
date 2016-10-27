@@ -119,6 +119,7 @@ $id_max = $dbarr[0]+1 ; // นำค่า id มาเพิ่มให้กับค่ารหัสครั้งละ1
       <td class="style51">แผนก :</td>
       <td><select name="depart" size="1" class="style5">
         <option value="0" >- - เลือก - - </option>
+				<option value="คลังยา-กองเภสัชกรรม">คลังยา-กองเภสัชกรรม</option>
         <?
 				$sql = "select * From departments  where status='y' order by id  asc";
 				$result = mysql_query($sql);

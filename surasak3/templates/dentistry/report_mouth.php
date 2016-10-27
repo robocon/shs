@@ -161,13 +161,11 @@ $mouth_items = array(
 				}
 				$total = 0;
 				foreach($violences as $key => $vio):
-					$sql = "
-					SELECT COUNT(`hn`) AS `count` 
+					
+					$sql = "SELECT COUNT(`hn`) AS `count` 
 					FROM `survey_oral` 
 					WHERE `date` LIKE '$date%' 
-					AND `max_status` = '$key'
-					$where_is
-					";
+					AND `max_status` = '$key'";
 					$item = DB::select($sql, null, true);
 					$total += (int) $item['count'];
 					?>

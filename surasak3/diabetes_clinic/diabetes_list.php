@@ -90,7 +90,7 @@ if( $search == '1' ){
 	$date_end = $year_select.'-09-30';
 
 	$strSQL = "SELECT * FROM diabetes_clinic 
-	WHERE `dateN` >= '$date_start' AND `dateN` <= '$date_end' ";
+	WHERE `thidate` >= '$date_start' AND `thidate` <= '$date_end' ";
 	if($_POST["txtKeyword"] != ""){
 		$strSQL .= " AND hn = '".$_POST["txtKeyword"]."'  ";
 	}

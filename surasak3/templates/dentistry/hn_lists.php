@@ -39,19 +39,26 @@ if( $max === 5 ){
 		GROUP BY c.`hn`";
 	$items = DB::select($sql);
 } else {
-	$sql = "SELECT c.`thidate`,c.`hn`,c.`ptname`,c.`camp` 
-	FROM `survey_oral` AS a
-	LEFT JOIN `condxofyear_so` AS c ON c.`hn` = a.`hn` AND c.`yearcheck` LIKE  '$yearcheck'
-	WHERE a.`date` LIKE '$date%' 
-	AND a.`max_status` = '$max' ";
+
+	$sql = "SELECT c.`thidate`,a.`hn`,a.`fullname` AS `ptname`,c.`camp` 
+	FROM (
+		SELECT * FROM `survey_oral`
+		WHERE `date` LIKE '$date%' 
+		AND `max_status` = '$max'
+	) AS a
+	LEFT JOIN `condxofyear_so` AS c 
+		ON c.`hn` = a.`hn` AND c.`yearcheck` LIKE  '$yearcheck'
+	";
 	
 	if( $category_id !== false && $category_id > 0 ){
 		$sql .= " AND a.`section` = '$category_id' ";
 	}
 	
 	$sql .= "GROUP BY a.`hn`";
-	$items = DB::select($sql);
-	// dump($sql);
+	
+	// $items = DB::select($sql);
+	$db->select($sql);
+	$items = $db->get_items();
 }
 ?>
 <div class="col">
