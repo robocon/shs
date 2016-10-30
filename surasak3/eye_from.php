@@ -1,11 +1,11 @@
-<? 
+<?php
 session_start();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>Untitled Document</title>
+<title>::OPD ตา :: สมุดทะเบียนตา</title>
 </head>
 <style type="text/css">
 .forntsarabun11 {	font-family: "TH SarabunPSK";
@@ -105,40 +105,38 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 }
 //-->
 </script>
-  <form action="" method="POST" name="frmMain1">
-<!--  <table  border="0" align="center" bordercolor="#393939" bgcolor="#FFFFCE">
-  <tr>
-     <td align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</td>
-    <td><input  type="text"  name="pHn"/></td>
-  </tr>
-  <tr>
-    <td>วันที่</td>
-    <td><input type="text" name="date_eye" id="date_eye"  value="<?//=date("Y-m-d");?>"/></td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><input type="submit" name="button2" id="button2" value="ตกลง" /></td>
-    </tr>
-  <tr>
-    <td colspan="2" align="center"><a  class="font2" target="_top" href="../nindex.htm">&lt;&lt;ไปเมนู</a> &nbsp;&nbsp; <a href="hd_list.php" target="_blank">รายชื่อ opd ตา</a></td>
-  </tr>
-  </table>-->
-  <table  border="0" align="center" bordercolor="#393939" bgcolor="#FFFFCE">
-  <tr>
-    <td align="center" bgcolor="#9900CC" class="forntsarabun">กรอกหมายเลข HN</td>
-    </tr>
-  <tr>
-    <td class="forntsarabun"><input  name="pHn"  type="text" class="forntsarabun1"/></td>
-    </tr>
-  <tr>
-    <td align="center"><input name="button2" type="submit" class="forntsarabun1" id="button2" value="ตกลง" /></td>
-    </tr>
-  <tr>
-    <td align="center"><a  class="forntsarabun1" target="_top" href="nindex.htm">&lt;&lt;ไปเมนู</a> &nbsp;&nbsp; <a href="eye_list.php" target="_blank" class="forntsarabun1">รายชื่อ opd ตา</a></td>
-  </tr>
-  <tr>
-      <td><a class="forntsarabun1" href="report_opdeye.php">opdตาสรุปยอดตามปี</a></td>
-  </tr>
-  </table>
+<form action="" method="POST" name="frmMain1">
+	<table  border="0" align="center" bordercolor="#393939" bgcolor="#FFFFCE">
+		<tr>
+			<td align="center" bgcolor="#9900CC" class="forntsarabun">กรอกหมายเลข HN</td>
+		</tr>
+		<tr>
+			<td class="forntsarabun"><input  name="pHn"  type="text" class="forntsarabun1"/></td>
+		</tr>
+		<tr>
+			<td align="center"><input name="button2" type="submit" class="forntsarabun1" id="button2" value="ตกลง" /></td>
+		</tr>
+		<tr>
+			<td align="center">
+				<a  class="forntsarabun1" target="_top" href="../nindex.htm">&lt;&lt;ไปเมนูหลัก</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="eye_list.php" target="_blank" class="forntsarabun1">รายชื่อ opdตา</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a class="forntsarabun1" href="report_opdeye.php">opdตา สรุปยอดตามปี</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a class="forntsarabun1" href="report_dm_eye.php">รายชื่อผู้ป่วยห้องตา เปรียบเทียบกับคลินิกเบาหวาน</a>
+			</td>
+		</tr>
+	</table>
 </form>  
 <hr />
 <? if(isset($_POST['pHn'])){
@@ -240,21 +238,17 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 }
 
 if(isset($_POST['button']) && $_POST['button']!=''){
-include("connect.inc");	
-	$regis=date("Y-m-d H:i:s");
-	
+  include("connect.inc");	
+  $regis=date("Y-m-d H:i:s");
+  $sql="INSERT INTO `opd_eye` ( `register` , `date_eye` , `hn` , `ptname` , `ptright` , `fbs` , `hba1c` , `dr` , `comment` , `officer` )
+  VALUES ( '".$regis."', '".$_POST['date_eye']."', '".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['fbs']."', '".$_POST['hba1c']."', '".$_POST['dr']."', '".$_POST['comment']."','".$sOfficer."');";
+  $query=mysql_query($sql) or die (mysql_error());
 
-
-$sql="INSERT INTO `opd_eye` ( `register` , `date_eye` , `hn` , `ptname` , `ptright` , `fbs` , `hba1c` , `dr` , `comment` , `officer` )
-VALUES ( '".$regis."', '".$_POST['date_eye']."', '".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['fbs']."', '".$_POST['hba1c']."', '".$_POST['dr']."', '".$_POST['comment']."','".$sOfficer."');";
-$query=mysql_query($sql) or die (mysql_error());
-
-if($query){
-echo "บันทึกข้อมูลเรียบร้อยแล้ว";
-echo"<meta http-equiv='refresh' content='1;url=eye_from.php'>";
+  if($query){
+    echo "บันทึกข้อมูลเรียบร้อยแล้ว";
+    echo"<meta http-equiv='refresh' content='1;url=eye_from.php'>";
+  }
 }
-}
-
 ?>
 </body>
 </html>
