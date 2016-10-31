@@ -2,10 +2,6 @@
 session_start();
 if (isset($sOfficer)){} else {die;} //for security
 
-function dump($str){
-	echo "<pre>".var_dump($str)."</pre>";
-}
-
 $thdatehn="";
 $thidate2 = (date("Y")).date("-m-d H:i:s"); 
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
@@ -78,14 +74,10 @@ if($_POST['lockptright5']=="lock"){
 }else{
 	$where4 = ",ptright2='' ";
 }
-
-// ทดสอบการแตกตัวแปรจากใน $_POST 
-extract($_POST);
-
 //update opdcard table
-$hospcode=$_POST['hospcode'];
-$ptrcode=$_POST['rdo1'];
-//$note=$_POST['note'].'/'.$hospcode;
+	$hospcode=$_POST['hospcode'];
+	$ptrcode=$_POST['rdo1'];
+	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
 $sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',
@@ -181,47 +173,48 @@ $thdatehn=$d.'-'.$m.'-'.$yr.$cHn;   //  session ใช้ update opday table
 //    print " $thdatehn<br>";
 //to find AN from runno table
 
-//หา AN 
 $query = "SELECT title,prefix,runno FROM runno WHERE title = 'AN'";
-$result = mysql_query($query) or die( mysql_error() );
+$result = mysql_query($query) or die("Query failed runno ask");
+
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	if (!mysql_data_seek($result, $i)) {
 		echo "Cannot seek to row $i\n";
 		continue;
 	}
 
-	if(!($row = mysql_fetch_object($result))){
+	if(!($row = mysql_fetch_object($result)))
 		continue;
-	}
 }
-$vTitle = $row->title;
-$vPrefix = $row->prefix;
-$nRunno = $row->runno;
+
+$vTitle=$row->title;
+$vPrefix=$row->prefix;
+$nRunno=$row->runno;
 $nRunno++;
-$vAN = $vPrefix.$nRunno;
+$vAN=$vPrefix.$nRunno;
 
 //หา VN จาก runno table
 $query = "SELECT * FROM runno WHERE title = 'VN'";
-$result = mysql_query($query) or die( mysql_error() );
+$result = mysql_query($query) or die("Query failed");
+
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	if (!mysql_data_seek($result, $i)) {
 		echo "Cannot seek to row $i\n";
 		continue;
 	}
-	if(!($row = mysql_fetch_object($result))){
+		if(!($row = mysql_fetch_object($result)))
 		continue;
-	}
 }
-// ทำการ lock table runno ให้เขียนได้อย่างเดียวเท่านั้น
-// ป้องกันการเรียก vn ซ้ำกัน
-mysql_query("LOCK TABLES `runno` WRITE;") or die( mysql_error() );
 
-$nVn = $row->runno;
-$dVndate = $row->startday;
-$dVndate = substr($dVndate,0,10);
-$today = date("Y-m-d");
+//  	    $cTitle=$row->title;  //=VN
+$nVn=$row->runno;
+$dVndate=$row->startday;
+$dVndate=substr($dVndate,0,10);
+$today = date("Y-m-d");  
+//print "$today<br>";
+//print "$dVndate<br>";
+//print "$nVn.'A'<br>";
 ?>
- <script type="text/javascript">
+ <script>
  	function chType(){
 		var text5='<?=$_POST['case']?>';
 		var text6 =text5.substring(0,4);
@@ -234,72 +227,66 @@ $today = date("Y-m-d");
 		}
 	}
  </script>
-<?php
-// เซ็ตค่าลงใน Session เพื่อใช้สำหรับตรวจสอบ
-if( !isset($_SESSION['check_vn']) ){
-	$_SESSION['check_vn'] = $_POST['new_vn'];
-}
+<?
 
-// กรณีขอ vn ใหม่
-// ตรวจสอบจาก Session แทน
-If ($_SESSION['check_vn'] == "1"){
-
-	//ยังไม่เปลี่ยนวันที่ จะเป็นการรัน number ตัวใหม่
-	if( $today == $dVndate ){
+//กรณีขอ vn ใหม่
+If ($_POST["new_vn"] == "1"){
+	
+	//ยังไม่เปลี่ยนวันที่
+	if($today==$dVndate){
 		$nVn++;
-		$thdatevn = $d.'-'.$m.'-'.$yr.$nVn;
-		$query = "UPDATE runno SET runno = $nVn WHERE title='VN'";
-		$result = mysql_query($query) or die( mysql_error() );
+		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+		$query ="UPDATE runno SET runno = $nVn WHERE title='VN'";
+		$result = mysql_query($query) or die("Query failed");
 		print "<font face='Angsana New' size=5>ผู้ป่วยใหม่ได้หมายเลข VN = $nVn  .... </font> ...ผู้ลงทะเบียน  ..........$sOfficer<br>";
 		print "การออก OPD CARD  = $case<br>";
 	}
 
-	//วันใหม่ จะเป็นการรีเซ็ทเลขที่รัน number เป็น 1
-	if( $today <> $dVndate ){ 
-		$nVn = 1;
-		$thdatevn = $d.'-'.$m.'-'.$yr.$nVn;
-		$query = "UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN'";
-		$result = mysql_query($query) or die( mysql_error() );
+	//วันใหม่
+	if($today<>$dVndate){    
+		$nVn=1;
+		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+		$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN'";
+		$result = mysql_query($query) or die("Query failed");
+		//   	         echo mysql_errno() . ": " . mysql_error(). "\n";
+		//                       echo "<br>";
 		print "ผู้ป่วยใหม่  ได้ VN = $nVn <br>";
-	}
-
-	// ปลดล็อคหลังจากอัพเดทข้อมูล เพื่อให้ process ตัวอื่นได้ออก VN ใหม่
-	mysql_query("UNLOCK TABLES;") or die( mysql_error() );
+	}	
 	
 	//ลงทะเบียนใน opday table
-	$opergcode = 'x';
+$opergcode='x';
 	if(substr($_POST["case"],0,4) == "EX19"){
-		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,diag,icd10,icd9cm,okopd,withdraw,opdreg)VALUES(
-		'$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','D/S wound ','Z480','9357','Y',".$R03true1.",'$opergcode');";
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,diag,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','D/S wound ','Z480','9357','Y',".$R03true1.",'$opergcode');";
 	}else if(substr($_POST["case"],0,4) == "EX22"){
-		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw,opdreg)VALUES(
-		'$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z138','8898','Y',".$R03true1.",'$opergcode');";
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z138','8898','Y',".$R03true1.",'$opergcode');";
 	}else{
-		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES(
-		'$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
 	}
-	$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
 	
 	//จัดเก็บข้อมูลในตาราง cliniceye กรณีที่เลือก EX25
 	if(substr($_POST["case"],0,4) == "EX25"){
-		$today = date("Y-m-d H:i:s");
-		$subtoday=substr($today,0,10);
-		$sql="select * from cliniceye where date_time like '$subtoday%' && hn='$cHn' && vn='$nVn'";
-		$result=mysql_query($sql);
-		$num=mysql_num_rows($result);
+	$today = date("Y-m-d H:i:s");
+	$subtoday=substr($today,0,10);
+	$sql="select * from cliniceye where date_time like '$subtoday%' && hn='$cHn' && vn='$nVn'";
+	$result=mysql_query($sql);
+	$num=mysql_num_rows($result);
 		if($num < 1){
-			$add="insert into cliniceye set date_time='$today', hn='$cHn', vn='$nVn'";
-			$query=mysql_query($add);
+		$add="insert into cliniceye set date_time='$today', hn='$cHn', vn='$nVn'";
+		$query=mysql_query($add);
 		}
-	}
+	}	
 	
-	$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES(
-	'$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
-	$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+		
+		$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
+		
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+
 
 	// update time to table opday
-	$query ="UPDATE opday SET time1 = '$time' WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+	$query ="UPDATE opday SET time1='$time' WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 	$result = mysql_query($query);
+	//        or die("Query failed runno update");
 
 	$query1 = "SELECT status FROM typeopcard WHERE type_name = '".$_POST['case']."'";
 	$result1 = mysql_query($query1) or die("Query failed");
@@ -322,7 +309,7 @@ If ($_SESSION['check_vn'] == "1"){
 		
 				if(!($row = mysql_fetch_object($result)))
 					continue;
-			}
+				 }
 		
 			$nRunno=$row->runno;
 			$nRunno++;
@@ -335,83 +322,76 @@ If ($_SESSION['check_vn'] == "1"){
 			$idno=mysql_insert_id();
 		 
 			$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
-			VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50','0','OTHER','OTHER','$idno','$cPtright');";
+VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50','0','OTHER','OTHER','$idno','$cPtright');";
 			$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
 			
 			$query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
       		$result = mysql_query($query) or die("Query failed,update opday");
 		}
 	}
-
-	// หลังจากออก VN ใหม่เรียบร้อยแล้ว จะโดนเซ็ตให้ออกเป็น VN เดิมทันที
-	// เพราะมีปัญหาคือ user เผลอไป refresh หน้าแล้วมันเด้งเป็นออก VN ตัวใหม่
-	$_SESSION['check_vn'] = "0";
-
 }else{
 
-	// ปลดล็อค table runno จากการออก VNเดิม
-	mysql_query("UNLOCK TABLES;") or die( mysql_error() );
+$query = "SELECT hn,vn,kew,toborow FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
+$result = mysql_query($query) or die("Query failed,opday");
+//    echo mysql_errno() . ": " . mysql_error(). "\n";
+//    echo "<br>";
 
-	$query = "SELECT hn,vn,kew,toborow FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
-	$result = mysql_query($query) or die( mysql_error() );
-	//    echo mysql_errno() . ": " . mysql_error(). "\n";
-	//    echo "<br>";
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+}
 
-	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-		if (!mysql_data_seek($result, $i)) {
-			echo "Cannot seek to row $i\n";
-			continue;
-		}
+if(!($row = mysql_fetch_object($result)))
+	continue;
+}	
 
-		if(!($row = mysql_fetch_object($result)))
-			continue;
-	}	
+$nVn=$row->vn;
+$kew=$row->kew;
+$toborow=$row->toborow;
 
-	$nVn=$row->vn;
-	$kew=$row->kew;
-	$toborow=$row->toborow;
 
-	if(substr($_POST["case"],0,4) == "EX19"){
-		$query ="UPDATE opday SET ptname='$cPtname',
-		ptright='$cPtright',
-		goup='$cGoup',
-		note='$note',
-		idcard='$cIdcard',
-		borow='$borow',
-		toborow='$case',
-		camp='$cCamp',
-		okopd='Y',  
-		officer='$sOfficer'
-		".$R03true2."
-		WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
-	}else{
-		$query ="UPDATE opday SET ptname='$cPtname',
-		ptright='$cPtright',
-		goup='$cGoup',
-		note='$note',
-		idcard='$cIdcard',
-		borow='$borow',
-		toborow='$case',
-		camp='$cCamp',
-		okopd='N',  
-		officer='$sOfficer'
-		".$R03true2."
-		WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
-	}
+if(substr($_POST["case"],0,4) == "EX19"){
+$query ="UPDATE opday SET ptname='$cPtname',
+ptright='$cPtright',
+goup='$cGoup',
+note='$note',
+idcard='$cIdcard',
+borow='$borow',
+toborow='$case',
+camp='$cCamp',
+okopd='Y',  
+officer='$sOfficer'
+".$R03true2."
+WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+}else{
+$query ="UPDATE opday SET ptname='$cPtname',
+ptright='$cPtright',
+goup='$cGoup',
+note='$note',
+idcard='$cIdcard',
+borow='$borow',
+toborow='$case',
+camp='$cCamp',
+okopd='N',  
+officer='$sOfficer'
+".$R03true2."
+WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+}
 
-	$result = mysql_query($query) or die("Query failed,update opday");
-	$sql = "Select count(row_id) as c_row From opday2 where thdatehn = '".$thdatehn."' AND toborow = '".$case."' limit 1 ";
-	list($c_row) = Mysql_fetch_row(Mysql_Query($sql));
+$result = mysql_query($query) or die("Query failed,update opday");
+$sql = "Select count(row_id) as c_row From opday2 where thdatehn = '".$thdatehn."' AND toborow = '".$case."' limit 1 ";
+list($c_row) = Mysql_fetch_row(Mysql_Query($sql));
 
-	if($c_row == 0){
-		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
-		$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
-		$result = mysql_query($query) or die("Query failed,cannot insert into opday2");
-	}else{
-		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
-		$query = "Update opday2 set thidate = '".$thidate."' where thdatevn = '".$thdatevn."' limit 1 ";
-		$result = mysql_query($query) or die("Query failed,cannot insert into opday2");
-	}
+if($c_row == 0){
+	$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+	$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
+	$result = mysql_query($query) or die("Query failed,cannot insert into opday2");
+}else{
+	$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+	$query = "Update opday2 set thidate = '".$thidate."' where thdatevn = '".$thdatevn."' limit 1 ";
+	$result = mysql_query($query) or die("Query failed,cannot insert into opday2");
+}
 
 	$query1 = "SELECT status FROM typeopcard WHERE type_name = '".$_POST['case']."'";
 	$result1 = mysql_query($query1) or die("Query failed");
@@ -434,7 +414,7 @@ If ($_SESSION['check_vn'] == "1"){
 		
 				if(!($row = mysql_fetch_object($result)))
 					continue;
-			}
+				 }
 		
 			$nRunno=$row->runno;
 			$nRunno++;
@@ -447,7 +427,7 @@ If ($_SESSION['check_vn'] == "1"){
 			$idno=mysql_insert_id();
 		 
 			$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
-			VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50','0','OTHER','OTHER','$idno','$cPtright');";
+VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50','0','OTHER','OTHER','$idno','$cPtright');";
 			$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
 			
 			$query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
@@ -455,9 +435,8 @@ If ($_SESSION['check_vn'] == "1"){
 		}
 	}
 
-	print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้ VN: $nVn ได้คิวที่..$kew...<br>เปลี่ยนจาก ..$toborow..<br>เป็น ...".$_POST['case']."...</font>";
-	print "<br>ผู้ลงทะเบียน ..$sOfficer";
-
+print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้ VN: $nVn ได้คิวที่..$kew...<br>เปลี่ยนจาก ..$toborow..<br>เป็น ...".$_POST['case']."...</font>";
+print "<br>ผู้ลงทะเบียน ..$sOfficer";
 }
 
 // ตรวจสอบและอับเดล dphardep กรณี ผู้ป่วยมาฉีดยาต่อเนื่อง
@@ -480,24 +459,41 @@ $dataf_size=$_FILES['filUpload']['size'];
 $dataf_type=$_FILES['filUpload']['type'];
 if(empty($dataf)){
 	
+	
 }else{
-	$structure = '../image_patient';
-	$ext=strtolower(end(explode('.',$dataf_name)));
-	echo $ext;
-	if($ext=="jpg"){
-		$filename=$_POST['cIdcard'].".". $ext;
-		copy($dataf, "$structure/$filename");
-	}else{
-		echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .jpg</CENTER></B></FONT> ";
-	}
-} //ปิดไฟล์*/
+$structure = '../image_patient';
 
 
-$sql = "Select runno From runno where title ='kew' ";
-$result = Mysql_Query($sql);
-list($akew) = Mysql_fetch_row($result);
+
+					$ext=strtolower(end(explode('.',$dataf_name)));
+					
+					echo $ext;
+					if($ext=="jpg"){
+								
+								$filename=$_POST['cIdcard'].".". $ext;
+		
+								copy($dataf, "$structure/$filename");
+								
+								//echo $structure.'/'.$_POST['cIdcard'].'.jpg';
+
+						}else{
+				
+				//echo $filename;
+				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .jpg</CENTER></B></FONT> ";
+								}
+					}			//ปิดไฟล์*/
+
+
+
+
+
 ?>
-<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php" onclick="addQueue()">คิวตรวจโรคทั่วไป (<?=$akew;?>)</a>
+ 
+
+<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php" onclick="addQueue()">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php" onclick="addQueue()">คิวตรวจทันตกรรม(<?php $sql = "Select runno From runno where title ='kew2' ";
 	$result = Mysql_Query($sql);
@@ -590,6 +586,7 @@ list($akew) = Mysql_fetch_row($result);
 <script type="text/javascript">
 
 var queue = 0;
+
 var card = 0;
 function searchCard(ev){
 	
@@ -613,7 +610,6 @@ function searchCard(ev){
 
 function addQueue(){
 	queue = 1;
-
 }
 
 function SMPreventDefault(ev){
