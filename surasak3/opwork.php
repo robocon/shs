@@ -77,9 +77,9 @@ if($_POST['lockptright5']=="lock"){
 }
 
 //update opdcard table
-$hospcode=$_POST['hospcode'];
-$ptrcode=$_POST['rdo1'];
-//$note=$_POST['note'].'/'.$hospcode;
+	$hospcode=$_POST['hospcode'];
+	$ptrcode=$_POST['rdo1'];
+	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
 extract($_POST);
@@ -294,7 +294,7 @@ If ($_POST["new_vn"] == "1"){
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES
 		('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
 	}
-	$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
 	
 	//จัดเก็บข้อมูลในตาราง cliniceye กรณีที่เลือก EX25
 	if(substr($_POST["case"],0,4) == "EX25"){
@@ -304,8 +304,8 @@ If ($_POST["new_vn"] == "1"){
 		$result = mysql_query($sql);
 		$num = mysql_num_rows($result);
 		if($num < 1){
-			$add="insert into cliniceye set date_time='$today', hn='$cHn', vn='$nVn'";
-			$query=mysql_query($add);
+		$add="insert into cliniceye set date_time='$today', hn='$cHn', vn='$nVn'";
+		$query=mysql_query($add);
 		}
 	}	
 	
@@ -380,33 +380,33 @@ $kew=$row->kew;
 $toborow=$row->toborow;
 
 
-	if(substr($_POST["case"],0,4) == "EX19"){
-		$query ="UPDATE opday SET ptname='$cPtname',
-		ptright='$cPtright',
-		goup='$cGoup',
-		note='$note',
-		idcard='$cIdcard',
-		borow='$borow',
-		toborow='$case',
-		camp='$cCamp',
-		okopd='Y',  
-		officer='$sOfficer'
-		".$R03true2."
-		WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
-	}else{
-		$query ="UPDATE opday SET ptname='$cPtname',
-		ptright='$cPtright',
-		goup='$cGoup',
-		note='$note',
-		idcard='$cIdcard',
-		borow='$borow',
-		toborow='$case',
-		camp='$cCamp',
-		okopd='N',  
-		officer='$sOfficer'
-		".$R03true2."
-		WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
-	}
+if(substr($_POST["case"],0,4) == "EX19"){
+$query ="UPDATE opday SET ptname='$cPtname',
+ptright='$cPtright',
+goup='$cGoup',
+note='$note',
+idcard='$cIdcard',
+borow='$borow',
+toborow='$case',
+camp='$cCamp',
+okopd='Y',  
+officer='$sOfficer'
+".$R03true2."
+WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+}else{
+$query ="UPDATE opday SET ptname='$cPtname',
+ptright='$cPtright',
+goup='$cGoup',
+note='$note',
+idcard='$cIdcard',
+borow='$borow',
+toborow='$case',
+camp='$cCamp',
+okopd='N',  
+officer='$sOfficer'
+".$R03true2."
+WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+}
 
 $result = mysql_query($query) or die("Query failed,update opday");
 $sql = "Select count(row_id) as c_row From opday2 where thdatehn = '".$thdatehn."' AND toborow = '".$case."' limit 1 ";
