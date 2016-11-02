@@ -9,10 +9,13 @@ if( $userCode != 'ADM' && $userCode != 'ADMCOM' ){
 }
 
 // Load Databse
-DB::load();
+// DB::load();
+$db = Mysql::load();
 
-$task = isset($_REQUEST['task']) ? trim($_REQUEST['task']) : false ;
-$action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
+// $task = isset($_REQUEST['task']) ? trim($_REQUEST['task']) : false ;
+// $action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
+$task = input('task');
+$action = input('action');
 
 if( $action === 'save' ){
     
@@ -20,11 +23,15 @@ if( $action === 'save' ){
     $files = $_FILES['files'];
     
     if( $id === false ){
+        // Add
         $folder_name = time();
         mkdir('news/'.$folder_name);
     }else{
+        // Edit
         $sql = "SELECT `folder` FROM `news` WHERE `id` = :id";
-        $item = DB::select($sql, array(':id' => $id), true);
+        // $item = DB::select($sql, array(':id' => $id), true);
+        $db->select($sql, array(':id' => $id));
+        $item = $db->get_item();
         $folder_name = $item['folder'];
     }
     
@@ -47,14 +54,16 @@ if( $action === 'save' ){
         VALUES (
         NULL ,  '$title',  '$folder_name',  NOW(), NULL ,  '1',  '$owner'
         );";
-        $save = DB::exec($sql);
+        // $save = DB::exec($sql);
+        $save = $db->insert($sql);
     } else {
         $sql = "UPDATE  `smdb`.`news` SET  
         `title` =  '$title',
         `date_end` = NOW(),
         `owner` = '$owner'
         WHERE  `news`.`id` = :id LIMIT 1 ;";
-        $save = DB::exec($sql, array(':id' => $id));
+        // $save = DB::exec($sql, array(':id' => $id));
+        $save = $db->update($sql, array(':id' => $id));
     }
     
     $msg = 'บันทึกข้อมูลเรียบร้อย';
@@ -66,10 +75,11 @@ if( $action === 'save' ){
     exit;
 } else if( $action === 'delete' ){
     
-    
     $id = input_get('id');
     $sql = "UPDATE  `smdb`.`news` SET  `status` =  '0' WHERE  `news`.`id` =:id LIMIT 1 ;";
-    DB::exec($sql, array(':id' => $id));
+    // DB::exec($sql, array(':id' => $id));
+    $db->update($sql, array(':id' => $id));
+
     redirect('news_list.php', 'ดำเนินการเรียบร้อยแล้ว');
     exit;
 } else if( $action === 'remove_path' ){
@@ -141,7 +151,9 @@ if ( $task === false ) {
                     <?php
                     
                     $sql = "SELECT * FROM `news` WHERE `status` = 1 ORDER BY `id` DESC";
-                    $items = DB::select($sql);
+                    // $items = DB::select($sql);
+                    $db->select($sql);
+                    $items = $db->get_items();
                     $i = 1;
                     foreach( $items as $key => $item ){
                         
@@ -170,7 +182,9 @@ if ( $task === false ) {
         FROM `news` 
         WHERE `id` = :id 
         AND `status` = 1";
-        $item = DB::select($sql, array(':id' => $id), true);
+        // $item = DB::select($sql, array(':id' => $id), true);
+        $db->select($sql);
+        $item = $db->get_item();
     }
     ?>
     <style type="text/css">

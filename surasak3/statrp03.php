@@ -4,39 +4,32 @@ require("fpdf/pdf.php");
 
 require("connect.php");
 
-$month_ = array(
-	'01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', 
-	'07' => 'กรกฏาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม'
-);
+$month_["01"] = "มกราคม";
+$month_["02"] = "กุมภาพันธ์";
+$month_["03"] = "มีนาคม";
+$month_["04"] = "เมษายน";
+$month_["05"] = "พฤษภาคม";
+$month_["06"] = "มิถุนายน";
+$month_["07"] = "กรกฏาคม";
+$month_["08"] = "สิงหาคม";
+$month_["09"] = "กันยายน";
+$month_["10"] = "ตุลาคม";
+$month_["11"] = "พฤศจิกายน";
+$month_["12"] = "ธันวาคม";
 
-$day = sprintf("%02d", $_GET["day"]);
-$month = sprintf("%02d", $_GET["month"]);
-$year = sprintf("%02d", $_GET["year"]);
-
-$doctor = $_GET["doctor"];
-$code = $_GET["code"];
-
-// var_dump($day);
-// var_dump($month);
-// var_dump($year);
-
-// exit;
-
-// if($_GET["day"] != ""){
-// 	$_GET["day"] = sprintf("%02d",$_GET["day"]);
-// }
-	
+if($_GET["day"] != "")
+	$_GET["day"] = sprintf("%02d",$_GET["day"]);
 
 
 $time_zone = explode("-",$_GET["time"]);
 	
-if($code == "58001"){
-	$where = " AND doctor like '".$doctor."%' AND (code like '".$code."%' OR code like '58020%') ";
-}else{
-	$where = " AND code like '".$code."%' ";
-}
+	if($_GET["code"] == "58001")
+		$where = " AND doctor like '".$_GET["doctor"]."%' AND (code like '".$_GET["code"]."%' OR code like '58020%') ";
+	else
+		$where = " AND code like '".$_GET["code"]."%'  ";
 
-if($code == "58001" OR $code == "58000" ){ //ฝังเข็ม
+
+if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 
 	// $pdf = new PDF('P' ,'mm','A4');
 	// $pdf->SetThaiFont();
@@ -44,16 +37,16 @@ if($code == "58001" OR $code == "58000" ){ //ฝังเข็ม
 	// $pdf->AddPage();
 	// $pdf->SetFont('AngsanaNew', '', 14);
 
-	$sql = "SELECT hn, ptname, idno, date, detail 
+	$sql = "SELECT hn, ptname, idno   
 	FROM patdata 
 	WHERE hn != '' 
-	AND ( date between '$year-$month-$day ".$time_zone[0]."' AND '$year-$month-$day ".$time_zone[1]."') 
-	$where 
+	AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  
+	".$where." 
 	Group by hn Having sum(amount) > 0 
 	Order by date ASC 
 	limit 70 ";
 
-	// file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
+	file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
 	
 	$result2  = Mysql_Query($sql) or die( mysql_error() );
 	
@@ -63,6 +56,7 @@ if($code == "58001" OR $code == "58000" ){ //ฝังเข็ม
 		case "16:20:00-21:00:00" : $txt .= "16.30 - 20.30"; break;
 		case "08.00:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
 		case "16:00:01-20:30:00" : $txt .= "16.00 - 20.00"; break;
+	
 	}
 
 	// $pdf->Cell(0,7,$txt,0,0,'C');
@@ -120,7 +114,7 @@ if($code == "58001" OR $code == "58000" ){ //ฝังเข็ม
 					<?php
 					
 					$i=1;
-					while(list($hn,$ptname,$idno,$date,$detail) = mysql_fetch_row($result2)){	
+					while(list($hn,$ptname, $idno) = mysql_fetch_row($result2)){	
 						
 						$sql = "SELECT `diag` 
 						FROM `depart` 
@@ -130,7 +124,7 @@ if($code == "58001" OR $code == "58000" ){ //ฝังเข็ม
 					
 					?>
 					<tr>
-						<td width="5%" align="center"><?=$i;?></td>
+						<td align="center"><?=$i;?></td>
 						<td><?=$ptname;?></td>
 						<td align="center"><?=$hn;?></td>
 						<td align="center"><?=$res['diag'];?></td>
@@ -189,7 +183,7 @@ if($code == "58001" OR $code == "58000" ){ //ฝังเข็ม
 	// $pdf->Ln();
 	
 	// $pdf->Cell(20,7,"ผู้บันทึก",0,0,'C');
-	// if($doctor=="MD115"){
+	// if($_GET["doctor"]=="MD115"){
 	// 	$pdf->Cell(100,7,"นาย",0,0,'R');
 	// }else{
 	// 	$pdf->Cell(100,7,"พ.อ.",0,0,'R');

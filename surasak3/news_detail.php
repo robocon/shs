@@ -17,13 +17,16 @@ include 'bootstrap.php';
 </style>
 <?php
 $id = input_get('id');
-DB::load();
+// DB::load();
+$db = Mysql::load();
 
 $sql = "SELECT * 
 FROM `news` 
 WHERE `id` = :id 
 AND `status` = 1";
-$item = DB::select($sql, array(':id' => $id), true);
+// $item = DB::select($sql, array(':id' => $id), true);
+$db->select($sql, array(':id' => $id));
+$item = $db->get_item();
 if( !empty($item) ){
 ?>
 <div class="body-contain">

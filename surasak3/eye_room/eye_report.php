@@ -96,7 +96,7 @@ include '../bootstrap.php';
 	<form action="eye_report.php" method="post">
 		<table  border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" style="border-collapse:collapse">
 			<tr class="forntsarabun" align="center">
-				<td colspan="2" bgcolor="#99CC99">เลือกการแสดงผลตามปีงบประมาณ</td>
+				<td colspan="2" bgcolor="#99CC99">เลือกการแสดงผลตามปีงบประมาณ (ตุลาคม - กันยายน)</td>
 			</tr>
 			<tr class="forntsarabun" align="center">
 				<td colspan="2">
@@ -109,7 +109,7 @@ include '../bootstrap.php';
 			</tr>
 			<tr class="forntsarabun" align="center">
 				<td colspan="2">
-					<button class="forntsarabun">ตกลง</button>
+					<button class="forntsarabun" type="submit">ตกลง</button>
 					<input type="hidden" name="checkup" value="yes">
 					<input type="hidden" name="submit" value="submit">
 				</td>
@@ -174,7 +174,6 @@ if($_POST['submit']){
 	FROM `opday` 
 	WHERE $where 
 	AND ( `doctor` LIKE  '%พิศาล%' OR `doctor` LIKE  '%เลอปรัชญ์%' )";
-	// dump($sql1);
 	$query1 = mysql_query($sql1) or die( mysql_error() );
  
 	$sql = "SELECT * FROM opday1";
