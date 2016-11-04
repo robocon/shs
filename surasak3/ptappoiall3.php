@@ -1,6 +1,10 @@
 <?php
 // Update 31 พค 2553 
 //bbm
+session_start();
+
+$user_menucode = $_SESSION['smenucode'];
+
 $appd = isset($_GET['appd']) ? trim($_GET['appd']) : false ;
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
@@ -8,6 +12,12 @@ print "<b>การนัด:</b> $detail <br>";
 
 print "<b>นัดมาวันที่</b> $appd<br> ";
 print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
+
+function dump($str){
+	echo "<pre>";
+	var_dump($str);
+	echo "</pre>";
+}
 
 ?>
 <style type="text/css">
@@ -17,7 +27,7 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 }
 table{
 	width: 100%;
-	border-left: 1px solid #ffffff
+	border-left: 1px solid #ffffff;
 	border-top: 1px solid #ffffff;
 	border-collapse: collapse;
 	border-spacing: 0;
@@ -73,45 +83,68 @@ a{
 	// WHERE appdate = '$appd' 
 	// and detail = '$detail' ".$sort;
 	
-	$query = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,date_format(a.`date`,'%d-%m-%Y')
-FROM `appoint` AS a 
-INNER JOIN (
-	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`
-	FROM `appoint` 
-	WHERE `appdate` = '$appd' 
-	GROUP BY `hn` 
-) AS b ON b.`id` = a.`row_id` 
-WHERE a.`detail` = '$detail' 
-";
-	$result = mysql_query($query) or die("Query failed");
+	$query = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,
+	date_format(a.`date`,'%d-%m-%Y') AS `date`,a.`other`,a.`detail`,SUBSTRING(a.`detail`, 1, 4) AS `detail_code`
+	FROM `appoint` AS a 
+	INNER JOIN (
+		SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`
+		FROM `appoint` 
+		WHERE `appdate` = '$appd' 
+		GROUP BY `hn` 
+	) AS b ON b.`id` = a.`row_id` 
+	WHERE a.`detail` = '$detail' ";
+	$result = mysql_query($query) or die( mysql_error() );
 
-	
 	$date_now = date("d-m-").(date("Y")+543);
 	
 	$cancel_date = array();
 	$user_lists = array();
-	while (list ($hn,$ptname,$apptime,$came,$row_id,$age, $date) = mysql_fetch_row ($result)) {
+	while ( $item = mysql_fetch_assoc ($result)) {
 		
-		if($date_now == $date){
-			$bgcolor = "FFA8A8";
-		}else{
-			$bgcolor = "66CDAA";
-		}
-		
+		$hn = $item['hn'];
+		$ptname = $item['ptname'];
+		$apptime = $item['apptime'];
+		$came = $item['came'];
+		$row_id = $item['row_id'];
+		$age = $item['age'];
+		$date = $item['date'];
+		$other = $item['other'];
+		$detail = 'ค้นพบ////ไม่พบ';
+		$detail_code = $item['detail_code'];
+
 		list($key_year, $hn_key) = explode('-', $hn);
 		$key = $key_year.sprintf("%08d", intval($hn_key));
 		
+		$card_status = '';
+		if( $detail_code === 'FU03' AND ( $user_menucode === 'ADMMAINOPD' OR $user_menucode === 'ADM' ) ){
+			$sql = "SELECT b.`status` 
+			FROM (
+				SELECT `an` 
+				FROM `ipcard` 
+				WHERE `hn` = '$hn' 
+				ORDER BY `row_id` DESC 
+				LIMIT 1 
+			) AS a 
+			LEFT JOIN `dcstatus` AS b ON a.`an` = b.`an` 
+			ORDER BY b.`date` DESC 
+			LIMIT 1";
+			$q = mysql_query($sql);
+			$user = mysql_fetch_assoc($q);
+			$card_status = $user['status'];
+		}
+
 		$user_lists[$key] = array(
 			'hn' => $hn,
 			'ptname' => $ptname,
 			'apptime' => $apptime,
-			'detail' => 'ค้นพบ////ไม่พบ',
-			'other' => '...................................................',
+			'detail' => $detail,
+			'other' => $other,
 			'date' => $date,
-			'sort_hn' => $key
+			'sort_hn' => $key,
+			'card_status' => $card_status
 		);
 	}
-	
+
 	// เรียงจากน้อยไปหามากตาม sort_hn
 	function sorthn($a, $b){
 		return $a['sort_hn'] - $b['sort_hn'];
@@ -126,15 +159,23 @@ WHERE a.`detail` = '$detail'
 			$cancel_date[] = $user;
 			continue;
 		}
-		
+
+		// Default color
+		$bgcolor = "66CDAA";
+		if($date_now == $date){
+			$bgcolor = "FFA8A8";
+		}
+
+		$other = ( empty($user['other']) ) ? '..............................' : $user['other'] ; 
+
 		?>
-		<tr bgcolor="66CDAA">
+		<tr bgcolor="<?=$bgcolor;?>">
 			<td><?=$order;?></td>
 			<td><?=$user['hn'];?></td>
 			<td><?=$user['ptname'];?></td>
 			<td><?=$user['apptime'];?></td>
 			<td><?=$user['detail'];?></td>
-			<td><?=$user['other'];?></td>
+			<td><?=$other.' '.$user['card_status'];?></td>
 			<td><?=$user['date'];?></td>
 		</tr>
 		<?php
