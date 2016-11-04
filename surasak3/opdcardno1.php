@@ -43,8 +43,7 @@ if( $action === false ){
 			$query = "SELECT row_id,vn,thdatehn, date_format(thidate, '%d/%m/%Y %H:%i:%s'),hn,ptname,an,diag,doctor,okopd,toborow,borow 
 			FROM opday 
 			WHERE okopd='N'
-			AND thidate 
-			LIKE '$today%' ";
+			AND thidate LIKE '$today%' ";
 			$result = mysql_query($query)or die("Query failed");
 			$opd = 0;
 			while (list ($row_id,$vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$doctor,$okopd,$toborow,$borow) = mysql_fetch_row ($result)) {

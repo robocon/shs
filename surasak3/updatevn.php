@@ -1,48 +1,47 @@
 <?php
 session_start();
+
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
 $Thaidate=date("d-m-").(date("Y")+543)." เวลา  ".date("H:i:s");
 $Thaidate1=date("d-m-").(date("Y")+543);
 $time=date("H:i:s");
+
 global $regisdate,$an,$sex,$married,$idcard,
-           $warcard,$camp,$goup,$dbirth,$race,$national,$religion,$career,$ptright,$address,
-            $tambol,$ampur,$changwat,$parent,$couple,$guardian;
- include("connect.inc");
+$warcard,$camp,$goup,$dbirth,$race,$national,$religion,$career,$ptright,$address,
+$tambol,$ampur,$changwat,$parent,$couple,$guardian;
 
- $query = "SELECT title,prefix,runno FROM runno WHERE title = 'vn'";
-    $result = mysql_query($query)
-        or die("Query failed runno ask");
+include("connect.inc");
 
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
+$query = "SELECT title,prefix,runno FROM runno WHERE title = 'vn'";
+$result = mysql_query($query) or die("Query failed runno ask");
 
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+    if (!mysql_data_seek($result, $i)) {
+        echo "Cannot seek to row $i\n";
+        continue;
+    }
 
-    $vTitle=$row->title;
-    $vPrefix=$row->prefix;
-    $nRunno=$row->runno;
-    $nRunno++;
-    $vkew1=$nRunno;
-	$vkew12=$nRunno;
+    if(!($row = mysql_fetch_object($result)))
+        continue;
+}
 
-$thdatevn=$Thaidate1.$vkew12;
+$vTitle = $row->title;
+$vPrefix = $row->prefix;
+$nRunno = $row->runno;
+$nRunno++;
+$vkew1 = $nRunno;
+$vkew12  =$nRunno;
+
+$thdatevn = $Thaidate1.$vkew12;
 
 
 // update kew to table runno
-    $query ="UPDATE runno SET runno = $nRunno WHERE title='vn'";
-    $result = mysql_query($query);
-//        or die("Query failed runno update");
+$query = "UPDATE runno SET runno = $nRunno WHERE title='vn'";
+$result = mysql_query($query) or die("Query failed runno update");
 
 // ใส่ kew ใน opday table 
-
-    $query ="UPDATE opday SET vn = '$vkew12', thdatevn = '$thdatevn' WHERE thdatehn = '$thdatehn' AND vn = '".$_SESSION["nVn"]."' "; 
-   $result = mysql_query($query);
-
+$query = "UPDATE opday SET vn = '$vkew12', thdatevn = '$thdatevn' WHERE thdatehn = '$thdatehn' AND vn = '".$_SESSION["nVn"]."' "; 
+$result = mysql_query($query);
 
 //echo mysql_errno() . ": " . mysql_error(). "\n";
 //echo "<br>";
