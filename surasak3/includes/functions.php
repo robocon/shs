@@ -10,7 +10,17 @@ $def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เ
 $def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
 					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
 					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+$th_number = array('1' => '๑','2' => '๒','3' => '๓','4' => '๔','5' => '๕','6' => '๖','7' => '๗','8' => '๘','9' => '๙','0' => '๐');
 
+function to_thai_number($number){
+	global $th_number;
+	$lists = str_split($number);
+	$th_str = '';
+	foreach( $lists as $key => $item ){
+		$th_str .= $th_number[$item];
+	}
+	return $th_str;
+}
 /**
  * แบ่งหน้า
  * $total	จำนวนทั้งหมด
@@ -205,7 +215,15 @@ function getMonthValue($keyMatch){
 }
 
 function getDateList($name = 'days', $match = null){
-
+	$def_day = range(1, 31);
+	?>
+	<select name="<?=$name;?>">
+		<?php foreach($def_day as $key => $day): ?>
+		<?php $select = ( $match == $day ) ? 'selected="selected"' : '' ; ?>
+		<option value="<?=$day;?>" <?=$select;?>><?=$day;?></option>
+		<?php endforeach; ?>
+	</select>
+	<?php
 }
 
 /**
