@@ -47,4 +47,4 @@ testsmdb/**
 
 tests/*
 vendor/*
-/nbproject/private/
+nbproject/*

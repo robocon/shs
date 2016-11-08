@@ -23,31 +23,65 @@ if($_GET["day"] != "")
 
 $time_zone = explode("-",$_GET["time"]);
 	
-	if($_GET["code"] == "58001")
-		$where = " AND doctor like '".$_GET["doctor"]."%' AND (code like '".$_GET["code"]."%' OR code like '58020%') ";
-	else
-		$where = " AND code like '".$_GET["code"]."%'  ";
+	$where = " AND `code` LIKE '".$_GET["code"]."%'  ";
+	// if($_GET["code"] == "58001")
+	// 	$where = " AND doctor like '".$_GET["doctor"]."%' 
+	// 	AND ( code like '".$_GET["code"]."%' OR code like '58020%') ";
+	// else
+	// 	$where = " AND code like '".$_GET["code"]."%'  ";
 
 
 if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 
-	// $pdf = new PDF('P' ,'mm','A4');
-	// $pdf->SetThaiFont();
-	// $pdf->SetMargins(10, 10);
-	// $pdf->AddPage();
-	// $pdf->SetFont('AngsanaNew', '', 14);
+	$date = $_GET["year"]."-".$_GET["month"]."-".$_GET["day"];
+	$start_from = $time_zone[0];
+	$end_from = $time_zone[1];
+	$code = trim($_GET["code"]);
+	$doctor = trim($_GET["doctor"]);
 
-	$sql = "SELECT hn, ptname, idno   
-	FROM patdata 
-	WHERE hn != '' 
-	AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  
+	if( $code == '58001' ){
+		$where = " AND ( `code` LIKE '$code%' OR `code` LIKE '58020%') ";
+	}else{
+		$where = " AND `code` LIKE '$code%' ";
+	}
+	
+	// Test case
+	$sql = "SELECT a.* 
+	FROM ( 
+		SELECT `row_id`,`hn`,`date`,`ptname`,`idno`,`code`,`amount`,`doctor`,
+		SUBSTRING(`date`, 1, 10) AS `dateymd`, 
+		SUBSTRING(`date`, 12, 8) AS `timehis`
+		FROM `patdata` 
+		WHERE `hn` != '' 
+		AND `date` LIKE '$date%' 
+		AND `doctor` LIKE '$doctor%'
+		$where 
+	) AS a 
+	LEFT JOIN `patdata` AS b ON a.`row_id` = b.`row_id`
+	WHERE ( a.`timehis` >= '$start_from' AND a.`timehis` <= '$end_from' )
+	GROUP BY a.`hn` HAVING SUM(a.`amount`) > 0 
+	ORDER BY a.`date` ASC ";
+
+	/*
+	?>
+	<div style="display: none;"><?=$sql;?></div>
+	<?php
+	*/
+	/*
+	$sql = "SELECT `hn`, `ptname`, `idno` 
+	FROM `patdata` 
+	WHERE `hn` != '' 
+	AND ( `date` BETWEEN 
+		'".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' 
+		AND 
+		'".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."'
+	)  
 	".$where." 
 	Group by hn Having sum(amount) > 0 
 	Order by date ASC 
 	limit 70 ";
+	*/
 
-	file_put_contents('logs/mysql-query.log', $sql, FILE_APPEND);
-	
 	$result2  = Mysql_Query($sql) or die( mysql_error() );
 	
 	$txt = "คลินิกนอกเวลาราชการ (ฝังเข็ม) เวลา ";
@@ -58,16 +92,6 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 		case "16:00:01-20:30:00" : $txt .= "16.00 - 20.00"; break;
 	
 	}
-
-	// $pdf->Cell(0,7,$txt,0,0,'C');
-	// $pdf->Ln();
-	// $pdf->Cell(0,7,"วันที่ ".$_GET["day"]." ".$month_[$_GET["month"]]." ".$_GET["year"],0);
-	// $pdf->Ln();
-	// $pdf->Cell(10,7,"ลำดับ",1,0,'C');
-	// $pdf->Cell(100,7,"ชื่อ - สกุล ผู้รับบริการ",1,0,'C');
-	// $pdf->Cell(30,7,"HN",1,0,'C');
-	// $pdf->Cell(30,7,"โรค",1,0,'C');
-	// $pdf->Ln();
 	?>
 	<style type="text/css">
 		body, th, td{
@@ -114,7 +138,10 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 					<?php
 					
 					$i=1;
-					while(list($hn,$ptname, $idno) = mysql_fetch_row($result2)){	
+					while( $item = mysql_fetch_assoc($result2)){	
+						$hn = $item['hn'];
+						$ptname = $item['ptname'];
+						$idno = $item['idno'];
 						
 						$sql = "SELECT `diag` 
 						FROM `depart` 
