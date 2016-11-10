@@ -122,7 +122,7 @@ if(!empty($cStkcutdate)) {
 <?php
 // แพ้ยารุนแรง
 // เอา date_save บวกเพิ่มไปอีก 2 เดือนเพื่อหาวันสิ้นสุด
-$sql = "SELECT `date_save`,`drug_code`, DATE_ADD(`date_save`, INTERVAL 2 MONTH) AS `end_date` 
+$sql = "SELECT `date_save`,`drug_code`, DATE_ADD(`date_save`, INTERVAL 6 MONTH) AS `end_date` 
 FROM `phar_allergic` 
 WHERE `hn` = '$rxHn'";
 $query = mysql_query($sql);
@@ -298,16 +298,9 @@ $result = Mysql_Query($sql);
 }
 include("unconnect.inc");
 
-/*
-include("unconnect.inc");
-
-
-
 if(substr($rxPtright,0,3)=="R03" || substr($rxPtright,0,3)=="R33"){
-echo "<div style='page-break-before: always;'></div>";
-$hn=$rxHn;
-$date=$y.'-'.$m.'-'.$d;
-include("reportcash1.php");
-
+	echo "<div style='page-break-before: always;'></div>";
+	$hn=$rxHn;
+	$date=$y.'-'.$m.'-'.$d;
+	include("reportcash1.php");
 }
-*/
