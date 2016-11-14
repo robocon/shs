@@ -121,7 +121,7 @@ function thaiNumber($str){
 		
 		?>
 		<tr class="font_tr">
-			<td align="center"><?php echo $num;?></td>
+			<td align="center"><?php echo thaiNumber($num);?></td>
 			<td><?php echo $ptname;?><br><?php echo thaiNumber($idcard);?></td>
 			<td>
 				<?php 

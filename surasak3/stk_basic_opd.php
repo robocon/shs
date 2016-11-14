@@ -1,7 +1,8 @@
 <?php
 // README! 
 // พิมพ์สติกเกอร์แบบ PDF สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล และหน้าของ OPD แบบพิมพ์ย้อนหลัง
-require("fpdf_thai/fpdf_thai.php");
+// require("fpdf_thai/fpdf_thai.php");
+include 'fpdf_thai/shspdf.php';
 include("connect.php");
 
 class PDF extends FPDF_Thai{}
@@ -30,7 +31,9 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age 
+From opd 
+where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
 list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
 
@@ -91,74 +94,23 @@ list($dbirth) = Mysql_fetch_row($result111);
 $cAge = calcage($dbirth);
 
 
-$pdf = new PDF("L", 'mm', array( 50, 80));
-
-// $pdf->AddFont('THSarabunPSK', '', 'THSarabun.php');
-// $pdf->SetFont('THSarabunPSK', '', 14);
-$pdf->AddFont('AngsanaNew', '', 'angsa.php');
-$pdf->SetFont('AngsanaNew', '', 14);
-
-
+$pdf = new SHSPdf('L', 'mm', array( 80, 50));
+$pdf->SetThaiFont(); // เซ็ตฟอนต์
+$pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 $pdf->SetAutoPageBreak(true, 2);
 $pdf->SetMargins(2, 2);
-// $pdf->SetLineWidth(80);
 $pdf->AddPage();
 
-$pdf->Cell(0, 6, "HN: $hn, $thidate, $cAge");
-$pdf->Ln();
-$pdf->Cell(0, 6, "VN: $vn, T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที");
-$pdf->Ln();
-$pdf->Cell(0, 6, "BP: $bp1 / $bp2 mmHg, นน: $weight กก., สส: $height ซม.");
-$pdf->Ln();
-$pdf->Cell(0, 6, "บุหรี่: $cigarette, สุรา: $alcohol, bmi: $bmi, PS: $painscore");
-$pdf->Ln();
-$pdf->Cell(0, 6, "ลักษณะ: $type, คลินิก: ".(substr($clinic,3)));
-$pdf->Ln();
-$pdf->Cell(0, 6, "โรคประจำตัว: ".trim($congenital_disease));
-$pdf->Ln();
-$pdf->MultiCell(0, 6, "อาการ: ".trim($organ));
-$pdf->Ln();
+$full_text = "HN: $hn, $thidate, $cAge\n";
+$full_text .= "VN: $vn, T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที\n";
+$full_text .= "BP: $bp1 / $bp2 mmHg, นน: $weight กก., สส: $height ซม.\n";
+$full_text .= "บุหรี่: $cigarette, สุรา: $alcohol, bmi: $bmi, PS: $painscore\n";
+$full_text .= "ลักษณะ: $type, คลินิก: ".(substr($clinic,3))."\n";
+$full_text .= "โรคประจำตัว: ".trim($congenital_disease)."\n";
+$full_text .= "อาการ: ".trim($organ);
 
+$pdf->MultiCell(0, 6, $full_text);
+
+$pdf->AutoPrint(true);
 $pdf->Output();
-
-/*
-$ll = "P";
-$pdf = new PDF($ll,'mm',array( 80,50 ));
-$pdf->SetThaiFont();
-$pdf->SetAutoPageBreak(false,0);
-$pdf->SetMargins(0, 0);
-$pdf->AddPage();
-$pdf->SetFont('AngsanaNew','',14);
-
-$pdf->Cell(0,6,"HN : ".$hn."  ".$thidate,0,0);
-$pdf->Ln();
-$pdf->Cell(0,6,"T : ".$temperature." C, P : ".$pause." ครั้ง/นาที , R : ".$rate." ครั้ง/นาที",0,0);
-$pdf->Ln();
-$pdf->Cell(0,6,"BP : ".$bp1." / ".$bp2." mmHg, นน : ".$weight." กก., ส่วนสูง : ".$height." ซม.",0,0);
-$pdf->Ln();
-$pdf->Cell(0,6,"ลักษณะ : ".$type." , คลินิก : ".substr($clinic,3).", ".$age.", BMI :".$bmi,0,0);
-$pdf->Ln();
-$pdf->MultiCell(0,6,"S : ".$organ,0,"L");
-
-
-if($drugreact == 0){
-	$congenital_disease .=" , ผู้ป่วยไม่แพ้ยา";
-}else{
-	$i=0;
-	$list = array();
-	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
-	$result = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result)){
-		array_push($list ,$arr["tradname"]);
-	}
-	$list_drug = implode(", ",$list);
-	$congenital_disease .= " , แพ้ยา : ".$list_drug;
-}
-
-
-$pdf->Cell(0,5,"B : ".$congenital_disease,0,0);
-
-
-$pdf->Output();
-*/
 ?>

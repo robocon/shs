@@ -17,7 +17,13 @@ function to_thai_number($number){
 	$lists = str_split($number);
 	$th_str = '';
 	foreach( $lists as $key => $item ){
-		$th_str .= $th_number[$item];
+
+		if( isset($th_number[$item]) ){
+			$th_str .= $th_number[$item];
+		}else{
+			$th_str .= $item;
+		}
+		
 	}
 	return $th_str;
 }
