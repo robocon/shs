@@ -83,36 +83,40 @@
 			  $cBedwcare  =$days*$cWcare;  //รวมค่าบริการทางพยาบาล
 			  /////////
 			  $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
+
+			//   $diag = htmlspecialchars($diag, ENT_QUOTES);
+			$diag = str_replace("'", ' ', $diag);
+
 	//ค่าห้องที่เบิกได้ depart	
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','$bedname (เฉพาะที่เบิกได้) $stays','$cYBedfood','คอมพิวเตอร์','$diag','$cAccno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into depart");
+				$result = mysql_query($query) or die("Query failed,cannot insert into depart in page calroom");
 				$idno=mysql_insert_id();
 	//ค่าห้องที่เบิกได้ patdata
 				$query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,depart,part,idno) VALUES('$Thidate','$hn','$an','$ptname','$doctor','2','BFY','$bedname (เฉพาะที่เบิกได้) $stays','$days','$cYBedfood','WARD','BFY','$idno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+				$result = mysql_query($query) or die("Query failed,cannot insert into patdata in page calroom");
 	//ค่าบริการทางพยาบาล
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','NCARE','WARD','$cWname','$days','$cBedwcare','คอมพิวเตอร์','NCARE','$cAccno','$idno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc2");
+				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc2 in page calroom");
 	//ค่าห้องที่เบิกได้ ipacc	
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','BFY','WARD','$bedname ($bedcode) $stays','$days','$cYBedfood','คอมพิวเตอร์','BFY','$cAccno','$idno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc");
+				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc in page calroom");
 	//ค่าห้องส่วนเกิน dapart
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$cNBedfood','คอมพิวเตอร์','$diag','$cAccno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into depart");
+				$result = mysql_query($query) or die("Query failed,cannot insert into depart in page calroom");
 				$idno=mysql_insert_id();
 	//ค่าห้องส่วนเกิน patdata
 				$query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,depart,part,idno) VALUES('$Thidate','$hn','$an','$ptname','$doctor','2','BFN','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$days','$cNBedfood','WARD','BFN','$idno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+				$result = mysql_query($query) or die("Query failed,cannot insert into patdata in page calroom");
 	//ค่าห้องส่วนเกิน ipacc
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','BFN','WARD','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$days','$cNBedfood','คอมพิวเตอร์','BFN','$cAccno','$idno');";
 				//echo $query."<br>";
-				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc1");
+				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc1 in page calroom");
 				$daytime =explode(" ",$lastcalroom);
 				$timeadmit = $daytime[1]; //เอาเวลาที่ admit ออกมาก่อน
 				$caldate =explode("-",$daytime[0]); //ตัดเอาวันที่ในเบสออกมาเพื่อไปทำ mktime
@@ -126,7 +130,7 @@
 				//echo $daycalroom;
 				//$daycalroom = (date("Y")+543).date("-m-d ").$timeadmit;
 				$query4 = "update bed SET lastcalroom ='$daycalroom',days ='$daysallstart' where bedcode = '$bedcode'";
-				$result4 = mysql_query($query4) or die("Query failed,cannot update bed");
+				$result4 = mysql_query($query4) or die("Query failed,cannot update bed in page calroom");
 			}
 		}
 	}

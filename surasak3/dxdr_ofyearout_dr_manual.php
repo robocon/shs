@@ -963,10 +963,12 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['bsrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['bsflag']!="N"){ echo "style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['bsflag']?></span></td>
-	    <td class="labfont"><input name='normal47' type='radio' value='ปกติ' onclick="togglediv2('acnormal47');" <?  if($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106){ echo "checked";}?>/>
-ปกติ
+	    <td class="labfont">
+			<input name='normal47' type='radio' value='ปกติ' onclick="togglediv2('acnormal47');" <?  if($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106){ echo "checked";}?>/>
+			ปกติ
   		<input name='normal47' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal47');" <? if($result_dx['bs'] < 74 || $result_dx['bs'] > 106){ echo "checked";}?>/>
-            <? 
+            
+			<? 
 			if($result_dx['bs'] < 74 || $result_dx['bs'] > 106){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
@@ -974,13 +976,40 @@ $bsult = mysql_fetch_array($brow);
 			}
 			?>  
   		</td>
-	    <td colspan="4">            
-        <div id="acnormal47" <? if($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
-        <select name='ch47'>
-        <option value="ระดับน้ำตาลในเลือดสูงเกินค่าปกติ มีความเสี่ยงสูงต่อการเกิดเบาหวานในอนาคต ควรเริ่มต้นควบคุมอาหาร จำพวกข้าว, แป้ง, อาหารที่มีรสชาติหวาน และตรวจซ้ำใน 1-2 ปี" <? if($result_dx['bs'] >= 106 && $result_dx['bs'] <= 125){ echo "selected='selected';";}?>>ระดับน้ำตาลในเลือดสูงเกินค่าปกติ มีความเสี่ยงสูงต่อการเกิดเบาหวานในอนาคต ควรเริ่มต้นควบคุมอาหาร และตรวจซ้ำใน 1-2 ปี</option>
-        <option value="อาจเป็นโรคเบาหวาน ควรพบแพทย์เพื่อประเมินและให้การรักษา" <? if($result_dx['bs'] > 125){ echo "selected='selected';";}?>>อาจเป็นโรคเบาหวาน ควรพบแพทย์เพื่อประเมินและให้การรักษา</option>                
-        </select></div></td>
-	      </tr>
+	    <td colspan="4">
+				<?php
+				$style = 'style="display: block;"';
+				if($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106){ 
+					$style = 'style="display: none;"'; 
+				}
+				?>
+        <div id="acnormal47" <?=$style;?>>
+					<select name='ch47'>
+					<?php
+					$selected_bs = '';
+					if($result_dx['bs'] >= 106 && $result_dx['bs'] <= 125){ 
+						$selected_bs = "selected='selected'";
+					}
+
+					$blood_txt = 'สูง';
+					if( $result_dx['bs'] < 74 ){
+						$blood_txt = 'ต่ำ';
+					}
+
+					?>
+					<option value="ระดับน้ำตาลในเลือด<?=$blood_txt;?>เกินค่าปกติ มีความเสี่ยงสูงต่อการเกิดเบาหวานในอนาคต ควรเริ่มต้นควบคุมอาหาร จำพวกข้าว, แป้ง, อาหารที่มีรสชาติหวาน และตรวจซ้ำใน 1-2 ปี" <?=$selected_bs;?> >
+						ระดับน้ำตาลในเลือด<?=$blood_txt;?>เกินค่าปกติ มีความเสี่ยงสูงต่อการเกิดเบาหวานในอนาคต ควรเริ่มต้นควบคุมอาหาร และตรวจซ้ำใน 1-2 ปี
+					</option>
+					<?php
+					if($result_dx['bs'] > 125){ 
+						echo "selected='selected';";
+					}
+					?>
+					<option value="อาจเป็นโรคเบาหวาน ควรพบแพทย์เพื่อประเมินและให้การรักษา" >อาจเป็นโรคเบาหวาน ควรพบแพทย์เพื่อประเมินและให้การรักษา</option>                
+					</select>
+				</div>
+			</td>
+	    </tr>
 	    <tr>
 	      <td align="right" class="profilelab">CHOL :</td>
 	      <td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">
