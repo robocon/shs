@@ -117,20 +117,24 @@ $mouth_items = array(
 					
 				$total = 0;
 				foreach($mouth_items as $key => $mouth):
-				$sql = "SELECT COUNT(`hn`) AS `count` 
-				FROM `survey_oral` 
-				WHERE `date` LIKE '$date%' 
-				AND `mouth_detail` LIKE '%$key\";i:1%'
-				$where_is
-				";
-				$item = DB::select($sql, null, true);
-				$total += (int) $item['count'];
+					$sql = "SELECT COUNT(`hn`) AS `count` 
+					FROM `survey_oral` 
+					WHERE `date` LIKE '$date%' 
+					AND `mouth_detail` LIKE '%$key\";i:1%'
+					$where_is
+					";
+					// $item = DB::select($sql, null, true);
+					$db->select($sql);
+					$item = $db->get_item();
+					$total += (int) $item['count'];
+					?>
+					<tr>
+						<td><?php echo $mouth;?></td>
+						<td align="center"><?php echo $item['count'];?></td>
+					</tr>
+				<?php 
+				endforeach; 
 				?>
-				<tr>
-					<td><?php echo $mouth;?></td>
-					<td align="center"><?php echo $item['count'];?></td>
-				</tr>
-				<?php endforeach; ?>
 				<tr>
 					<td><b>ยอดทั้งหมด</b></td>
 					<td align="center"><b><?=$total;?></b></td>
@@ -165,13 +169,18 @@ $mouth_items = array(
 					$sql = "SELECT COUNT(`hn`) AS `count` 
 					FROM `survey_oral` 
 					WHERE `date` LIKE '$date%' 
-					AND `max_status` = '$key'";
-					$item = DB::select($sql, null, true);
+					AND `max_status` = '$key' 
+					AND `section` = '$filter_category'";
+					$db->select($sql);
+					$item = $db->get_item();
+					// $item = DB::select($sql, null, true);
 					$total += (int) $item['count'];
 					?>
 					<tr>
 						<td><?=$vio;?></td>
-						<td align="center"><a href="survey_oral.php?task=hn_lists&date=<?=$date;?>&category=<?=$cat;?>&max=<?=$key;?>&yearcheck=<?=$year_checkup;?>" target="_blank"><?=$item['count'];?></a></td>
+						<td align="center">
+							<a href="survey_oral.php?task=hn_lists&date=<?=$date;?>&category=<?=$cat;?>&max=<?=$key;?>&yearcheck=<?=$year_checkup;?>" target="_blank"><?=$item['count'];?></a>
+						</td>
 					</tr>
 					<?php
 				endforeach;

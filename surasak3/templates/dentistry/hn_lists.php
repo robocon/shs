@@ -44,7 +44,8 @@ if( $max === 5 ){
 	FROM (
 		SELECT * FROM `survey_oral`
 		WHERE `date` LIKE '$date%' 
-		AND `max_status` = '$max'
+		AND `max_status` = '$max' 
+		AND `section` = '$category_id'
 	) AS a
 	LEFT JOIN `condxofyear_so` AS c 
 		ON c.`hn` = a.`hn` AND c.`yearcheck` LIKE  '$yearcheck'

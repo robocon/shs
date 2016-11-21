@@ -39,7 +39,8 @@ include 'templates/classic/nav.php';
 		</div>
 	</div>
 	<?php
-	DB::load();
+	// DB::load();
+	$db = Mysql::load();
 	if( $search ){
 	?>
 	<div class="col">
@@ -51,7 +52,6 @@ include 'templates/classic/nav.php';
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>ชื่อยา</th>
 						<th>วันที่หมอจ่ายยา</th>
 						<th>HN</th>
 						<th>ชื่อผู้ป่วย</th>
@@ -60,8 +60,7 @@ include 'templates/classic/nav.php';
 				<tbody>
 					<?php
 					
-					$sql = "
-					SELECT b.`drugcode`,b.`tradname`,b.`hn`,b.`date` AS `doctor_date`,c.`yot`,c.`name`,c.`surname`
+					$sql = "SELECT b.`drugcode`,b.`tradname`,b.`hn`,b.`date` AS `doctor_date`,c.`yot`,c.`name`,c.`surname`
 					FROM 
 					`ddrugrx` AS b  
 					LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`
@@ -69,18 +68,19 @@ include 'templates/classic/nav.php';
 					WHERE b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
 					AND a.`dr_cancle` IS NULL 
 					AND b.`date` LIKE :year_select 
-					ORDER BY b.`date` ASC
-					";
-					
-					$items = DB::select($sql, array(
-						':year_select' => "$year%"
-					));
-					
+					ORDER BY b.`date` ASC";
+					// $items = DB::select($sql, array(
+					// 	':year_select' => "$year%"
+					// ));
+
+					$db->select($sql, array(':year_select' => "$year%"));
+					$items = $db->get_items();
+
 					$i = 1;
 					$count_drugs = array();
+					$check_hn = false;
 					foreach ($items as $key => $item) {
 						// $drug_code = trim($item['drugcode']);
-						
 						
 						$trade_key = trim($item['tradname']);
 						
@@ -89,16 +89,25 @@ include 'templates/classic/nav.php';
 						}else{
 							$count_drugs[$trade_key] += 1;
 						}
+
+						// ข้ามการแสดงผลถ้า hn ซ้ำกับของคนก่อนหน้านี้
+						$hn = $item['hn'];
+						if( $hn == $check_hn ){
+							continue;
+						}
+						?>
+						<tr>
+							<td align="center"><?php echo $i;?></td>
+							<td><?php echo $item['doctor_date']; ?></td>
+							<td><?php echo $hn; ?></td>
+							<td><?php echo $item['yot'].' '.$item['name'].' '.$item['surname'];?></td>
+						</tr>
+						<?php
+						$i++;
+
+						$check_hn = $item['hn'];
+					}
 					?>
-					<tr>
-						<td align="center"><?php echo $i;?></td>
-						<td><?php echo $item['tradname']; ?></td>
-						<td><?php echo $item['doctor_date']; ?></td>
-						<td><?php echo $item['hn']; ?></td>
-						<td><?php echo $item['yot'].' '.$item['name'].' '.$item['surname'];?></td>
-					</tr>
-					<?php $i++; ?>
-					<?php } ?>
 				</tbody>
 			</table>
 			<div style="margin-top: 1em;">

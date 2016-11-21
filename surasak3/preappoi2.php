@@ -153,6 +153,7 @@ if( !isset($_GET['action']) ){
 	FROM `dr_limit_appoint` 
 	WHERE `dr_name` LIKE '$code%' 
 	AND `date` = '$check_date'";
+	//echo $sql;
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
 	$dr_limit = (int) $item['user_row'];
@@ -358,12 +359,12 @@ $_SESSION["list_detail"] = array();
    $codedr = substr($cdoctor,0,5);
    //$arrdr1 = array(MD052,MD006,MD013,MD014);
    $arrdr2 = array('MD008','MD009','MD007','MD072','MD036','MD041','MD016','MD047','MD088','MD100');
-   if(in_array($codedr,$arrdr2)){
-		 $counter='2'; //จุดนัดที่ 2
-	}
-	else{
-		$counter = '1'; //จุดนัดที่ 1
-	}
+   
+	   if(in_array($codedr,$arrdr2)){
+			$counter='2'; //จุดนัดที่ 2
+		}else{
+			$counter = '1'; //จุดนัดที่ 1
+		}
 //$dbirth="$y-$m-$d"; เก็บวันเกิดใน opcard= "$y-$m-$d" ซึ่ง=$birth in function
 // print "<p><b><font face='Angsana New' size = '3'>โรงพยาบาลค่ายสุรศักดิ์มนตรี</font></b></p>";
    print "<p><font face='Angsana New' size = '4'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B><br>";
@@ -481,7 +482,7 @@ function show_bock(){
 }
 
 function listb(number){
-	
+	//alert(document.getElementById("detail").value);
 	if(document.getElementById("detail").value!='FU05 ผ่าตัด'){
 		document.getElementById("setor").style.display='none';
 	}
@@ -551,12 +552,7 @@ function listb(number){
 		}
 	}
 	else if(document.getElementById("detail").value=='FU14 เจาะเลือดไม่พบแพทย์'){
-		if(number=="2"){
-			document.getElementById("room").selectedIndex=2;
-		}
-		else if(number=="1"){
-			document.getElementById("room").selectedIndex=1;
-		}
+		document.getElementById("room").selectedIndex=18;	 <!--ห้องเก็บเงินรายได้-->	
 	}
 	else if(document.getElementById("detail").value=='FU15 OPD นอกเวลา'){
 		document.getElementById("room").selectedIndex=3;
@@ -611,6 +607,9 @@ function listb(number){
 		else if(number=="1"){
 			document.getElementById("room").selectedIndex=1;
 		}
+		else if(number=="3"){
+			document.getElementById("room").selectedIndex=18;
+		}	
 	}
 	else if(document.getElementById("detail").value=='FU29 X-ray + Lab ก่อนพบแพทย์'){
 		if(number=="2"){
@@ -619,6 +618,9 @@ function listb(number){
 		else if(number=="1"){
 			document.getElementById("room").selectedIndex=1;
 		}
+		else if(number=="3"){
+			document.getElementById("room").selectedIndex=18;
+		}	
 	}
 	else if(document.getElementById("detail").value=='FU30 คลินิกโรคไต'){
 		document.getElementById("room").selectedIndex=15;
@@ -845,7 +847,8 @@ function fncSubmit(strPage)
         <option>ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
         <option>คลีนิกโรคไต</option>
 		<option>กายภาพบำบัดชั้น 2</option>
-         <option>ห้อง CT SCAN</option>       
+         <option>ห้อง CT SCAN</option>  
+        <option>ห้องเก็บเงินรายได้ เบอร์4</option>  <!--#18-->             
         <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
         <option selected="selected">ห้อง CT SCAN (ตรวจมวลกระดูก)</option>
         <? } ?>

@@ -486,24 +486,26 @@ while($objResult = mysql_fetch_array($objQuery))
 </select>
 
 
-  <?php }else  if($menucode == "ADMNID"){
+<?php 
+}else  if($menucode == "ADMNID"){
 
-$strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMNID'  order by name "; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	$strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMNID'  order by name "; 
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	?>
+	<select name="doctor" id="doctor"  onChange="show_carlendar(this.value)">
+		<option value="0">กรุณาเลือกแพทย์</option> 
+		<?php
+		while($objResult = mysql_fetch_array($objQuery)) {
+			?>
+			<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>
+			<?php
+		} 
+		?>
+		<option value="MD072 บุริน เลาหะวัฒนะ">MD072 บุริน เลาหะวัฒนะ</option>
+	</select>
+<?php 
+}else{
 ?>
-  <select name="doctor" id="doctor"  onChange="show_carlendar(this.value)">
-  <option value="0">กรุณาเลือกแพทย์</option> 
-    <? 
-while($objResult = mysql_fetch_array($objQuery)) 
-{ 
-?>
-    <option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>
-    <? 
-} 
-?>
-<option value="MD072 บุริน เลาหะวัฒนะ">MD072 บุริน เลาหะวัฒนะ</option> 
-  </select>
-  <?php }else{?>
 	  <? 
 	 $strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 

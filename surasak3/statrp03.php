@@ -48,7 +48,7 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 	// Test case
 	$sql = "SELECT a.* 
 	FROM ( 
-		SELECT `row_id`,`hn`,`date`,`ptname`,`idno`,`code`,`amount`,`doctor`,
+		SELECT `row_id`,`hn`,`date`,`ptname`,`idno`,`code`,`amount`,`doctor`,`ptright`,
 		SUBSTRING(`date`, 1, 10) AS `dateymd`, 
 		SUBSTRING(`date`, 12, 8) AS `timehis`
 		FROM `patdata` 
@@ -132,6 +132,7 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 						<th>ชื่อ - สกุล ผู้รับบริการ</th>
 						<th>HN</th>
 						<th>โรค</th>
+						<th>สิทธิการรักษา</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -155,6 +156,7 @@ if($_GET["code"] == "58001" OR $_GET["code"] == "58000" ){ //ฝังเข็ม
 						<td><?=$ptname;?></td>
 						<td align="center"><?=$hn;?></td>
 						<td align="center"><?=$res['diag'];?></td>
+						<td align="center"><?=$item['ptright'];?></td>
 					</tr>
 					<?php
 						$i++;

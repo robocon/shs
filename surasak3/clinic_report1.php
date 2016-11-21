@@ -139,6 +139,9 @@ b, strong, h1, h2, h3{
 	#no_print{
 		display:none;
 	}
+	.shs-table{
+		width: 90%;
+	}
 }
 
 .theBlocktoPrint 
@@ -455,6 +458,7 @@ switch($_POST['m_start']){
   <h1 class="font1 shs-header" align="center">คลินิกพิเศษนอกเวลาราชการ</h1>
 <? //if($fil=='thidate'){ ?>
 <h2 class="font3 shs-header" align="center">วันที่ <?=$dateshow;?> เวลา <?=$_POST['time'];?>  ห้องตรวจโรคกระดูกและข้อ</h2>
+<div>&nbsp;</div>
 <? //} ?>
 <!--<?//if($fil=='hn'){ ?>
   <h2 class="font3" align="center">HN<?//=$key;?>ห้องตรวจโรคผู้ป่วยนอก</h2>
