@@ -40,12 +40,16 @@ if( $max === 5 ){
 	$items = DB::select($sql);
 } else {
 
+	$where_category = '';
+	if( $category_id > 0 ){
+		$where_category = "AND `section` = '$category_id'";
+	}
 	$sql = "SELECT c.`thidate`,a.`hn`,a.`fullname` AS `ptname`,c.`camp` 
 	FROM (
 		SELECT * FROM `survey_oral`
 		WHERE `date` LIKE '$date%' 
 		AND `max_status` = '$max' 
-		AND `section` = '$category_id'
+		$where_category
 	) AS a
 	LEFT JOIN `condxofyear_so` AS c 
 		ON c.`hn` = a.`hn` AND c.`yearcheck` LIKE  '$yearcheck'

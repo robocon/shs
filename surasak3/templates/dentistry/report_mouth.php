@@ -160,17 +160,22 @@ $mouth_items = array(
 				$year_checkup = get_year_checkup(true);
 				$sh_year = get_year_checkup();
 				$cat = 'n';
+				$where_category = '';
 				if( $filter_category !== false ){
 					$cat = $filter_category;
+					$where_category = "AND `section` = '$filter_category'";
 				}
 				$total = 0;
+
+				
+
 				foreach($violences as $key => $vio):
 					
 					$sql = "SELECT COUNT(`hn`) AS `count` 
 					FROM `survey_oral` 
 					WHERE `date` LIKE '$date%' 
 					AND `max_status` = '$key' 
-					AND `section` = '$filter_category'";
+					$where_category";
 					$db->select($sql);
 					$item = $db->get_item();
 					// $item = DB::select($sql, null, true);

@@ -832,7 +832,7 @@ if( $num_result > 0 ){
 	<tr>
 		<td width="50%" align="center">
     <strong>Authorise  LAB : </strong> <?=$authorisename?> (<?=$authorisedate?>) 
-    <strong> CXR : </strong>ร.อ.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์ (<?=$authorisedate;?>) 
+    <strong> CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์ (<?=$authorisedate;?>) 
     <strong> Doctor : </strong>พ.ท.วรวิทย์ วงษ์มณี (ว.27035) (<?=$authorisedate;?>)
 		</td>
 	</tr>
