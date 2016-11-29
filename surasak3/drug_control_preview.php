@@ -73,17 +73,19 @@ include("connect.inc");
       <td colspan="11" align="center">
       <input type="hidden" name="sump" value="<?=$r?>" />
 		<?php
+		// เฉพาะห้องยาจะเห็นใบเบิกตัวเดิมด้วย
 		$smenucode = trim($_SESSION['smenucode']);
-		if( $smenucode === 'ADMPHA' OR $smenucode === 'ADMPHARX' ){
+		if( $smenucode === 'ADMPHA' 
+			OR $smenucode === 'ADMPHARX' 
+			OR $smenucode === 'ADMPHA'
+			OR $smenucode === 'ADM' 
+		){
 			?>
 			<input type="submit" name="save" id="save" value="ตกลง" />
 			<?php
-		}else{ // ถ้าเป็นแผนกอื่น
-			?>
-			<button id="shsBtn">ใบเบิกค่ายสุรศักดิ์</button>
-			<?php
 		}
 		?>
+		<button id="shsBtn">ใบเบิกใหม่</button>
     </td>
     </tr>
   </table>

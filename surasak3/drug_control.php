@@ -1,15 +1,6 @@
 <?php
-// session_start();
-// include 'connect.inc';
-// include 'includes/mysqli.php';
-
-include 'bootstrap.php';
-
-// $db = Mysql::load();
-// $db->select("CALL `drug_bill`('กฤษณะศักดิ์ กันธรส','2559-01-03','2559-08-03');");
-// $test = $db->get_items();
-// dump($test);
-// exit;
+session_start();
+include("connect.inc");
 
 function jschars($str){
     $str = str_replace("\\\\", "\\\\", $str);
@@ -24,40 +15,51 @@ function jschars($str){
     return $str;
 }
 
-if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
-	
-	$sql = "SELECT drugcode,tradname,genname 
-	FROM druglst 
-	WHERE drugcode LIKE '%".$_GET["search1"]."%' 
-	LIMIT 10 ";
-	$result = mysql_query($sql) or die( mysql_error() );
+function dump($str){
+	echo "<pre>";
+	print_r($str);
+	echo "</pre>";
+}
 
-	if( mysql_num_rows($result) > 0 ){
+// ค้นหาชื่อยา
+if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
+	include("connect.inc");
+	
+	$sql = "Select drugcode,tradname,genname from druglst  where  drugcode like '%".$_GET["search1"]."%' limit 10 ";
+	$result = Mysql_Query($sql)or die(Mysql_error());
+
+	if(Mysql_num_rows($result) > 0){
 		echo "<Div style=\"position: absolute;text-align: center; width:500px; height:430px; overflow:auto; \">";
+
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\"><tr align=\"center\" bgcolor=\"#333333\"><td ><strong>&nbsp;</strong></td><td ><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td><td ><font style=\"color: #FFFFFF;\"><strong>ชื่อยา(การค้า)</strong></font></td><td ><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td></tr>";
+
+
 		$i=1;
 		while($se = Mysql_fetch_assoc($result)){
 		echo "<tr><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",jschars($se["drugcode"]),"';document.getElementById('txt1').value = '",jschars($se["tradname"]),"';document.getElementById('txt2').value = '",jschars($se["genname"]),"';document.getElementById('list').innerHTML ='';\">",$se["drugcode"],"</A></td><td>".$se['tradname']."</td><td>&nbsp;</td></tr>";
 		}
+		
 		echo "</TABLE></Div>";
 	}
+
 	exit();
 }
 
 if( isset($_POST['ok']) ){
 
-	$sel = "select * from druglst where drugcode= '".$_POST['drugcode']."' ";
-	$row = mysql_query($sel);
+	$sel = "SELECT * 
+	FROM `druglst` 
+	WHERE `drugcode` = '".$_POST['drugcode']."' ";
+	$row = mysql_query($sel) or die( mysql_error() );
 	$result = mysql_fetch_array($row);
 
 	// if($result['usercontrol']==""){
-		
-	$sql1= "UPDATE druglst SET 
-    usercontrol = '".$_SESSION['sOfficer']."',
-    min = '".$_POST['min']."',
-    max = '".$_POST['max']."' 
-    WHERE drugcode= '".$_POST['drugcode']."'";
-	$query1 = mysql_query($sql1);
+	$sql1= "UPDATE `druglst` SET 
+    `usercontrol` = '".$_SESSION['sOfficer']."',
+    `min` = '".$_POST['min']."',
+    `max` = '".$_POST['max']."' 
+    WHERE `drugcode` = '".$_POST['drugcode']."'";
+	$query1 = mysql_query($sql1) or die( mysql_error() );
 
 	// เก็บ log เอาไว้ด้วยว่าใครแก้อะไรไปบ้าง
 	$date_now = date('Y-m-d H:i:s');
@@ -67,33 +69,31 @@ if( isset($_POST['ok']) ){
 	VALUES (
 		NULL , '".$_SESSION['sOfficer']."',  '".$_POST['min']."',  '".$_POST['max']."',  '".$_POST['drugcode']."',  '$date_now'
 	);";
-	mysql_query($sql);
-}
+	mysql_query($sql) or die( mysql_error() );
 
-if( isset($_GET['cancle']) ){
-	$del = "UPDATE druglst SET usercontrol = '' WHERE row_id='".$_GET['cancle']."' ";
-	mysql_query($del);
-	
+}else if(isset($_GET['cancle'])){
+	$del = "UPDATE `druglst` 
+	SET `usercontrol` = '' 
+	WHERE `row_id` = '".$_GET['cancle']."' ";
+	mysql_query($del) or die( mysql_error() );
 }
 
 ?>
 <script>
 function newXmlHttp(){
 	var xmlhttp = false;
-
-	try{
-		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-	}catch(e){
-	try{
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		try{
+			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
 		}catch(e){
-			xmlhttp = false;
+		try{
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}catch(e){
+				xmlhttp = false;
+			}
 		}
-	}
-
-	if(!xmlhttp && document.createElement){
-		xmlhttp = new XMLHttpRequest();
-	}
+		if(!xmlhttp && document.createElement){
+			xmlhttp = new XMLHttpRequest();
+		}
 	return xmlhttp;
 }
 
@@ -109,90 +109,90 @@ function searchSuggest(str,len,getto) {
 }
 </script>
 <style type="text/css">
-<!--
 .font1 {
-	font-family: TH SarabunPSK;
+	font-family: 'TH SarabunPSK';
+	font-size: 20px;
 }
--->
 </style>
-<a target=_self  href='drug_control_index.php'>&lt;&lt; กลับ</a>
+<a target=_self  href='drug_control_index.php'><< กลับ</a>
 <?php
 
-?>
-<div id="list" style="left:270PX;top:50PX;position:absolute;"></div>
-<?php
-	echo "<br><span class='font1'>".$_SESSION['sOfficer']."</span>";
-?>
-<form name="form2" method="post" action="drug_control.php">
-  <table width="87%">
-    <tr>
-      <td colspan="2" align="center" class="font1"><strong>ระบุยาประจำตัว</strong></td>
-    </tr>
-    <tr>
-      <td width="14%" align="right" class="font1">รหัสยา : </td>
-      <td width="86%" class="font1">
-          <input type="text" name="drugcode" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode')";>
-      </td>
-    </tr>
-    <tr>
-      <td align="right" class="font1">ชื่อสามัญ :</td>
-      <td class="font1">
-        <input name="txt1" type="text" id="txt1" size="40" readonly="readonly">
-      </td>
-    </tr>
-    <tr>
-      <td align="right" class="font1">ชื่อการค้า :</td>
-      <td class="font1">
-        <input name="txt2" type="text" id="txt2" size="40" readonly="readonly">
-      </td>
-    </tr>
-    <tr>
-      <td align="right" class="font1">ค่าต่ำสุด :</td>
-      <td class="font1"><input name="min" type="text" id='drugcode2' size="15"; /></td>
-    </tr>
-    <tr>
-      <td align="right" class="font1">ค่าสูงสุด :</td>
-      <td class="font1"><input name="max" type="text" id='drugcode3' size="15"; /></td>
-    </tr>
-    <tr>
-      <td colspan="2" align="center" class="font1">
-        <input type="submit" name="ok" id="ok" value="ตกลง">
-		<input type="hidden" name="rptday1" value="<?=$_POST['rptday1'];?>">
-		<input type="hidden" name="rptmo1" value="<?=$_POST['rptmo1'];?>">
-		<input type="hidden" name="thiyr1" value="<?=$_POST['thiyr1'];?>">
-		<input type="hidden" name="rptday2" value="<?=$_POST['rptday2'];?>">
-		<input type="hidden" name="rptmo2" value="<?=$_POST['rptmo2'];?>">
-		<input type="hidden" name="thiyr2" value="<?=$_POST['thiyr2'];?>">
-      </td>
-    </tr>
-  </table>
-</form>
-
-<span class="font1">
-<strong>รายการยาที่รับผิดชอบ </strong>
-<?php
 $rptday1 = $_POST['rptday1'];
 $rptday2 = $_POST['rptday2'];
 
-if($rptday1 != ""){
+$rptmo1 = $_POST['rptmo1'];
+$rptmo2 = $_POST['rptmo2'];
 
+$thiyr1 = $_POST['thiyr1'];
+$thiyr2 = $_POST['thiyr2'];
+
+if( !empty($rptday1) && empty($_SESSION['yymall']) ){
 	$_SESSION['yymall'] = $rptday1.'-'.$rptmo1.'-'.$thiyr1." ถึง ".$rptday2.'-'.$rptmo2.'-'.$thiyr2;
 	$_SESSION['yym'] = $thiyr1.'-'.$rptmo1.'-'.$rptday1;
  	$_SESSION['yym2'] = $thiyr2.'-'.$rptmo2.'-'.$rptday2;
 	$_SESSION['datetime'] = date("d-m")."-".(date("Y")+543)." ".date("H:i:s");
+}
 
-}elseif($rptday1==""&&$rptday2==""){
+// แจ้งเตือนกรณีที่ไม่มี $_SESSION และ ไม่มี rptday1
+if( empty($rptday1) && empty($_SESSION['yymall']) ){
 	?>
-	<script>
+	<script type="text/javascript">
 		alert("กรุณาเลือกวันที่ก่อนคะ");
     	window.location.href='drug_control_index.php';
     </script>
-	<?
+	<?php
 }
+
 ?>
+<!-- แสดงรายการยา -->
+<div id="list" style="left:270PX;top:50PX;position:absolute;"></div>
+<?php
+	echo "<br><span class='font1'>".$_SESSION['sOfficer']."</span>";
+?>
+<form name="form2" method="post" action="">
+	<table width="87%">
+		<tr>
+			<td colspan="2" align="center" class="font1"><strong>ระบุยาประจำตัว</strong></td>
+		</tr>
+		<tr>
+			<td width="14%" align="right" class="font1">รหัสยา :</td>
+			<td width="86%" class="font1">
+				<input type="text" name="drugcode" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode')";>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" class="font1">ชื่อสามัญ :</td>
+			<td class="font1">
+				<input name="txt1" type="text" id="txt1" size="40" readonly="readonly">
+			</td>
+		</tr>
+		<tr>
+			<td align="right" class="font1">ชื่อการค้า :</td>
+			<td class="font1">
+				<input name="txt2" type="text" id="txt2" size="40" readonly="readonly">
+			</td>
+		</tr>
+		<tr>
+			<td align="right" class="font1">ค่าต่ำสุด :</td>
+			<td class="font1"><input name="min" type="text" id='drugcode2' size="15"; /></td>
+		</tr>
+		<tr>
+			<td align="right" class="font1">ค่าสูงสุด :</td>
+			<td class="font1"><input name="max" type="text" id='drugcode3' size="15"; /></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center" class="font1">
+				<input type="submit" name="ok" id="ok" value="ตกลง">
+			</td>
+		</tr>
+	</table>
+</form>
+<span class="font1">
+<strong>รายการยาที่รับผิดชอบ </strong>
 
 ช่วงวันที่ <?=$_SESSION['yymall']?><br />
 ตรวจสอบเมื่อวันที่ <?=date("d-m")."-".(date("Y")+543)?> เวลา <?=date("H:i:s")?></span>
+
 <form id="form2" target="_blank" name="form2" method="post" action="drug_control_preview.php">
 	<table width="100%" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
 		<tr>
@@ -210,86 +210,52 @@ if($rptday1 != ""){
 			<td width="4%" align="center" bgcolor="#FF9966" class="font1">แก้ไข</td>
 			<td width="9%" align="center" bgcolor="#FF9966" class="font1"><strong>ลบ</strong></td>
 		</tr>
-		<?php 
-		$ymd1 = $thiyr1.'-'.$rptmo1.'-'.$rptday1;
- 		$ymd2 = $thiyr2.'-'.$rptmo2.'-'.$rptday2;
-		
-		// $sel2 = "SELECT * 
-		// FROM druglst 
-		// WHERE usercontrol = '".$_SESSION['sOfficer']."' 
-		// ORDER BY drugcode ASC";
+    <?php
+	
+	$sel2 = "SELECT * FROM `druglst` 
+	WHERE `usercontrol` = '".$_SESSION['sOfficer']."' 
+	ORDER BY `drugcode` ASC";
+	$row2 = mysql_query($sel2) or die( mysql_error() );
 
-		// หาจำนวนจ่ายยา
-		// $sel2 = "SELECT a.`row_id`,a.`drugcode`,a.`tradname`,a.`genname`,a.`min`,a.`max`,a.`stock`,a.`mainstk`,a.`pack`,sum(b.`amount`) AS amount
-		// FROM `druglst` AS a 
-		// RIGHT JOIN `drugrx` AS b ON b.`drugcode` = a.`drugcode`
-		// WHERE a.`usercontrol` = '".$_SESSION['sOfficer']."' 
-		// AND b.`date` BETWEEN '$ymd1 00:00:00' AND '$ymd2 23:59:59' 
-		// GROUP BY b.`drugcode`
-		// ORDER BY a.`drugcode` ASC ";
-		// var_dump($sel2);
-		// $row2 = mysql_query($sel2);
+	while($result2 = mysql_fetch_array($row2)){
 
-		$db = Mysql::load();
-		$sql = "CALL `drug_bill`('".$_SESSION['sOfficer']."','$ymd1 00:00:00','$ymd2 23:59:59');";
-		// $sql = "SELECT TRIM(a.drugcode) AS drugcode, 
-		// SUM(a.amount) AS amount,
-		// b.row_id,b.drugcode,b.tradname,b.genname,b.min,b.max,b.stock,b.mainstk,b.pack 
-		// FROM drugrx AS a, 
-		// druglst AS b 
-		// WHERE b.drugcode = a.drugcode 
-		// AND a.date BETWEEN '$ymd1 00:00:00' AND '$ymd2 23:59:59' 
-		// AND b.usercontrol = '".$_SESSION['sOfficer']."' 
-		// GROUP BY a.drugcode 
-		// ORDER BY a.drugcode ASC;";
-		// var_dump($sql);
-		$db->select($sql);
-		$items = $db->get_items();
-		// var_dump($items);
-		// while($result2 = mysql_fetch_assoc($row2)){
-		foreach( $items as $key => $result2 ){
-			
-			$amount = $result2['amount'];
+		$query = "SELECT drugcode,tradname,sum(amount) 
+		FROM drugrx 
+		WHERE drugcode = '".trim($result2['drugcode'])."' 
+		AND date between '".$_SESSION['yym']." 00:00:00' 
+		AND '".$_SESSION['yym2']." 23:59:59' 
+		GROUP BY drugcode";
 
-			// หาจำนวนจ่ายยา
-			// $query = "SELECT drugcode,tradname,sum(amount) 
-			// FROM drugrx 
-			// WHERE drugcode = '".trim($result2['drugcode'])."' 
-			// AND `date` BETWEEN '$ymd1 00:00:00' AND '$ymd2 23:59:59' 
-			// GROUP BY drugcode";
-			// $resultq = mysql_query($query) or die("Query failed");
-			// list($drugcode, $tradname, $amount) = mysql_fetch_row($resultq);
-
-			$k++;
-			?>
-			<tr>
-				<td bgcolor="#FFFFCC" class="font1"><input type="hidden" name="drx<?=$k?>" value="<?=$result2['drugcode']?>" /><a target="_blank" href="drugchkcode.php?code=<?=$result2['drugcode']?>"><?=$result2['drugcode']?></a></td>
-				<td bgcolor="#FFFFCC" class="font1"><?=$result2['tradname']?></td>
-				<td bgcolor="#FFFFCC" class="font1"><?=$result2['genname']?></td>
-				<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['min']?></td>
-				<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['max']?><input name="rxmax<?=$k?>" type="hidden" id='rxmax<?=$k?>' value="<?=$result2['max']?>"; /></td>
-				<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']?></td>
-				<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['mainstk']?><input name="rxmainstk<?=$k?>" type="hidden" id='rxmainstk<?=$k?>' value="<?=$result2['mainstk']?>"; /></td>
-				<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']+$result2['mainstk']?></td>
-				<td align="center" bgcolor="#FF9B9B" class="font1">
-					<?=$amount?>
-					<input name="rxdrug<?=$k?>" type="hidden" id='rxdrug<?=$k?>' value="<?=$amount?>"; />
-				</td>
-				<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['pack'];?></td>
-				<td align="center" bgcolor="#FFFFCC" class="font1"><input name="import<?=$k?>" type="text" id='import<?=$k?>' size="10" onkeyup="if(parseInt(this.value)>parseInt(document.getElementById('rxmax<?=$k?>').value)){alert('ยอดเบิกเกินค่าสูงสุด');this.value='';} if(parseInt(this.value)>parseInt(document.getElementById('rxmainstk<?=$k?>').value)){alert('ยอดเบิกเกินกว่ายอดในคลัง');} "; /></td>
-				<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['row_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
-				<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['row_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
-			</tr>
-			<?php
-		}
+		$resultq = mysql_query($query) or die( mysql_error() );
+		list($drugcode, $tradname, $amount) = mysql_fetch_row($resultq);
+		$k++;
 		?>
 		<tr>
-			<td colspan="12" align="center" bgcolor="#FFFFCC" class="font1">
-			<input type="hidden" name="sump" value="<?=$k?>" />
-			<input type="submit" name="save" id="save" value="ตกลง" /></td>
+			<td bgcolor="#FFFFCC" class="font1"><input type="hidden" name="drx<?=$k?>" value="<?=$result2['drugcode']?>" /><a target="_blank" href="drugchkcode.php?code=<?=$result2['drugcode']?>"><?=$result2['drugcode']?></a></td>
+			<td bgcolor="#FFFFCC" class="font1"><?=$result2['tradname']?></td>
+			<td bgcolor="#FFFFCC" class="font1"><?=$result2['genname']?></td>
+			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['min']?></td>
+			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['max']?><input name="rxmax<?=$k?>" type="hidden" id='rxmax<?=$k?>' value="<?=$result2['max']?>"; /></td>
+			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']?></td>
+			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['mainstk']?><input name="rxmainstk<?=$k?>" type="hidden" id='rxmainstk<?=$k?>' value="<?=$result2['mainstk']?>"; /></td>
+			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']+$result2['mainstk']?></td>
+			<td align="center" bgcolor="#FF9B9B" class="font1"><?=$amount?><input name="rxdrug<?=$k?>" type="hidden" id='rxdrug<?=$k?>' value="<?=$amount?>"; /></td>
+			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['pack'];?></td>
+			<td align="center" bgcolor="#FFFFCC" class="font1"><input name="import<?=$k?>" type="text" id='import<?=$k?>' size="10" onkeyup="if(parseInt(this.value)>parseInt(document.getElementById('rxmax<?=$k?>').value)){alert('ยอดเบิกเกินค่าสูงสุด');this.value='';} if(parseInt(this.value)>parseInt(document.getElementById('rxmainstk<?=$k?>').value)){alert('ยอดเบิกเกินกว่ายอดในคลัง');} "; /></td>
+			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['row_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
+			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['row_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
 		</tr>
-	</table>
-	<br />
+		<?php
+	}
+	
+?>
+    <tr>
+      <td colspan="12" align="center" bgcolor="#FFFFCC" class="font1">
+      <input type="hidden" name="sump" value="<?=$k?>" />
+        <input type="submit" name="save" id="save" value="ตกลง" /></td>
+    </tr>
+  </table>
+  <br />
 </form>
 
 <span class="font1"><strong>รายการยาที่เคยเบิกไปแล้ว</strong></span>
@@ -305,31 +271,16 @@ if($rptday1 != ""){
 					<td width="5%" align="center" bgcolor="#FF9966" class="font1"><strong>จำนวน (รายการ)</strong></td>
 				</tr>
 				<?php
-				
-				$smenucode = $_SESSION['smenucode'];
-
-				// $sel2 = "SELECT thidate, count(row_id) AS sum, idno 
-				// FROM drugimport 
-				// WHERE usercontrol= '".$_SESSION['sOfficer']."' 
-				// GROUP BY idno 
-				// ORDER BY idno DESC";
-				// var_dump($sel2);
-				$sql = "SELECT thidate,count(row_id) AS sum,idno 
-				FROM drugimport 
-				WHERE usercontrol= '".$_SESSION['sOfficer']."' 
-				GROUP BY idno
-				ORDER BY idno DESC ";
-				$result = mysql_query($sql);
-				while($result2 = mysql_fetch_assoc($result)){
-					// $k++;
-
-					$link = ( $smenucode === 'ADMPHA' OR $smenucode === 'ADMPHARX' ) ? 'print_drugimport.php?id='.$result2['idno'] : 'drug_bill_print.php?id='.$result2['idno'] ;
-
+				$sel2 = "SELECT `thidate`, COUNT(`row_id`) AS `sum`, `idno` 
+				FROM `drugimport` 
+				WHERE `usercontrol` = '".$_SESSION['sOfficer']."' 
+				GROUP BY `idno`";
+				$row2 = mysql_query($sel2);
+				while($result2 = mysql_fetch_array($row2)){
+					$k++;
 					?>
 					<tr>
-						<td align="center" bgcolor="#FFFFCC" class="font1">
-							<a target="_blank" href="<?=$link;?>"><?=$result2['thidate']?></a>
-						</td>
+						<td align="center" bgcolor="#FFFFCC" class="font1"><a target="_blank" href="print_drugimport.php?id=<?=$result2['idno']?>"><?=$result2['thidate']?></a></td>
 						<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['sum']?></td>
 					</tr>
 					<?php

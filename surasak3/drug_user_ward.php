@@ -16,6 +16,7 @@ if ( $action === false ) {
 
 	include 'templates/classic/header.php';
 
+	/*
 	$sql = "SELECT `row_id`,`name`,`menucode` 
 	FROM `inputm` 
 	WHERE `status` = 'Y' 
@@ -29,6 +30,7 @@ if ( $action === false ) {
 	)
 	ORDER BY `menucode`,`row_id` ASC";
 	$db->select($sql);
+	*/
 
 	$checklist = array(
 		'ADMDEN' => 'ทันตกรรม',
@@ -55,14 +57,11 @@ if ( $action === false ) {
 		'ADMXR' => 'รังษีกรรม',
 	);
 	
+	include 'includes/ajax.php';
 	?>
 	<style type="text/css">
 	optgroup, option {
 		font-family: 'TH SarabunPSK';
-	}
-	#user{
-		width: 320px;
-		height: 200px;
 	}
 	</style>
 	<div class="col width-fill mobile-width-fill">
@@ -84,7 +83,58 @@ if ( $action === false ) {
 				</div>
 				<div class="col">
 					<div class="cell">
-						<div>เลือกผู้ใช้งาน</div>
+
+						<fieldset>
+							<legend>เลือกกลุ่มผู้ใช้งาน</legend>
+							<select name="section" id="section" onchange="changeCategory(this.value)">
+								<option value="">-- เลือกแผนก --</option>
+								<?php
+								foreach ($checklist as $key => $name) {
+									?>
+									<option value="<?=$key;?>"><?=$name;?></option>
+									<?php
+								}
+								?>
+							</select>
+						</fieldset>
+						<script type="text/javascript">
+							function changeCategory(val){
+								var html = '';
+								if( val !== '' ){
+
+									var newSm = new SmHttp();
+									newSm.ajax(
+										'drug_user_ward.php',
+										{ 'category': val, 'action':'search_user' },
+										function(html){
+											// var txt = JSON.parse(res);
+											document.getElementById('user_lists').innerHTML = html;
+											// if( txt.state === 400 ){
+											// 	alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
+											// 	SmPreventDefault(ev);
+											// }else{
+											// 	// window.open(link.href, '_blank');
+											// }
+										},
+										false // true is Syncronous and false is Assyncronous (Default by true)
+									);
+
+								}else{
+									document.getElementById('user_lists').innerHTML = html;
+								}
+							}
+						</script>
+						<div>
+							<fieldset>
+								<legend>เลือกผู้ใช้งาน</legend>
+								<div id="user_lists"></div>
+							</fieldset>
+						</div>
+
+
+						<?php
+						/*
+
 						<select name="user" id="user" multiple>
 							<?php
 							$items = $db->get_items();
@@ -120,6 +170,9 @@ if ( $action === false ) {
 							}
 							?>
 						</select>
+						*/
+						?>
+
 					</div>
 				</div>
 				<div class="col">
@@ -187,7 +240,7 @@ if ( $action === false ) {
 	$(function(){
 		$(document).on('click', '#sumitBtn', function(){
 			var user_id = $('#user').val();
-			if( user_id == '' ){
+			if( user_id == '' || typeof user_id === 'undefined' ){
 				return false;
 			}
 		});
@@ -210,11 +263,38 @@ if ( $action === false ) {
 	$test_insert = $db->insert($sql, $data);
 
 	redirect('drug_user_ward.php', 'บันทึกข้อมูลเรียบร้อย');
+	
 }elseif( $action === 'delete' ){
 	$id = input_get('id');
 	$sql = "DELETE FROM `drug_user_ward` WHERE `id`=:id;";
 	$db->delete($sql, array(':id' => $id));
 
 	redirect('drug_user_ward.php', 'ลบข้อมูลเรียบร้อย');
+}elseif( $action === 'search_user' ){
+
+	$category = input_post('category');
+
+	$sql = "SELECT `row_id`,`name`,`menucode` 
+	FROM `inputm` 
+	WHERE `status` = 'Y' 
+	AND `menucode` = '$category'
+	ORDER BY `row_id` ASC";
+
+	$db->select($sql);
+	$users = $db->get_items();
+
+	?>
+	<select name="user" id="user">
+		<option value="">-- เลือกชื่อผู้ใช้งาน --</option>
+		<?php
+		foreach ($users as $key => $user) {
+			?>
+			<option value="<?=$user['row_id'];?>"><?=$user['name'];?></option>
+			<?php
+		}
+		?>
+	</select>
+	<?php
+	exit;
 }
 ?>
