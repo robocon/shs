@@ -1088,7 +1088,8 @@ function searchOther1(str,len) {
 }
 
 function listb(number){
-	
+	//alert(document.getElementById("detail").value);
+	//alert(number);
 	if(document.getElementById("detail").value=='FU01 ตรวจตามนัด'){
 		if(number=="2"){
 			document.getElementById("room").selectedIndex=1;
@@ -1163,7 +1164,7 @@ function listb(number){
 		}
 		else if(number=="1"){
 			document.getElementById("room").selectedIndex=0;
-		}
+		}		
 	}
 	else if(document.getElementById("detail").value=='FU13 ส่องกระเพาะ'){
 		if(number=="2"){
@@ -1177,15 +1178,7 @@ function listb(number){
 		}
 	}
 	else if(document.getElementById("detail").value=='FU14 เจาะเลือดไม่พบแพทย์'){
-		if(number=="2"){
-			document.getElementById("room").selectedIndex=1;
-		}
-		else if(number=="3"){
-			document.getElementById("room").selectedIndex=2;
-		}
-		else if(number=="1"){
-			document.getElementById("room").selectedIndex=0;
-		}
+		document.getElementById("room").selectedIndex=17;  <!--ห้องเก็บเงินรายได้-->	
 	}
 	else if(document.getElementById("detail").value=='FU15 OPD นอกเวลา'){
 		document.getElementById("room").selectedIndex=2;
@@ -1242,6 +1235,9 @@ function listb(number){
 		else if(number=="1"){
 			document.getElementById("room").selectedIndex=0;
 		}
+		else if(number=="4"){
+			document.getElementById("room").selectedIndex=17;
+		}			
 	}
 	else if(document.getElementById("detail").value=='FU29 X-ray + Lab ก่อนพบแพทย์'){
 		if(number=="2"){
@@ -1253,6 +1249,9 @@ function listb(number){
 		else if(number=="1"){
 			document.getElementById("room").selectedIndex=0;
 		}
+		else if(number=="4"){
+			document.getElementById("room").selectedIndex=17;
+		}			
 	}
 
 }
@@ -1308,14 +1307,13 @@ include("dt_patient.php");
 </TR>
 <?
 
-
-if($_SESSION["sIdname"] == "md19364" || $_SESSION["sIdname"] == "md12456"|| $_SESSION["sIdname"] == "md29262"|| $_SESSION["sIdname"] == "md20278"|| $_SESSION["sIdname"] == "md27035"|| $_SESSION["sIdname"] == "md21329"|| $_SESSION["sIdname"] == "md24535"|| $_SESSION["sIdname"] == "คามิน" || $_SESSION["sIdname"] == "md16633"  || $_SESSION["sIdname"] == "md37533"){
-	$counter="2";
-}elseif($_SESSION["sIdname"] == "thaywin"){
-	$counter="3";
-}else{ 			 
-	$counter="1";
-}
+	if($_SESSION["sIdname"] == "md19364" || $_SESSION["sIdname"] == "md12456"|| $_SESSION["sIdname"] == "md29262"|| $_SESSION["sIdname"] == "md20278"|| $_SESSION["sIdname"] == "md27035"|| $_SESSION["sIdname"] == "md21329"|| $_SESSION["sIdname"] == "md24535"|| $_SESSION["sIdname"] == "คามิน" || $_SESSION["sIdname"] == "md16633"  || $_SESSION["sIdname"] == "md37533"){
+		$counter="2";
+	}elseif($_SESSION["sIdname"] == "thaywin"){
+		$counter="3";
+	}else{ 			 
+		$counter="1";
+	}	
 //if($_SESSION["sIdname"]!= "md16633" ||$_SESSION["sIdname"]!="md19364"&&$_SESSION["sIdname"]!="md12456"&&$_SESSION["sIdname"]!="md29262"&&$_SESSION["sIdname"]!="md20278"&&$_SESSION["sIdname"]!="md27035"&&$_SESSION["sIdname"]!="md21329"&&$_SESSION["sIdname"]!="md24535")
 ?>
 <TR>
@@ -1368,15 +1366,16 @@ if($_SESSION["sIdname"] == "md19364" || $_SESSION["sIdname"] == "md12456"|| $_SE
 			<option>แผนกพยาธิวิทยา</option>
 			<option>แผนกเอกชเรย์</option>
 			<option>กองสูติ-นารี</option>
-			<option>กายภาพ</option>
+			<option>กายภาพ</option>  <!--#8-->
 			<option>คลีนิกฝังเข็ม</option>
 			<option>ห้องตรวจจักษุ(ตา)</option>
 			<option>นวดแผนไทย</option>
-        <option>ห้องตรวจจักษุ(ตา)</option>
-        <option>ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)</option>
-        <option>ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
-        <option>คลีนิกโรคไต</option>
-		       <option>กายภาพบำบัดชั้น 2</option>
+        	<option>ห้องตรวจจักษุ(ตา)</option>
+        	<option>ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)</option>
+        	<option>ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
+        	<option>คลีนิกโรคไต</option>
+		 	<option>กายภาพบำบัดชั้น 2</option>
+         	<option>ห้องเก็บเงินรายได้ เบอร์4</option>  <!--#17-->
 		</select>
 	</TD>
 

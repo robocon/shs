@@ -25,7 +25,8 @@ if(PHP_VERSION_ID <= 50217){
 ?>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
-<form method="post" action="<?php echo $PHP_SELF ?>">
+
+<form method="post" action="opnameops.php">
     <p>ค้นหาคนไข้จาก&nbsp; ชื่อและนามสกุล</p>
     <p>ให้ใส่ข้อมูลทั้งชื่อและนามสกุลทั้งสองข้อมูล</p>
     
@@ -54,10 +55,20 @@ if(PHP_VERSION_ID <= 50217){
         <th bgcolor=6495ED>สถานะ ward</th>
     </tr>
 <?php
-If (!empty($name)){
+$name = htmlspecialchars($_POST['name'], ENT_QUOTES);
+$sname = htmlspecialchars($_POST['sname'], ENT_QUOTES);
+
+if(!empty($name)){
     include("connect.inc");
-    global $name;
-    $query = "SELECT hn,yot,name,surname,dbirth,idcard FROM opcard WHERE name LIKE '%$name%' and surname LIKE '%$sname%' ";
+
+    $query = "SELECT `hn`,`yot`,`name`,`surname`,`dbirth`,`idcard` 
+	FROM `opcard` 
+	WHERE `name` LIKE '%$name%'";
+
+	if( !empty($sname) ){
+		$query .= " AND `surname` LIKE '%$sname%'";
+	}
+
     $result = mysql_query($query) or die("Query failed");
 
     while (list ($hn,$yot,$name,$surname,$dbirth,$idcard) = mysql_fetch_row ($result)) {
@@ -70,11 +81,9 @@ If (!empty($name)){
 		ORDER BY `row_id` DESC LIMIT 1", $hn);
 		$query = mysql_query($sql);
 		$item = mysql_fetch_assoc($query);
-		
 		if($item != false && $item['dcdate'] == '0000-00-00 00:00:00'){
 			$alert_msg = $item['my_ward'];
 		}
-		
 		
         print (" <tr>\n".
         "  <td BGCOLOR=66CDAA><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn \">$hn</a></td>\n".

@@ -1,27 +1,12 @@
 <?php 
 session_start();
-?>
-<html>
-<head>
-<style type="text/css">
-<!--
-body,td,th {
-	font-family: Angsana New;
-	font-size: 20px;
-}
+include 'connect.inc';
 
-.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
-
--->
-</style>
-</head>
-</body>
-<?php 
+$cAn = $_GET['cAn'];
+$Bed = $_GET['Bed'];
 
 $today = (date("Y")+543)."-".date("m-d");
 $thiday = date("d-m-").(date("Y")+543);
-include("connect.inc");
 
 function calcage($birth){
 
@@ -44,13 +29,27 @@ function calcage($birth){
 		$pAge="$ageY ปี $ageM เดือน";
 	}
 
-return $pAge;
+	return $pAge;
 }
 
-
+?>
+<html>
+<head>
+<style type="text/css">
+<!--
+body,td,th {
+	font-family: Angsana New;
+	font-size: 20px;
+}
+.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
+.tb_detail {background-color: #FFFFC1;  }
+-->
+</style>
+</head>
+</body>
+<?php 
 	$sql = "Select * From ipcard where an = '".$cAn."' and status_log!='จำหน่าย'  limit 1";
-
-	$result = Mysql_Query($sql);
+	$result = Mysql_Query($sql) or die( mysql_error() );
 	if(mysql_num_rows($result) > 0){
 
 		session_register("hn_ipd");

@@ -4,17 +4,16 @@ if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
 
-include("connect.inc");
-
+include 'connect.inc';
 
 $limit30checkday = 30;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 
-	(
-		(left( drugcode, 1 ) = '0' AND drug_inject_amount ='' AND drug_inject_slip ='' AND  drug_inject_type ='' )
-		OR
-		(left( drugcode, 1 ) = '2' AND right( left( drugcode, 2 ) , 1 ) NOT IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') AND drug_inject_amount ='' AND drug_inject_slip ='' AND  drug_inject_type ='')
-	)";
-	$result = Mysql_Query($sql) or die(mysql_error());
+(
+	(left( drugcode, 1 ) = '0' AND drug_inject_amount ='' AND drug_inject_slip ='' AND  drug_inject_type ='' )
+	OR
+	(left( drugcode, 1 ) = '2' AND right( left( drugcode, 2 ) , 1 ) NOT IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') AND drug_inject_amount ='' AND drug_inject_slip ='' AND  drug_inject_type ='')
+)";
+$result = Mysql_Query($sql) or die(mysql_error());
 
 function jschars($str)
 {
@@ -292,13 +291,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	//$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') and (part!='DDL' and part!='DDY' and part!='DDN' ) Order by drugcode ASC";
-	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr 
-	From druglst where ".$where." (drugcode like '".$_GET["search"]."%') 
-	and (part!='DDL' and part!='DDY' and part!='DDN' ) Order by drugcode ASC";
 
-	$result = Mysql_Query($sql)or die(Mysql_error());
+	// ไม่แสดงชื่อ tradname ที่มี (Z) Ward บอกพี่วามาอีกที
+	$sql = "SELECT `drugcode`,`tradname`,`genname`,`unit`,`stock`,`salepri`,`part`,`lock`,`lock_dr` 
+	FROM `druglst` 
+	WHERE `drugcode` LIKE '".$_GET["search"]."%' 
+	AND `tradname` NOT LIKE '%(Z)%' 
+	AND ( `part` != 'DDL' AND `part` != 'DDY' AND `part` != 'DDN' ) 
+	ORDER BY `drugcode` ASC ";
+	$result = mysql_query($sql) or die(mysql_error());
 
-	if(Mysql_num_rows($result) > 0){
+	if( mysql_num_rows($result) > 0 ){
 		?>
 		<Div style="position: absolute;text-align: left; width:770px; height:430px; overflow:auto;">
 		<table bgcolor="#FFFFCC" width="750" border="0" cellpadding="0" cellspacing="0">
@@ -378,7 +381,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				<td height="5"></td>
 			</tr>
 			<?php
-		$i++;
+			$i++;
 		}
 		
 		?>
@@ -386,7 +389,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		<?php
 	}
 
-exit();
+	exit();
 }
 
 //************************** แสดงรายการวิธีใช้ยาให้เลือก  ********************************************************
@@ -395,21 +398,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "slip"){
 	$sql = "Select detail1, detail2, detail3, detail4, slcode  From drugslip where  (slcode LIKE '%".$_GET["search"]."%') OR (detail1 LIKE '%".$_GET["search"]."%') OR (detail2 LIKE '%".$_GET["search"]."%') OR (detail3 LIKE '%".$_GET["search"]."%')  Order by slcode ASC ";
 	$result = Mysql_Query($sql);
 	if(Mysql_num_rows($result) > 0){
-	$i=" id='choice1' ";
-	echo "<Div style=\"position: absolute;text-align: left; width:720px; height:400px; overflow:auto; \"><TABLE width=\"100%\" bgcolor=\"#FFFFCC\"><TD align=\"center\" bgcolor=\"#3333CC\" width=\"460\"><FONT COLOR=\"#FFFFFF\"><B>รายการวิธีใช้ยา</B></FONT></TD><TD  bgcolor=\"red\" align=\"center\"><FONT COLOR=\"#FFFFFF\"><B><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></B></FONT></TD>";
-	while($arr = Mysql_fetch_assoc($result)){
-	
-	echo "<TR bgcolor=\"#FFFFCC\">
+		$i=" id='choice1' ";
+		echo "<Div style=\"position: absolute;text-align: left; width:720px; height:400px; overflow:auto; \"><TABLE width=\"100%\" bgcolor=\"#FFFFCC\"><TD align=\"center\" bgcolor=\"#3333CC\" width=\"460\"><FONT COLOR=\"#FFFFFF\"><B>รายการวิธีใช้ยา</B></FONT></TD><TD  bgcolor=\"red\" align=\"center\"><FONT COLOR=\"#FFFFFF\"><B><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></B></FONT></TD>";
+		while($arr = Mysql_fetch_assoc($result)){
+			echo "<TR bgcolor=\"#FFFFCC\">
 					<TD colspan=\"2\"><INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)addslip('",$arr["slcode"],"'); \" ondblclick=\"addslip('",$arr["slcode"],"'); \" >&nbsp;",$arr["detail1"]," ",$arr["detail2"]," ",$arr["detail3"]," ",$arr["detail4"],"</TD>
 				</TR>
-				<TR height=\"3\" bgcolor=\"#FFFFFF\"><TD colspan=\"2\"></TD></TR>
-	";
-
+			<TR height=\"3\" bgcolor=\"#FFFFFF\"><TD colspan=\"2\"></TD></TR>";
+		}
+		echo "</TABLE></Div>";
 	}
-	echo "</TABLE></Div>";
-	}
-
-exit();
+	exit();
 }
 
 
@@ -443,6 +442,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugslip"){
 exit();
 }
 /////////////////////////////////////////
+
+#### click drug list ####
 if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 
 	$limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
@@ -473,6 +474,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 	echo ",".$part;
 	exit();
 }
+####  ####
 //**********************************************************************************************
 ?>
 <html>
@@ -512,19 +514,25 @@ function newXmlHttp(){
 	return xmlhttp;
 }
 
+// แสดงรายการยา
 function searchSuggest(action,str,len) {
-	
-		str = str+String.fromCharCode(event.keyCode);
 
-		if(str.length >= len){
-			url = 'ward_rx.php?action='+action+'&search=' + str;
+	if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){
+		document.getElementById('choice').focus();
+		document.getElementById('choice').checked = true;
+		return false; 
+	}
+	// str = str+String.fromCharCode(event.keyCode);
 
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
+	if(str.length >= len){
+		url = 'ward_rx.php?action='+action+'&search=' + str;
 
-			document.getElementById("list").innerHTML = xmlhttp.responseText;
-		}
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
+
+		document.getElementById("list").innerHTML = xmlhttp.responseText;
+	}
 }
 
 
@@ -731,6 +739,13 @@ function checkall3(xx){
 <TABLE border="0" width="100%">
   <TR>
 	<TD width="240" valign="top">
+	<script>
+	// if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){
+	// 	document.getElementById('choice').focus();
+	// 	document.getElementById('choice').checked = true;
+	// 	return false; 
+	// }
+	</script>
 <FORM Name="form1" METHOD="post" ACTION="" Onsubmit=" return false;">
 <TABLE width="98%" border="1" bordercolor="#F0F000">
 <TR>
@@ -738,7 +753,7 @@ function checkall3(xx){
 <TABLE width="232" border="0">
 <TR>
 	<TD align="right" class="tb_detail">ยา : </TD>
-	<TD><INPUT ID="drug_code" TYPE="text" NAME="drug_code" onKeyPress="searchSuggest('drug',this.value,1); " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }"></TD>
+	<TD><INPUT ID="drug_code" TYPE="text" NAME="drug_code" onkeyup="searchSuggest('drug',this.value,3);"></TD>
 
 </TR>
 <TR>
