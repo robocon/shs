@@ -6,7 +6,10 @@ $temp14 = "CREATE TEMPORARY  TABLE report_admission
 SELECT `date`,`an`,`hn`,`ptright`,`clinic`,`my_ward`,`dcdate`,`dcstatus`,`dctype`,`doctor` 
 FROM `ipcard` 
 WHERE `dcdate` LIKE '$thimonth%' 
-AND `dcdate` IS NOT NULL";
+AND ( 
+    `dcdate` IS NOT NULL 
+    AND `dcdate` != '0000-00-00 00:00:00' 
+)";
 $querytmp14 = mysql_query($temp14) or die("Query failed,Create temp14");
 
 $sql14="SELECT * 
@@ -19,6 +22,11 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     $sqlopd = mysql_query("SELECt `weight`,`height` FROM `opd` WHERE `hn`='$hn' ORDER BY `row_id` DESC");
     list($admitweight,$admitheight)=mysql_fetch_array($sqlopd);
     
+    list($predate, $pretime) = explode(' ', $date);
+    list($year, $month, $day) = explode('-', $predate);
+    list($hour, $min, $sec) = explode(':', $pretime);
+    $datetime_admit = ($year-543)."$month$day$hour$min$sec";
+
     $num2 = 543;
     $d = substr($date,8,2);
     $m = substr($date,5,2); 
@@ -60,8 +68,12 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     }
     
     $typein = "1";
-    $dischtype = substr($dctype,0,1);
-    $dischstatus = $dcstatus;
+
+    // วิธีการการจำหน่ายผู้ป่วย ถ้าเป็น null ตีเป็น 1
+    $dischtype = ( !empty($dctype) ) ? substr($dctype, 0, 1) : 1 ;
+
+    // สถานะภาพการจำหน่ายผู้ป่วย ถ้าเป็น null ตีเป็น 1
+    $dischstatus = ( !empty($dcstatus) ) ? $dcstatus : 1 ;
     
     $ipmonsql = mysql_query("SELECT `price`,`cash`,`credit` FROM `ipmonrep` WHERE `an` = '$an'");
     list($price, $cash, $credit)=mysql_fetch_array($ipmonsql);
@@ -122,8 +134,8 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     
     $causein = "1";  //สาเหตุการส่งผู้ป่วย
     $cost = "0.00";  //ราคาทุน
-    
-    $inline = "$hospcode|$hn|$seq|$an|$dateserv|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update\r\n";
+
+    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update\r\n";
     // print($inline);
     $txt .= $inline;
 } // End while

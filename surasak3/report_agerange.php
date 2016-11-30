@@ -17,9 +17,9 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 					padding-left: 10px;
 				}
 			}
-			body{
+			/*body{
 				font-size:12px;
-			}
+			}*/
 		</style>
 		<div class="col width-fill mobile-width-fill no-print">
             <div class="cell">
@@ -62,17 +62,53 @@ $months = array( '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.'
 			
 			if( $select_month !== false && $select_year !== false ){
 					
-				$sql = "CREATE TEMPORARY TABLE opday_temp 
-				SELECT a.`hn`,a.`thidate`,a.`ptright`, LEFT(b.`ptright`,3) AS `code`, TIMESTAMPDIFF(YEAR, b.`dbirth`, CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d %H:%i:%s' ) ) ) AS age 
-FROM `opday` AS a LEFT JOIN `opcard` AS b ON b.`hn`=a.`hn`
-WHERE a.`thidate` LIKE '$select_year-$select_month%'";
-				$db->select($sql);
+				// $sql = "CREATE TEMPORARY TABLE opday_temp 
+				// SELECT a.`hn`,
+				// a.`thidate`,
+				// a.`ptright`, 
+				// LEFT(b.`ptright`,3) AS `code`, 
+				// TIMESTAMPDIFF(YEAR, b.`dbirth`, CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d %H:%i:%s' ) ) ) AS age 
+				// FROM `opday` AS a 
+				// LEFT JOIN `opcard` AS b ON b.`hn`=a.`hn`
+				// WHERE a.`thidate` LIKE '$select_year-$select_month%'";
+
+				// $sql = "SELECT a.`hn`,
+				// a.`thidate`,
+				// a.`ptright`, 
+				// LEFT(b.`ptright`,3) AS `code`, 
+				// TIMESTAMPDIFF(YEAR, b.`dbirth`, CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d %H:%i:%s' ) ) ) AS age 
+				// FROM `opday` AS a 
+				// LEFT JOIN `opcard` AS b ON b.`hn`=a.`hn`
+				// WHERE a.`thidate` LIKE '$select_year-$select_month%'";
+
+				// $test_select = $db->select($sql);
+				// dump($test_select);
+				// exit;
 				
-				$sql = "SELECT * 
-				FROM opday_temp 
-				WHERE `code` IN ('R01','R03','R07','R09','R10','R11','R12','R13','R14','R15','R35','R33')
-				AND `age` > 0 
-				";
+				// $sql = "SELECT * 
+				// FROM opday_temp 
+				// WHERE `code` IN ('R01','R03','R07','R09','R10','R11','R12','R13','R14','R15','R35','R33')
+				// AND `age` > 0 ";
+				$sql = "SELECT a.`hn`,
+a.`thidate`,
+a.`ptright`, 
+b.`code`, 
+b.`age` 
+FROM `opday` AS a 
+LEFT JOIN (
+	SELECT `hn`,
+	SUBSTRING(`ptright`, 1, 3) AS `code`, 
+    `dbirth`, 
+    SUBSTRING(`dbirth`,1,4) AS `thai_year`, 
+	CONCAT((SUBSTRING(`dbirth`,1,4) - 543), SUBSTRING(`dbirth`,5,6)) AS `birth_date`, 
+    TIMESTAMPDIFF(YEAR, CONCAT((SUBSTRING(`dbirth`,1,4) - 543), SUBSTRING(`dbirth`,5,6)), NOW() ) AS `age` 
+	FROM `opcard` 
+	WHERE SUBSTRING(`dbirth`,1,4) >= '2449'
+    AND TIMESTAMPDIFF(YEAR, CONCAT((SUBSTRING(`dbirth`,1,4) - 543), SUBSTRING(`dbirth`,5,6)), NOW() ) > 0 
+	AND `ptright` != '0' 
+    AND SUBSTRING(`ptright`, 1, 3) IN ('R01','R03','R07','R09','R10','R11','R12','R13','R14','R15','R35','R33')
+) AS b ON b.`hn` = a.`hn`
+WHERE a.`thidate` LIKE '2559-01%' ";
 				$db->select($sql);
 				$all_items = $db->get_items();
 				$all_rows = $db->get_rows();
