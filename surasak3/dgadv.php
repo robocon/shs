@@ -235,6 +235,7 @@ else{
   <input type='text' name='reporter7' size='10' value='OPD'>
   <input type='text' name='repdate7' size='10' value='<?=$Thaidate?>'><br>
 &nbsp;&nbsp;&nbsp;*การประเมิน :&nbsp; &nbsp;(1=ใช่แน่นอน, 2=น่าจะใช่, 3=อาจจะใช่, 4=สงสัย&nbsp;)<br>  
+** การใส่รหัสยาจะช่วยเพิ่มความสมบูรณ์ของ43แฟ้มไฟล์<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type='submit' value='          บันทึก          ' name='B1'>
   <br />

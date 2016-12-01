@@ -1,14 +1,24 @@
 <?php
-   session_start();
-    session_unregister("cHn");  
-    session_unregister("cPtname");
-    session_unregister("cPtright");
-    session_unregister("nVn");  
-    session_unregister("cAge");  
-    session_unregister("nRunno");  
-    session_unregister("vAN");
-    session_unregister("thdatehn");  
-    session_unregister("cNote");  
+session_start();
+session_unregister("cHn");  
+session_unregister("cPtname");
+session_unregister("cPtright");
+session_unregister("nVn");  
+session_unregister("cAge");  
+session_unregister("nRunno");  
+session_unregister("vAN");
+session_unregister("thdatehn");  
+session_unregister("cNote");  
+
+// var_dump($_SESSION);
+
+if( empty($_SESSION['sOfficer']) ){
+    ?>
+    <p>Sessionหมดอายุ <a href="login_page.php">คลิกที่นี่</a>เพื่อเข้าสู่ระบบอีกครั้ง </p>
+    <?php
+    exit;
+}
+
 //    session_destroy();
 ?>
 <form method="post" action="<?php echo $PHP_SELF ?>">

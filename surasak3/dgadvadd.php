@@ -61,6 +61,9 @@ $aRepdate[7] = "$repdate7";
 
 echo"<font face='Angsana New'>ชื่อ: $sPtname,HN: $sHn, ";  
 echo "สิทธิการรักษา: $sPtright<br>";
+
+$error_list = array();
+
 FOR ($no=1; $no<=7; $no++){
 	IF (!empty($aTradname[$no])) {
 		
@@ -83,15 +86,24 @@ FOR ($no=1; $no<=7; $no++){
 		*/
 		
 		echo "$aDrugcode[$no],$aTradname[$no],$aAdvreact[$no],$aAsses[$no],$aReporter[$no],$aRepdate[$no]<br>";
+		
 		//insert data into drugreact
-		$sql = "INSERT INTO drugreact(hn,drugcode,tradname,advreact,asses,reporter,date,officer)
+		$sql = "INSERT INTO drugreact(`hn`,`drugcode`,`tradname`,`advreact`,`asses`,`reporter`,`date`,`officer`)
 		VALUES('$sHn','$aDrugcode[$no]','$aTradname[$no]','$aAdvreact[$no]','$aAsses[$no]','$aReporter[$no]','$aRepdate[$no]','".$_SESSION['sOfficer']."')";
-		//echo $sql;
 		$result = mysql_query($sql);
+		if( $result === false ){
+			$error_list[] = mysql_error();
+		}
 	}
 }
 ////////////////
 print "<br>บันทึกข้อมูลเรียบร้อย <br>";
+
+if( count($error_list) > 0 ){
+	$error_txt = implode('<br>', $error_list);
+	echo "<hr><p>มีข้อมูลบางส่วนไม่สามารถบันทึกได้ กรุณาถ่ายรูปหน้าจอเพื่อส่งให้โปรแกรมเมอร์แก้ไข</p>".$error_txt;
+}
+
 include("unconnect.inc");
 session_unregister("sHn");
 session_unregister("sPtname");
