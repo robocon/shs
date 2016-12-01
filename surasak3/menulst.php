@@ -1,14 +1,15 @@
 <?php
-    session_start();
-    $sOfficer="";
-	$smenucode = "";
-	$sRowid="";
-	$sLevel="";
-    session_register("sOfficer");
-	session_register("smenucode");
-	session_register("sRowid");
-	session_register("sLevel");
-//error_reporting (E_ALL ^ E_NOTICE);
+session_start();
+
+$sOfficer="";
+$smenucode = "";
+$sRowid="";
+$sLevel="";
+
+session_register("sOfficer");
+session_register("smenucode");
+session_register("sRowid");
+session_register("sLevel");
 
 function displaydate($x) {
 	$thai_m=array("มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฏาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
@@ -27,27 +28,27 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-    include("connect.inc");
-//    print "$username<br>";
-//    print "$password<br>";
-    $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
-    $result = mysql_query($query) or die( mysql_error($Conn) );
-        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
+include("connect.inc");
 
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
-    if(mysql_num_rows($result)){
-         $sOfficer=$row->name;
-         $menucode=$row->menucode;
-		  $_SESSION["smenucode"]=$row->menucode;
-		$sRowid=$row->row_id;
-		 $sLevel=$row->level;
-$where_search= "";
+$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+$result = mysql_query($query) or die( mysql_error($Conn) );
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
+
+	if(!($row = mysql_fetch_object($result)))
+		continue;
+}
+
+if(mysql_num_rows($result)){
+	$sOfficer=$row->name;
+	$menucode=$row->menucode;
+	$_SESSION["smenucode"]=$row->menucode;
+	$sRowid=$row->row_id;
+	$sLevel=$row->level;
+	$where_search= "";
 //if($_SESSION["smenucode"] == "ADM"){
 ///////แบบสอบถาม//////
 /*$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
@@ -61,11 +62,11 @@ if($nrow3==0){
 	<?
 }*/
 ////////////////////////////////
-echo "
-<FORM METHOD=POST ACTION=\"\">
-	<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
-</FORM>
-";
+	echo "
+	<FORM METHOD=POST ACTION=\"\">
+		<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
+	</FORM>
+	";
 
 	if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
 		$xxx = explode(" ",$_POST["search"]);
@@ -78,29 +79,27 @@ echo "
 		$where_search = " AND (menu like '%".$yyy."%')";
 		//echo $yyy;
 	//}
-}
+	}
 
 	/*//echo "<script>alert('ทดสอบ') </script>";*/
  //print (" <tr>\n".
  // "  <td BGCOLOR='#008400'><font face='THSarabunPSK' size='3' color='#FFFFFF' >   $sOfficer </font></td>\n".
 			//	" </tr>\n");
-         print "<body bgcolor='#008080' text='#00FFFF' link='#FFFFFF' vlink='#FFFFFF' alink='#FFFFFF' onload='Realtime();'>";
-         print "<table>";
-		
-         print "<tr>";
-         print "<th bgcolor=#005555><font face='THSarabunPSK' size='4'>เมนู</th>";
-         print "</tr>";
-if($menucode=='ADM' ){
-	$sort = "ORDER BY menu ASC";
-}elseif($menucode=='ADMPHA' ){
-	$sort = "ORDER BY menu_sort2 ASC ,menu ASC";
-}else{
-	$sort = "ORDER BY menu_sort ASC ,menu ASC";
-}
+	print "<body bgcolor='#008080' text='#00FFFF' link='#FFFFFF' vlink='#FFFFFF' alink='#FFFFFF' onload='Realtime();'>";
+	print "<table>";
 
- 		
-
-if($menucode=="ADM"){
+	print "<tr>";
+	print "<th bgcolor=#005555><font face='THSarabunPSK' size='4'>เมนู</th>";
+	print "</tr>";
+	if($menucode=='ADM' ){
+		$sort = "ORDER BY menu ASC";
+	}elseif($menucode=='ADMPHA' ){
+		$sort = "ORDER BY menu_sort2 ASC ,menu ASC";
+	}else{
+		$sort = "ORDER BY menu_sort ASC ,menu ASC";
+	}
+ 	
+	if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
 				" </tr>\n");
@@ -127,7 +126,7 @@ if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
 				" </tr>\n");	
-}else if($sLevel=="admin"){
+	}else if($sLevel=="admin"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
 				" </tr>\n");
@@ -150,7 +149,7 @@ if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
 				" </tr>\n");	
-}else if($menucode=="ADMXR"){						
+	}else if($menucode=="ADMXR"){						
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
 				" </tr>\n");
@@ -165,7 +164,7 @@ if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
 				" </tr>\n");	
-}else{
+	}else{
 		print (" <tr>\n".
                 "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
 				" </tr>\n");
@@ -184,106 +183,107 @@ if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
 				" </tr>\n");	
-}							 
-echo '<div id="test_dr_menu" style="display: none;">'.$sOfficer.'</div>';
-if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
- $query = "SELECT menu,script,target FROM menulst WHERE menucode LIKE '$menucode%' AND status='Y'  ".$sort;
- $result = mysql_query($query) or die( mysql_error($Conn) );
+	}							 
+	echo '<div id="test_dr_menu" style="display: none;">'.$sOfficer.'</div>';
+	if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
+		$query = "SELECT menu,script,target FROM menulst WHERE menucode LIKE '$menucode%' AND status='Y'  ".$sort;
+		$result = mysql_query($query) or die( mysql_error($Conn) );
 
- 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-               print (" <tr>\n".
-                  "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-                  " </tr>\n");
-                  };
-}elseif($sOfficer=='ภูภูมิ วุฒิธาดา (ว.33906)'){
-    $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
-    $result = mysql_query($query) or die( mysql_error($Conn) );
-    
-    while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-        print (" <tr>\n".
-        "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-        " </tr>\n");
-    }
-}elseif($sOfficer=='วริทธิ์ พสุธาดล (ว.38228)'){
-    $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
-    $result = mysql_query($query) or die( mysql_error($Conn) );
-    
-    while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-        print (" <tr>\n".
-        "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-        " </tr>\n");
-    }
-}elseif($sOfficer=='ธนบดินทร์ ผลศรีนาค (ว.19921)'){
-	 $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADM19921' AND status='Y' ".$where_search." ".$sort;
-	 $result = mysql_query($query) or die( mysql_error($Conn) );
-	
+		while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+				print (" <tr>\n".
+					"  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+					" </tr>\n");
+		}
+	}elseif($sOfficer=='ภูภูมิ วุฒิธาดา (ว.33906)'){
+		$query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
+		$result = mysql_query($query) or die( mysql_error($Conn) );
+		
+		while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+			print (" <tr>\n".
+			"  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+			" </tr>\n");
+		}
+	}elseif($sOfficer=='วริทธิ์ พสุธาดล (ว.38228)'){
+		$query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
+		$result = mysql_query($query) or die( mysql_error($Conn) );
+		
+		while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+			print (" <tr>\n".
+			"  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+			" </tr>\n");
+		}
+	}elseif($sOfficer=='ธนบดินทร์ ผลศรีนาค (ว.19921)'){
+		$query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADM19921' AND status='Y' ".$where_search." ".$sort;
+		$result = mysql_query($query) or die( mysql_error($Conn) );
+		
+		while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+			print (" <tr>\n".
+				"  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+				" </tr>\n");
+		} 
+	}else{
+
+		$sql2="select * from menu_user WHERE member_code='".$sRowid."'";
+		$result2= mysql_query($sql2) or die( mysql_error($Conn) );
+		$rows=mysql_num_rows($result2);
+
+		if($rows){ ///  ถ้ามี rows
+
+		$query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
+		$result = mysql_query($query) or die( mysql_error($Conn) );
+
+			while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
+				print (" <tr>\n".
+					"  <td BGCOLOR='#008484'><a target='$target' href=\"$link?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+					" </tr>\n");
+			}
+
+		}else{
+				  
+			$query = "SELECT menu,script,target FROM menulst WHERE menucode like '$menucode%' AND status='Y' ".$where_search." ".$sort;
+			$result = mysql_query($query) or die( mysql_error($Conn) );
+
 			while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-				   print (" <tr>\n".
-					  "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-					  " </tr>\n");
-					  } 
-}else{
+			print (" <tr>\n".
+			"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
+			" </tr>\n");
+			}
 
-$sql2="select * from menu_user WHERE member_code='".$sRowid."'";
-$result2= mysql_query($sql2) or die( mysql_error($Conn) );
-$rows=mysql_num_rows($result2);
+		}/// ปิด if rows		  
 
-if($rows){///  ถ้ามี rows
+	}
 
- $query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
- $result = mysql_query($query) or die( mysql_error($Conn) );
+ 	//สารบัญทั่วไป ทุกคนดูได้
+	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
+	$result = mysql_query($query) or die( mysql_error($Conn) );
 
-        while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
-               print (" <tr>\n".
-                  "  <td BGCOLOR='#008484'><a target='$target' href=\"$link?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-                  " </tr>\n");
-                  }
-				  		  
-}else{
-				  
- $query = "SELECT menu,script,target FROM menulst WHERE menucode like '$menucode%' AND status='Y' ".$where_search." ".$sort;
- $result = mysql_query($query) or die( mysql_error($Conn) );
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+			print (" <tr>\n".
+			"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
+			" </tr>\n");
+	}
+	print (" <tr>\n".
+		"  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
+		" </tr>\n");
+	include("unconnect.inc");
 
-        while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-               print (" <tr>\n".
-                  "  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
-                  " </tr>\n");
-                  }		
-				  
-}/// ปิด if rows		  
+	print "</table>";
+	print "</body>";
 
+} else {
+	print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
+	print "...<br>";
+	print "...<br>";
+	print "...<br>";
+	print "...<br>";
+	print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
+	print "</body>";
+	session_unregister("sIdname");
+	session_unregister("sPword");
+	session_unregister("sOfficer");
+	session_unregister("sRowid");
+	session_unregister("sLevel");
 }
- //สารบัญทั่วไป ทุกคนดูได้
-        $query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
-        $result = mysql_query($query) or die( mysql_error($Conn) );
-
-        while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-              print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
-                " </tr>\n");
-                     };
-		 print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
-                " </tr>\n");
-        include("unconnect.inc");
-
-        print "</table>";
-        print "</body>";
-                   }
-   else {
-        print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
-        print "...<br>";
-        print "...<br>";
-        print "...<br>";
-        print "...<br>";
-        print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
-        print "</body>";
-       session_unregister("sIdname");
-       session_unregister("sPword");
-       session_unregister("sOfficer");
-	   session_unregister("sRowid");
-	   session_unregister("sLevel");
-            }
 ?>
 <style type="text/css" media="screen">
 @font-face {
