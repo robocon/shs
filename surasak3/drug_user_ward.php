@@ -55,6 +55,8 @@ if ( $action === false ) {
 		'ADMVIP' => 'หอผู้ป่วยพิเศษ',
 		'ADMWF' => 'หอผู้ป่วยรวม',
 		'ADMXR' => 'รังษีกรรม',
+		'ADMLIBRARY' => 'เวชกรรมป้องกัน',
+		'ADMCMS' => 'หน่วยจ่ายกลาง',
 	);
 	
 	include 'includes/ajax.php';
