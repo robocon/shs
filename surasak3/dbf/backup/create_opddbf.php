@@ -1461,26 +1461,26 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 	  echo "Error, can't create the database16\n";
 	}
 	
-	$sql161 ="select * from  drugrx  where date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and  (an is null or an = '')  group by hn";
+		$sql161 ="select * from  drugrx  where date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and  (an is null or an = '')  group by hn";
 		
 		
 		
 		
-	//echo $sql161;
-	$result161 = mysql_query($sql161) or die("Query failed16");
-	$num161= mysql_num_rows($result161);
-	while($rows161 = mysql_fetch_array($result161)){	
+		//echo $sql161;
+		$result161 = mysql_query($sql161) or die("Query failed16");
+		$num161= mysql_num_rows($result161);
+   		while($rows161 = mysql_fetch_array($result161)){	
 		$chkhn = $rows161["hn"];
 		$chkdate = substr($rows161["date"],0,10);		
-			
-		$newreason='';
+		
+$newreason='';
 		//$sql16 ="select *,sum(amount) as sumamount from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' or part != 'DSN' or part != 'DPN') and drugcode !='5VIAT ' group by drugcode";
 		$sql16 ="select *,sum(amount) as sumamount from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' or part != 'DSN' or part != 'DPN') group by drugcode";
 		//echo $sql16."<br>";
-			
+		
 		$result16 = mysql_query($sql16) or die("Query failed16");
 		$num16= mysql_num_rows($result16);
-		while($rows16 = mysql_fetch_array($result16)){	
+   		while($rows16 = mysql_fetch_array($result16)){	
 			$hcode16 ="11512";
 			$hn16=$rows16["hn"];  //  HN ใช้ตัวแปรนี้นำเข้าข้อมูล	
 			$an16=$rows16["an"]; //  AN ใช้ตัวแปรนี้นำเข้าข้อมูล
@@ -1502,33 +1502,33 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			$datedrug =explode("-",$datedrg);
 			$newdatedrug=$datedrug[0]-543;
 			$newdateserv =$newdatedrug.$datedrug[1].$datedrug[2];  		  //  DATE_SERV ใช้ตัวแปรนี้นำเข้าข้อมูล						
-				
+			
 			// ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF
 			$reason16=$rows16["reason"]; 
 			$reason=substr($reason16,0,1);
 			$reasondefault ="00";
-				
+			
 
-	//---------------------ใช้ข้อมูลยาจากตาราง druglst---------------------//					
+//---------------------ใช้ข้อมูลยาจากตาราง druglst---------------------//					
 			$sqldrx= "SELECT * FROM  druglst WHERE drugcode ='".$drugcode16."' ";
 			$resultdrx = mysql_query($sqldrx) or die("Query druglst failed");
 			$rowsdrx=mysql_fetch_array($resultdrx);
-			$code24=$rowsdrx["code24"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
-			//$saleprice=$rowsdrx["salepri"];    //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
-			$unitprice=$rowsdrx["unitpri"];    //  DRUGCOST(ราคาทุน) ใช้ตัวแปรนี้นำเข้าข้อมูล
-			$unit=$rowsdrx["unit"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
-			$packing=$rowsdrx["packing"];    //  UNIT_PACK ใช้ตัวแปรนี้นำเข้าข้อมูล
-							
-		
-			// หา drugtype=2 ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF, PA
-					
-
-	//---------------------ใช้ข้อมูลการรับบริการจากตาราง opday---------------------//					
-			$sqlop ="select * from opday where hn ='".$hn16."' and thidate like '$datedrg%'";   //  Query เอาข้อมูลจากตาราง opday
-			$resultop = mysql_query($sqlop) or die("Query opday failed");
-			$rowsop = mysql_fetch_array($resultop);	
-			$personid=$rowsop["idcard"]; //  PERSON_ID ใช้ตัวแปรนี้นำเข้าข้อมูล	
+				$code24=$rowsdrx["code24"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
+				//$saleprice=$rowsdrx["salepri"];    //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
+				$unitprice=$rowsdrx["unitpri"];    //  DRUGCOST(ราคาทุน) ใช้ตัวแปรนี้นำเข้าข้อมูล
+				$unit=$rowsdrx["unit"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
+				$packing=$rowsdrx["packing"];    //  UNIT_PACK ใช้ตัวแปรนี้นำเข้าข้อมูล
+						
+	
+				// หา drugtype=2 ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF, PA
 				
+
+//---------------------ใช้ข้อมูลการรับบริการจากตาราง opday---------------------//					
+		$sqlop ="select * from opday where hn ='".$hn16."' and thidate like '$datedrg%'";   //  Query เอาข้อมูลจากตาราง opday
+		$resultop = mysql_query($sqlop) or die("Query opday failed");
+   		$rowsop = mysql_fetch_array($resultop);	
+			$personid=$rowsop["idcard"]; //  PERSON_ID ใช้ตัวแปรนี้นำเข้าข้อมูล	
+			
 			//CLINIC
 			$clinic3=$rowsop["clinic"];
 			$clinic1=0;
@@ -1557,43 +1557,36 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			if(($reason =="A" || $reason =="B" || $reason =="C" || $reason =="D" || $reason =="E" || $reason =="F") && $reason !=" "){
 			$newreason ="E".$reason;} else {$newreason =='';};
 			
-			$totcopay16 = 0;
-			$total = 0;
-			if( $rows16['part'] == 'DDN' ){
-				$totcopay16 = $rows16['price'];
-			}else{
-				$total = $price;
-			}
 			
 			$db16 = dbase_open($dbname16, 2);
-			if ($db16) {
-				dbase_add_record($db16, array(
-					$hcode16, 
-					$hn16, 
-					$an16, 
-					$newclinic,
-					$personid, 
-					$newdateserv,
-					$drugcode16,  // drugcode
-					$drugname16, 
-					$amount16, 
-					$saleprice,
-					$unitprice, 
-					$code24, 	
-					$unit, 	
-					$packing, 	
-					$newseq, 	
-					$newreason, 																																		  				  
-					$pano,
-					$totcopay16,  //เพิ่มใหม่ เบิกไม่ได้
-					$use_status,
-					$total  //เพิ่มใหม่ เบิกได้
-					));     
-					dbase_close($db16);
-				}  //if db		
-				
-		}  // while
+				if ($db16) {
+					dbase_add_record($db16, array(
+						$hcode16, 
+						$hn16, 
+						$an16, 
+						$newclinic,
+						$personid, 
+						$newdateserv,
+						$drugcode16,  // drugcode
+						$drugname16, 
+						$amount16, 
+						$saleprice,
+						$unitprice, 
+						$code24, 	
+						$unit, 	
+						$packing, 	
+						$newseq, 	
+						$newreason, 																																		  				  
+						$pano,
+						$totcopay,  //เพิ่มใหม่
+						$use_status,
+						$total  //เพิ่มใหม่
+						));     
+						dbase_close($db16);
+					}  //if db		
+			
 	}  // while
+}  // while
 	//---------------End Dataset16---------------//
 	
 	

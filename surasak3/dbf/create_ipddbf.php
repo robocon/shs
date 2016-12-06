@@ -19,7 +19,7 @@ color: #FFF;
 <div id="no_print" >
 <span class="font1">
 <font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้ใน</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<strong>ส่งออกข้อมูล DBF คนไข้ในประจำเดือน (อัพเดท. 29-11-59)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
 <?php
 
 $mon = isset($_POST['mon']) ? $_POST['mon'] : '' ;
@@ -138,23 +138,27 @@ if(file_exists("$dbf1") && file_exists("$dbf2") && file_exists("$dbf3") && file_
 	unlink("$dbf14");
 	unlink("$dbf15");
 	unlink("$dbf16");		
-	echo "เรียบร้อย </br>";				
+	echo "<p style='color:#FF0000; font-weight:bold;'>ลบไฟล์เดิมเรียบร้อย</p>";				
 }
 // จบ ลบไฟล์-----------------)
 
 
 if($_POST['credit']=="OFC"){
+	$showptright="เบิกจ่ายตรง";
 	$newcredit = "(ptright like '%R02%' OR ptright
 LIKE '%R03%'
 )";
 }else if($_POST['credit']=="SSS"){
+	$showptright="ประกันสังคม";
 	$newcredit = "ptright like '%R07%' ";
 }else if($_POST['credit']=="LGO"){
+	$showptright="จ่ายตรง อปท.";
 	$newcredit = "(ptright like '%R21%' OR ptright
 LIKE '%R33%'
 )";
 }else if($_POST['credit']=="UC"){
-	$newcredit = "( `ptright` LIKE '%ประกันสุขภาพ%' OR `ptright` LIKE '%R35%' OR `ptright` LIKE '%R17%' OR `ptright` LIKE '%R36%')";
+	$showptright="ประกันสุขภาพ";
+	$newcredit = "( `ptright` LIKE '%ประกันสุขภาพ%' OR `ptright` LIKE '%R35%' OR `ptright` LIKE '%R17%' OR `ptright` LIKE '%R36%' OR `ptright` LIKE '%R06%')";
 }
 
 
@@ -180,7 +184,7 @@ $dbname1 = "INS".$yy.$mm.".dbf";
 	  array("SEQ","C", 15),  // เพิ่มใหม่
 	  array("SUBINSCL","C",2),  // เพิ่มใหม่
 	  array("RELINSCL","C",1), // เพิ่มใหม่
-	    array("HTYPE","C",1)  // เพิ่มใหม่
+	  array("HTYPE","C",1)  // ประเภทสถานพยาบาลที่รักษา  SSS/SSI
 	);
 	
 	// creation
@@ -197,7 +201,7 @@ $dbname1 = "INS".$yy.$mm.".dbf";
 		AND $newcredit
 		";	
 		
-		// var_dump($sqlop1);
+		 //var_dump($sqlop1);
 		// exit;
    		$resultop1 = mysql_query($sqlop1) or die("Query INS failed");
 		while($rowsop1 = mysql_fetch_array($resultop1)){
@@ -226,7 +230,8 @@ $dbname1 = "INS".$yy.$mm.".dbf";
 			|| $codeptright =="R14" 
 			|| $codeptright =="R35"
 			|| $codeptright =="R17"
-			|| $codeptright =="R36"){
+			|| $codeptright =="R36"
+			|| $codeptright =="R06"){
 				$newptright ="UCS";
 			}else if($codeptright =="R02"){  // จ่ายตรง
 				$newptright ="OFC";
@@ -285,11 +290,11 @@ $dbname1 = "INS".$yy.$mm.".dbf";
 	  array("OCCUPA",    "C", 3),
 	  array("NATION",     "C",  3),
 	  array("PERSON_ID",      "C",   13),
-	  array("NAMEPAT",    "C", 36),
-	  array("TITLE",     "C", 30),
-	  array("FNAME",     "C",  40),
-	  array("LNAME",      "C",   40),
-	  array("IDTYPE",    "C", 1)
+	  array("NAMEPAT",    "C", 36),  //ชื่อ – สกุล ผู้ป่วย โดยใช้รูปแบบ : ชื่อ (เว้นวรรค) นามสกุล , คำนำหน้าชื่อ
+	  array("TITLE",     "C", 30),  //คำนำหน้า (เพิ่มเติม)
+	  array("FNAME",     "C",  40),  //ชื่อ (เพิ่มเติม)
+	  array("LNAME",      "C",   40),  //นามสกุล (เพิ่มเติม)
+	  array("IDTYPE",    "C", 1)  //ประเภทบัตร (เพิ่มเติม)
 	);
 	
 	// creation
@@ -311,7 +316,8 @@ $dbname1 = "INS".$yy.$mm.".dbf";
 		$sqlop ="select * from opcard where hn ='".$hn2."'";   //  Query เอาข้อมูลจากตาราง opday
 		$resultop = mysql_query($sqlop) or die("Query opcard failed");
    		$rowsop = mysql_fetch_array($resultop);
-			$hcode2 ="11486";
+			//$hcode2 ="11486";
+			$hcode2 ="11512";
 			$personid=$rowsop["idcard"];  //  PERSON_ID ใช้ตัวแปรนี้นำเข้าข้อมูล
 			//$changwat2=$rowsop["changwat"];
 			//$ampur2=$rowsop["ampur"];
@@ -583,6 +589,7 @@ $dbname7 = "IPD".$yy.$mm.".dbf";
 		//$warddsc=substr($rows7["bedcode"],0,2); //  WARDDSC ใช้ตัวแปรนี้นำเข้าข้อมูล				
 		//$adm_w=$rows7["adm_w"]; //  ADM_W ใช้ตัวแปรนี้นำเข้าข้อมูล
 		$ucc7="1";  //  UCC ใช้ตัวแปรนี้นำเข้าข้อมูล				
+		$svctype="I";  //ประเภทบริการ/รักษา  I = IPD, A = Ambulatory Care
 		
 	$db7 = dbase_open($dbname7, 2);
 		if ($db7) {
@@ -599,7 +606,7 @@ $dbname7 = "IPD".$yy.$mm.".dbf";
 				  $dept, 	
 				  $adm_w, 					  			  				  		  
 				  $ucc7,
-				  $SVCTYPE));   
+				  $svctype)); 
 					dbase_close($db7);
 				}  //if db
 	}  //while			
@@ -894,6 +901,7 @@ $dbname10 = "IOP".$yy.$mm.".dbf";
 
 
 //---------------Start Dataset11---------------//
+//แฟ้มข้อมูลที่ 11 มาตรฐานแฟ้มข้อมูลการเงิน (แบบสรุป) (CHT)
 $dbname11 = "CHT".$yy.$mm.".dbf";
 	$def11 = array(
 	    array("HN","C",15),
@@ -979,12 +987,13 @@ $dbname11 = "CHT".$yy.$mm.".dbf";
 
 
 //---------------Start Dataset12---------------//
+//แฟ้มข้อมูลที่ 12 มาตรฐานแฟ้มข้อมูลการเงิน (แบบรายละเอียด) (CHA)
 $dbname12 = "CHA".$yy.$mm.".dbf";
 	$def12 = array(
 	   array("HN","C",15),
 	  array("AN","C",15),
 	  array("DATE","D"),	  
-	  array("CHRGITEM","C",2), 
+	  array("CHRGITEM","C",2),   //ชนิดของบริการที่คิดค่ารักษา ตามรหัสที่กำหนด
 	  array("AMOUNT","N",12,0),		  
  	  array("PERSON_ID","C",13),	 
 	  array("SEQ","C",15)
@@ -1025,83 +1034,96 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 						$newdateipa =$newdateip.$dateipa[1].$dateipa[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล						
 
 						$chrgitem1 =$rowsip["part"];
-						if($chrgitem1=="BFY"){
+						if($chrgitem1=="BFY"){  //ค่าห้องเบิกได้
 							$chrgitemip ="11";
-						}elseif($chrgitem1=="BFN"){
+						}elseif($chrgitem1=="BFN"){  //ค่าห้องเบิกไม่ได้
 							$chrgitemip ="12";
-						}elseif($chrgitem1=="DPY"){
+						}elseif($chrgitem1=="DPY"){  //อุปกรณ์เบิกได้
 							$chrgitemip ="21";
-						}elseif($chrgitem1=="DPN"){
+						}elseif($chrgitem1=="DPN"){  //อุปกรณ์เบิกไม่ได้
 							$chrgitemip ="22";		
-						}elseif($chrgitem1=="DDL"){
+						}elseif($chrgitem1=="DDL"){  //ยาเบิกได้
 							$chrgitemip ="31";
 							$dd1=1;
-						}elseif($chrgitem1=="DDY"){
+						}elseif($chrgitem1=="DDY"){  //ยาเบิกได้
 							$chrgitemip ="31";
 							$dd2=1;											
-						}elseif($chrgitem1=="DDN"){
+						}elseif($chrgitem1=="DDN"){  //ยาเบิกไม่ได้
 							$chrgitemip ="32";														
-						}elseif($chrgitem1=="DSY"){
+						}elseif($chrgitem1=="DSY"){  //เวชภัณฑ์เบิกได้
 							$chrgitemip ="51";
-						}elseif($chrgitem1=="DSN"){
+						}elseif($chrgitem1=="DSN"){  //เวชภัณฑ์เบิกไม่ได้
 							$chrgitemip ="52";
-						}elseif($chrgitem1=="BLOOD"){
+						}elseif($chrgitem1=="BLOOD"){  //บริการโลหิตและส่วนประกอบของโลหิตเบิกได้
 							$chrgitemip ="61";
 							$bl1=1;
-						}elseif($chrgitem1=="BLOODY"){
+						}elseif($chrgitem1=="BLOODY"){  //บริการโลหิตและส่วนประกอบของโลหิตเบิกได้
 							$chrgitemip ="61";
 							$bl2=1;					
-						}elseif($chrgitem1=="LAB"){
+						}elseif($chrgitem1=="LAB"){  //ตรวจวินิจฉัยทางเทคนิคการแพทย์และพยาธิวิทยาเบิกได้
 							$chrgitemip ="71";
 							$la1=1;
-						}elseif($chrgitem1=="LABY"){
+						}elseif($chrgitem1=="LABY"){  //ตรวจวินิจฉัยทางเทคนิคการแพทย์และพยาธิวิทยาเบิกได้
 							$chrgitemip ="71";		
 							$la2=1;					
-						}elseif($chrgitem1=="LABN"){
+						}elseif($chrgitem1=="LABN"){  //ตรวจวินิจฉัยทางเทคนิคการแพทย์และพยาธิวิทยาเบิกไม่ได้
 							$chrgitemip ="72";
-						}elseif($chrgitem1=="XRAY"){
+						}elseif($chrgitem1=="XRAY"){  //ตรวจวินิจฉัยและรักษาทางรังสีวิทยาเบิกได้
 							$chrgitemip ="81";
 							$xr1=1;
-						}elseif($chrgitem1=="XRAYY"){
+						}elseif($chrgitem1=="XRAYY"){  //ตรวจวินิจฉัยและรักษาทางรังสีวิทยาเบิกได้
 							$chrgitemip ="81";
 							$xr2=1;
-						}elseif($chrgitem1=="XRAYN"){
+						}elseif($chrgitem1=="XRAYN"){  //ตรวจวินิจฉัยและรักษาทางรังสีวิทยาเบิกไม่ได้
 							$chrgitemip ="82";							
-						}elseif($chrgitem1=="SINV"){
+						}elseif($chrgitem1=="SINV"){  //ตรวจวินิจฉัยโดยวิธีพิเศษอื่น ๆ เบิกได้
 							$chrgitemip ="91";	
 							$si1=1;
-						}elseif($chrgitem1=="SINVY"){
+						}elseif($chrgitem1=="SINVY"){  //ตรวจวินิจฉัยโดยวิธีพิเศษอื่น ๆ เบิกได้
 							$chrgitemip ="91";	
 							$si2=1;																		
-						}elseif($chrgitem1=="TOOL"){
+						}elseif($chrgitem1=="TOOL"){  //อุปกรณ์ของใช้และเครื่องมือทางการแพทย์เบิกได้
 							$chrgitemip ="A1";
 							$to1=1;
-						}elseif($chrgitem1=="TOOLY"){
+						}elseif($chrgitem1=="TOOLY"){  //อุปกรณ์ของใช้และเครื่องมือทางการแพทย์เบิกได้
 							$chrgitemip ="A1";	
 							$to2=1;						
-						}elseif($chrgitem1=="SURG"){
+						}elseif($chrgitem1=="SURG"){  //ทำหัตถการ และบริการวิสัญญีเบิกได้
 							$chrgitemip ="B1";
 							$su1=1;
-						}elseif($chrgitem1=="SURGY"){
+						}elseif($chrgitem1=="SURGY"){  //ทำหัตถการ และบริการวิสัญญีเบิกได้
 							$chrgitemip ="B1";	
-							$su2=1;						
-						}elseif($chrgitem1=="NCARE"){
+							$su2=1;
+						}elseif($chrgitem1=="SURGN"){  //ทำหัตถการ และบริการวิสัญญีเบิกไม่ได้   ***เพิ่ม 1-8-59***
+							$chrgitemip ="B2";	
+							$su2=1;													
+						}elseif($chrgitem1=="NCARE"){  //ค่าบริการทางการพยาบาลเบิกได้
 							$chrgitemip ="C1";
 							$nc1=1;
-						}elseif($chrgitem1=="NCAREY"){
+						}elseif($chrgitem1=="NCAREY"){  //ค่าบริการทางการพยาบาลเบิกได้
 							$chrgitemip ="C1";
 							$nc2=1;	
-						}elseif($chrgitem1=="NCAREN"){
+						}elseif($chrgitem1=="NCAREN"){  //ค่าบริการทางการพยาบาลเบิกไม่ได้
 							$chrgitemip ="C2";				
-						}elseif($chrgitem1=="DENTA"){
+						}elseif($chrgitem1=="DENTA"){  //บริการทางทันตกรรมเบิกได้
 							$chrgitemip ="D1";
-						}elseif($chrgitem1=="PT"){
+						}elseif($chrgitem1=="DENTAY"){  //บริการทางทันตกรรมเบิกได้  ***เพิ่ม 1-8-59***
+							$chrgitemip ="D1";	
+						}elseif($chrgitem1=="PT"){  //บริการทางกายภาพบำบัด และเวชกรรมฟื้นฟูเบิกได้
 							$chrgitemip ="E1";
-						}elseif($chrgitem1=="PTN"){
+						}elseif($chrgitem1=="PTY"){  //บริการทางกายภาพบำบัด และเวชกรรมฟื้นฟูเบิกได้
+							$chrgitemip ="E1";							
+						}elseif($chrgitem1=="PTN"){  //บริการทางกายภาพบำบัด และเวชกรรมฟื้นฟูเบิกไม่ได้
 							$chrgitemip ="E2";
-						}elseif($chrgitem1=="MC"){
-							$chrgitemip ="J2";
-						}	elseif($chrgitem1=="EYE"){
+						}elseif($chrgitem1=="STX"){  //บริการฝังเข็ม/การบาบัดของผู้ประกอบโรคศิลปะอื่น ๆเบิกได้
+							$chrgitemip ="F1";
+						}elseif($chrgitem1=="STXY"){  //บริการฝังเข็ม/การบาบัดของผู้ประกอบโรคศิลปะอื่น ๆเบิกได้
+							$chrgitemip ="F1";							
+						}elseif($chrgitem1=="STXN"){  //บริการฝังเข็ม/การบาบัดของผู้ประกอบโรคศิลปะอื่น ๆเบิกไม่ได้
+							$chrgitemip ="F2";								
+						}elseif($chrgitem1=="MC" || $chrgitem1=="MCY" || $chrgitem1=="MCN"){  //บริการอื่น ๆ ที่ยังไม่จัดหมวด เบิกไม่ได้
+							$chrgitemip ="J2";						
+						}	elseif($chrgitem1=="EYE"){  //ทำหัตถการ และบริการวิสัญญี (ค่าตรวจตา)
 							$chrgitemip ="B1";
 						}											
 					
@@ -1346,7 +1368,7 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 						}	 // while										
 					}else if($chrgitem1=="NCAREY" || $chrgitem1=="NCARE"){
 							$sqlnc ="select *,sum(price) as sumpricec1 from  ipacc  where an='".$anipacc."' and (part='NCAREY' || part='NCARE')";
-							//echo "$sqlnc----->$chrgitemip</br>";
+							//echo "1)$sqlnc----->$chrgitemip</br>";
 							//echo "3=>".$sqlnc."</br>";
 							$resultnc = mysql_query($sqlnc) or die("Query ipacc failed");		
 							while($rowsnc = mysql_fetch_array($resultnc)){
@@ -1366,6 +1388,50 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 									}  //if db		
 									
 								}  //while	
+					}else if($chrgitem1=="PT" || $chrgitem1=="PTY"){
+							$sqlnc ="select *,sum(price) as sumpricec1 from  ipacc   where an='".$anipacc."' and (part='PT' || part='PTY')";
+							//echo "2)$sqlnc----->$chrgitemip</br>";
+							//echo "3=>".$sqlnc."</br>";
+							$resultnc = mysql_query($sqlnc) or die("Query ipacc failed");		
+							while($rowsnc = mysql_fetch_array($resultnc)){
+							$sumpricenc = $rowsnc["sumpricec1"];
+							
+							$db12 = dbase_open($dbname12, 2);
+								if ($db12) {
+									dbase_add_record($db12, array(
+										$hnopday, 
+										$anipacc, 
+										$newdateipc, 
+										$chrgitemip,
+										$sumpricenc, 
+										$personidopday, 				  				  
+										$newseqopday));     
+										dbase_close($db12);
+									}  //if db		
+									
+								}  //while	
+					}else if($chrgitem1=="STX" || $chrgitem1=="STXY"){
+							$sqlnc ="select *,sum(price) as sumpricec1 from  ipacc   where an='".$anipacc."' and (part='STX' || part='STXY')";
+							//echo "2)$sqlnc----->$chrgitemip</br>";
+							//echo "3=>".$sqlnc."</br>";
+							$resultnc = mysql_query($sqlnc) or die("Query ipacc failed");		
+							while($rowsnc = mysql_fetch_array($resultnc)){
+							$sumpricenc = $rowsnc["sumpricec1"];
+							
+							$db12 = dbase_open($dbname12, 2);
+								if ($db12) {
+									dbase_add_record($db12, array(
+										$hnopday, 
+										$anipacc, 
+										$newdateipc, 
+										$chrgitemip,
+										$sumpricenc, 
+										$personidopday, 				  				  
+										$newseqopday));     
+										dbase_close($db12);
+									}  //if db		
+									
+								}  //while									
 												
 					}else if($chrgitem1=="EYE"){
 							$sqlnc ="select *,sum(price) as sumpricec1 from  ipacc  where an='".$anipacc."' and part='EYE' ";
@@ -1443,6 +1509,7 @@ $dbname13 = "AER".$yy.$mm.".dbf";
 
 
 //---------------Start Dataset14---------------//
+//แฟ้มข้อมูลที่ 14 มาตรฐานแฟ้มข้อมูลค่าใช้จ่ายเพิ่ม และบริการที่ยังไม่ได้จัดหมวด (ADP)
 $dbname14 = "ADP".$yy.$mm.".dbf";
 	$def14 = array(
 	  array("HN","C",15),
@@ -1491,7 +1558,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 
 
 
-						
+		// 10 = ค่าห้อง/ค่าอาหาร				
 		$sqlip ="select * from  ipacc  where an='".$an14."' and part='BFY' group by code ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
 		//echo $sqlip."</br>"; 
 		$resultip = mysql_query($sqlip) or die("Query ipcard failed14");
@@ -1541,10 +1608,10 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 									$price,
 									$newseq,
 									$cagcode, 	
-									$dose, 																																  				  
+									$dose, 																																
 									$catype,
 									$serialno,
-									$totcopay,
+									$totcopay,  //
 									$use_status,
 									$TOTAL,
 									$QTYDAY
@@ -1587,7 +1654,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 									$rate1,
 									$newseq1,
 									$cagcode, 	
-									$dose, 																																  				  
+									$dose, 																																
 									$catype,
 									$serialno,
 									$totcopay,
@@ -1603,7 +1670,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 			
 			
 		
-			
+		// 2 = Instrument
 		$sqlip2 ="select * from  ipacc  where an='".$an14."' and part='DPY' group by part";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
 		//echo $sqlip."</br>";
 		$resultip2 = mysql_query($sqlip2) or die("Query ipcard failed14");
@@ -1674,7 +1741,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 		
 		
 			
-			
+		// 11 = เวชภัณฑ์ที่ไม่ใช่ยา	
 		$sqlip3 ="select * from  ipacc  where an='".$an14."' and part='DSY' group by part ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
 		//echo $sqlip3."</br>";
 		$resultip3 = mysql_query($sqlip3) or die("Query ipcard failed14");
@@ -1713,7 +1780,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 									$rate,
 									$newseq,
 									$cagcode, 	
-									$dose, 																																  				  
+									$dose, 																															
 									$catype,
 									$serialno,
 									$totcopay,
@@ -1726,6 +1793,116 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 						}  // while
 					} // if part			
 			}  //while						
+
+
+		// 12 = ค่าบริการทันตกรรม	
+		$sqlip4 ="select * from  ipacc  where an='".$an14."' and (part='DENTA' || part='DENTAY')  group by part ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
+		//echo $sqlip3."</br>";
+		$resultip4 = mysql_query($sqlip4) or die("Query ipcard failed14");
+		$numip4 = mysql_num_rows($resultip4);
+		//echo "$numip3 </br>";
+		while($rowsip4 = mysql_fetch_array($resultip4)){			
+			$part4 =$rowsip4["part"];
+			
+			if($part4=="DENTA" || $part4=="DENTAY"){
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part3'";
+						//echo $sqlds."</br>";
+						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
+						while($rowsds = mysql_fetch_array($resultds)){
+						$ands=$rowsds["an"];						
+						//SEQ	
+						$rowidop=$rowsds["row_id"];
+						$newrowid = substr($rowidop,3,4);	
+						$newseq=$newdcdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+					//	$qty = $rowsds["amount"];
+						$qty = '1';
+						$rate =$rowsds["dsprice"];
+						$chrgitemip ="12";
+						$code =$rowsds["code"];
+						$use_status='1';						
+						if($ands !="" && $rate != 0){
+						//echo "DENTA--->$ands/$qty/$rate/$newseq </br>";								
+						$db14 = dbase_open($dbname14, 2);
+							if ($db14) {
+								dbase_add_record($db14, array(
+									$hn14, //
+									$an14, //
+									$newdcdate,  //
+									$chrgitemip,  //
+									$code,
+									$qty,
+									$rate,
+									$newseq,
+									$cagcode, 	
+									$dose, 																															
+									$catype,
+									$serialno,
+									$totcopay,
+									$use_status,
+									$TOTAL,
+									$QTYDAY));     
+									dbase_close($db14);
+								}  //if db			
+							}   //if check an				
+						}  // while
+					} // if part			
+			}  //while	
+			
+			
+			
+		// 13 = ค่าบริการฝังเข็ม	
+		$sqlip5 ="select * from  ipacc  where an='".$an14."' and (part='STX' || part='STXY')   group by part ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
+		//echo $sqlip3."</br>";
+		$resultip5 = mysql_query($sqlip5) or die("Query ipcard failed14");
+		$numip5 = mysql_num_rows($resultip5);
+		//echo "$numip3 </br>";
+		while($rowsip5 = mysql_fetch_array($resultip5)){			
+			$part5 =$rowsip5["part"];
+			
+			if($part5=="STX" || $part5=="STXY"){
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part3'";
+						//echo $sqlds."</br>";
+						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
+						while($rowsds = mysql_fetch_array($resultds)){
+						$ands=$rowsds["an"];						
+						//SEQ	
+						$rowidop=$rowsds["row_id"];
+						$newrowid = substr($rowidop,3,4);	
+						$newseq=$newdcdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+					//	$qty = $rowsds["amount"];
+						$qty = '1';
+						$rate =$rowsds["dsprice"];
+						$chrgitemip ="13";
+						$code =$rowsds["code"];
+						$use_status='1';						
+						if($ands !="" && $rate != 0){
+						//echo "DENTA--->$ands/$qty/$rate/$newseq </br>";								
+						$db14 = dbase_open($dbname14, 2);
+							if ($db14) {
+								dbase_add_record($db14, array(
+									$hn14, //
+									$an14, //
+									$newdcdate,  //
+									$chrgitemip,  //
+									$code,
+									$qty,
+									$rate,
+									$newseq,
+									$cagcode, 	
+									$dose, 																															
+									$catype,
+									$serialno,
+									$totcopay,
+									$use_status,
+									$TOTAL,
+									$QTYDAY));     
+									dbase_close($db14);
+								}  //if db			
+							}   //if check an				
+						}  // while
+					} // if part			
+			}  //while									
+
 					
 }  //while
 
@@ -1733,6 +1910,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 
 
 //---------------Start Dataset15---------------//
+
 $dbname15 = "LVD".$yy.$mm.".dbf";
 	$def15 = array(
 	  array("SEQLVD","C",3),
@@ -1752,6 +1930,7 @@ $dbname15 = "LVD".$yy.$mm.".dbf";
 
 
 //---------------Start Dataset16---------------//
+//แฟ้มข้อมูลที่ 16 มาตรฐานแฟ้มข้อมูลการใช้ยา (DRU)
 $dbname16 = "DRU".$yy.$mm.".dbf";
 	$def16 = array(
 	   array("HCODE","C",5),
@@ -1773,7 +1952,9 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 	  array("PA_NO","C",9),
 	  array("TOTCOPAY","N",7,0),	//เพิ่มใหม่  
 	  array("USE_STATUS","C",1),
-	   array("TOTAL","N",12,2)	  //เพิ่มใหม่  
+	  array("TOTAL","N",12,2),	  //เพิ่มใหม่  
+	  array("SIGCODE","C",50),
+	  array("SIGTEXT","C",255)
 	);
 	
 	// creation
@@ -1785,7 +1966,8 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			$dbsql ="select * from  ipcard  where $newcredit and dcdate like '".$_POST['year']."-".$_POST['mon']."%'  ";
 			$dbresult = mysql_query($dbsql) or die("Query ipcard failed16");
 			while($rowsdb = mysql_fetch_array($dbresult)){
-					$hcode16 ="11486";
+					//$hcode16 ="11486";
+					$hcode2 ="11512";
 					$hn16=$rowsdb["hn"];  //  HN ใช้ตัวแปรนี้นำเข้าข้อมูล	
 					$an16=$rowsdb["an"]; //  AN ใช้ตัวแปรนี้นำเข้าข้อมูล
 					
@@ -1794,21 +1976,28 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 					$newdatedc=$datedc[0]-543;
 					$newdcdate =$newdatedc.$datedc[1].$datedc[2];  //  DATE_SERV ใช้ตัวแปรนี้นำเข้าข้อมูล							
 					
-				$sqlip ="select *,sum(amount) as sumamount from  ipacc  where an='".$an16."' and (part ='DDL' || part ='DDY' ) group by code";
-				//echo $sqlip."</br>";
+				$sqlip ="select *,sum(amount) as sumamount from  ipacc  where an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code";
+				//echo $sqlip."==>";
 				$resultip = mysql_query($sqlip) or die("Query ipcard failed16");
+					$i=0;
 					while($rowsip = mysql_fetch_array($resultip)){
-					
+					$i++;
 						$dateip=$rowsip["date"];
 						$newdateip = substr($dateip,0,10);
-
+						//echo "$i===>$an16===>".$rowsip["code"];
+						$sqldrglist="select drugcode from druglst where drugcode='".$rowsip["code"]."'";
+						//echo $sqldrglist."</br>";
+						$querydrglist=mysql_query($sqldrglist);
+						list($drugcode16)=mysql_fetch_array($querydrglist);
 						
-						$drugcode16=$rowsip["code"];		
+									
+						//$drugcode16=$rowsip["code"];		
 						$drugname16=$rowsip["detail"];	
-						$amount16=$rowsip["sumamount"];  //  AMOUNT ใช้ตัวแปรนี้นำเข้าข้อมูล		
-						$amount=$rowsip["amount"];
-						$price=$rowsip["price"]; 
-						$saleprice = $price/$amount;   //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
+						$amount16=$rowsip["sumamount"];  //  AMOUNT จำนวนยา
+						$saleprice=$rowsip["price"]/$rowsip["amount"];	//ราคา/หน่วย	DRUGPRICE(ราคาขาย)
+						$total=$saleprice*$rowsip["sumamount"];  //TOTAL ราคารวมยาที่ขอเบิก
+						
+						//echo "===>รหัสยา:$drugcode16 ===>ราคา:$saleprice==>จำนวน:$amount16 ===>รวม:$total<br>";
 					
 						//---------------------ใช้ข้อมูลจากตาราง opday---------------------//	 	
 						$sqlop ="select * from opday where an ='".$an16."' ";   //  Query เอาข้อมูลจากตาราง opday
@@ -1841,7 +2030,8 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 						//$saleprice=$rowsdrx["salepri"];    //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
 						$unitprice=$rowsdrx["unitpri"];    //  DRUGCOST(ราคาทุน) ใช้ตัวแปรนี้นำเข้าข้อมูล
 						$unit=$rowsdrx["unit"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
-						$packing=$rowsdrx["packing"];    //  UNIT_PACK ใช้ตัวแปรนี้นำเข้าข้อมูล			
+						$packing=$rowsdrx["packing"];    //  UNIT_PACK ใช้ตัวแปรนี้นำเข้าข้อมูล	
+								
 						
 
 					$sql161 ="select * from  drugrx  where an='".$an16."' and drugcode ='".$drugcode16."' ";
@@ -1849,6 +2039,14 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 					$result161 = mysql_query($sql161) or die("Query failed16");
 					$num161= mysql_num_rows($result161);
 					$rows161 = mysql_fetch_array($result161);	
+					
+					$sigcode=$rows161["slcode"];  //รหัสวิธีใช้ยา
+					
+					$sqlslcode=mysql_query("select * from drugslip where slcode='".$rows161["slcode"]."'");
+					$resultslcode=mysql_fetch_array($sqlslcode);
+					
+					$sigtext=$resultslcode["detail1"]." ".$resultslcode["detail2"]." ".$resultslcode["detail3"]." ".$resultslcode["detail4"];  //วิธีใช้ยา
+	
 						
 								// ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF
 								$reason161=$rows161["reason"]; 
@@ -1875,11 +2073,13 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 								$unit, 	 //
 								$packing, 	  //
 								$newseq, 	 //
-								$newreason1, 		//																																  				  
+								$newreason1, 		//																															
 								$pano,
-								$totcopay,  //เพิ่มใหม่
-								$use_status ,
-								$total  //เพิ่มใหม่								
+								$totcopay,  //จำนวนเงินรวม หน่วยเป็นบาท ในส่วนที่เบิกไม่ได้
+								$use_status ,  //หมวดรายการยา
+								$total,  //จำนวนเงินรวมที่ขอเบิกของรายการนั้น
+								$sigcode,  //รหัสวิธีใช้ยา (ถ้ามี)
+								$sigtext		//วิธีใช้ยา (ถ้ามี)								
 								));     
 								dbase_close($db16);
 							}  //if db		
@@ -1902,11 +2102,13 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 										$unit, 	 //
 										$packing, 	  //
 										$newseq, 	 //
-										$reasondefault1, //																											  				  
+										$reasondefault1, //																											
 										$pano,
-										$totcopay,  //เพิ่มใหม่
-										$use_status,
-										$total   //เพิ่มใหม่										
+										$totcopay,  //จำนวนเงินรวม หน่วยเป็นบาท ในส่วนที่เบิกไม่ได้
+										$use_status ,  //หมวดรายการยา
+										$total,  //จำนวนเงินรวมที่ขอเบิกของรายการนั้น
+										$sigcode,  //รหัสวิธีใช้ยา (ถ้ามี)
+										$sigtext		//วิธีใช้ยา (ถ้ามี)								
 										));     
 										dbase_close($db16);
 									}  //if db						
@@ -1939,6 +2141,8 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 	$zip->addFile($dbname16, $dbname16); // Source,Destination	
 	$zip->save();
 	
-	echo "ดาวน์โหลดข้อมูล DBF ผู้ป่วยใน... เดือน $fullm  <a href=$ZipName>คลิกที่นี่</a>";	
+	echo "ดาวน์โหลดข้อมูล DBF ผู้ป่วยในเพื่อนำเข้าโปรแกรม E-Claim...สิทธิ $showptright...ประจำเดือน $fullm <a href=$ZipName>คลิกที่นี่ดาวน์โหลด</a>";	
+	
+	/*echo "<strong style='color:red;'>อยู่ระหว่างปรับปรุงโครงสร้างใหม่ หากต้องการดึงข้อมูลจริง กรุณาติดต่อ....แอมป์ โทร.6203 ครับ</strong>";*/
 }  // if check box ปิดสุดท้าย
 ?>
