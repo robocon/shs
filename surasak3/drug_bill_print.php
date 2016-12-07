@@ -1,4 +1,5 @@
 <?php
+# รายการยาที่เคยเบิกไปแล้ว
 include 'bootstrap.php';
 
 $id = (int) input_get('id');
