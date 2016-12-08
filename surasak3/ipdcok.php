@@ -1,13 +1,19 @@
 <?php
-  session_start();
-  $sOfficer=$_SESSION["sOfficer"];
- // include("class_file/class_refer.php");
-//  $obj = New refer;
-	  include("connect.inc");
-  $thidate = (date("Y")+543).date("-m-d H:i:s"); 
+session_start();
+$sOfficer=$_SESSION["sOfficer"];
+
+include("class_file/class_refer.php");
+$obj = New refer();
+
+include("connect.inc");
+$thidate = (date("Y")+543).date("-m-d H:i:s"); 
+
+$cAn = $_POST["cAn"];
+$cHn = $_POST["cHn"];
+$dctype_code = substr($_POST["dctype"],0,1);
 
 //เก็บข้อมูลหากคนไข้ Refer
-if(substr($_POST["dctype"],0,2) == "4"){
+if($dctype_code == "4"){
 			
 			$obj->sethn($cHn);
 			$obj->setan($cAn);

@@ -360,6 +360,10 @@ echo "
   print "  </div>";
 
   print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
+  ?>
+  <input type="hidden" name="cAn" value="<?=$oAn;?>">
+  <input type="hidden" name="cHn" value="<?=$oHn;?>">
+  <?php
   print "<input type='submit' value='    µ¡Å§    ' name='B1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   print "<input type='reset' value='  Åº·Ôé§  ' name='B2'></p>";
   print "</form>";
