@@ -4,7 +4,7 @@
  */
 include 'bootstrap.php';
 
-DB::load();
+$db = Mysql::load();
 
 $camp_lists = array(
 	'312600' => 'รพ.ค่ายสุรศักดิ์มนตรี',
@@ -17,34 +17,26 @@ $camp_lists = array(
 	// '312607' => 'หน่วยทหารอื่นๆ'
 );
 
-$sql = "
-CREATE TEMPORARY TABLE condxofyear_so_temp 
-SELECT a.`row_id`,a.`hn`,a.`thidate`,a.`camp1`,b.`yot`,b.`name`,b.`surname`,b.`idcard`,b.`dbirth`,a.`age`,b.`sex`,
-a.`cigarette`,a.`alcohol`,a.`exercise`,a.`weight`,a.`height`,a.`round_`,a.`bp1`,
-a.`bp2`,a.`bs`,a.`chol`,a.`tg`,a.`chunyot1`,a.`hdl`,a.`ldl`
-FROM `opcard` AS b
-LEFT JOIN `condxofyear_so` AS a ON a.`hn`=b.`hn`
-WHERE a.`yearcheck` = '2559' 
-#AND b.`name` != ''
+#a.`bs`, --> glu_result
+#a.`tg`, --> trig_result
+#
+$sql = "CREATE TEMPORARY TABLE condxofyear_so_temp 
+SELECT a.`row_id`,a.`hn`,a.`registerdate`,a.`camp`,a.`yot`,a.`ptname`,a.`idcard`,a.`birthday`,a.`age`,a.`gender`,
+a.`cigarette`,a.`alcohol`,a.`exercise`,a.`weight`,a.`height`,a.`waist`,a.`bp1`,
+a.`bp2`,a.`chol_result`,a.`chunyot`,a.`hdl_result`,a.`ldl_result`,a.`glu_result`,a.`trig_result`
+FROM `armychkup` AS a 
+WHERE a.`yearchkup` = '60' 
 GROUP BY a.`hn`
-ORDER BY a.`row_id` DESC
-";
-// echo "<pre>";
-// var_dump($sql);
-DB::select($sql, null);
-
-$db = Mysql::load();
-
-$sql = "DROP TEMPORARY TABLE IF EXISTS `condxofyear_so_temp`;";
+ORDER BY a.`row_id` DESC";
 $db->select($sql);
 
 $new_itmes = array();
 foreach($camp_lists as $key => $camp){
 	
-	$sql = "SELECT * FROM condxofyear_so_temp WHERE `camp1` LIKE '%$camp' ORDER BY `row_id` ASC ";
-	$items = DB::select($sql, null);
-	
-	
+	$sql = "SELECT * FROM condxofyear_so_temp WHERE `camp` LIKE '%$camp' ORDER BY `row_id` ASC ";
+	$db->select($sql);
+	$items = $db->get_items();
+
 	$yot1 = array('จอมพล','พล.อ.','พล.ท.','พล.ต.','พล.จ.','พ.อ.','พ.ท.','พ.ต.','ร.อ.','ร.ท.','ร.ต.','พลตรี');
 	$yot2 = array('จ.ส.อ.','จ.ส.อ .','จ.ส.ท.','จ.ส.ต.','ส.อ.','ส.อ','ส.ท.','ส.ต.');
 	$yot3 = array('นาย','นางสาว','น.ส.','นาง');
@@ -64,7 +56,6 @@ foreach($camp_lists as $key => $camp){
 		}else{
 			$value['rankgroup'] = 4;
 		}
-		
 		
 		$new_itmes[] = $value;
 		
@@ -105,38 +96,41 @@ foreach ($new_itmes as $key => $item) {
 		continue;
 	}
 	
+	// ต้องแยกชื่อเพื่อทำการเว้นวรรคตามรูปแบบการบันทึกข้อมูลสำหรับ AHDAP
+	list($firstname, $lastname) = explode(' ', $item['ptname']);
+
 	?>
 	<tr>
 		<td><?php echo $i; ?></td>
 		<td><?php echo $item['yot']; ?></td>
 		<td><?=$item['hn'];?></td>
-		<td><?php echo $item['name'].' '.$item['surname']; ?></td>
+		<td><?php echo $firstname.'&nbsp;&nbsp;'.$lastname; ?></td>
 		<td><?php echo $item['idcard']; ?></td>
 		<td><?php echo $item['camp_code'];?></td>
 		<td><?php echo $item['rankgroup'];?></td>
 		<td>
 			<?php 
-			list($y, $m, $d) = explode('-', $item['dbirth']); 
-			echo "$d/$m/$y";
+			list($y, $m, $d) = explode('-', $item['birthday']); 
+			echo "$d/$m/".($y+543);
 			?>
 		</td>
 		<td>
 			<?php echo substr($item['age'], 0, 2);?>
 		</td>
-		<td><?php echo ( $item['sex'] == 'ช' ) ? 1 : 2 ; ?></td>
+		<td><?php echo ( $item['gender'] == '1' ) ? 1 : 2 ; ?></td>
 		<td><?php // echo $item['cigarette']; ?></td>
 		<td><?php // echo $item['alcohol']; ?></td>
 		<td><?php // echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
 		<td><?php echo (float) $item['weight']; ?></td>
 		<td><?php echo $item['height']; ?></td>
-		<td><?php echo (float) $item['round_'];?></td>
+		<td><?php echo (float) $item['waist'];?></td>
 		<td><?php echo $item['bp1']; ?></td>
 		<td><?php echo $item['bp2']; ?></td>
-		<td><?php echo !empty($item['bs']) ? $item['bs'] : '' ; ?></td>
-		<td><?php echo !empty($item['chol']) ? $item['chol'] : '' ; ?></td>
-		<td><?php echo !empty($item['tg']) ? $item['tg'] : '' ; ?></td>
-		<td><?php echo !empty($item['hdl']) ? $item['hdl'] : '' ; ?></td>
-		<td><?php echo !empty($item['ldl']) ? $item['ldl'] : '' ; ?></td>
+		<td><?php echo !empty($item['glu_result']) ? $item['glu_result'] : '' ; ?></td>
+		<td><?php echo !empty($item['chol_result']) ? $item['chol_result'] : '' ; ?></td>
+		<td><?php echo !empty($item['trig_result']) ? $item['trig_result'] : '' ; ?></td>
+		<td><?php echo !empty($item['hdl_result']) ? $item['hdl_result'] : '' ; ?></td>
+		<td><?php echo !empty($item['ldl_result']) ? $item['ldl_result'] : '' ; ?></td>
 	</tr>
 	<?php
 	$i++;

@@ -3,11 +3,10 @@ session_start();
 include("connect.inc");
 
 if($_GET["action"] == "del"){
-
 	$sql = "Delete From `trauma_inject` where row_id = '".$_GET["rowid"]."' ";
 	Mysql_Query($sql);
 	echo "<meta http-equiv=\"REFRESH\" content=\"0;url=report_inject.php\">";
-exit();
+	exit();
 }
 
 	$list_ptright["P02"] = "ทหาร (น)";
@@ -25,19 +24,14 @@ exit();
 $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
 if(isset($_POST["submit"])){
-
-		$day_now = $_POST["d"];
-		$month_now = $_POST["m"];
-		$year_now = $_POST["yr"];
-
-	}else{
-	
-		$day_now = date("d");
-		$month_now = date("m");
-		$year_now = (date("Y")+543);
-
-	}
-
+	$day_now = $_POST["d"];
+	$month_now = $_POST["m"];
+	$year_now = $_POST["yr"];
+}else{
+	$day_now = isset($_GET['d']) ? $_GET['d'] : date("d") ;
+	$month_now = isset($_GET['m']) ? $_GET['m'] : date("m") ;
+	$year_now = isset($_GET['y']) ? $_GET['y'] : (date("Y")+543) ;
+}
 ?>
 <html>
 <head>
@@ -90,34 +84,40 @@ body,td,th {
 	</TR>
 	</TABLE>
 	</form>
-	
+	<?php
+	// todo เช็กอีกทีตอนส่ง get มาแล้วข้อมูลมันอ่านจาก input อยู่
+	?>
 	<Div id="menu1" style="color:#FF0000;">
-	<A HREF="report_trauma09.php" style="color:#FF0000;">ER</A> | <A HREF="report_trauma09_1.php?w=opd" style="color:#FF0000;">OPD</A> | <A HREF="report_trauma09_1.php?w=opd_eye" style="color:#FF0000;">จักษุ</A> | <A HREF="report_trauma09_1.php?w=opd_obg" style="color:#FF0000;">สูติ</A> | <A HREF="report_trauma09_1.php?w=42" style="color:#FF0000;">Wardรวม</A> | <A HREF="report_trauma09_1.php?w=44" style="color:#FF0000;">WardICU</A> | <A HREF="report_trauma09_1.php?w=45" style="color:#FF0000;">Wardพิเศษ</A> | <A HREF="report_trauma09_1.php?w=43" style="color:#FF0000;">Wardสูตินารี</A>
+		<A HREF="report_trauma09.php?m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">ER</A> | 
+		<A HREF="report_trauma09_1.php?w=opd" style="color:#FF0000;">OPD</A> | 
+		<A HREF="report_trauma09_1.php?w=opd_eye" style="color:#FF0000;">จักษุ</A> | 
+		<A HREF="report_trauma09_1.php?w=opd_obg" style="color:#FF0000;">สูติ</A> | 
+		<A HREF="report_trauma09_1.php?w=42" style="color:#FF0000;">Wardรวม</A> | 
+		<A HREF="report_trauma09_1.php?w=44" style="color:#FF0000;">WardICU</A> | 
+		<A HREF="report_trauma09_1.php?w=45" style="color:#FF0000;">Wardพิเศษ</A> | 
+		<A HREF="report_trauma09_1.php?w=43" style="color:#FF0000;">Wardสูตินารี</A>
 	</Div>
 
 <?php
 		
-		if(!empty($_POST["yr"]) && !empty($_POST["m"]) ){
-			
-			if(strlen($_POST["m"]) == 1){
-				$_POST["m"] = "0".$_POST["m"];
-			}
+if(!empty($_POST["yr"]) && !empty($_POST["m"]) ){
+	
+	if(strlen($_POST["m"]) == 1){
+		$_POST["m"] = "0".$_POST["m"];
+	}
 
-			$select_day = $_POST["yr"]."-".$_POST["m"]."-";
-			
-			$mm = $_POST["m"];
-			$yrr =  $_POST["yr"];
+	$select_day = $_POST["yr"]."-".$_POST["m"]."-";
+	$mm = $_POST["m"];
+	$yrr =  $_POST["yr"];
+}else{
+	$dd = date("d");
 
-		}else{
-		
-			$dd = date("d");
-			$mm = date("m");
-			$yrr = date("Y")+543;
-			$select_day = $yrr."-".$mm."-";
-			
-		}
+	$mm = isset($_GET['m']) ? $_GET['m'] : date("m") ;
+	$yrr = isset($_GET['y']) ? $_GET['y'] : (date("Y")+543) ;
+	$select_day = $yrr."-".$mm."-";
+}
 
-		$mm = ($mm * 1)-1;
+$mm = ($mm * 1)-1;
 ?>
 
 <CENTER>สรุปการ Refer ผู้ป่วย เดือน......<?php echo $thmonthname[$mm];?>......พ.ศ. .......<?php echo $yrr;?>.......<BR>
