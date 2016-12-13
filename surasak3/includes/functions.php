@@ -234,16 +234,17 @@ function getDateList($name = 'days', $match = null){
 
 /**
  * แสดงเดือนเป็น Dropdown
- *
+ * $name string ชื่อของตัวแปร
+ * $match string ค่าที่จับคู่ใน value
  */
-function getMonthList($name = 'months', $match = null){
+function getMonthList($name = 'months', $match = null, $class_name = false){
 	global $def_month_th;
 	if( empty($def_month_th) ){
 		echo 'กรุณาเปิด global variable ใน php.ini';
 		exit;
 	}
 	?>
-	<select name="<?=$name;?>">
+	<select name="<?=$name;?>" class="<?=$class_name;?>">
 		<?php foreach($def_month_th as $key => $month): ?>
 		<?php $select = ( $match == $key ) ? 'selected="selected"' : '' ; ?>
 		<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
@@ -263,9 +264,9 @@ function getMonthList($name = 'months', $match = null){
  * getYearList('new_name', true, 2558, array(2556,2557,2558,2559));
  * เป็นการตั้งชื่อ input ชื่อ new_name แสดงเป็นปี พศ และแสดงปี 2558 เป็นค่าเริ่มต้นโดยมีช่วงการแสดงผลตั้งแต่ปี 2556 ถึง 2559
  */
-function getYearList($name = 'years', $thai = false, $year = null, $range = array()){
+function getYearList($name = 'years', $thai = false, $year = null, $range = array(), $class_name = false){
 	?>
-	<select name="<?=$name;?>">
+	<select name="<?=$name;?>" class="<?=$class_name;?>">
 		<?php
 		if( !empty($range) ){
 			$y_min = min($range);
