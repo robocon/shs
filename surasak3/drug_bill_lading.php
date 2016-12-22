@@ -21,6 +21,7 @@ $runno = (int) $item['runno'];
 $sql = "UPDATE `runno` SET `runno` = '$runno' WHERE title = 'drugimp'; ";
 $db->update($sql);
 
+// เตรียมข้อมูลเอาไว้ก่อน
 for ($i=1; $i <= $rows; $i++) { 
 
 	$drugcode = trim($_POST['drx'.$i]);
@@ -47,10 +48,12 @@ for ($i=1; $i <= $rows; $i++) {
 	$db->insert($insert_sql);
 
     $full_items[$i] = array(
+		'drugcode' => $drugcode,
         'tradename' => $tradename,
         'rxdrug' => $rxdrug,
         'num' => $num
     );
 }
 
+// แล้วเอา $full_items โยนเข้าไปหน้ารายงานอย่างเดียวเลยจ้า
 include 'bill_lading_pdf.php';

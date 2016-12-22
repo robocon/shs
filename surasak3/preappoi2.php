@@ -178,6 +178,12 @@ if( !isset($_GET['action']) ){
 			'22 ธันวาคม 2559' => 0,
 			'23 ธันวาคม 2559' => 0
 		);
+	}elseif( $_POST['doctor'] == 'HD ณรงค์ (ว.12456)' OR $_POST['doctor'] == 'MD007 ณรงค์ ปรีดาอนันทสุข' ){
+		$dr_name = 'หมอ ณรงค์ ปรีดาอนันทสุข';
+		$manual_lock = array(
+			'05 มกราคม 2560' => 0,
+			'06 มกราคม 2560' => 0
+		);
 	}
 
 	if( isset($manual_lock[$date_appoint]) === true ){

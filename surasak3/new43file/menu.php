@@ -3,5 +3,9 @@
     <a href="specialpp.php">SPECIALPP</a> | 
     <a href="onlycharge_ipd.php">CHARGE_IPD</a> | 
     <a href="onlycard.php">CARD</a> | 
-    <a href="popuckai.php">อัพเดทข้อมูลผู้ป่วยสิทธิ์ 30บาท</a>
+    <a href="popuckai.php">อัพเดทข้อมูลผู้ป่วยสิทธิ์ 30บาท</a> | 
+    <!--
+    <a href="diff_person.php">เปรียบเทียบข้อมูล person</a>
+    -->
+    <a href="pt30baht.php">ดึงข้อมูล ผป.สิทธิ30บาท</a>
 </div>

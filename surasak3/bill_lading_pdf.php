@@ -116,9 +116,13 @@ class PDF_AutoPrint extends PDF_JavaScript{
         $this->SetXY(75, 19);
         $this->SetFont('THSarabun', 'B', 38);
         $this->Cell(30, 11, 'ใบเบิก', 0, 1, 'C');
+        
         $this->SetXY(108, 19);
         $this->SetFont('THSarabun', '', 17);
-        $this->Cell(70, 11, 'วันที่ ...............'.$date_serve.'...............', 0, 1, 'R');
+        $this->Cell(70, 11, 'วันที่ .............................................................', 0, 1, 'R');
+        // y -1 เพื่อให้วันที่มันลอยขึ้นมานิดหนึ่ง
+        $this->SetXY(125, 18);
+        $this->Cell(35, 11, $date_serve, 0, 1, 'C');
 
         $this->Rect(8, 30, 170, 11); // กรอบ
         $this->SetXY(10, 30);
@@ -130,44 +134,25 @@ class PDF_AutoPrint extends PDF_JavaScript{
 
         // หัวข้อรายการด้านซ้าย
         $this->SetXY(8, 41);
-        $this->Cell(50, 18, 'รายการ', 1, 1, 'C');
+        $this->Cell(25, 18, 'รหัสยา', 1, 1, 'C');
 
-        $this->Rect(58, 41, 10, 18);
-        $this->SetFont('THSarabun', '', 12);
-        $this->SetXY(58, 45);
-        $this->MultiCell(10, 5, 'จำนวนเบิก', 0, 'C');
+        $this->SetXY(33, 41);
+        $this->Cell(85, 18, 'รายการ', 1, 1, 'C');
 
-        $this->Rect(68, 41, 10, 18);
-        $this->SetXY(68, 45);
-        $this->MultiCell(10, 5, 'จ่าย จริง', 0, 'C');
+        $this->SetXY(118, 41);
+        // $this->Cell(15, 18, 'จำนวนเบิก', 1, 1, 'C');
+        $this->Multicell(15, 9, 'จำนวน เบิก', 1, 'C');
 
-        $this->SetXY(78, 41);
-        $this->Cell(15, 11, 'เป็นเงิน', 1, 1, 'C');
-        $this->SetXY(78, 52);
-        $this->Cell(9, 7, 'บาท', 1, 1, 'C');
-        $this->SetXY(87, 52);
-        $this->Cell(6, 7, 'สต.', 1, 1, 'C');
+        $this->SetXY(133, 41);
+        $this->Cell(15, 18, 'จ่ายจริง', 1, 1, 'C');
 
-        // หัวข้อรายการด้านขวา
-        $this->SetXY(93, 41);
-        $this->SetFont('THSarabun', '', 17);
-        $this->Cell(50, 18, 'รายการ', 1, 1, 'C');
+        $this->SetXY(148, 41);
+        $this->Cell(30, 11, 'เป็นเงิน', 1, 1, 'C');
+        $this->SetXY(148, 52);
+        $this->Cell(18, 7, 'บาท', 1, 1, 'C');
+        $this->SetXY(166, 52);
+        $this->Cell(12, 7, 'สต.', 1, 1, 'C');
 
-        $this->Rect(143, 41, 10, 18);
-        $this->SetFont('THSarabun', '', 12);
-        $this->SetXY(143, 45);
-        $this->MultiCell(10, 5, 'จำนวนเบิก', 0, 'C');
-
-        $this->Rect(153, 41, 10, 18);
-        $this->SetXY(153, 45);
-        $this->MultiCell(10, 5, 'จ่าย จริง', 0, 'C');
-
-        $this->SetXY(163, 41);
-        $this->Cell(15, 11, 'เป็นเงิน', 1, 1, 'C');
-        $this->SetXY(163, 52);
-        $this->Cell(9, 7, 'บาท', 1, 1, 'C');
-        $this->SetXY(172, 52);
-        $this->Cell(6, 7, 'สต.', 1, 1, 'C');
     }
 
     function Footer(){
@@ -237,78 +222,94 @@ $pdf->AddPage();
 
 $pdf->SetFont('THSarabun', '', 15);
 
-$max_row = 34; // จำนวนแถวต่อหนึ่งหน้ากระดาษ
-
+// ค่าแกน y ที่เป็นบรรทัดเริ่มต้น
 $y_start = 59;
-$line_height = 7.5;
 
-// หาจำนวนเต็มของตาราง
+// ค่าแกน X
+$x_drugcode = 8; 
+$x_tradename = 33;
+$x_drugbring = 118;
+$x_pay = 133;
+$x_baht = 148;
+$x_smallbaht = 166;
+
+$max_row = 17; // จำนวนแถวต่อหนึ่งหน้ากระดาษที่ความสูง 7.5
+$default_line_height = 7.5; // ความสูงมาตรฐาน
+$line_total = 0; // จำนวนบรรทัดทั้งหมด
+
+$line_max_height = $y_start + ($default_line_height * $max_row) ; // ความสูงต่อหนึ่งหน้ากระดาษ
+
+// จำนวนยา
 $item_rows = count($full_items);
-$full_rows = ( ceil(( $item_rows / $max_row )) ) * $max_row ;
 
-$row_i = 0;
-$line_num = 0; // นับจำนวนแถวของ column ซ้ายและขวา
-$item_i = 0;
+// จำนวนที่แท้จริงของตาราง
+// ต.ย. เช่น จำนวนยามี25 จำนวนช่องก็จะตัดเป็น 34 (2หน้ากระดาษ)
+$full_rows = (int) ( ceil(( $item_rows / $max_row )) ) * $max_row ;
 
-for( $i=1; $i<=$full_rows; $i++){
-    ++$line_num;
-    ++$row_i;
+$line_number = 0;
+$over_line_limit = 0;
 
-    // ถ้าเป็น column ซ้ายมือจะใช้ค่า X ตามนี้
-    if( $row_i <= 17 ){
-        $x1 = 8;
-        $x2 = 58;
-        $x3 = 68;
-        $x4 = 78;
-        $x5 = 87;
-    }elseif( $row_i >= 18 && $row_i <= 34 ){ // ถ้าเป็น column ขวามือจะใช้ค่า X ตามนี้
-        $x1 = 93;
-        $x2 = 143;
-        $x3 = 153;
-        $x4 = 163;
-        $x5 = 172;
-    }
+for ($i=1; $i <= $full_rows; $i++) { 
+    
+    $line_height = $default_line_height;
+    $item = $full_items[$i];
+    
+    if( !empty($item) ){
 
-    if( isset($full_items[$i]) ){
+        // รองรับแค่ที่2บรรทัด
+        $tradename = trim($item['tradename']);
+        $test_count_tradename = strlen($item['tradename']);
+        if( !empty($item) && $test_count_tradename >= 48 ){
 
-        ++$item_i;
+            $line_height += $default_line_height; // เบิ้ลความสูง
+            ++$line_number; // เบิ้ลจำนวนบรรทัด
 
-        $item = $full_items[$i];
-        $pdf->SetXY($x1, $y_start);
-        $pdf->Cell(50, $line_height, $item['tradename'], 1, 1, 'L');
-        $pdf->SetXY($x2, $y_start);
-        $pdf->Cell(10, $line_height, $item['num'], 1, 1, 'R');
+            ++$over_line_limit; // นับจำนวนที่มันเกินว่ามีกี่บรรทัด
+        }
+
+        // รหัสยา
+        $pdf->SetXY($x_drugcode, $y_start);
+        $pdf->Cell(25, $line_height, $item['drugcode'], 0, 0, 'L');
+
+        // รายการยา
+        $pdf->SetXY($x_tradename, $y_start);
+        $pdf->Multicell(85, $default_line_height, $tradename, 0, 'L');
+
+        // จำนวนเบิก
+        $pdf->SetXY($x_drugbring, $y_start);
+        $drug_num = ( empty($item['num']) ) ? 0 : $item['num'] ; 
+        $pdf->Cell(15, $line_height, $drug_num, 0, 0, 'R');
 
     }else{
-        $pdf->Rect($x1, $y_start, 50, $line_height); //รายการ
-        $pdf->Rect($x2, $y_start, 10, $line_height); //จำนวนเบิก
-
+        // ถ้ามีบรรทัดที่เกิน(ไอ่ที่มันเบิ้ล2บรรทัด) ข้ามไปเล๊ยยยยย
+        if( $over_line_limit > 0 ){
+            --$over_line_limit;
+            continue;
+        }
     }
+
+    // บรรทัดจะว่างหรือไม่ว่างก็นับแม่งเลยสัส
+    ++$line_number;
+
+    $pdf->Rect($x_drugcode, $y_start, 25, $line_height); //รหัสยา
+    $pdf->Rect($x_tradename, $y_start, 85, $line_height); //รายการยา
+    $pdf->Rect($x_drugbring, $y_start, 15, $line_height); //จำนวนเบิก
 
     // สามช่องด้านขวาของแต่ละ column เป็นค่าว่าง
-    $pdf->Rect($x3, $y_start, 10, $line_height); //จ่ายจริง
-    $pdf->Rect($x4, $y_start, 9, $line_height); //เป็นเงิน(บาท)
-    $pdf->Rect($x5, $y_start, 6, $line_height); //เป็นเงิน(สต.)
+    $pdf->Rect($x_pay, $y_start, 15, $line_height); //จ่ายจริง
+    $pdf->Rect($x_baht, $y_start, 18, $line_height); //เป็นเงิน(บาท)
 
-    $y_start += 7.5;
     
-    // เมื่อครบ 34 แถว(ซ้าย+ขวา) ให้รีเซ็ตใหม่
-    if( $row_i === 34 ){
-        $row_i = 0;
-    }
+    $pdf->Rect($x_smallbaht, $y_start, 12, $line_height); //เป็นเงิน(สต.)
 
-    // นับจำนวนที่แท้จริงของแถวต่อหนึ่งหน้ากระดาษเพื่อไม่ให้มันเด้งแสดงหน้าใหม่
-    // เช่นแถวทั้งหมดมี 34 แต่มีข้อมูลจริงๆ 25 เป็นต้น
-    if( $item_i === 34 ){
-        $item_i = 0;
+    $y_start += $line_height; // ขึ้นบรรทัดใหม่ไปเรื่อยๆ
+
+    if( $line_number == $max_row && !empty($item) ){
+        $y_start = 59;
+        $line_number = 0;
         $pdf->AddPage();
     }
 
-    // แถวซ้ายหรือขวาเมื่อครบ 17 แถวให้รีเซ็ตจุดที่จะเริ่มนับใหม่
-    if( $line_num === 17 ){
-        $y_start = 59;
-        $line_num = 0;
-    }
 }
 
 $pdf->AutoPrint(true);

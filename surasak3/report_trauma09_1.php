@@ -25,73 +25,65 @@ exit();
 $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
 if(isset($_POST["submit"])){
-
-		$day_now = $_POST["d"];
-		$month_now = $_POST["m"];
-		$year_now = $_POST["yr"];
-
-	}else{
-	
-		$day_now = date("d");
-		$month_now = date("m");
-		$year_now = (date("Y")+543);
-
-	}
+	$day_now = $_POST["d"];
+	$month_now = $_POST["m"];
+	$year_now = $_POST["yr"];
+}else{
+	$day_now = isset($_GET['d']) ? $_GET['d'] : date("d") ;
+	$month_now = isset($_GET['m']) ? $_GET['m'] : date("m") ;
+	$year_now = isset($_GET['y']) ? $_GET['y'] : (date("Y")+543) ;
+}
 
 ?>
 <html>
 <head>
 <style type="text/css">
-
-
 a:link {color:#000000; text-decoration:underline;}
 a:visited {color:#000000; text-decoration:underline;}
 a:active {color:#000000; text-decoration:underline;}
 a:hover {color:#000000; text-decoration:underline;}
-
 body,td,th {
 	font-family:  MS Sans Serif;
 	font-size: 14 px;
 }
-
 .font_title{
 	font-family:  MS Sans Serif;
 	font-size: 14 px;
 	color:#FFFFFF;
 	font-weight: bold;
-
 }
 </style>
 </head>
 <body>
 <SCRIPT LANGUAGE="JavaScript">
-	
-		function wprint(){
-
-			document.getElementById("form_01").style.display='none';
-			document.getElementById("menu1").style.display='none';
-			window.print();
-
-		}
-	
-	</SCRIPT>
+	function wprint(){
+		document.getElementById("form_01").style.display='none';
+		document.getElementById("menu1").style.display='none';
+		window.print();
+	}
+</SCRIPT>
 	<form method='POST' action=''>
-	<TABLE id="form_01">
-	<TR>
-		<TD>
-		
-	เดือน&nbsp; <input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;&nbsp;
-	พ.ศ. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
-		</TD>
-	</TR>
-	
-	<TR>
-		<TD><input type='submit' name="submit" value='     ตกลง     ' >&nbsp;<INPUT TYPE="button" value="print" onclick="wprint();"></TD>
-	</TR>
-	</TABLE>
+		<TABLE id="form_01">
+			<TR>
+				<TD>
+					เดือน&nbsp; <input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;&nbsp;
+					พ.ศ. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
+				</TD>
+			</TR>
+			<TR>
+				<TD><input type='submit' name="submit" value='     ตกลง     ' >&nbsp;<INPUT TYPE="button" value="print" onclick="wprint();"></TD>
+			</TR>
+		</TABLE>
 	</form>
 	<Div id="menu1" style="color:#FF0000;">
-	<A HREF="report_trauma09.php" style="color:#FF0000;">ER</A> | <A HREF="report_trauma09_1.php?w=opd" style="color:#FF0000;">OPD</A> | <A HREF="report_trauma09_1.php?w=opd_eye" style="color:#FF0000;">จักษุ</A> | <A HREF="report_trauma09_1.php?w=opd_obg" style="color:#FF0000;">สูติ</A> | <A HREF="report_trauma09_1.php?w=42" style="color:#FF0000;">Wardรวม</A> | <A HREF="report_trauma09_1.php?w=44" style="color:#FF0000;">WardICU</A> | <A HREF="report_trauma09_1.php?w=45" style="color:#FF0000;">Wardพิเศษ</A> | <A HREF="report_trauma09_1.php?w=43" style="color:#FF0000;">Wardสูตินารี</A>
+		<A HREF="report_trauma09.php?m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">ER</A> | 
+		<A HREF="report_trauma09_1.php?w=opd&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">OPD</A> | 
+		<A HREF="report_trauma09_1.php?w=opd_eye&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">จักษุ</A> | 
+		<A HREF="report_trauma09_1.php?w=opd_obg&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">สูติ</A> | 
+		<A HREF="report_trauma09_1.php?w=42&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">Wardรวม</A> | 
+		<A HREF="report_trauma09_1.php?w=44&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">WardICU</A> | 
+		<A HREF="report_trauma09_1.php?w=45&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">Wardพิเศษ</A> | 
+		<A HREF="report_trauma09_1.php?w=43&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">Wardสูตินารี</A>
 	</Div>
 <?php
 		
@@ -107,10 +99,10 @@ body,td,th {
 			$yrr =  $_POST["yr"];
 
 		}else{
-		
-			$dd = date("d");
-			$mm = date("m");
-			$yrr = date("Y")+543;
+
+			$dd = isset($_GET['d']) ? $_GET['d'] : date("d") ;
+			$mm = isset($_GET['m']) ? $_GET['m'] : date("m") ;
+			$yrr = isset($_GET['y']) ? $_GET['y'] : (date("Y")+543) ;
 			$select_day = $yrr."-".$mm."-";
 			
 		}
@@ -119,17 +111,17 @@ body,td,th {
 ?>
 
 <CENTER>สรุปการ Refer ผู้ป่วย เดือน......<?php echo $thmonthname[$mm];?>......พ.ศ. .......<?php echo $yrr;?>.......<BR>
-						หอผู้ป่วย<?php
-						
-						switch($_GET["w"]){
-							case "42": echo "รวม"; $filedward = "Ward".$_GET["w"]."%"; break;
-							case "45":  echo "พิเศษ";  $filedward = "Ward".$_GET["w"]."%"; break;
-							case "44":  echo "ICU";  $filedward = "Ward".$_GET["w"]."%"; break;
-							case "43":  echo "สูตินรี";  $filedward = "Ward".$_GET["w"]."%"; break;
-							case "opd":  echo "OPD";  $filedward = "opd"; $date_field = "a.dateopd"; break;
-							case "opd_eye":  echo "จักษุ";  $filedward = "opd_eye"; $date_field = "a.dateopd"; break;
-							case "opd_obg":  echo "สูติ";  $filedward = "opd_obg"; $date_field = "a.dateopd"; break;
-						}
+หอผู้ป่วย<?php
+
+switch($_GET["w"]){
+	case "42": echo "รวม"; $filedward = "Ward".$_GET["w"]."%"; break;
+	case "45":  echo "พิเศษ";  $filedward = "Ward".$_GET["w"]."%"; break;
+	case "44":  echo "ICU";  $filedward = "Ward".$_GET["w"]."%"; break;
+	case "43":  echo "สูตินรี";  $filedward = "Ward".$_GET["w"]."%"; break;
+	case "opd":  echo "OPD";  $filedward = "opd"; $date_field = "a.dateopd"; break;
+	case "opd_eye":  echo "จักษุ";  $filedward = "opd_eye"; $date_field = "a.dateopd"; break;
+	case "opd_obg":  echo "สูติ";  $filedward = "opd_obg"; $date_field = "a.dateopd"; break;
+}
 
 						?> รพ.ค่ายสุรศักดิ์มนตรี
 </CENTER>
@@ -264,10 +256,13 @@ $i++;
 <?php
 	
 	$i=1;
-	
-	$sql = "Select a.name, a.sname, a.age, a.hn, a.an, a.type_wound, date_format(".$date_field.",'%d-%m-%Y'), date_format(".$date_field.",'%H:%i'), time_format(a.time_refer,'%H:%i'), a.doctor, a.diag, a.exrefer , a.referh, a.problem_refer, a.pttype, a.refercar, a.list_type_patient, a.follow_refer, a.organ, a.maintenance, a.doc_refer, a.nurse, a.assistant_nurse, a.estimate, a.no_estimate, a.cradle, a.doc_txt, a.suggestion  From refer as a INNER JOIN ipcard as b ON a.an=b.an Where ".$where." ";
-	 
 
+	$sql = "SELECT a.name, a.sname, a.age, a.hn, a.an, a.type_wound, date_format(".$date_field.",'%d-%m-%Y'), date_format(".$date_field.",'%H:%i'), time_format(a.time_refer,'%H:%i'), a.doctor, a.diag, a.exrefer , a.referh, a.problem_refer, a.pttype, a.refercar, a.list_type_patient, a.follow_refer, a.organ, a.maintenance, a.doc_refer, a.nurse, a.assistant_nurse, a.estimate, a.no_estimate, a.cradle, a.doc_txt, a.suggestion  
+	FROM `refer` AS a 
+	INNER JOIN ipcard as b ON a.an=b.an 
+	WHERE ".$where." ";
+
+	
 	$result = Mysql_Query($sql);
 	while(list($name, $sname, $age, $hn, $an, $type_wound, $date, $time_date, $time_refer, $doctor, $diag, $exrefer , $referh, $problem_refer, $pttype, $refercar, $list_type_patient, $follow_refer, $organ, $maintenance, $doc_refer, $nurse, $assistant_nurse, $estimate, $no_estimate, $cradle, $doc_txt, $suggestion) = mysql_fetch_row($result)){
 		

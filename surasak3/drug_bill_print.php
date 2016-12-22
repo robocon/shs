@@ -4,7 +4,7 @@ include 'bootstrap.php';
 
 $id = (int) input_get('id');
 $db = Mysql::load();
-$sql = "SELECT `thidate`,`tradname`,`dispense`,`amountrx` 
+$sql = "SELECT `thidate`,`drugcode`,`tradname`,`dispense`,`amountrx` 
 FROM `drugimport` 
 WHERE `idno` = '$id' ";
 $db->select($sql);
@@ -18,6 +18,7 @@ for ($i=0; $i < $rows ; $i++) {
     $item = $items[$i];
     ++$set_i;
     $full_items[$set_i] = array(
+        'drugcode' => $item['drugcode'],
         'tradename' => $item['tradname'],
         'rxdrug' => $item['dispense'],
         'num' => $item['amountrx']

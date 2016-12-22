@@ -10,7 +10,7 @@ $action = input('action');
 
 if( $action === false ){
 	include 'menu.php';
-?>
+	?>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
 		<p>อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
