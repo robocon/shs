@@ -89,13 +89,13 @@ body,td,th {
 	?>
 	<Div id="menu1" style="color:#FF0000;">
 		<A HREF="report_trauma09.php?m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">ER</A> | 
-		<A HREF="report_trauma09_1.php?w=opd" style="color:#FF0000;">OPD</A> | 
-		<A HREF="report_trauma09_1.php?w=opd_eye" style="color:#FF0000;">®—°…ÿ</A> | 
-		<A HREF="report_trauma09_1.php?w=opd_obg" style="color:#FF0000;"> Ÿµ‘</A> | 
-		<A HREF="report_trauma09_1.php?w=42" style="color:#FF0000;">Ward√«¡</A> | 
-		<A HREF="report_trauma09_1.php?w=44" style="color:#FF0000;">WardICU</A> | 
-		<A HREF="report_trauma09_1.php?w=45" style="color:#FF0000;">Wardæ‘‡»…</A> | 
-		<A HREF="report_trauma09_1.php?w=43" style="color:#FF0000;">Ward Ÿµ‘π“√’</A>
+		<A HREF="report_trauma09_1.php?w=opd&m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">OPD</A> | 
+		<A HREF="report_trauma09_1.php?w=opd_eyem=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">®—°…ÿ</A> | 
+		<A HREF="report_trauma09_1.php?w=opd_obgm=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;"> Ÿµ‘</A> | 
+		<A HREF="report_trauma09_1.php?w=42m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">Ward√«¡</A> | 
+		<A HREF="report_trauma09_1.php?w=44m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">WardICU</A> | 
+		<A HREF="report_trauma09_1.php?w=45m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">Wardæ‘‡»…</A> | 
+		<A HREF="report_trauma09_1.php?w=43m=<?=$month_now;?>&y=<?=$year_now;?>" style="color:#FF0000;">Ward Ÿµ‘π“√’</A>
 	</Div>
 
 <?php
@@ -110,11 +110,12 @@ if(!empty($_POST["yr"]) && !empty($_POST["m"]) ){
 	$mm = $_POST["m"];
 	$yrr =  $_POST["yr"];
 }else{
-	$dd = date("d");
 
+	$dd = isset($_GET['d']) ? $_GET['d'] : date("d") ;
 	$mm = isset($_GET['m']) ? $_GET['m'] : date("m") ;
 	$yrr = isset($_GET['y']) ? $_GET['y'] : (date("Y")+543) ;
 	$select_day = $yrr."-".$mm."-";
+	
 }
 
 $mm = ($mm * 1)-1;
@@ -252,7 +253,12 @@ $i++;
 <?php
 	
 	$i=1;
-	$sql = "Select a.row_id, a.hn, a.an, a.age,CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.list_ptright, date_format(a.date_in,'%d/%m/%Y'), left(a.time_in,5), left(a.time_out,5), a.doctor, a.consult, a.dx, a.organ, a.maintenance, a.cause_refer, a.refer_hospital, a.problem_refer, a.`repeat`, a.`type_wounded`, a.`type_wounded2`, a.`suggestion`, a.`doc_refer`,  a.`nurse`,  a.`assistant_nurse`,  a.`estimate`,  a.`no_estimate`,  a.`cradle`,  a.`doc_txt`, a.`type_patient` ,a.`means_refer`,a.`follow_refer`  From `trauma` as a LEFT JOIN opcard as b ON a.hn = b.hn where  ( a.date_in like '".$select_day."%' )  AND a.cure = 'refer'   AND ( doc_refer = '1' OR doc_txt = '1' ) ";
+	$sql = "SELECT a.row_id, a.hn, a.an, a.age,CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.list_ptright, date_format(a.date_in,'%d/%m/%Y'), left(a.time_in,5), left(a.time_out,5), a.doctor, a.consult, a.dx, a.organ, a.maintenance, a.cause_refer, a.refer_hospital, a.problem_refer, a.`repeat`, a.`type_wounded`, a.`type_wounded2`, a.`suggestion`, a.`doc_refer`,  a.`nurse`,  a.`assistant_nurse`,  a.`estimate`,  a.`no_estimate`,  a.`cradle`,  a.`doc_txt`, a.`type_patient` ,a.`means_refer`,a.`follow_refer`  
+	FROM `trauma` as a 
+	LEFT JOIN opcard AS b ON a.hn = b.hn 
+	WHERE ( a.date_in LIKE '".$select_day."%' ) 
+	AND a.cure = 'refer' 
+	AND ( doc_refer = '1' OR doc_txt = '1' )";
 	
 	$result = Mysql_Query($sql);
 	while(list($row_id, $hn, $an, $age,$ull_name, $list_ptright2, $date_in, $time_in, $time_out, $doctor, $consult, $dx, $organ, $maintenance, $cause_refer, $refer_hospital, $problem_refer, $repeat, $type_wounded, $type_wounded2,$suggestion, $doc_refer,  $nurse,  $assistant_nurse,  $estimate,  $no_estimate,  $cradle,  $doc_txt, $type_patient, $means_refer,$follow_refer) = mysql_fetch_row($result)){

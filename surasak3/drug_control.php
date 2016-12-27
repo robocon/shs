@@ -269,6 +269,7 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 				<tr>
 					<td width="4%" align="center" bgcolor="#FF9966" class="font1"><strong>วันที่เบิก</strong></td>
 					<td width="5%" align="center" bgcolor="#FF9966" class="font1"><strong>จำนวน (รายการ)</strong></td>
+					<td width="5%" align="center" bgcolor="#FF9966" class="font1"><strong>พิมพ์ใบเบิกใหม่</strong></td>
 				</tr>
 				<?php
 				$sel2 = "SELECT `thidate`, COUNT(`row_id`) AS `sum`, `idno` 
@@ -282,6 +283,9 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 					<tr>
 						<td align="center" bgcolor="#FFFFCC" class="font1"><a target="_blank" href="print_drugimport.php?id=<?=$result2['idno']?>"><?=$result2['thidate']?></a></td>
 						<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['sum']?></td>
+						<td align="center" bgcolor="#FFFFCC" class="font1">
+							<a target="_blank" href="drug_bill_print.php?id=<?=$result2['idno']?>">พิมพ์</a>
+						</td>
 					</tr>
 					<?php
 				}

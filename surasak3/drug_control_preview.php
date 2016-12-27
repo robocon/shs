@@ -1,6 +1,26 @@
 <?php
 session_start();
 include("connect.inc");
+
+// เช็กก่อนว่ารายการไหนใส่ตัวเลขมาจริงๆ แล้วบ้าง
+// อนุญาตให้ใช้ 0
+$cont = $_POST['sump'];
+$test_real_item = 0;
+for ($i=1; $i <= $cont; $i++) { 
+	$drug_import =  $_POST['import'.$i];
+	// var_dump($drug_import);
+	if( $drug_import !== '' ){
+		++$test_real_item;
+	}
+}
+
+if( $test_real_item === 0 ){
+	echo 'กรุณาเลือกยาอย่างน้อย 1รายการ<br><a href="javascript:window.close()">กลับ</a>';
+	exit;
+}
+
+// exit;
+
 ?>
 <style type="text/css">
 <!--
@@ -33,9 +53,8 @@ include("connect.inc");
       <td width="8%" align="center">จ่ายจริง</td>
     </tr>
 	<?php
-	$cont = $_POST['sump'];
 	for($p=1; $p<=$cont; $p++){
-		if($_POST['import'.$p]!=""||$_POST['import'.$p]!=0){
+		if( $_POST['import'.$p] != "" OR $_POST['import'.$p] != 0 ){
 			$sel2 = "select * from druglst where drugcode= '".$_POST['drx'.$p]."'";
 			$row2 = mysql_query($sel2);
 			$result2 = mysql_fetch_array($row2);
@@ -81,11 +100,11 @@ include("connect.inc");
 			OR $smenucode === 'ADM' 
 		){
 			?>
-			<input type="submit" name="save" id="save" value="ตกลง" />
+			<input type="submit" name="save" id="save" value="ใบเบิกเดิม" />
+			<button id="shsBtn">ใบเบิกใหม่</button>
 			<?php
 		}
 		?>
-		<button id="shsBtn">ใบเบิกใหม่</button>
     </td>
     </tr>
   </table>
@@ -94,14 +113,28 @@ include("connect.inc");
 <script type="text/javascript">
 	$(function(){
 
-		// เช็กดูก่อนว่ามีปุ่มนี้รึป่าว
+		// ใบเบิกใหม่
 		if( $('#shsBtn').length > 0 ){
 			$(document).on('click', '#shsBtn', function(e){
 				e.preventDefault();
-				$('#form1').attr('action','drug_bill_lading.php').submit();
+				$('#form1').attr({
+					action:'drug_bill_lading.php', 
+					target: '_blank'
+				}).submit();
 				return false;
 			});
 		}
-		
+
+		// ใบเบิกเดิม
+		if( $('#save').length > 0 ){
+			$(document).on('click', '#save', function(e){
+				e.preventDefault();
+				$('#form1').attr({
+					action:'drugimport.php', 
+					target: '_blank'
+				}).submit();
+				return false;
+			});
+		}
 	});
 </script>
