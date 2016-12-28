@@ -3,7 +3,11 @@ include 'bootstrap.php';
 
 include 'templates/classic/header.php';
 
-$doctors = array('87' => 'ขชล รวมทรัพย์', '20' => 'วรวิทย์ วงษ์มณี');
+$doctors = array(
+	'87' => 'ขชล รวมทรัพย์', 
+	'20' => 'วรวิทย์ วงษ์มณี',
+	'116' => 'จรรยวรรธน์  สร้างสมวงษ์'
+);
 
 $th_date = !empty($_POST['year_select']) ? trim($_POST['year_select']) : date('Y') + 543 ;
 $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;

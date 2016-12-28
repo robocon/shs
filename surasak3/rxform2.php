@@ -11,11 +11,11 @@
 
 <?php
 
-    session_start();
-    $thdatehn="";
-    session_register("thdatehn"); 
- 
-    include("connect.inc");   
+session_start();
+$thdatehn="";
+session_register("thdatehn"); 
+
+include("connect.inc");   
 
 $ok = 'N';
 

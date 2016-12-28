@@ -112,6 +112,7 @@ include 'templates/classic/header.php';
 			<li><a href="phar_allergic.php">รายการแพ้ยารุนแรง</a></li>
 			<li><a href="phar_allergic.php?view=form">เพิ่มข้อมูลแพ้ยา</a></li>
 			<li><a href="phar_allergic.php?view=user">รายชื่อผู้แพ้ยารุนแรง</a></li>
+			<li><a href="phar_allergic.php?view=user_start">ใช้ยาเริ่มต้น</a></li>
 		</ul>
 	</div>
 </div>
@@ -357,5 +358,156 @@ if( $view === false ){
 		}
 	}
 
-}
+} elseif( $view === 'user_start' ){
+
+	$db = Mysql::load();
+
+	// ปีงบประมาณปัจจุบันเป็นปีพื้นฐาน
+	$def_year = get_year_checkup(true, true);
+	
+	$year_range = range(2004, $def_year);
+
+	$year_start = input_post('year_start', $def_year);
+	$year_end = input_post('year_end', $def_year);
+
+	?>
+	<div class="col">
+		<div class="cell">
+
+			<fieldset>
+				<legend>เลือกการแสดงผลตามปีงบประมาณ</legend>
+				<form action="phar_allergic.php" method="post">
+					<div class="col">
+						<div class="cell">
+							ตั้งแต่ 
+							<?php 
+							echo getYearList('year_start', true, $year_start, $year_range);
+							?>-09-30
+							ถึง 
+							<?php 
+							echo getYearList('year_end', true, $year_end, $year_range);
+							?>-10-01
+						</div>
+					</div>
+					<div class="col">
+						<div class="cell">
+							<button type="submit">แสดงผล</button>
+							<input type="hidden" name="view" value="user_start">
+							<input type="hidden" name="sub_view" value="show">
+							<input type="hidden" name="token" value="<?=generate_token('get_user_phar');?>">
+						</div>
+					</div>
+				</form>
+			</fieldset>
+
+		</div>
+	</div>
+	<?php
+	$sub_view = input_post('sub_view');
+	if( $sub_view === 'show' ){
+		$post_token = input_post('token');
+
+		$valid = check_token($post_token, 'get_user_phar');
+		if( !$valid ){
+			echo 'Invalid token';
+			exit;
+		}
+
+		$start_time = ad_to_bc($year_start).'-10-01';
+		$end_time = ad_to_bc($year_end).'-09-30';
+		$date_range = " ( c.`date` >= '$start_time' AND c.`date` <= '$end_time' )  ";
+		
+		?>
+		<div class="col">
+			<div class="cell">
+			<?php
+
+			$sql = "SELECT a.`id`, a.`drug_code`, b.`tradname`
+			FROM `allergic_list` AS a 
+			LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drug_code` 
+			WHERE a.`status` = 1 ;";
+			$db->select($sql);
+			$items = $db->get_items();
+
+			foreach ($items as $key => $item) {
+
+				$drugcode = $item['drug_code'];
+
+				// select ด้านในจะลิสรายชื่อออกมาก่อน
+				// แล้ว select ด้านนอกจะ filter อีกทีว่าวันแรกที่ได้รับยาอยู่ตามปีที่หาอยู่รึป่าว
+				$sql = "SELECT c.* 
+				FROM ( 
+					SELECT MIN(a.`row_id`) AS `row_id`, a.`drugcode`, a.`date`, SUBSTRING(a.`date`, 1, 10) AS `start_on`, a.`hn`, CONCAT(b.`yot`,' ',b.`name`,' ',b.`surname`) AS `ptname` 
+					FROM `drugrx` AS a 
+					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+					WHERE a.`drugcode` LIKE '$drugcode%' 
+					AND ( a.`hn` != '' AND a.`hn` IS NOT NULL ) 
+					GROUP BY a.`hn`
+					ORDER BY `row_id` 
+				) AS c 
+				WHERE $date_range";
+				$db->select($sql);
+
+				?>
+				<div class="col">
+					<div class="cell">
+					
+						<h3><?=$item['tradname'];?> (<?=$item['drug_code'];?>)</h3>
+						<?php
+						$user_rows = $db->get_rows();
+						if( $user_rows > 0 ){
+						?>
+							<table style="width: 600px!important;">
+								<thead>
+									<tr>
+										<th width="10%">#</th>
+										<th width="20%">HN</th>
+										<th width="40%">ชื่อ-สกุล</th>
+										<th width="30%">วันแรกที่ได้รับยา</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+
+									$users = $db->get_items();
+									$i = 1;
+									foreach($users AS $user_key => $user){
+										// dump($user);
+									
+
+										?>
+										<tr>
+											<td><?=$i;?></td>
+											<td><?=$user['hn'];?></td>
+											<td><?=$user['ptname'];?></td>
+											<td><?=$user['start_on'];?></td>
+										</tr>
+										<?php
+										$i++;
+									}
+									?>
+								</tbody>
+							</table>
+
+						<?php
+						} // check rows
+						else{
+							?>
+							<p>-</p>
+							<?php
+						}
+						?>
+					</div>
+				</div>
+				<?php
+			} // End foreach
+
+			?>
+			</div>
+		</div>
+		<?php
+
+	}
+	
+} // End view
 include 'templates/classic/footer.php';
