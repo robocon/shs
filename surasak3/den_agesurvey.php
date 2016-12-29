@@ -80,7 +80,7 @@ if( $action === 'save' ){
     $hn = input_post('hn');
     $doctor = input_post('doctor');
     $officer = get_session('sOfficer');
-
+    $date_save = date('Y-m-d H:i:s');
     /**
      * @readme Class JSON ยังไม่รองรับภาษาไทย ฉะนั้นเวลาใช้งานถ้าต้องการ encode ส่วนที่มีภาษาไทยรวมอยู่ด้วย
      * ควรแปลงค่าเป็นชนิดอื่นที่อยู่ในรูปแบบของ a-zA-Z0-9 เช่นใช้ urlencode เป็นต้น หรือจะใช้ function อื่นก็ได้
@@ -98,7 +98,8 @@ if( $action === 'save' ){
     `hn`,
     `data`,
     `doctor`,
-    `owner`)
+    `owner`,
+    `date_save`)
     VALUES
     (NULL,
     '$date_add',
@@ -107,7 +108,8 @@ if( $action === 'save' ){
     '$hn',
     '$json_data',
     '$doctor',
-    '$officer');
+    '$officer',
+    '$date_save');
     ";
     $insert = $db->insert($sql);
     $msg = 'บันทึกข้อมูลเรียบร้อย';
@@ -194,6 +196,7 @@ if( $page === false ){
                         <th>#</th>
                         <th>HN</th>
                         <th>ชื่อ-สกุล</th>
+                        <th>อายุ</th>
                         <th>วันที่เพิ่ม</th>
                         <th>แพทย์ผู้รักษา</th>
                         <th>ลบ</th>
@@ -212,6 +215,7 @@ if( $page === false ){
                             <a href="den_agesurvey.php?page=print_detail&id=<?=$unit_id;?>"><?=$item['hn'];?></a>
                         </td>
                         <td><?=$item['ptname'];?></td>
+                        <td align="right"><?=$item['age'];?></td>
                         <td><?=$item['date_add'];?></td>
                         <td><?=$item['doctor'];?></td>
                         <td>
@@ -235,7 +239,7 @@ if( $page === false ){
     $token = generate_token('search_hn');
 
     ?>
-    <div class="col">
+    <div class="col no-print">
         <div class="cell">
             <form action="den_agesurvey.php?page=form" method="post">
                 <div class="col">
@@ -278,7 +282,7 @@ if( $page === false ){
             }
             $ptname = $item['ptname'];
             $hn = $search_hn;
-            $date_add = ad_to_bc(date('Y-m-d H:i:s'));
+            $date_add = ad_to_bc(date('Y-m-d'));
             $writer = false;
             $id = false;
 
@@ -286,7 +290,7 @@ if( $page === false ){
             <div class="col">
                 <div class="cell">
                     <h1>แนวทางคัดกรองผู้ป่วยสูงอายุ &gt;60ปี</h1>
-                    <form action="den_agesurvey.php" method="post">
+                    <form action="den_agesurvey.php" method="post" style="width: 1024px!important;">
                         <?php
 
                         // เฉพาะฟอร์มด้านในอย่างเดียว
@@ -347,14 +351,21 @@ if( $page === false ){
     <div class="col">
         <div class="cell">
             <h1>แนวทางคัดกรองผู้ป่วยสูงอายุ &gt;60ปี</h1>
-            
             <?php
 
             // เฉพาะฟอร์มด้านในอย่างเดียว
             include 'den_agesurvey_form.php';
             ?>
-            
-            
+            <div class="col">
+                <div class="cell">
+                    <button onclick="print_page()">พิมพ์</button>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function print_page(){
+                    window.print();
+                }
+            </script>
         </div>
     </div>
     <?php
