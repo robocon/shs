@@ -110,9 +110,37 @@ array_push($aStkcut,$cStkcut);
 <?php
     print "ให้เบิกเพิ่มจาก Lot.No ต่อไปอีกจำนวน $cRestkcut<br>";
 ?>
-   <a target=_BLANK href="stkbill.php">พิมพ์ใบเบิก</a>
-   &nbsp;&nbsp;&nbsp;<a target=_BLANK href="stktranx.php">ตัดสต๊อกยา</a>
-   &nbsp;&nbsp;&nbsp;<a target=_BLANK href="notstk.php">(ยกเลิกทั้งหมด)</a>
-   &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">กลับไปเมนู</a>
+<a target=_BLANK href="stkbill.php" onclick="valid_cut_stock(event,'<?=$nRunno;?>')">พิมพ์ใบเบิก</a>
+&nbsp;&nbsp;&nbsp;<a target=_BLANK href="stktranx.php">ตัดสต๊อกยา</a>
+&nbsp;&nbsp;&nbsp;<a target=_BLANK href="notstk.php">(ยกเลิกทั้งหมด)</a>
+&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">กลับไปเมนู</a>
 
+<script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="assets/js/json2.js"></script>
+<script type="text/javascript">
 
+    function valid_cut_stock(ev,run_number){
+        var newSm = new SmHttp();
+        newSm.ajax(
+            'templates/drug/check_cut_stock.php',
+            {'run_number': run_number },
+            function(res){
+                var txt = JSON.parse(res);
+                if( txt.get_status === 400 ){
+                    alert(txt.msg);
+                    SmPreventDefault(ev);
+                }else{
+                    // ถ้าเป็นค่าว่างแสดงว่า ยังไม่ได้ตัด
+                    if( txt.rows == 0 ){
+                        alert('ยังไม่ได้ทำการตัด Stock');
+                        SmPreventDefault(ev);
+                    }
+                }
+            },
+            false // true is Syncronous and false is Assyncronous (Default by true)
+        );
+
+        // return false;
+    }
+
+</script>
