@@ -6,6 +6,7 @@ include 'bootstrap.php';
 
 $db = Mysql::load();
 
+/*
 $camp_lists = array(
 	'312600' => 'Ã¾.¤èÒÂÊØÃÈÑ¡´ÔìÁ¹µÃÕ',
 	'312601' => 'Á·º.32',
@@ -16,6 +17,7 @@ $camp_lists = array(
 	// '312606' => '¡·¾.33',
 	// '312607' => 'Ë¹èÇÂ·ËÒÃÍ×è¹æ'
 );
+*/
 
 #a.`bs`, --> glu_result
 #a.`tg`, --> trig_result
@@ -91,9 +93,9 @@ foreach($items as $key => $item){
 		<th>DOB</th>
 		<th>age</th>
 		<th>gender</th>
-		<th>Smoke</th>
-		<th>Alcohol</th>
-		<th>Exercise</th>
+		<th>smoke</th>
+		<th>alcohol</th>
+		<th>exercise</th>
 		<th>weight</th>
 		<th>height</th>
 		<th>WC</th>
@@ -144,7 +146,7 @@ foreach ($new_itmes as $key => $item) {
 		<td><?php echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
 		<td><?php echo number_format($item['weight'], 1); ?></td>
 		<td><?php echo number_format($item['height'], 1); ?></td>
-		<td><?php echo number_format($item['waist'], 1);?></td>
+		<td><?php echo number_format(($item['waist'] / 0.39370), 1);?></td>
 		<td><?php echo $item['bp1']; ?></td>
 		<td><?php echo $item['bp2']; ?></td>
 		<td><?php echo !empty($item['glu_result']) ? $item['glu_result'] : '' ; ?></td>
