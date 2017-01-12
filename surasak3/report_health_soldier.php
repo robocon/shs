@@ -20,47 +20,64 @@ $camp_lists = array(
 #a.`bs`, --> glu_result
 #a.`tg`, --> trig_result
 #
-$sql = "CREATE TEMPORARY TABLE condxofyear_so_temp 
-SELECT a.`row_id`,a.`hn`,a.`registerdate`,a.`camp`,a.`yot`,a.`ptname`,a.`idcard`,a.`birthday`,a.`age`,a.`gender`,
+$sql = "SELECT a.`row_id`,a.`hn`,a.`registerdate`,a.`camp`,a.`yot`,a.`ptname`,a.`idcard`,a.`birthday`,a.`age`,a.`gender`,
 a.`cigarette`,a.`alcohol`,a.`exercise`,a.`weight`,a.`height`,a.`waist`,a.`bp1`,
-a.`bp2`,a.`chol_result`,a.`chunyot`,a.`hdl_result`,a.`ldl_result`,a.`glu_result`,a.`trig_result`
+a.`bp2`,a.`chol_result`,a.`chunyot`,a.`hdl_result`,a.`ldl_result`,a.`glu_result`,a.`trig_result`,
+(
+    CASE 
+        WHEN a.`camp` LIKE '%Ã¾.¤èÒÂÊØÃÈÑ¡´ÔìÁ¹µÃÕ' THEN '312600' 
+        WHEN a.`camp` LIKE '%Á·º.32' THEN '312601' 
+        WHEN a.`camp` LIKE '%ÃéÍÂ.½Ã¾.3' THEN '312602' 
+        WHEN a.`camp` LIKE '%Ã.17 ¾Ñ¹.2' THEN '312603' 
+        WHEN a.`camp` LIKE '%ª.¾Ñ¹.4 ÃéÍÂ4' THEN '312604' 
+        WHEN a.`camp` LIKE '%Ê§.Ê´.¨Ç.Å.».' THEN '312605' 
+        WHEN a.`camp` LIKE '%¡·¾.33' THEN '312606' 
+    END
+) AS `camp_code`
 FROM `armychkup` AS a 
 WHERE a.`yearchkup` = '60' 
+AND a.`camp` != '' 
 GROUP BY a.`hn`
-ORDER BY a.`row_id` DESC";
+ORDER BY `camp_code` ASC, a.`row_id` DESC";
 $db->select($sql);
-
+$items = $db->get_items();
 $new_itmes = array();
-foreach($camp_lists as $key => $camp){
+foreach($items as $key => $item){
 	
-	$sql = "SELECT * FROM condxofyear_so_temp WHERE `camp` LIKE '%$camp' ORDER BY `row_id` ASC ";
-	$db->select($sql);
-	$items = $db->get_items();
+	// $sql = "SELECT * FROM condxofyear_so_temp WHERE `camp` LIKE '%$camp' ORDER BY `row_id` ASC ";
+	// $db->select($sql);
+	// $items = $db->get_items();
+
+	// dump(count($items));
 
 	$yot1 = array('¨ÍÁ¾Å','¾Å.Í.','¾Å.·.','¾Å.µ.','¾Å.¨.','¾.Í.','¾.·.','¾.µ.','Ã.Í.','Ã.·.','Ã.µ.','¾ÅµÃÕ');
 	$yot2 = array('¨.Ê.Í.','¨.Ê.Í .','¨.Ê.·.','¨.Ê.µ.','Ê.Í.','Ê.Í','Ê.·.','Ê.µ.');
 	$yot3 = array('¹ÒÂ','¹Ò§ÊÒÇ','¹.Ê.','¹Ò§');
 	$yot4 = array('¾ÅÍÒÊÒ','¾ÅÍÒÊÒÊÁÑ¤Ã');
 	
-	foreach ($items as $camp_key => $value) {
-		$value['camp_code'] = $key;
+	// foreach ($items as $camp_key => $value) {
+		// $item['camp_code'] = $key;
 		
-		$test_yot = trim(str_replace(array('Ë­Ô§','(¾)'), '', $value['yot']));
+		$test_yot = trim(str_replace(array('Ë­Ô§','(¾)'), '', $item['yot']));
 		
 		if( in_array($test_yot, $yot1) ){
-			$value['rankgroup'] = 1;
+			$item['rankgroup'] = 1;
 		}else if(in_array($test_yot, $yot2)){
-			$value['rankgroup'] = 2;
+			$item['rankgroup'] = 2;
 		}else if(in_array($test_yot, $yot3)){
-			$value['rankgroup'] = 3;
+			$item['rankgroup'] = 3;
 		}else{
-			$value['rankgroup'] = 4;
+			$item['rankgroup'] = 4;
 		}
 		
-		$new_itmes[] = $value;
+		$new_itmes[] = $item;
 		
-	}
+	// }
 }
+
+// dump($new_itmes);
+// exit;
+
 ?>
 <table border="1" cellpadding="0" cellspacing="0">
 	<tr>
@@ -105,25 +122,29 @@ foreach ($new_itmes as $key => $item) {
 		<td><?php echo $item['yot']; ?></td>
 		<td><?=$item['hn'];?></td>
 		<td><?php echo $firstname.'&nbsp;&nbsp;'.$lastname; ?></td>
-		<td><?php echo $item['idcard']; ?></td>
+		<td>
+			<?php 
+			echo preg_replace('/^(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})$/', '$1-$2-$3-$4-$5', $item['idcard']);
+			?>
+		</td>
 		<td><?php echo $item['camp_code'];?></td>
 		<td><?php echo $item['rankgroup'];?></td>
 		<td>
 			<?php 
 			list($y, $m, $d) = explode('-', $item['birthday']); 
-			echo "$d/$m/".($y+543);
+			echo intval($d)."/".intval($m)."/".($y+543);
 			?>
 		</td>
 		<td>
 			<?php echo substr($item['age'], 0, 2);?>
 		</td>
 		<td><?php echo ( $item['gender'] == '1' ) ? 1 : 2 ; ?></td>
-		<td><?php // echo $item['cigarette']; ?></td>
-		<td><?php // echo $item['alcohol']; ?></td>
-		<td><?php // echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
-		<td><?php echo (float) $item['weight']; ?></td>
-		<td><?php echo $item['height']; ?></td>
-		<td><?php echo (float) $item['waist'];?></td>
+		<td><?php echo $item['cigarette']; ?></td>
+		<td><?php echo $item['alcohol']; ?></td>
+		<td><?php echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
+		<td><?php echo number_format($item['weight'], 1); ?></td>
+		<td><?php echo number_format($item['height'], 1); ?></td>
+		<td><?php echo number_format($item['waist'], 1);?></td>
 		<td><?php echo $item['bp1']; ?></td>
 		<td><?php echo $item['bp2']; ?></td>
 		<td><?php echo !empty($item['glu_result']) ? $item['glu_result'] : '' ; ?></td>
