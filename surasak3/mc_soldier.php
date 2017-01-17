@@ -92,14 +92,14 @@ $month["12"] = "¸Ñ¹ÇÒ¤Á";
 
 if( !empty($B1) ){
 	
-	$ymd_start = $_POST["start_year"]."-".$_POST["start_month"]."-".$_POST["start_day"];
-	$ymd_end = $_POST["end_year"]."-".$_POST["end_month"]."-".$_POST["end_day"];
+	$ymd_start = $_POST["start_year"]."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00";
+	$ymd_end = $_POST["end_year"]."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59";
 
-	$sql = "SELECT b.`row_id`,b.`hn`,b.`ptname`,b.`thdatehn`,b.`organ`,b.`dx_mc_soldier`,b.`dr1_mc_soldier`,b.`dr2_mc_soldier`,b.`dr3_mc_soldier`,b.`rule`,
+/*	$sql = "SELECT b.`row_id`,b.`hn`,b.`ptname`,b.`thdatehn`,b.`organ`,b.`dx_mc_soldier`,b.`dr1_mc_soldier`,b.`dr2_mc_soldier`,b.`dr3_mc_soldier`,b.`rule`,
 	CONCAT(c.`address`,' ',c.`tambol`,' ',c.`ampur`,' ',c.`changwat`) AS `address`,
 	CONCAT(SUBSTRING(b.`thidate`,9,2),'-',SUBSTRING(b.`thidate`,6,2),'-',SUBSTRING(b.`thidate`,1,4)) AS `date`,
 	c.`idcard`
-	FROM 
+	FROM
 	(
 		SELECT MAX(`row_id`) AS `opd_id`
 		FROM `opd` 
@@ -111,7 +111,13 @@ if( !empty($B1) ){
 		GROUP BY `hn`
 	) AS a 
 	LEFT JOIN `opd` AS b ON b.`row_id` = a.`opd_id` 
-	LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`";
+	LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`";*/
+	
+	$sql = "SELECT *, CONCAT(SUBSTRING(a.`thidate`,9,2),'-',SUBSTRING(a.`thidate`,6,2),'-',SUBSTRING(a.`thidate`,1,4)) AS `date`, CONCAT(b.`address`,' ',b.`tambol`,' ',b.`ampur`,' ',b.`changwat`) AS `address`  FROM `opday` as a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn` 
+		WHERE a.`thidate` >= '$ymd_start' AND a.`thidate` <= '$ymd_end' 
+		AND a.`toborow` LIKE 'EX30%' group by a.hn order by a.thidate desc";	
+	
+	//echo $sql;
 
 
 	$notPassed = 0;
@@ -138,18 +144,23 @@ if( !empty($B1) ){
 
 	while ( $item = mysql_fetch_assoc($result)) 
 	{
-		$row_id = $item['row_id'];
+		
+	$sql1="select * from opd where hn='$item[hn]' and thdatehn='$item[thdatehn]' ";
+	$query1=mysql_query($sql1);
+	$rows=mysql_fetch_array($query1);		
+		
+		$row_id = $rows['row_id'];
 		$date = $item['date'];
 		$hn = $item['hn'];
 		$ptname = $item['ptname'];
 		$organ = $item['organ'];
-		$dx_mc_soldier = $item['dx_mc_soldier'];
-		$dr1_mc_soldier = $item['dr1_mc_soldier'];
-		$dr2_mc_soldier = $item['dr2_mc_soldier'];
-		$dr3_mc_soldier = $item['dr3_mc_soldier'];
+		$dx_mc_soldier = $rows['dx_mc_soldier'];
+		$dr1_mc_soldier = $rows['dr1_mc_soldier'];
+		$dr2_mc_soldier = $rows['dr2_mc_soldier'];
+		$dr3_mc_soldier = $rows['dr3_mc_soldier'];
 		$address = $item['address'];
 		$thdatehn = $item['thdatehn'];
-		$rule = $item['rule'];
+		$rule = $rows['rule'];
 		$idcard = $item['idcard'];
 
 		$Total = $Total+$amount; 

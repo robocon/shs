@@ -622,7 +622,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		<table width="722" border="0" align="center" cellpadding="0" cellspacing="0">
           <tr>
             <td width="45" align="center"><input type="checkbox" name="checkbox2" value="" Onclick="checkall(this.checked)"/></td>
-            <td align="center" >รายการยา</td>
+            <td align="center" >รายการยาOPD</td>
 			<td align="center" >วิธีใช้</td>
             <td align="center" >ประเภท</td>
 			<td align="center" width="70" >จำนวนยา</td>
@@ -648,7 +648,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	GROUP BY a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	";
-	
+	//echo $sql;
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	$i=0;
 	$j=0;
@@ -1017,12 +1017,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		session_register("cancle_row_id");
 		$_SESSION["cancle_row_id"] = $id;
 
-	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_time`,
+	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_amount2`,`drug_inject_unit2`,`drug_inject_time`,
 	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`   
 	FROM `ddrugrx` 
 	WHERE `idno` = '".$id."' 
 	AND `hn` = '".$_SESSION["hn_now"]."' 
 	AND `date` LIKE '".((date("Y")+543).date("-m-d"))."%' ";
+	
 	
 	// เก็บ log หลังจากคลิกแก้ไขยา
 	$logs = "ddrugrx - edit\r\n";
@@ -1032,9 +1033,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$result = mysql_query($sql) or die( mysql_error() );
 	while($arr = mysql_fetch_assoc($result)){
 		
-		if($arr["drugcode"] === '4MET25'){
+		if($arr["drugcode"] === '4MET25'){  //กรณีเป็น balm
 		
-			$sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' GROUP BY amount  order by row_id desc limit 1";
+			$sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit,drug_inject_amount2, drug_inject_unit2, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' GROUP BY amount  order by row_id desc limit 1";
 			$res = mysql_query($sql2) or die( mysql_error() ) ;
 			$arr2 = mysql_fetch_assoc($res);
 			
@@ -1367,10 +1368,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 exit();
 }
 
+//*********************************** ตรวจสอบการlockจ่ายยา *****************************
+if(isset($_GET["action"]) && $_GET["action"] == "checkpharlock"){
+
+	$sql = "SELECT * FROM `drug_pharlock` where drugcode = '".$_GET["search"]."' and hn = '".$_SESSION["hn_now"]."' ";
+	$result = Mysql_Query($sql);
+	$arr = Mysql_fetch_assoc($result);
+	if(Mysql_num_rows($result) ==1){  //พบการ lock ยา
+		echo "Y";  //LOCK
+	}else{
+		echo "N";  //ไม่ LOCK
+	}
+exit();
+}
+
 ///////////////////////////////////////////////////-ตรวจสอบสิทธิการจ่ายยา-///////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "checkptright"){
 
-	$sql = "SELECT lockptright,tradname FROM `druglst` where drugcode = '".$_GET["search"]."' ";
+	$sql = "SELECT lockptright,tradname,drug_lockucsso FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
 	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  || substr($_SESSION["ptright_now"],0,3) == "R02"|| substr($_SESSION["ptright_now"],0,3) == "R03"  )){
@@ -1381,12 +1396,35 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkptright"){
 		else{
 			echo "0";
 		}
-	}
-	else{
+	}else{
 		echo "0";
 	}
+	
 exit();
 }
+
+
+///////////////////////////////////////////////////-ตรวจสอบสิทธิการจ่ายยา original ให้ผู้ป่วย-///////////////////////////////////////////////////
+if(isset($_GET["action"]) && $_GET["action"] == "checkptrightucsso"){
+
+	$sql = "SELECT drug_lockucsso FROM `druglst` where drugcode = '".$_GET["search"]."' ";
+	$result = Mysql_Query($sql);
+	$arr = Mysql_fetch_assoc($result);
+	
+	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10" || substr($_SESSION["ptright_now"],0,3) == "R11" || substr($_SESSION["ptright_now"],0,3) == "R12"|| substr($_SESSION["ptright_now"],0,3) == "R36"  )){
+		if($arr['drug_lockucsso']=="1"){
+			echo "1";  //กำหนด lock ยา original 
+		}else{
+			echo "0";  //ไม่ lock
+		}
+	}else{
+		echo "0"; //ไม่ lock
+	}
+	
+exit();
+}
+
+
 
 //////////////////////////// checkviat //////////////////////////////////
 
@@ -1406,6 +1444,46 @@ if(isset($_GET["action"]) && $_GET["action"] == "viatcheck"){
 	}
 exit();
 }
+
+//////////////////////////// checkartr //////////////////////////////////
+
+if(isset($_GET["action"]) && $_GET["action"] == "artrcheck"){
+	$count = count($_SESSION["list_drugcode"]);
+	for($i=0;$i<$count;$i++){
+		if($_SESSION["list_drugcode"][$i]=="5ARTR"&&$_SESSION["list_drug_reason"][$i]!="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+			$sqlquery = "select * from drug_gruco where hn='".$_SESSION['hn_now']."' and dateup like '".date("d-m-Y")."%'";
+			$resultq = Mysql_Query($sqlquery) or die(Mysql_ERROR());
+			$arrq = mysql_num_rows($resultq);
+			if($arrq=='0'){
+				echo "0";
+			}else{
+				echo "1";
+			}
+		}
+	}
+exit();
+}
+
+//////////////////////////// checkviatn //////////////////////////////////
+
+if(isset($_GET["action"]) && $_GET["action"] == "viatncheck"){
+	$count = count($_SESSION["list_drugcode"]);
+	for($i=0;$i<$count;$i++){
+		if($_SESSION["list_drugcode"][$i]=="5VIAT-N"&&$_SESSION["list_drug_reason"][$i]!="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+			$sqlquery = "select * from drug_gruco where hn='".$_SESSION['hn_now']."' and dateup like '".date("d-m-Y")."%'";
+			$resultq = Mysql_Query($sqlquery) or die(Mysql_ERROR());
+			$arrq = mysql_num_rows($resultq);
+			if($arrq=='0'){
+				echo "0";
+			}else{
+				echo "1";
+			}
+		}
+	}
+exit();
+}
+
+
 
 //******************************************** ตรวจสอบจำนวนยา *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugamount"){
@@ -1594,8 +1672,7 @@ function check_drug(drug_cc){
 window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		return true;
 		}
-	}
-	else if(drug_cc=='5VIAT'){
+	}else if(drug_cc=='5VIAT'){  //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
 		if(sit=="R03"){
@@ -1620,19 +1697,19 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 					if(count==1){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
-					}
-					else{
+					}else{
 						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 							return true;
 						}else{
-							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
+							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
+							return false;
+/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
 								count=2;
-			window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
+								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
 								return true;
-							}
-							else{
+							}else{
 								return false;
-							}
+							}*/
 						}
 					}
 				}//อายุ
@@ -1645,8 +1722,157 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 				return true;
 			}
 		}//สิทธิ์
-	}//5viat
-	else if(drug_cc=='2ESPO'|drug_cc=='2RECO'){
+	}else if(drug_cc=='5ARTR'){ //ยาไวอาทิล
+		var sit = '<?=$_SESSION["ptright_now"]?>';
+		sit = sit.substring(0,3);
+		if(sit=="R03"){
+				var agep = '<?=$_SESSION["age_now"]?>';
+				agep = agep.substring(0,2);
+				if(agep>="56"){
+					if(count==1|count==2){
+						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+						return false;
+					}
+					else{
+						count=2;
+						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+							return true;
+						}else{
+	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
+						return true;
+						}
+					}
+				}//อายุ
+				else{
+					if(count==1){
+						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+						return false;
+					}else{
+						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+							return true;
+						}else{
+							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
+							return false;
+/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
+								count=2;
+								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
+								return true;
+							}else{
+								return false;
+							}*/
+						}
+					}
+				}//อายุ
+		}//สิทธิ์
+		else{
+			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+				return true;
+			}else{
+				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
+				return true;
+			}
+		}//สิทธิ์
+	}else if(drug_cc=='5Artr'){ //ยาไวอาทิล ปรับปรุง 15-09-59
+		var sit = '<?=$_SESSION["ptright_now"]?>';
+		sit = sit.substring(0,3);
+		if(sit=="R03"){
+				var agep = '<?=$_SESSION["age_now"]?>';
+				agep = agep.substring(0,2);
+				if(agep>="56"){
+					if(count==1|count==2){
+						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+						return false;
+					}
+					else{
+						count=2;
+						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+							return true;
+						}else{
+	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
+						return true;
+						}
+					}
+				}//อายุ
+				else{
+					if(count==1){
+						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+						return false;
+					}else{
+						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+							return true;
+						}else{
+							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
+							return false;
+/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
+								count=2;
+								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
+								return true;
+							}else{
+								return false;
+							}*/
+						}
+					}
+				}//อายุ
+		}//สิทธิ์
+		else{
+			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+				return true;
+			}else{
+				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
+				return true;
+			}
+		}//สิทธิ์		
+	}else if(drug_cc=='5VIAT-N'){ //ยาไวอาทิล
+		var sit = '<?=$_SESSION["ptright_now"]?>';
+		sit = sit.substring(0,3);
+		if(sit=="R03"){
+				var agep = '<?=$_SESSION["age_now"]?>';
+				agep = agep.substring(0,2);
+				if(agep>="56"){
+					if(count==1|count==2){
+						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+						return false;
+					}
+					else{
+						count=2;
+						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+							return true;
+						}else{
+	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
+						return true;
+						}
+					}
+				}//อายุ
+				else{
+					if(count==1){
+						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+						return false;
+					}else{
+						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+							return true;
+						}else{
+							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
+							return false;
+/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
+								count=2;
+								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
+								return true;
+							}else{
+								return false;
+							}*/
+						}
+					}
+				}//อายุ
+		}//สิทธิ์
+		else{
+			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+				return true;
+			}else{
+				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
+				return true;
+			}
+		}//สิทธิ์				
+	}else if(drug_cc=='2ESPO'|drug_cc=='2RECO'){
 		window.open('eryth.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		return true;
 	}
@@ -1992,6 +2218,12 @@ function checkForm1(){
 	txt8 = ajaxcheck("checkptright",document.form1.drug_code.value);
 	txt8 = txt8.substr(4);
 
+	txt9 = ajaxcheck("checkptrightucsso",document.form1.drug_code.value);
+	txt9 = txt9.substr(4);	
+	
+	txt10 = ajaxcheck("checkpharlock",document.form1.drug_code.value);
+	txt10 = txt10.substr(4);		
+	//alert(txt10);
 
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
@@ -2004,6 +2236,8 @@ function checkForm1(){
 	}else if(document.form1.drug_slip.value == ""){
 		alert("กรุณาใส่วิธีใช้ยา");
 		document.form1.drug_slip.focus();	
+	}else if(txt10 == "Y" && !alert("ยาระงับการจ่ายให้ผู้ป่วยรายนี้")){  //lock ในตาราง drug_pharlock
+		document.form1.drug_code.focus();
 	}else if(txt == "0"){
 		alert("กรุณาลองใส่รหัสยาใหม่");
 		document.form1.drug_code.focus();
@@ -2033,6 +2267,8 @@ function checkForm1(){
 		return false;
 	}else if(txt3 != "0" && !confirm(txt3)){
 		return false;
+	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม กรุณาเปลี่ยนเป็นยา Generic")){
+		document.form1.drug_code.focus();
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
 		document.form1.drug_amount.focus();
@@ -2332,12 +2568,17 @@ function viatch(ing,code){
 	txt6 = ajaxcheck("viatcheck",document.form1.drug_code.value);
 	txt6 = txt6.substr(4);
 	
+	txt7 = ajaxcheck("artrcheck",document.form1.drug_code.value);
+	txt7 = txt7.substr(4);	
+	
+	txt8 = ajaxcheck("viatncheck",document.form1.drug_code.value);
+	txt8 = txt8.substr(4);		
+	
 	
 	if(return_drug500=="1"){
 		alert("คำสั่งจากผอ. ไม่สามารถจ่ายยานอกเวลาราชการเกินกว่า 500 บาทได้");
 		return false;
-	}
-	else if(txt6 == "0"){
+	}else if(txt6 == "0"){
 		var con = ing;
 		for(var m=0;m<con;m++){
 			if(document.getElementById("ch"+m).selectedIndex==6){
@@ -2347,6 +2588,26 @@ function viatch(ing,code){
 				return false;
 			}
 		}
+	}else if(txt7 == "0"){
+		var con = ing;
+		for(var m=0;m<con;m++){
+			if(document.getElementById("ch"+m).selectedIndex==6){
+				return true;
+			}else{
+				window.open('arbs.php?name=5ARTR',null,'height=550,width=600,scrollbars=1');
+				return false;
+			}
+		}
+	}else if(txt8 == "0"){
+		var con = ing;
+		for(var m=0;m<con;m++){
+			if(document.getElementById("ch"+m).selectedIndex==6){
+				return true;
+			}else{
+				window.open('arbs.php?name=5VIAT-N',null,'height=550,width=600,scrollbars=1');
+				return false;
+			}
+		}		
 	}/*else{
 		//window.open('arbs.php?name=5VIAT',null,'height=550,width=600,scrollbars=1');
 		
@@ -2402,9 +2663,7 @@ function viatch(ing,code){
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
-	Order by a.date DESC limit 100
-	
-	";
+	Order by a.date DESC limit 100";
 
 			$result = Mysql_Query($sql) or die(mysql_error());
 			while($arr = Mysql_fetch_assoc($result)){

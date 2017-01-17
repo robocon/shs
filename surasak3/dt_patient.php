@@ -44,7 +44,7 @@ if($style_menu==2){?>
 	<TD>
 <TABLE width="900">
 <TR>
-	<TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<?php echo $toborow;?></TD>
+	<TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #FF9900;"><?php echo $toborow;?></strong></TD>
 </TR>
 <TR>
 	<TD align="right" class="tb_detail">VN : </TD>
@@ -70,7 +70,7 @@ if($style_menu==2){?>
 	<TD>
 <TABLE width="900">
 <TR>
-	<TD colspan="7" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<?php echo $toborow;?></TD>
+	<TD colspan="7" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #FF9900;"><?php echo $toborow;?></strong></TD>
 </TR>
 <TR>
 	<TD align="right" class="tb_detail">VN : </TD>
