@@ -94,7 +94,7 @@ list($dbirth) = Mysql_fetch_row($result111);
 $cAge = calcage($dbirth);
 
 
-$pdf = new SHSPdf('L', 'mm', array( 80, 50));
+$pdf = new SHSPdf('L', 'mm', array( 85, 53));
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
 $pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 $pdf->SetAutoPageBreak(true, 2);
@@ -109,7 +109,8 @@ $full_text .= "ลักษณะ: $type, คลินิก: ".(substr($clinic,3))."\n";
 $full_text .= "โรคประจำตัว: ".trim($congenital_disease)."\n";
 $full_text .= "อาการ: ".trim($organ);
 
-$pdf->MultiCell(0, 6, $full_text);
+$pdf->SetXY(2, 2);
+$pdf->MultiCell(0, 5, $full_text);
 
 $pdf->AutoPrint(true);
 $pdf->Output();

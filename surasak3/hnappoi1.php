@@ -1,3 +1,6 @@
+<script type="text/javascript">
+document.getElementById('aLink').focus();
+</script>
 <?php
 session_start();
 session_unregister("cHn");  
@@ -7,22 +10,19 @@ session_unregister("cptright");
 session_unregister("capptime");
 session_unregister("cnote");
 session_unregister("cidguard");
-?>
-<script type="text/javascript">
-    document.getElementById('aLink').focus();
-</script>
 
-<form method="post" action="hnappoi1.php">
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกใบนัดผู้ป่วย</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN :&nbsp;
-<input type="text" name="hn" size="12" id="aLink">
+?>
+<form method="post" action="<?php echo $PHP_SELF ?>">
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกใบนัดผู้ป่วย</p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN :&nbsp;
+  <input type="text" name="hn" size="12" id="aLink">
 <script type="text/javascript">
 document.getElementById('aLink').focus();
 </script>
 </p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="submit" value="  ตกลง  " name="B1">
-&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< เมนู</a>&nbsp&nbsp;&nbsp<a target=_self  href='appoilst.php'>ดูรายชื่อผู้ป่วยนัด</a></p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="submit" value="  ตกลง  " name="B1">
+    &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< เมนู</a>&nbsp&nbsp;&nbsp<a target=_self  href='appoilst.php'>ดูรายชื่อผู้ป่วยนัด</a></p>
 คำเตือน  .....  การออกใบนัด กรุณาอย่าใช้อักษรที่พิเศษเช่น (  , "  '  เป็นต้น)   อาจทำให้ข้อมูลไม่สามารถบันทึกลงในคอมพิวเตอร์
 </form>
 
@@ -37,7 +37,6 @@ document.getElementById('aLink').focus();
  </tr>
 
 <?php
-$hn = $_POST['hn'];
 If (!empty($hn)){
     include("connect.inc");
     global $hn;
