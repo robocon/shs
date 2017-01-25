@@ -437,7 +437,7 @@ for($i=0;$i<$count;$i++){
 	exit();
 }
 
-//********************** Form Remed ยาผป.ใน **************************************************************
+//********************** Form Remed ยาผู้ป่วยใน **************************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 	
 ?>
@@ -445,7 +445,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		<table width="722" border="0" align="center" cellpadding="0" cellspacing="0">
           <tr>
             <td width="45" align="center"><input type="checkbox" name="checkbox2" value="" Onclick="checkall4(this.checked)"/></td>
-            <td align="center" >รายการยา</td>
+            <td align="center" >รายการยา IPD</td>
 			<td align="center" >วิธีใช้</td>
             <td align="center" >ประเภท</td>
 			<td align="center" width="70" >จำนวนยา</td>
@@ -488,7 +488,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		else
 			$bgcolor="#FFFFFF";
 		
-
+	$sql1="select * from drug_pharlock where hn = '".$_SESSION["hn_now"]."' and drugcode='".$arr["drugcode"]."'";
+	//echo $sql1;
+	$query1=mysql_query($sql1);
+	$num1=mysql_num_rows($query1);
+	if($num1 < 1){  //ถ้าไม่มีการ lock จ่ายยาตัวนี้ ให้แสดงข้อมูล
 ?>
           <tr bgcolor="<?php echo $bgcolor;?>">
             <td width="45" align="center">
@@ -518,7 +522,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_slip"];?></td>
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_type"];?></td>
           </tr>
-          
+          <? } ?>
 		  <?php if($arr["reason"] == "" && ($arr["part"] == "DDY" )){
 					// || $arr["drugcode"] == "1NEU300-C"|| $arr["drugcode"] == "1NEUT300*$"  || $arr["drugcode"] == "1NEUT100*$" || $arr["drugcode"] == "1NEU100-C"  || $arr["drugcode"] =="1PLAV*"
 					$i1=$i2=$i3=$i4=$i5=$i6=$i7=$i8=$i9=$i10=$i11 = "";
@@ -614,7 +618,7 @@ exit();
 
 
 
-//********************** Form Remed ยา **************************************************************
+//********************** Form Remed ยาผู้ป่วยนอก ******************************************
 if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	
 ?>
@@ -667,7 +671,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		else
 			$bgcolor="#FFFFFF";
 		
-
+	$sql1="select * from drug_pharlock where hn = '".$_SESSION["hn_now"]."' and drugcode='".$arr["drugcode"]."'";
+	//echo $sql1;
+	$query1=mysql_query($sql1);
+	$num1=mysql_num_rows($query1);
+	if($num1 < 1){  //ถ้าไม่มีการ lock จ่ายยาตัวนี้ ให้แสดงข้อมูล
 ?>
           <tr bgcolor="<?php echo $bgcolor;?>">
             <td width="45" align="center">
@@ -697,7 +705,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_slip"];?></td>
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_type"];?></td>
           </tr>
-          
+          <? } ?>
 		  <?php if($arr["reason"] == "" && ($arr["part"] == "DDY" )){
 					// || $arr["drugcode"] == "1NEU300-C"|| $arr["drugcode"] == "1NEUT300*$"  || $arr["drugcode"] == "1NEUT100*$" || $arr["drugcode"] == "1NEU100-C"  || $arr["drugcode"] =="1PLAV*"
 					$i1=$i2=$i3=$i4=$i5=$i6=$i7=$i8=$i9=$i10=$i11 = "";
