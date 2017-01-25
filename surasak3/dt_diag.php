@@ -232,8 +232,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
             <td>&nbsp;
 <A HREF="javascript:void(0);" onClick="document.getElementById('dt_diag').value='<?=jschars($arr["diag"])?>';document.getElementById('dt_icd10').value='<?=$arr["icd10"]?>';document.getElementById('head_remed').style.display='none';"><?php echo $arr["diag"];?></A></td>
 			<td align="center">&nbsp;<?php echo $arr["icd10"];?>
-            <input type="hidden" name="code<?=$i?>" value="<?php echo $arr["icd10"];?>">
-            <input type="hidden" name="detail<?=$i?>" value="<?php echo jschars($arr["diag"]);?>">
+            <input type="hidden" name="code<?=$i?>" id="code<?=$i?>" value="<?php echo $arr["icd10"];?>">
+            <input type="hidden" name="detail<?=$i?>" id="detail<?=$i?>" value="<?php echo jschars($arr["diag"]);?>">
             <input type="hidden" name="detailthai<?=$i?>" value="<?php echo jschars($arr["diag_thai"]);?>"></td>
             <td align="center" ><?php echo $arr["type"];?></td>
 			<td align="center" ><input type="radio" name="d_princ" value="<?=$i?>" id="d_princ<?=$i?>"></td>
@@ -343,6 +343,7 @@ function searchSuggest(str,len,getto,getto2) {
 			document.getElementById("list").innerHTML = xmlhttp.responseText;
 		}
 }
+
 function searchSuggest1(str,len,getto,getto2) {
 	
 		str = str+String.fromCharCode(event.keyCode);
@@ -498,7 +499,12 @@ function addtolist_muli(){
 	<TD width="150" align="right"  class="font3">PRINCIPLE ค้นหา:</TD>
 	<TD width="48" ><Div id="list1" style="left:70PX;top:170PX;position:absolute;"></Div>
 	  <input name="dt_icd10" type="text" id="dt_icd10" onKeyPress="searchSuggest(this.value,3,'dt_icd10','dt_diag')" value="<?php echo $_SESSION["dt_icd10"]?>" size="8"></TD>
-	<TD width="210" ><input name="dt_diag" type="text" id="dt_diag" onKeyPress="searchSuggest1(this.value,2,'dt_diag','dt_icd10')" value="<?php echo $_SESSION["dt_diag"]?>" size="40">
+	<TD width="210" >
+	<? if($_SESSION["dt_doctor"]=="ธนบดินทร์ ผลศรีนาค (ว.19921)" || $_SESSION["dt_doctor"]=="มนต์ชัย พรพัฒนะเจริญชัย (ว.25958)"){  //ได้รับคำสั่งจากหมอธนบดินทร์ เมื่อ 13/07/59 และหมอมนต์ชัย เมื่อ 21/07/59 ?>        
+    <input name="dt_diag" type="text" id="dt_diag"  value="<?php echo $_SESSION["dt_diag"]?>" size="40">
+    <? }else{ ?>
+    <input name="dt_diag" type="text" id="dt_diag" onKeyPress="searchSuggest1(this.value,2,'dt_diag','dt_icd10')" value="<?php echo $_SESSION["dt_diag"]?>" size="40">
+    <? } ?>
 </TD>
 	<TD   class="font3">Thai :<input name="diag_thai" type="text" id="diag_thai" size="30" onKeyPress="searchSuggest4(this.value,2)" value="<?php echo $_SESSION["diag_thai"]?>" >
 	<!--<select name="choose_organ" onChange="if(this.value != ''){document.form_diag.dt_diag.value = document.form_diag.dt_diag.value+' '+this.value;}" style="position: absolute;">
@@ -529,7 +535,13 @@ function addtolist_muli(){
 	<TD width="144" align="right" valign="middle" class="font3">CO-MORBIDITY :ค้นหา </TD>
 	<TD width="53" valign="middle"><Div id="list" style="left:200PX;top:170PX;position:absolute;"></Div>
 	  <input name="dt_icd10_morbidity0" type="text" id="dt_icd10_morbidity0" onKeyPress="searchSuggest3(this.value,3,'0');" value="<?php echo $_SESSION["dt_icd10_morbidity"]?>" size="8"></TD>
-		<TD width="373" valign="middle"><input name="dt_diag_morbidity0" type="text" id="dt_diag_morbidity0" onKeyPress="searchSuggest2(this.value,2,'0');" value="<?php echo $_SESSION["dt_diag_morbidity"]?>" size="35"></TD>
+		<TD width="373" valign="middle">
+	<? if($_SESSION["dt_doctor"]=="ธนบดินทร์ ผลศรีนาค (ว.19921)" || $_SESSION["dt_doctor"]=="มนต์ชัย พรพัฒนะเจริญชัย (ว.25958)"){  //ได้รับคำสั่งจากหมอธนบดินทร์ เมื่อ 13/07/59 และหมอมนต์ชัย เมื่อ 21/07/59 ?>        
+        <input name="dt_diag_morbidity0" type="text" id="dt_diag_morbidity0" value="<?php echo $_SESSION["dt_diag_morbidity"]?>" size="35">
+        <? }else{ ?>
+        <input name="dt_diag_morbidity0" type="text" id="dt_diag_morbidity0" onKeyPress="searchSuggest2(this.value,2,'0');" value="<?php echo $_SESSION["dt_diag_morbidity"]?>" size="35">
+        <? } ?>
+        </TD>
 	<TD width="75" valign="bottom">&nbsp;
     <!--<br>
         <select name="choose_organ2" onChange="if(this.value != ''){document.form_diag.dt_diag.value = this.value;}" style="position: absolute;">

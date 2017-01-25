@@ -1300,7 +1300,17 @@ include("dt_patient.php");
 <TR >
 	<TD align="right" class="tb_detail">วันที่นัดพบผู้ป่วย : </TD>
 	<TD>
+    <?
+	if($_SESSION["sIdname"] == "md19921"){
+	?>
+		<INPUT TYPE="text" ID="date_appoint" NAME="date_appoint" size="15">&nbsp;
+	<?
+	}else{
+    ?>
 		<INPUT TYPE="text" ID="date_appoint" NAME="date_appoint" size="15" readonly>&nbsp;
+    <?
+	}
+	?>
 	</TD>
 	<TD><A HREF="javascript:void(0);" Onclick="show_carlendar('');"><IMG SRC="../butcalendar.gif" WIDTH="21" HEIGHT="20" BORDER="0" ALT=""></A>
 	</TD>
