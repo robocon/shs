@@ -4,23 +4,13 @@ session_start();
 // Default time
 $time = 10000;
 
+// ธนบดินทร์ ผลศรีนาค
 if($_SESSION["sIdname"] == "md19921"){
 	$time = 2000;
-}else if($_SESSION['sIdname'] == 'md38220' OR $_SESSION['sIdname'] == 'md50814'){ // หมอพิพิธ
+}else if($_SESSION['sIdname'] == 'md38220' OR $_SESSION['sIdname'] == 'md50814'){ // พิพิธ  บุรัสการ + สาริศ เฉลิมพงศ์ชัย
 	$time = 31536000;
 }
 
-/*	if($_SESSION["sldname"]=="md12891" || $_SESSION["sldname"]=="HDเลือก"){  //หมอเลือก
-		echo header("Refresh:0; url=dt_index.php");	
-	}else if($_SESSION["sIdname"] == "md19921"){  //หมอธนบดินทร์
-		echo header("Refresh:1; url=dt_index.php");
-	}else if($_SESSION['sIdname'] == 'md38220' || $_SESSION['sIdname'] == 'md50814'){ // หมอพิพิธ
-		echo header("Refresh:3; url=dt_index.php");
-	}else{
-		echo header("Refresh:2; url=dt_index.php");
-	}*/
-	
-	
 ?>
 <html>
 <head>
@@ -30,74 +20,20 @@ if($_SESSION["sIdname"] == "md19921"){
 		setTimeout(function(){
 			window.location.href = 'dt_index.php';
 		},<?php echo $time;?>);
-
 	}
 </script>
 </head>
 
 <body leftmargin="0" topmargin="0">
 <style type="text/css">
-/* CSS Rest */
-/* http://meyerweb.com/eric/tools/css/reset/
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
-
-/* Your CSS is below */
-html{
-    font-family: 'TH SarabunPSK'!important;
+.appoint_zone{
+	font-family: 'TH SarabunPSK'!important;
     font-size: 14pt;
 }
-u{
-    border-bottom: 2px solid #000000;
-    text-decoration: none;
+.appoint_zone p{
+	margin: 0;
+	padding: 0;
 }
-b{ font-weight: bold; }
 .size1{
     font-size: 6pt;
     line-height: 12pt;
@@ -121,6 +57,7 @@ b{ font-weight: bold; }
 .center{
     text-align: center;
 }
+
 </style>
 <?php 
 echo $_SESSION["dt_drugstk"];

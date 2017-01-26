@@ -65,14 +65,17 @@ Mysql_Query($sql);
 $row_id = @mysql_insert_id();
 $i=false;
 if(count($_POST["list_lab_appoint"]) > 0)
-foreach($_POST["list_lab_appoint"] as $key => $value){
-	$sql = "INSERT INTO `appoint_lab` ( `id` , `code` ) VALUES ('".$row_id."', '".$value."'); ";
-	Mysql_Query($sql);
-	$i = true;
-}
+	foreach($_POST["list_lab_appoint"] as $key => $value){
+		$sql = "INSERT INTO `appoint_lab` ( `id` , `code` ) VALUES ('".$row_id."', '".$value."'); ";
+		Mysql_Query($sql);
+		$i = true;
+	}
 
-$sql = "Select count(distinct hn) as c_app From appoint where appdate = '".$_POST["date_appoint"]."' AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') AND apptime <> 'ยกเลิกการนัด'  ";
-
+$sql = "Select count(distinct hn) as c_app 
+From appoint 
+where appdate = '".$_POST["date_appoint"]."' 
+AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+AND apptime <> 'ยกเลิกการนัด' ";
 $result = Mysql_Query($sql) or die(mysql_error());
 list($c_app) = Mysql_fetch_row($result);
 
@@ -90,41 +93,28 @@ setcookie($xxx[0].$month.$xxx[2], "<A HREF=\"javascript:void(0);\" Onclick=\"doc
 
 $down_list = "";
 
-		if($_POST["xray"] != ""){
-			$down_list .= "X-ray : ".$_POST["xray"];
-		}
+	if($_POST["xray"] != ""){
+		$down_list .= "X-ray : ".$_POST["xray"];
+	}
 
-		if($other2 != ""){
-			$down_list .= "&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ : ".$other2."";
-		}
+	if($other2 != ""){
+		$down_list .= "&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ : ".$other2."";
+	}
 
 if($_SESSION["dt_drugstk"] != ""){
-		$_SESSION["dt_drugstk"].= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\" font style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
-		<TR>
-			<TD>วันที่ ".$_POST["date_appoint"]."<p class='size2' >&nbsp;เวลา : ".$_POST["capptime"]."</TD>
-		</TR>
-
-		<TR>
-			<TD><p class='size2' >นัดมาเพื่อ : ".substr($_POST["detail"],5)."</TD>
-		</TR>
-		";
+		$_SESSION["dt_drugstk"].= "<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >วันที่ ".$_POST["date_appoint"]."&nbsp;เวลา : ".$_POST["capptime"]."</p>
+			<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >นัดมาเพื่อ : ".substr($_POST["detail"],5)."</p>";
 		
-		if(count($_POST["list_lab_appoint"]) > 0)
-			$_SESSION["dt_drugstk"].= "
-		<TR>
-			<TD><p class='size2' >นัดตรวจทางพยาธิ : ".$lab_appoint_implode."</TD>
-		</TR>";
+		if(count($_POST["list_lab_appoint"]) > 0){
+			$_SESSION["dt_drugstk"].= "<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >นัดตรวจทางพยาธิ : ".$lab_appoint_implode."</p>";
+		}
+			
 		
 		
-
-		if(trim($down_list) !="")
-		$_SESSION["dt_drugstk"] .="
-		<TR>
-				<TD><p class='size2' >".$down_list."</TD>
-		</TR>";
-
-
-		$_SESSION["dt_drugstk"].= "</TABLE>";
+		if(trim($down_list) !=""){
+			$_SESSION["dt_drugstk"] .="<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >".$down_list."</p>";
+		}
+		
 		$_SESSION["dt_drugstk"].= "<DIV style=\"page-break-after:always\"></DIV>";
 }
 
@@ -135,7 +125,9 @@ if(substr($_POST["detail"],0 ,1) == "F"){
 $xxx = explode("(ว",$_SESSION["dt_doctor"]);
 $doctor = $xxx[0];
 
-$_SESSION["dt_drugstk"] .= "<p class=\"size3\" ><B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B></p>
+$_SESSION["dt_drugstk"] .= "<div class=\"appoint_zone\">";
+
+$_SESSION["dt_drugstk"] .= "<p class=\"size3\" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B></p>
 <p class=\"size2\" >ชื่อ : ".$cPtname." &nbsp;&nbsp; HN : ".$_SESSION["hn_now"]."</p>
 <p class=\"size3\" ><B><U>วันนัด ".$th_day[$test_n]." ที่ ".$_POST["date_appoint"]."</U></B></p>
 <p class=\"size3\" ><B>เวลา : ".$_POST["capptime"]."</B></p>
@@ -166,7 +158,7 @@ if($_POST['room']=="กองสูติ-นารี"){
 
 if($i){
 	$_SESSION["dt_drugstk"] .= "<DIV style=\"page-break-after:always\"></DIV>
-	<p class=\"size3\" ><b>ใบนัดตรวจทางพยาธิ</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+	<p class=\"size3\" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ใบนัดตรวจทางพยาธิ</b></p>
 	<p class=\"size2\" >ชื่อผู้ป่วย : ".$cPtname." &nbsp;&nbsp; HN : ".$_SESSION["hn_now"]."</p>
 	<p class=\"size3\" ><B><U>นัดวันที่ : ".$_POST["date_appoint"]."</U></B></p>
 	<p class=\"size2\" >แพทย์ : ".$doctor."</p>
@@ -177,13 +169,15 @@ if($i){
 
 if(trim($_POST["xray"]) !=""){
 	$_SESSION["dt_drugstk"] .= "<DIV style=\"page-break-after:always\"></DIV>
-	<p class=\"size3\" ><b>ใบนัด X-Ray</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+	<p class=\"size3\" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ใบนัด X-Ray</b></p>
 	<p class=\"size2\" >ชื่อผู้ป่วย : ".$cPtname." &nbsp;&nbsp; HN : ".$_SESSION["hn_now"]."</p>
 	<p class=\"size3\" ><B><U>นัดวันที่ : ".$_POST["date_appoint"]."</U></B></p>
 	<p class=\"size2\" >แพทย์ : ".$doctor."</p>
 	<p class=\"size2\" >X-Ray : <B>".$_POST["xray"]."</B></p>
 	<p class=\"size2\" >".$other2."</p>";
 }
+
+$_SESSION["dt_drugstk"] .= "</div>"; // End appoint
 
 header('Location: dt_printstker.php');
 exit;

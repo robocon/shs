@@ -234,7 +234,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			<td align="center">&nbsp;<?php echo $arr["icd10"];?>
             <input type="hidden" name="code<?=$i?>" id="code<?=$i?>" value="<?php echo $arr["icd10"];?>">
             <input type="hidden" name="detail<?=$i?>" id="detail<?=$i?>" value="<?php echo jschars($arr["diag"]);?>">
-            <input type="hidden" name="detailthai<?=$i?>" value="<?php echo jschars($arr["diag_thai"]);?>"></td>
+            <input type="hidden" name="detailthai<?=$i?>" id="detailthai<?=$i?>" value="<?php echo jschars($arr["diag_thai"]);?>"></td>
             <td align="center" ><?php echo $arr["type"];?></td>
 			<td align="center" ><input type="radio" name="d_princ" value="<?=$i?>" id="d_princ<?=$i?>"></td>
           </tr>
