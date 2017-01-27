@@ -356,6 +356,7 @@ div3.display = 'none';
     <option value="09.00-15.00">09.00-15.00</option>
     <option value="10.30-14.00">10.30-14.00</option>
     <option value="16.00-20.00">16.00-20.00</option>
+	<option value="17.00-20.00">17.00-20.00</option>
     </select>
       <!--</span>-->
      <!--   <span id="text3" style="display:none">
