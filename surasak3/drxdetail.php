@@ -15,11 +15,11 @@
 		$fnum=mysql_num_rows($fquery);
 		if($fnum > 0){
 			//echo "<script>alert('ยา $cdrugcode เกิด INTERACTION กับยาดังต่อไปนี้ ";
-				// while($frows=mysql_fetch_array($fquery)){
-				// 	$bdrugcode=$frows["between_drugcode"];
-				// 	echo "$bdrugcode,";
-				// }
-			// echo "');</script>";
+				while($frows=mysql_fetch_array($fquery)){
+					$bdrugcode=$frows["between_drugcode"];
+					echo "$bdrugcode,";
+				}
+			echo "');</script>";
 		}else if($fnum < 1){
 			$bsql="select first_drugcode, between_drugcode from drug_interaction where first_drugcode='$cdrugcode'";
 			//echo $bsql;
@@ -27,17 +27,17 @@
 			$bnum=mysql_num_rows($bquery);		
 			if($bnum > 0){
 				//echo "<script>alert('ยา $cdrugcode เกิด INTERACTION กับยาดังต่อไปนี้ ";
-				// 	while($frows=mysql_fetch_array($fquery)){
-				// 		$fdrugcode=$frows["first_drugcode"];
-				// 		echo "$fdrugcode,";
-				// 	}
-				// echo "');</script>";	
+					while($frows=mysql_fetch_array($fquery)){
+						$fdrugcode=$frows["first_drugcode"];
+						echo "$fdrugcode,";
+					}
+				echo "');</script>";	
 			}else{
 				//echo "<script>alert('ยา $cdrugcode ไม่เกิด DRUGINTERACTION กับยาอื่นๆ";
-				// 	while($frows=mysql_fetch_array($fquery)){
-				// 		echo "";
-				// 	}
-				// echo "</script>";				
+					while($frows=mysql_fetch_array($fquery)){
+						echo "";
+					}
+				echo "</script>";				
 			}	//close if $bnum
 		} //close if $fnum
 	}  //close while $crows
@@ -123,6 +123,29 @@
 	  $sPtright=$row->ptright;
 	  $stkcutdate_now = $row->stkcutdate;
 
+//เช็คการได้รับยา Balm ฟรี 1 หลอด/เดือน 
+$chkDate=(date("Y")+543)."-".date("m");  //ปี-เดือน ปัจจุบัน
+$sqlb="select * from drugrx where `date` like '$chkDate%' and hn='".$sHn."' and drugcode='4MET25' and part='DDL' and amount >0";
+//echo $sqlb;
+$queryb=mysql_query($sqlb);
+$numb=mysql_num_rows($queryb);
+$rowsb=mysql_fetch_array($queryb);
+$datebalm=$rowsb["date"];
+if($numb > 0){
+	echo "<script>alert('ผู้ป่วย HN : $sHn ได้รับยา 4MET25 ฟรีประจำเดือน $chkDate ไปแล้ว เมื่อวันที่ $datebalm');</script>";
+}
+
+//เช็คการได้รับยา เจลพริก ฟรี 1 หลอด/เดือน 
+$sqlj="select * from drugrx where `date` like '$chkDate%' and hn='".$sHn."' and drugcode='10H014' and part='DDL' and amount >0";
+$queryj=mysql_query($sqlj);
+$numj=mysql_num_rows($queryj);
+$rowsj=mysql_fetch_array($queryj);
+$datejel=$rowsj["date"];
+if($numj > 0){
+	echo "<script>alert('ผู้ป่วย HN : $sHn ได้รับยา 10H014 ฟรีประจำเดือน $chkDate ไปแล้ว เมื่อวันที่ $datejel');</script>";
+}
+
+
 
 //----------------------------เช็คแพ้ยา
 $rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
@@ -134,7 +157,7 @@ if($rnum > 0){
 			$tradname=$rrows["tradname"];
 			$advreact=$rrows["advreact"];
 			$asses=$rrows["asses"];
-			echo "$tradname...$advreact($asses), \r\n";			
+			echo "$tradname...$advreact($asses), ";			
 	}
 	echo "');</script>";	
 }else{
@@ -219,7 +242,7 @@ $color="F5DEB3";
 
 $ptright=substr($sPtright,0,3);
 //echo $ptright."...<br>";
-if($ptright=="R07" || $ptright=="R09"){
+//if($ptright=="R07" || $ptright=="R09"){
 	if($drugcode=="4MET25" || $drugcode=="10H014"){
 		if($part=="DDN"){
 			$comment="<strong style='color:#FF0000'>(เบิกไม่ได้)</strong>";
@@ -231,9 +254,9 @@ if($ptright=="R07" || $ptright=="R09"){
 	}else{
 		$comment="";
 	}
-}else{
+/*}else{
 	$comment="";
-}
+}*/
 
 		if($count_row ==1)
 		$onclick= "<A HREF='#' onclick=\"alert('กรุณา เหลือรายการยาไว้อย่างน้อย 1 รายการครับ');\">";
@@ -329,6 +352,45 @@ $sql = "Select hn,ptname From dphardep WHERE hn = '".$sHn."' AND  date LIKE '$to
 		list($hn,$ptname) = Mysql_fetch_row($result);
 		echo "<br><br><font face='Angsana New' size='5' color='#FF0066'><center>***ผู้ป่วยมีใบรายยามากกว่า 1 ใบ*** </center></FONT>";
 	}
+
+/* แจ้งเตือน Warfarin */
+// เตือนว่าในช่วง 3เดือนย้อนหลังผู้ป่วยมีการใช้งานยาในกลุ่มนี้รึป่าว
+if( !function_exists('ad_to_bc') ){
+	function ad_to_bc($time = null){
+		$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
+		return $time;
+	}
+}
+
+if( !function_exists('cal_to_bc') ){
+	function cal_to_bc($match){
+		return ( $match['0'] + 543 );
+	}
+}
+
+$date_end = date('Y-m-d');
+$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-3 months"));
+
+$date_end = ad_to_bc($date_end);
+$date_start = ad_to_bc($date_start);
+
+$patient_hn = trim($sHn);
+$sql = "SELECT COUNT(`row_id`) AS `rows` 
+FROM `drugrx` 
+WHERE `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
+AND ( `date` >= '$date_start' AND `date` <= '$date_end' ) 
+AND `hn` = '$patient_hn' ";
+$q = mysql_query($sql);
+$item = mysql_fetch_assoc($q);
+$count_wafarin = (int) $item['rows'];
+if( $count_wafarin > 0 ){
+	?>
+	<script type="text/javascript">
+		alert('ผู้ป่วยมีประวัติการใช้ยา Warfarin');
+	</script>
+	<?php
+}
+/* แจ้งเตือน Warfarin */
 
 include("unconnect.inc");
 ?>

@@ -114,6 +114,44 @@ if(!empty($cStkcutdate)) {
 		print "</div>";
 
 	}
+
+	/* แจ้งเตือน Warfarin */
+	if( !function_exists('ad_to_bc') ){
+		function ad_to_bc($time = null){
+			$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
+			return $time;
+		}
+	}
+
+	if( !function_exists('cal_to_bc') ){
+		function cal_to_bc($match){
+			return ( $match['0'] + 543 );
+		}
+	}
+
+	$date_end = date('Y-m-d');
+	$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-3 months"));
+
+	$date_end = ad_to_bc($date_end);
+	$date_start = ad_to_bc($date_start);
+
+	$patient_hn = trim($rxHn);
+	$sql = "SELECT COUNT(`row_id`) AS `rows` 
+	FROM `drugrx` 
+	WHERE `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
+	AND ( `date` >= '$date_start' AND `date` <= '$date_end' ) 
+	AND `hn` = '$patient_hn' ";
+	$q = mysql_query($sql);
+	$item = mysql_fetch_assoc($q);
+	$count_wafarin = (int) $item['rows'];
+	if( $count_wafarin > 0 ){
+		?>
+		<div>
+			<span style="color: red; font-weight: bold;">ผู้ป่วยมีประวัติการใช้ยา Warfarin</span>
+		</div>
+		<?php
+	}
+	/* แจ้งเตือน Warfarin */
 ?>
 
 <table>

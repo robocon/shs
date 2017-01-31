@@ -21,7 +21,7 @@ if( empty($_SESSION['sOfficer']) ){
 
 //    session_destroy();
 ?>
-<form method="post" action="<?php echo $PHP_SELF ?>">
+<form method="post" action="dgadvhn.php">
   <p>HN คนไข้แพ้ยา</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="text" name="hn" size="12"></p>
