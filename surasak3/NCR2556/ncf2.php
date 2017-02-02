@@ -615,7 +615,7 @@ function textdisabled(){
       <TD colspan="3"><B>ความรุนแรง</B></TD>
     </TR>
     <TR>
-      <TD width="78%"><input type="radio" name="clinic1"   id="clinic" value="A" <?php if($arr_edit2["clinic"] == "A") echo " Checked ";?>>
+      <TD width="78%"><input type="radio" name="clinic"   id="clinic1" value="A" <?php if($arr_edit2["clinic"] == "A") echo " Checked ";?>>
         &nbsp;A มีเหตุการณ์ซึ่งมีโอกาสที่ก่อให้เกิดความคลาดเคลื่อน หรืออาจเกิดภายในหน่วยงาน แต่ยังไม่เกิด<br>
         <INPUT TYPE="radio" NAME="clinic"  id="clinic2"  value="B" <?php if($arr_edit2["clinic"] == "B") echo " Checked ";?>>
         &nbsp;B  เกิดความคลาดเคลื่อนขึ้น ซึ่งไม่ถึงผู้ป่วย/รพ./เจ้าหน้าที่ และยังไม่มีความเสียหายใด</TD>
