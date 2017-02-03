@@ -168,7 +168,12 @@ a{
 		?>
 		<tr style="background-color: #<?=$bgcolor;?>;">
 			<td><?=$i;?></td>
-			<td><a href="opdcard_vnprintday.php?act=show1&hn=<?=$hn;?>&nat=<?=$appd;?>&detail=<?=$dc;?>&doctor" target="_blank"><?=$hn;?></a></td>
+			<td>
+				<!--
+				<a href="opdcard_vnprintday.php?act=show1&hn=<?=$hn;?>&nat=<?=$appd;?>&detail=<?=$dc;?>" target="_blank"><?=$hn;?></a>
+				-->
+				<a href="print_novn.php?hn=<?=$hn;?>&date_appoint=<?=urlencode($appd);?>" target="_blank"><?=$hn;?></a>
+			</td>
 			<td><?=$ptname;?></td>
 			<td><?=$apptime;?></td>
 			<td><?=$detail;?></td>

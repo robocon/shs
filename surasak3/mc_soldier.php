@@ -79,15 +79,18 @@ $month["12"] = "ธันวาคม";
 	</TR>
 	</TABLE>
 
- 	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
  
 	<input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<INPUT TYPE="button" value="Print" Onclick="window.open('mc_soldier_print.php?sd='+document.ff1.start_year.value+'-'+document.ff1.start_month.value+'-'+document.ff1.start_day.value+'&ed='+document.ff1.end_year.value+'-'+document.ff1.end_month.value+'-'+document.ff1.end_day.value+'');">
 	
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- 	<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
+ 	
 </form>
-
+<div class="disappear">
+	<a target=_self  href='../nindex.htm'><<ไปเมนู</a> | 
+	<a href="mc_test.php" target="_blank">ระบบตรวจสอบข้อมูลงดเว้นเกณฑ์ทหาร</a>
+</div>
 <?php
 
 if( !empty($B1) ){
