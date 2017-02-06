@@ -2150,7 +2150,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 		จำนวนหัตถการ : <INPUT TYPE="text" id="total_lst_labcare" NAME="total_lst_labcare" size="2" maxlength="2" onkeypress = "if(event.keyCode == 13){ create_lst_labcare('<?php echo $total_lst_labcare;?>'); return false; }else{ check_number();}" value="<?php echo $total_lst_labcare;?>">
 		<BR><?php echo $div_list_lst_labcare;?>
 		<div id="list_lst_labcare">		</div><BR>
-		จำนวนหัตถการ อื่นๆ : <INPUT TYPE="text" NAME="total_labcare" size="2" maxlength="2" onkeypress = "if(event.keyCode == 13){ create_labcare('<?php echo $total_labcare;?>'); return false; }else{ check_number();}" value="<?php echo $total_labcare;?>">
+		จำนวนหัตถการ อื่นๆ : <INPUT TYPE="text" id="total_labcare" NAME="total_labcare" size="2" maxlength="2" onkeypress = "if(event.keyCode == 13){ create_labcare('<?php echo $total_labcare;?>'); return false; }else{ check_number();}" value="<?php echo $total_labcare;?>">
 		<BR><?php echo $div_list_labcare;?>
 		<div id="list_labcare">		</div>	</TD>
 </TR>

@@ -263,6 +263,7 @@ if($stringtime > 600){
 </table>
 
 <?php 
+// ทีแรกเค้าจะแสดงหมดเลย ตอนหลังเปลี่ยนมาเป็น ex01 กับ ex02
 $list = array(
     'EX 91' => 'ออก VN โดย กายภาพ',
     'EX 92' => 'ออก VN โดย ฝังเข็ม',
@@ -295,12 +296,16 @@ $list = array(
 ?>
 <h3 style="margin: 0">เวลาที่ใช้โดยเฉลี่ย</h3>
 <?php
+
+$today = ( !empty($_POST['yr']) ) ? $_POST['yr'] : '' ;
+$today .= ( !empty($_POST['m']) ) ? '-'.$_POST['m'] : '' ;
+$today .= ( !empty($_POST['d']) ) ? '-'.$_POST['d'] : '' ;
+
 // เวลาโดยเฉลี่ย คัดเอาเฉพาะ EX01, EX02 และเวลาที่น้อยกว่า 8นาที
 $sql = "SELECT `toborow`,`time2`,`time1`,
 LEFT(`toborow`,4) AS `toborow2`,
 TIME_TO_SEC(SUBTIME( `time2`, `time1` )) AS `time3`
-FROM `opday` WHERE `thidate` 
-LIKE '$today%' 
+FROM `opday` WHERE `thidate` LIKE '$today%' 
 AND `time1` != '' 
 AND `time2` != '' 
 AND LEFT(`toborow`,4) IN ('EX01','EX02') 
@@ -308,7 +313,7 @@ AND TIME_TO_SEC(SUBTIME( `time2`, `time1` )) <= 480
 ORDER BY `toborow2` ASC";
 
 $lists = array();
-$row_lists = array();
+$row_lists = array(); // นับจำนวนว่าในแต่ละ ex มีจำนวนเท่าไร
 
 $q = mysql_query($sql);
 while($item = mysql_fetch_assoc($q)){

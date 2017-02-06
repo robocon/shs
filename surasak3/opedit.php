@@ -190,6 +190,9 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cBlood=$row->blood;
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
+		if($cPtright=="R09 ประกันสุขภาพถ้วนหน้า" && $cHospcode=="11512-โรงพยาบาล ค่ายสุรศักดิ์มนตรี"){
+			echo "<script>alert('กรุณาตรวจสอบสิทธิการรักษาผู้ป่วยรายนี้ด้วยครับ');</script>";
+		}
 		$employee = $row->employee;
 		
 		$hcode=explode("/",$cHospcode);
@@ -531,8 +534,8 @@ return $pAge;
     <p><input type="file" name="filUpload"><!---style="display: none; -->
 		  <!--<input name="tmpPath" type="text" value="D:\image_patient\<?//=$cIdcard;?>.jpg" size="50" readonly>
 		  <strong><a href="#" onClick="filUpload.click();tmpPath.value=filUpload.value;" class="fonttitle">เลือกไฟล์</a></strong>-->
-          </p>
-          <input type="hidden" name="cIdcard" value="<?=$cIdcard;?>"></td>
+    </p>
+      <input type="hidden" name="cIdcard" value="<?=$cIdcard;?>"></td>
   </tr>
   </table>
 
@@ -869,9 +872,9 @@ return $pAge;
     <td class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
     <td class="fonthead"><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">  
  
-<input name="rdo1" type="radio"  id="rdo1" value="30 บาท" <? if($hcode1=="30 บาท"){ echo "checked"; }?>> 
-30 บาท 
-<input name="rdo1" type="radio" id="rdo2" value="ปส." <? if($hcode1=="ปส."){ echo "checked"; }?>> 
+<input name="rdo1" type="checkbox"  id="rdo1" value="30 บาท" <? if($cPtright=="R09 ประกันสุขภาพถ้วนหน้า"){ echo "checked"; }?>> 
+30 บาท
+<input name="rdo1" type="checkbox" id="rdo2" value="ปส." <? if($cPtright=="R07 ประกันสังคม"){ echo "checked"; }?>> 
 ประกันสังคม  
       รพ.ต้นสังกัด
 <INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">
