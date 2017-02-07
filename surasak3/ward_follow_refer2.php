@@ -138,46 +138,102 @@ body,td,th {
 
 <?php
 }
+
 if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 
+	include 'includes/functions.php';
 
-if($_REQUEST["search_hn"] != ""){
-	$where = " a.hn='".$_REQUEST["search_hn"]."' AND ";
-}else if($_POST["search_an"] != ""){
-	$where = " a.an='".$_POST["search_an"]."' AND ";
-}
+	$sections = array(
+		'opd' => 'OPD', 
+		'opd_obg' => 'สูติ', 
+		'opd_eye' => 'ห้องตา', 
+		'ER' => 'ห้องฉุกเฉิน'
+	);
 
-$sql = "Select a.row_id, a.name, a.sname, a.hn, a.an, date_format(a.dateopd,'%d-%m-%Y'), ward, officer  From refer as a Where ".$where."  ward in ('opd','opd_obg','opd_eye') Order by a.row_id DESC  ";
+	$month_select = input_post('month_select', date('m'));
+	$year_select = input_post('year_select', date('Y'));
+	$section_select = input_post('section_select');
+	
+	?>
+	<h3>ข้อมูล Refer</h3>
+	<form action="ward_follow_refer2.php?view=opd" method="post">
+		<div>
+			แผนก 
+			<select name="section_select" id="section">
+				<option value="">แสดงทั้งหมด</option>
+				<?php
+				foreach ($sections as $key => $section) {
+					$selected = ( $section_select === $key ) ? 'selected="selected"' : '';
+					?>
+					<option value="<?=$key;?>" <?=$selected;?> ><?=$section;?></option>
+					<?php
+				}
+				?>
+			</select>
+			เดือน
+			<?php
+			getMonthList('month_select', $month_select);
+			?>
+			ปี
+			<?php
+			$year_range = range(2004, date('Y'));
+			getYearList('year_select', true, $year_select, $year_range);
+			?>
+		</div>
+		<div>
+			<button>แสดงผล</button>
+		</div>
+	</form>
+	<?php
+	$where = '';
 
-$result = mysql_query($sql);
-
-echo "<table width=\"90%\"  border=\"1\" bordercolor=\"#3366FF\">
-  <tr>
-    <td ><table width=\"100%\" border=\"0\" align=\"center\">
-      <tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
-        <td >HN</td>
-		<td >AN</td>
-        <td >ชื่อ - สกุล</td>
-        <td >วันที่ refer</td>
-		<td >refer จาก</td>
-		<td >ผู้บันทึก</td>
-		<td >แก้ไข</td>
-		<td >ลบ</td>
-      </tr>";
-
-while(list($row_id, $name, $sname, $hn, $an, $dateopd, $ward, $officer) = Mysql_fetch_row($result)){
-
-	switch($ward){
-		case "opd" : $by = "ห้องตรวจโรค"; break;  
-		case "opd_eye" : $by = "จักษุ"; break;
-		case "opd_obg" : $by = "สูติ"; break;
+	if($_REQUEST["search_hn"] != ""){
+		$where .= "AND a.hn='".$_REQUEST["search_hn"]."' ";
+	}else if($_POST["search_an"] != ""){
+		$where .= "AND a.an='".$_POST["search_an"]."' ";
 	}
 
-echo "<tr align=\"center\" >
-        <td align=\"center\" >".$hn."</td>
+	if( !empty($section_select) ){
+		$where .= "AND ward = '$section_select'";
+	}
+
+	$sql = "SELECT row_id, name, sname, hn, an, date_format(dateopd,'%d-%m-%Y'), ward, officer, refer_runno 
+	FROM refer 
+	WHERE `dateopd` LIKE '".($year_select + 543)."-$month_select%' 
+	".$where."
+	ORDER BY row_id DESC ";
+	$result = mysql_query($sql);
+
+	echo "<table width=\"90%\"  border=\"1\" bordercolor=\"#3366FF\">
+	<tr>
+	<td ><table width=\"100%\" border=\"0\" align=\"center\">
+	<tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
+	<td >HN</td>
+	<td >AN</td>
+	<td >ชื่อ - สกุล</td>
+	<td >เลข refer</td>
+	<td >วันที่ refer</td>
+	<td >refer จาก</td>
+	<td >ผู้บันทึก</td>
+	<td >แก้ไข</td>
+	<td >ลบ</td>
+	</tr>";
+
+	while(list($row_id, $name, $sname, $hn, $an, $dateopd, $ward, $officer, $refer_runno) = Mysql_fetch_row($result)){
+
+		switch($ward){
+			case "opd" : $by = "ห้องตรวจโรค"; break;  
+			case "opd_eye" : $by = "จักษุ"; break;
+			case "opd_obg" : $by = "สูติ"; break;
+			case "ER" : $by = "ER"; break;
+		}
+
+		echo "<tr align=\"center\" >
+		<td align=\"center\" >".$hn."</td>
 		<td align=\"center\" >".$an."</td>
-        <td >".$name." ".$sname."</td>
-        <td >".$dateopd."</td>
+		<td >".$name." ".$sname."</td>
+		<td>".$refer_runno."</td>
+		<td >".$dateopd."</td>
 		<td >".$by."</td>
 		<td >".$officer."</td>";
 		if($officer == "" || $officer == $_SESSION["sOfficer"]){
@@ -186,12 +242,12 @@ echo "<tr align=\"center\" >
 		}else{
 			echo "<td colspan='2' >&nbsp;</td>";
 		}
-      echo "</tr>";
-}
+		echo "</tr>";
+	}
 
 	echo "</table>
 	</td>
-      </tr>
+	</tr>
 	</table>";
 
 }else if($_GET["edit_refer"] == "edit" && $_GET["search_id"] !=""){
