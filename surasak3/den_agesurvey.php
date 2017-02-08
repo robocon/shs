@@ -369,7 +369,5 @@ if( $page === false ){
         </div>
     </div>
     <?php
-    // include 'den_agesurvey_form.php';
-    // exit;
 }
 include 'templates/classic/footer.php';

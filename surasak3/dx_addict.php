@@ -2,7 +2,7 @@
 
 include 'bootstrap.php';
 
-include 'templates/classic/header.php';
+// include 'templates/classic/header.php';
 
 
 if($_SESSION['sIdname'] !== 'ชุติกาญจน์' AND $_SESSION['smenucode'] !== 'ADM'){
@@ -25,12 +25,14 @@ $select_year = input_post('select_year', date('Y'));
     <div class="cell">
         <h3>Addict</h3>
         <div>
-            <form action="dx_narcotic.php" method="post">
+            <form action="dx_addict.php" method="post">
                 <div class="col">
                     <div class="cell">
-                        วัน <?php getDateList('select_day', $select_day);?>
+                        วัน <input type="text" name="select_day" value="<?=$select_day;?>" style="width: 50px;">
                         เดือน <?php getMonthList('select_month', $select_month); ?> 
-                        ปี <?php getYearList('select_year', false, $select_year, $year_range); ?> 
+                        ปี <?php getYearList('select_year', true, $select_year, $year_range); ?> 
+                        <span style="color: red; display: block; font-size: 12px;">* ตัวอย่างวันที่ 01</span>
+                        <span style="color: red; display: block; font-size: 12px;">** ต้องการแสดงเป็นเดือนให้ลบวันที่ออก</span>
                     </div>
                 </div>
                 <div class="col">
@@ -52,15 +54,31 @@ if ( $show === 'table' ) {
     $db = Mysql::load();
     $select_year = ad_to_bc($select_year);
 
+    $date_selected = "$select_year-$select_month";
+    if( !empty($select_day) ){
+        $date_selected .= "-$select_day";
+    }
+
+    /*
     $sql = "SELECT a.`row_id`, a.`date`, a.`drugcode`, a.`tradname`, `drug_inject_amount`, SUM(a.`amount`) AS `amount`, 
     b.`hn`, b.`an`, b.`ptname`, b.`bedcode`, SUBSTRING(b.`bedcode`, 1, 2) AS `ward_code` 
     FROM `drugrx` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
-    WHERE a.`date` LIKE '$select_year-$select_month-$select_day%' 
+    WHERE a.`date` LIKE '$date_selected%' 
     AND ( a.`an` IS NOT NULL AND a.`an` != '' ) 
     AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N') 
     GROUP BY a.`an` 
     ORDER BY b.`bedcode` ASC, a.`date` ASC ";
+    */
+
+    $sql = "SELECT a.`row_id`, a.`date`, a.`drugcode`, a.`tradname`, `drug_inject_amount`, `amount`, 
+    b.`hn`, b.`an`, b.`ptname`, b.`bedcode`, SUBSTRING(b.`bedcode`, 1, 2) AS `ward_code` 
+    FROM `drugrx` AS a 
+    LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
+    WHERE a.`date` LIKE '$date_selected%' 
+    AND ( a.`an` IS NOT NULL AND a.`an` != '' ) 
+    AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N') ";
+    
     $db->select($sql);
     $items = $db->get_items();
 
@@ -91,10 +109,16 @@ if ( $show === 'table' ) {
         $item_lists[$ward_code][] = $item;
 
     }
+
+    if( !empty($select_day) ){
+        $date_selected .= "-$select_day";
+    }
+
+
     ?>
     <div class="col">
         <div class="cell">
-            <h3>Addict วันที่ <?=$select_day.' '.$def_fullm_th[$select_month].' '.$select_year;?>
+            <h3>Addict <?=( !empty($select_day) ? 'วันที่ '.$select_day.' ' : '' )?><?=$def_fullm_th[$select_month].' '.$select_year;?>
         </div>
     </div>
     <div class="col">
@@ -105,11 +129,12 @@ if ( $show === 'table' ) {
                 $ward_name = $code_lists[$key];
                 ?>
                 <h3><?=$ward_name;?></h3>
-                <table>
+                <table border="1" cellpadding="0" cellspacing="0">
                     <thead>
                         <tr>
-                            <th width="5%">#</th>
-                            <th width="12%">HN</th>
+                            <th width="3%">#</th>
+                            <th width="15%">วันที่</th>
+                            <th width="8%">HN</th>
                             <th width="25%">ชื่อ-สกุล</th>
                             <th width="25%">ชื่อยา</th>
                             <th width="8%">จำนวนที่ใช้</th>
@@ -125,6 +150,7 @@ if ( $show === 'table' ) {
                     ?>
                         <tr>
                             <td align="right"><?=$i;?></td>
+                            <td><?=$item['date'];?></td>
                             <td><?=$item['hn'];?></td>
                             <td><?=$item['ptname'];?></td>
                             <td><?=$item['tradname'];?></td>
@@ -147,4 +173,4 @@ if ( $show === 'table' ) {
     <?php
 }
 
-include 'templates/classic/footer.php';
+// include 'templates/classic/footer.php';
