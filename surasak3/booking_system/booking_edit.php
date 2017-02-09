@@ -160,6 +160,7 @@ return $pAge;
       <option value="พิเศษ1000" <? if($dbarr['bed']=="พิเศษ1000"){ echo "selected"; }?>>พิเศษ1000</option>
       <option value="พิเศษ1200" <? if($dbarr['bed']=="พิเศษ1200"){ echo "selected"; }?>>พิเศษ1200</option>
       <option value="พิเศษ1600" <? if($dbarr['bed']=="พิเศษ1600"){ echo "selected"; }?>>พิเศษ1600</option>
+			<option value="sleeptest1000" <?php if($dbarr['bed']=="sleeptest1000"){ echo "selected"; }?>>sleeptest1000</option>
       
       </select></td>
     <td>หอผู้ป่วย</td>
