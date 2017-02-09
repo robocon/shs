@@ -77,7 +77,8 @@ if ( $show === 'table' ) {
     LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
     WHERE a.`date` LIKE '$date_selected%' 
     AND ( a.`an` IS NOT NULL AND a.`an` != '' ) 
-    AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N') ";
+    AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N') 
+    ORDER BY a.`hn` ASC, a.`date` ASC";
     
     $db->select($sql);
     $items = $db->get_items();
