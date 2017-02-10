@@ -29,14 +29,15 @@ for ($i=1; $i <= $rows; $i++) {
 	$rxdrug = $_POST['rxdrug'.$i];
 	$num = (int) $_POST['import'.$i];
 
-	$sql = "SELECT `min`, `max`, `stock`, `mainstk` 
-	FROM `druglst` 
-	WHERE `drugcode` = '$drugcode'";
+	$sql = "SELECT b.`min`, b.`max`, a.`stock`, a.`mainstk` 
+	FROM `druglst` AS a 
+	RIGHT JOIN `drug_control_user` AS b ON b.`drugcode` = a.`drugcode` 
+	WHERE a.`drugcode` = '$drugcode' 
+	AND b.`username` = '$sOfficer'";
 	$db->select($sql);
 	$item = $db->get_item();
 
-	$insert_sql = "
-	INSERT INTO drugimport (
+	$insert_sql = "INSERT INTO drugimport (
 	thidate,drugcode,tradname,min,max,
 	stock,mainstk,dispense,amountrx,idno,
 	usercontrol,datesearch

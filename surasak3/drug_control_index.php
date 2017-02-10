@@ -14,6 +14,7 @@ $allow_group = array('ADM', 'ADMPHA', 'ADMPHARX');
 if( in_array($user_group, $allow_group) === false ){
 
 	$sql = "SELECT * FROM `drug_user_ward` WHERE `user_id` = '$user_id'";
+	//echo $sql;
 	$query = mysql_query($sql);
 	$user_row = mysql_num_rows($query);
 	if( empty($user_row) ){

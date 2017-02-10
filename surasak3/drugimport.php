@@ -85,22 +85,27 @@ include("connect.inc");
       $cont = $_POST['sump'];
 	  for($p=1;$p<=$cont;$p++){
 		  if($_POST['import'.$p]!=""||$_POST['import'.$p]!=0){
-			  $sel2 = "select * from druglst where drugcode= '".$_POST['drx'.$p]."'";
+
+			$sel2 = "SELECT a.*, b.`min` AS `new_min`, b.`max` AS `new_max` 
+			FROM `druglst` AS a 
+			RIGHT JOIN `drug_control_user` AS b ON b.`drugcode` = a.`drugcode` 
+			WHERE a.`drugcode` = '".$_POST['drx'.$p]."' 
+			AND b.`username` = '".$_SESSION['sOfficer']."'";
+
 			  $row2 = mysql_query($sel2);
 			  $result2 = mysql_fetch_array($row2);
+
 			  $r++;
-			  
-			  
 			
-			  $import = "insert into drugimport (thidate,drugcode,tradname,min,max,stock,mainstk,dispense,amountrx,idno,usercontrol,datesearch) values ('".$_SESSION['datetime']."','".$_POST['drx'.$p]."','".$result2['tradname']."','".$result2['min']."','".$result2['max']."','".$result2['stock']."','".$result2['mainstk']."','".$_POST['rxdrug'.$p]."','".$_POST['import'.$p]."','".$nRunno."','".$_SESSION['sOfficer']."','".$_SESSION['yymall']."')";
+			  $import = "insert into drugimport (thidate,drugcode,tradname,min,max,stock,mainstk,dispense,amountrx,idno,usercontrol,datesearch) values ('".$_SESSION['datetime']."','".$_POST['drx'.$p]."','".$result2['tradname']."','".$result2['new_min']."','".$result2['new_max']."','".$result2['stock']."','".$result2['mainstk']."','".$_POST['rxdrug'.$p]."','".$_POST['import'.$p]."','".$nRunno."','".$_SESSION['sOfficer']."','".$_SESSION['yymall']."')";
 			  $result56 = mysql_query($import) or die(mysql_error());
 	  ?>
       <tr>
         <td align="center"><?=$r?></td>
         <td><?=$_POST['drx'.$p]?></td>
         <td><?=$result2['tradname']?></td>
-        <td align="center"><?=$result2['min']?></td>
-        <td align="center"><?=$result2['max']?></td>
+        <td align="center"><?=$result2['new_min']?></td>
+        <td align="center"><?=$result2['new_max']?></td>
         <td align="center"><?=$result2['stock']?></td>
         <td align="center"><?=$result2['mainstk']?></td>
         <td align="center"><?=$_POST['rxdrug'.$p]?></td>

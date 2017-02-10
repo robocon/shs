@@ -8,7 +8,6 @@ $cont = $_POST['sump'];
 $test_real_item = 0;
 for ($i=1; $i <= $cont; $i++) { 
 	$drug_import =  $_POST['import'.$i];
-	// var_dump($drug_import);
 	if( $drug_import !== '' ){
 		++$test_real_item;
 	}
@@ -18,8 +17,6 @@ if( $test_real_item === 0 ){
 	echo 'กรุณาเลือกยาอย่างน้อย 1รายการ<br><a href="javascript:window.close()">กลับ</a>';
 	exit;
 }
-
-// exit;
 
 ?>
 <style type="text/css">
@@ -55,7 +52,13 @@ if( $test_real_item === 0 ){
 	<?php
 	for($p=1; $p<=$cont; $p++){
 		if( $_POST['import'.$p] != "" OR $_POST['import'.$p] != 0 ){
-			$sel2 = "select * from druglst where drugcode= '".$_POST['drx'.$p]."'";
+			
+			$sel2 = "SELECT a.*, b.`min` AS `new_min`, b.`max` AS `new_max`
+			FROM `druglst` AS a 
+			RIGHT JOIN `drug_control_user` AS b ON b.`drugcode` = a.`drugcode` 
+			WHERE a.`drugcode` = '".$_POST['drx'.$p]."' 
+			AND b.`username` = '".$_SESSION['sOfficer']."' ";
+
 			$row2 = mysql_query($sel2);
 			$result2 = mysql_fetch_array($row2);
 			$r++;
@@ -69,8 +72,8 @@ if( $test_real_item === 0 ){
 					<?=$result2['tradname']?>
 					<input type="hidden" name="tname<?=$r;?>" value="<?=$result2['tradname']?>">
 				</td>
-				<td align="center"><?=$result2['min']?></td>
-				<td align="center"><?=$result2['max']?></td>
+				<td align="center"><?=$result2['new_min']?></td>
+				<td align="center"><?=$result2['new_max']?></td>
 				<td align="center"><?=$result2['stock']?></td>
 				<td align="center"><?=$result2['mainstk']?></td>
 				<td align="center">

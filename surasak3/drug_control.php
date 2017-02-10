@@ -25,7 +25,10 @@ function dump($str){
 if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 	include("connect.inc");
 	
-	$sql = "Select drugcode,tradname,genname from druglst  where  drugcode like '%".$_GET["search1"]."%' limit 10 ";
+	$sql = "SELECT `row_id`,`drugcode`,`tradname`,`genname` 
+	FROM `druglst` 
+	WHERE `drugcode` LIKE '%".$_GET["search1"]."%' 
+	LIMIT 10 ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
@@ -36,7 +39,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 
 		$i=1;
 		while($se = Mysql_fetch_assoc($result)){
-		echo "<tr><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",jschars($se["drugcode"]),"';document.getElementById('txt1').value = '",jschars($se["tradname"]),"';document.getElementById('txt2').value = '",jschars($se["genname"]),"';document.getElementById('list').innerHTML ='';\">",$se["drugcode"],"</A></td><td>".$se['tradname']."</td><td>&nbsp;</td></tr>";
+		echo "<tr><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",jschars($se["drugcode"]),"';document.getElementById('txt1').value = '",jschars($se["tradname"]),"';document.getElementById('txt2').value = '",jschars($se["genname"]),"';document.getElementById('list').innerHTML ='';document.getElementById('drug_id').value = '".$se["row_id"]."';\">",$se["drugcode"],"</A></td><td>".$se['tradname']."</td><td>&nbsp;</td></tr>";
 		}
 		
 		echo "</TABLE></Div>";
@@ -45,37 +48,64 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 	exit();
 }
 
+// บันทึกชื่อ จำนวนสูงสุด,ต่ำสุด ของคนที่คุมยา
 if( isset($_POST['ok']) ){
 
-	$sel = "SELECT * 
-	FROM `druglst` 
-	WHERE `drugcode` = '".$_POST['drugcode']."' ";
-	$row = mysql_query($sel) or die( mysql_error() );
-	$result = mysql_fetch_array($row);
+	$min = trim($_POST['min']);
+	$max = trim($_POST['max']);
+	$drug_id = trim($_POST['drug_id']);
+	$sOfficer = $_SESSION['sOfficer'];
 
-	// if($result['usercontrol']==""){
-	$sql1= "UPDATE `druglst` SET 
-    `usercontrol` = '".$_SESSION['sOfficer']."',
-    `min` = '".$_POST['min']."',
-    `max` = '".$_POST['max']."' 
-    WHERE `drugcode` = '".$_POST['drugcode']."'";
-	$query1 = mysql_query($sql1) or die( mysql_error() );
-
+	// นับจาก druglst เป็น drug_user_control
+	$sql = "SELECT `id` 
+	FROM `drug_control_user` 
+	WHERE `drugcode` = '".$_POST['drugcode']."' 
+	AND `username` = '".$sOfficer."' ";
+	$row = mysql_query($sql) or die( mysql_error() );
+	$result = mysql_fetch_assoc($row);
+	
+	if( $result === false ){
+		$sql = "INSERT INTO `drug_control_user`
+		(`id`,
+		`username`,
+		`min`,
+		`max`,
+		`drugcode`,
+		`druglst_id`)
+		VALUES(
+		NULL,
+		'".$sOfficer."',
+		'".$min."',
+		'".$max."',
+		'".$_POST['drugcode']."',
+		'".$drug_id."');";
+		$save = mysql_query($sql) or die( mysql_error() );
+	}else{
+		$sql = "UPDATE `drug_control_user` SET 
+		`min` = '".$min."',
+		`max` = '".$max."' 
+		WHERE `id` = '".$result['id']."' ";
+		$save = mysql_query($sql) or die( mysql_error() );
+	}
+	
 	// เก็บ log เอาไว้ด้วยว่าใครแก้อะไรไปบ้าง
 	$date_now = date('Y-m-d H:i:s');
     $sql = "INSERT INTO  `smdb`.`drug_control_log` (
 		`id` ,`author` ,`min` ,`max` ,`drugcode` ,`date_add`
 	)
 	VALUES (
-		NULL , '".$_SESSION['sOfficer']."',  '".$_POST['min']."',  '".$_POST['max']."',  '".$_POST['drugcode']."',  '$date_now'
+		NULL , '".$sOfficer."',  '".$_POST['min']."',  '".$_POST['max']."',  '".$_POST['drugcode']."',  '$date_now'
 	);";
 	mysql_query($sql) or die( mysql_error() );
 
-}else if(isset($_GET['cancle'])){
-	$del = "UPDATE `druglst` 
-	SET `usercontrol` = '' 
-	WHERE `row_id` = '".$_GET['cancle']."' ";
-	mysql_query($del) or die( mysql_error() );
+}else if(isset($_GET['cancle'])){ // ลบออกจากรายการ
+
+	$id = trim($_GET['cancle']);
+	$sql = "DELETE FROM `drug_control_user`
+	WHERE `id` = '$id';";
+	$delete = mysql_query($sql);
+	header('Location: drug_control.php');
+	exit;
 }
 
 ?>
@@ -183,6 +213,7 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 		<tr>
 			<td colspan="2" align="center" class="font1">
 				<input type="submit" name="ok" id="ok" value="ตกลง">
+				<input type="hidden" name="drug_id" id="drug_id">
 			</td>
 		</tr>
 	</table>
@@ -212,20 +243,21 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 		</tr>
     <?php
 	
-	$sel2 = "SELECT * FROM `druglst` 
-	WHERE `usercontrol` = '".$_SESSION['sOfficer']."' 
-	ORDER BY `drugcode` ASC";
+	$sel2 = "SELECT a.*, b.`id` AS `drug_id`, b.`min` AS `new_min`, b.`max` AS `new_max` 
+	FROM `druglst` AS a 
+	RIGHT JOIN `drug_control_user` AS b 
+		ON b.`druglst_id` = a.`row_id` 
+	WHERE b.`username` = '".$_SESSION['sOfficer']."' 
+	ORDER BY a.`drugcode` ASC";
 	$row2 = mysql_query($sel2) or die( mysql_error() );
 
 	while($result2 = mysql_fetch_array($row2)){
 
-		$query = "SELECT drugcode,tradname,sum(amount) 
-		FROM drugrx 
-		WHERE drugcode = '".trim($result2['drugcode'])."' 
-		AND date between '".$_SESSION['yym']." 00:00:00' 
-		AND '".$_SESSION['yym2']." 23:59:59' 
-		GROUP BY drugcode";
-
+		$query = "SELECT `drugcode`,`tradname`,SUM(`amount`) 
+		FROM `drugrx` 
+		WHERE `drugcode` = '".trim($result2['drugcode'])."' 
+		AND DATE BETWEEN '".$_SESSION['yym']." 00:00:00' AND '".$_SESSION['yym2']." 23:59:59' 
+		GROUP BY `drugcode`";
 		$resultq = mysql_query($query) or die( mysql_error() );
 		list($drugcode, $tradname, $amount) = mysql_fetch_row($resultq);
 		$k++;
@@ -234,25 +266,26 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 			<td bgcolor="#FFFFCC" class="font1"><input type="hidden" name="drx<?=$k?>" value="<?=$result2['drugcode']?>" /><a target="_blank" href="drugchkcode.php?code=<?=$result2['drugcode']?>"><?=$result2['drugcode']?></a></td>
 			<td bgcolor="#FFFFCC" class="font1"><?=$result2['tradname']?></td>
 			<td bgcolor="#FFFFCC" class="font1"><?=$result2['genname']?></td>
-			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['min']?></td>
-			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['max']?><input name="rxmax<?=$k?>" type="hidden" id='rxmax<?=$k?>' value="<?=$result2['max']?>"; /></td>
+			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['new_min']?></td>
+			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['new_max']?><input name="rxmax<?=$k?>" type="hidden" id='rxmax<?=$k?>' value="<?=$result2['max']?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']?></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['mainstk']?><input name="rxmainstk<?=$k?>" type="hidden" id='rxmainstk<?=$k?>' value="<?=$result2['mainstk']?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']+$result2['mainstk']?></td>
 			<td align="center" bgcolor="#FF9B9B" class="font1"><?=$amount?><input name="rxdrug<?=$k?>" type="hidden" id='rxdrug<?=$k?>' value="<?=$amount?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['pack'];?></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><input name="import<?=$k?>" type="text" id='import<?=$k?>' size="10" onkeyup="if(parseInt(this.value)>parseInt(document.getElementById('rxmax<?=$k?>').value)){alert('ยอดเบิกเกินค่าสูงสุด');this.value='';} if(parseInt(this.value)>parseInt(document.getElementById('rxmainstk<?=$k?>').value)){alert('ยอดเบิกเกินกว่ายอดในคลัง');} "; /></td>
-			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['row_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
-			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['row_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
+			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['drug_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
+			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['drug_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
 		</tr>
 		<?php
 	}
-	
-?>
+	?>
     <tr>
-      <td colspan="12" align="center" bgcolor="#FFFFCC" class="font1">
-      <input type="hidden" name="sump" value="<?=$k?>" />
-        <input type="submit" name="save" id="save" value="ตกลง" /></td>
+		<td colspan="12" align="center" bgcolor="#FFFFCC" class="font1">
+			<input type="hidden" name="sump" value="<?=$k?>" />
+			<input type="submit" name="save" id="save" value="ตกลง" />
+		</td>
+		<td bgcolor="#FFFFCC"></td>
     </tr>
   </table>
   <br />
