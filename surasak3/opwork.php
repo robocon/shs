@@ -20,9 +20,9 @@ else
 	$ok = 'N';   
 
 
-if(substr($_POST["case"],0,4) == "EX03"){
+if(substr($_POST["case"],0,4) == "EX03"){  //สมัครโครงการเบิกจ่ายตรง
 	$R03true1 = "'1'";
-	$R03true2 = " ,withdraw='1' ";
+	$R03true2 = " ,withdraw='1' ";	
 }else{
 	$R03true1 = "Null";
 	$R03true2 = ""; 
@@ -49,7 +49,7 @@ Function calcage($birth){
 		$pAge="$ageY ปี $ageM เดือน";
 	}
 
-	return $pAge;
+return $pAge;
 }
 
 //$Y=($y-543);
@@ -60,76 +60,39 @@ $cAge=calcage($dbirth);
 //ตรวจสอบเลขบัตรประชาชน
 $sql = "Select hn From opcard where idcard='$idcard' AND hn<>'$cHn' limit 0,1 ";
 $result = mysql_query($sql);
-if(mysql_num_rows($result) > 0 && strlen(trim($idcard)) == 13){
-	list($chk_idcard) = mysql_fetch_row($result);
-	echo "<SCRIPT LANGUAGE=\"JavaScript\">
+	if(mysql_num_rows($result) > 0 && strlen(trim($idcard)) == 13){
+		list($chk_idcard) = mysql_fetch_row($result);
+		echo "<SCRIPT LANGUAGE=\"JavaScript\">
 
-	alert('เลขบัตรประชาชน $idcard ถูกใช้โดย HN : $chk_idcard กรุณาตรวจสอบว่าเป็นคนๆเดียวกันหรือไม่');
+		alert('เลขบัตรประชาชน $idcard ถูกใช้โดย HN : $chk_idcard กรุณาตรวจสอบว่าเป็นคนๆเดียวกันหรือไม่');
 
-	</SCRIPT>";
+		</SCRIPT>";
 }
-
 $where4="";
 if($_POST['lockptright5']=="lock"){
 	$where4 = ",ptright2='".$_POST['ptright']."' ";
 }else{
 	$where4 = ",ptright2='' ";
 }
-
 //update opdcard table
 	$hospcode=$_POST['hospcode'];
 	$ptrcode=$_POST['rdo1'];
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
-extract($_POST);
-
-$sql = "UPDATE opcard SET idcard='$idcard',
-mid='$mid',
-hn='$cHn',
-yot='$yot',
-name='$name',
-surname='$surname',
-education='$education',
-goup='$goup',
-married='$married',
-dbirth='$dbirth',
-guardian='$guardian',
-idguard='$idguard',
-nation='$nation',
-religion='$religion',
-career='$career',
-ptright='$ptright',
-ptright1='$ptright1',
-ptrightdetail='$ptrightdetail',
-address='$address',
-tambol='$tambol',
-ampur='$ampur',
-changwat='$changwat',
-hphone='$hphone',
-phone='$phone',
-father='$father',
-mother='$mother',
-couple='$couple',
-note='$note',
-sex='$sex',
-camp='$camp',
-race='$race',
-ptf='$ptf',
-ptfadd='$ptfadd',
-ptffone='$ptffone',
-ptfmon='$ptfmon',
-lastupdate='$thidate',
-blood='$blood',
-drugreact='$drugreact',  
-officer ='".$_SESSION["sOfficer"]."',
-hospcode='".$hospcode."',
-ptrcode ='$ptrcode',
+$sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',
+yot='$yot',name='$name',surname='$surname',education='$education',goup='$goup',married='$married',
+dbirth='$dbirth',guardian='$guardian',idguard='$idguard',
+nation='$nation',religion='$religion',career='$career',ptright='$ptright',ptright1='$ptright1',ptrightdetail='$ptrightdetail',address='$address',
+tambol='$tambol',ampur='$ampur',changwat='$changwat',hphone='$hphone',
+phone='$phone',father='$father',mother='$mother',couple='$couple',
+note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
+ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
+officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
 employee='$employee', 
-opcardstatus='$opcardstatus' 
-$where4 WHERE hn='$cHn' ";
+opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
 
-$result = mysql_query($sql) or die("Query failed");
+$result = mysql_query($sql) or die("Query failed ipcard");
 
 If (!$result){
 	echo "update opcard fail";
@@ -141,6 +104,7 @@ If (!$result){
 
 //update xrayno table
 $sql = "UPDATE xrayno SET name='$name',surname='$surname' WHERE hn='$cHn' ";
+
 $result = mysql_query($sql) or die("Query failed xrayno");
 
 //update xrayno table
@@ -149,7 +113,9 @@ $sql = "UPDATE bed SET ptname='$fname' WHERE hn='$cHn' limit 1";
 $result = mysql_query($sql) or die("Query failed bed");
 
 $sql = "UPDATE ipcard SET ptname='$fname' WHERE hn='$cHn'  limit 1";
+
 $result = mysql_query($sql) or die("Query failed ipcard");
+
 If (!$result){
 	echo "update xrayno fail";
 	echo mysql_errno() . ": " . mysql_error(). "\n";
@@ -161,6 +127,7 @@ If (!$result){
 //หาข้อมูลจาก opcard ของ $cHn เพื่อใช้ทั้งในกรณีลงทะเบียนแล้ว หรือยังไม่ลง
 $query = "SELECT * FROM opcard WHERE hn = '$cHn'";
 $result = mysql_query($query) or die("Query failed");
+
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	if (!mysql_data_seek($result, $i)) {
 		echo "Cannot seek to row $i\n";
@@ -182,13 +149,15 @@ If ($result){
 	$cGoup=$row->goup;
 	$cCamp=$row->camp;
 	$cNote=$row->note;
-	$cIdguard=$row->idguard;
+  	               $cIdguard=$row->idguard;
  
 	echo "HN : $cHn, ชื่อ-สกุล: $cYot   $cName  $cSurname<br>";  
 	echo "<font face='Angsana New' size=4><b>สิทธิการรักษา : $cPtright :<font face='Angsana New' size=5><u>$cIdguard</u></b></font><br> ";
        
 	//       echo "หมายเลขบัตร ปชช.: $cIdcard  ";
+ 
 	//   echo "มาครั้งสุดท้ายเมื่อ $cLastupdate <br> ";
+ 	
 	// echo "หมายเหตุ.: $cNote <br> ";
 //echo "<B>หมายเหตุ.:.ให้ตรวจสอบสิทธิทุกครั้งก่อนออกใบสั่งยา </B><br> ";
 }  
@@ -237,9 +206,9 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 }
 
 //  	    $cTitle=$row->title;  //=VN
-$nVn = $row->runno;
-$dVndate = $row->startday;
-$dVndate = substr($dVndate,0,10);
+$nVn=$row->runno;
+$dVndate=$row->startday;
+$dVndate=substr($dVndate,0,10);
 $today = date("Y-m-d");  
 //print "$today<br>";
 //print "$dVndate<br>";
@@ -258,7 +227,7 @@ $today = date("Y-m-d");
 		}
 	}
  </script>
-<?php
+<?
 
 //กรณีขอ vn ใหม่
 If ($_POST["new_vn"] == "1"){
@@ -274,9 +243,9 @@ If ($_POST["new_vn"] == "1"){
 	}
 
 	//วันใหม่
-	if($today <> $dVndate){    
-		$nVn = 1;
-		$thdatevn = $d.'-'.$m.'-'.$yr.$nVn;
+	if($today<>$dVndate){    
+		$nVn=1;
+		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
 		$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN'";
 		$result = mysql_query($query) or die("Query failed");
 		//   	         echo mysql_errno() . ": " . mysql_error(). "\n";
@@ -284,33 +253,35 @@ If ($_POST["new_vn"] == "1"){
 		print "ผู้ป่วยใหม่  ได้ VN = $nVn <br>";
 	}	
 	
-	//ลงทะเบียนใน opday table
-	$opergcode='x';
-	if(substr($_POST["case"],0,4) == "EX19"){
+//ลงทะเบียนใน opday table
+$opergcode='x';
+	if(substr($_POST["case"],0,4) == "EX19"){  //EX19 ออก VN ทำแผล(ต่อเนื่อง)
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,diag,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','D/S wound ','Z480','9357','Y',".$R03true1.",'$opergcode');";
-	}else if(substr($_POST["case"],0,4) == "EX22"){
+	}else if(substr($_POST["case"],0,4) == "EX22"){  //EX22 ตรวจมวลกระดูก
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z138','8898','Y',".$R03true1.",'$opergcode');";
 	}else{
-		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES
-		('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
 	}
 		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
 	
 	//จัดเก็บข้อมูลในตาราง cliniceye กรณีที่เลือก EX25
-	if(substr($_POST["case"],0,4) == "EX25"){
-		$today = date("Y-m-d H:i:s");
-		$subtoday = substr($today,0,10);
-		$sql = "select * from cliniceye where date_time like '$subtoday%' && hn='$cHn' && vn='$nVn'";
-		$result = mysql_query($sql);
-		$num = mysql_num_rows($result);
+	if(substr($_POST["case"],0,4) == "EX25"){  //EX25 จักษุ
+	$today = date("Y-m-d H:i:s");
+	$subtoday=substr($today,0,10);
+	$sql="select * from cliniceye where date_time like '$subtoday%' && hn='$cHn' && vn='$nVn'";
+	$result=mysql_query($sql);
+	$num=mysql_num_rows($result);
 		if($num < 1){
 		$add="insert into cliniceye set date_time='$today', hn='$cHn', vn='$nVn'";
 		$query=mysql_query($add);
 		}
 	}	
 	
-	$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
-	$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+		
+		$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
+		
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+
 
 	// update time to table opday
 	$query ="UPDATE opday SET time1='$time' WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
@@ -410,7 +381,7 @@ WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 
 $result = mysql_query($query) or die("Query failed,update opday");
 $sql = "Select count(row_id) as c_row From opday2 where thdatehn = '".$thdatehn."' AND toborow = '".$case."' limit 1 ";
-list($c_row) = mysql_fetch_row(mysql_query($sql));
+list($c_row) = Mysql_fetch_row(Mysql_Query($sql));
 
 if($c_row == 0){
 	$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
@@ -468,7 +439,42 @@ print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้
 print "<br>ผู้ลงทะเบียน ..$sOfficer";
 }
 
-// ตรวจสอบและอับเดล dphardep กรณี ผู้ป่วยมาฉีดยาต่อเนื่อง
+if(substr($_POST["case"],0,4)=="EX03"){  //คิดค่าบริการสมัครโครงการเบิกจ่ายตรงอัตโนมัติ
+		//runno  for chktranx
+			$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
+			$result = mysql_query($query)
+				or die("Query failed");
+		
+			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+				if (!mysql_data_seek($result, $i)) {
+					echo "Cannot seek to row $i\n";
+					continue;
+				}
+		
+				if(!($row = mysql_fetch_object($result)))
+					continue;
+				 }
+		
+			$nRunno=$row->runno;
+			$nRunno++;
+		
+			$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
+			$result = mysql_query($query) or die("Query failed");
+				/////////////////////////////////////////////////////////////
+			$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('$nRunno','$thidate','$cPtname','$cHn','','OTHER','1','ค่าบริการทางการแพทย์', '30','0','30','','$sOfficer','0','$nVn','$cPtright');";
+			$result = mysql_query($query);
+			$idno=mysql_insert_id();
+		 
+			$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
+VALUES('$thidate','$cHn','','$cPtname','1','cscd','ค่าธรรมเนียมการสมัครโครงการจ่ายตรง','1','30','0','30','OTHER','MC','$idno','$cPtright');";
+			$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+			
+			$query ="UPDATE opday SET other=(other+30) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
+      		$result = mysql_query($query) or die("Query failed,update opday");
+}
+
+
+// ตรวจสอบและอับเดต dphardep กรณี ผู้ป่วยมาฉีดยาต่อเนื่อง
 if(substr($_POST["case"],0,4) == "EX23"){
 	$sql = "Select row_id From dphardep where hn = '".$cHn."' AND date like '".$thidate3."%' AND tvn = '' ";
 
@@ -482,200 +488,172 @@ if(substr($_POST["case"],0,4) == "EX23"){
 $_SESSION['admit_vn']=$nVn;
 //END 
 // รูปภาพ
-$dataf = $_FILES['filUpload']['tmp_name'];
-$dataf_name = $_FILES['filUpload']['name'];
-$dataf_size = $_FILES['filUpload']['size'];
-$dataf_type = $_FILES['filUpload']['type'];
-if( !empty($dataf) ){
-	$structure = '../image_patient';
-	$ext = strtolower(end(explode('.',$dataf_name)));
-	echo $ext;
-	if($ext == "jpg"){
-		$filename = $_POST['cIdcard'].".". $ext;
-		copy($dataf, "$structure/$filename");
-		//echo $structure.'/'.$_POST['cIdcard'].'.jpg';
-	}else{
-		//echo $filename;
-		echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .jpg</CENTER></B></FONT> ";
-	}
-} //ปิดไฟล์*/
+$dataf=$_FILES['filUpload']['tmp_name'];
+$dataf_name=$_FILES['filUpload']['name'];
+$dataf_size=$_FILES['filUpload']['size'];
+$dataf_type=$_FILES['filUpload']['type'];
+if(empty($dataf)){
+	
+	
+}else{
+$structure = '../image_patient';
 
-$sql = "SELECT runno FROM runno WHERE title = 'kew' ";
-$result = mysql_query($sql) or die( mysql_error() );
-list($kewadd) = mysql_fetch_row($result);
+
+
+					$ext=strtolower(end(explode('.',$dataf_name)));
+					
+					echo $ext;
+					if($ext=="jpg"){
+								
+								$filename=$_POST['cIdcard'].".". $ext;
+		
+								copy($dataf, "$structure/$filename");
+								
+								//echo $structure.'/'.$_POST['cIdcard'].'.jpg';
+
+						}else{
+				
+				//echo $filename;
+				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .jpg</CENTER></B></FONT> ";
+								}
+					}			//ปิดไฟล์*/
+
+
+
+
+
 ?>
-<br>
-1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('kewadd.php')">คิวตรวจโรคทั่วไป (<?=$kewadd;?>)</a>
-<?php
-$sql = "Select runno From runno where title ='kew2' ";
-$result = mysql_query($sql) or die( mysql_error() );
-list($akew) = mysql_fetch_row($result);
-?>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('kewadd2.php')">คิวตรวจทันตกรรม (<?=$akew;?>)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kew3' ";
-$result = mysql_query($sql);
-list($kewadd3) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewadd3.php')">คิวสูติ(<?=$kewadd3;?>)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kew7' ";
-$result = mysql_query($sql);
-list($kewadd7) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewadd7.php')">คิวตรวจตา(<?=$kewadd7;?>)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='chekup' ";
-$result = mysql_query($sql);
-list($kewadd_chkup) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewadd_chkup.php')">คิวตรวจสุขภาพทหารในสังกัดประจำปี(<?=$kewadd_chkup;?>)</a>
+ 
+
+<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php" onclick="addQueue()">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php" onclick="addQueue()">คิวตรวจทันตกรรม(<?php $sql = "Select runno From runno where title ='kew2' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>) </a>
 &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd3.php" onclick="addQueue()">คิวสูติ(<?php $sql = "Select runno From runno where title ='kew3' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd7.php" onclick="addQueue()">คิวตรวจตา(<?php $sql = "Select runno From runno where title ='kew7' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php" onclick="addQueue()">คิวตรวจสุขภาพทหารในสังกัดประจำปี(<?php $sql = "Select runno From runno where title ='chekup' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
+
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kew6' ";
-$result = mysql_query($sql);
-list($kewadd6) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewadd6.php')">คิวฝั่งเข็ม(<?=$kewadd6;?>)</a>
+&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd6.php" onclick="addQueue()">คิวฝั่งเข็ม(<?php $sql = "Select runno From runno where title ='kew6' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd5.php" onclick="addQueue()">มวลกระดูก(<?php $sql = "Select runno From runno where title ='kew5' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
+	
+	&nbsp;&nbsp;&nbsp
+	<?php
+	$q = mysql_query("SELECT * FROM `runno` WHERE `title` = 'kewsold' ");
+	$item = mysql_fetch_assoc($q);
+	?>
+	<a target="_target" href="kewadd_soldier.php" onclick="addQueue()">คิวตรวจสุขภาพทหารพรานประจำปี(<?php echo $item['runno'];?>)</a>
+	&nbsp;&nbsp;&nbsp
+	
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd4.php">ลบคิว</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;คิวคลินิกพิเศษ&nbsp;&nbsp;&nbsp;<a target=_TOP href="keweye.php">จักษุ(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewmed.php" onclick="addQueue()">อยุรกรรม(พ)(<?php $sql = "Select runno From runno where title ='kewmed' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewsurg.php" onclick="addQueue()">ศัลยกรรม(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewogb.php" onclick="addQueue()">สูติ(พ)(<?php $sql = "Select runno From runno where title ='kewogb' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewent.php" onclick="addQueue()">หู คอ จมูก(พ)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewchild.php" onclick="addQueue()">กุมารเวช(พ)</a>
 &nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kew5' ";
-$result = mysql_query($sql);
-list($kewadd5) = mysql_fetch_row($result);
-?>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('kewadd5.php')">มวลกระดูก(<?=$kewadd5;?>)</a>
-<?php
-$q = mysql_query("SELECT * FROM `runno` WHERE `title` = 'kewsold' ");
-$item = mysql_fetch_assoc($q);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewadd_soldier.php')">คิวตรวจสุขภาพทหารพรานประจำปี(<?=$item['runno'];?>)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="kewadd4.php">ลบคิว</a>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-คิวคลินิกพิเศษ
-&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="keweye.php">จักษุ(พ) </a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kewmed' ";
-$result = mysql_query($sql);
-list($kewmed) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewmed.php')">อยุรกรรม(พ)(<?=$kewmed;?>)</a>
-&nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('kewsurg.php')">ศัลยกรรม(พ) </a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kewogb' ";
-$result = mysql_query($sql);
-list($kewogb) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewogb.php')">สูติ(พ)(<?=$kewogb?>)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('kewent.php')">หู คอ จมูก(พ)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('kewchild.php')">กุมารเวช(พ)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php
-$sql = "Select runno From runno where title ='kewortho' ";
-$result = mysql_query($sql);
-list($kewortho) = mysql_fetch_row($result);
-?>
-<a href="javascript:void(0);" onclick="addQueue('kewortho.php')">ศัลยกรรมกระดูก(พ)(<?=$kewortho;?>)</a>
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewortho.php" onclick="addQueue()">ศัลยกรรมกระดูก(พ)(<?php $sql = "Select runno From runno where title ='kewortho' ";
+	$result = Mysql_Query($sql);
+	list($akew) = Mysql_fetch_row($result);
+	echo $akew ;   ?>)</a>
 <br>2...ส่งข้อมูล&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="sentkew.php" onclick="searchCard(event)" >ส่งข้อมูลค้นบัตร </a>
-&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="sentkew.php" onclick="searchCard(event)" >ส่งข้อมูลค้นบัตร </a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="sentopd.php">ส่งข้อมูลคัดแยกกรณีออกใบสั่งยาเอง</a>
 
-<br><br>
+<br> <br>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="rxform.php">พิมพ์ใบสั่งยา </a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="rxform9.php">พิมพ์ใบสั่งยาไม่มีแพ้ยา </a>&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;
-<a href="javascript:void(0);" onclick="addQueue('rxform.php')">พิมพ์ใบสั่งยา </a>
-&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="rxform9.php">พิมพ์ใบสั่งยาไม่มีแพ้ยา </a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint2.php?cHn=<?=$cHn;?>">พิมพ์บัตรต่อประวัติผู้ป่วย</a>
-&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint2.php?cHn=<?=$cHn;?>">พิมพ์บัตรต่อประวัติผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="opdprint4.php">พิมพ์บัตรต่อประวัติผู้ป่วยใบแรก</a>
 <br>
 &nbsp;&nbsp;&nbsp;
 <a target=_TOP href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>
 &nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint1bc.php">พิมพ์บัตรผู้ป่วย</a>
-&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint6.php">พิมพ์ กท.16/1</a>
-&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint1bc.php">พิมพ์บัตรผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint6.php">พิมพ์ กท.16/1</a>&nbsp;&nbsp;&nbsp;
+
 <a target=_TOP href="edprint.php">พิมพ์ใบใช้ยานอกบัญชี</a>
+&nbsp;&nbsp;&nbsp;<a target=_blank href="FR-IPC-001_8.php?cHn=<?=$cHn;?>">แบบการรับนอนรักษาต่อ</a><br>
 &nbsp;&nbsp;&nbsp;
-<a target=_blank href="FR-IPC-001_8.php?cHn=<?=$cHn;?>">แบบการรับนอนรักษาต่อ</a><br>
-&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="vnprint.php">พิมพ์ใบ ตรวจโรค</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="vnprint.php">พิมพ์ใบ ตรวจโรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="vnprint_l.php">ใบติด OPDCARD</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_blank href="opdfullprint.php">ใบประวัติแบบเต็ม</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint7.php">สำเนาประวัติการรักษาพยาบาล</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target=_blank href="opdfullprint.php">ใบประวัติแบบเต็ม</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint7.php">สำเนาประวัติการรักษาพยาบาล</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target="_top" href="report_opt.php?cHn=<?=$cHn;?>">สมัครจ่ายตรง อปท.</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdcard_reg.php?cHn=<?=$cHn;?>&cVn=<?=$nVn;?>">ใบต่อรายวัน</a><br><br><br>
-&nbsp;&nbsp;&nbsp;
-<a  href="opipcard.php" onclick="return chType();">รับป่วยเป็นคนไข้ใน (admit)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdcard_reg.php?cHn=<?=$cHn;?>&cVn=<?=$nVn;?>">ใบต่อรายวัน</a><br><br><br>&nbsp;&nbsp;&nbsp;
+
+<a  href="opipcard.php" onclick="return chType();">รับป่วยเป็นคนไข้ใน (admit)</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
-
 <script type="text/javascript">
-	var queue = 0;
-	var card = 0;
-	function searchCard(ev){
-		
-		if( queue === 0 ){
-			var c = confirm('ยังไม่ได้กดคิว ยืนยันที่จะส่งค้นบัตรหรือไม่?');
-			if( c === false ){
-				SMPreventDefault(ev);
-				return false;
-			}else{
-				queue = 1;
-			}
-		}
-		
-		if( card === 0 ){
-			card = 1;
-		}else{
-			alert('ส่งค้นบัตรเรียบร้อยแล้ว');
+
+var queue = 0;
+
+var card = 0;
+function searchCard(ev){
+	
+	if( queue === 0 ){
+		var c = confirm('ยังไม่ได้กดคิว ยืนยันที่จะส่งค้นบัตรหรือไม่?');
+		if( c === false ){
 			SMPreventDefault(ev);
-		}
-	}
-
-	function addQueue(url){
-		queue = 1;
-
-		if(typeof url !== 'undefined'){
-			window.open(url, '_target');
-		}
-
-	}
-
-	function SMPreventDefault(ev){
-		if( !ev.returnValue ){
-			ev.returnValue = false; // For old IE(6,7,8,9)
+			return false;
 		}else{
-			ev.preventDefault();
+			queue = 1;
 		}
 	}
+	
+	if( card === 0 ){
+		card = 1;
+	}else{
+		alert('ส่งค้นบัตรเรียบร้อยแล้ว');
+		SMPreventDefault(ev);
+	}
+}
+
+function addQueue(){
+	queue = 1;
+}
+
+function SMPreventDefault(ev){
+	if( !ev.returnValue ){
+		ev.returnValue = false; // For old IE(6,7,8,9)
+	}else{
+		ev.preventDefault();
+	}
+}
 </script>
 <?php
 include("unconnect.inc");

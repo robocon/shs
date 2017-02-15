@@ -1,23 +1,22 @@
 <?php
 session_start();
-include("connect.inc");
-$_SESSION['cHn'] = '';
-$_SESSION['cPtname'] = '';
-$_SESSION['cPtright'] = '';
-$_SESSION['nVn'] = '';
-$_SESSION['cAge'] = '';
-$_SESSION['nRunno'] = '';
-$_SESSION['vAN'] = '';
-$_SESSION['thdatehn'] = '';
-$_SESSION['cNote'] = '';
-$_SESSION['Ptright1'] = '';
+session_unregister("cHn");
+session_unregister("cPtname");
+session_unregister("cPtright");
+session_unregister("nVn");
+session_unregister("cAge");
+session_unregister("nRunno");
+session_unregister("vAN");
+session_unregister("thdatehn");
+session_unregister("cNote");
+session_unregister("Ptright1");
 //    session_destroy();
 ?>
 
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 
-<form method="post" action="ophn.php">
+<form method="post" action="<?php echo $PHP_SELF ?>">
     <p>ค้นหาคนไข้จาก&nbsp; HN</p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="text" name="hn" size="12" id="aLink"></p>
@@ -47,9 +46,8 @@ $_SESSION['Ptright1'] = '';
             </tr>
 
             <?php
-            $hn = $_POST['hn'];
             If (!empty($hn)){
-                
+                include("connect.inc");
                 global $hn;
                 $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
                 $result = mysql_query($query)or die("Query failed");
@@ -108,7 +106,7 @@ $_SESSION['Ptright1'] = '';
                     }
 
                     print (" <tr>\n".
-                    "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php?cHn=$hn&cName=$name&cSurname=$surname\">$hn</a></td>\n".
+                    "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn & cName=$name &cSurname=$surname\">$hn</a></td>\n".
                     "  <td BGCOLOR=".$color.">$yot</td>\n".
                     "  <td BGCOLOR=".$color.">$name</td>\n".
                     "  <td BGCOLOR=".$color.">$surname</td>\n".
@@ -235,7 +233,7 @@ $_SESSION['Ptright1'] = '';
                                         while($dbarr= mysql_fetch_array($result_chkname)){
 
                                             print (" <tr>\n".
-                                            "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php?cHn=$dbarr[hn]&cName=$dbarr[name]&cSurname=$dbarr[surname]\">$dbarr[hn]</a></td>\n".
+                                            "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php? cHn=$dbarr[hn] & cName=$dbarr[name] &cSurname=$dbarr[surname]\">$dbarr[hn]</a></td>\n".
                                             "  <td BGCOLOR=".$color.">$dbarr[yot]</td>\n".
                                             "  <td BGCOLOR=".$color.">$dbarr[name]</td>\n".
                                             "  <td BGCOLOR=".$color.">$dbarr[surname]</td>\n".
@@ -251,9 +249,9 @@ $_SESSION['Ptright1'] = '';
                                             " </tr>\n");
                                         }
                                     }
-                                    $_SESSION['hn'] = NULL;
-                                    $_SESSION['name'] = NULL;
-                                    $_SESSION['surname'] = NULL;
+                                    session_unregister("hn");
+                                    session_unregister("name");
+                                    session_unregister("surname");
 
 
                                     include("unconnect.inc");
