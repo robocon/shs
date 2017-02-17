@@ -6,7 +6,11 @@ include("connect.inc");
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
 
 	//$sql = "Select drugcode, tradname,unit From druglst  where (drugcode Like '".$_GET["search"]."%') OR (tradname Like '%".$_GET["search"]."%')  Order by drugcode ASC ";
-	$sql = "Select drugcode, tradname,unit, unitpri, stock,part  From druglst  where (drugcode Like '".$_GET["search"]."%')  Order by drugcode ASC ";
+	$sql = "SELECT `drugcode`, `tradname`,`unit`, `unitpri`, `stock`,`part` 
+	FROM `druglst`  
+	WHERE ( `drugcode` LIKE '".$_GET["search"]."%' OR `genname` LIKE '".$_GET["search"]."%' )  
+	ORDER BY `drugcode` ASC ";
+
 	$result = Mysql_Query($sql);
 
 	if(Mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
