@@ -48,6 +48,13 @@ body,td,th {
 		<TD  rowspan="2" >NCR</TD>
 		<TD  rowspan="2">หน่วยงาน/ทีม</TD>
 		<TD rowspan="2" align="center">เหตุการณ์</TD>
+		<?php
+		if( $_SESSION['Namencr'] === 'ชาตรี แสงประสาร' ){
+			?>
+			<td rowspan="2" width="20%">ปัญหาที่พบ/สาเหตุ</td>
+			<?php
+		}
+		?>
 		<TD  align="center">ความรุนแรง</TD>
 		<TD rowspan="2"  align="center">ความเสี่ยง</TD>
 		<TD  rowspan="2" >วันที่</TD>
@@ -79,7 +86,7 @@ body,td,th {
 		$sqld="SELECT name FROM `departments` where code='$arr[until]' ";
 		$queryd=mysql_query($sqld);
 		$arrd = mysql_fetch_assoc($queryd);
-		
+
 		$clinic=$arr['clinic'];
 		//$nonclinic=$arr['nonclinic'];
 		
@@ -517,6 +524,11 @@ body,td,th {
 		<b>$topic8</b>".$topic8_1.$topic8_2.$topic8_3.$topic8_4.$topic8_5.$topic8_6.$topic8_7.$topic8_8.$topic8_9.$topic8_10.$topic8_11."
 		
 		</TD>";
+		if( $_SESSION['Namencr'] === 'ชาตรี แสงประสาร' ){
+			?>
+			<td><?=$arr['problem'];?></td>
+			<?php
+		}
 		echo "<TD>".$clinic."</TD>";
 		echo "<TD>".$showrisk1.$showrisk2.$showrisk3.$showrisk4.$showrisk5.$showrisk6.$showrisk7.$showrisk8.$showrisk9."</TD>";
 		echo "<TD align='center'>".$nonconf_date.($arr['nonconf_date2'])."</TD>";

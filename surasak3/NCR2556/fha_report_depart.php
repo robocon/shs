@@ -44,21 +44,6 @@ color: #FFF;
   <tr class="forntsarabun">
     <td width="64"  align="right">เลือกปี</td>
     <td width="387" >
-<!--<select name="m_start" class="forntsarabun">
-        <option value="">---ไม่เลือกเดือน---</option>
-        <option value="01" <?//if($m=='01'){ echo "selected"; }?>>มกราคม</option>
-        <option value="02" <?//if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
-        <option value="03" <?//if($m=='03'){ echo "selected"; }?>>มีนาคม</option>
-        <option value="04" <?//if($m=='04'){ echo "selected"; }?>>เมษายน</option>
-        <option value="05" <?//if($m=='05'){ echo "selected"; }?>>พฤษภาคม</option>
-        <option value="06" <?//if($m=='06'){ echo "selected"; }?>>มิถุนายน</option>
-        <option value="07" <?//if($m=='07'){ echo "selected"; }?>>กรกฎาคม</option>
-        <option value="08" <?//if($m=='08'){ echo "selected"; }?>>สิงหาคม</option>
-        <option value="09" <?//if($m=='09'){ echo "selected"; }?>>กันยายน</option>
-        <option value="10" <?//if($m=='10'){ echo "selected"; }?>>ตุลาคม</option>
-        <option value="11" <?//if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
-        <option value="12" <?//if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
-      </select>-->
 <? 
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
@@ -82,42 +67,15 @@ color: #FFF;
 </table>
 </form>
 </div>
-<?
+<?php
 include("connect.inc");
-//if($_POST['submit']=="ค้นหา"){
-	if($_POST['y_start']!=''){
+
+if($_POST['y_start']!=''){
 	$date1=($_POST['y_start']);
-	}else{
+}else{
 	$date1=(date("Y")+543);
-	}
-
-
-/*$sqlncr= "CREATE TEMPORARY TABLE ncr SELECT *  FROM  ncr2556  WHERE nonconf_date  like '".$date1."%' ";
-$result = Mysql_Query($sqlncr) or die(mysql_error());*/
-			
-/////////////////////////////  รวมแต่ละแผนก  //////////////////////		
-
-/*$list01 = array();
-
-	for($n=1;$n<=12;$n++){
-		if($n<10){
-			$m = "0".$n;
-		}
-		else $m = $n;
-		
-
-		$selectsql = "SELECT COUNT(*)  FROM    drug_fail_2  WHERE fha_date  like '".$date1."-".$m."-%' and 
-		risk1='1'  and until ='".$_SESSION["Codencr"]."' ";
-		$result = mysql_query($selectsql);
-		$arr01 = mysql_fetch_array($result);
-		array_push($list01,$arr01[0]);
-	
-		
-		
-	}
-*/
+}
 ?>
-<!--<h1 align="center" class="forntsarabun">รายงานสรุปอุบัติการณ์ ซึ่งอาจมีผลให้บุคลากรได้รับการติดเชื้อจากปฏิบัติงาน</h1>-->
 <h1 align="center" class="forntsarabun">รายงานสรุปความคลาดเคลื่อนทางยา</h1>
 	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
 <tr>
@@ -141,46 +99,47 @@ $result = Mysql_Query($sqlncr) or die(mysql_error());*/
   <td align="center" bgcolor="#00CCFF" class="forntsarabun">ธ.ค.</td>
   <td align="center" bgcolor="#00CCFF" class="forntsarabun">รวม</td>
 </tr>
-<? 
-$sql="SELECT  distinct(`depart`)as newdepart
-FROM  `drug_fail_2` 
-WHERE  fha_date   like '".$date1."%'
-GROUP  BY depart";
-$query=mysql_query($sql);
-while($arruntil=mysql_fetch_assoc($query)){
+<?php
+$sql = "SELECT `code` AS `newdepart`  
+FROM `departments` 
+WHERE `report_drug` = 1 ";
+$query = mysql_query($sql);
+while( $arruntil = mysql_fetch_assoc($query) ){
 	
 	$sqlname="SELECT name  FROM `departments` WHERE code='".$arruntil['newdepart']."'  ";
 	$queryname=mysql_query($sqlname);
 	$arrname=mysql_fetch_assoc($queryname)
-?>
-<tr>
-<td class="forntsarabun"><?=$arrname['name']?></td>
-
-<? 
-$sum=0;
-$sum2=0;
-for($n=1;$n<=12;$n++){
+	?>
+	<tr>
+	<td class="forntsarabun"><?=$arrname['name']?></td>
+	<?php 
+	$sum = 0;
+	$sum2 = 0;
+	for($n=1; $n<=12; $n++){
 		if($n<10){
 			$m = "0".$n;
+		} else {
+			$m = $n;
 		}
-		else $m = $n;
-		
-$selectsql = "SELECT COUNT(*)as count   FROM    drug_fail_2  WHERE depart ='".$arruntil['newdepart']."' and fha_date  like '".$date1."-".$m."-%'";
+
+		$selectsql = "SELECT COUNT(*)as count 
+		FROM drug_fail_2 
+		WHERE depart ='".$arruntil['newdepart']."' 
+		AND fha_date LIKE '".$date1."-".$m."-%'";
 		$result = mysql_query($selectsql);
 		$arr01 = mysql_fetch_array($result);
-		
- ?>
-<? if ($arr01['count']!=0){?>
-  <td align="center" class="forntsarabun"><a href="detail_fha_report_progarm.php?y=<?=$date1;?>&m=<?=$m;?>&depart=<?=$arruntil['newdepart']?>" target="_blank"><?=$arr01['count'];?></a></td>
- <? 
-	}else{
-?>
-<td align="center" class="forntsarabun"><?=$arr01['count'];?></td>
-<?
-  }
-  $sum+=$arr01['count'];
-  $sum2+=$sum;
-}
+		if ($arr01['count']!=0){
+			?>
+			<td align="center" class="forntsarabun"><a href="detail_fha_report_progarm.php?y=<?=$date1;?>&m=<?=$m;?>&depart=<?=$arruntil['newdepart']?>" target="_blank"><?=$arr01['count'];?></a></td>
+			<?php 
+		}else{
+			?>
+			<td align="center" class="forntsarabun"><?=$arr01['count'];?></td>
+			<?php
+		}
+		$sum += $arr01['count'];
+		$sum2 += $sum;
+	}
   ?>
   <td align="center" class="forntsarabun"  width="7%"><?=$sum;?></td>
   </tr>
@@ -200,10 +159,10 @@ $selectsql = "SELECT COUNT(*)as count   FROM    drug_fail_2  WHERE depart ='".$a
 		}
 		else $m = $n;
 		
-$selectsql = "SELECT COUNT(*)as count  FROM  drug_fail_2  WHERE fha_date  like '".$date1."-".$m."-%' "; 	
-$result = mysql_query($selectsql);
-$arr01 = mysql_fetch_array($result);	
-$sum2=0;
+		$selectsql = "SELECT COUNT(*)as count  FROM  drug_fail_2  WHERE fha_date  like '".$date1."-".$m."-%' "; 	
+		$result = mysql_query($selectsql);
+		$arr01 = mysql_fetch_array($result);	
+		$sum2=0;
 		for($a=0;$a<=11;$a++){
 		$sum2+=$arr01[$a];
   		}
