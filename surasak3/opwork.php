@@ -440,37 +440,51 @@ print "<br>ผู้ลงทะเบียน ..$sOfficer";
 }
 
 if(substr($_POST["case"],0,4)=="EX03"){  //คิดค่าบริการสมัครโครงการเบิกจ่ายตรงอัตโนมัติ
+	
+	// ถ้าในวันนี้ยังไม่มีค่าธรรมเนียมการสมัครโครงการจ่ายตรง
+	$sql = "SELECT a.`row_id`
+	FROM `depart` AS a 
+	LEFT JOIN `patdata` as b ON b.`idno` = a.`row_id` 
+	WHERE a.`date` LIKE '$thidate3%' 
+	AND a.`hn` = '$cHn' 
+	AND a.`tvn` = '$nVn' 
+	AND b.`detail` = 'ค่าธรรมเนียมการสมัครโครงการจ่ายตรง'";
+	$q = mysql_query($sql);
+	$rows = mysql_num_rows($q);
+	if( $rows === 0 ){
+
 		//runno  for chktranx
-			$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-			$result = mysql_query($query)
-				or die("Query failed");
+		$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
+		$result = mysql_query($query)
+			or die("Query failed");
+
+		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+			if (!mysql_data_seek($result, $i)) {
+				echo "Cannot seek to row $i\n";
+				continue;
+			}
+
+			if(!($row = mysql_fetch_object($result)))
+				continue;
+		}
+
+		$nRunno=$row->runno;
+		$nRunno++;
+
+		$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
+		$result = mysql_query($query) or die("Query failed");
+			/////////////////////////////////////////////////////////////
+		$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('$nRunno','$thidate','$cPtname','$cHn','','OTHER','1','ค่าบริการทางการแพทย์', '30','0','30','','$sOfficer','0','$nVn','$cPtright');";
+		$result = mysql_query($query);
+		$idno=mysql_insert_id();
 		
-			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-				if (!mysql_data_seek($result, $i)) {
-					echo "Cannot seek to row $i\n";
-					continue;
-				}
+		$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
+		VALUES('$thidate','$cHn','','$cPtname','1','cscd','ค่าธรรมเนียมการสมัครโครงการจ่ายตรง','1','30','0','30','OTHER','MC','$idno','$cPtright');";
+		$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
 		
-				if(!($row = mysql_fetch_object($result)))
-					continue;
-				 }
-		
-			$nRunno=$row->runno;
-			$nRunno++;
-		
-			$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-			$result = mysql_query($query) or die("Query failed");
-				/////////////////////////////////////////////////////////////
-			$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('$nRunno','$thidate','$cPtname','$cHn','','OTHER','1','ค่าบริการทางการแพทย์', '30','0','30','','$sOfficer','0','$nVn','$cPtright');";
-			$result = mysql_query($query);
-			$idno=mysql_insert_id();
-		 
-			$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
-VALUES('$thidate','$cHn','','$cPtname','1','cscd','ค่าธรรมเนียมการสมัครโครงการจ่ายตรง','1','30','0','30','OTHER','MC','$idno','$cPtright');";
-			$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-			
-			$query ="UPDATE opday SET other=(other+30) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
-      		$result = mysql_query($query) or die("Query failed,update opday");
+		$query ="UPDATE opday SET other=(other+30) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
+		$result = mysql_query($query) or die("Query failed,update opday");
+	}
 }
 
 

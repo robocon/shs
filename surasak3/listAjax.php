@@ -1,21 +1,21 @@
 <?php
 session_start();
- header("content-type: application/x-javascript; charset=TIS-620");
-
+header("content-type: application/x-javascript; charset=TIS-620");
 include("connect.inc");
+
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
 
 	//$sql = "Select drugcode, tradname,unit From druglst  where (drugcode Like '".$_GET["search"]."%') OR (tradname Like '%".$_GET["search"]."%')  Order by drugcode ASC ";
-	$sql = "SELECT `drugcode`, `tradname`,`unit`, `unitpri`, `stock`,`part` 
-	FROM `druglst`  
-	WHERE ( `drugcode` LIKE '".$_GET["search"]."%' OR `genname` LIKE '".$_GET["search"]."%' )  
-	ORDER BY `drugcode` ASC ";
-
-	$result = Mysql_Query($sql);
-
-	if(Mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
+	
+	$search_txt = trim($_GET['search']);
+	$sql = "SELECT a.`drugcode`,a.`tradname`,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`
+	FROM `druglst` AS a 
+	LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode`
+	WHERE ( a.`drugcode` LIKE '$search_txt%' OR a.`genname` LIKE '$search_txt%' OR a.`tradname` LIKE '$search_txt%' )  
+	ORDER BY a.`drugcode` ASC ";
+	$result = mysql_query($sql) or die( mysql_error() ) ;
+	if(mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
 		echo "
-		
 			<TABLE width=\"100%\" border=\"1\" bordercolor=\"blue\" cellspacing=\"0\" cellpadding=\"0\"  >
 		<TR>
 			<TD>
@@ -29,44 +29,45 @@ if($_GET["action"] == "drugcode"){// ชื่อยา*************************************
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>ประเภท</B></FONT></TD>
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>ราคา</B></FONT></TD>
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>จำนวนคงเหลือ</B></FONT></TD>
-			
 		</TR>
 		";
 		$i=0;
 		while($arr = Mysql_fetch_assoc($result)){
 			$drugcode = jschars($arr["tradname"]);
 			
-				$sql = "SELECT count( slcode ) , slcode
-								FROM `dgprofile` 
-								WHERE drugcode = \"".$arr["drugcode"]."\"
-								GROUP BY slcode
-								ORDER BY `count( slcode )` DESC ";
-				$result2 = Mysql_Query($sql);
-				$arr3 = Mysql_fetch_assoc($result2);
+			/*
+			$sql = "SELECT count( slcode ) , slcode
+					FROM `dgprofile` 
+					WHERE drugcode = \"".$arr["drugcode"]."\"
+					GROUP BY slcode
+					ORDER BY `count( slcode )` DESC ";
+			$result2 = Mysql_Query($sql);
+			$arr3 = Mysql_fetch_assoc($result2);
+			*/
 
+			if($i == 0){
+				$txt = "list_radio";
+			}else{
+				$txt = "select_radio".$i;
+			}
 
-		if($i == 0){
-			$txt = "list_radio";
-		}else{
-			$txt = "select_radio".$i;
-		}
-
-		echo "
-
-		<TR>
-			<TD><INPUT TYPE=\"radio\" ID = \"",$txt,"\" NAME=\"select_radio\" onkeypress=\"if(event.keyCode == 13){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr3["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}\"></TD>
-			<TD><A HREF=\"#\" Onclick=\"document.getElementById('drugcode').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('unit2').value='",$arr["part"],"';document.getElementById('drugslip').value='",$arr3["slcode"],"';document.getElementById('listdrugcode').innerHTML='';\">",$arr["drugcode"],"</A></TD>
-			<TD>",$arr["tradname"],"</TD>
-			<TD>",$arr["part"],"</TD>
-			<TD>",$arr["unitpri"],"</TD>
-			<TD>",$arr["stock"],"</TD>
-		</TR>";
+			echo "
+			<TR>
+				<TD><INPUT TYPE=\"radio\" ID = \"",$txt,"\" NAME=\"select_radio\" onkeypress=\"if(event.keyCode == 13){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}\"></TD>
+				<TD><A HREF=\"#\" Onclick=\"document.getElementById('drugcode').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('unit2').value='",$arr["part"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';\">",$arr["drugcode"],"</A></TD>
+				<TD>",$arr["tradname"],"</TD>
+				<TD>",$arr["part"],"</TD>
+				<TD>",$arr["unitpri"],"</TD>
+				<TD>",$arr["stock"],"</TD>
+			</TR>";
 			$i++;
 		}
 		echo "</TABLE></TD>
 		</TR>
 		</TABLE>
 		";
+
+		exit;
 	}
 }else if($_GET["action"] == "drugslip"){ //วิธีใช้********************************************************************
 

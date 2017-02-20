@@ -250,7 +250,7 @@ function searchSuggest(action,str) {
 			lengthsearch = 2;
 
 
-		str = str+String.fromCharCode(event.keyCode);
+		// str = str+String.fromCharCode(event.keyCode);
 
 		if(str.length >= lengthsearch){
 			url = 'listAjax.php?action='+action+'&search=' + str;
@@ -756,7 +756,7 @@ echo "<TR>
 		<TD>รหัสยา : 
 		</TD>
 		<TD>
-		<INPUT TYPE="text" ID = "drugcode" NAME="drugcode" size="13" onKeyPress="searchSuggest('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }"
+		<INPUT TYPE="text" ID = "drugcode" NAME="drugcode" size="13" onkeyup="searchSuggest('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }"
 		onfocus="document.getElementById('listdrugcode').innerHTML = '';"
 		>
 		</TD>
