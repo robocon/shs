@@ -104,10 +104,10 @@ if( $test_real_item === 0 ){
 		){
 			?>
 			<input type="submit" name="save" id="save" value="ใบเบิกเดิม" />
-			<button id="shsBtn">ใบเบิกใหม่</button>
 			<?php
 		}
 		?>
+		<button id="shsBtn">ใบเบิกใหม่</button>
     </td>
     </tr>
   </table>

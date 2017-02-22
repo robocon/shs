@@ -48,7 +48,7 @@ if( $action === 'print' ){
     <style type="text/css">
     *{
         font-family: 'TH SarabunPSK';
-        font-size: 14pt;
+        font-size: 15pt;
     }
     body{
         padding: 2pt;
@@ -68,7 +68,10 @@ if( $action === 'print' ){
         padding: 0 8px;
     }
     </style>
+    <!--
     <h3 style="text-align: center;">Medication reconciliation(<?=$type_txt;?>)</h3>
+    -->
+    <h3 style="text-align: center;">ยาเดิมของผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</h3>
     <table>
         <tr>
             <td><b>ชื่อ</b>: <span class="underline"><?=$user['ptname'];?></span></td>
@@ -83,9 +86,9 @@ if( $action === 'print' ){
     </table>
     <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
         <tr>
-            <th rowspan="2">#</th>
-            <th rowspan="2">ชื่อยา</th>
-            <th rowspan="2">การใช้</th>
+            <th rowspan="2" width="2%">#</th>
+            <th rowspan="2" width="25%">ชื่อยา</th>
+            <th rowspan="2" width="40%">การใช้</th>
             <th rowspan="2">จำนวน</th>
             <th rowspan="2">วันที่</th>
             <th colspan="3"><?=$type_txt;?></th>
@@ -98,13 +101,14 @@ if( $action === 'print' ){
         <?php
         $i = 1;
         while( $item = mysql_fetch_assoc($q) ) {
+            list($date, $time) = explode(' ', $item['date']);
             ?>
              <tr>
                 <td><?=$i;?></td>
                 <td><?=$item['tradname'];?></td>
                 <td><?=$item['detail1'].$item['detail2'].$item['detail3'];?></td>
                 <td align="right"><?=$item['amount'];?></td>
-                <td><?=$item['date'];?></td>
+                <td><?=$date;?></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -113,6 +117,35 @@ if( $action === 'print' ){
             ++$i;
         }
         ?>
+    </table>
+    <table width="100%">
+        <tr>
+            <td width="50%">แพทย์..................................................</td>
+            <td width="50%">วันที่..................................................</td>
+        </tr>
+        <tr>
+            <td width="50%">เภสัช..................................................</td>
+            <td width="50%">วันที่..................................................</td>
+        </tr>
+        <tr>
+            <td width="50%">พยาบาล..................................................</td>
+            <td width="50%">วันที่..................................................</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td valign="top">Note: </td>
+                        <td>
+                            พยาบาลหอผู้ป่วยตรวจสอบการจัดการยาเดิมของผู้ป่วยในฟอร์มนี้ให้เรียบร้อยครบถ้วน<br>
+                            และส่งแบบฟอร์มนี้พร้อม Dr's order D/C ในวันที่ผู้ป่วยกลับบ้านทุกราย<br>
+                            เพื่อทำ Med.reconcile ให้สมบูรณ์ก่อนผู้ป่วยกลับบาน+นำสติกเกอร์ไปติด OPD Card
+                        </td>
+                    </tr>
+                </table>
+                
+            </td>
+        </tr>
     </table>
     <div class="noPrint">
         <button onclick="println()">พิมพ์ใบ</button>
@@ -138,11 +171,17 @@ if( $action === 'print' ){
 
 <form action="hndrugcheck.php" method="post" target="_blank">
     <div>
-        <button type="submit" name="type" value="admit">พิมพ์ใบ Admit</button>
-        <button type="submit" name="type" value="dc">พิมพ์ใบ D/C</button>
+        <button type="submit" value="admit" onclick="add_type('admit')">พิมพ์ใบ Admit</button>
+        <button type="submit" value="dc" onclick="add_type('dc')">พิมพ์ใบ D/C</button>
+        <input type="hidden" name="type" id="type">
         <input type="hidden" name="hn" value="<?=$hn;?>">
         <input type="hidden" name="action" value="print">
     </div>
+    <script type="text/javascript">
+        function add_type(type){
+            document.getElementById('type').value = type;
+        }
+    </script>
     <table>
         <thead>
             <tr>

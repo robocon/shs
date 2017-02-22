@@ -16,6 +16,31 @@ $select_day = input_post('select_day', date('d'));
 $select_month = input_post('select_month', date('m'));
 $select_year = input_post('select_year', date('Y'));
 ?>
+
+<style type="text/css">
+*{
+    font-family: 'TH SarabunPSK';
+    font-size: 14pt;
+}
+body{
+    padding: 2pt;
+}
+h3{
+    font-size: 18pt;
+    padding: 0;
+    margin: 0;
+}
+@media print{
+    .no-print{
+        display: none;
+    }
+}
+.underline{
+    border-bottom: 1px solid black;
+    padding: 0 8px;
+}
+</style>
+
 <div class="col no-print">
     <div class="cell">
         <a href="../nindex.htm">หน้าหลักรพ.</a>
@@ -31,8 +56,8 @@ $select_year = input_post('select_year', date('Y'));
                         วัน <input type="text" name="select_day" value="<?=$select_day;?>" style="width: 50px;">
                         เดือน <?php getMonthList('select_month', $select_month); ?> 
                         ปี <?php getYearList('select_year', true, $select_year, $year_range); ?> 
-                        <span style="color: red; display: block; font-size: 12px;">* ตัวอย่างวันที่ 01</span>
-                        <span style="color: red; display: block; font-size: 12px;">** ต้องการแสดงเป็นเดือนให้ลบวันที่ออก</span>
+                        <span style="color: red; display: block;">* ตัวอย่างวันที่ 01</span>
+                        <span style="color: red; display: block;">** ต้องการแสดงเป็นเดือนให้ลบวันที่ออก</span>
                     </div>
                 </div>
                 <div class="col">
@@ -130,7 +155,7 @@ if ( $show === 'table' ) {
                 $ward_name = $code_lists[$key];
                 ?>
                 <h3><?=$ward_name;?></h3>
-                <table border="1" cellpadding="0" cellspacing="0">
+                <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
                     <thead>
                         <tr>
                             <th width="3%">#</th>
@@ -156,9 +181,9 @@ if ( $show === 'table' ) {
                             <td><?=$item['ptname'];?></td>
                             <td><?=$item['tradname'];?></td>
                             <td align="right"><?=$item['amount'];?></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     <?php
                         $i++;
@@ -166,6 +191,7 @@ if ( $show === 'table' ) {
                     ?>
                     </tbody>
                 </table>
+                <div style="height: 5px;">&nbsp;</div>
                 <?php
             }
             ?>

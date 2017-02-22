@@ -109,7 +109,7 @@ if( isset($_POST['ok']) ){
 }
 
 ?>
-<script>
+<script type="text/javascript">
 function newXmlHttp(){
 	var xmlhttp = false;
 		try{
@@ -128,7 +128,7 @@ function newXmlHttp(){
 }
 
 function searchSuggest(str,len,getto) {
-	str = str+String.fromCharCode(event.keyCode);
+	// str = str+String.fromCharCode(event.keyCode);
 	if(str.length >= len){
 		url = 'drug_control.php?action=drugcode&search1=' + str+'&getto=' + getto;
 		xmlhttp = newXmlHttp();
@@ -246,9 +246,10 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 	$sel2 = "SELECT a.*, b.`id` AS `drug_id`, b.`min` AS `new_min`, b.`max` AS `new_max` 
 	FROM `druglst` AS a 
 	RIGHT JOIN `drug_control_user` AS b 
-		ON b.`druglst_id` = a.`row_id` 
+		ON b.`drugcode` = a.`drugcode` 
 	WHERE b.`username` = '".$_SESSION['sOfficer']."' 
 	ORDER BY a.`drugcode` ASC";
+	
 	$row2 = mysql_query($sel2) or die( mysql_error() );
 
 	while($result2 = mysql_fetch_array($row2)){
