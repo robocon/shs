@@ -439,6 +439,15 @@ print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้
 print "<br>ผู้ลงทะเบียน ..$sOfficer";
 }
 
+// เก็บข้อมูลผู้ป่วยที่ออก EX30 งดเว้นเกณฑ์ทหาร
+if(substr($_POST["case"],0,4) == "EX30"){ 
+	$sql = "INSERT INTO `smdb`.`ex30_log`
+	(`id`,`date`,`vn`,`hn`,`ptname`)
+	VALUES
+	(NULL,'$thidate2','$nVn','$cHn','$cPtname');";
+	$insert = mysql_query($sql) or die( mysql_error() );
+}
+
 if(substr($_POST["case"],0,4)=="EX03"){  //คิดค่าบริการสมัครโครงการเบิกจ่ายตรงอัตโนมัติ
 	
 	// ถ้าในวันนี้ยังไม่มีค่าธรรมเนียมการสมัครโครงการจ่ายตรง
