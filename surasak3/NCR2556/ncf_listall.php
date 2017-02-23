@@ -1,6 +1,11 @@
 <?php
 session_start();
-if($_SESSION["statusncr"] !== 'admin'){ echo 'สิทธิ์การใช้งานไม่ถูกต้อง'; exit; }
+
+// ถ้าไม่ใช่ระดับ admin
+if($_SESSION["statusncr"] !== 'admin'){ 
+	echo 'สิทธิ์การใช้งานไม่ถูกต้อง'; 
+	exit; 
+}
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -58,7 +63,9 @@ if($_SESSION["statusncr"] !== 'admin'){ echo 'สิทธิ์การใช้งานไม่ถูกต้อง'; exit; 
 <?php
 
 include("connect.inc");
-$months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.',);
+#$months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.',);
+$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+
 ?>
 	<table>
 		<tbody>
@@ -70,19 +77,18 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 					<span>เลือกการแสดงผลตามปีที่เขียนรายงาน</span>
 					<form action="ncf_listall.php" method="post" id="yearForm" style="display: inline;">
 						<?php
-						$sql = "SELECT date_format(`nonconf_date`, '%Y') as `years` FROM `ncr2556` GROUP BY `years` ORDER BY `years` DESC";
+						$sql = "SELECT date_format(`nonconf_date`, '%Y') as `years` 
+						FROM `ncr2556` 
+						GROUP BY `years` 
+						ORDER BY `years` DESC";
 						$q = mysql_query($sql);
 						?>
 						<select id="year_select" name="set_year">
 							<option value="0" >เลือกปี</option>
 							<?php 
-							$default_year = isset($_POST['set_year']) ? $_POST['set_year'] : 0;
+							$default_year = isset($_POST['set_year']) ? $_POST['set_year'] : date('Y') + 543 ;
 							$i = 0;
 							while($item = mysql_fetch_assoc($q)){
-								
-								// if($i === 0 && $default_year === null){
-									// $default_year = $item['years'];
-								// }
 								
 								$select = $default_year == $item['years'] ? 'selected="selected"' : '' ;
 								?>
@@ -107,6 +113,22 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 							}
 							?>
 						</select>
+
+						<span>เลือกวัน</span>
+						<select id="day_select" name="day_select">
+							<option value="0" >เลือกวัน</option>
+							<?php 
+							$default_day = isset($_POST['day_select']) ? $_POST['day_select'] : 0 ;
+							for($i = 1; $i <= 31; $i++){
+								
+								$selected = ( $default_day == $i ) ? 'selected="selected"' : '' ;
+								?>
+								<option value="<?php echo $i;?>" <?php echo $selected;?> ><?php echo $i;?></option>
+								<?php
+							}
+							?>
+						</select>
+
 						<?php 
 							$late = isset($_POST['late']) ? 'checked="checked"' : '' ;
 						?>
@@ -139,9 +161,7 @@ $months = array( 1 => 'ม.ค.','ก.พ.','มี.ค.','เม.ษ.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'
 	<br>
 <?php
 
-// $default_year = ( $default_year === 0 ) ? date('Y-m-d')
-
-
+/*
 if($default_year != 0 && $default_month != 0){
 	
 	if(strlen($default_month) === 1){
@@ -165,6 +185,15 @@ if($default_year != 0 && $default_month != 0){
 	$start_nonconf = "$default_year-01-01";
 	$end_nonconf = "$default_year-12-31";
 }
+*/
+
+$start_nonconf = "$default_year";
+if( $default_month > 0 ){
+	$start_nonconf .= "-$default_month";
+}
+if( $default_day > 0 ){
+	$start_nonconf .= "-$default_day";
+}
 
 /**
  * แสดงใบรายงานทั้งหมด !!!! ตัวที่ NCR เป็น 000 !!!!
@@ -184,7 +213,7 @@ WHERE ncr = '000' AND (
 	AND (risk2 !=1 OR risk3 !=1) 
 	OR (risk1=0 AND risk2=0 AND risk3=0 AND risk4=0 AND risk5=0 AND risk6=0 AND risk7=0 AND risk8=0 AND risk9=0)
 ) 
-AND (nonconf_date >= '$start_nonconf' AND nonconf_date <= '$end_nonconf')
+AND nonconf_date LIKE '$start_nonconf%' 
 ORDER BY until ASC, nonconf_date DESC";
 $query1 = mysql_query($sql1) or die (mysql_error());
 $row = mysql_num_rows($query1);
@@ -221,7 +250,7 @@ AND (
 	AND ( risk2 !=1 OR risk3 !=1 ) 
 	OR ( risk1=0 AND risk2=0 AND risk3=0 AND risk4=0 AND risk5=0 AND risk6=0 AND risk7=0 AND risk8=0 AND risk9=0)
 ) 
-AND (nonconf_date >= '$start_nonconf' AND nonconf_date <= '$end_nonconf')
+AND nonconf_date LIKE '$start_nonconf%' 
 $and_late_condition
 ORDER BY until ASC, nonconf_date DESC";
 // echo "<pre>";

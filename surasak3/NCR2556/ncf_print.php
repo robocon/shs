@@ -2,6 +2,11 @@
 session_start();
 include("connect.inc");
 
+if( empty($_SESSION["statusncr"]) ){
+	echo "Session หมดอายุ กรุณาล็อคอินอีกครั้งเพื่อเข้าใช้งาน";
+	exit;
+}
+
 // Set time to print only admin
 if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
 	$print_by = $_SESSION['Namencr'];

@@ -263,6 +263,8 @@ $opergcode='x';
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
 	}
 		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+		$opday_id = mysql_insert_id();
+
 	
 	//จัดเก็บข้อมูลในตาราง cliniceye กรณีที่เลือก EX25
 	if(substr($_POST["case"],0,4) == "EX25"){  //EX25 จักษุ
@@ -331,7 +333,7 @@ VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป
 	}
 }else{
 
-$query = "SELECT hn,vn,kew,toborow FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
+$query = "SELECT row_id,hn,vn,kew,toborow FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
 $result = mysql_query($query) or die("Query failed,opday");
 //    echo mysql_errno() . ": " . mysql_error(). "\n";
 //    echo "<br>";
@@ -345,7 +347,7 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 if(!($row = mysql_fetch_object($result)))
 	continue;
 }	
-
+$opday_id = $row->row_id;
 $nVn=$row->vn;
 $kew=$row->kew;
 $toborow=$row->toborow;
@@ -442,9 +444,9 @@ print "<br>ผู้ลงทะเบียน ..$sOfficer";
 // เก็บข้อมูลผู้ป่วยที่ออก EX30 งดเว้นเกณฑ์ทหาร
 if(substr($_POST["case"],0,4) == "EX30"){ 
 	$sql = "INSERT INTO `smdb`.`ex30_log`
-	(`id`,`date`,`vn`,`hn`,`ptname`)
+	(`id`,`date`,`vn`,`hn`,`ptname`,`opday_id`)
 	VALUES
-	(NULL,'$thidate2','$nVn','$cHn','$cPtname');";
+	(NULL,'$thidate2','$nVn','$cHn','$cPtname','$opday_id');";
 	$insert = mysql_query($sql) or die( mysql_error() );
 }
 
