@@ -247,7 +247,7 @@ if($dbdcode=="4TA15" || $dbdcode=="4ALC450"){
     	$num2=0;
    		while (list($getdate,$billno,$drugcode,$tname,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk,$amountfree) = mysql_fetch_row ($result2)) {
 			$k++;
-			$sql3 = "select stkno from combill where billno = '$billno' ";
+			$sql3 = "select stkno from combill where billno = '$billno' and lotno='$lotno' ";
 			$row3 = mysql_query($sql3);
 			list($stkno)=mysql_fetch_array($row3);
 			
@@ -304,9 +304,9 @@ if($dbdcode=="4TA15" || $dbdcode=="4ALC450"){
 				if($stkcutpri==0){
 				?>
                 <!--จ่าย-->
-			   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
-		      <td  align="right"><font face="Angsana New">&nbsp;</font></td>
-			   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
+          		<td  align="right"><font face="Angsana New"><?=$unitpri;?></font></td>
+           		<td  align="right"><font face="Angsana New"><?=$stkcut;?></font></td>
+		  		<td  align="right"><font face="Angsana New"><?=number_format($stkcutpri,2);?></font></td>
 				 <?
                   }else{
                   ?>
