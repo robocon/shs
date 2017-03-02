@@ -116,7 +116,36 @@ if( $action === 'print' ){
             <?php
             ++$i;
         }
+        
+        $other_name = $_POST['other_name'];
+        $other_sl = $_POST['other_sl'];
+        $other_amount = $_POST['other_amount'];
+        
+        $rows = count($other_name);
+        if( $rows > 0 ){
+            for( $x = 0; $x < $rows; $x++ ){
+                $tradname = $other_name[$x];
+                $other_sl = $other_sl[$x];
+                $other_amount = $other_amount[$x];
+                ?>
+                <tr>
+                    <td><?=$i;?></td>
+                    <td><?=$tradname;?></td>
+                    <td><?=$other_sl;?></td>
+                    <td align="right"><?=$other_amount;?></td>
+                    <td><?=$date;?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <?php
+                $i++;
+            }
+        }
+            
         ?>
+
+
     </table>
     <table width="100%">
         <tr>
@@ -173,37 +202,99 @@ if( $action === 'print' ){
     <div>
         <button type="submit" value="admit" onclick="add_type('admit')">พิมพ์ใบ Admit</button>
         <button type="submit" value="dc" onclick="add_type('dc')">พิมพ์ใบ D/C</button>
+        
         <input type="hidden" name="type" id="type">
         <input type="hidden" name="hn" value="<?=$hn;?>">
         <input type="hidden" name="action" value="print">
     </div>
+    <div>
+        <fieldset>
+            <legend>เพิ่มยานอก รพ.</legend>
+            <div>
+                <label for="">ชื่อยา</label>
+                <input type="text" name="drug_name" id="drug_name">
+            </div>
+            <div>
+                <label for="">การใช้ยา</label>
+                <input type="text" name="drug_sl" id="drug_sl">
+            </div>
+            <div>
+                <label for="">จำนวน</label>
+                <input type="text" name="drug_amount" id="drug_amount">
+            </div>
+            <button onclick="return add_other()">เพิ่มยานอก</button>
+        </fieldset>
+    </div>
+    <script type="template/javascript" id="drug_template">
+        <tr bgcolor="F5DEB3">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input type="hidden" name="other_name[]" value="{{tradname}}">{{tradname}}</td>
+            <td><input type="hidden" name="other_sl[]" value="{{slcode}}">{{slcode}}</td>
+            <td><input type="hidden" name="other_amount[]" value="{{amount}}">{{amount}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </script>
     <script type="text/javascript">
+        function add_other(){
+            var drug_name = document.getElementById('drug_name');
+            var drug_sl = document.getElementById('drug_sl');
+            var drug_amount = document.getElementById('drug_amount');
+
+            if( drug_name.value == '' || drug_sl.value == '' || drug_amount.value == '' ){
+                alert('กรุณากรอกข้อมูลให้ครบ');
+                return false;
+            }
+
+            var tem = document.getElementById('drug_template').innerHTML;
+            
+            tem = tem.replace(/{{tradname}}/g, drug_name.value, tem);
+            tem = tem.replace(/{{slcode}}/g, drug_sl.value, tem);
+            tem = tem.replace(/{{amount}}/g, drug_amount.value, tem);
+
+            var main_content = document.getElementById('main_content');
+            main_content.innerHTML = tem+main_content.innerHTML;
+
+            drug_name.value = '';
+            drug_sl.value = '';
+            drug_amount.value = '';
+
+            return false;
+        }
+
         function add_type(type){
             document.getElementById('type').value = type;
         }
     </script>
     <table>
         <thead>
-            <tr>
-                <th bgcolor=CD853F></th>
-                <th bgcolor=CD853F>HN</th>
-                <th bgcolor=CD853F>AN</th>
-                <th bgcolor=CD853F>วันและเวลา</th>
-                <th bgcolor=CD853F>drugcode</th>
-                <th bgcolor=CD853F>ชื่อยา</th>
-                <th bgcolor=CD853F>วิธีใช้</th>
-                <th bgcolor=CD853F>จำนวน</th>
-                <th bgcolor=CD853F>ราคา</th>
-                <th bgcolor=CD853F>part</th>
-                <th bgcolor=CD853F>แพทย์</th>
-                <th bgcolor=CD853F>ผู้ตัด</th>
+            <tr bgcolor="CD853F">
+                <th ></th>
+                <th>HN</th>
+                <th>AN</th>
+                <th>วันและเวลา</th>
+                <th>drugcode</th>
+                <th>ชื่อยา</th>
+                <th>วิธีใช้</th>
+                <th>จำนวน</th>
+                <th>ราคา</th>
+                <th>part</th>
+                <th>แพทย์</th>
+                <th>ผู้ตัด</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="main_content">
             <?php
             if( !empty($hn) ){
                 
-                $query = "SELECT `row_id`,hn,an,date,drugcode,tradname, slcode,amount, price,part FROM drugrx WHERE hn = '$hn'  ORDER BY date DESC " ;
+                $query = "SELECT `row_id`,hn,an,date,drugcode,tradname, slcode,amount, price,part 
+                FROM drugrx WHERE hn = '$hn'  ORDER BY date DESC " ;
                 $result = mysql_query($query) or die("Query failed");
 
                 while (list ($row_id,$hn,$an,$date,$drugcode,$tradname,$slcode,$amount,$price,$part) = mysql_fetch_row ($result)) {
@@ -221,21 +312,21 @@ if( $action === 'print' ){
                     }
 
                     ?>
-                    <tr>
-                        <td BGCOLOR="<?=$bg;?>">
+                    <tr bgcolor="<?=$bg;?>">
+                        <td >
                             <input type="checkbox" name="rows_id[]" id="row_<?=$row_id;?>" value="<?=$row_id;?>">
                         </td>
-                        <td BGCOLOR="<?=$bg;?>"><label for="row_<?=$row_id;?>"><?=$hn;?></label></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$an;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$date;?></a></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$drugcode;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$tradname;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$slcode;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$amount;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$price;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$part;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$doctor1;?></td>
-                        <td BGCOLOR="<?=$bg;?>"><?=$idname1;?></td>
+                        <td><label for="row_<?=$row_id;?>"><?=$hn;?></label></td>
+                        <td><?=$an;?></td>
+                        <td><?=$date;?></a></td>
+                        <td><?=$drugcode;?></td>
+                        <td><?=$tradname;?></td>
+                        <td><?=$slcode;?></td>
+                        <td><?=$amount;?></td>
+                        <td><?=$price;?></td>
+                        <td><?=$part;?></td>
+                        <td><?=$doctor1;?></td>
+                        <td><?=$idname1;?></td>
                     </tr>
                     <?php
                 }

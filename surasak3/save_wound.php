@@ -51,7 +51,7 @@ $_GET['y'] = $_GET['y']-543;
 		$date_appo = date('d',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y'])).' '.$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y']))].' '.(date('Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y']))+543);
 			echo "<TR align='center'>";
 			echo "<TD>";
-			echo "วันที่ &nbsp;&nbsp;<INPUT TYPE=\"text\" NAME=\"calendar_date".$i."\" value=\"".$date_appo."\" readonly>&nbsp;&nbsp;";
+			echo "วันที่ &nbsp;&nbsp;<INPUT TYPE=\"text\" id=\"calendar_date".$i."\" NAME=\"calendar_date".$i."\" value=\"".$date_appo."\" readonly>&nbsp;&nbsp;";
 			echo "<input type=\"button\" name=\"calendar_button\" value=\".....\" onClick=\"document.f1.calendar_date".$i.".value='';showCalendar('calendar_date".$i."','DD-MM-YYYY')\">";
 			
 			

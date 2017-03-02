@@ -528,6 +528,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 				}
 				?></td>
               </tr>
+							<?php /* ?>
               <tr height="25">
                 <td width="5%">&nbsp;</td>
                 <td width="48%"><strong>เลือดในปัสสาวะ (BLOODU)</strong></td>
@@ -547,7 +548,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 				}
 				?>                </td>
               </tr>
-
+							<?php */ ?>
               <tr height="25">
                 <td>&nbsp;</td>
                 <td><strong>น้ำตาล (GLUU)</strong></td>
@@ -586,6 +587,9 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 				}
 				?>                </td>
               </tr>
+							<tr height="25">
+								<td rowspan="3"></td>
+							</tr>
             </table></td>
           </tr>
         </table></td>
@@ -600,10 +604,18 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
  ?>     
 <table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
       <tr>
-        <td align="center"><strong class="text" style="font-size:20px"><u>LAB : อื่นๆ</u></strong></td>
+        <td align="center"><strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ : อื่นๆ</u></strong></td>
         </tr>
       <tr>
         <td height="52" valign="top">
+				<table width="100%" class="text3" style="border-collapse:collapse; border-bottom-style:none; border-bottom: 1px solid black;">
+		<tr height="25">
+			<td width="32%" valign="top"></td>
+			<td width="9%" valign="top">ผลการตรวจ</td>
+			<td width="10%" valign="top">ค่าปกติ</td>
+			<td width="49%" valign="top" style="font-size:16px;"></td>
+		</tr>
+	</table>
 	<table width="98%" border="0" class="text3">
   <?
 $sql1="SELECT * FROM resulthead WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG') and hn='".$result2['HN']."' and clinicalinfo ='ตรวจสุขภาพประจำปี60' ";

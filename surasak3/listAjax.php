@@ -5,14 +5,26 @@ include("connect.inc");
 
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
 
-	//$sql = "Select drugcode, tradname,unit From druglst  where (drugcode Like '".$_GET["search"]."%') OR (tradname Like '%".$_GET["search"]."%')  Order by drugcode ASC ";
-	
 	$search_txt = trim($_GET['search']);
 	$sql = "SELECT a.`drugcode`,a.`tradname`,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`
 	FROM `druglst` AS a 
-	LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode`
+	LEFT JOIN (
+
+		SELECT * 
+		FROM (
+			SELECT `drugcode`,`slcode`,COUNT(`slcode`) AS `sl_rows` 
+			FROM `dgprofile` 
+			WHERE `drugcode` LIKE '$search_txt%' 
+			AND `slcode` != '' 
+			GROUP BY `drugcode`, `slcode`
+			ORDER BY `sl_rows` DESC
+		) AS x 
+		GROUP BY x.`drugcode` 
+
+	) AS b ON b.`drugcode` = a.`drugcode` 
 	WHERE ( a.`drugcode` LIKE '$search_txt%' OR a.`genname` LIKE '$search_txt%' OR a.`tradname` LIKE '$search_txt%' )  
-	ORDER BY a.`drugcode` ASC ";
+	ORDER BY a.`drugcode` ASC";
+
 	$result = mysql_query($sql) or die( mysql_error() ) ;
 	if(mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
 		echo "
