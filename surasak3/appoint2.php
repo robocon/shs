@@ -112,7 +112,7 @@ function checkname(hn) {
 	HN : 
 	</TD>
 	<TD>
-	<INPUT TYPE="text" ID="HN" NAME="HN" onkeypress = "if(event.keyCode == 13){ add_hn(); }">
+	<INPUT TYPE="text" ID="hn" NAME="hn" onkeypress = "if(event.keyCode == 13){ add_hn(); }">
 	</TD>
 </TR>
 <TR>
@@ -260,18 +260,18 @@ while($objResult = mysql_fetch_array($objQuery))
 </select>  
 <select size="1" name="appmo">
 <option value="" selected>--เดือน--</option>
-<option value="มกราคม">มกราคม</option>
-<option value="กุมภาพันธ์">กุมภาพันธ์</option>
-<option value="มีนาคม">มีนาคม</option>
-<option value="เมษายน">เมษายน</option>
-<option value="พฤษภาคม">พฤษภาคม</option>
-<option value="มิถุนายน">มิถุนายน</option>
-<option value="กรกฎาคม">กรกฎาคม</option>
-<option value="สิงหาคม">สิงหาคม</option>
-<option value="กันยายน">กันยายน</option>
-<option value="ตุลาคม">ตุลาคม</option>
-<option value="พฤศจิกายน">พฤศจิกายน</option>
-<option value="ธันวาคม">ธันวาคม</option>
+	<?php
+	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+	'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+	'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+	$def_month = date('m');
+	foreach ($def_fullm_th as $key => $month) {
+		$selected = ( $key == $def_month ) ? 'selected="selected"' : '' ;
+		?>
+		<option value="<?=$month;?>" <?=$selected;?>><?=$month;?></option>
+		<?php
+	}
+	?>
 </select>
 <select size="1" name="thiyr">
 <?php for($i=date("Y")+542;$i<date("Y")+545;$i++){?>
