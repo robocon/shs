@@ -27,8 +27,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 	
 	$sql = "SELECT `row_id`,`drugcode`,`tradname`,`genname` 
 	FROM `druglst` 
-	WHERE `drugcode` LIKE '%".$_GET["search1"]."%' 
-	LIMIT 10 ";
+	WHERE `drugcode` LIKE '%".$_GET["search1"]."%' ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
@@ -187,7 +186,7 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 		<tr>
 			<td width="14%" align="right" class="font1">รหัสยา :</td>
 			<td width="86%" class="font1">
-				<input type="text" name="drugcode" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode')";>
+				<input type="text" name="drugcode" id='drugcode' onkeyup="searchSuggest(this.value,2,'drugcode')";>
 			</td>
 		</tr>
 		<tr>
@@ -268,13 +267,26 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 			<td bgcolor="#FFFFCC" class="font1"><?=$result2['tradname']?></td>
 			<td bgcolor="#FFFFCC" class="font1"><?=$result2['genname']?></td>
 			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['new_min']?></td>
-			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['new_max']?><input name="rxmax<?=$k?>" type="hidden" id='rxmax<?=$k?>' value="<?=$result2['max']?>"; /></td>
+			<td align="center" bgcolor="#F0C8FD" class="font1"><?=$result2['new_max']?><input name="rxmax<?=$k?>" type="hidden" id='rxmax<?=$k?>' value="<?=$result2['new_max'];?>" /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']?></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['mainstk']?><input name="rxmainstk<?=$k?>" type="hidden" id='rxmainstk<?=$k?>' value="<?=$result2['mainstk']?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']+$result2['mainstk']?></td>
 			<td align="center" bgcolor="#FF9B9B" class="font1"><?=$amount?><input name="rxdrug<?=$k?>" type="hidden" id='rxdrug<?=$k?>' value="<?=$amount?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['pack'];?></td>
-			<td align="center" bgcolor="#FFFFCC" class="font1"><input name="import<?=$k?>" type="text" id='import<?=$k?>' size="10" onkeyup="if(parseInt(this.value)>parseInt(document.getElementById('rxmax<?=$k?>').value)){alert('ยอดเบิกเกินค่าสูงสุด');this.value='';} if(parseInt(this.value)>parseInt(document.getElementById('rxmainstk<?=$k?>').value)){alert('ยอดเบิกเกินกว่ายอดในคลัง');} "; /></td>
+			<td align="center" bgcolor="#FFFFCC" class="font1">
+			<?php
+			/*
+			// onkeyup ใน id='import<?=$k?>'
+			if( parseInt(this.value) > parseInt(document.getElementById('rxmax<?=$k?>').value) ){
+				alert('ยอดเบิกเกินค่าสูงสุด');
+				this.value='';
+			} 
+			if( parseInt(this.value) > parseInt(document.getElementById('rxmainstk<?=$k?>').value) ){
+				alert('ยอดเบิกเกินกว่ายอดในคลัง');
+			} 
+			*/
+			?>
+			<input name="import<?=$k?>" type="text" id='import<?=$k?>' size="10" /></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['drug_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['drug_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
 		</tr>

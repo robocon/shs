@@ -26,7 +26,7 @@ if(isset($_POST['okok'])){
 
 	$query = "SELECT a.*, b.`id`, b.`min` AS `new_min`, b.`max` AS `new_max` 
 	FROM `druglst` AS a 
-	RIGHT JOIN `drug_control_user` AS b ON b.`druglst_id` = a.`row_id` 
+	RIGHT JOIN `drug_control_user` AS b ON b.`drugcode` = a.`drugcode` 
 	WHERE b.`id` = '".$id."'";
     $rows = mysql_query($query) or die(mysql_error());
 	$result = mysql_fetch_array($rows);

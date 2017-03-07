@@ -12,10 +12,10 @@ $ll = "P";
 
 $pdf = new PDF($ll,'mm',array( 55,30 ));
 $pdf->SetThaiFont();
-$pdf->SetAutoPageBreak(false,0);
+$pdf->SetFont('AngsanaNew','',13);
+$pdf->SetAutoPageBreak(false, 0);
 $pdf->SetMargins(0, 0);
 $pdf->AddPage();
-$pdf->SetFont('AngsanaNew','',13);
 
 $exName = '';
 
@@ -26,41 +26,18 @@ if( $wardExTest > 0 ){
 	// เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
 	$wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
 	$wardBxTest = preg_match('/B[0-9]+/', $cBed1);
-	// var_dump($cbedcode);
-	// var_dump($wardBxTest);
 	$exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
 	
 }
 
-$pdf->Cell(0, 6, $cbedname.$exName."/".$cBed1." AN: ".$can." HN: ".$chn,0,0);
-$pdf->Ln();
-$pdf->Cell(0, 5, $cptname."  อายุ :".$cage,0,0);
-$pdf->Ln();
-$pdf->Cell(0,5,"โรค: ".$cdiagnos,0,0);
-$pdf->Ln();
-$pdf->Cell(0,5,"สิทธิ: ".$cptright,0,0);
-$pdf->Ln();
-$pdf->Cell(0,5,"แพทย์: ".$cdoctor,0,0);
-//$pdf->MultiCell(0,6,"S : ".$organ,0,"L");
+$full_text = $cbedname.$exName."/$cBed1 AN: $can HN: $chn\n";
+$full_text .= "$cptname อายุ: $cage\n";
+$full_text .= "โรค: $cdiagnos\n";
+$full_text .= "สิทธิ: $cptright\n";
+$full_text .= "แพทย์: $cdoctor\n";
 
-
-/*if($drugreact == 0){
-	$congenital_disease .=" , ผู้ป่วยไม่แพ้ยา";
-}else{
-	$i=0;
-	$list = array();
-	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
-	$result = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result)){
-		array_push($list ,$arr["tradname"]);
-	}
-	$list_drug = implode(", ",$list);
-	$congenital_disease .= " , แพ้ยา : ".$list_drug;
-}*/
-
-
-//$pdf->Cell(0,5,"B : ".$congenital_disease,0,0);
-
+$pdf->SetXY(0, 1);
+$pdf->MultiCell(0, 4, $full_text);
 $pdf->Output();
 
 ?>

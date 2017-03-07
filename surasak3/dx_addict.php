@@ -1,9 +1,5 @@
 <?php
-
 include 'bootstrap.php';
-
-// include 'templates/classic/header.php';
-
 
 if($_SESSION['sIdname'] !== 'ชุติกาญจน์' AND $_SESSION['smenucode'] !== 'ADM'){
     echo "ไม่สามารถเข้าใช้งานได้<br>กรุณาติดต่อ คุณ ชุุติกาญจน์(เภสัชกร)";
@@ -16,7 +12,6 @@ $select_day = input_post('select_day', date('d'));
 $select_month = input_post('select_month', date('m'));
 $select_year = input_post('select_year', date('Y'));
 ?>
-
 <style type="text/css">
 *{
     font-family: 'TH SarabunPSK';
@@ -60,6 +55,37 @@ h3{
                         <span style="color: red; display: block;">** ต้องการแสดงเป็นเดือนให้ลบวันที่ออก</span>
                     </div>
                 </div>
+                <div>
+                    <div>
+                    <?php
+                    $code_lists = array(
+                        42 => 'หอผู้ป่วยรวม', 43 => 'หอผู้ป่วยสูติ', 44 => 'หอผู้ป่วยICU', 45 => 'หอผู้ป่วยพิเศษ'
+                    );
+
+                    function check_ward($items){
+                        $new_items = array();
+                        if( !is_null($items) ){
+                            foreach($items AS $key => $item){
+                                $new_items[$item] = 1;
+                            }
+                        }
+                        return $new_items;
+                    }
+
+                    $checked_ward = check_ward($_POST['wards']);
+
+                    foreach ($code_lists as $key => $ward) {
+
+                        $checked = ( isset($checked_ward[$key]) ) ? 'checked="checked"' : '';
+                        ?>
+                        <label for="<?=$key;?>">
+                            <input type="checkbox" name="wards[]" id="<?=$key;?>" value="<?=$key;?>" <?=$checked;?> > <?=$ward;?>
+                        </label>
+                        <?php
+                    }
+                    ?>
+                    </div>
+                </div>
                 <div class="col">
                     <div class="cell">
                         <button type="submit">แสดงผล</button>
@@ -76,6 +102,15 @@ h3{
 $show = input_post('show');
 if ( $show === 'table' ) {
 
+    $wards = $_POST['wards'];
+    if( $wards !== null && count($wards) > 0 ){
+        $replace_list = array();
+        foreach ($wards as $id => $key) {
+            $replace_list[$key] = $code_lists[$key];
+        }
+        $code_lists = $replace_list;
+    }
+
     $db = Mysql::load();
     $select_year = ad_to_bc($select_year);
 
@@ -84,35 +119,19 @@ if ( $show === 'table' ) {
         $date_selected .= "-$select_day";
     }
 
-    /*
-    $sql = "SELECT a.`row_id`, a.`date`, a.`drugcode`, a.`tradname`, `drug_inject_amount`, SUM(a.`amount`) AS `amount`, 
-    b.`hn`, b.`an`, b.`ptname`, b.`bedcode`, SUBSTRING(b.`bedcode`, 1, 2) AS `ward_code` 
-    FROM `drugrx` AS a 
-    LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
-    WHERE a.`date` LIKE '$date_selected%' 
-    AND ( a.`an` IS NOT NULL AND a.`an` != '' ) 
-    AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N') 
-    GROUP BY a.`an` 
-    ORDER BY b.`bedcode` ASC, a.`date` ASC ";
-    */
-
     $sql = "SELECT a.`row_id`, a.`date`, a.`drugcode`, a.`tradname`, `drug_inject_amount`, `amount`, 
     b.`hn`, b.`an`, b.`ptname`, b.`bedcode`, SUBSTRING(b.`bedcode`, 1, 2) AS `ward_code` 
     FROM `drugrx` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
     WHERE a.`date` LIKE '$date_selected%' 
     AND ( a.`an` IS NOT NULL AND a.`an` != '' ) 
-    AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N') 
+    AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N','2DORM*') 
     ORDER BY a.`hn` ASC, a.`date` ASC";
     
     $db->select($sql);
     $items = $db->get_items();
 
     $item_lists = array();
-    $code_lists = array(
-        42 => 'หอผู้ป่วยรวม', 43 => 'หอผู้ป่วยสูติ', 44 => 'หอผู้ป่วยICU', 45 => 'หอผู้ป่วยพิเศษ'
-    );
-
     foreach ($items as $key => $item) {
 
         if( $item['amount'] <= 0 ){
@@ -120,26 +139,30 @@ if ( $show === 'table' ) {
         }
 
         $ward_code = $item['ward_code'];
-        $item['ward_name'] = $code_lists[$ward_code];
 
-        $wardExTest = preg_match('/45.+/', $item['bedcode']);
-        if( $wardExTest > 0 ){
-            
-            // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-            $wardR3Test = preg_match('/R3\d+|B\d+/', $item['bedcode']);
-            $wardBxTest = preg_match('/B[0-9]+/', $item['bedcode']);
-            $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
-            $item['ward_name'] = $item['ward_name'].' '.$exName;
+        if( $code_lists[$ward_code] !== null ){
+        
+            $item['ward_name'] = $code_lists[$ward_code];
+
+            $wardExTest = preg_match('/45.+/', $item['bedcode']);
+            if( $wardExTest > 0 ){
+                
+                // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
+                $wardR3Test = preg_match('/R3\d+|B\d+/', $item['bedcode']);
+                $wardBxTest = preg_match('/B[0-9]+/', $item['bedcode']);
+                $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+                $item['ward_name'] = $item['ward_name'].' '.$exName;
+            }
+
+            $item_lists[$ward_code][] = $item;
+
         }
-
-        $item_lists[$ward_code][] = $item;
 
     }
 
     if( !empty($select_day) ){
         $date_selected .= "-$select_day";
     }
-
 
     ?>
     <div class="col">
@@ -199,5 +222,3 @@ if ( $show === 'table' ) {
     </div>
     <?php
 }
-
-// include 'templates/classic/footer.php';

@@ -49,6 +49,19 @@ $item = mysql_fetch_assoc($q);
 // 	$ncr=$_POST['ncr'];
 // }
 
+include '../includes/JSON.php';
+$json = new Services_JSON();
+$data = $json->encode($_POST);
+$officer = ( !empty($_POST['officer']) ? $_POST['officer'] : $_POST['sRowid'] ) ;
+
+// ALTER TABLE `dbconform`.`ncr_log` 
+// CHARACTER SET = latin1 , COLLATE = latin1_general_ci ;
+$sql = "INSERT INTO `dbconform`.`ncr_log`
+(`id`,`officer`,`data`,`date`)
+VALUES
+(NULL,'$officer','$data',NOW());";
+mysql_query($sql) or die( mysql_error() );
+
 /**
  *ALTER TABLE `ncr2556` ADD `date_edit` DATETIME NULL ,
  * ADD `date_print` DATETIME NULL ;

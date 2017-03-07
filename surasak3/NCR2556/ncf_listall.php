@@ -206,7 +206,9 @@ if( $default_day > 0 ){
 	// or (risk1=0 and risk2=0 and risk3=0 and risk4=0 and risk5=0 and risk6=0 and risk7=0 and risk8=0 and risk9=0)
 // ) 
 // order by ncr desc, nonconf_date desc, nonconf_time desc ";
-$sql1="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') AS date1, date_format(nonconf_date,'%Y') AS date2, left(nonconf_time,5) AS time, nonconf_dategroup, `return`,`insert_date`, `date_edit`,`date_print`   
+$sql1="SELECT nonconf_id, ncr, until, date_format(nonconf_date,'%d/%m/') AS date1, 
+date_format(nonconf_date,'%Y') AS date2, 
+left(nonconf_time,5) AS time, nonconf_dategroup, `return`,`insert_date`, `date_edit`,`date_print`   
 FROM  `ncr2556` 
 WHERE ncr = '000' AND ( 
 	( risk1=1  OR risk4=1 OR risk5=1 OR risk6=1 OR risk7=1 OR risk8=1 OR risk9=1) 
