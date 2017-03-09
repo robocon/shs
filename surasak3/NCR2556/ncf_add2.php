@@ -52,7 +52,7 @@ $item = mysql_fetch_assoc($q);
 include '../includes/JSON.php';
 $json = new Services_JSON();
 $data = $json->encode($_POST);
-$officer = ( !empty($_POST['officer']) ? $_POST['officer'] : $_POST['sRowid'] ) ;
+$officer = ( !empty($_POST['officer']) ? urlencode($_POST['officer']) : $_POST['sRowid'] ) ;
 
 // ALTER TABLE `dbconform`.`ncr_log` 
 // CHARACTER SET = latin1 , COLLATE = latin1_general_ci ;

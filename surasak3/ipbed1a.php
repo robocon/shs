@@ -22,7 +22,7 @@ $exName = '';
 // เช็กว่าเป็นWardพิเศษรึป่าว
 $wardExTest = preg_match('/45.+/', $cbedcode);
 if( $wardExTest > 0 ){
-	
+	//
 	// เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
 	$wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
 	$wardBxTest = preg_match('/B[0-9]+/', $cBed1);
@@ -31,7 +31,8 @@ if( $wardExTest > 0 ){
 }
 
 $full_text = $cbedname.$exName."/$cBed1 AN: $can HN: $chn\n";
-$full_text .= "$cptname อายุ: $cage\n";
+$full_text .= "$cptname อายุ: $cage";
+$full_text .= "อายุ: $cage\n";
 $full_text .= "โรค: $cdiagnos\n";
 $full_text .= "สิทธิ: $cptright\n";
 $full_text .= "แพทย์: $cdoctor\n";
