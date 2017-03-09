@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>พิมพ์ใบตรวจสุขภาพเทศบาลเมืองพิชัย</title>
+<title>พิมพ์ใบตรวจสุขภาพสำนักงานพัฒนาชุมชนจังหวัดลำปาง</title>
 <style type="text/css">
 <!--
 .tet {
@@ -59,7 +59,7 @@ color: #FFF;
 <div id="no_print">
 <form name="formdx" action="<? $_SERVER['PHP_SELF'];?>" method="post">
 <center>
-<span class="tet1">พิมพ์ใบตรวจสุขภาพเทศบาลเมืองพิชัย</span><br />
+<span class="tet1">พิมพ์ใบตรวจสุขภาพสำนักงานพัฒนาชุมชนจังหวัดลำปาง</span><br />
   <br />
   <input type="submit" name="ok" value="ตกลง" style="width:60px; height:40px; font:'TH SarabunPSK'; font-size:20px;">
   <br />
@@ -78,7 +78,7 @@ if(isset($_POST['ok'])){
     <?
 	
 	include("connect.inc");	
-	$sql="SELECT  * FROM opcardchk  WHERE part='เทศบาลพิชัย60' and active='y' and HN='48-8300' || HN='56-9421' || HN='57-2308' || HN='47-24995' order by row";
+	$sql="SELECT  * FROM opcardchk  WHERE part='พัฒนาชุมชน60' and active='y' order by row";
 	//echo $sql."<br>";
 	$row2 = mysql_query($sql)or die ("Query Fail line 83");
 	while($result2 = mysql_fetch_array($row2)){
@@ -93,6 +93,12 @@ if(isset($_POST['ok'])){
 	
 	$ht = $result['height']/100;
 	$bmi=number_format($result['weight'] /($ht*$ht),2);
+	
+	
+$strSQL11 = "SELECT date_format(orderdate,'%d-%m-%Y') as orderdate2 FROM resulthead  WHERE hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
+//echo "===>".$strSQL1;
+$objQuery11 = mysql_query($strSQL11);
+list($orderdate)=mysql_fetch_array($objQuery11);	
 ?>
 <div id="divprint">
 <table width="100%" border="0">
@@ -100,7 +106,7 @@ if(isset($_POST['ok'])){
     <td colspan="2"><table width="100%">
       <tr>
         <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="87" height="83" /></td>
-        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพเทศบาลเมืองพิชัย</strong></td>
+        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพสำนักงานพัฒนาชุมชนจังหวัดลำปาง</strong></td>
         <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
@@ -108,7 +114,7 @@ if(isset($_POST['ok'])){
         <td align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">ตรวจเมื่อวันที่ 3 กุมภาพันธ์ 2560</span></span></span></td>
+        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">วันที่ตรวจ <?=$orderdate;?></span></span></span></td>
         <td align="center" valign="top" class="text3">&nbsp;</td>
       </tr>
     </table></td>
@@ -123,8 +129,7 @@ if(isset($_POST['ok'])){
                   <td  valign="top" class="text2"><strong class="text" style="font-size:22px"><u>ข้อมูลผู้ตรวจสุขภาพ</u> </strong><strong>HN : <?=$result['hn']?> 
                     &nbsp;&nbsp;</strong><strong>ชื่อ :</strong> <span style="font-size:24px"><strong>
                     <?=$result['ptname']?>
-                    </strong></span><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วัน/เดือน/ปี เกิด</strong>
-                    <?=$result2['dbirth']?></td>
+                    </strong></span></td>
                 </tr>
               </table></td>
             </tr>
@@ -201,7 +206,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <td width="19%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
             <td width="20%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
           </tr>
- <? $sql="SELECT * FROM resulthead WHERE profilecode='CBC' and hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพเทศบาลพิชัย60' || clinicalinfo ='ตรวจสุขภาพประจำปี60')";
+ <? $sql="SELECT * FROM resulthead WHERE profilecode='CBC' and hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -378,7 +383,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
             <td width="30%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
           </tr>
-          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพเทศบาลพิชัย60' || clinicalinfo ='ตรวจสุขภาพประจำปี60')";
+          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -481,19 +486,13 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 				$objQuery1 = mysql_query($strSQL1);
 				$objResult1 = mysql_fetch_array($objQuery1);					
 				if($objResult1["labcode"]=="WBCU"){
-					$wbculen=strlen($objResult1["result"]);
-					//echo $wbculen;
+					$wbculen=strlen($objResult2["result"]);
 					if($wbculen >=5){
-						$wbcu1=substr($objResult1["result"],0,2);
-						$wbcu2=substr($objResult1["result"],3,2);
-					}else if($wbculen ==4){
-						$wbcu1=substr($objResult1["result"],0,1);
-						$wbcu2=substr($objResult1["result"],2,2);	
-						//echo $wbcu1."<br>";
-						//echo $wbcu2."<br>";					
+						$wbcu1=substr($objResult2["result"],0,2);
+						$wbcu2=substr($objResult2["result"],3,2);
 					}else{
-						$wbcu1=substr($objResult1["result"],0,1);
-						$wbcu2=substr($objResult1["result"],2,1);
+						$wbcu1=substr($objResult2["result"],0,1);
+						$wbcu2=substr($objResult2["result"],2,1);
 					}
 					//echo $objResult1["result"];
 					if($objResult1["result"] == "Negative" || ($wbcu1 >=0 && $wbcu2 <=5) && $objResult1["result"] != "*"){
@@ -519,9 +518,6 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 					if($rbculen >=5){
 						$rbcu1=substr($objResult2["result"],0,2);
 						$rbcu2=substr($objResult2["result"],3,2);
-					}else if($rbculen ==4){
-						$rbcu1=substr($objResult2["result"],0,1);
-						$rbcu2=substr($objResult2["result"],2,2);										
 					}else{
 						$rbcu1=substr($objResult2["result"],0,1);
 						$rbcu2=substr($objResult2["result"],2,1);
@@ -565,7 +561,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 				$objQuery5 = mysql_query($strSQL5);
 				$objResult5 = mysql_fetch_array($objQuery5);		
 				if($objResult5["labcode"]=="PROU"){
-					if($objResult5["result"] == "Negative" || $objResult5["result"] == "Trace"){
+					if($objResult5["result"] == "Negative"){
 						echo "ปกติ";
 					}else if($objResult5["result"] == "*"){
 						echo "*";
@@ -584,8 +580,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
   <tr>
     <td colspan="2"  valign="top">
  <? 
- if($result2["agey"] >= 35){ 
- // echo "==>".$result2["agey"];
+ if($result["hn"]!="55-2002"){ 
  ?></td>
   </tr>
   <tr>
@@ -602,7 +597,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
               <td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
             </tr>
             <?
-$sql1="SELECT * FROM resulthead WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG' or profilecode='HDL' or profilecode='LDL') and hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพเทศบาลพิชัย60' || clinicalinfo ='ตรวจสุขภาพประจำปี60')";
+$sql1="SELECT * FROM resulthead WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG' or profilecode='HDL' or profilecode='LDL') and hn='".$result2['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
 //echo $sql1;
 $query1 = mysql_query($sql1);
 $i=0;
@@ -778,29 +773,7 @@ if($objResult["labcode"]=='HBSAG'){  //HBSAG
     <td colspan="2"  valign="top"><? } ?></td>
   </tr>
   <tr>
-    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">
-      <? if($result["hn"]=="47-15553" || $result["hn"]=="47-24995" || $result["hn"]=="58-3188" || $result["hn"]=="50-894" || $result["hn"]=="48-8300" || $result["hn"]=="55-995" || $result["hn"]=="47-19757"){ //48-8300,  55-995,  47-19757 ตรวจจริงหรือไม่??>
-      <tr>
-        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><strong class="text" style="margin-left: 9px;"> :
-          <? if($result["hpv"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ ควรพบแพทย์เพื่อการรักษา"; } ?>
-        </strong></td>
-      </tr>
-      <? } ?>  
-      <? if($result["hn"]=="55-995" || $result["hn"]=="47-27981"){  ?>
-      <tr>
-        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจสารชี้บ่งมะเร็งลำไส้ (CEA)</u></strong><strong class="text" style="margin-left: 9px;"> :
-          <? if($result["cea"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ ควรพบแพทย์เพื่อการรักษา"; } ?>
-        </strong></td>
-      </tr>
-      <? } ?>              
-      <? if($result["hn"]=="48-8934" || $result["hn"]=="55-1569"){  ?>
-      <tr>
-        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจคลื่นไฟฟ้าหัวใจ (EKG)</u></strong><strong class="text" style="margin-left: 9px;"> :
-          <? if($result["ekg"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ ควรพบแพทย์เพื่อการรักษา"; } ?>
-        </strong></td>
-      </tr>
-      <? } ?>              
-
+    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
         <tr>
           <td><strong class="text" style="font-size:18px"><u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u></strong><strong class="text" style="margin-left: 9px;"> : <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติเล็กน้อย...".$result["cxr"]; } ?></strong></td>
         </tr>       
@@ -809,7 +782,7 @@ if($objResult["labcode"]=='HBSAG'){  //HBSAG
 </table>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (20-02-2017) Doctor : </strong>พ.อ.วรวิทย์ วงษ์มณี (ว.27035) <strong>(23-02-2017)</strong></td>
+    <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (05-03-2017) Doctor : </strong>พ.อ.วรวิทย์ วงษ์มณี (ว.27035) <strong>(08-03-2017)</strong></td>
     
   </tr>
 </table>

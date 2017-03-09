@@ -180,8 +180,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 							}
 						}
 				  ?>
-				  </span>
-                  </td>
+				  </span>                  </td>
                 </tr>
               </table></td>
             </tr>
@@ -198,7 +197,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
         <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
           <tr>
             <td width="61%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
-            <td width="19%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+            <td width="19%" align="left" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
             <td width="20%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
           </tr>
  <? $sql="SELECT * FROM resulthead WHERE profilecode='CBC' and hn='".$result2['HN']."' and clinicalinfo ='ตรวจสุขภาพประจำปี60' ";
@@ -261,7 +260,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 		?>
           <tr height="25">
             <td><?=$objResult["labcode"]." ".$labmean;?></td>
-            <td align="center"><?=$objResult["result"];?></td>
+            <td align="left"><?=$objResult["result"];?></td>
             <td align="center"><?=$objResult["normalrange"];?></td>
           </tr>
                 <?  } ?>                   
@@ -273,8 +272,8 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <table width="100%" border="0" cellpadding="1" cellspacing="0">
               <tr height="25">
                 <td width="5%">&nbsp;</td>
-                <td width="48%"><strong>จำนวนเม็ดเลือด (WBC)</strong></td>
-                <td width="47%">
+                <td width="56%"><strong>จำนวนเม็ดเลือด (WBC)</strong></td>
+                <td width="39%">
 				<? 
 				$strSQL1 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and labcode= 'WBC'";
 				//echo "---->".$strSQL1;
@@ -369,7 +368,6 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             </table></td>
           </tr>
         </table></td>
-        
       </tr>
     </table></td>
     <td width="50%"  valign="top"><table width="100%" height="111" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
@@ -380,7 +378,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
         <td><table width="100%" border="0" cellpadding="0" cellspacing="0" class="text3">
           <tr>
             <td width="53%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
-            <td width="17%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+            <td width="17%" align="left" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
             <td width="30%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
           </tr>
           <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result2['HN']."' and clinicalinfo ='ตรวจสุขภาพประจำปี60'";
@@ -461,7 +459,11 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
           <tr height="25">
             <td><?=$objResult["labcode"]." ".$labmean;?></td>
             <td ><?=$objResult["result"];?></td>
-            <td align="center"><?=$objResult["normalrange"];?></td>
+            <? if($objResult["labcode"]=="PROU" || $objResult["labcode"]=="GLUU"){ ?>
+            <td align="center">Negative</td>
+            <? }else{ ?>
+			<td align="center"><?=$objResult["normalrange"];?></td>
+			<? } ?>
           </tr>
           
           <?  }
@@ -474,21 +476,24 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
             <td colspan="3"><table width="100%" border="0" cellpadding="1" cellspacing="0">
 
               <tr height="25">
-                <td>&nbsp;</td>
-                <td><strong>เม็ดเลือดขาว (WBCU)</strong></td>
-                <td><? 
+                <td width="7%">&nbsp;</td>
+                <td width="46%"><strong>เม็ดเลือดขาว (WBCU)</strong></td>
+                <td width="47%"><? 
 				$strSQL1 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'WBCU'";
 				//echo "---->".$strSQL1;
 				$objQuery1 = mysql_query($strSQL1);
 				$objResult1 = mysql_fetch_array($objQuery1);					
 				if($objResult1["labcode"]=="WBCU"){
-					$wbculen=strlen($objResult2["result"]);
+					$wbculen=strlen($objResult1["result"]);
 					if($wbculen >=5){
-						$wbcu1=substr($objResult2["result"],0,2);
-						$wbcu2=substr($objResult2["result"],3,2);
+						$wbcu1=substr($objResult1["result"],0,2);
+						$wbcu2=substr($objResult1["result"],3,2);
+					}else if($wbculen ==4){
+						$wbcu1=substr($objResult1["result"],0,1);
+						$wbcu2=substr($objResult1["result"],2,2);							
 					}else{
-						$wbcu1=substr($objResult2["result"],0,1);
-						$wbcu2=substr($objResult2["result"],2,1);
+						$wbcu1=substr($objResult1["result"],0,1);
+						$wbcu2=substr($objResult1["result"],2,1);
 					}
 					//echo $objResult1["result"];
 					if($objResult1["result"] == "Negative" || ($wbcu1 >=0 && $wbcu2 <=5) && $objResult1["result"] != "*"){
@@ -514,6 +519,9 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 					if($rbculen >=5){
 						$rbcu1=substr($objResult2["result"],0,2);
 						$rbcu2=substr($objResult2["result"],3,2);
+					}else if($rbculen ==4){
+						$rbcu1=substr($objResult2["result"],0,1);
+						$rbcu2=substr($objResult2["result"],2,2);						
 					}else{
 						$rbcu1=substr($objResult2["result"],0,1);
 						$rbcu2=substr($objResult2["result"],2,1);
@@ -603,23 +611,22 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
  <? 
  if($result2["agey"] >= 35){ 
  // echo "==>".$result2["agey"];
- ?>     
-<table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+ ?></td>
+  </tr>
+  <tr>
+    <td colspan="2"  valign="top"><table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center"><strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ : อื่นๆ</u></strong></td>
-        </tr>
+      </tr>
       <tr>
-        <td height="52" valign="top">
-	<table width="100%" class="text3" style="border-collapse:collapse; border-bottom-style:none; border-bottom: 1px solid black;">
-		<tr height="25">
-			<td width="32%" valign="top"></td>
-			<td width="9%" valign="top">ผลการตรวจ</td>
-			<td width="10%" valign="top">ค่าปกติ</td>
-			<td width="49%" valign="top" style="font-size:16px;"></td>
-		</tr>
-	</table>
-	<table width="98%" border="0" class="text3">
-  <?
+        <td height="52" valign="top"><table width="98%" border="0" class="text3">
+            <tr height="25">
+              <td width="32%" valign="top" bgcolor="#CCCCCC"><strong>รายการตรวจ</strong></td>
+              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+              <td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
+            </tr>
+            <?
 $sql1="SELECT * FROM resulthead WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG') and hn='".$result2['HN']."' and clinicalinfo ='ตรวจสุขภาพประจำปี60' ";
 //echo $sql1;
 $query1 = mysql_query($sql1);
@@ -774,30 +781,42 @@ if($objResult["labcode"]=='HBSAG'){  //HBSAG
 }
 
 		?>
-          <tr height="25">
-            <td width="34%" valign="top"><strong><?=$objResult["labname"]." ".$labmean;?></strong></td>
-            <td width="8%" valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
-            <td width="9%" valign="top"><?=$objResult["normalrange"];?></td>
-            <td width="49%" valign="top" style="font-size:16px;"><?=$app;?></td>
+            <tr height="25">
+              <td width="34%" valign="top"><strong>
+                <?=$objResult["labname"]." ".$labmean;?>
+              </strong></td>
+              <td width="8%" valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
+              <td width="9%" valign="top"><?=$objResult["normalrange"];?></td>
+              <td width="49%" valign="top" style="font-size:16px;"><?=$app;?></td>
             </tr>
-          <? 
+            <? 
 		  } 
 		}
-	?>           
-          </table>
-          
-          </td>
-        </tr>
-      </table>
-<? } ?>      
-      
-      <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">
-        <tr>
-          <td><strong class="text" style="font-size:18px"><u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u></strong><strong class="text" style="margin-left: 9px;"> : <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติเล็กน้อย...".$result["cxr"]; } ?></strong></td>
-        </tr>       
+	?>
+        </table></td>
+      </tr>
     </table></td>
   </tr>
-</table>
+  <tr>
+    <td colspan="2"  valign="top"><? } ?></td>
+  </tr>
+  <tr>
+    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">
+      <? if($result["hn"]=="52-2543"){  ?>
+      <tr>
+        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><strong class="text" style="margin-left: 9px;"> :
+          <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติเล็กน้อย...".$result["cxr"]; } ?>
+        </strong></td>
+      </tr>
+      <? } ?>
+      <tr>
+        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u></strong><strong class="text" style="margin-left: 9px;"> :
+          <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติเล็กน้อย...".$result["cxr"]; } ?>
+        </strong></td>
+      </tr>
+    </table></td>
+  </tr>
+  </table>
 <table width="100%" border="0" class="text4">
   <tr>
     <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (20-02-2017) Doctor : </strong>พ.อ.วรวิทย์ วงษ์มณี (ว.27035) <strong>(23-02-2017)</strong></td>
