@@ -127,13 +127,12 @@ if ( $show === 'table' ) {
     AND ( a.`an` IS NOT NULL AND a.`an` != '' ) 
     AND a.`drugcode` IN('2MO','2PET50','2EPHE','2FENT-N','2DORM*') 
     ORDER BY a.`hn` ASC, a.`date` ASC";
-    
     $db->select($sql);
     $items = $db->get_items();
 
     $item_lists = array();
     foreach ($items as $key => $item) {
-
+        
         if( $item['amount'] <= 0 ){
             continue;
         }
@@ -160,65 +159,75 @@ if ( $show === 'table' ) {
 
     }
 
-    if( !empty($select_day) ){
-        $date_selected .= "-$select_day";
-    }
+    if( empty($item_lists) ){
+        echo "ไม่พบข้อมูล";
+    } else {
+        if( !empty($select_day) ){
+            $date_selected .= "-$select_day";
+        }
 
-    ?>
-    <div class="col">
-        <div class="cell">
-            <h3>Addict <?=( !empty($select_day) ? 'วันที่ '.$select_day.' ' : '' )?><?=$def_fullm_th[$select_month].' '.$select_year;?>
+        ?>
+        <div class="col">
+            <div class="cell">
+                <h3>Addict <?=( !empty($select_day) ? 'วันที่ '.$select_day.' ' : '' )?><?=$def_fullm_th[$select_month].' '.$select_year;?>
+            </div>
         </div>
-    </div>
-    <div class="col">
-        <div class="cell">
-            <?php
-            foreach ($item_lists as $key => $items) {
-                
-                $ward_name = $code_lists[$key];
-                ?>
-                <h3><?=$ward_name;?></h3>
-                <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th width="3%">#</th>
-                            <th width="15%">วันที่</th>
-                            <th width="8%">HN</th>
-                            <th width="25%">ชื่อ-สกุล</th>
-                            <th width="25%">ชื่อยา</th>
-                            <th width="8%">จำนวนที่ใช้</th>
-                            <th width="8%">เก็บซาก</th>
-                            <th width="8%">คงเหลือ</th>
-                            <th>amp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $i = 1;
-                    foreach ($items as $key => $item) {
-                    ?>
-                        <tr>
-                            <td align="right"><?=$i;?></td>
-                            <td><?=$item['date'];?></td>
-                            <td><?=$item['hn'];?></td>
-                            <td><?=$item['ptname'];?></td>
-                            <td><?=$item['tradname'];?></td>
-                            <td align="right"><?=$item['amount'];?></td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    <?php
-                        $i++;
-                    }
-                    ?>
-                    </tbody>
-                </table>
-                <div style="height: 5px;">&nbsp;</div>
+        <div class="col">
+            <div class="cell">
                 <?php
-            }
-            ?>
+                foreach ($item_lists as $key => $items) {
+                    
+                    $ward_name = $code_lists[$key];
+                    ?>
+                    <h3><?=$ward_name;?></h3>
+                    <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="3%">#</th>
+                                <th width="14%">วันที่</th>
+                                <th width="7%">HN</th>
+                                <th width="20%">ชื่อ-สกุล</th>
+                                <th width="32%">ชื่อยา</th>
+                                <th width="8%">จำนวนที่ใช้</th>
+                                <th width="8%">เก็บซาก</th>
+                                <th width="8%">คงเหลือ</th>
+                                <th>amp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $i = 1;
+                        foreach ($items as $key => $item) {
+                        ?>
+                            <tr>
+                                <td align="right"><?=$i;?></td>
+                                <td>
+                                <?php
+                                    list($date, $time) = explode(' ', $item['date']);
+                                    list($h, $m, $s) = explode(':', $time);
+                                    echo "$date $h:$m น.";
+                                ?>
+                                </td>
+                                <td><?=$item['hn'];?></td>
+                                <td><?=$item['ptname'];?></td>
+                                <td><?=$item['tradname'];?></td>
+                                <td align="right"><?=$item['amount'];?></td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        <?php
+                            $i++;
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div style="height: 5px;">&nbsp;</div>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
-    </div>
-    <?php
+        <?php
+    }
 }

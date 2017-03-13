@@ -1,10 +1,8 @@
 <style type="text/css">
-<!--
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
--->
 </style>
 <script language="JavaScript">
 	function chkNumber(ele)
@@ -38,7 +36,12 @@ $part = array('','กองบังคับการ','กองการพยาบาล','หอผู้ป่วยรวม','หอผู้ป่วยพิเศษ','
     </tr>
     <tr>
       <td valign="top">รายละเอียดของข่าวสาร&nbsp;</td>
-      <td><TEXTAREA NAME="new" COLS="100" ROWS="10" class="forntsarabun"></TEXTAREA></td>
+      <td>
+        <TEXTAREA NAME="new" COLS="100" ROWS="10" class="forntsarabun"></TEXTAREA>
+        <div>
+          <span style="font-size: 16px; color: red;">สามารถขึ้นบรรทัดใหม่ด้วยการใส่ <b>&lt;br&gt;</b> ไว้ด้านหลังข้อความ</span>
+        </div>
+      </td>
     </tr>
     <tr>
       <td>วันที่</td>

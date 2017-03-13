@@ -2851,6 +2851,8 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
         <Option value="UNIT">UNIT</Option>
         <Option value="ล้านUNIT">ล้านUNIT</Option>
         <Option value="UNIT ก่อนอาหารเช้า">UNIT ก่อนอาหารเช้า</Option>
+		<Option value="UNIT ก่อนอาหารกลางวัน">UNIT ก่อนอาหารกลางวัน</Option>
+		<Option value="UNIT ก่อนอาหารเย็น">UNIT ก่อนอาหารเย็น</Option>
 	  </SELECT></TD>
 </TR>
 <TR ID="drug_inject_amount2"  style="display:none">
