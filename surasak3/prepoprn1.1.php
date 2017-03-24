@@ -766,13 +766,15 @@ $newdate=$yy."-".$mon."-".$d;
 $chkdate=date("w",strtotime($newdate));  //หาวันหยุด เสาร์=6, อาทิตย์=0 
 
 if($chkdate==0){  //อาทิตย์
-$strnewdate=date("Y-m-d",strtotime("+1 day",strtotime($newdate)));
-}else if($chkdate==6){  //เสาร์
 $strnewdate=date("Y-m-d",strtotime("+2 day",strtotime($newdate)));
-}else if($chkdate==5){  //ศุกร์
+}else if($chkdate==6){  //เสาร์
 $strnewdate=date("Y-m-d",strtotime("+3 day",strtotime($newdate)));
+}else if($chkdate==5){  //ศุกร์
+$strnewdate=date("Y-m-d",strtotime("+4 day",strtotime($newdate)));
+}else if($chkdate==4){  //พฤหัสบดี
+$strnewdate=date("Y-m-d",strtotime("+4 day",strtotime($newdate)));
 }else{
-$strnewdate=date("Y-m-d",strtotime("+1 day",strtotime($newdate)));
+$strnewdate=date("Y-m-d",strtotime("+2 day",strtotime($newdate)));
 }
 
 $newcPrepodate=thaidate($strnewdate);

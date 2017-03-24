@@ -78,7 +78,7 @@ function check(){
 }
 </script>
 <?php
-
+//print "สิทธิการรักษา :$cPtright<br>";
 include("connect.inc");
 $sqlpt = "select * from ptright where status = 'a' order by code asc";
 $rowpt = mysql_query($sqlpt);
@@ -163,6 +163,19 @@ $rowpt = mysql_query($sqlpt);
 	
 	<?php
 	}
+
+	// บันทึกเวลาที่ทำการรักษาของนวดแผนไทย
+	if( $_SESSION['smenucode'] === 'ADMPT' ){
+		?>
+		<div>
+			<span style="font-family: 'Angsana New';">ทำการรักษาตั้งแต่</span>&nbsp;
+			<input type="text" name="treat_start" value="<?=date('H:i');?>" style="width: 50px;">น.
+			&nbsp;<span style="font-family: 'Angsana New';">ถึง</span>&nbsp;
+			<input type="text" name="treat_end" value="<?=date('H:i');?>" style="width: 50px;">น.
+		</div>
+		<?php
+	}
+
 	?>
 	<p>
 	<font face="Angsana New">&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
@@ -232,151 +245,134 @@ $rowpt = mysql_query($sqlpt);
 				<?php
 			}
 			?>
-		</select>
+		</select>	
 		<?php
 	}  //close if ADMPT
 	
-	if( $menucode == "ADMNID" ){
+	if( $menucode == "ADMNID" ){	   
 		$today = date("Y-m-d");
 		$submonth=substr($today,0,7);
 		?>
 		<p><strong>เฉพาะฝังเข็ม สาเหตุการป่วย (ชื่อโรค)</strong></p>
 		<table width="40%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='01'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input name="selnid1" type="checkbox" id="selnid1" value="01" <?php if($rows["groupnid"]=="01"){ echo "checked='checked'";}?> />01
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='02'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>    
-					<input type="checkbox" name="selnid2" id="selnid2" value="02" <?php if($rows["groupnid"]=="02"){ echo "checked='checked'";}?> />02
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='03'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>    
-					<input type="checkbox" name="selnid3" id="selnid3" value="03" <?php if($rows["groupnid"]=="03"){ echo "checked='checked'";}?> />03
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='04'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid4" id="selnid4" value="04" <?php if($rows["groupnid"]=="04"){ echo "checked='checked'";}?> />04
-				</td>
-			</tr>
-			<tr>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='05'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid5" id="selnid5" value="05" <?php if($rows["groupnid"]=="05"){ echo "checked='checked'";}?> />05
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='06'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid6" id="selnid6" value="06" <?php if($rows["groupnid"]=="06"){ echo "checked='checked'";}?> />06
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='07'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid7" id="selnid7" value="07" <?php if($rows["groupnid"]=="07"){ echo "checked='checked'";}?> />07
-				</td>
-				<td align="left"><?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='08'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid8" id="selnid8" value="08" <?php if($rows["groupnid"]=="08"){ echo "checked='checked'";}?> />08
-				</td>
-			</tr>
-			<tr>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='09'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid9" id="selnid9" value="09" <?php if($rows["groupnid"]=="09"){ echo "checked='checked'";}?> />09
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='10'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid10" id="selnid10" value="10" <?php if($rows["groupnid"]=="10"){ echo "checked='checked'";}?> />10
-				</td>
-				<td align="left"><?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='11'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid11" id="selnid11" value="11" <?php if($rows["groupnid"]=="11"){ echo "checked='checked'";}?> />11
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='12'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid12" id="selnid12" value="12" <?php if($rows["groupnid"]=="12"){ echo "checked='checked'";}?> />12
-				</td>
-			</tr>
-			<tr>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='13'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid13" id="selnid13" value="13" <?php if($rows["groupnid"]=="13"){ echo "checked='checked'";}?> />13
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='14'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid14" id="selnid14" value="14" <?php if($rows["groupnid"]=="14"){ echo "checked='checked'";}?> />14
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='15'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid15" id="selnid15" value="15" <?php if($rows["groupnid"]=="15"){ echo "checked='checked'";}?> />15
-				</td>
-				<td align="left">
-					<?php
-					$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='16'";
-					$result=mysql_query($tbsql);
-					$rows=mysql_fetch_array($result);
-					?>
-					<input type="checkbox" name="selnid16" id="selnid16" value="16" <?php if($rows["groupnid"]=="16"){ echo "checked='checked'";}?> />16
-				</td>
-			</tr>
-		</table>	
+		<tr>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='01'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input name="selnid1" type="checkbox" id="selnid1" value="01" <?php if($rows["groupnid"]=="01"){ echo "checked='checked'";}?> />01</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='02'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>    
+		<input type="checkbox" name="selnid2" id="selnid2" value="02" <?php if($rows["groupnid"]=="02"){ echo "checked='checked'";}?> />02</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='03'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>    
+		<input type="checkbox" name="selnid3" id="selnid3" value="03" <?php if($rows["groupnid"]=="03"){ echo "checked='checked'";}?> />03</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='04'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid4" id="selnid4" value="04" <?php if($rows["groupnid"]=="04"){ echo "checked='checked'";}?> />04</td>
+		</tr>
+		<tr>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='05'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid5" id="selnid5" value="05" <?php if($rows["groupnid"]=="05"){ echo "checked='checked'";}?> />05</td>
+		<td align="left"><?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='06'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid6" id="selnid6" value="06" <?php if($rows["groupnid"]=="06"){ echo "checked='checked'";}?> />06</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='07'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid7" id="selnid7" value="07" <?php if($rows["groupnid"]=="07"){ echo "checked='checked'";}?> />07</td>
+		<td align="left"><?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='08'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid8" id="selnid8" value="08" <?php if($rows["groupnid"]=="08"){ echo "checked='checked'";}?> />08</td>
+		</tr>
+		<tr>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='09'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid9" id="selnid9" value="09" <?php if($rows["groupnid"]=="09"){ echo "checked='checked'";}?> />09</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='10'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid10" id="selnid10" value="10" <?php if($rows["groupnid"]=="10"){ echo "checked='checked'";}?> />10</td>
+		<td align="left"><?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='11'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid11" id="selnid11" value="11" <?php if($rows["groupnid"]=="11"){ echo "checked='checked'";}?> />11</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='12'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid12" id="selnid12" value="12" <?php if($rows["groupnid"]=="12"){ echo "checked='checked'";}?> />12</td>
+		</tr>
+		<tr>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='13'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid13" id="selnid13" value="13" <?php if($rows["groupnid"]=="13"){ echo "checked='checked'";}?> />13</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='14'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid14" id="selnid14" value="14" <?php if($rows["groupnid"]=="14"){ echo "checked='checked'";}?> />14</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='15'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid15" id="selnid15" value="15" <?php if($rows["groupnid"]=="15"){ echo "checked='checked'";}?> />15</td>
+		<td align="left">
+		<?php
+		$tbsql="select * from clinicnid where date_time like '$submonth%' && hn='$cHn' && groupnid='16'";
+		$result=mysql_query($tbsql);
+		$rows=mysql_fetch_array($result);
+		?>
+		<input type="checkbox" name="selnid16" id="selnid16" value="16" <?php if($rows["groupnid"]=="16"){ echo "checked='checked'";}?> />16</td>
+		</tr>
+		</table>
 		<div>
 			<?php
 			// เคลียร์ค่าทุกครั้งที่เลือกข้อมูลใหม่
@@ -400,7 +396,7 @@ $rowpt = mysql_query($sqlpt);
 					?>
 				</select>
 			</div>
-		</div>
+		</div>	
 		<?php
 	}  //close if ADMNID
 	?>	  

@@ -140,7 +140,6 @@ $sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`tem
 	$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
 	$result1 = Mysql_Query($sql1) or die(Mysql_Error());	
 	
-	
 	if($_POST["appoint"] > 0){
 	$sql = "Select count(row_id) From opday2 where thdatehn = '".$thidatehn."' AND toborow like 'EX04%' limit 1";
 	
@@ -157,7 +156,7 @@ $sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`tem
 
 		}
 	}
-
+	
 	if(!empty($_GET["close"])){
 		$plus = "window.close();";
 	}else{
@@ -259,7 +258,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปีตามระเบียบข้าราชการ</a> </p>
+<p><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in)</a> </p>
 <form id="f1" name="f1" method="post" action="">
   กรอก Hn : 
   <input name="hn" type="text" id="hn" size="10" maxlength="10" />
@@ -267,7 +266,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
   <input type="submit" name="Submit" value="ตกลง" /><BR>
  <INPUT TYPE="checkbox" NAME="unshow" value="1">&nbsp;&nbsp;ไม่ประกาศ คิว ผู้ป่วย
 </form>
- <p><a href="../nindex.htm">&lt;&lt;เมนู</a>&nbsp;&nbsp;<a href="rp_basic_opd.php" target="_blank">&lt;&lt;แสดงข้อมูล</a></p>
+ <p><a href="../nindex.htm">&lt;&lt;เมนู</a>&nbsp;&nbsp;<a href="rp_basic_opd.php" target="_blank">&lt;&lt;แสดงข้อมูล</a>&nbsp;&nbsp;<a href="consent4.php" target="_blank">ใบยินยอม</a></p>
  <p>&nbsp; </p>
  
  <?php
