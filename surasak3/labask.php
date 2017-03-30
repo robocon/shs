@@ -1,101 +1,120 @@
 <?php
-session_start();
-if(isset($sIdname)){} else {die;}
-include("connect.inc");
+   session_start();
+   if(isset($sIdname)){} else {die;}
+    include("connect.inc");
+
+  
+    ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
+	$strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
+	$strresult = mysql_query($strsql);
+	$strrow=mysql_num_rows($strresult);
+	
 
 
-////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
-$strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
-$strresult = mysql_query($strsql);
-$strrow=mysql_num_rows($strresult);
+	if($strrow>0){
+		echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
+		//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
 
-
-
-if($strrow>0){
-	echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
-	//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
-
-}
+	}
 //////////////////////////////////////////
-
-function calcage($birth){
-	$today = getdate();   
-	$nY  = $today['year']; 
-	$nM = $today['mon'] ;
-	$bY=substr($birth,0,4)-543;
-	$bM=substr($birth,5,2);
-	$ageY=$nY-$bY;
-	$ageM=$nM-$bM;
+   
+   function calcage($birth){
+		$today = getdate();   
+		$nY  = $today['year']; 
+		$nM = $today['mon'] ;
+		$bY=substr($birth,0,4)-543;
+		$bM=substr($birth,5,2);
+		$ageY=$nY-$bY;
+		$ageM=$nM-$bM;
 	
-	if ($ageM<0) {
-		$ageY=$ageY-1;
-		$ageM=12+$ageM;
-	}
+		if ($ageM<0) {
+			$ageY=$ageY-1;
+			$ageM=12+$ageM;
+		}
 	
-	if ($ageM==0){
-		$pAge="$ageY ปี";
-	}else{
-		$pAge="$ageY ปี $ageM เดือน";
-	}
+		if ($ageM==0){
+			$pAge="$ageY ปี";
+		}else{
+			$pAge="$ageY ปี $ageM เดือน";
+		}
 	
 	return $pAge;
 }
-
-$sqlage = "select idcard,dbirth,idguard,goup   from opcard where hn ='".$cHn."'";
-$arr_age = mysql_fetch_array(mysql_query($sqlage));
-$age = calcage($arr_age['dbirth']);
-
-
-$idcard=$arr_age['idcard'];
-$idguard=$arr_age['idguard'];
-$goup=$arr_age['goup'];
-
-if($idcard=="" || $idcard=="-"){
-	$img=$cHn.'.jpg';
-}else{
-	$img=$idcard.'.jpg';
-}
+		$sqlage = "select idcard,dbirth,idguard,goup   from opcard where hn ='".$cHn."'";
+		$arr_age = mysql_fetch_array(mysql_query($sqlage));
+		$age = calcage($arr_age['dbirth']);
+		
+		
+		$idcard=$arr_age['idcard'];
+				$idguard=$arr_age['idguard'];
+				$goup=$arr_age['goup'];
+		
+		if($idcard=="" || $idcard=="-"){
+		$img=$cHn.'.jpg';
+		}else{
+		$img=$idcard.'.jpg';
+		}
 	
-if(file_exists("../image_patient/$img")){
-
-	$image="<IMG SRC='../image_patient/$img' WIDTH='100' HEIGHT='150' BORDER='1' ALT=''>";
-}else{
-	$image="";
-}
+	if(file_exists("../image_patient/$img")){
+		
+		$image="<IMG SRC='../image_patient/$img' WIDTH='100' HEIGHT='150' BORDER='1' ALT=''>";
+	}else{
+		$image="";
+	}
+	
+	$chkdate=(date("Y")+543)."-".date("m-d");
+	$sql1=mysql_query("select ptright,toborow from opday where hn='$cHn' and thidate like '$chkdate%' order by row_id desc limit 1 ");
+	//echo $sql1;
+	list($aptright,$atoborow)=mysql_fetch_array($sql1);
 	
 ?>		
 <table  border="0">
-	<tr>
-		<td>ผู้ป่วยนอก</td>
-		<td rowspan="5" valign="top">
-		<?=$image;?>
-		</td>
-	</tr>
-	<tr>
-		<td>HN :<?=$cHn;?></td>
-	</tr>
-	<tr>
-		<td>VN :<?=$tvn;?></td>
-	</tr>
-	<tr>
-		<td><?=$cPtname;?></td>
-	</tr>
-	<tr>
-		<td><font color='#FF0000' style='font-size:18px'>อายุ: <?=$age;?></font></td>
-	</tr>
-	<tr>
-		<td><font color='#FF0000' style='font-size:18px'><?=$idguard;?></font></td>
-	</tr>
-	<tr>
-		<td><font color='#FF0000' style='font-size:18px'><?=$goup;?></font></td>
-	</tr>
+  <tr>
+    <td>ผู้ป่วยนอก</td>
+   <td rowspan="5" valign="top">
+   <?=$image;?>
+ 
+ </td>
+  </tr>
+  <tr>
+     <td>HN :<?=$cHn;?></td>
+    </tr>
+  <tr>
+    <td>VN :<?=$tvn;?></td>
+    </tr>
+  <tr>
+   <td><?=$cPtname;?></td>
+    </tr>
+  <tr>
+    <td><font color='#FF0000' style='font-size:18px'>อายุ: <?=$age;?></font></td>
+    </tr>
+    <tr>
+    <td><font color='#FF0000' style='font-size:18px'><?=$idguard;?></font></td>
+    </tr>
+      <tr>
+    <td><font color='#FF0000' style='font-size:18px'><?=$goup;?></font></td>
+    </tr>
+      <tr>
+    <td><font color='#0000FF' style='font-size:18px'><?=$atoborow;?></font></td>
+    </tr> 
+      <tr>
+    <td><font color='#0000FF' style='font-size:18px'><?=$aptright;?></font></td>
+    </tr>        
+ <!--     <tr>
+    <td><hr /><font color='#0000FF' style='font-size:16px'>*** กรณี ตรวจสุขภาพทหารประจำปี ให้เลือก***<br />โรค : ตรวจสุขภาพ<br />สิทธิ : R22 ตรวจสุขภาพประจำปีกองทัพบก</font><hr /></td>
+    </tr>    -->
 </table>
 
  <? 
+if(substr($atoborow,0,4)=="EX26"){  
+   $sqlpt = "select * from ptright where code = 'R22' order by code asc";
+}else{
    $sqlpt = "select * from ptright where status = 'a' order by code asc";
+}   
    $rowpt = mysql_query($sqlpt);
    
-   $sqlpt1 = "select * from ptright where chk_up = 'y' order by code asc";
+   
+   $sqlpt1 = "select * from ptright where chk_up = 'y' order by code asc"; 
    $rowpt1 = mysql_query($sqlpt1);
 
 
@@ -105,7 +124,7 @@ if(file_exists("../image_patient/$img")){
 <script>
 function check()
 {
-	if(document.getElementById("doctor").selectedIndex=='0'){
+	if(document.getElementById("doctor").value == ' กรุณาเลือกแพทย์'){
 		alert("กรุณาเลือกแพทย์");
 		return false;
 	}
@@ -127,6 +146,7 @@ function sit2(){
 }
 </script>
    <form method="POST" action="prelab.php" onsubmit="return check();">
+   <input type="hidden" name="chktoborow" value="<?=$atoborow;?>" />
     <p><font face="Angsana New">
 &nbsp;&nbsp;&#3650;&#3619;&#3588;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;
@@ -134,9 +154,48 @@ function sit2(){
 document.getElementById('aLink').focus();
 </script>
     <option value="ตรวจวิเคราะห์เพื่อการรักษา" selected>ตรวจวิเคราะห์เพื่อการรักษา</option>
+    <? if($_SESSION["smenucode"]=="ADMXR"){ ?>
+    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX26"){ echo "selected";}?>>ตรวจสุขภาพ</option>
+    <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
+    <? } ?>
+    
   </select>&nbsp;</font></p>
 <font face="Angsana New">สิทธิ&nbsp;
+<? if($_SESSION["smenucode"]=="ADMXR"){ ?>
+<select name="pt" id="pt" style="display:">
+  <?
+   while($resultpt = mysql_fetch_array($rowpt)){
+	$re = $resultpt[0]." ".$resultpt[1];
+
+		if($cPtright==$re){  //ถ้าสิทธิผู้ป่วยตรงกับสิทธิปัจจุบัน
+			 $c=0;
+			 ?>
+  <option value="<?=$cPtright?>" selected="selected">
+  <?=$cPtright?>
+  </option>
+  <?
+		}else{
+			$b=0;
+  ?>
+  
+  <option value="<?=$re?>" <? if(substr($atoborow,0,4)=="EX26"){ echo "selected";}?>>
+  <?=$re?>  <!--R22-->
+  </option>
+  
+  <?
+		}
+	}
+	if(!isset($c)){
+		?>
+  <option value="<?=$cPtright?>" <? if(substr($atoborow,0,4)!="EX26"){ echo "selected";}?>>
+  <?=$cPtright?>  <!--ตามสิทธิผู้ป่วย-->
+  </option>
+  <?
+	}
+   ?>
+</select>
+<? }else{ ?>
 <select name="pt" id="pt" style="display:">
   <?
    while($resultpt = mysql_fetch_array($rowpt)){
@@ -168,7 +227,9 @@ document.getElementById('aLink').focus();
 	}
    ?>
 </select>
+<? } ?>
 
+<!--โชว์ข้อมูล กรณีที่เลือกเป็น ตรวจสุขภาพ-->
 <select name="pt2" id="pt2" style="display:none">
   <?
    while($resultpt = mysql_fetch_array($rowpt1)){
@@ -218,11 +279,7 @@ document.getElementById('aLink').focus();
   $sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
 list($menucode) = Mysql_fetch_row(Mysql_Query($sql));
 
-  if($menucode == "ADMNID"){
-  ?>
-  
-  <? 
-
+if($menucode == "ADMNID"){
 $strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMNID'  order by name "; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 ?>
@@ -246,7 +303,7 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 
 
   
-	  <?php }else  if($menucode == "ADMDEN"){
+<?php }else  if($menucode == "ADMDEN"){
 
 $strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMDEN'  order by name "; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
@@ -268,57 +325,66 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 ?>
 </select>
 
-<?php }else  if($menucode == "ADMXR"){
-if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){
-$name="MD013 ธนบดินทร์ ผลศรีนาค";
-}else{
-$name="MD022 (ไม่ทราบแพทย์)";
-}
-$strSQL = "SELECT name FROM doctor  where status='y' order by name "; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-?>
-<select name="doctor" id="doctor"> 
-<?
-  	while($objResult = mysql_fetch_array($objQuery)) {
-		if($name==$objResult["name"]){
-			 ?>
-<option value="<?=$objResult["name"]?>" selected="selected"><?=$objResult["name"]?></option>
-			 <?
-		}else{
-			?>
-			<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>    
-			<?
-		}
+<?php 
+}else  if($menucode == "ADMXR"){
+
+	if($_SESSION["sOfficer"] == "ศุภรัตน์ มิ่งเชื้อ1"){
+		$name = "MD013 ธนบดินทร์ ผลศรีนาค";
+	}else{
+		$name = "MD022 (ไม่ทราบแพทย์)";
 	}
-?>
-</select>
+	
+	$strSQL = "SELECT name FROM doctor  where status='y' order by name "; 
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	?>
+	<select name="doctor" id="doctor"> 
+		<option value="MD022 (ไม่ทราบแพทย์)">MD022 (ไม่ทราบแพทย์)</option>
+		<?php
+		while($objResult = mysql_fetch_array($objQuery)) {
+			if($name == $objResult["name"]){
+				?>
+				<option value="<?=$objResult["name"]?>" selected="selected"><?=$objResult["name"]?></option>
+				<?php
+			}else{
+				?>
+				<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>
+				<?php
+			}
+		}
+		?>
+	</select>
 
+<?php 
 
+}else{  //เงื่อนไขอื่นๆ
 
-  
-	  <?php }else{?>
-	  <? 
-	 $strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-?>
-<select name="doctor" id="doctor"> 
-<?
-  	while($objResult = mysql_fetch_array($objQuery)) {
-		if($app1['doctor']==$objResult["name"]){
-			 ?>
-<option value="<?=$objResult["name"]?>" selected="selected"><?=$objResult["name"]?></option>
-			 <?
+	$strSQL = "SELECT name FROM doctor where status='y' order by name"; 
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	if( $app1 === false ){
+		$app1['doctor'] = 'MD022 (ไม่ทราบแพทย์)';
+	}
+
+	?>
+	<select name="doctor" id="doctor"> 
+		<option value="MD022 (ไม่ทราบแพทย์)">MD022 (ไม่ทราบแพทย์)</option>
+	<?php
+	while($objResult = mysql_fetch_array($objQuery)) {
+		if( $app1['doctor'] == $objResult["name"] ){
+			?>
+			<option value="<?=$objResult["name"]?>" selected="selected"><?=$objResult["name"]?></option>
+			<?php
 		}
 		else{
 			?>
 			<option value="<?=$objResult["name"];?>" <? if($objResult["name"]=="MD022 (ไม่ทราบแพทย์)"&&$_SESSION["until_login"] == "LAB") echo "selected='selected'";?>><?=$objResult["name"];?></option>    
-			<?
+			<?php
 		}
 	}
+	?>
+	</select>
+	<?php 
+}
 ?>
-</select>
-
-	  <?php }?>
  
  </font> </p>
 <?php if($cDepart == "PATHO"){?>

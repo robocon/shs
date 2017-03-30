@@ -11,7 +11,7 @@
     session_unregister("cNote");  
 //    session_destroy();
 ?>
-<form method="post" action="<?php echo $PHP_SELF ?>">
+<form method="post" action="opdhnedit.php">
   <p>แก้ไขข้อมูลผู้ป่วยจาก&nbsp; HN</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="text" name="hn" size="12"></p>
@@ -28,6 +28,7 @@
  </tr>
 
 <?php
+$hn = $_POST['hn'];
 If (!empty($hn)){
     include("connect.inc");
     global $hn;

@@ -89,7 +89,7 @@ if( $rows == 0 && $date_start_th !== false && $date_end_th !== false ){
     $date_end = ( $ey - 543 )."-$em-$ed";
     
     $sql = "UPDATE `medicalcertificate` 
-    SET `date_start` = '$date_start', `date_end` = '$date_end' 
+    SET `date_start` >= '$date_start', `date_end` <= '$date_end' 
     WHERE `number` = '$nRunno' ";
     mysql_query($sql);
     $showStart = 1;

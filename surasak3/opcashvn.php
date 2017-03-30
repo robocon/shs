@@ -6,7 +6,7 @@
 		$today = $_GET['a']."-".$_GET['b']."-".$_GET['c'];
 	}
    print "<font face='Angsana New'><b>วันที่ $today: เก็บเงินผู้ป่วยที่ยังไม่ได้  'จ่ายเงิน' , *กรณีเบิกตรงให้เก็บเงินส่วนที่ 'เบิกไม่ได้' &nbsp;<U>ถ้าเป็นสีแดงแสดงว่าสิทธิการรักษามีปัญหา</U></b><br>";
-    print "<br>รายการตรวจวิเคราะห์โรคหรือทำหัตถการ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp<a target=_self  href='../nindex.htm'>ไปเมนู</a>";
+    print "<br><strong>รายการตรวจวิเคราะห์โรคหรือทำหัตถการ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp<a target=_self  href='../nindex.htm'>ไปเมนู</a>";
 // print "VN= $vn";
  //  print "&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
    
@@ -574,6 +574,28 @@ $totaltopay1=$totalpaid1+$totalpaid2;
 		echo "<script>alert('ผู้ป่วยมีรายการค้างจ่ายยาวันนี้  กรุณาติดต่อห้องยา') </script>";
 	}
 
+$strsql2="select  * from  opday  where thidate like '$dateid%' and  hn='".$hnid."' and toborow='EX07 ทันตกรรม'";
+//echo $strsql2;
+$strresult2= mysql_query($strsql2);
+$strrow2=mysql_num_rows($strresult2);
+$strrows=mysql_fetch_array($strresult2);	
+//echo "==>".$strrows["ptright"];	
+if($strrows["ptright"]=="R07 ประกันสังคม"){	
+$chkdate=substr($dateid,0,4);
+$chksql="SELECT sum( denta ) AS pricedental, sum( other ) AS priceother
+FROM `opday`
+WHERE toborow = 'EX07 ทันตกรรม' AND hn='".$hnid."' and (thidate like '$chkdate%' AND thidate not like '$date%')  AND `denta` >0 AND `other` >0";	
+//echo $chksql;
+$chkquery= mysql_query($chksql);
+$chknum=mysql_num_rows($chkquery);
+$chkrows=mysql_fetch_array($chkquery);
+$sumprice=$chkrows["pricedental"]+$chkrows["priceother"];
+	if($sumprice > 900){
+		echo "<script>alert('แจ้งเตือน : ผู้ป่วยมียอดรวมค่าทำหัตถการทันตกรรม ปี$chkdate เกิน 900 บาท/ปี ตามสิทธิประโยชน์ของประกันสังคมแล้ว') </script>";
+	}else{
+		echo "<script>alert('แจ้งเตือน : ผู้ป่วยมียอดรวมค่าทำหัตถการทันตกรรม ปี$chkdate รวม $sumprice บาท (จำนวนเงินนี้ไม่รวมกับวันที่ $date)') </script>";
+	}	
+}
 ?>
 <?
     include("unconnect.inc");

@@ -116,6 +116,19 @@
 				continue;
 		}
 		$nPrefix=$row->prefix;	
+		
+		$yquery = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+		$yresult = mysql_query($yquery) or die("Query failed");
+		
+		for ($j = mysql_num_rows($yresult) - 1; $j >= 0; $j--) {
+			if (!mysql_data_seek($yresult, $j)) {
+				echo "Cannot seek to row $j\n";
+				continue;
+			}
+				if(!($yrow = mysql_fetch_object($yresult)))
+				continue;
+		}
+		$yPrefix=$yrow->prefix;			
 ?>
 <table>
  <tr>
@@ -162,6 +175,7 @@ $sVn=$_POST['vnnow'];
 					continue;
 			}
 			if($nrow>0){
+				$sRowid=$row->row_id;
 				$sHn=$row->hn;
 				$sAn=$row->an;
 				//$sPtname=$row->ptname;
@@ -196,7 +210,7 @@ $sVn=$_POST['vnnow'];
 			
 					if(!($row = mysql_fetch_object($result)))
 						continue;
-					
+						$sRowid=$row->row_id;
 						$sHn=$row->hn;
 						$sAn=$row->an;
 						$sPtright=$row->ptright;
@@ -234,7 +248,16 @@ $sVn=$_POST['vnnow'];
 		print "$sPtname, HN: $sHn<br> ";
 		print "โรค: ";
 		if(count($_SESSION['tDiag'])==1){
-			echo $_SESSION['tDiag'][0];
+			$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$nhn' and tvn = '$sVn' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+			//echo $chksql;
+			$chkquery=mysql_query($chksql);
+			$chknum=mysql_num_rows($chkquery);
+		
+			if($chknum > 0){
+				echo "เชื้อราในสมอง";
+			}else{
+				echo $_SESSION['tDiag'][0];
+			}
 		}
 		elseif(count($_SESSION['tDiag'])>1){
 			/*if(in_array("ตรวจวิเคราะห์เพื่อการรักษา",$_SESSION['tDiag'])){
@@ -245,11 +268,20 @@ $sVn=$_POST['vnnow'];
 					if($p!=0){ $str .=",";}
 					$str.=$_SESSION['tDiag'][$p];
 				}
-				echo $str;
+				
+					$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$nhn' and tvn = '$sVn' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+					$chkquery=mysql_query($chksql);
+					$chknum=mysql_num_rows($chkquery);
+				
+					if($chknum > 0){
+						echo "เชื้อราในสมอง";
+					}else{
+						echo $str;
+					}				
 			//}
 		}
 		print ", แพทย์ :$sDoctor<br>";
-	
+		
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
 				$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice FROM patdata as a,depart as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id ";
 				//echo $query;
@@ -412,7 +444,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
@@ -565,7 +597,7 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กท44' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>กท.44</TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ค้างจ่าย' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>ค้างจ่าย</TD>
+		 	<TD>ค้างจ่าย จำนวนเงิน : <INPUT TYPE='text' NAME='money_trust' size='5'> บาท</TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง อปท.' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>จ่ายตรง อปท.</TD>			
 		</TR>
@@ -593,6 +625,20 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>												 
 		 </TR>
+		 
+		 <TR>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ฮักกันยามเฒ่า$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ฮักกันยามเฒ่า$yPrefix</TD>			
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เซ็นทรัล' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>บริษัทเซ็นทรัล</TD>			
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการต้อหิน' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>โครงการต้อหิน</TD>			
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHKUP$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ตรวจสุขภาพลูกจ้าง$yPrefix</TD>
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>																 
+		 </TR>
+		 		 
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";
 		 print "<span id='detailhead4' style='display:none'><span id='detail4'></span><INPUT TYPE='text' NAME='detail_3'><BR></span>";
@@ -670,7 +716,7 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='สวัสดิการทันตกรรม' onclick=\"document.getElementById('detail3').innerHTML='ประเภทการตรวจ'; detailhead3.style.display='';detailhead4.style.display='none';\"></TD>
 		 	<TD>สวัสดิการทันตกรรม</TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ค้างจ่าย' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>ค้างจ่าย</TD>
+		 	<TD>ค้างจ่าย จำนวนเงิน : <INPUT TYPE='text' NAME='money_trust' size='5'> บาท</TD>
 		 </TR>
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";

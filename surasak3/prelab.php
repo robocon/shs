@@ -1,8 +1,12 @@
 <?php
-   session_start();
+	session_start();
 
-   // ยัดมันไว้ใน session แม่ง
-   $_SESSION['dr_nid'] = ( isset($_POST['dr_nid']) ) ? $_POST['dr_nid'] : null ;
+    // เก็บสถิติแพทย์แผนจีน
+	$_SESSION['dr_nid'] = ( isset($_POST['dr_nid']) ) ? $_POST['dr_nid'] : null ;
+
+	// เวลาที่ทำการตรวจ
+	$_SESSION['treat_start'] = ( isset($_POST['treat_start']) ) ? $_POST['treat_start'] : false ;
+	$_SESSION['treat_end'] = ( isset($_POST['treat_end']) ) ? $_POST['treat_end'] : false ;
 
     $x=0;
     $aDgcode = array("รหัส");
@@ -34,9 +38,14 @@
 	session_register("appyr");
 	//// เปลี่ยนแปลงสิทธิ์
 	$cPtright = $_POST['pt'];
-	if($_POST["diag"]=='ตรวจสุขภาพ') $cPtright = $_POST['pt2'];
+	if($_POST["chktoborow"]=='EX26 ตรวจสุขภาพประจำปี'){
+		if($_POST["diag"]=='ตรวจสุขภาพ') $cPtright =  $_POST['pt'];
+	}else{
+		if($_POST["diag"]=='ตรวจสุขภาพ') $cPtright = $_POST['pt2'];
+	}
 	//session_register("cPtright");
 	///
+	//echo "----->".$cPtright;  //เงินสด
     $cPart="";
     $cDiag=$_POST["diag"];
     $cDoctor=$doctor;

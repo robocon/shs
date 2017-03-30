@@ -21,7 +21,7 @@
 if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
 	
-	$sql = "Select  code,detail,price,depart from labcare  where  code like '%".$_GET["search1"]."%' or detail 	 like '%".$_GET["search1"]."%' or codex 	 like '%".$_GET["search1"]."%' or icd9cm 	 like '%".$_GET["search1"]."%' limit 10 ";
+	$sql = "Select  code,detail,price,depart from labcare  where  code !='12723-sso' and code like '%".$_GET["search1"]."%' or detail 	 like '%".$_GET["search1"]."%' or codex 	 like '%".$_GET["search1"]."%' or icd9cm 	 like '%".$_GET["search1"]."%' limit 10 ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
@@ -123,6 +123,38 @@ if($_SESSION["until_login"] == "xray" && (!empty($_POST["xraydetail"]) && count(
 	list($labex,$other) = mysql_fetch_array($result);
 	
  echo "<font face='Angsana New' size='4'>HN : $cHn,<b>&nbsp;VN:$tvn&nbsp; $cPtname</b><br> สิทธิ: $cPtright  <br> ";
+ 
+ 
+ 
+if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMDEN" || $_SESSION["sOfficer"] == "หนึ่งฤทัย มหายศนันท์ (ท.3448)" || $_SESSION["sOfficer"] == "เกื้อกูล อาชามาส (ท.5947)"){ 
+
+	$dateid=(date("Y")+543)."-".date("m-d");	 
+	$strsql2="select  * from  opday  where thidate like '$dateid%' and  hn='".$cHn."' and toborow='EX07 ทันตกรรม'";
+	//echo $strsql2;
+	$strresult2= mysql_query($strsql2);
+	$strrow2=mysql_num_rows($strresult2);
+	$strrows=mysql_fetch_array($strresult2);	
+	//echo "==>".$strrows["ptright"];	
+	if($strrows["ptright"]=="R07 ประกันสังคม"){	
+	$chkdate=substr($dateid,0,4);
+	$chksql="SELECT sum( denta ) AS pricedental, sum( other ) AS priceother
+	FROM `opday`
+	WHERE toborow = 'EX07 ทันตกรรม' AND hn='".$cHn."' and (thidate like '$chkdate%')  AND `denta` >0 AND `other` >0";	
+	//echo $chksql;
+	$chkquery= mysql_query($chksql);
+	$chknum=mysql_num_rows($chkquery);
+	$chkrows=mysql_fetch_array($chkquery);
+	$sumprice=$chkrows["pricedental"]+$chkrows["priceother"];
+	$total=900-$sumprice;
+		if($sumprice > 900){
+			echo "<script>alert('แจ้งเตือน : ผู้ป่วย HN : $cHn มียอดรวมค่าทำหัตถการทันตกรรม ปี$chkdate เกิน 900 บาท/ปี ตามสิทธิประโยชน์ของประกันสังคมแล้ว ผู้ป่วยจะต้องชำระเงินส่วนเกินเอง') </script>";
+		}else{
+			echo "<script>alert('แจ้งเตือน : ผู้ป่วย HN : $cHn มียอดรวมค่าทำหัตถการทันตกรรม ปี$chkdate รวม $sumprice บาท สามารถใช้สิทธิได้อีก $total บาท (จำนวนเงินนี้่รวมกับวันที่ $dateid แล้ว)') </script>";
+		}	
+	}
+}
+
+ 
  echo $_SESSION["nPrintXray"];
 // echo "<br>คำสั่งพิเศษ $labex";
 if($cDepart  == "PATHO"){
@@ -136,7 +168,6 @@ if($cDepart  == "PATHO"){
 	}
 }
 ?>
-
 
 <script>
 function newXmlHttp(){
@@ -159,7 +190,7 @@ function newXmlHttp(){
 }
 function searchSuggest(str,len,getto) {
 	
-		// str = str+String.fromCharCode(event.keyCode);
+		str = str+String.fromCharCode(event.keyCode);
 
 		if(str.length >= len){
 
@@ -200,6 +231,11 @@ document.getElementById('aLink').focus();
   <input type="submit" value="ตกลง" name="B1" style="height:40px; width:110px; font-size:16px;"></font></p>
 </form><? //echo "==>$cDiag---->$aDetail";?>
 *พื้น<FONT COLOR="#FF6464">สีแดง</FONT>หมายถึงเคยคิดค่าใช้จ่ายแล้ว
+<? //echo "==>".print_r($_POST);
+//echo "==>".$_POST["code"];
+//echo "==>".$_POST["amount"];
+//echo "==>".$_SESSION["cPtright"];
+?>
 <table>
  <tr>
   <th bgcolor=6495ED>รหัส</th>
@@ -211,9 +247,14 @@ document.getElementById('aLink').focus();
 <?php
 
  If (!empty($_POST["code"])){
-   
-    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '".$_POST["code"]."%')  ";
 
+	if($_POST["code"]=="12723" && $_POST["amount"]=="2500" && $_SESSION["cPtright"]=="R07 ประกันสังคม"){
+    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '12723-sso')  ";	
+	}else if($_POST["code"]=="12723"){
+    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."')  ";	
+	}else{   
+    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '".$_POST["code"]."%')  ";
+	}
     $result = mysql_query($query)
         or die("Query failed");
 

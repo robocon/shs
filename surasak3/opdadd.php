@@ -137,39 +137,8 @@ dbirth,guardian,idguard,nation,religion,career,ptright,ptrightdetail,address,tam
 '$yot','$name','$surname','$education','$goup','$married','$dbirth','$guardian','$idguard',
 '$nation','$religion','$career','$ptright','$ptrightdetail','$address','$tambol','$ampur','$changwat',
 '$hphone','$phone','$father','$mother','$couple','$note','$sex','$camp','$race','$ptf','$ptfadd','$ptffone','$ptfmon','$ptright','".$_SESSION["sOfficer"]."','$blood', '$drugreact','$phone2','$hospcode','$ptrcode','$typeservice');";
-//echo $sql;
-/*
-  regisdate
-  idcard 
-  hn 
-  yot
-  name
-  surname 
-  goup 
-  married 
-  cbirth (วันเกิดข้อความเก็บไว้ดู)
-  dbirth 
-  guardian
-  idguard
-  nation 
-  religion 
-  career 
-  ptright 
-  address 
-  tambol 
-  ampur 
-  changwat 
-  phone 
-  father 
-  mother 
-  couple 
-  note
-  sex 
-  camp 
-  race
-*/
 
-$result = mysql_query($sql) or die("หมายเลข HN $vHN ซ้ำ    ไม่สามารถบันทึกได้    โปรดทำบัตรใหม่ !");
+$result = mysql_query($sql) or die( mysql_error() . "หมายเลข HN $vHN ซ้ำ    ไม่สามารถบันทึกได้    โปรดทำบัตรใหม่ !");
 
 
 $query ="UPDATE runno SET runno = $nRunno WHERE title='HN'"; 

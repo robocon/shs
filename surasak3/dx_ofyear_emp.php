@@ -91,6 +91,22 @@ $list_lab["CREA"] = "cr";
 $list_lab["URIC"] = "uric";
 $list_lab['LDL'] = 'ldl';
 
+
+////*runno ตรวจสุขภาพ*/////////
+$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+	$result = mysql_query($query) or die("Query failed");
+	
+	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+		if (!mysql_data_seek($result, $i)) {
+			echo "Cannot seek to row $i\n";
+			continue;
+		}
+			if(!($row = mysql_fetch_object($result)))
+			continue;
+	}
+	
+	$nPrefix=$row->prefix;
+////*runno ตรวจสุขภาพ*/////////
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -117,7 +133,9 @@ $list_lab['LDL'] = 'ldl';
 <body>
 <a href ="../nindex.htm" >&lt;&lt; เมนู</a>
 <center>
-  <div class="font_title">โปรแกรมตรวจสุขภาพลูกจ้าง</div></center>
+  <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพลูกจ้าง</div>
+  <div align="center" class="font_title">ประจำปี <?="25".$nPrefix;?> ห้วงวันที่ 13-15 มีนาคม 2560</div>
+</center>
 
 <form action="dx_ofyear_emp.php" method="post">
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
@@ -148,32 +166,34 @@ if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 	
 	$q = "SELECT *, CONCAT(`yot`,' ',`name`,' ',`surname`) as `ptname` 
 	FROM `opcard` 
-	WHERE `hn` = '%s' 
-	AND `employee` = 'y' LIMIT 0,1";
+	WHERE `hn` = '%s'  LIMIT 0,1";  //ถ้าเป็น y คือลูกจ้าง รพ.ค่ายฯ
 	$sql = sprintf($q, trim($_POST['p_hn']));
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
 
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
 	$arr_view = mysql_fetch_assoc($result);
 	
-	if($arr_view === false){
-		echo 'ไม่ได้เป็นบุคลากรโรงพยาบาล';
+/*	if($arr_view === false){
+		echo 'ไม่ได้เป็นลูกจ้างโรงพยาบาล กรุณาติดต่อห้องทะเบียน';
 		exit;
-	}
+	}*/
 	
 	// ค้นหา vn ล่าสุด
-	$sql = " SELECT vn
-FROM `opd`
-WHERE `hn` LIKE '".trim($_POST['p_hn'])."'
+	$chkdate =(date("Y")+543)."-".date("m")."-".date("d");
+	$sql = " SELECT vn  
+FROM `opday`
+WHERE `hn` LIKE '".trim($_POST['p_hn'])."' and toborow like 'EX16%' and thidate like '$chkdate%' 
 ORDER BY `row_id` DESC
 LIMIT 1 ";
+
+//echo $sql;
 	
 	// $sql = "SELECT vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
 	list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
-
+	//echo $arr_view["vn"];
+	if(empty($arr_view["vn"])){
+		echo "<script>alert('ยังไม่ได้ลงทะเบียน EX16 ตรวจสุขภาพ กรุณาติดต่อห้องทะเบียนก่อน');window.location='dx_ofyear_emp.php';</script>";	
+	}
+	
 	$date_hn = date("Y-m-d").$arr_view["hn"];
 	$date_vn = date("Y-m-d").$arr_view["vn"];
 
@@ -197,21 +217,7 @@ if($cou=="0"){
 	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
 	$arr_view["age"] = calcage($arr_view["dbirth"]);
 
-////*runno ตรวจสุขภาพ*/////////
-$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
-	$result = mysql_query($query) or die("Query failed");
-	
-	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-		if (!mysql_data_seek($result, $i)) {
-			echo "Cannot seek to row $i\n";
-			continue;
-		}
-			if(!($row = mysql_fetch_object($result)))
-			continue;
-	}
-	
-	$nPrefix=$row->prefix;
-////*runno ตรวจสุขภาพ*/////////
+
 
 //ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 
@@ -222,7 +228,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	Order by a.autonumber DESC limit 0,1";
 	// var_dump($sql);
 	// exit;
-	list($lab_date) = mysql_fetch_row(mysql_query($sql));
+	list($lab_date) = mysql_fetch_row(mysql_query($sql));  //วันที่ตรวจ lab
 
 	// ค้นหาผลตรวจทางพยาธิ
 	$sql = "SELECT labcode, result, unit,normalrange,flag 
@@ -231,9 +237,10 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	AND a.autonumber = b.autonumber 
 	AND b.parentcode = 'UA' 
 	AND (a.clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' ) 
-	Order by b.labcode ASC ";
+	Order by labcode ASC";
 	$result_ua = mysql_query($sql);
-
+	//echo $sql;
+	
 	$sql = "SELECT labcode, result, unit,normalrange,flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix') Order by labcode ASC";
 	$result_cbc = mysql_query($sql);
 
@@ -249,7 +256,6 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$sql = "SELECT * From  `dxofyear_emp` where  hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
-	
 	if($count > 0){
 		$arr_dxofyear = mysql_fetch_assoc($result);
 		
@@ -273,7 +279,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 		$type=$arr_dxofyear["type"];
 		$doctor=$arr_dxofyear["doctor"];
 		
-		$arr_view["vn"]=$arr_dxofyear["vn"];
+		//$arr_view["vn"]=$arr_dxofyear["vn"];
 		
 		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
 		
@@ -300,7 +306,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	if($arr_dxofyear["rate"] == ""){
 		$arr_dxofyear["rate"] = 20;
 	}
-	
+
 $choose = array();
 
 array_push($choose,"ตรวจตามนัด");
@@ -358,10 +364,12 @@ $choose2 = array();
 while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
+
+
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<form method="post" ACTION="dx_ofyear_emp_save.php" <?php //if($arr_view["vn"] ==""){echo "Onsubmit=\"alert('ผู้ป่วยยังไม่ได้ทำการลงทะเบียน');return false;\"";}?>>
+<form method="post" ACTION="dx_ofyear_emp_save.php" target="_blank">
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
@@ -398,7 +406,7 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td width="79"><input name="height" type="text" size="1" maxlength="3" value="<?php echo $height; ?>" />
 ซม.</td>
 			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
-			<td width="129"><input name="weight" type="text" size="1" maxlength="3" value="<?php echo $weight; ?>" />
+			<td width="129"><input name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
 กก. </td>
 			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
 			<td width="132"><input name="round_" type="text" size="1" maxlength="3" value="<?php echo $waist; ?>" />
@@ -739,7 +747,7 @@ mmHg</td>
 </TABLE>
 <center>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
-<input name="submit2" type="submit" value="ตกลง" />
+<input name="submit2" type="submit" value="บันทึกข้อมูล" />
 </center>
 <INPUT TYPE="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
 </form>
