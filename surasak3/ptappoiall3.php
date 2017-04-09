@@ -84,7 +84,7 @@ a{
 	// and detail = '$detail' ".$sort;
 	
 	$query = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`came`,a.`row_id`,a.`age`,
-	date_format(a.`date`,'%d-%m-%Y') AS `date`,a.`other`,a.`detail`,SUBSTRING(a.`detail`, 1, 4) AS `detail_code`
+	date_format(a.`date`,'%d-%m-%Y') AS `date`,a.`other`,a.`detail`,SUBSTRING(a.`detail`, 1, 4) AS `detail_code`,a.`detail2`
 	FROM `appoint` AS a 
 	INNER JOIN (
 		SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`
@@ -110,6 +110,7 @@ a{
 		$date = $item['date'];
 		$other = $item['other'];
 		$detail = 'ค้นพบ////ไม่พบ';
+		$detail2 = $item['detail2'];
 		$detail_code = $item['detail_code'];
 
 		list($key_year, $hn_key) = explode('-', $hn);
@@ -138,6 +139,7 @@ a{
 			'ptname' => $ptname,
 			'apptime' => $apptime,
 			'detail' => $detail,
+			'detail2' => $detail2,
 			'other' => $other,
 			'date' => $date,
 			'sort_hn' => $key,
@@ -168,6 +170,12 @@ a{
 
 		$other = ( empty($user['other']) ) ? '..............................' : $user['other'] ; 
 
+		// ถ้าไม่ใช่กลุ่มของห้องทะเบียนจะมองเห็น
+		$detail2 = '';
+		if( $_SESSION['smenucode'] != 'ADMOPD' ){
+			$detail2 = $user['detail2'];
+		}
+
 		?>
 		<tr bgcolor="<?=$bgcolor;?>">
 			<td><?=$order;?></td>
@@ -175,7 +183,7 @@ a{
 			<td><?=$user['ptname'];?></td>
 			<td><?=$user['apptime'];?></td>
 			<td><?=$user['detail'];?></td>
-			<td><?=$other.' '.$user['card_status'];?></td>
+			<td><?=$detail2.' '.$other.' '.$user['card_status'];?></td>
 			<td><?=$user['date'];?></td>
 		</tr>
 		<?php

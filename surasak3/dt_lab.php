@@ -915,7 +915,7 @@ $i++;
 	for($i=1;$i<=$count;$i++){
 		
 		echo "<TD align='right' >";
-			echo "<INPUT TYPE=\"checkbox\" NAME=\"\" id=\"".jschars($list_lab_check[$i-1]["code"])."\" onclick=\"addbycheck(this.checked, '".jschars($list_lab_check[$i-1]["code"])."');\">";
+			echo "<INPUT TYPE=\"checkbox\" NAME=\"\" TYPE=\"checkbox\"  id=\"".jschars($list_lab_check[$i-1]["code"])."\" onclick=\"addbycheck(this.checked, '".jschars($list_lab_check[$i-1]["code"])."');\">";
 		echo "</TD>";
 		echo "<TD>".jschars($list_lab_check[$i-1]["detail"])."</TD>";
 		if($i%$r==0)

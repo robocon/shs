@@ -82,7 +82,7 @@ list($cbc,$flag)=mysql_fetch_array($querycbc);
 if($flag=="N"){
 	echo "$cbc";
 }else{
-	echo "<strong>$cbc</strong>";
+	echo "<strong style='color:#FF0000'>$cbc</strong>";
 }
 ?> </td>
     <td><?
@@ -111,14 +111,14 @@ list($prou,$flag2)=mysql_fetch_array($queryua1);
 if($flag1=="N" && $flag2=="N"){
 	echo "Negative";
 }else if($flag1!="N"){
-	echo "<strong>$bloodu</strong>";
+	echo "<strong style='color:#FF0000'>$bloodu</strong>";
 }else if($flag2!="N"){
-	echo "<strong>$prou</strong>";
+	echo "<strong style='color:#FF0000'>$prou</strong>";
 }
 ?></td>
     <td align="center">
 <?
-$sql1="SELECT b.result
+$sql1="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'GLU' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -127,11 +127,15 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql1;
 $query1=mysql_query($sql1);
-list($glu)=mysql_fetch_array($query1);
-echo $glu;
+list($glu,$flag)=mysql_fetch_array($query1);
+if($flag=="N"){
+	echo $glu;
+}else{
+	echo "<strong style='color:#FF0000'>$glu</strong>";
+}
 ?>    </td>
     <td align="center"><?
-$sql2="SELECT b.result
+$sql2="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'CHOL' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -140,11 +144,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql2;
 $query2=mysql_query($sql2);
-list($chol)=mysql_fetch_array($query2);
-echo $chol;
+list($chol,$flag)=mysql_fetch_array($query2);
+
+if($flag=="N"){
+	echo $chol;
+}else{
+	echo "<strong style='color:#FF0000'>$chol</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql3="SELECT b.result
+$sql3="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'TRIG' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -153,11 +162,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql3;
 $query3=mysql_query($sql3);
-list($tg)=mysql_fetch_array($query3);
-echo $tg;
+list($tg,$flag)=mysql_fetch_array($query3);
+
+if($flag=="N"){
+	echo $tg;
+}else{
+	echo "<strong style='color:#FF0000'>$tg</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql4="SELECT b.result
+$sql4="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'HDL' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -166,11 +180,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql4;
 $query4=mysql_query($sql4);
-list($hdl)=mysql_fetch_array($query4);
-echo $hdl;
+list($hdl,$flag)=mysql_fetch_array($query4);
+
+if($flag=="N"){
+	echo $hdl;
+}else{
+	echo "<strong style='color:#FF0000'>$hdl</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql5="SELECT b.result
+$sql5="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE (b.labcode = 'LDL' || b.labcode = 'LDL-C' || b.labcode = '10001')  AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -179,11 +198,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql5;
 $query5=mysql_query($sql5);
-list($ldl)=mysql_fetch_array($query5);
-echo $ldl;
+list($ldl,$flag)=mysql_fetch_array($query5);
+
+if($flag=="N"){
+	echo $ldl;
+}else{
+	echo "<strong style='color:#FF0000'>$ldl</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql6="SELECT b.result
+$sql6="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'BUN' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -192,11 +216,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql6;
 $query6=mysql_query($sql6);
-list($bun)=mysql_fetch_array($query6);
-echo $bun;
+list($bun,$flag)=mysql_fetch_array($query6);
+
+if($flag=="N"){
+	echo $bun;
+}else{
+	echo "<strong style='color:#FF0000'>$bun</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql7="SELECT b.result
+$sql7="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -205,11 +234,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql7;
 $query7=mysql_query($sql7);
-list($crea)=mysql_fetch_array($query7);
-echo $crea;
+list($crea,$flag)=mysql_fetch_array($query7);
+
+if($flag=="N"){
+	echo $crea;
+}else{
+	echo "<strong style='color:#FF0000'>$crea</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql8="SELECT b.result
+$sql8="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -218,11 +252,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql8;
 $query8=mysql_query($sql8);
-list($uric)=mysql_fetch_array($query8);
-echo $uric;
+list($uric,$flag)=mysql_fetch_array($query8);
+
+if($flag=="N"){
+	echo $uric;
+}else{
+	echo "<strong style='color:#FF0000'>$uric</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql9="SELECT b.result
+$sql9="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'AST' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -231,11 +270,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql9;
 $query9=mysql_query($sql9);
-list($ast)=mysql_fetch_array($query9);
-echo $ast;
+list($ast,$flag)=mysql_fetch_array($query9);
+
+if($flag=="N"){
+	echo $ast;
+}else{
+	echo "<strong style='color:#FF0000'>$ast</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql10="SELECT b.result
+$sql10="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ALT' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -244,11 +288,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql10;
 $query10=mysql_query($sql10);
-list($alt)=mysql_fetch_array($query10);
-echo $alt;
+list($alt,$flag)=mysql_fetch_array($query10);
+
+if($flag=="N"){
+	echo $alt;
+}else{
+	echo "<strong style='color:#FF0000'>$alt</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql11="SELECT b.result
+$sql11="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ALP' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -257,11 +306,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql11;
 $query11=mysql_query($sql11);
-list($alp)=mysql_fetch_array($query11);
-echo $alp;
+list($alp,$flag)=mysql_fetch_array($query11);
+
+if($flag=="N"){
+	echo $alp;
+}else{
+	echo "<strong style='color:#FF0000'>$alp</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql12="SELECT b.result
+$sql12="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'HBSAG' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -270,11 +324,16 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql12;
 $query12=mysql_query($sql12);
-list($hbsag)=mysql_fetch_array($query12);
-echo $hbsag;
+list($hbsag,$flag)=mysql_fetch_array($query12);
+
+if($flag=="N"){
+	echo $hbsag;
+}else{
+	echo "<strong style='color:#FF0000'>$hbsag</strong>";
+}
 ?></td>
     <td align="center"><?
-$sql13="SELECT b.result
+$sql13="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ANTIHB' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -283,11 +342,15 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql13;
 $query13=mysql_query($sql13);
-list($hbsab)=mysql_fetch_array($query13);
-echo $hbsab;
+list($hbsab,$flag)=mysql_fetch_array($query13);
+if($flag=="N"){
+	echo $hbsab;
+}else{
+	echo "<strong style='color:#FF0000'>$hbsab</strong>";
+}
 ?></td>
     <td align="center"><?
-/*$sql1="SELECT b.result
+/*$sql1="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE a.profilecode = 'GLU' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
@@ -296,7 +359,7 @@ a.clinicalinfo = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ60'
 GROUP BY a.`profilecode` ";
 //echo $sql1;
 $query1=mysql_query($sql1);
-list($glu)=mysql_fetch_array($query1);*/
+list($glu,$flag)=mysql_fetch_array($query1);*/
 echo "&nbsp;";
 ?></td>
   </tr>

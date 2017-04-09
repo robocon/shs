@@ -47,8 +47,22 @@ a:active {
     <td>2. พัฒนาชุมชน</td>
     <td align="center"><a href="out_result.php?part=พัฒนาชุมชน60" target="_blank">บันทึก</a></td>
   </tr>
+  
   <tr>
     <td>3. ลำปางกัลยาณี</td>
     <td align="center"><a href="out_result.php?part=ลำปางกัลยาณี60" target="_blank">บันทึก</a></td>
-  </tr>      
+  </tr>
+  
+  <tr>
+    <td>4. บริษัท ที ไอ ซี</td>
+    <td align="center"><a href="out_result.php?part=ทีไอซี60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>5. บริษัท บริหารสินทรัพย์ กรุงเทพพาณิชย์ จำกัด (มหาชน)</td>
+    <td align="center"><a href="out_result.php?part=บริหารสินทรัพย์60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>6. สำนักงานสถิติลำปาง</td>
+    <td align="center"><a href="out_result.php?part=สถิติลำปาง60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>

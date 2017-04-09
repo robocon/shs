@@ -71,6 +71,7 @@ if($sIdname == "md19921" || $sIdname == "thaywin"  ){
 	echo "menu2[3]='<a href=\"dt_drug_pt.php\" >สั่งอุปกรณ์ PT</a>'\n";
 };
 ?>
+menu2[4]='<a href="dt_slipadd.php" >เพิ่มวิธีใช้ยา</a>'
 
 var menu3=new Array();
 menu3[0]='<a href="<?php echo $lab_page;?>" >สั่งตรวจ LAB</a>'

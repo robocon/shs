@@ -5,6 +5,8 @@ date_default_timezone_set("Asia/Bangkok");
 
 include 'bootstrap.php';
 
+// phpinfo();
+
 class cu_sso{
     
     public $checkup_list = array();
@@ -18,7 +20,7 @@ class cu_sso{
         return array('CBC' => 'CBC', 
         'UA' => 'UA',
         'FBS' => 'BS',
-        'ไต' => 'CR',
+        'ไต' => 'BUN,CR',
         'ไขมัน' => 'LIPID',
         'ตับอักเสบ' => 'HBSAG',
         'Pap Smear' => 'PAP',
@@ -26,50 +28,63 @@ class cu_sso{
         'X-Ray' => '41001');
     }
 
-    public function check($labs, $age, $sex){
+    public function check($package, $age, $sex){
         
         $age = (int) $age;
         
         $this->checkup_list = array();
         $this->code = array();
+        // $code = array();
 
-        if( ( $age >= 18 && $age <= 70 ) && in_array('CBC', $labs) === true ){
+        if( $age >= 40 ){
+            $this->checkup_list[] = 'การตรวจตาโดยความดูแลของจักษุแพทย์'."<br>";
+            
+        }
+
+        if( $age >= 55 ){
+            $this->checkup_list[] = 'การตรวจสายตาด้วย snellen eye chart'."<br>";
+            
+        }
+
+        if( $age >= 18 && $age <= 70 ){
             $this->checkup_list[] = 'ความสมบูรณ์ของเม็ดเลือด CBC'."<br>";
             $this->code[] = 'CBC';
         }
 
-        if( $age >= 55 && in_array('UA', $labs) === true ){
+        if( $age >= 55 ){
             $this->checkup_list[] = 'ปัสสาวะ UA'."<br>";
             $this->code[] = 'UA';
         }
 
-        if( ( $age >= 35 && $age <= 55 ) && in_array('BS', $labs) === true ){
+        if( $age >= 35 && $age <= 55 ){
             $this->checkup_list[] = 'น้ำตาลในเลือด FBS'."<br>";
             $this->code[] = 'BS';
         }
 
-        if( $age >= 55 && in_array('CR', $labs) === true ){
+        if( $age >= 55 ){
             $this->checkup_list[] = 'การทำงานของไต Cr'."<br>";
-            $this->code[] = 'CR';
+            $this->code[] = 'BUN,CR';
         }
 
-        if( $age >= 20 && in_array('LIPID', $labs) === true ){
+        if( $age >= 20 ){
             $this->checkup_list[] = 'ไขมันในเส้นเลือดชนิด Total & HDL cholesterol'."<br>";
             $this->code[] = 'LIPID';
         }
 
-        if( $age >= 25 && in_array('HBSAG', $labs) === true ){
+        if( $age >= 25 ){
             $this->checkup_list[] = 'เชื้อไวรัสตับอักเสบ HBsAg'."<br>";
             $this->code[] = 'HBSAG';
         }
 
-        if( ( $age >= 30 && $sex > 1 ) && in_array('pap', $labs) === true ){
+        if( $age >= 30 && $sex > 1 ){
             $this->checkup_list[] = 'มะเร็งปากมดลูก Pap Smear'."<br>";
+            $this->checkup_list[] = 'มะเร็งปากมดลูก Via'."<br>";
+
             $this->code[] = 'PAP';
             
         }
 
-        if( $age >= 50 && in_array('STOCB', $labs) === true ){
+        if( $age >= 50 ){
             $this->checkup_list[] = 'เลือดในอุจจาระ FOBT'."<br>";
              $this->code[] = 'STOCB';
         }
@@ -78,7 +93,7 @@ class cu_sso{
             $this->checkup_list[] = 'Chest X-ray'."<br>";
             $this->code[] = '41001';
         }
-
+ 
     }
 
     public function get_checkup_list(){
@@ -91,17 +106,23 @@ class cu_sso{
 
 }
 
-
+/**
+ * todo
+ * ออกรายงาน
+ *
+ */
 $sso = new cu_sso();
+
 $db = Mysql::load();
 $sql = "SELECT a.*,b.`dbirth`
 , CONCAT(SUBSTRING(b.`dbirth`, 1, 4) - 543, SUBSTRING(b.`dbirth`, 5, 10))
-, b.`idcard` AS `idcard`
+, b.`idcard`
 FROM `opcardchk` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`part` = 'ลูกจ้าง60' 
 AND a.`active` = 'y';";
 $db->select($sql);
+
 $items = $db->get_items();
 
 ?>
@@ -111,7 +132,7 @@ $items = $db->get_items();
     font-size: 16pt;
 }
 </style>
-<h3>การตรวจสุขภาพประจำปี 2560 ของผู้ประกันตน รพ.ค่ายสุรศักดิ์มนตรี</h3>
+<h3>การตรวจสุขภาพประจำปีของผู้ประกันตน รพ.ค่ายสุรศักดิ์มนตรี</h3>
 <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" border-collapse="collapse">
     <?php
     $headers = $sso->get_lab_lists();
@@ -121,7 +142,7 @@ $items = $db->get_items();
             <th>#</th>
             <th>HN</th>
             <th>ชื่อ</th>
-            <th>เลขบัตร ปชช.</th>
+            <th>เลขบัตรปชช.</th>
             <th>อายุ</th>
             <th>เบิก</th>
             <?php
@@ -142,27 +163,21 @@ $items = $db->get_items();
         $total_nprice = 0;
         foreach ($items as $key => $item) {
             
-            $sql = "SELECT `profilecode` 
-            FROM `resulthead` WHERE `hn` = '".$item['HN']."' 
-            AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' 
-            AND `profilecode` IN ('CBC','UA','BS','BUN','CR','LIPID','HBSAG','PAP','STOCB')
-            GROUP BY `profilecode` ";
-            $db->select($sql);
-            $labs = $db->get_items();
-            $lab_lists = array();
-            // โค้ดที่ตรวจจริงจาก resulthead
-            foreach ($labs as $key => $val) {
-                $lab_lists[] = $val['profilecode'];
-            }
-
-            // หาอายุ
+            // วันเกิดจากใน opcard
             list($th_year, $month, $day) = explode('-', $item['dbirth']);
             $time1 = strtotime(($th_year - 543)."-$month-$day");
-            $time2 = strtotime(date('Y-m-d'));
+
+            // เปรียบเทียบกับ ณ วันที่มาเจาะ lab เค้าอายุจริงเท่าไร
+            $hn = $item['HN'];
+            $sql = "SELECT SUBSTRING(`orderdate`, 1, 10) AS `date_lab` 
+            FROM `orderhead` 
+            WHERE `hn` = '$hn' 
+            AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' ";
+            $db->select($sql);
+            $lab = $db->get_item();
+            $time2 = strtotime($lab['date_lab']);
             $time_diff = $time2 - $time1;
 
-            $age_year = (date('Y',$time_diff) - 1970);
-            $age_month = ( date('m',$time_diff) - 1 );
 
             if( strpos($item['name'], 'นาย') !== false ){
                 $item['sex'] = 1;
@@ -172,11 +187,12 @@ $items = $db->get_items();
                 $item['sex'] = 3;
             }
 
-            // หารายการ lab 
-            $sso->check($lab_lists, $age_year, $item['sex']);
+            $age_year = (date('Y',$time_diff) - 1970);
+            $age_month = ( date('m',$time_diff) - 1 );
 
-            // ชื่อภาษาไทย
-            // $checkup_list = $sso->get_checkup_list();
+            $sso->check($item['pid'], $age_year, $item['sex']);
+
+            $checkup_list = $sso->get_checkup_list();
 
             // รายการที่ผู้ป่วยสามารถตรวจได้ในกลุ่มของประกันสังคม
             $code_list = $sso->get_code();
@@ -188,6 +204,12 @@ $items = $db->get_items();
                 <td><?=($item['name'].' '.$item['surname']);?></td>
                 <td><?=$item['idcard'];?></td>
                 <td>
+                    <?php
+                    // dump($item['dbirth']);
+                    // list($th_year, $month, $day) = explode('-', $item['dbirth']);
+                    // dump(($th_year - 543)."-$month-$day");
+                    // dump(date('Y-m-d',$time_diff));
+                    ?>
                     <?php echo $age_year;?> ปี <?php echo ( $age_month != 0 ) ? $age_month.'เดือน' : '' ;?> 
                 </td>
                 <td>ได้<br>ไม่ได้</td>
@@ -236,7 +258,7 @@ $items = $db->get_items();
         }
         ?>
         <tr>
-            <td colspan="14" align="center">รวม</td>
+            <td colspan="15" align="center">รวม</td>
             <td align="right">
                 <?=(number_format($total_yprice, 2).'<br>'.number_format($total_nprice, 2));?>
             </td>

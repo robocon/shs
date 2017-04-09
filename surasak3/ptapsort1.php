@@ -121,7 +121,7 @@ a{
 	$doctor2
 	ORDER BY `hn` ASC ";
 
-$query1 = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
+$query1 = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`detail2`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
 date_format(a.`date`,'%d-%m-%Y') AS `date`,
 left(a.`apptime`,5) AS `left5`
 FROM `appoint` AS a 
@@ -201,7 +201,15 @@ ORDER BY `hn` ASC
 			<td><a href="opdcard_vnprintday.php?act=show1&hn=<?=$hn;?>&nat=<?=$appd;?>&detail=<?=$dc;?>&doctor" target="_blank"><?=$hn;?></a></td>
 			<td><?=$ptname;?></td>
 			<td><?=$apptime;?></td>
-			<td><?=$detail;?></td>
+			<td>
+				<?=$detail;?>
+				<?php
+				// ถ้าไม่ใช่กลุ่มของห้องทะเบียนจะมองเห็น
+				if( !empty($item['detail2']) && $_SESSION['smenucode'] != 'ADMOPD' ){
+					echo ' ('.$item['detail2'].')';
+				}
+				?>
+			</td>
 			<td>
 				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>
 			</td>
@@ -267,7 +275,14 @@ if( $row > 0 ){
 					<td><?=$item['hn'];?></td>
 					<td><?=$item['ptname'];?></td>
 					<td><?=$item['apptime'];?></td>
-					<td><?=$item['detail'];?></td>
+					<td>
+						<?=$item['detail'];?>
+						<?php
+						if( !empty($item['detail2']) && $_SESSION['smenucode'] != 'ADMOPD' ){
+							echo ' ('.$item['detail2'].')';
+						}
+						?>
+					</td>
 					<!-- <td><?=$item['other'];?></td>
 					<td><?=$item['diag'];?></td> -->
 					<td>

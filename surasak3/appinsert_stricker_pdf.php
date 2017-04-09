@@ -1,7 +1,10 @@
 <?php 
+
+/* just mixing code */
 session_start();
 
 include 'bootstrap.php';
+include 'fpdf_thai/shspdf.php';
 
 $detail = input_post('detail');
 $detail2 = input_post('detail2');
@@ -25,11 +28,7 @@ $depcode = input_post('depcode');
 $telp = input_post('telp');
 $appd = input_post('appd');
 
-dump($_POST);
-dump($_SESSION);
-
 $cHn = $_SESSION['cHn'];
-exit;
 
 if ( isset($cHn) ){
 	
@@ -88,6 +87,7 @@ if ( isset($cHn) ){
 	$doctor = substr($doctor,5);
 	$depcode = substr($depcode,4);
 	
+	// insert appoint or appoint_lab
 	if($result){
 
 		// $_GET['hn'] = $cHn;	
@@ -107,12 +107,14 @@ if ( isset($cHn) ){
 		AND `apptime` <> 'ยกเลิกการนัด' 
 		ORDER BY `row_id` DESC 
 		LIMIT 1 ";
+		
 		$result = Mysql_Query($sql);
 		$arr = Mysql_fetch_assoc($result);
 
 		$xxx = explode("(ว",$arr["doctor"]);
 		$arr["doctor"] = $xxx[0];
 
+		// นับ lab
 		$sql2 = "SELECT * 
 		FROM `appoint_lab` 
 		WHERE `id` = '".$arr["row_id"]."' 
@@ -125,117 +127,88 @@ if ( isset($cHn) ){
 			$i = true;
 		}
 
+		$pdf = new SHSPdf('L', 'mm', array( 80, 35));
+		$pdf->SetThaiFont(); // เซ็ตฟอนต์
+		$pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+		$pdf->SetAutoPageBreak(true, 2);
+		$pdf->SetMargins(2, 2);
+		$pdf->AddPage();
 
-	$drugstk = "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\" font style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
-	<TR>
-		<TD align=\"center\"><font face='Angsana New' size= 3 ><B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-	</TR>
-	<TR>
-		<TD><font face='Angsana New' size= 2>ชื่อ : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
-	</TR>
-	<TR>
-		<TD><font face='Angsana New' size= 3 ><B><U>วันที่ : ".$arr["appdate"]."<font face='Angsana New' size= 2 >&nbsp;เวลา : ".$arr["apptime"]."</U></B></TD>
-	</TR>
-	<TR>
-		<TD><font face='Angsana New' size= 2 ><B>เพื่อ :</B> ".$arr["detail"]."<font face='Angsana New' size= 2 >&nbsp;<B>แพทย์ :</B> ".$arr["doctor"]."</TD>
-	</TR>
-	<TR>
-		<TD><font face='Angsana New' size= 3 ><U><B>ยื่นใบนัดที่ :</B> ".$arr["room"]."</U></TD>
-	</TR>";
+		$pdf->SetFont('THSarabun','B',14);
+		$pdf->Cell(0, 5, 'ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง', 0, 1, 'C');
 
-	if($i){
-		$drugstk .="<TR  style=\"line-height: 14px;\">
-		<TD><font face='Angsana New' size= 1 >LAB : ".implode(", ",$list_lab_appoint)."</TD>
-		</TR>";
-	}
-
-	if(trim($arr["xray"]) !="" &&  trim($arr["xray"]) !="NA"){
-		$drugstk .="<TR  style=\"line-height: 14px;\">
-		<TD><font face='Angsana New' size= 1 >X-Ray : ".$arr["xray"]."&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ".$arr["other"]."</TD>
-		</TR>";
-	}
-
-	$drugstk .="<TR style=\"line-height: 14px;\">
-	<TD><font face='Angsana New' size= 1 >วันเวลาออกใบนัด : ".date("d/m/Y H:i:s")."</TD>
-	</TR>";
-
-	$phone_intra = '1100';
-	if( $user_code === 'ADMDEN' ){
-		$phone_intra = '1230';
-	}
-
-	$drugstk .= "<TR style=\"line-height: 14px;\">
-	<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ $phone_intra</TD>
-	</TR>
-	</TABLE>
-	";
-
-	if($i){
-		$drugstk .= "<DIV style=\"page-break-after:always\"></DIV>";
-		$drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
-		<TR>
-			<TD align=\"center\"><font face='Angsana New' size= 3 >ใบนัดเจาะเลือด&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >ชื่อผู้ป่วย : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 3 ><B><U>นัดวันที่ : ".$arr["appdate"]."</U></B></TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >แพทย์ : ".$arr["doctor"]."</TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >ข้อควรปฏิบัติ : <U>".$arr["advice"]."</U></TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >รายการ : <B>".implode(", ",$list_lab_appoint)."</B></TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 1 >".$arr["other"]."</TD>
-		</TR>
-		</TABLE>";
-	}
-
-	if(trim($arr["xray"]) !=""  &&  trim($arr["xray"]) !="NA"){
-		$drugstk .= "<DIV style=\"page-break-after:always\"></DIV>";
-		$drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
-		<TR>
-			<TD align=\"center\"><font face='Angsana New' size= 3 >ใบนัด X-Ray&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >ชื่อผู้ป่วย : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 3 ><B><U>นัดวันที่ : ".$arr["appdate"]."</U></B></TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >แพทย์ : ".$arr["doctor"]."</TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 2 >X-Ray : <B>".$arr["xray"]."</B></TD>
-		</TR>
-		<TR>
-			<TD><font face='Angsana New' size= 1 >".$arr["other"]."</TD>
-		</TR>
-		</TABLE>";
-	}
-
-		// END 
-		/*
-		?>
-		<SCRIPT LANGUAGE="JavaScript">
-		window.onload = function(){
-			window.print();
-			// opener.location.href='hnappoi1.php';
-			
-			window.open('','_self');
-			// self.close(); 
+		$slip_txt = "ชื่อ: ".$arr["ptname"].", HN: ".$arr["hn"]."\n";
+		$slip_txt .= "วันที่: ".$arr["appdate"].", เวลา: ".$arr["apptime"]."\n";
+		$slip_txt .= "เพื่อ: ".$arr["detail"].", แพทย์: ".$arr["doctor"]."\n";
+		$slip_txt .= "ยื่นใบนัดที่: ".$arr["room"]."\n";
 		
+		// ถ้ามี lab
+		if( $i === true ){
+			$slip_txt .= "LAB: ".implode(", ",$list_lab_appoint)."\n";
 		}
-		</SCRIPT>
-		<?php
-		*/
+
+		// ถ้ามี x-ray
+		if(trim($arr["xray"]) !="" &&  trim($arr["xray"]) !="NA"){
+			$slip_txt .= "X-Ray: ".$arr["xray"].", อื่นๆ: ".$arr["other"]."\n";
+		}
+
+		$slip_txt .= "วันเวลาออกใบนัด: ".date("d/m/Y H:i:s")."\n";
+		
+		$phone_intra = '1100';
+		if( $user_code === 'ADMDEN' ){
+			$phone_intra = '1230';
+		}
+
+		$slip_txt .= "มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ: $phone_intra\n";
+
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->SetXY(2, 7);
+		$pdf->MultiCell(0, 5, $slip_txt, 0);
+
+		// เพิ่มหน้าใหม่เมื่อมีข้อมูลตรวจ lab
+		if( $i === true ){
+
+			// เพิ่มหน้า
+			$pdf->AddPage();
+
+			$pdf->SetFont('THSarabun','B',14);
+			$pdf->Cell(0, 5, 'ใบนัดเจาะเลือด', 0, 1, 'L');
+
+			$extra_txt = "ชื่อผู้ป่วย : ".$arr["ptname"]." HN : ".$arr["hn"]."\n";
+			$extra_txt .= "นัดวันที่ : ".$arr["appdate"]."\n";
+			$extra_txt .= "แพทย์ : ".$arr["doctor"]."\n";
+			$extra_txt .= "ข้อควรปฏิบัติ : ".$arr["advice"]."\n";
+			$extra_txt .= "รายการ : ".implode(", ",$list_lab_appoint)."\n";
+			$extra_txt .= $arr["other"]."\n";
+
+			$pdf->SetFont('THSarabun','',14);
+			$pdf->SetXY(2, 7);
+			$pdf->MultiCell(0, 5, $extra_txt, 0);
+
+		}
+
+		if(trim($arr["xray"]) !=""  &&  trim($arr["xray"]) !="NA"){
+
+			$pdf->AddPage();
+
+			$pdf->SetFont('THSarabun','B',14);
+			$pdf->Cell(0, 5, 'ใบนัด X-Ray', 0, 1, 'L');
+
+			$extra_txt = "ชื่อผู้ป่วย : ".$arr["ptname"]." HN : ".$arr["hn"]."\n";
+			$extra_txt .= "นัดวันที่ : ".$arr["appdate"]."\n";
+			$extra_txt .= "แพทย์ : ".$arr["doctor"]."\n";
+			$extra_txt .= "X-Ray : ".$arr["xray"]."\n";
+			$extra_txt .= $arr["other"]."\n";
+
+			$pdf->SetFont('THSarabun','',14);
+			$pdf->SetXY(2, 7);
+			$pdf->MultiCell(0, 5, $extra_txt, 0);
+
+		}
+
+		$pdf->AutoPrint(true);
+		$pdf->Output();
+		exit;
 	}
 } // End $cHn
 ?>

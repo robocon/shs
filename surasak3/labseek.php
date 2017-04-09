@@ -121,8 +121,16 @@ if($_SESSION["until_login"] == "xray" && (!empty($_POST["xraydetail"]) && count(
 	$sql = "Select labextra,other From appoint where appdate like '%".$date_n."%' AND apptime <> 'ยกเลิกการนัด' AND hn = '".$cHn."' ";
 	$result = mysql_query($sql) or die(mysql_error());
 	list($labex,$other) = mysql_fetch_array($result);
-	
- echo "<font face='Angsana New' size='4'>HN : $cHn,<b>&nbsp;VN:$tvn&nbsp; $cPtname</b><br> สิทธิ: $cPtright  <br> ";
+
+$sqlemp="select * from opcardchk where HN='".$cHn."' and part='ลูกจ้าง60' and active='y'";
+//echo $sqlemp;
+$queryemp=mysql_query($sqlemp);
+$numemp=mysql_num_rows($queryemp);
+if($numemp > 0){  //ถ้าเป็นลูกจ้าง รพ.
+ echo "<font face='Angsana New' size='4'>HN : $cHn,<b>&nbsp;VN:$tvn&nbsp; $cPtname</b><br> สิทธิ: $cPtright, (ลูกจ้าง รพ.ค่ายฯ)<br> ";
+}else{
+ echo "<font face='Angsana New' size='4'>HN : $cHn,<b>&nbsp;VN:$tvn&nbsp; $cPtname</b><br> สิทธิ: $cPtright <br> ";
+}
  
  
  

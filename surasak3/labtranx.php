@@ -145,49 +145,7 @@ if($cDepart == 'XRAY'){
 }
 
 //insert data into depart
-$query = "INSERT INTO depart(
-	chktranx,
-	date,
-	ptname,
-	hn,
-	an,
-	doctor,
-	depart,
-	item,
-	detail,
-	price,
-	sumyprice,
-	sumnprice,
-	paid,
-	idname,
-	diag,
-	accno,
-	tvn,
-	ptright,
-	lab,
-	staf_massage
-)VALUES(
-	'$nRunno',
-	'$Thidate',
-	'$cPtname',
-	'$cHn',
-	'$cAn',
-	'$cDoctor',
-	'$cDepart',
-	'$item',
-	'$aDetail',
-	'$Netprice',
-	'$aSumYprice',
-	'$aSumNprice',
-	'',
-	'$sOfficer',
-	'$cDiag',
-	'$cAccno',
-	'$tvn',
-	'$cPtright',
-	'$nLab',
-	'$cstaf_massage'
-);";
+   $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab,staf_massage)VALUES('$nRunno','$Thidate','$cPtname','$cHn','$cAn','$cDoctor','$cDepart','$item','$aDetail', '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab','$cstaf_massage');";
 
       $result = mysql_query($query) or 
                 die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
@@ -212,32 +170,15 @@ $query = "INSERT INTO depart(
 //print "<br>$idno <br>";
 //test 9/4/47 to find the last row
 
-// เก็บสถิติแพทย์แผนจีน
-if( $_SESSION['smenucode'] === 'ADMNID' && isset($_SESSION['dr_nid']) ){
-	$nid_name = $_SESSION['dr_nid'];
-	$sql = "INSERT INTO `smdb`.`dr_nid_log`
-	(`date_add`,`nid_name`,`depart_id`,`author`)
-	VALUES
-	(NOW(),'$nid_name','$idno','$sOfficer');";
-	mysql_query($sql) or die ( mysql_error() );
-}
-// เก็บสถิติแพทย์แผนจีน
-
-// เก็บเวลาในการตรวจของนวดแผนไทย
-if( $_SESSION['smenucode'] === 'ADMPT' ){
-	
-}
-// เก็บเวลาในการตรวจของนวดแผนไทย
-
 //insert data into patdata
-for ($n=1; $n<=$x; $n++){
-		If (!empty($aDgcode[$n])){
-		$query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright,film_size)
-		VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
-		'$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright','$aFilmsize[$n]');";
-		$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-	}
-}
+    for ($n=1; $n<=$x; $n++){
+         If (!empty($aDgcode[$n])){
+                $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright,film_size)
+                                 VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
+                                 '$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright','$aFilmsize[$n]');";
+                $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+        }
+        }
 
 // in case of inpatient insert data into ipacc
 
@@ -327,39 +268,39 @@ if(!empty($cAn)) {
         $result = mysql_query($query) or die("Query failed,update opday");
 
 if ($cDepart == 'PATHO'){
+	
+	 for ($n=1; $n<=$x; $n++){
 
-	for ($n=1; $n<=$x; $n++){
-
-		list($olddetail) = mysql_fetch_row(mysql_query("Select oldcode From labcare where code = '".$aDgcode[$n]."' limit 0,1 "));
+		 list($olddetail) = mysql_fetch_row(mysql_query("Select oldcode From labcare where code = '".$aDgcode[$n]."' limit 0,1 "));
 
 		$sql = "INSERT INTO `orderdetail` ( `labnumber` , `labcode`, `labcode1` , `labname` ) VALUES ('".date("ymd").sprintf("%03d", $nLab)."', '".$aDgcode[$n]."', '".$olddetail."', '".$aTrade[$n]."');";
-		$result = mysql_query($sql) or die("Query failed,INSERT orderdetail");
+		 $result = mysql_query($sql) or die("Query failed,INSERT orderdetail");
 
-		$clinicalinfo .=$aDgcode[$n]." ,";
-	}
+		 $clinicalinfo .=$aDgcode[$n]." ,";
+	 }
 
-	////*runno ตรวจสุขภาพ*/////////
-	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+////*runno ตรวจสุขภาพ*/////////
+$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
-
+	
 	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 		if (!mysql_data_seek($result, $i)) {
 			echo "Cannot seek to row $i\n";
 			continue;
 		}
-		if(!($row = mysql_fetch_object($result)))
+			if(!($row = mysql_fetch_object($result)))
 			continue;
 	}
-
+	
 	$nPrefix=$row->prefix;
-	////*runno ตรวจสุขภาพ*/////////
+////*runno ตรวจสุขภาพ*/////////
 
-	if($cDiag == "chk01-ตรวจสุขภาพประจำปีกองทับบก" || $cDiag == "chk01-ตรวจสุขภาพประจำปีกองทัพบก")
-		$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
+	 if($cDiag == "chk01-ตรวจสุขภาพประจำปีกองทับบก" || $cDiag == "chk01-ตรวจสุขภาพประจำปีกองทัพบก")
+			$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
 
-	if($cDiag == "ตรวจสุขภาพ")
-		$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
-
+	  if($cDiag == "ตรวจสุขภาพ")
+			$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
+	
 	$sql = "Select sex, dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
 	$result = mysql_query($sql) or die("Query failed,update opday");
 	list($sex, $dbirth) = mysql_fetch_row($result);
@@ -370,28 +311,30 @@ if ($cDepart == 'PATHO'){
 		$gender = "F";
 	else
 		$gender = "0";
-
+	
 	if(empty($_SESSION["aPriority"]))
 		$priority = "R";
 	else
 		$priority = $_SESSION["aPriority"];
-
+	
 	$first_year = explode("-",$dbirth);
 	$first_year[0] = $first_year[0]-543;
-
 	if(checkdate($first_year[1],$first_year[2],$first_year[0])){
 		$dbirth = $first_year[0].substr($dbirth,4);
 	}else{
 		$dbirth = date("Y-m-d");
 	}
-
+	
 	$sql = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo`  ) VALUES ('', '".$Thidate2."', '".date("ymd").sprintf("%03d", $nLab)."', '".$cHn."', '".$patienttype."', '".$cPtname."', '".$gender."', '".$dbirth."', '".$_SESSION['sourcecode']."', '".$sourcename."', '".$room."','".$cliniciancode."', '".$clinicianname."', '".$priority."', '".$clinicalinfo."');";
 	$result = mysql_query($sql)or die("Query failed,INSERT orderhead ");
 
-	$nLab++;
-	$query ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
-	$result = mysql_query($query) or die("Query failed");
 
+
+		$nLab++;
+		$query ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
+		$result = mysql_query($query) or die("Query failed");
+
+		
 }
 
    include("unconnect.inc");

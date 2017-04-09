@@ -41,14 +41,14 @@ color: #FFF;
     <select name="mon1">
       <option value="01">มกราคม</option>
       <option value="02">กุมภาพันธ์</option>
-      <option value="03">มีนาคม</option>
+      <option value="03" selected="selected">มีนาคม</option>
       <option value="04">เมษายน</option>
       <option value="05">พฤษภาคม</option>
       <option value="06">มิถุนายน</option>
       <option value="07">กรกฎาคม</option>
       <option value="08">สิงหาคม</option>
       <option value="09">กันยายน</option>
-      <option value="10" selected="selected">ตุลาคม</option>
+      <option value="10" >ตุลาคม</option>
       <option value="11">พฤศจิกายน</option>
       <option value="12">ธันวาคม</option>
     </select>
@@ -87,14 +87,14 @@ echo "<select>";
  <select name="mon2">
    <option value="01">มกราคม</option>
    <option value="02">กุมภาพันธ์</option>
-   <option value="03">มีนาคม</option>
+   <option value="03" selected="selected">มีนาคม</option>
    <option value="04">เมษายน</option>
    <option value="05">พฤษภาคม</option>
    <option value="06">มิถุนายน</option>
    <option value="07">กรกฎาคม</option>
    <option value="08">สิงหาคม</option>
    <option value="09">กันยายน</option>
-   <option value="10" selected="selected">ตุลาคม</option>
+   <option value="10">ตุลาคม</option>
    <option value="11">พฤศจิกายน</option>
    <option value="12">ธันวาคม</option>
  </select>
@@ -261,19 +261,25 @@ $page=1;
 			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n");
 		   }else{
 			   print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
-			   "  <td  align='right'><font face='Angsana New'>555</td>\n".
+			   "  <td  align='right'><font face='Angsana New'>$amount</td>\n".
 			   "  <td  align='right'><font face='Angsana New'>$netprice</td>\n");
 		   }
 		   
-		   if($stkcutpri==0){  //ยาบริจาค
-          		print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
-           		"  <td  align='right'><font face='Angsana New'>$stkcut</td>\n".
-		  		"  <td  align='right'><font face='Angsana New'>$stkcutpri</td>\n");
+		   if($stkcut ==0 || $stkcut ==""){
+			   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 
+			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
+			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n");
 		   }else{
-          		print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
-           		"  <td  align='right'><font face='Angsana New'>$stkcut</td>\n".
-		  		"  <td  align='right'><font face='Angsana New'>$stkcutpri</td>\n");
-		   }
+			   if($stkcutpri==0){  //ยาบริจาค
+					print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
+					"  <td  align='right'><font face='Angsana New'>$stkcut</td>\n".
+					"  <td  align='right'><font face='Angsana New'>$stkcutpri</td>\n");
+			   }else{
+					print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
+					"  <td  align='right'><font face='Angsana New'>$stkcut</td>\n".
+					"  <td  align='right'><font face='Angsana New'>$stkcutpri</td>\n");
+			   }
+			}
 		   
            print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
 		   "  <td  align='right'><font face='Angsana New'>$mainstk</td>\n".

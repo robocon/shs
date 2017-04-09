@@ -954,7 +954,7 @@ if($enddatetime  == Null){
 		      }
 
 
-			  $sql = "Select sum(price),status FROM ipacc WHERE an = '$cAn' and status='จำหน่าย' group by status ";
+$sql = "Select sum(price),status FROM ipacc WHERE an = '$cAn' and status='จำหน่าย' group by status ";
 $result2 = Mysql_Query($sql) or die(mysql_error());
 list($pricedc,$status) = Mysql_fetch_row($result2);
  include("unconnect.inc");
@@ -981,7 +981,7 @@ print "</table>";
 
 /* $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx;
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc;*/
- $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
+$nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
  
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc+$Bloodn+$Labon+$Xrayn+$Sinvn+$Tooln+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Mcn+$Mcy;
 
@@ -1017,8 +1017,10 @@ print "        เบิกได้<br>";
 print "        $BFY<br>";
 print "        ...<br>";
 print "        $DPY<br>";
-$DDLDDY=$DDLDDY-$pricedc;
-print "        $DDLDDY<br>";
+
+//$DDLDDY=$DDLDDY-$pricedc; //echo "$DDLDDY-$pricedc";
+$DDLDDY=$DDLDDY;
+print "        $DDLDDY<br>"; //3. ยาและสารอาหารทางเส้นเลือดที่ใช้ในโรงพยาบาล
 $pricedc=number_format($pricedc,0);
 print "        $pricedc<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
 print "        $DSY<br>";

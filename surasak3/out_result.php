@@ -146,8 +146,14 @@ if(!$Row){
       </tr>
     <tr>
       <td class="pdx">ผล X-RAY
-        <input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" /></td>
-    </tr>          
+        <input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />
+      </td>
+    </tr>
+    <tr>
+      <td class="pdx">EKG
+        <input name="ekg" type="text" class="pdxhead" size="50" id="ekg" value="<?=$arrchk['ekg']?>" />
+      </td>
+    </tr>
     <tr>
       <td align="left" class="pdx">
         <input type="hidden" name="ptname" value="<?=$ptname?>" />

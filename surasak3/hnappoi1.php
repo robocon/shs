@@ -1,8 +1,6 @@
-<script type="text/javascript">
-document.getElementById('aLink').focus();
-</script>
 <?php
 session_start();
+
 session_unregister("cHn");  
 session_unregister("cPtname");
 session_unregister("cAge");
@@ -12,12 +10,12 @@ session_unregister("cnote");
 session_unregister("cidguard");
 
 ?>
-<form method="post" action="<?php echo $PHP_SELF ?>">
+<form method="post" action="hnappoi1.php">
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกใบนัดผู้ป่วย</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN :&nbsp;
   <input type="text" name="hn" size="12" id="aLink">
 <script type="text/javascript">
-document.getElementById('aLink').focus();
+    document.getElementById('aLink').focus();
 </script>
 </p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -37,6 +35,7 @@ document.getElementById('aLink').focus();
  </tr>
 
 <?php
+$hn = trim($_POST['hn']);
 If (!empty($hn)){
     include("connect.inc");
     global $hn;
@@ -56,6 +55,6 @@ If (!empty($hn)){
            " </tr>\n");
        }
 include("unconnect.inc");
-       }
+}
 ?>
 </table>
