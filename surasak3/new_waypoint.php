@@ -364,7 +364,7 @@ if( empty($page) ){
 		
 		$fullname = $patient['fullname'];
 		$idcard = $patient['idcard'];
-		$address = $patient['address'].' '.$patient['tambol'].' '.$patient['ampur'].' '.$patient['changwat'];
+		$address = $patient['address'].' ต.'.$patient['tambol'].' อ.'.$patient['ampur'].' จ.'.$patient['changwat'];
 		$phone = $patient['phone'];
 
 		$age = calcage($patient['dbirth']);
@@ -524,7 +524,7 @@ if( empty($page) ){
 									<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
 										<tr align='center' style='line-height:16px'>
 											<td>
-												สถานี 7<br>
+												สถานี 4<br>
 												EKG<br>
 												.............................
 											</td>

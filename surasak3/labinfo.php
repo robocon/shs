@@ -161,37 +161,84 @@ if (isset($sIdname)){} else {die;} //for security
 			$sex = 1;
 		}
 		$age_year = calcage($user['dbirth']);
+		$year_birth = substr($user['dbirth'], 0, 4);
 
 		$json = new Services_JSON();
 		$json_list = $json->decode($item['list']);
 
 		$sso = new CU_SSO();
-		$sso->check($json_list, $age_year, $sex);
+		$sso->check($json_list, $cHn, ($year_birth - 543), $age_year, $sex);
+		$full_name = $sso->get_lab_name();
+		// dump($full_name);
+
+		// รายการที่ตรวจได้ - ฟรี
+		$codes = $sso->get_code();
 		// var_dump($json_list);
-		// echo implode(',', $json_list);
+		// echo '<hr>';
+		var_dump($nRunno);
+		// echo '<hr>';
 
+		// รายการที่เสียเงินเต็มประตู
+		$diff = array_diff($json_list, $codes);
 
-		for ($n=1; $n<=$x; $n++){
-	        print("<tr>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n".
-			" </tr>\n");
+		$sql = "SELECT `code_lab`,`price`,`yprice`,`nprice` FROM smdb.sso_checkup where `code_lab` IS NOT NULL GROUP BY `code_lab`;";
+		$q = mysql_query($sql) or die( mysql_error() );
+		$lab_price = array();
+		while ( $item = mysql_fetch_assoc($q) ) {
+			$key = $item['code_lab'];
+			$lab_price[$key] = array(
+				'price' => $item['price'],
+				'yprice' => $item['yprice'],
+				'nprice' => $item['nprice'],
+			);
 		}
 
+		$Amount = 1;
+		$x = 0;
+		foreach( $json_list as $key => $lab ){
+			
+			$item = $lab_price[$lab];
+			
+			// ถ้ามีในกลุ่มที่เบิกได้ให้คิดราคาตามปกติ
+			if( in_array($lab, $codes) === true ){
+				$price = $item['price'];
+				$yprice = $item['yprice'];
+				$nprice = $item['nprice'];
 
-		// ต้องรวมราคาโชวด้านล่าง
-		echo " <font face='Angsana New' size='4'><b>ราคารวม  $Netprice บาท </b> ";
-		echo " (ราคาเบิกได้ $aSumYprice บาท ";
-		echo "  <font color =FF0000><b><u>เบิกไม่ได้   $aSumNprice บาท</u></b>)<br>หมายเลข$nLab2";
+			// ส่วนต่างที่ผู้ป่วยต้องรับผิดชอบเพราะไม่สามารถเบิกได้
+			}else if( in_array($lab, $diff) === true ){
+				$nprice = $price = $item['price'];
+				$yprice = 0;
+			}
+				
+			$x++;
+			$aDgcode[$x] = $lab; 
+			$aTrade[$x] = $full_name[$lab];
+			$aPrice[$x] = $price;
 
+			$aPart[$x] = 'LAB';
+			$aAmount[$x] = 1;
+			$money = $Amount * $price ;
+			$aMoney[$x] = $money;
+			$aFilmsize[$x] = '';
+			$Netprice = array_sum($aMoney);
 
+			$aYprice[$x] = $yprice * $Amount;
+			$aNprice[$x] = $nprice * $Amount;
+			$aSumYprice = array_sum($aYprice);
+			$aSumNprice = array_sum($aNprice);
 
+	        print("<tr>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'> </td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'>$x</td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$x]</td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$x]</td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$x]</td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$x]</td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$x]</b></td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$x]</td>\n".
+			" </tr>\n");
+		}
 
 	} else { // กรณีไม่เข้ากลุ่ม @, #, AN, HN 
 
