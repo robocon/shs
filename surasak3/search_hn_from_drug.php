@@ -46,7 +46,7 @@ include 'templates/classic/nav.php';
 	<div class="col">
 		<div class="cell">
 			<div class="col">
-				<h3>รายชื่อผู้ป่วยที่ใช้ยา Warfarin ปี <?php echo $year; ?></h3>
+				<h3>รายชื่อผู้ป่วยที่ใช้ยา Warfarin ปี <?php echo $year; ?> เรียงตามเดือน</h3>
 			</div>
 			<table>
 				<thead>
@@ -79,6 +79,9 @@ include 'templates/classic/nav.php';
 					$i = 1;
 					$count_drugs = array();
 					$check_hn = false;
+
+					$group_hn = array();
+
 					foreach ($items as $key => $item) {
 						// $drug_code = trim($item['drugcode']);
 						
@@ -92,6 +95,10 @@ include 'templates/classic/nav.php';
 
 						// ข้ามการแสดงผลถ้า hn ซ้ำกับของคนก่อนหน้านี้
 						$hn = $item['hn'];
+
+						$full_name = $item['yot'].' '.$item['name'].' '.$item['surname'];
+						$group_hn[$hn] = $full_name;
+
 						if( $hn == $check_hn ){
 							continue;
 						}
@@ -100,11 +107,12 @@ include 'templates/classic/nav.php';
 							<td align="center"><?php echo $i;?></td>
 							<td><?php echo $item['doctor_date']; ?></td>
 							<td><?php echo $hn; ?></td>
-							<td><?php echo $item['yot'].' '.$item['name'].' '.$item['surname'];?></td>
+							<td><?php echo $full_name;?></td>
 						</tr>
 						<?php
 						$i++;
 
+						// latest memory for checking next loop
 						$check_hn = $item['hn'];
 					}
 					?>
@@ -117,6 +125,24 @@ include 'templates/classic/nav.php';
 					?><p><b><?php echo $key;?></b>: <?php echo $item_rows;?></p><?php
 				}
 				?>
+			</div>
+			<div style="margin-top: 1em;">
+				<h3>รายชื่อทั้งหมดในปี</h3>
+				<table>
+				<?php
+				$i = 1;
+				foreach ($group_hn as $hn => $user) {
+					?>
+					<tr>
+						<td align="right"><?=$i;?></td>
+						<td><?=$hn;?></td>
+						<td><?=$user;?></td>
+					</tr>
+					<?php
+					$i++;
+				}
+				?>
+				</table>
 			</div>
 		</div>
 	</div>

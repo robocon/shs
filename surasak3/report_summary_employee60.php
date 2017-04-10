@@ -22,6 +22,7 @@ include("connect.inc");
     <td width="2%" align="center"><strong>ลำดับ</strong></td>
     <td width="11%" align="center"><strong>HN</strong></td>
     <td width="11%" align="center"><strong>ชื่อ - สกุล</strong></td>
+    <td width="4%" align="center"><strong>สิทธิ</strong></td>
     <td width="4%" align="center"><strong>อายุ</strong></td>
     <td width="6%" align="center"><strong>สังกัด</strong></td>
     <td width="5%" align="center"><strong>น้ำหนัก</strong></td>
@@ -61,6 +62,7 @@ $ptname=$result["name"]." ".$result["surname"];
     <td><?=$i;?></td>
     <td><?=$result["HN"];?></td>
     <td><?=$ptname;?></td>
+    <td><?=$result["branch"];?></td>
     <td><?=$result["agey"];?></td>
     <td><?=$result["course"];?></td>
     <td><?=$result["weight"];?></td>
