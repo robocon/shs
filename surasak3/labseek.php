@@ -411,6 +411,44 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 			}
 
 		////////////////////////
+		
+		// แสดงรายการตรวจสุขภาพ
+		include 'includes/JSON.php';
+
+		$sql = "SELECT `hn`,`list` 
+		FROM `testmatch` 
+		WHERE `hn` = '$cHn'";
+		$q = mysql_query($sql) or die( mysql_error() );
+		$item = mysql_fetch_assoc($q);
+
+		$json = new Services_JSON();
+		$json_list = $json->decode($item['list']);
+		?>
+		<br>
+		<table border="1" bordercolor="#330099">
+			<tr>
+				<td>
+					<table  width="300">
+						<tr bgcolor="#000080">
+							<td colspan="2" align="center">
+								<font color="#FFFFFF">รายการ ตรวจสุขภาพประกันสังคม</font>
+							</td>
+						</tr>
+						<tr>
+							<td align="center" >
+								<?php
+								$href = "labinfo.php?Dgcode=sso&Amount=1&tvn=$tvn&hn=$cHn";
+								?>
+								<a target="right" href="<?=$href;?>">คิดเงิน</A>
+							</td>
+							<td><?=strtoupper(implode(',', $json_list));?></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<?php
+
 	include("unconnect.inc");
 ?>
 
