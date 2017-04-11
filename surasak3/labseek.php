@@ -411,9 +411,8 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 			}
 
 		////////////////////////
-		
-		// แสดงรายการตรวจสุขภาพ
 
+		// แสดงรายการตรวจสุขภาพ
 		include 'includes/JSON.php';
 		$today = date('Y-m-d');
 		$sql = "SELECT `hn`,`list` 
@@ -421,36 +420,52 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 		WHERE `hn` = '$cHn' 
 		AND ( `date_start` <= '$today' AND `date_end` >= '$today' )";
 		$q = mysql_query($sql) or die( mysql_error() );
-		$item = mysql_fetch_assoc($q);
 
-		$json = new Services_JSON();
-		$json_list = $json->decode($item['list']);
-		?>
-		<br>
-		<table border="1" bordercolor="#330099">
-			<tr>
-				<td>
-					<table  width="300">
-						<tr bgcolor="#000080">
-							<td colspan="2" align="center">
-								<font color="#FFFFFF">รายการ ตรวจสุขภาพประกันสังคม</font>
-							</td>
-						</tr>
-						<tr>
-							<td align="center" >
-								<?php
-								$href = "labinfo.php?Dgcode=sso&Amount=1&tvn=$tvn&hn=$cHn";
-								?>
-								<a target="right" href="<?=$href;?>">คิดเงิน</A>
-							</td>
-							<td><?=strtoupper(implode(',', $json_list));?></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<?php
+		// ถ้ามีข้อมูลอยู่ในช่วงของการตรวจ จะแสดงผล
+		$test_row = mysql_num_rows($q);
+		if( $test_row > 0 ){
 
+			$item = mysql_fetch_assoc($q);
+
+			$json = new Services_JSON();
+			$json_list = $json->decode($item['list']);
+
+			// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
+			// ถ้าสั่งจากหน้าของ lab จะตัด xray ออกไป
+			if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
+				unset($json_list[$search_key]);
+			}
+
+			// ถ้าเป็น xray จะเห็นเฉพาะของตัวเอง
+			if( $_SESSION['until_login'] == 'xray' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
+				$json_list = array('41001-sso');
+			}
+			?>
+			<br>
+			<table border="1" bordercolor="#330099">
+				<tr>
+					<td>
+						<table  width="300">
+							<tr bgcolor="#000080">
+								<td colspan="2" align="center">
+									<font color="#FFFFFF">รายการ ตรวจสุขภาพประกันสังคม</font>
+								</td>
+							</tr>
+							<tr>
+								<td align="center" >
+									<?php
+									$href = "labinfo.php?Dgcode=sso&Amount=1&tvn=$tvn&hn=$cHn";
+									?>
+									<a target="right" href="<?=$href;?>">คิดเงิน</A>
+								</td>
+								<td><?=implode(',', $json_list);?></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<?php
+		}
 	include("unconnect.inc");
 ?>
 

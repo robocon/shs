@@ -165,38 +165,61 @@ if (isset($sIdname)){} else {die;} //for security
 		$json = new Services_JSON();
 		$json_list = $json->decode($item['list']);
 
+		// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
+		// ถ้าสั่งจากหน้าของ lab จะตัด xray ออกไป
+		if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
+			unset($json_list[$search_key]);
+		}
+
+		// ถ้าเป็น xray จะเห็นเฉพาะของตัวเอง
+		if( $_SESSION['until_login'] == 'xray' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
+			$json_list = array('41001-sso');
+		}
+
 		$sso = new CU_SSO();
 		$sso->check($json_list, $cHn, ($year_birth - 543), $age_year, $sex);
-		$full_name = $sso->get_lab_name();
+		// $full_name = $sso->get_lab_name();
 		// dump($full_name);
 
 		// รายการที่ตรวจได้ - ฟรี
 		$codes = $sso->get_code();
-		// var_dump($json_list);
+		// var_dump($codes);
 		// echo '<hr>';
 		// var_dump($nRunno);
 		// echo '<hr>';
 
 		// รายการที่เสียเงินเต็มประตู
 		$diff = array_diff($json_list, $codes);
+		// var_dump($diff);
 
-		$sql = "SELECT `code_lab`,`price`,`yprice`,`nprice` FROM smdb.sso_checkup where `code_lab` IS NOT NULL GROUP BY `code_lab`;";
+		/*
+		$sql = "SELECT `code`,`detail`,`price`,`yprice`,`nprice` 
+		FROM labcare 
+		where `code` IS NOT NULL 
+		GROUP BY `code`;";
 		$q = mysql_query($sql) or die( mysql_error() );
 		$lab_price = array();
 		while ( $item = mysql_fetch_assoc($q) ) {
-			$key = $item['code_lab'];
+			$key = $item['code'];
 			$lab_price[$key] = array(
 				'price' => $item['price'],
 				'yprice' => $item['yprice'],
 				'nprice' => $item['nprice'],
 			);
 		}
+		*/
 
 		$Amount = 1;
 		$x = 0;
 		foreach( $json_list as $key => $lab ){
 			
-			$item = $lab_price[$lab];
+			$sql = "SELECT `code`,`detail`,`price`,`yprice`,`nprice` 
+			FROM `labcare` 
+			WHERE `code` = '$lab'";
+			$q = mysql_query($sql) or die( mysql_error() );
+			$item = mysql_fetch_assoc($q);
+
+			// $item = $lab_price[$lab];
 			
 			// ถ้ามีในกลุ่มที่เบิกได้ให้คิดราคาตามปกติ
 			if( in_array($lab, $codes) === true ){
@@ -212,7 +235,7 @@ if (isset($sIdname)){} else {die;} //for security
 				
 			$x++;
 			$aDgcode[$x] = $lab; 
-			$aTrade[$x] = $full_name[$lab];
+			$aTrade[$x] = $item['detail'];
 			$aPrice[$x] = $price;
 
 			$aPart[$x] = 'LAB';

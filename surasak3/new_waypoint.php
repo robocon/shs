@@ -82,14 +82,14 @@ if( $action === 'import' ){
 			$age = trim($item['3']);
 			
 			$pre_list = array(
-				'CBC' => $item['4'],
-				'UA' => $item['5'],
-				'BS' => $item['6'],
-				'CR' => $item['7'],
-				'LIPID' => $item['8'],
-				'HBSAG' => $item['9'],
-				'PAP' => $item['10'],
-				'STOCB' => $item['11'],
+				'CBC-sso' => $item['4'],
+				'UA-sso' => $item['5'],
+				'BS-sso' => $item['6'],
+				'CR-sso' => $item['7'],
+				'LIPID-sso' => $item['8'],
+				'HBSAG-sso' => $item['9'],
+				'PAP-sso' => $item['10'],
+				'STOCB-sso' => $item['11'],
 				'41001-sso' => $item['12'], //x-ray
 			);
 			

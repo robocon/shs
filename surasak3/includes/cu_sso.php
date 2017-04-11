@@ -96,7 +96,7 @@ class CU_SSO{
         
 
         // ความสมบูรณ์ของเม็ดเลือด
-        if( in_array('CBC', $package) === true && ( $age >= 18 && $age <= 70 ) ){
+        if( in_array('CBC-sso', $package) === true && ( $age >= 18 && $age <= 70 ) ){
             // $this->checkup_list[] = 'ความสมบูรณ์ของเม็ดเลือด CBC'."<br>";
 
             $clinical = '';
@@ -127,12 +127,12 @@ class CU_SSO{
             
             // เป็น 0 แสดงว่าปีนี้ยังไม่ได้ตรวจ ให้เก็บค่าว่าตรวจได้
             if( $check_row === 0 ){
-                $this->code[] = 'CBC';
+                $this->code[] = 'CBC-sso';
             }
         }
         
         // ปัสสาวะ UA 55ปีขึ้นไป ตรวจได้ปีละครั้ง
-        if( in_array('UA', $package) === true && $age >= 55 ){
+        if( in_array('UA-sso', $package) === true && $age >= 55 ){
             // $this->checkup_list[] = 'ปัสสาวะ UA'."<br>";
 
             $sql = "SELECT b.`hn`  
@@ -145,12 +145,12 @@ class CU_SSO{
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = 'UA';
+                $this->code[] = 'UA-sso';
             }
         }
 
         // น้ำตาลในเลือด
-        if( in_array('BS', $package) === true && $age >= 35 ){
+        if( in_array('BS-sso', $package) === true && $age >= 35 ){
             // $this->checkup_list[] = 'น้ำตาลในเลือด FBS'."<br>";
 
             // 35-54 ทุกๆ3ปีตรวจได้ 1ครั้ง 
@@ -190,12 +190,12 @@ class CU_SSO{
             $q = mysql_query($sql);
             $check_row = mysql_num_rows($q);
             if( $check_row === 0 ){
-                $this->code[] = 'BS';
+                $this->code[] = 'BS-sso';
             }
         }
         
         // การทำงานของไต CR 55ปีขึ้นไป ตรวจได้ปีละครั้ง
-        if( in_array('CR', $package) === true && $age >= 55 ){
+        if( in_array('CR-sso', $package) === true && $age >= 55 ){
             // $this->checkup_list[] = 'การทำงานของไต Cr'."<br>";
 
             $sql = "SELECT b.`hn`  
@@ -208,13 +208,13 @@ class CU_SSO{
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = 'CR';
+                $this->code[] = 'CR-sso';
             }
 
         }
         
         // ไขมันในเส้นเลือด 20ปีขึ้นไป ทุกๆ5ปีตรวจได้ 1ครั้ง
-        if( in_array('LIPID', $package) === true && $age >= 20 ){
+        if( in_array('LIPID-sso', $package) === true && $age >= 20 ){
             // $this->checkup_list[] = 'ไขมันในเส้นเลือดชนิด Total & HDL cholesterol'."<br>";
 
             $year_before = $year_checkup - 4;
@@ -239,12 +239,12 @@ class CU_SSO{
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = 'LIPID';
+                $this->code[] = 'LIPID-sso';
             }
         }
 
         // ไวรัสตับอักเสบ เกิดก่อน 2535(1992) ตรวจได้ครั้งเดียวตลอดชีวิต
-        if( in_array('HBSAG', $package) === true && $year_birth > 1992 ){
+        if( in_array('HBSAG-sso', $package) === true && $year_birth > 1992 ){
             // $this->checkup_list[] = 'เชื้อไวรัสตับอักเสบ HBsAg'."<br>";
 
             $sql = "SELECT b.`hn`  
@@ -259,13 +259,13 @@ class CU_SSO{
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = 'HBSAG';
+                $this->code[] = 'HBSAG-sso';
             }
 
         }
         
         // มะเร็งปากมดลูก 
-        if( in_array('PAP', $package) === true && $age >= 30 && $sex > 1 ){
+        if( in_array('PAP-sso', $package) === true && $age >= 30 && $sex > 1 ){
             // $this->checkup_list[] = 'มะเร็งปากมดลูก Pap Smear'."<br>";
             
             $group_by = '';
@@ -302,12 +302,12 @@ class CU_SSO{
             $q = mysql_query($sql);
             $check_row = mysql_num_rows($q);
             if( $check_row === 0 ){
-                $this->code[] = 'PAP';
+                $this->code[] = 'PAP-sso';
             }
         }
         
         // 
-        if( in_array('STOCB', $package) === true && $age >= 50 ){
+        if( in_array('STOCB-sso', $package) === true && $age >= 50 ){
             // $this->checkup_list[] = 'เลือดในอุจจาระ FOBT'."<br>";
 
             $sql = "SELECT b.`hn`  
@@ -320,11 +320,11 @@ class CU_SSO{
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = 'STOCB';
+                $this->code[] = 'STOCB-sso';
             }
         }
         
-        if( in_array('41001', $package) === true && $age >= 15 ){
+        if( in_array('41001-sso', $package) === true && $age >= 15 ){
             // $this->checkup_list[] = 'Chest X-ray'."<br>";
 
             $sql = "SELECT b.`hn`  
@@ -337,7 +337,7 @@ class CU_SSO{
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = '41001';
+                $this->code[] = '41001-sso';
             }
         }
  

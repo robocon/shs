@@ -453,6 +453,7 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 		FROM `testmatch` 
 		WHERE `hn` = '$cHn' 
 		AND ( `date_start` <= '$today' AND `date_end` >= '$today' )";
+		
 		$q = mysql_query($sql) or die( mysql_error() );
 		$row = mysql_num_rows($q);
 		if( $row > 0 ){
