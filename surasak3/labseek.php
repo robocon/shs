@@ -413,11 +413,13 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 		////////////////////////
 		
 		// แสดงรายการตรวจสุขภาพ
-		include 'includes/JSON.php';
 
+		include 'includes/JSON.php';
+		$today = date('Y-m-d');
 		$sql = "SELECT `hn`,`list` 
 		FROM `testmatch` 
-		WHERE `hn` = '$cHn'";
+		WHERE `hn` = '$cHn' 
+		AND ( `date_start` <= '$today' AND `date_end` >= '$today' )";
 		$q = mysql_query($sql) or die( mysql_error() );
 		$item = mysql_fetch_assoc($q);
 

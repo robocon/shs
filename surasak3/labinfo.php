@@ -152,7 +152,6 @@ if (isset($sIdname)){} else {die;} //for security
 		$q = mysql_query($sql) or die( mysql_error() );
 		$user = mysql_fetch_assoc($q);
 		
-
 		if( $user['yot'] == 'นาง' 
 			OR $user['yot'] == 'น.ส.' 
 			OR $user['yot'] == 'นางสาว' ){
@@ -175,7 +174,7 @@ if (isset($sIdname)){} else {die;} //for security
 		$codes = $sso->get_code();
 		// var_dump($json_list);
 		// echo '<hr>';
-		var_dump($nRunno);
+		// var_dump($nRunno);
 		// echo '<hr>';
 
 		// รายการที่เสียเงินเต็มประตู

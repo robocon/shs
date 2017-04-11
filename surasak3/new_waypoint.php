@@ -66,22 +66,22 @@ if( $action === 'import' ){
 	$content = file_get_contents($file['tmp_name']);
 	$items = explode("\r\n", $content);
 	$bad_lists = array();
-
+	
 	foreach ($items as $key => $list) {
 		
 		$item = explode(',', $list);
-		$hn = $item['0'];
-
+		$hn = str_replace(' ', '', $item['2']);
+		
 		// เป็น hn dd-ddddd รึป่าว
 		$test_match = preg_match('/(\d+)\-(\d+)/', $hn);
 		
 		if( !empty($list) && $test_match > 0 ){
-			
-			$name = $item['1'];
-			$surname = $item['2'];
+
+			$name = trim($item['0']);
+			$surname = trim($item['1']);
+			$age = trim($item['3']);
 			
 			$pre_list = array(
-				'41001' => $item['3'], //x-ray
 				'CBC' => $item['4'],
 				'UA' => $item['5'],
 				'BS' => $item['6'],
@@ -89,19 +89,19 @@ if( $action === 'import' ){
 				'LIPID' => $item['8'],
 				'HBSAG' => $item['9'],
 				'PAP' => $item['10'],
-				'STOCB' => $item['11']
+				'STOCB' => $item['11'],
+				'41001-sso' => $item['12'], //x-ray
 			);
-
+			
 			$list = array();
 			foreach ($pre_list as $code => $value) {
+				$value = ( !empty($value) ) ? 1 : 0 ;
 				if( $value > 0 ){
 					$list[] = $code;
 				}
 			}
 
 			$json_list = $json->encode($list);
-			// dump($json_list);
-			// echo "<hr>";
 
 			$sql = "SELECT `hn` 
 			FROM `opcard` 
@@ -110,24 +110,28 @@ if( $action === 'import' ){
 			AND `surname` = '$surname' ";
 			$db->select($sql);
 			$user_count = $db->get_rows();
+			
 			if( $user_count > 0 ){
 				$sql = "INSERT INTO `testmatch` VALUES (
 				NULL,
 				'$hn', 
+				'$age',
 				'$company', 
 				'$company_code', 
 				'$date_start', 
 				'$date_end',
 				'$json_list');";
 				$insert = $db->insert($sql);
-
+				
 			}else{
-				$bad_lists[] = "$hn $name $surname";
+
+				$sql = "SELECT CONCAT(`name`,' ',`surname`) AS `fullname` FROM `opcard` WHERE `hn` = '$hn' ";
+				$db->select($sql);
+				$check_user = $db->get_item();
+				$bad_lists[] = "$hn $name $surname (".$check_user['fullname'].")";
 			}
 		}
 	}
-
-	// exit;
 
 	if( count($bad_lists) > 0 ){
 		$_SESSION['bad_lists'] = $bad_lists;
@@ -185,7 +189,7 @@ if( isset($_SESSION['x-msg']) ){
 if( count($_SESSION['bad_lists']) > 0 ){
 	?>
 	<div style="border: 2px solid #c3c300;padding: 4px;background-color: #fffcdd;">
-		<p>ข้อมูลไม่ถูกต้อง HN และ ชื่อ-สกุล ไม่ตรงกับฐานข้อมูลกรุณาตรวจสอบอีกครั้ง</p>
+		<p>ข้อมูลไม่ถูกต้อง HN หรือ ชื่อ-สกุล ไม่ตรงกับฐานข้อมูลกรุณาตรวจสอบอีกครั้ง</p>
 		<ol>
 			<?php
 			foreach ($_SESSION['bad_lists'] as $key => $item) {
