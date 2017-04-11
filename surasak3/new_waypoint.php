@@ -70,7 +70,7 @@ if( $action === 'import' ){
 	foreach ($items as $key => $list) {
 		
 		$item = explode(',', $list);
-		$hn = str_replace(' ', '', $item['2']);
+		$hn = str_replace(' ', '', $item['3']);
 		
 		// เป็น hn dd-ddddd รึป่าว
 		$test_match = preg_match('/(\d+)\-(\d+)/', $hn);
@@ -79,7 +79,7 @@ if( $action === 'import' ){
 
 			$name = trim($item['0']);
 			$surname = trim($item['1']);
-			$age = trim($item['3']);
+			$age = trim($item['2']);
 			
 			$pre_list = array(
 				'CBC-sso' => $item['4'],
@@ -103,6 +103,8 @@ if( $action === 'import' ){
 
 			$json_list = $json->encode($list);
 
+			$name = trim(str_replace(array('นางสาว','นาย','นาง','น.ส.'), '', $name));
+
 			$sql = "SELECT `hn` 
 			FROM `opcard` 
 			WHERE `hn` = '$hn' 
@@ -121,6 +123,7 @@ if( $action === 'import' ){
 				'$date_start', 
 				'$date_end',
 				'$json_list');";
+				
 				$insert = $db->insert($sql);
 				
 			}else{
@@ -214,7 +217,7 @@ if( empty($page) ){
 	LEFT JOIN `testmatch` AS b ON b.`company_code` = a.`code`
 	WHERE a.`year` = '60' 
 	GROUP BY b.`company_code`";
-	
+	// dump($sql);
 	$db->select($sql);
 	$items = $db->get_items();
 
