@@ -181,7 +181,7 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 			?>
 		</div>
 		<div>
-			<button>แสดงผล</button>
+			<button type="submit">แสดงผล</button>
 		</div>
 	</form>
 	<?php
