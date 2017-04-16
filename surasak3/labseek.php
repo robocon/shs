@@ -412,7 +412,7 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 
 		////////////////////////
 
-		// แสดงรายการตรวจสุขภาพ
+		// แสดงรายการตรวจสุขภาพ แบบกลุ่ม
 		include 'includes/JSON.php';
 		$today = date('Y-m-d');
 		$sql = "SELECT `hn`,`list` 
@@ -458,14 +458,46 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 									?>
 									<a target="right" href="<?=$href;?>">คิดเงิน</A>
 								</td>
-								<td><?=implode(',', $json_list);?></td>
+								<td><?=implode('<br>', $json_list);?></td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 			</table>
 			<?php
+		} 
+		
+		// กรณี ที่เป็น walk-in และ ผู้ป่วยมีสิทธิประกันสังคม
+		$thdate_format = date('d-m-').( date('Y') + 543 ).$cHn;
+		$sql = "SELECT SUBSTRING(a.`age`, 1, 2) AS `age_year`, 
+		SUBSTRING(a.`ptright`, 1, 3) AS `ptright_code`, 
+		SUBSTRING(a.`toborow`, 1, 4) AS `ex_code`, 
+		SUBSTRING(b.`dbirth`, 1, 4) AS `dbirth`, 
+		b.`sex`
+		FROM `opday` AS a 
+		LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+		WHERE a.`thdatehn` = '$thdate_format' ";
+		$q = mysql_query($sql);
+		$test_checkup = mysql_fetch_assoc($q);
+		// var_dump($sql);
+		if( $test_checkup['ptright_code'] == 'R07' && $test_checkup['ex_code'] == 'EX42' ){
+			
+			include 'includes/cu_sso.php';
+
+			$user_gender = trim($test_checkup['sex']);
+			$sex = ( $user_gender === 'ช' ) ? 1 : 2 ;
+			$year_birth = ( $test_checkup['dbirth'] - 543 );
+
+			// var_dump($cHn);
+			// var_dump($year_birth);
+			// var_dump($test_checkup['age_year']);
+			// var_dump($sex);
+
+			$sso = new CU_SSO();
+			$sso->find_package_from_age($cHn, $year_birth, $test_checkup['age_year'], $sex);
+
 		}
+
 	include("unconnect.inc");
 ?>
 

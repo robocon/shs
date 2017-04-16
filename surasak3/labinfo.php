@@ -116,7 +116,7 @@ if (isset($sIdname)){} else {die;} //for security
 
 
 
-	} else if( $Dgcode === 'sso' ){ // กรณีเป็น ตรวจสุขภาพประกันสังคม
+	} else if( $Dgcode === 'sso' ){ // กรณีเป็น ตรวจสุขภาพประกันสังคม แบบกลุ่ม
 
 		include 'includes/JSON.php';
 		include 'includes/cu_sso.php';
@@ -146,19 +146,15 @@ if (isset($sIdname)){} else {die;} //for security
 		$q = mysql_query($sql) or die( mysql_error() );
 		$item = mysql_fetch_assoc($q);
 		
-		$sql = "SELECT `yot`,`dbirth` 
+		$sql = "SELECT `yot`,`dbirth`,`sex`
 		FROM `opcard` 
 		WHERE `hn` = '$cHn' ";
 		$q = mysql_query($sql) or die( mysql_error() );
 		$user = mysql_fetch_assoc($q);
-		
-		if( $user['yot'] == 'นาง' 
-			OR $user['yot'] == 'น.ส.' 
-			OR $user['yot'] == 'นางสาว' ){
-			$sex = 2;
-		}else{
-			$sex = 1;
-		}
+
+		$user_gender = trim($user['sex']);
+		$sex = ( $user_gender === 'ช' ) ? 1 : 2 ;
+
 		$age_year = calcage($user['dbirth']);
 		$year_birth = substr($user['dbirth'], 0, 4);
 
@@ -177,6 +173,8 @@ if (isset($sIdname)){} else {die;} //for security
 		}
 
 		$sso = new CU_SSO();
+
+		// ตรวจสอบรายการตรวจ
 		$sso->check($json_list, $cHn, ($year_birth - 543), $age_year, $sex);
 		// $full_name = $sso->get_lab_name();
 		// dump($full_name);

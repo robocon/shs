@@ -440,11 +440,11 @@ if( empty($page) ){
 					$arrtype = array('ตรวจ x-ray ปอด','ตรวจความสมบูรณ์ของเม็ดเลือด(CBC)','ตรวจปัสสาวะ(UA)','เบาหวาน(BS)','ไขมัน(CHOL) (TRI)','ตรวจหน้าที่ของตับ(SGOT,SGPT)','ตรวจหน้าที่ของไต(BUN,CR)','ตรวจหน้าที่ของไต(ALK)','ตรวจกรดยูริก(URICACID)');
 					$arrprice = array('170.00','90.00','50.00','40.00','120.00','100.00','100.00','50','60');
 					?>
-					<table width="756">
+					<table width="100%">
+						<!--
 						<tr>
 							<td class="pdxpro" colspan="2"><strong>รายการตรวจสุขภาพ</strong></td>
 						</tr>
-						<!--
 						<tr>
 							<td class="pdxpro" colspan="2"><strong><?=$company;?></strong></td>
 						</tr>
@@ -471,76 +471,97 @@ if( empty($page) ){
 						</tr>
 						<tr>
 							<td class="pdx" colspan="2">
+								<table>
+									<tr style='line-height:16px'>
 
-							<table>
-								<tr style='line-height:16px'>
-									<!--
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 1 <br>ลงทะเบียน<br>ทะเบียน<br>.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-									-->
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 2<br>
-													เจาะเลือด<br>
-													.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 3<br>
-													X-RAY<br>
-													.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 4<br>
-													ซักประวัติ<br>
-													.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-							
-							<?php
-							// if($program_type != "1" && $program_type != "2" && $program_type != "3" && $program_type != "4"){
-							if( $ekg > 0 ){
-								?>
-								<!-- 
-								<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 5<br>PAP<br>OPD สูติฯ<br>.............................</td></tr></table></td>
-								<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 6<br>V/A<br>OPD ตา<br>.............................</td></tr></table></td>
-								-->
-								<td>
-									<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-										<tr align='center' style='line-height:16px'>
+										<?php
+										$stations = array('เจาะเลือด','X-RAY','ซักประวัติ');
+										?>
+										<!--
+										<td>
+											<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+												<tr align='center' style='line-height:16px'>
+													<td>
+														สถานี 1 <br>ลงทะเบียน<br>ทะเบียน<br>.............................
+													</td>
+												</tr>
+											</table>
+										</td>
+										-->
+										<?php
+										$station_i = 1;
+
+										// แทรกทะเบียน ฯลฯ ได้
+										// 
+
+										foreach ($stations as $key => $station) {
+											# code...
+											?>
 											<td>
-												สถานี 4<br>
-												EKG<br>
-												.............................
+												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+													<tr align='center' style='line-height:16px'>
+														<td>
+															สถานี <?=$station_i;?><br>
+															<?=$station;?><br>
+															.............................
+														</td>
+													</tr>
+												</table>
 											</td>
-										</tr>
-									</table>
-								</td>
-								<?php	
-							}	
-							?>
+											<?php
+											$station_i++;
+										}
+										?>
+										<!--
+										<td>
+											<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+												<tr align='center' style='line-height:16px'>
+													<td>
+														สถานี 3<br>
+														X-RAY<br>
+														.............................
+													</td>
+												</tr>
+											</table>
+										</td>
+										<td>
+											<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+												<tr align='center' style='line-height:16px'>
+													<td>
+														สถานี 4<br>
+														ซักประวัติ<br>
+														.............................
+													</td>
+												</tr>
+											</table>
+										</td>
+										-->
+								
+										<?php
+										// if($program_type != "1" && $program_type != "2" && $program_type != "3" && $program_type != "4"){
+										if( $ekg > 0 ){
+											
+											?>
+											<!-- 
+											<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 5<br>PAP<br>OPD สูติฯ<br>.............................</td></tr></table></td>
+											<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 6<br>V/A<br>OPD ตา<br>.............................</td></tr></table></td>
+											-->
+											<td>
+												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+													<tr align='center' style='line-height:16px'>
+														<td>
+															สถานี <?=$station_i;?><br>
+															EKG<br>
+															.............................
+														</td>
+													</tr>
+												</table>
+											</td>
+											<?php
+											$station_i++;
+										}	
+										?>
+								</table>
 							</td>
 						</tr>
 						<tr>
@@ -557,8 +578,15 @@ if( empty($page) ){
 			- กรุณาอย่าทำเอกสารใบนำทางหาย เป็นอันเด็ดขาด
 		</div>
 		<?php
-		$i++;
+		
 
+		if( ( $i % 2 ) == 0 ){
+			?>
+			<div style="page-break-after: always;"></div>
+			<?php
+		}
+
+		$i++;
 	} // End foreach
 
 }

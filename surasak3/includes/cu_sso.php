@@ -62,9 +62,62 @@ class CU_SSO{
         global $Conn;
 
         $sql = "SELECT `prefix` FROM `runno` WHERE `title` = 'y_chekup'";
-        $q = mysql_query($sql);
+        $q = mysql_query($sql, $Conn);
         $y = mysql_fetch_assoc($q);
         return $y;
+    }
+
+    private function create_cache_db(){
+        global $Conn;
+
+        // เก็บเป็นแคชเอาไว้ เพราะ query แบบเดิมมันช้า
+        $sql = "CREATE TEMPORARY TABLE `out_result_chkup_tmp` 
+        SELECT * 
+        FROM `out_result_chkup` 
+        WHERE `hn` = '$hn' ";
+        mysql_query($sql, $Conn);
+
+        $sql = "CREATE TEMPORARY TABLE `resulthead_tmp` 
+        SELECT * 
+        FROM `resulthead` 
+        WHERE `hn` = '$hn' 
+        AND `clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%'";
+        mysql_query($sql, $Conn);
+    }
+
+    private function test_cbc($year_checkup, $age, $sex){
+        global $Conn;
+
+        $clinical = '';
+        // ตรวจได้ 1 ครั้งในช่วงอายุ 18-54 นี้
+        if( $age >= 18 && $age <= 54 ){
+
+            $where = "AND a.`year_chk` <= '$year_checkup' ";
+            $clinical = "AND b.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' ";
+
+        // 55-70 ตรวจได้ปีละครั้ง
+        } else if ( $age >= 55 && $age <= 70 ){
+
+            $where = "AND a.`year_chk` = '$year_checkup' ";
+            $clinical = "AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' ";
+            
+        }
+
+        // ในปีงบนี้ตรวจไปแล้วรึยัง
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+        WHERE a.`hn` = '$hn' 
+        $where 
+        $clinical
+        AND b.`profilecode` = 'CBC'";
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        // เป็น 0 แสดงว่าปีนี้ยังไม่ได้ตรวจ ให้เก็บค่าว่าตรวจได้
+        if( $check_row === 0 ){
+            $this->code[] = 'CBC-sso';
+        }
     }
 
     // ตรวจสอบว่าสามารถตรวจอะไรได้บ้าง จากรายการที่อยากตรวจ
@@ -78,57 +131,16 @@ class CU_SSO{
         $this->checkup_list = array();
         $this->code = array();
 
-        // ปีงบ
+        // ปีงบประมาณ
         $year_checkup = get_year_checkup();
 
-        $sql = "CREATE TEMPORARY TABLE `out_result_chkup_tmp` 
-        SELECT * 
-        FROM `out_result_chkup` 
-        WHERE `hn` = '$hn' ";
-        mysql_query($sql);
-
-        $sql = "CREATE TEMPORARY TABLE `resulthead_tmp` 
-        SELECT * 
-        FROM `resulthead` 
-        WHERE `hn` = '$hn' 
-        AND `clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%'";
-        mysql_query($sql);
-        
+        $this->create_cache_db();
 
         // ความสมบูรณ์ของเม็ดเลือด
         if( in_array('CBC-sso', $package) === true && ( $age >= 18 && $age <= 70 ) ){
             // $this->checkup_list[] = 'ความสมบูรณ์ของเม็ดเลือด CBC'."<br>";
 
-            $clinical = '';
-            // ตรวจได้ 1 ครั้งในช่วงอายุ 18-54 นี้
-            if( $age >= 18 && $age <= 54 ){
-
-                $where = "AND a.`year_chk` <= '$year_checkup' ";
-                $clinical = "AND b.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' ";
-
-            // 55-70 ตรวจได้ปีละครั้ง
-            } else if ( $age >= 55 && $age <= 70 ){
-
-                $where = "AND a.`year_chk` = '$year_checkup' ";
-                $clinical = "AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' ";
-                
-            }
-
-            // ในปีงบนี้ตรวจไปแล้วรึยัง
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-            WHERE a.`hn` = '$hn' 
-            $where 
-            $clinical
-            AND b.`profilecode` = 'CBC'";
-            $q = mysql_query($sql);
-            $check_row = mysql_num_rows($q);
-            
-            // เป็น 0 แสดงว่าปีนี้ยังไม่ได้ตรวจ ให้เก็บค่าว่าตรวจได้
-            if( $check_row === 0 ){
-                $this->code[] = 'CBC-sso';
-            }
+            $this->test_cbc($year_checkup, $age, $sex);
         }
         
         // ปัสสาวะ UA 55ปีขึ้นไป ตรวจได้ปีละครั้ง
@@ -141,7 +153,7 @@ class CU_SSO{
             WHERE a.`hn` = '$hn' 
             AND a.`year_chk` = '$year_checkup' 
             AND b.`profilecode` = 'UA'";
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
@@ -187,7 +199,7 @@ class CU_SSO{
             AND b.`profilecode` = 'BS' 
             $group_by";
             
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             if( $check_row === 0 ){
                 $this->code[] = 'BS-sso';
@@ -204,7 +216,7 @@ class CU_SSO{
             WHERE a.`hn` = '$hn' 
             AND a.`year_chk` = '$year_checkup' 
             AND b.`profilecode` = 'CR'";
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
@@ -235,7 +247,7 @@ class CU_SSO{
             AND b.`profilecode` = 'LIPID' 
             GROUP BY a.`hn` ";
             
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
@@ -255,7 +267,7 @@ class CU_SSO{
             AND a.`year_chk` <= '$year_checkup' 
             AND b.`profilecode` = 'HBSAG' 
             GROUP BY b.`hn` ";
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
@@ -299,7 +311,7 @@ class CU_SSO{
             AND b.`profilecode` = 'PAP' 
             $group_by";
             
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             if( $check_row === 0 ){
                 $this->code[] = 'PAP-sso';
@@ -316,7 +328,7 @@ class CU_SSO{
             WHERE a.`hn` = '$hn' 
             AND a.`year_chk` = '$year_checkup' 
             AND b.`profilecode` = 'STOCB'";
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
@@ -333,7 +345,7 @@ class CU_SSO{
             WHERE a.`hn` = '$hn' 
             AND a.`year_chk` <= '$year_checkup' 
             GROUP BY b.`hn` ";
-            $q = mysql_query($sql);
+            $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
@@ -351,8 +363,26 @@ class CU_SSO{
         return $this->code;
     }
 
-    public function get_list(){
+    // แสดงรายการที่สามารถตรวจได้จาก อายุ
+    public function find_package_from_age($hn, $year_birth, $age, $sex){
 
+        $age = (int) $age;
+        $year_birth = (int) $year_birth;
+        
+        $this->code = array();
+
+        // ปีงบประมาณ
+        $year_checkup = get_year_checkup();
+        $this->create_cache_db();
+
+        // ความสมบูรณ์ของเม็ดเลือด
+        if( $age >= 18 && $age <= 70 ){
+            // $this->checkup_list[] = 'ความสมบูรณ์ของเม็ดเลือด CBC'."<br>";
+
+            $this->test_cbc($year_checkup, $age, $sex);
+        }
+
+        var_dump($this->code);
     }
 
 }
