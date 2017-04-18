@@ -140,7 +140,7 @@ if (isset($sIdname)){} else {die;} //for security
 			return $ageY;
 		}
 
-		$sql = "SELECT `hn`,`list` 
+		$sql = "SELECT `hn`,`list`,`age`
 		FROM `testmatch` 
 		WHERE `hn` = '$cHn'";
 		$q = mysql_query($sql) or die( mysql_error() );
@@ -155,7 +155,7 @@ if (isset($sIdname)){} else {die;} //for security
 		$user_gender = trim($user['sex']);
 		$sex = ( $user_gender === 'ช' ) ? 1 : 2 ;
 
-		$age_year = calcage($user['dbirth']);
+		$age_year = $item['age'];
 		$year_birth = substr($user['dbirth'], 0, 4);
 
 		$json = new Services_JSON();
@@ -175,7 +175,7 @@ if (isset($sIdname)){} else {die;} //for security
 		$sso = new CU_SSO();
 
 		// ตรวจสอบรายการตรวจ
-		$sso->check($json_list, $cHn, ($year_birth - 543), $age_year, $sex);
+		$sso->check($json_list, $cHn, $year_birth, $age_year, $sex);
 		// $full_name = $sso->get_lab_name();
 		// dump($full_name);
 
@@ -211,7 +211,7 @@ if (isset($sIdname)){} else {die;} //for security
 		$x = 0;
 		foreach( $json_list as $key => $lab ){
 			
-			$sql = "SELECT `code`,`detail`,`price`,`yprice`,`nprice` 
+			$sql = "SELECT `code`,`detail`,`price`,`yprice`,`nprice`,`part`
 			FROM `labcare` 
 			WHERE `code` = '$lab'";
 			$q = mysql_query($sql) or die( mysql_error() );
@@ -236,7 +236,7 @@ if (isset($sIdname)){} else {die;} //for security
 			$aTrade[$x] = $item['detail'];
 			$aPrice[$x] = $price;
 
-			$aPart[$x] = 'LAB';
+			$aPart[$x] = $item['part'];
 			$aAmount[$x] = 1;
 			$money = $Amount * $price ;
 			$aMoney[$x] = $money;

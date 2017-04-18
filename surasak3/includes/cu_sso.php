@@ -153,6 +153,7 @@ class CU_SSO{
             WHERE a.`hn` = '$hn' 
             AND a.`year_chk` = '$year_checkup' 
             AND b.`profilecode` = 'UA'";
+            
             $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
@@ -226,7 +227,7 @@ class CU_SSO{
         }
         
         // ไขมันในเส้นเลือด 20ปีขึ้นไป ทุกๆ5ปีตรวจได้ 1ครั้ง
-        if( in_array('LIPID-sso', $package) === true && $age >= 20 ){
+        if( in_array('CHOL-sso', $package) === true && $age >= 20 ){
             // $this->checkup_list[] = 'ไขมันในเส้นเลือดชนิด Total & HDL cholesterol'."<br>";
 
             $year_before = $year_checkup - 4;
@@ -244,19 +245,48 @@ class CU_SSO{
             WHERE a.`hn` = '$hn' 
             $where 
             $clinical 
-            AND b.`profilecode` = 'LIPID' 
+            AND b.`profilecode` = 'CHOL' 
             GROUP BY a.`hn` ";
             
             $q = mysql_query($sql, $Conn);
             $check_row = mysql_num_rows($q);
             
             if( $check_row === 0 ){
-                $this->code[] = 'LIPID-sso';
+                $this->code[] = 'CHOL-sso';
+            }
+        }
+
+        if( in_array('HDL-sso', $package) === true && $age >= 20 ){
+            // $this->checkup_list[] = 'ไขมันในเส้นเลือดชนิด Total & HDL cholesterol'."<br>";
+
+            $year_before = $year_checkup - 4;
+            $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
+
+            $clinical_range = array();
+            for ($i=$year_before; $i <= $year_checkup; $i++) { 
+                $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
+            }
+            $clinical = "AND (".implode('OR', $clinical_range).")";
+
+            $sql = "SELECT b.`hn`  
+            FROM `out_result_chkup_tmp` AS a 
+            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+            WHERE a.`hn` = '$hn' 
+            $where 
+            $clinical 
+            AND b.`profilecode` = 'HDL' 
+            GROUP BY a.`hn` ";
+            
+            $q = mysql_query($sql, $Conn);
+            $check_row = mysql_num_rows($q);
+            
+            if( $check_row === 0 ){
+                $this->code[] = 'HDL-sso';
             }
         }
 
         // ไวรัสตับอักเสบ เกิดก่อน 2535(1992) ตรวจได้ครั้งเดียวตลอดชีวิต
-        if( in_array('HBSAG-sso', $package) === true && $year_birth > 1992 ){
+        if( in_array('HBSAG-sso', $package) === true && $year_birth < 2535 ){
             // $this->checkup_list[] = 'เชื้อไวรัสตับอักเสบ HBsAg'."<br>";
 
             $sql = "SELECT b.`hn`  
@@ -377,8 +407,6 @@ class CU_SSO{
 
         // ความสมบูรณ์ของเม็ดเลือด
         if( $age >= 18 && $age <= 70 ){
-            // $this->checkup_list[] = 'ความสมบูรณ์ของเม็ดเลือด CBC'."<br>";
-
             $this->test_cbc($year_checkup, $age, $sex);
         }
 

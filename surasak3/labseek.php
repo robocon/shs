@@ -423,12 +423,14 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 
 		// ถ้ามีข้อมูลอยู่ในช่วงของการตรวจ จะแสดงผล
 		$test_row = mysql_num_rows($q);
-		if( $test_row > 0 ){
+		$item = mysql_fetch_assoc($q);
 
-			$item = mysql_fetch_assoc($q);
+		$json = new Services_JSON();
+		$json_list = $json->decode($item['list']);
+		
+		// var_dump($_SESSION["list_codeed"]);
 
-			$json = new Services_JSON();
-			$json_list = $json->decode($item['list']);
+		if( $test_row > 0 && count($json_list) > 0 ){
 
 			// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
 			// ถ้าสั่งจากหน้าของ lab จะตัด xray ออกไป
@@ -458,14 +460,29 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 									?>
 									<a target="right" href="<?=$href;?>">คิดเงิน</A>
 								</td>
-								<td><?=implode('<br>', $json_list);?></td>
+								<td>
+									<?//=implode('<br>', $json_list);?>
+									<?php
+									foreach( $json_list as $test_key => $test_val ){
+										// var_dump($test_val);
+										$color = 'white';
+										if( array_key_exists($test_val, $_SESSION["list_codeed"]) === true ){
+											$color = 'red';
+										}
+
+										?>
+										<span style="background-color: <?=$color;?>"><?=$test_val;?></span><br>
+										<?php
+									}
+									?>
+								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 			</table>
 			<?php
-		} 
+		}
 		
 		// กรณี ที่เป็น walk-in และ ผู้ป่วยมีสิทธิประกันสังคม
 		$thdate_format = date('d-m-').( date('Y') + 543 ).$cHn;

@@ -81,26 +81,35 @@ if( $action === 'import' ){
 			$surname = trim($item['1']);
 			$age = trim($item['2']);
 			
+			// รายการตรวจใน csv จะเรียงตามนี้
 			$pre_list = array(
 				'CBC-sso' => $item['4'],
 				'UA-sso' => $item['5'],
 				'BS-sso' => $item['6'],
 				'CR-sso' => $item['7'],
-				'LIPID-sso' => $item['8'],
+				'HDL-CHOL-sso' => $item['8'], // ตัวนี้พิเศษหน่อย
 				'HBSAG-sso' => $item['9'],
 				'PAP-sso' => $item['10'],
 				'STOCB-sso' => $item['11'],
-				'41001-sso' => $item['12'], //x-ray
+				'41001-sso' => $item['12'], // x-ray
 			);
 			
 			$list = array();
 			foreach ($pre_list as $code => $value) {
 				$value = ( !empty($value) ) ? 1 : 0 ;
 				if( $value > 0 ){
-					$list[] = $code;
+					
+					// ในรายการตรวจเค้าจะเช็กมาตัวเดียว แต่เราต้องแยกออกมาสองตัว
+					if( $code == 'HDL-CHOL-sso' ){
+						$list[] = 'CHOL-sso';
+						$list[] = 'HDL-sso';
+					}else{
+						$list[] = $code;
+					}
+					
 				}
 			}
-
+			
 			$json_list = $json->encode($list);
 
 			$name = trim(str_replace(array('นางสาว','นาย','นาง','น.ส.'), '', $name));
@@ -115,7 +124,7 @@ if( $action === 'import' ){
 			
 			if( $user_count > 0 ){
 				$sql = "INSERT INTO `testmatch` VALUES (
-				NULL,
+				NULL, 
 				'$hn', 
 				'$age',
 				'$company', 
@@ -133,6 +142,7 @@ if( $action === 'import' ){
 				$check_user = $db->get_item();
 				$bad_lists[] = "$hn $name $surname (".$check_user['fullname'].")";
 			}
+
 		}
 	}
 
@@ -239,6 +249,10 @@ if( empty($page) ){
 				}
 				?>
 			</select>
+		</div>
+		<div>
+			<input type="checkbox" id="register" name="register" value="1"> 
+			<label for="register">ผ่านแผนกทะเบียน</label>
 		</div>
 		<div>
 			<input type="checkbox" id="ekg" name="ekg" value="1"> 
@@ -493,6 +507,24 @@ if( empty($page) ){
 
 										// แทรกทะเบียน ฯลฯ ได้
 										// 
+
+										$register = $_POST['register'];
+										if( $register > 0 ){
+											?>
+											<td>
+												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+													<tr align='center' style='line-height:16px'>
+														<td>
+															สถานี <?=$station_i;?><br>
+															ทะเบียน<br>
+															.............................
+														</td>
+													</tr>
+												</table>
+											</td>
+											<?php
+											$station_i++;
+										}
 
 										foreach ($stations as $key => $station) {
 											# code...
