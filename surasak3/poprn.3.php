@@ -198,7 +198,7 @@ return $vat;
 						}
 ///////End Load offisers
 
-    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,ponoyear,podate,bounddate,row_id,,chkindate FROM pocompany WHERE row_id = '$nRow_id' ";
+    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,ponoyear,podate,bounddate,row_id,chkindate,senddate FROM pocompany WHERE row_id = '$nRow_id' ";
     $result = mysql_query($query) or die("Query pocompany fail");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -220,7 +220,14 @@ return $vat;
 	$cPodate=$row->podate;
 	$cBounddate=$row->bounddate;
 	$cChkindate=$row->chkindate;  //วันที่รับมอบ
-	$cPonoyear=$row->ponoyear;	
+	$cSenddate=$row->senddate;  //ส่งของเมื่อ
+	$cPonoyear=$row->ponoyear;
+	
+	if(empty($cSenddate)){
+		$cSenddate=$cBounddate;
+	}else{
+		$cSenddate=$cSenddate;
+	}
 	
 	if($cComcode=='GPO/S' || $cComcode=='GPO_NAP' || $cComcode=='G003.1' || $cComcode=='G003.2' || $cComcode=='M001' || $cComcode=='F007' || $cComcode=='A040'){
 		$vitee="วิธีกรณีพิเศษ";
@@ -771,11 +778,11 @@ print "<div style='left:365PX;top:2663PX;height:23PX;TEXT-ALIGN:RIGHT;'><span cl
 print "<div style='left:365PX;top:2643PX;height:23PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>.................................................................</span></div>";
 print "<div style='left:373PX;top:2870PX;height:23PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>.................................................................</span></div>";
 
-print "<DIV style='left:78PX;top:2066PX;width:695PX;height:25PX;TEXT-ALIGN:CENTER;'><span class='      fc1-3'><b>ข้อตกลงระหว่างผู้ซื้อและผู้ขายแนบท้ายใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญาใบสั่งซื้อที่ $cPono$cPonoyear ลง $cPodate</b></span></DIV>";
+print "<DIV style='left:78PX;top:2066PX;width:695PX;height:25PX;TEXT-ALIGN:CENTER;'><span class='      fc1-3'><b>ข้อตกลงระหว่างผู้ซื้อและผู้ขายแนบท้ายใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญาใบสั่งซื้อที่ $cPono$cPonoyear ลง $cChkindate</b></span></DIV>";
 print "<DIV style='left:138PX;top:2094PX;width:645PX;height:21PX;'><span class='fc1-3'>ข้อ 1. ผู้ขายรับรองว่าสิ่งของที่ขายให้ตามใบสั่งซื้อนี้มี รูปร่าง ลักษณะ ขนาด และคุณภาพไม่ต่ำกว่าที่กำหนดไว้ ตามคุณลักษณะเฉพาะ ตามใบสั่งซื้อ </span></DIV>";
 print "<DIV style='left:378PX;top:2869PX;width:42PX;height:23PX;'><span class='fc1-3'>$aYot[4]</span></DIV>";
 print "<DIV style='left:88PX;top:2114PX;width:695PX;height:21PX;'><span class='fc1-3'>ที่";
-  print "$cPono$cPonoyear ลง $cPodate โดยจะต้องเป็นของใหม่ไม่เคยถูกใช้มาก่อน ซึ่งผู้ซื้อได้สั่งซื้อตามจำนวนและราคาดังปรากฏในใบสั่งซื้อฉบับนี้</span></DIV>";
+  print "$cPono$cPonoyear ลง $cChkindate โดยจะต้องเป็นของใหม่ไม่เคยถูกใช้มาก่อน ซึ่งผู้ซื้อได้สั่งซื้อตามจำนวนและราคาดังปรากฏในใบสั่งซื้อฉบับนี้</span></DIV>";
 print "<DIV style='left:309PX;top:2665PX;width:55PX;height:23PX;TEXT-ALIGN:RIGHT;'><span class='fc1-3'></span></DIV>";
 print "<DIV style='left:547PX;top:2665PX;width:51PX;height:23PX;'><span class='fc1-3'>พยาน</span></DIV>";
 print "<DIV style='left:309PX;top:2599PX;width:55PX;height:23PX;TEXT-ALIGN:RIGHT;'><span class='fc1-3'></span></DIV>";
@@ -886,7 +893,7 @@ print "</div>";
 print "<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:3280PX;width:743PX;height:560PX;'>";
 print "<table border=0 cellpadding=0 cellspacing=0 width=736px height=553px><TD>&nbsp;</TD></TABLE>";
 print "</DIV>";
-print "<DIV style='left:504PX;top:3199PX;width:194PX;height:26PX;'><span class='fc1-2'>$cPodate</span></DIV>";
+print "<DIV style='left:504PX;top:3199PX;width:194PX;height:26PX;'><span class='fc1-2'>$cChkindate</span></DIV>";
 print "<DIV style='left:71PX;top:3175PX;width:159PX;height:26PX;'><span class='fc1-2'>$cPono$cPonoyear</span></DIV>";
 print "<DIV style='left:130PX;top:3129PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
 print "<DIV style='left:6PX;top:3175PX;width:66PX;height:26PX;'><span class='fc1-2'> ใบสั่งซื้อที่</span></DIV>";
@@ -901,7 +908,7 @@ print "<DIV style='left:670PX;top:3292PX;width:64PX;height:23PX;TEXT-ALIGN:CENTE
 print "<DIV style='left:588PX;top:3292PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>ไม่รวม VAT</span></DIV>";
 print "<DIV style='left:668PX;top:3110PX;width:82PX;height:23PX;TEXT-ALIGN:RIGHT;'><span class='fc1-3'>(ย.37)</span></DIV>";
 print "<DIV style='left:668PX;top:3094PX;width:82PX;height:23PX;TEXT-ALIGN:RIGHT;'><span class='fc1-3'>ทบ.101-048</span></DIV>";
-print "<DIV style='left:7PX;top:3249PX;width:761PX;height:26PX;'><span class='fc1-2'>ร.พ. ค่ายสุรศักดิ์มนตรี  และปฏิบัติตามข้อตกลงระหว่างผู้ซื้อและผู้ขาย แนบท้ายใบสั่งซื้อ เป็นข้อตกลงแทนการทำสัญญาใบสั่งซื้อที่ $cPono$cPonoyear ลง $cPodate </span></DIV>";
+print "<DIV style='left:7PX;top:3249PX;width:761PX;height:26PX;'><span class='fc1-2'>ร.พ. ค่ายสุรศักดิ์มนตรี  และปฏิบัติตามข้อตกลงระหว่างผู้ซื้อและผู้ขาย แนบท้ายใบสั่งซื้อ เป็นข้อตกลงแทนการทำสัญญาใบสั่งซื้อที่ $cPono$cPonoyear ลง $cChkindate </span></DIV>";
 print "<DIV style='left:516PX;top:3174PX;width:234PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-2'>......................................................................</span></DIV>";
 print "<DIV style='left:483PX;top:3283PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>จำนวน</span></DIV>";
 print "<DIV style='left:7PX;top:3224PX;width:761PX;height:26PX;'><span class='fc1-2'>ถึง
@@ -1246,7 +1253,7 @@ print "<DIV style='left:151PX;top:5818PX;width:55PX;height:30PX;TEXT-ALIGN:RIGHT
 print "<DIV style='left:149PX;top:5673PX;width:593PX;height:30PX;'><span class='fc1-0'>คณะกรรมการพิจารณาแล้ว เห็นควรรับพัสดุ ไว้ใช้ในราชการต่อไป และได้มอบพัสดุตามรายการ ให้แก่</span></DIV>";
 print "<DIV style='left:445PX;top:5644PX;width:104PX;height:30PX;'><span class='fc1-0'>ทันเวลากำหนด</span></DIV>";
 print "<DIV style='left:223PX;top:5702PX;width:308PX;height:30PX;'><span class='fc1-0'>เจ้าหน้าที่เก็บรักษา/รับไปใช้ในราชการต่อไปแล้วเมื่อ</span></DIV>";
-print "<DIV style='left:279PX;top:5644PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cBounddate</span></DIV>";
+print "<DIV style='left:279PX;top:5644PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cSenddate</span></DIV>";
 print "<DIV style='left:530PX;top:5702PX;width:167PX;height:30PX;'><span class='fc1-0'>$cBounddate</span></DIV>";
 print "<DIV style='left:575PX;top:5818PX;width:73PX;height:30PX;'><span class='fc1-0'>ผู้นำชี้</span></DIV>";
 print "<DIV style='left:151PX;top:5731PX;width:55PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'></span></DIV>";
@@ -1763,7 +1770,7 @@ print "<DIV style='left:24PX;top:8468PX;width:82PX;height:30PX;TEXT-ALIGN:CENTER
 print "<DIV style='left:212PX;top:8497PX;width:92PX;height:30PX;'><span class='fc1-0'>ตามใบสั่งซื้อที่</span></DIV>";
 print "<DIV style='left:303PX;top:8498PX;width:117PX;height:30PX;'><span class='fc1-0'>$cPono$cPonoyear</span></DIV>";
 print "<DIV style='left:212PX;top:8526PX;width:26PX;height:30PX;'><span class='fc1-0'>ลง</span></DIV>";
-print "<DIV style='left:237PX;top:8526PX;width:183PX;height:30PX;'><span class='fc1-0'>$cPodate</span></DIV>";
+print "<DIV style='left:237PX;top:8526PX;width:183PX;height:30PX;'><span class='fc1-0'>$cChkindate</span></DIV>";
 print "<DIV style='left:212PX;top:8555PX;width:111PX;height:30PX;'><span class='fc1-0'>ค่าภาษีมูลค่าเพิ่ม</span></DIV>";
 //print "<DIV style='left:442PX;top:8526PX;width:43PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>เงิน</span></DIV>";
 //print "<DIV style='left:442PX;top:8555PX;width:43PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>เงิน</span></DIV>";

@@ -5,13 +5,16 @@ $sql="select edpri,unitpri from druglst where drugcode='$Dgcode'";
 //echo $sql;
 $query=mysql_query($sql);
 $rows=mysql_fetch_array($query);
-if($rows["edpri"] < $rows["unitpri"]){  //ราคากลางน้อยกว่าราคาทุน/หน่วย
-$edpri=$rows["edpri"];  //ราคากลาง
-$unitpri=$rows["unitpri"];  //ราคาทุน/หน่วย
-	echo "<script>alert('ยา $Dgcode มีการกำหนดราคาทุน/หน่วยมากกว่าราคากลางครับ');</script>";  //พี่มุ้ยสั่ง 7/4/60
-	echo "<strong style='color:red;font-size:20px;'>กรุณาพิจารณาการสั่งซื้อยา $Dgcode  เนื่องจากราคาทุน/หน่วยสูงกว่าราคากลางที่กำหนด<br></strong>";
-	echo "<strong style='color:blue;font-size:20px;'>ราคากลาง คือ $edpri บาท<br>ราคาทุน/หน่วย คือ $unitpri บาท</strong>";
-	
+
+if($rows["edpri"] > 0){
+	if($rows["edpri"] < $rows["unitpri"]){  //ราคากลางน้อยกว่าราคาทุน/หน่วย
+	$edpri=$rows["edpri"];  //ราคากลาง
+	$unitpri=$rows["unitpri"];  //ราคาทุน/หน่วย
+		echo "<script>alert('ยา $Dgcode มีการกำหนดราคาทุน/หน่วยมากกว่าราคากลางครับ');</script>";  //พี่มุ้ยสั่ง 7/4/60
+		echo "<strong style='color:red;font-size:20px;'>กรุณาพิจารณาการสั่งซื้อยา $Dgcode  เนื่องจากราคาทุน/หน่วยสูงกว่าราคากลางที่กำหนด<br></strong>";
+		echo "<strong style='color:blue;font-size:20px;'>ราคากลาง คือ $edpri บาท<br>ราคาทุน/หน่วย คือ $unitpri บาท</strong>";
+		
+	}
 }
 
     print"<form method='POST' action='podginfo.php' target='top'>";
