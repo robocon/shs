@@ -175,6 +175,7 @@ if( $action === 'import' ){
 	}
 </style>
 <div id="no_print" class="col">
+	<h3>ตรวจสุขภาพแบบกลุ่ม ประกันสังคม</h3>
 	<div class="cell">
 		<ul class="nav">
 			<li>

@@ -249,7 +249,7 @@ if (isset($sIdname)){} else {die;} //for security
 			$aSumNprice = array_sum($aNprice);
 
 	        print("<tr>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'> </td>\n".
+			"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right' href=\"labdele.php?Delrow=$x\">ź</td>\n".
 			"<td bgcolor=F5DEB3><font face='Angsana New'>$x</td>\n".
 			"<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$x]</td>\n".
 			"<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$x]</td>\n".
