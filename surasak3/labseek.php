@@ -496,7 +496,8 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 		WHERE a.`thdatehn` = '$thdate_format' ";
 		$q = mysql_query($sql);
 		$test_checkup = mysql_fetch_assoc($q);
-		// var_dump($sql);
+
+		// ต้องผ่านทะเบียนและออก opdcard เป็น ex42
 		if( $test_checkup['ptright_code'] == 'R07' && $test_checkup['ex_code'] == 'EX42' ){
 			
 			include 'includes/cu_sso.php';

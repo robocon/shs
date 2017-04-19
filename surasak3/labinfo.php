@@ -190,6 +190,8 @@ if (isset($sIdname)){} else {die;} //for security
 		$diff = array_diff($json_list, $codes);
 		// var_dump($diff);
 
+		// exit;
+
 		/*
 		$sql = "SELECT `code`,`detail`,`price`,`yprice`,`nprice` 
 		FROM labcare 

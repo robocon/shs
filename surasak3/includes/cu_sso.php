@@ -85,7 +85,7 @@ class CU_SSO{
         mysql_query($sql, $Conn);
     }
 
-    private function test_cbc($year_checkup, $age, $sex){
+    private function test_cbc($hn, $year_checkup, $age){
         global $Conn;
 
         $clinical = '';
@@ -111,12 +111,248 @@ class CU_SSO{
         $where 
         $clinical
         AND b.`profilecode` = 'CBC'";
+
+        // var_dump($sql);
+
         $q = mysql_query($sql, $Conn);
         $check_row = mysql_num_rows($q);
         
         // เป็น 0 แสดงว่าปีนี้ยังไม่ได้ตรวจ ให้เก็บค่าว่าตรวจได้
         if( $check_row === 0 ){
             $this->code[] = 'CBC-sso';
+        }
+
+    }
+
+    private function test_ua($hn, $year_checkup){
+        global $Conn;
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'
+        WHERE a.`hn` = '$hn' 
+        AND a.`year_chk` = '$year_checkup' 
+        AND b.`profilecode` = 'UA'";
+        
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = 'UA-sso';
+        }
+
+    }
+
+    private function test_bs($hn, $year_checkup, $age){
+        global $Conn;
+
+        // 35-54 ทุกๆ3ปีตรวจได้ 1ครั้ง 
+        $group_by = '';
+        if( $age >= 35 && $age <= 54 ){
+
+            // 3ปีย้อนหลัง
+            // ที่ต้อง -2 เพราะเรานับปีตั้งต้นไปด้วย เช่น 60-2=58 จะได้ 58 59 60 ครบ 3 ปีพอดี
+            $year_before = $year_checkup - 2;
+            $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
+
+            $clinical_range = array();
+            for ($i=$year_before; $i <= $year_checkup; $i++) { 
+                $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
+            }
+            $clinical = "AND (".implode('OR', $clinical_range).")";
+
+            $group_by = "GROUP BY a.`hn` ";
+
+        // 55 ขึ้นไปตรวจได้ปีละครั้ง
+        } else if ( $age >= 55 ){
+
+            $where = "AND a.`year_chk` = '$year_checkup' ";
+            $clinical = "AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'";
+            
+        }
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+        WHERE a.`hn` = '$hn' 
+        $where 
+        $clinical 
+        AND b.`profilecode` = 'BS' 
+        $group_by";
+        
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        if( $check_row === 0 ){
+            $this->code[] = 'BS-sso';
+        }
+    }
+
+    private function test_cr($hn, $year_checkup){
+        global $Conn;
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'
+        WHERE a.`hn` = '$hn' 
+        AND a.`year_chk` = '$year_checkup' 
+        AND b.`profilecode` = 'CR'";
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = 'CR-sso';
+        }
+    }
+
+    private function test_chol($hn, $year_checkup){
+        global $Conn;
+
+        $year_before = $year_checkup - 4;
+        $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
+
+        $clinical_range = array();
+        for ($i=$year_before; $i <= $year_checkup; $i++) { 
+            $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
+        }
+        $clinical = "AND (".implode('OR', $clinical_range).")";
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+        WHERE a.`hn` = '$hn' 
+        $where 
+        $clinical 
+        AND b.`profilecode` = 'CHOL' 
+        GROUP BY a.`hn` ";
+        
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = 'CHOL-sso';
+        }
+    }
+
+    private function test_hdl($hn, $year_checkup){
+        global $Conn;
+
+        $year_before = $year_checkup - 4;
+        $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
+
+        $clinical_range = array();
+        for ($i=$year_before; $i <= $year_checkup; $i++) { 
+            $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
+        }
+        $clinical = "AND (".implode('OR', $clinical_range).")";
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+        WHERE a.`hn` = '$hn' 
+        $where 
+        $clinical 
+        AND b.`profilecode` = 'HDL' 
+        GROUP BY a.`hn` ";
+        
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = 'HDL-sso';
+        }
+    }
+
+    private function test_hbsag($hn, $year_checkup){
+        global $Conn;
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+        WHERE a.`hn` = '$hn' 
+        AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี%' 
+        AND a.`year_chk` <= '$year_checkup' 
+        AND b.`profilecode` = 'HBSAG' 
+        GROUP BY b.`hn` ";
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = 'HBSAG-sso';
+        }
+    }
+
+    private function test_pap($hn, $year_checkup, $age, $sex){
+        global $Conn;
+
+        $group_by = '';
+        if( $age >= 30 && $age <= 54 ){
+
+            $year_before = $year_checkup - 2;
+            $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
+
+            $clinical_range = array();
+            for ($i=$year_before; $i <= $year_checkup; $i++) { 
+                $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
+            }
+            $clinical = "AND (".implode('OR', $clinical_range).")";
+
+            $group_by = "GROUP BY a.`hn` ";
+
+        // 55 ขึ้นไปตรวจได้ปีละครั้ง
+        } else if ( $age >= 55 ){
+
+            $where = "AND a.`year_chk` = '$year_checkup' ";
+            $clinical = "AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'";
+            
+        }
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
+        WHERE a.`hn` = '$hn' 
+        $where 
+        $clinical 
+        AND b.`profilecode` = 'PAP' 
+        $group_by";
+        
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        if( $check_row === 0 ){
+            $this->code[] = 'PAP-sso';
+        }
+    }
+
+    private function test_stocb($hn, $year_checkup){
+        global $Conn;
+
+        $sql = "SELECT b.`hn`  
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'
+        WHERE a.`hn` = '$hn' 
+        AND a.`year_chk` = '$year_checkup' 
+        AND b.`profilecode` = 'STOCB'";
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = 'STOCB-sso';
+        }
+    }
+
+    private function test_xray($hn, $year_checkup){
+        global $Conn;
+
+        $sql = "SELECT b.`hn` 
+        FROM `out_result_chkup_tmp` AS a 
+        LEFT JOIN `depart` AS b ON b.`hn` = a.`hn` AND b.`depart` = 'XRAY'
+        WHERE a.`hn` = '$hn' 
+        AND a.`year_chk` <= '$year_checkup' 
+        GROUP BY b.`hn` ";
+        $q = mysql_query($sql, $Conn);
+        $check_row = mysql_num_rows($q);
+        
+        if( $check_row === 0 ){
+            $this->code[] = '41001-sso';
         }
     }
 
@@ -138,249 +374,51 @@ class CU_SSO{
 
         // ความสมบูรณ์ของเม็ดเลือด
         if( in_array('CBC-sso', $package) === true && ( $age >= 18 && $age <= 70 ) ){
-            // $this->checkup_list[] = 'ความสมบูรณ์ของเม็ดเลือด CBC'."<br>";
-
-            $this->test_cbc($year_checkup, $age, $sex);
+            $this->test_cbc($hn, $year_checkup, $age);
         }
         
         // ปัสสาวะ UA 55ปีขึ้นไป ตรวจได้ปีละครั้ง
         if( in_array('UA-sso', $package) === true && $age >= 55 ){
-            // $this->checkup_list[] = 'ปัสสาวะ UA'."<br>";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'
-            WHERE a.`hn` = '$hn' 
-            AND a.`year_chk` = '$year_checkup' 
-            AND b.`profilecode` = 'UA'";
-            
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = 'UA-sso';
-            }
+            $this->test_ua($hn, $year_checkup);
         }
 
         // น้ำตาลในเลือด
         if( in_array('BS-sso', $package) === true && $age >= 35 ){
-            // $this->checkup_list[] = 'น้ำตาลในเลือด FBS'."<br>";
-
-            // 35-54 ทุกๆ3ปีตรวจได้ 1ครั้ง 
-            $group_by = '';
-            if( $age >= 35 && $age <= 54 ){
-
-                // 3ปีย้อนหลัง
-                // ที่ต้อง -2 เพราะเรานับปีตั้งต้นไปด้วย เช่น 60-2=58 จะได้ 58 59 60 ครบ 3 ปีพอดี
-                $year_before = $year_checkup - 2;
-                $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
-
-                $clinical_range = array();
-                for ($i=$year_before; $i <= $year_checkup; $i++) { 
-                    $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
-                }
-                $clinical = "AND (".implode('OR', $clinical_range).")";
-
-                $group_by = "GROUP BY a.`hn` ";
-
-            // 55 ขึ้นไปตรวจได้ปีละครั้ง
-            } else if ( $age >= 55 ){
-
-                $where = "AND a.`year_chk` = '$year_checkup' ";
-                $clinical = "AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'";
-                
-            }
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-            WHERE a.`hn` = '$hn' 
-            $where 
-            $clinical 
-            AND b.`profilecode` = 'BS' 
-            $group_by";
-            
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            if( $check_row === 0 ){
-                $this->code[] = 'BS-sso';
-            }
+            $this->test_bs($hn, $year_checkup, $age);
         }
         
         // การทำงานของไต CR 55ปีขึ้นไป ตรวจได้ปีละครั้ง
         if( in_array('CR-sso', $package) === true && $age >= 55 ){
-            // $this->checkup_list[] = 'การทำงานของไต Cr'."<br>";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'
-            WHERE a.`hn` = '$hn' 
-            AND a.`year_chk` = '$year_checkup' 
-            AND b.`profilecode` = 'CR'";
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = 'CR-sso';
-            }
-
+            $this->test_cr($hn, $year_checkup);
         }
         
         // ไขมันในเส้นเลือด 20ปีขึ้นไป ทุกๆ5ปีตรวจได้ 1ครั้ง
         if( in_array('CHOL-sso', $package) === true && $age >= 20 ){
-            // $this->checkup_list[] = 'ไขมันในเส้นเลือดชนิด Total & HDL cholesterol'."<br>";
-
-            $year_before = $year_checkup - 4;
-            $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
-
-            $clinical_range = array();
-            for ($i=$year_before; $i <= $year_checkup; $i++) { 
-                $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
-            }
-            $clinical = "AND (".implode('OR', $clinical_range).")";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-            WHERE a.`hn` = '$hn' 
-            $where 
-            $clinical 
-            AND b.`profilecode` = 'CHOL' 
-            GROUP BY a.`hn` ";
+            $this->test_chol($hn, $year_checkup);
             
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = 'CHOL-sso';
-            }
         }
 
         if( in_array('HDL-sso', $package) === true && $age >= 20 ){
-            // $this->checkup_list[] = 'ไขมันในเส้นเลือดชนิด Total & HDL cholesterol'."<br>";
-
-            $year_before = $year_checkup - 4;
-            $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
-
-            $clinical_range = array();
-            for ($i=$year_before; $i <= $year_checkup; $i++) { 
-                $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
-            }
-            $clinical = "AND (".implode('OR', $clinical_range).")";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-            WHERE a.`hn` = '$hn' 
-            $where 
-            $clinical 
-            AND b.`profilecode` = 'HDL' 
-            GROUP BY a.`hn` ";
-            
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = 'HDL-sso';
-            }
+            $this->test_hdl($hn, $year_checkup);
         }
 
         // ไวรัสตับอักเสบ เกิดก่อน 2535(1992) ตรวจได้ครั้งเดียวตลอดชีวิต
         if( in_array('HBSAG-sso', $package) === true && $year_birth < 2535 ){
-            // $this->checkup_list[] = 'เชื้อไวรัสตับอักเสบ HBsAg'."<br>";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-            WHERE a.`hn` = '$hn' 
-            AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี%' 
-            AND a.`year_chk` <= '$year_checkup' 
-            AND b.`profilecode` = 'HBSAG' 
-            GROUP BY b.`hn` ";
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = 'HBSAG-sso';
-            }
-
+            $this->test_hbsag($hn, $year_checkup);
         }
         
         // มะเร็งปากมดลูก 
         if( in_array('PAP-sso', $package) === true && $age >= 30 && $sex > 1 ){
-            // $this->checkup_list[] = 'มะเร็งปากมดลูก Pap Smear'."<br>";
-            
-            $group_by = '';
-            if( $age >= 30 && $age <= 54 ){
-
-                $year_before = $year_checkup - 2;
-                $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
-
-                $clinical_range = array();
-                for ($i=$year_before; $i <= $year_checkup; $i++) { 
-                    $clinical_range[] = " b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$i' ";
-                }
-                $clinical = "AND (".implode('OR', $clinical_range).")";
-
-                $group_by = "GROUP BY a.`hn` ";
-
-            // 55 ขึ้นไปตรวจได้ปีละครั้ง
-            } else if ( $age >= 55 ){
-
-                $where = "AND a.`year_chk` = '$year_checkup' ";
-                $clinical = "AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'";
-                
-            }
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-            WHERE a.`hn` = '$hn' 
-            $where 
-            $clinical 
-            AND b.`profilecode` = 'PAP' 
-            $group_by";
-            
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            if( $check_row === 0 ){
-                $this->code[] = 'PAP-sso';
-            }
+            $this->test_pap($hn, $year_checkup, $age, $sex);
         }
         
         // 
         if( in_array('STOCB-sso', $package) === true && $age >= 50 ){
-            // $this->checkup_list[] = 'เลือดในอุจจาระ FOBT'."<br>";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup'
-            WHERE a.`hn` = '$hn' 
-            AND a.`year_chk` = '$year_checkup' 
-            AND b.`profilecode` = 'STOCB'";
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = 'STOCB-sso';
-            }
+            $this->test_stocb($hn, $year_checkup);
         }
         
         if( in_array('41001-sso', $package) === true && $age >= 15 ){
-            // $this->checkup_list[] = 'Chest X-ray'."<br>";
-
-            $sql = "SELECT b.`hn`  
-            FROM `out_result_chkup_tmp` AS a 
-            LEFT JOIN `depart` AS b ON b.`hn` = a.`hn` AND b.`depart` = 'XRAY'
-            WHERE a.`hn` = '$hn' 
-            AND a.`year_chk` <= '$year_checkup' 
-            GROUP BY b.`hn` ";
-            $q = mysql_query($sql, $Conn);
-            $check_row = mysql_num_rows($q);
-            
-            if( $check_row === 0 ){
-                $this->code[] = '41001-sso';
-            }
+            $this->test_xray($hn, $year_checkup);
         }
  
     }
@@ -407,7 +445,51 @@ class CU_SSO{
 
         // ความสมบูรณ์ของเม็ดเลือด
         if( $age >= 18 && $age <= 70 ){
-            $this->test_cbc($year_checkup, $age, $sex);
+            $this->test_cbc($hn, $year_checkup, $age);
+        }
+
+        // ปัสสาวะ UA 55ปีขึ้นไป ตรวจได้ปีละครั้ง
+        if( $age >= 55 ){
+            $this->test_ua($hn, $year_checkup);
+        }
+
+        // น้ำตาลในเลือด
+        if( $age >= 35 ){
+            $this->test_bs($hn, $year_checkup, $age);
+        }
+        
+        // การทำงานของไต CR 55ปีขึ้นไป ตรวจได้ปีละครั้ง
+        if( $age >= 55 ){
+            $this->test_cr($hn, $year_checkup);
+        }
+        
+        // ไขมันในเส้นเลือด 20ปีขึ้นไป ทุกๆ5ปีตรวจได้ 1ครั้ง
+        if( $age >= 20 ){
+            $this->test_chol($hn, $year_checkup);
+            
+        }
+
+        if( $age >= 20 ){
+            $this->test_hdl($hn, $year_checkup);
+        }
+
+        // ไวรัสตับอักเสบ เกิดก่อน 2535(1992) ตรวจได้ครั้งเดียวตลอดชีวิต
+        if( $year_birth < 2535 ){
+            $this->test_hbsag($hn, $year_checkup);
+        }
+        
+        // มะเร็งปากมดลูก 
+        if( $age >= 30 && $sex > 1 ){
+            $this->test_pap($hn, $year_checkup, $age, $sex);
+        }
+        
+        // 
+        if( $age >= 50 ){
+            $this->test_stocb($hn, $year_checkup);
+        }
+        
+        if( $age >= 15 ){
+            $this->test_xray($hn, $year_checkup);
         }
 
         var_dump($this->code);
