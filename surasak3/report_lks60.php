@@ -33,9 +33,9 @@ label{ display: block; }
 </head>
 
 <body>
+
 	<div id="no_print">
 		<form name="formdx" action="report_lks60.php" method="post">
-		<center>
 			<div class="tet1">
 				พิมพ์ใบตรวจสุขภาพ <?=$title;?>
 			</div>
@@ -54,7 +54,6 @@ label{ display: block; }
 				}
 				?>
 			</div>
-		</center>
 		</form>
 	</div>
 <!--แสดงเนื้อหา-->
@@ -75,13 +74,13 @@ $showpart = $_POST['company'];
 $sql1 = "SELECT * FROM  out_result_chkup WHERE part='$showpart' ORDER BY hn asc";
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
-while($result2 = mysql_fetch_array($row2)){
+while($result = mysql_fetch_array($row2)){
 
-	$select = "select * from out_result_chkup  WHERE hn='".$result2['hn']."'";
+	// $select = "select * from out_result_chkup  WHERE hn='".$result['hn']."'";
 	//echo $select."<br>";
 	
-	$row = mysql_query($select)or die ("Query Fail line 91");
-	$result = mysql_fetch_array($row);
+	// $row = mysql_query($select)or die ("Query Fail line 91");
+	// $result = mysql_fetch_array($row);
 	
 	$ht = $result['height']/100;
 	$bmi=number_format($result['weight'] /($ht*$ht),2);
@@ -89,7 +88,7 @@ while($result2 = mysql_fetch_array($row2)){
 	
     $strSQL11 = "SELECT date_format(orderdate,'%d-%m-%Y') as orderdate2 
     FROM resulthead  
-    WHERE hn='".$result2['hn']."' 
+    WHERE hn='".$result['hn']."' 
     and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
     // var_dump($strSQL11);
     $objQuery11 = mysql_query($strSQL11);
@@ -101,7 +100,7 @@ while($result2 = mysql_fetch_array($row2)){
     <td colspan="2"><table width="100%">
       <tr>
         <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="87" height="83" /></td>
-        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพ <?=$title;?></strong></td>
+        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพ <br><?=$title;?></strong></td>
         <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
@@ -205,12 +204,19 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 					<td width="61%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
 					<td width="19%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
 					<td width="20%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+					<?php
+					/*
+					?>
+					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผลการตรวจ</strong></td>
+					<?php
+					*/
+					?>
 				</tr>
 				<?php 
 				$sql="SELECT * 
 				FROM resulthead 
 				WHERE profilecode='CBC' 
-				AND hn = '".$result2['hn']."' 
+				AND hn = '".$result['hn']."' 
 				AND clinicalinfo ='ตรวจสุขภาพประจำปี60'";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
@@ -300,6 +306,23 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 						<td><?=$objResult["labcode"]." ".$labmean;?></td>
 						<td align="center"><?=$objResult["result"];?></td>
 						<td align="center"><?=$objResult["normalrange"];?></td>
+						<?php
+						/*
+						?>
+						<td align="center">
+							<?php
+								$lab_result = $objResult["result"];
+								$pure_normalrange = str_replace(' ', '', $objResult["normalrange"]);
+								list($normal_min, $normal_max) = explode('-', $pure_normalrange);
+								// var_dump($normal_min);
+								// var_dump($normal_max);
+								// echo ( $normal_min >= $lab_result && $normal_max <= $lab_result ) ? 'ปกติ' : 'ผิดปกติ' ;
+
+							?>
+						</td>
+						<?php
+						*/
+						?>
 					</tr>
                 <?php 
 				} // End while
@@ -328,6 +351,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 								?>
 								</td>
 							</tr>
+							<!--
 							<tr height="25">
 								<td>&nbsp;</td>
 								<td><strong>การติดเชื้อแบคทีเรีย (NEU)</strong></td>
@@ -345,7 +369,8 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 								}
 								?>
 								</td>
-              				</tr>
+							</tr>
+							
 							<tr height="25">
 								<td>&nbsp;</td>
 								<td><strong>การติดเชื้อไวรัส หรือมะเร็งเม็ดเลือด (LYMP)</strong></td>
@@ -364,6 +389,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 								?>
 								</td>
 							</tr>
+							-->
 							<tr height="25">
 								<td>&nbsp;</td>
 								<td><strong>อาการโรคภูมิแพ้หรือพยาธิ (EOS)</strong></td>
@@ -427,13 +453,13 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
         <td height="30" align="center"><strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong></td>
       </tr>
       <tr>
-        <td><table width="100%" border="0" cellpadding="0" cellspacing="0" class="text3">
+        <td style="vertical-align: top;"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="text3">
           <tr>
-            <td width="53%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
-            <td width="17%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
-            <td width="30%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+            <td width="61%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
+            <td width="19%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+            <td width="20%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
           </tr>
-          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result2['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
+          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -447,6 +473,9 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='COLOR' || labcode ='APPEAR' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) ";
 		//echo $strSQL;
 		$objQuery = mysql_query($strSQL);
+
+		$ua_rows = mysql_num_rows($objQuery);
+
 		while($objResult = mysql_fetch_array($objQuery))
 		{
 			if($objResult["labcode"]=="COLOR"){
@@ -520,115 +549,130 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
           
           <?  }
 		  
-		   ?>        
-          <tr height="25">             
-            <td colspan="3"><strong>สรุปผลการตรวจปัสสาวะ</strong></td>
-            </tr>
-          <tr>
-            <td colspan="3"><table width="100%" border="0" cellpadding="1" cellspacing="0">
-
-              <tr height="25">
-                <td width="5%">&nbsp;</td>
-                <td width="48%"><strong>เม็ดเลือดขาว (WBCU)</strong></td>
-                <td width="47%"><? 
-				$strSQL1 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'WBCU'";
-				//echo "---->".$strSQL1;
-				$objQuery1 = mysql_query($strSQL1);
-				$objResult1 = mysql_fetch_array($objQuery1);					
-				if($objResult1["labcode"]=="WBCU"){
-					$wbculen=strlen($objResult1["result"]);
-					if($wbculen >=5){
-						$wbcu1=substr($objResult1["result"],0,2);
-						$wbcu2=substr($objResult1["result"],3,2);
-					}else if($wbculen ==4){
-						$wbcu1=substr($objResult1["result"],0,1);
-						$wbcu2=substr($objResult1["result"],2,2);							
-					}else{
-						$wbcu1=substr($objResult1["result"],0,1);
-						$wbcu2=substr($objResult1["result"],2,1);
-					}
-					//echo $objResult1["result"];
-					if($objResult1["result"] == "Negative" || ($wbcu1 >=0 && $wbcu2 <=5) && $objResult1["result"] != "*"){
-						echo "ปกติ";
-					}else if($objResult1["result"] == "*"){
-						echo "*";
-					}else{
-						echo "ผิดปกติ";
-					}	
-				}
-				?></td>
-              </tr>
-              <tr height="25">
-                <td>&nbsp;</td>
-                <td><strong>เม็ดเลือดแดง (RBCU)</strong></td>
-                <td><? 
-				$strSQL2 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'RBCU'";
-				//echo "---->".$strSQL2;
-				$objQuery2 = mysql_query($strSQL2);
-				$objResult2 = mysql_fetch_array($objQuery2);					
-				if($objResult2["labcode"]=="RBCU"){
-					$rbculen=strlen($objResult2["result"]);
-					if($rbculen >=5){
-						$rbcu1=substr($objResult2["result"],0,2);
-						$rbcu2=substr($objResult2["result"],3,2);
-					}else if($rbculen ==4){
-						$rbcu1=substr($objResult2["result"],0,1);
-						$rbcu2=substr($objResult2["result"],2,2);						
-					}else{
-						$rbcu1=substr($objResult2["result"],0,1);
-						$rbcu2=substr($objResult2["result"],2,1);
-					}
-					if($objResult2["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult1["result"] != "*"){
-						echo "ปกติ";
-					}else if($objResult2["result"] == "*"){
-						echo "*";
-					}else{
-						echo "ผิดปกติ";
-					}	
-				}
-				?></td>
-              </tr>
-
-              <tr height="25">
-                <td>&nbsp;</td>
-                <td><strong>น้ำตาล (GLUU)</strong></td>
-                <td><? 
-				$strSQL4 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'GLUU'";
-				//echo "---->".$strSQL4;
-				$objQuery4 = mysql_query($strSQL4);
-				$objResult4 = mysql_fetch_array($objQuery4);					
-				if($objResult4["labcode"]=="GLUU"){
-					if($objResult4["result"] == "Negative"){
-						echo "ปกติ";
-					}else if($objResult1["result"] == "*"){
-						echo "*";
-					}else{
-						echo "ผิดปกติ";
-					}
-				}
-				?>                </td>
-              </tr>
-              <tr height="25">
-                <td>&nbsp;</td>
-                <td><strong>โปรตีน (PROU)</strong></td>
-                <td><? 
-				$strSQL5 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'PROU'";
-				//echo "---->".$strSQL5;
-				$objQuery5 = mysql_query($strSQL5);
-				$objResult5 = mysql_fetch_array($objQuery5);		
-				if($objResult5["labcode"]=="PROU"){
-					if($objResult5["result"] == "Negative" || $objResult5["result"] == "Trace"){
-						echo "ปกติ";
-					}else if($objResult5["result"] == "*"){
-						echo "*";
-					}else{
-						echo "ผิดปกติ";
-					}
-				}
-				?>                </td>
-              </tr>
-            </table></td>
-          </tr>
+		  // 
+		if( $ua_rows > 0 ){
+		?>
+		<tr height="25">             
+			<td colspan="3">
+				<strong>สรุปผลการตรวจปัสสาวะ</strong>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<table width="100%" border="0" cellpadding="1" cellspacing="0">
+					<tr height="25">
+						<td width="5%">&nbsp;</td>
+						<td width="48%"><strong>เม็ดเลือดขาว (WBCU)</strong></td>
+						<td width="47%">
+						<? 
+						$strSQL1 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'WBCU'";
+						//echo "---->".$strSQL1;
+						$objQuery1 = mysql_query($strSQL1);
+						$objResult1 = mysql_fetch_array($objQuery1);					
+						if($objResult1["labcode"]=="WBCU"){
+							$wbculen=strlen($objResult1["result"]);
+							if($wbculen >=5){
+								$wbcu1=substr($objResult1["result"],0,2);
+								$wbcu2=substr($objResult1["result"],3,2);
+							}else if($wbculen ==4){
+								$wbcu1=substr($objResult1["result"],0,1);
+								$wbcu2=substr($objResult1["result"],2,2);							
+							}else{
+								$wbcu1=substr($objResult1["result"],0,1);
+								$wbcu2=substr($objResult1["result"],2,1);
+							}
+							//echo $objResult1["result"];
+							if($objResult1["result"] == "Negative" || ($wbcu1 >=0 && $wbcu2 <=5) && $objResult1["result"] != "*"){
+								echo "ปกติ";
+							}else if($objResult1["result"] == "*"){
+								echo "*";
+							}else{
+								echo "ผิดปกติ";
+							}	
+						}
+						?>
+						</td>
+					</tr>
+					<tr height="25">
+						<td>&nbsp;</td>
+						<td><strong>เม็ดเลือดแดง (RBCU)</strong></td>
+						<td>
+						<? 
+						$strSQL2 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'RBCU'";
+						//echo "---->".$strSQL2;
+						$objQuery2 = mysql_query($strSQL2);
+						$objResult2 = mysql_fetch_array($objQuery2);					
+						if($objResult2["labcode"]=="RBCU"){
+							$rbculen=strlen($objResult2["result"]);
+							if($rbculen >=5){
+								$rbcu1=substr($objResult2["result"],0,2);
+								$rbcu2=substr($objResult2["result"],3,2);
+							}else if($rbculen ==4){
+								$rbcu1=substr($objResult2["result"],0,1);
+								$rbcu2=substr($objResult2["result"],2,2);						
+							}else{
+								$rbcu1=substr($objResult2["result"],0,1);
+								$rbcu2=substr($objResult2["result"],2,1);
+							}
+							if($objResult2["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult1["result"] != "*"){
+								echo "ปกติ";
+							}else if($objResult2["result"] == "*"){
+								echo "*";
+							}else{
+								echo "ผิดปกติ";
+							}	
+						}
+						?>
+						</td>
+					</tr>
+					<tr height="25">
+						<td>&nbsp;</td>
+						<td><strong>น้ำตาล (GLUU)</strong></td>
+						<td>
+						<? 
+						$strSQL4 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'GLUU'";
+						//echo "---->".$strSQL4;
+						$objQuery4 = mysql_query($strSQL4);
+						$objResult4 = mysql_fetch_array($objQuery4);					
+						if($objResult4["labcode"]=="GLUU"){
+							if($objResult4["result"] == "Negative"){
+								echo "ปกติ";
+							}else if($objResult1["result"] == "*"){
+								echo "*";
+							}else{
+								echo "ผิดปกติ";
+							}
+						}
+						?>
+						</td>
+					</tr>
+					<tr height="25">
+						<td>&nbsp;</td>
+						<td><strong>โปรตีน (PROU)</strong></td>
+						<td>
+						<? 
+						$strSQL5 = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and labcode= 'PROU'";
+						//echo "---->".$strSQL5;
+						$objQuery5 = mysql_query($strSQL5);
+						$objResult5 = mysql_fetch_array($objQuery5);		
+						if($objResult5["labcode"]=="PROU"){
+							if($objResult5["result"] == "Negative" || $objResult5["result"] == "Trace"){
+								echo "ปกติ";
+							}else if($objResult5["result"] == "*"){
+								echo "*";
+							}else{
+								echo "ผิดปกติ";
+							}
+						}
+						?>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<?php
+		}
+		?>
         </table></td>
       </tr>
     </table></td>
@@ -636,7 +680,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
   <tr>
     <td colspan="2"  valign="top">
  <? 
- if($result["hn"]!="55-2002"){ 
+ if( $result["hn"] != "55-2002" ){ 
  ?></td>
   </tr>
   <tr>
@@ -653,11 +697,28 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
               <td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
             </tr>
             <?
-$sql1="SELECT * FROM resulthead 
-WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG'  or profilecode='ANTIHB' or profilecode='HDL' or profilecode='LDL') 
-and hn='".$result2['hn']."' 
-and (clinicalinfo ='ตรวจสุขภาพประจำปี60') 
-group by profilecode";
+$sql1="SELECT * 
+FROM resulthead 
+WHERE ( 
+	profilecode='GLU' 
+	OR profilecode='CREA' 
+	OR profilecode='BUN' 
+	OR profilecode='URIC' 
+	OR profilecode='CHOL' 
+	OR profilecode='TRIG' 
+	OR profilecode='AST' 
+	OR profilecode='ALT' 
+	OR profilecode='LIPID' 
+	OR profilecode='ALP' 
+	OR profilecode='HBSAG' 
+	OR profilecode='ANTIHB' 
+	OR profilecode='HDL' 
+	OR profilecode='LDL' 
+) 
+AND hn = '".$result['hn']."' 
+AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' ) 
+GROUP BY profilecode 
+ORDER BY `autonumber`";
 //echo $sql1;
 $query1 = mysql_query($sql1);
 $i=0;
@@ -868,58 +929,102 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
       </tr>
       <? } ?>         
         <tr>
-			<td height="30">
-				<strong class="text" style="font-size:18px">
-					<u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u>
-				</strong>
-				<strong class="text" style="margin-left: 9px;"> : <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"]; } ?></strong>
+			<td height="30" width="60%">
 
-				<?php
-				// var_dump($result);
-				if( !empty($result['va']) ){
-					?>
-					<div>
-						<strong class="text" style="font-size:18px">
-							<u>ผลการตรวจตา</u> : <?=$result['va'];?>
-						</strong>
-					</div>
-					
+				<table>
+					<tr>
+						<td>
+							<strong class="text" style="font-size:18px">
+								<u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u>
+							</strong>
+						</td>
+						<td>
+							<strong class="text" style="margin-left: 9px;"> : <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"]; } ?></strong>
+						</td>
+					</tr>
 					<?php
-				}
-				?>
+					if( !empty($result['va']) ){
+						?>
+						<tr>
+							<td>
+								<strong class="text" style="font-size:18px">
+									<u>ผลการตรวจตา</u>
+								</strong>
+							</td>
+							<td>
+								<strong class="text" style="margin-left: 9px;"> : <?=$result['va'];?></strong>
+							</td>
+						</tr>
+						<?php
+					}
 
+					/*
+					?>
+					<tr>
+						<td>
+							<strong class="text" style="font-size:18px">
+								<u>ผลการตรวจคลื่นไฟฟ้าหัวใจ</u>
+							</strong>
+						</td>
+						<td>
+							<strong class="text" style="margin-left: 9px;"> : ปกติ</strong>
+						</td>
+					</tr>
+					<?php
+					*/
+
+					if( !empty($result['42702']) ){
+						?>
+						<tr>
+							<td>
+								<strong class="text" style="font-size:18px">
+									<u>ผลการตรวจความหนาแน่นของมวลกระดูก</u>
+								</strong>
+							</td>
+							<td>
+								<strong class="text" style="margin-left: 9px;"> : <?=$result['42702'];?></strong>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+					
+					
+
+				</table>
+
+				
+			</td>
+			<td rowspan="2">
+				<!-- ช่องเซ็น -->
+				<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				
+					<tr>
+						<td align="center" class="text3">แพทย์ผู้ตรวจ<?php for($i=1; $i<60; $i++){ echo '&nbsp;'; } ?></td>
+						<td class="text3">&nbsp;</td>
+					</tr>
+					<tr>
+						<td align="center" class="text3">พ.ท. วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี</td>
+						<td class="text3">&nbsp;</td>
+					</tr>
+					<tr>
+						<td align="center" class="text3">&nbsp;แพทย์ประจำ รพ.ค่ายสุรศักดิ์มนตรี จ.ลำปาง</td>
+						<td class="text3">&nbsp;</td>
+					</tr>
+				</table>
+				<!-- ช่องเซ็น -->
 			</td>
         </tr>
         <tr>
           <td valign="bottom"><strong class="text" style="font-size:20px">สรุปผลการตรวจ :</strong>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text3">
-            <input type="checkbox" name="checkbox" id="checkbox" />
-&nbsp;พบแพทย์
+            <input type="checkbox" name="checkbox" id="checkbox" />&nbsp;พบแพทย์
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <input type="checkbox" name="checkbox2" id="checkbox2" />
                   &nbsp;ไม่ต้องพบแพทย์</span>
-            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-              <tr>
-                <td>&nbsp;</td>
-                <td width="37%" class="text3">&nbsp;</td>
-                <td width="13%" class="text3">&nbsp;</td>
-              </tr>
-              <tr>
-                <td>&nbsp;</td>
-                <td align="center" class="text3">แพทย์ผู้ตรวจ<?php for($i=1; $i<60; $i++){ echo '&nbsp;'; } ?></td>
-                <td class="text3">&nbsp;</td>
-              </tr>
-              <tr>
-                <td width="50%">&nbsp;</td>
-                <td align="center" class="text3">พ.ท. วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี</td>
-                <td class="text3">&nbsp;</td>
-                </tr>
-              <tr>
-                <td>&nbsp;</td>
-                <td align="center" class="text3">&nbsp;แพทย์ประจำ รพ.ค่ายสุรศักดิ์มนตรี จ.ลำปาง</td>
-                <td class="text3">&nbsp;</td>
-                </tr>
-            </table></td>
+			
+			</td>
+			
         </tr>               
     </table></td>
   </tr>

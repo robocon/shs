@@ -155,6 +155,11 @@ if(!$Row){
       </td>
     </tr>
     <tr>
+      <td class="pdx">ผลการตรวจความหนาแน่นของมวลกระดูก
+        <input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />
+      </td>
+    </tr>
+    <tr>
       <td align="left" class="pdx">
         <input type="hidden" name="ptname" value="<?=$ptname?>" />
         <input type="hidden" name="hn" value="<?=$hn?>" />
@@ -188,7 +193,8 @@ $update="UPDATE `out_result_chkup` SET `weight` = '".$_POST['weight']."',
 `cxr`='".$_POST['cxr']."',
 `doctor_result`='".$_POST['doctor_result']."',
 year_chk='".$nPrefix."',
-`part`='".$_POST['part']."'
+`part`='".$_POST['part']."',
+`42702` = '".$_POST['42702']."'
 WHERE  `row_id` ='".$_POST['row_id']."' ";
 
 
