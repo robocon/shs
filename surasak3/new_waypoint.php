@@ -489,8 +489,28 @@ if( empty($page) ){
 								<table>
 									<tr style='line-height:16px'>
 
-										<?php
-										$stations = array('เจาะเลือด','X-RAY','ซักประวัติ');
+										<?php 
+										$register = $_POST['register'];
+										$stations = array();
+										if( $register > 0 ){
+											$stations['ห้องทะเบียน'] = 'ลงทะเบียน';
+											// array_push($stations, array('ห้องทะเบียน' => 'ลงทะเบียน'));
+										}
+
+										$stations['ห้องพยาธิ'] = 'เจาะเลือด';
+										$stations['ห้องเอ็กเรย์'] = 'X-RAY';
+										// array_push($stations, array('ห้องพยาธิ' => 'เจาะเลือด'));
+										// array_push($stations, array('ห้องเอ็กเรย์' => 'X-RAY'));
+
+
+										if( $ekg > 0 ){
+											$stations['OPDตา'] = 'EKG';
+											// array_push($stations, array('OPDตา' => 'EKG'));
+										}
+
+										// ใส่ไว้ท้ายสุด
+										$stations['จุดคัดแยก'] = 'V/S';
+										// array_push($stations, array('จุดคัดแยก' => 'V/S'));
 										?>
 										<!--
 										<td>
@@ -505,11 +525,13 @@ if( empty($page) ){
 										-->
 										<?php
 										$station_i = 1;
-
+										// echo "<pre>";
+										// var_dump($stations);
+										// echo "</pre>";
 										// แทรกทะเบียน ฯลฯ ได้
 										// 
 
-										$register = $_POST['register'];
+										/*
 										if( $register > 0 ){
 											?>
 											<td>
@@ -517,7 +539,7 @@ if( empty($page) ){
 													<tr align='center' style='line-height:16px'>
 														<td>
 															สถานี <?=$station_i;?><br>
-															ทะเบียน<br>
+															ห้องทะเบียน<br>
 															.............................
 														</td>
 													</tr>
@@ -526,9 +548,10 @@ if( empty($page) ){
 											<?php
 											$station_i++;
 										}
+										*/
 
 										foreach ($stations as $key => $station) {
-											# code...
+											// var_dump($station);
 											?>
 											<td>
 												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
@@ -536,6 +559,7 @@ if( empty($page) ){
 														<td>
 															สถานี <?=$station_i;?><br>
 															<?=$station;?><br>
+															<?=$key;?><br>
 															.............................
 														</td>
 													</tr>
@@ -572,8 +596,8 @@ if( empty($page) ){
 								
 										<?php
 										// if($program_type != "1" && $program_type != "2" && $program_type != "3" && $program_type != "4"){
+										/*
 										if( $ekg > 0 ){
-											
 											?>
 											<!-- 
 											<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 5<br>PAP<br>OPD สูติฯ<br>.............................</td></tr></table></td>
@@ -593,32 +617,36 @@ if( empty($page) ){
 											<?php
 											$station_i++;
 										}	
+										*/
 										?>
 								</table>
 							</td>
 						</tr>
+						<!-- 
 						<tr>
 							<td class="pdx">&nbsp;</td>
 						</tr>
+						-->
 					</table>
 				</td>
 			</tr>
 		</table>
 		<div class="pdx" style="margin-left:10px;">
 			<strong>*** หมายเหตุ ***</strong><br />
+			<!-- 
 			- ให้เจ้าหน้าที่เซ็นต์ชื่อกำกับทุกสถานี เมื่อทำการตรวจเสร็จเรียร้อยแล้ว <br />
-			- เมื่อทำการตรวจครบทุกสถานีแล้ว นำเอกสารส่งคืนเจ้าหน้าที่ ณ จุดลงทะเบียน <br />
+			-->
+			- เมื่อทำการตรวจครบทุกสถานีแล้ว นำเอกสารส่งคืนเจ้าหน้าที่ ณ จุดคัดแยก <br />
+			<!-- 
 			- กรุณาอย่าทำเอกสารใบนำทางหาย เป็นอันเด็ดขาด
+			-->
 		</div>
 		<?php
-		
-
 		if( ( $i % 2 ) == 0 ){
 			?>
 			<div style="page-break-after: always;"></div>
 			<?php
 		}
-
 		$i++;
 	} // End foreach
 
