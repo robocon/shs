@@ -217,6 +217,10 @@ if( empty($page) ){
 
 	$i = 1;
 	foreach ($items as $key => $item) {
+
+		if( empty($item) ){
+			continue;
+		}
 		
 		list($name, $surname, $age, $hn) = explode(',', $item);
 
@@ -373,12 +377,16 @@ if( empty($page) ){
 			<strong>*** หมายเหตุ ***</strong><br />
 			- เมื่อทำการตรวจครบทุกสถานีแล้ว นำเอกสารส่งคืนเจ้าหน้าที่ ณ จุดคัดแยก <br />
 		</div>
-		<?php
+		<?php 
+		/*
 		if( ( $i % 2 ) == 0 ){
+			*/
 			?>
 			<div style="page-break-after: always;"></div>
 			<?php
+			/*
 		}
+		*/
 		$i++;
 	} // End foreach
 
