@@ -514,6 +514,24 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 			$sso = new CU_SSO();
 			$sso->find_package_from_age($cHn, $year_birth, $test_checkup['age_year'], $sex);
 
+			?>
+			<table border="1" cellspacing="0">
+				<tr bgcolor="#000080">
+					<td style="color: #ffffff;">รายการที่สามารถตรวจได้ สิทธิประกันสังคม</td>
+				</tr>
+			
+				<?php
+				$can_check = $sso->get_code();
+				foreach( $can_check as $key => $val ){
+					?>
+					<tr align="center">
+						<td><?=$val;?></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+			<?php
 		}
 
 	include("unconnect.inc");

@@ -111,11 +111,10 @@ class CU_SSO{
         $where 
         $clinical
         AND b.`profilecode` = 'CBC'";
-
-        // var_dump($sql);
-
+        dump($sql);
         $q = mysql_query($sql, $Conn);
         $check_row = mysql_num_rows($q);
+        dump($check_row);
         
         // เป็น 0 แสดงว่าปีนี้ยังไม่ได้ตรวจ ให้เก็บค่าว่าตรวจได้
         if( $check_row === 0 ){
@@ -492,7 +491,7 @@ class CU_SSO{
             $this->test_xray($hn, $year_checkup);
         }
 
-        var_dump($this->code);
+        // dump($this->code);
     }
 
 }

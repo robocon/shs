@@ -187,6 +187,9 @@ if( $action === 'import' ){
 			<li>
 				<a href="new_waypoint.php?page=import">นำเข้าข้อมูล</a>
 			</li>
+			<li>
+				<a href="print_waypoint.php">ออกใบนำทางทั่วไป</a>
+			</li>
 		</ul>
 	</div>
 </div>
