@@ -504,33 +504,59 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 
 			$user_gender = trim($test_checkup['sex']);
 			$sex = ( $user_gender === 'ช' ) ? 1 : 2 ;
-			$year_birth = ( $test_checkup['dbirth'] - 543 );
-
-			// var_dump($cHn);
-			// var_dump($year_birth);
-			// var_dump($test_checkup['age_year']);
-			// var_dump($sex);
+			$year_birth = $test_checkup['dbirth'];
 
 			$sso = new CU_SSO();
 			$sso->find_package_from_age($cHn, $year_birth, $test_checkup['age_year'], $sex);
+			$can_check = $sso->get_code();
+
+			$all_lists = $sso->get_checkup_from_age($test_checkup['age_year'], $year_birth, $sex);
+
+			// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
+			// ถ้าสั่งจากหน้าของ lab จะตัด xray ออกไป
+			if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
+				unset($all_lists[$search_key]);
+			}
+
+			// ถ้าเป็น xray จะเห็นเฉพาะของตัวเอง
+			if( $_SESSION['until_login'] == 'xray' && ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
+				$all_lists = array('41001-sso');
+			}
 
 			?>
+			<style>
+			.sso-help{
+				cursor: pointer;
+			}
+			</style>
 			<table border="1" cellspacing="0">
-				<tr bgcolor="#000080">
-					<td style="color: #ffffff;">รายการที่สามารถตรวจได้ สิทธิประกันสังคม</td>
+				<tr style="background-color: #d2d2d2;">
+					<td>รายการตรวจสำหรับผู้ป่วย สิทธิประกันสังคม</td>
+					
 				</tr>
-			
 				<?php
-				$can_check = $sso->get_code();
-				foreach( $can_check as $key => $val ){
+				foreach( $all_lists as $key => $val ){
+
+					$bg = 'background-color: #E91E63;';
+					$help_class = '';
+					if( in_array($val, $can_check) === true ){
+						$bg = 'background-color: #4caf50;';
+						$help_class = 'sso-help';
+					}
+
 					?>
-					<tr align="center">
-						<td><?=$val;?></td>
+					<tr align="center" style="<?=$bg;?>">
+						<td class="<?=$help_class;?>" onclick="add_to_code('<?=$val;?>')"><?=$val;?></td>
 					</tr>
 					<?php
 				}
 				?>
 			</table>
+			<script>
+				function add_to_code(str){
+					document.getElementById('aLink').value = str;
+				}
+			</script>
 			<?php
 		}
 
