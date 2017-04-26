@@ -65,4 +65,8 @@ a:active {
     <td>6. สำนักงานสถิติลำปาง</td>
     <td align="center"><a href="out_result.php?part=สถิติลำปาง60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>7. โรงเรียนเวียงตาลพิทยาคม</td>
+    <td align="center"><a href="out_result.php?part=เวียงตาล60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>

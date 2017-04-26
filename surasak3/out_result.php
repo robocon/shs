@@ -167,7 +167,7 @@ if(!$Row){
   </table>
 </form>
 <p>
-  <?				
+  <?
 }
 if(isset($_POST['okhn2'])){
 	
@@ -277,7 +277,7 @@ window.print();
   </tr>
   <tr>
     <td>S : <?=$arr1["part"];?> ตรวจสุขภาพประจำปี</td>
-  </tr>    
+  </tr>
 </table>
 <?
 echo "<meta http-equiv='refresh' content='1; url=out_result.php?part=$arr1[part]'>" ;
