@@ -182,13 +182,20 @@ if( $action === 'import' ){
 				<a href="../nindex.htm">เมนูหลัก รพ.</a>
 			</li>
 			<li>
+				<a href="new_waypoint.php">ตรวจสุขภาพแบบกลุ่ม</a>
+			</li>
+			<li>
+				<a href="print_waypoint.php" style="border-right: none;">ออกใบนำทางทั่วไป</a>
+			</li>
+		</ul>
+		<ul class="nav">
+			<!-- 
+			<li>
 				<a href="new_waypoint.php">ออกใบนำทาง</a>
-			</li>
+			</li> 
+			-->
 			<li>
-				<a href="new_waypoint.php?page=import">นำเข้าข้อมูล</a>
-			</li>
-			<li>
-				<a href="print_waypoint.php">ออกใบนำทางทั่วไป</a>
+				<a href="new_waypoint.php?page=import" style="border-right: none;">นำเข้าข้อมูล</a>
 			</li>
 		</ul>
 	</div>
@@ -226,15 +233,15 @@ if( count($_SESSION['bad_lists']) > 0 ){
 //หน้าแรก
 if( empty($page) ){
 
+	/*
 	$sql = "SELECT a.*, COUNT(b.`company_code`) AS rows
 	FROM `chkcompany` AS a 
 	LEFT JOIN `testmatch` AS b ON b.`company_code` = a.`code`
 	WHERE a.`year` = '60' 
 	GROUP BY b.`company_code`";
-	// dump($sql);
 	$db->select($sql);
 	$items = $db->get_items();
-
+	
 	?>
 	<h3>พิมพ์ใบนำทาง</h3>
 	<form action="new_waypoint.php" method="post" onsubmit="return checker()">
@@ -256,11 +263,11 @@ if( empty($page) ){
 		</div>
 		<div>
 			<input type="checkbox" id="register" name="register" value="1"> 
-			<label for="register">ผ่านแผนกทะเบียน</label>
+			<label for="register">แผนกทะเบียน</label>
 		</div>
 		<div>
 			<input type="checkbox" id="ekg" name="ekg" value="1"> 
-			<label for="ekg">มีการตรวจ EKG</label>
+			<label for="ekg">EKG OPDตา</label>
 		</div>
 		<div>
 			<button type="submit">พิมพ์</button>
@@ -276,6 +283,10 @@ if( empty($page) ){
 			}
 		}
 	</script>
+	<?php
+	*/
+	?>
+	<p>หน้าหลัก การตรวจสุขภาพแบบกลุ่ม</p>
 	<?php
 
 // หน้านำเข้าไฟล์ .csv
