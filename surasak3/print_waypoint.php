@@ -27,11 +27,9 @@ $db = Mysql::load();
 			<li>
 				<a href="../nindex.htm">เมนูหลัก รพ.</a>
 			</li>
-			<!--
 			<li>
 				<a href="new_waypoint.php">ตรวจสุขภาพแบบกลุ่ม</a>
 			</li>
-			-->
 			<li>
 				<a href="print_waypoint.php">ออกใบนำทางทั่วไป</a>
 			</li>
