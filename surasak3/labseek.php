@@ -1,22 +1,16 @@
-
-
 <?php
-  
- session_start();
- global $code;
- session_register("sourcecode");
- if($_POST['bcode']!=""){
-	$_SESSION['sourcecode']=$_POST['bcode'];
- }
-	
- function jschars($str)
-{
-    $str = str_replace('"', '\\"', $str);
+session_start();
+global $code;
+session_register("sourcecode");
 
-    return $str;
+if($_POST['bcode']!=""){
+	$_SESSION['sourcecode']=$_POST['bcode'];
 }
 
-
+function jschars($str){
+	$str = str_replace('"', '\\"', $str);
+	return $str;
+}
 
 if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
@@ -414,11 +408,14 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 
 		// แสดงรายการตรวจสุขภาพ แบบกลุ่ม
 		include 'includes/JSON.php';
+		include 'includes/cu_sso.php';
+
 		$today = date('Y-m-d');
-		$sql = "SELECT `hn`,`list` 
-		FROM `testmatch` 
-		WHERE `hn` = '$cHn' 
-		AND ( `date_start` <= '$today' AND `date_end` >= '$today' )";
+		$sql = "SELECT a.`hn`,a.`list`,a.`age`, SUBSTRING(b.`dbirth`, 1, 4) AS `dbirth`,`sex`
+		FROM `testmatch` AS a 
+		LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+		WHERE a.`hn` = '$cHn' 
+		AND ( a.`date_start` <= '$today' AND a.`date_end` >= '$today' )";
 		$q = mysql_query($sql) or die( mysql_error() );
 
 		// ถ้ามีข้อมูลอยู่ในช่วงของการตรวจ จะแสดงผล
@@ -426,10 +423,12 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 		$item = mysql_fetch_assoc($q);
 
 		$json = new Services_JSON();
-		$json_list = $json->decode($item['list']);
 		
-		// var_dump($_SESSION["list_codeed"]);
-
+		$json_list = array();
+		if( $test_row > 0 ){
+			$json_list = $json->decode($item['list']);
+		}
+		
 		if( $test_row > 0 && count($json_list) > 0 ){
 
 			// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
@@ -442,6 +441,19 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 			if( $_SESSION['until_login'] == 'xray' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
 				$json_list = array('41001-sso');
 			}
+
+			$age_year = $item['age'];
+			$sex = $item['sex'];
+			$year_birth = $item['dbirth'];
+
+			$sso = new CU_SSO();
+			$sso->check($json_list, $cHn, $year_birth, $age_year, $sex);
+			$codes = $sso->get_code();
+			// var_dump($codes);
+			// echo "<hr>";
+			$diff = array_diff($json_list, $codes);
+			// var_dump($diff);
+
 			?>
 			<br>
 			<table border="1" bordercolor="#330099">
@@ -461,12 +473,16 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 									<a target="right" href="<?=$href;?>">คิดเงิน</A>
 								</td>
 								<td>
-									<?//=implode('<br>', $json_list);?>
 									<?php
+									
 									foreach( $json_list as $test_key => $test_val ){
-										// var_dump($test_val);
+										
 										$color = 'white';
 										if( array_key_exists($test_val, $_SESSION["list_codeed"]) === true ){
+											$color = 'red';
+										}
+
+										if( in_array($test_val, $diff) === true ){
 											$color = 'red';
 										}
 
@@ -477,6 +493,15 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 									?>
 								</td>
 							</tr>
+							<?php
+							if( count($diff) > 0 ){
+								?>
+								<tr>
+									<td colspan="2">* ผู้ป่วยเคยตรวจบางรายการไปแล้ว</td>
+								</tr>
+								<?php
+							}
+							?>
 						</table>
 					</td>
 				</tr>
@@ -498,9 +523,9 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 		$test_checkup = mysql_fetch_assoc($q);
 
 		// ต้องผ่านทะเบียนและออก opdcard เป็น ex42
-		if( $test_checkup['ptright_code'] == 'R07' && $test_checkup['ex_code'] == 'EX42' ){
+		if( $test_checkup['ptright_code'] == 'R07' && $test_checkup['ex_code'] == 'EX45' ){
 			
-			include 'includes/cu_sso.php';
+			// include_once 'includes/cu_sso.php';
 
 			$user_gender = trim($test_checkup['sex']);
 			$sex = ( $user_gender === 'ช' ) ? 1 : 2 ;
@@ -535,6 +560,7 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 					
 				</tr>
 				<?php
+				// var_dump($all_lists);
 				foreach( $all_lists as $key => $val ){
 
 					$bg = 'background-color: #E91E63;';

@@ -17,7 +17,8 @@ class CU_SSO{
 
     public $lab_name = array();
 
-    public $call_temp = null;
+    public $call_temp = false;
+    public $call_chkup_temp = false;
 
     public function __construct(){
 
@@ -77,6 +78,7 @@ class CU_SSO{
         SELECT * 
         FROM `out_result_chkup` 
         WHERE `hn` = '$hn' ";
+        $this->call_chkup_temp = $sql;
         mysql_query($sql, $Conn);
 
         /*
@@ -225,22 +227,12 @@ class CU_SSO{
         global $Conn;
 
         $year_before = $year_checkup - 4;
-        // $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
 
         $clinical_range = array();
         for ($i=$year_before; $i <= $year_checkup; $i++) { 
             $clinical_range[] = " `clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$i' ";
         }
         $clinical = "AND (".implode('OR', $clinical_range).")";
-
-        $sql = "SELECT b.`hn`  
-        FROM `out_result_chkup_tmp` AS a 
-        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-        WHERE a.`hn` = '$hn' 
-        $where 
-        $clinical 
-        AND b.`profilecode` = 'CHOL' 
-        GROUP BY a.`hn` ";
 
         $sql = "SELECT * 
         FROM `orderhead_tmp` 
@@ -258,22 +250,12 @@ class CU_SSO{
         global $Conn;
 
         $year_before = $year_checkup - 4;
-        // $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
 
         $clinical_range = array();
         for ($i=$year_before; $i <= $year_checkup; $i++) { 
             $clinical_range[] = " `clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$i' ";
         }
         $clinical = "AND (".implode('OR', $clinical_range).")";
-
-        $sql = "SELECT b.`hn`  
-        FROM `out_result_chkup_tmp` AS a 
-        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-        WHERE a.`hn` = '$hn' 
-        $where 
-        $clinical 
-        AND b.`profilecode` = 'HDL' 
-        GROUP BY a.`hn` ";
         
         $sql = "SELECT * 
         FROM `orderhead_tmp` 
@@ -290,21 +272,10 @@ class CU_SSO{
 
     private function test_hbsag($hn, $year_checkup){
         global $Conn;
-
-        $sql = "SELECT b.`hn`  
-        FROM `out_result_chkup_tmp` AS a 
-        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-        WHERE a.`hn` = '$hn' 
-        AND b.`clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ%' 
-        AND a.`year_chk` <= '$year_checkup' 
-        AND b.`profilecode` = 'HBSAG' 
-        GROUP BY b.`hn` ";
-
         $sql = "SELECT * 
         FROM `orderhead_tmp` 
         WHERE ( `labcode` = 'HBSAG' OR `labcode` = 'HBSAG-sso' ) 
-        AND `clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ%' ";
-
+        AND `clinicalinfo` LIKE 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ%' ";
         $q = mysql_query($sql, $Conn) or die( mysql_error() );
         $check_row = mysql_num_rows($q);
         
@@ -320,7 +291,6 @@ class CU_SSO{
         if( $age >= 30 && $age <= 54 ){
 
             $year_before = $year_checkup - 2;
-            $where = "AND ( a.`year_chk` >= '$year_before' AND a.`year_chk` <= '$year_checkup' ) ";
 
             $clinical_range = array();
             for ($i=$year_before; $i <= $year_checkup; $i++) { 
@@ -337,15 +307,6 @@ class CU_SSO{
             $clinical = "AND `clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$year_checkup'";
             
         }
-
-        $sql = "SELECT b.`hn`  
-        FROM `out_result_chkup_tmp` AS a 
-        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` 
-        WHERE a.`hn` = '$hn' 
-        $where 
-        $clinical 
-        AND b.`profilecode` = 'PAP' 
-        $group_by";
         
         $sql = "SELECT * 
         FROM `orderhead_tmp` 
@@ -362,13 +323,6 @@ class CU_SSO{
     private function test_stocb($hn, $year_checkup){
         global $Conn;
 
-        $sql = "SELECT b.`hn`  
-        FROM `out_result_chkup_tmp` AS a 
-        LEFT JOIN `resulthead_tmp` AS b ON b.`hn` = a.`hn` AND b.`clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$year_checkup'
-        WHERE a.`hn` = '$hn' 
-        AND a.`year_chk` = '$year_checkup' 
-        AND b.`profilecode` = 'STOCB'";
-
         $sql = "SELECT * 
         FROM `orderhead_tmp` 
         WHERE ( `labcode` = 'STOCB' OR `labcode` = 'STOCB-sso' ) 
@@ -383,12 +337,10 @@ class CU_SSO{
     private function test_xray($hn, $year_checkup){
         global $Conn;
 
-        $sql = "SELECT b.`hn` 
-        FROM `out_result_chkup_tmp` AS a 
-        LEFT JOIN `depart` AS b ON b.`hn` = a.`hn` AND b.`depart` = 'XRAY'
-        WHERE a.`hn` = '$hn' 
-        AND a.`year_chk` <= '$year_checkup' 
-        GROUP BY b.`hn` ";
+        $sql = "SELECT * 
+        FROM `out_result_chkup` 
+        WHERE `hn` = '$hn' 
+        AND `year_chk` <= '$year_checkup' ";
         $q = mysql_query($sql, $Conn);
         $check_row = mysql_num_rows($q);
         

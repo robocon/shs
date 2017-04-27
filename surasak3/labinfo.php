@@ -308,7 +308,7 @@ if (isset($sIdname)){} else {die;} //for security
 		}
  	}
 
-
+// var_dump($cDepart);
 
 if ($cDepart == 'PATHO'){
 
