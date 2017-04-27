@@ -8,13 +8,7 @@ mysql_select_db('smdb', $conn) or die( mysql_error() );
 
 #autonumber	orderdate	labnumber
 
-/*
-$sql = "SELECT `runno` AS `id`,`startday` 
-FROM `smdb`.`test_runno` 
-WHERE `title` = 'lab' ";
-$q = mysql_query($sql);
-$runno = mysql_fetch_assoc($q);
-*/
+// ไม่สนใจ runno ตามเลข running number อยู่แล้ว เพราะรันหลังเที่ยงคืนเป็นอันดับแรก
 
 // Lock ให้ write ไม่ให้ read
 mysql_query("LOCK TABLES `test_runno` WRITE, `test_orderhead` WRITE;", $conn) or die( mysql_error() );
