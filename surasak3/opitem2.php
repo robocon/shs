@@ -638,14 +638,11 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>																 
 		 </TR>
-
 		 <TR>
 			<TD align='right'>
-				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHECKUP' id='SSOCHECKUP' onclick=\"detailhead4.style.display='none';\">
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHECKUP$yPrefix' onclick=\"detailhead4.style.display='none';\">
 			</TD>
-		 	<TD>
-			 	<label for='SSOCHECKUP'>ตรวจสุขภาพประกันสังคม</label>
-			 </TD>			
+		 	<TD>ตรวจสุขภาพประกันสังคม</TD>			
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>			
 			<TD>&nbsp;</TD>

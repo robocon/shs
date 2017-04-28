@@ -126,7 +126,7 @@ if( empty($page) ){
 				<li class="ui-state-default">
 					<span class="ui-icon ui-icon-arrowtick-2-n-s"></span>
 					<input type="checkbox" id="vs" name="step[vs]" value="1"> 
-					<label for="vs">V/S คัดแยก</label>
+					<label for="vs">วัดความดัน จุดคัดแยก</label>
 				</li>
 				<li class="ui-state-default">
 					<span class="ui-icon ui-icon-arrowtick-2-n-s"></span>
@@ -142,6 +142,16 @@ if( empty($page) ){
 					<span class="ui-icon ui-icon-arrowtick-2-n-s"></span>
 					<input type="checkbox" id="vs" name="step[ekg]" value="1"> 
 					<label for="ekg">EKG OPD ตา</label>
+				</li>
+				<li class="ui-state-default">
+					<span class="ui-icon ui-icon-arrowtick-2-n-s"></span>
+					<input type="checkbox" id="boobs" name="step[boobs]" value="1"> 
+					<label for="boobs">ตรวจเต้านม</label>
+				</li>
+				<li class="ui-state-default">
+					<span class="ui-icon ui-icon-arrowtick-2-n-s"></span>
+					<input type="checkbox" id="ear" name="step[ear]" value="1"> 
+					<label for="ear">ตรวจการได้ยิน</label>
 				</li>
 			</ul>
 		</div>
@@ -181,7 +191,7 @@ if( empty($page) ){
 			'ห้องเอ็กเรย์' => 'X-RAY'
 		),
 		'vs' => array(
-			'จุดคัดแยก' => 'V/S'
+			'จุดคัดแยก' => 'วัดความดัน'
 		),
 		'pap' => array(
 			'OPDสูติฯ' => 'PAP'
@@ -191,6 +201,12 @@ if( empty($page) ){
 		),
 		'ekg' => array(
 			'OPDตา' => 'EKG'
+		),
+		'boobs' => array(
+			'OPD' => 'ตรวจเต้านม'
+		),
+		'ear' => array(
+			'OPD' => 'ตรวจการได้ยิน'
 		)
 	);
 
