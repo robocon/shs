@@ -1,4 +1,4 @@
-<p align="center">นำเข้า Lab ตรวจสุขภาพมหาลัยสวนดุสิต 2560
+<p align="center">นำเข้า Lab ตรวจสุขภาพเทศบาลพิชัย 2560
 <form name="form1" id="form1" method="post" action="<? $PHP_SELF; ?>">
 <input name="act" type="hidden" value="add">   
 <input name="Submit" type="submit" value="กดที่นี่ เพื่อนำเข้า Lab" />
@@ -7,7 +7,7 @@
 <?
 if($_POST["act"]=="add"){
 include("connect.inc"); 
-$sql="select * from opcardchk where part='สวนดุสิต60' order by row asc";
+$sql="select * from opcardchk where part='เทศบาลพิชัย60' order by row asc";
 //echo $sql;
 $query=mysql_query($sql);
 $num=mysql_num_rows($query);
@@ -17,7 +17,7 @@ while($rows=mysql_fetch_array($query)){
 //$y=$y-543;
 //$dbirth="$y-$m-$d 00:00:00";
 $dbirth="00-00-00 00:00:00";
-$ptname=$rows["name"]."  ".$rows["surname"];
+$ptname=$rows["name"];
 
 $query1 = "SELECT runno, startday FROM runno WHERE title = 'lab'";
 $result = mysql_query($query1) or die("Query failed");
@@ -39,7 +39,8 @@ $Thidate2 = date("Y").date("-m-d H:i:s");
 $patienttype = "OPD";
 
 
-$clinicalinfo = "ตรวจสุขภาพสวนดุสิต60";
+$clinicalinfo = "ตรวจสุขภาพเทศบาลพิชัย60";
+
 $chkgender=substr($rows["name"],0,6);
 if($chkgender=="นางสาว"){
 $gender = "F";
@@ -54,14 +55,15 @@ $chkgender=substr($rows["name"],0,3);
 
 $priority = "R";
 
-$sql1 = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo`  ) VALUES ('', '".$Thidate2."', '".date("ymd").sprintf("%03d", $nLab)."', '".$rows["idcard"]."', '".$patienttype."', '".$ptname."', '".$gender."', '".$dbirth."', '', '', '','".$cliniciancode."', 'MD022 (ไม่ทราบแพทย์)', '".$priority."', '".$clinicalinfo."');";
+
+$sql1 = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo`  ) VALUES ('', '".$Thidate2."', '".date("ymd").sprintf("%03d", $nLab)."', '".$rows["HN"]."', '".$patienttype."', '".$ptname."', '".$gender."', '".$dbirth."', '', '', '','".$cliniciancode."', 'MD022 (ไม่ทราบแพทย์)', '".$priority."', '".$clinicalinfo."');";
 //echo $sql1."<br>";
 $result1 = mysql_query($sql1)or die("Query failed,INSERT orderhead ");
 echo "นำเข้า Order Lab เรียบร้อยแล้ว";
-if($rows["pid"]=="1" || $rows["pid"]=="3"){
-$arrlab=array('CBC','UA','BS','LIPID','BUN','CR','SGOT','SGPT','ALK','URIC','HBSAG');
-}else if($rows["pid"]=="2"){
-$arrlab=array('CBC','UA','BS','LIPID','BUN','CR','SGOT','SGPT','ALK','URIC','HBSAG','C-S','ST');
+if($rows["pid"]=="1"){
+$arrlab=array('CBC','UA');
+}else if($rows["pid"]=="3"){
+$arrlab=array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
 }
 
 foreach ($arrlab as $value) {
