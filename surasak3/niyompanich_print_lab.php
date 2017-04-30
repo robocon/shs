@@ -253,11 +253,8 @@ if( empty($page) ){
 
 		
 		if( count($list_chem) > 0 ){
+
 			++$pre_number;
-
-			$str_chem = '';
-			$str_chem .= ( $lab === 'BS-sso' ) ? '' : 'BS' ;
-
 			$chem_text = implode(',', $list_chem);
 			
 			?>
@@ -357,13 +354,14 @@ if( empty($page) ){
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 
-	$sql = "SELECT a.*,b.`sex`,c.`vn`
+	$sql = "SELECT a.*,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` ,c.`vn`
 	FROM `opcardchk` AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 	LEFT JOIN `opday` AS c ON c.`hn` = a.`hn` 
-		AND c.`thidate` LIKE '2560-05-01%' 
+		AND c.`thidate` LIKE '2560-04-29%' 
 	WHERE a.`part` = '¹ÔÂÁ¾Ò¹Ôª60' 
 	ORDER BY a.`row` ASC";
+	// dump($sql);
 	$db->select($sql);
 	$items = $db->get_items();
 
@@ -381,15 +379,27 @@ if( empty($page) ){
 	}
 
 	$thai_date = (date("Y")+543)."-".date("m-d H:i:s");
-
+	$en_date = date("Y-m-d H:i:s");
 	$user_i = 1;
+	$test_case = true;
+	$clinicalinfo = "µÃÇ¨ÊØ¢ÀÒ¾»ÃĞ¡Ñ¹ÊÑ§¤Á60";
 
 	// àÃÕÂ§ä»·ÕÅĞ¤¹ 
 	foreach ($items as $key => $item) {
 
+		// test case
+		// if( empty($item['vn']) OR $test_case === false ){
+		// 	continue;
+		// }
+		
+		$hn = $item['HN'];
+		$exam_no = $item['exam_no'];
+		$labnumber = $checkup_date_code.$exam_no;
 		$age_year = substr($item['dbirth'], 0, 4) + 543 ;
 		$sex = ( $item['sex'] === 'ª' ) ? 1 : 2 ;
-		$fullname = $item['name'].' '.$item['surname'];
+		$ptname = $item['name'].' '.$item['surname'];
+		$gender = ( $item['sex'] === 'ª' ) ? 'M' : 'F' ;
+		$dbirth = $item['dbirth'];
 
 		$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
 
@@ -397,9 +407,7 @@ if( empty($page) ){
 		if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
 			unset($all_lists[$search_key]);
 		}
-
-		$clinicalinfo = "µÃÇ¨ÊØ¢ÀÒ¾»ÃĞ¨Ó»Õ60";
-
+		
 		// orderhead
 		$orderhead_sql = "INSERT INTO `orderhead` ( 
 			`autonumber`, 
@@ -419,13 +427,13 @@ if( empty($page) ){
 			`clinicalinfo` 
 		) VALUES (
 			'', 
-			'".$Thidate2."', 
-			'".date("ymd").sprintf("%03d", $nLab)."', 
-			'".$rows["idcard"]."', 
-			'".$patienttype."', 
-			'".$ptname."', 
-			'".$gender."', 
-			'".$dbirth."', 
+			'$en_date', 
+			'$labnumber', 
+			'$hn', 
+			'OPD', 
+			'$ptname', 
+			'$gender', 
+			'$dbirth', 
 			'', 
 			'', 
 			'', 
@@ -434,45 +442,45 @@ if( empty($page) ){
 			'R', 
 			'".$clinicalinfo."'
 		);";
-
-
-
-
-		// orderdetail
-		// lab áµèÅĞµÑÇ
-		$sql2 = "INSERT INTO `orderdetail` ( 
-			`labnumber`,`labcode`,`labcode1`,`labname` 
-		) VALUES (
-			'".date("ymd").sprintf("%03d", $nLab)."', '".$code."', '".$oldcode."', '".$detail."'
-		);";
-
-
+		dump($orderhead_sql);
+		$depart = $db->insert($orderhead_sql);
+		// $orderhead_id = $db->get_last_id();
 		
+		// orderdetail
+		foreach ($all_lists as $key => $list) {
+			$lab_item = $lab_lists[$list];
+			$code = $lab_item['code'];
+			$oldcode = $lab_item['oldcode'];
+			$detail = $lab_item['detail'];
 
-
+			$orderdetail_sql = "INSERT INTO `orderdetail` ( 
+				`labnumber`,`labcode`,`labcode1`,`labname` 
+			) VALUES (
+				'$labnumber', '$code', '$oldcode', '".$detail."'
+			);";
+			// dump($orderdetail_sql);
+			$db->insert($orderdetail_sql);
+		}
 
 		// ËÒÃÒ¤ÒÃÇÁà¾×èÍãÊèã¹ depart
-		$hn = $item['HN'];
-		$ptname = $item['name'].' '.$item['surname'];
 		$price = 0;
 		$yprice = 0;
 		$count_item = count($all_lists);
-		$exam_no = $item['exam_no'];
 		$vn = $item['vn'];
 		$ptright = 'R07 »ÃĞ¡Ñ¹ÊÑ§¤Á';
 
 		foreach ($all_lists as $key => $list) {
 			$lab_item = $lab_lists[$list];
-			$price = $lab_item['price'];
-			$yprice = $lab_item['yprice'];
+			$price += $lab_item['price'];
+			$yprice += $lab_item['yprice'];
 		}
 
-		// runno lab
+		// runno stktranx
 		$db->select("SELECT runno, startday FROM runno WHERE title = 'stktranx'");
 		$nStktranx = $db->get_item();
 		$runno = $nStktranx['runno']+1;
 
-		// patdata
+		// depart
 		$depart_sql = "INSERT INTO `depart` SET 
 		`chktranx` = '$runno',
 		`date` = '$thai_date',
@@ -492,6 +500,7 @@ if( empty($page) ){
 		`ptright` = '$ptright',
 		`lab` = '$exam_no',
 		`status` = 'Y';";
+		dump($depart_sql);
 		$depart = $db->insert($depart_sql);
 		$depart_id = $db->get_last_id();
 
