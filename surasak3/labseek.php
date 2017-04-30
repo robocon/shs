@@ -1,16 +1,22 @@
+
+
 <?php
-session_start();
-global $code;
-session_register("sourcecode");
-
-if($_POST['bcode']!=""){
+  
+ session_start();
+ global $code;
+ session_register("sourcecode");
+ if($_POST['bcode']!=""){
 	$_SESSION['sourcecode']=$_POST['bcode'];
+ }
+	
+ function jschars($str)
+{
+    $str = str_replace('"', '\\"', $str);
+
+    return $str;
 }
 
-function jschars($str){
-	$str = str_replace('"', '\\"', $str);
-	return $str;
-}
+
 
 if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
@@ -208,10 +214,27 @@ function searchSuggest(str,len,getto) {
 
 </script>
 <form method="POST" action="<?php echo $PHP_SELF ?>"> <font face="Angsana New"><a target=_BLANK href="codehlp.php">&#3619;&#3627;&#3633;&#3626;</a><Div id="list" style="left: 9px; top: 121px; position: absolute;"></Div>&nbsp;&nbsp;&nbsp;
+
+	<?php
+	$sql = "SELECT `hn` 
+	FROM `opcardchk` 
+	WHERE `hn` = '$cHn' 
+	AND `part` = 'นิยมพานิช60'";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$row = mysql_num_rows($q);
+	$xray_sso = '';
+	if( $row > 0 && $_SESSION["until_login"] == "xray" ){
+		$xray_sso = '41001-sso';
+	}
+	?>
+
 <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
-  <input type="text" name="code" size="8" id="aLink" value="42703" onkeypress="searchSuggest(this.value,2,'code');">
+	<?php
+	$default = ( !empty($xray_sso) ) ? $xray_sso : '42703' ;
+	?>
+  <input type="text" name="code" size="8" id="aLink" value="<?=$default;?>" onkeypress="searchSuggest(this.value,2,'code');">
 <? }else{ ?>
-  <input type="text" name="code" size="8" id="aLink" onkeypress="searchSuggest(this.value,2,'code');">
+  <input type="text" name="code" size="8" id="aLink" value="<?=$xray_sso;?>" onkeypress="searchSuggest(this.value,2,'code');">
  <? } ?> 
 <script type="text/javascript">
 document.getElementById('aLink').focus();
@@ -405,187 +428,6 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 			}
 
 		////////////////////////
-
-		// แสดงรายการตรวจสุขภาพ แบบกลุ่ม
-		include 'includes/JSON.php';
-		include 'includes/cu_sso.php';
-
-		$today = date('Y-m-d');
-		$sql = "SELECT a.`hn`,a.`list`,a.`age`, SUBSTRING(b.`dbirth`, 1, 4) AS `dbirth`,`sex`
-		FROM `testmatch` AS a 
-		LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-		WHERE a.`hn` = '$cHn' 
-		AND ( a.`date_start` <= '$today' AND a.`date_end` >= '$today' )";
-		$q = mysql_query($sql) or die( mysql_error() );
-
-		// ถ้ามีข้อมูลอยู่ในช่วงของการตรวจ จะแสดงผล
-		$test_row = mysql_num_rows($q);
-		$item = mysql_fetch_assoc($q);
-
-		$json = new Services_JSON();
-		
-		$json_list = array();
-		if( $test_row > 0 ){
-			$json_list = $json->decode($item['list']);
-		}
-		
-		if( $test_row > 0 && count($json_list) > 0 ){
-
-			// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
-			// ถ้าสั่งจากหน้าของ lab จะตัด xray ออกไป
-			if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
-				unset($json_list[$search_key]);
-			}
-
-			// ถ้าเป็น xray จะเห็นเฉพาะของตัวเอง
-			if( $_SESSION['until_login'] == 'xray' && ( $search_key = array_search('41001-sso',$json_list) ) !== false ){
-				$json_list = array('41001-sso');
-			}
-
-			$age_year = $item['age'];
-			$sex = $item['sex'];
-			$year_birth = $item['dbirth'];
-
-			$sso = new CU_SSO();
-			$sso->check($json_list, $cHn, $year_birth, $age_year, $sex);
-			$codes = $sso->get_code();
-			// var_dump($codes);
-			// echo "<hr>";
-			$diff = array_diff($json_list, $codes);
-			// var_dump($diff);
-
-			?>
-			<br>
-			<table border="1" bordercolor="#330099">
-				<tr>
-					<td>
-						<table  width="300">
-							<tr bgcolor="#000080">
-								<td colspan="2" align="center">
-									<font color="#FFFFFF">รายการ ตรวจสุขภาพประกันสังคม</font>
-								</td>
-							</tr>
-							<tr>
-								<td align="center" >
-									<?php
-									$href = "labinfo.php?Dgcode=sso&Amount=1&tvn=$tvn&hn=$cHn";
-									?>
-									<a target="right" href="<?=$href;?>">คิดเงิน</A>
-								</td>
-								<td>
-									<?php
-									
-									foreach( $json_list as $test_key => $test_val ){
-										
-										$color = 'white';
-										if( array_key_exists($test_val, $_SESSION["list_codeed"]) === true ){
-											$color = 'red';
-										}
-
-										if( in_array($test_val, $diff) === true ){
-											$color = 'red';
-										}
-
-										?>
-										<span style="background-color: <?=$color;?>"><?=$test_val;?></span><br>
-										<?php
-									}
-									?>
-								</td>
-							</tr>
-							<?php
-							if( count($diff) > 0 ){
-								?>
-								<tr>
-									<td colspan="2">* ผู้ป่วยเคยตรวจบางรายการไปแล้ว</td>
-								</tr>
-								<?php
-							}
-							?>
-						</table>
-					</td>
-				</tr>
-			</table>
-			<?php
-		}
-		
-		// กรณี ที่เป็น walk-in และ ผู้ป่วยมีสิทธิประกันสังคม
-		$thdate_format = date('d-m-').( date('Y') + 543 ).$cHn;
-		$sql = "SELECT SUBSTRING(a.`age`, 1, 2) AS `age_year`, 
-		SUBSTRING(a.`ptright`, 1, 3) AS `ptright_code`, 
-		SUBSTRING(a.`toborow`, 1, 4) AS `ex_code`, 
-		SUBSTRING(b.`dbirth`, 1, 4) AS `dbirth`, 
-		b.`sex`
-		FROM `opday` AS a 
-		LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-		WHERE a.`thdatehn` = '$thdate_format' ";
-		$q = mysql_query($sql);
-		$test_checkup = mysql_fetch_assoc($q);
-
-		// ต้องผ่านทะเบียนและออก opdcard เป็น ex42
-		if( $test_checkup['ptright_code'] == 'R07' && $test_checkup['ex_code'] == 'EX45' ){
-			
-			// include_once 'includes/cu_sso.php';
-
-			$user_gender = trim($test_checkup['sex']);
-			$sex = ( $user_gender === 'ช' ) ? 1 : 2 ;
-			$year_birth = $test_checkup['dbirth'];
-
-			$sso = new CU_SSO();
-			$sso->find_package_from_age($cHn, $year_birth, $test_checkup['age_year'], $sex);
-			$can_check = $sso->get_code();
-
-			$all_lists = $sso->get_checkup_from_age($test_checkup['age_year'], $year_birth, $sex);
-
-			// เงื่อนไข 2 ตัวด้านล่าง hardcode ไปก่อน
-			// ถ้าสั่งจากหน้าของ lab จะตัด xray ออกไป
-			if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
-				unset($all_lists[$search_key]);
-			}
-
-			// ถ้าเป็น xray จะเห็นเฉพาะของตัวเอง
-			if( $_SESSION['until_login'] == 'xray' && ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
-				$all_lists = array('41001-sso');
-			}
-
-			?>
-			<style>
-			.sso-help{
-				cursor: pointer;
-			}
-			</style>
-			<table border="1" cellspacing="0">
-				<tr style="background-color: #d2d2d2;">
-					<td>รายการตรวจสำหรับผู้ป่วย สิทธิประกันสังคม</td>
-					
-				</tr>
-				<?php
-				// var_dump($all_lists);
-				foreach( $all_lists as $key => $val ){
-
-					$bg = 'background-color: #E91E63;';
-					$help_class = '';
-					if( in_array($val, $can_check) === true ){
-						$bg = 'background-color: #4caf50;';
-						$help_class = 'sso-help';
-					}
-
-					?>
-					<tr align="center" style="<?=$bg;?>">
-						<td class="<?=$help_class;?>" onclick="add_to_code('<?=$val;?>')"><?=$val;?></td>
-					</tr>
-					<?php
-				}
-				?>
-			</table>
-			<script>
-				function add_to_code(str){
-					document.getElementById('aLink').value = str;
-				}
-			</script>
-			<?php
-		}
-
 	include("unconnect.inc");
 ?>
 

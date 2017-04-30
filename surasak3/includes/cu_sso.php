@@ -3,12 +3,7 @@
  * เริ่มนับตั้งแต่ปี 2560
  */
 
-/**
- * 
- *
- */
-
-include_once 'includes/functions.php';
+include_once 'functions.php';
 
 class CU_SSO{
     

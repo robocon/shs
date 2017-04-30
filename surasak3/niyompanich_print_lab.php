@@ -358,12 +358,15 @@ if( empty($page) ){
 	FROM `opcardchk` AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 	LEFT JOIN `opday` AS c ON c.`hn` = a.`hn` 
-		AND c.`thidate` LIKE '2560-04-29%' 
+		AND c.`thidate` LIKE '2560-04-30%' 
 	WHERE a.`part` = 'นิยมพานิช60' 
+	#AND c.`vn` IS NOT NULL 
 	ORDER BY a.`row` ASC";
 	// dump($sql);
 	$db->select($sql);
 	$items = $db->get_items();
+	// dump($items);
+	exit;
 
 	// ดึงรายการ พวกที่เป็น -sso ออกมาก่อน
 	$sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice` 
@@ -404,10 +407,11 @@ if( empty($page) ){
 		$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
 
 		// ตัดรายการของ xray ออกไป
-		if( $_SESSION['until_login'] == 'LAB' && ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
+		if( ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
 			unset($all_lists[$search_key]);
 		}
 		
+		/*
 		// orderhead
 		$orderhead_sql = "INSERT INTO `orderhead` ( 
 			`autonumber`, 
@@ -461,6 +465,7 @@ if( empty($page) ){
 			// dump($orderdetail_sql);
 			$db->insert($orderdetail_sql);
 		}
+		*/
 
 		// หาราคารวมเพื่อใส่ใน depart
 		$price = 0;
@@ -500,9 +505,10 @@ if( empty($page) ){
 		`ptright` = '$ptright',
 		`lab` = '$exam_no',
 		`status` = 'Y';";
-		dump($depart_sql);
+		// dump($depart_sql);
 		$depart = $db->insert($depart_sql);
 		$depart_id = $db->get_last_id();
+		dump($depart_id);
 
 		foreach ($all_lists as $key => $list) {
 
@@ -535,10 +541,10 @@ if( empty($page) ){
 		
 		$run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
 
-		if( $user_i === 1 ){
-			exit;
-		}
-		$user_i++;
+		// if( $user_i === 1 ){
+		// 	exit;
+		// }
+		// $user_i++;
 
 		echo "<hr>";
 		
