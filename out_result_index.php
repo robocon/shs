@@ -69,8 +69,4 @@ a:active {
     <td>7. โรงเรียนเวียงตาลพิทยาคม</td>
     <td align="center"><a href="out_result.php?part=เวียงตาล60" target="_blank">บันทึก</a></td>
   </tr>
-  <tr>
-    <td>8. บริษัทนิยมพานิช ลำปาง</td>
-    <td align="center"><a href="out_result.php?part=นิยมพานิช60" target="_blank">บันทึก</a></td>
-  </tr>
 </table>

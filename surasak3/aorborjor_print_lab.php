@@ -4,7 +4,7 @@ include 'bootstrap.php';
 $db = Mysql::load();
 
 $exam_no = 301;
-$checkup_date_code = '170501';
+$checkup_date_code = '170503';
 
 $action = input('action');
 if( $action === 'import' ){
@@ -19,12 +19,14 @@ if( $action === 'import' ){
 	$last_id = (int) $chk['lastrow'];
 
 	foreach ($items as $key => $item) {
+
+		// dump($item);
 		
 		if( !empty($item) ){
 		
 			++$last_id;
 
-			list($name, $surname, $age, $hn) = explode(',', $item);
+			list($name, $surname, $age, $hn, $course, $ptright) = explode(',', $item);
 
 			$hn = trim(str_replace(' ', '', $hn));
 
@@ -43,16 +45,17 @@ if( $action === 'import' ){
 			$age = trim($age);
 
 			$sql = "INSERT INTO `opcardchk`
-			(`HN`,
-			`row`,
-			`exam_no`,
-			`idcard`,
-			`name`,
-			`surname`,
-			`dbirth`,
-			`agey`,
-			`part`,
-			`branch`,
+			(`HN`, 
+			`row`, 
+			`exam_no`, 
+			`idcard`, 
+			`name`, 
+			`surname`, 
+			`dbirth`, 
+			`agey`, 
+			`part`, 
+			`course`, 
+			`branch`, 
 			`datechkup`)
 			VALUES (
 			'$hn',
@@ -63,19 +66,19 @@ if( $action === 'import' ){
 			'$surname',
 			'$dbirth',
 			'$age',
-			'นิยมพานิช60',
-			'ประกันสังคม',
-			NOW());
-			";
+			'อบจ60',
+			'$course',
+			'$ptright',
+			NOW());";
 			$insert = $db->insert($sql);
-			// dump($insert);
+			dump($insert);
 
 			$exam_no++;
 			
 		}
 	}
-
-	header('Location: niyompanich_print_lab.php');
+	
+	header('Location: aorborjor_print_lab.php');
 	exit;
 
 }
@@ -90,16 +93,16 @@ if( $action === 'import' ){
 </style>
 <ul class="no-print">
 	<li>
-		<a href="niyompanich_print_lab.php">นำเข้าข้อมูล</a>
+		<a href="aorborjor_print_lab.php">นำเข้าข้อมูล</a>
 	</li>
 	<li>
-		<a href="niyompanich_print_lab.php?page=lab">print sticker lab</a>
+		<a href="aorborjor_print_lab.php?page=lab">print sticker lab</a>
 	</li>
 	<li>
-		<a href="niyompanich_print_lab.php?page=labsso">ดูรายการตรวจ</a>
+		<a href="aorborjor_print_lab.php?page=labsso">ดูรายการตรวจ</a>
 	</li>
 	<li>
-		<a href="niyompanich_print_lab.php?page=money">ดีดค่าใช้จ่าย Lab</a>
+		<a href="aorborjor_print_lab.php?page=money">ดีดค่าใช้จ่าย Lab</a>
 	</li>
 </ul>
 <?php
@@ -108,7 +111,7 @@ $page = input('page');
 if( empty($page) ){
 	?>
 	<h3>นำเข้าข้อมูล opcardchk</h3>
-	<form action="niyompanich_print_lab.php" method="post" enctype="multipart/form-data">
+	<form action="aorborjor_print_lab.php" method="post" enctype="multipart/form-data">
 		<div>
 			ไฟล์นำเข้า : <input type="file" name="file">
 			<div><span style="color: red; font-size: 14px;">รองรับไฟล์ csv</span></div>
@@ -127,7 +130,7 @@ if( empty($page) ){
 	$sql = "SELECT a.*,b.`sex`
 	FROM `opcardchk` AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
-	WHERE a.`part` = 'นิยมพานิช60' 
+	WHERE a.`part` = 'อบจ60' 
 	ORDER BY a.`row` ASC";
 	$db->select($sql);
 	$items = $db->get_items();
@@ -156,9 +159,30 @@ if( empty($page) ){
 		$fullname = $item['name'].' '.$item['surname'];
 		// dump($item['age']);
 		// dump($age_year);
-		// dump($item);
+		dump($item['branch']);
 
-		$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
+		if( $item['branch'] == 'ประกันสังคม' ){
+			$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
+
+		}else if( $item['branch'] == 'เบิกจ่ายตรง' ){
+			if( $age < 35 ){
+
+				// program1 อายุน้อยกว่า 35
+				$all_lists = array('CBC','UA');
+				
+			} else if( $age >= 35 ){
+
+				// program3 อายุ 35ขึ้นไป
+				// อย่าลืมเพิ่ม hdl ldl
+				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
+
+			}
+		}else if( $item['branch'] == 'เงินสด' ){
+			$all_lists = array('CBC');
+		}
+		// dump($all_lists);
+
+		
 		// dump($all_lists);
 
 		/**
@@ -292,7 +316,7 @@ if( empty($page) ){
 	$sql = "SELECT a.*,b.`sex`
 	FROM `opcardchk` AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
-	WHERE a.`part` = 'นิยมพานิช60' 
+	WHERE a.`part` = 'อบจ60' 
 	ORDER BY a.`row` ASC";
 	$db->select($sql);
 	$items = $db->get_items();
@@ -304,7 +328,7 @@ if( empty($page) ){
 		font-size: 16px;
 	}
 	</style>
-	<h3>รายการตรวจตามช่วงอายุ สำหรับผู้ประกันตน บริษัทนิยมพานิช ลำปาง</h3>
+	<h3>รายการตรวจตามช่วงอายุ สำหรับผู้ประกันตน บริษัทอบจ ลำปาง</h3>
 	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
 		<thead>
 			<tr>
@@ -321,7 +345,6 @@ if( empty($page) ){
 				<th>HBSAG</th>
 				<th>PAP</th>
 				<th>STOCB</th>
-				<th>xray</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -350,7 +373,6 @@ if( empty($page) ){
 				<td align="center"><?=( in_array('HBSAG-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
 				<td align="center"><?=( in_array('PAP-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
 				<td align="center"><?=( in_array('STOCB-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('41001-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
 			</tr>
 			<?php
 			$i++;
@@ -368,13 +390,14 @@ if( empty($page) ){
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 	LEFT JOIN `opday` AS c ON c.`hn` = a.`hn` 
 		AND c.`thidate` LIKE '2560-05-01%' 
-	WHERE a.`part` = 'นิยมพานิช60' 
-	AND c.`vn` IS NOT NULL 
+	WHERE a.`part` = 'อบจ60' 
+	#AND c.`vn` IS NOT NULL 
 	ORDER BY a.`row` ASC";
+	// dump($sql);
 	$db->select($sql);
 	$items = $db->get_items();
 	// dump($items);
-	// exit;
+	exit;
 
 	// ดึงรายการ พวกที่เป็น -sso ออกมาก่อน
 	$sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice` 
@@ -547,9 +570,9 @@ if( empty($page) ){
 
 		} // end patdata
 		
-		// $runno = $runno + 1;
+		$runno = $runno + 1;
 		$run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
-		dump($run);
+
 		// if( $user_i === 1 ){
 		// 	exit;
 		// }

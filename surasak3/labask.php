@@ -455,8 +455,8 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	if( $row > 0 ){
 		?>
 		<div id="dv1">
-			<a href="javascript:void(0);" onclick="document.getElementById('dv1').style.display='none';document.getElementById('dv1').innerHTML='';">CXR </a>
-			<input type="hidden" name="xraydetail[]" value="CXR ">
+			<a href="javascript:void(0);" onclick="document.getElementById('dv1').style.display='none';document.getElementById('dv1').innerHTML='';">CHEST CHECK UP </a>
+			<input type="hidden" name="xraydetail[]" value="CHEST CHECK UP ">
 		</div>
 		<?php
 	}
