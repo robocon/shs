@@ -106,6 +106,9 @@ if( $action === 'import' ){
 		<a href="aorborjor_print_lab.php?page=orderlab">สั่ง orderhead</a>
 	</li>
 	<li>
+		<a href="aorborjor_print_lab.php?page=fixorderlab">แก้ไขที่ใส่ order ผิด</a>
+	</li>
+	<li>
 		<a href="aorborjor_print_lab.php?page=money">ดีดค่าใช้จ่าย Lab</a>
 	</li>
 </ul>
@@ -602,6 +605,7 @@ if( empty($page) ){
 				// program1 อายุน้อยกว่า 35
 				$all_lists = array('CBC','UA');
 				
+			// !!!!! ลืมเช็กว่าต้องเป็นของคนที่ทำงานใน อบจ. เท่านั้น จากหน่วยอื่นจะตรวจไม่ได้ !!!!!
 			} else if( $item['agey'] >= 35 && $item['agey'] <= 44 ){
 
 				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
@@ -700,5 +704,64 @@ if( empty($page) ){
 	// mysql_query($sql, $conn) or die( mysql_error() );
 	*/
 
+} else if( $page == 'fixorderlab' ){
+
+	$sql = "SELECT a.`HN`,c.* 
+	FROM ( 
+		SELECT `row`,`HN`,CONCAT('170503',`exam_no`) AS `labnumber`
+        FROM `opcardchk` 
+        WHERE `part` = 'อบจ60' 
+		AND `course` != 'อบจ' 
+		AND `branch` = 'เบิกจ่ายตรง' 
+    ) AS a 
+	LEFT JOIN ( 
+		SELECT * FROM `orderdetail` WHERE `labnumber` LIKE '170503%' 
+    ) AS c ON c.`labnumber` = a.`labnumber` 
+	ORDER BY a.`row` ASC";
+	$db->select($sql);
+
+	$items = $db->get_items();
+	foreach( $items as $key => $item ){
+
+		$labcode = $item['labcode'];
+		$labnumber = $item['labnumber'];
+
+		if( $labcode == 'LIPID' ){
+
+			dump($labnumber);
+
+			$sql = "DELETE FROM `orderdetail`
+			WHERE `labcode` = 'LIPID' 
+			AND `labnumber` = '$labnumber' ;";
+			$delete_detail = $db->delete($sql);
+			dump($delete_detail);
+			
+			$new_lab = array('CHOL','TRI');
+			foreach( $new_lab as $lab ){
+				
+				$labcare_sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice` 
+				FROM `labcare` 
+				WHERE `code` = '$lab'";
+				$db->select($labcare_sql);
+				$lab_item = $db->get_item();
+
+				$code = $lab_item['code'];
+				$oldcode = $lab_item['oldcode'];
+				$detail = $lab_item['detail'];
+
+				$orderdetail_sql = "INSERT INTO `orderdetail` ( 
+					`labnumber`,`labcode`,`labcode1`,`labname` 
+				) VALUES (
+					'$labnumber', '$code', '$oldcode', '".$detail."'
+				);";
+				$orderdetail = $db->insert($orderdetail_sql);
+
+				dump($orderdetail);
+			}
+			
+		}
+	}
+	
+	exit;
 }
 	
