@@ -9,6 +9,8 @@ $checkup_date_code = '170501';
 $action = input('action');
 if( $action === 'import' ){
 
+	exit;
+
 	$file = $_FILES['file'];
 	$content = file_get_contents($file['tmp_name']);
 	$items = explode("\r\n", $content);
@@ -360,6 +362,9 @@ if( empty($page) ){
 	</table>
 	<?php
 } else if( $page == 'money' ){
+
+	exit;
+
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 

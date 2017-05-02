@@ -6,6 +6,7 @@ $db = Mysql::load();
 $exam_no = 301;
 $checkup_date_code = '170503';
 
+
 $action = input('action');
 if( $action === 'import' ){
 
@@ -71,7 +72,7 @@ if( $action === 'import' ){
 			'$ptright',
 			NOW());";
 			$insert = $db->insert($sql);
-			dump($insert);
+			// dump($insert);
 
 			$exam_no++;
 			
@@ -102,6 +103,9 @@ if( $action === 'import' ){
 		<a href="aorborjor_print_lab.php?page=labsso">ดูรายการตรวจ</a>
 	</li>
 	<li>
+		<a href="aorborjor_print_lab.php?page=orderlab">สั่ง orderhead</a>
+	</li>
+	<li>
 		<a href="aorborjor_print_lab.php?page=money">ดีดค่าใช้จ่าย Lab</a>
 	</li>
 </ul>
@@ -127,9 +131,9 @@ if( empty($page) ){
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 
-	$sql = "SELECT a.*,b.`sex`
+	$sql = "SELECT a.*,b.`sex` 
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 	WHERE a.`part` = 'อบจ60' 
 	ORDER BY a.`row` ASC";
 	$db->select($sql);
@@ -147,167 +151,175 @@ if( empty($page) ){
 	<?php
 	foreach ($items as $key => $item) {
 		
-		// $hn = $item['HN'];
-		// if( $hn !== '47-21983' ){
+		// test only
+		// if( $item['branch'] !== 'ประกันสังคม' ){
 		// 	continue;
-		// }else{
-		// 	$exam_no = 363;
 		// }
 
+		$exam_no = $item['exam_no'];
 		$age_year = substr($item['dbirth'], 0, 4) + 543 ;
 		$sex = ( $item['sex'] === 'ช' ) ? 1 : 2 ;
 		$fullname = $item['name'].' '.$item['surname'];
 		// dump($item['age']);
 		// dump($age_year);
-		dump($item['branch']);
+		// dump($item['branch']);
+		// dump($item['agey']);
 
+		// ตรวจพวก chem จะตามท้ายด้วย 01
+		$lab_number = $checkup_date_code.$exam_no."01";
+
+		// ตรวจพวก chem จะตามท้ายด้วย 02
+		$lab_chem = $checkup_date_code.$exam_no."02";
+
+		// เลขรันของสติ๊กเกอร์แต่ละใบ
+		$pre_number = 0;
+		
 		if( $item['branch'] == 'ประกันสังคม' ){
 			$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
-
-		}else if( $item['branch'] == 'เบิกจ่ายตรง' ){
-			if( $age < 35 ){
-
-				// program1 อายุน้อยกว่า 35
-				$all_lists = array('CBC','UA');
-				
-			} else if( $age >= 35 ){
-
-				// program3 อายุ 35ขึ้นไป
-				// อย่าลืมเพิ่ม hdl ldl
-				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
-
-			}
-		}else if( $item['branch'] == 'เงินสด' ){
-			$all_lists = array('CBC');
-		}
-		// dump($all_lists);
-
-		
-		// dump($all_lists);
-
-		/**
-		 * @todo 
-		 * [/] เอาอายุไปหารายการ ปกส.
-		 * [] เอารายการที่ได้ไปหาใน labcare กรณี labใน/นอก
-		 * [] พิมพ์สติ๊กเกอร์
-		 */
-
-		$list_chem = array();
-		$pre_number = 0;
-
-		foreach ($all_lists as $key => $lab) {
 			
-			// 
-			$lab_number = $checkup_date_code.$exam_no."01";
-
-			// ตรวจพวก chem จะตามท้ายด้วย 02
-			$lab_chem = $checkup_date_code.$exam_no."02";
-			
-			if( $lab === 'CBC-sso' ){
+			if( in_array('CBC-sso', $all_lists) === true ){
 				++$pre_number;
 				?>
 				<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
 				<font style='line-height:20px;' face='Angsana New' size='6'>
 					<center><b><?=$pre_number;?>-<?=$exam_no;?></b> <span style="font-size: 14px;">CBC</span></center>
 				</font>
-				<center><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_number;?>"></span></center>
+				<center><span class='fc1-0'><img src="barcode/labstk.php?cLabno=<?=$lab_number;?>"></span></center>
 				<div style="page-break-before: always;"></div>
 				<?php
 			}
 
-			if( $lab === 'UA-sso' ){
+			if( in_array('UA-sso', $all_lists) === true ){
 				++$pre_number;
 				?>
 				<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
-				<font style='line-height:23px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
-				<font style='line-height:23px;' face='Angsana New' size='5'><center><b>UA</b></center></font>
+				<font style='line-height:20px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
+				<font style='line-height:20px;' face='Angsana New' size='5'><center><b>UA</b></center></font>
 				<div style="page-break-before: always;"></div>
 				<?php
 			}
 
-			
-			if( $lab === 'BS-sso' ){
-				$list_chem[] = 'BS';
+			// เหลือของเคม
+			$chem_sticker = false;
+			$list_chem = array();
+			if( in_array('BS-sso', $all_lists) === true 
+				OR in_array('CR-sso', $all_lists) === true 
+				OR in_array('HDL-sso', $all_lists) === true 
+				OR in_array('CHOL-sso', $all_lists) === true 
+				OR in_array('HBSAG-sso', $all_lists) === true ){
+				++$pre_number;
+
+				if( in_array('BS-sso', $all_lists) === true ){ $list_chem[] = 'BS'; }
+				if( in_array('CR-sso', $all_lists) === true ){ $list_chem[] = 'CR'; }
+				if( in_array('HDL-sso', $all_lists) === true ){ $list_chem[] = 'HDL'; }
+				if( in_array('CHOL-sso', $all_lists) === true ){ $list_chem[] = 'CHOL'; }
+				if( in_array('HBSAG-sso', $all_lists) === true ){ $list_chem[] = 'HBSAG'; }
+				
+				$chem_txt = '';
+				if( count($list_chem) > 0 ){
+					$chem_txt = implode(',', $list_chem);
+				}
+				
+				?>
+				<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
+				<font style='line-height:20px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b> <span style="font-size: 14px;"><?=$chem_txt;?></span></center></font>
+				<center>
+					<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_chem;?>"></span>
+				</center>
+				<div style="page-break-before: always;"></div>
+				<?php
 			}
 
-			if( $lab === 'CR-sso' ){
-				$list_chem[] = 'CR';
-			}
-
-			if( $lab === 'HDL-sso' ){
-				$list_chem[] = 'HDL';
-			}
-
-			if( $lab === 'CHOL-sso' ){
-				$list_chem[] = 'CHOL';
-			}
-			
-			if( $lab === 'HBSAG-sso' ){
-				$list_chem[] = 'HBSAG';
-			}
-	
-			
 			/*
-			if( $lab === 'HBSAG-sso' ){
+			if( in_array('PAP-sso', $all_lists) === true ){
 				++$pre_number;
 				?>
-				<font style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
-				<font style='line-height:23px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
-				<font style='line-height:23px;' face='Angsana New' size='5'><center><b>HBSAG</b></center></font>
+				<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
+				<font style='line-height:20px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
+				<font style='line-height:20px;' face='Angsana New' size='5'><center><b>OUTLAB</b> </center></font>
 				<div style="page-break-before: always;"></div>
 				<?php
 			}
 			*/
 
-			if( $lab === 'PAP-sso' ){
-				++$pre_number;
-				?>
-				<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
-				<font style='line-height:23px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
-				<font style='line-height:23px;' face='Angsana New' size='5'><center><b>OUTLAB</b> </center></font>
-				<div style="page-break-before: always;"></div>
-				<?php
-			}
-
-			if( $lab === 'STOCB-sso' ){
+			if( in_array('STOCB-sso', $all_lists) === true ){
 				++$pre_number;
 				?>
 				<font style='line-height:22px;'  face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
-				<font style='line-height:23px;'  face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b><center></font>
-				<font style='line-height:23px;'  face='Angsana New' size='5'><center><b>STOOL</b></center></font>
+				<font style='line-height:20px;'  face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
+				<font style='line-height:20px;'  face='Angsana New' size='5'><center><b>STOOL</b></center></font>
+				<div style="page-break-before: always;"></div>
+				<?php
+			}
+
+		}else if( $item['branch'] == 'เบิกจ่ายตรง' ){
+
+			if( $item['agey'] < 35 ){
+
+				// program1 อายุน้อยกว่า 35
+				$all_lists = array('CBC','UA');
+				$program = 1;
+				
+			} else if( $item['agey'] >= 35 ){
+
+				// program3 อายุ 45 ขึ้นไป
+				// อย่าลืมเพิ่ม hdl ldl
+				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
+				$program = 2;
+
+			}
+
+			++$pre_number;
+			?>
+			<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
+			<font style='line-height:20px;' face='Angsana New' size='6'>
+				<center><b><?=$pre_number;?>-<?=$exam_no;?></b> <span style="font-size: 14px;">CBC</span></center>
+			</font>
+			<center>
+				<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_number;?>"></span>
+			</center>
+			<div style="page-break-before: always;"></div>
+			
+			<?php
+			++$pre_number;
+			?>
+			<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
+			<font style='line-height:20px;' face='Angsana New' size='6'>
+				<center><b><?=$pre_number;?>-<?=$exam_no;?></b></center>
+			</font>
+			<font style='line-height:20px;' face='Angsana New' size='5'><center><b>UA</b></center></font>
+			<div style="page-break-before: always;"></div>
+			<?php
+			if( $program === 2 ){
+				++$pre_number;
+				?>
+				<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
+				<font style='line-height:20px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b></center></font>
+				<center>
+					<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_chem;?>"></span>
+				</center>
 				<div style="page-break-before: always;"></div>
 				<?php
 			}
 
 
-		} // end each lab
+		}else if( $item['branch'] == 'เงินสด' ){
 
-		
-		if( count($list_chem) > 0 ){
-
-			++$pre_number;
-			$chem_text = implode(',', $list_chem);
-			
 			?>
-			<font style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
-			<font style='line-height:23px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b> <span style="font-size: 14px; line-height:11px;"><?=$chem_text;?></span></center></font>
-			<center><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_chem;?>"></span></center>
+			<font style='line-height:22px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
+			<font style='line-height:20px;' face='Angsana New' size='6'>
+				<center><b>1-<?=$exam_no;?></b> <span style="font-size: 14px;">CBC</span></center>
+			</font>
+			<center><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_number;?>"></span></center>
 			<div style="page-break-before: always;"></div>
 			<?php
-			
+
 		}
-
-		
 		// exit;
-
-		// if( $test_user_number == 10 ){
-		// 	exit;
-		// }
-
-		$test_user_number++;
-
-		$exam_no++;
+		
 	} // foreach แต่ละ user
+
+	exit;
 		
 } else if( $page === 'labsso' ){
 	include 'includes/cu_sso.php';
@@ -328,7 +340,7 @@ if( empty($page) ){
 		font-size: 16px;
 	}
 	</style>
-	<h3>รายการตรวจตามช่วงอายุ สำหรับผู้ประกันตน บริษัทอบจ ลำปาง</h3>
+	<h3>รายการตรวจตามช่วงอายุ สำหรับผู้ประกันตน อบจ.ลำปาง</h3>
 	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
 		<thead>
 			<tr>
@@ -345,12 +357,17 @@ if( empty($page) ){
 				<th>HBSAG</th>
 				<th>PAP</th>
 				<th>STOCB</th>
+				<th>X-Ray</th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
 		$i = 1;
 		foreach ($items as $key => $item) {
+
+			if( $item['branch'] !== 'ประกันสังคม' ){
+				continue;
+			}
 			
 			$age_year = substr($item['dbirth'], 0, 4) + 543 ;
 			$sex = ( $item['sex'] === 'ช' ) ? 1 : 2 ;
@@ -373,6 +390,7 @@ if( empty($page) ){
 				<td align="center"><?=( in_array('HBSAG-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
 				<td align="center"><?=( in_array('PAP-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
 				<td align="center"><?=( in_array('STOCB-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
+				<td align="center"><?=( in_array('41001-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
 			</tr>
 			<?php
 			$i++;
@@ -382,6 +400,10 @@ if( empty($page) ){
 	</table>
 	<?php
 } else if( $page == 'money' ){
+
+
+	exit;
+
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 
@@ -416,8 +438,7 @@ if( empty($page) ){
 	$en_date = date("Y-m-d H:i:s");
 	$user_i = 1;
 	$test_case = true;
-	$clinicalinfo = "ตรวจสุขภาพประกันสังคม60";
-
+	
 	// เรียงไปทีละคน 
 	foreach ($items as $key => $item) {
 
@@ -441,62 +462,6 @@ if( empty($page) ){
 		if( ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
 			unset($all_lists[$search_key]);
 		}
-		
-		/*
-		// orderhead
-		$orderhead_sql = "INSERT INTO `orderhead` ( 
-			`autonumber`, 
-			`orderdate`, 
-			`labnumber`, 
-			`hn`, 
-			`patienttype`, 
-			`patientname`, 
-			`sex`, 
-			`dob`, 
-			`sourcecode`, 
-			`sourcename`, 
-			`room`, 
-			`cliniciancode`, 
-			`clinicianname`, 
-			`priority`, 
-			`clinicalinfo` 
-		) VALUES (
-			'', 
-			'$en_date', 
-			'$labnumber', 
-			'$hn', 
-			'OPD', 
-			'$ptname', 
-			'$gender', 
-			'$dbirth', 
-			'', 
-			'', 
-			'', 
-			'', 
-			'MD022 (ไม่ทราบแพทย์)', 
-			'R', 
-			'".$clinicalinfo."'
-		);";
-		dump($orderhead_sql);
-		$depart = $db->insert($orderhead_sql);
-		// $orderhead_id = $db->get_last_id();
-		
-		// orderdetail
-		foreach ($all_lists as $key => $list) {
-			$lab_item = $lab_lists[$list];
-			$code = $lab_item['code'];
-			$oldcode = $lab_item['oldcode'];
-			$detail = $lab_item['detail'];
-
-			$orderdetail_sql = "INSERT INTO `orderdetail` ( 
-				`labnumber`,`labcode`,`labcode1`,`labname` 
-			) VALUES (
-				'$labnumber', '$code', '$oldcode', '".$detail."'
-			);";
-			// dump($orderdetail_sql);
-			$db->insert($orderdetail_sql);
-		}
-		*/
 
 		// หาราคารวมเพื่อใส่ใน depart
 		$price = 0;
@@ -581,5 +546,159 @@ if( empty($page) ){
 		echo "<hr>";
 		
 	} // end insert into depart & patdata
+} else if( $page === 'orderlab' ){
+
+	include 'includes/cu_sso.php';
+	$sso = new CU_SSO();
+
+	$en_date = date("Y-m-d H:i:s");
+
+	$sql = "SELECT a.*,
+	b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+	WHERE a.`part` = 'อบจ60' 
+	ORDER BY a.`row` ASC";
+	$db->select($sql);
+	$items = $db->get_items();
+
+	foreach ($items as $key => $item) {
+		
+		if( $item['branch'] == 'เงินสด' ){
+			continue;
+		}
+
+		$hn = $item['HN'];
+		$last_labnumber = $exam_no = $item['exam_no'];
+		$labnumber = $checkup_date_code.$exam_no;
+		$age_year = substr($item['dbirth'], 0, 4) + 543 ;
+		$sex = ( $item['sex'] === 'ช' ) ? 1 : 2 ;
+		$ptname = $item['name'].' '.$item['surname'];
+		$gender = ( $item['sex'] === 'ช' ) ? 'M' : 'F' ;
+		$dbirth = $item['dbirth'];
+		
+		// dump($item['branch']);
+		// dump('age => '.$item['agey']);
+
+		if( $item['branch'] == 'ประกันสังคม' ){
+			
+			$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
+
+			// ตัดของ xray ออกไปก่อน
+			if( ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
+				unset($all_lists[$search_key]);
+			}
+
+			if( ( $search_key = array_search('PAP-sso',$all_lists) ) !== false ){
+				unset($all_lists[$search_key]);
+			}
+
+			$clinicalinfo = "ตรวจสุขภาพประกันสังคม60";
+			
+		}else if( $item['branch'] == 'เบิกจ่ายตรง' ){
+
+			if( $item['agey'] < 35 ){
+
+				// program1 อายุน้อยกว่า 35
+				$all_lists = array('CBC','UA');
+				
+			} else if( $item['agey'] >= 35 && $item['agey'] <= 44 ){
+
+				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
+				
+			} else if( $item['agey'] >= 45  ){
+
+				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','LIPID');
+			}
+
+			$clinicalinfo = "ตรวจสุขภาพอบจ60";
+
+		}
+
+		# orderhead
+		$orderhead_sql = "INSERT INTO `orderhead` ( 
+			`autonumber`, 
+			`orderdate`, 
+			`labnumber`, 
+			`hn`, 
+			`patienttype`, 
+			`patientname`, 
+			`sex`, 
+			`dob`, 
+			`sourcecode`, 
+			`sourcename`, 
+			`room`, 
+			`cliniciancode`, 
+			`clinicianname`, 
+			`priority`, 
+			`clinicalinfo` 
+		) VALUES (
+			'', 
+			'$en_date', 
+			'$labnumber', 
+			'$hn', 
+			'OPD', 
+			'$ptname', 
+			'$gender', 
+			'$dbirth', 
+			'', 
+			'', 
+			'', 
+			'', 
+			'MD022 (ไม่ทราบแพทย์)', 
+			'R', 
+			'$clinicalinfo'
+		);";
+		// dump('labnumber => '.$labnumber);
+		dump($orderhead_sql);
+		$orderhead = $db->insert($orderhead_sql);
+		dump($orderhead);
+
+		// mysql_query($orderhead_sql, $conn) or die( mysql_error() );
+		echo "+++++++++++++++++++++++++++++++++++++++++++++++";
+		foreach ($all_lists as $key => $list) {
+
+			$labcare_sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice` 
+			FROM `labcare` 
+			WHERE `code` = '$list'";
+			$db->select($labcare_sql);
+			$lab_item = $db->get_item();
+
+			$code = $lab_item['code'];
+			$oldcode = $lab_item['oldcode'];
+			$detail = $lab_item['detail'];
+
+			$orderdetail_sql = "INSERT INTO `orderdetail` ( 
+				`labnumber`,`labcode`,`labcode1`,`labname` 
+			) VALUES (
+				'$labnumber', '$code', '$oldcode', '".$detail."'
+			);";
+			dump($orderdetail_sql);
+			$orderdetail = $db->insert($orderdetail_sql);
+			dump($orderdetail);
+			// mysql_query($orderdetail_sql, $conn) or die( mysql_error() );
+		}
+
+		echo "<hr>";
+
+	} // จบการวน lab แต่ละคน
+
+	/*
+	$update_date = date('Y-m-d');
+	dump($last_labnumber);
+
+	// กันไว้ไม่ให้มันชนกัน
+	++$last_labnumber;
+
+	// update runno
+	$sql = "UPDATE `runno` SET  
+	`runno` =  '$last_labnumber',
+	`startday` =  '$update_date'
+	WHERE  `title` = 'lab' 
+	AND  `prefix` = '' 
+	LIMIT 1 ;";
+	// mysql_query($sql, $conn) or die( mysql_error() );
+	*/
+
 }
 	
