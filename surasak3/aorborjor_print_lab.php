@@ -84,6 +84,8 @@ if( $action === 'import' ){
 
 } else if( $action === 'money_lab' ){
 	
+	// exit;
+
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 	
@@ -96,72 +98,55 @@ if( $action === 'import' ){
 		SELECT *, CONCAT('$checkup_date_code',`exam_no`) AS `labnumber`
 		FROM `opcardchk`
 		WHERE ( `part` = 'อบจ60' 
-			AND `course` = 'อบจ' 
-			AND ( 
-				`branch` != 'เงินสด' 
-				AND `branch` != 'ประกันสังคม' 
-			) 
-		)
+			#AND `course` = 'อบจ' 
+			#AND ( 
+			#AND `branch` != 'เงินสด' 
+				AND `branch` = 'ประกันสังคม' 
+			#) 
+		) 
 		
 	 ) AS a 
 	LEFT JOIN ( 
 		
-		SELECT * FROM `depart` WHERE `date` LIKE '2560-05-03%'
+		SELECT * FROM `depart` WHERE `date` LIKE '2560-05-04%'
 
-	) AS b ON b.`lab` = a.`exam_no`
-	WHERE b.`lab` IS NOT NULL 
+	) AS b ON b.`hn` = a.`HN`
+	#WHERE b.`lab` IS NOT NULL 
 	";
-	// dump($test_depart);
+	dump($test_depart);
 
-	/**
-	 * รายการ labdetail ของวันที่4
-	SELECT a.`HN`,a.`course`,a.`branch`,c.* 
-	FROM ( 
-		SELECT `row`,`HN`,`course`,`branch`,CONCAT('170503',`exam_no`) AS `labnumber`
-        FROM `opcardchk` 
-        WHERE `part` = 'อบจ60' 
-        AND `exam_no` > 437
-		AND `branch` != 'เงินสด' 
-    ) AS a 
-	LEFT JOIN ( 
-		SELECT * FROM `orderdetail` WHERE `labnumber` LIKE '170503%' 
-    ) AS c ON c.`labnumber` = a.`labnumber` 
-	ORDER BY a.`row` ASC
-	*/
+	
 
 	// ดูใน opday ก่อนว่ามีใครบ้างที่ได้ VN
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!
 	// !!! อย่าลืมดูตรง thidate !!!!
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!
-	// AND a.`branch` != 'เงินสด' AND a.`branch` != 'ประกันสังคม'
-	// AND `course` == 'อบจ'
 	$sql = "SELECT a.* 
 	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` 
-	,c.`vn` 
-	#,c.`ptright` 
-	,b.`ptright`
+	,c.`thidate`,c.`vn`,c.`ptright` 
 	FROM ( 
 		SELECT *, CONCAT('$checkup_date_code',`exam_no`) AS `labnumber`
 		FROM `opcardchk`
 		WHERE ( `part` = 'อบจ60' 
 			#AND `course` = 'อบจ' 
 			#AND ( 
-			#	`branch` != 'เงินสด' 
-			#	AND `branch` != 'ประกันสังคม' 
+			#AND `branch` != 'เงินสด' 
+				AND `branch` != 'ประกันสังคม' 
 			#) 
-		)
+		) 
+		AND `hn` != '60-1987' 
+		AND ( `hn` = '60-3216' OR `hn` = '50-8820' OR `hn` = '48-20145' ) 
 	) AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 
-		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-03%' 
+		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-04%' 
 	) AS c ON c.`hn` = a.`HN` 
-	#WHERE c.`vn` IS NOT NULL 
-	AND a.`exam_no` > 437
-	ORDER BY a.`row` ASC 
+	WHERE c.`vn` IS NOT NULL 
+	ORDER BY c.`ptright` ASC 
 	LIMIT 300";
-	// dump($sql);
-// 
-	// exit;
+
+	dump($sql);
+	exit;
 
 	$db->select($sql);
 	$items = $db->get_items();
@@ -240,12 +225,13 @@ if( $action === 'import' ){
 		`ptright` = '$ptright',
 		`lab` = '$exam_no',
 		`status` = 'Y';";
-		// dump($depart_sql);
-		// $depart = $db->insert($depart_sql);
-		// $depart_id = $db->get_last_id();
+		dump($depart_sql);
+		$depart = $db->insert($depart_sql);
+		$depart_id = $db->get_last_id();
+
 		// $depart_id = rand(10000, 20000);
 		// dump($depart_sql);
-		// dump($depart_id);
+		dump($depart_id);
 		
 		// เอารายการตรวจมาเพิ่มใน patdata
 		foreach ($all_lists as $key => $list) {
@@ -275,50 +261,54 @@ if( $action === 'import' ){
 			`ptright` = '$ptright',
 			`status` = 'Y';";
 			// dump($patdata_sql);
-			// $patdata = $db->insert($patdata_sql);
-			// dump($patdata);
+			$patdata = $db->insert($patdata_sql);
+			dump($patdata);
 
 		} // end patdata
 		
 		// $runno = $runno + 1;
-		// $run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
+		$run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
 
 		echo "<hr>";
 		
 	} // end insert into depart & patdata
 
 	++$end_runno;
-	// dump($end_runno);
-	// $db->update("UPDATE runno SET runno = $end_runno WHERE title='stktranx'");
+	dump($end_runno);
+	$db->update("UPDATE runno SET runno = $end_runno WHERE title='stktranx'");
 
 	exit;
 
 } else if( $action === 'money_xray' ){
 
+	exit;
+
 	$sql = "SELECT a.* 
 	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` 
-	,c.`vn`,c.`ptright` 
+	,c.`thidate`,c.`vn`,c.`ptright` 
 	FROM ( 
 		SELECT *, CONCAT('$checkup_date_code',`exam_no`) AS `labnumber`
 		FROM `opcardchk`
 		WHERE ( `part` = 'อบจ60' 
-			AND `course` = 'อบจ' 
-			AND ( 
-				`branch` != 'เงินสด' 
-				AND `branch` != 'ประกันสังคม' 
-			) 
-		)
+			#AND `course` = 'อบจ' 
+			#AND ( 
+			AND `branch` != 'เงินสด' 
+			#	AND `branch` != 'ประกันสังคม' 
+			#) 
+		) 
+		AND `hn` != '60-1987' 
+		AND ( `hn` = '60-3216' OR `hn` = '50-8820' OR `hn` = '48-20145' ) 
 	) AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 
-		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-03%' 
+		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-04%' 
 	) AS c ON c.`hn` = a.`HN` 
 	WHERE c.`vn` IS NOT NULL 
-	ORDER BY a.`row` ASC 
+	ORDER BY c.`ptright` ASC 
 	LIMIT 300";
 	// dump($sql);
 
-	exit;
+	// exit;
 
 	$db->select($sql);
 	$items = $db->get_items();

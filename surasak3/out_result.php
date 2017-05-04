@@ -41,13 +41,19 @@ color: #FFF;
 <body>
 <div id="no_print">
 <form action="" method="post" name="f1">
-<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#339933" class="pdxhead">
-  <tr><td height="40" align="center" bgcolor="#66CC99"><strong>กรอกข้อมูล HN </strong></td>
-  </tr>
-  <tr><td align="left">HN: <input name="hn" type="text" size="20" class="pdxhead"  /> 
-  <input type="submit"  value="   ตกลง   " name="okhn" class="pdxhead"/></td>
-  </tr>
-</table>
+	<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#339933" class="pdxhead">
+		<tr>
+			<td height="40" align="center" bgcolor="#66CC99">
+				<strong>กรอกข้อมูล HN </strong>
+			</td>
+		</tr>
+		<tr>
+			<td align="left">
+				HN: <input name="hn" type="text" size="20" class="pdxhead"  /> 
+				<input type="submit"  value="   ตกลง   " name="okhn" class="pdxhead"/>
+			</td>
+		</tr>
+	</table>
 </form>
 <br />
 <? 
@@ -55,7 +61,7 @@ if(isset($_POST['hn'])){
 				
 	include("connect.inc");		
 	
-			////*runno ตรวจสุขภาพ*/////////
+	////*runno ตรวจสุขภาพ*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 	
@@ -64,66 +70,77 @@ if(isset($_POST['hn'])){
 			echo "Cannot seek to row $i\n";
 			continue;
 		}
-			if(!($row = mysql_fetch_object($result)))
+
+		if(!($row = mysql_fetch_object($result)))
 			continue;
 	}
 	
 	$nPrefix=$row->prefix;
 	$nPrefix2="25".$nPrefix;
-////*runno ตรวจสุขภาพ*/////////
-$part=$_GET["part"];
+	////*runno ตรวจสุขภาพ*/////////
+	$part=$_GET["part"];
 		
-			$sql1="SELECT * ,concat(yot,name,' ',surname)as ptname,part FROM `opcardchk` WHERE HN='".$_POST['hn']."' ";	
-			//echo "-->".$sql1;
-	  	    $query=mysql_query($sql1) or die (mysql_error());
-			$Row=mysql_num_rows($query);
+	$sql1="SELECT * ,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` 
+	FROM `opcardchk` 
+	WHERE `HN` = '".(trim($_POST['hn']))."' ";	
+	//echo "-->".$sql1;
+	
+	$query=mysql_query($sql1) or die (mysql_error());
+	$Row=mysql_num_rows($query);
+
+	$arr=mysql_fetch_array($query);
+	$hn = $arr['HN'];
+	$ptname = $arr['yot'].$arr['name'].' '.$arr['surname'];			
+
+	$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
+	//echo $sqlchk;
+	$querychk=mysql_query($sqlchk) or die (mysql_error());
+	$Rowchk=mysql_num_rows($querychk);
+
+	if($Rowchk>0){
+		
+		$arrchk=mysql_fetch_array($querychk);	
+		$data1 = "update";
+		$button = "<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
+		$button .= '<input type="hidden" name="form_status" value="update">';
+
+	}else{
+		$data1 = "insert";
+		$button = "<input type='submit'  value='   บันทึกข้อมูล   ' name='okhn2' class='pdxhead'/>";
+		$button .= '<input type="hidden" name="form_status" value="insert">';
+	}
+				
+	if(!$Row){	
+
+		$sql2="SELECT hn as HN ,concat(yot,name,' ',surname)as ptname FROM `opcard` WHERE hn='".$_POST['hn']."' ";	
+		//echo "-->".$sql2;
+		$query=mysql_query($sql2) or die (mysql_error());
+		$Row2=mysql_num_rows($query);	
+		if(empty($Row2)){
+			echo "<div align='center' class='fontsara'>!!! ไม่พบ HN  $_POST[hn]!! </div>";		
+		}else{
 			$arr=mysql_fetch_array($query);
 			$hn=$arr['HN'];
-			$ptname=$arr['ptname'];			
-
-				$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
-				//echo $sqlchk;
-				$querychk=mysql_query($sqlchk) or die (mysql_error());
-				$Rowchk=mysql_num_rows($querychk);
-		
-				if($Rowchk>0){
-					
-					$arrchk=mysql_fetch_array($querychk);	
-					$data1="update";
-					$button="<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
-				}else{
-					$data1="insert";
-					$button="<input type='submit'  value='   บันทึกข้อมูล   ' name='okhn2' class='pdxhead'/>";
-				}
+			$ptname=$arr['ptname'];
+			
+			$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
+			//echo $sqlchk;
+			$querychk=mysql_query($sqlchk) or die (mysql_error());
+			$Rowchk=mysql_num_rows($querychk);
+	
+			if($Rowchk>0){
 				
-if(!$Row){	
-			$sql2="SELECT hn as HN ,concat(yot,name,' ',surname)as ptname FROM `opcard` WHERE hn='".$_POST['hn']."' ";	
-			//echo "-->".$sql2;
-	  	    $query=mysql_query($sql2) or die (mysql_error());
-			$Row2=mysql_num_rows($query);	
-			if(empty($Row2)){
-				echo "<div align='center' class='fontsara'>!!! ไม่พบ HN  $_POST[hn]!! </div>";		
+				$arrchk=mysql_fetch_array($querychk);	
+				$data1="update";
+				$button="<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
+				$button .= '<input type="hidden" name="form_status" value="update">';
 			}else{
-				$arr=mysql_fetch_array($query);
-				$hn=$arr['HN'];
-				$ptname=$arr['ptname'];
-				
-				$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
-				//echo $sqlchk;
-				$querychk=mysql_query($sqlchk) or die (mysql_error());
-				$Rowchk=mysql_num_rows($querychk);
-		
-				if($Rowchk>0){
-					
-					$arrchk=mysql_fetch_array($querychk);	
-					$data1="update";
-					$button="<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
-				}else{
-					$data1="insert";
-					$button="<input type='submit'  value='   บันทึกข้อมูล   ' name='okhn2' class='pdxhead'/>";
-				}
+				$data1="insert";
+				$button="<input type='submit'  value='   บันทึกข้อมูล   ' name='okhn2' class='pdxhead'/>";
+				$button .= '<input type="hidden" name="form_status" value="insert">';
 			}
-}		
+		}
+	}
 ?>
 <form action="" method="post" name="f2">
  <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#FF9900">
@@ -167,42 +184,45 @@ if(!$Row){
   </table>
 </form>
 <p>
-  <?
+<?
 }
 if(isset($_POST['okhn2'])){
 	
-	include("connect.inc");	
+	include("connect.inc");
+	$data1 = $_POST['form_status'];
+	if( $data1 == "update" ){
+
+		$ptname = $_POST['ptname'];
+		$update="UPDATE `out_result_chkup` SET 
+		`ptname` = '$ptname',
+		`weight` = '".$_POST['weight']."',
+		`height` = '".$_POST['height']."',
+		`bp1` = '".$_POST['bp1']."',
+		`bp2` ='".$_POST['bp2']."',
+		`p` = '".$_POST['p']."' ,
+		`ekg` = '".$_POST['ekg']."',
+		`va` = '".$_POST['va']."',
+		`stool` = '".$_POST['stool']."',
+		`cxr` = '".$_POST['cxr']."',
+		`doctor_result` = '".$_POST['doctor_result']."',
+		`year_chk` = '".$nPrefix."',
+		`part` = '".$_POST['part']."'
+		WHERE `row_id` ='".$_POST['row_id']."' ";
+
+	}else if( $data1=="insert" ){
+		$active="y";
+		$update = "INSERT INTO `out_result_chkup` ( `hn` , `ptname`  , `weight` , `height` , `bp1` , `bp2` , `p` , `ekg` , `va`, `cxr`, year_chk,`register`,`part`)
+		VALUES ('".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."','".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix', '','".$_POST['part']."');";
+	}
 	
-
+	// echo "<pre>";
+	// var_dump($update);
+	// echo "</pre>";
 	
-if($data1=="update"){
-	
-$update="UPDATE `out_result_chkup` SET `weight` = '".$_POST['weight']."',
-`height` = '".$_POST['height']."',
-`bp1` = '".$_POST['bp1']."',
-`bp2` ='".$_POST['bp2']."',
-`p` ='".$_POST['p']."' ,
-`ekg`='".$_POST['ekg']."',
-`va`='".$_POST['va']."',
-`stool`='".$_POST['stool']."',
-`cxr`='".$_POST['cxr']."',
-`doctor_result`='".$_POST['doctor_result']."',
-year_chk='".$nPrefix."',
-`part`='".$_POST['part']."'
-WHERE  `row_id` ='".$_POST['row_id']."' ";
-
-
-}else if($data1=="insert"){
-$active="y";
-$update="INSERT INTO `out_result_chkup` ( `hn` , `ptname`  , `weight` , `height` , `bp1` , `bp2` , `p` , `ekg` , `va`, `cxr`, year_chk,`register`,`part`)
-VALUES ('".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."','".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix', '','".$_POST['part']."');";
-}
-//echo $update;
-$upquery=mysql_query($update)or die (mysql_error());
-
-if($upquery){  //บันทึกสำเร็จ
-	echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;
-}	
+	$upquery = mysql_query($update) or die (mysql_error());
+	if($upquery){ //บันทึกสำเร็จ
+		echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;
+	}	
 }
 ?>
 <br />
