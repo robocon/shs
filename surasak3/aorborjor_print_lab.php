@@ -21,8 +21,6 @@ if( $action === 'import' ){
 	$last_id = (int) $chk['lastrow'];
 
 	foreach ($items as $key => $item) {
-
-		// dump($item);
 		
 		if( !empty($item) ){
 		
@@ -75,12 +73,11 @@ if( $action === 'import' ){
 			$insert = $db->insert($sql);
 			dump($sql);
 			dump($insert);
-			// $exam_no++;
 			
 		}
 	}
 	
-	exit;
+	// exit;
 
 	header('Location: aorborjor_print_lab.php');
 	exit;
@@ -116,7 +113,22 @@ if( $action === 'import' ){
 	";
 	// dump($test_depart);
 
-	
+	/**
+	 * รายการ labdetail ของวันที่4
+	SELECT a.`HN`,a.`course`,a.`branch`,c.* 
+	FROM ( 
+		SELECT `row`,`HN`,`course`,`branch`,CONCAT('170503',`exam_no`) AS `labnumber`
+        FROM `opcardchk` 
+        WHERE `part` = 'อบจ60' 
+        AND `exam_no` > 437
+		AND `branch` != 'เงินสด' 
+    ) AS a 
+	LEFT JOIN ( 
+		SELECT * FROM `orderdetail` WHERE `labnumber` LIKE '170503%' 
+    ) AS c ON c.`labnumber` = a.`labnumber` 
+	ORDER BY a.`row` ASC
+	*/
+
 	// ดูใน opday ก่อนว่ามีใครบ้างที่ได้ VN
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!
 	// !!! อย่าลืมดูตรง thidate !!!!
@@ -125,28 +137,31 @@ if( $action === 'import' ){
 	// AND `course` == 'อบจ'
 	$sql = "SELECT a.* 
 	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` 
-	,c.`vn`,c.`ptright` 
+	,c.`vn` 
+	#,c.`ptright` 
+	,b.`ptright`
 	FROM ( 
 		SELECT *, CONCAT('$checkup_date_code',`exam_no`) AS `labnumber`
 		FROM `opcardchk`
 		WHERE ( `part` = 'อบจ60' 
-			AND `course` = 'อบจ' 
-			AND ( 
-				`branch` != 'เงินสด' 
-				AND `branch` != 'ประกันสังคม' 
-			) 
+			#AND `course` = 'อบจ' 
+			#AND ( 
+			#	`branch` != 'เงินสด' 
+			#	AND `branch` != 'ประกันสังคม' 
+			#) 
 		)
 	) AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 
 		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-03%' 
 	) AS c ON c.`hn` = a.`HN` 
-	WHERE c.`vn` IS NOT NULL 
+	#WHERE c.`vn` IS NOT NULL 
+	AND a.`exam_no` > 437
 	ORDER BY a.`row` ASC 
 	LIMIT 300";
-	dump($sql);
+	// dump($sql);
 // 
-	exit;
+	// exit;
 
 	$db->select($sql);
 	$items = $db->get_items();
@@ -225,12 +240,12 @@ if( $action === 'import' ){
 		`ptright` = '$ptright',
 		`lab` = '$exam_no',
 		`status` = 'Y';";
-		dump($depart_sql);
-		$depart = $db->insert($depart_sql);
-		$depart_id = $db->get_last_id();
+		// dump($depart_sql);
+		// $depart = $db->insert($depart_sql);
+		// $depart_id = $db->get_last_id();
 		// $depart_id = rand(10000, 20000);
 		// dump($depart_sql);
-		dump($depart_id);
+		// dump($depart_id);
 		
 		// เอารายการตรวจมาเพิ่มใน patdata
 		foreach ($all_lists as $key => $list) {
@@ -259,28 +274,26 @@ if( $action === 'import' ){
 			`idno` = '$depart_id',
 			`ptright` = '$ptright',
 			`status` = 'Y';";
-			dump($patdata_sql);
-			$patdata = $db->insert($patdata_sql);
-			dump($patdata);
+			// dump($patdata_sql);
+			// $patdata = $db->insert($patdata_sql);
+			// dump($patdata);
 
 		} // end patdata
 		
 		// $runno = $runno + 1;
-		$run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
+		// $run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
 
 		echo "<hr>";
 		
 	} // end insert into depart & patdata
 
 	++$end_runno;
-	dump($end_runno);
-	$db->update("UPDATE runno SET runno = $end_runno WHERE title='stktranx'");
+	// dump($end_runno);
+	// $db->update("UPDATE runno SET runno = $end_runno WHERE title='stktranx'");
 
 	exit;
 
 } else if( $action === 'money_xray' ){
-
-	// exit;
 
 	$sql = "SELECT a.* 
 	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` 
@@ -305,7 +318,7 @@ if( $action === 'import' ){
 	LIMIT 300";
 	// dump($sql);
 
-	// exit;
+	exit;
 
 	$db->select($sql);
 	$items = $db->get_items();
@@ -328,25 +341,15 @@ if( $action === 'import' ){
 
 		$ptright = $item['ptright'];
 		$labnumber = $item['labnumber'];
-
-		/**
-		 * เอาข้อมูลจากที่เคยดีดไว้ใน orderhead + orderdetail มาคำนวณ คชจ. เลยจ้า
-		 */
-		/* 
-		$sql = "SELECT a.*,b.`code`,b.`oldcode`,b.`detail`,b.`price`,b.`yprice`,b.`nprice`
-		FROM `orderdetail` AS a 
-		LEFT JOIN `labcare` AS b ON b.`code` = a.`labcode` 
-		WHERE a.`labnumber` = '$labnumber' ";
-		*/
+		
 		$code = '41001'; 
-		// if( $item['branch'] == 'ประกันสังคม' ){ 
-		// 	$code = '41001-sso'; 
-		// } 
+		if( $item['branch'] == 'ประกันสังคม' ){ 
+			$code = '41001-sso'; 
+		} 
 
 		$sql = "SELECT * FROM `labcare` WHERE `code` = '$code'";
 		$db->select($sql);
 		$all_lists = $db->get_items();
-		// dump($all_lists);
 
 		// หาราคารวมเพื่อใส่ใน depart
 		$price = 0;
@@ -458,18 +461,20 @@ if( $action === 'import' ){
 	<li>
 		<a href="aorborjor_print_lab.php">นำเข้าข้อมูล</a>
 	</li>
+	<!-- 
 	<li>
 		<a href="aorborjor_print_lab.php?page=lab">print sticker lab</a>
 	</li>
 	<li>
-		<a href="aorborjor_print_lab.php?page=labsso">ดูรายการตรวจ</a>
+		<a href="aorborjor_print_lab.php?page=labsso">ดูรายการตรวจของผู้ป่วย ปกส</a>
 	</li>
 	<li>
 		<a href="aorborjor_print_lab.php?page=orderlab">สั่ง orderhead</a>
 	</li>
 	<li>
 		<a href="aorborjor_print_lab.php?page=fixorderlab">แก้ไขที่ใส่ order ผิด</a>
-	</li>
+	</li> 
+	-->
 	<li>
 		<a href="aorborjor_print_lab.php?page=money">คิดค่าใช้จ่าย Lab</a>
 	</li>
@@ -496,6 +501,8 @@ if( empty($page) ){
 	<?php
 }else if( $page === 'lab' ){
 
+	exit;
+
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 
@@ -519,20 +526,11 @@ if( empty($page) ){
 	</style>
 	<?php
 	foreach ($items as $key => $item) {
-		
-		// test only
-		// if( $item['branch'] !== 'ประกันสังคม' ){
-		// 	continue;
-		// }
 
 		$exam_no = $item['exam_no'];
 		$age_year = substr($item['dbirth'], 0, 4) + 543 ;
 		$sex = ( $item['sex'] === 'ช' ) ? 1 : 2 ;
 		$fullname = $item['name'].' '.$item['surname'];
-		// dump($item['age']);
-		// dump($age_year);
-		// dump($item['branch']);
-		// dump($item['agey']);
 
 		// ตรวจพวก chem จะตามท้ายด้วย 01
 		$lab_number = $checkup_date_code.$exam_no."01";
@@ -599,7 +597,6 @@ if( empty($page) ){
 				<?php
 			}
 
-			/*
 			if( in_array('PAP-sso', $all_lists) === true ){
 				++$pre_number;
 				?>
@@ -609,7 +606,6 @@ if( empty($page) ){
 				<div style="page-break-before: always;"></div>
 				<?php
 			}
-			*/
 
 			if( in_array('STOCB-sso', $all_lists) === true ){
 				++$pre_number;
