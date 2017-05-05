@@ -9,7 +9,15 @@ $companys = array(
 	'ทีไอซี60' => 'บริษัท ที ไอ ซี',
 	'บริหารสินทรัพย์60' => 'บริษัท บริหารสินทรัพย์ กรุงเทพพาณิชย์ จำกัด (มหาชน)',
 	'สถิติลำปาง60' => 'สำนักงานสถิติจังหวัดลำปาง',
+
+	// 24-25 เมษา
 	'เวียงตาล60' => 'โรงเรียนเวียงตาลพิทยาคม',
+
+	// 1 พ.ค. นิยมพานิช60
+	'นิยมพานิช60' => 'บริษัทนิยมพานิช ลำปาง',
+
+	// 3-4 พ.ค. อบจ60
+	'อบจ60' => 'องค์การบริหารส่วนจังหวัดลำปาง',
 );
 
 $key = $_POST['company'];
@@ -78,7 +86,11 @@ include("connect.inc");
 
 // $showpart = 'ลำปางกัลยาณี60';
 $showpart = $_POST['company'];
-$sql1 = "SELECT * FROM  out_result_chkup WHERE part='$showpart' ORDER BY hn asc";
+$sql1 = "SELECT * 
+FROM `out_result_chkup` 
+WHERE `part` = '$showpart' 
+ORDER BY `hn` ASC";
+
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
 while($result = mysql_fetch_array($row2)){
@@ -93,11 +105,11 @@ while($result = mysql_fetch_array($row2)){
 	$bmi=number_format($result['weight'] /($ht*$ht),2);
 	
 	
-    $strSQL11 = "SELECT date_format(orderdate,'%d-%m-%Y') as orderdate2 
-    FROM resulthead  
-    WHERE hn='".$result['hn']."' 
-    and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
-    // var_dump($strSQL11);
+    $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
+    FROM `resulthead` 
+    WHERE `hn` = '".$result['hn']."' 
+    AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี60' )";
+	
     $objQuery11 = mysql_query($strSQL11);
     list($orderdate)=mysql_fetch_array($objQuery11);	
 ?>

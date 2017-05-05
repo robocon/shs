@@ -92,30 +92,27 @@ if( $action === 'import' ){
 	##############################
 	### ทดสอบดูว่ามีค่าใช้จ่ายเกิดขึ้นแล้วรึยัง
 	##############################
-	$test_depart = "SELECT a.*,b.* 
+	$test_depart = "SELECT b.*, COUNT(b.`depart`) AS `count_depart`
 	FROM ( 
-
-		SELECT *, CONCAT('$checkup_date_code',`exam_no`) AS `labnumber`
-		FROM `opcardchk`
-		WHERE ( `part` = 'อบจ60' 
-			#AND `course` = 'อบจ' 
-			#AND ( 
-			#AND `branch` != 'เงินสด' 
-				AND `branch` = 'ประกันสังคม' 
-			#) 
-		) 
-		
+		SELECT * FROM `opcardchk`WHERE `part` = 'อบจ60' 
 	 ) AS a 
 	LEFT JOIN ( 
-		
 		SELECT * FROM `depart` WHERE `date` LIKE '2560-05-04%'
-
 	) AS b ON b.`hn` = a.`HN`
-	#WHERE b.`lab` IS NOT NULL 
-	";
-	dump($test_depart);
+	WHERE b.`row_id` IS NOT NULL 
 
-	
+	#
+	AND b.`depart` = 'PATHO' 
+	#AND count_depart >= 2 
+	GROUP BY b.`hn` 
+	#
+
+	ORDER BY a.`exam_no` ASC 
+
+	LIMIT 500 
+	";
+	// dump($test_depart);
+	// exit;
 
 	// ดูใน opday ก่อนว่ามีใครบ้างที่ได้ VN
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -135,7 +132,7 @@ if( $action === 'import' ){
 			#) 
 		) 
 		AND `hn` != '60-1987' 
-		AND ( `hn` = '60-3216' OR `hn` = '50-8820' OR `hn` = '48-20145' ) 
+		AND ( `hn` != '60-3216' OR `hn` != '50-8820' OR `hn` != '48-20145' ) 
 	) AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 

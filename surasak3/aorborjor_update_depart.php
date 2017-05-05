@@ -23,6 +23,8 @@ if ( $action === 'update' ) {
 	WHERE b.`row_id` IS NOT NULL 
     #GROUP BY b.`tvn` 
     ORDER BY b.`hn`";
+	// dump($test_depart);
+	// exit;
 	$db->select($test_depart);
 	$items = $db->get_items();
 

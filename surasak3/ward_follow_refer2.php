@@ -106,7 +106,7 @@ body,td,th {
 .font_title{
 	font-family:  MS Sans Serif;
 	font-size: 14 px;
-	color:#FFFFFF;
+	/*color:#FFFFFF;*/
 	font-weight: bold;
 
 }
@@ -147,7 +147,11 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 		'opd' => 'OPD', 
 		'opd_obg' => 'สูติ', 
 		'opd_eye' => 'ห้องตา', 
-		'ER' => 'ห้องฉุกเฉิน'
+		'ER' => 'ห้องฉุกเฉิน',
+		'Ward42' => 'Ward รวม',
+		'Ward43' => 'Ward สูติ',
+		'Ward44' => 'Ward ICU',
+		'Ward45' => 'Ward พิเศษ',
 	);
 
 	$month_select = input_post('month_select', date('m'));
@@ -155,35 +159,40 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	$section_select = input_post('section_select');
 	
 	?>
-	<h3>ข้อมูล Refer</h3>
-	<form action="ward_follow_refer2.php?view=opd" method="post">
-		<div>
-			แผนก 
-			<select name="section_select" id="section">
-				<option value="">แสดงทั้งหมด</option>
-				<?php
-				foreach ($sections as $key => $section) {
-					$selected = ( $section_select === $key ) ? 'selected="selected"' : '';
-					?>
-					<option value="<?=$key;?>" <?=$selected;?> ><?=$section;?></option>
+	<style type="text/css">
+	@media print{ .no_print{ display: none; } }
+	</style>
+	<div class="no_print">
+		<h3>ข้อมูล Refer</h3>
+		<form action="ward_follow_refer2.php?view=opd" method="post">
+			<div>
+				แผนก 
+				<select name="section_select" id="section">
+					<option value="">แสดงทั้งหมด</option>
 					<?php
-				}
+					foreach ($sections as $key => $section) {
+						$selected = ( $section_select === $key ) ? 'selected="selected"' : '';
+						?>
+						<option value="<?=$key;?>" <?=$selected;?> ><?=$section;?></option>
+						<?php
+					}
+					?>
+				</select>
+				เดือน
+				<?php
+				getMonthList('month_select', $month_select);
 				?>
-			</select>
-			เดือน
-			<?php
-			getMonthList('month_select', $month_select);
-			?>
-			ปี
-			<?php
-			$year_range = range(2004, date('Y'));
-			getYearList('year_select', true, $year_select, $year_range);
-			?>
-		</div>
-		<div>
-			<button>แสดงผล</button>
-		</div>
-	</form>
+				ปี
+				<?php
+				$year_range = range(2004, date('Y'));
+				getYearList('year_select', true, $year_select, $year_range);
+				?>
+			</div>
+			<div>
+				<button type="submit">แสดงผล</button>
+			</div>
+		</form>
+	</div>
 	<?php
 	$where = '';
 
@@ -194,7 +203,18 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	}
 
 	if( !empty($section_select) ){
-		$where .= "AND ward = '$section_select'";
+
+		if( $section_select === 'Ward42' 
+			OR $section_select === 'Ward43' 
+			OR $section_select === 'Ward44' 
+			OR $section_select === 'Ward45' ){
+
+			$where .= "AND ward LIKE '$section_select%'";
+
+		}else{
+			$where .= "AND ward = '$section_select'";
+		}
+		
 	}
 
 	$sql = "SELECT row_id, name, sname, hn, an, date_format(dateopd,'%d-%m-%Y'), ward, officer, refer_runno 
@@ -204,10 +224,10 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	ORDER BY row_id DESC ";
 	$result = mysql_query($sql);
 
-	echo "<table width=\"90%\"  border=\"1\" bordercolor=\"#3366FF\">
+	echo "<table width=\"100%\"  border=\"0\" bordercolor=\"#3366FF\">
 	<tr>
-	<td ><table width=\"100%\" border=\"0\" align=\"center\">
-	<tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
+	<td ><table width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"3\"  bordercolor=\"#000000\" style=\"border-collapse:collapse\">
+	<tr align=\"center\" bgcolor=\"#a6bcff\" class=\"font_title\">
 	<td >HN</td>
 	<td >AN</td>
 	<td >ชื่อ - สกุล</td>
@@ -215,19 +235,24 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	<td >วันที่ refer</td>
 	<td >refer จาก</td>
 	<td >ผู้บันทึก</td>
-	<td >แก้ไข</td>
-	<td >ลบ</td>
+	<td class='no_print'>แก้ไข</td>
+	<td class='no_print'>ลบ</td>
 	</tr>";
 
 	while(list($row_id, $name, $sname, $hn, $an, $dateopd, $ward, $officer, $refer_runno) = Mysql_fetch_row($result)){
-
-		switch($ward){
-			case "opd" : $by = "ห้องตรวจโรค"; break;  
-			case "opd_eye" : $by = "จักษุ"; break;
-			case "opd_obg" : $by = "สูติ"; break;
-			case "ER" : $by = "ER"; break;
+		
+		if( preg_match('/^Ward(\d{2,})/', $ward, $match) > 0 ){
+			$ward_key = $match['0'];
+			$by = $sections[$ward_key];
+		}else{
+			switch($ward){
+				case "opd" : $by = "ห้องตรวจโรค"; break;  
+				case "opd_eye" : $by = "จักษุ"; break;
+				case "opd_obg" : $by = "สูติ"; break;
+				case "ER" : $by = "ER"; break;
+			}
 		}
-
+			
 		echo "<tr align=\"center\" >
 		<td align=\"center\" >".$hn."</td>
 		<td align=\"center\" >".$an."</td>
@@ -237,10 +262,10 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 		<td >".$by."</td>
 		<td >".$officer."</td>";
 		if($officer == "" || $officer == $_SESSION["sOfficer"]){
-			echo "<td ><A HREF=\"ward_follow_refer2.php?edit_refer=edit&search_id=".$row_id."\">แก้ไข</A></td>";
-			echo "<td ><A HREF=\"ward_follow_refer2.php?del_refer=true&search_id=".$row_id."\">ลบ</A></td>";
+			echo "<td class='no_print'><A HREF=\"ward_follow_refer2.php?edit_refer=edit&search_id=".$row_id."\">แก้ไข</A></td>";
+			echo "<td class='no_print'><A HREF=\"ward_follow_refer2.php?del_refer=true&search_id=".$row_id."\">ลบ</A></td>";
 		}else{
-			echo "<td colspan='2' >&nbsp;</td>";
+			echo "<td colspan='2' class='no_print'>&nbsp;</td>";
 		}
 		echo "</tr>";
 	}
