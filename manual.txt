@@ -20,3 +20,9 @@ INSERT INTO `labcare` VALUES (NULL, '7.3.3.2', 'PATHO', 'LAB', 'CR-sso', '10249'
 INSERT INTO `labcare` VALUES (NULL, '7.5.4.13', 'PATHO', 'LAB', 'HBSAG-sso', '10514', '36319', '(36319)"HBs-Ag (Hepatitis B surface antigen)  - ELISA, MEIA, ECLIA"', '"HBs-Ag (Hepatitis B surface antigen)  - ELISA, MEIA, ECLIA"', NULL, 'Test', 130.00, 130.00, 0.00, '', '36319', NULL, 'HBSAG', '', 'Serology', 'IN', 'Y', '', '99', 29, 'HBsAg', '');
 INSERT INTO `labcare` VALUES (NULL, '7.7.2.2', 'PATHO', 'LAB', 'PAP-sso', '10824', '38302', '(38302)การตรวจเซลล์วิทยา - Gynecological specimen (PAP smear)', 'การตรวจเซลล์วิทยา - Gynecological specimen (PAP smear)', NULL, 'ราย', 50.00, 50.00, 0.00, '', '38302', NULL, 'PAP', 'อินเตอร์-แลป', 'Outlab', 'OUT', 'Y', '', '99', 51, 'PAP', '');
 INSERT INTO `labcare` VALUES (NULL, '7.2.2.3', 'PATHO', 'LAB', 'STOCB-sso', '10215', '31203', '(31203)Occult blood', 'Occult blood', NULL, 'Test', 30.00, 30.00, 0.00, '', '31203', NULL, 'STOCB', '', 'Micros', 'IN', 'Y', '', '99', 48, 'Stool occult blood', '');
+
+CREATE TABLE `smdb`.`orderhead_log` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `orderhead` INT NULL,
+  `part` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`));

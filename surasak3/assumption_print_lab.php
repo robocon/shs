@@ -11,82 +11,81 @@ $title_part = 'โรงเรียนอัสสัมชัญลำปาง';
 $action = input('action');
 if( $action === 'import' ){
 
-	// exit;
-
 	$file = $_FILES['file'];
 	$content = file_get_contents($file['tmp_name']);
-	$items = explode("\r\n", $content);
+	if( $content !== false ){
 	
-	$sql = "SELECT MAX(`row`) AS `lastrow` FROM `opcardchk` LIMIT 1";
-	$db->select($sql);
-	$chk = $db->get_item();
-	$last_id = (int) $chk['lastrow'];
-
-	foreach ($items as $key => $item) {
+		$items = explode("\r\n", $content);
 		
-		if( !empty($item) ){
+		$sql = "SELECT MAX(`row`) AS `lastrow` FROM `opcardchk` LIMIT 1";
+		$db->select($sql);
+		$chk = $db->get_item();
+		$last_id = (int) $chk['lastrow'];
+
+		foreach ($items as $key => $item) {
 			
-			++$last_id;
-			list($exam_no, $name, $surname, $age, $hn) = explode(',', $item);
-			// dump($exam_no);
-			// dump($name);
-			// dump($surname);
-			// dump($age);
-			// dump($hn);
+			if( !empty($item) ){
+				
+				++$last_id;
+				list($exam_no, $name, $surname, $age, $hn) = explode(',', $item);
 
-			$hn = trim(str_replace(' ', '', $hn));
+				$hn = trim(str_replace(' ', '', $hn));
 
-			$sql = "SELECT `yot`,`name`,`surname`,`idcard`
-			,CONCAT((SUBSTRING(`dbirth`,1,4) - 543),SUBSTRING(`dbirth`,5,15)) AS `dbirth` 
-			FROM `opcard` 
-			WHERE `hn` = '$hn'";
-			$db->select($sql);
-			$user = $db->get_item();
+				$sql = "SELECT `yot`,`name`,`surname`,`idcard`
+				,CONCAT((SUBSTRING(`dbirth`,1,4) - 543),SUBSTRING(`dbirth`,5,15)) AS `dbirth` 
+				FROM `opcard` 
+				WHERE `hn` = '$hn'";
+				$db->select($sql);
+				$user = $db->get_item();
 
-			$idcard = $user['idcard'];
-			$dbirth = $user['dbirth'];
+				$idcard = $user['idcard'];
+				$dbirth = $user['dbirth'];
 
-			$name = $user['yot'].$user['name'];
-			$surname = trim($surname);
-			$age = trim($age);
+				$name = $user['yot'].$user['name'];
+				$surname = trim($surname);
+				$age = trim($age);
 
-			$sql = "INSERT INTO `opcardchk`
-			(`HN`,
-			`row`,
-			`exam_no`,
-			`idcard`,
-			`name`,
-			`surname`,
-			`dbirth`,
-			`agey`,
-			`part`,
-			`branch`,
-			`datechkup`)
-			VALUES (
-			'$hn',
-			'$last_id',
-			'$exam_no',
-			'$idcard',
-			'$name',
-			'$surname',
-			'$dbirth',
-			'$age',
-			'$part',
-			'ประกันสังคม',
-			NOW());
-			";
-			// dump($sql);
-			$insert = $db->insert($sql);
-			dump($insert);
+				$sql = "INSERT INTO `opcardchk`
+				(`HN`,
+				`row`,
+				`exam_no`,
+				`idcard`,
+				`name`,
+				`surname`,
+				`dbirth`,
+				`agey`,
+				`part`,
+				`branch`,
+				`datechkup`)
+				VALUES (
+				'$hn',
+				'$last_id',
+				'$exam_no',
+				'$idcard',
+				'$name',
+				'$surname',
+				'$dbirth',
+				'$age',
+				'$part',
+				'ประกันสังคม',
+				NOW());
+				";
+				// dump($sql);
+				$insert = $db->insert($sql);
+				dump($insert);
 
-			// $exam_no++;
-			echo "<hr>";
+				// $exam_no++;
+				echo "<hr>";
+			}
 		}
-	}
 
+	}
 	header('Location: assumption_print_lab.php');
 	exit;
 
+} else if( $action === 'add_lab_depart' ){
+
+	exit;
 }
 
 ?>
@@ -111,9 +110,23 @@ if( $action === 'import' ){
 		<a href="assumption_print_lab.php?page=labsso">ดูรายการตรวจ</a>
 	</li>
 	<li>
-		<a href="assumption_print_lab.php?page=money">ดีดค่าใช้จ่าย Lab</a>
+		<a href="assumption_print_lab.php?page=order_lab" onclick="return confirm_order_lab()">Order Lab</a>
+	</li>
+	<li>
+		<a href="assumption_print_lab.php?page=add_lab_depart" onclick="return confirm_add_lab_depart()">ดีดค่าใช้จ่าย Lab</a>
 	</li>
 </ul>
+<script type="text/javascript">
+	function confirm_order_lab(){
+		var c = confirm("ยืนยันการ Order Lab?");
+		return c;
+	}
+
+	function confirm_add_lab_depart(){
+		var c = confirm("ยืนยันการเพิ่มค่าใช้จ่าย Lab?");
+		return c;
+	}
+</script>
 <?php
 
 $page = input('page');
@@ -123,11 +136,30 @@ if( empty($page) ){
 	<form action="assumption_print_lab.php" method="post" enctype="multipart/form-data">
 		<div>
 			ไฟล์นำเข้า : <input type="file" name="file">
-			<div><span style="color: red; font-size: 14px;">รองรับไฟล์ csv</span></div>
+			<div><span style="color: red; font-size: 14px;">รองรับไฟล์ .csv</span></div>
 		</div>
 		<div>
 			<button type="submit">นำเข้า</button>
 			<input type="hidden" name="action" value="import">
+		</div>
+		<div>
+			<p>ตัวอย่างไฟล์</p>
+			<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+				<tr>
+					<td>#</td>
+					<td>name</td>
+					<td>surname</td>
+					<td>age</td>
+					<td>hn</td>
+				</tr>
+				<tr>
+					<td>301</td>
+					<td>ทดสอบ</td>
+					<td>ทดลอง</td>
+					<td>99</td>
+					<td>99-9999</td>
+				</tr>
+			</table>
 		</div>
 	</form>
 	<?php
@@ -141,8 +173,7 @@ if( empty($page) ){
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
 	WHERE a.`part` = '$part' 
 	ORDER BY a.`row` ASC";
-	// dump($sql);
-	// exit;
+	
 	$db->select($sql);
 	$items = $db->get_items();
 	
@@ -157,24 +188,13 @@ if( empty($page) ){
 	</style>
 	<?php
 	foreach ($items as $key => $item) {
-		
-		// $hn = $item['HN'];
-		// if( $hn !== '47-21983' ){
-		// 	continue;
-		// }else{
-		// 	$exam_no = 363;
-		// }
 
 		$age_year = substr($item['dbirth'], 0, 4) + 543 ;
 		$sex = ( $item['sex'] === 'ช' ) ? 1 : 2 ;
 		$fullname = $item['name'].' '.$item['surname'];
 		$exam_no = $item['exam_no'];
-		// dump($item['agey']);
-		// dump($age_year);
-		// dump($item);
 
 		$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
-		// dump($all_lists);
 
 		$list_chem = array();
 		$pre_number = 0;
@@ -283,16 +303,6 @@ if( empty($page) ){
 			
 		}
 
-		
-		// exit;
-
-		// if( $test_user_number == 10 ){
-		// 	exit;
-		// }
-
-		$test_user_number++;
-
-		$exam_no++;
 	} // foreach แต่ละ user
 		
 } else if( $page === 'labsso' ){
@@ -372,9 +382,125 @@ if( empty($page) ){
 		</tbody>
 	</table>
 	<?php
-} else if( $page == 'money' ){
+} else if( $page === 'order_lab' ){
+
+	include 'includes/cu_sso.php';
+	
+	$sso = new CU_SSO();
+
+	$sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice` 
+	FROM `labcare` 
+	WHERE `code` LIKE '%-sso'";
+	$db->select($sql);
+	$pre_lab = $db->get_items();
+	
+	$lab_lists = array();
+	foreach( $pre_lab AS $key => $lab ){
+		$code = $lab['code'];
+		$lab_lists[$code] = $lab;
+	}
+	
+	$sql = "SELECT a.*,
+	b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` 
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+	WHERE a.`part` = '$part' 
+	ORDER BY a.`row` ASC";
+	$db->select($sql);
+	$items = $db->get_items();
+
+	$clinicalinfo = "ตรวจสุขภาพประกันสังคม60";
+	$en_date = date("Y-m-d H:i:s");
+
+	foreach ($items as $key => $item) {
+
+		$hn = $item['HN'];
+		$last_labnumber = $exam_no = $item['exam_no'];
+		$labnumber = $checkup_date_code.$exam_no;
+		$age_year = substr($item['dbirth'], 0, 4) + 543 ;
+		$sex = ( $item['sex'] === 'ช' ) ? 1 : 2 ;
+		$ptname = $item['name'].' '.$item['surname'];
+		$gender = ( $item['sex'] === 'ช' ) ? 'M' : 'F' ;
+		$dbirth = $item['dbirth'];
+		$part = $item['part'];
+
+		$all_lists = $sso->get_checkup_from_age($item['agey'], $age_year, $sex);
+
+		// ตัดของ xray ออกไปก่อน
+		if( ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
+			unset($all_lists[$search_key]);
+		}
+
+		// ตัด pap เพราะพี่หนาไม่ได้ตรวจ
+		if( ( $search_key = array_search('PAP-sso',$all_lists) ) !== false ){
+			unset($all_lists[$search_key]);
+		}
+		// dump($all_lists);
+
+		# orderhead
+		$orderhead_sql = "INSERT INTO `orderhead` ( 
+			`autonumber`, 
+			`orderdate`, 
+			`labnumber`, 
+			`hn`, 
+			`patienttype`, 
+			`patientname`, 
+			`sex`, 
+			`dob`, 
+			`sourcecode`, 
+			`sourcename`, 
+			`room`, 
+			`cliniciancode`, 
+			`clinicianname`, 
+			`priority`, 
+			`clinicalinfo` 
+		) VALUES (
+			'', 
+			'$en_date', 
+			'$labnumber', 
+			'$hn', 
+			'OPD', 
+			'$ptname', 
+			'$gender', 
+			'$dbirth', 
+			'', 
+			'', 
+			'', 
+			'', 
+			'MD022 (ไม่ทราบแพทย์)', 
+			'R', 
+			'$clinicalinfo'
+		);";
+		$orderhead = $db->insert($orderhead_sql);
+		dump($orderhead);
+
+		// กันเหนียว เผื่อลง orderhead ผิด
+		$db->insert("INSERT INTO `orderhead_log`(`id`,`orderhead`,`part`)VALUES(NULL,'$labnumber','$part');");
+		
+		foreach ($all_lists as $key => $list) {
+
+			$lab_item = $lab_lists[$list];
+
+			$code = $lab_item['code'];
+			$oldcode = $lab_item['oldcode'];
+			$detail = $lab_item['detail'];
+
+			$orderdetail_sql = "INSERT INTO `orderdetail` ( 
+				`labnumber`,`labcode`,`labcode1`,`labname` 
+			) VALUES (
+				'$labnumber', '$code', '$oldcode', '".$detail."'
+			);";
+			$orderdetail = $db->insert($orderdetail_sql);
+			dump($orderdetail);
+		}
+
+		echo "<hr>";
+
+	}
 
 	exit;
+
+} else if( $page === 'add_lab_depart' ){
 
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
@@ -434,62 +560,6 @@ if( empty($page) ){
 		if( ( $search_key = array_search('41001-sso',$all_lists) ) !== false ){
 			unset($all_lists[$search_key]);
 		}
-		
-		/*
-		// orderhead
-		$orderhead_sql = "INSERT INTO `orderhead` ( 
-			`autonumber`, 
-			`orderdate`, 
-			`labnumber`, 
-			`hn`, 
-			`patienttype`, 
-			`patientname`, 
-			`sex`, 
-			`dob`, 
-			`sourcecode`, 
-			`sourcename`, 
-			`room`, 
-			`cliniciancode`, 
-			`clinicianname`, 
-			`priority`, 
-			`clinicalinfo` 
-		) VALUES (
-			'', 
-			'$en_date', 
-			'$labnumber', 
-			'$hn', 
-			'OPD', 
-			'$ptname', 
-			'$gender', 
-			'$dbirth', 
-			'', 
-			'', 
-			'', 
-			'', 
-			'MD022 (ไม่ทราบแพทย์)', 
-			'R', 
-			'".$clinicalinfo."'
-		);";
-		dump($orderhead_sql);
-		$depart = $db->insert($orderhead_sql);
-		// $orderhead_id = $db->get_last_id();
-		
-		// orderdetail
-		foreach ($all_lists as $key => $list) {
-			$lab_item = $lab_lists[$list];
-			$code = $lab_item['code'];
-			$oldcode = $lab_item['oldcode'];
-			$detail = $lab_item['detail'];
-
-			$orderdetail_sql = "INSERT INTO `orderdetail` ( 
-				`labnumber`,`labcode`,`labcode1`,`labname` 
-			) VALUES (
-				'$labnumber', '$code', '$oldcode', '".$detail."'
-			);";
-			// dump($orderdetail_sql);
-			$db->insert($orderdetail_sql);
-		}
-		*/
 
 		// หาราคารวมเพื่อใส่ใน depart
 		$price = 0;
