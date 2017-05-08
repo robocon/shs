@@ -322,6 +322,7 @@ if( empty($page) ){
 				<?php
 			}
 			?>
+				<option value="อัสสัมชัญ60">โรงเรียนอัสสัมชัญลำปาง</option>
 			</select>
 		</div>
 		<div>
@@ -335,6 +336,10 @@ if( empty($page) ){
 			<button type="submit">นำเข้า</button>
 			<input type="hidden" name="action" value="import">
 		</div>
+		<!--
+		<div>รูปแบบ ชื่อ,สกุล,อายุ,HN,CBC,UA,BS,CR,CHOL,HDL,HBSAG,PAP,STOCB,41001</div>
+		-->
+</div>
 	</form>
 	<script type="text/javascript">
 		function checker(){

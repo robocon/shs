@@ -448,6 +448,9 @@ if( $action === 'import' ){
 	<li>
 		<a href="aorborjor_print_lab.php">นำเข้าข้อมูล</a>
 	</li>
+	<li>
+		<a href="aorborjor_print_lab.php?page=agemorethan45">อบจ. อายุเกิน45</a>
+	</li>
 	<!-- 
 	<li>
 		<a href="aorborjor_print_lab.php?page=lab">print sticker lab</a>
@@ -461,13 +464,14 @@ if( $action === 'import' ){
 	<li>
 		<a href="aorborjor_print_lab.php?page=fixorderlab">แก้ไขที่ใส่ order ผิด</a>
 	</li> 
-	-->
+	
 	<li>
 		<a href="aorborjor_print_lab.php?page=money">คิดค่าใช้จ่าย Lab</a>
 	</li>
 	<li>
 		<a href="aorborjor_print_lab.php?page=money_xray">คิดค่าใช้จ่าย X-Ray</a>
 	</li>
+	-->
 </ul>
 <?php
 
@@ -856,6 +860,7 @@ if( empty($page) ){
 
 					$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','LIPID');
 				}
+
 			}else{
 				$all_lists = array('CBC','UA','BS','BUN','CR','SGOT','SGPT','ALK','URIC','CHOL','TRI');
 			}
@@ -1009,6 +1014,50 @@ if( empty($page) ){
 		}
 	}
 	
+	exit;
+} else if( $page == 'agemorethan45' ){
+
+	$sql = "SELECT a.* 
+	FROM `opcardchk` AS a 
+	WHERE a.`part` = 'อบจ60' 
+	ORDER BY a.`row` ASC";
+	$db->select($sql);
+	$items = $db->get_items();
+
+	?>
+	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>HN</th>
+				<th>ชื่อ</th>
+				<th>สกุล</th>
+				<th>อายุ</th>
+				<th>หน่วยงาน</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+		$i = 1;
+		foreach ($items as $key => $item) {
+			if( $item['branch'] == 'เบิกจ่ายตรง' && $item['course'] === 'อบจ' && $item['agey'] >= 45 ){
+				?>
+				<tr>
+					<td><?=$i;?></td>
+					<td><?=$item['HN'];?></td>
+					<td><?=$item['name'];?></td>
+					<td><?=$item['surname'];?></td>
+					<td><?=$item['agey'];?></td>
+					<td><?=$item['course'];?></td>
+				</tr>
+				<?php
+				$i++;
+			}
+		}
+		?>
+		</tbody>
+	</table>
+	<?php
 	exit;
 }
 	
