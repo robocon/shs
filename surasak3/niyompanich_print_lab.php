@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
-$exam_no = 301;
+// $exam_no = 301;
 $checkup_date_code = '170501';
 
 $action = input('action');
@@ -26,7 +26,7 @@ if( $action === 'import' ){
 		
 			++$last_id;
 
-			list($name, $surname, $age, $hn) = explode(',', $item);
+			list($exam_no, $name, $surname, $age, $hn) = explode(',', $item);
 
 			$hn = trim(str_replace(' ', '', $hn));
 
@@ -72,7 +72,7 @@ if( $action === 'import' ){
 			$insert = $db->insert($sql);
 			// dump($insert);
 
-			$exam_no++;
+			// $exam_no++;
 			
 		}
 	}

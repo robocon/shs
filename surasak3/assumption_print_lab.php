@@ -364,16 +364,16 @@ if( empty($page) ){
 				<td><?=$fullname;?></td>
 				<td><?=$exam_no;?></td>
 				<td align="center"><?=$item['agey'];?></td>
-				<td align="center"><?=( in_array('CBC-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('UA-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('BS-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('CR-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('HDL-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('CHOL-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('HBSAG-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('PAP-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('STOCB-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
-				<td align="center"><?=( in_array('41001-sso', $all_lists) === true ? "&#10004;" : '' );?></td>
+				<td align="center"><?=( in_array('CBC-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('UA-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('BS-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('CR-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('HDL-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('CHOL-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('HBSAG-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('PAP-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('STOCB-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
+				<td align="center"><?=( in_array('41001-sso', $all_lists) === true ? "&#10003;" : '' );?></td>
 			</tr>
 			<?php
 			$i++;
@@ -471,6 +471,7 @@ if( empty($page) ){
 			'R', 
 			'$clinicalinfo'
 		);";
+		// dump($orderhead_sql);
 		$orderhead = $db->insert($orderhead_sql);
 		dump($orderhead);
 
@@ -490,6 +491,7 @@ if( empty($page) ){
 			) VALUES (
 				'$labnumber', '$code', '$oldcode', '".$detail."'
 			);";
+			// dump($orderdetail_sql);
 			$orderdetail = $db->insert($orderdetail_sql);
 			dump($orderdetail);
 		}
