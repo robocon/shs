@@ -9,6 +9,15 @@ $companys = array(
 	'ทีไอซี60' => 'บริษัท ที ไอ ซี',
 	'บริหารสินทรัพย์60' => 'บริษัท บริหารสินทรัพย์ กรุงเทพพาณิชย์ จำกัด (มหาชน)',
 	'สถิติลำปาง60' => 'สำนักงานสถิติจังหวัดลำปาง',
+
+	// 24-25 เมษา
+	'เวียงตาล60' => 'โรงเรียนเวียงตาลพิทยาคม',
+
+	// 1 พ.ค. นิยมพานิช60
+	'นิยมพานิช60' => 'บริษัทนิยมพานิช ลำปาง',
+
+	// 3-4 พ.ค. อบจ60
+	'อบจ60' => 'องค์การบริหารส่วนจังหวัดลำปาง',
 );
 
 $key = $_POST['company'];
@@ -39,9 +48,6 @@ label{ display: block; }
 			<div class="tet1">
 				พิมพ์ใบตรวจสุขภาพ <?=$title;?>
 			</div>
-			<div class="">
-				<input type="submit" name="ok" value="ตกลง" style="width:60px; height:40px; font:'TH SarabunPSK'; font-size:20px;">
-			</div>
 			<div>
 				<?php
 				foreach ($companys as $key => $item) {
@@ -53,6 +59,15 @@ label{ display: block; }
 					<?php
 				}
 				?>
+			</div>
+			<div>
+				<fieldset>
+					<legend>แสดงผลรายการอื่นๆ</legend>
+					<input type="checkbox" id="ekg" name="ekg"> <label for="ekg">แสดงผล EKG</label>
+				</fieldset>
+			</div>
+			<div class="">
+				<input type="submit" name="ok" value="ตกลง" style="width:60px; height:40px; font:'TH SarabunPSK'; font-size:20px;">
 			</div>
 		</form>
 	</div>
@@ -71,7 +86,11 @@ include("connect.inc");
 
 // $showpart = 'ลำปางกัลยาณี60';
 $showpart = $_POST['company'];
-$sql1 = "SELECT * FROM  out_result_chkup WHERE part='$showpart' ORDER BY hn asc";
+$sql1 = "SELECT * 
+FROM `out_result_chkup` 
+WHERE `part` = '$showpart' 
+ORDER BY `hn` ASC";
+
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
 while($result = mysql_fetch_array($row2)){
@@ -86,11 +105,11 @@ while($result = mysql_fetch_array($row2)){
 	$bmi=number_format($result['weight'] /($ht*$ht),2);
 	
 	
-    $strSQL11 = "SELECT date_format(orderdate,'%d-%m-%Y') as orderdate2 
-    FROM resulthead  
-    WHERE hn='".$result['hn']."' 
-    and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
-    // var_dump($strSQL11);
+    $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
+    FROM `resulthead` 
+    WHERE `hn` = '".$result['hn']."' 
+    AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี60' )";
+	
     $objQuery11 = mysql_query($strSQL11);
     list($orderdate)=mysql_fetch_array($objQuery11);	
 ?>
@@ -603,7 +622,34 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 						$objQuery2 = mysql_query($strSQL2);
 						$objResult2 = mysql_fetch_array($objQuery2);					
 						if($objResult2["labcode"]=="RBCU"){
+
+							if( strpos($objResult2["result"], '-') !== false ){
+								
+								$rbcu_normalrange = str_replace(' ', '', $objResult2["normalrange"]);
+								list($rbcu_normal_min, $rbcu_normal_max) = explode('-', $rbcu_normalrange);
+
+								$rbcu_result = str_replace(' ', '', $objResult2["result"]);
+								list($rbcu_min, $rbcu_max) = explode('-', $rbcu_result);
+								
+								if( $rbcu_min >= $rbcu_normal_min && $rbcu_max <= $rbcu_normal_max ){
+									echo "ปกติ";
+								}else{
+									echo "ผิดปกติ";
+								}
+
+							}else{
+								if( $objResult2["result"] == "*" ){
+									echo "*";
+								}else if( $objResult2["result"] == "Negative" ){
+									echo "ปกติ";
+								}else{
+									echo "ผิดปกติ";
+								}
+							}
+
+							/*
 							$rbculen=strlen($objResult2["result"]);
+							
 							if($rbculen >=5){
 								$rbcu1=substr($objResult2["result"],0,2);
 								$rbcu2=substr($objResult2["result"],3,2);
@@ -614,13 +660,15 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 								$rbcu1=substr($objResult2["result"],0,1);
 								$rbcu2=substr($objResult2["result"],2,1);
 							}
+
 							if($objResult2["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult1["result"] != "*"){
 								echo "ปกติ";
 							}else if($objResult2["result"] == "*"){
 								echo "*";
 							}else{
 								echo "ผิดปกติ";
-							}	
+							}
+							*/
 						}
 						?>
 						</td>
@@ -679,25 +727,9 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
   </tr>
   <tr>
     <td colspan="2"  valign="top">
- <? 
- if( $result["hn"] != "55-2002" ){ 
- ?></td>
-  </tr>
-  <tr>
-    <td colspan="2"  valign="top"><table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
-      <tr>
-        <td align="center"><strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ : อื่นๆ</u></strong></td>
-      </tr>
-      <tr>
-        <td height="52" valign="top"><table width="100%" border="0" class="text3">
-            <tr height="25">
-              <td width="32%" valign="top" bgcolor="#CCCCCC"><strong>รายการตรวจ</strong></td>
-              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
-              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-              <td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
-            </tr>
-            <?
-$sql1="SELECT * 
+ <?php
+
+$sql1 = "SELECT * 
 FROM resulthead 
 WHERE ( 
 	profilecode='GLU' 
@@ -719,8 +751,29 @@ AND hn = '".$result['hn']."'
 AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' ) 
 GROUP BY profilecode 
 ORDER BY `autonumber`";
-//echo $sql1;
-$query1 = mysql_query($sql1);
+$query1 = mysql_query($sql1) or die( mysql_error() );
+$other_result_row = mysql_num_rows($query1);
+ if( $other_result_row > 0 ){ 
+ ?>
+ </td>
+  </tr>
+  <tr>
+    <td colspan="2"  valign="top"><table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" height="30">
+			<strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ : อื่นๆ</u></strong>
+		</td>
+      </tr>
+      <tr>
+        <td height="52" valign="top" style="padding: 2px;">
+		<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="32%" valign="top" bgcolor="#CCCCCC"><strong>รายการตรวจ</strong></td>
+              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+              <td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
+            </tr>
+            <?
 $i=0;
 while($arrresult = mysql_fetch_array($query1)){
 		$i++;
@@ -917,8 +970,102 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
     </table></td>
   </tr>
   <tr>
-    <td colspan="2"  valign="top"><? } ?></td>
+    <td colspan="2"  valign="top">
+	<? } ?>
+	
+	</td>
   </tr>
+	<?php
+
+	$normal_outlab = array(
+		'AFP' => '12',
+		'CA125' => '0-35',
+		'CA153' => '0-35',
+		'CA199' => '0-39',
+		'CEA' => '0-4.7',
+		'PSA' => '0-4',
+	);
+
+	$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`
+	FROM (
+
+		SELECT MAX(`autonumber`) AS `autonumber`
+		FROM `resulthead` 
+		WHERE `hn` = '".$result['hn']."' 
+		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' 
+		AND `testgroupcode` = 'OUT' 
+		GROUP BY `profilecode` 
+
+	) AS b 
+	LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
+	LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber`";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$outlab_row = mysql_num_rows($q);
+	if( $outlab_row > 0 ){
+	?>
+	<tr>
+		<td colspan="2">
+			<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">
+				<tr>
+					<td colspan="2" class="text" style="text-align: center; text-decoration: underline; font-size: 20px; font-weight: bold;">Lab นอก</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<table width="100%">
+							<tr class="text3" style="background-color: #CCCCCC;">
+								<td><b>รายการตรวจ</b></td>
+								<td><b>ค่าปกติ</b></td>
+								<td><b>ผลการตรวจ</b></td>
+								<td><b>สรุปผลการตรวจ</b></td>
+							</tr>
+							<?php
+							while( $outlab = mysql_fetch_assoc($q)){
+								$outlab_code = $outlab['labcode'];
+
+								// เอาค่าแปลกๆออกไปก่อน
+								$outlab_result = str_replace(array('<','>'), '', $outlab['result']);
+
+								// ค่า normal range ที่เป็นพวก outlab
+								$outlab_range = $normal_outlab[$outlab_code];
+							?>
+							<tr class="text3">
+								<td><?=$outlab_code;?></td>
+								<td><?=$outlab_range;?></td>
+								<td><?=$outlab_result;?></td>
+								<td>
+									<?php
+									// default เป็นค่าปกติ
+									$result_outlab_txt = 'ผิดปกติ';
+
+									if( strpos($outlab_range, '-') !== false ){
+
+										list($outlab_min, $outlab_max) = explode('-', $outlab_range );
+										if( $outlab_result >= $outlab_min && $outlab_result <= $outlab_max ){
+											$result_outlab_txt = 'ปกติ';
+										}
+
+									}else{ // กรณีไม่มีขีด
+										if( $outlab_result >= 0 && $outlab_result <= $outlab_range ){
+											$result_outlab_txt = 'ปกติ';
+										}
+									}
+									echo $result_outlab_txt;
+									?>
+								</td>
+							</tr>
+							<?php
+							}
+							?>
+						</table>
+					</td>
+				</tr>
+			</table>
+			
+		</td>
+	</tr>
+	<?php
+	}
+	?>
   <tr>
     <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
       <? if($result["hn"]=="48-21424" || $result["hn"]=="60-1066" || $result["hn"]=="60-1067"){ ?>
@@ -957,22 +1104,23 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 						</tr>
 						<?php
 					}
-
-					/*
-					?>
-					<tr>
-						<td>
-							<strong class="text" style="font-size:18px">
-								<u>ผลการตรวจคลื่นไฟฟ้าหัวใจ</u>
-							</strong>
-						</td>
-						<td>
-							<strong class="text" style="margin-left: 9px;"> : ปกติ</strong>
-						</td>
-					</tr>
-					<?php
-					*/
-
+					
+					$ekg = $_POST['ekg'];
+					if( !empty($ekg) ){
+						?>
+						<tr>
+							<td>
+								<strong class="text" style="font-size:18px">
+									<u>ผลการตรวจคลื่นไฟฟ้าหัวใจ</u>
+								</strong>
+							</td>
+							<td>
+								<strong class="text" style="margin-left: 9px;"> : <?=( ( empty($result['ekg']) ) ? 'ปกติ' : 'ผิดปกติ' )?></strong>
+							</td>
+						</tr>
+						<?php
+					}
+					
 					if( !empty($result['42702']) ){
 						?>
 						<tr>
@@ -988,14 +1136,9 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 						<?php
 					}
 					?>
-					
-					
-
 				</table>
-
-				
 			</td>
-			<td rowspan="2">
+			<td rowspan="2" valign="bottom">
 				<!-- ช่องเซ็น -->
 				<table width="100%" border="0" cellpadding="0" cellspacing="0">
 				

@@ -38,19 +38,24 @@ color: #FFF;
   ?>
   </select>
   เดือน 
+<?
+$mm=date("m");
+$selectm="selected='selected'";
+?>  
+  
     <select name="mon1">
-      <option value="01">มกราคม</option>
-      <option value="02">กุมภาพันธ์</option>
-      <option value="03" selected="selected">มีนาคม</option>
-      <option value="04">เมษายน</option>
-      <option value="05">พฤษภาคม</option>
-      <option value="06">มิถุนายน</option>
-      <option value="07">กรกฎาคม</option>
-      <option value="08">สิงหาคม</option>
-      <option value="09">กันยายน</option>
-      <option value="10" >ตุลาคม</option>
-      <option value="11">พฤศจิกายน</option>
-      <option value="12">ธันวาคม</option>
+      <option value="01" <? if($mm=="01"){ echo $selectm;}?>>มกราคม</option>
+      <option value="02" <? if($mm=="02"){ echo $selectm;}?>>กุมภาพันธ์</option>
+      <option value="03" <? if($mm=="03"){ echo $selectm;}?>>มีนาคม</option>
+      <option value="04" <? if($mm=="04"){ echo $selectm;}?>>เมษายน</option>
+      <option value="05" <? if($mm=="05"){ echo $selectm;}?>>พฤษภาคม</option>
+      <option value="06" <? if($mm=="06"){ echo $selectm;}?>>มิถุนายน</option>
+      <option value="07" <? if($mm=="07"){ echo $selectm;}?>>กรกฎาคม</option>
+      <option value="08" <? if($mm=="08"){ echo $selectm;}?>>สิงหาคม</option>
+      <option value="09" <? if($mm=="09"){ echo $selectm;}?>>กันยายน</option>
+      <option value="10" <? if($mm=="10"){ echo $selectm;}?>>ตุลาคม</option>
+      <option value="11" <? if($mm=="11"){ echo $selectm;}?>>พฤศจิกายน</option>
+      <option value="12" <? if($mm=="12"){ echo $selectm;}?>>ธันวาคม</option>
     </select>
 ปี 
 <?
@@ -85,18 +90,18 @@ echo "<select>";
 </select>
 เดือน 
  <select name="mon2">
-   <option value="01">มกราคม</option>
-   <option value="02">กุมภาพันธ์</option>
-   <option value="03" selected="selected">มีนาคม</option>
-   <option value="04">เมษายน</option>
-   <option value="05">พฤษภาคม</option>
-   <option value="06">มิถุนายน</option>
-   <option value="07">กรกฎาคม</option>
-   <option value="08">สิงหาคม</option>
-   <option value="09">กันยายน</option>
-   <option value="10">ตุลาคม</option>
-   <option value="11">พฤศจิกายน</option>
-   <option value="12">ธันวาคม</option>
+      <option value="01" <? if($mm=="01"){ echo $selectm;}?>>มกราคม</option>
+      <option value="02" <? if($mm=="02"){ echo $selectm;}?>>กุมภาพันธ์</option>
+      <option value="03" <? if($mm=="03"){ echo $selectm;}?>>มีนาคม</option>
+      <option value="04" <? if($mm=="04"){ echo $selectm;}?>>เมษายน</option>
+      <option value="05" <? if($mm=="05"){ echo $selectm;}?>>พฤษภาคม</option>
+      <option value="06" <? if($mm=="06"){ echo $selectm;}?>>มิถุนายน</option>
+      <option value="07" <? if($mm=="07"){ echo $selectm;}?>>กรกฎาคม</option>
+      <option value="08" <? if($mm=="08"){ echo $selectm;}?>>สิงหาคม</option>
+      <option value="09" <? if($mm=="09"){ echo $selectm;}?>>กันยายน</option>
+      <option value="10" <? if($mm=="10"){ echo $selectm;}?>>ตุลาคม</option>
+      <option value="11" <? if($mm=="11"){ echo $selectm;}?>>พฤศจิกายน</option>
+      <option value="12" <? if($mm=="12"){ echo $selectm;}?>>ธันวาคม</option>
  </select>
 ปี
 <?

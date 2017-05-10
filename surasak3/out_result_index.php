@@ -65,4 +65,16 @@ a:active {
     <td>6. สำนักงานสถิติลำปาง</td>
     <td align="center"><a href="out_result.php?part=สถิติลำปาง60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>7. โรงเรียนเวียงตาลพิทยาคม</td>
+    <td align="center"><a href="out_result.php?part=เวียงตาล60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>8. บริษัทนิยมพานิช ลำปาง</td>
+    <td align="center"><a href="out_result.php?part=นิยมพานิช60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>9. องค์การบริหารส่วนจังหวัดลำปาง</td>
+    <td align="center"><a href="out_result.php?part=อบจ60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>

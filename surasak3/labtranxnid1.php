@@ -112,7 +112,7 @@ if( $cDoctor2 === 'MD115' ){
     }else if( $subDoctor === 2 ){
         $yot = 'น.ส.';
         $cDoctor1 = "ศศิภา ศิริรัตน์";
-        $doctorcode = "พจ.819";
+        $doctorcode = "พจ. 819";
     }
 
     $position = "แพทย์แผนจีน";
@@ -125,7 +125,11 @@ if( $cDoctor2 === 'MD115' ){
     $query = mysql_query($sql);
     $rows = mysql_fetch_array($query);
     $yot = $rows["yot"];
-    $doctorcode = "ว. ".$rows["doctorcode"];
+	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์"){
+    	$doctorcode = "พจ. ".$rows["doctorcode"];
+	}else{
+    	$doctorcode = "ว. ".$rows["doctorcode"];
+	}
 
     $position = "แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี";
     $certificate = "ใบอนุญาตประกอบอาชีพเวชกรรม";
@@ -207,7 +211,8 @@ $inList = test_diag($cDiag, $diag_list);
 
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
 
-if( $cDoctor2 === 'MD115' OR $cDoctor2 === 'MD037' OR $cDoctor2 === 'MD054' OR $cDoctor2 === 'MD089' ){
+if($cDoctor2 == 'MD037' || $cDoctor2 == 'MD054' || $cDoctor2 === 'MD089' || $cDoctor2 == 'MD115' || $cDoctor2 == 'MD128' || $cDoctor2 == 'MD129'){
+
     if( $inList === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';
     }else{

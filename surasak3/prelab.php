@@ -38,7 +38,8 @@
 	session_register("appyr");
 	//// เปลี่ยนแปลงสิทธิ์
 	$cPtright = $_POST['pt'];
-	if($_POST["chktoborow"]=='EX26 ตรวจสุขภาพประจำปี'){
+	
+	if($_POST["chktoborow"]=='EX26 ตรวจสุขภาพประจำปี' OR $_POST['chktoborow'] == 'EX45 ตรวจสุขภาพไม่คิดค่าบริการ'){
 		if($_POST["diag"]=='ตรวจสุขภาพ') $cPtright =  $_POST['pt'];
 	}else{
 		if($_POST["diag"]=='ตรวจสุขภาพ') $cPtright = $_POST['pt2'];

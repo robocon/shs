@@ -15,13 +15,13 @@ if (isset($sIdname)){} else {die;} //for security
  </tr>
 <?php
     include("connect.inc");
-	if (substr($Dgcode,0,1)=='@' || substr($Dgcode,0,1)=='#'|| substr($Dgcode1,0,2)=='AN' || substr($Dgcode,0,2)=='HN' ){
-		$aCode = array("code");
-		$aAmt = array("amount");
-		$num=0;
+    if (substr($Dgcode,0,1)=='@' || substr($Dgcode,0,1)=='#'|| substr($Dgcode1,0,2)=='AN' || substr($Dgcode,0,2)=='HN' ){
+       $aCode = array("code");
+       $aAmt = array("amount");
+       $num=0;
 
 		if(substr($Dgcode,0,1)=='@'){
-        	$query = "SELECT code,amount FROM labsuit WHERE suitcode = '$Dgcode' ";
+        $query = "SELECT code,amount FROM labsuit WHERE suitcode = '$Dgcode' ";
 		}else if(substr($Dgcode,0,1)=='#'){
 			
 			// โค้ดเก่า lab จากการนัดเจาะเลือดไม่พบแพทย์ 
@@ -44,160 +44,83 @@ if (isset($sIdname)){} else {die;} //for security
 			AND a.`row_id` = b.`id` ";
 
 		}else if(substr($Dgcode1,0,2)=='AN'){
-			$code_app = substr($Dgcode1,2);
-			$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
+		$code_app = substr($Dgcode1,2);
+		$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
 
-			$query = "SELECT code,1 as amount FROM lab_ward WHERE an = '$code_app'  and date like '".$date_n1."%'";
+		$query = "SELECT code,1 as amount FROM lab_ward WHERE an = '$code_app'  and date like '".$date_n1."%'";
 		
 		}else if(substr($Dgcode,0,2)=='HN'){
-			$code_app = substr($Dgcode,2);
-			$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
+		$code_app = substr($Dgcode,2);
+		$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
 
-			$query = "SELECT code,amount FROM labpatdata WHERE hn = '$code_app' and date like '".$date_n1."%'";
+		$query = "SELECT code,amount FROM labpatdata WHERE hn = '$code_app' and date like '".$date_n1."%'";
 		}
-
+	  // echo $query;
        $result = mysql_query($query) or die("Query failed111");
 
-		while (list ($code,$amount) = mysql_fetch_row ($result)) {
-			$num++;
-			$aCode[$num]=$code;
-			$aAmt[$num]=$amount;
-		}
+       while (list ($code,$amount) = mysql_fetch_row ($result)) {
+             $num++;
+ //            array_push($aCode,$code); 
+             $aCode[$num]=$code;
+             $aAmt[$num]=$amount;
+                    }
+///////
 		
 
-		for ($n=1; $n<=$num; $n++){
-			$query = "SELECT * FROM labcare WHERE code = '$aCode[$n]' ";
-			$result = mysql_query($query) or die("Query failed");
+            for ($n=1; $n<=$num; $n++){
+ 	   $query = "SELECT * FROM labcare WHERE code = '$aCode[$n]' ";
+    	   $result = mysql_query($query) or die("Query failed");
+                   for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	        if (!mysql_data_seek($result, $i)) {
+	            echo "Cannot seek to row $i\n";
+	            continue;
+	        }
 
-			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-				if (!mysql_data_seek($result, $i)) {
-					echo "Cannot seek to row $i\n";
-					continue;
-				}
+	        if(!($row = mysql_fetch_object($result)))
+	            continue;
+	         }
+	    $x++;
+	    $aDgcode[$x]=$row->code; 
+	    $aTrade[$x]=$row->detail;
+	    $aPrice[$x]=$row->price;
 
-				if(!($row = mysql_fetch_object($result)))
-					continue;
-			}
+	    $aPart[$x]=$row->part;
+	    $aAmount[$x]=$aAmt[$n];
+	    $money = $Amount*$row->price ;
+	    $aMoney[$x]=$money;
+		$aFilmsize[$x]=$_GET["films"];
+	    $Netprice=array_sum($aMoney);
 
-			$x++;
-			$aDgcode[$x]=$row->code; 
-			$aTrade[$x]=$row->detail;
-			$aPrice[$x]=$row->price;
+	    $aYprice[$x]=$row->yprice*$Amount;
+	    $aNprice[$x]=$row->nprice*$Amount;
+	    $aSumYprice=array_sum($aYprice);
+	    $aSumNprice=array_sum($aNprice);
 
-			$aPart[$x]=$row->part;
-			$aAmount[$x]=$aAmt[$n];
-			$money = $Amount*$row->price ;
-			$aMoney[$x]=$money;
-			$aFilmsize[$x]=$_GET["films"];
-			$Netprice=array_sum($aMoney);
-
-			$aYprice[$x]=$row->yprice*$Amount;
-			$aNprice[$x]=$row->nprice*$Amount;
-			$aSumYprice=array_sum($aYprice);
-			$aSumNprice=array_sum($aNprice);
-
-		}
-
-
+                     }
 /////////
 
 	   for ($n=1; $n<=$x; $n++){
 	        print("<tr>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n".
-			" </tr>\n");
-		}
+	                "<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n]</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$n]</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$n]</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n".
+					"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n".
+	                " </tr>\n");
+	        }
 
 
 
-	} else if( $Dgcode === 'sso' ){ // กรณีเป็น ตรวจสุขภาพประกันสังคม
-
-		include 'includes/JSON.php';
-		include 'includes/cu_sso.php';
-
-		// เอาปีอย่างเดียว
-		function calcage($birth){
-
-			$today = getdate();   
-			$nY  = $today['year']; 
-			$nM = $today['mon'] ;
-			$bY = substr($birth,0,4)-543;
-			$bM = substr($birth,5,2);
-			$ageY = $nY-$bY;
-			$ageM = $nM-$bM;
-
-			if ($ageM < 0) {
-				$ageY = $ageY-1;
-				$ageM = 12+$ageM;
-			}
-
-			return $ageY;
-		}
-
-		$sql = "SELECT `hn`,`list` 
-		FROM `testmatch` 
-		WHERE `hn` = '$cHn'";
-		$q = mysql_query($sql) or die( mysql_error() );
-		$item = mysql_fetch_assoc($q);
-		
-		$sql = "SELECT `yot`,`dbirth` 
-		FROM `opcard` 
-		WHERE `hn` = '$cHn' ";
-		$q = mysql_query($sql) or die( mysql_error() );
-		$user = mysql_fetch_assoc($q);
-		
-
-		if( $user['yot'] == 'นาง' 
-			OR $user['yot'] == 'น.ส.' 
-			OR $user['yot'] == 'นางสาว' ){
-			$sex = 2;
-		}else{
-			$sex = 1;
-		}
-		$age_year = calcage($user['dbirth']);
-
-		$json = new Services_JSON();
-		$json_list = $json->decode($item['list']);
-
-		$sso = new CU_SSO();
-		$sso->check($json_list, $age_year, $sex);
-		// var_dump($json_list);
-		// echo implode(',', $json_list);
-
-
-		for ($n=1; $n<=$x; $n++){
-	        print("<tr>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$n]</td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n".
-			"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n".
-			" </tr>\n");
-		}
-
-
-		// ต้องรวมราคาโชวด้านล่าง
-		echo " <font face='Angsana New' size='4'><b>ราคารวม  $Netprice บาท </b> ";
-		echo " (ราคาเบิกได้ $aSumYprice บาท ";
-		echo "  <font color =FF0000><b><u>เบิกไม่ได้   $aSumNprice บาท</u></b>)<br>หมายเลข$nLab2";
-
-
-
-
-	} else { // กรณีไม่เข้ากลุ่ม @, #, AN, HN 
-
-		$query = "SELECT * FROM labcare WHERE code = '$Dgcode' ";
-    	$result = mysql_query($query) or die("Query failed");
-
+             }
+			  
+    else {
+ 	$query = "SELECT * FROM labcare WHERE code = '$Dgcode' ";
+    	$result = mysql_query($query)
+	        or die("Query failed");
+	//echo $query;
 	    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	        if (!mysql_data_seek($result, $i)) {
 	            echo "Cannot seek to row $i\n";
@@ -206,8 +129,7 @@ if (isset($sIdname)){} else {die;} //for security
 
 	        if(!($row = mysql_fetch_object($result)))
 	            continue;
-		}
-
+	         }
 	    $x++;
 	    $aDgcode[$x]=$row->code; 
 	    $aTrade[$x]=$row->detail;
@@ -225,7 +147,7 @@ if (isset($sIdname)){} else {die;} //for security
 	    $aSumYprice=array_sum($aYprice);
 	    $aSumNprice=array_sum($aNprice);
 
-		for ($n=1; $n<=$x; $n++){
+	   for ($n=1; $n<=$x; $n++){
 	        print("<tr>\n".
 	                "<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
 	                "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
@@ -236,30 +158,29 @@ if (isset($sIdname)){} else {die;} //for security
 	                "<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n".
 					"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n".
 	                " </tr>\n");
-		}
+	        }
  	}
-
-
 
 if ($cDepart == 'PATHO'){
 
-	$query = "SELECT * FROM runno WHERE title = 'lab'";
-	$result = mysql_query($query) or die("Query failed");
+$query = "SELECT * FROM runno WHERE title = 'lab'";
+$result = mysql_query($query) or die("Query failed");
 
-	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-		if (!mysql_data_seek($result, $i)) {
-			echo "Cannot seek to row $i\n";
-			continue;
-		}
-			if(!($row = mysql_fetch_object($result)))
-			continue;
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
 	}
+		if(!($row = mysql_fetch_object($result)))
+		continue;
+}
 
-	$nLab2=$row->runno;
+//  	    $cTitle=$row->title;  //=VN
+$nLab2=$row->runno;
 
 }
 
-include("unconnect.inc");
+   include("unconnect.inc");
 ?>
 </table>
 <?php
@@ -289,8 +210,8 @@ echo "==>$cDiag---->$aDetail";?>
 
 <?php
 $cDoctor2 = substr($cDoctor,0,5);
-// หมอปฏิพงค์(MD037) หมอการุณย์(MD054) กับหมอฝังเข็มอีก 2 คน
-if( $cDoctor2 == 'MD037' OR $cDoctor2 == 'MD054' OR $cDoctor2 == 'MD115' OR $cDoctor2 == 'MD128' OR $cDoctor2 == 'MD129' ){
+// หมอปฏิพงค์(MD037) หมอการุณย์(MD054) หมอกัณต์กัลยา(MD130) กับหมอฝังเข็มอีก 2 คน
+if( $cDoctor2 == 'MD037' || $cDoctor2 == 'MD054' || $cDoctor2 == 'MD115' || $cDoctor2 == 'MD128' || $cDoctor2 == 'MD129' || $cDoctor2 == 'MD130' OR $cDoctor2 == 'MD116' ){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
@@ -314,5 +235,7 @@ if( $cDoctor2 == 'MD058' ){
     <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - หทัยรัตน์ กุลชิงชัย</a>
     <!--<br><br>
     <a target="_blank" href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
-    <?php
+
+<?php
 }
+?>

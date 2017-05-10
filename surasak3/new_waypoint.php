@@ -66,42 +66,53 @@ if( $action === 'import' ){
 	$content = file_get_contents($file['tmp_name']);
 	$items = explode("\r\n", $content);
 	$bad_lists = array();
-
+	
 	foreach ($items as $key => $list) {
 		
 		$item = explode(',', $list);
-		$hn = $item['0'];
-
+		$hn = str_replace(' ', '', $item['3']);
+		
 		// เป็น hn dd-ddddd รึป่าว
 		$test_match = preg_match('/(\d+)\-(\d+)/', $hn);
 		
 		if( !empty($list) && $test_match > 0 ){
-			
-			$name = $item['1'];
-			$surname = $item['2'];
-			
-			$pre_list = array(
-				'41001' => $item['3'], //x-ray
-				'CBC' => $item['4'],
-				'UA' => $item['5'],
-				'BS' => $item['6'],
-				'CR' => $item['7'],
-				'LIPID' => $item['8'],
-				'HBSAG' => $item['9'],
-				'PAP' => $item['10'],
-				'STOCB' => $item['11']
-			);
 
+			$name = trim($item['0']);
+			$surname = trim($item['1']);
+			$age = trim($item['2']);
+			
+			// รายการตรวจใน csv จะเรียงตามนี้
+			$pre_list = array(
+				'CBC-sso' => $item['4'],
+				'UA-sso' => $item['5'],
+				'BS-sso' => $item['6'],
+				'CR-sso' => $item['7'],
+				'HDL-CHOL-sso' => $item['8'], // ตัวนี้พิเศษหน่อย
+				'HBSAG-sso' => $item['9'],
+				'PAP-sso' => $item['10'],
+				'STOCB-sso' => $item['11'],
+				'41001-sso' => $item['12'], // x-ray
+			);
+			
 			$list = array();
 			foreach ($pre_list as $code => $value) {
+				$value = ( !empty($value) ) ? 1 : 0 ;
 				if( $value > 0 ){
-					$list[] = $code;
+					
+					// ในรายการตรวจเค้าจะเช็กมาตัวเดียว แต่เราต้องแยกออกมาสองตัว
+					if( $code == 'HDL-CHOL-sso' ){
+						$list[] = 'CHOL-sso';
+						$list[] = 'HDL-sso';
+					}else{
+						$list[] = $code;
+					}
+					
 				}
 			}
-
+			
 			$json_list = $json->encode($list);
-			// dump($json_list);
-			// echo "<hr>";
+
+			$name = trim(str_replace(array('นางสาว','นาย','นาง','น.ส.'), '', $name));
 
 			$sql = "SELECT `hn` 
 			FROM `opcard` 
@@ -110,24 +121,30 @@ if( $action === 'import' ){
 			AND `surname` = '$surname' ";
 			$db->select($sql);
 			$user_count = $db->get_rows();
+			
 			if( $user_count > 0 ){
 				$sql = "INSERT INTO `testmatch` VALUES (
-				NULL,
+				NULL, 
 				'$hn', 
+				'$age',
 				'$company', 
 				'$company_code', 
 				'$date_start', 
 				'$date_end',
 				'$json_list');";
+				
 				$insert = $db->insert($sql);
-
+				
 			}else{
-				$bad_lists[] = "$hn $name $surname";
+
+				$sql = "SELECT CONCAT(`name`,' ',`surname`) AS `fullname` FROM `opcard` WHERE `hn` = '$hn' ";
+				$db->select($sql);
+				$check_user = $db->get_item();
+				$bad_lists[] = "$hn $name $surname (".$check_user['fullname'].")";
 			}
+
 		}
 	}
-
-	// exit;
 
 	if( count($bad_lists) > 0 ){
 		$_SESSION['bad_lists'] = $bad_lists;
@@ -158,16 +175,27 @@ if( $action === 'import' ){
 	}
 </style>
 <div id="no_print" class="col">
+	<h3>ตรวจสุขภาพแบบกลุ่ม ประกันสังคม</h3>
 	<div class="cell">
 		<ul class="nav">
 			<li>
 				<a href="../nindex.htm">เมนูหลัก รพ.</a>
 			</li>
 			<li>
-				<a href="new_waypoint.php">ออกใบนำทาง</a>
+				<a href="new_waypoint.php">ตรวจสุขภาพแบบกลุ่ม</a>
 			</li>
 			<li>
-				<a href="new_waypoint.php?page=import">นำเข้าข้อมูล</a>
+				<a href="print_waypoint.php" style="border-right: none;">ออกใบนำทางทั่วไป</a>
+			</li>
+		</ul>
+		<ul class="nav">
+			<!-- 
+			<li>
+				<a href="new_waypoint.php">ออกใบนำทาง</a>
+			</li> 
+			-->
+			<li>
+				<a href="new_waypoint.php?page=import" style="border-right: none;">นำเข้าข้อมูล</a>
 			</li>
 		</ul>
 	</div>
@@ -185,7 +213,7 @@ if( isset($_SESSION['x-msg']) ){
 if( count($_SESSION['bad_lists']) > 0 ){
 	?>
 	<div style="border: 2px solid #c3c300;padding: 4px;background-color: #fffcdd;">
-		<p>ข้อมูลไม่ถูกต้อง HN และ ชื่อ-สกุล ไม่ตรงกับฐานข้อมูลกรุณาตรวจสอบอีกครั้ง</p>
+		<p>ข้อมูลไม่ถูกต้อง HN หรือ ชื่อ-สกุล ไม่ตรงกับฐานข้อมูลกรุณาตรวจสอบอีกครั้ง</p>
 		<ol>
 			<?php
 			foreach ($_SESSION['bad_lists'] as $key => $item) {
@@ -205,15 +233,15 @@ if( count($_SESSION['bad_lists']) > 0 ){
 //หน้าแรก
 if( empty($page) ){
 
+	/*
 	$sql = "SELECT a.*, COUNT(b.`company_code`) AS rows
 	FROM `chkcompany` AS a 
 	LEFT JOIN `testmatch` AS b ON b.`company_code` = a.`code`
 	WHERE a.`year` = '60' 
 	GROUP BY b.`company_code`";
-	
 	$db->select($sql);
 	$items = $db->get_items();
-
+	
 	?>
 	<h3>พิมพ์ใบนำทาง</h3>
 	<form action="new_waypoint.php" method="post" onsubmit="return checker()">
@@ -234,8 +262,12 @@ if( empty($page) ){
 			</select>
 		</div>
 		<div>
+			<input type="checkbox" id="register" name="register" value="1"> 
+			<label for="register">แผนกทะเบียน</label>
+		</div>
+		<div>
 			<input type="checkbox" id="ekg" name="ekg" value="1"> 
-			<label for="ekg">มีการตรวจ EKG</label>
+			<label for="ekg">EKG OPDตา</label>
 		</div>
 		<div>
 			<button type="submit">พิมพ์</button>
@@ -251,6 +283,10 @@ if( empty($page) ){
 			}
 		}
 	</script>
+	<?php
+	*/
+	?>
+	<p>หน้าหลัก การตรวจสุขภาพแบบกลุ่ม</p>
 	<?php
 
 // หน้านำเข้าไฟล์ .csv
@@ -286,6 +322,7 @@ if( empty($page) ){
 				<?php
 			}
 			?>
+				<option value="อัสสัมชัญ60">โรงเรียนอัสสัมชัญลำปาง</option>
 			</select>
 		</div>
 		<div>
@@ -299,6 +336,10 @@ if( empty($page) ){
 			<button type="submit">นำเข้า</button>
 			<input type="hidden" name="action" value="import">
 		</div>
+		<!--
+		<div>รูปแบบ ชื่อ,สกุล,อายุ,HN,CBC,UA,BS,CR,CHOL,HDL,HBSAG,PAP,STOCB,41001</div>
+		-->
+</div>
 	</form>
 	<script type="text/javascript">
 		function checker(){
@@ -364,7 +405,7 @@ if( empty($page) ){
 		
 		$fullname = $patient['fullname'];
 		$idcard = $patient['idcard'];
-		$address = $patient['address'].' '.$patient['tambol'].' '.$patient['ampur'].' '.$patient['changwat'];
+		$address = $patient['address'].' ต.'.$patient['tambol'].' อ.'.$patient['ampur'].' จ.'.$patient['changwat'];
 		$phone = $patient['phone'];
 
 		$age = calcage($patient['dbirth']);
@@ -433,11 +474,11 @@ if( empty($page) ){
 					$arrtype = array('ตรวจ x-ray ปอด','ตรวจความสมบูรณ์ของเม็ดเลือด(CBC)','ตรวจปัสสาวะ(UA)','เบาหวาน(BS)','ไขมัน(CHOL) (TRI)','ตรวจหน้าที่ของตับ(SGOT,SGPT)','ตรวจหน้าที่ของไต(BUN,CR)','ตรวจหน้าที่ของไต(ALK)','ตรวจกรดยูริก(URICACID)');
 					$arrprice = array('170.00','90.00','50.00','40.00','120.00','100.00','100.00','50','60');
 					?>
-					<table width="756">
+					<table width="100%">
+						<!--
 						<tr>
 							<td class="pdxpro" colspan="2"><strong>รายการตรวจสุขภาพ</strong></td>
 						</tr>
-						<!--
 						<tr>
 							<td class="pdxpro" colspan="2"><strong><?=$company;?></strong></td>
 						</tr>
@@ -464,94 +505,168 @@ if( empty($page) ){
 						</tr>
 						<tr>
 							<td class="pdx" colspan="2">
+								<table>
+									<tr style='line-height:16px'>
 
-							<table>
-								<tr style='line-height:16px'>
-									<!--
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 1 <br>ลงทะเบียน<br>ทะเบียน<br>.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-									-->
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 2<br>
-													เจาะเลือด<br>
-													.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 3<br>
-													X-RAY<br>
-													.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td>
-										<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-											<tr align='center' style='line-height:16px'>
-												<td>
-													สถานี 4<br>
-													ซักประวัติ<br>
-													.............................
-												</td>
-											</tr>
-										</table>
-									</td>
-							
-							<?php
-							// if($program_type != "1" && $program_type != "2" && $program_type != "3" && $program_type != "4"){
-							if( $ekg > 0 ){
-								?>
-								<!-- 
-								<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 5<br>PAP<br>OPD สูติฯ<br>.............................</td></tr></table></td>
-								<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 6<br>V/A<br>OPD ตา<br>.............................</td></tr></table></td>
-								-->
-								<td>
-									<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
-										<tr align='center' style='line-height:16px'>
+										<?php 
+										$register = $_POST['register'];
+										$stations = array();
+										if( $register > 0 ){
+											$stations['ห้องทะเบียน'] = 'ลงทะเบียน';
+											// array_push($stations, array('ห้องทะเบียน' => 'ลงทะเบียน'));
+										}
+
+										$stations['ห้องพยาธิ'] = 'เจาะเลือด';
+										$stations['ห้องเอ็กเรย์'] = 'X-RAY';
+										// array_push($stations, array('ห้องพยาธิ' => 'เจาะเลือด'));
+										// array_push($stations, array('ห้องเอ็กเรย์' => 'X-RAY'));
+
+
+										if( $ekg > 0 ){
+											$stations['OPDตา'] = 'EKG';
+											// array_push($stations, array('OPDตา' => 'EKG'));
+										}
+
+										// ใส่ไว้ท้ายสุด
+										$stations['จุดคัดแยก'] = 'V/S';
+										// array_push($stations, array('จุดคัดแยก' => 'V/S'));
+										?>
+										<!--
+										<td>
+											<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+												<tr align='center' style='line-height:16px'>
+													<td>
+														สถานี 1 <br>ลงทะเบียน<br>ทะเบียน<br>.............................
+													</td>
+												</tr>
+											</table>
+										</td>
+										-->
+										<?php
+										$station_i = 1;
+										// echo "<pre>";
+										// var_dump($stations);
+										// echo "</pre>";
+										// แทรกทะเบียน ฯลฯ ได้
+										// 
+
+										/*
+										if( $register > 0 ){
+											?>
 											<td>
-												สถานี 7<br>
-												EKG<br>
-												.............................
+												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+													<tr align='center' style='line-height:16px'>
+														<td>
+															สถานี <?=$station_i;?><br>
+															ห้องทะเบียน<br>
+															.............................
+														</td>
+													</tr>
+												</table>
 											</td>
-										</tr>
-									</table>
-								</td>
-								<?php	
-							}	
-							?>
+											<?php
+											$station_i++;
+										}
+										*/
+
+										foreach ($stations as $key => $station) {
+											// var_dump($station);
+											?>
+											<td>
+												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+													<tr align='center' style='line-height:16px'>
+														<td>
+															สถานี <?=$station_i;?><br>
+															<?=$station;?><br>
+															<?=$key;?><br>
+															.............................
+														</td>
+													</tr>
+												</table>
+											</td>
+											<?php
+											$station_i++;
+										}
+										?>
+										<!--
+										<td>
+											<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+												<tr align='center' style='line-height:16px'>
+													<td>
+														สถานี 3<br>
+														X-RAY<br>
+														.............................
+													</td>
+												</tr>
+											</table>
+										</td>
+										<td>
+											<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+												<tr align='center' style='line-height:16px'>
+													<td>
+														สถานี 4<br>
+														ซักประวัติ<br>
+														.............................
+													</td>
+												</tr>
+											</table>
+										</td>
+										-->
+								
+										<?php
+										// if($program_type != "1" && $program_type != "2" && $program_type != "3" && $program_type != "4"){
+										/*
+										if( $ekg > 0 ){
+											?>
+											<!-- 
+											<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 5<br>PAP<br>OPD สูติฯ<br>.............................</td></tr></table></td>
+											<td><table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'><tr align='center' style='line-height:16px'><td>สถานี 6<br>V/A<br>OPD ตา<br>.............................</td></tr></table></td>
+											-->
+											<td>
+												<table width='120' border='1' cellpadding='0' cellspacing='0' bordercolor='#666666'>
+													<tr align='center' style='line-height:16px'>
+														<td>
+															สถานี <?=$station_i;?><br>
+															EKG<br>
+															.............................
+														</td>
+													</tr>
+												</table>
+											</td>
+											<?php
+											$station_i++;
+										}	
+										*/
+										?>
+								</table>
 							</td>
 						</tr>
+						<!-- 
 						<tr>
 							<td class="pdx">&nbsp;</td>
 						</tr>
+						-->
 					</table>
 				</td>
 			</tr>
 		</table>
 		<div class="pdx" style="margin-left:10px;">
 			<strong>*** หมายเหตุ ***</strong><br />
+			<!-- 
 			- ให้เจ้าหน้าที่เซ็นต์ชื่อกำกับทุกสถานี เมื่อทำการตรวจเสร็จเรียร้อยแล้ว <br />
-			- เมื่อทำการตรวจครบทุกสถานีแล้ว นำเอกสารส่งคืนเจ้าหน้าที่ ณ จุดลงทะเบียน <br />
+			-->
+			- เมื่อทำการตรวจครบทุกสถานีแล้ว นำเอกสารส่งคืนเจ้าหน้าที่ ณ จุดคัดแยก <br />
+			<!-- 
 			- กรุณาอย่าทำเอกสารใบนำทางหาย เป็นอันเด็ดขาด
+			-->
 		</div>
 		<?php
+		if( ( $i % 2 ) == 0 ){
+			?>
+			<div style="page-break-after: always;"></div>
+			<?php
+		}
 		$i++;
-
 	} // End foreach
 
 }

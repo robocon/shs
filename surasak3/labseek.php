@@ -214,10 +214,27 @@ function searchSuggest(str,len,getto) {
 
 </script>
 <form method="POST" action="<?php echo $PHP_SELF ?>"> <font face="Angsana New"><a target=_BLANK href="codehlp.php">&#3619;&#3627;&#3633;&#3626;</a><Div id="list" style="left: 9px; top: 121px; position: absolute;"></Div>&nbsp;&nbsp;&nbsp;
+
+	<?php
+	$sql = "SELECT `hn` 
+	FROM `opcardchk` 
+	WHERE `hn` = '$cHn' 
+	AND `part` = 'นิยมพานิช60'";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$row = mysql_num_rows($q);
+	$xray_sso = '';
+	if( $row > 0 && $_SESSION["until_login"] == "xray" ){
+		$xray_sso = '41001-sso';
+	}
+	?>
+
 <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
-  <input type="text" name="code" size="8" id="aLink" value="42703" onkeypress="searchSuggest(this.value,2,'code');">
+	<?php
+	$default = ( !empty($xray_sso) ) ? $xray_sso : '42703' ;
+	?>
+  <input type="text" name="code" size="8" id="aLink" value="<?=$default;?>" onkeypress="searchSuggest(this.value,2,'code');">
 <? }else{ ?>
-  <input type="text" name="code" size="8" id="aLink" onkeypress="searchSuggest(this.value,2,'code');">
+  <input type="text" name="code" size="8" id="aLink" value="<?=$xray_sso;?>" onkeypress="searchSuggest(this.value,2,'code');">
  <? } ?> 
 <script type="text/javascript">
 document.getElementById('aLink').focus();
@@ -411,44 +428,6 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 			}
 
 		////////////////////////
-		
-		// แสดงรายการตรวจสุขภาพ
-		include 'includes/JSON.php';
-
-		$sql = "SELECT `hn`,`list` 
-		FROM `testmatch` 
-		WHERE `hn` = '$cHn'";
-		$q = mysql_query($sql) or die( mysql_error() );
-		$item = mysql_fetch_assoc($q);
-
-		$json = new Services_JSON();
-		$json_list = $json->decode($item['list']);
-		?>
-		<br>
-		<table border="1" bordercolor="#330099">
-			<tr>
-				<td>
-					<table  width="300">
-						<tr bgcolor="#000080">
-							<td colspan="2" align="center">
-								<font color="#FFFFFF">รายการ ตรวจสุขภาพประกันสังคม</font>
-							</td>
-						</tr>
-						<tr>
-							<td align="center" >
-								<?php
-								$href = "labinfo.php?Dgcode=sso&Amount=1&tvn=$tvn&hn=$cHn";
-								?>
-								<a target="right" href="<?=$href;?>">คิดเงิน</A>
-							</td>
-							<td><?=strtoupper(implode(',', $json_list));?></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<?php
-
 	include("unconnect.inc");
 ?>
 

@@ -1,0 +1,28 @@
+ALTER TABLE  `testmatch` ADD  `list` TEXT NOT NULL ;
+
+
+ALTER TABLE  `chkcompany` ADD  `year` VARCHAR( 50 ) NOT NULL ;
+INSERT INTO `smdb`.`chkcompany` (`row_id`, `code`, `name`, `status`, `year`) 
+VALUES 
+(NULL, 'ลำปางกัลยาณี60', 'รร.ลำปางกัลยาณี', '', '60'), 
+(NULL, 'ทีไอซี60', 'บริษัท ที ไอ ซี', '', '60'),
+(NULL, 'บริหารสินทรัพย์60', 'บริษัท บริหารสินทรัพย์ กรุงเทพพาณิชย์ จำกัด (มหาชน)', '', '60'), 
+(NULL, 'สถิติลำปาง60', 'สำนักงานสถิติจังหวัดลำปาง', '', '60');
+
+INSERT INTO `chkcompany` VALUES (NULL, 'นิยมพาณิช60', 'บริษัทนิยมพานิช ลำปาง', '', '60');
+
+INSERT INTO `labcare` VALUES (NULL, '7.1.1.1', 'PATHO', 'LAB', 'CBC-sso', '10083', '30101', '(30101)CBC (+ diff. + RBC morphology + plt count) by automation', 'CBC (+ diff. + RBC morphology + plt count) by automation', NULL, 'Test', 80.00, 80.00, 0.00, '', '30101', NULL, 'CBC', '', 'Heamato', 'IN', 'Y', '1234', '01', 18, 'CBC', '');
+INSERT INTO `labcare` VALUES (NULL, '7.2.1.1', 'PATHO', 'LAB', 'UA-sso', '10197', '31001', '(31001)Urine Analysis', 'Urine Analysis', NULL, 'Test', 50.00, 50.00, 0.00, '', '31001', NULL, 'UA', '', 'Micros', 'IN', 'Y', '1234', '02', 17, 'UA', '');
+INSERT INTO `labcare` VALUES (NULL, '7.3.3.3', 'PATHO', 'LAB', 'BS-sso', '10250', '32203', '(32203)Glucose', 'Glucose', NULL, 'Test', 40.00, 40.00, 0.00, '', '32203', NULL, 'BS', '', 'Chemistry', 'IN', 'Y', '34', '03', 1, 'BS', '');
+INSERT INTO `labcare` VALUES (NULL, '7.3.3.2', 'PATHO', 'LAB', 'CR-sso', '10249', '32202', '(32202)Creatinine', 'Creatinine', NULL, 'Test', 45.00, 45.00, 0.00, '', '32202', NULL, 'CR', '', 'Chemistry', 'IN', 'Y', '34', '05', 10, 'CR', '');
+
+
+INSERT INTO `labcare` VALUES (NULL, '7.5.4.13', 'PATHO', 'LAB', 'HBSAG-sso', '10514', '36319', '(36319)"HBs-Ag (Hepatitis B surface antigen)  - ELISA, MEIA, ECLIA"', '"HBs-Ag (Hepatitis B surface antigen)  - ELISA, MEIA, ECLIA"', NULL, 'Test', 130.00, 130.00, 0.00, '', '36319', NULL, 'HBSAG', '', 'Serology', 'IN', 'Y', '', '99', 29, 'HBsAg', '');
+INSERT INTO `labcare` VALUES (NULL, '7.7.2.2', 'PATHO', 'LAB', 'PAP-sso', '10824', '38302', '(38302)การตรวจเซลล์วิทยา - Gynecological specimen (PAP smear)', 'การตรวจเซลล์วิทยา - Gynecological specimen (PAP smear)', NULL, 'ราย', 50.00, 50.00, 0.00, '', '38302', NULL, 'PAP', 'อินเตอร์-แลป', 'Outlab', 'OUT', 'Y', '', '99', 51, 'PAP', '');
+INSERT INTO `labcare` VALUES (NULL, '7.2.2.3', 'PATHO', 'LAB', 'STOCB-sso', '10215', '31203', '(31203)Occult blood', 'Occult blood', NULL, 'Test', 30.00, 30.00, 0.00, '', '31203', NULL, 'STOCB', '', 'Micros', 'IN', 'Y', '', '99', 48, 'Stool occult blood', '');
+
+CREATE TABLE `smdb`.`orderhead_log` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `orderhead` INT NULL,
+  `part` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`));

@@ -155,7 +155,7 @@ document.getElementById('aLink').focus();
 </script>
     <option value="ตรวจวิเคราะห์เพื่อการรักษา" selected>ตรวจวิเคราะห์เพื่อการรักษา</option>
     <? if($_SESSION["smenucode"]=="ADMXR"){ ?>
-    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX26"){ echo "selected";}?>>ตรวจสุขภาพ</option>
+    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX26" OR substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>ตรวจสุขภาพ</option>
     <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
     <? } ?>
@@ -163,32 +163,30 @@ document.getElementById('aLink').focus();
   </select>&nbsp;</font></p>
 <font face="Angsana New">สิทธิ&nbsp;
 <? if($_SESSION["smenucode"]=="ADMXR"){ ?>
-<select name="pt" id="pt" style="display:">
-  <?
-   while($resultpt = mysql_fetch_array($rowpt)){
-	$re = $resultpt[0]." ".$resultpt[1];
-
+	<select name="pt" id="pt" style="display:">
+	<?
+	while($resultpt = mysql_fetch_array($rowpt)){
+		$re = $resultpt[0]." ".$resultpt[1];
 		if($cPtright==$re){  //ถ้าสิทธิผู้ป่วยตรงกับสิทธิปัจจุบัน
-			 $c=0;
+			$c=0;
 			 ?>
-  <option value="<?=$cPtright?>" selected="selected">
-  <?=$cPtright?>
-  </option>
-  <?
+			<option value="<?=$cPtright?>" selected="selected">
+  				<?=$cPtright?>
+  			</option>
+  			<?
 		}else{
 			$b=0;
-  ?>
-  
-  <option value="<?=$re?>" <? if(substr($atoborow,0,4)=="EX26"){ echo "selected";}?>>
-  <?=$re?>  <!--R22-->
-  </option>
-  
-  <?
+			?>
+			<option value="<?=$re?>" <? if(substr($atoborow,0,4)=="EX26" OR substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
+				<?=$re?>  <!--R22-->
+			</option>
+			<?
 		}
 	}
+
 	if(!isset($c)){
 		?>
-  <option value="<?=$cPtright?>" <? if(substr($atoborow,0,4)!="EX26"){ echo "selected";}?>>
+  <option value="<?=$cPtright?>" <? if(substr($atoborow,0,4)!="EX26" OR substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
   <?=$cPtright?>  <!--ตามสิทธิผู้ป่วย-->
   </option>
   <?
@@ -446,7 +444,24 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	  
 	?>
 	<font face="Angsana New"><A HREF="xraylst_dr.php" target="right">ตรวจ(ท่า)</A> : <BR>
-	<div id="cXraydetail"></div>
+	<div id="cXraydetail">
+	<?php
+	$sql = "SELECT `hn` 
+	FROM `opcardchk` 
+	WHERE `hn` = '$cHn' 
+	AND `part` = 'นิยมพานิช60'";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$row = mysql_num_rows($q);
+	if( $row > 0 ){
+		?>
+		<div id="dv1">
+			<a href="javascript:void(0);" onclick="document.getElementById('dv1').style.display='none';document.getElementById('dv1').innerHTML='';">CHEST CHECK UP </a>
+			<input type="hidden" name="xraydetail[]" value="CHEST CHECK UP ">
+		</div>
+		<?php
+	}
+	?>
+	</div>
 	<?php
   } ?>
   <p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
