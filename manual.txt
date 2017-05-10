@@ -26,3 +26,11 @@ CREATE TABLE `smdb`.`orderhead_log` (
   `orderhead` INT NULL,
   `part` VARCHAR(255) NULL,
   PRIMARY KEY (`id`));
+
+CREATE TABLE `smdb`.`depart_log` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `idno` INT NULL,
+  `hn` VARCHAR(255) NULL,
+  `part` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`));
+

@@ -63,7 +63,7 @@ if( !function_exists('input') ){
 
 if( !function_exists('input_post') ){
 	function input_post($t, $d = false){
-		$v = ( isset($_POST[$t]) ) ? trim($_POST[$t]) : $d ;
+		$v = ( !empty($_POST[$t]) ) ? trim($_POST[$t]) : $d ;
 		if( $v !== false ){
 			$res = htmlspecialchars(strip_tags($v), ENT_QUOTES);
 		}else{

@@ -3,10 +3,11 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
-// $exam_no = 301;
 $checkup_date_code = '170509';
 $part = 'อัสสัมชัญ60';
 $title_part = 'โรงเรียนอัสสัมชัญลำปาง';
+$thai_date = (date("Y")+543)."-".date("m-d H:i:s");
+$en_date = date("Y-m-d H:i:s");
 
 $action = input('action');
 if( $action === 'import' ){
@@ -74,7 +75,6 @@ if( $action === 'import' ){
 				$insert = $db->insert($sql);
 				dump($insert);
 
-				// $exam_no++;
 				echo "<hr>";
 			}
 		}
@@ -83,7 +83,123 @@ if( $action === 'import' ){
 	header('Location: assumption_print_lab.php');
 	exit;
 
-} else if( $action === 'add_lab_depart' ){
+} else if( $action === 'save_depart' ){
+
+	$hn = input_post('hn');
+	$vn = input_post('vn');
+	
+	$sql = "SELECT a.*
+	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`,b.`ptright`
+	,c.`vn`
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+	LEFT JOIN ( 
+		SELECT * FROM `opday` WHERE `thdatehn` = CONCAT('".date('d-m-').(date('Y')+543)."','$hn') 
+	 ) AS c ON c.`hn` = a.`hn` 
+	WHERE a.`part` = '$part' 
+	AND a.`hn` = '$hn' 
+	AND c.`vn` = '$vn' 
+	ORDER BY a.`row` ASC";
+	// dump($sql);
+	$db->select($sql);
+	$user = $db->get_item();
+	if( empty($user) ){
+		echo "ไม่พบ $vn ของHN $hn";
+		exit;
+	}
+
+	$vn = $user['vn'];
+	$ptright = $user['ptright'];
+	$ptname = $user['name'].' '.$user['surname'];
+	$part = $user['part'];
+	
+	// เอา labnumber ไปหารายการ lab ที่เคยสั่งเอาไว้ใน orderdetail
+	$exam_no = $user['exam_no'];
+	$labnumber = $checkup_date_code.$user['exam_no'];
+
+	$sql = "SELECT a.`labcode`,b.`code`,b.`oldcode`,b.`detail`,b.`price`,b.`yprice`,b.`nprice` 
+	FROM `orderdetail` AS a 
+	LEFT JOIN `labcare` AS b ON b.`code` = a.`labcode`
+	WHERE a.`labnumber` = '$labnumber'";
+	$db->select($sql);
+	$lab_lists = $db->get_items();
+
+	// หาราคารวมเพื่อใส่ใน depart
+	$price = 0;
+	$yprice = 0;
+	$count_item = count($lab_lists);
+	foreach ($lab_lists as $key => $list) {
+		$price += $list['price'];
+		$yprice += $list['yprice'];
+	}
+
+	// runno stktranx
+	$db->select("SELECT runno, startday FROM runno WHERE title = 'stktranx'");
+	$nStktranx = $db->get_item();
+	$runno = $nStktranx['runno']+1;
+
+	// depart
+	$depart_sql = "INSERT INTO `depart` SET 
+	`chktranx` = '$runno',
+	`date` = '$thai_date',
+	`ptname` = '$ptname',
+	`hn` = '$hn',
+	`doctor` = 'MD022 (ไม่ทราบแพทย์)',
+	`depart` = 'PATHO',
+	`item` = '$count_item',
+	`detail` = 'ค่าตรวจวิเคราะห์โรค',
+	`price` = '$price',
+	`sumyprice` = '$yprice',
+	`sumnprice` = '0',
+	`paid` = '0',
+	`idname` = 'พัชรี คำฟู',
+	`diag` = 'ตรวจสุขภาพ',
+	`tvn` = '$vn',
+	`ptright` = '$ptright',
+	`lab` = '$exam_no',
+	`status` = 'Y';";
+	// dump($depart_sql);
+	$depart = $db->insert($depart_sql);
+	$depart_id = $db->get_last_id();
+	dump($depart);
+	dump($depart_id);
+	
+	$depart_log = "INSERT INTO `depart_log`
+	(`id`,`idno`,`hn`,`part`)
+	VALUES
+	(NULL,'$depart_id','$hn','$part');";
+	$db->insert($depart_log);
+
+	foreach ($lab_lists as $key => $list) {
+
+		$code = $list['code'];
+		$price = $list['price'];
+		$yprice = $list['yprice'];
+		$detail = $list['detail'];
+		
+		$patdata_sql = "INSERT INTO `patdata` SET 
+		`date` = '$thai_date',
+		`hn` = '$hn',
+		`ptname` = '$ptname',
+		`doctor` = 'MD022 (ไม่ทราบแพทย์)',
+		`item` = '$count_item',
+		`code` = '$code',
+		`detail` = '$detail',
+		`amount` = '1',
+		`price` = '$price',
+		`yprice` = '$yprice',
+		`nprice` = '0',
+		`depart` = 'PATHO',
+		`part` = 'LAB',
+		`idno` = '$depart_id',
+		`ptright` = '$ptright',
+		`status` = 'Y';";
+		// dump($patdata_sql);
+		$patdata = $db->insert($patdata_sql);
+		dump($patdata);
+	} // end patdata
+
+
 
 	exit;
 }
@@ -112,13 +228,18 @@ if( $action === 'import' ){
 	<li>
 		<a href="assumption_print_lab.php?page=order_lab" onclick="return confirm_order_lab()">Order Lab</a>
 	</li>
+	<!--
 	<li>
 		<a href="assumption_print_lab.php?page=add_lab_depart" onclick="return confirm_add_lab_depart()">ดีดค่าใช้จ่าย Lab</a>
+	</li>
+	-->
+	<li>
+		<a href="assumption_print_lab.php?page=depart_form">เพิ่มค่าlabทีละคน</a>
 	</li>
 </ul>
 <script type="text/javascript">
 	function confirm_order_lab(){
-		var c = confirm("ยืนยันการ Order Lab?");
+		var c = confirm("ยืนยันการ Order Lab?\nกด Cancel เพื่อยกเลิก");
 		return c;
 	}
 
@@ -228,28 +349,12 @@ if( empty($page) ){
 				<div style="page-break-before: always;"></div>
 				<?php
 			}
-
 			
-			if( $lab === 'BS-sso' ){
-				$list_chem[] = 'BS';
-			}
-
-			if( $lab === 'CR-sso' ){
-				$list_chem[] = 'CR';
-			}
-
-			if( $lab === 'HDL-sso' ){
-				$list_chem[] = 'HDL';
-			}
-
-			if( $lab === 'CHOL-sso' ){
-				$list_chem[] = 'CHOL';
-			}
-			
-			if( $lab === 'HBSAG-sso' ){
-				$list_chem[] = 'HBSAG';
-			}
-	
+			if( $lab === 'BS-sso' ){ $list_chem[] = 'BS'; }
+			if( $lab === 'CR-sso' ){ $list_chem[] = 'CR'; }
+			if( $lab === 'HDL-sso' ){ $list_chem[] = 'HDL'; }
+			if( $lab === 'CHOL-sso' ){ $list_chem[] = 'CHOL'; }
+			if( $lab === 'HBSAG-sso' ){ $list_chem[] = 'HBSAG'; }
 			
 			/*
 			if( $lab === 'HBSAG-sso' ){
@@ -290,17 +395,14 @@ if( empty($page) ){
 
 		
 		if( count($list_chem) > 0 ){
-
 			++$pre_number;
 			$chem_text = implode(',', $list_chem);
-			
 			?>
 			<font style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$fullname;?></b></center></font>
 			<font style='line-height:23px;' face='Angsana New' size='6'><center><b><?=$pre_number;?>-<?=$exam_no;?></b> <span style="font-size: 14px; line-height:11px;"><?=$chem_text;?></span></center></font>
 			<center><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_chem;?>"></span></center>
 			<div style="page-break-before: always;"></div>
 			<?php
-			
 		}
 
 	} // foreach แต่ละ user
@@ -504,6 +606,8 @@ if( empty($page) ){
 
 } else if( $page === 'add_lab_depart' ){
 
+	exit;
+
 	include 'includes/cu_sso.php';
 	$sso = new CU_SSO();
 
@@ -659,4 +763,28 @@ if( empty($page) ){
 
 	exit;
 
+} else if( $page === 'depart_form' ) {
+
+	?>
+	<h3>บันทึกค่าใช้จ่าย lab</h3>
+	<form action="assumption_print_lab.php" method="post">
+		<div>
+			<label for="hn">HN: </label>
+			<input type="text" id="hn" name="hn">
+		</div>
+		<div>
+			<label for="vn">VN: </label>
+			<input type="text" id="vn" name="vn">
+		</div>
+		<div>
+			<div>
+				<span style="color: red;"><u>* ก่อนดีดค่าใช้จ่ายตรวจสอบให้แน่ใจก่อนว่าทะเบียนไม่ออก vn ซ้ำซ้อน หรือหลาย vn ในคนเดียวกัน</u></span>
+			</div>
+			<button type="submit">บันทึก คชจ.</button>
+			<input type="hidden" name="action" value="save_depart">
+		</div>
+	</form>
+	<?php
+
+	exit;
 }
