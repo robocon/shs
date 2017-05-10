@@ -92,12 +92,12 @@ if( $action === 'import' ){
 	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`,b.`ptright`
 	,c.`vn`
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 
 		SELECT * FROM `opday` WHERE `thdatehn` = CONCAT('".date('d-m-').(date('Y')+543)."','$hn') 
-	 ) AS c ON c.`hn` = a.`hn` 
+	 ) AS c ON c.`hn` = a.`HN` 
 	WHERE a.`part` = '$part' 
-	AND a.`hn` = '$hn' 
+	AND a.`HN` = '$hn' 
 	AND c.`vn` = '$vn' 
 	ORDER BY a.`row` ASC";
 	// dump($sql);
@@ -199,7 +199,8 @@ if( $action === 'import' ){
 		dump($patdata);
 	} // end patdata
 
-
+	$run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
+	dump($run);
 
 	exit;
 }
@@ -235,6 +236,9 @@ if( $action === 'import' ){
 	-->
 	<li>
 		<a href="assumption_print_lab.php?page=depart_form">เพิ่มค่าlabทีละคน</a>
+	</li>
+	<li>
+		<a href="assumption_print_lab.php?page=check_vn">ตรวจสอบ VN</a>
 	</li>
 </ul>
 <script type="text/javascript">
@@ -291,7 +295,7 @@ if( empty($page) ){
 
 	$sql = "SELECT a.*,b.`sex`
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN`
 	WHERE a.`part` = '$part' 
 	ORDER BY a.`row` ASC";
 	
@@ -413,7 +417,7 @@ if( empty($page) ){
 
 	$sql = "SELECT a.*,b.`sex`
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN`
 	WHERE a.`part` = '$part' 
 	ORDER BY a.`row` ASC";
 	$db->select($sql);
@@ -505,7 +509,7 @@ if( empty($page) ){
 	$sql = "SELECT a.*,
 	b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` 
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	WHERE a.`part` = '$part' 
 	ORDER BY a.`row` ASC";
 	$db->select($sql);
@@ -613,8 +617,8 @@ if( empty($page) ){
 
 	$sql = "SELECT a.*,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth` ,c.`vn`
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-	LEFT JOIN `opday` AS c ON c.`hn` = a.`hn` 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
+	LEFT JOIN `opday` AS c ON c.`hn` = a.`HN` 
 		AND c.`thidate` LIKE '2560-05-01%' 
 	WHERE a.`part` = '$part' 
 	AND c.`vn` IS NOT NULL 
@@ -754,7 +758,7 @@ if( empty($page) ){
 
 	$sql = "SELECT a.*,b.* 
 	FROM `opcardchk` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN`
 	WHERE a.`part` = '$part' 
 	ORDER BY a.`row` ASC";
 	dump($sql);
@@ -786,5 +790,50 @@ if( empty($page) ){
 	</form>
 	<?php
 
+	exit;
+} else if( $page === 'check_vn' ){
+
+	$sql = "SELECT a.`HN`,a.`name`,a.`surname` 
+	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`,b.`ptright`
+	,c.`vn`
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
+	LEFT JOIN ( 
+		SELECT * FROM `opday` WHERE `thidate` LIKE '".(date('Y')+543).date('-m-d')."%' 
+	 ) AS c ON c.`hn` = a.`HN` 
+	WHERE a.`part` = '$part' 
+	AND c.`vn` IS NOT NULL";
+	// dump($sql);
+	$db->select($sql);
+	$items = $db->get_items();
+	
+	?>
+	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>HN</th>
+				<th>ชื่อ-สกุล</th>
+				<th>VN</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+		$i = 1;
+		foreach ($items as $key => $item) {
+			?>
+			<tr>
+				<td><?=$i;?></td>
+				<td><?=$item['HN'];?></td>
+				<td><?=$item['name'].' '.$item['surname'];?></td>
+				<td><?=$item['vn'];?></td>
+			</tr>
+			<?php
+			$i++;
+		}
+		?>
+		</tbody>
+	</table>
+	<?php
 	exit;
 }

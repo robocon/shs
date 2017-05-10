@@ -5,6 +5,8 @@ $db = Mysql::load();
 
 // $exam_no = 301;
 $checkup_date_code = '170501';
+$thai_date = (date("Y")+543)."-".date("m-d H:i:s");
+$en_date = date("Y-m-d H:i:s");
 
 $action = input('action');
 if( $action === 'import' ){
@@ -80,6 +82,126 @@ if( $action === 'import' ){
 	header('Location: niyompanich_print_lab.php');
 	exit;
 
+} else if( $action === 'save_depart' ){
+
+	$hn = input_post('hn');
+	$vn = input_post('vn');
+	
+	$sql = "SELECT a.*
+	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`,b.`ptright`
+	,c.`vn`
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
+	LEFT JOIN ( 
+		SELECT * FROM `opday` WHERE `thdatehn` = CONCAT('".date('d-m-').(date('Y')+543)."','$hn') 
+	 ) AS c ON c.`hn` = a.`HN` 
+	WHERE a.`part` = 'นิยมพานิช60' 
+	AND a.`HN` = '$hn' 
+	AND c.`vn` = '$vn' 
+	ORDER BY a.`row` ASC";
+	// dump($sql);
+	$db->select($sql);
+	$user = $db->get_item();
+	if( empty($user) ){
+		echo "ไม่พบ $vn ของHN $hn";
+		exit;
+	}
+
+	$vn = $user['vn'];
+	$ptright = $user['ptright'];
+	$ptname = $user['name'].' '.$user['surname'];
+	$part = $user['part'];
+	
+	// เอา labnumber ไปหารายการ lab ที่เคยสั่งเอาไว้ใน orderdetail
+	$exam_no = $user['exam_no'];
+	$labnumber = $checkup_date_code.$user['exam_no'];
+
+	$sql = "SELECT a.`labcode`,b.`code`,b.`oldcode`,b.`detail`,b.`price`,b.`yprice`,b.`nprice` 
+	FROM `orderdetail` AS a 
+	LEFT JOIN `labcare` AS b ON b.`code` = a.`labcode`
+	WHERE a.`labnumber` = '$labnumber'";
+	$db->select($sql);
+	$lab_lists = $db->get_items();
+
+	// หาราคารวมเพื่อใส่ใน depart
+	$price = 0;
+	$yprice = 0;
+	$count_item = count($lab_lists);
+	foreach ($lab_lists as $key => $list) {
+		$price += $list['price'];
+		$yprice += $list['yprice'];
+	}
+
+	// runno stktranx
+	$db->select("SELECT runno, startday FROM runno WHERE title = 'stktranx'");
+	$nStktranx = $db->get_item();
+	$runno = $nStktranx['runno']+1;
+
+	// depart
+	$depart_sql = "INSERT INTO `depart` SET 
+	`chktranx` = '$runno',
+	`date` = '$thai_date',
+	`ptname` = '$ptname',
+	`hn` = '$hn',
+	`doctor` = 'MD022 (ไม่ทราบแพทย์)',
+	`depart` = 'PATHO',
+	`item` = '$count_item',
+	`detail` = 'ค่าตรวจวิเคราะห์โรค',
+	`price` = '$price',
+	`sumyprice` = '$yprice',
+	`sumnprice` = '0',
+	`paid` = '0',
+	`idname` = 'พัชรี คำฟู',
+	`diag` = 'ตรวจสุขภาพ',
+	`tvn` = '$vn',
+	`ptright` = '$ptright',
+	`lab` = '$exam_no',
+	`status` = 'Y';";
+	// dump($depart_sql);
+	$depart = $db->insert($depart_sql);
+	$depart_id = $db->get_last_id();
+	dump($depart);
+	dump($depart_id);
+	
+	$depart_log = "INSERT INTO `depart_log`
+	(`id`,`idno`,`hn`,`part`)
+	VALUES
+	(NULL,'$depart_id','$hn','$part');";
+	$db->insert($depart_log);
+
+	foreach ($lab_lists as $key => $list) {
+
+		$code = $list['code'];
+		$price = $list['price'];
+		$yprice = $list['yprice'];
+		$detail = $list['detail'];
+		
+		$patdata_sql = "INSERT INTO `patdata` SET 
+		`date` = '$thai_date',
+		`hn` = '$hn',
+		`ptname` = '$ptname',
+		`doctor` = 'MD022 (ไม่ทราบแพทย์)',
+		`item` = '$count_item',
+		`code` = '$code',
+		`detail` = '$detail',
+		`amount` = '1',
+		`price` = '$price',
+		`yprice` = '$yprice',
+		`nprice` = '0',
+		`depart` = 'PATHO',
+		`part` = 'LAB',
+		`idno` = '$depart_id',
+		`ptright` = '$ptright',
+		`status` = 'Y';";
+		// dump($patdata_sql);
+		$patdata = $db->insert($patdata_sql);
+		dump($patdata);
+	} // end patdata
+
+	$run = $db->update("UPDATE runno SET runno = $runno WHERE title='stktranx'");
+	dump($run);
+
+	exit;
 }
 
 ?>
@@ -100,8 +222,22 @@ if( $action === 'import' ){
 	<li>
 		<a href="niyompanich_print_lab.php?page=labsso">ดูรายการตรวจ</a>
 	</li>
+	<!-- 
 	<li>
 		<a href="niyompanich_print_lab.php?page=money">ดีดค่าใช้จ่าย Lab</a>
+	</li>
+	-->
+	<li>
+		<a href="niyompanich_print_lab.php?page=update_status">อัพเดทสถานะคนที่ตกค้าง</a>
+	</li>
+	<li>
+		<a href="niyompanich_print_lab.php?page=depart_form">เพิ่มค่าlabทีละคน</a>
+	</li>
+	<li>
+		<a href="niyompanich_print_lab.php?page=check_vn">ตรวจสอบ VN</a>
+	</li>
+	<li>
+		<a href="niyompanich_print_lab.php?page=cut_pap">ตัด PAP</a>
 	</li>
 </ul>
 <?php
@@ -563,5 +699,175 @@ if( empty($page) ){
 		echo "<hr>";
 		
 	} // end insert into depart & patdata
-}
+} else  if( $page === 'update_status' ){
+
+	$sql = "SELECT a.* 
+	FROM `opcardchk` AS a 
+	WHERE a.`part` = 'นิยมพานิช60' 
+	AND a.`HN` NOT IN (
+		'55-4126',
+		'47-16316',
+		'52-1508',
+		'50-18441',
+		'60-2882',
+		'51-9550',
+		'51-12418',
+		'47-16929',
+		'60-2634',
+		'52-7009',
+		'47-13232',
+		'48-8964',
+		'48-20239',
+		'48-22174',
+		'51-751'
+	) 
+	ORDER BY a.`row` ASC";
+	$db->select($sql);
+	$items = $db->get_items();
+	foreach ($items as $key => $item) {
+		$row = $item['HN'];
+		$update_sql = "UPDATE `opcardchk` SET `active` = 'y' WHERE `HN` = '$row' AND `part` = 'นิยมพานิช60' ;";
+		dump($update_sql);
+		$update = $db->update($update_sql);
+		dump($update);
+	}
+	exit;
 	
+} else if( $page === 'check_vn' ){
+
+	$sql = "SELECT a.`HN`,a.`name`,a.`surname` 
+	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`,b.`ptright`
+	,c.`vn`
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
+	LEFT JOIN ( 
+		SELECT * FROM `opday` WHERE `thidate` LIKE '".(date('Y')+543).date('-m-d')."%' 
+	 ) AS c ON c.`hn` = a.`HN` 
+	WHERE a.`part` = 'นิยมพานิช60' AND a.`active` != 'y' 
+	AND c.`vn` IS NOT NULL";
+	// dump($sql);
+	$db->select($sql);
+	$items = $db->get_items();
+	
+	?>
+	<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>HN</th>
+				<th>ชื่อ-สกุล</th>
+				<th>VN</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+		$i = 1;
+		foreach ($items as $key => $item) {
+			?>
+			<tr>
+				<td><?=$i;?></td>
+				<td><?=$item['HN'];?></td>
+				<td><?=$item['name'].' '.$item['surname'];?></td>
+				<td><?=$item['vn'];?></td>
+			</tr>
+			<?php
+			$i++;
+		}
+		?>
+		</tbody>
+	</table>
+	<?php
+	exit;
+} else if( $page === 'depart_form' ) {
+
+	?>
+	<h3>บันทึกค่าใช้จ่าย lab</h3>
+	<form action="niyompanich_print_lab.php" method="post">
+		<div>
+			<label for="hn">HN: </label>
+			<input type="text" id="hn" name="hn">
+		</div>
+		<div>
+			<label for="vn">VN: </label>
+			<input type="text" id="vn" name="vn">
+		</div>
+		<div>
+			<div>
+				<span style="color: red;"><u>* ก่อนดีดค่าใช้จ่ายตรวจสอบให้แน่ใจก่อนว่าทะเบียนไม่ออก vn ซ้ำซ้อน หรือหลาย vn ในคนเดียวกัน</u></span>
+			</div>
+			<button type="submit">บันทึก คชจ.</button>
+			<input type="hidden" name="action" value="save_depart">
+		</div>
+	</form>
+	<?php
+
+	exit;
+} else if( $page === 'cut_pap' ) {
+	
+	$sql = "SELECT b.* 
+	FROM ( 
+		SELECT CONCAT('170501',`exam_no`) AS labnumber FROM `opcardchk` 
+		WHERE `part` = 'นิยมพานิช60' 
+		AND `HN` IN (
+			'55-4126',
+			'47-16316',
+			'52-1508',
+			'50-18441',
+			'60-2882',
+			'51-9550',
+			'51-12418',
+			'47-16929',
+			'60-2634',
+			'52-7009',
+			'47-13232',
+			'48-8964',
+			'48-20239',
+			'48-22174',
+			'51-751'
+		) 
+	 ) AS a 
+	LEFT JOIN ( 
+		SELECT * FROM `orderdetail` WHERE `labnumber` LIKE '170501%' 
+	 ) AS b ON b.`labnumber` = a.`labnumber` 
+	WHERE b.`labcode` = 'PAP-sso'";
+	$db->select($sql);
+	$items = $db->get_items();
+	foreach ($items as $key => $item) {
+		
+		$del_labnumber = $item['labnumber'];
+		$del_labcode = $item['labcode'];
+
+		$sql_del = "DELETE FROM `orderdetail`
+		WHERE `labnumber` = '$del_labnumber' AND `labcode` = '$del_labcode' ;";
+		$delete = $db->delete($sql_del);
+		dump($delete);
+	}
+	
+
+}
+
+// ลองเช็กสิทธิคนที่ตกค้าง
+/*
+$sql = "SELECT a.*,b.* 
+	FROM `opcardchk` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+	WHERE a.`part` = 'นิยมพานิช60' 
+	AND a.`HN` IN (
+		'55-4126',
+		'47-16316',
+		'52-1508',
+		'50-18441',
+		'60-2882',
+		'51-9550',
+		'51-12418',
+		'47-16929',
+		'60-2634',
+		'52-7009',
+		'47-13232',
+		'48-8964',
+		'48-20239',
+		'48-22174',
+		'51-751'
+	) 
+	ORDER BY a.`row` ASC";
+*/
