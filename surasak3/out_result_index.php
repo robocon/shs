@@ -77,4 +77,8 @@ a:active {
     <td>9. องค์การบริหารส่วนจังหวัดลำปาง</td>
     <td align="center"><a href="out_result.php?part=อบจ60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>10. โรงเรียนอัสสัมชัญลำปาง</td>
+    <td align="center"><a href="out_result.php?part=อัสสัมชัญ60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>
