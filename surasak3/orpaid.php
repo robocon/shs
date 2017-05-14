@@ -15,6 +15,9 @@
     $no=0;
 	for($no=1; $no<=12; $no++){
 		if($_POST['item'.$no] !=""){
+
+            $_POST['item'.$no] = str_replace(array("\'",'\"'), ' ', $_POST['item'.$no]);
+
 			$NetMcpri=$NetMcpri+$_POST['price'.$no]; //รวมเงินทั้งหมด
 			$Netyprice=$Netyprice+$_POST['yprice'.$no]; //รวมเงินที่เบิกได้
 			$Netnprice=$Netnprice+$_POST['nprice'.$no]; //รวมเงินที่เบิกไม่ได้
