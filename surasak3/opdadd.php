@@ -67,7 +67,8 @@
     $nRunno++;
     $vHN=$vPrefix.$nRunno; //HN
 
-
+    // บันทึกเป็น pdf ให้ Dr.Com Sync ข้อมูล
+    include_once 'opdadd_pdf.php';
 
 
     //$query ="UPDATE runno SET runno = $nRunno WHERE title='HN'";
