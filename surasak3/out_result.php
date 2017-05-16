@@ -35,6 +35,7 @@ color: #FFF;
 }
 .style1 {color: #FF0000}
 .style2 {color: #0000FF}
+.help{ cursor: pointer; }
 </style>
 </head>
 
@@ -161,21 +162,52 @@ if(isset($_POST['hn'])){
         <input name="p" type="text" size="5" class="pdxhead" id="p" value="<?=$arrchk['p']?>" />
 ครั้ง/นาที</td>
       </tr>
-    <tr>
-      <td class="pdx">ผล X-RAY
-        <input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />
-      </td>
-    </tr>
-    <tr>
-      <td class="pdx">EKG
-        <input name="ekg" type="text" class="pdxhead" size="50" id="ekg" value="<?=$arrchk['ekg']?>" />
-      </td>
-    </tr>
-    <tr>
-      <td class="pdx">ผลการตรวจความหนาแน่นของมวลกระดูก
-        <input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />
-      </td>
-    </tr>
+    
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td class="pdx">
+							ผล X-RAY
+						</td>
+						<td>
+							<input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />
+						</td>
+					</tr>
+					<tr>
+						<td class="pdx">
+							EKG
+						</td>
+						<td>
+							<input name="ekg" type="text" class="pdxhead" size="50" id="ekg" value="<?=$arrchk['ekg']?>" />
+						</td>
+					</tr>
+					<tr>
+						<td class="pdx">
+							ผลการตรวจความหนาแน่นของมวลกระดูก
+						</td>
+						<td>
+							<input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />
+						</td>
+					</tr>
+					<tr>
+						<td class="pdx">
+							ผลการตรวจมะเร็งปากมดลูก (Pap Smear)
+						</td>
+						<td>
+							<input name="hpv" type="text" class="pdxhead" size="50" id="hpv" value="<?=$arrchk['hpv']?>" />
+							[<span class="help" onclick="help('hpv','ปกติ')">ปกติ</span><!-- | <span class="help" onclick="help('hpv','ผิดปกติ')">ผิดปกติ</span>-->]
+						</td>
+					</tr>
+				</table>
+				<script type="text/javascript">
+					function help(id_name, status){
+						document.getElementById(id_name).value = status;
+					}
+				</script>
+			</td>
+		</tr>
+
     <tr>
       <td align="left" class="pdx">
         <input type="hidden" name="ptname" value="<?=$ptname?>" />
@@ -195,6 +227,10 @@ if(isset($_POST['okhn2'])){
 	
 	include("connect.inc");
 	$data1 = $_POST['form_status'];
+
+	$hpv = ( trim($_POST['hpv']) != '' ) ? trim($_POST['hpv']) : NULL ;
+	$bone = ( trim($_POST['42702']) != '' ) ? trim($_POST['42702']) : NULL ;
+
 	if( $data1 == "update" ){
 
 		$ptname = $_POST['ptname'];
@@ -212,13 +248,21 @@ if(isset($_POST['okhn2'])){
 		`doctor_result` = '".$_POST['doctor_result']."',
 		`year_chk` = '".$nPrefix."',
 		`part` = '".$_POST['part']."',
-		`42702` = '".$_POST['42702']."'
+		`42702` = '$bone',
+		`hpv` = '$hpv'
 		WHERE `row_id` ='".$_POST['row_id']."' ";
 
 	}else if( $data1=="insert" ){
-		$active="y";
-		$update = "INSERT INTO `out_result_chkup` ( `hn` , `ptname`  , `weight` , `height` , `bp1` , `bp2` , `p` , `ekg` , `va`, `cxr`, year_chk,`register`,`part`)
-		VALUES ('".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."','".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix', '','".$_POST['part']."');";
+		$active = "y";
+		$update = "INSERT INTO `out_result_chkup` ( 
+			`hn`,`ptname`,`weight`,`height`,`bp1`,`bp2`,
+			`p`,`ekg`,`va`,`cxr`,`year_chk`,`register`,
+			`part`,`42702`,`hpv`
+		) VALUES (
+			'".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."',
+			'".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix', '',
+			'".$_POST['part']."','$bone','$hpv'
+		);";
 	}
 	
 	$upquery = mysql_query($update) or die (mysql_error());

@@ -38,6 +38,7 @@ $title = $companys[$key];
 #divprint{ page-break-after:always; }
 .theBlocktoPrint{ background-color: #000; color: #FFF; } 
 label{ display: block; }
+.etc label{ display: inline; }
 </style>
 </head>
 
@@ -60,10 +61,17 @@ label{ display: block; }
 				}
 				?>
 			</div>
-			<div>
+			<div class="etc">
 				<fieldset>
-					<legend>แสดงผลรายการอื่นๆ</legend>
-					<input type="checkbox" id="ekg" name="ekg"> <label for="ekg">แสดงผล EKG</label>
+					<legend>ตรวจเพิ่มเติม</legend>
+					<div>
+						<input type="checkbox" id="ekg" name="ekg"> <label for="ekg">แสดงผล EKG</label>	
+					</div>
+					<!--
+					<div>
+						<input type="checkbox" id="pap" name="pap"> <label for="pap">แสดงผล PAP</label>	
+					</div>
+					-->
 				</fieldset>
 			</div>
 			<div class="">
@@ -86,14 +94,17 @@ include("connect.inc");
 
 // $showpart = 'ลำปางกัลยาณี60';
 $showpart = $_POST['company'];
-$sql1 = "SELECT * 
-FROM `out_result_chkup` 
-WHERE `part` = '$showpart' 
-ORDER BY `hn` ASC";
+$sql1 = "SELECT a.*,b.`sex` 
+FROM `out_result_chkup` AS a 
+LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+WHERE a.`part` = '$showpart' 
+ORDER BY a.`hn` ASC";
 
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
 while($result = mysql_fetch_array($row2)){
+
+	$sex = $rexult['sex'];
 
 	// $select = "select * from out_result_chkup  WHERE hn='".$result['hn']."'";
 	//echo $select."<br>";
@@ -155,14 +166,14 @@ while($result = mysql_fetch_array($row2)){
                 <tr>
                   <td width="588" valign="top"><strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;<span class="text3"><strong>น้ำหนัก: </strong>
                       <?=$result['weight']?>
-&nbsp;กก. <strong>ส่วนสูง:</strong>
-<?=$result['height']?>
-&nbsp;ซม. <strong>BMI: </strong> <u>
-<?=$bmi?> </u><strong>BP:<u>
-<?=$result['bp1']?>
-/
-<?=$result['bp2']?>
-mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
+						&nbsp;กก. <strong>ส่วนสูง:</strong>
+						<?=$result['height']?>
+						&nbsp;ซม. <strong>BMI: </strong> <u>
+						<?=$bmi?> </u><strong>BP:<u>
+						<?=$result['bp1']?>
+						/
+						<?=$result['bp2']?>
+						mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
                       <?=$result['p']?> ครั้ง/นาที
 
                   </u></span></span></td>
@@ -220,16 +231,10 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 		<td>
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="61%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
-					<td width="19%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
-					<td width="20%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-					<?php
-					/*
-					?>
-					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผลการตรวจ</strong></td>
-					<?php
-					*/
-					?>
+					<td width="56%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
+					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 				</tr>
 				<?php 
 				$sql="SELECT * 
@@ -325,6 +330,19 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 						<td><?=$objResult["labcode"]." ".$labmean;?></td>
 						<td align="center"><?=$objResult["result"];?></td>
 						<td align="center"><?=$objResult["normalrange"];?></td>
+						<td align="center">
+							<?php
+							$result = (double) $objResult["result"];
+							list($min, $max) = explode('-', str_replace(' ', '', $objResult["normalrange"]));
+							$min = (double) $min;
+							$max = (double) $max;
+							if( $result >= $min && $result <= $max ){
+								echo "ปกติ";
+							}else{
+								echo "ผิดปกติ";
+							}
+							?>
+						</td>
 						<?php
 						/*
 						?>
@@ -345,7 +363,11 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 					</tr>
                 <?php 
 				} // End while
-				?>                   
+				?>
+
+				<?php
+				/*
+				?>
 				<tr height="25">
 					<td colspan="3"><strong>สรุปผลการตรวจเม็ดเลือด</strong></td>
 				</tr>
@@ -461,8 +483,11 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 								</td>
 							</tr>
 						</table>
-			</td>
-          </tr>
+					</td>
+				</tr>
+				<?php
+				*/
+				?>
         </table>
 		</td>
       </tr>
@@ -474,9 +499,10 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
       <tr>
         <td style="vertical-align: top;"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="text3">
           <tr>
-            <td width="61%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
-            <td width="19%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
-            <td width="20%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+            <td width="56%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
+            <td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+            <td width="15%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+			<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
           </tr>
           <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60')";
 	$query = mysql_query($sql);
@@ -1067,14 +1093,23 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 	}
 	?>
   <tr>
-    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
-      <? if($result["hn"]=="48-21424" || $result["hn"]=="60-1066" || $result["hn"]=="60-1067"){ ?>
-      <tr>
-        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><strong class="text" style="margin-left: 9px;"> :
-          <? if($result["hpv"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ"; } ?>
-        </strong></td>
-      </tr>
-      <? } ?>         
+    <td colspan="2"  valign="top">
+		<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
+      		<? /* if($result["hn"]=="48-21424" || $result["hn"]=="60-1066" || $result["hn"]=="60-1067"){ */ ?>
+			<?php
+			if( !empty($result['hpv']) && $sex === 'ญ' ){
+				?>
+				<tr>
+					<td>
+						<strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><strong class="text" style="margin-left: 9px;"> :
+							<?php /*if($result["hpv"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ"; }*/ echo $result['hpv']; ?>
+						</strong>
+					</td>
+				</tr>
+				<?php
+			}
+			?>
+			<? /* } */ ?>         
         <tr>
 			<td height="30" width="60%">
 
