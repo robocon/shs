@@ -422,7 +422,7 @@ $objQuery1 = mysql_query($strSQL1);
 list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='COLOR' || labcode ='APPEAR' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) ";
+		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) ";
 		//echo $strSQL;
 		$objQuery = mysql_query($strSQL);
 
@@ -550,8 +550,7 @@ $other_result_row = mysql_num_rows($query1);
     <td colspan="2"  valign="top"><table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
       <tr>
         <td align="center" height="30">
-			<strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ : อื่นๆ</u></strong>
-		</td>
+			<strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ</u></strong>		</td>
       </tr>
       <tr>
         <td height="52" valign="top" style="padding: 2px;">
@@ -648,9 +647,9 @@ if($objResult["labcode"]=='CHOL'){
 	if($objResult["result"]<=200){
 		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 	}else	if($objResult["result"]>200){
-		$app="ผิดปกติ ควรควบคุมอาหารพวกเครื่องในสัตว์ อาหารทะเล ไข่แดง ไข่นกกระทา กะทิ ไขมันสัตว์ ร่วมกับการออกกำลังกาย";	
+		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 	}else	if($objResult["result"]>300){
-		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ";	
+		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
 	}
 }
 
@@ -658,9 +657,9 @@ if($objResult["labcode"]=='TRIG'){
 	if($objResult["result"]<=150){
 		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 	}else	if($objResult["result"]>150 && $objResult["result"]<250){
-		$app="ผิดปกติ ควรควบคุมอาหารพวกแป้ง น้ำตาล อาหารหวาน ครีมเทียม กะทิ งดเครื่องดื่มแอลกอฮอล์ ร่วมกับการออกกำลังกาย";	
+		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 	}else	if($objResult["result"]>250){
-		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ";	
+		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
 	}
 }
 
@@ -670,7 +669,7 @@ if($objResult["labcode"]=='HDL'){
 	}else	if($objResult["result"]>60){  //สูงดี
 		$app="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ";	
 	}else	if($objResult["result"]<40){  //ต่ำไม่ดี
-		$app="ระดับไขมันในเลือดมีค่าต่ำผิดปกติ ควรงดสูบบุหรี่ร่วมกับการออกกำลังกาย รับประทารอาหารประเภทเนื้อปลา";	
+		$app="ระดับไขมันในเลือดมีค่าต่ำผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 	}
 }
 
@@ -678,7 +677,7 @@ if($objResult["labcode"]=='10001'){
 	if($objResult["result"]>=0 && $objResult["result"]<=100){
 		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 	}else	if($objResult["result"]>100){
-		$app="ผิดปกติ ควรควบคุมอาหารพวกเครื่องในสัตว์ อาหารทะเล ไข่แดง กะทิ น้ำมันสัตว์ งดสูบบุหรี่ ร่วมกับการออกกำลังกาย";	
+		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 	}
 }
 
@@ -686,7 +685,7 @@ if($objResult["labcode"]=='LDL'){
 	if($objResult["result"]>=0 && $objResult["result"]<=100){
 		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 	}else	if($objResult["result"]>100){
-		$app="ผิดปกติ ควรควบคุมอาหารพวกเครื่องในสัตว์ อาหารทะเล ไข่แดง กะทิ น้ำมันสัตว์ งดสูบบุหรี่ ร่วมกับการออกกำลังกาย";	
+		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 	}
 }
 
@@ -694,7 +693,7 @@ if($objResult["labcode"]=='LDLC'){
 	if($objResult["result"]>=0 && $objResult["result"]<=100){
 		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 	}else	if($objResult["result"]>100){
-		$app="ผิดปกติ ควรควบคุมอาหารพวกเครื่องในสัตว์ อาหารทะเล ไข่แดง กะทิ น้ำมันสัตว์ งดสูบบุหรี่ ร่วมกับการออกกำลังกาย";	
+		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 	}
 }
 
@@ -773,7 +772,7 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 		'PSA' => '0-4',
 	);
 
-	$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`
+	$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`,c.`flag`
 	FROM (
 
 		SELECT MAX(`autonumber`) AS `autonumber`
@@ -794,7 +793,7 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 		<td colspan="2">
 			<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">
 				<tr>
-					<td colspan="2" class="text" style="text-align: center; text-decoration: underline; font-size: 20px; font-weight: bold;">Lab นอก</td>
+					<td colspan="2" class="text" style="text-align: center; text-decoration: underline; font-size: 20px; font-weight: bold;">LAB อื่นๆ</td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -807,13 +806,22 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 							</tr>
 							<?php
 							while( $outlab = mysql_fetch_assoc($q)){
-								$outlab_code = $outlab['labcode'];
-
+								
+								if($outlab['labcode']=="38302"){
+									$outlab_code = "<strong>PAP SMEAR</strong> <font size='-1'>(การตรวจหามะเร็งปากมดลูก)</font>";
+								}else{
+									$outlab_code = $outlab['labcode'];
+								}
 								// เอาค่าแปลกๆออกไปก่อน
 								$outlab_result = str_replace(array('<','>'), '', $outlab['result']);
 
 								// ค่า normal range ที่เป็นพวก outlab
 								$outlab_range = $normal_outlab[$outlab_code];
+								if($outlab_result=="OL" || $outlab_result=="ol"){
+									$outlab_result="&nbsp;";
+								}else{
+									$outlab_result;
+								}
 							?>
 							<tr class="text3">
 								<td><?=$outlab_code;?></td>
@@ -822,8 +830,11 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 								<td>
 									<?php
 									// default เป็นค่าปกติ
-									$result_outlab_txt = 'ผิดปกติ';
-
+									$result_outlab_txt = 'ปกติ';
+									if( $outlab['flag'] != 'N' ){
+										$result_outlab_txt = 'ผิดปกติ';
+									}
+									/*
 									if( strpos($outlab_range, '-') !== false ){
 
 										list($outlab_min, $outlab_max) = explode('-', $outlab_range );
@@ -836,6 +847,8 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 											$result_outlab_txt = 'ปกติ';
 										}
 									}
+									*/
+
 									echo $result_outlab_txt;
 									?>
 								</td>
@@ -862,9 +875,9 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 				?>
 				<tr>
 					<td>
-						<strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><strong class="text" style="margin-left: 9px;"> :
+						<strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><span class="text" style="margin-left: 9px;"> :
 							<?php /*if($result["hpv"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ"; }*/ echo $result['hpv']; ?>
-						</strong>
+						</span>
 					</td>
 				</tr>
 				<?php
