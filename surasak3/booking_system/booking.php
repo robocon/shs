@@ -12,15 +12,9 @@ include("../includes/connect.php");
 	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
 	
-	<style>
-	@font-face{
-		font-family: "THSarabunNew";
-		src: url("../fonts/THSarabunNew.ttf") format('truetype');
-		font-weight: normal;
-		font-style: normal;
-	}
+	<style type="text/css">
 	.forntsarabun {
-		font-family: THSarabunNew;
+		font-family: 'TH SarabunPSK';
 		font-size: 22px;
 	}
 	</style>
@@ -135,25 +129,44 @@ if( !empty($hn) ){
 		return $pAge;
 	}
 	
-	$hn=trim($_POST['hn']);
-	$chkdate=(date("Y")+543)."-".date("m")."-".date("d");
-	$showdate=date("d")."/".date("m")."/".(date("Y")+543);
-	$str="select * from booking where hn='".$hn."' and date_in ='$chkdate'";
-	//echo $str;
-	$strquery=mysql_query($str);
-	$strnum=mysql_num_rows($strquery);
-	$strrows=mysql_fetch_array($strquery);
+	$hn = trim($_POST['hn']);
+	$chkdate = (date("Y")+543)."-".date("m")."-".date("d");
+	$showdate = date("d")."/".date("m")."/".(date("Y")+543);
+
+	// เปลี่ยนจาก AND `date_in` = '$chkdate' เป็นตรวจสอบจากสถานะ
+	$str="SELECT `hn`,`ptname`,`ward`,`bed`,`status`,`date_in` 
+	FROM `booking` 
+	WHERE `hn` = '".$hn."' 
+	AND `status` != 'อนุมัติ' ";
+
+	$strquery = mysql_query($str);
+	$strnum = mysql_num_rows($strquery);
+	// ถ้ายังไม่อนุมัติ ให้แจ้งเตือน
 	if($strnum > 0){
-		echo "<script>alert('!!! ผิดพลาด...ไม่สามารถจองเตียงได้ เนื่องจากคนไข้  HN : $hn จองเตียงวันที่ $showdate ไว้แล้ว สถานะ : $strrows[status] กรุณาตรวจสอบข้อมูลการจองเตียง');</script>";
+		
+		$alert_detail = '';
+		while ( $strrows = mysql_fetch_array($strquery) ) {
+			$alert_detail .= 'จองเตียงวันที่ '.$strrows['date_in'].' ไว้แล้ว \n';
+			$alert_detail .= 'สถานะ : '.$strrows['status'].' \n';
+			$alert_detail .= '\n';
+		}
+		
+		?>
+		<script type="text/javascript">
+			alert('!!! ผิดพลาด...ไม่สามารถจองเตียงได้ เนื่องจากคนไข้  HN : <?=$hn;?> \n\n<?=$alert_detail;?>กรุณาตรวจสอบข้อมูลการจองเตียง');
+		</script>
+		<?php
+
 	}else{
-	$sql="SELECT * FROM  opcard WHERE  hn ='".$hn."' ";
+		$sql = "SELECT * FROM opcard WHERE  hn ='".$hn."' ";
 	}
+
     $query = mysql_query($sql); 
-	$dbarr=mysql_fetch_array($query);
-	$row=mysql_num_rows($query);
+	$dbarr = mysql_fetch_array($query);
+	$row = mysql_num_rows($query);
 	
 	if($row){
-		$ptname=$dbarr['yot'].''.$dbarr['name'].' '.$dbarr['surname'];
+		$ptname = $dbarr['yot'].''.$dbarr['name'].' '.$dbarr['surname'];
 		
 		$sql = sprintf("SELECT `row_id`,`date_in`,`status` FROM `booking` WHERE `hn`='%s' AND `status` = '';", $hn);
 		$query = mysql_query($sql);
