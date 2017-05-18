@@ -75,6 +75,36 @@ switch($_POST["step"]){
 /******************************************************case 3******************************************************/
 case 3:
 
+	// Block ผู้ป่วยมีนัดวันนี้ไปแล้ว
+	$sql = "SELECT a.`max_id`,b.`ptname`,b.`room` 
+	FROM ( 
+		SELECT MAX(`row_id`) AS `max_id` 
+		FROM `appoint` 
+		WHERE `appdate` = '".date("d")." ".$month[date("m")]." ".(date("Y")+543)."' 
+		AND `hn` = '".$_POST["id_barcode"]."'
+	) AS a 
+	LEFT JOIN `appoint` AS b ON b.`row_id` = a.`max_id`";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$item = mysql_fetch_assoc($q);
+	if( !empty($item['max_id']) ){
+		echo "<br>".'ผู้ป่วยมีนัดวันนี้ที่ '.$item['room'].' กรุณาติดต่อที่แผนกดังกล่าว'."<br>";
+		echo '<a href="#" onclick="window.history.back()">คลิกที่นี่เพื่อกลับไปหน้าเก่า</a>';
+		exit;
+	}
+
+	// ถ้าผู้ป่วยยังอยู่ใน ward 
+	$sql = "SELECT b.`my_ward` 
+	FROM `bed` AS a
+    LEFT JOIN `ipcard` AS b ON b.`an` = a.`an`
+    WHERE a.`hn` = '".$_POST["id_barcode"]."' ;";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$item = mysql_fetch_assoc($q);
+	if( $item !== false ){
+		echo "<br>สถานะของผู้ป่วยยังอยู่ที่ ".$item['my_ward']." กรุณาติดต่อที่หอผู้ป่วย<br>";
+		echo '<a href="#" onclick="window.history.back()">คลิกที่นี่เพื่อกลับไปหน้าเก่า</a>';
+		exit;
+	}
+	
 	
 		$Thaidate=date("d-m-").(date("Y")+543)." เวลา  ".date("H:i:s");
 		$thidate = (date("Y")+543).date("-m-d H:i:s"); 

@@ -650,7 +650,7 @@ $i++;
 	$yr = date("Y")+543;
     $today="$yr-$m-$d";
 
-	 $sql = "SELECT date,ptname,hn,an,price,row_id,item FROM depart WHERE  date LIKE '$today%' and depart='PATHO' AND lab = 'DR' ";
+	 $sql = "SELECT date,ptname,hn,an,price,row_id,item FROM depart WHERE  date LIKE '$today%' and depart='PATHO' AND ( lab = 'DR' OR lab = 'ER' ) ";
 	 $result = Mysql_Query($sql);
 	 while(list($date,$ptname,$hn,$an,$price,$row_id,$item) = Mysql_fetch_row($result)){
 		

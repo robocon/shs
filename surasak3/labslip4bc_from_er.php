@@ -28,6 +28,8 @@ $sDate = $_GET['sDate'];
 $query2 = "SELECT * FROM `depart` WHERE `hn` = '$cHn' AND `date` = '$sDate' ORDER BY row_id desc";
 $result2 = mysql_query($query2);
 $row2 = mysql_fetch_array($result2);
+// var_dump($row2);
+// exit;
 $nLab2 = $row2['lab'];
 
 $labhn = $row2['hn'];
@@ -41,14 +43,14 @@ $labtvn = $row2['tvn'];
 	function CloseWindowsInTime(t){
 		t = t*1000;
 		setTimeout(function(){
-			window.close()
+			// window.close()
 		},t);
 	}
 	/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */
 	CloseWindowsInTime(2); 
 	
 	window.onload=function(){
-		window.print();
+		// window.print();
 	};
 	
 	ie4up = nav4up = false;
@@ -88,10 +90,12 @@ $nLab21 = sprintf("%03d",$nLab2);
 // $labno = substr(date("Y"),2,2).date("md").$nLab21;
 list($date_item, $time_item) = explode(' ', $row2['date']);
 list($sub_year, $sub_month, $sub_day) = explode('-', $date_item);
-$labno = substr(($sub_year-543),2,2).$sub_month.$sub_day.$nLab21;
-
-print "<div style='left:65PX;top:55PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"></span></div>";
+$labno = substr(($sub_year-543),2,2).$sub_month.$sub_day.$nLab21."02";
 ?>
+<div style="left:65PX;top:55PX;width:180PX;height:14PX;">
+	<span class="fc1-0"><img src = "barcode/labstk.php?cLabno=<?=$labno;?>"></span>
+</div>
+
 <!-- แสดง -->
 <div style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'><?=$nLab2;?></span></div>
 <?php
