@@ -78,11 +78,13 @@ if(isset($_POST['ok'])){
     <?
 	
 	include("connect.inc");	
-	$sql="SELECT  * FROM opcardchk  WHERE part='ลูกจ้าง60' and active='y' order by course desc, exam_no asc";
+	$sql="SELECT  * FROM opcardchk  WHERE part='ลูกจ้าง60' and HN='47-14187' and active='y' order by course desc, exam_no asc";
 	//echo $sql."<br>";
 	$row2 = mysql_query($sql)or die ("Query Fail line 83");
+	$j=0;
 	while($result2 = mysql_fetch_array($row2)){
-
+	$j++;
+/*	echo $j."<br>";*/
 	
 	
 	$select = "select * from dxofyear_emp  where hn='".$result2['HN']."'";
@@ -114,7 +116,8 @@ list($orderdate)=mysql_fetch_array($objQuery11);
         <td align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">วันที่ตรวจ <?=$orderdate;?></span></span></span></td>
+        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2"><strong>วันที่ตรวจ 
+          <? list($nd,$nm,$ny)=explode("-",$orderdate); $nyy=$ny+543; echo "$nd/$nm/$nyy";?></span></span></span></strong></td>
         <td align="center" valign="top" class="text3">&nbsp;</td>
       </tr>
     </table></td>
@@ -913,23 +916,22 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
     <td colspan="2"  valign="top"><? } ?></td>
   </tr>
   <tr>
-    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
-      <? if($result["hn"]=="48-21424" || $result["hn"]=="60-1066" || $result["hn"]=="60-1067"){ ?>
-      <tr>
-        <td><strong class="text" style="font-size:18px"><u>ผลการตรวจมะเร็งปากมดลูก (Pap Smear)</u></strong><strong class="text" style="margin-left: 9px;"> :
-          <? if($result["hpv"]==""){ echo "ปกติ"; }else{ echo "ผิดปกติ"; } ?>
-        </strong></td>
-      </tr>
-      <? } ?>         
+    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">                
         <tr>
-          <td><strong class="text" style="font-size:18px"><u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u></strong><strong class="text" style="margin-left: 9px;"> : <? if($result["cxr"]==""){ echo "&nbsp;"; }else{ echo $result["cxr"]; } ?></strong></td>
+          <td><strong class="text" style="font-size:18px"><u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u></strong><strong class="text" style="margin-left: 9px;"> : <? 
+		  if($result["hn"]=="47-6628"){
+		  	  echo "ผิดปกติควรพบแพทย์...สงสัยน้ำในเยื่อหุ้มปอดซ้าย และ มีกระดูกซี่โครงด้านซ้ายหลายซี่หักเก่า";
+		  }else{
+			  if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"]."...".$result["reason_cxr"]; }
+		  }
+		   ?></strong></td>
         </tr>               
     </table></td>
   </tr>
 </table>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (24-03-2017)</strong></td>
+    <td  width="50%" align="center"><strong>Authorise  LAB : </strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (24-03-2017)</strong></td>
     
   </tr>
 </table>

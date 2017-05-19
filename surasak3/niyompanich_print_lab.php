@@ -236,8 +236,13 @@ if( $action === 'import' ){
 	<li>
 		<a href="niyompanich_print_lab.php?page=check_vn">ตรวจสอบ VN</a>
 	</li>
+	<!-- 
 	<li>
 		<a href="niyompanich_print_lab.php?page=cut_pap">ตัด PAP</a>
+	</li>
+	-->
+	<li>
+		<a href="niyompanich_print_lab.php?page=update_outresult">Update Out Result</a>
 	</li>
 </ul>
 <?php
@@ -741,9 +746,10 @@ if( empty($page) ){
 	FROM `opcardchk` AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 
-		SELECT * FROM `opday` WHERE `thidate` LIKE '".(date('Y')+543).date('-m-d')."%' 
+		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-01%' 
 	 ) AS c ON c.`hn` = a.`HN` 
-	WHERE a.`part` = 'นิยมพานิช60' AND a.`active` != 'y' 
+	WHERE a.`part` = 'นิยมพานิช60' 
+	#AND a.`active` != 'y' 
 	AND c.`vn` IS NOT NULL";
 	// dump($sql);
 	$db->select($sql);
@@ -843,6 +849,63 @@ if( empty($page) ){
 		dump($delete);
 	}
 	
+
+}else if( $page === 'update_outresult' ){
+
+	$sql = "SELECT b.* 
+	FROM `opcardchk` AS a 
+	LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`hn` 
+	WHERE a.`part` = 'นิยมพานิช60' 
+	AND a.`active` = 'y' ";
+	$db->select($sql);
+	$items = $db->get_items();
+	
+	
+
+	foreach( $items AS $key => $item ){
+		$hn = $item['hn'];
+		$ptname = $item['ptname'];
+		$age = $item['age'];
+		$weight = $item['weight'];
+		$height = $item['height'];
+		$bp1 = $item['bp1'];
+		$bp2 = $item['bp2'];
+		$p = $item['pause'];
+		$year_chk = '60';
+		$part = 'นิยมพานิช60';
+		
+		$sql = "INSERT INTO `out_result_chkup`
+		(`row_id`,
+		`hn`,
+		`ptname`,
+		`age`,
+		`weight`,
+		`height`,
+		`bp1`,
+		`bp2`,
+		`p`,
+		`year_chk`,
+		`part`)
+		VALUES
+		(NULL,
+		'$hn',
+		'$ptname',
+		'$age',
+		'$weight',
+		'$height',
+		'$bp1',
+		'$bp2',
+		'$p',
+		'$year_chk',
+		'$part');
+		";
+		// dump($sql);
+		// $insert = $db->insert($sql);
+		// dump($insert);
+
+	}
+
+	exit;
 
 }
 

@@ -54,14 +54,22 @@ If (!empty($vn)){
 //กรณียังไม่ลงทะเบียน
     If (empty($row->hn)){
         print "VN :$vn<br>";
-        print "ยังไม่ได้ลงทะเบียนตรวจวันนี้  โปรดขอ VN ใหม่จากห้องทะเบียน<br>";
-                                    }
-//กรณีลงทะเบียนแล้ว
-   else { 
+        print "<FONT SIZE=\"4\"  COLOR=\"#0033CC\"><strong>ยังไม่ได้ลงทะเบียนตรวจวันนี้  โปรดขอ VN ใหม่จากห้องทะเบียน</strong></FONT><br>";
+    
+	
+	//กรณีลงทะเบียนแล้ว
+	}else { 
         $cHn=$row->hn;
         $cPtname=$row->ptname;
         $cPtright=$row->ptright;
 		
+$ipsql="select * from ipcard where hn='".$cHn."' and dcdate='0000-00-00 00:00:00'";
+$ipquery=mysql_query($ipsql);
+$iprows=mysql_fetch_array($ipquery);
+$my_ward=$iprows["my_ward"];
+if(mysql_num_rows($ipquery) > 0){
+	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
+}
 
         //print "VN  :$vn<br>";
         //print "HN :$cHn<br>";

@@ -190,15 +190,17 @@ if(isset($_POST['hn'])){
 							<input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />
 						</td>
 					</tr>
+					<!--
 					<tr>
 						<td class="pdx">
 							º≈°“√µ√«®¡–‡√Áßª“°¡¥≈Ÿ° (Pap Smear)
 						</td>
 						<td>
 							<input name="hpv" type="text" class="pdxhead" size="50" id="hpv" value="<?=$arrchk['hpv']?>" />
-							[<span class="help" onclick="help('hpv','ª°µ‘')">ª°µ‘</span><!-- | <span class="help" onclick="help('hpv','º‘¥ª°µ‘')">º‘¥ª°µ‘</span>-->]
+							[<span class="help" onclick="help('hpv','ª°µ‘')">ª°µ‘</span> | <span class="help" onclick="help('hpv','º‘¥ª°µ‘')">º‘¥ª°µ‘</span>]
 						</td>
 					</tr>
+					-->
 				</table>
 				<script type="text/javascript">
 					function help(id_name, status){

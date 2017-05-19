@@ -148,7 +148,7 @@ while($result = mysql_fetch_array($row2)){
     $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
     FROM `resulthead` 
     WHERE `hn` = '".$result['hn']."' 
-    AND ( `clinicalinfo` ='µ√«® ÿ¢¿“æª√–®”ª’60' )";
+    AND ( `clinicalinfo` ='µ√«® ÿ¢¿“æª√–®”ª’60' OR `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–°—π —ß§¡60' ) order by autonumber desc";
 	
     $objQuery11 = mysql_query($strSQL11);
     list($orderdate)=mysql_fetch_array($objQuery11);	
@@ -279,7 +279,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 				FROM resulthead 
 				WHERE profilecode='CBC' 
 				AND hn = '".$result['hn']."' 
-				AND clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60'";
+				AND ( clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60' OR `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–°—π —ß§¡60' ) ";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
 				/////
@@ -411,7 +411,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>§Ë“ª°µ‘</strong></td>
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong> √ÿªº≈</strong></td>
           </tr>
-          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60')";
+          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60' OR `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–°—π —ß§¡60')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -483,12 +483,41 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 				$labmean="(Õ◊ËπÊ)";
 			}
 						
-			if($objResult['flag']=='L' || $objResult['flag']=='H' || $objResult['result']=='1+'|| $objResult['result']=='2+'|| $objResult['result']=='3+'|| $objResult['result']=='4+'|| $objResult['result']=='5+'|| $objResult['result']=='6+'|| $objResult['result']=='7+'|| $objResult['result']=='8+'|| $objResult['result']=='9+'){
-				$objResult["result"]="<strong>".$objResult["result"]."</strong>";
+			if($objResult["labcode"]=="RBCU"){
+			if($result['hn']=="53-6092"){
 				$showresultua="º‘¥ª°µ‘";
 			}else{
-				$objResult["result"]=$objResult["result"];
-				$showresultua="ª°µ‘";
+					$rbculen=strlen($objResult6["result"]);
+					if($rbculen >=5){
+						$rbcu1=substr($objResult6["result"],0,2);
+						$rbcu2=substr($objResult6["result"],3,2);
+					}else if($rbculen ==4){
+						$rbcu1=substr($objResult6["result"],0,1);
+						$rbcu2=substr($objResult6["result"],2,2);						
+					}else{
+						$rbcu1=substr($objResult6["result"],0,1);
+						$rbcu2=substr($objResult6["result"],2,1);
+					}
+					if($objResult6["result"] == "*" || $objResult6["result"] == "**"  || $objResult6["result"] == "--"){
+						$showresultua="*";
+					}else{									
+						if($objResult6["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult6["result"] != "*"){
+							$showresultua="ª°µ‘";
+						}else if($objResult6["result"] == "*"){
+							$showresultua="*";
+						}else{
+							$showresultua="º‘¥ª°µ‘";
+						}
+					}	
+			}
+			}else{
+				if($objResult['flag']=='L' || $objResult['flag']=='H' || $objResult['result']=='1+'|| $objResult['result']=='2+'|| $objResult['result']=='3+'|| $objResult['result']=='4+'|| $objResult['result']=='5+'|| $objResult['result']=='6+'|| $objResult['result']=='7+'|| $objResult['result']=='8+'|| $objResult['result']=='9+'){
+					$objResult["result"]="<strong>".$objResult["result"]."</strong>";
+					$showresultua="º‘¥ª°µ‘";
+				}else{
+					$objResult["result"]=$objResult["result"];
+					$showresultua="ª°µ‘";
+				}
 			}
 			
 			if($objResult["labcode"]=="PROU" || $objResult["labcode"]=="GLUU"){
@@ -496,6 +525,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 			}else{
 				$normalrange=$objResult["normalrange"];
 			}
+
 		?>
           <tr height="25">
             <td><strong><?=$objResult["labcode"];?></strong> <font size="-1"><?=$labmean;?></font></td>
@@ -537,7 +567,7 @@ WHERE (
 	OR profilecode='LDL' 
 ) 
 AND hn = '".$result['hn']."' 
-AND ( clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60' ) 
+AND ( clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60' OR `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–°—π —ß§¡60' ) 
 GROUP BY profilecode 
 ORDER BY `autonumber`";
 $query1 = mysql_query($sql1) or die( mysql_error() );
@@ -778,7 +808,7 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 		SELECT MAX(`autonumber`) AS `autonumber`
 		FROM `resulthead` 
 		WHERE `hn` = '".$result['hn']."' 
-		AND `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–®”ª’60' 
+		AND ( `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–®”ª’60' OR `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–°—π —ß§¡60' ) 
 		AND `testgroupcode` = 'OUT' 
 		GROUP BY `profilecode` 
 
