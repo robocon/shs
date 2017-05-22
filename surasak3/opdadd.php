@@ -36,15 +36,15 @@
 	$rows = Mysql_num_rows($result);
 		if($rows > 0){
 			$arr = Mysql_fetch_assoc($result);
-			echo "
-			<CENTER>
-				เลขบัตรประชาชน ",$_POST["idcard"]," มีผู้ใช้แล้วคือ<BR>
-				HN : ",$arr["hn"]," ",$arr["yot"]," ",$arr["name"]," ",$arr["surname"],"<BR>
-				<A HREF=\"../nindex.htm\">&lt;&lt; ไปเมนู</A>
-			</CENTER>
+			// echo "
+			// <CENTER>
+			// 	เลขบัตรประชาชน ",$_POST["idcard"]," มีผู้ใช้แล้วคือ<BR>
+			// 	HN : ",$arr["hn"]," ",$arr["yot"]," ",$arr["name"]," ",$arr["surname"],"<BR>
+			// 	<A HREF=\"../nindex.htm\">&lt;&lt; ไปเมนู</A>
+			// </CENTER>
 			
-			";
-			exit();
+			// ";
+			// exit();
 		}
 	}
 
@@ -67,9 +67,11 @@
     $nRunno++;
     $vHN=$vPrefix.$nRunno; //HN
 
+    // 
+    include_once 'opdadd_json.php';
+
     // บันทึกเป็น pdf ให้ Dr.Com Sync ข้อมูล
     include_once 'opdadd_pdf.php';
-
 
     //$query ="UPDATE runno SET runno = $nRunno WHERE title='HN'";
    // $result = mysql_query($query) or die("Query failed");
