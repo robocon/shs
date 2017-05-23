@@ -71,7 +71,7 @@
     include_once 'opdadd_json.php';
 
     // บันทึกเป็น pdf ให้ Dr.Com Sync ข้อมูล
-    include_once 'opdadd_pdf.php';
+    // include_once 'opdadd_pdf.php';
 
     //$query ="UPDATE runno SET runno = $nRunno WHERE title='HN'";
    // $result = mysql_query($query) or die("Query failed");

@@ -109,7 +109,9 @@ if(!$result){
 		$result = mysql_query($sqlup) or die("Query failed condxofyear_so2");
 	}
 }
-	
+
+require_once 'opdwork_json.php';
+
 print " แก้ไขข้อมูลเรียบร้อย: <br>";
 print " ปิดหน้าต่างนี้: <br>";
 

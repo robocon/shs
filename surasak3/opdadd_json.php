@@ -18,18 +18,17 @@ define('DS', DIRECTORY_SEPARATOR);
 ]
 */
 
-// scp -P 21 hello.json administrator@192.168.1.4:/d/Syncweb
+// scp -v /root/hello.json administrator@192.168.1.4:/d/Images_Sync/
 
 $json = new Services_JSON();
 $data = array();
 
 foreach ($_POST as $key => $post) {
-    $data[] = '"'.$key.'":"'.urlencode($post).'"';
+    $data[$key] = urlencode($post);
 }
 $data['date'] = date('Y-m-d H:i:s');
 $data['status'] = 'new';
+$data['hn'] = $vHN;
 $output = $json->encode($data);
 
-file_put_contents('syncfile/'.$vHN.'.json', $output);
-
-exit;
+file_put_contents('syncfile/opd/insert/'.$vHN.'.json', $output);
