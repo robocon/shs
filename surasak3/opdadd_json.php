@@ -18,7 +18,7 @@ define('DS', DIRECTORY_SEPARATOR);
 ]
 */
 
-// scp -v /root/hello.json administrator@192.168.1.4:/d/Images_Sync/
+// scp -vr -P 21 /root/hello.json administrator@192.168.1.4:/
 
 $json = new Services_JSON();
 $data = array();

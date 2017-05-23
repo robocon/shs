@@ -6,6 +6,9 @@
         or die("Query failed");
 
     If ($result){
+
+        require_once 'delappoi_json.php';
+
           print "ยกเลิกการนัดเรียบร้อย<br>";
           print "ปิดหน้าต่างนี้";
  	}

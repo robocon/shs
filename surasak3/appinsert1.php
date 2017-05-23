@@ -162,7 +162,7 @@ if (isset($cHn )){
 	$sqltel = "update opcard SET phone='".$_POST['telp']."' where hn='".$cHn."'";
 	$result = mysql_query($sqltel);
 	
-	
+    
     $sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,
 detail,detail2,advice,patho,xray,other,depcode,labextra)
 VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$capptime',
@@ -170,6 +170,27 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
 
     $result = mysql_query($sql);
     $idno = mysql_insert_id();
+
+    $convert_m = array('มกราคม' => '01', 'กุมภาพันธ์' => '02', 'มีนาคม' => '03', 'เมษายน' => '04', 
+    'พฤษภาคม' => '05', 'มิถุนายน' => '06', 'กรกฎาคม' => '07', 'สิงหาคม' => '08', 
+    'กันยายน' => '09', 'ตุลาคม' => '10', 'พฤศจิกายน' => '11', 'ธันวาคม' => '12');
+    
+    // เปลี่ยน format เป็น yyyy-mm-dd จะได้เหมือนกับนัดฉีดยา
+    list($pre_d, $pre_m, $pre_y) = explode(' ', $appd);
+    $appdate_en = $pre_y.'-'.$convert_m[$pre_m].'-'.$pre_d;
+
+    // เก็บข้อมูลนัด
+    $appoint_opd = array(
+        'date' => $Thidate,'officer' => urlencode($sOfficer),'hn' => $cHn,'ptname' => urlencode($cPtname),
+        'age' => urlencode($cAge),'doctor' => urlencode($cdoctor),'appdate' => $appdate_en,'apptime' => urlencode($capptime),
+        'room' => urlencode($room),'detail' => urlencode($detail),'detail2' => urlencode($detail2),'advice' => urlencode($advice),
+        'patho' => urlencode($pathoall),'xray' => urlencode($xrayall),'other' => urlencode($other),'depcode' => urlencode($depcode),
+        'labextra' => urlencode($labm),'id' => $idno
+    );
+
+
+    // เก็บข้อมูลนัดเจาะ lab 
+    $appoint_lab = array();
 
     $count = count($_SESSION["list_code"]);
 
@@ -183,6 +204,8 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
                 $q = "('".$idno."', '".$_SESSION["list_code"][$n]."')  ";
                 array_push($list,$q);
                 
+                $appoint_lab[] = array($_SESSION["list_code"][$n], $idno);
+
             }
         }
             
@@ -234,13 +257,38 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
         break;
     }
     
+    // เก็บข้อมูลนัดผ่าตัด
+    $appoint_or = array();
+
     if($detail=="FU05 ผ่าตัด"){
         $wardor=substr($depcode,4);//ward or
         $timeor= $_POST["time1"].":".$_POST["time2"].":00";//time or
-        $sqlor = "INSERT INTO `set_or` ( `ward` , `hn` , `an` , `ptname` , `age` , `ptright` , `diag` , `surg` , `doctor` , `inhalation_type` , `date_surg` , `time` , `officer` , `comment` ) VALUES ('".$wardor."', '".$cHn."', '', '".$cPtname."', '".$cAge."', '".$cptright."', '".$ordetail1."', '".$ordetail2."', '".$cdoctor."', '".$ordetail3."', '".$date_surg."', '".$timeor."', '".$sOfficer."', '".$ordetail4."')";
+        $sqlor = "INSERT INTO `set_or` ( 
+            `ward` , `hn` , `an` , `ptname` , 
+            `age` , `ptright` , `diag` , `surg` , 
+            `doctor` , `inhalation_type` , `date_surg` , `time` , 
+            `officer` , `comment` 
+        ) VALUES (
+            '".$wardor."', '".$cHn."', '', '".$cPtname."', 
+            '".$cAge."', '".$cptright."', '".$ordetail1."', '".$ordetail2."', 
+            '".$cdoctor."', '".$ordetail3."', '".$date_surg."', '".$timeor."', 
+            '".$sOfficer."', '".$ordetail4."'
+        )";
         mysql_query($sqlor);
+
+        
+        $appoint_or = array('ward' => urlencode($wardor),'hn' => $cHn,'an' => '','ptname' => urlencode($cPtname),
+        'age' => $cAge,'ptright' => urlencode($cptright),'diag' => urlencode($ordetail1),'surg' => urlencode($ordetail2),
+        'doctor' => urlencode($cdoctor),'inhalation_type' => urlencode($ordetail3),'date_surg' => urlencode($date_surg),'time' => urlencode($timeor),
+        'officer' => urlencode($sOfficer),'comment' => urlencode($ordetail4),'idno' => $idno);
     }
 ///////////////////////
+
+
+    // ข้อมูล json สำหรับ dr.com 
+    require_once 'appinsert1_json.php';
+    // ข้อมูล json สำหรับ dr.com 
+
  
     $doctor=substr($doctor,5);
     $depcode=substr($depcode,4);
