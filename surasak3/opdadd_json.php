@@ -17,8 +17,8 @@ define('DS', DIRECTORY_SEPARATOR);
     }
 ]
 */
-
-// scp -vr -P 21 /root/hello.json administrator@192.168.1.4:/
+// -P 21 
+// scp -vr /root/hello.json administrator@192.168.1.4:/hello.json
 
 $json = new Services_JSON();
 $data = array();
