@@ -696,7 +696,20 @@ function searchSuggest(action,str,len) {
 			document.getElementById("list").innerHTML = xmlhttp.responseText;
 		}
 }
-
+</script>
+<?php
+// ถ้าเป็นวอร์ด ICU,รวม,พิเศษ,สูติ ให้แจ้งเตือนการกรอก AN กรณี FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน
+$result1 = mysql_query("SELECT menucode FROM inputm WHERE idname = '".$_SESSION["sIdname"]."' ");
+$arr = mysql_fetch_assoc($result1);
+$an_alert = false;
+if($arr['menucode'] == "ADMICU" 
+	|| $arr['menucode'] == "ADMWF" 
+	|| $arr['menucode'] == "ADMVIP" 
+	|| $arr['menucode'] == "ADMOBG"){
+	$an_alert = true;
+}
+?>
+<script type="text/javascript">
 function checktext(){
 		if(document.getElementById('room').value=="NA"){
 			alert('กรุณาเลือกช่อง\"ยื่นใบนัดที่\"');
@@ -714,6 +727,20 @@ function checktext(){
 			alert('กรุณาเลือกช่อง\"แผนกที่นัด\"');
 			return false;
 		}
+
+		<?php
+		if( $an_alert === true ){ 
+			?>
+			var detail = document.getElementById('detail').value;
+			var detail2 = document.getElementById('detail2').value;
+			if( detail == 'FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน' && detail2 == '' ){
+				alert("กรุณากรอกเลขที่ AN ");
+				return false;
+			}
+			<?php
+		}
+		?>
+
 		return true;
 }
 
@@ -764,6 +791,9 @@ function fncSubmit(strPage)
 	  $app = "select * from applist where status='Y' ";
 	  }
 	  $row = mysql_query($app);
+
+	  $an_check = false;
+
 	  while($result = mysql_fetch_array($row)){
 		  $str="";
 		if($result['applist']=="ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"){
@@ -773,6 +803,7 @@ function fncSubmit(strPage)
 			
 			if($arr[0] == "ADMICU" || $arr[0] == "ADMWF" || $arr[0] == "ADMVIP" || $arr[0] == "ADMOBG"){
 					$str= "  Selected  ";
+					$an_check = true;
 			}
 		}
 ?>
@@ -818,7 +849,13 @@ function fncSubmit(strPage)
       </select>
     </font></td>
     <td width="280"><font face="Angsana New">
- <input type="text" id="detail2" name="detail2" size="20">
+
+	<?php 
+	// ถ้านัดจาก Ward จะแสดงข้อความให้กรอก AN
+	if( $an_check === true ){ echo "เลขที่ AN: "; }
+	?>
+	<input type="text" id="detail2" name="detail2" size="20">
+
  <select size="1" name="detail_list" id="detail_list" style="display:none">
 <option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
 <option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
