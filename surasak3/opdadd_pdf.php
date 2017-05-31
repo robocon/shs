@@ -301,9 +301,9 @@ $pdf->Cell(40, 4, $drugreact, 0, 1);
 // // dump($ptffone);
 // exit;
 
-$dir = dirname(__FILE__);
+// $dir = dirname(__FILE__);
 
-$file = $dir.DS.'syncfile'.DS.$vHN.'.pdf';
+$file = '/mnt/win/register/'.$vHN.'.pdf';
 
 $pdf->Output($file,'F');
 

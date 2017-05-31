@@ -14,4 +14,4 @@ $data['status'] = 'update';
 $data['hn'] = $cHn;
 $output = $json->encode($data);
 
-file_put_contents('syncfile/opd/update/'.$cHn.'.json', $output);
+file_put_contents('/mnt/win/opd/update/'.$cHn.'.json', $output);

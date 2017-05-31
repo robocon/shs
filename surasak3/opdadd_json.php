@@ -34,4 +34,4 @@ $data['status'] = 'new';
 $data['hn'] = $vHN;
 $output = $json->encode($data);
 
-file_put_contents('syncfile/opd/insert/'.$vHN.'.json', $output);
+file_put_contents('/mnt/win/opd/insert/'.$vHN.'.json', $output);
