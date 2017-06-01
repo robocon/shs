@@ -734,7 +734,7 @@ function checktext(){
 			var detail = document.getElementById('detail').value;
 			var detail2 = document.getElementById('detail2').value;
 			if( detail == 'FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน' && detail2 == '' ){
-				alert("กรุณากรอกเลขที่ AN ");
+				alert("กรุณากรอกเลขที่AN/อื่นๆ");
 				return false;
 			}
 			<?php
@@ -852,7 +852,7 @@ function fncSubmit(strPage)
 
 	<?php 
 	// ถ้านัดจาก Ward จะแสดงข้อความให้กรอก AN
-	if( $an_check === true ){ echo "เลขที่ AN: "; }
+	if( $an_check === true ){ echo "เลขที่AN/อื่นๆ : "; }
 	?>
 	<input type="text" id="detail2" name="detail2" size="20">
 
