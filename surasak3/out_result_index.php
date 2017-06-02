@@ -81,4 +81,8 @@ a:active {
     <td>10. โรงเรียนอัสสัมชัญลำปาง</td>
     <td align="center"><a href="out_result.php?part=อัสสัมชัญ60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>11. บริษัทฮิตาชิ</td>
+    <td align="center"><a href="out_result.php?part=ฮิตาชิ60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>

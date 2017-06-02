@@ -11,4 +11,4 @@ $cHn = $item['hn'];
 $appoint_delete = array('id' => $cRow, 'hn' => $cHn, 'apptime' => urlencode('ยกเลิกการนัด'));
 $output = $json->encode($appoint_delete);
 
-file_put_contents('syncfile/appoint/update/'.$cHn.'.json', $output);
+file_put_contents('/mnt/win/appoint/update/'.$cHn.'.json', $output);

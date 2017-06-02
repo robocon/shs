@@ -41,6 +41,9 @@ $companys = array(
 
 	// 3-4 พ.ค. อบจ60
 	'อบจ60' => 'องค์การบริหารส่วนจังหวัดลำปาง',
+
+	// 11 พ.ค. อบจ60
+	'อัสสัมชัญ60' => 'โรงเรียนอัสสัมชัญลำปาง',
 );
 
 $key = $_POST['company'];
@@ -119,7 +122,7 @@ include("connect.inc");
 $showpart = $_POST['company'];
 $sql1 = "SELECT a.*,b.`sex`,b.`dbirth` 
 FROM `out_result_chkup` AS a 
-LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`part` = '$showpart' 
 ORDER BY a.`hn` ASC";
 

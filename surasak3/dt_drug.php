@@ -646,8 +646,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
-	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr, b.drug_lockintern  
+	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr`,`drug_lockintern` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
@@ -679,7 +679,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 ?>
           <tr bgcolor="<?php echo $bgcolor;?>">
             <td width="45" align="center">
-			<?php 
+			<?php 			
 			$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' ";
 	$dgrect = mysql_query($sqlrect);
 	
@@ -687,14 +687,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 				echo "<FONT COLOR=\"RED\" >แพ้ยา</FONT>";
 			}else if($arr["lock_dr"] == 'Y'){?>
               <input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
-			  <?php $i++; $j++;}else{ 
+			  <?php $i++; $j++;
+			}else{ 
 				if($arr["lock_dr"] =="N"){
 					echo "ยาตัดออก";
 				}else{
 					echo $arr["lock_dr"];
 				}
 			} 
-		
 			?>
             </td>
             <td >&nbsp;<?php echo $arr["tradname"];?></td>
@@ -1146,7 +1146,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	exit();
 }
 
-//************************** แสดงรายการยาให้เลือก  ********************************************************
+//************************** แสดงรายการยาให้เลือก Ajax ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
 	if($_GET["search"] == "viat"){
@@ -1155,7 +1155,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
-	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') Order by drugcode ASC";
+	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') Order by drugcode ASC";
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -1170,14 +1170,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		while($arr = Mysql_fetch_assoc($result)){
 				
 				if($arr["lock_dr"] != "Y"){
-					
 					if($arr["lock_dr"] =="N"){
 						$obj = "ยาตัดออก";
 					}else{
 						$obj = $arr["lock_dr"];
 					}
-
 					$alert="";
+				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
+					$obj = "Staff Only";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){
 					$obj = "รหัส:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 18px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่สำนักงานแพทย์ </FONT>";

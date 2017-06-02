@@ -16,4 +16,4 @@ if( count($appoint_or) > 0 ){
 
 $output = $json->encode($appoint_data);
 
-file_put_contents('syncfile/appoint/insert/'.$cHn.'.json', $output);
+file_put_contents('/mnt/win/appoint/insert/'.$cHn.'.json', $output);

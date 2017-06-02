@@ -174,6 +174,7 @@ if(isset($_POST['hn'])){
 							<input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />
 						</td>
 					</tr>
+                    <? if($part!="ฮิตาชิ60"){?>
 					<tr>
 						<td class="pdx">
 							EKG
@@ -184,12 +185,13 @@ if(isset($_POST['hn'])){
 					</tr>
 					<tr>
 						<td class="pdx">
-							ผลการตรวจความหนาแน่นของมวลกระดูก
+							ผลตรวจ BMD
 						</td>
 						<td>
 							<input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />
 						</td>
 					</tr>
+                    <? } ?>
 					<!--
 					<tr>
 						<td class="pdx">

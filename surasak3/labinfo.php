@@ -205,6 +205,10 @@ echo "==>$cDiag---->$aDetail";?>
 <a target="_blank" href="labslip4.1.php">สติ๊กเกอร์LAB ไม่ออกคิว</a>&nbsp;&nbsp;
 <a target="_blank" href="labslip4pdf.php">สติ๊กเกอร์LAB PDF</a>&nbsp;&nbsp;
 <br><br>
+<a target="_blank" href="labslip4cbc_chkup.php">สติ๊กเกอร์ CBC (C-UP)</a>&nbsp;&nbsp;
+<a target="_blank" href="labslip4bc_chkup.php">สติ๊กเกอร์ (C-UP)</a>&nbsp;&nbsp;
+<br><br>
+
 <a target="_blank" href="labslip4out.php">สติ๊กเกอร์ Lab นอก</a>&nbsp;&nbsp;
 <a target="_blank" href="labslip5out.php">สติ๊กเกอร์ Lab นอก NAP</a>
 
