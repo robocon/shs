@@ -134,7 +134,8 @@ if( !empty($hn) ){
 	$showdate = date("d")."/".date("m")."/".(date("Y")+543);
 
 	// เปลี่ยนจาก AND `date_in` = '$chkdate' เป็นตรวจสอบจากสถานะ
-	$str="SELECT `hn`,`ptname`,`ward`,`bed`,`status`,`date_in` 
+	$str="SELECT `hn`,`ptname`,`ward`,`bed`,`status`
+	,`date_in`
 	FROM `booking` 
 	WHERE `hn` = '".$hn."' 
 	AND `status` != 'อนุมัติ' ";
@@ -146,16 +147,28 @@ if( !empty($hn) ){
 		
 		$alert_detail = '';
 		while ( $strrows = mysql_fetch_array($strquery) ) {
-			$alert_detail .= 'จองเตียงวันที่ '.$strrows['date_in'].' ไว้แล้ว \n';
-			$alert_detail .= 'สถานะ : '.$strrows['status'].' \n';
-			$alert_detail .= '\n';
+
+			// ถ้าวันปัจจุบันยังไม่เกินวันที่ทำการจองเตียงจะมีแจ้งเตือน
+			if( $strrows['date_in'] >= $chkdate ){
+
+				$bed_status = ( !empty($strrows['status']) ) ? $strrows['status'] : 'กำลังรอทางหอผู้ป่วยยืนยันสถานะ' ;
+
+				$alert_detail .= 'จองเตียงวันที่ '.$strrows['date_in'].' ไว้แล้ว \n';
+				$alert_detail .= 'สถานะ : '.$bed_status.' \n';
+				$alert_detail .= '\n';
+
+
+			}
+			
 		}
 		
-		?>
-		<script type="text/javascript">
-			alert('!!! ผิดพลาด...ไม่สามารถจองเตียงได้ เนื่องจากคนไข้  HN : <?=$hn;?> \n\n<?=$alert_detail;?>กรุณาตรวจสอบข้อมูลการจองเตียง');
-		</script>
-		<?php
+		if( !empty($alert_detail) ){
+			?>
+			<script type="text/javascript">
+				alert('!!! ผิดพลาด...ไม่สามารถจองเตียงได้ เนื่องจากคนไข้  HN : <?=$hn;?> \n\n<?=$alert_detail;?>กรุณาตรวจสอบข้อมูลการจองเตียง');
+			</script>
+			<?php
+		}
 
 	}else{
 		$sql = "SELECT * FROM opcard WHERE  hn ='".$hn."' ";
@@ -298,15 +311,19 @@ if( !empty($hn) ){
 if($_POST['b2']){
 if($_REQUEST['do']=="save"){
 
-if($_POST['date_in']==""){
-	echo "ไม่ได้กรอกวันที่ Admit กรุณาทำรายการใหม่ค่ะ";
-	exit();
-}
-	$y=date('Y')+543;
-	$m=date('m');
-	$d=date('d');
-	$datetime=$y.'-'.$m.'-'.$d.' '.date('H:i:s');
+	if($_POST['date_in']==""){
+		echo "ไม่ได้กรอกวันที่ Admit กรุณาทำรายการใหม่ค่ะ";
+		exit();
+	}
+
+	// วันที่ปัจจุบัน
+	$y = date('Y')+543;
+	$m = date('m');
+	$d = date('d');
+	$datetime = $y.'-'.$m.'-'.$d.' '.date('H:i:s');
+
 	///////////////////////////////
+	// วันที่จองเตียง
 	list($d, $m, $y) = explode("/",$_POST['date_in']);
 	
 	// ป้องกันเคสที่เจ้าหน้าที่ห้องทะเบียนกรอกข้อมูลเองแล้วใส่ผิด
