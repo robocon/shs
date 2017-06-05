@@ -134,14 +134,22 @@ if( !empty($hn) ){
 	$showdate = date("d")."/".date("m")."/".(date("Y")+543);
 
 	// เปลี่ยนจาก AND `date_in` = '$chkdate' เป็นตรวจสอบจากสถานะ
-	$str="SELECT `hn`,`ptname`,`ward`,`bed`,`status`
-	,`date_in`
+	/*
+	$str="SELECT `hn`,`ptname`,`ward`,`bed`,`status`,`date_in`
 	FROM `booking` 
 	WHERE `hn` = '".$hn."' 
 	AND `status` != 'อนุมัติ' ";
+	*/
+
+	$str = "SELECT `hn`,`ptname`,`ward`,`bed`,`status`,`date_in`
+	FROM `booking` 
+	WHERE `status` != 'อนุมัติ' 
+	AND `hn` = '$hn' 
+	AND CONCAT((SUBSTRING(`date_in`,1,4)-543),SUBSTRING(`date_in`,5,6))  >= DATE_FORMAT(NOW(),'%Y-%m-%d') ";
 
 	$strquery = mysql_query($str);
 	$strnum = mysql_num_rows($strquery);
+	
 	// ถ้ายังไม่อนุมัติ ให้แจ้งเตือน
 	if($strnum > 0){
 		
