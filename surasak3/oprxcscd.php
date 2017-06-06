@@ -374,7 +374,7 @@ $cbaht=baht($xpaid);
 	print "</tr>";
 		print "<tr>";
 //	print "<td width='100%'><font face='Angsana New' size='4'></td>";
-echo "<td width='45%'><font face='Angsana New'  size ='3'><b>‚√§:</b></> ";
+echo "<td width='45%'><font face='Angsana New'  size ='3'><b>‚√§:</b></> $sDiag ";
 if(count($_SESSION['tDiag'])==1){
 	echo $_SESSION['tDiag'][0];
 }

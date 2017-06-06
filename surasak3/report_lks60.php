@@ -122,7 +122,7 @@ include("connect.inc");
 $showpart = $_POST['company'];
 $sql1 = "SELECT a.*,b.`sex`,b.`dbirth` 
 FROM `out_result_chkup` AS a 
-LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
 WHERE a.`part` = '$showpart' 
 ORDER BY a.`hn` ASC";
 
@@ -394,6 +394,11 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 					</tr>
                 <?php 
 				} // End while
+				
+$strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'";
+//echo "===>".$strSQL1;
+$objQuery1 = mysql_query($strSQL1);
+list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);				
 				?>                   
 				<tr height="25">
 					<td colspan="4">&nbsp;</td>
@@ -414,23 +419,18 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
           </tr>
-          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60')";
+    <? 
+	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
-
-$strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'";
-//echo "===>".$strSQL1;
-$objQuery1 = mysql_query($strSQL1);
-list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 
 
 		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) ";
 		//echo $strSQL;
 		$objQuery = mysql_query($strSQL);
-
 		$ua_rows = mysql_num_rows($objQuery);
-
+		
 		while($objResult = mysql_fetch_array($objQuery))
 		{
 			if($objResult["labcode"]=="COLOR"){
@@ -851,7 +851,11 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 								// ค่า normal range ที่เป็นพวก outlab
 								$outlab_range = $normal_outlab[$outlab_code];
 								if($outlab_result=="OL" || $outlab_result=="ol"){
-									$outlab_result="&nbsp;";
+									if($result['hn']=="49-2672"){
+										$outlab_result="ผิดปกติ";
+									}else{
+										$outlab_result="&nbsp;";
+									}
 								}else{
 									$outlab_result;
 								}
@@ -863,9 +867,13 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 								<td>
 									<?php
 									// default เป็นค่าปกติ
-									$result_outlab_txt = 'ปกติ';
-									if( $outlab['flag'] != 'N' ){
-										$result_outlab_txt = 'ผิดปกติ';
+									if($result['hn']=="49-2672"){
+										$result_outlab_txt = 'ผิดปกติ...นัดพบสูตินารีแพทย์';	
+									}else{
+										$result_outlab_txt = 'ปกติ';
+										if( $outlab['flag'] != 'N' ){
+											$result_outlab_txt = 'ผิดปกติ';
+										}
 									}
 									/*
 									if( strpos($outlab_range, '-') !== false ){

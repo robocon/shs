@@ -405,7 +405,7 @@ include("unconnect.inc");
 
 
           print "<form name='f2' method='POST' action='oprxbill.php'>";
-          print "เก็บเงิน&nbsp;&nbsp;&nbsp; <input type='text' name='xpaid' size='10' value=$cPaid>&nbsp;&nbsp;บาท<br>";
+          print "เก็บเงิน :&nbsp;&nbsp;&nbsp; <input type='text' name='xpaid' size='10' value=$cPaid>&nbsp;&nbsp;บาท<br>";
 		   ///////ใช้บัตรเครดิด
 		   print "<INPUT TYPE=\"hidden\" name=\"free_Paid\" value=\"".$free."\">";
          print "<font face='Angsana New' size='3'>ใช้บัตรเครดิด ? &nbsp;&nbsp;&nbsp;";
