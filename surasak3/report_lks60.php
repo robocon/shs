@@ -3,6 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <?php
+
+function dump($str){
+	echo "<pre>";
+	var_dump($str);
+	echo "</pre>";
+}
+
 function calcage($birth){
 
 	$today = getdate();   
@@ -46,8 +53,8 @@ $companys = array(
 	'อัสสัมชัญ60' => 'โรงเรียนอัสสัมชัญลำปาง',
 );
 
-$key = $_POST['company'];
-$title = $companys[$key];
+$company_key = $_POST['company'];
+$title = $companys[$company_key];
 ?>
 <title>พิมพ์ใบตรวจสุขภาพ <?=$title;?></title>
 <style type="text/css">
@@ -120,12 +127,13 @@ include("connect.inc");
 
 // $showpart = 'ลำปางกัลยาณี60';
 $showpart = $_POST['company'];
-$sql1 = "SELECT a.*,b.`sex`,b.`dbirth` 
+$sql1 = "SELECT a.*,b.`sex`,b.`dbirth`,c.`course`
 FROM `out_result_chkup` AS a 
-LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
+LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+LEFT JOIN `opcardchk` AS c ON c.`hn` = a.`hn`
 WHERE a.`part` = '$showpart' 
-ORDER BY a.`hn` ASC";
-
+ORDER BY a.`hn` ASC,c.`course` ASC";
+// dump($sql1);
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
 while($result = mysql_fetch_array($row2)){
@@ -151,10 +159,26 @@ while($result = mysql_fetch_array($row2)){
     $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
     FROM `resulthead` 
     WHERE `hn` = '".$result['hn']."' 
-    AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) order by autonumber desc";
+    AND ( 
+		`clinicalinfo` ='ตรวจสุขภาพประจำปี60' 
+		OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
+		OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60' 
+	) order by autonumber desc";
 	
     $objQuery11 = mysql_query($strSQL11);
-    list($orderdate)=mysql_fetch_array($objQuery11);	
+    list($orderdate)=mysql_fetch_array($objQuery11);
+	
+	// dump($result['course']);
+	// dump($company_key);
+
+	if( $company_key === 'อบจ60' && !empty($result['course']) ){
+		
+		if( $result['course'] !== 'อบจ' ){
+			
+			$title = $result['course'];
+		}
+	}
+
 ?>
 <div id="divprint">
 <table width="100%" border="0">
@@ -282,7 +306,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 				FROM resulthead 
 				WHERE profilecode='CBC' 
 				AND hn = '".$result['hn']."' 
-				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) ";
+				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) ";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
 				/////
@@ -420,7 +444,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
           </tr>
     <? 
-	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60')";
+	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  )";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -570,7 +594,7 @@ WHERE (
 	OR profilecode='LDL' 
 ) 
 AND hn = '".$result['hn']."' 
-AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) 
+AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
 GROUP BY profilecode 
 ORDER BY `autonumber`";
 $query1 = mysql_query($sql1) or die( mysql_error() );
@@ -811,7 +835,7 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 		SELECT MAX(`autonumber`) AS `autonumber`
 		FROM `resulthead` 
 		WHERE `hn` = '".$result['hn']."' 
-		AND ( `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) 
+		AND ( `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
 		AND `testgroupcode` = 'OUT' 
 		GROUP BY `profilecode` 
 

@@ -81,11 +81,13 @@ case 3:
 		SELECT MAX(`row_id`) AS `max_id` 
 		FROM `appoint` 
 		WHERE `appdate` = '".date("d")." ".$month[date("m")]." ".(date("Y")+543)."' 
-		AND `hn` = '".$_POST["id_barcode"]."'
+		AND `hn` = '".$_POST["id_barcode"]."' 
+		AND `apptime` != 'ยกเลิกการนัด'
 	) AS a 
-	LEFT JOIN `appoint` AS b ON b.`row_id` = a.`max_id`";
+	LEFT JOIN `appoint` AS b ON b.`row_id` = a.`max_id` ";
 	$q = mysql_query($sql) or die( mysql_error() );
 	$item = mysql_fetch_assoc($q);
+	var_dump($item);
 	if( !empty($item['max_id']) ){
 		echo "<br>".'ผู้ป่วยมีนัดวันนี้ที่ '.$item['room'].' กรุณาติดต่อที่แผนกดังกล่าว'."<br>";
 		echo '<a href="#" onclick="window.history.back()">คลิกที่นี่เพื่อกลับไปหน้าเก่า</a>';
