@@ -113,7 +113,7 @@ print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-6
 print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname</span></DIV>";
 $nLab21=sprintf("%03d",$nLab2);
 $labno=substr(date("Y"),2,2).date("md").$nLab21."01";
-print "<DIV style='left:30PX;top:55PX;width:200PX;height:10PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+3' style='margin-left:3px;'>1</font></span></DIV>";
+print "<DIV style='left:48PX;top:55PX;width:200PX;height:10PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+3' style='margin-left:3px;'>1</font></span></DIV>";
 //print "<DIV style='left:70PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'>$labno</span></DIV>";
 
 $i=0;

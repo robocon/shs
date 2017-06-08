@@ -216,7 +216,7 @@ DIV {position:absolute; z-index:25;}
     <td align="center">&nbsp;<!--โรงพยาบาลค่ายสุรศักดิ์มนตรี <div id="apDiv2">เล่มที่ &nbsp;&nbsp;<?//=$arrrunno['prefix'];?>/01</div>--></td>
     </tr>
   <tr>
-    <td align="right" >เลขที่&nbsp;&nbsp;&nbsp;<?=$arrrunno['runno'];?>/<?=$arrrunno['prefix'];?><!--เล่มที่ &nbsp;&nbsp;<?//=$arrrunno['prefix'];?>/01&nbsp;&nbsp;&nbsp;<u>ใบรับรองการใช้ยานอกบัญชียาหลักแห่งชาติ</u>-->
+    <td align="right" ><!--เลขที่&nbsp;&nbsp;&nbsp;<?//=$arrrunno['runno'];?>/<?//=$arrrunno['prefix'];?>--><!--เล่มที่ &nbsp;&nbsp;<?//=$arrrunno['prefix'];?>/01&nbsp;&nbsp;&nbsp;<u>ใบรับรองการใช้ยานอกบัญชียาหลักแห่งชาติ</u>-->
       <!--<div id="apDiv">เลขที่&nbsp;&nbsp;<?//=$arrrunno['runno'];?></div>--></td>
     </tr>
   <tr>
