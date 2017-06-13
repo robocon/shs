@@ -132,7 +132,7 @@ FROM `out_result_chkup` AS a
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 LEFT JOIN `opcardchk` AS c ON c.`hn` = a.`hn`
 WHERE a.`part` = '$showpart' 
-ORDER BY a.`hn` ASC,c.`course` ASC";
+ORDER BY c.`course` ASC, a.`hn` ASC";
 // dump($sql1);
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
@@ -168,14 +168,11 @@ while($result = mysql_fetch_array($row2)){
     $objQuery11 = mysql_query($strSQL11);
     list($orderdate)=mysql_fetch_array($objQuery11);
 	
-	// dump($result['course']);
-	// dump($company_key);
-
 	if( $company_key === 'อบจ60' && !empty($result['course']) ){
-		
 		if( $result['course'] !== 'อบจ' ){
-			
 			$title = $result['course'];
+		}else{
+			$title = 'องค์การบริหารส่วนจังหวัดลำปาง';
 		}
 	}
 
@@ -628,45 +625,48 @@ $strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FRO
 //echo $strSQL;
 $objQuery = mysql_query($strSQL);
 while($objResult = mysql_fetch_array($objQuery)){
-			if($objResult["labname"]=="Blood Sugar"){
-				$labmean="(ระดับน้ำตาลในเลือด)";
-			}else if($objResult["labname"]=="BUN"){
-				$labmean="(การทำงานของไต)";
-			}else if($objResult["labname"]=="Creatinine"){
-				$labmean="(การทำงานของไต)";
-			}else if($objResult["labname"]=="Uric acid"){
-				$labmean="(ยูริคในเลือด)";
-			}else if($objResult["labname"]=="Cholesterol"){
-				$labmean="(ไขมันในเลือด)";
-			}else if($objResult["labname"]=="Triglyceride"){
-				$labmean="(ไขมันในเลือด)";
-			}else if($objResult["labname"]=="HDL"){
-				$labmean="(ไขมันดี)";			
-			}else if($objResult["labname"]=="LDL"){
-				$labmean="(ไขมันเลว)";	
-			}else if($objResult["labname"]=="LDLC"){
-				$labmean="(ไขมันเลว)";												
-			}else if($objResult["labname"]=="SGOT(AST)"){
-				$labmean="(การทำงานของตับ)";
-			}else if($objResult["labname"]=="SGPT(ALT)"){
-				$labmean="(การทำงานของตับ)";
-			}else if($objResult["labname"]=="Alkaline phosphatase"){
-				$labmean="(การทำงานของตับ)";
-			}else if($objResult["labname"]=="HBsAg"){
-				$labmean="(เชื้อไวรัสตับอักเสบบี)";
-			}else if($objResult["labname"]=="Anti-HBs"){
-				$labmean="(ภูมิต้านทานไวรัสตับอักเสบบี)";
-			}
-			
-if($objResult["labcode"]=='GLU'){
-	if($objResult["result"]>=74 && $objResult["result"]<=106){
-		$app="ระดับน้ำตาลในเลือดมีค่าอยู่ในเกณฑ์ปกติ";
-	}else if($objResult["result"]>106 && $objResult["result"]<=125){
-		$app="ระดับน้ำตาลในเลือดมีค่าสูงผิดปกติ";
-	}else if($objResult["result"]>125){
-		$app="ระดับน้ำตาลในเลือดมีค่าสูงมากผิดปกติ";	
+
+	if($objResult["labname"]=="Blood Sugar"){
+		$labmean="(ระดับน้ำตาลในเลือด)";
+	}else if($objResult["labname"]=="BUN"){
+		$labmean="(การทำงานของไต)";
+	}else if($objResult["labname"]=="Creatinine"){
+		$labmean="(การทำงานของไต)";
+	}else if($objResult["labname"]=="Uric acid"){
+		$labmean="(ยูริคในเลือด)";
+	}else if($objResult["labname"]=="Cholesterol"){
+		$labmean="(ไขมันในเลือด)";
+	}else if($objResult["labname"]=="Triglyceride"){
+		$labmean="(ไขมันในเลือด)";
+	}else if($objResult["labname"]=="HDL"){
+		$labmean="(ไขมันดี)";			
+	}else if($objResult["labname"]=="LDL"){
+		$labmean="(ไขมันเลว)";	
+	}else if($objResult["labname"]=="LDLC"){
+		$labmean="(ไขมันเลว)";												
+	}else if($objResult["labname"]=="SGOT(AST)"){
+		$labmean="(การทำงานของตับ)";
+	}else if($objResult["labname"]=="SGPT(ALT)"){
+		$labmean="(การทำงานของตับ)";
+	}else if($objResult["labname"]=="Alkaline phosphatase"){
+		$labmean="(การทำงานของตับ)";
+	}else if($objResult["labname"]=="HBsAg"){
+		$labmean="(เชื้อไวรัสตับอักเสบบี)";
+	}else if($objResult["labname"]=="Anti-HBs"){
+		$labmean="(ภูมิต้านทานไวรัสตับอักเสบบี)";
 	}
-}
+			
+	if( $objResult["labcode"]=='GLU'){
+		if( $objResult["result"] >= 74 && $objResult["result"] <= 106 ){
+			$app="ระดับน้ำตาลในเลือดมีค่าอยู่ในเกณฑ์ปกติ";
+		}else if( $objResult["result"] > 106 && $objResult["result"] <= 125 ){
+			$app="ระดับน้ำตาลในเลือดมีค่าสูงผิดปกติ";
+		}else if( $objResult["result"] > 125 ){
+			$app="ระดับน้ำตาลในเลือดมีค่าสูงมากผิดปกติ";	
+		}else if( $objResult["result"] < 74 ){
+			$app="ระดับน้ำตาลในเลือดมีค่าต่ำผิดปกติ";	
+		}
+	}
 
 if($objResult["labcode"]=='BUN'){
 	if($objResult["result"]>18){
@@ -836,7 +836,7 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 		FROM `resulthead` 
 		WHERE `hn` = '".$result['hn']."' 
 		AND ( `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
-		AND `testgroupcode` = 'OUT' 
+		AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' )
 		GROUP BY `profilecode` 
 
 	) AS b 
@@ -866,6 +866,8 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 								
 								if($outlab['labcode']=="38302"){
 									$outlab_code = "<strong>PAP SMEAR</strong> <font size='-1'>(การตรวจหามะเร็งปากมดลูก)</font>";
+								}else if( $outlab['labcode']=="OCCULT" ){
+									$outlab_code = "<strong>FOBT</strong> <font size='-1'>(การตรวจเลือดในอุจจาระ)</font>";
 								}else{
 									$outlab_code = $outlab['labcode'];
 								}

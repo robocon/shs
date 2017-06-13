@@ -23,6 +23,7 @@ $billtime=substr($Thidate,11,5);
 $Thdate=date("d-m-").(date("Y")+543);
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 $hn_now=$_POST['aHn'];
+$money_trust=$_POST['money_trust'];
 //function baht///
 function baht($nArabic){
     $cTarget = Ltrim($nArabic);
@@ -294,9 +295,9 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	if($_POST["credit"] == "สวัสดิการทันตกรรม"){
 
 		if(count($_POST["detail_2"]) > 1)
-			$bill_den = 300;
+			$bill_den = 450;
 		else
-			$bill_den = 300;
+			$bill_den = 450;
 	
 		$field_plus = ", billno, vn, paidcscd";
 		$values_plus = " ,'$billno','".$_SESSION["sVn"]."','".$bill_den."' ";
@@ -396,6 +397,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 		}
 		if($num1>0){
 			$num2 = mysql_num_rows($result);
+			$sRowid=$row->row_id;
 			$sHn=$row->hn;
 			$sAn=$row->an;
 			$sPtright=$row->ptright;
@@ -559,9 +561,17 @@ print "<font face='Angsana New' size='6' COLOR='#FF0033'>&nbsp;&nbsp;&nbsp;&nbsp
 //	print "<td width='100%'><font face='Angsana New' size='4'></td>";
 echo "<td width='45%'><font face='Angsana New'  size ='3'><b>โรค:</b></> ";
 if(count($_SESSION['tDiag'])==1){
-	echo $_SESSION['tDiag'][0];
-}
-elseif(count($_SESSION['tDiag'])>1){
+			$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+			//echo $chksql;
+			$chkquery=mysql_query($chksql);
+			$chknum=mysql_num_rows($chkquery);
+		
+			if($chknum > 0){
+				echo "เชื้อราในสมอง";
+			}else{
+				echo $_SESSION['tDiag'][0];
+			}
+}elseif(count($_SESSION['tDiag'])>1){
 	/*if(in_array("ตรวจวิเคราะห์เพื่อการรักษา",$_SESSION['tDiag'])){
 		echo "<td width='45%'><font face='Angsana New'  size ='3'>โรค: ตรวจวิเคราะห์เพื่อการรักษา</font></td>";
 	}
@@ -572,7 +582,16 @@ elseif(count($_SESSION['tDiag'])>1){
 			$str.=$_SESSION['tDiag'][$p];
 		}
 		//$str.="</font></td>";
-		echo $str ;
+					$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+					//echo $chksql;
+					$chkquery=mysql_query($chksql);
+					$chknum=mysql_num_rows($chkquery);
+		
+					if($chknum > 0){
+						echo "เชื้อราในสมอง";
+					}else{
+						echo $str;
+					}
 	//}
 } echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
 echo "</font></td>";
@@ -641,7 +660,7 @@ echo "</font></td>";
 		for($xx=0;$xx<$count_detail_2;$xx++){
 			print "    <tr>";
 			print "      <td width='30%'><font face='Angsana New' size ='3'>".$_POST["detail_2"][$xx]."</td>"; //เดิม 63
-			print "      <td width='15%' align='right'><font face='Angsana New' size ='3'>300</td>";  //เดิม 28
+			print "      <td width='15%' align='right'><font face='Angsana New' size ='3'>450</td>";  //เดิม 28
 			print "      <td width='10%' align='right'><font face='Angsana New' size ='3'>0</td>";  //เดิม 28
 			print "      <td width='30%'><font face='Angsana New' size ='3'></td>";
 			print "    </tr>";
@@ -650,9 +669,9 @@ echo "</font></td>";
 		print "</div>";
 
 		if($count_detail_2 > 1)
-			$yy = 600;
+			$yy = 450;
 		else 
-			$yy = 300;
+			$yy = 450;
 	
 		$cbaht=baht(number_format($yy,2));
 		$Ppaid = $yy;
@@ -822,7 +841,7 @@ if($_POST["credit"] == "ค้างจ่าย"){
 			
 			$_SESSION["sVn"]=$row->tvn;
 			
-			$sql = "INSERT INTO accrued (date,txdate,hn,depart,detail,price,ptright,vn,status_pay) VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$sHn','$sDepart','$sDetail', '$sNetprice','$sPtright','".$_SESSION["sVn"]."','n');";
+			$sql = "INSERT INTO accrued (date,txdate,hn,depart,detail,price,ptright,vn,status_pay,money_trust) VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$sHn','$sDepart','$sDetail', '$sNetprice','$sPtright','".$_SESSION["sVn"]."','n',$money_trust);";
 			$result = mysql_query($sql) or die("Query failed 662");
 		}
 		else{
@@ -847,7 +866,7 @@ if($_POST["credit"] == "ค้างจ่าย"){
 				$asNetprice=$row->price;
 				$_SESSION["sVn"]=$row->tvn;
 
-				$sql = "INSERT INTO accrued (date,txdate,hn,depart,detail,price,ptright,vn,status_pay) VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$asHn','$sDepart','$sDetail', '$asNetprice','$asPtright','".$_SESSION["sVn"]."','n');";
+				$sql = "INSERT INTO accrued (date,txdate,hn,depart,detail,price,ptright,vn,status_pay,money_trust) VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$asHn','$sDepart','$sDetail', '$asNetprice','$asPtright','".$_SESSION["sVn"]."','n',$money_trust);";
 				$result = mysql_query($sql) or die("Query failed 662");
 			}
 		}
