@@ -65,13 +65,22 @@ if(isset($_POST["save"]) && $_POST["save"] !=""){
 			
 			
 			//////////
-	$sql = "INSERT INTO `smdb`.`refer` (`hn` ,`an` ,`clinic` ,`referh` ,`refertype` ,`dateopd` ,`name` ,`sname` ,`idcard` ,`pttype` ,`diag` ,`ptnote` ,`exrefer` ,`refercar` ,`office` ,`doctor`,`ward`,`trauma_id` ,`age`,`type_wound`,`time_refer`,`problem_refer`, `list_type_patient`, `organ`, `maintenance`,`doc_refer` ,`nurse` ,`assistant_nurse` ,`estimate` ,`no_estimate` ,`cradle` ,`doc_txt` ,`suggestion`, `officer` ,`refer_runno`,	`target_refer` )VALUES ('".$_POST["hn"]."', '', '', '".$_POST["hospital"]."', '2 ส่งต่อ', '".$dateopd."', '".$_POST["firstname"]."', '".$_POST["surname"]."', '".$_POST["idcard"]."', '".$_POST["pttype"]."', '".$_POST["diag"]."', '', '$exrefer', '".$_POST["refercar"]."', '".$_SESSION["sOfficer"]."', '".$_POST["doctor"]."', '".$_POST["ward"]."', '0' ,'".$_POST["age"]."','".$_POST["type_wound"]."','".$_POST["time_refer"]."', '".$_POST["problem_refer"]."','".$_POST["list_type_patient"]."', '".$_POST["organ"]."', '".$_POST["maintenance"]."', '".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["suggestion"]."', '".$_SESSION["sOfficer"]."', '".$sReferno."', '".$_POST["targe"]."');";
-
-	
+	$sql = "INSERT INTO `refer` (`hn` ,`an` ,`clinic` ,`referh` ,`refertype` ,`dateopd` ,`name` ,`sname` ,`idcard` ,`pttype` ,`diag` ,`ptnote` ,`exrefer` ,`refercar` ,`office` ,`doctor`,`ward`,`trauma_id` ,`age`,`type_wound`,`time_refer`,`problem_refer`, `list_type_patient`, `organ`, `maintenance`,`doc_refer` ,`nurse` ,`assistant_nurse` ,`estimate` ,`no_estimate` ,`cradle` ,`doc_txt` ,`suggestion`, `officer` ,`refer_runno`,	`target_refer` ) 
+	VALUES 
+	('".$_POST["hn"]."', '', '', '".$_POST["hospital"]."', '2 ส่งต่อ', '".$dateopd."', '".$_POST["firstname"]."', '".$_POST["surname"]."', '".$_POST["idcard"]."', '".$_POST["pttype"]."', '".$_POST["diag"]."', '', '$exrefer', '".$_POST["refercar"]."', '".$_SESSION["sOfficer"]."', '".$_POST["doctor"]."', '".$_POST["ward"]."', '0' ,'".$_POST["age"]."','".$_POST["type_wound"]."','".$_POST["time_refer"]."', '".$_POST["problem_refer"]."','".$_POST["list_type_patient"]."', '".$_POST["organ"]."', '".$_POST["maintenance"]."', '".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["suggestion"]."', '".$_SESSION["sOfficer"]."', '".$sReferno."', '".$_POST["targe"]."');";
 	$result = Mysql_Query($sql);
-	echo "<BR><BR><CENTER>บันทึกข้อมูลเรียบร้อยแล้ว<BR><A HREF=\"refer.php\">&lt;&lt;กลับ</A><BR><A HREF=\"../nindex.htm\">&lt;&lt;เมนู</A></CENTER>";
-	echo "<meta http-equiv=\"refresh\" content=\"3;URL=refer.php\">";
-exit();
+	?>
+	<br>
+	<br>
+	<center>
+		<p>บันทึกข้อมูลเรียบร้อยแล้ว</p>
+		<p>หมายเลข Refer ผู้ป่วย : <?=$sReferno;?></p>
+		<p><a href="refer.php">&lt;&lt;&nbsp;กลับไปหน้าแบบฟอร์ม</a></p>
+		<p><a href="../nindex.htm">&lt;&lt;&nbsp;กลับไปเมนู</a></p>
+	</center>
+	<?php
+	// echo "<meta http-equiv=\"refresh\" content=\"3;URL=refer.php\">";
+	exit();
 }
 
 function calcage($birth){

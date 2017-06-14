@@ -172,6 +172,7 @@ legend {
 		var yot = document.getElementById('yot');
 		var name = document.getElementById('name');
 		var surname = document.getElementById('surname');
+		var education = document.getElementById('education');
 		var address = document.getElementById('address');
 		var tambol = document.getElementById('tambol');
 		
@@ -187,6 +188,10 @@ legend {
 			msg += "- กรุณาใส่นามสกุล\n";
 			validation = false;
 		}
+		if(education.value == ''){
+			msg += "- กรุณาเลือกระดับการศึกษา\n";
+			validation = false;
+		}		
 		if(address.value == ''){
 			msg += "- กรุณาใส่บ้านเลขที่\n";
 			validation = false;
@@ -277,7 +282,7 @@ function searchSuggest2(str,len,getto1) {
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
 
-<form name="f1" method="POST" action="opdadd.php" Onsubmit="return checkForm();">
+<form name="f1" method="POST" action="opdadd.php">
 
 <fieldset>
     <legend>ข้อมูลประวัติส่วนตัว:</legend>
@@ -290,17 +295,13 @@ function searchSuggest2(str,len,getto1) {
       <tr>
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td> 
-          <input type="text" name="yot" size="5" id="yot" >
-
-        </td>
+          <input type="text" name="yot" size="5" id="yot" >        </td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
-          <input type="text" name="name" size="15" id="name" >
-        </td>
+          <input type="text" name="name" size="15" id="name" >        </td>
         <td align="right" class="fonthead">สกุล:</td>
         <td> 
-          <input type="text" name="surname" size="15" id="surname">
-        </td>
+          <input type="text" name="surname" size="15" id="surname">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -314,12 +315,10 @@ function searchSuggest2(str,len,getto1) {
             <option value="" selected><-เลือก-></option>
             <option value="ช">ชาย</option>
             <option value="ญ">หญิง</option>
-          </select>
-        </td>
+          </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input type="text" name="idcard" size="15" value="-" id="idcard">
-        </td>
+          <input type="text" name="idcard" size="15" value="-" id="idcard">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -354,9 +353,7 @@ function searchSuggest2(str,len,getto1) {
                 <option value="อินเดีย">อินเดีย</option>
                 <option value="เวียดนาม">เวียดนาม</option>
                 <option value="อื่นๆ">อื่นๆ</option>
-                </select>
-  
-              </td>
+                </select>              </td>
         </tr>
       <tr>
         <td align="right" class="fonthead">ศาสนา:</td>
@@ -367,9 +364,7 @@ function searchSuggest2(str,len,getto1) {
                   <option value="คริสต์">คริสต์</option>
                   <option value="อิสลาม">อิสลาม</option>
                   <option value="อื่นๆ">อื่นๆ</option>
-                </select>
-        
-    </td>
+                </select>    </td>
       </tr>
       <tr>
         <td align="right" class="fonthead">สถานภาพ:</td>
@@ -383,9 +378,7 @@ function searchSuggest2(str,len,getto1) {
             <option value="แยก">แยก</option>
             <option value="สมณะ">สมณะ</option>
             <option value="โสด">อื่นๆ</option>
-          </select>
-         
-        </td>
+          </select>        </td>
         <td class="fonthead">อาชีพ:</td>
         <td colspan="3"> 
         <select size="1" name="career" id="career">
@@ -403,10 +396,7 @@ function searchSuggest2(str,len,getto1) {
   <option value="11 ผู้เยาว์ไม่มีอาชีพ"<? if($cCareer=='11 ผู้เยาว์ไม่มีอาชีพ'){ echo "selected";}?>>11 ผู้เยาว์ไม่มีอาชีพ</option>
   <option value="12 นักบวช/งานด้านศาสนา"<? if($cCareer=='12 นักบวช/งานด้านศาสนา'){ echo "selected";}?>>12 นักบวช/งานด้านศาสนา</option>
   <option value="13 อื่นๆ"<? if($cCareer=='13 อื่นๆ'){ echo "selected";}?>>13 อื่นๆ</option>
-          </select>
-          
-          
-        </td>
+          </select>        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -414,8 +404,28 @@ function searchSuggest2(str,len,getto1) {
         <td>&nbsp;</td>
       </tr>
       <tr>
-        
+        <td align="right" class="fonthead">ระดับการศึกษา</td>
+        <td colspan="5"><select name="education" id="education">
+          <option value="">----- กรุณาเลือกข้อมูล -----</option>
+          <?
+        $sql="select * from education order by row_id asc";
+		$query=mysql_query($sql);
+		while($rows=mysql_fetch_array($query)){
+		?>
+          <option value="<?=$rows["edu_code"];?>">
+          <?=$rows["edu_code"]."-".$rows["edu_name"];?>
+          </option>
+          <?
+		}
+		?>
+        </select></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
       </tr>
+      
       <tr>
         <td colspan="6" class="fonthead">หมายเลขประจำตัวทหาร: 
           <input name="mid" type="text" id="mid" value="-" size="15" maxlength="13"></td>
@@ -640,7 +650,7 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
 <table border="0" align="center">
 <tr>
 <td>
-<input type="submit" value="  บันทึก  " name="B1" >&nbsp;&nbsp;
+<input type="submit" value="  บันทึกข้อมูล  " name="B1" Onclick="return checkForm();">&nbsp;&nbsp;
 <a target=_self  href="../nindex.htm"><---ไปเมนู</a></CENTER>
     </td>
     </tr>
