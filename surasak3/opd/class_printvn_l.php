@@ -84,24 +84,78 @@ class printvn{
 		print ".font04 { COLOR:000000;FONT-SIZE:16PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}";
 		print ".font05 { COLOR:000000;FONT-SIZE:16PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:NORMAL;}";
 		print "</STYLE>";
-		
+
+
 		print "<center>";
-		print "<font style='line-height:24px;font-size: 18px;' face='Angsana New' >ใบติด OPDCARD</font><br>";
-		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' >".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."</font><br>";
-		print "<font  style='line-height:24px;font-size: 22px;' face='Angsana New' ><b><u>".$this->toborow."</u></b></font><br>";
-		print "<font style='line-height:24px;font-size: 32px;' face='Angsana New' ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."</font>";
-		print "<font style='line-height:24px;font-size: 18px;' face='Angsana New' ></font><br>";
-		print "<font style='line-height:35px;font-size: 22px;' face='Angsana New' ><b>ชื่อ&nbsp;".$this->ptname."</b></font><br>";
-		print "<font style='line-height:24px;font-size: 28px;' face='Angsana New' ><b>HN: &nbsp;".$this->hn."</b></font><br>";
-		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New' >อายุ &nbsp; ".$this->age."</font><br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 3 >ใบติด OPDCARD<br>";
+			print "<font style='line-height:24px;' face='Angsana New' size= 3 ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."<br>";
+				print "<font  style='line-height:24px;' face='Angsana New' size= 5 ><b><u>".$this->toborow."</b></u><br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 6 ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
+		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><br>";
+		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>ชื่อ&nbsp;".$this->ptname."</b><br>";
+		//print " <BR><IMG SRC='../image_patient/".$this->idcard.".jpg' WIDTH='100' HEIGHT='125' BORDER='0' ALT=''  style='position: absolute;'><BR><BR><BR><BR><BR><BR><BR>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 5 ><b>HN: &nbsp;".$this->hn."</b><br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 3 >อายุ &nbsp; ".$this->age."<br>";
 		if(trim($this->idguard) != "") 
-	    	print "<font style='line-height:24px;font-size: 17px;' face='Angsana New' >".$this->idguard."</font><br>";
-		print "<font style='line-height:24px;font-size: 20px;' face='Angsana New'  ><b>สิทธิ :&nbsp; ".$this->ptright."</b></font><br>";
-		print "<font style='line-height:24px;font-size: 18px;' face='Angsana New' >บัตร ปชช: &nbsp; ".$this->idcard."</font><br>";
-		print "<font style='line-height:24px;font-size: 16px;' face='Angsana New' >หมายเหตุ ".$this->note."</font><BR>";
+	    print "<font style='line-height:24px;' face='Angsana New' size= 2 >".$this->idguard."<br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
+		
+		print "<font style='line-height:24px;' face='Angsana New' size= 2 >บัตร ปชช: &nbsp; ".$this->idcard."<br>";
+	
+	
+		
+		
+		
+		
+		
+		
+//		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
+
+		print "<font  style='line-height:24px;' face='Angsana New' size= 1 >หมายเหตุ ".$this->note."<BR>";
 		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
-		print "<font face='Angsana New' style='font-size: 18px;' >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."</font><BR>";
+print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
+//print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
+//print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 >แพทย์..............................................<BR>";
+//print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u>รับยายื่นที่ช่องหมายเลข 6</u><BR><BR>";
+
+/*
+		print "<font face='Angsana New' size= 3 ><b>XRAY</b><BR>";
+		
+		print "
+			
+			<TABLE style='font-size: 16px' border='0' width='200'>
+			<TR>
+				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
+				<TD>CXR</TD>
+				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
+				<TD colspan='4'>PLAIN KUB</TD>
+			</TR>
+			<TR>
+				<TD colspan='8'><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>L-S SPINE AP, LAT</TD>
+			</TR>
+			<TR>
+				<TD colspan='8'><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ABDOMEN ( SUPINE , UPRIGHT )</TD>
+			</TR>
+			<TR>
+				<TD colspan='8' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>
+					OTHERS:..........................................<BR>................................................................
+				</TD>
+			</TR>
+			<TR>
+				<TD colspan='8' align='right'>
+					แพทย์.................................................&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</TD>
+			</TR>
+			</TABLE>
+		";
+	*/	
+	//	print $this->inrxform;
+	//	print $this->drugreact;
+
 		print "</center>";
+	
+	
+	
 	}
 }
 ?>
