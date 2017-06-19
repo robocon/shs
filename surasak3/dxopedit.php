@@ -847,7 +847,7 @@ CREATE TABLE opday (
 
 print "<body bgcolor='##669999' text='#FFFFFF'>";
 print "<form method='POST' action='dxopok.php' >";
-print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "<p><a href=javascript:history.back(1)><<< BACK</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "แก้ไขได้เฉพาะประเภทบุคคล กลุ่มโรค คลีนิก แพทย์ และรหัสICD10,ICD9CM</p>";
 print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่    $cthidate </p>";
 
@@ -932,7 +932,6 @@ $date=explode(" ",$cthidate);
 $date1=$date[0];
 $sqlxray="select * from xray_stat where date like '$date1%' and hn='$cHn' ";
 $objxray = mysql_query($sqlxray) or die ("Error Query [".$sqlxray."]");
-
 $row_xray=mysql_num_rows($objxray);
 
 if($row_xray){
@@ -953,8 +952,26 @@ if($row_xray){
   <TD align="left" >&nbsp;</TD>
   </TR>
 <?
-  }
-}
+  }  //close while
+}else{  //ถ้าไม่มี order xray ในตาราง xray_stat	
+?>
+<TR>
+  <TD colspan="6" align="center" >การตรวจ Xray</TD>
+  </TR>
+  <?
+	  	$query2 = "SELECT * FROM depart WHERE date like '$date1%' and hn='$cHn' and depart='xray' ";
+		//echo $query2;
+    	$result2 = mysql_query($query2);
+		$arr2=mysql_fetch_array($result2);
+   ?>
+<TR>
+  <TD colspan="2" align="center" >&nbsp;</TD>
+  <TD colspan="2" ><a target="_blank" href="printcscd1.php?sDate=<?=$cthidate?>&nRow_id=<?=$arr2['row_id']?>"><?=$arr2['diag'];?></TD>
+  <TD align="left" >&nbsp;</TD>
+  <TD align="left" >&nbsp;</TD>
+  </TR>
+<?
+}  //close if
 ?>
 <tr>
   <td colspan="6" align="center"><div id="list" style="left:150px; top: 20px; position: absolute;"></div><b><br />
