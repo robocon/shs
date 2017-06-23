@@ -235,6 +235,27 @@ Class refer{
 
 
 
+		Mysql_Query($sql) or die(Mysql_Error());
+		}else{
+			$this->inserttb();
+		}
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

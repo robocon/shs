@@ -115,7 +115,6 @@ if( $action === 'import' ){
 
 	ORDER BY a.`exam_no` ASC 
 
-	LIMIT 500 
 	";
 	// dump($test_depart);
 	// exit;
