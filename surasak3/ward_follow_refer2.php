@@ -252,11 +252,12 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 				case "ER" : $by = "ER"; break;
 			}
 		}
-			
+		$an_detail = !empty($an) ? $an : '0' ;
+
 		echo "<tr align=\"center\" >
-		<td align=\"center\" >".$hn."</td>
-		<td align=\"center\" >".$an."</td>
-		<td >".$name." ".$sname."</td>
+		<td align=\"left\" ><a href=\"refer_detail.php?hn=$hn&an=$an_detail\">$hn</a></td>
+		<td align=\"left\" >".$an."</td>
+		<td align=\"left\">".$name." ".$sname."</td>
 		<td>".$refer_runno."</td>
 		<td >".$dateopd."</td>
 		<td >".$by."</td>

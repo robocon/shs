@@ -18,57 +18,95 @@ include("connect.inc");
 
 if(isset($_POST["save"]) && $_POST["save"] !=""){
 	
+	include_once 'class_file/class_refer.php';
+	$obj = New refer();
+
 	$_POST["day"] = sprintf("%02d",$_POST["day"]);
-
 	$dateopd = $_POST["year"]."-".$_POST["month"]."-".$_POST["day"];
-	$date_cut = substr($dateopd, 0, -9);
+	// $date_cut = substr($dateopd, 0, -9);
 
-	$sql = "Select hn From hn = '".$_POST["hn"]."' AND `dateopd` like  '".$date_cut."%' limit 1";
-	$result = Mysql_Query($sql);
-	$rows = Mysql_num_rows($result);
+	// $sql = "SELECT `hn` 
+	// FROM `hn` = '".$_POST["hn"]."' 
+	// AND `dateopd` LIKE '".$date_cut."%' LIMIT 1";
+	// $result = mysql_query($sql);
+	// $rows = Mysql_num_rows($result);
 
-	if($rows > 0){
-		echo "<BR><BR><CENTER>หมายเลข HN นี้เคยลงข้อมูลแล้ว<BR><A HREF=\"refer.php\">&lt;&lt;กลับ</A><BR><A HREF=\"../nindex.htm\">&lt;&lt;เมนู</A></CENTER>";
-		echo "<meta http-equiv=\"refresh\" content=\"3;URL=refer.php\">";
-		exit();
-	}
+	// if($rows > 0){
+	// 	echo "<BR><BR><CENTER>หมายเลข HN นี้เคยลงข้อมูลแล้ว<BR><A HREF=\"refer.php\">&lt;&lt;กลับ</A><BR><A HREF=\"../nindex.htm\">&lt;&lt;เมนู</A></CENTER>";
+	// 	echo "<meta http-equiv=\"refresh\" content=\"3;URL=refer.php\">";
+	// 	exit();
+	// }
 
 	$dateopd = $dateopd." ".$_POST["time_refer"];
 	//////////////
-			$queryw = "SELECT title,prefix,runno FROM runno WHERE title = 'referno'";
-			$resultw = mysql_query($queryw)
-				or die("Query failed");
-		
-			for ($i = mysql_num_rows($resultw) - 1; $i >= 0; $i--) {
-				if (!mysql_data_seek($resultw, $i)) {
-					echo "Cannot seek to row $i\n";
-					continue;
-				}
-		
-				if(!($row = mysql_fetch_object($resultw)))
-					continue;
-				 }
-		
-			$sReferno=$row->runno;
-			$sPrefix=$row->prefix;
-			$sReferno++;
-			$query12 ="UPDATE runno SET runno = ".$sReferno." WHERE title='referno'";
-			$result12 = mysql_query($query12) or die("Query failed");
-			$sReferno=$sPrefix."".$sReferno;
-			
-			$exrefer = ( isset($_POST["exrefer"]) && !empty($_POST["exrefer"]) ) ? $_POST["exrefer"] : false ;
-			$exrefer2 = ( isset($_POST["exrefer2"]) && !empty($_POST["exrefer2"]) ) ? trim($_POST["exrefer2"]) : '' ;
-			// ถ้า exrefer ไม่ถูกเลือกให้เอาค่าจาก exrefer2
-			if( $exrefer === false ){
-				$exrefer = $exrefer2;
-			}
+	// $queryw = "SELECT title,prefix,runno FROM runno WHERE title = 'referno'";
+	// $resultw = mysql_query($queryw)
+	// 	or die("Query failed");
+
+	// for ($i = mysql_num_rows($resultw) - 1; $i >= 0; $i--) {
+	// 	if (!mysql_data_seek($resultw, $i)) {
+	// 		echo "Cannot seek to row $i\n";
+	// 		continue;
+	// 	}
+
+	// 	if(!($row = mysql_fetch_object($resultw)))
+	// 		continue;
+	// 	 }
+
+	// $sReferno=$row->runno;
+	// $sPrefix=$row->prefix;
+	// $sReferno++;
+	// $query12 ="UPDATE runno SET runno = ".$sReferno." WHERE title='referno'";
+	// $result12 = mysql_query($query12) or die("Query failed");
+	// $sReferno=$sPrefix."".$sReferno;
+	
+	$exrefer = ( isset($_POST["exrefer"]) && !empty($_POST["exrefer"]) ) ? $_POST["exrefer"] : false ;
+	$exrefer2 = ( isset($_POST["exrefer2"]) && !empty($_POST["exrefer2"]) ) ? trim($_POST["exrefer2"]) : '' ;
+	// ถ้า exrefer ไม่ถูกเลือกให้เอาค่าจาก exrefer2
+	if( $exrefer === false ){
+		$exrefer = $exrefer2;
+	}
 			
 			
 			//////////
-	$sql = "INSERT INTO `refer` (`hn` ,`an` ,`clinic` ,`referh` ,`refertype` ,`dateopd` ,`name` ,`sname` ,`idcard` ,`pttype` ,`diag` ,`ptnote` ,`exrefer` ,`refercar` ,`office` ,`doctor`,`ward`,`trauma_id` ,`age`,`type_wound`,`time_refer`,`problem_refer`, `list_type_patient`, `organ`, `maintenance`,`doc_refer` ,`nurse` ,`assistant_nurse` ,`estimate` ,`no_estimate` ,`cradle` ,`doc_txt` ,`suggestion`, `officer` ,`refer_runno`,	`target_refer` ) 
-	VALUES 
-	('".$_POST["hn"]."', '', '', '".$_POST["hospital"]."', '2 ส่งต่อ', '".$dateopd."', '".$_POST["firstname"]."', '".$_POST["surname"]."', '".$_POST["idcard"]."', '".$_POST["pttype"]."', '".$_POST["diag"]."', '', '$exrefer', '".$_POST["refercar"]."', '".$_SESSION["sOfficer"]."', '".$_POST["doctor"]."', '".$_POST["ward"]."', '0' ,'".$_POST["age"]."','".$_POST["type_wound"]."','".$_POST["time_refer"]."', '".$_POST["problem_refer"]."','".$_POST["list_type_patient"]."', '".$_POST["organ"]."', '".$_POST["maintenance"]."', '".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["suggestion"]."', '".$_SESSION["sOfficer"]."', '".$sReferno."', '".$_POST["targe"]."');";
-	$result = Mysql_Query($sql);
+	// $sql = "INSERT INTO `refer` (`hn` ,`an` ,`clinic` ,`referh` ,`refertype` ,`dateopd` ,`name` ,`sname` ,`idcard` ,`pttype` ,`diag` ,`ptnote` ,`exrefer` ,`refercar` ,`office` ,`doctor`,`ward`,`trauma_id` ,`age`,`type_wound`,`time_refer`,`problem_refer`, `list_type_patient`, `organ`, `maintenance`,`doc_refer` ,`nurse` ,`assistant_nurse` ,`estimate` ,`no_estimate` ,`cradle` ,`doc_txt` ,`suggestion`, `officer` ,`refer_runno`,	`target_refer` ) 
+	// VALUES 
+	// ('".$_POST["hn"]."', '', '', '".$_POST["hospital"]."', '2 ส่งต่อ', '".$dateopd."', '".$_POST["firstname"]."', '".$_POST["surname"]."', '".$_POST["idcard"]."', '".$_POST["pttype"]."', '".$_POST["diag"]."', '', '$exrefer', '".$_POST["refercar"]."', '".$_SESSION["sOfficer"]."', '".$_POST["doctor"]."', '".$_POST["ward"]."', '0' ,'".$_POST["age"]."','".$_POST["type_wound"]."','".$_POST["time_refer"]."', '".$_POST["problem_refer"]."','".$_POST["list_type_patient"]."', '".$_POST["organ"]."', '".$_POST["maintenance"]."', '".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["suggestion"]."', '".$_SESSION["sOfficer"]."', '".$sReferno."', '".$_POST["targe"]."');";
+	// $result = Mysql_Query($sql);
+
+	$thidate = ( date("Y") + 543 ).date("-m-d H:i:s"); 
+	$obj->sethn($cHn);
+	// $obj->setan($cAn);
+
+	$obj->setrefertype("2 ส่งต่อ"); /* ไรอะ */
+
+	$obj->setreferh("", $_POST["hospital"]);
+	$obj->setlist_type_patient($_POST["list_type_patient"]);
+	$obj->setorgan($_POST["organ"]);
+	$obj->setmaintenance($_POST["maintenance"]);
+	$obj->setdateopd($thidate);
+	$obj->setpttype($_POST["pttype"]);
+	$obj->setdiag($_POST["diag"]);
+	$obj->setexrefer($exrefer, $exrefer2);
+	$obj->setrefercar($_POST["refercar"]);
+	$obj->setoffice($_SESSION["sOfficer"]);
+	$obj->setdoctor($_POST["doctor"]);
+	// $obj->setward("Ward".$cBedcode);
+	$obj->settype_woud($_POST["list_ptright"]); /* ไม่มี */
+	$obj->settime_refer($_POST["time_refer"]);
+	$obj->setproblem_refer($_POST["problem_refer"]);
+	$obj->set_doc_refer($_POST["doc_refer"]);
+	$obj->set_nurse($_POST["nurse"]);
+	$obj->set_assistant_nurse($_POST["assistant_nurse"]);
+	$obj->set_estimate($_POST["estimate"]);
+	$obj->set_no_estimate($_POST["no_estimate"]);
+	$obj->set_cradle ($_POST["cradle"]);
+	$obj->set_doc_txt($_POST["doc_txt"]);
+	$obj->set_suggestion($_POST["suggestion"]);
+	$obj->set_targe($_POST["targe"]);
+	$obj->inserttb();
+
+
 	?>
 	<br>
 	<br>
