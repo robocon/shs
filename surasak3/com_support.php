@@ -50,7 +50,14 @@ session_start();
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$user1) = mysql_fetch_row ($result)) {
 $n++;
 $head=substr($head,0,40);
-if($_SESSION['smenucode']=='ADM'){$where="<a target=_TOP href=\"com_edit.php?row=$row\">$programmer</a>";} else {$where="$programmer";};
+
+    $programmer = ( !empty($programmer) ) ? $programmer : 'รอการตอบรับ' ;
+
+    if($_SESSION['smenucode']=='ADM'){
+        $where="<a target=_TOP href=\"com_edit.php?row=$row\">$programmer</a>";
+    } else {
+        $where="$programmer";
+    };
 	
             print (" <tr>\n".
 				  "  <td BGCOLOR=#FFCC99 align='center'>$n</td>\n".

@@ -30,12 +30,12 @@ if( $wardExTest > 0 ){
 	
 }
 
-$full_text = $cbedname.$exName."/$cBed1 AN: $can HN: $chn\n";
-$full_text .= "$cptname อายุ: $cage";
-$full_text .= "อายุ: $cage\n";
-$full_text .= "โรค: $cdiagnos\n";
-$full_text .= "สิทธิ: $cptright\n";
-$full_text .= "แพทย์: $cdoctor\n";
+$full_text = $cbedname.$exName."/$cBed1 อายุ:$cage\n";
+$full_text .= "AN:$can HN:$chn\n";
+$full_text .= "$cptname\n";
+$full_text .= "โรค:$cdiagnos\n";
+$full_text .= "สิทธิ:$cptright\n";
+$full_text .= "แพทย์:$cdoctor\n";
 
 $pdf->SetXY(0, 1);
 $pdf->MultiCell(0, 4, $full_text);
