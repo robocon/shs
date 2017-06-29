@@ -40,6 +40,8 @@ Class refer{
  	var  $doc_txt;
  	var  $suggestion;
 	var  $targe;
+
+	var $refer_number;
 	
 	function   set_doc_refer($val){$this->doc_refer = $val;}
 	function   set_nurse($val){$this->nurse = $val;}
@@ -196,6 +198,8 @@ Class refer{
 			$query ="UPDATE runno SET runno = ".$sReferno." WHERE title='referno'";
 			$result = mysql_query($query) or die("Query failed");
 			$sReferno=$sPrefix."".$sReferno;
+
+			$this->refer_number = $sReferno;
 			
 		$sql = "INSERT INTO `smdb`.`refer` (`hn` ,`an` ,`clinic` ,`referh` ,`refertype` ,`dateopd` ,`name` ,`sname` ,`idcard` ,`pttype` ,`diag` ,`ptnote` ,`exrefer` ,`refercar` ,`office` ,`doctor`,`ward`,`trauma_id` ,`age`,`type_wound`,`time_refer`,`problem_refer`, `list_type_patient`, `organ`, `maintenance`,`doc_refer` ,`nurse` ,`assistant_nurse` ,`estimate` ,`no_estimate` ,`cradle` ,`doc_txt` ,`suggestion` ,`officer` ,`refer_runno`,	`target_refer`  )VALUES ('".$this->hn."', '".$this->an."', '".$this->clinic."', '".$this->referh."', '".$this->refertype."', '".$this->dateopd."', '".$this->name."', '".$this->sname."', '".$this->idcard."', '".$this->pttype."', '".$this->diag."', '".$this->ptnote."', '".$this->exrefer."', '".$this->refercar."', '".$this->office."', '".$this->doctor."', '".$this->ward."', '".$this->id."' ,'".$this->age."','".$this->type_wound."','".$this->time_refer."', '".$this->problem_refer."','".$this->list_type_patient."', '".$this->organ."', '".$this->maintenance."', '".$this->doc_refer."', '".$this->nurse."', '".$this->assistant_nurse."', '".$this->estimate."', '".$this->no_estimate."', '".$this->cradle."', '".$this->doc_txt."', '".$this->suggestion."', '".$_SESSION["sOfficer"]."', '".$sReferno."', '".$this->targe."');";
 		Mysql_Query($sql) or die(Mysql_Error());
@@ -222,42 +226,16 @@ Class refer{
 
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-		Mysql_Query($sql) or die(Mysql_Error());
-		}else{
-			$this->inserttb();
-		}
-
-
+	function get_refer_no(){
+		return $this->refer_number;
 	}
 
+		// Mysql_Query($sql) or die(Mysql_Error());
+		// }else{
+		// 	$this->inserttb();
+		// }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	// }
 
 }
-
 ?>

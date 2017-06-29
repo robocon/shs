@@ -229,5 +229,58 @@ $NumRow=mysql_num_rows($objQuery);
 </table>
 </form>
 <? //} ?>
+
+<?php
+$last = date("Y-m-d H:i:s",strtotime("-1 weeks"));
+
+$sql = "SELECT `ptname`,COUNT(`idcard`) AS `row` 
+FROM `internet` 
+WHERE `date_service` >= '$last' 
+AND `date_service` != '' 
+AND `type_net` = '7day' 
+GROUP BY `idcard` 
+ORDER BY COUNT(`idcard`) DESC 
+LIMIT 10";
+$query = mysql_query($sql);
+
+?>
+
+<h3>สถิติผู้มาขอใช้อินเตอร์เน็ตในอาทิตย์ที่ผ่านมา</h3>
+<table>
+	<tr>
+		<td align="center">อินเตอร์เน็ต 7วัน</td>
+		<td align="center">อินเตอร์เน็ต 1วัน</td>
+	</tr>
+	<tr>
+		<td valign="top">
+			<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+				<tr>
+					<td>ชื่อ</td>
+					<td>จำนวนครั้งที่ขอใช้</td>
+				</tr>
+				<?php
+				while( $item = mysql_fetch_assoc($query) ){
+					?>
+					<tr>
+						<td><?=$item['ptname'];?></td>
+						<td align="center"><?=$item['row'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+				
+			</table>
+		</td>
+		<td valign="top">
+			<table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+				<tr>
+					<td>ชื่อ</td>
+					<td>จำนวนครั้งที่ขอใช้</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
 </body>
 </html>

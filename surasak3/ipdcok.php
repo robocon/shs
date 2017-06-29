@@ -13,44 +13,47 @@ $cHn = $_POST["cHn"];
 $dctype_code = substr($_POST["dctype"],0,1);
 
 //เก็บข้อมูลหากคนไข้ Refer
+$get_refer_no = false;
 if($dctype_code == "4"){
 			
-			$obj->sethn($cHn);
-			$obj->setan($cAn);
+	$obj->sethn($cHn);
+	$obj->setan($cAn);
 
-			if($_POST["hospital1"] != ""){
-				$_POST["hospital"] = $_POST["hospital1"];
-			}
+	if($_POST["hospital1"] != ""){
+		$_POST["hospital"] = $_POST["hospital1"];
+	}
 
-			$obj->setreferh("", $_POST["hospital"]);
-			$obj->setlist_type_patient($_POST["list_type_patient"]);
+	$obj->setreferh("", $_POST["hospital"]);
+	$obj->setlist_type_patient($_POST["list_type_patient"]);
 
-			$obj->setorgan($_POST["organ"]);
-			$obj->setmaintenance($_POST["maintenance"]);
+	$obj->setorgan($_POST["organ"]);
+	$obj->setmaintenance($_POST["maintenance"]);
 
-			$obj->setrefertype("2 ส่งต่อ");
-			$obj->setdateopd($thidate);
-			$obj->setpttype($_POST["pttype"]);
-			$obj->setdiag($_POST["diag"]);
-			$obj->setexrefer($_POST["exrefer"],$_POST["exrefer2"]);
-			$obj->setrefercar($_POST["refercar"]);
-			$obj->setoffice($_SESSION["sOfficer"]);
-			$obj->setdoctor($_POST["doctor"]);
-			$obj->setward("Ward".$cBedcode);
-			$obj->settype_woud($_POST["list_ptright"]);
-			$obj->settime_refer($_POST["time_refer"]);
-			$obj->setproblem_refer($_POST["problem_refer"]);
-			$obj->set_doc_refer($_POST["doc_refer"]);
-			$obj->set_nurse($_POST["nurse"]);
-			$obj->set_assistant_nurse($_POST["assistant_nurse"]);
-			$obj->set_estimate($_POST["estimate"]);
-			$obj->set_no_estimate($_POST["no_estimate"]);
-			$obj->set_cradle ($_POST["cradle"]);
-			$obj->set_doc_txt($_POST["doc_txt"]);
-			$obj->set_suggestion($_POST["suggestion"]);
-			$obj->set_targe($_POST["targe"]);
-			$obj->inserttb();
-		}
+	$obj->setrefertype("2 ส่งต่อ");
+	$obj->setdateopd($thidate);
+	$obj->setpttype($_POST["pttype"]);
+	$obj->setdiag($_POST["diag"]);
+	$obj->setexrefer($_POST["exrefer"],$_POST["exrefer2"]);
+	$obj->setrefercar($_POST["refercar"]);
+	$obj->setoffice($_SESSION["sOfficer"]);
+	$obj->setdoctor($_POST["doctor"]);
+	$obj->setward("Ward".$cBedcode);
+	$obj->settype_woud($_POST["list_ptright"]);
+	$obj->settime_refer($_POST["time_refer"]);
+	$obj->setproblem_refer($_POST["problem_refer"]);
+	$obj->set_doc_refer($_POST["doc_refer"]);
+	$obj->set_nurse($_POST["nurse"]);
+	$obj->set_assistant_nurse($_POST["assistant_nurse"]);
+	$obj->set_estimate($_POST["estimate"]);
+	$obj->set_no_estimate($_POST["no_estimate"]);
+	$obj->set_cradle ($_POST["cradle"]);
+	$obj->set_doc_txt($_POST["doc_txt"]);
+	$obj->set_suggestion($_POST["suggestion"]);
+	$obj->set_targe($_POST["targe"]);
+	$obj->inserttb();
+
+	$get_refer_no = $obj->get_refer_no();
+}
 
 /*
 ค่าเตียงสามัญและค่าอาหาร ไม่เกินวันละ 200 บาท
@@ -418,70 +421,81 @@ if($_POST["dctype"] == "8 Dead Autopsy" || $_POST["dctype"] == "9 Dead Non autop
 //             echo mysql_errno() . ": " . mysql_error(). "\n";
 //             echo "<br>";
 ////////////////
-print "AN $cAn<br>";
-print "โรค $cDiag<br>";
-//print "จำนวนวันนอน $days วัน<br>";
-print "ผลการรักษา $txresult<br>";
-print "ประเภทการจำหน่าย $dctype<br>";
-print "แพทย์ $cDoctor<br><br>";
-print "จำหน่ายผู้ป่วยเรียบร้อย <br>";
-print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";
-print "เพื่อ update ข้อมูล";
 
 if( $dctype_code == "4" ){
-   
-  // @todo ทำเป็น redirect มาอีกหน้าหนึ่งแล้วแสดงอีกข้อมูลด้านบนด้วย
-  /**
-  print "ผลการรักษา $txresult<br>";
-print "ประเภทการจำหน่าย $dctype<br>";
-print "แพทย์ $cDoctor<br><br>";
-print "จำหน่ายผู้ป่วยเรียบร้อย <br>";
-print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";
-print "เพื่อ update ข้อมูล";
-  */
+	$time_refer = $_POST['time_refer'];
+	$organ = $_POST['organ'];
+	$maintenance = $_POST[' maintenance'];
+	$list_ptright = $_POST['list_ptright'];
+	$list_type_patient = $_POST['list_type_patient'];
+	$exrefer = $_POST['exrefer'];
+	$exrefer2 = $_POST['exrefer2'];
+	$refer_doctor = $_POST['doctor'];
+	$targe = $_POST['targe'];
+	$pttype = $_POST['pttype'];
+	$refercar = $_POST['refercar'];
+	$hospital = $_POST['hospital'];
+	$hospital1 = $_POST['hospital1'];
+	$problem_refer = $_POST['problem_refer'];
 
-  $time_refer = $_POST['time_refer'];
-  $organ = $_POST['organ'];
-  $maintenance = $_POST[' maintenance'];
-  $list_ptright = $_POST['list_ptright'];
-  $list_type_patient = $_POST['list_type_patient'];
-  $exrefer = $_POST['exrefer'];
-  $exrefer2 = $_POST['exrefer2'];
-  $refer_doctor = $_POST['doctor'];
-  $targe = $_POST['targe'];
-  $pttype = $_POST['pttype'];
-  $refercar = $_POST['refercar'];
-  $hospital = $_POST['hospital'];
-  $hospital1 = $_POST['hospital1'];
-  $problem_refer = $_POST['problem_refer'];
+	$doc_refer = $_POST['doc_refer'];
+	$nurse = $_POST['nurse'];
+	$assistant_nurse = $_POST['assistant_nurse'];
+	$suggestion = $_POST['suggestion'];
+	$estimate = $_POST['estimate'];
+	$no_estimate = $_POST['no_estimate'];
+	$cradle = $_POST['cradle'];
+	$doc_txt = $_POST['doc_txt'];
 
-  $doc_refer = $_POST['doc_refer'];
-  $nurse = $_POST['nurse'];
-  $assistant_nurse = $_POST['assistant_nurse'];
-  $suggestion = $_POST['suggestion'];
-  $estimate = $_POST['estimate'];
-  $no_estimate = $_POST['no_estimate'];
-  $cradle = $_POST['cradle'];
-  $doc_txt = $_POST['doc_txt'];
-
-  $targe_list = array('1' => 'ปรึกษา/วินิจฉัย','2' => 'รักษาแล้วให้ส่งกลับ','3' => 'โอนย้าย');
-  $pttype_list = array('1' => 'Emergency','2' => 'Urgent','3' => 'Non-Urgent');
+	$targe_list = array('1' => 'ปรึกษา/วินิจฉัย','2' => 'รักษาแล้วให้ส่งกลับ','3' => 'โอนย้าย');
+	$pttype_list = array('1' => 'Emergency','2' => 'Urgent','3' => 'Non-Urgent');
   
-  ?>
-  เวลาที่ Refer : <?=$time_refer;?>
-  อาการ : <?=$organ;?>
-  การรักษา : <?=$maintenance;?>
-  สิทธิ์ผู้ป่วย : <?=$list_ptright;?>
-  ประเภทคนไข้ : <?=$list_type_patient;?>
-  สาเหตุการ Refer : <?=$exrefer;?> <?=( !empty($exrefer2) ? 'สาเหตุอื่นๆ : '.$exrefer2 : '' );?>
-  แพทย์ผู้รักษา : <?=$refer_doctor;?>
-  วัตุประสงค์/เพื่อ : <?=$targe_list[$targe];?>
-  ประเภทผู้ป่วย : <?=$pttype_list[$pttype];?>
-  การเดินทาง : <?=$refercar;?>
-  Refer ไปที่โรงพยาบาล : <?=( ($hospital !== '00') ? $hospital : '' );?> <?=( !empty($hospital1) ? 'สถานพยาบาลอื่น : '.$hospital1 : '' );?>
-  ปัญหาการ Refer : <?=$problem_refer;?>
-  สิ่งที่ส่งไปด้วย : 
-  <?php
+	?>
+	<style type="text/css">
+	p{ margin: 0; }
+	@screen print{
+		.hide-txt{ display: none; }
+	}
+	</style>
+	<p><b>เลขที่ Refer</b> : <?=$get_refer_no;?></p>
+	<p><b>เวลาที่ Refer</b> : <?=$time_refer;?></p>
+	<p><b>อาการ</b> : <?=$organ;?></p>
+	<p><b>การรักษา</b> : <?=$maintenance;?></p>
+	<p><b>สิทธิ์ผู้ป่วย</b> : <?=$list_ptright;?></p>
+	<p><b>ประเภทคนไข้</b> : <?=$list_type_patient;?></p>
+	<p><b>สาเหตุการ Refer</b> : <?=$exrefer;?> <?=( !empty($exrefer2) ? '<b>สาเหตุอื่นๆ</b> : '.$exrefer2 : '' );?></p>
+	<p><b>แพทย์ผู้รักษา</b> : <?=$refer_doctor;?></p>
+	<p><b>วัตุประสงค์/เพื่อ</b> : <?=$targe_list[$targe];?></p>
+	<p><b>ประเภทผู้ป่วย</b> : <?=$pttype_list[$pttype];?></p>
+	<p><b>การเดินทาง</b> : <?=$refercar;?></p>
+	<p><b>Refer ไปที่โรงพยาบาล</b> : <?=( ($hospital !== '00') ? $hospital : '' );?> <?=( !empty($hospital1) ? '<b>สถานพยาบาลอื่น</b> : '.$hospital1 : '' );?></p>
+	<p><b>ปัญหาการ Refer</b> : <?=$problem_refer;?></p>
+	<p><b>สิ่งที่ส่งไปด้วย</b> : <?=( !empty($doc_refer) ? 'ใบ Refer' : '' );?> 
+	<?=( !empty($nurse) ? 'พยาบาล' : '' );?> 
+	<?=( !empty($assistant_nurse) ? 'ผู้ช่วย' : '' );?> 
+	<?=( !empty($suggestion) ? 'ให้คำแนะนำ' : '' );?> 
+	<?=( !empty($estimate) ? 'แบบประเมิน รพ.ลำปาง หมายเลข'.$no_estimate : '' );?> 
+	<?=( !empty($cradle) ? 'เปล' : '' );?> 
+	<?=( !empty($doc_txt) ? 'ใบบันทึกข้อความ' : '' );?> </p>
+	<br>
+	<p><a href="#"></a></p>
+	<script type="text/javascript">
+	window.print();
+	</script>
+	<?php
+
+}else{
+	
+	print "AN $cAn<br>";
+	print "โรค $cDiag<br>";
+	//print "จำนวนวันนอน $days วัน<br>";
+	print "ผลการรักษา $txresult<br>";
+	print "ประเภทการจำหน่าย $dctype<br>";
+	print "แพทย์ $cDoctor<br><br>";
+	print "จำหน่ายผู้ป่วยเรียบร้อย <br>";
+	print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";
+	print "เพื่อ update ข้อมูล";
+
 }
 
 include("unconnect.inc");
@@ -514,7 +528,6 @@ session_unregister('cAccno');
 session_unregister("clastcal");
 ////
 ?>
-<script>
-setTimeout("window.opener.location.href='allward.php?code=<?=$rward?>';window.close()",5000);
-
+<script type="text/javascript">
+	setTimeout("window.opener.location.href='allward.php?code=<?=$rward?>';window.close()",5000);
 </script>
