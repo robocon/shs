@@ -1430,7 +1430,7 @@ function view_expenses(an) {
 <?php
 echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn_ds.php\" target=\"_blank\">ยืนยันการทำแผล</A>&nbsp;|&nbsp;<A HREF=\"confirn_inject.php\" target=\"_blank\">ยืนยันการฉีดยา</A>&nbsp;|&nbsp;";
 ?>
-<A HREF="javascript:void(0);" Onclick="if(document.getElementById('menu').style.display=='') document.getElementById('menu').style.display='none'; else document.getElementById('menu').style.display=''; ">รายงานต่างๆ</A> | <A HREF="consent4.php" target="_blank">ใบยินยอม</A> | <A HREF="erstikerdrug.php" target="_blank">stiker ผสมยา</A> | <A HREF="admit_form.php" target="_blank">แจ้งADMIT</A>
+<A HREF="javascript:void(0);" Onclick="if(document.getElementById('menu').style.display=='') document.getElementById('menu').style.display='none'; else document.getElementById('menu').style.display=''; ">รายงานต่างๆ</A> | <A HREF="consent4.php" target="_blank">ใบยินยอม</A> | <A HREF="erstikerdrug.php" target="_blank">stiker ผสมยา</A> | <A HREF="admit_form.php" target="_blank">แจ้งADMIT</A> | <a target=_TOP href="oplist1.php">พิมพ์ใบสั่งยา</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DIV id="menu" bgcolor="#FFFFFF" style="position: absolute; display:none; "><BR>
 <Table bgcolor="#FFFFFF" bordercolor="#0000FF" border="1" cellpadding="2" cellspacing="0">
 	<TR>
@@ -1943,7 +1943,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	<INPUT TYPE="text" id="an" NAME="an" size="6" value="<?php echo $arr["an"];?>" onKeyPress="check_number_an();">&nbsp;<INPUT TYPE="button" value="คิดเงิน ผป. ใน" onClick="if(document.f1.an.value !=''){window.open('eripage.php?get_hn='+document.f1.an.value,'_blank');} else{alert('กรุณากรอก AN');}">&nbsp;
 	<INPUT TYPE="button" value="ค่าใช้จ่าย" onClick="view_expenses(document.f1.an.value);">
 	&nbsp;
-	<button onclick="print_sticker_an(event)">Stick ผป.นอก</button>
+	<button onClick="print_sticker_an(event)">Stick ผป.นอก</button>
 	
 	<script tyep="text/javascript">
 		function print_sticker_an(event){
