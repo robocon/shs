@@ -73,10 +73,10 @@ if(isset($_POST["save"]) && $_POST["save"] !=""){
 	// VALUES 
 	// ('".$_POST["hn"]."', '', '', '".$_POST["hospital"]."', '2 ส่งต่อ', '".$dateopd."', '".$_POST["firstname"]."', '".$_POST["surname"]."', '".$_POST["idcard"]."', '".$_POST["pttype"]."', '".$_POST["diag"]."', '', '$exrefer', '".$_POST["refercar"]."', '".$_SESSION["sOfficer"]."', '".$_POST["doctor"]."', '".$_POST["ward"]."', '0' ,'".$_POST["age"]."','".$_POST["type_wound"]."','".$_POST["time_refer"]."', '".$_POST["problem_refer"]."','".$_POST["list_type_patient"]."', '".$_POST["organ"]."', '".$_POST["maintenance"]."', '".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["suggestion"]."', '".$_SESSION["sOfficer"]."', '".$sReferno."', '".$_POST["targe"]."');";
 	// $result = Mysql_Query($sql);
+	$cHn = $_POST["hn"];
 
 	$thidate = ( date("Y") + 543 ).date("-m-d H:i:s"); 
 	$obj->sethn($cHn);
-	// $obj->setan($cAn);
 
 	$obj->setrefertype("2 ส่งต่อ"); /* ไรอะ */
 
@@ -91,8 +91,10 @@ if(isset($_POST["save"]) && $_POST["save"] !=""){
 	$obj->setrefercar($_POST["refercar"]);
 	$obj->setoffice($_SESSION["sOfficer"]);
 	$obj->setdoctor($_POST["doctor"]);
+
 	// $obj->setward("Ward".$cBedcode);
-	$obj->settype_woud($_POST["list_ptright"]); /* ไม่มี */
+	// $obj->settype_woud($_POST["list_ptright"]); /* ไม่มี */
+
 	$obj->settime_refer($_POST["time_refer"]);
 	$obj->setproblem_refer($_POST["problem_refer"]);
 	$obj->set_doc_refer($_POST["doc_refer"]);
@@ -106,16 +108,42 @@ if(isset($_POST["save"]) && $_POST["save"] !=""){
 	$obj->set_targe($_POST["targe"]);
 	$obj->inserttb();
 
-
+	$get_refer_no = $obj->get_refer_no();
 	?>
-	<br>
-	<br>
-	<center>
+	<style type="text/css">
+	@media print{
+		.no_print{ display: none; }
+	}
+	</style>
+	<p><b>เลขที่ Refer</b> : <?=$get_refer_no;?></p>
+	<p><b>เวลาที่ Refer</b> : <?=$time_refer;?></p>
+	<p><b>อาการ</b> : <?=$organ;?></p>
+	<p><b>การรักษา</b> : <?=$maintenance;?></p>
+	<p><b>สิทธิ์ผู้ป่วย</b> : <?=$list_ptright;?></p>
+	<p><b>ประเภทคนไข้</b> : <?=$list_type_patient;?></p>
+	<p><b>สาเหตุการ Refer</b> : <?=$exrefer;?> <?=( !empty($exrefer2) ? '<b>สาเหตุอื่นๆ</b> : '.$exrefer2 : '' );?></p>
+	<p><b>แพทย์ผู้รักษา</b> : <?=$refer_doctor;?></p>
+	<p><b>วัตุประสงค์/เพื่อ</b> : <?=$targe_list[$targe];?></p>
+	<p><b>ประเภทผู้ป่วย</b> : <?=$pttype_list[$pttype];?></p>
+	<p><b>การเดินทาง</b> : <?=$refercar;?></p>
+	<p><b>Refer ไปที่โรงพยาบาล</b> : <?=( ($hospital !== '00') ? $hospital : '' );?> <?=( !empty($hospital1) ? '<b>สถานพยาบาลอื่น</b> : '.$hospital1 : '' );?></p>
+	<p><b>ปัญหาการ Refer</b> : <?=$problem_refer;?></p>
+	<p><b>สิ่งที่ส่งไปด้วย</b> : <?=( !empty($doc_refer) ? 'ใบ Refer' : '' );?> 
+	<?=( !empty($nurse) ? 'พยาบาล' : '' );?> 
+	<?=( !empty($assistant_nurse) ? 'ผู้ช่วย' : '' );?> 
+	<?=( !empty($suggestion) ? 'ให้คำแนะนำ' : '' );?> 
+	<?=( !empty($estimate) ? 'แบบประเมิน รพ.ลำปาง หมายเลข'.$no_estimate : '' );?> 
+	<?=( !empty($cradle) ? 'เปล' : '' );?> 
+	<?=( !empty($doc_txt) ? 'ใบบันทึกข้อความ' : '' );?> </p>
+
+	<div class="no_print">
 		<p>บันทึกข้อมูลเรียบร้อยแล้ว</p>
-		<p>หมายเลข Refer ผู้ป่วย : <?=$sReferno;?></p>
 		<p><a href="refer.php">&lt;&lt;&nbsp;กลับไปหน้าแบบฟอร์ม</a></p>
 		<p><a href="../nindex.htm">&lt;&lt;&nbsp;กลับไปเมนู</a></p>
-	</center>
+	</div>
+	<script type="text/javascript">
+	window.print();
+	</script>
 	<?php
 	// echo "<meta http-equiv=\"refresh\" content=\"3;URL=refer.php\">";
 	exit();

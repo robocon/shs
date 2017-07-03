@@ -446,6 +446,7 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	<font face="Angsana New"><A HREF="xraylst_dr.php" target="right">ตรวจ(ท่า)</A> : <BR>
 	<div id="cXraydetail">
 	<?php
+	/*
 	$sql = "SELECT `hn` 
 	FROM `opcardchk` 
 	WHERE `hn` = '$cHn' 
@@ -460,6 +461,7 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 		</div>
 		<?php
 	}
+	*/
 	?>
 	</div>
 	<?php

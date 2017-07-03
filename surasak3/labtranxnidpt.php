@@ -89,7 +89,7 @@ if( $rows == 0 && $date_start_th !== false && $date_end_th !== false ){
     $date_end = ( $ey - 543 )."-$em-$ed";
     
     $sql = "UPDATE `medicalcertificate` 
-    SET `date_start` >= '$date_start', `date_end` <= '$date_end' 
+    SET `date_start` = '$date_start', `date_end` = '$date_end' 
     WHERE `number` = '$nRunno' ";
     mysql_query($sql);
     $showStart = 1;
@@ -109,8 +109,8 @@ if($cDoctor2 == "MD058"){
     // ¨Ñ¹·Ãì ¶Ö§ ÈØ¡Ãìà»ç¹¢Í§ ÈÔÃÔ¾Ã ÍÔ¹»Ñ¹
     $subDoctor = (int) $_GET['subDoctor'];
     if( $subDoctor === 1 ){
-        $cDoctor1 = "ÈÔÃÔ¾Ã ÍÔ¹»Ñ¹";
-        $doctorcode = "¾·.». 1272";
+        $cDoctor1 = "ÍÑ¨©ÃÒ ÍÇ´ËéÒÇ";
+        $doctorcode = "¾·.». 2556";
     }else if( $subDoctor === 2 ){
         $cDoctor1 = "¸Ñ­­ÒÇ´Õ ÁÙÅÃÑµ¹ì";
         $doctorcode = "¾·.». 1038";

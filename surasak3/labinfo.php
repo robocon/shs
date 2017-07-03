@@ -232,7 +232,7 @@ if( $cDoctor2 == 'MD037' || $cDoctor2 == 'MD054' || $cDoctor2 == 'MD115' || $cDo
 if( $cDoctor2 == 'MD058' ){
     ?>
     <br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ศิริพร อินปัน</a>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - อัจฉรา อวดห้าว</a>
     <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์</a>
 	<br><br>

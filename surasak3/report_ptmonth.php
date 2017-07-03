@@ -225,7 +225,7 @@ if($_POST["act"]=="show"){
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td align="left"><div style="margin-left:10px;">(ศิริพร&nbsp;&nbsp;&nbsp;&nbsp; อินปัน)</div></td>
+					<td align="left"><div style="margin-left:10px;">(หทัยรัตน์&nbsp;&nbsp;&nbsp;&nbsp;กุลชิงชัย)</div></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>

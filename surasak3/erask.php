@@ -60,21 +60,9 @@ function check(){
 	if(document.getElementById("doctor").selectedIndex=='0'){
 		alert("กรุณาเลือกแพทย์");
 		return false;
+	}else{
+		return true;
 	}
-
-	<?php
-	// บังคับให้เลือกแพทย์แผนจีนเพื่อเก็บสถิติ
-	if( $_SESSION['smenucode'] === 'ADMNID' ){
-	?>
-		if( document.getElementById("dr_nid").value == '' ){
-			alert('กรุณาเลือกแพทย์ฝังเข็ม');
-			return false;
-		}
-	<?php
-	}
-	?>
-
-	return true;
 }
 </script>
 <?php
@@ -163,19 +151,6 @@ $rowpt = mysql_query($sqlpt);
 	
 	<?php
 	}
-
-	// บันทึกเวลาที่ทำการรักษาของนวดแผนไทย
-	if( $_SESSION['smenucode'] === 'ADMPT' ){
-		?>
-		<div>
-			<span style="font-family: 'Angsana New';">ทำการรักษาตั้งแต่</span>&nbsp;
-			<input type="text" name="treat_start" value="<?=date('H:i');?>" style="width: 50px;">น.
-			&nbsp;<span style="font-family: 'Angsana New';">ถึง</span>&nbsp;
-			<input type="text" name="treat_end" value="<?=date('H:i');?>" style="width: 50px;">น.
-		</div>
-		<?php
-	}
-
 	?>
 	<p>
 	<font face="Angsana New">&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
@@ -372,31 +347,7 @@ $rowpt = mysql_query($sqlpt);
 		?>
 		<input type="checkbox" name="selnid16" id="selnid16" value="16" <?php if($rows["groupnid"]=="16"){ echo "checked='checked'";}?> />16</td>
 		</tr>
-		</table>
-		<div>
-			<?php
-			// เคลียร์ค่าทุกครั้งที่เลือกข้อมูลใหม่
-			$_SESSION['dr_nid'] = null;
-			?>
-			<div>แพทย์แผนจีน</div>
-			<div>
-				<?php
-				// เอาไว้เก็บสถิติของแพทย์แผนจีน
-				?>
-				<select name="dr_nid" id="dr_nid"> 
-					<option value="">--เลือก--</option> 
-					<?php 
-					$strstaf = "SELECT * FROM `inputm` where name like '%พจ.%';"; 
-					$query = mysql_query($strstaf) or die ( mysql_error() );  
-					while($nid = mysql_fetch_assoc($query)) { 
-						?>
-						<option value="<?=$nid['name']?>"><?=$nid['name']?></option> 
-						<?php
-					}
-					?>
-				</select>
-			</div>
-		</div>	
+		</table>	
 		<?php
 	}  //close if ADMNID
 	?>	  
