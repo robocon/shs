@@ -53,6 +53,23 @@ If (!empty($vn)){
         $cHn=$row->hn;
         $cPtname=$row->ptname;
         $cPtright=$row->ptright;
+
+        // แจ้งเตือนกรณีสิทธิไม่ตรง
+        $idcard = $row->idcard;
+        if( substr($cPtright,0,3) == 'R01' ){
+            $idcard = trim($idcard);
+            $sql = "SELECT `id` FROM `ssodata` WHERE `id` LIKE '$idcard%' LIMIT 1 ";
+            if(mysql_num_rows(mysql_query($sql)) > 0){
+                $msg = 'ผู้ป่วยมีสิทธิประกันสังคม กรุณาตรวจสอบสิทธิที่แผนกทะเบียน';
+                ?>
+                <script type="text/javascript">
+                    alert("<?=$msg;?>");
+                </script>
+                <?php
+            }
+        }
+
+
         //print "VN  :$vn<br>";
         //print "HN :$cHn<br>";
         //print "$cPtname<br>";

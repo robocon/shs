@@ -63,10 +63,26 @@
 	}
 	
 	$chkdate=(date("Y")+543)."-".date("m-d");
-	$sql1=mysql_query("select ptright,toborow from opday where hn='$cHn' and thidate like '$chkdate%' order by row_id desc limit 1 ");
+	$sql1=mysql_query("select ptright,toborow,idcard from opday where hn='$cHn' and thidate like '$chkdate%' order by row_id desc limit 1 ");
 	//echo $sql1;
-	list($aptright,$atoborow)=mysql_fetch_array($sql1);
+	list($aptright,$atoborow,$idcard)=mysql_fetch_array($sql1);
 	
+	// ตรวจสอบกรณีผู้ป่วยเงินสด แล้วมีการอัพเดทสิทธิประกันสังคม ช่วงเสาร์อาทิตย์
+	$sso_alert = false;
+	if( substr($aptright,0,3) == 'R01' ){
+		$idcard = trim($idcard);
+		$sql = "SELECT `id` FROM `ssodata` WHERE `id` LIKE '$idcard%' LIMIT 1 ";
+		if(mysql_num_rows(mysql_query($sql)) > 0){
+			$msg = 'ผู้ป่วยมีสิทธิประกันสังคม กรุณาตรวจสอบสิทธิที่แผนกทะเบียน';
+			$sso_alert = '<p style="color: red;">!!! '.$msg.' !!!</p>';
+			?>
+			<script type="text/javascript">
+				alert("<?=$msg;?>");
+			</script>
+			<?php
+		}
+	}
+
 ?>		
 <table  border="0">
   <tr>
@@ -99,7 +115,12 @@
     </tr> 
       <tr>
     <td><font color='#0000FF' style='font-size:18px'><?=$aptright;?></font></td>
-    </tr>        
+    </tr>
+	<?php if( $sso_alert !== false ){ ?>
+	<tr>
+    	<td><?=$sso_alert;?></td>
+    </tr>
+	<?php } ?>
  <!--     <tr>
     <td><hr /><font color='#0000FF' style='font-size:16px'>*** กรณี ตรวจสุขภาพทหารประจำปี ให้เลือก***<br />โรค : ตรวจสุขภาพ<br />สิทธิ : R22 ตรวจสุขภาพประจำปีกองทัพบก</font><hr /></td>
     </tr>    -->

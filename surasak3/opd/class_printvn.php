@@ -118,7 +118,7 @@ class printvn{
 		print "<font style='line-height:24px;' face='Angsana New' size= 4 >อายุ &nbsp; ".$this->age."<br>";
 		if(trim($this->idguard) != "") 
 	    print "<font style='line-height:24px;' face='Angsana New' size= 4 >".$this->idguard."<br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 5 ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 4 ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
 		
 		print "<font style='line-height:24px;' face='Angsana New' size= 4 >บัตร ปชช: &nbsp; ".$this->idcard."<br>";
 		
