@@ -19,7 +19,7 @@ color: #FFF;
 <div id="no_print" >
 <span class="font1">
 <font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน (อัพเดท. 29-11-59)</strong></font></span><span class="font1"><font face="Angsana New" size="+2"><strong></strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน Dataset_V4.1_25591017 (อัพเดทโปรแกรม เมื่อวันที่ 29-11-59)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
 <span class="font1">
 <font face="Angsana New">
 <form action="<? $_SERVER['PHP_SELF']?>" method="post">
@@ -1350,7 +1350,6 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 			$hn14=$rows14["hn"];  //  HN ใช้ตัวแปรนี้นำเข้าข้อมูล
 			$an14=$rows14["an"]; //  AN ใช้ตัวแปรนี้นำเข้าข้อมูล
 			$depart =$rows14["depart"];
-			$qty="1";
 			
 			$subdate = substr($rows14["txdate"],0,10);
 			list($yy14,$mm14,$dd14) =explode("-",$subdate);
@@ -1377,33 +1376,33 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 				$type="13";
 			}
 			
-			$sqladp="select code, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart'";
+			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
 			//echo $sqladp."<br>";
 			$queryadp=mysql_query($sqladp);
-			list($code,$rate,$total, $totcopay)=mysql_fetch_array($queryadp);
-			
-			
-			$db14 = dbase_open($dbname14, 2);
-				if ($db14) {
-					dbase_add_record($db14, array(
-						$hn14,
-						$an14,
-						$dateopd,  //วันที่รับบริการ
-						$type,  // ประเภท หมวดหมู่
-						$code,  //รหัสตาม สปสช.
-						$qty,  //หน่วยนับ เป็นจำนวนครั้งหรือจำนวนเม็ด
-						$rate,  //ราคารวม
-						$newseq,  //รหัสการบริการที่กำหนดโดยโปรแกรมต้องไม่ซ้ำกัน
-						$cagcode, 	
-						$dose, 																															
-						$catype,
-						$serialno,
-						$totcopay,  //ราคาเบิกไม่ได้
-						$use_status,
-						$total, //ราคาเบิกได้
-						$QTYDAY));     
-					dbase_close($db14);
-				}  //if db
+			while(list($code14, $qty14, $rate14, $total14, $totcopay14)=mysql_fetch_array($queryadp)){
+
+				$db14 = dbase_open($dbname14, 2);
+					if ($db14) {
+						dbase_add_record($db14, array(
+							$hn14,
+							$an14,
+							$dateopd,  //วันที่รับบริการ
+							$type,  // ประเภท หมวดหมู่
+							$code14,  //รหัสตาม สปสช.
+							$qty14,  //หน่วยนับ เป็นจำนวนครั้งหรือจำนวนเม็ด
+							$rate14,  //ราคารวม
+							$newseq,  //รหัสการบริการที่กำหนดโดยโปรแกรมต้องไม่ซ้ำกัน
+							$cagcode, 	
+							$dose, 																															
+							$catype,
+							$serialno,
+							$totcopay14,  //ราคาเบิกไม่ได้
+							$use_status,
+							$total14, //ราคาเบิกได้
+							$QTYDAY));     
+						dbase_close($db14);
+					}  //if db
+				}  //close while
 		}
 //---------------End Dataset14---------------//
 

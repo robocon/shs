@@ -19,7 +19,7 @@ color: #FFF;
 <div id="no_print" >
 <span class="font1">
 <font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้ในประจำเดือน (อัพเดท. 29-11-59)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<strong>ส่งออกข้อมูล DBF คนไข้ในประจำเดือน Dataset_V4.1_25591017 (อัพเดทโปรแกรม เมื่อวันที่ 29-11-59)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
 <?php
 
 $mon = isset($_POST['mon']) ? $_POST['mon'] : '' ;
@@ -1976,7 +1976,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 					$newdatedc=$datedc[0]-543;
 					$newdcdate =$newdatedc.$datedc[1].$datedc[2];  //  DATE_SERV ใช้ตัวแปรนี้นำเข้าข้อมูล							
 					
-				$sqlip ="select *,sum(amount) as sumamount from  ipacc  where an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code";
+				$sqlip ="select *, sum(price) as sumprice, sum(amount) as sumamount from  ipacc  where an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code";
 				//echo $sqlip."==>";
 				$resultip = mysql_query($sqlip) or die("Query ipcard failed16");
 					$i=0;
@@ -1995,7 +1995,8 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 						$drugname16=$rowsip["detail"];	
 						$amount16=$rowsip["sumamount"];  //  AMOUNT จำนวนยา
 						$saleprice=$rowsip["price"]/$rowsip["amount"];	//ราคา/หน่วย	DRUGPRICE(ราคาขาย)
-						$total=$saleprice*$rowsip["sumamount"];  //TOTAL ราคารวมยาที่ขอเบิก
+						//$total=$saleprice*$rowsip["sumamount"];  //TOTAL ราคารวมยาที่ขอเบิก เก่า
+						$total=$rowsip["sumprice"];  //TOTAL ราคารวมยาที่ขอเบิก ใหม่
 						
 						//echo "===>รหัสยา:$drugcode16 ===>ราคา:$saleprice==>จำนวน:$amount16 ===>รวม:$total<br>";
 					

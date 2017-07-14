@@ -211,7 +211,14 @@ $inList = test_diag($cDiag, $diag_list);
 
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
 
-if($cDoctor2 == 'MD037' || $cDoctor2 == 'MD054' || $cDoctor2 === 'MD089' || $cDoctor2 == 'MD115' || $cDoctor2 == 'MD128' || $cDoctor2 == 'MD129'){
+if( $cDoctor2 == 'MD037' 
+OR $cDoctor2 == 'MD054' 
+OR $cDoctor2 == 'MD089' 
+OR $cDoctor2 == 'MD115' 
+OR $cDoctor2 == 'MD128' 
+OR $cDoctor2 == 'MD129' 
+OR $cDoctor2 == 'MD116' 
+OR $cDoctor2 == 'MD130' ){
 
     if( $inList === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';

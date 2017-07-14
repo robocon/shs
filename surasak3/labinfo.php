@@ -215,7 +215,15 @@ echo "==>$cDiag---->$aDetail";?>
 <?php
 $cDoctor2 = substr($cDoctor,0,5);
 // หมอปฏิพงค์(MD037) หมอการุณย์(MD054) หมอกัณต์กัลยา(MD130) กับหมอฝังเข็มอีก 2 คน
-if( $cDoctor2 == 'MD037' || $cDoctor2 == 'MD054' || $cDoctor2 == 'MD115' || $cDoctor2 == 'MD128' || $cDoctor2 == 'MD129' || $cDoctor2 == 'MD130' OR $cDoctor2 == 'MD116' ){
+// MD115 คือแพทย์แผนจีน
+if( $cDoctor2 == 'MD037' 
+OR $cDoctor2 == 'MD054' 
+OR $cDoctor2 == 'MD115' 
+OR $cDoctor2 == 'MD128' 
+OR $cDoctor2 == 'MD129' 
+OR $cDoctor2 == 'MD130' 
+OR $cDoctor2 == 'MD116' 
+OR $cDoctor2 == 'MD130'){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>

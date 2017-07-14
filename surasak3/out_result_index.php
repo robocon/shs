@@ -85,4 +85,40 @@ a:active {
     <td>11. บริษัทฮิตาชิ</td>
     <td align="center"><a href="out_result.php?part=ฮิตาชิ60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>12. สำนักงานจังหวัดลำปาง</td>
+    <td align="center"><a href="out_result.php?part=สำนักงานจังหวัดลำปาง60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>13. อินทราเซรามิค</td>
+    <td align="center"><a href="out_result.php?part=อินทราเซรามิค60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>14. มูลนิธิคืนช้างสู่ธรรมชาติ</td>
+    <td align="center"><a href="out_result.php?part=มูลนิธิคืนช้างสู่ธรรมชาติ60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>15. กรมทางหลวง</td>
+    <td align="center"><a href="out_result.php?part=กรมทางหลวง60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>16. เขลางค์ทรานสปอร์ต</td>
+    <td align="center"><a href="out_result.php?part=เขลางค์ทรานสปอร์ต60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>17. นอร์ทเทิร์น</td>
+    <td align="center"><a href="out_result.php?part=นอร์ทเทิร์น60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>18. พูลผลการเกษตร</td>
+    <td align="center"><a href="out_result.php?part=พูลผลการเกษตร60" target="_blank">บันทึก</a></td>
+  </tr> 
+  <tr>
+    <td>19. ราชมงคลลำปาง</td>
+    <td align="center"><a href="out_result.php?part=ราชมงคลลำปาง60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>20. สรีรัตน์เหมืองแร่</td>
+    <td align="center"><a href="out_result.php?part=สรีรัตน์เหมืองแร่60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>
