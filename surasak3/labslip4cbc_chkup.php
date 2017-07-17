@@ -31,7 +31,7 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 /*$nLab2=$row->runno;
 $nLab2--;*/
 
-$query2 = "SELECT * FROM depart WHERE hn = '$cHn' order by row_id desc";
+$query2 = "SELECT * FROM depart WHERE hn = '$cHn' order by row_id desc limit 1";
 $result2 = mysql_query($query2);
 $row2 = mysql_fetch_array($result2);
 $nLab2 = $row2['lab'];
