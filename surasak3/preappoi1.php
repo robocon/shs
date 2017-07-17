@@ -398,7 +398,7 @@ function show_carlendar(xxx){
 }
 function checkForm(){
 	
-	if(document.f1.doctor.value == ""){
+	if(document.f1.doctor.value == "" || document.f1.doctor.value == " กรุณาเลือกแพทย์" ){
 		alert("กรุณาเลือกเพทย์ครับ\n*หากไม่มีในรายชื่อให้เลือกรายการ 'MD022 (ไม่ทราบแพทย์)' ");
 		return false;
 	}else{

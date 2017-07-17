@@ -108,9 +108,17 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 exit();
 }
 
-// หมอเลอปรัชให้ล็อกนัดเอาไว้
-$user_code = isset($_SESSION['smenucode']) ? $_SESSION['smenucode'] : false ;
-if( !isset($_GET['action']) ){
+
+$officer_name = trim($_SESSION['sOfficer']);
+$doctor_name = trim($_POST['doctor']);
+
+// @todo ยังไม่ได้ทำ lock นัดแบบแบ่งเช้า-บ่าย
+
+// ถ้าเป็น POST ที่ส่งมาจาก preappoi1.php ให้เข้าเงื่อนไขในการตรวจสอบ
+// ถ้าคนคีย์ไม่ใช่พี่หล้าสูติ หรือ หมอที่นัดไม่ใช่หมอขชล ก็ยังให้เข้าเงื่อนไขตรวจสอบอยู่
+if( empty($_GET['action']) 
+&& ( $doctor_name != 'MD101 ขชล รวมทรัพย์' OR $officer_name != 'กัลยรัตน์ ตาคำ' ) ){
+	
 	global $doctor;
 	$doctor = trim($doctor);
 	if($doctor == 'กรุณาเลือกแพทย์'){
@@ -121,7 +129,8 @@ if( !isset($_GET['action']) ){
 		exit;
 	}
 
-	// นับจำนวนที่นัดผู้ป่วย
+	// จำกัดจำนวนผู้ป่วยนัด
+	// ใน dr_limit_appoint จะเป็น lock นัดแบบตายตัว
 	// รองรับ format ว.xxxxx และ MDxxxxx
 	$testmatch = preg_match('/(\d+|MD\d+)/', $_POST['doctor'], $match);
 	$code = $match['1'];
@@ -157,7 +166,6 @@ if( !isset($_GET['action']) ){
 	FROM `dr_limit_appoint` 
 	WHERE `dr_name` LIKE '$code%' 
 	AND `date` = '$check_date'";
-	//echo $sql;
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
 	$dr_limit = (int) $item['user_row'];
@@ -171,8 +179,8 @@ if( !isset($_GET['action']) ){
 	}
 	// จำกัดจำนวนผู้ป่วยนัด
 	
-	$manual_lock = false;
 	// กรณีนอกเหนือจาก dr_limit_appoint
+	$manual_lock = false;
 	if( $_POST['doctor'] == 'MD100 เชาวรินทร์ อุ่นเครือ' OR $_POST['doctor'] == 'HD เชาวรินทร์ (ว.37533)' ){
 		$dr_name = 'แพทย์ เชาวรินทร์ อุ่นเครือ';
 		$manual_lock = array(
@@ -226,24 +234,24 @@ if( !isset($_GET['action']) ){
 		if( $limit <= $appoint_rows ){
 			
 			if( $limit === 0 ){
-				echo $dr_name.' ไม่ออกตรวจวันที่ '.$date_appoint.' กรุณาเลือกวันตรวจใหม่';
-				exit;
+				echo $dr_name.' ไม่ออกตรวจวันที่ '.$date_appoint;
 			}else{
-				echo $dr_name.' ได้จำกัดนัดในวันที่ '.$date_appoint.' ไว้ที่ '.$manual_lock[$date_appoint].'คน กรุณาเลือกวันตรวจใหม่';
-				exit;
+				echo $dr_name.' ได้จำกัดนัดในวันที่ '.$date_appoint.' ไว้ที่ '.$manual_lock[$date_appoint].'คน';
 			}
+			echo ' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
+			exit;
 		}
 	}
 
 	// หมอเชาวไม่รับตรวจทุกวันศุกร์ ไม่มีกำหนดว่าจะยกเลิกเมื่อไร
-	if( $_POST['doctor'] == 'MD100 เชาวรินทร์ อุ่นเครือ' OR $_POST['doctor'] == 'HD เชาวรินทร์ (ว.37533)' ){
+	if( $doctor_name == 'MD100 เชาวรินทร์ อุ่นเครือ' OR $doctor_name == 'HD เชาวรินทร์ (ว.37533)' ){
 		if( $check_date == 5 && $dr_cheaw_test > "2017-04-01" ){
-			echo 'แพทย์ เชาวรินทร์ อุ่นเครือ งดนัดผู้ป่วยทุกวันศุกร์ กรุณาเลือกวันตรวจใหม่';
+			echo 'แพทย์ เชาวรินทร์ อุ่นเครือ งดนัดผู้ป่วยทุกวันศุกร์ กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
 			exit;
 		}
 	}
-	
 
+	
 }
 
 ?>
