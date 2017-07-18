@@ -116,14 +116,14 @@ if($_GET["action"] == "carlendar"){
 	// ผู้ใช้งานปัจจุบันเป็นแพทย์เวชปฏิบัติหรือไม่ ถ้าใช่ค่อย query statement ออกมา
 	$dr_intern = false;
 	if( in_array($mdcode, $md_checklists) === true ){
-		$dr_intern = true;
+		$test_intern = $dr_intern = true;
 
 		$thai_date = $thmonthname[($month - 1)]." ".($year + 543);
 
-		// 
+		// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
 		$sql = "SELECT `appdate`, COUNT(DISTINCT `hn`) AS `total`, SUBSTRING(`appdate`, 1, 2) AS `code` 
 		FROM `appoint` 
-		WHERE `appdate` LIKE '% $thai_date' 
+		WHERE `appdate` LIKE '%$thai_date' 
 		AND `doctor` IN($dr_name) 
 		AND `apptime` != 'ยกเลิกการนัด' 
 		GROUP BY `appdate` 
@@ -256,7 +256,7 @@ if($_GET["action"] == "carlendar"){
 
 		}
 	}
-
+	
 	//แสดงแถวที่เหลือของปฏิทิน (หลังจากแสดงแถวแรกไปแล้ว จะเหลืออย่างมาก 5 แถว)
 	for ($j=0; $j<=4; $j++) { // แสดง4อาทิตย์
 		if ($iday <= $Lday) {
@@ -270,10 +270,12 @@ if($_GET["action"] == "carlendar"){
 
 						// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
 						$dr_intern_txt = '';
+						$intern_total = 0;
 						if( $dr_intern === true ){
 							if( !empty($total_items[$key]) ){
 								$item = $total_items[$key];
-								$dr_intern_txt = '<br>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)';
+								$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
+								$intern_total = $item['total'];
 							}
 						}
 
@@ -304,6 +306,20 @@ if($_GET["action"] == "carlendar"){
 							}else{
 								$class = "norm";
 							}
+
+							$intern_limit = '';
+							$data_count = '';
+							if( $dr_intern === true ){
+								// วันจันทร์จะลิมิตไว้ที่ 40 วันอื่นๆที่ 50
+								$max_limit = 50;
+								if( $i == 1 ){
+									// $max_limit = 40;
+								}
+
+								$intern_limit = 'intern-limit="'.$intern_limit.'"';
+								$data_count = 'data-count="'.$intern_total.'"';
+							}
+
 							echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
 								if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 									echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
@@ -321,8 +337,21 @@ if($_GET["action"] == "carlendar"){
 								$class = "norm";
 							}
 
+							$intern_limit = '';
+							$data_count = '';
+							if( $dr_intern === true ){
+								// วันจันทร์จะลิมิตไว้ที่ 40 วันอื่นๆที่ 50
+								$max_limit = 50;
+								if( $i == 1 ){
+									$max_limit = 40;
+								}
+
+								$intern_limit = 'intern-limit="'.$max_limit.'"';
+								$data_count = 'data-count="'.$intern_total.'"';
+							}
+							
 							echo "<td width=\"50\" align=\"center\" class=\"".$class."\">
-								<A class=\"".$class."\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
+								<A class=\"".$class." countnum\" $data_count $intern_limit href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
 							if(!empty($list_app[$key]["sum"])){
 								echo "<BR>
 								(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app[$key]["detail"]."<br>".$list_vac[$key]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app[$key]["sum"]."</A>)";
@@ -351,6 +380,15 @@ if($_GET["action"] == "carlendar"){
 	echo "</table></TD>
 	</TR>
 	</TABLE>";
+	if( $dr_intern === true ){
+		?>
+		<div>
+			<span style="color: #FF0000; font-size: 18px;">(สีแดง) ผู้ป่วยนัดของตัวเอง</span>
+			<br>
+			<span style="color: #008000; font-size: 18px;">(สีเขียว) ผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด</span>
+		</div>
+		<?php
+	}
 	exit();
 
 }
@@ -918,7 +956,6 @@ $_SESSION["list_yprice"] = array() ;
 <head>
 <title><?php echo $_SESSION["dt_doctor"];?> ออกใบนัดผู้ป่วย</title>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 24px;
@@ -934,18 +971,24 @@ body,td,th {
 	width:300px;
 	top:260px;
 
-	
-
 	layer-background-color:#000000;
 	font:bold 16px ms sans serif;
 	line-height:20px;
 
 }
-
--->
 </style>
 </head>
 <body>
+
+<?php 
+$sIdname = $_SESSION['sIdname'];
+$sql = "SELECT b.`position` 
+FROM `inputm` AS a 
+LEFT JOIN `doctor` AS b ON b.`doctorcode` = a.`codedoctor`
+WHERE a.`idname` = '$sIdname'";
+$q = mysql_query($sql);
+$dr = mysql_fetch_assoc($q);
+?>
 
 <SCRIPT LANGUAGE="JavaScript">
 	
@@ -1257,12 +1300,34 @@ function listb(number){
 }
 
 function frmchk(){
-	if(document.getElementById('date_appoint').value==""){
-		alert("กรุณาเลือกวันที่ด้วยคะ");
-		return false;
-	}else{
-		return true;
+
+	var test_return = true;
+	<?php
+	if( $dr['position'] == '99 เวชปฏิบัติ' ){
+		?>
+		var test_checker = document.getElementById('intern_checker').value;
+		var test_limit = document.getElementById('intern_limiter').value;
+		<?php
 	}
+	?>
+
+	if(document.getElementById('date_appoint').value==""){
+		alert("กรุณาเลือกวันที่ด้วยค่ะ");
+		test_return = false;
+	}
+	
+	<?php
+	if( $dr['position'] == '99 เวชปฏิบัติ' ){
+		?>
+		if( test_checker >= test_limit ){
+			alert("ผู้ป่วยนัดเกินจำนวน "+test_limit+"ท่านต่อวัน สำหรับแพทย์เวชปฏิบัติ\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา");
+			test_return = false;
+		}
+		<?php
+	}
+	?>
+
+	return test_return;
 }
 </SCRIPT>
 
@@ -1287,7 +1352,6 @@ $style_menu="2";
 include("dt_patient.php");
 
 ?>
-
 <TABLE width="100%" border="0">
 <TR   valign="top">
 	<TD width="45%">
@@ -1491,14 +1555,24 @@ include("dt_patient.php");
 	<TD colspan="2"><Div id="list1" style="left:100PX;top:350PX;position:absolute;"></Div><input type="text" name="other" id="other" size="30" onKeyPress="searchOther1(this.value,3);"></TD>
 </TR>
 <TR>
-	<TD align="center" colspan="3"><INPUT TYPE="submit" value="ตกลง"></TD>
+	<TD align="center" colspan="3">
+		<INPUT TYPE="submit" value="ตกลง">
+		<?php
+		if( $dr['position'] == '99 เวชปฏิบัติ' ){
+			?>
+			<input type="hidden" id="intern_checker" class="intern_checker" value="0" >
+			<input type="hidden" id="intern_limiter" class="intern_limiter" value="0" >
+			<?php
+		}
+		?>
+	</TD>
 </TR>
 </TABLE>
 </TD>
 </TR>
 </TABLE>
 </FORM>
-
+	
 	</TD>
 	
 	<TD width="55%"  valign="top">
@@ -1506,7 +1580,30 @@ include("dt_patient.php");
 	</TD>
 </TR>
 </TABLE>
+<?php
+if( $dr['position'] == '99 เวชปฏิบัติ' ){
+?>
 
+	<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript">
+	jQuery.noConflict();
+	(function( $ ) {
+	$(function() {
+		// ตอนคลิกที่ตัวปฏิทิน
+		$(document).on('click', '.countnum', function(){
+			
+			var intern_count = $(this).attr('data-count');
+			var intern_limit = $(this).attr('intern-limit');
+			$('.intern_checker').val(intern_count);
+			$('.intern_limiter').val(intern_limit);
+
+		});
+	});
+	})(jQuery);
+	</script>
+<?php
+}
+?>
 <div id="slidemenubar2" style="left:-260" onMouseover="pull()" onMouseout="draw()">
 </div>
 <script language="JavaScript1.2">
