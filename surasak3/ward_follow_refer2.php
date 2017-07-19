@@ -226,12 +226,13 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 
 	echo "<table width=\"100%\"  border=\"0\" bordercolor=\"#3366FF\">
 	<tr>
-	<td ><table width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"3\"  bordercolor=\"#000000\" style=\"border-collapse:collapse\">
+	<td >
+	<table width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"0\" cellpadding=\"3\"  bordercolor=\"#000000\" style=\"border-collapse:collapse\">
 	<tr align=\"center\" bgcolor=\"#a6bcff\" class=\"font_title\">
+	<td >เลข refer</td>
 	<td >HN</td>
 	<td >AN</td>
 	<td >ชื่อ - สกุล</td>
-	<td >เลข refer</td>
 	<td >วันที่ refer</td>
 	<td >refer จาก</td>
 	<td >ผู้บันทึก</td>
@@ -254,11 +255,13 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 		}
 		$an_detail = !empty($an) ? $an : '0' ;
 
+		$refer_id = urlencode($refer_runno);
+
 		echo "<tr align=\"center\" >
-		<td align=\"left\" ><a href=\"refer_detail.php?hn=$hn&an=$an_detail\">$hn</a></td>
+		<td><a href=\"ward_follow_refer_detail.php?id=$refer_id\" target=\"_blank\">".$refer_runno."</a></td>
+		<td align=\"left\" >$hn</td>
 		<td align=\"left\" >".$an."</td>
 		<td align=\"left\">".$name." ".$sname."</td>
-		<td>".$refer_runno."</td>
 		<td >".$dateopd."</td>
 		<td >".$by."</td>
 		<td >".$officer."</td>";
