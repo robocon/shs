@@ -2,20 +2,15 @@
 session_start();
 $sOfficer=$_SESSION["sOfficer"];
 
-include("class_file/class_refer.php");
-$obj = New refer();
-
 include("connect.inc");
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
 
-$cAn = $_POST["cAn"];
-$cHn = $_POST["cHn"];
-$dctype_code = substr($_POST["dctype"],0,1);
-
 //เก็บข้อมูลหากคนไข้ Refer
-$get_refer_no = false;
-if($dctype_code == "4"){
+if(substr($_POST["dctype"],0,2) == "4"){
 			
+	include("class_file/class_refer.php");
+	$obj = New refer;
+
 	$obj->sethn($cHn);
 	$obj->setan($cAn);
 
@@ -51,8 +46,6 @@ if($dctype_code == "4"){
 	$obj->set_suggestion($_POST["suggestion"]);
 	$obj->set_targe($_POST["targe"]);
 	$obj->inserttb();
-
-	$get_refer_no = $obj->get_refer_no();
 }
 
 /*
@@ -421,113 +414,47 @@ if($_POST["dctype"] == "8 Dead Autopsy" || $_POST["dctype"] == "9 Dead Non autop
 //             echo mysql_errno() . ": " . mysql_error(). "\n";
 //             echo "<br>";
 ////////////////
+          print "AN $cAn<br>";
+          print "โรค $cDiag<br>";
+          //print "จำนวนวันนอน $days วัน<br>";
+          print "ผลการรักษา $txresult<br>";
+          print "ประเภทการจำหน่าย $dctype<br>";
+          print "แพทย์ $cDoctor<br><br>";
+          print "จำหน่ายผู้ป่วยเรียบร้อย <br>";
+          print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";
+          print "เพื่อ update ข้อมูล";
 
-if( $dctype_code == "4" ){
-	$time_refer = $_POST['time_refer'];
-	$organ = $_POST['organ'];
-	$maintenance = $_POST[' maintenance'];
-	$list_ptright = $_POST['list_ptright'];
-	$list_type_patient = $_POST['list_type_patient'];
-	$exrefer = $_POST['exrefer'];
-	$exrefer2 = $_POST['exrefer2'];
-	$refer_doctor = $_POST['doctor'];
-	$targe = $_POST['targe'];
-	$pttype = $_POST['pttype'];
-	$refercar = $_POST['refercar'];
-	$hospital = $_POST['hospital'];
-	$hospital1 = $_POST['hospital1'];
-	$problem_refer = $_POST['problem_refer'];
-
-	$doc_refer = $_POST['doc_refer'];
-	$nurse = $_POST['nurse'];
-	$assistant_nurse = $_POST['assistant_nurse'];
-	$suggestion = $_POST['suggestion'];
-	$estimate = $_POST['estimate'];
-	$no_estimate = $_POST['no_estimate'];
-	$cradle = $_POST['cradle'];
-	$doc_txt = $_POST['doc_txt'];
-
-	$targe_list = array('1' => 'ปรึกษา/วินิจฉัย','2' => 'รักษาแล้วให้ส่งกลับ','3' => 'โอนย้าย');
-	$pttype_list = array('1' => 'Emergency','2' => 'Urgent','3' => 'Non-Urgent');
-  
-	?>
-	<style type="text/css">
-	p{ margin: 0; }
-	@screen print{
-		.hide-txt{ display: none; }
-	}
-	</style>
-	<p><b>เลขที่ Refer</b> : <?=$get_refer_no;?></p>
-	<p><b>เวลาที่ Refer</b> : <?=$time_refer;?></p>
-	<p><b>อาการ</b> : <?=$organ;?></p>
-	<p><b>การรักษา</b> : <?=$maintenance;?></p>
-	<p><b>สิทธิ์ผู้ป่วย</b> : <?=$list_ptright;?></p>
-	<p><b>ประเภทคนไข้</b> : <?=$list_type_patient;?></p>
-	<p><b>สาเหตุการ Refer</b> : <?=$exrefer;?> <?=( !empty($exrefer2) ? '<b>สาเหตุอื่นๆ</b> : '.$exrefer2 : '' );?></p>
-	<p><b>แพทย์ผู้รักษา</b> : <?=$refer_doctor;?></p>
-	<p><b>วัตุประสงค์/เพื่อ</b> : <?=$targe_list[$targe];?></p>
-	<p><b>ประเภทผู้ป่วย</b> : <?=$pttype_list[$pttype];?></p>
-	<p><b>การเดินทาง</b> : <?=$refercar;?></p>
-	<p><b>Refer ไปที่โรงพยาบาล</b> : <?=( ($hospital !== '00') ? $hospital : '' );?> <?=( !empty($hospital1) ? '<b>สถานพยาบาลอื่น</b> : '.$hospital1 : '' );?></p>
-	<p><b>ปัญหาการ Refer</b> : <?=$problem_refer;?></p>
-	<p><b>สิ่งที่ส่งไปด้วย</b> : <?=( !empty($doc_refer) ? 'ใบ Refer' : '' );?> 
-	<?=( !empty($nurse) ? 'พยาบาล' : '' );?> 
-	<?=( !empty($assistant_nurse) ? 'ผู้ช่วย' : '' );?> 
-	<?=( !empty($suggestion) ? 'ให้คำแนะนำ' : '' );?> 
-	<?=( !empty($estimate) ? 'แบบประเมิน รพ.ลำปาง หมายเลข'.$no_estimate : '' );?> 
-	<?=( !empty($cradle) ? 'เปล' : '' );?> 
-	<?=( !empty($doc_txt) ? 'ใบบันทึกข้อความ' : '' );?> </p>
-	<br>
-	<p><a href="#"></a></p>
-	<script type="text/javascript">
-	window.print();
-	</script>
-	<?php
-
-}else{
-	
-	print "AN $cAn<br>";
-	print "โรค $cDiag<br>";
-	//print "จำนวนวันนอน $days วัน<br>";
-	print "ผลการรักษา $txresult<br>";
-	print "ประเภทการจำหน่าย $dctype<br>";
-	print "แพทย์ $cDoctor<br><br>";
-	print "จำหน่ายผู้ป่วยเรียบร้อย <br>";
-	print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";
-	print "เพื่อ update ข้อมูล";
-
-}
-
-include("unconnect.inc");
+  include("unconnect.inc");
 //  session_destroy();
-//ipdata.php
-session_unregister("x");
-session_unregister("aDgcode");
-session_unregister("aTrade");
-session_unregister("aPrice");
-session_unregister("aPart");
-session_unregister("aAmount");
-session_unregister("aMoney");
-session_unregister("Netprice");
-session_unregister('cDate');
+    //ipdata.php
+    session_unregister("x");
+    session_unregister("aDgcode");
+    session_unregister("aTrade");
+    session_unregister("aPrice");
+    session_unregister("aPart");
+    session_unregister("aAmount");
+    session_unregister("aMoney");
+    session_unregister("Netprice");
+    session_unregister('cDate');
 //    session_unregister('cBedcode');
 //    session_unregister('Bedcode');
-session_unregister('cBed');
-session_unregister('cPtname');
-session_unregister('cAge');
-session_unregister('cPtright');
-session_unregister('cDoctor');
-session_unregister('cHn');
-session_unregister('cAn');
-session_unregister('cDiag');
-session_unregister('cBedpri');
-session_unregister('cChgdate');
-session_unregister('cChgwdate');
-session_unregister('cBedname');
-session_unregister('cAccno');
-session_unregister("clastcal");
+    session_unregister('cBed');
+    session_unregister('cPtname');
+    session_unregister('cAge');
+    session_unregister('cPtright');
+    session_unregister('cDoctor');
+    session_unregister('cHn');
+    session_unregister('cAn');
+    session_unregister('cDiag');
+    session_unregister('cBedpri');
+    session_unregister('cChgdate');
+	  session_unregister('cChgwdate');
+    session_unregister('cBedname');
+    session_unregister('cAccno');
+	session_unregister("clastcal");
 ////
 ?>
-<script type="text/javascript">
-	setTimeout("window.opener.location.href='allward.php?code=<?=$rward?>';window.close()",5000);
+  <script>
+setTimeout("window.opener.location.href='allward.php?code=<?=$rward?>';window.close()",5000);
+//setTimeout("window.close()",1000);
 </script>
