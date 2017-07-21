@@ -48,7 +48,7 @@ if( !empty($trauma_id) ){
 <style type="text/css">
 *{
     font-family: 'TH SarabunPSK';
-    font-size: 12pt;
+    font-size: 14pt;
 }
 p{
     margin: 0;

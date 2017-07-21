@@ -126,7 +126,7 @@ $list_ptright["P12"] = "กท.44";
   <input type="text" name="hn" size="12"></p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="submit" value="      ตกลง      " >
-  &nbsp;&nbsp;&nbsp;<input type="button"  value="เรียกดูข้อมูล"  Onclick="window.open('ward_follow_refer2.php?search_hn='+document.f1.hn.value+'&view=opd')">
+  &nbsp;&nbsp;&nbsp;<input type="button"  value="เรียกดูข้อมูลและพิมพ์ข้อมูลย้อนหลัง"  Onclick="window.open('ward_follow_refer2.php?search_hn='+document.f1.hn.value+'&view=opd')">
   </p>
   <INPUT TYPE="hidden" name="submit_search" value="1">
 </form>
