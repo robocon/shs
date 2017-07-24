@@ -61,17 +61,22 @@ window.print()
 </script>-->
 <?php
 include("connect.inc");	
-$showpart = 'ฮิตาชิ60';
-$sql1 = "SELECT a.*,b.`sex`,b.`dbirth`,c.`course`
-FROM `out_result_chkup` AS a 
-LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-LEFT JOIN `opcardchk` AS c ON c.`hn` = a.`hn`
-WHERE a.`part` = '$showpart' 
-ORDER BY c.`course` ASC, a.`hn` ASC";
-// dump($sql1);
+$showpart = 'เขลางค์ทรานสปอร์ต60';
+$sql1 = "SELECT *
+FROM `opcardchk`
+WHERE `part` = '$showpart' and active='y'
+ORDER BY `row` ASC";
+//echo $sql1;
 $row2 = mysql_query($sql1) or die ( mysql_error() );
-
 while($result = mysql_fetch_array($row2)){
+
+$sql2="select * from out_result_chkup where hn='".$result["HN"]."' and part='".$result["part"]."'";
+//echo $sql2;
+$query2=mysql_query($sql2);
+$result2=mysql_fetch_array($query2);
+
+
+
 
 	$sex = $result['sex'];
 /*	list($y,$m,$d)=explode("-",$rexult['dbirth']);
@@ -87,30 +92,24 @@ while($result = mysql_fetch_array($row2)){
 	// $row = mysql_query($select)or die ("Query Fail line 91");
 	// $result = mysql_fetch_array($row);
 	
-	$ht = $result['height']/100;
-	$bmi=number_format($result['weight'] /($ht*$ht),2);
+	$ht = $result2['height']/100;
+	$bmi=number_format($result2['weight'] /($ht*$ht),2);
 	
 	
     $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
     FROM `resulthead` 
-    WHERE `hn` = '".$result['hn']."' 
+    WHERE `hn` = '".$result['HN']."' 
     AND ( 
 		`clinicalinfo` ='ตรวจสุขภาพประจำปี60' 
 		OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
-		OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60' 
 	) order by autonumber desc";
 	
     $objQuery11 = mysql_query($strSQL11);
     list($orderdate)=mysql_fetch_array($objQuery11);
 	
-	if( $company_key === 'อบจ60' && !empty($result['course']) ){
-		if( $result['course'] !== 'อบจ' ){
-			$title = $result['course'];
-		}else{
-			$title = 'องค์การบริหารส่วนจังหวัดลำปาง';
-		}
-	}
-
+	list($d,$m,$y)=explode("-",$orderdate);
+	$yy=$y+543;
+	$showdate="$d/$m/$yy";
 ?>
 <div id="divprint">
 <table width="100%" border="0">
@@ -118,15 +117,15 @@ while($result = mysql_fetch_array($row2)){
     <td colspan="2"><table width="100%">
       <tr>
         <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="87" height="83" /></td>
-        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพ <br><?=$title;?></strong></td>
+        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี 2560<br>หน่วยงาน : <?=$showpart;?></strong></td>
         <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 หรือ 093-2744550</strong></td>
+        <td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
         <td align="center" valign="top" class="texthead">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">วันที่ตรวจ <?=$orderdate;?></span></span></span></td>
+        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">วันที่ตรวจ <?=$showdate;?></span></span></span></td>
         <td align="center" valign="top" class="text3">&nbsp;</td>
       </tr>
     </table></td>
@@ -138,11 +137,11 @@ while($result = mysql_fetch_array($row2)){
             <tr>
               <td><table width="100%"   class="text1" >
                 <tr>
-                  <td  valign="top" class="text2"><strong class="text" style="font-size:22px"><u>ข้อมูลผู้ตรวจสุขภาพ</u> </strong><strong>HN : <?=$result['hn']?> 
-                    &nbsp;&nbsp;</strong><strong>ชื่อ :</strong> <span style="font-size:24px"><strong>
-                    <?=$result['ptname']?>
-                    </strong>&nbsp;&nbsp;&nbsp;<strong>อายุ :</strong> <span style="font-size:24px"><strong>
-                    <?=$hbd;?>
+                  <td  valign="top" class="text2"><strong class="text" style="font-size:22px"><u>ข้อมูลผู้ตรวจสุขภาพ</u> </strong><strong>HN : <?=$result['HN']?> 
+                    &nbsp;&nbsp;</strong><strong>ชื่อ : </strong> <span style="font-size:24px"><strong>
+                    <?=$result['name']." ".$result['surname']?>
+                    </strong>&nbsp;&nbsp;&nbsp;<strong>อายุ : </strong> <span style="font-size:24px"><strong>
+                    <?=$result['agey'];?> ปี
                     </strong></span></td>
                 </tr>
               </table></td>
@@ -154,17 +153,17 @@ while($result = mysql_fetch_array($row2)){
             <tr>
               <td><table width="100%"  class="text1" >
                 <tr>
-                  <td width="588" valign="top"><strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;<span class="text3"><strong>น้ำหนัก: </strong>
-                      <?=$result['weight']?>
-&nbsp;กก. <strong>ส่วนสูง:</strong>
-<?=$result['height']?>
-&nbsp;ซม. <strong>BMI: </strong> <u>
-<?=$bmi?> </u><strong>BP:<u>
-<?=$result['bp1']?>
+                  <td width="588" valign="top"><strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;<span class="text3"><strong>น้ำหนัก : </strong>
+                      <?=$result2['weight']?>
+&nbsp;กก. <strong>ส่วนสูง : </strong>
+<?=$result2['height']?>
+&nbsp;ซม. <strong>BMI : </strong> <u>
+<?=$bmi?> </u><strong>BP : <u>
+<?=$result2['bp1']?>
 /
-<?=$result['bp2']?>
-mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
-                      <?=$result['p']?> ครั้ง/นาที
+<?=$result2['bp2']?>
+mmHg. </u></strong><span class="text3"><strong>P : </strong> <u>
+                      <?=$result2['p']?> ครั้ง/นาที
 
                   </u></span></span></td>
                 </tr>
@@ -187,14 +186,14 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 
 				 ?>
 				/ ความดันโลหิต  
-                  <? if($result["bp1"] =='NO'){
+                  <? if($result2["bp1"] =='NO'){
 							echo "ไม่ได้รับการตรวจ";
-						}else  if($result["bp1"] <= 130){
+						}else  if($result2["bp1"] <= 130){
 							echo "ปกติ";
 						}else{
-							if($result["bp1"] >=140){ 
+							if($result2["bp1"] >=140){ 
 								echo "มีความดันโลหิตสูง ควรออกกำลังอย่างสม่ำเสมอ ลดอาหารที่มีรสเค็ม หรือพบแพทย์เพื่อทำการรักษา";
-							}else if($result["bp1"] >=131 && $result["bp1"] < 140){
+							}else if($result2["bp1"] >=131 && $result2["bp1"] < 140){
 								echo "เริ่มมีภาวะความดันโลหิตสูง ควรออกกำลังกายอย่างสม่ำเสมอ";
 							}
 						}
@@ -237,8 +236,8 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
 				$sql="SELECT * 
 				FROM resulthead 
 				WHERE profilecode='CBC' 
-				AND hn = '".$result['hn']."' 
-				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) ";
+				AND hn = '".$result['HN']."' 
+				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
 				/////
@@ -376,7 +375,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
           </tr>
     <? 
-	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['hn']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  )";
+	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -386,7 +385,9 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 		//echo $strSQL;
 		$objQuery = mysql_query($strSQL);
 		$ua_rows = mysql_num_rows($objQuery);
-		
+		if($ua_rows < 1){
+		  echo "<tr height='150'><td align='center' colspan='4' style='font-size: 20px; font-weight: bold;'>ไม่ได้รับการตรวจ</td></tr>";	
+		}else{
 		while($objResult = mysql_fetch_array($objQuery))
 		{
 			if($objResult["labcode"]=="COLOR"){
@@ -492,7 +493,7 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
 			<td align="center"><?=$normalrange;?></td>
 			<td width="3%" align="center"><?=$showresultua;?></td>
           </tr>
-          <? } ?>
+		<? }} ?>
           <tr height="25">
             <td>&nbsp;</td>
             <td align="center">&nbsp;</td>
@@ -524,11 +525,12 @@ WHERE (
 	OR profilecode='ANTIHB' 
 	OR profilecode='HDL' 
 	OR profilecode='LDL' 
-)  
-AND hn = '".$result['hn']."' 
-AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
-GROUP BY profilecode 
-ORDER BY `autonumber`";
+	OR profilecode='STOCB' 
+	)  
+AND hn = '".$result['HN']."' 
+AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60'  ) 
+ORDER BY `autonumber` desc";
+//echo $sql1;
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
  if( $other_result_row > 0 ){ 
@@ -589,6 +591,8 @@ while($objResult = mysql_fetch_array($objQuery)){
 		$labmean="(เชื้อไวรัสตับอักเสบบี)";
 	}else if($objResult["labname"]=="Anti-HBs"){
 		$labmean="(ภูมิต้านทานไวรัสตับอักเสบบี)";
+	}else if($objResult["labname"]=="FOBT"){
+		$labmean="(เลือดในอุจจาระ)";
 	}
 			
 	if( $objResult["labcode"]=='GLU'){
@@ -732,7 +736,17 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 	}
 }
 
-		?>
+if($objResult["labcode"]=='OCCULT'){  //STOCB
+	if($objResult["result"]=="Negative"){
+		$app="ปกติ";	
+	}else if($objResult["result"]=="Positive"){
+		$app="ผิดปกติ";	
+	}
+}
+
+if($objResult["result"]!="*"){
+?>
+		
             <tr height="25">
               <td width="34%" valign="top"><strong><?=$objResult["labname"];?> <font size="-1"><?=$labmean;?></font></td>
               <td width="8%" valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
@@ -740,6 +754,7 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
               <td width="49%" valign="top" style="font-size:16px;"><?=$app;?></td>
             </tr>
             <? 
+}
 		  } 
 		}
 	?>
@@ -985,10 +1000,15 @@ if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 </table>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise  LAB:</strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (12-06-2017)</strong><br /></td>
+    <td  width="50%" align="center"><strong>Authorise  LAB : </strong><?=$authorisename?> <strong> (<?=$authorisedate?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (07-07-2017)</strong><br /></td>
     
   </tr>
 </table>
+
+<p>&nbsp;</p>
+<div class="text3"><strong>*** หมายเหตุ *** </strong></div>
+<div class="text">1. กรณีที่ผลการตรวจสุขภาพผิดปกติและมีการนัดพบแพทย์ ขอให้ท่านมารับการตรวจกับ พ.ท.วรวิทย์ วงษ์มณี  ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น. <br>หากมานอกเวลาดังกล่าวอาจไม่ได้รับความสะดวกในการบริการ </div>
+<div class="text">2. กรณีผลเลือดผิดปกติและไม่มีการนัดพบแพทย์ ถ้าต้องการตรวจเลือดซ้ำ ให้ปฏิบัติตามข้อแนะนำและมาเจาะเลือดซ้ำอีก 3-6 เดือน</div>
 </div>
 <?php 
 } // while
