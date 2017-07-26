@@ -22,13 +22,9 @@ if(file_exists("$filename1") && file_exists("$filename2")){
 $thimonth=$_POST["thiyr"]."-".$_POST["rptmo"]."-".$_POST["rptdate"];
 $numcscd=0;
 $cscd="จ่ายตรง";
-    $query="CREATE TEMPORARY TABLE reportcscd01 
-	SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate 
-	FROM opacc 
-	WHERE date LIKE '$thimonth%' 
-	and credit = '$cscd' 
-	AND paidcscd > $numcscd " ;
-    $result = mysql_query($query) or die("Query failed billtran 26");
+    $query="CREATE TEMPORARY TABLE reportcscd01 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd'  AND paidcscd > $numcscd " ;
+	//echo $query;
+    $result = mysql_query($query) or die("Query failed billtran, Create reportcscd01 Error !!!");
 
 
      $query="SELECT * FROM reportcscd01";
@@ -92,6 +88,10 @@ fwrite($objFopen1, $strText11);
 	$t1=substr($txdate,10,4); 
  	$t2=substr($txdate,14,2); 
 	$t3=substr($txdate,16,3); 
+	
+	$chkdate=substr($txdate,0,10);  //วันที่เกิดค่าใช้จ่าย
+
+
 if($t2<'3'){$t2='03';};
    $t4=$t2-$num4;
    $t5=$t2-$num5;
@@ -124,7 +124,18 @@ $numNcscd=number_format( $numNcscd, 2, '.', '');
 $row_id1=sprintf('%04d',$row_id1);
 $pay=$price-$paidcscd;
 
-$strText12="01||$date1$t|11512|$date2$row_id1$vn|$date2$row_id|$hn||$paidcscd|0.00||\r\n";
+
+$sqlopc="select hn from opday where hn='$hn' and thidate like '$chkdate%' and toborow='EX41 ผู้ป่วยในรับยาต่อเนื่องกลับบ้าน (VIP)' order by row_id desc limit 1";
+//echo "$sqlopc<br>";
+$queryopc=mysql_query($sqlopc);
+list($chkhn)=mysql_fetch_array($queryopc);
+
+$sqlip="select opreg from ipcard where hn='$chkhn' and dcdate like '$chkdate%' order by row_id desc limit 1";
+//echo "$sqlip<br>";
+$queryip=mysql_query($sqlip);
+list($authcode)=mysql_fetch_array($queryip);
+
+$strText12="01|$authcode|$date1$t|11512|$date2$row_id1$vn|$date2$row_id|$hn||$paidcscd|0.00||\r\n";
 
 $strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 $objFopen1 = fopen($strFileName1, 'a');
@@ -440,26 +451,29 @@ $dsy=number_format($dsy, 2, '.', '');
 $thimonth=$_POST["thiyr"]."-".$_POST["rptmo"]."-".$_POST["rptdate"];
 $numcscd=0;
 $cscd='จ่ายตรง';
-    $query="CREATE TEMPORARY TABLE reportcscd02 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd' AND depart='PHAR' " ;
-	//echo $query;
+    $query02="CREATE TEMPORARY TABLE reportcscd02 SELECT date,hn,vn,billno,price,credit,depart,paidcscd,detail,row_id,txdate FROM opacc WHERE date LIKE '$thimonth%' and credit = '$cscd' AND depart='PHAR' AND paidcscd > $numcscd AND (essd >0 OR nessdy >0) " ;  //เพิ่มคำสั่ง AND (essd >0 OR nessdy >0) วันที่ 27/05/59 เอาเฉพาะยาที่เบิกได้
+	//echo $query02;
 	
-    $result = mysql_query($query) or die("Query failed billdisp 379");
+    $result02 = mysql_query($query02) or die("Query failed billdisp, Create reportcscd02 Error !!!");
 
 
-     $query="SELECT * FROM reportcscd02";
-     $result = mysql_query($query) or die("Query xxx failed");
-	 while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	
+     $querytmp02="SELECT * FROM reportcscd02";
+     $resulttmp02 = mysql_query($querytmp02) or die("Query xxx failed");
+	 while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($resulttmp02)) {	
 		 $query3 = "select date,item,doctor,row_id from phardep where date = '$txdate' and price>0 and hn='$hn' ";
 		 $row3 = mysql_query($query3);
 		 list($datepx,$pitem,$doctor,$xrow) = mysql_fetch_array($row3);
 		 $ddl=0;
 		 $sql2 = "select sum(price) as suma,part,drugcode  from drugrx where idno = '".$xrow."' group by part";
 		 $row2 = mysql_query($sql2);
+		 $e;
 		 while($result2 = mysql_fetch_array($row2)){
+		
 			 if($result2['part']=="DDL"||$result2['part']=="DDY"){
 				 $ddl+=$result2['suma'];
 			 }elseif($result2['part']=="DSY"){
 				$sql3 = "select medical_sup_free,freepri from druglst where drugcode = '".$result2['drugcode']."' ";
+				
 				$row3 = mysql_query($sql3);
 				list($supfree,$freepri) = mysql_fetch_array($row3);
 				if($supfree==1){
@@ -581,10 +595,12 @@ $strText21="<?xml version=\"1.0\" encoding=\"windows-874\"?>\n
 	$ddl=0;
 	$ddn=0;
 	
-	$sql2 = "select sum(price) as price,count(row_id) as counter,part,drugcode  from drugrx where idno = '".$xrow."' and (part='DDL' or part='DDY') group by part,drugcode";
-//or part='DPY'
+	$sql2 = "select sum(price) as price,count(row_id) as counter,part,drugcode  from drugrx where idno = '".$xrow."' and (part='DDL' or part='DDY') AND price >0 group by part,drugcode";  //เพิ่มเงื่อนไข price>0 วันที่ 27/05/59
+	//echo "==>$sql2<br>";
 	$row2 = mysql_query($sql2);
+	$num2=mysql_num_rows($row2);
 	while($result2 = mysql_fetch_array($row2)){
+
 		if($result2['part']=="DDL"||$result2['part']=="DDY"){
 			$pitem+=$result2['counter'];
 			$ddl+=$result2['price'];
@@ -792,13 +808,14 @@ while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row
 
 	$dphardate = $y."-".$m."-".$d;
 	$query3 = "select date,item,doctor,row_id from phardep where hn= '$hn' and date like '$txdate%'  and price='$price' ";
+	//echo "-->".$query3."<br>";
 	$row3 = mysql_query($query3);
 	list($datepx,$pitem,$doctor,$xrow) = mysql_fetch_array($row3);
 	
-	$query6 = "SELECT a.drugcode, b.genname, a.slcode, a.amount, a.price, a.part , c.detail1, c.detail2, c.detail3 ,b.unit ,a.reason,b.tmt ,b.drugcode,b.product_category FROM drugrx as a left join druglst as b on a.drugcode = b.drugcode left join drugslip as c on c.slcode = a.slcode WHERE a.hn = '$hn' and (a.part='DDL' or a.part='DDY' ) AND a.idno = '$xrow' ";// or a.part='DPY'
+	$query6 = "SELECT a.drugcode, b.genname, a.slcode, a.amount, a.price, a.part , c.detail1, c.detail2, c.detail3 ,b.unit ,a.reason, b.drugcode,b.product_category FROM drugrx as a left join druglst as b on a.drugcode = b.drugcode left join drugslip as c on c.slcode = a.slcode WHERE a.hn = '$hn' and (a.part='DDL' or a.part='DDY' ) AND a.idno = '$xrow' AND a.price >0";  //เพิ่มเงื่อนไข price>0 วันที่ 27/05/59
 	//echo $query6."<br>";
 	$row6 = mysql_query($query6);
-	while(list($drugcode,$genname,$slcode,$amount,$price,$part,$detail1,$detail2,$detail3,$unit,$reason,$tmt,$drugcode1,$product_category) = mysql_fetch_array($row6)){  //while2
+	while(list($drugcode,$genname,$slcode,$amount,$price,$part,$detail1,$detail2,$detail3,$unit,$reason,$drugcode1,$product_category) = mysql_fetch_array($row6)){  //while2
 		$perunit = number_format($price/$amount,2, '.', '');
 
 //$sql = "Select drugcode From druglst where drugcode = '$drugcode' ";
@@ -856,22 +873,27 @@ if($part=="DDY"){
 	}
 }else{
 $claimcontrol="";
-}
-	$tmt=trim($tmt);	
+}	
 
-if($detail1 ==""){
+if(trim($detail1) ==""){
 		$slcode='b';
 		$detail1='.............';
 		$detail2='.............';
 		$detail3='.............';
 }
 
+
+$sqltmt="select tmt from druglst where drugcode = '$drugcode1'";
+//echo "-->".$sqltmt."<br>";
+$querytmt=mysql_query($sqltmt);
+list($tmt)=mysql_fetch_array($querytmt);
+$tmt=trim($tmt);
+
 //echo $drugcode1;
 $drugcode1= rtrim($drugcode1);
 //echo $drugcode1;
 
 if($product_category==''){$product_category='1';} else {$product_category=$product_category;};
-
 		$strText24="$date2$xrow$vn|$product_category|$drugcode1|$tmt|$dose|$genname|$unit|$slcode|$detail1 $detail2 $detail3|$amount|$perunit|$priceall|$reimb|$reimball|||$claimcontrol|\r\n";
 		
 		

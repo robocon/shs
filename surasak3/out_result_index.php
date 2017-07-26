@@ -121,4 +121,16 @@ a:active {
     <td>20. สรีรัตน์เหมืองแร่</td>
     <td align="center"><a href="out_result.php?part=สรีรัตน์เหมืองแร่60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>21. ดับเบิ้ลวิ้ง</td>
+    <td align="center"><a href="out_result.php?part=ดับเบิ้ลวิ้ง60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>22. อัลฟ่ากรุ๊ป</td>
+    <td align="center"><a href="out_result.php?part=อัลฟ่ากรุ๊ป60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>23. เอ็นเนอร์จีโซลูชั่น</td>
+    <td align="center"><a href="out_result.php?part=เอ็นเนอร์จีโซลูชั่น60" target="_blank">บันทึก</a></td>
+  </tr>  
 </table>
