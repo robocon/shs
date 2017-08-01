@@ -1331,8 +1331,11 @@ function frmchk(){
 	<?php
 	if( $dr['position'] == '99 เวชปฏิบัติ' ){
 		?>
-		var test_checker = document.getElementById('intern_checker').value;
-		var test_limit = document.getElementById('intern_limiter').value;
+		var input_checker = document.getElementById('intern_checker').value;
+		var input_limit = document.getElementById('intern_limiter').value;
+		
+		var test_checker = parseInt(input_checker);
+		var test_limit = parseInt(input_limit);
 		<?php
 	}
 	?>
@@ -1344,7 +1347,12 @@ function frmchk(){
 	
 	<?php
 	if( $dr['position'] == '99 เวชปฏิบัติ' ){
+
 		?>
+		
+		console.log('value test_checker '+test_checker);
+		console.log('value test_limit '+test_limit);
+
 		if( ( test_checker != 0 && test_limit != 0 ) && ( test_checker >= test_limit ) ){
 			alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+test_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
 			test_return = false;
@@ -1621,8 +1629,8 @@ if( $dr['position'] == '99 เวชปฏิบัติ' ){
 			var intern_count = $(this).attr('data-count');
 			var intern_limit = $(this).attr('intern-limit');
 
-			console.log(intern_count);
-			console.log(intern_limit);
+			console.log('input intern_checker '+intern_count);
+			console.log('input intern_limiter '+intern_limit);
 
 			$('.intern_checker').val(intern_count);
 			$('.intern_limiter').val(intern_limit);

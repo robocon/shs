@@ -110,7 +110,7 @@ if(!$result){
 	}
 }
 
-require_once 'opdwork_json.php';
+// require_once 'opdwork_json.php';
 
 print " แก้ไขข้อมูลเรียบร้อย: <br>";
 print " ปิดหน้าต่างนี้: <br>";

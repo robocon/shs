@@ -207,14 +207,17 @@ If (!empty($hn)){
 <option value="MD007 ณรงค์ ปรีดาอนันทสุข" >MD007 ณรงค์ ปรีดาอนันทสุข</option>  
 <option value="MD009 นภสมร ธรรมลักษมี" >MD009 นภสมร ธรรมลักษมี</option>
 <option value="MD013 ธนบดินทร์ ผลศรีนาค" >MD013 ธนบดินทร์ ผลศรีนาค</option>
-<option value="MD070 ประทีป เหลือแก้ว" >MD070 ประทีป เหลือแก้ว</option> 
+<!-- <option value="MD070 ประทีป เหลือแก้ว" >MD070 ประทีป เหลือแก้ว</option> -->
 <option value="MD105 ภควดี วุฒิพิทยามงคล" >MD105 ภควดี วุฒิพิทยามงคล</option> 
 <option value="MD106 มนัสจิตต์ บุณยทรรพ" >MD106 มนัสจิตต์ บุณยทรรพ</option> 
 <option value="MD107 รวี อัศวกิติพงษ์" >MD107 รวี อัศวกิติพงษ์</option> 
 <option value="MD117 แสงระวี บุรีคำ" >MD117 แสงระวี บุรีคำ</option> 
 <option value="MD122 นวมน สุนทรวราภาส" >MD122 นวมน สุนทรวราภาส</option> 
 <option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option>
-<option value="MD125 จรรยวรรธน์  สร้างสมวงษ์" >MD125 จรรยวรรธน์  สร้างสมวงษ์</option> 
+<!-- <option value="MD125 จรรยวรรธน์  สร้างสมวงษ์" >MD125 จรรยวรรธน์  สร้างสมวงษ์</option> -->
+<option value="MD136 ปริญญา เรือนวิไล" >MD136 ปริญญา เรือนวิไล</option> 
+<option value="MD137 กฤษฎิ์พงษ์ ศิริสารศักดา" >MD137 กฤษฎิ์พงษ์ ศิริสารศักดา</option> 
+<option value="MD138 มัทนา อัมพะเศวต" >MD138 มัทนา อัมพะเศวต</option> 
 </select>
 <?
 	print "<br><br>ราคา :";

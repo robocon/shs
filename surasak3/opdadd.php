@@ -68,10 +68,10 @@
     $vHN=$vPrefix.$nRunno; //HN
 
     // 
-    include_once 'opdadd_json.php';
+    // include_once 'opdadd_json.php';
 
     // บันทึกเป็น pdf ให้ Dr.Com Sync ข้อมูล
-    include_once 'opdadd_pdf.php';
+   // include_once 'opdadd_pdf.php';  ปิดใช้งานเมื่อ 26/7/2560 เวลา 19:00 น. เนื่องจากทำบัตรใหม่ไม่ได้
 
     //$query ="UPDATE runno SET runno = $nRunno WHERE title='HN'";
    // $result = mysql_query($query) or die("Query failed");

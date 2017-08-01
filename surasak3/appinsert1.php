@@ -286,7 +286,7 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
 
 
     // ข้อมูล json สำหรับ dr.com 
-    require_once 'appinsert1_json.php';
+    // require_once 'appinsert1_json.php';
     // ข้อมูล json สำหรับ dr.com 
 
  

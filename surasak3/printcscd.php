@@ -165,14 +165,14 @@ $poid="$Thaidate1$sChktranx";
            " </tr>\n");
       }
 
-    if (empty($sAn) && $sNetprice > 0){
-        print (" <tr>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>(55020/55021)ค่าบริการผู้ป่วยนอก</td>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>1</td>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>50.00</td>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>เบิกได้</td>\n".
-           " </tr>\n");
-                           }
+    // if (empty($sAn) && $sNetprice > 0){
+    //     print (" <tr>\n".
+    //        "  <td BGCOLOR=F5DEB3><font face='Angsana New'>(55020/55021)ค่าบริการผู้ป่วยนอก</td>\n".
+    //        "  <td BGCOLOR=F5DEB3><font face='Angsana New'>1</td>\n".
+    //        "  <td BGCOLOR=F5DEB3><font face='Angsana New'>50.00</td>\n".
+    //        "  <td BGCOLOR=F5DEB3><font face='Angsana New'>เบิกได้</td>\n".
+    //        " </tr>\n");
+    //                        }
 //กรณีคืนยา จะติดลบ
     if (empty($sAn) && $sNetprice < 0){
         print (" <tr>\n".
@@ -190,10 +190,15 @@ $poid="$Thaidate1$sChktranx";
     $pay=$sNessdn+$sDPN+$sDSY+$sDSN;
 
 //  OPD CASE
+    // if (empty($sAn) && $sNetprice > 0){
+    //        $xNetpri=$sNetprice+50;
+    //        $cPaid=$sNetprice+50; //opd case เก็บ 50 บาท
+    //        $free=$sEssd+$sNessdy+$sDPY+'50';
+    //                         }
     if (empty($sAn) && $sNetprice > 0){
-           $xNetpri=$sNetprice+50;
-           $cPaid=$sNetprice+50; //opd case เก็บ 50 บาท
-           $free=$sEssd+$sNessdy+$sDPY+'50';
+           $xNetpri=$sNetprice;
+           $cPaid=$sNetprice; //opd case เก็บ 50 บาท
+           $free=$sEssd+$sNessdy+$sDPY;
                             }
 
     if (empty($sAn) && $sNetprice < 0){
