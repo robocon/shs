@@ -1385,11 +1385,11 @@ if( empty($page) ){
 
 	$sql = "SELECT a.`HN`,a.`name`,a.`surname`,a.`exam_no`
 	,b.`idcard`,b.`sex`,CONCAT((SUBSTRING(b.`dbirth`,1,4) - 543),SUBSTRING(b.`dbirth`,5,15)) AS `dbirth`
-	,c.`vn`,c.`ptright`
+	,c.`thidate`,c.`vn`,c.`ptright`
 	FROM `opcardchk` AS a 
 	LEFT JOIN `opcard` AS b ON b.`hn` = a.`HN` 
 	LEFT JOIN ( 
-		SELECT * FROM `opday` WHERE `thidate` LIKE '2560-05-11%' 
+		SELECT * FROM `opday` WHERE ( `thidate` LIKE '2560-05-03%' OR `thidate` LIKE '2560-05-04%' OR `thidate` LIKE '2560-05-11%' ) 
 	 ) AS c ON c.`hn` = a.`HN` 
 	WHERE a.`part` = '$part' 
 	AND c.`vn` IS NOT NULL";
@@ -1403,6 +1403,7 @@ if( empty($page) ){
 			<tr>
 				<th>#</th>
 				<th>HN</th>
+				<th>วันที่</th>
 				<th>เลขบัตรปชช.</th>
 				<th>ชื่อ-สกุล</th>
 				<th>labnumber</th>
@@ -1418,6 +1419,7 @@ if( empty($page) ){
 			<tr>
 				<td><?=$i;?></td>
 				<td><?=$item['HN'];?></td>
+				<td><?=$item['thidate'];?></td>
 				<td><?=$item['idcard'];?></td>
 				<td><?=$item['name'].' '.$item['surname'];?></td>
 				<td><?=$checkup_date_code.$item['exam_no'];?></td>
