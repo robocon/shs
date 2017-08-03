@@ -506,7 +506,8 @@ include 'templates/classic/header.php';
 				$sql = "SELECT `id`,`date_write`,`auther`,`date_add` 
 				FROM `ward_acu` 
 				WHERE `status` = 1 
-				LIMIT $limit";
+				#LIMIT $limit
+				ORDER BY `id` DESC";
 				$items = DB::select($sql);
 				
 				include 'templates/ward/home_acu.php';

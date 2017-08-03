@@ -318,7 +318,7 @@ function searchSuggest2(str,len,getto1) {
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input type="text" name="idcard" size="15" value="-" id="idcard">        </td>
+          <input type="text" name="idcard" size="15" value="-" id="idcard" onblur="check_idcard(this,event)">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -659,6 +659,29 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
   
 </form>
 </body>
+<script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript">
 
+  function check_idcard(link, ev){
 
+    var input_idcard = document.getElementById('idcard').value;
+    if( input_idcard != '-' ){
+    
+      var newSm = new SmHttp();
+      newSm.ajax(
+        'check_idcard.php',
+        { 'idcard': input_idcard },
+        function(res){
 
+          var txt = JSON.parse(res);
+          if( txt.state === 400 ){
+              alert('เลขบัตรประชาชนซ้ำซ้อนกับผู้ป่วย '+"\n"+'HN: '+txt.hn+' '+"\n"+'ชื่อ-สกุล: '+txt.name);
+              SmPreventDefault(ev);
+          }
+
+        }
+      );
+
+    }
+  }
+</script>
