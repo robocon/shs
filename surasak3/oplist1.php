@@ -34,9 +34,7 @@ if( !isset($_SESSION['sOfficer']) && $_SESSION['sOfficer'] == '' ){
     นับถอยหลังเพื่อ refresh ในอีก  <span id="mysdiv">15</span> วินาที
     <BR>
 <?php
-// echo "<pre>";
-// var_dump($_SESSION['smenucode']);
-// echo "</pre>";
+
 print "<a target=_self  href='../nindex.htm'><<ไปเมนู............</a><br> ";
 
 $today = date("d-m-Y");   
@@ -66,6 +64,8 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
             <th bgcolor=6495ED><font face='Angsana New'>พิมพ์ใบต่อ</th>
             <th bgcolor=6495ED><font face='Angsana New'>ผู้ยืม</th>
             <th bgcolor=6495ED><font face='Angsana New'>ผู้บันทึก</th>
+            <th bgcolor="6495ED"></th>
+            <th bgcolor="6495ED">รายการที่แก้ไข</th>
         </tr>
     <?php
     $detail="ค่ายา";
@@ -123,6 +123,22 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
         }
 
         $time=substr($thidate,11);
+
+        // แสดงรายการอัพเดท
+        $op_sql = "SELECT `detail` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
+        $q = mysql_query($op_sql) or die( mysql_error() );
+        $op_rows = mysql_num_rows($q);
+        $diff = '';
+        if( $op_rows > 0 ){
+            $op_item = mysql_fetch_assoc($q);
+            $detail = $op_item['detail'];
+
+            $pre_objs = unserialize($detail);
+            foreach( $pre_objs as $list ){
+                $diff = '- '.$list.'<br>';
+            }
+        }
+
         print (" <tr>\n".
         "  <td BGCOLOR=$color><font face='Angsana New'>$vn</td>\n".
         "  <td BGCOLOR=$color><font face='Angsana New'>$kew</td>\n".
@@ -140,6 +156,7 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
         "  <td BGCOLOR=$color><font face='Angsana New'>$borow</td>\n".
         "  <td BGCOLOR=$color><font face='Angsana New'>$officer</td>\n".
         "  <td BGCOLOR=#FF0000><font face='Angsana New'>$detel$detel1</td>\n".
+        "  <td BGCOLOR=$color><font face='Angsana New'>$diff</td>\n".
         " </tr>\n");
     }
     include("unconnect.inc");
