@@ -1,7 +1,16 @@
-#!/usr/local/bin/php
+#!/usr/bin/php
 <?php
+/*
 
+Test on Server
+#!/usr/local/bin/php
+
+Test on docker
+#!/usr/bin/php
+
+*/
 include 'config.php';
+if ( !defined('EXTENDED_ABLE') ) { exit; }
 
 $sql = "SELECT * 
 FROM `sync_vn` 
