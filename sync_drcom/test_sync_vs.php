@@ -1,7 +1,19 @@
-#!/usr/local/bin/php
+#!/usr/bin/php
 <?php
 
-include 'config.php';
+define('ROOT_DIR', realpath(dirname(__FILE__)).'/');
+define('EXTENDED_ABLE', 1);
+
+include ROOT_DIR.'config.php';
+include ROOT_DIR.'base_fun.php';
+
+/**
+ * DEFAULT VARIABLE
+ */
+$date_create = date('Y-m-d');
+$th_date = ( date('Y') + 543 ).date('-m-d');
+
+$drcom = new DRDB();
 
 $sql = "SELECT * 
 FROM `sync_vitalsign` 
@@ -10,20 +22,55 @@ AND `STATUS` IS NULL
 AND `V_VN` != '' 
 GROUP BY `V_HN`,`V_VN`
 ORDER BY `DATE_CREATE` ASC ";
-$q = query($sql, $drcom);
-$user_row = mysql_num_rows($q);
+$drcom->query($sql);
+$user_row = $drcom->rows();
+
+// $q = query($sql, $drcom);
+// $user_row = mysql_num_rows($q);
 
 if( $user_row > 0 ){
-	while ( $item = mysql_fetch_assoc($q) ) {
-		// dump($item);
+
+	$items = $drcom->fetch();
+	foreach ($items as $key => $item) {
+		
 		$hn = $item['V_HN'];
+		$vn = $item['V_VN'];
 		$date_hn = $th_date.$hn;
 		$temp = $item['V_TEMP'];
+		$pulse = $item['V_PULSE'];
+		$rate = $item['V_RATE'];
+		$weight = $item['V_WEIGHT'];
+		$bp1 = $item['V_PRESSURE1'];
+		$bp2 = $item['V_PRESSURE2'];
+		$drugreact = $item['ALLERGY'];
+		$disease = $item['DISEASE'];
+
+		$cigarette = $item['CIGARETTE'];
+		$alcohol = $item['ALCOHOL'];
+
+		$type = $item['REFERIN'];
+		$pain_score = $item['PAIN_SCORE'];
+		$height = $_SESSION["V_HEIGHT"];
+
+		// ดึงจาก opday 
+		$toborow = $_POST["toborow"];
+		$cAge;
+
+		// ไม่แน่ใจ
+		$organ = $item['V_SYMPTOM'];
+		$sOfficer = $_SESSION["sOfficer"];
+		$waist = $_POST["waist"];
+		$doctorname = '';
+		$clinic = $_POST["clinic"];
+		$member2 = $_POST["member2"];
+		$typediag = $_POST["typediag"];
+		$room = $_POST["room"];
+
+		$shs = new SHSDB();
 
 		$sql = "SELECT CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn'";
-		$q = query($sql, $shs);
-		$user = mysql_fetch_assoc($q);
-
+		$shs->query($sql);
+		$user = $shs->fetch_single();
 		$ptname = $user['ptname'];
 
 		$sql = "INSERT INTO `opd` (
@@ -35,11 +82,11 @@ if( $user_row > 0 ){
 			`chkup`,`room`,`painscore`,`age`
 			)VALUES (
 			NULL , '$th_date', '$date_hn', '$hn', '$ptname', 
-			'$temp', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', 
-			'".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', 
-			'".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', 
-			'".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', '".$_POST["waist"]."', 
-			'".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."');";
+			'$temp', '$pulse', '$rate', '$weight', '$bp1', 
+			'$bp2', '$drugreact, '$disease', '$type', '$organ', 
+			'$doctorname', '$sOfficer', '$vn', '$toborow', '$height', 
+			'$clinic', '$cigarette', '$alcohol', '$member2', '$waist', 
+			'$typediag', '$room', '$pain_score' ,'$cAge');";
 
 
 	}

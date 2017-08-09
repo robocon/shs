@@ -1,16 +1,27 @@
-#!/usr/bin/php
+#!/usr/local/bin/php
 <?php
-/*
 
-Test on Server
+/*
+On Server .13
 #!/usr/local/bin/php
 
-Test on docker
+On Docker
 #!/usr/bin/php
-
 */
-include 'config.php';
-if ( !defined('EXTENDED_ABLE') ) { exit; }
+
+define('ROOT_DIR', realpath(dirname(__FILE__)).'/');
+define('EXTENDED_ABLE', 1);
+
+include ROOT_DIR.'config.php';
+include ROOT_DIR.'base_fun.php';
+
+/**
+ * DEFAULT VARIABLE
+ */
+$date_create = date('Y-m-d');
+$th_date = ( date('Y') + 543 ).date('-m-d');
+
+$drcom = new DRDB();
 
 $sql = "SELECT * 
 FROM `sync_vn` 
@@ -19,29 +30,34 @@ AND `STATUS` IS NULL
 AND `VN` != '' 
 GROUP BY `HN`,`VN`
 ORDER BY `DATE_CREATE` ASC ";
-$q = query($sql, $drcom);
-$user_row = mysql_num_rows($q);
+$drcom->query($sql);
+$drcom_users = $drcom->rows();
 
-if( $user_row > 0 ){
+if( $drcom_users > 0 ){
 
-    while ( $item = mysql_fetch_assoc($q) ) {
+    $items = $drcom->fetch();
+    foreach( $items as $key => $item ){ 
         
         $cHn = $item['HN'];
         $nVn = $item['VN'];
 
         // ถ้าฝั่งรพ.ยังไม่มีข้อมูลให้เพิ่มเข้าไปได้เลย
+        $shs = new SHSDB();
         $sql = "SELECT `hn`,`vn` FROM `opday` 
         WHERE `thidate` LIKE '$th_date%' 
         AND `hn` = '$cHn' 
         AND `vn` = '$nVn' ";
-        $opday_query = query($sql, $shs);
-        $opday_row = mysql_num_rows($opday_query);
-        if( $opday_row === 0 ){
+        $shs->query($sql);
+        $shs_users = $shs->rows();
+        if(  $shs_users === 0 ){
 
             $opcard_sql = "SELECT `dbirth`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`idcard`,`ptright`,`goup`,`camp`,`note`  
             FROM `opcard` WHERE `hn` = '$cHn' ";
-            $opcard_query = query($opcard_sql, $shs);
-            $opcard = mysql_fetch_assoc($opcard_query);
+            $shs->query($opcard_sql);
+            $opcard = $shs->fetch_single();
+
+            // var_dump($opcard);
+            // exit;
 
             $id = $item['ROW_ID'];
             $thidate = (date("Y")+543).date("-m-d H:i:s"); 
@@ -71,7 +87,7 @@ if( $user_row > 0 ){
                 '$cPtname','$cAge','$cPtright','$cGoup','$cCamp',
                 '$cNote','$toborow',' $cIdcard','$sOfficer'
             );";
-            $result = query($query, $shs);
+            $shs->query($query);
 
             $R03true1 = "NULL";
             if(substr($toborow,0,4) == "EX03"){  //สมัครโครงการเบิกจ่ายตรง
@@ -88,12 +104,12 @@ if( $user_row > 0 ){
                 '$cNote','$cIdcard','$toborow','','21',
                 '$sOfficer','$R03true1'
             );";
-            $result = query($query, $shs);
+            $shs->query($query);
 
             // ดึงเลขนัมเบอร์
             $sql = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-            $query = query($sql, $shs);
-            $runno = mysql_fetch_assoc($query);
+            $shs->query($sql);
+            $runno = $shs->fetch_single();
             $nRunno = $runno['runno'] + 1;
 
             $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,
@@ -103,13 +119,14 @@ if( $user_row > 0 ){
             '$nRunno','$thidate','$cPtname','$cHn','','OTHER',
             '1','(55020/55021 ค่าบริการผู้ป่วยนอก)', '50','50','0',
             '','$sOfficer','0','$nVn','$cPtright');";
-            $result = query($query, $shs);
-            $idno = mysql_insert_id($shs);
+            $shs->query($query);
+            $idno = $shs->get_last_id();
 
             // อัพเดทเลขนัมเบอร์
             $query ="UPDATE runno SET runno = '$nRunno' WHERE title='depart'";
-            $result = query($query, $shs);
-
+            $shs->query($query);
+            // $result = query($query, $shs);
+            
             $query = "INSERT INTO patdata(date,hn,an,ptname,item,
             code,detail,amount,price,yprice,
             nprice,depart,part,idno,ptright
@@ -117,10 +134,10 @@ if( $user_row > 0 ){
             '$thidate','$cHn','','$cPtname','1',
             'SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50',
             '0','OTHER','OTHER','$idno','$cPtright');";
-            $result = query($query, $shs);
+            $shs->query($query);
 
             $query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '$thdatehn' AND vn = '$nVn' ";
-            $result = query($query, $shs);
+            $shs->query($query);
 
             $update_sql = "UPDATE `sync_vn`
             SET
@@ -128,7 +145,7 @@ if( $user_row > 0 ){
             `USR_UPDATE` = 'surasak', 
             `STATUS` = '1'
             WHERE `ROW_ID` = '$id';";
-            $update = query($update_sql, $drcom);
+            $drcom->query($update_sql);
             dump($update_sql);
             dump($update);
 

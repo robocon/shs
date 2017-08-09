@@ -1,11 +1,5 @@
 <?php
-/**
- * DEFAULT VARIABLE
- */
-define('ROOT_DIR', realpath(dirname(__FILE__)).'/');
-define('EXTENDED_ABLE', 1);
-$date_create = date('Y-m-d');
-$th_date = ( date('Y') + 543 ).date('-m-d');
+if ( !defined('EXTENDED_ABLE') ) { exit; }
 
 /**
  * DEFAULT FUNCTION
