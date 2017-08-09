@@ -1,4 +1,4 @@
-#!/usr/local/bin/php
+#!/usr/bin/php
 <?php
 
 /*
@@ -55,9 +55,6 @@ if( $drcom_users > 0 ){
             FROM `opcard` WHERE `hn` = '$cHn' ";
             $shs->query($opcard_sql);
             $opcard = $shs->fetch_single();
-
-            // var_dump($opcard);
-            // exit;
 
             $id = $item['ROW_ID'];
             $thidate = (date("Y")+543).date("-m-d H:i:s"); 
@@ -146,8 +143,8 @@ if( $drcom_users > 0 ){
             `STATUS` = '1'
             WHERE `ROW_ID` = '$id';";
             $drcom->query($update_sql);
-            dump($update_sql);
-            dump($update);
+
+            set_system_log($update_sql);
 
         }
 

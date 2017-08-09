@@ -40,11 +40,15 @@ function to_tis620($txt){
 }
 
 function set_error_log( $error_msg ){
-    file_put_contents(ROOT_DIR.'error_log.log', $error_msg."\n", FILE_APPEND);
+	base_log('error_log.log', $error_msg);
 }
 
-function set_log( $msg ){
-	file_put_contents(ROOT_DIR.'system_log.log', $msg."\n", FILE_APPEND);
+function set_system_log( $msg ){
+	base_log('system_log.log', $msg);
+}
+
+function base_log($file_name, $msg){
+	file_put_contents(ROOT_DIR.$file_name, $msg."\n", FILE_APPEND);
 }
 
 function query($sql, $link){

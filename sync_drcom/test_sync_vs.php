@@ -25,14 +25,15 @@ ORDER BY `DATE_CREATE` ASC ";
 $drcom->query($sql);
 $user_row = $drcom->rows();
 
-// $q = query($sql, $drcom);
-// $user_row = mysql_num_rows($q);
-
 if( $user_row > 0 ){
 
 	$items = $drcom->fetch();
 	foreach ($items as $key => $item) {
 		
+		// @todo
+		// เหลือเงื่อนไขในการตรวจสอบตาม basic_opd.php ว่ามีข้อมูลในตาราง opd แล้วรึยัง
+		// ถ้ายังไม่มีให้เพิ่ม แต่ถ้ามีแล้วให้อัพเดท
+
 		$hn = $item['V_HN'];
 		$vn = $item['V_VN'];
 		$date_hn = $th_date.$hn;
@@ -44,21 +45,23 @@ if( $user_row > 0 ){
 		$bp2 = $item['V_PRESSURE2'];
 		$drugreact = $item['ALLERGY'];
 		$disease = $item['DISEASE'];
-
 		$cigarette = $item['CIGARETTE'];
 		$alcohol = $item['ALCOHOL'];
-
 		$type = $item['REFERIN'];
 		$pain_score = $item['PAIN_SCORE'];
 		$height = $_SESSION["V_HEIGHT"];
+		$sOfficer = $item["USR_CREATE"];
 
 		// ดึงจาก opday 
-		$toborow = $_POST["toborow"];
-		$cAge;
+		$opday_thdatehn = $th_date.$hn;
+		$sql = "SELECT * FROM `opday` WHERE `thidatehn` = '$opday_thdatehn'";
+		$shs->query($sql);
+		$opday = $shs->fetch_single();
+		$toborow = $opday["toborow"];
+		$cAge = $opday['age'];
 
 		// ไม่แน่ใจ
 		$organ = $item['V_SYMPTOM'];
-		$sOfficer = $_SESSION["sOfficer"];
 		$waist = $_POST["waist"];
 		$doctorname = '';
 		$clinic = $_POST["clinic"];
@@ -74,20 +77,20 @@ if( $user_row > 0 ){
 		$ptname = $user['ptname'];
 
 		$sql = "INSERT INTO `opd` (
-			`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,
-			`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,
-			`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,
-			`doctor`, `officer`, `vn` , `toborow`, `height`, 
-			`clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,
-			`chkup`,`room`,`painscore`,`age`
-			)VALUES (
-			NULL , '$th_date', '$date_hn', '$hn', '$ptname', 
-			'$temp', '$pulse', '$rate', '$weight', '$bp1', 
-			'$bp2', '$drugreact, '$disease', '$type', '$organ', 
-			'$doctorname', '$sOfficer', '$vn', '$toborow', '$height', 
-			'$clinic', '$cigarette', '$alcohol', '$member2', '$waist', 
-			'$typediag', '$room', '$pain_score' ,'$cAge');";
-
+		`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,
+		`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,
+		`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,
+		`doctor`, `officer`, `vn` , `toborow`, `height`, 
+		`clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,
+		`chkup`,`room`,`painscore`,`age`
+		)VALUES (
+		NULL , '$th_date', '$date_hn', '$hn', '$ptname', 
+		'$temp', '$pulse', '$rate', '$weight', '$bp1', 
+		'$bp2', '$drugreact, '$disease', '$type', '$organ', 
+		'$doctorname', '$sOfficer', '$vn', '$toborow', '$height', 
+		'$clinic', '$cigarette', '$alcohol', '$member2', '$waist', 
+		'$typediag', '$room', '$pain_score' ,'$cAge');";
+		$shs->query($sql);
 
 	}
 }
