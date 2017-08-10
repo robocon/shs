@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -144,8 +144,10 @@ if( $drcom_users > 0 ){
             WHERE `ROW_ID` = '$id';";
             $drcom->query($update_sql);
 
-            set_system_log($update_sql);
+            // set_system_log($update_sql);
 
+        } else {
+            // มีข้อมูลแล้ว อัพเดทข้อมูล
         }
 
     }

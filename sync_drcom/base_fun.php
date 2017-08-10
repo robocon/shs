@@ -39,6 +39,11 @@ function to_tis620($txt){
     return $txt;
 }
 
+function to_utf8($txt){
+    $txt = iconv('TIS-620', 'UTF-8', $txt);
+    return $txt;
+}
+
 function set_error_log( $error_msg ){
 	base_log('error_log.log', $error_msg);
 }

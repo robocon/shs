@@ -73,8 +73,8 @@ class DBC{
 class DRDB extends DBC{
 
     function __construct(){
-        $this->connect('test-mysql', 'surasak', '1234', 'sync');
-        // $this->connect('192.168.1.4', 'surasak', '1234', 'sync');
+        // $this->connect('test-mysql', 'surasak', '1234', 'sync');
+        $this->connect('192.168.1.4', 'surasak', '1234', 'sync', 'UTF8');
     }
 
 }
@@ -82,8 +82,8 @@ class DRDB extends DBC{
 class SHSDB extends DBC{
 
     function __construct(){
-        $this->connect('test-mysql', 'root', '1234', 'smdb_drcom', 'TIS-620');
-        // $this->connect('localhost', 'root', '1234', 'smdb_drcom', 'TIS-620');
+        // $this->connect('test-mysql', 'root', '1234', 'smdb_drcom', 'TIS-620');
+        $this->connect('localhost', 'root', '1234', 'smdb_drcom');
     }
 
 }
