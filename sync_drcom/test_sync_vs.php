@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/local/bin/php
 <?php
 
 define('ROOT_DIR', realpath(dirname(__FILE__)).'/');
@@ -25,6 +25,7 @@ ORDER BY `DATE_CREATE` ASC ";
 $drcom->query($sql);
 $user_row = $drcom->rows();
 
+
 if( $user_row > 0 ){
 
 	$items = $drcom->fetch();
@@ -33,7 +34,7 @@ if( $user_row > 0 ){
 		// @todo
 		// เหลือเงื่อนไขในการตรวจสอบตาม basic_opd.php ว่ามีข้อมูลในตาราง opd แล้วรึยัง
 		// ถ้ายังไม่มีให้เพิ่ม แต่ถ้ามีแล้วให้อัพเดท
-
+		$id = $item['ROW_ID'];
 		$hn = $item['V_HN'];
 		$vn = $item['V_VN'];
 		$date_hn = $th_date.$hn;
@@ -49,9 +50,15 @@ if( $user_row > 0 ){
 		$alcohol = $item['ALCOHOL'];
 		$type = $item['REFERIN'];
 		$pain_score = $item['PAIN_SCORE'];
-		$height = $_SESSION["V_HEIGHT"];
+		$height = $item["V_HEIGHT"];
 		$sOfficer = $item["USR_CREATE"];
 
+		$shs = new SHSDB();
+
+		$sql = "SELECT `row_id` FROM `opd` WHERE `thdatehn` '$date_hn'";
+		$shs->query($sql);
+		$opd_rows = $shs->rows();
+		
 		// ดึงจาก opday 
 		$opday_thdatehn = $th_date.$hn;
 		$sql = "SELECT * FROM `opday` WHERE `thidatehn` = '$opday_thdatehn'";
@@ -62,35 +69,80 @@ if( $user_row > 0 ){
 
 		// ไม่แน่ใจ
 		$organ = $item['V_SYMPTOM'];
-		$waist = $_POST["waist"];
+		$waist = ''; // $_POST["waist"]
 		$doctorname = '';
-		$clinic = $_POST["clinic"];
-		$member2 = $_POST["member2"];
-		$typediag = $_POST["typediag"];
-		$room = $_POST["room"];
+		$clinic = ''; // $_POST["clinic"]
+		$member2 = ''; // $_POST["member2"]
+		$typediag = ''; // $_POST["typediag"]
+		$room = ''; // $_POST["room"]
 
-		$shs = new SHSDB();
+		if( $opd_rows === 0 ){
 
-		$sql = "SELECT CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn'";
-		$shs->query($sql);
-		$user = $shs->fetch_single();
-		$ptname = $user['ptname'];
+			$sql = "SELECT CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn'";
+			$shs->query($sql);
+			$user = $shs->fetch_single();
+			$ptname = $user['ptname'];
 
-		$sql = "INSERT INTO `opd` (
-		`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,
-		`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,
-		`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,
-		`doctor`, `officer`, `vn` , `toborow`, `height`, 
-		`clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,
-		`chkup`,`room`,`painscore`,`age`
-		)VALUES (
-		NULL , '$th_date', '$date_hn', '$hn', '$ptname', 
-		'$temp', '$pulse', '$rate', '$weight', '$bp1', 
-		'$bp2', '$drugreact, '$disease', '$type', '$organ', 
-		'$doctorname', '$sOfficer', '$vn', '$toborow', '$height', 
-		'$clinic', '$cigarette', '$alcohol', '$member2', '$waist', 
-		'$typediag', '$room', '$pain_score' ,'$cAge');";
-		$shs->query($sql);
+			$sql = "INSERT INTO `opd` (
+			`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,
+			`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,
+			`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,
+			`doctor`, `officer`, `vn` , `toborow`, `height`, 
+			`clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,
+			`chkup`,`room`,`painscore`,`age`
+			)VALUES (
+			NULL , '$th_date', '$date_hn', '$hn', '$ptname', 
+			'$temp', '$pulse', '$rate', '$weight', '$bp1', 
+			'$bp2', '$drugreact, '$disease', '$type', '$organ', 
+			'$doctorname', '$sOfficer', '$vn', '$toborow', '$height', 
+			'$clinic', '$cigarette', '$alcohol', '$member2', '$waist', 
+			'$typediag', '$room', '$pain_score' ,'$cAge');";
+			$shs->query($sql);
+
+		}else{
+
+			$sql = "UPDATE `opd` SET 
+			`thidate` = '$th_date', 
+			`temperature` = '$temp', 
+			`pause` = '$pulse', 
+			`rate` = '$rate', 
+			`weight` = '$weight', 
+			`bp1` = '$bp1', 
+			`bp2` = '$bp2', 
+			`drugreact` = '$drugreact', 
+			`congenital_disease` = '$disease', 
+			`type` = '$type', 
+			`organ` = '$organ', 
+			`doctor` = '$doctorname',  
+			`officer` = '$sOfficer', 
+			`vn`= '$vn', 
+			`toborow` = '$toborow', 
+			`height` = '$height', 
+			`clinic`  = '$clinic', 
+			`cigarette`= '$cigarette', 
+			`alcohol`= '$alcohol', 
+			`cigok`= '$member2', 
+			`waist`= '$waist', 
+			`chkup`= '$typediag', 
+			`room`= '$room',
+			`painscore`= '$pain_score',
+			`age`='$cAge' 
+			WHERE `thdatehn` = '$date_hn' 
+			LIMIT 1 ";
+			$shs->query($sql);
+
+		}
+
+		// 
+		$update_sql = "UPDATE `sync_vitalsign`
+        SET
+        `DATE_UPDATE` = NOW(),
+        `USR_UPDATE` = 'surasak', 
+        `STATUS` = '1'
+        WHERE `ROW_ID` = '$id';";
+        $drcom->query($update_sql);
+		
+		var_dump($update_sql);
 
 	}
 }

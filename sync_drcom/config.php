@@ -56,7 +56,7 @@ class DBC{
     }
 
     public function rows(){
-        $rows = false;
+        $rows = 0;
         if( $this->q != false ){
             $rows = mysql_num_rows($this->q);
         }

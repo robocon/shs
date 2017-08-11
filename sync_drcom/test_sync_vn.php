@@ -136,19 +136,19 @@ if( $drcom_users > 0 ){
             $query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '$thdatehn' AND vn = '$nVn' ";
             $shs->query($query);
 
-            $update_sql = "UPDATE `sync_vn`
-            SET
-            `DATE_UPDATE` = NOW(),
-            `USR_UPDATE` = 'surasak', 
-            `STATUS` = '1'
-            WHERE `ROW_ID` = '$id';";
-            $drcom->query($update_sql);
-
             // set_system_log($update_sql);
 
         } else {
             // มีข้อมูลแล้ว อัพเดทข้อมูล
         }
+
+        $update_sql = "UPDATE `sync_vn`
+        SET
+        `DATE_UPDATE` = NOW(),
+        `USR_UPDATE` = 'surasak', 
+        `STATUS` = '1'
+        WHERE `ROW_ID` = '$id';";
+        $drcom->query($update_sql);
 
     }
 
