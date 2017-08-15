@@ -45,11 +45,11 @@ function to_utf8($txt){
 }
 
 function set_error_log( $error_msg ){
-	base_log('error_log.log', $error_msg);
+	base_log('error_log.log', '['.date('Y-m-d H:i:s').'] : '.$error_msg);
 }
 
 function set_system_log( $msg ){
-	base_log('system_log.log', $msg);
+	base_log('system_log.log', '['.date('Y-m-d H:i:s').'] : '.$msg);
 }
 
 function base_log($file_name, $msg){

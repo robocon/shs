@@ -12,6 +12,7 @@ include ROOT_DIR.'base_fun.php';
  */
 $date_create = date('Y-m-d');
 $th_date = ( date('Y') + 543 ).date('-m-d');
+$th_datetime = $th_date.' '.date('H:i:s');
 
 $drcom = new DRDB();
 
@@ -25,7 +26,6 @@ ORDER BY `DATE_CREATE` ASC ";
 $drcom->query($sql);
 $user_row = $drcom->rows();
 
-
 if( $user_row > 0 ){
 
 	$items = $drcom->fetch();
@@ -35,7 +35,9 @@ if( $user_row > 0 ){
 		// เหลือเงื่อนไขในการตรวจสอบตาม basic_opd.php ว่ามีข้อมูลในตาราง opd แล้วรึยัง
 		// ถ้ายังไม่มีให้เพิ่ม แต่ถ้ามีแล้วให้อัพเดท
 		$id = $item['ROW_ID'];
-		$hn = $item['V_HN'];
+		// $hn = $item['V_HN'];
+		$hn = substr($item['V_HN'], 0, 2).'-'.substr($item['V_HN'], 2);
+		
 		$vn = $item['V_VN'];
 		$date_hn = $th_date.$hn;
 		$temp = $item['V_TEMP'];
@@ -45,7 +47,7 @@ if( $user_row > 0 ){
 		$bp1 = $item['V_PRESSURE1'];
 		$bp2 = $item['V_PRESSURE2'];
 		$drugreact = $item['ALLERGY'];
-		$disease = $item['DISEASE'];
+		$disease = to_tis620($item['DISEASE']);
 		$cigarette = $item['CIGARETTE'];
 		$alcohol = $item['ALCOHOL'];
 		$type = $item['REFERIN'];
@@ -68,7 +70,7 @@ if( $user_row > 0 ){
 		$cAge = $opday['age'];
 
 		// ไม่แน่ใจ
-		$organ = $item['V_SYMPTOM'];
+		$organ = to_tis620($item['V_SYMPTOM']);
 		$waist = ''; // $_POST["waist"]
 		$doctorname = '';
 		$clinic = ''; // $_POST["clinic"]
@@ -91,13 +93,16 @@ if( $user_row > 0 ){
 			`clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,
 			`chkup`,`room`,`painscore`,`age`
 			)VALUES (
-			NULL , '$th_date', '$date_hn', '$hn', '$ptname', 
+			NULL , '$th_datetime', '$date_hn', '$hn', '$ptname', 
 			'$temp', '$pulse', '$rate', '$weight', '$bp1', 
-			'$bp2', '$drugreact, '$disease', '$type', '$organ', 
+			'$bp2', '$drugreact', '$disease', '$type', '$organ', 
 			'$doctorname', '$sOfficer', '$vn', '$toborow', '$height', 
 			'$clinic', '$cigarette', '$alcohol', '$member2', '$waist', 
 			'$typediag', '$room', '$pain_score' ,'$cAge');";
+
 			$shs->query($sql);
+
+
 
 		}else{
 
@@ -132,6 +137,8 @@ if( $user_row > 0 ){
 			$shs->query($sql);
 
 		}
+
+		// exit;
 
 		// 
 		$update_sql = "UPDATE `sync_vitalsign`

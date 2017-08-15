@@ -38,11 +38,40 @@ if( $drcom_users > 0 ){
     $items = $drcom->fetch();
     foreach( $items as $key => $item ){ 
         
+        $shs = new SHSDB();
+
+        
         $cHn = $item['HN'];
         $nVn = $item['VN'];
+        $toborow = to_tis620($item['TYPE_OPD']);
+
+        $opcard_sql = "SELECT `dbirth`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`idcard`,`ptright`,`goup`,`camp`,`note`  
+        FROM `opcard` WHERE `hn` = '$cHn' ";
+        $shs->query($opcard_sql);
+        $opcard = $shs->fetch_single();
+
+        $cPtname = $opcard['ptname'];
+        $cAge = calcage($opcard['dbirth']);
+        $cPtright = $opcard['ptright'];
+        $cGoup = $opcard['goup'];
+        $cCamp = $opcard['camp'];
+        $cNote = $opcard['note'];
+        $cIdcard = $opcard['idcard'];
+        $sOfficer = $item['USR_CREATE'];
+
+        $pre_dmy = date('d-m-').(date('Y')+543);
+        
+        // $thdatehn = $item['THDATE_HN'];
+        $thdatehn = $pre_dmy.$cHn;
+
+        $R03true1 = "NULL";
+        $R03true2 = ""; 
+        if(substr($toborow,0,4) == "EX03"){  //สมัครโครงการเบิกจ่ายตรง
+            $R03true1 = '1';
+            $R03true2 = ",`withdraw` = '1' ";	
+        }
 
         // ถ้าฝั่งรพ.ยังไม่มีข้อมูลให้เพิ่มเข้าไปได้เลย
-        $shs = new SHSDB();
         $sql = "SELECT `hn`,`vn` FROM `opday` 
         WHERE `thidate` LIKE '$th_date%' 
         AND `hn` = '$cHn' 
@@ -51,50 +80,41 @@ if( $drcom_users > 0 ){
         $shs_users = $shs->rows();
         if(  $shs_users === 0 ){
 
-            $opcard_sql = "SELECT `dbirth`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`idcard`,`ptright`,`goup`,`camp`,`note`  
-            FROM `opcard` WHERE `hn` = '$cHn' ";
-            $shs->query($opcard_sql);
-            $opcard = $shs->fetch_single();
-
             $id = $item['ROW_ID'];
             $thidate = (date("Y")+543).date("-m-d H:i:s"); 
-            $pre_dmy = date('d-m-').(date('Y')+543);
-
-            // $thdatehn = $item['THDATE_HN'];
-            $thdatehn = $pre_dmy.$cHn;
-
+            
             // $thdatevn = $item['THDATE_VN'];
             $thdatevn = $pre_dmy.$nVn;
 
-            $cPtname = $opcard['ptname'];
-            $cAge = calcage($opcard['dbirth']);
-            $cPtright = $opcard['ptright'];
-            $cGoup = $opcard['goup'];
-            $cCamp = $opcard['camp'];
-            $cNote = $opcard['note'];
-            $toborow = to_tis620($item['TYPE_OPD']);
-            $cIdcard = $opcard['idcard'];
-            $sOfficer = $item['USR_CREATE'];
+            $extra_query = '';
+            $extra_value = '';
 
-            $query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,
-                ptname,age,ptright,goup,camp,
-                note,toborow,idcard,officer
+            // EX19 ออก VN ทำแผล(ต่อเนื่อง)
+            if( substr($toborow,0,4) == "EX19" ){
+                $extra_query = '`diag`,`icd10`,`icd9cm`,`okopd`,';
+                $extra_value = "'D/S wound ','Z480','9357','Y',";
+
+            }else if( substr($toborow,0,4) == "EX22" ){ // EX22 ตรวจมวลกระดูก
+                $extra_query = '`icd10`,`icd9cm`,`okopd`,';
+                $extra_value = "'Z138','8898','Y',";
+            }
+
+            // เพิ่มข้อมูลใน opday 
+            $query = "INSERT INTO opday (`thidate`,`thdatehn`,`hn`,`vn`,`thdatevn`,
+                `ptname`,`age`,`ptright`,`goup`,`camp`,
+                `note`,`toborow`,`idcard`,`officer`,$extra_query`withdraw`,`opdreg`
             )VALUES(
                 '$thidate','$thdatehn','$cHn','$nVn','$thdatevn',
                 '$cPtname','$cAge','$cPtright','$cGoup','$cCamp',
-                '$cNote','$toborow',' $cIdcard','$sOfficer'
+                '$cNote','$toborow',' $cIdcard','$sOfficer',$extra_value'$R03true1','x'
             );";
             $shs->query($query);
 
-            $R03true1 = "NULL";
-            if(substr($toborow,0,4) == "EX03"){  //สมัครโครงการเบิกจ่ายตรง
-                $R03true1 = '1';	
-            }
-
-            $query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,
-                ptname,age,ptright,goup,camp,
-                note,idcard,toborow,borow,dxgroup,
-                officer,withdraw
+            // เพิ่มข้อมูลใน opday2
+            $query = "INSERT INTO opday2 (`thidate`,`thdatehn`,`hn`,`vn`,`thdatevn`,
+                `ptname`,`age`,`ptright`,`goup`,`camp`,
+                `note`,`idcard`,`toborow`,`borow`,`dxgroup`,
+                `officer`,`withdraw`
             )VALUES(
                 '$thidate','$thdatehn','$cHn','$nVn','$thdatevn',
                 '$cPtname','$cAge','$cPtright','$cGoup','$cCamp',
@@ -103,15 +123,23 @@ if( $drcom_users > 0 ){
             );";
             $shs->query($query);
 
+            // อัพเดทเลข vn ใน runno 
+            $sql ="UPDATE `runno` SET 
+            `runno` = '$nVn', 
+            `startday` = NOW() 
+            WHERE `title` = 'VN'";
+            $shs->query($sql);
+
+            // อัพเดท Depart กับ Patdata
             // ดึงเลขนัมเบอร์
-            $sql = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
+            $sql = "SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'";
             $shs->query($sql);
             $runno = $shs->fetch_single();
             $nRunno = $runno['runno'] + 1;
 
-            $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,
-            depart,item,detail,price,sumyprice,
-            sumnprice,paid, idname,accno,tvn,ptright
+            $query = "INSERT INTO depart(`chktranx`,`date`,`ptname`,`hn`,`an`,
+            `depart`,`item`,`detail`,`price`,`sumyprice`,
+            `sumnprice`,`paid`,`idname`,`accno`,`tvn`,`ptright`
             )VALUES(
             '$nRunno','$thidate','$cPtname','$cHn','','OTHER',
             '1','(55020/55021 ค่าบริการผู้ป่วยนอก)', '50','50','0',
@@ -119,27 +147,46 @@ if( $drcom_users > 0 ){
             $shs->query($query);
             $idno = $shs->get_last_id();
 
-            // อัพเดทเลขนัมเบอร์
-            $query ="UPDATE runno SET runno = '$nRunno' WHERE title='depart'";
+            // อัพเดทเลขนัมเบอร์ ของ depart
+            $query ="UPDATE `runno` SET `runno` = '$nRunno' WHERE `title` = 'depart'";
             $shs->query($query);
-            // $result = query($query, $shs);
             
-            $query = "INSERT INTO patdata(date,hn,an,ptname,item,
-            code,detail,amount,price,yprice,
-            nprice,depart,part,idno,ptright
+            $query = "INSERT INTO patdata(`date`,`hn`,`an`,`ptname`,`item`,
+            `code`,`detail`,`amount`,`price`,`yprice`,
+            `nprice`,`depart`,`part`,`idno`,`ptright`
             ) VALUES(
             '$thidate','$cHn','','$cPtname','1',
             'SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50',
             '0','OTHER','OTHER','$idno','$cPtright');";
             $shs->query($query);
 
-            $query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '$thdatehn' AND vn = '$nVn' ";
+            $query ="UPDATE `opday` SET 
+            `other`=(other+50) 
+            WHERE `thdatehn` = '$thdatehn' 
+            AND `vn` = '$nVn' ";
             $shs->query($query);
 
             // set_system_log($update_sql);
 
         } else {
+
             // มีข้อมูลแล้ว อัพเดทข้อมูล
+            $query ="UPDATE `opday` SET 
+            `ptname` = '$cPtname',
+            `ptright` = '$cPtright',
+            `goup` = '$cGoup',
+            `note` = '$cNote',
+            `idcard` = '$cIdcard',
+            `borow` = '',
+            `toborow` = '$toborow',
+            `camp` = '$cCamp',
+            `okopd` = 'Y',  
+            `officer` = '$sOfficer'
+            $R03true2
+            WHERE 
+                `thdatehn` = '$thdatehn' 
+                AND `vn` ='$nVn' ";
+
         }
 
         $update_sql = "UPDATE `sync_vn`
