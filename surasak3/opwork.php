@@ -12,13 +12,6 @@ session_register("thdatehn");
 session_register("admit_vn"); 
 
 include("connect.inc");   
-
-function dump( $txt ){
-	echo "<pre>";
-	var_dump($txt);
-	echo "</pre>";
-}
-
 $code21 = '21';
 
 if(substr($_POST["case"],0,4) == "EX19"||substr($_POST["case"],0,4) == "EX35")
@@ -75,12 +68,6 @@ $result = mysql_query($sql);
 
 		</SCRIPT>";
 }
-$where4="";
-if($_POST['lockptright5']=="lock"){
-	$where4 = ",ptright2='".$_POST['ptright']."' ";
-}else{
-	$where4 = ",ptright2='' ";
-}
 
 // บันทึกข้อมูลที่มีการอัพเดท
 
@@ -135,18 +122,22 @@ if( $_POST['note'] != $op['note'] ){ $update_list['note'] = $_POST['note']; }
 if( $_POST['blood'] != $op['blood'] ){ $update_list['blood'] = $_POST['blood']; }
 if( $_POST['drugreact'] != $op['drugreact'] ){ $update_list['drugreact'] = $_POST['drugreact']; }
 if( $_POST['idguard'] != $op['idguard'] ){ $update_list['idguard'] = $_POST['idguard']; }
+if( $_POST['goup'] != $op['goup'] ){ $update_list['goup'] = $_POST['goup']; }
+if( $_POST['ptrightdetail'] != $op['ptrightdetail'] ){ $update_list['ptrightdetail'] = $_POST['ptrightdetail']; }
+if( $_POST['ptfmon'] != $op['ptfmon'] ){ $update_list['ptfmon'] = $_POST['ptfmon']; }
+
 
 $list_text = serialize($update_list);
 $sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $op_rows = mysql_num_rows($q);
-if( $op_rows == 0 ){
+if( $op_rows == 0 && count($update_list) > 0 ){
 	$op_insert_sql = "INSERT INTO `opcard_update`
 	(`id`,`hn`,`detail`,`status`)
 	VALUES
 	(NULL,'$cHn','$list_text','Y');";
 	$q = mysql_query($op_insert_sql) or die( mysql_error() );
-}else if( $op_rows > 0 ){
+}else if( $op_rows > 0 && count($update_list) > 0 ){
 	$op_item = mysql_fetch_assoc($q);
 	$op_id = $op_item['id'];
 
@@ -157,6 +148,12 @@ if( $op_rows == 0 ){
 }
 // บันทึกข้อมูลที่มีการอัพเดท
 
+$where4="";
+if($_POST['lockptright5']=="lock"){
+	$where4 = ",ptright2='".$_POST['ptright']."' ";
+}else{
+	$where4 = ",ptright2='' ";
+}
 //update opdcard table
 	$hospcode=$_POST['hospcode'];
 	$ptrcode=$_POST['rdo1'];
@@ -342,6 +339,8 @@ $opergcode='x';
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,diag,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','D/S wound ','Z480','9357','Y',".$R03true1.",'$opergcode');";
 	}else if(substr($_POST["case"],0,4) == "EX22"){  //EX22 ตรวจมวลกระดูก
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z138','8898','Y',".$R03true1.",'$opergcode');";
+	}else if(substr($_POST["case"],0,4) == "EX40"){
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','P');";
 	}else{
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
 	}

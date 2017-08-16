@@ -213,12 +213,14 @@ If (empty($row->hn)){
 
 	//print "VN: $nVn ลงทะเบียนไปก่อนแล้ว......ผู้ตรวจสอบสิทธิ  ..........$sOfficer";
 }
+include("unconnect.inc");
 
+/*
 // ปิดสถานะหลังจากที่คลิกไปแล้ว
 $sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $op_rows = mysql_num_rows($q);
-if( $op_rows == 0 ){
+if( $op_rows > 0 ){
 	$op_item = mysql_fetch_assoc($q);
 	$op_id = $op_item['id'];
 
@@ -227,9 +229,8 @@ if( $op_rows == 0 ){
 	WHERE `id` = '$op_id';";
 	mysql_query($op_update_sql) or die( mysql_error() );
 }
+*/
 
-
-include("unconnect.inc");
 /////rxform.php
 
 include("opd/class_printvn_l.php");

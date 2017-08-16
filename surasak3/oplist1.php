@@ -34,7 +34,9 @@ if( !isset($_SESSION['sOfficer']) && $_SESSION['sOfficer'] == '' ){
     นับถอยหลังเพื่อ refresh ในอีก  <span id="mysdiv">15</span> วินาที
     <BR>
 <?php
-
+// echo "<pre>";
+// var_dump($_SESSION['smenucode']);
+// echo "</pre>";
 print "<a target=_self  href='../nindex.htm'><<ไปเมนู............</a><br> ";
 
 $today = date("d-m-Y");   
@@ -64,8 +66,8 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
             <th bgcolor=6495ED><font face='Angsana New'>พิมพ์ใบต่อ</th>
             <th bgcolor=6495ED><font face='Angsana New'>ผู้ยืม</th>
             <th bgcolor=6495ED><font face='Angsana New'>ผู้บันทึก</th>
-            <th bgcolor="6495ED"></th>
-            <th bgcolor="6495ED">รายการที่แก้ไข</th>
+            <th bgcolor=6495ED></th>
+            <th bgcolor=6495ED><font face='Angsana New'>แจ้งเตือนการแก้ไข</th>
         </tr>
     <?php
     $detail="ค่ายา";
@@ -122,7 +124,19 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
             $detel1="";
         }
 
-        $time=substr($thidate,11);
+        $key_lists = array(
+            'yot' => 'คำนำหน้า','name' => 'ชื่อ','surname' => 'สกุล','sex' => 'เพศ',
+            'idcard' => 'เลขบัตรประชาชน','married' => 'สถานะภาพ','career' => 'อาชีพ','religion' => 'ศาสนา',
+            'race' => 'เชื้อชาติ','nation' => 'สัญชาติ','ptright1' => 'สิทธิการรักษา',
+            'address' => 'บ้านเลขที่','tambol' => 'ตำบล','ampur' => 'อำเภอ',
+            'changwat' => 'จังหวัด','hphone' => 'เบอร์บ้าน','phone' => 'มือถือ',
+            'father' => 'บิดา','mother' => 'มารดา','couple' => 'คู่สมรส',
+            'camp' => 'สังกัด','guardian' => 'หน่วยงาน','ptf' => 'ผู้ที่สามารถติดต่อได้',
+            'ptfadd' => 'เกี่ยวข้องเป็น','ptffone' => 'โทรศัพท์','note' => 'อื่นๆ',
+            'blood' => 'กรุ๊ปเลือด','drugreact' => 'แพ้ยา','idguard' => 'หมายเหตุ',
+            'goup' => 'ประเภท','ptrightdetail' => 'ประเภทสิทธิ','ptfmon' => 'เบิกจาก',
+        );
+
 
         // แสดงรายการอัพเดท
         $op_sql = "SELECT `detail` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
@@ -134,11 +148,14 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
             $detail = $op_item['detail'];
 
             $pre_objs = unserialize($detail);
-            foreach( $pre_objs as $list ){
-                $diff = '- '.$list.'<br>';
+            foreach( $pre_objs as $key => $list ){
+                $key_name = $key_lists[$key];
+                $diff .= $key_name.': '.$list.'<br>';
             }
+
         }
 
+        $time=substr($thidate,11);
         print (" <tr>\n".
         "  <td BGCOLOR=$color><font face='Angsana New'>$vn</td>\n".
         "  <td BGCOLOR=$color><font face='Angsana New'>$kew</td>\n".
