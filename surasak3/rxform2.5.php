@@ -208,14 +208,18 @@ If (empty($row->hn)){
 }else{
 
 	$nVn=$row->vn;
-	$query ="UPDATE opday SET phaok='$ok'  WHERE thdatehn = '$thdatehn' AND vn = '".$nVn."' ";
-	$result = mysql_query($query) or die("Query failed,update opday");
+
+	// เฉพาะจนท.ห้องทะเบียนเท่านั้นที่จะอัพเดทสถานะได้
+	// เพราะมันแชร์หน้าของ oplist1.php ไปให้ ER ด้วย
+	if( $_SESSION['smenucode'] == 'ADMOPD' ){
+		$query ="UPDATE opday SET phaok='$ok'  WHERE thdatehn = '$thdatehn' AND vn = '".$nVn."' ";
+		$result = mysql_query($query) or die("Query failed,update opday");
+	}
 
 	//print "VN: $nVn ลงทะเบียนไปก่อนแล้ว......ผู้ตรวจสอบสิทธิ  ..........$sOfficer";
 }
-include("unconnect.inc");
 
-/*
+
 // ปิดสถานะหลังจากที่คลิกไปแล้ว
 $sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
 $q = mysql_query($sql) or die( mysql_error() );
@@ -229,8 +233,8 @@ if( $op_rows > 0 ){
 	WHERE `id` = '$op_id';";
 	mysql_query($op_update_sql) or die( mysql_error() );
 }
-*/
 
+include("unconnect.inc");
 /////rxform.php
 
 include("opd/class_printvn_l.php");

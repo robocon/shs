@@ -1192,7 +1192,7 @@ function checkForm(){
 		var stat = true;
 		var stat2 = true;
 
-		stat2 = checkID();
+		// stat2 = checkID();
 		if(document.f1.new_vn.value == ''){
 			
 			alert("ผู้ป่วยเคยลงทะเบียนแล้ว กรุณาเลือกว่าต้องการใช้ VN เดิม หรือ ออก VN ใหม่ ด้วยครับ");

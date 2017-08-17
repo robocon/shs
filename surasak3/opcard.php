@@ -141,6 +141,7 @@ legend {
 		var validation = true;
 		var msg = '';
 		
+    /*
 		if(id13 != "" && id13 != "-"){
 			
 			if(id13.length != 13){
@@ -167,6 +168,7 @@ legend {
 				}
 			}
 		}
+    */
 		
 		
 		var yot = document.getElementById('yot');
