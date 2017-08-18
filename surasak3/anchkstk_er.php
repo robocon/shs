@@ -27,8 +27,8 @@ include("connect.inc");
 <html>
 <body BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>
     <style type="text/css">
-        .fc1-0 { color:000000; font-size:20pt; font-family:Cordia New; font-weight:bold;}
-        .fc1-1 { color:000000; font-size:18pt; font-family:Cordia New; font-weight:normal; line-height: 18px;}
+        .fc1-0 { color:000000; font-size:18pt; font-family:Cordia New; font-weight:bold;}
+        .fc1-1 { color:000000; font-size:16pt; font-family:Cordia New; font-weight:normal; line-height: 18px;}
         .fc1-2 { color:000000; font-size:16pt; font-family:Cordia New; font-weight:bold;}
         .fc1-3 { color:000000; font-size:15pt; font-family:Cordia New; font-weight:normal;}
         .ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
@@ -64,7 +64,7 @@ while (list ($an,$hn,$date,$bedcode,$yot,$name,$surname,$idcard,$ptright,$dbirth
     <div class="fc1-1">
         AN:&nbsp;<?=$an?>&nbsp;HN:&nbsp;<?=$hn?>
     </div>
-    <div style="height: 10px; padding: 0; margin: 0;">&nbsp;</div>
+    <div style="height: 5px; padding: 0; margin: 0;">&nbsp;</div>
     <div class="fc1-0">&nbsp;<?=$cPtname?></div>
     <div class="fc1-1">
         AN:&nbsp;<?=$an?>&nbsp;HN:&nbsp;<?=$hn?>

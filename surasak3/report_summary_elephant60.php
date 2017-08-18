@@ -4,12 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>รายงานสรุปผลตรวจสุขภาพ</title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 18px;
 }
--->
+
 </style>
 </head>
 <?
@@ -88,9 +88,9 @@ if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"
     <td align="center"><?=$bp;?></td>
     <td>&nbsp;</td>
     <td align="left"><? 
-			  if($result["HN"]=="60-3343" || $result["HN"]=="60-3385"){
+			//   if($result["HN"]=="60-3343" || $result["HN"]=="60-3385"){
 			  	if($result2["cxr"]==""){ echo "ปกติ"; }else{ echo $result2["cxr"];}
-			  }
+			//   }
 			  
 		   ?></td>
     <td align="center"><?
@@ -116,7 +116,7 @@ if($flag=="N"){
 $sql1="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'BUN' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' AND (
+WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' AND (
 a.clinicalinfo = 'ตรวจสุขภาพประจำปี60' OR a.clinicalinfo = 'ตรวจสุขภาพประกันสังคม60'
 )
 GROUP BY a.`profilecode` ";

@@ -256,25 +256,32 @@ if($rows>0){
 		var id13 = document.f1.idcard.value;
 		var sum = 0;
 
-			if(id13 != "" && id13 != "-"){
-				if(id13.length != 13){
-					alert("เลขบัตรประชาชน ขาดหรือเกิน 13 หลัก");
-					stat = false;
-				}
-				if(stat == true){
-					for (i = 0; i < 12; i++)
-					{
-						sum += eval(id13.charAt(i)) * (13 - i);
-					}
-					sum = ((11 - (sum % 11)) % 10)
-					if(eval(id13.charAt(12)) != sum)
-						if(confirm("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n คุณต้องการกลับไปแก้ไขหรือไม่?"))
-							stat = false;
-						else
-							stat = true;
-				}
+		if(id13 != "" && id13 != "-"){
+			if(id13.length != 13){
+				alert("เลขบัตรประชาชน ขาดหรือเกิน 13 หลัก");
+				stat = false;
 			}
-			
+			if(stat == true){
+				
+				// https://goo.gl/yaX3FN
+				for (i = 0; i < 12; i++){
+					sum += parseFloat(id13.charAt(i))*(13-i);
+				}
+
+				var sum_mod = sum%11;
+				var pre_digit = 1;
+				if(sum_mod>1){
+					pre_digit = 11;
+				}
+				var new_sum = pre_digit-sum_mod;
+				if( new_sum != parseFloat(id13.charAt(12)) )
+					if(confirm("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n คุณต้องการกลับไปแก้ไขหรือไม่?"))
+						stat = false;
+					else
+						stat = true;
+			}
+		}
+		
 		return stat;
 	}
 	
@@ -1192,7 +1199,7 @@ function checkForm(){
 		var stat = true;
 		var stat2 = true;
 
-		// stat2 = checkID();
+		stat2 = checkID();
 		if(document.f1.new_vn.value == ''){
 			
 			alert("ผู้ป่วยเคยลงทะเบียนแล้ว กรุณาเลือกว่าต้องการใช้ VN เดิม หรือ ออก VN ใหม่ ด้วยครับ");

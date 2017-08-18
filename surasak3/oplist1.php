@@ -6,6 +6,8 @@ if( !isset($_SESSION['sOfficer']) && $_SESSION['sOfficer'] == '' ){
     echo 'หมดเวลาใช้งาน<br><a href="../nindex.htm">คลิกที่นี่</a> เพื่อเข้าสู่ระบบอีกครั้ง';
     exit;
 }
+
+include("connect.inc");
 ?>
 <html>
 <head>
@@ -45,6 +47,8 @@ $m=substr($today,3,2);
 $yr=substr($today,6,4) +543;
 $today="$d-$m-$yr";
 
+// ให้สิทธิเฉพาะ ศูนย์คอม+ทะเบียนที่เห็น เพราะมันแชร์ไปที่หน้าของ ER ด้วย 
+// มันมีปัญหาว่า จนท. ER เผลอไปกด
 $white_list = array('ADMOPD', 'ADM', 'ADMCOM');
 if( in_array($_SESSION['smenucode'], $white_list) === true ){
 
@@ -71,7 +75,7 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
         </tr>
     <?php
     $detail="ค่ายา";
-    include("connect.inc");
+    
 
     $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' ";
     $result = mysql_query($query) or die("Query failed,opdoplis");
@@ -180,83 +184,84 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
     ?>
     </table>
     <?php
-}
 
-$today = date("d-m-Y");   
-$d=substr($today,0,2);
-$m=substr($today,3,2);
-$yr=substr($today,6,4) +543;
-$today="$d-$m-$yr";
-print "วันที่ $today  รายชื่อผู้ป่วยที่ออก VN  โดยอัตโนมัติ กรุณาตรวจสอบสิทธิการรักษา  ถ้ามีปัญหาแจ้งหน่วยผู้ออกทันที";
-print "<a target=_self  href='../nindex.htm'><<ไปเมนู............</a><br> ";
+    $today = date("d-m-Y");   
+    $d=substr($today,0,2);
+    $m=substr($today,3,2);
+    $yr=substr($today,6,4) +543;
+    $today="$d-$m-$yr";
+    print "วันที่ $today  รายชื่อผู้ป่วยที่ออก VN  โดยอัตโนมัติ กรุณาตรวจสอบสิทธิการรักษา  ถ้ามีปัญหาแจ้งหน่วยผู้ออกทันที";
+    print "<a target=_self  href='../nindex.htm'><<ไปเมนู............</a><br> ";
 
-$today="$yr-$m-$d";
-$N='p';
-$ex='EX0';
-?>
+    $today="$yr-$m-$d";
+    $N='p';
+    $ex='EX0';
+    ?>
 
-<table>
-    <tr>
-        <th bgcolor=6495ED>VN</th>
-        <th bgcolor=6495ED>คิว</th>
-        <th bgcolor=6495ED>เวลา</th>
-        <th bgcolor=6495ED>HN</th>
-        <th bgcolor=6495ED>ชื่อ</th>
-        <th bgcolor=6495ED>AN</th>
-        <th bgcolor=6495ED>พิมพ์ใบตรวจสิทธิ</th>
-        <th bgcolor=6495ED><font face='Angsana New'>ยืนยันสิทธิ</th>
-    </tr>
-    <?php
-    $detail="ค่ายา";
-    include("connect.inc");
+    <table>
+        <tr>
+            <th bgcolor=6495ED>VN</th>
+            <th bgcolor=6495ED>คิว</th>
+            <th bgcolor=6495ED>เวลา</th>
+            <th bgcolor=6495ED>HN</th>
+            <th bgcolor=6495ED>ชื่อ</th>
+            <th bgcolor=6495ED>AN</th>
+            <th bgcolor=6495ED>พิมพ์ใบตรวจสิทธิ</th>
+            <th bgcolor=6495ED><font face='Angsana New'>ยืนยันสิทธิ</th>
+        </tr>
+        <?php
+        $detail="ค่ายา";
+        include("connect.inc");
 
-    $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' ";
-    $result = mysql_query($query) or die("Query failed,opdoplis");
+        $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' ";
+        $result = mysql_query($query) or die("Query failed,opdoplis");
 
-    $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday1 WHERE thidate LIKE '$today%' and phaok='$N' ";
-    $result = mysql_query($query)
-    or die("Query failed");
+        $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday1 WHERE thidate LIKE '$today%' and phaok='$N' ";
+        $result = mysql_query($query)
+        or die("Query failed");
 
-    while (list ($vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$ptright,$doctor,$okopd,$toborow,$borow,$goup,$officer,$kew,$phaok) = mysql_fetch_row ($result)) {
+        while (list ($vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$ptright,$doctor,$okopd,$toborow,$borow,$goup,$officer,$kew,$phaok) = mysql_fetch_row ($result)) {
 
-        if(substr($ptright,0,3)=='R07' && !empty($idcard)){
-            $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
-            if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-                $color = "#CCFF00";
+            if(substr($ptright,0,3)=='R07' && !empty($idcard)){
+                $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+                if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+                    $color = "#CCFF00";
+                }else{
+                    $color = "FF8C8C";
+                }
+            }else if(substr($ptright,0,3)=='R03'){
+                $sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
+                if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+                    $color = "99CC00";
+                }else{
+                    $color = "FF8C8C";
+                }
             }else{
-                $color = "FF8C8C";
+                $color = "66CDAA";
             }
-		}else if(substr($ptright,0,3)=='R03'){
-			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				$color = "99CC00";
-			}else{
-				$color = "FF8C8C";
-			}
-		}else{
-			$color = "66CDAA";
-		}
 
-        $time=substr($thidate,11);
-        print (" <tr>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'>$vn</td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'>$kew</td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'>$hn</td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</a></td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'>$an</td>\n".
-        // "  <td BGCOLOR=66CDAA><font face='Angsana New'>$diag</td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"rxform2.3.php? cTdatehn=$thdatehn&cPtname=$ptname&cHn=$hn&cDoctor=$doctor&cDiag=$diag&cOkopd=$okopd&ctoborow=$toborow&cVn=$vn\">$ptright</a></td>\n".
-        // "  <td BGCOLOR=66CDAA><font face='Angsana New'>$goup</td>\n".
-        //"  <td BGCOLOR=66CDAA><font face='Angsana New'>$doctor</td>\n".
-        // "  <td BGCOLOR=66CDAA><font face='Angsana New'>$okopd</td>\n".
-        "  <td BGCOLOR=$color><font face='Angsana New'><a  href=\"rxform2.2.php? cTdatehn=$thdatehn&cPtname=$ptname&cHn=$hn&cDoctor=$doctor&cDiag=$diag&cOkopd=$okopd&ctoborow=$toborow&cVn=$vn\">$toborow</a></td>\n".
-        " </tr>\n");
-    }
+            $time=substr($thidate,11);
+            print (" <tr>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'>$vn</td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'>$kew</td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'>$hn</td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</a></td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'>$an</td>\n".
+            // "  <td BGCOLOR=66CDAA><font face='Angsana New'>$diag</td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"rxform2.3.php? cTdatehn=$thdatehn&cPtname=$ptname&cHn=$hn&cDoctor=$doctor&cDiag=$diag&cOkopd=$okopd&ctoborow=$toborow&cVn=$vn\">$ptright</a></td>\n".
+            // "  <td BGCOLOR=66CDAA><font face='Angsana New'>$goup</td>\n".
+            //"  <td BGCOLOR=66CDAA><font face='Angsana New'>$doctor</td>\n".
+            // "  <td BGCOLOR=66CDAA><font face='Angsana New'>$okopd</td>\n".
+            "  <td BGCOLOR=$color><font face='Angsana New'><a  href=\"rxform2.2.php? cTdatehn=$thdatehn&cPtname=$ptname&cHn=$hn&cDoctor=$doctor&cDiag=$diag&cOkopd=$okopd&ctoborow=$toborow&cVn=$vn\">$toborow</a></td>\n".
+            " </tr>\n");
+        }
 
-?>
-</table>
-<?php
+    ?>
+    </table>
+    <?php
+
+}
 
 $today = date("d-m-Y");   
 $d=substr($today,0,2);

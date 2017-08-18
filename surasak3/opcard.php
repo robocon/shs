@@ -140,37 +140,46 @@ legend {
 		
 		var validation = true;
 		var msg = '';
-		
-    /*
-		if(id13 != "" && id13 != "-"){
-			
-			if(id13.length != 13){
-				alert("เลขบัตรประชาชนไม่ตรงกับเลข 13 หลักกรุณาใส่ข้อมูลให้ถูกต้อง");
-				idCard.focus();
-				return false;
-			}else{
-				
-				var test = id13.match(/[0-9]{13}$/g);
-				if(test == null){
-					alert("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \nกรุณาตรวจสอบอีกครั้ง");
-					return false;
-				}
-					
-				for (i = 0; i < 12; i++){
-					sum += eval(id13.charAt(i)) * (13 - i);
-				}
 
-				sum = ((11 - (sum % 11)) % 10);
-				
-				if(eval(id13.charAt(12)) != sum){
-					alert("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n กรุณาตรวจสอบอีกครั้ง");
-					return false;
-				}
-			}
-		}
-    */
-		
-		
+    
+    if(id13 != "" && id13 != "-"){
+      
+      if(id13.length != 13){
+        alert("เลขบัตรประชาชนไม่ตรงกับเลข 13 หลักกรุณาใส่ข้อมูลให้ถูกต้อง");
+        idCard.focus();
+        return false;
+      }else{
+        
+        var test = id13.match(/[0-9]{13}$/g);
+        if(test == null){
+          alert("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \nกรุณาตรวจสอบอีกครั้ง");
+          return false;
+        }
+        
+        // TEST - 
+        //https://jsfiddle.net/rrxf12rv/5/
+
+        // คำนวณเลขบัตรใหม่ 
+        // https://goo.gl/yaX3FN
+        for (i = 0; i < 12; i++){
+          sum += parseFloat(id13.charAt(i))*(13-i);
+        }
+        
+        var sum_mod = sum%11;
+        var pre_digit = 1;
+        if(sum_mod>1){
+          pre_digit = 11;
+        }
+        var new_sum = pre_digit-sum_mod;
+        if( new_sum != parseFloat(id13.charAt(12)) ){
+          alert("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n กรุณาตรวจสอบอีกครั้ง");
+          return false;
+        }
+
+      }
+    }
+    
+
 		var yot = document.getElementById('yot');
 		var name = document.getElementById('name');
 		var surname = document.getElementById('surname');
@@ -320,7 +329,8 @@ function searchSuggest2(str,len,getto1) {
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input type="text" name="idcard" size="15" value="-" id="idcard" onblur="check_idcard(this,event)">        </td>
+          <input type="text" name="idcard" size="15" value="-" id="idcard" onblur="check_idcard(this,event)">
+        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>

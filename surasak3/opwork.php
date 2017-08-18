@@ -70,17 +70,6 @@ $result = mysql_query($sql);
 }
 
 // บันทึกข้อมูลที่มีการอัพเดท
-
-/**
-CREATE TABLE `opcard_update` (
-  `id` int(11) NOT NULL auto_increment,
-  `hn` varchar(45) default NULL,
-  `detail` text,
-  `status` varchar(45) default 'N',
-  PRIMARY KEY  (`id`),
-  KEY `hn` (`hn`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-*/
 $sql = "SELECT * FROM `opcard` WHERE `hn` = '$cHn' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $op = mysql_fetch_assoc($q);
@@ -126,11 +115,11 @@ if( $_POST['goup'] != $op['goup'] ){ $update_list['goup'] = $_POST['goup']; }
 if( $_POST['ptrightdetail'] != $op['ptrightdetail'] ){ $update_list['ptrightdetail'] = $_POST['ptrightdetail']; }
 if( $_POST['ptfmon'] != $op['ptfmon'] ){ $update_list['ptfmon'] = $_POST['ptfmon']; }
 
-
 $list_text = serialize($update_list);
 $sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $op_rows = mysql_num_rows($q);
+
 if( $op_rows == 0 && count($update_list) > 0 ){
 	$op_insert_sql = "INSERT INTO `opcard_update`
 	(`id`,`hn`,`detail`,`status`)
