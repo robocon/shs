@@ -52,11 +52,17 @@ if ( $action === 'show' ) {
 		'Ward45' => 'Ward ¾ÔàÈÉ',
 	);
 
+    if( $month_start != $month_end ){
+        $dateopd = "AND ( `dateopd` >= '$month_start' AND `dateopd` <= '$month_end' )";
+    }else{
+        $dateopd = "AND `dateopd` LIKE '$month_start%'";
+    }
+
     $db = Mysql::load();
     $sql = "SELECT *, CONCAT(`name`,' ',`sname`) AS `ptname` 
     FROM `refer` 
     WHERE `an` != '' 
-    AND ( `dateopd` >= '$month_start' AND `dateopd` <= '$month_end' ) ";
+    $dateopd ";
     $db->select($sql);
     $items = $db->get_items();
     if( count($items) > 0 ){

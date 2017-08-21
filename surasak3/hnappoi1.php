@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+// ถ้าแพทย์เข้าใช้หน้านัดพยาบาลให้เด้งกลับไปหน้าแพทย์เหมือนเดิม
+if( $_SESSION['smenucode'] === 'ADMDR1' ){
+    header("Location: dt_index.php");
+    exit;
+}
+
 session_unregister("cHn");  
 session_unregister("cPtname");
 session_unregister("cAge");

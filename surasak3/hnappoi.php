@@ -1,4 +1,9 @@
 <?php
+// ให้ไปใช้ hnappoi1.php แทน
+
+header("Location: hnappoi1.php");
+exit;
+
    session_start();
     session_unregister("cHn");  
     session_unregister("cPtname");
@@ -8,7 +13,7 @@ session_unregister("cnote");
 session_unregister("cidguard");
 
 ?>
-<form method="post" action="hnappoi.php">
+<form method="post" action="<?php echo $PHP_SELF ?>">
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกใบนัดผู้ป่วย</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN :&nbsp;
   <input type="text" name="hn" size="12"></p>
@@ -29,7 +34,6 @@ session_unregister("cidguard");
  </tr>
 
 <?php
-$hn = $_POST['hn'];
 If (!empty($hn)){
     include("connect.inc");
     global $hn;
