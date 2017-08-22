@@ -1,3 +1,9 @@
+
+<div>
+    <a target=_top  href='../nindex.htm'>&lt;&lt; ไปเมนู</a> | <a href="rphos2m_2.php">รายงานยอดรวมตามช่วงเวลา</a>
+</div>
+
+
 <form method="POST" action="rphos2m.php">
 <p><b>สมุดรายวันซื้อยาและเวชภัณฑ์(ร.พ.2)  ตามเดือน</b></p>
     <div>
@@ -70,6 +76,6 @@
   </p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="submit" value="    &#3605;&#3585;&#3621;&#3591;    " name="B1">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
+    </p>
 </form>
 

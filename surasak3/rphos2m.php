@@ -1,8 +1,22 @@
 <?php
+$yym = $_POST['thiyr'].'-'.$_POST['rptmo'];
+$yym_end = $_POST['thiyr_end'].'-'.$_POST['rptmo_end'];
 
-    $yym=$thiyr.'-'.$rptmo;
-	//$yym1=$thiyr.'/'.$rptmo;
-    print "<font face='Angsana New'><b>สมุดรายวันซื้อยาและเวชภัณฑ์(ร.พ.2)  เดือน $yym  (เรียงตามวันที่รับของ)</b>&nbsp;&nbsp;&nbsp;<a target=_top  href='../nindex.htm'><< ไปเมนู</a>&nbsp;&nbsp;&nbsp;<a target=_top  href='hos2m.php'>&lt;&lt; กลับ</a><br>";
+$txt_more = '';
+if( $yym_end != $yym ){
+    $txt_more = 'ถึงเดือน '.$yym_end;
+}
+
+    // $yym=$thiyr.'-'.$rptmo;
+    // $yym1=$thiyr.'/'.$rptmo;
+    
+    ?>
+    <div>
+        <a target=_top  href='../nindex.htm'>&lt;&lt; ไปเมนู</a> | <a target=_top  href='hos2m.php'>&lt;&lt; กลับไปเลือกเดือน</a> | <a href="rphos2m_2.php">รายงานยอดรวมตามช่วงเวลา</a>
+    </div>
+    <?php
+
+    print "<font face='Angsana New'><b>สมุดรายวันซื้อยาและเวชภัณฑ์(ร.พ.2)  เดือน $yym $txt_more (เรียงตามวันที่รับของ)</b><br>";
 	print "<a href='rphos2m_print.php?yym=$yym'>พิมพ์สมุดรายวันซื้อ</a>";
 	
 ?>
@@ -29,7 +43,16 @@
 If (!empty($yym)){
     include("connect.inc");
 //or billdate LIKE '$yym1%'
-    $query = "SELECT stkno,docno,getdate,date,billno,comname,drugcode,tradname,lotno,packamt,packing,packpri,price,stkbak,packamt FROM combill WHERE (date LIKE '$yym%') AND drugcode like '".$_POST["drugcode"]."%' ORDER BY getdate";
+
+    $date_more = "date LIKE '$yym%'";
+    if( $yym_end != $yym ){
+        $date_more = " ( date >= '$yym-01' AND date <= '$yym_end-31') ";
+    }
+
+    $query = "SELECT stkno,docno,getdate,date,billno,comname,drugcode,tradname,lotno,packamt,packing,packpri,price,stkbak,packamt 
+    FROM combill 
+    WHERE $date_more 
+    AND drugcode like '".$_POST["drugcode"]."%' ORDER BY getdate";
 
     $result = mysql_query($query) or die("Query failed");
     $num=0;

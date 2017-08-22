@@ -1,0 +1,19 @@
+DROP TEMPORARY TABLE IF EXISTS tmp_inputm;
+CREATE TEMPORARY TABLE tmp_inputm 
+(INDEX ptname (ptname))
+SELECT *, REPLACE(`name`,' ', '') AS `ptname` FROM `inputm` 
+WHERE status = 'Y';
+
+DROP TEMPORARY TABLE IF EXISTS tmp_opcard;
+CREATE TEMPORARY TABLE tmp_opcard 
+(INDEX fullname (fullname))
+SELECT *, CONCAT(`name`,`surname`) AS `fullname` FROM `opcard` 
+WHERE ( `idcard` != '' AND `idcard` != '-' ) 
+AND ( `idguard` NOT LIKE 'MX04%' AND `idguard` NOT LIKE 'MX07%' );
+
+
+SELECT a.`name`,a.`idname`,a.`pword`,a.`ptname`,
+b.`idcard`,b.`hn`,b.`yot`,b.`name`,b.`surname`,b.`fullname` 
+FROM `tmp_inputm` AS a 
+LEFT JOIN `tmp_opcard` AS b ON b.`fullname` = a.`ptname`
+ORDER BY a.`row_id`
