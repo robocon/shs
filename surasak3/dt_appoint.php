@@ -1350,8 +1350,8 @@ function frmchk(){
 
 		?>
 		
-		console.log('value test_checker '+test_checker);
-		console.log('value test_limit '+test_limit);
+		// console.log('value test_checker '+test_checker);
+		// console.log('value test_limit '+test_limit);
 
 		if( ( test_checker != 0 && test_limit != 0 ) && ( test_checker >= test_limit ) ){
 			alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+test_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
@@ -1629,8 +1629,8 @@ if( $dr['position'] == '99 เวชปฏิบัติ' ){
 			var intern_count = $(this).attr('data-count');
 			var intern_limit = $(this).attr('intern-limit');
 
-			console.log('input intern_checker '+intern_count);
-			console.log('input intern_limiter '+intern_limit);
+			// console.log('input intern_checker '+intern_count);
+			// console.log('input intern_limiter '+intern_limit);
 
 			$('.intern_checker').val(intern_count);
 			$('.intern_limiter').val(intern_limit);
