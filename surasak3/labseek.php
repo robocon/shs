@@ -216,16 +216,16 @@ function searchSuggest(str,len,getto) {
 <form method="POST" action="<?php echo $PHP_SELF ?>"> <font face="Angsana New"><a target=_BLANK href="codehlp.php">&#3619;&#3627;&#3633;&#3626;</a><Div id="list" style="left: 9px; top: 121px; position: absolute;"></Div>&nbsp;&nbsp;&nbsp;
 
 	<?php
-	$sql = "SELECT `hn` 
-	FROM `opcardchk` 
-	WHERE `hn` = '$cHn' 
-	AND `part` = 'นิยมพานิช60'";
-	$q = mysql_query($sql) or die( mysql_error() );
-	$row = mysql_num_rows($q);
+	// $sql = "SELECT `hn` 
+	// FROM `opcardchk` 
+	// WHERE `hn` = '$cHn' 
+	// AND `part` = 'นิยมพานิช60'";
+	// $q = mysql_query($sql) or die( mysql_error() );
+	// $row = mysql_num_rows($q);
 	$xray_sso = '';
-	if( $row > 0 && $_SESSION["until_login"] == "xray" ){
-		$xray_sso = '41001-sso';
-	}
+	// if( $row > 0 && $_SESSION["until_login"] == "xray" ){
+	// 	$xray_sso = '41001-sso';
+	// }
 	?>
 
 <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>

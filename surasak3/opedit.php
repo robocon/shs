@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <style>
 body {
 	background-color:#CCE9FD;
@@ -38,7 +41,7 @@ else if (document.layers||document.getElementById) {
 </script>
 
 <?php
-    session_start();
+    
     session_unregister("cHn");  
     session_unregister("cPtname");
     session_unregister("cPtright");
