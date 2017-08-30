@@ -63,7 +63,7 @@ if( $user_row > 0 ){
 		
 		// ´Ö§¨Ò¡ opday 
 		$opday_thdatehn = $th_date.$hn;
-		$sql = "SELECT * FROM `opday` WHERE `thidatehn` = '$opday_thdatehn'";
+		$sql = "SELECT * FROM `opday` WHERE `thdatehn` = '$opday_thdatehn'";
 		$shs->query($sql);
 		$opday = $shs->fetch_single();
 		$toborow = $opday["toborow"];

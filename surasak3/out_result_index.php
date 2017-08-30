@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>	
 <style type="text/css">
 <!--
 body {
@@ -20,8 +23,9 @@ a:active {
 </style>
 <table width="60%" border="1" align="center" cellpadding="3" cellspacing="0" bordercolor="#000000">
   <tr>
-    <td width="74%" align="center" bgcolor="#66CC99"><strong>ชื่อหน่วยงานที่ตรวจสุขภาพ</strong></td>
-    <td width="26%" align="center" bgcolor="#66CC99"><strong>ซักประวัติ</strong></td>
+    <td width="58%" align="center" bgcolor="#66CC99"><strong>ชื่อหน่วยงานที่ตรวจสุขภาพ</strong></td>
+    <td width="24%" align="center" bgcolor="#66CC99"><strong>ซักประวัติ</strong></td>
+    <td width="18%" align="center" bgcolor="#66CC99"><strong>เดือน/ปี ที่ตรวจ</strong></td>
   </tr>
 <!--  <tr>
     <td>1. ประปา</td>
@@ -39,7 +43,7 @@ a:active {
     <td>4. คุมประพฤติ</td>
     <td align="center"><a href="out_result.php?part=คุมประพฤติ60" target="_blank">บันทึก</a></td>
   </tr>-->
-  <tr>
+<!--  <tr>
     <td>1. ลูกจ้าง รพ.ค่ายฯ</td>
     <td align="center"><a href="out_result.php?part=ลูกจ้าง60" target="_blank">บันทึก</a></td>
   </tr>
@@ -88,49 +92,68 @@ a:active {
   <tr>
     <td>12. สำนักงานจังหวัดลำปาง</td>
     <td align="center"><a href="out_result.php?part=สำนักงานจังหวัดลำปาง60" target="_blank">บันทึก</a></td>
-  </tr>
+  </tr>-->
   <tr>
-    <td>13. อินทราเซรามิค</td>
+    <td>1. อินทราเซรามิค</td>
     <td align="center"><a href="out_result.php?part=อินทราเซรามิค60" target="_blank">บันทึก</a></td>
+    <td rowspan="6" align="center">มิถุนายน 2560</td>
   </tr>
   <tr>
-    <td>14. มูลนิธิคืนช้างสู่ธรรมชาติ</td>
+    <td>2. มูลนิธิคืนช้างสู่ธรรมชาติ</td>
     <td align="center"><a href="out_result.php?part=มูลนิธิคืนช้างสู่ธรรมชาติ60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>15. กรมทางหลวง</td>
+    <td>3. กรมทางหลวง</td>
     <td align="center"><a href="out_result.php?part=กรมทางหลวง60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>16. เขลางค์ทรานสปอร์ต</td>
+    <td>4. เขลางค์ทรานสปอร์ต</td>
     <td align="center"><a href="out_result.php?part=เขลางค์ทรานสปอร์ต60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>17. นอร์ทเทิร์น</td>
+    <td>5. นอร์ทเทิร์น</td>
     <td align="center"><a href="out_result.php?part=นอร์ทเทิร์น60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>18. พูลผลการเกษตร</td>
+    <td>6. พูลผลการเกษตร</td>
     <td align="center"><a href="out_result.php?part=พูลผลการเกษตร60" target="_blank">บันทึก</a></td>
   </tr> 
   <tr>
-    <td>19. ราชมงคลลำปาง</td>
+    <td>7. ราชมงคลลำปาง</td>
     <td align="center"><a href="out_result.php?part=ราชมงคลลำปาง60" target="_blank">บันทึก</a></td>
+    <td rowspan="5" align="center">กรกฎาคม 2560</td>
   </tr>
   <tr>
-    <td>20. สรีรัตน์เหมืองแร่</td>
+    <td>8. สรีรัตน์เหมืองแร่</td>
     <td align="center"><a href="out_result.php?part=สรีรัตน์เหมืองแร่60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>21. ดับเบิ้ลวิ้ง</td>
+    <td>9. ดับเบิ้ลวิ้ง</td>
     <td align="center"><a href="out_result.php?part=ดับเบิ้ลวิ้ง60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>22. อัลฟ่ากรุ๊ป</td>
+    <td>10. อัลฟ่ากรุ๊ป</td>
     <td align="center"><a href="out_result.php?part=อัลฟ่ากรุ๊ป60" target="_blank">บันทึก</a></td>
   </tr>
   <tr>
-    <td>23. เอ็นเนอร์จีโซลูชั่น</td>
+    <td>11. เอ็นเนอร์จีโซลูชั่น</td>
     <td align="center"><a href="out_result.php?part=เอ็นเนอร์จีโซลูชั่น60" target="_blank">บันทึก</a></td>
-  </tr>  
+  </tr> 
+  <tr>
+    <td>12. ควอลิตี้เซรามิค</td>
+    <td align="center"><a href="out_result.php?part=ควอลิตี้เซรามิค60" target="_blank">บันทึก</a></td>
+    <td rowspan="4" align="center">สิงหาคม 2560</td>
+  </tr>
+  <tr>
+    <td>13. ธกส.แม่ทะ</td>
+    <td align="center"><a href="out_result.php?part=ธกส.แม่ทะ60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>14. ธนบดีเดคอร์เซรามิค</td>
+    <td align="center"><a href="out_result.php?part=ธนบดีเดคอร์เซรามิค60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>15. องค์การสงเคราะห์ทหารผ่านศึก</td>
+    <td align="center"><a href="out_result.php?part=องค์การสงเคราะห์ทหารผ่านศึก60" target="_blank">บันทึก</a></td>
+  </tr>    
 </table>

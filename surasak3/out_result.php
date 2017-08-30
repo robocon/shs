@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -38,7 +41,6 @@ background-color: #000;
 color: #FFF; 
 }
 .style1 {color: #FF0000}
-.style2 {color: #0000FF}
 .help{ cursor: pointer; }
 </style>
 </head>
@@ -62,6 +64,7 @@ color: #FFF;
 </form>
 <br />
 <?
+//echo $sOfficer;
 if(isset($_POST['hn'])){
 				
 	include("connect.inc");		
@@ -161,9 +164,9 @@ if(isset($_POST['hn'])){
       </tr>
     <tr>
       <td class="pdx">น้ำหนัก  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  กก. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ส่วนสูง <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> 
-        ซม. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP1  
+        ซม. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP  
         <input name="bp1" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp1']?>"/> / <input name="bp2" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp2']?>"/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP2
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Repeat-BP
 <input name="bp3" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp3']?>"/>
 /
 <input name="bp4" type="text" class="pdxhead" id="bp4"  value="<?=$arrchk['bp4']?>" size="5"/></td>
@@ -185,12 +188,14 @@ if(isset($_POST['hn'])){
 					<tr>
 					  <td class="pdx">หมายเหตุ</td>
 					  <td><input name="comment" type="text" class="pdxhead" size="50" id="comment" value="<?=$arrchk['comment']?>" /></td>
+				      <td>&nbsp;</td>
 				  </tr>
 					<tr>
 						<td class="pdx">
 							ผล X-RAY						</td>
 						<td>
 							<input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />						</td>
+					    <td><span class="style1">กรณี ตั้งครรภ์ หรือไม่ได้ Xray ให้กรอกข้อมูลช่องน</span>ี้</td>
 					</tr>
 					<tr>
                       <td class="pdx"> ผล V/A</td>
@@ -201,18 +206,21 @@ if(isset($_POST['hn'])){
 					      <option value="พบตาบอดสี" <? if($arrchk['va']=="พบตาบอดสี"){ echo "selected='selected'";} ?>>พบตาบอดสี</option>
 				        </select>
 					    </label></td>
+				      <td>&nbsp;</td>
 				  </tr>
 					<tr>
 						<td class="pdx">
-							EKG						</td>
+							ผล EKG						</td>
 						<td>
 							<input name="ekg" type="text" class="pdxhead" size="50" id="ekg" value="<?=$arrchk['ekg']?>" />						</td>
+					    <td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td class="pdx">
 							ผลตรวจ BMD						</td>
 						<td>
 							<input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />						</td>
+					    <td>&nbsp;</td>
 					</tr>
 					<!--
 					<tr>
@@ -274,6 +282,8 @@ if(isset($_POST['okhn2'])){
 		`doctor_result` = '".$_POST['doctor_result']."',
 		`year_chk` = '".$nPrefix."',
 		`part` = '".$_POST['part']."',
+		`officer` = '".$sOfficer."',
+		`register` = '".date("Y-m-d H:i:s")."',
 		`42702` = '$bone',
 		`hpv` = '$hpv',
 		`temp` = '".$_POST['temp']."',
@@ -293,11 +303,11 @@ if(isset($_POST['okhn2'])){
 		$update = "INSERT INTO `out_result_chkup` ( 
 			`hn`,`ptname`,`weight`,`height`,`bp1`,`bp2`,
 			`p`,`ekg`,`va`,`cxr`,`year_chk`,`register`,
-			`part`,`42702`,`hpv`,`temp`,`rate`,`prawat`,`cigga`,`alcohol`,`exercise`,`allergic`,`comment`,`bp3`,`bp4`
+			`part`,`officer`,`register`,`42702`,`hpv`,`temp`,`rate`,`prawat`,`cigga`,`alcohol`,`exercise`,`allergic`,`comment`,`bp3`,`bp4`
 		) VALUES (
 			'".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."',
 			'".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix', '',
-			'".$_POST['part']."','$bone','$hpv','".$_POST['temp']."','".$_POST['rate']."','".$_POST['prawat']."','".$_POST['cigga']."','".$_POST['alcohol']."',
+			'".$_POST['part']."',$sOfficer,'".date("Y-m-d H:i:s")."','$bone','$hpv','".$_POST['temp']."','".$_POST['rate']."','".$_POST['prawat']."','".$_POST['cigga']."','".$_POST['alcohol']."',
 			'".$_POST['exercise']."','".$_POST['allergic']."','".$_POST['comment']."','".$_POST['bp3']."','".$_POST['bp4']."'
 		);";
 	}
