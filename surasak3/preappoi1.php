@@ -68,8 +68,8 @@ if($_GET["action"] == "carlendar"){
 //$sql = "Select mdcode From inputm where name = '".$_GET['id']."' limit 1";
 //list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
 
-$sql = "Select name From doctor where name like '".$dt_doctor."%' limit 1 ";
-list($appoint_doctor) = Mysql_fetch_row(Mysql_Query($sql));
+$sql = "Select name,position From doctor where name like '".$dt_doctor."%' limit 1 ";
+list($appoint_doctor,$dr_position) = Mysql_fetch_row(Mysql_Query($sql));
 
 
 /*switch($_SESSION["dt_doctor"]){
@@ -146,7 +146,40 @@ $wday = $FTime["wday"];
 //สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-$sql = "Select appdate, apptime, count(distinct hn) as total_app From appoint  where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') AND apptime <> 'ยกเลิกการนัด' GROUP BY appdate, apptime  ";
+function dump($txt){
+	echo "<pre>";
+	var_dump($txt);
+	echo "</pre>";
+}
+
+// ถ้าหมอที่เลือกจาก dropdown เป็นหมอ intern
+$total_items = array();
+if( $dr_position == '99 เวชปฏิบัติ' ){
+	$thai_date = $thmonthname[($month - 1)]." ".($year + 543);
+	
+	// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
+	$sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
+	FROM `doctor` AS a 
+	LEFT JOIN (
+		SELECT `appdate`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
+	) AS b ON a.name = b.`doctor` 
+	WHERE a.`position` = '99 เวชปฏิบัติ' 
+	AND b.`appdate` IS NOT NULL 
+	GROUP BY b.`appdate`  ";
+	$query = mysql_query($sql);
+	while( $item = mysql_fetch_assoc($query) ){
+		$code = 'A'.$item['code'];
+		$total_items[$code] = $item;
+	}
+	// dump($total_items);
+}
+
+$sql = "Select appdate, apptime, count(distinct hn) as total_app 
+From appoint  
+where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+AND apptime <> 'ยกเลิกการนัด' 
+GROUP BY appdate, apptime  ";
 
 $result = Mysql_Query($sql);
 $list_app = array();
@@ -259,21 +292,51 @@ for ($i=0; $i<=6; $i++) {
       }
    }
    else {                  //แสดงวันที่ในแถวแรกของปฏิทิน
+
+	$key = 'A'.sprintf("%02d",$iday);
+	$dr_intern_txt = '';
+	$intern_total = 0;
+	if( !empty($total_items[$key]) ){
+		$item = $total_items[$key];
+		$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -250, -210)">'.$item['total'].'</span>)</div>';
+		$intern_total = $item['total'];
+	}
+
+	$intern_limit = '';
+	$data_count = '';
+	if( $dr_position == '99 เวชปฏิบัติ' ){
+		// วันจันทร์จะลิมิตไว้ที่ 40 วันอื่นๆที่ 50
+		$max_limit = 50;
+		if( $i == 1 ){
+			$max_limit = 40;
+		}
+
+		$intern_limit = 'intern-limit="'.$max_limit.'"';
+		$data_count = 'data-count="'.$intern_total.'"';
+	}
+
+
       if ($i == 0 ) {
       //กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
-         echo "<td width=\"50\" valign=\"top\" align=\"center\" class=\"sunday\"><A class=\"sunday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
+         echo "<td width=\"50\" valign=\"top\" align=\"center\" class=\"sunday\"><A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" >$iday</A>";
 		 if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		 else
 			 echo "<BR>&nbsp;";
+
+		echo $dr_intern_txt;
+
 		 echo "</td>\n";
       }else  if ($i == 6 ) {
       //กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
-         echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
+         echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" >$iday</A>";
 		  if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		  else
 			 echo "<BR>&nbsp;";
+
+		echo $dr_intern_txt;
+
 		 echo "</td>\n";
       }
       else {
@@ -287,11 +350,14 @@ for ($i=0; $i<=6; $i++) {
 
 
 
-         echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class."\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\"  ".$holiday_detail.">$iday</A>";
+         echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\"  ".$holiday_detail.">$iday</A>";
 		  if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		  else
 			 echo "<BR>&nbsp;";
+
+		echo $dr_intern_txt;
+
 		 echo "</td>\n";
 
       }
@@ -306,6 +372,31 @@ for ($j=0; $j<=4; $j++) {
    if ($iday <= $Lday) {
       echo "<tr  height=\"60\" valign=\"top\">\n";
 		for ($i=0; $i<=6; $i++) {
+
+
+			$key = 'A'.sprintf("%02d",$iday);
+			$dr_intern_txt = '';
+			$intern_total = 0;
+			if( !empty($total_items[$key]) ){
+				$item = $total_items[$key];
+				$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -0, -150)">'.$item['total'].'</span>)</div>';
+				$intern_total = $item['total'];
+			}
+
+			$intern_limit = '';
+			$data_count = '';
+			if( $dr_position == '99 เวชปฏิบัติ' ){
+				// วันจันทร์จะลิมิตไว้ที่ 40 วันอื่นๆที่ 50
+				$max_limit = 50;
+				if( $i == 1 ){
+					$max_limit = 40;
+				}
+		
+				$intern_limit = 'intern-limit="'.$max_limit.'"';
+				$data_count = 'data-count="'.$intern_total.'"';
+			}
+
+
 			$holiday_detail = "";
 			if ($iday <= $Lday) {
 			if ($i == 0 ) {
@@ -315,9 +406,12 @@ for ($j=0; $j<=4; $j++) {
 				  }else{
 					$class = "norm";
 				  }
-				echo "<td width=\"50\" align=\"center\" class=\"sunday\"><A class=\"sunday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail.">$iday</A>";
+				echo "<td width=\"50\" align=\"center\" class=\"sunday\"><A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail.">$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
+						
+						echo $dr_intern_txt;
+						
 						echo "</td>\n";
 			}else  if ($i == 6 ) {
 				if($holiday["A".sprintf("%02d",$iday)]["date"]){
@@ -326,10 +420,13 @@ for ($j=0; $j<=4; $j++) {
 				  }else{
 					$class = "norm";
 				  }
-				echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
+				echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail." >$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
-				echo "</td>\n";
+				
+						echo $dr_intern_txt;
+				
+						echo "</td>\n";
 			}else {
 				if($holiday["A".sprintf("%02d",$iday)]["date"]){
 					$class = "sunday";
@@ -337,10 +434,13 @@ for ($j=0; $j<=4; $j++) {
 				  }else{
 					$class = "norm";
 				  }
-				echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class."\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
+				echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail." >$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
-				echo "</td>\n";
+				
+						echo $dr_intern_txt;
+
+						echo "</td>\n";
 			}
 		$iday++;
 		}
@@ -357,6 +457,19 @@ for ($j=0; $j<=4; $j++) {
 
 echo "</table></TD>
 </TR>";
+
+if( $dr_position == '99 เวชปฏิบัติ' ){
+	?>
+	<tr>
+		<td colspan="2">
+			<span style="color: #FF0000; font-size: 18px;">(สีแดง) ผู้ป่วยนัดของของแพทย์ที่กำลังเลือก</span>
+			<br>
+			<span style="color: #008000; font-size: 18px;">(สีเขียว) ผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมดต่อวัน</span>
+		</td>
+	</tr>
+	<?php
+}
+
 echo "<tr><td colspan=\"2\"><br><font face=\"Angsana New\">นัดมาวันที่ : </font><INPUT TYPE=\"text\" ID=\"date_appoint\" NAME=\"date_appoint\" size=\"15\" readonly>";
 echo "</td></tr></TABLE>";
 
@@ -568,6 +681,30 @@ body,td,th {
   &nbsp;&nbsp;<input type="submit" value="    ต่อไป     " name="B1">
   &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< &#3648;&#3617;&#3609;<span class="t">&#3641;</span></a>&nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a></p>
 </form>
+
+<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	// ตอนคลิกที่ตัวปฏิทิน
+	$(document).on('click', '.countnum', function(){
+		
+		var intern_count = $(this).attr('data-count');
+		var intern_limit = $(this).attr('intern-limit');
+		if( intern_count >= intern_limit ){
+			alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+intern_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
+			return false;
+		}
+
+
+		$("#date_appoint").val($(this).attr('data-date'));
+
+	});
+});
+})(jQuery);
+</script>
+
 <?php include("unconnect.inc");?>
 <div id = "tooltip" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
