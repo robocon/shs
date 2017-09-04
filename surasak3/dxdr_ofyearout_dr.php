@@ -184,17 +184,15 @@ function check(){
 		alert('ยังไม่ได้เลือกค่า BMI');
 		document.dxdrform.normal56.focus();
 		return false;		
-	}else if(document.dxdrform.normal98.checked == false&document.dxdrform.normal99.checked == false){
+/*	}else if(document.dxdrform.normal98.checked == false&document.dxdrform.normal99.checked == false){
 		alert('ยังไม่ได้เลือกผลการตรวจUA');
 		document.dxdrform.normal98.focus();
 		return false;
-	}
-	else if(document.dxdrform.normal97.checked == false&document.dxdrform.normal96.checked == false){
+	}else if(document.dxdrform.normal97.checked == false&document.dxdrform.normal96.checked == false){
 		alert('ยังไม่ได้เลือกผลการตรวจCBC');
 		document.dxdrform.normal97.focus();
-		return false;
-	}
-	else if(document.dxdrform.normal58.checked == false&document.dxdrform.normal57.checked == false){
+		return false;*/
+	}else if(document.dxdrform.normal58.checked == false&document.dxdrform.normal57.checked == false){
 		alert('ยังไม่ได้เลือกผลการตรวจเอ็กซ์เรย์ปอด');
 		document.dxdrform.normal58.focus();
 		return false;
@@ -322,8 +320,8 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 	$date_after= date("Y-m-d H:i:s",$times);
 	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
 
-	$sql = "Select * From  `dxofyear_out` where yearchk = '$nPrefix' AND hn='".$arr_view["hn"]."' limit 0,1 ";
-	
+	$sql = "Select * From  `dxofyear_out` where yearchk = '$nPrefix' AND hn='".$arr_view["hn"]."' order by row_id desc limit 0,1 ";
+	//echo $sql;
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
 	$result_dx = mysql_fetch_array($result);
@@ -423,12 +421,14 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
 <input name="vn" type="hidden" id="vn"  value="<?php echo $queryvn['vn'];?>" />
 <br />
-<p align="center" class="head_font1"><strong>บันทึกผลการตรวจสุขภาพ</strong></p>
+<p align="center" class="head_font1"><strong>บันทึกผลการตรวจสุขภาพประจำปี</strong></p>
 <table  width="100%" border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFFFFF">
 <tr>
   <td><table width="100%" border="0" cellpadding="0" cellspacing="0" >
     <tr>
-      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</td>
+      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย<span class="profileheadvalue"> [
+          <?=substr($queryvn["toborow"],4);?>
+          ]</span></td>
     </tr>
     <tr>
       <td width="148" align="left" class="profilehead">VN</td>
@@ -480,7 +480,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
       <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["rate"]; ?> ครั้ง/นาที</td>
       <td align="left" class="profilehead">BP </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["bp1"]; ?> / <?php echo $arr_dxofyear["bp2"]; ?> mmHg</td>
+      <td class="profilevalue">&nbsp;<?php if(!empty($arr_dxofyear["bp21"])){ echo $arr_dxofyear["bp21"]; }else{ echo $arr_dxofyear["bp1"];} ?> / <?php if(!empty($arr_dxofyear["bp22"])){ echo $arr_dxofyear["bp22"]; }else{ echo $arr_dxofyear["bp2"];} ?> mmHg</td>
     </tr>
     <tr>
       <td align="left" class="profilehead">บุหรี่ </td>
@@ -522,10 +522,12 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 		}else{ echo $_SESSION["sOfficer"]; echo "<input type='hidden' name='doctorn' value='".$_SESSION["sOfficer"]."'";}
 		?></td>
     </tr>
+<? if(empty($arr_dxofyear["bp21"]) || empty($arr_dxofyear["bp22"])){  //ถ้าไม่ได้ Repeat BP ?>    
     <tr bgcolor="#CCCCFF">
-      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>ค่าความดัน</strong></td>
+      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>ค่าความดัน </strong></td>
 	    <td bgcolor="#FFCC99"><span class="profile">:</span></td>
-	    <td bgcolor="#FFCC99" class="profilevalue"><input name='normal55' type='radio' value='ปกติ' onclick="togglediv2('acnormal55')" <?  if($arr_dxofyear["bp1"] < 129 && $arr_dxofyear["bp2"] < 89){ echo "checked";}?>/>
+	    <td bgcolor="#FFCC99" class="profilevalue">
+        <input name='normal55' type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp1"] > 0 && $arr_dxofyear["bp1"] < 129) && ($arr_dxofyear["bp2"] >0 && $arr_dxofyear["bp2"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
 ปกติ
 <input name='normal55' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
 	      <?  
@@ -544,6 +546,31 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	        </select>
 	      </div></td>
 	    </tr>
+<? }else{ // ถ้า Repeat BP?>  
+    <tr bgcolor="#CCCCFF">
+      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>Repeat ค่าความดัน </strong></td>
+	    <td bgcolor="#FFCC99"><span class="profile">:</span></td>
+	    <td bgcolor="#FFCC99" class="profilevalue">
+        <input name='normal55' type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp21"] > 0 && $arr_dxofyear["bp21"] < 129) && ($arr_dxofyear["bp22"] >0 && $arr_dxofyear["bp22"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
+ปกติ
+<input name='normal55' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp21"] >= 130 && $arr_dxofyear["bp22"] >= 90) || ($arr_dxofyear["bp21"] >= 129 && $arr_dxofyear["bp22"] <= 89) || ($arr_dxofyear["bp21"] <= 129 && $arr_dxofyear["bp22"] >= 89)){ echo "checked";}?>/>
+	      <?  
+		  if(($arr_dxofyear["bp21"] >= 130 && $arr_dxofyear["bp22"] >= 90) || ($arr_dxofyear["bp21"] >= 129 && $arr_dxofyear["bp22"] <= 89) || ($arr_dxofyear["bp21"] <= 129 && $arr_dxofyear["bp22"] >= 89)){
+		  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+		  }else{
+		  	echo "ผิดปกติ";
+		  }
+		  ?>
+        </td>
+	    <td colspan="9" bgcolor="#FFCC99" class="profilevalue">
+         <div id="acnormal55" <? if($arr_dxofyear["bp21"] < 129 && $arr_dxofyear["bp22"] < 89){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+	      <select name="ch55" >
+	        <option value="ความดันโลหิต เกือบสูง PRE-HT" <? if($arr_dxofyear["bp21"] >= 135 && $arr_dxofyear["bp21"] <= 139){ echo "selected='selected';";}?>>ความดันโลหิต เกือบสูง PRE-HT</option>
+	        <option value="ท่านมีความดันโลหิตสูง ควรต้องควบคุมอาหารอย่างเคร่งครัด โดยเฉพาะอาหารที่มีรสเค็มและออกกำลังกาย" <? if(($arr_dxofyear["bp21"] >=140 && $arr_dxofyear["bp22"] >= 90) || ($arr_dxofyear["bp21"] >=140 && $arr_dxofyear["bp22"] <= 90) || ($arr_dxofyear["bp21"] <=140 && $arr_dxofyear["bp22"] >= 90)){ echo "selected='selected';";}?>>ท่านมีความดันโลหิตสูง ควรต้องควบคุมอาหารอย่างเคร่งครัด โดยเฉพาะอาหารที่มีรสเค็มและออกกำลังกาย</option>
+	        </select>
+	      </div></td>
+	    </tr>
+<? } //จบ เช็ค Repeat BP?>      
     <tr bgcolor="#FFCC99">
       <td class="profile"  style="color:#000"><strong>ค่า BMI</strong></td>
       <td><span class="profile">:</span></td>
@@ -814,9 +841,9 @@ $_SESSION["hn_now"] = $arr_view["hn"];
             <td width="32" align="center" class="labfont" ><span <? if($result_dx['hctflag']!="N") echo " style='color:#F00'";?>><?=$result_dx['hctflag']?></span></td>
             <td width="202" class="labfont"><input name='normal31' type='radio' value='ปกติ' onclick="togglediv2('acnormal31')" <? if($result_dx['cbc_hct'] >= 37 && $result_dx['cbc_hct'] <= 49) echo "checked";?> />
               ปกติ 
-              <input name='normal31' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal31')" <? if($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49) echo "checked";?>/>
+              <input name='normal31' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal31')" <? if(!empty($result_dx['cbc_hct']) && ($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49)) echo "checked";?>/>
               <? 
-			  if($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49){
+			  if(!empty($result_dx['cbc_hct']) && ($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49)){
 			  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			  }else{
 			  	echo "ผิดปกติ";
@@ -824,7 +851,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 			  ?>
               </td>
               <td width="877">
-             <div id="acnormal31" <? if($result_dx['cbc_hct'] >= 37 && $result_dx['cbc_hct'] <= 49) echo "style='display: none;'"; else "style='display: block;'"; ?>>
+             <div id="acnormal31" <? if(empty($result_dx['cbc_hct']) || ($result_dx['cbc_hct'] >= 37 && $result_dx['cbc_hct'] <= 49)) echo "style='display: none;'"; else "style='display: block;'"; ?>>
       <select name='ch31'>
           <option value='มีระดับเม็ดเลือดแดงต่ำกว่าปกติ บ่งบอกถึงภาวะซีดควรตรวจซ้ำ หรือ พบแพทย์เพื่อหาสาเหตุ' <? if($result_dx['cbc_hct'] < 37){ echo "selected='selected';";}?>>มีระดับเม็ดเลือดแดงต่ำกว่าปกติ บ่งบอกถึงภาวะซีดควรตรวจซ้ำ หรือ พบแพทย์เพื่อหาสาเหตุ</option>
 			<option value='มีระดับเม็ดเลือดแดงสูงกว่าปกติ ควรตรวจซ้ำ หรือ พบแพทย์' <? if($result_dx['cbc_hct'] > 49){ echo "selected='selected';";}?>>มีระดับเม็ดเลือดแดงสูงกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์</option>
@@ -846,16 +873,16 @@ $_SESSION["hn_now"] = $arr_view["hn"];
           <td align="center" class="labfont" width="32" ><span <? if($result_dx['wbcflag']!="N"){ echo " style='color:#F00'";}?>><?=$result_dx['wbcflag'];?></span></td>
           <td width="202" class="labfont"><input name='normal32' type='radio' value='ปกติ' onclick="togglediv2('acnormal32')" <? if($result_dx['cbc_wbc'] >= 5 &&  $result_dx['cbc_wbc'] <= 10){ echo "checked";}?>/>
           ปกติ 
-            <input name='normal32' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal32')" <? if($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10){ echo "checked";}?>/>
+            <input name='normal32' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal32')" <? if(!empty($result_dx['cbc_wbc']) && ($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10)){ echo "checked";}?>/>
               <? 
-			  if($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10){
+			  if(!empty($result_dx['cbc_wbc']) && ($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10)){
 			  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			  }else{
 			  	echo "ผิดปกติ";
 			  }
 			  ?>
             </td>
-            <td><div id="acnormal32" <? if($result_dx['cbc_wbc'] >= 5 &&  $result_dx['cbc_wbc'] <= 10){ echo "style='display: none;'";}else{ echo "style='display: block;'";} ?>>
+            <td><div id="acnormal32" <? if(empty($result_dx['cbc_wbc']) || ($result_dx['cbc_wbc'] >= 5 &&  $result_dx['cbc_wbc'] <= 10)){ echo "style='display: none;'";}else{ echo "style='display: block;'";} ?>>
             <select name='ch32'>
               <option value='ปริมาณเม็ดเลือดขาวมีค่าต่ำกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์' <? if($result_dx['cbc_wbc'] < 5){ echo "selected='selected';";}?>>ปริมาณเม็ดเลือดขาวมีค่าต่ำกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์</option>
               <option value='ปริมาณเม็ดเลือดขาวอยู่ในระดับสูงเกินปกติ ควรตรวจซ้ำหรือพบแพทย์' <? if($result_dx['cbc_wbc'] > 10){ echo "selected='selected';";}?>>ปริมาณเม็ดเลือดขาวอยู่ในระดับสูงเกินปกติ ควรตรวจซ้ำหรือพบแพทย์</option>              
@@ -877,16 +904,16 @@ $_SESSION["hn_now"] = $arr_view["hn"];
           <td align="center" class="labfont" width="32"><span <? if($result_dx['pltcflag']!="N"){ echo " style='color:#F00'";}?>><?=$result_dx['pltcflag']?></span></td>
           <td width="202" class="labfont"><input name='normal33' type='radio' value='ปกติ' onclick="togglediv2('acnormal33')" <? if($result_dx['cbc_pltc'] >= 140 &&  $result_dx['cbc_pltc'] <= 400){ echo "checked";}?>/>
           ปกติ 
-            <input name='normal33' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal33')" <? if($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400){ echo "checked";}?>/>
+            <input name='normal33' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal33')" <? if(!empty($result_dx['cbc_pltc']) && ($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400)){ echo "checked";}?>/>
               <? 
-			   if($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400){
+			   if(!empty($result_dx['cbc_pltc']) && ($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400)){
 			  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			  }else{
 			  	echo "ผิดปกติ";
 			  }
 			  ?>            
             </td>
-            <td><div id="acnormal33" <? if($result_dx['cbc_pltc'] >= 140 &&  $result_dx['cbc_pltc'] <= 400){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+            <td><div id="acnormal33" <? if(empty($result_dx['cbc_pltc']) || ($result_dx['cbc_pltc'] >= 140 &&  $result_dx['cbc_pltc'] <= 400)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
        <select name='ch33'>
 	  <option value='ปริมาณเกร็ดเลือดมีค่าต่ำกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์' <? if($result_dx['cbc_pltc'] < 140){ echo "selected='selected';";}?>>ปริมาณเกร็ดเลือดมีค่าต่ำกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์</option>
 	  <option value='ปริมาณเกร็ดเลือดมีค่าสูงเกินปกติ ควรตรวจซ้ำหรือพบแพทย์' <? if($result_dx['cbc_pltc'] > 400){ echo "selected='selected';";}?>>ปริมาณเกร็ดเลือดมีค่าสูงเกินปกติ ควรตรวจซ้ำหรือพบแพทย์</option>      
@@ -969,9 +996,9 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" class="labfont"><span <? if($result_dx['bsflag']!="N"){ echo "style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['bsflag']?></span></td>
 	    <td class="labfont"><input name='normal47' type='radio' value='ปกติ' onclick="togglediv2('acnormal47');" <?  if($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106){ echo "checked";}?>/>
 ปกติ
-  		<input name='normal47' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal47');" <? if($result_dx['bs'] < 74 || $result_dx['bs'] > 106){ echo "checked";}?>/>
+  		<input name='normal47' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal47');" <? if(!empty($result_dx['bs']) && $result_dx['bs'] < 74 || $result_dx['bs'] > 106){ echo "checked";}?>/>
             <? 
-			if($result_dx['bs'] < 74 || $result_dx['bs'] > 106){
+			if(!empty($result_dx['bs']) && $result_dx['bs'] < 74 || $result_dx['bs'] > 106){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
@@ -979,9 +1006,9 @@ $bsult = mysql_fetch_array($brow);
 			?>  
   		</td>
 	    <td colspan="4">            
-        <div id="acnormal47" <? if($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+        <div id="acnormal47" <? if(empty($result_dx['bs']) || ($result_dx['bs'] >= 74 && $result_dx['bs'] <= 106)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch47'>
-        <option value="ระดับน้ำตาลในเลือดสูงเกินค่าปกติ มีความเสี่ยงสูงต่อการเกิดเบาหวานในอนาคต ควรเริ่มต้นควบคุมอาหาร จำพวกข้าว, แป้ง, อาหารที่มีรสชาติหวาน และตรวจซ้ำใน 1-2 ปี" <? if($result_dx['bs'] >= 106 && $result_dx['bs'] <= 125){ echo "selected='selected';";}?>>ระดับน้ำตาลในเลือดสูงเกินค่าปกติ มีความเสี่ยงสูงต่อการเกิดเบาหวานในอนาคต ควรเริ่มต้นควบคุมอาหาร และตรวจซ้ำใน 1-2 ปี</option>
+        <option value="มีความเสี่ยงสูงต่อการเกิดเบาหวาน ควรควบคุมอาหาร จำพวกข้าว, แป้ง, อาหารที่มีรสชาติหวาน และตรวจซ้ำใน 1-2 ปี" <? if($result_dx['bs'] >= 106 && $result_dx['bs'] <= 125){ echo "selected='selected';";}?>>มีความเสี่ยงสูงต่อการเกิดเบาหวาน ควรควบคุมอาหาร จำพวกข้าว, แป้ง, อาหารที่มีรสชาติหวาน และตรวจซ้ำใน 1-2 ปี</option>
         <option value="อาจเป็นโรคเบาหวาน ควรพบแพทย์เพื่อประเมินและให้การรักษา" <? if($result_dx['bs'] > 125){ echo "selected='selected';";}?>>อาจเป็นโรคเบาหวาน ควรพบแพทย์เพื่อประเมินและให้การรักษา</option>                
         </select></div></td>
 	      </tr>
@@ -1004,7 +1031,7 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['cholrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['cholflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['cholflag']?></span></td>
-	    <td class="labfont"><input name='normal46' type='radio' value='ปกติ' onclick="togglediv2('acnormal46');" <? if($result_dx['chol'] <= 200){ echo "checked";}?> />
+	    <td class="labfont"><input name='normal46' type='radio' value='ปกติ' onclick="togglediv2('acnormal46');" <? if(!empty($result_dx['chol']) && $result_dx['chol'] <= 200){ echo "checked";}?> />
 ปกติ
   <input name='normal46' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal46');" <? if($result_dx['chol'] > 200){ echo "checked";}?>/>
             <? 
@@ -1041,7 +1068,7 @@ $bsult = mysql_fetch_array($brow);
 		</td>
 	    <td class="labfont">(<?=$result_dx['tgrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['tgflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['tgflag']?></span></td>
-	    <td class="labfont"><input name='normal48' type='radio' value='ปกติ' onclick="togglediv2('acnormal48');" <? if($result_dx['tg'] <= 150){ echo "checked";}?> />
+	    <td class="labfont"><input name='normal48' type='radio' value='ปกติ' onclick="togglediv2('acnormal48');" <? if(!empty($result_dx['tg']) && $result_dx['tg'] <= 150){ echo "checked";}?> />
 ปกติ
   <input name='normal48' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal48');"  <? if($result_dx['tg'] > 150){ echo "checked";}?>/>
             <? 
@@ -1080,9 +1107,9 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" class="labfont"><span <? if($result_dx['bunflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['bunflag']?></span></td>
 	    <td class="labfont"><input name='normal44' type='radio' value='ปกติ' onclick="togglediv2('acnormal44');" <? if($result_dx['bun'] >= 7 && $result_dx['bun'] <= 18){ echo "checked";}?>/>
 ปกติ
-  <input name='normal44' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal44');" <? if($result_dx['bun'] < 7 || $result_dx['bun'] > 18){ echo "checked";}?>/>
+  <input name='normal44' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal44');" <? if(!empty($result_dx['bun']) && $result_dx['bun'] < 7 || $result_dx['bun'] > 18){ echo "checked";}?>/>
             <? 
-			if($result_dx['bun'] < 7 || $result_dx['bun'] > 18){
+			if(!empty($result_dx['bun']) && $result_dx['bun'] < 7 || $result_dx['bun'] > 18){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
@@ -1090,7 +1117,7 @@ $bsult = mysql_fetch_array($brow);
 			?>          
         </td>
 	    <td colspan="4">
-        <div id="acnormal44" <? if($result_dx['bun'] >= 7 && $result_dx['bun'] <= 18){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+        <div id="acnormal44" <? if(empty($result_dx['bun']) || $result_dx['bun'] >= 7 && $result_dx['bun'] <= 18){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch44'>
 		<option value="ค่าการทำงานของไตต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ" <? if($result_dx['bun'] < 7){ echo "selected='selected';";}?>>ค่าการทำงานของไตต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ</option>       
         <option value="ค่าการทำงานของไตสูงกว่าปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['bun'] > 18){ echo "selected='selected';";}?>>ค่าการทำงานของไตสูงกว่าปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option>
@@ -1117,9 +1144,9 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" class="labfont"><span <? if($result_dx['crflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['crflag']?></span></td>
 	    <td class="labfont"><input name='normal45' type='radio' value='ปกติ' onclick="togglediv2('acnormal45');" <? if($result_dx['cr'] >= 0.6 && $result_dx['cr'] <= 1.3){ echo "checked";}?> />
 ปกติ
-  <input name='normal45' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal45');" <? if($result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){ echo "checked";}?>/>
+  <input name='normal45' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal45');" <? if(!empty($result['cr']) && $result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){ echo "checked";}?>/>
             <? 
-			if($result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){
+			if(!empty($result_dx['cr']) && $result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
@@ -1127,7 +1154,7 @@ $bsult = mysql_fetch_array($brow);
 			?>  
 		</td>
 	    <td colspan="4">
-        <div id="acnormal45" <? if($result_dx['cr'] >= 0.6 && $result_dx['cr'] <= 1.3){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+        <div id="acnormal45" <? if(empty($result_dx['cr']) || ($result_dx['cr'] >= 0.6 && $result_dx['cr'] <= 1.3)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
 		<select name='ch45'>
         <option value="ค่าการทำงานของไตต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ" <? if($result_dx['cr'] < 0.6){ echo "selected='selected';";}?>>ค่าการทำงานของไตต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ</option>
         <option value="ค่าการทำงานของไตสูงกว่าปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['cr'] > 1.3){ echo "selected='selected';";}?>>ค่าการทำงานของไตสูงกว่าปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option>
@@ -1154,9 +1181,9 @@ $bsult = mysql_fetch_array($brow);
             <td width="4%" align="center" class="labfont"><span <? if($result_dx['alkflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['alkflag']?></span></td>
 			<td width="10%" class="labfont"><input name='normal41' type='radio' value='ปกติ' onclick="togglediv2('acnormal41');"  <? if($result_dx['alk'] >= 46 && $result_dx['alk'] <= 116){ echo "checked";}?>/>
 			ปกติ 
-			  <input name='normal41' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal41');" <? if($result_dx['alk'] < 46 || $result_dx['alk'] > 116){ echo "checked";}?>/>
+			  <input name='normal41' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal41');" <? if(!empty($result_dx['alk']) && $result_dx['alk'] < 46 || $result_dx['alk'] > 116){ echo "checked";}?>/>
             <? 
-			if($result_dx['alk'] < 46 || $result_dx['alk'] > 116){
+			if(!empty($result_dx['alk']) && $result_dx['alk'] < 46 || $result_dx['alk'] > 116){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
@@ -1164,7 +1191,7 @@ $bsult = mysql_fetch_array($brow);
 			?>                  
             </td>
             <td width="70%" colspan="4">
-           <div id="acnormal41" <? if($result_dx['alk'] >= 46 && $result_dx['alk'] <= 116){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+           <div id="acnormal41" <? if(empty($result_dx['alk']) || ($result_dx['alk'] >= 46 && $result_dx['alk'] <= 116)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
            <select name='ch41'><option value="ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['alk'] < 46 || $result_dx['alk'] > 116){ echo "selected='selected';";}?>>ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option></select></div>            </td>
           </tr>
 	  <tr>
@@ -1186,7 +1213,7 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['sgptrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['sgptflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['sgptflag']?></span></td>
-	    <td class="labfont"><input name='normal42' type='radio' value='ปกติ' onclick="togglediv2('acnormal42');" <? if($result_dx['sgpt'] <= 50){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal42' type='radio' value='ปกติ' onclick="togglediv2('acnormal42');" <? if($result_dx['sgpt'] > 0 && $result_dx['sgpt'] <= 50){ echo "checked";}?>/>
 ปกติ
   <input name='normal42' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal42');" <? if($result_dx['sgpt'] > 50){ echo "checked";}?>/>
             <? 
@@ -1199,8 +1226,8 @@ $bsult = mysql_fetch_array($brow);
    
   		</td>
 	    <td colspan="4">          
-        <div id="acnormal42" <? if($result_dx['sgpt'] <= 50){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
-        <select name='ch42'><option value="ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['sgpt'] > 50){ echo "selected='selected';";}?>>ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option></select></div>  </td>
+        <div id="acnormal42" <? if(empty($result_dx['uric']) || ($result_dx['sgpt'] > 0 && $result_dx['sgpt'] <= 50)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+        <select name='ch42'><option value="ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if(!empty($result_dx['sgpt']) && $result_dx['sgpt'] > 50){ echo "selected='selected';";}?>>ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option></select></div>  </td>
 	    </tr>
 	  <tr>
 	    <td align="right" class="profilelab">AST :</td>
@@ -1223,9 +1250,9 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" class="labfont"><span <? if($result_dx['sgotflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['sgotflag']?></span></td>
 	    <td class="labfont"><input name='normal43' type='radio' value='ปกติ' onclick="togglediv2('acnormal43');" <? if($result_dx['sgot'] >= 15 && $result_dx['sgot'] <= 37){ echo "checked";}?>/>
 ปกติ
-  <input name='normal43' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal43');" <? if($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37){ echo "checked";}?>/>
+  <input name='normal43' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal43');" <? if(!empty($result_dx['sgot']) && ($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37)){ echo "checked";}?>/>
             <? 
-			if($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37){
+			if(!empty($result_dx['sgot']) && ($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37)){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
@@ -1233,7 +1260,7 @@ $bsult = mysql_fetch_array($brow);
 			?>    
 		</td>
 	    <td colspan="4">        
-        <div id="acnormal43" <? if($result_dx['sgot'] >= 15 && $result_dx['sgot'] <= 37){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+        <div id="acnormal43" <? if(empty($result_dx['sgot']) || ($result_dx['sgot'] >= 15 && $result_dx['sgot'] <= 37)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch43'><option value="ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37){ echo "selected='selected';";}?>>ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option></select></div>  </td>
 	    </tr>
 	  <tr>
@@ -1257,9 +1284,9 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" class="labfont"><span <? if($result_dx['uricflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['uricflag']?></span></td>
 	    <td class="labfont"><input name='normal49' type='radio' value='ปกติ' onclick="togglediv2('acnormal49');" <? if($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2){ echo "checked";}?>/>
 ปกติ
-  <input name='normal49' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal49');"<? if($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2){ echo "checked";}?>/>
+  <input name='normal49' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal49');"<? if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){ echo "checked";}?>/>
             <? 
-			if($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2){
+			if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
@@ -1267,7 +1294,7 @@ $bsult = mysql_fetch_array($brow);
 			?> 
 		</td>
 	    <td colspan="4">
-        <div id="acnormal49" <? if($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+        <div id="acnormal49" <? if(empty($result_dx['uric']) || ($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch49'>
         <option value="ปกติ" <? if($result_dx['uric'] <= 7){ echo "selected='selected';";}?>>ปกติ</option>
 		<option value="มีระดับกรดยูริคต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ" <? if($result_dx['uric'] < 2.6){ echo "selected='selected';";}?>>มีระดับกรดยูริคต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ</option>

@@ -215,14 +215,14 @@ list($dcdate,$lockdc) = Mysql_fetch_row($result2);
 
  
    if(($dcdate == '' || $dcdate =='0000-00-00 00:00:00')&$lockdc!=""){ 
-   		print "<br><BR><a target=_self href='ipdc_confirm.php'>จำหน่าย(discharge)เท่านั้น</a>";
+   		print "<br><BR><a target=_self href='ipdc_confirm.php'>จำหน่าย(discharge)  / ยกเลิก Admit</a>";
    }
    else if($lockdc==""){
-   		print "<br><BR><a href='#' onclick=\"alert('ไม่สามารถจำหน่ายได้เนื่องจากห้องยาไม่ได้การปลดล็อค หรือจ่ายยายังไม่สำเร็จกรุณาติดต่อห้องจ่ายยา โทร.1160');\">จำหน่าย(discharge)เท่านั้น</a>";
+   		print "<br><BR><a href='#' onclick=\"alert('ไม่สามารถจำหน่ายได้เนื่องจากห้องยาไม่ได้การปลดล็อค หรือจ่ายยายังไม่สำเร็จกรุณาติดต่อห้องจ่ายยา โทร.1160');\">จำหน่าย(discharge) / ยกเลิก Admit</a>";
    }
    else{
 	   print " <br><BR><BR><FONT SIZE='' COLOR='FF0000'>คำเตือน! หอผู้ป่วยได้ทำการจำหน่ายผู้ป่วยแล้ว <BR>ถ้าจำหน่ายอีกครั้งจะทำให้คิดค่าบริการและค่าห้องเพิ่มขึ้น ให้ทำการลบข้อมูลแทน</FONT> ";
 	  }
-   print " <br><BR><br><a target=_self href='erasbed.php'>*ลบข้อมูลจากเตียงผู้ป่วย?ใช้ในกรณีพิเศษ</a>";
+   print " <br><BR><br><a target=_self href='erasbed.php'>*ลบข้อมูลจากเตียงผู้ป่วย? ใช้ในกรณีพิเศษเท่านั้น ห้ามใช้เมนูนี้ กรณียกเลิก Admit</a>";
   include("unconnect.inc");
 ?>
