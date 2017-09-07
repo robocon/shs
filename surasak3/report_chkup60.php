@@ -76,11 +76,17 @@ FROM `out_result_chkup`
 WHERE `part` = '$showpart' 
 ORDER BY `row_id` ASC";
 }else if($_POST["xraydate"]=="8"){
+
 $xraydate ="27-08-2017";
 $sql1 = "SELECT *
 FROM `out_result_chkup`
-WHERE `part` = '$showpart' 
-ORDER BY `row_id` ASC";
+WHERE `part` = '$showpart' ";
+if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
+	$sql1 .= "ORDER BY `hn` ASC";
+}else{
+	$sql1 .= "ORDER BY `row_id` ASC";
+}
+
 }
 //echo $sql1;
 $row2 = mysql_query($sql1) or die ( mysql_error() );
@@ -136,6 +142,12 @@ $ptname=$result['name']." ".$result['surname'];
 	list($d,$m,$y)=explode("-",$orderdate);
 	$yy=$y+543;
 	$showdate="$d/$m/$yy";
+
+	// 
+	if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
+		$showdate="17-18/08/2560";
+	}
+	
 	$dateekg="$yy-$m";	
 ?>
 <div id="divprint">
@@ -219,14 +231,19 @@ mmHg. </u></strong><span class="text3"><strong>P : </strong> <u>
 
 				 ?>
 				/ ความดันโลหิต  
-                  <? if($result2["bp1"] =='NO'){
+					<?php 
+					
+					$bp1 = ( empty($result2['bp3']) ) ? $result2['bp1'] : $result2['bp3'];
+					$bp2 = ( empty($result2['bp4']) ) ? $result2['bp2'] : $result2['bp4'];
+
+					if($bp1 =='NO'){
 							echo "ไม่ได้รับการตรวจ";
-						}else  if($result2["bp1"] <= 130){
+						}else  if($bp1 <= 130){
 							echo "ปกติ";
 						}else{
-							if($result2["bp1"] >=140){ 
+							if($bp1 >=140){ 
 								echo "มีความดันโลหิตสูง ควรออกกำลังอย่างสม่ำเสมอ ลดอาหารที่มีรสเค็ม หรือพบแพทย์เพื่อทำการรักษา";
-							}else if($result2["bp1"] >=131 && $result2["bp1"] < 140){
+							}else if($bp1 >=131 && $bp1 < 140){
 								echo "เริ่มมีภาวะความดันโลหิตสูง ควรออกกำลังกายอย่างสม่ำเสมอ";
 							}
 						}
@@ -1301,9 +1318,14 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
                 <td width="48%" align="left" class="text3"><?php for($i=1; $i<5; $i++){ echo '&nbsp;'; } ?>แพทย์ผู้ตรวจ</td>
                 <td width="2%" class="text3">&nbsp;</td>
               </tr>
+							<tr>
+                <td align="center" class="text3">&nbsp;</td>
+                <td align="center" class="text3">พ.ท.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td class="text3">&nbsp;</td>
+              </tr>
               <tr>
                 <td align="center" class="text3">&nbsp;</td>
-                <td align="center" class="text3">พ.ท. วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี</td>
+                <td align="center" class="text3">(วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี)</td>
                 <td class="text3">&nbsp;</td>
               </tr>
               <tr>
