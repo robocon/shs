@@ -1390,6 +1390,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkpharlock"){
 exit();
 }
 
+//*********************************** ตรวจสอบการ DPY_CODE *****************************
+if(isset($_GET["action"]) && $_GET["action"] == "checkdpycode"){
+
+		$sql = "SELECT * FROM `druglst` where drugcode = '".$_GET["search"]."' and (dpy_code = '5702' || dpy_code = '5703' || dpy_code = '8701' || dpy_code = '8703' || dpy_code='8711')";
+		$result = Mysql_Query($sql);
+		$arr = Mysql_fetch_assoc($result);
+		if(Mysql_num_rows($result) ==1  && substr($_SESSION["ptright_now"],0,3) == "R07"){  //พบ dpy_code ตามที่ระบุ เฉพาะสิทธิประกันสังคม
+			echo "Y";  //ให้ออกใบรับรอง
+		}else{
+			echo "N";  //ไม่ต้องออกใบรับรอง
+		}
+exit();
+}
+
+
 ///////////////////////////////////////////////////-ตรวจสอบสิทธิการจ่ายยา-///////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "checkptright"){
 
@@ -2232,6 +2247,10 @@ function checkForm1(){
 	txt10 = ajaxcheck("checkpharlock",document.form1.drug_code.value);
 	txt10 = txt10.substr(4);		
 	//alert(txt10);
+	
+	txt11 = ajaxcheck("checkdpycode",document.form1.drug_code.value);
+	txt11 = txt11.substr(4);		
+	//alert(txt11);	
 
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
@@ -2246,6 +2265,8 @@ function checkForm1(){
 		document.form1.drug_slip.focus();	
 	}else if(txt10 == "Y" && !alert("ยาระงับการจ่ายให้ผู้ป่วยรายนี้")){  //lock ในตาราง drug_pharlock
 		document.form1.drug_code.focus();
+	}else if(txt11 == "Y" && alert("กรุณาออกใบรับรองการใช้อวัยวะเทียมและอุปกรณ์ในการบำบัดรักษา เพื่อแนบเป็นเอกสารเบิกกับประกันสังคม!!!")){  //ออกใบรับรอง
+		document.form1.drug_code.focus();		
 	}else if(txt == "0"){
 		alert("กรุณาลองใส่รหัสยาใหม่");
 		document.form1.drug_code.focus();
