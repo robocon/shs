@@ -12,11 +12,9 @@ $ll = "P";
 
 $pdf = new PDF($ll,'mm',array( 50,30 ));
 $pdf->SetThaiFont();
-$pdf->SetFont('AngsanaNew','',11);
-$pdf->SetAutoPageBreak(false, 0);
-$pdf->SetMargins(0, 0);
-$pdf->AddPage();
 
+// ward อื่นๆ ขนาดตัวหนังสือจะ 14
+$text_size = 14;
 $exName = '';
 
 // เช็กว่าเป็นWardพิเศษรึป่าว
@@ -27,8 +25,16 @@ if( $wardExTest > 0 ){
 	$wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
 	$wardBxTest = preg_match('/B[0-9]+/', $cBed1);
 	$exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+
+	// เฉพาะ ward พิเศษที่ตัวหนังสือ 11
+	$text_size = 11;
 	
 }
+
+$pdf->SetFont('AngsanaNew','',$text_size);
+$pdf->SetAutoPageBreak(false, 0);
+$pdf->SetMargins(0, 0);
+$pdf->AddPage();
 
 $full_text = $cbedname.$exName."/$cBed1 อายุ:$cage\n";
 $full_text .= "AN:$can HN:$chn\n";

@@ -13,14 +13,9 @@ $ll = "P";
 
 $pdf = new PDF($ll,'mm',array( 55,30 ));
 $pdf->SetThaiFont();
-$pdf->SetAutoPageBreak(false,0);
-$pdf->SetMargins(0, 0);
-$pdf->SetTopMargin(2); // ¡ÓË¹´¤èÒ ¡Ñé¹Ë¹éÒ´éÒ¹º¹
-$pdf->AddPage();
-$pdf->SetFont('AngsanaNew','',11);
-
 
 $exName = '';
+$text_size = 14;
 
 // àªç¡ÇèÒà»ç¹Ward¾ÔàÈÉÃÖ»èÒÇ
 $wardExTest = preg_match('/45.+/', $cbedcode);
@@ -31,16 +26,23 @@ if( $wardExTest > 0 ){
 	$wardBxTest = preg_match('/B[0-9]+/', $cBed1);
 	$exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ªÑé¹3' : 'ªÑé¹2' ;
 	
+	$text_size = 11;
 }
 
-$pdf->Cell(0,6,$cbedname.$exName."/".$cBed1." AN :".$can,0,0);
-$pdf->Ln();
-$pdf->Cell(0,5,$cptname,0,0);
-$pdf->Ln();
-$pdf->Cell(0,5,"âÃ¤ : ".$cdiagnos,0,0);
-$pdf->Ln();
-$pdf->Cell(0,5,"á¾·Âì : ".$cdoctor,0,0);
-//$pdf->MultiCell(0,6,"S : ".$organ,0,"L");
+$pdf->SetFont('AngsanaNew','',$text_size);
+$pdf->SetAutoPageBreak(false, 0);
+$pdf->SetMargins(0, 0);
+$pdf->AddPage();
+
+$full_text = $cbedname.$exName."/".$cBed1." AN :".$can."\n";
+$full_text .= "$cptname\n";
+$full_text .= "âÃ¤:$cdiagnos\n";
+$full_text .= "á¾·Âì:$cdoctor\n";
+
+$pdf->SetXY(0, 1);
+$pdf->MultiCell(0, 4, $full_text);
+$pdf->Output();
+
 
 
 /*if($drugreact == 0){
