@@ -690,8 +690,8 @@ $(function() {
 	// ตอนคลิกที่ตัวปฏิทิน
 	$(document).on('click', '.countnum', function(){
 		
-		var intern_count = $(this).attr('data-count');
-		var intern_limit = $(this).attr('intern-limit');
+		var intern_count = parseInt($(this).attr('data-count'));
+		var intern_limit = parseInt($(this).attr('intern-limit'));
 		if( intern_count >= intern_limit ){
 			alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+intern_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
 			return false;

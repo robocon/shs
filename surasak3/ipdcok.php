@@ -6,10 +6,16 @@ include("connect.inc");
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
 
 //เก็บข้อมูลหากคนไข้ Refer
-if(substr($_POST["dctype"],0,2) == "4"){
-			
+if(substr($_POST["dctype"],0,1) == "4"){
+  
+  // เก็บlog เวลามีข้อมูล refer
+  // $refer_data_log = array_push($_POST, $_SESSION["sOfficer"], "Ward".$cBedcode);
+  // var_dump($refer_data_log);
+  file_put_contents('logs/ward_refer.log', serialize($_POST));
+
+
 	include("class_file/class_refer.php");
-	$obj = New refer;
+	$obj = New refer();
 
 	$obj->sethn($cHn);
 	$obj->setan($cAn);
@@ -47,6 +53,7 @@ if(substr($_POST["dctype"],0,2) == "4"){
 	$obj->set_targe($_POST["targe"]);
 	$obj->inserttb();
 }
+
 
 /*
 ค่าเตียงสามัญและค่าอาหาร ไม่เกินวันละ 200 บาท

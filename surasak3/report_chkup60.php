@@ -261,7 +261,9 @@ $sql55="SELECT *
 FROM resulthead 
 WHERE (profilecode='CBC' OR profilecode='UA')
 AND hn = '".$result['HN']."' 
-AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
+AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  
+GROUP BY profilecode 
+ORDER BY `autonumber` desc";
 //echo $sql55;
 $query55 = mysql_query($sql55) or die( mysql_error() );
 $num=mysql_num_rows($query55);

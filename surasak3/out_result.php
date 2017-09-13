@@ -122,7 +122,7 @@ if(isset($_POST['hn'])){
 	
 		$sql2="SELECT hn as HN ,concat(yot,name,' ',surname)as ptname FROM `opcard` WHERE hn='".$_POST['hn']."' ";	
 		//echo "-->".$sql2;
-		echo "<div class='pdx'><strong>แจ้งเตือน...</strong>ข้อมูลนี้ไม่ได้ลงทะเบียนตรวจสุขภาพแบบกลุ่มของหน่วย : <strong>$part</strong> กรุณาตรวจสอบความถูกต้อง!!!</div>";
+		echo "<div class='pdx'><strong>แจ้งเตือน...</strong>บุคคลนี้ไม่ได้ลงทะเบียนตรวจสุขภาพแบบกลุ่มของหน่วย : <strong>$part</strong><br><span class='style1'>กรุณาเช็ครายชื่อบุคคลให้ตรงกับหน่วยงานที่มาตรวจสุขภาพ...!!!</span></div>";
 		$query=mysql_query($sql2) or die (mysql_error());
 		$Row2=mysql_num_rows($query);	
 		if(empty($Row2)){
@@ -184,18 +184,23 @@ if(isset($_POST['hn'])){
       </tr>	    
 		<tr>
 			<td>
-				<table>
+				<table width="924">
 					<tr>
-					  <td class="pdx">หมายเหตุ</td>
-					  <td><input name="comment" type="text" class="pdxhead" size="50" id="comment" value="<?=$arrchk['comment']?>" /></td>
-				      <td>&nbsp;</td>
+					  <td width="188" class="pdx">หมายเหตุ</td>
+					  <td width="464"><input name="comment" type="text" class="pdxhead" size="50" id="comment" value="<?=$arrchk['comment']?>" /></td>
+				      <td width="256">&nbsp;</td>
+				  </tr>
+					<tr>
+                      <td class="pdx">ผลตรวจ สมรรภภาพปอด</td>
+					  <td><input name="pt" type="text" class="pdxhead" size="50" id="pt" value="<?=$arrchk['pt']?>" /></td>
+					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
 						<td class="pdx">
 							ผล X-RAY						</td>
 						<td>
 							<input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />						</td>
-					    <td><span class="style1">กรณี ตั้งครรภ์ หรือไม่ได้ Xray ให้กรอกข้อมูลช่องน</span>ี้</td>
+					    <td><span class="style1">กรณี ตั้งครรภ์ หรือไม่ได้ Xray ให้กรอกข้อมูลช่องนี้</span></td>
 					</tr>
 					<tr>
                       <td class="pdx"> ผล V/A</td>
@@ -207,6 +212,14 @@ if(isset($_POST['hn'])){
 				        </select>
 					    </label></td>
 				      <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">ผลตรวจ วัดสายตา</td>
+					  <td class="pdx"><input type="radio" name="eye"  value="ปกติ" class="pdxhead" <? if($arrchk['eye']=="ปกติ"){ echo "checked='checked'";} ?> />
+					    ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    <input type="radio" name="eye" value="ผิดปกติ" class="pdxhead" <? if($arrchk['eye']=="ผิดปกติ"){ echo "checked='checked'";} ?> /> 
+					    ผิดปกติ</td>
+					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
 						<td class="pdx">
@@ -295,24 +308,30 @@ if(isset($_POST['okhn2'])){
 		`allergic` = '".$_POST['allergic']."',
 		`comment` = '".$_POST['comment']."'	,
 		`bp3` = '".$_POST['bp3']."',
-		`bp4` ='".$_POST['bp4']."'
+		`bp4` ='".$_POST['bp4']."',
+		`eye` ='".$_POST['eye']."',
+		`pt` ='".$_POST['pt']."'
 		WHERE `row_id` ='".$_POST['row_id']."' ";
 
 	}else if( $data1=="insert" ){
 		$active = "y";
+		$ptname = $_POST['ptname'];
 		$update = "INSERT INTO `out_result_chkup` ( 
 			`hn`,`ptname`,`weight`,`height`,`bp1`,`bp2`,
-			`p`,`ekg`,`va`,`cxr`,`year_chk`,`register`,
-			`part`,`officer`,`register`,`42702`,`hpv`,`temp`,`rate`,`prawat`,`cigga`,`alcohol`,`exercise`,`allergic`,`comment`,`bp3`,`bp4`
+			`p`,`ekg`,`va`,`cxr`,`year_chk`,		
+			`part`,`officer`,`register`,`42702`,`hpv`,`temp`,
+			`rate`,`prawat`,`cigga`,`alcohol`,
+			`exercise`,`allergic`,`comment`,`bp3`,`bp4`,`eye`,`pt`
 		) VALUES (
-			'".$_POST['hn']."', '".$_POST['ptname']."', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."',
-			'".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix', '',
-			'".$_POST['part']."',$sOfficer,'".date("Y-m-d H:i:s")."','$bone','$hpv','".$_POST['temp']."','".$_POST['rate']."','".$_POST['prawat']."','".$_POST['cigga']."','".$_POST['alcohol']."',
-			'".$_POST['exercise']."','".$_POST['allergic']."','".$_POST['comment']."','".$_POST['bp3']."','".$_POST['bp4']."'
+			'".$_POST['hn']."', '$ptname', '".$_POST['weight']."', '".$_POST['height']."',  '".$_POST['bp1']."','".$_POST['bp2']."',
+			'".$_POST['p']."','".$_POST['ekg']."','".$_POST['va']."','".$_POST['cxr']."','$nPrefix',
+			'".$_POST['part']."','$sOfficer','".date("Y-m-d H:i:s")."','$bone','$hpv','".$_POST['temp']."',
+			'".$_POST['rate']."','".$_POST['prawat']."','".$_POST['cigga']."','".$_POST['alcohol']."',
+			'".$_POST['exercise']."','".$_POST['allergic']."','".$_POST['comment']."','".$_POST['bp3']."','".$_POST['bp4']."','".$_POST['eye']."','".$_POST['pt']."'
 		);";
 	}
+	// echo $update;
 	
-	//echo $update;
 	$upquery = mysql_query($update) or die (mysql_error());
 	if($upquery){ //บันทึกสำเร็จ
 		echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;

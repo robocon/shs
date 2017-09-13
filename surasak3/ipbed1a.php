@@ -10,9 +10,9 @@ list($chn, $can, $cptname , $cage , $cptright , $cbedcode , $cdoctor , $cBed1 ,$
 
 $ll = "P";
 
-$pdf = new PDF($ll,'mm',array( 55,30 ));
+$pdf = new PDF($ll,'mm',array( 50,30 ));
 $pdf->SetThaiFont();
-$pdf->SetFont('AngsanaNew','',13);
+$pdf->SetFont('AngsanaNew','',11);
 $pdf->SetAutoPageBreak(false, 0);
 $pdf->SetMargins(0, 0);
 $pdf->AddPage();

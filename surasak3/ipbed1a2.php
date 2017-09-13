@@ -17,7 +17,7 @@ $pdf->SetAutoPageBreak(false,0);
 $pdf->SetMargins(0, 0);
 $pdf->SetTopMargin(2); // กำหนดค่า กั้นหน้าด้านบน
 $pdf->AddPage();
-$pdf->SetFont('AngsanaNew','',14);
+$pdf->SetFont('AngsanaNew','',11);
 
 
 $exName = '';

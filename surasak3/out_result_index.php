@@ -155,5 +155,22 @@ a:active {
   <tr>
     <td>15. องค์การสงเคราะห์ทหารผ่านศึก</td>
     <td align="center"><a href="out_result.php?part=องค์การสงเคราะห์ทหารผ่านศึก60" target="_blank">บันทึก</a></td>
-  </tr>    
+  </tr>
+  <tr>
+    <td>16. เมโทรแมชีนเนอรี่</td>
+    <td align="center"><a href="out_result.php?part=เมโทรแมชีนเนอรี่60" target="_blank">บันทึก</a></td>
+    <td rowspan="4" align="center">กันยายน 2560</td>
+  </tr>
+  <tr>
+    <td>17. นำพลัง</td>
+    <td align="center"><a href="out_result.php?part=นำพลัง60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>18. ป้อมคลัง</td>
+    <td align="center"><a href="out_result.php?part=ป้อมคลัง60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>19. แคชแวนแมนเนจเม้นท์</td>
+    <td align="center"><a href="out_result.php?part=แคชแวนแมนเนจเม้นท์60" target="_blank">บันทึก</a></td>
+  </tr>
 </table>

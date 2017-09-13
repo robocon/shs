@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <script language="JavaScript1.2">
 <!--
 window.moveTo(0,0);
@@ -14,7 +17,7 @@ top.window.outerWidth = screen.availWidth;
 </script>
 
 <?php
-    session_start();
+    
     if (isset($sIdname)){} else {die;} //for security
 //    session_destroy();
     //wardpage.php
