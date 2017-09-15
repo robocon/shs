@@ -10,7 +10,7 @@ list($chn, $can, $cptname , $cage , $cptright , $cbedcode , $cdoctor , $cBed1 ,$
 
 $ll = "P";
 
-$pdf = new PDF($ll,'mm',array( 50,30 ));
+$pdf = new PDF($ll,'mm',array( 55,30 ));
 $pdf->SetThaiFont();
 
 // ward อื่นๆ ขนาดตัวหนังสือจะ 14
