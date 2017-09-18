@@ -34,7 +34,14 @@ $sql = "SELECT *
 FROM `out_result_chkup`
 WHERE `part` = '$camp' 
 ORDER BY `row_id` ASC";
+}else if($month=="9"){
+$showmonth="กันยายน";
+$sql = "SELECT *
+FROM `out_result_chkup`
+WHERE `part` = '$camp' 
+ORDER BY `row_id` ASC";
 }
+
 //echo $sql."<br>";
 $row = mysql_query($sql)or die ("Query Fail");
 $num=mysql_num_rows($row);
@@ -51,7 +58,7 @@ $num=mysql_num_rows($row);
     <td width="5%" rowspan="2" align="center"><strong>น้ำหนัก</strong></td>
     <td width="5%" rowspan="2" align="center"><strong>ส่วนสูง</strong></td>
     <td width="5%" rowspan="2" align="center"><strong>BP</strong></td>
-    <td colspan="21" align="center"><strong>รายการตรวจ</strong></td>
+    <td colspan="23" align="center"><strong>รายการตรวจ</strong></td>
     <td width="8%" rowspan="2" align="center"><strong>ภาวะสุขภาพโดยรวม</strong></td>
     <td colspan="2" align="center"><strong>สรุปผลการตรวจ</strong></td>
   </tr>
@@ -77,6 +84,8 @@ $num=mysql_num_rows($row);
     <td width="5%" align="center"><strong>ABOC</strong></td>
     <td width="6%" align="center"><strong>EKG</strong></td>
     <td width="6%" align="center"><strong>V/A</strong></td>
+    <td width="6%" align="center"><strong>สายตา</strong></td>
+    <td width="6%" align="center"><strong>ปอด</strong></td>
     <td width="5%" align="center"><strong>พบแพทย์</strong></td>
     <td width="6%" align="center"><strong>ไม่พบแพทย์</strong></td>
   </tr>
@@ -96,6 +105,8 @@ $i++;
 $ptname=$result2["ptname"];
 if($result2["bp1"] && $result2["bp2"]){
 	$bp=$result2["bp1"]."/".$result2["bp2"];
+}else if($result2["bp3"] && $result2["bp4"]){
+	$bp=$result2["bp3"]."/".$result2["bp4"];
 }else{
 	$bp="&nbsp;";
 }
@@ -464,12 +475,20 @@ if($flag=="N"){
 		echo "ปกติ";
 	}
 	 ?></td>
-    <td><? 
-	if($month=="8"){
+    <td>
+	<? 
+	if($month=="8"  || $month=="9"){
 		echo "&nbsp;";
 	}else{
 		if($result2["va"]==""){ echo "ปกติ"; }else{ echo $result2["va"];}
 	}
+	?></td>
+    <td><? 
+		if($result2["eye"]=="ปกติ"){ echo $result2["eye"]; }else if($result2["eye"]=="ผิดปกติ"){ echo $result2["pt"]."...".$result2["eye_detail"];}else{ echo "&nbsp;";}
+	?></td>
+    <td>
+	<? 
+		if($result2["pt"]=="ปกติ"){ echo $result2["pt"]; }else if($result2["pt"]=="ปอดจำกัดการขยายตัว" || $result2["pt"]=="ปอดอุดกั้น"){ echo $result2["pt"]."...".$result2["pt_detail"];}else{ echo "&nbsp;";}
 	?></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>

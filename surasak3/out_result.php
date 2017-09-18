@@ -53,6 +53,23 @@ function showDiv(){
 		document.getElementById('hidden_div').style.display = "none";
 	}
 }
+
+
+function showDiveye(){
+	 if(document.getElementById('eye2').value == "ผิดปกติ"){
+		document.getElementById('hidden_div1').style.display = "block";
+	}else{
+		document.getElementById('hidden_div1').style.display = "none";
+	}
+}
+
+function showDiveye1(){
+	 if(document.getElementById('eye1').value == "ปกติ"){
+		document.getElementById('hidden_div1').style.display = "none";
+	}else{
+		document.getElementById('hidden_div1').style.display = "none";
+	}
+}
 </script>
 </head>
 
@@ -107,8 +124,9 @@ if(isset($_POST['hn'])){
 	$query=mysql_query($sql1) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 
-	$arr=mysql_fetch_array($query);
+	$arr=mysql_fetch_array($query);   // list ข้อมูลจาก opcardchk
 	$hn = $arr['HN'];
+	$age= $arr['agey'];
 	$ptname = $arr['yot'].$arr['name'].' '.$arr['surname'];			
 
 	$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
@@ -118,7 +136,10 @@ if(isset($_POST['hn'])){
 
 	if($Rowchk>0){
 		
-		$arrchk=mysql_fetch_array($querychk);	
+		$arrchk=mysql_fetch_array($querychk);	// list ข้อมูลจาก out_result_chkup
+		if(empty($age)){
+			$age=$arrchk["age"];
+		}
 		$data1 = "update";
 		$button = "<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
 		$button .= '<input type="hidden" name="form_status" value="update">';
@@ -171,7 +192,7 @@ if(isset($_POST['hn'])){
         <strong>
         <?=$hn?>
         </strong>       ชื่อ-สกุล : 
-      <strong><?=$ptname?></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>      </td>
+      <strong><?=$ptname?></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>&nbsp;&nbsp; อายุ: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
       </tr>
     <tr>
       <td class="pdx">น้ำหนัก  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  กก. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ส่วนสูง <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> 
@@ -209,7 +230,9 @@ if(isset($_POST['hn'])){
                         <option value="ปอดจำกัดการขยายตัว" <? if($arrchk['pt']=="ปอดจำกัดการขยายตัว"){ echo "selected='selected'";} ?> >ปอดจำกัดการขยายตัว</option>
                         <option value="ปอดอุดกั้น" <? if($arrchk['pt']=="ปอดอุดกั้น"){ echo "selected='selected'";} ?>>ปอดอุดกั้น</option>
                       </select>
-				      &nbsp;&nbsp;&nbsp;<div id="hidden_div" style="display: none;" class="pdx">ระบุ : <input type="radio" name="pt_detail"  value="ผิดปกติเล็กน้อย" class="pdxhead" <? if($arrchk['pt_detail']=="ผิดปกติเล็กน้อย"){ echo "checked='checked'";} ?> /> 
+				      &nbsp;&nbsp;&nbsp;
+					  <? if($arrchk['pt']=="ปอดจำกัดการขยายตัว" || $arrchk['pt']=="ปอดอุดกั้น"){ echo "<span class='pdx'>".$arrchk['pt_detail']."</span>";} ?>
+                      <div id="hidden_div" style="display: none;" class="pdx">ระบุ : <input type="radio" name="pt_detail"  value="ผิดปกติเล็กน้อย" class="pdxhead" <? if($arrchk['pt_detail']=="ผิดปกติเล็กน้อย"){ echo "checked='checked'";} ?> /> 
 					    ผิดปกติเล็กน้อย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					    <input type="radio" name="pt_detail" value="ผิดปกติปานกลาง" class="pdxhead" <? if($arrchk['pt_detail']=="ผิดปกติปานกลาง"){ echo "checked='checked'";} ?> /> 
 					    ผิดปกติปานกลาง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -235,11 +258,12 @@ if(isset($_POST['hn'])){
 				  </tr>
 					<tr>
 					  <td class="pdx">ผลตรวจ วัดสายตา</td>
-					  <td colspan="2" class="pdx"><input type="radio" name="eye"  value="ปกติ" class="pdxhead" <? if($arrchk['eye']=="ปกติ"){ echo "checked='checked'";} ?> />
+					  <td colspan="2" class="pdx"><input type="radio" name="eye" id="eye1"  value="ปกติ" class="pdxhead" <? if($arrchk['eye']=="ปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye1()" />
 					    ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					    <input type="radio" name="eye" value="ผิดปกติ" class="pdxhead" <? if($arrchk['eye']=="ผิดปกติ"){ echo "checked='checked'";} ?> /> 
-					    ผิดปกติ&nbsp;&nbsp;&nbsp;ระบุ : 
-					    <input name="eye_detail" type="text" class="pdxhead" size="50" id="eye_detail" value="<?=$arrchk['eye_detail']?>" /></td>
+					    <input type="radio" name="eye" id="eye2" value="ผิดปกติ" class="pdxhead" <? if($arrchk['eye']=="ผิดปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye()" /> 
+					    ผิดปกติ&nbsp;&nbsp;&nbsp;<? if($arrchk['eye']=="ผิดปกติ"){ echo "<span class='pdx'>".$arrchk['eye_detail']."</span>";} ?>
+                        <div id="hidden_div1" style="display: none;" class="pdx">ระบุความผิดปกติ : 
+					    <input name="eye_detail" type="text" class="pdxhead" size="50" id="eye_detail" value="<?=$arrchk['eye_detail']?>" /></div></td>
 				  </tr>
 					<tr>
 						<td class="pdx">
@@ -299,10 +323,16 @@ if(isset($_POST['okhn2'])){
 	$bone = ( trim($_POST['42702']) != '' ) ? trim($_POST['42702']) : NULL ;
 
 	if( $data1 == "update" ){
-
+		if($_POST['eye']=="ปกติ"){
+			$_POST['eye_detail']="";
+		}
+		if($_POST['pt']=="ปกติ"){
+			$_POST['pt_detail']="";
+		}
 		$ptname = $_POST['ptname'];
 		$update="UPDATE `out_result_chkup` SET 
 		`ptname` = '$ptname',
+		`age` = '".$_POST['age']."',
 		`weight` = '".$_POST['weight']."',
 		`height` = '".$_POST['height']."',
 		`bp1` = '".$_POST['bp1']."',
@@ -332,14 +362,21 @@ if(isset($_POST['okhn2'])){
 		`pt` ='".$_POST['pt']."',
 		`pt_detail` ='".$_POST['pt_detail']."',
 		`last_officer` = '$sOfficer',
-		`last_register` = '".date("Y-m-d H:i:s")."';		
-		WHERE `row_id` ='".$_POST['row_id']."' ";
+		`last_update` = '".date("Y-m-d H:i:s")."'		
+		WHERE `row_id` ='".$_POST['row_id']."'";
 
 	}else if( $data1=="insert" ){
 		$active = "y";
+		if($_POST['eye']=="ปกติ"){
+			$_POST['eye_detail']="";
+		}
+		if($_POST['pt']=="ปกติ"){
+			$_POST['pt_detail']="";
+		}		
 		$update = "INSERT INTO `out_result_chkup` SET 
 			`hn` = '".$_POST['hn']."',
 			`ptname` = '".$_POST['ptname']."',
+			`age` = '".$_POST['age']."',
 			`weight` = '".$_POST['weight']."',
 			`height` = '".$_POST['height']."',
 			`bp1` =  '".$_POST['bp1']."',
@@ -367,13 +404,18 @@ if(isset($_POST['okhn2'])){
 			`eye` = '".$_POST['eye']."',
 			`eye_detail` =  '".$_POST['eye_detail']."',
 			`pt` = '".$_POST['pt']."',
-			`pt_detail` = '".$_POST['pt_detail']."';";
+			`pt_detail` = '".$_POST['pt_detail']."'";
 	}
 	
 	//echo $update;
 	$upquery = mysql_query($update) or die (mysql_error());
 	if($upquery){ //บันทึกสำเร็จ
-		echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;
+		if($_POST["form_status"]=="insert"){
+			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
+		}else{
+			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
+		}
+		echo "<script>alert('$save');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;
 	}
 }
 ?>
@@ -453,9 +495,11 @@ $time=date("H:i:s");
 
 $thidate="$d/$m/$y $time";
 ?>
+<? if($_SESSION["smenucode"]=="ADMMAINOPD"){ ?>
 <script type="text/javascript">
 window.print();
 </script>
+<? } ?>
 <table cellpadding="0" cellspacing="0" border="0" style="font-family:'TH SarabunPSK'; font-size:16px">
 <tr>
     <td>HN : <?=$arr1['hn'];?>&nbsp;&nbsp;(<?php echo $thidate;?>)</td>

@@ -261,6 +261,15 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 		$resultq = mysql_query($query) or die( mysql_error() );
 		list($drugcode, $tradname, $amount) = mysql_fetch_row($resultq);
 		$k++;
+		
+		$query1 = "SELECT `drugcode`,`tradname`,SUM(`amount`) 
+		FROM `stkdata` 
+		WHERE `drugcode` = '".trim($result2['drugcode'])."' 
+		AND date BETWEEN '".$_SESSION['yym']." 00:00:00' AND '".$_SESSION['yym2']." 23:59:59' 
+		GROUP BY `drugcode`";
+		$resultq1 = mysql_query($query1) or die( mysql_error() );
+		list($drugcode1, $tradname1, $amount1) = mysql_fetch_row($resultq1);
+			$sumamount=$amount+$amount1;
 		?>
 		<tr>
 			<td bgcolor="#FFFFCC" class="font1"><input type="hidden" name="drx<?=$k?>" value="<?=$result2['drugcode']?>" /><a target="_blank" href="drugchkcode.php?code=<?=$result2['drugcode']?>"><?=$result2['drugcode']?></a></td>
@@ -271,7 +280,7 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']?></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['mainstk']?><input name="rxmainstk<?=$k?>" type="hidden" id='rxmainstk<?=$k?>' value="<?=$result2['mainstk']?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['stock']+$result2['mainstk']?></td>
-			<td align="center" bgcolor="#FF9B9B" class="font1"><?=$amount?><input name="rxdrug<?=$k?>" type="hidden" id='rxdrug<?=$k?>' value="<?=$amount?>"; /></td>
+			<td align="center" bgcolor="#FF9B9B" class="font1"><?=$sumamount;?><input name="rxdrug<?=$k?>" type="hidden" id='rxdrug<?=$k?>' value="<?=$sumamount;?>"; /></td>
 			<td align="center" bgcolor="#C5E8FC" class="font1"><?=$result2['pack'];?></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1">
 			<?php

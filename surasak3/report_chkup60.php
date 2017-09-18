@@ -81,12 +81,17 @@ $xraydate ="27-08-2017";
 $sql1 = "SELECT *
 FROM `out_result_chkup`
 WHERE `part` = '$showpart' ";
-if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
-	$sql1 .= "ORDER BY `hn` ASC";
-}else{
-	$sql1 .= "ORDER BY `row_id` ASC";
-}
-
+	if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
+		$sql1 .= "ORDER BY `hn` ASC";
+	}else{
+		$sql1 .= "ORDER BY `row_id` ASC";
+	}
+}else if($_POST["xraydate"]=="9"){
+$xraydate ="18-09-2017";
+$sql1 = "SELECT *
+FROM `out_result_chkup`
+WHERE `part` = '$showpart' 
+ORDER BY `row_id` ASC";
 }
 //echo $sql1;
 $row2 = mysql_query($sql1) or die ( mysql_error() );
@@ -1267,6 +1272,22 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
               <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตา</u> </strong> </td>
               <td><strong class="text" style="margin-left: 9px;"> :
                 <?=$result2['va'];?>
+              </strong> </td>
+            </tr>
+<? } ?>
+<?php if( !empty($result['eye']) ){ ?>           
+            <tr>
+              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
+              <td><strong class="text" style="margin-left: 9px;"> :
+                <?=$result2['eye']." ".$result2['eye_detail'];?>
+              </strong> </td>
+            </tr>
+<? } ?>  
+<?php if( !empty($result['pt']) ){ ?>           
+            <tr>
+              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
+              <td><strong class="text" style="margin-left: 9px;"> :
+                <?=$result2['pt']." ".$result2['pt_detail'];?>
               </strong> </td>
             </tr>
 <? } ?>   

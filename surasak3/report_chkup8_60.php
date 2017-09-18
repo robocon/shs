@@ -43,7 +43,7 @@ include("connect.inc");
   </table>
 </form>
 </p>
-<p align="center" class="tet"><strong style="color:red;">28/08/60  สามารถพิมพ์ผลของบริษัทธนบดีเดคอร์เซรามิคได้แล้ว รอผล XRAY อีก 3 บริษัทที่ยังไม่สามารถพิมพ์ผลได้ !!!</strong></p>
+<!--<p align="center" class="tet"><strong style="color:red;">28/08/60  สามารถพิมพ์ผลของบริษัทธนบดีเดคอร์เซรามิคได้แล้ว รอผล XRAY อีก 3 บริษัทที่ยังไม่สามารถพิมพ์ผลได้ !!!</strong></p>-->
 <!--<p align="center" class="tet"><strong>04/08/60  แจ้งผล xray ออกครบแล้วทั้ง 4 บริษัท สามารถพิมพ์ผลตรวจได้เลย</strong></p>-->
 </body>
 </html>

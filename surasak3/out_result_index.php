@@ -159,7 +159,7 @@ a:active {
   <tr>
     <td>16. เมโทรแมชีนเนอรี่</td>
     <td align="center"><a href="out_result.php?part=เมโทรแมชีนเนอรี่60" target="_blank">บันทึก</a></td>
-    <td rowspan="4" align="center">กันยายน 2560</td>
+    <td rowspan="10" align="center">กันยายน 2560</td>
   </tr>
   <tr>
     <td>17. นำพลัง</td>
@@ -173,4 +173,24 @@ a:active {
     <td>19. แคชแวนแมนเนจเม้นท์</td>
     <td align="center"><a href="out_result.php?part=แคชแวนแมนเนจเม้นท์60" target="_blank">บันทึก</a></td>
   </tr>
+  <tr>
+    <td>20. สถานพัฒนาและฟื้นฟูเด็ก</td>
+    <td align="center"><a href="out_result.php?part=สถานพัฒนาและฟื้นฟูเด็ก60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>21. แคชแวนแมนเนจเม้นท์</td>
+    <td align="center"><a href="out_result.php?part=แคชแวนแมนเนจเม้นท์60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>22. อีซูซุ</td>
+    <td align="center"><a href="out_result.php?part=อีซูซุ60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>23. เชียงใหม่สยามทีวี</td>
+    <td align="center"><a href="out_result.php?part=เชียงใหม่สยามทีวี60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>24. ที.ไอ.ซี</td>
+    <td align="center"><a href="out_result.php?part=ที.ไอ.ซี60" target="_blank">บันทึก</a></td>
+  </tr>  
 </table>
