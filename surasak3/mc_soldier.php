@@ -116,9 +116,14 @@ if( !empty($B1) ){
 	LEFT JOIN `opd` AS b ON b.`row_id` = a.`opd_id` 
 	LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`";*/
 	
-	$sql = "SELECT *, CONCAT(SUBSTRING(a.`thidate`,9,2),'-',SUBSTRING(a.`thidate`,6,2),'-',SUBSTRING(a.`thidate`,1,4)) AS `date`, CONCAT(b.`address`,' ',b.`tambol`,' ',b.`ampur`,' ',b.`changwat`) AS `address`  FROM `opday` as a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn` 
-		WHERE a.`thidate` >= '$ymd_start' AND a.`thidate` <= '$ymd_end' 
-		AND a.`toborow` LIKE 'EX30%' group by a.hn order by a.thidate desc";	
+	$sql = "SELECT *, CONCAT(SUBSTRING(a.`thidate`,9,2),'-',SUBSTRING(a.`thidate`,6,2),'-',SUBSTRING(a.`thidate`,1,4)) AS `date`, CONCAT(b.`address`,' ',b.`tambol`,' ',b.`ampur`,' ',b.`changwat`) AS `address`  
+	FROM `opday` as a 
+	LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn` 
+	WHERE a.`thidate` >= '$ymd_start' 
+	AND a.`thidate` <= '$ymd_end' 
+	AND a.`toborow` LIKE 'EX30%' 
+	group by a.hn 
+	order by a.thidate desc";	
 	
 	//echo $sql;
 

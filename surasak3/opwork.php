@@ -514,7 +514,7 @@ print "<br>ผู้ลงทะเบียน ..$sOfficer";
 
 // เก็บข้อมูลผู้ป่วยที่ออก EX30 งดเว้นเกณฑ์ทหาร
 if(substr($_POST["case"],0,4) == "EX30"){ 
-	$sql = "INSERT INTO `smdb`.`ex30_log`
+	$sql = "INSERT INTO `ex30_log`
 	(`id`,`date`,`vn`,`hn`,`ptname`,`opday_id`)
 	VALUES
 	(NULL,'$thidate2','$nVn','$cHn','$cPtname','$opday_id');";
