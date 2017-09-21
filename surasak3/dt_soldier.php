@@ -2,7 +2,6 @@
 session_start();
 
 function dump($txt){
-
     echo "<pre>";
     var_dump($txt);
     echo "</pre>";
@@ -11,30 +10,6 @@ function dump($txt){
 
 include "connect.inc";
 include "checklogin.php";
-
-?>
-
-<style type="text/css">
-body,td,th {
-	font-family: Angsana New;
-	font-size: 24px;
-}
-.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
-.tb_menu {background-color: #FFFFC1;  }
-.font3 {
-	font-size: 18px;
-}
-p{
-    margin: 0;
-    padding: 0;
-}
-</style>
-
-<?php
-include "dt_menu.php";
-include "dt_patient.php";
-
 
 $types = array(
     1 => array(
@@ -197,17 +172,65 @@ $types = array(
         )
     )
 );
+
+
+/**
+ * @todo
+ * [] ค้นหาจากการคีย์
+ * [] สามารถคีย์ได้จากรหัส เช่น 7.ข.5
+ * [] สามารถโชว์ให้หมอคนที่ 2 3 เห็นได้ว่าหมอคนแรกเลือกข้อไหน
+ * [] สามารถเลือกได้จากรายการที่แสดงทั้งหมด
+ */
+
+$action = $_POST['action'];
+if( $action === "search_val" ){
+
+
+
+    exit;
+}
+
 ?>
-<select name="" id="">
-    <option value="">เลือกข้อมูล กฎกระทรวง</option>
-</select>
-    
+<style type="text/css">
+body,td,th {
+	font-family: Angsana New;
+	font-size: 24px;
+}
+.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
+.tb_detail {background-color: #FFFFC1;  }
+.tb_menu {background-color: #FFFFC1;  }
+.font3 {
+	font-size: 18px;
+}
+p{
+    margin: 0;
+    padding: 0;
+}
+</style>
+
+<?php
+include "dt_menu.php";
+include "dt_patient.php";
+?>
+
+<div>
+    <form action="dt_soldier.php" method="post">
+        <div>
+            <span>กฏกระทรวง: </span><input type="text" name="regular" id="regular">
+        </div>
+        <div>
+            <button type="submit">บันทึกข้อมูล</button>
+        </div>
+    </form>
+</div>
+<button class="show_detail">ดูข้อมูลทั้งหมด</button>
+<div class="full_detail" style="display: none;">
     <?php
+
     foreach ($types as $main_number => $item_type) {
 
-
-        echo '<p>('.$main_number.') '.$item_type['title'].'</p>';
-        // echo "<br>";
+        $header =  '<p>('.$main_number.') '.$item_type['title'].'</p>';
+        echo $header;
 
         if( count($item_type['items']) > 0 ){
             foreach( $item_type['items'] AS $item_number => $item ){
@@ -219,15 +242,52 @@ $types = array(
                     $sub_item = $item['attributes'];
                 }
                 
-                echo '<p style="padding-left: 20px;">'.$item_number.') '.$item_name.'</p>';
 
+                $txt = '<p>('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
+                if( $sub_item === false ){
+                    echo '<a href="#">'.$txt.'</a>';
+                }else if( $sub_item !== false ){
+                    echo $txt;
+                }
+
+                $json_sub_item = array();
                 if( $sub_item !== false ){
                     foreach ($sub_item as $last_key => $value) {
-                        echo '<p style="padding-left: 40px;">'.$last_key.') '.$value.'</p>';
+                        echo '<a href="#"><p>('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
                     }
                 }
-                
+
             }
         }
     }
     ?>
+</div>
+
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+  $(function() {
+    $(document).on("click", ".show_detail", function(){
+        $(".full_detail").toggle();
+    });
+
+    $(document).on("keyup", "#regular", function(){
+
+        var txt = $(this).val();
+
+        $.ajax({
+            data: {"content_txt": txt,"action":"search_val"},
+            datatype: "json",
+            method : "post",
+            url: "dt_soldier.php",
+            success: function(msg){
+                console.log(msg);
+            }
+        });
+    });
+
+  });
+})(jQuery);
+
+</script>
