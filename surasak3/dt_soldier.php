@@ -8,9 +8,6 @@ function dump($txt){
 
 }
 
-include "connect.inc";
-include "checklogin.php";
-
 $types = array(
     1 => array(
         'title' => 'โรคหรือความผิดปกติของตา',
@@ -173,11 +170,42 @@ $types = array(
     )
 );
 
+$set_types = array();
+foreach ($types as $main_number => $item_type) {
+
+    if( count($item_type['items']) > 0 ){
+        foreach( $item_type['items'] AS $item_number => $item ){
+
+            $item_name = $item;
+            $sub_item = false;
+            if( is_array($item) === true ){
+                $item_name = $item['name'];
+                $sub_item = $item['attributes'];
+            }
+            
+            if( $sub_item === false ){
+                $sub_item_key = "$main_number.$item_number";
+                $set_types[$sub_item_key] = $item_name;
+            }
+
+            $json_sub_item = array();
+            if( $sub_item !== false ){
+                foreach ($sub_item as $last_key => $value) {
+                    $last_item_key = "$main_number.$item_number.$last_key";
+                    $set_types[$last_item_key] = $value;
+                }
+            }
+
+        }
+    }
+}
+// dump($set_types);
+
 
 /**
  * @todo
  * [] ค้นหาจากการคีย์
- * [] สามารถคีย์ได้จากรหัส เช่น 7.ข.5
+ * [/] สามารถคีย์ได้จากรหัส เช่น 7.ข.5
  * [] สามารถโชว์ให้หมอคนที่ 2 3 เห็นได้ว่าหมอคนแรกเลือกข้อไหน
  * [] สามารถเลือกได้จากรายการที่แสดงทั้งหมด
  */
@@ -185,10 +213,37 @@ $types = array(
 $action = $_POST['action'];
 if( $action === "search_val" ){
 
+    $regular = trim($_POST['content_txt']);
 
+    // if ( preg_match('/[ก-๙]/', $regular) > 0 ) {
+        $regular = iconv('UTF-8', 'TIS-620', $regular);
+    // }
+
+    foreach ($set_types as $key => $value) {
+
+        $test_match_val = preg_match('/'.addslashes($regular).'/', $value);
+        $test_match_key = preg_match('/'.str_replace('.','\.',$regular).'/', $key);
+        
+        if ( $test_match_val > 0 OR $test_match_key > 0 ) {
+
+            dump($key.':'.$value);
+        }
+
+    }
 
     exit;
 }
+
+
+
+
+
+
+
+
+
+include "connect.inc";
+include "checklogin.php";
 
 ?>
 <style type="text/css">
@@ -216,13 +271,15 @@ include "dt_patient.php";
 <div>
     <form action="dt_soldier.php" method="post">
         <div>
-            <span>กฏกระทรวง: </span><input type="text" name="regular" id="regular">
+            <span>กฏกระทรวง: </span><input type="text" name="regular" id="regular" style="width: 80%">
         </div>
         <div>
             <button type="submit">บันทึกข้อมูล</button>
         </div>
     </form>
 </div>
+<div class="show_list"></div>
+
 <button class="show_detail">ดูข้อมูลทั้งหมด</button>
 <div class="full_detail" style="display: none;">
     <?php
@@ -243,9 +300,9 @@ include "dt_patient.php";
                 }
                 
 
-                $txt = '<p>('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
+                $txt = '<p class="from_full_detail">('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
                 if( $sub_item === false ){
-                    echo '<a href="#">'.$txt.'</a>';
+                    echo '<a href="javascript:void(0)">'.$txt.'</a>';
                 }else if( $sub_item !== false ){
                     echo $txt;
                 }
@@ -253,7 +310,7 @@ include "dt_patient.php";
                 $json_sub_item = array();
                 if( $sub_item !== false ){
                     foreach ($sub_item as $last_key => $value) {
-                        echo '<a href="#"><p>('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
+                        echo '<a href="javascript:void(0)"><p class="from_full_detail">('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
                     }
                 }
 
@@ -269,22 +326,30 @@ jQuery.noConflict();
 (function( $ ) {
   $(function() {
     $(document).on("click", ".show_detail", function(){
-        $(".full_detail").toggle();
+        $(".full_detail").slideToggle("fast");
     });
 
     $(document).on("keyup", "#regular", function(){
 
         var txt = $(this).val();
+        if( txt.length >= 3 ){
+            $.ajax({
+                data: {"content_txt": txt,"action":"search_val"},
+                // datatype: "json",
+                method : "post",
+                url: "dt_soldier.php",
+                success: function(msg){
+                    // console.log(msg);
+                    $(".show_list").html(msg);
+                }
+            });
+        }
+        
+    });
 
-        $.ajax({
-            data: {"content_txt": txt,"action":"search_val"},
-            datatype: "json",
-            method : "post",
-            url: "dt_soldier.php",
-            success: function(msg){
-                console.log(msg);
-            }
-        });
+    $(document).on("click", ".from_full_detail", function(){
+        var full_detail = $(this).html();
+        $("#regular").val(full_detail);
     });
 
   });
