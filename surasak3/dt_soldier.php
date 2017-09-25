@@ -8,6 +8,15 @@ function dump($txt){
 
 }
 
+$action = $_POST['action'];
+if( $action === "save" ){
+
+    
+
+
+    exit;
+}
+
 $types = array(
     1 => array(
         'title' => 'โรคหรือความผิดปกติของตา',
@@ -204,37 +213,39 @@ foreach ($types as $main_number => $item_type) {
 
 /**
  * @todo
- * [] ค้นหาจากการคีย์
+ * [/] ค้นหาจากการคีย์
  * [/] สามารถคีย์ได้จากรหัส เช่น 7.ข.5
  * [] สามารถโชว์ให้หมอคนที่ 2 3 เห็นได้ว่าหมอคนแรกเลือกข้อไหน
- * [] สามารถเลือกได้จากรายการที่แสดงทั้งหมด
+ * [/] สามารถเลือกได้จากรายการที่แสดงทั้งหมด
  */
 
 $action = $_POST['action'];
 if( $action === "search_val" ){
 
     $regular = trim($_POST['content_txt']);
-
-    // if ( preg_match('/[ก-๙]/', $regular) > 0 ) {
-        $regular = iconv('UTF-8', 'TIS-620', $regular);
-    // }
+    $regular = iconv('UTF-8', 'TIS-620', $regular);
 
     foreach ($set_types as $key => $value) {
 
-        $test_match_val = preg_match('/'.addslashes($regular).'/', $value);
+        $test_match_val = preg_match('/'.addslashes($regular).'/', strtolower($value));
         $test_match_key = preg_match('/'.str_replace('.','\.',$regular).'/', $key);
         
         if ( $test_match_val > 0 OR $test_match_key > 0 ) {
 
-            dump($key.':'.$value);
+            $segment_list = explode('.',$key);
+            $segment_txt = array();
+            foreach($segment_list as $segment){
+                $segment_txt[] = "($segment)";
+            }
+            ?>
+            <a href="javascript: void(0);"><p class="from_full_detail"><?php echo implode(' ', $segment_txt);?> <?=$value;?></p></a>
+            <?php
         }
 
     }
 
     exit;
 }
-
-
 
 
 
@@ -275,6 +286,7 @@ include "dt_patient.php";
         </div>
         <div>
             <button type="submit">บันทึกข้อมูล</button>
+            <input type="hidden" name="action" value="save">
         </div>
     </form>
 </div>
