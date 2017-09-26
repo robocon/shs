@@ -11,8 +11,86 @@ function dump($txt){
 $action = $_POST['action'];
 if( $action === "save" ){
 
-    
+    include 'includes/connect.php';
 
+    $test_dr_code = preg_match('/[0-9]+/', $_SESSION['sOfficer'], $match);
+    if ( $test_dr_code > 0 ) {
+        $dr_code = $match['0'];
+    }
+
+    $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
+    FROM `doctor` 
+    WHERE ( `doctorcode` != '00000' AND `doctorcode` != '0000' AND `menucode` = 'ADM' ) 
+    AND `status` = 'y' 
+    AND `name` REGEXP '^MD+' ";
+    $q = mysql_query($sql) or die( mysql_error() );
+    $dr_lists = array();
+    while ( $dr = mysql_fetch_assoc($q) ) {
+        $key = $dr['doctorcode'];
+        $dr_lists[$key] = $dr;
+    }
+
+    $db_dr = $dr_lists[$dr_code];
+
+    $hn = $_SESSION['hn_now'];
+    $vn = $_SESSION['vn_now'];
+
+    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname` 
+    FROM `opcard` WHERE `hn` = '$hn'";
+    $q = mysql_query($sql) or die( mysql_error() );
+    $pt = mysql_fetch_assoc($q);
+    
+    $regular = $_POST['regular'];
+    $yot = $db_dr['yot'];
+    $doctor = $db_dr['name'];
+    $doctor_code = $dr_code;
+    $yot_pt = $pt['yot'];
+    $ptname = $pt['ptname'];
+
+    /*
+    CREATE TABLE dt_soldier (
+  id int(11) NOT NULL auto_increment,
+  `date` datetime default NULL,
+  hn varchar(45) default NULL,
+  vn varchar(45) default NULL,
+  regular text,
+  yot varchar(50) NOT NULL,
+  doctor varchar(255) default NULL,
+  doctor_code varchar(45) default NULL,
+  last_update datetime default NULL,
+  yot_pt varchar(50) NOT NULL,
+  ptname varchar(255) default NULL,
+  PRIMARY KEY  (id)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+    */
+    $sql = "INSERT INTO `smdb`.`dt_soldier`
+    (`id`,
+    `date`,
+    `hn`,
+    `vn`,
+    `regular`,
+    `yot`,
+    `doctor`,
+    `doctor_code`,
+    `last_update`,
+    `yot_pt`,
+    `ptname`)
+    VALUES
+    (NULL,
+    NOW(),
+    '$hn',
+    '$vn',
+    '$regular',
+    '$yot',
+    '$doctor',
+    '$doctor_code',
+    NOW(),
+    '$yot_pt',
+    '$ptname');
+    ";
+    $insert = mysql_query($sql) or die( mysql_error() );
+
+    dump($insert);
 
     exit;
 }
@@ -238,7 +316,7 @@ if( $action === "search_val" ){
                 $segment_txt[] = "($segment)";
             }
             ?>
-            <a href="javascript: void(0);"><p class="from_full_detail"><?php echo implode(' ', $segment_txt);?> <?=$value;?></p></a>
+            <a href="javascript: void(0);"><p class="search_detail"><?php echo implode(' ', $segment_txt);?> <?=$value;?></p></a>
             <?php
         }
 
@@ -280,7 +358,7 @@ include "dt_patient.php";
 ?>
 
 <div>
-    <form action="dt_soldier.php" method="post">
+    <form action="dt_soldier.php" method="post" id="inputForm">
         <div>
             <span>กฏกระทรวง: </span><input type="text" name="regular" id="regular" style="width: 80%">
         </div>
@@ -290,47 +368,52 @@ include "dt_patient.php";
         </div>
     </form>
 </div>
-<div class="show_list"></div>
+<div id="show_content" style="display: none;">
+<fieldset><legend>ผลการค้นหา</legend><div class="show_list"></div></fieldset>
+</div>
 
-<button class="show_detail">ดูข้อมูลทั้งหมด</button>
-<div class="full_detail" style="display: none;">
-    <?php
+<div id="full_detail_container">
+    <button class="show_detail">แสดงข้อกฎกระทรวงทั้งหมด</button>
+    <div class="full_detail" style="display: none;">
+        <?php
 
-    foreach ($types as $main_number => $item_type) {
+        foreach ($types as $main_number => $item_type) {
 
-        $header =  '<p>('.$main_number.') '.$item_type['title'].'</p>';
-        echo $header;
+            $header =  '<p>('.$main_number.') '.$item_type['title'].'</p>';
+            echo $header;
 
-        if( count($item_type['items']) > 0 ){
-            foreach( $item_type['items'] AS $item_number => $item ){
+            if( count($item_type['items']) > 0 ){
+                foreach( $item_type['items'] AS $item_number => $item ){
 
-                $item_name = $item;
-                $sub_item = false;
-                if( is_array($item) === true ){
-                    $item_name = $item['name'];
-                    $sub_item = $item['attributes'];
-                }
-                
-
-                $txt = '<p class="from_full_detail">('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
-                if( $sub_item === false ){
-                    echo '<a href="javascript:void(0)">'.$txt.'</a>';
-                }else if( $sub_item !== false ){
-                    echo $txt;
-                }
-
-                $json_sub_item = array();
-                if( $sub_item !== false ){
-                    foreach ($sub_item as $last_key => $value) {
-                        echo '<a href="javascript:void(0)"><p class="from_full_detail">('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
+                    $item_name = $item;
+                    $sub_item = false;
+                    if( is_array($item) === true ){
+                        $item_name = $item['name'];
+                        $sub_item = $item['attributes'];
                     }
-                }
+                    
 
+                    $txt = '<p class="from_full_detail">('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
+                    if( $sub_item === false ){
+                        echo '<a href="javascript:void(0)">'.$txt.'</a>';
+                    }else if( $sub_item !== false ){
+                        echo $txt;
+                    }
+
+                    $json_sub_item = array();
+                    if( $sub_item !== false ){
+                        foreach ($sub_item as $last_key => $value) {
+                            echo '<a href="javascript:void(0)"><p class="from_full_detail">('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
+                        }
+                    }
+
+                }
             }
         }
-    }
-    ?>
+        ?>
+    </div>
 </div>
+
 
 <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -344,15 +427,20 @@ jQuery.noConflict();
     $(document).on("keyup", "#regular", function(){
 
         var txt = $(this).val();
-        if( txt.length >= 3 ){
+        if( txt.length >= 2 ){
             $.ajax({
                 data: {"content_txt": txt,"action":"search_val"},
                 // datatype: "json",
                 method : "post",
                 url: "dt_soldier.php",
                 success: function(msg){
-                    // console.log(msg);
-                    $(".show_list").html(msg);
+                    console.log(msg);
+
+                    if ( msg !== '' ) {
+                        $("#show_content").show();
+                        $(".show_list").html(msg);
+                    }
+                    
                 }
             });
         }
@@ -362,6 +450,22 @@ jQuery.noConflict();
     $(document).on("click", ".from_full_detail", function(){
         var full_detail = $(this).html();
         $("#regular").val(full_detail);
+        $(".full_detail").slideUp(100);
+    });
+
+    // คลิกรายการที่ค้นหา
+    $(document).on("click", ".search_detail", function(){
+        var full_detail = $(this).html();
+        $("#regular").val(full_detail);
+        $("#show_content").hide();
+    });
+
+    $(document).on("submit", "#inputForm", function(){
+        var regular = $("#regular").val();
+        if (regular == '') {
+            alert('กรุณาเลือกกฎกระทรวง');
+            return false;
+        }
     });
 
   });
