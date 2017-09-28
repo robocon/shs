@@ -192,7 +192,7 @@ if(isset($_POST['hn'])){
         <strong>
         <?=$hn?>
         </strong>       ชื่อ-สกุล : 
-      <strong><?=$ptname?></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>&nbsp;&nbsp; อายุ: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
+      <strong><input name="newname" type="text" class="pdxhead" value="<?=$ptname?>" /></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>&nbsp;&nbsp; อายุ: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
       </tr>
     <tr>
       <td class="pdx">น้ำหนัก  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  กก. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ส่วนสูง <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> 
@@ -331,7 +331,7 @@ if(isset($_POST['okhn2'])){
 		}
 		$ptname = $_POST['ptname'];
 		$update="UPDATE `out_result_chkup` SET 
-		`ptname` = '$ptname',
+		`ptname` = '".$_POST['newname']."',
 		`age` = '".$_POST['age']."',
 		`weight` = '".$_POST['weight']."',
 		`height` = '".$_POST['height']."',
@@ -363,8 +363,7 @@ if(isset($_POST['okhn2'])){
 		`pt_detail` ='".$_POST['pt_detail']."',
 		`last_officer` = '$sOfficer',
 		`last_update` = '".date("Y-m-d H:i:s")."'		
-		WHERE `row_id` ='".$_POST['row_id']."'";
-
+		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
 		if($_POST['eye']=="ปกติ"){
@@ -413,6 +412,9 @@ if(isset($_POST['okhn2'])){
 		if($_POST["form_status"]=="insert"){
 			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
 		}else{
+			$edit="update opcardchk set name='".$_POST['newname']."',`agey` = '".$_POST['age']."' where HN='".$_POST['hn']."' and part='".$_POST['part']."';";
+			//echo $edit;
+			$querey=mysql_query($edit);
 			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
 		}
 		echo "<script>alert('$save');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;

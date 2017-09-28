@@ -59,7 +59,8 @@ elseif(isset($_GET['ids'])){
     <select  name='clinic'>
         <option value='<?=$result2['clinicalinfo']?>'><?=$result2['clinicalinfo']?></option>
         <option value='ตรวจสุขภาพประจำปี<?=$nPrefix?>'>ตรวจสุขภาพประจำปี<?=$nPrefix?></option>
-				<option value='ตรวจสุขภาพประจำปี59'>ตรวจสุขภาพประจำปี59</option>
+		<option value='ตรวจสุขภาพประจำปี60'>ตรวจสุขภาพประจำปี60</option>
+        <option value='ตรวจสุขภาพประจำปี59'>ตรวจสุขภาพประจำปี59</option>
         <option value='ตรวจสุขภาพประจำปี58'>ตรวจสุขภาพประจำปี58</option>
          <option value='ตรวจสุขภาพช่อง7'>ตรวจสุขภาพช่อง7</option>
  <option value='ยกเลิก'>ยกเลิก</option>

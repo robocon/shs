@@ -24,7 +24,10 @@
 <a target=_top href="labid.php">สั่งจาก ID</a>&nbsp;&nbsp;
 &nbsp;<a target=_top  href="../nindex.htm">&#3652;&#3611;&#3627;&#3609;&#3657;&#3634;&#3592;&#3629;&#3627;&#3621;&#3633;&#3585;</a>
 </font>
-
+<? if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADM"){ ?>
+<br>
+<span style="font-weight:bold; font-size:14px; color:#FF0000;">*** ตรวจสุขภาพทหารประจำปี 61 ให้เข้าเมนู <a href="labsolider.php" target="_blank">สั่ง Lab ตรวจสุขภาพทหารประจำปี</a> เท่านั้น ***</span>
+<? } ?>
 </body>
 
 </html>

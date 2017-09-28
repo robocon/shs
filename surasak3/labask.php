@@ -70,8 +70,7 @@
 	// ตรวจสอบกรณีผู้ป่วยเงินสด แล้วมีการอัพเดทสิทธิประกันสังคม ช่วงเสาร์อาทิตย์
 	$sso_alert = false;
 	if( substr($aptright,0,3) == 'R01' ){
-		$idcard = trim($idcard);
-		$sql = "SELECT `id` FROM `ssodata` WHERE `id` LIKE '$idcard%' LIMIT 1 ";
+		$sql = "SELECT id FROM ssodata WHERE id LIKE '$idcard%' limit 1 ";
 		if(mysql_num_rows(mysql_query($sql)) > 0){
 			$msg = 'ผู้ป่วยมีสิทธิประกันสังคม กรุณาตรวจสอบสิทธิที่แผนกทะเบียน';
 			$sso_alert = '<p style="color: red;">!!! '.$msg.' !!!</p>';
@@ -102,7 +101,7 @@
    <td><?=$cPtname;?></td>
     </tr>
   <tr>
-    <td><font color='#FF0000' style='font-size:18px'>อายุ: <?=$age;?></font></td>
+    <td><font color='#0000FF' style='font-size:18px'>อายุ: <?=$age;?></font></td>
     </tr>
     <tr>
     <td><font color='#FF0000' style='font-size:18px'><?=$idguard;?></font></td>
@@ -129,9 +128,12 @@
  <? 
 if(substr($atoborow,0,4)=="EX26"){  
    $sqlpt = "select * from ptright where code = 'R22' order by code asc";
+}else if(substr($atoborow,0,4)=="EX40"){  //EX40 ตรวจสุขภาพฮักกันยามเฒ่า
+   $sqlpt = "select * from ptright where code = 'R41' order by code asc";
 }else{
    $sqlpt = "select * from ptright where status = 'a' order by code asc";
-}   
+}  
+//echo $sqlpt; 
    $rowpt = mysql_query($sqlpt);
    
    
@@ -175,15 +177,15 @@ function sit2(){
 document.getElementById('aLink').focus();
 </script>
     <option value="ตรวจวิเคราะห์เพื่อการรักษา" selected>ตรวจวิเคราะห์เพื่อการรักษา</option>
-    <? if($_SESSION["smenucode"]=="ADMXR"){ ?>
-    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX26" OR substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>ตรวจสุขภาพ</option>
+    <? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADM"){ ?>
+    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>ตรวจสุขภาพ</option>
     <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
     <? } ?>
     
   </select>&nbsp;</font></p>
 <font face="Angsana New">สิทธิ&nbsp;
-<? if($_SESSION["smenucode"]=="ADMXR"){ ?>
+<? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADM"){ ?>
 	<select name="pt" id="pt" style="display:">
 	<?
 	while($resultpt = mysql_fetch_array($rowpt)){
@@ -192,24 +194,22 @@ document.getElementById('aLink').focus();
 			$c=0;
 			 ?>
 			<option value="<?=$cPtright?>" selected="selected">
-  				<?=$cPtright?>
+  				<?=$cPtright;?>
   			</option>
   			<?
 		}else{
 			$b=0;
 			?>
-			<option value="<?=$re?>" <? if(substr($atoborow,0,4)=="EX26" OR substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
+			<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
 				<?=$re?>  <!--R22-->
 			</option>
 			<?
-		}
-	}
+		}  //close if($cPtright==$re){
+	}  //close while
 
 	if(!isset($c)){
 		?>
-  <option value="<?=$cPtright?>" <? if(substr($atoborow,0,4)!="EX26" OR substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
-  <?=$cPtright?>  <!--ตามสิทธิผู้ป่วย-->
-  </option>
+  <option value="<?=$cPtright;?>" <? if(substr($atoborow,0,4)!="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>><?=$cPtright?><!--ตามสิทธิผู้ป่วย--></option>
   <?
 	}
    ?>
@@ -223,7 +223,7 @@ document.getElementById('aLink').focus();
 		if($cPtright==$re){
 			 $c=0;
 			 ?>
-  <option value="<?=$cPtright?>" selected="selected">
+  <option value="<?=$cPtright;?>" selected="selected">
   <?=$cPtright?>
   </option>
   <?
@@ -261,11 +261,10 @@ document.getElementById('aLink').focus();
   <?=$cPtright?>
   </option>
   <?
-		}
-		else{
+		}else{
 			$b=0;
-			?>
-  <option value="<?=$re?>">
+?>
+	<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  
   <?=$re?>
   </option>
   <?

@@ -261,6 +261,9 @@ while($objResult = mysql_fetch_array($objQuery))
 <select size="1" name="appmo">
 <option value="" selected>--เดือน--</option>
 	<?php
+
+	// $months = array('มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+	
 	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
 	'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
 	'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
@@ -354,6 +357,7 @@ while($objResult = mysql_fetch_array($objQuery))
 		<option>OPD เวชศาสตร์ฟื้นฟู</option>
         <option>คลินิกโรคไต</option>
         <option>กายภาพบำบัดชั้น2</option>
+        <option>ห้องประชุม1</option>
    </select>
    </TD>
 </TR>
@@ -506,6 +510,8 @@ while($objResult = mysql_fetch_array($objQuery))
 			<option>U25&nbsp; แผนกจักษุ</option>
             <option>U26&nbsp; คลินิกโรคไต</option>
             <option>U27&nbsp; OPD PM&R</option>
+            <option>U28&nbsp; เวชกรรมป้องกัน</option>
+            <option>U29&nbsp; ส่งเสริมสุขภาพ</option>
   </select>
    </TD>
 </TR>

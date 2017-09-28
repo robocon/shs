@@ -61,62 +61,22 @@ window.print()
 </script>-->
 <?php
 include("connect.inc");	
-$showpart = $_POST["camp"];
-
-if($_POST["xraydate"]=="6"){
-$xraydate ="07-07-2017";
-$sql1 = "SELECT *
-FROM `opcardchk`
-WHERE `part` = '$showpart' and active='y'
-ORDER BY `row` ASC";
-}else if($_POST["xraydate"]=="7"){
-$xraydate ="01-08-2017";
-$sql1 = "SELECT *
-FROM `out_result_chkup`
-WHERE `part` = '$showpart' 
-ORDER BY `row_id` ASC";
-}else if($_POST["xraydate"]=="8"){
-
-$xraydate ="27-08-2017";
+$showpart="สำนักงานจังหวัดลำปาง60";
+$xraydate ="27-06-2017";
 $sql1 = "SELECT *
 FROM `out_result_chkup`
 WHERE `part` = '$showpart' ";
-	if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
-		$sql1 .= "ORDER BY `hn` ASC";
-	}else{
-		$sql1 .= "ORDER BY `row_id` ASC";
-	}
-}else if($_POST["xraydate"]=="9"){
-$xraydate ="18-09-2017";
-$sql1 = "SELECT *
-FROM `out_result_chkup`
-WHERE `part` = '$showpart' 
-ORDER BY `row_id` ASC";
-}
 //echo $sql1;
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 while($result = mysql_fetch_array($row2)){
-
-$age=$result["agey"];
 if(empty($result["HN"])){
 $result["HN"]=$result["hn"];
 }
-
-$sqlcc = mysql_query("SELECT datechkup
-FROM `opcardchk`
-WHERE `HN` = '".$result["hn"]."'");
-list($showdate)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
-
-//echo $sqlcc;
 
 $sql2="select * from out_result_chkup where hn='".$result["HN"]."' and part='".$result["part"]."'";
 //echo $sql2;
 $query2=mysql_query($sql2);
 $result2=mysql_fetch_array($query2);
-
-if(empty($age)){
-$age=$result2["age"];
-}
 
 if(empty($result['name'])){
 $ptname=$result2['ptname'];
@@ -159,7 +119,7 @@ $ptname=$result['name']." ".$result['surname'];
 	
 	list($d,$m,$y)=explode("-",$orderdate);
 	$yy=$y+543;
-	$showdatelab="$d/$m/$yy";
+	$showdate="$d/$m/$yy";
 
 	// 
 	if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
@@ -200,9 +160,9 @@ $ptname=$result['name']." ".$result['surname'];
                     &nbsp;&nbsp;</strong><strong>ชื่อ : </strong> <span style="font-size:24px"><strong>
                     <?=$ptname;?>
                     </strong>&nbsp;&nbsp;&nbsp;
-                    <? if(!empty($age)){ ?>
+                    <? if(!empty($result["agey"])){ ?>
                     <strong>อายุ : </strong> <span style="font-size:24px"><strong>
-                    <?=$age;?> ปี
+                    <?=$result['agey'];?> ปี
                     </strong>
                     <? } ?>
                     </span></td>
@@ -221,26 +181,15 @@ $ptname=$result['name']." ".$result['surname'];
 &nbsp;กก. <strong>ส่วนสูง : </strong>
 <?=$result2['height']?>
 &nbsp;ซม. <strong>BMI : </strong> <u>
-<?=$bmi?> </u>
-&nbsp;&nbsp;<strong>BP : <u>
-<? echo $result2['bp1']; ?>
+<?=$bmi?> </u><strong>BP : <u>
+<? if(empty($result2['bp3'])){ echo $result2['bp1']; }else{ echo $result2['bp3'];} ?>
 /
-<? echo $result2['bp2']; ?>
-mmHg. </u></strong>&nbsp;&nbsp;
-<? if(!empty($result2["bp3"]) && !empty($result2["bp4"])){ ?>
-<strong>RE-BP : <u>
-<? echo $result2['bp3']; ?>
-/
-<? echo $result2['bp4']; ?>
-mmHg. </u></strong>&nbsp;&nbsp;
-<? } ?>
-<span class="text3"><strong>T : </strong> <u><?=$result2['temp']?> C</u></span>&nbsp;&nbsp;<span class="text3"><strong>P : </strong> <u><?=$result2['p']?> ครั้ง/นาที</u></span>&nbsp;&nbsp;<span class="text3"><strong>R : </strong> <u><?=$result2['rate']?> ครั้ง/นาที</u></span></span></td>
+<? if(empty($result2['bp4'])){ echo $result2['bp2']; }else{ echo $result2['bp4'];} ?>
+mmHg. </u></strong><span class="text3"><strong>P : </strong> <u>
+                      <?=$result2['p']?> ครั้ง/นาที
+
+                  </u></span></span></td>
                 </tr>
-<!--<? //if(!empty($result2['prawat'])){ ?>                
-                <tr>
-                  <td valign="top"><strong style="font-size:20px;">โรคประจำตัว/ประวัติการรักษา : </strong><span style="font-size:16px;"><? //echo $result2['prawat'];?></span></td>
-                </tr>
-<? //} ?>  -->              
                 <tr>
                   <td valign="top"><strong style="font-size:20px;">ผลตรวจ : </strong><span style="font-size:16px;"> ดัชนีมวลกาย 
 				  <?  if($bmi == '0.00' ){
@@ -1296,22 +1245,6 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
               <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตา</u> </strong> </td>
               <td><strong class="text" style="margin-left: 9px;"> :
                 <?=$result2['va'];?>
-              </strong> </td>
-            </tr>
-<? } ?>
-<?php if( !empty($result['eye']) ){ ?>           
-            <tr>
-              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
-              <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result2['eye']." ".$result2['eye_detail'];?>
-              </strong> </td>
-            </tr>
-<? } ?>  
-<?php if( !empty($result['pt']) ){ ?>           
-            <tr>
-              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
-              <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result2['pt']." ".$result2['pt_detail'];?>
               </strong> </td>
             </tr>
 <? } ?>   

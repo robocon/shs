@@ -99,6 +99,8 @@ $list_lab["CREA"] = "cr";
 $list_lab["URIC"] = "uric";
 $list_lab["HDL"] = "hdl";
 $list_lab["10001"] = "ldl";
+$list_lab["LDL"] = "ldl";
+$list_lab["LDLC"] = "ldl";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -239,10 +241,11 @@ function check(){
 	}*/
 	$arr_view = mysql_fetch_assoc($result);
 
-$sql = "Select vn From opday where thidate like '".$thaidate."%' and (toborow like 'EX26%' || toborow='ตรวจสุขภาพประจำปีทหาร') and hn = '".$_POST["p_hn"]."' limit 0,1";
+$sql = "Select vn From opday where thidate like '".$thaidate."%' and (toborow like 'EX26%') and hn = '".$_POST["p_hn"]."' limit 0,1";
+//echo $sql;
 $resultvn=mysql_query($sql);
 if(mysql_num_rows($resultvn) < 1){
-	echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ยังไม่ได้ลงทะเบียนเพื่อออก VN ตรวจสุขภาพประจำปีทหาร กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
+	echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ยังไม่ได้ลงทะเบียนเพื่อออก VN EX26 ตรวจสุขภาพประจำปี กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
 }
 list($arr_view["vn"]) = mysql_fetch_row($resultvn);
 
@@ -300,6 +303,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$result_cbc = mysql_query($sql);
 
 	$sql = "Select labcode, result, unit,normalrange,flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix') Order by a.autonumber ASC ";
+	//echo $sql;
 	$result_lab = mysql_query($sql);
 //ค้นหาข้อมูลเดิม
 	
@@ -418,36 +422,6 @@ while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
 ?>
-<?
-$csql="select * from chkup_solider where hn='". $_POST["p_hn"]."' and yearchkup='".$nPrefix."'";
-//echo $csql;
-$cquery=mysql_query($csql);
-if(mysql_num_rows($cquery) < 1){
-echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ($arr_view[ptname]) ยังไม่ได้ลงทะเบียนตรวจสุขภาพทหารปี $nPrefix กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
-}else{
-	$rows=mysql_fetch_array($cquery);
-	$yot=$rows["yot"];
-	$gender=$rows["gender"];
-	$age=$rows["age"];
-	$chunyot = $rows["chunyot"];
-	$camp = $rows["camp"];
-	$showcamp = substr($camp,4);
-	$position = $rows["position"];
-	$ratchakarn = $rows["ratchakarn"];
-	$idcard=$rows["idcard"];
-	$dxptright=$rows["dxptright"];
-
-	$opdsql=mysql_query("select opd from chkup_solider where hn='". $_POST["p_hn"]."' and yearchkup='".$nPrefix."'");
-	list($opddate)=mysql_fetch_array($opdsql);
-	if(!empty($opddate)){
-		echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ($arr_view[ptname]) สังกัด $showcamp เคยซักประวัติตรวจสุขภาพทหารปี $nPrefix แล้ว');</script>";
-	}else{
-		echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ($arr_view[ptname]) สังกัด $showcamp');</script>";
-	}
-	
-}
-?>
-
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM name="vsform" method="POST" ACTION="dx_ofyear_save.php" target="_blank" onsubmit="return check()" >
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
@@ -463,34 +437,20 @@ echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ($arr_view[ptname]) ยังไม่ได
 	</TR>
 	<TR>
 		<TD>
-	<table width="737" border="0" class="tb_font">
+	<table width="100%" border="0" class="tb_font">
 		<tr>
-			<td width="140" align="right"><span class="tb_font_2">VN :</span></td>
-			<td width="183"><?php echo $arr_view["vn"];?></td>
-			<td width="107" align="right"><span class="tb_font_2">HN :</span></td>
-			<td width="289"><?php echo $arr_view["hn"];?></td>
-			</tr>
+			<td width="157" align="right"><span class="tb_font_2">VN :</span></td>
+			<td width="302"><?php echo $arr_view["vn"];?></td>
+			<td width="141" align="right"><span class="tb_font_2">HN :</span></td>
+			<td width="333"><?php echo $arr_view["hn"];?></td>
+			<td width="419">&nbsp;</td>
+		</tr>
 		<tr>
 			<td align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
 			<td><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
 			<td align="right"><span class="tb_font_2">อายุ :</span></td>
 			<td align="left"><?php echo $arr_view["age"];?></td>
-		</tr>
-		<tr>
-		  <td align="right"><span class="tb_font_2">เพศ : </span></td>
-		  <td><? if($gender=="1"){ echo "ชาย";}else if($gender=="2"){ echo "หญิง";}?></td>
-		  <td align="right"><span class="tb_font_2">ชั้นยศ : </span></td>
-		  <td><? echo substr($chunyot,5);?></td>
-		</tr>
-		<tr>
-		  <td align="right"><span class="tb_font_2">สังกัด : </span></td>
-		  <td><? echo $showcamp;?></td>
-		  <td align="right"><span class="tb_font_2">ตำแหน่ง :</span></td>
-		  <td><?php echo $position; ?></td>
-		</tr>
-		<tr>
-		  <td align="right"><span class="tb_font_2">ช่วยราชการ(ถ้ามี) :</span></td>
-		  <td colspan="3"><?php echo $ratchakarn; ?></td>
+		    <td align="left">&nbsp;</td>
 		</tr>
 	</table>
 	<hr />
@@ -713,7 +673,7 @@ mmHg</td>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0">
 	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?php echo $lab_date;?><input name="rowlab" type="hidden" id="rowlab"  value="<?php echo $lab_date;?>" /></TD>
+		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ ปี<?=$nPrefix;?> เมื่อวันที่ <?php echo $lab_date;?><input name="rowlab" type="hidden" id="rowlab"  value="<?php echo $lab_date;?>" /></TD>
 	</TR>
 	<TR class="tb_font">
 		<TD>
@@ -776,7 +736,7 @@ mmHg</td>
 			//$labresult = $arr_dxofyear[$list_lab[$labname]];
 
 	  ?>
-          <td align="right" class="tb_font_2"><?php if($labname=="10001"){ echo "LDL";}else{ echo $labname;}?> : </td>
+          <td align="right" class="tb_font_2"><?php if($labname=="10001" || $labname=="LDLC" || $labname=="LDL"){ echo "LDL";}else{ echo $labname;}?> : </td>
           <td>&nbsp;<input name="<?php echo  $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;<?php //echo $unit;?>
 &nbsp;</td>
 		 <input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />

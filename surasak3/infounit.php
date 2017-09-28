@@ -15,7 +15,7 @@ session_start();
 <?php
     include("connect.inc");
 
-    $query = "SELECT drugcode,tradname,unitpri,part FROM druglst WHERE drugcode = '$Dgcode' ";
+    $query = "SELECT drugcode,tradname,unitpri,salepri,part FROM druglst WHERE drugcode = '$Dgcode' ";
     $result = mysql_query($query)
         or die("Query failed");
 
@@ -35,10 +35,12 @@ session_start();
     $aDgcode[$x]=$row->drugcode;
     $aTrade[$x]=$row->tradname;
 
-    $aPrice[$x]=$row->unitpri;
+    //$aPrice[$x]=$row->unitpri;
+	$sPrice[$x]=$row->salepri;
     $aPart[$x]=$row->part;
     $aAmount[$x]=$Amount;
-    $money = $Amount*$row->unitpri ;
+    //$money = $Amount*$row->unitpri ;
+	$money = $Amount*$row->salepri ;
     $aMoney[$x]=$money;
     $Netprice=array_sum($aMoney);
 
@@ -48,7 +50,7 @@ session_start();
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n]</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$n]</td>\n".
+                "<td bgcolor=F5DEB3><font face='Angsana New'>$sPrice[$n]</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$n]</td>\n".  
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$aMoney[$n]</td>\n".  
                 " </tr>\n");

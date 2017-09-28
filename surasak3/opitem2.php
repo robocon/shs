@@ -176,6 +176,7 @@ $sVn=$_POST['vnnow'];
 			}
 			if($nrow>0){
 				$sRowid=$row->row_id;
+				$ddate=$row->date;
 				$sHn=$row->hn;
 				$sAn=$row->an;
 				//$sPtname=$row->ptname;
@@ -211,6 +212,7 @@ $sVn=$_POST['vnnow'];
 					if(!($row = mysql_fetch_object($result)))
 						continue;
 						$sRowid=$row->row_id;
+						$pdate=$row->date;
 						$sHn=$row->hn;
 						$sAn=$row->an;
 						$sPtright=$row->ptright;
@@ -244,9 +246,30 @@ $sVn=$_POST['vnnow'];
 				}
 			}
 		}
+
+	if(!empty($ddate)){
+		$dr_date=$ddate;
+	}else{
+		$dr_date=$pdate;
+	}		
+	$sdate=substr($dr_date,0,10);
+	list($y1,$m1,$d1)=explode("-",$sdate);
+	$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
+	
+	$sqlopday = "select toborow, diag from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+	//echo $sqlopday;
+	$res= mysql_query($sqlopday) or die("Query failed");
+	list($toborow,$diagnosis) = mysql_fetch_row($res);
+	
+	if(!empty($diagnosis)){
+		$cDiag=$diagnosis;
+	}		
+		$showvn=$_SESSION["sVn"];
 		
-		print "$sPtname, HN: $sHn<br> ";
-		print "โรค: ";
+		print "<font face='Angsana New' size='5'><b>ชื่อ-สกุล: $sPtname, HN: $sHn, VN: $showvn</font><br> ";
+		print "<font face='Angsana New' size='4'><b>ผู้ป่วยสิทธิ: <span style='color:red;'>$sPtright</span></b></font><br />";
+		print "<font face='Angsana New' size='4'><b>ออก OPD CARD โดย : <span style='color:blue;'>$toborow</span></b></font><br> ";
+		print "<font face='Angsana New' size='4'><b>โรค: ";
 		if(count($_SESSION['tDiag'])==1){
 			$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$nhn' and tvn = '$sVn' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
 			//echo $chksql;
@@ -280,11 +303,13 @@ $sVn=$_POST['vnnow'];
 					}				
 			//}
 		}
-		print ", แพทย์ :$sDoctor<br>";
-		
+		print ", แพทย์ :$sDoctor</b></font><br>";
+?>
+<font face='Angsana New' size="5"><A HREF="drxadddiag.php?sDate=<?php echo urlencode($pdate);?>&nRow_id=<?php echo urlencode($sRowid);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >แก้ไขชื่อโรค</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิที่ต้องนำไปเบิกต้นสังกัดเท่านั้น)</font>
+<?		
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
 				$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice FROM patdata as a,depart as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id ";
-				//echo $query;
+				//echo $query."<br>";
 
 				$result = mysql_query($query) or die("Query failed");
 			
@@ -313,6 +338,7 @@ $sVn=$_POST['vnnow'];
 for($r=0;$r<count($_SESSION['idnumber']);$r++){
 
 		$query = "SELECT * FROM phardep WHERE row_id = '".$_SESSION['idnumber'][$r]."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."'  ";
+		//echo $query;
 		$result = mysql_query($query) or die(mysql_error());
 		$n1 = mysql_num_rows($result);
 		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -402,6 +428,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 //$DsNetprice,$DsDPN,$DsDPY,$DsDSN,$DsDSY,$DsNessdn,$DsNessdy,$DsEssd รวมเงินของยา
 
 $sNetprice =$sumprice+$DsNetprice; 
+//echo "ราคารวม-->".$sNetprice;
 $sSumNprice=$sumnprice+$DsDPN+$DsDSN+$DsNessdn;
 $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 ?>
@@ -444,7 +471,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
@@ -640,11 +667,11 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 </TR>
 		 <TR>
 			<TD align='right'>
-				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHECKUP$yPrefix' onclick=\"detailhead4.style.display='none';\">
-			</TD>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHECKUP$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ตรวจสุขภาพประกันสังคม</TD>			
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>			
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='PAYCHKUP$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>เรียกเก็บตรวจสุขภาพ</TD>			
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>			
 			<TD>&nbsp;</TD>
