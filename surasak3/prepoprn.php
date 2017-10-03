@@ -365,11 +365,11 @@ print"<STYLE>";
  print"A {text-decoration:none}";
  print"A IMG {border-style:none; border-width:0;}";
  print"DIV {position:absolute; z-index:25;}";
-print".fc1-0 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
-print".fc1-1 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:BOLD;}";
-print".fc1-2 { COLOR:000000;FONT-SIZE:11PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
-print".fc1-3 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
-print".fc1-4 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-0 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-1 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:BOLD;}";
+print".fc1-2 { COLOR:000000;FONT-SIZE:11PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-3 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-4 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
 print".ad1-0 {border:0PX none 000000; }";
 print".ad1-1 {border-left:0PX none 000000; border-right:0PX none 000000; border-top:1PX dashed 000000; border-bottom:0PX none 000000; }";
 print".ad1-2 {border-left:1PX dashed 000000; border-right:0PX none 000000; border-top:0PX none 000000; border-bottom:0PX none 000000; }";
@@ -379,35 +379,73 @@ print"<TITLE>Crystal Report Viewer</TITLE>";
 print"</head>";
 print"<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
 print"<DIV style='z-index:0'> &nbsp; </div>";
+
 print"<div style='left:310PX;top:1161PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
 print"<div style='left:515PX;top:1161PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
-print"<div style='left:8PX;top:1240PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
+// ขีด-ด้านล่างหัวข้อ
+print"<div style='left:8PX;top:1280PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:804PX;'></div>";
+// ขีด-ขวา
 print"<div style='left:44PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:561PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+// ขีด-รายการ
 print"<div style='left:311PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:561PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+// ขีด-หน่วยนับ
 print"<div style='left:365PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:561PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+// ขีด-ขนาดบรรจุ
 print"<div style='left:461PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:561PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+// ขีด-จำนวน
 print"<div style='left:515PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:585PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:561PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:679PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:8PX;top:1718PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
-print"<div style='left:124PX;top:1743PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
-print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:1210PX;width:743PX;height:560PX;'><table border=0 cellpadding=0 cellspacing=0 width=736px height=553px><TD>&nbsp;</TD></TABLE></DIV>";
-print"<DIV style='left:518PX;top:1140PX;width:105PX;height:26PX;'><span class='fc1-0'>
-	     $cPrepodate</span></DIV>";
+// ขีด-ราคากลาง
+print"<div style='left:570PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+// ขีด-แหล่งที่มาราคากลาง
+print"<div style='left:625PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+// หน่วยละไม่รวม vat
+print"<div style='left:689PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+// เป็นเงินไม่รวม vat
+print"<div style='left:750PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+
+
+// print"<div style='left:585PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:561PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+// print"<div style='left:679PX;top:1210PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+// print"<div style='left:8PX;top:1718PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
+// print"<div style='left:124PX;top:1743PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
+
+// กรอบใหญ่
+print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:1210PX;width:804PX;height:560PX;'><table border=0 cellpadding=0 cellspacing=0 width=736px height=553px><TD>&nbsp;</TD></TABLE></DIV>";
+
+
+print"<DIV style='left:518PX;top:1140PX;width:105PX;height:26PX;'><span class='fc1-0'>$cPrepodate</span></DIV>";
 print"<DIV style='left:310PX;top:1140PX;width:159PX;height:26PX;'><span class='fc1-0'>$cPrepono</span></DIV>";
 print"<DIV style='left:194PX;top:1100PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>บัญชีรายการยาที่ขออนุมัติจัดหา </span></DIV>";
 print"<DIV style='left:136PX;top:1140PX;width:175PX;height:26PX;'><span class='fc1-0'>ประกอบรายงานที่ กห 0483.63.4/</span></DIV>";
 print"<DIV style='left:474PX;top:1140PX;width:45PX;height:26PX;'><span class='fc1-0'>ลง วันที่</span></DIV>";
-print"<DIV style='left:4PX;top:1213PX;width:38PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
-print"<DIV style='left:44PX;top:1213PX;width:258PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รายการ</span></DIV>";
-print"<DIV style='left:313PX;top:1213PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยนับ</span></DIV>";
-print"<DIV style='left:371PX;top:1213PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
-print"<DIV style='left:467PX;top:1213PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
-print"<DIV style='left:520PX;top:1207PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยละ</span></DIV>";
-print"<DIV style='left:590PX;top:1207PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>เป็นเงิน</span></DIV>";
-print"<DIV style='left:684PX;top:1213PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
-print"<DIV style='left:600PX;top:1222PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ไม่รวม VAT</span></DIV>";
-print"<DIV style='left:518PX;top:1222PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ไม่รวม VAT</span></DIV>";
+
+// หัวข้อในตาราง
+print"<DIV style='left:4PX;top:1233PX;width:38PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
+print"<DIV style='left:44PX;top:1233PX;width:258PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รายการ</span></DIV>";
+print"<DIV style='left:313PX;top:1233PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยนับ</span></DIV>";
+print"<DIV style='left:371PX;top:1233PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
+print"<DIV style='left:467PX;top:1233PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
+// ราคากลาง
+print"<DIV style='left:515PX;top:1233PX;width:55px;height:27PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>ราคากลาง</span></DIV>";
+// แหล่งที่มาของราคากลาง
+print"<DIV style='left:570PX;top:1213PX;width:55px;height:27PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>แหล่งที่มาของราคากลาง ***</span></DIV>";
+
+print"<DIV style='left:625PX;top:1223PX;width:61PX;height:23PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>หน่วยละ</span></DIV>";
+print"<DIV style='left:625PX;top:1243PX;width:61PX;height:23PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>ไม่รวม VAT</span></DIV>";
+
+print"<DIV style='left:686PX;top:1223PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>เป็นเงิน</span></DIV>";
+print"<DIV style='left:686PX;top:1243PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>ไม่รวม VAT</span></DIV>";
+
+print"<DIV style='left:750PX;top:1223PX;width:61PX;height:23PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>spec<br>พบ.ที่</span></DIV>";
+
+
 ///list รายการ
    $x=0;
     $aX   = array("x");
@@ -417,8 +455,12 @@ print"<DIV style='left:518PX;top:1222PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER
 	$aAmount  = array(" amount");
     $aPrice   = array(" price");
     $aPackpri  = array(" packpri");
-    $aSpecno   = array(" specno");
-//$x  $tradname $packing  $pack  $amount  $price  $packpri  $specno 
+	$aSpecno   = array(" specno");
+
+	$aEdpri = array("edpri");
+	$aEdpriFrom = array("edpri_from");
+
+	//$x  $tradname $packing  $pack  $amount  $price  $packpri  $specno 
     $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' ";
     $result = mysql_query($query) or die("Query poitems failed");
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -427,28 +469,38 @@ print"<DIV style='left:518PX;top:1222PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER
             continue;
         }
         if(!($row = mysql_fetch_object($result)))
-            continue;      
-     $x++;
-	 $specnum = $row->specno;
-	 $drugc = $row->drugcode;
-	 if($specnum==""){
-		$query2 = "SELECT spec  from druglst WHERE drugcode = '$drugc' ";
-		$result2 = mysql_query($query2);
-		list($specnum) = mysql_fetch_array($result2);
-	 }
-    array_push($aX,"$x");
-    array_push($aTradname,$row->tradname);
-    array_push($aPacking,$row->packing);
-    array_push($aPack,$row->pack);
-    array_push($aAmount ,$row->amount);
-  	$price=$row->price;
-	$price=number_format($price,2,'.',',');
-    array_push($aPrice,$price);
-	$packpri=$row->packpri;
-	$packpri=number_format($packpri,2,'.',',');
-    array_push($aPackpri,$packpri);
-    array_push($aSpecno,$specnum);
-       }
+			continue;
+		
+		$x++;
+		$specnum = $row->specno;
+		$drugc = $row->drugcode;
+		if($specnum==""){
+			$query2 = "SELECT spec  from druglst WHERE drugcode = '$drugc' ";
+			$result2 = mysql_query($query2);
+			list($specnum) = mysql_fetch_array($result2);
+		}
+		array_push($aX,"$x");
+		array_push($aTradname,$row->tradname);
+		array_push($aPacking,$row->packing);
+		array_push($aPack,$row->pack);
+		array_push($aAmount ,$row->amount);
+		$price=$row->price;
+		$price=number_format($price,2,'.',',');
+		array_push($aPrice,$price);
+		$packpri=$row->packpri;
+		$packpri=number_format($packpri,2,'.',',');
+		array_push($aPackpri,$packpri);
+		array_push($aSpecno,$specnum);
+		
+		$sql = "SELECT * FROM druglst WHERE drugcode = '$drugc'";
+		$q = mysql_query($sql) or die( mysql_error() );
+		$item = mysql_fetch_assoc($q);
+
+		array_push($aEdpri,$item['edpri']);
+		array_push($aEdpriFrom,$item['edpri_from']);
+
+	}
+	
 	$x++;
     array_push($aX,"");
 	array_push($aTradname,"------- หมดรายการ -------"); 
@@ -471,235 +523,398 @@ for ($n=$x+1; $n<=13; $n++){
 }
 
 ///แถวที่1
-print"<DIV style='left:11PX;top:1249PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1289PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[1]</span></DIV>";
-print"<DIV style='left:49PX;top:1249PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[1]</span></DIV>";
-print"<DIV style='left:306PX;top:1249PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1289PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[1]</span></DIV>";
+print"<DIV style='left:306PX;top:1289PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[1]</span></DIV>";
-print"<DIV style='left:362PX;top:1249PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-	<span class='fc1-4'>$aPack[1]</span></DIV>";
-print"<DIV style='left:462PX;top:1249PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-	<span class='fc1-4'>$aAmount[1]</span></DIV>";
-print"<DIV style='left:597PX;top:1249PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1289PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4'>$aPack[1]</span></DIV>";
+print"<DIV style='left:462PX;top:1289PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4'>$aAmount[1]</span></DIV>";
+// ราคากลาง
+print"<DIV style='left:515PX;top:1289PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[1]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[1]) ) ? ( empty($aEdpri[1]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1289PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1289PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[1]</span></DIV>";
-print"<DIV style='left:679PX;top:1249PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1289PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[1]</span></DIV>";
-print"<DIV style='left:519PX;top:1249PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1289PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[1]</span></DIV>";
+
 ///แถวที่2
-print"<DIV style='left:11PX;top:1279PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1319PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[2]</span></DIV>";
-print"<DIV style='left:49PX;top:1279PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[2]</span></DIV>";
-print"<DIV style='left:306PX;top:1279PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1319PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[2]</span></DIV>";
+print"<DIV style='left:306PX;top:1319PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[2]</span></DIV>";
-print"<DIV style='left:362PX;top:1279PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1319PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[2]</span></DIV>";
-print"<DIV style='left:462PX;top:1279PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1319PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[2]</span></DIV>";
-print"<DIV style='left:597PX;top:1279PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+// ราคากลาง
+print"<DIV style='left:515PX;top:1319PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[2]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[2]) ) ? ( empty($aEdpri[2]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1319PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+print"<DIV style='left:625PX;top:1319PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[2]</span></DIV>";
-print"<DIV style='left:679PX;top:1279PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1319PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[2]</span></DIV>";
-print"<DIV style='left:519PX;top:1279PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1319PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[2]</span></DIV>";
+
 ///แถวที่3
-print"<DIV style='left:11PX;top:1309PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1349PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[3]</span></DIV>";
-print"<DIV style='left:49PX;top:1309PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[3]</span></DIV>";
-print"<DIV style='left:306PX;top:1309PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1349PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[3]</span></DIV>";
+print"<DIV style='left:306PX;top:1349PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[3]</span></DIV>";
-print"<DIV style='left:362PX;top:1309PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1349PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[3]</span></DIV>";
-print"<DIV style='left:462PX;top:1309PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1349PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[3]</span></DIV>";
-print"<DIV style='left:597PX;top:1309PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1349PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[3]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[3]) ) ? ( empty($aEdpri[3]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1349PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1349PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[3]</span></DIV>";
-print"<DIV style='left:679PX;top:1309PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1349PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[3]</span></DIV>";
-print"<DIV style='left:519PX;top:1309PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1349PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[3]</span></DIV>";
+
 ///แถวที่4
-print"<DIV style='left:11PX;top:1339PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1379PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[4]</span></DIV>";
-print"<DIV style='left:49PX;top:1339PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[4]</span></DIV>";
-print"<DIV style='left:306PX;top:1339PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1379PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[4]</span></DIV>";
+print"<DIV style='left:306PX;top:1379PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[4]</span></DIV>";
-print"<DIV style='left:362PX;top:1339PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1379PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[4]</span></DIV>";
-print"<DIV style='left:462PX;top:1339PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1379PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[4]</span></DIV>";
-print"<DIV style='left:597PX;top:1339PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1379PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[4]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[4]) ) ? ( empty($aEdpri[4]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1379PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1379PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[4]</span></DIV>";
-print"<DIV style='left:679PX;top:1339PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1379PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[4]</span></DIV>";
-print"<DIV style='left:519PX;top:1339PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1379PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[4]</span></DIV>";
+
 ///แถวที่5
-print"<DIV style='left:11PX;top:1369PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1409PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[5]</span></DIV>";
-print"<DIV style='left:76PX;top:1369PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[5]</span></DIV>";
-print"<DIV style='left:306PX;top:1369PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:76PX;top:1409PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[5]</span></DIV>";
+print"<DIV style='left:306PX;top:1409PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[5]</span></DIV>";
-print"<DIV style='left:362PX;top:1369PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1409PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[5]</span></DIV>";
-print"<DIV style='left:462PX;top:1369PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1409PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[5]</span></DIV>";
-print"<DIV style='left:597PX;top:1369PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1409PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[5]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[5]) ) ? ( empty($aEdpri[5]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1409PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1409PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[5]</span></DIV>";
-print"<DIV style='left:679PX;top:1369PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1409PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[5]</span></DIV>";
-print"<DIV style='left:519PX;top:1369PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1409PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[5]</span></DIV>";
+
 ///แถวที่6
-print"<DIV style='left:11PX;top:1399PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1439PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[6]</span></DIV>";
-print"<DIV style='left:76PX;top:1399PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[6]</span></DIV>";
-print"<DIV style='left:306PX;top:1399PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:76PX;top:1439PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[6]</span></DIV>";
+print"<DIV style='left:306PX;top:1439PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[6]</span></DIV>";
-print"<DIV style='left:362PX;top:1399PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1439PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[6]</span></DIV>";
-print"<DIV style='left:462PX;top:1399PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1439PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[6]</span></DIV>";
-print"<DIV style='left:597PX;top:1399PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1409PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[6]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[6]) ) ? ( empty($aEdpri[6]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1409PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1439PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[6]</span></DIV>";
-print"<DIV style='left:679PX;top:1399PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1439PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[6]</span></DIV>";
-print"<DIV style='left:519PX;top:1399PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1439PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[6]</span></DIV>";
+
 ///แถวที่7
-print"<DIV style='left:11PX;top:1429PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1469PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[7]</span></DIV>";
-print"<DIV style='left:49PX;top:1429PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[7]</span></DIV>";
-print"<DIV style='left:306PX;top:1429PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1469PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[7]</span></DIV>";
+print"<DIV style='left:306PX;top:1469PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[7]</span></DIV>";
-print"<DIV style='left:362PX;top:1429PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1469PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[7]</span></DIV>";
-print"<DIV style='left:462PX;top:1429PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1469PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[7]</span></DIV>";
-print"<DIV style='left:597PX;top:1429PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1469PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[6]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[6]) ) ? ( empty($aEdpri[7]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1469PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1469PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[7]</span></DIV>";
-print"<DIV style='left:679PX;top:1429PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1469PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[7]</span></DIV>";
-print"<DIV style='left:519PX;top:1429PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1469PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[7]</span></DIV>";
+
 ///แถวที่8
-print"<DIV style='left:11PX;top:1459PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1499PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[8]</span></DIV>";
-print"<DIV style='left:49PX;top:1459PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[8]</span></DIV>";
-print"<DIV style='left:306PX;top:1459PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1499PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[8]</span></DIV>";
+print"<DIV style='left:306PX;top:1499PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[8]</span></DIV>";
-print"<DIV style='left:362PX;top:1459PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1499PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[8]</span></DIV>";
-print"<DIV style='left:462PX;top:1459PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1499PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[8]</span></DIV>";
-print"<DIV style='left:597PX;top:1459PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1499PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[7]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[7]) ) ? ( empty($aEdpri[8]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1499PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1499PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[8]</span></DIV>";
-print"<DIV style='left:679PX;top:1459PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1499PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[8]</span></DIV>";
-print"<DIV style='left:519PX;top:1459PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1499PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[8]</span></DIV>";
 	
 ///แถวที่9
-print"<DIV style='left:11PX;top:1489PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1529PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[9]</span></DIV>";
-print"<DIV style='left:49PX;top:1489PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[9]</span></DIV>";
-print"<DIV style='left:306PX;top:1489PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1529PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[9]</span></DIV>";
+print"<DIV style='left:306PX;top:1529PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[9]</span></DIV>";
-print"<DIV style='left:362PX;top:1489PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1529PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[9]</span></DIV>";
-print"<DIV style='left:462PX;top:1489PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1529PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[9]</span></DIV>";
-print"<DIV style='left:597PX;top:1489PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1529PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[9]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[9]) ) ? ( empty($aEdpri[9]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1529PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1529PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[9]</span></DIV>";
-print"<DIV style='left:679PX;top:1489PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1529PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[9]</span></DIV>";
-print"<DIV style='left:519PX;top:1489PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1529PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[9]</span></DIV>";
 	
 ///แถวที่10
-print"<DIV style='left:11PX;top:1519PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1559PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[10]</span></DIV>";
-print"<DIV style='left:49PX;top:1519PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[10]</span></DIV>";
-print"<DIV style='left:306PX;top:1519PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1559PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[10]</span></DIV>";
+print"<DIV style='left:306PX;top:1559PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[10]</span></DIV>";
-print"<DIV style='left:362PX;top:1519PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1559PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[10]</span></DIV>";
-print"<DIV style='left:462PX;top:1519PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1559PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[10]</span></DIV>";
-print"<DIV style='left:597PX;top:1519PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1559PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[10]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[10]) ) ? ( empty($aEdpri[10]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1559PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1559PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[10]</span></DIV>";
-print"<DIV style='left:679PX;top:1519PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1559PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[10]</span></DIV>";
-print"<DIV style='left:519PX;top:1519PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1559PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[10]</span></DIV>";
+
 ///แถวที่11
-print"<DIV style='left:11PX;top:1549PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1589PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[11]</span></DIV>";
-print"<DIV style='left:49PX;top:1549PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[11]</span></DIV>";
-print"<DIV style='left:306PX;top:1549PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1589PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[11]</span></DIV>";
+print"<DIV style='left:306PX;top:1589PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[11]</span></DIV>";
-print"<DIV style='left:362PX;top:1549PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1589PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[11]</span></DIV>";
-print"<DIV style='left:462PX;top:1549PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1589PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[11]</span></DIV>";
-print"<DIV style='left:597PX;top:1549PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1589PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[11]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[11]) ) ? ( empty($aEdpri[11]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1589PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1589PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[11]</span></DIV>";
-print"<DIV style='left:679PX;top:1549PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1589PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[11]</span></DIV>";
-print"<DIV style='left:519PX;top:1549PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1589PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[11]</span></DIV>";
+
 ///แถวที่12
-print"<DIV style='left:11PX;top:1579PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:11PX;top:1619PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[12]</span></DIV>";
-print"<DIV style='left:49PX;top:1579PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[12]</span></DIV>";
-print"<DIV style='left:306PX;top:1579PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1619PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[12]</span></DIV>";
+print"<DIV style='left:306PX;top:1619PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[12]</span></DIV>";
-print"<DIV style='left:362PX;top:1579PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1619PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[12]</span></DIV>";
-print"<DIV style='left:462PX;top:1579PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1619PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[12]</span></DIV>";
-print"<DIV style='left:597PX;top:1579PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1619PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[12]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[12]) ) ? ( empty($aEdpri[12]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1619PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1619PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[12]</span></DIV>";
-print"<DIV style='left:679PX;top:1579PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1619PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[12]</span></DIV>";
-print"<DIV style='left:519PX;top:1579PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1619PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[12]</span></DIV>";
-///แถวที่13
-print"<DIV style='left:11PX;top:1609PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+
+// ///แถวที่13
+print"<DIV style='left:11PX;top:1649PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[13]</span></DIV>";
-print"<DIV style='left:49PX;top:1609PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[13]</span></DIV>";
-print"<DIV style='left:306PX;top:1609PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:49PX;top:1649PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[13]</span></DIV>";
+print"<DIV style='left:306PX;top:1649PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[13]</span></DIV>";
-print"<DIV style='left:362PX;top:1609PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:362PX;top:1649PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPack[13]</span></DIV>";
-print"<DIV style='left:462PX;top:1609PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:462PX;top:1649PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aAmount[13]</span></DIV>";
-print"<DIV style='left:597PX;top:1609PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+
+// ราคากลาง
+print"<DIV style='left:515PX;top:1649PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$aEdpri[13]</span></DIV>";
+// แหล่งที่มาของราคากลาง
+$from = ( isset($aEdpri[13]) ) ? ( empty($aEdpri[13]) ? 5 : 3 ) : '' ;
+print"<DIV style='left:570PX;top:1649PX;width:55PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4' style='margin-right: 2px;'>$from</span></DIV>";
+
+print"<DIV style='left:625PX;top:1649PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPrice[13]</span></DIV>";
-print"<DIV style='left:679PX;top:1609PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+print"<DIV style='left:686PX;top:1649PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aSpecno[13]</span></DIV>";
-print"<DIV style='left:519PX;top:1609PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+print"<DIV style='left:750PX;top:1649PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[13]</span></DIV>";
 /////////
 
-print"<DIV style='left:128PX;top:1721PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>";
-	print"<span class='fc1-0'>$nItems</span></DIV>";
-print"<DIV style='left:99PX;top:1721PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
-print"<DIV style='left:225PX;top:1721PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
+// รวมเงิน-ซ้าย
+print"<DIV style='left:45PX;top:1741PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
+print"<DIV style='left:50PX;top:1741PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>";
+print"<span class='fc1-0'>$nItems</span></DIV>";
+print"<DIV style='left:140PX;top:1741PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
+
 print"<DIV style='left:417PX;top:1798PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
 print"<DIV style='left:441PX;top:1824PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
 print"<DIV style='left:446PX;top:1853PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+
 //print"<DIV style='left:486PX;top:1830PX;width:249PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>..........................................................................</span></DIV>";
-print"<DIV style='left:496PX;top:1690PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
-print"<DIV style='left:538PX;top:1723PX;width:44PX;height:27PX;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
-print"<DIV style='left:496PX;top:1662PX;width:86PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
-print"<DIV style='left:597PX;top:1663PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'><span  class='fc1-0'>$nNetprice</span></DIV>";
-print"<DIV style='left:597PX;top:1690PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
-	<span class='fc1-0'>$nVat</span></DIV>";
-print"<DIV style='left:597PX;top:1723PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
+
+// รวมเงิน
+print"<DIV style='left:625PX;top:1703PX;width:64PX;height:19px;TEXT-ALIGN:left;border-bottom:1px solid black;'><span class='fc1-0'>รวมเงิน</span></DIV>";
+print"<DIV style='left:690PX;top:1703PX;width:61PX;height:19px;TEXT-ALIGN:RIGHT;border-bottom:1px solid black;'><span  class='fc1-0'>$nNetprice</span></DIV>";
+
+print"<DIV style='left:625PX;top:1723PX;width:64PX;height:19px;TEXT-ALIGN:left;border-bottom:1px solid black;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
+print"<DIV style='left:690PX;top:1723PX;width:61PX;height:19px;TEXT-ALIGN:RIGHT;border-bottom:1px solid black;'>
+<span class='fc1-0'>$nVat</span></DIV>";
+
+// สุทธิ
+print"<DIV style='left:625PX;top:1743PX;width:64PX;height:19px;border-bottom:1px solid black;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
+print"<DIV style='left:690PX;top:1743PX;width:61PX;height:19px;TEXT-ALIGN:RIGHT;border-bottom:1px solid black;'>
 	<span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
+
 print"<DIV style='left:446PX;top:1882PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 print"<BR>";
+
+$edpri_from_list = array(
+    1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
+    2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
+    3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด<br>(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
+    4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
+    5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
+    6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
+);
+
+?>
+<style>
+div{
+	font-family:TH SarabunPSK;
+	font-size: 18px;
+}
+</style>
+<div style="top:1800px;">รวมราคาประมาณการอนุมัติ เพื่อดำเนินการจัดซื้อในคราวนี้ <?=$nItems;?> รายการ</div>
+<div style="top:1819px;">จำนวนเงิน <?=$nPriadvat;?> บาท (สี่หมื่น000000 บาทถ้วน)</div>
+<div style="top:1838px;">*** หมายเหตุ</div>
+
+<div style="top:1857px;">
+	<div>แหล่งที่มาของราคากลาง</div><br>
+	<?php
+	foreach ($edpri_from_list as $key => $value) {
+		echo $value."<br>";
+	}
+	?>
+</div>
+<?php
 print"</BODY>";
 print"</HTML>";
 
@@ -721,12 +936,12 @@ print"<STYLE>";
  print"A {text-decoration:none}";
  print"A IMG {border-style:none; border-width:0;}";
  print"DIV {position:absolute; z-index:25;}";
-print".fc1-0 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
-print".fc1-1 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:BOLD;}";
-print".fc1-2 { COLOR:000000;FONT-SIZE:23PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:BOLD;}";
-print".fc1-3 { COLOR:000000;FONT-SIZE:19PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:BOLD;}";
-print".fc1-4 { COLOR:000000;FONT-SIZE:14PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
-print".fc1-5 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:THSarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-0 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-1 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:BOLD;}";
+print".fc1-2 { COLOR:000000;FONT-SIZE:23PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:BOLD;}";
+print".fc1-3 { COLOR:000000;FONT-SIZE:19PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:BOLD;}";
+print".fc1-4 { COLOR:000000;FONT-SIZE:14PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-5 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
 print".ad1-0 {border:0PX none 000000; }";
 print".ad1-1 {border-left:0PX none 000000; border-right:0PX none 000000; border-top:1PX dashed 000000; border-bottom:0PX none 000000; }";
 print".ad1-2 {border-left:1PX dashed 000000; border-right:0PX none 000000; border-top:0PX none 000000; border-bottom:0PX none 000000; }";

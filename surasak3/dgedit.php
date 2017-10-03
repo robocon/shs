@@ -51,7 +51,8 @@
 		$status_drug = $row->status;
 		$typedrug = $row->typedrug;
 		$tmt = $row->tmt;
-		$procat = $row->product_category;	
+        $procat = $row->product_category;
+        $edpri_from = $row->edpri_from;
                   }  
    else {
       echo "ไม่พบ รหัส : $drugcode ";
@@ -161,7 +162,41 @@ print "  <input type='text' name='dpy_code' size='20' tabindex='22' value=$cdpy_
 print "     ใบรับรองการใช้ยา <SELECT NAME=\"status_chdrug\"><Option value=\"\" ".($status_drug==""?"Selected":"")." >ไม่มีกลุ่ม</Option><Option value=\"A\" ".($status_drug=="A"?"Selected":"")." >ANGIOTENSIN II RECEPTOR ANTAGONISTS</Option><Option value=\"B\" ".($status_drug=="B"?"Selected":"")." >STATINS</Option><Option value=\"C\" ".($status_drug=="C"?"Selected":"")." >PROTON PUMP INHIBITORS</Option><Option value=\"D\" ".($status_drug=="D"?"Selected":"")." >COX-2 SELECTIVE INHIBITORS</Option><Option value=\"E\" ".($status_drug=="E"?"Selected":"")." >กลูโคซามีน</Option></SELECT><br>";
 
 print "   TMT CODE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='tmt' size='10' tabindex='23' value='$tmt'>";
+print "  <input type='text' name='tmt' size='10' tabindex='23' value='$tmt'><br>";
+
+$edpri_from_list = array(
+    1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
+    2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
+    3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
+    4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
+    5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
+    6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
+);
+?>
+แหล่งที่มาของราคากลาง 
+<select name="edpri_from" id="">
+    <?php 
+
+    $def_edpri = 5;
+    if ( $cEdpri > 0 OR $cFreelimit > 0 ) {
+        $def_edpri = 3;
+    }
+
+    if( $edpri_from !== NULL ){
+        $def_edpri = $def_edpri;
+    }
+
+    foreach ($edpri_from_list as $key => $value) {
+
+        $selected = ( $key == $def_edpri ) ? 'selected' : '' ;
+
+        ?>
+        <option value="<?=$key;?>" <?=$selected;?>><?=substr($value,1,80).'...';?></option>
+        <?php
+    }
+    ?>
+</select>
+<?php
 
 
 print "   </tr>";

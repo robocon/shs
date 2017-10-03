@@ -6,8 +6,8 @@ $user_id = $_SESSION['sIdname'];
 if( $user_code !== 'ADM' ){
     
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
-    $check_level = in_array($user_code, array('ADMPH', 'ADMPHA'));
-    $check_user = in_array($user_id, array('พรทิพา'));
+    $check_level = in_array($user_code, array('ADMPH', 'ADMPHA','ADMPHARX'));
+    $check_user = in_array($user_id, array('พรทิพา','วนิดาดา'));
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา'));
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','ชุติกาญจน์','ชนากานต์','เพียงออ','รุ่งทิวา','อมรรัตน์','ศุภรัตน์1','ศุภรัตน์2','ชนากานต์'));
    

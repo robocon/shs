@@ -91,8 +91,8 @@ if($action === 'save'){
 
 	// $rows = DB::rows();
 	if( $rows > 0 ){
-		redirect('survey_oral.php', 'HN: '.$_POST['hn'].' เคยบันทึกข้อมูลไปเรียบร้อยแล้วในรอบปีงบประมาณ '.$year_checkup);
-		exit;
+		// redirect('survey_oral.php', 'HN: '.$_POST['hn'].' เคยบันทึกข้อมูลไปเรียบร้อยแล้วในรอบปีงบประมาณ '.$year_checkup);
+		// exit;
 	}
 	
 	$item = serialize_and_setmax($_POST['mouth_detail']);

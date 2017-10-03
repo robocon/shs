@@ -52,6 +52,22 @@ if( $id !== false ){
 		</form>
 		
 		<?php 
+
+		if ( $hn !== false ) {
+			$sql = "SELECT `hn`,`fullname`,`date`,`yearcheck` FROM `survey_oral` WHERE `hn` = '$hn' ORDER BY `date` DESC LIMIT 1";
+			$db->select($sql);
+			$oral = $db->get_item();
+
+			$test_year = get_year_checkup();
+			if( $test_year == $oral['yearcheck'] ){
+				?>
+				<div class="notify-warning no-print">
+					<?=($oral['fullname']).' เคยบันทึกข้อมูลในรอบปีงบ '.$test_year.' ไปแล้วเมื่อ '.($oral['date'])?>
+				</div>
+				<?php
+			}
+		}
+
 		$sql = "SELECT `dbirth`,`hn`,`yot`,`name`,`surname`,`idcard` FROM `opcard` WHERE `hn` = :hn LIMIT 1;";
 		$item = $db->get_single($sql, array(':hn' => $hn));
 		if( $item !== false ){
