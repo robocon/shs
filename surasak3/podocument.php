@@ -45,8 +45,8 @@ If (!empty($yym)){
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$num</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php? 	nRow_id=$row_id\">$date</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php? 	nRow_id=$row_id\">$prepono</a></td>\n".
-           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn.php? 	nRow_id=$row_id\">$prepodate</td>\n".
-		  "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1.php? 	nRow_id=$row_id\">$prepodate</td>\n".
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn_new.php?nRow_id=$row_id\">$prepodate</td>\n".
+		  "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1_new.php?nRow_id=$row_id\">$prepodate</td>\n".
 		  "  <td BGCOLOR=66CDAA><a target=_BLANK  href=\"po2bill_list.php? 	nRow_id=$row_id\"><font face='Angsana New'>$comcode</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$comname</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"podgitem.php? 	nRow_id=$row_id&cComname=$comname&sNetpri=$netprice\">$items</a></td>\n".

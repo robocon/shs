@@ -102,10 +102,10 @@ if(empty($result["HN"])){
 $result["HN"]=$result["hn"];
 }
 
-$sqlcc = mysql_query("SELECT datechkup
+$sqlcc = mysql_query("SELECT datechkup,branch
 FROM `opcardchk`
 WHERE `HN` = '".$result["hn"]."'");
-list($showdate)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
+list($showdate,$branch)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
 
 //echo $sqlcc;
 
@@ -183,7 +183,7 @@ $ptname=$result['name']." ".$result['surname'];
       </tr>
       <tr>
         <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2"><strong>หน่วยงาน :
-                  <?=$showpart;?>
+                  <?=( $_POST['camp'] == 'อีซูซุ60' ? $branch : $showpart );?>
          วันที่ตรวจ <?=$showdate;?></strong></span></span></span></td>
         <td align="center" valign="top" class="text3">&nbsp;</td>
       </tr>

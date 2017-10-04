@@ -413,6 +413,7 @@ print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
 
 	$aEdpri = array("edpri");
 	$aEdpriFrom = array("edpri_from");
+	$aUnitpri = array("unitpri");
 
 	//$x  $tradname $packing  $pack  $amount  $price  $packpri  $specno 
     $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' ";
@@ -452,6 +453,7 @@ print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
 
 		array_push($aEdpri,$item['edpri']);
 		array_push($aEdpriFrom,$item['edpri_from']);
+		array_push($aUnitpri,$item['unitpri']);
 
 	}
 	
@@ -478,7 +480,7 @@ for ($n=$x+1; $n<=13; $n++){
 
 
 ?>
-<style>
+<style type="text/css">
 .dx_tb{
 	border: 1px dashed #000;
 	font-size: 13pt;
@@ -496,6 +498,7 @@ for ($n=$x+1; $n<=13; $n++){
 }
 .dx_detail div{
 	position: relative;
+	padding-left: 10px;
 }
 </style>
 <div style="position: absolute; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
@@ -511,22 +514,40 @@ for ($n=$x+1; $n<=13; $n++){
 				<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
 				<th style="width:75px;">หน่วยละไม่รวม VAT</th>
 				<th style="width:75px;">เป็นเงินไม่รวม VAT</th>
-				<th  style="width:61px;" class="last_child">Spec พบ.ที่</th>
+				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 			</tr>
 		</thead>
 		<tbody>
 			
 			<?php
 			for ($ii=1; $ii <= 14; $ii++) { 
-				$from = '&nbsp;';
-				if( !empty($aPackpri[$ii]) ){
 
+				// ราคากลาง
+				$cost = (float) $aEdpri[$ii];
+				if ( !empty($cost) ) {
+					$cost = number_format($cost,4,'.',',');
+				}
+
+				// ถ้ามีราคากลางให้ใช้ 3 นอกนั้นเป็น 5
+				$from = '&nbsp;';
+				if( !empty($aPackpri[$ii]) ){ // เช็กจากแถวก่อนว่าเป็นค่าว่างรึป่าว
 					if ( empty($aEdpriFrom[$ii]) ) {
-						$from = empty($aEdpri[$ii]) ? 5 : 3 ;
+						$from = empty($cost) ? 5 : 3 ;
 					} else if( !empty($aEdpriFrom[$ii]) ) {
 						$from = $aEdpriFrom[$ii];
 					}
 				}
+
+				// พอเป็น 5 ให้ override ราคากลางด้วยราคาทุน
+				if( $from == 5 ){
+					$cost = $aUnitpri[$ii];
+					$cost = number_format($cost,4,'.',',');
+				}
+
+				if( empty($cost) ){
+					$cost = '&nbsp;';
+				}
+				
 				?>
 				<tr>
 					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
@@ -534,10 +555,10 @@ for ($n=$x+1; $n<=13; $n++){
 					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
 					<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
-					<td align="right"><?=( !empty($aEdpri[$ii]) ? $aEdpri[$ii] : '&nbsp;' );?></td>
+					<td align="right"><?=$cost;?></td>
 					<td align="center"><?=$from;?></td>
-					<td align="right"><?=( !empty($aPrice[$ii]) ? $aPrice[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aPackpri[$ii]) ? $aPackpri[$ii] : '&nbsp;' );?></td>
+					<td align="right"><?=( !empty($aPrice[$ii]) ? $aPrice[$ii] : '&nbsp;' );?></td>
 					<td class="last_child" align="center"><?=( !empty($aSpecno[$ii]) ? $aSpecno[$ii] : '&nbsp;' );?></td>
 				</tr>
 				<?php
@@ -627,8 +648,7 @@ print"<DIV style='left:441PX;top:760PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'
 print"<DIV style='left:446PX;top:790PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
 //ตำแหน่ง
-print"<DIV style='left:446PX;top:820PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หก. กองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
-print"<DIV style='left:446PX;top:850PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+print"<DIV style='left:446PX;top:820PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 ?>
 </div>

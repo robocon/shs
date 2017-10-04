@@ -57,17 +57,17 @@ If (!empty($yym)){
 
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn_new61.php?nRow_id=$row_id\">หลัง</a></td>\n".
  
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.1.php? 	nRow_id=$row_id\">ก่อน</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.1_new61.php?nRow_id=$row_id\">ก่อน</a></td>\n".
  
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.2.php? 	nRow_id=$row_id\">ไม่มีภาษี</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.2_new61.php?nRow_id=$row_id\">ไม่มีภาษี</a></td>\n".
  
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.3.php? 	nRow_id=$row_id\">ไม่คิดภาษี</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.3_new61.php?nRow_id=$row_id\">ไม่คิดภาษี</a></td>\n".
  
 
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.php? 	nRow_id=$row_id\">หลัง</a></td>\n".
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.1.php? 	nRow_id=$row_id\">ก่อน</a></td>\n".
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.2.php? 	nRow_id=$row_id\">ไม่มีภาษี</a></td>\n".
- "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.3.php? 	nRow_id=$row_id\">ไม่คิดภาษี</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1_new61.php?nRow_id=$row_id\">หลัง</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.1_new61.php?nRow_id=$row_id\">ก่อน</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.2_new61.php?nRow_id=$row_id\">ไม่มีภาษี</a></td>\n".
+ "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.3_new61.php?nRow_id=$row_id\">ไม่คิดภาษี</a></td>\n".
          
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$bounddate</td>\n".
            " </tr>\n");
