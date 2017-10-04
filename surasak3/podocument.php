@@ -11,21 +11,15 @@
   <th bgcolor=6495ED><font face='Angsana New'>#</th>
   <th bgcolor=6495ED><font face='Angsana New'>วันที่สั่ง</th>
   <th bgcolor=6495ED><font face='Angsana New'>ที่ กห ใบสั่งซื้อชั่วคราว</th>
-
-    <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(ยา)รวมVATหลัง</th>
-
- <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(ยา)รวมVATก่อน</th>
-
-
-
-
- <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(เวชภัณฑ์ )รวมVATหลัง</th>
- <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(เวชภัณฑ์ )รวมVATก่อน</th>
- 
+    <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(ยา)</th>
+ <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(เวชภัณฑ์ )</th>
     <th bgcolor=6495ED><font face='Angsana New'>รหัสบริษัท</th>
   <th bgcolor=6495ED><font face='Angsana New'>บริษัทหรือห้างหุ้นส่วนจำกัด</th>
   <th bgcolor=6495ED><font face='Angsana New'>รายการ</th>
   <th bgcolor=6495ED><font face='Angsana New'>ราคาไม่รวมvat</th>
+  <th bgcolor=6495ED><font face='Angsana New'>ที่ กห ใบสั่งซื้อจริง</th>
+   <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อจริง(ยา)</th>
+   <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อจริง(เวชภัณฑ์)</th>
   <th bgcolor=6495ED><font face='Angsana New'>วันที่กำหนดส่งของ</th>
  </tr>
 
@@ -40,22 +34,28 @@ If (!empty($yym)){
     while (list ($date,$prepono,$prepodate,$comcode,$comname,$items,$netprice,$pono,$podate,$bounddate,$row_id ) = mysql_fetch_row 	($result)) {
 	$num++;
                 $nNetprice= $nNetprice+$netprice;
+				
+				/*if($items <=11){ 
+				$link="";
+				}else{
+				$link ="<a target=_BLANK  href=\"po2bill_list.php? 	nRow_id=$row_id\">";
+				}*/
+				
         print (" <tr>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$num</td>\n".
-           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php?nRow_id=$row_id\">$date</a></td>\n".
-           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php?nRow_id=$row_id\">$prepono</a></td>\n".
-
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn.1.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn.1_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn1_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1.1.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn1.1_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-  
-"  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"podocumentselect.php? 	nRow_id=$row_id\">$comcode</a></td>\n".
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php? 	nRow_id=$row_id\">$date</td>\n".
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php? 	nRow_id=$row_id\">$prepono</a></td>\n".
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn.php? 	nRow_id=$row_id\">$prepodate</td>\n".
+		  "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1.php? 	nRow_id=$row_id\">$prepodate</td>\n".
+		  "  <td BGCOLOR=66CDAA><a target=_BLANK  href=\"po2bill_list.php? 	nRow_id=$row_id\"><font face='Angsana New'>$comcode</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$comname</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"podgitem.php? 	nRow_id=$row_id&cComname=$comname&sNetpri=$netprice\">$items</a></td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$netprice</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$pono</td>\n".
-    
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn.php? 	nRow_id=$row_id\">$podate</a></td>\n".
+  "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"poprn1.php? 	nRow_id=$row_id\">$podate</a></td>\n".
+         
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'>$bounddate</td>\n".
            " </tr>\n");
           }
    include("unconnect.inc");
