@@ -1,12 +1,7 @@
 <?php 
 session_start();
 
-function dump($txt){
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-
-}
+include "includes/functions.php";
 
 $action = $_POST['action'];
 if( $action === "save" ){
@@ -31,7 +26,7 @@ if( $action === "save" ){
     }
 
     $db_dr = $dr_lists[$dr_code];
-
+    
     $hn = $_SESSION['hn_now'];
     $vn = $_SESSION['vn_now'];
 
@@ -46,6 +41,8 @@ if( $action === "save" ){
     $doctor_code = $dr_code;
     $yot_pt = $pt['yot'];
     $ptname = $pt['ptname'];
+
+    $yearchk = get_year_checkup(true);
 
     /*
     CREATE TABLE dt_soldier (
@@ -63,34 +60,65 @@ if( $action === "save" ){
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
     */
-    $sql = "INSERT INTO `smdb`.`dt_soldier`
-    (`id`,
-    `date`,
-    `hn`,
-    `vn`,
-    `regular`,
-    `yot`,
-    `doctor`,
-    `doctor_code`,
-    `last_update`,
-    `yot_pt`,
-    `ptname`)
-    VALUES
-    (NULL,
-    NOW(),
-    '$hn',
-    '$vn',
-    '$regular',
-    '$yot',
-    '$doctor',
-    '$doctor_code',
-    NOW(),
-    '$yot_pt',
-    '$ptname');
-    ";
-    $insert = mysql_query($sql) or die( mysql_error() );
+    $curr_date = date('Y-m-d');
+    $sql = "SELECT `id` 
+    FROM `dt_soldier` 
+    WHERE `date` LIKE '$curr_date%' 
+    AND `hn` = '$hn' 
+    AND `vn` = '$vn' LIMIT 1 ";
+    $q = mysql_query($sql) or die( mysql_error() );
+    $hn_rows = mysql_num_rows($q);
+    
+    if( $hn_rows > 0 ){
 
-    dump($insert);
+        $user = mysql_fetch_assoc($q);
+        $id = $user['id'];
+        // dump($user);
+        $sql = "UPDATE `dt_soldier` SET 
+        `regular` = '$regular',
+        `yot` = '$yot',
+        `doctor` = '$doctor',
+        `doctor_code` = '$doctor_code',
+        `last_update` = NOW() 
+        WHERE `id`='$id';";
+        $save = mysql_query($sql) or die( mysql_error() );
+        // dump($sql);
+    }else{
+
+        $sql = "INSERT INTO `dt_soldier`
+        (`id`,
+        `date`,
+        `hn`,
+        `vn`,
+        `regular`,
+        `yot`,
+        `doctor`,
+        `doctor_code`,
+        `last_update`,
+        `yot_pt`,
+        `ptname`,
+        `yearchk`)
+        VALUES
+        (NULL,
+        NOW(),
+        '$hn',
+        '$vn',
+        '$regular',
+        '$yot',
+        '$doctor',
+        '$doctor_code',
+        NOW(),
+        '$yot_pt',
+        '$ptname',
+        '$yearchk');";
+        $save = mysql_query($sql) or die( mysql_error() );
+
+    }
+    // exit;
+    if( $save !== false ){
+        $_SESSION['x_msg'] = 'บันทึกข้อมูลเรียบร้อย';
+        header("Location: dt_soldier.php");
+    }
 
     exit;
 }
@@ -355,7 +383,44 @@ p{
 <?php
 include "dt_menu.php";
 include "dt_patient.php";
+
+$yearchk = get_year_checkup(true);
+$hn = $_SESSION['hn_now'];
+$sql = "SELECT * FROM `dt_soldier` WHERE `yearchk` = '$yearchk' AND `hn` = '$hn' ";
+$q = mysql_query($sql) or die( mysql_error() );
+$hn_rows = mysql_num_rows($q);
+if ( $hn_rows > 0 ) {
+    
+    ?>
+    <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+        <thead>
+            <tr align="center">
+                <th width="70%">กฎกระทรวง</th>
+                <th width="15%">แพทย์ผู้บันทึก</th>
+                <th width="15%">วันที่บันทึกข้อมูล</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <?php
+                while ( $user = mysql_fetch_assoc($q) ) {
+                    $test = explode(' ', $user['last_update']);
+                    dump($test);
+                    ?>
+                    <td><?=$user['regular'];?></td>
+                    <td><?=$user['yot'].$user['doctor'];?></td>
+                    <td align="center"><?=$user['last_update'];?></td>
+                    <?php
+                }
+                ?>
+            </tr>
+        </tbody>
+    </table>
+    <?php
+}
 ?>
+<div>
+</div>
 
 <div>
     <form action="dt_soldier.php" method="post" id="inputForm">
@@ -368,10 +433,16 @@ include "dt_patient.php";
         </div>
     </form>
 </div>
+<?php
+if( !empty($_SESSION['x_msg']) ){
+    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x_msg'];?></p><?php
+    $_SESSION['x_msg'] = false;
+}
+?>
 <div id="show_content" style="display: none;">
 <fieldset><legend>ผลการค้นหา</legend><div class="show_list"></div></fieldset>
 </div>
-
+<br>
 <div id="full_detail_container">
     <button class="show_detail">แสดงข้อกฎกระทรวงทั้งหมด</button>
     <div class="full_detail" style="display: none;">
