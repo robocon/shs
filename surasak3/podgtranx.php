@@ -174,6 +174,8 @@ print"<div style='left:362PX;top:924PX;border-color:000000;border-style:solid;bo
 print"<DIV class='box' style='z-index:10; border-color:000000;border-style:solid;border-bottom-style:solid;border-bottom-width:1PX;border-left-style:solid;border-left-width:1PX;border-top-style:solid;border-top-width:1PX;border-right-style:solid;border-right-width:1PX;left:7PX;top:251PX;width:743PX;height:559PX;'>
 <table border=0 cellpadding=0 cellspacing=0 width=736px height=552px><TD>&nbsp;</TD></TABLE>
 </DIV>";
+
+
 print"<DIV class='box' style='z-index:10; border-color:000000;border-style:solid;border-bottom-style:solid;border-bottom-width:1PX;border-left-style:solid;border-left-width:1PX;border-top-style:solid;border-top-width:1PX;border-right-style:solid;border-right-width:1PX;left:44PX;top:819PX;width:181PX;height:45PX;'>
 <table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE>
 </DIV>";
