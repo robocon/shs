@@ -469,6 +469,8 @@ print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
 	$aEdpri = array("edpri");
 	$aEdpriFrom = array("edpri_from");
 	$aUnitpri = array("unitpri");
+	$aPart = array("part");
+	$aFreelimit = array("freelimit");
 
 //$x  $tradname $packing  $pack  $amount  $price  $packpri  $specno 
     $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' ";
@@ -508,6 +510,8 @@ print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
 	array_push($aEdpri,$item['edpri']);
 	array_push($aEdpriFrom,$item['edpri_from']);
 	array_push($aUnitpri,$item['unitpri']);
+	array_push($aPart,$item['part']);
+	array_push($aFreelimit,$item['freelimit']);
 
        }
 	$x++;
@@ -575,30 +579,34 @@ for ($n=$x+1; $n<=13; $n++){
 			<?php
 			for ($ii=1; $ii <= 14; $ii++) { 
 
-				// ราคากลาง
-				$cost = (float) $aEdpri[$ii];
-				if ( !empty($cost) ) {
-					$cost = number_format($cost,4,'.',',');
-				}
-
-				// ถ้ามีราคากลางให้ใช้ 3 นอกนั้นเป็น 5
+				$cost = false;
 				$from = '&nbsp;';
-				if( !empty($aPackpri[$ii]) ){ // เช็กจากแถวก่อนว่าเป็นค่าว่างรึป่าว
-					if ( empty($aEdpriFrom[$ii]) ) {
-						$from = empty($cost) ? 5 : 3 ;
-					} else if( !empty($aEdpriFrom[$ii]) ) {
-						$from = $aEdpriFrom[$ii];
+
+				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรเบิกได้ไม่เกิน
+				if( $part == 'DPY' OR $part == 'DPN' ){
+
+					// ราคาอุปกรณ์เบิกได้ไม่เกิน
+					if( $aFreelimit[$ii] > 0 ){
+						$cost = $aFreelimit[$ii];
+						$from = 3;
 					}
+
+				}else{
+
+					// ราคากลาง
+					if( $aEdpri[$ii] > 0 ){
+						$cost = $aEdpri[$ii];
+						$from = 3;
+					}
+
 				}
 
-				// พอเป็น 5 ให้ override ราคากลางด้วยราคาทุน
-				if( $from == 5 ){
-					$cost = $aUnitpri[$ii];
-					$cost = number_format($cost,4,'.',',');
-				}
-
+				// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
 				if( empty($cost) ){
-					$cost = '&nbsp;';
+					if( !empty($aUnitpri[$ii]) ){
+						$cost = $aUnitpri[$ii];
+						$from = 5;
+					}
 				}
 
 				?>

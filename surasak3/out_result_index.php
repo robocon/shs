@@ -159,7 +159,7 @@ a:active {
   <tr>
     <td>16. เมโทรแมชีนเนอรี่</td>
     <td align="center"><a href="out_result.php?part=เมโทรแมชีนเนอรี่60" target="_blank">บันทึก</a></td>
-    <td rowspan="10" align="center">กันยายน 2560</td>
+    <td rowspan="9" align="center">กันยายน 2560</td>
   </tr>
   <tr>
     <td>17. นำพลัง</td>
@@ -192,5 +192,10 @@ a:active {
   <tr>
     <td>24. ที.ไอ.ซี</td>
     <td align="center"><a href="out_result.php?part=ที.ไอ.ซี60" target="_blank">บันทึก</a></td>
+  </tr>
+  <tr>
+    <td>25. SCG</td>
+    <td align="center"><a href="out_result.php?part=scg61" target="_blank">บันทึก</a></td>
+    <td rowspan="10" align="center">ตุลาคม 2560</td>
   </tr>  
 </table>
