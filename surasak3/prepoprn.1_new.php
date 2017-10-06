@@ -235,14 +235,18 @@ return $vat;
 		}
 
 //คำนวนค่าต่างๆ
-  $nVat=($nNetprice*7)/107;
+$nVat=($nNetprice*7)/107;
 ///  $nVat=number_format($nVat,2,'.',''); //convert to string ทศนิยม 2 ตำแหน่ง ปัดเศษ
 ///  $nVat=floatval ($nVat);// convert to float-number
 
- $nVat=vat($nVat);//use function vat
+$nVat=vat($nVat);//use function vat
 
-  $nPriadvat=$nVat+$nNetprice;
+// $nPriadvat=$nVat+$nNetprice;
 $nNetprice1=$nNetprice-$nVat;
+
+$nPriadvat = $nNetprice;
+$nNetprice -= $nVat;
+
 $cPriadvat=baht($nPriadvat);//ตัวอักษร
 
 //format 2 decimal
@@ -324,8 +328,8 @@ print "<DIV style='left:459PX;top:563PX;width:324PX;height:30PX;'><span class='f
 
 print "<DIV style='left:138PX;top:169PX;width:647PX;height:30PX;'><span class='fc1-5'>ขออนุมัติจัดหายา</span></DIV>";
 print "<DIV style='left:167PX;top:263PX;width:617PX;height:30PX;'><span class='fc1-5'>กองเภสัชกรรม รพ.ค่ายฯ ขออนุมัติจัดหายา เพื่อใช้ในการรักษาพยาบาลผู้ป่วยเจ็บที่เข้ามา</span></DIV>";
-print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รับการรักษาพยาบาลใน รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นไปตามที่ประชุมคณะ</span></DIV>";
-print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>กรรมการเภสัชกรรมและการบำบัด ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
+print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รับการรักษาพยาบาลใน รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นการจัดหาทดแทน</span></DIV>";
+print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>ของในสต๊อกที่ใกล้จะหมดลง ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
 print "<DIV style='left:167PX;top:350PX;width:317PX;height:30PX;'><span class='fc1-5'>จึงเรียนมาเพื่อกรุณาพิจารณา</span></DIV>";
 print "<DIV style='left:398PX;top:393PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>$aYot[2]</span></DIV>";
 print "<DIV style='left:413PX;top:422PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>($aFname[2])</span></DIV>";
@@ -538,7 +542,7 @@ function dump($txt){
 	padding-left: 10px;
 }
 </style>
-<div style="position: absolute; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
+<div style="position: absolute; left:10px; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
 	<table class="dx_tb">
 		<thead>
 			<tr>
@@ -549,8 +553,10 @@ function dump($txt){
 				<th style="width:43px;">จำนวน</th>
 				<th style="width:55px;">ราคากลาง</th>
 				<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
-				<th style="width:75px;">หน่วยละรวม VAT</th>
-				<th style="width:75px;">เป็นเงินรวม VAT</th>
+				<th style="width:75px;">หน่วยละ<br />
+			    รวม VAT</th>
+				<th style="width:75px;">ราคา<br />
+			    รวม VAT</th>
 				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 			</tr>
 		</thead>
@@ -996,7 +1002,7 @@ print"<DIV style='left:313PX;top:2253PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER
 print"<DIV style='left:371PX;top:2253PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
 print"<DIV style='left:467PX;top:2253PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
 print"<DIV style='left:520PX;top:2248PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยละ</span></DIV>";
-print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>เป็นเงิน</span></DIV>";
+print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ราคา</span></DIV>";
 print"<DIV style='left:684PX;top:2253PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
 print"<DIV style='left:194PX;top:2120PX;width:364PX;height:41PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</span></DIV>";
 print"<DIV style='left:194PX;top:2163PX;width:364PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>มทบ.32</span></DIV>";

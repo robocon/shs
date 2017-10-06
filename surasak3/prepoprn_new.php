@@ -236,19 +236,22 @@ return $vat;
 		}
 
 //คำนวนค่าต่างๆ
-  $nVat=$nNetprice*.07;
-///  $nVat=number_format($nVat,2,'.',''); //convert to string ทศนิยม 2 ตำแหน่ง ปัดเศษ
-///  $nVat=floatval ($nVat);// convert to float-number
-
- $nVat=vat($nVat);//use function vat
- $nPriadvat=$nNetprice;
-//   $nPriadvat=$nVat+$nNetprice;
-  $cPriadvat=baht($nPriadvat);//ตัวอักษร
+$nVat = $nNetprice * .07;
 
 // รวมสุทธิ
 // $nPriadvat
 
-$nNetprice -= $nVat;
+// รวมเงิน
+// $nNetprice
+
+///  $nVat=number_format($nVat,2,'.',''); //convert to string ทศนิยม 2 ตำแหน่ง ปัดเศษ
+///  $nVat=floatval ($nVat);// convert to float-number
+
+$nVat = vat($nVat); //use function vat
+$nPriadvat = $nNetprice;
+
+$nPriadvat=$nVat+$nNetprice;
+$cPriadvat = baht($nPriadvat);//ตัวอักษร
 
 //format 2 decimal
 $nVat=number_format($nVat,2,'.',',');
@@ -292,8 +295,8 @@ print "<DIV style='left:138PX;top:227PX;width:617PX;height:30PX;'><span class='f
 print "<DIV style='left:138PX;top:169PX;width:647PX;height:30PX;'><span class='fc1-5'>ขออนุมัติจัดหายา</span></DIV>";
 
 print "<DIV style='left:167PX;top:263PX;width:617PX;height:30PX;'><span class='fc1-5'>กองเภสัชกรรม รพ.ค่ายฯ ขออนุมัติจัดหายา เพื่อใช้ในการรักษาพยาบาลผู้ป่วยเจ็บที่เข้ามา</span></DIV>";
-print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รับการรักษาพยาบาลใน รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นไปตามที่ประชุมคณะ</span></DIV>";
-print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>กรรมการเภสัชกรรมและการบำบัด ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
+print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รับการรักษาพยาบาลใน รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นการจัดหาทดแทน</span></DIV>";
+print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>ของในสต๊อกที่ใกล้จะหมดลง ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
 /// ส่วนเนื้อเรื่อง ////
 
 
@@ -509,19 +512,21 @@ for ($n=$x+1; $n<=13; $n++){
 	padding-left: 10px;
 }
 </style>
-<div style="position: absolute; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
+<div style="position: absolute; left:10px; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
 	<table class="dx_tb">
 		<thead>
 			<tr>
 				<th style="width:38px;">ลำดับ</th>
 				<th style="width:258px;">รายการ</th>
 				<th style="width:51px;">หน่วยนับ</th>
-				<th style="width:75px;">ขนาดบรรจุ</th>
+                <th style="width:75px;">ขนาดบรรจุ</th>
 				<th style="width:43px;">จำนวน</th>
 				<th style="width:55px;">ราคากลาง</th>
 				<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
-				<th style="width:75px;">หน่วยละไม่รวม VAT</th>
-				<th style="width:75px;">เป็นเงินไม่รวม VAT</th>
+				<th style="width:75px;">หน่วยละ<br>
+รวม VAT</th>
+				<th style="width:75px;">ราคา<br>
+รวม VAT</th>
 				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 			</tr>
 		</thead>
@@ -565,7 +570,7 @@ for ($n=$x+1; $n<=13; $n++){
 					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
 					<td><?=( !empty($aTradname[$ii]) ? $aTradname[$ii] : '&nbsp;' );?></td>
 					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
-					<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
+                    <td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=$cost;?></td>
 					<td align="center"><?=$from;?></td>
@@ -580,7 +585,7 @@ for ($n=$x+1; $n<=13; $n++){
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+                <td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -592,7 +597,7 @@ for ($n=$x+1; $n<=13; $n++){
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+                <td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -605,7 +610,7 @@ for ($n=$x+1; $n<=13; $n++){
 				<td>รวม <?=$nItems;?> รายการ</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+                <td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td style="border-bottom: 1px solid #000;">รวมสุทธิ</td>
@@ -616,7 +621,7 @@ for ($n=$x+1; $n<=13; $n++){
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+                <td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -705,7 +710,7 @@ print "</head>";
 print"<BODY BGCOLOR='FFFFFF'LEFTMARGIN=0 TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0>";
 print"<DIV style='z-index:0'> &nbsp; </div>";
 print"<div style='left:310PX;top:2216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
-print"<divstyle='left:515PX;top:2216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
+print"<div style='left:515PX;top:2216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
 print"<div style='left:8PX;top:2280PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
 print"<div style='left:44PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
 print"<div style='left:311PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
@@ -738,7 +743,7 @@ print"<DIV style='left:313PX;top:2253PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER
 print"<DIV style='left:371PX;top:2253PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
 print"<DIV style='left:467PX;top:2253PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
 print"<DIV style='left:520PX;top:2248PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยละ</span></DIV>";
-print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>เป็นเงิน</span></DIV>";
+print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ราคา</span></DIV>";
 print"<DIV style='left:684PX;top:2253PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
 print"<DIV style='left:194PX;top:2120PX;width:364PX;height:41PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</span></DIV>";
 print"<DIV style='left:194PX;top:2163PX;width:364PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>มทบ.32</span></DIV>";
@@ -748,8 +753,8 @@ print"<DIV style='left:97PX;top:2222PX;width:91PX;height:26PX;'><span class='fc1
 ";
 print"<DIV style='left:586PX;top:2222PX;width:104PX;height:26PX;'><span class='fc1-0'>ดังมีรายการต่อไปนี้</span></DIV>";
 print"<DIV style='left:684PX;top:2167PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>งบรายรับ</span></DIV>";
-print"<DIV style='left:518PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ไม่รวม VAT</span></DIV>";
-print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ไม่รวม VAT</span></DIV>";
+print"<DIV style='left:518PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
+print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
 
 
 ///แถวที่1

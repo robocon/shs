@@ -304,8 +304,8 @@ print "<DIV style='left:88PX;top:227PX;width:36PX;height:30PX;'><span class='fc1
 print "<DIV style='left:138PX;top:227PX;width:617PX;height:30PX;'><span class='fc1-5'>รายงานเสนอความต้องการ  $cDepart  ที่  $cDepartno  ลงวันที่  $cDepartdate </span></DIV>";
 
 print "<DIV style='left:167PX;top:263PX;width:617PX;height:30PX;'><span class='fc1-5'>กองเภสัชกรรม รพ.ค่ายฯ ขออนุมัติจัดหาเวชภัณฑ์  $cDepart</span></DIV>";
-print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นการระบุยี่ห้อและจำนวนโดยหน่วยใช้</span></DIV>";
-print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
+print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นการจัดหาทดแทนของในสต๊อก</span></DIV>";
+print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>ที่ใกล้จะหมดลง ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
 
 
 }else{
@@ -565,7 +565,7 @@ for ($n=$x+1; $n<=13; $n++){
 	padding-left: 10px;
 }
 </style>
-<div style="position: absolute; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
+<div style="position: absolute; left:10px; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
 	<table class="dx_tb">
 		<thead>
 			<tr>
@@ -576,9 +576,11 @@ for ($n=$x+1; $n<=13; $n++){
 				<th style="width:43px;">จำนวน</th>
 				<th style="width:55px;">ราคากลาง</th>
 				<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
-				<th style="width:75px;">หน่วยละไม่รวม VAT</th>
-				<th style="width:75px;">เป็นเงินไม่รวม VAT</th>
-				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
+				<th style="width:75px;">หน่วยละ<br />
+			    รวม VAT</th>
+			  <th style="width:75px;">ราคา<br />
+		      รวม VAT</th>
+			  <th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -1069,7 +1071,7 @@ print"<DIV style='left:313PX;top:2253PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER
 print"<DIV style='left:371PX;top:2253PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
 print"<DIV style='left:467PX;top:2253PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
 print"<DIV style='left:520PX;top:2248PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยละ</span></DIV>";
-print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>เป็นเงิน</span></DIV>";
+print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ราคา</span></DIV>";
 print"<DIV style='left:684PX;top:2253PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
 print"<DIV style='left:194PX;top:2120PX;width:364PX;height:41PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</span></DIV>";
 print"<DIV style='left:194PX;top:2163PX;width:364PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>มทบ.32</span></DIV>";
@@ -1079,8 +1081,8 @@ print"<DIV style='left:97PX;top:2222PX;width:91PX;height:26PX;'><span class='fc1
 ";
 print"<DIV style='left:586PX;top:2222PX;width:104PX;height:26PX;'><span class='fc1-0'>ดังมีรายการต่อไปนี้</span></DIV>";
 print"<DIV style='left:684PX;top:2167PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>งบรายรับ</span></DIV>";
-print"<DIV style='left:518PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ไม่รวม VAT</span></DIV>";
-print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ไม่รวม VAT</span></DIV>";
+print"<DIV style='left:518PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
+print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
 
 ///แถวที่1
 print"<DIV style='left:11PX;top:2289PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>

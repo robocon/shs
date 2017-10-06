@@ -44,26 +44,12 @@ if( $action === "save" ){
 
     $yearchk = get_year_checkup(true);
 
-    /*
-    CREATE TABLE dt_soldier (
-  id int(11) NOT NULL auto_increment,
-  `date` datetime default NULL,
-  hn varchar(45) default NULL,
-  vn varchar(45) default NULL,
-  regular text,
-  yot varchar(50) NOT NULL,
-  doctor varchar(255) default NULL,
-  doctor_code varchar(45) default NULL,
-  last_update datetime default NULL,
-  yot_pt varchar(50) NOT NULL,
-  ptname varchar(255) default NULL,
-  PRIMARY KEY  (id)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-    */
+    // แพทย์ลงข้อมูลในวันนั้นแล้วรึยัง
     $curr_date = date('Y-m-d');
     $sql = "SELECT `id` 
     FROM `dt_soldier` 
     WHERE `date` LIKE '$curr_date%' 
+    AND `doctor_code` = '$doctor_code' 
     AND `hn` = '$hn' 
     AND `vn` = '$vn' LIMIT 1 ";
     $q = mysql_query($sql) or die( mysql_error() );
@@ -73,7 +59,7 @@ if( $action === "save" ){
 
         $user = mysql_fetch_assoc($q);
         $id = $user['id'];
-        // dump($user);
+        
         $sql = "UPDATE `dt_soldier` SET 
         `regular` = '$regular',
         `yot` = '$yot',
@@ -82,7 +68,7 @@ if( $action === "save" ){
         `last_update` = NOW() 
         WHERE `id`='$id';";
         $save = mysql_query($sql) or die( mysql_error() );
-        // dump($sql);
+        
     }else{
 
         $sql = "INSERT INTO `dt_soldier`
@@ -114,7 +100,7 @@ if( $action === "save" ){
         $save = mysql_query($sql) or die( mysql_error() );
 
     }
-    // exit;
+    
     if( $save !== false ){
         $_SESSION['x_msg'] = 'บันทึกข้อมูลเรียบร้อย';
         header("Location: dt_soldier.php");
@@ -378,6 +364,12 @@ p{
     margin: 0;
     padding: 0;
 }
+.dt_patients td,
+.dt_patients th{
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+}
 </style>
 
 <?php
@@ -392,7 +384,7 @@ $hn_rows = mysql_num_rows($q);
 if ( $hn_rows > 0 ) {
     
     ?>
-    <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse">
+    <table align="center" width="70%" border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse" class="dt_patients">
         <thead>
             <tr align="center">
                 <th width="70%">กฎกระทรวง</th>
@@ -401,19 +393,21 @@ if ( $hn_rows > 0 ) {
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <?php
-                while ( $user = mysql_fetch_assoc($q) ) {
-                    $test = explode(' ', $user['last_update']);
-                    dump($test);
-                    ?>
+            
+            <?php
+            while ( $user = mysql_fetch_assoc($q) ) {
+                list($date, $time) = explode(' ', $user['last_update']);
+                list($year,$month,$day) = explode('-', $date);
+                ?>
+                <tr>
                     <td><?=$user['regular'];?></td>
                     <td><?=$user['yot'].$user['doctor'];?></td>
-                    <td align="center"><?=$user['last_update'];?></td>
-                    <?php
-                }
-                ?>
-            </tr>
+                    <td align="center"><?=( $day.' '.$def_fullm_th[$month].' '.( $year + 543 ) );?></td>
+                </tr>
+                <?php
+            }
+            ?>
+            
         </tbody>
     </table>
     <?php
@@ -505,7 +499,7 @@ jQuery.noConflict();
                 method : "post",
                 url: "dt_soldier.php",
                 success: function(msg){
-                    console.log(msg);
+                    // console.log(msg);
 
                     if ( msg !== '' ) {
                         $("#show_content").show();
