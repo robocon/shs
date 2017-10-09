@@ -52,6 +52,7 @@
 		$typedrug = $row->typedrug;
 		$tmt = $row->tmt;
         $procat = $row->product_category;
+		$prodrugtype = $row->product_drugtype;
         $edpri_from = $row->edpri_from;
                   }  
    else {
@@ -212,6 +213,21 @@ print "<td>Product Category&nbsp;&nbsp;&nbsp;";
 		  <option value='5'  <? if($procat=='5'){ echo "selected"; } ?>>5 = ยาแผนการรักษาทางเลือกอื่น</option> 
 		  <option value='6' <? if($procat=='6'){ echo "selected"; } ?>>6 = เวชภัณฑ์</option> 
 		  <option value='7'  <? if($procat=='7'){ echo "selected"; } ?>>7 = อื่นๆ</option> 
+</select>
+<?
+print "</td>";
+print "</tr>";
+print "<tr>";
+print "<td></td>";
+print "<td colspan='2'>พัสดุส่งเสริมสุขภาพและสาธารณสุข&nbsp;&nbsp;&nbsp;";
+?>
+<select name="pro_drugtype">
+          <option value='' <? if($prodrugtype==''){ echo "selected"; } ?>>ไม่อยู่ในหมวด 6 พัสดุส่งเสริมสุขภาพและสาธารณสุข</option>
+		  <option value='1' <? if($prodrugtype=='1'){ echo "selected"; } ?>>1 = ยาตามชื่อสามัญ (gereric name) ในบัญชียาหลัดแห่งชาติ</option>
+          <option value='2' <? if($prodrugtype=='2'){ echo "selected"; } ?>>2 = ยาที่อยู่ในบัญชียาหลักแห่งชาติหรือเวชภัณฑ์ ซึ่งองค์การเภสัชกรรมหรือสภากาชาดไทยได้ผลิตออกจำหน่ายแล้ว</option>
+		  <option value='3'  <? if($prodrugtype=='3'){ echo "selected"; } ?>>3 = ยาที่อยู่ในบัญชียาหลักแห่งชาติหรือเวชภัณฑ์ ซึ่งองค์การเภสัชกรรมหรือโรงงานเภสัชกรรมทหาร มิได้เป็นผู้ผลิตแต่มีจำหน่าย</option>
+		  <option value='4'  <? if($prodrugtype=='4'){ echo "selected"; } ?>>4 = ยาและเวชภัณฑ์ที่ได้ขึ้นบัญชีนวัตกรรมไทย</option>
+		  <option value='5'  <? if($prodrugtype=='5'){ echo "selected"; } ?>>5 = วัคซีนโรคตับอักเสบบี และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่มีอยู่ในบัญชี</option> 
 </select>
 <?
 print "</td>";

@@ -86,7 +86,8 @@ packpri_vat= '$packpri_vat ',
 		status = '".$_POST["status_chdrug"]."',
 		typedrug = '".$typedrug."',
 		product_category = '".$_POST["pro_cat"]."', 
-		edpri_from = '".$_POST['edpri_from']."'
+		edpri_from = '".$_POST['edpri_from']."',
+		product_drugtype = '".$_POST["pro_drugtype"]."' 
         WHERE drugcode='$drugcode' limit 1";
 
         $result = mysql_query($query)
