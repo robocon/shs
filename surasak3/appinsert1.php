@@ -212,7 +212,8 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
         $sql .= implode(", ",$list);
     
         $result = Mysql_Query($sql) or die("Error appoint_lab ".Mysql_Error());
-        $patho = implode(", ",$_SESSION["list_code"]);
+        // $patho = implode(", ",$_SESSION["list_code"]);
+        $patho = implode(', ', $_SESSION['lab_lists']);
     }
 
     $pathoall=$patho.' '.$patho2;

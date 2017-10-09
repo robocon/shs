@@ -33,11 +33,12 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 
 	if(count($result) ==0){
 
-	$sql = "Select detail, yprice, nprice From labcare where code = '".$_GET["code"]."' limit 1; ";
-	list($detail, $yprice, $nprice) = Mysql_fetch_row(Mysql_Query($sql));
+	$sql = "Select detail, yprice, nprice, lab_listdetail From labcare where code = '".$_GET["code"]."' limit 1; ";
+	list($detail, $yprice, $nprice, $lab_listdetail) = Mysql_fetch_row(Mysql_Query($sql));
 
 	array_push($_SESSION["list_code"],$_GET["code"]);
 	array_push($_SESSION["list_detail"],$detail);
+	array_push($_SESSION["lab_lists"],$lab_listdetail);
 	
 	}
 
@@ -395,6 +396,7 @@ session_register("list_code");
 session_register("list_detail");
 $_SESSION["list_code"] = array();
 $_SESSION["list_detail"] = array();
+$_SESSION['lab_lists'] = array();
 
  function jschars($str)
 {

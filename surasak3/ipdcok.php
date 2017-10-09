@@ -1,8 +1,14 @@
 <?php
 session_start();
-$sOfficer=$_SESSION["sOfficer"];
-
 include("connect.inc");
+
+$sOfficer = $_SESSION["sOfficer"];
+
+if( empty($cAn) OR empty($cPtname) OR empty($sOfficer) ){
+  echo 'หมดเวลาการเข้าใช้งาน กรุณา<a href="../nindex.htm">คลิกที่นี่</a>เพื่อเข้าสู่ระบบอีกครั้ง';
+  exit;
+}
+
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
 
 //เก็บข้อมูลหากคนไข้ Refer
