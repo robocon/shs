@@ -121,8 +121,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
 	echo "| <A HREF=\"javascript:showremed2();checkall4(false);\">Remedผป.ใน</A> ";
 	
-$sql = "Select idname From inputm where name = '".$_SESSION["dt_doctor"]."' limit 1 ";
-list($sld) = mysql_fetch_row(mysql_query($sql));
+	$sql = "Select idname From inputm where name = '".$_SESSION["dt_doctor"]."' limit 1 ";
+	list($sld) = mysql_fetch_row(mysql_query($sql));
 
 	$sql = "Select row_id From dr_drugsuit where code_dr = '".$sld."' limit 1";
 	
@@ -198,80 +198,86 @@ for($i=0;$i<$count;$i++){
 		array_push($remark,"<FONT style=\"font-size: 20px;\" COLOR=\"red\">เคยจ่ายยาครั้งสุดท้าย วันที่ ".$d." จำนวน ".$a." วิธีใช้ ".$s."</FONT>");
 	}
 
-			$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
-			//echo "$i==>".$sql."<br>";
-			$result = Mysql_Query($sql);
-			list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);		
+	$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  
+	From druglst  
+	where drugcode = '".$_SESSION["list_drugcode"][$i]."' 
+	limit 1";
+	//echo "$i==>".$sql."<br>";
+	$result = Mysql_Query($sql);
+	list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);		
 				
-				if($_SESSION["list_drugamount"][$i] > 0){
-					if($part == "DPY"){
-						
-						if($freepri > $salepri)
-							$freepri = $salepri;
+	if($_SESSION["list_drugamount"][$i] > 0){
 
-						$pricetype["DPY"]= $pricetype["DPY"] + ($freepri * $_SESSION["list_drugamount"][$i]); 
-						$pricetype["DPN"]=$pricetype["DPN"] + (($salepri - $freepri) * $_SESSION["list_drugamount"][$i]);
+		$part = $_SESSION['list_drug_part'][$i];
 
-					}else if($part == "DSY"){
-						
-						if($freepri > $salepri)
-							$freepri = $salepri;
-
-						if($medical_sup_free ==0){
-							$pricetype["DSN"]=$pricetype["DSN"] + ($salepri * $_SESSION["list_drugamount"][$i]);
-						}else{
-							$pricetype["DSY"]= $pricetype["DSY"] + ($freepri * $_SESSION["list_drugamount"][$i]); 
-							$pricetype["DSN"]=$pricetype["DSN"] + (($salepri - $freepri) * $_SESSION["list_drugamount"][$i]);
-						}
-
-					}else{
-						$pricetype[$part] = $pricetype[$part] + ($salepri * $_SESSION["list_drugamount"][$i]);
-					}  //close if $part
-
-					$total_price = $total_price+ ($salepri * $_SESSION["list_drugamount"][$i]);
-					if($_SESSION["list_drugcode"][$i] != "INJ");
-						$total_item++;
-					$Netprice = 	$Netprice + ($salepri * $_SESSION["list_drugamount"][$i]);
-			}  //close if $_SESSION["list_drugamount"][$i]
+		if($part == "DPY"){
 			
-			
-			$c1 = substr($_SESSION["list_drugcode"][$i],0,1);
-			$c2 = substr($_SESSION["list_drugcode"][$i],0,2);
-			$sql = "Select detail1, detail2, detail3, detail4  From drugslip where slcode = '".$_SESSION["list_drugslip"][$i]."' limit 1";
-			$result = Mysql_Query($sql);
-			list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
-			if($c2!='20'&&($c1=='2'||$c1=='0')){
-				array_push($remark,"<FONT style=\"font-size: 20;\" color=\"#000000\"> ".$_SESSION["list_drug_inject_amount"][$i]." ".$_SESSION["list_drug_inject_unit"][$i]." ".$_SESSION["list_drug_inject_amount2"][$i]." ".$_SESSION["list_drug_inject_unit2"][$i]." ".$_SESSION["list_drug_inject_time"][$i]." ".$_SESSION["list_drug_inject_slip"][$i]." ".$_SESSION["list_drug_inject_etc"][$i]."</FONT>");
+			if($freepri > $salepri)
+				$freepri = $salepri;
+
+			$pricetype["DPY"]= $pricetype["DPY"] + ($freepri * $_SESSION["list_drugamount"][$i]); 
+			$pricetype["DPN"]=$pricetype["DPN"] + (($salepri - $freepri) * $_SESSION["list_drugamount"][$i]);
+
+		}else if($part == "DSY"){
+				
+			if($freepri > $salepri)
+				$freepri = $salepri;
+
+			if($medical_sup_free ==0){
+				$pricetype["DSN"]=$pricetype["DSN"] + ($salepri * $_SESSION["list_drugamount"][$i]);
 			}else{
-			array_push($remark,"<FONT style=\"font-size: 20;\" color=\"#000000\"> ".$detail1." ".$detail2." ".$detail3." ".$detail4."</FONT>");
-			}
-			
-			if(count($remark) > 0){
-				$list_remark = implode("<BR>",$remark);
+				$pricetype["DSY"]= $pricetype["DSY"] + ($freepri * $_SESSION["list_drugamount"][$i]); 
+				$pricetype["DSN"]=$pricetype["DSN"] + (($salepri - $freepri) * $_SESSION["list_drugamount"][$i]);
 			}
 
-			if($part == "DDY"){
-				$style=" style=\"color:#0000FF\" ";
-			}elseif($part == "DDN"||$part == "DSN"||$part == "DPN"){
-				$style = " style=\"color:#FF0000\" ";
-			}else{
-				$style="";	
-			}
+		}else{
+			$pricetype[$part] = $pricetype[$part] + ($salepri * $_SESSION["list_drugamount"][$i]);
+		}  //close if $part
+
+		$total_price = $total_price+ ($salepri * $_SESSION["list_drugamount"][$i]);
+		if($_SESSION["list_drugcode"][$i] != "INJ");
+			$total_item++;
+		$Netprice = 	$Netprice + ($salepri * $_SESSION["list_drugamount"][$i]);
+	}  //close if $_SESSION["list_drugamount"][$i]
+			
+			
+	$c1 = substr($_SESSION["list_drugcode"][$i],0,1);
+	$c2 = substr($_SESSION["list_drugcode"][$i],0,2);
+	$sql = "Select detail1, detail2, detail3, detail4  From drugslip where slcode = '".$_SESSION["list_drugslip"][$i]."' limit 1";
+	$result = Mysql_Query($sql);
+	list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
+	if($c2!='20'&&($c1=='2'||$c1=='0')){
+		array_push($remark,"<FONT style=\"font-size: 20;\" color=\"#000000\"> ".$_SESSION["list_drug_inject_amount"][$i]." ".$_SESSION["list_drug_inject_unit"][$i]." ".$_SESSION["list_drug_inject_amount2"][$i]." ".$_SESSION["list_drug_inject_unit2"][$i]." ".$_SESSION["list_drug_inject_time"][$i]." ".$_SESSION["list_drug_inject_slip"][$i]." ".$_SESSION["list_drug_inject_etc"][$i]."</FONT>");
+	}else{
+		array_push($remark,"<FONT style=\"font-size: 20;\" color=\"#000000\"> ".$detail1." ".$detail2." ".$detail3." ".$detail4."</FONT>");
+	}
+			
+	if(count($remark) > 0){
+		$list_remark = implode("<BR>",$remark);
+	}
+
+	if($part == "DDY"){
+		$style=" style=\"color:#0000FF\" ";
+	}elseif($part == "DDN"||$part == "DSN"||$part == "DPN"){
+		$style = " style=\"color:#FF0000\" ";
+	}else{
+		$style="";	
+	}
+			
+	if($part == "DDY"){
+		if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
 			
 			if($part == "DDY"){
-				if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
-					
-					if($part == "DDY"){
-						$pricetype["DDN"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
-						$pricetype["DDY"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
-					}
-					
-					$part="DDN";
-					
-				}else{
-					echo "<INPUT TYPE=\"hidden\" name=\"ddnnew\" value=\"$i\">";
-				}
+				$pricetype["DDN"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
+				$pricetype["DDY"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
 			}
+			
+			$part="DDN";
+			
+		}else{
+			echo "<INPUT TYPE=\"hidden\" name=\"ddnnew\" value=\"$i\">";
+		}
+	}
 			//แก้ช่อง textbox จำนวน <TD align='right'><input name='piece$i' value='".$_SESSION["list_drugamount"][$i]."' type='text' size=3> &nbsp;&nbsp;</TD>
 			//แก้ช่องวิธีใช้ <input name='act$i' value='".$_SESSION["list_drugslip"][$i]."' type='text' size=5 onKeyPress=addslip2('slip2',this.value,2,$i); >
 			
@@ -1017,6 +1023,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$_SESSION["list_drug_reason"] = array() ;
 	$_SESSION["list_drug_reason2"] = array() ;
 
+	$_SESSION['list_drug_part'] = array();
+
 	$sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1";
 	$result = Mysql_Query($sql);
 	list($id, $item, $stkcutdate) = Mysql_fetch_row($result);
@@ -1025,8 +1033,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		session_register("cancle_row_id");
 		$_SESSION["cancle_row_id"] = $id;
 
-	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_amount2`,`drug_inject_unit2`,`drug_inject_time`,
-	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`   
+	// ดึงรายการมาแก้ไข
+	$sql = "SELECT `row_id`,`drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_amount2`,`drug_inject_unit2`,`drug_inject_time`,
+	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`,`part` 
 	FROM `ddrugrx` 
 	WHERE `idno` = '".$id."' 
 	AND `hn` = '".$_SESSION["hn_now"]."' 
@@ -1043,7 +1052,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		
 		if($arr["drugcode"] === '4MET25'){  //กรณีเป็น balm
 		
-			$sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit,drug_inject_amount2, drug_inject_unit2, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' GROUP BY amount  order by row_id desc limit 1";
+			// $sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit,drug_inject_amount2, drug_inject_unit2, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason, part   
+			// From ddrugrx 
+			// where idno = '".$id."' 
+			// AND hn='".$_SESSION["hn_now"]."' 
+			// AND  date like '".((date("Y")+543).date("-m-d"))."%' 
+			// GROUP BY amount  
+			// order by row_id desc 
+			// limit 1";
+
+			$sql2 = "SELECT drugcode, amount, slcode, drug_inject_amount, drug_inject_unit,
+			drug_inject_amount2, drug_inject_unit2, drug_inject_time,  drug_inject_slip,  drug_inject_type,  
+			drug_inject_etc, reason, part   
+			FROM ddrugrx 
+			WHERE `row_id` = '".$arr["row_id"]."' ";
+
 			$res = mysql_query($sql2) or die( mysql_error() ) ;
 			$arr2 = mysql_fetch_assoc($res);
 			
@@ -1060,6 +1083,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 			array_push($_SESSION["list_drug_inject_etc"],$arr2["drug_inject_etc"]);
 			array_push($_SESSION["list_drug_reason"],$arr2["reason"]);
 			array_push($_SESSION["list_drug_reason2"],$arr2["reason2"]);
+			array_push($_SESSION["list_drug_part"], $arr2["part"]);
 			
 		}else{
 			
@@ -1076,8 +1100,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 			array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
 			array_push($_SESSION["list_drug_reason"],$arr["reason"]);
 			array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
+			array_push($_SESSION["list_drug_part"], $arr["part"]);
+
 		}  //close if
-		
+
 	}  //close while
 
 	$logSession = $_SESSION['dt_doctor']."\r\n";
@@ -2964,7 +2990,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 			$onclick = "alert('รายการยาได้ถูกตัดสต๊อกแล้ว ให้ผู้ป่วยยกเลิกรายการยาที่ห้องยาก่อน จึงจะสามารถปรับปรุงรายการยาได้');";
 		}
 
-		echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">ยกเลิก/แก้ไขรายการครั้งล่าสุด</A></CENTER><BR>";
+		echo "<CENTER><A HREF=\"javascript: void(0);\" onclick=\"".$onclick."\"	>ยกเลิก/แก้ไขรายการครั้งล่าสุด</A></CENTER><BR>";
 	}?>
 
 	</TD>
