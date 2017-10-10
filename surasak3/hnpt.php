@@ -60,16 +60,33 @@ $today = date("d-m-Y");
     $yr=substr($today,6,4) +543;  
 
 $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT hn, concat(yot,' ',name,' ',surname) as ptname, ptright FROM opcard WHERE hn = '$hn'  limit 1 ";
+ $query = "SELECT hn, concat(yot,' ',name,' ',surname) as ptname, ptright, idcard FROM opcard WHERE hn = '$hn'  limit 1 ";
 
  $result = mysql_query($query) or die(Mysql_Error());
- list($xxx,$yyy,$zzz) = Mysql_fetch_row($result);
+ list($xxx,$yyy,$zzz,$idcard) = Mysql_fetch_row($result);
 	
 	print "HN :$xxx<br>";
    	print "$yyy<br>";
    	print "สิทธิการรักษา :$zzz<br>";
 	print "$vnlab";
-    print "<br><a href='hnpt.php?hn=".$xxx."&vnlab=".$vnlab."&confirm=true&service=".$servicd."'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
+    print "<br><a href='hnpt.php?hn=".$xxx."&vnlab=".$vnlab."&confirm=true&service=".$servicd."'>!ชื่อถูกต้อง ทำรายการต่อไป</a><br>";
+
+	// ตรวจสอบสิทธิ์
+	$pt_code = substr($zzz,0,3);
+	if( $pt_code == 'R07' OR $pt_code == 'R03' ){
+		if( $pt_code == 'R07' ){
+			$sql = "SELECT id FROM ssodata WHERE id LIKE '$idcard%' LIMIT 1 ";
+			
+		}else if( $pt_code == 'R03' ){
+			$sql = "SELECT hn, status FROM cscddata WHERE hn = '$xxx' AND ( status LIKE '%U%' OR status = '\r' OR status LIKE '%V%' ) LIMIT 1 ";
+
+		}
+
+		if(mysql_num_rows(mysql_query($sql)) == 0){
+			echo '<span style="font-weight: bold; color: red;">สิทธิในการรักษาพยาบาลมีปัญหา <br>กรุณาติดต่อ แผนกทะเบียน เพื่อทำการตรวจสอบสิทธิ</span>';
+		}
+	}
+	
 
 }else if(!empty($hn) && !empty($confirm)){
 	//$tvn=$vn;

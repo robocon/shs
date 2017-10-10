@@ -4,8 +4,8 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
-
-$checkup_date_code = '171002';
+// YYMMDD
+$checkup_date_code = '171010';
 $part = 'postdeploy61';
 $title_part = 'postdeploy61';
 $thai_date = (date("Y")+543)."-".date("m-d H:i:s");
@@ -35,6 +35,8 @@ if ( $action === false ) {
     <?php
 }else if ( $action === 'import' ) {
     
+    exit;
+    
     $file = $_FILES['file'];
 	$content = file_get_contents($file['tmp_name']);
 	if( $content !== false ){
@@ -52,7 +54,7 @@ if ( $action === false ) {
             ++$i;
             ++$last_id;
 
-            list($exam_no, $yot, $name, $surname, $branch) = explode(',', $item);
+            list($nubmer, $exam_no, $yot, $name, $surname, $branch) = explode(',', $item);
 
             if( !empty($exam_no) ){
 
@@ -84,7 +86,7 @@ if ( $action === false ) {
                 NULL,
                 '$part',
                 '$branch',
-                '03 ตุลาคม 2560');
+                '10 ตุลาคม 2560');
                 ";
                 // dump($sql);
                 $insert = $db->insert($sql);
@@ -104,6 +106,7 @@ if ( $action === false ) {
     $sql = "SELECT a.*
 	FROM `opcardchk` AS a 
 	WHERE a.`part` = '$part' 
+    AND a.`datechkup` = '10 ตุลาคม 2560' 
 	ORDER BY a.`row` ASC";
     $db->select($sql);
     $items = $db->get_items();
@@ -113,18 +116,21 @@ if ( $action === false ) {
         
         ++$ii;
 
-        $exam_no = $exam_no = $item['exam_no'];;
+        $exam_no = $item['exam_no'];
         $lab_chem = $checkup_date_code.$exam_no."02";
         $ptname = $item['name'].' '.$item['surname'];
+        $hn = $item['HN'];
         
         // ปริ้นเผื่อมาสัก 3 ใบ พี่สมยศบอก
         for ($i=0; $i < 3; $i++) { 
             ?>
             
-            <font style='line-height:23px;' face='Angsana New' size='6'><center><b><?=$exam_no;?></b></center></font>
-            <font style='line-height:15px;' face='Angsana New' size='3'><center><b><?=$ptname;?></b></center></font>
-            <font style='line-height:10px;' face='Angsana New' size='3'><center><b><?=$lab_chem;?></b></center></font>
-            <center><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_chem;?>"></span></center>
+            <font style='line-height:25px;' face='Angsana New' size='8'><center><b><?=$exam_no;?></b></center></font>
+            <font style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
+            <font style='line-height:23px;' face='Angsana New' size='6'><center><b>HN: <?=$hn;?></b></center></font>
+            
+            <!--<font style='line-height:10px;' face='Angsana New' size='3'><center><b><?=$lab_chem;?></b></center></font>
+            <center><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$lab_chem;?>"></span></center>-->
             <div style="page-break-before: always;"></div>
             <?php
         }
@@ -137,12 +143,13 @@ if ( $action === false ) {
 
 
 }else if ( $action === 'import_lab' ) {
-    
+
     exit;
 
     $sql = "SELECT a.*
 	FROM `opcardchk` AS a 
 	WHERE a.`part` = '$part' 
+    AND a.`datechkup` = '10 ตุลาคม 2560' 
 	ORDER BY a.`row` ASC";
     $db->select($sql);
     $items = $db->get_items();
@@ -200,6 +207,7 @@ if ( $action === false ) {
         // dump($orderhead_sql);
         $orderhead = $db->insert($orderhead_sql);
         dump($orderhead);
+        
 
         foreach ($lab_list as $key => $lab) {
 
@@ -217,6 +225,7 @@ if ( $action === false ) {
             dump($orderdetail);
         }
 
+        echo "<hr>";
         // exit;
 
     }
@@ -229,6 +238,7 @@ if ( $action === false ) {
     $sql = "SELECT a.*
 	FROM `opcardchk` AS a 
 	WHERE a.`part` = '$part' 
+    AND a.`datechkup` = '10 ตุลาคม 2560' 
 	ORDER BY a.`row` ASC";
     $db->select($sql);
     $items = $db->get_items();
@@ -238,18 +248,20 @@ if ( $action === false ) {
         <tr>
             <td>ลำดับ</td>
             <td>HN</td>
-            <td>รหัส</td>
+            <td>รหัสLab</td>
             <td>ชื่อ-สกุล</td>
             <td>หมายเหตุ</td>
         </tr>
     
     <?php
     foreach ($items as $key => $item) {
+        $exam_no = $item['exam_no'];
+        $lab_chem = $checkup_date_code.$exam_no."02";
         ?>
         <tr>
             <td><?=$item['pid'];?></td>
             <td><?=$pt_prefix.$item['exam_no'];?></td>
-            <td><?=$item['exam_no'];?></td>
+            <td><?=$lab_chem;?></td>
             <td><?=$item['name'].' '.$item['surname'];?></td>
             <td></td>
         </tr>

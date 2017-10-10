@@ -945,7 +945,10 @@ $objQuery1 = mysql_query($strSQL1);
 list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
 
 		
-$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode !='GFR' AND labcode !='HI')";
+$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
+FROM resultdetail  
+WHERE autonumber='".$arrresult['autonumber']."' 
+AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL')";
 //echo $strSQL;
 $objQuery = mysql_query($strSQL);
 while($objResult = mysql_fetch_array($objQuery)){
