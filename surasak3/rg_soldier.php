@@ -1,12 +1,41 @@
 <?php 
 session_start();
 
+/**
+ * dt_soldier -> rg_soldier
+ * 
+DROP TABLE IF EXISTS `rg_doctor`;
+CREATE TABLE `rg_doctor` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `soldier_id` int(11) DEFAULT NULL,
+  `yot` varchar(50) DEFAULT NULL,
+  `doctor` varchar(255) DEFAULT NULL,
+  `code` varchar(55) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `soldier_id` (`soldier_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `rg_soldier`;
+CREATE TABLE `rg_soldier` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `hn` varchar(45) DEFAULT NULL,
+  `vn` varchar(45) DEFAULT NULL,
+  `regular` text,
+  `last_update` datetime DEFAULT NULL,
+  `yot_pt` varchar(50) NOT NULL,
+  `ptname` varchar(255) DEFAULT NULL,
+  `yearchk` varchar(45) DEFAULT NULL,
+  `pic` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hn` (`hn`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+ */
 include "includes/functions.php";
+include 'includes/connect.php';
 
 $action = $_POST['action'];
 if( $action === "save" ){
-
-    include 'includes/connect.php';
 
     $test_dr_code = preg_match('/[0-9]+/', $_SESSION['sOfficer'], $match);
     if ( $test_dr_code > 0 ) {
@@ -300,18 +329,8 @@ foreach ($types as $main_number => $item_type) {
         }
     }
 }
-// dump($set_types);
 
-
-/**
- * @todo
- * [/] ค้นหาจากการคีย์
- * [/] สามารถคีย์ได้จากรหัส เช่น 7.ข.5
- * [] สามารถโชว์ให้หมอคนที่ 2 3 เห็นได้ว่าหมอคนแรกเลือกข้อไหน
- * [/] สามารถเลือกได้จากรายการที่แสดงทั้งหมด
- */
-
-$action = $_POST['action'];
+// ค้นหา
 if( $action === "search_val" ){
 
     $regular = trim($_POST['content_txt']);
@@ -342,12 +361,6 @@ if( $action === "search_val" ){
 
 
 
-
-
-
-include "connect.inc";
-include "checklogin.php";
-
 ?>
 <style type="text/css">
 body,td,th {
@@ -373,12 +386,11 @@ p{
 </style>
 
 <?php
-include "dt_menu.php";
-include "dt_patient.php";
 
+/*
 $yearchk = get_year_checkup(true);
 $hn = $_SESSION['hn_now'];
-$sql = "SELECT * FROM `dt_soldier` WHERE `yearchk` = '$yearchk' AND `hn` = '$hn' ";
+$sql = "SELECT * FROM `rg_soldier` WHERE `yearchk` = '$yearchk' AND `hn` = '$hn' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $hn_rows = mysql_num_rows($q);
 if ( $hn_rows > 0 ) {
@@ -412,14 +424,70 @@ if ( $hn_rows > 0 ) {
     </table>
     <?php
 }
+*/
+
+$sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
+FROM `doctor` 
+WHERE ( `doctorcode` != '00' AND `doctorcode` != '00000' AND `doctorcode` != '0000' AND `menucode` = 'ADM' ) 
+AND `status` = 'y' 
+AND `name` REGEXP '^MD+' ";
+$q = mysql_query($sql) or die( mysql_error() );
+$dr_items = array();
+while ( $dr = mysql_fetch_assoc($q) ) {
+    $dr_items[] = $dr;
+}
+
 ?>
 <div>
 </div>
 
 <div>
-    <form action="dt_soldier.php" method="post" id="inputForm">
+    <form action="dt_soldier.php" method="post" id="inputForm" enctype="multipart/form-data">
+
         <div>
-            <span>กฏกระทรวง: </span><input type="text" name="regular" id="regular" style="width: 80%">
+            <span>ค้นหากฏกระทรวง: </span><input type="text" id="regular_search">
+            <div id="regular_result" style="color: blue; text-decoration: underline;"></div>
+            <input type="hidden" id="regular" name="regular" value="">
+        </div>
+
+        <div>
+            แพทย์คนที่1: 
+            <select name="dr1" id="">
+                <?php
+                foreach ($dr_items as $key => $item) {
+                    ?>
+                    <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                    <?php
+                }
+                ?>
+            </select>   
+        </div>
+        <div>
+            แพทย์คนที่2: 
+            <select name="dr2" id="">
+                <?php
+                foreach ($dr_items as $key => $item) {
+                    ?>
+                    <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                    <?php
+                }
+                ?>
+            </select>   
+        </div>
+        <div>
+            แพทย์คนที่3: 
+            <select name="dr3" id="">
+                <?php
+                foreach ($dr_items as $key => $item) {
+                    ?>
+                    <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                    <?php
+                }
+                ?>
+            </select>   
+        </div>
+        <div>
+            แนบรูปถ่าย : <input type="file" name="" id="">
         </div>
         <div>
             <button type="submit">บันทึกข้อมูล</button>
@@ -474,6 +542,9 @@ if( !empty($_SESSION['x_msg']) ){
 
                 }
             }
+            ?>
+            <br>
+            <?php
         }
         ?>
     </div>
@@ -489,7 +560,7 @@ jQuery.noConflict();
         $(".full_detail").slideToggle("fast");
     });
 
-    $(document).on("keyup", "#regular", function(){
+    $(document).on("keyup", "#regular_search", function(){
 
         var txt = $(this).val();
         if( txt.length >= 2 ){
@@ -515,6 +586,7 @@ jQuery.noConflict();
     $(document).on("click", ".from_full_detail", function(){
         var full_detail = $(this).html();
         $("#regular").val(full_detail);
+        $("#regular_result").html(full_detail);
         $(".full_detail").slideUp(100);
     });
 
@@ -522,6 +594,7 @@ jQuery.noConflict();
     $(document).on("click", ".search_detail", function(){
         var full_detail = $(this).html();
         $("#regular").val(full_detail);
+        $("#regular_result").html(full_detail);
         $("#show_content").hide();
     });
 

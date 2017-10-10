@@ -90,7 +90,6 @@ menu4[2]='<a href="orderbmd.php" >สั่งตรวจ BMD</a>'
 var menu5=new Array();
 menu5[0]='<a href="dt_chkup.php" >ใบรับรองแพทย์</a>'
 menu5[1]='<a href="dt_refer.php" >ใบ Refer</a>'
-menu5[2]='<a href="dt_soldier.php" >ใบรับรองงดเว้นเกณฑ์ทหาร</a>'
 
 var menu6=new Array();
 menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพทหารประจำปี</a>'
