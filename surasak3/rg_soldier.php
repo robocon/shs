@@ -2,7 +2,7 @@
 session_start();
 
 /**
- * dt_soldier -> rg_soldier
+ * rg_soldier -> rg_soldier
  * 
 DROP TABLE IF EXISTS `rg_doctor`;
 CREATE TABLE `rg_doctor` (
@@ -31,20 +31,30 @@ CREATE TABLE `rg_soldier` (
   KEY `hn` (`hn`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
  */
-include "includes/functions.php";
-include 'includes/connect.php';
+
+include 'bootstrap.php';
+
+// include "includes/functions.php";
+// include 'includes/connect.php';
 
 $action = $_POST['action'];
 if( $action === "save" ){
 
-    $test_dr_code = preg_match('/[0-9]+/', $_SESSION['sOfficer'], $match);
-    if ( $test_dr_code > 0 ) {
-        $dr_code = $match['0'];
-    }
+    // var_dump($_SESSION);
+    dump($_POST);
+    dump($_FILES);
+    exit;
+
+    // $test_dr_code = preg_match('/[0-9]+/', $_SESSION['sOfficer'], $match);
+    // if ( $test_dr_code > 0 ) {
+    //     $dr_code = $match['0'];
+    // }
+
+    $dr_code_list = "`doctorcode` IN ( '".$_POST['dr1']."', '".$_POST['dr2']."', '".$_POST['dr3']."')";
 
     $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
     FROM `doctor` 
-    WHERE ( `doctorcode` != '00000' AND `doctorcode` != '0000' AND `menucode` = 'ADM' ) 
+    WHERE $dr_code_list 
     AND `status` = 'y' 
     AND `name` REGEXP '^MD+' ";
     $q = mysql_query($sql) or die( mysql_error() );
@@ -54,10 +64,9 @@ if( $action === "save" ){
         $dr_lists[$key] = $dr;
     }
 
+    exit;
+
     $db_dr = $dr_lists[$dr_code];
-    
-    $hn = $_SESSION['hn_now'];
-    $vn = $_SESSION['vn_now'];
 
     $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname` 
     FROM `opcard` WHERE `hn` = '$hn'";
@@ -73,10 +82,10 @@ if( $action === "save" ){
 
     $yearchk = get_year_checkup(true);
 
-    // แพทย์ลงข้อมูลในวันนั้นแล้วรึยัง
+    
     $curr_date = date('Y-m-d');
     $sql = "SELECT `id` 
-    FROM `dt_soldier` 
+    FROM `rg_soldier` 
     WHERE `date` LIKE '$curr_date%' 
     AND `doctor_code` = '$doctor_code' 
     AND `hn` = '$hn' 
@@ -89,18 +98,18 @@ if( $action === "save" ){
         $user = mysql_fetch_assoc($q);
         $id = $user['id'];
         
-        $sql = "UPDATE `dt_soldier` SET 
-        `regular` = '$regular',
-        `yot` = '$yot',
-        `doctor` = '$doctor',
-        `doctor_code` = '$doctor_code',
+        $sql = "UPDATE `rg_soldier` SET 
+        `regular` = '$regular', 
+        `yot` = '$yot', 
+        `doctor` = '$doctor', 
+        `doctor_code` = '$doctor_code', 
         `last_update` = NOW() 
         WHERE `id`='$id';";
         $save = mysql_query($sql) or die( mysql_error() );
         
     }else{
 
-        $sql = "INSERT INTO `dt_soldier`
+        $sql = "INSERT INTO `rg_soldier`
         (`id`,
         `date`,
         `hn`,
@@ -132,7 +141,7 @@ if( $action === "save" ){
     
     if( $save !== false ){
         $_SESSION['x_msg'] = 'บันทึกข้อมูลเรียบร้อย';
-        header("Location: dt_soldier.php");
+        header("Location: rg_soldier.php");
     }
 
     exit;
@@ -384,8 +393,223 @@ p{
     padding: 0;
 }
 </style>
-
+<ul>
+    <li><a href="rg_soldier.php">หน้าหลัก</a></li>
+    <li><a href="rg_soldier.php?page=add">เพิ่มข้อมูล</a></li>
+</ul>
 <?php
+
+$page = input('page');
+if( empty($page) ){
+    ?>
+    <h3>หน้าหลัก</h3>
+    <?php
+} else if( !empty($page) ){
+    $hn = input_post('hn', false);
+    ?>
+    <form action="rg_soldier.php?page=add" method="post">
+        <fieldset>
+            <legend>ระบุ HN</legend>
+            <div>
+                HN: <input type="text" name="hn" value="<?=$hn;?>">
+            </div>
+            <div>
+                <button type="button">ค้นหา</button>
+                <input type="hidden" name="search_hn" value="1">
+            </div>
+        </fieldset>
+    </form>
+    <?php
+    $search_hn = input('search_hn', false);
+    if( $search_hn !== false ){
+
+        $sql = "SELECT * FROM `opcard` WHERE ";
+
+        $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
+        FROM `doctor` 
+        WHERE ( `doctorcode` != '00' AND `doctorcode` != '00000' AND `doctorcode` != '0000' AND `menucode` = 'ADM' ) 
+        AND `status` = 'y' 
+        AND `name` REGEXP '^MD+' ";
+        $q = mysql_query($sql) or die( mysql_error() );
+        $dr_items = array();
+        while ( $dr = mysql_fetch_assoc($q) ) {
+            $dr_items[] = $dr;
+        }
+    
+        ?>
+        <div>
+            <form action="rg_soldier.php" method="post" id="inputForm" enctype="multipart/form-data">
+
+                <div>
+                    <span>ค้นหากฏกระทรวง: </span><input type="text" id="regular_search">
+                    <div id="regular_result" style="color: blue; text-decoration: underline;"></div>
+                    <input type="hidden" id="regular" name="regular" value="">
+                </div>
+    
+                <div>
+                    แพทย์คนที่1: 
+                    <select name="dr1" id="">
+                        <?php
+                        foreach ($dr_items as $key => $item) {
+                            ?>
+                            <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                            <?php
+                        }
+                        ?>
+                    </select>   
+                </div>
+                <div>
+                    แพทย์คนที่2: 
+                    <select name="dr2" id="">
+                        <?php
+                        foreach ($dr_items as $key => $item) {
+                            ?>
+                            <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                            <?php
+                        }
+                        ?>
+                    </select>   
+                </div>
+                <div>
+                    แพทย์คนที่3: 
+                    <select name="dr3" id="">
+                        <?php
+                        foreach ($dr_items as $key => $item) {
+                            ?>
+                            <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                            <?php
+                        }
+                        ?>
+                    </select>   
+                </div>
+                <div>
+                    แนบรูปถ่าย : <input type="file" name="pic_patient" id="">
+                </div>
+                <div>
+                    <button type="submit">บันทึกข้อมูล</button>
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="hn">
+                </div>
+            </form>
+        </div>
+        <?php
+        if( !empty($_SESSION['x_msg']) ){
+            ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x_msg'];?></p><?php
+            $_SESSION['x_msg'] = false;
+        }
+        ?>
+        <div id="show_content" style="display: none;">
+        <fieldset><legend>ผลการค้นหา</legend><div class="show_list"></div></fieldset>
+        </div>
+        <br>
+        <div id="full_detail_container">
+            <button class="show_detail">แสดงข้อกฎกระทรวงทั้งหมด</button>
+            <div class="full_detail" style="display: none;">
+                <?php
+    
+                foreach ($types as $main_number => $item_type) {
+    
+                    $header =  '<p>('.$main_number.') '.$item_type['title'].'</p>';
+                    echo $header;
+    
+                    if( count($item_type['items']) > 0 ){
+                        foreach( $item_type['items'] AS $item_number => $item ){
+    
+                            $item_name = $item;
+                            $sub_item = false;
+                            if( is_array($item) === true ){
+                                $item_name = $item['name'];
+                                $sub_item = $item['attributes'];
+                            }
+                            
+    
+                            $txt = '<p class="from_full_detail">('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
+                            if( $sub_item === false ){
+                                echo '<a href="javascript:void(0)">'.$txt.'</a>';
+                            }else if( $sub_item !== false ){
+                                echo $txt;
+                            }
+    
+                            $json_sub_item = array();
+                            if( $sub_item !== false ){
+                                foreach ($sub_item as $last_key => $value) {
+                                    echo '<a href="javascript:void(0)"><p class="from_full_detail">('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
+                                }
+                            }
+    
+                        }
+                    }
+                    ?>
+                    <br>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    
+    
+        <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        jQuery.noConflict();
+        (function( $ ) {
+        $(function() {
+            $(document).on("click", ".show_detail", function(){
+                $(".full_detail").slideToggle("fast");
+            });
+    
+            $(document).on("keyup", "#regular_search", function(){
+    
+                var txt = $(this).val();
+                if( txt.length >= 2 ){
+                    $.ajax({
+                        data: {"content_txt": txt,"action":"search_val"},
+                        // datatype: "json",
+                        method : "post",
+                        url: "rg_soldier.php",
+                        success: function(msg){
+                            // console.log(msg);
+    
+                            if ( msg !== '' ) {
+                                $("#show_content").show();
+                                $(".show_list").html(msg);
+                            }
+                            
+                        }
+                    });
+                }
+                
+            });
+    
+            $(document).on("click", ".from_full_detail", function(){
+                var full_detail = $(this).html();
+                $("#regular").val(full_detail);
+                $("#regular_result").html(full_detail);
+                $(".full_detail").slideUp(100);
+            });
+    
+            // คลิกรายการที่ค้นหา
+            $(document).on("click", ".search_detail", function(){
+                var full_detail = $(this).html();
+                $("#regular").val(full_detail);
+                $("#regular_result").html(full_detail);
+                $("#show_content").hide();
+            });
+    
+            $(document).on("submit", "#inputForm", function(){
+                var regular = $("#regular").val();
+                if (regular == '') {
+                    alert('กรุณาเลือกกฎกระทรวง');
+                    return false;
+                }
+            });
+    
+        });
+        })(jQuery);
+    
+        </script>
+    
+        <?php
+    }
 
 /*
 $yearchk = get_year_checkup(true);
@@ -426,187 +650,5 @@ if ( $hn_rows > 0 ) {
 }
 */
 
-$sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
-FROM `doctor` 
-WHERE ( `doctorcode` != '00' AND `doctorcode` != '00000' AND `doctorcode` != '0000' AND `menucode` = 'ADM' ) 
-AND `status` = 'y' 
-AND `name` REGEXP '^MD+' ";
-$q = mysql_query($sql) or die( mysql_error() );
-$dr_items = array();
-while ( $dr = mysql_fetch_assoc($q) ) {
-    $dr_items[] = $dr;
+
 }
-
-?>
-<div>
-</div>
-
-<div>
-    <form action="dt_soldier.php" method="post" id="inputForm" enctype="multipart/form-data">
-
-        <div>
-            <span>ค้นหากฏกระทรวง: </span><input type="text" id="regular_search">
-            <div id="regular_result" style="color: blue; text-decoration: underline;"></div>
-            <input type="hidden" id="regular" name="regular" value="">
-        </div>
-
-        <div>
-            แพทย์คนที่1: 
-            <select name="dr1" id="">
-                <?php
-                foreach ($dr_items as $key => $item) {
-                    ?>
-                    <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
-                    <?php
-                }
-                ?>
-            </select>   
-        </div>
-        <div>
-            แพทย์คนที่2: 
-            <select name="dr2" id="">
-                <?php
-                foreach ($dr_items as $key => $item) {
-                    ?>
-                    <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
-                    <?php
-                }
-                ?>
-            </select>   
-        </div>
-        <div>
-            แพทย์คนที่3: 
-            <select name="dr3" id="">
-                <?php
-                foreach ($dr_items as $key => $item) {
-                    ?>
-                    <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
-                    <?php
-                }
-                ?>
-            </select>   
-        </div>
-        <div>
-            แนบรูปถ่าย : <input type="file" name="" id="">
-        </div>
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-            <input type="hidden" name="action" value="save">
-        </div>
-    </form>
-</div>
-<?php
-if( !empty($_SESSION['x_msg']) ){
-    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x_msg'];?></p><?php
-    $_SESSION['x_msg'] = false;
-}
-?>
-<div id="show_content" style="display: none;">
-<fieldset><legend>ผลการค้นหา</legend><div class="show_list"></div></fieldset>
-</div>
-<br>
-<div id="full_detail_container">
-    <button class="show_detail">แสดงข้อกฎกระทรวงทั้งหมด</button>
-    <div class="full_detail" style="display: none;">
-        <?php
-
-        foreach ($types as $main_number => $item_type) {
-
-            $header =  '<p>('.$main_number.') '.$item_type['title'].'</p>';
-            echo $header;
-
-            if( count($item_type['items']) > 0 ){
-                foreach( $item_type['items'] AS $item_number => $item ){
-
-                    $item_name = $item;
-                    $sub_item = false;
-                    if( is_array($item) === true ){
-                        $item_name = $item['name'];
-                        $sub_item = $item['attributes'];
-                    }
-                    
-
-                    $txt = '<p class="from_full_detail">('.$main_number.') ('.$item_number.') '.$item_name.'</p>';
-                    if( $sub_item === false ){
-                        echo '<a href="javascript:void(0)">'.$txt.'</a>';
-                    }else if( $sub_item !== false ){
-                        echo $txt;
-                    }
-
-                    $json_sub_item = array();
-                    if( $sub_item !== false ){
-                        foreach ($sub_item as $last_key => $value) {
-                            echo '<a href="javascript:void(0)"><p class="from_full_detail">('.$main_number.') ('.$item_number.') ('.$last_key.') '.$value.'</p></a>';
-                        }
-                    }
-
-                }
-            }
-            ?>
-            <br>
-            <?php
-        }
-        ?>
-    </div>
-</div>
-
-
-<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-jQuery.noConflict();
-(function( $ ) {
-  $(function() {
-    $(document).on("click", ".show_detail", function(){
-        $(".full_detail").slideToggle("fast");
-    });
-
-    $(document).on("keyup", "#regular_search", function(){
-
-        var txt = $(this).val();
-        if( txt.length >= 2 ){
-            $.ajax({
-                data: {"content_txt": txt,"action":"search_val"},
-                // datatype: "json",
-                method : "post",
-                url: "dt_soldier.php",
-                success: function(msg){
-                    // console.log(msg);
-
-                    if ( msg !== '' ) {
-                        $("#show_content").show();
-                        $(".show_list").html(msg);
-                    }
-                    
-                }
-            });
-        }
-        
-    });
-
-    $(document).on("click", ".from_full_detail", function(){
-        var full_detail = $(this).html();
-        $("#regular").val(full_detail);
-        $("#regular_result").html(full_detail);
-        $(".full_detail").slideUp(100);
-    });
-
-    // คลิกรายการที่ค้นหา
-    $(document).on("click", ".search_detail", function(){
-        var full_detail = $(this).html();
-        $("#regular").val(full_detail);
-        $("#regular_result").html(full_detail);
-        $("#show_content").hide();
-    });
-
-    $(document).on("submit", "#inputForm", function(){
-        var regular = $("#regular").val();
-        if (regular == '') {
-            alert('กรุณาเลือกกฎกระทรวง');
-            return false;
-        }
-    });
-
-  });
-})(jQuery);
-
-</script>

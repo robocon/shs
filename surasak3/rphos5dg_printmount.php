@@ -179,7 +179,8 @@ while($rows = mysql_fetch_array($result)){
 				 list($chkcode) = mysql_fetch_row ($resultchk);
 				$chkcode = trim($chkcode);
 				$dcode = trim($dcode);
-   				//echo "$dcode<===>$chkcode";
+				   //echo "$dcode<===>$chkcode";
+// ถ้ามี drugcode ในเดือนที่เลือก
    if($dcode ==$chkcode){
    		//echo "$dcode == $chkcode </br>";
   		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode ='".$dbdcode."' and (getdate between '".$_POST['year']."-".$_POST['mon']."-"."01"." 00:00:00' and '".$_POST['year']."-".$_POST['mon']."-"."31"." 23:59:59') ORDER BY getdate limit 1";  // ยอดยกมา
@@ -197,13 +198,19 @@ while($rows = mysql_fetch_array($result)){
 		$totalpri = $total*$unitpri;
 		$month = substr($getdate,5,2);
 		$day = substr($getdate,8,2);
-		$month=$thmon[$month+0];		
+		$month=$thmon[$month+0];	
+		
+	// ถ้าไม่มี drugcode ในเดือนที่เลือก
+	// มันจะไปเลือกยอดของเดือนก่อนหน้านี้ที่มีข้อมูล
 	}else{
 		//echo "'$dcode' != '$chkcode' </br>";
 		$yearchk=$_POST["year"];
 		$monthchk=$_POST["mon"];
 		$monthchk=sprintf("%02d",$monthchk);
-  		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode ='".$dbdcode."'  and getdate < '$yearchk-$monthchk-01' ORDER BY getdate DESC, row_id DESC limit 1";  // ยอดยกมา
+  		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  
+		  FROM stktranx  WHERE drugcode ='".$dbdcode."'  
+		  and getdate < '$yearchk-$monthchk-01' 
+		  ORDER BY getdate DESC, row_id DESC limit 1";  // ยอดยกมา
 		//echo "ไม่เท่ากับ : ".$query3;	
 		$result3 = mysql_query($query3) or die("Query failed");
    		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
@@ -247,7 +254,7 @@ if($dbdcode=="4TA15" || $dbdcode=="4ALC450"){
     	$num2=0;
    		while (list($getdate,$billno,$drugcode,$tname,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk,$amountfree) = mysql_fetch_row ($result2)) {
 			$k++;
-			$sql3 = "select stkno from combill where billno = '$billno' and lotno='$lotno' ";
+			$sql3 = "select stkno from combill where date like '$getdate%' and lotno='$lotno' ";
 			$row3 = mysql_query($sql3);
 			list($stkno)=mysql_fetch_array($row3);
 			

@@ -81,7 +81,7 @@ echo "<select>";
 			$i="0".$i;
 		}
    		?>
-  <option value="<?=$i?> ">
+  <option value="<?=$i?>" <? if($i=="31"){ echo $selectm;}?>>
     <?=$i?>
     </option>
   <?
@@ -196,24 +196,53 @@ $page=1;
 <span class="font1">
 <?
 		$_POST['day2']=trim($_POST['day2']);
-		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '$drugcode' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."') ORDER BY getdate limit 1";
-		//echo $query."<br>";
+		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  
+		FROM stktranx  
+		WHERE drugcode = '$drugcode' 
+		and ( 
+			getdate between 
+				'".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' 
+				and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."' 
+		) ORDER BY getdate 
+		limit 1";
 		
 		$result = mysql_query($query) or die("Query failed");
-    	$num=0;
-   		list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result);
 
-		if($stkcut==0){  //ถ้าฟิลด์ตัดยา เท่ากับ 0 (มีการับเข้า)
-			$total =$mainstk-$amount;
-			//echo "มีการรับเข้า $mainstk-$amount==>".$total."<br>";
+		// กรณีที่ในเดือนไม่มียอดยกมาจะไปดึงจากเดือนก่อนหน้ามาแสดงเป็นยอดยกมา
+		$test_row = mysql_num_rows($result);
+		if( $test_row == 0 ){
+			$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  
+			FROM stktranx  
+			WHERE drugcode ='$drugcode'  
+			and getdate < '".$_POST['y_start']."-".$_POST['mon1']."-01' 
+			ORDER BY getdate DESC, row_id DESC limit 1";
+			$result = mysql_query($query) or die("Query failed");
+			list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result);
+			$total = $mainstk;
+			$totalpri = $total*$unitpri;
+			$month = substr($getdate,5,2);
+			$day = substr($getdate,8,2);
+			$month=$thmon[$month+1];
+
 		}else{
-			$total =$mainstk+$stkcut;
-			//echo "$mainstk+$stkcut==>".$total."<br>";
+
+			// ถ้าไม่มีปัญหาอะไรก็ query จาก statement ตัวเดิม
+			list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result);
+			
+			if($stkcut==0){  //ถ้าฟิลด์ตัดยา เท่ากับ 0 (มีการับเข้า)
+				$total =$mainstk-$amount;
+				//echo "มีการรับเข้า $mainstk-$amount==>".$total."<br>";
+			}else{
+				$total =$mainstk+$stkcut;
+				//echo "$mainstk+$stkcut==>".$total."<br>";
+			}
+			$totalpri = $total*$unitpri;
+			$month = substr($getdate,5,2);
+			$day = substr($getdate,8,2);
+			$month=$thmon[$month+0];
+
 		}
-		$totalpri = $total*$unitpri;
-		$month = substr($getdate,5,2);
-		$day = substr($getdate,8,2);
-		$month=$thmon[$month+0];
+
 		print (" <tr>\n".
            "  <td align='center'><font face='Angsana New'>$month</td>\n".
            "  <td align='center'><font face='Angsana New'>01</td>\n".
@@ -239,7 +268,7 @@ $page=1;
     	$num=0;
    		while (list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result)) {
 			$k++;
-			$sql3 = "select stkno from combill where billno = '$billno' and lotno='$lotno' ";
+			$sql3 = "select stkno from combill where date like '$getdate%' and lotno='$lotno' ";
 			//echo $sql3;
 			$row3 = mysql_query($sql3);
 			list($stkno)=mysql_fetch_array($row3);

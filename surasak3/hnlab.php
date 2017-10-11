@@ -63,16 +63,18 @@ $today = date("d-m-Y");
     $yr=substr($today,6,4) +543;  
 
 $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
+ $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
 
  $result = mysql_query($query) or die(Mysql_Error());
  $row=mysql_num_rows($result);
- list($ccc,$xxx,$yyy,$zzz) = Mysql_fetch_row($result);
-	
+ list($ccc,$xxx,$yyy,$zzz,$dbirth) = Mysql_fetch_row($result);
+$age=calcage($dbirth);	
 if($row){	
 	
+
 	print "HN :$xxx<br>";
    	print "$yyy<br>";
+	print "อายุ : $age<br>";
    	print "สิทธิการรักษา :$zzz";
 	if(substr($zzz,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$ccc%' limit 1 ";

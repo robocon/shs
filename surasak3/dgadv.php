@@ -127,7 +127,7 @@ else{
             <a target=_self  href='../nindex.htm'><<ไปเมนู</a>");
            }   
 
-    $query = "SELECT row_id,drugcode,tradname,advreact,asses FROM drugreact WHERE  hn = '$cHn' ";
+    $query = "SELECT row_id,drugcode,tradname,advreact,asses,officer FROM drugreact WHERE  hn = '$cHn' ";
     $result = mysql_query($query)
         or die("Query failed");
 
@@ -136,15 +136,17 @@ else{
         print"<form action =\"dgadv.php?hn=$cHn\" method=\"post\"><table>";
         print" <tr>";
 
-        print"  <th bgcolor=CD853F>ลำดับ</th>";
-		print"  <th bgcolor=CD853F>รหัสยา</th>";
-        print"  <th bgcolor=CD853F>ชื่อยา</th>";
-        print"  <th bgcolor=CD853F>อาการแพ้</th>";
-        print"  <th bgcolor=CD853F>ประเมิน</th>";
-		print"  <th bgcolor=CD853F>แก้ไข</th>";
-  		print"  <th bgcolor=CD853F>ลบ</th>";
+        print"  <th bgcolor=\"CD853F\">ลำดับ</th>";
+		print"  <th bgcolor=\"CD853F\">รหัสยา</th>";
+        print"  <th bgcolor=\"CD853F\">ชื่อยา</th>";
+        print"  <th bgcolor=\"CD853F\">อาการแพ้</th>";
+        print"  <th bgcolor=\"CD853F\">ประเมิน</th>";
+		print"  <th bgcolor=\"CD853F\">แก้ไข</th>";
+        print"  <th bgcolor=\"CD853F\">ลบ</th>";
+        print"  <th bgcolor=\"CD853F\">ชื่อผู้บันทึก</th>";
+
         print" </tr>";
-        while (list ($row_id,$drugcode,$tradname,$advreact,$asses) = mysql_fetch_row ($result)) {
+        while (list ($row_id,$drugcode,$tradname,$advreact,$asses,$officer) = mysql_fetch_row ($result)) {
             $n_row++;
 			print (" <tr>\n".
 				"  <td BGCOLOR=F5DEB3>$n_row</td>\n".
@@ -170,7 +172,9 @@ else{
 					document.getElementById('asses".$n_row."').style.display='';
 					document.getElementById('asses_value".$n_row."').style.display='none';
 					document.getElementById('ok').style.display='';}\">แก้ไข</td>\n".
-				"  <td BGCOLOR=F5DEB3><a  href=\"agadvdele.php? row_id=$row_id\">ลบ</td><input type=\"hidden\" name=\"row_id".$n_row."\" value=\"".$row_id."\" >\n".
+                "  <td BGCOLOR=F5DEB3><a  href=\"agadvdele.php? row_id=$row_id\">ลบ</td>
+                <td bgcolor=\"F5DEB3\">$officer</td>
+                <input type=\"hidden\" name=\"row_id".$n_row."\" value=\"".$row_id."\" >\n".
                 " </tr>\n");
   						    }
 		print "<tr><td colspan='5'><input id=\"ok\" type='submit' value=' บันทึกรายการที่แก้ไข ' name='C1' style=\"display:none\"></td></tr>";

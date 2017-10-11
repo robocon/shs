@@ -182,7 +182,8 @@ document.getElementById('aLink').focus();
     <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
     <? } ?>
-    
+	<option value="ตรวจสุขภาพพบแพทย์ที่อื่น">ตรวจสุขภาพพบแพทย์ที่อื่น</option>
+    <option value="ตรวจสุขภาพพบแพทย์">ตรวจสุขภาพพบแพทย์</option>
   </select>&nbsp;</font></p>
 <font face="Angsana New">สิทธิ&nbsp;
 <? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADM"){ ?>
