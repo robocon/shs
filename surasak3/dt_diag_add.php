@@ -19,9 +19,9 @@ function jschars($str)
 }
 
 	$_SESSION["dt_diag_detail"] = $_POST["dt_diag_detail"];
-	$_SESSION["dt_diag"] = $_POST["dt_diag"];
-	$_SESSION["dt_icd10"] = $_POST["dt_icd10"];
-	$_SESSION["diag_thai"] = $_POST["diag_thai"];
+	$_SESSION["dt_icd10"] = $_POST["dt_icd10"];  //ICD10 Principal Diagnosis
+	$_SESSION["dt_diag"] = $_POST["dt_diag"];  //Principal Diagnosis
+	$_SESSION["diag_thai"] = $_POST["diag_thai"];  //Principal Diagnosis ภาษาไทย
 	
 	$_SESSION["dt_diag"]=$_SESSION["diag_thai"]." ".$_SESSION["dt_diag"];
 	
@@ -51,6 +51,11 @@ function jschars($str)
 	$result = mysql_query($sql2);
 	list($code,$status,$detail,$thai,$eng) = mysql_fetch_array($result);
 
+	if(empty($thai)){
+		$thai=$_SESSION["diag_thai"];
+	}else{
+		$thai=$thai;
+	}
 	
 	$sql = "Update opday set history='".$_SESSION["dt_diag_detail"]."' , diag='".jschars($_SESSION["dt_diag"])."', diag_eng='".$detail."', diag_thai='".$thai."', icd10 = '".$_SESSION["dt_icd10"]."' , `diag_morbidity` = '".$_SESSION["dt_diag_morbidity"]."', `diag_complication` = '".$_SESSION["dt_diag_complication"]."', `diag_other` = '".$_SESSION["dt_diag_other"]."',`external_cause` = '".$_SESSION["dt_diag_external"]."',`icd101` = '".$_SESSION["dt_icd10_morbidity"]."', `icd10_complication` = '".$_SESSION["dt_icd10_complication"]."',`icd10_other` = '".$_SESSION["dt_icd10_other"]."', `icd10_external_cause` = '".$_SESSION["dt_icd10_external"]."' where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' limit 1";
 	$result = Mysql_Query($sql);

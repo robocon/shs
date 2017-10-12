@@ -963,10 +963,10 @@ while($objResult = mysql_fetch_array($objQuery)){
 		$labmean="(ยูริคในเลือด)";
 	}else if($objResult["labname"]=="Cholesterol"){
 		$labmean="(ไขมันในเลือด)";
-	}else if($objResult["labname"]=="Triglyceride"){
-		$labmean="(ไขมันในเลือด)";
 	}else if($objResult["labname"]=="HDL"){
 		$labmean="(ไขมันดี)";			
+	}else if($objResult["labname"]=="Triglyceride"){
+		$labmean="(ไขมันในเลือด)";
 	}else if($objResult["labname"]=="LDL"){
 		$labmean="(ไขมันเลว)";	
 	}else if($objResult["labname"]=="LDLC"){
@@ -1043,16 +1043,6 @@ if($objResult["labcode"]=='CHOL'){
 	}
 }
 
-if($objResult["labcode"]=='TRIG'){
-	if($objResult["result"]<=150){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>150 && $objResult["result"]<250){
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}else	if($objResult["result"]>250){
-		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
-	}
-}
-
 if($objResult["labcode"]=='HDL'){
 	if($objResult["result"]>=40 && $objResult["result"]<=60){
 		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
@@ -1060,6 +1050,16 @@ if($objResult["labcode"]=='HDL'){
 		$app="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ";	
 	}else	if($objResult["result"]<40){  //ต่ำไม่ดี
 		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+	}
+}
+
+if($objResult["labcode"]=='TRIG'){
+	if($objResult["result"]<=150){
+		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+	}else	if($objResult["result"]>150 && $objResult["result"]<250){
+		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+	}else	if($objResult["result"]>250){
+		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
 	}
 }
 

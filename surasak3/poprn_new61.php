@@ -501,30 +501,43 @@ print "<DIV style='left:61PX;top:765PX;width:705PX;height:30PX;'><span class='fc
 print "<DIV style='left:61PX;top:790PX;width:705PX;height:30PX;'><span class='fc1-0'>(ข) และตามอ้างถึง2 ข้อ1</span></DIV>";
 //print "===>$prodrugtype";
 if($prodrugtype=="" || $prodrugtype=="1"){
-print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มี</span></DIV>";
-print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>อาชีพขายยาและเวชภัณฑ์ ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และ ไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
+print "===>".strlen($cComname);
+	if(strlen($cComname) <= 30){
+		print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยาและเวชภัณฑ์</span></DIV>";
+		print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";	
+		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";	
+	}else if(strlen($cComname) > 30 && strlen($cComname) <= 40){ 
+		print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
+		print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";
+print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และ ไม่ควรเรียกหลักประกันสัญญา</span></DIV>";		
+	}else{
+		print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการ</span></DIV>";
+		print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่มีอาชีพขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก</span></DIV>";
+print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และ ไม่ควรเรียกหลักประกันสัญญา</span></DIV>";				
+	}
 }else if($prodrugtype=="2"){
 print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นยาที่อยู่ในบัญชียาหลัก</span></DIV>";
-print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>แห่งชาติหรือเวชภัณฑ์ ซึ่งองค์การเภสัชกรรมหรือสภากาชาดไทยได้ผลิตออกจำหน่ายแล้ว โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
+print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
+print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
+print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
 }else if($prodrugtype=="3"){
 print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นยาที่อยู่ในบัญชียาหลัก</span></DIV>";
-print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>แห่งชาติหรือเวชภัณฑ์ ซึ่งองค์การเภสัชกรรมหรือโรงงานเภสัชกรรมทหาร มิได้เป็นผู้ผลิตแต่มีจำหน่าย โดยใช้เกณฑ์ราคาในการพิจารณา</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>คัดเลือกและขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
+print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
+print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา </span></DIV>";
+print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
 }else if($prodrugtype=="4"){
 print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นยาและเวชภัณฑ์</span></DIV>";
-print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่ได้ขึ้นบัญชีนวัตกรรมไทย โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'> และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
+print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่ได้ขึ้นบัญชีนวัตกรรมไทย ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
+print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
 }else if($prodrugtype=="5"){
 print "<DIV style='left:105PX;top:815PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นวัคซีนโรคตับอักเสบบี</span></DIV>";
-print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>และผลิตภัณฑ์อื่นๆ ที่สภากาชาติไทยผลิตเอง และไม่อยู่ในบัญชี โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
+print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่อยู่ในบัญชี ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก</span></DIV>";
+print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
 }
 //สิ้นสุดเนื้อหา PO ใบที่1 page1
 
@@ -2095,7 +2108,7 @@ print"<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN
 print"<DIV style='z-index:0'> &nbsp; </div>";
 
 
-print"<DIV style='left:134PX;top:10315PX;width:550PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ขอบเขตของงานและรายละเอียดคุณลักษณะเฉพาะของพัสดุที่จะจัดซื้อยา/เวชภัณฑ์</span></DIV>";
+print"<DIV style='left:134PX;top:10315PX;width:600PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ขอบเขตของงานและรายละเอียดคุณลักษณะเฉพาะของพัสดุที่จะจัดซื้อยา/เวชภัณฑ์</span></DIV>";
 
 print"<DIV style='left:136PX;top:10355PX;width:800PX;height:26PX;' class='fc1-0'>
 <span>กองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ที่ กห 0483.63.4/</span>

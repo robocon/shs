@@ -106,11 +106,19 @@ a{
 	HAVING count( hn ) >= 1 ";
 	$result = mysql_query($query);
 	while($arr = Mysql_fetch_assoc($result)){
-		$name_dc = substr($arr["doctor"],5);
+
+		// ตัด 5 ตัวแรก
+		// $name_dc = substr($arr["doctor"],5);
+		$name_dc = $arr["doctor"];
+		
+		// ถ้ารหัสไม่ใช่ MD007
 		if(substr($arr["doctor"],0,5) != "MD007"){
 			$arr["doctor"] = substr($arr["doctor"],0,5);
 		}
-		$listhn[$arr["hn"]] .= "<A HREF=\"ptappoiall2.php?doctor=".urlencode($arr["doctor"])."&appd=".urlencode($appd)."\" target='_blank'>".$name_dc."</A> &nbsp; ";
+
+		$link = 'ptappoiall2.php?doctor='.urlencode($arr["doctor"]).'&appd='.urlencode($appd);
+		$listhn[$arr["hn"]] .= "<A HREF=\"$link\" target='_blank'>".$name_dc."</A> &nbsp; ";
+
 	}
 	///////////////////////
 	// กรณีที่หมอคนอื่นนัดเหมือนกัน
@@ -152,6 +160,7 @@ INNER JOIN (
 ) AS b ON b.`id` = a.`row_id` 
 ORDER BY `hn` ASC
 	";
+	//echo $query1;
 	?>
 	<div style="display: none;"><?php var_dump($query1);?></div>
 	<?php
@@ -198,6 +207,7 @@ ORDER BY `hn` ASC
 		$ptname = $item['ptname'];
 		$apptime = $item['apptime'];
 		$detail = $item['detail'];
+		$detail2 = $item['detail2'];
 		$came = $item['came'];
 		$row_id = $item['row_id'];
 		$age = $item['age'];
@@ -237,7 +247,12 @@ ORDER BY `hn` ASC
 				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>
 			</td>
 			<td>
-				<?php echo ( $room === 'แผนกทะเบียน' ) ? $room : '' ;?>
+				<?php 
+				if($detail=="FU33 นัดตรวจสุขภาพ"){
+					echo "เตรียม OPD CARD ที่ $room";
+				}else{
+					echo ( $room === 'แผนกทะเบียน' ) ? $room : '' ;
+				}?>
 			</td>
 			<td>
 				<?php
