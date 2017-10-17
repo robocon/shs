@@ -1,6 +1,11 @@
 <?php 
 include 'bootstrap.php';
 
+if( empty($_SESSION['sOfficer']) ){ 
+    echo 'เกิดข้อผิดพลาดบางประการ กรุณา<a href="login_page.php">เข้าสู่ระบบ</a>อีกครั้ง';
+    exit;
+}
+
 $db = Mysql::load();
 
 /**
@@ -14,57 +19,77 @@ $db = Mysql::load();
  *      [] ฟอร์มเดียวกันกับหน้าเพิ่ม
  */
 
-
-/**
- * rg_soldier -> rg_soldier
- * 
-DROP TABLE IF EXISTS `rg_doctor`;
-CREATE TABLE `rg_doctor` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `soldier_id` int(11) DEFAULT NULL,
-  `yot` varchar(50) DEFAULT NULL,
-  `doctor` varchar(255) DEFAULT NULL,
-  `code` varchar(55) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `soldier_id` (`soldier_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `rg_soldier`;
+ /*
 CREATE TABLE `rg_soldier` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime DEFAULT NULL,
-  `hn` varchar(45) DEFAULT NULL,
-  `vn` varchar(45) DEFAULT NULL,
+  `id` int(11) NOT NULL auto_increment,
+  `date` datetime default NULL,
+  `hn` varchar(45) default NULL,
+  `address` text,
   `regular` text,
-  `last_update` datetime DEFAULT NULL,
+  `last_update` datetime default NULL,
   `yot_pt` varchar(50) NOT NULL,
-  `ptname` varchar(255) DEFAULT NULL,
-  `yearchk` varchar(45) DEFAULT NULL,
-  `pic` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `ptname` varchar(255) default NULL,
+  `yearchk` varchar(45) default NULL,
+  `pic` varchar(255) default NULL,
+  `book_id` varchar(50) NOT NULL,
+  `number_id` varchar(50) NOT NULL,
+  `yot1` varchar(50) NOT NULL,
+  `doctor1` varchar(255) NOT NULL,
+  `code1` varchar(50) NOT NULL,
+  `yot2` varchar(50) NOT NULL,
+  `doctor2` varchar(255) NOT NULL,
+  `code2` varchar(50) NOT NULL,
+  `yot3` varchar(50) NOT NULL,
+  `doctor3` varchar(255) NOT NULL,
+  `code3` varchar(50) NOT NULL,
+  `diag` text NOT NULL,
+  `province` varchar(255) NOT NULL,
+  `editor` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`),
   KEY `hn` (`hn`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
  */
 
-$action = $_POST['action'];
+$action = input('action');
 if( $action === "save" ){
 
     $dr1 = input_post('dr1');
     $dr2 = input_post('dr2');
     $dr3 = input_post('dr3');
     $hn = input_post('hn');
+    $book_id = input_post('book_id');
+    $number_id = input_post('number_id');
+    $diag = input_post('diag');
     $regular = input_post('regular');
     $yearchk = get_year_checkup(true);
     $file_name = 'NULL';
     
-    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname` 
+    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ',`tambol`,' ',`ampur`) AS `address`, `changwat` AS `province`
     FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
     $db->select($sql);
     $pt = $db->get_item();
-
     $yot_pt = $pt['yot'];
     $ptname = $pt['ptname'];
+    $address = $pt['address'];
+    $province = $pt['province'];
+    $editor = $_SESSION['sOfficer'];
     
+    $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
+    FROM `doctor` 
+    WHERE `doctorcode` IN ( '$dr1', '$dr2', '$dr3')  
+    AND `status` = 'y' 
+    AND `name` REGEXP '^MD+' ";
+    $db->select($sql);
+    $items = $db->get_items();
+    $dr_lists = array();
+    $i = 0;
+    foreach ( $items as $key => $dr ) {
+        ++$i;
+        $dr_lists['yot'.$i] = $dr['yot'];
+        $dr_lists['doctor'.$i] = $dr['name'];
+        $dr_lists['code'.$i] = $dr['doctorcode'];
+    }
+
     $files = $_FILES['pic_patient'];
     $ext = strrchr(strtolower($files['name']), ".");
     if( $files['error'] === 0 && ( $ext == '.png' OR $ext == '.jpg' OR $ext == '.jpeg' ) ){
@@ -75,58 +100,20 @@ if( $action === "save" ){
         move_uploaded_file($files['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name);
     }
     
-    $sql = "INSERT INTO `rg_soldier`
-    (`id`,
-    `date`,
-    `hn`,
-    `vn`,
-    `regular`,
-    `last_update`,
-    `yot_pt`,
-    `ptname`,
-    `yearchk`,
-    `pic`)
-    VALUES
-    (NULL,
-    NOW(),
-    '$hn',
-    'NULL',
-    '$regular',
-    NOW(),
-    '$yot_pt',
-    '$ptname',
-    '$yearchk',
-    '$file_name');";
+    $sql = "INSERT INTO `smdb`.`rg_soldier`
+    (`id`,`date`,`hn`,`address`,`regular`,
+    `last_update`,`yot_pt`,`ptname`,`yearchk`,`pic`,
+    `book_id`,`number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
+    `doctor2`,`code2`,`yot3`,`doctor3`,`code3`,
+    `diag`,`province`,`editor`) 
+    VALUES 
+    (NULL,NOW(),'$hn','$address','$regular',
+    NOW(),'$yot_pt','$ptname','$yearchk','$file_name','$book_id',
+    '$number_id','".$dr_lists['yot1']."','".$dr_lists['doctor1']."','".$dr_lists['code1']."','".$dr_lists['yot2']."',
+    '".$dr_lists['doctor2']."','".$dr_lists['code2']."','".$dr_lists['yot3']."','".$dr_lists['doctor3']."','".$dr_lists['code3']."',
+    '$diag','$province','$editor');
+    ";
     $db->insert($sql);
-    $soldier_id = $db->get_last_id();
-
-    $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
-    FROM `doctor` 
-    WHERE `doctorcode` IN ( '$dr1', '$dr2', '$dr3')  
-    AND `status` = 'y' 
-    AND `name` REGEXP '^MD+' ";
-    $db->select($sql);
-    $items = $db->get_items();
-    foreach ( $items as $key => $dr ) {
-
-        $doctorcode = $dr['doctorcode'];
-        $yot = $dr['yot'];
-        $name = $dr['name'];
-
-        $sql = "INSERT INTO `rg_doctor`
-        (`id`,
-        `soldier_id`,
-        `yot`,
-        `doctor`,
-        `code`)
-        VALUES
-        (NULL,
-        '$soldier_id',
-        '$yot',
-        '$name',
-        '$doctorcode');";
-        $db->insert($sql);
-    }
 
     if( $save !== false ){
         $_SESSION['x_msg'] = 'บันทึกข้อมูลเรียบร้อย';
@@ -134,6 +121,22 @@ if( $action === "save" ){
     }
 
     exit;
+} else if( $action === 'delete' ){
+    $id = input_get('id');
+
+    if( $id === false ){
+        echo "ไม่พบข้อมูล";
+        exit;
+    }
+
+    $sql = "DELETE FROM `rg_soldier` WHERE `id` = '$id' ";
+    $delete = $db->delete($sql);
+
+    if( $delete !== false ){
+        $_SESSION['x_msg'] = 'ลบข้อมูลเรียบร้อย';
+        header("Location: rg_soldier.php");
+    }
+
 }
 
 $types = array(
@@ -361,31 +364,47 @@ if( $action === "search_val" ){
 
 ?>
 <style type="text/css">
-body,td,th {
-	font-family: Angsana New;
-	font-size: 24px;
+body,td,th,input,select,button{
+	font-family: TH SarabunPSK;
+	font-size: 16pt;
 }
-.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
-.tb_menu {background-color: #FFFFC1;  }
-.font3 {
-	font-size: 18px;
-}
-p{
-    margin: 0;
+input, p{
     padding: 0;
-}
-.dt_patients td,
-.dt_patients th{
-    font-size: 20px;
     margin: 0;
-    padding: 0;
+}
+
+.claearfix::after{
+    content: " ";
+    clear: both;
+    display: table;
+}
+
+ul.topnav{
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+    overflow: hidden;
+}
+ul.topnav li {
+    float: left;
+}
+ul.topnav li a{
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+ul.topnav li a:hover{
+    text-decoration: underline;
 }
 </style>
-<ul>
-    <li><a href="rg_soldier.php">หน้าหลัก</a></li>
-    <li><a href="rg_soldier.php?page=add">เพิ่มข้อมูล</a></li>
-</ul>
+<div class="claearfix" style="height: 50px;">
+    <ul class="topnav">
+        <li><a href="rg_soldier.php">หน้าหลัก</a></li>
+        <li><a href="rg_soldier.php?page=form">เพิ่มข้อมูล</a></li>
+        <li><a href="rg_soldier_xlsx.php">ส่งออก .xlsx</a></li>
+    </ul>
+</div>
 <?php
 
 $page = input('page');
@@ -396,25 +415,112 @@ if( empty($page) ){
         $_SESSION['x_msg'] = false;
     }
     ?>
-    <h3>หน้าหลัก</h3>
+    <div class="claearfix">
+    <h3>รายงานการตรวจโรคชายไทยก่อนเกณฑ์ทหาร(ที่พบความผิดปกติ)</h3>
     <?php
-} else if( !empty($page) ){
-    $hn = input_post('hn', false);
+
+    $sql = "SELECT a.*, b.`idcard`, b.`changwat` 
+    FROM `rg_soldier` AS a 
+    LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+    ORDER BY id ASC";
+    $db->select($sql);
+    $items = $db->get_items();
+
     ?>
-    <form action="rg_soldier.php?page=add" method="post">
-        <fieldset>
-            <legend>ระบุ HN</legend>
-            <div>
-                HN: <input type="text" name="hn" value="<?=$hn;?>">
-            </div>
-            <div>
-                <button type="submit">ค้นหา</button>
-                <input type="hidden" name="search_hn" value="1">
-            </div>
-        </fieldset>
-    </form>
+    <table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
+        <thead>
+            <tr>
+                <th>ลำดับ</th>
+                <th>คำนำหน้า</th>
+                <th>ชื่อ</th>
+                <th>นามสกุล</th>
+                <th width="8%">รหัสบัตรประจำตัวประชาชน</th>
+                <th>โรคที่ตรวจพบ</th>
+                <th width="30%">กฎกระทรวงที่ขัด</th>
+                <th width="12%">ภูมิลำเนาทหาร</th>
+                <th>จังหวัด</th>
+                <th>วันที่ออกใบรับรอง</th>
+                <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
+                <th>พิมพ์</th>
+                <th>แก้ไข</th>
+                <th>ลบ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $i = 1;
+            foreach ($items as $key => $item) {
+                list($firstname, $lastname) = explode(' ', $item['ptname']);
+
+                $board = $item['yot1'].$item['doctor1'].'<br>';
+                $board .= $item['yot2'].$item['doctor2'].'<br>';
+                $board .= $item['yot3'].$item['doctor3'];
+
+                list($date, $time) = explode(' ',$item['last_update']);
+                list($y, $m, $d) = explode('-', $date);
+
+                $lastupdate = $d.' '.$def_fullm_th[$m].' '.( $y + 543 );
+                ?>
+                <tr>
+                    <td><?=$i;?></td>
+                    <td><?=$item['yot_pt'];?></td>
+                    <td><?=$firstname;?></td>
+                    <td><?=$lastname;?></td>
+                    <td><?=$item['idcard'];?></td>
+                    <td><?=$item['diag'];?></td>
+                    <td><?=$item['regular'];?></td>
+                    <td><?=$item['address'];?></td>
+                    <td><?=$item['changwat'];?></td>
+                    <td><?=$lastupdate;?></td>
+                    <td><?=$board;?></td>
+                    <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
+                    <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
+                    <td><a href="rg_soldier.php?action=delete&id=<?=$item['id'];?>">ลบ</a></td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </tbody>
+    </table>
+    </div>
     <?php
-    $search_hn = input('search_hn', false);
+
+} else if( $page === 'form' ){
+    
+    $id = input_get('id');
+    
+    if( empty($id) ){
+        $hn = input_post('hn', false);
+        ?>
+        <h3>ฟอร์มบันทึกข้อมูล ตรช.</h3>
+        <form action="rg_soldier.php?page=form" method="post">
+            <fieldset>
+                <legend>ระบุ HN</legend>
+                <div>
+                    HN: <input type="text" name="hn" value="<?=$hn;?>">
+                </div>
+                <div>
+                    <button type="submit">ค้นหา</button>
+                    <input type="hidden" name="search_hn" value="1">
+                </div>
+            </fieldset>
+        </form>
+        <?php
+        $search_hn = input('search_hn', false);
+    }else{
+        $search_hn = 1;
+        $sql = "SELECT * FROM `rg_soldier` WHERE `id` = '$id' ";
+        $db->select($sql);
+        $user = $db->get_item();
+
+        $hn = $user['hn'];
+        ?>
+        <h3>ฟอร์มแก้ไขข้อมูล ตรช.</h3>
+        <?php
+    }
+
+    
     if( $search_hn !== false ){
 
         $sql = "SELECT CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn'";
@@ -436,14 +542,19 @@ if( empty($page) ){
         <div>
             <form action="rg_soldier.php" method="post" id="inputForm" enctype="multipart/form-data">
                 <div>ชื่อ-สกุล: <?=$user['ptname'];?></div>
+
                 <div>
-                    <span>ค้นหากฏกระทรวง: </span><input type="text" id="regular_search">
+                    เล่มที่ <input type="text" name="book_id" id=""> เลขที่ <input type="text" name="number_id" id="">
+                </div>
+
+                <div>
+                    <span>ค้นหากฏกระทรวงที่ขัด: </span><input type="text" id="regular_search">
                     <div id="regular_result" style="color: blue; text-decoration: underline;"></div>
                     <input type="hidden" id="regular" name="regular" value="">
                 </div>
     
                 <div>
-                    แพทย์คนที่1: 
+                    คณะกรรมการแพทย์คนที่1: 
                     <select name="dr1" id="">
                         <?php
                         foreach ($dr_items as $key => $item) {
@@ -455,7 +566,7 @@ if( empty($page) ){
                     </select>   
                 </div>
                 <div>
-                    แพทย์คนที่2: 
+                    คณะกรรมการแพทย์คนที่2: 
                     <select name="dr2" id="">
                         <?php
                         foreach ($dr_items as $key => $item) {
@@ -467,7 +578,7 @@ if( empty($page) ){
                     </select>   
                 </div>
                 <div>
-                    แพทย์คนที่3: 
+                    คณะกรรมการแพทย์คนที่3: 
                     <select name="dr3" id="">
                         <?php
                         foreach ($dr_items as $key => $item) {
@@ -479,7 +590,10 @@ if( empty($page) ){
                     </select>   
                 </div>
                 <div>
-                    แนบรูปถ่าย : <input type="file" name="pic_patient" id="">
+                    โรคที่ตรวจพบ <input type="text" name="diag" id="">
+                </div>
+                <div>
+                    แนบรูปถ่าย : <input type="file" name="pic_patient" id="" style="font-size: 12px;">
                 </div>
                 <div>
                     <button type="submit">บันทึกข้อมูล</button>
@@ -600,45 +714,5 @@ if( empty($page) ){
     
         <?php
     }
-
-/*
-$yearchk = get_year_checkup(true);
-$hn = $_SESSION['hn_now'];
-$sql = "SELECT * FROM `rg_soldier` WHERE `yearchk` = '$yearchk' AND `hn` = '$hn' ";
-$q = mysql_query($sql) or die( mysql_error() );
-$hn_rows = mysql_num_rows($q);
-if ( $hn_rows > 0 ) {
-    
-    ?>
-    <table align="center" width="70%" border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse" class="dt_patients">
-        <thead>
-            <tr align="center">
-                <th width="70%">กฎกระทรวง</th>
-                <th width="15%">แพทย์ผู้บันทึก</th>
-                <th width="15%">วันที่บันทึกข้อมูล</th>
-            </tr>
-        </thead>
-        <tbody>
-            
-            <?php
-            while ( $user = mysql_fetch_assoc($q) ) {
-                list($date, $time) = explode(' ', $user['last_update']);
-                list($year,$month,$day) = explode('-', $date);
-                ?>
-                <tr>
-                    <td><?=$user['regular'];?></td>
-                    <td><?=$user['yot'].$user['doctor'];?></td>
-                    <td align="center"><?=( $day.' '.$def_fullm_th[$month].' '.( $year + 543 ) );?></td>
-                </tr>
-                <?php
-            }
-            ?>
-            
-        </tbody>
-    </table>
-    <?php
-}
-*/
-
 
 }

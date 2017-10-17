@@ -63,7 +63,7 @@ function calcage($birth){
 	return $pAge;
 }
 
- if(substr($_POST["drug_inj"],0,-2) == "VERORAB" || substr($_POST["drug_inj"],0,-2) == "SPEEDA"){
+ if(substr($_POST["drug_inj"],0,-2) == "VERORAB" || substr($_POST["drug_inj"],0,-2) == "VERO RABIES" || substr($_POST["drug_inj"],0,-2) == "SPEEDA"){
 	$_POST["drug_inj"] = substr($_POST["drug_inj"],0,-2);
  }
  
@@ -73,12 +73,16 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "0DT";
 }else if($_POST["drug_inj"] == "VERORAB"){
 	$dgcode = "0VERO";
+}else if($_POST["drug_inj"] == "VERO RABIES"){
+	$dgcode = "0VERO-C";	
 }else if($_POST["drug_inj"] == "SPEEDA"){
 	$dgcode = "0SPEE";	
 }else if($_POST["drug_inj"] == "Engerix-B"){
 	$dgcode = "0EB1.0";
 }else if($_POST["drug_inj"] == "Hepavax"){
 	$dgcode = "0HB1.0";
+}else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
+	$dgcode = "30HBV";
 }
 
 //$sql = "Select inputm.name From inputm where mdcode = '".substr($_POST["doctor"],0,5)."' limit 1 ";
@@ -107,12 +111,16 @@ if($rows_drugrx > 0){
 		$dgcode = "0DT";//0TT
 	}else if($_POST["drug_inj"] == "VERORAB"){
 		$dgcode = "0VERO";
+	}else if($_POST["drug_inj"] == "VERO RABIES"){
+		$dgcode = "0VERO-C";		
 	}else if($_POST["drug_inj"] == "SPEEDA"){
 		$dgcode = "0SPEE";		
 	}else if($_POST["drug_inj"] == "Engerix-B"){
 		$dgcode = "0EB1.0";
 	}else if($_POST["drug_inj"] == "Hepavax"){
 		$dgcode = "0HB1.0";
+	}else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
+		$dgcode = "30HBV";
 	}
 
 	$sql = "Select drugcode, tradname, part, salepri, freepri From druglst where drugcode = '".$dgcode."'  ";
