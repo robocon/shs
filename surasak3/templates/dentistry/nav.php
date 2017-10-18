@@ -15,9 +15,16 @@
 			$report_mouth = ( $task === 'report_mouth' ) ? 'class="active"' : false ;
 		?>
 		<ul class="nav clear">
+			<?php 
+			// ถ้าถ้าเป็นห้องพี่หมี จะเห็นได้แค่รายงาน
+			if( $_SESSION['smenucode'] !== 'ADMSTD' ){
+			?>
 			<li <?php echo $home_active;?>><a href="survey_oral.php">หน้าหลัก</a></li>
 			<li <?php echo $form_active;?>><a href="survey_oral.php?task=form">เพิ่มข้อมูลแบบสำรวจ</a></li>
 			<li <?php echo $form_category;?>><a href="survey_oral.php?task=category_form">จัดการข้อมูลหน่วยงาน</a></li>
+			<?php
+			}
+			?>
 			<li <?php echo $den_report;?>><a href="survey_oral.php?task=report">รายงานผลการสำรวจ</a></li>
 			<li <?php echo $report_mouth;?>><a href="survey_oral.php?task=report_mouth">รายงานสภาวะช่องปากและระดับ</a></li>
 		</ul>

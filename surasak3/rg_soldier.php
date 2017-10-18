@@ -53,6 +53,8 @@ CREATE TABLE `rg_soldier` (
 $action = input('action');
 if( $action === "save" ){
 
+    $id = input_post('id');
+
     $dr1 = input_post('dr1');
     $dr2 = input_post('dr2');
     $dr3 = input_post('dr3');
@@ -90,6 +92,45 @@ if( $action === "save" ){
         $dr_lists['code'.$i] = $dr['doctorcode'];
     }
 
+    if( $id === false ){
+        $sql = "INSERT INTO `smdb`.`rg_soldier`
+        (`id`,`date`,`hn`,`address`,`regular`,
+        `last_update`,`yot_pt`,`ptname`,`yearchk`,`book_id`,
+        `number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
+        `doctor2`,`code2`,`yot3`,`doctor3`,`code3`,
+        `diag`,`province`,`editor`) 
+        VALUES 
+        (NULL,NOW(),'$hn','$address','$regular',
+        NOW(),'$yot_pt','$ptname','$yearchk','$book_id',
+        '$number_id','".$dr_lists['yot1']."','".$dr_lists['doctor1']."','".$dr_lists['code1']."','".$dr_lists['yot2']."',
+        '".$dr_lists['doctor2']."','".$dr_lists['code2']."','".$dr_lists['yot3']."','".$dr_lists['doctor3']."','".$dr_lists['code3']."',
+        '$diag','$province','$editor');
+        ";
+        $save = $db->insert($sql);
+        $last_id = $db->get_last_id();
+    }else{
+        $sql = "UPDATE `rg_soldier`
+        SET
+        `regular` = '$regular',
+        `last_update` = NOW(),
+        `book_id` = '$book_id',
+        `number_id` = '$number_id',
+        `yot1` = '".$dr_lists['yot1']."',
+        `doctor1` = '".$dr_lists['doctor1']."',
+        `code1` = '".$dr_lists['code1']."',
+        `yot2` = '".$dr_lists['yot2']."',
+        `doctor2` = '".$dr_lists['doctor2']."',
+        `code2` = '".$dr_lists['code2']."',
+        `yot3` = '".$dr_lists['yot3']."',
+        `doctor3` = '".$dr_lists['doctor3']."',
+        `code3` = '".$dr_lists['code3']."',
+        `diag` = '$diag',
+        `editor` = '$editor'
+        WHERE `id` = '$id';";
+        $save = $db->update($sql);
+        $last_id = $id;
+    }
+
     $files = $_FILES['pic_patient'];
     $ext = strrchr(strtolower($files['name']), ".");
     if( $files['error'] === 0 && ( $ext == '.png' OR $ext == '.jpg' OR $ext == '.jpeg' ) ){
@@ -98,22 +139,11 @@ if( $action === "save" ){
         if( !file_exists($folder) ){ mkdir($folder); }
         if( !file_exists($folder.'/'.$yearchk) ){ mkdir($folder.'/'.$yearchk); }
         move_uploaded_file($files['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name);
+
+        $sql = "UPDATE `rg_soldier` SET `pic` = '$file_name' WHERE `id` = '$last_id';";
+        $db->update($sql);
+
     }
-    
-    $sql = "INSERT INTO `smdb`.`rg_soldier`
-    (`id`,`date`,`hn`,`address`,`regular`,
-    `last_update`,`yot_pt`,`ptname`,`yearchk`,`pic`,
-    `book_id`,`number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
-    `doctor2`,`code2`,`yot3`,`doctor3`,`code3`,
-    `diag`,`province`,`editor`) 
-    VALUES 
-    (NULL,NOW(),'$hn','$address','$regular',
-    NOW(),'$yot_pt','$ptname','$yearchk','$file_name','$book_id',
-    '$number_id','".$dr_lists['yot1']."','".$dr_lists['doctor1']."','".$dr_lists['code1']."','".$dr_lists['yot2']."',
-    '".$dr_lists['doctor2']."','".$dr_lists['code2']."','".$dr_lists['yot3']."','".$dr_lists['doctor3']."','".$dr_lists['code3']."',
-    '$diag','$province','$editor');
-    ";
-    $db->insert($sql);
 
     if( $save !== false ){
         $_SESSION['x_msg'] = 'บันทึกข้อมูลเรียบร้อย';
@@ -384,6 +414,9 @@ ul.topnav{
     margin: 0; 
     padding: 0; 
     overflow: hidden;
+
+    background-color: #ECECEC;
+    color: #6B6B6B;
 }
 ul.topnav li {
     float: left;
@@ -396,13 +429,20 @@ ul.topnav li a{
 }
 ul.topnav li a:hover{
     text-decoration: underline;
+
+    background-color: #6B6B6B;
+    color: #ffffff;
+}
+#inputForm div{
+    margin-bottom: 6px;
 }
 </style>
 <div class="claearfix" style="height: 50px;">
     <ul class="topnav">
-        <li><a href="rg_soldier.php">หน้าหลัก</a></li>
+        <li><a href="../nindex.htm">หน้าหลัก รพ.</a></li>
+        <li><a href="rg_soldier.php">หน้าหลัก ตรช</a></li>
         <li><a href="rg_soldier.php?page=form">เพิ่มข้อมูล</a></li>
-        <li><a href="rg_soldier_xlsx.php">ส่งออก .xlsx</a></li>
+        <li><a href="rg_soldier_xlsx.php">ส่งออก Amed(.xlsx)</a></li>
     </ul>
 </div>
 <?php
@@ -475,7 +515,7 @@ if( empty($page) ){
                     <td><?=$board;?></td>
                     <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
                     <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
-                    <td><a href="rg_soldier.php?action=delete&id=<?=$item['id'];?>">ลบ</a></td>
+                    <td><a href="rg_soldier.php?action=delete&id=<?=$item['id'];?>" onclick="return del_confirm();">ลบ</a></td>
                 </tr>
                 <?php
                 $i++;
@@ -484,6 +524,14 @@ if( empty($page) ){
         </tbody>
     </table>
     </div>
+    <script type="text/javascript">
+        function del_confirm(){
+            var c = confirm('ยืนยันการลบข้อมูล');
+            if( c === false ){
+                return false;
+            }
+        }
+    </script>
     <?php
 
 } else if( $page === 'form' ){
@@ -508,6 +556,8 @@ if( empty($page) ){
         </form>
         <?php
         $search_hn = input('search_hn', false);
+        $yearchk = $pic = $diag = $code3 = $code2 = $code1 = $regular = $number_id = $book_id = false;
+        
     }else{
         $search_hn = 1;
         $sql = "SELECT * FROM `rg_soldier` WHERE `id` = '$id' ";
@@ -515,6 +565,15 @@ if( empty($page) ){
         $user = $db->get_item();
 
         $hn = $user['hn'];
+        $book_id = $user['book_id'];
+        $number_id = $user['number_id'];
+        $regular = $user['regular'];
+        $diag = $user['diag'];
+        $code1 = $user['code1'];
+        $code2 = $user['code2'];
+        $code3 = $user['code3'];
+        $pic = $user['pic'];
+        $yearchk = $user['yearchk'];
         ?>
         <h3>ฟอร์มแก้ไขข้อมูล ตรช.</h3>
         <?php
@@ -544,13 +603,13 @@ if( empty($page) ){
                 <div>ชื่อ-สกุล: <?=$user['ptname'];?></div>
 
                 <div>
-                    เล่มที่ <input type="text" name="book_id" id=""> เลขที่ <input type="text" name="number_id" id="">
+                    เล่มที่ <input type="text" name="book_id" value="<?=$book_id;?>"> เลขที่ <input type="text" name="number_id" value="<?=$number_id;?>">
                 </div>
 
                 <div>
-                    <span>ค้นหากฏกระทรวงที่ขัด: </span><input type="text" id="regular_search">
-                    <div id="regular_result" style="color: blue; text-decoration: underline;"></div>
-                    <input type="hidden" id="regular" name="regular" value="">
+                    <span>ค้นหากฏกระทรวงที่ขัด: </span><input type="text" id="regular_search" >
+                    <div id="regular_result" style="color: blue; text-decoration: underline;"><?=$regular;?></div>
+                    <input type="hidden" id="regular" name="regular" value="<?=$regular;?>">
                 </div>
     
                 <div>
@@ -558,8 +617,9 @@ if( empty($page) ){
                     <select name="dr1" id="">
                         <?php
                         foreach ($dr_items as $key => $item) {
+                            $selected = ( $item['doctorcode'] == $code1 ) ? 'selected="selected"' : '' ;
                             ?>
-                            <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                            <option value="<?=$item['doctorcode'];?>" <?=$selected;?> ><?=$item['yot'].$item['name'];?></option>
                             <?php
                         }
                         ?>
@@ -570,8 +630,9 @@ if( empty($page) ){
                     <select name="dr2" id="">
                         <?php
                         foreach ($dr_items as $key => $item) {
+                            $selected = ( $item['doctorcode'] == $code2 ) ? 'selected="selected"' : '' ;
                             ?>
-                            <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                            <option value="<?=$item['doctorcode'];?>" <?=$selected;?> ><?=$item['yot'].$item['name'];?></option>
                             <?php
                         }
                         ?>
@@ -582,23 +643,34 @@ if( empty($page) ){
                     <select name="dr3" id="">
                         <?php
                         foreach ($dr_items as $key => $item) {
+                            $selected = ( $item['doctorcode'] == $code3 ) ? 'selected="selected"' : '' ;
                             ?>
-                            <option value="<?=$item['doctorcode'];?>"><?=$item['yot'].$item['name'];?></option>
+                            <option value="<?=$item['doctorcode'];?>" <?=$selected;?> ><?=$item['yot'].$item['name'];?></option>
                             <?php
                         }
                         ?>
                     </select>   
                 </div>
                 <div>
-                    โรคที่ตรวจพบ <input type="text" name="diag" id="">
+                    โรคที่ตรวจพบ <input type="text" name="diag" value="<?=$diag;?>">
                 </div>
                 <div>
                     แนบรูปถ่าย : <input type="file" name="pic_patient" id="" style="font-size: 12px;">
+                    <?php
+                    if ( $pic != 'NULL' && $pic != false ) {
+                        ?>
+                        <p><u>(กรณีที่ต้องการเปลี่ยนรูปสามารถอัพโหลดรูปใหม่ทับได้ทันที)</u></p>
+                        <img src="certificate/<?=$yearchk;?>/<?=$pic;?>" style="width: 120px;">
+                        <?php
+                    }
+                    ?>
+                    
                 </div>
                 <div>
                     <button type="submit">บันทึกข้อมูล</button>
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="hn" value="<?=$hn;?>">
+                    <input type="hidden" name="id" value="<?=$id;?>">
                 </div>
             </form>
         </div>

@@ -110,6 +110,15 @@ class SHSPdf extends PDF_AutoPrint
 		return $data;
 	}
 
+	function SetDash($b = null, $w = null){
+		if( $b !== null ){
+			$s = sprintf('[%.3f %.3f] 0 d', $b * $this->k, $w * $this->k);
+		}else{
+			$s = '[] 0 d';
+		}
+		$this->_out($s);
+	}
+
 	// public function __call($method, $args){
 	// 	// var_dump($args);
 	// 	$this->c->$method($args['0']);
