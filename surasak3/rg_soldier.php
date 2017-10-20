@@ -53,7 +53,7 @@ CREATE TABLE `rg_soldier` (
 $action = input('action');
 if( $action === "save" ){
 
-    $id = input_post('id');
+    $id = input_post('id', false);
 
     $dr1 = input_post('dr1');
     $dr2 = input_post('dr2');
@@ -92,7 +92,7 @@ if( $action === "save" ){
         $dr_lists['code'.$i] = $dr['doctorcode'];
     }
 
-    if( $id === false ){
+    if( empty($id) ){
         $sql = "INSERT INTO `smdb`.`rg_soldier`
         (`id`,`date`,`hn`,`address`,`regular`,
         `last_update`,`yot_pt`,`ptname`,`yearchk`,`book_id`,
@@ -442,7 +442,7 @@ ul.topnav li a:hover{
         <li><a href="../nindex.htm">หน้าหลัก รพ.</a></li>
         <li><a href="rg_soldier.php">หน้าหลัก ตรช</a></li>
         <li><a href="rg_soldier.php?page=form">เพิ่มข้อมูล</a></li>
-        <li><a href="rg_soldier_xlsx.php">ส่งออก Amed(.xlsx)</a></li>
+        <li><a href="http://192.168.1.13/sm3/surasak3/rg_soldier_xlsx.php">ส่งออก Amed(.xlsx)</a></li>
     </ul>
 </div>
 <?php
@@ -466,73 +466,80 @@ if( empty($page) ){
     $db->select($sql);
     $items = $db->get_items();
 
-    ?>
-    <table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
-        <thead>
-            <tr>
-                <th>ลำดับ</th>
-                <th>คำนำหน้า</th>
-                <th>ชื่อ</th>
-                <th>นามสกุล</th>
-                <th width="8%">รหัสบัตรประจำตัวประชาชน</th>
-                <th>โรคที่ตรวจพบ</th>
-                <th width="30%">กฎกระทรวงที่ขัด</th>
-                <th width="12%">ภูมิลำเนาทหาร</th>
-                <th>จังหวัด</th>
-                <th>วันที่ออกใบรับรอง</th>
-                <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
-                <th>พิมพ์</th>
-                <th>แก้ไข</th>
-                <th>ลบ</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $i = 1;
-            foreach ($items as $key => $item) {
-                list($firstname, $lastname) = explode(' ', $item['ptname']);
-
-                $board = $item['yot1'].$item['doctor1'].'<br>';
-                $board .= $item['yot2'].$item['doctor2'].'<br>';
-                $board .= $item['yot3'].$item['doctor3'];
-
-                list($date, $time) = explode(' ',$item['last_update']);
-                list($y, $m, $d) = explode('-', $date);
-
-                $lastupdate = $d.' '.$def_fullm_th[$m].' '.( $y + 543 );
-                ?>
+    $rows = $db->get_rows();
+    if( $rows > 0 ){
+        ?>
+        <table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
+            <thead>
                 <tr>
-                    <td><?=$i;?></td>
-                    <td><?=$item['yot_pt'];?></td>
-                    <td><?=$firstname;?></td>
-                    <td><?=$lastname;?></td>
-                    <td><?=$item['idcard'];?></td>
-                    <td><?=$item['diag'];?></td>
-                    <td><?=$item['regular'];?></td>
-                    <td><?=$item['address'];?></td>
-                    <td><?=$item['changwat'];?></td>
-                    <td><?=$lastupdate;?></td>
-                    <td><?=$board;?></td>
-                    <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
-                    <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
-                    <td><a href="rg_soldier.php?action=delete&id=<?=$item['id'];?>" onclick="return del_confirm();">ลบ</a></td>
+                    <th>ลำดับ</th>
+                    <th>คำนำหน้า</th>
+                    <th>ชื่อ</th>
+                    <th>นามสกุล</th>
+                    <th width="8%">รหัสบัตรประจำตัวประชาชน</th>
+                    <th>โรคที่ตรวจพบ</th>
+                    <th width="30%">กฎกระทรวงที่ขัด</th>
+                    <th width="12%">ภูมิลำเนาทหาร</th>
+                    <th>จังหวัด</th>
+                    <th>วันที่ออกใบรับรอง</th>
+                    <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
+                    <th>พิมพ์</th>
+                    <th>แก้ไข</th>
+                    <th>ลบ</th>
                 </tr>
+            </thead>
+            <tbody>
                 <?php
-                $i++;
+                $i = 1;
+                foreach ($items as $key => $item) {
+                    list($firstname, $lastname) = explode(' ', $item['ptname']);
+
+                    $board = $item['yot1'].$item['doctor1'].'<br>';
+                    $board .= $item['yot2'].$item['doctor2'].'<br>';
+                    $board .= $item['yot3'].$item['doctor3'];
+
+                    list($date, $time) = explode(' ',$item['last_update']);
+                    list($y, $m, $d) = explode('-', $date);
+
+                    $lastupdate = $d.' '.$def_fullm_th[$m].' '.( $y + 543 );
+                    ?>
+                    <tr>
+                        <td><?=$i;?></td>
+                        <td><?=$item['yot_pt'];?></td>
+                        <td><?=$firstname;?></td>
+                        <td><?=$lastname;?></td>
+                        <td><?=$item['idcard'];?></td>
+                        <td><?=$item['diag'];?></td>
+                        <td><?=$item['regular'];?></td>
+                        <td><?=$item['address'];?></td>
+                        <td><?=$item['changwat'];?></td>
+                        <td><?=$lastupdate;?></td>
+                        <td><?=$board;?></td>
+                        <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
+                        <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
+                        <td><a href="rg_soldier.php?action=delete&id=<?=$item['id'];?>" onclick="return del_confirm();">ลบ</a></td>
+                    </tr>
+                    <?php
+                    $i++;
+                }
+                ?>
+            </tbody>
+        </table>
+        </div>
+        <script type="text/javascript">
+            function del_confirm(){
+                var c = confirm('ยืนยันการลบข้อมูล');
+                if( c === false ){
+                    return false;
+                }
             }
-            ?>
-        </tbody>
-    </table>
-    </div>
-    <script type="text/javascript">
-        function del_confirm(){
-            var c = confirm('ยืนยันการลบข้อมูล');
-            if( c === false ){
-                return false;
-            }
-        }
-    </script>
-    <?php
+        </script>
+        <?php
+    }else{
+        ?>
+        <p>ยังไม่มีข้อมูล</p>
+        <?php
+    }
 
 } else if( $page === 'form' ){
     
