@@ -660,12 +660,12 @@ for ($n=$x+1; $n<=13; $n++){
 
 <?php
 //  ช่องเซ็น
-print"<DIV style='left:417PX;top:730PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-print"<DIV style='left:441PX;top:760PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-print"<DIV style='left:446PX;top:790PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+print"<DIV style='left:600PX;top:730PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
+print"<DIV style='left:624PX;top:760PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
+print"<DIV style='left:629PX;top:790PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
 //ตำแหน่ง
-print"<DIV style='left:446PX;top:820PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+print"<DIV style='left:629PX;top:820PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 ?>
 </div>

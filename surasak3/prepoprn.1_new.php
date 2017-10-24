@@ -921,12 +921,12 @@ function dump($txt){
 // print"<DIV style='left:476PX;top:1882PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หัวหน้าเจ้าหน้าที่ รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 
 //  ช่องเซ็น
-print"<DIV style='left:417PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-print"<DIV style='left:441PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-print"<DIV style='left:446PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+print"<DIV style='left:600PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
+print"<DIV style='left:624PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
+print"<DIV style='left:629PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
 //ตำแหน่ง
-print"<DIV style='left:446PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+print"<DIV style='left:629PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 ?>
 <div style="page-break-after: always;"></div>

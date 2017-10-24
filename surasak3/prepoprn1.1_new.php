@@ -936,12 +936,12 @@ for ($n=$x+1; $n<=13; $n++){
 // print"<DIV style='left:476PX;top:1882PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 //  ªèÍ§à«ç¹
-print"<DIV style='left:417PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>µÃÇ¨¶Ù¡µéÍ§</span></DIV>";
-print"<DIV style='left:441PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-print"<DIV style='left:446PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+print"<DIV style='left:600PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>µÃÇ¨¶Ù¡µéÍ§</span></DIV>";
+print"<DIV style='left:624PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
+print"<DIV style='left:629PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
 //µÓáË¹è§
-print"<DIV style='left:446PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+print"<DIV style='left:629PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 ?>
 <div style="page-break-after: always;"></div>
@@ -1080,7 +1080,7 @@ print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER
 ///á¶Ç·Õè1
 print"<DIV style='left:11PX;top:2289PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[1]</span></DIV>";
-print"<DIV style='left:49PX;top:2289PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[1]</span></DIV>";
+print"<DIV style='left:49PX;top:2289PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[1]</span></DIV>";
 print"<DIV style='left:306PX;top:2289PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[1]</span></DIV>";
 print"<DIV style='left:362PX;top:2289PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1096,7 +1096,7 @@ print"<DIV style='left:519PX;top:2289PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè2
 print"<DIV style='left:11PX;top:2319PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[2]</span></DIV>";
-print"<DIV style='left:49PX;top:2319PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[2]</span></DIV>";
+print"<DIV style='left:49PX;top:2319PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[2]</span></DIV>";
 print"<DIV style='left:306PX;top:2319PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[2]</span></DIV>";
 print"<DIV style='left:362PX;top:2319PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1112,7 +1112,7 @@ print"<DIV style='left:519PX;top:2319PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè3
 print"<DIV style='left:11PX;top:2349PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[3]</span></DIV>";
-print"<DIV style='left:49PX;top:2349PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[3]</span></DIV>";
+print"<DIV style='left:49PX;top:2349PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[3]</span></DIV>";
 print"<DIV style='left:306PX;top:2349PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[3]</span></DIV>";
 print"<DIV style='left:362PX;top:2349PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1128,7 +1128,7 @@ print"<DIV style='left:519PX;top:2349PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè4
 print"<DIV style='left:11PX;top:2379PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[4]</span></DIV>";
-print"<DIV style='left:49PX;top:2379PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[4]</span></DIV>";
+print"<DIV style='left:49PX;top:2379PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[4]</span></DIV>";
 print"<DIV style='left:306PX;top:2379PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[4]</span></DIV>";
 print"<DIV style='left:362PX;top:2379PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1144,7 +1144,7 @@ print"<DIV style='left:519PX;top:2379PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè5
 print"<DIV style='left:11PX;top:2409PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[5]</span></DIV>";
-print"<DIV style='left:49PX;top:2409PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[5]</span></DIV>";
+print"<DIV style='left:49PX;top:2409PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[5]</span></DIV>";
 print"<DIV style='left:306PX;top:2409PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[5]</span></DIV>";
 print"<DIV style='left:362PX;top:2409PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1160,7 +1160,7 @@ print"<DIV style='left:519PX;top:2409PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè6
 print"<DIV style='left:11PX;top:2439PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[6]</span></DIV>";
-print"<DIV style='left:49PX;top:2439PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[6]</span></DIV>";
+print"<DIV style='left:49PX;top:2439PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[6]</span></DIV>";
 print"<DIV style='left:306PX;top:2439PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[6]</span></DIV>";
 print"<DIV style='left:362PX;top:2439PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1176,7 +1176,7 @@ print"<DIV style='left:519PX;top:2439PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè7
 print"<DIV style='left:11PX;top:2469PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[7]</span></DIV>";
-print"<DIV style='left:49PX;top:2469PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[7]</span></DIV>";
+print"<DIV style='left:49PX;top:2469PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[7]</span></DIV>";
 print"<DIV style='left:306PX;top:2469PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[7]</span></DIV>";
 print"<DIV style='left:362PX;top:2469PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1192,7 +1192,7 @@ print"<DIV style='left:519PX;top:2469PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè8
 print"<DIV style='left:11PX;top:2499PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[8]</span></DIV>";
-print"<DIV style='left:49PX;top:2499PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[8]</span></DIV>";
+print"<DIV style='left:49PX;top:2499PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[8]</span></DIV>";
 print"<DIV style='left:306PX;top:2499PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[8]</span></DIV>";
 print"<DIV style='left:362PX;top:2499PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1208,7 +1208,7 @@ print"<DIV style='left:519PX;top:2499PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè9
 print"<DIV style='left:11PX;top:2529PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[9]</span></DIV>";
-print"<DIV style='left:49PX;top:2529PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[9]</span></DIV>";
+print"<DIV style='left:49PX;top:2529PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[9]</span></DIV>";
 print"<DIV style='left:306PX;top:2529PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[9]</span></DIV>";
 print"<DIV style='left:362PX;top:2529PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1224,7 +1224,7 @@ print"<DIV style='left:519PX;top:2529PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè10
 print"<DIV style='left:11PX;top:2559PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[10]</span></DIV>";
-print"<DIV style='left:49PX;top:2559PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[10]</span></DIV>";
+print"<DIV style='left:49PX;top:2559PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[10]</span></DIV>";
 print"<DIV style='left:306PX;top:2559PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[10]</span></DIV>";
 print"<DIV style='left:362PX;top:2559PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1240,7 +1240,7 @@ print"<DIV style='left:519PX;top:2559PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè11
 print"<DIV style='left:11PX;top:2589PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[11]</span></DIV>";
-print"<DIV style='left:49PX;top:2589PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[11]</span></DIV>";
+print"<DIV style='left:49PX;top:2589PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[11]</span></DIV>";
 print"<DIV style='left:306PX;top:2589PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[11]</span></DIV>";
 print"<DIV style='left:362PX;top:2589PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1256,7 +1256,7 @@ print"<DIV style='left:519PX;top:2589PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè12
 print"<DIV style='left:11PX;top:2619PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[12]</span></DIV>";
-print"<DIV style='left:49PX;top:2619PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[12]</span></DIV>";
+print"<DIV style='left:49PX;top:2619PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[12]</span></DIV>";
 print"<DIV style='left:306PX;top:2619PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[12]</span></DIV>";
 print"<DIV style='left:362PX;top:2619PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
@@ -1272,7 +1272,7 @@ print"<DIV style='left:519PX;top:2619PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;
 ///á¶Ç·Õè13
 print"<DIV style='left:11PX;top:2649PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[13]</span></DIV>";
-print"<DIV style='left:49PX;top:2649PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[13]</span></DIV>";
+print"<DIV style='left:49PX;top:2649PX;width:260PX;height:22PX;'><span class='fc1-4'> $aTradname[13]</span></DIV>";
 print"<DIV style='left:306PX;top:2649PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aPacking[13]</span></DIV>";
 print"<DIV style='left:362PX;top:2649PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>

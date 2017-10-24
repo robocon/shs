@@ -457,12 +457,35 @@ if( empty($page) ){
     ?>
     <div class="claearfix">
     <h3>รายงานการตรวจโรคชายไทยก่อนเกณฑ์ทหาร(ที่พบความผิดปกติ)</h3>
+
+    <div>
+        <form action="rg_soldier.php" method="post">
+            <div>
+                <div>
+                    เลือกปี: 
+                    <?php 
+                    $curr_year = date('Y');
+                    $range_y = range(2017, $curr_year);
+                    $selected_y = input_post('year_selected', $curr_year);
+                    echo getYearList('year_selected', false, $selected_y, $range_y);
+
+                    $selected_m = input_post('selected_month', date('m'));
+                    ?>
+                    เลือกเดือน: <?=getMonthList('selected_month', $selected_m);?>
+
+                    <button type="submit">แสดงผล</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <?php
 
     $sql = "SELECT a.*, b.`idcard`, b.`changwat` 
     FROM `rg_soldier` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-    ORDER BY id ASC";
+    WHERE `last_update` LIKE '$selected_y-$selected_m%' 
+    ORDER BY id DESC";
     $db->select($sql);
     $items = $db->get_items();
 
@@ -473,6 +496,8 @@ if( empty($page) ){
             <thead>
                 <tr>
                     <th>ลำดับ</th>
+                    <th>เล่มที่</th>
+                    <th>เลขที่</th>
                     <th>คำนำหน้า</th>
                     <th>ชื่อ</th>
                     <th>นามสกุล</th>
@@ -505,6 +530,8 @@ if( empty($page) ){
                     ?>
                     <tr>
                         <td><?=$i;?></td>
+                        <td><?=$item['book_id'];?></td>
+                        <td><?=$item['number_id'];?></td>
                         <td><?=$item['yot_pt'];?></td>
                         <td><?=$firstname;?></td>
                         <td><?=$lastname;?></td>
@@ -621,7 +648,7 @@ if( empty($page) ){
     
                 <div>
                     คณะกรรมการแพทย์คนที่1: 
-                    <select name="dr1" id="">
+                    <select name="dr1" id="dr1">
                         <?php
                         foreach ($dr_items as $key => $item) {
                             $selected = ( $item['doctorcode'] == $code1 ) ? 'selected="selected"' : '' ;
@@ -634,7 +661,7 @@ if( empty($page) ){
                 </div>
                 <div>
                     คณะกรรมการแพทย์คนที่2: 
-                    <select name="dr2" id="">
+                    <select name="dr2" id="dr2">
                         <?php
                         foreach ($dr_items as $key => $item) {
                             $selected = ( $item['doctorcode'] == $code2 ) ? 'selected="selected"' : '' ;
@@ -647,7 +674,7 @@ if( empty($page) ){
                 </div>
                 <div>
                     คณะกรรมการแพทย์คนที่3: 
-                    <select name="dr3" id="">
+                    <select name="dr3" id="dr3">
                         <?php
                         foreach ($dr_items as $key => $item) {
                             $selected = ( $item['doctorcode'] == $code3 ) ? 'selected="selected"' : '' ;
@@ -784,6 +811,16 @@ if( empty($page) ){
                     alert('กรุณาเลือกกฎกระทรวง');
                     return false;
                 }
+
+                var dr1 = $("#dr1").val();
+                var dr2 = $("#dr2").val();
+                var dr3 = $("#dr3").val();
+
+                if( dr1 == dr2 || dr1 == dr3 || dr2 == dr3 ){
+                    alert('ชื่อแพทย์ซ้ำ กรุณาเลือกแพทย์ใหม่อีกครั้ง');
+                    return false;
+                }
+
             });
     
         });

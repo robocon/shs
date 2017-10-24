@@ -94,8 +94,22 @@ $query ="update runno SET runno = $nRunno WHERE title='combill'";
 
  $Thidate = (date("Y")+543).date("-m-d");  
  $acdate = date("Y-m-d");
-   $query = "INSERT INTO stktranx(date,drugcode,tradname,expdate,lotno,stkcut,unit,officer,billno,department,unitpri,amount,netlotno,getdate,mainstk,stock,totalstk,amountfree) VALUES('$acdate','$drugcode','$tradname','$expdate','$lotno','','$unit','$sOfficer','$billno','$cComname','$unitpri','$amount','$amount','$getdate',$cMainstk+$amount,$cTotalstk-$cMainstk,$cTotalstk+$amount,'$amountfree');";
-  $result = mysql_query($query) or die("failed,insert into stktranx");
+
+$zMainstk = $cMainstk + $amount;
+$zStock = $cTotalstk - $cMainstk;
+$zTotalstk = $cTotalstk + $amount;
+$query = "INSERT INTO stktranx(
+    date,drugcode,tradname,expdate,lotno,
+    stkcut,unit,officer,billno,department,
+    unitpri,amount,netlotno,getdate,mainstk,
+    stock,totalstk,amountfree
+) VALUES(
+    '$acdate','$drugcode','$tradname','$expdate','$lotno',
+    '','$unit','$sOfficer','$billno','$cComname',
+    '$unitpri','$amount','$amount','$getdate','$zMainstk',
+    '$zStock','$zTotalstk','$amountfree'
+);";
+$result = mysql_query($query) or die("failed,insert into stktranx");
  
 //   echo mysql_errno() . ": " . mysql_error(). "\n";
 //   echo "<br>";

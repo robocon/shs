@@ -195,6 +195,14 @@ $page=1;
   </tr>
 <span class="font1">
 <?
+
+		function dump($txt){
+			echo "<pre>";
+			var_dump($txt);
+			echo "</pre>";
+			
+		}
+
 		$_POST['day2']=trim($_POST['day2']);
 		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  
 		FROM stktranx  
@@ -262,22 +270,34 @@ $page=1;
            " </tr>\n");
 		   
 		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '$drugcode' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."') ORDER BY getdate ";
-		//echo $query;
-		
 		$result = mysql_query($query) or die("Query failed");
     	$num=0;
    		while (list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result)) {
 			$k++;
-			$sql3 = "select stkno from combill where date like '$getdate%' and lotno='$lotno' ";
-			//echo $sql3;
+
+			
+			$sql3 = "select stkno from combill where getdate like '$getdate%' and lotno='$lotno' ";
 			$row3 = mysql_query($sql3);
-			list($stkno)=mysql_fetch_array($row3);
+			$stk_row = mysql_num_rows($row3);
+			
+			$stkno = '';
+			if( $stk_row > 0 ){
+				$item = mysql_fetch_assoc($row3);
+				$stkno = $item['stkno'];
+			}
+
+			if( $stkcut > 0 ){
+				$stkno = '';
+			}
+
 			
 			$num++;
 			$netprice  =$unitpri*$amount;  //ราคาต่อหน่วย*จำนวน
 			$stkcutpri =$unitpri*$stkcut;
 			$netlotpri =$unitpri*$netlotno;
+
 			$mainstkpri =$unitpri*$mainstk;
+			
 			$month = substr($getdate,5,2);
 			$day = substr($getdate,8,2);
 			
