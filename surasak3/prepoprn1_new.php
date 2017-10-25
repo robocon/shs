@@ -370,7 +370,7 @@ print "<DIV style='left:109PX;top:927PX;width:269PX;height:30PX;TEXT-ALIGN:CENTE
 print "<DIV style='left:435PX;top:550PX;width:269PX;height:30PX;'><span class='fc1-5'>เรียน ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 print "<DIV style='left:472PX;top:579PX;width:269PX;height:30PX;'><span class='fc1-5'>ได้ตรวจสอบงบรายรับสถานพยาบาลแล้วมีเพียงพอ</span></DIV>";
 print "<DIV style='left:435PX;top:608PX;width:269PX;height:30PX;'><span class='fc1-5'>ให้การสนับสนุน จำนวนเงิน $nPriadvat บาท</span></DIV>";
-print "<DIV style='left:435PX;top:637PX;width:269PX;height:30PX;'><span class='fc1-5'>$cPriadvat</span></DIV>";
+print "<DIV style='left:435PX;top:637PX;width:300PX;height:30PX;'><span class='fc1-5'>$cPriadvat</span></DIV>";
 print "<DIV style='left:450PX;top:666PX;width:269PX;height:30PX;'><span class='fc1-5'>ร.อ.</span></DIV>";
 print "<DIV style='left:435PX;top:695PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(มนตรีศักดิ์   วงศ์สุวรรณ)</span></DIV>";
 print "<DIV style='left:435PX;top:724PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>ปฏิบัติหน้าที่งบประมาณ รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
@@ -405,7 +405,7 @@ print".fc1-0 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT
 print".fc1-1 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:BOLD;}";
 print".fc1-2 { COLOR:000000;FONT-SIZE:11PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
 print".fc1-3 { COLOR:000000;FONT-SIZE:15PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
-print".fc1-4 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL;}";
+print".fc1-4 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:NORMAL; line-height: 13pt;}";
 print".fc1-5 { COLOR:000000;FONT-SIZE:13PT;FONT-FAMILY:TH SarabunPSK;FONT-WEIGHT:BOLD;}";
 print".ad1-0 {border:0PX none 000000; }";
 print".ad1-1 {border-left:0PX none 000000; border-right:0PX none 000000; border-top:1PX dashed 000000; border-bottom:0PX none 000000; }";
@@ -549,7 +549,7 @@ for ($n=$x+1; $n<=13; $n++){
 	border: 1px dashed #000;
 	font-size: 13pt;
 }
-.dx_tb thead tr th{
+.dx_tb th{
 	border-bottom: 1px dashed #000;
 }
 .dx_tb th, .dx_tb td{
@@ -560,6 +560,9 @@ for ($n=$x+1; $n<=13; $n++){
 .dx_tb .last_child{
 	border-right: none;
 }
+.dx_detail{
+	margin-top: 5px;
+}
 .dx_detail div{
 	position: relative;
 	padding-left: 10px;
@@ -567,7 +570,7 @@ for ($n=$x+1; $n<=13; $n++){
 </style>
 <div style="position: absolute; left:10px; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
 	<table class="dx_tb">
-		<thead>
+		
 			<tr>
 				<th style="width:38px;">ลำดับ</th>
 				<th style="width:258px;">รายการ</th>
@@ -582,8 +585,7 @@ for ($n=$x+1; $n<=13; $n++){
 		      รวม VAT</th>
 			  <th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 			</tr>
-		</thead>
-		<tbody>
+		
 			
 			<?php
 			for ($ii=1; $ii <= 14; $ii++) { 
@@ -616,6 +618,10 @@ for ($n=$x+1; $n<=13; $n++){
 						$cost = $aUnitpri[$ii];
 						$from = 5;
 					}
+				}
+
+				if( $cost == false ){
+					$cost = '&nbsp;';
 				}
 
 				?>
@@ -682,7 +688,7 @@ for ($n=$x+1; $n<=13; $n++){
 				<td>&nbsp;</td>
 				<td class="last_child">&nbsp;</td>
 			</tr>
-		</tbody>
+		
 	</table>
 <?php
 	$edpri_from_list = array(
@@ -945,12 +951,12 @@ for ($n=$x+1; $n<=13; $n++){
 // print"<DIV style='left:476PX;top:1882PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 //  ช่องเซ็น
-print"<DIV style='left:600PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-print"<DIV style='left:624PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-print"<DIV style='left:629PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+print"<DIV style='left:520PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
+print"<DIV style='left:544PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
+print"<DIV style='left:549PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
 //ตำแหน่ง
-print"<DIV style='left:629PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+print"<DIV style='left:549PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 ?>
 <div style="page-break-after: always;"></div>

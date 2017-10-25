@@ -26,21 +26,13 @@ include("connect.inc");
 <body>
 <div align="center" class="text2"><strong>สรุปผลตรวจสุขภาพประจำปี 9/2560</strong></div>
 <p class="text3">
-<form name="form1" method="post" action="report_summary_chkup60.php" target="_blank" >
+<form name="form1" method="post" action="report_summary_chkup61.php" target="_blank" >
 <input type="hidden" name="month" value="9" />
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center"><span class="text1">หน่วยงาน :</span>
         <select name="camp" class="text1" id="camp">
-          <option value="เมโทรแมชีนเนอรี่60">เมโทรแมชีนเนอรี่</option>
-          <option value="นำพลัง60">นำพลัง</option>
-          <option value="ป้อมคลัง60">ป้อมคลัง</option>
-          <option value="แคชแวนแมนเนจเม้นท์60">แคชแวนแมนเนจเม้นท์</option>
-          <option value="สถานพัฒนาและฟื้นฟูเด็ก60">สถานพัฒนาและฟื้นฟูเด็ก</option>
-          <option value="แคชแวนแมนเนจเม้นท์60">แคชแวนแมนเนจเม้นท์</option>
-          <option value="อีซูซุ60">อีซูซุ</option>
-          <option value="เชียงใหม่สยามทีวี60">เชียงใหม่สยามทีวี</option> 
-          <option value="ที.ไอ.ซี60">ที.ไอ.ซี60</option>     
+          <option value="scg61">SCG</option>
         </select>
         <input name="button" type="submit" class="text1" id="button" value="ดูรายงาน"></td>
     </tr>

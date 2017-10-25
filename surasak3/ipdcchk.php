@@ -1,6 +1,6 @@
-
 <?php
-//    session_start(); //6-03-04
+   session_start(); //6-03-04
+   error_reporting(0);
     $sDiscdate="$yr-$m-$d";
     session_register("sDiscdate"); //add
 
