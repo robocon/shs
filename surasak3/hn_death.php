@@ -65,8 +65,13 @@ $arr=mysql_fetch_array($query);
 	$queryid=mysql_query($sqlid) or die (mysql_error());
 	$arrid=mysql_fetch_array($queryid);
 	
-	///// runno //////
-$year_now = substr(date("Y")+543,2);	
+  ///// runno //////
+
+// ปรับเรียกการใช้งานเป็นแบบปีงบประมาณ
+require_once 'includes/functions.php';
+$year_now = get_year_checkup();
+
+// $year_now = substr(date("Y")+543,2);	
 	
 	$sqlrunno="SELECT prefix,runno FROM `runno` WHERE `title` = 'death' ";
 	$queryrunno=mysql_query($sqlrunno) or die (mysql_error());

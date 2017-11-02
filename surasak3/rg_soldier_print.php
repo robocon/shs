@@ -14,7 +14,7 @@ $user = $db->get_item();
 
 $yearchk = $user['yearchk'];
 $img = false;
-if( $user['pic'] != "NULL" ){
+if( $user['pic'] != NULL ){
     $img = "certificate/$yearchk/".$user['pic'];
 }
 

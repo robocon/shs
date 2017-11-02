@@ -55,9 +55,9 @@ if( $action === "save" ){
 
     $id = input_post('id', false);
 
-    $dr1 = input_post('dr1');
-    $dr2 = input_post('dr2');
-    $dr3 = input_post('dr3');
+    // $dr1 = input_post('dr1');
+    // $dr2 = input_post('dr2');
+    // $dr3 = input_post('dr3');
     $hn = input_post('hn');
     $book_id = input_post('book_id');
     $number_id = input_post('number_id');
@@ -76,21 +76,29 @@ if( $action === "save" ){
     $province = $pt['province'];
     $editor = $_SESSION['sOfficer'];
     
-    $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
-    FROM `doctor` 
-    WHERE `doctorcode` IN ( '$dr1', '$dr2', '$dr3')  
-    AND `status` = 'y' 
-    AND `name` REGEXP '^MD+' ";
-    $db->select($sql);
-    $items = $db->get_items();
     $dr_lists = array();
-    $i = 0;
-    foreach ( $items as $key => $dr ) {
-        ++$i;
-        $dr_lists['yot'.$i] = $dr['yot'];
-        $dr_lists['doctor'.$i] = $dr['name'];
-        $dr_lists['code'.$i] = $dr['doctorcode'];
+    for ($i=1; $i <= 3; $i++) { 
+
+        $dr_code = input_post('dr'.$i);
+
+        $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
+        FROM `doctor` 
+        WHERE `doctorcode` = '$dr_code'  
+        AND `status` = 'y' 
+        AND `name` REGEXP '^MD+' ";
+        $db->select($sql);
+        $dr = $db->get_item();
+        
+        // $i = 0;
+        // foreach ( $items as $key => $dr ) {
+            // ++$i;
+            $dr_lists['yot'.$i] = $dr['yot'];
+            $dr_lists['doctor'.$i] = $dr['name'];
+            $dr_lists['code'.$i] = $dr['doctorcode'];
+        // }
+
     }
+    
 
     if( empty($id) ){
         $sql = "INSERT INTO `smdb`.`rg_soldier`
@@ -622,9 +630,8 @@ if( empty($page) ){
 
         $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
         FROM `doctor` 
-        WHERE ( `doctorcode` != '00' AND `doctorcode` != '00000' AND `doctorcode` != '0000' AND `menucode` = 'ADM' ) 
-        AND `status` = 'y' 
-        AND `name` REGEXP '^MD+' ";
+        WHERE  `rg_status` != '' 
+        AND `name` REGEXP '^MD+' order by rg_status";
         $q = mysql_query($sql) or die( mysql_error() );
         $dr_items = array();
         while ( $dr = mysql_fetch_assoc($q) ) {

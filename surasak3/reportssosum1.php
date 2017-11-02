@@ -324,6 +324,7 @@ $title_date = $start_day."-".$start_month."-".$start_year;
 $date1 ="$start_year-$start_month";
 
 $sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price) From opacc as a where  a.date LIKE '$date1%'   AND a.credit ='ประกันสังคม' group by date2, a.depart   ORDER by date";
+// echo $sql;
 $result = Mysql_Query($sql) or die(Mysql_Error());
 
 while(list($date, $depart, $paidcscd,$price) = Mysql_fetch_row($result)){
@@ -348,7 +349,7 @@ $row='0';
 
 echo "<BR><CENTER>รายละเอียดลูกหนี้ประจำวัน<BR>";
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-echo "<font face='Angsana New' size ='2'> รายงานเมื่อวันที่  $Thaidate </center></font>";
+echo "<font face='Angsana New' size ='2'>รายงานเมื่อวันที่  $Thaidate </center></font>";
 echo "<table width='90%' align='center' border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>
 				<tr align='center'>
 				<td>วันที่</td>
