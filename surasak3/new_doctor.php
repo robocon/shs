@@ -6,7 +6,34 @@ if( $_SESSION['smenucode'] !== 'ADM' AND $_SESSION['smenucode'] !== 'ADMCOM' ){
     exit;
 }
 
+// dump($_SESSION);
+
+$db = Mysql::load();
+
 $action = input('action');
+
+if( $action === 'recheck_password' ){
+    
+    require_once 'includes/JSON.php';
+    $json = new Services_JSON();
+
+    $id = $_SESSION['sRowid'];
+    $pass = input_post('check_pass');
+    
+    $sql = "SELECT `pword` FROM `inputm` WHERE `row_id` = :row_id AND `pword` = :password ";
+    $db->select($sql, array(':row_id' => $id, ':password' => $pass ));
+    $rows = $db->get_rows();
+
+    $res = array('res_status' => 0);
+    if ( $rows > 0 ) {
+        $res = array('res_status' => 4);
+    }
+
+    $output = $json->encode($res);
+    echo $output;
+
+    exit;
+}
 
 if( $action === false ){
 
@@ -67,7 +94,8 @@ if( !empty($_SESSION['x-msg']) ){
     unset($_SESSION['x-msg']);
 }
 ?>
-<form action="new_doctor.php" method="post">
+
+<form action="new_doctor.php" method="post" id="adminForm">
     <div>
         <span>ยศ</span> <input type="text" name="pre_name" > <span>ร.อ., น.พ., พ.ญ. ฯลฯ</span>
     </div>
@@ -100,6 +128,84 @@ if( !empty($_SESSION['x-msg']) ){
     </div>
     <div>ชื่อผู้ใช้งานและรหัสผ่านคือ md__เลขว.__ เช่น md99999 </div>
 </form>
+<script src="js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+
+        var confirm_pass = false;
+        var timeo = false;
+        function test_timeout(){
+            var timeo = setTimeout(function() {
+
+                // console.log(confirm_pass);
+
+                if( confirm_pass == false ){
+                    // test_timeout();
+                    test_out(timeo);
+                }else{
+
+                    // Success 
+                    // console.log('Password :)');
+                    // test_out(timeo);
+                    $('#adminForm').submit();
+
+                }
+                
+            }, 500);
+            return timeo;
+        }
+
+        function test_out(timeo){
+            clearTimeout(timeo);
+        }
+        
+        
+
+        $(document).on('submit', '#adminForm', function(){
+            
+            if( confirm_pass == false ){
+
+            
+            var pass = window.prompt('ยืนยันรหัสผ่าน', '');
+            if( pass !== null ){
+
+                timeo = test_timeout();
+
+                $.ajax({
+                    url: 'new_doctor.php',
+                    method: 'post',
+                    dataType: 'json',
+                    async: false,
+                    data: {'check_pass': pass, 'action': 'recheck_password'},
+                    success: function(ret){
+                        
+                        // console.log(ret.res_status);
+
+                        if( ret.res_status == 0 ){
+                            alert('การยืนยันรหัสผ่านไม่ถูกต้อง');
+                            confirm_pass = false;
+                        }else{
+                            confirm_pass = true;
+                        }
+
+                        // test_out(timeo);
+                        
+                    }
+
+                });
+
+            }
+            
+            return false;
+
+            }
+
+        });
+
+    });
+    
+</script>
+
 <?php
 } else if ( $action === 'save' ){
     
@@ -113,8 +219,6 @@ if( !empty($_SESSION['x-msg']) ){
         echo 'กรุณากรอกข้อมูลให้ครบถ้วน<br><a href="javascript: window.history.back(-1);">กลับไปหน้าฟอร์ม</a>';
         exit;
     }
-
-    $db = Mysql::load();
 
     $sql = "SELECT `name` FROM `doctor` WHERE `name` LIKE 'MD%' ORDER BY `row_id` DESC LIMIT 1 ";
     $db->select($sql);
