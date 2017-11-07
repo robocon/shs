@@ -71,15 +71,17 @@ a{
 <table>
 	<tr>
 		<th width="2%" >#</th>
-		<th>HN</th>
-		<th>ชื่อ</th>
-		<th><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
-		<th>นัดเพื่อ</th>
+		<th width="6%">HN</th>
+		<th width="15%">ชื่อ</th>
+		<th width="10%"><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
+		<th width="26%">นัดเพื่อ</th>
+	  <th width="12%">วันที่มาครั้งล่าสุด</th>
+	  <th width="4%">สถานะ</th>
 		<!-- <th>อื่นๆ</th>
 		<th>diag</th> -->
-		<th>ซ้ำ</th>
-		<th>ยื่นบัตร</th>
-		<th>Admit</th>
+		<th width="6%">ซ้ำ</th>
+		<th width="10%">ยื่นบัตร</th>
+		<th width="9%">Admit</th>
 	</tr>
 	<?php
 	$sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' limit 1 ";
@@ -227,7 +229,11 @@ ORDER BY `hn` ASC
 		if($menucode == 'ADMOPD'){
 			$detail = substr($detail,4);
 		}
-		
+
+
+$chkopcard="select * from opday where hn='$hn' order by row_id desc limit 1";
+$chkquery=mysql_query($chkopcard);
+$chkrows=mysql_fetch_array($chkquery);		
 		?>
 		<tr style="background-color: #<?=$bgcolor;?>;">
 			<td><?=$i;?></td>
@@ -241,27 +247,25 @@ ORDER BY `hn` ASC
 				if( !empty($item['detail2']) && $_SESSION['smenucode'] != 'ADMOPD' ){
 					echo ' ('.$item['detail2'].')';
 				}
-				?>
-			</td>
+				?>			</td>
+			<td><?=substr($chkrows["thidate"],0,10);?></td>
+			<td><?=$chkrows["okopd"];?></td>
 			<td>
-				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>
-			</td>
+				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>			</td>
 			<td>
 				<?php 
 				if($detail=="FU33 นัดตรวจสุขภาพ"){
 					echo "เตรียม OPD CARD ที่ $room";
 				}else{
 					echo ( $room === 'แผนกทะเบียน' ) ? $room : '' ;
-				}?>
-			</td>
+				}?>			</td>
 			<td>
 				<?php
 				$sql5 = "SELECT * FROM `bed` WHERE `hn` = '$hn' ";
 				$row5 = mysql_query($sql5);
 				$rep5 = mysql_num_rows($row5);
 				echo ( $rep5 > 0 ) ? 'Admit' : '' ;
-				?>
-			</td>
+				?>			</td>
 		</tr>
 		<?php
 		$i++;

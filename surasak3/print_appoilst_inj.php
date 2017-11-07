@@ -101,7 +101,7 @@ if($rows_drugrx==0){
 if($rows_drugrx > 0){
 	list($idno) = mysql_fetch_row($result);
 
-	$sql = "Select a.row_id, a.diag, a.ptright, a.doctor From phardep as a  where row_id = '{$idno}'  limit 1";
+	$sql = "Select a.row_id, a.diag, a.ptright, a.doctor From phardep as a  where row_id = '$idno'  limit 1";
 	list($row_id_phardep, $diag, $ptright, $name_doctor) = mysql_fetch_row(mysql_query($sql));
 
 
@@ -173,9 +173,12 @@ if($rows_drugrx > 0){
 		";
 		list($drugslip, $drug_inject_amount, $drug_inject_slip, $drug_inject_type, $drug_inject_etc, $reason) = mysql_fetch_row(mysql_query($sql));
 		
+		// วิธีใช้ยาจากตัวแปร $_SESSION["list_drugslip"][$i] หาไม่เจอ
+		$list_drugslip = ( !empty($_SESSION["list_drugslip"][$i]) ) ? $_SESSION["list_drugslip"][$i] : 'b';
+		$drug_slcode = ( empty($drugslip) ) ? $list_drugslip : $drugslip ;
+
 		// ต่อ string จาก $sql_ddrugrx
-		$sql_ddrugrx .= "$commar ('[Thidate]','".$_POST['hn']."','".$drugcode."','".$tradname."', '1','".( 1 * $money)."','2','".$_SESSION["list_drugslip"][$i]."','".$part."','[idno]','".$money."','".$freepri."','".$drug_inject_amount."','".$drug_inject_slip."','".$drug_inject_type."','".$drug_inject_etc."','".$reason."','[INJNO]')";
-		
+		$sql_ddrugrx .= "$commar ('[Thidate]','".$_POST['hn']."','".$drugcode."','".$tradname."', '1','".( 1 * $money)."','2','".$drug_slcode."','".$part."','[idno]','".$money."','".$freepri."','".$drug_inject_amount."','".$drug_inject_slip."','".$drug_inject_type."','".$drug_inject_etc."','".$reason."','[INJNO]')";
 		$commar = ",";
 		$x++;
 	
@@ -236,8 +239,10 @@ for($i=0;$i<$count;$i++){
 		$sql_dphardep2 = str_replace($xx,$yy,$sql_dphardep);
 
 		if($rows_drugrx > 0){
+			
 			$result = Mysql_Query($sql_dphardep2) or die(mysql_error());
 			$idno = mysql_insert_id();
+
 			$yy = array($idno, $_POST["list_date"][$i]." 00:00:00");
 			$sql_ddrugrx2 = str_replace($xx,$yy,$sql_ddrugrx);
 			$k=$i+2;
