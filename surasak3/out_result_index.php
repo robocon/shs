@@ -196,6 +196,11 @@ a:active {
   <tr>
     <td>25. SCG</td>
     <td align="center"><a href="out_result.php?part=scg61" target="_blank">บันทึก</a></td>
-    <td rowspan="10" align="center">ตุลาคม 2560</td>
-  </tr>  
+    <td rowspan="1" align="center">ตุลาคม 2560</td>
+  </tr>
+  <tr>
+    <td>26. ห้างหุ้นส่วนจำกัด สหกิจดินขาวทุ่งฝาย</td>
+    <td align="center"><a href="out_result.php?part=สหกิจดินขาว61" target="_blank">บันทึก</a></td>
+    <td rowspan="10" align="center">พฤศจิกายน 2560</td>
+  </tr>
 </table>

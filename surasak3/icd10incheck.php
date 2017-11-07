@@ -31,9 +31,19 @@
 	<TD><input type="text" name="icd101" size="20"></TD>
 </TR>
 <TR>
-  <TD align="right">ICD โรคแทรก</TD>
+  <TD align="right">ICD โรคแทรก(COMPLICATION) : </TD>
   <TD><input type="text" name="icd102" size="20"/></TD>
 </TR>
+<!--
+<tr>
+  <td align="right">OTHER : </td>
+  <td><input type="text" name="other" size="20"/></td>
+</tr>
+<tr>
+  <td align="right">EXTERNAL CAUSE : </td>
+  <td><input type="text" name="ext_cause" size="20"/></td>
+</tr>
+-->
 <TR>
 	<TD align="right" valign="top">การเรียกข้อมูล :</TD>
 	<TD><INPUT TYPE="radio" NAME="type" value="1" onclick="hidden_style('1');" checked> เจาะจงเป็น ปี, เดือน หรือ วัน <BR><INPUT TYPE="radio" NAME="type" value="2"  onclick="hidden_style('2');"> เลือกเป็นช่วง </TD>
@@ -144,9 +154,10 @@
 <th bgcolor=CD853F>โรค</th>
 
   <th bgcolor=CD853F>ICD10</th>
-  <th bgcolor=CD853F>ICD10 (โรครอง)</th>
-  <th bgcolor=CD853F>ICD10 (โรคแทรก)</th>
-  
+  <th bgcolor=CD853F>ICD10<br>(โรครอง)</th>
+  <th bgcolor=CD853F>ICD10<br>(โรคแทรก)</th>
+  <th bgcolor="CD853F">OTHER</th>
+  <th bgcolor="CD853F">EXTERNAL CAUSE</th>
 <th bgcolor=CD853F>วันจำหน่าย</th>
 <th bgcolor=CD853F>D/C Type</th>
 </tr>
@@ -221,13 +232,26 @@ if($_POST["ptright"] != ""){
 	$where .= " AND `ptright` LIKE '".$_POST["ptright"]."%' ";
 }
 
-$query = "
-SELECT MAX( `date` ) AS `date2`,`date`,`hn`,`an`,`ptname`,`diag`,`icd10`,`comorbid`,`dcdate`,`dctype`,`complica`
+$query = "SELECT MAX( `date` ) AS `date2`,`date`,`hn`,`an`,`ptname`,`diag`,`icd10`,`comorbid`,`dcdate`,`dctype`,`complica`
 FROM `ipcard` 
 WHERE $where1 $where 
 GROUP BY `hn`
-ORDER BY `date` ASC 
-";
+ORDER BY `date` ASC ";
+
+if( !empty($icd102) ){
+	$query = "SELECT b.`date` AS `date2`,b.`date`,b.`hn`,b.`an`,b.`ptname`,
+	b.`diag`,b.`icd10`,b.`comorbid`,b.`dcdate`,b.`dctype`,b.`complica` 
+	FROM (
+
+		SELECT * FROM `diag` 
+		WHERE `icd10` LIKE '%$icd102%' 
+		AND `regisdate` LIKE '$thiyr%' 
+		AND `type` = 'COMPLICATION' 
+
+	) AS a 
+	LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` ";
+
+}
 
 
 // $query = "SELECT date,hn,an,ptname,diag,icd10, comorbid,dcdate, dctype ,complica FROM ipcard WHERE ".$where1."  ".$where." ORDER BY `date` ASC ";
@@ -241,6 +265,32 @@ $result = mysql_query($query)or die( mysql_error() );
 
 
  $num++;
+
+$sql = "SELECT `icd10` FROM `diag` WHERE `an` = '$an' AND `type` = 'COMPLICATION' ";
+$q = mysql_query($sql);
+$complica_list = array();
+while ( $com = mysql_fetch_assoc($q) ) {
+	$complica_list[] = $com['icd10'];
+}
+$complica = implode(' ', $complica_list);
+
+$sql = "SELECT `icd10` FROM `diag` WHERE `an` = '$an' AND `type` = 'OTHER' ";
+$q = mysql_query($sql);
+$oth = mysql_fetch_assoc($q);
+$other_list = array();
+while ( $com = mysql_fetch_assoc($q) ) {
+	$other_list[] = $com['icd10'];
+}
+$other = implode(' ', $other_list);
+
+$sql = "SELECT `icd10` FROM `diag` WHERE `an` = '$an' AND `type` = 'EXTERNAL CAUSE' ";
+$q = mysql_query($sql);
+$extc = mysql_fetch_assoc($q);
+$external_list = array();
+while ( $com = mysql_fetch_assoc($q) ) {
+	$external_list[] = $com['icd10'];
+}
+$external = implode(' ', $external_list);
 
  print (" <tr>\n".
 
@@ -260,6 +310,8 @@ $result = mysql_query($query)or die( mysql_error() );
   "  <td BGCOLOR=F5DEB3>$icd10</td>\n".
   "  <td BGCOLOR=F5DEB3>$comorbid</td>\n".
    "  <td BGCOLOR=F5DEB3>$complica</td>\n".
+   "  <td BGCOLOR=F5DEB3>$other</td>\n".
+   "  <td BGCOLOR=F5DEB3>$external</td>\n".
 "  <td BGCOLOR=F5DEB3>$dcdate</td>\n".
 "  <td BGCOLOR=F5DEB3>$dctype</td>\n".
        

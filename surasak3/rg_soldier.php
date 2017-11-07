@@ -493,7 +493,7 @@ if( empty($page) ){
     FROM `rg_soldier` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
     WHERE `last_update` LIKE '$selected_y-$selected_m%' 
-    ORDER BY id DESC";
+    ORDER BY number_id ASC";
     $db->select($sql);
     $items = $db->get_items();
 
