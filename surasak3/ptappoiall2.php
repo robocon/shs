@@ -76,8 +76,8 @@ a{
 		<th width="10%"><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
 		<th width="26%">นัดเพื่อ</th>
 	  <th width="12%">วันที่มาครั้งล่าสุด</th>
-	  <th width="4%">สถานะ</th>
-		<!-- <th>อื่นๆ</th>
+	  <!-- <th width="4%">สถานะ</th>
+		<th>อื่นๆ</th>
 		<th>diag</th> -->
 		<th width="6%">ซ้ำ</th>
 		<th width="10%">ยื่นบัตร</th>
@@ -249,7 +249,7 @@ $chkrows=mysql_fetch_array($chkquery);
 				}
 				?>			</td>
 			<td><?=substr($chkrows["thidate"],0,10);?></td>
-			<td><?=$chkrows["okopd"];?></td>
+			<!-- <td><?=$chkrows["okopd"];?></td> -->
 			<td>
 				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>			</td>
 			<td>
