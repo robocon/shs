@@ -4,42 +4,51 @@
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>รายงานสรุปผลตรวจสุขภาพ</title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 18px;
 }
--->
+
 </style>
 </head>
 <?
 include("connect.inc");
 $camp=$_POST["camp"];
 $month=$_POST["month"];
+$title_date = '';
+$sql = "SELECT *
+FROM `out_result_chkup`
+WHERE `part` = '$camp' 
+ORDER BY `row_id` ASC";
+
 if(month=="6"){
-$showmonth="มิถุนายน";
-$sql="SELECT *
-FROM `opcardchk`
-WHERE `part` = '$camp' and active='y'
-ORDER BY `row` ASC";
+	$showmonth="มิถุนายน";
+	$sql="SELECT *
+	FROM `opcardchk`
+	WHERE `part` = '$camp' and active='y'
+	ORDER BY `row` ASC";
 }else if($month=="7"){
-$showmonth="กรกฎาคม";
-$sql = "SELECT *
-FROM `out_result_chkup`
-WHERE `part` = '$camp' 
-ORDER BY `row_id` ASC";
+	$showmonth="กรกฎาคม";
+	$sql = "SELECT *
+	FROM `out_result_chkup`
+	WHERE `part` = '$camp' 
+	ORDER BY `row_id` ASC";
 }else if($month=="8"){
-$showmonth="สิงหาคม";
-$sql = "SELECT *
-FROM `out_result_chkup`
-WHERE `part` = '$camp' 
-ORDER BY `row_id` ASC";
+	$showmonth="สิงหาคม";
+	$sql = "SELECT *
+	FROM `out_result_chkup`
+	WHERE `part` = '$camp' 
+	ORDER BY `row_id` ASC";
 }else if($month=="9"){
-$showmonth="กันยายน";
-$sql = "SELECT *
-FROM `out_result_chkup`
-WHERE `part` = '$camp' 
-ORDER BY `row_id` ASC";
+	$showmonth="กันยายน";
+	$sql = "SELECT *
+	FROM `out_result_chkup`
+	WHERE `part` = '$camp' 
+	ORDER BY `row_id` ASC";
+}else if($month=="10"){
+	$showmonth="ตุลาคม";
+	$title_date = '4-19';
 }
 
 //echo $sql."<br>";
@@ -48,7 +57,7 @@ $num=mysql_num_rows($row);
 ?>	
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$camp;?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
-<div align="center"><strong>ระหว่างวันที่   <?=$showmonth;?> 2560 จำนวน <?=$num;?> ราย</strong></div>
+<div align="center"><strong>ระหว่างวันที่ <?=$title_date;?>  <?=$showmonth;?> 2560 จำนวน <?=$num;?> ราย</strong></div>
 <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
   <tr>
     <td width="3%" rowspan="2" align="center"><strong>ลำดับ</strong></td>

@@ -161,8 +161,8 @@ $ptname=$result['name']." ".$result['surname'];
 	$showdatelab="$d/$m/$yy";
 
 	// 
-	if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
-		$showdate="17-18/08/2560";
+	if( $_POST['camp'] == 'scg61' ){
+		$showdate="4-19 ตุลาคม 2560";
 	}
 	
 	$dateekg="$yy-$m";	
@@ -1318,7 +1318,12 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
             </tr>
 <? } ?>   
 					<?
-					 $sql3="select * from patdata where hn='".$result["HN"]."' and code='51410' and date like '$dateekg%' order by row_id desc";
+					 $sql3="select * from 
+					 patdata where 
+					 hn='".$result["HN"]."' 
+					 and code='51410' 
+					 and date like '$dateekg%' 
+					 order by row_id desc";
 					//echo $sql3;
 					$query3=mysql_query($sql3);
 					$num3=mysql_num_rows($query3);
@@ -1334,7 +1339,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 							<strong class="text" style="margin-left: 9px;"> : <? if($result["HN"]=="56-9685"){ echo $result2["ekg"]; }else{ echo "ปกติ"; } ?></strong>
 						</td>
 					</tr>
-					<? }else if($result["HN"]=="60-5189"){  //ไม่ได้คิดค่าใช้จ่าย ?>  
+					<? }else if($result["HN"]=="60-7754"){  //ไม่ได้คิดค่าใช้จ่าย ?>  
 					<tr>
 						<td>
 							<strong class="text" style="font-size:18px">
@@ -1345,7 +1350,32 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 							<strong class="text" style="margin-left: 9px;"> : <?  echo "ปกติ"; ?></strong>
 						</td>
 					</tr>
-                    <? } ?>                           
+          <? } ?>   
+
+						<?php if( !empty($result['altra']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result2['altra'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
+						<?php if( !empty($result['psa']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมาก</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result2['psa'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
+						<?php if( !empty($result['hpv']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result2['hpv'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
           </table>
           </td>
         </tr>

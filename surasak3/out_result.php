@@ -279,6 +279,26 @@ if(isset($_POST['hn'])){
 							<input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />						</td>
 					    <td>&nbsp;</td>
 					</tr>
+					<tr>
+					  <td class="pdx">Õ—≈µ√È“´“«¥Ï</td>
+					  <td><input name="altra" type="text" class="pdxhead" size="50" id="altra" value="<?=$arrchk['altra']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">µËÕ¡≈Ÿ°À¡“°</td>
+					  <td><input name="psa" type="text" class="pdxhead" size="50" id="psa" value="<?=$arrchk['psa']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">¡–‡√Áßª“°¡¥≈Ÿ°</td>
+					  <td><input name="hpv" type="text" class="pdxhead" size="50" id="hpv" value="<?=$arrchk['hpv']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">·¡¡‚¡·°√¡</td>
+					  <td><input name="mammogram" type="text" class="pdxhead" size="50" id="mammogram" value="<?=$arrchk['mammogram']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
 					<!--
 					<tr>
 						<td class="pdx">
@@ -347,6 +367,9 @@ if(isset($_POST['okhn2'])){
 		`part` = '".$_POST['part']."',
 		`42702` = '$bone',
 		`hpv` = '$hpv',
+		`altra` = '".$_POST['altra']."',
+		`psa` = '".$_POST['psa']."',
+		`mammogram` = '".$_POST['mammogram']."',
 		`temp` = '".$_POST['temp']."',
 		`rate` ='".$_POST['rate']."',
 		`prawat` = '".$_POST['prawat']."' ,
@@ -390,6 +413,9 @@ if(isset($_POST['okhn2'])){
 			`register` = '".date("Y-m-d H:i:s")."',
 			`42702` = '$bone',
 			`hpv` = '$hpv',
+			`altra` = '".$_POST['altra']."',
+			`psa` = '".$_POST['psa']."',
+			`mammogram` = '".$_POST['mammogram']."',			
 			`temp` = '".$_POST['temp']."',
 			`rate` = '".$_POST['rate']."',
 			`prawat` =  '".$_POST['prawat']."',

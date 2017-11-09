@@ -24,10 +24,12 @@ label{ display: block; }
 include("connect.inc");
 ?>	
 <body>
-<div align="center" class="text2"><strong>สรุปผลตรวจสุขภาพประจำปี 9/2560</strong></div>
+<div align="center" class="text2"><strong>สรุปผลตรวจสุขภาพประจำปี 10/2560</strong></div>
 <p class="text3">
 <form name="form1" method="post" action="report_summary_chkup61.php" target="_blank" >
-<input type="hidden" name="month" value="9" />
+
+<input type="hidden" name="month" value="10" />
+
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center"><span class="text1">หน่วยงาน :</span>
