@@ -60,7 +60,13 @@ label{ display: block; }
 <body>
 <?php
 include("connect.inc");	
-$showpart = $_POST["camp"];
+
+$showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
+
+$sql1 = "SELECT *
+FROM `out_result_chkup`
+WHERE `part` = '$showpart' 
+ORDER BY `row_id` ASC";
 
 if($_POST["xraydate"]=="6"){
 	$xraydate ="07-07-2017";
@@ -96,32 +102,32 @@ if($_POST["xraydate"]=="6"){
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 while($result = mysql_fetch_array($row2)){
 
-$age=$result["agey"];
-if(empty($result["HN"])){
-$result["HN"]=$result["hn"];
-}
+	$age=$result["agey"];
+	if(empty($result["HN"])){
+		$result["HN"] = $result["hn"];
+	}
 
-$sqlcc = mysql_query("SELECT datechkup,branch
-FROM `opcardchk`
-WHERE `HN` = '".$result["hn"]."'");
-list($showdate,$branch)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
+	$sqlcc = mysql_query("SELECT datechkup,branch
+	FROM `opcardchk`
+	WHERE `HN` = '".$result["hn"]."'");
+	list($showdate,$branch)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
 
-//echo $sqlcc;
+	//echo $sqlcc;
 
-$sql2="select * from out_result_chkup where hn='".$result["HN"]."' and part='".$result["part"]."'";
-//echo $sql2;
-$query2=mysql_query($sql2);
-$result2=mysql_fetch_array($query2);
+	$sql2="select * from out_result_chkup where hn='".$result["HN"]."' and part='".$result["part"]."'";
+	//echo $sql2;
+	$query2=mysql_query($sql2);
+	$result2=mysql_fetch_array($query2);
 
-if(empty($age)){
-$age=$result2["age"];
-}
+	if(empty($age)){
+		$age=$result2["age"];
+	}
 
-if(empty($result['name'])){
-$ptname=$result2['ptname'];
-}else{
-$ptname=$result['name']." ".$result['surname'];
-}
+	if(empty($result['name'])){
+		$ptname=$result2['ptname'];
+	}else{
+		$ptname=$result['name']." ".$result['surname'];
+	}
 
 
 

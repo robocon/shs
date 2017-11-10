@@ -2059,7 +2059,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 						$db16 = dbase_open($dbname16, 2);
 						if ($db16) {
 							dbase_add_record($db16, array(
-								$hcode16, //
+								$hcode2, //
 								$hn16, //
 								$an16, //
 								$newclinic,  //
@@ -2088,7 +2088,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 							$db16 = dbase_open($dbname16, 2);
 								if ($db16) {
 									dbase_add_record($db16, array(
-										$hcode16, //
+										$hcode2, //
 										$hn16, //
 										$an16, //
 										$newclinic,  //

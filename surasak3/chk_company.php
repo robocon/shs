@@ -21,24 +21,39 @@ if( $action == false ){
             รหัสบริษัท <input type="text" name="company_code">
         </div>
         <div>
+            วันที่ตรวจ <input type="text" name="date_checkup"> 
+            <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u></span>
+            <div>
+                <span style="color: red;">ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
+            </div>
+        </div>
+        <div>
             <button type="submit">บันทึกข้อมูล</button>
             <input type="hidden" name="action" value="save">
         </div>
     </form>
+    <style type="text/css">
+    .chk_table ol{
+        margin: 0;
+        padding-left: 1em;
+    }
+    </style>
     <div>
         <?php
-        $sql = "SELECT * FROM `chk_company_list` WHERE `status` = '1' ORDER BY `id` DESC";
+        $sql = "SELECT * FROM `chk_company_list` WHERE `status` = '1' ORDER BY `id` ASC";
         $db->select($sql);
 
         $items = $db->get_items();
         ?>
         <h3>รายชื่อบริษัท</h3>
-        <table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
+        <table class="chk_table">
             <tr>
                 <th>#</th>
                 <th>ชื่อบริษัท</th>
                 <th>รหัส</th>
-                <th>ปีงบประมาณ</th>
+                <th>ช่วงเวลาที่ตรวจ</th>
+                <th>รอบปีงบประมาณ</th>
+                <th>ลงผล/พิมพ์ผล</th>
             </tr>
             <?php
             $i = 1;
@@ -48,7 +63,15 @@ if( $action == false ){
                     <td><?=$i;?></td>
                     <td><?=$item['name'];?></td>
                     <td><?=$item['code'];?></td>
+                    <td><?=$item['date_checkup'];?></td>
                     <td align="center"><?=$item['yearchk'];?></td>
+                    <td>
+                        <ol>
+                            <li><a href="out_result.php?part=<?=$item['code'];?>">ลงข้อมูลซักประวัติ</a></li>
+                            <li><a href="report_chkup_self.php?camp=<?=$item['code'];?>">ผลตรวจรายบุคคล</a></li>
+                            <li><a href="report_summary_chkup61.php?camp=<?=$item['code'];?>">สรุปผลตรวจ</a></li>
+                        </ol>
+                    </td>
                 </tr>
                 <?php
                 $i++;
@@ -63,11 +86,12 @@ if( $action == false ){
     
     $company = input_post('company');
     $company_code = input_post('company_code');
+    $date_checkup = input_post('date_checkup');
     $year = get_year_checkup(true);
 
-    $sql = "INSERT INTO  `chk_company_list` (  `id` ,  `name` ,  `code` ,  `yearchk` ,  `status` ) 
+    $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
     VALUES (
-    NULL,  '$company',  '$company_code',  '$year',  '1'
+    NULL,'$company','$company_code','$date_checkup','$year',  '1'
     );";
     $save = $db->insert($sql);
 

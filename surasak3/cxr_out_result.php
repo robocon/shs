@@ -29,7 +29,9 @@ if ( $action === 'upload' ) {
     exit;
 }
 
+include 'chk_menu.php';
 ?>
+
 <form action="cxr_out_result.php" method="post" enctype="multipart/form-data">
     <div>
         [ทดสอบ] ระบบอัพเดทสถานะ X-Ray สำหรับตรวจสุขภาพบริษัท scg61
