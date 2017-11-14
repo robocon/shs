@@ -30,6 +30,11 @@ if ( $action === 'upload' ) {
 }
 
 include 'chk_menu.php';
+
+if( $_SESSION['smenucode'] !== 'ADM' ){
+    echo "อยู่ในช่วงการพัฒนาระบบ ยังไม่เปิดใช้บริการ";
+    exit;
+}
 ?>
 
 <form action="cxr_out_result.php" method="post" enctype="multipart/form-data">

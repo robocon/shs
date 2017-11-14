@@ -12,16 +12,29 @@ if( $action == false ){
         ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
         unset($_SESSION['x-msg']);
     }
+
+    $id = input_get('id');
+    $company = $company_code = $date_checkup = '';
+    if( $id !== false ){
+        $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
+        $db->select($sql);
+        $item = $db->get_item();
+
+        $name = $item['name'];
+        $code = $item['code'];
+        $date_checkup = $item['date_checkup'];
+        
+    }
     ?>
     <form action="chk_company.php" method="post">
         <div>
-            ชื่อบริษัท <input type="text" name="company">
+            ชื่อบริษัท <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
         </div>
         <div>
-            รหัสบริษัท <input type="text" name="company_code">
+            รหัสบริษัท <input type="text" name="company_code" value="<?=$code;?>">
         </div>
         <div>
-            วันที่ตรวจ <input type="text" name="date_checkup"> 
+            วันที่ตรวจ <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
             <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u></span>
             <div>
                 <span style="color: red;">ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
@@ -54,6 +67,7 @@ if( $action == false ){
                 <th>ช่วงเวลาที่ตรวจ</th>
                 <th>รอบปีงบประมาณ</th>
                 <th>ลงผล/พิมพ์ผล</th>
+                <th></th>
             </tr>
             <?php
             $i = 1;
@@ -72,6 +86,7 @@ if( $action == false ){
                             <li><a href="chk_report_all.php?camp=<?=$item['code'];?>">สรุปผลตรวจ</a></li>
                         </ol>
                     </td>
+                    <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไข</a></td>
                 </tr>
                 <?php
                 $i++;

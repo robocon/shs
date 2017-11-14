@@ -1,3 +1,6 @@
+<?php
+if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบบอีกครั้ง</a>'; exit; }
+?>
 <style type="text/css">
 .clearfix:after{
     content: "";
@@ -47,6 +50,7 @@
 <div class="chk_menu clearfix">
     <h3>ระบบจัดการข้อมูล ตรวจสุขภาพ</h3>
     <ul>
+        <li><a href="../nindex.htm">ระบบหลักรพ.</a></li>
         <li><a href="chk_company.php">จัดการรายชื่อบริษัท</a></li>
         <li><a href="chk_import_user.php">นำเข้าข้อมูลสู่ระบบ</a></li>
         <li><a href="cxr_out_result.php">นำเข้าข้อมูล X-Ray</a></li>

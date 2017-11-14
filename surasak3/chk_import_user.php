@@ -6,6 +6,12 @@ $db = Mysql::load();
 
 if( empty($action) ){
     include_once 'chk_menu.php';
+
+    if( $_SESSION['smenucode'] !== 'ADM' ){
+        echo "อยู่ในช่วงการพัฒนาระบบ ยังไม่เปิดใช้บริการ";
+        exit;
+    }
+
     if( isset($_SESSION['x-msg']) ){
         ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
         unset($_SESSION['x-msg']);

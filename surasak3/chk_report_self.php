@@ -270,174 +270,175 @@ while($result = mysql_fetch_assoc($row2)){
 		</td>
   	</tr>
 	<?php 
-	$sql55="SELECT * 
-	FROM resulthead 
-	WHERE (profilecode='CBC' OR profilecode='UA')
-	AND hn = '".$hn."' 
-	AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  
-	GROUP BY profilecode 
-	ORDER BY `autonumber` desc";
-	//echo $sql55;
-	$query55 = mysql_query($sql55) or die( mysql_error() );
-	$num=mysql_num_rows($query55);
-	$arrresult55 = mysql_fetch_array($query55);    
-	if($num==1 && $arrresult55["profilecode"]=="CBC"){
+		$sql55="SELECT * 
+		FROM resulthead 
+		WHERE (profilecode='CBC' OR profilecode='UA')
+		AND hn = '".$hn."' 
+		AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  
+		GROUP BY profilecode 
+		ORDER BY `autonumber` desc";
+		//echo $sql55;
+		$query55 = mysql_query($sql55) or die( mysql_error() );
+		$num=mysql_num_rows($query55);
+		$arrresult55 = mysql_fetch_array($query55);    
+		if($num==1 && $arrresult55["profilecode"]=="CBC"){
 	?>            
-  <tr>
-    <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
-      <tr>
-        <td height="30" align="center"><strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong> </td>
-      </tr>
-      <tr>
-        <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-              <td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
-              <td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
-              <td width="18%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-              <td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
-              <?php
-					/*
-					?>
-					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผลการตรวจ</strong></td>
-					<?php
-					*/
-					?>
-            </tr>
-            <?php 
-				$sql="SELECT * 
-				FROM resulthead 
-				WHERE profilecode='CBC' 
-				AND hn = '".$hn."' 
-				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
-				$query = mysql_query($sql) or die( mysql_error() );
-				$arrresult = mysql_fetch_array($query);
-				
-				/////
-
-				$strSQL = "SELECT * 
-				FROM resultdetail 
-				WHERE autonumber='".$arrresult['autonumber']."' 
-				AND ( 
-					labcode = 'WBC' 
-					|| labcode ='EOS' 
-					|| labcode ='HCT' 
-					|| labcode ='PLTC' 
-					|| labcode ='NEU' 
-					|| labcode ='LYMP' 
-				) ";
-				$objQuery = mysql_query($strSQL) or die( mysql_error() );
-
-				$wbc_result = '';
-				$neu_result = '';
-				$eos_result = '';
-				$hct_result = '';
-				$lymp_result = '';
-				$pltc_result = '';
-				$cbc_rows = mysql_num_rows($objQuery);
-				if($cbc_rows < 1){
-				  echo "<tr height='150'><td align='center' colspan='4' style='font-size: 20px; font-weight: bold;'>ไม่ได้รับการตรวจ</td></tr>";	
-				}else{				
-				while($objResult = mysql_fetch_array($objQuery)){
-
-					if($objResult["labcode"]=="WBC"){
-						$labmean="(การตรวจนับเม็ดเลือดขาว)";
-						$wbc_result = $objResult["result"];
-
-					}else if($objResult["labcode"]=="NEU"){
-						$labmean="(การติดเชื้อแบคทีเรีย)";
-						$neu_result = $objResult["result"];
-
-					}else if($objResult["labcode"]=="LYMP"){
-						$labmean="(การติดเชื้อไวรัส หรือมะเร็งเม็ดเลือด)";
-						$lymp_result = $objResult["result"];
-
-					}else if($objResult["labcode"]=="MONO"){
-						$labmean="(โรคเกี่ยวกับการแพ้ หรือมะเร็งเม็ดเลือด)";
-					}else if($objResult["labcode"]=="EOS"){
-						$labmean="(อาการของโรคภูมแพ้ หรือพยาธิ)";
-						$eos_result = $objResult["result"];
-
-					}else if($objResult["labcode"]=="BASO"){
-						$labmean="(กลุ่มโรคมะเร็งเม็ดเลือดขาว)";
-					}else if($objResult["labcode"]=="ATYP"){
-						$labmean="(***)";
-					}else if($objResult["labcode"]=="BAND"){
-						$labmean="(***)";
-					}else if($objResult["labcode"]=="OTHER"){
-						$labmean="(***)";
-					}else if($objResult["labcode"]=="NRBC"){
-						$labmean="(***)";
-					}else if($objResult["labcode"]=="RBC"){
-						$labmean="(เม็ดเลือดแดง)";
-					}else if($objResult["labcode"]=="HB"){
-						$labmean="(การตรวจวัดความเข้มข้นของฮีโมโกลบิน)";
-					}else if($objResult["labcode"]=="HCT"){
-						$labmean="(การวัดเม็ดเลือดแดงอัดแน่น)";
-						$hct_result = $objResult["result"];
-
-					}else if($objResult["labcode"]=="MCV"){
-						$labmean="(การวัดปริมาตรเม็ดเลือดแดงในแต่ละเม็ด)";
-					}else if($objResult["labcode"]=="MCH"){
-						$labmean="(น้ำหนักของฮีโมโกลบินในเม็ดเลือดแดง)";
-					}else if($objResult["labcode"]=="MCHC"){
-						$labmean="(ความเข้มข้นฮีโมโกลบินในเม็ดเลือดแดง)";
-					}else if($objResult["labcode"]=="PLTC"){
-						$labmean="(การตรวจนับเกล็ดเลือดในเลือด)";
-						$pltc_result = $objResult["result"];
-						
-					}else if($objResult["labcode"]=="PLTS"){
-						$labmean="";
-					}else if($objResult["labcode"]=="RBCMOR"){
-						$labmean="(รูปร่างเม็ดเลือดแดง)";
-					}
-			
-					if($objResult['flag']=='L' || $objResult['flag']=='H'){
-						$objResult["result"]="<strong>".$objResult["result"]."</strong>";
-						$showresult="ผิดปกติ";
-					}else{
-						$objResult["result"]=$objResult["result"];
-						$showresult="ปกติ";
-					}
-					?>
-            <tr height="25">
-              <td><strong>
-                <?=$objResult["labcode"];?>
-                </strong> <font size="-1">
-                  <?=$labmean;?>
-                </font></td>
-              <td align="center"><?=$objResult["result"];?></td>
-              <td align="center"><?=$objResult["normalrange"];?></td>
-              <td align="center"><?=$showresult;?></td>
-              <?php
-						/*
-						?>
-						<td align="center">
+	<tr>
+    	<td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
+			<tr>
+				<td height="30" align="center"><strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong> </td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
+							<td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
+							<td width="18%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 							<?php
-								$lab_result = $objResult["result"];
-								$pure_normalrange = str_replace(' ', '', $objResult["normalrange"]);
-								list($normal_min, $normal_max) = explode('-', $pure_normalrange);
-								// var_dump($normal_min);
-								// var_dump($normal_max);
-								// echo ( $normal_min >= $lab_result && $normal_max <= $lab_result ) ? 'ปกติ' : 'ผิดปกติ' ;
-
+							/*
 							?>
-						</td>
-						<?php
-						*/
-						?>
-            </tr>
-            <?php 
-				}} // End while
+							<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผลการตรวจ</strong></td>
+							<?php
+							*/
+							?>
+						</tr>
+						<?php 
+							$sql="SELECT * 
+							FROM resulthead 
+							WHERE profilecode='CBC' 
+							AND hn = '".$hn."' 
+							AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
+							$query = mysql_query($sql) or die( mysql_error() );
+							$arrresult = mysql_fetch_array($query);
+				
+							/////
+
+							$strSQL = "SELECT * 
+							FROM resultdetail 
+							WHERE autonumber='".$arrresult['autonumber']."' 
+							AND ( 
+								labcode = 'WBC' 
+								|| labcode ='EOS' 
+								|| labcode ='HCT' 
+								|| labcode ='PLTC' 
+								|| labcode ='NEU' 
+								|| labcode ='LYMP' 
+							) ";
+							$objQuery = mysql_query($strSQL) or die( mysql_error() );
+
+							$wbc_result = '';
+							$neu_result = '';
+							$eos_result = '';
+							$hct_result = '';
+							$lymp_result = '';
+							$pltc_result = '';
+							$cbc_rows = mysql_num_rows($objQuery);
+							if($cbc_rows < 1){
+								echo "<tr height='150'><td align='center' colspan='4' style='font-size: 20px; font-weight: bold;'>ไม่ได้รับการตรวจ</td></tr>";	
+							}else{				
+								while($objResult = mysql_fetch_array($objQuery)){
+
+									if($objResult["labcode"]=="WBC"){
+										$labmean="(การตรวจนับเม็ดเลือดขาว)";
+										$wbc_result = $objResult["result"];
+
+									}else if($objResult["labcode"]=="NEU"){
+										$labmean="(การติดเชื้อแบคทีเรีย)";
+										$neu_result = $objResult["result"];
+
+									}else if($objResult["labcode"]=="LYMP"){
+										$labmean="(การติดเชื้อไวรัส หรือมะเร็งเม็ดเลือด)";
+										$lymp_result = $objResult["result"];
+
+									}else if($objResult["labcode"]=="MONO"){
+										$labmean="(โรคเกี่ยวกับการแพ้ หรือมะเร็งเม็ดเลือด)";
+									}else if($objResult["labcode"]=="EOS"){
+										$labmean="(อาการของโรคภูมแพ้ หรือพยาธิ)";
+										$eos_result = $objResult["result"];
+
+									}else if($objResult["labcode"]=="BASO"){
+										$labmean="(กลุ่มโรคมะเร็งเม็ดเลือดขาว)";
+									}else if($objResult["labcode"]=="ATYP"){
+										$labmean="(***)";
+									}else if($objResult["labcode"]=="BAND"){
+										$labmean="(***)";
+									}else if($objResult["labcode"]=="OTHER"){
+										$labmean="(***)";
+									}else if($objResult["labcode"]=="NRBC"){
+										$labmean="(***)";
+									}else if($objResult["labcode"]=="RBC"){
+										$labmean="(เม็ดเลือดแดง)";
+									}else if($objResult["labcode"]=="HB"){
+										$labmean="(การตรวจวัดความเข้มข้นของฮีโมโกลบิน)";
+									}else if($objResult["labcode"]=="HCT"){
+										$labmean="(การวัดเม็ดเลือดแดงอัดแน่น)";
+										$hct_result = $objResult["result"];
+
+									}else if($objResult["labcode"]=="MCV"){
+										$labmean="(การวัดปริมาตรเม็ดเลือดแดงในแต่ละเม็ด)";
+									}else if($objResult["labcode"]=="MCH"){
+										$labmean="(น้ำหนักของฮีโมโกลบินในเม็ดเลือดแดง)";
+									}else if($objResult["labcode"]=="MCHC"){
+										$labmean="(ความเข้มข้นฮีโมโกลบินในเม็ดเลือดแดง)";
+									}else if($objResult["labcode"]=="PLTC"){
+										$labmean="(การตรวจนับเกล็ดเลือดในเลือด)";
+										$pltc_result = $objResult["result"];
+										
+									}else if($objResult["labcode"]=="PLTS"){
+										$labmean="";
+									}else if($objResult["labcode"]=="RBCMOR"){
+										$labmean="(รูปร่างเม็ดเลือดแดง)";
+									}
 							
-				?>
-            <tr height="25">
-              <td colspan="4">&nbsp;</td>
-            </tr>
-        </table></td>
-      </tr>
-    </table></td>
-  </tr> 
-<? }else if($num==1 && $arrresult55["profilecode"]=="UA"){ ?>
+									if($objResult['flag']=='L' || $objResult['flag']=='H'){
+										$objResult["result"]="<strong>".$objResult["result"]."</strong>";
+										$showresult="ผิดปกติ";
+									}else{
+										$objResult["result"]=$objResult["result"];
+										$showresult="ปกติ";
+									}
+									?>
+									<tr height="23">
+										<td><strong><?=$objResult["labcode"];?></strong> <font size="-1"><?=$labmean;?></font></td>
+										<td align="center"><?=$objResult["result"];?></td>
+										<td align="center"><?=$objResult["normalrange"];?></td>
+										<td align="center"><?=$showresult;?></td>
+										<?php
+										/*
+										?>
+										<td align="center">
+											<?php
+												$lab_result = $objResult["result"];
+												$pure_normalrange = str_replace(' ', '', $objResult["normalrange"]);
+												list($normal_min, $normal_max) = explode('-', $pure_normalrange);
+												// var_dump($normal_min);
+												// var_dump($normal_max);
+												// echo ( $normal_min >= $lab_result && $normal_max <= $lab_result ) ? 'ปกติ' : 'ผิดปกติ' ;
+
+											?>
+										</td>
+										<?php
+										*/
+										?>
+									</tr>
+									<?php 
+								}
+							} // End while
+							?>
+							<tr height="23">
+								<td colspan="4">&nbsp;</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr> 
+	<?php 
+	}else if($num==1 && $arrresult55["profilecode"]=="UA"){ 
+	?>
   <tr>
     <td colspan="2"  valign="top"><table width="100%" height="77" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
       <tr>
@@ -561,14 +562,14 @@ while($result = mysql_fetch_assoc($row2)){
 			}
 
 		?>
-            <tr height="25">
+            <tr height="23">
               <td><strong><?=$labmean;?></strong></td>
               <td align="center"><?=$objResult["result"];?></td>
               <td align="center"><?=$normalrange;?></td>
               <td width="3%" align="center"><?=$showresultua;?></td>
             </tr>
             <? }?>
-            <tr height="25">
+            <tr height="23">
               <td>&nbsp;</td>
               <td align="center">&nbsp;</td>
               <td align="center">&nbsp;</td>
@@ -702,7 +703,7 @@ while($result = mysql_fetch_assoc($row2)){
 						$showresult="ปกติ";
 					}
 					?>
-					<tr height="25">
+					<tr height="23">
 						<td><strong><?=$objResult["labcode"];?></strong> <font size="-1"><?=$labmean;?></font></td>
 						<td align="center"><?=$objResult["result"];?></td>
 						<td align="center"><?=$objResult["normalrange"];?></td>
@@ -729,7 +730,8 @@ while($result = mysql_fetch_assoc($row2)){
 				}} // End while
 							
 				?>                   
-        </table>		</td>
+        </table>
+		</td>
       </tr>
     </table></td>
     <td width="50%"  valign="top"><table width="100%" height="77" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
@@ -854,7 +856,7 @@ while($result = mysql_fetch_assoc($row2)){
 			}
 
 		?>
-          <tr height="25">
+          <tr height="23">
             <td><strong><?=$labmean;?></strong></td>
             <td align="center"><?=$objResult["result"];?></td>
 			<td align="center"><?=$normalrange;?></td>
@@ -865,9 +867,8 @@ while($result = mysql_fetch_assoc($row2)){
       </tr>
     </table></td>
   </tr>
-<? } ?>  
-  <tr>
-    <td colspan="2"  valign="top">
+<? } // end from else ?>  
+  
  <?php
 
 $sql1 = "SELECT * 
@@ -888,454 +889,435 @@ WHERE (
 	OR profilecode='HDL' 
 	OR profilecode='LDL'
 	OR profilecode='10001'  
-	OR profilecode='OCCULT'
+	#OR profilecode='OCCULT'
 	OR profilecode='ABOC'	
 	OR profilecode='METAMP'	
 	)  
 AND hn = '".$hn."' 
-AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60'  ) 
+AND ( 
+	clinicalinfo ='ตรวจสุขภาพประจำปี60' 
+	OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+	OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60'  ) 
 ORDER BY `autonumber` asc";
 //echo $sql1."<br>";
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
  if( $other_result_row > 0 ){ 
- ?> </td>
-  </tr>
-  <tr>
-    <td colspan="2"  valign="top"><table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
-      <tr>
-        <td align="center" height="30">
-			<strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ</u></strong>		</td>
-      </tr>
-      <tr>
-        <td height="52" valign="top" style="padding: 2px;">
-		<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
-            <tr>
-              <td width="32%" valign="top" bgcolor="#CCCCCC"><strong>รายการตรวจ</strong></td>
-              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
-              <td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-              <td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
-            </tr>
-            <?
-$i=0;
-while($arrresult = mysql_fetch_array($query1)){
-		$i++;
-		//echo $i;
-
-$strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' limit 0,1";
-//echo "===>".$strSQL1;
-$objQuery1 = mysql_query($strSQL1);
-list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
-
-		
-$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
-FROM resultdetail  
-WHERE autonumber='".$arrresult['autonumber']."' 
-AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL')";
-//echo $strSQL;
-$objQuery = mysql_query($strSQL);
-while($objResult = mysql_fetch_array($objQuery)){
-
-	if($objResult["labname"]=="Blood Sugar"){
-		$labmean="(ระดับน้ำตาลในเลือด)";
-	}else if($objResult["labname"]=="BUN"){
-		$labmean="(การทำงานของไต)";
-	}else if($objResult["labname"]=="Creatinine"){
-		$labmean="(การทำงานของไต)";
-	}else if($objResult["labname"]=="Uric acid"){
-		$labmean="(ยูริคในเลือด)";
-	}else if($objResult["labname"]=="Cholesterol"){
-		$labmean="(ไขมันในเลือด)";
-	}else if($objResult["labname"]=="HDL"){
-		$labmean="(ไขมันดี)";			
-	}else if($objResult["labname"]=="Triglyceride"){
-		$labmean="(ไขมันในเลือด)";
-	}else if($objResult["labname"]=="LDL"){
-		$labmean="(ไขมันเลว)";	
-	}else if($objResult["labname"]=="LDLC"){
-		$labmean="(ไขมันเลว)";												
-	}else if($objResult["labname"]=="SGOT(AST)"){
-		$labmean="(การทำงานของตับ)";
-	}else if($objResult["labname"]=="SGPT(ALT)"){
-		$labmean="(การทำงานของตับ)";
-	}else if($objResult["labname"]=="Alkaline phosphatase"){
-		$labmean="(การทำงานของตับ)";
-	}else if($objResult["labname"]=="HBsAg"){
-		$labmean="(เชื้อไวรัสตับอักเสบบี)";
-	}else if($objResult["labname"]=="Anti-HBs"){
-		$labmean="(ภูมิต้านทานไวรัสตับอักเสบบี)";
-	}else if($objResult["labname"]=="Occult blood"){
-		$labmean="(เลือดในอุจจาระ)";
-	}else if($objResult["labname"]=="ABO Cell group"){
-		$labmean="(กรุ๊ปเลือด)";
-	}else if($objResult["labname"]=="Metamphetamine"){
-		$labmean="(การตรวจหาสารเสพติด)";
-	}
-			
-	if( $objResult["labcode"]=='GLU'){
-		if( $objResult["result"] >= 74 && $objResult["result"] <= 106 ){
-			$app="ระดับน้ำตาลในเลือดมีค่าอยู่ในเกณฑ์ปกติ";
-		}else if( $objResult["result"] > 106 && $objResult["result"] <= 125 ){
-			$app="ระดับน้ำตาลในเลือดมีค่าสูงผิดปกติ";
-		}else if( $objResult["result"] > 125 ){
-			$app="ระดับน้ำตาลในเลือดมีค่าสูงมากผิดปกติ";	
-		}else if( $objResult["result"] < 74 ){
-			$app="ระดับน้ำตาลในเลือดมีค่าต่ำผิดปกติ";	
-		}
-	}
-
-if($objResult["labcode"]=='BUN'){
-	if($objResult["result"]>18){
-		$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
-	}else if($objResult["result"]>=7 && $objResult["result"]<=18){
-		$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else if($objResult["result"]<7 ){
-		$app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
-	}
-	
-}
-
-if($objResult["labcode"]=='CREA'){
-	if($objResult["result"]>1.3){
-		$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
-	}else if($objResult["result"]>=0.6 && $objResult["result"]<=1.3){
-		$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else if($objResult["result"]<0.6){
-		$app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
-	}
-}
-
-if($objResult["labcode"]=='URIC'){
-	if($objResult["result"]>7.2){
-		$app="ผิดปกติ ควรงดเครื่องดื่มที่มีแอลกอฮอล์ เครื่องในสัตว์ สัตว์ปีก";	
-	}else if($objResult["result"] >=2.6 && $objResult["result"] <=7.2){
-		$app="ระดับกรดยูริคมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else if($objResult["result"]<2.6){
-		$app="ผิดปกติ ระดับกรดยูริคต่ำกว่าปกติ";	
-	}
-}
-
-
-if($objResult["labcode"]=='CHOL'){
-	if($objResult["result"]<=200){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>200){
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}else	if($objResult["result"]>300){
-		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
-	}
-}
-
-if($objResult["labcode"]=='HDL'){
-	if($objResult["result"]>=40 && $objResult["result"]<=60){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>60){  //สูงดี
-		$app="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ";	
-	}else	if($objResult["result"]<40){  //ต่ำไม่ดี
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}
-}
-
-if($objResult["labcode"]=='TRIG'){
-	if($objResult["result"]<=150){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>150 && $objResult["result"]<250){
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}else	if($objResult["result"]>250){
-		$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
-	}
-}
-
-if($objResult["labcode"]=='10001'){
-	if($objResult["result"]>=0 && $objResult["result"]<=100){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>100){
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}
-}
-
-if($objResult["labcode"]=='LDL'){
-	if($objResult["result"]>=0 && $objResult["result"]<=100){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>100){
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}
-}
-
-if($objResult["labcode"]=='LDLC'){
-	if($objResult["result"]>=0 && $objResult["result"]<=100){
-		$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-	}else	if($objResult["result"]>100){
-		$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
-	}
-}
-
-if($objResult["labcode"]=='AST'){  //SGOT
-	if($objResult["result"]>=15 && $objResult["result"]<=37){
-		$app="การทำงานของตับปกติ";	
-	}else	if($objResult["result"]>37){
-		$app="การทำงานของตับผิดปกติ";	
-	}else	if($objResult["result"]<15){
-		$app="การทำงานของตับผิดปกติ";	
-	}
-}
-if($objResult["labcode"]=='ALT'){  //SGPT
-	if($objResult["result"]>=0 && $objResult["result"]<=50){
-		$app="การทำงานของตับปกติ";		
-	}else{
-		$app="การทำงานของตับผิดปกติ";	
-	}
-}
-
-if($objResult["labcode"]=='ALP'){  //ALK
-	if($objResult["result"]>=46 && $objResult["result"]<=116){
-		$app="การทำงานของตับปกติ";	
-	}else	if($objResult["result"]>116){
-		$app="การทำงานของตับผิดปกติ";	
-	}else	if($objResult["result"]<46){
-		$app="การทำงานของตับผิดปกติ";	
-	}
-}
-
-if($objResult["labcode"]=='HBSAG'){  //HBSAG
-	if($objResult["result"]=="Negative"){
-		$app="ปกติ";	
-	}else if($objResult["result"]=="Positive"){
-		$app="ผิดปกติ";	
-	}
-}
-
-if($objResult["labcode"]=='ANTIHB'){  //HBSAB
-	if($objResult["result"]=="Negative"){
-		$app="ปกติ";	
-	}else if($objResult["result"]=="Positive"){
-		$app="ผิดปกติ";	
-	}
-}
-
-if($objResult["labcode"]=='OCCULT'){  //STOCB
-	if($objResult["result"]=="Negative"){
-		$app="ปกติ";	
-	}else if($objResult["result"]=="Positive"){
-		$app="ผิดปกติ";	
-	}
-}
-
-if($objResult["labcode"]=='ABOC'){  //STOCB
-	$app="";	
-}
-
-if($objResult["labcode"]=='METAMP'){  //METAMP
-	if($objResult["result"]=="Negative"){
-		$app="ปกติ";	
-	}else if($objResult["result"]=="Positive"){
-		$app="ผิดปกติ";	
-	}
-}
-
-if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
-?>
-		
-            <tr height="25">
-              <td width="34%" valign="top"><strong><?=$objResult["labname"];?> <font size="-1"><?=$labmean;?></font></td>
-              <td width="8%" valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
-              <td width="9%" valign="top"><?=$objResult["normalrange"];?></td>
-              <td width="49%" valign="top" style="font-size:16px;"><?=$app;?></td>
-            </tr>
-            <? 
-}
-		  } 
-		}
-	?>
-        </table></td>
-      </tr>
-    </table></td>
-  </tr>
-  <tr>
-    <td colspan="2"  valign="top">
-	<? } ?>	</td>
-  </tr>
-	<?php
-
-	$normal_outlab = array(
-		'AFP' => '12',
-		'CA125' => '0-35',
-		'CA153' => '0-35',
-		'CA199' => '0-39',
-		'CEA' => '0-4.7',
-		'PSA' => '0-4',
-	);
-
-	$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`,c.`flag`
-	FROM (
-
-		SELECT MAX(`autonumber`) AS `autonumber`
-		FROM `resulthead` 
-		WHERE `hn` = '".$hn."' 
-		AND ( `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
-		AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' )
-		GROUP BY `profilecode` 
-
-	) AS b 
-	LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
-	LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber`";
-	$q = mysql_query($sql) or die( mysql_error() );
-	$outlab_row = mysql_num_rows($q);
-	if( $outlab_row > 0 ){
-	?>
+ ?>
 	<tr>
-		<td colspan="2">
-			<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">
-				<tr>
-					<td colspan="2" class="text" style="text-align: center; text-decoration: underline; font-size: 20px; font-weight: bold;">LAB อื่นๆ</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<table width="100%">
-							<tr class="text3" style="background-color: #CCCCCC;">
-								<td><b>รายการตรวจ</b></td>
-								<td><b>ค่าปกติ</b></td>
-								<td><b>ผลการตรวจ</b></td>
-								<td><b>สรุปผลการตรวจ</b></td>
-							</tr>
-							<?php
-							while( $outlab = mysql_fetch_assoc($q)){
-								
-								if($outlab['labcode']=="38302"){
-									$outlab_code = "<strong>PAP SMEAR</strong> <font size='-1'>(การตรวจหามะเร็งปากมดลูก)</font>";
-								}else if( $outlab['labcode']=="OCCULT" ){
-									$outlab_code = "<strong>FOBT</strong> <font size='-1'>(การตรวจเลือดในอุจจาระ)</font>";
-								}else{
-									$outlab_code = $outlab['labcode'];
-								}
-								// เอาค่าแปลกๆออกไปก่อน
-								$outlab_result = str_replace(array('<','>'), '', $outlab['result']);
-
-								// ค่า normal range ที่เป็นพวก outlab
-								$outlab_range = $normal_outlab[$outlab_code];
-								if($outlab_result=="OL" || $outlab_result=="ol"){
-									if($hn=="49-2672"){
-										$outlab_result="ผิดปกติ";
-									}else{
-										$outlab_result="&nbsp;";
-									}
-								}else{
-									$outlab_result;
-								}
-							?>
-							<tr class="text3">
-								<td><?=$outlab_code;?></td>
-								<td><?=$outlab_range;?></td>
-								<td><?=$outlab_result;?></td>
-								<td>
-									<?php
-									// default เป็นค่าปกติ
-									if($hn=="49-2672"){
-										$result_outlab_txt = 'ผิดปกติ...นัดพบสูตินารีแพทย์';	
-									}else{
-										$result_outlab_txt = 'ปกติ';
-										if( $outlab['flag'] != 'N' ){
-											$result_outlab_txt = 'ผิดปกติ';
-										}
-									}
-									/*
-									if( strpos($outlab_range, '-') !== false ){
-
-										list($outlab_min, $outlab_max) = explode('-', $outlab_range );
-										if( $outlab_result >= $outlab_min && $outlab_result <= $outlab_max ){
-											$result_outlab_txt = 'ปกติ';
-										}
-
-									}else{ // กรณีไม่มีขีด
-										if( $outlab_result >= 0 && $outlab_result <= $outlab_range ){
-											$result_outlab_txt = 'ปกติ';
-										}
-									}
-									*/
-
-									echo $result_outlab_txt;
-									?>								</td>
-							</tr>
-							<?php
-							}
-							?>
-						</table>					</td>
-				</tr>
-			</table>		</td>
+		<td colspan="2"  valign="top"></td>
 	</tr>
-	<?php
-	}
-	?>
+	<tr>
+		<td colspan="2"  valign="top">
+			<table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+				<tr>
+					<td align="center" height="30">
+					<strong class="text" style="font-size:20px"><u>ผลการตรวจทางห้องปฏิบัติการ</u></strong>		</td>
+				</tr>
+				<tr>
+					<td height="52" valign="top" style="padding: 2px;">
+						<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="32%" valign="top" bgcolor="#CCCCCC"><strong>รายการตรวจ</strong></td>
+								<td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
+								<td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+								<td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
+							</tr>
+							<?php
+							$i=0;
+							while($arrresult = mysql_fetch_array($query1)){
+								$i++;
+								//echo $i;
+
+								$strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' limit 0,1";
+								//echo "===>".$strSQL1;
+								$objQuery1 = mysql_query($strSQL1);
+								list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
+
+								
+								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
+								FROM resultdetail  
+								WHERE autonumber='".$arrresult['autonumber']."' 
+								AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL')";
+								//echo $strSQL;
+								$objQuery = mysql_query($strSQL);
+								while($objResult = mysql_fetch_array($objQuery)){
+
+									if($objResult["labname"]=="Blood Sugar"){
+										$labmean="(ระดับน้ำตาลในเลือด)";
+									}else if($objResult["labname"]=="BUN"){
+										$labmean="(การทำงานของไต)";
+									}else if($objResult["labname"]=="Creatinine"){
+										$labmean="(การทำงานของไต)";
+									}else if($objResult["labname"]=="Uric acid"){
+										$labmean="(ยูริคในเลือด)";
+									}else if($objResult["labname"]=="Cholesterol"){
+										$labmean="(ไขมันในเลือด)";
+									}else if($objResult["labname"]=="HDL"){
+										$labmean="(ไขมันดี)";			
+									}else if($objResult["labname"]=="Triglyceride"){
+										$labmean="(ไขมันในเลือด)";
+									}else if($objResult["labname"]=="LDL"){
+										$labmean="(ไขมันเลว)";	
+									}else if($objResult["labname"]=="LDLC"){
+										$labmean="(ไขมันเลว)";												
+									}else if($objResult["labname"]=="SGOT(AST)"){
+										$labmean="(การทำงานของตับ)";
+									}else if($objResult["labname"]=="SGPT(ALT)"){
+										$labmean="(การทำงานของตับ)";
+									}else if($objResult["labname"]=="Alkaline phosphatase"){
+										$labmean="(การทำงานของตับ)";
+									}else if($objResult["labname"]=="HBsAg"){
+										$labmean="(เชื้อไวรัสตับอักเสบบี)";
+									}else if($objResult["labname"]=="Anti-HBs"){
+										$labmean="(ภูมิต้านทานไวรัสตับอักเสบบี)";
+									}else if($objResult["labname"]=="Occult blood"){
+										$labmean="(เลือดในอุจจาระ)";
+									}else if($objResult["labname"]=="ABO Cell group"){
+										$labmean="(กรุ๊ปเลือด)";
+									}else if($objResult["labname"]=="Metamphetamine"){
+										$labmean="(การตรวจหาสารเสพติด)";
+									}
+											
+									if( $objResult["labcode"]=='GLU'){
+										if( $objResult["result"] >= 74 && $objResult["result"] <= 106 ){
+											$app="ระดับน้ำตาลในเลือดมีค่าอยู่ในเกณฑ์ปกติ";
+										}else if( $objResult["result"] > 106 && $objResult["result"] <= 125 ){
+											$app="ระดับน้ำตาลในเลือดมีค่าสูงผิดปกติ";
+										}else if( $objResult["result"] > 125 ){
+											$app="ระดับน้ำตาลในเลือดมีค่าสูงมากผิดปกติ";	
+										}else if( $objResult["result"] < 74 ){
+											$app="ระดับน้ำตาลในเลือดมีค่าต่ำผิดปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='BUN'){
+										if($objResult["result"]>18){
+											$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
+										}else if($objResult["result"]>=7 && $objResult["result"]<=18){
+											$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else if($objResult["result"]<7 ){
+											$app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
+										}
+										
+									}
+
+									if($objResult["labcode"]=='CREA'){
+										if($objResult["result"]>1.3){
+											$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
+										}else if($objResult["result"]>=0.6 && $objResult["result"]<=1.3){
+											$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else if($objResult["result"]<0.6){
+											$app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='URIC'){
+										if($objResult["result"]>7.2){
+											$app="ผิดปกติ ควรงดเครื่องดื่มที่มีแอลกอฮอล์ เครื่องในสัตว์ สัตว์ปีก";	
+										}else if($objResult["result"] >=2.6 && $objResult["result"] <=7.2){
+											$app="ระดับกรดยูริคมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else if($objResult["result"]<2.6){
+											$app="ผิดปกติ ระดับกรดยูริคต่ำกว่าปกติ";	
+										}
+									}
+
+
+									if($objResult["labcode"]=='CHOL'){
+										if($objResult["result"]<=200){
+											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else	if($objResult["result"]>200){
+											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+										}else	if($objResult["result"]>300){
+											$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
+										}
+									}
+
+									if($objResult["labcode"]=='HDL'){
+										if($objResult["result"]>=40 && $objResult["result"]<=60){
+											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else	if($objResult["result"]>60){  //สูงดี
+											$app="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ";	
+										}else	if($objResult["result"]<40){  //ต่ำไม่ดี
+											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+										}
+									}
+
+									if($objResult["labcode"]=='TRIG'){
+										if($objResult["result"]<=150){
+											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else	if($objResult["result"]>150 && $objResult["result"]<250){
+											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+										}else	if($objResult["result"]>250){
+											$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
+										}
+									}
+
+									if($objResult["labcode"]=='10001'){
+										if($objResult["result"]>=0 && $objResult["result"]<=100){
+											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else	if($objResult["result"]>100){
+											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+										}
+									}
+
+									if($objResult["labcode"]=='LDL'){
+										if($objResult["result"]>=0 && $objResult["result"]<=100){
+											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else	if($objResult["result"]>100){
+											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+										}
+									}
+
+									if($objResult["labcode"]=='LDLC'){
+										if($objResult["result"]>=0 && $objResult["result"]<=100){
+											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
+										}else	if($objResult["result"]>100){
+											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+										}
+									}
+
+									if($objResult["labcode"]=='AST'){  //SGOT
+										if($objResult["result"]>=15 && $objResult["result"]<=37){
+											$app="การทำงานของตับปกติ";	
+										}else	if($objResult["result"]>37){
+											$app="การทำงานของตับผิดปกติ";	
+										}else	if($objResult["result"]<15){
+											$app="การทำงานของตับผิดปกติ";	
+										}
+									}
+									if($objResult["labcode"]=='ALT'){  //SGPT
+										if($objResult["result"]>=0 && $objResult["result"]<=50){
+											$app="การทำงานของตับปกติ";		
+										}else{
+											$app="การทำงานของตับผิดปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='ALP'){  //ALK
+										if($objResult["result"]>=46 && $objResult["result"]<=116){
+											$app="การทำงานของตับปกติ";	
+										}else	if($objResult["result"]>116){
+											$app="การทำงานของตับผิดปกติ";	
+										}else	if($objResult["result"]<46){
+											$app="การทำงานของตับผิดปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='HBSAG'){  //HBSAG
+										if($objResult["result"]=="Negative"){
+											$app="ปกติ";	
+										}else if($objResult["result"]=="Positive"){
+											$app="ผิดปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='ANTIHB'){  //HBSAB
+										if($objResult["result"]=="Negative"){
+											$app="ปกติ";	
+										}else if($objResult["result"]=="Positive"){
+											$app="ผิดปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='OCCULT'){  //STOCB
+										if($objResult["result"]=="Negative"){
+											$app="ปกติ";	
+										}else if($objResult["result"]=="Positive"){
+											$app="ผิดปกติ";	
+										}
+									}
+
+									if($objResult["labcode"]=='ABOC'){  //STOCB
+										$app="";	
+									}
+
+									if($objResult["labcode"]=='METAMP'){  //METAMP
+										if($objResult["result"]=="Negative"){
+											$app="ปกติ";	
+										}else if($objResult["result"]=="Positive"){
+											$app="ผิดปกติ";	
+										}
+									}
+
+									if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
+									?>
+									<tr height="23">
+										<td width="34%" valign="top"><strong><?=$objResult["labname"];?> <font size="-1"><?=$labmean;?></font></td>
+										<td width="8%" valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
+										<td width="9%" valign="top"><?=$objResult["normalrange"];?></td>
+										<td width="49%" valign="top" style="font-size:16px;"><?=$app;?></td>
+									</tr>
+									<? 
+									}
+								} // End while resultdetail 
+							}// End resulthead
+
+							// lab อื่นๆ
+
+							$normal_outlab = array(
+								'AFP' => '12',
+								'CA125' => '0-35',
+								'CA153' => '0-35',
+								'CA199' => '0-39',
+								'CEA' => '0-4.7',
+								'PSA' => '0-4',
+							);
+						
+							// ตัด 38302 PAP SMEAR ออกไปก่อน
+							$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`,c.`flag`
+							FROM (
+						
+								SELECT MAX(`autonumber`) AS `autonumber`
+								FROM `resulthead` 
+								WHERE `hn` = '".$hn."' 
+								AND ( 
+									`clinicalinfo` = 'ตรวจสุขภาพประจำปี60' 
+									OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+									OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
+									OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
+								AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' ) 
+								GROUP BY `profilecode` 
+						
+							) AS b 
+							LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
+							LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` 
+							#WHERE c.`labcode` != '38302'";
+							$q = mysql_query($sql) or die( mysql_error() );
+							$outlab_row = mysql_num_rows($q);
+							if( $outlab_row > 0 ){
+
+
+								while( $outlab = mysql_fetch_assoc($q)){
+									// dump($outlab['labcode']);
+									if($outlab['labcode']=="38302"){
+										// $outlab_code = "<strong>PAP SMEAR</strong> <font size='-1'>(การตรวจหามะเร็งปากมดลูก)</font>";
+									}else if( $outlab['labcode']=="OCCULT" ){
+										$outlab_code = "<strong>FOBT</strong> <font size='-1'>(การตรวจเลือดในอุจจาระ)</font>";
+									}else if( $outlab['labcode']=="AFP" ){
+										$outlab_code = "<strong>AFP</strong> <font size='-1'>(การตรวจมะเร็งตับ)</font>";
+									}else if( $outlab['labcode']=="CEA" ){
+										$outlab_code = "<strong>AFP</strong> <font size='-1'>(การตรวจมะเร็งลำไส้)</font>";
+									}else if( $outlab['labcode']=="PSA" ){
+										$outlab_code = "<strong>AFP</strong> <font size='-1'>(การตรวจมะเร็งต่อมลูกหมาก)</font>";
+									}else{
+										$outlab_code = $outlab['labcode'];
+									}
+									// เอาค่าแปลกๆออกไปก่อน
+									$outlab_result = str_replace(array('<','>'), '', $outlab['result']);
+	
+									// ค่า normal range ที่เป็นพวก outlab
+									$outlab_range = $normal_outlab[$outlab['labcode']];
+									if($outlab_result=="OL" || $outlab_result=="ol"){
+										// if($hn=="49-2672"){
+										// 	$outlab_result="ผิดปกติ";
+										// }else{
+											$outlab_result="&nbsp;";
+										// }
+									}
+								?>
+								<tr height="23">
+									<td><?=$outlab_code;?></td>
+									<td><?=$outlab_result;?></td>
+									<td><?=$outlab_range;?></td>
+									<td>
+										<?php
+										// default เป็นค่าปกติ
+										// if($hn=="49-2672"){
+										// 	$result_outlab_txt = 'ผิดปกติ...นัดพบสูตินารีแพทย์';	
+										// }else{
+											$result_outlab_txt = 'ปกติ';
+											if( $outlab['flag'] != 'N' ){
+												$result_outlab_txt = 'ผิดปกติ';
+											}
+										// }
+	
+										echo $result_outlab_txt;
+										?>
+									</td>
+								</tr>
+								<?php
+								}
+
+
+
+							}
+
+
+
+							?>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2"  valign="top"></td>
+	</tr>
+<?php 
+} 
+?>
   <tr>
     <td colspan="2"  valign="top">
 		<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
         <tr>
           <td valign="bottom"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+
             <tr valign="middle">
               <td width="24%"><strong class="text" style="font-size:18px"> <u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u> </strong> </td>
               <td width="76%"><strong class="text" style="margin-left: 9px;"> :
                 <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"];} ?>
               </strong> </td>
             </tr>
-<?php if( !empty($result['va']) ){ ?>           
-            <tr>
-              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตา</u> </strong> </td>
-              <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result['va'];?>
-              </strong> </td>
-            </tr>
-<? } ?>
-<?php if( !empty($result['eye']) ){ ?>           
-            <tr>
-              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
-              <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result['eye']." ".$result['eye_detail'];?>
-              </strong> </td>
-            </tr>
-<? } ?>  
-<?php if( !empty($result['pt']) ){ ?>           
-            <tr>
-              <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
-              <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result['pt']." ".$result['pt_detail'];?>
-              </strong> </td>
-            </tr>
-<? } ?>   
-					<?
-					 $sql3="select * from 
-					 patdata where 
-					 hn='".$hn."' 
-					 and code='51410' 
-					 and date like '$dateekg%' 
-					 order by row_id desc";
-					//echo $sql3;
-					$query3=mysql_query($sql3);
-					$num3=mysql_num_rows($query3);
-					if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
-					?>
-					<tr>
-						<td>
-							<strong class="text" style="font-size:18px">
-								<u>ผลการตรวจคลื่นหัวใจไฟฟ้า (EKG)</u>
-							</strong>
-						</td>
-						<td>
-							<strong class="text" style="margin-left: 9px;"> : <? if($hn=="56-9685"){ echo $result["ekg"]; }else{ echo "ปกติ"; } ?></strong>
-						</td>
-					</tr>
-					<? }else if($result["hn"]=="60-7754"){  //ไม่ได้คิดค่าใช้จ่าย ?>  
-					<tr>
-						<td>
-							<strong class="text" style="font-size:18px">
-								<u>ผลการตรวจคลื่นหัวใจไฟฟ้า (EKG)</u>
-							</strong>
-						</td>
-						<td>
-							<strong class="text" style="margin-left: 9px;"> : <?  echo "ปกติ"; ?></strong>
-						</td>
-					</tr>
-          <? } ?>   
+
+			<?php if( !empty($result['va']) ){ ?>           
+				<tr>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตา</u> </strong> </td>
+					<td><strong class="text" style="margin-left: 9px;"> :
+					<?=$result['va'];?>
+					</strong> </td>
+				</tr>
+			<?php } ?>
+			<?php if( !empty($result['eye']) ){ ?>           
+				<tr>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
+					<td><strong class="text" style="margin-left: 9px;"> :
+					<?=$result['eye']." ".$result['eye_detail'];?>
+					</strong> </td>
+				</tr>
+			<?php } ?>  
+			<?php if( !empty($result['pt']) ){ ?>           
+				<tr>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
+					<td><strong class="text" style="margin-left: 9px;"> :
+					<?=$result['pt']." ".$result['pt_detail'];?>
+					</strong> </td>
+				</tr>
+			<?php } ?>   
+			<?php
+				$sql3="select * from 
+				patdata where 
+				hn='".$hn."' 
+				and code='51410' 
+				and date like '$dateekg%' 
+				order by row_id desc";
+			$query3=mysql_query($sql3);
+			$num3=mysql_num_rows($query3);
+			if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
+			?>
+			<tr>
+				<td>
+					<strong class="text" style="font-size:18px">
+						<u>ผลการตรวจคลื่นหัวใจไฟฟ้า (EKG)</u>
+					</strong>
+				</td>
+				<td>
+					<strong class="text" style="margin-left: 9px;"> : <?=$result["ekg"];?></strong>
+				</td>
+			</tr>
+			<?php } ?>   
 
 						<?php if( !empty($result['altra']) ){ ?>           
 							<tr>
@@ -1392,11 +1374,13 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
                 <td align="center" class="text3">(วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี)</td>
                 <td class="text3">&nbsp;</td>
               </tr>
+			  <!--
               <tr>
                 <td align="center" class="text3">&nbsp;</td>
                 <td align="center" class="text3">กุมารแพทย์</td>
                 <td class="text3">&nbsp;</td>
               </tr>
+			  -->
               <tr>
                 <td align="center" class="text3">&nbsp;</td>
                 <td align="center" class="text3">ปฏิบัติหน้าที่ประธานฝ่ายตรวจสุขภาพ โรงพยาบาลค่ายสุรศักดิ์มนตรี</td>
@@ -1416,7 +1400,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 <div>&nbsp;</div>
 <div class="text3"><strong>*** หมายเหตุ *** </strong></div>
 <div class="text">1. กรณีที่ผลการตรวจสุขภาพผิดปกติและมีการนัดพบแพทย์ ขอให้ท่านมารับการตรวจกับ พ.ท.วรวิทย์ วงษ์มณี  ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น. <br />ให้นำแบบรายงานผลการตรวจสุขภาพประจำปี มาติดต่อที่ ห้องทะเบียน หากมานอกเวลาดังกล่าวอาจไม่ได้รับความสะดวกในการบริการ </div>
-<div class="text">2. กรณีผลเลือดผิดปกติและไม่มีการนัดพบแพทย์ ถ้าต้องการตรวจเลือดซ้ำ ให้ปฏิบัติตามข้อแนะนำและมาเจาะเลือดซ้ำอีก 3-6 เดือน</div>
+<div class="text">2. กรณีผลสรุปการตรวจคือพบแพทย์สามารถติดต่อผ่านทางฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.ท.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น.</div>
 </div>
 <?php 
 } // while

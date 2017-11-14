@@ -110,7 +110,8 @@ $list_lab["URIC"] = "uric";
 <body>
 <a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>
 <center>
-  <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพ</div></center>
+  <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า61</div>
+</center>
 
 <form action="dx_ofyear_out.php" method="post">
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
@@ -148,6 +149,7 @@ $list_lab["URIC"] = "uric";
 
 $sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
 list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
+//echo "===>".$arr_view["vn"];
 
 $date_hn = date("Y-m-d").$arr_view["hn"];
 $date_vn = date("Y-m-d").$arr_view["vn"];
@@ -235,8 +237,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 		$type=$arr_dxofyear["type"];
 		$doctor=$arr_dxofyear["doctor"];
 		
-		$arr_view["vn"]=$arr_dxofyear["vn"];
-		
+		//$arr_view["vn"]=$arr_dxofyear["vn"];
+		//echo "===>".$arr_view["vn"];
 		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
 		
 		//echo "arr_dxofyear";
@@ -353,7 +355,7 @@ while($arr = Mysql_fetch_assoc($result)){
 		  <td colspan="3"><span class="pdxhead">
 		    <select name='camp' id="camp">
               <?
-        $sql12 = "select * from chkcompany where status='Y' order by row_id desc";
+        $sql12 = "select * from chkcompany where status='Y' order by row_id asc";
 		$rows12 =mysql_query($sql12);
 		while($result12 = mysql_fetch_array($rows12)){
 		?>
