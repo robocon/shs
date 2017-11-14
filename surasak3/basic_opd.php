@@ -29,8 +29,6 @@ exit();
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>คัดแยกผู้ป่วย</title>
 <style type="text/css">
-<!--
-
 .data_show{ 
 	font-family:"MS Sans Serif"; 
 	font-size:16px; 
@@ -50,11 +48,15 @@ exit();
 	font-weight:bold;
 	background-color:#0000FF
 	}
+.txtsarabun{ 
+	font-family: "TH SarabunPSK";
+	font-size:18px; 
+	font-weight:bold;
+	}	
 
-body{ font-family:"MS Sans Serif";
+body{ font-family:"MS Sans Serif"; 
 font-size:16px;
 }
--->
 </style>
 
 
@@ -258,7 +260,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in)</a> </p>
+<p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
 <form id="f1" name="f1" method="post" action="">
   กรอก Hn : 
   <input name="hn" type="text" id="hn" size="10" maxlength="10" />
@@ -302,8 +304,12 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$og="ตรวจตามนัด";
 	}
 	
+	$query = "SELECT runno, startday FROM runno WHERE title = 'VN' ";
+	$result = mysql_query($query) or die("Query failed1");
+	list($nVn, $dVndate) = mysql_fetch_row($result);
+	$dVndate=substr($dVndate,0,10);
 		
-
+	// ไม่มีออก vn แต่มีนัด
 	if($opday_row == 0 && $app_row > 0){
 		
 		$query = "SELECT `idcard` , `hn` , `yot` , `name` , `surname` , `goup` , `dbirth` , `idguard` , `ptright` , `note` , `camp`   FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
@@ -314,6 +320,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$vnlab = 'EX04 ผู้ป่วยนัด';
 		$_SESSION["cHn"] = $cHn;
 		
+		// ทำการออก VN
 		$query = "SELECT runno, startday FROM runno WHERE title = 'VN' ";
 	    $result = mysql_query($query) or die("Query failed1");
 		list($nVn, $dVndate) = mysql_fetch_row($result);
@@ -327,7 +334,9 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$nVn=1;
 			$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN' limit 1 ";
 		}
-			$result = mysql_query($query) or die("Query failed2");
+		$result = mysql_query($query) or die("Query failed2");
+		// ทำการออก VN
+
 			$tvn=$nVn;
 			$time1 = date("H:i:s");
 			$thdatevn=$thidate.$nVn;

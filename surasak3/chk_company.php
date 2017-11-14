@@ -68,8 +68,8 @@ if( $action == false ){
                     <td>
                         <ol>
                             <li><a href="out_result.php?part=<?=$item['code'];?>">ลงข้อมูลซักประวัติ</a></li>
-                            <li><a href="report_chkup_self.php?camp=<?=$item['code'];?>">ผลตรวจรายบุคคล</a></li>
-                            <li><a href="report_summary_chkup61.php?camp=<?=$item['code'];?>">สรุปผลตรวจ</a></li>
+                            <li><a href="chk_report_self.php?camp=<?=$item['code'];?>">ผลตรวจรายบุคคล</a></li>
+                            <li><a href="chk_report_all.php?camp=<?=$item['code'];?>">สรุปผลตรวจ</a></li>
                         </ol>
                     </td>
                 </tr>

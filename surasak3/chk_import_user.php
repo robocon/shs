@@ -38,7 +38,7 @@ if( empty($action) ){
         </div>
         <div>
             <p><b>รูปแบบข้อมูลก่อนนำเข้าสู่ระบบ</b></p>
-            <table border="1">
+            <table class="chk_table">
                 <tr>
                     <td>ลำดับ</td>
                     <td>HN</td>
@@ -51,7 +51,7 @@ if( empty($action) ){
                 </tr>
             </table>
             <p><b>ตัวอย่างเช่น</b></p>
-            <table border="1">
+            <table class="chk_table">
                 <tr>
                     <td>1</td>
                     <td>99-9990</td>

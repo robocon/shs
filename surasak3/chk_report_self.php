@@ -1,17 +1,11 @@
 <?php
-session_start();
+include 'bootstrap.php';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <?php
-
-function dump($str){
-	echo "<pre>";
-	var_dump($str);
-	echo "</pre>";
-}
 
 function calcage($birth){
 
@@ -34,276 +28,261 @@ function calcage($birth){
 		$pAge="$ageY ปี $ageM เดือน";
 	}
 
-return $pAge;
+	return $pAge;
 }
 
 ?>
 <title>พิมพ์ใบตรวจสุขภาพ <?=$title;?></title>
 <style type="text/css">
-.tet{ font-family: "TH SarabunPSK";font-size: 18px; }
-.tet1{ font-family: "TH SarabunPSK";font-size: 36px; }
-.text3{ font-family: "TH SarabunPSK";font-size: 16px; }
-.text4{ font-family: "TH SarabunPSK";font-size: 14px; }
-.text{ font-family: "TH SarabunPSK";font-size: 16px; }
-.texthead{ font-family: "TH SarabunPSK";font-size: 25px; }
-.text1{ font-family: "TH SarabunPSK";font-size: 22px; }
-.text2{ font-family: "TH SarabunPSK";font-size: 20px; }
-.textsub{ font-size: 15px;}
-@media print{ #no_print{ display:none; } }
-#divprint{ page-break-after:always; }
-.theBlocktoPrint{ background-color: #000; color: #FFF; } 
-label{ display: block; }
-.etc label{ display: inline; }
+	*{
+		font-family: TH SarabunPSK;
+	}
+	.text{ font-size: 16px; }
+	.text1{ font-size: 22px; }
+	.text2{ font-size: 20px; }
+	.text3{ font-size: 16px; }
+	.text4{ font-size: 14px; }
+
+	.texthead{ font-size: 25px; }
+	.textsub{ font-size: 15px;}
+
+	@media print{ #no_print{ display:none; } }
+	#divprint{ page-break-after:always; }
+
+	.theBlocktoPrint{ background-color: #000; color: #FFF; } 
+	label{ display: block; }
+	.etc label{ display: inline; }
 </style>
 </head>
 
 <body>
 <?php
-include("connect.inc");	
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
+$xraydate ="18-09-2017";
 
-$sql1 = "SELECT *
-FROM `out_result_chkup`
-WHERE `part` = '$showpart' 
-ORDER BY `row_id` ASC";
+$sql1 = "SELECT a.*, a.`HN` AS `hn`, 
+b.`date_checkup` AS `show_date`, b.`name` AS `company_name`
+FROM `out_result_chkup` AS a 
+LEFT JOIN `chk_company_list` AS b ON b.`code` = a.`part` 
+WHERE a.`part` = '$showpart' 
+ORDER BY a.`row_id` ASC";
 
-if($_POST["xraydate"]=="6"){
-	$xraydate ="07-07-2017";
-	$sql1 = "SELECT *
-	FROM `opcardchk`
-	WHERE `part` = '$showpart' and active='y'
-	ORDER BY `row` ASC";
-}else if($_POST["xraydate"]=="7"){
-	$xraydate ="01-08-2017";
-	$sql1 = "SELECT *
-	FROM `out_result_chkup`
-	WHERE `part` = '$showpart' 
-	ORDER BY `row_id` ASC";
-}else if($_POST["xraydate"]=="8"){
 
-	$xraydate ="27-08-2017";
-	$sql1 = "SELECT *
-	FROM `out_result_chkup`
-	WHERE `part` = '$showpart' ";
-	if( $_POST['camp'] == 'ควอลิตี้เซรามิค60' ){
-		$sql1 .= "ORDER BY `hn` ASC";
-	}else{
-		$sql1 .= "ORDER BY `row_id` ASC";
-	}
-}else if($_POST["xraydate"]=="9"){
-	$xraydate ="18-09-2017";
-	$sql1 = "SELECT *
-	FROM `out_result_chkup`
-	WHERE `part` = '$showpart' 
-	ORDER BY `row_id` ASC";
-}
-//echo $sql1;
 $row2 = mysql_query($sql1) or die ( mysql_error() );
-while($result = mysql_fetch_array($row2)){
 
-	$age=$result["agey"];
-	if(empty($result["HN"])){
-		$result["HN"] = $result["hn"];
+while($result = mysql_fetch_assoc($row2)){
+
+	$age = $result["age"];
+	$hn = $result["hn"];
+	$show_date = $result['show_date'];
+
+	if( empty($show_date) ){
+		$sqlcc = mysql_query("SELECT datechkup, branch
+		FROM `opcardchk`
+		WHERE `HN` = '".$hn."'");
+		list($show_date, $branch)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
 	}
-
-	$sqlcc = mysql_query("SELECT datechkup,branch
-	FROM `opcardchk`
-	WHERE `HN` = '".$result["hn"]."'");
-	list($showdate,$branch)=mysql_fetch_array($sqlcc);   //18-09-60 น้องนัดแจ้งให้เปลี่ยนเป็นวันที่นัดตรวจ
-
-	//echo $sqlcc;
-
-	$sql2="select * from out_result_chkup where hn='".$result["HN"]."' and part='".$result["part"]."'";
-	//echo $sql2;
-	$query2=mysql_query($sql2);
-	$result2=mysql_fetch_array($query2);
-
-	if(empty($age)){
-		$age=$result2["age"];
-	}
-
-	if(empty($result['name'])){
-		$ptname=$result2['ptname'];
-	}else{
-		$ptname=$result['name']." ".$result['surname'];
-	}
-
-
-
-
-
-	$sex = $result['sex'];
-/*	list($y,$m,$d)=explode("-",$rexult['dbirth']);
-	$yy=$y-543;
-	$newdbirth="$yy-$m-$d";*/
-	$newdbirth=$result['dbirth'];
-	//echo $newdbirth;
-	$hbd=calcage($newdbirth);
-	//echo $hbd;
-	// $select = "select * from out_result_chkup  WHERE hn='".$result['hn']."'";
-	//echo $select."<br>";
 	
-	// $row = mysql_query($select)or die ("Query Fail line 91");
-	// $result = mysql_fetch_array($row);
+
+	// $sql2="SELECT * 
+	// FROM out_result_chkup 
+	// WHERE hn='".$hn."' 
+	// AND part='".$result["part"]."'";
+	// $query2=mysql_query($sql2);
+	// $result=mysql_fetch_array($query2);
+
+	// if(empty($age)){
+	// 	$age = $result["age"];
+	// }
+
+	// if(empty($result['name'])){
+		$ptname = $result['ptname'];
+	// }else{
+	// 	$ptname = $result['name']." ".$result['surname'];
+	// }
+
+	// $sex = $result['sex'];
+	// $newdbirth = $result['dbirth'];
+	// $hbd = calcage($newdbirth);
 	
-	$ht = $result2['height']/100;
-	$bmi=number_format($result2['weight'] /($ht*$ht),2);
+	$ht = $result['height']/100;
+	$bmi = number_format($result['weight'] /($ht*$ht),2);
 	
-	
+	// @todo $showdatelab ไม่ได้ใช้อะไร
     $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
     FROM `resulthead` 
-    WHERE `hn` = '".$result['HN']."' 
+    WHERE `hn` = '".$hn."' 
     AND ( 
 		`clinicalinfo` ='ตรวจสุขภาพประจำปี60' 
+		OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
 		OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
 	) order by autonumber desc";  //โชว์ข้อมูล
 	
     $objQuery11 = mysql_query($strSQL11);
-    list($orderdate)=mysql_fetch_array($objQuery11);
+    list($orderdate) = mysql_fetch_array($objQuery11);
 	
-	list($d,$m,$y)=explode("-",$orderdate);
-	$yy=$y+543;
-	$showdatelab="$d/$m/$yy";
+	list($d,$m,$y) = explode("-",$orderdate);
+	$yy = $y+543;
+	$showdatelab = "$d/$m/$yy";
 
-	// 
-	if( $_POST['camp'] == 'scg61' ){
-		$showdate="4-19 ตุลาคม 2560";
-	}
+	// if( $_POST['camp'] == 'scg61' ){
+	// 	$showdate="4-19 ตุลาคม 2560";
+	// }
 	
 	$dateekg="$yy-$m";	
 ?>
 <div id="divprint">
 <table width="100%" border="0">
-  <tr>
-    <td colspan="2"><table width="100%">
-      <tr>
-        <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="87" height="83" /></td>
-        <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี 2560</strong></td>
-        <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
-      </tr>
-      <tr>
-        <td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
-        <td align="center" valign="top" class="texthead">&nbsp;</td>
-      </tr>
-      <tr>
-        <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2"><strong>หน่วยงาน :
-                  <?=( $_POST['camp'] == 'scg61' ? $branch : $showpart );?>
-         วันที่ตรวจ <?=$showdate;?></strong></span></span></span></td>
-        <td align="center" valign="top" class="text3">&nbsp;</td>
-      </tr>
-    </table></td>
-  </tr>
-  <tr>
-    <td colspan="2"><table width="100%" border="0">
-        <tr>
-          <td><table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
-            <tr>
-              <td><table width="100%"   class="text1" >
-                <tr>
-                  <td  valign="top" class="text2"><strong class="text" style="font-size:22px"><u>ข้อมูลผู้ตรวจสุขภาพ</u> </strong><strong>HN : <?=$result['HN']?> 
-                    &nbsp;&nbsp;</strong><strong>ชื่อ : </strong> <span style="font-size:24px"><strong>
-                    <?=$ptname;?>
-                    </strong>&nbsp;&nbsp;&nbsp;
-                    <? if(!empty($age)){ ?>
-                    <strong>อายุ : </strong> <span style="font-size:24px"><strong>
-                    <?=$age;?> ปี
-                    </strong>
-                    <? } ?>
-                    </span></td>
-                </tr>
-              </table></td>
-            </tr>
-          </table></td>
-        </tr>
-        <tr>
-          <td><table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
-            <tr>
-              <td><table width="100%"  class="text1" >
-                <tr>
-                  <td width="588" valign="top"><strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;<span class="text3"><strong>น้ำหนัก : </strong>
-                      <?=$result2['weight']?>
-&nbsp;กก. <strong>ส่วนสูง : </strong>
-<?=$result2['height']?>
-&nbsp;ซม. <strong>BMI : </strong> <u>
-<?=$bmi?> </u>
-&nbsp;&nbsp;<strong>BP : <u>
-<? echo $result2['bp1']; ?>
-/
-<? echo $result2['bp2']; ?>
-mmHg. </u></strong>&nbsp;&nbsp;
-<? if(!empty($result2["bp3"]) && !empty($result2["bp4"])){ ?>
-<strong>RE-BP : <u>
-<? echo $result2['bp3']; ?>
-/
-<? echo $result2['bp4']; ?>
-mmHg. </u></strong>&nbsp;&nbsp;
-<? } ?>
-<span class="text3"><strong>T : </strong> <u><?=$result2['temp']?> C</u></span>&nbsp;&nbsp;<span class="text3"><strong>P : </strong> <u><?=$result2['p']?> ครั้ง/นาที</u></span>&nbsp;&nbsp;<span class="text3"><strong>R : </strong> <u><?=$result2['rate']?> ครั้ง/นาที</u></span></span></td>
-                </tr>
-<!--<? //if(!empty($result2['prawat'])){ ?>                
-                <tr>
-                  <td valign="top"><strong style="font-size:20px;">โรคประจำตัว/ประวัติการรักษา : </strong><span style="font-size:16px;"><? //echo $result2['prawat'];?></span></td>
-                </tr>
-<? //} ?>  -->              
-                <tr>
-                  <td valign="top"><strong style="font-size:20px;">ผลตรวจ : </strong><span style="font-size:16px;"> ดัชนีมวลกาย 
-				  <?  if($bmi == '0.00' ){
-				  			echo "'ไม่ได้รับการตรวจ";
-						}
-						 else if($bmi >= 18.5 && $bmi <= 22.99){
-				  			
-							echo "มีน้ำหนักตามเกณฑ์";
-							
-						}else{
-							if($bmi < 18.5){ echo "มีน้ำหนักต่ำกว่าเกณฑ์";}
-							if($bmi >= 23 && $bmi <= 24.99){ echo "เริ่มมีน้ำหนักเกินเกณฑ์";}
-							if($bmi >= 25 && $bmi <= 29.99){ echo "มีน้ำหนักเกินเกณฑ์";}
-							if($bmi >= 30 && $bmi <= 34.99){ echo "มีภาวะอ้วนค่อนข้างมาก";}
-							if($bmi >= 35){ echo "มีภาวะอ้วนมาก";}
-						}
+	<tr>
+		<td colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="87" height="83" /></td>
+					<td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
+					<td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
+					<td align="center" valign="top" class="texthead">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="center" valign="top" class="text3">
+						<span class="text">
+							<span class="text1">
+								<span class="text2">
+									<strong>
+										หน่วยงาน : <?=$result['company_name'];?>
+										วันที่ตรวจ <?=$show_date;?>
+									</strong>
+								</span>
+							</span>
+						</span>
+					</td>
+					<td align="center" valign="top" class="text3">&nbsp;</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 
-				 ?>
-				/ ความดันโลหิต  
-					<?php 
+  	<tr>
+    	<td colspan="2">
+			<table width="100%" border="0">
+        		<tr>
+          			<td>
+
+					  	<table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+            				<tr>
+              					<td>
+								  	<table width="100%" class="text1" >
+                						<tr>
+                  							<td  valign="top" class="text2">
+												<strong class="text1"><u>ข้อมูลผู้ตรวจสุขภาพ</u></strong> 
+												<strong>HN : <?=$hn?>&nbsp;&nbsp;</strong> 
+												<strong>ชื่อ : </strong>
+												<span style="font-size:24px">
+													<strong><?=$ptname;?></strong>&nbsp;&nbsp;&nbsp;
+													<?php if(!empty($age)){ ?>
+														<strong>อายุ : </strong> 
+														<strong><?=$age;?> ปี</strong>
+													<?php } ?>
+                    							</span>
+											</td>
+                						</tr>
+              						</table>
+			  					</td>
+            				</tr>
+          				</table>
+						
+		  			</td>
+        		</tr>
+        		<tr>
+          			<td>
+					  	<table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+							<tr>
+								<td>
+									<table width="100%"  class="text1" >
+										<tr>
+											<td width="588" valign="top">
+												<strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;
+												<span class="text3">
+													<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
+													<strong>ส่วนสูง : </strong><?=$result['height']?>&nbsp;ซม. 
+													<strong>BMI : </strong> <u><?=$bmi?> </u>&nbsp;&nbsp;
+													<strong>BP : <u><? echo $result['bp1']; ?> / <? echo $result['bp2']; ?>mmHg. </u></strong>&nbsp;&nbsp;
+													
+													<?php if(!empty($result["bp3"]) && !empty($result["bp4"])){ ?>
+														<strong>RE-BP : <u><?php echo $result['bp3']; ?> / <?php echo $result['bp4']; ?>mmHg. </u></strong>&nbsp;&nbsp;
+													<?php } ?>
+
+													<strong>T : </strong> <u><?=$result['temp']?> C</u>&nbsp;&nbsp;
+													<strong>P : </strong> <u><?=$result['p']?> ครั้ง/นาที</u>&nbsp;&nbsp;
+													<strong>R : </strong> <u><?=$result['rate']?> ครั้ง/นาที</u>
+												</span>
+											</td>
+										</tr>
+										<tr>
+                  							<td valign="top">
+												<strong style="font-size:20px;">ผลตรวจ : </strong>
+												<span style="font-size:16px;"> ดัชนีมวลกาย 
+												<?php 
+												if($bmi == '0.00' ){
+													echo "'ไม่ได้รับการตรวจ";
+												} else if($bmi >= 18.5 && $bmi <= 22.99){
+													echo "มีน้ำหนักตามเกณฑ์";
+												}else{
+													if($bmi < 18.5){ echo "มีน้ำหนักต่ำกว่าเกณฑ์";}
+													if($bmi >= 23 && $bmi <= 24.99){ echo "เริ่มมีน้ำหนักเกินเกณฑ์";}
+													if($bmi >= 25 && $bmi <= 29.99){ echo "มีน้ำหนักเกินเกณฑ์";}
+													if($bmi >= 30 && $bmi <= 34.99){ echo "มีภาวะอ้วนค่อนข้างมาก";}
+													if($bmi >= 35){ echo "มีภาวะอ้วนมาก";}
+												}
+
+												?>
+												/ ความดันโลหิต  
+												<?php 
 					
-					$bp1 = ( empty($result2['bp3']) ) ? $result2['bp1'] : $result2['bp3'];
-					$bp2 = ( empty($result2['bp4']) ) ? $result2['bp2'] : $result2['bp4'];
+												$bp1 = ( empty($result['bp3']) ) ? $result['bp1'] : $result['bp3'];
+												$bp2 = ( empty($result['bp4']) ) ? $result['bp2'] : $result['bp4'];
 
-					if($bp1 =='NO'){
-							echo "ไม่ได้รับการตรวจ";
-						}else  if($bp1 <= 130){
-							echo "ปกติ";
-						}else{
-							if($bp1 >=140){ 
-								echo "มีความดันโลหิตสูง ควรออกกำลังอย่างสม่ำเสมอ ลดอาหารที่มีรสเค็ม หรือพบแพทย์เพื่อทำการรักษา";
-							}else if($bp1 >=131 && $bp1 < 140){
-								echo "เริ่มมีภาวะความดันโลหิตสูง ควรออกกำลังกายอย่างสม่ำเสมอ";
-							}
-						}
-				  ?>
-				  </span>                  </td>
-                </tr>
-              </table></td>
-            </tr>
-          </table></td>
-        </tr>
-    </table></td>
-  </tr>
-<?
-$sql55="SELECT * 
-FROM resulthead 
-WHERE (profilecode='CBC' OR profilecode='UA')
-AND hn = '".$result['HN']."' 
-AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  
-GROUP BY profilecode 
-ORDER BY `autonumber` desc";
-//echo $sql55;
-$query55 = mysql_query($sql55) or die( mysql_error() );
-$num=mysql_num_rows($query55);
-$arrresult55 = mysql_fetch_array($query55);    
-if($num==1 && $arrresult55["profilecode"]=="CBC"){
-?>            
+												if($bp1 =='NO'){
+														echo "ไม่ได้รับการตรวจ";
+												}else  if($bp1 <= 130){
+														echo "ปกติ";
+												}else{
+													if($bp1 >=140){ 
+														echo "มีความดันโลหิตสูง ควรออกกำลังอย่างสม่ำเสมอ ลดอาหารที่มีรสเค็ม หรือพบแพทย์เพื่อทำการรักษา";
+													}else if($bp1 >=131 && $bp1 < 140){
+														echo "เริ่มมีภาวะความดันโลหิตสูง ควรออกกำลังกายอย่างสม่ำเสมอ";
+													}
+												}
+				  								?>
+				  								</span>
+				  							</td>
+                						</tr>
+              						</table>
+			  					</td>
+            				</tr>
+          				</table>
+		  			</td>
+        		</tr>
+    		</table>
+		</td>
+  	</tr>
+	<?php 
+	$sql55="SELECT * 
+	FROM resulthead 
+	WHERE (profilecode='CBC' OR profilecode='UA')
+	AND hn = '".$hn."' 
+	AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  
+	GROUP BY profilecode 
+	ORDER BY `autonumber` desc";
+	//echo $sql55;
+	$query55 = mysql_query($sql55) or die( mysql_error() );
+	$num=mysql_num_rows($query55);
+	$arrresult55 = mysql_fetch_array($query55);    
+	if($num==1 && $arrresult55["profilecode"]=="CBC"){
+	?>            
   <tr>
     <td colspan="2"  valign="top"><table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
       <tr>
@@ -328,8 +307,8 @@ if($num==1 && $arrresult55["profilecode"]=="CBC"){
 				$sql="SELECT * 
 				FROM resulthead 
 				WHERE profilecode='CBC' 
-				AND hn = '".$result['HN']."' 
-				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
+				AND hn = '".$hn."' 
+				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
 				
@@ -473,7 +452,7 @@ if($num==1 && $arrresult55["profilecode"]=="CBC"){
               <td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
             </tr>
             <? 
-	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) ORDER BY `autonumber` desc";
+	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$hn."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -539,7 +518,7 @@ if($num==1 && $arrresult55["profilecode"]=="CBC"){
 			}
 						
 			if($objResult["labcode"]=="RBCU"){
-			if($result['hn']=="53-6092"){
+			if($hn=="53-6092"){
 				$showresultua="ผิดปกติ";
 			}else{
 					$rbculen=strlen($objResult6["result"]);
@@ -631,8 +610,8 @@ if($num==1 && $arrresult55["profilecode"]=="CBC"){
 				$sql="SELECT * 
 				FROM resulthead 
 				WHERE profilecode='CBC' 
-				AND hn = '".$result['HN']."' 
-				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
+				AND hn = '".$hn."' 
+				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
 				
@@ -766,7 +745,7 @@ if($num==1 && $arrresult55["profilecode"]=="CBC"){
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
           </tr>
     <? 
-	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result['HN']."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) ORDER BY `autonumber` desc";
+	$sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$hn."' and (clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' ) ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -832,7 +811,7 @@ if($num==1 && $arrresult55["profilecode"]=="CBC"){
 			}
 						
 			if($objResult["labcode"]=="RBCU"){
-			if($result['hn']=="53-6092"){
+			if($hn=="53-6092"){
 				$showresultua="ผิดปกติ";
 			}else{
 					$rbculen=strlen($objResult6["result"]);
@@ -913,8 +892,8 @@ WHERE (
 	OR profilecode='ABOC'	
 	OR profilecode='METAMP'	
 	)  
-AND hn = '".$result['HN']."' 
-AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60'  ) 
+AND hn = '".$hn."' 
+AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60'  ) 
 ORDER BY `autonumber` asc";
 //echo $sql1."<br>";
 $query1 = mysql_query($sql1) or die( mysql_error() );
@@ -1193,8 +1172,8 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 
 		SELECT MAX(`autonumber`) AS `autonumber`
 		FROM `resulthead` 
-		WHERE `hn` = '".$result['hn']."' 
-		AND ( `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
+		WHERE `hn` = '".$hn."' 
+		AND ( `clinicalinfo` = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
 		AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' )
 		GROUP BY `profilecode` 
 
@@ -1236,7 +1215,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 								// ค่า normal range ที่เป็นพวก outlab
 								$outlab_range = $normal_outlab[$outlab_code];
 								if($outlab_result=="OL" || $outlab_result=="ol"){
-									if($result['hn']=="49-2672"){
+									if($hn=="49-2672"){
 										$outlab_result="ผิดปกติ";
 									}else{
 										$outlab_result="&nbsp;";
@@ -1252,7 +1231,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 								<td>
 									<?php
 									// default เป็นค่าปกติ
-									if($result['hn']=="49-2672"){
+									if($hn=="49-2672"){
 										$result_outlab_txt = 'ผิดปกติ...นัดพบสูตินารีแพทย์';	
 									}else{
 										$result_outlab_txt = 'ปกติ';
@@ -1296,14 +1275,14 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
             <tr valign="middle">
               <td width="24%"><strong class="text" style="font-size:18px"> <u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u> </strong> </td>
               <td width="76%"><strong class="text" style="margin-left: 9px;"> :
-                <? if($result2["cxr"]==""){ echo "ปกติ"; }else{ echo $result2["cxr"];} ?>
+                <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"];} ?>
               </strong> </td>
             </tr>
 <?php if( !empty($result['va']) ){ ?>           
             <tr>
               <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตา</u> </strong> </td>
               <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result2['va'];?>
+                <?=$result['va'];?>
               </strong> </td>
             </tr>
 <? } ?>
@@ -1311,7 +1290,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
             <tr>
               <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
               <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result2['eye']." ".$result2['eye_detail'];?>
+                <?=$result['eye']." ".$result['eye_detail'];?>
               </strong> </td>
             </tr>
 <? } ?>  
@@ -1319,14 +1298,14 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
             <tr>
               <td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
               <td><strong class="text" style="margin-left: 9px;"> :
-                <?=$result2['pt']." ".$result2['pt_detail'];?>
+                <?=$result['pt']." ".$result['pt_detail'];?>
               </strong> </td>
             </tr>
 <? } ?>   
 					<?
 					 $sql3="select * from 
 					 patdata where 
-					 hn='".$result["HN"]."' 
+					 hn='".$hn."' 
 					 and code='51410' 
 					 and date like '$dateekg%' 
 					 order by row_id desc";
@@ -1342,10 +1321,10 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 							</strong>
 						</td>
 						<td>
-							<strong class="text" style="margin-left: 9px;"> : <? if($result["HN"]=="56-9685"){ echo $result2["ekg"]; }else{ echo "ปกติ"; } ?></strong>
+							<strong class="text" style="margin-left: 9px;"> : <? if($hn=="56-9685"){ echo $result["ekg"]; }else{ echo "ปกติ"; } ?></strong>
 						</td>
 					</tr>
-					<? }else if($result["HN"]=="60-7754"){  //ไม่ได้คิดค่าใช้จ่าย ?>  
+					<? }else if($result["hn"]=="60-7754"){  //ไม่ได้คิดค่าใช้จ่าย ?>  
 					<tr>
 						<td>
 							<strong class="text" style="font-size:18px">
@@ -1362,7 +1341,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 							<tr>
 								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result2['altra'];?>
+									<?=$result['altra'];?>
 								</strong> </td>
 							</tr>
 						<? } ?>
@@ -1370,7 +1349,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 							<tr>
 								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมาก</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result2['psa'];?>
+									<?=$result['psa'];?>
 								</strong> </td>
 							</tr>
 						<? } ?>
@@ -1378,15 +1357,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 							<tr>
 								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result2['hpv'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['mammogram']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result2['mammogram'];?>
+									<?=$result['hpv'];?>
 								</strong> </td>
 							</tr>
 						<? } ?>
@@ -1395,8 +1366,8 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
         </tr>
         <tr>
           <td valign="bottom"><strong class="text" style="font-size:20px">
-<? if(!empty($result2["comment"])){
-	$comment=$result2["comment"];
+<? if(!empty($result["comment"])){
+	$comment=$result["comment"];
 	echo "ข้อมูลเพิ่มเติม : </strong><span class='text' style='font-size:20px'>$comment</span> <br />";
  } ?>                
             <strong class="text" style="font-size:20px">สรุปผลการตรวจ :</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text3">
@@ -1438,7 +1409,7 @@ if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
 </table>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise  LAB : </strong><?=$authorisename;?> <strong> (<?=$authorisedate;?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$xraydate ;?>)</strong><br /></td>
+    <td  width="50%" align="center"><strong>Authorise LAB : </strong><?=$authorisename;?> <strong> (<?=$authorisedate;?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$xraydate ;?>)</strong><br /></td>
     
   </tr>
 </table>
