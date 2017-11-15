@@ -68,8 +68,13 @@ LEFT JOIN `chk_company_list` AS b ON b.`code` = a.`part`
 WHERE a.`part` = '$showpart' 
 ORDER BY a.`row_id` ASC";
 
-
 $row2 = mysql_query($sql1) or die ( mysql_error() );
+
+$out_result_rows = mysql_num_rows($row2);
+if( $out_result_rows == 0 ){
+	echo "ยังไม่พบข้อมูลการบันทึกผลการซักประวัติ";
+	exit;
+}
 
 while($result = mysql_fetch_assoc($row2)){
 
@@ -612,10 +617,13 @@ while($result = mysql_fetch_assoc($row2)){
 				FROM resulthead 
 				WHERE profilecode='CBC' 
 				AND hn = '".$hn."' 
-				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  ORDER BY `autonumber` desc";
+				AND ( clinicalinfo ='ตรวจสุขภาพประจำปี60' 
+					OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+					OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' )  
+				ORDER BY `autonumber` desc";
 				$query = mysql_query($sql) or die( mysql_error() );
 				$arrresult = mysql_fetch_array($query);
-				
+				// dump($sql);
 				/////
 
 				$strSQL = "SELECT * 
@@ -639,9 +647,13 @@ while($result = mysql_fetch_assoc($row2)){
 				$pltc_result = '';
 				$cbc_rows = mysql_num_rows($objQuery);
 				if($cbc_rows < 1){
+
 				  echo "<tr height='150'><td align='center' colspan='4' style='font-size: 20px; font-weight: bold;'>ไม่ได้รับการตรวจ</td></tr>";	
-				}else{				
+				}else{	
+
 				while($objResult = mysql_fetch_array($objQuery)){
+
+// dump($objResult);
 
 					if($objResult["labcode"]=="WBC"){
 						$labmean="(การตรวจนับเม็ดเลือดขาว)";
@@ -870,7 +882,7 @@ while($result = mysql_fetch_assoc($row2)){
 <? } // end from else ?>  
   
  <?php
-
+// ผลการตรวจทางห้องปฏิบัติการ ตัด profilecode='OCCULT'
 $sql1 = "SELECT * 
 FROM resulthead 
 WHERE ( 
@@ -889,7 +901,6 @@ WHERE (
 	OR profilecode='HDL' 
 	OR profilecode='LDL'
 	OR profilecode='10001'  
-	#OR profilecode='OCCULT'
 	OR profilecode='ABOC'	
 	OR profilecode='METAMP'	
 	)  
@@ -903,7 +914,34 @@ ORDER BY `autonumber` asc";
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
- if( $other_result_row > 0 ){ 
+
+
+// lab อื่นๆ ตัด 38302 PAP SMEAR ออกไปก่อน
+$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`,c.`flag`
+FROM (
+
+	SELECT MAX(`autonumber`) AS `autonumber`
+	FROM `resulthead` 
+	WHERE `hn` = '".$hn."' 
+	AND ( 
+		`clinicalinfo` = 'ตรวจสุขภาพประจำปี60' 
+		OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+		OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
+		 ) 
+	AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' ) 
+	GROUP BY `profilecode` 
+
+) AS b 
+LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
+LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` ";
+$q = mysql_query($sql) or die( mysql_error() );
+$outlab_row = mysql_num_rows($q);
+
+
+// dump($other_result_row);
+// dump($outlab_row);
+
+ if( $other_result_row > 0 OR $outlab_row > 0 ){ 
  ?>
 	<tr>
 		<td colspan="2"  valign="top"></td>
@@ -1165,27 +1203,7 @@ $other_result_row = mysql_num_rows($query1);
 								'PSA' => '0-4',
 							);
 						
-							// ตัด 38302 PAP SMEAR ออกไปก่อน
-							$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`,c.`flag`
-							FROM (
-						
-								SELECT MAX(`autonumber`) AS `autonumber`
-								FROM `resulthead` 
-								WHERE `hn` = '".$hn."' 
-								AND ( 
-									`clinicalinfo` = 'ตรวจสุขภาพประจำปี60' 
-									OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
-									OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
-									OR `clinicalinfo` = 'ตรวจสุขภาพอบจ60'  ) 
-								AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' ) 
-								GROUP BY `profilecode` 
-						
-							) AS b 
-							LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
-							LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` 
-							#WHERE c.`labcode` != '38302'";
-							$q = mysql_query($sql) or die( mysql_error() );
-							$outlab_row = mysql_num_rows($q);
+			
 							if( $outlab_row > 0 ){
 
 
@@ -1314,7 +1332,7 @@ $other_result_row = mysql_num_rows($query1);
 					</strong>
 				</td>
 				<td>
-					<strong class="text" style="margin-left: 9px;"> : <?=$result["ekg"];?></strong>
+					<strong class="text" style="margin-left: 9px;"> : <?=( !empty($result["ekg"]) ? $result["ekg"] : 'ปกติ' );?></strong>
 				</td>
 			</tr>
 			<?php } ?>   
@@ -1399,8 +1417,7 @@ $other_result_row = mysql_num_rows($query1);
 </table>
 <div>&nbsp;</div>
 <div class="text3"><strong>*** หมายเหตุ *** </strong></div>
-<div class="text">1. กรณีที่ผลการตรวจสุขภาพผิดปกติและมีการนัดพบแพทย์ ขอให้ท่านมารับการตรวจกับ พ.ท.วรวิทย์ วงษ์มณี  ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น. <br />ให้นำแบบรายงานผลการตรวจสุขภาพประจำปี มาติดต่อที่ ห้องทะเบียน หากมานอกเวลาดังกล่าวอาจไม่ได้รับความสะดวกในการบริการ </div>
-<div class="text">2. กรณีผลสรุปการตรวจคือพบแพทย์สามารถติดต่อผ่านทางฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.ท.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น.</div>
+<div class="text">1. กรณีผลสรุปการตรวจคือพบแพทย์สามารถติดต่อผ่านทางฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.ท.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น.</div>
 </div>
 <?php 
 } // while

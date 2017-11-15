@@ -13,9 +13,10 @@ if( $action == false ){
         unset($_SESSION['x-msg']);
     }
 
-    $id = input_get('id');
+    $id = input_get('id', 0);
     $company = $company_code = $date_checkup = '';
-    if( $id !== false ){
+    $read_only = false;
+    if( $id > 0 ){
         $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
         $db->select($sql);
         $item = $db->get_item();
@@ -24,6 +25,7 @@ if( $action == false ){
         $code = $item['code'];
         $date_checkup = $item['date_checkup'];
         
+        $read_only = 'readonly="readonly"';
     }
     ?>
     <form action="chk_company.php" method="post">
@@ -31,7 +33,7 @@ if( $action == false ){
             ชื่อบริษัท <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
         </div>
         <div>
-            รหัสบริษัท <input type="text" name="company_code" value="<?=$code;?>">
+            รหัสบริษัท <input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>>
         </div>
         <div>
             วันที่ตรวจ <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
@@ -43,14 +45,9 @@ if( $action == false ){
         <div>
             <button type="submit">บันทึกข้อมูล</button>
             <input type="hidden" name="action" value="save">
+            <input type="hidden" name="id" value="<?=$id;?>">
         </div>
     </form>
-    <style type="text/css">
-    .chk_table ol{
-        margin: 0;
-        padding-left: 1em;
-    }
-    </style>
     <div>
         <?php
         $sql = "SELECT * FROM `chk_company_list` WHERE `status` = '1' ORDER BY `id` ASC";
@@ -75,15 +72,15 @@ if( $action == false ){
                 ?>
                 <tr>
                     <td><?=$i;?></td>
-                    <td><?=$item['name'];?></td>
+                    <td><a href="chk_show_user.php?part=<?=$item['code'];?>"><?=$item['name'];?></a></td>
                     <td><?=$item['code'];?></td>
                     <td><?=$item['date_checkup'];?></td>
                     <td align="center"><?=$item['yearchk'];?></td>
                     <td>
                         <ol>
-                            <li><a href="out_result.php?part=<?=$item['code'];?>">ลงข้อมูลซักประวัติ</a></li>
-                            <li><a href="chk_report_self.php?camp=<?=$item['code'];?>">ผลตรวจรายบุคคล</a></li>
-                            <li><a href="chk_report_all.php?camp=<?=$item['code'];?>">สรุปผลตรวจ</a></li>
+                            <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
+                            <li><a href="chk_report_self.php?camp=<?=$item['code'];?>" target="_blank">ผลตรวจรายบุคคล</a></li>
+                            <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
                         </ol>
                     </td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไข</a></td>
@@ -100,17 +97,33 @@ if( $action == false ){
 } else if( $action == 'save' ) {
     
     $company = input_post('company');
+    $id = input_post('id');
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
     $year = get_year_checkup(true);
 
-    $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
-    VALUES (
-    NULL,'$company','$company_code','$date_checkup','$year',  '1'
-    );";
-    $save = $db->insert($sql);
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( $id > 0 ){
+        $sql = "UPDATE `chk_company_list`
+        SET
+        `name` = '$company',
+        `code` = '$company_code',
+        `date_checkup` = '$date_checkup'
+        WHERE `id` = '$id';";
+        $save = $db->update($sql);
+    }else{
+        $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
+        VALUES (
+        NULL,'$company','$company_code','$date_checkup','$year','1'
+        );";
+        $save = $db->insert($sql);
+    }
 
-    redirect('chk_company.php', 'บันทึกข้อมูลเรียบร้อย');
+    if( $save !== true ){
+		$msg = errorMsg('save', $save['id']);
+    }
+
+    redirect('chk_company.php', $msg);
     exit;
 }
 ?>

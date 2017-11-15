@@ -203,4 +203,8 @@ a:active {
     <td align="center"><a href="out_result.php?part=สหกิจดินขาว61" target="_blank">บันทึก</a></td>
     <td rowspan="10" align="center">พฤศจิกายน 2560</td>
   </tr>
+  <tr>
+    <td>27. เอ็กซ์ตร้า เวลู จำกัด</td>
+    <td align="center"><a href="out_result.php?part=เอ็กซ์ตร้าเวลู61" target="_blank">บันทึก</a></td>
+  </tr>
 </table>
