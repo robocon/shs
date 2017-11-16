@@ -27,6 +27,7 @@ if( empty($action) ){
             ?>
             เลือกบริษัท : 
             <select name="part" id="">
+                <option value="">-- รายชื่อบริษัท --</option>
                 <?php
                 foreach ($items as $key => $item) {
                     ?><option value="<?=$item['code'];?>"><?=$item['name'];?></option><?php
@@ -36,7 +37,14 @@ if( empty($action) ){
         </div>
         <div>
             ไฟล์นำเข้า : <input type="file" name="file">
-            <div><span style="color: red; font-size: 14px;">คำแนะนำ<br>- กรุณาตรวจสอบข้อมูลก่อนนำเข้า<br>- ระบบรองรับไฟล์ .csv</span></div>
+            <div>
+                <span style="color: red; font-size: 14px;">
+                <b><u>คำแนะนำ และข้อควรระวัง</u></b><br>
+                - กรุณาตรวจสอบข้อมูลก่อนนำเข้า<br>
+                - ระบบรองรับเฉพาะไฟล์ .csv<br>
+                - ระบบรองรับแค่การเพิ่มรายชื่อผู้ป่วยใหม่
+                </span>
+            </div>
         </div>
         <div>
             <button type="submit">นำเข้า</button>
@@ -84,8 +92,11 @@ if( empty($action) ){
     <?php
 } else if ( $action === 'import' ) {
     $file = $_FILES['file'];
-	$content = file_get_contents($file['tmp_name']);
-	if( $content !== false ){
+    $content = file_get_contents($file['tmp_name']);
+    $part = input_post('part');
+    $msg = 'ไม่พบข้อมูลนำเข้า หรือไม่เลือกชื่อบริษัท';
+
+	if( $content !== false && $part !== false ){
 	
         $items = explode("\r\n", $content);
 
@@ -96,7 +107,6 @@ if( empty($action) ){
 
         $i = 0;
         $date_birth = '';
-        $part = input_post('part');
         
         foreach ($items as $key => $item) {
             
@@ -154,9 +164,9 @@ if( empty($action) ){
             // if( $i === 1 ){ exit; }
         }
 
-        
+        $msg = 'นำเข้าข้อมูลเรียบร้อย';
     }
-    redirect('Location: chk_import_user.php', 'นำเข้าข้อมูลเรียบร้อย');
+    redirect('chk_import_user.php', $msg);
     exit;
 }
 ?>

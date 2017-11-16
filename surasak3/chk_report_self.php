@@ -903,6 +903,7 @@ WHERE (
 	OR profilecode='10001'  
 	OR profilecode='ABOC'	
 	OR profilecode='METAMP'	
+	OR profilecode='OCCULT'
 	)  
 AND hn = '".$hn."' 
 AND ( 
@@ -928,14 +929,15 @@ FROM (
 		OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
 		OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
 		 ) 
-	AND ( `testgroupcode` = 'OUT' OR `profilecode` = 'OCCULT' ) 
+	AND ( `testgroupcode` = 'OUT' ) 
+	AND `profilecode` != '38302' 
 	GROUP BY `profilecode` 
 
 ) AS b 
 LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
 LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` ";
-$q = mysql_query($sql) or die( mysql_error() );
-$outlab_row = mysql_num_rows($q);
+$outlab_query = mysql_query($sql) or die( mysql_error() );
+$outlab_row = mysql_num_rows($outlab_query);
 
 
 // dump($other_result_row);
@@ -1180,6 +1182,12 @@ $outlab_row = mysql_num_rows($q);
 									}
 
 									if($objResult["result"]!="*"  && $objResult["result"]!="DELETE"){
+
+										// 
+										if ( $objResult["labname"]=="Occult blood" ) {
+											$objResult["labname"] = 'FOBT';
+										}
+
 									?>
 									<tr height="23">
 										<td width="34%" valign="top"><strong><?=$objResult["labname"];?> <font size="-1"><?=$labmean;?></font></td>
@@ -1207,18 +1215,18 @@ $outlab_row = mysql_num_rows($q);
 							if( $outlab_row > 0 ){
 
 
-								while( $outlab = mysql_fetch_assoc($q)){
+								while( $outlab = mysql_fetch_assoc($outlab_query)){
 									// dump($outlab['labcode']);
 									if($outlab['labcode']=="38302"){
 										// $outlab_code = "<strong>PAP SMEAR</strong> <font size='-1'>(การตรวจหามะเร็งปากมดลูก)</font>";
 									}else if( $outlab['labcode']=="OCCULT" ){
-										$outlab_code = "<strong>FOBT</strong> <font size='-1'>(การตรวจเลือดในอุจจาระ)</font>";
+										$outlab_code = "<strong>FOBT <font size='-1'>(การตรวจเลือดในอุจจาระ)</font></strong>";
 									}else if( $outlab['labcode']=="AFP" ){
-										$outlab_code = "<strong>AFP</strong> <font size='-1'>(การตรวจมะเร็งตับ)</font>";
+										$outlab_code = "<strong>AFP <font size='-1'>(การตรวจมะเร็งตับ)</font></strong>";
 									}else if( $outlab['labcode']=="CEA" ){
-										$outlab_code = "<strong>AFP</strong> <font size='-1'>(การตรวจมะเร็งลำไส้)</font>";
+										$outlab_code = "<strong>CEA <font size='-1'>(การตรวจมะเร็งลำไส้)</font></strong>";
 									}else if( $outlab['labcode']=="PSA" ){
-										$outlab_code = "<strong>AFP</strong> <font size='-1'>(การตรวจมะเร็งต่อมลูกหมาก)</font>";
+										$outlab_code = "<strong>PSA <font size='-1'>(การตรวจมะเร็งต่อมลูกหมาก)</font></strong>";
 									}else{
 										$outlab_code = $outlab['labcode'];
 									}
@@ -1284,8 +1292,8 @@ $outlab_row = mysql_num_rows($q);
           <td valign="bottom"><table width="100%" border="0" cellspacing="0" cellpadding="0">
 
             <tr valign="middle">
-              <td width="24%"><strong class="text" style="font-size:18px"> <u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u> </strong> </td>
-              <td width="76%"><strong class="text" style="margin-left: 9px;"> :
+              <td width="30%"><strong class="text" style="font-size:18px"> <u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u> </strong> </td>
+              <td width="70%"><strong class="text" style="margin-left: 9px;"> :
                 <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"];} ?>
               </strong> </td>
             </tr>
@@ -1339,7 +1347,7 @@ $outlab_row = mysql_num_rows($q);
 
 						<?php if( !empty($result['altra']) ){ ?>           
 							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์</u> </strong> </td>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
 									<?=$result['altra'];?>
 								</strong> </td>
@@ -1347,7 +1355,7 @@ $outlab_row = mysql_num_rows($q);
 						<? } ?>
 						<?php if( !empty($result['psa']) ){ ?>           
 							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมาก</u> </strong> </td>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
 									<?=$result['psa'];?>
 								</strong> </td>
@@ -1358,6 +1366,14 @@ $outlab_row = mysql_num_rows($q);
 								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
 									<?=$result['hpv'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
+						<?php if( !empty($result['mammogram']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['mammogram'];?>
 								</strong> </td>
 							</tr>
 						<? } ?>
@@ -1415,7 +1431,6 @@ $outlab_row = mysql_num_rows($q);
     
   </tr>
 </table>
-<div>&nbsp;</div>
 <div class="text3"><strong>*** หมายเหตุ *** </strong></div>
 <div class="text">1. กรณีผลสรุปการตรวจคือพบแพทย์สามารถติดต่อผ่านทางฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.ท.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น.</div>
 </div>

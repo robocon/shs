@@ -2,10 +2,10 @@
 
 include 'bootstrap.php';
 
-$action = input('action');
+$page = input('page');
 $db = Mysql::load();
 
-if( $action == false ){
+if( $page == false ){
     include 'chk_menu.php';
 
     $part = input_get('part');
@@ -31,6 +31,8 @@ if( $action == false ){
                 <th>ชื่อสกุล</th>
                 <th>เลขบัตรประชาชน</th>
                 <th>อายุ</th>
+                <th></th>
+                <th></th>
             </tr>
             <?php
             $i = 1;
@@ -42,6 +44,8 @@ if( $action == false ){
                     <td><?=$item['name'];?> <?=$item['surname'];?></td>
                     <td><?=$item['idcard'];?></td>
                     <td><?=$item['agey'];?></td>
+                    <td><a href="chk_user.php?page=form&id=<?=$item['row'];?>">แก้ไข</a></td>
+                    <td><a href="chk_lab.php?page=form&id=<?=$item['row'];?>">ปรับผลแลป</a></td>
                 </tr>
                 <?php
                 $i++;
