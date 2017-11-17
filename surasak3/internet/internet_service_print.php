@@ -1,4 +1,4 @@
-<? 
+<?php
 session_start(); 
 ob_start();
 ?>
@@ -20,7 +20,7 @@ color: #FFF;
 <div id="no_print">
 (<a  class="font2" target="_top" href="../../nindex.htm">&lt;&lt; เลิกทำ,ไปเมนู</a>) <a href="internet_service.php">ขอรหัสอินเตอร์เน็ต</a>
 </div>
-<?
+<?php
 
 
 include("../connect.inc");
@@ -31,7 +31,7 @@ $chksql="select * from internet where idcard ='".$_POST['idcard']."' and date_se
 $chkquery=mysql_query($chksql);
 $chkrow=mysql_num_rows($chkquery);
 $arr1=mysql_fetch_array($chkquery);
-
+// ดึงข้อมูลเก่าออกมาแสดง
 if($chkrow){
 	
 	echo "<div align='center' id='no_print'><b>คุณได้ขอรหัสไปแล้ว วันนี้ </b></div>";
@@ -53,30 +53,30 @@ window.print() ;
      <td height="17"><hr /></td>
 </tr>
 <tr>
-     <td class="font1">Username : <b><?=$arr1['user']?></b></td>
+     <td class="font1">ชื่อผู้ใช้ : <b><?=$arr1['user']?></b></td>
 </tr>
 <tr>
-     <td class="font1">Password :<b><?=$arr1['pass']?></b></td>
+     <td class="font1">รหัสผ่าน : <b><?=$arr1['pass']?></b></td>
 </tr>
 <tr>
-  <td class="font1">อายุการใช้งาน : <? if($arr1['type_net']=='1day'){ echo "1 วัน"; }else if($arr1['type_net']=='7day'){ echo "7 วัน"; }?> </td>
+  <td class="font1">บัตรมีอายุการใช้งาน : <?php if($arr1['type_net']=='1day'){ echo "1 วัน"; }else if($arr1['type_net']=='7day'){ echo "7 วัน"; }?> </td>
 </tr>
 <tr>
   <td>&nbsp;</td>
 </tr>
 <tr>
-  <td class="font1">ชื่อ : <?=$arr1['ptname']?></td>
+  <td class="font1">ชื่อผู้ขอใช้บริการ : <?=$arr1['ptname']?></td>
 </tr>
 <tr>
-  <td><div style="font-size:12pt">หมายเหตุ<br />
-    - สามารถขอรหัสได้ครั้งละ 1 วัน/1user</div></td>
+<td><div style="font-size:12pt"><u>หมายเหตุ<u><br />
+- สามารถขอใช้อินเตอร์เน็ตได้วันละ 1ผู้ใช้งาน</div></td>
 </tr>
 <tr>
   <td>&nbsp;</td>
 </tr>
 </table>
 	
-<?	
+<?php
 }else{
 
 
@@ -114,30 +114,30 @@ window.print() ;
      <td height="17"><hr /></td>
 </tr>
 <tr>
-     <td class="font1">Username : <b><?=$arr['user']?></b></td>
+     <td class="font1">ชื่อผู้ใช้ : <b><?=$arr['user']?></b></td>
 </tr>
 
 <tr>
-     <td class="font1">Password  :<b><?=$arr['pass']?></b></td>
+     <td class="font1">รหัสผ่าน  : <b><?=$arr['pass']?></b></td>
 </tr>
 <tr>
-  <td class="font1">อายุการใช้งาน : <? if($arr['type_net']=='1day'){ echo "1 วัน"; }else if($arr['type_net']=='7day'){ echo "7 วัน"; }?> </td>
+  <td class="font1">บัตรมีอายุการใช้งาน : <? if($arr['type_net']=='1day'){ echo "1 วัน"; }else if($arr['type_net']=='7day'){ echo "7 วัน"; }?> </td>
 </tr>
 <tr>
   <td>&nbsp;</td>
 </tr>
 <tr>
-  <td class="font1">ชื่อ : <?=$_POST['ptname'];?></td>
+  <td class="font1">ชื่อผู้ขอใช้บริการ : <?=$_POST['ptname'];?></td>
 </tr>
 <tr>
-  <td><div style="font-size:10pt">หมายเหตุ<br />
-    - สามารถขอรหัสได้ครั้งละ 1 วัน/1user</div></td>
+  <td><div style="font-size:12pt"><u>หมายเหตุ<u><br />
+- สามารถขอใช้อินเตอร์เน็ตได้วันละ 1ผู้ใช้งาน</div></td>
 </tr>
 <tr>
   <td>&nbsp;</td>
 </tr>
 </table>
-<?
+<?php
  }else{
 	?>
 <table align="center" cellpadding="2" cellspacing="2" class="font1">
@@ -145,7 +145,7 @@ window.print() ;
 <td align="center">ไม่สามารถออกรหัสได้ </td>
 </tr>
 </table>
-<?
+<?php
  }
 }else{
 	echo "-----------------------รหัสหมดแล้วติดต่อ โทร 6203 ---------------------------";	

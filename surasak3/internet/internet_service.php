@@ -150,7 +150,13 @@ $NumRow=mysql_num_rows($objQuery);
   <tr>
     <td colspan="2" align="center">ระบบให้บริการอินเตอร์เน็ต </td>
     </tr>
-    
+    <tr>
+    	<td colspan="2" align="center" style="color: red;">
+			เนื่องจากจำนวนผู้ใช้งานในระบบอินเตอร์เน็ตมีจำกัด<br>
+			จึงไม่สามารถให้บริการอินเตอร์เน็ตแบบ1วันได้<br>
+			ขออภัยมา ณ ที่นี้ด้วยครับ
+		</td>
+    </tr>
   <tr>
     <td colspan="2" align="center">
 		<? 
@@ -186,7 +192,7 @@ $NumRow=mysql_num_rows($objQuery);
 					
 					$text= "<div  style='background-color:#F9C;'> รหัสการใช้งานแบบ 1 วัน และ 7วัน เหลือน้อยกว่า 10 user  <br>กรุณาแจ้งศูนย์คอมพิวเตอร์ โทร 6203 เพื่อเพิ่มรหัสการใช้งานอินเตอร์เน็ต</div>";
 				}else if($count1<10){
-					$text= "<div  style='background-color:#F9C;'>รหัสการใช้งานแบบ 1 วัน เหลือน้อยกว่า 10 user <br>กรุณาแจ้งศูนย์คอมพิวเตอร์ โทร 6203 เพื่อเพิ่มรหัสการใช้งานอินเตอร์เน็ต</div>";
+					// $text= "<div  style='background-color:#F9C;'>รหัสการใช้งานแบบ 1 วัน เหลือน้อยกว่า 10 user <br>กรุณาแจ้งศูนย์คอมพิวเตอร์ โทร 6203 เพื่อเพิ่มรหัสการใช้งานอินเตอร์เน็ต</div>";
 				}else	if($count2<10){
 					$text= "<div  style='background-color:#F9C;'>รหัสการใช้งานแบบ 7 วัน เหลือน้อยกว่า 10 user <br>กรุณาแจ้งศูนย์คอมพิวเตอร์ โทร 6203 เพื่อเพิ่มรหัสการใช้งานอินเตอร์เน็ต</div>";
 			}
@@ -218,7 +224,7 @@ $NumRow=mysql_num_rows($objQuery);
     <td>อายุการใช้งาน</td>
     <td><select name="type_net">
      <option value="" >กรุณาเลือก</option>
-      <option value="1day">1 วัน</option>
+      <!-- <option value="1day">1 วัน</option> -->
       <option value="7day">7 วัน</option>
     </select></td>
   </tr>

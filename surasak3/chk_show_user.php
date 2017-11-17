@@ -31,8 +31,8 @@ if( $page == false ){
                 <th>ชื่อสกุล</th>
                 <th>เลขบัตรประชาชน</th>
                 <th>อายุ</th>
-                <th></th>
-                <th></th>
+                <th>แก้ไขข้อมูลพื้นฐาน</th>
+                <th>แก้ไขผลแลป</th>
             </tr>
             <?php
             $i = 1;
@@ -44,8 +44,8 @@ if( $page == false ){
                     <td><?=$item['name'];?> <?=$item['surname'];?></td>
                     <td><?=$item['idcard'];?></td>
                     <td><?=$item['agey'];?></td>
-                    <td><a href="chk_user.php?page=form&id=<?=$item['row'];?>">แก้ไข</a></td>
-                    <td><a href="chk_lab.php?page=form&id=<?=$item['row'];?>">ปรับผลแลป</a></td>
+                    <td align="center"><a href="chk_user.php?page=form&id=<?=$item['row'];?>">แก้ไข</a></td>
+                    <td align="center"><a href="chk_lab.php?page=form&id=<?=$item['row'];?>">ปรับผลแลป</a></td>
                 </tr>
                 <?php
                 $i++;
