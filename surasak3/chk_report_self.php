@@ -883,35 +883,42 @@ while($result = mysql_fetch_assoc($row2)){
   
  <?php
 // ผลการตรวจทางห้องปฏิบัติการ ตัด profilecode='OCCULT'
-$sql1 = "SELECT * 
-FROM resulthead 
-WHERE ( 
-	profilecode='GLU' 
-	OR profilecode='CREAG' 
-	OR profilecode='BUN' 
-	OR profilecode='URIC' 
-	OR profilecode='CHOL' 
-	OR profilecode='TRIG' 
-	OR profilecode='AST' 
-	OR profilecode='ALT' 
-	OR profilecode='LIPID' 
-	OR profilecode='ALP' 
-	OR profilecode='HBSAG' 
-	OR profilecode='ANTIHB' 
-	OR profilecode='HDL' 
-	OR profilecode='LDL'
-	OR profilecode='10001'  
-	OR profilecode='ABOC'	
-	OR profilecode='METAMP'	
-	OR profilecode='OCCULT'
-	)  
-AND hn = '".$hn."' 
-AND ( 
-	clinicalinfo ='ตรวจสุขภาพประจำปี60' 
-	OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
-	OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60'  ) 
-ORDER BY `autonumber` asc";
-//echo $sql1."<br>";
+$sql1 = "SELECT a.*, b.* 
+FROM ( 
+
+    SELECT * 
+    FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+    AND ( 
+        `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+        OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม61'  
+    ) 
+    AND ( 
+        `profilecode`='GLU' 
+        OR `profilecode`='CREAG' 
+        OR `profilecode`='BUN' 
+        OR `profilecode`='URIC' 
+        OR `profilecode`='CHOL' 
+        OR `profilecode`='TRIG' 
+        OR `profilecode`='AST' 
+        OR `profilecode`='ALT' 
+        OR `profilecode`='LIPID' 
+        OR `profilecode`='ALP' 
+        OR `profilecode`='HBSAG' 
+        OR `profilecode`='ANTIHB' 
+        OR `profilecode`='HDL' 
+        OR `profilecode`='LDL' 
+        OR `profilecode`='10001' 
+        OR `profilecode`='ABOC' 
+        OR `profilecode`='METAMP'	
+        OR `profilecode`='OCCULT'
+    ) 
+    ORDER BY `autonumber` ASC  
+
+ ) AS a 
+ LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+ WHERE b.`result` != 'DELETE' 
+ GROUP BY a.`profilecode` ";
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -970,7 +977,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 								$i++;
 								//echo $i;
 
-								$strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' limit 0,1";
+								$strSQL1 = "SELECT authorisename, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
+								FROM resultdetail 
+								WHERE autonumber='".$arrresult['autonumber']."' 
+								limit 0,1";
 								//echo "===>".$strSQL1;
 								$objQuery1 = mysql_query($strSQL1);
 								list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
