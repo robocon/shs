@@ -548,11 +548,20 @@ print "<BR>";
 		array_push($aSpecno,"");
 	}
 
+	$edpri_from_list = array(
+		1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
+		2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
+		3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด<br>(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
+		4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
+		5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
+		6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
+	);
+
 	function page2_header(){
 		global $cPrepono, $cPrepodate;
 		?>
-		<div style="position: relative; font-family: TH SarabunPSK; font-size: 13pt;">
-			<table class="dx_tb" width="97%">
+		
+			<table class="dx_tb" width="95%">
 				<tr>
 					<th style="width:38px;">ลำดับ</th>
 					<th style="width:258px;">รายการ</th>
@@ -565,6 +574,58 @@ print "<BR>";
 					<th style="width:75px;">ราคา<br>รวม VAT</th>
 					<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 				</tr>
+		<?php
+	}
+
+	function page2_footer(){
+		?></table><?php
+	}
+
+	function page2_topnote(){
+		global $cPrepono, $cPrepodate;
+		?>
+		<div style="position: relative;">
+			<DIV style='height:30PX;' align="center"><span class='fc1-1'>บัญชีรายการยาที่ขออนุมัติจัดซื้อ </span></DIV>
+			<DIV style='height:26PX;' class='fc1-0' align="center">
+				<span>ตามรายงานกองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ที่ กห 0483.63.4/</span>
+				<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepono;?></span>
+				ลง วันที่
+				<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepodate;?></span>
+			</DIV>
+		</div>
+		<?php
+	}
+
+	function page2_footnote(){
+		global $nItems, $nPriadvat, $cPriadvat, $edpri_from_list, $aYot, $aFname, $aPost, $aPost2;
+		?>
+		<div class="dx_detail" style="position: relative;">
+		<div>รวมราคาประมาณการอนุมัติ เพื่อดำเนินการจัดซื้อในคราวนี้ <?=$nItems;?> รายการ</div>
+		<div>จำนวนเงิน <?=$nPriadvat;?> บาท <?=$cPriadvat;?></div>
+		<div>*** หมายเหตุ</div>
+		<div>
+			<div>แหล่งที่มาของราคากลาง</div>
+			<div style="padding-left: 20px;">
+				<?php
+				foreach ($edpri_from_list as $key => $value) {
+					echo $value."<br>";
+				}
+				?>
+			</div>
+		</div>
+	</div>
+	<div style="position: relative;">
+		<?php
+		//  ช่องเซ็น 740
+		print"<DIV style='height:27PX; padding-right: 300px;' align='right'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
+		print"<DIV style='height:30PX; padding-right: 250px;' align='right'><span class='fc1-0'>$aYot[2]</span></DIV>";
+		print"<DIV style='height:30PX; padding-right: 150px;' align='right'><span class='fc1-0'>($aFname[2])</span></DIV>";
+
+		//ตำแหน่ง
+		print"<DIV style='height:30PX; padding-right: 100px;' align='right'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+
+		?>
+	</div>
 		<?php
 	}
 
@@ -595,16 +656,10 @@ print "<BR>";
 	}
 	</style>
 
-		
-	<div style="position: relative;">
-		<DIV style='left:194PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>บัญชีรายการยาที่ขออนุมัติจัดซื้อ </span></DIV>
-		<DIV style='left:136PX;width:800PX;height:26PX;' class='fc1-0'>
-			<span>ตามรายงานกองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ที่ กห 0483.63.4/</span>
-			<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepono;?></span>
-			ลง วันที่
-			<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepodate;?></span>
-		</DIV>
-	</div>
+	<?php 
+	// page2_topnote();
+	?>
+	<div style="position: relative; font-family: TH SarabunPSK; font-size: 13pt;">
 		<?php
 
 		$i_inpage = 0;
@@ -652,8 +707,12 @@ print "<BR>";
 			if( $ii % $line_in_page == 0 ){
 				
 				$i_inpage = 0;
+
+				page2_footer();
+
+				page2_footnote();
 				?>
-				</table>
+				
 				</div>
 				</div>
 				
@@ -670,6 +729,7 @@ print "<BR>";
 
 			// ขึ้นตารางใหม่
 			if( $i_inpage == 0 ){
+				page2_topnote();
 				page2_header();
 			}
 			
@@ -744,46 +804,15 @@ print "<BR>";
 			<td class="last_child">&nbsp;</td>
 		</tr>
 		
-	</table>
+	
 
 	<?php 
-	$edpri_from_list = array(
-		1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
-		2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
-		3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด<br>(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
-		4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
-		5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
-		6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
-	);
+	page2_footer();
+
+	page2_footnote();
 
 	?>
-	<div class="dx_detail" style="position: relative;">
-		<div>รวมราคาประมาณการอนุมัติ เพื่อดำเนินการจัดซื้อในคราวนี้ <?=$nItems;?> รายการ</div>
-		<div>จำนวนเงิน <?=$nPriadvat;?> บาท <?=$cPriadvat;?></div>
-		<div>*** หมายเหตุ</div>
-		<div>
-			<div>แหล่งที่มาของราคากลาง</div>
-			<div style="padding-left: 20px;">
-				<?php
-				foreach ($edpri_from_list as $key => $value) {
-					echo $value."<br>";
-				}
-				?>
-			</div>
-		</div>
-	</div>
-	<div style="position: relative;">
-		<?php
-		//  ช่องเซ็น 740
-		print"<DIV style='position:absolute; left:520PX;top:0PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-		print"<DIV style='position:absolute; left:544PX;top:30PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-		print"<DIV style='position:absolute; left:549PX;top:60PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
-
-		//ตำแหน่ง
-		print"<DIV style='position:absolute; left:549PX;top:90PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
-
-		?>
-	</div>
+	
 	
 </div>
 
