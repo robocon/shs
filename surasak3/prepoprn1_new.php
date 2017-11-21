@@ -286,7 +286,7 @@ print "<STYLE>";
  print "A IMG {border-style:none; border-width:0;}";
  print "DIV {position:absolute; z-index:25;}";
 print "</STYLE>";
-print "<TITLE>Crystal Report Viewer</TITLE>";
+print "<TITLE>เวชภัณฑ์รวม VAT หลัง</TITLE>";
 print "<BODY BGCOLOR='FFFFFF'LEFTMARGIN=0 TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0>";
 print "<DIV style='z-index:0'> &nbsp; </div>";
 print "<DIV style='left:88PX;top:110PX;width:697PX;height:30PX;'><span class='fc1-4'>ส่วนราชการ&nbsp;&nbsp;กองเภสัชกรรม&nbsp;&nbsp;&nbsp;&nbsp;รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
