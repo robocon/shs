@@ -19,98 +19,68 @@ body,td,th {
 
 $camp = $_GET["camp"];
 
-// $month=$_POST["month"];
 $title_date = '';
 
 $sql = "SELECT * 
 FROM `out_result_chkup` 
 WHERE `part` = '$camp' 
 ORDER BY `row_id` ASC";
+$out_result_sql = mysql_query($sql) or die ( mysql_error() );
+$num = mysql_num_rows($out_result_sql);
 
-// dump($sql);
-
-// if(month=="6"){
-// 	$showmonth="มิถุนายน";
-// 	$sql="SELECT *
-// 	FROM `opcardchk`
-// 	WHERE `part` = '$camp' and active='y'
-// 	ORDER BY `row` ASC";
-// }else if($month=="7"){
-// 	$showmonth="กรกฎาคม";
-// 	$sql = "SELECT *
-// 	FROM `out_result_chkup`
-// 	WHERE `part` = '$camp' 
-// 	ORDER BY `row_id` ASC";
-// }else if($month=="8"){
-// 	$showmonth="สิงหาคม";
-// 	$sql = "SELECT *
-// 	FROM `out_result_chkup`
-// 	WHERE `part` = '$camp' 
-// 	ORDER BY `row_id` ASC";
-// }else if($month=="9"){
-// 	$showmonth="กันยายน";
-// 	$sql = "SELECT *
-// 	FROM `out_result_chkup`
-// 	WHERE `part` = '$camp' 
-// 	ORDER BY `row_id` ASC";
-// }else if($month=="10"){
-// 	$showmonth="ตุลาคม";
-// 	$title_date = '4-19';
-// }
-
-//echo $sql."<br>";
-$row = mysql_query($sql)or die ("Query Fail");
-$num = mysql_num_rows($row);
-
-$q = mysql_query("SELECT `date_checkup` AS `show_date`, `name` AS `company_name` FROM `chk_company_list` WHERE `code` = '$camp' ");
+$q = mysql_query("SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
+FROM `chk_company_list` 
+WHERE `code` = '$camp' ") or die ( mysql_error() );
 $company = mysql_fetch_assoc($q);
 ?>	
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['company_name'];?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
-<div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?>  <?=$showmonth;?> 2560 จำนวน <?=$num;?> ราย</strong></div>
+<div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?> จำนวน <?=$num;?> ราย</strong></div>
 <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
   <tr>
-    <td width="3%" rowspan="2" align="center"><strong>ลำดับ</strong></td>
-    <td width="5%" rowspan="2" align="center"><strong>HN</strong></td>
-    <td width="15%" rowspan="2" align="center"><strong>ชื่อ - สกุล</strong></td>
-    <td width="4%" rowspan="2" align="center"><strong>อายุ</strong></td>
-    <td width="5%" rowspan="2" align="center"><strong>น้ำหนัก</strong></td>
-    <td width="5%" rowspan="2" align="center"><strong>ส่วนสูง</strong></td>
-    <td width="5%" rowspan="2" align="center"><strong>BP</strong></td>
-    <td colspan="23" align="center"><strong>รายการตรวจ</strong></td>
-    <td width="8%" rowspan="2" align="center"><strong>ภาวะสุขภาพโดยรวม</strong></td>
-    <td colspan="2" align="center"><strong>สรุปผลการตรวจ</strong></td>
+    <th width="3%" rowspan="2" align="center"><strong>ลำดับ</strong></th>
+    <th width="5%" rowspan="2" align="center"><strong>HN</strong></th>
+    <th width="15%" rowspan="2" align="center"><strong>ชื่อ - สกุล</strong></th>
+    <th width="4%" rowspan="2" align="center"><strong>อายุ</strong></th>
+    <th width="5%" rowspan="2" align="center"><strong>น้ำหนัก</strong></th>
+    <th width="5%" rowspan="2" align="center"><strong>ส่วนสูง</strong></th>
+    <th width="5%" rowspan="2" align="center"><strong>BP</strong></th>
+    <th colspan="25" align="center"><strong>รายการตรวจ</strong></th>
+    <th width="8%" rowspan="2" align="center"><strong>ภาวะสุขภาพโดยรวม</strong></th>
+    <th colspan="2" align="center"><strong>สรุปผลการตรวจ</strong></th>
   </tr>
   <tr>
-    <td width="3%" align="center"><strong>PE</strong></td>
-    <td width="7%" align="center"><strong>X-RAY</strong></td>
-    <td width="5%" align="center"><strong>CBC</strong></td>
-    <td width="5%" align="center"><strong>UA</strong></td>
-    <td width="5%" align="center"><strong>BS</strong></td>
-    <td width="6%" align="center"><strong>CHOL</strong></td>
-    <td width="6%" align="center"><strong>TRIG</strong></td>
-    <td width="5%" align="center"><strong>HDL</strong></td>
-    <td width="5%" align="center"><strong>LDL</strong></td>
-    <td width="5%" align="center"><strong>BUN</strong></td>
-    <td width="3%" align="center"><strong>CR</strong></td>
-    <td width="6%" align="center"><strong>URIC</strong></td>
-    <td width="7%" align="center"><strong>SGOT</strong></td>
-    <td width="6%" align="center"><strong>SGPT</strong></td>
-    <td width="4%" align="center"><strong>ALK</strong></td>
-    <td width="7%" align="center"><strong>HBSAG</strong></td>
-    <td width="6%" align="center"><strong>FOBT</strong></td>
-    <td width="6%" align="center"><strong>METAMP</strong></td>
-    <td width="5%" align="center"><strong>ABOC</strong></td>
-    <td width="6%" align="center"><strong>EKG</strong></td>
-    <td width="6%" align="center"><strong>V/A</strong></td>
-    <td width="6%" align="center"><strong>สายตา</strong></td>
-    <td width="6%" align="center"><strong>สมรรถภาพปอด</strong></td>
-    <td width="5%" align="center"><strong>พบแพทย์</strong></td>
-    <td width="6%" align="center"><strong>ไม่พบแพทย์</strong></td>
+    <th width="3%" align="center"><strong>PE</strong></th>
+    <th width="7%" align="center"><strong>X-RAY</strong></th>
+    <th width="5%" align="center"><strong>CBC</strong></th>
+    <th width="5%" align="center"><strong>UA</strong></th>
+    <th width="5%" align="center"><strong>BS</strong></th>
+    <th width="6%" align="center"><strong>CHOL</strong></th>
+    <th width="6%" align="center"><strong>TRIG</strong></th>
+    <th width="5%" align="center"><strong>HDL</strong></th>
+    <th width="5%" align="center"><strong>LDL</strong></th>
+    <th width="5%" align="center"><strong>BUN</strong></th>
+    <th width="3%" align="center"><strong>CR</strong></th>
+    <th width="6%" align="center"><strong>URIC</strong></th>
+    <th width="7%" align="center"><strong>SGOT</strong></th>
+    <th width="6%" align="center"><strong>SGPT</strong></th>
+    <th width="4%" align="center"><strong>ALK</strong></th>
+    <th width="7%" align="center"><strong>HBSAG</strong></th>
+    <th width="6%" align="center"><strong>FOBT</strong></th>
+    <th width="6%" align="center"><strong>METAMP</strong></th>
+    <th width="5%" align="center"><strong>ABOC</strong></th>
+    <th width="6%" align="center"><strong>EKG</strong></th>
+    <th width="6%" align="center"><strong>V/A</strong></th>
+    <th width="6%" align="center"><strong>สายตา</strong></th>
+    <th width="6%" align="center"><strong>สมรรถภาพปอด</strong></th>
+    <th width="6%" align="center"><strong>อัลตร้าซาวด์<br>ช่องท้อง</strong></th>
+    <th width="6%" align="center"><strong>ต่อมลูกหมาก<br>โดยการคลำ</strong></th>
+    <th width="5%" align="center"><strong>พบแพทย์</strong></th>
+    <th width="6%" align="center"><strong>ไม่พบแพทย์</strong></th>
   </tr>
-<?
+<?php
 $i=0;
-while($result = mysql_fetch_array($row)){
+while($result = mysql_fetch_array($out_result_sql)){
 
 $age=$result["agey"];
 
@@ -168,16 +138,16 @@ if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"
     <td align="center"><?=$result2["height"];?></td>
     <td align="center"><?=$bp;?></td>
     <td>&nbsp;</td>
-    <td align="left"><? 
+    <td align="left"><?php 
 			  	if($result2["cxr"]==""){ echo "ปกติ"; }else{ echo $result2["cxr"];}
 		   ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
 $sql18="SELECT * 
 FROM resulthead WHERE profilecode = 'CBC' AND hn = '".$result["HN"]."' AND (
 clinicalinfo = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR clinicalinfo = 'ตรวจสุขภาพประกันสังคม60'
 )
 GROUP BY `profilecode` ";
-// dump($sql18);
+
 $query18=mysql_query($sql18);
 $numcbc=mysql_num_rows($query18);
 if($numcbc > 0){
@@ -188,7 +158,7 @@ if($numcbc > 0){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php
 $sql19="SELECT * 
 FROM resulthead WHERE profilecode = 'UA' AND hn = '".$result["HN"]."' AND (
 clinicalinfo = 'ตรวจสุขภาพประจำปี60' OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' OR clinicalinfo = 'ตรวจสุขภาพประกันสังคม60'
@@ -205,7 +175,7 @@ if($numua > 0){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php
 $sql1="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
@@ -224,7 +194,7 @@ if($flag=="N" || $flag=="L"){
 	echo "&nbsp;";
 }
 ?>    </td>
-    <td align="center"><?
+    <td align="center"><?php
 $sql2="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
@@ -244,7 +214,7 @@ if($flag=="N"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php
 $sql3="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
@@ -264,7 +234,7 @@ if($flag=="N"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php
 $sql4="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
@@ -517,6 +487,21 @@ if($flag=="N"){
 	<? 
 		if($result2["pt"]=="ปกติ"){ echo $result2["pt"]; }else if($result2["pt"]=="ปอดจำกัดการขยายตัว" || $result2["pt"]=="ปอดอุดกั้น"){ echo $result2["pt"]."...".$result2["pt_detail"];}else{ echo "&nbsp;";}
 	?></td>
+    <td>
+    <?php
+    if( !empty($result['altra']) ){
+        echo $result['altra'];
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
+    // ต่อมลูกหมากโดยการคลำ
+    if( !empty($result['psa']) ){
+        echo $result['psa'];
+    }
+    ?>
+    </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
      <td>&nbsp;</td>
