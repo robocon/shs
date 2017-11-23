@@ -45,7 +45,7 @@ $pdf->SetXY(0, 45);
 $pdf->Cell(210, 5, 'ใบสำคัญความเห็นของแพทย์', 0, 1, 'C');
 
 if( $img != false ){
-    $pdf->Image($img, 170, 10, 30, 40);
+    $pdf->Image($img, 170, 10, 20, 30);
 }
 
 $pdf->SetFont('THSarabun','B',16);

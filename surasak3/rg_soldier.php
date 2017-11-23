@@ -451,6 +451,7 @@ ul.topnav li a:hover{
         <li><a href="rg_soldier.php">หน้าหลัก ตรช</a></li>
         <li><a href="rg_soldier.php?page=form">เพิ่มข้อมูล</a></li>
         <li><a href="http://192.168.1.13/sm3/surasak3/rg_soldier_xlsx.php">ส่งออก Amed(.xlsx)</a></li>
+        <li><a href="rg_print_photo.php" target="_blank">ถ่ายรูป 1นิ้ว</a></li>
     </ul>
 </div>
 <?php
