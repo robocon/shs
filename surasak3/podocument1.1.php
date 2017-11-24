@@ -45,10 +45,10 @@ If (!empty($yym)){
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php?nRow_id=$row_id\">$date</a></td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php?nRow_id=$row_id\">$prepono</a></td>\n".
 
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn_new.php?nRow_id=$row_id' target='_blank'>$prepodate</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn.1_new.php?nRow_id=$row_id' target='_blank'>$prepodate</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn1_new.php?nRow_id=$row_id' target='_blank'>$prepodate</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn1.1_new.php?nRow_id=$row_id' target='_blank'>$prepodate</a></td>\n".
+          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn_new.php?nRow_id=$row_id&type=drug&vat=after' target='_blank'>$prepodate</a></td>\n".
+          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn_new.php?nRow_id=$row_id&type=drug&vat=before' target='_blank'>$prepodate</a></td>\n".
+          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn_new.php?nRow_id=$row_id&type=supply&vat=after' target='_blank'>$prepodate</a></td>\n".
+          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn_new.php?nRow_id=$row_id&type=supply&vat=before' target='_blank'>$prepodate</a></td>\n".
   
 "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"podocumentselect.php? 	nRow_id=$row_id\">$comcode</a></td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$comname</td>\n".

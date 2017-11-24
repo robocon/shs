@@ -23,7 +23,7 @@
     </ol>
     <div style="position: relative;">
         <div class="container" id="container_img">
-            <video id="video" class="glass" autoplay></video>
+            <video id="video" class="glass" autoplay><u style="color: red;">เบราเซอร์ไม่รองรับการทำงานของกล้องถ่ายรูป</u></video>
             <div style="border: 1px solid blue; width: 472px; height: 708px; left: 236px; position: absolute; top: 0;"></div>
             <button id="snap" style="width: 200px; height: 200px; font-size: 50px; vertical-align: top;">ถ่ายรูป</button>
         </div>

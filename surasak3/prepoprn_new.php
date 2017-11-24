@@ -1,7 +1,15 @@
 <?php
-// session_start();
-// include("connect.inc");
 include 'bootstrap.php';
+
+$vat_type = $_GET['vat'];
+$type = $_GET['type'];
+if( $type === 'drug' ){
+	$type_txt = 'ยา';
+}else if( $type === 'supply' ){
+	$type_txt = 'เวชภัณฑ์';
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +17,7 @@ include 'bootstrap.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PO 3 ใบ - ยารวมVATหลัง</title>
+    <title>PO 3 ใบ - <?=$type_txt;?>รวมVAT<?=( $vat_type == 'after' ? 'หลัง' : 'ก่อน' );?></title>
 </head>
 <body>
 <script>
@@ -224,13 +232,13 @@ function vat($nVArabic){
             $cLtnum=$cLtnum.substr($cTarget,$x,1);
             $x++;
 	}
-   $cRtnum=substr($cTarget,$x+1);
+	$cRtnum=substr($cTarget,$x+1);
 
-$cRtnum=$cRtnum/100;
-$cRtnum=intval($cRtnum);
-$vat=$nVArabic+$cRtnum;
-return $vat;
-	}
+	$cRtnum=$cRtnum/100;
+	$cRtnum=intval($cRtnum);
+	$vat=$nVArabic+$cRtnum;
+	return $vat;
+}
 ///end of function convert to float number ทศนิยม 2ตำแหน่ง
 
     
@@ -304,20 +312,19 @@ return $vat;
 
 //คำนวนค่าต่างๆ
 $nVat = $nNetprice * .07;
-
-// รวมสุทธิ
-// $nPriadvat
-
-// รวมเงิน
-// $nNetprice
-
-///  $nVat=number_format($nVat,2,'.',''); //convert to string ทศนิยม 2 ตำแหน่ง ปัดเศษ
-///  $nVat=floatval ($nVat);// convert to float-number
-
 $nVat = vat($nVat); //use function vat
-$nPriadvat = $nNetprice;
 
-$nPriadvat=$nVat+$nNetprice;
+if ( $vat_type === 'after' ) {
+	$nPriadvat = $nNetprice;
+	$nPriadvat = $nVat + $nNetprice;
+
+}else if( $vat_type === 'before' ){
+	$nNetprice1 = $nNetprice-$nVat;
+	$nPriadvat = $nNetprice;
+	$nNetprice -= $nVat;
+
+}
+
 $cPriadvat = baht($nPriadvat);//ตัวอักษร
 
 //format 2 decimal
@@ -352,9 +359,9 @@ print "<DIV style='left:88PX;top:169PX;width:36PX;height:30PX;'><span class='fc1
 print "<DIV style='left:88PX;top:198PX;width:36PX;height:30PX;'><span class='fc1-5'>เรียน</span></DIV>";
 print "<DIV style='left:138PX;top:198PX;width:283PX;height:30PX;'><span class='fc1-5'>ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 
-print "<DIV style='left:138PX;top:169PX;width:647PX;height:30PX;'><span class='fc1-5'>ขออนุมัติจัดหายา</span></DIV>";
+print "<DIV style='left:138PX;top:169PX;width:647PX;height:30PX;'><span class='fc1-5'>ขออนุมัติจัดหา".$type_txt."</span></DIV>";
 
-print "<DIV style='left:167PX;top:263PX;width:617PX;height:30PX;'><span class='fc1-5'>กองเภสัชกรรม รพ.ค่ายฯ ขออนุมัติจัดหายา เพื่อใช้ในการรักษาพยาบาลผู้ป่วยเจ็บที่เข้ามา</span></DIV>";
+print "<DIV style='left:167PX;top:263PX;width:617PX;height:30PX;'><span class='fc1-5'>กองเภสัชกรรม รพ.ค่ายฯ ขออนุมัติจัดหา".$type_txt." เพื่อใช้ในการรักษาพยาบาลผู้ป่วยเจ็บที่เข้ามา</span></DIV>";
 print "<DIV style='left:88PX;top:292PX;width:696PX;height:30PX;'><span class='fc1-5'>รับการรักษาพยาบาลใน รพ.ค่ายสุรศักดิ์มนตรี จำนวน $nItems รายการ การจัดหาครั้งนี้เป็นการจัดหาทดแทน</span></DIV>";
 print "<DIV style='left:88PX;top:321PX;width:696PX;height:30PX;'><span class='fc1-5'>ของในสต๊อกที่ใกล้จะหมดลง ดังมีรายการตามสิ่งที่ส่งมาด้วยแล้ว</span></DIV>";
 /// ส่วนเนื้อเรื่อง ////
@@ -389,19 +396,19 @@ print "<BR>";
 
 
 
-
+<!-- เริ่มหน้าสอง -->
 <div class="clearfix">
-<!--[if IE]>
+	<!--[if IE]>
 		<div class="page2 ie7" style="">
-<![endif]-->
-<!--[if !IE]><!-->
-<div class="page2" style="position: relative; width: 20.8cm; height: 27cm;">
-<!--<![endif]-->
+	<![endif]-->
+	<!--[if !IE]><!-->
+		<div class="page2" style="position: relative; width: 20.8cm; height: 27cm;">
+	<!--<![endif]-->
 
-<?php
+	<?php
 
-///list รายการ
-   $x=0;
+	///list รายการ
+	$x=0;
     $aX   = array("x");
     $aTradname  = array("tradname ");
 	$aPacking  = array(" packing");
@@ -475,14 +482,17 @@ print "<BR>";
     array_push($aPackpri,"");
 	array_push($aSpecno,"");
 
-	// จำนวนบรรทัดปกติ 
-	$line_in_page = 14;
-	if( $po_page2_rows > 14 ){
-		$line_in_page = 20;
-	}
+	// จำนวนบรรทัดปกติที่แสดงต่อ1หน้ากระดาษ
+	$line_in_page = 30;
+	$set_new_page = false;
 
-	// หาจำนวนหน้า
-	$page_ceil = (int) ceil( $po_page2_rows / $line_in_page );
+	// จำนวนบรรทัดที่จะตัดขึ้นหน้าใหม่
+	$line_cutoff = 24;
+
+	// ถ้าข้อมูลเยอะกว่าจำนวนที่กำหนด
+	if( $po_page2_rows >= $line_cutoff ){
+		$set_new_page = true;
+	}
 
 	//มีได้ 12 รายการ+หมดรายการ(13แถว) ใส่ NULL ให้array ที่เหลือดังนี้
 	for ($n=$x+1; $n<=13; $n++){
@@ -504,79 +514,6 @@ print "<BR>";
 		5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
 		6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
 	);
-
-	function page2_header(){
-		global $cPrepono, $cPrepodate;
-		?>
-		
-			<table class="dx_tb" width="100%">
-				<tr>
-					<th style="width:38px;">ลำดับ</th>
-					<th style="width:258px;">รายการ</th>
-					<th style="width:51px;">หน่วยนับ</th>
-					<th style="width:75px;">ขนาดบรรจุ</th>
-					<th style="width:43px;">จำนวน</th>
-					<th style="width:55px;">ราคากลาง</th>
-					<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
-					<th style="width:75px;">หน่วยละ<br>รวม VAT</th>
-					<th style="width:75px;">ราคา<br>รวม VAT</th>
-					<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
-				</tr>
-		<?php
-	}
-
-	function page2_footer(){
-		?></table><?php
-	}
-
-	function page2_topnote(){
-		global $cPrepono, $cPrepodate;
-		?>
-		<div style="position: relative;">
-			<DIV style='height:30PX;' align="center"><span class='fc1-1'>บัญชีรายการยาที่ขออนุมัติจัดซื้อ </span></DIV>
-			<DIV style='height:26PX;' class='fc1-0' align="center">
-				<span>ตามรายงานกองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ที่ กห 0483.63.4/</span>
-				<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepono;?></span>
-				ลง วันที่
-				<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepodate;?></span>
-			</DIV>
-		</div>
-		<?php
-	}
-
-	function page2_footnote(){
-		global $nItems, $nPriadvat, $cPriadvat, $edpri_from_list, $aYot, $aFname, $aPost, $aPost2;
-		?>
-		<div class="dx_detail" style="position: relative;">
-		<div>รวมราคาประมาณการอนุมัติ เพื่อดำเนินการจัดซื้อในคราวนี้ <?=$nItems;?> รายการ</div>
-		<div>จำนวนเงิน <?=$nPriadvat;?> บาท <?=$cPriadvat;?></div>
-		<div>*** หมายเหตุ</div>
-		<div>
-			<div>แหล่งที่มาของราคากลาง</div>
-			<div style="padding-left: 20px;">
-				<?php
-				foreach ($edpri_from_list as $key => $value) {
-					echo $value."<br>";
-				}
-				?>
-			</div>
-		</div>
-	</div>
-	<div style="position: relative;">
-		<?php
-		//  ช่องเซ็น 740
-		print"<DIV style='height:27PX; padding-right: 300px;' align='right'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-		print"<DIV style='height:30PX; padding-right: 250px;' align='right'><span class='fc1-0'>$aYot[2]</span></DIV>";
-		print"<DIV style='height:30PX; padding-right: 150px;' align='right'><span class='fc1-0'>($aFname[2])</span></DIV>";
-
-		//ตำแหน่ง
-		print"<DIV style='height:30PX; padding-right: 100px;' align='right'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
-
-		?>
-	</div>
-		<?php
-	}
-
 	?>
 	<style type="text/css">
 	.dx_tb{
@@ -604,254 +541,246 @@ print "<BR>";
 	}
 	</style>
 
+	<div style="position: relative;">
+		<div style='height:30PX;' align="center"><span class='fc1-1'>บัญชีรายการ<?=$type_txt;?>ที่ขออนุมัติจัดซื้อ </span></div>
+		<div style='height:26PX;' class='fc1-0' align="center">
+			<span>ตามรายงานกองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ที่ กห 0483.63.4/</span>
+			<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepono;?></span>
+			ลง วันที่
+			<span style="padding: 0 10px; border-bottom: 1px dashed #000000;"><?=$cPrepodate;?></span>
+		</div>
+	</div>
+
 	<div style="position: relative; font-family: TH SarabunPSK; font-size: 13pt;">
-		<?php
 
-		$i_inpage = 0;
+		<table class="dx_tb" style="width: 745px;">
+			<tr>
+				<th style="width:38px;">ลำดับ</th>
+				<th style="width:258px;">รายการ</th>
+				<th style="width:51px;">หน่วยนับ</th>
+				<th style="width:75px;">ขนาดบรรจุ</th>
+				<th style="width:43px;">จำนวน</th>
+				<th style="width:55px;">ราคากลาง</th>
+				<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
+				<th style="width:75px;">หน่วยละ<br>รวม VAT</th>
+				<th style="width:75px;">ราคา<br>รวม VAT</th>
+				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
+			</tr>
+			<?php 
 
-		for ($ii=1; $ii <= $po_page2_rows; $ii++) { 
+			for ($ii=1; $ii <= $po_page2_rows; $ii++) { 
 
+				// cost ยังไม่เป็น &nbsp; เพราะต้องเช็กตามเงื่อนไขต่างๆก่อน
+				$cost = false;
+				$from = '&nbsp;';
 
+				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรเบิกได้ไม่เกิน
+				if( $part == 'DPY' OR $part == 'DPN' ){
 
-			// cost ยังไม่เป็น &nbsp; เพราะต้องเช็กตามเงื่อนไขต่างๆก่อน
-			$cost = false;
-			$from = '&nbsp;';
+					// ราคาอุปกรณ์เบิกได้ไม่เกิน
+					if( $aFreelimit[$ii] > 0 ){
+						$cost = $aFreelimit[$ii];
+						$from = 3;
+					}
 
-			//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรเบิกได้ไม่เกิน
-			if( $part == 'DPY' OR $part == 'DPN' ){
+				}else{
 
-				// ราคาอุปกรณ์เบิกได้ไม่เกิน
-				if( $aFreelimit[$ii] > 0 ){
-					$cost = $aFreelimit[$ii];
-					$from = 3;
+					// ราคากลาง
+					if( $aEdpri[$ii] > 0 ){
+						$cost = $aEdpri[$ii];
+						$from = 3;
+					}
+
 				}
 
-			}else{
-
-				// ราคากลาง
-				if( $aEdpri[$ii] > 0 ){
-					$cost = $aEdpri[$ii];
-					$from = 3;
+				// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
+				if( empty($cost) ){
+					if( !empty($aUnitpri[$ii]) ){
+						$cost = $aUnitpri[$ii];
+						$from = 5;
+					}
 				}
 
-			}
-
-			// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
-			if( empty($cost) ){
-				if( !empty($aUnitpri[$ii]) ){
-					$cost = $aUnitpri[$ii];
-					$from = 5;
+				if( $cost == false ){
+					$cost = '&nbsp;';
 				}
-			}
-
-			if( $cost == false ){
-				$cost = '&nbsp;';
-			}
-
-			// เซ็ตเพจใหม่
-			if( $ii % $line_in_page == 0 ){
 				
-				$i_inpage = 0;
-
-				page2_footer();
-
-				page2_footnote();
 				?>
-				
-				</div>
-				</div>
-				
-				<div class="clearfix">
-				<!--[if IE]>
-						<div class="page2 ie7" style="">
-				<![endif]-->
-				<!--[if !IE]><!-->
-				<div class="page2" style="position: relative; width: 20.8cm; height: 27cm;">
-				<!--<![endif]-->
+				<tr>
+					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
+					<td><?=( !empty($aTradname[$ii]) ? $aTradname[$ii] : '&nbsp;' );?></td>
+					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
+					<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
+					<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
+					<td align="right"><?=$cost;?></td>
+					<td align="center"><?=$from;?></td>
+					<td align="right"><?=( !empty($aPackpri[$ii]) ? $aPackpri[$ii] : '&nbsp;' );?></td>
+					<td align="right"><?=( !empty($aPrice[$ii]) ? $aPrice[$ii] : '&nbsp;' );?></td>
+					<td class="last_child" align="center"><?=( !empty($aSpecno[$ii]) ? $aSpecno[$ii] : '&nbsp;' );?></td>
+				</tr>
 				<?php
-
 			}
 
-			// ขึ้นตารางใหม่
-			if( $i_inpage == 0 ){
-				page2_topnote();
-				page2_header();
-			}
-			
-			
-			
+
 			?>
 			<tr>
-				<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
-				<td><?=( !empty($aTradname[$ii]) ? $aTradname[$ii] : '&nbsp;' );?></td>
-				<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
-				<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
-				<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
-				<td align="right"><?=$cost;?></td>
-				<td align="center"><?=$from;?></td>
-				<td align="right"><?=( !empty($aPackpri[$ii]) ? $aPackpri[$ii] : '&nbsp;' );?></td>
-				<td align="right"><?=( !empty($aPrice[$ii]) ? $aPrice[$ii] : '&nbsp;' );?></td>
-				<td class="last_child" align="center"><?=( !empty($aSpecno[$ii]) ? $aSpecno[$ii] : '&nbsp;' );?></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td style="border-bottom: 1px solid #000;">รวมเงิน</td>
+				<td style="border-bottom: 1px solid #000;" align="right"><?=$nNetprice;?></td>
+				<td class="last_child">&nbsp;</td>
 			</tr>
-			<?php
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td style="border-bottom: 1px solid #000;">ภาษี 7.00 %</td>
+				<td style="border-bottom: 1px solid #000;" align="right"><?=$nVat;?></td>
+				<td class="last_child">&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>รวม <?=$nItems;?> รายการ</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td style="border-bottom: 1px solid #000;">รวมสุทธิ</td>
+				<td style="border-bottom: 1px solid #000;" align="right"><?=$nPriadvat;?></td>
+				<td class="last_child">&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="last_child">&nbsp;</td>
+			</tr>
+		
+		</table>
 
-			$i_inpage++;
-		}
+	</div>
+	<?php
+	if ( $set_new_page === true ) {
+		?>
+		</div>
+		</div>
+		<div class="clearfix">
+		<!--[if IE]>
+			<div class="page2 ie7" style="">
+		<![endif]-->
+		<!--[if !IE]><!-->
+			<div class="page2" style="position: relative; width: 20.8cm; height: 27cm;">
+		<!--<![endif]-->
+		<?php
+	}
+	?>
+	<div style="position: relative;">
+		<div class="dx_detail" style="position: relative;">
+			<div>รวมราคาประมาณการอนุมัติ เพื่อดำเนินการจัดซื้อในคราวนี้ <?=$nItems;?> รายการ</div>
+			<div>จำนวนเงิน <?=$nPriadvat;?> บาท <?=$cPriadvat;?></div>
+			<div>*** หมายเหตุ</div>
+			<div>
+				<div>แหล่งที่มาของราคากลาง</div>
+				<div style="padding-left: 20px;">
+					<?php
+					foreach ($edpri_from_list as $key => $value) {
+						echo $value."<br>";
+					}
+					?>
+				</div>
+			</div>
+		</div>
+		<?php
+		//  ช่องเซ็น 740
+		print"<DIV style='height:27PX; padding-right: 300px;' align='right'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
+		print"<DIV style='height:30PX; padding-right: 250px;' align='right'><span class='fc1-0'>$aYot[2]</span></DIV>";
+		print"<DIV style='height:30PX; padding-right: 150px;' align='right'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
+		//ตำแหน่ง
+		print"<DIV style='height:30PX; padding-right: 100px;' align='right'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 		?>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td style="border-bottom: 1px solid #000;">รวมเงิน</td>
-			<td style="border-bottom: 1px solid #000;" align="right"><?=$nNetprice;?></td>
-			<td class="last_child">&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td style="border-bottom: 1px solid #000;">ภาษี 7.00 %</td>
-			<td style="border-bottom: 1px solid #000;" align="right"><?=$nVat;?></td>
-			<td class="last_child">&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>รวม <?=$nItems;?> รายการ</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td style="border-bottom: 1px solid #000;">รวมสุทธิ</td>
-			<td style="border-bottom: 1px solid #000;" align="right"><?=$nPriadvat;?></td>
-			<td class="last_child">&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td class="last_child">&nbsp;</td>
-		</tr>
-		
-	
+	</div>
 
-	<?php 
-	page2_footer();
+</div> <!-- Close class page2 -->
+</div> <!-- Close Clearfix -->
 
-	page2_footnote();
-
-	?>
-	
-	
-</div>
-
-</div>
-</div>
 
 <div class="clearfix">
-<!--[if IE]>
+	<!--[if IE]>
 		<div class="page3 ie7" style="">
-<![endif]-->
-<!--[if !IE]><!-->
-<div class="page3" style="position: relative; width: 20.8cm; height: 27cm;">
-<!--<![endif]-->
+	<![endif]-->
+	<!--[if !IE]><!-->
+		<div class="page3" style="position: relative; width: 20.8cm; height: 27cm;">
+	<!--<![endif]-->
 <?php
 ////po33.php
-page3_header();
-function page3_header(){
-	global $cPrepodate, $cPrepono, $cComcode, $cComname, $fax;
-
 // 2090
-print"<DIV style='left:194PX;top:90PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ใบสั่งซื้อยาและเวชภัณฑ์สิ้นเปลือง</span></DIV>";
+$p3_top = 0;
+print"<DIV style='left:194PX;top:".$p3_top."PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ใบสั่งซื้อยาและเวชภัณฑ์สิ้นเปลือง</span></DIV>";
 
-print"<DIV style='z-index:0'> &nbsp; </div>";
-print"<div style='left:310PX;top:216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
-print"<div style='left:515PX;top:216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
-print"<div style='left:8PX;top:280PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
-print"<div style='left:44PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:311PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:365PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:461PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:515PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:559PX;'><table width='0px' height='553PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:585PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:679PX;top:251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:559PX;'><table width='0px' height='553PX'><td>&nbsp;</td></table></div>";
+$p3_top += 30;
+print"<DIV style='left:194PX;top:".$p3_top."PX;width:364PX;height:41PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</span></DIV>";
+$p3_top += 35;
+print"<DIV style='left:194PX;top:".$p3_top."PX;width:364PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>มทบ.32</span></DIV>";
+print"<DIV style='left:684PX;top:".$p3_top."PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>งบรายรับ</span></DIV>";
 
-print"<div style='left:187PX;top:243PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:399PX;'></div>";
+$p3_top += 30;
+print"<DIV style='left:310PX;top:".$p3_top."PX;width:159PX;height:26PX;'><span class='fc1-0'>กห 0483.63.4/$cPrepono</span></DIV>";
+print"<DIV style='left:281PX;top:".$p3_top."PX;width:30PX;height:26PX;'><span class='fc1-0'>เลขที่</span></DIV>";
+print"<DIV style='left:490PX;top:".$p3_top."PX;width:29PX;height:26PX;'><span class='fc1-0'>วันที่</span></DIV>";
+print"<DIV style='left:518PX;top:".$p3_top."PX;width:105PX;height:26PX;'><span class='fc1-0'>$cPrepodate</span></DIV>";
+// ขีดเส้นใต้
+print"<div style='left:310PX;top:".($p3_top + 18)."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
+print"<div style='left:515PX;top:".($p3_top + 18)."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
 
-print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:251PX;width:743PX;height:559PX;'>
-<table border=0 cellpadding=0 cellspacing=0 width=736px height=552px><TD>&nbsp;</TD></TABLE>
-</DIV>";
 
-print"<DIV style='left:518PX;top:195PX;width:105PX;height:26PX;'><span class='fc1-0'>$cPrepodate</span></DIV>";
-print"<DIV style='left:310PX;top:195PX;width:159PX;height:26PX;'><span class='fc1-0'>กห 0483.63.4/$cPrepono</span></DIV>";
-print"<DIV style='left:281PX;top:195PX;width:30PX;height:26PX;'><span class='fc1-0'>เลขที่</span></DIV>";
-print"<DIV style='left:490PX;top:195PX;width:29PX;height:26PX;'><span class='fc1-0'>วันที่</span></DIV>";
+$p3_top += 30;
+print"<DIV style='left:97PX;top:".$p3_top."PX;width:91PX;height:26PX;'><span class='fc1-0'>ขอสั่งซื้อของจาก</span></DIV>";
+print"<DIV style='left:187PX;top:".$p3_top."PX;width:397PX;height:26PX;'><span class='fc1-0'>($cComcode)$cComname&nbsp;&nbsp;&nbsp;$fax</span></DIV>";
+print"<DIV style='left:586PX;top:".$p3_top."PX;width:104PX;height:26PX;'><span class='fc1-0'>ดังมีรายการต่อไปนี้</span></DIV>";
+// ขีดเส้นใต้
+print"<div style='left:187PX;top:".($p3_top + 18)."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:399PX;'></div>";
 
-print"<DIV style='left:7PX;top:253PX;width:38PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
-print"<DIV style='left:49PX;top:253PX;width:258PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รายการ</span></DIV>";
-print"<DIV style='left:313PX;top:253PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยนับ</span></DIV>";
-print"<DIV style='left:371PX;top:253PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
-print"<DIV style='left:467PX;top:253PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
-print"<DIV style='left:520PX;top:248PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยละ</span></DIV>";
-print"<DIV style='left:590PX;top:248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ราคา</span></DIV>";
-print"<DIV style='left:684PX;top:253PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
-print"<DIV style='left:194PX;top:120PX;width:364PX;height:41PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</span></DIV>";
-print"<DIV style='left:194PX;top:163PX;width:364PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>มทบ.32</span></DIV>";
+$table_border_top = $p3_top + 27;
 
-print"<DIV style='left:187PX;top:222PX;width:397PX;height:26PX;'><span class='fc1-0'>
-	($cComcode)$cComname&nbsp;&nbsp;&nbsp;$fax</span></DIV>";
+// หัวข้อตาราง
+$p3_top += 30;
+print"<DIV style='left:7PX;top:".$p3_top."PX;width:38PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
+print"<DIV style='left:49PX;top:".$p3_top."PX;width:258PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รายการ</span></DIV>";
+print"<DIV style='left:313PX;top:".$p3_top."PX;width:51PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยนับ</span></DIV>";
+print"<DIV style='left:371PX;top:".$p3_top."PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ขนาดบรรจุ</span></DIV>";
+print"<DIV style='left:467PX;top:".$p3_top."PX;width:43PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>จำนวน</span></DIV>";
+print"<DIV style='left:520PX;top:".$p3_top."PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>หน่วยละ</span></DIV>";
+print"<DIV style='left:590PX;top:".$p3_top."PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ราคา</span></DIV>";
+print"<DIV style='left:684PX;top:".$p3_top."PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
+print"<DIV style='left:518PX;top:".($p3_top + 12)."PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
+print"<DIV style='left:600PX;top:".($p3_top + 12)."PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
 
-print"<DIV style='left:97PX;top:222PX;width:91PX;height:26PX;'><span class='fc1-0'>ขอสั่งซื้อของจาก</span></DIV>
-";
-print"<DIV style='left:586PX;top:222PX;width:104PX;height:26PX;'><span class='fc1-0'>ดังมีรายการต่อไปนี้</span></DIV>";
-print"<DIV style='left:684PX;top:167PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>งบรายรับ</span></DIV>";
-print"<DIV style='left:518PX;top:262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
-print"<DIV style='left:600PX;top:262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
-}
+// ขีดเส้นใต้หัวข้อตาราง
+print"<div style='left:8PX;top:".($p3_top + 30)."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
 
-$start_line = 289;
+$start_line = $p3_top + 30;
 $line_count = 1;
-$max_line = 16;
 
 for ($iz=1; $iz <= $po_page2_rows; $iz++) { 
 	
-	// จบเพจให้รีเซ็ตใหม่
-	if ( $line_count % $max_line === 0 ) {
-		// 
-		$start_line = 289;
-		
-		page3_footer_note();
-		?>
-		</div>
-		</div>
-
-		<div class="clearfix">
-		<!--[if IE]>
-				<div class="page3 ie7" style="">
-		<![endif]-->
-		<!--[if !IE]><!-->
-		<div class="page3" style="position: relative; width: 20.8cm; height: 27cm;">
-		<!--<![endif]-->
-		<?php
-		page3_header();
-	}
-
 	print"<DIV style='left:11PX;top:".$start_line."PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 	<span class='fc1-4'>$aX[$iz]</span></DIV>";
 	print"<DIV style='left:49PX;top:".$start_line."PX;width:250PX;height:22PX;'><span class='fc1-4'> $aTradname[$iz]</span></DIV>";
@@ -868,64 +797,131 @@ for ($iz=1; $iz <= $po_page2_rows; $iz++) {
 	print"<DIV style='left:519PX;top:".$start_line."PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 		<span class='fc1-4'>$aPackpri[$iz]</span></DIV>";
 
-	$start_line += 30;
-
-	
-
-	
-
+	$start_line += 22;
 	$line_count++;
 	
 }
 
 /////////
+$line_tx = $start_line + 10;
 
-print"<div style='left:8PX;top:758PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
-print"<div style='left:124PX;top:783PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
-
-print"<DIV style='left:128PX;top:761PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>
-<span class='fc1-0'>$nItems</span></DIV>";
-print"<DIV style='left:99PX;top:761PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
-print"<DIV style='left:225PX;top:761PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
-
-print"<DIV style='left:496PX;top:730PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
-print"<DIV style='left:538PX;top:763PX;width:44PX;height:27PX;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
-print"<DIV style='left:496PX;top:702PX;width:86PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
-print"<DIV style='left:597PX;top:703PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
+// รวมเงิน
+print"<DIV style='left:496PX;top:".$line_tx."PX;width:86PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
+print"<DIV style='left:597PX;top:".$line_tx."PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 <span class='fc1-0'>$nNetprice</span></DIV>";
-print"<DIV style='left:597PX;top:730PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
+
+
+// ภาษี 7%
+$line_tx = $line_tx + 30;
+print"<DIV style='left:496PX;top:".$line_tx."PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
+print"<DIV style='left:597PX;top:".$line_tx."PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 <span class='fc1-0'>$nVat</span></DIV>";
-print"<DIV style='left:597PX;top:763PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
+
+
+// รวมสุทธิ
+$line_tx = $line_tx + 30;
+
+// เส้นรวมสุทธิ
+print"<div style='left:8PX;top:".$line_tx."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
+$line_tx += 10;
+
+print"<DIV style='left:538PX;top:".$line_tx."PX;width:44PX;height:27PX;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
+print"<DIV style='left:597PX;top:".$line_tx."PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 <span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
 
+// รวม-รายการ
+print"<DIV style='left:128PX;top:".$line_tx."PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-0'>$nItems</span></DIV>";
+print"<DIV style='left:99PX;top:".$line_tx."PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
+print"<DIV style='left:225PX;top:".$line_tx."PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
 
-page3_footer_note();
-function page3_footer_note(){
-	global $nItems, $aYot, $aFname, $nNetprice, $nVat, $nPriadvat, $aPost, $aPost2;
+print"<div style='left:124PX;top:".($line_tx + 17)."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
+$line_tx += 10;
+// รวม-รายการ
 
-	print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:44PX;top:819PX;width:181PX;height:45PX;'>
-	<table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE>
-	</DIV>";
+$table_border_bottom = $line_tx + 20;
+$table_height = $table_border_bottom - $table_border_top;
 
-	print"<DIV style='left:330PX;top:899PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>$aYot[2]</span></DIV>";
-	print"<DIV style='left:344PX;top:922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>($aFname[2])</span></DIV>";
+// ขีดปิดตาราง
+print"<div style='left:8PX;top:".$table_border_bottom."PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
 
-	print"<DIV style='left:360PX;top:816PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 15 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
-	print"<DIV style='left:360PX;top:842PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
-	print"<DIV style='left:360PX;top:868PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
-	print"<DIV style='left:10PX;top:951PX;width:209PX;height:27PX;'><span class='fc1-0'>บริษัท&nbsp;&nbsp;.....................................................</span></DIV>";
-	print"<DIV style='left:10PX;top:925PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
-	print"<DIV style='left:10PX;top:889PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>……………………………………...........</span></DIV>";
-	print"<DIV style='left:10PX;top:873PX;width:209PX;height:27PX;'><span class='fc1-0'>ได้รับใบสั่งซื้อไปแล้ว</span></DIV>";
-	print"<DIV style='left:76PX;top:819PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ขอเอกสารใบส่งของ 7 ชุด</span></DIV>";
-	print"<DIV style='left:76PX;top:840PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ใบกำกับภาษี 1 ชุด</span></DIV>";
 
-	print"<DIV style='left:10PX;top:981PX;width:479PX;height:27PX;'><span class='f1'><u>หมายเหตุ : ให้ลงวันที่ในใบส่งของและใบเสร็จรับเงิน หลังวันที่ใน PO ยกเว้นวันเสาร์ - อาทิตย์</u></span></DIV>";
-	print"<DIV style='left:344PX;top:942PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost[2]</span></DIV>";
-	print"<DIV style='left:344PX;top:961PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost2[2]</span></DIV>";
-	print"<BR>";
+// เส้นขีดในตาราง
+print"<div style='left:44PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:311PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:365PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:461PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:515PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='553PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:585PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:679PX;top:".$table_border_top."PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:".$table_height."PX;'><table width='0px' height='553PX'><td>&nbsp;</td></table></div>";
 
+// กรอบตาราง
+print"<DIV class='box' style='z-index:10; border-color:000000;
+border-style:dashed;
+border-left-width:1PX;
+border-bottom: 0px;
+border-top-width:1PX;
+border-right-width:1PX;
+left:7PX;
+top:".$table_border_top."PX;
+width:743PX;
+height:".$table_height."PX;'>
+<table border=0 cellpadding=0 cellspacing=0 width=736px height=552px><TD>&nbsp;</TD></TABLE></DIV>";
+
+
+if ( $set_new_page === true ) {
+	?>
+	</div>
+	</div>
+	<div class="clearfix">
+	<!--[if IE]>
+		<div class="page3 ie7" style="">
+	<![endif]-->
+	<!--[if !IE]><!-->
+		<div class="page3" style="position: relative; width: 20.8cm; height: 27cm;">
+	<!--<![endif]-->
+	<?php
+	$table_border_bottom = 0;
 }
+
+
+
+// กรอบเอกสาร
+$bottom = $table_border_bottom + 10;
+$bottom_right = $bottom;
+print"<DIV style='left:360PX;top:".$bottom."PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 15 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
+print"<DIV style='left:360PX;top:".($bottom+20)."PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
+print"<DIV style='left:360PX;top:".($bottom+40)."PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
+
+print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:44PX;top:".$bottom."PX;width:181PX;height:45PX;'>
+<table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE>
+</DIV>";
+print"<DIV style='left:76PX;top:".$bottom."PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ขอเอกสารใบส่งของ 7 ชุด</span></DIV>";
+$bottom += 20;
+print"<DIV style='left:76PX;top:".$bottom."PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ใบกำกับภาษี 1 ชุด</span></DIV>";
+
+$bottom += 30;
+print"<DIV style='left:10PX;top:".$bottom."PX;width:209PX;height:27PX;'><span class='fc1-0'>ได้รับใบสั่งซื้อไปแล้ว</span></DIV>";
+$bottom += 20;
+print"<DIV style='left:10PX;top:".$bottom."PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>……………………………………...........</span></DIV>";
+$bottom += 30;
+print"<DIV style='left:10PX;top:".$bottom."PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
+$bottom += 20;
+print"<DIV style='left:10PX;top:".$bottom."PX;width:209PX;height:27PX;'><span class='fc1-0'>บริษัท&nbsp;&nbsp;.....................................................</span></DIV>";
+
+$bottom_right += 70;
+print"<DIV style='left:330PX;top:".$bottom_right."PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>$aYot[2]</span></DIV>";
+print"<DIV style='left:423PX;top:".($bottom_right + 18)."PX;width:125PX;height:1PX;border-bottom:1px dotted black;'></DIV>";
+
+$bottom_right += 30;
+print"<DIV style='left:344PX;top:".$bottom_right."PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>($aFname[2])</span></DIV>";
+$bottom_right += 30;
+print"<DIV style='left:344PX;top:".$bottom_right."PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost[2]</span></DIV>";
+$bottom_right += 30;
+print"<DIV style='left:344PX;top:".$bottom_right."PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost2[2]</span></DIV>";
+$bottom_right += 30;
+print"<DIV style='left:10PX;top:".$bottom_right."PX;width:479PX;height:27PX;'><span class='f1'><u>หมายเหตุ : ให้ลงวันที่ในใบส่งของและใบเสร็จรับเงิน หลังวันที่ใน PO ยกเว้นวันเสาร์ - อาทิตย์</u></span></DIV>";
+
 ?>
 </div>
 </div>
