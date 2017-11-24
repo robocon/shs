@@ -52,56 +52,68 @@ if ( $page === 'form' ) {
     $db->select($sql);
     $items = $db->get_items();
 
+    $lab_rows = $db->get_rows();
+
     include 'chk_menu.php';
 
-    if( isset($_SESSION['x-msg']) ){
-        ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
-        unset($_SESSION['x-msg']);
-    }
     ?>
-    <h3>แก้ไขข้อมูลแลป</h3>
-    <p>HN : <?=$user['hn'];?></p>
-    <p>ชื่อ-สกุล : <?=$user['name'];?> <?=$user['surname'];?></p>
     <p><a href="chk_show_user.php?part=<?=$user['part'];?>">&lt;&lt;&nbsp;กลับไปหน้ารายชื่อ</a></p>
-    <table class="chk_table">
-        <tr>
-            <th>autonumber</th>
-            <th>รายการตรวจ</th>
-            <th>keyword</th>
-            <th>ผล</th>
-            <th></th>
-        </tr>
-        <?php
-        foreach ($items as $key => $item) {
-            $autonumber = $item['autonumber'];
+    <?php
+
+    if( $lab_rows === 0 ){
         ?>
-        <tr>
-        <td><?=$autonumber;?></td>
-            <td><?=$item['profilecode'];?></td>
-            <td>
-                <div>
-                    <?=$item['clinicalinfo'];?>
-                </div>
-            </td>
-            <td>
-                <?php
-                $detail_sql = "SELECT * FROM `resultdetail` WHERE `autonumber` = '$autonumber' ";
-                $db->select($detail_sql);
-                $detail_items = $db->get_items();
-                foreach( $detail_items AS $key => $detail ){
-                    ?>
-                    <div style="position: relative;"><?=$detail['labname'];?> : <span style="float: right;"><?=$detail['result'];?></span></div>
-                    <?php
-                }
-                ?>
-            </td>
-            <td><a href="chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?>">แก้ไข</a></td>
-        </tr>
+        <p>ไม่พบข้อมูล</p>
         <?php
+    }else {
+        
+        if( isset($_SESSION['x-msg']) ){
+            ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+            unset($_SESSION['x-msg']);
         }
         ?>
-    </table>
-    <?php
+        <h3>แก้ไขข้อมูลแลป</h3>
+        <p>HN : <?=$user['hn'];?></p>
+        <p>ชื่อ-สกุล : <?=$user['name'];?> <?=$user['surname'];?></p>
+        <table class="chk_table">
+            <tr>
+                <th>autonumber</th>
+                <th>รายการตรวจ</th>
+                <th>keyword</th>
+                <th>ผล</th>
+                <th></th>
+            </tr>
+            <?php
+            foreach ($items as $key => $item) {
+                $autonumber = $item['autonumber'];
+            ?>
+            <tr>
+            <td><?=$autonumber;?></td>
+                <td><?=$item['profilecode'];?></td>
+                <td>
+                    <div>
+                        <?=$item['clinicalinfo'];?>
+                    </div>
+                </td>
+                <td>
+                    <?php
+                    $detail_sql = "SELECT * FROM `resultdetail` WHERE `autonumber` = '$autonumber' ";
+                    $db->select($detail_sql);
+                    $detail_items = $db->get_items();
+                    foreach( $detail_items AS $key => $detail ){
+                        ?>
+                        <div style="position: relative;"><?=$detail['labname'];?> : <span style="float: right;"><?=$detail['result'];?></span></div>
+                        <?php
+                    }
+                    ?>
+                </td>
+                <td><a href="chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?>">แก้ไข</a></td>
+            </tr>
+            <?php
+            }
+            ?>
+        </table>
+        <?php
+    }
 }elseif ( $page === 'editdetail' ) {
 
     $number = input_get('number');
