@@ -1,5 +1,13 @@
 <?php
 include 'bootstrap.php';
+
+$showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
+
+$db = Mysql::load();
+$sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$showpart' ";
+$db->select($sql);
+$company = $db->get_item();
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -32,7 +40,7 @@ function calcage($birth){
 }
 
 ?>
-<title>พิมพ์ใบตรวจสุขภาพ <?=$title;?></title>
+<title>พิมพ์ใบตรวจสุขภาพ <?=$company['name'];?></title>
 <style type="text/css">
 	*{
 		font-family: TH SarabunPSK;
@@ -58,7 +66,7 @@ function calcage($birth){
 <body>
 <?php
 
-$showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
+
 $xraydate ="18-09-2017";
 
 $sql1 = "SELECT a.*, a.`HN` AS `hn`, 
@@ -1437,7 +1445,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 </table>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise LAB : </strong><?=$authorisename;?> <strong> (<?=$authorisedate;?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$xraydate ;?>)</strong><br /></td>
+    <td  width="50%" align="center"><strong>Authorise LAB : </strong><?=$authorisename;?> <strong> (<?=$authorisedate;?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate ;?>)</strong><br /></td>
     
   </tr>
 </table>

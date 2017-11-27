@@ -36,7 +36,7 @@ $num_list_pt2 = Mysql_num_rows($result_list_pt2 );
 <head>
 <title><?php echo $_SESSION["sOfficer"];?></title>
 <style type="text/css">
-
+<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 20px;
@@ -51,7 +51,7 @@ a{
 #dt_other:target{
 	text-decoration: underline;
 }
-
+-->
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -120,55 +120,7 @@ $depart1=Y;
         }
     print "</table>";
 
-?>
-<br>
-<?php
 
-$last_day = date('Y-m-d', strtotime("-2 week"));
-$new_date = date('Y-m-d', strtotime("-1 week"));
-$sql = "SELECT * FROM `news` 
-WHERE `status` = 1
-AND `date_start` > '$last_day'
-ORDER BY `date_start` DESC;";
-$q = mysql_query($sql);
-$rows = mysql_num_rows($q);
-if( $rows > 0 ){
-?>
-<style type="text/css">
-.news-contain h3,ol{
-	margin: 0;
-
-}
-.news-contain a{
-	text-decoration: none;
-}
-.news-contain a:hover{
-	text-decoration: underline;
-}
-</style>
-<div class="news-contain">
-	<h3 class="news-header">ข่าวประชาสัมพันธ์ บก. รพ.ค่าย</h3>
-	<div>
-		<ol>
-			<?php
-			while( $item = mysql_fetch_assoc($q) ){
-				?>
-				<li class="news-link">
-					<a href="news_detail.php?id=<?=$item['id'];?>" target="_blank"><?=$item['title'];?></a>
-					<?php
-					if( $new_date < $item['date_start'] ){
-						?><img height="15" src="../new.gif" width="30"><?php
-					}
-					?>
-				</li>
-				<?php
-			}
-			?>
-		</ol>
-	</div>
-</div>
-<?php
-}
 ?>
 <BR>
 <SCRIPT LANGUAGE="JavaScript">
