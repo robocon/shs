@@ -522,6 +522,9 @@ print "<BR>";
 	.dx_tb th{
 		border-bottom: 1px dashed #000;
 	}
+	tr.border_bottom td{
+		border-top: 1px dashed #000;
+	}
 	.dx_tb th, .dx_tb td{
 		border-right: 1px dashed #000;
 		padding: 0 2 0 0;
@@ -820,8 +823,8 @@ print "<BR>";
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
-			<td style="border-bottom: 1px solid #000;">รวมเงิน</td>
-			<td align="right" style="border-bottom: 1px solid #000;"><?=$nNetprice;?></td>
+			<td>รวมเงิน</td>
+			<td align="right"><?=$nNetprice;?></td>
 			<td class="last_child">&nbsp;</td>
 		</tr>
 		<tr>
@@ -830,18 +833,28 @@ print "<BR>";
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
-			<td style="border-bottom: 1px solid #000;">ภาษี 7.00 %</td>
-			<td align="right" style="border-bottom: 1px solid #000;"><?=$nVat;?></td>
+			<td>ภาษี 7.00 %</td>
+			<td align="right"><?=$nVat;?></td>
 			<td class="last_child">&nbsp;</td>
 		</tr>
-		<tr style="border-top: 1px solid #000000;">
+		<tr class="border_bottom">
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td class="last_child">&nbsp;</td>
+		</tr>
+		<tr>
 			<td>&nbsp;</td>
 			<td>รวม <span style="padding: 0 20px; border-bottom: 1px dashed #000000;"><?=$nItems;?></span> รายการ</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
-			<td style="border-bottom: 1px solid #000;">รวมสุทธิ</td>
-			<td align="right" style="border-bottom: 1px solid #000;"><b><?=$nPriadvat;?></b></td>
+			<td>รวมสุทธิ</td>
+			<td align="right"><b><?=$nPriadvat;?></b></td>
 			<td class="last_child">&nbsp;</td>
 		</tr>
 		<tr>
