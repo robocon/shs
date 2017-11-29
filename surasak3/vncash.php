@@ -98,7 +98,8 @@ $sql="Select * from opacc Where date like '$start_date%' and credit =''  ";
 	
 ///////////////////////////
 
-$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','เงินสด','อื่นๆ')" ;
+$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','เงินสด','อื่นๆ','นอนโรงพยาบาล')" ;
+//echo $query."<br>";
     $result = mysql_query($query) or die("Query failed,opday1");
 	
 	$chksql="Select * from opacc1";
@@ -111,6 +112,7 @@ $query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$sta
 		while($arr=mysql_fetch_array($chkquery)){
 			
 			$sql2="Select * from  ipcard  Where   hn ='".$arr['hn']."' and date like '$start_date%'";
+			//echo $sql2;
 			$query2= mysql_query($sql2) or die (mysql_error());
 			$numrow2=mysql_num_rows($query2);
 			
@@ -279,16 +281,16 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กร
     <TD bgcolor="6495ED">AN</TD>
 	<TD bgcolor="6495ED">ชื่อ-สกุล</TD>
 	<TD bgcolor="6495ED">สิทธิ์</TD>
-	<TD bgcolor="6495ED"><font size='1'>จำนวนเงิน</TD>
+	<TD bgcolor="6495ED"><font size='1'>จำนวนเงิน</font></TD>
 	<TD>ส่วนเกิน</TD>
 	<TD bgcolor="6495ED">แผนก</TD>
 	<TD bgcolor="6495ED">เจ้าหน้าที่</TD>
-	<TD bgcolor="6495ED"><font size='1'>ออกOPCARD</TD>
+	<TD bgcolor="6495ED"><font size='1'>ออก OPCARD</font></TD>
     <TD bgcolor="6495ED"><font size='2'>นัดมาเพื่อ</font></TD>
 </TR>
 <?php 
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND an = '' AND `status` = 'Y' AND price > 0 ORDER BY ptright,date ";
-
+	$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND (an = '' OR an is Null) AND `status` = 'Y' AND price > 0 ORDER BY ptright,date ";
+	//echo $sql;
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
 		
