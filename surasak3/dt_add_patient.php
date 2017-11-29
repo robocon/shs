@@ -217,6 +217,8 @@ if($_SESSION["sIdname"] == "md19921"){
 				echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=dxdr_ofyear1_dr.php\">";
 			}else if($mcheckdx=="P"){
 				echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=dxdr_ofyearout_dr.php\">";
+			}else if($mcheckdx=="sso"){
+				echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=chk_doctor.php\">";
 			}else{
 				echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=dt_diag.php\">";
 			}

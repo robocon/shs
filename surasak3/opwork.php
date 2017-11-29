@@ -330,6 +330,8 @@ $opergcode='x';
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z138','8898','Y',".$R03true1.",'$opergcode');";
 	}else if(substr($_POST["case"],0,4) == "EX40"){
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','P');";
+	}else if(substr($_POST["case"],0,5) == "EX999"){
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','sso');";
 	}else{
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
 	}
@@ -438,18 +440,27 @@ officer='$sOfficer'
 ".$R03true2."
 WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 }else{
-$query ="UPDATE opday SET ptname='$cPtname',
-ptright='$cPtright',
-goup='$cGoup',
-note='$note',
-idcard='$cIdcard',
-borow='$borow',
-toborow='$case',
-camp='$cCamp',
-okopd='N',  
-officer='$sOfficer'
-".$R03true2."
-WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+
+	$sso_condition = '';
+	$test_match = preg_match('/EX\d+/', $_POST['case'], $match);
+	if( $test_match > 0 && $match['0'] == 'EX999' ){
+		$sso_condition .= ", `checkdx` = 'sso' ";
+	}
+
+	$query ="UPDATE opday SET ptname='$cPtname',
+	ptright='$cPtright',
+	goup='$cGoup',
+	note='$note',
+	idcard='$cIdcard',
+	borow='$borow',
+	toborow='$case',
+	camp='$cCamp',
+	okopd='N',  
+	officer='$sOfficer' 
+	$sso_condition
+	".$R03true2."
+	WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+
 }
 
 $result = mysql_query($query) or die("Query failed,update opday");

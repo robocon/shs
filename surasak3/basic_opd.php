@@ -29,6 +29,8 @@ exit();
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>คัดแยกผู้ป่วย</title>
 <style type="text/css">
+
+
 .data_show{ 
 	font-family:"MS Sans Serif"; 
 	font-size:16px; 
@@ -57,6 +59,7 @@ exit();
 body{ font-family:"MS Sans Serif"; 
 font-size:16px;
 }
+
 </style>
 
 
@@ -304,12 +307,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$og="ตรวจตามนัด";
 	}
 	
-	$query = "SELECT runno, startday FROM runno WHERE title = 'VN' ";
-	$result = mysql_query($query) or die("Query failed1");
-	list($nVn, $dVndate) = mysql_fetch_row($result);
-	$dVndate=substr($dVndate,0,10);
 		
-	// ไม่มีออก vn แต่มีนัด
+
 	if($opday_row == 0 && $app_row > 0){
 		
 		$query = "SELECT `idcard` , `hn` , `yot` , `name` , `surname` , `goup` , `dbirth` , `idguard` , `ptright` , `note` , `camp`   FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
@@ -320,7 +319,6 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$vnlab = 'EX04 ผู้ป่วยนัด';
 		$_SESSION["cHn"] = $cHn;
 		
-		// ทำการออก VN
 		$query = "SELECT runno, startday FROM runno WHERE title = 'VN' ";
 	    $result = mysql_query($query) or die("Query failed1");
 		list($nVn, $dVndate) = mysql_fetch_row($result);
@@ -334,9 +332,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$nVn=1;
 			$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN' limit 1 ";
 		}
-		$result = mysql_query($query) or die("Query failed2");
-		// ทำการออก VN
-
+			$result = mysql_query($query) or die("Query failed2");
 			$tvn=$nVn;
 			$time1 = date("H:i:s");
 			$thdatevn=$thidate.$nVn;
@@ -438,6 +434,9 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$sql = "Select drugcode, tradname From drugreact where hn = '".$_REQUEST["hn"]."' ";
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$i=0;
+
+	$txt_react = array();
+	
 	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ $txt_react[$i] = "&nbsp;&nbsp;&nbsp;<b>[".$drugcode."]</b> ".$tradname.", "; $i++; }
 	
 	$txt_react2 = implode("",$txt_react);
