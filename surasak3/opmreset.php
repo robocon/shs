@@ -1,0 +1,50 @@
+<?php
+    session_start();
+    session_unregister("x");
+    session_unregister("aDate");
+
+    session_unregister("chkdate");
+    session_unregister("repdate");
+
+    session_unregister("aHn");
+    session_unregister("aAn");
+    session_unregister("aIdname");
+    session_unregister("aDepart");
+    session_unregister("aDetail");
+    session_unregister("aPrice");
+    session_unregister("aPaid");
+    session_unregister("aPtright");
+    session_unregister("aCredit");
+    session_unregister("aPhar");  
+    session_unregister("aPharpaid");    
+    session_unregister("aEssd");
+    session_unregister("aNessdy");
+    session_unregister("aNessdn");
+    session_unregister("aDDL");
+    session_unregister("aDDY");
+    session_unregister("aDDN");
+    session_unregister("aDPY");
+    session_unregister("aDPN");
+    session_unregister("aDSY");
+    session_unregister("aDSN");
+    session_unregister("aLabo");
+    session_unregister("aLabopaid");
+    session_unregister("aXray");
+    session_unregister("aXraypaid");  
+    session_unregister("aSurg");    
+    session_unregister("aSurgpaid");
+    session_unregister("aEmer");
+    session_unregister("aEmerpaid");
+    session_unregister("aDent");
+    session_unregister("aDentpaid");
+    session_unregister("aPhysi");
+    session_unregister("aPhysipd");
+    session_unregister("aHemo");
+    session_unregister("aHemopd");
+    session_unregister("aOther");
+    session_unregister("aOtherpd");
+    session_unregister("aWard");
+    session_unregister("aWardpd");
+    print "<br><br><br>ยกเลิกเรียบร้อย  ปิดหน้าต่างนี้เพื่อทำงานอื่นต่อไปได้";
+?>
+ 

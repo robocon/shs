@@ -1,0 +1,33 @@
+@charset "windows-874";
+/* CSS Document */
+
+.forntsarabun {
+	font-family: "TH SarabunPSK";
+	font-size: 22px;
+}
+.forntb{
+	font-family: "TH SarabunPSK";
+	font-size: 24px;
+	font-weight:bold;
+}
+.fornttable {
+	font-family: "TH SarabunPSK";
+	font-size: 18px;
+}
+.fornttable1 {
+	font-family: "TH SarabunPSK";
+	font-size: 18px;
+	font-weight:bold;
+}
+@media print{
+#no_print{
+	display:none;
+	}
+}
+
+.theBlocktoPrint 
+{ 
+background-color: #000; 
+color: #FFF; 
+} 
+-->

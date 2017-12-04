@@ -1,0 +1,395 @@
+<?php
+session_start();
+if (isset($sOfficer)){} else {die;} //for security
+$thdatehn="";
+$thidate2 = (date("Y")).date("-m-d G:i:s"); 
+$thidate = (date("Y")+543).date("-m-d G:i:s"); 
+$thidate3 = (date("Y")+543).date("-m-d"); 
+
+$time=date("G:i:s");
+session_register("thdatehn"); 
+
+include("connect.inc");   
+$code21 = '21';
+
+if(substr($_POST["case"],0,4) == "EX19")
+	$ok = 'Y';
+else
+	$ok = 'N';   
+
+
+if(substr($_POST["case"],0,4) == "EX03"){
+	$R03true1 = "'1'";
+	$R03true2 = " ,withdraw='1' ";
+}else{
+	$R03true1 = "Null";
+	$R03true2 = ""; 
+}
+
+Function calcage($birth){
+
+	$today = getdate();   
+	$nY  = $today['year']; 
+	$nM = $today['mon'] ;
+	$bY=substr($birth,0,4)-543;
+	$bM=substr($birth,5,2);
+	$ageY=$nY-$bY;
+	$ageM=$nM-$bM;
+
+	if ($ageM<0) {
+		$ageY=$ageY-1;
+		$ageM=12+$ageM;
+	}
+
+	if ($ageM==0){
+		$pAge="$ageY ปี";
+	}else{
+		$pAge="$ageY ปี $ageM เดือน";
+	}
+
+return $pAge;
+}
+
+//$Y=($y-543);
+//$dbirth="$Y-$m-$d";
+$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
+$cAge=calcage($dbirth);
+
+//ตรวจสอบเลขบัตรประชาชน
+$sql = "Select hn From opcard where idcard='$idcard' AND hn<>'$cHn' limit 0,1 ";
+$result = mysql_query($sql);
+	if(mysql_num_rows($result) > 0 && strlen(trim($idcard)) == 13){
+		list($chk_idcard) = mysql_fetch_row($result);
+		echo "<SCRIPT LANGUAGE=\"JavaScript\">
+
+		alert('เลขบัตรประชาชน $idcard ถูกใช้โดย HN : $chk_idcard กรุณาตรวจสอบว่าเป็นคนๆเดียวกันหรือไม่');
+
+		</SCRIPT>";
+}
+
+//update opdcard table
+$sql = "UPDATE opcard SET hn='$cHn',
+yot='$yot',name='$name',surname='$surname',goup='$goup',married='$married',
+dbirth='$dbirth',guardian='$guardian',idguard='$idguard',
+nation='$nation',religion='$religion',career='$career',ptright='$ptright',ptright1='$ptright1',address='$address',
+tambol='$tambol',ampur='$ampur',changwat='$changwat',
+phone='$phone',father='$father',mother='$mother',couple='$couple',
+note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood', officer ='".$_SESSION["sOfficer"]."' WHERE hn='$cHn' ";
+
+$result = mysql_query($sql) or die("Query failed ipcard");
+
+If (!$result){
+	echo "update opcard fail";
+	echo mysql_errno() . ": " . mysql_error(). "\n";
+	echo "<br>";
+} else {
+	print " แก้ไขข้อมูลเรียบร้อย: ";
+}
+
+//update xrayno table
+$sql = "UPDATE xrayno SET name='$name',surname='$surname' WHERE hn='$cHn' ";
+
+$result = mysql_query($sql) or die("Query failed xrayno");
+
+//update xrayno table
+$sql = "UPDATE bed SET ptright='$ptright' WHERE hn='$cHn' ";
+
+$result = mysql_query($sql) or die("Query failed bed");
+
+If (!$result){
+	echo "update xrayno fail";
+	echo mysql_errno() . ": " . mysql_error(). "\n";
+	echo "<br>";
+} else {
+	print " แก้ไขข้อมูลเรียบร้อยแล้ว: <br>";
+}
+
+//หาข้อมูลจาก opcard ของ $cHn เพื่อใช้ทั้งในกรณีลงทะเบียนแล้ว หรือยังไม่ลง
+$query = "SELECT * FROM opcard WHERE hn = '$cHn'";
+$result = mysql_query($query) or die("Query failed");
+
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
+
+	if(!($row = mysql_fetch_object($result)))
+	continue;
+}
+
+If ($result){
+	//	      $cHn=$row->hn;
+	$cYot = $row->yot;
+ 	      $cIdcard = $row->idcard;
+	$cName = $row->name;
+	$cSurname = $row->surname;
+	$cPtname=$cYot.' '.$cName.'  '.$cSurname;
+	$cPtright = $row->ptright;
+	$cGoup=$row->goup;
+	$cCamp=$row->camp;
+	$cNote=$row->note;
+  	               $cIdguard=$row->idguard;
+ 
+	echo "HN : $cHn, ชื่อ-สกุล: $cYot   $cName  $cSurname<br>";  
+	echo "<font face='Angsana New' size=4><b>สิทธิการรักษา : $cPtright :<font face='Angsana New' size=5><u>$cIdguard</u></b></font><br> ";
+       
+	//       echo "หมายเลขบัตร ปชช.: $cIdcard  ";
+ 
+	//   echo "มาครั้งสุดท้ายเมื่อ $cLastupdate <br> ";
+ 	
+	// echo "หมายเหตุ.: $cNote <br> ";
+//echo "<B>หมายเหตุ.:.ให้ตรวจสอบสิทธิทุกครั้งก่อนออกใบสั่งยา </B><br> ";
+}  
+//
+
+$today = date("d-m-Y");   
+$d=substr($today,0,2);
+$m=substr($today,3,2);
+$yr=substr($today,6,4) +543;  
+//  $thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+$thdatehn=$d.'-'.$m.'-'.$yr.$cHn;   //  session ใช้ update opday table
+//    print "วันที่  $thidate<br>";
+//    print " $thdatehn<br>";
+//to find AN from runno table
+
+$query = "SELECT title,prefix,runno FROM runno WHERE title = 'AN'";
+$result = mysql_query($query) or die("Query failed runno ask");
+
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
+
+	if(!($row = mysql_fetch_object($result)))
+		continue;
+}
+
+$vTitle=$row->title;
+$vPrefix=$row->prefix;
+$nRunno=$row->runno;
+$nRunno++;
+$vAN=$vPrefix.$nRunno;
+
+//หา VN จาก runno table
+$query = "SELECT * FROM runno WHERE title = 'VN'";
+$result = mysql_query($query) or die("Query failed");
+
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
+		if(!($row = mysql_fetch_object($result)))
+		continue;
+}
+
+//  	    $cTitle=$row->title;  //=VN
+$nVn=$row->runno;
+$dVndate=$row->startday;
+$dVndate=substr($dVndate,0,10);
+$today = date("Y-m-d");  
+//print "$today<br>";
+//print "$dVndate<br>";
+//print "$nVn.'A'<br>";
+
+
+//กรณีขอ vn ใหม่
+If ($_POST["new_vn"] == "1"){
+	
+	//ยังไม่เปลี่ยนวันที่
+	if($today==$dVndate){
+		$nVn++;
+		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+		$query ="UPDATE runno SET runno = $nVn WHERE title='VN'";
+		$result = mysql_query($query) or die("Query failed");
+		print "<font face='Angsana New' size=5>ผู้ป่วยใหม่ได้หมายเลข VN = $nVn  .... </font> ...ผู้ลงทะเบียน  ..........$sOfficer<br>";
+		print "การออก OPD CARD  = $case<br>";
+	}
+
+	//วันใหม่
+	if($today<>$dVndate){    
+		$nVn=1;
+		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+		$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN'";
+		$result = mysql_query($query) or die("Query failed");
+		//   	         echo mysql_errno() . ": " . mysql_error(). "\n";
+		//                       echo "<br>";
+		print "ผู้ป่วยใหม่  ได้ VN = $nVn <br>";
+	}	
+
+	//ลงทะเบียนใน opday table
+
+	if(substr($_POST["case"],0,4) == "EX19")
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,  ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z480','9357','Y',".$R03true1.");";
+	else if(substr($_POST["case"],0,4) == "EX22")
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,  ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,icd10,icd9cm,okopd,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer','Z138','8898','Y',".$R03true1.");";
+	else
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,  ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
+		
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+
+
+		$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,  ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
+		
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+
+
+	// update time to table opday
+	$query ="UPDATE opday SET time1='$time' WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+	$result = mysql_query($query);
+	//        or die("Query failed runno update");
+
+
+}else{
+
+$query = "SELECT hn,vn,kew,toborow FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
+$result = mysql_query($query) or die("Query failed,opday");
+//    echo mysql_errno() . ": " . mysql_error(). "\n";
+//    echo "<br>";
+
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+}
+
+if(!($row = mysql_fetch_object($result)))
+	continue;
+}	
+
+$nVn=$row->vn;
+$kew=$row->kew;
+$toborow=$row->toborow;
+
+if(substr($_POST["case"],0,4) == "EX19"){
+$query ="UPDATE opday SET ptname='$cPtname',
+ptright='$cPtright',
+goup='$cGoup',
+note='$note',
+	   
+idcard='$cIdcard',
+
+	
+borow='$borow',
+
+	
+toborow='$case',
+
+
+camp='$cCamp',
+okopd='Y',  
+officer='$sOfficer'
+".$R03true2."
+WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+}else{
+$query ="UPDATE opday SET ptname='$cPtname',
+ptright='$cPtright',
+goup='$cGoup',
+note='$note',
+	   
+idcard='$cIdcard',
+
+	
+borow='$borow',
+
+	
+toborow='$case',
+
+
+camp='$cCamp',
+okopd='N',  
+officer='$sOfficer'
+".$R03true2."
+WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+}
+
+$result = mysql_query($query) or die("Query failed,update opday");
+
+$sql = "Select count(row_id) as c_row From opday2 where thdatehn = '".$thdatehn."' AND toborow = '".$case."' limit 1 ";
+list($c_row) = Mysql_fetch_row(Mysql_Query($sql));
+
+if($c_row == 0){
+	$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+	$query = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,  ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.");";
+
+	$result = mysql_query($query) or die("Query failed,cannot insert into opday2");
+}else{
+	
+	$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
+	$query = "Update opday2 set thidate = '".$thidate."' where thdatevn = '".$thdatevn."' limit 1 ";
+	$result = mysql_query($query) or die("Query failed,cannot insert into opday2");
+
+
+}
+
+print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้ VN: $nVn ได้คิวที่..$kew...<br>ออกโดย ...$toborow</font>";
+print "<br>ผู้ลงทะเบียน ..$sOfficer";
+}
+
+// ตรวจสอบและอับเดล dphardep กรณี ผู้ป่วยมาฉีดยาต่อเนื่อง
+if(substr($_POST["case"],0,4) == "EX23"){
+	$sql = "Select row_id From dphardep where hn = '".$cHn."' AND date like '".$thidate3."%' AND tvn = '' ";
+
+	$result = mysql_query($sql);
+	while(list($dphardep_id) = mysql_fetch_row($result)){
+		mysql_query("update dphardep set tvn = '".$nVn."', date = '".$thidate."'  where row_id = '".$dphardep_id."' limit 1 ");
+	}
+
+}
+//END 
+
+include("unconnect.inc");
+?>
+ 
+
+<br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd.php">คิวตรวจโรคทั่วไป </a>&nbsp;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewadd2.php">คิวตรวจทันตกรรม </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd3.php">คิวสูติ</a>&nbsp;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd7.php">คิวตรวจตา</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd_chkup.php">คิวตรวจสุขภาพ</a>&nbsp;&nbsp;&nbsp;
+
+<BR>
+&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd6.php">คิวฝั่งเข็ม</a>
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd5.php">มวลกระดูก</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewadd4.php">ลบคิว</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;คิวคลินิกพิเศษ&nbsp;&nbsp;&nbsp;<a target=_TOP href="keweye.php">จักษุ(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewmed.php">อยุรกรรม(พ)</a>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="kewsurg.php">ศัลยกรรม(พ) </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewogb.php">สูติ(พ)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewent.php">หู คอ จมูก(พ)</a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewchild.php">กุมารเวช(พ)</a>
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp<a target=_TOP href="kewortho.php">ศัลยกรรมกระดูก(พ)</a>
+<br>2...ส่งข้อมูล&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="sentkew.php">ส่งข้อมูลค้นบัตร </a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="sentopd.php">ส่งข้อมูลคัดแยกกรณีออกใบสั่งยาเอง</a>
+
+<br> <br>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="rxform.php">พิมพ์ใบสั่งยา </a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="rxform9.php">พิมพ์ใบสั่งยาไม่มีแพ้ยา </a>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint2.php">พิมพ์บัตรต่อประวัติผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint4.php">พิมพ์บัตรต่อประวัติผู้ป่วยใบแรก</a>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint1bc.php">พิมพ์บัตรผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="opdprint6.php">พิมพ์ กท.16/1</a>&nbsp;&nbsp;&nbsp;
+
+<a target=_TOP href="edprint.php">พิมพ์ใบใช้ยานอกบัญชี</a>
+<br>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="vnprint.php">พิมพ์ใบ ตรวจโรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="vnprint_l.php">ใบติด OPDCARD</a>
+<br><br><br>&nbsp;&nbsp;&nbsp;
+<a  href="opipcard.php">รับป่วยเป็นคนไข้ใน (admit)</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
+
+

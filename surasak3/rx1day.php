@@ -1,0 +1,22 @@
+<?php
+    session_start();
+    if (isset($sIdname)){} else {die;} //for security
+?>
+<div align='left'>
+  <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+    <tr>
+      <td width='13%'></td>
+      <td width='87%'>&nbsp;
+        <p><b><font size='4'>โปรดทราบ !</font></b><br>
+	ถ้าเลือก ทำต่อไป โปรแกรมจะตั้งค่า 0 ให้การจ่ายยาทุกตัว<br>
+	และเก็บข้อมูลจำนวนจ่ายยาทุกตัว จนกว่าจะตั้งค่า 0 ใหม่<br>
+	เพื่อให้รู้จำนวนยาที่ใช้ไปในช่วงเวลาหนึ่ง<br>
+        <br>
+               <a target=_parent href="drx1day.php">ทำต่อไป</a>
+               &nbsp;&nbsp;&nbsp;&nbsp <a target=_self  href="../nindex.htm"><< ยกเลิก</a></td>
+    </tr>
+  </table>
+</div>
+
+
+
