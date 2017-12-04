@@ -125,11 +125,14 @@ label{
 	.no_print{ display:none; }
 }
 </style>
-
 <div id="no_print">
 	<div id="menu">
 		<ul class="menu">
 			<li><a href="../../nindex.htm" class="parent"><span>โปรแกรมโรงพยาบาล</span></a></li>
+			<?php
+			// 
+			if ( $_SESSION['smenucode'] != 'ADMFOD' ) {
+			?>
 			<li>
 				<a href="#"><span>ลงทะเบียน</span></a>
 				<ul>
@@ -144,6 +147,9 @@ label{
 					<li class="last"><a href="hypertension_edit.php"><span>แก้ไขข้อมูล HT</span></a></li>
 				</ul>
 			</li>
+			<?php
+			}
+			?>
 			<li>
 				<a href="#"><span>รายชื่อผู้ป่วย DM</span></a>
 				<ul>
@@ -159,6 +165,10 @@ label{
 					<li class="last"><a href="hypertension_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
 				</ul>
 			</li>
+			<?php
+			// 
+			if ( $_SESSION['smenucode'] != 'ADMFOD' ) {
+			?>
 			<li>
 				<a href="report_diabetes.php"><span>สถิติ</span></a>
 				<ul>
@@ -180,6 +190,9 @@ label{
 					<li class="last"><a href="hypertension_history.php"><span>ค้นหาประวัติ HT</span></a></li>
 				</ul>
 			</li>
+			<?php
+			}
+			?>
 		</ul>
 	</div>
 	<div style="visibility: hidden"><a href="http://apycom.com/">a</a></div>

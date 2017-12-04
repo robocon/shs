@@ -80,7 +80,9 @@ require "header.php";
 	?>
 	  <tr>
 		<td><div align="center"><?=$objResult["ht_no"];?></div></td>
-		<td><?=$objResult["hn"];?></td>
+		<td>
+			<a href="../report_lablst.php?hn=<?=$objResult["hn"];?>&close=true" target="_blank"><?=$objResult["hn"];?></a>
+		</td>
 		<td><?=$objResult["ptname"];?></td>
 		<td align="left"><?=$objResult["ptright"];?></td>
 		<td><?=$objResult["doctor"];?>&nbsp;</td>
