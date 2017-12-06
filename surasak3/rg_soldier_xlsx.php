@@ -102,7 +102,7 @@ if( empty($page) ){
     $sql = "SELECT a.*, b.`idcard`  
     FROM `rg_soldier` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-    WHERE `last_update` LIKE '$year_selected-$selected_month%' ";
+    WHERE `date_certificate` LIKE '$year_selected-$selected_month%' ";
     $db->select($sql);
     $items = $db->get_items();
     
