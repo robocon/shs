@@ -50,5 +50,12 @@ ul.topnav li a:hover{
         <li><a href="rg_report_opday.php">รายชื่อผู้มาขอใบรับรอง</a></li>
         <li><a href="http://192.168.1.13/sm3/surasak3/rg_soldier_xlsx.php">ส่งออก Amed(.xlsx)</a></li>
         <li><a href="rg_print_photo.php" target="_blank">ถ่ายรูป 1นิ้ว</a></li>
+        <li><a href="rg_config.php">ตั้งค่า</a></li>
     </ul>
 </div>
+<?php
+// แจ้งเตือนการบันทึก/แก้ไข
+if( !empty($_SESSION['x-msg']) ){
+    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+    $_SESSION['x-msg'] = false;
+}

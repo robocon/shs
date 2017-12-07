@@ -150,7 +150,7 @@ if( $action === "save" ){
     }
 
     if( $save !== false ){
-        $_SESSION['x_msg'] = 'บันทึกข้อมูลเรียบร้อย';
+        $_SESSION['x-msg'] = 'บันทึกข้อมูลเรียบร้อย';
         header("Location: rg_soldier.php");
     }
 
@@ -167,7 +167,7 @@ if( $action === "save" ){
     $delete = $db->delete($sql);
 
     if( $delete !== false ){
-        $_SESSION['x_msg'] = 'ลบข้อมูลเรียบร้อย';
+        $_SESSION['x-msg'] = 'ลบข้อมูลเรียบร้อย';
         header("Location: rg_soldier.php");
     }
 
@@ -410,11 +410,7 @@ include 'rg_menu.php';
 
 $page = input('page');
 if( empty($page) ){
-    // แจ้งเตือนการบันทึก/แก้ไข
-    if( !empty($_SESSION['x_msg']) ){
-        ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x_msg'];?></p><?php
-        $_SESSION['x_msg'] = false;
-    }
+    
     ?>
     <div class="claearfix">
     <h3>รายงานการตรวจโรคชายไทยก่อนเกณฑ์ทหาร(ที่พบความผิดปกติ)</h3>
@@ -533,6 +529,7 @@ if( empty($page) ){
     
     $id = input_get('id');
     
+    // ถ้าไม่มีไอดี จะเป็นการเพิ่มข้อมูลใหม่
     if( empty($id) ){
         $hn = input_post('hn', false);
         ?>
@@ -551,9 +548,16 @@ if( empty($page) ){
         </form>
         <?php
         $search_hn = input('search_hn', false);
-        $yearchk = $pic = $diag = $code3 = $code2 = $code1 = $regular = $number_id = $book_id = false;
+        $date_certificate = $yearchk = $pic = $diag = $code3 = $code2 = $code1 = $regular = $number_id = $book_id = false;
         
+        $sql = "SELECT * FROM `runno` WHERE `title` = 'rg_sol' ";
+        $db->select($sql);
+        $runno = $db->get_item();
+        $book_id = $runno['prefix'];
+        $number_id = sprintf('%03d', ($runno['runno'] + 1) );
+
     }else{
+
         $search_hn = 1;
         $sql = "SELECT * FROM `rg_soldier` WHERE `id` = '$id' ";
         $db->select($sql);
