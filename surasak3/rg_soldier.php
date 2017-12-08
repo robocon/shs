@@ -110,6 +110,12 @@ if( $action === "save" ){
         ";
         $save = $db->insert($sql);
         $last_id = $db->get_last_id();
+
+        $sql = "UPDATE `runno` SET 
+        `runno` = '$number_id' 
+        WHERE `title` = 'rg_sol' ";
+        $db->update($sql);
+
     }else{
         $sql = "UPDATE `rg_soldier`
         SET 
@@ -554,7 +560,8 @@ if( empty($page) ){
         $db->select($sql);
         $runno = $db->get_item();
         $book_id = $runno['prefix'];
-        $number_id = sprintf('%03d', ($runno['runno'] + 1) );
+        $runno_number = (int) $runno['runno'];
+        $number_id = sprintf('%03d', ($runno_number + 1) );
 
     }else{
 
