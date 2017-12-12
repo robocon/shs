@@ -94,7 +94,7 @@ menu5[1]='<a href="dt_refer.php" >ใบ Refer</a>'
 var menu6=new Array();
 menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพทหารประจำปี</a>'
 <!--menu6[1]='<a href="dxdr_ofyear_empsoldier.php">ตรวจสุขภาพลูกจ้าง รพ.</a>'-->
-menu6[2]='<a href="dxdr_ofyearout_dr.php" >ตรวจสุขภาพทั่วไป</a>'
+menu6[2]='<a href="dxdr_ofyearout_dr.php" >ตรวจสุขภาพทั่วไป && ฮักกันยามเฒ่า</a>'
 
 var menuwidth='170px' //default menu width
 var menubgcolor='#000097'  //menu bgcolor
