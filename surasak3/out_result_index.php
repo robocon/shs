@@ -1,8 +1,10 @@
 <?php
-    session_start();
+// session_start();
+include 'bootstrap.php';
+
+$db = Mysql::load();
 ?>	
 <style type="text/css">
-<!--
 body {
 	font-family: TH SarabunPSK;
 	font-size: 18px;
@@ -19,7 +21,6 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
--->
 </style>
 <table width="60%" border="1" align="center" cellpadding="3" cellspacing="0" bordercolor="#000000">
   <tr>
@@ -92,7 +93,7 @@ a:active {
   <tr>
     <td>12. สำนักงานจังหวัดลำปาง</td>
     <td align="center"><a href="out_result.php?part=สำนักงานจังหวัดลำปาง60" target="_blank">บันทึก</a></td>
-  </tr>-->
+  </tr>
   <tr>
     <td>1. อินทราเซรามิค</td>
     <td align="center"><a href="out_result.php?part=อินทราเซรามิค60" target="_blank">บันทึก</a></td>
@@ -207,4 +208,24 @@ a:active {
     <td>27. เอ็กซ์ตร้า เวลู จำกัด</td>
     <td align="center"><a href="out_result.php?part=เอ็กซ์ตร้าเวลู61" target="_blank">บันทึก</a></td>
   </tr>
+  -->
+
+  <?php
+  $sql = "SELECT * FROM `chk_company_list` WHERE `status` = '1' ORDER BY `id` ASC";
+  $db->select($sql);
+  $items = $db->get_items();
+  $i = 1;
+  foreach ($items as $key => $item) {
+    ?>
+    <tr>
+      <td><?=$i.' '.$item['name'];?></td>
+      <td align="center"><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">บันทึก</a></td>
+      <td align="center"><?=$item['date_checkup'];?></td>
+    </tr>
+    <?php
+    $i++;
+  }
+  ?>
+  
+
 </table>

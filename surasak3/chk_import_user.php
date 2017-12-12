@@ -152,16 +152,10 @@ if( empty($action) ){
                 '$date_chkup',
                 'y');";
 
-                // dump($sql);
-
-
-                // dump($sql);
                 $insert = $db->insert($sql);
-                dump($insert);
 
             }
             
-            // if( $i === 1 ){ exit; }
         }
 
         $msg = 'นำเข้าข้อมูลเรียบร้อย';

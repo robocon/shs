@@ -101,7 +101,7 @@ if( $action === "save" ){
     
 
     if( empty($id) ){
-        $sql = "INSERT INTO `smdb`.`rg_soldier`
+        $sql = "INSERT INTO `rg_soldier`
         (`id`,`date`,`hn`,`address`,`regular`,
         `last_update`,`yot_pt`,`ptname`,`yearchk`,`book_id`,
         `number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
