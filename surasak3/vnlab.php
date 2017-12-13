@@ -63,7 +63,7 @@ If (!empty($vn)){
         $cPtname=$row->ptname;
         $cPtright=$row->ptright;
 		
-$ipsql="select * from ipcard where hn='".$cHn."' and dcdate='0000-00-00 00:00:00'";
+        $ipsql="select * from ipcard where hn='".$cHn."' and dcdate='0000-00-00 00:00:00' AND my_ward IS NOT NULL";
 $ipquery=mysql_query($ipsql);
 $iprows=mysql_fetch_array($ipquery);
 $my_ward=$iprows["my_ward"];

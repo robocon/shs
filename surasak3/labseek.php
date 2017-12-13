@@ -1,5 +1,3 @@
-
-
 <?php
   
  session_start();
@@ -232,12 +230,16 @@ function searchSuggest(str,len,getto) {
 	<?php
 	$default = ( !empty($xray_sso) ) ? $xray_sso : '42703' ;
 	?>
-  <input type="text" name="code" size="8" id="aLink" value="<?=$default;?>" onkeypress="searchSuggest(this.value,2,'code');">
+  <input type="text" name="code" size="8" id="aLink" value="<?=$default;?>" onkeypress="searchSuggest(this.value,2,'aLink');">
 <? }else{ ?>
-  <input type="text" name="code" size="8" id="aLink" value="<?=$xray_sso;?>" onkeypress="searchSuggest(this.value,2,'code');">
+  <input type="text" name="code" size="8" id="aLink" value="<?=$xray_sso;?>" onkeypress="searchSuggest(this.value,2,'aLink');">
  <? } ?> 
 <script type="text/javascript">
-document.getElementById('aLink').focus();
+window.onload = load;
+function load(){
+	document.getElementById("aLink").focus();
+}
+
 </script>* <input type="text" name="amount" size="4" value="1">&nbsp;
   <?php if($_SESSION["until_login"] == "xray"){?>¢π“¥ø‘≈Ï¡ 
   <SELECT NAME="film_size">

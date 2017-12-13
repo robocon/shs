@@ -144,16 +144,19 @@ if(substr($atoborow,0,4)=="EX26"){
    $cXraydetail = "";
    session_register("cXraydetail");
 ?>
-<script>
+<script type="text/javascript">
 function check()
 {
 	if(document.getElementById("doctor").value == ' กรุณาเลือกแพทย์'){
 		alert("กรุณาเลือกแพทย์");
 		return false;
 	}
-	else if(document.getElementById("cXraydetail").innerHTML == ''){
-		alert("กรุณาเลือกตรวจ(ท่า)");
-		return false;
+	else if(document.getElementById("cXraydetail")){
+		if( document.getElementById("cXraydetail").innerHTML == '' ){
+			alert("กรุณาเลือกตรวจ(ท่า)");
+			return false;
+		}
+
 	}
 	else{
 		return true;
@@ -178,7 +181,7 @@ document.getElementById('aLink').focus();
 </script>
     <option value="ตรวจวิเคราะห์เพื่อการรักษา" selected>ตรวจวิเคราะห์เพื่อการรักษา</option>
     <? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADM"){ ?>
-    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>ตรวจสุขภาพ</option>
+    <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX16" || substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>ตรวจสุขภาพ</option>
     <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
     <? } ?>
@@ -210,7 +213,8 @@ document.getElementById('aLink').focus();
 
 	if(!isset($c)){
 		?>
-  <option value="<?=$cPtright;?>" <? if(substr($atoborow,0,4)!="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>><?=$cPtright?><!--ตามสิทธิผู้ป่วย--></option>
+  <option value="<?=$cPtright;?>" <? if(substr($atoborow,0,4)!="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>><?=$cPtright;?><!--ตามสิทธิผู้ป่วย--></option>
+  <option value="R01 เงินสด">R01 เงินสด</option>  
   <?
 	}
    ?>
@@ -273,7 +277,6 @@ document.getElementById('aLink').focus();
 	}
 	if(!isset($c)){
 		?>
-
   <?=$cPtright?>
   </option>
   <?

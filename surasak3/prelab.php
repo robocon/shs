@@ -375,5 +375,5 @@ for($i=0;$i<$count;$i++){
 
 
 <script type="text/javascript">
-document.getElementById('aLink').focus();
+// document.getElementById('aLink').focus();
 </script>
