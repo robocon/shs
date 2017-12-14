@@ -1,79 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ถ่ายรูป 1 นิ้ว</title>
-</head>
-<body style="padding: 0; margin: 0;">
-    <style>
-        .container{
-        }
-        .glass{
-            height: 708px;
-            width: 944px;
-            z-index: 0;
-        }
-    </style>
-    <div>คำแนะนำในการใช้งาน</div>
-    <ol>
-        <li>กรุณาใช้เบาร์เซอร์รุ่นใหม่ เช่น Google Chrome หรือ Firefox ที่อัพเดทเป็นรุ่นล่าสุด</li>
-        <li>ให้ผู้ป่วยยืนอยู่ในกรอบสีน้ำเงิน</li>
-    </ol>
-    <div style="position: relative;">
-        <div class="container" id="container_img">
-            <video id="video" class="glass" autoplay><u style="color: red;">เบราเซอร์ไม่รองรับการทำงานของกล้องถ่ายรูป</u></video>
-            <div style="border: 1px solid blue; width: 472px; height: 708px; left: 236px; position: absolute; top: 0;"></div>
-            <button id="snap" style="width: 200px; height: 200px; font-size: 50px; vertical-align: top;">ถ่ายรูป</button>
-        </div>
-    </div>
+<?php
+include 'bootstrap.php';
 
-    <div>
-        <canvas id="canvas" width="472" height="708" ></canvas>
-        <a id="download" href="javascript: void(0);" style="font-size: 2em;">ดาวโหลดรูป</a>
-    </div>
+$action = input_post('action');
+if( $action === 'resize' ){
 
-    <script>
-    // Grab elements, create settings, etc.
-    var video = document.getElementById('video');
-
-    // Get access to the camera!
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Not adding `{ audio: true }` since we only want video now
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-            video.src = window.URL.createObjectURL(stream);
-            video.play();
-        });
-    }
-
-    // Elements for taking the snapshot
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-
-    // Trigger photo take
-    document.getElementById("snap").addEventListener("click", function() {
-        context.drawImage(video, -236, 0, 944, 708);
-    });
-
-    function downloadCanvas(link, canvasId, filename) {
-        link.href = document.getElementById(canvasId).toDataURL();
-        link.download = filename;
-        console.log(link);
-    }
-
-    /** 
-    * The event handler for the link's onclick event. We give THIS as a
-    * parameter (=the link element), ID of the canvas and a filename.
-    */
-    document.getElementById('download').addEventListener('click', function() {
-        var d = new Date();
+    $file = $_FILES['upload_pic'];
+    if ( $file['error'] === 0 ) {
         
-        downloadCanvas(this, 'canvas', d.getMilliseconds()+'.png');
-    }, false);
+        $file_name = $file['name'];
+        $tmp_name = $file['tmp_name'];
 
-    </script>
+        // header('Content-Type: image/jpeg');
+        ob_start();
+        list($width, $height) = getimagesize($tmp_name);
 
-</body>
+        $dst_w = $src_w = ( $width / 2 );
+        $dst_h = $src_h = $height;
 
-</html>
+        $src_x = ( $width / 4 );
+        
+        $des = imagecreatetruecolor($dst_w, $dst_h);
+        $res = imagecreatefromjpeg($tmp_name);
+
+        imagecopyresized($des, $res, 0,0,$src_x,0, $dst_w, $dst_h, $src_w, $src_h);
+        imagejpeg($des);
+        $img_txt = ob_get_contents();
+        ob_end_clean();
+
+        $img_64 = base64_encode($img_txt);
+        ?>
+        <img src="data:image/png;base64,<?=$img_64;?>" />
+        <?php
+    }
+    
+    exit;
+
+}else if( empty($action) ){
+    include 'rg_menu.php';
+
+    ?>
+    <div class="claearfix">
+        <h3>เปลี่ยนขนาดรูป</h3>
+        <div>
+            <form action="rg_print_photo.php" method="post" enctype="multipart/form-data">
+                <div>
+                    <input type="file" name="upload_pic" id="">
+                </div>
+                <div>
+                    <button type="submit">อัพโหลดรูป</button>
+                    <input type="hidden" name="action" value="resize">
+                </div>
+                <div>
+                    <p><u>คำแนะนำการใช้งาน</u></p>
+                    <ul>
+                        <li>รองรับไฟล์ประเภท .jpg หรือ .jpeg เท่านั้น</li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    <?php
+}
+
+
+
+
+
+
+
+
