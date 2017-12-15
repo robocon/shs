@@ -47,7 +47,8 @@ $number_id = sprintf('%03d', ($runno['runno']) );
                 <tr>
                     <td>เลขที่ : </td>
                     <td>
-                    <input type="text" name="number_id" id="" value="<?=$number_id;?>">
+                        <input type="text" name="number_id" id="" value="<?=$number_id;?>">
+                        <div>* เลขที่ของคนสุดท้ายที่มีในระบบ</div>
                     </td>
                 </tr>
                 <tr>

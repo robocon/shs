@@ -29,7 +29,8 @@ if( $action === 'resize' ){
 
         $img_64 = base64_encode($img_txt);
         ?>
-        <img src="data:image/png;base64,<?=$img_64;?>" />
+        <p><a href="rg_print_photo.php">กลับหน้ารูป 1 นิ้ว</a></p>
+        <img src="data:image/png;base64,<?=$img_64;?>" style="width: 94.488188976px; height: 122.83464567px;"/>
         <?php
     }
     

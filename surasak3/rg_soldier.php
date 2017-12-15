@@ -63,6 +63,7 @@ if( $action === "save" ){
     $number_id = input_post('number_id');
     $diag = input_post('diag');
     $regular = input_post('regular');
+    $date_certificate = input_post('date_certificate');
     $yearchk = get_year_checkup(true);
     $file_name = 'NULL';
     
@@ -106,16 +107,24 @@ if( $action === "save" ){
         `last_update`,`yot_pt`,`ptname`,`yearchk`,`book_id`,
         `number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
         `doctor2`,`code2`,`yot3`,`doctor3`,`code3`,
-        `diag`,`province`,`editor`) 
+        `diag`,`province`,`editor`,`date_certificate`) 
         VALUES 
         (NULL,NOW(),'$hn','$address','$regular',
         NOW(),'$yot_pt','$ptname','$yearchk','$book_id',
         '$number_id','".$dr_lists['yot1']."','".$dr_lists['doctor1']."','".$dr_lists['code1']."','".$dr_lists['yot2']."',
         '".$dr_lists['doctor2']."','".$dr_lists['code2']."','".$dr_lists['yot3']."','".$dr_lists['doctor3']."','".$dr_lists['code3']."',
-        '$diag','$province','$editor');
+        '$diag','$province','$editor','$date_certificate');
         ";
         $save = $db->insert($sql);
         $last_id = $db->get_last_id();
+
+        $update_runno = (int) $number_id;
+        $sql = "UPDATE `runno` SET 
+        `runno` = '$update_runno', 
+        `startday` = NOW()
+        WHERE `title` = 'rg_sol'";
+        $db->update($sql);
+
     }else{
         $sql = "UPDATE `rg_soldier`
         SET
@@ -133,7 +142,8 @@ if( $action === "save" ){
         `doctor3` = '".$dr_lists['doctor3']."',
         `code3` = '".$dr_lists['code3']."',
         `diag` = '$diag',
-        `editor` = '$editor'
+        `editor` = '$editor',
+        `date_certificate` = '$date_certificate'
         WHERE `id` = '$id';";
         $save = $db->update($sql);
         $last_id = $id;
@@ -541,6 +551,14 @@ if( empty($page) ){
         $search_hn = input('search_hn', false);
         $yearchk = $pic = $diag = $code3 = $code2 = $code1 = $regular = $number_id = $book_id = false;
         
+        $sql = "SELECT * FROM `runno` WHERE `title` = 'rg_sol'";
+        $db->select($sql);
+        $runno_item = $db->get_item();
+        $book_id = $runno_item['prefix'];
+        $number_id = sprintf('%03d', ($runno_item['runno'] + 1) );
+        $date_cer = date('Y-m-d');
+
+
     }else{
         $search_hn = 1;
         $sql = "SELECT * FROM `rg_soldier` WHERE `id` = '$id' ";
@@ -557,6 +575,7 @@ if( empty($page) ){
         $code3 = $user['code3'];
         $pic = $user['pic'];
         $yearchk = $user['yearchk'];
+        $date_cer = $user['date_certificate'];
         ?>
         <h3>ฟอร์มแก้ไขข้อมูล ตรช.</h3>
         <?php
@@ -586,6 +605,11 @@ if( empty($page) ){
 
                 <div>
                     เล่มที่ <input type="text" name="book_id" value="<?=$book_id;?>"> เลขที่ <input type="text" name="number_id" value="<?=$number_id;?>">
+                </div>
+
+                <div>
+                    วันที่ออกใบรับรอง <input type="text" name="date_certificate" value="<?=$date_cer;?>">
+                    <div style="color: red;">* <u>รูปแบบ</u> ปี(ค.ศ.)-เดือน-วัน <u>ตัวอย่างเช่น</u> 2017-12-03 เป็นตัน</div>
                 </div>
 
                 <div>
