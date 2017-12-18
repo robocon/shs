@@ -1,10 +1,46 @@
 <?php
 session_start();
 include '../connect.php';
+include 'Connections/all_function.php';
+
+$action = $_POST['action'];
+if( $action === 'save' ){
+
+  $hn=$_POST['hn'];
+  $vaccine = $_POST['vaccine'];
+  $vaccine_detail = $_POST['vaccine_detail'];
+  $unit=$_POST['unit'];
+  $doctor =$_POST['doctor'];
+  $lotno=$_POST['lotno'];
+  $lotno2=$_POST['lotno2'];
+  $date2 =$_POST['date2'];//date_end
+  $date3 =$_POST['date3'];//date_end2
+  
+  $y=date('Y')+543;
+  $m=date('m');
+  $d=date('d');
+  $datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
+  $date11=explode('/',$_POST['date1']);
+  $date1=$date11[2].'-'.$date11[1].'-'.$date11[0];
+  
+  $sql_add2="INSERT  INTO tb_service (date_ser,hn,id_vac,num,unit,name_doc,lotno,date_end,lotno2,date_end2,date_insert) VALUES ('$date1','$hn','$vaccine','$vaccine_detail','$unit','$doctor','$lotno','$date2','$lotno2','$date3','$datetime') ";
+  $query_add2=mysql_query($sql_add2) or die( mysql_error() );
+  
+  if($query_add2){
+    echo "บันทึกข้อมูลเรียบร้อยแล้ว";
+    echo "<meta http-equiv='refresh' content='2; url=service.php'>" ;
+  }else{
+    echo "Error Save [".$sql_add2."]";
+    echo "<meta http-equiv='refresh' content='2; url=service.php'>" ;
+  }
+  exit;
+}
+
+
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=windows-874" /> -->
     <!-- InstanceBeginEditable name="doctitle" -->
     <title>สมุดทะเบียนการรับบริการวัคซีนเด็ก</title>
     <!-- InstanceEndEditable -->
@@ -111,12 +147,6 @@ window.onload = function () {
 
 </script>
 
-<?
-
-// include("Connections/connect.inc.php"); 
-include("Connections/all_function.php"); 
-
-?>
 <script language=Javascript>
 function Inint_AJAX() {
    try { return new ActiveXObject("Msxml2.XMLHTTP");  } catch(e) {} //IE
@@ -308,6 +338,7 @@ function fncSubmit()
             <input name="unit" type="hidden" id="unit" value="1" />
             <input type="hidden" name="hn" value="<?=$fetch['hn'];?>" />
             <input name="button2" type="submit" class="table_font1" id="button2" value="บันทึกข้อมูล">
+            <input type="hidden" name="action" value="save">
             </label></td>
       </tr>
     </table>
@@ -320,63 +351,6 @@ function fncSubmit()
 	    echo "<br/>";
 	 echo "<h1 align='left'>ไม่พบ HN </h1>";
   }
-  }
-  
-  if($_POST['button2']){
-	  
-	  
-	  
-	  $hn=$_POST['hn'];
-		$vaccine = $_POST['vaccine'];
-		$vaccine_detail = $_POST['vaccine_detail'];
-		$unit=$_POST['unit'];
-		$doctor =$_POST['doctor'];
-		$lotno=$_POST['lotno'];
-		$lotno2=$_POST['lotno2'];
-		//$date1 =$_POST['date1'];////date_ser
-		$date2 =$_POST['date2'];//date_end
-		$date3 =$_POST['date3'];//date_end2
-		
-	$y=date('Y')+543;
-	$m=date('m');
-	$d=date('d');
-	$datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
-	
-	$date11=explode('/',$_POST['date1']);
-	
-	$date1=$date11[2].'-'.$date11[1].'-'.$date11[0];
-	
-
-/*$strSQL = "SELECT * FROM tb_service WHERE   hn='".$_POST['hn']."' and  date_ser='".$_POST['date1']."' ";
-
-$objQuery = mysql_query($strSQL)or die (mysql_error());
-$objResult = mysql_num_rows($objQuery);
-if($objResult>0)
-{
-		echo "<h4 align=center>Hn : ".$_POST['hn']." เคยบันทึกแล้ววันนี้</h4></br>";
-		?>
- <!-- <div align="center"> <input name="btnButton" type="button" value="กลับไปแก้ไข" onClick="JavaScript:window.location='service.php"></div>-->
-       <?
-		
-}
-else
-{*/
-
-	 $sql_add2="INSERT  INTO tb_service (date_ser,hn,id_vac,num,unit,name_doc,lotno,date_end,lotno2,date_end2,date_insert) VALUES ('$date1','$hn','$vaccine','$vaccine_detail','$unit','$doctor','$lotno','$date2','$lotno2','$date3','$datetime') ";
-		 $query_add2=mysql_query($sql_add2);
-		 
-	if($query_add2)
-	{
-		echo "บันทึกข้อมูลเรียบร้อยแล้ว";
-		echo "<meta http-equiv='refresh' content='1; url=service.php'>" ;
-	}
-	else
-	{
-		echo "Error Save [".$sql_add2."]";
-		echo "<meta http-equiv='refresh' content='2; url=service.php'>" ;
-	}
-	  
-	  
   }
 
   ?>
