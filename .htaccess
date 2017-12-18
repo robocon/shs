@@ -1,3 +1,5 @@
 AddDefaultCharset TIS-620
 php_flag register_globals On
+#php_flag error_reporting E_ALL
+php_value display_errors 0
 php_value session.gc_maxlifetime 86400

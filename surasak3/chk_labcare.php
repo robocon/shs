@@ -5,10 +5,10 @@ $page = input('page');
 $action = input_post('action');
 $db = Mysql::load();
 
+include 'chk_menu.php';
+
 if ( empty($page) ) {
     
-    include 'chk_menu.php';
-
     $sql = "SELECT * FROM `labcare` WHERE `chkup` = 'chk' AND `lab_list` IS NULL ";
     $db->select($sql);
 
@@ -51,11 +51,41 @@ if ( empty($page) ) {
     <?php
 } elseif ( $page == 'form' ) {
     ?>
-    <form action="chk_labcare.php" method="post">
-        <div>
-        
-        </div>
-    </form>
+    <div>
+        <h3>ฟอร์มบันทึก</h3>
+    </div>
+    <div>
+        <form action="chk_labcare.php" method="post">
+            <div>
+                รหัสLab: <input type="text" name="" id="">
+            </div>
+            <div>
+                รายละเอียด: <input type="text" name="" id="">
+            </div>
+            <div>
+                Part: <input type="text" name="" id=""> 
+            </div>
+            <div>
+                ราคาเต็ม: <input type="text" name="" id=""> บาท
+            </div>
+            <div>
+                เบิกได้: <input type="text" name="" id=""> บาท
+            </div>
+            <div>
+                เบิกไม่ได้: <input type="text" name="" id=""> บาท
+            </div>
+            <div>
+                ประเภทLab: <input type="radio" name="" id=""> ในรพ. <input type="radio" name="" id=""> นอกรพ.
+            </div>
+            <!--
+            @todo
+            [] labcareeditrow.php labนอกมีบริษัทให้เลือก
+            -->
+            <div>
+                <button type="submit">บันทึกข้อมูล</button>
+            </div>
+        </form>
+    </div>
     <?php
 }
 ?>
