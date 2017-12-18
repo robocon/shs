@@ -6,7 +6,7 @@ include 'templates/classic/header.php';
 $doctors = array(
 	'87' => 'ขชล รวมทรัพย์', 
 	'20' => 'วรวิทย์ วงษ์มณี',
-	'116' => 'จรรยวรรธน์  สร้างสมวงษ์'
+	'129' => 'กฤษฎิ์พงษ์ ศิริสารศักดา'
 );
 
 $th_date = !empty($_POST['year_select']) ? trim($_POST['year_select']) : date('Y') + 543 ;
@@ -56,13 +56,18 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 				<?php
 				$show = isset($_POST['show']) ? true : false ;
 				if( $show ){
-					
+
 					$sql = "SELECT `name`,`doctorcode` FROM `doctor` WHERE `row_id` = :doctor_id;";
 					$doctor = DB::select($sql, array(':doctor_id' => $doctor_id), true);
 					
 					// ลบช่องว่างสองช่องให้เหลือช่องเดียว
 					list($md, $name, $surname) = explode(' ', str_replace('  ', ' ', $doctor['name']));
 					
+					$where = "AND a.`doctor` LIKE '%$name%'";
+					if( $name == 'กฤษฎิ์พงษ์' ){
+						$where = "AND ( a.`doctor` LIKE '%$name%' OR a.`doctor` LIKE '%จรรยวรรธน์%' ) ";
+					}
+
 					$sql = "
 					SELECT a.`thidate`,a.`diag`,a.`doctor`,CONCAT('in') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
 					TIMESTAMPDIFF( 
@@ -73,7 +78,7 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 					FROM `opday` AS a 
 					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 					WHERE a.`thidate` LIKE '$th_date%' 
-					AND a.`doctor` LIKE '%$name%' 
+					$where 
 					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
 					GROUP BY a.`diag`
 					
@@ -151,7 +156,7 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 					FROM `ipcard` AS a 
 					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 					WHERE a.`date` LIKE '$th_date%' 
-					AND a.`doctor` LIKE '%$name%' 
+					$where 
 					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
 					GROUP BY a.`diag`
 					
