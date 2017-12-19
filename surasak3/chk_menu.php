@@ -59,3 +59,8 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบ
         </ul>
     </div>
 </div>
+<?php
+if( isset($_SESSION['x-msg']) ){
+    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+    unset($_SESSION['x-msg']);
+}

@@ -12,10 +12,6 @@ if( empty($action) ){
     //     exit;
     // }
 
-    if( isset($_SESSION['x-msg']) ){
-        ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
-        unset($_SESSION['x-msg']);
-    }
     ?>
     <h3>นำเข้ารายชื่อผู้ตรวจสุขภาพเข้าสู่ระบบโรงพยาบาล</h3>
     <form action="chk_import_user.php" method="post" enctype="multipart/form-data">

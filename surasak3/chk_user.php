@@ -61,12 +61,6 @@ if( $page === 'form' ){
     include 'chk_menu.php';
     ?>
     <h3>แก้ไขข้อมูลผู้ตรวจสุขภาพ - <?=$user['company_name'];?></h3>
-    <?php
-    if( isset($_SESSION['x-msg']) ){
-        ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
-        unset($_SESSION['x-msg']);
-    }
-    ?>
     <form action="chk_user.php" method="post">
         <div>
             HN : <input type="text" name="hn" id="" value="<?=$user['hn'];?>">

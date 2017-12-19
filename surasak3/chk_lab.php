@@ -66,10 +66,6 @@ if ( $page === 'form' ) {
         <?php
     }else {
         
-        if( isset($_SESSION['x-msg']) ){
-            ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
-            unset($_SESSION['x-msg']);
-        }
         ?>
         <h3>แก้ไขข้อมูลแลป</h3>
         <p>HN : <?=$user['hn'];?></p>
