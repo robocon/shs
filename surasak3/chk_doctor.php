@@ -1,6 +1,15 @@
 <?php
 
 include 'bootstrap.php';
+$db = Mysql::load();
+
+$action = input_post('action');
+if( $action === 'save' ){
+
+    $sql = "";
+
+    exit;
+}
 
 include 'dt_menu.php';
 // include 'dt_patient.php';
@@ -17,7 +26,7 @@ $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
 $date_now = date("Y-m-d H:i:s");
 $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
 
-$db = Mysql::load();
+
 
 $sql = "SELECT a.*, b.`idcard`, b.`blood` 
 FROM `opd` AS a 
@@ -31,6 +40,8 @@ $cig_lists = array(0 => 'ไม่สูบ', 1 => 'สูบ', 2 => 'เคยสูบ');
 $cigok_lists = array(0 => 'ไม่อยากเลิก', 1 => 'อยากเลิก');
 $al_lists = array(0 => 'ไม่ดื่ม', 1 => 'ดื่ม', 2 => 'เคยดื่ม');
 $drugreact_lists = array(0 => 'ไม่แพ้', 1 => 'แพ้');
+
+$type_lists = array('เดินมา','นั่งรถเข็น','นอนเปล','ญาติ',);
 
 ?>
 <style type="text/css">
@@ -105,7 +116,7 @@ h1,h3,p{
                     </tr>
                     <tr>
                         <td class="tb-title">โรคประจำตัว</td>
-                        <td><?=$opd['organ'];?></td>
+                        <td><?=$opd['congenital_disease'];?></td>
                         <td class="tb-title">สูบบุหรี่</td>
                         <td>
                             <?php
@@ -135,7 +146,7 @@ h1,h3,p{
                     </tr>
                     <tr>
                     
-                        <td class="tb-title">ลักษณะอาการ</td>
+                        <td class="tb-title">ลักษณะผู้ป่วย</td>
                         <td><?=$opd['type'];?></td>
                         <td class="tb-title">อาการ</td>
                         <td><?=$opd['organ'];?></td>
@@ -159,26 +170,64 @@ h1,h3,p{
             <td colspan="2" class="title"><h3>ข้อมูลทางห้องปฏิบัติการ</h3></td>
         </tr>
         <tr>
-            <td>
+            <td valign="top">
+                <?php
+                $curr_day = date('Y-m-d');
+
+                $sql = "SELECT b.* 
+                FROM `resulthead` AS a 
+                    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+                WHERE a.`hn` = '$hn' 
+                AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+                AND a.`profilecode` = 'CBC' 
+                AND a.`orderdate` LIKE '$curr_day%' ";
+                $db->select($sql);
+                $cbc_items = $db->get_items();
+                ?>
                 <table width="100%">
                     <tr>
                         <td colspan="2" align="center">CBC</td>
                     </tr>
-                    <tr>
-                        <td>test</td>
-                        <td>1234</td>
-                    </tr>
+                    <?php
+                    foreach ($cbc_items as $key => $cbc) {
+                        ?>
+                        <tr>
+                            <td><?=$cbc['labcode'];?></td>
+                            <td><?=$cbc['result'];?></td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                    
                 </table>
             </td>
-            <td>
+            <td valign="top">
+                <?php
+                $sql = "SELECT b.* 
+                FROM `resulthead` AS a 
+                    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+                WHERE a.`hn` = '$hn' 
+                AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+                AND a.`profilecode` = 'UA' 
+                AND a.`orderdate` LIKE '$curr_day%' ";
+                $db->select($sql);
+                $ua_items = $db->get_items();
+
+                ?>
                 <table  width="100%">
                     <tr>
                         <td colspan="2" align="center">UA</td>
                     </tr>
-                    <tr>
-                        <td>test</td>
-                        <td>1234</td>
-                    </tr>
+                    <?php
+                    foreach ($ua_items as $key => $ua) {
+                        ?>
+                        <tr>
+                            <td><?=$ua['labcode'];?></td>
+                            <td><?=$ua['result'];?></td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
                 </table>
             </td>
         </tr>
@@ -248,5 +297,6 @@ h1,h3,p{
     <br>
     <div align="center">
         <button type="submit">บันทึกข้อมูล</button>
+        <input type="hidden" name="action" value="save">
     </div>
 </form>
