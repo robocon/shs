@@ -6,41 +6,48 @@ $action = input_post('action');
 $db = Mysql::load();
 
 if ( $action == 'save' ) {
-    
+    $id = input_post('id');
     $labcode = input_post('labcode');
     $detail = input_post('detail');
     $codex = input_post('codex');
     $depart = input_post('depart');
-    $part = input_post('part');
+    $labpart = input_post('labpart');
     $price = input_post('price');
     $yprice = input_post('yprice');
     $nprice = input_post('nprice');
     $labtype = input_post('labtype');
+    $status = input_post('status');
     $outlab_name = '';
     if( $labtype == 'OUT' ){
         $outlab_name = input_post('outlab_name');
     }
     $olddetail = "($codex) $detail";
-    $status = 'Y';
 
-    $sql = "INSERT INTO `labcare` (
-        `row_id`, `numbered`, `depart`, `part`, `code`, `codebak`, 
-        `codex`, `detail`, `olddetail`, `icd9cm`, `unit`, `price`, 
-        `yprice`, `nprice`, `note`, `oldcode`, `lablis`, `codelab`, 
-        `outlab_name`, `labpart`, `labtype`, `labstatus`, `chkup`, `reportlabno`, 
-        `lab_list`, `lab_listdetail`, `report_m`
-    ) VALUES (
-        NULL, '', '$depart', '$part', '$labcode', '$labcode', 
-        '$codex', '$detail', '$olddetail', NULL, '', '$price', 
-        '$yprice', '$nprice', '', '', NULL, '', 
-        '$outlab_name', '', '$labtype', '$status', 'chk', '', 
-        '', '', '');";
-    $save = $db->insert($sql);
+    if( $id == false ){
+
+        $sql = "INSERT INTO `labcare` (
+            `row_id`, `numbered`, `depart`, `part`, `code`, `codebak`, 
+            `codex`, `detail`, `olddetail`, `icd9cm`, `unit`, `price`, 
+            `yprice`, `nprice`, `note`, `oldcode`, `lablis`, `codelab`, 
+            `outlab_name`, `labpart`, `labtype`, `labstatus`, `chkup`, `reportlabno`, 
+            `lab_list`, `lab_listdetail`, `report_m`
+        ) VALUES (
+            NULL, '', '$depart', '$depart', '$labcode', '$labcode', 
+            '$codex', '$detail', '$olddetail', NULL, NULL, '$price', 
+            '$yprice', '$nprice', NULL, NULL, NULL, '', 
+            '$outlab_name', '$labpart', '$labtype', '$status', 'chk', '', 
+            NULL, '', '');";
+        $save = $db->insert($sql);
+    }else{
+        $sql = "";
+    }
+
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
     }
+
     redirect('chk_labcare.php', $msg);
     exit;
 }
@@ -66,24 +73,39 @@ if ( empty($page) ) {
                 <th>#</th>
                 <th>รหัสLab</th>
                 <th>รายละเอียด</th>
+                <th>แผนก</th>
                 <th>ราคา</th>
                 <th>เบิกได้</th>
                 <th>เบิกไม่ได้</th>
+                <th>Part</th>
                 <th>ประเภท</th>
+                <th></th>
             </tr>
             <?php
+            $i = 1;
             foreach ($items as $key => $item) {
                 ?>
                 <tr>
-                    <td><?=dump($item);?></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td><?=$i;?></td>
+                    <td><?=$item['code'];?></td>
+                    <td><?=('('.$item['codex'].') '.$item['detail']);?></td>
+                    <td><?=$item['depart'];?></td>
+                    <td align="right"><?=$item['price'];?></td>
+                    <td align="right"><?=$item['yprice'];?></td>
+                    <td align="right"><?=$item['nprice'];?></td>
+                    <td align="right"><?=$item['labpart'];?></td>
+                    <td>
+                        <?php 
+                        echo $item['labtype'];
+                        if( $item['labtype'] == 'OUT' ){
+                            echo ' ('.$item['outlab_name'].')';
+                        }
+                        ?>
+                    </td>
+                    <td><a href="chk_labcare?page=form&id=<?=$item['row_id'];?>">แก้ไข</a></td>
                 </tr>
                 <?php
+                $i++;
             }
             ?>
         </table>
@@ -94,6 +116,27 @@ if ( empty($page) ) {
     $part_list = array('Heamato','Chemistry','Micros','Micro','Serology','Outlab','Blood Bank');
     $outlab_list = array('รัฐบาล','อินเตอร์-แลป','ธนบุรี-แลป','เมดสตาร์-แลป');
     $depart_list = array('DENTA','OTHER','PATHO','XRAY');
+
+    $labcode = $detail = $codex = $depart = $labpart = $price = $yprice = $nprice = $labtype = '';
+
+    $id = input_get('id');
+    if( $id !== false ){
+        $sql = "SELECT * FROM `labcare` WHERE `row_id` = '$id'";
+        $db->select($sql);
+
+        $item = $db->get_item();
+
+        $labcode = $item['code'];
+        $detail = $item['detail'];
+        $codex = $item['codex'];
+        $depart = $item['depart'];
+        $labpart = $item['labpart'];
+        $price = $item['price'];
+        $yprice = $item['yprice'];
+        $nprice = $item['nprice'];
+        $labtype = $item['labtype'];
+        $outlab_name = $item['outlab_name'];
+    }
     ?>
     <div>
         <h3>ฟอร์มบันทึก</h3>
@@ -101,57 +144,68 @@ if ( empty($page) ) {
     <div>
         <form action="chk_labcare.php" method="post">
             <div>
-                รหัสLab: <input type="text" name="labcode" id="">
+                รหัสLab: <input type="text" name="labcode" value="<?=$labcode;?>">
             </div>
             <div>
-                รายละเอียด: <input type="text" name="detail" id="">
+                รายละเอียด: <input type="text" name="detail" value="<?=$detail;?>">
             </div>
             <div>
-                รหัสกรมบัญชีกลาง: <input type="text" name="codex" id="">
+                รหัสกรมบัญชีกลาง: <input type="text" name="codex" value="<?=$codex;?>">
             </div>
             <div>
-                แผนก: <select name="depart" id="">
+                แผนก: <select name="depart">
                     <?php
                     foreach ($depart_list as $key => $depart_item) {
+                        $select = ( $depart_item == $depart ) ? 'selected="selected"' : '' ;
                         ?>
-                        <option value="<?=$depart_item;?>"><?=$depart_item;?></option>
+                        <option value="<?=$depart_item;?>" <?=$select;?>><?=$depart_item;?></option>
                         <?php
                     }
                     ?>
-                    
                 </select> 
             </div>
             <div>
-                Part: <select name="part" id="">
+                Lab Part: <select name="labpart" id="">
                     <?php
                     foreach ($part_list as $key => $part_item) {
+                        $select = ( $part_item == $labpart ) ? 'selected="selected"' : '' ;
                         ?>
-                        <option value="<?=$part_item;?>"><?=$part_item;?></option>
+                        <option value="<?=$part_item;?>" <?=$select;?>><?=$part_item;?></option>
                         <?php
                     }
                     ?>
-                    
                 </select> 
             </div>
             <div>
-                ราคาเต็ม: <input type="text" name="price" id=""> บาท
+                ราคาเต็ม: <input type="text" name="price" value="<?=$price;?>"> บาท
             </div>
             <div>
-                เบิกได้: <input type="text" name="yprice" id=""> บาท
+                เบิกได้: <input type="text" name="yprice" value="<?=$yprice;?>"> บาท
             </div>
             <div>
-                เบิกไม่ได้: <input type="text" name="nprice" id=""> บาท
+                เบิกไม่ได้: <input type="text" name="nprice" value="<?=$nprice;?>"> บาท
             </div>
             <div>
+                <?php 
+                $in_select = ( $labtype == 'IN' ) ? 'checked="checked"' : '' ;
+                $out_select = ( $labtype == 'OUT' ) ? 'checked="checked"' : '' ;
+                ?>
                 ประเภทLab: 
-                <label for="labin" class="test_labin"><input type="radio" name="labtype" id="labin" value="IN"> ในรพ.</label> 
-                <label for="labout" class="test_labout"><input type="radio" name="labtype" id="labout" value="OUT"> นอกรพ.</label>
-                <span style="display: none;" id="outlab_list">
-                    <select name="outlab_name" id="">
+                <label for="labin" class="test_labin"><input type="radio" name="labtype" id="labin" value="IN" <?=$in_select;?> > ในรพ.</label> 
+                <label for="labout" class="test_labout"><input type="radio" name="labtype" id="labout" value="OUT" <?=$out_select;?>> นอกรพ.</label>
+                <?php
+                $style = 'style="display: none;"';
+                if ( $labtype == 'OUT' ) {
+                    $style = '';
+                }
+                ?>
+                <span <?=$style;?> id="outlab_list">
+                    <select name="outlab_name">
                         <?php
                         foreach ($outlab_list as $key => $outlab_item) {
+                            $select = ( $outlab_item == $outlab_name ) ? 'selected="selected"' : '' ;
                             ?>
-                            <option value="<?=$outlab_item;?>"><?=$outlab_item;?></option>
+                            <option value="<?=$outlab_item;?>" <?=$select;?>><?=$outlab_item;?></option>
                             <?php
                         }
                         ?>
@@ -159,8 +213,19 @@ if ( empty($page) ) {
                 </span>
             </div>
             <div>
+                สถานะ: <label for="s1"><input type="radio" name="status" id="s1" value="Y"> ใช้งาน</label>
+                <label for="s2"><input type="radio" name="status" id="s2" value="N"> ไม่ใช้งาน</label>
+            </div>
+            <div>
                 <button type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
+                <?php
+                if( $id !== false ){
+                    ?>
+                    <input type="hidden" name="id" value="<?=$item['row_id'];?>">
+                    <?php
+                }
+                ?>
             </div>
         </form>
     </div>
