@@ -6,8 +6,16 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
-    $sql = "";
-
+    $sql = "INSERT INTO `chk_doctor` (
+        `id`, `hn`, `vn`, `prefix`, `name`, `surname`, 
+        `idcard`, `address`, `date_chk`, `yearchk`, `ear`, `breast`, 
+        `eye`, `snell_eye`, `cxr`, `conclution`, `suggestion`, `doctor`
+    ) VALUES (
+        NULL, NULL, NULL, NULL, NULL, NULL, 
+        NULL, NULL, NULL, NULL, NULL, NULL, 
+        NULL, NULL, NULL, NULL, NULL, NULL
+    );";
+    dump($_POST);
     exit;
 }
 
@@ -25,8 +33,6 @@ $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
 
 $date_now = date("Y-m-d H:i:s");
 $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
-
-
 
 $sql = "SELECT a.*, b.`idcard`, b.`blood` 
 FROM `opd` AS a 
@@ -170,7 +176,7 @@ h1,h3,p{
             <td colspan="2" class="title"><h3>ข้อมูลทางห้องปฏิบัติการ</h3></td>
         </tr>
         <tr>
-            <td valign="top">
+            <td valign="top" width="50%">
                 <?php
                 $curr_day = date('Y-m-d');
 
@@ -180,22 +186,35 @@ h1,h3,p{
                 WHERE a.`hn` = '$hn' 
                 AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
                 AND a.`profilecode` = 'CBC' 
-                AND a.`orderdate` LIKE '$curr_day%' ";
+                AND ( b.`labcode` = 'HB' OR b.`labcode` = 'HCT' OR b.`labcode` = 'WBC' 
+                OR b.`labcode` = 'NEU' OR b.`labcode` = 'LYMP' OR b.`labcode` = 'MONO' 
+                OR b.`labcode` = 'EOS' OR b.`labcode` = 'BASO' OR b.`labcode` = 'PLTC' 
+                OR b.`labcode` = 'RBC' ) 
+                AND a.`orderdate` LIKE '$curr_day%' 
+                ORDER BY b.seq ASC";
                 $db->select($sql);
                 $cbc_items = $db->get_items();
                 ?>
                 <table width="100%">
                     <tr>
-                        <td colspan="2" align="center">CBC</td>
+                        <td colspan="3" align="center"><b>CBC</b></td>
+                    </tr>
+                    <tr style="background-color: #e6e6e6;">
+                        <td>รายการตรวจ</td>
+                        <td>ผลตรวจ</td>
+                        <td>ค่าปกติ</td>
                     </tr>
                     <?php
+                    $result_cbc = '';
                     foreach ($cbc_items as $key => $cbc) {
                         ?>
                         <tr>
-                            <td><?=$cbc['labcode'];?></td>
+                            <td><?=$cbc['labname'];?></td>
                             <td><?=$cbc['result'];?></td>
+                            <td><?=$cbc['normalrange'];?></td>
                         </tr>
                         <?php
+                        $result_cbc = $cbc['autonumber'];
                     }
                     ?>
                     
@@ -209,6 +228,9 @@ h1,h3,p{
                 WHERE a.`hn` = '$hn' 
                 AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
                 AND a.`profilecode` = 'UA' 
+                AND ( b.`labcode` = 'SPGR' OR b.`labcode` = 'PHU' OR b.`labcode` = 'GLUU' 
+                OR b.`labcode` = 'RBCU' OR b.`labcode` = 'WBCU' OR b.`labcode` = 'EPIU' 
+                OR b.`labcode` = 'BLOODU' OR b.`labcode` = 'KETU' ) 
                 AND a.`orderdate` LIKE '$curr_day%' ";
                 $db->select($sql);
                 $ua_items = $db->get_items();
@@ -216,21 +238,71 @@ h1,h3,p{
                 ?>
                 <table  width="100%">
                     <tr>
-                        <td colspan="2" align="center">UA</td>
+                        <td colspan="3" align="center"><b>UA</b></td>
+                    </tr>
+                    <tr style="background-color: #e6e6e6;">
+                        <td>รายการตรวจ</td>
+                        <td>ผลตรวจ</td>
+                        <td>ค่าปกติ</td>
                     </tr>
                     <?php
+                    $result_ua = '';
                     foreach ($ua_items as $key => $ua) {
                         ?>
                         <tr>
-                            <td><?=$ua['labcode'];?></td>
+                            <td><?=$ua['labname'];?></td>
                             <td><?=$ua['result'];?></td>
+                            <td><?=$ua['normalrange'];?></td>
                         </tr>
                         <?php
+                        $result_ua = $ua['autonumber'];
                     }
                     ?>
                 </table>
             </td>
         </tr>
+        <?php
+        $sql = "SELECT b.* 
+        FROM `resulthead` AS a 
+            RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+        WHERE a.`hn` = '$hn' 
+        AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+        AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'HDL' 
+        OR a.`profilecode` = 'LDL' OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
+        AND a.`orderdate` LIKE '$curr_day%' ";
+        $db->select($sql);
+        $etc_rows = $db->get_rows();
+        if( $etc_rows > 0 ){
+            $etc_items = $db->get_items();
+            ?>
+            <tr>
+                <td colspan="2">
+                    <table width="50%">
+                        <tr>
+                            <td colspan="3" align="center"><b>ตรวจอื่นๆ</b></td>
+                        </tr>
+                        <tr style="background-color: #e6e6e6;">
+                            <td>รายการตรวจ</td>
+                            <td>ผลตรวจ</td>
+                            <td>ค่าปกติ</td>
+                        </tr>
+                        <?php
+                        foreach ($etc_items as $key => $etc) {
+                            ?>
+                            <tr>
+                                <td><?=$etc['labname'];?></td>
+                                <td><?=$etc['result'];?></td>
+                                <td><?=$etc['normalrange'];?></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </table>
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
     </table>
     <br>
     <table class="chk_table">
@@ -240,43 +312,43 @@ h1,h3,p{
         <tr>
             <td width="25%" class="tb-title">การคัดกรองการได้ยิน</td>
             <td>
-                <label for="ear1"><input type="radio" name="ear" id="ear1"> ปกติ </label>
-                <label for="ear2"><input type="radio" name="ear" id="ear2"> ผิดปกติ </label>
+                <label for="ear1"><input type="radio" name="ear" id="ear1" value="1"> ปกติ </label>
+                <label for="ear2"><input type="radio" name="ear" id="ear2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">การตรวจเต้านมโดยแพทย์<br>หรือบุคลากรสาธารณสุข</td>
             <td>
-                <label for="breast1"><input type="radio" name="breast" id="breast1"> ปกติ </label>
-                <label for="breast2"><input type="radio" name="breast" id="breast2"> ผิดปกติ </label>
+                <label for="breast1"><input type="radio" name="breast" id="breast1" value="1"> ปกติ </label>
+                <label for="breast2"><input type="radio" name="breast" id="breast2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">การตรวจตาโดยความดูแลของจักษุแพทย์</td>
             <td>
-                <label for="eye1"><input type="radio" name="eye" id="eye1"> ปกติ </label>
-                <label for="eye2"><input type="radio" name="eye" id="eye2"> ผิดปกติ </label>
+                <label for="eye1"><input type="radio" name="eye" id="eye1" value="1"> ปกติ </label>
+                <label for="eye2"><input type="radio" name="eye" id="eye2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">การตรวจตาด้วย Snellen eye Chart</td>
             <td>
-                <label for="snell_eye1"><input type="radio" name="snell_eye" id="snell_eye1"> ปกติ </label>
-                <label for="snell_eye2"><input type="radio" name="snell_eye" id="snell_eye2"> ผิดปกติ </label>
+                <label for="snell_eye1"><input type="radio" name="snell_eye" id="snell_eye1" value="1"> ปกติ </label>
+                <label for="snell_eye2"><input type="radio" name="snell_eye" id="snell_eye2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=58-2733" target="_blank">ดูผลการตรวจ</a> </td>
             <td>
-                <label for="cxr1"><input type="radio" name="cxr" id="cxr1"> ปกติ </label>
-                <label for="cxr2"><input type="radio" name="cxr" id="cxr2"> ผิดปกติ </label>
+                <label for="cxr1"><input type="radio" name="cxr" id="cxr1" value="1"> ปกติ </label>
+                <label for="cxr2"><input type="radio" name="cxr" id="cxr2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">สรุปผลตรวจ</td>
             <td>
-                <label for="conclution1"><input type="radio" name="conclution" id="conclution1"> ปกติ </label>
-                <label for="conclution2"><input type="radio" name="conclution" id="conclution2"> ผิดปกติ </label>
+                <label for="conclution1"><input type="radio" name="conclution" id="conclution1" value="1"> ปกติ </label>
+                <label for="conclution2"><input type="radio" name="conclution" id="conclution2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
@@ -285,18 +357,19 @@ h1,h3,p{
                 <textarea name="suggestion" cols="60" rows="8" id="" placeholder="ทดสอบรายละเอียดเพิ่มเติม"></textarea>
             </td>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-        </tr>
     </table>
     <br>
     <div align="center">
-        <button type="submit">บันทึกข้อมูล</button>
+        <button type="submit">บันทึกข้อมูล & พิมพ์ผล</button>
         <input type="hidden" name="action" value="save">
+        <input type="hidden" name="hn" value="<?=$hn;?>">
+        <input type="hidden" name="vn" value="<?=$vn;?>">
+        <input type="hidden" name="idcard" value="<?=$opd['idcard'];?>">
+        <input type="hidden" name="doctor" value="<?=$_SESSION['dt_doctor'];?>">
+        <input type="hidden" name="cbc" value="<?=$result_cbc;?>">
+        <input type="hidden" name="ua" value="<?=$result_ua;?>">
+        <?php
+        dump($opd);
+        ?>
     </div>
 </form>

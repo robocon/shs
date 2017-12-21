@@ -2,7 +2,7 @@
 include 'bootstrap.php';
 
 $page = input('page');
-$action = input_post('action');
+$action = input('action');
 $db = Mysql::load();
 
 if ( $action == 'save' ) {
@@ -82,8 +82,23 @@ if ( $action == 'save' ) {
     }
 
     echo '{"find_rows": '.$find.'}';
-
     exit;
+
+} elseif ( $action === 'delete' ) {
+    
+    exit;
+    $id = input_get('id');
+    $sql = "DELETE FROM `labcare` WHERE `row_id` = '$id' AND `chkup` = 'chk' LIMIT 1";
+    $delete = $db->delete($sql);
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( $save !== true ){
+		$msg = errorMsg('save', $save['id']);
+    }
+
+    redirect();
+    exit;
+
 }
 
 include 'chk_menu.php';
@@ -138,7 +153,13 @@ if ( empty($page) ) {
                         ?>
                     </td>
                     <td><?=$item['labstatus'];?></td>
-                    <td><a href="chk_labcare?page=form&id=<?=$item['row_id'];?>">แก้ไข</a></td>
+                    <td>
+                    <a href="chk_labcare?page=form&id=<?=$item['row_id'];?>">แก้ไข</a>
+                    <!-- 
+                     | 
+                    <a href="chk_labcare?action=delete&id=<?=$item['row_id'];?>" onclick="return del_alert();">ลบ</a>
+                    -->
+                    </td>
                 </tr>
                 <?php
                 $i++;
@@ -146,6 +167,12 @@ if ( empty($page) ) {
             ?>
         </table>
     </div>
+    <script>
+    function del_alert(){
+        var c=confirm('ยืนยันที่จะลบข้อมูล?');
+        return c;
+    }
+    </script>
     <?php
 } elseif ( $page == 'form' ) {
 
@@ -188,6 +215,7 @@ if ( empty($page) ) {
         <form action="chk_labcare.php" method="post">
             <div>
                 รหัสLab: <input type="text" id="labcode" name="labcode" value="<?=$labcode;?>">
+                <button id="checklab">ตรวจรหัส</button>
                 <span id="alert_code" style="display: none;">รหัสซ้ำกับตัวอื่นกรุณาตรวจสอบอีกครั้ง</span>
             </div>
             <div>
@@ -291,7 +319,9 @@ if ( empty($page) ) {
                 $('#outlab_list').hide();
             });
 
-            $(document).on('keyup', '#labcode', function(){
+            $(document).on('click', '#checklab', function(ev){
+                ev.preventDefault();
+
                 var txt = $('#labcode').val();
                 if(txt.length >= 2){
                     $.ajax({
@@ -309,7 +339,7 @@ if ( empty($page) ) {
                         }
                     });
                 }
-                
+                return false;
             });
 
         });
