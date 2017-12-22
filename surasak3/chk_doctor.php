@@ -34,7 +34,7 @@ $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
 $date_now = date("Y-m-d H:i:s");
 $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
 
-$sql = "SELECT a.*, b.`idcard`, b.`blood` 
+$sql = "SELECT a.*, b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`
 FROM `opd` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`thdatehn` = '$date_hn' 
@@ -267,9 +267,13 @@ h1,h3,p{
             RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
         WHERE a.`hn` = '$hn' 
         AND a.`clinicalinfo` LIKE 'µÃÇ¨ÊØ¢ÀÒ¾%' 
-        AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'HDL' 
-        OR a.`profilecode` = 'LDL' OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
+        AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'LIPID' 
+        OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
+        AND ( 
+            b.`labcode` = 'CREA' OR b.`labcode` = 'HBSAG' OR b.`labcode` = 'HDL'
+        ) 
         AND a.`orderdate` LIKE '$curr_day%' ";
+
         $db->select($sql);
         $etc_rows = $db->get_rows();
         if( $etc_rows > 0 ){
@@ -368,8 +372,14 @@ h1,h3,p{
         <input type="hidden" name="doctor" value="<?=$_SESSION['dt_doctor'];?>">
         <input type="hidden" name="cbc" value="<?=$result_cbc;?>">
         <input type="hidden" name="ua" value="<?=$result_ua;?>">
+
+        <input type="hidden" name="yot" value="<?=$opd['yot'];?>">
+        <input type="hidden" name="name" value="<?=$opd['name'];?>">
+        <input type="hidden" name="surname" value="<?=$opd['surname'];?>">
+
         <?php
-        dump($opd);
+        $address = $opd['address'].' '.( !empty($opd['tambol']) ? 'µ.'.$opd['tambol'] : '' ).' '.( !empty($opd['ampur']) ? 'Í.'.$opd['ampur'] : '' ).' '.( !empty($opd['changwat']) ? '¨.'.$opd['changwat'] : '' );
         ?>
+        <input type="hidden" name="address" value="<?=$address;?>">
     </div>
 </form>
