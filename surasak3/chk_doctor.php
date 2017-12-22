@@ -6,21 +6,69 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
-    $sql = "INSERT INTO `chk_doctor` (
-        `id`, `hn`, `vn`, `prefix`, `name`, `surname`, 
-        `idcard`, `address`, `date_chk`, `yearchk`, `ear`, `breast`, 
-        `eye`, `snell_eye`, `cxr`, `conclution`, `suggestion`, `doctor`
-    ) VALUES (
-        NULL, NULL, NULL, NULL, NULL, NULL, 
-        NULL, NULL, NULL, NULL, NULL, NULL, 
-        NULL, NULL, NULL, NULL, NULL, NULL
-    );";
-    dump($_POST);
+    $hn = input_post('hn');
+    $vn = input_post('vn');
+    $prefix = input_post('yot');
+    $name = input_post('name');
+    $surname = input_post('surname');
+    $idcard = input_post('idcard');
+    $address = input_post('address');
+    $date_chk = input_post('date_chk');
+    $yearchk = get_year_checkup();
+    $ear = input_post('ear');
+    $breast = input_post('breast');
+    $eye = input_post('eye');
+    $snell_eye = input_post('snell_eye');
+    $cxr = input_post('cxr');
+    $conclution = input_post('conclution');
+    $suggestion = input_post('suggestion');
+    $doctor = input_post('doctor');
+    $officer = $_SESSION['sOfficer'];
+
+    $curr_date = date('Y-m-d');
+    $sql = "SELECT `id` FROM `chk_doctor` WHERE `date_chk` LIKE '$curr_date%' AND `hn` = '$hn' ";
+    $db->select();
+    $rows = $db->get_rows();
+    
+    if ( $rows == 0 ) {
+        
+        $sql = "INSERT INTO `chk_doctor` (
+            `id`, `hn`, `vn`, `prefix`, `name`, `surname`, 
+            `idcard`, `address`, `date_chk`, `yearchk`, `ear`, `breast`, 
+            `eye`, `snell_eye`, `cxr`, `conclution`, `suggestion`, `doctor`, 
+            `officer`
+        ) VALUES (
+            NULL, '$hn', '$vn', '$prefix', '$name', '$surname', 
+            '$idcard', '$address', NOW(), '$yearchk', '$ear', '$breast', 
+            '$eye', '$snell_eye', '$cxr', '$conclution', '$suggestion', '$doctor', 
+            '$officer'
+        );";
+        $save = $db->insert($sql);
+
+    }else if( $rows > 0 ){
+
+        $sql = "UPDATE `chk_doctor` SET 
+        `ear` = '$ear', 
+        `breast` = '$breast', 
+        `eye` = '$eye', 
+        `snell_eye` = '$snell_eye', 
+        `cxr` = '$cxr', 
+        `conclution` = '$conclution', 
+        `suggestion` = '$suggestion' ; ";
+        $save = $db->update($sql);
+
+    }
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( $save !== true ){
+		$msg = errorMsg('save', $save['id']);
+    }
+
+    redirect('chk_doctor_preprint.php?hn='.$hn.'&vn='.$vn.'&date='.$curr_date, $msg);
     exit;
 }
 
 include 'dt_menu.php';
-// include 'dt_patient.php';
 
 session_unregister("list_bill");
 session_register("list_bill");
@@ -81,7 +129,7 @@ h1,h3,p{
     padding: 0;
 }
 </style>
-<form action="chk_doctor.php" method="post" >
+<form action="chk_doctor.php" method="post">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
     <table class="chk_table">
         <tr>
@@ -364,7 +412,8 @@ h1,h3,p{
     </table>
     <br>
     <div align="center">
-        <button type="submit">บันทึกข้อมูล & พิมพ์ผล</button>
+        <button type="submit">บันทึกข้อมูล</button>
+
         <input type="hidden" name="action" value="save">
         <input type="hidden" name="hn" value="<?=$hn;?>">
         <input type="hidden" name="vn" value="<?=$vn;?>">
