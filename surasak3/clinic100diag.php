@@ -220,6 +220,7 @@ If (!empty($hn)){
 <option value="MD138 มัทนา อัมพะเศวต" >MD138 มัทนา อัมพะเศวต</option> 
 <option value="MD140 ชัชวาลย์  เชวงชุติรัตน์" >MD140 ชัชวาลย์  เชวงชุติรัตน์</option>
 <option value="MD141 อมร ตามไท" >MD141 อมร ตามไท</option> 
+<option value="MD142 กรรณิการ์  ศรีสุวรรณ" >MD142 กรรณิการ์  ศรีสุวรรณ</option> 
 </select>
 <?
 	print "<br><br>ราคา :";
