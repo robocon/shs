@@ -146,6 +146,7 @@ window.onload = function () {
 };
 
 </script>
+<script src="../templates/classic/main.js"></script>
 
 <script language=Javascript>
 function Inint_AJAX() {
@@ -157,20 +158,31 @@ function Inint_AJAX() {
 };
 
 function dochange(src, val) {
-     var req = Inint_AJAX();
-     req.onreadystatechange = function () { 
-          if (req.readyState==4) {
-               if (req.status==200) {
-                    document.getElementById(src).innerHTML=req.responseText; //รับค่ากลับมา
-               } 
-          }
-     };
-     req.open("GET", "locale.php?data="+src+"&val="+val); //สร้าง connection
-     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
-     req.send(null); //ส่งค่า
+    //  var req = Inint_AJAX();
+    //  req.onreadystatechange = function () { 
+    //       if (req.readyState==4) {
+    //            if (req.status==200) {
+    //             document.getElementById(src).innerHTML=req.responseText; //รับค่ากลับมา
+    //            } 
+    //       }
+    //  };
+    //  req.open("GET", "locale.php?data="+src+"&val="+val); //สร้าง connection
+    //  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
+    //  req.send(null); //ส่งค่า
+
+  var newSm = new SmHttp();
+  newSm.ajax(
+    'locale.php?data='+src+'&val='+val,
+    {},
+    function(res){
+      console.log(res);
+      document.getElementById(src).innerHTML=res; //รับค่ากลับมา
+    }
+  );
+
 }
 
-window.onLoad=dochange('vaccine', -1);     
+// window.onLoad=dochange('vaccine', -1);     
 
 function ch_null(){
 	if(document.form1.hn.value==""){
@@ -287,7 +299,21 @@ function fncSubmit()
       </tr>
         <tr>
           <td align="right" class="table_font1">วัคซีนที่ฉีด :</td>
-          <td><font id="vaccine"  class="forntsarabun"><select class="table_font2" ><option value="0">=========================</option></select></font></td>
+          <td><font id="vaccine"  class="forntsarabun">
+          <select name='vaccine' onChange="dochange('vaccine_detail', this.value)" class='table_font2'>
+
+            <option value='0'>===เลือกวัคซีน===</option>
+            <?php
+            $result=mysql_query("select * from vaccine order by id_vac");
+            while($row = mysql_fetch_array($result)){
+                echo "<option value=\"$row[id_vac]\" >$row[vac_name]</option> \n" ;
+            }
+
+            ?>
+
+
+          </select>
+          </font></td>
       </tr>
         <tr>
           <td align="right" class="table_font1">เข็มที่ :</td>
