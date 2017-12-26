@@ -34,7 +34,7 @@ $pdf->SetXY(0, 25);
 $pdf->Cell(210, 6, 'ใบรายงานผลตรวจสุขภาพ', 0, 1, 'C');
 
 $pdf->SetXY(25, 37);
-$pdf->Cell(163, 6, 'โรงพยาบาล  ค่ายสุรศักดิ์มนตรี', 0, 1, 'L');
+$pdf->Cell(163, 6, 'โรงพยาบาล  ค่ายสุรศักดิ์มนตรี', 0, 1);
 // print_dashed(56,43,100,43);
 
 
@@ -43,99 +43,99 @@ $pdf->SetFont('THSarabun','',9); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 # หัวข้อ
 $pdf->Rect(13, 43, 46, 6);
 $pdf->SetXY(13, 43);
-$pdf->Cell(46, 6, 'หน่วยงาน', 1, 1, 'L');
+$pdf->Cell(46, 6, 'หน่วยงาน', 1, 1);
 // print_dashed(23,52,52,52);
 
 $pdf->Rect(59, 43, 22, 6);
 $pdf->SetXY(59, 43);
-$pdf->Cell(22, 6, 'HN', 0, 1, 'L');
+$pdf->Cell(22, 6, 'HN', 0, 1);
 
 $pdf->Rect(81, 43, 26, 6);
 $pdf->SetXY(81, 43);
-$pdf->Cell(26, 6, 'เลขรับแจ้ง', 0, 1, 'L');
+$pdf->Cell(26, 6, 'เลขรับแจ้ง', 0, 1);
 
 $pdf->Rect(107, 43, 41, 6);
 $pdf->SetXY(107, 43);
-$pdf->Cell(41, 6, 'เลขบัตรประชาชน', 0, 1, 'L');
+$pdf->Cell(41, 6, 'เลขบัตรประชาชน', 0, 1);
 
 $pdf->Rect(148, 43, 40, 6);
 $pdf->SetXY(148, 43);
-$pdf->Cell(40, 6, 'วันที่เข้ารับบริการ', 0, 1, 'L');
+$pdf->Cell(40, 6, 'วันที่เข้ารับบริการ', 0, 1);
 
 # ข้อมูลส่วนตัว
 $pdf->SetXY(13, 49);
-$pdf->Cell(27, 6, 'ชื่อ-นามสกุล / Name', 1, 1, 'L');
+$pdf->Cell(27, 6, 'ชื่อ-นามสกุล / Name', 0, 1);
 
-$pdf->Rect(42, 49, 3, 3); // checkbox
+$pdf->Rect(42, 50, 3, 3); // checkbox
 $pdf->SetXY(46, 49);
-$pdf->Cell(5, 6, 'นาย', 0, 1, 'L');
+$pdf->Cell(5, 6, 'นาย', 0, 1);
 
-$pdf->Rect(52, 56, 3, 3);
+$pdf->Rect(52, 50, 3, 3);
 $pdf->SetXY(56, 49);
-$pdf->Cell(5, 6, 'นาง', 0, 1, 'L');
+$pdf->Cell(5, 6, 'นาง', 0, 1);
 
-$pdf->Rect(62, 56, 3, 3);
+$pdf->Rect(62, 50, 3, 3);
 $pdf->SetXY(66, 49);
-$pdf->Cell(5, 6, 'น.ส.', 0, 1, 'L');
+$pdf->Cell(5, 6, 'น.ส.', 0, 1);
 
 $pdf->SetXY(73, 49);
-$pdf->Cell(5, 6, 'ชื่อ', 0, 1, 'L');
-print_dashed(77,59,103,59);
+$pdf->Cell(5, 6, 'ชื่อ', 0, 1);
+print_dashed(77,53,103,53);
 
 $pdf->SetXY(103, 49);
-$pdf->Cell(5, 6, 'นามสกุล', 0, 1, 'L');
-print_dashed(112,59,140,59);
+$pdf->Cell(5, 6, 'นามสกุล', 0, 1);
+print_dashed(112,53,140,53);
 
 $pdf->Rect(148, 49, 40, 14);
 $pdf->SetXY(148, 49);
-$pdf->Cell(40, 6, 'โทรศัพท์ / Tel.', 0, 1, 'L');
+$pdf->Cell(40, 6, 'โทรศัพท์ / Tel.', 0, 1);
 
-$pdf->SetXY(13, 61);
-$pdf->Cell(27, 6, 'ที่อยู่ / Address', 0, 1, 'L');
-print_dashed(28,66,140,66);
-print_dashed(13,73,140,73);
+$pdf->SetXY(13, 55);
+$pdf->Cell(27, 6, 'ที่อยู่ / Address', 0, 1);
+print_dashed(28,59,140,59);
+print_dashed(13,65,140,65);
 
-$pdf->Line(13, 77, 188, 77);
+$pdf->Line(13, 67, 188, 67);
 
 $pdf->SetFont('THSarabun','B',13); // เรียกใช้งานฟอนต์ที่เตรียมไว้
-$pdf->SetXY(0, 77);
+$pdf->SetXY(0, 67);
 $pdf->Cell(210, 7, 'ข้อมูลสุขภาพ (Health data)', 0, 1, 'C');
 
 $pdf->SetFont('THSarabun','',9); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 ### หัวข้อ
-$pdf->Rect(13, 84, 46, 14);
-$pdf->SetXY(13, 84);
+$pdf->Rect(13, 73, 46, 12);
+$pdf->SetXY(13, 73);
 $pdf->Cell(46, 7, 'การตรวจร่างกายตามระบบ', 0, 1, 'L');
 
-$pdf->Rect(59, 84, 22, 14);
-$pdf->SetXY(59, 84);
+$pdf->Rect(59, 73, 22, 12);
+$pdf->SetXY(59, 73);
 $pdf->Cell(22, 7, 'ผลปกติ', 0, 1, 'C');
-$pdf->SetXY(59, 91);
+$pdf->SetXY(59, 79);
 $pdf->Cell(22, 7, 'NORMAL', 0, 1, 'C');
 
-$pdf->Rect(81, 84, 26, 14);
-$pdf->SetXY(81, 84);
+$pdf->Rect(81, 73, 26, 12);
+$pdf->SetXY(81, 73);
 $pdf->Cell(26, 7, 'ผลผิดปกติ', 0, 1, 'C');
-$pdf->SetXY(81, 91);
+$pdf->SetXY(81, 79);
 $pdf->Cell(26, 7, 'ABNORMAL', 0, 1, 'C');
 
-$pdf->Rect(107, 84, 41, 14);
-$pdf->SetXY(107, 84);
+$pdf->Rect(107, 73, 41, 12);
+$pdf->SetXY(107, 73);
 $pdf->Cell(41, 7, 'การตรวจสารเคมีในเลือด', 0, 1, 'L');
-$pdf->SetXY(107, 91);
+$pdf->SetXY(107, 79);
 $pdf->Cell(41, 7, 'BIOCHEMICAL TESTS', 0, 1, 'L');
 
-$pdf->Rect(148, 84, 15, 14);
-$pdf->SetXY(148, 84);
+$pdf->Rect(148, 73, 15, 12);
+$pdf->SetXY(148, 73);
 $pdf->Cell(15, 7, 'ค่าที่ตรวจได้', 0, 1, 'C');
-$pdf->SetXY(148, 91);
+$pdf->SetXY(148, 79);
 $pdf->Cell(15, 7, 'RESULT', 0, 1, 'C');
 
-$pdf->Rect(163, 84, 25, 14);
-$pdf->SetXY(163, 84);
+$pdf->Rect(163, 73, 25, 12);
+$pdf->SetXY(163, 73);
 $pdf->Cell(25, 7, 'ค่าปกติ', 0, 1, 'C');
-$pdf->SetXY(163, 91);
+$pdf->SetXY(163, 79);
 $pdf->Cell(25, 7, 'NORMAL', 0, 1, 'C');
 
 ### 1
