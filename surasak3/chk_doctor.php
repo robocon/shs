@@ -27,7 +27,7 @@ if( $action === 'save' ){
 
     $curr_date = date('Y-m-d');
     $sql = "SELECT `id` FROM `chk_doctor` WHERE `date_chk` LIKE '$curr_date%' AND `hn` = '$hn' ";
-    $db->select();
+    $db->select($sql);
     $rows = $db->get_rows();
     
     if ( $rows == 0 ) {
@@ -54,10 +54,14 @@ if( $action === 'save' ){
         `snell_eye` = '$snell_eye', 
         `cxr` = '$cxr', 
         `conclution` = '$conclution', 
-        `suggestion` = '$suggestion' ; ";
+        `suggestion` = '$suggestion',
+        `doctor` = '$doctor' ; ";
         $save = $db->update($sql);
 
     }
+
+    // dump($sql);
+    // exit;
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
