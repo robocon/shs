@@ -1,5 +1,5 @@
 
-<a target=_self  href='../nindex.htm'><< ไปเมนู</a>
+<a target=_self  href='../nindex.htm'><< ไปเมนูหลัก</a>  || <a target=_self  href='dglst.php'><< ไปหน้าก่อนนี้</a>
 <?php
     include("connect.inc");
 
@@ -54,6 +54,7 @@
         $procat = $row->product_category;
 		$prodrugtype = $row->product_drugtype;
         $edpri_from = $row->edpri_from;
+		$grouptype = $row->grouptype;
                   }  
    else {
       echo "ไม่พบ รหัส : $drugcode ";
@@ -228,6 +229,17 @@ print "<td colspan='2'>พัสดุส่งเสริมสุขภาพและสาธารณสุข&nbsp;&nbsp;&nbsp;";
 		  <option value='3'  <? if($prodrugtype=='3'){ echo "selected"; } ?>>3 = ยาที่อยู่ในบัญชียาหลักแห่งชาติหรือเวชภัณฑ์ ซึ่งองค์การเภสัชกรรมหรือโรงงานเภสัชกรรมทหาร มิได้เป็นผู้ผลิตแต่มีจำหน่าย</option>
 		  <option value='4'  <? if($prodrugtype=='4'){ echo "selected"; } ?>>4 = ยาและเวชภัณฑ์ที่ได้ขึ้นบัญชีนวัตกรรมไทย</option>
 		  <option value='5'  <? if($prodrugtype=='5'){ echo "selected"; } ?>>5 = วัคซีนโรคตับอักเสบบี และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่มีอยู่ในบัญชี</option> 
+</select>
+<?
+print "</td>";
+print "</tr>";
+print "<tr>";
+print "<td></td>";
+print "<td colspan='2'>หน่วยที่จัดซื้อ&nbsp;&nbsp;&nbsp;";
+?>
+<select name="grouptype">
+          <option value='' <? if($grouptype==''){ echo "selected"; } ?>>กองเภสัชกรรม</option>
+		  <option value='pc' <? if($grouptype=='pc'){ echo "selected"; } ?>>แผนกจัดซื้อ สป.สายแพทย์</option>
 </select>
 <?
 print "</td>";

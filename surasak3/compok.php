@@ -5,8 +5,8 @@ include("connect.inc");
 */
 
       $sql = "INSERT INTO company(comcode,comname,comaddr,
-	            ampur,changwat,tel,fax)VALUES('$comcode','$comname',
-    	           '$comaddr','$ampur','$changwat','$tel','$fax');";
+	            ampur,changwat,tel,fax,comtype)VALUES('$comcode','$comname',
+    	           '$comaddr','$ampur','$changwat','$tel','$fax','$type');";
      $result = mysql_query($sql);
 if ($result){
         print "√À— ∫√‘…—∑  :$comcode<br>";

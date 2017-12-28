@@ -7,15 +7,20 @@ if( $user_code !== 'ADM' ){
     
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
     $check_level = in_array($user_code, array('ADMPH', 'ADMPHA'));
-    $check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','สงคราม','รุ่งทิวา','อมรรัตน์'));
+    //$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','จีราภรณ์4','สงคราม','รุ่งทิวา','อมรรัตน์'));
+    $check_user = in_array($user_id, array('พรทิพา','วนิดาดา','จีราภรณ์4','สงคราม','รุ่งทิวา','อมรรัตน์'));  //รับคำสั่ง หน.กองเภสัชกรรม วันที่ 27/12/60
     
     if( $check_level === false OR $check_user === false ){
         ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขข้อมูลยา กรุณาติดต่อ</p>
         <ol>
             <li>พ.อ.หญิง พรทิพา จันทร์ณรงค์</li>
-            <li>พ.ท.หญิง อรัญญา ชาวไชย</li>
-            <li>พ.ต.หญิง วนิดา โลห์สุวรรณ</li>
+            <!--<li>พ.อ.หญิง อรัญญา ชาวไชย</li>-->
+            <li>พ.ท.หญิง วนิดา โล่ห์สุวรรณ</li>         
+            <li>น.ส. จีราภรณ์ เขมดำรง (20-12-60)</li><!--ได้รับมอบหมายจากหัวหน้าห้องยา พ.อ.หญิง พรทิพา จันทร์ณรงค์ เมื่อวันที่ 20-12-60-->
+            <li>สงคราม  ไหวดี</li>
+            <li>รุ่งทิวา  ใจเดียว</li>
+            <li>อมรรัตน์  นันทะวงค์</li>
         </ol>
         <p>เพื่อทำการแก้ไขข้อมูลยา</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
@@ -26,7 +31,7 @@ if( $user_code !== 'ADM' ){
 
   print "รายการยาเวชภัณฑ์ <br> ";
 if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
-	include("connect.inc");
+include("connect.inc");
 	
 	$sql = "Select drugcode,tradname from druglst  where  drugcode like '%".$_GET["search1"]."%' limit 10 ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
