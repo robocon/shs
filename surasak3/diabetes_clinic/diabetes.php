@@ -1021,7 +1021,7 @@ C&deg;</td>
 				AND b.`labname` = 'Protein'
 				AND b.`authoriseby` != ''
 				AND a.`profilecode` = 'UA'
-				AND a.`orderdate` LIKE '$year%%'
+				AND a.`orderdate` LIKE '$year%'
 				ORDER BY a.`orderdate` DESC
 				";
 				$query = mysql_query($sql);
