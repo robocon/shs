@@ -443,7 +443,7 @@ if( empty($page) ){
     $sql = "SELECT a.*, b.`idcard`, b.`changwat` 
     FROM `rg_soldier` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-    WHERE `last_update` LIKE '$selected_y-$selected_m%' 
+    WHERE `date_certificate` LIKE '$selected_y-$selected_m%' 
     ORDER BY number_id ASC";
     $db->select($sql);
     $items = $db->get_items();
@@ -482,7 +482,7 @@ if( empty($page) ){
                     $board .= $item['yot2'].$item['doctor2'].'<br>';
                     $board .= $item['yot3'].$item['doctor3'];
 
-                    list($date, $time) = explode(' ',$item['last_update']);
+                    list($date, $time) = explode(' ',$item['date_certificate']);
                     list($y, $m, $d) = explode('-', $date);
 
                     $lastupdate = $d.' '.$def_fullm_th[$m].' '.( $y + 543 );

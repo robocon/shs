@@ -27,26 +27,26 @@ $list2 = array();
 
 while(list($date,$txdate, $hn, $full_name, $depart, $price,$idcard,$note,$paidcscd) = Mysql_fetch_row($result)){
 
- $date=substr($date,0,10);
- $d=substr($date,8,2);
-  $m=substr($date,4,4);
-   $y=substr($date,0,4);
+	$date=substr($date,0,10);
+	$d=substr($date,8,2);
+	$m=substr($date,4,4);
+	$y=substr($date,0,4);
 
-  $note=substr($note,0,25);
+	$note=substr($note,0,25);
 
 	$list2[$hn] = $d."".$m."".$y."/".$full_name."/".$idcard."/".$note;
-switch($depart){
+	switch($depart){
 
-	case "PHAR" : $list[$hn]["PHAR"] = $list[$hn]["PHAR"] + $price; break;
-	case "PATHO" : $list[$hn]["PATHO"] = $list[$hn]["PATHO"] + $price; break;
-	case "XRAY" : $list[$hn]["XRAY"] = $list[$hn]["XRAY"] + $price; break;
-case "NID" : $list[$hn]["NID"] = $list[$hn]["NID"] + $paidcscd; break;
-//case "EMER" : $list[$hn]["EMER"] = $list[$hn]["EMER"] + $price; break;
-//case "SURG" : $list[$hn]["SURG"] = $list[$hn]["SURG"] + $price; break;
-default:  $list[$hn]["OTHER"] = $list[$hn]["OTHER"] + $price; break;
+		case "PHAR" : $list[$hn]["PHAR"] = $list[$hn]["PHAR"] + $price; break;
+		case "PATHO" : $list[$hn]["PATHO"] = $list[$hn]["PATHO"] + $price; break;
+		case "XRAY" : $list[$hn]["XRAY"] = $list[$hn]["XRAY"] + $price; break;
+		case "NID" : $list[$hn]["NID"] = $list[$hn]["NID"] + $paidcscd; break;
+		//case "EMER" : $list[$hn]["EMER"] = $list[$hn]["EMER"] + $price; break;
+		//case "SURG" : $list[$hn]["SURG"] = $list[$hn]["SURG"] + $price; break;
+		default:  $list[$hn]["OTHER"] = $list[$hn]["OTHER"] + $price; break;
 
 
-}
+	}
 
 }
 $num='0';
@@ -75,36 +75,40 @@ foreach ($list2 as $key => $value) {
 
 	$xx = explode("/",$value);
 	$num++;
-$i++;
+	$i++;
 
 
 
-$OTHER1=$list[$key]["NID"]+$list[$key]["OTHER"];
+	$OTHER1=$list[$key]["NID"]+$list[$key]["OTHER"];
 
-if ($list[$key]["PHAR"] > 0 ){$list[$key]["PHAR1"]=number_format( $list[$key]["PHAR"],2);} else {
-	};
-if ($list[$key]["PATHO"] > 0 ){$list[$key]["PATHO1"]=number_format( $list[$key]["PATHO"],2);} else {
-	};
-if ($list[$key]["XRAY"] > 0 ){$list[$key]["XRAY1"]=number_format( $list[$key]["XRAY"],2);} else {
-	};
-if ($list[$key]["PHYSI"] > 0 ){$list[$key]["PHYSI1"]=number_format( $list[$key]["PHYSI"],2);} else {
-	};
-	if ($list[$key]["EMER"] > 0 ){$list[$key]["EMER1"]=number_format( $list[$key]["EMER"],2);} else {
-	};
-	if ($list[$key]["SURG"] > 0 ){$list[$key]["SURG1"]=number_format( $list[$key]["SURG"],2);} else {
-	};
+	if ($list[$key]["PHAR"] > 0 ){$list[$key]["PHAR1"]=number_format( $list[$key]["PHAR"],2);} else {
+		};
+	if ($list[$key]["PATHO"] > 0 ){$list[$key]["PATHO1"]=number_format( $list[$key]["PATHO"],2);} else {
+		};
+	if ($list[$key]["XRAY"] > 0 ){$list[$key]["XRAY1"]=number_format( $list[$key]["XRAY"],2);} else {
+		};
+	if ($list[$key]["PHYSI"] > 0 ){$list[$key]["PHYSI1"]=number_format( $list[$key]["PHYSI"],2);} else {
+		};
+		if ($list[$key]["EMER"] > 0 ){$list[$key]["EMER1"]=number_format( $list[$key]["EMER"],2);} else {
+		};
+		if ($list[$key]["SURG"] > 0 ){$list[$key]["SURG1"]=number_format( $list[$key]["SURG"],2);} else {
+		};
 
-if ($OTHER1 > 0 ){$OTHER1=number_format( $OTHER1,2);} else {
-	};
-
-
-$total=$list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key]["PHYSI"]+$list[$key]["EMER"]+$list[$key]["SURG"] +$list[$key]["NID"]+$list[$key]["OTHER"];
-$total=number_format($total,2);
+	if ($OTHER1 > 0 ){$OTHER1=number_format( $OTHER1,2);} else {
+		};
 
 
- $sql = "SELECT icd10,icd9cm,icd101,doctor FROM opday WHERE  hn = '".$key."' and  thdatehn like '".$date2."%' ";
+	$total=$list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key]["PHYSI"]+$list[$key]["EMER"]+$list[$key]["SURG"] +$list[$key]["NID"]+$list[$key]["OTHER"];
+	$total=number_format($total,2);
 
-   list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
+
+ 	$sql = "SELECT icd10,icd9cm,icd101,doctor 
+	FROM opday 
+	WHERE  hn = '".$key."' 
+	AND thdatehn like '".$date2."%' 
+	AND ptright LIKE '$pt_code%'";
+
+   	list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
 
 
 
@@ -129,47 +133,47 @@ $total=number_format($total,2);
 
 
 	if($i == '20'){
-			echo "</table>";
-			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
+		echo "</table>";
+		print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
 
-echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้หลักประกันสุขภาพประจำวันที่ $date2 <br></b> ";
-echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง </center>";
+		echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้หลักประกันสุขภาพประจำวันที่ $date2 <br></b> ";
+		echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง </center>";
 
-echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='2'  style='BORDER-COLLAPSE: collapse' >";
-
-
-
-echo "<tr>
-<td border-style:dashed>&nbsp;&nbsp;#&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;วันที่&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ชื่อ - สกุล&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;บัตรประชาชน&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;นายจ้าง&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ตรวจอื่นๆ&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
-<!-- <td><center> <b>&nbsp;&nbsp;ICD10หลัก&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td> -->
-</tr>";
-$i='0';
+		echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='2'  style='BORDER-COLLAPSE: collapse' >";
 
 
-		}
+
+		echo "<tr>
+		<td border-style:dashed>&nbsp;&nbsp;#&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;วันที่&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ชื่อ - สกุล&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;บัตรประชาชน&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;นายจ้าง&nbsp;&nbsp;</td>
+		<td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ตรวจอื่นๆ&nbsp;&nbsp;</td>
+		<td><center> <b>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
+		<!-- <td><center> <b>&nbsp;&nbsp;ICD10หลัก&nbsp;&nbsp;</td>
+		<td><center> <b>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
+		<td><center> <b>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
+		<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td> -->
+		</tr>";
+		$i='0';
+
+
+	}
 
 
 
 	$PHAR = $PHAR+$list[$key]["PHAR"];
 	$PATHO = $PATHO+$list[$key]["PATHO"];
 	$XRAY = $XRAY+$list[$key]["XRAY"];
-		$PHYSI = $PHYSI+$list[$key]["PHYSI"];	
-		$EMER = $EMER+$list[$key]["EMER"];	
-		$SURG = $SURG+$list[$key]["SURG"];
-		$NID = $NID+$list[$key]["NID"];
+	$PHYSI = $PHYSI+$list[$key]["PHYSI"];	
+	$EMER = $EMER+$list[$key]["EMER"];	
+	$SURG = $SURG+$list[$key]["SURG"];
+	$NID = $NID+$list[$key]["NID"];
 	$OTHER = $OTHER+$list[$key]["OTHER"];
 	$OTHER1=$OTHER+$NID;
 	$sum = $sum+($list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key]["PHYSI"]+$list[$key]["EMER"]+$list[$key]["SURG"]+$list[$key]["NID"]+$list[$key]["OTHER"]);
