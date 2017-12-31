@@ -136,31 +136,21 @@
 </SCRIPT>
 
 <table>
- <tr>
-
-
-
-  <th bgcolor=CD853F>#</th>
- 
-
-  <th bgcolor=CD853F>วัน-เวลา</th>
- 
-<th bgcolor=CD853F>HN</th>
- 
-<th bgcolor=CD853F>AN</th>
- 
- <th bgcolor=CD853F>ชื่อ-สกุล</th>
-  
-<th bgcolor=CD853F>โรค</th>
-
-  <th bgcolor=CD853F>ICD10</th>
-  <th bgcolor=CD853F>ICD10<br>(โรครอง)</th>
-  <th bgcolor=CD853F>ICD10<br>(โรคแทรก)</th>
-  <th bgcolor="CD853F">OTHER</th>
-  <th bgcolor="CD853F">EXTERNAL CAUSE</th>
-<th bgcolor=CD853F>วันจำหน่าย</th>
-<th bgcolor=CD853F>D/C Type</th>
-</tr>
+	<tr>
+		<th bgcolor=CD853F>#</th>
+		<th bgcolor=CD853F>วัน-เวลา</th>
+		<th bgcolor=CD853F>HN</th>
+		<th bgcolor=CD853F>AN</th>
+		<th bgcolor=CD853F>ชื่อ-สกุล</th>
+		<th bgcolor=CD853F>โรค</th>
+		<th bgcolor=CD853F>ICD10</th>
+		<th bgcolor=CD853F>ICD10<br>(โรครอง)</th>
+		<th bgcolor=CD853F>ICD10<br>(โรคแทรก)</th>
+		<th bgcolor="CD853F">OTHER</th>
+		<th bgcolor="CD853F">EXTERNAL CAUSE</th>
+		<th bgcolor=CD853F>วันจำหน่าย</th>
+		<th bgcolor=CD853F>D/C Type</th>
+	</tr>
 
 <?php
 $num=0;
@@ -294,26 +284,19 @@ $external = implode(' ', $external_list);
 
  print (" <tr>\n".
 
-       
-       "  <td BGCOLOR=F5DEB3>$num</td>\n".
-   
-       "  <td BGCOLOR=F5DEB3>$date</td>\n".
-   
-    "  <td BGCOLOR=F5DEB3>$hn</td>\n".
-  
-"  <td BGCOLOR=F5DEB3>$an</td>\n".
-  
-   "  <td BGCOLOR=F5DEB3>$ptname</a></td>\n".
-     
-      "  <td BGCOLOR=F5DEB3>$diag</td>\n".
-    
-  "  <td BGCOLOR=F5DEB3>$icd10</td>\n".
-  "  <td BGCOLOR=F5DEB3>$comorbid</td>\n".
-   "  <td BGCOLOR=F5DEB3>$complica</td>\n".
-   "  <td BGCOLOR=F5DEB3>$other</td>\n".
-   "  <td BGCOLOR=F5DEB3>$external</td>\n".
-"  <td BGCOLOR=F5DEB3>$dcdate</td>\n".
-"  <td BGCOLOR=F5DEB3>$dctype</td>\n".
+		"  <td BGCOLOR=F5DEB3>$num</td>\n".
+		"  <td BGCOLOR=F5DEB3>$date</td>\n".
+		"  <td BGCOLOR=F5DEB3>$hn</td>\n".
+		"  <td BGCOLOR=F5DEB3>$an</td>\n".
+		"  <td BGCOLOR=F5DEB3>$ptname</a></td>\n".
+		"  <td BGCOLOR=F5DEB3>$diag</td>\n".
+		"  <td BGCOLOR=F5DEB3>$icd10</td>\n".
+		"  <td BGCOLOR=F5DEB3>$comorbid</td>\n".
+		"  <td BGCOLOR=F5DEB3>$complica</td>\n".
+		"  <td BGCOLOR=F5DEB3>$other</td>\n".
+		"  <td BGCOLOR=F5DEB3>$external</td>\n".
+		"  <td BGCOLOR=F5DEB3>$dcdate</td>\n".
+		"  <td BGCOLOR=F5DEB3>$dctype</td>\n".
        
          " </tr>\n");
 

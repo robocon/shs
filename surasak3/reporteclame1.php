@@ -19,7 +19,13 @@ AND a.credit ='30บาท'
 AND a.ptright LIKE '$pt_code%'
 group by a.hn, a.depart   
 ORDER by a.date";
-// var_dump($sql);
+
+// echo "<pre>";
+// var_dump($_SESSION['smenucode']);
+// echo "</pre>";
+
+// $_SESSION['smenucode'] = ADMNHSO
+
 $result = mysql_Query($sql) or die(mysql_error());
 
 $list = array();
@@ -45,10 +51,14 @@ while(list($date,$txdate, $hn, $full_name, $depart, $price,$idcard,$note,$paidcs
 		//case "SURG" : $list[$hn]["SURG"] = $list[$hn]["SURG"] + $price; break;
 		default:  $list[$hn]["OTHER"] = $list[$hn]["OTHER"] + $price; break;
 
-
 	}
 
 }
+
+// echo "<pre>";
+// var_dump($list);
+// echo "</pre>";
+
 $num='0';
 $i='0';
 echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนหลักประกันสุขภาพประจำวันที่ $date2 <br></b> ";
@@ -65,52 +75,51 @@ echo "<tr>
 <td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;ตรวจอื่นๆ&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
-<!--<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='2'><center>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td>-->
-</tr>";
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>";
+
+// ให้สิทธิห้อง30บาทเห็นในส่วนที่เป็น ICD
+if( $_SESSION['smenucode'] == "ADMNHSO" ){
+	echo "<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10&nbsp;&nbsp;</td>
+	<td><center> <b><font face='Angsana New' size ='2'><center>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
+	<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
+	<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td>";
+}
+
+echo "</tr>";
+
+
 foreach ($list2 as $key => $value) {
 
 	$xx = explode("/",$value);
 	$num++;
 	$i++;
 
-
-
 	$OTHER1=$list[$key]["NID"]+$list[$key]["OTHER"];
 
-	if ($list[$key]["PHAR"] > 0 ){$list[$key]["PHAR1"]=number_format( $list[$key]["PHAR"],2);} else {
-		};
-	if ($list[$key]["PATHO"] > 0 ){$list[$key]["PATHO1"]=number_format( $list[$key]["PATHO"],2);} else {
-		};
-	if ($list[$key]["XRAY"] > 0 ){$list[$key]["XRAY1"]=number_format( $list[$key]["XRAY"],2);} else {
-		};
-	if ($list[$key]["PHYSI"] > 0 ){$list[$key]["PHYSI1"]=number_format( $list[$key]["PHYSI"],2);} else {
-		};
-		if ($list[$key]["EMER"] > 0 ){$list[$key]["EMER1"]=number_format( $list[$key]["EMER"],2);} else {
-		};
-		if ($list[$key]["SURG"] > 0 ){$list[$key]["SURG1"]=number_format( $list[$key]["SURG"],2);} else {
-		};
-
-	if ($OTHER1 > 0 ){$OTHER1=number_format( $OTHER1,2);} else {
-		};
-
+	if ($list[$key]["PHAR"] > 0 ){
+		$list[$key]["PHAR1"]=number_format( $list[$key]["PHAR"],2);
+	}
+	if ($list[$key]["PATHO"] > 0 ){
+		$list[$key]["PATHO1"]=number_format( $list[$key]["PATHO"],2);
+	}
+	if ($list[$key]["XRAY"] > 0 ){
+		$list[$key]["XRAY1"]=number_format( $list[$key]["XRAY"],2);
+	}
+	if ($list[$key]["PHYSI"] > 0 ){
+		$list[$key]["PHYSI1"]=number_format( $list[$key]["PHYSI"],2);
+	}
+	if ($list[$key]["EMER"] > 0 ){
+		$list[$key]["EMER1"]=number_format( $list[$key]["EMER"],2);
+	}
+	if ($list[$key]["SURG"] > 0 ){
+		$list[$key]["SURG1"]=number_format( $list[$key]["SURG"],2);
+	}
+	if ($OTHER1 > 0 ){
+		$OTHER1=number_format( $OTHER1,2);
+	}
 
 	$total=$list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key]["PHYSI"]+$list[$key]["EMER"]+$list[$key]["SURG"] +$list[$key]["NID"]+$list[$key]["OTHER"];
 	$total=number_format($total,2);
-
-
- 	$sql = "SELECT icd10,icd9cm,icd101,doctor 
-	FROM opday 
-	WHERE  hn = '".$key."' 
-	AND thdatehn like '".$date2."%' 
-	AND ptright LIKE '$pt_code%'";
-
-   	list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
-
-
 
 	echo "<tr  >
 	<td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$num."&nbsp;</td>
@@ -123,15 +132,47 @@ foreach ($list2 as $key => $value) {
 	<td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PATHO1"]."</td>
 	<td align='right'><font face='Angsana New' size ='2'>".$list[$key]["XRAY1"]."</td>
 	<td align='right'><font face='Angsana New' size ='2'>".$OTHER1."</td>
-	<td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td>
-	<!-- <td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd10."&nbsp;</td>
-	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd9cm."&nbsp;</td>
-	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd101."&nbsp;</td>
-	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td> -->
-	</tr>";
+	<td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td>";
 
+	// ให้สิทธิห้อง30บาทเห็นในส่วนที่เป็น ICD
+	if( $_SESSION['smenucode'] == "ADMNHSO" ){
 
+		$thdate_hn = $date2.$key;
+		if($date == 'เลือก'){
+			$thdate_hn = $date2;
+		}
 
+		$sql = "SELECT icd10,icd9cm,icd101,doctor 
+		FROM opday 
+		WHERE  hn = '$key' 
+		AND thdatehn LIKE '$thdate_hn%'";
+		list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
+
+		// ดึง ICD10 จาก diag ให้พี่หนึ่งดูได้ว่าบางคนมันมี icd10 หลายตัว
+		$sql = "SELECT `icd10` 
+		FROM `diag` 
+		WHERE `regisdate` LIKE '$date1%' 
+		AND `hn` = '$key' 
+		AND `icd10` != '' 
+		AND `type` = 'PRINCIPLE' 
+		GROUP BY `icd10`";
+		$q = mysql_query($sql) or die( mysql_error() );
+		$icd10_lists = array();
+		while ( $icd10_item = mysql_fetch_assoc($q) ) {
+			$icd10_lists[] = $icd10_item['icd10'];
+		}
+
+		// ICD10 ICD9 ICD10รอง ชื่อแพทย์
+		echo "<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".(implode(',', $icd10_lists))."&nbsp;</td>
+		<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd9cm."&nbsp;</td>
+		<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd101."&nbsp;</td>
+		<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td>";
+	}
+
+	echo "</tr>";
+	
+
+	// ตัดตารางใหม่ทุกๆ 20row
 	if($i == '20'){
 		echo "</table>";
 		print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
@@ -140,8 +181,6 @@ foreach ($list2 as $key => $value) {
 		echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง </center>";
 
 		echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='2'  style='BORDER-COLLAPSE: collapse' >";
-
-
 
 		echo "<tr>
 		<td border-style:dashed>&nbsp;&nbsp;#&nbsp;&nbsp;</td>
@@ -154,18 +193,19 @@ foreach ($list2 as $key => $value) {
 		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
 		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td>
 		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ตรวจอื่นๆ&nbsp;&nbsp;</td>
-		<td><center> <b>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
-		<!-- <td><center> <b>&nbsp;&nbsp;ICD10หลัก&nbsp;&nbsp;</td>
-		<td><center> <b>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
-		<td><center> <b>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
-		<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td> -->
-		</tr>";
+		<td><center> <b>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>";
+		
+		if( $_SESSION['smenucode'] == "ADMNHSO" ){
+			echo "<td><center> <b>&nbsp;&nbsp;ICD10หลัก&nbsp;&nbsp;</td>
+			<td><center> <b>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
+			<td><center> <b>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
+			<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td>";
+		}
+		
+		echo "</tr>";
 		$i='0';
 
-
 	}
-
-
 
 	$PHAR = $PHAR+$list[$key]["PHAR"];
 	$PATHO = $PATHO+$list[$key]["PATHO"];
@@ -178,7 +218,6 @@ foreach ($list2 as $key => $value) {
 	$OTHER1=$OTHER+$NID;
 	$sum = $sum+($list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key]["PHYSI"]+$list[$key]["EMER"]+$list[$key]["SURG"]+$list[$key]["NID"]+$list[$key]["OTHER"]);
 }
-
 
 $PHAR=number_format( $PHAR,2);
 $PATHO=number_format( $PATHO,2);
@@ -200,13 +239,17 @@ echo "<tr>
 <td align='right'><font face='Angsana New' size ='2'><b>".$PATHO."</b></td>
 <td align='right'><font face='Angsana New' size ='2'><b>".$XRAY."</b></td>
 <td align='right'><font face='Angsana New' size ='2'><b>".$OTHER1."</b></td>
-<td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</b></td>
-<!--<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>-->
-</tr></FONT>";
+<td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</b></td>";
 
-echo "</table>";
+if( $_SESSION['smenucode'] == "ADMNHSO" ){
+	echo "<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>";
+}
+
+echo "</tr>";
+echo "</FONT></table>";
 
 
 

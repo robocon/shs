@@ -1,10 +1,8 @@
 <?php
-include 'includes/connect.php';
+include 'bootstrap.php';
 ?>
 <form method="POST" action="reporteclame1.php">
 <p>ลูกหนี้หลักประกันสุขภาพ ประจำเดือน</p>
-
-
 
 
 <p><font face="Angsana New">วันที่
@@ -45,6 +43,12 @@ include 'includes/connect.php';
     <option>31</option>
   </select>
 
+<?php
+$curr_month = date('m');
+getMonthList('rptmo', $curr_month);
+
+/*
+?>
    <font face="Angsana New">&nbsp;&nbsp; &#3648;&#3604;&#3639;&#3629;&#3609;&nbsp;<select size="1" name="rptmo">
     <option selected>--&#3648;&#3621;&#3639;&#3629;&#3585;--</option>
     <option value="01">&#3617;&#3585;&#3619;&#3634;&#3588;&#3617;</option>
@@ -59,9 +63,16 @@ include 'includes/connect.php';
     <option value="10">&#3605;&#3640;&#3621;&#3634;&#3588;&#3617;</option>
     <option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
     <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
-
   </select>
+<?php
+*/
 
+$curr_yaer = (date('Y') + 543);
+$year_lists = range(2552, $curr_yaer + 1 );
+getYearList('thiyr', false, $curr_yaer, $year_lists);
+
+/*
+?>
   <select size="1" name="thiyr">
     <option selected>2552</option>
     <option>2553</option>
@@ -75,9 +86,9 @@ include 'includes/connect.php';
     <option>2561</option>
     <option>2562</option>
   </select>
-  
   <?php
-  
+*/
+
   $sql = "SELECT * 
   FROM `ptright` 
   WHERE `status` != 'n' AND (
