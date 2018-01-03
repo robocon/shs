@@ -82,9 +82,42 @@ $total=number_format($total,2);
 
    list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
 
+    // ICD10 หลัก
+	$sql = "SELECT `icd10` 
+	FROM `diag` 
+	WHERE `regisdate` LIKE '$date1%' 
+	AND `hn` = '$key' 
+	AND `icd10` != '' 
+	AND `type` = 'PRINCIPLE' 
+	GROUP BY `icd10` ;";
+	$q = mysql_query($sql) or die( mysql_error() );
 
+	$icd10_lists = array();
+	while ( $item = mysql_fetch_assoc($q) ) {
+		$icd10_lists[] = $item['icd10'];
+	}
 
-    echo "<tr  ><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$num."&nbsp;</td><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$xx[0]."&nbsp;</td><td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[1]."&nbsp;</b></td><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$key."&nbsp;</td><td><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$xx[2]."&nbsp;</td><td><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$xx[3]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PHAR1"]."</td><td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PATHO1"]."</td><td align='right'><font face='Angsana New' size ='2'>".$list[$key]["XRAY1"]."</td><td align='right'><font face='Angsana New' size ='2'>".$OTHER1."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd10."&nbsp;</td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd9cm."&nbsp;</td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd101."&nbsp;</td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td></tr>";
+	$icd10_txt = implode(', ', $icd10_lists);
+
+	// ICD10 รอง
+	$sql = "SELECT `icd10` 
+	FROM `diag` 
+	WHERE `regisdate` LIKE '$date1%' 
+	AND `hn` = '$key' 
+	AND `icd10` != '' 
+	AND `type` = 'CO-MORBIDITY' 
+	GROUP BY `icd10` ;";
+	$q = mysql_query($sql) or die( mysql_error() );
+
+	$comobid_lists = array();
+	while ( $item = mysql_fetch_assoc($q) ) {
+		$comobid_lists[] = $item['icd10'];
+	}
+
+	$comobid_txt = implode(', ', $comobid_lists);
+	
+
+    echo "<tr  ><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$num."&nbsp;</td><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$xx[0]."&nbsp;</td><td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[1]."&nbsp;</b></td><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$key."&nbsp;</td><td><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$xx[2]."&nbsp;</td><td><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$xx[3]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PHAR1"]."</td><td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PATHO1"]."</td><td align='right'><font face='Angsana New' size ='2'>".$list[$key]["XRAY1"]."</td><td align='right'><font face='Angsana New' size ='2'>".$OTHER1."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd10_txt."&nbsp;</td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd9cm."&nbsp;</td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$comobid_txt."&nbsp;</td><td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td></tr>";
 
 
 
@@ -130,7 +163,7 @@ $OTHER1=number_format($OTHER1,2);
 
 $sum=number_format($sum,2);
 
-echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>รวม</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$PHAR."</td><td align='right'><font face='Angsana New' size ='2'><b>".$PATHO."</td><td align='right'><font face='Angsana New' size ='2'><b>".$XRAY."</td><td align='right'><font face='Angsana New' size ='2'><b>".$OTHER1."</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</td></b><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></FONT>";
+echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>รวม</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$PHAR."</td><td align='right'><font face='Angsana New' size ='2'><b>".$PATHO."</td><td align='right'><font face='Angsana New' size ='2'><b>".$XRAY."</td><td align='right'><font face='Angsana New' size ='2'><b>".$OTHER1."</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</td></b><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td></td></tr></FONT>";
 
 echo "</table>";
 

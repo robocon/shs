@@ -1,3 +1,7 @@
+<?php
+session_start();
+include("connect.inc");
+?>
 <style>
 .fonthead{
 	font-family:"TH SarabunPSK";
@@ -10,8 +14,6 @@
 }
 </style>
 <?php
-session_start();
-include("connect.inc");
 
 function displaydate($x) {
 	$date_m=array("มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฏาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
@@ -33,7 +35,13 @@ $date2 ="$date-$rptmo-$thiyr";
 
 $dateshow ="$thiyr-$rptmo-$date";
 
-$sql = "Select a.admit,a.dcdate,a.days ,a.an,a.hn,a.ptname,a.bfy,a.bfn,a.dpy,a.dpn,a.ddl,a.ddy,a.ddn,a.dsy,a.dsn,a.blood,a.lab,a.xray,a.sinv,a.surg,a.ncare,a.denta,a.pt,a.stx,a.mc,b.icd10,b.comorbid,b.icd9cm From ipmonrep as a, ipcard as b where a.hn=b.hn AND a.dcdate  like '".$date1."%'  AND a.credit ='30บาท' group by a.hn  ORDER by a.dcdate";
+$sql = "Select a.admit,a.dcdate,a.days ,a.an,a.hn,a.ptname,a.bfy,a.bfn,a.dpy,a.dpn,a.ddl,a.ddy,a.ddn,a.dsy,a.dsn,a.blood,a.lab,a.xray,a.sinv,a.surg,a.ncare,a.denta,a.pt,a.stx,a.mc,b.icd10,b.comorbid,b.icd9cm 
+From ipmonrep as a, 
+ipcard as b 
+where a.hn=b.hn 
+AND a.dcdate  like '".$date1."%'  
+AND a.credit ='30บาท' 
+group by a.hn  ORDER by a.dcdate";
 $result = mysql_query($sql) or die(mysql_error());
 
 //echo $sql;
@@ -80,6 +88,16 @@ $room=$bfy+$bfn;
 $other=$blood+$sunv+$surg+$ncare+$denta+$pt+$stx+$mc;
 
 $total1=$drug+$lab+$xray+$room+$other;
+
+
+$sql = "SELECT icd9cm FROM ipicd9cm WHERE an = '$an' GROUP BY icd9cm ";
+$q = mysql_query($sql) or die( mysql_error() );
+$icd9_lists = array();
+while ( $item = mysql_fetch_assoc($q) ) {
+	$icd9_lists[] = $item['icd9cm'];
+}
+$icd9cm = implode(',', $icd9_lists);
+
 echo "<tr>
 	<td class=\"fontlist\">".$num."</td>
 	<td class=\"fontlist\">".$admit."</td>
