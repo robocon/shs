@@ -1,4 +1,12 @@
-<form method="POST" action="reporteclame1.php">
+<?php
+include 'bootstrap.php';
+
+if( $_SESSION['smenucode'] != "ADM" ){
+  echo "ให้สิทธิเฉพาะ Admin เท่านั้น";
+  exit;
+}
+?>
+<form method="POST" action="reporteclame1_finance.php">
 <p>ลูกหนี้หลักประกันสุขภาพ ประจำเดือน</p>
 
 
@@ -73,7 +81,32 @@
     <option>2562</option>
     
     
-  </select></p>
+  </select>
+  
+
+<?php
+
+  $sql = "SELECT * 
+  FROM `ptright` 
+  WHERE `status` != 'n' AND (
+    `code` = 'R09' OR `code` = 'R10' OR `code` = 'R11' OR `code` = 'R12' 
+    OR `code` = 'R13' OR `code` = 'R14' OR `code` = 'R17'
+  ) ORDER BY `code` ASC ";
+  $q = mysql_query($sql) or die( mysql_error() );
+  ?>
+
+  เลือกสิทธิ
+  <select name="ptright" id="">
+  <?php
+  while ( $item = mysql_fetch_assoc($q) ) {
+    ?><option value="<?=$item['code'];?>"><?=$item['code'].$item['name'];?></option><?php
+  }
+  ?>
+  </select>
+  
+  
+  
+  </p>
 
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;
