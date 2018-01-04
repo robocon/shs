@@ -286,7 +286,7 @@ print "<STYLE>";
  print "A IMG {border-style:none; border-width:0;}";
  print "DIV {position:absolute; z-index:25;}";
 print "</STYLE>";
-print "<TITLE>เวชภัณฑ์รวม VAT หลัง</TITLE>";
+print "<TITLE>Crystal Report Viewer</TITLE>";
 print "<BODY BGCOLOR='FFFFFF'LEFTMARGIN=0 TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0>";
 print "<DIV style='z-index:0'> &nbsp; </div>";
 print "<DIV style='left:88PX;top:110PX;width:697PX;height:30PX;'><span class='fc1-4'>ส่วนราชการ&nbsp;&nbsp;กองเภสัชกรรม&nbsp;&nbsp;&nbsp;&nbsp;รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
@@ -370,7 +370,7 @@ print "<DIV style='left:109PX;top:927PX;width:269PX;height:30PX;TEXT-ALIGN:CENTE
 print "<DIV style='left:435PX;top:550PX;width:269PX;height:30PX;'><span class='fc1-5'>เรียน ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 print "<DIV style='left:472PX;top:579PX;width:269PX;height:30PX;'><span class='fc1-5'>ได้ตรวจสอบงบรายรับสถานพยาบาลแล้วมีเพียงพอ</span></DIV>";
 print "<DIV style='left:435PX;top:608PX;width:269PX;height:30PX;'><span class='fc1-5'>ให้การสนับสนุน จำนวนเงิน $nPriadvat บาท</span></DIV>";
-print "<DIV style='left:435PX;top:637PX;width:320PX;height:30PX;'><span class='fc1-5'>$cPriadvat</span></DIV>";
+print "<DIV style='left:435PX;top:637PX;width:300PX;height:30PX;'><span class='fc1-5'>$cPriadvat</span></DIV>";
 print "<DIV style='left:450PX;top:666PX;width:269PX;height:30PX;'><span class='fc1-5'>$aYot[5]</span></DIV>";
 print "<DIV style='left:435PX;top:695PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>($aFname[5])</span></DIV>";
 print "<DIV style='left:435PX;top:724PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost[5]</span></DIV>";
@@ -968,7 +968,7 @@ print"</BODY>";
 print"</HTML>";
 
 ////po33.php
-$date=$cPrepodate;
+/*$date=$cPrepodate;
 list($d,$m,$y)=explode(" ",$date);
 $yy=$y-543;
 	if($m=="มกราคม"){
@@ -1011,7 +1011,7 @@ $strnewdate=date("Y-m-d",strtotime("+4 day",strtotime($newdate)));
 $strnewdate=date("Y-m-d",strtotime("+2 day",strtotime($newdate)));
 }
 
-$newcPrepodate=thaidate($strnewdate);
+$newcPrepodate=thaidate($strnewdate);*/
 
 
 print"<HTML>";
@@ -1066,7 +1066,9 @@ print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashe
 print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:44PX;top:2819PX;width:181PX;height:45PX;'>
 <table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE>
 </DIV>";
-print"<DIV style='left:518PX;top:2195PX;width:105PX;height:26PX;'><span class='fc1-0'>$newcPrepodate</span></DIV>";
+//print"<DIV style='left:518PX;top:2195PX;width:105PX;height:26PX;'><span class='fc1-0'>$newcPrepodate</span></DIV>";
+print"<DIV style='left:518PX;top:2195PX;width:105PX;height:26PX;'><span class='fc1-0'>$cPrepodate</span></DIV>";
+
 //print"<DIV style='left:310PX;top:2195PX;width:159PX;height:26PX;'><span class='fc1-0'>$cPrepono</span></DIV>";  //เก่า
 print"<DIV style='left:310PX;top:2195PX;width:159PX;height:26PX;'><span class='fc1-0'>กห 0483.63.4/$cPrepono</span></DIV>";
 print"<DIV style='left:194PX;top:2090PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ใบสั่งซื้อยาและเวชภัณฑ์สิ้นเปลือง</span></DIV>";

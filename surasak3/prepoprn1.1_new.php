@@ -443,13 +443,13 @@ print"<DIV style='z-index:0'> &nbsp; </div>";
 // print"<DIV style='left:518PX;top:1222PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
 ///list รายการ
 
-print"<div style='left:442PX;top:1161PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:100PX;'></div>";
-print"<div style='left:588PX;top:1161PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:100PX;'></div>";
+print"<div style='left:442PX;top:1111PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:100PX;'></div>";
+print"<div style='left:588PX;top:1111PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:100PX;'></div>";
 
-print"<DIV style='left:194PX;top:1100PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>บัญชีรายการเวชภัณฑ์ที่ขออนุมัติจัดหา </span></DIV>";
+print"<DIV style='left:194PX;top:1050PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>บัญชีรายการเวชภัณฑ์ที่ขออนุมัติจัดหา </span></DIV>";
 
 
-print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
+print"<DIV style='left:136PX;top:1090PX;width:800PX;height:26PX;' class='fc1-0'>
 	<span>ตามรายงานกองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ที่ กห 0483.63.4/</span>
 	&nbsp;&nbsp;&nbsp;&nbsp;$cPrepono&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	ลง วันที่
@@ -562,7 +562,7 @@ for ($n=$x+1; $n<=13; $n++){
 	padding-left: 10px;
 }
 </style>
-<div style="position: absolute; left:10px; top: 1180px; font-family: TH SarabunPSK; font-size: 13pt;">
+<div style="position: absolute; left:10px; top: 1130px; font-family: TH SarabunPSK; font-size: 13pt;">
 	<table class="dx_tb">
 		
 			<tr>
@@ -688,7 +688,7 @@ for ($n=$x+1; $n<=13; $n++){
 	$edpri_from_list = array(
     1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
     2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
-    3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด<br>(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
+    3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด<br>(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0416.4/ว484 ลงวันที่ 21 ธันวาคม 2560)',
     4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
     5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
     6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
@@ -943,12 +943,12 @@ for ($n=$x+1; $n<=13; $n++){
 // print"<DIV style='left:476PX;top:1882PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 //  ช่องเซ็น
-print"<DIV style='left:520PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-print"<DIV style='left:544PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-print"<DIV style='left:549PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+print"<DIV style='left:510PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
+print"<DIV style='left:534PX;top:1925PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
+print"<DIV style='left:539PX;top:1955PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 
 //ตำแหน่ง
-print"<DIV style='left:549PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
+print"<DIV style='left:539PX;top:1985PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 ?>
 <div style="page-break-after: always;"></div>
@@ -960,7 +960,7 @@ print"</HTML>";
 
 ////po33.php
 
-$date=$cPrepodate;
+/*$date=$cPrepodate;
 list($d,$m,$y)=explode(" ",$date);
 $yy=$y-543;
 	if($m=="มกราคม"){
@@ -1005,7 +1005,7 @@ $strnewdate=date("Y-m-d",strtotime("+4 day",strtotime($newdate)));
 $strnewdate=date("Y-m-d",strtotime("+2 day",strtotime($newdate)));
 }
 
-$newcPrepodate=thaidate($strnewdate);
+$newcPrepodate=thaidate($strnewdate);*/
 
 print"<HTML>";
 print"<script>";
@@ -1059,7 +1059,8 @@ print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashe
 print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:44PX;top:2819PX;width:181PX;height:45PX;'>
 <table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE>
 </DIV>";
-print"<DIV style='left:518PX;top:2195PX;width:105PX;height:26PX;'><span class='fc1-0'>$newcPrepodate</span></DIV>";
+//print"<DIV style='left:518PX;top:2195PX;width:105PX;height:26PX;'><span class='fc1-0'>$newcPrepodate</span></DIV>";
+print"<DIV style='left:518PX;top:2195PX;width:105PX;height:26PX;'><span class='fc1-0'>$cPrepodate</span></DIV>";
 //print"<DIV style='left:310PX;top:2195PX;width:159PX;height:26PX;'><span class='fc1-0'>$cPrepono</span></DIV>";  //เก่า
 print"<DIV style='left:310PX;top:2195PX;width:159PX;height:26PX;'><span class='fc1-0'>กห 0483.63.4/$cPrepono</span></DIV>";
 print"<DIV style='left:194PX;top:2090PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ใบสั่งซื้อยาและเวชภัณฑ์สิ้นเปลือง</span></DIV>";

@@ -260,7 +260,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			<?php 
 			$sql = "SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 			FROM diabetes_history_temp
-			WHERE l_microal != '' OR l_ua != ''
+			WHERE l_microal != '' OR l_ua != '' OR l_urine != '' 
 			GROUP BY MONTH(dateN) 
 			ORDER BY dateN ASC ";
 
