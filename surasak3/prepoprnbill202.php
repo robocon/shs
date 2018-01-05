@@ -620,7 +620,7 @@ print"<DIV style='left:10PX;top:1079PX;width:209PX;height:27PX;'><span class='fc
 print"<DIV style='left:10PX;top:1053PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
 print"<DIV style='left:10PX;top:1017PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>……………………………………...........</span></DIV>";
 print"<DIV style='left:10PX;top:1001PX;width:209PX;height:27PX;'><span class='fc1-0'>ได้รับใบสั่งซื้อไปแล้ว</span></DIV>";
-print"<DIV style='left:76PX;top:947PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ขอแนบใบส่งของ 7 ชุด</span></DIV>";
+print"<DIV style='left:76PX;top:947PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ขอเอกสารใบส่งของ 7 ชุด</span></DIV>";
 print"<DIV style='left:76PX;top:968PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ใบกำกับภาษี 1 ชุด</span></DIV>";
 print"<DIV style='left:597PX;top:832PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-0'>$nNetprice</span></DIV>";

@@ -1,12 +1,6 @@
-<style>
-.f1{
-	font-family: "TH SarabunPSK";
-	font-size:18px;
-	text-decoration:underline;
-	font-weight:bold;
-}
-</style>
 <?php
+session_start();
+include("connect.inc");
 
 function dump($txt){
 	echo "<pre>";
@@ -33,8 +27,18 @@ return $vat;
 	}
 ///end of function convert to float number ทศนิยม 2ตำแหน่ง
 
-    include("connect.inc");
+    
 
+?>
+<style>
+.f1{
+	font-family: "TH SarabunPSK";
+	font-size:18px;
+	text-decoration:underline;
+	font-weight:bold;
+}
+</style>
+<?php
 	///Load offisers
     $aMancode=array("aMancode"); 
 	$aMancode[1]='director';
@@ -149,6 +153,11 @@ print"</STYLE>";
 print"<TITLE>Crystal Report Viewer</TITLE>";
 print"</head>";
 print"<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
+
+?>
+<div style="page-break-after: always; border: 1px solid red;">
+<?php
+
 print"<DIV style='z-index:0'> &nbsp; </div>";
 
 // print"<div style='left:310PX;top:61PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
@@ -697,25 +706,27 @@ print"<DIV style='left:674PX;top:719PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'
 /////////
 */
 
+
+
+print"<DIV style='left:477PX;top:800PX;width:70PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
+print"<DIV style='left:477PX;top:833PX;width:70PX;height:27PX;text-align: right;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
+print"<DIV style='left:477PX;top:772PX;width:70PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
+
 print"<DIV style='left:118PX;top:833PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>";
 	print"<span class='fc1-0'>$nItems</span></DIV>";
 print"<DIV style='left:89PX;top:833PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
 print"<DIV style='left:215PX;top:833PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
 
-print"<DIV style='left:477PX;top:908PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-print"<DIV style='left:471PX;top:934PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-print"<DIV style='left:476PX;top:963PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
+
+
+
 //print"<DIV style='left:486PX;top:1830PX;width:249PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>..........................................................................</span></DIV>";
-print"<DIV style='left:477PX;top:800PX;width:70PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
-print"<DIV style='left:477PX;top:833PX;width:70PX;height:27PX;text-align: right;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
-print"<DIV style='left:477PX;top:772PX;width:70PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
 
 print"<DIV style='left:687PX;top:772PX;width:79PX;height:27PX;TEXT-ALIGN:RIGHT;'><span  class='fc1-0'>$nNetprice</span></DIV>";
 print"<DIV style='left:687PX;top:800PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-0'>$nVat</span></DIV>";
 print"<DIV style='left:687PX;top:833PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
-print"<DIV style='left:476PX;top:992PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 
 ?>
@@ -730,8 +741,27 @@ print"<DIV style='left:476PX;top:992PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER
     5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
     6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
 );
-/*
+
 ?>
+</div>
+<!-- 
+Default paper letter size
+w: 216mm h: 279mm
+w: 51.2149em h: 66.1526em
+-->
+<style>
+.letter-page{
+	width: 44.5em;
+	height: 58em;
+	top: 59.5em;
+	/* page-break-after: always; */
+}
+.letter-page div {
+	position: relative!important;
+}
+</style>
+<div class="fc1-0 letter-page">
+
 	<div class="dx_detail">
 		<div>รวมราคาประมาณการอนุมัติ เพื่อดำเนินการจัดซื้อในคราวนี้ <?=$nItems;?> รายการ</div>
 		<div>จำนวนเงิน <?=$nPriadvat;?> บาท <?=$cPriadvat;?></div>
@@ -747,12 +777,17 @@ print"<DIV style='left:476PX;top:992PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER
 			</div>
 		</div>
 	</div>
-
+	<div>
+	<?php
+	print"<DIV style='left:477PX;width:81PX;height:30PX;'>ตรวจถูกต้อง</DIV>";
+	print"<DIV style='left:471PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'>$aYot[2]</DIV>";
+	print"<DIV style='left:476PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'>($aFname[2])</DIV>";
+	print"<DIV style='left:476PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'>$aPost[2] $aPost2[2]</DIV>";
+	?>
+	</div>
+	
+</div>
 <?php
-*/
-
-
-
 print"<BR>";
 print"</BODY>";
 print"</HTML>";
