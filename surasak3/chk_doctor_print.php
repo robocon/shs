@@ -48,6 +48,7 @@ WHERE a.`hn` = '$hn'
 AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
 AND a.`profilecode` = 'UA' 
 AND ( b.`labcode` = 'SPGR' OR b.`labcode` = 'PHU' OR b.`labcode` = 'GLUU' 
+OR b.`labcode` = 'PROU' 
 OR b.`labcode` = 'RBCU' OR b.`labcode` = 'WBCU' OR b.`labcode` = 'EPIU' 
 OR b.`labcode` = 'BLOODU' OR b.`labcode` = 'KETU' ) 
 AND a.`orderdate` LIKE '$date%' ";
@@ -61,17 +62,32 @@ foreach ($ua_items as $key => $item) {
 }
 
 # ETC 
+// $sql = "SELECT b.* 
+// FROM `resulthead` AS a 
+//     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+// WHERE a.`hn` = '$hn' 
+// AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+// AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'LIPID' 
+// OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
+// AND ( 
+//     b.`labcode` = 'CREA' OR b.`labcode` = 'HBSAG' OR b.`labcode` = 'HDL'
+// ) 
+// AND a.`orderdate` LIKE '$date%' ";
+
 $sql = "SELECT b.* 
 FROM `resulthead` AS a 
     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
 WHERE a.`hn` = '$hn' 
 AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
-AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'LIPID' 
-OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
 AND ( 
-    b.`labcode` = 'CREA' OR b.`labcode` = 'HBSAG' OR b.`labcode` = 'HDL'
+    b.`labcode` = 'GLU' 
+    OR b.`labcode` = 'CREA' 
+    OR b.`labcode` = 'CHOL' 
+    OR b.`labcode` = 'HDL' 
+    OR b.`labcode` = 'HBSAG'
 ) 
 AND a.`orderdate` LIKE '$date%' ";
+
 $db->select($sql);
 $etc_items = $db->get_items();
 
@@ -263,13 +279,13 @@ $pdf->Cell(41, 6, '7.การตรวจระดับน้ำตาลในเลือด FBS', 0, 1);
 
 $pdf->Rect(148, 85, 15, 12);
 $pdf->SetXY(148, 85);
-$pdf->Cell(15, 6, $etc_lists['fbs']['result'], 0, 1, 'C');
+$pdf->Cell(15, 6, $etc_lists['glu']['result'], 0, 1, 'C');
 // $pdf->SetXY(148, 91);
 // $pdf->Cell(15, 6, '', 0, 1, 'C');
 
 $pdf->Rect(163, 85, 25, 12);
 $pdf->SetXY(163, 85);
-$pdf->Cell(25, 6, $etc_lists['fbs']['normalrange'], 0, 1, 'C');
+$pdf->Cell(25, 6, $etc_lists['glu']['normalrange'], 0, 1, 'C');
 // $pdf->SetXY(163, 91);
 // $pdf->Cell(25, 6, '', 0, 1, 'C');
 
@@ -281,12 +297,12 @@ $pdf->SetXY(13, 103);
 $pdf->Cell(46, 6, 'บุคลากรสาธารณสุข', 0, 1);
 
 $pdf->Rect(59, 97, 22, 12);
-if( $user['breast'] == 1 ){
+if( !empty($user['breast']) && $user['breast'] == 1 ){
     $pdf->Line(65, 106, 75, 100);
 }
 
 $pdf->Rect(81, 97, 26, 12);
-if( $user['breast'] == 0 ){
+if( !empty($user['breast']) && $user['breast'] == 0 ){
     $pdf->Line(89, 106, 99, 100);
 }
 
@@ -332,16 +348,16 @@ $pdf->SetXY(107, 115);
 $pdf->Cell(41, 6, 'Total Cholesterol', 0, 1, 'R');
 
 $pdf->Rect(148, 109, 15, 12);
-$pdf->SetXY(148, 109);
-$pdf->Cell(15, 6, '', 0, 1, 'C');
+// $pdf->SetXY(148, 109);
+// $pdf->Cell(15, 6, $etc_lists['chol']['result'], 0, 1, 'C');
 $pdf->SetXY(148, 115);
-$pdf->Cell(15, 6, '', 0, 1, 'C');
+$pdf->Cell(15, 6, $etc_lists['chol']['result'], 0, 1, 'C');
 
 $pdf->Rect(163, 109, 25, 12);
-$pdf->SetXY(163, 109);
-$pdf->Cell(25, 6, '', 0, 1, 'C');
+// $pdf->SetXY(163, 109);
+// $pdf->Cell(25, 6, $etc_lists['chol']['result'], 0, 1, 'C');
 $pdf->SetXY(163, 115);
-$pdf->Cell(25, 6, '', 0, 1, 'C');
+$pdf->Cell(25, 6, $etc_lists['chol']['normalrange'], 0, 1, 'C');
 
 # 4
 $pdf->Rect(13, 121, 46, 12);
@@ -607,9 +623,9 @@ $pdf->SetXY(107, 181);
 $pdf->Cell(41, 6, 'Albumin', 0, 1);
 $pdf->Line(128, 187, 148, 187);
 $pdf->SetXY(148, 181);
-$pdf->Cell(15, 6, '', 1, 1, 'C');
+$pdf->Cell(15, 6, $ua_lists['prou']['result'], 1, 1, 'C');
 $pdf->SetXY(163, 181);
-$pdf->Cell(25, 6, '', 1, 1, 'C');
+$pdf->Cell(25, 6, $ua_lists['prou']['normalrange'], 1, 1, 'C');
 
 $pdf->SetXY(107, 187);
 $pdf->Cell(41, 6, 'RBC', 0, 1);

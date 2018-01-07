@@ -16,7 +16,7 @@ if( $action === 'save' ){
     $date_chk = input_post('date_chk');
     $yearchk = get_year_checkup();
     $ear = input_post('ear');
-    $breast = input_post('breast');
+    
     $eye = input_post('eye');
     $snell_eye = input_post('snell_eye');
     $cxr = input_post('cxr');
@@ -24,6 +24,12 @@ if( $action === 'save' ){
     $suggestion = input_post('suggestion');
     $doctor = input_post('doctor');
     $officer = $_SESSION['sOfficer'];
+
+    $sex = input_post('sex');
+    $breast = '';
+    if( $sex == "ญ" ){
+        $breast = input_post('breast');
+    }
 
     $curr_date = date('Y-m-d');
     $sql = "SELECT `id` FROM `chk_doctor` WHERE `date_chk` LIKE '$curr_date%' AND `hn` = '$hn' ";
@@ -60,9 +66,6 @@ if( $action === 'save' ){
 
     }
 
-    // dump($sql);
-    // exit;
-
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
@@ -86,11 +89,11 @@ $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
 $date_now = date("Y-m-d H:i:s");
 $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
 
-$sql = "SELECT a.*, b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`
+$sql = "SELECT a.*, 
+b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
 FROM `opd` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-WHERE a.`thdatehn` = '$date_hn' 
-";
+WHERE a.`thdatehn` = '$date_hn' ";
 $db->select($sql);
 $opd = $db->get_item();
 
@@ -314,15 +317,18 @@ h1,h3,p{
             </td>
         </tr>
         <?php
+
         $sql = "SELECT b.* 
         FROM `resulthead` AS a 
             RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
         WHERE a.`hn` = '$hn' 
         AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
-        AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'LIPID' 
-        OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
         AND ( 
-            b.`labcode` = 'CREA' OR b.`labcode` = 'HBSAG' OR b.`labcode` = 'HDL'
+            b.`labcode` = 'GLU' 
+            OR b.`labcode` = 'CREA' 
+            OR b.`labcode` = 'CHOL' 
+            OR b.`labcode` = 'HDL' 
+            OR b.`labcode` = 'HBSAG'
         ) 
         AND a.`orderdate` LIKE '$curr_day%' ";
 
@@ -372,6 +378,9 @@ h1,h3,p{
                 <label for="ear2"><input type="radio" name="ear" id="ear2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
+        <?php
+        if( $opd['sex'] == 'ญ' ){
+        ?>
         <tr>
             <td class="tb-title">การตรวจเต้านมโดยแพทย์<br>หรือบุคลากรสาธารณสุข</td>
             <td>
@@ -379,6 +388,9 @@ h1,h3,p{
                 <label for="breast2"><input type="radio" name="breast" id="breast2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
+        <?php
+        }
+        ?>
         <tr>
             <td class="tb-title">การตรวจตาโดยความดูแลของจักษุแพทย์</td>
             <td>
@@ -429,6 +441,8 @@ h1,h3,p{
         <input type="hidden" name="yot" value="<?=$opd['yot'];?>">
         <input type="hidden" name="name" value="<?=$opd['name'];?>">
         <input type="hidden" name="surname" value="<?=$opd['surname'];?>">
+
+        <input type="hidden" name="sex" value="<?=$opd['sex'];?>">
 
         <?php
         $address = $opd['address'].' '.( !empty($opd['tambol']) ? 'ต.'.$opd['tambol'] : '' ).' '.( !empty($opd['ampur']) ? 'อ.'.$opd['ampur'] : '' ).' '.( !empty($opd['changwat']) ? 'จ.'.$opd['changwat'] : '' );
