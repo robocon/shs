@@ -17,6 +17,10 @@ AND a.`date_chk` LIKE '$date%' ";
 $db->select($sql);
 $user = $db->get_item();
 
+$sql = "SELECT `camp` FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
+$db->select($sql);
+$dxofyear = $db->get_item();
+
 # CBC
 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange` 
 FROM `resulthead` AS a 
@@ -122,7 +126,7 @@ $pdf->AddPage('P', 'A4');
 
 
 
-$pdf->SetFont('THSarabun','B',13); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+$pdf->SetFont('AngsanaNew','',13); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 $pdf->SetXY(0, 25);
 $pdf->Cell(210, 6, 'ใบรายงานผลตรวจสุขภาพ', 0, 1, 'C');
 
@@ -131,12 +135,16 @@ $pdf->Cell(163, 6, 'โรงพยาบาล  ค่ายสุรศักดิ์มนตรี', 0, 1);
 print_dashed(42,42,100,42);
 
 
-$pdf->SetFont('THSarabun','',10); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+$pdf->SetFont('AngsanaNew','',10); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 # หัวข้อ
 $pdf->Rect(13, 43, 46, 6);
 $pdf->SetXY(13, 43);
 $pdf->Cell(46, 6, 'หน่วยงาน', 1, 1);
+
+$pdf->SetXY(26, 43);
+$pdf->Cell(26, 6, $dxofyear['camp'], 0, 1);
+
 // print_dashed(23,52,52,52);
 
 $pdf->Rect(59, 43, 22, 6);
@@ -214,11 +222,11 @@ $pdf->Cell(40, 6, $user['address'], 0, 1);
 
 $pdf->Line(13, 67, 188, 67);
 
-$pdf->SetFont('THSarabun','B',13); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+$pdf->SetFont('AngsanaNew','',13); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 $pdf->SetXY(0, 67);
 $pdf->Cell(210, 6, 'ข้อมูลสุขภาพ (Health data)', 0, 1, 'C');
 
-$pdf->SetFont('THSarabun','',10); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+$pdf->SetFont('AngsanaNew','',10); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 ### หัวข้อ
 $pdf->Rect(13, 73, 46, 12);
@@ -708,7 +716,7 @@ $pdf->Cell(38, 6, $user['suggestion'], 0, 1);
 print_dashed(53,239.50,188,239.50);
 print_dashed(13,245,188,245);
 
-$pdf->SetFont('THSarabun','B',12);
+$pdf->SetFont('AngsanaNew','',12);
 
 $pdf->SetXY(13, 247);
 $pdf->Cell(25, 6, 'ผู้ประกันตนลงนาม', 0, 1);
@@ -722,7 +730,5 @@ $pdf->Line(133,253,179,253);
 $pdf->SetXY(133, 254);
 $pdf->Cell(46, 6, '( '.$user['doctor'].' )', 0, 1, 'C');
 
-
-
-// $pdf->AutoPrint(true);
+$pdf->AutoPrint(true);
 $pdf->Output();

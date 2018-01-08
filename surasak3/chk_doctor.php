@@ -87,7 +87,8 @@ $post_vn = 1;
 $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
 
 $date_now = date("Y-m-d H:i:s");
-$date_hn = date('d-m-').( date('Y') + 543 ).$hn;
+// $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
+$date_hn = date('Y-m-d').$hn;
 
 $sql = "SELECT a.*, 
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
