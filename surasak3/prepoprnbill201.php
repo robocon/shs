@@ -155,7 +155,7 @@ print"</head>";
 print"<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
 
 ?>
-<div style="page-break-after: always; border: 1px solid red;">
+<div style="page-break-after: always;">
 <?php
 
 print"<DIV style='z-index:0'> &nbsp; </div>";
@@ -167,30 +167,26 @@ print"<DIV style='z-index:0'> &nbsp; </div>";
 print"<div style='left:8PX;top:140PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:761PX;'></div>";
 //// 
 //// ตารางเส้นปะ
-print"<div style='left:44PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:44PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
 // เส้นหน่วยนับ
-print"<div style='left:260PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:260PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
 // ขนาดบรรจุ
-print"<div style='left:314PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:314PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
 // จำนวน
-print"<div style='left:361PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:361PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
 // ราคากลาง
-print"<div style='left:411PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:411PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
 // แหล่งที่มาของราคากลาง
-print"<div style='left:477PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:477PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='555PX'><td>&nbsp;</td></table></div>";
 // หน่วยละรวมvat
-print"<div style='left:555PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:621PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:555PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:621PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
 
-print"<div style='left:687PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:760PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+print"<div style='left:687PX;top:110PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:910PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
 //
-///เส้นแนวนอนที่ 3 ของตาราง
-print"<div style='left:8PX;top:828PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:761PX;'></div>";
-//// ขีด รวม  รายการ
-print"<div style='left:124PX;top:851PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
 //////
 // ความกว้าง  สูง ของตาราง  (กรอบ)
-print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:110PX;width:761PX;height:760PX;'><table border=0 cellpadding=0 cellspacing=0 width=736px height=553px><TD>&nbsp;</TD></TABLE></DIV>";
+print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:110PX;width:761PX;height:910PX;'><table border=0 cellpadding=0 cellspacing=0 width=736px height=553px><TD>&nbsp;</TD></TABLE></DIV>";
 ///
 // print"<DIV style='left:518PX;top:40PX;width:105PX;height:26PX;'><span class='fc1-0'>
 // 	     $cPrepodate</span></DIV>";
@@ -317,9 +313,10 @@ print"<DIV style='left:687PX;top:113PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;
     array_push($aAmount ,"");
     array_push($aPrice,"");
     array_push($aPackpri,"");
-    array_push($aSpecno,"");
+	array_push($aSpecno,"");
+	
 //มีได้ 12 รายการ+หมดรายการ(13แถว) ใส่ NULL ให้array ที่เหลือดังนี้
-for ($n=$x+1; $n<=20; $n++){
+for ($n=$x+1; $n<=27; $n++){
     array_push($aX,"");
 	array_push($aTradname,""); 
     array_push($aPacking,"");
@@ -332,7 +329,7 @@ for ($n=$x+1; $n<=20; $n++){
 
 ///แถวที่1
 $line_start = 149;
-for ($i=1; $i < 21; $i++) { 
+for ($i=1; $i < 27; $i++) { 
 	
 	print"<DIV style='left:11PX;top:".$line_start."PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
 		<span class='fc1-4'>$aX[$i]</span></DIV>";
@@ -357,7 +354,10 @@ for ($i=1; $i < 21; $i++) {
 	print"<DIV style='left:555PX;top:".$line_start."PX;width:61PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 		<span class='fc1-4'>$aPackpri[$i]</span></DIV>";
 
-	$line_start += 30;
+	if( !empty($aTradname[$i]) ){
+		$line_start += 30;
+	}
+	
 }
 
 /*
@@ -706,27 +706,30 @@ print"<DIV style='left:674PX;top:719PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'
 /////////
 */
 
+///เส้นแนวนอนที่ 3 ของตาราง
+print"<div style='left:8PX;top:980PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:761PX;'></div>";
 
 
-print"<DIV style='left:477PX;top:800PX;width:70PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
-print"<DIV style='left:477PX;top:833PX;width:70PX;height:27PX;text-align: right;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
-print"<DIV style='left:477PX;top:772PX;width:70PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
+//// ขีด รวม  รายการ
+print"<div style='left:114PX;top:1006PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
 
-print"<DIV style='left:118PX;top:833PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>";
-	print"<span class='fc1-0'>$nItems</span></DIV>";
-print"<DIV style='left:89PX;top:833PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
-print"<DIV style='left:215PX;top:833PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
+print"<DIV style='left:477PX;top:929PX;width:70PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
+print"<DIV style='left:477PX;top:959PX;width:70PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
+print"<DIV style='left:477PX;top:989PX;width:70PX;height:27PX;text-align: right;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
+
+print"<DIV style='left:621PX;top:929PX;width:61PX;height:27PX;TEXT-ALIGN:RIGHT;'><span  class='fc1-0'>$nNetprice</span></DIV>";
+print"<DIV style='left:621PX;top:959PX;width:61PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$nVat</span></DIV>";
+print"<DIV style='left:621PX;top:989PX;width:61PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
+
+print"<DIV style='left:118PX;top:989PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$nItems</span></DIV>";
+print"<DIV style='left:89PX;top:989PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
+print"<DIV style='left:215PX;top:989PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
 
 
 
 
 //print"<DIV style='left:486PX;top:1830PX;width:249PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>..........................................................................</span></DIV>";
 
-print"<DIV style='left:687PX;top:772PX;width:79PX;height:27PX;TEXT-ALIGN:RIGHT;'><span  class='fc1-0'>$nNetprice</span></DIV>";
-print"<DIV style='left:687PX;top:800PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
-	<span class='fc1-0'>$nVat</span></DIV>";
-print"<DIV style='left:687PX;top:833PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
-	<span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
 
 
 ?>
