@@ -91,7 +91,7 @@ $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
 
 $sql = "SELECT a.*, 
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
-FROM `opd` AS a 
+FROM `dxofyear_out` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`thdatehn` = '$date_hn' ";
 $db->select($sql);
