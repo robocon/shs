@@ -12,28 +12,27 @@
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
 SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright
 FROM (
-    SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2`, `doctor` 
+    SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
         FROM `opday` 
         WHERE `thidate` LIKE '$thimonth%' 
     UNION 
-    SELECT b.`hn`, SUBSTRING(b.`dcdate`, 1, 10) AS `date2`, b.`doctor`
+    SELECT b.`hn`, SUBSTRING(`dcdate`, 1, 10) AS `date2` 
         FROM `ipcard` AS b 
         WHERE b.`dcdate` LIKE '$thimonth%' 
 ) AS c 
 LEFT JOIN `opcard` AS d 
     ON d.`hn` = c.`hn`
-GROUP BY d.`hn`
-ORDER BY c.`date2`";
+GROUP BY d.`hn`";
 
-mysql_query($temp1) or die( mysql_error() );
+
+$querytmp1 = mysql_query($temp1) or die("Query failed,Create temp1");
 
 $sql1="SELECT * 
-FROM report_person1";
-// dump($sql1);
-$result1 = mysql_query($sql1) or die( mysql_error() );
+From report_person1";
+$result1 = mysql_query($sql1) or die("Query failed, Select report_person1 (person)");
 $txt = '';
 while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright) = mysql_fetch_row ($result1)) {		
-// dump($hn);
+
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
     
@@ -222,8 +221,6 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
     $txt .= $inline;
 
 } //close while
-// dump($txt);
-// exit;
 $filePath = $dirPath.'/person.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;

@@ -132,6 +132,9 @@ if( $action === false ){
 	
 	// แฟ้มที่ 2
 	include 'libs/address.php';
+
+	// 4
+	include 'libs/chronic.php';
 	
 	// แฟ้มที่ 11
 	include 'libs/drugallergy.php';
