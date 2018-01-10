@@ -39,16 +39,24 @@ $q = mysql_query($sql) or die( mysql_query() );
 
 $txt = "";
 while ( $item = mysql_fetch_assoc($q) ) {
-    $txt .= $item['HOSPCODE'].'|'.$item['PID'].'|'.$item['DATE_DIAG'].'|'.$item['CHRONIC'].'|'.$item['HOSP_DX'].'|'.$item['HOSP_RX'].'|'.$item['DATE_DISCH'].'|'.$item['TYPEDISCH'].'|'.$item['D_UPDATE'].'|';
+	$txt .= $item['HOSPCODE'].'|'.
+	$item['PID'].'|'.
+	$item['DATE_DIAG'].'|'.
+	$item['CHRONIC'].'|'.
+	$item['HOSP_DX'].'|'.
+	$item['HOSP_RX'].'|'.
+	$item['DATE_DISCH'].'|'.
+	$item['TYPEDISCH'].'|'.
+	$item['D_UPDATE']."\r\n";
 }
 
-$filePath = $dirPath.'/death.txt';
+$filePath = $dirPath.'/chronic.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|HOSPDEATH|AN|SEQ|DDEATH|CDEATH_A|CDEATH_B|CDEATH_C|CDEATH_D|ODISEASE|CDEATH|PREGDEATH|PDEATH|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|DATE_DIAG|CHRONIC|HOSP_DX|HOSP_RX|DATE_DISCH|TYPEDISCH|D_UPDATE\r\n";
 $txt = $header.$txt;
-$qofPath = $dirPath.'/qof_death.txt';
+$qofPath = $dirPath.'/qof_chronic.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 

@@ -126,7 +126,11 @@ if( $action === false ){
 	$hospcode = '11512';
 	$zipLists = array();
 	$qofLists = array();
-	
+
+	include 'libs/provider.php';
+
+	exit;
+
 	// แฟ้มที่ 1
 	include 'libs/person.php';
 	
@@ -135,6 +139,11 @@ if( $action === false ){
 
 	// 4
 	include 'libs/chronic.php';
+
+	// 8
+	include 'libs/disability.php';
+
+	include 'libs/provider.php';
 	
 	// แฟ้มที่ 11
 	include 'libs/drugallergy.php';

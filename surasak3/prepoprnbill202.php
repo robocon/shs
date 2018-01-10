@@ -600,6 +600,23 @@ print"<DIV style='left:679PX;top:779PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;
 	<span class='fc1-4'>$aSpecno[20]</span></DIV>";
 print"<DIV style='left:519PX;top:779PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-4'>$aPackpri[20]</span></DIV>";
+
+///แถวที่21
+print"<DIV style='left:11PX;top:809PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-4'>$aX[21]</span></DIV>";
+print"<DIV style='left:49PX;top:809PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[21]</span></DIV>";
+print"<DIV style='left:306PX;top:809PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-4'>$aPacking[21]</span></DIV>";
+print"<DIV style='left:362PX;top:809PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4'>$aPack[21]</span></DIV>";
+print"<DIV style='left:462PX;top:809PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4'>$aAmount[21]</span></DIV>";
+print"<DIV style='left:597PX;top:809PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4'>$aPrice[21]</span></DIV>";
+print"<DIV style='left:679PX;top:809PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
+<span class='fc1-4'>$aSpecno[21]</span></DIV>";
+print"<DIV style='left:519PX;top:809PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
+<span class='fc1-4'>$aPackpri[21]</span></DIV>";
 	
 	///////
 //print"<DIV style='left:79PX;top:278PX;width:159PX;height:22PX;'><span class='fc1-4'>----------&nbsp;&nbsp;หมดรายการ&nbsp;&nbsp;----------</span></DIV>";
