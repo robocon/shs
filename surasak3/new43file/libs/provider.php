@@ -83,15 +83,63 @@ while ( $item = mysql_fetch_assoc($q) ) {
 	$txt .= $item['MOVETO'].'|'.$item['D_UPDATE']."\r\n";
 }
 
-// @todo ค้างของหมอ
 
 
+$sql = "SELECT 
+'11512' AS `HOSPCODE`, 
+CONCAT(a.`doctorcode`,a.`row_id`) AS `PROVIDER`, 
+'' AS `REGISTERNO`, 
+'' AS `CONCIL`, 
+b.`idcard` AS `CID`, 
+a.`yot` AS `PRENAME`,  
+SUBSTRING_INDEX(a.`doctor_name`, ' ', 1) AS `NAME`, 
+SUBSTRING_INDEX(a.`doctor_name`, ' ', -1) AS `LNAME`, 
+`sex` AS `SEX`, 
+thDateToEn(b.`dbirth`) AS `BIRTH`, 
+CASE
+	WHEN a.`menucode` = 'ADMNID' THEN '083'
+	WHEN a.`menucode` = 'ADMDEN' THEN '02'
+	ELSE '01'
+END AS `PROVIDERTYPE`,
+REPLACE(SUBSTRING(b.`regisdate`,1,10),'-','') AS `STARTDATE`, 
+'' AS `OUTDATE`, 
+'' AS `MOVEFROM`, 
+'' AS `MOVETO`, 
+thDateTimeToEn(b.`lastupdate`) AS `D_UPDATE`
+FROM ( 
 
+	SELECT *, 
+		TRIM(SUBSTRING(`name`,6)) AS `doctor_name`, 
+		REPLACE(TRIM(SUBSTRING(`name`,6)), ' ', '') AS `ptname` 
+	FROM `doctor` 
+	WHERE `status` = 'y' 
+	AND ( `name` NOT LIKE 'HD%' AND `name` NOT LIKE 'CHK%' )
 
+) AS a 
+LEFT JOIN ( 
 
+	SELECT `idcard`,`yot`,`name`,`surname`,IF( TRIM(`sex`) = 'ช', '1', '2') AS `sex`,`dbirth`,`regisdate`,`lastupdate`, CONCAT(`name`,`surname`) AS `fullname` 
+	FROM `opcard` 
+	WHERE ( `idcard` != '' AND `idcard` != '-' ) 
+	AND ( `idguard` NOT LIKE 'MX04%' AND `idguard` NOT LIKE 'MX07%' )
 
+ ) AS b ON b.`fullname` = a.`ptname`  
+
+WHERE b.`idcard` IS NOT NULL ";
+$q = mysql_query($sql) or die( mysql_error() );
+while ( $item = mysql_fetch_assoc($q) ) {
+	$txt .= $item['HOSPCODE'].'|'.$item['PROVIDER'].'|';
+	$txt .= $item['REGISTERNO'].'|'.$item['CONCIL'].'|';
+	$txt .= $item['CID'].'|'.$item['PRENAME'].'|';
+	$txt .= $item['NAME'].'|'.$item['LNAME'].'|';
+	$txt .= $item['SEX'].'|'.$item['BIRTH'].'|';
+	$txt .= $item['PROVIDERTYPE'].'|'.$item['STARTDATE'].'|';
+	$txt .= $item['OUTDATE'].'|'.$item['MOVEFROM'].'|';
+	$txt .= $item['MOVETO'].'|'.$item['D_UPDATE']."\r\n";
+}
 
 $filePath = $dirPath.'/provider.txt';
+
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
