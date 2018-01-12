@@ -127,10 +127,6 @@ if( $action === false ){
 	$zipLists = array();
 	$qofLists = array();
 
-	include 'libs/chronicfu.php';
-
-	exit;
-
 	// แฟ้มที่ 1
 	include 'libs/person.php';
 	
@@ -144,6 +140,8 @@ if( $action === false ){
 	include 'libs/disability.php';
 
 	include 'libs/provider.php';
+
+	include 'libs/dental.php';
 	
 	// แฟ้มที่ 11
 	include 'libs/drugallergy.php';

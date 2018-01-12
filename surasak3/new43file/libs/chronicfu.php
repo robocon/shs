@@ -38,8 +38,6 @@ LEFT JOIN (
 LEFT JOIN `inputm` AS c ON c.`name` = x.`officer` 
 WHERE s.`icd10` IS NOT NULL;";
 
-dump($sql);
-
 $q = mysql_query($sql) or die( mysql_error() );
 
 $txt = "";
@@ -70,4 +68,4 @@ $qofPath = $dirPath.'/qof_chronicfu.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
-echo "สร้างแฟ้ม chronicfu เสร็จเรียบร้อย";
+echo "สร้างแฟ้ม chronicfu เสร็จเรียบร้อย<br>";

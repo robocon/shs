@@ -17,9 +17,9 @@ $sql = "SELECT
 '' AS `DIAGCODE`, 
 '' AS `DATE_DETECT`, 
 '' AS `DATE_DISAB`, 
-thDateTimeToEn(`thidate`) AS `D_UPDATE` 
+thDateTimeToEn(`lastupdate`) AS `D_UPDATE` 
 FROM `opcard` 
-WHERE `lastupdate` >= '$thiyr-10-01' AND `thidate` <= '$thiyr_end-09-30'
+WHERE `lastupdate` >= '$thiyr-10-01' AND `lastupdate` <= '$thiyr_end-09-30'
 AND ( `ptright` LIKE 'R12%' OR `ptright` LIKE 'R40%' );";
 $q = mysql_query($sql) or die( mysql_error() );
 
@@ -47,4 +47,4 @@ $qofPath = $dirPath.'/qof_disability.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
-echo "สร้างแฟ้ม disability เสร็จเรียบร้อย";
+echo "สร้างแฟ้ม disability เสร็จเรียบร้อย<br>";

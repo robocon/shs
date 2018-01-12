@@ -149,4 +149,4 @@ $qofPath = $dirPath.'/qof_provider.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
-echo "สร้างแฟ้ม provider เสร็จเรียบร้อย";
+echo "สร้างแฟ้ม provider เสร็จเรียบร้อย<br>";
