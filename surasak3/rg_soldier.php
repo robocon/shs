@@ -512,6 +512,23 @@ if( empty($page) ){
             </tbody>
         </table>
         </div>
+        <div>
+            <?php 
+            $selected_y_th = $selected_y + 543;
+            $date_th = "$selected_y_th-$selected_m";
+            
+            $sql = "SELECT COUNT(`hn`) AS `hn_row` 
+            FROM `opday2` 
+            WHERE `thidate` LIKE '$date_th%' 
+            AND `toborow` LIKE 'ex30%' ";
+            $db->select($sql);
+
+            $item_row = $db->get_item();
+
+            ?>
+            <p>จำนวนผู้มาขอรับใบรับรองแพทย์ <?=$item_row['hn_row'];?> ราย</p>
+            <p>จำนวนผู้ที่ได้รับใบรับรองแพทย์ <?=( $i -1 );?> ราย</p>
+        </div>
         <script type="text/javascript">
             function del_confirm(){
                 var c = confirm('ยืนยันการลบข้อมูล');
@@ -728,7 +745,7 @@ if( empty($page) ){
                 ?>
             </div>
         </div>
-    
+        
     
         <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
         <script type="text/javascript">

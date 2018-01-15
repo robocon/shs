@@ -13,7 +13,8 @@ if( $action === false ){
 	?>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
-		<p>อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
+		<p>- อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
+		<p>- เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
 	</div>
 	<form action="export_new43.php" method="post">
 		<div>

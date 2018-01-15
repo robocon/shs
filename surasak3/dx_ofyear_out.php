@@ -195,11 +195,25 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix')  Order by a.autonumber DESC limit 0,1";
 	list($lab_date) = mysql_fetch_row(mysql_query($sql));
 
-	$sql = "Select labcode, result, unit,normalrange,flag  From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'UA' AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix' ) Order by labcode ASC ";
+	$sql = "Select labcode, result, unit,normalrange,flag  
+	From resulthead as a , 
+	resultdetail as b  
+	where a.hn='".$arr_view["hn"]."' 
+	AND a.autonumber = b.autonumber 
+	AND b.parentcode = 'UA' 
+	AND (a.clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix' ) 
+	Order by b.seq ASC ";
 
 	$result_ua = mysql_query($sql);
 
-	$sql = "Select labcode, result, unit,normalrange,flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix') Order by labcode ASC";
+	$sql = "Select labcode, result, unit,normalrange,flag 
+	From resulthead as a , 
+	resultdetail as b  
+	where a.hn='".$arr_view["hn"]."' 
+	AND a.autonumber = b.autonumber 
+	AND b.parentcode = 'CBC' 
+	AND (a.clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix') 
+	Order by b.seq ASC";
 	$result_cbc = mysql_query($sql);
 
 	$sql = "Select labcode, result, unit,normalrange,flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix') Order by a.autonumber ASC ";
