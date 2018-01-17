@@ -8,48 +8,6 @@ if( empty($_SESSION['sOfficer']) ){
 
 $db = Mysql::load();
 
-/**
- * @todo 
- * [] form เพิ่มข้อมูล
- *      [] แจ้งเตือนแพทย์ซ็ำ
- *      [] แนบรูป + ตัดรูป 1 นิ้ว
- * [] หน้าหลัก + ค้นหาตาม HN
- *      [] ส่งออกเป็น pdf + xlsx
- * [] หน้าแก้ไขข้อมูล
- *      [] ฟอร์มเดียวกันกับหน้าเพิ่ม
- */
-
- /*
-CREATE TABLE `rg_soldier` (
-  `id` int(11) NOT NULL auto_increment,
-  `date` datetime default NULL,
-  `hn` varchar(45) default NULL,
-  `address` text,
-  `regular` text,
-  `last_update` datetime default NULL,
-  `yot_pt` varchar(50) NOT NULL,
-  `ptname` varchar(255) default NULL,
-  `yearchk` varchar(45) default NULL,
-  `pic` varchar(255) default NULL,
-  `book_id` varchar(50) NOT NULL,
-  `number_id` varchar(50) NOT NULL,
-  `yot1` varchar(50) NOT NULL,
-  `doctor1` varchar(255) NOT NULL,
-  `code1` varchar(50) NOT NULL,
-  `yot2` varchar(50) NOT NULL,
-  `doctor2` varchar(255) NOT NULL,
-  `code2` varchar(50) NOT NULL,
-  `yot3` varchar(50) NOT NULL,
-  `doctor3` varchar(255) NOT NULL,
-  `code3` varchar(50) NOT NULL,
-  `diag` text NOT NULL,
-  `province` varchar(255) NOT NULL,
-  `editor` varchar(255) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `hn` (`hn`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
- */
-
 $action = input('action');
 if( $action === "save" ){
 
@@ -526,7 +484,7 @@ if( empty($page) ){
             $item_row = $db->get_item();
 
             ?>
-            <p>จำนวนผู้มาขอรับใบรับรองแพทย์ <?=$item_row['hn_row'];?> ราย</p>
+            <p><a href="rg_solider_ex30.php?date_th=<?=$date_th;?>" target="_blank">จำนวนผู้มาขอรับใบรับรองแพทย์ <?=$item_row['hn_row'];?> ราย</a></p>
             <p>จำนวนผู้ที่ได้รับใบรับรองแพทย์ <?=( $i -1 );?> ราย</p>
         </div>
         <script type="text/javascript">

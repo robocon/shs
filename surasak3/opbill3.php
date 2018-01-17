@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <body Onload="window.print();">
 <style>
 @media print{
@@ -11,7 +12,7 @@ color: #FFF;
 }
 </style>
 <?php
-session_start();
+
 if(isset($sIdname)){} else {die;} //for security
 
 if($paid<>$sNetprice){
@@ -248,6 +249,8 @@ else{
 	$values_plus = ",'". $sSumYprice."' ";
 }
 
+$hemo_txt = "";
+
 for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	$query = "SELECT * FROM depart WHERE row_id = '".$_SESSION['idnumber'][$r]."' and hn='".$hn_now."' and tvn='".$_SESSION["sVn"]."'";
     $result = mysql_query($query) or die(mysql_error());
@@ -278,6 +281,11 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 		$aSumn+=$sSumNprice;
 		$aTotal+=$sNetprice;
 		$diag =$row->diag;
+		
+		if( $row->depart == "HEMO" ){
+			list($hemo_date, $hemo_time) = explode(' ', $row->date);
+			$hemo_txt = "ได้รับการตรวจเมื่อวันที่ ".$hemo_date;
+		}
 		
 					
 		$_SESSION["sVn"]=$row->tvn;
@@ -594,6 +602,10 @@ if(count($_SESSION['tDiag'])==1){
 					}
 	//}
 } echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
+
+
+echo $hemo_txt;
+
 echo "</font></td>";
 	print "</tr>";
 	print "</table>";

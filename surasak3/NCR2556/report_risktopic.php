@@ -40,7 +40,7 @@ include '../bootstrap.php';
             
                 <form action="report_risktopic.php" method="post">
 
-                    <h3>ค้นหาตามช่วงระยะเวลา และชนิดความเสี่ยง</h3>
+                    <h3>ค้นหาความรุนแรงและเหตุการณ์ ตามช่วงเวลาและความเสี่ยง</h3>
                     <?php 
                     $year_range = range('2556', get_year_checkup(true) );
                     $def_year = date('Y') + 543;
@@ -83,8 +83,6 @@ include '../bootstrap.php';
 
             </div>
         </div>
-
-
 
         <?php
         $action = input_post('action');
@@ -179,40 +177,76 @@ include '../bootstrap.php';
             AND `$risk` = '1' 
             AND `clinic` != '' 
             ORDER BY `clinic` ";
-            // dump($sql);
             $q = mysql_query($sql) or die( mysql_error() );
 
+            // เอาข้อมูลมาจัด key ใหม่
             $sql = "SELECT *, CONCAT(`topic`,`clinic`) AS `key`, COUNT(`nonconf_id`) AS `rows`
             FROM `tmp_ncr2556` 
             GROUP BY CONCAT(`topic`,`clinic`)";
 
             $topic_lists = array();
             $q = mysql_query($sql) or die( mysql_error() );
-            while ( $item = mysql_fetch_assoc($q) ) {
 
-                $key = $item['key'];
-                $topic_lists[$key] = $item['rows'];
+            $ncr_rows = mysql_num_rows($q);
+            if( $ncr_rows > 0 ){
+
+                while ( $item = mysql_fetch_assoc($q) ) {
+                    $key = $item['key'];
+                    $topic_lists[$key] = $item['rows'];
+                }
+    
+                $title = $def_fullm_th[$month_start].' '.$year_start;
+                if( $date_start != $date_end ){
+                    $title = $def_fullm_th[$month_start].' '.$year_start.' - '.$def_fullm_th[$month_end].' '.$year_end;
+                }
+    
+                ?>
+    
+                <h3 class="forntsarabun"><?=$risk_list[$risk];?> <?=$title;?></h3>
+    
+                <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse" width="100%">
+                    <tr bgcolor="#00CCFF">
+                        <th rowspan="2">ความรุนแรง</th>
+                        <th colspan="9">เหตุการณ์</th>
+                    </tr>
+                    <tr bgcolor="#00CCFF">
+                        <?php
+                        foreach ($dmg_list as $key => $dmg) {
+                            ?>
+                            <th><?=$dmg;?></th>
+                            <?php
+                        }
+                        ?>
+                    </tr>
+                <?php 
+                $i = 0;
+                foreach ($event_list as $key => $event) {
+                    ++$i;
+                    ?>
+                    <tr>
+                        <td><?=$i.') '.$event;?></td>
+                    <?php
+                    foreach ($dmg_list as $key_dmg => $dmg) {
+    
+                        $set_key = $key.$dmg;
+                        ?>
+                        <td align="center" width="5%"><?=( isset($topic_lists[$set_key]) ? $topic_lists[$set_key] : '0' );?></td>
+                        <?php
+                    }
+                    ?>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </table>
+                <?php
+
+            }else{
+                ?><p>ไม่พบข้อมูล</p><?php
             }
-            dump($topic_lists);
 
-
-/*
-- สร้าง array 2มิติ
-topic[X][risk] เช่น topic1A topic1B topic1D
-*/
-            // dump($sql);
         }
-        
-
         ?>
     </div>
-
-    <?php 
-
-    // ncr2556
-    // nonconf_date
-    ?>
-
 </body>
-
 </html>
