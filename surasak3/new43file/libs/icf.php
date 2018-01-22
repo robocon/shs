@@ -12,16 +12,14 @@ $sql = "SELECT
 '11512' AS `HOSPCODE`, 
 '' AS `DISABID`, 
 `hn` AS `PID`, 
-'' AS `DISABTYPE`, 
-'' AS `DISABCAUSE`, 
-'' AS `DIAGCODE`, 
-'' AS `DATE_DETECT`, 
-'' AS `DATE_DISAB`, 
-thDateTimeToEn(`lastupdate`) AS `D_UPDATE` 
-FROM `opcard` 
-WHERE 
-#`lastupdate` >= '$thiyr-10-01' AND `lastupdate` <= '$thiyr_end-09-30' 
-`lastupdate` LIKE '$thimonth%' 
+`vn` AS `SEQ`, 
+thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERRV`, 
+'' AS `ICF`,
+'' AS `QUALIFIER`,
+'' AS `PROVIDER`,
+thDateTimeToEn(`thidate`) AS `D_UPDATE` 
+FROM `opday` 
+WHERE `thidate` LIKE '$thimonth%'
 AND ( `ptright` LIKE 'R12%' OR `ptright` LIKE 'R40%' );";
 $q = mysql_query($sql) or die( mysql_error() );
 
@@ -30,23 +28,23 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $txt .= $item['HOSPCODE'].'|'
     .$item['DISABID'].'|'
     .$item['PID'].'|'
-    .$item['DISABTYPE'].'|'
-    .$item['DISABCAUSE'].'|'
-    .$item['DIAGCODE'].'|'
-    .$item['DATE_DETECT'].'|'
-    .$item['DATE_DISAB'].'|'
+    .$item['SEQ'].'|'
+    .$item['DATE_SERRV'].'|'
+    .$item['ICF'].'|'
+    .$item['QUALIFIER'].'|'
+    .$item['PROVIDER'].'|'
     .$item['D_UPDATE']
     ."\r\n";
 }
 
-$filePath = $dirPath.'/disability.txt';
+$filePath = $dirPath.'/icf.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|DISABID|PID|DISABTYPE|DISABCAUSE|DIAGCODE|DATE_DETECT|DATE_DISAB|D_UPDATE\r\n";
+$header = "HOSPCODE|DISABID|PID|SEQ|DATE_SERRV|ICF|QUALIFIER|PROVIDER|D_UPDATE\r\n";
 $txt = $header.$txt;
-$qofPath = $dirPath.'/qof_disability.txt';
+$qofPath = $dirPath.'/qof_icf.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
-echo "สร้างแฟ้ม disability เสร็จเรียบร้อย<br>";
+echo "สร้างแฟ้ม icf เสร็จเรียบร้อย<br>";

@@ -140,6 +140,8 @@ if( $action === false ){
 	// 8
 	include 'libs/disability.php';
 
+	include 'libs/icf.php';
+
 	include 'libs/provider.php';
 
 	include 'libs/dental.php';

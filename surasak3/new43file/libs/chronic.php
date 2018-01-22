@@ -47,7 +47,8 @@ AND (
 	OR `icd10` LIKE 'i20%' OR `icd10` LIKE 'i21%' OR `icd10` LIKE 'i22%' OR `icd10` LIKE 'i23%' OR `icd10` LIKE 'i24%' OR `icd10` LIKE 'i25%' 
 	OR `icd10` LIKE 'j42%' OR `icd10` LIKE 'j43%' OR `icd10` LIKE 'j44%' 
 	OR `icd10` LIKE 'i60%' OR `icd10` LIKE 'i61%' OR `icd10` LIKE 'i62%' OR `icd10` LIKE 'i63%' OR `icd10` LIKE 'i64%' 
-) ;";
+) 
+GROUP BY `hn`;";
 
 $q = mysql_query($sql) or die( mysql_query() );
 
