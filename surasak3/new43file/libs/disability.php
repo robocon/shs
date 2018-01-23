@@ -18,11 +18,13 @@ $sql = "SELECT
 '' AS `DATE_DETECT`, 
 '' AS `DATE_DISAB`, 
 thDateTimeToEn(`lastupdate`) AS `D_UPDATE` 
-FROM `opcard` 
-WHERE 
-#`lastupdate` >= '$thiyr-10-01' AND `lastupdate` <= '$thiyr_end-09-30' 
-`lastupdate` LIKE '$thimonth%' 
-AND ( `ptright` LIKE 'R12%' OR `ptright` LIKE 'R40%' );";
+FROM `opday` 
+WHERE `thidate` LIKE '$thimonth%' 
+AND ( 
+    `ptright` LIKE 'R12%' 
+    OR `ptright` LIKE 'R40%' 
+    OR `ptright` LIKE 'R27%' 
+);";
 $q = mysql_query($sql) or die( mysql_error() );
 
 $txt = "";

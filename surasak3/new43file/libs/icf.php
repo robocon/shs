@@ -20,7 +20,11 @@ thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERRV`,
 thDateTimeToEn(`thidate`) AS `D_UPDATE` 
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%'
-AND ( `ptright` LIKE 'R12%' OR `ptright` LIKE 'R40%' );";
+AND ( 
+    `ptright` LIKE 'R12%' 
+    OR `ptright` LIKE 'R40%' 
+    OR `ptright` LIKE 'R27%' 
+ );";
 $q = mysql_query($sql) or die( mysql_error() );
 
 $txt = "";
