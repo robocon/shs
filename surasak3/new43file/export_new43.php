@@ -128,6 +128,9 @@ if( $action === false ){
 	$zipLists = array();
 	$qofLists = array();
 
+	include 'libs/village.php';
+	exit;
+
 	// แฟ้มที่ 1
 	include 'libs/person.php';
 	
