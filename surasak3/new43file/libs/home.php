@@ -12,5 +12,23 @@ $q = mysql_query($q) or die( mysql_error() );
 
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {
-	$item[''];'
+	$txt .= $item['HOSPCODE'].'|'.$item['HID'].'|'.$item['HOUSE_ID'].'|'.$item['HOUSETYPE'].'|'.$item['ROOMNO'].'|'.$item['CONDO'].'|';
+	$txt .= $item['HOUSE'].'|'.$item['SOISUB'].'|'.$item['SOIMAIN'].'|'.$item['ROAD'].'|'.$item['VILLANAME'].'|'.$item['VILLAGE'].'|';
+	$txt .= $item['TAMBON'].'|'.$item['AMPUR'].'|'.$item['CHANGWAT'].'|'.$item['TELEPHONE'].'|'.$item['LATITUDE'].'|'.$item['LONGITUDE'].'|';
+	$txt .= $item['NFAMILY'].'|'.$item['LOCATYPE'].'|'.$item['VHVID'].'|'.$item['HEADID'].'|'.$item['TOILET'].'|'.$item['WATER'].'|';
+	$txt .= $item['WATERTYPE'].'|'.$item['GARBAGE'].'|'.$item['HOUSING'].'|'.$item['DURABILITY'].'|'.$item['CLEANLINESS'].'|'.$item['VENTILATION'].'|';
+	$txt .= $item['LIGHT'].'|'.$item['WATERTM'].'|'.$item['MFOOD'].'|'.$item['BCONTROL'].'|'.$item['ACONTROL'].'|'.$item['CHEMICAL'].'|';
+	$txt .= $item['OUTDATE'].'|'.$item['D_UPDATE'];
 }
+
+$filePath = $dirPath.'/home.txt';
+file_put_contents($filePath, $txt);
+$zipLists[] = $filePath;
+
+$header = "HOSPCODE|HID|HOUSE_ID|HOUSETYPE|ROOMNO|CONDO|HOUSE|SOISUB|SOIMAIN|ROAD|VILLANAME|VILLAGE|TAMBON|AMPUR|CHANGWAT|TELEPHONE|LATITUDE|LONGITUDE|NFAMILY|LOCATYPE|VHVID|HEADID|TOILET|WATER|WATERTYPE|GARBAGE|HOUSING|DURABILITY|CLEANLINESS|VENTILATION|LIGHT|WATERTM|MFOOD|BCONTROL|ACONTROL|CHEMICAL|OUTDATE|D_UPDATE";
+$txt = $header.$txt;
+$qofPath = $dirPath.'/qof_home.txt';
+file_put_contents($qofPath, $txt);
+$qofLists[] = $qofPath;
+
+echo "สร้างแฟ้ม home เสร็จเรียบร้อย<br>";

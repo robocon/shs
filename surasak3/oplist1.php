@@ -288,16 +288,21 @@ $ex='EX0';
         <th bgcolor=6495ED><font face='Angsana New'>พิมพ์ใบต่อ</th>
     </tr>
 <?php
-$query = "SELECT a.vn,a.thdatehn,a.thidate,a.hn,a.ptname,a.an,a.diag,a.ptright,a.doctor,a.okopd,a.toborow,a.borow,a.goup,a.officer,a.kew,a.phaok,b.idcard FROM opday as a,opcard as b WHERE a.hn=b.hn and a.thidate LIKE '$today%' order by a.thidate desc ";
+$query = "SELECT a.vn,a.thdatehn,a.thidate,a.hn,a.ptname,a.an,a.diag,a.ptright,a.doctor,a.okopd,a.toborow,a.borow,a.goup,a.officer,a.kew,a.phaok,b.idcard,a.row_id FROM opday as a,opcard as b WHERE a.hn=b.hn and a.thidate LIKE '$today%' order by a.thidate desc ";
 $result = mysql_query($query) or die("Query failed");
 
-while (list ($vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$ptright,$doctor,$okopd,$toborow,$borow,$goup,$officer,$kew,$phaok,$idcard) = mysql_fetch_row ($result)) {
+while (list ($vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$ptright,$doctor,$okopd,$toborow,$borow,$goup,$officer,$kew,$phaok,$idcard,$row_id) = mysql_fetch_row ($result)) {
     $color='66CDAA';
     $time=substr($thidate,11);
 
+    $link = $kew;
+    if( !empty($kew) ){
+        $link = '<a href="javascript: void(0)" onclick="print_queue(\''.$row_id.'\')" >'.$kew.'</a>';
+    }
+
     print (" <tr>\n".
     "  <td BGCOLOR=$color><font face='Angsana New'>$vn</td>\n".
-    "  <td BGCOLOR=$color><font face='Angsana New'>$kew</td>\n".
+    "  <td BGCOLOR=$color><font face='Angsana New'>$link</td>\n".
     "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n".
     "  <td BGCOLOR=$color><font face='Angsana New'>$hn</td>\n".
     //  "  <td BGCOLOR=$color><font face='Angsana New'><a  href=\"rxform2.php? cTdatehn=$thdatehn&cPtname=$ptname&cHn=$hn&cDoctor=$doctor&cDiag=$diag&cOkopd=$okopd&ctoborow=$toborow&cVn=$vn\">$ptname</a></td>\n".
@@ -318,3 +323,8 @@ while (list ($vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$ptright,$doctor,$okop
 include("unconnect.inc");
 ?>
 </table>
+<script type="text/javascript">
+    function print_queue(row_id){
+        window.open('kew_print_all.php?id='+row_id);
+    }
+</script>

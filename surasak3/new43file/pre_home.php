@@ -71,7 +71,6 @@ foreach ($home_list as $key => $value) {
     VALUES 
     ('$key','".$value['number']."',NULL,'01','11','01','52',NULL,'".$value['lastupdate']."') ";
     $insert = $db->insert($sql);
-    dump($insert);
 }
 
-// dump($home_list);
+echo "ปรับปรุงแฟ้ม home เรียบร้อย";

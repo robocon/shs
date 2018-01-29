@@ -13,8 +13,9 @@ if( $action === false ){
 	?>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
-		<p>- อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
-		<p>- เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
+		<p>- ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
+		<p>- 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
+		<p>- 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
 	</div>
 	<form action="export_new43.php" method="post">
 		<div>
@@ -128,9 +129,6 @@ if( $action === false ){
 	$zipLists = array();
 	$qofLists = array();
 
-	include 'libs/village.php';
-	exit;
-
 	// แฟ้มที่ 1
 	include 'libs/person.php';
 	
@@ -148,6 +146,8 @@ if( $action === false ){
 	include 'libs/provider.php';
 
 	include 'libs/dental.php';
+
+	include 'libs/home.php';
 	
 	// แฟ้มที่ 11
 	include 'libs/drugallergy.php';

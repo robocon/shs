@@ -7,5 +7,7 @@
     <!--
     <a href="diff_person.php">เปรียบเทียบข้อมูล person</a>
     -->
-    <a href="pt30baht.php">ดึงข้อมูล ผป.สิทธิ30บาท</a>
+    <a href="pt30baht.php">ดึงข้อมูล ผป.สิทธิ30บาท</a> | 
+
+    <a href="pre_home.php" target="_blank">เตรียมข้อมูลแฟ้ม HOME</a>
 </div>
