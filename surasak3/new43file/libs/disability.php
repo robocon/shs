@@ -17,7 +17,7 @@ $sql = "SELECT
 '' AS `DIAGCODE`, 
 '' AS `DATE_DETECT`, 
 '' AS `DATE_DISAB`, 
-thDateTimeToEn(`lastupdate`) AS `D_UPDATE` 
+thDateTimeToEn(`thidate`) AS `D_UPDATE` 
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( 
