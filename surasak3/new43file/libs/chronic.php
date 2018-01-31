@@ -1,34 +1,22 @@
 <?php
 /*
 ตาม สนย
-i10-i15
-j45
-i20-i25
-c00-d48
-d50-d64
-f30-f39
-i60-i69
-g80-g83
-n17-n19
-e10-e14
-j42
-j43
-i05-i09
-i26-i28
-i30-i52
-f10.0
-f10.2
-j44
-a15-a19
-*/
-
-/*
-hosxp
-e10-e14
-i10-i15
-i20-i25
-j41-j44
-i60-i64
+ความดันโลหิตสูง		i10-i15
+เบาหวาน			e10-e14
+หอบหืด			j45
+หัวใจขาดเลือด	i20-i25
+มะเร็ง			c00-d48
+โลหิตจาง		d50-d64
+โรคซึมเศร้า		f30-f39
+หลอดเลือดสมอง	i60-i69
+อัมพฤกษ์ อัมพาต g80-g83
+ไตวาย			n17-n19
+หลอดลมอักเสบเรื้อรัง	j42
+ถุงลมโป่งพอง	j43
+ทางเดินหายใจอุดกั้นเรื้อรัง		j44
+โรคหัวใจ 		i05-i09 + i26-i28 + i30-i52
+พิษสุราเรื้อรัง		f10.0 + f10.2
+วัณโรค			a15-a19
 */
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 `hn` AS `PID`, 
@@ -42,11 +30,20 @@ thDateTimeToEn(`thidate`) AS `D_UPDATE`
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( 
-	`icd10` LIKE 'i10%' OR `icd10` LIKE 'i11%' OR `icd10` LIKE 'i12%' OR `icd10` LIKE 'i13%' OR `icd10` LIKE 'i14%' 
-	OR `icd10` LIKE 'e10%' OR `icd10` LIKE 'e11%' OR `icd10` LIKE 'e12%' OR `icd10` LIKE 'e13%' OR `icd10` LIKE 'e14%' 
-	OR `icd10` LIKE 'i20%' OR `icd10` LIKE 'i21%' OR `icd10` LIKE 'i22%' OR `icd10` LIKE 'i23%' OR `icd10` LIKE 'i24%' OR `icd10` LIKE 'i25%' 
-	OR `icd10` LIKE 'j42%' OR `icd10` LIKE 'j43%' OR `icd10` LIKE 'j44%' 
-	OR `icd10` LIKE 'i60%' OR `icd10` LIKE 'i61%' OR `icd10` LIKE 'i62%' OR `icd10` LIKE 'i63%' OR `icd10` LIKE 'i64%' 
+	`icd10` regexp 'i1[0-5]' 
+	OR `icd10` regexp 'e1[0-4]' 
+	OR `icd10` = 'j45' 
+	OR `icd10` regexp 'i2[0-5]' 
+	OR `icd10` regexp 'c[0-9][0-9]' OR `icd10` regexp 'd[0-3][0-9]' OR `icd10` regexp 'd4[0-8]' 
+	OR `icd10` regexp 'd5[0-9]' OR `icd10` regexp 'd6[0-4]' 
+	OR `icd10` regexp 'f3[0-9]' 
+	OR `icd10` regexp 'i6[0-9]' 
+	OR `icd10` regexp 'g8[0-3]' 
+	OR `icd10` regexp 'n1[7-9]' 
+	OR `icd10` regexp 'j4[2-4]' 
+	OR `icd10` regexp 'i0[5-9]' OR `icd10` regexp 'i2[6-8]' OR `icd10` regexp 'i[3-5][0-9]' OR `icd10` regexp 'i5[1-2]' 
+	OR `icd10` = 'f10.0' OR `icd10` = 'f10.2' 
+	OR `icd10` regexp 'a1[5-9]' 
 ) 
 GROUP BY `hn`;";
 

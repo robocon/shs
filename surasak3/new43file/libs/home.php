@@ -48,7 +48,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
 	$txt .= $item['NFAMILY'].'|'.$item['LOCATYPE'].'|'.$item['VHVID'].'|'.$item['HEADID'].'|'.$item['TOILET'].'|'.$item['WATER'].'|';
 	$txt .= $item['WATERTYPE'].'|'.$item['GARBAGE'].'|'.$item['HOUSING'].'|'.$item['DURABILITY'].'|'.$item['CLEANLINESS'].'|'.$item['VENTILATION'].'|';
 	$txt .= $item['LIGHT'].'|'.$item['WATERTM'].'|'.$item['MFOOD'].'|'.$item['BCONTROL'].'|'.$item['ACONTROL'].'|'.$item['CHEMICAL'].'|';
-	$txt .= $item['OUTDATE'].'|'.$item['D_UPDATE'];
+	$txt .= $item['OUTDATE'].'|'.$item['D_UPDATE']."\r\n";
 }
 
 $filePath = $dirPath.'/home.txt';
