@@ -29,40 +29,47 @@ exit();
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>คัดแยกผู้ป่วย</title>
 <style type="text/css">
-
+<!--
 
 .data_show{ 
-	font-family:"MS Sans Serif"; 
-	font-size:16px; 
+	font-family:"TH SarabunPSK"; 
+	font-size:18px; 
 	color:#000000;
 	}
 
 .data_drugreact{ 
-	font-family:"MS Sans Serif"; 
-	font-size:14px; 
+	font-family:"TH SarabunPSK"; 
+	font-size:18px; 
 	color:#FF0000;
 	
 	}
 .data_title{ 
-	font-family:"MS Sans Serif"; 
-	font-size:14px; 
+	font-family:"TH SarabunPSK"; 
+	font-size:22px; 
 	color:#FFFFFF;
 	font-weight:bold;
-	background-color:#0000FF
+	background-color:#339999;
 	}
 .txtsarabun{ 
 	font-family: "TH SarabunPSK";
-	font-size:18px; 
+	font-size:16px; 
 	font-weight:bold;
 	}	
-
-body{ font-family:"MS Sans Serif"; 
-font-size:16px;
+.headsarabun{ 
+	font-family: "TH SarabunPSK";
+	font-size:22px; 
+	}
+	
+body{ font-family:"TH SarabunPSK"; 
+font-size:18px;
 }
 
+.style1 {
+	font-size: 28px;
+	font-weight: bold;
+}
+-->
 </style>
-
-
 </head>
 
 <body >
@@ -264,15 +271,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$showyear="25".$nPrefix;
 ?>
 <p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
+<p class="txtsarabun"><a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a></p>
 <form id="f1" name="f1" method="post" action="">
-  กรอก Hn : 
-  <input name="hn" type="text" id="hn" size="10" maxlength="10" />
+    <strong>กรอก HN :</strong> 
+  <input name="hn" type="text" class="txtsarabun" id="hn" size="10" maxlength="10" />
 
-  <input type="submit" name="Submit" value="ตกลง" /><BR>
+  <input name="Submit" type="submit" class="txtsarabun" value=" ตกลง " />
+  <BR>
  <INPUT TYPE="checkbox" NAME="unshow" value="1">&nbsp;&nbsp;ไม่ประกาศ คิว ผู้ป่วย
 </form>
- <p><a href="../nindex.htm">&lt;&lt;เมนู</a>&nbsp;&nbsp;<a href="rp_basic_opd.php" target="_blank">&lt;&lt;แสดงข้อมูล</a>&nbsp;&nbsp;<a href="consent4.php" target="_blank">ใบยินยอม</a></p>
- <p>&nbsp; </p>
+ <p><span class="tb_font">
+  <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" />
+ </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></p>
+<p>&nbsp; </p>
  
  <?php
  $onfocus = "hn";
@@ -434,9 +445,6 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$sql = "Select drugcode, tradname From drugreact where hn = '".$_REQUEST["hn"]."' ";
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$i=0;
-
-	$txt_react = array();
-	
 	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ $txt_react[$i] = "&nbsp;&nbsp;&nbsp;<b>[".$drugcode."]</b> ".$tradname.", "; $i++; }
 	
 	$txt_react2 = implode("",$txt_react);
@@ -444,23 +452,29 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
  ?>
- <span><a href="compareopd1.php?hn=<?php echo $hn;?>" target="_blank">เปรียบเทียบผลย้อนหลัง</a></span>
-  <form id="f2" name="f2" method="post" action="" Onsubmit="return checkForm();">
- <table width="800" border="1" cellpadding="0" cellspacing="0" bordercolor="#0000FF">
+ <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center"><div style="margin: 5px 5px 5px 5px;"><img src="../shs.png" width="119" height="92" border="0" /></div>      <span class="style1">โปรแกรมซักประวัติผู้ป่วยนอก</span></td>
+  </tr>
+</table>
+
+<form id="f2" name="f2" method="post" action="" Onsubmit="return checkForm();">
+ <table width="95%" border="4" align="center" cellpadding="2" cellspacing="0" bordercolor="#339999">
   <tr valign="top">
-    <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" class="data_show2"><tr>
+    <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" class="data_show2">
+      <tr>
         <td colspan="2"align="center" class="data_title">ข้อมูลผู้ป่วย </td>
       </tr>
 	  <tr>
-        <td><p>HN : <strong><?php echo $hn;?></strong>, ชื่อ-สกุล : <strong><?php echo $fullname;?></strong>,&nbsp;ID:<strong><?php echo $idcard;?></strong>,&nbsp;VN&nbsp;:&nbsp;<B><?php echo $vn;?></B>&nbsp;, คิว : <B><?php echo $kew;?></B>, <B><?php echo substr($toborow,4);?></B></td>
+        <td class="headsarabun"><p>HN : <strong><?php echo $hn;?></strong>, ชื่อ-สกุล : <strong><?php echo $fullname;?></strong>,&nbsp;ID:<strong><?php echo $idcard;?></strong>,&nbsp;VN&nbsp;:&nbsp;<B><?php echo $vn;?></B>&nbsp;, คิว : <B><?php echo $kew;?></B>, <B><?php echo substr($toborow,4);?></B></td>
 		<td rowspan="4">
 		<IMG SRC="../image_patient/<?php echo $idcard;?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">		</td>
       </tr>
-      <tr>
-        <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><?php echo $ptright;?></font> &nbsp;&nbsp;&nbsp;
+      <tr class="headsarabun">
+      <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><strong><?php echo $ptright;?></strong></font> &nbsp;&nbsp;&nbsp;
 				, หมายเหตุ : <?php echo $note;?>		</td>
       </tr>
-      <tr>
+      <tr class="headsarabun">
         <td><font class="data_drugreact"><?php echo $txt_react2;?></font></td>
       </tr>
       <tr>
@@ -474,7 +488,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		list($cIdcard,$cHn,$cYot,$cName,$cSurname,$cGoup,$dbirth,$cIdguard,$cPtright,$cNote,$cCamp,$cTypeservice) = mysql_fetch_row($result);
 		?>
         ประเภท : 
-          <select name="goup" id="goup" onChange="dochange('type', this.value)">
+          <select name="goup" class="txtsarabun" id="goup" onChange="dochange('type', this.value)">
           <option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
           <?
 						include("connect.inc");
@@ -502,7 +516,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
       </tr>
       <tr>
         <td>ความสัมพันธ์ : <font id="type">
-        <select name="select">
+        <select name="select" class="txtsarabun">
           <option value='0'>--------------------------</option>
         </select>
         </font> </td>
@@ -513,7 +527,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
         <?
 		if($cTypeservice==""){
 		?>
-          <select name="typeservice" id="typeservice">
+          <select name="typeservice" class="txtsarabun" id="typeservice">
             <option  selected="selected" value="0" >--------------------เลือก--------------------</option>
             <?
 						include("connect.inc");
@@ -535,7 +549,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
         <?
         }else{
 		?>
-          <select name="typeservice" id="typeservice">
+          <select name="typeservice" class="txtsarabun" id="typeservice">
             <option  selected="selected" value="0" >--------------------เลือก--------------------</option>
             <?
 						include("connect.inc");
@@ -651,11 +665,11 @@ function togglediv1(divid){
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
  </p>
-<table width="800" border="1" cellpadding="0" cellspacing="0" bordercolor="#0000FF">
-     <tr valign="top">
+<table width="95%" border="4" align="center" cellpadding="2" cellspacing="0" bordercolor="#339999">
+<tr valign="top">
        <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" >
          <tr>
-           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูล </td>
+           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ </td>
          </tr>
          <tr>
            <td height="28" colspan="6" align="center" class="data_show"><table width="100%" border="0">
@@ -702,7 +716,7 @@ mmHg </td>
            </table></td>
           </tr>
 		 <tr>
-		   <td width="82" align="right" class="data_show">แพ้ยา : </td>
+		   <td width="116" align="right" class="data_show">แพ้ยา : </td>
 		   <td colspan="5" align="left" class="data_show"><input name="drugreact" type="radio" value="0" />
 		     ไม่แพ้ <input name="drugreact" type="radio" value="1" />
 		     แพ้
@@ -730,8 +744,8 @@ mmHg </td>
          <tr>
            <td align="right" class="data_show">โรคประจำตัว :</td>
            <td align="left" colspan="5"><span class="data_show">
-             <input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>"/>
-             <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" />
+             <input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>" class="txtsarabun"/>
+             <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" class="txtsarabun" />
            </span></td>
          </tr>
          <tr>
@@ -748,8 +762,9 @@ mmHg </td>
          </tr>
          <tr>
            <td align="right" valign="top" class="data_show">อาการ :</td>
-           <td colspan="3" rowspan="3" align="left" valign="top"><textarea id="organ" name="organ" cols="40" rows="6" ><?php echo $og;?></textarea>&nbsp;&nbsp;</td>
-           <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;">
+           <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
+           &nbsp;&nbsp;</td>
+           <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;" class="txtsarabun">
              <option value="">--- ตัวช่วย ---</option>
              <?php
 			 foreach($choose as $value){
@@ -760,7 +775,7 @@ mmHg </td>
          </tr>
          <tr>
            <td align="right" valign="top" class="data_show">&nbsp;</td>
-           <td align="left" valign="top"><select name="select2" onchange="if(this.value !=''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;">
+           <td align="left" valign="top"><select name="select2" onchange="if(this.value !=''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;" class="txtsarabun">
              <option value="">--- อาการเดิม ---</option>
              <?php
 			 foreach($choose2 as $value){
@@ -771,7 +786,7 @@ mmHg </td>
          </tr>
          <tr>
            <td align="right" valign="top" class="data_show">&nbsp;</td>
-           <td width="321" align="left" valign="top">&nbsp;</td>
+           <td width="796" align="left" valign="top">&nbsp;</td>
          </tr>
 		<script language=Javascript>
             function Inint_AJAX() {
@@ -802,15 +817,15 @@ mmHg </td>
 		   <td align="right" class="data_show">แพทย์ : </td>
 		   <td colspan="2" align="left">
            <font id="doctor">
-             <select>
+             <select class="txtsarabun">
                <option value="0">--------------------------</option>
              </select>
            </font> </td>
 		   <td colspan="3" align="left"><table width="100%" border="0">
              <tr>
-               <td width="26%" align="right"><span class="data_show">คลินิก/ห้อง :</span></td>
-               <td width="74%"><font id="clinic">
-                 <select>
+               <td width="18%" align="right"><span class="data_show">คลินิก/ห้อง :</span></td>
+               <td width="82%"><font id="clinic">
+                 <select class="txtsarabun">
                    <option value='0'>--------------------------</option>
                  </select>
                </font></td>
@@ -819,7 +834,7 @@ mmHg </td>
 	      </tr>
 		 <tr>
            <td align="right" class="data_show">การตรวจ :</td>
-           <td colspan="2" align="left"><select name="typediag" id="typediag">
+           <td colspan="2" align="left"><select name="typediag" class="txtsarabun" id="typediag">
              <option selected="selected" value="ตรวจทั่วไป" >ตรวจทั่วไป</option>
              <option value="ตรวจสุขภาพตามกรมบัญชีกลาง">ตรวจสุขภาพตามกรมบัญชีกลาง</option>
              <option value="ธกส">ธกส</option>
@@ -835,7 +850,10 @@ mmHg </td>
          <tr>
            <td colspan="6" align="center" class="data_show">
           
-           <input name="printvn" value="พิมพ์ใบตรวจโรค" type="submit" id="printvn" />&nbsp;<input type="button" value="พิมพ์คิว" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" />&nbsp;<input name="basic_opd" type="submit" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;<input name="print_basic_opd" type="submit" id="print_basic_opd" value="ตกลง &amp; สติกเกอร์" />
+           <input name="printvn" type="submit" class="txtsarabun" id="printvn" value="พิมพ์ใบตรวจโรค" />
+           &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
+           &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
+           &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; สติกเกอร์" />
            
            
 <?
@@ -853,7 +871,7 @@ $room = $_POST['room'];
        </table></td>
      </tr>
    </table>
-   <input name="hn" type="hidden" value="<?php echo $_REQUEST["hn"];?>" />
+<input name="hn" type="hidden" value="<?php echo $_REQUEST["hn"];?>" />
     <input name="ptname" type="hidden" value="<?php echo $fullname;?>" />
 	<input name="vn" type="hidden" value="<?php echo $vn;?>" />
 	<input name="toborow" type="hidden" value="<?php echo $toborow;?>" />

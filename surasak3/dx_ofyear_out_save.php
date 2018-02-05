@@ -81,6 +81,13 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 //echo $sql;
 //print_r($_POST);
 $result = mysql_query($sql) or die(mysql_error());
+
+// สิทธิ ปกส + ex26 ตรวจสุขภาพ
+$checkdx = '';
+if( substr($_POST["case"],0,4) == 'ex26' && substr($_POST['ptright'],0,3) == 'r07' ){
+	$checkdx = ", `checkdx` = 'sso' ";
+}
+
 $upopday = "update opday set checkdx='P' where thdatehn = '".$date_hn2."'";
 $result3 = mysql_query($upopday) or die(mysql_error());
 
