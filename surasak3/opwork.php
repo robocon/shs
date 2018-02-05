@@ -323,9 +323,11 @@ If ($_POST["new_vn"] == "1"){
 	}	
 	
 	// สิทธิ ปกส + ex26 ตรวจสุขภาพ
+	$toborow = strtolower(substr($_POST['case'],0,4));
+	$ptright = strtolower(substr($_POST['ptright'],0,3));
 	$checkdx = '';
-	if( substr($_POST["case"],0,4) == 'ex26' && substr($_POST['ptright'],0,3) == 'r07' ){
-		$checkdx = 'sso';
+	if( $toborow == 'ex26' && $ptright == 'r07' ){
+		$checkdx = "sso";
 	}
 
 //ลงทะเบียนใน opday table
@@ -446,8 +448,10 @@ WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 }else{
 
 	// สิทธิ ปกส + ex26 ตรวจสุขภาพ
+	$toborow = strtolower(substr($_POST['case'],0,4));
+	$ptright = strtolower(substr($_POST['ptright'],0,3));
 	$checkdx = '';
-	if( substr($_POST["case"],0,4) == 'ex26' && substr($_POST['ptright'],0,3) == 'r07' ){
+	if( $toborow == 'ex26' && $ptright == 'r07' ){
 		$checkdx = ", `checkdx` = 'sso' ";
 	}
 

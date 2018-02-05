@@ -229,10 +229,10 @@ h1,h3,p{
     <br>
     <table class="chk_table">
         <tr>
-            <td colspan="2" class="title"><h3>ข้อมูลทางห้องปฏิบัติการ</h3></td>
+            <td class="title"><h3>ข้อมูลทางห้องปฏิบัติการ</h3></td>
         </tr>
         <tr>
-            <td valign="top" width="50%">
+            <td valign="top">
                 <?php
                 $curr_day = date('Y-m-d');
 
@@ -253,12 +253,12 @@ h1,h3,p{
                 ?>
                 <table width="100%">
                     <tr>
-                        <td colspan="3" align="center"><b>CBC</b></td>
+                        <th colspan="3" align="center"><b>CBC</b></th>
                     </tr>
                     <tr style="background-color: #e6e6e6;">
-                        <td>รายการตรวจ</td>
-                        <td>ผลตรวจ</td>
-                        <td>ค่าปกติ</td>
+                        <th width="40%">รายการตรวจ</th>
+                        <th width="30%">ผลตรวจ</th>
+                        <th width="30%">ค่าปกติ</th>
                     </tr>
                     <?php
                     $result_cbc = '';
@@ -266,16 +266,30 @@ h1,h3,p{
                         ?>
                         <tr>
                             <td><?=$cbc['labname'];?></td>
-                            <td><?=$cbc['result'];?></td>
-                            <td><?=$cbc['normalrange'];?></td>
+                            <td align="center"><?=$cbc['result'];?></td>
+                            <td align="center"><?=$cbc['normalrange'];?></td>
                         </tr>
                         <?php
                         $result_cbc = $cbc['autonumber'];
                     }
                     ?>
-                    
+                    <tr bgcolor="#abcea1">
+                        <td>ผลการตรวจ</td>
+                        <td>
+                            <label for="cbc">
+                                <input type="radio" name="cbc" id="cbc" value="1"> ปกติ
+                            </label> 
+                            <label for="cbc2">
+                                <input type="radio" name="cbc" id="cbc2" value="0"> ผิดปกติ
+                            </label>
+                        </td>
+                        <td></td>
+                    </tr>
                 </table>
             </td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
             <td valign="top">
                 <?php
                 $sql = "SELECT b.* 
@@ -294,12 +308,12 @@ h1,h3,p{
                 ?>
                 <table  width="100%">
                     <tr>
-                        <td colspan="3" align="center"><b>UA</b></td>
+                        <th colspan="3" align="center"><b>UA</b></th>
                     </tr>
                     <tr style="background-color: #e6e6e6;">
-                        <td>รายการตรวจ</td>
-                        <td>ผลตรวจ</td>
-                        <td>ค่าปกติ</td>
+                        <th width="40%">รายการตรวจ</th>
+                        <th width="30%">ผลตรวจ</th>
+                        <th width="30%">ค่าปกติ</th>
                     </tr>
                     <?php
                     $result_ua = '';
@@ -307,16 +321,29 @@ h1,h3,p{
                         ?>
                         <tr>
                             <td><?=$ua['labname'];?></td>
-                            <td><?=$ua['result'];?></td>
-                            <td><?=$ua['normalrange'];?></td>
+                            <td align="center"><?=$ua['result'];?></td>
+                            <td align="center"><?=$ua['normalrange'];?></td>
                         </tr>
                         <?php
                         $result_ua = $ua['autonumber'];
                     }
                     ?>
+                    <tr bgcolor="#abcea1">
+                        <td>ผลการตรวจ</td>
+                        <td>
+                            <label for="ua">
+                                <input type="radio" name="ua" id="ua" value="1"> ปกติ
+                            </label> 
+                            <label for="ua2">
+                                <input type="radio" name="ua" id="ua2" value="0"> ผิดปกติ
+                            </label>
+                        </td>
+                        <td></td>
+                    </tr>
                 </table>
             </td>
         </tr>
+        <tr><td>&nbsp;</td></tr>
         <?php
 
         $sql = "SELECT b.* 
@@ -339,23 +366,32 @@ h1,h3,p{
             $etc_items = $db->get_items();
             ?>
             <tr>
-                <td colspan="2">
-                    <table width="50%">
+                <td>
+                    <table width="100%">
                         <tr>
-                            <td colspan="3" align="center"><b>ตรวจอื่นๆ</b></td>
+                            <th colspan="4" align="center"><b>ตรวจอื่นๆ</b></th>
                         </tr>
                         <tr style="background-color: #e6e6e6;">
-                            <td>รายการตรวจ</td>
-                            <td>ผลตรวจ</td>
-                            <td>ค่าปกติ</td>
+                            <th>รายการตรวจ</th>
+                            <th align="center">ผลตรวจ</th>
+                            <th align="center">ค่าปกติ</th>
+                            <th bgcolor="#abcea1">ผลการตรวจ</th>
                         </tr>
                         <?php
                         foreach ($etc_items as $key => $etc) {
                             ?>
                             <tr>
                                 <td><?=$etc['labname'];?></td>
-                                <td><?=$etc['result'];?></td>
-                                <td><?=$etc['normalrange'];?></td>
+                                <td align="center"><?=$etc['result'];?></td>
+                                <td align="center"><?=$etc['normalrange'];?></td>
+                                <td bgcolor="#abcea1">
+                                    <label for="<?=$etc['labcode'];?>">
+                                        <input type="radio" name="<?=$etc['labcode'];?>" id="<?=$etc['labcode'];?>" value="1"> ปกติ
+                                    </label> 
+                                    <label for="<?=$etc['labcode'];?>2">
+                                        <input type="radio" name="<?=$etc['labcode'];?>" id="<?=$etc['labcode'];?>2" value="0"> ผิดปกติ
+                                    </label>
+                                </td>
                             </tr>
                             <?php
                         }

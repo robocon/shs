@@ -147,8 +147,8 @@ $list_lab["URIC"] = "uric";
 	}*/
 	$arr_view = mysql_fetch_assoc($result);
 
-$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
-list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
+$sql = "Select vn,ptright,toborow From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
+list($arr_view["vn"],$ptright,$toborow) = mysql_fetch_row(mysql_query($sql));
 //echo "===>".$arr_view["vn"];
 
 $date_hn = date("Y-m-d").$arr_view["hn"];
@@ -746,6 +746,8 @@ mmHg</td>
 <center>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
 <input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />
+<input type="hidden" name="toborow" value="<?=$toborow;?>">
+<input type="hidden" name="ptright" value="<?=$ptright;?>">
 </center>
 <INPUT TYPE="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
 </FORM>
