@@ -16,7 +16,6 @@ if( $action === 'save' ){
     $date_chk = input_post('date_chk');
     $yearchk = get_year_checkup();
     $ear = input_post('ear');
-    
     $eye = input_post('eye');
     $snell_eye = input_post('snell_eye');
     $cxr = input_post('cxr');
@@ -24,6 +23,14 @@ if( $action === 'save' ){
     $suggestion = input_post('suggestion');
     $doctor = input_post('doctor');
     $officer = $_SESSION['sOfficer'];
+
+    $res_cbc = input_post('res_cbc');
+    $res_ua = input_post('res_ua');
+    $res_glu = input_post('res_glu');
+    $res_crea = input_post('res_crea');
+    $res_chol = input_post('res_chol');
+    $res_hdl = input_post('res_hdl');
+    $res_hbsag = input_post('res_hbsag');
 
     $sex = input_post('sex');
     $breast = '';
@@ -42,16 +49,21 @@ if( $action === 'save' ){
             `id`, `hn`, `vn`, `prefix`, `name`, `surname`, 
             `idcard`, `address`, `date_chk`, `yearchk`, `ear`, `breast`, 
             `eye`, `snell_eye`, `cxr`, `conclution`, `suggestion`, `doctor`, 
-            `officer`
+            `officer`, `res_cbc`, `res_ua`, `res_glu`, `res_crea`, `res_chol`, 
+            `res_hdl`, `res_hbsag`
         ) VALUES (
             NULL, '$hn', '$vn', '$prefix', '$name', '$surname', 
             '$idcard', '$address', NOW(), '$yearchk', '$ear', '$breast', 
             '$eye', '$snell_eye', '$cxr', '$conclution', '$suggestion', '$doctor', 
-            '$officer'
+            '$officer', '$res_cbc', '$res_ua', '$res_glu', '$res_crea', '$res_chol', 
+            '$res_hdl', '$res_hbsag'
         );";
         $save = $db->insert($sql);
 
     }else if( $rows > 0 ){
+
+        $up = $db->get_item();
+        $id = $up['id'];
 
         $sql = "UPDATE `chk_doctor` SET 
         `ear` = '$ear', 
@@ -61,7 +73,15 @@ if( $action === 'save' ){
         `cxr` = '$cxr', 
         `conclution` = '$conclution', 
         `suggestion` = '$suggestion',
-        `doctor` = '$doctor' ; ";
+        `doctor` = '$doctor',
+        `res_cbc` = '$res_cbc', 
+        `res_ua` = '$res_ua', 
+        `res_glu` = '$res_glu', 
+        `res_crea` = '$res_crea', 
+        `res_chol` = '$res_chol', 
+        `res_hdl` = '$res_hdl', 
+        `res_hbsag` = '$res_hbsag' 
+        WHERE `id` = '$id' ; ";
         $save = $db->update($sql);
 
     }
@@ -273,14 +293,14 @@ h1,h3,p{
                         $result_cbc = $cbc['autonumber'];
                     }
                     ?>
-                    <tr bgcolor="#abcea1">
+                    <tr bgcolor="#abcea1" style="font-weight: bold;">
                         <td>º≈°“√µ√«®</td>
                         <td>
-                            <label for="cbc">
-                                <input type="radio" name="cbc" id="cbc" value="1"> ª°µ‘
+                            <label for="res_cbc">
+                                <input type="radio" name="res_cbc" id="res_cbc" value="1"> ª°µ‘
                             </label> 
-                            <label for="cbc2">
-                                <input type="radio" name="cbc" id="cbc2" value="0"> º‘¥ª°µ‘
+                            <label for="res_cbc2">
+                                <input type="radio" name="res_cbc" id="res_cbc2" value="0"> º‘¥ª°µ‘
                             </label>
                         </td>
                         <td></td>
@@ -328,14 +348,14 @@ h1,h3,p{
                         $result_ua = $ua['autonumber'];
                     }
                     ?>
-                    <tr bgcolor="#abcea1">
+                    <tr bgcolor="#abcea1" style="font-weight: bold;">
                         <td>º≈°“√µ√«®</td>
                         <td>
-                            <label for="ua">
-                                <input type="radio" name="ua" id="ua" value="1"> ª°µ‘
+                            <label for="res_ua">
+                                <input type="radio" name="res_ua" id="res_ua" value="1"> ª°µ‘
                             </label> 
-                            <label for="ua2">
-                                <input type="radio" name="ua" id="ua2" value="0"> º‘¥ª°µ‘
+                            <label for="res_ua2">
+                                <input type="radio" name="res_ua" id="res_ua2" value="0"> º‘¥ª°µ‘
                             </label>
                         </td>
                         <td></td>
@@ -356,7 +376,9 @@ h1,h3,p{
             OR b.`labcode` = 'CREA' 
             OR b.`labcode` = 'CHOL' 
             OR b.`labcode` = 'HDL' 
-            OR b.`labcode` = 'HBSAG'
+            OR b.`labcode` = 'HBSAG' 
+            OR b.`labcode` = 'STOCB' 
+            OR b.`labcode` = '38302' 
         ) 
         AND a.`orderdate` LIKE '$curr_day%' ";
 
@@ -379,17 +401,20 @@ h1,h3,p{
                         </tr>
                         <?php
                         foreach ($etc_items as $key => $etc) {
+
+                            $labcode = strtolower($etc['labcode']);
+
                             ?>
                             <tr>
                                 <td><?=$etc['labname'];?></td>
                                 <td align="center"><?=$etc['result'];?></td>
                                 <td align="center"><?=$etc['normalrange'];?></td>
-                                <td bgcolor="#abcea1">
-                                    <label for="<?=$etc['labcode'];?>">
-                                        <input type="radio" name="<?=$etc['labcode'];?>" id="<?=$etc['labcode'];?>" value="1"> ª°µ‘
+                                <td bgcolor="#abcea1" style="font-weight: bold;">
+                                    <label for="res_<?=$labcode;?>">
+                                        <input type="radio" name="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ª°µ‘
                                     </label> 
-                                    <label for="<?=$etc['labcode'];?>2">
-                                        <input type="radio" name="<?=$etc['labcode'];?>" id="<?=$etc['labcode'];?>2" value="0"> º‘¥ª°µ‘
+                                    <label for="res_<?=$labcode;?>2">
+                                        <input type="radio" name="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="0"> º‘¥ª°µ‘
                                     </label>
                                 </td>
                             </tr>

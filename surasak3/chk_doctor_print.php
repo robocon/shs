@@ -88,7 +88,9 @@ AND (
     OR b.`labcode` = 'CREA' 
     OR b.`labcode` = 'CHOL' 
     OR b.`labcode` = 'HDL' 
-    OR b.`labcode` = 'HBSAG'
+    OR b.`labcode` = 'HBSAG' 
+    OR b.`labcode` = 'STOCB' 
+    OR b.`labcode` = '38302' 
 ) 
 AND a.`orderdate` LIKE '$date%' ";
 
@@ -432,18 +434,19 @@ $pdf->Cell(41, 6, '11.การตรวจเนื้อเยื่อจากปากมดลูก', 0, 1);
 $pdf->SetXY(107, 139);
 $pdf->Cell(41, 6, 'ด้วยวิธี PAP Smear', 0, 1);
 
+/* group รวมกัน */
 $pdf->Rect(148, 133, 15, 12);
-$pdf->SetXY(148, 133);
-$pdf->Cell(15, 6, '', 0, 1, 'C');
+// $pdf->SetXY(148, 133);
+// $pdf->Cell(15, 6, 'xxx', 0, 1, 'C');
 $pdf->SetXY(148, 139);
-$pdf->Cell(15, 6, '', 0, 1, 'C');
+$pdf->Cell(15, 6, 'yyyy', 0, 1, 'C');
 
 $pdf->Rect(163, 133, 25, 12);
-$pdf->SetXY(163, 133);
-$pdf->Cell(25, 6, '', 0, 1, 'C');
+// $pdf->SetXY(163, 133);
+// $pdf->Cell(25, 6, '111', 0, 1, 'C');
 $pdf->SetXY(163, 139);
-$pdf->Cell(25, 6, '', 0, 1, 'C');
-
+$pdf->Cell(25, 6, '222', 0, 1, 'C');
+/* group รวมกัน */
 
 # โลหิตจาง
 $pdf->Rect(13, 145, 46, 66); // กรอบช่องซ้ายเม็ดเลือดขาว
@@ -685,10 +688,10 @@ $pdf->Cell(41, 6, 'Fecal occult blood test(FOBT)', 0, 1);
 
 $pdf->Rect(148, 217, 15, 12);
 $pdf->SetXY(148, 217);
-$pdf->Cell(15, 6, '', 0, 1, 'C');
+$pdf->Cell(15, 6, 'asdf', 0, 1, 'C');
 $pdf->Rect(163, 217, 25, 12);
 $pdf->SetXY(163, 217);
-$pdf->Cell(25, 6, '', 0, 1, 'C');
+$pdf->Cell(25, 6, 'asdf', 0, 1, 'C');
 
 $pdf->SetXY(13, 229);
 $pdf->Cell(41, 6, 'สรุปผลตรวจ', 0, 1);
