@@ -479,15 +479,21 @@ print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
     array_push($aPackpri,"");
     array_push($aSpecno,"");
 //มีได้ 12 รายการ+หมดรายการ(13แถว) ใส่ NULL ให้array ที่เหลือดังนี้
+
 for ($n=$x+1; $n<=13; $n++){
-    array_push($aX,"");
-	array_push($aTradname,""); 
-    array_push($aPacking,"");
-    array_push($aPack,"");
-    array_push($aAmount ,"");
-    array_push($aPrice,"");
-    array_push($aPackpri,"");
-    array_push($aSpecno,"");
+
+	// if( strlen($aTradname) >= 36 ){
+	// 	continue;
+	// }
+
+    // array_push($aX,"");
+	// array_push($aTradname,""); 
+    // array_push($aPacking,"");
+    // array_push($aPack,"");
+    // array_push($aAmount ,"");
+    // array_push($aPrice,"");
+    // array_push($aPackpri,"");
+    // array_push($aSpecno,"");
 }
 
 
@@ -534,10 +540,8 @@ for ($n=$x+1; $n<=13; $n++){
 รวม VAT</th>
 				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
 			</tr>
-		
-		
-			
-			<?php
+			<?php 
+			$over_line = 0;
 			for ($ii=1; $ii <= 14; $ii++) { 
 
 				// cost ยังไม่เป็น &nbsp; เพราะต้องเช็กตามเงื่อนไขต่างๆก่อน
@@ -574,10 +578,27 @@ for ($n=$x+1; $n<=13; $n++){
 				if( $cost == false ){
 					$cost = '&nbsp;';
 				}
+
+				// นับบรรทัดบนก่อน ถ้าข้อความเกิน 36 ตัว
+				// พอเงื่อนไขมาตกใน else ก็จะตัดบรรทัดว่างออกไป กรณีที่เกิน 1บรรทัด
+				if( !empty($aTradname[$ii]) ){
+
+					if( strlen($aTradname[$ii]) >= 36 ){
+						++$over_line;
+					}
+
+				}else{
+
+					if( $over_line > 0 ){
+						continue;
+						--$over_line;
+					}
+
+				}
 				
 				?>
 				<tr>
-					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
+					<td align="center" valign="top"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
 					<td><?=( !empty($aTradname[$ii]) ? $aTradname[$ii] : '&nbsp;' );?></td>
 					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
                     <td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
@@ -647,7 +668,7 @@ for ($n=$x+1; $n<=13; $n++){
     2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
     3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด<br>(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
     4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
-    5 => '(๕) ราคาที่เคขซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
+    5 => '(๕) ราคาที่เคยซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ',
     6 => '(๖) ราคาอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของหน่วยงานของรัฐนั้นๆ',
 );
 

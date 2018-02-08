@@ -29,7 +29,7 @@
 if(isset($_POST['Chkhn'])){
  include("connect.inc");
  
-	$strsql="SELECT *,concat(yot,name,' ',surname)as ptname FROM `opcardchk` WHERE  HN = '".$_POST['Chkhn']."' and part=' Õ∫µ”√«®59'";
+	$strsql="SELECT *,concat(yot,name,' ',surname)as ptname FROM `opcardchk` WHERE  HN = '".$_POST['Chkhn']."' and part=' Õ∫µ”√«®60'";
 	$query=mysql_query($strsql) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 	
@@ -114,11 +114,8 @@ echo"<meta http-equiv='refresh' content='1;url=chk_opacc.php'>";
 window.open('chk_labslip4bc.php?labno=<?//=$labno;?>&hn=<?//=$_POST['hn'];?>&ptname=<?//=$_POST['name'];?>',null,'height=500,width=850,scrollbars=1');
 </script>-->
 <?
-
 		}
-		
-	
-//	echo "<BR>$query";
+//echo "<BR>$query";
 }
  include("unconnect.inc");
 ?>

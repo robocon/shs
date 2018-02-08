@@ -33,7 +33,9 @@
 If (!empty($yym)){
     include("connect.inc");
     $nNetprice=0;
-    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id FROM pocompany WHERE date LIKE '$yym%' AND prepono !='ยกเลิก' ORDER BY date ";
+   // $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id FROM pocompany WHERE date LIKE '$yym%' AND prepono !='ยกเลิก' ORDER BY date ";
+	 $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id FROM pocompany WHERE date LIKE '$yym%' AND prepono !='ยกเลิก' AND ( `potype` is null OR `potype` = '' ) ORDER BY date ";
+	 //echo $query;
     $result = mysql_query($query) or die("Query failed");
     $num=0;
     $nNetprice=0;
