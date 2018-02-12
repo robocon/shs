@@ -29,7 +29,10 @@
 if(isset($_POST['Chkhn'])){
  include("connect.inc");
  
-	$strsql="SELECT *,concat(yot,name,' ',surname)as ptname FROM `opcardchk` WHERE  HN = '".$_POST['Chkhn']."' and part='สอบตำรวจ60'";
+	$strsql="SELECT *, CONCAT(`yot`,`name`,' ',`surname`) as ptname 
+  FROM `opcardchk` 
+  WHERE  HN = '".$_POST['Chkhn']."' 
+  and part='สอบตำรวจ60'";
 	$query=mysql_query($strsql) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 	
@@ -49,7 +52,7 @@ if(isset($_POST['Chkhn'])){
     </strong></td>
     <td>ชื่อ-สกุล: 
       <strong>
-      <?=$arr['ptname'];?>
+      <?=$arr['name'].' '.$arr['surname'];?>
       </strong></td>
     </tr>
   <tr>
@@ -92,7 +95,7 @@ $depart = "OTHER";
 $detail = "ค่าบริการตรวจสุขภาพตำรวจ";
 $price =900;
 $paid  =900;
-$idname='น.ส. นทีพร	อุ่นม่อน';
+$idname='นางสาว นทีพร อุ่นม่อน';
 
 $credit="เงินสด";
 
