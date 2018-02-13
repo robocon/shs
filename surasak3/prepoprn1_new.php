@@ -589,6 +589,7 @@ for ($n=$x+1; $n<=13; $n++){
 		
 			
 			<?php
+			$over_line = 0;
 			for ($ii=1; $ii <= 14; $ii++) { 
 
 				$cost = false;
@@ -625,9 +626,26 @@ for ($n=$x+1; $n<=13; $n++){
 					$cost = '&nbsp;';
 				}
 
+				// นับบรรทัดบนก่อน ถ้าข้อความเกิน 36 ตัว
+				// พอเงื่อนไขมาตกใน else ก็จะตัดบรรทัดว่างออกไป กรณีที่เกิน 1บรรทัด
+				if( !empty($aTradname[$ii]) ){
+
+					if( strlen($aTradname[$ii]) >= 36 ){
+						++$over_line;
+					}
+
+				}else{
+
+					if( $over_line > 0 ){
+						continue;
+						--$over_line;
+					}
+
+				}
+
 				?>
 				<tr>
-					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
+					<td align="center" valign="top"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
 					<td><?=( !empty($aTradname[$ii]) ? $aTradname[$ii] : '&nbsp;' );?></td>
 					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
 					<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>

@@ -299,6 +299,11 @@ if(isset($_POST['hn'])){
 					  <td><input name="mammogram" type="text" class="pdxhead" size="50" id="mammogram" value="<?=$arrchk['mammogram']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					<tr>
+					  <td class="pdx">ลำดับ</td>
+					  <td><input name="seq" type="text" class="pdxhead" size="10" id="seq" value="<?=$arrchk['seq']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
 					<!--
 					<tr>
 						<td class="pdx">
@@ -385,7 +390,8 @@ if(isset($_POST['okhn2'])){
 		`pt` ='".$_POST['pt']."',
 		`pt_detail` ='".$_POST['pt_detail']."',
 		`last_officer` = '$sOfficer',
-		`last_update` = '".date("Y-m-d H:i:s")."'		
+		`last_update` = '".date("Y-m-d H:i:s")."', 
+		`seq` = '".$_POST['seq']."' 
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -429,7 +435,8 @@ if(isset($_POST['okhn2'])){
 			`eye` = '".$_POST['eye']."',
 			`eye_detail` =  '".$_POST['eye_detail']."',
 			`pt` = '".$_POST['pt']."',
-			`pt_detail` = '".$_POST['pt_detail']."'";
+			`pt_detail` = '".$_POST['pt_detail']."', 
+			`seq` = '".$_POST['seq']."' ";
 	}
 	
 	//echo $update;
@@ -476,6 +483,7 @@ $numchk1=mysql_num_rows($querychk1);
     <td width="9%" align="left" bgcolor="#FF99CC"><strong>ส่วนสูง</strong></td>
     <td width="5%" align="left" bgcolor="#FF99CC"><strong>BP</strong></td>
     <td width="22%" align="left" bgcolor="#FF99CC"><strong>P</strong></td>
+		<td width="3%" align="left" bgcolor="#FF99CC"><strong>Seq</strong></td>
     <td width="9%" align="center" bgcolor="#FF99CC"><strong>สติ๊กเกอร์</strong></td>
 	<td width="9%" align="center" bgcolor="#FF99CC"><strong>ลบข้อมูล</strong></td>
   </tr>
@@ -492,6 +500,7 @@ $numchk1=mysql_num_rows($querychk1);
     <td align="left"><?=$arr1['height'];?></td>
     <td align="left"><? if(empty($arr1['bp3']) || empty($arr1['bp4'])){ echo $arr1['bp1'].'/'.$arr1['bp2'];}else{ echo $arr1['bp3'].'/'.$arr1['bp4'];}?></td>
     <td align="left"><?=$arr1['p'];?></td>
+		<td align="left"><?=$arr1['seq'];?></td>
     <td align="center"><a href="out_result_print.php?hn=<?=$arr1['hn'];?>&part=<?=$showpart;?>&act=print" target="_blank">พิมพ์</a></td>
 	<td align="center"><a href="out_result.php?getid=<?=$arr1['row_id'];?>&act=del&part=<?=$showpart;?>" onclick="return confirm('คุณต้องการลบข้อมูลรายการนี้ใช่หรือไม่');">ลบ</a></td>
   </tr>

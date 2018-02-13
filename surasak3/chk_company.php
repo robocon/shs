@@ -89,6 +89,17 @@ if( $action == false ){
                 $i++;
             }
             ?>
+            <tr>
+                <td></td>
+                <td>ตรวจสุขภาพ สอบตำรวจ 61</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="out_result.php?part=สอบตำรวจ60" target="_blank">ลงข้อมูลซักประวัติ</a>
+                </td>
+                <td></td>
+            </tr>
         </table>
         <?php
         ?>
