@@ -96,7 +96,16 @@ if( $action == false ){
                 <td></td>
                 <td></td>
                 <td>
-                    <a href="out_result.php?part=สอบตำรวจ60" target="_blank">ลงข้อมูลซักประวัติ</a>
+                    <ol>
+                        <li>
+                            <a href="out_result.php?part=สอบตำรวจ60" target="_blank">ลงข้อมูลซักประวัติ</a>
+                        </li>
+                        <li>
+                        <a href="chk_report_police60.php" target="_blank">พิมพ์ผลตรวจ</a>
+                        </li>
+                    </ol>
+                    
+                    
                 </td>
                 <td></td>
             </tr>
