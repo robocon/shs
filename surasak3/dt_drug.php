@@ -1163,7 +1163,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		echo "<Div style=\"position: absolute;text-align: center; width:760px; height:320px; overflow:auto; \">";
 
 		
-		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr align=\"center\" bgcolor=\"#3333CC\"><td width=\"20\"><font style=\"color: #FFFFFF\"></font></td><td width=\"73\"><font style=\"color: #FFFFFF\"></font></td><td width=\"368\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td><td width=\"110\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td><td width=\"50\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td><td width=\"15\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td></tr>"; 
+		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
+		<tr align=\"center\" bgcolor=\"#3333CC\">
+			<td width=\"20\"><font style=\"color: #FFFFFF\"></font></td>
+			<td width=\"50\"><font style=\"color: #FFFFFF\"></font></td>
+			<td width=\"391\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td>
+			<td width=\"110\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td>
+			<td width=\"50\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td>
+			<td width=\"15\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td>
+		</tr>"; 
 
 
 		$i=1;
@@ -1177,17 +1185,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					}
 					$alert="";
 				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
-					$obj = "Staff Only";
+					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){
-					$obj = "รหัส:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
-					$alert="<FONT style=\"font-size: 18px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่สำนักงานแพทย์ </FONT>";
+					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
+					$alert="<FONT style=\"font-size: 18px;\" COLOR=\"blue\">ติดต่อรับรหัสผ่านได้ที่สำนักงานแพทย์เท่านั้น</FONT>";
 				}else{
 					$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
 					$alert="";
 				}
 
 				
-					$bgcolor="#FFCCE6";
+					$bgcolor="#FF99CC";
 				
 				if($arr["part"] == "DDY"){
 					$style = " style='color:#0000FF;' ";
@@ -1199,12 +1207,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 
 				$arr["genname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["genname"]);
 				$arr["tradname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["tradname"]);
-
+			//แสดงรายการยาที่ค้นหา
 			echo "<tr bgcolor=\"$bgcolor\" ".$style.">
 					<td rowspan=\"3\" align=\"center\">
 					".$obj."</td>
-					<td align=\"right\" bgcolor=\"$bgcolor\">ชื่อยา : </td>
-					<td bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"],"</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">ชื่อยา : </td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"],"</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td valign='top' colspan=\"2\" rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 				</tr>
@@ -1359,20 +1367,30 @@ exit();
 //******************************************** ตรวจสอบรหัสยา *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
-	$sql = "SELECT count(drugcode) as amountcode FROM `druglst` where drugcode = '".$_GET["search"]."' ";
+	$sql = "SELECT count(drugcode) as amountcode, genname FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
+	$chkgenname1=substr($arr["genname"],0,7);
 
 	
-	$sql = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";
-	$result = Mysql_Query($sql);
-	if(Mysql_num_rows($result) > 0){
-		echo "3";
+	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";
+	$result1 = Mysql_Query($sql1);
+
+	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
+			echo "3";
 	}else if($arr["amountcode"] > 0){
-		echo "1";
+		$sql2 = "Select genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND genname like '".$chkgenname1."%' limit 0,1";
+		$result2 = mysql_query($sql2);
+		$arr2 = Mysql_fetch_assoc($result2);
+		if(!empty($arr2["genname"])){  //ถ้ามียาในกลุ่มที่แพ้	
+			echo "55";
+		}else{
+			echo "1";
+		}	
 	}else{
 		echo "0";
 	}
+		
 exit();
 }
 
@@ -1570,12 +1588,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 		if($rows > 0){
 		
 			while(list($row_id, $doctor) = mysql_fetch_row($result)){
-				$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+				$sql = " Select b.genname, b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 				$result2 = mysql_query($sql) or die(mysql_error());
 	
 	
-				while(list($tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
-	
+				while(list($genname, $tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
+					$chkgenname=substr($genname,0,12);
 					list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 					array_push($listinteraction,$drugcode);
 					
@@ -1593,16 +1611,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 			}
 		}
 	$list_session = " '".implode("','",$_SESSION["list_drugcode"])."' ";
-	$list_session2 = " '".implode("','",$listinteraction)."' ";//listยาที่มาจาหแพทย์อื่น
+	$list_session2 = " '".implode("','",$listinteraction)."' ";//listยาที่มาจากแพทย์อื่น
 	$list_session3 = " '".implode("','",$listremedint)."' ";//listยาที่มาจากการremed
 
-	$sql = "SELECT first_drugcode, between_drugcode, effect, action, follow, onset, violence, referable, status  FROM drug_interaction  where (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session.") ) OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session2.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session2.") ) OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session3.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session3.") ) ";
+	//print_r($listinteraction);
+
+	$sql = "SELECT first_drugcode, between_drugcode,first_genname,between_genname effect, action, follow, onset, violence, referable, status  FROM drug_interaction  where (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session.") ) OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session2.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session2.") ) OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session3.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session3.") ) ";
 	
 	$result = Mysql_Query($sql);
 	$rows = Mysql_num_rows($result);
 		if($rows == 0){
 			echo "0";
-			//echo "$sql ";
 		}else{
 			$arr = Mysql_fetch_assoc($result);
 			$i=0;
@@ -1614,9 +1633,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 			}
 
 			if($arr["status"]=="popup"){
-			echo "1เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n ท่านยังต้องการจ่ายยาหรือไม่? ";
+				echo "1เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n ท่านยังต้องการจ่ายยาหรือไม่? ";
 			}else if($arr["status"]=="lock"){
-			echo "2เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n";
+				echo "2เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n";
 			}
 		}
 	
@@ -2204,7 +2223,6 @@ function checkall2(xxx){
 }
 
 function drug_interaction(drugcode){
-	
 	var return_drug_interaction;
 
 	xmlhttp = newXmlHttp();
@@ -2221,7 +2239,7 @@ function checkForm1(){
 	var txt ;
 	var txt1 ;
 	var txt2 ;
-
+	
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);
 	txt = txt.substr(4);
@@ -2292,6 +2310,8 @@ function checkForm1(){
 	document.form1.drug_code.focus();
 	//else if(txt == "3" && !confirm("ผู้ป่วยมีการแพ้ยาตัวนี้ ต้องการจ่ายยาหรือไม่?")){
 	//	document.form1.drug_code.focus();
+	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
+	document.form1.drug_code.focus();
 	}else if(txt7 != "0" && !confirm(txt7)){
 		return false;
 	}else if(txt3 != "0" && !confirm(txt3)){
@@ -2331,6 +2351,9 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
+	}else if(document.form1.drug_code.value == "6VISL" && eval(document.form1.drug_amount.value) > 60){
+		alert("สั่งได้ไม่เกิน 60 ");
+		document.form1.drug_amount.focus();
 	}else{
 		
 			if(check_inject(document.form1.drug_code.value) == false){
@@ -2737,7 +2760,8 @@ function viatch(ing,code){
 			$date_remed ="";
 	
 	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){
-		$where1 = " where `lock` = 'Y' ";
+		$where1 = " where `lock` = 'Y' ";   //ยาที่ถูกล็อครหัสผ่าน
+		//$where1 = "";
 	}else{
 		$where1 = "";
 	}

@@ -35,10 +35,13 @@ $date2 ="$date-$rptmo-$thiyr";
 
 $dateshow ="$thiyr-$rptmo-$date";
 
-$sql = "Select a.admit,a.dcdate,a.days ,a.an,a.hn,a.ptname,a.bfy,a.bfn,a.dpy,a.dpn,a.ddl,a.ddy,a.ddn,a.dsy,a.dsn,a.blood,a.lab,a.xray,a.sinv,a.surg,a.ncare,a.denta,a.pt,a.stx,a.mc,b.icd10,b.comorbid,b.icd9cm 
+$sql = "Select a.admit,a.dcdate,a.days ,a.an,a.hn,a.ptname,a.bfy,a.bfn,a.dpy,a.dpn,a.ddl,a.ddy,a.ddn,a.dsy,a.dsn,a.blood,a.lab,a.xray,a.sinv,a.surg,a.ncare,a.denta,a.pt,a.stx,a.mc,
+b.icd10,b.comorbid,b.icd9cm, 
+c.`idcard` 
 From ipmonrep as a, 
-ipcard as b 
-where a.hn=b.hn 
+ipcard as b, 
+opcard AS c 
+where a.hn=b.hn AND b.`hn` = c.`hn` 
 AND a.dcdate  like '".$date1."%'  
 AND a.credit ='30บาท' 
 group by a.hn  ORDER by a.dcdate";
@@ -59,6 +62,7 @@ echo "<tr>
 <td align=\"center\" class=\"fonthead\">วันนอน</td>
 <td align=\"center\" class=\"fonthead\">hn</td>
 <td align=\"center\" class=\"fonthead\">AN</td>
+<td align=\"center\" class=\"fonthead\">เลขบัตร ปชช.</td>
 <td align=\"center\" class=\"fonthead\">ชื่อ - สกุล</td>
 <td align=\"center\" class=\"fonthead\">ICD10</td>
 <td align=\"center\" class=\"fonthead\">ICD10รอง</td>
@@ -75,7 +79,7 @@ echo "<tr>
 $num=1;
 
 
-while(list($admit,$dcdate,$days,$an,$hn,$ptname,$bfy,$bfn,$dpy,$dpn,$ddl,$ddy,$ddn,$dsy,$dsn,$blood,$lab,$xray,$sunv,$surg,$ncare,$denta,$pt,$stx,$mc,$icd10,$comorbid,$icd9cm) = mysql_fetch_row($result)){
+while(list($admit,$dcdate,$days,$an,$hn,$ptname,$bfy,$bfn,$dpy,$dpn,$ddl,$ddy,$ddn,$dsy,$dsn,$blood,$lab,$xray,$sunv,$surg,$ncare,$denta,$pt,$stx,$mc,$icd10,$comorbid,$icd9cm,$idcard) = mysql_fetch_row($result)){
 
 $date=substr($date,0,10);
 $d=substr($date,8,2);
@@ -105,6 +109,7 @@ echo "<tr>
 	<td class=\"fontlist\" align=\"center\">".$days."</td>
 	<td class=\"fontlist\">".$hn."</td>
 	<td align='right' class=\"fontlist\">".$an."</td>
+	<td>$idcard</td>
 	<td class=\"fontlist\">".$ptname."</td>
 	<td align='center' class=\"fontlist\">".$icd10."</td>
 	<td align='center' class=\"fontlist\">".$comorbid."</td>
