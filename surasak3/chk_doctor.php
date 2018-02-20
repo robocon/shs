@@ -474,6 +474,7 @@ h1,h3,p{
                 <label for="cxr2"><input type="radio" name="cxr" id="cxr2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
+        <!--
         <tr>
             <td class="tb-title">สรุปผลตรวจ</td>
             <td>
@@ -485,6 +486,33 @@ h1,h3,p{
             <td colspan="2">
                 <p class="tb-title" style="text-align: left;">คำแนะนำเพิ่มเติมในการดูแลสุขภาพ</p>
                 <textarea name="suggestion" cols="60" rows="8" id="" placeholder="ทดสอบรายละเอียดเพิ่มเติม"></textarea>
+            </td>
+        </tr>
+        -->
+    </table>
+    <br>
+    <table class="chk_table">
+        <tr>
+            <td colspan="2" class="title"><h3>สรุปผลการตรวจและการดำเนินงาน</h3></td>
+        </tr>
+        <tr>
+            <td width="25%" class="tb-title">ผลการตรวจ</td>
+            <td>
+                <label for="conclution1"><input type="radio" name="conclution" id="conclution1" value="1"> ปกติ </label>
+                <label for="conclution2"><input type="radio" name="conclution" id="conclution2" value="0"> ผิดปกติ </label>
+            </td>
+        </tr>
+        <tr>
+            <td width="25%" class="tb-title">คำแนะนำ</td>
+            <td>
+                <label for="suggestion1"><input type="radio" name="suggestion" id="suggestion1" value="1"> ให้คำแนะนำ </label>
+                <label for="suggestion2"><input type="radio" name="suggestion" id="suggestion2" value="0"> ไม่ได้ให้คำแนะนำ </label>
+            </td>
+        </tr>
+        <tr>
+            <td width="25%" class="tb-title">แนะนำให้รับการตรวจต่อเนื่องครั้งต่อไปในวันที่</td>
+            <td>
+                <input type="text" name="" id="">
             </td>
         </tr>
     </table>
