@@ -2351,11 +2351,20 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
-	}else if(document.form1.drug_code.value == "6VISL" && eval(document.form1.drug_amount.value) > 60){
-		alert("สั่งได้ไม่เกิน 60 ");
-		document.form1.drug_amount.focus();
+	}else if( document.form1.drug_code.value == '6VISL' && eval(document.form1.drug_amount.value) > 60 ){
+		
+		alert('ยาควบคุมราคา สั่งได้ไม่เกิน 60 หลอด');
+
 	}else{
 		
+		var dt_code = document.getElementById('doctor_code').value;
+		var dCode = document.form1.drug_code.value;
+
+		// ถ้าไม่ใช่หมอเลอปรัช(32166) กับ หมอพิศาลให้แจ้งเตือนเฉยๆ(29268)
+		if( dCode == '6VISL' && ( dt_code != 'md32166' || dt_code != 'md29268' ) ){
+			alert('กรุณาให้จักษุแพทย์สั่งยา');
+		}
+
 			if(check_inject(document.form1.drug_code.value) == false){
 				
 				document.form1.drug_inject_amount.value = '';
@@ -2972,7 +2981,9 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
     </TD>
 </TR>
 <TR>
-	<TD align="center" colspan="2"><INPUT id="form_submit" TYPE="submit" value="   ตกลง    " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;<INPUT TYPE="button" value="ยกเลิก" onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';">
+	<TD align="center" colspan="2">
+		<INPUT id="form_submit" TYPE="submit" value="   ตกลง    " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;<INPUT TYPE="button" value="ยกเลิก" onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';">
+		<input type="hidden" name="doctor_code" id="doctor_code" value="<?=$_SESSION['sIdname'];?>">
 	</TD>
 </TR>
 </TABLE>

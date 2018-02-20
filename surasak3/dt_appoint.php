@@ -180,6 +180,11 @@ if($_GET["action"] == "carlendar"){
 		$today2 = $today;
 	}
 
+	if( $_SESSION['sIdname'] == 'md32166' OR $_SESSION['smenucode'] == 'ADM' ){
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$today1.'&dfMonth='.($month + 3).'&dfYear='.$year.'\')">&gt;&gt; เลือนนัดอีก 3เดือน</a>';
+		echo '&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$today1.'&dfMonth='.$month.'&dfYear='.($year+1).'\')">&gt;&gt; เลือนนัดอีก 1ปี</a>';
+	}
 
 	echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 	<tr class=\"norm\"><td width=\"50\" align=\"center\">
