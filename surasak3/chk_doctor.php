@@ -15,23 +15,31 @@ if( $action === 'save' ){
     $address = input_post('address');
     $date_chk = input_post('date_chk');
     $yearchk = get_year_checkup();
-    $ear = input_post('ear');
-    $eye = input_post('eye');
-    $snell_eye = input_post('snell_eye');
-    $cxr = input_post('cxr');
-    $conclution = input_post('conclution');
-    $suggestion = input_post('suggestion');
+    $ear = $_POST['ear'];
+    $eye = $_POST['eye'];
+    $snell_eye = $_POST['snell_eye'];
+    $cxr = $_POST['cxr'];
+    $conclution = $_POST['conclution'];
+
+    $normal_suggest = $_POST['normal_suggest'];
+    $normal_suggest_date = input_post('normal_suggest_date');
+
+    $abnormal_suggest = $_POST['abnormal_suggest'];
+    $abnormal_suggest_date = input_post('abnormal_suggest_date');
+
     $doctor = input_post('doctor');
     $officer = $_SESSION['sOfficer'];
 
-    $res_cbc = input_post('res_cbc');
-    $res_ua = input_post('res_ua');
-    $res_glu = input_post('res_glu');
-    $res_crea = input_post('res_crea');
-    $res_chol = input_post('res_chol');
-    $res_hdl = input_post('res_hdl');
-    $res_hbsag = input_post('res_hbsag');
+    $res_cbc = $_POST['res_cbc'];
+    $res_ua = $_POST['res_ua'];
+    $res_glu = $_POST['res_glu'];
+    $res_crea = $_POST['res_crea'];
+    $res_chol = $_POST['res_chol'];
+    $res_hdl = $_POST['res_hdl'];
+    $res_hbsag = $_POST['res_hbsag'];
 
+    $diag = input_post('diag');
+    
     $sex = input_post('sex');
     $breast = '';
     if( $sex == "ญ" ){
@@ -48,15 +56,17 @@ if( $action === 'save' ){
         $sql = "INSERT INTO `chk_doctor` (
             `id`, `hn`, `vn`, `prefix`, `name`, `surname`, 
             `idcard`, `address`, `date_chk`, `yearchk`, `ear`, `breast`, 
-            `eye`, `snell_eye`, `cxr`, `conclution`, `suggestion`, `doctor`, 
-            `officer`, `res_cbc`, `res_ua`, `res_glu`, `res_crea`, `res_chol`, 
-            `res_hdl`, `res_hbsag`
+            `eye`, `snell_eye`, `cxr`, `conclution`, `normal_suggest`,
+            `normal_suggest_date`, `abnormal_suggest`, `abnormal_suggest_date`, `doctor`, `officer`, 
+            `res_cbc`, `res_ua`, `res_glu`, `res_crea`, `res_chol`, `res_hdl`, 
+            `res_hbsag`,`diag`
         ) VALUES (
             NULL, '$hn', '$vn', '$prefix', '$name', '$surname', 
             '$idcard', '$address', NOW(), '$yearchk', '$ear', '$breast', 
-            '$eye', '$snell_eye', '$cxr', '$conclution', '$suggestion', '$doctor', 
-            '$officer', '$res_cbc', '$res_ua', '$res_glu', '$res_crea', '$res_chol', 
-            '$res_hdl', '$res_hbsag'
+            '$eye', '$snell_eye', '$cxr', '$conclution', '$normal_suggest', 
+            '$normal_suggest_date', '$abnormal_suggest', '$abnormal_suggest_date', '$doctor', '$officer', 
+            '$res_cbc', '$res_ua', '$res_glu', '$res_crea', '$res_chol', '$res_hdl', 
+            '$res_hbsag', '$diag'
         );";
         $save = $db->insert($sql);
 
@@ -72,7 +82,10 @@ if( $action === 'save' ){
         `snell_eye` = '$snell_eye', 
         `cxr` = '$cxr', 
         `conclution` = '$conclution', 
-        `suggestion` = '$suggestion',
+        `normal_suggest` = '$normal_suggest',
+        `normal_suggest_date` = '$normal_suggest_date', 
+        `abnormal_suggest` = '$abnormal_suggest', 
+        `abnormal_suggest_date` = '$abnormal_suggest_date',
         `doctor` = '$doctor',
         `res_cbc` = '$res_cbc', 
         `res_ua` = '$res_ua', 
@@ -80,7 +93,8 @@ if( $action === 'save' ){
         `res_crea` = '$res_crea', 
         `res_chol` = '$res_chol', 
         `res_hdl` = '$res_hdl', 
-        `res_hbsag` = '$res_hbsag' 
+        `res_hbsag` = '$res_hbsag',
+        `diag` = '$diag'
         WHERE `id` = '$id' ; ";
         $save = $db->update($sql);
 
@@ -157,7 +171,8 @@ h1,h3,p{
     padding: 0;
 }
 </style>
-<form action="chk_doctor.php" method="post">
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<form action="chk_doctor.php" method="post" id="formSubmit">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
     <table class="chk_table">
         <tr>
@@ -297,10 +312,10 @@ h1,h3,p{
                         <td>ผลการตรวจ</td>
                         <td>
                             <label for="res_cbc">
-                                <input type="radio" name="res_cbc" id="res_cbc" value="1"> ปกติ
+                                <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc" value="1"> ปกติ
                             </label> 
                             <label for="res_cbc2">
-                                <input type="radio" name="res_cbc" id="res_cbc2" value="0"> ผิดปกติ
+                                <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc2" value="0"> ผิดปกติ
                             </label>
                         </td>
                         <td></td>
@@ -352,10 +367,10 @@ h1,h3,p{
                         <td>ผลการตรวจ</td>
                         <td>
                             <label for="res_ua">
-                                <input type="radio" name="res_ua" id="res_ua" value="1"> ปกติ
+                                <input type="radio" name="res_ua" class="res_ua" id="res_ua" value="1"> ปกติ
                             </label> 
                             <label for="res_ua2">
-                                <input type="radio" name="res_ua" id="res_ua2" value="0"> ผิดปกติ
+                                <input type="radio" name="res_ua" class="res_ua" id="res_ua2" value="0"> ผิดปกติ
                             </label>
                         </td>
                         <td></td>
@@ -411,10 +426,10 @@ h1,h3,p{
                                 <td align="center"><?=$etc['normalrange'];?></td>
                                 <td bgcolor="#abcea1" style="font-weight: bold;">
                                     <label for="res_<?=$labcode;?>">
-                                        <input type="radio" name="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ปกติ
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ปกติ
                                     </label> 
                                     <label for="res_<?=$labcode;?>2">
-                                        <input type="radio" name="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="0"> ผิดปกติ
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="0"> ผิดปกติ
                                     </label>
                                 </td>
                             </tr>
@@ -470,27 +485,20 @@ h1,h3,p{
         <tr>
             <td class="tb-title">Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=58-2733" target="_blank">ดูผลการตรวจ</a> </td>
             <td>
-                <label for="cxr1"><input type="radio" name="cxr" id="cxr1" value="1"> ปกติ </label>
-                <label for="cxr2"><input type="radio" name="cxr" id="cxr2" value="0"> ผิดปกติ </label>
+                <label for="cxr1"><input type="radio" name="cxr" class="cxr" id="cxr1" value="1"> ปกติ </label>
+                <label for="cxr2"><input type="radio" name="cxr" class="cxr" id="cxr2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
-        <!--
-        <tr>
-            <td class="tb-title">สรุปผลตรวจ</td>
-            <td>
-                <label for="conclution1"><input type="radio" name="conclution" id="conclution1" value="1"> ปกติ </label>
-                <label for="conclution2"><input type="radio" name="conclution" id="conclution2" value="0"> ผิดปกติ </label>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <p class="tb-title" style="text-align: left;">คำแนะนำเพิ่มเติมในการดูแลสุขภาพ</p>
-                <textarea name="suggestion" cols="60" rows="8" id="" placeholder="ทดสอบรายละเอียดเพิ่มเติม"></textarea>
-            </td>
-        </tr>
-        -->
     </table>
     <br>
+    <style type="text/css">
+    .normal, .abnormal, .norm-sugges{
+        display: none;
+    }
+    table.calendar{
+        font-size: 1.2em!important;
+    }
+    </style>
     <table class="chk_table">
         <tr>
             <td colspan="2" class="title"><h3>สรุปผลการตรวจและการดำเนินงาน</h3></td>
@@ -498,27 +506,48 @@ h1,h3,p{
         <tr>
             <td width="25%" class="tb-title">ผลการตรวจ</td>
             <td>
-                <label for="conclution1"><input type="radio" name="conclution" id="conclution1" value="1"> ปกติ </label>
-                <label for="conclution2"><input type="radio" name="conclution" id="conclution2" value="0"> ผิดปกติ </label>
+                <label for="conclution1"><input type="radio" name="conclution" class="conclution" id="conclution1" value="1"> ปกติ </label>
+                <label for="conclution2"><input type="radio" name="conclution" class="conclution" id="conclution2" value="0"> ผิดปกติ </label>
             </td>
         </tr>
-        <tr>
-            <td width="25%" class="tb-title">คำแนะนำ</td>
+        <tr class="normal">
+            <td width="25%" class="tb-title" valign="top">คำแนะนำกรณีปกติ</td>
             <td>
-                <label for="suggestion1"><input type="radio" name="suggestion" id="suggestion1" value="1"> ให้คำแนะนำ </label>
-                <label for="suggestion2"><input type="radio" name="suggestion" id="suggestion2" value="0"> ไม่ได้ให้คำแนะนำ </label>
+                <input type="radio" name="normal_suggest" class="suggest_detail"  id="normal_suggest1" value="1">
+                <label for="normal_suggest1">แนะนำให้รับการตรวจต่อเนื่อง ครั้งต่อไปในวันที่ </label>
+                <input type="text" name="normal_suggest_date" id="normal_suggest_date">
+
+                <br>
+                <input type="radio" name="normal_suggest" class="suggest_detail" id="normal_suggest2" value="0">
+                <label for="normal_suggest2"> ไม่ได้ให้คำแนะนำ </label>
+
             </td>
         </tr>
-        <tr>
-            <td width="25%" class="tb-title">แนะนำให้รับการตรวจต่อเนื่องครั้งต่อไปในวันที่</td>
+        <tr class="abnormal" valign="top">
+            <td width="25%" class="tb-title">คำแนะนำกรณีผิดปกติ</td>
             <td>
-                <input type="text" name="" id="">
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs0" value="0"> <label for="abs0"> ไม่ได้ให้คำแนะนำ </label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs1" value="1"> <label for="abs1"> ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs2" value="2"> <label for="abs2"> ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs3" value="3"> <label for="abs3"> ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง</label><br>
+                ในวันที่ <input type="text" name="abnormal_suggest_date" id="abnormal_suggest_date">
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table class="chk_table">
+        <tr>
+            <td class="title" style="text-align: left;"><h3>บันทึกการวินิฉัยจากแพทย์</h3></td>
+        </tr>
+        <tr>
+            <td>
+                <textarea name="diag" id="" cols="60" rows="5"></textarea>
             </td>
         </tr>
     </table>
     <br>
     <div align="center">
-        <button type="submit">บันทึกข้อมูล</button>
+        <button type="submit" id="submit-btn">บันทึกข้อมูล</button>
 
         <input type="hidden" name="action" value="save">
         <input type="hidden" name="hn" value="<?=$hn;?>">
@@ -540,3 +569,88 @@ h1,h3,p{
         <input type="hidden" name="address" value="<?=$address;?>">
     </div>
 </form>
+
+
+<link type="text/css" href="epoch_styles.css" rel="stylesheet">
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script type="text/javascript">
+    var popup1, popup2, popup3;
+    window.onload = function() {
+        popup1 = new Epoch('popup1','popup',document.getElementById('normal_suggest_date'),false);
+        popup1 = new Epoch('popup2','popup',document.getElementById('abnormal_suggest_date'),false);
+    };
+</script>
+<script type="text/javascript">
+    $(function(){
+
+        $(document).on('click', '#conclution1', function(){
+            $('.normal').show();
+            $('.abnormal').hide();
+
+            clear_sub();
+        });
+
+        $(document).on('click', '#conclution2', function(){
+            $('.normal').hide();
+            $('.abnormal').show();
+            
+            clear_sub();
+        });
+
+        function clear_sub(){
+            $('#normal_suggest1').prop('checked', false);
+            $('#normal_suggest2').prop('checked', false);
+            
+            $('#abs0').prop('checked', false);
+            $('#abs1').prop('checked', false);
+            $('#abs2').prop('checked', false);
+            $('#abs3').prop('checked', false);
+            
+        }
+
+        $(document).on('submit', '#formSubmit', function(){
+            var res_cbc = $('.res_cbc').is(':checked');
+            var res_ua = $('.res_ua').is(':checked');
+            var cxr = $('.cxr').is(':checked');
+            var conclution = $('.conclution').is(':checked');
+            var suggest_detail = $('.suggest_detail').is(':checked');
+
+            var res_glu = $('.res_glu').is(':checked');
+            var res_crea = $('.res_crea').is(':checked');
+            var res_chol = $('.res_chol').is(':checked');
+            var res_hdl = $('.res_hdl').is(':checked');
+            var res_hbsag = $('.res_hbsag').is(':checked');
+            
+            var ret_stat = true;
+
+            if( res_cbc === false ){
+                alert('กรุณาเลือกผลการตรวจ CBC');
+                ret_stat = false;
+
+            }else if( res_ua === false ){
+                alert('กรุณาเลือกผลการตรวจ UA');
+                ret_stat = false;
+
+            }else if( res_glu === false || res_crea === false || res_chol === false || res_hdl === false || res_hbsag === false ){
+                alert('กรุณาเลือกผลการตรวจอื่นๆ');
+                ret_stat = false;
+
+            }else if( cxr === false ){
+                alert('กรุณาเลือกผลการตรวจ X-Ray');
+                ret_stat = false;
+
+            }else if( conclution === false ){
+                alert('กรุณาเลือกสรุปผลการตรวจสุขภาพ');
+                ret_stat = false;
+
+            }else if( suggest_detail === false ){
+                alert('กรุณาเลือกให้คำแนะนำในการตรวจสุขภาพ');
+                ret_stat = false;
+
+            }
+
+            return ret_stat;
+        });
+        
+    });
+</script>
