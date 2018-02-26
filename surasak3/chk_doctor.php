@@ -513,8 +513,8 @@ h1,h3,p{
         <tr class="normal">
             <td width="25%" class="tb-title" valign="top">คำแนะนำกรณีปกติ</td>
             <td>
-                <input type="radio" name="normal_suggest" class="suggest_detail" id="normal_suggest2" value="1">
-                <label for="normal_suggest2"> ไม่ได้ให้คำแนะนำ </label>
+                <input type="radio" name="normal_suggest" class="suggest_detail cleardate" id="normal_suggest2" value="1">
+                <label for="normal_suggest2" class="cleardate"> ไม่ได้ให้คำแนะนำ </label>
                 <br>
                 <input type="radio" name="normal_suggest" class="suggest_detail"  id="normal_suggest1" value="2">
                 <label for="normal_suggest1">แนะนำให้รับการตรวจต่อเนื่อง ครั้งต่อไปในวันที่ </label>
@@ -524,7 +524,7 @@ h1,h3,p{
         <tr class="abnormal" valign="top">
             <td width="25%" class="tb-title">คำแนะนำกรณีผิดปกติ</td>
             <td>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs0" value="1"> <label for="abs0"> ไม่ได้ให้คำแนะนำ </label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail cleardate" id="abs0" value="1"> <label for="abs0" class="cleardate"> ไม่ได้ให้คำแนะนำ </label><br>
                 <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs1" value="2"> <label for="abs1"> ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป</label><br>
                 <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs2" value="3"> <label for="abs2"> ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ</label><br>
                 <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs3" value="4"> <label for="abs3"> ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง</label><br>
@@ -593,6 +593,12 @@ h1,h3,p{
             $('.abnormal').show();
             
             clear_sub();
+        });
+
+        $(document).on('click', '.cleardate', function(){
+            $('#normal_suggest_date').val('');
+            $('#abnormal_suggest_date').val('');
+            
         });
 
         function clear_sub(){
