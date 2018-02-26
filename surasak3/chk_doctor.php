@@ -315,7 +315,7 @@ h1,h3,p{
                                 <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc" value="1"> ปกติ
                             </label> 
                             <label for="res_cbc2">
-                                <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc2" value="0"> ผิดปกติ
+                                <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc2" value="2"> ผิดปกติ
                             </label>
                         </td>
                         <td></td>
@@ -370,7 +370,7 @@ h1,h3,p{
                                 <input type="radio" name="res_ua" class="res_ua" id="res_ua" value="1"> ปกติ
                             </label> 
                             <label for="res_ua2">
-                                <input type="radio" name="res_ua" class="res_ua" id="res_ua2" value="0"> ผิดปกติ
+                                <input type="radio" name="res_ua" class="res_ua" id="res_ua2" value="2"> ผิดปกติ
                             </label>
                         </td>
                         <td></td>
@@ -429,7 +429,7 @@ h1,h3,p{
                                         <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ปกติ
                                     </label> 
                                     <label for="res_<?=$labcode;?>2">
-                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="0"> ผิดปกติ
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="2"> ผิดปกติ
                                     </label>
                                 </td>
                             </tr>
@@ -452,7 +452,7 @@ h1,h3,p{
             <td width="25%" class="tb-title">การคัดกรองการได้ยิน</td>
             <td>
                 <label for="ear1"><input type="radio" name="ear" id="ear1" value="1"> ปกติ </label>
-                <label for="ear2"><input type="radio" name="ear" id="ear2" value="0"> ผิดปกติ </label>
+                <label for="ear2"><input type="radio" name="ear" id="ear2" value="2"> ผิดปกติ </label>
             </td>
         </tr>
         <?php
@@ -462,7 +462,7 @@ h1,h3,p{
             <td class="tb-title">การตรวจเต้านมโดยแพทย์<br>หรือบุคลากรสาธารณสุข</td>
             <td>
                 <label for="breast1"><input type="radio" name="breast" id="breast1" value="1"> ปกติ </label>
-                <label for="breast2"><input type="radio" name="breast" id="breast2" value="0"> ผิดปกติ </label>
+                <label for="breast2"><input type="radio" name="breast" id="breast2" value="2"> ผิดปกติ </label>
             </td>
         </tr>
         <?php
@@ -472,21 +472,21 @@ h1,h3,p{
             <td class="tb-title">การตรวจตาโดยความดูแลของจักษุแพทย์</td>
             <td>
                 <label for="eye1"><input type="radio" name="eye" id="eye1" value="1"> ปกติ </label>
-                <label for="eye2"><input type="radio" name="eye" id="eye2" value="0"> ผิดปกติ </label>
+                <label for="eye2"><input type="radio" name="eye" id="eye2" value="2"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">การตรวจตาด้วย Snellen eye Chart</td>
             <td>
                 <label for="snell_eye1"><input type="radio" name="snell_eye" id="snell_eye1" value="1"> ปกติ </label>
-                <label for="snell_eye2"><input type="radio" name="snell_eye" id="snell_eye2" value="0"> ผิดปกติ </label>
+                <label for="snell_eye2"><input type="radio" name="snell_eye" id="snell_eye2" value="2"> ผิดปกติ </label>
             </td>
         </tr>
         <tr>
             <td class="tb-title">Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=58-2733" target="_blank">ดูผลการตรวจ</a> </td>
             <td>
                 <label for="cxr1"><input type="radio" name="cxr" class="cxr" id="cxr1" value="1"> ปกติ </label>
-                <label for="cxr2"><input type="radio" name="cxr" class="cxr" id="cxr2" value="0"> ผิดปกติ </label>
+                <label for="cxr2"><input type="radio" name="cxr" class="cxr" id="cxr2" value="2"> ผิดปกติ </label>
             </td>
         </tr>
     </table>
@@ -507,29 +507,27 @@ h1,h3,p{
             <td width="25%" class="tb-title">ผลการตรวจ</td>
             <td>
                 <label for="conclution1"><input type="radio" name="conclution" class="conclution" id="conclution1" value="1"> ปกติ </label>
-                <label for="conclution2"><input type="radio" name="conclution" class="conclution" id="conclution2" value="0"> ผิดปกติ </label>
+                <label for="conclution2"><input type="radio" name="conclution" class="conclution" id="conclution2" value="2"> ผิดปกติ </label>
             </td>
         </tr>
         <tr class="normal">
             <td width="25%" class="tb-title" valign="top">คำแนะนำกรณีปกติ</td>
             <td>
-                <input type="radio" name="normal_suggest" class="suggest_detail"  id="normal_suggest1" value="1">
+                <input type="radio" name="normal_suggest" class="suggest_detail" id="normal_suggest2" value="1">
+                <label for="normal_suggest2"> ไม่ได้ให้คำแนะนำ </label>
+                <br>
+                <input type="radio" name="normal_suggest" class="suggest_detail"  id="normal_suggest1" value="2">
                 <label for="normal_suggest1">แนะนำให้รับการตรวจต่อเนื่อง ครั้งต่อไปในวันที่ </label>
                 <input type="text" name="normal_suggest_date" id="normal_suggest_date">
-
-                <br>
-                <input type="radio" name="normal_suggest" class="suggest_detail" id="normal_suggest2" value="0">
-                <label for="normal_suggest2"> ไม่ได้ให้คำแนะนำ </label>
-
             </td>
         </tr>
         <tr class="abnormal" valign="top">
             <td width="25%" class="tb-title">คำแนะนำกรณีผิดปกติ</td>
             <td>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs0" value="0"> <label for="abs0"> ไม่ได้ให้คำแนะนำ </label><br>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs1" value="1"> <label for="abs1"> ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป</label><br>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs2" value="2"> <label for="abs2"> ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ</label><br>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs3" value="3"> <label for="abs3"> ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs0" value="1"> <label for="abs0"> ไม่ได้ให้คำแนะนำ </label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs1" value="2"> <label for="abs1"> ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs2" value="3"> <label for="abs2"> ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs3" value="4"> <label for="abs3"> ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง</label><br>
                 ในวันที่ <input type="text" name="abnormal_suggest_date" id="abnormal_suggest_date">
             </td>
         </tr>

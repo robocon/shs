@@ -89,7 +89,7 @@ AND (
     OR b.`labcode` = 'CHOL' 
     OR b.`labcode` = 'HDL' 
     OR b.`labcode` = 'HBSAG' 
-    OR b.`labcode` = 'STOCB' 
+    OR b.`labcode` = 'OCCULT' 
     OR b.`labcode` = '38302' 
 ) 
 AND a.`orderdate` LIKE '$date%' ";
@@ -436,16 +436,12 @@ $pdf->Cell(41, 6, 'ด้วยวิธี PAP Smear', 0, 1);
 
 /* group รวมกัน */
 $pdf->Rect(148, 133, 15, 12);
-// $pdf->SetXY(148, 133);
-// $pdf->Cell(15, 6, 'xxx', 0, 1, 'C');
 $pdf->SetXY(148, 139);
-$pdf->Cell(15, 6, 'yyyy', 0, 1, 'C');
+// $pdf->Cell(15, 6, 'yyyy', 0, 1, 'C');
 
 $pdf->Rect(163, 133, 25, 12);
-// $pdf->SetXY(163, 133);
-// $pdf->Cell(25, 6, '111', 0, 1, 'C');
 $pdf->SetXY(163, 139);
-$pdf->Cell(25, 6, '222', 0, 1, 'C');
+// $pdf->Cell(25, 6, '222', 0, 1, 'C');
 /* group รวมกัน */
 
 # โลหิตจาง
@@ -688,10 +684,10 @@ $pdf->Cell(41, 6, 'Fecal occult blood test(FOBT)', 0, 1);
 
 $pdf->Rect(148, 217, 15, 12);
 $pdf->SetXY(148, 217);
-$pdf->Cell(15, 6, 'asdf', 0, 1, 'C');
+$pdf->Cell(15, 6, $etc_lists['occult']['result'], 0, 1, 'C');
 $pdf->Rect(163, 217, 25, 12);
 $pdf->SetXY(163, 217);
-$pdf->Cell(25, 6, 'asdf', 0, 1, 'C');
+$pdf->Cell(25, 6, $etc_lists['occult']['normalrange'], 0, 1, 'C');
 
 $pdf->SetXY(13, 229);
 $pdf->Cell(41, 6, 'สรุปผลตรวจ', 0, 1);
@@ -713,8 +709,35 @@ if( $user['conclution'] == "0" ){
 $pdf->SetXY(13, 235);
 $pdf->Cell(38, 6, 'คำแนะนำเพิ่มเติมในการดูแลรักษาสุขภาพ', 0, 1);
 
+
+$conclution = $user['conclution'];
+if( $conclution == 1 ){
+    $suggest_list = array(
+        1 => 'ไม่ได้ให้คำแนะนำ', 
+        'แนะนำให้รับการตรวจต่อเนื่อง ครั้งต่อไปในวันที่'
+    );
+
+    $suggest = $user['normal_suggest'];
+    $suggest_date = ( $user['normal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$user['normal_suggest_date'] : '' ;
+    
+}else{
+    $suggest_list = array(
+        1 => 'ไม่ได้ให้คำแนะนำ', 
+        'ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป', 
+        'ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ', 
+        'ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง'
+    );
+
+    $suggest = $user['abnormal_suggest'];
+    $suggest_date = ( $user['abnormal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$user['abnormal_suggest_date'] : '' ;
+    
+}
+
+$suggest_detail = $suggest_list[$suggest];
+$conclution_detail = $suggest_detail.$suggest_date;
+
 $pdf->SetXY(53, 235);
-$pdf->Cell(38, 6, $user['suggestion'], 0, 1);
+$pdf->Cell(38, 6, $conclution_detail, 0, 1);
 
 print_dashed(53,239.50,188,239.50);
 print_dashed(13,245,188,245);
