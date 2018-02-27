@@ -17,22 +17,24 @@ AND a.`date_chk` LIKE '$date%' ";
 $db->select($sql);
 $user = $db->get_item();
 
-$sql = "SELECT `camp` FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
+$sql = "SELECT `camp`,`labin_date` FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
 $db->select($sql);
 $dxofyear = $db->get_item();
+
+$dxofyear_labin_date = $dxofyear['labin_date'];
 
 # CBC
 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange` 
 FROM `resulthead` AS a 
     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
 WHERE a.`hn` = '$hn' 
-AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
 AND a.`profilecode` = 'CBC' 
 AND ( b.`labcode` = 'HB' OR b.`labcode` = 'HCT' OR b.`labcode` = 'WBC' 
 OR b.`labcode` = 'NEU' OR b.`labcode` = 'LYMP' OR b.`labcode` = 'MONO' 
 OR b.`labcode` = 'EOS' OR b.`labcode` = 'BASO' OR b.`labcode` = 'PLTC' 
 OR b.`labcode` = 'RBC' ) 
-AND a.`orderdate` LIKE '$date%' 
+AND a.`orderdate` LIKE '$dxofyear_labin_date%' 
 ORDER BY b.seq ASC";
 $db->select($sql);
 $cbc_items = $db->get_items();
@@ -49,13 +51,13 @@ $sql = "SELECT b.*
 FROM `resulthead` AS a 
     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
 WHERE a.`hn` = '$hn' 
-AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
 AND a.`profilecode` = 'UA' 
 AND ( b.`labcode` = 'SPGR' OR b.`labcode` = 'PHU' OR b.`labcode` = 'GLUU' 
 OR b.`labcode` = 'PROU' 
 OR b.`labcode` = 'RBCU' OR b.`labcode` = 'WBCU' OR b.`labcode` = 'EPIU' 
 OR b.`labcode` = 'BLOODU' OR b.`labcode` = 'KETU' ) 
-AND a.`orderdate` LIKE '$date%' ";
+AND a.`orderdate` LIKE '$dxofyear_labin_date%' ";
 $db->select($sql);
 $ua_items = $db->get_items();
 
@@ -65,24 +67,11 @@ foreach ($ua_items as $key => $item) {
     $ua_lists[$labcode] = array('result' => $item['result'], 'normalrange' => $item['normalrange']);
 }
 
-# ETC 
-// $sql = "SELECT b.* 
-// FROM `resulthead` AS a 
-//     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-// WHERE a.`hn` = '$hn' 
-// AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
-// AND ( a.`profilecode` = 'FBS' OR a.`profilecode` = 'HBSAG' OR a.`profilecode` = 'LIPID' 
-// OR a.`profilecode` = '38302' OR a.`profilecode` = 'CREAG' ) 
-// AND ( 
-//     b.`labcode` = 'CREA' OR b.`labcode` = 'HBSAG' OR b.`labcode` = 'HDL'
-// ) 
-// AND a.`orderdate` LIKE '$date%' ";
-
 $sql = "SELECT b.* 
 FROM `resulthead` AS a 
     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
 WHERE a.`hn` = '$hn' 
-AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
 AND ( 
     b.`labcode` = 'GLU' 
     OR b.`labcode` = 'CREA' 
@@ -92,7 +81,7 @@ AND (
     OR b.`labcode` = 'OCCULT' 
     OR b.`labcode` = '38302' 
 ) 
-AND a.`orderdate` LIKE '$date%' ";
+AND a.`orderdate` LIKE '$dxofyear_labin_date%' ";
 
 $db->select($sql);
 $etc_items = $db->get_items();
@@ -163,7 +152,7 @@ $pdf->Cell(41, 6, 'เลขบัตรประชาชน '.$user['idcard'], 0, 1);
 
 $pdf->Rect(148, 43, 40, 6);
 $pdf->SetXY(148, 43);
-$pdf->Cell(40, 6, 'วันที่เข้ารับบริการ '.$date, 0, 1);
+$pdf->Cell(40, 6, 'วันที่เข้ารับบริการ '.$dxofyear_labin_date, 0, 1);
 
 # ข้อมูลส่วนตัว
 $pdf->SetXY(13, 49);

@@ -124,13 +124,16 @@ $date_now = date("Y-m-d H:i:s");
 // $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
 $date_hn = date('Y-m-d').$hn;
 
+
 $sql = "SELECT a.*, 
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
 FROM `dxofyear_out` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-WHERE a.`thdatehn` = '$date_hn' ";
+WHERE a.`hn` = '$hn' 
+ORDER BY `row_id` DESC LIMIT 1";
 $db->select($sql);
 $opd = $db->get_item();
+
 
 $cig_lists = array(0 => 'ไม่สูบ', 1 => 'สูบ', 2 => 'เคยสูบ');
 $cigok_lists = array(0 => 'ไม่อยากเลิก', 1 => 'อยากเลิก');
@@ -269,13 +272,14 @@ h1,h3,p{
         <tr>
             <td valign="top">
                 <?php
-                $curr_day = date('Y-m-d');
+                // $curr_day = date('Y-m-d');
+                $curr_day = $opd['labin_date'];
 
                 $sql = "SELECT b.* 
                 FROM `resulthead` AS a 
                     RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
                 WHERE a.`hn` = '$hn' 
-                AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+                AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
                 AND a.`profilecode` = 'CBC' 
                 AND ( b.`labcode` = 'HB' OR b.`labcode` = 'HCT' OR b.`labcode` = 'WBC' 
                 OR b.`labcode` = 'NEU' OR b.`labcode` = 'LYMP' OR b.`labcode` = 'MONO' 
@@ -283,6 +287,7 @@ h1,h3,p{
                 OR b.`labcode` = 'RBC' ) 
                 AND a.`orderdate` LIKE '$curr_day%' 
                 ORDER BY b.seq ASC";
+                
                 $db->select($sql);
                 $cbc_items = $db->get_items();
                 ?>

@@ -192,8 +192,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 
 //ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 
-	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
-	list($lab_date) = mysql_fetch_row(mysql_query($sql));
+	$sql = "Select date_format(a.orderdate,'%d/%m/%Y'),date_format(a.orderdate,'%Y-%m-%d') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
+	list($lab_date,$labin_date) = mysql_fetch_row(mysql_query($sql));
 
 	$sql = "Select labcode, result, unit,normalrange,flag  
 	From resulthead as a , 
@@ -750,6 +750,7 @@ mmHg</td>
 <input type="hidden" name="ptright" value="<?=$ptright;?>">
 </center>
 <INPUT TYPE="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
+<input type="hidden" name="labin_date" value="<?=$labin_date;?>">
 </FORM>
 
 
