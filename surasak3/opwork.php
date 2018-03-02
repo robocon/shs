@@ -253,6 +253,14 @@ If ($_POST["new_vn"] == "1"){
 		print "ผู้ป่วยใหม่  ได้ VN = $nVn <br>";
 	}	
 	
+	// สิทธิ ปกส + ex46 ตรวจสุขภาพ
+	$toborow = strtolower(substr($_POST['case'],0,4));
+	$ptright = strtolower(substr($_POST['ptright'],0,3));
+	$checkdx = '';
+	if( $toborow == 'ex46' && $ptright == 'r07' ){
+		$checkdx = "sso";
+	}
+
 //ลงทะเบียนใน opday table
 $opergcode='x';
 	if(substr($_POST["case"],0,4) == "EX19"){  //EX19 ออก VN ทำแผล(ต่อเนื่อง)
@@ -262,7 +270,7 @@ $opergcode='x';
 	}else if(substr($_POST["case"],0,4) == "EX40"){
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','P');";
 	}else{
-		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode');";
+		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','$checkdx');";
 	}
 		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
 		$opday_id = mysql_insert_id();
@@ -369,18 +377,29 @@ officer='$sOfficer'
 ".$R03true2."
 WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 }else{
-$query ="UPDATE opday SET ptname='$cPtname',
-ptright='$cPtright',
-goup='$cGoup',
-note='$note',
-idcard='$cIdcard',
-borow='$borow',
-toborow='$case',
-camp='$cCamp',
-okopd='N',  
-officer='$sOfficer'
-".$R03true2."
-WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+
+	// สิทธิ ปกส + ex46 ตรวจสุขภาพ
+	$toborow = strtolower(substr($_POST['case'],0,4));
+	$ptright = strtolower(substr($_POST['ptright'],0,3));
+	$checkdx = '';
+	if( $toborow == 'ex46' && $ptright == 'r07' ){
+		$checkdx = ", `checkdx` = 'sso' ";
+	}
+
+	$query ="UPDATE opday SET ptname='$cPtname',
+	ptright='$cPtright',
+	goup='$cGoup',
+	note='$note',
+	idcard='$cIdcard',
+	borow='$borow',
+	toborow='$case',
+	camp='$cCamp',
+	okopd='N',  
+	officer='$sOfficer' 
+	$checkdx
+	".$R03true2."
+	WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
+
 }
 
 $result = mysql_query($query) or die("Query failed,update opday");

@@ -1,7 +1,18 @@
-<body Onload="window.print();">
-
 <?php
-    session_start();
+session_start();
+include("connect.inc");
+?>
+<body Onload="window.print();">
+<?php
+	$thdatehn = date('d-m-').(date('Y') + 543).$cHn;
+	$sql = "SELECT toborow FROM `opday` WHERE `thdatehn` = '$thdatehn'";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$opday = mysql_fetch_assoc($q);
+	if( substr($opday['toborow'], 0, 4) == 'EX99' ){
+		$clinicalinfo = "ตรวจสุขภาพประกันสังคม".$nPrefix;
+	}
+	var_dump($clinicalinfo);
+	exit;
 
 	function calcage($birth){
 
@@ -295,11 +306,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$nPrefix=$row->prefix;
 ////*runno ตรวจสุขภาพ*/////////
 
-	 if($cDiag == "chk01-ตรวจสุขภาพประจำปีกองทับบก" || $cDiag == "chk01-ตรวจสุขภาพประจำปีกองทัพบก")
-			$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
+	if($cDiag == "chk01-ตรวจสุขภาพประจำปีกองทับบก" || $cDiag == "chk01-ตรวจสุขภาพประจำปีกองทัพบก")
+		$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
 
-	  if($cDiag == "ตรวจสุขภาพ")
-			$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
+	if($cDiag == "ตรวจสุขภาพ")
+		$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
+
+	$thdatehn = date('d-m-').(date('Y') + 543).$cHn;
+	$sql = "SELECT toborow FROM `opday` WHERE `thdatehn` = '$thdatehn'";
+	$q = mysql_query($sql) or die( mysql_error() );
+	$opday = mysql_fetch_assoc($q);
+	if( substr($opday['toborow'], 0, 4) == 'EX99' ){
+		$clinicalinfo = "ตรวจสุขภาพประกันสังคม".$nPrefix;
+	}
 	
 	$sql = "Select sex, dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
 	$result = mysql_query($sql) or die("Query failed,update opday");

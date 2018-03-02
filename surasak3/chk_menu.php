@@ -47,14 +47,41 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบ
     background-color: #bfbfbf;
 }
 </style>
+<?php
+
+$menu_list = array(
+    array('link' => '../nindex.htm', 'name' => 'ระบบหลักรพ', 'access' => 'ADM|ADMNEWCHKUP'),
+    array('link' => 'chk_company.php', 'name' => 'จัดการรายชื่อบริษัท', 'access' => 'ADM|ADMNEWCHKUP'),
+    array('link' => 'chk_import_user.php', 'name' => 'นำเข้าข้อมูลสู่ระบบ', 'access' => 'ADM|ADMNEWCHKUP'),
+    array('link' => 'cxr_out_result.php', 'name' => 'นำเข้าข้อมูล X-Ray', 'access' => 'ADM|ADMNEWCHKUP'),
+    array('link' => 'chk_labcare.php', 'name' => 'ระบบLab', 'access' => 'ADM|ADMNEWCHKUP'),
+    array('link' => 'chk_sso.php', 'name' => 'Walk-in ปกส', 'access' => 'ALL'),
+);
+
+
+?>
 <div class="clearfix" style="height: 105px;">
     <h3>ระบบจัดการข้อมูล ตรวจสุขภาพ</h3>
     <div class="chk_menu clearfix">
+
         <ul>
-            <li><a href="../nindex.htm">ระบบหลักรพ.</a></li>
-            <li><a href="chk_company.php">จัดการรายชื่อบริษัท</a></li>
-            <li><a href="chk_import_user.php">นำเข้าข้อมูลสู่ระบบ</a></li>
-            <li><a href="cxr_out_result.php">นำเข้าข้อมูล X-Ray</a></li>
+            <?php
+            foreach ($menu_list as $key => $item) { 
+                if( $item['access'] != 'ALL' ){
+                    if( preg_match('/'.$_SESSION['smenucode'].'/', $item['access']) == 0 ){
+                        continue;
+                    }
+                }
+            ?>
+            <li><a href="<?=$item['link'];?>"><?=$item['name'];?></a></li>
+            <?php
+            }
+            ?>
         </ul>
     </div>
 </div>
+<?php
+if( isset($_SESSION['x-msg']) ){
+    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+    unset($_SESSION['x-msg']);
+}

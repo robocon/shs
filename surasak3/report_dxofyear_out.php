@@ -655,23 +655,23 @@ mmHg.</u></span></td>
     <tr>
       <td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
       <!--<td valign="top" width="4%"  class="text3" bordercolor="#000000"><strong>2555</strong></td>-->
-      <td width="6%" align="center" valign="top" bordercolor="#000000"  class="text3"><strong><?=$nPrefix2;?></strong></td>
-      <td width="1%" align="center" valign="top" bordercolor="#000000"  class="text3">&nbsp;</td>
+      <td width="4%" align="center" valign="top" bordercolor="#000000"  class="text3"><strong><?=$nPrefix2;?></strong></td>
+      <td width="3%" align="center" valign="top" bordercolor="#000000"  class="text3">&nbsp;</td>
       <td valign="top" class="text">&nbsp;</td>
       <td valign="top" class="text">&nbsp;</td>
     </tr>
     <? if($result['bs']!=""){?>
     <tr>
-      <td width="21%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
+      <td width="23%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
      <!-- <td width="4%" align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['bs']?>
       </strong></td>-->
-        <td width="6%" align="right" valign="top" bordercolor="#000000" class="text3"><strong>
+        <td width="4%" align="right" valign="top" bordercolor="#000000" class="text3"><strong>
           <?=$result['bs']?>
         </strong></td>
-        <td width="1%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td width="6%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
-        <td width="66%" valign="top" class="text"><strong>
+        <td width="3%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+        <td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
+        <td width="60%" valign="top" class="text"><strong>
           <?=$result['stat_bs']?>
         </strong>
           <? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
@@ -826,7 +826,7 @@ mmHg.</u></span></td>
 	?>
     
     <tr>
-      <td valign="top" class="text3" width="21%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
+      <td valign="top" class="text3" width="23%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
      <!-- <td align="left" valign="top" class="text3" width="4%"><strong>
         <?//=$result5['cxr']?>
       </strong></td>-->
@@ -851,7 +851,7 @@ mmHg.</u></span></td>
       <td colspan="6" valign="top"><strong>การตรวจพิเศษอื่น ๆ </strong></td>
     </tr>
     <tr>
-      <td width="21%" valign="top" class="text3"><strong>
+      <td width="23%" valign="top" class="text3"><strong>
         <?=$result['other1']?>
       :</strong></td>
       <td colspan="5" valign="top" class="text3"><span class="text3">
@@ -990,6 +990,9 @@ mmHg.</u></span></td>
 ?>
 </span>
 <!--<a href="report_dxofyear_emp.php">พิมพ์ใบตรวจสุขภาพลูกจ้าง</a>-->
+<div>
+	<a href="chk_sso.php" target="_blank">พิมพ์ใบตรวจสุขภาพ สิทธิ์ประกันสังคม</a>
+</div>
 <form name="formdx" action="<? $_SERVER['PHP_SELF']?>" method="post">
 <center>
 <span class="tet1">พิมพ์ใบตรวจสุขภาพประจำปี <?=$nPrefix2;?></span> <br />

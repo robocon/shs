@@ -7,11 +7,6 @@ $db = Mysql::load();
 
 if( $action == false ){
     include 'chk_menu.php';
-    
-    if( isset($_SESSION['x-msg']) ){
-        ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
-        unset($_SESSION['x-msg']);
-    }
 
     $id = input_get('id', 0);
     $company = $company_code = $date_checkup = '';

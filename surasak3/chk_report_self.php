@@ -338,7 +338,7 @@ while($result = mysql_fetch_assoc($row2)){
 								|| labcode ='PLTC' 
 								|| labcode ='NEU' 
 								|| labcode ='LYMP' 
-							) ";
+							) ORDER BY seq ASC";
 							$objQuery = mysql_query($strSQL) or die( mysql_error() );
 
 							$wbc_result = '';
@@ -472,7 +472,11 @@ while($result = mysql_fetch_assoc($row2)){
 /////
 
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) ";
+		$strSQL = "SELECT * 
+		FROM resultdetail 
+		WHERE autonumber='".$arrresult['autonumber']."' 
+		and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) 
+		ORDER BY seq ASC";
 		//echo $strSQL;
 		$objQuery = mysql_query($strSQL);
 		$ua_rows = mysql_num_rows($objQuery);
@@ -644,7 +648,7 @@ while($result = mysql_fetch_assoc($row2)){
 					|| labcode ='PLTC' 
 					|| labcode ='NEU' 
 					|| labcode ='LYMP' 
-				) ";
+				) ORDER BY seq ASC";
 				$objQuery = mysql_query($strSQL) or die( mysql_error() );
 
 				$wbc_result = '';
@@ -773,7 +777,10 @@ while($result = mysql_fetch_assoc($row2)){
 /////
 
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) ";
+		$strSQL = "SELECT * 
+		FROM resultdetail  
+		WHERE autonumber='".$arrresult['autonumber']."' and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' ) 
+		ORDER BY seq ASC";
 		//echo $strSQL;
 		$objQuery = mysql_query($strSQL);
 		$ua_rows = mysql_num_rows($objQuery);
@@ -926,7 +933,8 @@ FROM (
  ) AS a 
  LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
  WHERE b.`result` != 'DELETE' 
- GROUP BY a.`profilecode` ";
+ GROUP BY a.`profilecode` 
+ ORDER BY b.seq ASC";
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -950,7 +958,8 @@ FROM (
 
 ) AS b 
 LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
-LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` ";
+LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` 
+ORDER BY c.seq ASC";
 $outlab_query = mysql_query($sql) or die( mysql_error() );
 $outlab_row = mysql_num_rows($outlab_query);
 
@@ -997,7 +1006,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
 								FROM resultdetail  
 								WHERE autonumber='".$arrresult['autonumber']."' 
-								AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL')";
+								AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL') 
+								ORDER BY seq ASC";
 								//echo $strSQL;
 								$objQuery = mysql_query($strSQL);
 								while($objResult = mysql_fetch_array($objQuery)){
