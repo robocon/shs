@@ -322,11 +322,11 @@ If ($_POST["new_vn"] == "1"){
 		print "ผู้ป่วยใหม่  ได้ VN = $nVn <br>";
 	}	
 	
-	// สิทธิ ปกส + ex26 ตรวจสุขภาพ
+	// สิทธิ ปกส + ex46 ตรวจสุขภาพ
 	$toborow = strtolower(substr($_POST['case'],0,4));
 	$ptright = strtolower(substr($_POST['ptright'],0,3));
 	$checkdx = '';
-	if( $toborow == 'ex26' && $ptright == 'r07' ){
+	if( $toborow == 'ex46' && $ptright == 'r07' ){
 		$checkdx = "sso";
 	}
 
@@ -447,11 +447,11 @@ officer='$sOfficer'
 WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 }else{
 
-	// สิทธิ ปกส + ex26 ตรวจสุขภาพ
+	// สิทธิ ปกส + ex46 ตรวจสุขภาพ
 	$toborow = strtolower(substr($_POST['case'],0,4));
 	$ptright = strtolower(substr($_POST['ptright'],0,3));
 	$checkdx = '';
-	if( $toborow == 'ex26' && $ptright == 'r07' ){
+	if( $toborow == 'ex46' && $ptright == 'r07' ){
 		$checkdx = ", `checkdx` = 'sso' ";
 	}
 

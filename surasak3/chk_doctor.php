@@ -633,12 +633,12 @@ h1,h3,p{
             var ret_stat = true;
 
             if( res_cbc === false ){
-                alert('กรุณาเลือกผลการตรวจ CBC');
-                ret_stat = false;
+                // alert('กรุณาเลือกผลการตรวจ CBC');
+                // ret_stat = false;
 
             }else if( res_ua === false ){
-                alert('กรุณาเลือกผลการตรวจ UA');
-                ret_stat = false;
+                // alert('กรุณาเลือกผลการตรวจ UA');
+                // ret_stat = false;
 
             }else if( res_glu === false || res_crea === false || res_chol === false || res_hdl === false || res_hbsag === false ){
                 alert('กรุณาเลือกผลการตรวจอื่นๆ');

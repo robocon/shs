@@ -691,7 +691,7 @@ if( $user['conclution'] == "1" ){
 $pdf->Rect(70, 230, 3, 3);
 $pdf->SetXY(74, 229);
 $pdf->Cell(10, 6, '¼Ô´»¡µÔ', 0, 1);
-if( $user['conclution'] == "0" ){
+if( $user['conclution'] == "2" ){
     $pdf->Line(70,233,73,230);
 }
 
@@ -729,6 +729,10 @@ $pdf->SetXY(53, 235);
 $pdf->Cell(38, 6, $conclution_detail, 0, 1);
 
 print_dashed(53,239.50,188,239.50);
+
+$pdf->SetXY(13, 240);
+$pdf->Cell(38, 6, $user['diag'], 0, 1);
+
 print_dashed(13,245,188,245);
 
 $pdf->SetFont('AngsanaNew','',12);
@@ -743,7 +747,7 @@ $pdf->SetXY(107, 247);
 $pdf->Cell(25, 6, 'Å§ª×èÍá¾·Âì¼ÙéµÃÇ¨', 0, 1);
 $pdf->Line(133,253,179,253);
 $pdf->SetXY(133, 254);
-$pdf->Cell(46, 6, '( '.$user['doctor'].' )', 0, 1, 'C');
+$pdf->Cell(46, 6, '( á¾·Âì '.$user['doctor'].' )', 0, 1, 'C');
 
 $pdf->AutoPrint(true);
 $pdf->Output();
