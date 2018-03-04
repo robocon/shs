@@ -395,7 +395,7 @@ WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 	toborow='$case',
 	camp='$cCamp',
 	okopd='N',  
-	officer='$sOfficer' 
+	officer='$sOfficer'
 	$checkdx
 	".$R03true2."
 	WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";

@@ -174,7 +174,7 @@ h1,h3,p{
     padding: 0;
 }
 </style>
-<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+
 <form action="chk_doctor.php" method="post" id="formSubmit">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
     <table class="chk_table">
@@ -583,6 +583,8 @@ h1,h3,p{
         popup1 = new Epoch('popup2','popup',document.getElementById('abnormal_suggest_date'),false);
     };
 </script>
+
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(function(){
 
