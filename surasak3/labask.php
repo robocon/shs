@@ -144,19 +144,16 @@ if(substr($atoborow,0,4)=="EX26"){
    $cXraydetail = "";
    session_register("cXraydetail");
 ?>
-<script type="text/javascript">
+<script>
 function check()
 {
 	if(document.getElementById("doctor").value == ' กรุณาเลือกแพทย์'){
 		alert("กรุณาเลือกแพทย์");
 		return false;
 	}
-	else if(document.getElementById("cXraydetail")){
-		if( document.getElementById("cXraydetail").innerHTML == '' ){
-			alert("กรุณาเลือกตรวจ(ท่า)");
-			return false;
-		}
-
+	else if(document.getElementById("cXraydetail").innerHTML == ''){
+		alert("กรุณาเลือกตรวจ(ท่า)");
+		return false;
 	}
 	else{
 		return true;
@@ -185,6 +182,7 @@ document.getElementById('aLink').focus();
     <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
     <? } ?>
+	<option value="ตรวจสุขภาพประกันสังคม">ตรวจสุขภาพประกันสังคม</option>
 	<option value="ตรวจสุขภาพพบแพทย์ที่อื่น">ตรวจสุขภาพพบแพทย์ที่อื่น</option>
     <option value="ตรวจสุขภาพพบแพทย์">ตรวจสุขภาพพบแพทย์</option>
   </select>&nbsp;</font></p>

@@ -364,7 +364,14 @@ for($i=0;$i<$count;$i++){
 		$_SESSION["nPrintXray"] = "<A HREF=\"xraydoctor_print.php?vn=".urlencode($tvn)."&hn=".urlencode($cHn)."&name=".urlencode($yot." ".$name." ".$surname)."&detail_all=".urlencode($_SESSION["cXraydetail"])."&doctor=".urlencode($_POST["doctor"])."&xrayno=".urlencode($xray_no)."\" target=\"_blank\">พิมพ์ หมายเลข X-Ray</A>";
 	}
 
-	$sql = "update opday set doctor = '$cDoctor' where  thdatehn = '".(date("d-m-")).(date("Y")+543).($cHn)."' ";
+	$sso_txt = '';
+	if( $cDiag == 'ตรวจสุขภาพประกันสังคม' && substr($cPtright,0,3) == 'R07' ){
+		$sso_txt = ", `toborow` = 'EX46 ตรวจสุขภาพประกันสังคม', `checkdx` = 'sso' ";
+	}
+
+	$sql = "update opday set 
+	doctor = '$cDoctor' $sso_txt 
+	where  thdatehn = '".(date("d-m-")).(date("Y")+543).($cHn)."' ";
 	$result = @mysql_query($sql);
 
 	include("unconnect.inc");
@@ -375,5 +382,5 @@ for($i=0;$i<$count;$i++){
 
 
 <script type="text/javascript">
-// document.getElementById('aLink').focus();
+document.getElementById('aLink').focus();
 </script>
