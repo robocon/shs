@@ -134,6 +134,8 @@ ORDER BY `row_id` DESC LIMIT 1";
 $db->select($sql);
 $opd = $db->get_item();
 
+$year_checkup = $opd['yearchk'];
+
 
 $cig_lists = array(0 => 'ไม่สูบ', 1 => 'สูบ', 2 => 'เคยสูบ');
 $cigok_lists = array(0 => 'ไม่อยากเลิก', 1 => 'อยากเลิก');
@@ -254,8 +256,14 @@ h1,h3,p{
                         <td>
                             <?php 
                             $ht = $opd["height"] / 100;
-                            echo number_format(($_SESSION["weight"]/($ht*$ht)),2);
+                            $bmi = number_format(($opd["weight"]/($ht*$ht)),2);
+
+                            $bmi_abnormal = '';
+                            if($bmi < 18.5 && $bmi > 22.99){
+                                $bmi_abnormal = 'style="font-weight: bold; color: red;"';
+                            }
                             ?>
+                            <span <?=$bmi_abnormal;?>><?=$bmi;?></span>
                         </td>
                         <td class=""></td>
                         <td></td>
@@ -272,135 +280,187 @@ h1,h3,p{
         <tr>
             <td valign="top">
                 <?php
-                // $curr_day = date('Y-m-d');
+                
                 $curr_day = $opd['labin_date'];
 
-                $sql = "SELECT b.* 
-                FROM `resulthead` AS a 
-                    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-                WHERE a.`hn` = '$hn' 
-                AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
-                AND a.`profilecode` = 'CBC' 
+                $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`unit`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `resultdate`
+                FROM ( 
+
+                    SELECT MAX(`autonumber`) AS `latest_number` 
+                    FROM `resulthead` 
+                    WHERE `hn` = '$hn' 
+                    AND `profilecode` = 'CBC'
+                    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+                    GROUP BY `profilecode` 
+                    ORDER BY `autonumber` ASC 
+
+                ) AS a 
+                    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_number` 
+                WHERE b.`autonumber` = a.`latest_number` 
                 AND ( b.`labcode` = 'HB' OR b.`labcode` = 'HCT' OR b.`labcode` = 'WBC' 
                 OR b.`labcode` = 'NEU' OR b.`labcode` = 'LYMP' OR b.`labcode` = 'MONO' 
                 OR b.`labcode` = 'EOS' OR b.`labcode` = 'BASO' OR b.`labcode` = 'PLTC' 
                 OR b.`labcode` = 'RBC' ) 
-                AND a.`orderdate` LIKE '$curr_day%' 
                 ORDER BY b.seq ASC";
-                
                 $db->select($sql);
                 $cbc_items = $db->get_items();
-                ?>
-                <table width="100%">
-                    <tr>
-                        <th colspan="3" align="center"><b>CBC</b></th>
-                    </tr>
-                    <tr style="background-color: #e6e6e6;">
-                        <th width="40%">รายการตรวจ</th>
-                        <th width="30%">ผลตรวจ</th>
-                        <th width="30%">ค่าปกติ</th>
-                    </tr>
-                    <?php
-                    $result_cbc = '';
-                    foreach ($cbc_items as $key => $cbc) {
-                        ?>
+
+                if( count($cbc_items) > 0 ){
+
+                    ?>
+                    <table width="100%">
                         <tr>
-                            <td><?=$cbc['labname'];?></td>
-                            <td align="center"><?=$cbc['result'];?></td>
-                            <td align="center"><?=$cbc['normalrange'];?></td>
+                            <th colspan="3" align="center"><b>CBC</b></th>
+                        </tr>
+                        <tr style="background-color: #e6e6e6;">
+                            <th width="40%">รายการตรวจ</th>
+                            <th width="30%">ผลตรวจ</th>
+                            <th width="30%">ค่าปกติ</th>
                         </tr>
                         <?php
-                        $result_cbc = $cbc['autonumber'];
-                    }
-                    ?>
-                    <tr bgcolor="#abcea1" style="font-weight: bold;">
-                        <td>ผลการตรวจ</td>
-                        <td>
-                            <label for="res_cbc">
-                                <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc" value="1"> ปกติ
-                            </label> 
-                            <label for="res_cbc2">
-                                <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc2" value="2"> ผิดปกติ
-                            </label>
-                        </td>
-                        <td></td>
-                    </tr>
-                </table>
+                        $result_cbc = '';
+                        $result_date = '';
+                        foreach ($cbc_items as $key => $cbc) {
+
+                            $cbc_abnormal = '';
+                            if( $cbc['flag'] == 'L' OR $cbc['flag'] == 'H' ){
+                                $cbc_abnormal = 'style="font-weight: bold; color: red;"';
+                            }
+
+                            ?>
+                            <tr>
+                                <td><?=$cbc['labname'];?></td>
+                                <td align="center" <?=$cbc_abnormal;?>><?=$cbc['result'];?></td>
+                                <td align="center"><?=$cbc['normalrange'];?></td>
+                            </tr>
+                            <?php
+                            $result_cbc = $cbc['autonumber'];
+
+                            $result_date = $cbc['resultdate'];
+                        }
+                        ?>
+                        <tr bgcolor="#abcea1" style="font-weight: bold;">
+                            <td>ผลการตรวจ (วันที่ <?=$result_date;?>)</td>
+                            <td>
+                                <label for="res_cbc">
+                                    <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc" value="1"> ปกติ
+                                </label> 
+                                <label for="res_cbc2">
+                                    <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc2" value="2"> ผิดปกติ
+                                </label>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+
+                    <?php
+                }
+                ?>
             </td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
             <td valign="top">
                 <?php
-                $sql = "SELECT b.* 
-                FROM `resulthead` AS a 
-                    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-                WHERE a.`hn` = '$hn' 
-                AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
-                AND a.`profilecode` = 'UA' 
+                $sql = "SELECT b.*, SUBSTRING(b.`authorisedate`,1,10) AS `resultdate`
+                FROM ( 
+
+                    SELECT MAX(`autonumber`) AS `latest_number` 
+                    FROM `resulthead` 
+                    WHERE `hn` = '$hn' 
+                    AND `profilecode` = 'UA'
+                    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+                    GROUP BY `profilecode` 
+                    ORDER BY `autonumber` ASC 
+
+                ) AS a 
+                    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_number` 
+                WHERE b.`autonumber` = a.`latest_number` 
                 AND ( b.`labcode` = 'SPGR' OR b.`labcode` = 'PHU' OR b.`labcode` = 'GLUU' 
+                OR b.`labcode` = 'PROU' 
                 OR b.`labcode` = 'RBCU' OR b.`labcode` = 'WBCU' OR b.`labcode` = 'EPIU' 
                 OR b.`labcode` = 'BLOODU' OR b.`labcode` = 'KETU' ) 
-                AND a.`orderdate` LIKE '$curr_day%' ";
+                ORDER BY b.seq ASC";
                 $db->select($sql);
                 $ua_items = $db->get_items();
 
-                ?>
-                <table  width="100%">
-                    <tr>
-                        <th colspan="3" align="center"><b>UA</b></th>
-                    </tr>
-                    <tr style="background-color: #e6e6e6;">
-                        <th width="40%">รายการตรวจ</th>
-                        <th width="30%">ผลตรวจ</th>
-                        <th width="30%">ค่าปกติ</th>
-                    </tr>
-                    <?php
-                    $result_ua = '';
-                    foreach ($ua_items as $key => $ua) {
-                        ?>
+                if ( count($ua_items) > 0 ) {
+                    ?>
+                    <table  width="100%">
                         <tr>
-                            <td><?=$ua['labname'];?></td>
-                            <td align="center"><?=$ua['result'];?></td>
-                            <td align="center"><?=$ua['normalrange'];?></td>
+                            <th colspan="3" align="center"><b>UA</b></th>
+                        </tr>
+                        <tr style="background-color: #e6e6e6;">
+                            <th width="40%">รายการตรวจ</th>
+                            <th width="30%">ผลตรวจ</th>
+                            <th width="30%">ค่าปกติ</th>
                         </tr>
                         <?php
-                        $result_ua = $ua['autonumber'];
-                    }
-                    ?>
-                    <tr bgcolor="#abcea1" style="font-weight: bold;">
-                        <td>ผลการตรวจ</td>
-                        <td>
-                            <label for="res_ua">
-                                <input type="radio" name="res_ua" class="res_ua" id="res_ua" value="1"> ปกติ
-                            </label> 
-                            <label for="res_ua2">
-                                <input type="radio" name="res_ua" class="res_ua" id="res_ua2" value="2"> ผิดปกติ
-                            </label>
-                        </td>
-                        <td></td>
-                    </tr>
-                </table>
+                        $result_ua = '';
+                        $result_date = '';
+                        foreach ($ua_items as $key => $ua) {
+
+                            $ua_abnormal = '';
+                            if( $ua['flag'] == 'L' OR $ua['flag'] == 'H' ){
+                                $ua_abnormal = 'style="font-weight: bold; color: red;"';
+                            }
+
+                            ?>
+                            <tr>
+                                <td><?=$ua['labname'];?></td>
+                                <td align="center" <?=$ua_abnormal;?>><?=$ua['result'];?></td>
+                                <td align="center"><?=$ua['normalrange'];?></td>
+                            </tr>
+                            <?php
+                            $result_ua = $ua['autonumber'];
+                            $result_date = $ua['resultdate'];
+                        }
+                        ?>
+                        <tr bgcolor="#abcea1" style="font-weight: bold;">
+                            <td>ผลการตรวจ (วันที่ <?=$result_date;?>)</td>
+                            <td>
+                                <label for="res_ua">
+                                    <input type="radio" name="res_ua" class="res_ua" id="res_ua" value="1"> ปกติ
+                                </label> 
+                                <label for="res_ua2">
+                                    <input type="radio" name="res_ua" class="res_ua" id="res_ua2" value="2"> ผิดปกติ
+                                </label>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <?php
+                }
+                ?>
             </td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <?php
 
         $sql = "SELECT b.* 
-        FROM `resulthead` AS a 
-            RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-        WHERE a.`hn` = '$hn' 
-        AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพ%' 
+        FROM ( 
+
+            SELECT MAX(`autonumber`) AS `latest_number` 
+            FROM `resulthead` 
+            WHERE `hn` = '$hn' 
+            AND ( `profilecode` != 'CBC' AND `profilecode` != 'UA' )
+            AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+            GROUP BY `profilecode` 
+            ORDER BY `autonumber` ASC 
+
+        ) AS a 
+            RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_number` 
+        WHERE b.`autonumber` = a.`latest_number` 
         AND ( 
             b.`labcode` = 'GLU' 
             OR b.`labcode` = 'CREA' 
             OR b.`labcode` = 'CHOL' 
             OR b.`labcode` = 'HDL' 
             OR b.`labcode` = 'HBSAG' 
-            OR b.`labcode` = 'STOCB' 
+            OR b.`labcode` = 'OCCULT' 
             OR b.`labcode` = '38302' 
         ) 
-        AND a.`orderdate` LIKE '$curr_day%' ";
+        ORDER BY b.seq ASC ";
 
         $db->select($sql);
         $etc_rows = $db->get_rows();
@@ -424,10 +484,15 @@ h1,h3,p{
 
                             $labcode = strtolower($etc['labcode']);
 
+                            $etc_abnormal = '';
+                            if( $etc['flag'] == 'L' OR $etc['flag'] == 'H' ){
+                                $etc_abnormal = 'style="font-weight: bold; color: red;"';
+                            }
+
                             ?>
                             <tr>
                                 <td><?=$etc['labname'];?></td>
-                                <td align="center"><?=$etc['result'];?></td>
+                                <td align="center" <?=$etc_abnormal;?>><?=$etc['result'];?></td>
                                 <td align="center"><?=$etc['normalrange'];?></td>
                                 <td bgcolor="#abcea1" style="font-weight: bold;">
                                     <label for="res_<?=$labcode;?>">
@@ -506,15 +571,50 @@ h1,h3,p{
     </style>
     <table class="chk_table">
         <tr>
-            <td colspan="2" class="title"><h3>สรุปผลการตรวจและการดำเนินงาน</h3></td>
+            <td colspan="4" class="title"><h3>สรุปผลการตรวจและการดำเนินงาน</h3></td>
         </tr>
-        <tr>
-            <td width="25%" class="tb-title">ผลการตรวจ</td>
-            <td>
-                <label for="conclution1"><input type="radio" name="conclution" class="conclution" id="conclution1" value="1"> ปกติ </label>
-                <label for="conclution2"><input type="radio" name="conclution" class="conclution" id="conclution2" value="2"> ผิดปกติ </label>
+        <tr valign="top">
+            <td width="15%" class="tb-title" style="border-bottom: 1px solid #000;">ผลการตรวจ</td>
+            <td style="border-left: 1px solid #000;border-bottom: 1px solid #000;">
+                <label for="conclution1">
+                    <input type="radio" name="conclution" class="conclution" id="conclution1" value="1"> ปกติ 
+                </label>
+            </td>
+            <td style="border-left: 1px solid #000;border-bottom: 1px solid #000;" colspan="2">
+                <label for="conclution2">
+                    <input type="radio" name="conclution" class="conclution" id="conclution2" value="2"> ผิดปกติ 
+                </label>
             </td>
         </tr>
+        <tr valign="top">
+            <td class="tb-title">คำแนะนำ</td>
+            <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;">
+                <input type="radio" name="normal_suggest" class="suggest_detail cleardate" id="normal_suggest2" value="1">
+                <label for="normal_suggest2" class="cleardate"> ไม่ได้ให้คำแนะนำ </label>
+            </td>
+            <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;" colspan="2">
+                <input type="radio" name="abnormal_suggest" class="suggest_detail cleardate" id="abs0" value="1"> <label for="abs0" class="cleardate"> ไม่ได้ให้คำแนะนำ </label>
+            </td>
+        </tr>
+        
+        <tr valign="top">
+            <td></td>
+            <td style="border-left: 1px solid #000;">
+                <input type="radio" name="normal_suggest" class="suggest_detail cleardate"  id="normal_suggest1" value="2">
+                <label for="normal_suggest1">แนะนำให้รับการตรวจต่อเนื่อง <br>ครั้งต่อไปในวันที่ </label>
+                <input type="text" name="normal_suggest_date" id="normal_suggest_date">
+            </td>
+            <td style="border-left: 1px solid #000;">
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs1" value="2"> <label for="abs1"> ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs2" value="3"> <label for="abs2"> ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ</label><br>
+                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs3" value="4"> <label for="abs3"> ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง</label><br>
+            </td>
+            <td style="border-left: 1px solid #000;" valign="middle">
+                ในวันที่ <input type="text" name="abnormal_suggest_date" id="abnormal_suggest_date">
+            </td>
+        </tr>
+
+        <!--
         <tr class="normal">
             <td width="25%" class="tb-title" valign="top">คำแนะนำกรณีปกติ</td>
             <td>
@@ -536,6 +636,7 @@ h1,h3,p{
                 ในวันที่ <input type="text" name="abnormal_suggest_date" id="abnormal_suggest_date">
             </td>
         </tr>
+        -->
     </table>
     <br>
     <table class="chk_table">
@@ -589,15 +690,15 @@ h1,h3,p{
     $(function(){
 
         $(document).on('click', '#conclution1', function(){
-            $('.normal').show();
-            $('.abnormal').hide();
+            // $('.normal').show();
+            // $('.abnormal').hide();
 
             clear_sub();
         });
 
         $(document).on('click', '#conclution2', function(){
-            $('.normal').hide();
-            $('.abnormal').show();
+            // $('.normal').hide();
+            // $('.abnormal').show();
             
             clear_sub();
         });
@@ -633,20 +734,24 @@ h1,h3,p{
             var res_hbsag = $('.res_hbsag').is(':checked');
             
             var ret_stat = true;
-
+            
+            /*
             if( res_cbc === false ){
-                // alert('กรุณาเลือกผลการตรวจ CBC');
-                // ret_stat = false;
+                alert('กรุณาเลือกผลการตรวจ CBC');
+                ret_stat = false;
 
             }else if( res_ua === false ){
-                // alert('กรุณาเลือกผลการตรวจ UA');
-                // ret_stat = false;
+                alert('กรุณาเลือกผลการตรวจ UA');
+                ret_stat = false;
 
             }else if( res_glu === false || res_crea === false || res_chol === false || res_hdl === false || res_hbsag === false ){
                 alert('กรุณาเลือกผลการตรวจอื่นๆ');
                 ret_stat = false;
 
-            }else if( cxr === false ){
+            }else 
+            */
+            
+            if( cxr === false ){
                 alert('กรุณาเลือกผลการตรวจ X-Ray');
                 ret_stat = false;
 

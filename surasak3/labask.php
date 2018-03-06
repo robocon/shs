@@ -168,6 +168,16 @@ function sit2(){
 		document.getElementById('pt2').style.display='none';
 }
 </script>
+
+	<?php
+	$option_diag = 'selected';
+	$option_diag_sso = '';
+	if( substr($cPtright,0,3) == 'R07' ){
+		$option_diag = '';
+		$option_diag_sso = 'selected';
+	}
+	?>
+
    <form method="POST" action="prelab.php" onsubmit="return check();">
    <input type="hidden" name="chktoborow" value="<?=$atoborow;?>" />
     <p><font face="Angsana New">
@@ -176,13 +186,13 @@ function sit2(){
   <select size="1" name="diag" id="aLink" onchange="if(this.value=='ตรวจสุขภาพ'){sit();} else{sit2();}"><script type="text/javascript">
 document.getElementById('aLink').focus();
 </script>
-    <option value="ตรวจวิเคราะห์เพื่อการรักษา" selected>ตรวจวิเคราะห์เพื่อการรักษา</option>
+    <option value="ตรวจวิเคราะห์เพื่อการรักษา" <?=$option_diag;?>>ตรวจวิเคราะห์เพื่อการรักษา</option>
     <? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADM"){ ?>
     <option value="ตรวจสุขภาพ" <? if(substr($atoborow,0,4)=="EX16" || substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>ตรวจสุขภาพ</option>
     <? }else{ ?>
     <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
     <? } ?>
-	<option value="ตรวจสุขภาพประกันสังคม">ตรวจสุขภาพประกันสังคม</option>
+	<option value="ตรวจสุขภาพประกันสังคม" <?=$option_diag_sso;?>>ตรวจสุขภาพประกันสังคม</option>
 	<option value="ตรวจสุขภาพพบแพทย์ที่อื่น">ตรวจสุขภาพพบแพทย์ที่อื่น</option>
     <option value="ตรวจสุขภาพพบแพทย์">ตรวจสุขภาพพบแพทย์</option>
   </select>&nbsp;</font></p>

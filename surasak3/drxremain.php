@@ -209,7 +209,7 @@ $result2 = Mysql_Query($sql3);
 	$sql = "INSERT INTO dphardep(chktranx,date,ptname,hn,price,doctor,item,idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,whokey)VALUES('".$_SESSION["nRunno"]."','0000-00-00 00:00:00','".$rxPtname."','".$rxHn."','".$Netprice."','".$rxDoctor."','1','".$_SESSION["sOfficer"]."','".$rxDiag."','".$pricetype["DDL"]."','".$pricetype["DDY"]."','".$pricetype["DDN"]."','".$pricetype["DPY"]."','".$pricetype["DPN"]."','".$pricetype["DSY"]."','".$pricetype["DSN"]."','','".$rxPtright."','DR')";
 	//echo "<!-- ".$sql." -->";
 
-	$result = Mysql_Query($sql);
+	$result = Mysql_Query($sql) or die( mysql_error() );
 	if($result){ 
 		$insert1 = true; 
 		$idno=mysql_insert_id();

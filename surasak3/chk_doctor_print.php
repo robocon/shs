@@ -17,24 +17,33 @@ AND a.`date_chk` LIKE '$date%' ";
 $db->select($sql);
 $user = $db->get_item();
 
+$year_checkup = $user['yearchk'];
+
 $sql = "SELECT `camp`,`labin_date` FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
 $db->select($sql);
 $dxofyear = $db->get_item();
 
 $dxofyear_labin_date = $dxofyear['labin_date'];
 
-# CBC
+# CBC 
 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange` 
-FROM `resulthead` AS a 
-    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-WHERE a.`hn` = '$hn' 
-AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
-AND a.`profilecode` = 'CBC' 
+FROM ( 
+
+    SELECT MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+    AND `profilecode` = 'CBC'
+    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+    GROUP BY `profilecode` 
+    ORDER BY `autonumber` ASC 
+
+ ) AS a 
+    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_number` 
+WHERE b.`autonumber` = a.`latest_number` 
 AND ( b.`labcode` = 'HB' OR b.`labcode` = 'HCT' OR b.`labcode` = 'WBC' 
 OR b.`labcode` = 'NEU' OR b.`labcode` = 'LYMP' OR b.`labcode` = 'MONO' 
 OR b.`labcode` = 'EOS' OR b.`labcode` = 'BASO' OR b.`labcode` = 'PLTC' 
 OR b.`labcode` = 'RBC' ) 
-AND a.`orderdate` LIKE '$dxofyear_labin_date%' 
 ORDER BY b.seq ASC";
 $db->select($sql);
 $cbc_items = $db->get_items();
@@ -46,18 +55,26 @@ foreach ($cbc_items as $key => $item) {
 }
 
 
-# UA
+# UA 
 $sql = "SELECT b.* 
-FROM `resulthead` AS a 
-    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-WHERE a.`hn` = '$hn' 
-AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
-AND a.`profilecode` = 'UA' 
+FROM ( 
+
+    SELECT MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+    AND `profilecode` = 'UA'
+    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+    GROUP BY `profilecode` 
+    ORDER BY `autonumber` ASC 
+
+ ) AS a 
+    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_number` 
+WHERE b.`autonumber` = a.`latest_number` 
 AND ( b.`labcode` = 'SPGR' OR b.`labcode` = 'PHU' OR b.`labcode` = 'GLUU' 
 OR b.`labcode` = 'PROU' 
 OR b.`labcode` = 'RBCU' OR b.`labcode` = 'WBCU' OR b.`labcode` = 'EPIU' 
 OR b.`labcode` = 'BLOODU' OR b.`labcode` = 'KETU' ) 
-AND a.`orderdate` LIKE '$dxofyear_labin_date%' ";
+ORDER BY b.seq ASC";
 $db->select($sql);
 $ua_items = $db->get_items();
 
@@ -68,10 +85,19 @@ foreach ($ua_items as $key => $item) {
 }
 
 $sql = "SELECT b.* 
-FROM `resulthead` AS a 
-    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-WHERE a.`hn` = '$hn' 
-AND a.`clinicalinfo` LIKE 'ตรวจสุขภาพประจำปี%' 
+FROM ( 
+
+    SELECT MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+    AND ( `profilecode` != 'CBC' AND `profilecode` != 'UA' )
+    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+    GROUP BY `profilecode` 
+    ORDER BY `autonumber` ASC 
+
+ ) AS a 
+    RIGHT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_number` 
+WHERE b.`autonumber` = a.`latest_number` 
 AND ( 
     b.`labcode` = 'GLU' 
     OR b.`labcode` = 'CREA' 
@@ -81,7 +107,7 @@ AND (
     OR b.`labcode` = 'OCCULT' 
     OR b.`labcode` = '38302' 
 ) 
-AND a.`orderdate` LIKE '$dxofyear_labin_date%' ";
+ORDER BY b.seq ASC ";
 
 $db->select($sql);
 $etc_items = $db->get_items();
@@ -267,7 +293,7 @@ if( $user['ear'] == 1 ){
 }
 
 $pdf->Rect(81, 85, 26, 12);
-if( $user['ear'] == 0 ){
+if( $user['ear'] == 2 ){
     $pdf->Line(89, 94, 99, 88);
 }
 
@@ -301,7 +327,7 @@ if( !empty($user['breast']) && $user['breast'] == 1 ){
 }
 
 $pdf->Rect(81, 97, 26, 12);
-if( !empty($user['breast']) && $user['breast'] == 0 ){
+if( !empty($user['breast']) && $user['breast'] == 2 ){
     $pdf->Line(89, 106, 99, 100);
 }
 
@@ -336,7 +362,7 @@ if( $user['eye'] == 1 ){
 }
 
 $pdf->Rect(81, 109, 26, 12);
-if( $user['eye'] == 0 ){
+if( $user['eye'] == 2 ){
     $pdf->Line(89, 118, 99, 112);
 }
 
@@ -369,7 +395,7 @@ if( $user['snell_eye'] == 1 ){
 }
 
 $pdf->Rect(81, 121, 26, 12);
-if( $user['snell_eye'] == 0 ){
+if( $user['snell_eye'] == 2 ){
     $pdf->Line(89, 130, 99, 124);
 }
 
@@ -533,7 +559,8 @@ $pdf->SetXY(59, 205);
 $pdf->Cell(48, 6, $cbc_lists['rbc']['result'], 1, 1, 'C');
 
 // ก่อนถึงช่อง xray
-$pdf->Rect(13, 211, 46, 12);
+$pdf->SetXY(13, 211);
+$pdf->Cell(46, 18, '6.Chest X-ray', 1, 1);
 
 $pdf->Rect(59, 211, 22, 12);
 $pdf->SetXY(59, 211);
@@ -547,8 +574,6 @@ $pdf->Cell(26, 6, 'ผลผิดปกติ', 0, 1, 'C');
 $pdf->SetXY(81, 217);
 $pdf->Cell(26, 6, 'ABNORMAL', 0, 1, 'C');
 
-$pdf->SetXY(13, 223);
-$pdf->Cell(46, 6, '6.Chest X-ray', 1, 1);
 
 $pdf->Rect(59, 223, 22, 6);
 if( $user['cxr'] == 1 ){
@@ -731,7 +756,7 @@ $pdf->Cell(38, 6, $conclution_detail, 0, 1);
 print_dashed(53,239.50,188,239.50);
 
 $pdf->SetXY(13, 240);
-$pdf->Cell(38, 6, $user['diag'], 0, 1);
+$pdf->Cell(38, 6, 'Diag แพทย์: '.$user['diag'], 0, 1);
 
 print_dashed(13,245,188,245);
 
