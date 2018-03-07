@@ -163,6 +163,9 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	@media print{ .no_print{ display: none; } }
 	</style>
 	<div class="no_print">
+		<a href="refer_top.php" target="_blank">Top diag และสาเหตุที่ refer เลือกตามช่วงเวลา</a>
+	</div>
+	<div class="no_print">
 		<h3>ข้อมูล Refer</h3>
 		<form action="ward_follow_refer2.php?view=opd" method="post">
 			<div>

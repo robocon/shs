@@ -175,6 +175,11 @@ h1,h3,p{
     margin: 0;
     padding: 0;
 }
+.clean_data{
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
 </style>
 
 <form action="chk_doctor.php" method="post" id="formSubmit">
@@ -523,6 +528,7 @@ h1,h3,p{
             <td>
                 <label for="ear1"><input type="radio" name="ear" id="ear1" value="1"> ปกติ </label>
                 <label for="ear2"><input type="radio" name="ear" id="ear2" value="2"> ผิดปกติ </label>
+                <span class="clean_data" onclick="clean_data(['ear1','ear2']);">ล้างข้อมูล</span>
             </td>
         </tr>
         <?php
@@ -533,6 +539,7 @@ h1,h3,p{
             <td>
                 <label for="breast1"><input type="radio" name="breast" id="breast1" value="1"> ปกติ </label>
                 <label for="breast2"><input type="radio" name="breast" id="breast2" value="2"> ผิดปกติ </label>
+                <span class="clean_data" onclick="clean_data(['breast1','breast2']);">ล้างข้อมูล</span>
             </td>
         </tr>
         <?php
@@ -543,6 +550,7 @@ h1,h3,p{
             <td>
                 <label for="eye1"><input type="radio" name="eye" id="eye1" value="1"> ปกติ </label>
                 <label for="eye2"><input type="radio" name="eye" id="eye2" value="2"> ผิดปกติ </label>
+                <span class="clean_data" onclick="clean_data(['eye1','eye2']);">ล้างข้อมูล</span>
             </td>
         </tr>
         <tr>
@@ -550,10 +558,11 @@ h1,h3,p{
             <td>
                 <label for="snell_eye1"><input type="radio" name="snell_eye" id="snell_eye1" value="1"> ปกติ </label>
                 <label for="snell_eye2"><input type="radio" name="snell_eye" id="snell_eye2" value="2"> ผิดปกติ </label>
+                <span class="clean_data" onclick="clean_data(['snell_eye1','snell_eye2']);">ล้างข้อมูล</span>
             </td>
         </tr>
         <tr>
-            <td class="tb-title">Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=58-2733" target="_blank">ดูผลการตรวจ</a> </td>
+            <td class="tb-title">Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$hn;?>" target="_blank">ดูผลการตรวจ</a> </td>
             <td>
                 <label for="cxr1"><input type="radio" name="cxr" class="cxr" id="cxr1" value="1"> ปกติ </label>
                 <label for="cxr2"><input type="radio" name="cxr" class="cxr" id="cxr2" value="2"> ผิดปกติ </label>
@@ -687,6 +696,13 @@ h1,h3,p{
 
 <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+    
+    function clean_data(items){
+        items.forEach(function(item) {
+            document.getElementById(item).checked = false;
+        });
+    }
+
     $(function(){
 
         $(document).on('click', '#conclution1', function(){
