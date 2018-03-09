@@ -172,7 +172,8 @@ function sit2(){
 	<?php
 	$option_diag = 'selected';
 	$option_diag_sso = '';
-	if( substr($cPtright,0,3) == 'R07' ){
+	$chk_user = $_GET['chk'];
+	if( substr($cPtright,0,3) == 'R07' && $chk_user === 'sso' ){
 		$option_diag = '';
 		$option_diag_sso = 'selected';
 	}

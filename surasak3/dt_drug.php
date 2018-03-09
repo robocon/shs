@@ -2029,6 +2029,13 @@ function addobtreason(nameojt,path,dc,sl){
 
 function add_drug(drugcode){
 	
+	var doctor_id = document.getElementById('doctor_id').value;
+	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
+		if( drugcode == '6VISL' || drugcode == '6HIAL' ){
+			alert('ยาควบคุมราคา กรุณาให้จักษุแพทย์สั่งยา');
+		}
+	}
+
 	var returnstr;
 
 	xmlhttp = newXmlHttp();
@@ -2321,9 +2328,12 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
 		document.form1.drug_amount.focus();
-	}else if((document.form1.drug_code.value == "1SUDO" || document.form1.drug_code.value == "1SUDO-N") && eval(document.form1.drug_amount.value) > 60 ){
+	}else if((document.form1.drug_code.value == "1SUDO" || document.form1.drug_code.value == "1SUDO-N"  || document.form1.drug_code.value == "1SUDO-NN") && eval(document.form1.drug_amount.value) > 60 ){
 		alert("ยา PSEUDOEPHEDRINE  60 mg. 	วัตถุออกฤทธิ์ประเภท 2 \n ควบคุมการจ่ายได้ครั้งละไม่เกิน 60 เม็ด ครับ");  //ได้รับแจ้งจาก พี่ตู๋ หน.ห้องยา เมื่อ 25/05/2559
 		document.form1.drug_amount.focus();		
+	}else if((document.form1.drug_code.value == "6VISL  " || document.form1.drug_code.value == "6VISL") && eval(document.form1.drug_amount.value) > 60 ){
+		alert("ยา Sodium  hyaluronate 0.18% , 0.3 ml.  ยามีโควต้าจัดซื้อ \n ควบคุมการจ่ายได้ไม่เกิน 60 หลอด/คน/เดือน");  //ได้รับแจ้งจาก พี่ตู๋ หก.ห้องยา เมื่อ 02/03/2561
+		document.form1.drug_amount.focus();				
 	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
 		document.form1.drug_inject_amount.focus();
@@ -2351,20 +2361,8 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
-	}else if( document.form1.drug_code.value == '6VISL' && eval(document.form1.drug_amount.value) > 60 ){
-		
-		alert('ยาควบคุมราคา สั่งได้ไม่เกิน 60 หลอด');
-
 	}else{
 		
-		var dt_code = document.getElementById('doctor_code').value;
-		var dCode = document.form1.drug_code.value;
-
-		// ถ้าไม่ใช่หมอเลอปรัช(32166) กับ หมอพิศาลให้แจ้งเตือนเฉยๆ(29268)
-		if( dCode == '6VISL' && ( dt_code != 'md32166' || dt_code != 'md29268' ) ){
-			alert('กรุณาให้จักษุแพทย์สั่งยา');
-		}
-
 			if(check_inject(document.form1.drug_code.value) == false){
 				
 				document.form1.drug_inject_amount.value = '';
@@ -2538,7 +2536,6 @@ e_k=event.keyCode
 
 
 function showremed(){
-	
 	if(document.getElementById("head_remed").style.display=="")
 		document.getElementById("head_remed").style.display="none";
 	else
@@ -2983,7 +2980,7 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 <TR>
 	<TD align="center" colspan="2">
 		<INPUT id="form_submit" TYPE="submit" value="   ตกลง    " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;<INPUT TYPE="button" value="ยกเลิก" onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';">
-		<input type="hidden" name="doctor_code" id="doctor_code" value="<?=$_SESSION['sIdname'];?>">
+		<input type="hidden" id="doctor_id" name="doctor_id" value="<?=$_SESSION['sIdname'];?>">
 	</TD>
 </TR>
 </TABLE>

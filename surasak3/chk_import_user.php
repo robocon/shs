@@ -7,11 +7,6 @@ $db = Mysql::load();
 if( empty($action) ){
     include_once 'chk_menu.php';
 
-    // if( $_SESSION['smenucode'] !== 'ADM' ){
-    //     echo "อยู่ในช่วงการพัฒนาระบบ ยังไม่เปิดใช้บริการ";
-    //     exit;
-    // }
-
     ?>
     <h3>นำเข้ารายชื่อผู้ตรวจสุขภาพเข้าสู่ระบบโรงพยาบาล</h3>
     <form action="chk_import_user.php" method="post" enctype="multipart/form-data">
@@ -26,7 +21,7 @@ if( empty($action) ){
                 <option value="">-- รายชื่อบริษัท --</option>
                 <?php
                 foreach ($items as $key => $item) {
-                    ?><option value="<?=$item['code'];?>"><?=$item['name'];?></option><?php
+                    ?><option value="<?=$item['code'];?>"><?=$item['name'].' ('.$item['code'].')';?></option><?php
                 }
                 ?>
             </select>

@@ -83,6 +83,9 @@ if($row){
 			echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"3\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 			
 			 print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true'>!ชื่อถูกต้อง ทำรายการต่อไป...</a>";
+			 print "<br>";
+			 print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true&chk=sso'>! ชื่อถูกต้อง และต้องการ ตรวจสุขภาพสิทธิประกันสังคม</a>";
+
 			}else{
 				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"3\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 				echo "</br><FONT SIZE=\"3\"  COLOR=\"#0033CC\">กรุณาติดต่อแผนกทะเบียนเพื่อปรับปรุงสิทธิการรักษา</FONT>";
@@ -109,6 +112,9 @@ if($row){
    
 
 }else if (!empty($hn) && !empty($confirm)){
+
+	$chk_user = ( !empty($_GET['chk']) && $_GET['chk'] == "sso" ) ? '?chk=sso' : '' ;
+
 	//$tvn=$vn;
 	//$cHn=$hn;
     include("connect.inc");
@@ -147,7 +153,7 @@ if($row){
    	     //print "$cPtname<br>";
    	     //print "สิทธิการรักษา :$cPtright";
     	    //print "<br><a href='labask.php'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
-			 echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php\">";
+			 echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php$chk_user\">";
 		}
 		else{
 //หาข้อมูลจาก opcard ของ $cHn เพื่อใช้ทั้งในกรณีลงทะเบียนแล้ว หรือยังไม่ลง
@@ -260,7 +266,7 @@ if($row){
        // print "$cPtname<br>";
        // print "สิทธิการรักษา :$cPtright";
        // print "<br><a href='labask.php'>ชื่อถูกต้อง ทำรายการต่อไป</a>";
-		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php\">";
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php$chk_user\">";
 		}
 		else{
    			print"ไม่พบ HN $hn ในเวชระเบียน";

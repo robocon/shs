@@ -57,10 +57,11 @@ if( $action === 'show' ){
                 <th>#</th>
                 <th>วันที่</th>
                 <th>HN</th>
+                <th>VN</th>
                 <th>ชื่อ-สกุล</th>
                 <th>สูง(cm.)</th>
                 <th>นน.(kg.)</th>
-                <th>T(C.)</th>
+                <th>T(&#8451;)</th>
                 <th>pause</th>
                 <th>rate</th>
                 <th>bmi</th>
@@ -68,13 +69,54 @@ if( $action === 'show' ){
                 <th>bp2</th>
                 <th>CBC</th>
                 <th>UA</th>
-
+                <th>น้ำตาลในเลือด FBS</th>
+                <th>ไต(CREA)</th>
+                <th>Total Cholesterol</th>
+                <th>HDL Cholesterol</th>
+                <th>HBsAg</th>
             </tr>
         <?php
         $i = 1;
         foreach ($items as $key => $item) {
+            
+            
 
-            $sql = "SELECT `res_cbc`,`res_ua` 
+            $sql = "SELECT 
+            CASE
+                WHEN `res_cbc` = 1 THEN 'ปกติ' 
+                WHEN `res_cbc` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_cbc`,
+            CASE
+                WHEN `res_ua` = 1 THEN 'ปกติ' 
+                WHEN `res_ua` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_ua`,
+            CASE
+                WHEN `res_glu` = 1 THEN 'ปกติ' 
+                WHEN `res_glu` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_glu`,
+            CASE
+                WHEN `res_crea` = 1 THEN 'ปกติ' 
+                WHEN `res_crea` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_crea`,
+            CASE
+                WHEN `res_chol` = 1 THEN 'ปกติ' 
+                WHEN `res_chol` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_chol`,
+            CASE
+                WHEN `res_hdl` = 1 THEN 'ปกติ' 
+                WHEN `res_hdl` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_hdl`,
+            CASE
+                WHEN `res_hbsag` = 1 THEN 'ปกติ' 
+                WHEN `res_hbsag` = 2 THEN 'ผิดปกติ' 
+                ELSE ''
+            END AS `res_hbsag` 
             FROM `chk_doctor` 
             WHERE `hn` = '".$item['hn']."' 
             AND `vn` = '".$item['vn']."' ";
@@ -82,21 +124,12 @@ if( $action === 'show' ){
             $db->select($sql);
             $user = $db->get_item();
 
-            $final_cbc = '';
-            $final_ua = '';
-
-            if( !empty($user['res_cbc']) ){
-                $final_cbc = ( $user['res_cbc'] == '1' ) ? 'ปกติ' : 'ผิดปกติ' ;
-            }
-
-            if( !empty($user['res_ua']) ){
-                $final_ua = ( $user['res_ua'] == '1' ) ? 'ปกติ' : 'ผิดปกติ' ;
-            }
             ?>
             <tr>
                 <td><?=$i;?></td>
                 <td><?=$item['thidate'];?></td>
                 <td><?=$item['hn'];?></td>
+                <td><?=$item['vn'];?></td>
                 <td><?=$item['ptname'];?></td>
                 <td align="right"><?=$item['height'];?></td>
                 <td align="right"><?=$item['weight'];?></td>
@@ -106,8 +139,13 @@ if( $action === 'show' ){
                 <td align="right"><?=$item['bmi'];?></td>
                 <td align="right"><?=$item['bp1'];?></td>
                 <td align="right"><?=$item['bp2'];?></td>
-                <td><?=$final_cbc;?></td>
-                <td><?=$final_ua;?></td>
+                <td><?=$user['res_cbc'];?></td>
+                <td><?=$user['res_ua'];?></td>
+                <td><?=$user['res_glu'];?></td>
+                <td><?=$user['res_crea'];?></td>
+                <td><?=$user['res_chol'];?></td>
+                <td><?=$user['res_hdl'];?></td>
+                <td><?=$user['res_hbsag'];?></td>
             </tr>
             <?php
             $i++;
