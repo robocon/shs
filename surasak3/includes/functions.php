@@ -226,7 +226,7 @@ function getDateList($name = 'days', $match = null){
 	<select name="<?=$name;?>">
 		<?php foreach($def_day as $key => $day): ?>
 		<?php $select = ( $match == $day ) ? 'selected="selected"' : '' ; ?>
-		<option value="<?=$day;?>" <?=$select;?>><?=$day;?></option>
+		<option value="<?=sprintf('%02d',$day);?>" <?=$select;?>><?=$day;?></option>
 		<?php endforeach; ?>
 	</select>
 	<?php

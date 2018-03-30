@@ -6,28 +6,29 @@ $page = input('page');
 $action = input_post('action');
 $db = Mysql::load();
 
+$date = input_post('date_search', date('Y-m-d'));
+
 if( empty($page) ){
 
     include 'chk_menu.php';
     ?>
     <form action="chk_sso.php" method="post">
-
         <div>
-            ค้นหา <input type="text" name="date_search" id="">
+            ค้นหา <input type="text" name="date_search" id="" value="<?=$date;?>">
             <div>รูปแบบการค้นหา ปี-เดือน-วัน เช่น 2017-01-25</div>
         </div>
-    
+
         <div>
             <button type="submit">ทำการค้นหา</button>
             <input type="hidden" name="action" value="search">
-
         </div>
-    
     </form>
     <?php
     if( $action == "search" ){
-        $date = input_post('date_search');
-        $sql = "SELECT *, CONCAT(`prefix`,`name`,' ',`surname`) AS `ptname` FROM `chk_doctor` WHERE `date_chk` LIKE '$date%' ";
+        
+        $sql = "SELECT *, CONCAT(`prefix`,`name`,' ',`surname`) AS `ptname` 
+        FROM `chk_doctor` 
+        WHERE `date_chk` LIKE '$date%' ";
         $db->select($sql);
 
         $items = $db->get_items();

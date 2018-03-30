@@ -1,42 +1,8 @@
-<?php
-session_start();
-include("connect.inc");
+<?php 
+
+include 'report_pt_menu.php';
+
 ?>
-<style type="text/css">
-<!--
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 22px;
-}
-a:link {
-	text-decoration: none;
-}
-a:visited {
-	text-decoration: none;
-}
-a:hover {
-	text-decoration: none;
-}
-a:active {
-	text-decoration: none;
-}
-.txt{
-	font-family: TH SarabunPSK;
-	font-size: 16px;
-}
-.txt1 {	font-family: TH SarabunPSK;
-	font-size: 20px;
-}
-#printable { display: block; }
-@media print { 
-	#non-printable { display: none; } 
-	/*#printable { page-break-after:always; } */
-	thead{
-		display: table-header-group;
-	}
-} 
--->
-</style>
 <div id="non-printable">
 	<form id="form1" name="form1" method="post" action="<?=$PHP_SELF;?>">
 		<h1 style="text-align: center;">รายงานนวดแผนไทย<u>ประจำเดือน</u>(นอกเวลาราชการ)</h1>
@@ -78,9 +44,7 @@ a:active {
 					</span>
 				</td>
 			</tr>
-			<tr>
-				<td align="center"><a href="../nindex.htm">กลับเมนูหลัก</a>  || <a href="report_ptmonth2.php">รายงานนวดแผนไทยตามห้วงเวลา (นอกเวลาราชการ)</a></td>
-			</tr>
+			
 		</table>
 	</form>
 </div> 

@@ -79,7 +79,7 @@ a:active {
 			</tr>
 			<tr>
 				<td align="center">
-					<a href="../nindex.htm">กลับเมนูหลัก</a> || <a href="report_ptformonth.php">รายงานนวดแผนไทยประจำเดือน</a></a>
+					<a href="../nindex.htm">กลับเมนูหลัก</a> || <a href="report_ptformonth.php">รายงานนวดแผนไทยประจำเดือน</a> || <a href="report_pt2018.php" target="_blank">รายงานนวดแผนไทย(ใหม่)</a>
 				</td>
 			</tr>
 		</table>

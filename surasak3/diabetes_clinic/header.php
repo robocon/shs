@@ -181,6 +181,7 @@ label{
 				<ul>
 					<li class="last"><a href="report_diabetesofyear.php"><span>รายงาน DM</span></a></li>
 					<li class="last"><a href="report_hypertensionofyear.php"><span>รายงาน HT</span></a></li>
+					<li class="last"><a href="report_retinal_exam.php"><span>รายงาน Retinal Exam</span></a></li>
 				</ul> 
 			</li>
 			<li>

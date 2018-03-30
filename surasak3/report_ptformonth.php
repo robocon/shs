@@ -3,7 +3,7 @@ session_start();
 include("connect.inc");
 ?>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 22px;
@@ -35,7 +35,7 @@ a:active {
 		display: table-header-group;
 	}
 } 
--->
+
 </style>
 <?php
 function dump($str){
@@ -78,6 +78,14 @@ $ัyears = range(2547, $date);
 		<input name="act" type="hidden" value="show" />
 		
 		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="center">
+					<a href="../nindex.htm">กลับเมนูหลัก</a> || 
+					<a href="report_ptmonth.php">รายงานนวดแผนไทยตามห้วงเวลา</a></a> || 
+					<a href="report_ptformonth.php">รายงานนวดแผนไทยประจำเดือน</a></a> || 
+					<!-- <a href="report_ptmonth200.php">รายงานนวดตัวเพื่อสุขภาพตามห้วง</a></a> -->
+				</td>
+			</tr>
 			<tr>
 				<td align="center">
 
@@ -144,11 +152,7 @@ $ัyears = range(2547, $date);
 					</span>
 			  </td>
 		  </tr>
-			<tr>
-				<td align="center">
-					<a href="../nindex.htm">กลับเมนูหลัก</a> || <a href="report_ptmonth.php">รายงานนวดแผนไทยตามห้วงเวลา</a></a>
-				</td>
-			</tr>
+			
 		</table>
 	</form>
 </div> 

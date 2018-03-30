@@ -125,7 +125,7 @@ $date_now = date("Y-m-d H:i:s");
 $date_hn = date('Y-m-d').$hn;
 
 
-$sql = "SELECT a.*, 
+$sql = "SELECT a.*,  
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
 FROM `dxofyear_out` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
@@ -133,8 +133,19 @@ WHERE a.`hn` = '$hn'
 ORDER BY `row_id` DESC LIMIT 1";
 $db->select($sql);
 $opd = $db->get_item();
-
 $year_checkup = $opd['yearchk'];
+
+
+// ดึงวันที่ที่ตรวจ lab นับเป็นวันที่ได้รับการเข้ารับบริการ
+// $sql = "SELECT SUBSTRING(`orderdate`,1,10) AS `lab_opd`  
+// FROM `resulthead` 
+// WHERE `hn` = '$hn' 
+// AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+// ORDER BY `autonumber` DESC 
+// LIMIT 1 ";
+// $db->select($sql);
+// $res_head = $db->get_item();
+// $lab_opd = $res_head['lab_opd'];
 
 
 $cig_lists = array(0 => 'ไม่สูบ', 1 => 'สูบ', 2 => 'เคยสูบ');
@@ -285,8 +296,6 @@ h1,h3,p{
         <tr>
             <td valign="top">
                 <?php
-                
-                $curr_day = $opd['labin_date'];
 
                 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`unit`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `resultdate`
                 FROM ( 

@@ -5,7 +5,7 @@ $db = Mysql::load();
 
 $hn = input_get('hn');
 $vn = input_get('vn');
-$date = input_get('date');
+$date = input_get('date'); // date_chk ในตาราง chk_doctor
 
 # ข้อมูลผู้ป่วย
 $sql = "SELECT a.*, b.`ptffone`, b.`phone`
@@ -19,11 +19,22 @@ $user = $db->get_item();
 
 $year_checkup = $user['yearchk'];
 
-$sql = "SELECT `camp`,`labin_date` FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
+$sql = "SELECT `camp`,`labin_date` 
+FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
 $db->select($sql);
 $dxofyear = $db->get_item();
 
-$dxofyear_labin_date = $dxofyear['labin_date'];
+// ดึงวันที่ที่ตรวจ lab นับเป็นวันที่ได้รับการเข้ารับบริการ
+$sql = "SELECT SUBSTRING(`orderdate`,1,10) AS `lab_opd`  
+FROM `resulthead` 
+WHERE `hn` = '$hn' 
+AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+ORDER BY `autonumber` DESC 
+LIMIT 1 ";
+$db->select($sql);
+$res_head = $db->get_item();
+
+$lab_opd = $res_head['lab_opd'];
 
 # CBC 
 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange` 
@@ -118,9 +129,6 @@ foreach ($etc_items as $key => $item) {
     $etc_lists[$labcode] = array('result' => $item['result'], 'normalrange' => $item['normalrange']);
 }
 
-// dump($etc_items);
-// exit;
-
 include 'fpdf_thai/shspdf.php';
 
 function print_dashed($x1, $y1, $x2, $y2){
@@ -178,7 +186,7 @@ $pdf->Cell(41, 6, 'เลขบัตรประชาชน '.$user['idcard'], 0, 1);
 
 $pdf->Rect(148, 43, 40, 6);
 $pdf->SetXY(148, 43);
-$pdf->Cell(40, 6, 'วันที่เข้ารับบริการ '.$dxofyear_labin_date, 0, 1);
+$pdf->Cell(40, 6, 'วันที่เข้ารับบริการ '.$lab_opd, 0, 1);
 
 # ข้อมูลส่วนตัว
 $pdf->SetXY(13, 49);
@@ -755,8 +763,10 @@ $pdf->Cell(38, 6, $conclution_detail, 0, 1);
 
 print_dashed(53,239.50,188,239.50);
 
-$pdf->SetXY(13, 240);
-$pdf->Cell(38, 6, 'Diag แพทย์: '.$user['diag'], 0, 1);
+if( !empty($user['diag']) ){
+    $pdf->SetXY(13, 240);
+    $pdf->Cell(38, 6, 'Diag แพทย์: '.$user['diag'], 0, 1);
+}
 
 print_dashed(13,245,188,245);
 
