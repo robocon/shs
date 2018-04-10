@@ -278,11 +278,68 @@ h1,h3,p{
                             if($bmi < 18.5 && $bmi > 22.99){
                                 $bmi_abnormal = 'style="font-weight: bold; color: red;"';
                             }
+
                             ?>
                             <span <?=$bmi_abnormal;?>><?=$bmi;?></span>
                         </td>
-                        <td class=""></td>
-                        <td></td>
+                        <td class="tb-title">ออกกำลังกาย</td>
+                        <td>
+                            <?php 
+                            $exercise_list = array('ไม่เคยออกกำลังกาย','ออกกำลังกาย ต่ำกว่าเกณฑ์','ออกกำลังกาย ตามเกณฑ์');
+                            $exercise = $opd["exercise"];
+                            ?>
+                            <?=$exercise_list[$exercise];?>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <!-- ข้อมูลที่เพิ่มขึ้นมาสำหรับ รายงานผลรายบุคคล -->
+                <table width="100%" align="left">
+                    <tr>
+                        <td class="tb-title" width="10%">ค่าความดัน</td>
+                        <td>
+                            <input type="radio" id="pres_normal" name="res_pressure" value="1">
+                            <label for="pres_normal">
+                                ปกติ
+                            </label>
+
+                            <input type="radio" id="pres_abnormal" name="res_pressure" value="2">
+                            <label for="pres_abnormal">
+                                ผิดปกติ
+                            </label>
+
+                            <select name="pres_extra" id="pres_extra" style="display:none;">
+                                <option value="ความดันโลหิต เกือบสูง PRE-HT" <? if($arr_dxofyear["bp1"] >= 135 && $arr_dxofyear["bp1"] <= 139){ echo "selected='selected';";}?>>ความดันโลหิต เกือบสูง PRE-HT</option>
+                                <option value="ท่านมีความดันโลหิตสูง ควรต้องควบคุมอาหารอย่างเคร่งครัด โดยเฉพาะอาหารที่มีรสเค็มและออกกำลังกาย" <? if(($arr_dxofyear["bp1"] >=140 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >=140 && $arr_dxofyear["bp2"] <= 90) || ($arr_dxofyear["bp1"] <=140 && $arr_dxofyear["bp2"] >= 90)){ echo "selected='selected';";}?>>ท่านมีความดันโลหิตสูง ควรต้องควบคุมอาหารอย่างเคร่งครัด โดยเฉพาะอาหารที่มีรสเค็มและออกกำลังกาย</option>
+                            </select>
+
+                            <script>
+                            
+                            </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tb-title">ค่า BMI</td>
+                        <td>
+                            <input type="radio" id="bmi_normal" name="res_bim" value="1">
+                            <label for="bmi_normal">
+                                ปกติ
+                            </label>
+
+                            <input type="radio" id="bmi_abnormal" name="res_bim" value="2">
+                            <label for="bmi_abnormal">
+                                ผิดปกติ
+                            </label>
+
+                            <select name="bmi_extra" id="bmi_extra" style="display:none;">
+                                <option value="ท่านมีน้ำหนักน้อยเกินไป" <?php if($bmi < 18.5){ echo "selected='selected';";}?>>ท่านมีน้ำหนักน้อยเกินไป</option>
+                                <option value="ท่านเริ่มมีภาวะน้ำหนักเกิน" <?php if($bmi >= 23 && $bmi <= 24.99){ echo "selected='selected';";}?>>ท่านเริ่มมีภาวะน้ำหนักเกิน</option>
+                                <option value="ท่านมีน้ำหนักเกินหรือภาวะอ้วน" <? if($bmi >= 25 && $bmi <= 29.99){ echo "selected='selected';";}?>>ท่านมีน้ำหนักเกินหรือภาวะอ้วน</option>
+                                <option value="ท่านมีภาวะอ้วนค่อนข้างมาก" <?php if($bmi >= 30 && $bmi <= 34.99){ echo "selected='selected';";}?>>ท่านมีภาวะอ้วนค่อนข้างมาก</option>
+                                <option value="ท่านมีภาวะอ้วนรุนแรง" <?php if($bmi >= 35){ echo "selected='selected';";}?>>ท่านมีภาวะอ้วนรุนแรง</option>            
+                            </select>
+                        
+                        </td>
                     </tr>
                 </table>
             </td>
@@ -292,6 +349,9 @@ h1,h3,p{
     <table class="chk_table">
         <tr>
             <td class="title"><h3>ข้อมูลทางห้องปฏิบัติการ</h3></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
         </tr>
         <tr>
             <td valign="top">
@@ -318,16 +378,15 @@ h1,h3,p{
                 ORDER BY b.seq ASC";
                 $db->select($sql);
                 $cbc_items = $db->get_items();
+                
+                $extra = array();
 
                 if( count($cbc_items) > 0 ){
 
                     ?>
                     <table width="100%">
-                        <tr>
-                            <th colspan="3" align="center"><b>CBC</b></th>
-                        </tr>
-                        <tr style="background-color: #e6e6e6;">
-                            <th width="40%">รายการตรวจ</th>
+                        <tr style="background-color: #e6e6e6; font-size: 18px;">
+                            <th width="40%">รายการตรวจ CBC</th>
                             <th width="30%">ผลตรวจ</th>
                             <th width="30%">ค่าปกติ</th>
                         </tr>
@@ -339,6 +398,12 @@ h1,h3,p{
                             $cbc_abnormal = '';
                             if( $cbc['flag'] == 'L' OR $cbc['flag'] == 'H' ){
                                 $cbc_abnormal = 'style="font-weight: bold; color: red;"';
+                            }
+
+                            // สำหรับสรุปผลตรวจ
+                            $lab_key = strtolower($cbc['labcode']) ;
+                            if( $lab_key == 'hct' OR $lab_key == 'wbc' OR $lab_key == 'pltc' ){
+                                $extra[$lab_key] = $cbc;
                             }
 
                             ?>
@@ -353,8 +418,44 @@ h1,h3,p{
                             $result_date = $cbc['resultdate'];
                         }
                         ?>
-                        <tr bgcolor="#abcea1" style="font-weight: bold;">
-                            <td>ผลการตรวจ (วันที่ <?=$result_date;?>)</td>
+                        
+                    </table>
+                    
+                    <!-- สรุปผลการตรวจ สำหรับรายงานรายบุคคล -->
+                    <table width="100%">
+                        <tr style="background-color: #e6e6e6; font-size: 18px;">
+                            <th>รายการตรวจ</th>
+                            <th align="center">ผลตรวจ</th>
+                            <th align="center">ค่าปกติ</th>
+                            <th bgcolor="#abcea1">ผลการตรวจ</th>
+                        </tr>
+                        <?php
+                        foreach ($extra as $key => $extralab) {
+
+                            $labcode = $extralab['labcode'];
+                            ?>
+                            <tr>
+                                <td><?=strtoupper($key);?></td>
+                                <td align="center"><?=$extralab['result'];?></td>
+                                <td align="center"><?=$extralab['normalrange'];?></td>
+                                <td bgcolor="#abcea1" style="font-weight: bold;">
+                                    <label for="res_<?=$labcode;?>">
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ปกติ
+                                    </label> 
+                                    <label for="res_<?=$labcode;?>2">
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="2"> ผิดปกติ
+                                    </label>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+
+                    </table>
+
+                    <table width="100%">
+                    <tr bgcolor="#abcea1" style="font-weight: bold;">
+                            <td width="40%">สรุปผลการตรวจ CBC (เมื่อวันที่ <?=$result_date;?>)</td>
                             <td>
                                 <label for="res_cbc">
                                     <input type="radio" name="res_cbc" class="res_cbc" id="res_cbc" value="1"> ปกติ
@@ -364,9 +465,8 @@ h1,h3,p{
                                 </label>
                             </td>
                             <td></td>
-                        </tr>
+                        </tr>   
                     </table>
-
                     <?php
                 }
                 ?>
@@ -401,11 +501,8 @@ h1,h3,p{
                 if ( count($ua_items) > 0 ) {
                     ?>
                     <table  width="100%">
-                        <tr>
-                            <th colspan="3" align="center"><b>UA</b></th>
-                        </tr>
-                        <tr style="background-color: #e6e6e6;">
-                            <th width="40%">รายการตรวจ</th>
+                        <tr style="background-color: #e6e6e6; font-size: 18px;">
+                            <th width="40%">รายการตรวจ UA</th>
                             <th width="30%">ผลตรวจ</th>
                             <th width="30%">ค่าปกติ</th>
                         </tr>
@@ -431,7 +528,7 @@ h1,h3,p{
                         }
                         ?>
                         <tr bgcolor="#abcea1" style="font-weight: bold;">
-                            <td>ผลการตรวจ (วันที่ <?=$result_date;?>)</td>
+                            <td>สรุปผลการตรวจ UA (เมื่อวันที่ <?=$result_date;?>)</td>
                             <td>
                                 <label for="res_ua">
                                     <input type="radio" name="res_ua" class="res_ua" id="res_ua" value="1"> ปกติ
@@ -484,11 +581,8 @@ h1,h3,p{
             <tr>
                 <td>
                     <table width="100%">
-                        <tr>
-                            <th colspan="4" align="center"><b>ตรวจอื่นๆ</b></th>
-                        </tr>
-                        <tr style="background-color: #e6e6e6;">
-                            <th>รายการตรวจ</th>
+                        <tr style="background-color: #e6e6e6; font-size: 18px;">
+                            <th>รายการตรวจอื่นๆ</th>
                             <th align="center">ผลตรวจ</th>
                             <th align="center">ค่าปกติ</th>
                             <th bgcolor="#abcea1">ผลการตรวจ</th>
@@ -520,6 +614,7 @@ h1,h3,p{
                             <?php
                         }
                         ?>
+
                     </table>
                 </td>
             </tr>
@@ -631,31 +726,149 @@ h1,h3,p{
                 ในวันที่ <input type="text" name="abnormal_suggest_date" id="abnormal_suggest_date">
             </td>
         </tr>
-
-        <!--
-        <tr class="normal">
-            <td width="25%" class="tb-title" valign="top">คำแนะนำกรณีปกติ</td>
-            <td>
-                <input type="radio" name="normal_suggest" class="suggest_detail cleardate" id="normal_suggest2" value="1">
-                <label for="normal_suggest2" class="cleardate"> ไม่ได้ให้คำแนะนำ </label>
-                <br>
-                <input type="radio" name="normal_suggest" class="suggest_detail"  id="normal_suggest1" value="2">
-                <label for="normal_suggest1">แนะนำให้รับการตรวจต่อเนื่อง ครั้งต่อไปในวันที่ </label>
-                <input type="text" name="normal_suggest_date" id="normal_suggest_date">
-            </td>
-        </tr>
-        <tr class="abnormal" valign="top">
-            <td width="25%" class="tb-title">คำแนะนำกรณีผิดปกติ</td>
-            <td>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail cleardate" id="abs0" value="1"> <label for="abs0" class="cleardate"> ไม่ได้ให้คำแนะนำ </label><br>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs1" value="2"> <label for="abs1"> ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป</label><br>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs2" value="3"> <label for="abs2"> ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วยโดยนัดเข้ารับบริการ</label><br>
-                <input type="radio" name="abnormal_suggest" class="suggest_detail" id="abs3" value="4"> <label for="abs3"> ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง</label><br>
-                ในวันที่ <input type="text" name="abnormal_suggest_date" id="abnormal_suggest_date">
-            </td>
-        </tr>
-        -->
     </table>
+
+<br>
+
+<table width="100%" class="chk_table">
+    <tbody>
+        <tr>
+            <td>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFCCCC">
+                    <tbody>
+                        <tr>
+                            <td bgcolor="#0099CC" colspan="5" class="title">
+                                <h3>ป่วยเป็นโรค</h3>
+                            </td>
+                        </tr>
+      <tr>
+        <td width="30%" class="tb_font_2"><span class="labfont">
+          <input name="anemia" type="checkbox" value="Y" id="normal">
+          โลหิตจาง (Anemia)</span></td>
+        <td width="32%" class="tb_font_2"><span class="labfont">
+          <input name="cirrhosis" type="checkbox" value="Y" id="cirrhosis">
+ตับแข็ง (Cirrhosis) </span></td>
+        <td width="38%" class="tb_font_2"><span class="labfont">
+          <input name="hepatitis" type="checkbox" value="Y" id="hepatitis">
+โรคตับอักเสบ (Hepatitis) </span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="cardiomegaly" type="checkbox" value="Y" id="cardiomegaly">
+          หัวใจโต
+        </span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="allergy" type="checkbox" value="Y" id="allergy"> 
+          ภูมิแพ้
+</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="gout" type="checkbox" value="Y" id="gout"> 
+          โรคเก๊าท์
+</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="waistline" type="checkbox" id="waistline" value="Y">
+รอบเอวเกิน (ชาย &gt; 90 ซ.ม. , หญิง &gt; 80 ซ.ม.)</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="asthma" type="checkbox" value="Y" id="asthma">
+หอบหืด (Asthma) </span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="muscle" type="checkbox" value="Y" id="muscle">
+กล้ามเนื้ออักเสบ</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="ihd" type="checkbox" value="Y" id="ihd">
+โรคหัวใจขาดเลือดเรื้อรัง (IHD)</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="thyroid" type="checkbox" value="Y" id="thyroid">
+ไทรอยด์</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="heart" type="checkbox" value="Y" id="heart">
+โรคหัวใจ </span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="emphysema" type="checkbox" value="Y" id="emphysema">
+ถุงลมโป่งพอง</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="herniated" type="checkbox" value="Y" id="herniated">
+หมอนรองกระดูกทับเส้นประสาท</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="conjunctivitis" type="checkbox" value="Y" id="conjunctivitis">
+เยื่อบุตาอักเสบ (Conjunctivitis)</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+    <input name="cystitis" type="checkbox" value="Y" id="cystitis">
+กระเพาะปัสสาวะอักเสบ (Cystitis) </span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="epilepsy" type="checkbox" value="Y" id="epilepsy">
+ลมชัก (Epilepsy) </span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="fracture" type="checkbox" value="Y" id="fracture">
+กระดูกหักเลื่อน</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="cardiac" type="checkbox" value="Y" id="cardiac">
+หัวใจเต้นผิดจังหวะ (Cardiac arrhythmia)</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="spine" type="checkbox" value="Y" id="spine">
+กระดูกสันหลัง (อก) คด</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="dermatitis" type="checkbox" value="Y" id="dermatitis">
+ผิวหนังอักเสบ</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="degeneration" type="checkbox" value="Y" id="degeneration">
+หัวเข่าเสื่อม</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="alcoholic" type="checkbox" value="Y" id="alcoholic">
+ความผิดปกติจากแอลกอฮอล์</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="copd" type="checkbox" value="Y" id="copd">
+COPD</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="bph" type="checkbox" value="Y" id="bph">
+BPH</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="kidney" type="checkbox" value="Y" id="kidney">
+ไตผิดปกติ</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="pterygium" type="checkbox" value="Y" id="pterygium">
+ต้อเนื้อ</span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="tonsil" type="checkbox" value="Y" id="tonsil">
+ต่อมทอนซิลโต</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="paralysis" type="checkbox" value="Y" id="paralysis">
+อัมพาตซีกซ้าย/ขวา </span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="blood" type="checkbox" value="Y" id="blood">
+เม็ดเลือดผิดปกติ </span></td>
+      </tr>
+      <tr>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="conanemia" type="checkbox" value="Y" id="conanemia">
+ภาวะซีด</span></td>
+        <td class="tb_font_2"><span class="labfont">
+          <input name="ht" type="checkbox" value="Y" id="ht">
+          ความดันโลหิตสูง
+        </span></td>
+        <td class="tb_font_2">&nbsp;</td>
+      </tr>
+    </tbody></table></td>
+  </tr>
+</tbody></table>
+
+
     <br>
     <table class="chk_table">
         <tr>
@@ -792,6 +1005,23 @@ h1,h3,p{
 
             return ret_stat;
         });
+
+
+
+        $(document).on('click', '#pres_abnormal', function(){
+            $('#pres_extra').show();
+        });
+        $(document).on('click', '#pres_normal', function(){
+            $('#pres_extra').hide();
+        });
+
+        $(document).on('click', '#bmi_abnormal', function(){
+            $('#bmi_extra').show();
+        });
+        $(document).on('click', '#bmi_normal', function(){
+            $('#bmi_extra').hide();
+        });
+        
         
     });
 </script>

@@ -37,7 +37,7 @@ a.`bp2`,a.`chol_result`,a.`chunyot`,a.`hdl_result`,a.`ldl_result`,a.`glu_result`
     END
 ) AS `camp_code`
 FROM `armychkup` AS a 
-WHERE a.`yearchkup` = '60' 
+WHERE a.`yearchkup` = '61' 
 AND a.`camp` != '' 
 GROUP BY a.`hn`
 ORDER BY `camp_code` ASC, a.`row_id` DESC";
@@ -81,82 +81,106 @@ foreach($items as $key => $item){
 // exit;
 
 ?>
-<table border="1" cellpadding="0" cellspacing="0">
-	<tr>
-		<th>No.</th>
-		<th>rank</th>
-		<th>HN</th>
-		<th>name</th>
-		<th>ID</th>
-		<th>unit</th>
-		<th>rankgroup</th>
-		<th>DOB</th>
-		<th>age</th>
-		<th>gender</th>
-		<th>smoke</th>
-		<th>alcohol</th>
-		<th>exercise</th>
-		<th>weight</th>
-		<th>height</th>
-		<th>WC</th>
-		<th>SBP</th>
-		<th>DBP</th>
-		<th>FBS</th>
-		<th>CHOL</th>
-		<th>TG</th>
-		<th>HDL-C</th>
-		<th>LDL-C</th>
-	</tr>
-<?php
-$i = 1;
-foreach ($new_itmes as $key => $item) {
-	
-	if( is_null($item['hn']) OR $item['hn'] == '47-1' ){
-		continue;
-	}
-	
-	// ต้องแยกชื่อเพื่อทำการเว้นวรรคตามรูปแบบการบันทึกข้อมูลสำหรับ AHDAP
-	list($firstname, $lastname) = explode(' ', $item['ptname']);
-
-	?>
-	<tr>
-		<td><?php echo $i; ?></td>
-		<td><?php echo $item['yot']; ?></td>
-		<td><?=$item['hn'];?></td>
-		<td><?php echo $firstname.'&nbsp;&nbsp;'.$lastname; ?></td>
-		<td>
-			<?php 
-			echo preg_replace('/^(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})$/', '$1-$2-$3-$4-$5', $item['idcard']);
-			?>
-		</td>
-		<td><?php echo $item['camp_code'];?></td>
-		<td><?php echo $item['rankgroup'];?></td>
-		<td>
-			<?php 
-			list($y, $m, $d) = explode('-', $item['birthday']); 
-			echo intval($d)."/".intval($m)."/".($y+543);
-			?>
-		</td>
-		<td>
-			<?php echo substr($item['age'], 0, 2);?>
-		</td>
-		<td><?php echo ( $item['gender'] == '1' ) ? 1 : 2 ; ?></td>
-		<td><?php echo $item['cigarette']; ?></td>
-		<td><?php echo $item['alcohol']; ?></td>
-		<td><?php echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
-		<td><?php echo number_format($item['weight'], 1); ?></td>
-		<td><?php echo number_format($item['height'], 1); ?></td>
-		<td><?php echo number_format(($item['waist'] / 0.39370), 1);?></td>
-		<td><?php echo $item['bp1']; ?></td>
-		<td><?php echo $item['bp2']; ?></td>
-		<td><?php echo !empty($item['glu_result']) ? $item['glu_result'] : '' ; ?></td>
-		<td><?php echo !empty($item['chol_result']) ? $item['chol_result'] : '' ; ?></td>
-		<td><?php echo !empty($item['trig_result']) ? $item['trig_result'] : '' ; ?></td>
-		<td><?php echo !empty($item['hdl_result']) ? $item['hdl_result'] : '' ; ?></td>
-		<td><?php echo !empty($item['ldl_result']) ? $item['ldl_result'] : '' ; ?></td>
-	</tr>
-	<?php
-	$i++;
+<style>
+*{
+    font-family: TH SarabunPSK;
+    font-size: 16pt;
 }
-?>
+/* ตาราง */
+.chk_table{
+    border-collapse: collapse;
+}
+
+.chk_table, th, td{
+    border: 1px solid black;
+}
+
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+}
+</style>
+<table class="chk_table">
+	<thead>
+		<tr>
+			<th>No.</th>
+			<th>rank</th>
+			<th>HN</th>
+			<th>name</th>
+			<th>ID</th>
+			<th>unit</th>
+			<th>rankgroup</th>
+			<th>DOB</th>
+			<th>age</th>
+			<th>gender</th>
+			<th>smoke</th>
+			<th>alcohol</th>
+			<th>exercise</th>
+			<th>weight</th>
+			<th>height</th>
+			<th>WC</th>
+			<th>SBP</th>
+			<th>DBP</th>
+			<th>FBS</th>
+			<th>CHOL</th>
+			<th>TG</th>
+			<th>HDL-C</th>
+			<th>LDL-C</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$i = 1;
+	foreach ($new_itmes as $key => $item) {
+		
+		if( is_null($item['hn']) OR $item['hn'] == '47-1' ){
+			continue;
+		}
+		
+		// ต้องแยกชื่อเพื่อทำการเว้นวรรคตามรูปแบบการบันทึกข้อมูลสำหรับ AHDAP
+		$ptname = preg_replace('/\s+/', ' ', $item['ptname']);
+		list($firstname, $lastname) = explode(' ', $ptname);
+
+		?>
+		<tr>
+			<td><?php echo $i; ?></td>
+			<td><?php echo $item['yot']; ?></td>
+			<td><?=$item['hn'];?></td>
+			<td><?php echo $firstname.'&nbsp;&nbsp;'.$lastname; ?></td>
+			<td>
+				<?php 
+				echo preg_replace('/^(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})$/', '$1-$2-$3-$4-$5', $item['idcard']);
+				?>
+			</td>
+			<td><?php echo $item['camp_code'];?></td>
+			<td><?php echo $item['rankgroup'];?></td>
+			<td>
+				<?php 
+				list($y, $m, $d) = explode('-', $item['birthday']); 
+				echo intval($d)."/".intval($m)."/".($y+543);
+				?>
+			</td>
+			<td>
+				<?php echo substr($item['age'], 0, 2);?>
+			</td>
+			<td><?php echo ( $item['gender'] == '1' ) ? 1 : 2 ; ?></td>
+			<td><?php echo $item['cigarette']; ?></td>
+			<td><?php echo $item['alcohol']; ?></td>
+			<td><?php echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
+			<td><?php echo number_format($item['weight'], 1); ?></td>
+			<td><?php echo number_format($item['height'], 1); ?></td>
+			<td><?php echo number_format(($item['waist'] / 0.39370), 1);?></td>
+			<td><?php echo $item['bp1']; ?></td>
+			<td><?php echo $item['bp2']; ?></td>
+			<td><?php echo !empty($item['glu_result']) ? $item['glu_result'] : '' ; ?></td>
+			<td><?php echo !empty($item['chol_result']) ? $item['chol_result'] : '' ; ?></td>
+			<td><?php echo !empty($item['trig_result']) ? $item['trig_result'] : '' ; ?></td>
+			<td><?php echo !empty($item['hdl_result']) ? $item['hdl_result'] : '' ; ?></td>
+			<td><?php echo !empty($item['ldl_result']) ? $item['ldl_result'] : '' ; ?></td>
+		</tr>
+		<?php
+		$i++;
+	}
+	?>
+	</tbody>
 </table>

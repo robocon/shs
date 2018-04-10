@@ -35,8 +35,6 @@ if ( $action === false ) {
     </ul>
     <?php
 }else if ( $action === 'import' ) {
-
-    exit;
     
     $file = $_FILES['file'];
 	$content = file_get_contents($file['tmp_name']);
@@ -145,13 +143,16 @@ if ( $action === false ) {
 
 }else if ( $action === 'import_lab' ) {
 
-    exit;
+    $en_date = '2018-04-02 10:28:30';
     
     $sql = "SELECT a.*
 	FROM `opcardchk` AS a 
 	WHERE a.`part` = '$part' 
     AND a.`datechkup` = '$date_checkup' 
-	ORDER BY a.`row` ASC";
+    AND a.`row` >= '10589' AND a.`row` <= '10598'
+    ORDER BY a.`row` ASC"; 
+    
+
     $db->select($sql);
     $items = $db->get_items();
 
