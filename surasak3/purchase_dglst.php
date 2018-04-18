@@ -6,34 +6,27 @@ $user_id = $_SESSION['sIdname'];
 if( $user_code !== 'ADM' ){
     
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
-    $check_level = in_array($user_code, array('ADMPH', 'ADMPHA', 'ADMPURCHASE'));
-    //$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','จีราภรณ์4','สงคราม','รุ่งทิวา','อมรรัตน์'));
-    $check_user = in_array($user_id, array('พรทิพา','อรัญญา','วนิดาดา','จีราภรณ์4','สงคราม','รุ่งทิวา','อมรรัตน์','ภูมิพัฒน์'));  //รับคำสั่ง หน.กองเภสัชกรรม วันที่ 27/12/60
+    $check_level = in_array($user_code, array('ADMPH', 'ADMPURCHASE'));
+    $check_user = in_array($user_id, array('อรัญญา','purchase'));
     
     if( $check_level === false OR $check_user === false ){
         ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขข้อมูลยา กรุณาติดต่อ</p>
         <ol>
-            <li>พ.อ.หญิง พรทิพา จันทร์ณรงค์</li>
-            <!--<li>พ.อ.หญิง อรัญญา ชาวไชย</li>-->
-            <li>พ.ท.หญิง วนิดา โล่ห์สุวรรณ</li>         
-            <li>น.ส. จีราภรณ์ เขมดำรง (20-12-60)</li><!--ได้รับมอบหมายจากหัวหน้าห้องยา พ.อ.หญิง พรทิพา จันทร์ณรงค์ เมื่อวันที่ 20-12-60-->
-            <li>สงคราม  ไหวดี</li>
-            <li>รุ่งทิวา  ใจเดียว</li>
-            <li>อมรรัตน์  นันทะวงค์</li>
+            <li>พ.อ.หญิง อรัญญา ชาวไชย</li>
         </ol>
-        <p>เพื่อทำการแก้ไขข้อมูลยา</p>
+        <p>เพื่อทำการแก้ไขข้อมูล สป.สายแพทย์</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
         <?php
         exit;
     }
 }
 
-  print "รายการยาเวชภัณฑ์ <br> ";
+  print "รายการสป.สายแพทย์<br> ";
 if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 include("connect.inc");
 	
-	$sql = "Select drugcode,tradname from druglst  where  drugcode like '%".$_GET["search1"]."%' limit 10 ";
+	$sql = "Select drugcode,tradname from druglst  where  drugcode like '%".$_GET["search1"]."%' AND grouptype='pc' limit 10 ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
@@ -78,7 +71,7 @@ function searchSuggest(str,len,getto) {
 
 		if(str.length >= len){
 
-			url = 'dglst.php?action=drugcode&search1=' + str+'&getto=' + getto;
+			url = 'purchase_dglst.php?action=drugcode&search1=' + str+'&getto=' + getto;
 
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
@@ -92,7 +85,7 @@ function searchSuggest(str,len,getto) {
 <form method="post" action="<?php echo $PHP_SELF ?>">
 <font face="Angsana New">
 <Div id="list" style="left:150PX;top:70PX;position:absolute;"></Div>
-<a target='right' href="drugcode.php">รหัสยา ?</a>&nbsp;&nbsp;
+<a target='right' href="purchase_drugcode.php">รหัสยา ?</a>&nbsp;&nbsp;
 <input type="text" name="drugcode" size="10" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode');">&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="submit" value="  ตกลง  " name="B1">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></font></p>
@@ -141,13 +134,13 @@ function searchSuggest(str,len,getto) {
 If (!empty($drugcode)){
     include("connect.inc");
 
-    $query = "SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec FROM druglst WHERE drugcode LIKE '$drugcode%' ";
+    $query = "SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec FROM druglst WHERE drugcode LIKE '$drugcode%' AND grouptype ='pc' ";
     $result = mysql_query($query)
         or die("Query failed");
 
     while (list ($drugcode, $tradname,$genname, $salepri,$part,$stock,$mainstk,$totalstk,$pack,$packpri_vat, $comcode, $comname, $unitpri,$code24, $edpri,$spec) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
-           "  <td BGCOLOR=66CDAA><a   href=\"dgedit.php?Dgcode=$drugcode\">$drugcode</a></td>\n".
+           "  <td BGCOLOR=66CDAA><a   href=\"purchase_dgedit.php?Dgcode=$drugcode\">$drugcode</a></td>\n".
            "  <td BGCOLOR=66CDAA>$tradname</td>\n".
 		   "  <td BGCOLOR=66CDAA>$genname</td>\n".
            "  <td BGCOLOR=66CDAA>$salepri</td>\n".

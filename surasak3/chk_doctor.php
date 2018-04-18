@@ -408,12 +408,12 @@ h1,h3,p{
 
                             ?>
 
-                            <input type="radio" id="pres_normal" name="res_pressure" value="1" <?=$pres_normal;?> >
+                            <input type="radio" id="pres_normal" name="normal55" value="1" <?=$pres_normal;?> >
                             <label for="pres_normal">
                                 ª°µ‘
                             </label>
 
-                            <input type="radio" id="pres_abnormal" name="res_pressure" value="2" <?=$pres_abnormal;?> >
+                            <input type="radio" id="pres_abnormal" name="normal55" value="2" <?=$pres_abnormal;?> >
                             <label for="pres_abnormal">
                                 º‘¥ª°µ‘
                             </label>
@@ -798,7 +798,7 @@ h1,h3,p{
             SELECT MAX(`autonumber`) AS `latest_number` 
             FROM `resulthead` 
             WHERE `hn` = '$hn' 
-            AND ( `profilecode` != 'CBC' AND `profilecode` != 'UA' )
+            AND ( `profilecode` != 'CBC' AND `profilecode` != 'UA' ) 
             AND `clinicalinfo` = 'µ√«® ÿ¢¿“æª√–®”ª’$year_checkup' 
             GROUP BY `profilecode` 
             ORDER BY `autonumber` ASC 

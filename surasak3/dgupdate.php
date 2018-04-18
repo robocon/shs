@@ -52,9 +52,8 @@ packpri_vat= '$packpri_vat ',
 	}else{
 			$typedrug=$_POST["typedrug"];
 	}
-	
+	//ไม่ได้แก้ไขรหัสยา
  $query ="update druglst SET comcode='$comcode', 
-
   		tradname= '$tradname',
  		genname= '$genname ',
 		drugname= '$drugname ',
@@ -87,9 +86,13 @@ packpri_vat= '$packpri_vat ',
 		typedrug = '".$typedrug."',
 		product_category = '".$_POST["pro_cat"]."', 
 		edpri_from = '".$_POST['edpri_from']."',
-		product_drugtype = '".$_POST["pro_drugtype"]."' 
+		product_drugtype =  '".$_POST['product_drugtype']."',
+		grouptype = '".$_POST["grouptype"]."',
+		drug_nature = '".$_POST["drug_nature"]."',
+		drug_properties = '".$_POST["drug_properties"]."',
+		drugnote = '".$_POST["drugnote"]."'  		
         WHERE drugcode='$drugcode' limit 1";
-
+//echo $query;
         $result = mysql_query($query)
                        or die("Query failed,update druglst");
 //echo mysql_errno() . ": " . mysql_error(). "\n";
