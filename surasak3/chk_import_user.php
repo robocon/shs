@@ -106,11 +106,11 @@ if( empty($action) ){
 
             list($pid, $hn, $idcard, $fullname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
 
+
             if( !empty($pid) ){
 
                 $fullname = preg_replace('/\s+/', ' ', $fullname);
                 list($name, $surname) = explode(' ',$fullname);
-                $course = 'โปรแกรม '.$course;
     
                 $sql = "INSERT INTO `opcardchk`
                 (`HN`,
@@ -151,6 +151,7 @@ if( empty($action) ){
 
         $msg = 'นำเข้าข้อมูลเรียบร้อย';
     }
+
     redirect('chk_import_user.php', $msg);
     exit;
 }
