@@ -6,6 +6,8 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
+    $dxofyear_id = input_post('dxofyear_id');
+
     $hn = input_post('hn');
     $vn = input_post('vn');
     $prefix = input_post('yot');
@@ -100,88 +102,135 @@ if( $action === 'save' ){
 
     }
 
+    // ua -> res_ua
+    $_POST['normal'] = ( $res_ua == 1 ) ? 'ปกติ' : 'ผิดปกติ' ;
 
+    //cbc -> res_cbc
+    $_POST['normal81'] = ( $res_cbc == 1 ) ? 'ปกติ' : 'ผิดปกติ' ;
 
-    // $dx มาจาก dxofyear_out
-$sql ="INSERT INTO  `condxofyear_out` ( 
-    `thidate`,`thdatehn`,`thdatevn`,`hn`,`vn`,`ptname`,
-    `age`,`camp`,`camp_until`,`height`,`weight`,`round_`,
-    `temperature`,`pause`,`rate`,`bmi`,`bp1`,`bp2`,
-    `drugreact` ,`prawat`,`congenital_disease`,`type`,`organ`,`doctor`,
-    `ua_color`,`ua_appear`,`ua_spgr`,`ua_phu`,`ua_bloodu`,`ua_prou`,
-    `ua_gluu`,`ua_ketu`,`ua_urobil`,`ua_bili`,`ua_nitrit`,`ua_wbcu`,
-    `ua_rbcu`,`ua_epiu`,`ua_bactu`,`ua_yeast`,`ua_mucosu`,`ua_amopu`,
-    `ua_castu`,`ua_crystu`,`ua_otheru`,`stat_ua`,`reason_ua`,`cbc_wbc`,
-    `stat_wbc`,`reason_wbc`,`wbcrange`,`wbcflag`,`cbc_rbc`,`cbc_hb`,
-    `cbc_hct`,`stat_hct`,`reason_hct`,`hctrange`,`hctflag`,`cbc_mcv`,
-    `cbc_mch`,`cbc_mchc`,`cbc_pltc`,`stat_pltc`,`reason_pltc`,`pltcrange`,
-    `pltcflag`,`cbc_plts`,`cbc_neu`,`cbc_lymp`,`cbc_mono`,`cbc_eos`,
-    `cbc_baso`,`cbc_band`,`cbc_atyp`,`cbc_nrbc`,`cbc_rbcmor`,`cbc_other`,
-    `stat_cbc`,`reason_cbc`,`cxr`,`reason_cxr`,`bs`,`stat_bs`,
-    `reason_bs`,`bsrange`,`bsflag`,`bun`,`stat_bun`,`reason_bun`,
-    `bunrange`,`bunflag`,`cr`,`stat_cr`,`reason_cr`,`crrange`,
-    `crflag`,`uric`,`stat_uric`,`reason_uric`,`uricrange`,`uricflag`,
-    `chol`,`stat_chol`,`reason_chol`,`cholrange`,`cholflag`,`tg`,
-    `stat_tg`,`reason_tg`,`tgrange`,`tgflag`,`sgot`,`stat_sgot`,
-    `reason_sgot`,`sgotrange`,`sgotflag`,`sgpt`,`stat_sgpt`,`reason_sgpt`,
-    `sgptrange`,`sgptflag`,`alk`,`stat_alk`,`reason_alk`,`alkrange`,
-    `alkflag`,`general`,`reason_general`,`pap`,`reason_pap`,`other1`,
-    `stat_other1`,`reason_other1`,`other2`,`stat_other2`,`reason_other2`,`dx`,
-    `clinic`,`cigarette`,`alcohol`,`summary`,`diag`,`soldier1`,
-    `reason_sol1`,`soldier2`,`reason_sol2`,`soldier3`,`reason_sol3`,`soldier4`,
-    `reason_sol4`,`soldier5`,`reason_sol5`,`soldier6`,`reason_sol6`,`soldier7`,
-    `reason_sol7`,`soldier8` ,`reason_sol8`,`soldier9`,`reason_sol9`,`soldier10`,
-    `reason_sol10`,`status_dr`,`yearcheck`,
-    `sol1`,`sol2`,`sol3`,`sol4`,`sol41`,`sol5`,
-    `sol51`,`sum1`,`sum2`,`rs_sum21`,`rs_sum22`,`rs_sum23`,
-    `rs_sum24`,`rs_sum25`,`sum3`,`sum4`,`sum5`,`rs_sum51`,
-    `rs_sum52`,`rs_sum53`,`sum6`,`rs_sum61`,`anemia`,`cirrhosis`,
-    `hepatitis`,`cardiomegaly`,`allergy`,`gout`,`waistline`,`asthma`,
-    `muscle`,`ihd`,`thyroid`,`heart`,`emphysema`,`herniated`,
-    `conjunctivitis`,`cystitis`,`epilepsy`,`fracture`,`cardiac`,`spine`,
-    `dermatitis`,`degeneration`,`alcoholic`,`copd`,`bph`,`kidney`,
-    `pterygium`,`tonsil`,`paralysis`,`blood`,`conanemia`,`ht`,
-    `stat_pressure`,`reason_pressure`,`stat_bmi`,`reason_bmi`) 
-VALUES (
-    '".$date_now."','".$date_hn."','".$date_vn."','".$dx['hn']."','".$dx['vn']."','".$dx['ptname']."',
-    '".$dx['age']."','".$dx['camp']."','".$dx['camp_until']."','".$dx['height']."','".$dx['weight']."','".$dx['round_']."',
-    '".$dx['temperature']."','".$dx['pause']."','".$dx['rate']."','".$_POST['bmi']."','".$dx['bp1']."','".$dx['bp2']."',
-    '".$dx['drugreact']."','".$dx['prawat']."','".$dx['congenital_disease']."','".$dx['type']."','".$dx['organ']."','".$_POST['doctorn']."',
-    '".$dx['ua_color']."','".$dx['ua_appear']."','".$dx['ua_spgr']."','".$dx['ua_phu']."','".$dx['ua_bloodu']."','".$dx['ua_prou']."',
-    '".$dx['ua_gluu']."','".$dx['ua_ketu']."','".$dx['ua_urobil']."','".$dx['ua_bili']."','".$dx['ua_nitrit']."','".$dx['ua_wbcu']."',
-    '".$dx['ua_rbcu']."','".$dx['ua_epiu']."','".$dx['ua_bactu']."','".$dx['ua_yeast']."','".$dx['ua_mucosu']."','".$dx['ua_amopu']."',
-    '".$dx['ua_castu']."','".$dx['ua_crystu']."','".$dx['ua_otheru']."','".$_POST['normal']."','".$_POST['ch']."','".$dx['cbc_wbc']."',
-    '".$_POST['normal32']."','".$_POST['ch32']."','".$dx['wbcrange']."','".$dx['wbcflag']."','".$dx['cbc_rbc']."','".$dx['cbc_hb']."',
-    '".$dx['cbc_hct']."','".$_POST['normal31']."','".$_POST['ch31']."','".$dx['hctrange']."','".$dx['hctflag']."','".$dx['cbc_mcv']."',
-    '".$dx['cbc_mch']."','".$dx['cbc_mchc']."','".$dx['cbc_pltc']."','".$_POST['normal33']."','".$_POST['ch33']."','".$dx['pltcrange']."',
-    '".$dx['pltcflag']."','".$dx['cbc_plts']."','".$dx['cbc_neu']."','".$dx['cbc_lymp']."','".$dx['cbc_mono']."','".$dx['cbc_eos']."',
-    '".$dx['cbc_baso']."','".$dx['cbc_band']."','".$dx['cbc_atyp']."','".$dx['cbc_nrbc']."','".$dx['cbc_rbcmor']."','".$dx['cbc_other']."',
-    '".$_POST['normal81']."','".$_POST['ch81']."','".$_POST['normal51']."','".$_POST['ch51']."','".$dx['bs']."','".$_POST['normal47']."',
-    '".$_POST['ch47']."','".$dx['bsrange']."','".$dx['bsflag']."','".$dx['bun']."','".$_POST['normal44']."','".$_POST['ch44']."',
-    '".$dx['bunrange']."','".$dx['bunflag']."','".$dx['cr']."','".$_POST['normal45']."','".$_POST['ch45']."','".$dx['crrange']."',
-    '".$dx['crflag']."','".$dx['uric']."','".$_POST['normal49']."','".$_POST['ch49']."','".$dx['uricrange']."','".$dx['uricflag']."',
-    '".$dx['chol']."','".$_POST['normal46']."','".$_POST['ch46']."','".$dx['cholrange']."','".$dx['cholflag']."','".$dx['tg']."',
-    '".$_POST['normal48']."','".$_POST['ch48']."','".$dx['tgrange']."','".$dx['tgflag']."','".$dx['sgot']."','".$_POST['normal41']."',
-    '".$_POST['ch41']."','".$dx['sgotrange']."','".$dx['sgotflag']."','".$dx['sgpt']."','".$_POST['normal42']."','".$_POST['ch42']."',
-    '".$dx['sgptrange']."','".$dx['sgptflag']."','".$dx['alk']."','".$_POST['normal43']."','".$_POST['ch43']."','".$dx['alkrange']."',
-    '".$dx['alkflag']."','".$_POST['normal20']."','".$_POST['ch20']."','".$_POST['normal52']."','".$_POST['ch52']."','".$_POST['other1']."',
-    '".$_POST['normal53']."','".$_POST['ch53']."','".$_POST['other2']."','".$_POST['normal54']."','".$_POST['ch54']."','".$_POST['dx']."',
-    '".$dx['clinic']."','".$dx['cigarette']."','".$dx['alcohol']."','".$_POST['normal71']."','".$txtsm."','".$_POST['normal21']."','".$_POST['text21']."',
-    '".$_POST['normal22']."','".$_POST['text22']."','".$_POST['normal23']."','".$_POST['text23']."','".$_POST['normal24']."','".$_POST['text24']."',
-    '".$_POST['normal25']."','".$_POST['text25']."','".$_POST['normal26']."','".$_POST['text26']."','".$_POST['normal27']."','".$_POST['text27']."',
-    '".$_POST['normal28']."','".$_POST['text28']."','".$_POST['normal29']."','".$_POST['text29']."','".$_POST['normal30']."','".$_POST['text30']."',
-    'Y','".$nPrefix."','".$_POST['normal91']."','".$_POST['normal92']."','".$_POST['normal93']."','".$_POST['normal94']."',
-    '".$_POST['normal941']."','".$_POST['normal95']."','".$_POST['normal951']."','".$_POST['normal61']."','".$_POST['normal62']."','".$rs_sum21."',
-    '".$rs_sum22."','".$rs_sum23."','".$rs_sum24."','".$rs_sum25."','".$_POST['normal63']."','".$_POST['normal64']."',
-    '".$_POST['normal65']."','".$rs_sum51."','".$rs_sum52."','".$rs_sum53."','".$_POST['normal66']."','".$rs_sum61."',
-    '".$_POST['anemia']."','".$_POST['cirrhosis']."','".$_POST['hepatitis']."','".$_POST['cardiomegaly']."','".$_POST['allergy']."','".$_POST['gout']."',
-    '".$_POST['waistline']."','".$_POST['asthma']."','".$_POST['muscle']."','".$_POST['ihd']."','".$_POST['thyroid']."','".$_POST['heart']."',
-    '".$_POST['emphysema']."','".$_POST['herniated']."','".$_POST['conjunctivitis']."','".$_POST['cystitis']."','".$_POST['epilepsy']."','".$_POST['fracture']."',
-    '".$_POST['cardiac']."','".$_POST['spine']."','".$_POST['dermatitis']."','".$_POST['degeneration']."','".$_POST['alcoholic']."','".$_POST['copd']."',
-    '".$_POST['bph']."','".$_POST['kidney']."','".$_POST['pterygium']."','".$_POST['tonsil']."','".$_POST['paralysis']."','".$_POST['blood']."',
-    '".$_POST['conanemia']."','".$_POST['ht']."','".$_POST['normal55']."','".$_POST['ch55']."','".$_POST['normal56']."','".$_POST['ch56']."'
-)";
+    // xray -> cxr
+    $_POST['normal51'] = ( $cxr == 1 ) ? 'ปกติ' : 'ผิดปกติ' ;
 
+    // ปกติ -> conclution
+    
+    $_POST['normal61'] = ( $conclution == 1 ) ? 'ปกติ' : 'ผิดปกติ' ;
+
+    // การดำเนินการ port เข้าสองตัวนี้หมดเลย
+    // -> normal_suggest
+    // -> abnormal_suggest
+    $_POST['normal95'] = '5 อื่นๆ';
+    
+    if( $conclution == 1 ){
+        $suggest_list = array(
+            1 => 'ไม่ได้ให้คำแนะนำ', 
+            'แนะนำให้รับการตรวจต่อเนื่อง'
+        );
+
+        $normal951 = $suggest_list[$normal_suggest];
+        
+    }else{
+        $suggest_list = array(
+            1 => 'ไม่ได้ให้คำแนะนำ', 
+            'ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ', 
+            'ให้คำแนะนำเข้ารับการรักษากรณีเจ็บป่วย', 
+            'ให้คำแนะนำเข้ารักการรักษากรณีภาวะแทรกซ้อนจากโรคเรื้อรัง'
+        );
+
+        $normal951 = $suggest_list[$abnormal_suggest];
+        
+    }
+
+    $_POST['normal951'] = $normal951;
+    
+    $date_now = date("Y-m-d H:i:s");
+    $date_hn = date('Y-m-d').$hn;
+    $date_vn = date('Y-m-d').$vn;
+    
+
+    $sql = "SELECT * FROM `dxofyear_out` WHERE `row_id` = '$dxofyear_id'";
+    $db->select($sql);
+    $dx = $db->get_item();
+
+    $sql ="INSERT INTO  `condxofyear_out` ( 
+        `thidate`,`thdatehn`,`thdatevn`,`hn`,`vn`,`ptname`,
+        `age`,`camp`,`camp_until`,`height`,`weight`,`round_`,
+        `temperature`,`pause`,`rate`,`bmi`,`bp1`,`bp2`,
+        `drugreact` ,`prawat`,`congenital_disease`,`type`,`organ`,`doctor`,
+        `ua_color`,`ua_appear`,`ua_spgr`,`ua_phu`,`ua_bloodu`,`ua_prou`,
+        `ua_gluu`,`ua_ketu`,`ua_urobil`,`ua_bili`,`ua_nitrit`,`ua_wbcu`,
+        `ua_rbcu`,`ua_epiu`,`ua_bactu`,`ua_yeast`,`ua_mucosu`,`ua_amopu`,
+        `ua_castu`,`ua_crystu`,`ua_otheru`,`stat_ua`,`reason_ua`,`cbc_wbc`,
+        `stat_wbc`,`reason_wbc`,`wbcrange`,`wbcflag`,`cbc_rbc`,`cbc_hb`,
+        `cbc_hct`,`stat_hct`,`reason_hct`,`hctrange`,`hctflag`,`cbc_mcv`,
+        `cbc_mch`,`cbc_mchc`,`cbc_pltc`,`stat_pltc`,`reason_pltc`,`pltcrange`,
+        `pltcflag`,`cbc_plts`,`cbc_neu`,`cbc_lymp`,`cbc_mono`,`cbc_eos`,
+        `cbc_baso`,`cbc_band`,`cbc_atyp`,`cbc_nrbc`,`cbc_rbcmor`,`cbc_other`,
+        `stat_cbc`,`reason_cbc`,`cxr`,`reason_cxr`,`bs`,`stat_bs`,
+        `reason_bs`,`bsrange`,`bsflag`,`bun`,`stat_bun`,`reason_bun`,
+        `bunrange`,`bunflag`,`cr`,`stat_cr`,`reason_cr`,`crrange`,
+        `crflag`,`uric`,`stat_uric`,`reason_uric`,`uricrange`,`uricflag`,
+        `chol`,`stat_chol`,`reason_chol`,`cholrange`,`cholflag`,`tg`,
+        `stat_tg`,`reason_tg`,`tgrange`,`tgflag`,`sgot`,`stat_sgot`,
+        `reason_sgot`,`sgotrange`,`sgotflag`,`sgpt`,`stat_sgpt`,`reason_sgpt`,
+        `sgptrange`,`sgptflag`,`alk`,`stat_alk`,`reason_alk`,`alkrange`,
+        `alkflag`,`general`,`reason_general`,`pap`,`reason_pap`,`other1`,
+        `stat_other1`,`reason_other1`,`other2`,`stat_other2`,`reason_other2`,`dx`,
+        `clinic`,`cigarette`,`alcohol`,`summary`,`diag`,`soldier1`,
+        `reason_sol1`,`soldier2`,`reason_sol2`,`soldier3`,`reason_sol3`,`soldier4`,
+        `reason_sol4`,`soldier5`,`reason_sol5`,`soldier6`,`reason_sol6`,`soldier7`,
+        `reason_sol7`,`soldier8` ,`reason_sol8`,`soldier9`,`reason_sol9`,`soldier10`,
+        `reason_sol10`,`status_dr`,`yearcheck`,
+        `sol1`,`sol2`,`sol3`,`sol4`,`sol41`,`sol5`,
+        `sol51`,`sum1`,`sum2`,`rs_sum21`,`rs_sum22`,`rs_sum23`,
+        `rs_sum24`,`rs_sum25`,`sum3`,`sum4`,`sum5`,`rs_sum51`,
+        `rs_sum52`,`rs_sum53`,`sum6`,`rs_sum61`,`anemia`,`cirrhosis`,
+        `hepatitis`,`cardiomegaly`,`allergy`,`gout`,`waistline`,`asthma`,
+        `muscle`,`ihd`,`thyroid`,`heart`,`emphysema`,`herniated`,
+        `conjunctivitis`,`cystitis`,`epilepsy`,`fracture`,`cardiac`,`spine`,
+        `dermatitis`,`degeneration`,`alcoholic`,`copd`,`bph`,`kidney`,
+        `pterygium`,`tonsil`,`paralysis`,`blood`,`conanemia`,`ht`,
+        `stat_pressure`,`reason_pressure`,`stat_bmi`,`reason_bmi`) 
+    VALUES (
+        '".$date_now."','".$date_hn."','".$date_vn."','".$dx['hn']."','".$dx['vn']."','".$dx['ptname']."',
+        '".$dx['age']."','".$dx['camp']."','".$dx['camp_until']."','".$dx['height']."','".$dx['weight']."','".$dx['round_']."',
+        '".$dx['temperature']."','".$dx['pause']."','".$dx['rate']."','".$_POST['bmi']."','".$dx['bp1']."','".$dx['bp2']."',
+        '".$dx['drugreact']."','".$dx['prawat']."','".$dx['congenital_disease']."','".$dx['type']."','".$dx['organ']."','".$_POST['doctorn']."',
+        '".$dx['ua_color']."','".$dx['ua_appear']."','".$dx['ua_spgr']."','".$dx['ua_phu']."','".$dx['ua_bloodu']."','".$dx['ua_prou']."',
+        '".$dx['ua_gluu']."','".$dx['ua_ketu']."','".$dx['ua_urobil']."','".$dx['ua_bili']."','".$dx['ua_nitrit']."','".$dx['ua_wbcu']."',
+        '".$dx['ua_rbcu']."','".$dx['ua_epiu']."','".$dx['ua_bactu']."','".$dx['ua_yeast']."','".$dx['ua_mucosu']."','".$dx['ua_amopu']."',
+        '".$dx['ua_castu']."','".$dx['ua_crystu']."','".$dx['ua_otheru']."','".$_POST['normal']."','".$_POST['ch']."','".$dx['cbc_wbc']."',
+        '".$_POST['normal32']."','".$_POST['ch32']."','".$dx['wbcrange']."','".$dx['wbcflag']."','".$dx['cbc_rbc']."','".$dx['cbc_hb']."',
+        '".$dx['cbc_hct']."','".$_POST['normal31']."','".$_POST['ch31']."','".$dx['hctrange']."','".$dx['hctflag']."','".$dx['cbc_mcv']."',
+        '".$dx['cbc_mch']."','".$dx['cbc_mchc']."','".$dx['cbc_pltc']."','".$_POST['normal33']."','".$_POST['ch33']."','".$dx['pltcrange']."',
+        '".$dx['pltcflag']."','".$dx['cbc_plts']."','".$dx['cbc_neu']."','".$dx['cbc_lymp']."','".$dx['cbc_mono']."','".$dx['cbc_eos']."',
+        '".$dx['cbc_baso']."','".$dx['cbc_band']."','".$dx['cbc_atyp']."','".$dx['cbc_nrbc']."','".$dx['cbc_rbcmor']."','".$dx['cbc_other']."',
+        '".$_POST['normal81']."','".$_POST['ch81']."','".$_POST['normal51']."','".$_POST['ch51']."','".$dx['bs']."','".$_POST['normal47']."',
+        '".$_POST['ch47']."','".$dx['bsrange']."','".$dx['bsflag']."','".$dx['bun']."','".$_POST['normal44']."','".$_POST['ch44']."',
+        '".$dx['bunrange']."','".$dx['bunflag']."','".$dx['cr']."','".$_POST['normal45']."','".$_POST['ch45']."','".$dx['crrange']."',
+        '".$dx['crflag']."','".$dx['uric']."','".$_POST['normal49']."','".$_POST['ch49']."','".$dx['uricrange']."','".$dx['uricflag']."',
+        '".$dx['chol']."','".$_POST['normal46']."','".$_POST['ch46']."','".$dx['cholrange']."','".$dx['cholflag']."','".$dx['tg']."',
+        '".$_POST['normal48']."','".$_POST['ch48']."','".$dx['tgrange']."','".$dx['tgflag']."','".$dx['sgot']."','".$_POST['normal41']."',
+        '".$_POST['ch41']."','".$dx['sgotrange']."','".$dx['sgotflag']."','".$dx['sgpt']."','".$_POST['normal42']."','".$_POST['ch42']."',
+        '".$dx['sgptrange']."','".$dx['sgptflag']."','".$dx['alk']."','".$_POST['normal43']."','".$_POST['ch43']."','".$dx['alkrange']."',
+        '".$dx['alkflag']."','".$_POST['normal20']."','".$_POST['ch20']."','".$_POST['normal52']."','".$_POST['ch52']."','".$_POST['other1']."',
+        '".$_POST['normal53']."','".$_POST['ch53']."','".$_POST['other2']."','".$_POST['normal54']."','".$_POST['ch54']."','".$_POST['dx']."',
+        '".$dx['clinic']."','".$dx['cigarette']."','".$dx['alcohol']."','".$_POST['normal71']."','".$txtsm."','".$_POST['normal21']."','".$_POST['text21']."',
+        '".$_POST['normal22']."','".$_POST['text22']."','".$_POST['normal23']."','".$_POST['text23']."','".$_POST['normal24']."','".$_POST['text24']."',
+        '".$_POST['normal25']."','".$_POST['text25']."','".$_POST['normal26']."','".$_POST['text26']."','".$_POST['normal27']."','".$_POST['text27']."',
+        '".$_POST['normal28']."','".$_POST['text28']."','".$_POST['normal29']."','".$_POST['text29']."','".$_POST['normal30']."','".$_POST['text30']."',
+        'Y','".$nPrefix."','".$_POST['normal91']."','".$_POST['normal92']."','".$_POST['normal93']."','".$_POST['normal94']."',
+        '".$_POST['normal941']."','".$_POST['normal95']."','".$_POST['normal951']."','".$_POST['normal61']."','".$_POST['normal62']."','".$rs_sum21."',
+        '".$rs_sum22."','".$rs_sum23."','".$rs_sum24."','".$rs_sum25."','".$_POST['normal63']."','".$_POST['normal64']."',
+        '".$_POST['normal65']."','".$rs_sum51."','".$rs_sum52."','".$rs_sum53."','".$_POST['normal66']."','".$rs_sum61."',
+        '".$_POST['anemia']."','".$_POST['cirrhosis']."','".$_POST['hepatitis']."','".$_POST['cardiomegaly']."','".$_POST['allergy']."','".$_POST['gout']."',
+        '".$_POST['waistline']."','".$_POST['asthma']."','".$_POST['muscle']."','".$_POST['ihd']."','".$_POST['thyroid']."','".$_POST['heart']."',
+        '".$_POST['emphysema']."','".$_POST['herniated']."','".$_POST['conjunctivitis']."','".$_POST['cystitis']."','".$_POST['epilepsy']."','".$_POST['fracture']."',
+        '".$_POST['cardiac']."','".$_POST['spine']."','".$_POST['dermatitis']."','".$_POST['degeneration']."','".$_POST['alcoholic']."','".$_POST['copd']."',
+        '".$_POST['bph']."','".$_POST['kidney']."','".$_POST['pterygium']."','".$_POST['tonsil']."','".$_POST['paralysis']."','".$_POST['blood']."',
+        '".$_POST['conanemia']."','".$_POST['ht']."','".$_POST['normal55']."','".$_POST['ch55']."','".$_POST['normal56']."','".$_POST['ch56']."'
+    )";
+
+    $dx_insert = $db->insert($sql);
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
@@ -408,12 +457,12 @@ h1,h3,p{
 
                             ?>
 
-                            <input type="radio" id="pres_normal" name="normal55" value="1" <?=$pres_normal;?> >
+                            <input type="radio" id="pres_normal" name="normal55" value="ปกติ" <?=$pres_normal;?> >
                             <label for="pres_normal">
                                 ปกติ
                             </label>
 
-                            <input type="radio" id="pres_abnormal" name="normal55" value="2" <?=$pres_abnormal;?> >
+                            <input type="radio" id="pres_abnormal" name="normal55" value="ผิดปกติ" <?=$pres_abnormal;?> >
                             <label for="pres_abnormal">
                                 ผิดปกติ
                             </label>
@@ -424,7 +473,7 @@ h1,h3,p{
                                 $style_press = '';
                             }
                             ?>
-                            <select name="pres_extra" id="pres_extra" <?=$style_press;?> >
+                            <select name="ch55" id="pres_extra" <?=$style_press;?> >
                                 <option value="ความดันโลหิต เกือบสูง PRE-HT" <? if($bp1 >= 135 && $bp1 <= 139){ echo "selected='selected';";}?>>ความดันโลหิต เกือบสูง PRE-HT</option>
                                 <option value="ท่านมีความดันโลหิตสูง ควรต้องควบคุมอาหารอย่างเคร่งครัด โดยเฉพาะอาหารที่มีรสเค็มและออกกำลังกาย" <? if(($bp1 >=140 && $bp2 >= 90) || ($bp1 >=140 && $bp2 <= 90) || ($bp1 <=140 && $bp2 >= 90)){ echo "selected='selected';";}?>>ท่านมีความดันโลหิตสูง ควรต้องควบคุมอาหารอย่างเคร่งครัด โดยเฉพาะอาหารที่มีรสเค็มและออกกำลังกาย</option>
                             </select>
@@ -442,7 +491,7 @@ h1,h3,p{
                                 $bmi_normal_checked = 'checked="checked"';
                             }
                             ?>
-                            <input type="radio" id="bmi_normal" name="res_bim" value="1" <?=$bmi_normal_checked;?>>
+                            <input type="radio" id="bmi_normal" name="normal56" value="ปกติ" <?=$bmi_normal_checked;?>>
                             <label for="bmi_normal">
                                 ปกติ
                             </label>
@@ -453,7 +502,7 @@ h1,h3,p{
                                 $bmi_abnormal_checked = '';
                             }
                             ?>
-                            <input type="radio" id="bmi_abnormal" name="res_bim" value="2" <?=$bmi_abnormal_checked;?>>
+                            <input type="radio" id="bmi_abnormal" name="normal56" value="ผิดปกติ" <?=$bmi_abnormal_checked;?>>
                             <label for="bmi_abnormal">
                                 ผิดปกติ
                             </label>
@@ -464,7 +513,7 @@ h1,h3,p{
                                 $style_bmi = '';
                             }
                             ?>
-                            <select name="bmi_extra" id="bmi_extra" <?=$style_bmi;?> >
+                            <select name="ch56" id="bmi_extra" <?=$style_bmi;?> >
                                 <option value="ท่านมีน้ำหนักน้อยเกินไป" <?php if($bmi < 18.5){ echo "selected='selected';";}?>>ท่านมีน้ำหนักน้อยเกินไป</option>
                                 <option value="ท่านเริ่มมีภาวะน้ำหนักเกิน" <?php if($bmi >= 23 && $bmi <= 24.99){ echo "selected='selected';";}?>>ท่านเริ่มมีภาวะน้ำหนักเกิน</option>
                                 <option value="ท่านมีน้ำหนักเกินหรือภาวะอ้วน" <? if($bmi >= 25 && $bmi <= 29.99){ echo "selected='selected';";}?>>ท่านมีน้ำหนักเกินหรือภาวะอ้วน</option>
@@ -587,10 +636,10 @@ h1,h3,p{
                                 }
                                 ?>
                                 <label for="res_hct">
-                                    <input type="radio" name="res_hct" class="res_hct" id="res_hct" value="1" <?=$res_hct;?> onclick="click_hs(this, 'hct_extra', 'hide')"> ปกติ
+                                    <input type="radio" name="normal31" class="res_hct" id="res_hct" value="ปกติ" <?=$res_hct;?> onclick="click_hs(this, 'hct_extra', 'hide')"> ปกติ
                                 </label> 
                                 <label for="res_hct2">
-                                    <input type="radio" name="res_hct" class="res_hct" id="res_hct2" value="2" <?=$res_hct2;?> onclick="click_hs(this, 'hct_extra', 'show')"> ผิดปกติ
+                                    <input type="radio" name="normal31" class="res_hct" id="res_hct2" value="ผิดปกติ" <?=$res_hct2;?> onclick="click_hs(this, 'hct_extra', 'show')"> ผิดปกติ
                                 </label>
                                 
                                 <select id="hct_extra" name='ch31' <?=$style_res_hct;?>>
@@ -624,10 +673,10 @@ h1,h3,p{
 
                                 ?>
                                 <label for="res_wbc">
-                                    <input type="radio" name="res_wbc" class="res_wbc" id="res_wbc" value="1" <?=$res_wbc;?> onclick="click_hs(this, 'wbc_extra', 'hide')"> ปกติ
+                                    <input type="radio" name="normal32" class="res_wbc" id="res_wbc" value="ปกติ" <?=$res_wbc;?> onclick="click_hs(this, 'wbc_extra', 'hide')"> ปกติ
                                 </label> 
                                 <label for="res_wbc2">
-                                    <input type="radio" name="res_wbc" class="res_wbc" id="res_wbc2" value="2" <?=$res_wbc2;?> onclick="click_hs(this, 'wbc_extra', 'show')"> ผิดปกติ
+                                    <input type="radio" name="normal32" class="res_wbc" id="res_wbc2" value="ผิดปกติ" <?=$res_wbc2;?> onclick="click_hs(this, 'wbc_extra', 'show')"> ผิดปกติ
                                 </label>
 
                                 <select id="wbc_extra" name='ch32' <?=$style_res_wbc;?>>
@@ -660,10 +709,10 @@ h1,h3,p{
 
                                 ?>
                                 <label for="res_pltc">
-                                    <input type="radio" name="res_pltc" class="res_pltc" id="res_pltc" value="1" <?=$res_pltc;?> onclick="click_hs(this, 'plct_extra', 'hide')"> ปกติ
+                                    <input type="radio" name="normal33" class="res_pltc" id="res_pltc" value="ปกติ" <?=$res_pltc;?> onclick="click_hs(this, 'plct_extra', 'hide')"> ปกติ
                                 </label> 
                                 <label for="res_pltc2">
-                                    <input type="radio" name="res_pltc" class="res_pltc" id="res_pltc2" value="2" <?=$res_pltc2;?> onclick="click_hs(this, 'plct_extra', 'show')"> ผิดปกติ
+                                    <input type="radio" name="normal33" class="res_pltc" id="res_pltc2" value="ผิดปกติ" <?=$res_pltc2;?> onclick="click_hs(this, 'plct_extra', 'show')"> ผิดปกติ
                                 </label>
                                 <select name='ch33' id="plct_extra" <?=$style_res_pltc;?>>
                                     <option value='ปริมาณเกร็ดเลือดมีค่าต่ำกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์' <? if($result_dx['cbc_pltc'] < 140){ echo "selected='selected';";}?>>ปริมาณเกร็ดเลือดมีค่าต่ำกว่าปกติ ควรตรวจซ้ำหรือพบแพทย์</option>
@@ -671,29 +720,6 @@ h1,h3,p{
                                 </select>
                             </td>
                         </tr>
-                        <?php
-                        /*
-                        foreach ($extra as $key => $extralab) {
-
-                            $labcode = $extralab['labcode'];
-                            ?>
-                            <tr>
-                                <td><?=strtoupper($key);?></td>
-                                <td align="center"><?=$extralab['result'];?></td>
-                                <td align="center"><?=$extralab['normalrange'];?></td>
-                                <td bgcolor="#abcea1" style="font-weight: bold;">
-                                    <label for="res_<?=$labcode;?>">
-                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ปกติ
-                                    </label> 
-                                    <label for="res_<?=$labcode;?>2">
-                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="2"> ผิดปกติ
-                                    </label>
-                                </td>
-                            </tr>
-                            <?php
-                        }
-                        */
-                        ?>
 
                     </table>
 
@@ -1033,7 +1059,7 @@ h1,h3,p{
 
                             ?>
                             <td width="30%">
-                                <input type="checkbox" name="<?=$key;?>" id="<?=$key;?>">
+                                <input type="checkbox" name="<?=$key;?>" id="<?=$key;?>" value="Y">
                                 <label for="<?=$key;?>"><?=$item;?></label>
                             </td>
                             <?php
@@ -1069,6 +1095,8 @@ h1,h3,p{
     <br>
     <div align="center">
         <button type="submit" id="submit-btn">บันทึกข้อมูล</button>
+
+        <input type="hidden" name="dxofyear_id" value="<?=$opd['row_id'];?>">      
 
         <input type="hidden" name="action" value="save">
         <input type="hidden" name="hn" value="<?=$hn;?>">
