@@ -104,7 +104,7 @@ if( empty($action) ){
             ++$i;
             ++$last_id;
 
-            list($pid, $hn, $idcard, $fullname, $age, $date_birth, $course, $date_chkup ) = explode(',', $item);
+            list($pid, $hn, $idcard, $fullname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
 
             if( !empty($pid) ){
 
@@ -138,7 +138,7 @@ if( empty($action) ){
                 '$date_birth',
                 '$age',
                 '$part',
-                '',
+                '$branch',
                 '$course',
                 '$date_chkup',
                 'y');";
