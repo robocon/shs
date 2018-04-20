@@ -78,7 +78,7 @@ if(isset($_POST['ok'])){
     <?
 	
 	include("connect.inc");	
-	$sql="SELECT  * FROM opcardchk  WHERE part='≈Ÿ°®È“ß60' and HN='47-14187' and active='y' order by course desc, exam_no asc";
+	$sql="SELECT  * FROM opcardchk  WHERE part='≈Ÿ°®È“ß61' and active='y' order by course desc, exam_no asc";
 	//echo $sql."<br>";
 	$row2 = mysql_query($sql)or die ("Query Fail line 83");
 	$j=0;
@@ -97,7 +97,7 @@ if(isset($_POST['ok'])){
 	$bmi=number_format($result['weight'] /($ht*$ht),2);
 	
 	
-$strSQL11 = "SELECT date_format(orderdate,'%d-%m-%Y') as orderdate2 FROM resulthead  WHERE hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60') order by orderdate desc";
+$strSQL11 = "SELECT date_format(orderdate,'%d-%m-%Y') as orderdate2 FROM resulthead  WHERE hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’61') order by orderdate desc";
 //echo "===>".$strSQL1;
 $objQuery11 = mysql_query($strSQL11);
 list($orderdate)=mysql_fetch_array($objQuery11);	
@@ -213,7 +213,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <td width="19%" align="center" bgcolor="#CCCCCC"><strong>º≈°“√µ√«®</strong></td>
             <td width="20%" align="center" bgcolor="#CCCCCC"><strong>§Ë“ª°µ‘</strong></td>
           </tr>
- <? $sql="SELECT * FROM resulthead WHERE profilecode='CBC' and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60')";
+ <? $sql="SELECT * FROM resulthead WHERE profilecode='CBC' and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’61')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -420,7 +420,7 @@ mmHg. </u></strong><span class="text3"><strong>P: </strong> <u>
             <td width="17%" align="center" bgcolor="#CCCCCC"><strong>º≈°“√µ√«®</strong></td>
             <td width="30%" align="center" bgcolor="#CCCCCC"><strong>§Ë“ª°µ‘</strong></td>
           </tr>
-          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60')";
+          <? $sql="SELECT * FROM resulthead WHERE profilecode='UA' and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’61')";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
 /////
@@ -707,10 +707,10 @@ list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);
             </tr>
 <?
 if($result2["pid"]=="4" || $result2["pid"]=="5"){ 
-	$sql1="SELECT * FROM resulthead WHERE (profilecode='HBSAG' or profilecode='ANTIHB') and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60') GROUP BY `profilecode`
+	$sql1="SELECT * FROM resulthead WHERE (profilecode='HBSAG' or profilecode='ANTIHB') and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’61') GROUP BY `profilecode`
 ORDER BY `autonumber` ASC"; 
 }else{
-	$sql1="SELECT * FROM resulthead WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG' or profilecode='ANTIHB' or profilecode='HDL' or profilecode='LDL') and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’60') GROUP BY `profilecode`
+	$sql1="SELECT * FROM resulthead WHERE (profilecode='GLU' or profilecode='CREA' or profilecode='BUN' or profilecode='URIC' or profilecode='CHOL' or profilecode='TRIG' or  profilecode='AST' or profilecode='ALT' or profilecode='LIPID' or profilecode='ALP' or profilecode='HBSAG' or profilecode='ANTIHB' or profilecode='HDL' or profilecode='LDL') and hn='".$result2['HN']."' and (clinicalinfo ='µ√«® ÿ¢¿“æª√–®”ª’61') GROUP BY `profilecode`
 ORDER BY `autonumber` ASC";
 }
 //echo $sql1;

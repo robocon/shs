@@ -2,7 +2,6 @@
 include("connect.inc");
 
 $part = "ลูกจ้าง61";
-$part = "test61";
 
 $sql = "SELECT * FROM `opcardchk` 
 WHERE `part` = '$part' 
@@ -12,7 +11,7 @@ $i = 301;
 
 while($arr = mysql_fetch_array($query)){
 
-	$hn = $arr["hn"];
+	$hn = $arr["HN"];
 	$age = $arr['agey'];
 
 	$name = $arr["name"].' '.$arr["surname"];
@@ -23,18 +22,24 @@ while($arr = mysql_fetch_array($query)){
 
 	//CBC
 	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$name</b></center></font>";
-	print "<div style='text-align:center;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno1\"></span></div>";
+	print "<div style='text-align:center;'>
+		<span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno1\"></span>
+		&nbsp;<span style='font-size: 32px;'>1</span>
+	</div>";
 	print "<div style=\"page-break-before: always;\"></div>";
 
 	//CHEM
 	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$name</b></center></font>";
-	print "<div style='text-align:center;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno2\"></span></div>";
+	print "<div style='text-align:center;'>
+		<span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno2\"></span>
+		&nbsp;<span style='font-size: 32px;'>2</span>
+	</div>";
 	print "<div style=\"page-break-before: always;\"></div>";
 
 	//UA
 	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$name</b></center></font>";
 	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$hn</b></center></font>";
-	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>UA</b></center></font>";
+	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>180422$i</b></center></font>";
 	print "<div style=\"page-break-before: always;\"></div>";
 
 	//1
@@ -43,21 +48,13 @@ while($arr = mysql_fetch_array($query)){
 	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>180422$i</b></center></font>";
 	print "<div style=\"page-break-before: always;\"></div>";
 
-	if( $age >= 50 ){
-		//2
-		print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$name</b></center></font>";
-		print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$hn</b></center></font>";
-		print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>180422$i</b></center></font>";
-		print "<div style=\"page-break-before: always;\"></div>";
-	}
+
+	//2
+	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$name</b></center></font>";
+	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>$hn</b></center></font>";
+	print "<font  style='line-height:23px;' face='Angsana New' size='5'><center><b>180422$i</b></center></font>";
+	print "<div style=\"page-break-before: always;\"></div>";
 
 	$i++;
 }
 ?>
-<Script Language="JavaScript">
-	function CloseWindowsInTime(t){
-		t = t*1000;
-		setTimeout("window.close()",t);
-	}
-	CloseWindowsInTime(2/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */); 
-</Script>

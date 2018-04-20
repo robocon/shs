@@ -1,5 +1,5 @@
 <?php
-
+// เอาไว้นำเข้าข้อมูลจาก excel มาใน db 
 include 'bootstrap.php';
 $db = Mysql::load();
 ?>

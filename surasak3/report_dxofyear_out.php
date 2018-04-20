@@ -88,7 +88,7 @@ if(isset($_POST['hn'])){
 		    <?=$result["yearcheck"]?>
 		  </span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&no" target="_blank">ดูข้อมูล</a></span></td>
+          <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
           
@@ -130,7 +130,7 @@ if(isset($_POST['hn'])){
 		    <?=$result["yearcheck"]?>
 		  </span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no" target="_blank">ดูข้อมูล</a></span></td>
+          <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
 		</tr>
