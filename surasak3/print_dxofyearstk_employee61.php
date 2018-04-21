@@ -5,7 +5,7 @@ $part = "ลูกจ้าง61";
 
 $sql = "SELECT * FROM `opcardchk` 
 WHERE `part` = '$part' 
-ORDER BY `pid`";
+ORDER BY `row`";
 $query = mysql_query($sql) or die (mysql_error());
 $i = 301;
 

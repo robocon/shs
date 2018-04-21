@@ -374,11 +374,41 @@ for($i=0;$i<$count;$i++){
 	where  thdatehn = '".(date("d-m-")).(date("Y")+543).($cHn)."' ";
 	$result = @mysql_query($sql);
 
-	include("unconnect.inc");
 
+	
+// มีข้อมูลในตรวจสุขภาพลูกจ้างแล้วรึยัง?
+// ถ้ามีจะให้เด้งไปอีกหน้าหนึ่ง
+$test_checkup = false;
+if( $sso_txt != '' ){
+
+	$sql = "SELECT * 
+	FROM `lab_pretest` 
+	WHERE `hn` = '$cHn' 
+	AND `checked` IS NULL 
+	OR `checked` = '' ";
+	$q = mysql_query($sql) or die( mysql_error() );
+	// $test = mysql_fetch_assoc($q);
+	$row = mysql_num_rows($q);
+	if( $row > 0 ){
+		$test_checkup = true;
+	}
+}
+
+include("unconnect.inc");
+
+
+if( $sso_txt != '' && $test_checkup === true && ( $menucode == 'ADMLAB' OR $menucode == 'ADM' ) ){
+	?>
+	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labsso.php">
+	<?php
+}else{
+	?>
+	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php">
+	<?php
+}
 ?>
 <!-- <a href="labseek.php" id="aLink">ทำรายการต่อไป</a> -->
-<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php">
+<!-- <META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php"> -->
 
 
 <script type="text/javascript">

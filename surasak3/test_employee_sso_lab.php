@@ -28,52 +28,32 @@ if( $action == 'import' ){
     $i = 0;
     foreach ($items as $key => $item) {
         
-        if( $i > 0 ){
-            list($idcard, $cbc,$ua,$fbs,$cr,$chol,$hdl,$hbsag,$fobt) = explode(',', $item);
-            
+        if( !empty($item) ){
 
-            dump($idcard);
-            $sql = "INSERT INTO `lab_pretest` (`part`,`idcard`,";
+            // dump($item);
 
-            $lab_lists = array();
-            $lab_values = array();
-            dump($cbc);
-            if( !empty($cbc) ){
-                $lab_lists[] = "`cbc`";
-                $lab_values[] = "'1'";
-            }
+            list($id, $hn, $idcard, $ptname, $cbc, $ua, $fbs, $cr, $chol, $hdl, $hbsag, $fobt, $cxr, $etc) = explode(',', $item);
 
-            dump($ua);
-            if( !empty($ua) ){
-                $lab_lists[] = "`ua`";
-                $lab_values[] = "'1'";
-            }
+            $sql = "INSERT INTO `lab_pretest` ( 
+                `hn`, `part`, `idcard`, `ptname`, 
+                `cbc`, `ua`, `bs`, `cr`,
+                `chol`, `hdl`, `hbsag`, `fobt`,
+                `cxr`, `etc`
+            ) VALUES ( 
+                '$hn', 'ลูกจ้าง61', '$idcard', '$ptname', 
+                '$cbc', '$ua', '$fbs', '$cr', 
+                '$chol', '$hdl', '$hbsag', '$fobt', 
+                '$cxr', '$etc' 
+            );";
 
-            dump($fbs);
-            if( !empty($fbs) ){
-                $lab_lists[] = "`bs`";
-                $lab_values[] = "'1'";
-            }
-
-            dump($cr);
-            dump($chol);
-            dump($hdl);
-            dump($hbsag);
-            dump($fobt);
-
-            
-
-            $test_imp = implode(',', $lab_lists);
-            $test_valimp = implode(',', $lab_values);
-            // dump();
-
-            $sql = $sql.$test_imp.") VALUES ('ลูกจ้าง61',"."'$idcard',".$test_valimp.');';
-
+            dump($sql);
             $insert = $db->insert($sql);
             dump($insert);
             echo "<hr>";
+
+            $i++;
         }
-        $i++;
+
     }
 
 }
