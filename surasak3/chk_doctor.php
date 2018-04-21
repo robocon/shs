@@ -115,6 +115,83 @@ if( $action === 'save' ){
     
     $_POST['normal61'] = ( $conclution == 1 ) ? 'ปกติ' : 'ผิดปกติ' ;
 
+    $_POST['doctorn'] = $doctor;
+    $_POST['dx'] = $diag;
+    $nPrefix = '2561';
+
+
+
+    if($_POST['normal20']=="ปกติ"|$_POST['normal20']=="") $_POST['ch20']="";
+	if($_POST['normal21']=="ปกติ"|$_POST['normal21']=="") $_POST['ch21']="";
+	if($_POST['normal22']=="ปกติ"|$_POST['normal22']=="") $_POST['ch22']="";
+	if($_POST['normal23']=="ปกติ"|$_POST['normal23']=="") $_POST['ch23']="";
+	if($_POST['normal24']=="ปกติ"|$_POST['normal24']=="") $_POST['ch24']="";
+	if($_POST['normal25']=="ปกติ"|$_POST['normal25']=="") $_POST['ch25']="";
+	if($_POST['normal26']=="ปกติ"|$_POST['normal26']=="") $_POST['ch26']="";
+	if($_POST['normal27']=="ปกติ"|$_POST['normal27']=="") $_POST['ch27']="";
+	if($_POST['normal28']=="ปกติ"|$_POST['normal28']=="") $_POST['ch28']="";
+	if($_POST['normal29']=="ปกติ"|$_POST['normal29']=="") $_POST['ch29']="";
+	if($_POST['normal30']=="ปกติ"|$_POST['normal30']=="") $_POST['ch30']="";
+	if($_POST['normal']=="ปกติ"|$_POST['normal']=="") $_POST['ch']="";
+	if($_POST['normal31']=="ปกติ"|$_POST['normal31']=="") $_POST['ch31']="";
+	if($_POST['normal32']=="ปกติ"|$_POST['normal32']=="") $_POST['ch32']="";
+	if($_POST['normal33']=="ปกติ"|$_POST['normal33']=="") $_POST['ch33']="";
+	if($_POST['normal81']=="ปกติ"|$_POST['normal81']=="") $_POST['ch81']="";
+	if($_POST['normal41']=="ปกติ"|$_POST['normal41']=="") $_POST['ch41']="";
+	if($_POST['normal42']=="ปกติ"|$_POST['normal42']=="") $_POST['ch42']="";
+	if($_POST['normal43']=="ปกติ"|$_POST['normal43']=="") $_POST['ch43']="";
+	if($_POST['normal44']=="ปกติ"|$_POST['normal44']=="") $_POST['ch44']="";
+	if($_POST['normal45']=="ปกติ"|$_POST['normal45']=="") $_POST['ch45']="";
+	if($_POST['normal46']=="ปกติ"|$_POST['normal46']=="") $_POST['ch46']="";
+	if($_POST['normal47']=="ปกติ"|$_POST['normal47']=="") $_POST['ch47']="";
+	if($_POST['normal48']=="ปกติ"|$_POST['normal48']=="") $_POST['ch48']="";
+	if($_POST['normal49']=="ปกติ"|$_POST['normal49']=="") $_POST['ch49']="";
+	if($_POST['normal51']=="ปกติ"|$_POST['normal51']=="") $_POST['ch51']="";
+	if($_POST['normal52']=="ปกติ"|$_POST['normal52']=="") $_POST['ch52']="";
+	
+	if($_POST['other1']==""){ $_POST['normal53']=""; $_POST['ch53']="";};
+	if($_POST['other2']==""){ $_POST['normal54']=""; $_POST['ch54']="";};
+	if($_POST['normal53']=="ปกติ"|$_POST['normal53']=="") $_POST['ch53']="";
+	if($_POST['normal54']=="ปกติ"|$_POST['normal54']=="") $_POST['ch54']="";
+	if($_POST['normal55']=="ปกติ"|$_POST['normal55']=="") $_POST['ch55']="";
+    if($_POST['normal56']=="ปกติ"|$_POST['normal56']=="") $_POST['ch56']="";
+    
+    $txtsm="";
+	for($k=1;$k<=8;$k++){
+		if($_POST['chk'.$k]!=""){
+			if($k==8){
+				$txtsm .= $_POST['text71'];
+			}else{
+				$txtsm .= $_POST['chk'.$k].",";
+			}
+		}
+	}
+	if($_POST['normal71']=="ปกติ"){
+		$txtsm="";
+		$_POST['text72']="";
+	}elseif($_POST['normal71']=="มีปัจจัยเสี่ยงที่จะเกิดโรค (ผิดปกติเล็กน้อย)"){
+		//$txtsm=$txtsm;
+		$_POST['text72']="";
+	}elseif($_POST['normal71']=="เป็นโรค"){
+		$txtsm=$_POST['text72'];
+    }
+    
+    if($_POST['normal62']=="พบความเสี่ยงเบื้องต้นต่อโรค"){ 
+		$rs_sum21 = $_POST['normal621'];
+		$rs_sum22 = $_POST['normal622'];
+		$rs_sum23 = $_POST['normal623'];
+		$rs_sum24 = $_POST['normal624'];
+		$rs_sum25 = $_POST['normal625'];
+	}
+	if($_POST['normal65']=="ป่วยด้วยโรคเรื้อรัง"){ 
+		$rs_sum51 = $_POST['normal651'];
+		$rs_sum52 = $_POST['normal652'];
+		$rs_sum53 = $_POST['normal653'];
+	}
+	if($_POST['normal66']=="ผลเอ็กซเรย์"){ 
+		$rs_sum61 = $_POST['normal661'];
+	}
+
     // การดำเนินการ port เข้าสองตัวนี้หมดเลย
     // -> normal_suggest
     // -> abnormal_suggest
@@ -237,6 +314,7 @@ if( $action === 'save' ){
 		$msg = errorMsg('save', $save['id']);
     }
 
+    exit;
     redirect('chk_doctor_preprint.php?hn='.$hn.'&vn='.$vn.'&date='.$curr_date, $msg);
     exit;
 }
@@ -1105,6 +1183,8 @@ h1,h3,p{
         <input type="hidden" name="doctor" value="<?=$_SESSION['dt_doctor'];?>">
         <input type="hidden" name="cbc" value="<?=$result_cbc;?>">
         <input type="hidden" name="ua" value="<?=$result_ua;?>">
+
+        <input type="hidden" name="bmi" value="<?=$bmi;?>">
 
         <input type="hidden" name="yot" value="<?=$opd['yot'];?>">
         <input type="hidden" name="name" value="<?=$opd['name'];?>">
