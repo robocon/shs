@@ -1,16 +1,22 @@
 <?php
-// session_start();
+
 include 'bootstrap.php';
 $db = Mysql::load();
 
-// echo "Hello ลูกจ้าง ปกส.";
+$action = input_post('action');
+if( $action == 'search_lab' ){
+    $code = input_post('code');
+    $db->select("SELECT `code`,`detail`,`price` FROM `labcare` WHERE `code` LIKE '$code' ");
+    
+    $rows = $db->get_rows();
 
-// echo "<br>";
+    if( $rows > 0 ){
+        $item = $db->get_item();
+        echo '{"code":"'.$item['code'].'","detail":"'.$item['detail'].'","price":"'.$item['price'].'"}';
+    }
 
-// echo "<pre>";
-// var_dump($GLOBALS);
-// var_dump($_SESSION);
-// echo "</pre>";
+    exit;
+}
 
 $sql = "SELECT a.*, b.`agey`
 FROM `lab_pretest` AS a 
@@ -24,71 +30,62 @@ $item = $db->get_item();
 echo "HN : $cHn, <b> VN:</b>$tvn, ชื่อ-สกุล : $cPtname<br> 
 สิทธิ : $cPtright, อายุ : ".$item['agey']." ปี <br> ";
 
-
-
-/*
-?>
-<p>HN : 58-2733, VN:1  นาย กฤษณะศักดิ์ กันธรส</p>
-<p>สิทธิ: R07 ประกันสังคม, (ลูกจ้าง รพ.ค่ายฯ)</p>
-<?php
-*/
 ?>
 
-<form method="POST" action="/sm3/surasak3/labseek.php"> <font face="Angsana New">
+<form method="POST" action="labsso.php" id="formCode"> 
+    
     <a target="_BLANK" href="codehlp.php">รหัส</a>
     <div id="list" style="left: 9px; top: 121px; position: absolute;"></div>&nbsp;&nbsp;&nbsp;
 
-    <input type="text" name="code" size="8" id="aLink" value="" onkeypress="searchSuggest(this.value,2,'code');">
-
-    * <input type="text" name="amount" size="4" value="1">&nbsp;
-    </font>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font face="Angsana New">
-    <input type="submit" value="ตกลง" name="B1" style="height:40px; width:110px; font-size:16px;"></font><p></p>
-
-    <script type="text/javascript">
-        document.getElementById('aLink').focus();
-
-        function newXmlHttp(){
-            var xmlhttp = false;
-
-                try{
-                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-                }catch(e){
-                try{
-                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                    }catch(e){
-                        xmlhttp = false;
-                    }
-                }
-
-                if(!xmlhttp && document.createElement){
-                    xmlhttp = new XMLHttpRequest();
-                }
-            return xmlhttp;
-        }
-
-        function searchSuggest(str,len,getto) {
-	
-            str = str+String.fromCharCode(event.keyCode);
-
-            if(str.length >= len){
-
-                url = 'labseek.php?action=code&search1=' + str+'&getto=' + getto;
-
-                xmlhttp = newXmlHttp();
-                xmlhttp.open("GET", url, false);
-                xmlhttp.send(null);
-
-                document.getElementById("list").innerHTML = xmlhttp.responseText;
-            }
-        }
-
-    </script>
+    <input type="text" name="code" size="8" id="code" value="" onkeypress="searchSuggest(this.value,2,'code');">
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+    <input type="submit" value="ตกลง" name="B1" style="height:40px; width:110px; font-size:16px;">
 
 </form>
 
-<?php
+<script type="text/javascript">
+    document.getElementById('code').focus();
 
+    function newXmlHttp(){
+        var xmlhttp = false;
+
+            try{
+                xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+            }catch(e){
+            try{
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }catch(e){
+                    xmlhttp = false;
+                }
+            }
+
+            if(!xmlhttp && document.createElement){
+                xmlhttp = new XMLHttpRequest();
+            }
+        return xmlhttp;
+    }
+
+    function searchSuggest(str,len,getto) {
+
+        str = str+String.fromCharCode(event.keyCode);
+
+        if(str.length >= len){
+
+            url = 'labseek.php?action=code&search1=' + str+'&getto=' + getto;
+
+            xmlhttp = newXmlHttp();
+            xmlhttp.open("GET", url, false);
+            xmlhttp.send(null);
+
+            document.getElementById("list").innerHTML = xmlhttp.responseText;
+        }
+    }
+
+</script>
+
+<?php
 $sso_list = array();
 if( !empty($item['cbc']) ){
     $sso_list[] = 'cbc';
@@ -134,15 +131,29 @@ foreach( $shs_list AS $key => $shs_item ){
 
 
 ?>
+<style>
+/* ตาราง */
+.chk_table{
+    border-collapse: collapse;
+}
 
+.chk_table, th, td{
+    border: 1px solid black;
+}
+
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+}
+</style>
 <form action="labsso_save.php" target="right" method="post">
     <?php
     if( count($sso_list) > 0 ){
         ?>
         <p style="margin-bottom: 0;"><b>รายการตรวจตามสิทธิประกันสังคม</b></p>
         <div>
-            <table border="1">
-                <tr>
+            <table id="sso_tb" class="chk_table" style="font-size: 12px;">
+                <tr style="background-color: #e8e8e8;">
                     <th>รหัส</th>
                     <th>รายการ</th>
                     <th>ราคา</th>
@@ -176,8 +187,8 @@ foreach( $shs_list AS $key => $shs_item ){
         ?>
         <p style="margin-bottom: 0;"><b>รายการตรวจตาม รพ.ค่ายฯ</b></p>
         <div>
-            <table border="1">
-                <tr>
+            <table id="shs_tb" class="chk_table" style="font-size: 12px;">
+                <tr style="background-color: #e8e8e8;">
                     <th>รหัส</th>
                     <th>รายการ</th>
                     <th>ราคา</th>
@@ -190,12 +201,12 @@ foreach( $shs_list AS $key => $shs_item ){
                     $db->select($sql);
                     $lab = $db->get_item();
                     ?>
-                        <tr>
+                        <tr class="c<?=$lab['code'];?>">
                             <td><?=$lab['code'];?></td>
                             <td><?=$lab['detail'];?></td>
                             <td><?=$lab['price'];?></td>
                             <td align="center">
-                                <a href="javascript: void(0);">ลบ</a>
+                                <a href="javascript: void(0);" data-item="c<?=$lab['code'];?>" class="rm_item">ลบ</a>
                                 <input type="hidden" name="shs_list[]" value="<?=$lab['code'];?>">
                             </td>
                         </tr>
@@ -211,7 +222,66 @@ foreach( $shs_list AS $key => $shs_item ){
     <div>
         <button type="submit" style="font-size: 16px; font-weight: bold; padding: 8px;">บันทึกข้อมูล</button>
         <br>
-        <span style="color: red;">กรุณาตรวจสอบข้อมูลให้ดีก่อนทำการบันทึก</span>
+        <span style="color: red;">กรุณาตรวจสอบรายการอีกครั้ง ก่อนทำการบันทึก</span>
     </div>
 </form>
 
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function(){ 
+
+    $(document).on('click', '.rm_item', function(){
+        var c = confirm('ยืนยันที่จะลบข้อมูล?');
+        if( c === false ){
+            return false;
+        }
+
+        var className = $(this).attr('data-item');
+        $('.'+className).remove();
+    });
+
+    $(document).on('submit', '#formCode', function(){
+        var lCode = $('#code').val();
+
+        if( lCode == '' ){
+            return false;
+        }
+        
+        var thisReg = new RegExp('.+\-sso');
+        var codeType = 'shs_tb';
+        var typeList = 'shs_list';
+        if( thisReg.test(lCode) === true ){
+            codeType = 'sso_tb';
+            typeList = 'sso_list';
+        }
+
+        $.ajax({
+            url: 'labsso.php',
+            type: 'POST',
+            data: {'code': lCode, 'action': 'search_lab'},
+            dataType: 'json',
+            success: function(txt){
+
+                var test_int = Math.floor(Math.random() * 100);
+                
+                var txt_tb = '<tr class="'+test_int+txt.code+'">';
+                txt_tb += '<td>'+txt.code+'</td>';
+                txt_tb += '<td>'+txt.detail+'</td>';
+                txt_tb += '<td>'+txt.price+'</td>';
+                txt_tb += '<td align="center">';
+                txt_tb += '<a href="javascript: void(0);" data-item="'+test_int+txt.code+'" class="rm_item">ลบ</a>';
+                txt_tb += '<input type="hidden" name="'+typeList+'[]" value="'+txt.code+'">';
+                txt_tb += '</td>';
+                txt_tb += '</tr>';
+
+                $('#'+codeType).append(txt_tb);
+
+                $('#code').val('');
+            }
+        });
+
+        return false;
+    });
+
+});
+</script>

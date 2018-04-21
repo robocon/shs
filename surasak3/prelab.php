@@ -412,5 +412,5 @@ if( $sso_txt != '' && $test_checkup === true && ( $menucode == 'ADMLAB' OR $menu
 
 
 <script type="text/javascript">
-document.getElementById('aLink').focus();
+//document.getElementById('aLink').focus();
 </script>

@@ -126,6 +126,7 @@ $db->select("UNLOCK TALBES");
 
 $cDiag = 'µ√«® ÿ¢¿“æ';
 $cPtright = 'R01 ‡ß‘π ¥';
+$item = count($_POST['shs_list']);
 
 $sql = "INSERT INTO depart(
     chktranx,date,ptname,hn,an,
