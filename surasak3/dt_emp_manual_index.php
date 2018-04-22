@@ -12,7 +12,7 @@ include 'connect.inc';
 <title>โปรแกรมตรวจสุขภาพลูกจ้าง</title>
 <meta http-equiv="Content-Type" content="text/html; charset=tis-620" />
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 18px;
@@ -22,7 +22,7 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_detail2 {background-color: #FFFFFF;  }
 
--->
+
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -104,8 +104,11 @@ if($_POST["act"]=="show"){
 		echo 'ไม่ใช่ลูกจ้างโรงพยาบาล';
 		exit;
 	}
+
+	$_SESSION['doctor'] = $_POST['doctor'];
 	
-$sql = sprintf("SELECT * FROM `dxofyear_emp` WHERE `hn`='%s'", $_POST['hn_now']);
+	// ตัวเดิมเป็น dxofyear_emp
+$sql = sprintf("SELECT * FROM `dxofyear_out` WHERE `hn`='%s'", $_POST['hn_now']);
 $query = mysql_query($sql);
 	?>
 	<table width="60%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
@@ -125,11 +128,16 @@ $query = mysql_query($sql);
 	while($rows = mysql_fetch_array($query)){
 		
 		$i++;
+
+		$href = 'doctor_pre_chk.php?thidate='.$rows['thidate'].'&hn='.$rows['hn'].'&vn='.$rows['vn'];
 		?>  
 	  <tr>
 		<td align="center"><?=$i;?></td>
 		<td align="center"><?=$rows["thidate"];?></td>
-		<td align="center"><a href="dxdr_ofyear_empsoldier.php?hn_now=<?=$rows["hn"];?>&doctor=<?=$_POST["doctor"];?>&thidate=<?=$rows["thidate"];?>"><?=$rows["hn"];?></a></td>
+		<!-- <td align="center"><a href="dxdr_ofyear_empsoldier.php?hn_now=<?=$rows["hn"];?>&doctor=<?=$_POST["doctor"];?>&thidate=<?=$rows["thidate"];?>"><?=$rows["hn"];?></a></td> -->
+		<td align="center">
+			<a href="<?=$href;?>" target="_blank"><?=$rows["hn"];?></a>
+		</td>
 		<td><?=$rows["ptname"];?></td>
 		<td><?=$rows["camp"];?></td>
 	  </tr>

@@ -19,12 +19,12 @@ $tvn = $_SESSION['tvn'];
 $cPtright = $_SESSION['cPtright'];
 $cstaf_massage = $_SESSION['cstaf_massage'];
 
-$sql = "SELECT `pid` FROM `opcardchk` WHERE `HN` = '$cHn' AND `part` = 'ลูกจ้าง61' ";
+$sql = "SELECT `examno` FROM `opcardchk` WHERE `HN` = '$cHn' AND `part` = 'ลูกจ้าง61' ";
 $db->select($sql);
 $opcardchk = $db->get_item();
 
 // ดึงจาก exam_no
-$nLab = $opcardchk['pid'] + 300;
+$nLab = $opcardchk['examno'];
 $item = count($_POST['sso_list']);
 
 ### จ่ายส่วนที่เป็นสิทธิประกันสังคม ###

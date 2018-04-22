@@ -396,16 +396,19 @@ if( $sso_txt != '' ){
 
 include("unconnect.inc");
 
+// ถ้าเป็น จนท.คอมฯ + แลป จะเห็นเมนูใหม่
+if( $menucode == 'ADMLAB' OR $menucode == 'ADM' ){
 
-if( $sso_txt != '' && $test_checkup === true && ( $menucode == 'ADMLAB' OR $menucode == 'ADM' ) ){
-	?>
-	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labsso.php">
-	<?php
+	if( $sso_txt != '' && $test_checkup === true ){
+		?>
+		<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labsso.php">
+		<?php
+	}
+
 }else{
-	?>
-	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php">
-	<?php
+	?><META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php"><?php
 }
+
 ?>
 <!-- <a href="labseek.php" id="aLink">ทำรายการต่อไป</a> -->
 <!-- <META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php"> -->

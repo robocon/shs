@@ -5,6 +5,10 @@ $db = Mysql::load();
 
 $action = input_post('action');
 if( $action == 'search_lab' ){
+
+    include 'includes/JSON.php';
+    $json = new Services_JSON();
+
     $code = input_post('code');
     $db->select("SELECT `code`,`detail`,`price` FROM `labcare` WHERE `code` LIKE '$code' ");
     
@@ -12,7 +16,11 @@ if( $action == 'search_lab' ){
 
     if( $rows > 0 ){
         $item = $db->get_item();
-        echo '{"code":"'.$item['code'].'","detail":"'.$item['detail'].'","price":"'.$item['price'].'"}';
+        // echo '{"code":"'.$item['code'].'","detail":"'.$item['detail'].'","price":"'.$item['price'].'"}';
+
+
+        $output = $json->encode(array('code'=>$item['code'],'detail'=>$item['detail'],'price'=>$item['price']));
+        echo $output;
     }
 
     exit;
@@ -112,7 +120,7 @@ if( !empty($item['fobt']) ){
     $sso_list[] = 'stocb';
 }
 if( !empty($item['cxr']) ){
-    $sso_list[] = 'cxr';
+    // $sso_list[] = 'cxr';
 }
 sort($sso_list); // เรียงตัวอักษรใหม่
 
@@ -147,19 +155,18 @@ foreach( $shs_list AS $key => $shs_item ){
 }
 </style>
 <form action="labsso_save.php" target="right" method="post">
-    <?php
-    if( count($sso_list) > 0 ){
-        ?>
-        <p style="margin-bottom: 0;"><b>รายการตรวจตามสิทธิประกันสังคม</b></p>
-        <div>
-            <table id="sso_tb" class="chk_table" style="font-size: 12px;">
-                <tr style="background-color: #e8e8e8;">
-                    <th>รหัส</th>
-                    <th>รายการ</th>
-                    <th>ราคา</th>
-                    <th>แก้ไข</th>
-                </tr>
-                <?php
+
+    <p style="margin-bottom: 0;"><b>รายการตรวจตามสิทธิประกันสังคม</b></p>
+    <div>
+        <table id="sso_tb" class="chk_table" style="font-size: 12px;">
+            <tr style="background-color: #e8e8e8;">
+                <th>รหัส</th>
+                <th>รายการ</th>
+                <th>ราคา</th>
+                <th>แก้ไข</th>
+            </tr>
+            <?php
+            if( count($sso_list) > 0 ){
                 foreach ($sso_list as $key => $item) {
                     
                     $sql = "SELECT `code`,`detail`,`price` FROM `labcare` WHERE `code` LIKE '$item-sso'";
@@ -177,11 +184,11 @@ foreach( $shs_list AS $key => $shs_item ){
                         </tr>
                     <?php
                 }
-                ?>
-            </table>
-        </div>
-        <?php
-    }
+            }
+            ?>
+        </table>
+    </div>
+    <?php
     
     if( count($shs_list) > 0 ){
         ?>
