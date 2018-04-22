@@ -173,12 +173,12 @@ foreach( $shs_list AS $key => $shs_item ){
                     $db->select($sql);
                     $lab = $db->get_item();
                     ?>
-                        <tr>
+                        <tr class="c<?=$lab['code'];?>">
                             <td><?=$lab['code'];?></td>
                             <td><?=$lab['detail'];?></td>
                             <td><?=$lab['price'];?></td>
                             <td align="center">
-                                <a href="javascript: void(0);">ź</a>
+                                <a href="javascript: void(0);" data-item="c<?=$lab['code'];?>" class="rm_item">ź</a>
                                 <input type="hidden" name="sso_list[]" value="<?=$lab['code'];?>">
                             </td>
                         </tr>

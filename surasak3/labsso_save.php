@@ -19,15 +19,72 @@ $tvn = $_SESSION['tvn'];
 $cPtright = $_SESSION['cPtright'];
 $cstaf_massage = $_SESSION['cstaf_massage'];
 
-$sql = "SELECT `examno` FROM `opcardchk` WHERE `HN` = '$cHn' AND `part` = 'ลูกจ้าง61' ";
+
+$sql = "SELECT `exam_no` FROM `opcardchk` WHERE `HN` = '$cHn' AND `part` = 'ลูกจ้าง61' ";
 $db->select($sql);
 $opcardchk = $db->get_item();
 
 // ดึงจาก exam_no
-$nLab = $opcardchk['examno'];
-$item = count($_POST['sso_list']);
+$nLab = $opcardchk['exam_no'];
+
+############################################################
+### จัดการ รายการใน orderdetail ก่อนที่จะเก็บเงิน
+### กรณีที่ มีการแก้ไขรายการแลป
+############################################################
+
+// รายการทั้งหมด
+$all_lab_lists = array_merge_recursive($_POST['sso_list'], $_POST['shs_list']);
+$new_lab_lists = array();
+foreach ($all_lab_lists as $key => $cl) {
+    $new_lab_lists[] = str_replace('-sso', '', $cl);
+}
+
+// order ที่เพิ่มไปแล้ว
+$sql = "SELECT * FROM `orderdetail` WHERE `labnumber` = '180422$nLab' ";
+$db->select($sql);
+$test_lab = $db->get_items();
+$default_lab = array();
+foreach ($test_lab as $key => $tl) {
+    $default_lab[] = $tl['labcode'];
+}
+
+// หาตัวที่เพิ่มเข้ามาใหม่
+$added_diff = array_diff($new_lab_lists, $default_lab);
+if( count($added_diff) > 0 ){
+    foreach( $added_diff as $key => $new_lab ){
+
+        $lab_sql = "SELECT `code`,`oldcode`,`detail` 
+        FROM `labcare` 
+        WHERE `code` = '$new_lab' 
+        LIMIT 1";
+        $db->select($lab_sql);
+        $lab_item = $db->get_item($lab_item);
+
+        $insert_detail = "INSERT INTO `orderdetail` ( 
+            `labnumber` , `labcode`, `labcode1` , `labname` 
+        ) VALUES ( 
+            '180422$nLab', '".$lab_item['code']."', '".$lab_item['oldcode']."', '".$lab_item['detail']."'
+        );";
+        $insert = $db->insert($insert_detail);
+        
+    }
+}
+
+// หาตัวที่โดนลบออกไป เพื่อลบใน orderdetail
+$rm_diff = array_diff($default_lab, $new_lab_lists);
+if( count($rm_diff) > 0 ){
+    foreach ($rm_diff as $key => $rm_lab) {
+        
+        $rm_sql = "DELETE FROM `orderdetail` WHERE `labnumber` = '180422$nLab' AND `labcode` = '$rm_lab'";
+        $delete = $db->delete($rm_sql);
+
+    }
+}
+
+############################################################
 
 ### จ่ายส่วนที่เป็นสิทธิประกันสังคม ###
+$item = count($_POST['sso_list']);
 $Netprice = (float) 0;
 $aSumYprice = (float) 0;
 $aSumNprice = (float) 0;

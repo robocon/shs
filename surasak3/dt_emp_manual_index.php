@@ -96,11 +96,12 @@ window.onload = function(){
 <?php
 if($_POST["act"]=="show"){
 	
+	$hn_now = trim($_POST['hn_now']);
+
 	// Check employee
-	$sql = sprintf("SELECT `employee` FROM `opcard` WHERE `hn`='%s'", $_POST['hn_now']);
-	$q = mysql_query($sql);
+	$q = mysql_query("SELECT `employee` FROM `opcard` WHERE `hn`='$hn_now'");
 	$item = mysql_fetch_assoc($q);
-	if($item['employee'] !== 'y'){
+	if(strtolower($item['employee']) !== 'y'){
 		echo 'ไม่ใช่ลูกจ้างโรงพยาบาล';
 		exit;
 	}
@@ -108,8 +109,7 @@ if($_POST["act"]=="show"){
 	$_SESSION['doctor'] = $_POST['doctor'];
 	
 	// ตัวเดิมเป็น dxofyear_emp
-$sql = sprintf("SELECT * FROM `dxofyear_out` WHERE `hn`='%s'", $_POST['hn_now']);
-$query = mysql_query($sql);
+$query = mysql_query("SELECT * FROM `dxofyear_out` WHERE `hn`='$hn_now'");
 	?>
 	<table width="60%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
 	  <tr>

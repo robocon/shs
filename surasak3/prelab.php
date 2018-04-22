@@ -384,8 +384,8 @@ if( $sso_txt != '' ){
 	$sql = "SELECT * 
 	FROM `lab_pretest` 
 	WHERE `hn` = '$cHn' 
-	AND `checked` IS NULL 
-	OR `checked` = '' ";
+	AND ( `checked` IS NULL OR `checked` = '' )";
+	var_dump($sql);
 	$q = mysql_query($sql) or die( mysql_error() );
 	// $test = mysql_fetch_assoc($q);
 	$row = mysql_num_rows($q);
@@ -396,14 +396,13 @@ if( $sso_txt != '' ){
 
 include("unconnect.inc");
 
-// ถ้าเป็น จนท.คอมฯ + แลป จะเห็นเมนูใหม่
-if( $menucode == 'ADMLAB' OR $menucode == 'ADM' ){
 
-	if( $sso_txt != '' && $test_checkup === true ){
-		?>
-		<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labsso.php">
-		<?php
-	}
+// ถ้าเป็น จนท.คอมฯ + แลป และ เป็นการตรวจลูกจ้าง ปกส.
+if( ( $menucode == 'ADMLAB' OR $menucode == 'ADM' ) && $test_checkup === true ){
+
+	?>
+	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labsso.php">
+	<?php
 
 }else{
 	?><META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php"><?php
