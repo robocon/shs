@@ -64,7 +64,7 @@ if( $_POST["act"] == "add" ){
 		);";
 		// dump("ORDERHEAD");
 		// dump($sql1);
-		$result1 = mysql_query($sql1) or die(" orderhead : ".mysql_error() );
+		// $result1 = mysql_query($sql1) or die(" orderhead : ".mysql_error() );
 		// echo "นำเข้า Order Lab เรียบร้อยแล้ว";
 
 
@@ -139,7 +139,9 @@ if( $_POST["act"] == "add" ){
 				'$nLab', '$code', '$oldcode', '$detail'
 			);";
 			// dump($insert_detail);
-			$result2 = mysql_query($insert_detail) or die("insert orderdetail : ".mysql_error());
+			// $result2 = mysql_query($insert_detail) or die("insert orderdetail : ".mysql_error());
+
+			dump($insert_detail);
 
 		}
 		

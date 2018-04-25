@@ -306,15 +306,18 @@ if( $action === 'save' ){
         '".$_POST['bph']."','".$_POST['kidney']."','".$_POST['pterygium']."','".$_POST['tonsil']."','".$_POST['paralysis']."','".$_POST['blood']."',
         '".$_POST['conanemia']."','".$_POST['ht']."','".$_POST['normal55']."','".$_POST['ch55']."','".$_POST['normal56']."','".$_POST['ch56']."'
     )";
-
     $dx_insert = $db->insert($sql);
+
+
+    $sql = "UPDATE `lab_pretest` SET `checked` = 'y' WHERE `hn` = '$hn' AND `part` = 'ลูกจ้าง61' LIMIT 1 ";
+    $db->update($sql);
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
     }
 
-    exit;
+    
     redirect('chk_doctor_preprint.php?hn='.$hn.'&vn='.$vn.'&date='.$curr_date, $msg);
     exit;
 }

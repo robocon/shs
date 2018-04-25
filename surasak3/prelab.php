@@ -379,20 +379,20 @@ for($i=0;$i<$count;$i++){
 // มีข้อมูลในตรวจสุขภาพลูกจ้างแล้วรึยัง?
 // ถ้ามีจะให้เด้งไปอีกหน้าหนึ่ง
 $test_checkup = false;
-if( $sso_txt != '' ){
+// if( $sso_txt != '' ){
 
 	$sql = "SELECT * 
 	FROM `lab_pretest` 
 	WHERE `hn` = '$cHn' 
 	AND ( `checked` IS NULL OR `checked` = '' )";
-	var_dump($sql);
+	
 	$q = mysql_query($sql) or die( mysql_error() );
 	// $test = mysql_fetch_assoc($q);
 	$row = mysql_num_rows($q);
 	if( $row > 0 ){
 		$test_checkup = true;
 	}
-}
+// }
 
 include("unconnect.inc");
 

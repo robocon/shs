@@ -182,7 +182,7 @@ $update = $db->update("UPDATE runno SET runno = $nRunno WHERE title='depart'");
 $db->select("UNLOCK TALBES");
 
 $cDiag = 'ตรวจสุขภาพ';
-$cPtright = 'R01 เงินสด';
+$cPtright = 'R29 ตรวจสุขภาพแบบกลุ่ม';
 $item = count($_POST['shs_list']);
 
 $sql = "INSERT INTO depart(
