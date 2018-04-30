@@ -309,14 +309,13 @@ if( $action === 'save' ){
 
     $dx_insert = $db->insert($sql);
 
+    $sql = "UPDATE `lab_pretest` SET `checked` = 'y' WHERE `hn` = '$hn' AND `part` = 'ลูกจ้าง61' LIMIT 1 ";
+    $db->update($sql);
+
     $msg = 'บันทึกข้อมูลเรียบร้อย<br>หลังจากพิมพ์สติกเกอร์สามารถปิดหน้านี้ได้ทันที';
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
     }
-    // dump($save);
-    // dump($dx_insert);
-    // dump($msg);
-    // exit;
 
     redirect('doctor_pre_chk_print.php?hn='.$hn.'&vn='.$vn.'&date='.$curr_date, $msg);
     exit;
@@ -418,7 +417,9 @@ h1,h3,p{
     cursor: pointer;
 }
 </style>
-
+<div>
+    <a href="dt_emp_manual_index.php">กลับไปหน้า ตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ ปี61(แบบไม่ต้องใช้ VN) </a>
+</div>
 <form action="doctor_pre_chk.php" method="post" id="formSubmit">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
     <table class="chk_table">

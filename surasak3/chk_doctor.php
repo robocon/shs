@@ -41,6 +41,7 @@ if( $action === 'save' ){
     $res_hbsag = $_POST['res_hbsag'];
 
     $diag = input_post('diag');
+    $diag = htmlspecialchars($diag, ENT_QUOTES);
     
     $sex = input_post('sex');
     $breast = '';

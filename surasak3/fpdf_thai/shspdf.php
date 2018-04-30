@@ -93,6 +93,7 @@ class SHSPdf extends PDF_AutoPrint
 	function SetThaiFont() {
 		$this->_getfontpath();
 		$this->AddFont('AngsanaNew','','angsa.php');
+		$this->AddFont('AngsanaNew','B','angsab.php');
 		$this->AddFont('THSarabun','','THSarabun.php');
 		$this->AddFont('THSarabun','B','THSarabun Bold.php');
 	}

@@ -387,13 +387,13 @@ while($arr = Mysql_fetch_assoc($result)){
 	<table width="854" border="0" class="tb_font">
 	  <tr>
 			<td width="130" align="right" class="tb_font_2">ส่วนสูง : </td>
-			<td width="79"><input name="height" type="text" size="1" maxlength="3" value="<?php echo $height; ?>" />
+			<td width="79"><input name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" />
 ซม.</td>
 			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
-			<td width="129"><input name="weight" type="text" size="1" maxlength="3" value="<?php echo $weight; ?>" />
+			<td width="129"><input name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
 กก. </td>
 			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
-			<td width="132"><input name="round_" type="text" size="1" maxlength="3" value="<?php echo $waist; ?>" />
+			<td width="132"><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" />
 			  ซม.</td>
 			<td width="67" align="left"><span class="tb_font_2">BP1 :</span></td>
 			<td width="130" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
@@ -419,7 +419,7 @@ mmHg</td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2"><span class="tb_font_2">BMI :</span></td>
-		  <td colspan="2"><input name="bmi" type="text" size="3"  value="<?php echo $bmi; ?>"  /></td>
+		  <td colspan="2"><input name="bmi" type="text" size="5"  value="<?php echo $bmi; ?>"  /></td>
 		  <td align="left">&nbsp;</td>
 		  <td align="right">&nbsp;</td>
 		  <td align="left">&nbsp;</td>

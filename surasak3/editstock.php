@@ -7,10 +7,15 @@ if( $user_code !== 'ADM' ){
     
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
     $check_level = in_array($user_code, array('ADMPH', 'ADMPHA','ADMPHARX'));
+    // ตัวเดิม
     $check_user = in_array($user_id, array('พรทิพา','วนิดาดา'));
+
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา'));
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','ชุติกาญจน์','ชนากานต์','เพียงออ','รุ่งทิวา','อมรรัตน์','ศุภรัตน์1','ศุภรัตน์2','ชนากานต์'));
-   
+
+    // ให้ปิดการใช้งานในวันเสาร์ที่ 31 มีค 61
+    // $check_user = in_array($user_id, array('พรทิพา','วนิดาดา','รุ่งทิวา','อมรรัตน์','ชนากานต์','สงคราม'));
+
     if( $check_level === false OR $check_user === false ){
         ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขจำนวนยาในห้องจ่าย กรุณาติดต่อ</p>

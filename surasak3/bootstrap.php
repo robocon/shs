@@ -268,8 +268,7 @@ class Mysql
 			$this->db = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $user, $pass);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			
-			$items = $this->get_sv_headers();
-			$match = preg_match('/(tis-620)/', $items['content-type']);
+			$match = preg_match('/(tis-620)/', $_SERVER['CONTENT_TYPE']);
 			if( empty($match) ){
 				$this->db->exec("SET NAMES $charset ;");
 			}
@@ -283,14 +282,12 @@ class Mysql
 
 	// Get response from header
 	public function get_sv_headers(){
-		$headers = get_headers('http://'.$_SERVER['SERVER_NAME']);
+		$headers = get_headers('http://'.$_SERVER['SERVER_NAME'], 1);
 		$items = array();
-		foreach( $headers as $val ){
-			$exp_str = explode(':', $val, 2);
-			if( count($exp_str) > 1 ){
-				$key = strtolower($exp_str['0']);
-				$items[$key] = strtolower($exp_str['1']);
-			}
+		foreach( $headers as $key => $val ){ 
+
+			$items[$key] = strtolower($val);
+			
 		}
 		return $items;
 	}

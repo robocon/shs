@@ -3,9 +3,9 @@ session_start();
 error_reporting(0);
 ini_set('display_errors', 0);
 header('Content-Type: text/html; charset=tis-620');
+
 include 'connect.inc';
-// mysql_query("SET NAMES TIS620");
-// mysql_query("SET NAMES UTF8");
+
 ?>
 <html>
 <head>
@@ -56,15 +56,21 @@ window.onload = function(){
 			<TD>
 	<?php
 	
-	$sql = "SELECT `codedoctor` FROM `inputm` WHERE `idname` = '$_SESSION[sIdname]' and status='y'";
-	//echo $sql."<br>";
+	$sql = "SELECT `codedoctor`,`menucode` FROM `inputm` WHERE `idname` = '$_SESSION[sIdname]' and status='y'";
 	$query = mysql_query($sql);
-	list($codedoctor) = mysql_fetch_array($query);
+	list($codedoctor, $menucode) = mysql_fetch_array($query);
 	
+	$strSQL = "SELECT doctorcode, name 
+	FROM doctor  
+	where doctorcode = '$codedoctor' 
+	and status='y' order by row_id"; 
+
+	// ถ้าผู้ใช้งานไม่ได้ Login เป็นแพทย์จะแสดงทั้งหมด
+	if( $menucode !== 'ADMDR1' && $menucode !== 'ADMDR' ){
+		$strSQL = "SELECT * FROM `doctor` WHERE `status` = 'y' ORDER BY `row_id`";
+	}
+
 	// แสดงรายการ doctor
-	//echo "-->".$_SESSION["sOfficer"];
-	$strSQL = "SELECT doctorcode, name FROM doctor  where doctorcode='$codedoctor' and status='y' order by row_id"; 
-	//echo $strSQL;
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	?>
 	<select name="doctor" id="doctor"> 
@@ -76,7 +82,7 @@ window.onload = function(){
 	}
 	?>
 	</select>
-</TD>
+		</TD>
 			<TD>&nbsp;</TD>
 		</TR>
 		<TR>
@@ -102,7 +108,7 @@ if($_POST["act"]=="show"){
 	$q = mysql_query("SELECT `employee` FROM `opcard` WHERE `hn`='$hn_now'");
 	$item = mysql_fetch_assoc($q);
 	if(strtolower($item['employee']) !== 'y'){
-		echo 'ไม่ใช่ลูกจ้างโรงพยาบาล';
+		?><p style="color: red;"><b>ไม่ใช่ลูกจ้างโรงพยาบาล กรุณาให้แผนกทะเบียนปรับสถานะเป็นลูกจ้างรพ.ค่ายฯ</b></p><?php
 		exit;
 	}
 
@@ -136,7 +142,7 @@ $query = mysql_query("SELECT * FROM `dxofyear_out` WHERE `hn`='$hn_now'");
 		<td align="center"><?=$rows["thidate"];?></td>
 		<!-- <td align="center"><a href="dxdr_ofyear_empsoldier.php?hn_now=<?=$rows["hn"];?>&doctor=<?=$_POST["doctor"];?>&thidate=<?=$rows["thidate"];?>"><?=$rows["hn"];?></a></td> -->
 		<td align="center">
-			<a href="<?=$href;?>" target="_blank"><?=$rows["hn"];?></a>
+			<a href="<?=$href;?>" ><?=$rows["hn"];?></a>
 		</td>
 		<td><?=$rows["ptname"];?></td>
 		<td><?=$rows["camp"];?></td>
