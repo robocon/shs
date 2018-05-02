@@ -46,6 +46,7 @@ if( empty($action) ){
             <table class="chk_table">
                 <tr>
                     <td>ลำดับ</td>
+                    <td>Lab Number</td>
                     <td>HN</td>
                     <td>เลขบัตรประชาชน</td>
                     <td>ชื่อ สกุล</td>
@@ -53,12 +54,14 @@ if( empty($action) ){
                     <td>วันเกิด</td>
                     <td>โปรแกรมที่ตรวจ เช่น โปรแกรม1 โปรแกรม2</td>
                     <td>วันที่ตรวจจริง</td>
+                    <td>แผนก</td>
                 </tr>
             </table>
             <p><b>ตัวอย่างเช่น</b></p>
             <table class="chk_table">
                 <tr>
                     <td>1</td>
+                    <td>301</td>
                     <td>99-9990</td>
                     <td>1111111111111</td>
                     <td>นายประกอบ ผลไม้</td>
@@ -66,9 +69,11 @@ if( empty($action) ){
                     <td>25/11/2510</td>
                     <td>1</td>
                     <td>10 ตุลาคม 2560</td>
+                    <td>A</td>
                 </tr>
                 <tr>
                     <td>2</td>
+                    <td>302</td>
                     <td>99-9991</td>
                     <td>2222222222222</td>
                     <td>นายโชติ ช่วง</td>
@@ -76,6 +81,7 @@ if( empty($action) ){
                     <td>01/05/2535</td>
                     <td>1</td>
                     <td>10 ตุลาคม 2560</td>
+                    <td>B</td>
                 </tr>
             </table>
         </div>
@@ -97,17 +103,26 @@ if( empty($action) ){
 		$last_id = (int) $chk['lastrow'];
 
         $i = 0;
-        $date_birth = '';
+        $idcard = $exam_no = $date_birth = '';
         
         foreach ($items as $key => $item) {
             
             ++$i;
             ++$last_id;
 
-            list($pid, $hn, $idcard, $fullname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
+            list($pid, $exam_no, $hn, $idcard, $fullname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
 
 
             if( !empty($pid) ){
+
+
+                if( empty($idcard) ){
+                    $sql = "SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn' ";
+                    $db->select($sql);
+                    $item = $db->get_item();
+                    $idcard = $item['idcard'];
+                }
+
 
                 $fullname = preg_replace('/\s+/', ' ', $fullname);
                 list($name, $surname) = explode(' ',$fullname);
@@ -130,7 +145,7 @@ if( empty($action) ){
                 VALUES (
                 '$hn',
                 '$last_id',
-                '',
+                '$exam_no',
                 '$pid',
                 '$idcard',
                 '$name',

@@ -378,6 +378,7 @@ for($i=0;$i<$count;$i++){
 	
 // มีข้อมูลในตรวจสุขภาพลูกจ้างแล้วรึยัง?
 // ถ้ามีจะให้เด้งไปอีกหน้าหนึ่ง
+/*
 $test_checkup = false;
 // if( $sso_txt != '' ){
 
@@ -393,11 +394,12 @@ $test_checkup = false;
 		$test_checkup = true;
 	}
 // }
-
+*/
 include("unconnect.inc");
 
 
 // ถ้าเป็น จนท.คอมฯ + แลป และ เป็นการตรวจลูกจ้าง ปกส.
+/*
 if( ( $menucode == 'ADMLAB' OR $menucode == 'ADM' ) && $test_checkup === true ){
 
 	?>
@@ -407,10 +409,10 @@ if( ( $menucode == 'ADMLAB' OR $menucode == 'ADM' ) && $test_checkup === true ){
 }else{
 	?><META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php"><?php
 }
-
+*/
 ?>
 <!-- <a href="labseek.php" id="aLink">ทำรายการต่อไป</a> -->
-<!-- <META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php"> -->
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=labseek.php">
 
 
 <script type="text/javascript">

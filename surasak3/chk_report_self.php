@@ -123,21 +123,28 @@ while($result = mysql_fetch_assoc($row2)){
 	$bmi = number_format($result['weight'] /($ht*$ht),2);
 	
 	// @todo $showdatelab ไม่ได้ใช้อะไร
-    $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
-    FROM `resulthead` 
-    WHERE `hn` = '".$hn."' 
-    AND ( 
-		`clinicalinfo` ='ตรวจสุขภาพประจำปี60' 
-		OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
-		OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
-	) order by autonumber desc";  //โชว์ข้อมูล
+    $strSQL11 = "SELECT b.`authorisename`,DATE_FORMAT(b.`authorisedate`,'%d-%m-%Y') as orderdate2 
+    FROM (
+
+		SELECT * 
+		FROM `resulthead` 
+		WHERE ( 
+			`clinicalinfo` ='ตรวจสุขภาพประจำปี60' 
+			OR `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+			OR `clinicalinfo` = 'ตรวจสุขภาพประกันสังคม60' 
+		) 
+		AND `hn` = '$hn' 
+		ORDER BY `autonumber` 
+		DESC LIMIT 1 
+
+	) AS a 
+	LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` ";  //โชว์ข้อมูล
 	
     $objQuery11 = mysql_query($strSQL11);
-    list($orderdate) = mysql_fetch_array($objQuery11);
+    $author = mysql_fetch_assoc($objQuery11);
 	
-	list($d,$m,$y) = explode("-",$orderdate);
-	$yy = $y+543;
-	$showdatelab = "$d/$m/$yy";
+	$authorisename = $author['authorisename'];
+	$authorisedate = $author['orderdate2'];
 
 	// if( $_POST['camp'] == 'scg61' ){
 	// 	$showdate="4-19 ตุลาคม 2560";
@@ -151,7 +158,7 @@ while($result = mysql_fetch_assoc($row2)){
 		<td colspan="2">
 			<table width="100%">
 				<tr>
-					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="87" height="83" /></td>
+					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="75" height="83" /></td>
 					<td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
 					<td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 				</tr>
@@ -998,10 +1005,11 @@ $outlab_row = mysql_num_rows($outlab_query);
 								FROM resultdetail 
 								WHERE autonumber='".$arrresult['autonumber']."' 
 								limit 0,1";
-								//echo "===>".$strSQL1;
+								
+								
 								$objQuery1 = mysql_query($strSQL1);
 								list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
-
+								
 								
 								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
 								FROM resultdetail  

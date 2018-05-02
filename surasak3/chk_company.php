@@ -64,6 +64,8 @@ if( $action == false ){
             <?php
             $i = 1;
             foreach ($items as $key => $item) {
+
+                $report = $item['report'];
                 ?>
                 <tr>
                     <td><?=$i;?></td>
@@ -74,8 +76,9 @@ if( $action == false ){
                     <td>
                         <ol>
                             <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
-                            <li><a href="chk_report_self.php?camp=<?=$item['code'];?>" target="_blank">ผลตรวจรายบุคคล</a></li>
+                            <li><a href="<?=$report;?>?camp=<?=$item['code'];?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                             <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
+                            <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
                         </ol>
                     </td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไข</a></td>

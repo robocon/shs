@@ -55,7 +55,9 @@ $menu_list = array(
     array('link' => 'chk_import_user.php', 'name' => '¹Óà¢éÒ¢éÍÁÙÅÊÙèÃĞºº', 'access' => 'ADM|ADMNEWCHKUP'),
     array('link' => 'cxr_out_result.php', 'name' => '¹Óà¢éÒ¢éÍÁÙÅ X-Ray', 'access' => 'ADM|ADMNEWCHKUP'),
     array('link' => 'chk_labcare.php', 'name' => 'ÃĞººLab', 'access' => 'ADM|ADMNEWCHKUP'),
-    array('link' => 'chk_sso.php', 'name' => 'Walk-in »¡Ê', 'access' => 'ALL'),
+    array('link' => 'chk_sso.php', 'name' => 'Walk-in »¡Ê.', 'access' => 'ALL'),
+    array('link' => 'dt_emp_manual_index.php', 'name' => 'Å§¼ÅµÃÇ¨ »¡Ê.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank'),
+
 );
 
 
@@ -65,16 +67,20 @@ $menu_list = array(
     <div class="chk_menu clearfix">
 
         <ul>
-            <?php
+            <?php 
+            // µÃÇ¨ÊÍºÊÔ·¸Ôã¹¡ÒÃ´ÙàÁ¹Ù
             foreach ($menu_list as $key => $item) { 
                 if( $item['access'] != 'ALL' ){
                     if( preg_match('/'.$_SESSION['smenucode'].'/', $item['access']) == 0 ){
                         continue;
                     }
                 }
-            ?>
-            <li><a href="<?=$item['link'];?>"><?=$item['name'];?></a></li>
-            <?php
+
+                $target = ( !empty($item['target']) ) ? 'target="'.$item['target'].'"' : '' ;
+
+                ?>
+                <li><a href="<?=$item['link'];?>" <?=$target;?> ><?=$item['name'];?></a></li>
+                <?php
             }
             ?>
         </ul>

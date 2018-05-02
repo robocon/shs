@@ -39,6 +39,7 @@ if( $action === 'save' ){
     $res_chol = $_POST['res_chol'];
     $res_hdl = $_POST['res_hdl'];
     $res_hbsag = $_POST['res_hbsag'];
+    $res_occult = $_POST['res_occult'];
 
     $diag = input_post('diag');
     
@@ -61,14 +62,14 @@ if( $action === 'save' ){
             `eye`, `snell_eye`, `cxr`, `conclution`, `normal_suggest`,
             `normal_suggest_date`, `abnormal_suggest`, `abnormal_suggest_date`, `doctor`, `officer`, 
             `res_cbc`, `res_ua`, `res_glu`, `res_crea`, `res_chol`, `res_hdl`, 
-            `res_hbsag`,`diag`
+            `res_hbsag`,`res_occult`,`diag`
         ) VALUES (
             NULL, '$hn', '$vn', '$prefix', '$name', '$surname', 
             '$idcard', '$address', NOW(), '$yearchk', '$ear', '$breast', 
             '$eye', '$snell_eye', '$cxr', '$conclution', '$normal_suggest', 
             '$normal_suggest_date', '$abnormal_suggest', '$abnormal_suggest_date', '$doctor', '$officer', 
             '$res_cbc', '$res_ua', '$res_glu', '$res_crea', '$res_chol', '$res_hdl', 
-            '$res_hbsag', '$diag'
+            '$res_hbsag', '$res_occult', '$diag'
         );";
         $save = $db->insert($sql);
 
@@ -96,6 +97,7 @@ if( $action === 'save' ){
         `res_chol` = '$res_chol', 
         `res_hdl` = '$res_hdl', 
         `res_hbsag` = '$res_hbsag',
+        `res_occult` = '$res_occult',
         `diag` = '$diag'
         WHERE `id` = '$id' ; ";
         $save = $db->update($sql);
@@ -309,8 +311,8 @@ if( $action === 'save' ){
 
     $dx_insert = $db->insert($sql);
 
-    $sql = "UPDATE `lab_pretest` SET `checked` = 'y' WHERE `hn` = '$hn' AND `part` = 'ลูกจ้าง61' LIMIT 1 ";
-    $db->update($sql);
+    // $sql = "UPDATE `lab_pretest` SET `checked` = 'y' WHERE `hn` = '$hn' AND `part` = 'ลูกจ้าง61' LIMIT 1 ";
+    // $db->update($sql);
 
     $msg = 'บันทึกข้อมูลเรียบร้อย<br>หลังจากพิมพ์สติกเกอร์สามารถปิดหน้านี้ได้ทันที';
     if( $save !== true ){
@@ -332,7 +334,11 @@ $_SESSION['list_bill'] = '';
 $vn = $_GET['vn'];
 $hn = $_GET['hn'];
 $post_vn = 1;
+
 $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
+if( isset($_SESSION['doctor']) ){
+    $_SESSION['dt_doctor'] = $_SESSION['doctor'];
+}
 
 $date_now = date("Y-m-d H:i:s");
 // $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
@@ -418,7 +424,7 @@ h1,h3,p{
 }
 </style>
 <div>
-    <a href="dt_emp_manual_index.php">กลับไปหน้า ตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ ปี61(แบบไม่ต้องใช้ VN) </a>
+    <a href="dt_emp_manual_index.php">กลับไปหน้า ค้นหาตามHN </a>
 </div>
 <form action="doctor_pre_chk.php" method="post" id="formSubmit">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
@@ -1271,26 +1277,43 @@ h1,h3,p{
             var res_chol = $('.res_chol').is(':checked');
             var res_hdl = $('.res_hdl').is(':checked');
             var res_hbsag = $('.res_hbsag').is(':checked');
+            var res_occult = $('.res_occult').is(':checked');
             
             var ret_stat = true;
             
-            /*
-            if( res_cbc === false ){
+            if( $('.res_cbc').val() && res_cbc === false ){
                 alert('กรุณาเลือกผลการตรวจ CBC');
                 ret_stat = false;
 
-            }else if( res_ua === false ){
+            }else if( $('.res_ua').val() && res_ua === false ){
                 alert('กรุณาเลือกผลการตรวจ UA');
                 ret_stat = false;
 
-            }else if( res_glu === false || res_crea === false || res_chol === false || res_hdl === false || res_hbsag === false ){
-                alert('กรุณาเลือกผลการตรวจอื่นๆ');
+            }else if( $('.res_glu').val() && res_glu === false ){
+                alert('กรุณาเลือกผลการตรวจ Blood Sugar');
                 ret_stat = false;
 
-            }else 
-            */
-            
-            if( cxr === false ){
+            }else if( $('.res_crea').val() && res_crea === false ){
+                alert('กรุณาเลือกผลการตรวจ Creatinine');
+                ret_stat = false;
+
+            }else if( $('.res_chol').val() && res_chol === false ){
+                alert('กรุณาเลือกผลการตรวจ Cholesterol');
+                ret_stat = false;
+
+            }else if( $('.res_hdl').val() && res_hdl === false ){
+                alert('กรุณาเลือกผลการตรวจ HDL');
+                ret_stat = false;
+
+            }else if( $('.res_hbsag').val() && res_hbsag === false ){
+                alert('กรุณาเลือกผลการตรวจ HBsAg');
+                ret_stat = false;
+
+            }else if( $('.res_occult').val() && res_occult === false ){
+                alert('กรุณาเลือกผลการตรวจ เลือดในอุจจาระ');
+                ret_stat = false;
+
+            }else if( cxr === false ){
                 alert('กรุณาเลือกผลการตรวจ X-Ray');
                 ret_stat = false;
 

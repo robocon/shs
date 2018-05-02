@@ -55,7 +55,11 @@ window.onload = function(){
 			<TD><strong>แพทย์ : </strong></TD>
 			<TD>
 	<?php
-	
+	// echo "<pre>";
+	// var_dump($_SESSION);
+	// echo "</pre>";
+
+	//
 	$sql = "SELECT `codedoctor`,`menucode` FROM `inputm` WHERE `idname` = '$_SESSION[sIdname]' and status='y'";
 	$query = mysql_query($sql);
 	list($codedoctor, $menucode) = mysql_fetch_array($query);
@@ -67,7 +71,7 @@ window.onload = function(){
 
 	// ถ้าผู้ใช้งานไม่ได้ Login เป็นแพทย์จะแสดงทั้งหมด
 	if( $menucode !== 'ADMDR1' && $menucode !== 'ADMDR' ){
-		$strSQL = "SELECT * FROM `doctor` WHERE `status` = 'y' ORDER BY `row_id`";
+		$strSQL = "SELECT * FROM `doctor` WHERE `status` = 'y' and `doctorcode` IS NOT NULL ORDER BY `row_id`";
 	}
 
 	// แสดงรายการ doctor
@@ -76,8 +80,9 @@ window.onload = function(){
 	<select name="doctor" id="doctor"> 
 	<?php
 	while($objResult = mysql_fetch_array($objQuery)){
+		$selected = ( $objResult['doctorcode'] == $codedoctor ) ? 'selected="selected"' : '' ;
 	?>
-		<option value="<?=$objResult["name"]?>" selected><?=$objResult["name"]?></option>
+		<option value="<?=$objResult["name"]?>" <?=$selected;?> ><?=$objResult["name"]?></option>
 	<?php
 	}
 	?>
@@ -105,12 +110,14 @@ if($_POST["act"]=="show"){
 	$hn_now = trim($_POST['hn_now']);
 
 	// Check employee
+	/*
 	$q = mysql_query("SELECT `employee` FROM `opcard` WHERE `hn`='$hn_now'");
 	$item = mysql_fetch_assoc($q);
 	if(strtolower($item['employee']) !== 'y'){
 		?><p style="color: red;"><b>ไม่ใช่ลูกจ้างโรงพยาบาล กรุณาให้แผนกทะเบียนปรับสถานะเป็นลูกจ้างรพ.ค่ายฯ</b></p><?php
 		exit;
 	}
+	*/
 
 	$_SESSION['doctor'] = $_POST['doctor'];
 	
@@ -127,7 +134,7 @@ $query = mysql_query("SELECT * FROM `dxofyear_out` WHERE `hn`='$hn_now'");
 	  </tr>
 	<?php
 	if(mysql_num_rows($query) < 1){
-		echo "<tr><td colspan='5' align='center'>----------------------------- ไม่มีข้อมูล -----------------------------</td></tr>";
+		echo "<tr><td colspan='5' align='center'>---------- ไม่มีข้อมูลซักประวัติ ----------</td></tr>";
 	}
 	
 	$i=0;
