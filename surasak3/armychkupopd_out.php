@@ -19,15 +19,15 @@ include("connect.inc");
 <style type="text/css">
 <!--
 body,td,th {
-	font-family: "cs ChatThai", "CS ChatThaiUI";
+	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
 .frmsaraban{
-	font-family: "cs ChatThai", "CS ChatThaiUI";
+	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
 .labfont {		
-	font-family: "cs ChatThai", "CS ChatThaiUI";
+	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
 -->
@@ -37,7 +37,10 @@ body,td,th {
 .forntsarabun {	font-family: "TH SarabunPSK";
 	font-size: 20px;
 }
-.style1 {font-family: "cs ChatThai", "CS ChatThaiUI"; font-size: 18px; font-weight: bold; }
+.style1 {font-family: "TH SarabunPSK"; font-size: 18px; font-weight: bold; }
+.frmsaraban1 {	font-family: TH SarabunPSK;
+	font-size: 18px;
+}
 </style>
 <title>บันทึกผลตรวจสุขภาพทหารประจำปี (ตรวจที่อื่น)</title><a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>
 <form action="armychkupopd_out.php" method="post">
@@ -113,79 +116,54 @@ function gettext( ){
 }
 </script>
 
-<script>
-function checkfrm(){
-	if(document.vsform.txtweight.value ==""){
-		alert('กรุณากรอกข้อมูลน้ำหนัก');
-		document.vsform.txtweight.focus();
-		return false;
-	}else if(document.vsform.txtheight.value ==""){
-		alert('กรุณากรอกข้อมูลความสูง');
-		document.vsform.txtheight.focus();
-		return false;		
-	}else if(document.vsform.txtwaist.value ==""){
-		alert('กรุณากรอกข้อมูลรอบเอว');
-		document.vsform.txtwaist.focus();
-		return false;		
-	}else if(document.vsform.txttemperature.value ==""){
-		alert('กรุณากรอกข้อมูล TEMPERATURE');
-		document.vsform.txttemperature.focus();
-		return false;		
-	}else if(document.vsform.txtpause.value ==""){
-		alert('กรุณากรอกข้อมูล PAUSE');
-		document.vsform.txtpause.focus();
-		return false;		
-	}else if(document.vsform.txtrate.value ==""){
-		alert('กรุณากรอกข้อมูล RATE');
-		document.vsform.txtrate.focus();
-		return false;	
-	}else if(document.vsform.txtbp1.value ==""){
-		alert('กรุณากรอกข้อมูลความดันโลหิต BP1');
-		document.vsform.txtbp1.focus();
-		return false;
-	}else if(document.vsform.txtbp2.value ==""){
-		alert('กรุณากรอกข้อมูลความดันโลหิต BP1');
-		document.vsform.txtbp2.focus();
-		return false;		
-	}else if(document.vsform.prawat.value ==""){
-		alert('กรุณาเลือกข้อมูลประวัติโรคประจำตัว');
-		document.vsform.prawat.focus();
-		return false;						
-	}else if(document.vsform.prawat.value =="6" && document.vsform.congenital_disease.value ==""){
-		alert('กรุณากรอกข้อมูลโรคประจำตัว (โรคประจำตัวอื่นๆ)');
-		document.vsform.congenital_disease.focus();
-		return false;
-	}else if(document.vsform.prawat.value !="0" && document.vsform.hospital.value ==""){
-		alert('กรุณากรอกข้อมูลโรงพยาบาลที่รับการรักษา');
-		document.vsform.congenital_disease.focus();
-		return false;				
-	}else if(document.vsform.drugreact1.checked == false && document.vsform.drugreact2.checked == false){
-		alert('กรุณากรอกเลือกข้อมูลการแพ้ยา');
-		document.vsform.drugreact1.focus();
-		return false;																																		
-	}else{
-		return true;
-	}
-}
-</script>
 <?
 if($_POST["act"]=="show"){
 	if(!empty($_POST["p_hn"])){
 		$sql="select * from  armychkup where hn='$_POST[p_hn]' and yearchkup='$nPrefix' order by row_id asc";
+		
+		$solsql="select * from chkup_solider where hn='$_POST[p_hn]' and yearchkup='$nPrefix'";
+		//echo $solsql;
+		$solquery=mysql_query($solsql);
+		$solrows=mysql_fetch_array($solquery);	
+				
 	}else if(!empty($_POST["p_id"])){
 		$sql="select * from  armychkup where idcard='$_POST[p_id]' and yearchkup='$nPrefix' order by row_id asc";
-	}else if(!empty($_POST["p_name"])){
+		
+		$solsql="select * from chkup_solider where idcard='$_POST[p_id]' and yearchkup='$nPrefix'";
+		//echo $solsql;
+		$solquery=mysql_query($solsql);
+		$solrows=mysql_fetch_array($solquery);		
+		
+	}else if(!empty($_POST["p_name"]) && empty($_POST["p_sname"])){
 		$sql="select * from  armychkup where ptname like '%$_POST[p_name]%' and yearchkup='$nPrefix' order by row_id asc";
-	}else if(!empty($_POST["p_sname"])){
+		
+		$solsql="select * from chkup_solider where ptname like '%$_POST[p_name]%' and yearchkup='$nPrefix'";
+		//echo $solsql;
+		$solquery=mysql_query($solsql);
+		$solrows=mysql_fetch_array($solquery);
+				
+	}else if(!empty($_POST["p_sname"]) && empty($_POST["p_name"])){
 		$sql="select * from  armychkup where ptname like '%$_POST[p_sname]%' and yearchkup='$nPrefix' order by row_id asc";
+		
+		$solsql="select * from chkup_solider where ptname like '%$_POST[p_sname]%' and yearchkup='$nPrefix'";
+		//echo $solsql;
+		$solquery=mysql_query($solsql);
+		$solrows=mysql_fetch_array($solquery);	
+				
 	}else if(!empty($_POST["p_name"]) && !empty($_POST["p_sname"])){
-		$sql="select * from  armychkup where (ptname like '%$_POST[p_name]%') || (ptname like '%$_POST[p_sname]%') and yearchkup='$nPrefix' order by row_id asc";
+		$sql="select * from  armychkup where (ptname like '%$_POST[p_name]%') && (ptname like '%$_POST[p_sname]%') and yearchkup='$nPrefix' order by row_id asc";
+		
+		$solsql="select * from chkup_solider where (ptname like '%$_POST[p_name]%') && (ptname like '%$_POST[p_sname]%') and yearchkup='$nPrefix'";
+		echo $solsql;
+		$solquery=mysql_query($solsql);
+		$solrows=mysql_fetch_array($solquery);			
 	}
-	//echo $sql;
+	// echo $sql;
 	$query=mysql_query($sql);
 	$num=mysql_num_rows($query);
 	//echo $num;
 	$rows=mysql_fetch_array($query);
+
 	
 		$chksql="select hn, dbirth, congenital_disease, drugreact from opcard where hn='".$rows["hn"]."'";
 		//echo $chksql;
@@ -207,17 +185,26 @@ if($_POST["act"]=="show"){
 			$chkrows["congenital_disease"]=$chkrows["congenital_disease"]="ปฎิเสธ";
 		}
 		
-		
-			
-	$camp=substr($rows["camp"],4);
-	$chunyot=substr($rows["chunyot"],4);
 	
-	if($rows["gender"]=="1"){
-		$gender="ชาย";
-	}else if($rows["gender"]=="2"){
-		$gender="หญิง";
+			
+	if(!empty($rows["camp"])){
+		$camp=$rows["camp"];
 	}else{
-		$gender="ไม่ได้ระบุ";
+		$camp=$solrows["camp"];
+	}
+	
+	if(!empty($rows["chunyot"])){
+		$textchunyot=$rows["chunyot"];
+		$chunyot=substr($rows["chunyot"],4);
+	}else{
+		$textchunyot=$solrows["chunyot"];
+		$chunyot=substr($solrows["chunyot"],4);
+	}
+	
+	if(!empty($rows["gender"])){
+		$gender=$rows["gender"];
+	}else{
+		$gender=$solrows["gender"];
 	}
 
 $sql1="select * from armychkup where hn='".$rows["hn"]."' and yearchkup='$nPrefix'";
@@ -231,9 +218,13 @@ $alcohol=$arr_view["alcohol"];
 $exercise=$arr_view["exercise"];
 $diagtype=$arr_view["diagtype"];
 
+if($num1 > 0){
+	$birthday=$arr_view["birthday"];
+}
+
 ?>
 <form name="vsform" action="armychkupopd_out.php" method="post">
-<? if($num1 < 1){ ?>
+<? if($num < 1){ ?>
 <input type="hidden" name="act" value="add">
 <? }else{ ?>
 <input type="hidden" name="act" value="edit">
@@ -248,70 +239,39 @@ $diagtype=$arr_view["diagtype"];
       <tr>
         <td colspan="3" align="center" bgcolor="#FFFFFF">สังกัด
           <select name="camp" class="forntsarabun" id="camp">
-            <option value="D01 รพ.ค่ายสุรศักดิ์มนตรี">รพ.ค่ายสุรศักดิ์มนตรี</option>
-            <option value="D02 ศาล และ อก.ศาล มทบ.32">ศาล และ อก.ศาล มทบ.32</option>
-            <option value="D03 ผปบ.มทบ.32">ผปบ.มทบ.32</option>
-            <option value="D04 สง.สด.จว.ล.ป.">สง.สด.จว.ล.ป.</option>
-            <option value="D05 กกบ.มทบ.32">กกบ.มทบ.32</option>
-            <option value="D06 กยก.มทบ.32">กยก.มทบ.32</option>
-            <option value="D07 กขว.มทบ.32">กขว.มทบ.32</option>
-            <option value="D08 กกร.มทบ.32">กกร.มทบ.32</option>
-            <option value="D09 ฝกง.มทบ.32">ฝกง.มทบ.32</option>
-            <option value="D10 ฝสก.มทบ.32">ฝสก.มทบ.32</option>
-            <option value="D11 ฝธน.มทบ.32">ฝธน.มทบ.32</option>
-            <option value="D12 ฝสวส.มทบ.32">ฝสวส.มทบ.32</option>
-            <option value="D13 บก.มทบ.32">บก.มทบ.32</option>
-            <option value="D14 กกพ.มทบ.32">กกพ.มทบ.32</option>
-            <option value="D15 ฝคง.มทบ.32">ฝคง.มทบ.32</option>
-            <option value="D16 ฝอศจ.มทบ.32">ฝอศจ.มทบ.32</option>
-            <option value="D17 ผพธ.มทบ.32">ผพธ.มทบ.32</option>
-            <option value="D18 ฝสส.มทบ.32">ฝสส.มทบ.32</option>
-            <option value="D19 มว.ส.มทบ.32">มว.ส.มทบ.32</option>
-            <option value="D20 ผยย.มทบ.32">ผยย.มทบ.32</option>
-            <option value="D21 กอง รจ.มทบ.32">กอง รจ.มทบ.32</option>
-            <option value="D22 ร้อย.สห.มทบ.32">ร้อย.สห.มทบ.32</option>
-            <option value="D23 ฝสห.มทบ.32">ฝสห.มทบ.32</option>
-            <option value="D24 สขส.มทบ.32">สขส.มทบ.32</option>
-            <option value="D25 สรรพกำลัง มทบ.32">สรรพกำลัง มทบ.32</option>
-            <option value="D26 ร้อย.มทบ.32">ร้อย.มทบ.32</option>
-            <option value="D27 ผสพ.มทบ.32">ผสพ.มทบ.32</option>
-            <option value="D28 มว.ดย.มทบ.32">มว.ดย.มทบ.32</option>
-            <option value="D29 ศฝ.นศท.มทบ.32">ศฝ.นศท.มทบ.32</option>
-            <option value="D30 ร.17 พัน.2">ร.17 พัน.2</option>
-            <option value="D31 ช.พัน.4 ร้อย4">ช.พัน.4 ร้อย4</option>
-            <option value="D32 ร้อย.ฝรพ.3">ร้อย.ฝรพ.3</option>
-            <option value="D34 กทพ.33">กทพ.33</option>
-            <option value="D33 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>
+            <option value="D34 กทพ.33" selected="selected">กทพ.33</option>
           </select>
-          <input name="dxptright" type="hidden" value="<?=$rows["dxptright"];?>"></td>
+          <input name="dxptright" type="hidden" value="1"></td>
       </tr>
       <tr>
-        <td colspan="3" align="left" bgcolor="#FFCC99"><strong>ข้อมูลเบื้องต้น</strong></td>
+        <td colspan="3" align="left" bgcolor="#FFCC99"><strong>ข้อมูลเบื้องต้น ( หากไม่มีข้อมูล ไม่ต้องใส่เครื่องหมายขีดกลาง (-) )</strong></td>
         </tr>
       <tr>
         <td width="14%"><strong>HN</strong></td>
         <td width="2%" align="center">:</td>
-        <td width="84%"><input name="hn" type="text" value="<?=$_POST["p_hn"];?>"></td>
+        <td width="84%"><input name="hn" type="text" class="frmsaraban" value="<? if(!empty($rows["hn"])){ echo $rows["hn"];}else{ echo $solrows["hn"];}?>"></td>
       </tr>
       <tr>
-        <td><strong>ยศ-ชื่อ-นามสกุล</strong></td>
+        <td><strong>ยศ</strong></td>
         <td align="center">:</td>
-        <td><input name="yot" type="text" value="<?=$rows["yot"];?>" size="10">
+        <td><input name="yot" type="text" class="frmsaraban" value="<? if(!empty($rows["yot"])){ echo $rows["yot"];}else{ echo $solrows["yot"];}?>" size="10">
           &nbsp;&nbsp;
-          <input name="ptname" type="text" value="<?=$rows["ptname"];?>"></td>
+          <strong>ชื่อ-นามสกุล</strong> : 
+          <input name="ptname" type="text" class="frmsaraban" value="<? if(!empty($rows["ptname"])){ echo $rows["ptname"];}else{ echo $solrows["ptname"];}?>"></td>
       </tr>
       <tr>
         <td><strong>เลขที่บัตรประชาชน</strong></td>
         <td align="center">:</td>
-        <td><input name="chkidcard" type="text" value="<?=$rows["idcard"];?>"></td>
+        <td><input name="chkidcard" type="text" class="frmsaraban" value="<? if(!empty($rows["idcard"])){ echo $rows["idcard"];}else{ echo $solrows["idcard"];}?>"></td>
       </tr>
       <tr>
         <td><strong>ชั้นยศ</strong></td>
         <td align="center">:</td>
         <td>
+        
           <select name="chunyot" class="forntsarabun" id="chunyot">
-            <option value="<?=$chunyot;?>">
-            <?=substr($chunyot,5);?>
+            <option value="<?=$textchunyot;?>">
+            <?=$chunyot;?>
             </option>
             <option value="CH01 นายทหารชั้นสัญญาบัตร">นายทหารชั้นสัญญาบัตร</option>
             <option value="CH02 นายทหารชั้นประทวน">นายทหารชั้นประทวน</option>
@@ -322,44 +282,73 @@ $diagtype=$arr_view["diagtype"];
         <td><strong>เพศ</strong></td>
         <td align="center">:</td>
         <td>
-          <input name="gender" type="radio" id="gender1" value="1" <? if($rows["gender"]==1){ echo "checked";}?>>
+          <input name="gender" type="radio" class="frmsaraban" id="gender1" value="1" <? if($gender==1){ echo "checked";}?>>
           ชาย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="radio" name="gender" id="gender2" value="2" <? if($rows["gender"]==2){ echo "checked";}?>>
+          <input name="gender" type="radio" class="frmsaraban" id="gender2" value="2" <? if($gender==2){ echo "checked";}?>>
           หญิง</td>
       </tr>
       <tr>
         <td><strong>ตำแหน่ง</strong></td>
         <td align="center">:</td>
-        <td><input name="position" type="text" value="<?=$rows["position"];?>"></td>
+        <td><input name="position" type="text" class="frmsaraban" value="<? if(!empty($rows["position"])){ echo $rows["position"];}else{ echo $solrows["position"];}?>"></td>
       </tr>
       <tr>
         <td><strong>ช่วยราชการ (ถ้ามี)</strong></td>
         <td align="center">:</td>
-        <td><input name="ratchakarn" type="text" value="<?=$rows["ratchakarn"];?>"></td>
+        <td><input name="ratchakarn" type="text" class="frmsaraban" value="<? if(!empty($rows["ratchakarn"])){ echo $rows["ratchakarn"];}else{ echo $solrows["ratchakarn"];}?>"></td>
       </tr>
       <tr>
         <td><strong>วัน/เดือน/ปี เกิด</strong></td>
         <td align="center">:</td>
         <td>
-        <? if($num1 < 1){ ?>
-        <input name="birthday" type="text" >
-        <? }else{ ?>
-        <input name="birthday" type="text" value="<?=$birthday;?>">
-        <? } ?>
+        <?
+		if(!empty($solrows["birthday"])){
+			list($dd1,$mm1,$yy1)=explode(" ",$solrows["birthday"]);
+			if($mm1=="มกราคม"){
+				$nmm="01";
+			}else if($mm1=="กุมภาพันธ์"){
+				$nmm="02";
+			}else if($mm1=="มีนาคม"){
+				$nmm="03";
+			}else if($mm1=="เมษายน"){
+				$nmm="04";
+			}else if($mm1=="พฤษภาคม"){
+				$nmm="05";
+			}else if($mm1=="มิถุนายน"){
+				$nmm="06";
+			}else if($mm1=="กรกฎาคม"){
+				$nmm="07";
+			}else if($mm1=="สิงหาคม"){
+				$nmm="08";
+			}else if($mm1=="กันยายน"){
+				$nmm="09";
+			}else if($mm1=="ตุลาคม"){
+				$nmm="10";
+			}else if($mm1=="พฤศจิกายน"){
+				$nmm="11";
+			}else if($mm1=="ธันวาคม"){
+				$nmm="12";
+			}	
+		$ndd=sprintf("%02d",$dd1);
+		
+		$birthday="$yy1-$nmm-$ndd";
+		}        
+        ?>
+        <input name="birthday" type="text" class="frmsaraban" value="<?=$birthday;?>">
         (ตัวอย่าง 2017-01-01)</td>
       </tr>
       <tr>
         <td><strong>อายุ</strong></td>
         <td align="center">:</td>
-        <td><input name="age" type="text" value="<?=$rows["age"];?>"></td>
+        <td><input name="age" type="text" class="frmsaraban" value="<? if(!empty($rows["age"])){ echo $rows["age"];}else{ echo $solrows["age"];}?>"></td>
       </tr>
       <tr>
         <td><strong>แพ้ยา</strong></td>
         <td align="center">:</td>
-        <td style="color:#FF0000;"><input name="hospitaldrugreact" type="text" value="<?=$chkrows["drugreact"];?>"></td>
+        <td style="color:#FF0000;"><input name="hospitaldrugreact" type="text" class="frmsaraban" value="<?=$chkrows["drugreact"];?>"></td>
       </tr>
       <tr>
-        <td colspan="3" bgcolor="#FFCC99"><strong>การตรวจร่างกาย</strong></td>
+        <td colspan="3" bgcolor="#FFCC99"><strong>การตรวจร่างกายทั่วไป ( หากไม่มีข้อมูล ไม่ต้องใส่เครื่องหมายขีดกลาง (-) )</strong></td>
         </tr>
       <tr>
         <td><strong>น้ำหนัก</strong></td>
@@ -388,13 +377,13 @@ $diagtype=$arr_view["diagtype"];
       <tr>
         <td><strong>อุณหภูมิ (T)</strong></td>
         <td align="center">:</td>
-        <td><input name="txttemperature" type="text" class="frmsaraban" id="txttemperature" value="<?=$arr_view["temperature"];?>"> 
+        <td><input name="txttemperature" type="text" class="frmsaraban" id="txttemperature" value="<? if(!empty($arr_view["temperature"])){ echo $arr_view["temperature"];}else{ echo "36.5";}?>"> 
           &nbsp;C</td>
       </tr>
       <tr>
         <td><strong>ชีพจร (P)</strong></td>
         <td align="center">:</td>
-        <td><input name="txtpulse" type="text" class="frmsaraban" id="txtpulse" value="<?=$arr_view["pulse"];?>" onKeyUp="gettext( );">
+        <td><input name="txtpulse" type="text" class="frmsaraban" id="txtpulse" value="<? if(!empty($arr_view["pulse"])){ echo $arr_view["pulse"];}else{ echo "80";}?>" onKeyUp="gettext( );">
 &nbsp;ครั้ง/นาที</td>
       </tr>
       <tr>
@@ -404,13 +393,13 @@ $diagtype=$arr_view["diagtype"];
 &nbsp;ครั้ง/นาที</td>
       </tr>
       <tr>
-        <td><strong>ความดันโลหิต 1</strong></td>
+        <td><strong>ความดันโลหิต ครั้งที่ 1</strong></td>
         <td align="center">:</td>
         <td><input name="txtbp1" type="text" class="frmsaraban" id="txtbp1" value="<?=$arr_view["bp1"];?>">
 &nbsp;มม. ปรอท</td>
       </tr>
       <tr>
-        <td><strong>ความดันโลหิต 2</strong></td>
+        <td><strong>ความดันโลหิต ครั้งที่ 2</strong></td>
         <td align="center">:</td>
         <td><input name="txtbp2" type="text" class="frmsaraban" id="txtbp2" value="<?=$arr_view["bp2"];?>">
 &nbsp;มม. ปรอท</td>
@@ -463,7 +452,7 @@ var div = document.getElementById('prawat5').style;
       <tr>
         <td><strong>ประวัติการแพ้ยา</strong></td>
         <td align="center">:</td>
-        <td><input name="drugreact" type="radio" class="frmsaraban" id="drugreact1" value="0" <? if($arr_view["drugreact"]=="0"){ echo "checked='checked'";}?> />
+        <td><input name="drugreact" type="radio" class="frmsaraban" id="drugreact1" value="0" <? if($arr_view["drugreact"]=="0" || $arr_view["drugreact"]!="1"){ echo "checked='checked'";}?> />
 ไม่แพ้
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="drugreact" type="radio" class="frmsaraban" id="drugreact2" value="1" <? if($arr_view["drugreact"]=="1"){ echo "checked='checked'";}?> />
@@ -509,22 +498,26 @@ var div = document.getElementById('prawat5').style;
             <input name="exercise" type="radio" class="frmsaraban" value="2" <?php if($exercise==2){ echo "checked"; } ?> /> 
             3 ครั้งต่อ 1 สัปดาห์ขึ้นไป</td>
       </tr>
-<?
-//if($sIdname=="thaywin"){
-
-	$sqllabdate = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$rows["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
-	//echo $sqllabdate;
-	list($lab_date) = mysql_fetch_row(mysql_query($sqllabdate));
-	
-
-	$sqlua = "Select labcode, result, unit,normalrange,flag  From resulthead as a , resultdetail as b  where a.hn='".$rows["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'UA' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' ) Order by labcode ASC ";
-	//echo $sqlua;
-	$result_ua = mysql_query($sqlua);
-
-	$sqlcbc = "Select labcode, result, unit,normalrange,flag From resulthead as a , resultdetail as b  where a.hn='".$rows["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix') Order by labcode ASC";
-	//echo $sqlcbc;
-	$result_cbc = mysql_query($sqlcbc);
-?>      
+      
+      <tr>
+        <td colspan="3" bgcolor="#FFCC99"><strong>ผล X-Ray</strong></td>
+      </tr>
+      <tr>
+        <td bgcolor="#FFFFCC"><strong>ผลการ X-Ray</strong></td>
+        <td align="center" bgcolor="#FFFFCC">:</td>
+        <td bgcolor="#FFFFCC"><input name='xray' type='radio' id="xray1" value='ปกติ' checked="checked" />
+ปกติ
+  <input name='xray' type='radio' value='ผิดปกติ' id="xray2"/>
+ผิดปกติ
+&nbsp;
+<input name='xray' type='radio' value='ไม่มีผล' id="xray3"/>
+ไม่มีผล</td>
+      </tr>
+      <tr>
+        <td bgcolor="#FFFFCC"><strong>ค่าผิดปกติ ระบุ</strong></td>
+        <td align="center" bgcolor="#FFFFCC">:</td>
+        <td bgcolor="#FFFFCC"><input name="xraydetail" type="text" class="frmsaraban1" id="xraydetail" value="<?=$arr_view["xray_detail"];?>" size="50" /></td>
+      </tr>
       <tr>
         <td colspan="3" bgcolor="#FFCC99"><strong>ผลการตรวจทางพยาธิ</strong></td>
         </tr>
@@ -564,9 +557,10 @@ var div = document.getElementById('prawat5').style;
         <td colspan="3">
 <table border="1" cellpadding="1" cellspacing="0" bordercolor="#FFFFFF"  width="100%" bgcolor="#FFCCCC">
   <tr><td>
-	  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+<? // if(!empty($rows["age"]) && $rows["age"] >=35 || !empty($solrows["age"]) && $solrows["age"] >=35)){ ?>
+      <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	    <tr>
-	      <td colspan="3" align="left" bgcolor="#FFFFCC" class="tb_font_2"><strong>ผล LAB เฉพาะผู้ที่มีอายุมากกว่า 35 ปี</strong></td>
+	      <td colspan="3" align="left" bgcolor="#FFFFCC" class="tb_font_2"><strong>ผล LAB เฉพาะผู้ที่มีอายุมากกว่า 35 ปี ( หากไม่มีข้อมูล ไม่ต้องใส่เครื่องหมายขีดกลาง (-) )</strong></td>
 	      </tr>    
 	    <tr>
 	      <td align="center" valign="middle" bordercolor="#FFFFFF" bgcolor="#33CCCC" class="text3"><strong>LAB ที่ตรวจ</strong></td>
@@ -575,384 +569,114 @@ var div = document.getElementById('prawat5').style;
 	      </tr>
 	    <tr>
 	      <td width="28%" align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
-	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input type="text" name="glu_result" id="glu_result"></td>
-	      <td bgcolor="#FFFFFF" class="labfont"><input name='glu_lab' type='radio' value='ปกติ' <?  if($resultlab >= 74 && $resultlab <= 106){ echo "checked";}?>/>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="glu_result" type="text" class="frmsaraban" id="glu_result" value="<?=$rows["glu_result"];?>"></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='glu_lab' type='radio' value='ปกติ' <?  if($rows["glu_lab"]=="ปกติ"){ echo "checked";}?>/>
 ปกติ
-  		<input name='glu_lab' type='radio' value='ผิดปกติ' <? if(!empty($resultlab) && $resultlab < 74 || $resultlab > 106){ echo "checked";}?>/>
+  		<input name='glu_lab' type='radio' value='ผิดปกติ' <? if($rows["glu_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
   		ผิดปกติ</td>
 	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='CHOL' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='CHOL' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='CHOL' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-?>          
+	    <tr>
+          <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>URIC(โรคเก๊าท์) :</strong></td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="uric_result2" type="text" class="frmsaraban" id="uric_result2" value="<?=$rows["uric_result"];?>" /></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='uric_lab' type='radio' value='ปกติ' <?  if($rows["uric_lab"]=="ปกติ"){ echo "checked";}?>/>
+	        ปกติ
+	        <input name='uric_lab' type='radio' value='ผิดปกติ' <? if($rows["uric_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+	        ผิดปกติ</td>
+	      </tr>
+          
+	    <tr>
+          <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>BUN(การทำงานของไต) :</strong></td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="bun_result2" type="text" class="frmsaraban" id="bun_result2" value="<?=$rows["bun_result"];?>" /></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='bun_lab' type='radio' value='ปกติ' <?  if($rows["bun_lab"]=="ปกติ"){ echo "checked";}?>/>
+	        ปกติ
+	        <input name='bun_lab' type='radio' value='ผิดปกติ' <? if($rows["bun_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+	        ผิดปกติ</td>
+	      </tr>
+	    <tr>
+          <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>CREA(การทำงานของไต) :</strong></td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="crea_result2" type="text" class="frmsaraban" id="crea_result2" value="<?=$rows["crea_result"];?>" /></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='crea_lab' type='radio' value='ปกติ' <?  if($rows["crea_lab"]=="ปกติ"){ echo "checked";}?>/>
+	        ปกติ
+	        <input name='crea_lab' type='radio' value='ผิดปกติ' <? if($rows["crea_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+	        ผิดปกติ</td>
+	      </tr>
+	    
 	    <tr>
 	      <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>CHOL(การตรวจไขมัน) :</strong></td>
-	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	        <input type="text" name="chol_result" id="chol_result">
-	      </label></td>
-	      <td bgcolor="#FFFFFF" class="labfont"><input name='chol_lab' type='radio' value='ปกติ' <? if(!empty($resultlab) && $resultlab <= 200){ echo "checked";}?> />
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="chol_result" type="text" class="frmsaraban" id="chol_result" value="<?=$rows["chol_result"];?>"></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='chol_lab' type='radio' value='ปกติ' <?  if($rows["chol_lab"]=="ปกติ"){ echo "checked";}?>/>
 ปกติ
-  <input name='chol_lab' type='radio' value='ผิดปกติ' <? if($resultlab > 200){ echo "checked";}?>/>
-  ผิดปกติ</td>
+  		<input name='chol_lab' type='radio' value='ผิดปกติ' <? if($rows["chol_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+  		ผิดปกติ</td>
 	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='TRIG' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='TRIG' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='TRIG' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-?>       
+   
 	    <tr>
 	      <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>TRIG(การตรวจไขมัน) :</strong></td>
-	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	        <input type="text" name="trig_result" id="trig_result">
-	      </label></td>
-	      <td bgcolor="#FFFFFF" class="labfont"><input name='trig_lab' type='radio' value='ปกติ' <? if(!empty($resultlab) && $resultlab <= 150){ echo "checked";}?> />
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="trig_result" type="text" class="frmsaraban" id="trig_result" value="<?=$rows["trig_result"];?>"></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='trig_lab' type='radio' value='ปกติ' <?  if($rows["trig_lab"]=="ปกติ"){ echo "checked";}?>/>
 ปกติ
-  <input name='trig_lab' type='radio' value='ผิดปกติ'  <? if($resultlab > 150){ echo "checked";}?>/>
-  ผิดปกติ</td>
+  		<input name='trig_lab' type='radio' value='ผิดปกติ' <? if($rows["trig_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+  		ผิดปกติ</td>
 	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='HDL' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='HDL' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='HDL' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-
-?>         
+         
 	  <tr>
 	    <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>HDL(การตรวจไขมันดี) :</strong></td>
-	    <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	      <input type="text" name="hdl_result" id="hdl_result">
-	    </label></td>
-	    <td bgcolor="#FFFFFF" class="labfont"><input name='hdl_lab' type='radio' value='ปกติ' <? if($resultlab >= 40 && $resultlab <= 60){ echo "checked";}?>/>
-	      ปกติ
-	      <input name='hdl_lab' type='radio' value='ผิดปกติ' <? if(!empty($resultlab) && $resultlab < 40 || $resultlab > 60){ echo "checked";}?>/>
-	      ผิดปกติ</td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="hdl_result" type="text" class="frmsaraban" id="hdl_result" value="<?=$rows["hdl_result"];?>"></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='hdl_lab' type='radio' value='ปกติ' <?  if($rows["hdl_lab"]=="ปกติ"){ echo "checked";}?>/>
+ปกติ
+  		<input name='hdl_lab' type='radio' value='ผิดปกติ' <? if($rows["hdl_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+  		ผิดปกติ</td>
 	  </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='10001' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
 
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='10001' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='10001' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-
-?>       
 	  <tr>
 	    <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>LDL(การตรวจไขมันเลว) :</strong></td>
-	    <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	      <input type="text" name="ldl_result" id="ldl_result">
-	    </label></td>
-	    <td bgcolor="#FFFFFF" class="labfont"><input name='ldl_lab' type='radio' value='ปกติ' <? if(!empty($resultlab) && $resultlab <= 100){ echo "checked";}?> />
-	      ปกติ
-	      <input name='ldl_lab' type='radio' value='ผิดปกติ' <? if($resultlab > 100){ echo "checked";}?>/>
-	      ผิดปกติ</td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="ldl_result" type="text" class="frmsaraban" id="ldl_result" value="<?=$rows["ldl_result"];?>"></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='ldl_lab' type='radio' value='ปกติ' <?  if($rows["ldl_lab"]=="ปกติ"){ echo "checked";}?>/>
+ปกติ
+  		<input name='ldl_lab' type='radio' value='ผิดปกติ' <? if($rows["ldl_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+  		ผิดปกติ</td>
 	  </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='BUN' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
 
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='BUN' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='BUN' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-?>        
 	    <tr>
-	      <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>BUN(การทำงานของไต) :</strong></td>
-	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	        <input type="text" name="bun_result" id="bun_result">
-	      </label></td>
-	      <td bgcolor="#FFFFFF" class="labfont"><input name='bun_lab' type='radio' value='ปกติ' <? if($resultlab >= 7 && $resultlab <= 18){ echo "checked";}?>/>
-ปกติ
-  <input name='bun_lab' type='radio' value='ผิดปกติ' <? if(!empty($resultlab) && $resultlab < 7 || $resultlab > 18){ echo "checked";}?>/>
-  ผิดปกติ</td>
-	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='CREA' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='CREA' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='CREA' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-?>        
+          <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>AST, SGOT(การทำงานของตับ) :</strong></td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="ast_result" type="text" class="frmsaraban" id="ast_result" value="<?=$rows["ast_result"];?>" /></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='ast_lab' type='radio' value='ปกติ' <?  if($rows["ast_lab"]=="ปกติ"){ echo "checked";}?>/>
+	        ปกติ
+	        <input name='ast_lab' type='radio' value='ผิดปกติ' <? if($rows["ast_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+	        ผิดปกติ</td>
+	      </tr>
 	    <tr>
-	      <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>CREA(การทำงานของไต) :</strong></td>
-	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	        <input type="text" name="crea_result" id="crea_result">
-	      </label></td>
-	      <td bgcolor="#FFFFFF" class="labfont"><input name='crea_lab' type='radio' value='ปกติ' <? if($resultlab >= 0.6 && $resultlab <= 1.3){ echo "checked";}?> />
-ปกติ
-  <input name='crea_lab' type='radio' value='ผิดปกติ' <? if(!empty($result['cr']) && $resultlab < 0.6 || $resultlab > 1.3){ echo "checked";}?>/>
-  ผิดปกติ</td>
-	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='ALP' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='ALP' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='ALP' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-
-?>        
+          <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>ALT, SGPT(การทำงานของตับ) :</strong></td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="alt_result2" type="text" class="frmsaraban" id="alt_result2" value="<?=$rows["alt_result"];?>" /></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='alt_lab' type='radio' value='ปกติ' <?  if($rows["alt_lab"]=="ปกติ"){ echo "checked";}?>/>
+	        ปกติ
+	        <input name='alt_lab' type='radio' value='ผิดปกติ' <? if($rows["alt_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+	        ผิดปกติ</td>
+	      </tr>
 	    <tr>
-	      <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>ALP(ตับ,กระดูก) :</strong></td>
-          <td width="22%" align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-            <input type="text" name="alp_result" id="alp_result">
-          </label></td>
-          <td width="50%" bgcolor="#FFFFFF" class="labfont"><input name='alp_lab' type='radio' value='ปกติ' <? if($resultlab >= 46 && $resultlab <= 116){ echo "checked";}?>/>
-			ปกติ 
-			  <input name='alp_lab' type='radio' value='ผิดปกติ' <? if(!empty($resultlab) && $resultlab < 46 || $resultlab > 116){ echo "checked";}?>/>
-			  ผิดปกติ</td>
-            </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='ALT' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='ALT' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='ALT' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-
-?>            
-	  <tr>
-	    <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>ALT(การทำงานของตับ) :</strong></td>
-	    <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	      <input type="text" name="alt_result" id="alt_result">
-	    </label></td>
-	    <td bgcolor="#FFFFFF" class="labfont"><input name='alt_lab' type='radio' value='ปกติ' <? if($resultlab > 0 && $resultlab <= 50){ echo "checked";}?>/>
+	      <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>ALP, Alkaline phosphatase(ตับ,กระดูก) :</strong></td>
+	      <td align="left" bgcolor="#FFFFFF" class="labfontlab"><input name="alp_result" type="text" class="frmsaraban" id="alp_result" value="<?=$rows["alp_result"];?>"></td>
+	      <td bgcolor="#FFFFFF" class="labfont"><input name='alp_lab' type='radio' value='ปกติ' <?  if($rows["alp_lab"]=="ปกติ"){ echo "checked";}?>/>
 ปกติ
-  <input name='alt_lab' type='radio' value='ผิดปกติ' <? if($resultlab > 50){ echo "checked";}?>/>
-  ผิดปกติ</td>
-	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='AST' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='AST' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='AST' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-
-?>          
-	  <tr>
-	    <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>AST(การทำงานของตับ) :</strong></td>
-	    <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	      <input type="text" name="ast_result" id="ast_result">
-	    </label></td>
-	    <td bgcolor="#FFFFFF" class="labfont"><input name='ast_lab' type='radio' value='ปกติ' <? if($resultlab >= 15 && $resultlab <= 37){ echo "checked";}?>/>
-ปกติ
-  <input name='ast_lab' type='radio' value='ผิดปกติ' <? if(!empty($resultlab) && ($resultlab < 15 || $resultlab > 37)){ echo "checked";}?>/>
-  ผิดปกติ</td>
-	    </tr>
-<?
-$bsquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='URIC' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-2)."'";
-//echo $bsquery;
-$bsrow = mysql_query($bsquery);
-$bssult = mysql_fetch_array($bsrow);
-$resultlab2=$bssult["result"];
-
-$bquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='URIC' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix-1)."'";
-$brow = mysql_query($bquery);
-$bsult = mysql_fetch_array($brow);
-$resultlab1=$bsult["result"];
-
-$labquery = "select * from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.profilecode='URIC' AND a.hn ='".$rows["hn"]."' and a.clinicalinfo='ตรวจสุขภาพประจำปี".($nPrefix)."'";
-//echo $labquery;
-$row = mysql_query($labquery);
-$sult = mysql_fetch_array($row);
-$resultlab=$sult["result"];
-$unitlab=$sult["unit"];
-$ranglab=$sult["normalrange"];
-$flaglab=$sult["flag"];
-
-?>        
-	  <tr>
-	    <td align="right" valign="middle" bordercolor="#FFFFFF" bgcolor="#FFFFFF" class="text3"><strong>URIC(โรคเก๊าท์) :</strong></td>
-	    <td align="left" bgcolor="#FFFFFF" class="labfontlab"><label>
-	      <input type="text" name="uric_result" id="uric_result">
-	    </label></td>
-	    <td bgcolor="#FFFFFF" class="labfont"><input name='uric_lab' type='radio' value='ปกติ' <? if($resultlab >= 2.6 && $resultlab <= 7.2){ echo "checked";}?>/>
-ปกติ
-  <input name='uric_lab' type='radio' value='ผิดปกติ' <? if(!empty($resultlab) && ($resultlab < 2.6 || $resultlab > 7.2)){ echo "checked";}?>/>
-  ผิดปกติ</td>
-	    </tr>
+  		<input name='alp_lab' type='radio' value='ผิดปกติ' <? if($rows["alp_lab"]=="ผิดปกติ"){ echo "checked";}?>/>
+  		ผิดปกติ</td>
+        </tr>
             </table>
+<? //} ?>            
+            
         </TD>
 	</TR>
 	</TABLE>
-    <br>
-        </td>
+    <br>        </td>
         </tr>
       <!--จบ อายุมากกว่าหรือเท่ากับ 35 ปี-->   
 <? //} //ปิดเช็ค thaywin?>
-      <tr>
-        <td colspan="3" bgcolor="#FFCC99"><strong>สรุปเบื้องต้น</strong> <? if($result['bmi'] >=35.0 && $result['bmi'] <=39.9){
-			echo "อ้วนมาก";}else if($arr_view['bmi'] >=40.0){
-			echo "โรคอ้วน";
-		} ?></td>
-        </tr>
-      <tr>
-        <td colspan="3"><input name='resultdiagnormal' type='checkbox' value='1' id="resultdiagnormal" <?php if($arr_view["resultdiag_normal"]==1){ echo "checked"; } ?>/>        
-          ไม่พบความเสี่ยงต่อโรค NCDs</td>
-        </tr>
-      <tr>
-        <td colspan="3"><input name='resultdiagrisk' type='checkbox' value='1' id="resultdiagrisk" <?php if($arr_view["resultdiag_risk"]==1){ echo "checked"; } ?>/>
-  พบความเสี่ยงเบื้องต้นต่อโรค&nbsp;&nbsp;
-&nbsp;&nbsp;
-<input name='risk_dm' type='checkbox' class="frmsaraban" id="risk_dm" value='1' <?php if($arr_view["risk_dm"]==1){ echo "checked"; } ?> />
-DM(เบาหวาน)
-<input name='risk_ht' type='checkbox' class="frmsaraban" id="risk_ht" value='1' <?php if($arr_view["risk_ht"]==1){ echo "checked"; } ?> />
-HT(ความดันโลหิตสูง)
-<input name='risk_dlp' type='checkbox' class="frmsaraban" id="risk_dlp" value='1' <?php if($arr_view["risk_dlp"]==1){ echo "checked"; } ?> />
-DLP(ไขมันในเลือดสูง)
-<input name='risk_storke' type='checkbox' class="frmsaraban" id="risk_storke" value='1' <?php if($arr_view["risk_storke"]==1){ echo "checked"; } ?> />
-Stroke
-
-<input name='risk_obesity' type='checkbox' class="frmsaraban" id="risk_obesity" value='1' <?php if($arr_view["risk_obesity"]==1){ echo "checked"; } ?> />
-Obesity</td>
-        </tr>
-      <tr>
-        <td colspan="3"><input name='resultdiagdiseases' type='checkbox' value='1' id="resultdiagdiseases" <?php if($arr_view["resultdiag_diseases"]==1){ echo "checked"; } ?>/>
-  ป่วยด้วยโรคเรื้อรัง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;
-          <input name='diseases_dm' type='checkbox' class="frmsaraban" id="diseases_dm" value='1' <?php if($arr_view["diseases_dm"]==1){ echo "checked"; } ?> />
-          DM(เบาหวาน)
-          <input name='diseases_ht' type='checkbox' class="frmsaraban" id="diseases_ht" value='1' <?php if($arr_view["diseases_ht"]==1){ echo "checked"; } ?> />
-          HT(ความดันโลหิตสูง)
-          <input name='diseases_dlp' type='checkbox' class="frmsaraban" id="diseases_dlp" value='1' <?php if($arr_view["diseases_dlp"]==1){ echo "checked"; } ?> />
-          DLP(ไขมันในเลือดสูง)
-          <input name='diseases_stroke' type='checkbox' class="frmsaraban" id="diseases_stroke" value='1' <?php if($arr_view["diseases_stroke"]==1){ echo "checked"; } ?> />
-          Stroke
-          <input name='diseases_obesity' type='checkbox' class="frmsaraban" id="diseases_obesity" value='1' <?php if($arr_view["diseases_obesity"]==1){ echo "checked"; } ?> />
-Obesity</td>
-        </tr>
       <tr height="50">
         <td height="52" colspan="3" align="center" bgcolor="#FF6699">
-<? if($num1 < 1){ ?>
-<input name="Submit" type="submit" class="frmsaraban" value="บันทึกข้อมูล" onClick="return checkfrm()" />
+<? if($num < 1){ ?>
+<input name="Submit" type="submit" class="frmsaraban" value="กดบันทึกข้อมูลเข้าระบบ" onClick="return checkfrm()" />
 <? }else{ ?>
-<input name="Submit" type="submit" class="frmsaraban" value="แก้ไขข้อมูล" onClick="return checkfrm()" />
+<input name="Submit" type="submit" class="frmsaraban" value="กดเพื่อแก้ไขข้อมูลในระบบ" onClick="return checkfrm()" />
 <? } ?>        </td>
         </tr>
       

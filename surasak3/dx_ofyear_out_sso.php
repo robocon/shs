@@ -107,6 +107,7 @@ if( $action === 'show' ){
                     <th>bmi</th>
                     <th>bp1</th>
                     <th>bp2</th>
+                    <th>CXR</th>
                     <th>CBC</th>
                     <th>UA</th>
                     <th>น้ำตาลในเลือด FBS</th>
@@ -114,6 +115,7 @@ if( $action === 'show' ){
                     <th>Total Cholesterol</th>
                     <th>HDL Cholesterol</th>
                     <th>HBsAg</th>
+                    <th>Diag</th>
                 </tr>
             </thead>
             <tbody>
@@ -158,7 +160,13 @@ if( $action === 'show' ){
                     WHEN `res_hbsag` = 1 THEN 'ปกติ' 
                     WHEN `res_hbsag` = 2 THEN 'ผิดปกติ' 
                     ELSE ''
-                END AS `res_hbsag` 
+                END AS `res_hbsag`, 
+                CASE
+                    WHEN `cxr` = 1 THEN 'ปกติ' 
+                    WHEN `cxr` = 2 THEN 'ผิดปกติ' 
+                    ELSE ''
+                END AS `cxr`, 
+                `diag` 
                 FROM `chk_doctor` 
                 WHERE `hn` = '".$item['hn']."' 
                 AND `vn` = '".$item['vn']."' ";
@@ -181,6 +189,7 @@ if( $action === 'show' ){
                     <td align="right"><?=$item['bmi'];?></td>
                     <td align="right"><?=$item['bp1'];?></td>
                     <td align="right"><?=$item['bp2'];?></td>
+                    <td><?=$user['cxr'];?></td>
                     <td><?=$user['res_cbc'];?></td>
                     <td><?=$user['res_ua'];?></td>
                     <td><?=$user['res_glu'];?></td>
@@ -188,6 +197,7 @@ if( $action === 'show' ){
                     <td><?=$user['res_chol'];?></td>
                     <td><?=$user['res_hdl'];?></td>
                     <td><?=$user['res_hbsag'];?></td>
+                    <td><?=$user['diag'];?></td>
                 </tr>
                 <?php
                 $i++;

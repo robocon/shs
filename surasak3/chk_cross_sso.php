@@ -196,19 +196,19 @@ $company = $db->get_item();
             <td><?=( $item['cxr'] == '1' ? '»¡µÔ' : '¼Ô´»¡µÔ' );?></td>
             <td>
                 <?php
-                if( $item['res_cbc'] == '1' OR $item['res_cbc'] == '2' ){
-                    echo "ÁÕ";
-                }else{
-                    echo "äÁèÁÕ";
+                if( $item['res_cbc'] == '1' ){
+                    echo "»¡µÔ";
+                }else if( $item['res_cbc'] == '2' ){
+                    echo "¼Ô´»¡µÔ";
                 }
                 ?>
             </td>
             <td>
                 <?php
-                if( $item['res_ua'] == '1' OR $item['res_ua'] == '2' ){
-                    echo "ÁÕ";
-                }else{
-                    echo "äÁèÁÕ";
+                if( $item['res_ua'] == '1' ){
+                    echo "»¡µÔ";
+                }else if( $item['res_ua'] == '2' ){
+                    echo "¼Ô´»¡µÔ";
                 }
                 ?>
             </td>

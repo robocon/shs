@@ -11,6 +11,8 @@ if( empty($cAn) OR empty($cPtname) OR empty($sOfficer) ){
 
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
 
+$refer_number = false;
+
 //เก็บข้อมูลหากคนไข้ Refer
 if(substr($_POST["dctype"],0,1) == "4"){
   
@@ -57,7 +59,10 @@ if(substr($_POST["dctype"],0,1) == "4"){
 	$obj->set_doc_txt($_POST["doc_txt"]);
 	$obj->set_suggestion($_POST["suggestion"]);
 	$obj->set_targe($_POST["targe"]);
-	$obj->inserttb();
+  $obj->inserttb(); 
+  
+  $refer_number = $obj->get_refer_no();
+
 }
 
 
@@ -434,6 +439,11 @@ if($_POST["dctype"] == "8 Dead Autopsy" || $_POST["dctype"] == "9 Dead Non autop
           print "ประเภทการจำหน่าย $dctype<br>";
           print "แพทย์ $cDoctor<br><br>";
           print "จำหน่ายผู้ป่วยเรียบร้อย <br>";
+
+          if( $refer_number !== false ){
+            echo "<br><b>เลขที่ Refer : $refer_number</b><br><br>";
+          }
+
           print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";
           print "เพื่อ update ข้อมูล";
 

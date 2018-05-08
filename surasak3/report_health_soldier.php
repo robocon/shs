@@ -24,7 +24,7 @@ $camp_lists = array(
 #
 $sql = "SELECT a.`row_id`,a.`hn`,a.`registerdate`,a.`camp`,a.`yot`,a.`ptname`,a.`idcard`,a.`birthday`,a.`age`,a.`gender`,
 a.`cigarette`,a.`alcohol`,a.`exercise`,a.`weight`,a.`height`,a.`waist`,a.`bp1`,
-a.`bp2`,a.`chol_result`,a.`chunyot`,a.`hdl_result`,a.`ldl_result`,a.`glu_result`,a.`trig_result`,
+a.`bp2`,a.`chol_result`,a.`chunyot`,a.`hdl_result`,a.`ldl_result`,a.`glu_result`,a.`trig_result`,a.`bmi`,
 (
     CASE 
         WHEN a.`camp` LIKE '%Ã¾.¤èÒÂÊØÃÈÑ¡´ÔìÁ¹µÃÕ' THEN '312600' 
@@ -118,6 +118,7 @@ foreach($items as $key => $item){
 			<th>exercise</th>
 			<th>weight</th>
 			<th>height</th>
+			<th>BMI</th>
 			<th>WC</th>
 			<th>SBP</th>
 			<th>DBP</th>
@@ -169,6 +170,9 @@ foreach($items as $key => $item){
 			<td><?php echo !empty($item['exercise']) ? $item['exercise'] : '' ; ?></td>
 			<td><?php echo number_format($item['weight'], 1); ?></td>
 			<td><?php echo number_format($item['height'], 1); ?></td>
+			<td>
+				<?php echo $item['bmi'];?>
+			</td>
 			<td><?php echo number_format(($item['waist'] / 0.39370), 1);?></td>
 			<td><?php echo $item['bp1']; ?></td>
 			<td><?php echo $item['bp2']; ?></td>
