@@ -20,7 +20,7 @@ foreach ($items as $key => $item) {
     
     $lab_list = array('UA','CBC','BS','BUN','CR','URIC','CHOL','TRI','HDL','LDL','SGOT','SGPT','ALK');
     if( $item['course'] == '2' ){
-        $lab_list = array_merge_recursive($lab_list, array('HBSAB','HBSAG','STOCB','ST'));
+        $lab_list = array_merge_recursive($lab_list, array('10502','HBSAG','10446','ST','C-S'));
         
     }
 
@@ -53,8 +53,8 @@ foreach ($items as $key => $item) {
         '','$cliniciancode', 'MD022 (äÁè·ÃÒºá¾·Âì)', '$priority', '$clinicalinfo' 
     );";
 
-    // $insert = $db->insert($orderhead_sql);
-    // dump($insert);
+    $insert = $db->insert($orderhead_sql);
+    dump($insert);
 
 
     foreach ($lab_list as $lab_key => $lab_code) {
@@ -73,8 +73,8 @@ foreach ($items as $key => $item) {
             '$nLab', '$code', '$oldcode', '$detail'
         );";
 
-        // $insert_detail = $db->insert($orderdetail_sql);
-        // dump($insert_detail);
+        $insert_detail = $db->insert($orderdetail_sql);
+        dump($insert_detail);
 
     }
 

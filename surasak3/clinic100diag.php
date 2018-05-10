@@ -156,6 +156,8 @@ If (!empty($hn)){
 	session_register("tvn"); 
 	session_register("list_codeed");
 
+	session_register("cDepart"); 
+
 	$_SESSION["list_codeed"] = array();
 	//$_SESSION["cDoctor"] = "MD013 ธนบดินทร์ ผลศรีนาค";
 	$_SESSION["cDiag"] = "";
@@ -187,7 +189,10 @@ If (!empty($hn)){
 	    $Netprice=array_sum($aMoney);
 
 	    $aYprice[$x]=$row->yprice*$Amount;
-	    $aNprice[$x]=$row->nprice*$Amount;
+		$aNprice[$x]=$row->nprice*$Amount;
+		
+		$cDepart = $row->depart;
+
 	    //$aSumYprice=array_sum($aYprice);
 	    //$aSumNprice=array_sum($aNprice);
 ?>
@@ -220,7 +225,8 @@ If (!empty($hn)){
 <option value="MD138 มัทนา อัมพะเศวต" >MD138 มัทนา อัมพะเศวต</option> 
 <option value="MD140 ชัชวาลย์  เชวงชุติรัตน์" >MD140 ชัชวาลย์  เชวงชุติรัตน์</option>
 <option value="MD141 อมร ตามไท" >MD141 อมร ตามไท</option> 
-<option value="MD142 กรรณิการ์  ศรีสุวรรณ" >MD142 กรรณิการ์  ศรีสุวรรณ</option> 
+<option value="MD142 กรรณิการ์  ศรีสุวรรณ" >MD142 กรรณิการ์  ศรีสุวรรณ</option>
+<option value="MD144 อนวัช บุปผาเจริญสุข" >MD144 อนวัช บุปผาเจริญสุข</option>
 </select>
 <?
 	print "<br><br>ราคา :";

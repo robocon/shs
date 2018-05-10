@@ -207,19 +207,38 @@ if($_POST["act"]=="show"){
 		$gender=$solrows["gender"];
 	}
 
+
 $sql1="select * from armychkup where hn='".$rows["hn"]."' and yearchkup='$nPrefix'";
+
 //echo $sql1;
 $query1=mysql_query($sql1);
 $num1=mysql_num_rows($query1);
 $arr_view=mysql_fetch_array($query1);
+
 $prawat=$arr_view["prawat"];
 $cigarette=$arr_view["cigarette"];
 $alcohol=$arr_view["alcohol"];
 $exercise=$arr_view["exercise"];
 $diagtype=$arr_view["diagtype"];
 
-if($num1 > 0){
+$weight = '';
+$height = '';
+$bmi = '';
+$waist = '';
+$bp1 = '';
+$bp2 = '';
+
+if($num1 > 0){ 
+
 	$birthday=$arr_view["birthday"];
+
+	$weight = $arr_view["weight"];
+	$height = $arr_view["height"];
+	$bmi = $arr_view["bmi"];
+	$waist = $arr_view["waist"];
+	$bp1 = $arr_view["bp1"];
+	$bp2 = $arr_view["bp2"];
+
 }
 
 ?>
@@ -353,25 +372,25 @@ if($num1 > 0){
       <tr>
         <td><strong>น้ำหนัก</strong></td>
         <td align="center">:</td>
-        <td><input name="txtweight" type="text" class="frmsaraban" id="txtweight" value="<?=$arr_view["weight"];?>" OnChange="fncSum();">
+        <td><input name="txtweight" type="text" class="frmsaraban" id="txtweight" value="<?=$weight;?>" OnChange="fncSum();">
           &nbsp;กก.</td>
       </tr>
       <tr>
         <td><strong>ส่วนสูง</strong></td>
         <td align="center">:</td>
-        <td><input name="txtheight" type="text" class="frmsaraban" id="txtheight" value="<?=$arr_view["height"];?>" OnChange="fncSum();">
+        <td><input name="txtheight" type="text" class="frmsaraban" id="txtheight" value="<?=$height;?>" OnChange="fncSum();">
           &nbsp;ซม.</td>
       </tr>
       <tr>
         <td><strong>BMI</strong></td>
         <td align="center">:</td>
         <td>
-          <input name="txtbmi" type="text" class="frmsaraban" id="txtbmi" value="<?=$arr_view["bmi"];?>"></td>
+          <input name="txtbmi" type="text" class="frmsaraban" id="txtbmi" value="<?=$bmi;?>"></td>
       </tr>
       <tr>
         <td><strong>เส้นรอบเอว</strong></td>
         <td align="center">:</td>
-        <td><input name="txtwaist" type="text" class="frmsaraban" id="txtwaist" value="<?=$arr_view["waist"];?>">
+        <td><input name="txtwaist" type="text" class="frmsaraban" id="txtwaist" value="<?=$waist;?>">
           &nbsp;นิ้ว</td>
       </tr>
       <tr>
@@ -395,13 +414,13 @@ if($num1 > 0){
       <tr>
         <td><strong>ความดันโลหิต ครั้งที่ 1</strong></td>
         <td align="center">:</td>
-        <td><input name="txtbp1" type="text" class="frmsaraban" id="txtbp1" value="<?=$arr_view["bp1"];?>">
+        <td><input name="txtbp1" type="text" class="frmsaraban" id="txtbp1" value="<?=$bp1;?>">
 &nbsp;มม. ปรอท</td>
       </tr>
       <tr>
         <td><strong>ความดันโลหิต ครั้งที่ 2</strong></td>
         <td align="center">:</td>
-        <td><input name="txtbp2" type="text" class="frmsaraban" id="txtbp2" value="<?=$arr_view["bp2"];?>">
+        <td><input name="txtbp2" type="text" class="frmsaraban" id="txtbp2" value="<?=$bp2;?>">
 &nbsp;มม. ปรอท</td>
       </tr>
 <script type="text/javascript">
@@ -692,7 +711,8 @@ $officer=$_SESSION["sOfficer"];
 if($_POST["hospital"]==""){
 $_POST["hospital"]=$_POST["hospital_other"];
 }
-	$add="insert into armychkup set registerdate='$datekey',
+	$add="insert into armychkup set row_id = NULL,
+													registerdate='$datekey',
 													 hn='$_POST[hn]',
 													 yot='$_POST[yot]',
 													 ptname='$_POST[ptname]',
@@ -829,7 +849,10 @@ $_POST["hospital"]=$_POST["hospital_other"];
 													 yearchkup='$_POST[yearchkup]',
 													 typechkup='out'";
 													//echo $add;
-	if(mysql_query($add)){
+
+													$query = mysql_query($add) or die( mysql_error() );
+
+	if( $query ){
 		echo "<script>alert('บันทึกข้อมูลเรียบร้อย');window.location='armychkupopd_out.php';</script>";
 	}else{
 		echo "<script>alert('ผิดพลาด บันทึกข้อมูลไม่สำเร็จ');window.location='armychkupopd_out.php';</script>";
@@ -837,11 +860,12 @@ $_POST["hospital"]=$_POST["hospital_other"];
 }
 
 if($_POST["act"]=="edit"){
-$lastupdate=date("Y-m-d H:i:s");
-$officer=$_SESSION["sOfficer"];
-if($_POST["hospital"]==""){
-$_POST["hospital"]=$_POST["hospital_other"];
-}
+
+	$lastupdate=date("Y-m-d H:i:s");
+	$officer=$_SESSION["sOfficer"];
+	if($_POST["hospital"]==""){
+		$_POST["hospital"]=$_POST["hospital_other"];
+	}
 	$edit="update armychkup set yot='$_POST[yot]',
 													 ptname='$_POST[ptname]',
 													 idcard='$_POST[chkidcard]',

@@ -150,7 +150,17 @@ if($cDepart == 'XRAY'){
 }
 
 //insert data into depart
-   $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab,staf_massage)VALUES('$nRunno','$Thidate','$cPtname','$cHn','$cAn','$cDoctor','$cDepart','$item','$aDetail', '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab','$cstaf_massage');";
+   $query = "INSERT INTO depart(
+	   chktranx,date,ptname,hn,an,
+	   doctor,depart,item,detail,price,
+	   sumyprice,sumnprice,paid, idname,diag,
+	   accno,tvn,ptright,lab,staf_massage 
+	)VALUES( 
+		'$nRunno','$Thidate','$cPtname','$cHn','$cAn',
+		'$cDoctor','$cDepart','$item','$aDetail', '$Netprice',
+		'$aSumYprice','$aSumNprice','','$sOfficer','$cDiag',
+		'$cAccno','$tvn','$cPtright','$nLab','$cstaf_massage'
+	);";
 
       $result = mysql_query($query) or 
                 die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
