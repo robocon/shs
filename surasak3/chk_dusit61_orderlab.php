@@ -53,8 +53,8 @@ foreach ($items as $key => $item) {
         '','$cliniciancode', 'MD022 (äÁè·ÃÒºá¾·Âì)', '$priority', '$clinicalinfo' 
     );";
 
-    $insert = $db->insert($orderhead_sql);
-    dump($insert);
+    // $insert = $db->insert($orderhead_sql);
+    // dump($insert);
 
 
     foreach ($lab_list as $lab_key => $lab_code) {
@@ -73,8 +73,8 @@ foreach ($items as $key => $item) {
             '$nLab', '$code', '$oldcode', '$detail'
         );";
 
-        $insert_detail = $db->insert($orderdetail_sql);
-        dump($insert_detail);
+        // $insert_detail = $db->insert($orderdetail_sql);
+        // dump($insert_detail);
 
     }
 
