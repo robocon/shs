@@ -78,6 +78,7 @@ if( $action == false ){
                             <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                             <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                             <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
+                            <li><a href="dx_ofyear_out.php" target="_blank">ซักประวัติ(สิทธิ ปกส.)</a></li>
                             <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
                         </ol>
                     </td>

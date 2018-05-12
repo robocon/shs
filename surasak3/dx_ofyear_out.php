@@ -368,17 +368,22 @@ while($arr = Mysql_fetch_assoc($result)){
 		  <td align="right"><span class="tb_font_2">หน่วยงาน : </span></td>
 		  <td colspan="3"><span class="pdxhead">
 		    <select name='camp' id="camp">
-              <?
-        $sql12 = "select * from chkcompany where status='Y' order by row_id asc";
-		$rows12 =mysql_query($sql12);
-		while($result12 = mysql_fetch_array($rows12)){
-		?>
-              <option value='<?=$result12['name']?>' >
-                <?=$result12['name']?>
-                </option>
-              <?
-		}
-		?>
+			<?php 
+			$toborow_key = substr($toborow,0,4);
+			$sql12 = "select * from chkcompany where status='Y' order by row_id asc";
+			$rows12 = mysql_query($sql12);
+			while($result12 = mysql_fetch_array($rows12)){ 
+
+				$selected = '';
+				if( $toborow_key == 'EX46' ){
+					$selected = 'selected="selected"';
+				}
+
+				?>
+				<option value='<?=$result12['name']?>' <?=$selected;?> ><?=$result12['name']?></option>
+				<?php
+			}
+			?>
             </select>
 		  </span></td>
 		  </tr>

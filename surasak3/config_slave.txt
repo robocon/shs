@@ -1,0 +1,31 @@
+chown -R mysql:mysql /var/lib/mysql/testsmdb;
+chmod -R 660 /var/lib/mysql/testsmdb;
+chown mysql:mysql /var/lib/mysql/testsmdb;
+chmod 700 /var/lib/mysql/testsmdb;
+service mysqld start;
+
+
+SLAVE STOP;
+
+CHANGE MASTER TO 
+MASTER_HOST='192.168.1.2', 
+MASTER_PORT=3306, 
+MASTER_USER='userrepl', 
+MASTER_PASSWORD='userrepl1234',
+MASTER_LOG_FILE='mysql-bin.000084',
+MASTER_LOG_POS=762613066;
+
+CHANGE REPLICATION FILTER REPLICATE_DO_TABLE = ('smdb.soldier');
+
+
+SET GLOBAL sql_slave_skip_counter = 1;
+SLAVE START;
+
+SHOW SLAVE STATUS\G;
+
+
+SLAVE STOP;
+SET GLOBAL sql_slave_skip_counter = 99;
+SLAVE START;
+SHOW SLAVE STATUS\G;
+

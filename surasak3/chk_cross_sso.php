@@ -11,13 +11,15 @@ if( empty($camp) ){
 }
 
 $sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
-c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
+c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag`, 
+c.`yearchk` 
 FROM ( 
     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
 ) AS a 
 LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
-LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN`
-WHERE b.row_id IS NOT NULL ";
+LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN` 
+WHERE b.row_id IS NOT NULL 
+AND b.`yearchk` = c.`yearchk`";
 $db->select($sql);
 $items = $db->get_items();
 
