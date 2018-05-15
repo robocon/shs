@@ -6,7 +6,7 @@ $time = 10000;
 
 // ธนบดินทร์ ผลศรีนาค
 if($_SESSION["sIdname"] == "md19921"){
-	$time = 2000;
+	$time = 800;
 }else if($_SESSION['sIdname'] == 'md38220' OR $_SESSION['sIdname'] == 'md50814'){ // พิพิธ  บุรัสการ + สาริศ เฉลิมพงศ์ชัย
 	$time = 31536000;
 }
@@ -14,14 +14,6 @@ if($_SESSION["sIdname"] == "md19921"){
 ?>
 <html>
 <head>
-<script type="text/javascript">
-	window.onload = function(){
-		window.print();
-		setTimeout(function(){
-			window.location.href = 'dt_index.php';
-		},<?php echo $time;?>);
-	}
-</script>
 </head>
 
 <body leftmargin="0" topmargin="0">
@@ -62,5 +54,15 @@ if($_SESSION["sIdname"] == "md19921"){
 <?php 
 echo $_SESSION["dt_drugstk"];
 ?>
+
+<script type="text/javascript">
+	window.onload = function(){
+		window.print();
+		setTimeout(function(){
+			window.location.href = 'dt_index.php';
+		},<?php echo $time;?>);
+	}
+</script>
+
 </body>
 </html>
