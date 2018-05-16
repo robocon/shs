@@ -97,6 +97,8 @@ while($result = mysql_fetch_assoc($row2)){
 	$hn = $result["hn"];
 	$show_date = $result['show_date'];
 
+	$c_s = $result['cs'];
+
 	// ถ้าไม่มีวันที่ใน chk_company_list ให้ดึงมาจาก opcardchk แทน
 	if( empty($show_date) ){
 		$sqlcc = mysql_query("SELECT datechkup, branch FROM `opcardchk`WHERE `HN` = '$hn' ");
@@ -156,7 +158,7 @@ while($result = mysql_fetch_assoc($row2)){
 		<td colspan="2">
 			<table width="100%">
 				<tr>
-					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="75" height="83" /></td>
+					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="70" height="83" /></td>
 					<td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
 					<td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 				</tr>
@@ -216,7 +218,7 @@ while($result = mysql_fetch_assoc($row2)){
 					<td>
 						<table width="100%"  class="text1" >
 							<tr>
-								<td width="588" valign="top">
+								<td width="100%" valign="top">
 									<strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;
 									<span class="text3">
 										<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
@@ -355,7 +357,7 @@ if( $num > 0 ){
 				<td>
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
+							<td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด</strong></td>
 							<td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
 							<td width="18%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
 							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
@@ -377,21 +379,21 @@ if( $num > 0 ){
 							while($objResult = mysql_fetch_array($objQuery)){
 
 								if($objResult["labcode"]=="WBC"){
-									$labmean="การตรวจนับเม็ดเลือดขาว";
+									$labmean="จำนวนเม็ดเลือดขาว";
 									$wbc_result = $objResult["result"];
 
 								}else if($objResult["labcode"]=="NEU"){
-									$labmean="การติดเชื้อแบคทีเรีย";
+									$labmean="เม็ดเลือดขาวชนิดนิวโทรฟิล";
 									$neu_result = $objResult["result"];
 
 								}else if($objResult["labcode"]=="LYMP"){
-									$labmean="การติดเชื้อไวรัส หรือมะเร็งเม็ดเลือด";
+									$labmean="เม็ดเลือดขาวชนิดลิมโฟไซด์";
 									$lymp_result = $objResult["result"];
 
 								}else if($objResult["labcode"]=="MONO"){
 									$labmean="โรคเกี่ยวกับการแพ้ หรือมะเร็งเม็ดเลือด";
 								}else if($objResult["labcode"]=="EOS"){
-									$labmean="อาการของโรคภูมแพ้ หรือพยาธิ";
+									$labmean="เม็ดเลือดขาวชนิดอีโอซิโนฟิล";
 									$eos_result = $objResult["result"];
 
 								}else if($objResult["labcode"]=="BASO"){
@@ -409,7 +411,7 @@ if( $num > 0 ){
 								}else if($objResult["labcode"]=="HB"){
 									$labmean="การตรวจวัดความเข้มข้นของฮีโมโกลบิน";
 								}else if($objResult["labcode"]=="HCT"){
-									$labmean="การวัดเม็ดเลือดแดงอัดแน่น";
+									$labmean="ความเข้มข้นของเลือด";
 									$hct_result = $objResult["result"];
 
 								}else if($objResult["labcode"]=="MCV"){
@@ -419,7 +421,7 @@ if( $num > 0 ){
 								}else if($objResult["labcode"]=="MCHC"){
 									$labmean="ความเข้มข้นฮีโมโกลบินในเม็ดเลือดแดง";
 								}else if($objResult["labcode"]=="PLTC"){
-									$labmean="การตรวจนับเกล็ดเลือดในเลือด";
+									$labmean="จำนวนเกล็ดเลือดในเลือด";
 									$pltc_result = $objResult["result"];
 									
 								}else if($objResult["labcode"]=="PLTS"){
@@ -676,22 +678,23 @@ FROM (
 LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
 LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` 
 ORDER BY c.seq ASC";
-$outlab_query = mysql_query($sql) or die( mysql_error() );
-$outlab_row = mysql_num_rows($outlab_query);
+// $outlab_query = mysql_query($sql) or die( mysql_error() );
+// $outlab_row = mysql_num_rows($outlab_query);
+// ตัดพวก outlab ออกไปก่อน
 
- if( $other_result_row > 0 OR $outlab_row > 0 ){ 
+ if( $other_result_row > 0 ){ 
  ?>
 	<tr>
-		<td colspan="2"  valign="top">
+		<td colspan="2" valign="top">
 			<table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
 				<tr>
 					<td height="52" valign="top" style="padding: 2px;">
 						<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
 							<tr>
-								<td width="32%" valign="top" bgcolor="#CCCCCC"><strong>รายการตรวจ</strong></td>
-								<td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ผลการตรวจ</strong></td>
-								<td width="9%" valign="top" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-								<td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;"><strong>สรุปผลการตรวจ</strong></td>
+								<td width="32%" valign="top" bgcolor="#CCCCCC" align="center"><strong>รายการตรวจ</strong></td>
+								<td width="9%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
+								<td width="9%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ค่าปกติ</strong></td>
+								<td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;" align="center"><strong>สรุปผลการตรวจ</strong></td>
 							</tr>
 							<?php
 							$i=0;
@@ -728,13 +731,13 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}else if($objResult["labname"]=="Cholesterol"){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="HDL"){
-										$labmean="ไขมันดี";			
+										$labmean="ไขมันความหนาแน่นสูง";			
 									}else if($objResult["labname"]=="Triglyceride"){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="LDL"){
-										$labmean="ไขมันเลว";	
+										$labmean="ไขมันความหนาแน่นต่ำ";	
 									}else if($objResult["labname"]=="LDLC"){
-										$labmean="ไขมันเลว";												
+										$labmean="ไขมันความหนาแน่นต่ำ";												
 									}else if($objResult["labname"]=="SGOT(AST)"){
 										$labmean="การทำงานของตับ";
 									}else if($objResult["labname"]=="SGPT(ALT)"){
@@ -977,10 +980,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 									?>
 									<tr height="23">
-										<td><?=$outlab_code;?></td>
-										<td><?=$outlab_result;?></td>
-										<td><?=$outlab_range;?></td>
-										<td>
+										<td align="center"><?=$outlab_code;?></td>
+										<td align="center"><?=$outlab_result;?></td>
+										<td align="center"><?=$outlab_range;?></td>
+										<td align="center">
 											<?php
 											// default เป็นค่าปกติ
 											// if($hn=="49-2672"){
@@ -1030,7 +1033,7 @@ FROM (
         `profilecode`='HAVTOT' 
         OR `profilecode`='HBSAG' 
         OR `profilecode`='WET' 
-        OR `profilecode`='STOOL' 
+        # OR `profilecode`='STOOL' 
         OR `profilecode`='C-S' 
     ) 
     ORDER BY `autonumber` ASC  
@@ -1057,11 +1060,56 @@ if ( $group2_rows > 0 ) {
 				<td>
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด </strong></td>
-							<td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
-							<td width="18%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
+							<td width="45%" align="center" bgcolor="#CCCCCC"><strong>รายการตรวจ </strong></td>
+							<td width="9%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
+							<td width="9%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
+							<td width="37%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 						</tr>
+						<?php 
+
+						$type2 = array(
+							'HAVTOT' => '<b>ตรวจไวรัสตับอักเสบ A</b> (Anti-HAV IgG)',
+							'HBSAG' => '<b>ตรวจไวรัสตับอักเสบ B</b> (HBsAg)',
+							'STOOL' => '<b>ตรวจอุจจาระสมบูรณ์แบบ</b> (Stool Exam - Color)',
+							'WET' => '<b>ตรวจอุจจาระสมบูรณ์แบบ</b> (Stool Exam)',
+						);
+
+						while( $item = mysql_fetch_assoc($query)){ 
+
+							$labcode = $item['profilecode'];
+
+							?>
+							<tr>
+								<td><?=$type2[$labcode];?></td>
+								<td align="center"><?=$item['result'];?></td>
+								<td align="center"><?=$item['normalrange'];?></td>
+								<td align="center">
+									<?php
+									$result_outlab_txt = 'ปกติ';
+									if( $item['flag'] != 'N' ){
+										$result_outlab_txt = 'ผิดปกติ';
+									}
+
+									echo $result_outlab_txt;
+									?>
+								</td>
+							</tr>
+							<?php 
+							// หลังจากแสดง WET ไปเรียบร้อยแล้ว
+							if ( $labcode == 'WET' ) {
+								if( !empty($c_s) ){
+									?>
+									<tr>
+										<td><b>ตรวจอุจจาระเพาะเชื้อ</b> (Stool Culture)</td>
+										<td colspan="3"><?=$c_s;?></td>
+									</tr>
+									<?php
+								}
+							}
+
+						}
+						
+						?>
 					</table>
 				</td>
 			</tr>
