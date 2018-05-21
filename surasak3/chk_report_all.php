@@ -21,10 +21,14 @@ $camp = $_GET["camp"];
 
 $title_date = '';
 
-$sql = "SELECT * 
-FROM `out_result_chkup` 
-WHERE `part` = '$camp' 
-ORDER BY `row_id` ASC";
+$sql = "SELECT a.* 
+FROM ( 
+    SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' 
+) AS a 
+LEFT JOIN ( 
+    SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC 
+) AS b ON b.`HN` = a.`hn` 
+ORDER BY b.`row` ASC";
 $out_result_sql = mysql_query($sql) or die ( mysql_error() );
 $num = mysql_num_rows($out_result_sql);
 
@@ -45,7 +49,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center"><strong>น้ำหนัก</strong></th>
     <th width="5%" rowspan="2" align="center"><strong>ส่วนสูง</strong></th>
     <th width="5%" rowspan="2" align="center"><strong>BP</strong></th>
-    <th colspan="25" align="center"><strong>รายการตรวจ</strong></th>
+    <th colspan="28" align="center"><strong>รายการตรวจ</strong></th>
     <th width="8%" rowspan="2" align="center"><strong>ภาวะสุขภาพโดยรวม</strong></th>
     <th colspan="2" align="center"><strong>สรุปผลการตรวจ</strong></th>
   </tr>
@@ -65,8 +69,13 @@ $company = mysql_fetch_assoc($q);
     <th width="7%" align="center"><strong>SGOT</strong></th>
     <th width="6%" align="center"><strong>SGPT</strong></th>
     <th width="4%" align="center"><strong>ALK</strong></th>
-    <th width="7%" align="center"><strong>HBSAG</strong></th>
+    <th width="7%" align="center"><strong>HBsAg</strong></th>
     <th width="6%" align="center"><strong>FOBT</strong></th>
+
+    <th width="6%" align="center"><strong>Anti-HAV IgG</strong></th>
+    <th width="6%" align="center"><strong>Stool Exam</strong></th>
+    <th width="6%" align="center"><strong>Stool Culture</strong></th>
+
     <th width="6%" align="center"><strong>METAMP</strong></th>
     <th width="5%" align="center"><strong>ABOC</strong></th>
     <th width="6%" align="center"><strong>EKG</strong></th>
@@ -82,7 +91,8 @@ $company = mysql_fetch_assoc($q);
 $i=0;
 while($result = mysql_fetch_array($out_result_sql)){
 
-$age=$result["agey"];
+$age = $result["age"];
+$cs = $result["cs"];
 
 if(empty($result["HN"])){
     $result["HN"]=$result["hn"];
@@ -422,7 +432,60 @@ if($hbsag=="Negative"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+
+<!-- Anti-HAV IgG -->
+<td align="center">
+    <?php 
+
+    $hn = $result['HN'];
+
+    $sql = "SELECT b.`result`, b.`flag` 
+    FROM ( 
+
+        SELECT *, MAX(`autonumber`) AS `latest_number`
+        FROM `resulthead` 
+        WHERE `hn` = '$hn' 
+        AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+        AND `profilecode` = 'HAVTOT' 
+        GROUP BY `profilecode` 
+
+    ) AS a
+    INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+    WHERE b.result !='DELETE' OR b.result !='*' ";
+    
+    $query13 = mysql_query($sql);
+    list($result, $flag) = mysql_fetch_array($query13);
+
+    echo $result;
+    ?>
+</td>
+<td align="center">
+    <?php 
+    $sql = "SELECT b.`result`, b.`flag` 
+    FROM ( 
+
+        SELECT *, MAX(`autonumber`) AS `latest_number`
+        FROM `resulthead` 
+        WHERE `hn` = '$hn' 
+        AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+        AND `profilecode` = 'WET' 
+        GROUP BY `profilecode` 
+
+    ) AS a
+    INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+    WHERE b.result !='DELETE' OR b.result !='*' ";
+
+    $query13 = mysql_query($sql);
+    list($result, $flag) = mysql_fetch_array($query13);
+
+    echo $result;
+    ?>
+</td> 
+<!-- Stool Culture -->
+<td align="center"><?php echo $cs; ?></td>
+
+<td align="center">
+<?php 
 $sql14="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
