@@ -57,35 +57,15 @@ if( empty($action) ){
                     <td>แผนก</td>
                 </tr>
             </table>
-            <p><b>ตัวอย่างเช่น</b></p>
-            <table class="chk_table">
-                <tr>
-                    <td>1</td>
-                    <td>301</td>
-                    <td>99-9990</td>
-                    <td>1111111111111</td>
-                    <td>นายประกอบ ผลไม้</td>
-                    <td>50</td>
-                    <td>25/11/2510</td>
-                    <td>1</td>
-                    <td>10 ตุลาคม 2560</td>
-                    <td>A</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>302</td>
-                    <td>99-9991</td>
-                    <td>2222222222222</td>
-                    <td>นายโชติ ช่วง</td>
-                    <td>25</td>
-                    <td>01/05/2535</td>
-                    <td>1</td>
-                    <td>10 ตุลาคม 2560</td>
-                    <td>B</td>
-                </tr>
-            </table>
         </div>
     </form>
+
+    <div>
+        <div>
+            <div><b>ตัวอย่างการจัดข้อมูล</b></div>
+            <img src="images/sso-import-user.png" alt="">
+        </div>
+    </div>
     <?php
 } else if ( $action === 'import' ) {
     $file = $_FILES['file'];

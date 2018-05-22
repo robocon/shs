@@ -60,6 +60,7 @@ if( $action == false ){
                 <th>รอบปีงบประมาณ</th>
                 <th>ลงผล/พิมพ์ผล</th>
                 <th></th>
+                <th></th>
             </tr>
             <?php
             $i = 1;
@@ -82,6 +83,7 @@ if( $action == false ){
                             <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
                         </ol>
                     </td>
+                    <td><a href="javascript: void(0);?part=<?=$item['code'];?>">ผล Lab ทั้งหมด</a></td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไข</a></td>
                 </tr>
                 <?php

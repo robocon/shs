@@ -54,7 +54,7 @@ $menu_list = array(
     array('link' => 'chk_company.php', 'name' => 'จัดการรายชื่อบริษัท', 'access' => 'ADM|ADMNEWCHKUP'),
     array('link' => 'chk_import_user.php', 'name' => 'นำเข้าข้อมูลสู่ระบบ', 'access' => 'ADM|ADMNEWCHKUP'),
     array('link' => 'cxr_out_result.php', 'name' => 'นำเข้าข้อมูล X-Ray', 'access' => 'ADM|ADMNEWCHKUP'),
-    array('link' => 'chk_labcare.php', 'name' => 'ระบบLab', 'access' => 'ADM|ADMNEWCHKUP'),
+    array('link' => 'chk_lab_order.php', 'name' => 'นำเข้าOrder Lab', 'access' => 'ADM|ADMNEWCHKUP'),
     array('link' => 'chk_sso.php', 'name' => 'Walk-in ปกส.', 'access' => 'ALL'),
     array('link' => 'dt_emp_manual_index.php', 'name' => 'ลงผลตรวจ ปกส.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank'),
 
