@@ -11,9 +11,12 @@ c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c
 FROM ( 
     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
 ) AS a 
-LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+LEFT JOIN ( 
+    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '61' AND `camp` LIKE 'ตรวจสุขภาพ%'
+) AS b ON b.`hn` = a.`HN` 
 LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN`
-WHERE b.row_id IS NOT NULL ";
+WHERE b.row_id IS NOT NULL 
+ORDER BY a.`row`";
 $db->select($sql);
 $items = $db->get_items();
 
@@ -27,7 +30,7 @@ $company = $db->get_item();
 <style>
 *{
     font-family: TH SarabunPSK;
-    font-size: 16px;
+    font-size: 14px;
 }
 .chk_table{
     border-collapse: collapse;
@@ -43,20 +46,18 @@ $company = $db->get_item();
 }
 </style>
 <div style="text-align: center;">
-    <p><b>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['name'];?> บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</b></p>
-    <p><b>ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p>
+    <p><b><?=$company['name'];?> ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p>
 </div>
 <table class="chk_table" width="100%">
     <thead>
         <tr>
-            <th width="3%" rowspan="2" align="center">ลำดับ</th>
-            <th width="5%" rowspan="2" align="center">HN</th>
-            <th width="15%" rowspan="2" align="center">ชื่อ - สกุล</th>
-            <th width="3%" rowspan="2" align="center">อายุ</th>
-            <th width="3%" rowspan="2" align="center">น้ำหนัก</th>
-            <th width="3%" rowspan="2" align="center">ส่วนสูง</th>
+            <th rowspan="2" align="center">ลำดับ</th>
+            <th rowspan="2" align="center">HN</th>
+            <th rowspan="2" align="center">ชื่อ - สกุล</th>
+            <th rowspan="2" align="center">อายุ</th>
+            <th rowspan="2" align="center">น้ำหนัก</th>
+            <th rowspan="2" align="center">ส่วนสูง</th>
             <th rowspan="2">BMI</th>
-
             <th width="5%" rowspan="2" align="center">BP</th>
             <th colspan="14" align="center">รายการตรวจ</th>
             <th width="8%" rowspan="2" align="center">สรุปผลการตรวจ</th>
@@ -64,20 +65,20 @@ $company = $db->get_item();
         </tr>
         <tr>
 
-            <th width="3%" align="center">X-RAY</th>
-            <th width="3%" align="center">CBC</th>
-            <th width="3%" align="center">UA</th>
-            <th width="3%" align="center">BS</th>
-            <th width="3%" align="center">CR</th>
-            <th width="3%" align="center">CHOL</th>
-            <th width="3%" align="center">HDL</th>
-            <th width="5%" align="center">HBsAg</th>
-            <th width="6%" align="center">FOBT</th>
-            <th width="3%" align="center">LDL</th>
-            <th width="3%" align="center">BUN</th>
-            <th width="3%" align="center">SGOT</th>
-            <th width="3%" align="center">SGPT</th>
-            <th width="3%" align="center">ALK</th>
+            <th align="center">X-RAY</th>
+            <th align="center">CBC</th>
+            <th align="center">UA</th>
+            <th align="center">GLU</th>
+            <th align="center">CR</th>
+            <th align="center">CHOL</th>
+            <th align="center">HDL</th>
+            <th align="center">HBsAg</th>
+            <th align="center">FOBT</th>
+            <th align="center">LDL</th>
+            <th align="center">BUN</th>
+            <th align="center">SGOT</th>
+            <th align="center">SGPT</th>
+            <th align="center">ALK</th>
 
         </tr>
     </thead>
@@ -203,7 +204,7 @@ $company = $db->get_item();
             <td align="right"><?=$age;?></td>
             <td align="right"><?=$item['weight'];?></td>
             <td align="right"><?=$item['height'];?></td>
-        <td><?=$item['bmi'];?></td>
+            <td align="right"><?=$item['bmi'];?></td>
             <td><?=$bp1.'/'.$bp2?></td>
 
 
@@ -337,4 +338,3 @@ $company = $db->get_item();
 
     </tbody>
 </table>
-<p align="center">BS = น้ำตาลในเลือด  CHOL, HDL = ไขมันในเลือด CR = การทำงานของไต HBsAg = เชื้อไวรัสตับอักเสบ  FOBT = เลือดในอุจจาระ</p>
