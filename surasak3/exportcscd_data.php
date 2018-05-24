@@ -19,7 +19,8 @@ body,td,th {
   $selmon=date("m");
   ?>
 <form method="POST" action="datacscd/exportdatacscd.php">
-<p><strong>ส่งออกข้อมูลเบิก CSCD แต่ละเดือน</strong>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'  class='txt'><< ไปเมนู</a></p>
+<p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (CSCD)<br />
+ ปรับปรุงล่าสุด Date11/05/2561 By Pfc.แอมป์ โทร.6203</strong></p>
   <strong>ข้อมูลประจำวันที่ : </strong>
   <select name="rptdate" class="txt" id="rptdate">
   <?
@@ -68,6 +69,6 @@ body,td,th {
 				}
 				echo "<select>";
 				?>
-      <p style="margin-left: 65px;"><input type="submit" value="ส่งออกข้อมูล" name="B1"  class="txt" /></p>
+      <p style="margin-left: 65px;"><input type="submit" value="ส่งออกข้อมูล" name="B1"  class="txt" />&nbsp;&nbsp;&nbsp;<input type="button" value="กลับหน้าหลัก" onclick="window.location.href='../nindex.htm' " class="txt" /></p>
 </form>
 

@@ -421,7 +421,7 @@ if( $num > 0 ){
 								}else if($objResult["labcode"]=="MCHC"){
 									$labmean="ความเข้มข้นฮีโมโกลบินในเม็ดเลือดแดง";
 								}else if($objResult["labcode"]=="PLTC"){
-									$labmean="จำนวนเกล็ดเลือดในเลือด";
+									$labmean="จำนวนเกล็ดเลือด";
 									$pltc_result = $objResult["result"];
 									
 								}else if($objResult["labcode"]=="PLTS"){
@@ -437,6 +437,13 @@ if( $num > 0 ){
 									$objResult["result"]=$objResult["result"];
 									$showresult="ปกติ";
 								}
+
+
+								// ตัด S ออก
+								if ( $objResult["labcode"] == 'EOS' ) {
+									$objResult["labcode"] = substr($objResult["labcode"], 0, -1);
+								}
+
 								?>
 								<tr height="23">
 									<td><strong><?=$labmean;?></strong> (<?=$objResult["labcode"];?>)</td>
@@ -597,6 +604,11 @@ if( $num > 0 ){
 								$normalrange="Negative";
 							}else{
 								$normalrange=$objResult["normalrange"];
+							}
+
+							// ตัด U ออก
+							if( $objResult["labcode"] == 'PROU' OR $objResult["labcode"] == 'GLUU' OR $objResult["labcode"] == 'WBCU' OR $objResult["labcode"] == 'RBCU'  ){
+								$objResult["labcode"] = substr($objResult["labcode"], 0, -1);
 							}
 
 							?>
@@ -924,6 +936,10 @@ ORDER BY c.seq ASC";
 											$objResult["labname"] = 'FOBT';
 										}
 
+										if ( $objResult["labname"] == 'SGOT(AST)' OR $objResult["labname"] == 'SGPT(ALT)' ) {
+											$objResult["labname"] = substr($objResult["labname"], 0, -5);
+										}
+
 									?>
 									<tr height="23">
 										<td width="34%" valign="top"><strong><?=$labmean;?></strong> (<?=$objResult["labname"];?>)</td>
@@ -1027,19 +1043,20 @@ ORDER BY c.seq ASC";
 $sql = "SELECT a.*, b.* 
 FROM ( 
 
-    SELECT * FROM `resulthead` 
-    WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+    SELECT *, MAX(`autonumber`) AS `latest_id` 
+	FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
     AND ( 
         `profilecode`='HAVTOT' 
         OR `profilecode`='HBSAG' 
         OR `profilecode`='WET' 
-        # OR `profilecode`='STOOL' 
-        OR `profilecode`='C-S' 
     ) 
+	GROUP BY `profilecode` 
     ORDER BY `autonumber` ASC  
 
 ) AS a 
-LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
 WHERE b.`result` != 'DELETE' 
 GROUP BY a.`profilecode` 
 ORDER BY b.seq ASC";
@@ -1062,7 +1079,6 @@ if ( $group2_rows > 0 ) {
 						<tr>
 							<td width="45%" align="center" bgcolor="#CCCCCC"><strong>รายการตรวจ </strong></td>
 							<td width="9%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
-							<td width="9%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
 							<td width="37%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 						</tr>
 						<?php 
@@ -1070,7 +1086,6 @@ if ( $group2_rows > 0 ) {
 						$type2 = array(
 							'HAVTOT' => '<b>ตรวจไวรัสตับอักเสบ A</b> (Anti-HAV IgG)',
 							'HBSAG' => '<b>ตรวจไวรัสตับอักเสบ B</b> (HBsAg)',
-							'STOOL' => '<b>ตรวจอุจจาระสมบูรณ์แบบ</b> (Stool Exam - Color)',
 							'WET' => '<b>ตรวจอุจจาระสมบูรณ์แบบ</b> (Stool Exam)',
 						);
 
@@ -1082,7 +1097,6 @@ if ( $group2_rows > 0 ) {
 							<tr>
 								<td><?=$type2[$labcode];?></td>
 								<td align="center"><?=$item['result'];?></td>
-								<td align="center"><?=$item['normalrange'];?></td>
 								<td align="center">
 									<?php
 									$result_outlab_txt = 'ปกติ';
@@ -1090,18 +1104,23 @@ if ( $group2_rows > 0 ) {
 										$result_outlab_txt = 'ผิดปกติ';
 									}
 
+									if( $labcode == 'HBSAG' && $item['result'] == 'Positive' ){
+										$result_outlab_txt = 'ตรวจพบการติดเชื้อไวรัสตับอักเสบชนิด B';
+									}
+
 									echo $result_outlab_txt;
 									?>
 								</td>
 							</tr>
 							<?php 
-							// หลังจากแสดง WET ไปเรียบร้อยแล้ว
+							// หลังจากแสดง WET ไปเรียบร้อยแล้ว 
 							if ( $labcode == 'WET' ) {
 								if( !empty($c_s) ){
 									?>
 									<tr>
 										<td><b>ตรวจอุจจาระเพาะเชื้อ</b> (Stool Culture)</td>
-										<td colspan="3"><?=$c_s;?></td>
+										<td></td>
+										<td align="center"><?=$c_s;?></td>
 									</tr>
 									<?php
 								}
@@ -1167,7 +1186,9 @@ if ( $group2_rows > 0 ) {
 			order by row_id desc";
 			$query3=mysql_query($sql3);
 			$num3=mysql_num_rows($query3);
-			if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
+			// if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
+
+			if( !empty($result["ekg"]) ){
 			?>
 			<tr>
 				<td>

@@ -12,7 +12,7 @@ $filename2 = "billdisp$thiyr$yrmonth$yrdate.txt";
 if(file_exists("$filename1") && file_exists("$filename2")){
 	unlink("$filename1");
 	unlink("$filename2");					
-	echo "ลบข้อมูลเดิมเรียบร้อย </br>";				
+	//echo "ลบข้อมูลเดิมเรียบร้อย </br>";				
 }
 // จบ ลบไฟล์-----------------)
 ?>
@@ -28,7 +28,7 @@ $cscd="จ่ายตรง";
 
 
      $query="SELECT * FROM reportcscd01";
-     $result = mysql_query($query) or die("Query xxx failed");
+     $result = mysql_query($query) or die("Query reportcscd01 failed");
 	 $counttran =mysql_num_rows($result);
 
 
@@ -73,9 +73,9 @@ fwrite($objFopen1, $strText11);
 	fclose($objFopen1);
 
 
-   $query="SELECT * FROM reportcscd01";
-   $result = mysql_query($query);
-    while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	  //วนลูป
+$query="SELECT * FROM reportcscd01";
+$result = mysql_query($query);
+while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	  //วนลูป
 	$numcscd++;
 	$num1=11512;
 	$num2=543;
@@ -135,7 +135,12 @@ $sqlip="select opreg from ipcard where hn='$chkhn' and dcdate like '$chkdate%' o
 $queryip=mysql_query($sqlip);
 list($authcode)=mysql_fetch_array($queryip);
 
-$strText12="01|$authcode|$date1$t|11512|$date2$row_id1$vn|$date2$row_id|$hn||$paidcscd|0.00||\r\n";
+$sqlpid="select idcard,yot,name,surname from opcard where hn='$hn' limit 1;";
+//echo "$sqlpid<br>";
+$querypid=mysql_query($sqlpid);
+list($pid,$yot,$name,$surname)=mysql_fetch_array($querypid);
+
+$strText12="01|$authcode|$date1$t|11512|$date2$row_id1$vn|$date2$row_id|$hn||$paidcscd|0.00|||$pid\r\n";
 
 $strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 $objFopen1 = fopen($strFileName1, 'a');
@@ -165,8 +170,8 @@ fwrite($objFopen1, $strText13);
 
 $count2=0;
 $query="SELECT * FROM reportcscd01  ";
-   $result = mysql_query($query);
-    while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	
+$result = mysql_query($query);
+while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	
 			
 		if($depart=='PHAR'){
 			$ddl=0;
@@ -178,7 +183,7 @@ $query="SELECT * FROM reportcscd01  ";
 			$sql2 = "select sum(price) as suma,part,drugcode  from drugrx where idno = '".$result1['row_id']."' group by part";
 			$row2 = mysql_query($sql2);
 			while($result2 = mysql_fetch_array($row2)){
-				if($result2['part']=="DDL"||$result2['part']=="DDY"){
+				if($result2['part']=="DDL" || $result2['part']=="DDY"){
 					$ddl+=$result2['suma'];
 				}elseif($result2['part']=="DPY"){
 					$dpy+=$result2['suma'];
@@ -193,27 +198,33 @@ $query="SELECT * FROM reportcscd01  ";
 			}
 			if($ddl>0){
 				$count2++;
+				//echo "1) DDL : $count2 <br>";
 			}
 			if($dpy>0){
 				$count2++;
+				//echo "2) DPY : $count2 <br>";
 			}
 			if($dsy>0){
 				$count2++;
+				//echo "3) DSY : $count2 <br>";
 			}
-			
 		}else{
-			$sql1 = "select * from depart where date = '".$txdate."' ";
+			$sql1 = "select * from depart where date = '".$txdate."' and hn='$hn' ";
 			$row1 = mysql_query($sql1);
 			$result1 = mysql_fetch_array($row1);
-			$sql2 = "select sum(price) as sumb,part  from patdata where idno = '".$result1['row_id']."' group by part";
-			$row2 = mysql_query($sql2);
-			$result2 = mysql_fetch_array($row2);
-			$count2++;
+			$sqlp = "select sum(yprice) as sumyprice,part  from patdata where idno = '".$result1['row_id']."' AND yprice > 0 group by part";
+			$rowp = mysql_query($sqlp);
+			$numchk = mysql_num_rows($rowp);
+			while($result2 = mysql_fetch_array($rowp)){
+				if($numchk > 0){
+					$count2++;
+					//echo "5) PATDATA : $count2 <br>";
+				}
+			}
 		}
 	}
 
 $strText14="<OPBills invcount=\"$counttran\" lines=\"$count2\">\r\n";
-
 
 $strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 $objFopen1 = fopen($strFileName1, 'a');
@@ -228,9 +239,10 @@ fwrite($objFopen1, $strText14);
 
 
 $numcscd=0;
-   $query="SELECT * FROM reportcscd01  ";
-   $result = mysql_query($query);
-    while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	
+$query="SELECT * FROM reportcscd01  ";
+$result = mysql_query($query);
+$i=0;
+while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	
 		$numcscd++;
 		$num1=11512;
 		$num2=543;
@@ -256,7 +268,7 @@ $numcscd=0;
 		$numNcscd=$price-$paidcscd;
 		$numNcscd=number_format( $numNcscd, 2, '.', '');
 		
-		if($depart=='PHAR'){
+if($depart=='PHAR'){  // ค่ายา
 			$ddl=0;
 			$dpy=0;
 			$dsy=0;
@@ -320,7 +332,7 @@ $numcscd=0;
 				$n=number_format($n, 2, '.', '');
 				$ddl1=$ddl+$ddn;
 
-				$strText15="$date2$row_id1$vn|4|$ddl|0.00\r\n";
+				$strText15="$date2$row_id1$vn|3|$ddl|0.00\r\n";  //หมวด 3 ค่ายา และสารอาหาร
 				
 				$strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 				$objFopen1 = fopen($strFileName1, 'a');
@@ -346,7 +358,7 @@ $numcscd=0;
 				$dpydpn=$dpy+$dpn;
 				$dpydpn=number_format($dpydpn, 2, '.', '');
 
-				$strText15="$date2$row_id1$vn|2|$dpy1|0.00\r\n";
+				$strText15="$date2$row_id1$vn|2|$dpy1|0.00\r\n";  //หมวด 2 ค่าอวัยวะเทียม และอุปกรณ์ในการบำบัดรักษา
 				
 				$strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 				$objFopen1 = fopen($strFileName1, 'a');
@@ -359,10 +371,10 @@ $numcscd=0;
 					}
 					fclose($objFopen1);				
 			}
-			if($dsy>0){
+		if($dsy>0){
 				//$dsy = number_format($dsy,2);
-$dsy=number_format($dsy, 2, '.', '');
-				$strText15="$date2$row_id1$vn|6|$dsy|0.00\r\n";
+				$dsy=number_format($dsy, 2, '.', '');
+				$strText15="$date2$row_id1$vn|5|$dsy|0.00\r\n";  //หมวด 5 ค่าเวชภัณฑ์ที่ไม่ใช่ยา
 				
 				$strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 				$objFopen1 = fopen($strFileName1, 'a');
@@ -376,47 +388,57 @@ $dsy=number_format($dsy, 2, '.', '');
 					fclose($objFopen1);					
 			}
 			
-		}else{
-			$sql1 = "select * from depart where date = '".$txdate."' ";
-			
-		
+}else{  //ค่าอื่น ๆ นอกเหนือจากค่ายา
+
+			$sql1 = "select * from depart where date = '".$txdate."' and hn='$hn' ";
+			//echo $sql1."<br>";
 			$row1 = mysql_query($sql1);
 			$result1 = mysql_fetch_array($row1);
-			$sql2 = "select sum(price) as sumb,part  from patdata where idno = '".$result1['row_id']."' and yprice > 0  group by part";
-			$row2 = mysql_query($sql2);
-			$result2 = mysql_fetch_array($row2);
-				if($result2['part']=="LAB"){
-					$depart1="7";
+			//$cvn=sprintf('%04d',$result1["tvn"]);
+				$sql2 = "select hn,sum(yprice) as sumb,depart,part  from patdata where idno = '".$result1['row_id']."' AND yprice > 0  group by part";
+				//echo $sql2;
+				$row2 = mysql_query($sql2);
+				while($result2 = mysql_fetch_array($row2)){	
+				//หมวด 3 และหมวด 5 (บางส่วน) อยู่ไฟล์ Billdisp  ปรับเมื่อ 23/01/61 By Amp
+				if($result2['part']=="DPY"){
+					$depart1="2";  //ค่าอวัยวะเทียม และอุปกรณ์ในการบำบัด
+				}else if($result2['part']=="DSY"){
+					$depart1="5";  //หมวด 5 เวชภัณฑ์ที่ไม่ใช่ยา		
 				}elseif($result2['part']=="BLOOD"){
-					$depart1="6";
+					$depart1="6";  //ค่าบริการโลหิตและส่วนประกอบของเลือด
+				}else if($result2['part']=="LAB"){
+					$depart1="7";  //ค่าตรวจวินิจฉัยทางเทคนิคการแพทย์
 				}elseif($result2['part']=="XRAY"){
-					$depart1="8";
+					$depart1="8";  //ค่าตรวจวินิจฉัยทางรังสีวิทยา
 				}elseif($result2['part']=="SINV"){
-					$depart1="9";
+					$depart1="9";  //ค่าตรวจวินิจฉัยโรคโดยวิธีพิเศษอื่นๆ
 				}elseif($result2['part']=="TOOL"){
-					$depart1="A";
+					$depart1="A";  //หมวด 10 ค่าอุปกรณ์ของใช้และเครื่องมือ 
 				}elseif($result2['part']=="SURG"){
-					$depart1="B";
-				}elseif($result2['part']=="NCARE"||$result2['part']=="OTHER"||$result2['part']=="EMER"){
-					$depart1="C";
-				}elseif($result2['part']=="DENTA"){
-					$depart1="D";
+					$depart1="B";  //หมวด 11 ค่าทำหัตถการและวิสัญญี
+				}elseif($result2['part']=="NCARE"){
+					$depart1="C";  //หมวด 12 ค่าบริการทางการพยาบาล
+				}elseif($result2['part']=="OTHER"){
+					$depart1="C";  //หมวด 12 ค่าบริการทางการพยาบาล					
+				}elseif($result2['part']=="DENTA"){  
+					$depart1="D";  //หมวด 13 ค่าบริการทางทันตกรรม
 				}elseif($result2['part']=="PT"){
-					$depart1="E";
-				}elseif($result2['part']=="STX"||$result2['part']=="NID"){
-					$depart1="F";
+					$depart1="E";  //หมวด 14 ค่าบริการทางกายภาพบำบัด
+				}elseif($result2['part']=="STX"){
+					$depart1="F";  //หมวด 15 ค่าบริการฝังเข็ม
 				}elseif($result2['part']=="MC"){
-					$depart1="G";
+					$depart1="G";  //หมวด 16 ค่าบริการอื่นๆ
 				}else{
-					$depart1="C";
-				}
-				
+					$depart1="G";  //หมวด 16 ค่าบริการอื่นๆ
+				}				
 				
 			//	echo $depart1;
 	
 				$npaidcscd111=$price-$paidcscd;
-				$strText15="$date2$row_id1$vn|$depart1|$paidcscd|0.00\r\n";
-
+				$sumb=$result2['sumb'];  //ราคาที่เบิกได้
+				
+				$strText15="$date2$row_id1$vn|$depart1|$sumb|0.00\r\n";  //เพิ่มรายการใน OPBills ของไฟล์ Billtran
+				//echo $strText15."<br>";
 				$strFileName1 = "billtran$thiyr$yrmonth$yrdate.txt";
 				$objFopen1 = fopen($strFileName1, 'a');
 				fwrite($objFopen1, $strText15);
@@ -427,6 +449,7 @@ $dsy=number_format($dsy, 2, '.', '');
 						/*echo "File can not write";*/
 					}
 					fclose($objFopen1);	
+				}  //close patdata
 		}
 	}
 				$strText16="</OPBills>\r\n";
@@ -778,7 +801,7 @@ $numcscd=0;
 $query="SELECT * FROM reportcscd01";
 $result = mysql_query($query);
 while (list ($date,$hn,$vn,$billno,$price,$cerdit,$depart,$paidcscd,$detail,$row_id,$txdate) = mysql_fetch_row ($result)) {	  //while1
-		$numcscd++;
+	$numcscd++;
 	$num1=11512;
 	$num2=543;
 	$num4=1;
@@ -937,9 +960,13 @@ $strText25="</DispensedItems>\n
 	
 	$zip->save();
 	
-	echo "<p style='color:#FF0000; font-weight:bold;'>โปรแกรมส่งเบิกเงิน CSCD</p>";
-	echo "ดาวน์โหลดข้อมูลเบิก CSCD... <a href=$ZipName>คลิกที่นี่</a> <br>";
-	echo "<a href='../exportcscd_data.php'><< กลับหน้าเดิม</a>";	
+	echo "<p>
+<div style='color:#FF0000; font-weight:bold;'>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (CSCD)</div>
+<div style='color:#0000FF;'>ปรับปรุงล่าสุด Date.11/05/2561 By Pfc.แอมป์ โทร.6203</div></p>";
+echo "<div style='margin-left: 15px;'>1) ปรับปรุงไฟล์ BillTran เพิ่มเลขที่บัตรประชาชน (PID) ในฟิลด์ที่ 13</div>";
+echo "<br>";
+echo "ดาวน์โหลดข้อมูลลูกหนี้เบิกจ่ายตรง เพื่อส่งให้ สกส. วันที่ $yrmonthdate <a href=$ZipName>คลิกที่นี่</a> <br>";
+echo "<a href='../exportcscd_data.php'><< เลือกวันที่ใหม่</a>";	
 //-------------------- Close add to zip --------------------//
 include("unconnect.inc");
 ?>
