@@ -1048,8 +1048,8 @@ FROM (
     WHERE `hn` = '$hn' 
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
     AND ( 
-        `profilecode`='HAVTOT' 
-        OR `profilecode`='HBSAG' 
+        `profilecode`='HBSAG' 
+        OR `profilecode`='HAVTOT' 
         OR `profilecode`='WET' 
     ) 
 	GROUP BY `profilecode` 
@@ -1059,7 +1059,7 @@ FROM (
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
 WHERE b.`result` != 'DELETE' 
 GROUP BY a.`profilecode` 
-ORDER BY b.seq ASC";
+ORDER BY b.`autonumber` ASC";
 $query = mysql_query($sql) or die( mysql_error() );
 $group2_rows = mysql_num_rows($query);
 if ( $group2_rows > 0 ) {
@@ -1084,8 +1084,8 @@ if ( $group2_rows > 0 ) {
 						<?php 
 
 						$type2 = array(
-							'HAVTOT' => '<b>ตรวจไวรัสตับอักเสบ A</b> (Anti-HAV IgG)',
 							'HBSAG' => '<b>ตรวจไวรัสตับอักเสบ B</b> (HBsAg)',
+							'HAVTOT' => '<b>ตรวจไวรัสตับอักเสบ A</b> (Anti-HAV IgG)',
 							'WET' => '<b>ตรวจอุจจาระสมบูรณ์แบบ</b> (Stool Exam)',
 						);
 

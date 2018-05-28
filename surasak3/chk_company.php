@@ -83,7 +83,7 @@ if( $action == false ){
                             <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
                         </ol>
                     </td>
-                    <td><a href="javascript: void(0);?part=<?=$item['code'];?>">ผล Lab ทั้งหมด</a></td>
+                    <td><a href="chk_all_lab.php?part=<?=$item['code'];?>">ผล Lab ทั้งหมด</a></td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไข</a></td>
                 </tr>
                 <?php
@@ -124,24 +124,31 @@ if( $action == false ){
     $year = get_year_checkup(true);
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
-    if( $id > 0 ){
-        $sql = "UPDATE `chk_company_list`
-        SET
-        `name` = '$company',
-        `code` = '$company_code',
-        `date_checkup` = '$date_checkup'
-        WHERE `id` = '$id';";
-        $save = $db->update($sql);
-    }else{
-        $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
-        VALUES (
-        NULL,'$company','$company_code','$date_checkup','$year','1'
-        );";
-        $save = $db->insert($sql);
-    }
 
-    if( $save !== true ){
-		$msg = errorMsg('save', $save['id']);
+    if( empty($company) OR empty($company_code) ){
+        $msg = 'กรุณาใส่ข้อมูล ชื่อบริษัท และ รหัสบริษัทให้ถูกต้อง';
+    }else{
+
+        if( $id > 0 ){
+            $sql = "UPDATE `chk_company_list`
+            SET
+            `name` = '$company',
+            `code` = '$company_code',
+            `date_checkup` = '$date_checkup'
+            WHERE `id` = '$id';";
+            $save = $db->update($sql);
+        }else{
+            $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
+            VALUES (
+            NULL,'$company','$company_code','$date_checkup','$year','1'
+            );";
+            $save = $db->insert($sql);
+        }
+    
+        if( $save !== true ){
+            $msg = errorMsg('save', $save['id']);
+        }
+
     }
 
     redirect('chk_company.php', $msg);
