@@ -11,20 +11,23 @@ body,td,th {
 </style>
 <table width="80%" border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#000000">
   <tr>
-    <td width="14%" rowspan="2" align="center" bgcolor="#66CC99">ปีที่ดำเนินการ</td>
-    <td width="18%" rowspan="2" align="center" bgcolor="#66CC99">งานทั้งหมด</td>
-    <td colspan="2" align="center" bgcolor="#66CC99">รอดำเนินการ</td>
-    <td colspan="2" align="center" bgcolor="#66CC99">อยู่ระหว่างดำเนินการ</td>
-    <td colspan="2" align="center" bgcolor="#66CC99">เสร็จสิ้น</td>
-    <td width="17%" rowspan="2" align="center" bgcolor="#66CC99">คิดเป็น</td>
+    <td width="14%" rowspan="2" align="center" bgcolor="#66CC99"><strong>ปีที่ดำเนินการ</strong></td>
+    <td colspan="3" align="center" bgcolor="#66CC99"><strong>ใบงานทั้งหมด</strong></td>
+    <td colspan="2" align="center" bgcolor="#66CC99"><strong>รอดำเนินการ</strong></td>
+    <td colspan="2" align="center" bgcolor="#66CC99"><strong>อยู่ระหว่างดำเนินการ</strong></td>
+    <td colspan="2" align="center" bgcolor="#66CC99"><strong>เสร็จสิ้น</strong></td>
+    <td width="17%" rowspan="2" align="center" bgcolor="#66CC99"><strong>คิดเป็น %</strong></td>
   </tr>
   <tr>
-    <td width="7%" align="center" bgcolor="#66CC99">จำนวน</td>
-    <td width="8%" align="center" bgcolor="#66CC99">ร้อยละ</td>
-    <td width="9%" align="center" bgcolor="#66CC99">จำนวน</td>
-    <td width="10%" align="center" bgcolor="#66CC99">ร้อยละ</td>
-    <td width="9%" align="center" bgcolor="#66CC99">จำนวน</td>
-    <td width="8%" align="center" bgcolor="#66CC99">ร้อยละ</td>
+    <td width="18%" align="center" bgcolor="#66CC99"><strong>Hardware</strong></td>
+    <td width="18%" align="center" bgcolor="#66CC99"><strong>Software</strong></td>
+    <td width="18%" align="center" bgcolor="#66CC99"><strong>รวมทั้งสิน</strong></td>
+    <td width="7%" align="center" bgcolor="#66CC99"><strong>จำนวน</strong></td>
+    <td width="8%" align="center" bgcolor="#66CC99"><strong>ร้อยละ</strong></td>
+    <td width="9%" align="center" bgcolor="#66CC99"><strong>จำนวน</strong></td>
+    <td width="10%" align="center" bgcolor="#66CC99"><strong>ร้อยละ</strong></td>
+    <td width="9%" align="center" bgcolor="#66CC99"><strong>จำนวน</strong></td>
+    <td width="8%" align="center" bgcolor="#66CC99"><strong>ร้อยละ</strong></td>
   </tr>
 <?
 $sql="select date from  com_support group by substring(date,1,4)";
@@ -32,13 +35,26 @@ $query=mysql_query($sql);
 while($rows=mysql_fetch_array($query)){
 $year=substr($rows["date"],0,4);
 ?>  
+
   <tr>
     <td align="center"><?=$year;?></td>
+	<?
+    $rsql="select * from  com_support where jobtype='hardware' and date like '$year%' and (status !='c' and status !='w')";
+    $rquery=mysql_query($rsql);
+	$rnum=mysql_num_rows($rquery);
+    ?>    
+	<td align="center"><?=$rnum;?></td>
+	<?
+    $dsql="select * from  com_support where jobtype='software' and date like '$year%' and (status !='c' and status !='w')";
+    $dquery=mysql_query($dsql);
+	$dnum=mysql_num_rows($dquery);
+    ?>       
+	<td align="center"><?=$dnum;?></td>
 	<?
     $csql="select * from  com_support where date like '$year%' and (status !='c' and status !='w')";
     $cquery=mysql_query($csql);
 	$cnum=mysql_num_rows($cquery);
-    ?>    
+    ?>         
     <td align="center"><?=$cnum;?></td>    
 	<?
     $ysql="select * from  com_support where date like '$year%' and status ='y'";

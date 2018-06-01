@@ -163,22 +163,48 @@ session_unregister("Ptright1");
 
     <hr />
 
-    <?php
+    <?php 
+
     $alert_msg = null;
     $hn = isset($_POST['hn']) ? $_POST['hn'] : null ;
     if($hn !== null){
 
-        $sql_pre = "
-        SELECT b.`my_ward` FROM `bed` AS a
+        $sql_pre = "SELECT a.`bedcode`,a.`bed`,b.`my_ward` FROM `bed` AS a
         LEFT JOIN `ipcard` AS b ON b.`an` = a.`an`
-        WHERE a.`hn` = '%s' ;
-        ";
+        WHERE a.`hn` = '%s' ;";
         $sql = sprintf($sql_pre, $hn);
         $query = mysql_query($sql);
         $item = mysql_fetch_assoc($query);
 
-        if( $item != false && $item['my_ward'] != '' ) {
-            $alert_msg = 'ผู้ป่วยยังอยู่ที่ '.$item['my_ward'];
+        $ward_code = substr($item['bedcode'], 0, 2);
+        $ward_txt = '';
+
+        if( $ward_code == '44' ){
+            // หอผู้ป่วย ICU
+            $ward_txt = 'หอผู้ป่วย ICU';
+
+        } elseif ( $ward_code == '42' ) {
+            // หอผู้ป่วยรวม
+            $ward_txt = 'หอผู้ป่วยรวม';
+
+        } elseif ( $ward_code == '43' ) {
+            // หอผู้ป่วยสูตินรี
+            $ward_txt = 'หอผู้ป่วยสูตินรี';
+
+        } elseif ( $ward_code == '45' ) {
+            // หอผู้ป่วยพิเศษ
+            $ward_txt = 'หอผู้ป่วยพิเศษ';
+                //
+                // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
+            $wardR3Test = preg_match('/R3\d+|B\d+/', $item['bed']);
+            $wardBxTest = preg_match('/B[0-9]+/', $item['bed']);
+            $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+            
+            $ward_txt = $ward_txt.$exName;
+        }
+
+        if( $item != false && $ward_txt != '' ) {
+            $alert_msg = 'ผู้ป่วยยังอยู่ที่ '.$ward_txt;
         }
     }
 

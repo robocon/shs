@@ -9,10 +9,20 @@ include("connect.inc");
 <style type="text/css">
 <!--
 .font1 {	font-family: "TH SarabunPSK";
-	font-size: 20px;
+	font-size: 22px;
 }
 .font1 {
-	font-family: AngsanaUPC;
+	font-family: "TH SarabunPSK";
+}
+.style1 {font-family: "TH SarabunPSK"; font-size: 22px; font-weight: bold; }
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 22px;
+}
+.style3 {font-family: "TH SarabunPSK"; font-size: 22px}
+.forntsarabun {
+	font-family: "TH SarabunPSK";
+	font-size: 22px;
 }
 -->
 </style>
@@ -26,12 +36,13 @@ if(!isset($_POST['search'])){
 <a target=_self  href='../nindex.htm' class='forntsarabun'><------ ไปเมนู</a>
 <form action="<? $_SERVER['PHP_SELF']?>" name="f1" method="post" target="_blank">
 <table width="291">
-	<tr><td align="center" class="font1">รายงานประจำเดือน</td>
+	<tr><td align="center" class="font1"><strong>รายงานประจำเดือน</strong></td>
 	</tr>
     <tr>
-      <td align="center" class="font1">เดือน
-          <select name="m">
-            <?
+      <td align="center" class="style1">เดือน
+          <select name="m" class="forntsarabun">
+<?
+	$m=date("m");
 	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 	for($a=1;$a<13;$a++){
 		if($a<10) $ss = "0";
@@ -45,7 +56,7 @@ if(!isset($_POST['search'])){
 	?>
           </select>
       ปี
-          <select name="yr">
+          <select name="yr" class="forntsarabun">
             <?
 	$year = date("Y")+543;
 	for($a=($year-5);$a<($year+5);$a++){
@@ -56,13 +67,11 @@ if(!isset($_POST['search'])){
             <?
 	}
 	?>
-          </select>
-      </td>
-    </tr>
+          </select>      </td>
+</tr>
       <tr>
   <td align="center" class="font1">
-    <input name="search" type="submit" value="  ตกลง  "/>
-  </td>
+    <input name="search" type="submit" class="forntsarabun" value="  ตกลง  " style="font:TH SarabunPSK"/>  </td>
 </tr> 
 </table>
 
@@ -71,61 +80,62 @@ if(!isset($_POST['search'])){
 }
 if(isset($_POST['search'])){
 	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-	$sql = "select * from com_support where dateend like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+	$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
 	$row = mysql_query($sql);
+	$num=mysql_num_rows($row);
+
 ?>
 <center>
-  <span class="font1">รายงานประจำเดือน 
+  <span class="style1">รายงานการแจ้งซ่อมอุปกรณ์ทางคอมพิวเตอร์ และแก้ไขปรับปรุงโปรแกรมโรงพยาบาล<br />
+  ประจำเดือน 
   <?=$month[$_POST['m']+0]?> ปี <?=$_POST['yr']?>
   </span>
 </center>
-<table width="100%" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse; font-size: 14px;">
-<tr><td width="3%" align="center" valign="top" class="font1">ลำดับ</td>
-  <td width="7%" align="center" valign="top" class="font1">วันที่</td>
-  <td width="7%" align="center" valign="top" class="font1">แผนก</td>
-  <td width="10%" align="center" valign="top" class="font1">ผู้ร้องขอ</td>
-  <td width="10%" align="center" valign="top" class="font1">หัวข้อ</td>
-  <td width="28%" align="center" valign="top" class="font1">รายละเอียด</td>
-  <td width="20%" align="center" valign="top" class="font1">ผลการดำเนินการ</td>
-  <td width="6%" align="center" valign="top" class="font1">ผู้รับผิดชอบ</td>
-  <td width="7%" align="center" valign="top" class="font1">วันเวลาที่ดำเนินการ</td>
+<table width="100%" border="1" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; font-size: 14px;">
+<tr><td width="3%" align="center" valign="top" class="font1"><strong>ลำดับ</strong></td>
+  <td width="7%" align="center" valign="top" class="style1">วันที่แจ้ง</td>
+  <td width="7%" align="center" valign="top" class="style1">แผนก</td>
+  <td width="10%" align="center" valign="top" class="style1">ผู้ร้องขอ</td>
+  <td width="10%" align="center" valign="top" class="style1">ประเภทงาน</td>
+  <td width="10%" align="center" valign="top" class="style1">หัวข้อ</td>
+  <td width="28%" align="center" valign="top" class="style1">รายละเอียด</td>
+  <td width="20%" align="center" valign="top" class="style1">ผลการดำเนินการ</td>
+  <td width="6%" align="center" valign="top" class="style1">ผู้รับผิดชอบ</td>
+  <td width="7%" align="center" valign="top" class="style1">วันที่ดำเนินการ</td>
+  <td width="7%" align="center" valign="top" class="style1">ระยะเวลา/วัน</td>
 </tr>
 <?
+	if($num <1){
+		echo "<tr><td colspan='11' align='center'>----------------------------------------------- ไม่มีข้อมูลในระบบ -----------------------------------------------</td></tr>";
+	}else{
 	while($result = mysql_fetch_array($row)){
-		$i++;
+		$i++;	
 ?>
 		<tr><td align="center" valign="top" class="font1">
 	    <?=$i?>
 		</td>
 		  <td valign="top" class="font1">
-	      <?=$result['date']?>
-		  </td>
+	      <?=$result['date']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=$result['depart']?>
-		  </td>
+	      <?=$result['depart']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=$result['user']?>
-		  </td>
+	      <?=$result['user']?>		  </td>
+		  <td valign="top" class="font1"><?=$result['jobtype']?>          </td>
 		  <td valign="top" class="font1">
-	      <?=$result['head']?>
-		  </td>
+	      <?=$result['head']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=nl2br($result['detail'])?>
-		  </td>
+	      <?=nl2br($result['detail'])?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=$result['p_edit']?>
-		  </td>
+	      <?=$result['p_edit']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=$result['programmer']?>
-		  </td>
+	      <?=$result['programmer']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=$result['dateend']?>
-		  </td>
+	      <?=$result['dateend']?>		  </td>
+		  <td align="center" valign="top" class="font1"><?=$result['hold']?></td>
 		</tr>
 <?
-	}
+	}}
 ?>
-
 </table>
 <?
 }

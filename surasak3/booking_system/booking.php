@@ -151,6 +151,7 @@ if( !empty($hn) ){
 	$strnum = mysql_num_rows($strquery);
 	
 	// ถ้ายังไม่อนุมัติ ให้แจ้งเตือน
+	$strnum = 0;
 	if($strnum > 0){
 		
 		$alert_detail = '';
@@ -161,9 +162,9 @@ if( !empty($hn) ){
 
 				$bed_status = ( !empty($strrows['status']) ) ? $strrows['status'] : 'กำลังรอทางหอผู้ป่วยยืนยันสถานะ' ;
 
-				$alert_detail .= 'จองเตียงวันที่ '.$strrows['date_in'].' ไว้แล้ว \n';
-				$alert_detail .= 'สถานะ : '.$bed_status.' \n';
-				$alert_detail .= '\n';
+				// $alert_detail .= 'จองเตียงวันที่ '.$strrows['date_in'].' ไว้แล้ว \n';
+				// $alert_detail .= 'สถานะ : '.$bed_status.' \n';
+				// $alert_detail .= '\n';
 
 
 			}

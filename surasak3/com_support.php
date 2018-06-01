@@ -22,12 +22,15 @@ a:active {
 }
 </style>
 <?php
-print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='com_add.php'><font size='4' class='forntsarabun'>บันทึกแจ้งงานใหม่</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
+print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
 print "<hr>";
-print"<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการขอแก้ไข/เพิ่มเติมโปรแกรมในระบบโรงพยาบาล SHS<BR>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</strong></div><BR>";
+print"<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี โทร. 054-839305 ต่อ 6203</strong></div><BR>";
+    print"<div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong>$sOfficer</strong> เข้าสู่ระบบ</font></div>";
+    echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานแก้ไขปรับปรุงโปรแกรม....</b>ส.ต. เทวิน  ศรีแก้ว และนายกฤษณะศักดิ์  กันธรส</font></div>";
+	echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานซ่อมอุปกรณ์ทางคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานะพัฒน์  นิลคำ</font></div><br>";
 $Thaidate=date("d-m-").(date("Y")+543);
 $n =0;
-$num = Y;
+$num = "Y";
 
 // งานค้างที่ยังไม่ได้รับผิดชอบ
 $query = "SELECT row,depart,head,datetime,programmer,date,user1 
@@ -36,8 +39,6 @@ WHERE status ='$num'
 ORDER BY row desc";
 $result = mysql_query($query) or die("Query failed111");
 if(mysql_num_rows($result)){
-    print"<div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong>$sOfficer</strong> เข้าสู่ระบบ</font></div>";
-    echo "<div align='center'><font size='1' class='forntsarabun'>ติดต่อโปรแกรมเมอร์....นายเทวิน  ศรีแก้ว และนายกฤษณะศักดิ์  กันธรส โทร. 6206</font></div><BR>";
     print"<div align='center' class='forntsarabun'><strong>งานค้างที่ยังไม่ได้รับผิดชอบ</strong></div>";
     print"<table class='forntsarabun'  align='center' width='90%'>";
     print" <tr>";
@@ -91,7 +92,6 @@ include("connect.inc");
 $query = "SELECT  row,depart,head,datetime,programmer,date,user 
 FROM com_support 
 WHERE status ='$num' 
-and programmer !='เพลิงพายุ' 
 ORDER BY row desc";
 $result = mysql_query($query) or die("Query failed111");
 
@@ -106,7 +106,7 @@ $result = mysql_query($query) or die("Query failed111");
         print"  <th bgcolor=#FF99CC>วันที่ร้องขอ</th>";
 		print"  <th bgcolor=#FF99CC>ผู้รับผิดชอบ</th>";
 		print"  <th bgcolor=#FF99CC>พิมพ์</th>";
-		print"  <th bgcolor=#FF99CC>การทำงาน</th>";
+		//print"  <th bgcolor=#FF99CC>การทำงาน</th>";
       
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$user) = mysql_fetch_row ($result)) {
@@ -123,7 +123,7 @@ $result = mysql_query($query) or die("Query failed111");
                 "  <td BGCOLOR=#FFCCCC>$date</td>\n".
 				  "  <td BGCOLOR=#FFCCCC>$where</td>\n".
 				  "  <td BGCOLOR=#FFCCCC><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
-				  "  <td BGCOLOR=#FFCCCC align='center'>$add</td>\n".
+				 // "  <td BGCOLOR=#FFCCCC align='center'>$add</td>\n".
                 " </tr>\n");
   						    }
         print"</table>";

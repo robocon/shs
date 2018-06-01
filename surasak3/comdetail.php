@@ -1,4 +1,11 @@
-<?php
+<style type="text/css">
+<!--
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 20px;
+}
+-->
+</style><?php
       
  $Thaidate=date("d-m-").(date("Y")+543);
  print"<FONT SIZE='3'><CENTER>แบบรายงายการขอแก้ไข/เพิ่มเติมโปรแกรมในระบบคอมพิวเตอร์เครือข่าย<BR>";
@@ -12,8 +19,8 @@ $num = Y;
    if(mysql_num_rows($result)){
         
         print"<BR><BR><CENTER><table>";
-        print" <tr>";
-        print"  <th bgcolor=CD853F>ลำดับแจ้ง</th>";
+        print" <tr align='center'>";
+        print"  <th bgcolor=CD853F>ลำดับ</th>";
         print"  <th bgcolor=CD853F>แผนก</th>";
         print"  <th bgcolor=CD853F>หัวข้อ</th>";
 		   print"  <th bgcolor=CD853F>รายละเอียด</th>";

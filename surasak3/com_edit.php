@@ -4,6 +4,12 @@
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
+.style2 {
+	font-family: "TH SarabunPSK";
+	font-size: 24px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
 -->
 </style>
 <body bgcolor="#FFFFFF" >
@@ -32,24 +38,16 @@ function fncSubmit()
 ?>
 
 <form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
-<table class="forntsarabun">
+<table align="center" cellpadding="0" cellspacing="0" class="forntsarabun">
   <tr>
-    <td height="48" colspan="4" bgcolor="#CCCCCC"><span class="forntsarabun">ระบบแจ้ง เพิ่มแก้ไข/ปรับปรุง เพิ่มเติม โปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><--------- ไปเมนู</a></span></td>
+    <td height="48" colspan="4" bgcolor="#66CC99"><span class="style2">ระบบแจ้ง เพิ่มแก้ไข/ปรับปรุง เพิ่มเติม โปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</span></td>
     </tr>
   <tr>
-    <td width="80">แผนก</td>
-    <td colspan="4"><!--<input name="depart" type="text" class="forntsarabun" size="20">-->
+    <td width="121" bgcolor="#66CCCC"><strong>แผนก</strong></td>
+    <td colspan="4" bgcolor="#66CCCC"><!--<input name="depart" type="text" class="forntsarabun" size="20">-->
       <select name="depart" id="depart" class="forntsarabun">
         <option value="0">เลือกแผนก</option>
   <?
-/*$part = array('','กองบังคับการ','กองการพยาบาล','หอผู้ป่วยรวม','หอผู้ป่วยพิเศษ','หอผู้ป่วยสูตินรีเวชกรรม','หอผู้ป่วยหนัก','ห้องไตเทียม','ห้องผ่าตัด','กองเภสัชกรรม','กองทันตกรรม','ห้องฉุกเฉิน','ห้องทะเบียน','ห้องตรวจโรคผู้ป่วยนอก','ส่วนเก็บเงินรายได้','ห้องประกันสุขภาพฯ','แผนกพยาธิวิทยา','แผนกรังสีกรรม','แผนกส่งกำลังบำรุง','พลาธิการ','องค์กรแพทย์','ศูนย์พัฒนาคุณภาพ','ฝ่ายการเงิน','สำนักงานกิจการพิเศษ','ศูนย์บริการคอมพิวเตอร์','กายภาพบำบัด','เวชกรรมป้องกัน','ห้องจ่ายกลาง','ศูนย์ผู้ป่วยใน','ประกันสังคม','ศูนย์อบรมและพัฒนาบุคลากร','ส่งเสริมสุขภาพ','กองร้อยพลเสนารักษ์','ห้องฝังเข็ม','คณะกรรมการสิ่งแวดล้อมและความปลอดภัย');
-		$sql="select  *  from  ptright order by code asc";
-		$result=mysql_query($sql);
-			for($i=1;$i<35;$i++) {
-			
-    		<option value="<?//=$part[$i];?>"<?//if($dbarr['depart']==$part[$i]){ echo "selected"; } ?>><?//=$part[$i];?></option>
-           
-		}*/
 		$sql="select  *  from   departments where status='y' order by id asc";
 		$result=mysql_query($sql);
 			while($arr=mysql_fetch_array($result)) {
@@ -63,34 +61,43 @@ function fncSubmit()
       </select></td>
     </tr>
   <tr>
-    <td>หัวข้อ</td>
-    <td colspan="3"><input name="head" type="text" class="forntsarabun" value="<?=$dbarr['head'];?>" size="60" readonly></td>
+    <td bgcolor="#66CCCC"><strong>ประเภทงาน</strong></td>
+    <td colspan="3" bgcolor="#66CCCC"><select name="jobtype" id="jobtype" class="forntsarabun">
+        <option value="0">เลือกงาน</option>
+        <option value="hardware" <? if($dbarr['jobtype']=="hardware"){ echo "selected";}?>>งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
+        <option value="software" <? if($dbarr['jobtype']=="software"){ echo "selected";}?>>งานแก้ไข/พัฒนาโปรแกมโรงพยาบาล</option>
+    </select></td>
     </tr>
   <tr>
-    <td valign="top">รายละเอียด</td>
-    <td colspan="3"><textarea name="detail" cols="100" rows="10" readonly class="forntsarabun"><?=$dbarr['detail'];?>
-    </textarea></td>
+    <td bgcolor="#66CCCC"><strong>หัวข้อ</strong></td>
+    <td colspan="3" bgcolor="#66CCCC"><input name="head" type="text" class="forntsarabun" value="<?=$dbarr['head'];?>" size="60" readonly></td>
     </tr>
   <tr>
-    <td>ผู้แจ้ง</td>
-    <td width="201"><input name="user" type="text" class="forntsarabun" value="<?=$dbarr['user'];?>" size="20" readonly></td>
-    <td width="96">โทรศัพท์ภายใน</td>
-    <td width="518"><input name="phone" type="text" class="forntsarabun" value="<?=$dbarr['phone'];?>" size="20" readonly></td>
+    <td valign="top" bgcolor="#66CCCC"><strong>รายละเอียด</strong></td>
+    <td colspan="3" bgcolor="#66CCCC"><textarea name="detail" cols="100" rows="10" readonly class="forntsarabun"><?=$dbarr['detail'];?></textarea></td>
+    </tr>
+  <tr>
+    <td bgcolor="#66CCCC"><strong>ผู้แจ้ง</strong></td>
+    <td width="160" bgcolor="#66CCCC"><input name="user" type="text" class="forntsarabun" value="<?=$dbarr['user'];?>" size="20" readonly></td>
+    <td width="96" bgcolor="#66CCCC">โทรศัพท์ภายใน</td>
+    <td width="520" bgcolor="#66CCCC"><input name="phone" type="text" class="forntsarabun" value="<?=$dbarr['phone'];?>" size="20" readonly></td>
   </tr>
   <tr>
-    <td>ผู้รับผิดชอบ</td>
-    <td colspan="3"><select name="programmer" class="forntsarabun">
+    <td bgcolor="#66CCCC"><strong>ผู้รับผิดชอบ</strong></td>
+    <td colspan="3" bgcolor="#66CCCC"><select name="programmer" class="forntsarabun">
      <option value="0" selected>==กรุณาเลือก==</option>
-    <option value="เทวิน">เทวิน</option>
-	<option value="กฤษณะศักดิ์">กฤษณะศักดิ์</option>
-    </select>
-    </td>
+    <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
+	<option value="กฤษณะศักดิ์  กันธะรส">กฤษณะศักดิ์  กันธะรส</option>
+    <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
+	<option value="ฐานะพัฒน์  นิลคำ">ฐานะพัฒน์  นิลคำ</option>    
+    </select>    </td>
     </tr>
   <tr>
-    <td>&nbsp;</td>
-    <td colspan="3"><input name="B1" type="submit" class="forntsarabun" value="ตกลง">
+    <td bgcolor="#66CC99">&nbsp;</td>
+    <td colspan="3" bgcolor="#66CC99"><input name="B1" type="submit" class="forntsarabun" value="ตกลง">
     <input type="hidden" name="row" value="<?=$row;?>">
-      <input name="B2" type="reset" class="forntsarabun" value="ลบทิ้ง"></td>
+      <input name="B2" type="reset" class="forntsarabun" value="ลบทิ้ง">
+      &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<<ไปเมนู</a></td>
     </tr>
 </table>
 </form>

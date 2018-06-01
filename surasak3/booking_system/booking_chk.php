@@ -1,6 +1,5 @@
 <?php
 session_start();
-include '../includes/connect.php';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -91,6 +90,9 @@ include '../includes/connect.php';
 if($_POST['submit']){
 	
 	echo "<hr>";
+	
+	// include("../Connections/connect.inc.php"); 
+	include '../includes/connect.php';
 	
 	if($_POST['d_start']=="00") {$_POST['d_start']="";}
 	
@@ -211,13 +213,13 @@ echo "</table>
 	
 }// ปิด$_POST['submit']
 
-// mysql_close();
+mysql_close();
 ?>
 
 <br />
 <?
 
-// include("../connect.php"); 
+include("../connect.php"); 
 //////จองเตียงวันนี้//////
 $todayy1=date("Y")+543;
 $todaym1=date("m");
@@ -428,8 +430,36 @@ echo "<br><br>";
 	//////////////จองพรุ่งนี้///////////////////
 
 $todayy1=date("Y")+543;
-$todaym1=date("m");
-$todayd1=date("d")+1;
+
+//echo date("m");
+if(date("m")=="01" || date("m")=="03" || date("m")=="05" || date("m")=="07" || date("m")=="08" || date("m")=="10" || date("m")=="12"){  //เดือนที่มี 31 วัน
+	if(date("d")=="31"){
+	$todaym1=date("m")+1;
+	$todaym1=sprintf("%02d",$todaym1);
+	$todayd1="1";
+	}else{
+	$todaym1=date("m");
+	$todayd1=date("d")+1;
+	}
+}else if(date("m")=="04" || date("m")=="06" || date("m")=="09" || date("m")=="11"){  //เดือนที่มี 30 วัน
+	if(date("d")=="30"){
+	$todaym1=date("m")+1;
+	$todaym1=sprintf("%02d",$todaym1);
+	$todayd1="1";
+	}else{
+	$todaym1=date("m");
+	$todayd1=date("d")+1;
+	}
+}else{  //เดือนกุมภาพันธ์
+	if(date("d")=="28"){
+	$todaym1=date("m")+1;
+	$todaym1=sprintf("%02d",$todaym1);
+	$todayd1="1";
+	}else{
+	$todaym1=date("m");
+	$todayd1=date("d")+1;
+	}
+}
 
 	if($todayd1<=9){
 		$todayd1="0".$todayd1;		
@@ -441,6 +471,7 @@ $today1=$todayy1.'-'.$todaym1.'-'.$todayd1;
 $show_today1=$todayd1.'-'.$todaym1.'-'.$todayy1;
 
 	$sql2="SELECT * FROM  booking  WHERE  date_in  like '".$today1."%' ";
+	//echo $sql2;
     $query2 = mysql_query($sql2); 
 	$row2=mysql_num_rows($query2);
 	$ii=1;
@@ -519,9 +550,8 @@ echo "</table>
 
   }else{
 	echo "<font class='forntsarabun'>ไม่พบเตียงจองพรุ่งนี้ : $show_today1</font><br>";
-	}
-	
-	mysql_close();
+  }
+  mysql_close();
 ?>
 </body>
 </html>
