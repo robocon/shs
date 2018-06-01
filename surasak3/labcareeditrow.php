@@ -35,30 +35,15 @@ function fncSubmit(){
 	font-family:"Angsana New";
 	font-size: 22px;
 }
+.del-item{
+  color: blue;
+}
+.del-item:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
 </style>
 <!--onsubmit="JavaScript:return fncSubmit();"--> <!--ถ้าต้องการเช็ค-->
-
-<script type="text/javascript">
-
-function Show(sel){
-	//alert(sel);
-var obj=document.getElementById('labtype').value;
-if (obj=='OUT'){
-if(document.getElementById('sel').style.display=='none'){
-document.getElementById('sel').style.display='block';
-document.getElementById('sel1').style.display='none';
-} 
-}else if (obj=='IN'){
-	
-if (document.getElementById('sel').style.display=='block'){
-document.getElementById('sel').style.display='none';
-document.getElementById('sel1').style.display='none';
-
-}
-}
-}
-
-</script>
 
 <body onload="Show(sel);">
 <?php
@@ -110,6 +95,58 @@ $dbarr=mysql_fetch_array($query);
     </select></div></td>
   </tr>
 
+  <?php 
+
+  if( strtolower($dbarr['labpart']) == "outlab" ){
+
+    $outlab_name = $dbarr['outlab_name'];
+
+    $sql = "SELECT b.* FROM `outlab_company` AS a 
+    LEFT JOIN `outlab_company_part` AS b ON b.`company_id` = a.`id` 
+    WHERE a.`name` = '$outlab_name' 
+    AND b.`id` IS NOT NULL ";
+    $q = mysql_query($sql);
+
+    // $row = mysql_num_rows($q);
+    // if( $row > 0 ){
+
+      ?>
+      <tr>
+        <td>
+          แผนกที่ส่ง
+        </td>
+        <td>
+          <?php 
+
+            $outlab_list = array();
+            while ( $item = mysql_fetch_assoc($q) ) {
+              $outlab_list[] = $item;
+            }
+            ?>
+            
+            <select name="company_part" id="" class="font1">
+              <option value="">เลือกรายการ</option>
+              <?php
+              foreach( $outlab_list as $item ){
+                $key = $item['id'];
+                ?>
+                <option value="<?=$key;?>"><?=$item['name'];?></option>
+                <?php
+              }
+              ?>
+            </select>
+            
+            <div id="com_more"></div>
+
+            <div>
+              <button id="add_btn" type="button" onclick="test_added()">เพิ่ม</button>
+            </div>
+        </td>
+      </tr>
+      <?php
+    // }
+  }
+  ?>
   <tr>
     <td>สถานะ</td>
     <td><select name="status" class="font1">
@@ -136,7 +173,77 @@ $dbarr=mysql_fetch_array($query);
 </table>
 </form>
 
-<?php
+
+
+<script>
+	function Show(sel){
+		//alert(sel);
+		var obj=document.getElementById('labtype').value;
+		if (obj=='OUT'){
+			if(document.getElementById('sel').style.display=='none'){
+			document.getElementById('sel').style.display='block';
+			// document.getElementById('sel1').style.display='none';
+			} 
+		}else if (obj=='IN'){
+			
+			if (document.getElementById('sel').style.display=='block'){
+			document.getElementById('sel').style.display='none';
+			// document.getElementById('sel1').style.display='none';
+
+			}
+		}
+	}
+
+	function test_added(){
+
+		var id_rand = Math.floor((Math.random() * 10000) + 1);
+
+		var template_str = '<div class="{item_key}"><select name="company_part[]" class="font1">';
+		template_str += '<option value="">เลือกรายการ</option>'
+			<?php
+			foreach( $outlab_list as $item ){
+				$key = $item['id'];
+				?>
+				template_str += '<option value="<?=$key;?>"><?=$item['name'];?></option>';
+				<?php
+			}
+			?>
+		template_str += '</select>';
+		template_str += '<span class="del-item" data-del="{item_key}">[ลบ]</span>';
+		template_str += '<br></div>';
+
+
+		var new_template = template_str.replace(/{item_key}/gm, id_rand);
+		
+		var z = document.createElement('div'); // is a node
+		z.innerHTML = new_template;
+
+		var replace_tmp = document.getElementById('com_more');
+		replace_tmp.appendChild(z);
+	}
+
+
+</script>
+
+<!-- ด้านล่างจะแสดงเฉพาะของ jQuery เท่านั้น -->
+<script src="js/vendor/jquery-1.11.2.min.js"></script>
+<script>
+$.noConflict();
+jQuery( document ).ready(function( $ ) {
+	// Code that uses jQuery's $ can follow here.
+	$(document).on('click', '.del-item', function(){
+		var c=confirm('ยืนยันการลบข้อมูล?');
+		if(c==false){
+			return false;
+		}else{
+			var item_del = $(this).attr("data-del");
+			$('.'+item_del).remove();
+		}
+	});
+});
+</script>
+
+<?php 
 if(isset($_POST['b1'])){
 	include("connect.inc");
 	
