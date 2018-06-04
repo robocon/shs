@@ -79,17 +79,22 @@ if($row){
 	if(substr($zzz,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$ccc%' limit 1 ";
 
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"3\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
-			
-			 print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true'>!ชื่อถูกต้อง ทำรายการต่อไป...</a>";
-			 print "<br>";
-			 print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true&chk=sso'>! ชื่อถูกต้อง และต้องการ ตรวจสุขภาพสิทธิประกันสังคม</a>";
+			$query = mysql_query($sql) or die( mysql_error() );
+			$numrows_r07 = mysql_num_rows($query);
 
-			}else{
+			if( $numrows_r07 == 0 ){
 				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"3\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
-				echo "</br><FONT SIZE=\"3\"  COLOR=\"#0033CC\">กรุณาติดต่อแผนกทะเบียนเพื่อปรับปรุงสิทธิการรักษา</FONT>";
+				echo "</br><FONT SIZE=\"3\"  COLOR=\"#0033CC\">กรุณาติดต่อแผนกทะเบียนเพื่อปรับปรุงสิทธิการรักษา</FONT><br>";
+			}else if( $numrows_r07 > 0 ){
+				echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"3\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
+
 			}
+			
+			print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true'>!ชื่อถูกต้อง ทำรายการต่อไป...</a>";
+			print "<br>";
+			print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true&chk=sso'>! ชื่อถูกต้อง และต้องการ ตรวจสุขภาพสิทธิประกันสังคม</a>";
+
+			
 		}else if(substr($zzz,0,3)=='R03'){
 			$sql = "Select hn, status From cscddata where hn = '$xxx' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
 

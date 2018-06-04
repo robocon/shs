@@ -1,3 +1,112 @@
+<?php
+session_start();
+include("connect.inc");
+
+/**
+CREATE TABLE `outlab_list` (
+  `id` int(11) NOT NULL auto_increment,
+  `lab_id` int(11) default NULL,
+  `company_part_id` int(11) default NULL,
+  `company` varchar(255) default NULL,
+  `name` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+ */
+
+function dump($txt){
+	echo "<pre>";
+	var_dump($txt);
+	echo "</pre>";
+}
+
+if(isset($_POST['b1'])){
+	include("connect.inc");
+	
+	$update = "UPDATE labcare SET  
+	codelab='".$_POST['codelab']."',
+	outlab_name='".$_POST['outlab_name']."',
+	labpart='".$_POST['part']."',
+	labtype='".$_POST['labtype']."',
+	labstatus='".$_POST['status']."',
+	chkup='".$_POST['chkup']."',
+	reportlabno='".$_POST['reportlabno']."' 
+	WHERE row_id='".$_POST['rowid']."' ";
+	// $query1 = mysql_query($update);
+
+	dump($_POST);
+
+	$lab_id = $_POST['rowid'];
+	$company = $_POST['outlab_name'];
+
+	if( count($_POST['company_part']) > 0 ){
+
+		foreach ($_POST['company_part'] as $key => $company_part) {
+			
+			/**
+			 * @todo
+			 * [] ตรวจสอบก่อนว่ามีข้อมูลในรายการรึป่าว
+			 * [] ถ้ายังไม่มีจะเพิ่ม
+			 * [] ถ้ามีจะอัพเดท
+			 * 
+			 * 
+ 			 */
+			$sql = "SELECT `id` FROM `outlab_list` 
+			WHERE `lab_id` = '$lab_id' AND `company_part_id` = '$company_part' LIMIT 1;";
+
+			$query = mysql_query($sql) or die( mysql_error() );
+			$outlab_row = mysql_num_rows($query);
+// dump($sql);
+// dump($outlab_row);
+			// update
+			if( $outlab_row > 0 ){ // แก้ไขข้อมูล
+
+				$sql = "UPDATE `outlab_list` SET 
+				`` = '', 
+				`` = '', 
+				`` = '', 
+				`` = '', 
+				";
+
+			}else if( $outlab_row == 0 ){ // เพิ่มข้อมูล
+
+				// 
+				$sql = "SELECT a.`company_name`,b.`name` AS `part_name` 
+				FROM ( 
+					SELECT `id` AS `company_id` ,`name` AS `company_name` FROM `outlab_company` WHERE `name` = '$company' 
+				) AS a 
+				LEFT JOIN `outlab_company_part` AS b ON b.`company_id` = a.`company_id`
+				WHERE b.`id` = '$company_part' LIMIT 1";
+				$query = mysql_query($sql) or die( mysql_error() );
+				$part = mysql_fetch_assoc($query);
+				$part_name = $part['part_name'];
+
+				$sql = "INSERT INTO `outlab_list` (`id`,`lab_id`,`company_part_id`,`company`,`name`) VALUES 
+				(NULL, '$lab_id','$company_part','$company','$part_name') ";
+				$query = mysql_query($sql) or die( mysql_error() );
+
+
+			}
+			
+
+
+		}
+
+	}
+
+
+
+	exit;
+
+	if($query1){
+		echo "<h1 align=center class='font1'>แก้ไขข้อมูลเสร็จเรียบร้อยแล้ว    กำลัง............กลับหน้ารายการ</h1>";
+		echo "<meta http-equiv='refresh' content='3; url=labcareedit1.php'>" ;
+	}
+	
+	
+}
+
+
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -11,6 +120,30 @@
 }
 </style>
 <script>
+
+function Show(sel){
+		//alert(sel);
+		var obj=document.getElementById('labtype').value;
+		if (obj=='OUT'){
+			if(document.getElementById('sel').style.display=='none'){
+			document.getElementById('sel').style.display='block';
+			// document.getElementById('sel1').style.display='none';
+        
+			document.getElementById('outlab_part').style.display='table-row';
+      
+
+			} 
+		}else if (obj=='IN'){
+			
+			if (document.getElementById('sel').style.display=='block'){
+			document.getElementById('sel').style.display='none';
+			// document.getElementById('sel1').style.display='none';
+			document.getElementById('outlab_part').style.display='none';
+
+			}
+		}
+	}
+
 function fncSubmit(){
 	var obj=document.getElementById('labtype').value;
 	if(obj=='OUT'){
@@ -47,9 +180,10 @@ function fncSubmit(){
 
 <body onload="Show(sel);">
 <?php
-include("connect.inc");
+
 
 $sql="select * from labcare Where row_id='".$_GET['rowid']."'";
+
 $query=mysql_query($sql);
 $dbarr=mysql_fetch_array($query);
 ?>
@@ -96,8 +230,8 @@ $dbarr=mysql_fetch_array($query);
   </tr>
 
   <?php 
-
-  if( strtolower($dbarr['labpart']) == "outlab" ){
+  // var_dump($dbarr);
+  // if( strtolower($dbarr['labtype']) == "out" ){
 
     $outlab_name = $dbarr['outlab_name'];
 
@@ -111,7 +245,7 @@ $dbarr=mysql_fetch_array($query);
     // if( $row > 0 ){
 
       ?>
-      <tr>
+      <tr id="outlab_part" style="display:none">
         <td>
           แผนกที่ส่ง
         </td>
@@ -121,10 +255,45 @@ $dbarr=mysql_fetch_array($query);
             $outlab_list = array();
             while ( $item = mysql_fetch_assoc($q) ) {
               $outlab_list[] = $item;
-            }
+			}
+
+			$row_id = $dbarr['row_id'];
+
+			$sql = "SELECT * FROM `outlab_list` WHERE `lab_id` = '$row_id' ";
+			$q = mysql_query($sql) or die(mysql_error());
+			
+			while ($oLab = mysql_fetch_assoc($q)) {
+				
+				// dump($oLab);
+
+				?>
+				<div class="{item_key}">
+				
+					<select name="company_part[]" class="font1">
+						<option value="">เลือกรายการ</option>
+						<?php
+						foreach( $outlab_list as $item ){
+							$key = $item['id'];
+
+							$selected = ( $oLab['name'] == $item['name'] ) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$key;?>" <?=$selected;?>><?=$item['name'];?></option>
+							<?php
+						}
+						?>
+					</select>
+					<span class="del-item" data-del="{item_key}">[ลบ]</span>
+				</div>
+				<?php
+
+
+			}
+
+			
+			/*
             ?>
             
-            <select name="company_part" id="" class="font1">
+            <select name="company_part[]" id="" class="font1">
               <option value="">เลือกรายการ</option>
               <?php
               foreach( $outlab_list as $item ){
@@ -135,17 +304,26 @@ $dbarr=mysql_fetch_array($query);
               }
               ?>
             </select>
-            
+
+			<!--
+			หน้าแก้ไขจะมี del-item ซึ่งจะมี ajax ตรวจตอนลบด้วย
+			-->
+			
+			<?php
+
+			*/
+
+			?>
             <div id="com_more"></div>
 
             <div>
-              <button id="add_btn" type="button" onclick="test_added()">เพิ่ม</button>
+              <button id="add_btn" type="button" onclick="test_added()">เพิ่มรายการ</button>
             </div>
         </td>
       </tr>
       <?php
     // }
-  }
+  // }
   ?>
   <tr>
     <td>สถานะ</td>
@@ -176,24 +354,7 @@ $dbarr=mysql_fetch_array($query);
 
 
 <script>
-	function Show(sel){
-		//alert(sel);
-		var obj=document.getElementById('labtype').value;
-		if (obj=='OUT'){
-			if(document.getElementById('sel').style.display=='none'){
-			document.getElementById('sel').style.display='block';
-			// document.getElementById('sel1').style.display='none';
-			} 
-		}else if (obj=='IN'){
-			
-			if (document.getElementById('sel').style.display=='block'){
-			document.getElementById('sel').style.display='none';
-			// document.getElementById('sel1').style.display='none';
-
-			}
-		}
-	}
-
+	
 	function test_added(){
 
 		var id_rand = Math.floor((Math.random() * 10000) + 1);
@@ -242,22 +403,5 @@ jQuery( document ).ready(function( $ ) {
 	});
 });
 </script>
-
-<?php 
-if(isset($_POST['b1'])){
-	include("connect.inc");
-	
-	$update="UPDATE labcare SET  codelab='".$_POST['codelab']."',outlab_name='".$_POST['outlab_name']."',labpart='".$_POST['part']."',labtype='".$_POST['labtype']."',labstatus='".$_POST['status']."',chkup='".$_POST['chkup']."',reportlabno='".$_POST['reportlabno']."' Where row_id='".$_POST['rowid']."' ";
-	$query1=mysql_query($update);
-	
-	if($query1){
-
-		echo "<h1 align=center class='font1'>แก้ไขข้อมูลเสร็จเรียบร้อยแล้ว    กำลัง............กลับหน้ารายการ</h1>";
-		echo "<meta http-equiv='refresh' content='3; url=labcareedit1.php'>" ;
-	}
-	
-	
-}
-?>
 </body>
 </html>
