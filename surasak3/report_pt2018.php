@@ -193,9 +193,11 @@ if ( $action == 'show' ) {
     FROM `depart` AS a 
     LEFT JOIN `patdata` AS b ON b.`idno` = a.`row_id`
     WHERE a.`staf_massage` != '' 
+    AND a.`status` != 'N' 
     AND a.`date` >= '$year_start-$month_start-$day_start 00:00:00' AND a.`date` <= '$year_end-$month_end-$day_end 23:59:59' 
     AND b.`code` in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')
     ORDER BY a.`date`, a.`staf_massage`";
+
     $db->select($sql);
     $items = $db->get_items();
 

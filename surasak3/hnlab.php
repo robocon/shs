@@ -49,11 +49,12 @@ document.getElementById('aLink').focus();
 include("connect.inc");
 if(!empty($_POST['hn']) && $confirm != true){
 
-$ipsql="select * from ipcard where hn='".$_POST['hn']."' and dcdate='0000-00-00 00:00:00'";
+$ipsql="select * from ipcard where hn='".$_POST['hn']."' order by row_id desc limit 1";
 $ipquery=mysql_query($ipsql);
 $iprows=mysql_fetch_array($ipquery);
 $my_ward=$iprows["my_ward"];
-if(mysql_num_rows($ipquery) > 0){
+$dcdate=$iprows["dcdate"];
+if($dcdate=="0000-00-00 00:00:00"){
 	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
 }
 

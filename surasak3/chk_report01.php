@@ -566,23 +566,25 @@ if( $num > 0 ){
 										
 							if($objResult["labcode"]=="RBCU"){
 
-								$rbculen=strlen($objResult6["result"]);
+								$rbculen=strlen($objResult["result"]);
 								if($rbculen >=5){
-									$rbcu1=substr($objResult6["result"],0,2);
-									$rbcu2=substr($objResult6["result"],3,2);
+									$rbcu1=substr($objResult["result"],0,2);
+									$rbcu2=substr($objResult["result"],3,2);
 								}else if($rbculen ==4){
-									$rbcu1=substr($objResult6["result"],0,1);
-									$rbcu2=substr($objResult6["result"],2,2);						
+									$rbcu1=substr($objResult["result"],0,1);
+									$rbcu2=substr($objResult["result"],2,2);						
 								}else{
-									$rbcu1=substr($objResult6["result"],0,1);
-									$rbcu2=substr($objResult6["result"],2,1);
+									$rbcu1=substr($objResult["result"],0,1);
+									$rbcu2=substr($objResult["result"],2,1);
 								}
-								if($objResult6["result"] == "*" || $objResult6["result"] == "**"  || $objResult6["result"] == "--"){
+
+								if($objResult["result"] == "*" || $objResult["result"] == "**"  || $objResult["result"] == "--"){
 									$showresultua="*";
-								}else{									
-									if($objResult6["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult6["result"] != "*"){
+								}else{
+
+									if($objResult["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult["result"] != "*"){
 										$showresultua="»¡µÔ";
-									}else if($objResult6["result"] == "*"){
+									}else if($objResult["result"] == "*"){
 										$showresultua="*";
 									}else{
 										$showresultua="¼Ô´»¡µÔ";
