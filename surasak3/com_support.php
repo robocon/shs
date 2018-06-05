@@ -20,6 +20,9 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
+body {
+	background-color: #339966;
+}
 </style>
 <?php
 print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
@@ -39,8 +42,8 @@ WHERE status ='$num'
 ORDER BY row desc";
 $result = mysql_query($query) or die("Query failed111");
 if(mysql_num_rows($result)){
-    print"<div align='center' class='forntsarabun'><strong>งานค้างที่ยังไม่ได้รับผิดชอบ</strong></div>";
-    print"<table class='forntsarabun'  align='center' width='90%'>";
+    print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ</strong></div>";
+    print"<table class='forntsarabun'  align='center' width='98%'>";
     print" <tr>";
     print"  <th bgcolor=#FF9966>ลำดับ</th>";
     print"  <th bgcolor=#FF9966>ลำดับแจ้ง</th>";
@@ -53,11 +56,10 @@ if(mysql_num_rows($result)){
     print" </tr>";
     while (list ($row,$depart,$head,$datetime,$programmer,$date,$user1) = mysql_fetch_row ($result)) {
         $n++;
-        $head=substr($head,0,40);
 
         $programmer = ( !empty($programmer) ) ? $programmer : 'รอการตอบรับ' ;
 
-        if($_SESSION['smenucode']=='ADM'){
+        if($_SESSION['smenucode']=='ADM' || $_SESSION['smenucode']=='ADMCOM'){
             $where="<a target=_TOP href=\"com_edit.php?row=$row\">$programmer</a>";
         } else {
             $where="$programmer";
@@ -97,7 +99,7 @@ $result = mysql_query($query) or die("Query failed111");
 
    if(mysql_num_rows($result)){
         print"<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการอยู่</strong></div>";
-        print"<table class='forntsarabun'  align='center' width='90%'>";
+        print"<table class='forntsarabun'  align='center' width='98%'>";
         print" <tr>";
 		        print"  <th bgcolor=#FF99CC>ลำดับ</th>";
         print"  <th bgcolor=#FF99CC>ลำดับแจ้ง</th>";
@@ -111,8 +113,7 @@ $result = mysql_query($query) or die("Query failed111");
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$user) = mysql_fetch_row ($result)) {
 			$n++;
-			$head=substr($head,0,40);
-			if($_SESSION['smenucode']=='ADM'){$where="<a target=_TOP href=\"comsucces.php?row=$row\">$programmer</a>";} else {$where="$programmer";};
+			if($_SESSION['smenucode']=='ADM' || $_SESSION['smenucode']=='ADMCOM'){$where="<a target=_TOP href=\"comsucces.php?row=$row\">$programmer</a>";} else {$where="$programmer";};
 			if($_SESSION['smenucode']=='ADM'){$add="<a target='_blank' href=\"comservice.php?row=$row&act=win\">บันทึก</a>";} else {$add="บันทึก";};
 			
             print (" <tr>\n".
@@ -146,7 +147,7 @@ $result = mysql_query($query) or die("Query failed111");
 
    if(mysql_num_rows($result)){
 	    print"<div align='center' class='forntsarabun'><strong>งานที่ดำเนินการเสร็จแล้ว</strong></div>";
-        print"<table class='forntsarabun'  align='center'>";
+        print"<table class='forntsarabun'  align='center' width='98%'>";
         print" <tr>";
         print"  <th bgcolor=#0099CC>ลำดับแจ้ง</th>";
         print"  <th bgcolor=#0099CC>แผนก</th>";
@@ -159,7 +160,6 @@ $result = mysql_query($query) or die("Query failed111");
       
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$p_edit,$dateend) = mysql_fetch_row ($result)) {
-			$head=substr($head,0,40);
             print (" <tr>\n".
                 "  <td BGCOLOR=#66CCFF  align='center'>$row</td>\n".
                 "  <td BGCOLOR=#66CCFF>$depart</td>\n".

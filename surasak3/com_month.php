@@ -81,6 +81,7 @@ if(!isset($_POST['search'])){
 if(isset($_POST['search'])){
 	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 	$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+	//echo $sql;
 	$row = mysql_query($sql);
 	$num=mysql_num_rows($row);
 
@@ -119,7 +120,7 @@ if(isset($_POST['search'])){
 		  <td valign="top" class="font1">
 	      <?=$result['depart']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=$result['user']?>		  </td>
+	      <?=$result['user1']?>		  </td>
 		  <td valign="top" class="font1"><?=$result['jobtype']?>          </td>
 		  <td valign="top" class="font1">
 	      <?=$result['head']?>		  </td>

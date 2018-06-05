@@ -12,7 +12,8 @@ $_POST["end_day"]="$end_day";
 //$date2 ="$date-$rptmo-$thiyr";
 $date1 ="$start_year-$start_month";
 $date3 ="$start_month-$start_year";
-$sql = "Select  a.depart, sum(a.paidcscd),sum(a.price) From opacc as a where a.date LIKE '$date1%'  AND a.credit ='อื่นๆ' and a.credit_detail  like '%44%' group by  a.depart   ORDER by a.date";
+$sql = "Select  a.depart, sum(a.paidcscd),sum(a.price) From opacc as a where a.date LIKE '$date1%' and a.credit='กท44' group by  a.depart   ORDER by a.date";
+//echo $sql;
 
 $result = mysql_Query($sql) or die(mysql_error());
  //$count =mysql_num_rows($result);
@@ -218,19 +219,7 @@ if(strlen($sum) > 10){
 $sum=number_format($sum,2);
 
 
-//$cbaht=$sum;
-
-
-
-/*
-echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>รวมทั้งหมด</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$NID."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
-
-echo "</table>";
-
-
-			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
-			*/
-echo "<font face='Angsana New' size ='5'><br><br><center> <b>สรุปลูกหน ี้กท44 ประจำเดือน &nbsp;$date3 <br></b> ";
+echo "<font face='Angsana New' size ='5'><br><br><center><b>สรุปลูกหนี้ กท44 ประจำเดือน &nbsp;$date3 <br></b>";
 echo "<font face='Angsana New' size ='5'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง <br>";
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 echo "<font face='Angsana New' size ='4'> รายงานเมื่อวันที่  $Thaidate </center>";
@@ -317,7 +306,7 @@ $list = array();
 $title_date = $start_day."-".$start_month."-".$start_year;
 $date1 ="$start_year-$start_month";
 
-$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price) From opacc as a where  a.date LIKE '$date1%'   AND a.credit ='อื่นๆ' and a.credit_detail  like '%44%' group by date2, a.depart   ORDER by date";
+$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price) From opacc as a where  a.date LIKE '$date1%'   AND a.credit ='กท44' group by date2, a.depart   ORDER by date";
 $result = Mysql_Query($sql) or die(Mysql_Error());
 
 while(list($date, $depart, $paidcscd,$price) = Mysql_fetch_row($result)){

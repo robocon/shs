@@ -85,7 +85,7 @@ include("connect.inc");
   <tr>
     <td bgcolor="#66CCCC"><strong>หัวข้อ</strong></td>
     <td colspan="3" bgcolor="#66CCCC"><input name="head" id="head" type="text" class="forntsarabun" size="40">  
-    <font color="#FF0000">*** ระบุเมนูที่มีปัญหาหรือเมนูที่ต้องการแก้ไขด้วยครับ ***</font></td>
+    <font color="#FF0000">*** ระบุปัญหาหรืออาการที่ต้องการแก้ไขด้วยครับ ***</font></td>
     </tr>
   <tr>
     <td valign="top" bgcolor="#66CCCC"><strong>รายละเอียด</strong></td>

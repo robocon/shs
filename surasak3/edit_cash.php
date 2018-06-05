@@ -17,7 +17,12 @@ include("connect.inc");
 		
 		
  $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
+ 
+if($_SESSION["sOfficer"]=="Administrator"){
+
+}else{
 $sql = "Select idname From opacc where row_id = '".$_GET["id"]."' ";
+//echo $sql;
 $result = Mysql_Query($sql);
 $arr = Mysql_fetch_assoc($result);
 
@@ -40,16 +45,15 @@ if($yyy[0] == "นาง"){
 }else{
 	$yyy1 = $arr["idname"];
 }
-
-if($xxx1 != $yyy1){
-	if($_SESSION["sOfficer"] =="CSCD"){ //เงื่อนไข cscd พี่เพชร จัดเก็บรายได้ ให้เพิ่มเมื่อวันที่ 23/06/60
-	
-	}else{
-		echo "ขออภัยครับ ข้อมูลนี้ มีเพียง ".$arr["idname"]." เท่านั้นที่เปลี่ยนได้";
-		exit();
+	if($xxx1 != $yyy1){
+		if($_SESSION["sOfficer"] =="CSCD"){ //เงื่อนไข cscd พี่เพชร จัดเก็บรายได้ ให้เพิ่มเมื่อวันที่ 23/06/60
+		
+		}else{
+			echo "ขออภัยครับ ข้อมูลนี้ มีเพียง ".$arr["idname"]." เท่านั้นที่เปลี่ยนได้";
+			exit();
+		}
 	}
 }
-
 if(isset($_POST["submit"])){
 	
 
@@ -101,51 +105,83 @@ include("unconnect.inc");
 	}
 
 
-</SCRIPT>
+</SCRIPT><style type="text/css">
+<!--
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 24px;
+}
 
-แก้ไขข้อมูลการจ่ายเงิน
+.fontsarabun {
+	font-family: TH SarabunPSK;
+	font-size: 22px;
+}
+-->
+</style>
+
+<strong>แก้ไขข้อมูลการจ่ายเงิน</strong>
 <FORM name="f1" METHOD=POST ACTION="" onsubmit="return checkformf1();">
-<TABLE>
+<TABLE width="80%">
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินสด' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
 		 	<TD>เงินสด</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงเทพ' onclick="document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();"></TD>
-		 	<TD>บัตรเครดิด ธ.กรุงเทพ</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick="document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
-		 	<TD>จ่ายตรง</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง อปท.' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
-		 	<TD>จ่ายตรง อปท.</TD>
+		 	<td align='right'>&nbsp;&nbsp;
+		 	    <input type='radio' name='credit' value='ทหารไทย' onclick="document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();" /></td>
+		 	<td>บัตรเครดิต ธ.ทหารไทย</td>
+		 	<td align='right'>&nbsp;&nbsp;
+		 	    <input type='radio' name='credit' value='จ่ายตรง' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		 	<td>จ่ายตรง</td>
+		 	<td align='right'>&nbsp;&nbsp;
+		 	    <input type='radio' name='credit' value='จ่ายตรง อปท.' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		 	<td>จ่ายตรง อปท.</td>
 		 </TR>
 		 <TR>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคม' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
 		 	<TD>ประกันสังคม</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='30บาท' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
 		 	<TD>30บาท</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินเชื่อ' onclick="document.getElementById('detail1').innerHTML='ข้อมูลเพิ่มเติม'; detailhead1.style.display='';document.f1.detail_1.focus();"></TD>
-		 	<TD>เงินเชื่อ</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick="document.getElementById('detail1').innerHTML='ข้อมูลเพิ่มเติม'; detailhead1.style.display='';document.f1.detail_1.focus();"></TD>
-		 	<TD>อื่นๆ</TD>
+		 	<td align='right'>&nbsp;&nbsp;
+		 	    <input type='radio' name='credit' value='อื่นๆ' onclick="document.getElementById('detail1').innerHTML='ข้อมูลเพิ่มเติม'; detailhead1.style.display='';document.f1.detail_1.focus();" /></td>
+		 	<td>อื่นๆ</td>
+		 	<td align='right'>&nbsp;&nbsp;
+                <input type='radio' name='credit' value='HD' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		 	<td>HD</td>           
 		 </TR>
 		 <TR>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='HD' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
-		 	<TD>HD</TD>
-		    <TD>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='CHKUP<?=$nPrefix;?>' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
-		    <TD>CHKUP<?=$nPrefix;?></TD>
-		    <TD>&nbsp;</TD>
+		   <td align="right"><input type='radio' name='credit' value='CHKUP<?=$nPrefix;?>' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		   <td>CHKUP
+		     <?=$nPrefix;?></td>
+		   <td align='right'>&nbsp;&nbsp;
+		       <input type='radio' name='credit' value='กท44' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		   <td>กท.44</td>
+		   <TD align='right'>&nbsp;</TD>
+		 	<TD>&nbsp;</TD>                    
 		    <TD>&nbsp;</TD>
 		    <TD>&nbsp;</TD>
 		 </TR>
 		 <TR>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ยกเลิก' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
-		 	<TD colspan="6">ยกเลิก</TD>
-		 </TR>
+		   <td align='right'>&nbsp;&nbsp;
+		       <input type='radio' name='credit' value='ยกเลิก' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		   <td>ยกเลิก</td>
+		   <TD align='right'>&nbsp;</TD>
+		   <TD>&nbsp;</TD>
+		   <TD align='right'>&nbsp;</TD>
+		   <TD>&nbsp;</TD>
+		   <TD>&nbsp;</TD>
+		   <TD>&nbsp;</TD>
+    </TR>
 		 <TR>
 		 	<TD colspan="8"><span id='detailhead1' style='display:none'><span id='detail1'></span><INPUT TYPE='text' NAME='detail_1'></span></TD>
 		 </TR>
 		 <TR>
-		 	<TD colspan="8"><INPUT TYPE="submit" name="submit" value="ตกลง"></TD>
+		 	<TD>&nbsp;</TD>
+		    <TD><input type="submit" name="submit" class="fontsarabun" value="   บันทึก   " /></TD>
+		    <TD>&nbsp;</TD>
+		    <TD>&nbsp;</TD>
+		    <TD>&nbsp;</TD>
+		    <TD>&nbsp;</TD>
+		    <TD>&nbsp;</TD>
+		    <TD>&nbsp;</TD>
 		 </TR>
 		 </TABLE>
   <INPUT TYPE="hidden" name="idrow" value="<?php echo $_GET["id"];?>">
