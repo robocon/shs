@@ -31,44 +31,22 @@ if(isset($_POST['b1'])){
 	chkup='".$_POST['chkup']."',
 	reportlabno='".$_POST['reportlabno']."' 
 	WHERE row_id='".$_POST['rowid']."' ";
-	// $query1 = mysql_query($update);
+	$query1 = mysql_query($update);
 
-	dump($_POST);
 
 	$lab_id = $_POST['rowid'];
 	$company = $_POST['outlab_name'];
 
 	if( count($_POST['company_part']) > 0 ){
 
+		// ลบตัวเก่าไปก่อน
+		$sql = "DELETE FROM `outlab_list` WHERE `lab_id` = '$lab_id'";
+		$q = mysql_query($sql) or die(mysql_error());
+
 		foreach ($_POST['company_part'] as $key => $company_part) {
-			
-			/**
-			 * @todo
-			 * [] ตรวจสอบก่อนว่ามีข้อมูลในรายการรึป่าว
-			 * [] ถ้ายังไม่มีจะเพิ่ม
-			 * [] ถ้ามีจะอัพเดท
-			 * 
-			 * 
- 			 */
-			$sql = "SELECT `id` FROM `outlab_list` 
-			WHERE `lab_id` = '$lab_id' AND `company_part_id` = '$company_part' LIMIT 1;";
 
-			$query = mysql_query($sql) or die( mysql_error() );
-			$outlab_row = mysql_num_rows($query);
-// dump($sql);
-// dump($outlab_row);
-			// update
-			if( $outlab_row > 0 ){ // แก้ไขข้อมูล
-
-				$sql = "UPDATE `outlab_list` SET 
-				`` = '', 
-				`` = '', 
-				`` = '', 
-				`` = '', 
-				";
-
-			}else if( $outlab_row == 0 ){ // เพิ่มข้อมูล
-
+			if( $company_part > 0 ){
+				
 				// 
 				$sql = "SELECT a.`company_name`,b.`name` AS `part_name` 
 				FROM ( 
@@ -80,28 +58,20 @@ if(isset($_POST['b1'])){
 				$part = mysql_fetch_assoc($query);
 				$part_name = $part['part_name'];
 
-				$sql = "INSERT INTO `outlab_list` (`id`,`lab_id`,`company_part_id`,`company`,`name`) VALUES 
-				(NULL, '$lab_id','$company_part','$company','$part_name') ";
+				$sql = "INSERT INTO `outlab_list` (`lab_id`,`company_part_id`,`company`,`name`) VALUES 
+				('$lab_id','$company_part','$company','$part_name') ";
 				$query = mysql_query($sql) or die( mysql_error() );
 
-
 			}
-			
-
 
 		}
 
 	}
 
-
-
-	exit;
-
 	if($query1){
 		echo "<h1 align=center class='font1'>แก้ไขข้อมูลเสร็จเรียบร้อยแล้ว    กำลัง............กลับหน้ารายการ</h1>";
 		echo "<meta http-equiv='refresh' content='3; url=labcareedit1.php'>" ;
 	}
-	
 	
 }
 
@@ -122,27 +92,27 @@ if(isset($_POST['b1'])){
 <script>
 
 function Show(sel){
-		//alert(sel);
-		var obj=document.getElementById('labtype').value;
-		if (obj=='OUT'){
-			if(document.getElementById('sel').style.display=='none'){
-			document.getElementById('sel').style.display='block';
-			// document.getElementById('sel1').style.display='none';
-        
-			document.getElementById('outlab_part').style.display='table-row';
-      
+	
+	var obj=document.getElementById('labtype').value;
+	if (obj=='OUT'){
+		if(document.getElementById('sel').style.display=='none'){
+		document.getElementById('sel').style.display='block';
+		// document.getElementById('sel1').style.display='none';
+	
+		document.getElementById('outlab_part').style.display='table-row';
+	
 
-			} 
-		}else if (obj=='IN'){
-			
-			if (document.getElementById('sel').style.display=='block'){
-			document.getElementById('sel').style.display='none';
-			// document.getElementById('sel1').style.display='none';
-			document.getElementById('outlab_part').style.display='none';
+		} 
+	}else if (obj=='IN'){
+		
+		if (document.getElementById('sel').style.display=='block'){
+		document.getElementById('sel').style.display='none';
+		// document.getElementById('sel1').style.display='none';
+		document.getElementById('outlab_part').style.display='none';
 
-			}
 		}
 	}
+}
 
 function fncSubmit(){
 	var obj=document.getElementById('labtype').value;
@@ -180,8 +150,6 @@ function fncSubmit(){
 
 <body onload="Show(sel);">
 <?php
-
-
 $sql="select * from labcare Where row_id='".$_GET['rowid']."'";
 
 $query=mysql_query($sql);
@@ -230,8 +198,6 @@ $dbarr=mysql_fetch_array($query);
   </tr>
 
   <?php 
-  // var_dump($dbarr);
-  // if( strtolower($dbarr['labtype']) == "out" ){
 
     $outlab_name = $dbarr['outlab_name'];
 
@@ -241,20 +207,16 @@ $dbarr=mysql_fetch_array($query);
     AND b.`id` IS NOT NULL ";
     $q = mysql_query($sql);
 
-    // $row = mysql_num_rows($q);
-    // if( $row > 0 ){
 
-      ?>
-      <tr id="outlab_part" style="display:none">
-        <td>
-          แผนกที่ส่ง
-        </td>
-        <td>
-          <?php 
+	?>
+	<tr id="outlab_part" style="display:none">
+		<td>แผนกที่ส่ง</td>
+		<td>
+			<?php 
 
-            $outlab_list = array();
-            while ( $item = mysql_fetch_assoc($q) ) {
-              $outlab_list[] = $item;
+			$outlab_list = array();
+			while ( $item = mysql_fetch_assoc($q) ) {
+				$outlab_list[] = $item;
 			}
 
 			$row_id = $dbarr['row_id'];
@@ -263,12 +225,9 @@ $dbarr=mysql_fetch_array($query);
 			$q = mysql_query($sql) or die(mysql_error());
 			
 			while ($oLab = mysql_fetch_assoc($q)) {
-				
-				// dump($oLab);
-
+				$rand_num = rand(100,10000);
 				?>
-				<div class="{item_key}">
-				
+				<div class="<?=$rand_num;?>">
 					<select name="company_part[]" class="font1">
 						<option value="">เลือกรายการ</option>
 						<?php
@@ -282,49 +241,18 @@ $dbarr=mysql_fetch_array($query);
 						}
 						?>
 					</select>
-					<span class="del-item" data-del="{item_key}">[ลบ]</span>
+					<span class="del-item" data-del="<?=$rand_num;?>">[ลบ]</span>
 				</div>
 				<?php
-
-
 			}
-
-			
-			/*
-            ?>
-            
-            <select name="company_part[]" id="" class="font1">
-              <option value="">เลือกรายการ</option>
-              <?php
-              foreach( $outlab_list as $item ){
-                $key = $item['id'];
-                ?>
-                <option value="<?=$key;?>"><?=$item['name'];?></option>
-                <?php
-              }
-              ?>
-            </select>
-
-			<!--
-			หน้าแก้ไขจะมี del-item ซึ่งจะมี ajax ตรวจตอนลบด้วย
-			-->
-			
-			<?php
-
-			*/
-
 			?>
-            <div id="com_more"></div>
+			<div id="com_more"></div>
+			<div>
+				<button id="add_btn" type="button" onclick="test_added()">เพิ่มรายการ</button>
+			</div>
+		</td>
+	</tr>
 
-            <div>
-              <button id="add_btn" type="button" onclick="test_added()">เพิ่มรายการ</button>
-            </div>
-        </td>
-      </tr>
-      <?php
-    // }
-  // }
-  ?>
   <tr>
     <td>สถานะ</td>
     <td><select name="status" class="font1">

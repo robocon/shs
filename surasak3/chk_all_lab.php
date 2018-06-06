@@ -302,6 +302,45 @@ foreach ($items as $key => $item) {
                 $flag = 'ผิดปกติ';
             }
 
+
+            if($ua["labcode"]=="RBCU"){
+
+                $rbculen = strlen($ua["result"]);
+                if($rbculen >= 5){
+                    $rbcu1 = substr($ua["result"],0,2);
+                    $rbcu2 = substr($ua["result"],3,2);
+                }else if($rbculen ==4){
+                    $rbcu1 = substr($ua["result"],0,1);
+                    $rbcu2 = substr($ua["result"],2,2);						
+                }else{
+                    $rbcu1 = substr($ua["result"],0,1);
+                    $rbcu2 = substr($ua["result"],2,1);
+                }
+
+                if($ua["result"] == "*" || $ua["result"] == "**"  || $ua["result"] == "--"){
+                    $flag = "*";
+                }else{
+
+                    if($ua["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $ua["result"] != "*"){
+                        $flag = "ปกติ";
+                    }else if($ua["result"] == "*"){
+                        $flag = "*";
+                    }else{
+                        $flag = "ผิดปกติ";
+                    }
+                }	
+                
+            }else{
+                
+                if($ua['flag']=='L' || $ua['flag']=='H' || $ua['result']=='1+'|| $ua['result']=='2+'|| $ua['result']=='3+'|| $ua['result']=='4+'|| $ua['result']=='5+'|| $ua['result']=='6+'|| $ua['result']=='7+'|| $ua['result']=='8+'|| $ua['result']=='9+'){
+                    $ua["result"] = "<strong>".$ua["result"]."</strong>";
+                    $flag = "ผิดปกติ";
+                }else{
+                    $ua["result"]=$ua["result"];
+                    $flag = "ปกติ";
+                }
+            }
+
             ?>
             <td><?=$ua['result'];?></td>
             <td><?=$ua['normalrange'];?></td>
@@ -319,7 +358,7 @@ foreach ($items as $key => $item) {
             $etc = $etc_all_result[$etc_item];
             $app = '';
 
-            if( $etc_item == 'GLU'){
+            if( $etc_item == 'GLU' && !is_null($etc)){
                 if( $etc["result"] >= 74 && $etc["result"] <= 106 ){
                     $app="ระดับน้ำตาลในเลือดมีค่าอยู่ในเกณฑ์ปกติ";
                 }else if( $etc["result"] > 106 && $etc["result"] <= 125 ){
@@ -331,7 +370,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'BUN'){
+            if($etc_item == 'BUN' && !is_null($etc)){
                 if($etc["result"]>18){
                     $app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
                 }else if($etc["result"]>=7 && $etc["result"]<=18){
@@ -342,7 +381,7 @@ foreach ($items as $key => $item) {
                 
             }
 
-            if($etc_item == 'CREA'){
+            if($etc_item == 'CREA' && !is_null($etc)){
                 if($etc["result"]>1.3){
                     $app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
                 }else if($etc["result"]>=0.6 && $etc["result"]<=1.3){
@@ -352,7 +391,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'URIC'){
+            if($etc_item == 'URIC' && !is_null($etc)){
                 if($etc["result"]>7.2){
                     $app="ผิดปกติ ควรงดเครื่องดื่มที่มีแอลกอฮอล์ เครื่องในสัตว์ สัตว์ปีก";	
                 }else if($etc["result"] >=2.6 && $etc["result"] <=7.2){
@@ -363,7 +402,7 @@ foreach ($items as $key => $item) {
             }
 
 
-            if($etc_item == 'CHOL'){
+            if($etc_item == 'CHOL' && !is_null($etc)){
                 if($etc["result"]<=200){
                     $app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
                 }else	if($etc["result"]>200){
@@ -373,7 +412,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'HDL'){
+            if($etc_item == 'HDL' && !is_null($etc)){
                 if($etc["result"]>=40 && $etc["result"]<=60){
                     $app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
                 }else	if($etc["result"]>60){  //สูงดี
@@ -383,7 +422,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'TRIG'){
+            if($etc_item == 'TRIG' && !is_null($etc)){
                 if($etc["result"]<=150){
                     $app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
                 }else	if($etc["result"]>150 && $etc["result"]<250){
@@ -393,7 +432,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == '10001'){
+            if($etc_item == '10001' && !is_null($etc)){
                 if($etc["result"]>=0 && $etc["result"]<=100){
                     $app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
                 }else	if($etc["result"]>100){
@@ -401,7 +440,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'LDL'){
+            if($etc_item == 'LDL' && !is_null($etc)){
                 if($etc["result"]>=0 && $etc["result"]<=100){
                     $app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
                 }else	if($etc["result"]>100){
@@ -409,7 +448,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'LDLC'){
+            if($etc_item == 'LDLC' && !is_null($etc)){
                 if($etc["result"]>=0 && $etc["result"]<=100){
                     $app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
                 }else	if($etc["result"]>100){
@@ -417,7 +456,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'AST'){  //SGOT
+            if($etc_item == 'AST' && !is_null($etc)){  //SGOT
                 if($etc["result"]>=15 && $etc["result"]<=37){
                     $app="การทำงานของตับปกติ";	
                 }else	if($etc["result"]>37){
@@ -426,7 +465,8 @@ foreach ($items as $key => $item) {
                     $app="การทำงานของตับผิดปกติ";	
                 }
             }
-            if($etc_item == 'ALT'){  //SGPT
+
+            if($etc_item == 'ALT' && !is_null($etc)){  //SGPT
                 if($etc["result"]>=0 && $etc["result"]<=50){
                     $app="การทำงานของตับปกติ";		
                 }else{
@@ -434,7 +474,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'ALP'){  //ALK
+            if($etc_item == 'ALP' && !is_null($etc) ){  //ALK
                 if($etc["result"]>=46 && $etc["result"]<=116){
                     $app="การทำงานของตับปกติ";	
                 }else	if($etc["result"]>116){
@@ -444,7 +484,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'HBSAG'){  //HBSAG
+            if($etc_item == 'HBSAG' && !is_null($etc)){  //HBSAG
                 if($etc["result"]=="Negative"){
                     $app="ปกติ";	
                 }else if($etc["result"]=="Positive"){
@@ -452,7 +492,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'ANTIHB'){  //HBSAB
+            if($etc_item == 'ANTIHB' && !is_null($etc)){  //HBSAB
                 if($etc["result"]=="Negative"){
                     $app="ปกติ";	
                 }else if($etc["result"]=="Positive"){
@@ -460,7 +500,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'OCCULT'){  //STOCB
+            if($etc_item == 'OCCULT' && !is_null($etc)){  //STOCB
                 if($etc["result"]=="Negative"){
                     $app="ปกติ";	
                 }else if($etc["result"]=="Positive"){
@@ -468,7 +508,7 @@ foreach ($items as $key => $item) {
                 }
             }
 
-            if($etc_item == 'METAMP'){  //METAMP
+            if($etc_item == 'METAMP' && !is_null($etc)){  //METAMP
                 if($etc["result"]=="Negative"){
                     $app="ปกติ";	
                 }else if($etc["result"]=="Positive"){
