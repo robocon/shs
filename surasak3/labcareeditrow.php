@@ -50,7 +50,7 @@ if(isset($_POST['b1'])){
 				// 
 				$sql = "SELECT a.`company_name`,b.`name` AS `part_name` 
 				FROM ( 
-					SELECT `id` AS `company_id` ,`name` AS `company_name` FROM `outlab_company` WHERE `name` = '$company' 
+					SELECT `id` AS `company_id` ,`name` AS `company_name` FROM `outlab_company` WHERE `labcare_name` = '$company' 
 				) AS a 
 				LEFT JOIN `outlab_company_part` AS b ON b.`company_id` = a.`company_id`
 				WHERE b.`id` = '$company_part' LIMIT 1";
@@ -203,7 +203,7 @@ $dbarr=mysql_fetch_array($query);
 
     $sql = "SELECT b.* FROM `outlab_company` AS a 
     LEFT JOIN `outlab_company_part` AS b ON b.`company_id` = a.`id` 
-    WHERE a.`name` = '$outlab_name' 
+    WHERE a.`labcare_name` = '$outlab_name' 
     AND b.`id` IS NOT NULL ";
     $q = mysql_query($sql);
 
