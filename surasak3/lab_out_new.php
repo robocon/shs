@@ -1,6 +1,17 @@
 <?php
 
 require "bootstrap.php";
+$db = Mysql::load();
+
+
+$times = array(
+	'01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', 
+	'12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', 
+	'23:00', '00:00', 
+);
+
+$curr_hour = date('G');
+$curr_time = "$curr_hour:00";
 
 ?>
 <html>
@@ -46,13 +57,53 @@ require "bootstrap.php";
 					<span>เริ่มตั้งแต่วันที่: </span>
 					<input type="text" id="date_start" name="date_start" value="<?php echo $date_start; ?>">
 				</label>
+				<label>
+					<span>เวลา: </span>
+					<select name="time_start">
+						<?php foreach($times as $time){ ?>
+						<?php $select = ($time == $curr_time) ? 'selected="selected"' : '' ; ?>
+						<option value="<?php echo $time; ?>" <?php echo $select; ?>><?php echo $time; ?></option>
+						<?php } ?>
+					</select>
+					น.
+				</label>
 
 				<label>
 					<span>สิ้นสุดวันที่: </span>
 					<input type="text" id="date_end" name="date_end" value="<?php echo $date_end; ?>">
 				</label>
+				<label>
+					<span>เวลา: </span>
+					<select name="time_end">
+						<?php foreach($times as $time){ ?>
+						<?php $select = ($time == $curr_time) ? 'selected="selected"' : '' ; ?>
+						<option value="<?php echo $time; ?>" <?php echo $select; ?>><?php echo $time; ?></option>
+						<?php } ?>
+					</select>
+					น.
+				</label>
 			</div>
+			<?php
+			$sql = "SELECT * FROM `outlab_company`";
+			$db->select($sql);
+			$company_list = $db->get_items();
 
+			
+			?>
+			<div>
+				<span>เลือกรายการที่ส่ง: </span>
+				<select name="part" id="">
+					<option value="">ทั้งหมด</option>
+					<?php
+					foreach ($company_list as $key => $company) {
+						$selected = ( $company['id'] == $_POST['part'] ) ? 'selected="selected"' : '';
+						?>
+						<option value="<?=$company['id'];?>" <?=$selected;?> ><?=$company['name'];?></option>
+						<?php
+					}
+					?>
+				</select>
+			</div>
 			<div>
 				<input type="hidden" name="action" value="report">
 				<button type="submit">ทำการส่งออกข้อมูล</button>
@@ -75,8 +126,29 @@ $action = input_post('action');
 
 if( $action == 'report' ){
 
-    $db = Mysql::load();
+	$time_start = $_POST['date_start'].':00';
+	$time_end = $_POST['date_end'].':59';
+	$part = input('part');
 
+	// 
+	$where = '';
+	if( $part != '' ){
+		$where = "WHERE `company_id` = '$part'";
+		
+	} 
+
+	// ดึงเอา code มารวมกันก่อน
+	$sql = "SELECT * FROM `outlab_list` $where GROUP BY `lab_id`";
+	$db->select($sql);
+	$company_list = $db->get_items();
+	
+	$outlab_where = array();
+	foreach ($company_list as $key => $company) {
+		$code = $company['code'];
+		$outlab_where[] = "'$code'";
+	}
+	$outlab_where_txt = implode(',', $outlab_where);
+	// dump($outlab_where_txt);
 
     list($ys, $ms, $ds) = explode('-', $_POST['date_start']);
 	$ys = $ys + 543;
@@ -87,12 +159,18 @@ if( $action == 'report' ){
 	$date_end_th = "$ye-$me-$de";
 	
 
+	/*
+	$where_outlab = '';
+	if( $company_id != '' ){
+		$where_outlab = "AND `outlab_name` = '$company_id' ";
+	}
+
 	$sql = "SELECT a.*, b.* 
 	FROM ( 
 		SELECT `row_id` AS `pat_id`,`date`,`hn`,`ptname`,`code`,`status`,`price`,
 		SUBSTRING(`date`,1,10) AS `short_date`
 		FROM `patdata` 
-		WHERE ( `date` >= '$date_start_th 00:00:01' AND `date` <= '$date_end_th 23:59:59' ) 
+		WHERE ( `date` >= '$date_start_th $time_start' AND `date` <= '$date_end_th $time_end' ) 
 		AND `depart` = 'PATHO' 
 		AND `status` = 'Y' 
 		AND `price` > 0 
@@ -100,11 +178,28 @@ if( $action == 'report' ){
 		SELECT `row_id` AS `lab_id`,`code`,`detail`,`outlab_name`
 		FROM `labcare` 
 		WHERE `labtype` = 'OUT' 
+		$where_outlab 
 		AND `labstatus` = 'Y' 
 		AND `depart` LIKE '%patho%'
 	) AS b ON b.`code` = a.`code` 
 	WHERE b.`lab_id` IS NOT NULL 
 	ORDER BY a.`pat_id`; ";
+	*/
+
+	
+	$sql = "SELECT `row_id`,`date`,`hn`,`ptname`,`code`,`status`,`price`,
+	SUBSTRING(`date`,1,10) AS `short_date`
+	FROM `patdata` 
+	WHERE ( `date` >= '$date_start_th $time_start' AND `date` <= '$date_end_th $time_end' ) 
+	AND `code` IN($outlab_where_txt) 
+	AND `depart` = 'PATHO' 
+	AND `status` = 'Y' 
+	AND `price` > 0 
+	GROUP BY `hn`,`code`
+	ORDER BY `row_id`";
+
+	// dump($sql);
+	// exit;
 	
 	$db->select($sql);
 	$items = $db->get_items();
@@ -117,32 +212,37 @@ if( $action == 'report' ){
 			<th>ชื่อ-สกุล</th>
 			<th>รหัส</th>
 			<th>รายละเอียด</th>
-			<th>Out Lab</th>
-			<th>แผนกที่ส่ง</th>
 		</tr>
 	<?php
-
+	// รายการจาก patdata
 	foreach ($items as $key => $item) { 
 
 		$name = $item['outlab_name'];
-		$lab_id = $item['lab_id'];
+		$lab_code = $item['code'];
 
 
-		$sql = "SELECT * FROM `outlab_company` WHERE `labcare_name` = '$name' ";
+		// $sql = "SELECT * FROM `outlab_company` WHERE `labcare_name` = '$name' ";
+		// $db->select($sql);
+		// $company = $db->get_item($sql); 
+
+
+		$sql = "SELECT `row_id` AS `lab_id`,`code`,`detail`,`outlab_name` FROM `labcare` WHERE `code` = '$lab_code' ";
 		$db->select($sql);
-		$company = $db->get_item($sql);
+		$labcare = $db->get_item();
 
-		$sql = "SELECT `name` FROM `outlab_list` WHERE `company` = '$name' AND `lab_id` = '$lab_id'";
-		$db->select($sql);
 
-		$parts = false;
 		$part_txt = '';
-		if( $db->get_rows() > 0 ){
-			$parts = $db->get_items();
-			foreach ($parts as $key => $value) {
-				$part_txt .= $value['name']."<br>";
-			}
-		}
+		// $sql = "SELECT * FROM `outlab_list` WHERE `lab_id` = '$lab_id'";
+		// $db->select($sql);
+
+		// $parts = false;
+		// $part_txt = '';
+		// if( $db->get_rows() > 0 ){
+		// 	$parts = $db->get_items();
+		// 	foreach ($parts as $key => $value) {
+		// 		$part_txt .= $value['company']."<br>";
+		// 	}
+		// }
 
 		$short_date = $item['short_date'];
 		if( $short_date == $late_short_date ){
@@ -165,9 +265,7 @@ if( $action == 'report' ){
 			<td><?=$hn;?></td>
 			<td><?=$ptname;?></td>
 			<td><?=$item['code'];?></td>
-			<td><?=$item['detail'];?></td>
-			<td><?=$company['name'];?></td>
-			<td><?=$part_txt;?></td>
+			<td><?=$labcare['detail'];?></td>
 		</tr>
 		<?php
 

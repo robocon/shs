@@ -27,12 +27,13 @@ $pttype_list = array('1' => 'Emergency','2' => 'Urgent','3' => 'Non-Urgent');
 $type_wound = $item['type_wound'];
 $targe = $item['target_refer'];
 $pttype = $item['pttype'];
-$organ = $item['organ'];
-$maintenance = $item['maintenance'];
+$organ2 = $item['organ'];
+$maintenance2 = $item['maintenance'];
 $list_type_patient = $item['list_type_patient'];
 $problem_refer = $item['problem_refer'];
 
 $trauma_id = $item['trauma_id'];
+
 if( !empty($trauma_id) ){
     $sql = "SELECT * FROM `trauma` WHERE `row_id` = '$trauma_id'; ";
     $db->select($sql);
@@ -65,6 +66,15 @@ p{
 <p><b>วัตุประสงค์/เพื่อ</b> : <?=$targe_list[$targe];?></p>
 <p><b>ประเภทผู้ป่วย</b> : <?=$pttype_list[$pttype];?></p>
 <p><b>การเดินทาง</b> : <?=$item['refercar'];?></p>
+
+<?php
+if( $maintenance2 ){
+    ?>
+    <p><b>ข้อมูลสำคัญของผู้ป่วย</b> : - <?=$organ2?> <br> - <?=$maintenance2?></p>
+    <?php
+}
+?>
+
 <p><b>Refer ไปที่โรงพยาบาล</b> : <?=( ($item['referh'] !== '00') ? $item['referh'] : '-' );?></p>
 <p><b>ปัญหาการ Refer</b> : <?=$problem_refer;?></p>
 <p><b>สิ่งที่ส่งไปด้วย</b> : <?=( !empty($item['doc_refer']) ? 'ใบ Refer' : '' );?> 

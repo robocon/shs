@@ -51,7 +51,9 @@ if($_SESSION["statusncr"] !== 'admin'){
 	table.forntsarabun a.action-done{
 		color: #10AA00;
 	}
-	
+	table.forntsarabun .form-print:active{
+		color: #10AA00;
+	}
 	</style>
 	<script language="JavaScript" type="text/JavaScript">
 	<!--
@@ -320,11 +322,11 @@ $row2 = mysql_num_rows($query2);
 		<?php
 		if( $_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
 			$color_edit = !empty($arr1['date_edit']) ? 'class="action-done"' : '' ;
-			$color_print = !empty($arr1['date_print']) ? 'class="action-done"' : '' ;
+			$color_print = !empty($arr1['date_print']) ? 'action-done' : '' ;
 		?>
 		<td align="center"><a href="ncf2_edit.php?nonconf_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
 		<td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr1['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr1['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
-		<td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
+		<td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr1['nonconf_id'];?>" target="_blank" class="form-print <?=$color_print;?>">พิมพ์</a></td>
 		<?php } ?>
 	</tr>
     <?php
@@ -380,11 +382,11 @@ $row2 = mysql_num_rows($query2);
 			<?php
 			if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
 			$color_edit = !empty($arr2['date_edit']) ? 'class="action-done"' : '' ;
-			$color_print = !empty($arr2['date_print']) ? 'class="action-done"' : '' ;
+			$color_print = !empty($arr2['date_print']) ? 'action-done' : '' ;
 			?>
 			<td align="center"><a  href="ncf2_edit.php?nonconf_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_edit;?>>แก้ไข</a></td>
 			<td align="center"><a href="javascript:if(confirm('ยืนยันการลบ NCR : <?=$arr2['nonconf_id']?>')==true){MM_openBrWindow('ncf_del.php?id=<?=$arr2['nonconf_id']?>','','width=400,height=500')}">ลบ</a></td>
-			<td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr2['nonconf_id'];?>" target="_blank" <?php echo $color_print;?>>พิมพ์</a></td>
+			<td align="center"><a  href="ncf_print.php?ncr_id=<?=$arr2['nonconf_id'];?>" target="_blank" class="form-print <?=$color_print;?>">พิมพ์</a></td>
 			<?php } ?>
 		</tr>
 	<?php

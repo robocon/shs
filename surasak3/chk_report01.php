@@ -602,6 +602,17 @@ if( $num > 0 ){
 									$showresultua="ปกติ";
 								}
 							}
+
+							if($objResult["labcode"]=="WBCU"){  //เม็ดเลือดขาว
+								
+								$wbcu_result = str_replace('/\s+/','',$objResult["result"]);
+								list($wbcu_min, $wbcu_max) = explode('-', $wbcu_result);
+								$showresultua="ผิดปกติ";
+								if( $wbcu_min >= 0 && $wbcu_max <= 5 ){
+									$showresultua="ปกติ";
+								}
+
+							}
 							
 							if($objResult["labcode"]=="PROU" || $objResult["labcode"]=="GLUU"){
 								$normalrange="Negative";
@@ -1054,6 +1065,7 @@ FROM (
         `profilecode`='HBSAG' 
         OR `profilecode`='HAVTOT' 
         OR `profilecode`='WET' 
+		OR `profilecode`='AHAV' 
     ) 
 	GROUP BY `profilecode` 
     ORDER BY `autonumber` ASC  
@@ -1089,7 +1101,9 @@ if ( $group2_rows > 0 ) {
 						$type2 = array(
 							'HBSAG' => '<b>ตรวจไวรัสตับอักเสบ B</b> (HBsAg)',
 							'HAVTOT' => '<b>ตรวจไวรัสตับอักเสบ A</b> (Anti-HAV IgG)',
+							'AHAV' => '<b>ตรวจไวรัสตับอักเสบ A</b> (Anti HAV IgM)',
 							'WET' => '<b>ตรวจอุจจาระสมบูรณ์แบบ</b> (Stool Exam)',
+							
 						);
 
 						while( $item = mysql_fetch_assoc($query)){ 
@@ -1117,7 +1131,7 @@ if ( $group2_rows > 0 ) {
 							</tr>
 							<?php 
 							// หลังจากแสดง WET ไปเรียบร้อยแล้ว 
-							if ( $labcode == 'WET' ) {
+							// if ( $labcode == 'WET' ) {
 								if( !empty($c_s) ){
 									?>
 									<tr>
@@ -1127,7 +1141,7 @@ if ( $group2_rows > 0 ) {
 									</tr>
 									<?php
 								}
-							}
+							// }
 
 						}
 						

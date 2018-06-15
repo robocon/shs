@@ -442,6 +442,10 @@ if($_POST["dctype"] == "8 Dead Autopsy" || $_POST["dctype"] == "9 Dead Non autop
 
           if( $refer_number !== false ){
             echo "<br><b>เลขที่ Refer : $refer_number</b><br><br>";
+
+            echo '<script>';
+            echo 'alert("เลขที่ Refer : '.$refer_number.'");';
+            echo '</script>';
           }
 
           print "ปิดหน้าต่างนี้  และRefresh หน้าต่างหอผู้ป่วย<br>";

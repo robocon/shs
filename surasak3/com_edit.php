@@ -87,7 +87,7 @@ function fncSubmit()
     <td colspan="3" bgcolor="#66CCCC"><select name="programmer" class="forntsarabun">
      <option value="0" selected>==กรุณาเลือก==</option>
     <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
-	<option value="กฤษณะศักดิ์  กันธะรส">กฤษณะศักดิ์  กันธะรส</option>
+	<option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
     <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
 	<option value="ฐานะพัฒน์  นิลคำ">ฐานะพัฒน์  นิลคำ</option>    
     </select>    </td>

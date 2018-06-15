@@ -49,7 +49,8 @@ if( empty($action) ){
                     <td>Lab Number</td>
                     <td>HN</td>
                     <td>เลขบัตรประชาชน</td>
-                    <td>ชื่อ สกุล</td>
+                    <td>ชื่อ</td>
+                    <td>สกุล</td>
                     <td>อายุ</td>
                     <td>วันเกิด</td>
                     <td>โปรแกรมที่ตรวจ เช่น โปรแกรม1 โปรแกรม2</td>
@@ -90,7 +91,7 @@ if( empty($action) ){
             ++$i;
             ++$last_id;
 
-            list($pid, $exam_no, $hn, $idcard, $fullname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
+            list($pid, $exam_no, $hn, $idcard, $fname, $lname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
 
 
             if( !empty($pid) ){
@@ -104,8 +105,10 @@ if( empty($action) ){
                 }
 
 
-                $fullname = preg_replace('/\s+/', ' ', $fullname);
-                list($name, $surname) = explode(' ',$fullname);
+                // $fullname = preg_replace('/\s+/', ' ', $fullname);
+                // list($name, $surname) = explode(' ',$fullname);
+                $name = trim($fname);
+                $surname = trim($lname);
     
                 $sql = "INSERT INTO `opcardchk`
                 (`HN`,

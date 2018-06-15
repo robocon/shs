@@ -21,7 +21,7 @@ a:active {
 	text-decoration: none;
 }
 body {
-	background-color: #339966;
+	background-color: #FFFFFF;
 }
 </style>
 <?php
@@ -41,18 +41,18 @@ FROM com_support
 WHERE status ='$num' 
 ORDER BY row desc";
 $result = mysql_query($query) or die("Query failed111");
-if(mysql_num_rows($result)){
-    print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ</strong></div>";
+if($num1=mysql_num_rows($result)){
+    print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
     print"<table class='forntsarabun'  align='center' width='98%'>";
     print" <tr>";
-    print"  <th bgcolor=#FF9966>ลำดับ</th>";
-    print"  <th bgcolor=#FF9966>ลำดับแจ้ง</th>";
-    print"  <th bgcolor=#FF9966>แผนก</th>";
-    print"  <th bgcolor=#FF9966>หัวข้อ</th>";
-    print"  <th bgcolor=#FF9966>ผู้ที่ร้องขอ</th>";
-    print"  <th bgcolor=#FF9966>วันที่ร้องขอ</th>";
-    print"  <th bgcolor=#FF9966>ผู้รับผิดชอบ</th>";
-    print"  <th bgcolor=#FF9966>พิมพ์</th>";
+    print"  <th bgcolor=#FF0033>ลำดับ</th>";
+    print"  <th bgcolor=#FF0033>ลำดับแจ้ง</th>";
+    print"  <th bgcolor=#FF0033>แผนก</th>";
+    print"  <th bgcolor=#FF0033>หัวข้อ</th>";
+    print"  <th bgcolor=#FF0033>ผู้ที่ร้องขอ</th>";
+    print"  <th bgcolor=#FF0033>วันที่ร้องขอ</th>";
+    print"  <th bgcolor=#FF0033>ผู้รับผิดชอบ</th>";
+    print"  <th bgcolor=#FF0033>พิมพ์</th>";
     print" </tr>";
     while (list ($row,$depart,$head,$datetime,$programmer,$date,$user1) = mysql_fetch_row ($result)) {
         $n++;
@@ -66,14 +66,14 @@ if(mysql_num_rows($result)){
         }
 	
         print (" <tr>\n".
-        "  <td BGCOLOR=#FFCC99 align='center'>$n</td>\n".
-        "  <td BGCOLOR=#FFCC99 align='center'>$row</td>\n".
-        "  <td BGCOLOR=#FFCC99>$depart</td>\n".
-        "  <td BGCOLOR=#FFCC99><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
-        "  <td BGCOLOR=#FFCC99>$user1</td>\n".
-        "  <td BGCOLOR=#FFCC99>$date</td>\n".
-        "  <td BGCOLOR=#FFCC99>$where</td>\n".
-        "  <td BGCOLOR=#FFCC99><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
+        "  <td BGCOLOR=#FF8080 align='center'>$n</td>\n".
+        "  <td BGCOLOR=#FF8080 align='center'>$row</td>\n".
+        "  <td BGCOLOR=#FF8080>$depart</td>\n".
+        "  <td BGCOLOR=#FF8080><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
+        "  <td BGCOLOR=#FF8080>$user1</td>\n".
+        "  <td BGCOLOR=#FF8080>$date</td>\n".
+        "  <td BGCOLOR=#FF8080>$where</td>\n".
+        "  <td BGCOLOR=#FF8080><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
         " </tr>\n");
 		
     }
@@ -97,18 +97,18 @@ WHERE status ='$num'
 ORDER BY row desc";
 $result = mysql_query($query) or die("Query failed111");
 
-   if(mysql_num_rows($result)){
-        print"<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการอยู่</strong></div>";
+   if($num2=mysql_num_rows($result)){
+        print"<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการ จำนวน $num2 รายการ</strong></div>";
         print"<table class='forntsarabun'  align='center' width='98%'>";
         print" <tr>";
-		        print"  <th bgcolor=#FF99CC>ลำดับ</th>";
-        print"  <th bgcolor=#FF99CC>ลำดับแจ้ง</th>";
-        print"  <th bgcolor=#FF99CC>แผนก</th>";
-        print"  <th bgcolor=#FF99CC>หัวข้อ</th>";
-        print"  <th bgcolor=#FF99CC>วันที่ร้องขอ</th>";
-		print"  <th bgcolor=#FF99CC>ผู้รับผิดชอบ</th>";
-		print"  <th bgcolor=#FF99CC>พิมพ์</th>";
-		//print"  <th bgcolor=#FF99CC>การทำงาน</th>";
+		        print"  <th bgcolor=#FFCC00>ลำดับ</th>";
+        print"  <th bgcolor=#FFCC00>ลำดับแจ้ง</th>";
+        print"  <th bgcolor=#FFCC00>แผนก</th>";
+        print"  <th bgcolor=#FFCC00>หัวข้อ</th>";
+        print"  <th bgcolor=#FFCC00>วันที่ร้องขอ</th>";
+		print"  <th bgcolor=#FFCC00>ผู้รับผิดชอบ</th>";
+		print"  <th bgcolor=#FFCC00>พิมพ์</th>";
+		//print"  <th bgcolor=#FFCC00>การทำงาน</th>";
       
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$user) = mysql_fetch_row ($result)) {
@@ -117,14 +117,14 @@ $result = mysql_query($query) or die("Query failed111");
 			if($_SESSION['smenucode']=='ADM'){$add="<a target='_blank' href=\"comservice.php?row=$row&act=win\">บันทึก</a>";} else {$add="บันทึก";};
 			
             print (" <tr>\n".
-				      "  <td BGCOLOR=#FFCCCC align='center'>$n</td>\n".
-                "  <td BGCOLOR=#FFCCCC align='center'>$row</td>\n".
-                "  <td BGCOLOR=#FFCCCC>$depart</td>\n".
-                "  <td BGCOLOR=#FFCCCC><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
-                "  <td BGCOLOR=#FFCCCC>$date</td>\n".
-				  "  <td BGCOLOR=#FFCCCC>$where</td>\n".
-				  "  <td BGCOLOR=#FFCCCC><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
-				 // "  <td BGCOLOR=#FFCCCC align='center'>$add</td>\n".
+				      "  <td BGCOLOR=#FFFF99 align='center'>$n</td>\n".
+                "  <td BGCOLOR=#FFFF99 align='center'>$row</td>\n".
+                "  <td BGCOLOR=#FFFF99>$depart</td>\n".
+                "  <td BGCOLOR=#FFFF99><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
+                "  <td BGCOLOR=#FFFF99>$date</td>\n".
+				  "  <td BGCOLOR=#FFFF99>$where</td>\n".
+				  "  <td BGCOLOR=#FFFF99><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
+				 // "  <td BGCOLOR=#FFFF99 align='center'>$add</td>\n".
                 " </tr>\n");
   						    }
         print"</table>";
@@ -141,34 +141,33 @@ include("connect.inc");
 $query = "SELECT row,depart,head,datetime,programmer,date,p_edit,dateend 
 FROM com_support 
 WHERE status ='$num' 
-ORDER BY dateend desc 
-LIMIT 40 ";
+ORDER BY dateend desc";
 $result = mysql_query($query) or die("Query failed111");
 
-   if(mysql_num_rows($result)){
-	    print"<div align='center' class='forntsarabun'><strong>งานที่ดำเนินการเสร็จแล้ว</strong></div>";
+   if($num3=mysql_num_rows($result)){
+	    print"<div align='center' class='forntsarabun'><strong>งานที่ดำเนินการเสร็จแล้ว จำนวน $num3 รายการ</strong></div>";
         print"<table class='forntsarabun'  align='center' width='98%'>";
         print" <tr>";
-        print"  <th bgcolor=#0099CC>ลำดับแจ้ง</th>";
-        print"  <th bgcolor=#0099CC>แผนก</th>";
-        print"  <th bgcolor=#0099CC>หัวข้อ</th>";
-        print"  <th bgcolor=#0099CC>วันเวลาที่ร้องขอ</th>";
-		print"  <th bgcolor=#0099CC>ผู้รับผิดชอบ</th>";
-		print"  <th bgcolor=#0099CC>การดำเนิการ</th>";
-		print"  <th bgcolor=#0099CC>วันเวลาที่ดำเนินการ</th>";
-		print"  <th bgcolor=#0099CC>พิมพ์</th>";
+        print"  <th bgcolor=#339966>ลำดับแจ้ง</th>";
+        print"  <th bgcolor=#339966>แผนก</th>";
+        print"  <th bgcolor=#339966>หัวข้อ</th>";
+        print"  <th bgcolor=#339966>วันเวลาที่ร้องขอ</th>";
+		print"  <th bgcolor=#339966>ผู้รับผิดชอบ</th>";
+		print"  <th bgcolor=#339966>การดำเนิการ</th>";
+		print"  <th bgcolor=#339966>วันเวลาที่ดำเนินการ</th>";
+		print"  <th bgcolor=#339966>พิมพ์</th>";
       
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$p_edit,$dateend) = mysql_fetch_row ($result)) {
             print (" <tr>\n".
-                "  <td BGCOLOR=#66CCFF  align='center'>$row</td>\n".
-                "  <td BGCOLOR=#66CCFF>$depart</td>\n".
-                "  <td BGCOLOR=#66CCFF><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
-                "  <td BGCOLOR=#66CCFF>$date</td>\n".
-				"  <td BGCOLOR=#66CCFF>$programmer</td>\n".
-				"  <td BGCOLOR=#66CCFF>$p_edit</td>\n".
-				"  <td BGCOLOR=#66CCFF>$dateend</td>\n".
-				"  <td BGCOLOR=#66CCFF><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
+                "  <td BGCOLOR=#33CC99  align='center'>$row</td>\n".
+                "  <td BGCOLOR=#33CC99>$depart</td>\n".
+                "  <td BGCOLOR=#33CC99><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
+                "  <td BGCOLOR=#33CC99>$date</td>\n".
+				"  <td BGCOLOR=#33CC99>$programmer</td>\n".
+				"  <td BGCOLOR=#33CC99>$p_edit</td>\n".
+				"  <td BGCOLOR=#33CC99>$dateend</td>\n".
+				"  <td BGCOLOR=#33CC99><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
                 " </tr>\n");
   				}
         print "</table>";

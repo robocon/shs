@@ -15,7 +15,6 @@ $list_ptright["P10"] = "30บาทฉุกเฉิน";
 $list_ptright["P11"] = "พรบ.";
 $list_ptright["P12"] = "กท.44";
 
-
 if(isset($_GET["del_refer"])){
 
 	$sql = "Delete From `refer` where row_id = '".$_GET["search_id"]."' limit 1";
@@ -221,7 +220,7 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	}
 
 	$sql = "SELECT row_id, name, sname, hn, an, date_format(dateopd,'%d-%m-%Y'), ward, officer, refer_runno,
-	referh,diag,doctor,exrefer
+	referh,diag,doctor,exrefer,maintenance,organ
 	FROM refer 
 	WHERE `dateopd` LIKE '".($year_select + 543)."-$month_select%' 
 	".$where."
@@ -242,6 +241,7 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	<td>refer ไป</td>
 	<td >ผู้บันทึก</td>
 	<td>Diag</td>
+	<td>ข้อมูลสำคัญของผู้ป่วย</td>
 	<td>แพทย์</td>
 	<td>สิทธิการรักษา</td>
 	<td>สาเหตุที่ refer</td>
@@ -249,7 +249,7 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 	<td class='no_print'>ลบ</td>
 	</tr>";
 
-	while(list($row_id, $name, $sname, $hn, $an, $dateopd, $ward, $officer, $refer_runno,$referh,$diag,$doctor,$exrefer) = Mysql_fetch_row($result)){
+	while(list($row_id, $name, $sname, $hn, $an, $dateopd, $ward, $officer, $refer_runno,$referh,$diag,$doctor,$exrefer,$maintenance,$organ) = Mysql_fetch_row($result)){
 		
 		if( preg_match('/^Ward(\d{2,})/', $ward, $match) > 0 ){
 			$ward_key = $match['0'];
@@ -278,7 +278,7 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 		}
 		
 
-		echo "<tr align=\"center\" >
+		echo "<tr align=\"left\" >
 		<td><a href=\"ward_follow_refer_detail.php?id=$refer_id\" target=\"_blank\">".$refer_runno."</a></td>
 		<td align=\"left\" >$hn</td>
 		<td align=\"left\" >".$an."</td>
@@ -287,12 +287,14 @@ if($_POST["submit_search"] == "ค้นหา" || $_GET["view"] == 'opd'){
 		<td >".$by."</td>
 		<td>".$referh."</td>
 		<td >".$officer."</td>
-		<td align=\"right\">$diag</td>
+		<td align=\"left\">$diag</td>
+		<td align=\"left\">$organ <br><br> $maintenance</td>
+		
 		<td align=\"right\">$doctor</td>
 		<td align=\"right\">".$ptr['ptright']."</td>
 		<td align=\"right\">".$exrefer."</td>";
 		
-		if($officer == "" || $officer == $_SESSION["sOfficer"]){
+		if($officer == "" || $officer == $_SESSION["sOfficer"] || $_SESSION["sOfficer"] == 'ADM' ){
 			echo "<td class='no_print'><A HREF=\"ward_follow_refer2.php?edit_refer=edit&search_id=".$row_id."\">แก้ไข</A></td>";
 			echo "<td class='no_print'><A HREF=\"ward_follow_refer2.php?del_refer=true&search_id=".$row_id."\">ลบ</A></td>";
 		}else{
