@@ -99,6 +99,7 @@ while($result = mysql_fetch_assoc($row2)){
 	$show_date = $result['show_date'];
 
 	$c_s = $result['cs'];
+	$result_cs = $result['result_cs'];
 
 	// ถ้าไม่มีวันที่ใน chk_company_list ให้ดึงมาจาก opcardchk แทน
 	if( empty($show_date) ){
@@ -1092,9 +1093,9 @@ if ( $group2_rows > 0 ) {
 				<td>
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="45%" align="center" bgcolor="#CCCCCC"><strong>รายการตรวจ </strong></td>
-							<td width="9%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
-							<td width="37%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
+							<td width="30%" align="center" bgcolor="#CCCCCC"><strong>รายการตรวจ </strong></td>
+							<td width="35%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
+							<td width="35%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 						</tr>
 						<?php 
 
@@ -1133,10 +1134,12 @@ if ( $group2_rows > 0 ) {
 							// หลังจากแสดง WET ไปเรียบร้อยแล้ว 
 							// if ( $labcode == 'WET' ) {
 								if( !empty($c_s) ){
+
+
 									?>
 									<tr>
 										<td><b>ตรวจอุจจาระเพาะเชื้อ</b> (Stool Culture)</td>
-										<td></td>
+										<td align="center"><?=$result_cs;?></td>
 										<td align="center"><?=$c_s;?></td>
 									</tr>
 									<?php

@@ -1,5 +1,10 @@
-<?php
+<?php 
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 session_start();
+
 if(isset($_GET["action"])){
 	// header("content-type: application/x-javascript; charset=TIS-620");
 }
@@ -230,8 +235,8 @@ if($_GET["action"] == "carlendar"){
 			if( $dr_intern === true ){
 				if( !empty($total_items[$key]) ){
 					$item = $total_items[$key];
-					$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
-					$intern_total = $item['total'];
+					// $dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
+					// $intern_total = $item['total'];
 				}
 			}
 
@@ -244,8 +249,8 @@ if($_GET["action"] == "carlendar"){
 					$max_limit = 40;
 				}
 
-				$intern_limit = 'intern-limit="'.$max_limit.'"';
-				$data_count = 'data-count="'.$intern_total.'"';
+				// $intern_limit = 'intern-limit="'.$max_limit.'"';
+				// $data_count = 'data-count="'.$intern_total.'"';
 			}
 
 			if ($i == 0 ) {
@@ -257,7 +262,7 @@ if($_GET["action"] == "carlendar"){
 				else
 					echo "<BR>&nbsp;";
 
-				echo $dr_intern_txt;
+				// echo $dr_intern_txt;
 
 				echo "</td>\n";
 			}else  if ($i == 6 ) {
@@ -269,7 +274,7 @@ if($_GET["action"] == "carlendar"){
 				else
 					echo "<BR>&nbsp;";
 
-				echo $dr_intern_txt;
+				// echo $dr_intern_txt;
 
 				echo "</td>\n";
 
@@ -289,7 +294,7 @@ if($_GET["action"] == "carlendar"){
 				else
 					echo "<BR>&nbsp;";
 
-				echo $dr_intern_txt;
+				// echo $dr_intern_txt;
 
 				echo "</td>\n";
 
@@ -317,8 +322,8 @@ if($_GET["action"] == "carlendar"){
 						if( $dr_intern === true ){
 							if( !empty($total_items[$key]) ){
 								$item = $total_items[$key];
-								$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
-								$intern_total = $item['total'];
+								// $dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
+								// $intern_total = $item['total'];
 							}
 						}
 
@@ -331,8 +336,8 @@ if($_GET["action"] == "carlendar"){
 								$max_limit = 40;
 							}
 
-							$intern_limit = 'intern-limit="'.$max_limit.'"';
-							$data_count = 'data-count="'.$intern_total.'"';
+							// $intern_limit = 'intern-limit="'.$max_limit.'"';
+							// $data_count = 'data-count="'.$intern_total.'"';
 						}
 
 						if ($i == 0 ) { // ถ้าเป็นวันอาทิตย์
@@ -352,7 +357,7 @@ if($_GET["action"] == "carlendar"){
 							}
 
 							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							echo $dr_intern_txt;
+							// echo $dr_intern_txt;
 
 							echo "</td>\n";
 						}else  if ($i == 6 ) { // ถ้าเป็นวันเสาร์
@@ -369,7 +374,7 @@ if($_GET["action"] == "carlendar"){
 									echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 							
 							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							echo $dr_intern_txt;
+							// echo $dr_intern_txt;
 							
 							echo "</td>\n";
 						}else { // ถ้าเป็นวันธรรมดา
@@ -389,7 +394,7 @@ if($_GET["action"] == "carlendar"){
 							}
 
 							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							echo $dr_intern_txt;
+							// echo $dr_intern_txt;
 							
 							echo "</td>\n";
 						}
@@ -411,6 +416,8 @@ if($_GET["action"] == "carlendar"){
 	echo "</table></TD>
 	</TR>
 	</TABLE>";
+
+	/*
 	if( $dr_intern === true ){
 		?>
 		<div>
@@ -420,6 +427,7 @@ if($_GET["action"] == "carlendar"){
 		</div>
 		<?php
 	}
+	*/
 	exit();
 
 }
@@ -1334,15 +1342,17 @@ function frmchk(){
 
 	var test_return = true;
 	<?php
-	if( $dr['position'] == '99 เวชปฏิบัติ' ){
-		?>
-		var input_checker = document.getElementById('intern_checker').value;
-		var input_limit = document.getElementById('intern_limiter').value;
+	// if( $dr['position'] == '99 เวชปฏิบัติ' ){
 		
-		var test_checker = parseInt(input_checker);
-		var test_limit = parseInt(input_limit);
+		?>
+		//var input_checker = document.getElementById('intern_checker').value;
+		//var input_limit = document.getElementById('intern_limiter').value;
+		
+		//var test_checker = parseInt(input_checker);
+		//var test_limit = parseInt(input_limit);
 		<?php
-	}
+		
+	// }
 	?>
 
 	if(document.getElementById('date_appoint').value==""){
@@ -1351,19 +1361,19 @@ function frmchk(){
 	}
 	
 	<?php
-	if( $dr['position'] == '99 เวชปฏิบัติ' ){
+	// if( $dr['position'] == '99 เวชปฏิบัติ' ){
 
 		?>
 		
 		// console.log('value test_checker '+test_checker);
 		// console.log('value test_limit '+test_limit);
 
-		if( ( test_checker != 0 && test_limit != 0 ) && ( test_checker >= test_limit ) ){
-			alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+test_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
-			test_return = false;
-		}
+		// if( ( test_checker != 0 && test_limit != 0 ) && ( test_checker >= test_limit ) ){
+			// alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+test_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
+			// test_return = false;
+		// }
 		<?php
-	}
+	// }
 	?>
 
 	return test_return;
@@ -1629,18 +1639,18 @@ if( $dr['position'] == '99 เวชปฏิบัติ' ){
 	(function( $ ) {
 	$(function() {
 		// ตอนคลิกที่ตัวปฏิทิน
-		$(document).on('click', '.countnum', function(){
+		// $(document).on('click', '.countnum', function(){
 			
-			var intern_count = $(this).attr('data-count');
-			var intern_limit = $(this).attr('intern-limit');
+			// var intern_count = $(this).attr('data-count');
+			// var intern_limit = $(this).attr('intern-limit');
 
 			// console.log('input intern_checker '+intern_count);
 			// console.log('input intern_limiter '+intern_limit);
 
-			$('.intern_checker').val(intern_count);
-			$('.intern_limiter').val(intern_limit);
+			// $('.intern_checker').val(intern_count);
+			// $('.intern_limiter').val(intern_limit);
 
-		});
+		// });
 	});
 	})(jQuery);
 	</script>

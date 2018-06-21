@@ -22,6 +22,7 @@ include("connect.inc");
 	}
 	
 	$nPrefix=$row->prefix;
+	$nPrefix="61";
 ////*runno ตรวจสุขภาพ*/////////
 ?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>
@@ -57,11 +58,11 @@ if($_POST["act"]=="show"){
 if($_POST["camp"]=="all"){
 $sql1="SELECT *
 FROM `armychkup`
-WHERE `yearchkup` = '$nPrefix'  and (camp !='D33 หน่วยทหารอื่นๆ' and camp !='')  order by chunyot asc, age desc";
+WHERE `yearchkup` = '$nPrefix'  and (camp !='D33 หน่วยทหารอื่นๆ' and camp !='')  order by age desc";
 }else{
 $sql1="SELECT *
 FROM `armychkup`
-WHERE `camp`='$_POST[camp]' AND `yearchkup` = '$nPrefix' and camp !='' order by chunyot asc, age desc";
+WHERE `camp`='$_POST[camp]' AND `yearchkup` = '$nPrefix' and camp !='' order by age desc";
 }
 //var_dump($sql1);
 $query1=mysql_query($sql1)or die ("Query armychkup Error");
@@ -84,6 +85,7 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
     <td width="1%" rowspan="3" align="center" valign="top" bgcolor="#FFFFFF"><strong>ยศ</strong></td>
     <td width="1%" rowspan="3" align="center" valign="top" bgcolor="#FFFFFF"><strong>ชื่อ</strong></td>
     <td width="2%" rowspan="3" align="center" valign="top" bgcolor="#FFFFFF"><strong>นามสกุล</strong></td>
+    <td width="3%" rowspan="3" align="center" valign="top" bgcolor="#FFFFFF"><strong>เลขที่ทั่วไป(HN.No.)</strong></td>
     <td width="3%" rowspan="3" align="center" valign="top" bgcolor="#FFFFFF"><strong>เลขประจำตัว<br />
     ประชาชน</strong></td>
     <td width="1%" rowspan="3" align="center" valign="top" bgcolor="#FFFFFF"><strong>สังกัด</strong></td>
@@ -226,12 +228,68 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
 	
 	$age=substr($arr1["age"],0,2);
   
+   $chksql1="select b.	labcode, b.result from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.hn='$arr1[hn]' and a.clinicalinfo='ตรวจสุขภาพประจำปี$nPrefix' and (a.profilecode='UA' || a.profilecode='CBC')";
+   //echo $chksql1;
+	$querychksql1=mysql_query($chksql1);
+	while(list($labcode,$result)=mysql_fetch_row($querychksql1)){
+		if($labcode=="BLOODU"){
+			if($result=="1+" || $result=="2+" || $result=="3+" || $result=="4+" || $result=="5+" || $result=="6+" || $result=="7+" || $result=="8+" ||$result=="9+" || $result=="10+"){
+				$hematuria="2";
+			}else{
+				$hematuria="1";
+			}
+		}
+		if($labcode=="PROU"){
+			if($result=="1+" || $result=="2+" || $result=="3+" || $result=="4+" || $result=="5+" || $result=="6+" || $result=="7+" || $result=="8+" ||$result=="9+" || $result=="10+"){
+				$proteinurea="2";
+			}else{
+				$proteinurea="1";
+			}
+		}
+		
+		//สรุปผลตรวจ UA
+		if($hematuria=="1" && $proteinurea=="1"){
+			$ua_lab="1";  //ปกติ
+		}else if(($hematuria=="2" && $proteinurea=="2") || ($hematuria=="1" && $proteinurea=="2") || ($hematuria=="2" && $proteinurea=="1")){
+			$ua_lab="2";  //ผิดปกติ
+		}else{
+			$ua_lab="0";  //ไม่ได้ตรวจ,error
+		}
+		
+		if($labcode=="HCT"){
+			if($result < 40){
+				$hct="2";  //ผิดปกติ
+			}else{
+				$hct="1";
+			}
+		}
+		
+		if($labcode=="MCV"){
+			if($result < 78){
+				$mcv="2";  //ผิดปกติ
+			}else{
+				$mcv="1";
+			}
+		}	
+		
+		//สรุปผลตรวจ CBC
+		if($hct=="1" && $mcv=="1"){ 
+			$cbc_lab="1";  //ปกติ
+		}else if(($hct=="2" && $mcv=="2") || ($hct=="1" && $mcv=="2") || ($hct=="2" && $mcv=="1")){
+			$cbc_lab="2";  //ผิดปกติ
+		}else{
+			$cbc_lab="0";  //ไม่ได้ตรวจ,error
+		}					
+				
+	}
    ?>
+   
   <tr>
     <td align="center"><?=$i;?></td>
     <td><? if(!empty($yot)){ echo $yot;}else{ echo "&nbsp;";}?></td>
     <td><? if(!empty($name)){ echo $name;}else{ echo "&nbsp;";}?></td>
     <td><? if(!empty($surname)){ echo $surname;}else{ echo "&nbsp;";}?></td>
+    <td><? if(!empty($arr1['hn'])){ echo $arr1['hn'];}else{ echo "&nbsp;";}?></td>
     <td><? if(!empty($idcard)){ echo "<span style='color:#fff;'>'</span>".$idcard;}else{ echo "&nbsp;";}?></td>
     <td><? if(!empty($arr1['camp'])){ echo substr($arr1['camp'],4);}else{ echo "&nbsp;";}?></td>
     <td><? if(!empty($position)){ echo $position;}else{ echo "&nbsp;";}?></td>
@@ -247,22 +305,35 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
     <td align="right"><? if(!empty($arr1['bp1'])){ echo substr($arr1['bp1'],4,2);}else{ echo "&nbsp;";}?></td>
     <td align="center"><? if($arr1['xray']==""){ echo "0";}else if($arr1['xray']=="ปกติ"){ echo "1";}else if($arr1['xray']=="ผิดปกติ"){ echo "2";}else{ echo "0";}?></td>
     <td><? if(!empty($arr1['xray_detail'])){ echo $arr1['xray_detail'];}else{ echo "&nbsp;";}?></td>
-    <td align="center"><? if($arr1['ua_lab']==""){ echo "0";}else if($arr1['ua_lab']=="ปกติ"){ echo "1";}else if($arr1['ua_lab']=="ผิดปกติ"){ echo "2";}else{ echo "0";}?></td>
-    <td align="center"><? if($arr1['ua_lab']==""){ echo "0";}else if($arr1['ua_lab']=="ปกติ"){ echo "1";}else if($arr1['ua_lab']=="ผิดปกติ"){ echo "2";}else{ echo "0";}?></td>
-    <td align="center"><? if($arr1['ua_bloodu']=="1+" || $arr1['ua_bloodu']=="2+" || $arr1['ua_bloodu']=="3+" || $arr1['ua_bloodu']=="4+"){ echo "2";}else{ echo "1";}?></td>
+    <td align="center"><? echo $ua_lab;?></td>
+    <td align="center"><? echo $proteinurea;?></td>
+    <td align="center"><? echo $hematuria;?></td>
     <td><? if(!empty($arr1['reason_ua'])){ echo $arr1['reason_ua'];}else{ echo "&nbsp;";}?></td>
-    <td align="center"><? if($arr1['cbc_lab']==""){ echo "0";}else if($arr1['cbc_lab']=="ปกติ"){ echo "1";}else if($arr1['cbc_lab']=="ผิดปกติ"){ echo "2";}else{ echo "0";}?></td>
-    <td><? if(!empty($arr1['reason_wbc'])){ echo $arr1['reason_wbc'];}else{ echo "&nbsp;";}?></td>
+    <td align="center"><? echo $cbc_lab;?></td>
+    <td>&nbsp;</td>
+    <? if($age >=35){ ?>
     <td align="center"><? echo $arr1['glu_result'];?></td>
     <td align="center"><? echo $arr1['chol_result'];?></td>
     <td align="center"><? echo $arr1['trig_result'];?></td>
     <td align="center"><? echo $arr1['hdl_result'];?></td>
-    <td align="center"><? echo $arr1['ldl_result'];?></td>
+    <td align="center"><? if(!empty($arr1['ldl_result'])){ echo $arr1['ldl_result'];}else{ echo "&nbsp;";}?></td>
     <td align="center"><? echo $arr1['bun_result'];?></td>
     <td align="center"><? echo $arr1['crea_result'];?></td>
     <td align="center"><? echo $arr1['uric_result'];?></td>
     <td align="center"><? echo $arr1['ast_result'];?></td>
     <td align="center"><? echo $arr1['alt_result'];?></td>
+    <? }else{ ?>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td> 
+    <? } ?> 
     <td align="center"><? if($arr1['pap']==""){ echo "0";}else if($arr1['pap']=="ปกติ"){ echo "1";}else if($arr1['pap']=="ผิดปกติ"){ echo "2";}else{ echo "0";}?></td>
     <td><? if(!empty($arr1['reason_pap'])){ echo $arr1['reason_pap'];}else{ echo "&nbsp;";}?></td>
     <td align="center"><? if(!empty($arr1['prawat'])){ echo $arr1['prawat'];}else{ echo "0";}?></td>

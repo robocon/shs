@@ -1,3 +1,4 @@
+// opwork.php
 // บันทึกข้อมูลที่มีการอัพเดท
 $sql = "SELECT * FROM `opcard` WHERE `hn` = '$cHn' ";
 $q = mysql_query($sql) or die( mysql_error() );
@@ -44,7 +45,16 @@ if( $_POST['goup'] != $op['goup'] ){ $update_list['goup'] = $_POST['goup']; }
 if( $_POST['ptrightdetail'] != $op['ptrightdetail'] ){ $update_list['ptrightdetail'] = $_POST['ptrightdetail']; }
 if( $_POST['ptfmon'] != $op['ptfmon'] ){ $update_list['ptfmon'] = $_POST['ptfmon']; }
 
-$list_text = serialize($update_list);
+include 'includes/JSON.php';
+$json = new Services_JSON();
+
+// htmlentities กับ htmlspecialchars มีปัญหาตอน encode กับของ JSON
+$update_list_thai = array();
+foreach ($update_list as $key => $value) {
+	$update_list_thai[$key] = urlencode($value);
+}
+$list_text = $json->encode($update_list_thai);
+
 $sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $op_rows = mysql_num_rows($q);
@@ -54,7 +64,8 @@ if( $op_rows == 0 && count($update_list) > 0 ){
 	(`id`,`hn`,`detail`,`status`)
 	VALUES
 	(NULL,'$cHn','$list_text','Y');";
-	$q = mysql_query($op_insert_sql) or die( mysql_error() );
+	mysql_query($op_insert_sql) or die( mysql_error() );
+
 }else if( $op_rows > 0 && count($update_list) > 0 ){
 	$op_item = mysql_fetch_assoc($q);
 	$op_id = $op_item['id'];
@@ -65,3 +76,23 @@ if( $op_rows == 0 && count($update_list) > 0 ){
 	mysql_query($op_update_sql) or die( mysql_error() );
 }
 // บันทึกข้อมูลที่มีการอัพเดท
+
+// oplist1.php
+include 'includes/JSON.php';
+        $json = new Services_JSON();
+
+        // แสดงรายการอัพเดท
+        $op_sql = "SELECT `detail` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' LIMIT 1";
+        $q = mysql_query($op_sql) or die( mysql_error() );
+        $op_rows = mysql_num_rows($q);
+        $diff = '';
+        if( $op_rows > 0 ){
+            $op_item = mysql_fetch_assoc($q);
+            $pre_objs = $json->decode($op_item['detail']);
+
+            foreach( $pre_objs as $key => $list ){
+                $key_name = $key_lists[$key];
+                $diff .= $key_name.': '.urldecode($list).'<br>';
+            }
+
+        }

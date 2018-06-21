@@ -305,8 +305,13 @@ if(isset($_POST['hn'])){
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">º≈·≈ª Stool Culture(C-S)</td>
+					  <td class="pdx"> √ÿªº≈ Stool Culture(C-S)</td>
 					  <td><input name="cs" type="text" class="pdxhead" size="50" id="cs" value="<?=$arrchk['cs']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">º≈µ√«® Stool Culture(C-S)</td>
+					  <td><input name="result_cs" type="text" class="pdxhead" size="50" value="<?=$arrchk['result_cs']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<!--
@@ -397,7 +402,8 @@ if(isset($_POST['okhn2'])){
 		`last_officer` = '$sOfficer',
 		`last_update` = '".date("Y-m-d H:i:s")."', 
 		`seq` = '".$_POST['seq']."', 
-		`cs` = '".$_POST['cs']."'
+		`cs` = '".$_POST['cs']."',
+		`result_cs` = '".$_POST['result_cs']."' 
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -443,7 +449,8 @@ if(isset($_POST['okhn2'])){
 			`pt` = '".$_POST['pt']."',
 			`pt_detail` = '".$_POST['pt_detail']."', 
 			`seq` = '".$_POST['seq']."',
-			`cs` = '".$_POST['cs']."' ";
+			`cs` = '".$_POST['cs']."',
+			`result_cs` = '".$_POST['result_cs']."' ";
 	}
 	
 	//echo $update;

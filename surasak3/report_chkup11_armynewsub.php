@@ -22,6 +22,7 @@ include("connect.inc");
 	}
 	
 	$nPrefix=$row->prefix;
+	$nPrefix="61";
 ////*runno ตรวจสุขภาพ*/////////
 ?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>

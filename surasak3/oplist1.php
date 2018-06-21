@@ -142,19 +142,21 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
         );
 
 
+        include 'includes/JSON.php';
+        $json = new Services_JSON();
+
         // แสดงรายการอัพเดท
-        $op_sql = "SELECT `detail` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
+        $op_sql = "SELECT `detail` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' LIMIT 1";
         $q = mysql_query($op_sql) or die( mysql_error() );
         $op_rows = mysql_num_rows($q);
         $diff = '';
         if( $op_rows > 0 ){
             $op_item = mysql_fetch_assoc($q);
-            $detail = $op_item['detail'];
+            $pre_objs = $json->decode($op_item['detail']);
 
-            $pre_objs = unserialize($detail);
             foreach( $pre_objs as $key => $list ){
                 $key_name = $key_lists[$key];
-                $diff .= $key_name.': '.$list.'<br>';
+                $diff .= $key_name.': '.urldecode($list).'<br>';
             }
 
         }
