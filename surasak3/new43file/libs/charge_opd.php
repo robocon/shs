@@ -2,22 +2,31 @@
 //
 //-------------------- Create file charge_opd ‰ø≈Ï∑’Ë 18 --------------------//
 // 
-$temp13="CREATE  TEMPORARY  TABLE report_chargeopd 
-SELECT `date`,`hn`,`depart`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dpy`,`dpn`,`dsy`,`dsn`,`ptright`,`credit`,
-SUBSTRING(`date`, 1, 10) AS `date2`, `vn`
+// $temp13="CREATE  TEMPORARY  TABLE report_chargeopd 
+// SELECT `date`,`hn`,`depart`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dpy`,`dpn`,`dsy`,`dsn`,`ptright`,`credit`,
+// SUBSTRING(`date`, 1, 10) AS `date2`, `vn`
+// FROM `opacc` 
+// WHERE `date` like '$thimonth%' 
+// AND ( `vn` IS NOT NULL AND `vn` != '' )
+// GROUP BY SUBSTRING(`date`, 1, 10), `hn`
+// ORDER BY `date` ASC";
+
+// $querytmp13 = mysql_query($temp13) or die( mysql_error() );
+
+// $sql13="SELECT *
+// FROM report_chargeopd";
+// $result13= mysql_query($sql13) or die( mysql_error() );
+// $num = mysql_num_rows($result13);
+
+$sql13="SELECT `date`,`hn`,`depart`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dpy`,`dpn`,`dsy`,`dsn`,`ptright`,`credit`,
+SUBSTRING(`date`, 1, 10) AS `date2`, `vn` 
 FROM `opacc` 
 WHERE `date` like '$thimonth%' 
-AND ( `vn` IS NOT NULL AND `vn` != '' )
-GROUP BY `date2`, `hn`
+AND ( `vn` IS NOT NULL AND `vn` != '' ) 
+GROUP BY SUBSTRING(`date`, 1, 10), `hn` 
 ORDER BY `date` ASC";
-
-$querytmp13 = mysql_query($temp13) or die( mysql_error() );
-
-$sql13="SELECT *
-FROM report_chargeopd";
 $result13= mysql_query($sql13) or die( mysql_error() );
 $num = mysql_num_rows($result13);
-
 
 $txt = '';
 
@@ -28,13 +37,13 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 
 	list($chkdate) = explode(' ', $date);
 
-	$qOpday = "SELECT `thidate` 
+	$qOpday = "SELECT `thidate`,`idcard` 
 	FROM `opday` 
 	WHERE `thidate` LIKE '$date2%' 
 	AND `vn` = '$vn'";
 	
 	$sqlop = mysql_query($qOpday);
-	list($thidate) = mysql_fetch_array($sqlop);
+	list($thidate,$idcard) = mysql_fetch_array($sqlop);
 
 	if( empty($thidate) ){
 		$thidate = $date;
@@ -91,7 +100,7 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	}else if($depart=="PHYSI"){
 		$chargeitem="14";
 	}else if($depart=="NID"){
-		$chargeitem="16";
+		$chargeitem="15";
 	}
 
 	list($regis1, $regis2) = explode(' ', $thidate);
@@ -108,7 +117,7 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	$chargelist = "000000";
 	$quantity="1";
 
-	$inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update\r\n";			
+	$inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update|$idcard\r\n";			
 	// print($inline);
 	$txt .= $inline;
 }
@@ -116,7 +125,7 @@ $filePath = $dirPath.'/charge_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_charge_opd.txt';
 file_put_contents($qofPath, $txt);

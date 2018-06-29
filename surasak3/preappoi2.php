@@ -807,6 +807,16 @@ function fncSubmit(strPage)
 					$an_check = true;
 			}
 		}
+		
+		if($result['applist']=="กายภาพ"){
+			$sql1 = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
+			$result1 = Mysql_Query($sql1);
+			$arr = Mysql_fetch_row($result1);
+			
+			if($arr[0] == "ADMPT"){
+					$str= "  Selected  ";
+			}
+		}		
 ?>
       	<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
         <!--<option value="FU01 ตรวจตามนัด">ตรวจตามนัด</option>
@@ -918,7 +928,7 @@ function fncSubmit(strPage)
         <option>แผนกพยาธิวิทยา</option>
         <option>แผนกเอกชเรย์</option>
         <option>กองสูติ-นารี</option>
-        <option>กายภาพ</option>
+        <option <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>กายภาพ</option>
         <option>คลีนิกฝังเข็ม</option>
         <option>นวดแผนไทย</option>
         <option>ห้องตรวจจักษุ(ตา)</option>
@@ -1032,7 +1042,7 @@ function fncSubmit(strPage)
   <? }else{ ?>
     <select size="1" name="advice" id="advice">
       <option selected value="NA">&lt;&#3650;&#3611;&#3619;&#3604;&#3648;&#3621;&#3639;&#3629;&#3585;&#3619;&#3634;&#3618;&#3585;&#3634;&#3619;&gt;</option>
-      <option value="ไม่มี">ไม่มี</option>
+      <option value="ไม่มี" <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>ไม่มี</option>
       <option>ไม่ต้องงดน้ำหรืออาหาร</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 20:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 24:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
@@ -1086,7 +1096,7 @@ function fncSubmit(strPage)
       <option>U16&nbsp;
         &#3627;&#3657;&#3629;&#3591;&#3593;&#3640;&#3585;&#3648;&#3593;&#3636;&#3609;</option>
       <option>U19&nbsp; กองตรวจโรคผู้ป่วยสูติ</option>
-      <option>U20&nbsp; กายภาพ</option>
+      <option <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>U20&nbsp; กายภาพ</option>
       <option>U21&nbsp; นวดแผนไทย</option>
       <option>U22&nbsp; ห้องตรวจจักษุ(ตา)</option>
       <option>U23&nbsp; ห้องตรวจเวชศาสตร์ฯ</option>

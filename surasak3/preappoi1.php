@@ -1,4 +1,10 @@
-<?php
+<?php 
+
+/**
+ * แก้วันที่ 29/06/61
+ * - ปิดจำกัดนัด แพทย์เวชปฎิบัติ
+ */
+
 session_start();
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
@@ -298,7 +304,7 @@ for ($i=0; $i<=6; $i++) {
 	$intern_total = 0;
 	if( !empty($total_items[$key]) ){
 		$item = $total_items[$key];
-		$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -250, -210)">'.$item['total'].'</span>)</div>';
+		// $dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -250, -210)">'.$item['total'].'</span>)</div>';
 		$intern_total = $item['total'];
 	}
 
@@ -324,7 +330,7 @@ for ($i=0; $i<=6; $i++) {
 		 else
 			 echo "<BR>&nbsp;";
 
-		echo $dr_intern_txt;
+		// echo $dr_intern_txt;
 
 		 echo "</td>\n";
       }else  if ($i == 6 ) {
@@ -335,7 +341,7 @@ for ($i=0; $i<=6; $i++) {
 		  else
 			 echo "<BR>&nbsp;";
 
-		echo $dr_intern_txt;
+		// echo $dr_intern_txt;
 
 		 echo "</td>\n";
       }
@@ -356,7 +362,7 @@ for ($i=0; $i<=6; $i++) {
 		  else
 			 echo "<BR>&nbsp;";
 
-		echo $dr_intern_txt;
+		// echo $dr_intern_txt;
 
 		 echo "</td>\n";
 
@@ -379,7 +385,7 @@ for ($j=0; $j<=4; $j++) {
 			$intern_total = 0;
 			if( !empty($total_items[$key]) ){
 				$item = $total_items[$key];
-				$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -0, -150)">'.$item['total'].'</span>)</div>';
+				// $dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -0, -150)">'.$item['total'].'</span>)</div>';
 				$intern_total = $item['total'];
 			}
 
@@ -410,7 +416,7 @@ for ($j=0; $j<=4; $j++) {
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 						
-						echo $dr_intern_txt;
+						// echo $dr_intern_txt;
 						
 						echo "</td>\n";
 			}else  if ($i == 6 ) {
@@ -424,7 +430,7 @@ for ($j=0; $j<=4; $j++) {
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				
-						echo $dr_intern_txt;
+						// echo $dr_intern_txt;
 				
 						echo "</td>\n";
 			}else {
@@ -438,7 +444,7 @@ for ($j=0; $j<=4; $j++) {
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				
-						echo $dr_intern_txt;
+						// echo $dr_intern_txt;
 
 						echo "</td>\n";
 			}
@@ -458,6 +464,7 @@ for ($j=0; $j<=4; $j++) {
 echo "</table></TD>
 </TR>";
 
+/*
 if( $dr_position == '99 เวชปฏิบัติ' ){
 	?>
 	<tr>
@@ -469,6 +476,7 @@ if( $dr_position == '99 เวชปฏิบัติ' ){
 	</tr>
 	<?php
 }
+*/
 
 echo "<tr><td colspan=\"2\"><br><font face=\"Angsana New\">นัดมาวันที่ : </font><INPUT TYPE=\"text\" ID=\"date_appoint\" NAME=\"date_appoint\" size=\"15\" readonly>";
 echo "</td></tr></TABLE>";
@@ -688,13 +696,14 @@ jQuery.noConflict();
 (function( $ ) {
 $(function() {
 	// ตอนคลิกที่ตัวปฏิทิน
+	
 	$(document).on('click', '.countnum', function(){
 		
 		var intern_count = parseInt($(this).attr('data-count'));
 		var intern_limit = parseInt($(this).attr('intern-limit'));
 		if( intern_count >= intern_limit ){
-			alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+intern_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
-			return false;
+			// alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+intern_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
+			// return false;
 		}
 
 

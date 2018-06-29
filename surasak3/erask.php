@@ -68,7 +68,11 @@ function check(){
 <?php
 //print "สิทธิการรักษา :$cPtright<br>";
 include("connect.inc");
+if( $_SESSION['smenucode'] === 'ADMPT'){
+$sqlpt = "select * from ptright where (status = 'a' || status = 'c') order by code asc";
+}else{
 $sqlpt = "select * from ptright where status = 'a' order by code asc";
+}
 $rowpt = mysql_query($sqlpt);
 ?>
 <form method="POST" action="prelab.php" onsubmit="return check();">
@@ -80,8 +84,7 @@ $rowpt = mysql_query($sqlpt);
 		if($cPtright==$re){
 			$c=0;
 			?><option value="<?=$cPtright?>" selected="selected"><?=$cPtright?></option><?php
-		}
-		else{
+		}else{
 			$b=0;
 			?><option value="<?=$re?>"><?=$re?></option>   <?php
 		}
@@ -109,14 +112,15 @@ $rowpt = mysql_query($sqlpt);
 	if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' ){
 		?>
 		<br>
-		<span>คลิกเพื่อเพิ่ม Diag</span>&nbsp;
+		<span>คลิกเพื่อเพิ่ม Diag</span><br />
 		<span class="nid_diag" onclick="add_diag('CVA')" data-val="CVA">CVA</span>,&nbsp;
 		<span class="nid_diag" onclick="add_diag('อัมพฤกษ์')">อัมพฤกษ์</span>,&nbsp;
 		<span class="nid_diag" onclick="add_diag('อัมพาต')" data-val="อัมพาต">อัมพาต</span>,&nbsp;
 		<span class="nid_diag" onclick="add_diag('พากินสันต์')" data-val="พากินสันต์">พากินสันต์</span>,&nbsp;
 		<span class="nid_diag" onclick="add_diag('หวัด')" data-val="CVA">หวัด</span>,&nbsp;
 		<span class="nid_diag" onclick="add_diag('ภูมิแพ้')" data-val="CVA">ภูมิแพ้</span>,&nbsp;
-		<span class="nid_diag" onclick="add_diag('โรคหอบหืด')" data-val="โรคหอบหืด">โรคหอบหืด</span>
+		<span class="nid_diag" onclick="add_diag('โรคหอบหืด')" data-val="โรคหอบหืด">โรคหอบหืด</span>,&nbsp;
+        <span class="nid_diag" onclick="add_diag('ตรวจสุขภาพ')" data-val="ตรวจสุขภาพ">ตรวจสุขภาพ</span>
 		
 		<script type="text/javascript">
 		// เพิ่ม diag ลงในช่องว่าง
@@ -194,11 +198,12 @@ $rowpt = mysql_query($sqlpt);
 		$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 		?>
 		<select name="doctor" id="doctor"> 
-		<?php 
-		while($objResult = mysql_fetch_array($objQuery)) { 
-			?> <option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> <?php 
-		} 
-		?> 
+			<option value="-กรุณาเลือกแพทย์-">-กรุณาเลือกแพทย์-</option> 
+			<?php 
+			while($objResult = mysql_fetch_array($objQuery)) { 
+				?> <option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> <?php 
+			} 
+			?> 
 		</select>
 	
 	<?php 

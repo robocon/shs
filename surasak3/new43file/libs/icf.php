@@ -17,7 +17,8 @@ thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERRV`,
 '' AS `ICF`,
 '' AS `QUALIFIER`,
 '' AS `PROVIDER`,
-thDateTimeToEn(`thidate`) AS `D_UPDATE` 
+thDateTimeToEn(`thidate`) AS `D_UPDATE`,
+`idcard` AS `CID` 
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%'
 AND ( 
@@ -37,7 +38,8 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['ICF'].'|'
     .$item['QUALIFIER'].'|'
     .$item['PROVIDER'].'|'
-    .$item['D_UPDATE']
+    .$item['D_UPDATE'].'|'
+    .$item['CID']
     ."\r\n";
 }
 
@@ -45,7 +47,7 @@ $filePath = $dirPath.'/icf.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|DISABID|PID|SEQ|DATE_SERRV|ICF|QUALIFIER|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|DISABID|PID|SEQ|DATE_SERRV|ICF|QUALIFIER|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_icf.txt';
 file_put_contents($qofPath, $txt);

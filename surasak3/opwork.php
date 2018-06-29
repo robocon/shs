@@ -132,15 +132,24 @@ $json = new Services_JSON();
 
 // htmlentities กับ htmlspecialchars มีปัญหาตอน encode กับของ JSON
 $update_list_thai = array();
-foreach ($update_list as $key => $value) {
-	$update_list_thai[$key] = urlencode($value);
-}
-$list_text = $json->encode($update_list_thai);
+$list_text = '';
 
-$sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' AND `status` = 'Y' ";
+// ถ้ามีการแก้ไขข้อมูล
+if ( count($update_list) > 0 ) {
+	
+	foreach ($update_list as $key => $value) {
+		$update_list_thai[$key] = urlencode($value);
+	}
+	$list_text = $json->encode($update_list_thai);
+
+}
+
+// ตรวจดูก่อนว่าเคยมีข้อมูลรึป่าว
+$sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' ";
 $q = mysql_query($sql) or die( mysql_error() );
 $op_rows = mysql_num_rows($q);
 
+// ถ้ายังไม่เคยมีข้อมูล จะเพิ่มใหม่
 if( $op_rows == 0 && count($update_list) > 0 ){
 	$op_insert_sql = "INSERT INTO `opcard_update`
 	(`id`,`hn`,`detail`,`status`)
@@ -153,7 +162,8 @@ if( $op_rows == 0 && count($update_list) > 0 ){
 	$op_id = $op_item['id'];
 
 	$op_update_sql = "UPDATE `opcard_update`
-	SET `detail` = '$list_text'
+	SET `detail` = '$list_text', 
+	`status` = 'Y' 
 	WHERE `id` = '$op_id';";
 	mysql_query($op_update_sql) or die( mysql_error() );
 }

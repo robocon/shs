@@ -14,7 +14,7 @@ if($_SESSION["statusncr"] !== 'admin'){
     <title>ระบบรายงานเหตุการณ์สำคัญ/อุบัติการณ์/ความไม่สอดคล้อง</title>
     <!-- InstanceEndEditable -->
     <link type="text/css" href="menu.css" rel="stylesheet" />
-    <script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="menu.js"></script>
     <!-- InstanceBeginEditable name="head" -->
     <!-- InstanceEndEditable -->
@@ -401,6 +401,23 @@ $row2 = mysql_num_rows($query2);
 ?><!-- InstanceEndEditable -->
 
 </div>
+
+<script type="text/javascript" src="../js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	$(function(){
+		$(document).on('click', '.form-print', function(){
+			$(this).css("color","#10AA00");
+		});
+	});
+});
+})(jQuery);
+
+
+</script>
+
 </body>
 <!-- InstanceEnd -->
 </html>

@@ -17,7 +17,8 @@ $sql = "SELECT
 '' AS `DIAGCODE`, 
 '' AS `DATE_DETECT`, 
 '' AS `DATE_DISAB`, 
-thDateTimeToEn(`thidate`) AS `D_UPDATE` 
+thDateTimeToEn(`thidate`) AS `D_UPDATE`, 
+`idcard` AS `CID` 
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( 
@@ -37,7 +38,8 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['DIAGCODE'].'|'
     .$item['DATE_DETECT'].'|'
     .$item['DATE_DISAB'].'|'
-    .$item['D_UPDATE']
+    .$item['D_UPDATE'].'|'
+    .$item['CID']
     ."\r\n";
 }
 
@@ -45,7 +47,7 @@ $filePath = $dirPath.'/disability.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|DISABID|PID|DISABTYPE|DISABCAUSE|DIAGCODE|DATE_DETECT|DATE_DISAB|D_UPDATE\r\n";
+$header = "HOSPCODE|DISABID|PID|DISABTYPE|DISABCAUSE|DIAGCODE|DATE_DETECT|DATE_DISAB|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_disability.txt';
 file_put_contents($qofPath, $txt);
