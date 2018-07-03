@@ -7,6 +7,7 @@ if ( !defined('RDU_TEST') ) {
 
 // ตัวหาร B
 // OPD + ICD10
+$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday` 
 SELECT `row_id`,`thidate`,`hn`,`icd10` 
 FROM `opday` 
@@ -25,10 +26,13 @@ AND (
 )";
 $db->select($sql);
 
+$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx` 
 SELECT `row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
 WHERE `date` LIKE '$date%' 
+AND `status` = 'Y' 
+AND `an` IS NULL 
 AND `drugcode` IN ( 
 
     '1AMOX250',

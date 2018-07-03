@@ -314,6 +314,11 @@ if(isset($_POST['hn'])){
 					  <td><input name="result_cs" type="text" class="pdxhead" size="50" value="<?=$arrchk['result_cs']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					<tr>
+					  <td class="pdx">ผลตรวจ ตาบอดสี</td>
+					  <td><input name="blindness" type="text" class="pdxhead" size="50" value="<?=$arrchk['blindness']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
 					<!--
 					<tr>
 						<td class="pdx">
@@ -403,7 +408,8 @@ if(isset($_POST['okhn2'])){
 		`last_update` = '".date("Y-m-d H:i:s")."', 
 		`seq` = '".$_POST['seq']."', 
 		`cs` = '".$_POST['cs']."',
-		`result_cs` = '".$_POST['result_cs']."' 
+		`result_cs` = '".$_POST['result_cs']."',
+		`blindness` = '".$_POST['blindness']."' 
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -448,9 +454,10 @@ if(isset($_POST['okhn2'])){
 			`eye_detail` =  '".$_POST['eye_detail']."',
 			`pt` = '".$_POST['pt']."',
 			`pt_detail` = '".$_POST['pt_detail']."', 
-			`seq` = '".$_POST['seq']."',
-			`cs` = '".$_POST['cs']."',
-			`result_cs` = '".$_POST['result_cs']."' ";
+			`seq` = '".$_POST['seq']."', 
+			`cs` = '".$_POST['cs']."', 
+			`result_cs` = '".$_POST['result_cs']."', 
+			`blindness` = '".$_POST['blindness']."'";
 	}
 	
 	//echo $update;
