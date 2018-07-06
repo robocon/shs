@@ -96,7 +96,7 @@ if( $wardExTest > 0 ){
         <div style="width: 35%; height: 45mm; float: left; text-align: center;">
             <p style="font-size: 20pt;"><b>โรงพยาบาลค่ายสุรศักดิ์มนตรี</b></p>
             <p><b>แบบบันทึกการให้ยา</b></p>
-            <p><b>ยารับประทาน</b></p>
+            <p style="font-size: 18pt;"><b><u><?=$_POST['type'];?></u></b></p>
         </div>
         <div style="width: 65%; float: right;">
             <b>ชื่อ/สกุล ผู้ป่วย: </b><?=$user['ptname'];?> <b>อายุ: </b><?=$user['age'];?><br>
@@ -124,7 +124,7 @@ if( $wardExTest > 0 ){
                 <th rowspan="2" style="font-size: 20px;">ชื่อยา ขนาด วิธีให้</th>
 
                 <?php
-                $current = strtotime(date('Y/m/d'));
+                $current = strtotime($_POST['date_set']);
 
                 for ($i=1; $i <= 5; $i++) { 
 
@@ -165,10 +165,24 @@ if( $wardExTest > 0 ){
                 $def_drug_h = $drug_height[$drug_code]['0'];
                 $tr_height = $def_drug_h + 1;
 
+                $slcode = $d['slcode'];
+
+                $sql = "SELECT * 
+                FROM `drugslip` 
+                WHERE `slcode` = '$slcode' ";
+                $db->select($sql);
+                $dSlip = $db->get_item();
+
+                $detail_txt = $dSlip['detail1'].'<br>';
+                $detail_txt .= $dSlip['detail2'].'<br>';
+                $detail_txt .= $dSlip['detail3'].'<br>';
+                $detail_txt .= $dSlip['detail4'];
+
                 ?>
                 <tr class="td_detail">
                     <td rowspan="<?=$tr_height;?>" style="vertical-align: top; font-size: 16pt;">
-                        <?=$d['tradname'];?>&nbsp;&nbsp;( <?=$d['slcode'];?> )
+                        <?=$d['tradname'];?>&nbsp;&nbsp;( <?=$d['slcode'];?> )<br>
+                        <?=$detail_txt;?>
                     </td>
                     <td></td>
                     <td></td>
@@ -214,7 +228,7 @@ if( $wardExTest > 0 ){
                 <td></td>
             </tr>
             <tr class="td_detail">
-                <td align="center"><b>การตรวจสอบแบบบันทึกการให้ยา</b></td>
+                <td align="center"><b>Recheck order</b></td>
                 <td colspan="10" align="center"><b>ผู้ตรวจสอบ</b></td>
             </tr>
             <tr class="td_detail">

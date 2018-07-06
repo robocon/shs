@@ -55,6 +55,7 @@ if( $wardExTest > 0 ){
     font-family: TH Sarabun New, TH SarabunPSK;
     font-size: 16pt;
 }
+
 label{
     cursor: pointer;
 }
@@ -82,7 +83,9 @@ label{
             if( $react_txt !== '' ){
                 ?>
                 <span style="color: red;">
-                    <b><u>แพ้ยา:</u> </b><?=$react_txt;?>
+                    <b><u>แพ้ยา:</u></b>
+                    <br>
+                    <?=$react_txt;?>
                 </span>
                 <?php
             }
@@ -91,8 +94,18 @@ label{
 </div>
 <div>
     <form action="med_record_print.php" method="post">
-        <div>
-            เลือกวันที่
+        <div style="padding: 5px 0;">
+            <fieldset>
+                <legend>ข้อมูลเบื้องต้น</legend>
+                <div>
+                    <b>วันที่</b> <input type="text" name="date_set" id="date_set">
+                </div>
+                <div>
+                    <b>ประเภท</b> 
+                    <label for="type1"><input type="radio" name="type" id="type1" value="ยารับประทาน" checked="checked"> ยารับประทาน</label> 
+                    <label for="type2"><input type="radio" name="type" id="type2" value="ยาฉีด"> ยาฉีด</label>
+                </div>
+            </fieldset>
         </div>
         <div>
             <table class="chk_table">
@@ -103,7 +116,7 @@ label{
                     <th>Tradname</th>
                     <th>Unit</th>
                     <th>วิธีใช้</th>
-                    <th>ความสูง</th>
+                    <th>จำนวนบรรทัด</th>
                 </tr>
             <?php
             foreach ($items as $key => $item) { 
@@ -115,6 +128,19 @@ label{
                 }
 
                 $dCode = trim($item['drugcode']);
+
+                $slcode = $item['slcode'];
+
+                $sql = "SELECT * 
+                FROM `drugslip` 
+                WHERE `slcode` = '$slcode' ";
+                $db->select($sql);
+                $dSlip = $db->get_item();
+
+                $detail_txt = $dSlip['detail1'].'<br>';
+                $detail_txt .= $dSlip['detail2'].'<br>';
+                $detail_txt .= $dSlip['detail3'].'<br>';
+                $detail_txt .= $dSlip['detail4'];
 
                 ?>
                 <tr>
@@ -128,7 +154,7 @@ label{
                     <td><?=$dCode;?></td>
                     <td><?=$item['tradname'];?></td>
                     <td><?=$item['unit'];?></td>
-                    <td><?=$item['slcode'];?></td>
+                    <td><b><?=$item['slcode'];?></b><br><?=$detail_txt;?></td>
                     <td>
                         <input type="text" name="drug_height[<?=$dCode;?>][]" id="" size="5" value="<?=$help_h;?>">
                     </td>
@@ -144,3 +170,21 @@ label{
         </div>
     </form>
 </div>
+
+
+<link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+<style>
+/* Custom */
+table.calendar td, table.calendar th{
+    font-size: 0.8em;
+}
+</style>
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script type="text/javascript">
+	var popup1;
+	window.onload = function() {
+        popup1 = new Epoch('popup1','popup',document.getElementById('date_set'),false);
+        
+	};
+</script>
+
