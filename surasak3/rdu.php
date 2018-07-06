@@ -1,15 +1,20 @@
 <?php
 
 include 'bootstrap.php';
-
 define('RDU_TEST', '1');
-
 global $in6_result;
 
-$db = Mysql::load();
+// ไปดึงข้อมูลจากเซิฟเวอร์ .13 เพื่อลดภาระเซิฟเวอร์หลัก 
+$configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'superadmin',
+    'pass' => ''
+);
 
+$db = Mysql::load($configs);
 $def_date = (date('Y') + 543).date('-m');
-
 $date = input_post('date', $def_date);
 
 ?>
@@ -116,12 +121,35 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
             <?php
-            include 'rdu_in10.php';
+            // include 'rdu_in10.php';
             ?>
             <td>= ร้อยละ 10</td>
             <td align="right"><?=$in10a;?></td>
             <td align="right"><?=$in10b;?></td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">11</td>
+            <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>
+            หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
+            <?php
+            // include 'rdu_in11.php';
+            ?>
+            <td>&le; ร้อยละ 5</td>
+            <td align="right"><?=$in11a;?></td>
+            <td align="right"><?=$in11b;?></td>
+            <td align="right"><?=number_format($in11_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">12</td>
+            <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
+            <?php
+            include 'rdu_in12.php';
+            ?>
+            <td>>= ร้อยละ 80</td>
+            <td align="right"><?=$in12a;?></td>
+            <td align="right"><?=$in12b;?></td>
+            <td align="right"><?=number_format($in12_result, 2);?></td>
         </tr>
     </table>
     <?php
