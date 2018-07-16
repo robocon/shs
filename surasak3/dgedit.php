@@ -81,6 +81,8 @@ font-size:18px;
 		
         $edpri_from = $row->edpri_from;
 		$grouptype = $row->grouptype;
+		$active = $row->drug_active;
+		$ised = $row->ised;
                   }  
    else {
       echo "ไม่พบ รหัส : $drugcode ";
@@ -139,13 +141,13 @@ print "  <select name='typedrug' class='txtsarabun' >
 			<option value='T04 วัคซีน'>วัคซีน</option>
 			</select><br>";
 
-print " &#3627;&#3609;&#3656;&#3623;&#3618;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print " หน่วย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "   <input class='txtsarabun'  type='text' name='unit' size='20' tabindex='6'value='$cUnit'><br>";
-print "  &#3619;&#3634;&#3588;&#3634;&#3607;&#3640;&#3609;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "  ราคาทุน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  &nbsp;&nbsp; <input class='txtsarabun'  type='text' name='unitpri' size='20' tabindex='6'value='$cUnitpri'><br>";
-print "  &#3619;&#3634;&#3588;&#3634;&#3586;&#3634;&#3618;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "  ราคาขาย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  &nbsp;&nbsp; <input class='txtsarabun'  type='text' name='salepri' size='20' tabindex='7'value='$cSalepri'><br>";
-print "  <a target=_BLANK href='part.htm'>&#3585;&#3621;&#3640;&#3656;&#3617;</a>(part)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "  <a target=_BLANK href='part.htm'>กลุ่ม</a>(part)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 //print "  <input class='txtsarabun'  type='text' name='part' size='20' tabindex='8'value='$cPart'><br>";
 ?>
 <select name='part' tabindex='8' class="txtsarabun">
@@ -161,7 +163,7 @@ print "  <a target=_BLANK href='part.htm'>&#3585;&#3621;&#3640;&#3656;&#3617;</a
 print "  บัญชียา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  <input class='txtsarabun'  type='text' name='drugtype' size='2' value='$cDrugtype' onkeypress='if(event.keyCode>=3585 && event.keyCode <=3592) return true; else return false;'><br>";
 
-print "  &#3619;&#3634;&#3588;&#3634;&#3629;&#3640;&#3611;&#3585;&#3619;&#3603;&#3660;&#3648;&#3610;&#3636;&#3585;&#3652;&#3604;&#3657;&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='freepri' size='10' tabindex='9'value='$cFreepri'><br>";
+print "  ราคาอุปกรณ์เบิกได้&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='freepri' size='10' tabindex='9'value='$cFreepri'><br>";
 print "  ('' '' เบิกได้ไม่เกิน)&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='freelimit' size='11' tabindex='9'value='$cFreelimit'><BR>";
 
 print "     หมายเลข สป สายแพทย์&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -288,6 +290,30 @@ print "<td colspan='2'>หน่วยที่จัดซื้อ&nbsp;&nbsp;&nbsp;";
 <select name="grouptype">
           <option value='' <? if($grouptype==''){ echo "selected"; } ?>>กองเภสัชกรรม</option>
 		  <option value='pc' <? if($grouptype=='pc'){ echo "selected"; } ?>>แผนกจัดซื้อ สป.สายแพทย์</option>
+</select>
+<?
+print "</td>";
+print "</tr>";
+print "<tr>";
+print "<td></td>";
+print "<td colspan='2'>สถานะการใช้งาน&nbsp;&nbsp;&nbsp;";
+?>
+<select name="active">
+          <option value='' <? if($active==''){ echo "selected"; } ?>>กรุณาเลือก</option>
+          <option value='y' <? if($active=='y'){ echo "selected"; } ?>>Active</option>
+		  <option value='n' <? if($active=='n'){ echo "selected"; } ?>>Inactive</option>
+</select>
+<?
+print "</td>";
+print "</tr>";
+print "<tr>";
+print "<td></td>";
+print "<td colspan='2'>ยา ED/NED&nbsp;&nbsp;&nbsp;";
+?>
+<select name="ised">
+          <option value='' <? if($ised==''){ echo "selected"; } ?>>ไม่ใช่ยา ED/NED</option>
+          <option value='e' <? if($ised=='e'){ echo "selected"; } ?>>ED</option>
+		  <option value='n' <? if($ised=='n'){ echo "selected"; } ?>>NED</option>
 </select>
 <?
 print "</td>";

@@ -25,12 +25,12 @@ body {
 }
 </style>
 <?php
-print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
+print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
 print "<hr>";
 print"<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี โทร. 054-839305 ต่อ 6203</strong></div><BR>";
     print"<div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong>$sOfficer</strong> เข้าสู่ระบบ</font></div>";
     echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานแก้ไขปรับปรุงโปรแกรม....</b>ส.ต. เทวิน  ศรีแก้ว และนายกฤษณะศักดิ์  กันธรส</font></div>";
-	echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานซ่อมอุปกรณ์ทางคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานะพัฒน์  นิลคำ</font></div><br>";
+	echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานซ่อมอุปกรณ์ทางคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ</font></div><br>";
 $Thaidate=date("d-m-").(date("Y")+543);
 $n =0;
 $num = "Y";
@@ -45,7 +45,6 @@ if($num1=mysql_num_rows($result)){
     print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
     print"<table class='forntsarabun'  align='center' width='98%'>";
     print" <tr>";
-    print"  <th bgcolor=#FF0033>ลำดับ</th>";
     print"  <th bgcolor=#FF0033>ลำดับแจ้ง</th>";
     print"  <th bgcolor=#FF0033>แผนก</th>";
     print"  <th bgcolor=#FF0033>หัวข้อ</th>";
@@ -66,7 +65,6 @@ if($num1=mysql_num_rows($result)){
         }
 	
         print (" <tr>\n".
-        "  <td BGCOLOR=#FF8080 align='center'>$n</td>\n".
         "  <td BGCOLOR=#FF8080 align='center'>$row</td>\n".
         "  <td BGCOLOR=#FF8080>$depart</td>\n".
         "  <td BGCOLOR=#FF8080><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
@@ -94,14 +92,13 @@ include("connect.inc");
 $query = "SELECT  row,depart,head,datetime,programmer,date,user 
 FROM com_support 
 WHERE status ='$num' 
-ORDER BY row desc";
+ORDER BY programmer asc, row desc";
 $result = mysql_query($query) or die("Query failed111");
 
    if($num2=mysql_num_rows($result)){
         print"<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการ จำนวน $num2 รายการ</strong></div>";
         print"<table class='forntsarabun'  align='center' width='98%'>";
         print" <tr>";
-		        print"  <th bgcolor=#FFCC00>ลำดับ</th>";
         print"  <th bgcolor=#FFCC00>ลำดับแจ้ง</th>";
         print"  <th bgcolor=#FFCC00>แผนก</th>";
         print"  <th bgcolor=#FFCC00>หัวข้อ</th>";
@@ -117,7 +114,6 @@ $result = mysql_query($query) or die("Query failed111");
 			if($_SESSION['smenucode']=='ADM'){$add="<a target='_blank' href=\"comservice.php?row=$row&act=win\">บันทึก</a>";} else {$add="บันทึก";};
 			
             print (" <tr>\n".
-				      "  <td BGCOLOR=#FFFF99 align='center'>$n</td>\n".
                 "  <td BGCOLOR=#FFFF99 align='center'>$row</td>\n".
                 "  <td BGCOLOR=#FFFF99>$depart</td>\n".
                 "  <td BGCOLOR=#FFFF99><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
@@ -141,7 +137,7 @@ include("connect.inc");
 $query = "SELECT row,depart,head,datetime,programmer,date,p_edit,dateend 
 FROM com_support 
 WHERE status ='$num' 
-ORDER BY dateend desc";
+ORDER BY dateend desc, programmer asc";
 $result = mysql_query($query) or die("Query failed111");
 
    if($num3=mysql_num_rows($result)){

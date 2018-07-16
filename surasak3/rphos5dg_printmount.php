@@ -116,7 +116,15 @@ if(isset($_POST['BOK'])){
 	}
 
 
-$sql = "SELECT drugcode, LEFT(drugcode,2) as newdrugcode FROM druglst  where drugcode !='' group by drugcode order by drugcode";
+$sql = "SELECT drugcode, LEFT( drugcode, 2 ) AS newdrugcode
+FROM druglst
+WHERE drugcode != '' AND (
+LEFT( drugcode, 2 ) !=  '12' AND LEFT( drugcode, 2 ) !=  '13' AND LEFT( drugcode, 2 ) !=  '14' AND LEFT( drugcode, 2 ) !=  '15' AND (
+LEFT( drugcode, 2 ) !=  '16' || drugcode =  '16OR014' || drugcode =  '16OR015' || drugcode =  '16OR016' || drugcode =  '16OR017'
+)  AND LEFT( drugcode, 2 ) != '17' AND LEFT( drugcode, 2 ) !=  '18' AND LEFT( drugcode, 2 ) !=  '19'
+)
+GROUP BY drugcode
+ORDER BY drugcode";
 $result = mysql_query($sql) or die("Query failed1");
 $num=mysql_num_rows($result);
 while($rows = mysql_fetch_array($result)){
@@ -152,6 +160,7 @@ while($rows = mysql_fetch_array($result)){
     <?=$_POST['year']+543;?></td>
   <td rowspan="2" align="center" class="font1" >ที่เอกสาร</td>
   <td rowspan="2" align="center" class="font1" >รับจาก-จ่ายให้</td>
+  <td rowspan="2" align="center" class="font1" >เลขที่ PO</td>
   <td rowspan="2" align="center" class="font1" >เลขที่รับ<br>ลำดับคลัง</td>
   <td colspan="3" align="center" class="font1" >รับ</td>
   <td colspan="3" align="center" class="font1">จ่าย</td>
@@ -174,46 +183,56 @@ while($rows = mysql_fetch_array($result)){
  <!--แถวแสดงรายการยอดยกมาของเดือนนั้นๆ	-->   
 <?
 				$sqlchk = "SELECT drugcode FROM stktranx WHERE drugcode ='".$dbdcode."' and (getdate between '".$_POST['year']."-".$_POST['mon']."-"."01"." 00:00:00' and '".$_POST['year']."-".$_POST['mon']."-"."31"." 23:59:59') group by drugcode order by getdate,row_id";
+				
 				//echo "$sqlchk </br>";
 				$resultchk = mysql_query($sqlchk) or die("Query failed2");
 				 list($chkcode) = mysql_fetch_row ($resultchk);
 				$chkcode = trim($chkcode);
 				$dcode = trim($dcode);
-				   //echo "$dcode<===>$chkcode";
-// ถ้ามี drugcode ในเดือนที่เลือก
+   				//echo "$dcode<===>$chkcode";
    if($dcode ==$chkcode){
    		//echo "$dcode == $chkcode </br>";
-  		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode ='".$dbdcode."' and (getdate between '".$_POST['year']."-".$_POST['mon']."-"."01"." 00:00:00' and '".$_POST['year']."-".$_POST['mon']."-"."31"." 23:59:59') ORDER BY getdate limit 1";  // ยอดยกมา
-		//echo "เท่ากับ : ".$query3."<br>";
+		$yearchk=$_POST["year"];
+		$monthchk=$_POST["mon"];
+		$monthchk=sprintf("%02d",$monthchk);		
+  		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode ='".$dbdcode."' and getdate < '$yearchk-$monthchk-01' ORDER BY getdate desc, row_id desc limit 1";  // ยอดยกมา
+		//echo "amp เท่ากับ : ".$query3."<br>";
 		$result3 = mysql_query($query3) or die("Query failed");
-   		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
+   		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
+		
+					$querya1 = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' order by row_id desc limit 1";
+					//echo $querya1."<br>";
+					$resulta1 = mysql_query($querya1) or die("Query failed");
+					list($unitpri) = mysql_fetch_row($resulta1);
 		
 		if($stkcut==0){  //ถ้าฟิลด์ตัดยา เท่ากับ 0 (มีการรับเข้า)
-			$total =$mainstk-$amount;
+			//$total =$mainstk-$amount;
+			$total =$mainstk;
 			//echo "มีการรับเข้า $mainstk-$amount==>".$total."<br>";
 		}else{
-			$total =$mainstk+$stkcut;
+			//$total =$mainstk+$stkcut;
 			//echo "$mainstk+$stkcut==>".$total."<br>";
+			$total=$mainstk;
+			
 		}		
 		$totalpri = $total*$unitpri;
 		$month = substr($getdate,5,2);
 		$day = substr($getdate,8,2);
-		$month=$thmon[$month+0];	
-		
-	// ถ้าไม่มี drugcode ในเดือนที่เลือก
-	// มันจะไปเลือกยอดของเดือนก่อนหน้านี้ที่มีข้อมูล
+		$month=$thmon[$month+0];		
 	}else{
 		//echo "'$dcode' != '$chkcode' </br>";
 		$yearchk=$_POST["year"];
 		$monthchk=$_POST["mon"];
 		$monthchk=sprintf("%02d",$monthchk);
-  		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  
-		  FROM stktranx  WHERE drugcode ='".$dbdcode."'  
-		  and getdate < '$yearchk-$monthchk-01' 
-		  ORDER BY getdate DESC, row_id DESC limit 1";  // ยอดยกมา
+  		$query3 = "SELECT getdate,billno,drugcode,tradname,lotno,department,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode ='".$dbdcode."'  and getdate < '$yearchk-$monthchk-01' ORDER BY getdate desc, row_id desc limit 1";  // ยอดยกมา
 		//echo "ไม่เท่ากับ : ".$query3;	
 		$result3 = mysql_query($query3) or die("Query failed");
-   		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
+   		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
+		
+					$querya2 = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' order by row_id desc limit 1";
+					//echo $querya2."<br>";
+					$resulta2 = mysql_query($querya2) or die("Query failed");
+					list($unitpri) = mysql_fetch_row($resulta2);
 
 		$total =$mainstk;
 		$totalpri = $total*$unitpri;
@@ -243,20 +262,38 @@ while($rows = mysql_fetch_array($result)){
    
 <!--แถวแสดงรายการความเคลื่อนไหวของยาในเดือนนั้นๆ	-->  
 <?     	   
-if($dbdcode=="4TA15" || $dbdcode=="4ALC450"){
+if($dbdcode=="4TA15 " || $dbdcode=="4ALC450 "){
 		$query2 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk,amountfree  FROM stktranx  WHERE drugcode ='".$dbdcode."' and (getdate between '".$_POST['year']."-".$_POST['mon']."-"."01"." 00:00:00' and '".$_POST['year']."-".$_POST['mon']."-"."31"." 23:59:59') ORDER BY getdate asc, row_id asc";
 }else{
-		$query2 = "SELECT getdate,billno,drugcode,tradname,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk,amountfree  FROM stktranx  WHERE drugcode ='".$dbdcode."' and (getdate between '".$_POST['year']."-".$_POST['mon']."-"."01"." 00:00:00' and '".$_POST['year']."-".$_POST['mon']."-"."31"." 23:59:59') ORDER BY getdate asc, row_id asc";
+		$query2 = "SELECT getdate,billno,drugcode,tradname,lotno,department,amount,stkcut,netlotno,mainstk,stock,totalstk,amountfree  FROM stktranx  WHERE drugcode ='".$dbdcode."' and (getdate between '".$_POST['year']."-".$_POST['mon']."-"."01"." 00:00:00' and '".$_POST['year']."-".$_POST['mon']."-"."31"." 23:59:59') ORDER BY getdate asc, row_id asc";
 }		
 		//echo "รายการในเดือน : ".$query2;
 		$result2 = mysql_query($query2) or die("Query failed");
 		$tbnum2=mysql_num_rows($result2);
-    	$num2=0;
-   		while (list($getdate,$billno,$drugcode,$tname,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk,$amountfree) = mysql_fetch_row ($result2)) {
+    	$num2=0;	
+   		while (list($getdate,$billno,$drugcode,$tname,$lotno,$department,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk,$amountfree) = mysql_fetch_row ($result2)) {
 			$k++;
-			$sql3 = "select stkno from combill where date like '$getdate%' and lotno='$lotno' ";
+			
+				$querya = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' order by row_id desc limit 1";
+				$resulta = mysql_query($querya) or die("Query failed");
+				list($unitpri) = mysql_fetch_row($resulta);	
+			
+			$sql3 = "select stkno,docno from combill where getdate like '$getdate%' and lotno='$lotno' and drugcode='$drugcode' ";
 			$row3 = mysql_query($sql3);
-			list($stkno)=mysql_fetch_array($row3);
+			$stk_row = mysql_num_rows($row3);
+			
+			$stkno = '';
+			$docno = '';
+			if( $stk_row > 0 ){
+				$item = mysql_fetch_assoc($row3);
+				$stkno = $item['stkno'];
+				$docno = $item['docno'];
+			}
+
+			if( $stkcut > 0 ){
+				$stkno = '';
+				$docno = '';
+			}
 			
 			$num2++;
 			if($stkno=="ยาของแถม"){
@@ -286,13 +323,8 @@ if($dbdcode=="4TA15" || $dbdcode=="4ALC450"){
                 <td align="center"><font face="Angsana New"><?=$billno;?></font></td>
                 <? } ?>
            		<td align="left" ><font face="Angsana New"><?=$department;?></font></td>
-		   		<?
-				if($stkno==""){
-				?>
-                <td align="center" ><font face="Angsana New">&nbsp;</font></td>
-            <? }else{ ?>
+                <td align="center" ><font face="Angsana New"><?=$docno;?></font></td>
                 <td align="center" ><font face="Angsana New"><?=$stkno;?></font></td>
-              <? } ?>
 			<?
                if($netprice=="Y"){
             ?>

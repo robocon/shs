@@ -5,6 +5,9 @@
 	$_SESSION['ponumber'] = $_POST['ponum'];
     print  "ตรวจสอบยาเวชภัณฑ์ในคลังของบริษัท เพื่อการสั่งซื้อ<a target=_parent  href='../nindex.htm'><<ไปเมนู</a> ";
     print  "<a target=_parent  href='dgorder.php'><<สั่งซื้อยาใหม่</a> ";
+	
+$date=date('Y-m-d');
+$lastmonth=date('Y-m-d', strtotime("-3 month"));	
 ?>
 <table>
  <tr>
@@ -15,7 +18,7 @@
   <th bgcolor=6495ED><font face='Angsana New'>เหลือสุทธิ</th>
   <th bgcolor=6495ED><font face='Angsana New'>ในคลัง</th>
   <th bgcolor=6495ED><font face='Angsana New'>ห้องยา</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ใช้/เดือน</th>
+  <th bgcolor=6495ED><font face='Angsana New'>ค่าเฉลี่ย 3 เดือนย้อนหลัง</th>
   <th bgcolor=6495ED><font face='Angsana New'>เหลือ?เดือน</th>
   <th bgcolor=6495ED><font face='Angsana New'>หน่วยนับ</th>
   <th bgcolor=6495ED><font face='Angsana New'>ขนาดบรรจุ</th>
@@ -29,7 +32,7 @@
 If (!empty($comcode)){
     include("connect.inc");
 
-    $query = "SELECT drugcode,tradname,minimum,totalstk,mainstk,stock,rxrate,stkpmon,packing,pack,packpri_vat,packpri,comname,row_id,snspec,spec FROM druglst  WHERE comcode = '$comcode' "; 
+    $query = "SELECT drugcode,tradname,minimum,totalstk,mainstk,stock,rxrate,stkpmon,packing,pack,packpri_vat,packpri,comname,row_id,snspec,spec FROM druglst  WHERE comcode = '$comcode' and  grouptype !='pc'"; 
 	 
     $result = mysql_query($query) or die("Query failed");
 	 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -69,7 +72,7 @@ If (!empty($comcode)){
         print "<font face='Angsana New' size='2'>ใช้/เดือน คืออัตราการจ่ายต่อเดือน <br>";
         print "เหลือ ? เดือน คือยังมีเหลือใช้ได้กี่เดือน (เหลือสุทธิ/อัตราการจ่ายต่อเดือน)";
 
-        $query = "SELECT drugcode,tradname,minimum,totalstk,mainstk,stock,rxrate,stkpmon,packing,pack,packpri_vat,packpri,row_id,snspec,spec,rxaccum FROM druglst  WHERE comcode = '$comcode' ";  
+        $query = "SELECT drugcode,tradname,minimum,totalstk,mainstk,stock,rxrate,stkpmon,packing,pack,packpri_vat,packpri,row_id,snspec,spec,rxaccum FROM druglst  WHERE comcode = '$comcode' and  grouptype !='pc' ";  
         $result = mysql_query($query) or die("Query failed");
         while (list ($drugcode,$tradname,$minimum,$totalstk,$mainstk,$stock,
 	$rxrate,$stkpmon,$packing,$pack,$packpri_vat,$packpri,$row_id,$snspec,$spec,$rxaccum
@@ -92,6 +95,12 @@ $nRxacc = $rxaccum;
 		$nMonth = 0;
 	}
 
+		$sql1="select sum(stkcut) as amount from stktranx where drugcode = '$drugcode' and getdate between '$lastmonth' and '$date' ";
+		//echo $sql1;
+		$query1=mysql_query($sql1);
+		list($amount)=mysql_fetch_array($query1);
+		$rxrate3m=$amount/3;  //เฉลี่ยใช้ 3 เดือน
+
             $n++;
             print (" <tr>\n".
                "  <td bgcolor=6495ED>$n</td>\n".
@@ -101,7 +110,7 @@ $nRxacc = $rxaccum;
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$totalstk</td>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$mainstk</td>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$stock</td>\n".
-               "  <td BGCOLOR=66CDAA><font face='Angsana New'>$nRate</td>\n".
+			    "  <td BGCOLOR=66CDAA><font face='Angsana New'>".(number_format($rxrate3m,2))."</td>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$nMonth</td>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$packing</td>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$pack</td>\n".
