@@ -7,6 +7,13 @@ if ( !defined('RDU_TEST') ) {
 
 $to_en_date = bc_to_ad($date);
 
+$pre_find_last_day = strtotime($to_en_date.'-01');
+$last_day = date('t', $pre_find_last_day);
+
+$latest_time = strtotime(($to_en_date.'-01')." -6 months");
+$latest_date = date('Y-m-d', $latest_time);
+
+
 // lab ย้อนหลัง 6 เดือน
 $db->select("DROP TEMPORARY TABLE IF EXISTS `pre_in11_lab`");
 $sql = "CREATE TEMPORARY TABLE `pre_in11_lab` 
@@ -15,7 +22,7 @@ FROM (
 
 	SELECT MAX(`autonumber`) as `latest_id`
 	FROM `resulthead` 
-	WHERE (`orderdate` >= '2018-01-01 00:00:00' AND `orderdate` <= '2018-07-06' ) 
+	WHERE (`orderdate` >= '$latest_date 00:00:00' AND `orderdate` <= '$to_en_date-$last_day 23:59:59' ) 
 	AND ( `profilecode` = 'CREA' OR `profilecode` = 'CREAG' ) 
 	GROUP BY `hn` 
 

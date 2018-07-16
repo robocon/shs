@@ -319,6 +319,16 @@ if(isset($_POST['hn'])){
 					  <td><input name="blindness" type="text" class="pdxhead" size="50" value="<?=$arrchk['blindness']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					<tr>
+					  <td class="pdx">ผลการได้ยิน</td>
+					  <td><input name="hearing" type="text" class="pdxhead" size="50" value="<?=$arrchk['hearing']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">ผลการตรวจสารเคมีโลหะหนัก</td>
+					  <td><input name="metal" type="text" class="pdxhead" size="50" value="<?=$arrchk['metal']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
 					<!--
 					<tr>
 						<td class="pdx">
@@ -409,7 +419,9 @@ if(isset($_POST['okhn2'])){
 		`seq` = '".$_POST['seq']."', 
 		`cs` = '".$_POST['cs']."',
 		`result_cs` = '".$_POST['result_cs']."',
-		`blindness` = '".$_POST['blindness']."' 
+		`blindness` = '".$_POST['blindness']."', 
+		`hearing` = '".$_POST['hearing']."', 
+		`metal` = '".$_POST['metal']."' 
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -457,7 +469,9 @@ if(isset($_POST['okhn2'])){
 			`seq` = '".$_POST['seq']."', 
 			`cs` = '".$_POST['cs']."', 
 			`result_cs` = '".$_POST['result_cs']."', 
-			`blindness` = '".$_POST['blindness']."'";
+			`blindness` = '".$_POST['blindness']."', 
+			`hearing` = '".$_POST['hearing']."', 
+			`metal` = '".$_POST['metal']."'";
 	}
 	
 	//echo $update;

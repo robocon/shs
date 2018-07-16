@@ -12,7 +12,22 @@ include("connect.inc");
 
 $_SESSION["list_lab"] = array() ;
 
+function calcage($birth){
 
+	$pAge = array();
+
+	list($bY, $bM, $bD) = explode('-', $birth);
+	$end_time = strtotime(($bY - 543)."-$bM-$bD");
+	$start_time = time();
+
+	$test = getdate(($start_time - $end_time));
+
+	$pAge['year'] = $test['year'] - 1970;
+	$pAge['month'] = $test['mon'] - 1;
+	$pAge['day'] = $test['mday'] - 1;
+
+	return $pAge;
+}
 
 /* ฟังก์ชั่น LastDay() ใช้สำหรับหาวันที่สุดท้ายของเดือน/ปีที่ระบุหรือหาว่าเดือน/ปีที่ระบุนั้นมีกี่วัน*/
 function LastDay($m, $y) {
@@ -185,10 +200,79 @@ if($_GET["action"] == "carlendar"){
 		$today2 = $today;
 	}
 
+	if( $dr_intern == true OR $_SESSION['smenucode'] == 'ADM' ){
+
+		$next_1month = strtotime(date('Y-m-d')." +1 month");
+		$next_2month = strtotime(date('Y-m-d')." +2 months");
+		$next_3month = strtotime(date('Y-m-d')." +3 months");
+
+		$next_6month = strtotime(date('Y-m-d')." +6 months");
+		$next_1year = strtotime(date('Y-m-d')." +1 year");
+		$next_2year = strtotime(date('Y-m-d')." +2 years");
+
+		list($n1mY, $n1mM, $n1mD) = explode('-', date('Y-m-d', $next_1month));
+		list($n2mY, $n2mM, $n2mD) = explode('-', date('Y-m-d', $next_2month));
+		list($n3mY, $n3mM, $n3mD) = explode('-', date('Y-m-d', $next_3month));
+
+		list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
+		list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
+		list($n2yY, $n2yM, $n2yD) = explode('-', date('Y-m-d', $next_2year));
+
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">&gt;&gt; นัด 1เดือน</a>&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>';
+		echo '<br>';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
+		echo '<br>';
+
+	}
+
+	// แสดงของหมอเลอปรัชญ์ 
+	// คลิกไปแต่ละครั้งจะเป็นการนัดทีละ 3เดือน 1ปี
 	if( $_SESSION['sIdname'] == 'md32166' OR $_SESSION['smenucode'] == 'ADM' ){
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$today1.'&dfMonth='.($month + 3).'&dfYear='.$year.'\')">&gt;&gt; เลือนนัดอีก 3เดือน</a>';
 		echo '&nbsp;||&nbsp;';
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$today1.'&dfMonth='.$month.'&dfYear='.($year+1).'\')">&gt;&gt; เลือนนัดอีก 1ปี</a>';
+	}
+
+
+	// ของหมอวรวิทย์ จะเป็นนัดเด็ก 2.5ขวบ กับ 4ขวบ 
+	$sql = "SELECT a.`age`,b.`dbirth`  
+	FROM `opday` AS a 
+	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+	WHERE a.`thdatevn` = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
+	$q = mysql_query($sql);
+	$pt = mysql_fetch_assoc($q);
+	$pt_age = calcage($pt['dbirth']);
+
+	if( ( $_SESSION['sIdname'] == 'md27035' OR $_SESSION['smenucode'] == 'ADM' ) && $pt_age['year'] >= 0 && $pt_age['year'] < 4 ){
+
+		list($y, $m, $d) = explode('-', $pt['dbirth']);
+		
+		$next_2years = strtotime(($y - 543)."-$m-$d +2 years +6 months");
+		$next_4years = strtotime(($y - 543)."-$m-$d +4 years");
+		
+		
+		list($yinj, $minj, $dinj) = explode('-', date('Y-m-d', $next_2years));
+		list($yinj2, $minj2, $dinj2) = explode('-', date('Y-m-d', $next_4years));
+
+		// คลิกแล้วเด้งไปตอน 2ขวบครึ่ง และ4ขวบ
+		echo '<br>';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">เลือกวันปัจจุบัน</a>';
+
+		// 0 - 2ขวบครึ่ง
+		if( $pt_age['year'] <= 2 && $pt_age['month'] < 6 ) {
+			echo '&nbsp;||&nbsp;';
+			echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$dinj.'&dfMonth='.$minj.'&dfYear='.$yinj.'\')">นัดเด็ก 2ขวบครึ่ง</a>';
+		}
+		
+		if( $pt_age['year'] < 4 ) {
+			echo '&nbsp;||&nbsp;';
+			echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$dinj2.'&dfMonth='.$minj2.'&dfYear='.$yinj2.'\')">นัดเด็ก 4ขวบ</a>';
+		}
+		
 	}
 
 	echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
@@ -235,7 +319,7 @@ if($_GET["action"] == "carlendar"){
 			if( $dr_intern === true ){
 				if( !empty($total_items[$key]) ){
 					$item = $total_items[$key];
-					// $dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
+					$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
 					// $intern_total = $item['total'];
 				}
 			}
@@ -262,7 +346,7 @@ if($_GET["action"] == "carlendar"){
 				else
 					echo "<BR>&nbsp;";
 
-				// echo $dr_intern_txt;
+				echo $dr_intern_txt;
 
 				echo "</td>\n";
 			}else  if ($i == 6 ) {
@@ -274,7 +358,7 @@ if($_GET["action"] == "carlendar"){
 				else
 					echo "<BR>&nbsp;";
 
-				// echo $dr_intern_txt;
+				echo $dr_intern_txt;
 
 				echo "</td>\n";
 
@@ -294,7 +378,7 @@ if($_GET["action"] == "carlendar"){
 				else
 					echo "<BR>&nbsp;";
 
-				// echo $dr_intern_txt;
+				echo $dr_intern_txt;
 
 				echo "</td>\n";
 
@@ -322,7 +406,7 @@ if($_GET["action"] == "carlendar"){
 						if( $dr_intern === true ){
 							if( !empty($total_items[$key]) ){
 								$item = $total_items[$key];
-								// $dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
+								$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
 								// $intern_total = $item['total'];
 							}
 						}
@@ -357,7 +441,7 @@ if($_GET["action"] == "carlendar"){
 							}
 
 							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							// echo $dr_intern_txt;
+							echo $dr_intern_txt;
 
 							echo "</td>\n";
 						}else  if ($i == 6 ) { // ถ้าเป็นวันเสาร์
@@ -374,7 +458,7 @@ if($_GET["action"] == "carlendar"){
 									echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 							
 							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							// echo $dr_intern_txt;
+							echo $dr_intern_txt;
 							
 							echo "</td>\n";
 						}else { // ถ้าเป็นวันธรรมดา
@@ -394,7 +478,7 @@ if($_GET["action"] == "carlendar"){
 							}
 
 							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							// echo $dr_intern_txt;
+							echo $dr_intern_txt;
 							
 							echo "</td>\n";
 						}
@@ -417,7 +501,7 @@ if($_GET["action"] == "carlendar"){
 	</TR>
 	</TABLE>";
 
-	/*
+	
 	if( $dr_intern === true ){
 		?>
 		<div>
@@ -427,7 +511,7 @@ if($_GET["action"] == "carlendar"){
 		</div>
 		<?php
 	}
-	*/
+	
 	exit();
 
 }

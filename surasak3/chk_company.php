@@ -137,16 +137,31 @@ if( $action == false ){
             `date_checkup` = '$date_checkup'
             WHERE `id` = '$id';";
             $save = $db->update($sql);
+
+            if( $save !== true ){
+                $msg = errorMsg('save', $save['id']);
+            }
+
         }else{
-            $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
-            VALUES (
-            NULL,'$company','$company_code','$date_checkup','$year','1'
-            );";
-            $save = $db->insert($sql);
-        }
-    
-        if( $save !== true ){
-            $msg = errorMsg('save', $save['id']);
+
+            $sql = "SELECT `id` FROM `chk_company_list` WHERE `code` = '$company_code'";
+            $db->select($sql);
+            $chk_row = $db->get_rows();
+
+            $msg = "ÃËÑÊºÃÔÉÑ·«éÓ«éÍ¹äÁèÊÒÁÒÃ¶ºÑ¹·Ö¡¢éÍÁÙÅä´é";
+
+            if( $chk_row == 0 ){
+                $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
+                VALUES (
+                NULL,'$company','$company_code','$date_checkup','$year','1'
+                );";
+                $save = $db->insert($sql);
+
+                if( $save !== true ){
+                    $msg = errorMsg('save', $save['id']);
+                }
+            }
+            
         }
 
     }

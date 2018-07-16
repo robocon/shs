@@ -64,7 +64,7 @@ if( empty($action) ){
     <div>
         <div>
             <div><b>ตัวอย่างการจัดข้อมูล</b></div>
-            <img src="images/sso-import-user.png" alt="">
+            <!-- <img src="images/sso-import-user.png" alt=""> -->
         </div>
     </div>
     <?php
@@ -96,6 +96,9 @@ if( empty($action) ){
 
             if( !empty($pid) ){
 
+                if( !empty($idcard) ){
+                    $idcard = str_replace('-', '', $idcard);
+                }
 
                 if( empty($idcard) ){
                     $sql = "SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn' ";

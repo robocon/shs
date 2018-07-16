@@ -76,6 +76,46 @@ if ( $action == 'load' ) {
             <th>ร.พ.ค่ายฯ</th>
         </tr>
         <tr>
+            <td align="center">1</td>
+            <td>-</td>
+            <td>-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+        </tr>
+        <tr>
+            <td align="center">2</td>
+            <td>-</td>
+            <td>-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+        </tr>
+        <tr>
+            <td align="center">3</td>
+            <td>-</td>
+            <td>-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+        </tr>
+        <tr>
+            <td align="center">4</td>
+            <td>-</td>
+            <td>-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+        </tr>
+        <tr>
+            <td align="center">5</td>
+            <td>-</td>
+            <td>-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+        </tr>
+        <tr>
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php
