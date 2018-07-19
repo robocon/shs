@@ -9,7 +9,7 @@ $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday` 
 SELECT `row_id`,`thidate`,`hn`,`icd10` 
 FROM `opday` 
-WHERE `thidate` LIKE '$date%' 
+WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
     OR `icd10` IN ( 'A020' ) 
@@ -26,7 +26,7 @@ $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx` 
 SELECT `row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
-WHERE `date` LIKE '$date%' 
+WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
 AND `status` = 'Y' 
 AND `an` IS NULL 
 AND `drugcode` IN ( 
@@ -48,19 +48,19 @@ AND `drugcode` IN (
 ); "; 
 $db->select($sql); 
 
-$sql = "SELECT b.`row_id` AS `drug_id` 
+$in7a = $in7b = $in7_result = 0;
+
+$sql = "SELECT COUNT(b.`row_id`) AS `rows`  
 FROM `tmp_opday` AS a 
 LEFT JOIN `tmp_drugrx` AS b ON b.`hn` = a.`hn` 
 WHERE b.`row_id` IS NOT NULL";
 $db->select($sql);
-$items_in7_a = $db->get_items();
-$in7a = count($items_in7_a);
+$items_in7_a = $db->get_item();
+$in7a = $items_in7_a['rows'];
 
-
-$sql = "SELECT * FROM `tmp_opday`";
+$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday`";
 $db->select($sql);
-$items_in7_b = $db->get_items();
-$in7b = count($items_in7_b);
-
+$items_in7_b = $db->get_item();
+$in7b = $items_in7_b['rows'];
 
 $in7_result = ( $in7a / $in7b ) * 100 ;

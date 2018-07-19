@@ -5,14 +5,8 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$to_en_date = bc_to_ad($date);
-
-$pre_find_last_day = strtotime($to_en_date.'-01');
-$last_day = date('t', $pre_find_last_day);
-
-$latest_time = strtotime(($to_en_date.'-01')." -6 months");
-$latest_date = date('Y-m-d', $latest_time);
-
+$en_date_min = bc_to_ad($date_min);
+$en_date_max = bc_to_ad($date_max);
 
 // lab ย้อนหลัง 6 เดือน
 $db->select("DROP TEMPORARY TABLE IF EXISTS `pre_in11_lab`");
@@ -22,7 +16,7 @@ FROM (
 
 	SELECT MAX(`autonumber`) as `latest_id`
 	FROM `resulthead` 
-	WHERE (`orderdate` >= '$latest_date 00:00:00' AND `orderdate` <= '$to_en_date-$last_day 23:59:59' ) 
+	WHERE (`orderdate` >= '$en_date_min' AND `orderdate` <= '$en_date_max' ) 
 	AND ( `profilecode` = 'CREA' OR `profilecode` = 'CREAG' ) 
 	GROUP BY `hn` 
 
@@ -32,7 +26,7 @@ LEFT JOIN `resultdetail` AS c ON c.`autonumber` = a.`latest_id`
 WHERE c.`labname` = 'Creatinine' ";
 $db->select($sql);
 
-
+// หา eGFR
 $db->select("DROP TEMPORARY TABLE IF EXISTS `pre_in11_b`");
 $sql = "CREATE TEMPORARY TABLE `pre_in11_b` 
 SELECT a.`shortage`,a.`datehn`,b.*, eGFR(a.`shortage`,b.`sex`,b.`result`) AS `eGFR`
@@ -42,7 +36,7 @@ FROM (
 	SUBSTRING(`thidate`,1,10) AS `date`, 
 	CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `datehn` 
 	FROM `opday` 
-	WHERE `thidate` LIKE '2561-06%' 
+	WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
 	AND `icd10` regexp 'E11' 	
 
 ) AS a 
@@ -52,18 +46,19 @@ HAVING eGFR(a.`shortage`,b.`sex`,b.`result`) > 30 ";
 $db->select($sql);
 
 // Table B
-$sql = "SELECT * FROM `pre_in11_b`";
+$sql = "SELECT COUNT(`autonumber`) AS `rows` FROM `pre_in11_b`";
 $db->select($sql);
-$pre_in12b = $db->get_items();
-$in12b = count($pre_in12b );
+$pre_in12b = $db->get_item();
+// $in12b = count($pre_in12b );
+$in12b = $pre_in12b['rows'];
 
 // Table A
-$sql = "SELECT * 
+$sql = "SELECT COUNT(a.`row_id`) AS `rows` 
 FROM ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,
     CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `datehn`
     FROM `drugrx` 
-    WHERE `date` LIKE '$date%' 
+    WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
     AND `status` = 'Y' 
     AND `an` IS NULL 
     AND `drugcode` IN ( 
@@ -80,7 +75,8 @@ FROM (
 RIGHT JOIN `pre_in11_b` AS b ON b.`datehn` = a.`datehn` 
 WHERE a.`row_id` IS NOT NULL ";
 $db->select($sql);
-$pre_in12a = $db->get_items();
-$in12a = count($pre_in12a ); 
+$pre_in12a = $db->get_item();
+// $in12a = count($pre_in12a ); 
+$in12a = $pre_in12a['rows']; 
 
 $in12_result = ( $in12a / $in12b ) * 100 ;

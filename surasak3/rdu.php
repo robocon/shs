@@ -2,21 +2,36 @@
 
 include 'bootstrap.php';
 define('RDU_TEST', '1');
-global $in6_result;
+// global $in6_result;
 
 // ไปดึงข้อมูลจากเซิฟเวอร์ .13 เพื่อลดภาระเซิฟเวอร์หลัก 
 $configs = array(
     'host' => '192.168.1.13',
     'port' => '3306',
     'dbname' => 'smdb',
-    'user' => 'superadmin',
-    'pass' => ''
+    'user' => 'root',
+    'pass' => '1234'
 );
 
-$db = Mysql::load($configs);
-$def_date = (date('Y') + 543).date('-m');
-$date = input_post('date', $def_date);
-
+$db = Mysql::load();
+$quarter = input_post('quarter');
+if( $quarter == 1 ){
+    $month_range['min'] = '10';
+    $month_range['max'] = '12'; //คม
+    
+}else if( $quarter == 2 ){
+    $month_range['min'] = '01';
+    $month_range['max'] = '03'; //คม
+    
+}else if( $quarter == 3 ){
+    $month_range['min'] = '04';
+    $month_range['max'] = '06';
+    
+}else if( $quarter == 4 ){
+    $month_range['min'] = '07';
+    $month_range['max'] = '09';
+    
+}
 ?>
 
 <style>
@@ -44,28 +59,94 @@ body, button{
     <a href="../nindex.htm">กลับหน้าหลัก ร.พ.</a>
 </div>
 
-<h3>RDU Indicator</h3>
+<?php
+$default_year = date('Y');
+$year = input_post('year', $default_year);
+
+$year_range = array(2017,2018);
+
+$quarter_range = array(
+    1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',
+    'ไตรมาสที่ 2(ม.ค. - มี.ค.)',
+    'ไตรมาสที่ 3(เม.ย. - มิ.ย.)',
+    'ไตรมาสที่ 4(ก.ค. - ก.ย.)'
+);
+?>
+
 <form action="rdu.php" method="post">
 
-    <div>
-        เลือกเดือน <input type="text" name="date" id="" value="<?=$date;?>">
-    </div>
+    <fieldset>
+        <legend>RDU Indicator</legend>
+    
 
-    <div>
-        <button type="submit">แสดงผล</button>
-        <input type="hidden" name="action" value="load">
-    </div>
+        <div>
+            เลือกปีงบประมาณ 
+            <select name="year" id="">
+                <?php
+                foreach ($year_range as $year_en) {
+
+                    $selected = ( $year_en == $year ) ? 'selected="selected"' : '' ;
+
+                    ?>
+                    <option value="<?=$year_en;?>" <?=$selected;?>><?=($year_en + 543);?></option>
+                    <?php
+                }
+                ?>
+            </select>
+
+            เลือกช่วงไตรมาส 
+            <select name="quarter" id="">
+                <?php
+                foreach ($quarter_range as $key => $quarter_item) {
+
+                    $selected = ( $key == $quarter ) ? 'selected="selected"' : '' ;
+                    
+                    ?>
+                    <option value="<?=$key;?>" <?=$selected;?> ><?=$quarter_item;?></option>
+                    <?php
+                }
+                ?>
+                <!-- <option value="1">ไตรมาสที่ 1(ต.ค. - ธ.ค.)</option>
+                <option value="2">ไตรมาสที่ 2(ม.ค. - มี.ค.)</option>
+                <option value="3">ไตรมาสที่ 3(เม.ย. - มิ.ย.)</option>
+                <option value="4">ไตรมาสที่ 4(ก.ค. - ก.ย.)</option> -->
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">แสดงผล</button>
+            <input type="hidden" name="action" value="load">
+        </div>
+
+    </fieldset>
 
 </form>
 
-<?php
+<?php 
+
+
+
 // special char
 // w3schools.com/charsets/ref_utf_math.asp
+// &le; <=
+// &ge; >=
 $action = input_post('action');
 
 if ( $action == 'load' ) {
     
+    
+    if( $quarter == 1 ){
+        $year = $year - 1;
+    }
+
+    $last_day = date('t', $year.'-'.$month_range['max'].'-01');
+
+    $year = $year + 543;
+    $date_min = $year.'-'.$month_range['min'].'-01 00:00:00';
+    $date_max = $year.'-'.$month_range['max'].'-'.$last_day.' 23:59:59';
+
     ?>
+    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year;?> (ไตรมาส <?=$quarter;?>)</h3>
     <table class="chk_table">
         <tr>
             <th>ตัวชี้วัดที่</th>
@@ -77,40 +158,43 @@ if ( $action == 'load' ) {
         </tr>
         <tr>
             <td align="center">1</td>
-            <td>-</td>
-            <td>-</td>
-            <td align="right">-</td>
-            <td align="right">-</td>
-            <td align="right">-</td>
+            <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
+            <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
+            <?php
+            // include 'rdu_in1.php';
+            ?>
+            <td align="right"><?=number_format($in1a);?></td>
+            <td align="right"><?=number_format($in1b);?></td>
+            <td align="right"><?=number_format($in1_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">2</td>
-            <td>-</td>
-            <td>-</td>
+            <td>ประสิทธิผลการดำเนินงานของคณะกรรมการ PTC ในการชี้นำสื่อสาร<br>และส่งเสริมเพื่อนำไปสู่การเป็นโรงพยาบาลส่งเสริมการใช้ยาอย่างสมเหตุผล</td>
+            <td>ระดับ 3</td>
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right">-</td>
         </tr>
         <tr>
             <td align="center">3</td>
-            <td>-</td>
-            <td>-</td>
+            <td>การดำเนินงานในการจัดทำฉลากยามาตรฐาน ฉลากยาเสริม และเอกสารข้อมูลยาใน 13กลุ่ม ที่มีรายละเอียดครบถ้วน</td>
+            <td>รายการยา 13กลุ่ม</td>
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right">-</td>
         </tr>
         <tr>
             <td align="center">4</td>
-            <td>-</td>
-            <td>-</td>
+            <td>รายการยาที่ควรพิจารณาตัดออก 8รายการ ซึ่งยังคงมีอยู่ในบัญชีรายการยาของโรงพยาบาล</td>
+            <td>&le; 1รายการ</td>
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right">-</td>
         </tr>
         <tr>
             <td align="center">5</td>
-            <td>-</td>
-            <td>-</td>
+            <td>การดำเนินงานเพื่อส่งเสริมจริยธรรมในการจัดซื้อและส่งเสริมการขายยา</td>
+            <td>ระดับ 3</td>
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right">-</td>
@@ -118,23 +202,23 @@ if ( $action == 'load' ) {
         <tr>
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
-            <?php
+            <?php 
             // include 'rdu_in6.php';
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right"><?=$in6a;?></td>
-            <td align="right"><?=$in6b;?></td>
+            <td align="right"><?=number_format($in6a);?></td>
+            <td align="right"><?=number_format($in6b);?></td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
-            <?php
+            <?php 
             // include 'rdu_in7.php';
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right"><?=$in7a;?></td>
-            <td align="right"><?=$in7b;?></td>
+            <td align="right"><?=number_format($in7a);?></td>
+            <td align="right"><?=number_format($in7b);?></td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
         <tr>
@@ -144,8 +228,8 @@ if ( $action == 'load' ) {
             // include 'rdu_in8.php';
             ?>
             <td>&le; ร้อยละ 40</td>
-            <td align="right"><?=$in8a;?></td>
-            <td align="right"><?=$in8b;?></td>
+            <td align="right"><?=number_format($in8a);?></td>
+            <td align="right"><?=number_format($in8b);?></td>
             <td align="right"><?=number_format($in8_result, 2);?></td>
         </tr>
         <tr>
@@ -160,12 +244,12 @@ if ( $action == 'load' ) {
             <td align="center">10</td>
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
-            <?php
+            <?php 
             // include 'rdu_in10.php';
             ?>
             <td>= ร้อยละ 10</td>
-            <td align="right"><?=$in10a;?></td>
-            <td align="right"><?=$in10b;?></td>
+            <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด"><?=number_format($in10a);?></td>
+            <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด"><?=number_format($in10b);?></td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
         <tr>
@@ -173,23 +257,34 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>
             หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
             <?php
-            // include 'rdu_in11.php';
+            include 'rdu_in11.php';
             ?>
             <td>&le; ร้อยละ 5</td>
-            <td align="right"><?=$in11a;?></td>
-            <td align="right"><?=$in11b;?></td>
+            <td align="right"><?=number_format($in11a);?></td>
+            <td align="right"><?=number_format($in11b);?></td>
             <td align="right"><?=number_format($in11_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">12</td>
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
             <?php
-            include 'rdu_in12.php';
+            // include 'rdu_in12.php';
             ?>
-            <td>>= ร้อยละ 80</td>
-            <td align="right"><?=$in12a;?></td>
-            <td align="right"><?=$in12b;?></td>
+            <td>&ge; ร้อยละ 80</td>
+            <td align="right"><?=number_format($in12a);?></td>
+            <td align="right"><?=number_format($in12b);?></td>
             <td align="right"><?=number_format($in12_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">13</td>
+            <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
+            <?php
+            // include 'rdu_in13.php';
+            ?>
+            <td>&le; ร้อยละ 5</td>
+            <td align="right"><?=number_format($in13a);?></td>
+            <td align="right"><?=number_format($in13b);?></td>
+            <td align="right"><?=number_format($in13_result, 2);?></td>
         </tr>
     </table>
     <?php
