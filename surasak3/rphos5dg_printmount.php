@@ -247,6 +247,7 @@ while($rows = mysql_fetch_array($result)){
            <td ><font face="Angsana New">&nbsp;</font></td>
            <td align="left"><font face="Angsana New">ยอดยกมา</font></td>
 		   <td ><font face="Angsana New">&nbsp;</font></td>
+           <td ><font face="Angsana New">&nbsp;</font></td>
 		   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
 		   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
 		   <td  align="right"><font face="Angsana New">&nbsp;</font></td>

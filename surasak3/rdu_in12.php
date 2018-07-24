@@ -9,8 +9,8 @@ $en_date_min = bc_to_ad($date_min);
 $en_date_max = bc_to_ad($date_max);
 
 // lab ย้อนหลัง 6 เดือน
-$db->select("DROP TEMPORARY TABLE IF EXISTS `pre_in11_lab`");
-$sql = "CREATE TEMPORARY TABLE `pre_in11_lab` 
+$db->select("DROP TEMPORARY TABLE IF EXISTS `pre_in12_lab`");
+$sql = "CREATE TEMPORARY TABLE `pre_in12_lab` 
 SELECT b.`autonumber`,b.`orderdate`,b.`hn`,b.`patientname`,b.`sex`,c.`result`
 FROM (  
 
@@ -40,7 +40,7 @@ FROM (
 	AND `icd10` regexp 'E11' 	
 
 ) AS a 
-LEFT JOIN `pre_in11_lab` AS b ON b.`hn` = a.`hn`
+LEFT JOIN `pre_in12_lab` AS b ON b.`hn` = a.`hn`
 WHERE b.`autonumber` IS NOT NULL 
 HAVING eGFR(a.`shortage`,b.`sex`,b.`result`) > 30 ";
 $db->select($sql);

@@ -9,11 +9,11 @@ $configs = array(
     'host' => '192.168.1.13',
     'port' => '3306',
     'dbname' => 'smdb',
-    'user' => 'root',
-    'pass' => '1234'
+    'user' => 'dottwo',
+    'pass' => '12345678'
 );
 
-$db = Mysql::load();
+$db = Mysql::load($configs);
 $quarter = input_post('quarter');
 if( $quarter == 1 ){
     $month_range['min'] = '10';
@@ -62,7 +62,6 @@ body, button{
 <?php
 $default_year = date('Y');
 $year = input_post('year', $default_year);
-
 $year_range = array(2017,2018);
 
 $quarter_range = array(
@@ -134,7 +133,9 @@ $action = input_post('action');
 
 if ( $action == 'load' ) {
     
+    $year_for_title = $year;
     
+    // ถ้าไตรมาสแรกหักไป1ปี
     if( $quarter == 1 ){
         $year = $year - 1;
     }
@@ -146,7 +147,7 @@ if ( $action == 'load' ) {
     $date_max = $year.'-'.$month_range['max'].'-'.$last_day.' 23:59:59';
 
     ?>
-    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year;?> (ไตรมาส <?=$quarter;?>)</h3>
+    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> (ไตรมาส <?=$quarter;?>)</h3>
     <table class="chk_table">
         <tr>
             <th>ตัวชี้วัดที่</th>
@@ -161,7 +162,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
             <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
             <?php
-            // include 'rdu_in1.php';
+            include 'rdu_in1.php';
             ?>
             <td align="right"><?=number_format($in1a);?></td>
             <td align="right"><?=number_format($in1b);?></td>
@@ -203,7 +204,7 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            // include 'rdu_in6.php';
+            include 'rdu_in6.php';
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right"><?=number_format($in6a);?></td>
@@ -214,18 +215,25 @@ if ( $action == 'load' ) {
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
-            // include 'rdu_in7.php';
+            include 'rdu_in7.php';
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right"><?=number_format($in7a);?></td>
-            <td align="right"><?=number_format($in7b);?></td>
+            <td align="right">
+                <?php
+                $rdu_in7_a = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
+                ?>
+                <a href="rdu_in7_a.php?<?=$rdu_in7_a;?>" target="_blank"><?=number_format($in7a);?></a>
+            </td>
+            <td align="right">
+                <a href="rdu_in7_b.php"><?=number_format($in7b);?></a>
+            </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
             <?php
-            // include 'rdu_in8.php';
+            include 'rdu_in8.php';
             ?>
             <td>&le; ร้อยละ 40</td>
             <td align="right"><?=number_format($in8a);?></td>
@@ -245,7 +253,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
             <?php 
-            // include 'rdu_in10.php';
+            include 'rdu_in10.php';
             ?>
             <td>= ร้อยละ 10</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด"><?=number_format($in10a);?></td>

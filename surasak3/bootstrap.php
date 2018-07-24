@@ -400,6 +400,7 @@ class Mysql
 	public function exec($sql, $data = NULL){
 		try{
 			$this->prepare($sql, $data);
+			return true;
 		}catch(Exception  $e) {
 			$log_id = $this->set_log($e);
 			$msg = array('error' => $e->getMessage(), 'id' => $log_id);

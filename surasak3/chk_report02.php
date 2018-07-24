@@ -677,6 +677,7 @@ FROM (
 LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
 WHERE b.`result` != 'DELETE' 
+AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
 ORDER BY b.seq ASC";
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
@@ -724,8 +725,6 @@ ORDER BY c.seq ASC";
 								FROM resultdetail 
 								WHERE autonumber='".$arrresult['autonumber']."' 
 								limit 0,1";
-								
-								
 								$objQuery1 = mysql_query($strSQL1);
 								list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
 								

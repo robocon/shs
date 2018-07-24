@@ -113,11 +113,14 @@ if( $cDoctor2 === 'MD115' ){
         $yot = 'น.ส.';
         $cDoctor1 = "ศศิภา ศิริรัตน์";
         $doctorcode = "พจ. 819";
+    }else if( $subDoctor === 3 ){
+        $yot = 'น.ส.';
+        $cDoctor1 = "กันยกร มาเกตุ";
+        $doctorcode = "พจ. 907";
     }
 
     $position = "แพทย์แผนจีน";
     $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขาการแพทย์แผนจีน";
-    
     $licen = "$position $doctorcode";
     
 }else{
@@ -125,16 +128,23 @@ if( $cDoctor2 === 'MD115' ){
     $query = mysql_query($sql);
     $rows = mysql_fetch_array($query);
     $yot = $rows["yot"];
-	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์"){
-    	$doctorcode = "พจ. ".$rows["doctorcode"];
+	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ"){
+        
+        $doctorcode = "พจ. ".$rows["doctorcode"];
+        $position = "แพทย์แผนจีน";
+        $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขาการแพทย์แผนจีน";
+
 	}else{
-    	$doctorcode = "ว. ".$rows["doctorcode"];
+
+        $doctorcode = "ว. ".$rows["doctorcode"];
+        $position = "แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี";
+        $certificate = "ใบอนุญาตประกอบอาชีพเวชกรรม";
+
 	}
 
-    $position = "แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี";
-    $certificate = "ใบอนุญาตประกอบอาชีพเวชกรรม";
-    
 }
+
+
 
 $date_log = date('Y-m-d H:i:s');
 $dt_log = "{\"yot\":\"$yot\",\"name\":\"$cDoctor1\",\"code\":\"$doctorcode\"}";
@@ -218,7 +228,8 @@ OR $cDoctor2 == 'MD115'
 OR $cDoctor2 == 'MD128' 
 OR $cDoctor2 == 'MD129' 
 OR $cDoctor2 == 'MD116' 
-OR $cDoctor2 == 'MD130' ){
+OR $cDoctor2 == 'MD130' 
+OR $cDoctor2 == 'MD151' ){
 
     if( $inList === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';

@@ -7,8 +7,8 @@ if ( !defined('RDU_TEST') ) {
 
 // ตัวหาร B
 // OPD + ICD10
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
+$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
 SELECT `row_id`,`thidate`,`hn`,`icd10` 
 FROM `opday` 
 WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
@@ -26,8 +26,8 @@ AND (
 )";
 $db->select($sql);
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx`");
-$sql = "CREATE TEMPORARY TABLE `tmp_drugrx` 
+$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6`");
+$sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
 SELECT `row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
 WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
@@ -73,14 +73,14 @@ $db->select($sql);
 $in6a = $in6b = $in6_result = 0;
 
 $sql = "SELECT COUNT(b.`row_id`) AS `rows` 
-FROM `tmp_opday` AS a 
-LEFT JOIN `tmp_drugrx` AS b ON b.`hn` = a.`hn` 
+FROM `tmp_opday_in6` AS a 
+LEFT JOIN `tmp_drugrx_in6` AS b ON b.`hn` = a.`hn` 
 WHERE b.`row_id` IS NOT NULL";
 $db->select($sql);
 $items_a = $db->get_item();
 $in6a = $items_a['rows'];
 
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday`";
+$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday_in6`";
 $db->select($sql);
 $items_b = $db->get_item();
 $in6b = $items_b['rows'];

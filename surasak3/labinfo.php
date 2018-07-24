@@ -223,7 +223,8 @@ OR $cDoctor2 == 'MD128'
 OR $cDoctor2 == 'MD129' 
 OR $cDoctor2 == 'MD130' 
 OR $cDoctor2 == 'MD116' 
-OR $cDoctor2 == 'MD130'){
+OR $cDoctor2 == 'MD130' 
+OR $cDoctor2 == 'MD151'){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
@@ -233,6 +234,8 @@ OR $cDoctor2 == 'MD130'){
     <a target="_blank" href="labtranxnid1.php?subDoctor=1">ใบรับรองแพทย์ ฝังเข็ม(ภาคภูมิ พิสุทธิวงษ์)</a>
 	<br><br>
     <a target="_blank" href="labtranxnid1.php?subDoctor=2">ใบรับรองแพทย์ ฝังเข็ม(ศศิภา ศิริรัตน์)</a>
+	<br><br>
+    <a target="_blank" href="labtranxnid1.php?subDoctor=3">ใบรับรองแพทย์ ฝังเข็ม(กันยกร มาเกตุ)</a>
 	<?php
 }
 

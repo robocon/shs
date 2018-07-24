@@ -17,10 +17,12 @@ DPN = ÍØ»¡Ã³ìàºÔ¡äÁèä´é
 
 $in1a = $in1b = $in1_result = 0;
 
+// xxx > '' is handle both between IS NOT EMPTY and = '' 
+// Question id 2327029 in StackOverflow
 $sql = "SELECT COUNT(`row_id`) AS `rows` 
 FROM `drugrx` 
-WHERE `date` >= '$date_min' AND `date` <= '$date_max' 
-AND `an` IS NULL 
+WHERE (`date` >= '$date_min' AND `date` <= '$date_max')  
+AND `an` > ''  
 AND `part` = 'DDL' ";
 $db->select($sql);
 $items_a = $db->get_item();
@@ -28,8 +30,9 @@ $in1a = $items_a['rows'];
 
 $sql = "SELECT COUNT(`row_id`) AS `rows` 
 FROM `drugrx` 
-WHERE `date` >= '$date_min' AND `date` <= '$date_max' 
-AND `an` IS NULL ";
+WHERE (`date` >= '$date_min' AND `date` <= '$date_max')  
+AND `an` > ''  
+AND `part` LIKE 'DD%' ";
 $db->select($sql);
 $items_b = $db->get_item();
 $in1b = $items_b['rows'];
