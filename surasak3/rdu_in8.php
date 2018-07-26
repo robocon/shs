@@ -7,9 +7,10 @@ if ( !defined('RDU_TEST') ) {
 
 $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
-SELECT `row_id`,`thidate`,`hn`,`icd10` 
+SELECT `row_id`,`thidate`,`hn`,`icd10`,CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
 FROM `opday` 
 WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
+AND `an` IS NULL 
 AND ( 
     `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
     OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
@@ -29,7 +30,7 @@ $db->select($sql);
 
 $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
-SELECT `row_id`,`date`,`hn`,`drugcode`  
+SELECT `row_id`,`date`,`hn`,`drugcode`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn`  
 FROM `drugrx` 
 WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
 AND `status` = 'Y' 
@@ -48,15 +49,27 @@ AND `drugcode` IN (
     '5ZMAX', 
     '1ZITH-C', 
     '1KLA500-N', 
-    '2ZITH'  
-); "; 
+    '2ZITH',
+
+    '1AMOX250',
+    '1AMOX500',
+    '1AMOX625',
+    '5AMOX',
+    '1DIC250',
+    '5AMOX250',
+    '1AUGM',
+    '5AUG35',
+    '1AUGM1-C',
+    '5AUG35-C'
+) 
+GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
 $db->select($sql); 
 
 $in8a = $in8b = $in8_result = 0;
 
 $sql = "SELECT COUNT(b.`row_id`) AS `rows`
 FROM `tmp_opday_in8` AS a 
-LEFT JOIN `tmp_drugrx_in8` AS b ON b.`hn` = a.`hn` 
+LEFT JOIN `tmp_drugrx_in8` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL";
 $db->select($sql);
 $items_in8_a = $db->get_item();

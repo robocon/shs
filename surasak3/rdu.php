@@ -276,7 +276,7 @@ if ( $action == 'load' ) {
             <td align="center">12</td>
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
             <?php
-            // include 'rdu_in12.php';
+            include 'rdu_in12.php';
             ?>
             <td>&ge; ร้อยละ 80</td>
             <td align="right"><?=number_format($in12a);?></td>
@@ -287,12 +287,23 @@ if ( $action == 'load' ) {
             <td align="center">13</td>
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
             <?php
-            // include 'rdu_in13.php';
+            include 'rdu_in13.php';
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right"><?=number_format($in13a);?></td>
             <td align="right"><?=number_format($in13b);?></td>
             <td align="right"><?=number_format($in13_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">14</td>
+            <td>ร้อยละของผู้ป่วยโรคไตเรื้อรังระดับ 3 ขึ้นไปที่ได้รับยา NSAIDs</td>
+            <?php
+            include 'rdu_in14.php';
+            ?>
+            <td>&le; ร้อยละ 10</td>
+            <td align="right"><?=number_format($in14a);?></td>
+            <td align="right"><?=number_format($in14b);?></td>
+            <td align="right"><?=number_format($in14_result, 2);?></td>
         </tr>
     </table>
     <?php

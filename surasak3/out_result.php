@@ -246,7 +246,7 @@ if(isset($_POST['hn'])){
 					    <td><span class="style1">กรณี ตั้งครรภ์ หรือไม่ได้ Xray ให้กรอกข้อมูลช่องนี้</span></td>
 					</tr>
 					<tr>
-                      <td class="pdx"> ผล V/A</td>
+                      <td class="pdx"> ผลตรวจตาบอดสี</td>
 					  <td><label>
 					    <select name="va" class="pdxhead" id="va">
                           <option value="" >---------- เลือก ----------</option>
@@ -314,11 +314,13 @@ if(isset($_POST['hn'])){
 					  <td><input name="result_cs" type="text" class="pdxhead" size="50" value="<?=$arrchk['result_cs']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					<!-- 
 					<tr>
 					  <td class="pdx">ผลตรวจ ตาบอดสี</td>
 					  <td><input name="blindness" type="text" class="pdxhead" size="50" value="<?=$arrchk['blindness']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					-->
 					<tr>
 					  <td class="pdx">ผลการได้ยิน</td>
 					  <td><input name="hearing" type="text" class="pdxhead" size="50" value="<?=$arrchk['hearing']?>" /></td>

@@ -1182,7 +1182,7 @@ if ( $group2_rows > 0 ) {
 
 			<?php if( !empty($result['va']) ){ ?>           
 				<tr>
-					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตา</u> </strong> </td>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตาบอดสี</u> </strong> </td>
 					<td><strong class="text" style="margin-left: 9px;"> :
 					<?=$result['va'];?>
 					</strong> </td>
