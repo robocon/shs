@@ -147,7 +147,7 @@ if ( $action == 'load' ) {
     $date_max = $year.'-'.$month_range['max'].'-'.$last_day.' 23:59:59';
 
     ?>
-    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> (ไตรมาส <?=$quarter;?>)</h3>
+    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (ไตรมาส <?=$quarter;?>) </h3>
     <table class="chk_table">
         <tr>
             <th>ตัวชี้วัดที่</th>
@@ -304,6 +304,17 @@ if ( $action == 'load' ) {
             <td align="right"><?=number_format($in14a);?></td>
             <td align="right"><?=number_format($in14b);?></td>
             <td align="right"><?=number_format($in14_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">17</td>
+            <td>จำนวนสตรีตั้งครรภ์ที่ได้รับยาที่ห้ามใช้ ได้แก่ ยา Warfarin/Statins/Ergot เมื่อรู้ว่าตั้งครรภ์แล้ว</td>
+            <?php
+            include 'rdu_in17.php';
+            ?>
+            <td>เท่ากับ 0คน</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right"><?=$in17_result;?></td>
         </tr>
     </table>
     <?php
