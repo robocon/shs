@@ -1,56 +1,95 @@
-<?php
-session_start();
-session_unregister("cHn");  
-session_unregister("cPtname");
-session_unregister("cPtright");
-session_unregister("cPtright1");
-session_unregister("nVn");
-session_unregister("cAge");
-session_unregister("cIdcard");
-session_unregister("cNote");
-session_unregister("cIdcard");
-session_unregister("cIdguard");
-
-$nRunno="";
-$vAN="";
-$cPtname="";
-$cPtright="";    
-$nVn="";
-$cAge="";
-$borow='';
-
-session_register("nRunno");  
-session_register("vAN");
-session_register("cHn");  
-session_register("cPtname");
-session_register("cPtright");
-session_register("cPtright1");
-session_register("nVn");  
-session_register("cAge");  
-session_register("cIdcard");   
-session_register("cNote");  
-session_register("cIdcard");  
-session_register("cIdguard");  
-
-$_SESSION["cHn"] = trim($_GET["cHn"]);
-
-include("connect.inc");
-
-$query = "SELECT * FROM opcard WHERE hn = '$cHn'";
-$result = mysql_query($query) or die("Query failed");
-
-for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-    if (!mysql_data_seek($result, $i)) {
-        echo "Cannot seek to row $i\n";
-        continue;
-	}
-
-	if(!($row = mysql_fetch_object($result)))
-		continue;
+<style>
+body {
+	background-color: #66CC99;
 }
+fieldset { border:1px solid #0033FF}
 
-if($result){
-	//	$cRegisdate=$row->regisdate;
+legend {
+  padding: 0.2em 0.5em;
+  border:1px solid #0033FF;
+  color: #0033FF;
+  font-size:90%;
+  text-align:right;
+  }
+  .fonttitle{
+/*	 font-family:"Angsana New";
+	 size:25PX;*/
+	 color:#030;
+ }
+ .fonthead{
+	 font-family:"Angsana New";
+	 size:16PX;
+	/* font-weight:bold;*/
+ }
+</style>
+<script language="JavaScript1.2">
+<!--
+window.moveTo(0,0);
+if (document.all) {
+top.window.resizeTo(screen.availWidth,screen.availHeight);
+}
+else if (document.layers||document.getElementById) {
+if (top.window.outerHeight<screen.availHeight||top.window.outerWidth<screen.availWidth){
+top.window.outerHeight = screen.availHeight;
+top.window.outerWidth = screen.availWidth;
+}
+}
+//-->
+</script>
+
+<?php
+   session_start();
+    session_unregister("cHn");  
+    session_unregister("cPtname");
+    session_unregister("cPtright");
+    session_unregister("cPtright1");
+    session_unregister("nVn");  
+    session_unregister("cAge");  
+    session_unregister("cIdcard");  
+    session_unregister("cNote");  
+ 	session_unregister("cIdcard"); 
+ 	session_unregister("cIdguard"); 
+    $nRunno="";
+    $vAN="";
+
+    $cPtname="";
+    $cPtright="";    
+    $nVn="";
+    $cAge="";
+	$borow='';
+    session_register("nRunno");  
+    session_register("vAN");
+    session_register("cHn");  
+    session_register("cPtname");
+    session_register("cPtright");
+    session_register("cPtright1");
+    session_register("nVn");  
+    session_register("cAge");  
+    session_register("cIdcard");   
+    session_register("cNote");  
+  session_register("cIdcard");  
+  session_register("cIdguard");  
+	
+	$_SESSION["cHn"] = $_GET["cHn"];
+
+    include("connect.inc");
+
+
+    $query = "SELECT * FROM opcard WHERE hn = '$cHn'";
+    $result = mysql_query($query)
+        or die("Query failed");
+ 
+    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+        if (!mysql_data_seek($result, $i)) {
+            echo "Cannot seek to row $i\n";
+            continue;
+        }
+
+        if(!($row = mysql_fetch_object($result)))
+            continue;
+         }
+   If ($result){
+//	$cRegisdate=$row->regisdate;
 	$cIdcard =$row->idcard;
 	$cMid=$row->mid;
 	$cHn =$row->hn;
@@ -60,7 +99,7 @@ if($result){
 	$cEducation =$row->education;
 	$cGoup =$row->goup;
 	$cMarried =$row->married;
-	//	$cCbirth (วันเกิดข้อความเก็บไว้ดู)
+//	$cCbirth (วันเกิดข้อความเก็บไว้ดู)
 	$cCbirth =$row->cbirth; // (วันเกิดข้อความเก็บไว้ดู)
 	$cDbirth =$row->dbirth;
 	$cGuardian=$row->guardian;
@@ -89,111 +128,86 @@ if($result){
 	$cPtfadd=$row->ptfadd;
 	$cPtffone=$row->ptffone;
 
-	$cPtfmon=$row->ptfmon;
-	$cLastupdate=$row->lastupdate;
-	$cBlood=$row->blood;
-	$cDrugreact=$row->drugreact;
-	$cHospcode=$row->hospcode;
-	$employee = $row->employee;
+$cPtfmon=$row->ptfmon;
+$cLastupdate=$row->lastupdate;
+$cBlood=$row->blood;
+$cDrugreact=$row->drugreact;
+$cHospcode=$row->hospcode;
+$employee = $row->employee;
 
-	$hcode=explode("/",$cHospcode);
-	$hcode1=$hcode[0];
+		$hcode=explode("/",$cHospcode);
+		$hcode1=$hcode[0];
 		
-	//$cCase=$row->case;
-	//  2494-05-28
-	$cD=substr($cDbirth,8,2);
-	$cM=substr($cDbirth,5,2); 
-	$cY=substr($cDbirth,0,4); 
-	$cD1=substr($cLastupdate,8,2);
-	$cM1=substr($cLastupdate,5,2); 
-	$cY1=substr($cLastupdate,0,4); 
-	$cT1=substr($cLastupdate,11,8); 
- } else {
-	echo "ไม่พบ HN : $cHn ";
-}
+//$cCase=$row->case;
+//  2494-05-28
+    $cD=substr($cDbirth,8,2);
+    $cM=substr($cDbirth,5,2); 
+    $cY=substr($cDbirth,0,4); 
+  $cD1=substr($cLastupdate,8,2);
+    $cM1=substr($cLastupdate,5,2); 
+    $cY1=substr($cLastupdate,0,4); 
+    $cT1=substr($cLastupdate,11,8); 
+ }  
+   else {
+      echo "ไม่พบ HN : $cHn ";
+           }    
 		   
-if(substr($cIdguard,0,4)=="MX07"){
-	?>
-	<script type="text/javascript">
-		alert("HN: <?=$cHn;?> มีสถานะทำลายประวัติ");
-	</script>
-	<?php 
-}else if(substr($cIdguard,0,4)=="MX05"){
-	?>
-	<script type="text/javascript">
-		alert("HN: <?=$cHn;?> มีสถานะยุบประวัติ");
-	</script>
-	<?php 
-}
+		   if(substr($cIdguard,0,4)=="MX07"){
+			   
+			   ?>
+               <script>
+			   alert("HN: <?=$cHn;?> มีสถานะทำลายประวัติ");
+			   </script>
+               <?
+		
+		   }else if(substr($cIdguard,0,4)=="MX05"){
+			  ?>
+               <script>
+			   alert("HN: <?=$cHn;?> มีสถานะยุบประวัติ");
+			   </script>
+               <?  
+			   
+		   }
 
 //print "$cDbirth";
 ?>
-
-<style>
-body { background-color: #66CC99; }
-fieldset { border:1px solid #0033FF; }
-legend {
-  padding: 0.2em 0.5em;
-  border:1px solid #0033FF;
-  color: #0033FF;
-  font-size:90%;
-  text-align:right;
-}
-.fonttitle{ color:#030; }
-.fonthead{
-  font-family:"Angsana New";
-  size: 16px;
-}
-</style>
-<script type="text/javascript">
-window.moveTo(0,0);
-if (document.all) {
-  top.window.resizeTo(screen.availWidth,screen.availHeight);
-} else if (document.layers||document.getElementById) {
-  if (top.window.outerHeight<screen.availHeight||top.window.outerWidth<screen.availWidth){
-    top.window.outerHeight = screen.availHeight;
-    top.window.outerWidth = screen.availWidth;
-  }
-}
-</script>
-
-<script type="text/javascript">
+<SCRIPT LANGUAGE='JavaScript'>
 	function newXmlHttp(){
 	var xmlhttp = false;
 
-	try{
-		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-	}catch(e){
-	try{
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		try{
+			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
 		}catch(e){
-			xmlhttp = false;
+		try{
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}catch(e){
+				xmlhttp = false;
+			}
 		}
-	}
 
-	if(!xmlhttp && document.createElement){
-		xmlhttp = new XMLHttpRequest();
-	}
+		if(!xmlhttp && document.createElement){
+			xmlhttp = new XMLHttpRequest();
+		}
 	return xmlhttp;
 }
 
 function searchSuggest2(str,len,getto1) {
 	
-	str = str+String.fromCharCode(event.keyCode);
+		str = str+String.fromCharCode(event.keyCode);
 
-	if(str.length >= len){
-		url = 'opdedit.php?action=hospcode&search2=' + str+'&getto1=' + getto1
-		//alert(url);
-		xmlhttp = newXmlHttp();
-		xmlhttp.open("GET", url, false);
-		xmlhttp.send(null);
+		if(str.length >= len){
+			url = 'opdedit.php?action=hospcode&search2=' + str+'&getto1=' + getto1
+			//alert(url);
+			xmlhttp = newXmlHttp();
+			xmlhttp.open("GET", url, false);
+			xmlhttp.send(null);
 
-		document.getElementById("list3").innerHTML = xmlhttp.responseText;
-	}
+			document.getElementById("list3").innerHTML = xmlhttp.responseText;
+		}
 }
 </script>
 
-<?php
+<?
 if(isset($_GET["action"]) && $_GET["action"] == "hospcode"){
 	$sql = "SELECT hospcode,hosptype,name  FROM hospcode WHERE  hospcode  like '".$_GET["search2"]."%' ";
 	//echo "==>".$sql;
@@ -218,6 +232,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "hospcode"){
 		$i=1;
 		while($arr = Mysql_fetch_assoc($result)){
 				
+			
+
 				if($i%2==0)
 					$bgcolor="#FFFFFF";
 				else
@@ -280,8 +296,8 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td> 
           <select size="1" name="sex" id="sex">
             <option value="">เลือก</option>
-            <option <?php if($cSex=='ช' ||$cSex=='1' ){ echo "selected"; }?> value="ช">ชาย</option>
-            <option <?php if($cSex=='ญ' ||$cSex=='2' ){ echo "selected"; }?> value="ญ">หญิง</option>
+            <option <? if($cSex=='ช' ||$cSex=='1' ){ echo "selected"; }?> value="ช">ชาย</option>
+            <option <? if($cSex=='ญ' ||$cSex=='2' ){ echo "selected"; }?> value="ญ">หญิง</option>
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
@@ -300,32 +316,32 @@ echo "<tr bgcolor=\"$bgcolor\" >
 <input type='text' name='y' size='4' value='<?=$cY;?>' maxlength='4'>
           เชื้อชาติ: 
             <select size="1" name="race" id="race">
-<option <?php if($cRace=='ไทย'){ echo "selected";}?>value="ไทย">ไทย</option>
-<option <?php if($cRace=='จีน'){ echo "selected";}?> value="จีน">จีน</option>
-<option <?php if($cRace=='ลาว'){ echo "selected";}?>  value="ลาว">ลาว</option>
-<option <?php if($cRace=='พม่า'){ echo "selected";}?> value="พม่า">พม่า</option>
-<option <?php if($cRace=='กัมพูชา'){ echo "selected";}?> value="กัมพูชา">กัมพูชา</option>
-<option <?php if($cRace=='อินเดีย'){ echo "selected";}?> value="อินเดีย">อินเดีย</option>
-<option <?php if($cRace=='เวียดนาม'){ echo "selected";}?> value="เวียดนาม">เวียดนาม</option>
-<option <?php if($cRace=='อื่นๆ'){ echo "selected";}?> value="อื่นๆ">อื่นๆ</option>
+<option <? if($cRace=='ไทย'){ echo "selected";}?>value="ไทย">ไทย</option>
+<option <? if($cRace=='จีน'){ echo "selected";}?> value="จีน">จีน</option>
+<option <? if($cRace=='ลาว'){ echo "selected";}?>  value="ลาว">ลาว</option>
+<option <? if($cRace=='พม่า'){ echo "selected";}?> value="พม่า">พม่า</option>
+<option <? if($cRace=='กัมพูชา'){ echo "selected";}?> value="กัมพูชา">กัมพูชา</option>
+<option <? if($cRace=='อินเดีย'){ echo "selected";}?> value="อินเดีย">อินเดีย</option>
+<option <? if($cRace=='เวียดนาม'){ echo "selected";}?> value="เวียดนาม">เวียดนาม</option>
+<option <? if($cRace=='อื่นๆ'){ echo "selected";}?> value="อื่นๆ">อื่นๆ</option>
               </select>
             สัญชาติ: 
               <select size="1" name="nation" id="nation">
-<option  value="ไทย"<?php if($cNation=='ไทย'){ echo "selected";}?> >ไทย</option>
-<option value="จีน"<?php if($cNation=='จีน'){ echo "selected";}?> >จีน</option>
-<option value="ลาว"<?php if($cNation=='ลาว'){ echo "selected";}?> >ลาว</option>
-<option value="พม่า"<?php if($cNation=='พม่า'){ echo "selected";}?> >พม่า</option>
-<option value="กัมพูชา"<?php if($cNation=='กัมพูชา'){ echo "selected";}?> >กัมพูชา</option>
-<option value="อินเดีย"<?php if($cNation=='อินเดีย'){ echo "selected";}?> >อินเดีย</option>
-<option value="เวียดนาม"<?php if($cNation=='เวียดนาม'){ echo "selected";}?> >เวียดนาม</option>
-<option value="อื่นๆ"<?php if($cNation=='อื่นๆ'){ echo "selected";}?> >อื่นๆ</option>
+<option  value="ไทย"<? if($cNation=='ไทย'){ echo "selected";}?> >ไทย</option>
+<option value="จีน"<? if($cNation=='จีน'){ echo "selected";}?> >จีน</option>
+<option value="ลาว"<? if($cNation=='ลาว'){ echo "selected";}?> >ลาว</option>
+<option value="พม่า"<? if($cNation=='พม่า'){ echo "selected";}?> >พม่า</option>
+<option value="กัมพูชา"<? if($cNation=='กัมพูชา'){ echo "selected";}?> >กัมพูชา</option>
+<option value="อินเดีย"<? if($cNation=='อินเดีย'){ echo "selected";}?> >อินเดีย</option>
+<option value="เวียดนาม"<? if($cNation=='เวียดนาม'){ echo "selected";}?> >เวียดนาม</option>
+<option value="อื่นๆ"<? if($cNation=='อื่นๆ'){ echo "selected";}?> >อื่นๆ</option>
 </select>
               ศาสนา: 
                 <select size="1" name="religion" id="religion">
-<option value="พุทธ"<?php if($cReligion=='พุทธ'){ echo "selected";}?>>พุทธ</option>
-<option value="คริสต์"<?php if($cReligion=='คริสต์'){ echo "selected";}?>>คริสต์</option>
-<option value="อิสลาม"<?php if($cReligion=='อิสลาม'){ echo "selected";}?>>อิสลาม</option>
-<option value="อื่นๆ"<?php if($cReligion=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
+<option value="พุทธ"<? if($cReligion=='พุทธ'){ echo "selected";}?>>พุทธ</option>
+<option value="คริสต์"<? if($cReligion=='คริสต์'){ echo "selected";}?>>คริสต์</option>
+<option value="อิสลาม"<? if($cReligion=='อิสลาม'){ echo "selected";}?>>อิสลาม</option>
+<option value="อื่นๆ"<? if($cReligion=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
 </select>        </td>
         </tr>
       <tr>
@@ -333,32 +349,32 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td> 
 <select size="1" name="married" id="married">
 <option value=""><-เลือก-></option>
-            <option value="โสด" <?php if($cMarried=='โสด'){ echo "selected";}?>>โสด</option>
-            <option value="สมรส" <?php if($cMarried=='สมรส'){ echo "selected";}?>>สมรส</option>
-            <option value="หม้าย" <?php if($cMarried=='หม้าย'){ echo "selected";}?>>หม้าย</option>
-            <option value="หย่า" <?php if($cMarried=='หย่า'){ echo "selected";}?>>หย่า</option>
-            <option value="แยก" <?php if($cMarried=='แยก'){ echo "selected";}?>>แยก</option>
-            <option value="สมณะ" <?php if($cMarried=='สมณะ'){ echo "selected";}?>>สมณะ</option>
-            <option value="อื่นๆ" <?php if($cMarried=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
+            <option value="โสด" <? if($cMarried=='โสด'){ echo "selected";}?>>โสด</option>
+            <option value="สมรส" <? if($cMarried=='สมรส'){ echo "selected";}?>>สมรส</option>
+            <option value="หม้าย" <? if($cMarried=='หม้าย'){ echo "selected";}?>>หม้าย</option>
+            <option value="หย่า" <? if($cMarried=='หย่า'){ echo "selected";}?>>หย่า</option>
+            <option value="แยก" <? if($cMarried=='แยก'){ echo "selected";}?>>แยก</option>
+            <option value="สมณะ" <? if($cMarried=='สมณะ'){ echo "selected";}?>>สมณะ</option>
+            <option value="อื่นๆ" <? if($cMarried=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
 </select>        </td>
         <td class="fonthead">อาชีพ:</td>
         <td colspan="3"> 
           <select size="1" name="career" id="career">
             <option value=""><-เลือก-></option>
              <option value='<?=$cCareer;?>' selected><?=$cCareer;?></option>";
-<option value="01 เกษตรกร"<?php if($cCareer=='01 เกษตรกร'){ echo "selected";}?>>01 เกษตรกร</option>
-<option value="02 รับจ้างทั่วไป"<?php if($cCareer=='02 รับจ้างทั่วไป'){ echo "selected";}?>>02 รับจ้างทั่วไป</option>
-<option value="03 ช่างฝีมือ" <?php if($cCareer=='03 ช่างฝีมือ'){ echo "selected";}?>>03 ช่างฝีมือ</option>
-<option value="04 ธุรกิจ"<?php if($cCareer=='04 ธุรกิจ'){ echo "selected";}?>>04 ธุรกิจ</option>
-<option value="05 ทหาร/ตำรวจ"<?php if($cCareer=='05 ทหาร/ตำรวจ'){ echo "selected";}?>>05 ทหาร/ตำรวจ</option>
-<option value="06 นักวิทยาศาตร์และนักเทคนิก"<?php if($cCareer=='06 นักวิทยาศาตร์และนักเทคนิก'){ echo "selected";}?>>06 นักวิทยาศาตร์และนักเทคนิก</option>
-<option value="07 บุคลากรด้านสาธารณสุข"<?php if($cCareer=='07 บุคลากรด้านสาธารณสุข'){ echo "selected";}?>>07 บุคลากรด้านสาธารณสุข</option>
-<option value="08 นักวิชาชีพ/นักวิชาการ"<?php if($cCareer=='08 นักวิชาชีพ/นักวิชาการ'){ echo "selected";}?>>08 นักวิชาชีพ/นักวิชาการ</option>
-<option value="09 ข้าราชการทั่วไป"<?php if($cCareer=='09 ข้าราชการทั่วไป'){ echo "selected";}?>>09 ข้าราชการทั่วไป</option>
-<option value="10 รัฐวิสาหกิจ"<?php if($cCareer=='10 รัฐวิสาหกิจ'){ echo "selected";}?>>10 รัฐวิสาหกิจ</option>
-<option value="11 ผู้เยาว์ไม่มีอาชีพ"<?php if($cCareer=='11 ผู้เยาว์ไม่มีอาชีพ'){ echo "selected";}?>>11 ผู้เยาว์ไม่มีอาชีพ</option>
-<option value="12 นักบวช/งานด้านศาสนา"<?php if($cCareer=='12 นักบวช/งานด้านศาสนา'){ echo "selected";}?>>12 นักบวช/งานด้านศาสนา</option>
-<option value="13 อื่นๆ"<?php if($cCareer=='13 อื่นๆ'){ echo "selected";}?>>13 อื่นๆ</option>
+<option value="01 เกษตรกร"<? if($cCareer=='01 เกษตรกร'){ echo "selected";}?>>01 เกษตรกร</option>
+<option value="02 รับจ้างทั่วไป"<? if($cCareer=='02 รับจ้างทั่วไป'){ echo "selected";}?>>02 รับจ้างทั่วไป</option>
+<option value="03 ช่างฝีมือ" <? if($cCareer=='03 ช่างฝีมือ'){ echo "selected";}?>>03 ช่างฝีมือ</option>
+<option value="04 ธุรกิจ"<? if($cCareer=='04 ธุรกิจ'){ echo "selected";}?>>04 ธุรกิจ</option>
+<option value="05 ทหาร/ตำรวจ"<? if($cCareer=='05 ทหาร/ตำรวจ'){ echo "selected";}?>>05 ทหาร/ตำรวจ</option>
+<option value="06 นักวิทยาศาตร์และนักเทคนิก"<? if($cCareer=='06 นักวิทยาศาตร์และนักเทคนิก'){ echo "selected";}?>>06 นักวิทยาศาตร์และนักเทคนิก</option>
+<option value="07 บุคลากรด้านสาธารณสุข"<? if($cCareer=='07 บุคลากรด้านสาธารณสุข'){ echo "selected";}?>>07 บุคลากรด้านสาธารณสุข</option>
+<option value="08 นักวิชาชีพ/นักวิชาการ"<? if($cCareer=='08 นักวิชาชีพ/นักวิชาการ'){ echo "selected";}?>>08 นักวิชาชีพ/นักวิชาการ</option>
+<option value="09 ข้าราชการทั่วไป"<? if($cCareer=='09 ข้าราชการทั่วไป'){ echo "selected";}?>>09 ข้าราชการทั่วไป</option>
+<option value="10 รัฐวิสาหกิจ"<? if($cCareer=='10 รัฐวิสาหกิจ'){ echo "selected";}?>>10 รัฐวิสาหกิจ</option>
+<option value="11 ผู้เยาว์ไม่มีอาชีพ"<? if($cCareer=='11 ผู้เยาว์ไม่มีอาชีพ'){ echo "selected";}?>>11 ผู้เยาว์ไม่มีอาชีพ</option>
+<option value="12 นักบวช/งานด้านศาสนา"<? if($cCareer=='12 นักบวช/งานด้านศาสนา'){ echo "selected";}?>>12 นักบวช/งานด้านศาสนา</option>
+<option value="13 อื่นๆ"<? if($cCareer=='13 อื่นๆ'){ echo "selected";}?>>13 อื่นๆ</option>
           </select>        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -370,18 +386,18 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td align="right" class="fonthead">ระดับการศึกษา</td>
         <td colspan="5"><select name="education" id="education">
         <option value="">----- กรุณาเลือกข้อมูล -----</option>
-        <?php 
+        <?
         $sql="select * from education order by row_id asc";
 		$query=mysql_query($sql);
 		while($rows=mysql_fetch_array($query)){
 			if($cEducation==$rows["edu_code"]){
 		?>
         	<option value="<?=$rows["edu_code"];?>" selected="selected"><?=$rows["edu_code"]."-".$rows["edu_name"];?></option>
-        <?php 
+        <?
 			}else{
 		?>
         	<option value="<?=$rows["edu_code"];?>"><?=$rows["edu_code"]."-".$rows["edu_name"];?></option>
-        <?php 
+        <?
 			}
 		}
 		?>
@@ -472,32 +488,96 @@ echo "<tr bgcolor=\"$bgcolor\" >
     <table  border="0" align="center">
   <tr>
     <td align="right" class="fonthead">ประเภท:</td>
-    <td>
+    <td><!--<select size="1" name="goup" id="goup">
+<option value="<?//=$cGoup;?>" selected><?//=$cGoup;?></option>
+<option value="G11 ก.1 นายทหารประจำการ">G11 ก.1 นายทหารประจำการ</option>
+<option value="G12 ก.2 นายสิบ  พลทหารประจำการ">G12 ก.2 นายสิบ  พลทหารประจำการ</option>
+<option value="G13 ก.3 ข้าราชการกลาโหมพลเรือน">G13 ก.3 ข้าราชการกลาโหมพลเรือน</option>
+<option value="G14 ก.4 ลูกจ้างประจำ">G14 ก.4 ลูกจ้างประจำ</option>
+<option value="G15 ก.5 ลูกจ้างชั่วคราว">G15 ก.5 ลูกจ้างชั่วคราว</option>
+<option value="G21 ข.1 สิบตรี พลทหารกองประจำการ">G21 ข.1 สิบตรี พลทหารกองประจำการ</option>
+<option value="G22 ข.2 นักเรียนทหาร">G22 ข.2 นักเรียนทหาร</option>
+<option value="G23 ข.3 อาสาสมัครทหารพราน">G23 ข.3 อาสาสมัครทหารพราน</option>
+<option value="G24 ข.4 นักโทษทหาร">G24 ข.4 นักโทษทหาร</option>
+<option value="G31 ค.1 ครอบครัวทหาร">G31 ค.1 ครอบครัวทหาร</option>
+<option value="G32 ค.2 ทหารนอกประจำการ">G32 ค.2 ทหารนอกประจำการ
+<option value="G33 ค.3 นักศึกษาวิชาทหาร(รด)">G33 ค.3 นักศึกษาวิชาทหาร(รด)</option>
+<option value="G34 ค.4 วิวัฒน์พลเมือง">G34 ค.4 วิวัฒน์พลเมือง</option>
+<option value="G35 ค.5 บัตรประกันสังคม">G35 ค.5 บัตรประกันสังคม
+<option value="G36 ค.6 บัตรทอง30บาท">G36 ค.6 บัตรทอง30บาท</option>
+<option value="G37 ค.7 ข้าราชการพลเรือน(เบิกต้นสังกัด)">G37 ค.7 ข้าราชการพลเรือน(เบิกต้นสังกัด)</option>
+<option value="G38 ค.8 พลเรือน(ไม่เบิกต้นสังกัด)">G38 ค.8 พลเรือน(ไม่เบิกต้นสังกัด)</option>
+<option value="G39 ค.9 อื่นๆไม่ระบุ">G39 ค.9 อื่นๆไม่ระบุ
+</select>-->
      <SELECT NAME="goup" id="goup">
      <option value="<?=$cGoup;?>" selected><?=$cGoup;?></option>
     <option value=""><-เลือก-></option>
-      <?php
-		  $sqlg="SELECT * FROM `goup` order by row_id";
+      <? 
+		  $sqlg="SELECT * 
+						FROM `grouptype` 
+						WHERE `status` = 'y'
+						ORDER BY type ASC,`row_id` ASC";
 		  $queryg=mysql_query($sqlg)or die (mysql_error());
 		  while($arrg=mysql_fetch_array($queryg)){
 
 		 if($arrg['name']==$cGoup){
  		  ?>
       <option value="<?=$arrg['name']?>" selected="selected"> <?=$arrg['name']?></option>
-      <?php }else{ ?>
+      <? }else{ ?>
 
       <option value="<?=$arrg['name']?>"><?=$arrg['name']?></option>
-      <?php
+      <? 
 	  }
 		  }
 	  ?>
     </select></td>
     <td align="right" class="fonthead">สังกัด:</td>
-    <td>
+    <td><!--<select size="1" name="camp" id="camp">
+      <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
+      <option value="M01 พลเรือน">พลเรือน</option>
+      <option value="M02 ร.17 พัน2">ร.17 พัน2</option>
+      <option value="M03 มณฑลทหารบกที่32">มณฑลทหารบกที่32</option>
+      <option value="M04 ร.พ.ค่ายสุรศักดิ์มนตรี">ร.พ.ค่ายสุรศักดิ์มนตรี</option>
+      <option value="M05 ช.พัน4">ช.พัน4</option>
+      <option value="M06 ร้อยฝึกรบพิเศษประตูผา">ร้อยฝึกรบพิเศษประตูผา</option>
+      <option value="M0301 บก.มทบ.32">บก.มทบ.32</option>
+      <option value="M0302 กกพ.มทบ.32">กกพ.มทบ.32</option>
+      <option value="M0303 กขว.,ฝผท.มทบ.32">กขว.,ฝผท.มทบ.32</option>
+      <option value="M0304 กยก.มทบ.32">กยก.มทบ.32</option>
+      <option value="M0305 กกบ.มทบ.32">กกบ.มทบ.32</option>
+      <option value="M0306 กกร.มทบ.32">กกร.มทบ.32</option>
+      <option value="M0307 ฝคง.มทบ.32">ฝคง.มทบ.32</option>
+      <option value="M0308 ฝกง.มทบ.32">ฝกง.มทบ.32</option>
+      <option value="M0309 ฝสก.มทบ.32">ฝสก.มทบ.32</option>
+      <option value="M0310 ฝปบฝ.มทบ.32">ฝปบฝ.มทบ.32</option>
+      <option value="M0311 ผพธ.มทบ.32">ผพธ.มทบ.32</option>
+      <option value="M0312 อก.ศาล มทบ.32">อก.ศาล มทบ.32</option>
+      <option value="M0313 ฝสวส.มทบ.32">ฝสวส.มทบ.32</option>
+      <option value="M0314 ฝธน.มทบ.32">ฝธน.มทบ.32</option>
+      <option value="M0315 อศจ.มทบ.32">อศจ.มทบ.32</option>
+      <option value="M0316 ร้อย.มทบ.32">ร้อย.มทบ.32</option>
+      <option value="M0317 สขส.มทบ.32">สขส.มทบ.32</option>
+      <option value="M0313 รจ.มทบ.32">รจ.มทบ.32</option>
+      <option value="M0318 ผยย.มทบ.32">ผยย.มทบ.32</option>
+      <option value="M0319 สส.มทบ.32">สส.มทบ.32</option>
+      <option value="M0320 ฝสห.มทบ.32">ฝสห.มทบ.32</option>
+      <option value="M0321 ร้อย.สห.มทบ.32">ร้อย.สห.มทบ.32</option>
+      <option value="M0322 มว.ดย.มทบ.32">มว.ดย.มทบ.32</option>
+      <option value="M0323 ผสพ.มทบ.32">ผสพ.มทบ.32</option>
+      <option value="M0324 สรรพกำลัง มทบ.32">สรรพกำลัง มทบ.32</option>
+      <option value="M0325 ศฝ.นศท.มทบ.32">ศฝ.นศท.มทบ.32</option>
+      <option value="M0326 ศาล.มทบ.32">ศาล.มทบ.32</option>
+      <option value="M0327 ศูนย์โทรศัพท์ มทบ.32">ศูนย์โทรศัพท์ มทบ.32</option>
+      <option value="M0328 ผปบ.มทบ.32">ผปบ.มทบ.32</option>
+      <option value="M08 สัสดีจังหวัดลำปาง">สัสดีจังหวัดลำปาง</option>
+      <option value="M09 มว.คลัง สป.๓ฯ">มว.คลัง สป.๓ฯ</option>
+      <option value="M10 กรม ทพ.33">กรม ทพ.33</option>
+      <option value="M07 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>
+    </select>-->
     <SELECT NAME="camp" id="camp">
         <option value="<?=$cCamp;?>" selected><?=$cCamp;?></option>
       <option value=""><-เลือก-></option>
-      <?php
+      <? 
 		  $sqlcamp="SELECT * FROM `camp` order by row_id";
 		  $querycamp=mysql_query($sqlcamp)or die (mysql_error());
 		  while($arrcamp=mysql_fetch_array($querycamp)){
@@ -505,9 +585,9 @@ echo "<tr bgcolor=\"$bgcolor\" >
 			  if($cCamp==$arrcamp['name']){
 		  ?>
       <option value="<?=$arrcamp['name']?>" selected> <?=$arrcamp['name']?></option>
-      <?php }else{ ?>
+      <? }else{ ?>
       <option value="<?=$arrcamp['name']?>"><?=$arrcamp['name']?></option>
-      <?php 
+      <? 
 	  }
 		  }
 	  ?>
@@ -595,9 +675,9 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
     </SELECT></td>
     <td class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
     <td><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">
-<input name="rdo1" type="radio"  id="rdo1" value="30 บาท" <?php if($hcode1=="30 บาท"){ echo "checked"; }?>> 
+<input name="rdo1" type="radio"  id="rdo1" value="30 บาท" <? if($hcode1=="30 บาท"){ echo "checked"; }?>> 
 30 บาท 
-<input name="rdo1" type="radio" id="rdo2" value="ปส." <?php if($hcode1=="ปส."){ echo "checked"; }?>> 
+<input name="rdo1" type="radio" id="rdo2" value="ปส." <? if($hcode1=="ปส."){ echo "checked"; }?>> 
 ประกันสังคม  
       รพ.ต้นสังกัด
 <INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    
@@ -627,7 +707,7 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
 
 </fieldset>
 <BR>
-<?php 
+<?
 print "  <font face='Angsana New' size='4' color =red>&nbsp;&nbsp;&nbsp; **มาครั้งสุดท้าย&nbsp;&nbsp;&nbsp; $cD1-$cM1-$cY1&nbsp;$cT1 **</font>";
 ?>
 <p align="center"><input type='submit' value='แก้ไข/ลงทะเบียน' name='B1'>&nbsp;&nbsp;
