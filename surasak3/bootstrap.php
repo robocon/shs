@@ -442,6 +442,10 @@ class Mysql
 		file_put_contents('logs/mysql-errors.log', $data, FILE_APPEND);
 		return $id;
 	}
+
+	public function close(){
+		$this->db = null;
+	}
 	
 }
 

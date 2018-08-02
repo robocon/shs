@@ -361,21 +361,31 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td colspan="3"> 
           <select size="1" name="career" id="career">
             <option value=""><-เลือก-></option>
-             <option value='<?=$cCareer;?>' selected><?=$cCareer;?></option>";
-<option value="01 เกษตรกร"<? if($cCareer=='01 เกษตรกร'){ echo "selected";}?>>01 เกษตรกร</option>
-<option value="02 รับจ้างทั่วไป"<? if($cCareer=='02 รับจ้างทั่วไป'){ echo "selected";}?>>02 รับจ้างทั่วไป</option>
-<option value="03 ช่างฝีมือ" <? if($cCareer=='03 ช่างฝีมือ'){ echo "selected";}?>>03 ช่างฝีมือ</option>
-<option value="04 ธุรกิจ"<? if($cCareer=='04 ธุรกิจ'){ echo "selected";}?>>04 ธุรกิจ</option>
-<option value="05 ทหาร/ตำรวจ"<? if($cCareer=='05 ทหาร/ตำรวจ'){ echo "selected";}?>>05 ทหาร/ตำรวจ</option>
-<option value="06 นักวิทยาศาตร์และนักเทคนิก"<? if($cCareer=='06 นักวิทยาศาตร์และนักเทคนิก'){ echo "selected";}?>>06 นักวิทยาศาตร์และนักเทคนิก</option>
-<option value="07 บุคลากรด้านสาธารณสุข"<? if($cCareer=='07 บุคลากรด้านสาธารณสุข'){ echo "selected";}?>>07 บุคลากรด้านสาธารณสุข</option>
-<option value="08 นักวิชาชีพ/นักวิชาการ"<? if($cCareer=='08 นักวิชาชีพ/นักวิชาการ'){ echo "selected";}?>>08 นักวิชาชีพ/นักวิชาการ</option>
-<option value="09 ข้าราชการทั่วไป"<? if($cCareer=='09 ข้าราชการทั่วไป'){ echo "selected";}?>>09 ข้าราชการทั่วไป</option>
-<option value="10 รัฐวิสาหกิจ"<? if($cCareer=='10 รัฐวิสาหกิจ'){ echo "selected";}?>>10 รัฐวิสาหกิจ</option>
-<option value="11 ผู้เยาว์ไม่มีอาชีพ"<? if($cCareer=='11 ผู้เยาว์ไม่มีอาชีพ'){ echo "selected";}?>>11 ผู้เยาว์ไม่มีอาชีพ</option>
-<option value="12 นักบวช/งานด้านศาสนา"<? if($cCareer=='12 นักบวช/งานด้านศาสนา'){ echo "selected";}?>>12 นักบวช/งานด้านศาสนา</option>
-<option value="13 อื่นๆ"<? if($cCareer=='13 อื่นๆ'){ echo "selected";}?>>13 อื่นๆ</option>
-          </select>        </td>
+            <?php 
+            $cCareer_lists = array(
+              '01 เกษตรกร', '02 รับจ้างทั่วไป', '03 ช่างฝีมือ', '04 ธุรกิจ', '05 ทหาร/ตำรวจ', 
+              '06 นักวิทยาศาตร์และนักเทคนิก', '07 บุคลากรด้านสาธารณสุข', '08 นักวิชาชีพ/นักวิชาการ', '09 ข้าราชการทั่วไป', '10 รัฐวิสาหกิจ', 
+              '11 ผู้เยาว์ไม่มีอาชีพ', '12 นักบวช/งานด้านศาสนา', '13 อื่นๆ' 
+            );
+
+            // ถ้าไม่มีในรายการด้านบนจะแสดงเป็นตัวแรกสุด
+            // แสดงว่าเป็นข้อมูลเก่า
+            if( !in_array($cCareer, $cCareer_lists) ){
+              ?>
+              <option value="<?=$cCareer;?>" selected="selected" ><?=$cCareer;?></option>
+              <option value="">---------</option>
+              <?php
+            }
+
+            foreach ($cCareer_lists as $key => $career_item) {
+              $career_selected = ( $career_item == $cCareer ) ? 'selected="selected"' : '' ;
+              ?>
+              <option value="<?=$career_item;?>" <?=$career_selected;?> ><?=$career_item;?></option>
+              <?php
+            }
+            ?>
+            </select>
+          </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
