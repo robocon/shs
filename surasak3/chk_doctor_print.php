@@ -614,7 +614,7 @@ $pdf->Cell(26, 6, $cbc_lists['baso']['normalrange'], 1, 1, 'C');
 $pdf->SetXY(13, 199);
 $pdf->Cell(46, 6, 'จำนวนเกล็ดเลือด', 0, 1);
 $pdf->SetXY(39, 199);
-$pdf->Cell(20, 6, 'Plateiets count', 0, 1);
+$pdf->Cell(20, 6, 'Platelets count', 0, 1);
 $pdf->Line(39, 205, 59, 205);
 $pdf->SetXY(59, 199);
 

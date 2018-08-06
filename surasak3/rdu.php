@@ -10,7 +10,7 @@ $configs = array(
     'port' => '3306',
     'dbname' => 'smdb',
     'user' => 'dottwo',
-    'pass' => '12345678'
+    'pass' => ''
 );
 
 $db = Mysql::load($configs);

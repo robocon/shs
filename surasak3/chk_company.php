@@ -148,7 +148,8 @@ if( $action == false ){
             $db->select($sql);
             $chk_row = $db->get_rows();
 
-            $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
+            // $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
+            $msg = "บันทึกข้อมูลเรียบร้อย";
 
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 

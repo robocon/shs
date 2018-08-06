@@ -597,6 +597,13 @@ $sumprice=$chkrows["pricedental"]+$chkrows["priceother"];
 	}	
 }
 ?>
-<?
+<?php 
+
+$sql = "SELECT `thidate`,`vn` FROM `opday` WHERE `hn` = '$hnid' AND `thidate` < '$dateid' ORDER BY `thidate` DESC LIMIT 1";
+$q = mysql_query($sql);
+$item_opday = mysql_fetch_assoc($q);
+echo '<br><br>';
+echo '<b style="color: red;">ผู้ป่วยมาครั้งสุดท้ายวันที่ '.$item_opday['thidate'].' ด้วย VN '.$item_opday['vn'].'</b>';
+
     include("unconnect.inc");
 ?>

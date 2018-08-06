@@ -94,10 +94,31 @@ if( empty($action) ){
             list($pid, $exam_no, $hn, $idcard, $fname, $lname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
 
 
-            if( !empty($pid) ){
+            if( !empty($pid) ){ 
+
+                $date_birth = trim($date_birth);
+
+                // รูปแบบ dd/mm/yyyy 
+                $match = preg_match('/\d+\/\d+\/\d+/', $date_birth, $matchs);
+                if ( $match > 0 ) {
+                    list($dd, $mm, $yy) = explode('/', $date_birth);
+                    $date_birth = "$yy-$mm-$dd 00:00:00";
+                }
+                
+                // เปลี่ยนรูปแบบ พ.ศ. เป็น ค.ศ. เช่น 18 มกราคม 2561 เป็น 2018-01-11 
+                $match_thdate = preg_match('/(\d+)\s([ก-๙].+)\s(\d+)/', $date_birth, $matchs);
+                if ( $match_thdate > 0 ) {
+
+                    $dd = $matchs['1'];
+                    $mm = $matchs['2'];
+                    $yy = $matchs['3'];
+                    $month_number = array_keys($def_fullm_th, $mm);
+                    $date_birth = ($yy - 543)."-".$month_number['0']."-$dd 00:00:00";
+                    
+                }
 
                 if( !empty($idcard) ){
-                    $idcard = str_replace('-', '', $idcard);
+                    $idcard = str_replace(array('-', ' '), '', $idcard);
                 }
 
                 if( empty($idcard) ){
