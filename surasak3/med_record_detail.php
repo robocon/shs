@@ -74,7 +74,7 @@ label{
 </style>
 <div>
     <fieldset>
-        <legend>ข้อมูลเบื้องต้น</legend>
+        <legend>ข้อมูลผู้ปวยเบื้องต้น</legend>
             <b>ชื่อ-สกุล ผู้ป่วย: </b><?=$user['ptname'];?> <b>อายุ: </b><?=$user['age'];?><br>
             <b>HN: </b><?=$user['hn'];?> <b>AN: </b><?=$user['an'];?> <b>WARD: </b><?=$ward_name;?> <b>ROOM/BED: </b><?=$user['bed'];?><br>
             <b>Dx: </b><?=$user['diagnos'];?><br>
@@ -93,12 +93,16 @@ label{
     </fieldset>
 </div>
 <div>
-    <form action="med_record_print.php" method="post">
+    <?php
+    $def_date = date('Y-m-d');
+    $date_set = input_post('date_set', $def_date);
+    ?>
+    <form action="med_record_print_pdf.php" method="post">
         <div style="padding: 5px 0;">
             <fieldset>
                 <legend>ข้อมูลเบื้องต้น</legend>
                 <div>
-                    <b>วันที่</b> <input type="text" name="date_set" id="date_set">
+                    <b>วันที่</b> <input type="text" name="date_set" id="date_set" value="<?=$date_set;?>" autocomplete="off">
                 </div>
                 <div>
                     <b>ประเภท</b> 
@@ -145,7 +149,7 @@ label{
                 ?>
                 <tr>
                     <td align="center">
-                        <input type="checkbox" name="drug_lists[]" id="<?=$dCode;?>" value="<?=$dCode;?>">
+                        <input type="checkbox" class="drugName" name="drug_lists[]" id="<?=$dCode;?>" value="<?=$dCode;?>">
                     </td>
                     
                     <td>
@@ -165,7 +169,7 @@ label{
             </table>
         </div>
         <div style="margin-top: 5px;">
-            <button type="submit">พิมพ์รายการที่เลือก</button>
+            <button type="submit" class="btnSubmit">พิมพ์รายการที่เลือก</button>
             <input type="hidden" name="an" value="<?=urlencode($cAn);?>">
         </div>
     </form>
@@ -175,7 +179,10 @@ label{
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 <style>
 /* Custom */
-table.calendar td, table.calendar th{
+table.calendar td, 
+table.calendar th,
+table.calendar select,
+table.calendar input[type=button]{
     font-size: 0.8em;
 }
 </style>
@@ -187,4 +194,22 @@ table.calendar td, table.calendar th{
         
 	};
 </script>
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script>
+jQuery.noConflict();
+	(function( $ ) {
+	$(function() {
+		
+        $(document).on('click', '.btnSubmit', function(){
 
+            var test = $('.drugName').is(':checked');
+            if( test === false ){
+                alert('กรุณาเลือกรายการยาที่ต้องการพิมพ์');
+                return false;
+            }
+            
+        });
+		
+	});
+})(jQuery);
+</script>

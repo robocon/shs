@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <style>
 body {
 	background-color:#CCE9FD;
@@ -41,7 +38,7 @@ else if (document.layers||document.getElementById) {
 </script>
 
 <?php
-    
+    session_start();
     session_unregister("cHn");  
     session_unregister("cPtname");
     session_unregister("cPtright");
@@ -642,7 +639,7 @@ return $pAge;
 						$query = "SELECT * 
 						FROM `grouptype` 
 						WHERE `status` = 'y'
-						ORDER BY `row_id` ASC";
+						ORDER BY type ASC,`row_id` ASC";
 						$result = mysql_query($query);
 						while($tbrows=mysql_fetch_assoc($result)){
 						$code = substr($cGoup,0,3);

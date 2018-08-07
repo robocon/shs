@@ -685,9 +685,9 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
     </SELECT></td>
     <td class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
     <td><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">
-<input name="rdo1" type="radio"  id="rdo1" value="30 บาท" <? if($hcode1=="30 บาท"){ echo "checked"; }?>> 
+<input name="rdo1" type="checkbox"  id="rdo1" value="30 บาท" <? if($cPtright=="R09 ประกันสุขภาพถ้วนหน้า"){ echo "checked"; }?>> 
 30 บาท 
-<input name="rdo1" type="radio" id="rdo2" value="ปส." <? if($hcode1=="ปส."){ echo "checked"; }?>> 
+<input name="rdo1" type="checkbox" id="rdo2" value="ปส." <? if($cPtright=="R07 ประกันสังคม"){ echo "checked"; }?>> 
 ประกันสังคม  
       รพ.ต้นสังกัด
 <INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    

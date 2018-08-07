@@ -3,6 +3,86 @@
 include 'bootstrap.php';
 include 'fpdf_thai/shspdf.php';
 
+class MedSHS extends SHSPdf{
+
+    function __construct($orientation='P', $unit='mm', $size='A4')
+	{
+		parent::__construct($orientation, $unit, $size);
+    }
+    
+    function header(){
+
+        global $user,$get_header_y, $date_set, $def_month_th; 
+
+        $this->SetFont('THSarabun','',20);
+        $this->SetXY(20, 12);
+        $this->Cell(60, 8, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 1, 1, 'C');
+
+        $this->SetFont('THSarabun','',14);
+        $this->SetXY(20, 20);
+        $this->Cell(60, 8, 'แบบบันทึกการให้ยา', 1, 1, 'C');
+
+        $this->SetFont('THSarabun','UB',18);
+        $this->SetXY(20, 28);
+        $this->Cell(60, 8, $_POST['type'], 1, 1, 'C');
+
+        // ข้อมูลผู้ป่วย
+        // 110
+        $this->SetFont('THSarabun','',14);
+        $this->SetXY(80, 12);
+        $this->Cell(110, 6, 'ชื่อ/สกุล ผู้ป่วย: '.$user['ptname'].' อายุ: '.$user['age'], 1, 1);
+
+        $this->SetXY(80, 18);
+        $this->Cell(110, 6, 'HN: '.$user['hn'].' AN: '.$user['an'].' WARD: '.$user['ward_name'], 1, 1);
+
+        $this->SetXY(80, 24);
+        $this->Cell(110, 6, 'ROOM/BED: '.$user['bed'].' Dx: '.$user['diagnos'], 1, 1);
+
+        $this->SetXY(80, 30);
+        $this->Cell(110, 6, 'สิทธ์: '.$user['ptright'].' แพทย์: '.$user['doctor'], 1, 1);
+
+        $this->SetXY(80, 36);
+        $this->MultiCell(110, 6, $user['drug_reaction']);
+        
+        // ความสูงสุดท้ายของ MultiCel
+        $header_y = $this->GetY();
+
+        // เว้นเพิ่มไป 1 ช่อง
+        $this->SetXY(80, $header_y);
+        $this->Cell(110, 6, '', 1, 1);
+
+        $this->SetFont('THSarabun','B',14);
+        $this->SetXY(20, ( $header_y + 6 ));
+        $this->Cell(52, 12, 'ชื่อยา ขนาด วิธีใช้', 1, 1, 'C');
+        
+
+        // 
+        $current = strtotime($date_set);
+        $cell_width = 24;
+        $cell_x = 72;
+        for ($i=1; $i <= 5; $i++) { 
+
+            $year = date('Y', $current) + 543;
+            $month = date('m', $current);
+            $date = date('d', $current);
+
+            $this->SetXY($cell_x, ( $header_y + 6 ));
+            $this->Cell($cell_width, 6, $date.' '.$def_month_th[$month].' '.$year, 1, 1, 'C');
+
+            $this->SetXY($cell_x, ( $header_y + 12 ));
+            $this->Cell($cell_width, 6, 'เวลา/ผู้ให้', 1, 1, 'C');
+
+            $cell_x += $cell_width;
+            $current = strtotime('+1 day', $current);
+        }
+
+        $this->SetFont('THSarabun','',14);
+        $get_header_y = $this->GetY();
+
+    }
+}
+
+
 $db = Mysql::load();
 
 $cAn = urldecode(input_post('an'));
@@ -28,7 +108,14 @@ $react_txt = '';
 foreach ($drug_react as $key => $dreact) { 
 
     $advreact = ( !empty($dreact['advreact']) ) ? ' ( อาการ: '.$dreact['advreact'].' )' : '' ;
-    $react_txt .= $i.'.) <b>'.$dreact['drugcode'].'</b> '.$dreact['genname'].' '.$dreact['tradname'].' '.$advreact.'<br>';
+
+    $react_txt = $i.'.)';
+
+    if( !empty($dreact['drugcode']) ){
+        $react_txt .= $dreact['drugcode'];
+    }
+
+    $react_txt .= $dreact['genname'].' '.$dreact['tradname'].' '.$advreact."\n\r";
     $i++;
 
 }
@@ -46,42 +133,109 @@ if( $wardExTest > 0 ){
     $ward_name = $ward_name.' '.$exName;
 }
 
+// เซ็ตข้อมูลสำหรับ HEADER ของตาราง
+$date_set = $_POST['date_set'];
+$user['drug_reaction'] = $react_txt;
+$user['ward_name'] = $ward_name;
+// เซ็ตข้อมูลสำหรับ HEADER ของตาราง
 
-// A4 ยาวทั้งหมด 210mm
-$pdf = new SHSPdf('P', 'mm', 'A4');
 
+// A4 ยาวทั้งหมด 210mm สูง 297mm
+$pdf = new MedSHS('P', 'mm', 'A4');
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
-$pdf->SetAutoPageBreak(false, 2);
 $pdf->SetMargins(0,0); // left, top, right
 $pdf->AddPage();
 $pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
+// ค่า y จากท้ายสุดของ header
+$start_line = $get_header_y;
 
-//////////////////////////
-// HEADER
-//////////////////////////
+$line_height = 6;
+$ii = 1;
+$test_line = 0;
 
-$pdf->SetFont('THSarabun','',20);
-$pdf->SetXY(20, 20);
-$pdf->Cell(60, 6, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 1, 1, 'C');
+// ข้อมูลของยา
+for ($i=1; $i <= 40; $i++) { 
 
-$pdf->SetFont('THSarabun','',14);
-$pdf->SetXY(20, 26);
-$pdf->Cell(60, 6, 'แบบบันทึกการให้ยา', 1, 1, 'C');
+    $test_line = $start_line + ( $line_height * $ii );
 
-$pdf->SetFont('THSarabun','',18);
-$pdf->SetXY(20, 32);
-$pdf->Cell(60, 6, $_POST['type'], 1, 1, 'C');
+    // $pdf->SetX(20);
+    // $pdf->Cell(110, 6, "Line: $ii Height: $line_height Start: $start_line Test: $test_line", 1, 1, 'C');
 
-$pdf->SetXY(80, 20);
-$pdf->Cell(110, 6, 'ช่องว่าง', 1, 1, 'C');
+    $ii++;
 
-//////////////////////////
-// HEADER
-//////////////////////////
+}
 
 
 
+foreach ($drug_lists as $drug_code) {
+    
+    $sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`onoff`,`dateoff`,`row_id` 
+    FROM `dgprofile` 
+    WHERE `an` = '$cAn' 
+    AND `drugcode` = '$drug_code' ";
+    $db->select($sql);
+    $d = $db->get_item();
+
+    $def_drug_h = $drug_height[$drug_code]['0'];
+    $tr_height = $def_drug_h + 1;
+
+    $slcode = $d['slcode'];
+
+    $sql = "SELECT * 
+    FROM `drugslip` 
+    WHERE `slcode` = '$slcode' ";
+    $db->select($sql);
+    $dSlip = $db->get_item();
+
+    $detail_txt = $dSlip['detail1']."\n";
+    $detail_txt .= $dSlip['detail2']."\n";
+    $detail_txt .= $dSlip['detail3']."\n";
+    $detail_txt .= $dSlip['detail4'];
+
+    // เซ็ตให้ทุกบรรทัดห่างจาก X 20 หน่วย
+    $pdf->SetX(20);
+
+    $drug_y = $pdf->GetY();
+
+    // x y w h
+    $pdf->Rect(20, $drug_y, 52, ($tr_height * 6));
+
+    $pdf->MultiCell(52, 6, $d['tradname'].'('.$d['slcode'].')'."\n\r".$detail_txt, 1);
+
+
+    ////// 
+    // ในยาแต่ละตัวสูงกี่บรรทัด 
+
+    
+
+    $start_tr = 72;
+    $test_tr = $drug_y;
+    for( $tr = 1; $tr <= $tr_height; $tr++ ){
+    // foreach ($tr_height as $key => $tr) {
+        # code...
+        
+        // dump($tr);
+
+        $pdf->Rect($start_tr, $test_tr, 24, 6);
+        // 
+
+        $test_tr += 6;
+
+        // เหลือ repeat อีก 4 วัน
+
+    }
+
+    
+    $drug_y += ($tr_height * 6);
+    $pdf->SetY($drug_y);
+
+    
+
+    
+}
+
+// exit;
 
 // $pdf->AutoPrint(true);
 $pdf->Output();
