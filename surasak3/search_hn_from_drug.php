@@ -25,6 +25,7 @@ include 'templates/classic/nav.php';
 							<option value="2558">2558</option>
 							<option value="2559" selected="selected">2559</option>
 							<option value="2560">2560</option>
+							<option value="2561">2561</option>
 						</select>
 					</div>
 				</div>

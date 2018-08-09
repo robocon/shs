@@ -16,58 +16,61 @@ class MedSHS extends SHSPdf{
 
         $this->SetFont('THSarabun','',20);
         $this->SetXY(20, 12);
-        $this->Cell(60, 8, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 1, 1, 'C');
+        $this->Cell(60, 8, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 0, 1, 'C');
 
         $this->SetFont('THSarabun','',14);
         $this->SetXY(20, 20);
-        $this->Cell(60, 8, 'แบบบันทึกการให้ยา', 1, 1, 'C');
+        $this->Cell(60, 8, 'แบบบันทึกการให้ยา', 0, 1, 'C');
 
         $this->SetFont('THSarabun','UB',18);
         $this->SetXY(20, 28);
-        $this->Cell(60, 8, $_POST['type'], 1, 1, 'C');
+        $this->Cell(60, 8, $_POST['type'], 0, 1, 'C');
 
         // ข้อมูลผู้ป่วย
         // 110
         $this->SetFont('THSarabun','',14);
         $this->SetXY(80, 12);
-        $this->Cell(110, 6, 'ชื่อ/สกุล ผู้ป่วย: '.$user['ptname'].' อายุ: '.$user['age'], 1, 1);
+        $this->Cell(110, 6, 'ชื่อ/สกุล ผู้ป่วย: '.$user['ptname'].' อายุ: '.$user['age'], 0, 1);
 
         $this->SetXY(80, 18);
-        $this->Cell(110, 6, 'HN: '.$user['hn'].' AN: '.$user['an'].' WARD: '.$user['ward_name'], 1, 1);
+        $this->Cell(110, 6, 'HN: '.$user['hn'].' AN: '.$user['an'].' WARD: '.$user['ward_name'], 0, 1);
 
         $this->SetXY(80, 24);
-        $this->Cell(110, 6, 'ROOM/BED: '.$user['bed'].' Dx: '.$user['diagnos'], 1, 1);
+        $this->Cell(110, 6, 'ROOM/BED: '.$user['bed'].' Dx: '.$user['diagnos'], 0, 1);
 
         $this->SetXY(80, 30);
-        $this->Cell(110, 6, 'สิทธ์: '.$user['ptright'].' แพทย์: '.$user['doctor'], 1, 1);
+        $this->Cell(110, 6, 'สิทธ์: '.$user['ptright'].' แพทย์: '.$user['doctor'], 0, 1);
 
         $this->SetXY(80, 36);
-        $this->MultiCell(110, 6, $user['drug_reaction']);
+        $this->MultiCell(130, 6, $user['drug_reaction']);
         
         // ความสูงสุดท้ายของ MultiCel
         $header_y = $this->GetY();
 
         // เว้นเพิ่มไป 1 ช่อง
         $this->SetXY(80, $header_y);
-        $this->Cell(110, 6, '', 1, 1);
+        $this->Cell(110, 6, '', 0, 1);
 
         $this->SetFont('THSarabun','B',14);
         $this->SetXY(20, ( $header_y + 6 ));
         $this->Cell(52, 12, 'ชื่อยา ขนาด วิธีใช้', 1, 1, 'C');
         
+        $this->SetXY(72, ( $header_y + 6 ));
+        $this->Cell(15, 12, 'เวลา', 1, 1, 'C');
 
         // 
         $current = strtotime($date_set);
-        $cell_width = 24;
-        $cell_x = 72;
-        for ($i=1; $i <= 5; $i++) { 
+        $cell_width = 18;
+        $cell_x = 87;
+        for ($i=1; $i <= 6; $i++) { 
 
             $year = date('Y', $current) + 543;
+            $short_y = substr($year,2);
             $month = date('m', $current);
             $date = date('d', $current);
 
             $this->SetXY($cell_x, ( $header_y + 6 ));
-            $this->Cell($cell_width, 6, $date.' '.$def_month_th[$month].' '.$year, 1, 1, 'C');
+            $this->Cell($cell_width, 6, $date.'/'.$month.'/'.$short_y, 1, 1, 'C');
 
             $this->SetXY($cell_x, ( $header_y + 12 ));
             $this->Cell($cell_width, 6, 'เวลา/ผู้ให้', 1, 1, 'C');
@@ -94,11 +97,13 @@ $ward_lists = array(
 $drug_lists = $_POST['drug_lists'];
 $drug_height = $_POST['drug_height'];
 
+// ข้อมูลจากเตียงผู้ป่วย
 $sql = "SELECT * FROM `bed` WHERE `an` = '$cAn' ";
 $db->select($sql);
 $user = $db->get_item();
 $hn = $user['hn'];
 
+// แพ้ยา
 $sql = "SELECT * FROM `drugreact` WHERE `hn` = '$hn' ";
 $db->select($sql);
 $drug_react = $db->get_items();
@@ -109,7 +114,7 @@ foreach ($drug_react as $key => $dreact) {
 
     $advreact = ( !empty($dreact['advreact']) ) ? ' ( อาการ: '.$dreact['advreact'].' )' : '' ;
 
-    $react_txt = $i.'.)';
+    $react_txt .= $i.'.)';
 
     if( !empty($dreact['drugcode']) ){
         $react_txt .= $dreact['drugcode'];
@@ -147,25 +152,6 @@ $pdf->SetMargins(0,0); // left, top, right
 $pdf->AddPage();
 $pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
-// ค่า y จากท้ายสุดของ header
-$start_line = $get_header_y;
-
-$line_height = 6;
-$ii = 1;
-$test_line = 0;
-
-// ข้อมูลของยา
-for ($i=1; $i <= 40; $i++) { 
-
-    $test_line = $start_line + ( $line_height * $ii );
-
-    // $pdf->SetX(20);
-    // $pdf->Cell(110, 6, "Line: $ii Height: $line_height Start: $start_line Test: $test_line", 1, 1, 'C');
-
-    $ii++;
-
-}
-
 
 
 foreach ($drug_lists as $drug_code) {
@@ -177,6 +163,7 @@ foreach ($drug_lists as $drug_code) {
     $db->select($sql);
     $d = $db->get_item();
 
+    // ความสูงเพื่อคีย์ เวลา/ผู้ให้ 
     $def_drug_h = $drug_height[$drug_code]['0'];
     $tr_height = $def_drug_h + 1;
 
@@ -188,54 +175,104 @@ foreach ($drug_lists as $drug_code) {
     $db->select($sql);
     $dSlip = $db->get_item();
 
-    $detail_txt = $dSlip['detail1']."\n";
-    $detail_txt .= $dSlip['detail2']."\n";
-    $detail_txt .= $dSlip['detail3']."\n";
+    $detail_txt = $dSlip['detail1']." ";
+    $detail_txt .= $dSlip['detail2']." ";
+    $detail_txt .= $dSlip['detail3']." ";
     $detail_txt .= $dSlip['detail4'];
 
     // เซ็ตให้ทุกบรรทัดห่างจาก X 20 หน่วย
-    $pdf->SetX(20);
-
     $drug_y = $pdf->GetY();
 
+    if( $drug_y > 240 ){
+        $pdf->AddPage();
+        $drug_y = $get_header_y;
+    }
+
+    $pdf->SetX(20);
+    
+    // หาความสูงของตัว Multicel ที่เป็นข้อความ
+    $message = $d['tradname'].'('.$d['slcode'].')'."\n\r".$detail_txt."$drug_y   $tr_height";
+    $muticell_h = $pdf->GetMultiCellHeight(52, 6, $message);
+
+    // หาร 6 เพราะ1บรรทัดสูง6หน่วย
+    $muticell_hCal = $muticell_h / 6; 
+    // ถ้าข้อความสูงกว่าค่าที่ user input เข้ามา
+    if( $muticell_hCal > $tr_height ){
+        $tr_height = $muticell_hCal + 1;
+    }
+
     // x y w h
+    // เป็นกรอบข้อความยา
     $pdf->Rect(20, $drug_y, 52, ($tr_height * 6));
-
-    $pdf->MultiCell(52, 6, $d['tradname'].'('.$d['slcode'].')'."\n\r".$detail_txt, 1);
-
+    $pdf->MultiCell(52, 6, $d['tradname'].'('.$d['slcode'].')'."\n\r".$detail_txt, 0);
 
     ////// 
     // ในยาแต่ละตัวสูงกี่บรรทัด 
+    $td_h = 72;
+    $tr_h = $drug_y;
 
-    
-
-    $start_tr = 72;
-    $test_tr = $drug_y;
-    for( $tr = 1; $tr <= $tr_height; $tr++ ){
-    // foreach ($tr_height as $key => $tr) {
-        # code...
+    // วนตามความสูงที่ user คีย์เข้ามา
+    for( $tr_count = 1; $tr_count <= $tr_height; $tr_count++ ){
         
-        // dump($tr);
+        // ช่องลงเวลา
+        $pdf->Rect($td_h, $tr_h, 15, 6);
 
-        $pdf->Rect($start_tr, $test_tr, 24, 6);
-        // 
+        $td2_h = 87;
+        // เหลือ repeat อีก 5 วัน
+        for ($td_count=0; $td_count <= 5; $td_count++) { 
+            $pdf->Rect($td2_h, $tr_h, 18, 6);
+            $td2_h += 18;
+        }
 
-        $test_tr += 6;
-
-        // เหลือ repeat อีก 4 วัน
-
+        $tr_h += 6;
     }
 
-    
-    $drug_y += ($tr_height * 6);
-    $pdf->SetY($drug_y);
+    $pdf->SetY(($drug_y + ($tr_height * 6)));
 
-    
-
-    
 }
 
-// exit;
+
+// ถ้าท้ายตารางเกินขอบด้านล่าง
+$footer_h = $pdf->GetY();
+if( $footer_h > 240 ){
+    $pdf->AddPage();
+    $footer_h = $get_header_y;
+}
+
+$pdf->SetXY(20, $footer_h);
+$pdf->Cell(52, 12, 'Recheck order', 1, 1, 'C');
+$pdf->SetXY(72, $footer_h);
+$pdf->Cell(123, 12, 'ผู้ตรวจสอบ', 1, 1, 'C');
+
+$pdf->SetXY(20, ($footer_h + 12));
+$pdf->Cell(52, 6, 'เวรเช้า', 1, 1, 'C');
+$pdf->Rect(72, ($footer_h + 12), 15, 6);
+$pdf->Rect(87, ($footer_h + 12), 18, 6);
+$pdf->Rect(105, ($footer_h + 12), 18, 6);
+$pdf->Rect(123, ($footer_h + 12), 18, 6);
+$pdf->Rect(141, ($footer_h + 12), 18, 6);
+$pdf->Rect(159, ($footer_h + 12), 18, 6);
+$pdf->Rect(177, ($footer_h + 12), 18, 6);
+
+$pdf->SetXY(20, ($footer_h + 18));
+$pdf->Cell(52, 6, 'เวรบ่าย', 1, 1, 'C');
+$pdf->Rect(72, ($footer_h + 18), 15, 6);
+$pdf->Rect(87, ($footer_h + 18), 18, 6);
+$pdf->Rect(105, ($footer_h + 18), 18, 6);
+$pdf->Rect(123, ($footer_h + 18), 18, 6);
+$pdf->Rect(141, ($footer_h + 18), 18, 6);
+$pdf->Rect(159, ($footer_h + 18), 18, 6);
+$pdf->Rect(177, ($footer_h + 18), 18, 6);
+
+$pdf->SetXY(20, ($footer_h + 24));
+$pdf->Cell(52, 6, 'เวรดึก', 1, 1, 'C');
+$pdf->Rect(72, ($footer_h + 24), 15, 6);
+$pdf->Rect(87, ($footer_h + 24), 18, 6);
+$pdf->Rect(105, ($footer_h + 24), 18, 6);
+$pdf->Rect(123, ($footer_h + 24), 18, 6);
+$pdf->Rect(141, ($footer_h + 24), 18, 6);
+$pdf->Rect(159, ($footer_h + 24), 18, 6);
+$pdf->Rect(177, ($footer_h + 24), 18, 6);
 
 // $pdf->AutoPrint(true);
 $pdf->Output();

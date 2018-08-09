@@ -89,10 +89,24 @@ if( $wardExTest > 0 ){
     height: 7mm;
     font-size: 16pt;
 }
+
+@media print{
+    .page_header{
+        height: auto; 
+        /* position: fixed;  */
+        width: 100%;
+    }
+    .page_body,
+    .new_table_page{
+        
+    }
+}
+
 </style>
 <!-- width: 8.3in; height: 11.7in; -->
 <div id="main_page" style="">
-    <div style="" class="clearfix">
+
+    <div class="page_header" style="" class="clearfix">
         <div style="width: 35%; height: 45mm; float: left; text-align: center;">
             <p style="font-size: 20pt;"><b>โรงพยาบาลค่ายสุรศักดิ์มนตรี</b></p>
             <p><b>แบบบันทึกการให้ยา</b></p>
@@ -113,12 +127,14 @@ if( $wardExTest > 0 ){
             }
             ?>
         </div>
+
+
     </div>
 
     <!-- clear fix for IE 8 -->
     <div style="clear: both;"></div>
 
-    <div style="">
+    <div class="page_body" style="">
         <table class="chk_table" width="100%">
             <tr>
                 <th rowspan="2" style="font-size: 20px;">ชื่อยา ขนาด วิธีให้</th>
@@ -126,13 +142,13 @@ if( $wardExTest > 0 ){
                 <?php
                 $current = strtotime($_POST['date_set']);
 
-                for ($i=1; $i <= 5; $i++) { 
+                for ($i=1; $i <= 7; $i++) { 
 
                     $year = date('Y', $current) + 543;
                     $month = date('m', $current);
                     $date = date('d', $current);
                     ?>
-                    <th colspan="2"><?=$date;?> <?=$def_month_th[$month];?> <?=$year;?></th>
+                    <th width="10%"><?=$date;?> <?=$def_month_th[$month];?> <?=$year;?></th>
                     <?php
                     $current = strtotime('+1 day', $current);
                 }
@@ -140,20 +156,34 @@ if( $wardExTest > 0 ){
                 
             </tr>
             <tr class="time-get">
-                <th>เวลา</th>
-                <th>ผู้ให้</th>
-                <th>เวลา</th>
-                <th>ผู้ให้</th>
-                <th>เวลา</th>
-                <th>ผู้ให้</th>
-                <th>เวลา</th>
-                <th>ผู้ให้</th>
-                <th>เวลา</th>
-                <th>ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
+                <th>เวลา/ผู้ให้</th>
             </tr>
 
             <?php
+            $ii = 1;
             foreach ($drug_lists as $drug_code) {
+
+                if ( $ii == 6 ) {
+                    
+                    ?>
+                    </table>
+                    </div>
+
+                    <div style="page-break-before: always;"></div>
+
+                    <div class="page_body">
+                    <table class="chk_table" width="100%" style="padding-top: 45mm;">
+                    <?php
+                    
+                }
+                
+                $ii++;
 
                 $sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`onoff`,`dateoff`,`row_id` 
                 FROM `dgprofile` 
@@ -184,24 +214,18 @@ if( $wardExTest > 0 ){
                         <?=$d['tradname'];?>&nbsp;&nbsp;( <?=$d['slcode'];?> )<br>
                         <?=$detail_txt;?>
                     </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
                 </tr>
                 <?php
                 for ($i=0; $i < $def_drug_h; $i++) { 
                     ?>
                     <tr class="td_detail">
-                        <td></td>
-                        <td></td>
-                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -223,9 +247,6 @@ if( $wardExTest > 0 ){
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
             </tr>
             <tr class="td_detail">
                 <td align="center"><b>Recheck order</b></td>
@@ -233,33 +254,39 @@ if( $wardExTest > 0 ){
             </tr>
             <tr class="td_detail">
                 <td  align="center"><b>เวรเช้า</b></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr class="td_detail">
                 <td  align="center"><b>เวรบ่าย</b></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr class="td_detail">
                 <td  align="center"><b>เวรดึก</b></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
-                <td colspan="2"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     </div>
 </div>
 <script>
 window.onload = function(){
-    window.print();
+    // window.print();
 };
 </script>
