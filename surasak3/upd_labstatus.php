@@ -84,6 +84,9 @@ elseif(isset($_POST['upbtn'])){
 		echo "<meta http-equiv='refresh' content='3' />";
 	}
 }else{
+
+	$send_hn = $_GET['send_hn'];
+
 ?>
 <form id="form1" name="form1" method="post" action="upd_labstatus.php">
 
@@ -93,7 +96,7 @@ elseif(isset($_POST['upbtn'])){
   </tr>
   <tr>
     <td align="center">HN : 
-      <input name="hn" type="text" id="hn" size="10" />&nbsp;<input type="submit" name="okbtn" id="button" value="ตกลง" /></td>
+      <input name="hn" type="text" id="hn" size="10" value="<?=$send_hn;?>"/>&nbsp;<input type="submit" name="okbtn" id="button" value="ตกลง" /></td>
     </tr>
 </table>
 </form>

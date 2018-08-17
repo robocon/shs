@@ -30,7 +30,7 @@
     include("connect.inc");
         
 	$query = "SELECT row_id, comcode,drugcode,tradname,unitpri,edpri,salepri,minimum,totalstk,mainstk,stock,rxrate,stkpmon,
-		pack,packpri,packpri_vat,comname FROM druglst ORDER BY comcode ASC";  
+		pack,packpri,packpri_vat,comname FROM druglst where grouptype !='pc' ORDER BY comcode ASC";  
         $result = mysql_query($query) or die("Query failed");
 	$n=0;
 	$profit=0;

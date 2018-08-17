@@ -162,7 +162,7 @@ if(!empty($drugcode)){
 $page=1;
     print  "<center><font face='Angsana New'><b>ทะเบียนคุมยาและเวชภัณฑ์</b></center>";
 	print  "แผ่นที่........$page.........<br> ";
-	print  "ประเภท...............................ชื่อหรือชนิดวัสดุ...$tname....<br> ";
+	print  "ประเภท...............................ชื่อหรือชนิดวัสดุ...($drugcode)$tname....<br> ";
 	print  "ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................<br> ";
 	print  "หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................<br> ";
 ?>
@@ -176,6 +176,7 @@ $page=1;
   <td rowspan="2" align="center" class="font1" >รับจาก-จ่ายให้</td>
   <td rowspan="2" align="center" class="font1" >เลขที่ PO</td>
   <td rowspan="2" align="center" class="font1" >เลขที่รับ<br>ลำดับคลัง</td>
+  <td rowspan="2" align="center" class="font1" >PACK</td>  
   <td colspan="3" align="center" class="font1" >รับ</td>
   <td colspan="3" align="center" class="font1">จ่าย</td>
   <td colspan="3" align="center" class="font1" >คงเหลือ</td>
@@ -270,6 +271,7 @@ $page=1;
            "  <td ><font face='Angsana New'>ยอดยกมา</td>\n".
 		   "  <td ><font face='Angsana New'>&nbsp;</td>\n".
 		   "  <td ><font face='Angsana New'>&nbsp;</td>\n".
+		   "  <td ><font face='Angsana New'>&nbsp;</td>\n".
 		   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
 		   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
 		   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
@@ -295,22 +297,25 @@ $page=1;
 				$unitpri=$inunitpri;
 			}
 			
-			$sql3 = "select stkno,docno from combill where getdate like '$getdate%' and lotno='$lotno' and drugcode='$drugcode' ";
+			$sql3 = "select stkno,docno,packing from combill where getdate like '$getdate%' and lotno='$lotno' and drugcode='$drugcode' ";
 			//echo $sql3;
 			$row3 = mysql_query($sql3);
 			$stk_row = mysql_num_rows($row3);
 			
 			$stkno = '';
 			$docno = '';
+			$packing = '';
 			if( $stk_row > 0){
 				$item = mysql_fetch_assoc($row3);
 				$stkno = $item['stkno'];
 				$docno = $item['docno'];
+				$packing = $item['packing'];
 			}
 
 			if( $stkcut > 0 ){
 				$stkno = '';
 				$docno = '';
+				$packing = '';
 			}
 
 			
@@ -332,7 +337,8 @@ $page=1;
            "  <td ><font face='Angsana New'>&nbsp;$billno</td>\n".
            "  <td ><font face='Angsana New'>$department</td>\n".
 		   "  <td ><font face='Angsana New'>&nbsp;$docno</td>\n". //เลขที่ PO
-		   "  <td ><font face='Angsana New'>&nbsp;$stkno</td>\n");  //เลขที่รับลำดับคลัง
+		   "  <td ><font face='Angsana New'>&nbsp;$stkno</td>\n".  //เลขที่รับลำดับคลัง
+		    "  <td ><font face='Angsana New'>&nbsp;$packing</td>\n");  //PACK
 		   if($netprice==0){
 			   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 
 			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
@@ -372,7 +378,7 @@ $page=1;
 			echo "<div style='page-break-after:always'></div>";
 		   	print  "<center><font face='Angsana New'><b>ทะเบียนคุมยาและเวชภัณฑ์</b></center>";
 			print  "แผ่นที่........$page.........<br> ";
-			print  "ประเภท...............................ชื่อหรือชนิดวัสดุ....$tname....<br> ";
+			print  "ประเภท...............................ชื่อหรือชนิดวัสดุ....($drugcode)$tname....<br> ";
 			print  "ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................<br> ";
 			print  "หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................<br> ";
 ?>

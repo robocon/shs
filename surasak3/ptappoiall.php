@@ -18,8 +18,8 @@ include("connect.inc");
 // FROM appoint 
 // WHERE appdate = '$appd' ";
 
-$query="CREATE TEMPORARY TABLE appoint1 
-SELECT a.*, LEFT( a.`doctor` , 5 ) AS `codedoctor` 
+$query = "CREATE TEMPORARY TABLE appoint1 
+SELECT a.*, LEFT( a.`doctor` , 5 ) AS `codedoctor`,b.`drcode` 
 FROM `appoint` AS a 
 RIGHT JOIN (
 	SELECT MAX(`row_id`) AS `lastid`, SUBSTRING(`doctor`, 1,5) AS `drcode`
@@ -29,31 +29,36 @@ RIGHT JOIN (
 ) AS b ON b.`lastid` = a.`row_id` 
 WHERE a.`apptime` != 'ยกเลิกการนัด' 
 ORDER BY a.`date` ASC ";
+// echo '<div style="display: none;">'.$query.'</div>';
 $result = mysql_query($query) or die( mysql_error() );
 
 
-  print "จำนวนผู้ป่วยนัดแต่ละแพทย์ กดเลือกแพทย์ = รายชื่อผู้ป่วย<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
-   $query="SELECT  codedoctor,COUNT(*) AS duplicate 
-   FROM appoint1 where codedoctor <> 'MD007' 
-   GROUP BY codedoctor 
-   HAVING duplicate > 0 
-   ORDER BY doctor";
-   $result = mysql_query($query);
-     $n=0;
- while (list ($codedoctor,$duplicate) = mysql_fetch_row ($result)) {
-            $n++;
-$num= $duplicate+$num;
+print "จำนวนผู้ป่วยนัดแต่ละแพทย์ กดเลือกแพทย์ = รายชื่อผู้ป่วย<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
+$query = "SELECT  codedoctor,COUNT(*) AS duplicate,drcode
+FROM appoint1 where codedoctor <> 'MD007' 
+GROUP BY codedoctor 
+HAVING duplicate > 0 
+ORDER BY doctor";
+// echo '<div style="display: none;">'.$query.'</div>';
+$result = mysql_query($query);
+$n=0;
+while (list ($codedoctor,$duplicate,$drcode) = mysql_fetch_row ($result)) {
 
-list($doctor) = mysql_fetch_row(mysql_query("Select name From doctor where name like '{$codedoctor}%' limit 1 "));
-            print (" <tr>\n".
-               "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
-              "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"ptappoiall2.php? doctor=$codedoctor&appd=$appd\">$doctor&nbsp;&nbsp;</a></td>\n".
- 
-//    "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
-             //  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
-        "  <td BGCOLOR=66CDAA><font face='Angsana New'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
-               " </tr>\n<br>");
-               }
+	// echo '<div style="display: none;">'.$drcode.'</div>';
+
+	$n++;
+	$num= $duplicate+$num;
+
+	list($doctor) = mysql_fetch_row(mysql_query("Select name From doctor where name like '$codedoctor%' limit 1 "));
+	print (" <tr>\n".
+	"  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
+	"  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"ptappoiall2.php? doctor=$codedoctor&appd=$appd\">$doctor&nbsp;&nbsp;</a></td>\n".
+
+	//    "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
+	//  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
+	"  <td BGCOLOR=66CDAA><font face='Angsana New'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
+	" </tr>\n<br>");
+}
 
 $query="SELECT  doctor,COUNT(*) AS duplicate FROM appoint1 where codedoctor = 'MD007' GROUP BY doctor HAVING duplicate > 0 ORDER BY doctor";
    $result = mysql_query($query);

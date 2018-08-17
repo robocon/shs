@@ -162,6 +162,7 @@ while($rows = mysql_fetch_array($result)){
   <td rowspan="2" align="center" class="font1" >รับจาก-จ่ายให้</td>
   <td rowspan="2" align="center" class="font1" >เลขที่ PO</td>
   <td rowspan="2" align="center" class="font1" >เลขที่รับ<br>ลำดับคลัง</td>
+  <td rowspan="2" align="center" class="font1" >PACK</td>
   <td colspan="3" align="center" class="font1" >รับ</td>
   <td colspan="3" align="center" class="font1">จ่าย</td>
   <td colspan="3" align="center" class="font1" >คงเหลือ</td>
@@ -246,8 +247,9 @@ while($rows = mysql_fetch_array($result)){
            <td align="center"><font face="Angsana New">01</font></td>
            <td ><font face="Angsana New">&nbsp;</font></td>
            <td align="left"><font face="Angsana New">ยอดยกมา</font></td>
-		   <td ><font face="Angsana New">&nbsp;</font></td>
-           <td ><font face="Angsana New">&nbsp;</font></td>
+		   <td ><font face="Angsana New">&nbsp;</font></td>  <!--เลขที่ PO-->
+           <td ><font face="Angsana New">&nbsp;</font></td>  <!--เลขที่รับคลัง-->
+           <td ><font face="Angsana New">&nbsp;</font></td>  <!--PACK-->
 		   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
 		   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
 		   <td  align="right"><font face="Angsana New">&nbsp;</font></td>
@@ -279,21 +281,25 @@ if($dbdcode=="4TA15 " || $dbdcode=="4ALC450 "){
 				$resulta = mysql_query($querya) or die("Query failed");
 				list($unitpri) = mysql_fetch_row($resulta);	
 			
-			$sql3 = "select stkno,docno from combill where getdate like '$getdate%' and lotno='$lotno' and drugcode='$drugcode' ";
+			$sql3 = "select stkno,docno,packing from combill where getdate like '$getdate%' and lotno='$lotno' and drugcode='$drugcode' ";
+			//echo $sql3;
 			$row3 = mysql_query($sql3);
 			$stk_row = mysql_num_rows($row3);
 			
 			$stkno = '';
 			$docno = '';
+			$packing = '';
 			if( $stk_row > 0 ){
 				$item = mysql_fetch_assoc($row3);
 				$stkno = $item['stkno'];
 				$docno = $item['docno'];
+				$packing = $item['packing'];
 			}
 
 			if( $stkcut > 0 ){
 				$stkno = '';
 				$docno = '';
+				$packing = '';
 			}
 			
 			$num2++;
@@ -326,6 +332,7 @@ if($dbdcode=="4TA15 " || $dbdcode=="4ALC450 "){
            		<td align="left" ><font face="Angsana New"><?=$department;?></font></td>
                 <td align="center" ><font face="Angsana New"><?=$docno;?></font></td>
                 <td align="center" ><font face="Angsana New"><?=$stkno;?></font></td>
+                <td align="center" ><font face="Angsana New"><?=$packing;?></font></td>
 			<?
                if($netprice=="Y"){
             ?>

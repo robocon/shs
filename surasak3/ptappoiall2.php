@@ -26,10 +26,6 @@ print "<b>นัดมาวันที่</b> $appd<br> ";
 print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
 ?>
 <style type="text/css">
-*{
-	font-family: Angsana New;
-	font-size: 20px;
-}
 table{
 	width: 100%;
 	border-left: 1px solid #ffffff
@@ -59,6 +55,10 @@ a{
 @media print{
 	#no_print{display:none;}
 }
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 18px;
+}
 </style>
 <br />
 <div id="no_print" >
@@ -71,17 +71,17 @@ a{
 <table>
 	<tr>
 		<th width="2%" >#</th>
-		<th width="6%">HN</th>
-		<th width="15%">ชื่อ</th>
-		<th width="10%"><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
-		<th width="26%">นัดเพื่อ</th>
-	  <th width="12%">วันที่มาครั้งล่าสุด</th>
-	  <!-- <th width="4%">สถานะ</th>
+		<th width="7%">HN</th>
+		<th width="16%">ชื่อ</th>
+		<th width="13%"><A HREF="<?php echo $_SERVER["PHP_SELF"];?>?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>&sortby=time">เวลานัด</A></th>
+	  <th width="23%">นัดเพื่อ</th>
+	  <th width="10%">มาครั้งล่าสุด</th>
+<!-- <th width="4%">สถานะ</th>
 		<th>อื่นๆ</th>
 		<th>diag</th> -->
-		<th width="6%">ซ้ำ</th>
-		<th width="10%">ยื่นบัตร</th>
-		<th width="9%">Admit</th>
+		<th width="11%">ซ้ำ</th>
+	  <th width="9%">ยื่นบัตร</th>
+	  <th width="9%">Admit</th>
 	</tr>
 	<?php
 	$sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' limit 1 ";
@@ -106,20 +106,30 @@ a{
 	AND apptime != 'ยกเลิกการนัด' 
 	GROUP BY hn 
 	HAVING count( hn ) >= 1 ";
+	//echo $query;
 	$result = mysql_query($query);
 	while($arr = Mysql_fetch_assoc($result)){
 
-		// ตัด 5 ตัวแรก
-		// $name_dc = substr($arr["doctor"],5);
-		$name_dc = $arr["doctor"];
-		
-		// ถ้ารหัสไม่ใช่ MD007
-		if(substr($arr["doctor"],0,5) != "MD007"){
-			$arr["doctor"] = substr($arr["doctor"],0,5);
+
+		// ถ้าขึ้นต้นด้วย HD ให้ใช้ชื่อเต็มๆ
+		$match = preg_match('/^HD/', $arr["doctor"]);
+		if( $match > 0 ){
+			$name_dc = $arr["doctor"];
+		}else{
+			
+			// ถ้ารหัสไม่ใช่ MD007 ให้ตัดเหลือรหัส 5 ตัว
+			if(substr($arr["doctor"],0,5) != "MD007"){
+				$name_dc = substr($arr["doctor"],0,5);  //รหัส 5 ตัว 
+			}
+
 		}
+		
+		
+		
+		//echo "==>".$arr["doctor"];
 
 		$link = 'ptappoiall2.php?doctor='.urlencode($arr["doctor"]).'&appd='.urlencode($appd);
-		$listhn[$arr["hn"]] .= "<A HREF=\"$link\" target='_blank'>".$name_dc."</A> &nbsp; ";
+		$listhn[$arr["hn"]] .= "<A HREF=\"$link\" target='_blank' title=\"".$arr["doctor"]."\">".$name_dc."</A> &nbsp; ";
 
 	}
 	///////////////////////
@@ -133,21 +143,8 @@ a{
 		$doctor2 = " AND a.`doctor` = '".$doctor."' ";
 	}
 	
-	
-	// $query1 = "SELECT a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
-	// date_format(a.`date`,'%d-%m-%Y') AS `date`,
-	// left(a.`apptime`,5) AS `left5`
-	// FROM `appoint` AS a 
-	// INNER JOIN ( 
-	// 	SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
-	// 	FROM `appoint` 
-	// 	WHERE `appdate` = '$appd' 
-	// 	GROUP BY `hn`, `drcode`
-	// ) AS b ON b.`id` = a.`row_id` 
-	// WHERE a.`appdate` = '$appd' 
-	// $doctor2 
-	// ORDER BY `hn` ASC 
-	// ";
+	//echo "==>".$doctor2;
+
 	$query1 = "
 SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`detail2`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
 date_format(a.`date`,'%d-%m-%Y') AS `date`,
@@ -193,6 +190,7 @@ ORDER BY `hn` ASC
 		return $a['sort_hn'] - $b['sort_hn'];
 	}
 	usort($user_lists, "sorthn");
+
 	
 	$i = 1;
 	$unincome_lists = array();
@@ -233,7 +231,8 @@ ORDER BY `hn` ASC
 
 $chkopcard="select * from opday where hn='$hn' order by row_id desc limit 1";
 $chkquery=mysql_query($chkopcard);
-$chkrows=mysql_fetch_array($chkquery);		
+$chkrows=mysql_fetch_array($chkquery);
+// echo "==>$hn.<br>";
 		?>
 		<tr style="background-color: #<?=$bgcolor;?>;">
 			<td><?=$i;?></td>
@@ -251,7 +250,7 @@ $chkrows=mysql_fetch_array($chkquery);
 			<td><?=substr($chkrows["thidate"],0,10);?></td>
 			<!-- <td><?=$chkrows["okopd"];?></td> -->
 			<td>
-				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '' ;?>			</td>
+				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '';?></td>
 			<td>
 				<?php 
 				if($detail=="FU33 นัดตรวจสุขภาพ"){
@@ -298,7 +297,6 @@ if( $row > 0 ){
 		<?php
 		$i = 1;
 		foreach( $unincome_lists as $key => $item ){
-			
 			if($date_now == $item['date']){
 				$bgcolor = "FFA8A8"; // สีแดง
 			}else{
