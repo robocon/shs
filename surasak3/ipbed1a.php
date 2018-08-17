@@ -27,12 +27,12 @@ if( $wardExTest > 0 ){
 	$exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
 
 	// เฉพาะ ward พิเศษที่ตัวหนังสือ 11
-	$text_size = 11;
+	// $text_size = 14;
 	
 }
 
 $pdf->SetFont('AngsanaNew','',$text_size);
-$pdf->SetAutoPageBreak(false, 0);
+$pdf->SetAutoPageBreak(true, 0);
 $pdf->SetMargins(0, 0);
 $pdf->AddPage();
 

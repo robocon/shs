@@ -74,6 +74,24 @@ $get_headers = $db->get_items();
         <th>R</th>
         <th>ผลตรวจ</th>
 
+        <th>หมายเหตุ</th>
+        <th>ผลตรวจ สมรรถภาพปอด</th>
+        <th>ผล X-RAY</th>
+        <th>ผลตรวจตาบอดสี</th>
+        <th>ผลตรวจ วัดสายตา</th>
+        <th>ผล EKG</th>
+        <th>ผลตรวจ BMD</th>
+        <th>อัลตร้าซาวด์</th>
+        <th>ต่อมลูกหมาก</th>
+        <th>มะเร็งปากมดลูก</th>
+        <th>แมมโมแกรม</th>
+        <th>ลำดับ</th>
+        <th>สรุปผล Stool Culture(C-S)</th>
+        <th>ผลตรวจ Stool Culture(C-S)</th>
+        <th>ผลการได้ยิน</th>
+        <th>ผลการตรวจสารเคมีโลหะหนัก</th>
+        <th>สรุปผลการตรวจสารเคมีโลหะหนัก</th>
+
         <th>WBC Result</th>
         <th>WBC Range</th>
         <th>WBC สรุป</th>
@@ -135,7 +153,7 @@ $get_headers = $db->get_items();
     </tr>
 
 <?php
-
+// ผลจาก out_result_chkup
 foreach ($items as $key => $item) {
 
     $hn = $item['hn'];
@@ -277,6 +295,24 @@ foreach ($items as $key => $item) {
         <td><?=$item['p'];?></td>
         <td><?=$item['rate'];?></td>
         <td><?=$body_res;?></td>
+
+        <td><?=$item['comment'];?></td>
+        <td><?=$item['pt'];?></td>
+        <td><?php if($item["cxr"]==""){ echo "ปกติ"; }else{ echo $item["cxr"];} ?></td>
+        <td><?=$item['va'];?></td>
+        <td><?=$item['eye'];?></td>
+        <td><?=$item['ekg'];?></td>
+        <td><?=$item['42702'];?></td>
+        <td><?=$item['altra'];?></td>
+        <td><?=$item['psa'];?></td>
+        <td><?=$item['hpv'];?></td>
+        <td><?=$item['mammogram'];?></td>
+        <td><?=$item['seq'];?></td>
+        <td><?=$item['cs'];?></td>
+        <td><?=$item['result_cs'];?></td>
+        <td><?=$item['hearing'];?></td>
+        <td><?=$item['metal'];?></td>
+        <td><?=$item['metal_result'];?></td>
         
         <?php
         while( $cbc = mysql_fetch_assoc($cbc_query) ) {

@@ -7,6 +7,8 @@ include 'bootstrap.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
+$year_checkup = get_year_checkup();
+
 $db = Mysql::load();
 $sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
@@ -135,7 +137,7 @@ while($result = mysql_fetch_assoc($row2)){
 
 		SELECT * 
 		FROM `resulthead` 
-		WHERE `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+		WHERE `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 		AND `hn` = '$hn' 
 		ORDER BY `autonumber` 
 		DESC LIMIT 1 
@@ -300,7 +302,7 @@ while($result = mysql_fetch_assoc($row2)){
     FROM resulthead 
     WHERE (profilecode = 'CBC' OR profilecode = 'UA') 
     AND hn = '$hn' 
-    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
     GROUP BY `profilecode` 
 	ORDER BY `autonumber` desc";
     $query55 = mysql_query($sql55) or die( mysql_error() );
@@ -318,7 +320,7 @@ while($result = mysql_fetch_assoc($row2)){
 	FROM resulthead 
 	WHERE profilecode='CBC' 
 	AND hn = '".$hn."' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql) or die( mysql_error() );
 	$arrresult = mysql_fetch_array($query);
@@ -468,7 +470,7 @@ if( $num > 0 ){
 	FROM resulthead 
 	WHERE profilecode='UA' 
 	and hn='$hn' 
-	and `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+	and `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
@@ -640,12 +642,12 @@ if( $num > 0 ){
 } // end ถ้ามี cbc หรือ ua
 
 // ผลการตรวจทางห้องปฏิบัติการ ตัด profilecode='OCCULT'
-$sql1 = "SELECT a.*, b.* 
+$sql1 = "SELECT x.`profilecode`,x.`autonumber`  
 FROM ( 
 
     SELECT MAX(`autonumber`) AS `latest_id`   
     FROM `resulthead` 
-    WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+    WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
     AND ( 
         `profilecode`='GLU' 
         OR `profilecode`='CREAG' 
@@ -668,17 +670,21 @@ FROM (
 		OR `profilecode`='HBSAG' 
         OR `profilecode`='HAVTOT' 
         OR `profilecode`='WET' 
-		OR `profilecode`='AHAV'
+		OR `profilecode`='AHAV' 
+
+		OR `profilecode`='STOOL' 
+		OR `profilecode`='35101' 
 		
     ) 
 	GROUP BY `profilecode` 
 
 ) AS a 
 LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
-LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
-WHERE b.`result` != 'DELETE' 
-AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
-ORDER BY b.seq ASC";
+#LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
+#WHERE b.`result` != 'DELETE' 
+#AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
+#ORDER BY b.seq ASC";
+// dump($sql1);
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -689,7 +695,7 @@ FROM (
 	SELECT MAX(`autonumber`) AS `autonumber`
 	FROM `resulthead` 
 	WHERE `hn` = '$hn' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 	AND `testgroupcode` = 'OUT' 
 	AND `profilecode` != '38302' 
 	GROUP BY `profilecode` 
@@ -728,11 +734,17 @@ ORDER BY c.seq ASC";
 								$objQuery1 = mysql_query($strSQL1);
 								list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
 								
+								$where = '';
+								if( $arrresult['profilecode'] == "STOOL" ){
+									$where = " AND `labname` = 'Parasite or ova' ";
+								}
 								
 								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
 								FROM resultdetail  
 								WHERE autonumber='".$arrresult['autonumber']."' 
+								AND `result` != 'DELETE' 
 								AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL') 
+								$where 
 								ORDER BY seq ASC";
 								
 								$objQuery = mysql_query($strSQL);
@@ -776,6 +788,8 @@ ORDER BY c.seq ASC";
 										$labmean="ตรวจไวรัสตับอักเสบ A";
 									}else if($objResult["labname"]=="Anti HAV IgM"){
 										$labmean="ตรวจไวรัสตับอักเสบ A";
+									}else if($objResult["labname"]=="Parasite or ova"){
+										$labmean="ตรวจอุจจาระเพาะเชื้อ";
 									}
 											
 									if( $objResult["labcode"]=='GLU'){
@@ -939,6 +953,14 @@ ORDER BY c.seq ASC";
 										}
 									}
 
+									if( $objResult["labcode"]=='PARASI'){
+										if($objResult["result"]=="Not Found"){
+											$app="ปกติ";	
+										}else{
+											$app="ผิดปกติ";	
+										}
+									}
+
 									// if($objResult['labcode'] == 'HAVTOT'){
 									// 	if($objResult["flag"]=="N"){
 									// 		$app="ปกติ";	
@@ -1041,6 +1063,17 @@ ORDER BY c.seq ASC";
 									<?php
 								}
 							}
+							
+							if( $result['metal'] != '' && $result['metal_result'] != '' ){ 
+								?>
+								<tr height="23">
+									<td width="34%" valign="top"><b>การตรวจสารเคมีโลหะหนัก(ตะกั่ว)</b></td>
+									<td width="8%" valign="top"><?=$result['metal'];?></td>
+									<td width="9%" valign="top">0-40</td>
+									<td width="49%" valign="top"><?=$result['metal_result'];?></td>
+								</tr>
+								<?php
+							}
 							?>
 						</table>
 					</td>
@@ -1069,11 +1102,14 @@ FROM (
     SELECT *, MAX(`autonumber`) AS `latest_id` 
 	FROM `resulthead` 
     WHERE `hn` = '$hn' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี61' 
+	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
     AND ( 
         `profilecode`='HBSAG' 
         OR `profilecode`='HAVTOT' 
         OR `profilecode`='WET' 
+		OR `profilecode`='STOOL' 
+		OR `profilecode`='35101' 
+		OR `profilecode`='AHAV' 
     ) 
 	GROUP BY `profilecode` 
     ORDER BY `autonumber` ASC  

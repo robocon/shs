@@ -29,6 +29,25 @@ if ( $action === 'save' ) {
 
     redirect('chk_lab.php?page=form&id='.$id, $msg);
     exit;
+} elseif ( $action == 'save_result' ){
+
+    $autonumber = input_post('autonumber');
+    $labcode = input_post('labcode');
+    $id = input_post('id');
+
+    $result = input_post('result');
+    $normalrange = input_post('normalrange');
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    $sql = "UPDATE `resultdetail` SET 
+    `result` = '$result', 
+    `normalrange` = '$normalrange' 
+    WHERE `autonumber` = '$autonumber' 
+    AND `labcode` = '$labcode' ";
+    $update = $db->update($sql);
+
+    redirect('chk_lab.php?page=form&id='.$id, $msg);
+    exit;
 }
 
 if ( $page === 'form' ) { 
@@ -70,13 +89,13 @@ if ( $page === 'form' ) {
         <h3>แก้ไขข้อมูลแลป</h3>
         <p>HN : <?=$user['hn'];?></p>
         <p>ชื่อ-สกุล : <?=$user['name'];?> <?=$user['surname'];?></p>
-        <table class="chk_table">
+        <table class="chk_table" width="100%">
             <tr>
                 <th>autonumber</th>
                 <th>รายการตรวจ</th>
                 <th>keyword</th>
-                <th>ผล</th>
-                <th></th>
+                <th>labcode/labname/result/normalrange</th>
+                <th>ปรับสถานะLab</th>
             </tr>
             <?php
             foreach ($items as $key => $item) {
@@ -95,14 +114,25 @@ if ( $page === 'form' ) {
                     $detail_sql = "SELECT * FROM `resultdetail` WHERE `autonumber` = '$autonumber' ";
                     $db->select($detail_sql);
                     $detail_items = $db->get_items();
-                    foreach( $detail_items AS $key => $detail ){
-                        ?>
-                        <div style="position: relative;"><?=$detail['labname'];?> : <span style="float: right;"><?=$detail['result'];?></span></div>
-                        <?php
-                    }
                     ?>
+                    <table class="chk_table" width="100%">
+                        <?php
+                        foreach( $detail_items AS $key => $detail ){
+                        ?>
+                        <tr>
+                            <td width="20%">
+                                <a href="chk_lab.php?page=edit_result&autonumber=<?=$autonumber;?>&labcode=<?=$detail['labcode'];?>&id=<?=$id;?>"><?=$detail['labcode'];?></a>
+                            </td>
+                            <td width="20%"><?=$detail['labname'];?></td>
+                            <td width="10%"><?=$detail['result'];?></td>
+                            <td width="10%"><?=$detail['normalrange'];?></td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                    </table>
                 </td>
-                <td><a href="chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?>">แก้ไข</a></td>
+                <td><a href="chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?>">แก้ไขสถานะ</a></td>
             </tr>
             <?php
             }
@@ -144,4 +174,44 @@ if ( $page === 'form' ) {
         </div>
     </form>
     <?php
+}elseif ( $page === 'edit_result' ) {
+
+    $autonumber = input_get('autonumber');
+    $labcode = input_get('labcode');
+    $id = input_get('id');
+
+    $sql = "SELECT `result`,`normalrange` 
+    FROM `resultdetail` 
+    WHERE `autonumber` = '$autonumber' 
+    AND `labcode` = '$labcode' ";
+    $db->select($sql);
+    $item_result = $db->get_item();
+
+    include 'chk_menu.php';
+    ?>
+    <div>
+        <h3>แก้ไขผลแลป</h3>
+        <p>เลขที่ Autonumber : <?=$autonumber;?></p>
+        <p>Labcode : <?=$labcode;?></p>
+    </div>
+    <form action="chk_lab.php" method="post">
+        <div>
+            result: <input type="text" name="result" id="" value="<?=$item_result['result'];?>">
+        </div>
+        <div>
+            normalrange: <input type="text" name="normalrange" id="" value="<?=$item_result['normalrange'];?>">
+        </div>
+        <div>
+            <button type="submit">บันทึกข้อมูล</button>
+            <input type="hidden" name="action" value="save_result">
+            <input type="hidden" name="autonumber" value="<?=$autonumber;?>">
+            <input type="hidden" name="labcode" value="<?=$labcode;?>">
+            <input type="hidden" name="id" value="<?=$id;?>">
+        </div>
+        <div>
+            <a href="javascript: window.history.back();">ย้อนกลับ</a>
+        </div>
+    </form>
+    <?php
+
 }
