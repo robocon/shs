@@ -93,14 +93,16 @@ while($result = mysql_fetch_array($out_result_sql)){
 
     $yaer_chk = $result['year_chk'];
 
-$age = $result["age"];
-$cs = $result["cs"];
+    $pt_hn = $result['hn'];
 
-if(empty($result["HN"])){
-    $result["HN"]=$result["hn"];
-}
+    $age = $result["age"];
+    $cs = $result["cs"];
 
-$sql2 = "select * from out_result_chkup where hn='".$result["HN"]."' AND `part` = '$camp'";
+    if(empty($result["HN"])){
+        $result["HN"] = $result["hn"];
+    }
+
+$sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
 $query2 = mysql_query($sql2);
 $result2 = mysql_fetch_array($query2);
 
@@ -159,7 +161,7 @@ if($result["congenital_disease"]=="»®ÔàÊ¸" || empty($result["congenital_disease"
 $sql18="SELECT * 
 FROM resulthead 
 WHERE profilecode = 'CBC' 
-AND hn = '".$result["HN"]."' 
+AND hn = '$pt_hn' 
 AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY `profilecode` ";
 
@@ -175,7 +177,7 @@ if($numcbc > 0){
 ?></td>
     <td align="center"><?php
 $sql19="SELECT * 
-FROM resulthead WHERE profilecode = 'UA' AND hn = '".$result["HN"]."' 
+FROM resulthead WHERE profilecode = 'UA' AND hn = '$pt_hn' 
 AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY `profilecode` ";
 //echo $sql19;
@@ -193,7 +195,7 @@ if($numua > 0){
 $sql1="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql1;
@@ -211,7 +213,7 @@ if($flag=="N" || $flag=="L"){
 $sql2="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'CHOL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'CHOL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql2;
@@ -230,7 +232,7 @@ if($flag=="N"){
 $sql3="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'TRIG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'TRIG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql3;
@@ -249,7 +251,7 @@ if($flag=="N"){
 $sql4="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'HDL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'HDL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql4;
@@ -268,7 +270,7 @@ if($flag=="N" || $flag=="H"){
 $sql5="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE (b.labcode = 'LDL' OR b.labcode = 'LDLC' OR b.labcode='10001') AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE (b.labcode = 'LDL' OR b.labcode = 'LDLC' OR b.labcode='10001') AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql5;
@@ -287,7 +289,7 @@ if($flag=="N" || $flag=="L"){
 $sql6="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'BUN' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'BUN' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql6;
@@ -304,7 +306,7 @@ if($flag=="N"){
 $sql7="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql7;
@@ -321,7 +323,7 @@ if($flag=="N"){
 $sql8="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql8;
@@ -338,7 +340,7 @@ if($flag=="N"){
 $sql9="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'AST' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'AST' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql9;
@@ -355,7 +357,7 @@ if($flag=="N"){
 $sql10="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'ALT' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'ALT' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql10;
@@ -372,7 +374,7 @@ if($flag=="N"){
 $sql11="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'ALP' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'ALP' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql11;
@@ -389,7 +391,7 @@ if($flag=="N"){
 $sql12="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'HBSAG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'HBSAG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql12;
@@ -408,7 +410,7 @@ if($hbsag=="Negative"){
 $sql13="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'OCCULT' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'OCCULT' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql13;
@@ -480,10 +482,10 @@ if($hbsag=="Negative"){
 $sql14="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'METAMP' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'METAMP' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
-//echo $sql14;
+
 $query14=mysql_query($sql14);
 list($hbsag,$flag)=mysql_fetch_array($query14);
 
@@ -499,7 +501,7 @@ if($hbsag=="Negative"){
 $sql17="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'ABOC' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '".$result["HN"]."' 
+WHERE b.labcode = 'ABOC' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql1;
@@ -514,7 +516,7 @@ if($flag=="N"){
 }
 ?></td>
     <td><? 
-	$sql3="select * from patdata where hn='".$result["HN"]."' and code='51410' and date like '$dateekg%' order by row_id desc";
+	$sql3="select * from patdata where hn='$pt_hn' and code='51410' and date like '$dateekg%' order by row_id desc";
 	//echo $sql3;
 	$query3=mysql_query($sql3);
 	$num3=mysql_num_rows($query3);

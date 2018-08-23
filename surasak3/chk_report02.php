@@ -100,6 +100,7 @@ while($result = mysql_fetch_assoc($row2)){
 	$show_date = $result['show_date'];
 
 	$c_s = $result['cs'];
+	$result_cs = $result['result_cs'];
 
 	// ถ้าไม่มีวันที่ใน chk_company_list ให้ดึงมาจาก opcardchk แทน
 	if( empty($show_date) ){
@@ -642,7 +643,7 @@ if( $num > 0 ){
 } // end ถ้ามี cbc หรือ ua
 
 // ผลการตรวจทางห้องปฏิบัติการ ตัด profilecode='OCCULT'
-$sql1 = "SELECT x.`profilecode`,x.`autonumber`  
+$sql1 = "SELECT x.`profilecode`,x.`autonumber`,b.seq
 FROM ( 
 
     SELECT MAX(`autonumber`) AS `latest_id`   
@@ -674,17 +675,24 @@ FROM (
 
 		OR `profilecode`='STOOL' 
 		OR `profilecode`='35101' 
+
+		OR `profilecode`='PSA' 
 		
     ) 
 	GROUP BY `profilecode` 
 
 ) AS a 
 LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
-#LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
-#WHERE b.`result` != 'DELETE' 
-#AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
-#ORDER BY b.seq ASC";
-// dump($sql1);
+LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
+WHERE b.`result` != 'DELETE' 
+AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
+AND ( b.`labcode` != 'COLORS'
+	AND b.`labcode` != 'CHARAC' 
+	AND b.`labcode` != 'WBCS' 
+	AND b.`labcode` != 'RBCS' 
+	AND b.`labcode` != 'MUCOUS'  )
+ORDER BY b.`seq` ASC,a.`latest_id` ASC";
+
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -718,9 +726,9 @@ ORDER BY c.seq ASC";
 						<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
 							<tr>
 								<td width="32%" valign="top" bgcolor="#CCCCCC" align="center"><strong>รายการตรวจ</strong></td>
-								<td width="9%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
+								<td width="27%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
 								<td width="9%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ค่าปกติ</strong></td>
-								<td width="50%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;" align="center"><strong>สรุปผลการตรวจ</strong></td>
+								<td width="32%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;" align="center"><strong>สรุปผลการตรวจ</strong></td>
 							</tr>
 							<?php
 							$i=0;
@@ -736,16 +744,17 @@ ORDER BY c.seq ASC";
 								
 								$where = '';
 								if( $arrresult['profilecode'] == "STOOL" ){
-									$where = " AND `labname` = 'Parasite or ova' ";
+									$where = " AND `labcode` = 'PARASI' ";
 								}
 								
 								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
 								FROM resultdetail  
 								WHERE autonumber='".$arrresult['autonumber']."' 
 								AND `result` != 'DELETE' 
-								AND (labcode !='GFR' AND labcode !='HI' AND labcode !='LDL') 
+								AND (labcode !='GFR' AND labcode !='HI' ) 
 								$where 
 								ORDER BY seq ASC";
+								// dump($strSQL);
 								
 								$objQuery = mysql_query($strSQL);
 								while($objResult = mysql_fetch_array($objQuery)){
@@ -789,7 +798,10 @@ ORDER BY c.seq ASC";
 									}else if($objResult["labname"]=="Anti HAV IgM"){
 										$labmean="ตรวจไวรัสตับอักเสบ A";
 									}else if($objResult["labname"]=="Parasite or ova"){
-										$labmean="ตรวจอุจจาระเพาะเชื้อ";
+										$labmean="ตรวจอุจจาระสมบูรณ์แบบ";
+										$objResult["labname"] = 'Stool Exam';
+									}else if($objResult["labname"]=="PSA"){
+										$labmean="การตรวจมะเร็งต่อมลูกหมาก";
 									}
 											
 									if( $objResult["labcode"]=='GLU'){
@@ -959,7 +971,17 @@ ORDER BY c.seq ASC";
 										}else{
 											$app="ผิดปกติ";	
 										}
+									} 
+
+									if( $objResult["labcode"]=='PSA'){
+
+										$app = 'ปกติ';
+										if( $objResult['flag'] != 'N' ){
+											$app = 'ผิดปกติ';
+										}
+
 									}
+
 
 									// if($objResult['labcode'] == 'HAVTOT'){
 									// 	if($objResult["flag"]=="N"){
@@ -987,10 +1009,10 @@ ORDER BY c.seq ASC";
 
 									?>
 									<tr height="23">
-										<td width="34%" valign="top"><strong><?=$labmean;?></strong> (<?=$objResult["labname"];?>)</td>
-										<td width="8%" valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
-										<td width="9%" valign="top"><?=$objResult["normalrange"];?></td>
-										<td width="49%" valign="top" style="font-size:16px;"><?=$app;?></td>
+										<td valign="top"><strong><?=$labmean;?></strong> (<?=$objResult["labname"];?>)</td>
+										<td valign="top"><? if($objResult["flag"]!="N" || $objResult['result']=='Positive'){ echo "<strong>".$objResult["result"]."</strong>";}else{ echo $objResult["result"];}?></td>
+										<td valign="top"><?=$objResult["normalrange"];?></td>
+										<td valign="top" style="font-size:16px;"><?=$app;?></td>
 									</tr>
 									<? 
 									}
@@ -1063,14 +1085,30 @@ ORDER BY c.seq ASC";
 									<?php
 								}
 							}
+
+
+							
+							if( !empty($c_s) ){
+								?>
+								<tr height="23">
+									<td valign="top"><b>ตรวจอุจจาระเพาะเชื้อ</b> (Stool Culture)</td>
+									<td valign="top"><?=$result_cs;?></td>
+									<td valign="top"></td>
+									<td valign="top"><?=$c_s;?></td>
+								</tr>
+								<?php
+							}
+							
+
+
 							
 							if( $result['metal'] != '' && $result['metal_result'] != '' ){ 
 								?>
 								<tr height="23">
-									<td width="34%" valign="top"><b>การตรวจสารเคมีโลหะหนัก(ตะกั่ว)</b></td>
-									<td width="8%" valign="top"><?=$result['metal'];?></td>
-									<td width="9%" valign="top">0-40</td>
-									<td width="49%" valign="top"><?=$result['metal_result'];?></td>
+									<td valign="top"><b>การตรวจสารเคมีโลหะหนัก(ตะกั่ว)</b></td>
+									<td valign="top"><?=$result['metal'];?></td>
+									<td valign="top">0-40</td>
+									<td valign="top"><?=$result['metal_result'];?></td>
 								</tr>
 								<?php
 							}

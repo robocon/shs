@@ -551,7 +551,21 @@ foreach ($items as $key => $item) {
                     $app="¼Ô´»¡µÔ";	
                 }
             }
-            
+
+            if($etc_item == 'PARASI' && !is_null($etc)){  //METAMP
+                if($etc["result"]=="Not Found"){
+                    $app="»¡µÔ";	
+                }else{
+                    $app="¼Ô´»¡µÔ";	
+                }
+            }
+
+            if($etc_item == 'PSA' && !is_null($etc)){  //METAMP
+                $app = '»¡µÔ';
+                if( $etc['flag'] != 'N' ){
+                    $app = '¼Ô´»¡µÔ';
+                }
+            }
 
             ?>
             <td><?=$etc['result'];?></td>

@@ -724,6 +724,14 @@ mmHg</td>
 	</TD>
 </TR>
 </TABLE>
+<br>
+<div style="color: red; font-size: 10pt;">
+	<span><b>* กรณีผลแลปไม่แสดงหรือแสดงไม่ครบ ให้ดำเนินการดังนี้</b></span><br>
+	<span>1. ประสานห้องทะเบียน เพื่อตรวจสอบว่าออกOPDการ์ดเป็น <u><b>"ตรวจสุขภาพ"</b></u> หรือไม่</span><br>
+	<span>2. ตรวจสอบสถานะแลปที่เมนู "<a href="upd_labstatus.php?send_hn=<?=$_POST["p_hn"];?>" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>"</span><br>
+	<span>3. ประสานห้องแลป เพื่อยืนยันว่าห้องแลปทำการ Authorise เรียบร้อยแล้ว</span><br>
+	<span>4. ประสานโปรแกรมเมอร์ หากโปรแกรมมีปัญหาในการคีย์ข้อมูลซักประวัติ</span>
+</div>
 <BR>
 <!-- บันทึกการวินิฉัยจากแพทย์ -->
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
