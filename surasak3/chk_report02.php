@@ -803,6 +803,8 @@ ORDER BY c.seq ASC";
 									}else if($objResult["labname"]=="PSA"){
 										$labmean="การตรวจมะเร็งต่อมลูกหมาก";
 									}
+
+									$app = '';
 											
 									if( $objResult["labcode"]=='GLU'){
 										if( $objResult["result"] >= 74 && $objResult["result"] <= 106 ){
