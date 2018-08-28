@@ -71,6 +71,12 @@ body,td,th {
 
 ?>
 <BR>
+
+<div style="text-align: center;">
+	Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$_SESSION["hn_now"];?>" target="_blank">¥Ÿø‘≈Ï¡ PACS</a>
+</div>
+<br>
+
 <TABLE  border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#0046D7">
 <TR>
 	<TD>

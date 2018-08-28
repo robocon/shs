@@ -400,8 +400,8 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
 			<td width="132"><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" />
 			  ซม.</td>
-			<td width="67" align="left"><span class="tb_font_2">BP1 :</span></td>
-			<td width="130" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
+			<td width="70" align="left"><span class="tb_font_2">BP1 :</span></td>
+			<td width="150" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
 			  /
 			  <input name="bp2" type="text" size="1" maxlength="3" value="<?php echo $bp2; ?>" />
 			  mmHg</td>
@@ -416,11 +416,11 @@ C&deg; </td>
 		  <td align="right"><span class="tb_font_2">R :</span></td>
 		  <td align="left"><input name="rate" type="text" size="1" maxlength="3" value="<?php echo $rate;?>" />
 ครั้ง/นาที</td>
-		  <td align="left"><span class="tb_font_2">BP2 :</span></td>
-		  <td align="left"><input name="bp21" type="text" size="1" maxlength="3" value="<?php echo $bp21;?>" />
-/
-  <input name="bp22" type="text" size="1" maxlength="3" value="<?php echo $bp22; ?>" />
-mmHg</td>
+		  <td align="left"><span class="tb_font_2">Repeat BP :</span></td>
+		  <td align="left">
+		  	<input name="bp21" type="text" size="1" maxlength="3" value="<?php echo $bp21;?>" /> / <input name="bp22" type="text" size="1" maxlength="3" value="<?php echo $bp22; ?>" /> mmHg<br>
+			<span style="font-size: 13px; color: red;">* Repeat BP ถ้าไม่มีข้อมูลให้เว้นว่าง</span>
+		  </td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2"><span class="tb_font_2">BMI :</span></td>
@@ -724,14 +724,6 @@ mmHg</td>
 	</TD>
 </TR>
 </TABLE>
-<br>
-<div style="color: red; font-size: 10pt;">
-	<span><b>* กรณีผลแลปไม่แสดงหรือแสดงไม่ครบ ให้ดำเนินการดังนี้</b></span><br>
-	<span>1. ประสานห้องทะเบียน เพื่อตรวจสอบว่าออกOPDการ์ดเป็น <u><b>"ตรวจสุขภาพ"</b></u> หรือไม่</span><br>
-	<span>2. ตรวจสอบสถานะแลปที่เมนู "<a href="upd_labstatus.php?send_hn=<?=$_POST["p_hn"];?>" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>"</span><br>
-	<span>3. ประสานห้องแลป เพื่อยืนยันว่าห้องแลปทำการ Authorise เรียบร้อยแล้ว</span><br>
-	<span>4. ประสานโปรแกรมเมอร์ หากโปรแกรมมีปัญหาในการคีย์ข้อมูลซักประวัติ</span>
-</div>
 <BR>
 <!-- บันทึกการวินิฉัยจากแพทย์ -->
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >

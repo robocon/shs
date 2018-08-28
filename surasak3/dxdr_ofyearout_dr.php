@@ -1323,7 +1323,10 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="7">&nbsp;&nbsp;&nbsp;การตรวจอื่น ๆ</td>
 	  </tr>
 	  <tr bgcolor="#CCCCFF">
-	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">ตรวจเอ็กซ์เรย์ปอด : <a href="dxdr_xray_film.php" target="_blank">ดูฟิลม์</a> </td>
+	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">
+				<!-- ตรวจเอ็กซ์เรย์ปอด : <a href="dxdr_xray_film.php" target="_blank">ดูฟิลม์</a> -->
+				ตรวจเอ็กซ์เรย์ปอด : <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$arr_view["hn"];?>" target="_blank">ดูฟิลม์</a>
+				</td>
 	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ปกติ' onclick="togglediv2('acnormal51')" id="normal58"/>
 	      ปกติ
 	        <input name='normal51' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal51')" id="normal57"/>
