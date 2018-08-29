@@ -968,7 +968,7 @@ ORDER BY c.seq ASC";
 									}
 
 									if( $objResult["labcode"]=='PARASI'){
-										if($objResult["result"]=="Not Found"){
+										if(strtolower($objResult["result"])=="not found"){
 											$app="»¡µÔ";	
 										}else{
 											$app="¼Ô´»¡µÔ";	

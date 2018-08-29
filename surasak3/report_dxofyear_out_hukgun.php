@@ -41,6 +41,11 @@ include("connect.inc");
 .text4 {	font-family: "TH SarabunPSK";
 	font-size: 14px;
 }
+.text5 {font-family: "TH SarabunPSK";font-size: 16px; }
+.style10 {font-size: 16px; font-weight: bold; }
+.style11 {font-size: 16px}
+.style16 {font-size: 18px}
+.style17 {font-family: "TH SarabunPSK"; font-size: 18px; font-weight: bold; }
 -->
 </style>
 <div id="no-print">
@@ -93,6 +98,7 @@ if(isset($_POST['hn']) || isset($_GET['hn'])){
 	$result = mysql_fetch_array($row);
 	
 	$sql1="CREATE TEMPORARY TABLE  result1  Select * from  resulthead  WHERE hn='".$result['hn']."' and clinicalinfo ='ตรวจสุขภาพประจำปี$nPrefix' ";
+	//$sql1="CREATE TEMPORARY TABLE  result1  Select * from  resulthead  WHERE hn='".$result['hn']."' and clinicalinfo ='ตรวจสุขภาพประจำปี59' ";	
 	$query1 = mysql_query($sql1); 	
 	?>	
 <table width="100%">
@@ -101,7 +107,8 @@ if(isset($_POST['hn']) || isset($_GET['hn'])){
 <table width="100%">
 <tr>
   <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" width="87" height="83" /></td>
-  <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพประจำปี <?=$nPrefix?></strong></td>
+  <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพประจำปี <?=$nPrefix?><br />โครงการ "ฮักกันยามเฒ่า"
+</strong></td>
   <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 </tr>
 <tr>
@@ -115,7 +122,7 @@ if(isset($_POST['hn']) || isset($_GET['hn'])){
   $da = explode(" ",$result["thidate"]);
   $daten = explode("-",$da[0]);
   ?>
-  <?=$daten[2]?>-<?=$daten[1]?>-<?=$daten[0]?>&nbsp;<?=$da[1]?>
+  <?=$daten[2]?>-<?=$daten[1]?>-<?=$daten[0]+543;?>&nbsp;เวลา <?=$da[1];?> น.
   </span></span></span></td>
   <td align="center" valign="top" class="text3">&nbsp;</td>
 </tr>
@@ -125,13 +132,12 @@ if(isset($_POST['hn']) || isset($_GET['hn'])){
   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" width="100%" >
   <tr><td>
   <table width="100%" class="text1">
-    <tr><td width="12%" valign="top" class="text2"><strong>HN :</strong>    <?=$result['hn']?></td>
-  <td colspan="3" valign="top" class="text2"><strong>ชื่อ :</strong>    <span style="font-size:24px"><strong><?=$result['ptname']?></strong></span></td>
+    <tr><td colspan="4" valign="top" class="text2"><strong>HN :</strong>    <?=$result['hn']?>      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ชื่อ :</strong>    <span style="font-size:24px"><strong><?=$result['ptname']?></strong></span></td>
   <td colspan="2" valign="top" class="text2"><strong>อายุ :</strong>
     <?=$result['age']?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text3"><strong>สังกัด : </strong> <span style="font-size:18px"><?=$result['camp'];?></span></span></td>
   </tr>
 <tr>
-  <td valign="top"><span class="text3"><strong>น้ำหนัก: </strong>
+  <td width="12%" valign="top"><span class="text3"><strong>น้ำหนัก: </strong>
   <?=$result['weight']?>กก.</span></td>
   <td width="17%" valign="top"><span class="text3"><strong>ส่วนสูง:</strong>
     <?=$result['height']?>
@@ -157,16 +163,13 @@ if(isset($_POST['hn']) || isset($_GET['hn'])){
   </span></td>
   </tr>
 <tr>
-  <td valign="top"><span class="text3"><strong>บุหรี่: </strong>
+  <td colspan="3" valign="top"><span class="text3"><strong>บุหรี่: </strong>
     <? if($result['cigarette']=="0"){ echo "ไม่เคยสูบ";}else if($result['cigarette']=="1"){ echo "เคยสูบ แต่เลิกแล้ว";}else if($result['cigarette']=="2"){ echo "สูบเป็นครั้งคราว";}else if($result['cigarette']=="3"){ echo "สูบเป็นประจำ";}?>
-  </span></td>
-  <td valign="top"><span class="text3"><strong>สุรา: </strong>
+  </span><span class="text3"><strong>&nbsp;&nbsp;สุรา: </strong>
     <? if($result['alcohol']=="0"){ echo "ไม่เคยดื่ม";}else if($result['alcohol']=="1"){ echo "เคยดื่ม แต่เลิกแล้ว";}else if($result['alcohol']=="2"){ echo "ดื่มเป็นครั้งคราว";}else if($result['alcohol']=="3"){ echo "ดื่มเป็นประจำ";}?>  
-  </span></td>
-  <td valign="top"><span class="text3"><strong>T:</strong>
+  &nbsp;&nbsp;</span><span class="text3"><strong>T:</strong>
 <u><?=$result['temperature']?></u>
-C ํ</span></td>
-  <td valign="top"><span class="text3"><strong>P:
+C ํ</span><span class="text3"><strong>&nbsp;&nbsp;P:
   </strong>
     <?=$result['pause']?>
 ครั้ง/นาที</span></td>
@@ -178,29 +181,56 @@ C ํ</span></td>
 /
 <?=$result['bp2']?>
 mmHg.</u></span></td>
+<td class="text3">
+  <?php 
+  $thdatehn = $result['thdatehn'];
+
+  $sql = "SELECT `bp21`,`bp22`  
+  FROM `dxofyear_out` 
+  WHERE `thdatehn` = '$thdatehn'";
+
+  $q = mysql_query($sql);
+  $dxofyear = mysql_fetch_assoc($q);
+
+  $bp21 = '-';
+  $bp22 = '-';
+  if( $dxofyear['bp21'] && $dxofyear['bp22'] ){
+    $bp21 = $dxofyear['bp21'];
+    $bp22 = $dxofyear['bp22'];
+  } 
+  ?>
+  <b>BP2:</b> <u><?=$bp21;?> / <?=$bp22;?> mmHg.</u>
+</td>
 </tr>
 <tr>
   <td colspan="6" valign="top" class="text2"><strong class="text2">ค่าความดัน : </strong><?=$result['stat_pressure']?>
-    <? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure'];?></td>
+    <? if($result['stat_pressure']=="ผิดปกติ") echo $result['reason_pressure'];?></td>
 </tr>
 <tr>
   <td colspan="6" valign="top" class="text2"><strong class="text2">ค่า BMI : </strong>
     <?=$result['stat_bmi']?>
-    <? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi'];?></td>
+    <? if($result['stat_bmi']=="ผิดปกติ") echo $result['reason_bmi'];?></td>
 </tr>
   </table></td></tr></table></td>
   </tr>
 <tr class="text3">
-  <td align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+  <td width="47%" align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
     <tr>
       <td align="center"><strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong></td>
     </tr>
     <tr>
       <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td width="61%" align="center" bgcolor="#CCCCCC">labcode </td>
-            <td width="19%" align="center" bgcolor="#CCCCCC">result</td>
-            <td width="20%" align="center" bgcolor="#CCCCCC">normalrange</td>
+            <td align="center" bgcolor="#CCCCCC"><span class="style10">การตรวจเม็ดเลือด </span></td>
+            <td align="center" bgcolor="#CCCCCC"><span class="style10">ผลตรวจ</span></td>
+            <td align="center" bgcolor="#CCCCCC"><span class="style10">ค่าปกติ</span></td>
+            <?php
+					/*
+					?>
+					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผลการตรวจ</strong></td>
+					<?php
+					*/
+					?>
           </tr>
           <? $sql="SELECT * FROM result1 WHERE profilecode='CBC' ";
 	$query = mysql_query($sql);
@@ -208,7 +238,14 @@ mmHg.</u></span></td>
 /////
 
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
+		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and ( 
+					labcode = 'WBC' 
+					|| labcode ='EOS' 
+					|| labcode ='HCT' 
+					|| labcode ='PLTC' 
+					|| labcode ='NEU' 
+					|| labcode ='LYMP' 
+				) ";
 		//echo "---->".$strSQL;
 		$objQuery = mysql_query($strSQL);
 		while($objResult = mysql_fetch_array($objQuery))
@@ -261,61 +298,48 @@ mmHg.</u></span></td>
 			}
 		?>
           <tr>
-            <td><?=$objResult["labcode"]." ".$labmean;?></td>
-            <td align="center"><?=$objResult["result"];?></td>
-            <td align="center"><?=$objResult["normalrange"];?></td>
+            <td width="64%"><span class="style11">
+              <?=$objResult["labcode"]." ".$labmean;?>
+            </span></td>
+            <td width="16%" align="center"><span class="style11">
+              <?=$objResult["result"];?>
+            </span></td>
+            <td width="20%" align="center"><span class="style11">
+              <?=$objResult["normalrange"];?>
+            </span></td>
           </tr>
           <?  } ?>
-          <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td align="center">&nbsp;</td>
-          </tr>
           <?
  		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
 		//echo "---->".$strSQL;
 		$objQuery = mysql_query($strSQL);
  ?>
           <tr>
-            <td colspan="3"><strong>HCT &nbsp;: </strong><span class="text"><strong>
-              <?=$result['stat_hct']?>
-              </strong>
-                  <? if($result['stat_hct']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_hct'];?>
-            </span></td>
-          </tr>
-          <tr>
-            <td colspan="3"><strong>WBC &nbsp;: </strong><span class="text"><strong>
-              <?=$result['stat_wbc']?>
-              </strong>
-                  <? if($result['stat_wbc']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_wbc'];?>
-            </span></td>
-          </tr>
-          <tr>
-            <td colspan="3"><strong>PLTC : </strong><span class="text"><strong>
-              <?=$result['stat_pltc']?>
-              </strong>
-                  <? if($result['stat_pltc']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pltc'];?>
-            </span></td>
-          </tr>
-          <tr>
-            <td colspan="3"><span>ผลการตรวจ :</span><strong>
+            <td colspan="3" height="27"><span class="style16">สรุปผลตรวจ :<strong>
               <?=$result['stat_cbc']?>
               <? if($result['stat_cbc']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cbc'];?>
-            </strong></td>
+            </strong></span></td>
           </tr>
       </table></td>
     </tr>
   </table>
-  <td align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+  <td width="53%" align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
     <tr>
       <td align="center"><strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong></td>
     </tr>
     <tr>
       <td><table width="100%" border="0" cellpadding="0" cellspacing="0" class="text31">
           <tr>
-            <td width="44%" align="center" bgcolor="#CCCCCC">labcode </td>
-            <td width="15%" align="center" bgcolor="#CCCCCC">result</td>
-            <td width="41%" align="center" bgcolor="#CCCCCC">normalrange</td>
+            <td align="center" bgcolor="#CCCCCC"><span class="style10">การตรวจปัสสาวะ</span></td>
+            <td align="center" bgcolor="#CCCCCC"><span class="style10">ผลตรวจ</span></td>
+            <td align="center" bgcolor="#CCCCCC"><span class="style10">ค่าปกติ</span></td>
+            <?php
+					/*
+					?>
+					<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผลการตรวจ</strong></td>
+					<?php
+					*/
+					?>
           </tr>
           <? $sql="SELECT * FROM result1 WHERE profilecode='UA' ";
 	$query = mysql_query($sql);
@@ -323,7 +347,7 @@ mmHg.</u></span></td>
 /////
 
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' ";
+		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."'  and (labcode ='SPGR' || labcode ='PHU' || labcode ='GLUU' || labcode ='PROU' || labcode ='WBCU' || labcode ='RBCU' )";
 		$objQuery = mysql_query($strSQL);
 		while($objResult = mysql_fetch_array($objQuery))
 		{
@@ -380,16 +404,22 @@ mmHg.</u></span></td>
 			}
 		?>
           <tr>
-            <td><?=$objResult["labcode"]." ".$labmean;?></td>
-            <td ><?=$objResult["result"];?></td>
-            <td align="center"><?=$objResult["normalrange"];?></td>
+            <td width="59%"><span class="style11">
+              <?=$objResult["labcode"]." ".$labmean;?>
+            </span></td>
+            <td width="18%" ><span class="style11">
+              <?=$objResult["result"];?>
+            </span></td>
+            <td width="23%" align="center"><span class="style11">
+              <?=$objResult["normalrange"];?>
+            </span></td>
           </tr>
           <?  } ?>
           <tr>
-            <td height="27" colspan="3">ผลตรวจ : <strong>
+            <td height="27" colspan="3"><span class="style16">สรุปผลตรวจ : <strong>
 				<?=$result['stat_ua']?>
-              <? if($result['stat_ua']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ua'];?>             
-            </strong></td>
+                <? if($result['stat_ua']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ua'];?>             
+            </strong></span></td>
           </tr>
       </table></td>
     </tr>
@@ -399,34 +429,33 @@ mmHg.</u></span></td>
   <table width="100%"  bordercolor="#FFFFFF" border="0"  cellpadding="0" cellspacing="0">
   
     <tr>
-      <td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
+      <td valign="top" class="text3"><strong class="text5" style="font-size:20px"><u>การตรวจทางห้องปฏิบัติการ</u></strong><strong>&nbsp;</strong></td>
+      <td align="left" class="text3"><strong>ผลตรวจ</strong></td>
       <!--<td valign="top" width="4%"  class="text3" bordercolor="#000000"><strong>2555</strong></td>-->
-      <td width="5%" align="center" valign="top" bordercolor="#000000"  class="text3"></td>
-      <td width="0%" align="center" valign="top" bordercolor="#000000"  class="text3">&nbsp;</td>
-      <td valign="top" class="text">&nbsp;</td>
-      <td valign="top" class="text">&nbsp;</td>
+      <td width="0%" align="left" bordercolor="#000000"  class="style17">&nbsp;</td>
+      <td align="left" class="text"><span class="style17">ค่าปกติ</span></td>
+      <td align="left" class="text"><span class="style17">สรุปผล</span></td>
     </tr>
     <? if($result['bs']!=""){?>
     <tr>
-      <td width="23%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
+      <td width="26%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
      <!-- <td width="4%" align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['bs']?>
       </strong></td>-->
-        <td width="5%" align="center" valign="top" bordercolor="#000000" class="text3">
+        <td width="8%" align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['bsflag']=="N"){
 				echo $result['bs'];
 			}else{
         		echo "<strong>$result[bs]</strong>";
         	}
-		?>
-        </td>
+		?>        </td>
         <td width="0%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td width="8%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
-        <td width="64%" valign="top" class="text"><strong>
+        <td width="9%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
+        <td width="57%" valign="top" class="text"><strong>
           <?=$result['stat_bs']?>
         </strong>
-          <? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
+          <? if($result['stat_bs']=="ผิดปกติ") echo $result['reason_bs']."...";?></td>
       </tr>
       <? } 
 	  if($result['chol']!=""){
@@ -436,21 +465,20 @@ mmHg.</u></span></td>
         <!--<td align="right" valign="top" bordercolor="#000000"><strong>
           <?//=$result5['chol']?>
         </strong></td>-->
-        <td align="center" valign="top" bordercolor="#000000" class="text3">
+        <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['cholflag']=="N"){
 				echo $result['chol'];
 			}else{
         		echo "<strong>$result[chol]</strong>";
         	}
-		?>        
-		</td>
+		?>		</td>
         <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
         <td valign="top" class="text">(<?=$result['cholrange']?>)</td>
         <td valign="top" class="text"><strong>
           <?=$result['stat_chol']?>
         </strong>
-          <? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
+          <? if($result['stat_chol']=="ผิดปกติ") echo $result['reason_chol']."...";?></td>
       </tr>
       <? } 
 	  if($result['tg']!=""){
@@ -460,21 +488,20 @@ mmHg.</u></span></td>
        <!-- <td align="right" valign="top" bordercolor="#000000"><strong>
           <?//=$result5['tg']?>
         </strong></td>-->
-        <td align="center" valign="top" bordercolor="#000000" class="text3">
+        <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['tgflag']=="N"){
 				echo $result['tg'];
 			}else{
         		echo "<strong>$result[tg]</strong>";
         	}
-		?> 
-        </td>
+		?>        </td>
         <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
         <td valign="top" class="text">(<?=$result['tgrange']?>)</td>
         <td valign="top" class="text"><strong>
           <?=$result['stat_tg']?>
         </strong>
-          <? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
+          <? if($result['stat_tg']=="ผิดปกติ") echo $result['reason_tg']."...";?></td>
       </tr>
       <? } 
 	  if($result['bun']!=""){
@@ -484,21 +511,20 @@ mmHg.</u></span></td>
         <!--<td align="right" valign="top" bordercolor="#000000"><strong>
           <?//=$result5['bun']?>
         </strong></td>-->
-        <td align="center" valign="top" bordercolor="#000000" class="text3">
+        <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['bunflag']=="N"){
 				echo $result['bun'];
 			}else{
         		echo "<strong>$result[bun]</strong>";
         	}
-		?> 
-        </td>
+		?>        </td>
         <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
         <td valign="top" class="text">(<?=$result['bunrange']?>)</td>
         <td valign="top" class="text"><strong>
           <?=$result['stat_bun']?>
         </strong>
-          <? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
+          <? if($result['stat_bun']=="ผิดปกติ") echo $result['reason_bun']."...";?></td>
       </tr>
       <? } 
 	  if($result['cr']!=""){
@@ -508,21 +534,20 @@ mmHg.</u></span></td>
        <!-- <td align="right" valign="top" bordercolor="#000000"><strong>
           <?//=$result5['cr']?>
         </strong></td>-->
-        <td align="center" valign="top" bordercolor="#000000" class="text3">
+        <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['crflag']=="N"){
 				echo $result['cr'];
 			}else{
         		echo "<strong>$result[cr]</strong>";
         	}
-		?> 
-        </td>
+		?>        </td>
         <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
         <td valign="top" class="text">(<?=$result['crrange']?>)</td>
         <td valign="top" class="text"><strong>
           <?=$result['stat_cr']?>
         </strong>
-          <? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
+          <? if($result['stat_cr']=="ผิดปกติ") echo $result['reason_cr']."...";?></td>
       </tr>
       <? } 
 	  if($result['alk']!=""){
@@ -532,20 +557,19 @@ mmHg.</u></span></td>
      <!-- <td align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['alk']?>
       </strong></td>-->
-      <td align="center" valign="top" bordercolor="#000000" class="text3">
+      <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['alkflag']=="N"){
 				echo $result['alk'];
 			}else{
         		echo "<strong>$result[alk]</strong>";
         	}
-		?>       
-      </td>
+		?>      </td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['alkrange']?>)</td>
       <td valign="top" class="text"><strong><strong>
         <?=$result['stat_sgot']?>
-      </strong></strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
+      </strong></strong><? if($result['stat_sgot']=="ผิดปกติ") echo $result['reason_sgot']."...";?></td>
       </tr>
       <? } 
 	  if($result['sgpt']!=""){
@@ -555,21 +579,20 @@ mmHg.</u></span></td>
       <!--<td align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['sgpt']?>
       </strong></td>-->
-      <td align="center" valign="top" bordercolor="#000000" class="text3">
+      <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['sgptflag']=="N"){
 				echo $result['sgpt'];
 			}else{
         		echo "<strong>$result[sgpt]</strong>";
         	}
-		?> 
-      </td>
+		?>      </td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['sgptrange']?>)</td>
       <td valign="top" class="text"><strong>
         <?=$result['stat_sgpt']?>
       </strong>
-        <? if($result['stat_sgpt']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgpt']."...";?></td>
+        <? if($result['stat_sgpt']=="ผิดปกติ") echo $result['reason_sgpt']."...";?></td>
     </tr>
     <? } 
 	  if($result['sgot']!=""){
@@ -579,21 +602,20 @@ mmHg.</u></span></td>
       <!--<td align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['sgot']?>
       </strong></td>-->
-      <td align="center" valign="top" bordercolor="#000000" class="text3">
+      <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['sgotflag']=="N"){
 				echo $result['sgot'];
 			}else{
         		echo "<strong>$result[sgot]</strong>";
         	}
-		?> 
-      </td>
+		?>      </td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['sgotrange']?>)</td>
       <td valign="top" class="text"><strong>
         <?=$result['stat_alk']?>
       </strong>
-        <? if($result['stat_alk']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_alk']."...";?></td>
+        <? if($result['stat_alk']=="ผิดปกติ") echo $result['reason_alk']."...";?></td>
     </tr>
     <? } 
 	  if($result['uric']!=""){
@@ -603,21 +625,20 @@ mmHg.</u></span></td>
       <!--<td align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['uric']?>
       </strong></td>-->
-      <td align="center" valign="top" bordercolor="#000000" class="text3">
+      <td align="left" valign="top" bordercolor="#000000" class="text3">
         <?
         	if($result['uricflag']=="N"){
 				echo $result['uric'];
 			}else{
         		echo "<strong>$result[uric]</strong>";
         	}
-		?> 
-      </td>
+		?>      </td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['uricrange']?>)</td>
       <td valign="top" class="text"><strong>
         <?=$result['stat_uric']?>
       </strong>
-        <? if($result['stat_uric']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_uric']."...";?></td>
+        <? if($result['stat_uric']=="ผิดปกติ") echo $result['reason_uric']."...";?></td>
     </tr>
     <tr>
       <td colspan="6" align="center" valign="top"> <hr /></td>
@@ -626,7 +647,7 @@ mmHg.</u></span></td>
 	?>
     
     <tr>
-      <td valign="top" class="text3" width="23%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
+      <td valign="top" class="text3" width="26%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
      <!-- <td align="left" valign="top" class="text3" width="4%"><strong>
         <?//=$result5['cxr']?>
       </strong></td>-->
@@ -651,7 +672,7 @@ mmHg.</u></span></td>
       <td colspan="6" valign="top"><strong>การตรวจพิเศษอื่น ๆ </strong></td>
     </tr>
     <tr>
-      <td width="23%" valign="top" class="text3"><strong>
+      <td width="26%" valign="top" class="text3"><strong>
         <?=$result['other1']?>
       :</strong></td>
       <td colspan="5" valign="top" class="text3"><span class="text3">
@@ -752,8 +773,7 @@ mmHg.</u></span></td>
 		  echo $summary;
 	  }
 	  
-	 ?></u>
-     </td>
+	 ?></u>     </td>
      </tr>
 </table>
 </td>
