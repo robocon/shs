@@ -64,17 +64,20 @@ if( $action === 'show' ){
 
     $where = "AND `thidate` LIKE '$def_date%' ";
     if( !empty($hn) ){
-        $where = "AND `hn` = '$hn' ";
+        $where = "AND `hn` = '$hn' ORDER BY `row_id` DESC";
     }
 
-    $sql = "SELECT * 
+    // อันเก่าเป็น `camp` LIKE 'ตรวจสุขภาพ%'
+    $sql = "SELECT *, SUBSTRING(`thidate`, 1, 10) AS `short_date`  
     FROM `dxofyear_out` 
-    WHERE `camp` LIKE 'ตรวจสุขภาพ%'
+    WHERE `camp` LIKE 'ตรวจสุขภาพ%' 
     $where ";
+
     $db->select($sql);
-    $items = $db->get_items();
-    if( count($items) > 0 ){
-        
+    $rows = $db->get_rows();
+
+    if( $rows > 0 ){
+        $items = $db->get_items();
         ?>
         <style>
             .chk_table{
@@ -123,8 +126,6 @@ if( $action === 'show' ){
             $i = 1;
             foreach ($items as $key => $item) {
                 
-                
-
                 $sql = "SELECT 
                 CASE
                     WHEN `res_cbc` = 1 THEN 'ปกติ' 
@@ -169,11 +170,10 @@ if( $action === 'show' ){
                 `diag` 
                 FROM `chk_doctor` 
                 WHERE `hn` = '".$item['hn']."' 
-                AND `vn` = '".$item['vn']."' ";
+                AND ( `date_chk` LIKE '".$item['short_date']."%' OR `vn` = '".$item['vn']."' )";
 
                 $db->select($sql);
                 $user = $db->get_item();
-
                 ?>
                 <tr>
                     <td><?=$i;?></td>

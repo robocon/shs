@@ -16,6 +16,7 @@ if( $action === false ){
 		<p>- ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
 		<p>- 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
 		<p>- 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
+		<p>- 30-08-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen</p>
 	</div>
 	<form action="export_new43.php" method="post">
 		<div>
@@ -198,6 +199,12 @@ if( $action === false ){
 	
 	// แฟ้มที่ 27
 	include 'libs/charge_ipd.php';
+
+	include 'libs/anc.php';
+	include 'libs/prenatal.php';
+	include 'libs/ncdscreen.php';
+
+	
 	
 	
 	// สร้าง zip ไฟล์
