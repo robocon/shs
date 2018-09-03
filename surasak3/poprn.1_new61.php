@@ -203,7 +203,7 @@ return $vat;
 						}
 ///////End Load offisers
 
-    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id ,ponoyear,chkindate,senddate,borrowdate,pobillno,pobilldate FROM pocompany WHERE row_id = '$nRow_id' ";
+    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id ,ponoyear,chkindate,senddate,borrowdate,pobillno,pobilldate,fixdate FROM pocompany WHERE row_id = '$nRow_id' ";
     $result = mysql_query($query) or die("Query pocompany fail");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -230,6 +230,11 @@ return $vat;
 	$cPonoyear=$row->ponoyear;
 	$cBillno=$row->pobillno;  //ใบเสนอราคาเลขที่
 	$cBilldate=$row->pobilldate;	//ใบเสนอราคาลงวันที่
+	$cFixdate=$row->fixdate;	//วันที่กำหนดส่งมอบ
+	//echo "-->".$cFixdate;
+	if(empty($cFixdate)){ 
+		$cFixdate=$cBorrowdate;
+	}
 	
 	if(empty($cBillno) || empty($cBilldate)){
 		$chksqlcom="select pobillno, pobilldate, pobillno2, pobilldate2, pobillno3, pobilldate3 from company where comcode='$cComcode'";
@@ -305,6 +310,7 @@ $aPart  = array(" part");
 //$x  $drugcode $tradname $packing  $pack  $amount  $price  $packpri  $specno 
 
 	$query = "SELECT drugcode FROM poitems WHERE idno = '$nRow_id' ";
+	//echo $query;
 	$result = Mysql_Query($query);
 	$i=0;
 	while(list($drugcode) = Mysql_fetch_row($result)){
@@ -456,7 +462,101 @@ print "<DIV style='left:105PX;top:390PX;width:661PX;height:30PX;'><span class='f
 print "<DIV style='left:105PX;top:415PX;width:661PX;height:30PX;'><span class='fc1-0'>7. คำสั่งรพ.ค่ายสุรศักดิ์มนตรี ที่ 151/60 ลง 23 ส.ค. 60, 237/60 ลง 15 ธ.ค. 60 เรื่องแต่งตั้งคณะกรรมการผู้รับผิดชอบ</span></DIV>";
 
 print "<DIV style='left:105PX;top:440PX;width:661PX;height:30PX;'><span class='fc1-0'>ในการจัดทำร่างขอบเขตงานหรือรายละเอียดคุณลักษณะเฉพาะเจาะจงของพัสดุที่จะซื้อหรือจ้าง</span></DIV>";
-
+	
+	$query55 = "SELECT drugcode FROM poitems WHERE idno = '$nRow_id' AND (drugcode ='2RECO' || drugcode ='2EPOS' || drugcode ='2EPOS_3000' || drugcode ='2EPOS_4000' || drugcode ='2EPOS_5000' || drugcode ='2ESPOVI')";
+	//echo $query55;
+	$result55 = mysql_query($query55);
+	if(mysql_num_rows($result55) > 0){  //ถ้าเป็นยาชีววัตถุคล้ายคลึง
+		print "<DIV style='left:105PX;top:465PX;width:661PX;height:30PX;'><span class='fc1-0'>8. หนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐกรมบัญชีกลาง ที่ กค (กวจ) 0405.2/050764 </span></DIV>";	
+		
+		print "<DIV style='left:105PX;top:490PX;width:661PX;height:30PX;'><span class='fc1-0'>ลง 24 พ.ย. 60</span></DIV>";			
+		
+		print "<DIV style='left:54PX;top:515PX;width:106PX;height:30PX;'><span class='fc1-5'>สิ่งที่ส่งมาด้วย</span></DIV>";
+		
+		print "<DIV style='left:166PX;top:515PX;width:229PX;height:30PX;'><span class='fc1-0'>1. หนังสือกองเภสัชกรรม รพ.ค่ายฯ ที่</span></DIV>";
+		
+		print "<DIV style='left:394PX;top:515PX;width:110PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cPrepono</B></span></DIV>";
+		
+		print "<DIV style='left:503PX;top:515PX;width:56PX;height:30PX;'><span class='fc1-0'>ลงวันที่</span></DIV>";
+		
+		print "<DIV style='left:558PX;top:515PX;width:208PX;height:30PX;'><span class='fc1-0'><B>$cPrepodate</B></span></DIV>";
+		
+		print "<DIV style='left:166PX;top:540PX;width:600PX;height:30PX;'><span class='fc1-0'>2. บัญชีรายละเอียดในการ จัดซื้อ จำนวน 1 ชุด</span></DIV>";
+		
+		print "<DIV style='left:166PX;top:565PX;width:600PX;height:30PX;'><span class='fc1-0'>3. ร่างขอบเขตของงานและรายละเอียดคุณลักษณะของพัสดุที่จะซื้อหรือจ้าง จำนวน 1 ชุด</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:590PX;width:661PX;height:30PX;'><span class='fc1-0'>1. เนื่องด้วยกองเภสัชกรรม รพ.ค่ายฯ มีความจำเป็นที่จะต้องจัดซื้อยาเพื่อใช้ในราชการ รพ.ค่ายฯ</span></DIV>";
+		
+		print "<DIV style='left:61PX;top:615PX;width:705PX;height:30PX;'><span class='fc1-0'>ตามสิ่งที่ส่งมาด้วย 1.</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:640PX;width:661PX;height:30PX;'><span class='fc1-0'>2. รายละเอียด พัสดุที่จะจัดซื้อ ตามบัญชีรายละเอียดที่แนบ ตามสิ่งที่ส่งมาด้วย 2.</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:665PX;width:661PX;height:30PX;'><span class='fc1-0'>3. ขอบเขตของงานหรือรายละเอียดคุณลักษณะเฉพาะของพัสดุ ตามสิ่งที่ส่งมาด้วย 3.</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:690PX;width:661PX;height:30PX;'><span class='fc1-0'>4. ราคากลางของพัสดุที่จะซื้อ ตามสิ่งที่ส่งมาด้วย 2.</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:715PX;width:189PX;height:30PX;'><span class='fc1-0'>5. วงเงิน จัดซื้อ ครั้งนี้เป็นเงิน</span></DIV>";
+		
+		print "<DIV style='left:293PX;top:715PX;width:99PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
+		
+		print "<DIV style='left:391PX;top:715PX;width:40PX;height:30PX;'><span class='fc1-0'>บาท</span></DIV>";
+		
+		print "<DIV style='left:430PX;top:715PX;width:400PX;height:30PX;'><span class='fc1-0'>$cPriadvat</span></DIV>";  //จำนวนเงินตัวอักษร  ----->
+		
+		print "<DIV style='left:61PX;top:740PX;width:661PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:765PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุในวันที่</span></DIV>";
+		
+		print "<DIV style='left:333PX;top:765PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
+		
+		print "<DIV style='left:509PX;top:765PX;width:257PX;height:30PX;'><span class='fc1-0'>ส่งที่หน่วย รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เป็นการจัดซื้อโดยวิธีเฉพาะเจาะจง เนื่องจากเป็นการจัดซื้อยาชีววัตถุที่ไม่ใช่ยาชีววัตถุคล้ายคลึง</span></DIV>";
+		
+		print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 8. ข้อ 1.5 และมีวงเงินในการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกินวงเงินตามที่กำหนดในกฎกระทรวง ตามอ้างถึง1 มาตรา56 (2)</span></DIV>";
+		
+		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>(ข) และตามอ้างถึง2 ข้อ1</span></DIV>";
+		
+		print "<DIV style='left:105PX;top:865PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print " <B>$cComname</B> ซึ่งเป็นยากลุ่มชีววัตถุโครงสร้างซับซ้อน</span></DIV>";
+		print "<DIV style='left:61PX;top:890PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่มีรายงานผู้ป่วยเกิดอาการไม่พึงประสงค์จากการใช้ยารุนแรงเนื่องจากเปลี่ยนยี่ห้อของผลิตภัณฑ์ ผลิตภัณฑ์จากต่างบริษัทจะทำให้</span></DIV>";
+		print "<DIV style='left:61PX;top:915PX;width:705PX;height:30PX;'><span class='fc1-0'>เกิดความแตกต่างของการตอบสนองทางภูมิคุ้มกันในผู้ป่วยแต่ละราย ตามอ้างถึง 8.  โดยใช้เกณฑ์ราคาในการพิจารณาคัดเลือก </span></DIV>";		
+		print "<DIV style='left:61PX;top:940PX;width:705PX;height:30PX;'><span class='fc1-0'> และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา</span></DIV>";
+		//สิ้นสุดเนื้อหา PO ใบที่1 page1
+		
+		
+		
+		//เริ่มต้นเนื้อหา PO ใบที่1 page12
+		print "<DIV style='left:105PX;top:11365PX;width:661PX;height:30PX;'><span class='fc1-0'>9. ข้อเสนอ</span></DIV>";
+		
+		print "<DIV style='left:138PX;top:11390PX;width:600PX;height:30PX;'><span class='fc1-0'>9.1 เห็นควรอนุมัติให้กองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ดำเนินการจัดซื้อโดยวิธีการเฉพาะเจาะจง</span></DIV>";
+		
+		print "<DIV style='left:61PX;top:11415PX;width:705PX;height:30PX;'><span class='fc1-0'>ตามรายละเอียดในรายงานข้างต้น</span></DIV>";
+		
+		print "<DIV style='left:138PX;top:11440PX;width:120PX;height:30PX;'><span class='fc1-0'>9.2 เห็นควรแต่งตั้ง</span></DIV>";
+		
+		print "<DIV style='left:257PX;top:11440PX;width:150PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cKumkan</span></DIV>";
+		
+		print "<DIV style='left:406PX;top:11440PX;width:48PX;height:30PX;'><span class='fc1-0'>จำนวน</span></DIV>";
+		
+		print "<DIV style='left:453PX;top:11440PX;width:18PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$nKumkan</span></DIV>";
+		
+		print "<DIV style='left:470PX;top:11440PX;width:295PX;height:30PX;'><span class='fc1-0'>นาย ตามระเบียบฯ ด้วยแล้วรายงานผล</span></DIV>";
+		
+		print "<DIV style='left:61PX;top:11465PX;width:705PX;height:30PX;'><span class='fc1-0'> ให้ทราบภายใน 5 วันทำการ</span></DIV>";
+		
+		print "<DIV style='left:138PX;top:11490PX;width:628PX;height:30PX;'><span class='fc1-0'>จึงเรียนมาเพื่อกรุณาทราบ และกรุณาอนุมัติตามข้อเสนอในข้อ 9.</span></DIV>";
+		
+		//ระยะบรรทัด 25
+		print "<DIV style='left:466PX;top:11540PX;width:71PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";  //ยศ
+		
+		print "<DIV style='left:456PX;top:11540PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[2]</span></DIV>"; //ลงชื่อ
+		
+		print "<DIV style='left:456PX;top:11565PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";  //ชื่อสกุล
+		
+		print "<DIV style='left:456PX;top:11590PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2]</span></DIV>";  //ตำแหน่ง
+		//สิ้นสุดเนื้อหา PO ใบที่1 page12		
+	}else{
 print "<DIV style='left:54PX;top:465PX;width:106PX;height:30PX;'><span class='fc1-5'>สิ่งที่ส่งมาด้วย</span></DIV>";
 
 print "<DIV style='left:166PX;top:465PX;width:229PX;height:30PX;'><span class='fc1-0'>1. หนังสือกองเภสัชกรรม รพ.ค่ายฯ ที่</span></DIV>";
@@ -489,15 +589,11 @@ print "<DIV style='left:391PX;top:665PX;width:40PX;height:30PX;'><span class='fc
 
 print "<DIV style='left:430PX;top:665PX;width:400PX;height:30PX;'><span class='fc1-0'>$cPriadvat</span></DIV>";  //จำนวนเงินตัวอักษร
 
-print "<DIV style='left:61PX;top:690PX;width:171PX;height:30PX;'><span class='fc1-0'>(ต้องการให้งานนั้นเสร็จในวันที่</span></DIV>";
-
-print "<DIV style='left:221PX;top:690PX;width:157PX;height:30PX;TEXT-ALIGN: CENTER;'><span class='fc1-0'><B>$cBounddate</B></span></DIV>";  //วันที่ ข้อ3  
-
-print "<DIV style='left:417PX;top:690PX;width:369PX;height:30PX;'><span class='fc1-0'>) อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
+print "<DIV style='left:61PX;top:690PX;width:661PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 
 print "<DIV style='left:105PX;top:715PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุในวันที่</span></DIV>";
 
-print "<DIV style='left:343PX;top:715PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cBounddate</B></span></DIV>";  //วันที่ ข้อ 4
+print "<DIV style='left:333PX;top:715PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
 
 print "<DIV style='left:509PX;top:715PX;width:257PX;height:30PX;'><span class='fc1-0'>ส่งที่หน่วย รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 
@@ -581,6 +677,7 @@ print "<DIV style='left:456PX;top:11565PX;width:269PX;height:30PX;TEXT-ALIGN:CEN
 
 print "<DIV style='left:456PX;top:11590PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2]</span></DIV>";  //ตำแหน่ง
 //สิ้นสุดเนื้อหา PO ใบที่1 page12
+	}
 print "<BR>";
 print "</BODY></HTML>";
 
@@ -662,42 +759,47 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 			for ($ii=1; $ii <= 19; $ii++) { 
 				 include("connect.inc");
 				$sql1="select unitpri,part,freelimit,edpri,edpri_from from druglst where drugcode='$aDrugcode[$ii]'";
-				//print $sql;
+				//print $sql1;
 				$chkquery=mysql_query($sql1);
-				list($unitpri,$part,$freelimit,$edpri,$edprifrom)=mysql_fetch_array($chkquery);				
-				// ราคากลาง
-				//echo "==>".$edpri;
-				
-				$cost = false;
-				$from = '&nbsp;';
-
-				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรเบิกได้ไม่เกิน
-				if( $part == 'DPY' OR $part == 'DPN' ){
-
-					// ราคาอุปกรณ์เบิกได้ไม่เกิน
-					if( $freelimit > 0 ){
-						$cost = $freelimit;
-						$from = 3;
-					}
-
-				}else{
-
+				$chkrows=mysql_num_rows($chkquery);
+				//echo "==>".$chkrows;
+					list($unitpri,$part,$freelimit,$edpri,$edprifrom)=mysql_fetch_array($chkquery);				
 					// ราคากลาง
-					if( $edpri > 0 ){
-						$cost = $edpri;
-						$from = 3;
+					//echo "==>".$edprifrom;
+					
+					$cost = false;
+					
+					//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรณ์เบิกได้ไม่เกิน
+					if( $part == 'DPY' OR $part == 'DPN' ){
+	
+						// ราคาอุปกรณ์เบิกได้ไม่เกิน
+						if( $freelimit > 0 ){
+							$cost = $freelimit;  //
+							if($edprifrom==0 && $edprifrom !=""){  //ถ้าแหล่งที่มาราคากลางเป็นค่าว่าง
+								$from = 3;
+							}else{  //ถ้าแหล่งที่มาไม่ใช่ค่าว่าง
+								$from = $edprifrom;
+							}
+						}
+					}else{  //ถ้าเป็นยา/เวชภัณฑ์
+						// ราคากลางต้องมากกว่า 0
+						if( $edpri > 0 ){  //ถ้าราคากลางมากกว่า 0
+							$cost = $edpri;
+							if($edprifrom==0 && $edprifrom !=""){  //ถ้าแหล่งที่มาราคากลางยังไม่มีการกำหนดค่า
+								$from = 3;
+							}else{  //ถ้าแหล่งที่มามีข้อมูลแล้ว
+								$from = $edprifrom;
+							}
+						}else{
+							$cost = $edpri;
+							if($edprifrom==0 && $edprifrom !=""){  //ถ้าแหล่งที่มาราคากลางยังไม่มีการกำหนดค่า
+								$from = 5;
+							}else{  //ถ้าแหล่งที่มามีข้อมูลแล้ว
+								$from = $edprifrom;
+							}					
+						}
 					}
 
-				}
-
-				// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
-				if( empty($cost) ){
-					if( !empty($unitpri) ){
-						$cost = $unitpri;
-						$from = 5;
-					}
-				}
-				
 				$aTotalpackprice=$aAmount[$ii]*$aPackpri[$ii];
 				$aTotalprice=$aAmount[$ii]*$aPackpri_vat[$ii];
 				?>
@@ -851,10 +953,10 @@ print "<DIV style='left:372PX;top:2684PX;width:71PX;height:23PX;'><span class='f
 print "<DIV style='left:547PX;top:2684PX;width:51PX;height:23PX;'><span class='fc1-3'>พยาน</span></DIV>";
 
 print "<DIV style='left:88PX;top:2154PX;width:695PX;height:21PX;'><span class='fc1-3'>ให้ถูกต้องและครบถ้วนตามที่กำหนดไว้ในข้อ 1. แห่งใบสั่งซื้อนี้ พร้อมทั้งหีบห่อ หรือเครื่องรัดพันผูกโดยเรียบร้อย</span></DIV>";
-print "<DIV style='left:138PX;top:2136PX;width:645PX;height:21PX;'><span class='fc1-3'>ข้อ 2. ผู้ขายรับรองว่าจะส่งมอบสิ่งของที่ซื้อขายตามใบสั่งซื้อนี้ให้แก่ผู้ซื้อ ณ รพ.ค่ายสุรศักดิ์มนตรี  วันที่";
-print "</span><span class='fc1-3'>$cBounddate</span></DIV>";
-print "<DIV style='left:138PX;top:2174PX;width:645PX;height:21PX;'><span class='fc1-3'>ข้อ 3. ก่อนหรือในวันลงลายมือชื่อใบสั่งซื้อนี้ ผู้ขายได้นำหลักประกันเป็น....... -.........เป็นจำนวนร้อยละห้าของราคาสิ่งของทั้งหมด</span></DIV>";
-print "<DIV style='left:88PX;top:2194PX;width:695PX;height:23PX;'><span class='fc1-3'>คิดเป็นเงิน.....-...... บาท .(...-........) มามอบไว้แก่ผู้ซื้อเพื่อเป็นการประกันการปฏิบัติตามข้อตกลงนี้หลักประกันดังกล่าวผู้ซื้อจะคืนให้เมื่อผู้ขายพ้นจากข้อ</span></DIV>";
+print "<DIV style='left:138PX;top:2136PX;width:645PX;height:21PX;'><span class='fc1-3'>ข้อ 2. ผู้ขายรับรองว่าจะส่งมอบสิ่งของที่ซื้อขายตามใบสั่งซื้อนี้ให้แก่ผู้ซื้อ ณ รพ.ค่ายสุรศักดิ์มนตรี  ภายในวันที่ ";
+print "</span><span class='fc1-3'>$cFixdate</span></DIV>";
+print "<DIV style='left:138PX;top:2174PX;width:645PX;height:21PX;'><span class='fc1-3'>ข้อ 3. ก่อนหรือในวันลงลายมือชื่อใบสั่งซื้อนี้ ผู้ขายได้นำหลักประกันเป็น....... -.........เป็นจำนวนร้อยละ.............ของราคาสิ่งของทั้งหมด</span></DIV>";
+print "<DIV style='left:88PX;top:2194PX;width:695PX;height:23PX;'><span class='fc1-3'>คิดเป็นเงิน.....-...... บาท .(.....-......) มามอบไว้แก่ผู้ซื้อเพื่อเป็นการประกันการปฏิบัติตามข้อตกลงนี้หลักประกันดังกล่าวผู้ซื้อจะคืนให้เมื่อผู้ขายพ้นจากข้อ</span></DIV>";
 print "<DIV style='left:88PX;top:2216PX;width:695PX;height:23PX;'><span class='fc1-3'>ผูกพันตามข้อตกลงนี้แล้ว</span></DIV>";
 print "<DIV style='left:138PX;top:2238PX;width:645PX;height:23PX;'><span class='fc1-3'>ข้อ 4. ถ้าปรากฏว่าสิ่งของที่ผู้ขายส่งมอบไม่ตรงตามข้อตกลงข้อ 1. ผู้ซื้อทรงไว้ซึ่งสิทธิที่จะไม่รับของนั้น ในกรณีเช่นว่านี้ ผู้ขายต้องรีบนำสิ่งของนั้น</span></DIV>";
 print "<DIV style='left:88PX;top:2260PX;width:695PX;height:23PX;'><span class='fc1-3'>กลับคืนโดยเร็วที่สุดที่จะทำได้ และนำสิ่งของมามอบให้ใหม่หรือต้องทำการแก้ไขให้ถูกต้องตามข้อตกลงโดยผู้ซื้อไม่ต้องใช้ค่าเสียหาย หรือค่าใช้จ่ายให้แต่ประการใด </span></DIV>";  
@@ -870,7 +972,7 @@ print "<DIV style='left:88PX;top:2436PX;width:695PX;height:23PX;'><span class='f
 print "<DIV style='left:88PX;top:2458PX;width:695PX;height:23PX;'><span class='fc1-3'>จากการปรับจนถึงวันบอกเลิกข้อตกลงด้วยก็ได้ การคิดค่าปรับกรณีสิ่งของที่ตกลงซื้อขายประกอบกันเป็นชุด ขาดส่วนประกอบส่วนหนึ่งส่วนใดไปทำให้ไม่สามารถ</span></DIV>";
 print "<DIV style='left:88PX;top:2480PX;width:695PX;height:23PX;'><span class='fc1-3'>ใช้การได้โดยสมบูรณ์ให้ถือว่ายังมิได้ส่งมอบสิ่งของนั้นเลย และให้คิดค่าปรับจากราคาสิ่งของเต็มทั้งชุด</span></DIV>";
 print "<DIV style='left:138PX;top:2502PX;width:645PX;height:23PX;'><span class='fc1-3'>ข้อ 7. ผู้ขายยอมรับประกันความชำรุดบกพร่องหรือขัดข้องของสิ่งของตามข้อตกลงนี้เนื่องจากการใช้งานตามปกติเป็นเวลา....1.....ปี</span></DIV>";
-print "<DIV style='left:88PX;top:2524PX;width:695PX;height:23PX;'><span class='fc1-3'>นับถัดจากวันที่ผู้ซื้อได้รับมอบสิ่งของ โดยภายในกำหนดเวลาดังกล่าว หากสิ่งของเกิดชำรุดผู้ขายต้องจัดการซ่อมแซม หรือแก้ไขให้ใช้การได้ดีดังเดิมภายใน........วัน </span></DIV>";
+print "<DIV style='left:88PX;top:2524PX;width:695PX;height:23PX;'><span class='fc1-3'>นับถัดจากวันที่ผู้ซื้อได้รับมอบสิ่งของ โดยภายในกำหนดเวลาดังกล่าว หากสิ่งของเกิดชำรุดผู้ขายต้องจัดการซ่อมแซม หรือแก้ไขให้ใช้การได้ดีดังเดิมภายใน 7 วัน </span></DIV>";
 print "<DIV style='left:88PX;top:2546PX;width:695PX;height:23PX;'><span class='fc1-3'>นับแต่ที่ได้รับแจ้งจากผู้ซื้อและไม่คิดค่าใช้จ่ายใดๆ ทั้งสิ้นกับผู้ซื้อ</span></DIV>";
 print "<DIV style='left:138PX;top:2568PX;width:645PX;height:23PX;'><span class='fc1-3'>ข้อ 8. ถ้าผู้ขายไม่ปฏิบัติตาม ข้อตกลงข้อหนึ่งข้อใด ด้วยเหตุใดๆ ก็ตาม จนเป็นเหตุให้เกิดความเสียหายแก่ผู้ซื้อ แล้วผู้ขายยอมรับผิดและยินยอม</span></DIV>";
 print "<DIV style='left:88PX;top:2590PX;width:695PX;height:23PX;'><span class='fc1-3'>ชดใช้ค่าเสียหาย&nbsp;&nbsp;อันเกิดจากการที่ผู้ขายไม่ปฏิบัติตามข้อตกลงนั้น ให้แก่ผู้ซื้อ โดยสิ้นเชิง ภายในกำหนด 30 วันนับแต่วันที่ได้รับแจ้งจากผู้ซื้อ</span></DIV>";
@@ -2295,7 +2397,7 @@ print"<div style='left:588PX;top:10376PX;border-color:000000;border-style:dashed
 ?>
 	<div class="dx_detail" style="margin-top:10px;">
 		<div><strong>ระยะเวลาการส่งมอบ</strong>
-			<div style="padding-left: 20px;">กำหนดเวลาส่งมอบยา/เวชภัณฑ์ ภายใน 15 วัน นับจากวันลงนามในสัญญา</div>
+			<div style="padding-left: 20px;">กำหนดเวลาส่งมอบยา/เวชภัณฑ์ ภายใน 30 วัน นับจากวันลงนามในสัญญา</div>
         </div>
 		<div><strong>งบประมาณ</strong>
 			<div style="padding-left: 20px;">งบประมาณในการจัดซื้อ จำนวนเงิน <?=$nPriadvat;?> บาท <?=$cPriadvat;?></div>

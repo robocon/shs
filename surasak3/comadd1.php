@@ -1,31 +1,33 @@
-<html>
-<head>
-<title>add_user</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
-<link href="css/backoffice.css" rel="stylesheet" type="text/css">
-
-</head>
-
 <?php
- session_start();
+session_start();
 include("connect.inc");
 $thidate = (date("Y")+543).date("-m-d H:i:s"); 
-     $sql = "INSERT INTO com_support(depart,head,detail,datetime,user,date,phone,user1,jobtype)
-                  VALUES('$depart','$head','$detail','$datetime','$sOfficer','$thidate','$phone','$user','$jobtype');";
-      $result = mysql_query($sql);
-      if (mysql_errno() == 0){
-	  	echo "<script>alert('บันทึกข้อมูลเรียบร้อยแล้ว');window.location='com_support.php';</script>";
-	  }else { 
-           print "<br><br><br>รหัส  :$idname  ซ้ำของเดิม โปรดแก้ไข<br>";	   
-		   ?>
-            <script>
-			window.opener.location.reload();
-			window.open('','_self');
-			setTimeout("self.close()",1000);
-			</script>
-		<?
-        }
-        include("unconnect.inc");
+//print_r($_POST);
+$depart=$_POST["depart"];
+$head=$_POST["head"];
+$detail=$_POST["detail"];
+$datetime=$_POST["datetime"];
+$phone=$_POST["phone"];
+$user=$_POST["user"];
+$jobtype=$_POST["jobtype"];
+if($_POST["B1"]=="บันทึกข้อมูล"){
+	$sql="select * from com_support where depart='$depart' and head='$head' and thidate='$thidate'";
+	//echo $sql;
+	$query=mysql_query($sql);
+	$num=mysql_num_rows($query);
+	if($num < 1){
+		 $add = "INSERT INTO com_support(depart,head,detail,datetime,user,date,phone,user1,jobtype)
+					  VALUES('$depart','$head','$detail','$datetime','$sOfficer','$thidate','$phone','$user','$jobtype');";
+		  $result = mysql_query($add);
+		  if (mysql_errno() == 0){
+			echo "ทำการเพิ่มข้อมูลเรียบร้อยแล้ว";
+			echo "<meta http-equiv=\"refresh\" content=\"1;url=com_support.php\">";
+		  }else { 
+			echo "ไม่สามารถเพิ่มข้อมูลได้";
+			echo "<meta http-equiv=\"refresh\" content=\"1;url=com_add.php\">";
+			exit();			
+			}
+	}
+}
         ?>
-
 

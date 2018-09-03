@@ -89,7 +89,7 @@ function fncSubmit()
     <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
 	<option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
     <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
-	<option value="ฐานะพัฒน์  นิลคำ">ฐานะพัฒน์  นิลคำ</option>    
+	<option value="ฐานพัฒน์  นิลคำ">ฐานพัฒน์  นิลคำ</option>    
     </select>    </td>
     </tr>
   <tr>
@@ -110,26 +110,22 @@ if($_REQUEST['do']=='edit'){
 	$query=mysql_query($update);
 
 	 if($query){
-			echo"<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว</h1>";
-		//	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
-		?>
+			echo"<h1 align=center>เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว</h1>";
+?>
         <script>
-
-window.open('','_self');
-setTimeout("self.close()",2000);
-window.opener.location.reload();
-</script>
-        <?
+			setTimeout("self.close()",1000);
+			window.opener.location.reload();
+		</script>
+<?
 			}else {
-			echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้</h1>";
+			echo "<h1 align=center>ไม่สามารถเลือกผู้รับผิดชอบงานได้</h1>";
 		//	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
 		?>
         <script>
-
-window.open('','_self');
-setTimeout("self.close()",2000);
-window.opener.location.reload();
-</script>
+			window.open('','_self');
+			setTimeout("self.close()",2000);
+			window.opener.location.reload();
+		</script>
         <?
 			}
 	}
