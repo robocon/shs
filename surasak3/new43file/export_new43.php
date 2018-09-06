@@ -13,10 +13,10 @@ if( $action === false ){
 	?>
 	<div>
 		<h3>ส่งออก43แฟ้ม</h3>
-		<p>- ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
-		<p>- 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
-		<p>- 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
-		<p>- 30-08-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen</p>
+		<p>1. ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
+		<p>2. 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
+		<p>3. 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
+		<p>4. 30-08-2561 - 06-09-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen, labfu</p>
 	</div>
 	<form action="export_new43.php" method="post">
 		<div>
@@ -111,7 +111,7 @@ if( $action === false ){
 	}
 	list($thiyr, $rptmo) = explode('-', $dateSelect);
 	
-	$dirPath = "export/$thiyr/$rptmo";
+	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo";
 	
 	if( !is_dir("export/$thiyr") ){
 		mkdir("export/$thiyr", 0777);
@@ -130,6 +130,7 @@ if( $action === false ){
 	$zipLists = array();
 	$qofLists = array();
 
+	
 	// แฟ้มที่ 1
 	include 'libs/person.php';
 	
@@ -199,11 +200,16 @@ if( $action === false ){
 	
 	// แฟ้มที่ 27
 	include 'libs/charge_ipd.php';
+	
 
-	include 'libs/anc.php';
-	include 'libs/prenatal.php';
-	include 'libs/ncdscreen.php';
+	// แฟ้มใหม่
+	require_once 'libs/anc.php';
+	require_once 'libs/prenatal.php';
+	require_once 'libs/ncdscreen.php';
+	require_once 'libs/labfu.php';
+	require_once 'libs/labfu2.php';
 
+	require_once 'libs/chronicfu.php';
 	
 	
 	
@@ -211,7 +217,8 @@ if( $action === false ){
 	$main_folder = 'F43_11512_'.$thiyr.$rptmo.'01090000';
 	$zipName = 'export/'.$main_folder.'.zip';
 	$zipNameQOF = 'export/QOF_'.$main_folder.'.zip';
-	
+
+
 	require_once("libs/dZip.inc.php"); // include Class
 	
 	$zip = new dZip($zipName);

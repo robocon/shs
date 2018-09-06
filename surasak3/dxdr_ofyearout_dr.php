@@ -935,7 +935,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 <br />
 <?
 //echo "==>".substr($arr_view["age"],0,2);
-if(substr($arr_view["age"],0,2) >= 35){
+// if(substr($arr_view["age"],0,2) >= 35){
 ////ผลlab ของปีที่แล้ว
 ////*runno ตรวจสุขภาพ*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -1314,7 +1314,7 @@ $bsult = mysql_fetch_array($brow);
 </TABLE>
 <BR>
 <?
-} // close if age
+// } // close if age
 ?>
 <TABLE border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" width="100%">
 <TR>

@@ -2,7 +2,6 @@
 
 $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 mysql_select_db('smdb', $db2) or die( mysql_error() );
-mysql_query("SET NAMES UTF8", $db2);
 
 $sql = "SELECT '11512' AS `HOSPCODE`,
 `hn` AS `PID`, 
@@ -44,8 +43,6 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['CID']."\r\n";
 
 }
-mysql_close($db2);
-
 
 $filePath = $dirPath.'/prenatal.txt';
 file_put_contents($filePath, $txt);
@@ -57,31 +54,6 @@ $qofPath = $dirPath.'/qof_prenatal.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
+echo "สร้างแฟ้ม prenatal เสร็จเรียบร้อย<br>";
 
-
-// เทสว่ามีแลปอะไรบ้าง
-/*
-SELECT b.* 
-FROM (
-    SELECT '11512' AS `HOSPCODE`,
-    `hn` AS `PID`, 
-    '' AS `GRAVIDA`, 
-    '' AS `LMP`, 
-    '' AS `EDC`, 
-    '' AS `VDRL_RESULT`, 
-    '' AS `HB_RESULT`, 
-    '' AS `HIV_RESULT`, 
-    '' AS `DATE_HCT`, 
-    '' AS `HCT_RESULT`, 
-    '' AS `THALASSEMIA`, 
-    thDateTimeToEn(`thidate`) AS `D_UPDATE`, 
-    CONCAT(thDateToEn(`thidate`), LPAD(`vn`, 3, 0),'0000') AS `PROVIDER`, 
-    `idcard` AS `CID` 
-    FROM `opday` 
-    WHERE `thidate` LIKE '2561-08%' 
-    AND `toborow` LIKE 'ex08%'
-) AS a 
-LEFT JOIN ( 
-    SELECT * FROM `orderhead` WHERE `orderdate` LIKE '2018-08%' 
-) AS b ON b.`hn` = a.`PID` 
-*/
+mysql_close($db2);

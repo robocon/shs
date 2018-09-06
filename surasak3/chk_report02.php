@@ -650,34 +650,35 @@ FROM (
     FROM `resulthead` 
     WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
     AND ( 
-        `profilecode`='GLU' 
-        OR `profilecode`='CREAG' 
-        OR `profilecode`='BUN' 
-        OR `profilecode`='URIC' 
-        OR `profilecode`='CHOL' 
-        OR `profilecode`='TRIG' 
-        OR `profilecode`='AST' 
-        OR `profilecode`='ALT' 
-        OR `profilecode`='LIPID' 
-        OR `profilecode`='ALP' 
-        OR `profilecode`='ANTIHB' 
-        OR `profilecode`='HDL' 
-        OR `profilecode`='LDL' 
-        OR `profilecode`='10001' 
-        OR `profilecode`='ABOC' 
-        OR `profilecode`='METAMP'	
-        OR `profilecode`='OCCULT'
+        #`profilecode`='GLU' 
+        #OR `profilecode`='CREAG' 
+        #OR `profilecode`='BUN' 
+        #OR `profilecode`='URIC' 
+        #OR `profilecode`='CHOL' 
+        #OR `profilecode`='TRIG' 
+        #OR `profilecode`='AST' 
+        #OR `profilecode`='ALT' 
+        #OR `profilecode`='LIPID' 
+        #OR `profilecode`='ALP' 
+        #OR `profilecode`='ANTIHB' 
+        #OR `profilecode`='HDL' 
+        #OR `profilecode`='LDL' 
+        #OR `profilecode`='10001' 
+        #OR `profilecode`='ABOC' 
+        #OR `profilecode`='METAMP'	
+        #OR `profilecode`='OCCULT'
 
-		OR `profilecode`='HBSAG' 
-        OR `profilecode`='HAVTOT' 
-        OR `profilecode`='WET' 
-		OR `profilecode`='AHAV' 
+		#OR `profilecode`='HBSAG' 
+        #OR `profilecode`='HAVTOT' 
+        #OR `profilecode`='WET' 
+		#OR `profilecode`='AHAV' 
 
-		OR `profilecode`='STOOL' 
-		OR `profilecode`='35101' 
+		#OR `profilecode`='STOOL' 
+		#OR `profilecode`='35101' 
 
-		OR `profilecode`='PSA' 
+		#OR `profilecode`='PSA' 
 		
+		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -685,14 +686,15 @@ FROM (
 LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
 WHERE b.`result` != 'DELETE' 
-AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
-AND ( b.`labcode` != 'COLORS'
-	AND b.`labcode` != 'CHARAC' 
-	AND b.`labcode` != 'WBCS' 
-	AND b.`labcode` != 'RBCS' 
-	AND b.`labcode` != 'MUCOUS'  )
-ORDER BY b.`seq` ASC,a.`latest_id` ASC";
-
+#AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
+#AND ( b.`labcode` != 'COLORS'
+#	AND b.`labcode` != 'CHARAC' 
+#	AND b.`labcode` != 'WBCS' 
+#	AND b.`labcode` != 'RBCS' 
+#	AND b.`labcode` != 'MUCOUS'  ) 
+GROUP BY x.`profilecode` 
+ORDER BY b.`seq` ASC, a.`latest_id` ASC ";
+// dump($sql1);
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -743,15 +745,18 @@ ORDER BY c.seq ASC";
 								list($authorisename,$authorisedate)=mysql_fetch_array($objQuery1);	
 								
 								$where = '';
-								if( $arrresult['profilecode'] == "STOOL" ){
+								if( $arrresult['profilecode'] == 'STOOL' ){
 									$where = " AND `labcode` = 'PARASI' ";
+
+								} else if( $arrresult['profilecode'] == 'CREAG' ){
+									$where = " AND ( `labcode` = 'GFR' OR `labcode` = 'CREA' ) ";
 								}
 								
 								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
 								FROM resultdetail  
 								WHERE autonumber='".$arrresult['autonumber']."' 
 								AND `result` != 'DELETE' 
-								AND (labcode !='GFR' AND labcode !='HI' ) 
+								#AND ( labcode !='GFR' AND labcode !='HI' ) 
 								$where 
 								ORDER BY seq ASC";
 								// dump($strSQL);
@@ -802,6 +807,8 @@ ORDER BY c.seq ASC";
 										$objResult["labname"] = 'Stool Exam';
 									}else if($objResult["labname"]=="PSA"){
 										$labmean="การตรวจมะเร็งต่อมลูกหมาก";
+									}else if($objResult["labname"]=="eGFR"){
+										$labmean="eGFR";
 									}
 
 									$app = '';

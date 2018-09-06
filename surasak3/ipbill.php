@@ -250,9 +250,9 @@ debt= Netpri-Netpaid-$paid
        echo "<br>";
 */
 
-$sql = "Select sum(price),status FROM ipacc WHERE an = '$cAn' and status='จำหน่าย' group by status ";
+/*$sql = "Select sum(price),status FROM ipacc WHERE an = '$cAn' and status='จำหน่าย' group by status ";
 $result2 = Mysql_Query($sql) or die(mysql_error());
-list($pricedc,$status) = Mysql_fetch_row($result2);
+list($pricedc,$status) = Mysql_fetch_row($result2);*/
 
    include("unconnect.inc");
 //ค่ารักษาพยาบาล หักที่จ่ายแล้ว  เพื่อออกใบเสร็จส่วนที่ค้างจ่าย
@@ -265,10 +265,12 @@ list($pricedc,$status) = Mysql_fetch_row($result2);
     $DDLDDY1 =$Essd1+$Nessdy1; //3.ยาและสารอาหารทางเส้นเลือด(เบิกได้)
     $Nessdn1=array_sum($aBNessdn1);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได
 
+
     $Essd    =array_sum($aBEssd);   //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
     $Nessdy=array_sum($aBNessdy);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
     $DDLDDY =$Essd+$Nessdy+$DDLDDY1; //3.ยาและสารอาหารทางเส้นเลือด(เบิกได้)
     $Nessdn=array_sum($aBNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
+
 //ยาเวชภัณฑ์ที่นำไปใช้ต่อที่บ้าน
     $DEssd    =array_sum($aBDEssd);   //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
     $DNessdy=array_sum($aBDNessdy);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
@@ -578,10 +580,11 @@ print "        $Mc</font></td>";
 print "       <td width='15%' valign='middle' align='right'><font face='Angsana New' size='3'> $BFY<br>";
 print "        ...<br>";
 print "        $DPY<br>";
-$DDLDDY=$DDLDDY-$pricedc;
+//$DDLDDY=$DDLDDY-$pricedc;
+$DDLDDY=$DDLDDY;
 print "        $DDLDDY<br>";
-$pricedc=$pricedc+0;
-print "         $pricedc<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
+//$pricedc=$pricedc+0;
+print "        $DDgy<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
 print "        $DSY<br>";
 $Blood+=$Bloody;
 print "        $Blood<br>";

@@ -2,29 +2,22 @@
 //
 //-------------------- Create file diagnosis_opd ไฟล์ที่ 15 --------------------//
 //
-$temp10 = "CREATE  TEMPORARY  TABLE report_diagnosisopd 
-SELECT `thidate`, `hn`, `vn`, `doctor`, `clinic`, SUBSTRING(`thidate`, 1, 10) AS `date2`
+$sql10 = "SELECT `thidate`, `hn`, `vn`, `doctor`, `clinic`, SUBSTRING(`thidate`, 1, 10) AS `date2`, `idcard`
 FROM `opday` 
-WHERE `hn` !='' 
+WHERE `thidate` LIKE '$thimonth%' 
+AND ( `hn` != '' AND `vn` != '' ) 
+AND `icd10` != '' 
 AND ( `doctor` IS NOT NULL AND `doctor` != '' )
-AND `thidate` LIKE '$thimonth%' 
-GROUP BY `date2`, `hn`
-ORDER BY `thidate`
-";
-$querytmp10 = mysql_query($temp10) or die("Query failed,Create temp10");
-
-$sql10 = "SELECT * 
-FROM report_diagnosisopd";
-$result10 = mysql_query($sql10) or die("Query failed, Select report_diagnosisopd (diagnosis_opd)");
+GROUP BY `date2`, `hn` 
+ORDER BY `thidate`";
+$result10 = mysql_query($sql10) or die("Query failed, Select diagnosis_opd");
 $num = mysql_num_rows($result10);
 
 $ii = 0;
 $txt = '';
 
-while (list ($thidate,$hn,$vn,$doctor,$cliniccode) = mysql_fetch_row ($result10)) {
+while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_row ($result10)) {
     
-    // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
-    // list($hospcode)=mysql_fetch_array($sqlhos);
 
     $chkdate = substr($thidate,0,10);	
     $sqlopd = "SELECT  regisdate,icd10,type 
@@ -80,11 +73,11 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode) = mysql_fetch_row ($result10)
                 $provider = $date_serv.$vn.$doctorcode;
             }	
 
-            $inline = "$hospcode|$hn|$seq|$date_serv|$diagtype|$diagcode|$clinic|$provider|$d_update\r\n";
-            // print($inline);
+            $inline = "$hospcode|$hn|$seq|$date_serv|$diagtype|$diagcode|$clinic|$provider|$d_update|$idcard\r\n";
             $txt .= $inline;
             
         }  //close while
+
     }else{  //ถ้ามี 1 record
     
         list($regisdate,$icd10,$type) = mysql_fetch_array($resultopd);
@@ -130,8 +123,7 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode) = mysql_fetch_row ($result10)
             $provider = $date_serv.$vn.$doctorcode;
         }	
 
-        $inline = "$hospcode|$hn|$seq|$date_serv|$diagtype|$diagcode|$clinic|$provider|$d_update\r\n";
-        // print($inline);
+        $inline = "$hospcode|$hn|$seq|$date_serv|$diagtype|$diagcode|$clinic|$provider|$d_update|$idcard\r\n";
         $txt .= $inline;
         
     }  // close while
@@ -140,7 +132,7 @@ $filePath = $dirPath.'/diagnosis_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|DIAGTYPE|DIAGCODE|CLINIC|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|DIAGTYPE|DIAGCODE|CLINIC|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_diagnosis_opd.txt';
 file_put_contents($qofPath, $txt);

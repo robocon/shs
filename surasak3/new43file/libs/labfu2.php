@@ -1,9 +1,8 @@
 <?php 
-
 $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 mysql_select_db('smdb', $db2) or die( mysql_error() );
 
-// ข้อมูลยาตามรายการที่ต้องตรวจในเดือนนั้นๆ
+mysql_query('DROP TEMPORARY TABLE IF EXISTS `pre_labfu`');
 $sql_pre_labfu = "CREATE TEMPORARY TABLE `pre_labfu` 
 SELECT 
 a.*, b.`sex`,b.`hn`, CONCAT(SUBSTRING(b.`orderdate`,1,10),b.`hn`) AS `date_hn`
@@ -27,10 +26,11 @@ FROM (
     AND ( `result` != 'DELETE' AND `result` != '*' ) 
 ) AS a 
 LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`autonumber`";
-$q_test = mysql_query($sql_pre_labfu, $db2) or die( mysql_error() );
+mysql_query($sql_pre_labfu, $db2) or die(mysql_error());
 
-// ผู้ป่วยโรคเบาหวาน-ความดันโลหิตสูง ที่ได้รับการตรวจทางห้องปฏิบัติการทุกครั้ง โดย่โรงพยาบาลและสถานบริการระดับปฐมภูมิ
-$sql_labfu1 = "SELECT 
+
+// ผู้ป่วยที่ไม่ใช่ความดันโลหิตสูง-เบาหวาน ที่ตรวจ macroalbumin microalbumin เป็น positive หรือ egfr < 60
+$sql_labfu2 = "SELECT 
 '11512' AS `HOSPCODE`, 
 x.`hn` AS `PID`, 
 x.`vn` AS `SEQ`, 
@@ -66,15 +66,21 @@ FROM (
     CONCAT(toEn(SUBSTRING(`thidate`,1,10)),`hn`) AS `date_hn` 
     FROM `opday` 
     WHERE `thidate` LIKE '$thimonth%' 
-    AND ( `icd10` regexp 'I(1[0-5])' OR `icd10` regexp 'E(1[0-4])' ) 
+    AND ( `icd10` NOT REGEXP 'I(1[0-5])' AND `icd10` NOT REGEXP 'E(1[0-4])' ) 
 
 ) AS x 
 LEFT JOIN `pre_labfu` AS y ON y.`date_hn` = x.`date_hn` 
-WHERE y.`autonumber` IS NOT NULL ;";
-$q = mysql_query($sql_labfu1, $db2) or die(mysql_error());
+WHERE y.`autonumber` IS NOT NULL 
+AND x.`icd10` != '' 
+AND ( 
+	( y.`labcode` = 'MAU' AND y.`flag` = 'N' ) 
+	OR 
+	( y.`labcode` = 'CREA' AND eGFR(x.`age`,y.`sex`,y.`result`) < 60 ) 
+)";
+$q_labfu2 = mysql_query($sql_labfu2, $db2) or die(mysql_error());
 
 $txt = '';
-while ( $item = mysql_fetch_assoc($q) ) { 
+while ( $item = mysql_fetch_assoc($q_labfu2) ) { 
 
     $txt .= $item['HOSPCODE'].'|'
     .$item['PID'].'|'
@@ -89,14 +95,16 @@ while ( $item = mysql_fetch_assoc($q) ) {
 
 }
 
-file_put_contents($dirPath.'/labfu.txt', $txt);
+$filePath = $dirPath.'/labfu.txt';
+file_put_contents($filePath, $txt, FILE_APPEND);
+$zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|LABTEST|LABRESULT|D_UPDATE|LABPLACE|CID\r\n";
-$txt = $header.$txt;
+
 $qofPath = $dirPath.'/qof_labfu.txt';
-file_put_contents($qofPath, $txt);
+file_put_contents($qofPath, $txt, FILE_APPEND);
+$qofLists[] = $qofPath;
 
-echo "สร้างแฟ้ม labfu เสร็จเรียบร้อย<br>";
+echo "สร้างแฟ้ม labfu2 เสร็จเรียบร้อย<br>";
 
 mysql_close($db2);
 ?>

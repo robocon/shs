@@ -158,7 +158,12 @@ LIKE '%R33%'
 )";
 }else if($_POST['credit']=="UC"){
 	$showptright="ประกันสุขภาพ";
-	$newcredit = "( `ptright` LIKE '%ประกันสุขภาพ%' OR `ptright` LIKE '%R35%' OR `ptright` LIKE '%R17%' OR `ptright` LIKE '%R36%' OR `ptright` LIKE '%R06%')";
+	$newcredit = "( `ptright` LIKE '%ประกันสุขภาพ%' 
+	OR `ptright` LIKE '%R35%' 
+	OR `ptright` LIKE '%R17%' 
+	OR `ptright` LIKE '%R36%' 
+	OR `ptright` LIKE '%R06%' 
+	OR `ptright` LIKE '%R40%' )";
 }
 
 
@@ -231,7 +236,8 @@ $dbname1 = "INS".$yy.$mm.".dbf";
 			|| $codeptright =="R35"
 			|| $codeptright =="R17"
 			|| $codeptright =="R36"
-			|| $codeptright =="R06"){
+			|| $codeptright =="R06" 
+			|| $codeptright =="R40"){
 				$newptright ="UCS";
 			}else if($codeptright =="R02"){  // จ่ายตรง
 				$newptright ="OFC";
@@ -666,13 +672,13 @@ $dbname9 = "IDX".$yy.$mm.".dbf";
 			
 			if($dxtype9=='PRINCIPLE'){		
 				$dxtype ="1";
-			}else if(dxtype9=='CO-MORBIDITY'){
+			}else if($dxtype9=='CO-MORBIDITY'){
 				$dxtype ="2";
-			}else if(dxtype9=='COMPLICATION'){
+			}else if($dxtype9=='COMPLICATION'){
 				$dxtype ="3";
-			}else if(dxtype9=='OTHER'){
+			}else if($dxtype9=='OTHER'){
 				$dxtype ="4";
-			}else if(dxtype9=='EXTERNAL CAUSE'){
+			}else if($dxtype9=='EXTERNAL CAUSE'){
 				$dxtype ="5";
 			}else{
 				$dxtype ="2";
@@ -716,13 +722,13 @@ $dbname9 = "IDX".$yy.$mm.".dbf";
 			$dxtype9=$rows9["type"];
 			if($dxtype9=="PRINCIPLE"){		
 				$dxtype ="1";
-			}else if(dxtype9=='CO-MORBIDITY'){
+			}else if($dxtype9=='CO-MORBIDITY'){
 				$dxtype ="2";
-			}else if(dxtype9=='COMPLICATION'){
+			}else if($dxtype9=='COMPLICATION'){
 				$dxtype ="3";
-			}else if(dxtype9=='OTHER'){
+			}else if($dxtype9=='OTHER'){
 				$dxtype ="4";
-			}else if(dxtype9=='EXTERNAL CAUSE'){
+			}else if($dxtype9=='EXTERNAL CAUSE'){
 				$dxtype ="5";
 			}else{
 				$dxtype ="4";

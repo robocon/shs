@@ -2,7 +2,6 @@
 
 $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 mysql_select_db('smdb', $db2) or die( mysql_error() );
-mysql_query("SET NAMES UTF8", $db2);
 
 $sql = "SELECT '11512' AS `HOSPCODE`,
 `hn` AS `PID`, 
@@ -40,7 +39,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['CID']."\r\n";
 
 }
-mysql_close($db2);
+
 
 
 $filePath = $dirPath.'/anc.txt';
@@ -52,3 +51,7 @@ $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_anc.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
+
+echo "สร้างแฟ้ม anc เสร็จเรียบร้อย<br>";
+
+mysql_close($db2);

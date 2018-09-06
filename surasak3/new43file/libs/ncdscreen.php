@@ -2,13 +2,6 @@
 
 $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 mysql_select_db('smdb', $db2) or die( mysql_error() );
-mysql_query("SET NAMES UTF8", $db2);
-
-function dump($txt){
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
 
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 a.`hn` AS `PID`,
@@ -109,8 +102,6 @@ while ($item = mysql_fetch_assoc($q)) {
     .$item['CID']."\r\n";
 
 }
-mysql_close($db2);
-
 
 $filePath = $dirPath.'/ncdscreen.txt';
 file_put_contents($filePath, $txt);
@@ -121,3 +112,7 @@ $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_ncdscreen.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
+
+echo "สร้างแฟ้ม ncdscreen เสร็จเรียบร้อย<br>";
+
+mysql_close($db2);

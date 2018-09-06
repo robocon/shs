@@ -4,8 +4,9 @@
 //-------------------- Create file service ‰ø≈Ï∑’Ë 14 --------------------//
 // 
 $temp7 = "CREATE TEMPORARY TABLE report_service 
-SELECT a.`thidate`,a.`hn`,a.`vn`,a.`an`,a.`ptname`,a.`ptright`,a.`goup`,a.`toborow`, SUBSTRING(a.`thidate`, 1, 10) AS `date2`, 
-b.`ptrightdetail`, c.`temperature`, c.`pause`, c.`rate`, c.`bp1`, c.`bp2`, c.`organ`
+SELECT a.`thidate`,a.`hn`,a.`vn`,a.`an`,a.`ptname`,a.`ptright`,a.`goup`,a.`toborow`, SUBSTRING(a.`thidate`, 1, 10) AS `date2`,a.`idcard`, 
+b.`ptrightdetail`, 
+c.`temperature`, c.`pause`, c.`rate`, c.`bp1`, c.`bp2`, c.`organ`
 FROM `opday` AS a
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 LEFT JOIN `opd` AS c ON c.`thdatehn` = a.`thdatehn`
@@ -26,7 +27,7 @@ $result7 = mysql_query($sql7) or die("Query failed, SELECT report_service (servi
 $num = mysql_num_rows($result7);
 
 $txt = '';
-while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$ptrightdetail,$btemp,$pr,$rr,$sbp,$dbp,$organ) = mysql_fetch_row ($result7) ) {	
+while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$idcard,$ptrightdetail,$btemp,$pr,$rr,$sbp,$dbp,$organ) = mysql_fetch_row ($result7) ) {	
 
     $sql = "SELECT SUM(paid),credit FROM report_serviceopacc WHERE hn = '$hn' AND txdate LIKE '$thimonth%'  ";
     list($price,$credit)  = mysql_fetch_row(mysql_query($sql));
@@ -113,7 +114,7 @@ while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$ptrigh
         $price="50.00";
     }
 
-    $inline = "$hospcode|$hn|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update\r\n";			
+    $inline = "$hospcode|$hn|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$idcard\r\n";			
     // print($inline);
     $txt .= $inline;
     
@@ -122,7 +123,7 @@ $filePath = $dirPath.'/service.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|HN|SEQ|DATE_SERV|TIME_SERV|LOCATION|INTIME|INSTYPE|INSID|MAIN|TYPEIN|REFERINHOSP|CAUSEIN|CHIEFCOMP|SERVPLACE|BTEMP|SBP|DBP|PR|RR|TYPEOUT|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|HN|SEQ|DATE_SERV|TIME_SERV|LOCATION|INTIME|INSTYPE|INSID|MAIN|TYPEIN|REFERINHOSP|CAUSEIN|CHIEFCOMP|SERVPLACE|BTEMP|SBP|DBP|PR|RR|TYPEOUT|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_service.txt';
 file_put_contents($qofPath, $txt);
