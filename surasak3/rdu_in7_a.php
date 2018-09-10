@@ -8,7 +8,7 @@ $configs = array(
     'port' => '3306',
     'dbname' => 'smdb',
     'user' => 'dottwo',
-    'pass' => '12345678'
+    'pass' => ''
 );
 
 $db = Mysql::load($configs);
@@ -19,9 +19,11 @@ $date_max = input_get('date_max');
 $date_min = input_get('date_min');
 $quarter = input_get('quarter');
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
-SELECT `row_id`,`thidate`,`hn`,`icd10` 
+SELECT `row_id`,`thidate`,`hn`,`ptname`,`icd10`,`doctor`,`diag`,
+SUBSTRING(`age`,1,2) AS `age`,
+CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
 FROM `opday` 
 WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
 AND ( 
@@ -34,11 +36,11 @@ AND (
     OR `icd10` IN ( 'A09', 'A090', 'A099' ) 
     OR `icd10` IN ( 'K521', 'K528', 'K529' ) 
 )";
-$db->select($sql);
+$db->exec($sql);
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
-SELECT `row_id`,`date`,`hn`,`drugcode`  
+SELECT `row_id`,`date`,`hn`,`drugcode`,`amount` 
 FROM `drugrx` 
 WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
 AND `status` = 'Y' 
@@ -60,7 +62,7 @@ AND `drugcode` IN (
     '5MEIA', 
     '1CEFS' 
 ); "; 
-$db->select($sql); 
+$db->exec($sql); 
 
 $in7a = $in7b = $in7_result = 0;
 
@@ -100,24 +102,38 @@ body, button{
 
 <table class="chk_table">
     <tr>
-        <th>ลำดับ</th>
-        <th>วันที่</th>
+        <th>#</th>
+        <th>Date</th>
         <th>HN</th>
-        <th>ชื่อสกุล</th>
-        <th>ICD10</th>
-        <th>โค้ดยา</th>
+        <th>ชื่อผู้ป่วย</th>
+        <th>อายุ</th>
+        <th>Diag1</th>
+        <th>Diag2</th>
+        <th>Diag3</th>
+        <th>Diag4</th>
+        <th>ICD-10</th>
+        <th>Drug code</th>
+        <th>จำนวน</th>
+        <th>แพทย์</th>
     </tr>
 <?php 
 $i = 1;
 foreach ($items as $key => $item) {
     ?>
     <tr>
-        <td><?=$i;?></td>
-        <td><?=$item['thidate'];?></td>
-        <td><?=$item['hn'];?></td>
-        <td><?=$item['ptname'];?></td>
-        <td><?=$item['icd10'];?></td>
-        <td><?=$item['drugcode'];?></td>
+    <td><?=$i;?></td>
+            <td><?=$item['thidate'];?></td>
+            <td><?=$item['hn'];?></td>
+            <td><?=$item['ptname'];?></td>
+            <td><?=$item['age'];?></td>
+            <td><?=$item['diag'];?></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><?=$item['icd10'];?></td>
+            <td><?=$item['drugcode'];?></td>
+            <td><?=$item['amount'];?></td>
+            <td><?=$item['doctor'];?></td>
     </tr>
     <?php
     $i++;

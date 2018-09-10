@@ -13,33 +13,41 @@ $configs = array(
 
 $db = Mysql::load($configs);
 
+// $db->exec("SET NAMES UTF8");
+
 $date_max = input_get('date_max');
 $date_min = input_get('date_min');
 $quarter = input_get('quarter');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
+$sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
 SELECT `row_id`,`thidate`,`hn`,`ptname`,`icd10`,`doctor`,`diag`,
 SUBSTRING(`age`,1,2) AS `age`,
 CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
 FROM `opday` 
 WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
+AND `an` IS NULL 
 AND ( 
-    `icd10` IN ( 'A000', 'A001', 'A009' ) 
-    OR `icd10` IN ( 'A020' ) 
-    OR `icd10` IN ( 'A030', 'A031', 'A032', 'A033', 'A038', 'A039' ) 
-    OR `icd10` LIKE 'A04%' 
-    OR `icd10` IN ( 'A050', 'A053', 'A054', 'A059' ) 
-    OR `icd10` IN ( 'A080', 'A081', 'A082', 'A083', 'A084', 'A085' ) 
-    OR `icd10` IN ( 'A09', 'A090', 'A099' ) 
-    OR `icd10` IN ( 'K521', 'K528', 'K529' ) 
+    `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
+    OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
+    OR `icd10` regexp 'S(2[8-9]|3[0-1])' 
+    OR `icd10` regexp 'S(3[8-9]|4[0-1])' 
+    OR `icd10` regexp 'S{1}([4-8]([6-9]|[0-1]))' 
+    OR `icd10` regexp 'S(8[6-9]|9[0-1]|9[6-9])' 
+    OR `icd10` regexp 'T(0[0-1]|[4-7])' 
+    OR `icd10` regexp 'T([09|11|13|14][0-1])' 
+    OR `icd10` regexp 'T(14[6-9])' 
+    OR `icd10` regexp 'T(2[0-5])' 
+    OR `icd10` regexp 'T(29|3[0-2])' 
+    OR `icd10` regexp 'X([0-1][0-9])' 
+    OR `icd10` regexp 'X([2-3][0-9])' 
 )";
 $db->exec($sql);
 
-$sql = "SELECT * FROM `tmp_opday_in7`";
+$sql = "SELECT * FROM `tmp_opday_in8`";
 $db->select($sql);
 $items = $db->get_items();
-
 
 ?>
 
@@ -64,7 +72,7 @@ body, button{
 }
 </style>
 
-<h3><u>ตัวชี้วัดที่ 7 ไตรมาส <?=$quarter;?></u> ตัวหาร จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันทั้งหมด</h3> 
+<h3><u>ตัวชี้วัดที่ 8 (ไตรมาส <?=$quarter;?>)</u> ตัวหาร จำนวนครั้งของผู้ป่วยนอกบาดแผลสดจากอุบัติเหตุทั้งหมด</h3> 
 
 <table class="chk_table">
     <tr>

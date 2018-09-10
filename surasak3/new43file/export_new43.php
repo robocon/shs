@@ -16,7 +16,8 @@ if( $action === false ){
 		<p>1. ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
 		<p>2. 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
 		<p>3. 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
-		<p>4. 30-08-2561 - 06-09-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen, labfu</p>
+		<p>4. 30-08-2561 - 06-09-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen, labfu, chronicfu</p>
+		<p>2561-09-07 ปรับปรุงแฟ้ม procedure_opd, procedure_ipd เพิ่ม CID และปรับปรุงการดึงข้อมูล icd9-cm</p>
 	</div>
 	<form action="export_new43.php" method="post">
 		<div>

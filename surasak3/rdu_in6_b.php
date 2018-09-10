@@ -11,37 +11,39 @@ $configs = array(
     'pass' => ''
 );
 
-$db = Mysql::load($configs);
-
 $date_max = input_get('date_max');
 $date_min = input_get('date_min');
 $quarter = input_get('quarter');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
+$db = Mysql::load($configs);
+// $db->exec("SET NAMES TIS-620");
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
+$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
 SELECT `row_id`,`thidate`,`hn`,`ptname`,`icd10`,`doctor`,`diag`,
 SUBSTRING(`age`,1,2) AS `age`,
 CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
 FROM `opday` 
 WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
+AND `an` IS NULL 
 AND ( 
-    `icd10` IN ( 'A000', 'A001', 'A009' ) 
-    OR `icd10` IN ( 'A020' ) 
-    OR `icd10` IN ( 'A030', 'A031', 'A032', 'A033', 'A038', 'A039' ) 
-    OR `icd10` LIKE 'A04%' 
-    OR `icd10` IN ( 'A050', 'A053', 'A054', 'A059' ) 
-    OR `icd10` IN ( 'A080', 'A081', 'A082', 'A083', 'A084', 'A085' ) 
-    OR `icd10` IN ( 'A09', 'A090', 'A099' ) 
-    OR `icd10` IN ( 'K521', 'K528', 'K529' ) 
+    `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
+    OR `icd10` IN ( 'J020', 'J029' ) 
+    OR `icd10` IN ( 'J030', 'J038', 'J039' ) 
+    OR `icd10` IN ( 'J040', 'J041', 'J042' ) 
+    OR `icd10` IN ( 'J050', 'J051' ) 
+    OR `icd10` IN ( 'J060', 'J068', 'J069' ) 
+    OR `icd10` IN ( 'J101', 'J111' ) 
+    OR `icd10` LIKE 'J20%' 
+    OR `icd10` IN ( 'J210', 'J218', 'J219' ) 
+    OR `icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
 )";
 $db->exec($sql);
 
-$sql = "SELECT * FROM `tmp_opday_in7`";
+$sql = "SELECT * FROM `tmp_opday_in6`";
 $db->select($sql);
 $items = $db->get_items();
-
-
-?>
+?> 
 
 <style>
 /* ตาราง */
@@ -64,7 +66,7 @@ body, button{
 }
 </style>
 
-<h3><u>ตัวชี้วัดที่ 7 ไตรมาส <?=$quarter;?></u> ตัวหาร จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันทั้งหมด</h3> 
+<h3><u>ตัวชี้วัดที่ 6 ไตรมาส <?=$quarter;?></u> ตัวหาร จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด</h3> 
 
 <table class="chk_table">
     <tr>
@@ -82,12 +84,12 @@ body, button{
         <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
-<?php 
-$i = 1;
-foreach ($items as $key => $item) {
-    ?>
-    <tr>
-    <td><?=$i;?></td>
+    <?php 
+    $i = 1;
+    foreach ($items as $key => $item) {
+        ?>
+        <tr>
+            <td><?=$i;?></td>
             <td><?=$item['thidate'];?></td>
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
@@ -100,9 +102,9 @@ foreach ($items as $key => $item) {
             <td><?=$item['drugcode'];?></td>
             <td><?=$item['amount'];?></td>
             <td><?=$item['doctor'];?></td>
-    </tr>
-    <?php
-    $i++;
-}
-?>
+        </tr>
+        <?php 
+        $i++;
+    }
+    ?>
 </table>

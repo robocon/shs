@@ -809,6 +809,8 @@ ORDER BY c.seq ASC";
 										$labmean="การตรวจมะเร็งต่อมลูกหมาก";
 									}else if($objResult["labname"]=="eGFR"){
 										$labmean="eGFR";
+									}else if($objResult["labname"]=="Xylene"){
+										$labmean="การตรวจสารโลหะหนัก";
 									}
 
 									$app = '';
@@ -983,6 +985,15 @@ ORDER BY c.seq ASC";
 									} 
 
 									if( $objResult["labcode"]=='PSA'){
+
+										$app = 'ปกติ';
+										if( $objResult['flag'] != 'N' ){
+											$app = 'ผิดปกติ';
+										}
+
+									} 
+
+									if( $objResult["labcode"]=='XYLENE'){
 
 										$app = 'ปกติ';
 										if( $objResult['flag'] != 'N' ){

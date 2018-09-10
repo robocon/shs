@@ -207,8 +207,19 @@ if ( $action == 'load' ) {
             include 'rdu_in6.php';
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right"><?=number_format($in6a);?></td>
-            <td align="right"><?=number_format($in6b);?></td>
+            <td align="right">
+
+                <?php 
+                $url_in6 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
+                ?>
+                <a href="rdu_in6_a.php?<?=$url_in6;?>"><?=number_format($in6a);?></a>
+
+            </td>
+            <td align="right">
+
+                <a href="rdu_in6_b.php?<?=$url_in6;?>"><?=number_format($in6b);?></a>
+                
+            </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
         <tr>
@@ -219,13 +230,17 @@ if ( $action == 'load' ) {
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
+
                 <?php
-                $rdu_in7_a = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
+                $url_in7 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
                 ?>
-                <a href="rdu_in7_a.php?<?=$rdu_in7_a;?>" target="_blank"><?=number_format($in7a);?></a>
+
+                <a href="rdu_in7_a.php?<?=$url_in7_a;?>" target="_blank"><?=number_format($in7a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in7_b.php"><?=number_format($in7b);?></a>
+
+                <a href="rdu_in7_b.php?<?=$url_in7;?>"><?=number_format($in7b);?></a>
+
             </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
@@ -234,10 +249,15 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
             <?php
             include 'rdu_in8.php';
+            $url_in8 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 40</td>
-            <td align="right"><?=number_format($in8a);?></td>
-            <td align="right"><?=number_format($in8b);?></td>
+            <td align="right">
+                <a href="rdu_in8_a.php?<?=$url_in8;?>"><?=number_format($in8a);?></a>
+            </td>
+            <td align="right">
+                <a href="rdu_in8_b.php?<?=$url_in8;?>"><?=number_format($in8b);?></a>
+            </td>
             <td align="right"><?=number_format($in8_result, 2);?></td>
         </tr>
         <tr>
@@ -311,7 +331,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in17.php';
             ?>
-            <td>เท่ากับ 0คน</td>
+            <td>ร้อยละ 0</td>
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right"><?=$in17_result;?></td>
