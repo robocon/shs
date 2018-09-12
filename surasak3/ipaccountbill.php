@@ -1075,12 +1075,15 @@ $Netpri2=number_format($Netpri,2,".","");
 $debt=$Netpri-$Netpaid;
 $debt=number_format($debt,2,'.',''); //เพิ่มจุดทศนิยม
 
+$sql = "SELECT * FROM `officers` WHERE `row_id` = '12' ";
+$q = mysql_query($sql);
+$user = mysql_fetch_assoc($q);
 
 //print "ค้างจ่าย $debt บาท)<br>";
 print "<BR><BR><font face='Angsana New'  size='2'><B>เจ้าหน้าที่ตรวจสอบ</B><BR>";
-print "<font face='Angsana New'  size='2'> ร.อ.หญิง ........................................<BR>";
-print "&nbsp;&nbsp;&nbsp;(สุภาภรณ์   คำแก้ว)<BR>";
-print "น.ทะเบียนการแพทย์ ปฏิบัติหน้าที่ หน.ส่วนเก็บเงินรายได้<BR>";
+print "<font face='Angsana New'  size='2'> ".$user['yot']." ........................................<BR>";
+print "&nbsp;&nbsp;&nbsp;(".$user['fullname'].")<BR>";
+print $user['position']." ".$user['position2']."<BR>";
 print "................/......................../....................<BR>";
 
 //print "จนท. $sOfficer วันที่ $Thaidate<br>";

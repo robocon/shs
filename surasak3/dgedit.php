@@ -50,6 +50,11 @@ font-size:18px;
 		$cDrugnote=$row->drugnote;
         $cMinimum=$row->minimum;
         $cUnit=$row->unit;
+		
+		$cDosecode=$row->dosecode;
+		$cStrength=$row->strength;
+		$cContent=$row->content;
+		
        $cUnitpri=$row->unitpri;
       $cSalepri =$row->salepri;
       $cPart =$row->part;
@@ -82,6 +87,7 @@ font-size:18px;
         $edpri_from = $row->edpri_from;
 		$grouptype = $row->grouptype;
 		$active = $row->drug_active;
+		$had = $row->had;
 		$ised = $row->ised;
                   }  
    else {
@@ -140,6 +146,12 @@ print "  <select name='typedrug' class='txtsarabun' >
 			<option value='T03 ฉีด'>ฉีด</option>
 			<option value='T04 วัคซีน'>วัคซีน</option>
 			</select><br>";
+print " DFSCode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "   <input class='txtsarabun'  type='text' name='dosecode' size='20' tabindex='6'value='$cDosecode'><br>";
+print " Strength&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "   <input class='txtsarabun'  type='text' name='strength' size='20' tabindex='6'value='$cStrength'><br>";
+print " Content&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "   <input class='txtsarabun'  type='text' name='content' size='20' tabindex='6'value='$cContent'><br>";
 
 print " หน่วย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "   <input class='txtsarabun'  type='text' name='unit' size='20' tabindex='6'value='$cUnit'><br>";
@@ -199,8 +211,8 @@ print "   &#3619;&#3634;&#3588;&#3634;/&#3649;&#3614;&#3588;&nbsp;&nbsp;&nbsp;&n
 print "   <input class='txtsarabun'  type='text' name='packpri' size='10' tabindex='18' value=$cPackpri>ราคาไม่รวม VAT<br>";
 print "   &#3619;&#3634;&#3588;&#3634;/&#3649;&#3614;&#3588;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "   <input class='txtsarabun'  type='text' name='packpri_vat' size='10' tabindex='18' value=$cPackpri_vat>ราคารวม VAT<br>";
-print "     &#3592;&#3656;&#3634;&#3618;&#3648;&#3591;&#3636;&#3609;contack&nbsp;&nbsp;&nbsp;";
-print "    &nbsp;&nbsp;&nbsp; <input class='txtsarabun'  type='text' name='contract' size='10' tabindex='19' value=$cContract><br>";
+/*print "     &#3592;&#3656;&#3634;&#3618;&#3648;&#3591;&#3636;&#3609;contack&nbsp;&nbsp;&nbsp;";
+print "    &nbsp;&nbsp;&nbsp; <input class='txtsarabun'  type='text' name='contract' size='10' tabindex='19' value=$cContract><br>";*/
 
 print "     จำนวนวางระดับ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  <input class='txtsarabun'  type='text' name='minimum' size='10' tabindex='20' value=><br>";
@@ -217,7 +229,8 @@ print "   TMT CODE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  <input class='txtsarabun'  type='text' name='tmt' size='10' tabindex='23' value='$tmt'><br>";
 
 $edpri_from_list = array(
-    1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
+    0 => '(๐) ยังไม่ได้ใส่ข้อมูล',
+	1 => '(๑) ราคาที่ได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการราคากลางกำหนด',
     2 => '(๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ',
     3 => '(๓) ราคามาตรฐานที่สำนักงบประมาณหรือหน่วยงานกลางอื่นกำหนด(ราคามาตรฐานเวชภัณฑ์ที่มิใช่ยา ที่ สธ 0228.07.2/ว688 ลง วันที่ 6 สิงหาคม พ.ศ.2556)<br>(ประเภทและอัตราค่าอวัยวะเทียมและอุปกรณ์ในการบำบัดรักษาโรค ที่ กค 0422.2/พิเศษ ว 1 ลงวันที่ 4 ธันวาคม 2556)',
     4 => '(๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด',
@@ -230,13 +243,16 @@ $edpri_from_list = array(
     <?php 
 
     $def_edpri = 5;
-    if ( $cEdpri > 0 OR $cFreelimit > 0 ) {
-        $def_edpri = 3;
-    }
-
-    if( $edpri_from !== NULL ){
+ 	if( $edpri_from !== NULL || $edprifrom !=0){  //ดึงข้อมูลตาม DB
         $def_edpri = $edpri_from;
-    }
+    }else{
+		if ($cEdpri > 0 || $cFreelimit > 0 ) {  //ถ้ามีราคากลาง ตั้งค่าเป็น 3
+			$def_edpri = 3;
+		}else{
+			$def_edpri = 5;
+		}
+	}
+   
 
     foreach ($edpri_from_list as $key => $value) {
 
@@ -249,7 +265,13 @@ $edpri_from_list = array(
     ?>
 </select>
 <?php
-
+print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
+?>
+<select name="had">
+          <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
+          <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
+</select>
+<?
 
 print "   </tr>";
 print "<tr>";

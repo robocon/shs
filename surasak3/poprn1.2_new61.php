@@ -223,6 +223,7 @@ return $vat;
 	$nItems=$row->items;
 	$nNetprice=$row->netprice;
 	$cPono=$row->pono;
+	$chkpono=substr($cPono,0,2);  //ถ้าเป็น อ. จะใช้งบอุดหนุน	
 	$cPodate=$row->podate;
 	$cBounddate=$row->bounddate;
 	$cChkindate=$row->chkindate;  //วันที่รับมอบ
@@ -1281,7 +1282,13 @@ print "<DIV style='left:268PX;top:4378PX;><span class='fc1-0'>
 //print "<DIV style='left:213PX;top:4455PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cPodate</span></DIV>";
 ///////////////
 print "<DIV style='left:88PX;top:4136PX;width:245PX;height:30PX;'><span class='fc1-0'>เรียน ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
+
+if($chkpono=="อ."){
+print "<DIV style='left:152PX;top:4165PX;width:520PX;height:30PX;'><span class='fc1-0'>-ได้ตรวจสอบงบอุดหนุนแล้วมีเพียงพอให้การสนับสนุนได้  จำนวนเงิน $nPriadvat บาท  $cPriadvat</span></DIV>";
+}else{
 print "<DIV style='left:152PX;top:4165PX;width:520PX;height:30PX;'><span class='fc1-0'>-ได้ตรวจสอบงบรายรับสถานพยาบาลแล้วมีเพียงพอให้การสนับสนุนได้  จำนวนเงิน $nPriadvat บาท  $cPriadvat</span></DIV>";
+}
+
 // 4552PX;
 print "<DIV style='left:208PX;top:4220PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
 print "<DIV style='left:213PX;top:4244PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
@@ -1583,7 +1590,13 @@ print "<DIV style='left:363PX;top:6290PX;width:52PX;height:24PX;TEXT-ALIGN:CENTE
 print "<DIV style='left:363PX;top:6322PX;width:52PX;height:24PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>ค้างจ่าย</span></DIV>";
 print "<DIV style='left:303PX;top:6315PX;width:52PX;height:24PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>อนุมัติ</span></DIV>";
 print "<DIV style='left:303PX;top:6294PX;width:52PX;height:24PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>จำนวน</span></DIV>";
+
+if($chkpono=="อ."){
+print "<DIV style='left:586PX;top:6240PX;width:135PX;height:27PX;'><span class='fc1-5'>งบอุดหนุน</span></DIV>";
+}else{
 print "<DIV style='left:586PX;top:6240PX;width:135PX;height:27PX;'><span class='fc1-5'>รายรับสถานพยาบาล</span></DIV>";
+}
+
 print "<DIV style='left:617PX;top:6214PX;width:115PX;height:27PX;'><span class='fc1-5'>4</span></DIV>";
 print "<DIV style='left:638PX;top:6186PX;width:115PX;height:27PX;'><span class='fc1-5'>พ</span></DIV>";
 
@@ -1740,7 +1753,13 @@ print "<DIV style='left:615PX;top:6692PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT
 print "<DIV style='left:615PX;top:6725PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-2'><B>$nPriadvat</B></span></DIV>";
 print "<DIV style='left:485PX;top:7049PX;width:168PX;height:30PX;'><span class='fc1-0'>ทะเบียนหน่วยจ่าย</span></DIV>";
 print "<DIV style='left:36PX;top:6777PX;width:141PX;height:30PX;'><span class='fc1-0'>หลักฐานที่ใช้ในการเบิก</span></DIV>";
+
+if($chkpono=="อ."){
+print "<DIV style='left:36PX;top:6809PX;width:312PX;height:30PX;'><span class='fc1-0'>ตรวจสอบแล้วเห็นว่า........เป็นสป.จัดหาจากงบอุดหนุน</span></DIV>";
+}else{
 print "<DIV style='left:36PX;top:6809PX;width:312PX;height:30PX;'><span class='fc1-0'>ตรวจสอบแล้วเห็นว่า........เป็นสป.จัดหาจากงบรายรับ</span></DIV>";
+}
+
 print "<DIV style='left:355PX;top:6808PX;width:393PX;height:30PX;'><span class='fc1-0'>ขอเบิกสิ่งอุปกรณ์ตามที่ระบุไว้ในช่อง 'จำนวนเบิก' </span></DIV>";
 print "<DIV style='left:651PX;top:6839PX;width:97PX;height:30PX;'><span class='fc1-0'>&nbsp;</span></DIV>";
 print "<DIV style='left:354PX;top:6866PX;width:72PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>พ.อ. หญิง</span></DIV>";

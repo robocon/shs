@@ -3,7 +3,7 @@ session_start();
 ?>
 <html>
 <head>
-<title>add_user</title>
+<title>add_druglst</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 <link href="css/backoffice.css" rel="stylesheet" type="text/css">
 <meta http-equiv="refresh" content="1;URL=dglst.php">
@@ -84,13 +84,19 @@ packpri_vat= '$packpri_vat ',
 		medical_sup_free = '".$_POST["medical_sup_free"]."',
 		status = '".$_POST["status_chdrug"]."',
 		typedrug = '".$typedrug."',
+		dosecode = '".$_POST["dosecode"]."',
+		strength = '".$_POST["strength"]."',
+		content = '".$_POST["content"]."',
 		product_category = '".$_POST["pro_cat"]."', 
 		edpri_from = '".$_POST['edpri_from']."',
 		product_drugtype =  '".$_POST['product_drugtype']."',
 		grouptype = '".$_POST["grouptype"]."',
 		drug_nature = '".$_POST["drug_nature"]."',
 		drug_properties = '".$_POST["drug_properties"]."',
-		drugnote = '".$_POST["drugnote"]."'  		
+		drugnote = '".$_POST["drugnote"]."',  		
+		drug_active = '".$_POST["active"]."',
+		ised = '".$_POST["ised"]."',
+		had = '".$_POST["had"]."' 
         WHERE drugcode='$drugcode' limit 1";
 //echo $query;
         $result = mysql_query($query)
@@ -100,12 +106,11 @@ packpri_vat= '$packpri_vat ',
 
 		
 
-   If (!$result){
+   If(!$result){
         echo "insert into druglst fail";
-                    }
-   else {
-	   
-	   $sql = "INSERT INTO `drug_edit_log` (`id` ,`update_code`) VALUES (NULL , '".mysql_real_escape_string($query)."');";
+        }else{
+	   $date=date("Y-m-d H:i:s");
+	   $sql = "INSERT INTO `drug_edit_log` (`id` ,`update_code`,`date_edit`,`user_edit`) VALUES (NULL , '".mysql_real_escape_string($query)."', '$date', '".$_SESSION["sIdname"]."');";
 	   $query = mysql_query($sql);
 	   
         echo "บันทึกแก้ไขข้อมูลเรียบร้อย";

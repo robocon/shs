@@ -241,6 +241,7 @@ return $vat;
 	$nItems=$row->items;
 	$nNetprice=$row->netprice;
 	$cPono=$row->pono;
+	$chkpono=substr($cPono,0,2);  //ถ้าเป็น อ. จะใช้งบอุดหนุน	
 	$cPodate=$row->podate;
 	
 		$query1 = "SELECT * FROM company WHERE comcode = '$cComcode'";
@@ -366,7 +367,12 @@ print "<DIV style='left:109PX;top:927PX;width:269PX;height:30PX;TEXT-ALIGN:CENTE
 
 
 print "<DIV style='left:435PX;top:550PX;width:269PX;height:30PX;'><span class='fc1-5'>เรียน ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
+if($chkpono=="อ."){
+print "<DIV style='left:472PX;top:579PX;width:269PX;height:30PX;'><span class='fc1-5'>ได้ตรวจสอบงบอุดหนุนแล้วมีเพียงพอ</span></DIV>";
+}else{
 print "<DIV style='left:472PX;top:579PX;width:269PX;height:30PX;'><span class='fc1-5'>ได้ตรวจสอบงบรายรับสถานพยาบาลแล้วมีเพียงพอ</span></DIV>";
+
+}
 print "<DIV style='left:435PX;top:608PX;width:269PX;height:30PX;'><span class='fc1-5'>ให้การสนับสนุน จำนวนเงิน $nPriadvat บาท</span></DIV>";
 print "<DIV style='left:435PX;top:637PX;width:320PX;height:30PX;'><span class='fc1-5'>$cPriadvat</span></DIV>";
 print "<DIV style='left:450PX;top:666PX;width:269PX;height:30PX;'><span class='fc1-5'>$aYot[5]</span></DIV>";
@@ -493,8 +499,8 @@ print"<DIV style='left:136PX;top:1090PX;width:800PX;height:26PX;' class='fc1-0'>
 	 }
     array_push($aX,"$x");
     array_push($aTradname,$row->tradname);
-    array_push($aPacking,$row->packing);
-    array_push($aPack,$row->pack);
+    //array_push($aPacking,$row->packing);
+    //array_push($aPack,$row->pack);
     array_push($aAmount ,$row->amount);
   	$price=$row->price;
 	$price=number_format($price,2,'.',',');
@@ -513,6 +519,8 @@ print"<DIV style='left:136PX;top:1090PX;width:800PX;height:26PX;' class='fc1-0'>
 	array_push($aUnitpri,$item['unitpri']);
 	array_push($aPart,$item['part']);
 	array_push($aFreelimit,$item['freelimit']);
+	array_push($aPacking,$item['packing']);
+	array_push($aPack,$item['pack']);	
 
        }
 	$x++;
@@ -585,38 +593,36 @@ for ($n=$x+1; $n<=13; $n++){
 			$over_line = 0;
 			for ($ii=1; $ii <= 14; $ii++) { 
 
-				$cost = false;
-				$from = '&nbsp;';
-
-				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรเบิกได้ไม่เกิน
-				if( $part == 'DPY' OR $part == 'DPN' ){
-
+				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรณ์เบิกได้ไม่เกิน
+				//echo "==>".$aEdpri[$ii];
+				if( $aPart[$ii] == 'DPY' || $aPart[$ii] == 'DPN' ){
+					
 					// ราคาอุปกรณ์เบิกได้ไม่เกิน
 					if( $aFreelimit[$ii] > 0 ){
-						$cost = $aFreelimit[$ii];
-						$from = 3;
+						$cost = $aFreelimit[$ii];  //
+						if($aEdpriFrom[$ii]==0){  //ถ้าแหล่งที่มาราคากลางเป็นค่าว่าง
+							$from = 3;
+						}else{  //ถ้าแหล่งที่มาไม่ใช่ค่าว่าง
+							$from = $aEdpriFrom[$ii];
+						}
 					}
-
-				}else{
-
-					// ราคากลาง
-					if( $aEdpri[$ii] > 0 ){
+				}else{  //ถ้าเป็นยา/เวชภัณฑ์
+					// ราคากลางต้องมากกว่า 0
+					if( $aEdpri[$ii] > 0 ){  //ถ้าราคากลางมากกว่า 0
 						$cost = $aEdpri[$ii];
-						$from = 3;
+						if($aEdpriFrom[$ii]==0){  //ถ้าแหล่งที่มาราคากลางยังไม่มีการกำหนดค่า
+							$from = 3;
+						}else{  //ถ้าแหล่งที่มามีข้อมูลแล้ว
+							$from = $aEdpriFrom[$ii];
+						}
+					}else{
+						$cost = $aEdpri[$ii];
+						if($aEdpriFrom[$ii]==0 && $aEdpriFrom[$ii]!=""){  //ถ้าแหล่งที่มาราคากลางยังไม่มีการกำหนดค่า
+							$from = 5;
+						}else{  //ถ้าแหล่งที่มามีข้อมูลแล้ว
+							$from = $aEdpriFrom[$ii];
+						}					
 					}
-
-				}
-
-				// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
-				if( empty($cost) ){
-					if( !empty($aUnitpri[$ii]) ){
-						$cost = $aUnitpri[$ii];
-						$from = 5;
-					}
-				}
-
-				if( $cost == false ){
-					$cost = '&nbsp;';
 				}
 
 				// นับบรรทัดบนก่อน ถ้าข้อความเกิน 36 ตัว
@@ -732,233 +738,7 @@ for ($n=$x+1; $n<=13; $n++){
 </div>
 <?php
 
-///แถวที่1
-// print"<DIV style='left:11PX;top:1249PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[1]</span></DIV>";
-// print"<DIV style='left:49PX;top:1249PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[1]</span></DIV>";
-// print"<DIV style='left:306PX;top:1249PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[1]</span></DIV>";
-// print"<DIV style='left:362PX;top:1249PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[1]</span></DIV>";
-// print"<DIV style='left:462PX;top:1249PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[1]</span></DIV>";
-// print"<DIV style='left:597PX;top:1249PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[1]</span></DIV>";
-// print"<DIV style='left:679PX;top:1249PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[1]</span></DIV>";
-// print"<DIV style='left:519PX;top:1249PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[1]</span></DIV>";
-// ///แถวที่2
-// print"<DIV style='left:11PX;top:1279PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[2]</span></DIV>";
-// print"<DIV style='left:49PX;top:1279PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[2]</span></DIV>";
-// print"<DIV style='left:306PX;top:1279PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[2]</span></DIV>";
-// print"<DIV style='left:362PX;top:1279PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[2]</span></DIV>";
-// print"<DIV style='left:462PX;top:1279PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[2]</span></DIV>";
-// print"<DIV style='left:597PX;top:1279PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[2]</span></DIV>";
-// print"<DIV style='left:679PX;top:1279PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[2]</span></DIV>";
-// print"<DIV style='left:519PX;top:1279PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[2]</span></DIV>";
-// ///แถวที่3
-// print"<DIV style='left:11PX;top:1309PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[3]</span></DIV>";
-// print"<DIV style='left:49PX;top:1309PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[3]</span></DIV>";
-// print"<DIV style='left:306PX;top:1309PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[3]</span></DIV>";
-// print"<DIV style='left:362PX;top:1309PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[3]</span></DIV>";
-// print"<DIV style='left:462PX;top:1309PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[3]</span></DIV>";
-// print"<DIV style='left:597PX;top:1309PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[3]</span></DIV>";
-// print"<DIV style='left:679PX;top:1309PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[3]</span></DIV>";
-// print"<DIV style='left:519PX;top:1309PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[3]</span></DIV>";
-// ///แถวที่4
-// print"<DIV style='left:11PX;top:1339PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[4]</span></DIV>";
-// print"<DIV style='left:49PX;top:1339PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[4]</span></DIV>";
-// print"<DIV style='left:306PX;top:1339PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[4]</span></DIV>";
-// print"<DIV style='left:362PX;top:1339PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[4]</span></DIV>";
-// print"<DIV style='left:462PX;top:1339PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[4]</span></DIV>";
-// print"<DIV style='left:597PX;top:1339PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[4]</span></DIV>";
-// print"<DIV style='left:679PX;top:1339PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[4]</span></DIV>";
-// print"<DIV style='left:519PX;top:1339PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[4]</span></DIV>";
-// ///แถวที่5
-// print"<DIV style='left:11PX;top:1369PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[5]</span></DIV>";
-// print"<DIV style='left:76PX;top:1369PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[5]</span></DIV>";
-// print"<DIV style='left:306PX;top:1369PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[5]</span></DIV>";
-// print"<DIV style='left:362PX;top:1369PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[5]</span></DIV>";
-// print"<DIV style='left:462PX;top:1369PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[5]</span></DIV>";
-// print"<DIV style='left:597PX;top:1369PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[5]</span></DIV>";
-// print"<DIV style='left:679PX;top:1369PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[5]</span></DIV>";
-// print"<DIV style='left:519PX;top:1369PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[5]</span></DIV>";
-// ///แถวที่6
-// print"<DIV style='left:11PX;top:1399PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[6]</span></DIV>";
-// print"<DIV style='left:76PX;top:1399PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[6]</span></DIV>";
-// print"<DIV style='left:306PX;top:1399PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[6]</span></DIV>";
-// print"<DIV style='left:362PX;top:1399PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[6]</span></DIV>";
-// print"<DIV style='left:462PX;top:1399PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[6]</span></DIV>";
-// print"<DIV style='left:597PX;top:1399PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[6]</span></DIV>";
-// print"<DIV style='left:679PX;top:1399PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[6]</span></DIV>";
-// print"<DIV style='left:519PX;top:1399PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[6]</span></DIV>";
-// ///แถวที่7
-// print"<DIV style='left:11PX;top:1429PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[7]</span></DIV>";
-// print"<DIV style='left:49PX;top:1429PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[7]</span></DIV>";
-// print"<DIV style='left:306PX;top:1429PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[7]</span></DIV>";
-// print"<DIV style='left:362PX;top:1429PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[7]</span></DIV>";
-// print"<DIV style='left:462PX;top:1429PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[7]</span></DIV>";
-// print"<DIV style='left:597PX;top:1429PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[7]</span></DIV>";
-// print"<DIV style='left:679PX;top:1429PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[7]</span></DIV>";
-// print"<DIV style='left:519PX;top:1429PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[7]</span></DIV>";
-// ///แถวที่8
-// print"<DIV style='left:11PX;top:1459PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[8]</span></DIV>";
-// print"<DIV style='left:49PX;top:1459PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[8]</span></DIV>";
-// print"<DIV style='left:306PX;top:1459PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[8]</span></DIV>";
-// print"<DIV style='left:362PX;top:1459PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[8]</span></DIV>";
-// print"<DIV style='left:462PX;top:1459PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[8]</span></DIV>";
-// print"<DIV style='left:597PX;top:1459PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[8]</span></DIV>";
-// print"<DIV style='left:679PX;top:1459PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[8]</span></DIV>";
-// print"<DIV style='left:519PX;top:1459PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[8]</span></DIV>";
-// ///แถวที่9
-// print"<DIV style='left:11PX;top:1489PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[9]</span></DIV>";
-// print"<DIV style='left:49PX;top:1489PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[9]</span></DIV>";
-// print"<DIV style='left:306PX;top:1489PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[9]</span></DIV>";
-// print"<DIV style='left:362PX;top:1489PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[9]</span></DIV>";
-// print"<DIV style='left:462PX;top:1489PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[9]</span></DIV>";
-// print"<DIV style='left:597PX;top:1489PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[9]</span></DIV>";
-// print"<DIV style='left:679PX;top:1489PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[9]</span></DIV>";
-// print"<DIV style='left:519PX;top:1489PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[9]</span></DIV>";
-// ///แถวที่10
-// print"<DIV style='left:11PX;top:1519PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[10]</span></DIV>";
-// print"<DIV style='left:49PX;top:1519PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[10]</span></DIV>";
-// print"<DIV style='left:306PX;top:1519PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[10]</span></DIV>";
-// print"<DIV style='left:362PX;top:1519PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[10]</span></DIV>";
-// print"<DIV style='left:462PX;top:1519PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[10]</span></DIV>";
-// print"<DIV style='left:597PX;top:1519PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[10]</span></DIV>";
-// print"<DIV style='left:679PX;top:1519PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[10]</span></DIV>";
-// print"<DIV style='left:519PX;top:1519PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[10]</span></DIV>";
-// ///แถวที่11
-// print"<DIV style='left:11PX;top:1549PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[11]</span></DIV>";
-// print"<DIV style='left:49PX;top:1549PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[11]</span></DIV>";
-// print"<DIV style='left:306PX;top:1549PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[11]</span></DIV>";
-// print"<DIV style='left:362PX;top:1549PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[11]</span></DIV>";
-// print"<DIV style='left:462PX;top:1549PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[11]</span></DIV>";
-// print"<DIV style='left:597PX;top:1549PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[11]</span></DIV>";
-// print"<DIV style='left:679PX;top:1549PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[11]</span></DIV>";
-// print"<DIV style='left:519PX;top:1549PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[11]</span></DIV>";
-// ///แถวที่12
-// print"<DIV style='left:11PX;top:1579PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[12]</span></DIV>";
-// print"<DIV style='left:49PX;top:1579PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[12]</span></DIV>";
-// print"<DIV style='left:306PX;top:1579PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[12]</span></DIV>";
-// print"<DIV style='left:362PX;top:1579PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[12]</span></DIV>";
-// print"<DIV style='left:462PX;top:1579PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[12]</span></DIV>";
-// print"<DIV style='left:597PX;top:1579PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[12]</span></DIV>";
-// print"<DIV style='left:679PX;top:1579PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[12]</span></DIV>";
-// print"<DIV style='left:519PX;top:1579PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[12]</span></DIV>";
-// ///แถวที่13
-// print"<DIV style='left:11PX;top:1609PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aX[13]</span></DIV>";
-// print"<DIV style='left:49PX;top:1609PX;width:350PX;height:22PX;'><span class='fc1-4'> $aTradname[13]</span></DIV>";
-// print"<DIV style='left:306PX;top:1609PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aPacking[13]</span></DIV>";
-// print"<DIV style='left:362PX;top:1609PX;width:96PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPack[13]</span></DIV>";
-// print"<DIV style='left:462PX;top:1609PX;width:50PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aAmount[13]</span></DIV>";
-// print"<DIV style='left:597PX;top:1609PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPrice[13]</span></DIV>";
-// print"<DIV style='left:679PX;top:1609PX;width:72PX;height:22PX;TEXT-ALIGN:CENTER;'>
-// 	<span class='fc1-4'>$aSpecno[13]</span></DIV>";
-// print"<DIV style='left:519PX;top:1609PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-4'>$aPackpri[13]</span></DIV>";
-/////////
 
-// print"<DIV style='left:128PX;top:1721PX;width:93PX;height:26PX;TEXT-ALIGN:CENTER;'>";
-// 	print"<span class='fc1-0'>$nItems</span></DIV>";
-// print"<DIV style='left:99PX;top:1721PX;width:25PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวม</span></DIV>";
-// print"<DIV style='left:225PX;top:1721PX;width:44PX;height:27PX;'><span class='fc1-0'>รายการ</span></DIV>";
-// print"<DIV style='left:477PX;top:1798PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
-// print"<DIV style='left:471PX;top:1824PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
-// print"<DIV style='left:476PX;top:1853PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
-// //print"<DIV style='left:486PX;top:1830PX;width:249PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>..........................................................................</span></DIV>";
-// print"<DIV style='left:496PX;top:1690PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
-// print"<DIV style='left:538PX;top:1723PX;width:44PX;height:27PX;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
-// print"<DIV style='left:496PX;top:1662PX;width:86PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
-// print"<DIV style='left:597PX;top:1663PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'><span  class='fc1-0'>$nNetprice</span></DIV>";
-// print"<DIV style='left:597PX;top:1690PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-0'>$nVat</span></DIV>";
-// print"<DIV style='left:597PX;top:1723PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
-// 	<span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
-// print"<DIV style='left:476PX;top:1882PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2] $aPost2[2]</span></DIV>";
 
 //  ช่องเซ็น
 print"<DIV style='left:510PX;top:1895PX;width:81PX;height:27PX;'><span class='fc1-0'>ตรวจถูกต้อง</span></DIV>";
@@ -1057,18 +837,29 @@ print "</head>";
 
 print"<BODY BGCOLOR='FFFFFF'LEFTMARGIN=0 TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0>";
 print"<DIV style='z-index:0'> &nbsp; </div>";
+
 print"<div style='left:310PX;top:2216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
+
 print"<div style='left:515PX;top:2216PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:156PX;'></div>";
+
 print"<div style='left:8PX;top:2280PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
+
 print"<div style='left:44PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+
 print"<div style='left:311PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+
 print"<div style='left:365PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+
 print"<div style='left:461PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+
 print"<div style='left:515PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:559PX;'><table width='0px' height='553PX'><td>&nbsp;</td></table></div>";
+
 print"<div style='left:585PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:560PX;'><table width='0px' height='554PX'><td>&nbsp;</td></table></div>";
+
 print"<div style='left:679PX;top:2251PX;border-color:000000;border-style:dashed;border-width:0px;border-left-width:1PX;height:559PX;'><table width='0px' height='553PX'><td>&nbsp;</td></table></div>";
-print"<div style='left:187PX;top:2243PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:399PX;'></div>";
+
 print"<div style='left:8PX;top:2758PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:743PX;'></div>";
+
 print"<div style='left:124PX;top:2783PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:102PX;'></div>";
 //print"<div style='left:362PX;top:2924PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:234PX;'></div>";
 print"<DIV class='box' style='z-index:10; border-color:000000;border-style:dashed;border-bottom-style:dashed;border-bottom-width:1PX;border-left-style:dashed;border-left-width:1PX;border-top-style:dashed;border-top-width:1PX;border-right-style:dashed;border-right-width:1PX;left:7PX;top:2251PX;width:743PX;height:559PX;'>
@@ -1094,12 +885,20 @@ print"<DIV style='left:590PX;top:2248PX;width:85PX;height:27PX;TEXT-ALIGN:CENTER
 print"<DIV style='left:684PX;top:2253PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>spec.</span></DIV>";
 print"<DIV style='left:194PX;top:2120PX;width:364PX;height:41PX;TEXT-ALIGN:CENTER;'><span class='fc1-2'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</span></DIV>";
 print"<DIV style='left:194PX;top:2163PX;width:364PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>มทบ.32</span></DIV>";
-print"<DIV style='left:187PX;top:2222PX;width:397PX;height:26PX;'><span class='fc1-0'>
-	($cComcode)$cComname&nbsp;&nbsp;&nbsp;$fax</span></DIV>";
-print"<DIV style='left:97PX;top:2222PX;width:91PX;height:26PX;'><span class='fc1-0'>ขอสั่งซื้อของจาก</span></DIV>
+
+print"<div style='left:147PX;top:2243PX;border-color:000000;border-style:dashed;border-width:0px;border-top-width:1PX;width:450PX;'></div>";
+
+print"<DIV style='left:57PX;top:2222PX;width:91PX;height:26PX;'><span class='fc1-0'>ขอสั่งซื้อของจาก</span></DIV>
 ";
-print"<DIV style='left:586PX;top:2222PX;width:104PX;height:26PX;'><span class='fc1-0'>ดังมีรายการต่อไปนี้</span></DIV>";
+print"<DIV style='left:147PX;top:2222PX;width:450PX;height:26PX;'><span class='fc1-0'>
+	($cComcode)$cComname&nbsp;&nbsp;&nbsp;$fax</span></DIV>";
+	
+print"<DIV style='left:616PX;top:2222PX;width:104PX;height:26PX;'><span class='fc1-0'>ดังมีรายการต่อไปนี้</span></DIV>";
+if($chkpono=="อ."){
+print"<DIV style='left:684PX;top:2167PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>งบอุดหนุน</span></DIV>";
+}else{
 print"<DIV style='left:684PX;top:2167PX;width:61PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>งบรายรับ</span></DIV>";
+}
 print"<DIV style='left:518PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
 print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>รวม VAT</span></DIV>";
 
@@ -1323,7 +1122,7 @@ print"<DIV style='left:344PX;top:2922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTE
 print"<DIV style='left:496PX;top:2730PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ภาษี 7.00 %</span></DIV>";
 print"<DIV style='left:538PX;top:2763PX;width:44PX;height:27PX;'><span class='fc1-0'>รวมสุทธิ</span></DIV>";
 print"<DIV style='left:496PX;top:2702PX;width:86PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>รวมเงิน</span></DIV>";
-print"<DIV style='left:360PX;top:2816PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 15 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
+print"<DIV style='left:360PX;top:2816PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 30 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
 print"<DIV style='left:360PX;top:2842PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
 print"<DIV style='left:360PX;top:2868PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
 print"<DIV style='left:10PX;top:2951PX;width:209PX;height:27PX;'><span class='fc1-0'>บริษัท&nbsp;&nbsp;.....................................................</span></DIV>";

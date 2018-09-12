@@ -1,6 +1,6 @@
 <?php
     $yym=$thiyr.'-'.$rptmo;
-    print "<font face='Angsana New'><b>ทำเอกสารการสั่งซื้อยาและเวชภัณฑ์  ประจำเดือน $yym  </b>&nbsp;&nbsp;&nbsp;<a target=_top  href='../nindex.htm'><< ไปเมนู</a>&nbsp;&nbsp;&nbsp;<a target=_top  href='pomonth.php'><< ไปเลือกเดือน</a><br>";
+    print "<font face='Angsana New'><b>ทำเอกสารการสั่งซื้อยาและเวชภัณฑ์  ประจำเดือน $yym  </b>&nbsp;&nbsp;&nbsp;<a target=_top  href='../nindex.htm'><< ไปเมนู</a>&nbsp;&nbsp;&nbsp;<a target=_top  href='pomonth1.php'><< ไปเลือกเดือน</a><br>";
     print "คลิก--> ที่ กห ใบสั่งซื้อชั่วคราว-->กรอกข้อมูลใบ PO<br>";
     print "คลิก--> วันที่ใบสั่งซื้อชั่วคราว---->พิมพ์ใบ PO ชั่วคราว<br>";
     print "คลิก--> รายการ ------------------->ดูจำนวนรายการที่สั่งซื้อ<br>";
@@ -11,21 +11,14 @@
   <th bgcolor=6495ED><font face='Angsana New'>#</th>
   <th bgcolor=6495ED><font face='Angsana New'>วันที่สั่ง</th>
   <th bgcolor=6495ED><font face='Angsana New'>ที่ กห ใบสั่งซื้อชั่วคราว</th>
-
-    <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(ยา)รวมVATหลัง</th>
-
- <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(ยา)รวมVATก่อน</th>
-
-
-
-
- <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(เวชภัณฑ์ )รวมVATหลัง</th>
- <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว(เวชภัณฑ์ )รวมVATก่อน</th>
- 
-    <th bgcolor=6495ED><font face='Angsana New'>รหัสบริษัท</th>
+ <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว<br />
+ยา ราคารวม VAT</th>
+ <th bgcolor=6495ED><font face='Angsana New'>วันที่ใบสั่งซื้อชั่วคราว<br />
+เวชภัณฑ์ ราคารวม VAT</th>
+  <th bgcolor=6495ED><font face='Angsana New'>รหัสบริษัท</th>
   <th bgcolor=6495ED><font face='Angsana New'>บริษัทหรือห้างหุ้นส่วนจำกัด</th>
   <th bgcolor=6495ED><font face='Angsana New'>รายการ</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ราคาไม่รวมvat</th>
+  <th bgcolor=6495ED><font face='Angsana New'>ราคารวม VAT</th>
   <th bgcolor=6495ED><font face='Angsana New'>วันที่กำหนดส่งของ</th>
  </tr>
 
@@ -47,10 +40,9 @@ If (!empty($yym)){
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php?nRow_id=$row_id\">$date</a></td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepofill.php?nRow_id=$row_id\">$prepono</a></td>\n".
 
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn.1.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn.1_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn1_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
-          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"prepoprn1.1.php?nRow_id=$row_id\">$prepodate</a> <a href='prepoprn1.1_new.php?nRow_id=$row_id' target='_blank'>(แบบใหม่)</a></td>\n".
+          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn.1_new.php?nRow_id=$row_id' target='_blank'>$prepodate</a></td>\n".  //ยา ราคารวม VAT
+		  
+          "  <td BGCOLOR=66CDAA><font face='Angsana New'><a href='prepoprn1.1_new.php?nRow_id=$row_id' target='_blank'>$prepodate</a> </td>\n".  //เวชภัณฑ์ ราคารวม VAT
   
 "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"podocumentselect.php? 	nRow_id=$row_id\">$comcode</a></td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$comname</td>\n".
@@ -62,7 +54,7 @@ If (!empty($yym)){
           }
    include("unconnect.inc");
           }
-  print "<b>รวมมูลค่าสั่งซื้อยาและเวชภัณฑ์ทั้งสิ้น  $nNetprice บาท</b>&nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='officers.php'>กรรมการตรวจรับพัสดุ</a><br>";
+  print "<b>รวมมูลค่าสั่งซื้อยาและเวชภัณฑ์ทั้งสิ้น  ".number_format($nNetprice,2)." บาท</b>&nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='officers.php'>กรรมการตรวจรับพัสดุ</a><br>";
 
 ?>
 </table>

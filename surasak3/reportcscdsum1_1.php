@@ -319,7 +319,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='60%'></td>";
-print "      <td width='40%'><font face='Angsana New'>Ã.µ.Ë­Ô§</font></td>";
+print "      <td width='40%'><font face='Angsana New'>¾.µ.Ë­Ô§</font></td>";
 print "    </tr>";
 print "  </table>";
 print "<div align='left'>";

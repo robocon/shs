@@ -26,7 +26,7 @@
 if(isset($_POST['hn'])){
 	$sql = "select * from resulthead where hn='".$_POST['hn']."' group by labnumber order by orderdate desc";
   	$rows = mysql_query($sql);
-	echo "<table class='ppo' border='1' width='100%' align='center' cellpadding='0' cellspacing='0' style='border-collapse:collapse'><tr><td align='center'>HN</td><td align='center'>ชื่อ - สกุล</td><td align='center'>Orderdate</td><td align='center'>สถานะการตรวจ</td><td align='center'>แก้ไข</td></tr>";
+	echo "<table class='ppo' border='1' width='100%' align='center' cellpadding='0' cellspacing='0' style='border-collapse:collapse'><tr><td align='center'>HN</td><td align='center'>ชื่อ - สกุล</td><td align='center'>Orderdate</td><td align='center'>สถานะการตรวจ</td><td align='center'>ปรับสถานะ</td></tr>";
   	while($result = mysql_fetch_array($rows)){
 	echo "<tr><td align='center'>".$result['hn']."</td><td align='center'>".$result['patientname']."</td><td align='center'>".$result['orderdate']."</td><td>&nbsp;".$result['clinicalinfo']."</td><td align='center'><a href='upd_labstatus.php?ids=".$result['labnumber']."' >แก้ไข</a></td></tr>";
 	}
@@ -84,9 +84,6 @@ elseif(isset($_POST['upbtn'])){
 		echo "<meta http-equiv='refresh' content='3' />";
 	}
 }else{
-
-	$send_hn = $_GET['send_hn'];
-
 ?>
 <form id="form1" name="form1" method="post" action="upd_labstatus.php">
 
@@ -96,7 +93,7 @@ elseif(isset($_POST['upbtn'])){
   </tr>
   <tr>
     <td align="center">HN : 
-      <input name="hn" type="text" id="hn" size="10" value="<?=$send_hn;?>"/>&nbsp;<input type="submit" name="okbtn" id="button" value="ตกลง" /></td>
+      <input name="hn" type="text" id="hn" size="10" />&nbsp;<input type="submit" name="okbtn" id="button" value="ตกลง" /></td>
     </tr>
 </table>
 </form>
