@@ -12,9 +12,19 @@ b.`cigarette` AS `SMOKE`,
 b.`alcohol` AS `ALCOHOL`,
 '' AS `DMFAMILY`,
 '' AS `HTFAMILY`,
-b.`weight` AS `WEIGHT`,
+
+CASE 
+    WHEN b.`weight` > 0 THEN ROUND(b.`weight`,1) 
+    ELSE '0'  
+END AS `WEIGHT`,
+
 b.`height` AS `HEIGHT`,
-b.`waist` AS `WAIST_CM`, 
+
+CASE 
+    WHEN b.`waist` <> '' THEN b.`waist` 
+    ELSE '0'  
+END AS `WAIST_CM`,
+
 b.`bp1` AS `SBP_1`,
 b.`bp2` AS `DBP_1`,
 '' AS `SBP_2`,

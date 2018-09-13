@@ -1,4 +1,9 @@
 <?php
+
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
+
+
 //-------------------- Create file person ไฟล์ที่ 1 --------------------//
 // $temp1="CREATE  TEMPORARY  TABLE report_person1 
 // SELECT a.regisdate, a.hn, a.dbirth, a.sex, a.married, a.career, a.nation, a.idcard, b.thidate, a.yot, a.name, a.surname, a.education, a.religion, a.blood, a.idguard
@@ -10,28 +15,29 @@
 
 
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
-SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright
+SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright, 
+
+CASE 
+    WHEN d.hphone <> '' THEN d.hphone 
+    WHEN d.phone <> '' THEN d.phone
+    WHEN d.ptffone <> '' THEN d.ptffone
+END AS `PHONE` 
+
 FROM (
     SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
-        FROM `opday` 
-        WHERE `thidate` LIKE '$thimonth%' 
-    UNION 
-    SELECT b.`hn`, SUBSTRING(`dcdate`, 1, 10) AS `date2` 
-        FROM `ipcard` AS b 
-        WHERE b.`dcdate` LIKE '$thimonth%' 
+    FROM `opday` 
+    WHERE `thidate` LIKE '$thimonth%' 
+    AND ( `idcard` <> '' AND `idcard` IS NOT NULL )
 ) AS c 
-LEFT JOIN `opcard` AS d 
-    ON d.`hn` = c.`hn`
+LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
 GROUP BY d.`hn`";
-
-
-$querytmp1 = mysql_query($temp1) or die("Query failed,Create temp1");
+$querytmp1 = mysql_query($temp1, $db2) or die("Query failed,Create temp1");
 
 $sql1="SELECT * 
 From report_person1";
-$result1 = mysql_query($sql1) or die("Query failed, Select report_person1 (person)");
+$result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
-while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright) = mysql_fetch_row ($result1)) {		
+while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone) = mysql_fetch_row ($result1)) {		
 
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
@@ -139,7 +145,7 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
     $thidatey1= $thidatey-543;
 
     $sql ="select code from pername where (detail1='$yot' or detail2='$yot')   ";
-    $row = mysql_query($sql);
+    $row = mysql_query($sql, $db2);
     list($pername) = mysql_fetch_array($row);
 
 /*    $sql ="select code from bloodgroup where (detail='$blood' or detail2='$blood')   ";
@@ -218,7 +224,7 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
 	
     $discharge="9";  //สถานะ/สาเหตุการจำหน่าย
     
-    $inline = "$hospcode|$cid|$hn|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update\r\n";
+    $inline = "$hospcode|$cid|$hn|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update|$phone|$phone\r\n";
 
     $txt .= $inline;
 
@@ -228,7 +234,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 //สำหรับ qof
-$header = "HOSPCODE|CID|PID|HID|PRENAME|NAME|LNAME|HN|SEX|BIRTH|MSTATUS|OCCUPATION_OLD|OCCUPATION_NEW|RACE|NATION|RELIGION|EDUCATION|FSTATUS|FATHER|MOTHER|COUPLE|VSTATUS|MOVEIN|DISCHARGE|DDISCHARGE|ABOGROUP|RHGROUP|LABOR|PASSPORT|TYPEAREA|D_UPDATE\r\n";
+$header = "HOSPCODE|CID|PID|HID|PRENAME|NAME|LNAME|HN|SEX|BIRTH|MSTATUS|OCCUPATION_OLD|OCCUPATION_NEW|RACE|NATION|RELIGION|EDUCATION|FSTATUS|FATHER|MOTHER|COUPLE|VSTATUS|MOVEIN|DISCHARGE|DDISCHARGE|ABOGROUP|RHGROUP|LABOR|PASSPORT|TYPEAREA|D_UPDATE|TELEPHONE|MOBILE\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_person.txt';
 file_put_contents($qofPath, $txt);
