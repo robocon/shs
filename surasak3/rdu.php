@@ -235,7 +235,7 @@ if ( $action == 'load' ) {
                 $url_in7 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
                 ?>
 
-                <a href="rdu_in7_a.php?<?=$url_in7_a;?>" target="_blank"><?=number_format($in7a);?></a>
+                <a href="rdu_in7_a.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7a);?></a>
             </td>
             <td align="right">
 
@@ -275,7 +275,7 @@ if ( $action == 'load' ) {
             <?php 
             include 'rdu_in10.php';
             ?>
-            <td>= ร้อยละ 10</td>
+            <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด"><?=number_format($in10a);?></td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด"><?=number_format($in10b);?></td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
@@ -331,7 +331,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in17.php';
             ?>
-            <td>ร้อยละ 0</td>
+            <td>0 คน</td>
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right"><?=$in17_result;?></td>

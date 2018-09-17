@@ -226,6 +226,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$sql = "Select * From  `dxofyear_out` where  hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
+
+	$camp = '';
 	
 	if($count > 0){
 		$arr_dxofyear = mysql_fetch_assoc($result);
@@ -250,6 +252,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 		 $exercise=$arr_dxofyear["exercise"];
 		$type=$arr_dxofyear["type"];
 		$doctor=$arr_dxofyear["doctor"];
+
+		$camp = $arr_dxofyear['camp'];
 		
 		//$arr_view["vn"]=$arr_dxofyear["vn"];
 		//echo "===>".$arr_view["vn"];
@@ -379,6 +383,10 @@ while($arr = Mysql_fetch_assoc($result)){
 					$selected = 'selected="selected"';
 				}
 
+				if( $camp == $result12['code'] ){
+					$selected = 'selected="selected"';
+				}
+
 				?>
 				<option value='<?=$result12['name']?>' <?=$selected;?> ><?=$result12['name']?></option>
 				<?php
@@ -392,10 +400,10 @@ while($arr = Mysql_fetch_assoc($result)){
 	<table width="854" border="0" class="tb_font">
 	  <tr>
 			<td width="130" align="right" class="tb_font_2">ส่วนสูง : </td>
-			<td width="79"><input name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" />
+			<td width="79"><input id="pt_height" name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" />
 ซม.</td>
 			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
-			<td width="129"><input name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
+			<td width="129"><input id="pt_weight" name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
 กก. </td>
 			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
 			<td width="132"><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" />
@@ -424,7 +432,10 @@ C&deg; </td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2"><span class="tb_font_2">BMI :</span></td>
-		  <td colspan="2"><input name="bmi" type="text" size="5"  value="<?php echo $bmi; ?>"  /></td>
+		  <td colspan="2">
+		  	<input name="bmi" id="pt_bmi" type="text" size="5"  value="<?php echo $bmi; ?>"  />
+			<button type="button" id="btn-bmi">คำนวณBMI</button>
+		  </td>
 		  <td align="left">&nbsp;</td>
 		  <td align="right">&nbsp;</td>
 		  <td align="left">&nbsp;</td>
@@ -758,7 +769,27 @@ C&deg; </td>
 <input type="hidden" name="labin_date" value="<?=$labin_date;?>">
 </FORM>
 
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script>
+	jQuery.noConflict();
+	(function( $ ) {
+	$(function() {
+		
+        $(document).on('click', '#btn-bmi', function(){
 
+            var pt_height = $("#pt_height").val();
+			var pt_weight = $("#pt_weight").val();
+
+			var hei = pt_height / 100;
+			var bmi = pt_weight / ( hei * hei );
+
+			$("#pt_bmi").val(bmi.toFixed(2));
+            
+        });
+		
+	});
+})(jQuery);
+</script>
 
 
 

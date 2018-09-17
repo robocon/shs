@@ -9,12 +9,11 @@ $ward_lists = array(
 
 $cAn = urldecode(input_get('an'));
 
-$sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`onoff`,`dateoff`,`row_id` 
+$sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`statcon`,`onoff`,`row_id`, 
+SUBSTRING(`dateoff`,1,10) AS `dateoff` 
 FROM `dgprofile` 
 WHERE `an` = '$cAn' 
-AND `statcon` = 'CONT' 
-AND `onoff` = 'ON' 
-ORDER BY `date` ";
+ORDER BY `date` DESC ";
 $db->select($sql);
 $items = $db->get_items();
 
@@ -120,6 +119,9 @@ label{
                     <th>Tradname</th>
                     <th>Unit</th>
                     <th>วิธีใช้</th>
+                    <th>สถานะ</th>
+                    <th>ON/OFF</th>
+                    <th>วันที่ OFF</th>
                     <th>จำนวนบรรทัด</th>
                 </tr>
             <?php
@@ -159,6 +161,9 @@ label{
                     <td><?=$item['tradname'];?></td>
                     <td><?=$item['unit'];?></td>
                     <td><b><?=$item['slcode'];?></b><br><?=$detail_txt;?></td>
+                    <td><?=$item['statcon'];?></td>
+                    <td><?=$item['onoff'];?></td>
+                    <td><?=$item['dateoff'];?></td>
                     <td>
                         <input type="text" name="drug_height[<?=$dCode;?>][]" id="" size="5" value="<?=$help_h;?>">
                     </td>

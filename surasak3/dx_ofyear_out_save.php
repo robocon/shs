@@ -30,7 +30,6 @@ $date_vn = date("Y-m-d").$_POST["vn"];
 window.onload = function(){
 	opener.location.href = 'dx_ofyear_out.php';
 	window.print();
-	//window.close();
 	setTimeout("window.close()",3000);
 }
 </script>
@@ -81,6 +80,175 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 //echo $sql;
 //print_r($_POST);
 $result = mysql_query($sql) or die(mysql_error());
+
+
+
+########################################################################
+# แปลงข้อมูลให้อยู่ในรูปแบบของตรวจสุขภาพ Walk-in 
+########################################################################
+if ( $_POST['camp'] == 'ตรวจสุขภาพประกันสังคม' ) {
+	
+	$hn = $_POST["hn"];
+	$out_result_officer = $_SESSION['sOfficer'];
+	$register = date("Y-m-d H:i:s");
+	
+	$cigga_list = array(
+		'0' => 'ไม่เคยสูบ',
+		'1' => 'เคยสูบ แต่เลิกแล้ว',
+		'2' => 'สูบบุหรี่ เป็นครั้งคราว',
+		'3' => 'สูบบุหรี่ เป็นประจำ'
+	);
+	$cigarette = $_POST['cigarette'];
+	$cigga = $cigga_list[$cigarette];
+	
+	$alcohol_list = array(
+		0 => 'ไม่เคยดื่ม',
+		1 => 'เคยดื่ม แต่เลิกแล้ว',
+		2 => 'ดื่ม เป็นครั้งคราว',
+		3 => 'ดื่ม เป็นประจำ'
+	);
+	$alcohol = $_POST['alcohol'];
+	$alcohol_name = $alcohol_list[$alcohol];
+	
+	$exercise_list = array(
+		0 => 'ไม่เคยออกกำลังกาย',
+		1 => 'ออกกำลังกาย ต่ำกว่าเกณฑ์',
+		2 => 'ออกกำลังกาย ตามเกณฑ์'
+	);
+	$exercise = $_POST['exercise'];
+	$exercise_name = $exercise_list[$exercise];
+	
+	
+	$drugreact_list = array(
+		0 => 'ไม่แพ้',
+		1 => 'แพ้'
+	);
+	$drugreact = $_POST['drugreact'];
+	$allergic = $drugreact_list[$drugreact];
+	
+	// ถึง part ออกมา
+	$sql = "SELECT `part` FROM `opcardchk` WHERE `HN` = '$hn' AND `datechkup` = '20 กันยายน 2561' ORDER BY row DESC LIMIT 1";
+	$q = mysql_query($sql) or die( mysql_query($sql) );
+	$item = mysql_fetch_assoc($q);
+	$part = $item['part'];
+
+	$sql = "SELECT * FROM `out_result_chkup` WHERE `part` = '$part' AND `hn` = '$hn' ";
+	$q = mysql_query($sql) or die( mysql_query($sql) );
+	$out_result_row = mysql_num_rows($q);
+
+	// Update
+	if( $out_result_row > 0 ){
+
+		$out_result = mysql_fetch_assoc($q);
+	
+		$out_result_chkup_update = "UPDATE `out_result_chkup` SET 
+		`ptname` = '".$_POST['ptname']."',
+		`age` = '".$_POST['age']."',
+		`weight` = '".$_POST['weight']."',
+		`height` = '".$_POST['height']."',
+		`bp1` = '".$_POST['bp1']."',
+		`bp2` ='".$_POST['bp2']."',
+		`bp3` = '".$_POST['bp21']."',
+		`bp4` ='".$_POST['bp22']."',
+		`p` = '".$_POST['pause']."' ,
+		`ekg` = '',
+		`va` = '',
+		`stool` = '',
+		`cxr` = '',
+		`year_chk` = '".$nPrefix."',
+		`part` = '$part',
+		`42702` = '',
+		`hpv` = '',
+		`altra` = '',
+		`psa` = '',
+		`mammogram` = '',
+		`temp` = '".$_POST['temperature']."',
+		`rate` ='".$_POST['rate']."',
+		`prawat` = '".$_POST['congenital_disease']."' ,
+		`cigga` = '$cigga',
+		`alcohol` = '$alcohol_name',
+		`exercise` = '$exercise_name',
+		`allergic` = '$allergic',
+		`comment` = '".$_POST['organ'].", ".$_POST['dx']."'	,
+		`eye` ='',
+		`eye_detail` ='',
+		`pt` ='',
+		`pt_detail` ='',
+		`last_officer` = '$out_result_officer',
+		`last_update` = '$register', 
+		`seq` = '', 
+		`cs` = '',
+		`result_cs` = '',
+		`blindness` = '', 
+		`hearing` = '', 
+		`metal` = '', 
+		`metal_result` = ''
+		WHERE `row_id` ='".$out_result['row_id']."';";
+		$out_result_update = mysql_query($out_result_chkup_update) or die( mysql_error() );
+	
+	}else{ // Insert
+	
+		$out_result_chkup_insert = "INSERT INTO `out_result_chkup` SET 
+		`hn` = '".$_POST['hn']."',
+		`ptname` = '".$_POST['ptname']."',
+		`age` = '".$_POST['age']."',
+		`weight` = '".$_POST['weight']."',
+		`height` = '".$_POST['height']."',
+	
+		`bp1` = '".$_POST['bp1']."',
+		`bp2` = '".$_POST['bp2']."',
+		`bp3` = '".$_POST['bp21']."',
+		`bp4` = '".$_POST['bp22']."',
+		`p` = '".$_POST['pause']."',
+		
+		`ekg` = '',
+		`va` = '',
+		`cxr` = '',
+		`year_chk` =  '$nPrefix',
+		`part` = '$part',
+	
+		`officer` = '$out_result_officer',
+		`register` = '$register',
+		`42702` = '',
+		`hpv` = '',
+		`altra` = '',
+	
+		`psa` = '',
+		`mammogram` = '',
+		`temp` = '".$_POST['temperature']."',
+		`rate` = '".$_POST['rate']."',
+		`prawat` =  '".$_POST['congenital_disease']."',
+	
+		`cigga` = '$cigga',
+		`alcohol` = '$alcohol_name',
+		`exercise` = '$exercise_name',
+		`allergic` = '$allergic',
+		`comment` = '".$_POST['organ'].", ".$_POST['dx']."',
+		
+		`eye` = '',
+		`eye_detail` =  '',
+		`pt` = '',
+		`pt_detail` = '', 
+		`seq` = '', 
+	
+		`cs` = '', 
+		`result_cs` = '', 
+		`blindness` = '', 
+		`hearing` = '', 
+		`metal` = '', 
+		`metal_result` = ''";
+
+		$out_result_insert = mysql_query($out_result_chkup_insert) or die( mysql_error() );
+	
+	}
+
+
+
+}
+
+#########################################################################
+
+
 
 // สิทธิ ปกส + ex46 ตรวจสุขภาพ
 $toborow = strtolower(substr($_POST['toborow'],0,4));

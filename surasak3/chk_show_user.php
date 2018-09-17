@@ -10,7 +10,7 @@ if( $page == false ){
 
     $part = input_get('part');
 
-    $sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$part'";
+    $sql = "SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$part'";
     $db->select($sql);
     $company = $db->get_item();
 
@@ -23,7 +23,7 @@ if( $page == false ){
     if( $rows > 0 ){
 
         ?>
-        <h3>รายชื่อผู้ตรวจสุขภาพ - <?=$company['name'];?></h3>
+        <h3>รายชื่อผู้ตรวจสุขภาพ - <?=$company['name'];?>(<?=$company['code'];?>)</h3>
         <table class="chk_table">
             <tr>
                 <th>#</th>
