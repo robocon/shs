@@ -1,6 +1,7 @@
 <?php 
 include 'bootstrap.php';
 
+// ข้าราชการ
 $db = Mysql::load();
 $sql = "SELECT * FROM `opcardchk` 
 WHERE `part` = 'lpru61' 
@@ -28,7 +29,7 @@ foreach( $items as $key => $arr ){
     ?>
     <table style="font-family: Angsana New; text-align: center;" width="100%">
         <tr>
-            <td colspan="2"><?=$name.' ('.$hn.')('.$row.')';?></td>
+            <td colspan="2"><?=$name.' ('.$hn.')';?></td>
         </tr>
         <tr>
             <td><font size="5"><?=$exam_no;?></font><br><font size="2">(CBC)</font></td>
@@ -38,10 +39,11 @@ foreach( $items as $key => $arr ){
     <?php
 
     $stk_number = $lab_header.$exam_no."02";
+    for ($i=0; $i < 2; $i++) { 
     ?>
     <table style="font-family: Angsana New; text-align: center;" width="100%">
         <tr>
-            <td colspan="2"><?=$name.' ('.$hn.')('.$row.')';?></td>
+            <td colspan="2"><?=$name.' ('.$hn.')';?></td>
         </tr>
         <tr>
             <td><font size="5"><?=$exam_no;?></font><br><font size="2">(Chem)</font></td>
@@ -49,6 +51,7 @@ foreach( $items as $key => $arr ){
         </tr>
     </table>
     <?php 
+    }
 
     if (in_array('UA', $course_list)) {
 
@@ -56,10 +59,10 @@ foreach( $items as $key => $arr ){
             ?>
             <table style="font-family: Angsana New; text-align: center;" width="100%">
                 <tr>
-                    <td colspan="2"><?=$name.' ('.$hn.')('.$row.')';?></td>
+                    <td colspan="2"><?=$name.' ('.$hn.')';?></td>
                 </tr>
                 <tr>
-                    <td><font size="5"><?=$exam_no;?></font> <font size="5">UA</font></td>
+                    <td><font size="5"><?=$exam_no;?></font> - <font size="5">UA</font></td>
                     <td>&nbsp;<br>&nbsp;</td>
                 </tr>
             </table>
@@ -68,6 +71,7 @@ foreach( $items as $key => $arr ){
 
     }
 
+    /*
     if (in_array('BS', $course_list)) {
         ++$start_latest_id;
 
@@ -77,7 +81,7 @@ foreach( $items as $key => $arr ){
         ?>
         <table style="font-family: Angsana New; text-align: center;" width="100%">
             <tr>
-                <td colspan="2"><?=$name.' ('.$hn.')('.$row.')';?></td>
+                <td colspan="2"><?=$name.' ('.$hn.')';?></td>
             </tr>
             <tr>
                 <td><font size="5"><?=$bs_exam_id;?></font><br><font size="2">(BS)</font></td>
@@ -86,7 +90,7 @@ foreach( $items as $key => $arr ){
         </table>
         <?php
     }
-        
+    */
     
 }
 ?>

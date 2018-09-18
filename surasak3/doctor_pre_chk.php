@@ -333,7 +333,6 @@ $_SESSION['list_bill'] = '';
 // $hn = $_SESSION['hn_now'];
 $vn = $_GET['vn'];
 $hn = $_GET['hn'];
-$post_vn = 1;
 
 $_SESSION['dt_doctor'] = $_SESSION['sOfficer'];
 if( isset($_SESSION['doctor']) ){
