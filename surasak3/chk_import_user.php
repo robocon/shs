@@ -102,6 +102,14 @@ if( empty($action) ){
                 $match = preg_match('/\d+\/\d+\/\d+/', $date_birth, $matchs);
                 if ( $match > 0 ) {
                     list($dd, $mm, $yy) = explode('/', $date_birth);
+
+                    if($yy > 2100){
+                        $yy = $yy - 543;
+                    }
+
+                    $dd = sprintf('%02d', $dd);
+                    $mm = sprintf('%02d', $mm);
+                    
                     $date_birth = "$yy-$mm-$dd 00:00:00";
                 }
                 
@@ -112,8 +120,13 @@ if( empty($action) ){
                     $dd = $matchs['1'];
                     $mm = $matchs['2'];
                     $yy = $matchs['3'];
+
+                    if($yy > 2100){
+                        $yy = $yy - 543;
+                    }
+
                     $month_number = array_keys($def_fullm_th, $mm);
-                    $date_birth = ($yy - 543)."-".$month_number['0']."-$dd 00:00:00";
+                    $date_birth = $yy."-".$month_number['0']."-$dd 00:00:00";
                     
                 }
 

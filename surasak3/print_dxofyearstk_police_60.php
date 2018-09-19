@@ -15,41 +15,53 @@ while($arr=mysql_fetch_array($query)){
     $name = $arr["yot"].' '.$arr["name"].' '.$arr["surname"];
     $exam_no = $arr['exam_no'];
 
-    $labno2 = "180211".$exam_no."01";
+    $type = '01';
 
-    print "<div style=\"page-break-after: always;\">";
-    print "<font  style='line-height:23px;'  face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
-    print "<font  style='line-height:23px;'  face='Angsana New' size='3'><center>$name<br></font>";
-    print "<font  style='line-height:23px;'  face='Angsana New' size='4'><u><b>STOOL</u> </b></font></center>";
-    print "</div>";
+    $labno2 = "180823".$exam_no.$type;
+    $labno2 = "180823".$exam_no."02";
 
-    print "<div style=\"page-break-after: always;\">";
-    print "<font  style='line-height:23px;'  face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
-    print "<font  style='line-height:23px;'  face='Angsana New' size='3'><center>$name<br></font>";
-    print "<font  style='line-height:23px;'  face='Angsana New' size='3'>เป็นปัสสาวะของ.......................................</font></center>";
-    print "</div>";
 
-    print "<div style=\"page-break-after: always;\">";
-    print "<font  style='line-height:23px;' face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
-    print "<font  style='line-height:23px;' face='Angsana New' size='3'><center>$name<br></font>";
-    print "<font  style='line-height:23px;' face='Angsana New' size='3'>B.............. P.............. S..............</font></center>";
-    print "</div>";
+    if( pare_match('/โปรแกรมอายุ>35ปี/', $arr['course']) > 0 ){
+        dump($arr['course']);
+    }
 
-    print "<div style=\"page-break-after: always;\">";
-    print "<font  style='line-height:23px;' face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
-    print "<font  style='line-height:23px;' face='Angsana New' size='3'><center>$name<br></font>";
-    print "</div>";
+    // if( $arr[''] )
 
-    print "<div style=\"page-break-after: always;\">";
-    print "<font  style='line-height:23px;' face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
-    print "<font  style='line-height:23px;' face='Angsana New' size='3'><center>$name<br></font>";
-    print "<font  style='line-height:23px;' face='Angsana New' size='4'><u><b>CHEM</u> </b></font></center>";
-    print "</div>";
+    // print "<div style=\"page-break-after: always;\">";
+    // print "<font  style='line-height:23px;'  face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
+    // print "<font  style='line-height:23px;'  face='Angsana New' size='3'><center>$name<br></font>";
+    // print "<font  style='line-height:23px;'  face='Angsana New' size='4'><u><b>STOOL</u> </b></font></center>";
+    // print "</div>";
+
+    // print "<div style=\"page-break-after: always;\">";
+    // print "<font  style='line-height:23px;'  face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
+    // print "<font  style='line-height:23px;'  face='Angsana New' size='3'><center>$name<br></font>";
+    // print "<font  style='line-height:23px;'  face='Angsana New' size='3'>เป็นปัสสาวะของ.......................................</font></center>";
+    // print "</div>";
+
+    // print "<div style=\"page-break-after: always;\">";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='3'><center>$name<br></font>";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='3'>B.............. P.............. S..............</font></center>";
+    // print "</div>";
+
+    // print "<div style=\"page-break-after: always;\">";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='3'><center>$name<br></font>";
+    // print "</div>";
+
+    // print "<div style=\"page-break-after: always;\">";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='5'><center>HN $hn ($exam_no)<br></font>";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='3'><center>$name<br></font>";
+    // print "<font  style='line-height:23px;' face='Angsana New' size='4'><u><b>CHEM</u> </b></font></center>";
+    // print "</div>";
 
     print "<div style=\"page-break-after: always; vertical-align: top; text-align: center;\">";
-    print "<font style='line-height: 20px;' face='Angsana New' size='5'>HN $hn ($exam_no)</font><br>";
-    print "<font style='line-height: 20px;' face='Angsana New' size='3'>$name</font>";
+    // print "<font style='line-height: 20px;' face='Angsana New' size='5'>HN $hn ($exam_no)</font><br>";
+    print "<font style='line-height: 20px;' face='Angsana New' size='3'>$name $hn</font>";
     print "<div style=''><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno2\"></span></div>";
+
+
     print "</div>";
 
     $i++;
@@ -60,5 +72,5 @@ while($arr=mysql_fetch_array($query)){
         t = t*1000;
         // setTimeout("window.close()",t);
     }
-    CloseWindowsInTime(2/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */); 
+    // CloseWindowsInTime(2/*ใส่เวลาเป็นวินาทีนะครับตรงเลข 5 */); 
 </Script>
