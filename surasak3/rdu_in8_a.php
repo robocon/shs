@@ -55,28 +55,24 @@ AND `drugcode` IN (
     '1DIC250', 
     '1DOXY', 
     '1DALA300-N', 
-    '1CRAV-NN', 
     '1ERYT', 
-    '1KLA500-C*', 
     '1RUL150-C', 
     '1ZITH*', 
     '5ERY', 
     '5ZITH*$', 
     '5ZMAX', 
     '1ZITH-C', 
-    '1KLA500-N', 
-    '2ZITH',
+    '1CIPR-C*?',
 
-    '1AMOX250',
-    '1AMOX500',
     '1AMOX625',
-    '5AMOX',
-    '1DIC250',
-    '5AMOX250',
+    '1DIC500',
     '1AUGM',
     '5AUG35',
     '1AUGM1-C',
-    '5AUG35-C'
+    '5AUG35-C',
+    '1DOXY', 
+    '1COTR4', 
+    '1METR'
 ) 
 GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
 $db->exec($sql); 

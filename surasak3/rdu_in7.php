@@ -39,12 +39,13 @@ AND `drugcode` IN (
     '1CRAV-C', 
     '1CRAV-N', 
     '1LEX400-N', 
-    '1OMNI*$', 
-    '1MEIA', 
-    '5CEFS', 
-    '5DIST', 
-    '5MEIA', 
-    '1CEFS' 
+    '1ERYT', 
+    '5ERY', 
+    '5ZITH*S', 
+    '5ZMAX', 
+    '1ZITH-C', 
+    '1DOXY', 
+    '1COTR4', 
 ); "; 
 $db->select($sql); 
 

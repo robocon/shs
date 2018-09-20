@@ -2,16 +2,22 @@
 
 include 'bootstrap.php';
 define('RDU_TEST', '1');
-// global $in6_result;
+define('RDU_REALHOST', 0);
 
-// ä»´Ö§¢éÍÁÙÅ¨Ò¡à«Ô¿àÇÍÃì .13 à¾×èÍÅ´ÀÒÃÐà«Ô¿àÇÍÃìËÅÑ¡ 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottwo',
-    'pass' => ''
-);
+
+if( RDU_REALHOST == 1 ){
+    // ä»´Ö§¢éÍÁÙÅ¨Ò¡à«Ô¿àÇÍÃì .13 à¾×èÍÅ´ÀÒÃÐà«Ô¿àÇÍÃìËÅÑ¡ 
+    $configs = array(
+        'host' => '192.168.1.13',
+        'port' => '3306',
+        'dbname' => 'smdb',
+        'user' => 'dottwo',
+        'pass' => ''
+    );
+}else {
+    $configs = false;
+}
+
 
 $db = Mysql::load($configs);
 $quarter = input_post('quarter');
