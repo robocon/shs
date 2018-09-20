@@ -3,27 +3,16 @@
 include 'bootstrap.php';
 
 $configs = array(
-    'host' => '192.168.1.13',
+    'host' => '192.168.1.2',
     'port' => '3306',
     'dbname' => 'smdb',
-    'user' => 'dottwo',
+    'user' => 'remoteuser',
     'pass' => ''
 );
 
 $db = Mysql::load($configs);
 
-// รายการตรวจ รพ.
-$lab_keys = array('ALK','BS','BUN','CBC','UA','CHOL','CR','HDL','LDL','SGOT','SGPT','TRI');
-
-// รายการตรวจ ประกันสังคม
-// ในแลปที่คีย์จะเป็น STOCB แต่ในตอนที่แสดงจะเป็น FOBT
-$lab_sso = array('CBC','UA','BS','CR','HDL','CHOL','HBSAG','STOCB');
-
 ?>
-
-<div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก รพ.</a>
-</div>
 
 <style>
 body{
@@ -55,56 +44,56 @@ table{
 
 </style>
 
-
-<?php
-$sql = "SELECT `branch` FROM `opcardchk` WHERE `part` = 'ลูกจ้าง61' GROUP BY `branch` ";
-$db->select($sql);
-$branchs = $db->get_items();
-$op = input_post('branch');
-?>
-<form action="lpru_report_money_sso.php" method="post" class="hide">
-    <div>
-        <button type="submit">แสดงรายงาน</button>
-        <input type="hidden" name="action" value="show">
-    </div>
-</form>
+<div class="hide">
+    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก รพ.</a>
+</div>
+<div class="hide">
+    <form action="lpru_report_money_sso.php" method="post" >
+        <div>
+            <p>รายงานแสดงค่าใช้จ่ายตรวจสุขภาพสิทธิประกันสังคม มหาวิทยาลัยราชภัฏลำปาง ณ วันที่ 20 กันยายน 2561 </p>
+        </div>
+        <div>
+            <button type="submit">แสดงรายงาน</button>
+            <input type="hidden" name="action" value="show">
+        </div>
+    </form>
+</div>
 
 <?php
 
 $action = input_post('action');
-
 if ( $action == 'show' ) {
     
 
-    // กลุ่มลูกจ้างตามแผนก
-    $sql = "SELECT * 
-    FROM `opcardchk` 
-    WHERE `part` = 'ราชภัฎ61'";
-    $db->select($sql);
-    $users = $db->get_items();
+    $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+    mysql_select_db('smdb', $db2) or die( mysql_error() );
 
+    $q = mysql_query("SELECT * FROM `opcardchk` WHERE `part` = 'ราชภัฎ61' ORDER BY `exam_no` ASC") or die( mysql_error() );
 
-
+    $users = array();
+    while ($user = mysql_fetch_assoc($q)) {
+        $users[] = $user;
+    }
 ?>
 
-<div style="text-align: center; font-weight: bold;">ตรวจสุขภาพประกันสังคม มหาวิทยาลัยราชภัฏลำปาง 2561</div>
-
+<div style="text-align: center; font-weight: bold;">ตรวจสุขภาพสิทธิประกันสังคม มหาวิทยาลัยราชภัฏลำปาง 2561</div>
 <table class="chk_table">
     <tr>
         <th rowspan="2">#</th>
+        <th rowspan="2">ลำดับในใบรายชื่อ</th>
         <th rowspan="2">HN</th>
         <th rowspan="2">ชื่อ-สกุล</th>
-        <th rowspan="2">แผนก</th>
         <th rowspan="2">อายุ</th>
-        <th rowspan="2">สิทธิ</th>
         <th colspan="10">ประกันสังคม</th>
-        <th colspan="14">เก็บกับ รพ.</th>
+        <th colspan="13">เรียกเก็บกับ มหาวิทยาลัย</th>
         <th rowspan="2">รวมสุทธิ</th>
     </tr>
     <tr>
-
         <?php 
+        $lab_sso = array('CBC','UA','CR','BS','CHOL','HDL','HBSAG','STOCB'); 
 
+        // มันจะมีส่วนเกินจาก CBC หรือ UA ของปกส ให้โยนมาเป็นฝั่งมหาลัย
+        $lab_keys = array('CBC','UA','10446','ST','STOCB','BUN','CR','SGOT','SGPT','ALK','URIC',);
         foreach ($lab_sso as $key => $sso) {
             ?>
             <th><?=$sso;?></th>
@@ -126,28 +115,24 @@ if ( $action == 'show' ) {
     </tr>
 <?php 
 
-$i = 1;
+$i_row = 1;
 
 $all_shs = 0.00; 
 $all_sso = 0.00; 
 
-
 $late_branch = false; 
 
 
-
-
 // sum ของแต่ละรายการฝั่ง ประกันสังคม
-$sCbc = $sUa = $sBs = $sCr = $sHdl = $sChol = $sHbsag = $sFobt = $sXray = 0.00;
+// $sCbc = $sUa = $sBs = $sCr = $sHdl = $sChol = $sHbsag = $sFobt = $sXray = 0.00;
 
 // sum ของแต่ละรายการฝั่ง รพ.
-$tAlk = $tBs = $tBun = $tCbc = $tChol = $tCr = $tHdl = $tLdl = $tSgot = $tSgpt = $tTri = $tUa = $tXray = 0.00;
+// $tAlk = $tBs = $tBun = $tCbc = $tChol = $tCr = $tHdl = $tLdl = $tSgot = $tSgpt = $tTri = $tUa = $tXray = 0.00;
 
 foreach ($users as $key => $user) {
 
     // ราคาต่อคน
     $user_sso = 0;
-    
 
     $all_per_user = 0.00;
     
@@ -156,11 +141,13 @@ foreach ($users as $key => $user) {
     $branch = $user['branch'];
     $age = $user['agey'];
 
+    $pid = $user['pid'];
+
     // สิทธิที่ใช้ในวันนั้น
     $sql = "SELECT `thidate`,`hn`,`vn`,`ptright` 
     FROM `opday` 
     WHERE `hn` = '$hn' 
-    AND ( `thidate` >= '2561-04-23 00:00:00' AND `thidate` <= '2561-04-30 23:59:59' ) ";
+    AND `thidate` LIKE '2561-09-20%' ";
     $db->select($sql);
     $opday = $db->get_item();
     
@@ -169,12 +156,11 @@ foreach ($users as $key => $user) {
 
     ?>
     <tr>
-        <td align="center"><?=$i;?></td>
+        <td align="center"><?=$i_row;?></td>
+        <td><?=$pid;?></td>
         <td><?=$hn;?></td>
         <td><?=$ptname;?></td>
-        <td><?=$branch;?></td>
         <td align="center"><?=$age;?></td>
-        <td><?=$ptright;?></td>
     <?php
 
     /////////////////////
@@ -189,7 +175,7 @@ foreach ($users as $key => $user) {
         SELECT MAX(`row_id`) AS `latest_id` 
         FROM `depart` 
         WHERE `hn` = '$hn' 
-        AND ( `date` >= '2561-04-23 00:00:00' AND `date` <= '2561-04-30 23:59:59' ) 
+        AND `date` LIKE '2561-09-20%' 
         AND `cashok` LIKE 'SSOCHECKUP61%' 
         AND `depart` = 'PATHO' 
         GROUP BY `hn`,`depart` 
@@ -223,14 +209,14 @@ foreach ($users as $key => $user) {
             // รวมราคาต่อคน
             $user_sso += $pat['yprice'];
 
-            if( $key == 'CBC' ){ $sCbc += $pat['yprice']; }
-            if( $key == 'UA' ){ $sUa += $pat['yprice']; }
-            if( $key == 'BS' ){ $sBs += $pat['yprice']; }
-            if( $key == 'CR' ){ $sCr += $pat['yprice']; }
-            if( $key == 'HDL' ){ $sHdl += $pat['yprice']; }
-            if( $key == 'CHOL' ){ $sChol += $pat['yprice']; }
-            if( $key == 'HBSAG' ){ $sHbsag += $pat['yprice']; }
-            if( $key == 'STOCB' ){ $sFobt += $pat['yprice']; }
+            // if( $key == 'CBC' ){ $sCbc += $pat['yprice']; }
+            // if( $key == 'UA' ){ $sUa += $pat['yprice']; }
+            // if( $key == 'BS' ){ $sBs += $pat['yprice']; }
+            // if( $key == 'CR' ){ $sCr += $pat['yprice']; }
+            // if( $key == 'HDL' ){ $sHdl += $pat['yprice']; }
+            // if( $key == 'CHOL' ){ $sChol += $pat['yprice']; }
+            // if( $key == 'HBSAG' ){ $sHbsag += $pat['yprice']; }
+            // if( $key == 'STOCB' ){ $sFobt += $pat['yprice']; }
         }
 
     }
@@ -250,7 +236,7 @@ foreach ($users as $key => $user) {
         SELECT MAX(`row_id`) AS `latest_id` 
         FROM `depart` 
         WHERE `hn` = '$hn' 
-        AND ( `date` >= '2561-04-23 00:00:00' AND `date` <= '2561-04-30 23:59:59' ) 
+        AND `date` LIKE '2561-09-20%' 
         AND `cashok` LIKE 'SSOCHECKUP61%' 
         AND `depart` = 'XRAY' 
         GROUP BY `hn`,`depart` 
@@ -291,7 +277,7 @@ foreach ($users as $key => $user) {
         SELECT MAX(`row_id`) AS `latest_id` 
         FROM `depart` 
         WHERE `hn` = '$hn' 
-        AND ( `date` >= '2561-04-23 00:00:00' AND `date` <= '2561-04-30 23:59:59' ) 
+        AND `date` LIKE '2561-09-20%' 
         AND `cashok` LIKE 'SSOCHKUP61%'
         AND `depart` = 'PATHO' 
         GROUP BY `hn`,`depart` 
@@ -355,7 +341,7 @@ foreach ($users as $key => $user) {
         SELECT MAX(`row_id`) AS `latest_id` 
         FROM `depart` 
         WHERE `hn` = '$hn' 
-        AND ( `date` >= '2561-04-23 00:00:00' AND `date` <= '2561-04-30 23:59:59' ) 
+        AND `date` LIKE '2561-09-20%' 
         AND `cashok` LIKE 'SSOCHKUP61%'
         AND `depart` = 'XRAY' 
         GROUP BY `hn`,`depart` 
@@ -385,51 +371,12 @@ foreach ($users as $key => $user) {
         <td align="right"><b><?=number_format($all_per_user, 2);?></b></td>
     </tr>
     <?php
-
+    $i_row++;
 
 }
 
-/*
 ?>
-    <tr style="font-weight: bold;" align="right">
-        <td colspan="6" align="center">รวมทั้งสิ้น</td>
-
-        <td><?=number_format($sCbc, 2);?></td>
-        <td><?=number_format($sUa, 2);?></td>
-        <td><?=number_format($sBs, 2);?></td>
-        <td><?=number_format($sCr, 2);?></td>
-        <td><?=number_format($sHdl, 2);?></td>
-        <td><?=number_format($sChol, 2);?></td>
-        <td><?=number_format($sHbsag, 2);?></td>
-        <td><?=number_format($sFobt, 2);?></td>
-        <td><?=number_format($sXray, 2);?></td>
-        <td><?=number_format($all_sso, 2);?></td>
-
-
-        <td><?=number_format($tAlk, 2);?></td>
-        <td><?=number_format($tBs, 2);?></td>
-        <td><?=number_format($tBun, 2);?></td>
-        <td><?=number_format($tCbc, 2);?></td>
-        <td><?=number_format($tChol, 2);?></td>
-        <td><?=number_format($tCr, 2);?></td>
-        <td><?=number_format($tHdl, 2);?></td>
-        <td><?=number_format($tLdl, 2);?></td>
-        <td><?=number_format($tSgot, 2);?></td>
-        <td><?=number_format($tSgpt, 2);?></td>
-        <td><?=number_format($tTri, 2);?></td>
-        <td><?=number_format($tUa, 2);?></td>
-        <td><?=number_format($tXray, 2);?></td>
-        <td><?=number_format($all_shs, 2);?></td>
-    </tr>
-<?php
-*/
-?>
-
 </table>
-
 <?php
-
-
-    
 
 }
