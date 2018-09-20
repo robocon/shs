@@ -48,26 +48,31 @@ while($rows=mysql_fetch_array($query)){
 	$sumnprice=0;
 	$paid=0;
 	
-	$add1=mysql_query("insert into depart set chktranx='$nStktranx',
-										  date='$date',
-										  ptname='$ptname',
-										  hn='$hn',
-										  doctor='MD022 (ไม่ทราบแพทย์)',
-										  depart='XRAY',
-										  item='$item',
-										  detail='ค่าตรวจวิเคราะห์โรค',
-										  price='$price',
-										  sumyprice='$sumyprice',
-										  sumnprice='$sumnprice',
-										  paid='$paid',
-										  idname='สุทธิชัย หนูมา',
-										  diag='ตรวจสุขภาพ',
-										  tvn='$vn',
-										  ptright='$cPtright',
-										  cashok='SSOCHECKUP61'
-										  status='Y';");
-$maxid=mysql_insert_id();
-//echo "==>$add1<br>";
+	$sql_depart = "insert into depart set chktranx='$nStktranx',
+	date='$date',
+	ptname='$ptname',
+	hn='$hn',
+	doctor='MD022 (ไม่ทราบแพทย์)',
+	depart='XRAY',
+	item='$item',
+	detail='ค่าตรวจวิเคราะห์โรค',
+	price='$price',
+	sumyprice='$sumyprice',
+	sumnprice='$sumnprice',
+	paid='$paid',
+	idname='สุทธิชัย หนูมา',
+	diag='ตรวจสุขภาพประกันสังคม',
+	tvn='$vn',
+	ptright='$cPtright',
+	cashok='SSOCHECKUP61',
+	status='Y';";
+	
+	$add1=mysql_query($sql_depart) or die( mysql_error() );
+	
+	
+	$maxid=mysql_insert_id();
+	//echo "==>$add1<br>";
+	var_dump($add1);
 
 	foreach ($arrxray as $value) {
 	   list($code,$oldcode,$detail,$price,$yprice,$nprice) = mysql_fetch_row(mysql_query("Select code,oldcode,detail,price,yprice,nprice From labcare where code = '".$value."' limit 0,1 ")); 
@@ -89,6 +94,7 @@ $maxid=mysql_insert_id();
 												ptright='$cPtright',
 												status='Y';");
 	//echo $add2."<br>";
+		var_dump($add2);
 	}										
 
 // $edit="update chkup_solider set finance_xray='1' where row_id='$chkuprow_id';";
@@ -98,7 +104,7 @@ $nStktranx++;
 $query3 ="UPDATE runno SET runno = $nStktranx WHERE title='stktranx'";
 $result3 = mysql_query($query3) or die("Query failed runno");
 
-
+echo "<hr>";
 
 }  //close while
 

@@ -3,13 +3,23 @@ include 'bootstrap.php';
 
 // ข้าราชการ
 $db = Mysql::load();
+
+
+
+
 $sql = "SELECT a.*,b.`vn`,b.`thidate`,b.`ptname`,b.`ptright` 
 FROM `opcardchk` AS a 
 LEFT JOIN ( 
-    SELECT * FROM `opday` WHERE `thidate` LIKE '2561-09-19%' 
+    SELECT * FROM `opday` WHERE `thidate` LIKE '2561-09-20%' 
 ) AS b ON b.`hn` = a.`hn`
 WHERE a.`part` = 'lpru61' 
+
+AND ( a.`HN` = '61-6056' OR a.`HN` = '51-4968' OR a.`HN` = '48-19666' OR a.`HN` = '49-5922' )
+
 ORDER BY a.`row` ASC";
+
+
+
 $db->select($sql);
 $items = $db->get_items();
 

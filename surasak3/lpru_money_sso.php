@@ -28,11 +28,12 @@ if( $action == 'save' ){
     // $hn = $_POST['hn'];
     $Thidate = (date("Y")+543)."-".date("m-d H:i:s");
     
+    // $where = "AND ( `HN` = '53-11177' OR `HN` = '61-6050' OR `HN` = '61-6046' )";
+
     $sql = "SELECT * 
     FROM `opcardchk` 
     WHERE `part` = 'ราชภัฎ61' 
     ORDER BY `row` ASC";
-    
     $q_pretest = mysql_query($sql) or die( mysql_error() );
     
     while ( $user = mysql_fetch_assoc($q_pretest) ) {
@@ -41,7 +42,7 @@ if( $action == 'save' ){
         ##################################
         ## เตรียมข้อมูลลง depart
         ##################################
-        $Thidate = $opday['thidate'];
+        // $Thidate = $opday['thidate'];
         $cPtname = $user['name'].' '.$user['surname'];
         $cHn = $user['HN'];
         $cAn = '';

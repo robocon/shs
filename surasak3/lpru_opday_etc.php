@@ -86,11 +86,12 @@ foreach( $items as $key => $item ){
         'ระบบคอมพิวเตอร์', 'N', NULL, NULL, 'Y', 
         '$time1', NULL, NULL, NULL, NULL, 
         NULL, '', NULL, '', NULL, 
-        'P', '', '', NULL, NULL, 
-        NULL, 'x'
+        'P', '', '', '', '', 
+        '', 'x'
     );";
-    $db->insert($opday_sql);
     dump($opday_sql);
+    $insert_opday = $db->insert($opday_sql);
+    dump($insert_opday);
 
     echo "<hr>";
 }
