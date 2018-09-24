@@ -1,5 +1,21 @@
 <?php
 session_start();
+include("connect.inc");
+
+if( empty($_SESSION["statusncr"]) ){
+	echo "Session หมดอายุ กรุณาล็อคอินอีกครั้งเพื่อเข้าใช้งาน";
+	exit;
+}
+
+// Set time to print only admin
+if($_SESSION["statusncr"]=='admin' && $_SESSION['Userncr'] == 'admin' ){
+	$print_by = $_SESSION['Namencr'];
+	$sql = "UPDATE `ncr2556` 
+	SET `date_edit` = NOW(), 
+	`print_by` = '$print_by'
+	WHERE `nonconf_id` = '".$_GET['nonconf_id']."';";
+	$query = mysql_query($sql) or die( mysql_error($Conn) );
+}
 
 
 ?>

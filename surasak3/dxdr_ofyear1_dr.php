@@ -325,7 +325,7 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
 
 	$sql = "Select * From  `dxofyear` where yearchk = '$nPrefix' AND hn='".$arr_view["hn"]."' limit 0,1 ";
-	
+	//echo $sql;
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
 	$result_dx = mysql_fetch_array($result);
@@ -1017,6 +1017,7 @@ if(empty($arr_dxofyear["bp21"]) && empty($arr_dxofyear["bp22"])){
 ////ผลlab ของปีที่แล้ว
 ////*runno ตรวจสุขภาพ*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+//echo $query;
 	$result = mysql_query($query) or die("Query failed");
 	
 	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -1039,6 +1040,7 @@ $bssult = mysql_fetch_array($bsrow);
 $bquery = "select * from condxofyear_so where hn ='".$_SESSION["hn_now"]."' and status_dr='Y' and yearcheck='".($nPrefix-1)."' ";
 $brow = mysql_query($bquery);
 $bsult = mysql_fetch_array($brow);
+if($arr_view["age"] >= 35){
 ?>
 <table border="2" cellpadding="2" cellspacing="0" bordercolor="#000000"  width="100%" bgcolor="#FFCCCC">
   <tr><td>
@@ -1167,7 +1169,7 @@ $bsult = mysql_fetch_array($brow);
             <?=$bsult['hdl']?>
           </span></td>
 	      <td align="center" bgcolor="#FFFFFF" class="profilehead"><? 
-			if($result_dx['hdl'] < 40 || $result_dx['hdl'] > 60){
+			if($result_dx['hdlflag']=="H"){
 				echo "<span style='color:#F00'><strong>$result_dx[hdl]</strong></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[hdl]</span>";
@@ -1179,20 +1181,24 @@ $bsult = mysql_fetch_array($brow);
 	      <td align="center" class="labfont"><span <? if($result_dx['hdlflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>>
 	        <?=$result_dx['hdlflag']?>
 	        </span></td>
-	      <td class="labfont"><input name='normal88' type='radio' value='ปกติ' onclick="togglediv2('acnormal88');" <? if($result_dx['hdl'] >=40 && $result_dx['hdl'] <= 60){ echo "checked";}?> />
+	      <td class="labfont"><input name='normal88' type='radio' value='ปกติ' onclick="togglediv2('acnormal88');" <? if($result_dx['hdlflag']=="N" || $result_dx['hdlflag']=="H"){ echo "checked";}?> />
 	        ปกติ
-	        <input name='normal88' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal88');"  <? if($result_dx['hdl'] < 40 || $result_dx['hdl'] > 60){ echo "checked";}?>/>
+	        <input name='normal88' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal88');"  <? if($result_dx['hdlflag']=="L"){ echo "checked";}?>/>
       <? 
-			if((!empty($result_dx['hdl']) && $result_dx['hdl'] < 40) || (!empty($result_dx['hdl']) && $result_dx['hdl'] > 60)){
+			if($result_dx['hdlflag']=="L"){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
 			?>          </td>
-	      <td><div id="acnormal88" <? if((!empty($result_dx['hdl']) && $result_dx['hdl'] >= 40) && (!empty($result_dx['hdl']) && $result_dx['hdl'] <= 60)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+	      <td><div id="acnormal88"
+		  <? if($result_dx['hdlflag']=="" || $result_dx['hdlflag']=="N" || $result_dx['hdlflag']=="H"){  //ถ้าไม่มีข้อมูล หรือเท่ากับ N หรือ H
+		  			echo "style='display: none;'";
+				}else{
+					echo "style='display: block;'";
+				} ?>>
               <select name='ch88'>
-                <option value="ระดับไขมันในเลือดมีค่าผิดปกติเล็กน้อย ควรควบคุมอาหารกลุ่มไขมัน ออกกำลังกาย และตรวจซ้ำใน 3-6 เดือน" <? if($result_dx['hdl'] < 40){ echo "selected='selected';";}?>>ระดับไขมันในเลือดมีค่าผิดปกติเล็กน้อย ควรควบคุมอาหารกลุ่มไขมัน ออกกำลังกาย และตรวจซ้ำใน 3-6 เดือน</option>
-                <option value="ระดับไขมันในเลือดมีค่าสูงผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['hdl'] > 60){ echo "selected='selected';";}?>>ระดับไขมันในเลือดมีค่าสูงผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option>
+                <option value="ระดับไขมันดีในเลือดมีค่าต่ำผิดปกติ ควรควบคุมอาหารกลุ่มไขมัน ออกกำลังกาย และตรวจซ้ำใน 3-6 เดือน" <? if($result_dx['hdlflag']=="L"){ echo "selected='selected';";}?>>ระดับไขมันดีในเลือดมีค่าต่ำผิดปกติ ควรควบคุมอาหารกลุ่มไขมัน ออกกำลังกาย และตรวจซ้ำใน 3-6 เดือน</option>
               </select>
 	        </div></td>
 	      </tr>
@@ -1205,7 +1211,7 @@ $bsult = mysql_fetch_array($brow);
             <?=$bsult['ldl']?>
           </span></td>
 	      <td align="center" bgcolor="#FFFFFF" class="profilehead"><? 
-			if($result_dx['ldl'] > 100){
+			if($result_dx['ldlflag']=="H"){
 				echo "<span style='color:#F00'><strong>$result_dx[ldl]</strong></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[ldl]</span>";
@@ -1218,20 +1224,24 @@ $bsult = mysql_fetch_array($brow);
 	      <td align="center" class="labfont"><span <? if($result_dx['ldlflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>>
             <?=$result_dx['ldlflag']?>
           </span></td>
-	      <td class="labfont"><input name='normal89' type='radio' value='ปกติ' onclick="togglediv2('acnormal89');" <? if($result_dx['ldl'] <= 100){ echo "checked";}?> />
+	      <td class="labfont"><input name='normal89' type='radio' value='ปกติ' onclick="togglediv2('acnormal89');" <? if($result_dx['ldlflag']=="N" || $result_dx['ldlflag']=="L"){ echo "checked";}?> />
 	        ปกติ
-	        <input name='normal89' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal89');"  <? if($result_dx['ldl'] > 100){ echo "checked";}?>/>
+	        <input name='normal89' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal89');"  <? if($result_dx['ldlflag']=="H"){ echo "checked";}?>/>
       <? 
-			if($result_dx['ldl'] > 100){
+			if($result_dx['ldlflag']=="H"){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
 			?>
           </td>
-	      <td><div id="acnormal89" <? if($result_dx['ldl'] <= 100){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+	      <td><div id="acnormal89" <? if($result_dx['ldlflag']=="" || $result_dx['ldlflag']=="N" || $result_dx['ldlflag']=="L"){  //ถ้าไม่มีข้อมูล หรือเท่ากับ N หรือ H
+		  			echo "style='display: none;'";
+				}else{
+					echo "style='display: block;'";
+				} ?>>
               <select name='ch89'>
-                <option value="ระดับไขมันในเลือดมีค่าสูงผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['ldl'] > 100){ echo "selected='selected';";}?>>ระดับไขมันในเลือดมีค่าสูงผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option>
+                <option value="ระดับไขมันเลวในเลือดมีค่าสูงผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['ldlflag']=="H"){ echo "selected='selected';";}?>>ระดับไขมันเลวในเลือดมีค่าสูงผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option>
               </select>
           </div></td>
 	      </tr>
@@ -1438,14 +1448,15 @@ $bsult = mysql_fetch_array($brow);
 	<?php 
 	/*$i++;
 			}*/?>
-            </table>
+            </table>        
         <hr />   
-</TD>
+		</TD>
 	</TR>
 	</TABLE>
   </TD>
 </TR>
 </TABLE>
+<? } ?>    
 <BR>
 <TABLE border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" width="100%">
 <TR>
@@ -1454,7 +1465,11 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="7">&nbsp;&nbsp;&nbsp;การตรวจอื่น ๆ</td>
 	  </tr>
 	  <tr bgcolor="#CCCCFF">
-	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">ตรวจเอ็กซ์เรย์ปอด : <a href="dxdr_xray_film.php" target="_blank">ดูฟิลม์</a> </td>
+	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">
+				<!-- ตัวเก่า dxdr_xray_film.php -->
+				<!-- pacs ใหม่ http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=หมายเลข HN --> 
+				ตรวจเอ็กซ์เรย์ปอด : <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$queryvn['hn'];?>" target="_blank">ดูฟิลม์</a> 
+			</td>
 	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ปกติ' onclick="togglediv2('acnormal51')" id="normal58"/>
 	      ปกติ
 	        <input name='normal51' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal51')" id="normal57"/>
