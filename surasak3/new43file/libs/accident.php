@@ -1,10 +1,16 @@
 <?php
 //-------------------- Create file accident ä¿Åì·Õè 9 --------------------//
-$temp9="CREATE  TEMPORARY  TABLE report_accident SELECT  date,hn,date_in,time_in,type_accident,sender,type_wounded,wounded_vehicle,wounded_detail,spirits,belt,helmet,accident_detail  From  trauma where hn !='' and date_in like '$thimonth%' ORDER BY date ASC";
+$temp9="CREATE  TEMPORARY  TABLE report_accident 
+SELECT  date,hn,date_in,time_in,type_accident,sender,type_wounded,wounded_vehicle,wounded_detail,spirits,belt,helmet,accident_detail  
+From  trauma 
+where hn !='' 
+and date_in like '$thimonth%' 
+ORDER BY date ASC";
 //echo $temp9;
 $querytmp9 = mysql_query($temp9) or die("Query failed,Create temp9");
 
-$sql9="SELECT date,hn,date_in,time_in,type_accident,sender,type_wounded,wounded_vehicle,wounded_detail,spirits,belt,helmet,accident_detail  From report_accident";
+$sql9="SELECT date,hn,date_in,time_in,type_accident,sender,type_wounded,wounded_vehicle,wounded_detail,spirits,belt,helmet,accident_detail  
+From report_accident";
 $result9= mysql_query($sql9) or die("Query failed, Select report_accident (accident)");
 $num=mysql_num_rows($result9);
 $txt = '';
@@ -14,10 +20,10 @@ while (list ($date,$hn,$appdate,$doctor,$type_accident,$depcode,$urgency,$wounde
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 	
 	$chkdate=substr($appdate,0,10);	
-	$sqlopd="select vn from opday where thidate like '$chkdate%' and hn='$hn'";
+	$sqlopd="select vn,idcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	//echo $sqlopd."<br>";
 	$resultopd=mysql_query($sqlopd);	
-	list($vn)=mysql_fetch_array($resultopd);
+	list($vn,$idcard)=mysql_fetch_array($resultopd);
 
     $regis1=substr($date,0,10);
     $regis2=substr($date,11,19);
@@ -173,7 +179,7 @@ while (list ($date,$hn,$appdate,$doctor,$type_accident,$depcode,$urgency,$wounde
     $splint="3";
     $fluid="3";
 
-    $txt .= "$hospcode|$hn|$seq|$datetime_serv|$datetime_ae|$aetype|$aeplace|$typein_ae|$traffic|$vehicle|$alcohol|$nacrotic_drug|$belt|$helmet|$airway|$stopbleed|$splint|$fluid|$urgency|$coma_eye|$coma_speak|$coma_movement|$d_update\r\n";
+    $txt .= "$hospcode|$hn|$seq|$datetime_serv|$datetime_ae|$aetype|$aeplace|$typein_ae|$traffic|$vehicle|$alcohol|$nacrotic_drug|$belt|$helmet|$airway|$stopbleed|$splint|$fluid|$urgency|$coma_eye|$coma_speak|$coma_movement|$d_update|$idcard\r\n";
     // $strFileName9 = "accident.txt";
     // $objFopen9 = fopen($strFileName9, 'a');
     // fwrite($objFopen9, $strText9);
@@ -189,7 +195,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|SEQ|DATETIME_SERV|DATETIME_AE|AETYPE|AEPLACE|TYPEIN_AE|TRAFFIC|VEHICLE|ALCOHOL|NACROTIC_DRUG|BELT|HELMET|AIRWAY|STOPBLEED|SPLINT|FLUID|URGENCY|COMA_EYE|COMA_SPEAK|COMA_MOVEMENT|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|SEQ|DATETIME_SERV|DATETIME_AE|AETYPE|AEPLACE|TYPEIN_AE|TRAFFIC|VEHICLE|ALCOHOL|NACROTIC_DRUG|BELT|HELMET|AIRWAY|STOPBLEED|SPLINT|FLUID|URGENCY|COMA_EYE|COMA_SPEAK|COMA_MOVEMENT|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_accident.txt';
 file_put_contents($qofPath, $txt);

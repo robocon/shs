@@ -11,10 +11,10 @@ while (list ($date,$dcdate,$hn,$an,$icd10,$doctor) = mysql_fetch_row ($result3))
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 	
 	$chkdate=substr($date,0,10);	
-	$sqlopd="select vn from opday where thidate like '$chkdate%' and hn='$hn'";
+	$sqlopd="select vn,idcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	//echo $sqlopd."<br>";
 	$resultopd=mysql_query($sqlopd);	
-	list($vn)=mysql_fetch_array($resultopd);	
+	list($vn, $cid)=mysql_fetch_array($resultopd);	
 
     $dateseq=substr($date,0,10);
     $timeseq=substr($date,11,19);
@@ -47,7 +47,7 @@ while (list ($date,$dcdate,$hn,$an,$icd10,$doctor) = mysql_fetch_row ($result3))
     $provider=$date_serv.$vn.$doctorcode;
     }
 
-    $txt .= "$hospcode|$hn|$hospcode|$an|$seq|$ddeath|$cdeath_a|$cdeath_b|$cdeath_c|$cdeath_d|$odisease|$cdeath|$pregdeath|$pdeath|$provider|$d_update\r\n";				
+    $txt .= "$hospcode|$hn|$hospcode|$an|$seq|$ddeath|$cdeath_a|$cdeath_b|$cdeath_c|$cdeath_d|$odisease|$cdeath|$pregdeath|$pdeath|$provider|$d_update|$cid\r\n";				
     // $strFileName3 = "death.txt";
     // $objFopen3 = fopen($strFileName3, 'a');
     // fwrite($objFopen3, $strText3);
@@ -65,7 +65,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|HOSPDEATH|AN|SEQ|DDEATH|CDEATH_A|CDEATH_B|CDEATH_C|CDEATH_D|ODISEASE|CDEATH|PREGDEATH|PDEATH|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|HOSPDEATH|AN|SEQ|DDEATH|CDEATH_A|CDEATH_B|CDEATH_C|CDEATH_D|ODISEASE|CDEATH|PREGDEATH|PDEATH|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_death.txt';
 file_put_contents($qofPath, $txt);

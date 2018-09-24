@@ -41,10 +41,10 @@ while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 	
 	$chkdate=substr($admdate,0,10);	
-	$sqlopd1="select vn from opday where thidate like '$chkdate%' and hn='$hn'";
+	$sqlopd1="select vn, idcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	//echo $sqlopd1;
 	$resultopd1=mysql_query($sqlopd1);	
-	list($vn)=mysql_fetch_array($resultopd1);			
+	list($vn, $cid)=mysql_fetch_array($resultopd1);			
 	
 	$regis1=substr($admdate,0,10);
 	$regis2=substr($admdate,11,19);
@@ -85,7 +85,7 @@ while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor
 	$datestart=$datetime_admit;  //วันที่เริ่มให้ยา
 	$datefinish=$datetime_admit;  //วันสุดท้ายที่ให้ยา
 
-    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$typedrug|$didstd|$dname|$datestart|$datefinish|$amount|$unit|$unitpack|$drugprice|$drugcost|$provider|$d_update\r\n";
+    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$typedrug|$didstd|$dname|$datestart|$datefinish|$amount|$unit|$unitpack|$drugprice|$drugcost|$provider|$d_update|$cid\r\n";
 
     // $strFileName17 = "drug_ipd.txt";
     // $objFopen17 = fopen($strFileName17, 'a');
@@ -103,7 +103,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|TYPEDRUG|DIDSTD|DNAME|DATESTART|DATEFINISH|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|TYPEDRUG|DIDSTD|DNAME|DATESTART|DATEFINISH|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_drug_ipd.txt';
 file_put_contents($qofPath, $txt);

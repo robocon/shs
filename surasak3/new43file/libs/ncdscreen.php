@@ -15,7 +15,7 @@ b.`alcohol` AS `ALCOHOL`,
 
 CASE 
     WHEN b.`weight` > 0 THEN ROUND(b.`weight`,1) 
-    ELSE '0'  
+    ELSE '0.0'  
 END AS `WEIGHT`,
 
 b.`height` AS `HEIGHT`,

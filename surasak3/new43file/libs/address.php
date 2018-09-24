@@ -1,12 +1,16 @@
 <?php
 //-------------------- Create file address ä¿Åì·Õè 2 --------------------//
-$temp2="CREATE TEMPORARY TABLE report_person2 SELECT a.regisdate,a.hn,a.yot,a.name,a.surname,a.address,a.tambol,a.ampur,a.changwat,a.idguard,a.hphone,a.phone From opcard as a,opday as b where a.hn=b.hn AND a.regisdate like '$yrmonth%'  group by a.hn";
+$temp2="CREATE TEMPORARY TABLE report_person2 
+SELECT a.regisdate,a.hn,a.yot,a.name,a.surname,a.address,a.tambol,a.ampur,a.changwat,a.idguard,a.hphone,a.phone,a.idcard 
+From opcard as a,
+opday as b 
+where a.hn=b.hn AND a.regisdate like '$yrmonth%'  group by a.hn";
 $querytmp2 = mysql_query($temp2) or die("Query failed,Create temp2");
 
 $sql2="SELECT regisdate,hn,yot,name,surname,address,tambol,ampur,changwat,idguard,hphone,phone From report_person2";
 $result2= mysql_query($sql2) or die("Query failed, Select report_person1 (address)");
 $txt = '';
-while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,$idguard,$hphone,$phone) = mysql_fetch_row ($result2)) {	
+while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,$idguard,$hphone,$phone,$cid) = mysql_fetch_row ($result2)) {	
 
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
@@ -80,14 +84,14 @@ while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,
     list($hh,$ss,$ii)=explode(":",$regis2);
     $d_update=$yy.$mm.$dd.$hh.$ss.$ii;
 
-    $inline = "$hospcode|$hn|$addresstype|$house_id|$housetype|$roomno|$condo|$num_address|$soisub|$soimain|$road|$villaname|$village|$cdistrict|$camphur|$cprovince|$telephone|$mobile|$d_update\r\n";			
+    $inline = "$hospcode|$hn|$addresstype|$house_id|$housetype|$roomno|$condo|$num_address|$soisub|$soimain|$road|$villaname|$village|$cdistrict|$camphur|$cprovince|$telephone|$mobile|$d_update|$cid\r\n";			
     $txt .= $inline;
 } //close while
 $filePath = $dirPath.'/address.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|ADDRESSTYPE|HOUSE_ID|HOUSETYPE|ROOMNO|CONDO|HOUSENO|SOISUB|SOIMAIN|ROAD|VILLNAME|VILLAGE|TAMBON|AMPUR|CHANGWAT|TELEPHONE|MOBILE|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|ADDRESSTYPE|HOUSE_ID|HOUSETYPE|ROOMNO|CONDO|HOUSENO|SOISUB|SOIMAIN|ROAD|VILLNAME|VILLAGE|TAMBON|AMPUR|CHANGWAT|TELEPHONE|MOBILE|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_address.txt';
 file_put_contents($qofPath, $txt);
