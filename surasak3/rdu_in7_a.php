@@ -109,9 +109,6 @@ body, button{
         <th>ชื่อผู้ป่วย</th>
         <th>อายุ</th>
         <th>Diag1</th>
-        <th>Diag2</th>
-        <th>Diag3</th>
-        <th>Diag4</th>
         <th>ICD-10</th>
         <th>Drug code</th>
         <th>จำนวน</th>
@@ -128,9 +125,6 @@ foreach ($items as $key => $item) {
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>
             <td><?=$item['diag'];?></td>
-            <td></td>
-            <td></td>
-            <td></td>
             <td><?=$item['icd10'];?></td>
             <td><?=$item['drugcode'];?></td>
             <td><?=$item['amount'];?></td>

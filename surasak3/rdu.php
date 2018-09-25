@@ -111,10 +111,6 @@ $quarter_range = array(
                     <?php
                 }
                 ?>
-                <!-- <option value="1">ไตรมาสที่ 1(ต.ค. - ธ.ค.)</option>
-                <option value="2">ไตรมาสที่ 2(ม.ค. - มี.ค.)</option>
-                <option value="3">ไตรมาสที่ 3(เม.ย. - มิ.ย.)</option>
-                <option value="4">ไตรมาสที่ 4(ก.ค. - ก.ย.)</option> -->
             </select>
         </div>
 
@@ -211,20 +207,14 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
             include 'rdu_in6.php';
+            $url_in6 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-
-                <?php 
-                $url_in6 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
-                ?>
                 <a href="rdu_in6_a.php?<?=$url_in6;?>"><?=number_format($in6a);?></a>
-
             </td>
             <td align="right">
-
                 <a href="rdu_in6_b.php?<?=$url_in6;?>"><?=number_format($in6b);?></a>
-                
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
@@ -233,20 +223,14 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
             include 'rdu_in7.php';
+            $url_in7 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-
-                <?php
-                $url_in7 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
-                ?>
-
                 <a href="rdu_in7_a.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7a);?></a>
             </td>
             <td align="right">
-
                 <a href="rdu_in7_b.php?<?=$url_in7;?>"><?=number_format($in7b);?></a>
-
             </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
