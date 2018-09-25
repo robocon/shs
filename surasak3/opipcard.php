@@ -11,13 +11,17 @@ if( empty($cHn) ){
     exit;
 }
 
-$sql = "Select count(row_id) as rows_id From ipcard where date like '".substr($thidate,0,10)."%' AND hn = '".$cHn."' ";
+$sql = "Select *, TIMESTAMPDIFF(HOUR, CONCAT((SUBSTRING(date,1,4)-543),SUBSTRING(date,5,15)), NOW()) AS HOURDIFF  
+From ipcard 
+where date like '".substr($thidate,0,10)."%' 
+AND hn = '".$cHn."' ";
 $result = Mysql_Query($sql);
 $arr = Mysql_fetch_assoc($result);
+$test_row = mysql_num_rows($result);
 
-if($arr["rows_id"] > 0){
-echo "<BR><BR><CENTER>ไม่สามารถ admit ได้เนื่องจากมี HN นี้อยู่ในรายการคนไข้ในแล้ว</CENTER>";
-exit();
+if($test_row > 0 && $arr['HOURDIFF'] < 6){
+    echo "<BR><BR><CENTER>ไม่สามารถ admit ได้เนื่องจากมี HN นี้อยู่ในรายการคนไข้ในแล้ว และคนไข้ยัง admit ไม่ครบ 6ชั่วโมง </CENTER>";
+    exit();
 }
 
 
