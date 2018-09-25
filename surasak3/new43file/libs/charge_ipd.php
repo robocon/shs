@@ -17,17 +17,19 @@ while( $item = mysql_fetch_assoc($result) ){
 }
 
 // ptrightdetail จากใน ipcard
-$sql = "SELECT b.`hn`,b.`ptrightdetail`
+$sql = "SELECT b.`hn`,b.`ptrightdetail`,b.`ipcard` 
 FROM `ipcard` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
 WHERE a.`dcdate` LIKE '$thimonth%' 
 AND a.`dcdate` IS NOT NULL 
 AND b.`ptrightdetail` != '';";
 $ptLists = array();
+$ipcardLists = array();
 $query = mysql_query($sql);
 while( $item = mysql_fetch_assoc($query) ){
 	$key = $item['hn'];
-	$ptLists[$key] = $item['ptrightdetail'];
+    $ptLists[$key] = $item['ptrightdetail'];
+    $ipcardLists[$key] = $item['ipcard'];
 }
 
 // สิทธิตอนจ่ายเงิน
@@ -46,7 +48,7 @@ while( $item = mysql_fetch_assoc($query) ){
 $txt = '';
 $sql = "SELECT a.`date`,b.`hn`,b.`date`,b.`my_ward`,a.`an`,a.`depart`,a.`amount`,a.`price`,a.`paid`,a.`part` 
 FROM `ipacc` AS a, 
-`ipcard` AS b 
+`ipcard` AS b
 WHERE a.`an` = b.`an` 
 AND b.`dcdate` LIKE '$thimonth%' 
 AND b.`dcdate` IS NOT NULL 
@@ -63,7 +65,8 @@ while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) 
 	// $sqlpt = mysql_query("select ptrightdetail from opcard where hn='$hn'");
 	// list($ptrightdetail) = mysql_fetch_array($sqlpt);
 	
-	$ptrightdetail = ( isset($ptLists[$hn]) ) ? $ptLists[$hn] : false ;
+    $ptrightdetail = ( isset($ptLists[$hn]) ) ? $ptLists[$hn] : false ;
+    $cid = ( isset($ipcardLists[$hn]) ) ? $ipcardLists[$hn] : '0000000000000' ;
     $instype = ( isset($items[$ptrightdetail]) ) ? $items[$ptrightdetail] : 9100 ;
     
 	// $sqlptr = "Select code From  ptrightdetail where detail='$ptrightdetail'";
@@ -168,7 +171,7 @@ while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) 
 	list($hh,$ss,$ii)=explode(":",$regis2);
 	$d_update=($yy-543).$mm.$dd.$hh.$ss.$ii;
 
-    $inline = "$hospcode|$hn|$an|$datetime_admit|$wardstay|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update\r\n";
+    $inline = "$hospcode|$hn|$an|$datetime_admit|$wardstay|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update|$cid\r\n";
     // dump($inline);
     $txt .= $inline;
     // $strFileName18 = "charge_ipd.txt";
@@ -189,7 +192,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE|CID\r\n";
 $charge_ipd_txt = $header.$txt;
 $qofPath = $dirPath.'/qof_charge_ipd.txt';
 file_put_contents($qofPath, $charge_ipd_txt);

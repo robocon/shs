@@ -13,12 +13,12 @@ $txt = '';
 while (list ($thidate,$hn,$drugcode) = mysql_fetch_row ($result221)) {	
     
     $chkdate = substr($thidate,0,10);	
-    $sqlopd221 = "select vn,doctor 
+    $sqlopd221 = "select vn,doctor,idcard 
     from opday 
     where thidate like '$chkdate%' 
     and hn='$hn'";
     $resultopd221 = mysql_query($sqlopd221);	
-    list($vn,$doctor) = mysql_fetch_array($resultopd221);	
+    list($vn,$doctor,$cid) = mysql_fetch_array($resultopd221);	
     $newdoctor = substr($doctor,7,10);
 
     $vaccinetype = '815';
@@ -48,7 +48,7 @@ while (list ($thidate,$hn,$drugcode) = mysql_fetch_row ($result221)) {
         $provider = $date_serv.$vn.$doctorcode;
     }	
 
-    $inline = "$hospcode|$hn|$seq|$date_serv|$vaccinetype|$hospcode|$provider|$d_update\r\n";	
+    $inline = "$hospcode|$hn|$seq|$date_serv|$vaccinetype|$hospcode|$provider|$d_update|$cid\r\n";	
     // print($inline);
     $txt .= $inline;
 }  //close while
@@ -57,7 +57,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|VACCINETYPE|VACCINEPLACE|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|VACCINETYPE|VACCINEPLACE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_epi.txt';
 file_put_contents($qofPath, $txt);

@@ -83,7 +83,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|PROCEDCODE|TIMESTART|TIMEFINISH|SERVICEPRICE|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|PROCEDCODE|TIMESTART|TIMEFINISH|SERVICEPRICE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_procedure_ipd.txt';
 file_put_contents($qofPath, $txt);

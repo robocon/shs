@@ -14,9 +14,9 @@ while (list ($date,$hn,$appdate,$doctor,$detail,$depcode) = mysql_fetch_row ($re
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 	
     $chkdate=substr($date,0,10);	
-    $sqlopd="select vn,clinic,icd10 from opday where thidate like '$chkdate%' and hn='$hn'";
+    $sqlopd="select vn,clinic,icd10,idcard from opday where thidate like '$chkdate%' and hn='$hn'";
     $resultopd=mysql_query($sqlopd);	
-    list($vn,$cliniccode,$apdiag)=mysql_fetch_array($resultopd);
+    list($vn,$cliniccode,$apdiag,$cid)=mysql_fetch_array($resultopd);
 
     $sqlipa="select an from ipcard where dcdate like '$chkdate%' and hn='$hn'";
     $resultipa=mysql_query($sqlipa);	
@@ -70,7 +70,7 @@ while (list ($date,$hn,$appdate,$doctor,$detail,$depcode) = mysql_fetch_row ($re
     $provider=$date_serv.$vn.$doctorcode;
     }
 
-    $txt .= "$hospcode|$hn|$an|$seq|$date_serv|$clinic|$apdate|$aptype|$apdiag|$provider|$d_update\r\n";	
+    $txt .= "$hospcode|$hn|$an|$seq|$date_serv|$clinic|$apdate|$aptype|$apdiag|$provider|$d_update|$cid\r\n";	
     // $strFileName8 = "appointment.txt";
     // $objFopen8 = fopen($strFileName8, 'a');
     // fwrite($objFopen8, $strText8);
@@ -87,7 +87,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|SEQ|DATE_SERV|CLINIC|APDATE|APTYPE|APDIAG|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|AN|SEQ|DATE_SERV|CLINIC|APDATE|APTYPE|APDIAG|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_appointment.txt';
 file_put_contents($qofPath, $txt);

@@ -92,9 +92,9 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     
     // หา VN
     $chkdate = substr($date, 0, 10);
-    $sqlopd1 = "select vn FROM opday WHERE thidate LIKE '$chkdate%' and hn='$hn'";
+    $sqlopd1 = "select vn,idcard FROM opday WHERE thidate LIKE '$chkdate%' and hn='$hn'";
     $resultopd1 = mysql_query($sqlopd1);	
-    list($vn) = mysql_fetch_array($resultopd1);
+    list($vn,$cid) = mysql_fetch_array($resultopd1);
     
     // date_serv สำหรับ provider
     list($yy,$mm,$dd) = explode("-", $regis1);
@@ -135,7 +135,7 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     $causein = "1";  //สาเหตุการส่งผู้ป่วย
     $cost = "0.00";  //ราคาทุน
 
-    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update\r\n";
+    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$cid\r\n";
     // print($inline);
     $txt .= $inline;
 } // End while
@@ -143,7 +143,7 @@ $filePath = $dirPath.'/admission.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_admission.txt';
 file_put_contents($qofPath, $txt);

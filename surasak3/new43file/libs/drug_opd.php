@@ -6,7 +6,7 @@ $temp12 = "CREATE TEMPORARY TABLE report_drugopd
 SELECT a.`date`,a.`hn`,a.`an`,a.`drugcode`,a.`tradname`,a.`amount`, 
 b.`code24`,b.`unit`,b.`packing`,b.`salepri`,b.`unitpri`, SUBSTRING(a.`date`, 1, 10) AS `date2`
 FROM `drugrx` as a 
-INNER JOIN `druglst`as b ON a.`drugcode` = b.`drugcode` 
+LEFT JOIN `druglst`as b ON a.`drugcode` = b.`drugcode` 
 WHERE a.`date` LIKE '$thimonth%' 
 AND b.`drugcode` REGEXP '^[0-9]+' 
 AND ( 
@@ -46,8 +46,8 @@ while (list ($date,$hn,$an,$drugcode,$dname,$amount,$didstd,$unit,$unit_packing,
     // list($hospcode)=mysql_fetch_array($sqlhos);
 
     $chkdate = substr($date,0,10);
-    $sqlop = mysql_query("select thidate,vn from opday where hn ='$hn' and thidate like '$chkdate%'");
-    list($thidate,$vn) = mysql_fetch_array($sqlop);
+    $sqlop = mysql_query("select thidate,vn,idcard from opday where hn ='$hn' and thidate like '$chkdate%'");
+    list($thidate,$vn,$cid) = mysql_fetch_array($sqlop);
 
 
     $newclinic = substr($cliniccode,0,2);
@@ -81,7 +81,7 @@ while (list ($date,$hn,$an,$drugcode,$dname,$amount,$didstd,$unit,$unit_packing,
 
     // echo "$hospcode|$hn|$seq|$date_serv|$clinic|$didstd|$dname|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update<br/>";
     
-    $inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$didstd|$dname|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update\r\n";
+    $inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$didstd|$dname|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update|$cid\r\n";
     // print($inline);
     $txt .= $inline;
     
@@ -90,7 +90,7 @@ $filePath = $dirPath.'/drug_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|DIDSTD|DNAME|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|DIDSTD|DNAME|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_drug_opd.txt';
 file_put_contents($qofPath, $txt);

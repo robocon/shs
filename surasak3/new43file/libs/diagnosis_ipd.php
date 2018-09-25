@@ -12,10 +12,10 @@ while (list ($regisdate,$hn,$an,$date,$my_ward,$doctor,$diagcode,$type,$svdate) 
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 	
 	$chkdate=substr($date,0,10);	
-	$sqlopd1="select vn from opday where thidate like '$chkdate%' and hn='$hn'";
+	$sqlopd1="select vn, idcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	//echo $sqlopd1;
 	$resultopd1=mysql_query($sqlopd1);	
-	list($vn)=mysql_fetch_array($resultopd1);		
+	list($vn, $cid)=mysql_fetch_array($resultopd1);		
 
 	
 	if($type=="PRINCIPLE"){ $diagtype="1";}
@@ -63,7 +63,7 @@ while (list ($regisdate,$hn,$an,$date,$my_ward,$doctor,$diagcode,$type,$svdate) 
 	list($hh,$ss,$ii)=explode(":",$regis2);
 	$d_update=($yy-543).$mm.$dd.$hh.$ss.$ii;
 	
-    $txt .= "$hospcode|$hn|$an|$datetime_admit|$warddiag|$diagtype|$diagcode|$provider|$d_update\r\n";
+    $txt .= "$hospcode|$hn|$an|$datetime_admit|$warddiag|$diagtype|$diagcode|$provider|$d_update|$cid\r\n";
     // $strFileName15 = "diagnosis_ipd.txt";
     // $objFopen15 = fopen($strFileName15, 'a');
     // fwrite($objFopen15, $strText15);
@@ -80,7 +80,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDDIAG|DIAGTYPE|DIAGCODE|PROVIDER|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDDIAG|DIAGTYPE|DIAGCODE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_diagnosis_ipd.txt';
 file_put_contents($qofPath, $txt);

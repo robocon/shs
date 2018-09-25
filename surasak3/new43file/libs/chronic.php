@@ -26,7 +26,8 @@ thDateToEn(SUBSTRING_INDEX(`thidate`, ' ', 1)) AS `DATE_DIAG`,
 '' AS `HOSP_RX`, 
 '' AS `DATE_DISCH`, 
 '03' AS `TYPEDISCH`, 
-thDateTimeToEn(`thidate`) AS `D_UPDATE`
+thDateTimeToEn(`thidate`) AS `D_UPDATE`,
+`idcard` AS 'CID' 
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( 
@@ -59,14 +60,15 @@ while ( $item = mysql_fetch_assoc($q) ) {
 	$item['HOSP_RX'].'|'.
 	$item['DATE_DISCH'].'|'.
 	$item['TYPEDISCH'].'|'.
-	$item['D_UPDATE']."\r\n";
+	$item['D_UPDATE'].'|'.
+	$item['CID']."\r\n";
 }
 
 $filePath = $dirPath.'/chronic.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|DATE_DIAG|CHRONIC|HOSP_DX|HOSP_RX|DATE_DISCH|TYPEDISCH|D_UPDATE\r\n";
+$header = "HOSPCODE|PID|DATE_DIAG|CHRONIC|HOSP_DX|HOSP_RX|DATE_DISCH|TYPEDISCH|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_chronic.txt';
 file_put_contents($qofPath, $txt);
