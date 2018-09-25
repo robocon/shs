@@ -51,7 +51,6 @@ AND `drugcode` IN (
 
     '1AMOX250',
     '1AMOX500',
-    '1AMOX500-D',
     '1AMOX625',
     '5AMOX',
     '1DIC250',
@@ -63,6 +62,7 @@ AND `drugcode` IN (
     '1OMNI*$',
     '1DISMR',
     '1MEIA',
+    '2INVA',
     '5CEFS',
     '5DIST',
     '5MEIA',
@@ -75,7 +75,11 @@ AND `drugcode` IN (
     '5ZITH*$',
     '5ZMAX',
     '1ZITH-C',
-    '1KLA500-N'
+    '1KLA500-N',
+    '2ZITH',
+    '1DOXY',
+    '1DALA300-N',
+    '1CRAV-NN'
 
  ) 
 GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
