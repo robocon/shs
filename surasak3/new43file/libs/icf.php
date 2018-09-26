@@ -11,20 +11,21 @@ if( $rptmo >= 10 && $rptmo <= 12 ){
 $sql = "SELECT 
 '11512' AS `HOSPCODE`, 
 '' AS `DISABID`, 
-`hn` AS `PID`, 
-`vn` AS `SEQ`, 
-thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERRV`, 
-'' AS `ICF`,
+a.`hn` AS `PID`, 
+a.`vn` AS `SEQ`, 
+thDateToEn(SUBSTRING(a.`thidate`, 1, 10)) AS `DATE_SERRV`, 
+b.`ICF`,
 '' AS `QUALIFIER`,
 '' AS `PROVIDER`,
-thDateTimeToEn(`thidate`) AS `D_UPDATE`,
-`idcard` AS `CID` 
-FROM `opday` 
-WHERE `thidate` LIKE '$thimonth%'
+thDateTimeToEn(a.`thidate`) AS `D_UPDATE`,
+a.`idcard` AS `CID` 
+FROM `opday` AS a 
+LEFT JOIN `ICF` AS b ON b.`hn` = a.`hn`  
+WHERE a.`thidate` LIKE '$thimonth%'
 AND ( 
-    `ptright` LIKE 'R12%' 
-    OR `ptright` LIKE 'R40%' 
-    OR `ptright` LIKE 'R27%' 
+    a.`ptright` LIKE 'R12%' 
+    OR a.`ptright` LIKE 'R40%' 
+    OR a.`ptright` LIKE 'R27%' 
  );";
 $q = mysql_query($sql) or die( mysql_error() );
 
