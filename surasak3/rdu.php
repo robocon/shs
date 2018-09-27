@@ -310,6 +310,28 @@ if ( $action == 'load' ) {
             <td align="right"><?=number_format($in14_result, 2);?></td>
         </tr>
         <tr>
+            <td align="center">15</td>
+            <td>ร้อยละผู้ป่วยโรคหืดเรื้อรังที่ได้รับยา inhaled corticosteroid</td>
+            <?php
+            include 'rdu_in15.php';
+            ?>
+            <td>&ge; ร้อยละ 80</td>
+            <td align="right"><?=number_format($in15a);?></td>
+            <td align="right"><?=number_format($in15b);?></td>
+            <td align="right"><?=number_format($in15_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">16</td>
+            <td>ร้อยละผู้ป่วยนอกสูงอายุ ที่ใช้ยากลุ่ม long-acting benzodiazepine ได้แก่ chlordiazepoxide, diazepam, dipotassium chlorazepate</td>
+            <?php
+            // include 'rdu_in16.php';
+            ?>
+            <td>&le; ร้อยละ 5</td>
+            <td align="right"><?=number_format($in16a);?></td>
+            <td align="right"><?=number_format($in16b);?></td>
+            <td align="right"><?=number_format($in16_result, 2);?></td>
+        </tr>
+        <tr>
             <td align="center">17</td>
             <td>จำนวนสตรีตั้งครรภ์ที่ได้รับยาที่ห้ามใช้ ได้แก่ ยา Warfarin/Statins/Ergot เมื่อรู้ว่าตั้งครรภ์แล้ว</td>
             <?php
@@ -319,6 +341,17 @@ if ( $action == 'load' ) {
             <td align="right">-</td>
             <td align="right">-</td>
             <td align="right"><?=$in17_result;?></td>
+        </tr>
+        <tr>
+            <td align="center">18</td>
+            <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจแัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
+            <?php
+            // include 'rdu_in18.php';
+            ?>
+            <td>&le; ร้อยละ 20</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right"><?=$in18_result;?></td>
         </tr>
     </table>
     <?php
