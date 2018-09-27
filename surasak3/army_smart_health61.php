@@ -42,9 +42,13 @@ $new_itmes = array();
     font-family: TH SarabunPSK;
     font-size: 16pt;
 }
+body{
+    width: 100%;
+}
 /* ตาราง */
 .chk_table{
     border-collapse: collapse;
+    width: 100%;
 }
 
 .chk_table, th, td{
@@ -56,50 +60,115 @@ $new_itmes = array();
     padding: 3px;
 }
 </style>
-<table class="chk_table">
-    <thead>
-        <tr>
-            <th>ลำดับ</th>
-            <th>เลขประจำตัวประชาชน<br>(13 หลักติดกันไม่ต้องเว้นหรือมี -)</th>
-            <th>เลขประจำตัวกำลังพล<br>(10 หลัก)</th>
-            <th>ยศ</th>
-            <th>ชื่อ</th>
-            <th>นามสกุล</th>
-            <th>วันเดือนปีเกิด<br>(วว/ดด/ปปปป)</th>
-            <th>หน่วยที่ทำงาน/ขรก.</th>
-            <th>สถานที่ปฏิบัติงาน<br>(แผนก/กอง)</th>
-            <th>หน่วยที่รับเงินเดือน</th>
-        </tr>
-    </thead>
-    
-    <tbody>
+<div width="100%">
 
-    <?php
-    $i = 1;
-    foreach ($items as $key => $item) {
+    <table class="chk_table">
+        <thead>
+            <tr style="text-align: center;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">BP</td>
+                <td></td>
+                <td colspan="2">Chest x-ray</td>
+                <td colspan="4">ผลการตรวจปัสสาวะ</td>
+                <td colspan="12">ผลการตรวจเลือด</td>
+            </tr>
+            <tr style="text-align: center;">
+                <td rowspan="2">ลำดับ</td>
+                <td rowspan="2">เลขประจำตัวประชาชน<br>(13 หลักติดกันไม่ต้องเว้นหรือมี -)</td>
+                <td rowspan="2">เลขประจำตัวกำลังพล<br>(10 หลัก)</td>
+                <td rowspan="2">คำนำหน้าชื่อ</td>
+                <td rowspan="2">ชื่อ</td>
+                <td rowspan="2">นามสกุล</td>
+                <td rowspan="2">วันเดือนปีเกิด<br>(วว/ดด/ปปปป)</td>
+                <td rowspan="2">หน่วยที่ทำงาน/ขรก.</td>
+                <td rowspan="2">สถานที่ปฏิบัติงาน<br>(แผนก/กอง)</td>
+                <td rowspan="2">หน่วยที่รับเงินเดือน</td>
+                <td rowspan="2">เพศ</td>
+                <td rowspan="2">ระดับชั้นยศ</td>
+                <td rowspan="2">อายุ(ปี)</td>
+                <td rowspan="2">วันที่ตรวจ<br>(วว/ดด/ปปปป)</td>
+                <td rowspan="2">นน.(กก.)</td>
+                <td rowspan="2">ส่วนสูง(ซม.)</td>
+                <td rowspan="2">BMI</td>
+                <td rowspan="2">รอบเอว(ซม.)</td>
 
-        $ptname = preg_replace('/\s+/', ' ', $item['ptname']);
-        list($fname, $lname) = explode(' ', $ptname);
+                <td>Systolic<br>mmHg</td>
+                <td>Diastolic<br>mmHg</td>
 
-        list($yyyy, $mm, $dd) = explode('-', $item['birthday']); 
+                <td rowspan="2">ชีพจร(ครั้ง/นาที)</td>
 
-        $camp_name = preg_replace('/D\d+\s/', '', $item['camp']);
-        ?>
-        <tr>
-            <td><?=$i;?></td>
-            <td><?=$item['idcard'];?></td>
-            <td>&nbsp;</td>
-            <td><?=$item['yot'];?></td>
-            <td><?=$fname;?></td>
-            <td><?=$lname;?></td>
-            <td><?=($dd.'/'.$mm.'/'.( $yyyy + 543 ) );?></td>
-            <td><?=$camp_name;?></td>
-            <td><?=$item['position'];?></td>
-            <td>&nbsp;</td>
-        </tr>
+                <td>ผล</td>
+                <td>ผิดปกติ</td>
+
+                <td>Glucose</td>
+                <td>Protein</td>
+                <td>Blood</td>
+                <td>RBC</td>
+
+                <td>Hb</td>
+                <td>Glu</td>
+                <td>Chol</td>
+                <td>TG</td>
+                <td>HDL-C</td>
+                <td>LDL-C</td>
+                <td>BUN</td>
+                <td>Cr</td>
+                <td>Uric</td>
+                <td>AST</td>
+                <td>ALT</td>
+                <td>ALP</td>
+                
+
+
+            </tr>
+        </thead>
+        
+        <tbody>
+
         <?php
-        $i++;
-    }
-    ?>
-    </tbody>
-</table>
+        $i = 1;
+        foreach ($items as $key => $item) {
+
+            $ptname = preg_replace('/\s+/', ' ', $item['ptname']);
+            list($fname, $lname) = explode(' ', $ptname);
+
+            list($yyyy, $mm, $dd) = explode('-', $item['birthday']); 
+
+            $camp_name = preg_replace('/D\d+\s/', '', $item['camp']);
+            ?>
+            <tr>
+                <td><?=$i;?></td>
+                <td><?=$item['idcard'];?></td>
+                <td>&nbsp;</td>
+                <td><?=$item['yot'];?></td>
+                <td><?=$fname;?></td>
+                <td><?=$lname;?></td>
+                <td><?=($dd.'/'.$mm.'/'.( $yyyy + 543 ) );?></td>
+                <td><?=$camp_name;?></td>
+                <td><?=$item['position'];?></td>
+                <td>&nbsp;</td>
+            </tr>
+            <?php
+            $i++;
+        }
+        ?>
+        </tbody>
+    </table>
+</div>
