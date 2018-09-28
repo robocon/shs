@@ -116,7 +116,7 @@ if ( $action == 'show_data' ) {
         $sql = "SELECT * 
         FROM `diabetes_clinic_history` 
         WHERE `dateN` LIKE '$year%' 
-        AND `l_hbalc` <= 7 
+        AND `l_hbalc` < 7 
         AND `bp1` <> '' 
         AND ( `bp1` < 140 AND `bp2` < 90 )";
     }else if( $type == 2 ){
@@ -128,7 +128,7 @@ if ( $action == 'show_data' ) {
             GROUP BY `hn` 
         ) AS a 
         LEFT JOIN  `diabetes_clinic_history` AS b ON b.`row_id` = a.`max_id`
-        WHERE b.`l_hbalc` <= 7 
+        WHERE b.`l_hbalc` < 7 
         AND b.`bp1` <> '' 
         AND ( b.`bp1` < 140 AND b.`bp2` < 90 ) ORDER BY `hn`";
     }
@@ -162,6 +162,10 @@ if ( $action == 'show_data' ) {
         </tr>
         <?php 
         $i = 0;
+        $male_rows = $female_rows = 0;
+        $hba1c_rows = 0;
+        $bp_count = 0;
+        $toots_count = 0;
         foreach ($items as $key => $item) { 
 
             ++$i;
@@ -191,6 +195,23 @@ if ( $action == 'show_data' ) {
                 $count_other++;
             }
 
+            if( $item['sex'] == 1 ){
+                $female_rows++;
+            }elseif ( $item['sex'] == 0 ) {
+                $male_rows++;
+            }
+
+            if( $item['l_hbalc'] != '' && $item['l_hbalc'] > 0 ){
+                $hba1c_rows++;
+            }
+
+            if ( $item['bp1'] && $item['bp2'] ) {
+                $bp_count++;
+            }
+
+            if( $item['tooth'] == 1 ){
+                $toots_count++;
+            }
 
             ?>
             <tr>
@@ -205,8 +226,6 @@ if ( $action == 'show_data' ) {
                 <td><?=$other;?></td>
             </tr>
             <?php 
-            
-
 
         }
 
@@ -230,6 +249,26 @@ if ( $action == 'show_data' ) {
         <tr>
             <td>จำนวนผู้ป่วย ที่ไม่สูบบุหรี่</td>
             <td><?=$count_non_smoke;?> ราย</td>
+        </tr>
+        <tr>
+            <td>เพศ ชาย</td>
+            <td><?=$male_rows;?> ราย</td>
+        </tr>
+        <tr>
+            <td>เพศ หญิง</td>
+            <td><?=$female_rows;?> ราย</td>
+        </tr>
+        <tr>
+            <td>จำนวนผู้ป่วย HBA1C ที่น้อยกว่า 7</td>
+            <td><?=$hba1c_rows;?> ราย</td>
+        </tr>
+        <tr>
+            <td>จำนวนผู้ป่วยที่ BP < 140/90</td>
+            <td><?=$bp_count;?> ราย</td>
+        </tr>
+        <tr>
+            <td>จำนวนผู้ป่วยที่ตรวจฟัน</td>
+            <td><?=$toots_count;?> ราย</td>
         </tr>
         <?php 
         ksort($age_list);
