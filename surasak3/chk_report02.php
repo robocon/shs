@@ -7,12 +7,12 @@ include 'bootstrap.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
-$year_checkup = get_year_checkup();
-
 $db = Mysql::load();
-$sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$showpart' ";
+$sql = "SELECT `name`,`yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
 $company = $db->get_item();
+
+$year_checkup = substr($company['yearchk'], 2,2);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
