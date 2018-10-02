@@ -23,29 +23,59 @@ if( $action == false ){
         $read_only = 'readonly="readonly"';
     }
     ?>
-    <form action="chk_company.php" method="post">
-        <div>
-            ชื่อบริษัท <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
-        </div>
-        <div>
-            รหัสบริษัท <input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>>
-        </div>
-        <div>
-            วันที่ตรวจ <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
-            <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u></span>
+    <fieldset>
+        <legend>เพิ่มบริษัทใหม่</legend>
+        <form action="chk_company.php" method="post">
             <div>
-                <span style="color: red;">ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
+                ชื่อบริษัท : <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
             </div>
-        </div>
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-            <input type="hidden" name="action" value="save">
-            <input type="hidden" name="id" value="<?=$id;?>">
-        </div>
-    </form>
+            <div>
+                รหัสบริษัท : <input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>>
+            </div>
+            <div>
+                วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
+                <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u></span>
+                <div>
+                    <span style="color: red;">ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
+                </div>
+            </div>
+            <div>
+                <button type="submit">บันทึกข้อมูล</button>
+                <input type="hidden" name="action" value="save">
+                <input type="hidden" name="id" value="<?=$id;?>">
+            </div>
+        </form>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>ค้นหาตามปีงบประมาณ</legend>
+        <form action="chk_company.php" method="post">
+            <div> เลือกปี : 
+                <?php 
+                $year_range = range('2018',get_year_checkup(true, true));
+                getYearList('year_selected', true, 'selected', $year_range);
+                ?>
+            </div>
+
+            <div>
+                <button type="submit">แสดงผล</button>
+                <input type="hidden" name="views" value="search">
+            </div>
+        </form>
+    </fieldset>
+
+    <?php 
+    $action = input_post('views');
+    if ( $action == 'search' ) {
+    ?>
     <div>
-        <?php
-        $sql = "SELECT * FROM `chk_company_list` WHERE `status` = '1' ORDER BY `id` ASC";
+        <?php 
+        $year_selected = input_post('year_selected');
+        $year_selected += 543;
+
+        $sql = "SELECT * FROM `chk_company_list` 
+        WHERE `yearchk` = '$year_selected' AND `status` = '1' 
+        ORDER BY `id` ASC";
         $db->select($sql);
 
         $items = $db->get_items();
@@ -105,8 +135,6 @@ if( $action == false ){
                         <a href="chk_report_police60.php" target="_blank">พิมพ์ผลตรวจ</a>
                         </li>
                     </ol>
-                    
-                    
                 </td>
                 <td></td>
             </tr>
@@ -115,6 +143,8 @@ if( $action == false ){
         ?>
     </div>
     <?php
+    }
+
 } else if( $action == 'save' ) {
     
     $company = input_post('company');
