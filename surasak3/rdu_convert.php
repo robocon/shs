@@ -9,20 +9,18 @@ function dump($txt){
     echo "</pre>";
 }
 
-$db = mysql_connect('localhost', 'root', '1234') or die( mysql_error() );
+$db = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 mysql_select_db('smdb', $db) or die( mysql_error() );
 
-mysql_query('SET NAMES TIS620', $db);
+// mysql_query('SET NAMES TIS620', $db);
 
 /**
  * @todo 
  * function รันใน local มีปัญหา string tis กับ utf
  */
-$sql = "SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,
-testSex(b.`yot`) AS `sex`, 
+$sql = "SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`, 
 CONCAT(SUBSTRING(a.`thidate`,1,10),a.`hn`) AS `date_hn` 
 FROM `opday` AS a 
-LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
 WHERE a.`thidate` >= '2560-10-01 00:00:00' AND a.`thidate` <= '2560-12-31 23:59:59' 
 AND a.`an` IS NULL 
 AND ( a.`icd10` <> '' AND a.`icd10` IS NOT NULL ) ";
@@ -37,13 +35,16 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $thidate = $item['thidate'];
     $hn = $item['hn'];
     $ptname = $item['ptname'];
-    $sex = $item['sex'];
+    $yot = $item['yot'];
     $age = $item['age'];
     $diag = $item['diag'];
     $icd10 = $item['icd10'];
     $doctor = $item['doctor'];
     $date_hn = $item['date_hn'];
-    
+
+
+    $match = preg_match('/[หญิง|นาง|น.ส|ด.ญ|ms|mis]/', $yot, $matchs);
+    dump($match);
 
     $sql = "INSERT INTO `opday` ( 
         `id`,`row_id`,`date`,`hn`,`ptname`,
@@ -54,7 +55,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
         '$sex','$age','$diag','$icd10','$doctor',
         '$date_hn',NOW()
     );";
-    dump($sql);
+    // dump($sql);
 
 }
 
