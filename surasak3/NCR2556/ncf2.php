@@ -256,7 +256,7 @@ function textdisabled(){
 
 </SCRIPT>
 <FORM Name="f1" METHOD="post" ACTION="ncf_add2.php" Onsubmit="return CheckForm();">
-
+<div style="color: red;">ระบบ: งดการรายงานย้อนหลังตั้งแต่ 1 มกราคม 2561 ถึง 31 สิงหาคม 2561</div>
 <TABLE align="center" border="1" style="border-collapse:collapse;" cellpadding="0" cellspacing="0" bordercolor="#000000" >
 <TR bgcolor="#CCCCCC">
 	<TD height="48"  align="center" bgcolor="#99CCFF">

@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // Open for show error
 // ini_set('display_errors',1);
@@ -9,14 +10,17 @@ include 'connect.inc';
 
 $_POST["nonconf_time"] = $_POST["nonconf_time1"].":".$_POST["nonconf_time2"].":00";
 $now = date('Y-m-d H:i:s');
-
-
 $check_time = $_POST['nonconf_date'].' '.$_POST['nonconf_time1'].':'.$_POST['nonconf_time2'].':00';
-if( $check_time >= "2561-01-01 00:00:00" && $check_time <= "2561-08-31 23:59:59" ){
 
-	echo "<b>RM งดการรายงานย้อนหลัง</b><br>";
-	echo '<a href="ncf2.php">กลับไปหน้าบันทึกรายงาน</a>';
-	exit;
+if( empty($_SESSION['Namencr']) && ( $_SESSION['Namencr'] != 'นิธิวดี' && $_SESSION['Namencr'] != 'admin' ) ){
+
+	if( $check_time >= "2561-01-01 00:00:00" && $check_time <= "2561-08-31 23:59:59" ){
+
+		echo "<b>RM งดการรายงานย้อนหลัง</b><br>";
+		echo '<a href="ncf2.php">กลับไปหน้าบันทึกรายงาน</a>';
+		exit;
+	}
+
 }
 
 $q = mysql_query("SELECT `last_update_runno` FROM `runno` WHERE `title` = 'NCR';");
