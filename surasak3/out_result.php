@@ -98,21 +98,28 @@ if(isset($_POST['hn'])){
 	include("connect.inc");		
 	
 	////*runno µ√«® ÿ¢¿“æ*/////////
-	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
-	$result = mysql_query($query) or die("Query failed");
+	// $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+	// $result = mysql_query($query) or die("Query failed");
 	
-	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-		if (!mysql_data_seek($result, $i)) {
-			echo "Cannot seek to row $i\n";
-			continue;
-		}
+	// for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	// 	if (!mysql_data_seek($result, $i)) {
+	// 		echo "Cannot seek to row $i\n";
+	// 		continue;
+	// 	}
 
-		if(!($row = mysql_fetch_object($result)))
-			continue;
-	}
+	// 	if(!($row = mysql_fetch_object($result)))
+	// 		continue;
+	// }
 	
-	$nPrefix=$row->prefix;
-	$nPrefix2="25".$nPrefix;
+	// $nPrefix=$row->prefix;
+	// $nPrefix2="25".$nPrefix;
+
+
+	$sql = "SELECT SUBSTRING(`yearchk`, 3, 2) AS `checkup_year` FROM `chk_company_list` WHERE `code` = '$part' ";
+	$q = mysql_query($sql);
+	$chk = mysql_fetch_assoc($q);
+	$nPrefix = $chk['checkup_year'];
+
 	////*runno µ√«® ÿ¢¿“æ*/////////
 	$part=$_GET["part"];
 		
