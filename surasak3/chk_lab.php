@@ -59,18 +59,22 @@ if ( $page === 'form' ) {
         exit;
     }
 
-    $year_chk = get_year_checkup();
+    // $year_chk = get_year_checkup();
 
     $db->select("SELECT *,`HN` AS `hn` FROM `opcardchk` WHERE `row` = '$id' ");
     $user = $db->get_item();
+    $user_hn = $user['hn'];
+    $user_part = $user['part'];
+
+    $db->select("SELECT SUBSTRING(`yearchk`, 3, 2) AS `yearchk` FROM `chk_company_list` WHERE `code` = '$user_part' ");
+    $chk_company = $db->get_item();
+    $year_chk = $chk_company['yearchk'];
 
     $sql = "SELECT * 
     FROM `resulthead` 
-    WHERE `hn` = '".$user['hn']."'  
+    WHERE `hn` = '$user_hn'  
     AND `clinicalinfo` LIKE '%ตรวจสุขภาพประจำปี$year_chk'";
     $db->select($sql);
-    $items = $db->get_items();
-
     $lab_rows = $db->get_rows();
 
     include 'chk_menu.php';
@@ -85,6 +89,8 @@ if ( $page === 'form' ) {
         <?php
     }else {
         
+        $items = $db->get_items();
+
         ?>
         <h3>แก้ไขข้อมูลแลป</h3>
         <p>HN : <?=$user['hn'];?></p>
@@ -160,6 +166,9 @@ if ( $page === 'form' ) {
     <form action="chk_lab.php" method="post">
         <div>
             Keyword : <input type="text" name="info" id="" value="<?=$item['clinicalinfo'];?>">
+            <br>
+            ตรวจสุขภาพราชภัฏ61
+            <br>
         </div>
         <div style="color: red;">
             คำแนะนำ : ให้เปลี่ยน keyword เช่น ตรวจสุขภาพประจำปี60 เป็น deleteตรวจสุขภาพประจำปี60

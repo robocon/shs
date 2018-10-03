@@ -7,12 +7,14 @@ include 'bootstrap.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
-$year_checkup = get_year_checkup();
+// $year_checkup = get_year_checkup();
 
 $db = Mysql::load();
-$sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$showpart' ";
+$sql = "SELECT `name`,SUBSTRING(`yearchk`, 3, 2) AS `yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
 $company = $db->get_item();
+
+$year_checkup = $company['yearchk'];
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -977,7 +979,11 @@ ORDER BY c.seq ASC";
 									}
 
 									if( $objResult["labcode"]=='PARASI'){
-										if(strtolower($objResult["result"])=="not found"){
+
+										$clean_result = strtolower(trim($objResult["result"]));
+										$match_parasite = preg_match('/(not found)/', $clean_result, $matchs_parasite);
+
+										if( $match_parasite > 0 ){
 											$app="»¡µÔ";	
 										}else{
 											$app="¼Ô´»¡µÔ";	

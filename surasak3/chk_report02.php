@@ -977,11 +977,16 @@ ORDER BY c.seq ASC";
 									}
 
 									if( $objResult["labcode"]=='PARASI'){
-										if(strtolower($objResult["result"])=="not found"){
+										
+										$clean_result = strtolower(trim($objResult["result"]));
+										$match_parasite = preg_match('/(not found)/', $clean_result, $matchs_parasite);
+
+										if( $match_parasite > 0 ){
 											$app="»¡µÔ";	
 										}else{
 											$app="¼Ô´»¡µÔ";	
 										}
+
 									} 
 
 									if( $objResult["labcode"]=='PSA'){
