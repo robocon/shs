@@ -8,20 +8,43 @@ session_start();
 
 include 'connect.inc';
 
+
+/**
+ * @todo 
+ * ปรับเงื่อนไขใหม่โดยให้ lock เป็น หลังทุกวันที่ 5 ของแต่ละเดือนให้ระบบ lock ไม่ให้กรอกเลย
+ */
 $_POST["nonconf_time"] = $_POST["nonconf_time1"].":".$_POST["nonconf_time2"].":00";
+
+list($form_y, $form_m, $form_d) = explode('-', $_POST['nonconf_date']);
+$form_date = ($form_y - 543)."-$form_m-$form_d ".$_POST["nonconf_time"];
+
 $now = date('Y-m-d H:i:s');
-$check_time = $_POST['nonconf_date'].' '.$_POST['nonconf_time1'].':'.$_POST['nonconf_time2'].':00';
+// $now = date('2018-10-06 08:00:00');
+$date_5 = date('Y-m-05 23:59:59');
+
+$time_now = strtotime($now);
+$time5 = strtotime($date_5);
+$form_time = strtotime($form_date);
+
 
 if( empty($_SESSION['Namencr']) && ( $_SESSION['Namencr'] != 'นิธิวดี' && $_SESSION['Namencr'] != 'admin' ) ){
 
-	if( $check_time >= "2561-01-01 00:00:00" && $check_time <= "2561-08-31 23:59:59" ){
+	// ถ้าวันปัจจุบัน เกิน วันที่ 5 ของแต่ละเดือน
+	if( $time_now > $time5 ){
 
-		echo "<b>RM งดการรายงานย้อนหลัง</b><br>";
-		echo '<a href="ncf2.php">กลับไปหน้าบันทึกรายงาน</a>';
-		exit;
-	}
+		// ดูว่า ลงวันที่ย้อนหลังรึป่าว
+		if( $form_time < $time5 ){
+
+			echo "<b>RM งดการรายงานย้อนหลัง</b><br>";
+			echo '<a href="ncf2.php">กลับไปหน้าบันทึกรายงาน</a>';
+			exit;
+
+		} 
+
+	} 
 
 }
+
 
 $q = mysql_query("SELECT `last_update_runno` FROM `runno` WHERE `title` = 'NCR';");
 $item = mysql_fetch_assoc($q);

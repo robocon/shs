@@ -1,4 +1,4 @@
-<? 
+<?php 
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
@@ -46,19 +46,17 @@ body,td,th {
 }
 </style>
 <link rel="stylesheet" type="text/css" href="epoch_styles.css" />
+
 <script type="text/javascript" src="epoch_classes.js"></script>
 <script type="text/javascript">
 
 	var bas_cal,dp_cal,ms_cal;
 
-window.onload = function () {
-	dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('nonconf_date'));
+	window.onload = function () {
+		dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('nonconf_date'));
 
-};
+	};
 
-</script>
-
-<script type='text/javascript'>
 	function clearRdo(){
 		tag =document.getElementsByName('event');
 		for(i=0;i<tag.length;i++){
@@ -67,196 +65,164 @@ window.onload = function () {
 			}
 		}
 	}
-/*function clearRdo2(){
-		tag =document.getElementsByName('clinic');
-		//alert(tag)
-		for(i=0;i<tag.length;i++){
-			if(tag[i].id=='clinic'){
-				tag[i].checked= false;
+
+	function clearChecks(radioName) {
+		var radio = document.f1[radioName]
+		for(x=0;x<radio.length;x++) {
+			document.f1[radioName][x].checked = false
+		}
+	}
+
+
+	
+	function CheckForm(){
+		
+		var ff = document.f1;
+
+		// ตรวจ ระดับความรุนแรง ว่าได้เลือกหรือไม่
+		var dmg_check = false;
+		for (let index = 0; index < ff.clinic.length; index++) {
+			const element = ff.clinic[index].checked;
+			if(element == true){
+				dmg_check = true;
 			}
 		}
-	}*/
-function clearChecks(radioName) {
-    var radio = document.f1[radioName]
-    for(x=0;x<radio.length;x++) {
-        document.f1[radioName][x].checked = false
-    }
-}
-</script>
 
+		// ตรวจ ชนิดของความเสี่ยง
+		var testTypeRisk = document.getElementsByClassName('type_risk');
+		var risk_check = false;
+		for (let index = 0; index < testTypeRisk.length; index++) {
+			const element = testTypeRisk[index].checked;
+			if(element == true){
+				risk_check = true;
+			}
+		}
+		
+		if(ff.until.value==""){
+			alert("กรุณาเลือก หน่วยงาน ของท่าน");
+			ff.until.focus();
+			return false;
+		
+		}else if( ff.topic1_1.checked == false && ff.topic1_2.checked == false && ff.topic1_3.checked == false && ff.topic1_4.checked == false && ff.topic1_5.checked == false && ff.topic1_6.checked == false && ff.topic1_7.value.length == 0 
+			&& ff.topic2_1.checked == false && ff.topic2_2.checked == false && ff.topic2_3.checked == false && ff.topic2_4.checked == false && ff.topic2_5.checked == false && ff.topic2_6.checked == false && ff.topic2_7.value.length == 0 
+			&& ff.topic3_1.checked == false && ff.topic3_2.checked == false && ff.topic3_3.checked == false && ff.topic3_4.value.length == 0 
+			&& ff.topic4_1.checked == false && ff.topic4_2.checked == false && ff.topic4_3.checked == false && ff.topic4_4.checked == false && ff.topic4_5.checked == false && ff.topic4_6.value.length == 0 
+			&& ff.topic5_1.checked == false && ff.topic5_2.checked == false && ff.topic5_3.checked == false && ff.topic5_4.checked == false && ff.topic5_5.checked == false && ff.topic5_6.checked == false && ff.topic5_7.checked == false && ff.topic5_8.checked == false && ff.topic5_9.checked == false && ff.topic5_10.checked == false && ff.topic5_11.value.length == 0 
+			&& ff.topic6_1.checked == false && ff.topic6_2.checked == false && ff.topic6_3.checked == false && ff.topic6_4.checked == false && ff.topic6_5.value.length == 0 
+			&& ff.topic7_1.checked == false && ff.topic7_2.checked == false && ff.topic7_3.checked == false && ff.topic7_4.checked == false && ff.topic7_5.checked == false && ff.topic7_6.checked == false && ff.topic7_7.value.length == 0 
+			&& ff.topic8_1.checked == false && ff.topic8_2.checked == false && ff.topic8_3.checked == false && ff.topic8_4.checked == false && ff.topic8_5.checked == false && ff.topic8_6.checked == false && ff.topic8_7.checked == false && ff.topic8_8.checked == false && ff.topic8_9.checked == false && ff.topic8_10.checked == false && ff.topic8_11.value.length == 0){
+			alert("กรุณาเลือก รายการที่ต้องการแจ้ง");
+			return false;
+
+		}else if(ff.sum_up.value == ""){
+			alert("กรุณากรอกรายละเอียด บรรยายสรุปเหตุการณ์");
+			ff.sum_up.focus();
+			return false;
+
+		}else if( dmg_check == false ){
+			alert("กรุณาเลือก ระดับความรุนแรง");
+			ff.clinic1.focus();
+			return false;
+
+		}else if(ff.head_name.value==""){
+			alert("กรุณากรอก ชื่อหัวหน้า ");
+			ff.head_name.focus();
+			return false;
+
+		}else if( risk_check == false ){
+			alert("กรุณาเลือก ชนิดของความเสี่ยง");
+			ff.risk1.focus();
+			return false;
+
+		}else{
+			return true;
+		}
+	}	
+
+	function textdisabled(){
+		var ff = document.f1;
+			
+		//****   1      **//	
+		
+		if(ff.topic1_1.checked == true || ff.topic1_2.checked == true || ff.topic1_3.checked == true || ff.topic1_4.checked == true || ff.topic1_5.checked == true || ff.topic1_6.checked == true){
+			ff.topic1_7.disabled=true;
+			ff.topic1_7.value="";
+		}else{
+			ff.topic1_7.disabled=false;
+		}
+		//****    2      **//
+		
+			if(ff.topic2_1.checked == true || ff.topic2_2.checked == true || ff.topic2_3.checked == true || ff.topic2_4.checked == true || ff.topic2_5.checked == true || ff.topic2_6.checked == true){
+			ff.topic2_7.disabled=true;
+			ff.topic2_7.value="";
+		}else{
+			ff.topic2_7.disabled=false;
+		}
+		//****    3      **//
+		
+		if(ff.topic3_1.checked == true || ff.topic3_2.checked == true || ff.topic3_3.checked == true){
+			ff.topic3_4.disabled=true;
+			ff.topic3_4.value="";
+		}else{
+			ff.topic3_4.disabled=false;
+		}
+		//****    4      **//
+		if(ff.topic4_1.checked == true || ff.topic4_2.checked == true || ff.topic4_3.checked == true || ff.topic4_4.checked == true || ff.topic4_5.checked == true){
+			ff.topic4_6.disabled=true;
+			ff.topic4_6.value="";
+		}else{
+			ff.topic4_6.disabled=false;
+		}
+		//****    5      **//
+		if(ff.topic5_1.checked == true || ff.topic5_2.checked == true || ff.topic5_3.checked == true || ff.topic5_4.checked == true || ff.topic5_5.checked == true || ff.topic5_6.checked == true || ff.topic5_7.checked == true || ff.topic5_8.checked == true || ff.topic5_9.checked == true || ff.topic5_10.checked == true){
+			ff.topic5_11.disabled=true;
+			ff.topic5_11.value="";
+		}else{
+			ff.topic5_11.disabled=false;
+		}
+		//****    6    **//
+		if(ff.topic6_1.checked == true || ff.topic6_2.checked == true || ff.topic6_3.checked == true || ff.topic6_4.checked == true){
+			ff.topic6_5.disabled=true;
+			ff.topic6_5.value="";
+		}else{
+			ff.topic6_5.disabled=false;
+		}
+		//****    7   **//
+			if(ff.topic7_1.checked == true || ff.topic7_2.checked == true || ff.topic7_3.checked == true || ff.topic7_4.checked == true || ff.topic7_5.checked == true || ff.topic7_5.checked == true || ff.topic7_6.checked == true){
+			ff.topic7_7.disabled=true;
+			ff.topic7_7.value="";
+		}else{
+			ff.topic7_7.disabled=false;
+		}
+		//****   8   **//
+		if(ff.topic8_1.checked == true || ff.topic8_2.checked == true || ff.topic8_3.checked == true || ff.topic8_4.checked == true || ff.topic8_5.checked == true || ff.topic8_6.checked == true || ff.topic8_7.checked == true || ff.topic8_8.checked == true || ff.topic8_9.checked == true || ff.topic8_10.checked == true){
+			ff.topic8_11.disabled=true;
+			ff.topic8_11.value="";
+		}else{
+			ff.topic8_11.disabled=false;
+		}	
+	}
+</script>
 
 
 <?php
 
-		include("connect.inc");
+include("connect.inc");
 
+$sendfile = "ncf_add2.php";
+$hidden = "";
+$date_now = (date("Y")+543).date("-m-d");
+$nonconf_time1 = date("H");
+$nonconf_time2 = date("i");
 
-		$sendfile = "ncf_add2.php";
-		$hidden = "";
-		$date_now = (date("Y")+543).date("-m-d");
-		$nonconf_time1 = date("H");
-		$nonconf_time2 = date("i");
-		
-		
-		
-		
-		
-		$arr_edit2["send_by"] = $_SESSION["firstname_now"];
-		
-		/////////////////////////////
-		/////////////////////////////
-			/*$query = "SELECT title,runno FROM runno WHERE title = 'NCR'";
-			$result = mysql_query($query) or die("Query failed");
-		
-			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-				if (!mysql_data_seek($result, $i)) {
-					echo "Cannot seek to row $i\n";
-					continue;
-				}
-		
-				if(!($row = mysql_fetch_object($result)))
-					continue;
-				 }
-		
-			$nRunno=$row->runno;
-			$nRunno++;*/
-		/////////////////////////
-		
-		
-		///////////////////////////////////////
-			/*$query ="UPDATE runno SET runno = $nRunno WHERE title='NCR'";
-			$result = mysql_query($query) or die("Query failed");*/
-			
-			///////////////////////////
-
-	//	$ncr_no = $nRunno;
-	//}
+$arr_edit2["send_by"] = $_SESSION["firstname_now"];
 
 ?>
-<!--<SCRIPT LANGUAGE="JavaScript">
-
-	function clinicandnon(xxx){
-		
-		for(i=0;i<document.f1.clinic.length;i++){
-			
-			document.f1.clinic[i].checked = false;
-
-		}
-
-		for(i=0;i<document.f1.nonclinic.length;i++){
-			
-			document.f1.nonclinic[i].checked = false;
-
-		}
-
-		xxx.checked = true;
-
-	}
-
-</SCRIPT>-->
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-function CheckForm(){
-	
-  var ff = document.f1;
-  
-  if(ff.until.value==""){
-    alert("กรุณาเลือก หน่วยงาน ของท่าน");
-    ff.until.focus();
-    return false;
-  
-  }else if(
-  ff.topic1_1.checked == false && ff.topic1_2.checked == false && ff.topic1_3.checked == false && ff.topic1_4.checked == false && ff.topic1_5.checked == false && ff.topic1_6.checked == false && ff.topic1_7.value.length == 0 && ff.topic2_1.checked == false && ff.topic2_2.checked == false && ff.topic2_3.checked == false && ff.topic2_4.checked == false && ff.topic2_5.checked == false && ff.topic2_6.checked == false && ff.topic2_7.value.length == 0 && ff.topic3_1.checked == false && ff.topic3_2.checked == false && ff.topic3_3.checked == false && ff.topic3_4.value.length == 0 && ff.topic4_1.checked == false && ff.topic4_2.checked == false && ff.topic4_3.checked == false && ff.topic4_4.checked == false && ff.topic4_5.checked == false && ff.topic4_6.value.length == 0 && ff.topic5_1.checked == false && ff.topic5_2.checked == false && ff.topic5_3.checked == false && ff.topic5_4.checked == false && ff.topic5_5.checked == false && ff.topic5_6.checked == false && ff.topic5_7.checked == false && ff.topic5_8.checked == false && ff.topic5_9.checked == false && ff.topic5_10.checked == false && ff.topic5_11.value.length == 0 && ff.topic6_1.checked == false && ff.topic6_2.checked == false && ff.topic6_3.checked == false && ff.topic6_4.checked == false && ff.topic6_5.value.length == 0 && ff.topic7_1.checked == false && ff.topic7_2.checked == false && ff.topic7_3.checked == false && ff.topic7_4.checked == false && ff.topic7_5.checked == false && ff.topic7_6.checked == false && ff.topic7_7.value.length == 0 && ff.topic8_1.checked == false && ff.topic8_2.checked == false && ff.topic8_3.checked == false && ff.topic8_4.checked == false && ff.topic8_5.checked == false && ff.topic8_6.checked == false && ff.topic8_7.checked == false && ff.topic8_8.checked == false && ff.topic8_9.checked == false && ff.topic8_10.checked == false && ff.topic8_11.value.length == 0){
-    alert("กรุณาเลือกรายการที่ต้องการแจ้ง");
-    return false;
-  }/*else if(ff.clinic1.checked == false && ff.clinic2.checked == false && ff.clinic3.checked == false && ff.clinic4.checked == false && ff.clinic5.checked == false && ff.clinic6.checked == false && ff.clinic7.checked == false && ff.clinic8.checked == false && ff.clinic9.checked == false ){
-  alert('กรุณาเลือกความรุนแรง');
-  return false;
-  }*/
-  else if(ff.head_name.value==""){
-    alert("กรุณากรอกชื่อหัวหน้า ");
-    ff.head_name.focus();
-    return false;
-  }else{
-    return true;
-  }
-}	
-/*	else if(ff.risk1.checked == false && ff.risk2.checked == false && ff.risk3.checked == false && ff.risk4.checked == false && ff.risk5.checked == false && ff.risk6.checked == false && ff.risk7.checked == false && ff.risk8.checked == false && ff.risk9.checked == false ){
-		alert('กรุณาเลือกชนิดของความเสี่ยง');
-		return false;	
-	}
-
-	*/
-//-->
-
-function textdisabled(){
-	var ff = document.f1;
-		
-	//****   1      **//	
-	
-	if(ff.topic1_1.checked == true || ff.topic1_2.checked == true || ff.topic1_3.checked == true || ff.topic1_4.checked == true || ff.topic1_5.checked == true || ff.topic1_6.checked == true){
-		ff.topic1_7.disabled=true;
-		ff.topic1_7.value="";
-	}else{
-		ff.topic1_7.disabled=false;
-	}
-	//****    2      **//
-	
-		if(ff.topic2_1.checked == true || ff.topic2_2.checked == true || ff.topic2_3.checked == true || ff.topic2_4.checked == true || ff.topic2_5.checked == true || ff.topic2_6.checked == true){
-		ff.topic2_7.disabled=true;
-		ff.topic2_7.value="";
-	}else{
-		ff.topic2_7.disabled=false;
-	}
-	//****    3      **//
-	
-	if(ff.topic3_1.checked == true || ff.topic3_2.checked == true || ff.topic3_3.checked == true){
-		ff.topic3_4.disabled=true;
-		ff.topic3_4.value="";
-	}else{
-		ff.topic3_4.disabled=false;
-	}
-	//****    4      **//
-	if(ff.topic4_1.checked == true || ff.topic4_2.checked == true || ff.topic4_3.checked == true || ff.topic4_4.checked == true || ff.topic4_5.checked == true){
-		ff.topic4_6.disabled=true;
-		ff.topic4_6.value="";
-	}else{
-		ff.topic4_6.disabled=false;
-	}
-	//****    5      **//
-	if(ff.topic5_1.checked == true || ff.topic5_2.checked == true || ff.topic5_3.checked == true || ff.topic5_4.checked == true || ff.topic5_5.checked == true || ff.topic5_6.checked == true || ff.topic5_7.checked == true || ff.topic5_8.checked == true || ff.topic5_9.checked == true || ff.topic5_10.checked == true){
-		ff.topic5_11.disabled=true;
-		ff.topic5_11.value="";
-	}else{
-		ff.topic5_11.disabled=false;
-	}
-	//****    6    **//
-	if(ff.topic6_1.checked == true || ff.topic6_2.checked == true || ff.topic6_3.checked == true || ff.topic6_4.checked == true){
-		ff.topic6_5.disabled=true;
-		ff.topic6_5.value="";
-	}else{
-		ff.topic6_5.disabled=false;
-	}
-	//****    7   **//
-		if(ff.topic7_1.checked == true || ff.topic7_2.checked == true || ff.topic7_3.checked == true || ff.topic7_4.checked == true || ff.topic7_5.checked == true || ff.topic7_5.checked == true || ff.topic7_6.checked == true){
-		ff.topic7_7.disabled=true;
-		ff.topic7_7.value="";
-	}else{
-		ff.topic7_7.disabled=false;
-	}
-	//****   8   **//
-	if(ff.topic8_1.checked == true || ff.topic8_2.checked == true || ff.topic8_3.checked == true || ff.topic8_4.checked == true || ff.topic8_5.checked == true || ff.topic8_6.checked == true || ff.topic8_7.checked == true || ff.topic8_8.checked == true || ff.topic8_9.checked == true || ff.topic8_10.checked == true){
-		ff.topic8_11.disabled=true;
-		ff.topic8_11.value="";
-	}else{
-		ff.topic8_11.disabled=false;
-	}	
-}
-
-
-</SCRIPT>
 <FORM Name="f1" METHOD="post" ACTION="ncf_add2.php" Onsubmit="return CheckForm();">
-<div style="color: red;">ระบบ: งดการรายงานย้อนหลังตั้งแต่ 1 มกราคม 2561 ถึง 31 สิงหาคม 2561</div>
+<div style="color: red;">
+	<u>ระบบคอมฯ จะทำการ Lock ไม่ให้กรอกข้อมูลย้อนหลัง หลังจากวันที่5 ของแต่ละเดือน</u>
+</div>
+<br>
 <TABLE align="center" border="1" style="border-collapse:collapse;" cellpadding="0" cellspacing="0" bordercolor="#000000" >
 <TR bgcolor="#CCCCCC">
 	<TD height="48"  align="center" bgcolor="#99CCFF">
@@ -278,15 +244,15 @@ function textdisabled(){
       <br>
       หน่วยงาน / ทีม :
 <SELECT NAME="until">
-  <Option value="">--------------</Option>
-  <?php
-										$sql="SELECT * FROM `departments` where status='y' ";
-										$query=mysql_query($sql);
-										
-										while($arr=mysql_fetch_array($query)){
-											echo "<option value='$arr[code]'>$arr[name]</option> ";
-										}
-									?>
+	<Option value="">--------------</Option>
+	<?php
+	$sql="SELECT * FROM `departments` where status='y' ";
+	$query=mysql_query($sql);
+
+	while($arr=mysql_fetch_array($query)){
+		echo "<option value='$arr[code]'>$arr[name]</option> ";
+	}
+	?>
 </SELECT>
 <BR>
 วันที่ :
@@ -606,7 +572,7 @@ function textdisabled(){
 </TR>-->
 <TR valign="top">
 	<TD colspan="3" bgcolor="#CCCCCC"  >
-		<B>บรรยายสรุปเหตุการณ์</B> : <BR>&nbsp;&nbsp;&nbsp;<TEXTAREA NAME="sum_up" ROWS="6" COLS="60"><?php echo $arr_edit["sum_up"];?></TEXTAREA>
+		<B>บรรยายสรุปเหตุการณ์</B> : <BR>&nbsp;&nbsp;&nbsp;<TEXTAREA NAME="sum_up" id="sum_up" ROWS="6" COLS="60"><?php echo $arr_edit["sum_up"];?></TEXTAREA>
 	</TD>
 </TR>
 <TR valign="top">
@@ -708,47 +674,47 @@ function textdisabled(){
 			<table border="0">
 				<tr>
 					<td>
-						<input name="risk1" type="checkbox" id="risk1" value="1"> 
+						<input name="risk1" class="type_risk" type="checkbox" id="risk1" value="1"> 
 						1.Clinical Risk
 					</td>
 					<td>
-						<input name="risk6" type="checkbox" id="risk6" value="1"> 
+						<input name="risk6" class="type_risk" type="checkbox" id="risk6" value="1"> 
 						6.Customer Complaint Risk
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input name="risk2" type="checkbox" id="risk2" value="1"> 
+						<input name="risk2" class="type_risk" type="checkbox" id="risk2" value="1"> 
 						2.Infection control Risk
 					</td>
 					<td>
-						<input name="risk7" type="checkbox" id="risk7" value="1"> 
+						<input name="risk7" class="type_risk" type="checkbox" id="risk7" value="1"> 
 						7.Financial Risk
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input name="risk3" type="checkbox" id="risk3" value="1"> 
+						<input name="risk3" class="type_risk" type="checkbox" id="risk3" value="1"> 
 						3.Medication Risk
 					</td>
 					<td>
-						<input name="risk8" type="checkbox" id="risk8" value="1"> 
+						<input name="risk8" class="type_risk" type="checkbox" id="risk8" value="1"> 
 						8.Utilization Management Risk
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input name="risk4" type="checkbox" id="risk4" value="1"> 
+						<input name="risk4" class="type_risk" type="checkbox" id="risk4" value="1"> 
 						4.Medical Equipment Risk
 					</td>
 					<td>
-						<input name="risk9" type="checkbox" id="risk9" value="1"> 
+						<input name="risk9" class="type_risk" type="checkbox" id="risk9" value="1"> 
 						9.Information Risk
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input name="risk5" type="checkbox" id="risk5" value="1"> 
+						<input name="risk5" class="type_risk" type="checkbox" id="risk5" value="1"> 
 						5.Safety and Environment Risk
 					</td>
 					<td>&nbsp;</td>
