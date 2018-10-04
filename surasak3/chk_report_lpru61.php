@@ -680,7 +680,9 @@ FROM (
 
 		#OR `profilecode`='PSA' 
 		
-		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
+		`profilecode` != 'CBC' 
+		AND `profilecode` != 'UA' 
+		AND `profilecode` != 'WET' 
     ) 
 	GROUP BY `profilecode` 
 
