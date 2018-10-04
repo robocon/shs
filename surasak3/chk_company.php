@@ -90,7 +90,6 @@ if( $action == false ){
                 <th>รอบปีงบประมาณ</th>
                 <th>ลงผล/พิมพ์ผล</th>
                 <th></th>
-                <th></th>
             </tr>
             <?php
             $i = 1;
@@ -109,16 +108,20 @@ if( $action == false ){
                             <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                             <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                             <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
+                            <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
+                            <!-- 
                             <li><a href="dx_ofyear_out.php" target="_blank">ซักประวัติ(สิทธิ ปกส.)</a></li>
                             <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
+                            -->
                         </ol>
                     </td>
-                    <td><a href="chk_all_lab.php?part=<?=$item['code'];?>">ผล Lab ทั้งหมด</a></td>
-                    <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไข</a></td>
+                    <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
                 </tr>
                 <?php
                 $i++;
             }
+            
+            /*
             ?>
             <tr>
                 <td></td>
@@ -138,6 +141,9 @@ if( $action == false ){
                 </td>
                 <td></td>
             </tr>
+            <?php
+            */
+            ?>
         </table>
         <?php
         ?>
@@ -151,7 +157,6 @@ if( $action == false ){
     $id = input_post('id');
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
-    $year = get_year_checkup(true);
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
 
@@ -180,6 +185,8 @@ if( $action == false ){
 
             // $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
             $msg = "บันทึกข้อมูลเรียบร้อย";
+
+            $year = get_year_checkup(true);
 
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 

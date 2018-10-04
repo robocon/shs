@@ -553,12 +553,17 @@ foreach ($items as $key => $item) {
             }
 
             if($etc_item == 'PARASI' && !is_null($etc)){  //METAMP
-                if($etc["result"]=="Not Found"){
+
+                $clean_result = strtolower(trim($etc["result"]));
+                $match_parasite = preg_match('/(not found)/', $clean_result, $matchs_parasite);
+
+                if( $match_parasite > 0 ){
                     $app="»¡µÔ";	
                 }else{
                     $app="¼Ô´»¡µÔ";	
                 }
             }
+
 
             if($etc_item == 'PSA' && !is_null($etc)){  //METAMP
                 $app = '»¡µÔ';

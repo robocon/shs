@@ -57,7 +57,7 @@ $menu_list = array(
     array('link' => 'chk_lab_order.php', 'name' => '¹Óà¢éÒOrder Lab', 'access' => 'ADM|ADMNEWCHKUP'),
     array('link' => 'chk_sso.php', 'name' => 'Walk-in »¡Ê.', 'access' => 'ALL'),
     array('link' => 'dt_emp_manual_index.php', 'name' => 'Å§¼ÅµÃÇ¨ »¡Ê.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank'),
-
+    array('link' => 'dx_ofyear_out.php', 'name' => '«Ñ¡»ÃĞÇÑµÔ(ÊÔ·¸Ô »¡Ê.)', 'access' => 'ALL', 'target' => '_blank'),
 );
 
 

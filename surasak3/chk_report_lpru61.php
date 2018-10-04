@@ -140,7 +140,7 @@ while($result = mysql_fetch_assoc($row2)){
 
 		SELECT * 
 		FROM `resulthead` 
-		WHERE `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+		WHERE ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
 		AND `hn` = '$hn' 
 		ORDER BY `autonumber` 
 		DESC LIMIT 1 
@@ -305,7 +305,7 @@ while($result = mysql_fetch_assoc($row2)){
     FROM resulthead 
     WHERE (profilecode = 'CBC' OR profilecode = 'UA') 
     AND hn = '$hn' 
-    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+    AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
     GROUP BY `profilecode` 
 	ORDER BY `autonumber` desc";
     $query55 = mysql_query($sql55) or die( mysql_error() );
@@ -323,7 +323,7 @@ while($result = mysql_fetch_assoc($row2)){
 	FROM resulthead 
 	WHERE profilecode='CBC' 
 	AND hn = '".$hn."' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql) or die( mysql_error() );
 	$arrresult = mysql_fetch_array($query);
@@ -473,7 +473,7 @@ if( $num > 0 ){
 	FROM resulthead 
 	WHERE profilecode='UA' 
 	and hn='$hn' 
-	and `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	and ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
@@ -650,7 +650,7 @@ FROM (
 
     SELECT MAX(`autonumber`) AS `latest_id`   
     FROM `resulthead` 
-    WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+    WHERE `hn` = '$hn' AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
     AND ( 
         #`profilecode`='GLU' 
         #OR `profilecode`='CREAG' 
@@ -680,7 +680,9 @@ FROM (
 
 		#OR `profilecode`='PSA' 
 		
-		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
+		`profilecode` != 'CBC' 
+		AND `profilecode` != 'UA' 
+		AND `profilecode` != 'WET' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -707,7 +709,7 @@ FROM (
 	SELECT MAX(`autonumber`) AS `autonumber`
 	FROM `resulthead` 
 	WHERE `hn` = '$hn' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
 	AND `testgroupcode` = 'OUT' 
 	AND `profilecode` != '38302' 
 	GROUP BY `profilecode` 
@@ -1166,7 +1168,7 @@ FROM (
     SELECT *, MAX(`autonumber`) AS `latest_id` 
 	FROM `resulthead` 
     WHERE `hn` = '$hn' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND ( `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' OR `clinicalinfo` = 'ตรวจสุขภาพราชภัฏ$year_checkup' ) 
     AND ( 
         `profilecode`='HBSAG' 
         OR `profilecode`='HAVTOT' 
