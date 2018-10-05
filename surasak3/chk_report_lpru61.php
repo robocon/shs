@@ -732,8 +732,8 @@ ORDER BY c.seq ASC";
 						<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
 							<tr>
 								<td width="32%" valign="top" bgcolor="#CCCCCC" align="center"><strong>รายการตรวจ</strong></td>
-								<td width="27%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
-								<td width="9%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ค่าปกติ</strong></td>
+								<td width="21%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
+								<td width="15%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ค่าปกติ</strong></td>
 								<td width="32%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;" align="center"><strong>สรุปผลการตรวจ</strong></td>
 							</tr>
 							<?php
