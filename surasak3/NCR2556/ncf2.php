@@ -81,22 +81,22 @@ body,td,th {
 
 		// ตรวจ ระดับความรุนแรง ว่าได้เลือกหรือไม่
 		var dmg_check = false;
-		for (let index = 0; index < ff.clinic.length; index++) {
-			const element = ff.clinic[index].checked;
+		for (var index = 0; index < ff.clinic.length; index++) {
+			var element = ff.clinic[index].checked;
 			if(element == true){
 				dmg_check = true;
 			}
 		}
 
 		// ตรวจ ชนิดของความเสี่ยง
-		var testTypeRisk = document.getElementsByClassName('type_risk');
-		var risk_check = false;
-		for (let index = 0; index < testTypeRisk.length; index++) {
-			const element = testTypeRisk[index].checked;
-			if(element == true){
-				risk_check = true;
-			}
-		}
+		// var testTypeRisk = document.getElementsByClassName('type_risk');
+		// var risk_check = false;
+		// for (let index = 0; index < testTypeRisk.length; index++) {
+		// 	const element = testTypeRisk[index].checked;
+		// 	if(element == true){
+		// 		risk_check = true;
+		// 	}
+		// }
 		
 		if(ff.until.value==""){
 			alert("กรุณาเลือก หน่วยงาน ของท่าน");
@@ -129,12 +129,12 @@ body,td,th {
 			ff.head_name.focus();
 			return false;
 
-		}else if( risk_check == false ){
+		}/*else if( risk_check == false ){
 			alert("กรุณาเลือก ชนิดของความเสี่ยง");
 			ff.risk1.focus();
 			return false;
 
-		}else{
+		}*/else{
 			return true;
 		}
 	}	
@@ -218,7 +218,7 @@ $nonconf_time2 = date("i");
 $arr_edit2["send_by"] = $_SESSION["firstname_now"];
 
 ?>
-<FORM Name="f1" METHOD="post" ACTION="ncf_add2.php" Onsubmit="return CheckForm();">
+<FORM Name="f1" id="f1Form" METHOD="post" ACTION="ncf_add2.php" Onsubmit="return CheckForm();">
 <div style="color: red;">
 	<u>ระบบคอมฯ จะทำการ Lock ไม่ให้กรอกข้อมูลย้อนหลัง หลังจากวันที่5 ของแต่ละเดือน</u>
 </div>
@@ -745,6 +745,35 @@ $arr_edit2["send_by"] = $_SESSION["firstname_now"];
 
 </div>
 
+<script type="text/javascript">
+
+var j2 = jQuery.noConflict();
+j2("#f1Form").submit(function(ev){
+
+	var tr = j2('.type_risk');
+	var risk_length = tr.length;
+	
+	var risk_check = false;
+	for (var index = 0; index < risk_length; index++) {
+		var element = tr[index].checked;
+		if(element == true){
+			risk_check = true;
+		}
+	}
+
+	if( risk_check == false ){ 
+		ev.preventDefault();
+		alert("กรุณาเลือก ชนิดของความเสี่ยง");
+		return false;
+
+	}else{
+		return true;
+	}
+
+});
+
+
+</script>
 
 
 </body>

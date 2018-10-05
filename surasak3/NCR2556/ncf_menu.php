@@ -1,10 +1,8 @@
-<? session_start();?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-"http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
+<?php 
+session_start();
+?>
+
 		<link rel="stylesheet" type="text/css" href="css/superfish.css" media="screen">
-		<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
 		<script type="text/javascript" src="js/hoverIntent.js"></script>
 		<script type="text/javascript" src="js/superfish.js"></script>
 		<script type="text/javascript">
@@ -14,10 +12,7 @@
 			jQuery('ul.sf-menu').superfish();
 		});
 		</script>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
-	</head>
-    
-	<body >
+
     
 
 		<ul class="sf-menu">
@@ -90,6 +85,3 @@
 			?>
 			</li>
 		</ul>
-
-	</body>
-</html>
