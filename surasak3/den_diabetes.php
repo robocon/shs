@@ -43,7 +43,7 @@ function calcage($birth){
 /* ตาราง */
 body, button{
     font-family: TH SarabunPSK, TH Sarabun NEW;
-    font-size: 14pt;
+    font-size: 13pt;
 }
 .chk_table{
     border-collapse: collapse;
@@ -51,7 +51,7 @@ body, button{
 
 .chk_table, th, td{
     border: 1px solid black;
-    font-size: 14pt;
+    font-size: 13pt;
 }
 
 .chk_table th,
@@ -165,177 +165,283 @@ if ( $action == 'show_data' ) {
     $count_non_smoke = 0;
 
     $age_list = array();
+
+
+    // แยกกลุ่มคนที่เข้าเกณฑ์ hba1c กับ bp
+    $criteria_pass = array();
+    $criteria_not_pass = array();
+
+    // 
+    $i = 0;
+    $male_rows = $female_rows = $a1c_more7 = $hba1c_rows = $bp_more_count = $bp_count = $toots_count = 0;
+
+    foreach ($items as $key => $item) { 
+
+        // เก็บข้อมูล
+        $test_criteria = 0;
+
+        if( $item['l_hbalc'] > 0 && $item['l_hbalc'] < 7 ){
+            $test_criteria++;
+        }
+
+        if ( $item['bp1'] < 140 && $item['bp2'] < 90 ) {
+            $test_criteria++;
+        }
+
+        if ( $test_criteria >= 2 ) {
+            $criteria_pass[] = $item;
+        }else{
+            $criteria_not_pass[] = $item;
+        }
+        // เก็บข้อมูล
+
+
+        ++$i;
+
+        $age = calcage($item['dbbirt']);
+
+        $test_age = substr($age, 0, 2);
+        $age_list[$test_age][] = $item['hn'];
+
+        $cig = $item['smork'];
+        if( $cig === '0' ){
+            $count_non_smoke++;
+        }else if( $cig === '1' ){
+            $count_smoke++;
+        }
+
+        $other = '';
+        if( $item['ht'] != '' ){
+            $other .= 'HT, ';
+        }
+
+        if ( $item['ht_etc'] != '' ) {
+            $other .= $item['ht_etc'];
+        }
+
+        if ( $other != '' ) {
+            $count_other++;
+        }
+
+        if( $item['sex'] == 1 ){
+            $female_rows++;
+        }elseif ( $item['sex'] == 0 ) {
+            $male_rows++;
+        }
+
+        if( $item['l_hbalc'] > 0 && $item['l_hbalc'] < 7 ){
+            $hba1c_rows++;
+        }elseif ( $item['l_hbalc'] > 0 && $item['l_hbalc'] >= 7 ) {
+            $a1c_more7++;
+        }
+
+        if ( $item['bp1'] < 140 && $item['bp2'] < 90 ) {
+            $bp_count++;
+        }elseif ( $item['bp1'] >= 140 && $item['bp2'] >= 90 ) {
+            $bp_more_count++;
+        }
+
+        if( $item['tooth'] == 1 ){
+            $toots_count++;
+        }
+
+
+
+
+
+    }
+
+
+
     ?>
-    <h3>รายชื่อผู้ป่วยเบาหวาน ปี<?=($year+543);?></h3>
-    <table class="chk_table">
-        <tr>
-            <th>#</th>
-            <th>HN</th>
-            <th>ชื่อ-สกุล</th>
-            <th>เพศ</th>
-            <th>อายุ</th>
-            <th>HBA1C</th>
-            <th>BP</th>
-            <th>บุหรี่</th>
-            <th>โรคร่วม</th>
-        </tr>
-        <?php 
-        $i = 0;
-        $male_rows = $female_rows = 0;
-        $a1c_more7 = $hba1c_rows = 0;
-        $bp_more_count = $bp_count = 0;
-        $toots_count = 0;
-        
-        foreach ($items as $key => $item) { 
 
-            $standard = 0;
+    <div width="100%" style="clear: both;">
+    
+        <div style="float: left; width: 50%;">
 
-            ++$i;
+            <h3>รายชื่อผู้ป่วยเบาหวาน ปี<?=($year+543);?> ที่ผ่านเกณฑ์ HBA1C < 7 และ BP 140/90</h3>
+            <table class="chk_table">
+                <tr>
+                    <th>#</th>
+                    <th>HN</th>
+                    <th>ชื่อ-สกุล</th>
+                    <th>เพศ</th>
+                    <th>อายุ</th>
+                    <th>HBA1C</th>
+                    <th>BP</th>
+                    <th>บุหรี่</th>
+                    <th>โรคร่วม</th>
+                </tr>
+                <?php 
+                $i1 = 0;
+                foreach ($criteria_pass as $key => $item) { 
 
-            $age = calcage($item['dbbirt']);
+                    $age = calcage($item['dbbirt']);
+                    $cig = $item['smork'];
 
-            $test_age = substr($age, 0, 2);
-            $age_list[$test_age][] = $item['hn'];
+                    $other = '';
+                    if( $item['ht'] != '' ){
+                        $other .= 'HT, ';
+                    }
 
-            $cig = $item['smork'];
-            if( $cig === '0' ){
-                $count_non_smoke++;
-            }else if( $cig === '1' ){
-                $count_smoke++;
-            }
+                    if ( $item['ht_etc'] != '' ) {
+                        $other .= $item['ht_etc'];
+                    }
 
-            $other = '';
-            if( $item['ht'] != '' ){
-                $other .= 'HT, ';
-            }
+                    ++$i1;
 
-            if ( $item['ht_etc'] != '' ) {
-                $other .= $item['ht_etc'];
-            }
+                    ?>
+                    <tr>
+                        <td><?=$i1;?></td>
+                        <td><?=$item['hn'];?></td>
+                        <td><?=$item['ptname'];?></td>
+                        <td><?=( $item['sex'] == '1' ? 'หญิง' : 'ชาย' );?></td>
+                        <td><?=$age;?></td>
+                        <td><?=$item['l_hbalc'];?></td>
+                        <td><?=$item['bp1'].'/'.$item['bp2'];?></td>
+                        <td><?=$cigarette_list[$cig];?></td>
+                        <td><?=$other;?></td>
+                    </tr>
+                    <?php 
 
-            if ( $other != '' ) {
-                $count_other++;
-            }
+                }
+                ?>
+            </table>
 
-            if( $item['sex'] == 1 ){
-                $female_rows++;
-            }elseif ( $item['sex'] == 0 ) {
-                $male_rows++;
-            }
+        </div>
+    
+        <div style="float: left; width: 50%;">
+                
+            <h3>รายชื่อผู้ป่วยเบาหวาน ปี<?=($year+543);?> ที่ไม่ผ่านเกณฑ์</h3>
+                
+            <table class="chk_table">
+                <tr>
+                    <th>#</th>
+                    <th>HN</th>
+                    <th>ชื่อ-สกุล</th>
+                    <th>เพศ</th>
+                    <th>อายุ</th>
+                    <th>HBA1C</th>
+                    <th>BP</th>
+                    <th>บุหรี่</th>
+                    <th>โรคร่วม</th>
+                </tr>
+                <?php 
+                $i2 = 0;
+                foreach ($criteria_not_pass as $key => $item) { 
 
-            if( $item['l_hbalc'] > 0 && $item['l_hbalc'] < 7 ){
-                $standard++;
-                $hba1c_rows++;
-            }elseif ( $item['l_hbalc'] > 0 && $item['l_hbalc'] >= 7 ) {
-                $a1c_more7++;
-            }
+                    ++$i2;
 
-            if ( $item['bp1'] < 140 && $item['bp2'] < 90 ) {
-                $standard++;
-                $bp_count++;
-            }elseif ( $item['bp1'] >= 140 && $item['bp2'] >= 90 ) {
-                $bp_more_count++;
-            }
+                    $age = calcage($item['dbbirt']);
 
-            if( $item['tooth'] == 1 ){
-                $toots_count++;
-            }
+                    $test_age = substr($age, 0, 2);
+                    $cig = $item['smork'];
 
-            $bg_color = '';
-            if( $standard == 2 ){
-                $bg_color = 'style="background-color: #caffc9;"';
-            }
+                    $other = '';
+                    if( $item['ht'] != '' ){
+                        $other .= 'HT, ';
+                    }
 
-            ?>
-            <tr <?=$bg_color;?>>
-                <td><?=$i;?></td>
-                <td><?=$item['hn'];?></td>
-                <td><?=$item['ptname'];?></td>
-                <td><?=( $item['sex'] == '1' ? 'หญิง' : 'ชาย' );?></td>
-                <td><?=$age;?></td>
-                <td><?=$item['l_hbalc'];?></td>
-                <td><?=$item['bp1'].'/'.$item['bp2'];?></td>
-                <td><?=$cigarette_list[$cig];?></td>
-                <td><?=$other;?></td>
-            </tr>
-            <?php 
+                    if ( $item['ht_etc'] != '' ) {
+                        $other .= $item['ht_etc'];
+                    }
 
-        }
 
-        $count_dm = $i - $count_other;
-        ?>
-    </table>
+                    ?>
+                    <tr>
+                        <td><?=$i2;?></td>
+                        <td><?=$item['hn'];?></td>
+                        <td><?=$item['ptname'];?></td>
+                        <td><?=( $item['sex'] == '1' ? 'หญิง' : 'ชาย' );?></td>
+                        <td><?=$age;?></td>
+                        <td><?=$item['l_hbalc'];?></td>
+                        <td><?=$item['bp1'].'/'.$item['bp2'];?></td>
+                        <td><?=$cigarette_list[$cig];?></td>
+                        <td><?=$other;?></td>
+                    </tr>
+                    <?php 
+
+                }
+
+                $count_dm = $i - $count_other;
+                ?>
+            </table>
+
+
+        </div>
+
+    </div>
+
+    <div style="clear: both;"></div>
+
     <br>
-    <table class="chk_table">
-        
-        <tr>
-            <th>จำแนกตามรายการ</th>
-            <th>จำนวนราย</th>
-        </tr>
-
-        <?php 
-        if ( $count_all > 0 ) {
-            ?>
+    <div style="clear: both;">
+    
+        <table class="chk_table">
+            
             <tr>
-                <td>จำนวนผู้ป่วย ทั้งหมด แบบไม่กรอง HbA1c, bp</td>
-                <td align="right"><?=$count_all;?></td>
+                <th>จำแนกตามรายการ</th>
+                <th>จำนวนราย</th>
             </tr>
-            <?php
-        }
-        ?>
 
-        <tr>
-            <td>จำนวนผู้ป่วย DM อย่างเดียว</td>
-            <td align="right"><?=$count_dm;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วย DM และมีโรคร่วม</td>
-            <td align="right"><?=$count_other;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วย ที่สูบบุหรี่</td>
-            <td align="right"><?=$count_smoke;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วย ที่ไม่สูบบุหรี่</td>
-            <td align="right"><?=$count_non_smoke;?></td>
-        </tr>
-        
-        <tr>
-            <td>จำนวนผู้ป่วย ที่ไม่มีข้อมูลสูบบุหรี่</td>
-            <td align="right"><?=( $i - ( $count_smoke + $count_non_smoke ) );?></td>
-        </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย ทั้งหมด </td>
+                <td align="right"><?=$i;?></td>
+            </tr>
 
-        <tr>
-            <td>เพศ ชาย</td>
-            <td align="right"><?=$male_rows;?></td>
-        </tr>
-        <tr>
-            <td>เพศ หญิง</td>
-            <td align="right"><?=$female_rows;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วย HBA1C ที่น้อยกว่า 7</td>
-            <td align="right"><?=$hba1c_rows;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วย HBA1C มากกว่าหรือเท่ากับ 7</td>
-            <td align="right"><?=$a1c_more7;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วยที่ BP น้อยกว่า 140/90</td>
-            <td align="right"><?=$bp_count;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วยที่ BP มากกว่าหรือเท่ากับ 140/90</td>
-            <td align="right"><?=$bp_more_count;?></td>
-        </tr>
-        <tr>
-            <td>จำนวนผู้ป่วยที่ตรวจฟัน</td>
-            <td align="right"><?=$toots_count;?></td>
-        </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย DM อย่างเดียว</td>
+                <td align="right"><?=$count_dm;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย DM และมีโรคร่วม</td>
+                <td align="right"><?=$count_other;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย ที่สูบบุหรี่</td>
+                <td align="right"><?=$count_smoke;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย ที่ไม่สูบบุหรี่</td>
+                <td align="right"><?=$count_non_smoke;?></td>
+            </tr>
+            
+            <tr>
+                <td>จำนวนผู้ป่วย ที่ไม่มีข้อมูลสูบบุหรี่</td>
+                <td align="right"><?=( $i - ( $count_smoke + $count_non_smoke ) );?></td>
+            </tr>
 
-    </table>
+            <tr>
+                <td>เพศ ชาย</td>
+                <td align="right"><?=$male_rows;?></td>
+            </tr>
+            <tr>
+                <td>เพศ หญิง</td>
+                <td align="right"><?=$female_rows;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย HBA1C ที่น้อยกว่า 7</td>
+                <td align="right"><?=$hba1c_rows;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วย HBA1C มากกว่าหรือเท่ากับ 7</td>
+                <td align="right"><?=$a1c_more7;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วยที่ BP น้อยกว่า 140/90</td>
+                <td align="right"><?=$bp_count;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วยที่ BP มากกว่าหรือเท่ากับ 140/90</td>
+                <td align="right"><?=$bp_more_count;?></td>
+            </tr>
+            <tr>
+                <td>จำนวนผู้ป่วยที่ตรวจฟัน</td>
+                <td align="right"><?=$toots_count;?></td>
+            </tr>
+
+        </table>
+    </div>
     <br>
     <table class="chk_table">
         <tr>
