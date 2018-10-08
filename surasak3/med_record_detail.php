@@ -96,7 +96,7 @@ label{
     $def_date = date('Y-m-d');
     $date_set = input_post('date_set', $def_date);
     ?>
-    <form action="med_record_print_pdf.php" method="post">
+    <form action="med_record_print_pdf.php" method="post" action="_blank">
         <div style="padding: 5px 0;">
             <fieldset>
                 <legend>ข้อมูลเบื้องต้น</legend>
