@@ -580,7 +580,12 @@ $strresult2= mysql_query($strsql2);
 $strrow2=mysql_num_rows($strresult2);
 $strrows=mysql_fetch_array($strresult2);	
 //echo "==>".$strrows["ptright"];	
-if($strrows["ptright"]=="R07 ประกันสังคม"){	
+
+$user_ptright = substr($strrows["ptright"], 0, 3);
+
+// R07 ประกันสังคม
+// เพิ่มสิทธิ พรบ. R06 เข้าไปด้วย 
+if( $user_ptright == "R07" || $user_ptright == "R06" || $user_ptright == "R08" ){
 $chkdate=substr($dateid,0,4);
 $chksql="SELECT sum( denta ) AS pricedental, sum( other ) AS priceother
 FROM `opday`
