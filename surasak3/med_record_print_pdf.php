@@ -155,7 +155,13 @@ $pdf->SetMargins(0,0); // left, top, right
 $pdf->AddPage();
 $pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
+// for ($i=1; $i <= 45; $i++) { 
 
+//     $test_y = $i * 6;
+//     $pdf->SetXY(1, $test_y);
+//     $pdf->Cell(6, 6, $i, 1, 1, 'C');
+
+// }
 
 foreach ($drug_lists as $drug_code) {
     
@@ -243,22 +249,56 @@ if( $footer_h > 240 ){
     $footer_h = $get_header_y;
 }
 
+// ความสูงสุดท้ายก่อนขึ้นท้ายตาราง
+$test_before_footer = ( 240 - $footer_h );
+// ช่องว่างก่อนจะขึ้น footer
+if( $test_before_footer > 0 ){
+
+    $test_line_footer = ( $test_before_footer / 6 );
+
+    for ($i=0; $i < $test_line_footer; $i++) { 
+        
+
+        $test_y = ( $i * 6 ) + $footer_h;
+
+        // ช่องชื่อยา
+        $pdf->SetXY(10, $test_y);
+        $pdf->Cell(52, 6, '', 1, 1, 'C');
+
+        // ช่องเวลา
+        $pdf->Rect(62, $test_y, 15, 6);
+
+        $pdf->Rect(77, $test_y, 18, 6);
+        $pdf->Rect(95, $test_y, 18, 6);
+        $pdf->Rect(113, $test_y, 18, 6);
+        $pdf->Rect(131, $test_y, 18, 6);
+        $pdf->Rect(149, $test_y, 18, 6);
+        $pdf->Rect(167, $test_y, 18, 6);
+        $pdf->Rect(185, $test_y, 18, 6);
+
+    }
+
+    $footer_h = $test_y + 6;
+}
+
+// Footer
 $pdf->SetXY(10, $footer_h);
 $pdf->Cell(52, 12, 'Recheck order', 1, 1, 'C');
 $pdf->SetXY(62, $footer_h);
 $pdf->Cell(141, 12, 'ผู้ตรวจสอบ', 1, 1, 'C');
 
-$pdf->SetXY(10, ($footer_h + 12));
+$line_bottom_1 = $footer_h + 12;
+$pdf->SetXY(10, $line_bottom_1);
 $pdf->Cell(52, 6, 'เวรเช้า', 1, 1, 'C');
-$pdf->Rect(62, ($footer_h + 12), 15, 6); // ช่องเวลา
+$pdf->Rect(62, $line_bottom_1, 15, 6); // ช่องเวลา
 
-$pdf->Rect(77, ($footer_h + 12), 18, 6);
-$pdf->Rect(95, ($footer_h + 12), 18, 6);
-$pdf->Rect(113, ($footer_h + 12), 18, 6);
-$pdf->Rect(131, ($footer_h + 12), 18, 6);
-$pdf->Rect(149, ($footer_h + 12), 18, 6);
-$pdf->Rect(167, ($footer_h + 12), 18, 6);
-$pdf->Rect(185, ($footer_h + 12), 18, 6);
+$pdf->Rect(77, $line_bottom_1, 18, 6);
+$pdf->Rect(95, $line_bottom_1, 18, 6);
+$pdf->Rect(113, $line_bottom_1, 18, 6);
+$pdf->Rect(131, $line_bottom_1, 18, 6);
+$pdf->Rect(149, $line_bottom_1, 18, 6);
+$pdf->Rect(167, $line_bottom_1, 18, 6);
+$pdf->Rect(185, $line_bottom_1, 18, 6);
 
 $pdf->SetXY(10, ($footer_h + 18));
 $pdf->Cell(52, 6, 'เวรบ่าย', 1, 1, 'C');
