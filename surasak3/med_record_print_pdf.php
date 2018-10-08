@@ -55,14 +55,17 @@ class MedSHS extends SHSPdf{
         $this->SetXY(10, ( $header_y + 6 ));
         $this->Cell(52, 12, 'ชื่อยา ขนาด วิธีใช้', 1, 1, 'C');
         
+        // กว้าง 15
         $this->SetXY(62, ( $header_y + 6 ));
         $this->Cell(15, 12, 'เวลา', 1, 1, 'C');
 
         // 
         $current = strtotime($date_set);
-        $cell_width = 18;
-        $cell_x = 87;
-        for ($i=1; $i <= 6; $i++) { 
+        $cell_width = 18; // กว้าง 18
+        $cell_x = 77;
+
+        // 7 วัน
+        for ($i=1; $i <= 7; $i++) { 
 
             $year = date('Y', $current) + 543;
             $short_y = substr($year,2);
@@ -180,7 +183,7 @@ foreach ($drug_lists as $drug_code) {
     $detail_txt .= $dSlip['detail3']." ";
     $detail_txt .= $dSlip['detail4'];
 
-    // เซ็ตให้ทุกบรรทัดห่างจาก X 20 หน่วย
+    
     $drug_y = $pdf->GetY();
 
     if( $drug_y > 240 ){
@@ -188,10 +191,11 @@ foreach ($drug_lists as $drug_code) {
         $drug_y = $get_header_y;
     }
 
+    // เซ็ตให้ทุกบรรทัดห่างจาก X 10 หน่วย
     $pdf->SetX(10);
     
     // หาความสูงของตัว Multicel ที่เป็นข้อความ
-    $message = $d['tradname'].'('.$d['slcode'].')'."\n\r".$detail_txt."$drug_y   $tr_height";
+    $message = $d['tradname'].'('.$slcode.')'."\n\r".$detail_txt."$drug_y   $tr_height";
     $muticell_h = $pdf->GetMultiCellHeight(52, 6, $message);
 
     // หาร 6 เพราะ1บรรทัดสูง6หน่วย
@@ -204,11 +208,11 @@ foreach ($drug_lists as $drug_code) {
     // x y w h
     // เป็นกรอบข้อความยา
     $pdf->Rect(10, $drug_y, 52, ($tr_height * 6));
-    $pdf->MultiCell(52, 6, $d['tradname'].'('.$d['slcode'].')'."\n\r".$detail_txt, 0);
+    $pdf->MultiCell(52, 6, $d['tradname'].'('.$slcode.')'."\n\r".$detail_txt, 0);
 
     ////// 
     // ในยาแต่ละตัวสูงกี่บรรทัด 
-    $td_h = 72;
+    $td_h = 62; // X ช่องลงเวลา
     $tr_h = $drug_y;
 
     // วนตามความสูงที่ user คีย์เข้ามา
@@ -217,9 +221,9 @@ foreach ($drug_lists as $drug_code) {
         // ช่องลงเวลา
         $pdf->Rect($td_h, $tr_h, 15, 6);
 
-        $td2_h = 87;
+        $td2_h = 77; // แกน X
         // เหลือ repeat อีก 5 วัน
-        for ($td_count=0; $td_count <= 5; $td_count++) { 
+        for ($td_count=0; $td_count <= 6; $td_count++) { 
             $pdf->Rect($td2_h, $tr_h, 18, 6);
             $td2_h += 18;
         }
@@ -229,7 +233,7 @@ foreach ($drug_lists as $drug_code) {
 
     $pdf->SetY(($drug_y + ($tr_height * 6)));
 
-}
+} // จบการแสดงผลรายการยา
 
 
 // ถ้าท้ายตารางเกินขอบด้านล่าง
@@ -242,37 +246,43 @@ if( $footer_h > 240 ){
 $pdf->SetXY(10, $footer_h);
 $pdf->Cell(52, 12, 'Recheck order', 1, 1, 'C');
 $pdf->SetXY(62, $footer_h);
-$pdf->Cell(123, 12, 'ผู้ตรวจสอบ', 1, 1, 'C');
+$pdf->Cell(141, 12, 'ผู้ตรวจสอบ', 1, 1, 'C');
 
 $pdf->SetXY(10, ($footer_h + 12));
 $pdf->Cell(52, 6, 'เวรเช้า', 1, 1, 'C');
-$pdf->Rect(62, ($footer_h + 12), 15, 6);
-$pdf->Rect(87, ($footer_h + 12), 18, 6);
-$pdf->Rect(105, ($footer_h + 12), 18, 6);
-$pdf->Rect(123, ($footer_h + 12), 18, 6);
-$pdf->Rect(141, ($footer_h + 12), 18, 6);
-$pdf->Rect(159, ($footer_h + 12), 18, 6);
-$pdf->Rect(177, ($footer_h + 12), 18, 6);
+$pdf->Rect(62, ($footer_h + 12), 15, 6); // ช่องเวลา
+
+$pdf->Rect(77, ($footer_h + 12), 18, 6);
+$pdf->Rect(95, ($footer_h + 12), 18, 6);
+$pdf->Rect(113, ($footer_h + 12), 18, 6);
+$pdf->Rect(131, ($footer_h + 12), 18, 6);
+$pdf->Rect(149, ($footer_h + 12), 18, 6);
+$pdf->Rect(167, ($footer_h + 12), 18, 6);
+$pdf->Rect(185, ($footer_h + 12), 18, 6);
 
 $pdf->SetXY(10, ($footer_h + 18));
 $pdf->Cell(52, 6, 'เวรบ่าย', 1, 1, 'C');
 $pdf->Rect(62, ($footer_h + 18), 15, 6);
-$pdf->Rect(87, ($footer_h + 18), 18, 6);
-$pdf->Rect(105, ($footer_h + 18), 18, 6);
-$pdf->Rect(123, ($footer_h + 18), 18, 6);
-$pdf->Rect(141, ($footer_h + 18), 18, 6);
-$pdf->Rect(159, ($footer_h + 18), 18, 6);
-$pdf->Rect(177, ($footer_h + 18), 18, 6);
+
+$pdf->Rect(77, ($footer_h + 18), 18, 6);
+$pdf->Rect(95, ($footer_h + 18), 18, 6);
+$pdf->Rect(113, ($footer_h + 18), 18, 6);
+$pdf->Rect(131, ($footer_h + 18), 18, 6);
+$pdf->Rect(149, ($footer_h + 18), 18, 6);
+$pdf->Rect(167, ($footer_h + 18), 18, 6);
+$pdf->Rect(185, ($footer_h + 18), 18, 6);
 
 $pdf->SetXY(10, ($footer_h + 24));
 $pdf->Cell(52, 6, 'เวรดึก', 1, 1, 'C');
 $pdf->Rect(62, ($footer_h + 24), 15, 6);
-$pdf->Rect(87, ($footer_h + 24), 18, 6);
-$pdf->Rect(105, ($footer_h + 24), 18, 6);
-$pdf->Rect(123, ($footer_h + 24), 18, 6);
-$pdf->Rect(141, ($footer_h + 24), 18, 6);
-$pdf->Rect(159, ($footer_h + 24), 18, 6);
-$pdf->Rect(177, ($footer_h + 24), 18, 6);
+
+$pdf->Rect(77, ($footer_h + 24), 18, 6);
+$pdf->Rect(95, ($footer_h + 24), 18, 6);
+$pdf->Rect(113, ($footer_h + 24), 18, 6);
+$pdf->Rect(131, ($footer_h + 24), 18, 6);
+$pdf->Rect(149, ($footer_h + 24), 18, 6);
+$pdf->Rect(167, ($footer_h + 24), 18, 6);
+$pdf->Rect(185, ($footer_h + 24), 18, 6);
 
 // $pdf->AutoPrint(true);
 $pdf->Output();
