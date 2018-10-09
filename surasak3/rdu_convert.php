@@ -18,7 +18,7 @@ $date_end = '2560-12-31';
 $quarter = 1;
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
-$filePath = $dirPath.'/'.$date_start.'_'.$date_end.'.sql';
+$filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_opday_'.$quarter.'.sql';
 
 unlink($filePath);
 
