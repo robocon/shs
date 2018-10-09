@@ -1,32 +1,29 @@
 <?php 
 
-$configs_rdu = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'rdu',
-    'user' => 'dottow',
-    'pass' => ''
-);
-$db_rdu = Mysql::load($configs_rdu);
-// dump($configs_rdu);
+// $configs_rdu = array(
+//     'host' => '192.168.1.13',
+//     'port' => '3306',
+//     'dbname' => 'rdu',
+//     'user' => 'dottow',
+//     'pass' => ''
+// );
+// $db = Mysql::load($configs_rdu);
+// dump($db);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT `hn`, `date_hn` 
 FROM `opday` 
 WHERE `quarter` = '$quarter' 
-#AND ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
 AND ( `icd10` LIKE 'J45%' 
     OR `icd10` LIKE 'J46%' ) 
 GROUP BY `hn`";
-dump($sql);
-$test = $db_rdu->exec($sql);
-dump($test);
+$test = $db->exec($sql);
 
-$db_rdu->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `row_id`,`date`,`hn` AS `hn_drug`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
+WHERE `quarter` = '$quarter'  
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 
@@ -37,10 +34,9 @@ AND `drugcode` IN (
     '7BUDE-N', 
     '7BUDE-NN', 
     '7SER_EVO' 
- 
 ) 
 GROUP BY `hn`";
-$db_rdu->exec($sql);
+$db->exec($sql);
 
 
 $sql = "SELECT COUNT(b.`row_id`) AS `rows`
@@ -48,12 +44,12 @@ FROM `tmp_opday_in15` AS a
 LEFT JOIN `tmp_drugrx_in15` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL 
 ORDER BY b.`row_id`";
-$db_rdu->select($sql);
-$pre_in15a = $db_rdu->get_item();
+$db->select($sql);
+$pre_in15a = $db->get_item();
 $in15a = $pre_in15a['rows'];
 
-$db_rdu->select("SELECT COUNT(`hn`) AS `rows` FROM `tmp_opday_in15`");
-$pre_in15b = $db_rdu->get_item();
+$db->select("SELECT COUNT(`hn`) AS `rows` FROM `tmp_opday_in15`");
+$pre_in15b = $db->get_item();
 $in15b = $pre_in15b['rows'];
 
 $in15_result  = ( $in15a / $in15b ) * 100 ;

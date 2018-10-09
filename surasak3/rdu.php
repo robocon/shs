@@ -2,18 +2,9 @@
 
 include 'bootstrap.php';
 define('RDU_TEST', '1');
-// global $in6_result;
 
-// ไปดึงข้อมูลจากเซิฟเวอร์ .13 เพื่อลดภาระเซิฟเวอร์หลัก 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottwo',
-    'pass' => ''
-);
 
-$db = Mysql::load($configs);
+$db = Mysql::load($rdu_configs);
 $quarter = input_post('quarter');
 if( $quarter == 1 ){
     $month_range['min'] = '10';
@@ -302,7 +293,7 @@ if ( $action == 'load' ) {
             <td align="center">14</td>
             <td>ร้อยละของผู้ป่วยโรคไตเรื้อรังระดับ 3 ขึ้นไปที่ได้รับยา NSAIDs</td>
             <?php
-            // include 'rdu_in14.php';
+            include 'rdu_in14.php';
             ?>
             <td>&le; ร้อยละ 10</td>
             <td align="right"><?=number_format($in14a);?></td>
@@ -335,7 +326,7 @@ if ( $action == 'load' ) {
             <td align="center">17</td>
             <td>จำนวนสตรีตั้งครรภ์ที่ได้รับยาที่ห้ามใช้ ได้แก่ ยา Warfarin/Statins/Ergot เมื่อรู้ว่าตั้งครรภ์แล้ว</td>
             <?php
-            // include 'rdu_in17.php';
+            include 'rdu_in17.php';
             ?>
             <td>0 คน</td>
             <td align="right">-</td>
@@ -346,12 +337,12 @@ if ( $action == 'load' ) {
             <td align="center">18</td>
             <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจแัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
             <?php
-            // include 'rdu_in18.php';
+            include 'rdu_in18.php';
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right">-</td>
-            <td align="right">-</td>
-            <td align="right"><?=$in18_result;?></td>
+            <td align="right"><?=number_format($in18a);?></td>
+            <td align="right"><?=number_format($in18b);?></td>
+            <td align="right"><?=number_format($in18_result, 2);?></td>
         </tr>
     </table>
     <?php
