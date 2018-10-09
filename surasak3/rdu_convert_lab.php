@@ -13,9 +13,9 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2017-10-01';
-$date_end = '2017-12-31';
-$quarter = 1;
+$date_start = '2018-07-01';
+$date_end = '2018-09-31';
+$quarter = 4;
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_lab_'.$quarter.'.sql';
