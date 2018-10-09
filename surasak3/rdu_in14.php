@@ -3,11 +3,9 @@
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in13`");
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in13` 
-SELECT `hn`, 
-CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+SELECT `hn`,`date_hn` 
 FROM `opday` 
 WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-AND `an` IS NULL 
 AND ( `icd10` = 'N183' 
     OR `icd10` = 'N184' 
     OR `icd10` = 'N185' 
@@ -17,10 +15,8 @@ $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in13`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in13` 
-SELECT `row_id`,`date`,`hn`,`an`,`drugcode`,COUNT(`hn`) AS `rows` ,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`an`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `status` = 'Y' 
-AND `an` IS NULL 
 AND ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
 AND `drugcode` IN ( 
     '1CELE200*', 
