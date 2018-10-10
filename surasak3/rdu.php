@@ -149,7 +149,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
             <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
             <?php
-            // include 'rdu_in1.php';
+            include 'rdu_in1.php';
             ?>
             <td align="right"><?=number_format($in1a);?></td>
             <td align="right"><?=number_format($in1b);?></td>
@@ -191,7 +191,7 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            // include 'rdu_in6.php';
+            include 'rdu_in6.php';
             $url_in6 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -207,7 +207,7 @@ if ( $action == 'load' ) {
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
-            // include 'rdu_in7.php';
+            include 'rdu_in7.php';
             $url_in7 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -223,7 +223,7 @@ if ( $action == 'load' ) {
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
             <?php
-            // include 'rdu_in8.php';
+            include 'rdu_in8.php';
             $url_in8 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 40</td>
@@ -248,7 +248,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
             <?php 
-            // include 'rdu_in10.php';
+            include 'rdu_in10.php';
             ?>
             <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด"><?=number_format($in10a);?></td>
@@ -260,7 +260,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>
             หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
             <?php
-            // include 'rdu_in11.php';
+            include 'rdu_in11.php';
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right"><?=number_format($in11a);?></td>
@@ -282,7 +282,7 @@ if ( $action == 'load' ) {
             <td align="center">13</td>
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
             <?php
-            // include 'rdu_in13.php';
+            include 'rdu_in13.php';
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right"><?=number_format($in13a);?></td>

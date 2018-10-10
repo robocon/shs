@@ -7,9 +7,9 @@ if ( !defined('RDU_TEST') ) {
 
 $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
-SELECT `row_id`,`thidate`,`hn`,`icd10` 
+SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
+WHERE `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
     OR `icd10` IN ( 'A020' ) 
@@ -24,11 +24,9 @@ $db->select($sql);
 
 $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
-SELECT `row_id`,`date`,`hn`,`drugcode`  
+SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CIPR-C*?', 
     '1CRAV*', 

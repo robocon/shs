@@ -5,25 +5,20 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
-SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`icd10`,b.`bp1`,b.`bp2`,b.`congenital_disease` 
+SELECT a.`row_id`,a.`date`,a.`hn`,a.`icd10`,`date_hn`
 FROM `opday` AS a 
-LEFT JOIN `opd` AS b ON b.`thdatehn` = a.`thdatehn`
-WHERE ( a.`thidate` >= '$date_min' AND a.`thidate` <= '$date_max' ) 
-AND b.`row_id` IS NOT NULL 
-AND a.`icd10` regexp 'I10' 
-AND b.`bp1` > 130";
-$db->select($sql);
+WHERE a.`quarter` = '$quarter' 
+AND a.`icd10` regexp 'I10' ";
+$db->exec($sql);
 
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
-SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode` 
+SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1RENI20-C', 
     '1RENI5-C', 
@@ -44,36 +39,36 @@ AND `drugcode` IN (
     '1APRO-N', 
     '1TANZ50' 
 ); "; 
-$db->select($sql); 
+$db->exec($sql); 
 
 
 //  A 
-$sql = "SELECT a.*,b.`thidate`,b.`icd10`, COUNT(b.`row_id`) AS `rows`
+$sql = "SELECT COUNT(a.`hn_row`) AS `rows`
 FROM (
 
-    SELECT `hn`,COUNT(`hn`) as `row`,'1' as `hn_row`
+    SELECT `hn`,COUNT(`hn`) as `row`,'1' as `hn_row`,`date_hn`
     FROM `tmp_drugrx_in10` 
     GROUP BY `thidatecode` 
     HAVING COUNT(`hn`) >= 2
 
 ) AS a 
-LEFT JOIN `tmp_opday_in10` AS b ON b.`hn` = a.`hn` 
-WHERE b.`row_id` IS NOT NULL ; ";
+LEFT JOIN `tmp_opday_in10` AS b ON b.`date_hn` = a.`date_hn` 
+WHERE b.`row_id` IS NOT NULL ;";
 $db->select($sql);
 $items_in10_a = $db->get_item();
 $in10a = $items_in10_a['rows'];
 
 // B
-$sql = "SELECT a.*,b.`thidate`,b.`icd10`, COUNT(b.`row_id`) AS `rows`
+$sql = "SELECT COUNT(a.`hn_row`) AS `rows`
 FROM (
 
-    SELECT `hn`,COUNT(`hn`) as `row`,'1' as `hn_row`
+    SELECT `hn`,COUNT(`hn`) as `row`,'1' as `hn_row`,`date_hn`
     FROM `tmp_drugrx_in10` 
     GROUP BY `thidatecode` 
 
 ) AS a 
-LEFT JOIN `tmp_opday_in10` AS b ON b.`hn` = a.`hn` 
-WHERE b.`row_id` IS NOT NULL ; ";
+LEFT JOIN `tmp_opday_in10` AS b ON b.`date_hn` = a.`date_hn` 
+WHERE b.`row_id` IS NOT NULL ;";
 $db->select($sql);
 $items_in10_b = $db->get_item();
 $in10b = $items_in10_b['rows'];

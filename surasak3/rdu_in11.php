@@ -11,28 +11,23 @@ if ( !defined('RDU_TEST') ) {
 // เตรียมข้อมูล opday
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_opday_in11`");
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
-SELECT `hn`, 
-SUBSTRING(`age`,1,2) AS `shortage`, 
-SUBSTRING(`thidate`,1,10) AS `date`, 
-CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `datehn`, 
-CONCAT((SUBSTRING(`thidate`,1,4) - 543),SUBSTRING(`thidate`,5,15)) AS `opd_date` 
+SELECT * 
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ";
+dump($sql);
 $db->exec($sql); 
 
 // เตรียมข้อมูล drugrx
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_drugrx_in11`");
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
-SELECT `row_id`,`hn`,`drugcode`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `datehn` 
+SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ";
+dump($sql);
 $test = $db->exec($sql); 
 
 // เอาสองตัวบนมารวมกัน จะได้ ผู้ป่วยที่ได้รับยา gibenclamide
