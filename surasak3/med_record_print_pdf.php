@@ -41,8 +41,11 @@ class MedSHS extends SHSPdf{
         $this->SetXY(80, 30);
         $this->Cell(110, 6, 'สิทธ์: '.$user['ptright'].' แพทย์: '.$user['doctor'], 0, 1);
 
-        $this->SetXY(80, 36);
-        $this->MultiCell(130, 6, $user['drug_reaction']);
+        if( $user['drug_reaction'] ){
+            $this->SetXY(80, 36);
+            $this->MultiCell(130, 6, 'แพ้ยา : '.$user['drug_reaction']);
+        }
+        
         
         // ความสูงสุดท้ายของ MultiCel
         $header_y = $this->GetY();
