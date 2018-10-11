@@ -7,10 +7,9 @@ if ( !defined('RDU_TEST') ) {
 
 $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
-SELECT `row_id`,`thidate`,`hn`,`icd10`,CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
     OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
@@ -30,11 +29,9 @@ $db->select($sql);
 
 $db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn`  
+SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1DIC250', 
     '1DOXY', 

@@ -3,28 +3,23 @@
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in17`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in17` 
-select `hn`, 
-CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
-from opday 
-where ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-and an is NULL 
-and ( 
-    icd10 = 'z321' 
-    or icd10 = 'z33' 
-    or icd10 like 'z34%' 
-    or icd10 like 'z35%' 
+SELECT `hn`,`date_hn` 
+FROM `opday` 
+WHERE `quarter` = '$quarter' 
+AND ( 
+    `icd10` = 'z321' 
+    OR `icd10` = 'z33' 
+    OR `icd10` LIKE 'z34%' 
+    OR `icd10` LIKE 'z35%' 
 ) 
-group by hn 
-order by hn;";
+GROUP BY hn;";
 $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in17`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in17` 
-SELECT `row_id`,`date`,`hn`,`an`,`drugcode`,COUNT(`hn`) AS `rows` ,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `status` = 'Y' 
-AND `an` IS NULL 
-AND ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 '1COUM-C1', 
 '1COUM-C2', 
@@ -81,10 +76,10 @@ AND `drugcode` IN (
 GROUP BY `hn`;";
 $db->exec($sql);
 
-$sql = "select count(b.row_id) as `rows` 
-from tmp_opday_in17 as a 
-left join tmp_drugrx_in17 as b on b.date_hn = a.date_hn 
-where b.row_id is not null ";
+$sql = "SELECT COUNT(b.`row_id`) as `rows` 
+FROM `tmp_opday_in17` AS a 
+LEFT JOIN `tmp_drugrx_in17` AS b ON b.`date_hn` = a.`date_hn` 
+WHERE b.`row_id` IS NOT NULL ";
 $db->select($sql);
 
 $item = $db->get_item();

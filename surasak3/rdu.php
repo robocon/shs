@@ -2,18 +2,9 @@
 
 include 'bootstrap.php';
 define('RDU_TEST', '1');
-// global $in6_result;
 
-// ไปดึงข้อมูลจากเซิฟเวอร์ .13 เพื่อลดภาระเซิฟเวอร์หลัก 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottwo',
-    'pass' => ''
-);
 
-$db = Mysql::load($configs);
+$db = Mysql::load($rdu_configs);
 $quarter = input_post('quarter');
 if( $quarter == 1 ){
     $month_range['min'] = '10';
@@ -324,7 +315,7 @@ if ( $action == 'load' ) {
             <td align="center">16</td>
             <td>ร้อยละผู้ป่วยนอกสูงอายุ ที่ใช้ยากลุ่ม long-acting benzodiazepine ได้แก่ chlordiazepoxide, diazepam, dipotassium chlorazepate</td>
             <?php
-            // include 'rdu_in16.php';
+            include 'rdu_in16.php';
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right"><?=number_format($in16a);?></td>
@@ -346,12 +337,12 @@ if ( $action == 'load' ) {
             <td align="center">18</td>
             <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจแัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
             <?php
-            // include 'rdu_in18.php';
+            include 'rdu_in18.php';
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right">-</td>
-            <td align="right">-</td>
-            <td align="right"><?=$in18_result;?></td>
+            <td align="right"><?=number_format($in18a);?></td>
+            <td align="right"><?=number_format($in18b);?></td>
+            <td align="right"><?=number_format($in18_result, 2);?></td>
         </tr>
     </table>
     <?php

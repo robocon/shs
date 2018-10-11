@@ -1,23 +1,29 @@
 <?php 
 
+// $configs_rdu = array(
+//     'host' => '192.168.1.13',
+//     'port' => '3306',
+//     'dbname' => 'rdu',
+//     'user' => 'dottow',
+//     'pass' => ''
+// );
+// $db = Mysql::load($configs_rdu);
+// dump($db);
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
-SELECT `hn`, CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+SELECT `hn`, `date_hn` 
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND ( `icd10` LIKE 'J45%' 
     OR `icd10` LIKE 'J46%' ) 
 GROUP BY `hn`";
-$db->exec($sql);
-
+$test = $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
-SELECT `row_id`,`date`,`hn` AS `hn_drug`,`drugcode`,COUNT(`hn`) AS `rows` ,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn` AS `hn_drug`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `status` = 'Y' 
-AND `an` IS NULL 
-AND ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
+WHERE `quarter` = '$quarter'  
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 
@@ -28,7 +34,6 @@ AND `drugcode` IN (
     '7BUDE-N', 
     '7BUDE-NN', 
     '7SER_EVO' 
- 
 ) 
 GROUP BY `hn`";
 $db->exec($sql);

@@ -17,12 +17,9 @@ DPN = อุปกรณ์เบิกไม่ได้
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in1`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
-SELECT `row_id`,`date`,`hn`,`an`,`drugcode`,`part`,`status`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
 FROM `drugrx` 
-WHERE (`date` >= '$date_min' AND `date` <= '$date_max') 
-AND `status` = 'Y' 
-AND `an` IS NULL  
-AND `part` LIKE 'DD%' ";
+WHERE `quarter` = '$quarter' ";
 $db->exec($sql);
 
 

@@ -9,10 +9,9 @@ if ( !defined('RDU_TEST') ) {
 // OPD + ICD10
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
-SELECT `row_id`,`thidate`,`hn`,`icd10`,CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -29,11 +28,9 @@ $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn` 
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL  
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 
     '1AMOX250',
@@ -69,7 +66,7 @@ AND `drugcode` IN (
     '1CRAV-NN'
 
  ) 
-GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
+GROUP BY `date_hn`"; 
 $db->exec($sql);
 
 $in6a = $in6b = $in6_result = 0;
