@@ -271,7 +271,7 @@ if ( $action == 'load' ) {
             <td align="center">12</td>
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
             <?php
-            // include 'rdu_in12.php';
+            include 'rdu_in12.php';
             ?>
             <td>&ge; ร้อยละ 80</td>
             <td align="right"><?=number_format($in12a);?></td>
@@ -315,7 +315,7 @@ if ( $action == 'load' ) {
             <td align="center">16</td>
             <td>ร้อยละผู้ป่วยนอกสูงอายุ ที่ใช้ยากลุ่ม long-acting benzodiazepine ได้แก่ chlordiazepoxide, diazepam, dipotassium chlorazepate</td>
             <?php
-            // include 'rdu_in16.php';
+            include 'rdu_in16.php';
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right"><?=number_format($in16a);?></td>
