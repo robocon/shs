@@ -13,7 +13,7 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2018-07-01';
+$date_start = '2018-01-01';
 $date_end = '2018-09-31';
 $quarter = 4;
 
@@ -40,7 +40,7 @@ LEFT JOIN `resultdetail` AS c ON c.`autonumber` = a.`latest_id`
 LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn` 
 WHERE c.`labname` = 'Creatinine' 
 AND c.`result` != '*' 
-order by b.`autonumber` DESC ";
+ORDER BY b.`autonumber` ASC ";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 
@@ -56,8 +56,10 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $egfr = $item['egfr'];
     $date_hn = $item['date_hn'];
 
-    $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$egfr','$date_hn','$quarter');\n";
-    file_put_contents($filePath, $sql_data, FILE_APPEND);
+    if( $egfr != '' && $egfr > 0 ){
+        $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$egfr','$date_hn','$quarter');\n";
+        file_put_contents($filePath, $sql_data, FILE_APPEND);
+    }
 
 }
 
