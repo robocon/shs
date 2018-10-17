@@ -2,7 +2,7 @@
 include 'bootstrap.php';
 
 $configs = array(
-    'host' => '192.168.1.2',
+    'host' => '192.168.1.13',
     'port' => '3306',
     'dbname' => 'smdb',
     'user' => 'remoteuser',
@@ -180,7 +180,7 @@ if ( $action == 'show_data' ) {
         // เก็บข้อมูล
         $test_criteria = 0;
 
-        if( $item['l_hbalc'] > 0 && $item['l_hbalc'] < 7 ){
+        if( $item['l_hbalc'] > 0 && $item['l_hbalc'] <= 7 ){
             $test_criteria++;
         }
 
@@ -229,25 +229,21 @@ if ( $action == 'show_data' ) {
             $male_rows++;
         }
 
-        if( $item['l_hbalc'] > 0 && $item['l_hbalc'] < 7 ){
+        if( $item['l_hbalc'] > 0 && $item['l_hbalc'] <= 7 ){
             $hba1c_rows++;
-        }elseif ( $item['l_hbalc'] > 0 && $item['l_hbalc'] >= 7 ) {
+        }elseif ( $item['l_hbalc'] > 0 && $item['l_hbalc'] > 7 ) {
             $a1c_more7++;
         }
 
-        if ( $item['bp1'] < 140 && $item['bp2'] < 90 ) {
+        if ( $item['bp1'] <= 140 && $item['bp2'] <= 90 ) {
             $bp_count++;
-        }elseif ( $item['bp1'] >= 140 && $item['bp2'] >= 90 ) {
+        }elseif ( $item['bp1'] > 140 && $item['bp2'] > 90 ) {
             $bp_more_count++;
         }
 
         if( $item['tooth'] == 1 ){
             $toots_count++;
         }
-
-
-
-
 
     }
 
