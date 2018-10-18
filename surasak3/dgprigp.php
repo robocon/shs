@@ -50,7 +50,7 @@
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part = 'DDL'ORDER BY drugcode ";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part = 'DDL' AND drug_active= 'y' ORDER BY drugcode ";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -88,7 +88,7 @@
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part = 'DDY' ORDER BY drugcode";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part = 'DDY' AND drug_active= 'y' ORDER BY drugcode";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -126,7 +126,7 @@
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part = 'DDN'ORDER BY drugcode ";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part = 'DDN' AND drug_active= 'y' ORDER BY drugcode ";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -166,7 +166,7 @@ print "  <th bgcolor=6495ED><font face='Angsana New'>ราคาขายตาม รบ.</th>";
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DSY'ORDER BY drugcode ";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DSY' AND drug_active= 'y' ORDER BY drugcode ";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -240,7 +240,7 @@ print "  <th bgcolor=6495ED><font face='Angsana New'>ราคาขายตาม รบ.</th>";
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DSN'ORDER BY drugcode ";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DSN' AND drug_active= 'y' ORDER BY drugcode ";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -311,7 +311,7 @@ print "  <th bgcolor=6495ED><font face='Angsana New'>เบิกไม่ได้</th>";
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,freepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DPY'ORDER BY drugcode ";
+    $query = "SELECT drugcode,tradname,genname,salepri,freepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DPY' AND drug_active= 'y' ORDER BY drugcode ";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -387,7 +387,7 @@ print "  <th bgcolor=6495ED><font face='Angsana New'>ราคาขายตาม รบ.</th>";
     print "  <th bgcolor=6495ED><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DPN' ORDER BY drugcode";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part,unitpri FROM druglst  WHERE part = 'DPN' AND drug_active= 'y' ORDER BY drugcode";
      $result = mysql_query($query)
         or die("Query failed");
 
@@ -452,7 +452,7 @@ else {$nSalepri1=10934+1.06*($unitpri-10000);
     print "  <th bgcolor=CD853F><font face='Angsana New'>ประเภท</th>";
     print " </tr>";
 
-    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part<>'DDL' and part<>'DDY' and part<>'DDN' and part<>'DSY' and part<>'DSN' and part<>'DPY' and part<>'DPN'";
+    $query = "SELECT drugcode,tradname,genname,salepri,unit,totalstk,rxrate,part FROM druglst  WHERE part<>'DDL' and part<>'DDY' and part<>'DDN' and part<>'DSY' and part<>'DSN' and part<>'DPY' and part<>'DPN' AND drug_active= 'y' ";
     $result = mysql_query($query)
         or die("Query failed");
 
