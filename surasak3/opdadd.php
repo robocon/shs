@@ -131,6 +131,9 @@ Function calcage($birth){
 //
 //$Y=($y-543);
 //$dbirth="$Y-$m-$d";
+$d = sprintf('%02d', $d);
+$m = sprintf('%02d', $m);
+
 $dbirth="$y-$m-$d"; //insert to opcard
 $birthdate="$d-$m-$y"; //print into opdcard
 $cAge=calcage($dbirth);
