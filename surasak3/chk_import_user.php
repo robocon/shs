@@ -41,30 +41,36 @@ if( empty($action) ){
             <button type="submit">นำเข้า</button>
             <input type="hidden" name="action" value="import">
         </div>
-        <div>
-            <p><b>รูปแบบข้อมูลก่อนนำเข้าสู่ระบบ</b></p>
-            <table class="chk_table">
-                <tr>
-                    <td>ลำดับ</td>
-                    <td>Lab Number</td>
-                    <td>HN</td>
-                    <td>เลขบัตรประชาชน</td>
-                    <td>ชื่อ</td>
-                    <td>สกุล</td>
-                    <td>อายุ</td>
-                    <td>วันเกิด</td>
-                    <td>โปรแกรมที่ตรวจ เช่น โปรแกรม1 โปรแกรม2</td>
-                    <td>วันที่ตรวจจริง</td>
-                    <td>แผนก</td>
-                </tr>
-            </table>
-        </div>
     </form>
-
+    <div>
+        <p><b>รูปแบบข้อมูลก่อนนำเข้าสู่ระบบ</b></p>
+        <table class="chk_table">
+            <tr>
+                <td>ลำดับ</td>
+                <td>Lab Number</td>
+                <td>HN</td>
+                <td>เลขบัตรประชาชน</td>
+                <td>ชื่อ</td>
+                <td>สกุล</td>
+                <td>อายุ</td>
+                <td>วันเกิด</td>
+                <td>โปรแกรมที่ตรวจ เช่น โปรแกรม1 โปรแกรม2</td>
+                <td>วันที่ตรวจจริง</td>
+                <td>แผนก</td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div>
+        <b><u>วันเกิด</u></b> รองรับการทำงานแค่ 2รูปแบบ คือ<br>
+        1.) รูปแบบอังกฤษ(DD/MM/YYYY) โดยที่ DD คือวันที่ MM คือเดือน YYYY คือปีค.ศ. ตัวอย่างเช่น <u>01/02/1985</u><br>
+        2.) รูปแบบไทย(วันที่ เดือน ปี) ตัวอย่างเช่น <u>18 มกราคม 2561</u><br>
+    </div>
+    <br>
     <div>
         <div>
             <div><b>ตัวอย่างการจัดข้อมูล</b></div>
-            <!-- <img src="images/sso-import-user.png" alt=""> -->
+            <img src="images/sso-import-user.png" alt="">
         </div>
     </div>
     <?php
