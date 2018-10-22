@@ -166,17 +166,20 @@ $pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 // }
 
-foreach ($drug_lists as $drug_code) {
+foreach ($drug_lists as $drug_id) {
+
+
+    // list($drug_code, $drug_slcode) = explode('|', $drug_mix);
     
     $sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`onoff`,`dateoff`,`row_id` 
     FROM `dgprofile` 
     WHERE `an` = '$cAn' 
-    AND `drugcode` = '$drug_code' ";
+    AND `row_id` = '$drug_id' ";
     $db->select($sql);
     $d = $db->get_item();
 
     // ความสูงเพื่อคีย์ เวลา/ผู้ให้ 
-    $def_drug_h = $drug_height[$drug_code]['0'];
+    $def_drug_h = $drug_height[$drug_id]['0'];
     $tr_height = $def_drug_h + 1;
 
     $slcode = $d['slcode'];

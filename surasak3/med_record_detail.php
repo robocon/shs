@@ -151,11 +151,11 @@ label{
                 ?>
                 <tr>
                     <td align="center">
-                        <input type="checkbox" class="drugName" name="drug_lists[]" id="<?=$dCode;?>" value="<?=$dCode;?>">
+                        <input type="checkbox" class="drugName" name="drug_lists[]" id="<?=$dCode.$item['statcon'];?>" value="<?=$item['row_id'];?>">
                     </td>
                     
                     <td>
-                        <label for="<?=$dCode;?>"><?=$item['date'];?></label>
+                        <label for="<?=$dCode.$item['statcon'];?>"><?=$item['date'];?></label>
                     </td>
                     <td><?=$dCode;?></td>
                     <td><?=$item['tradname'];?></td>
@@ -165,7 +165,7 @@ label{
                     <td><?=$item['onoff'];?></td>
                     <td><?=$item['dateoff'];?></td>
                     <td>
-                        <input type="text" name="drug_height[<?=$dCode;?>][]" id="" size="5" value="<?=$help_h;?>">
+                        <input type="text" name="drug_height[<?=$item['row_id'];?>][]" id="" size="5" value="<?=$help_h;?>">
                     </td>
                 </tr>
                 <?php
