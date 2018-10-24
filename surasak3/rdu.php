@@ -196,10 +196,10 @@ if ( $action == 'load' ) {
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-                <a href="rdu_in6_a.php?<?=$url_in6;?>"><?=number_format($in6a);?></a>
+                <a href="rdu_in6_a.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in6_b.php?<?=$url_in6;?>"><?=number_format($in6b);?></a>
+                <a href="rdu_in6_b.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6b);?></a>
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
@@ -215,7 +215,7 @@ if ( $action == 'load' ) {
                 <a href="rdu_in7_a.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in7_b.php?<?=$url_in7;?>"><?=number_format($in7b);?></a>
+                <a href="rdu_in7_b.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7b);?></a>
             </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
@@ -228,10 +228,10 @@ if ( $action == 'load' ) {
             ?>
             <td>&le; ร้อยละ 40</td>
             <td align="right">
-                <a href="rdu_in8_a.php?<?=$url_in8;?>"><?=number_format($in8a);?></a>
+                <a href="rdu_in8_a.php?<?=$url_in8;?>" target="_blank"><?=number_format($in8a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in8_b.php?<?=$url_in8;?>"><?=number_format($in8b);?></a>
+                <a href="rdu_in8_b.php?<?=$url_in8;?>" target="_blank"><?=number_format($in8b);?></a>
             </td>
             <td align="right"><?=number_format($in8_result, 2);?></td>
         </tr>
@@ -239,9 +239,9 @@ if ( $action == 'load' ) {
             <td align="center">9</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในหญิงคลอดปกติครบกำหนดทางช่องคลอด</td>
             <td>&le; ร้อยละ 10</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
+            <td align="right">-</td>
         </tr>
         <tr>
             <td align="center">10</td>
@@ -251,8 +251,12 @@ if ( $action == 'load' ) {
             include 'rdu_in10.php';
             ?>
             <td>ร้อยละ 0</td>
-            <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด"><?=number_format($in10a);?></td>
-            <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด"><?=number_format($in10b);?></td>
+            <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด">
+                <a href="rdu_in10_detail.php?quarter=<?=$quarter;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
+            </td>
+            <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด">
+                <a href="rdu_in10_detail.php?quarter=<?=$quarter;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
+            </td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
         <tr>

@@ -5,7 +5,7 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
 SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
 FROM `opday` 
@@ -25,9 +25,9 @@ AND (
     OR `icd10` regexp 'X([0-1][0-9])' 
     OR `icd10` regexp 'X([2-3][0-9])' 
 )";
-$db->select($sql);
+$db->exec($sql);
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
 FROM `drugrx` 
@@ -60,7 +60,7 @@ AND `drugcode` IN (
     '5AUG35-C'
 ) 
 GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
-$db->select($sql); 
+$db->exec($sql); 
 
 $in8a = $in8b = $in8_result = 0;
 

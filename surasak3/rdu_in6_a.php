@@ -2,30 +2,18 @@
 
 include 'bootstrap.php';
 
-// ä»´Ö§¢éÍÁÙÅ¨Ò¡à«Ô¿àÇÍÃì .13 à¾×èÍÅ´ÀÒÃĞà«Ô¿àÇÍÃìËÅÑ¡ 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottwo',
-    'pass' => ''
-);
-
 $date_max = input_get('date_max');
 $date_min = input_get('date_min');
 $quarter = input_get('quarter');
 
-$db = Mysql::load($configs);
-// $db->exec("SET NAMES TIS-620");
+$db = Mysql::load($rdu_configs);
+$db->exec("SET NAMES TIS620");
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
-SELECT `row_id`,`thidate`,`hn`,`ptname`,`icd10`,`doctor`,`diag`,
-SUBSTRING(`age`,1,2) AS `age`,
-CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -42,11 +30,9 @@ $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL  
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 
     '1AMOX250',
@@ -82,10 +68,10 @@ AND `drugcode` IN (
     '1CRAV-NN'
 
  ) 
-GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
-$db->exec($sql); 
+GROUP BY `date_hn`"; 
+$db->exec($sql);
 
-$sql = "SELECT a.*,b.*  
+$sql = "SELECT a.`date`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,b.`drugcode`,b.`amount`
 FROM `tmp_opday_in6` AS a 
 LEFT JOIN `tmp_drugrx_in6` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL ";
@@ -136,7 +122,7 @@ body, button{
         ?>
         <tr>
             <td><?=$i;?></td>
-            <td><?=$item['thidate'];?></td>
+            <td><?=$item['date'];?></td>
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>

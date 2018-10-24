@@ -5,7 +5,7 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
 SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
 FROM `opday` 
@@ -20,9 +20,9 @@ AND (
     OR `icd10` IN ( 'A09', 'A090', 'A099' ) 
     OR `icd10` IN ( 'K521', 'K528', 'K529' ) 
 )";
-$db->select($sql);
+$db->exec($sql);
 
-$db->select("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
 FROM `drugrx` 
@@ -44,7 +44,7 @@ AND `drugcode` IN (
     '5MEIA', 
     '1CEFS' 
 ); "; 
-$db->select($sql); 
+$db->exec($sql); 
 
 $in7a = $in7b = $in7_result = 0;
 
