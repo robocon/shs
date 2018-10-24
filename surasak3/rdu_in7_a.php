@@ -2,18 +2,8 @@
 
 include 'bootstrap.php';
 
-// ä»´Ö§¢éÍÁÙÅ¨Ò¡à«Ô¿àÇÍÃì .13 à¾×èÍÅ´ÀÒÃĞà«Ô¿àÇÍÃìËÅÑ¡ 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottwo',
-    'pass' => ''
-);
-
-$db = Mysql::load($configs);
-
-// $db->exec("SET NAMES UTF8");
+$db = Mysql::load($rdu_configs);
+$db->exec("SET NAMES TIS620");
 
 $date_max = input_get('date_max');
 $date_min = input_get('date_min');
@@ -21,11 +11,9 @@ $quarter = input_get('quarter');
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
-SELECT `row_id`,`thidate`,`hn`,`ptname`,`icd10`,`doctor`,`diag`,
-SUBSTRING(`age`,1,2) AS `age`,
-CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
-WHERE ( `thidate` >= '$date_min' AND `thidate` <= '$date_max' ) 
+WHERE `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
     OR `icd10` IN ( 'A020' ) 
@@ -40,11 +28,9 @@ $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,`amount` 
+SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
-WHERE ( `date` >= '$date_min' AND `date` <= '$date_max' ) 
-AND `status` = 'Y' 
-AND `an` IS NULL 
+WHERE `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CIPR-C*?', 
     '1CRAV*', 
@@ -64,14 +50,10 @@ AND `drugcode` IN (
 ); "; 
 $db->exec($sql); 
 
-$in7a = $in7b = $in7_result = 0;
-
-$sql = "SELECT a.*,b.*,CONCAT(c.`yot`,c.`name`,' ',c.`surname`) AS `ptname` 
+$sql = "SELECT a.`date`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,b.`drugcode`,b.`amount` 
 FROM `tmp_opday_in7` AS a 
 LEFT JOIN `tmp_drugrx_in7` AS b ON b.`hn` = a.`hn` 
-LEFT JOIN `opcard` AS c ON c.`hn` = a.`hn`
-WHERE b.`row_id` IS NOT NULL 
-ORDER BY a.`thidate` ASC";
+WHERE b.`row_id` IS NOT NULL";
 $db->select($sql);
 $items = $db->get_items();
 
@@ -119,7 +101,7 @@ foreach ($items as $key => $item) {
     ?>
     <tr>
     <td><?=$i;?></td>
-            <td><?=$item['thidate'];?></td>
+            <td><?=$item['date'];?></td>
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>
