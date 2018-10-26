@@ -12,8 +12,12 @@ background-color: #000;
 color: #FFF; 
 }
 .font1 {
-	font-family: AngsanaUPC;
+	font-family: Angsana New;
 	font-size:14px;
+}
+.font2 {
+	font-family: Angsana New;
+	font-size:16px;
 }
 </style>
 <div id="no_print" >
@@ -136,7 +140,7 @@ if(isset($_POST['BOK'])){
 	}
 
 if(!empty($drugcode)){
-	$query = "SELECT drugcode,tradname,genname,unit,stock,mainstk,totalstk FROM druglst WHERE drugcode = '$drugcode' ";
+	$query = "SELECT drugcode,tradname,genname,unit,stock,mainstk,totalstk,pack FROM druglst WHERE drugcode = '$drugcode' ";
 	$result = mysql_query($query) or die("Query failed");
 
 	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -156,18 +160,30 @@ if(!empty($drugcode)){
 			$nmainstk=$row->mainstk;
 			$ntotalstk=$row->totalstk;	
 			$cUnit  = $row->unit;
+			$cPack  = $row->pack;
 		}
 
 
 $page=1;
     print  "<center><font face='Angsana New'><b>ทะเบียนคุมยาและเวชภัณฑ์</b></center>";
-	print  "แผ่นที่........$page.........<br> ";
-	print  "ประเภท...............................ชื่อหรือชนิดวัสดุ...($drugcode)$tname....<br> ";
-	print  "ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................<br> ";
-	print  "หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................<br> ";
 ?>
-<table width="100%" border="1" cellpadding="0" cellspacing="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="font2">
+  <tr>
+    <td align="left">แผ่นที่........<?=$page;?>.........</td>
+    <td align="right">ร.พ.5</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">ประเภท...............................ชื่อหรือชนิดวัสดุ...<?="($drugcode)$tname";?>....</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................</td>
+  </tr>
+</table>
 </span>
+<table width="100%" border="1" cellpadding="0" cellspacing="0">
 <tr>
   <td colspan="2" align="center" class="font1" >พ.ศ 
     <?=$_POST['y_end']+543;?>
@@ -305,17 +321,20 @@ $page=1;
 			$stkno = '';
 			$docno = '';
 			$packing = '';
+			$pack = '';
 			if( $stk_row > 0){
 				$item = mysql_fetch_assoc($row3);
 				$stkno = $item['stkno'];
 				$docno = $item['docno'];
 				$packing = $item['packing'];
+				$pack=$cPack;
 			}
 
 			if( $stkcut > 0 ){
 				$stkno = '';
 				$docno = '';
 				$packing = '';
+				$pack = '';
 			}
 
 			
@@ -338,7 +357,7 @@ $page=1;
            "  <td ><font face='Angsana New'>$department</td>\n".
 		   "  <td ><font face='Angsana New'>&nbsp;$docno</td>\n". //เลขที่ PO
 		   "  <td ><font face='Angsana New'>&nbsp;$stkno</td>\n".  //เลขที่รับลำดับคลัง
-		    "  <td ><font face='Angsana New'>&nbsp;$packing</td>\n");  //PACK
+		    "  <td ><font face='Angsana New'>&nbsp;$pack</td>\n");  //PACK
 		   if($netprice==0){
 			   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 
 			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
@@ -377,11 +396,22 @@ $page=1;
 		   	echo "</table>";
 			echo "<div style='page-break-after:always'></div>";
 		   	print  "<center><font face='Angsana New'><b>ทะเบียนคุมยาและเวชภัณฑ์</b></center>";
-			print  "แผ่นที่........$page.........<br> ";
-			print  "ประเภท...............................ชื่อหรือชนิดวัสดุ....($drugcode)$tname....<br> ";
-			print  "ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................<br> ";
-			print  "หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................<br> ";
 ?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="font2">
+  <tr>
+    <td align="left">แผ่นที่........<?=$page;?>.........</td>
+    <td align="right">ร.พ.5</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">ประเภท...............................ชื่อหรือชนิดวัสดุ...<?="($drugcode)$tname";?>....</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................</td>
+  </tr>
+</table>
 </span>
 <table width="100%" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
   <tr>
@@ -392,6 +422,7 @@ $page=1;
   <td rowspan="2" align="center" class="font1" >รับจาก-จ่ายให้</td>
   <td rowspan="2" align="center" class="font1" >เลขที่ PO</td>
   <td rowspan="2" align="center" class="font1" >เลขที่รับ<br>ลำดับคลัง</td>
+  <td rowspan="2" align="center" class="font1" >PACK</td>
   <td colspan="3" align="center" class="font1" >รับ</td>
   <td colspan="3" align="center" class="font1">จ่าย</td>
   <td colspan="3" align="center" class="font1" >คงเหลือ</td>

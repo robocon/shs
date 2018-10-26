@@ -1,3 +1,4 @@
+
 <form method="POST" action="reporteclame1.php">
 <p>ลูกหนี้หลักประกันสุขภาพ ประจำเดือน</p>
 
@@ -55,7 +56,7 @@
     <option value="07">&#3585;&#3619;&#3585;&#3598;&#3634;&#3588;&#3617;</option>
     <option value="08">&#3626;&#3636;&#3591;&#3627;&#3634;&#3588;&#3617;</option>
     <option value="09">&#3585;&#3633;&#3609;&#3618;&#3634;&#3618;&#3609;</option>
-    <option value="10">&#3605;&#3640;&#3621;&#3634;&#3588;&#3617;</option>
+    <option value="10" selected="selected">&#3605;&#3640;&#3621;&#3634;&#3588;&#3617;</option>
     <option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
     <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
 
@@ -69,7 +70,7 @@
     <option>2558</option>
     <option>2559</option>
     <option>2560</option>
-    <option>2561</option>
+    <option selected="selected">2561</option>
     <option>2562</option>
     
     

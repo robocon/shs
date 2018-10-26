@@ -55,7 +55,7 @@
     if(mysql_num_rows($result)){
 	$cComname=$row->comname;
 			}
-
+$drugcode=trim($drugcode);
 $query = "Select docno From combill where dgexplot = '$drugcode$expdate$lotno$nRunno' ";
 $result = Mysql_Query($query);
 $rows = Mysql_num_rows($result);
@@ -81,7 +81,7 @@ exit();
                    '$comcode','$cComname','$drugcode','$tradname','$genname','$lotno','$unit',
                    '$amount','$amount','$price','$unitpri','$salepri','$mfdate','$expdate',
                    '$getdate','','$sOfficer','$stkno','$drugcode$expdate$lotno$nRunno','$packing','$packamt','$packpri','$packpri_vat','$amountfree');";
-  $result = mysql_query($query) or die("Query failed,insert into combill");
+  $result = mysql_query($query) or die("ผิดพลาด,ไม่สามารถบันทึกตาราง combill ได้");
    $idno=mysql_insert_id();
 //   echo mysql_errno() . ": " . mysql_error(). "\n";
 //   echo "<br>";
@@ -89,7 +89,7 @@ exit();
 if($result){
 $query ="update runno SET runno = $nRunno WHERE title='combill'";
 
-    $result = mysql_query($query) or die("Query failed");
+    $result = mysql_query($query) or die("ผิดพลาด, ไม่สามารถอัพเดทตาราง runno ได้");
 }
 
  $Thidate = (date("Y")+543).date("-m-d");  
@@ -102,14 +102,14 @@ $query = "INSERT INTO stktranx(
     date,drugcode,tradname,expdate,lotno,
     stkcut,unit,officer,billno,department,
     unitpri,amount,netlotno,getdate,mainstk,
-    stock,totalstk,amountfree
+    stock,totalstk,amountfree,pack
 ) VALUES(
     '$acdate','$drugcode','$tradname','$expdate','$lotno',
     '','$unit','$sOfficer','$billno','$cComname',
     '$unitpri','$amount','$amount','$getdate','$zMainstk',
-    '$zStock','$zTotalstk','$amountfree'
+    '$zStock','$zTotalstk','$amountfree','$pack'
 );";
-$result = mysql_query($query) or die("failed,insert into stktranx");
+$result = mysql_query($query) or die("ผิดพลาด,ไม่สามารถบันทึกตาราง stktranx ได้");
  
 //   echo mysql_errno() . ": " . mysql_error(). "\n";
 //   echo "<br>";
@@ -159,7 +159,7 @@ print "$cComcode, $cComname<br>";
 					   	pack = '$pack'	
                        WHERE drugcode= '$drugcode' ";
 
-        $result = mysql_query($query) or die("Query failed,update druglst");
+        $result = mysql_query($query) or die("ผิดพลาด,ไม่สามารถอัพเดทตาราง druglst ได้");
 		
 //        echo mysql_errno() . ": " . mysql_error(). "\n";
 //        echo "<br>";

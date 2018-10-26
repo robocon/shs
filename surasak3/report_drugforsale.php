@@ -47,6 +47,7 @@ body,td,th {
       <option value="">ยาทั้งหมด</option>
       <option value="e">ยา ED</option>
       <option value="n">ยา NED</option>
+      <option value="4">ยาบัญชีนวัตกรรมไทย</option>
     </select>
      &nbsp;&nbsp;  
     <input type="submit" value="ดูข้อมูล" name="B1"  class="txt" />
@@ -74,8 +75,12 @@ $month12="กันยายน ".$endyear;
 
 if($_POST["part"]=="e"){
 	$showised="ยา ED";
-}else{
+}else if($_POST["part"]=="n"){
 	$showised="ยา NED";
+}else if($_POST["part"]=="4"){
+	$showised="ยาบัญชีนวัตกรรมไทย";
+}else{
+	$showised="ทั้งหมด";
 }
 ?>
 <hr />
@@ -107,6 +112,9 @@ if($_POST["part"]=="e"){
 $sql="select * from pocompany AS a  INNER JOIN poitems AS b ON a.row_id=b.idno INNER JOIN druglst AS c ON b.drugcode=c.drugcode where (a.bounddate LIKE '%$month1' OR a.bounddate LIKE '%$month2'  OR a.bounddate LIKE '%$month3'  OR a.bounddate LIKE '%$month4'  OR a.bounddate LIKE '%$month5'  OR a.bounddate LIKE '%$month6'  OR a.bounddate LIKE '%$month7'  OR a.bounddate LIKE '%$month8'  OR a.bounddate LIKE '%$month9'  OR a.bounddate LIKE '%$month10'  OR a.bounddate LIKE '%$month11'  OR a.bounddate LIKE '%$month12') AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND ( a.`potype` is null OR a.`potype` = '' ) AND c.part ='DDL' AND a.prepono NOT LIKE 'อ.%'  AND pono !='' ORDER BY a.date ASC";
 }else if($_POST["part"]=="n"){
 $sql="select * from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno INNER JOIN druglst AS c ON b.drugcode=c.drugcode where (a.bounddate LIKE '%$month1' OR a.bounddate LIKE '%$month2'  OR a.bounddate LIKE '%$month3'  OR a.bounddate LIKE '%$month4'  OR a.bounddate LIKE '%$month5'  OR a.bounddate LIKE '%$month6'  OR a.bounddate LIKE '%$month7'  OR a.bounddate LIKE '%$month8'  OR a.bounddate LIKE '%$month9'  OR a.bounddate LIKE '%$month10'  OR a.bounddate LIKE '%$month11'  OR a.bounddate LIKE '%$month12') AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND ( a.`potype` is null OR a.`potype` = '' ) AND (c.part ='DDN' || c.part='DDY') AND a.prepono NOT LIKE 'อ.%'  AND pono !='' ORDER BY a.date ASC";
+}else if($_POST["part"]=="4"){
+$sql="select * from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno INNER JOIN druglst AS c ON b.drugcode=c.drugcode where (a.bounddate LIKE '%$month1' OR a.bounddate LIKE '%$month2'  OR a.bounddate LIKE '%$month3'  OR a.bounddate LIKE '%$month4'  OR a.bounddate LIKE '%$month5'  OR a.bounddate LIKE '%$month6'  OR a.bounddate LIKE '%$month7'  OR a.bounddate LIKE '%$month8'  OR a.bounddate LIKE '%$month9'  OR a.bounddate LIKE '%$month10'  OR a.bounddate LIKE '%$month11'  OR a.bounddate LIKE '%$month12') AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND ( a.`potype` is null OR a.`potype` = '' ) AND c.product_drugtype='4' AND a.prepono NOT LIKE 'อ.%'  AND pono !='' ORDER BY a.date ASC";
+
 }else{
 $sql="select * from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno INNER JOIN druglst AS c ON b.drugcode=c.drugcode where (a.bounddate LIKE '%$month1' OR a.bounddate LIKE '%$month2'  OR a.bounddate LIKE '%$month3'  OR a.bounddate LIKE '%$month4'  OR a.bounddate LIKE '%$month5'  OR a.bounddate LIKE '%$month6'  OR a.bounddate LIKE '%$month7'  OR a.bounddate LIKE '%$month8'  OR a.bounddate LIKE '%$month9'  OR a.bounddate LIKE '%$month10'  OR a.bounddate LIKE '%$month11'  OR a.bounddate LIKE '%$month12') AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND ( a.`potype` is null OR a.`potype` = '' ) AND (c.part LIKE 'DD%') AND a.prepono NOT LIKE 'อ.%'  AND pono !='' ORDER BY a.date ASC";
 }

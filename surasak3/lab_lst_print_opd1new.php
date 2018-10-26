@@ -65,17 +65,21 @@ hr {
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 </head>
 <body>
-<?
+<? 
+
+// แยกตามกลุ่ม เช่น CHEMISTRY HEMATOLOGY
 $sqlop="select distinct(testgroupname) as newtestgroupname 
 from resulthead 
 where hn ='$gethn' 
 AND labnumber = '$getlabnumber' ";
 //echo $sqlop;
 $queryop=mysql_query($sqlop);
+
 while($rowsop=mysql_fetch_array($queryop)){
 	$chktestgroupname=$rowsop["newtestgroupname"];
 
-	$sql = "Select date_format(orderdate,'%Y-%m-%d') as neworderdate,patientname,labnumber,sex,dob 
+	// ข้อมูลหัวกระดาษ
+	$sql = "Select date_format(orderdate,'%Y-%m-%d') as neworderdate,patientname,labnumber,sex,dob,comment 
 	From resulthead 
 	where hn = '$hn' 
 	AND labnumber = '$getlabnumber' 
@@ -112,8 +116,10 @@ while($rowsop=mysql_fetch_array($queryop)){
 			<td height="24" align="right"><strong>Ward :</strong></td>
 			<td align="left"><?=$getdepart;?></td>
 			<td align="right"><strong>Test :</strong></td>
-			<td colspan="3" align="left"><?=$getlistlab;?></td>
-			</tr>
+			<td align="left"><?=$getlistlab;?></td>
+			<td width="15%" align="right"><strong>Comment :</strong></td>
+			<td width="17%" align="left"><?=$rows["comment"];?></td>
+		</tr>
 		<tr>
 			<td align="right"><strong>Age :</strong></td>
 			<td align="left"><?=getAge($dateB)." ปี";?></td>
@@ -135,7 +141,11 @@ while($rowsop=mysql_fetch_array($queryop)){
 		<td width="25%"><strong>Reference Range</strong></td>
 	</tr>
 	</table>
-	<?
+	<? 
+
+	
+
+	// แสดงผลตามกลุ่ม 
 	$sqlloop="select distinct(testgroupname) as newtestgroupname 
 	from resulthead 
 	where hn ='$gethn' 
@@ -151,13 +161,33 @@ while($rowsop=mysql_fetch_array($queryop)){
 			<strong style="font-size:16px;"><u><?=$newtestgroupname;?></u></strong>
 		</td>
 	</tr>
-			<?
-			$sql1="select * 
-			from resulthead 
-			where hn ='$gethn' 
-			and labnumber = '$getlabnumber' 
-			and testgroupname='$newtestgroupname' 
-			GROUP BY `profilecode` ";
+			<? 
+
+			/**
+			 * หา max จากการ group by profilecode
+			 */
+
+
+			$sql1 = "SELECT b. * 
+			FROM ( 
+				SELECT MAX(`autonumber`) AS `latest_id` 
+				FROM `resulthead` 
+				WHERE `hn` ='$gethn' 
+				AND `labnumber` = '$getlabnumber' 
+				AND `testgroupname` ='$newtestgroupname' 
+				GROUP BY `profilecode`
+			) AS a 
+			LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` 
+			";
+
+			
+			// $sql1="select * 
+			// from resulthead 
+			// where hn ='$gethn' 
+			// and labnumber = '$getlabnumber' 
+			// and testgroupname='$newtestgroupname' 
+			// GROUP BY `profilecode` ";
+			
 			$result1= mysql_query($sql1);
 			while($arr1 = mysql_fetch_assoc($result1)){
 			$autonumber = $arr1["autonumber"];
@@ -192,6 +222,7 @@ while($rowsop=mysql_fetch_array($queryop)){
 	<div class="iBannerFix">  
 		<hr />
 	<?
+			// ดึงเอา Reported by กับ Date Authorise
 			$sql3="select * from resulthead 
 			inner join resultdetail on resulthead.autonumber=resultdetail.autonumber 
 			where resulthead.hn ='$gethn' 

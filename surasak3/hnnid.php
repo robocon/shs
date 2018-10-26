@@ -114,13 +114,16 @@ function checkType(){
  	       print "HN :$cHn<br>";
    	     print "$cPtname<br>";
    	     print "สิทธิการรักษา :$cPtright<br>";
+		 		 
 
  $sql = "SELECT idguard FROM opcard WHERE hn = '".$cHn."' Order by row_id DESC limit 1";
     list($idguard) = mysql_fetch_row(Mysql_Query($sql));
   
     print "ประเภท : $idguard";
 
-
+			if(substr($cPtright,0,3)=='R12' || substr($cPtright,0,3)=='R13' || substr($cPtright,0,3)=='R14' || substr($cPtright,0,3)=='R35'){
+				echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+			}
     	    print "<br><a href='erask.php'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
 			}
 else  {

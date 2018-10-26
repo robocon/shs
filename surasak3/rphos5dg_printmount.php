@@ -12,11 +12,15 @@ background-color: #000;
 color: #FFF; 
 }
 .font1 {
-	font-family: AngsanaUPC;
+	font-family: Angsana New;
 	font-size:14px;
 }
+.font2 {
+	font-family: Angsana New;
+	font-size:16px;
+}
 .style1 {
-font-family: AngsanaUPC;
+font-family: Angsana New;
 font-size: 14px;
 }
 .style2 {
@@ -141,19 +145,31 @@ while($rows = mysql_fetch_array($result)){
 					$dcode=$row["drugcode"];
 					//$tname=$row["tradname"];
 					
-					$tbsql = "SELECT tradname FROM druglst  where drugcode ='".$dcode."'";
+					$tbsql = "SELECT tradname,pack FROM druglst  where drugcode ='".$dcode."'";
 					$tbresult = mysql_query($tbsql) or die("Query druglst failed");
 					$tbrows = mysql_fetch_array($tbresult);
-						$tname=$tbrows["tradname"];					
+						$tname=$tbrows["tradname"];		
+						$cPack=$tbrows["pack"];			
 								
 					$page = 1;
-					print  "<center><font face='Angsana New'><b>ทะเบียนคุมยาและเวชภัณฑ์</b></center>";
-					print  "แผ่นที่........$page.........<br>";
-					print  "ประเภท...............................ชื่อหรือชนิดวัสดุ...($dcode)$tname....<br> ";
-					print  "ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................<br> ";
-					print  "หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................<br> ";
-					
+					print  "<center><font face='Angsana New'><b>ทะเบียนคุมยาและเวชภัณฑ์</b></center>";				
 ?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="font2">
+  <tr>
+    <td align="left">แผ่นที่........<?=$page;?>.........</td>
+    <td align="right">ร.พ.5</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">ประเภท...............................ชื่อหรือชนิดวัสดุ...<?="($dcode)$tname";?>....</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">ขนาดหรือลักษณะ...............................จำนวนอย่างสูง.................................................</td>
+  </tr>
+  <tr>
+    <td align="left" colspan="2">หน่วยนับ......................ที่เก็บ............................จำนวนอย่างต่ำ...................................</td>
+  </tr>
+</table>
+
 <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
 <tr>
   <td colspan="2" align="center" class="font1" >พ.ศ 
@@ -289,17 +305,20 @@ if($dbdcode=="4TA15 " || $dbdcode=="4ALC450 "){
 			$stkno = '';
 			$docno = '';
 			$packing = '';
+			$pack='';
 			if( $stk_row > 0 ){
 				$item = mysql_fetch_assoc($row3);
 				$stkno = $item['stkno'];
 				$docno = $item['docno'];
 				$packing = $item['packing'];
+				$pack=$cPack;
 			}
 
 			if( $stkcut > 0 ){
 				$stkno = '';
 				$docno = '';
 				$packing = '';
+				$pack = '';
 			}
 			
 			$num2++;
@@ -332,7 +351,7 @@ if($dbdcode=="4TA15 " || $dbdcode=="4ALC450 "){
            		<td align="left" ><font face="Angsana New"><?=$department;?></font></td>
                 <td align="center" ><font face="Angsana New"><?=$docno;?></font></td>
                 <td align="center" ><font face="Angsana New"><?=$stkno;?></font></td>
-                <td align="center" ><font face="Angsana New"><?=$packing;?></font></td>
+                <td align="center" ><font face="Angsana New"><?=$pack;?></font></td>
 			<?
                if($netprice=="Y"){
             ?>

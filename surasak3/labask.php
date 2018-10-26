@@ -81,7 +81,6 @@
 			<?php
 		}
 	}
-
 ?>		
 <table  border="0">
   <tr>
@@ -124,7 +123,11 @@
     <td><hr /><font color='#0000FF' style='font-size:16px'>*** กรณี ตรวจสุขภาพทหารประจำปี ให้เลือก***<br />โรค : ตรวจสุขภาพ<br />สิทธิ : R22 ตรวจสุขภาพประจำปีกองทัพบก</font><hr /></td>
     </tr>    -->
 </table>
-
+<?
+			if(substr($aptright,0,3)=='R12' || substr($aptright,0,3)=='R13' || substr($aptright,0,3)=='R14' || substr($aptright,0,3)=='R35'){
+				echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+			}
+?>
  <? 
 if(substr($atoborow,0,4)=="EX26"){  
    $sqlpt = "select * from ptright where code = 'R22' order by code asc";

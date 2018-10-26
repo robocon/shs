@@ -90,7 +90,7 @@ if($row){
 				echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"3\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 
 			}
-			
+
 			print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true'>!ชื่อถูกต้อง ทำรายการต่อไป...</a>";
 			print "<br>";
 			print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true&chk=sso'>! ชื่อถูกต้อง และต้องการ ตรวจสุขภาพสิทธิประกันสังคม</a>";
@@ -108,7 +108,9 @@ if($row){
 				echo "</br><FONT SIZE=\"3\"  COLOR=\"#0033CC\">กรุณาติดต่อแผนกทะเบียนเพื่อปรับปรุงสิทธิการรักษา</FONT>";
 			}
 		}else{
-			
+			if(substr($zzz,0,3)=='R12' || substr($zzz,0,3)=='R13' || substr($zzz,0,3)=='R14' || substr($zzz,0,3)=='R35'){
+				echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+			}
 			print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true'>!ชื่อถูกต้อง ทำรายการต่อไป...</a>";
 		}
 	}else{

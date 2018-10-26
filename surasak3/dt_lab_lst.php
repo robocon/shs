@@ -13,7 +13,12 @@ if(isset($_GET["lab_date"])){
 	$date_now = date("Y-m-d");
 }
 
-$sql = "Select date_format(orderdate,'%Y-%m-%d') From resulthead where hn = '".$_SESSION["hn_now"]."' AND orderdate like '".$date_now."%' Order by  `autonumber` DESC limit 0,1";
+$sql = "Select date_format(orderdate,'%Y-%m-%d'), comment 
+From resulthead 
+where hn = '".$_SESSION["hn_now"]."' 
+AND orderdate like '".$date_now."%' 
+Order by  `autonumber` 
+DESC limit 0,1";
 
 $result = mysql_query($sql);
 $noLab = true;
@@ -22,7 +27,7 @@ if(mysql_num_rows($result) == 0){
 	$noLab = false;
 
 }
-list($orderdate) = mysql_fetch_row($result);
+list($orderdate, $comment) = mysql_fetch_row($result);
 
 
 $xx = explode("-",$date_now);
@@ -33,7 +38,7 @@ $date_now2 = "<B>ผล LAB ของวันที่ :</B> ";
 <head>
 <title>สั่งตรวจ LAB Online</title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: Angsana New;
 	font-size: 24px;
@@ -51,7 +56,7 @@ body,td,th {
 
 .tb_detail {background-color: #FFFFC1;  }
 .tb_menu {background-color: #FFFFC1;  }
--->
+
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -87,7 +92,13 @@ body,td,th {
 
 	$select_date = "";
 	$select_date .= "";
-	$sql = "Select distinct date_format(orderdate,'%d-%m-') as orderdate1, date_format(orderdate,'%Y') as orderdate3, date_format(orderdate,'%Y-%m-%d') as orderdate2  From resulthead where hn='".$_SESSION["hn_now"]."' Order by orderdate DESC limit 0,10";
+	$sql = "Select distinct date_format(orderdate,'%d-%m-') as orderdate1, 
+	date_format(orderdate,'%Y') as orderdate3, 
+	date_format(orderdate,'%Y-%m-%d') as orderdate2  
+	From resulthead 
+	where hn='".$_SESSION["hn_now"]."' 
+	Order by orderdate DESC 
+	limit 0,10";
 	//echo $sql;
 	$result = mysql_query($sql);
 	
@@ -112,7 +123,16 @@ if($noLab == false){
 $list_code_lab = array();
 $list_group_lab = array();
 $lab_title = array();
-$sql = "Select a.profilecode, count(b.labcode), a.testgroupname From (Select * From resulthead where hn='".$_SESSION["hn_now"]."' AND orderdate like '".$date_now."%' ) as a INNER JOIN resultdetail as b ON a.autonumber = b.autonumber group by a.profilecode  Order by  a.testgroupname ASC";
+$sql = "Select a.profilecode, count(b.labcode), a.testgroupname 
+From ( 
+	Select * 
+	From resulthead 
+	where hn='".$_SESSION["hn_now"]."' 
+	AND orderdate like '".$date_now."%' 
+) as a 
+INNER JOIN resultdetail as b ON a.autonumber = b.autonumber 
+group by a.profilecode  
+Order by  a.testgroupname ASC";
 //echo $sql;
 
 $result = mysql_query($sql);
@@ -131,6 +151,8 @@ $list_lab = implode(", ",$lab_title);
 	<TD>
 <?php echo $date_now2," ",$select_date;
 echo "รายการ Lab ทั้งหมด : ",$list_lab;
+echo "<br>";
+echo $comment;
 ?>
 <TABLE width="800" border="0"  cellpadding="0" cellspacing="0" style="border-color: #33FF00" >
 <TR>
@@ -143,7 +165,13 @@ $i=0;
 foreach($list_code_lab as $key => $value){
 
 		$r=4;
-		$sql = "Select autonumber, profilecode,clinicalinfo, testgroupname From resulthead where hn='".$_SESSION["hn_now"]."' AND orderdate like '".$date_now."%' AND profilecode = '".$key."'  Order by autonumber DESC limit 0,1";
+		$sql = "Select autonumber, profilecode,clinicalinfo, testgroupname 
+		From resulthead 
+		where hn='".$_SESSION["hn_now"]."' 
+		AND orderdate like '".$date_now."%' 
+		AND profilecode = '".$key."'  
+		Order by autonumber DESC 
+		limit 0,1 ";
 		$result = mysql_query($sql);
 		while(list($autonumber, $profilecode,$clinicalinfo, $testgroupname) = mysql_fetch_row($result)){
 	

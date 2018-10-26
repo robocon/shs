@@ -18,7 +18,7 @@ if($strrow>0){
 
 }
 
-$sqlage = "select idcard,dbirth from opcard where hn ='".$cHn."'";
+$sqlage = "select idcard,dbirth,ptright from opcard where hn ='".$cHn."'";
 $arr_age = mysql_fetch_array(mysql_query($sqlage));
 
 $idcard=$arr_age['idcard'];
@@ -53,7 +53,9 @@ if(file_exists("../image_patient/$img")){
 	</tr>
 </table>
 <?php
-////////////////////////////////////////// 
+if(substr($cPtright,0,3)=='R12' || substr($cPtright,0,3)=='R13' || substr($cPtright,0,3)=='R14' || substr($cPtright,0,3)=='R35'){
+	echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+}
 ?>
 <script type="text/javascript">
 function check(){

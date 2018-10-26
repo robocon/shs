@@ -117,6 +117,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	}else{
 		$code = "OTHER";
 	}
+if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R36"){
+	$sql="select sum(price),hn,ptname from depart where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
+	//echo "==>".$sql;
+	$query=mysql_query($sql);
+	list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
+	echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
+	$pay=700;
+}		
 	echo "<FORM name=\"form_list\" METHOD=POST ACTION=\"dt_drug_reason.php\" onsubmit=\"return viatch($count,'$code');\">
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
 	echo "| <A HREF=\"javascript:showremed2();checkall4(false);\">Remedผป.ใน</A> ";
@@ -391,34 +399,14 @@ for($i=0;$i<$count;$i++){
 				<TD  colspan=\"5\">";
 	if($_SESSION["dt_special"])
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
-	$totalbalm=0;
-	for($i=0;$i<$count;$i++){
-		if($_SESSION["list_drugcode"][$i]=="4MET25"){
-			$totalbalm=$totalbalm+$_SESSION["list_drugamount"][$i];
-			if($totalbalm > 10){
-				echo "<INPUT TYPE=\"hidden\" NAME=\"chk4met25\" id=\"chk4met25\" value=\"11\">";
-			}  //cloose if
-		}	// close if
-	}  //close for
-	//echo $totalbalm;
-	if($totalbalm < 11){
+
 		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";
-	}else{
-		echo "<div  align=\"center\"><INPUT TYPE=\"button\" value=\"จำนวนยาไม่ถูกต้อง\" onclick=\"return chklist()\"></div>";	
-	}
+	
 	echo "	</TD>
 	</TR>";
-	//}	
+
 	$phar = $pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DDN"];
-	$totalbalm=0;
-	for($i=0;$i<$count;$i++){
-		if($_SESSION["list_drugcode"][$i]=="4MET25"){
-			$totalbalm=$totalbalm+$_SESSION["list_drugamount"][$i];
-			if($totalbalm > 10){
-				echo "<strong style='color:#FF0000;'>!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด/วัน กรุณาลบจำนวนยาส่วนที่เกินออก<strong>";
-			}
-		}	
-	}
+	
 	echo "</TABLE>
 			
 		<INPUT TYPE=\"hidden\" name=\"DDL\" value=\"",$pricetype["DDL"],"\">
@@ -637,17 +625,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 
 <?php
 	
-	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){
-		$where1 = " where `lock` = 'Y' ";
-	}else if((substr($_SESSION["ptright_now"],0,3) == "R03"  )){
+	/*if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){  //ถ้าเป็นสิทธิประกันสังคม/ประกันสุขภาพ
+		$where1 = " where `lock` = 'Y' ";  //เลือกเฉพาะยาที่ไม่ต้องใส่รหัสผ่านมา REMED
+	}else if(substr($_SESSION["ptright_now"],0,3) == "R02" || substr($_SESSION["ptright_now"],0,3) == "R03"){
 		$where1 = " where `lockptright` != 'Y' ";
 	}else{
 		$where1 = "";
-	}
+	}*/
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr, b.drug_lockintern  
-	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr`,`drug_lockintern` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
+	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
@@ -670,7 +658,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			$bgcolor="#FFFF99";
 		else
 			$bgcolor="#FFFFFF";
-		
 	$sql1="select * from drug_pharlock where hn = '".$_SESSION["hn_now"]."' and drugcode='".$arr["drugcode"]."'";
 	//echo $sql1;
 	$query1=mysql_query($sql1);
@@ -682,19 +669,45 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			<?php 			
 			$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' ";
 	$dgrect = mysql_query($sqlrect);
-	
 			if(mysql_num_rows($dgrect)>0){
 				echo "<FONT COLOR=\"RED\" >แพ้ยา</FONT>";
-			}else if($arr["lock_dr"] == 'Y'){?>
-              <input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
+			}else{
+				if($arr["drug_active"]=="n"){  //ถ้าเป็นยาที่เลิกใช้แล้ว
+					if($arr["lock_dr"] == 'N'){
+						echo "<FONT COLOR=\"BLUE\" >เลิกใช้</FONT>";
+					}else{
+						echo $arr["lock_dr"];
+					}
+				}else{  //ถ้าเป็นยาที่ยังใช้อยู่
+					if((substr($_SESSION["ptright_now"],0,3) == "R07" || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10" || substr($_SESSION["ptright_now"],0,3) == "R11" || substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R14" || substr($_SESSION["ptright_now"],0,3) == "R17" || substr($_SESSION["ptright_now"],0,3) == "R35" || substr($_SESSION["ptright_now"],0,3) == "R36" || substr($_SESSION["ptright_now"],0,3) == "R40")){  //ถ้าเป็นสิทธิประกันสังคม/ประกันสุขภาพ
+					//echo "==>".$arr["lock"];
+						if($arr["lock"]=="N"){  //ถ้าเป็นยา NED ที่ต้องใส่รหัสผ่าน
+							echo "<FONT COLOR=\"RED\" >ใส่รหัสผ่านทุกครั้ง</FONT>";
+						}else{  //ยาที่ไม่ต้องใส่รหัสผ่าน
+							if($arr["lock_dr"] == 'Y'){
+						?>
+							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
 			  <?php $i++; $j++;
-			}else{ 
-				if($arr["lock_dr"] =="N"){
-					echo "ยาตัดออก";
-				}else{
-					echo $arr["lock_dr"];
-				}
-			} 
+			  				}else if($arr["lock_dr"] == 'N'){
+								echo "<FONT COLOR=\"RED\" >ยาตัดออก</FONT>";
+							}else{
+								echo $arr["lock_dr"];
+							}
+						}					
+					}else{  //ถ้าเป็นสิทธิอื่นๆ
+						if($arr["lock_dr"] == 'Y'){
+					?>
+						<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
+			  		<?php $i++; $j++;	
+			  				}else if($arr["lock_dr"] == 'N'){
+								echo "<FONT COLOR=\"RED\" >ยาตัดออก</FONT>";
+							}else{
+								echo $arr["lock_dr"];
+							}					                    
+					}  //close 672
+				}  //close 667
+			}  //close 664
+				
 			?>
             </td>
             <td >&nbsp;<?php echo $arr["tradname"];?></td>
@@ -1155,7 +1168,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
-	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') Order by drugcode ASC";
+	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -1186,9 +1199,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$alert="";
 				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
 					$obj = "Staff Only !!!";
-				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  )){
+				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
 					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
-					$alert="<FONT style=\"font-size: 18px;\" COLOR=\"blue\">ติดต่อรับรหัสผ่านได้ที่สำนักงานแพทย์เท่านั้น</FONT>";
+					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่ผู้อำนวยการโรงพยาบาลเท่านั้น</FONT>";
 				}else{
 					$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
 					$alert="";
@@ -1472,7 +1485,7 @@ exit();
 if(isset($_GET["action"]) && $_GET["action"] == "viatcheck"){
 	$count = count($_SESSION["list_drugcode"]);
 	for($i=0;$i<$count;$i++){
-		if($_SESSION["list_drugcode"][$i]=="5VIAT"&&$_SESSION["list_drug_reason"][$i]!="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+		if(trim($_SESSION["list_drugcode"][$i])=="5VIAT" && $_SESSION["list_drug_reason"][$i]!="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 			$sqlquery = "select * from drug_gruco where hn='".$_SESSION['hn_now']."' and dateup like '".date("d-m-Y")."%'";
 			$resultq = Mysql_Query($sqlquery) or die(Mysql_ERROR());
 			$arrq = mysql_num_rows($resultq);
@@ -1714,10 +1727,10 @@ function check_drug(drug_cc){
 window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		return true;
 		}
-	}else if(drug_cc=='5VIAT'){  //ยาไวอาทิล
+	}else if(drug_cc=='5VIAT' || drug_cc=='5VIAT    '){  //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
-		if(sit=="R03"){
+		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
 				if(agep>="56"){
@@ -1767,7 +1780,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 	}else if(drug_cc=='5ARTR'){ //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
-		if(sit=="R03"){
+		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
 				if(agep>="56"){
@@ -1817,7 +1830,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 	}else if(drug_cc=='5Artr'){ //ยาไวอาทิล ปรับปรุง 15-09-59
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
-		if(sit=="R03"){
+		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
 				if(agep>="56"){
@@ -1867,7 +1880,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 	}else if(drug_cc=='5VIAT-N'){ //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
-		if(sit=="R03"){
+		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
 				if(agep>="56"){
@@ -1893,7 +1906,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 							return true;
 						}else{
-							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
+							alert("ผู้ป่วยอายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
 							return false;
 /*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
 								count=2;
@@ -2153,7 +2166,7 @@ function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount,
 
 function alert500(){
 	
-	if(eval(document.getElementById("total_all_price").value) > 500){
+	if(eval(document.getElementById("total_all_price").value) > 700){
 
 	var ptright = '<?php echo substr($_SESSION["ptright_now"],0,3);?>';
 	var stat = '';
@@ -2164,8 +2177,8 @@ function alert500(){
 	stat = xmlhttp.responseText;
 	stat = stat.substr(4);
 		if(stat == '0'){
-			if((ptright == 'R07' || ptright == 'R09') && eval(document.getElementById("total_all_price").value) > 500){
-					alert("ท่านได้จ่ายยาเกิน 500 บาท ให้ ผู้ป่วย สิทธิ <?php echo substr($_SESSION["ptright_now"],4);?>");
+			if((ptright == 'R07' || ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
+					alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ <?php echo substr($_SESSION["ptright_now"],4);?>");
 			}
 		}
 	}
@@ -2355,9 +2368,9 @@ function checkForm1(){
 		document.form1.drug_code.focus();
 	}else if(return_drug_interaction.substring(0,1) == "1" && !confirm(return_drug_interaction)){  //popup
 		document.form1.drug_code.focus();	
-	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
+/*	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
-		document.form1.drug_amount.focus();	
+		document.form1.drug_amount.focus();	*/
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
@@ -3130,20 +3143,6 @@ if( $count_wafarin > 0 ){
 /* แจ้งเตือน Warfarin */
 
 ?>
-<script type="text/javascript">
-function chklist(){
-	// เช็กก่อนว่ามี ID chk4met25 จริงๆ รึป่าว
-	if(document.getElementById("chk4met25")){
-		if(document.getElementById("chk4met25").value=="11"){		
-			alert("!!! ท่านสั่งยา 4MET25 เกิน 10 หลอด/วัน กรุณาลบจำนวนยาส่วนที่เกินออก");
-			document.getElementById("chk4met25").focus()
-			return false;										
-		}else{
-			return true;
-		}
-	}
-}
-</script>
 </body>
 <?php include("unconnect.inc");?>
 </html>
