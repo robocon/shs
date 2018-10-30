@@ -13,7 +13,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_opday_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
 FROM `opday` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ";
 // dump($sql);
@@ -24,7 +24,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_drugrx_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
 FROM `drugrx` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ";
 // dump($sql);

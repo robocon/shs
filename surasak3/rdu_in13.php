@@ -4,7 +4,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_rdu_in13`");
 $sql = "CREATE TEMPORARY TABLE `tmp_rdu_in13` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CELE200*', 
     '1INDO', 

@@ -13,7 +13,7 @@
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT `hn`, `date_hn` 
 FROM `opday` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( `icd10` LIKE 'J45%' 
     OR `icd10` LIKE 'J46%' ) 
 GROUP BY `hn`";
@@ -23,7 +23,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `row_id`,`date`,`hn` AS `hn_drug`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `quarter` = '$quarter'  
+WHERE `year` = '$year' AND `quarter` = '$quarter'  
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 

@@ -5,7 +5,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in17`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in17` 
 SELECT `hn`,`date_hn` 
 FROM `opday` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` = 'z321' 
     OR `icd10` = 'z33' 
@@ -19,7 +19,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in17`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in17` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 '1COUM-C1', 
 '1COUM-C2', 

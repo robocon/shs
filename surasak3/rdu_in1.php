@@ -19,7 +19,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in1`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
 FROM `drugrx` 
-WHERE `quarter` = '$quarter' ";
+WHERE `year` = '$year' AND `quarter` = '$quarter' ";
 $db->exec($sql);
 
 
