@@ -49,10 +49,10 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `test_in12`");
 $sql = "CREATE TEMPORARY TABLE `test_in12` 
 SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
 FROM ( 
-	SELECT * FROM `opday` WHERE `quarter` = '$quarter' AND `icd10` regexp 'E11' GROUP BY `hn`
+	SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' AND `icd10` regexp 'E11' GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
-	SELECT * FROM `lab` WHERE `quarter` = '$quarter' AND `egfr` > 30 
+	SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' AND `egfr` > 30 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`autonumber` IS NOT NULL  ";
 // dump($sql);
@@ -72,7 +72,7 @@ $sql = "SELECT COUNT(a.`row_id`) AS `rows`
 FROM ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `drugrx` 
-    WHERE `quarter` = '$quarter' 
+    WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND `drugcode` IN ( 
         '1MET500-C', 
         '1METF', 

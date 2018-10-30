@@ -4,7 +4,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in18`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT `row_id`,`hn`,`date_hn` 
 FROM `opday` 
-WHERE `quarter` = '$quarter'  
+WHERE `year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (
 	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 12 )
@@ -34,7 +34,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in18`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
 FROM `drugrx` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1AERI*', 
     '1CLAR-C', 
