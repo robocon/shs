@@ -120,6 +120,8 @@ if($_POST["cigarette"]=="1"){
 	$_POST["member2"]="";
 }
 
+	$bp3 = $_POST['bp3'];
+	$bp4 = $_POST['bp4'];
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
@@ -127,7 +129,7 @@ if($_POST["cigarette"]=="1"){
 	
 	if($rows > 0){
 
-$sql = "Update `opd` set  `thidate` = '".$thidate_now."', `temperature`  = '".$_POST["temperature"]."', `pause`  = '".$_POST["pause"]."', `rate`  = '".$_POST["rate"]."', `weight`  = '".$_POST["weight"]."', `bp1`  = '".$_POST["bp1"]."', `bp2`  = '".$_POST["bp2"]."', `drugreact`  = '".$_POST["drugreact"]."', `congenital_disease`  = '".$_POST["congenital_disease"]."', `type`  = '".$_POST["type"]."', `organ`  = '".$_POST["organ"]."', `doctor` = '".$doctorname."',  `officer` = '".$_SESSION["sOfficer"]."' ,  `dc_diag` = Null, `vn`= '".$_POST["vn"]."', `toborow` = '".$_POST["toborow"]."', `height` = '".$_POST["height"]."' , `clinic`  = '".$_POST["clinic"]."' , `cigarette`= '".$_POST["cigarette"]."', `alcohol`= '".$_POST["alcohol"]."', `cigok`= '".$_POST["member2"]."', `waist`= '".$_POST["waist"]."',`chkup`= '".$_POST["typediag"]."',`room`= '".$_POST["room"]."' ,`painscore`= '".$_POST["painscore"]."',`age`='".$cAge."' where  `thdatehn` = '".$thidatehn."' limit 1 ";
+$sql = "Update `opd` set  `thidate` = '".$thidate_now."', `temperature`  = '".$_POST["temperature"]."', `pause`  = '".$_POST["pause"]."', `rate`  = '".$_POST["rate"]."', `weight`  = '".$_POST["weight"]."', `bp1`  = '".$_POST["bp1"]."', `bp2`  = '".$_POST["bp2"]."', `drugreact`  = '".$_POST["drugreact"]."', `congenital_disease`  = '".$_POST["congenital_disease"]."', `type`  = '".$_POST["type"]."', `organ`  = '".$_POST["organ"]."', `doctor` = '".$doctorname."',  `officer` = '".$_SESSION["sOfficer"]."' ,  `dc_diag` = Null, `vn`= '".$_POST["vn"]."', `toborow` = '".$_POST["toborow"]."', `height` = '".$_POST["height"]."' , `clinic`  = '".$_POST["clinic"]."' , `cigarette`= '".$_POST["cigarette"]."', `alcohol`= '".$_POST["alcohol"]."', `cigok`= '".$_POST["member2"]."', `waist`= '".$_POST["waist"]."',`chkup`= '".$_POST["typediag"]."',`room`= '".$_POST["room"]."' ,`painscore`= '".$_POST["painscore"]."',`age`='".$cAge."',`bp3`='$bp3',`bp4`='$bp4' where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
 
 
@@ -135,7 +137,7 @@ $sql = "Update `opd` set  `thidate` = '".$thidate_now."', `temperature`  = '".$_
 		
 		
 
-$sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , `toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,`chkup`,`room`,`painscore`,`age`)VALUES (NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', '".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."');";
+$sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , `toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,`bp4`)VALUES (NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', '".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3','$bp4');";
 
 }
 
@@ -708,11 +710,21 @@ mmHg </td>
                <td align="left"><input name="waist" type="text" id="waist" size="3" value="" />
 «Á.
   <?php //} ?></td>
-               <td align="right" class="data_show">Pain Score:</td>
-               <td align="left"><input name="painscore" type="text" id="painscore" size="3" value="" />
-
-  <?php //} ?></td>
+               <td align="right">Repeat BP :</td>
+				<td align="left">
+					<input name="bp3" type="text" id="bp3" size="3" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" />&nbsp;mmHg 
+				</td>
              </tr>
+			 <tr>
+				<td align="right" class="data_show">Pain Score:</td>
+				<td align="left">
+					<input name="painscore" type="text" id="painscore" size="3" value="" />
+				</td>
+				<td align="right"></td>
+				<td align="left"></td>
+				<td align="right"></td>
+				<td align="left"></td>
+			 </tr>
            </table></td>
           </tr>
 		 <tr>

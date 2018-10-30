@@ -583,13 +583,18 @@ $strrows=mysql_fetch_array($strresult2);
 
 $user_ptright = substr($strrows["ptright"], 0, 3);
 
+// R06	พ.ร.บ.คุ้มครองผู้ประสบภัยจากรถ
 // R07 ประกันสังคม
-// เพิ่มสิทธิ พรบ. R06 เข้าไปด้วย 
+// R08	ก.ท.44(บาดเจ็บในงาน)
 if( $user_ptright == "R07" || $user_ptright == "R06" || $user_ptright == "R08" ){
 $chkdate=substr($dateid,0,4);
 $chksql="SELECT sum( denta ) AS pricedental, sum( other ) AS priceother
 FROM `opday`
-WHERE toborow = 'EX07 ทันตกรรม' AND hn='".$hnid."' and (thidate like '$chkdate%' AND thidate not like '$date%')  AND `denta` >0 AND `other` >0";	
+WHERE toborow = 'EX07 ทันตกรรม' 
+AND hn='".$hnid."' 
+AND (thidate like '$chkdate%' AND thidate not like '$date%')  
+AND `denta` > 0 
+AND `other` > 0";	
 //echo $chksql;
 $chkquery= mysql_query($chksql);
 $chknum=mysql_num_rows($chkquery);

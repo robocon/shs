@@ -211,6 +211,11 @@ if( empty($_GET['action'])
 			'18 ¡Ñ¹ÂÒÂ¹ 2560' => 70,
 			'25 ¡Ñ¹ÂÒÂ¹ 2560' => 50
 		);
+	}elseif( $_POST['doctor'] == 'MD150 ÃÑµ¹à¡ÕÂÃµÔ ¾§ÉìÃÑµ¹¡ØÅ' ){
+		$dr_name = 'á¾·Âì ÃÑµ¹à¡ÕÂÃµÔ ¾§ÉìÃÑµ¹¡ØÅ';
+		$manual_lock = array(
+			'12 ¾ÄÈ¨Ô¡ÒÂ¹ 2561' => 0
+		);
 	}
 
 	if( isset($manual_lock[$date_appoint]) === true ){

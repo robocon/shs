@@ -42,10 +42,10 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4 From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 if($cigarette==0){$cigarette='‰¡Ë Ÿ∫';}
 else if($cigarette==1){$cigarette=' Ÿ∫';}
@@ -99,6 +99,15 @@ window.onload = function(){
 	<tr>
 		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, ππ : <?=$weight;?> °°.,    : <?=$height;?> ´¡.</td>
 	</tr>
+	<?php 
+	if( !empty($bp3) && !empty($bp4) ){
+		?>
+		<tr>
+			<td>Repeat BP : <?=$bp3;?> / <?=$bp4;?> mmHg</td>
+		</tr>
+		<?php
+	}
+	?>
 	<tr>
 		<td>∫ÿÀ√’Ë : <?=$cigarette;?>,  ÿ√“ : <?=$alcohol;?> , bmi : <?=$bmi;?>, PS : <?=$painscore;?></td>
 	</tr>
