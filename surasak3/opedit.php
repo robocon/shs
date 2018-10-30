@@ -190,6 +190,13 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cBlood=$row->blood;
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
+		//echo substr($cPtright,1,3);
+		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
+			echo '<script>alert("ผู้ป่วยสิทธิประกันสุขภาพถ้วนหน้า(ผู้พิการ)\กรุณาตรวจสอบสิทธิการรักษา\r\nเพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด");</script>';
+		}			
+		
+					
+		
 		if($cPtright=="R09 ประกันสุขภาพถ้วนหน้า" && $cHospcode=="11512-โรงพยาบาล ค่ายสุรศักดิ์มนตรี"){
 			echo "<script>alert('กรุณาตรวจสอบสิทธิการรักษาผู้ป่วยรายนี้ด้วยครับ');</script>";
 		}
@@ -601,6 +608,36 @@ return $pAge;
     </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
+  </tr>
+  <tr>
+	<td align="right" class="fonthead">สถานะบุคคล</td>
+	<td colspan="5">
+		<?php 
+		$typearea_list = array(
+			1 => 'มีชื่ออยู่ตามทะเบียนบ้านในเขตรับผิดชอบและอยู่จริง',
+			2 => 'มีชื่ออยู่ตามทะเบียนบ้านในเขตรับผิดชอบแต่ตัวไม่อยู่จริง',
+			3 => 'มาอาศัยอยู่ในเขตรับผิดชอบแต่ทะเบียนบ้านอยู่นอกเขตรับผิดชอบ',
+			4 => 'ที่อาศัยอยู่นอกเขตรับผิดชอบและเข้ามารับบริการ',
+			5 => 'มาอาศัยในเขตรับผิดชอบแต่ไม่ได้อยู่ตามทะเบียนบ้านในเขตรับผิดชอบ เช่น คนเร่ร่อน ไม่มีที่พักอาศัย เป็นต้น'
+		);
+		?>
+		<select name="typearea" id="typearea">
+			<option value="">-- เลือกข้อมูล สถานะบุคคล --</option>
+			<?php
+			foreach ($typearea_list as $key => $item) {
+				?>
+				<option value="<?=$key;?>"><?=$item;?></option>
+				<?php
+			}
+			?>
+		</select>
+	</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
   </tr>
 </table>    
 </fieldset>
@@ -1144,7 +1181,10 @@ if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 	}else{
 			echo"<FONT SIZE='5' COLOR='#0000FF'>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มี HN</FONT><br>";
 		}
-	
+
+if(substr($cPtright,0,3)=="R12" || substr($cPtright,0,3)=="R13" || substr($cPtright,0,3)=="R14" || substr($cPtright,0,3)=="R36"){
+	echo"<FONT SIZE='5' COLOR='#FF0000'>&nbsp;&nbsp;กรุณาตรวจสอบสิทธิการรักษา เพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด</FONT><br>";
+}
 
 
 
@@ -1214,6 +1254,10 @@ function checkForm(){
 		}else if(document.f1.education.value == ''){		
 			alert("กรุณาเลือกระดับการศึกษาด้วยครับ เพื่อความสมบูรณ์ของ 43 แฟ้ม");			
 			document.f1.education.focus();
+			return false;
+		}else if(document.f1.typearea.value == ''){		
+			alert("กรุณาเลือกสถานะบุคคลด้วยครับ เพื่อความสมบูรณ์ของ 43 แฟ้ม");			
+			document.f1.typearea.focus();
 			return false;
 		}else{	
 			if(stat2 == true){

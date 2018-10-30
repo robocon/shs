@@ -122,7 +122,7 @@ if($style_menu==2){?>
 
            </tr>
            <tr>
-             <td align="left" colspan="14"> ¿“æ : <B><?php echo $_SESSION["type"];?></B> , ‚√§ª√–®”µ—« : <B><?php echo $_SESSION["congenital_disease"];?></B>
+             <td align="left" colspan="14">Repeat BP : <?=$_SESSION['repeat_bp'];?> mmHg,  ¿“æ : <B><?php echo $_SESSION["type"];?></B> , ‚√§ª√–®”µ—« : <B><?php echo $_SESSION["congenital_disease"];?></B>
 			&nbsp;&nbsp;&nbsp;&nbsp;, Õ“°“√ : <B><?php echo $_SESSION["organ"];?></B>
              </td>
            </tr>
@@ -142,7 +142,7 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ºŸÈªË«¬‰¡Ë·æÈ¬“ ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' ";
+$sql = "Select drugcode, tradname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname =''";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -153,6 +153,31 @@ if($rows > 0){
 	while($arr = Mysql_fetch_assoc($result)){
 		$txt .= "&nbsp;&nbsp;".$i.". ".$arr["drugcode"]." : ".$arr["tradname"];
 		$txt2[$i-1] = $arr["tradname"];
+		if($i%3==0) $txt .="<BR>"; else $txt.=",";
+		$i++;
+	}
+	$_SESSION["list_drugreact"] = implode(", ",$txt2);
+}else{
+	$_SESSION["list_drugreact"] = "";
+}
+
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
+
+
+
+
+//·æÈ¬“µ“¡°≈ÿË¡
+$sql = "Select distinct(groupname) as groupname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname !=''";
+
+$result = Mysql_Query($sql);
+$rows = Mysql_num_rows($result);
+if($rows > 0){ 
+		$txt = "";
+		$i=1;
+		$txt2 = array();
+	while($arr = Mysql_fetch_assoc($result)){
+		$txt .= "&nbsp;&nbsp;".$i.". ".$arr["groupname"];
+		$txt2[$i-1] = $arr["groupname"];
 		if($i%3==0) $txt .="<BR>"; else $txt.=",";
 		$i++;
 	}

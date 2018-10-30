@@ -77,98 +77,9 @@ if($_POST['lockptright5']=="lock"){
 //update opdcard table
 	$hospcode=$_POST['hospcode'];
 	$ptrcode=$_POST['rdo1'];
+	$typearea = $_POST['typearea'];
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
-
-
-// บันทึกข้อมูลที่มีการอัพเดท
-$sql = "SELECT * FROM `opcard` WHERE `hn` = '$cHn' ";
-$q = mysql_query($sql) or die( mysql_error() );
-$op = mysql_fetch_assoc($q);
-
-$update_list = array();
-if( $_POST['yot'] != $op['yot'] ){ $update_list['yot'] = $_POST['yot']; }
-if( $_POST['name'] != $op['name'] ){ $update_list['name'] = $_POST['name']; }
-if( $_POST['surname'] != $op['surname'] ){ $update_list['surname'] = $_POST['surname']; }
-if( $_POST['sex'] != $op['sex'] ){ $update_list['sex'] = $_POST['sex']; }
-if( $_POST['idcard'] != $op['idcard'] ){ $update_list['idcard'] = $_POST['idcard']; }
-if( $_POST['married'] != $op['married'] ){ $update_list['married'] = $_POST['married']; }
-
-list($year, $month, $day) = explode('-', $op['dbirth']);
-if( $_POST['d'] != $day ){ $update_list['d'] = $_POST['d']; }
-if( $_POST['m'] != $month ){ $update_list['m'] = $_POST['m']; }
-if( $_POST['y'] != $year ){ $update_list['y'] = $_POST['y']; }
-
-if( $_POST['career'] != $op['career'] ){ $update_list['career'] = $_POST['career']; }
-if( $_POST['religion'] != $op['religion'] ){ $update_list['religion'] = $_POST['religion']; }
-if( $_POST['race'] != $op['race'] ){ $update_list['race'] = $_POST['race']; }
-if( $_POST['nation'] != $op['nation'] ){ $update_list['nation'] = $_POST['nation']; }
-
-if( $_POST['ptright1'] != $op['ptright1'] ){ $update_list['ptright1'] = $_POST['ptright1']; }
-if( $_POST['address'] != $op['address'] ){ $update_list['address'] = $_POST['address']; }
-if( $_POST['tambol'] != $op['tambol'] ){ $update_list['tambol'] = $_POST['tambol']; }
-if( $_POST['ampur'] != $op['ampur'] ){ $update_list['ampur'] = $_POST['ampur']; }
-if( $_POST['changwat'] != $op['changwat'] ){ $update_list['changwat'] = $_POST['changwat']; }
-if( $_POST['hphone'] != $op['hphone'] ){ $update_list['hphone'] = $_POST['hphone']; }
-if( $_POST['phone'] != $op['phone'] ){ $update_list['phone'] = $_POST['phone']; }
-if( $_POST['father'] != $op['father'] ){ $update_list['father'] = $_POST['father']; }
-if( $_POST['mother'] != $op['mother'] ){ $update_list['mother'] = $_POST['mother']; }
-if( $_POST['couple'] != $op['couple'] ){ $update_list['couple'] = $_POST['couple']; }
-if( $_POST['camp'] != $op['camp'] ){ $update_list['camp'] = $_POST['camp']; }
-if( $_POST['guardian'] != $op['guardian'] ){ $update_list['guardian'] = $_POST['guardian']; }
-if( $_POST['ptf'] != $op['ptf'] ){ $update_list['ptf'] = $_POST['ptf']; }
-if( $_POST['ptfadd'] != $op['ptfadd'] ){ $update_list['ptfadd'] = $_POST['ptfadd']; }
-if( $_POST['ptffone'] != $op['ptffone'] ){ $update_list['ptffone'] = $_POST['ptffone']; }
-if( $_POST['note'] != $op['note'] ){ $update_list['note'] = $_POST['note']; }
-if( $_POST['blood'] != $op['blood'] ){ $update_list['blood'] = $_POST['blood']; }
-if( $_POST['drugreact'] != $op['drugreact'] ){ $update_list['drugreact'] = $_POST['drugreact']; }
-if( $_POST['idguard'] != $op['idguard'] ){ $update_list['idguard'] = $_POST['idguard']; }
-if( $_POST['goup'] != $op['goup'] ){ $update_list['goup'] = $_POST['goup']; }
-if( $_POST['ptrightdetail'] != $op['ptrightdetail'] ){ $update_list['ptrightdetail'] = $_POST['ptrightdetail']; }
-if( $_POST['ptfmon'] != $op['ptfmon'] ){ $update_list['ptfmon'] = $_POST['ptfmon']; }
-
-include 'includes/JSON.php';
-$json = new Services_JSON();
-
-// htmlentities กับ htmlspecialchars มีปัญหาตอน encode กับของ JSON
-$update_list_thai = array();
-$list_text = '';
-
-// ถ้ามีการแก้ไขข้อมูล
-if ( count($update_list) > 0 ) {
-	
-	foreach ($update_list as $key => $value) {
-		$update_list_thai[$key] = urlencode($value);
-	}
-	$list_text = $json->encode($update_list_thai);
-
-}
-
-// ตรวจดูก่อนว่าเคยมีข้อมูลรึป่าว
-$sql = "SELECT `id`,`hn` FROM `opcard_update` WHERE `hn` = '$cHn' ";
-$q = mysql_query($sql) or die( mysql_error() );
-$op_rows = mysql_num_rows($q);
-
-// ถ้ายังไม่เคยมีข้อมูล จะเพิ่มใหม่
-if( $op_rows == 0 && count($update_list) > 0 ){
-	$op_insert_sql = "INSERT INTO `opcard_update`
-	(`id`,`hn`,`detail`,`status`)
-	VALUES
-	(NULL,'$cHn','$list_text','Y');";
-	mysql_query($op_insert_sql) or die( mysql_error() );
-
-}else if( $op_rows > 0 && count($update_list) > 0 ){
-	$op_item = mysql_fetch_assoc($q);
-	$op_id = $op_item['id'];
-
-	$op_update_sql = "UPDATE `opcard_update`
-	SET `detail` = '$list_text', 
-	`status` = 'Y' 
-	WHERE `id` = '$op_id';";
-	mysql_query($op_update_sql) or die( mysql_error() );
-}
-// บันทึกข้อมูลที่มีการอัพเดท
-
 
 $sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',
 yot='$yot',name='$name',surname='$surname',education='$education',goup='$goup',married='$married',
@@ -180,9 +91,9 @@ note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
 ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
 officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
 employee='$employee', 
-opcardstatus='$opcardstatus' $where4 WHERE hn='$cHn' ";
+opcardstatus='$opcardstatus',`typearea` = '$typearea' $where4 WHERE hn='$cHn' ";
 
-$result = mysql_query($sql) or die("Query failed ipcard");
+$result = mysql_query($sql) or die("Query failed ipcard".mysql_error());
 
 If (!$result){
 	echo "update opcard fail";
