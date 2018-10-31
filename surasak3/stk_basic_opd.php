@@ -31,11 +31,11 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4 
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist 
 From opd 
 where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist) = Mysql_fetch_row($result_dt_hn);
 
 
 $ht = $height/100;
@@ -105,6 +105,7 @@ $full_text = "HN: $hn, $thidate, $cAge\n";
 $full_text .= "VN: $vn, T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที\n";
 $full_text .= "BP: $bp1 / $bp2 mmHg, นน: $weight กก., สส: $height ซม.\n";
 
+$full_text .= "รอบเอว: $waist ซม., ";
 if( !empty($bp3) && !empty($bp4) ){
 	$full_text .= "Repeat BP: $bp3 / $bp4 mmHg\n";
 }

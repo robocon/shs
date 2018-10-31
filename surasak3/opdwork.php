@@ -49,6 +49,7 @@ extract($_POST);
 $hospcode = $_POST['hospcode'];
 $ptrcode = $_POST['rdo1'];
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
+$typearea = $_POST['typearea'];
 
 $cHn = $_POST["hn"];
 
@@ -91,7 +92,8 @@ $sql = "UPDATE opcard SET idcard = '$idcard',
 	ptrcode  = '$ptrcode',
 	blood ='".$blood."',
 	drugreact ='".$drugreact."',
-	employee = '$employee' WHERE hn = '$cHn' ";
+	employee = '$employee',
+	typearea = '$typearea' WHERE hn = '$cHn' ";
 $result = mysql_query($sql) or die("Query failed ipcard");
 
 if(!$result){

@@ -134,6 +134,7 @@ $cBlood=$row->blood;
 $cDrugreact=$row->drugreact;
 $cHospcode=$row->hospcode;
 $employee = $row->employee;
+$typearea = $row->typearea;
 
 		$hcode=explode("/",$cHospcode);
 		$hcode1=$hcode[0];
@@ -488,6 +489,41 @@ echo "<tr bgcolor=\"$bgcolor\" >
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
+
+  <tr>
+	<td align="right" class="fonthead">สถานะบุคคล</td>
+	<td colspan="5">
+		<?php 
+		$typearea_list = array(
+			1 => 'มีชื่ออยู่ตามทะเบียนบ้านในเขตรับผิดชอบและอยู่จริง',
+			2 => 'มีชื่ออยู่ตามทะเบียนบ้านในเขตรับผิดชอบแต่ตัวไม่อยู่จริง',
+			3 => 'มาอาศัยอยู่ในเขตรับผิดชอบแต่ทะเบียนบ้านอยู่นอกเขตรับผิดชอบ',
+			4 => 'ที่อาศัยอยู่นอกเขตรับผิดชอบและเข้ามารับบริการ',
+			5 => 'มาอาศัยในเขตรับผิดชอบแต่ไม่ได้อยู่ตามทะเบียนบ้านในเขตรับผิดชอบ เช่น คนเร่ร่อน ไม่มีที่พักอาศัย เป็นต้น'
+		);
+		?>
+		<select name="typearea" id="typearea">
+			<option value="">-- เลือกข้อมูล สถานะบุคคล --</option>
+			<?php
+			foreach ($typearea_list as $key => $item) { 
+
+				$type_selected = ( $key == $typearea ) ? 'selected="selected"' : '' ;
+				?>
+				<option value="<?=$key;?>" <?=$type_selected;?>><?=$item;?></option>
+				<?php
+			}
+			?>
+		</select>
+	</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+  </tr>
+
+
 </table>    
 </fieldset>
 <BR>

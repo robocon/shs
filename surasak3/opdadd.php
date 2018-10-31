@@ -103,6 +103,8 @@ global   $regisdate,$idcard,$mid,$hn,$yot,$name,$surname,$education,$goup,$marri
 $name = trim($_POST['name']);
 $surname = trim($_POST['surname']);
 
+$typearea = $_POST['typearea'];
+
 $Thaidate = date("d-m-").(date("Y")+543);
 
 if (!empty($name)){
@@ -139,10 +141,10 @@ $birthdate="$d-$m-$y"; //print into opdcard
 $cAge=calcage($dbirth);
 $ptname=$yot.' '.$name.' '.$surname;
 $sql = "INSERT INTO opcard (regisdate,idcard,mid,hn,yot,name,surname,education,goup,married,
-dbirth,guardian,idguard,nation,religion,career,ptright,ptrightdetail,address,tambol,ampur,changwat,hphone,phone,father,mother,couple,note,sex,camp,race,ptf,ptfadd,ptffone,ptfmon, ptright1, officer, blood, drugreact,phone2,hospcode,ptrcode,typeservice) VALUES (now(),'$idcard','$mid','$vHN',
+dbirth,guardian,idguard,nation,religion,career,ptright,ptrightdetail,address,tambol,ampur,changwat,hphone,phone,father,mother,couple,note,sex,camp,race,ptf,ptfadd,ptffone,ptfmon, ptright1, officer, blood, drugreact,phone2,hospcode,ptrcode,typeservice,typearea) VALUES (now(),'$idcard','$mid','$vHN',
 '$yot','$name','$surname','$education','$goup','$married','$dbirth','$guardian','$idguard',
 '$nation','$religion','$career','$ptright','$ptrightdetail','$address','$tambol','$ampur','$changwat',
-'$hphone','$phone','$father','$mother','$couple','$note','$sex','$camp','$race','$ptf','$ptfadd','$ptffone','$ptfmon','$ptright','".$_SESSION["sOfficer"]."','$blood', '$drugreact','$phone2','$hospcode','$ptrcode','$typeservice');";
+'$hphone','$phone','$father','$mother','$couple','$note','$sex','$camp','$race','$ptf','$ptfadd','$ptffone','$ptfmon','$ptright','".$_SESSION["sOfficer"]."','$blood', '$drugreact','$phone2','$hospcode','$ptrcode','$typeservice','$typearea');";
 
 $result = mysql_query($sql) or die( mysql_error() . "หมายเลข HN $vHN ซ้ำ    ไม่สามารถบันทึกได้    โปรดทำบัตรใหม่ !");
 

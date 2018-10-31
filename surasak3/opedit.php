@@ -190,6 +190,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cBlood=$row->blood;
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
+		$typearea = $row->typearea;
 		//echo substr($cPtright,1,3);
 		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
 			echo '<script>alert("ผู้ป่วยสิทธิประกันสุขภาพถ้วนหน้า(ผู้พิการ)\กรุณาตรวจสอบสิทธิการรักษา\r\nเพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด");</script>';
@@ -624,9 +625,11 @@ return $pAge;
 		<select name="typearea" id="typearea">
 			<option value="">-- เลือกข้อมูล สถานะบุคคล --</option>
 			<?php
-			foreach ($typearea_list as $key => $item) {
+			foreach ($typearea_list as $key => $item) { 
+
+				$type_selected = ( $key == $typearea ) ? 'selected="selected"' : '' ;
 				?>
-				<option value="<?=$key;?>"><?=$item;?></option>
+				<option value="<?=$key;?>" <?=$type_selected;?>><?=$item;?></option>
 				<?php
 			}
 			?>
