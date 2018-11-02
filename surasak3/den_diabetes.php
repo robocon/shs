@@ -416,19 +416,19 @@ if ( $action == 'show_data' ) {
                 <td align="right"><?=$female_rows;?></td>
             </tr>
             <tr>
-                <td>จำนวนผู้ป่วย HBA1C ที่น้อยกว่า 7</td>
+                <td>จำนวนผู้ป่วย HBA1C ที่น้อยกว่าหรือเท่ากับ 7</td>
                 <td align="right"><?=$hba1c_rows;?></td>
             </tr>
             <tr>
-                <td>จำนวนผู้ป่วย HBA1C มากกว่าหรือเท่ากับ 7</td>
+                <td>จำนวนผู้ป่วย HBA1C มากกว่า 7</td>
                 <td align="right"><?=$a1c_more7;?></td>
             </tr>
             <tr>
-                <td>จำนวนผู้ป่วยที่ BP น้อยกว่า 140/90</td>
+                <td>จำนวนผู้ป่วยที่ BP น้อยกว่าหรือเท่ากับ 140/90</td>
                 <td align="right"><?=$bp_count;?></td>
             </tr>
             <tr>
-                <td>จำนวนผู้ป่วยที่ BP มากกว่าหรือเท่ากับ 140/90</td>
+                <td>จำนวนผู้ป่วยที่ BP มากกว่า 140/90</td>
                 <td align="right"><?=$bp_more_count;?></td>
             </tr>
             <tr>

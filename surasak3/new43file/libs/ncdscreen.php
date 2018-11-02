@@ -27,8 +27,8 @@ END AS `WAIST_CM`,
 
 b.`bp1` AS `SBP_1`,
 b.`bp2` AS `DBP_1`,
-'' AS `SBP_2`,
-'' AS `DBP_2`,
+b.`bp3` AS `SBP_2`,
+b.`bp4` AS `DBP_2`,
 '' AS `BSLEVEL`,
 '1' AS `BSTEST`,
 '11512' AS `SCREENPLACE`,
@@ -54,7 +54,7 @@ FROM (
 
 ) AS a 
 LEFT JOIN (  
-    SELECT `thidate`,`thdatehn`,`vn`,`weight`,`height`,`bp1`,`bp2`,`cigarette`,`alcohol`,`waist` 
+    SELECT `thidate`,`thdatehn`,`vn`,`weight`,`height`,`bp1`,`bp2`,`cigarette`,`alcohol`,`waist`,`bp3`,`bp4`  
     FROM `opd` 
     WHERE `thidate` LIKE '$thimonth%' 
 ) AS b ON b.`thdatehn` = a.`thdatehn` 

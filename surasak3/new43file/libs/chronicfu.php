@@ -9,7 +9,10 @@ y.`vn` AS `SEQ`,
 thDateToEn(SUBSTRING(y.`thidate`, ' ', 1)) AS `DATE_SERV`, 
 x.`weight` AS `WEIGHT`, 
 x.`height` AS `HEIGHT`, 
-'' AS `WAIST_CM`, 
+CASE 
+    WHEN y.`waist` <> '' THEN y.`waist` 
+    ELSE '0'  
+END AS `WAIST_CM`,
 x.`bp1` AS `SBP`, 
 x.`bp2` AS `DBP`, 
 x.`foot` AS `FOOT`, 
