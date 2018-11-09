@@ -305,6 +305,7 @@ a:active {
         $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
         ?>
         <select name="doctor" id="doctor">
+					<option value="-กรุณาเลือกแพทย์-">-กรุณาเลือกแพทย์-</option>
           <? 
         while($objResult = mysql_fetch_array($objQuery)) { 
         ?>
