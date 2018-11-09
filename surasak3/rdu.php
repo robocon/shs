@@ -124,14 +124,14 @@ if ( $action == 'load' ) {
     
     // ถ้าไตรมาสแรกหักไป1ปี
     if( $quarter == 1 ){
-        $year = $year - 1;
+        // $year = $year - 1;
     }
 
     $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 
     $year = $year + 543;
-    $date_min = $year.'-'.$month_range['min'].'-01 00:00:00';
-    $date_max = $year.'-'.$month_range['max'].'-'.$last_day.' 23:59:59';
+    // $date_min = $year.'-'.$month_range['min'].'-01 00:00:00';
+    // $date_max = $year.'-'.$month_range['max'].'-'.$last_day.' 23:59:59';
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (ไตรมาส <?=$quarter;?>) </h3>
