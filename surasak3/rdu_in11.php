@@ -51,7 +51,7 @@ FROM (
 LEFT JOIN ( 
     SELECT * 
     FROM `lab` 
-    WHERE `quarter` = '1' 
+    WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( `egfr` < 60 AND `egfr` > 0 ) 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 

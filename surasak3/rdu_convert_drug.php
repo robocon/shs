@@ -13,9 +13,10 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2561-07-01';
-$date_end = '2561-09-31';
-$quarter = 4;
+$date_start = '2561-10-01';
+$date_end = '2561-10-31';
+$quarter = 1;
+$year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_drug_'.$quarter.'.sql';
@@ -30,7 +31,7 @@ AND `reject` != 'Y'
 AND `amount` > 0 ";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
-$sql_header = "INSERT INTO `drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`) VALUES ";
+$sql_header = "INSERT INTO `drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
 $sql_data = '';
 
 while ( $item = mysql_fetch_assoc($q) ) {
@@ -43,7 +44,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $amount = $item['amount'];
     $date_hn = $item['date_hn'];
 
-    $sql_data = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter');\n";
+    $sql_data = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year');\n";
     file_put_contents($filePath, $sql_data, FILE_APPEND);
 
 }

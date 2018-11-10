@@ -2,8 +2,7 @@
 
 include 'bootstrap.php';
 
-$date_max = input_get('date_max');
-$date_min = input_get('date_min');
+$year = input_get('year');
 $quarter = input_get('quarter');
 
 $db = Mysql::load($rdu_configs);
@@ -13,7 +12,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 

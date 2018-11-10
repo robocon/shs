@@ -13,9 +13,10 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2018-01-01';
-$date_end = '2018-09-31';
-$quarter = 4;
+$date_start = '2018-10-01';
+$date_end = '2018-10-31';
+$quarter = 1;
+$year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_lab_'.$quarter.'.sql';
@@ -44,7 +45,7 @@ ORDER BY b.`autonumber` ASC ";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 
-$sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`egfr`,`date_hn`,`quarter`) VALUES ";
+$sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
 $sql_data = '';
 
 while ( $item = mysql_fetch_assoc($q) ) {
@@ -57,7 +58,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $date_hn = $item['date_hn'];
 
     if( $egfr != '' && $egfr > 0 ){
-        $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$egfr','$date_hn','$quarter');\n";
+        $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$egfr','$date_hn','$quarter','$year');\n";
         file_put_contents($filePath, $sql_data, FILE_APPEND);
     }
 

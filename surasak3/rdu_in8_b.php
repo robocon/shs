@@ -5,15 +5,14 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 $db->exec("SET NAMES TIS620");
 
-$date_max = input_get('date_max');
-$date_min = input_get('date_min');
+$year = input_get('year');
 $quarter = input_get('quarter');
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn` 
 FROM `opday` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
     OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
