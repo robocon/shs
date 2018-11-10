@@ -53,7 +53,7 @@ body, button{
 <?php
 $default_year = date('Y');
 $year = input_post('year', $default_year);
-$year_range = array(2017,2018);
+$year_range = array(2017,2018,2019);
 
 $quarter_range = array(
     1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',
@@ -192,7 +192,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
             include 'rdu_in6.php';
-            $url_in6 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
+            $url_in6 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
@@ -208,7 +208,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
             include 'rdu_in7.php';
-            $url_in7 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
+            $url_in7 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
@@ -224,7 +224,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
             <?php
             include 'rdu_in8.php';
-            $url_in8 = "date_max=".urlencode($date_max)."&date_min=".urlencode($date_min)."&quarter=$quarter";
+            $url_in8 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 40</td>
             <td align="right">
@@ -252,10 +252,10 @@ if ( $action == 'load' ) {
             ?>
             <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด">
-                <a href="rdu_in10_detail.php?quarter=<?=$quarter;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
+                <a href="rdu_in10_detail.php?year=<?=$year;?>&quarter=<?=$quarter;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
             </td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด">
-                <a href="rdu_in10_detail.php?quarter=<?=$quarter;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
+                <a href="rdu_in10_detail.php?year=<?=$year;?>&quarter=<?=$quarter;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
             </td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
@@ -265,10 +265,16 @@ if ( $action == 'load' ) {
             หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
             <?php
             include 'rdu_in11.php';
+
+            $link_11 = "rdu_in11_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 5</td>
-            <td align="right"><?=number_format($in11a);?></td>
-            <td align="right"><?=number_format($in11b);?></td>
+            <td align="right">
+                <a href="<?=$link_11;?>&table=a" target="_blank"><?=number_format($in11a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_11;?>&table=b" target="_blank"><?=number_format($in11b);?></a>
+            </td>
             <td align="right"><?=number_format($in11_result, 2);?></td>
         </tr>
         <tr>
@@ -276,10 +282,16 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
             <?php
             include 'rdu_in12.php';
+
+            $link_12 = "rdu_in12_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&ge; ร้อยละ 80</td>
-            <td align="right"><?=number_format($in12a);?></td>
-            <td align="right"><?=number_format($in12b);?></td>
+            <td align="right">
+                <a href="<?=$link_12;?>&table=a" target="_blank"><?=number_format($in12a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_12;?>&table=b" target="_blank"><?=number_format($in12b);?></a>
+            </td>
             <td align="right"><?=number_format($in12_result, 2);?></td>
         </tr>
         <tr>
@@ -287,10 +299,16 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
             <?php
             include 'rdu_in13.php';
+
+            $link_13 = "rdu_in13_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 5</td>
-            <td align="right"><?=number_format($in13a);?></td>
-            <td align="right"><?=number_format($in13b);?></td>
+            <td align="right">
+                <a href="<?=$link_13;?>&table=a" target="_blank"><?=number_format($in13a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_13;?>&table=b" target="_blank"><?=number_format($in13b);?></a>
+            </td>
             <td align="right"><?=number_format($in13_result, 2);?></td>
         </tr>
         <tr>
@@ -298,10 +316,16 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยโรคไตเรื้อรังระดับ 3 ขึ้นไปที่ได้รับยา NSAIDs</td>
             <?php
             include 'rdu_in14.php';
+
+            $link_14 = "rdu_in14_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 10</td>
-            <td align="right"><?=number_format($in14a);?></td>
-            <td align="right"><?=number_format($in14b);?></td>
+            <td align="right">
+                <a href="<?=$link_14;?>&table=a" target="_blank"><?=number_format($in14a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_14;?>&table=b" target="_blank"><?=number_format($in14b);?></a>
+            </td>
             <td align="right"><?=number_format($in14_result, 2);?></td>
         </tr>
         <tr>
@@ -309,10 +333,16 @@ if ( $action == 'load' ) {
             <td>ร้อยละผู้ป่วยโรคหืดเรื้อรังที่ได้รับยา inhaled corticosteroid</td>
             <?php
             include 'rdu_in15.php';
+
+            $link_15 = "rdu_in15_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&ge; ร้อยละ 80</td>
-            <td align="right"><?=number_format($in15a);?></td>
-            <td align="right"><?=number_format($in15b);?></td>
+            <td align="right">
+                <a href="<?=$link_15;?>&table=a" target="_blank"><?=number_format($in15a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_15;?>&table=b" target="_blank"><?=number_format($in15b);?></a>
+            </td>
             <td align="right"><?=number_format($in15_result, 2);?></td>
         </tr>
         <tr>
@@ -320,10 +350,16 @@ if ( $action == 'load' ) {
             <td>ร้อยละผู้ป่วยนอกสูงอายุ ที่ใช้ยากลุ่ม long-acting benzodiazepine ได้แก่ chlordiazepoxide, diazepam, dipotassium chlorazepate</td>
             <?php
             include 'rdu_in16.php';
+
+            $link_16 = "rdu_in16_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 5</td>
-            <td align="right"><?=number_format($in16a);?></td>
-            <td align="right"><?=number_format($in16b);?></td>
+            <td align="right">
+                <a href="<?=$link_16;?>&table=a" target="_blank"><?=number_format($in16a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_16;?>&table=b" target="_blank"><?=number_format($in16b);?></a>
+            </td>
             <td align="right"><?=number_format($in16_result, 2);?></td>
         </tr>
         <tr>
@@ -342,10 +378,16 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจแัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
             <?php
             include 'rdu_in18.php';
+
+            $link_18 = "rdu_in18_detail.php?year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
-            <td align="right"><?=number_format($in18a);?></td>
-            <td align="right"><?=number_format($in18b);?></td>
+            <td align="right">
+                <a href="<?=$link_18;?>&table=a" target="_blank"><?=number_format($in18a);?></a>
+            </td>
+            <td align="right">
+                <a href="<?=$link_18;?>&table=b" target="_blank"><?=number_format($in18b);?></a>
+            </td>
             <td align="right"><?=number_format($in18_result, 2);?></td>
         </tr>
     </table>

@@ -13,9 +13,10 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2561-07-01';
-$date_end = '2561-09-31';
-$quarter = 4;
+$date_start = '2561-10-01';
+$date_end = '2561-10-31';
+$quarter = 1;
+$year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_opday_'.$quarter.'.sql';
@@ -32,7 +33,7 @@ AND a.`doctor` <> '' ";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 
-$sql_header = "INSERT INTO `opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`date_hn`,`date_generate`,`quarter`) VALUES ";
+$sql_header = "INSERT INTO `opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
 $sql_data_list = '';
 
 $test_i = 0;
@@ -55,7 +56,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
         $gender = 'f';
     }
 
-    $sql_data_list = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$date_hn',NOW(),'$quarter');\n";
+    $sql_data_list = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$date_hn',NOW(),'$quarter','$year');\n";
     file_put_contents($filePath, $sql_data_list, FILE_APPEND);
 
     // if ( $test_i > 100 ) {

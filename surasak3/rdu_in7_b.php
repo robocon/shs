@@ -5,13 +5,12 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 $db->exec("SET NAMES TIS620");
 
-$date_max = input_get('date_max');
-$date_min = input_get('date_min');
+$year = input_get('year');
 $quarter = input_get('quarter');
 
 $sql = "SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
-WHERE `quarter` = '$quarter' 
+WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
     OR `icd10` IN ( 'A020' ) 
