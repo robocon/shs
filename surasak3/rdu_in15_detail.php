@@ -14,8 +14,7 @@ $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15`
 SELECT * 
 FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
-AND ( `icd10` LIKE 'J45%' 
-    OR `icd10` LIKE 'J46%' ) 
+AND `icd10` LIKE 'J45%' 
 GROUP BY `hn`";
 $test = $db->exec($sql);
 
