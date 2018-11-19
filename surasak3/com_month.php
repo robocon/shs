@@ -24,22 +24,42 @@ body,td,th {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
+a:link {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
 -->
 </style>
 </head>
 
 <body>
-
+<?php
+print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_support.php'><font size='4' class='forntsarabun'>ดูข้อมูลแจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
+print "<hr>";
+?>
 <?
 if(!isset($_POST['search'])){
 ?>
-<a target=_self  href='../nindex.htm' class='forntsarabun'><------ ไปเมนู</a>
+
 <form action="<? $_SERVER['PHP_SELF']?>" name="f1" method="post" target="_blank">
-<table width="291">
+<table width="80%">
 	<tr><td align="center" class="font1"><strong>รายงานประจำเดือน</strong></td>
 	</tr>
     <tr>
-      <td align="center" class="style1">เดือน
+      <td align="center" class="style1"><strong>ประเภทงาน&nbsp;</strong>
+        <select name="jobtype" id="jobtype" class="forntsarabun">
+      <option value="0" selected>เลือกงานทั้งหมด</option>
+      <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
+      <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
+        </select>&nbsp;&nbsp;เดือน
           <select name="m" class="forntsarabun">
 <?
 	$m=date("m");
@@ -80,7 +100,12 @@ if(!isset($_POST['search'])){
 }
 if(isset($_POST['search'])){
 	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+	
+if($_POST['jobtype']=="0"){
 	$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+}else{
+	$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."'";
+}	
 	//echo $sql;
 	$row = mysql_query($sql);
 	$num=mysql_num_rows($row);

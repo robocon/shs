@@ -101,7 +101,11 @@ if($_POST["part"]=="e"){
 $chkdate1=$_POST["year1"]."-".$_POST["month1"]."-".$_POST["date1"]." 00:00:00";
 $chkdate2=$_POST["year2"]."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
 
+if($_POST["part"]=="4"){
+$result="select SUM(b.`price`) AS sumprice from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno INNER JOIN druglst AS c ON b.drugcode=c.drugcode where (a.bounddate LIKE '%$month1' OR a.bounddate LIKE '%$month2'  OR a.bounddate LIKE '%$month3'  OR a.bounddate LIKE '%$month4'  OR a.bounddate LIKE '%$month5'  OR a.bounddate LIKE '%$month6'  OR a.bounddate LIKE '%$month7'  OR a.bounddate LIKE '%$month8'  OR a.bounddate LIKE '%$month9'  OR a.bounddate LIKE '%$month10'  OR a.bounddate LIKE '%$month11'  OR a.bounddate LIKE '%$month12') AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND ( a.`potype` is null OR a.`potype` = '' ) AND c.part LIKE 'DD%' AND c.drug_innovation !='' LIKE 'DD%' AND a.prepono NOT LIKE 'อ.%' AND pono !=''";
+}else{
 $result="select SUM(b.`price`) AS sumprice from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno INNER JOIN druglst AS c ON b.drugcode=c.drugcode where (a.bounddate LIKE '%$month1' OR a.bounddate LIKE '%$month2'  OR a.bounddate LIKE '%$month3'  OR a.bounddate LIKE '%$month4'  OR a.bounddate LIKE '%$month5'  OR a.bounddate LIKE '%$month6'  OR a.bounddate LIKE '%$month7'  OR a.bounddate LIKE '%$month8'  OR a.bounddate LIKE '%$month9'  OR a.bounddate LIKE '%$month10'  OR a.bounddate LIKE '%$month11'  OR a.bounddate LIKE '%$month12') AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND ( a.`potype` is null OR a.`potype` = '' ) AND c.part LIKE 'DD%' AND a.prepono NOT LIKE 'อ.%' AND pono !=''";
+}
 //echo $result;
 $cquery=mysql_query($result);
 list($sumprice)=mysql_fetch_array($cquery);

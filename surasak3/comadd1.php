@@ -10,16 +10,17 @@ $datetime=$_POST["datetime"];
 $phone=$_POST["phone"];
 $user=$_POST["user"];
 $jobtype=$_POST["jobtype"];
-if($_POST["B1"]=="บันทึกข้อมูล"){
+//print_r($_POST);
+if($_POST["act"]=="add"){
 	$sql="select * from com_support where depart='$depart' and head='$head' and thidate='$thidate'";
 	//echo $sql;
 	$query=mysql_query($sql);
 	$num=mysql_num_rows($query);
 	if($num < 1){
 		 $add = "INSERT INTO com_support(depart,head,detail,datetime,user,date,phone,user1,jobtype)
-					  VALUES('$depart','$head','$detail','$datetime','$sOfficer','$thidate','$phone','$user','$jobtype');";
-		  $result = mysql_query($add);
-		  if (mysql_errno() == 0){
+					  VALUES('$depart','$head','$detail','$datetime','$sOfficer','$thidate','$phone','$user','$jobtype');";	
+					 // echo $add;  
+		 if(mysql_query($add)){
 			echo "ทำการเพิ่มข้อมูลเรียบร้อยแล้ว";
 			echo "<meta http-equiv=\"refresh\" content=\"1;url=com_support.php\">";
 		  }else { 

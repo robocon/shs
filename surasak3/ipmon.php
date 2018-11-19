@@ -5,7 +5,8 @@
     $today="$d-$m-$yr";
     print "<font face='Angsana New'>ชื่อและรายงานการเงิน  คนไข้ในที่จำหน่ายในวันที่ $today";
     print "&nbsp;&nbsp;&nbsp<a target=_BLANK  href='ipmonrep.php'>พิมพ์รายงาน</a>";
-    print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
+    print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='ipdate.php'><<เลือกวันที่ใหม่</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
     $today="$yr-$m-$d";
 ?>
 <table>

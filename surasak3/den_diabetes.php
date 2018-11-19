@@ -9,7 +9,7 @@ $configs = array(
     'pass' => ''
 );
 
-$db = Mysql::load($configs);
+$db = Mysql::load($shs_configs);
 $db->exec('SET NAMES UTF-8');
 
 $end = date('Y');
@@ -384,7 +384,10 @@ if ( $action == 'show_data' ) {
                 <td>จำนวนผู้ป่วย ทั้งหมด </td>
                 <td align="right"><?=$i;?></td>
             </tr>
-
+            <tr>
+                <td>จำนวนที่ผ่านเกณฑ์ HBA1C < 7 และ BP 140/90</td>
+                <td align="right"><?=$i1;?></td>
+            </tr>
             <tr>
                 <td>จำนวนผู้ป่วย DM อย่างเดียว</td>
                 <td align="right"><?=$count_dm;?></td>

@@ -96,7 +96,8 @@ packpri_vat= '$packpri_vat ',
 		drugnote = '".$_POST["drugnote"]."',  		
 		drug_active = '".$_POST["active"]."',
 		ised = '".$_POST["ised"]."',
-		had = '".$_POST["had"]."' 
+		had = '".$_POST["had"]."',
+		drug_innovation =  '".$_POST['drug_innovation']."' 
         WHERE drugcode='$drugcode' limit 1";
 //echo $query;
         $result = mysql_query($query)

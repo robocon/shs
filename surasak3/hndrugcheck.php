@@ -1,6 +1,30 @@
 <?php
 session_start();
-
+?>
+    <style type="text/css">
+    *{
+        font-family: 'TH SarabunPSK';
+        font-size: 15pt;
+    }
+    body{
+        padding: 2pt;
+    }
+    h3{
+        font-size: 18pt;
+        padding: 0;
+        margin: 0;
+    }
+    @media print{
+        .noPrint{
+            display: none;
+        }
+    }
+    .underline{
+        border-bottom: 1px solid black;
+        padding: 0 8px;
+    }
+    </style>
+<?
 include 'includes/connect.php';
 global $hn;
 $ward_lists = array(
@@ -8,14 +32,21 @@ $ward_lists = array(
 );
 
 $action = $_POST['action'];
-if( $action === 'print' ){
+$type = $_POST['type'];
+if( $action == 'print' && ($type=='admit' || $type=='dc')){
 
     $ids = $_POST['rows_id'];
     $hn = $_POST['hn'];
-    $type = $_POST['type'];
-
-    $type_txt = ( $type === 'admit' ) ? 'Admit' : 'D/C' ;
-    
+//echo $type;
+    //$type_txt = ($type === 'admit') ? 'Admit' : 'D/C';
+	if($type == 'admit'){
+		$type_txt ="Admit";
+	}else if($type == 'dc'){
+		$type_txt ="D/C";
+	}else{
+		$type_txt ="MR";
+	}
+//echo $type_txt;    
     $sql = "SELECT *, SUBSTRING(`bedcode`, 1, 2) AS `ward_code`
     FROM `ipcard` 
     WHERE `hn` = '$hn' 
@@ -45,32 +76,6 @@ if( $action === 'print' ){
     $q = mysql_query($sql) or die( mysql_error() );
 
     ?>
-    <style type="text/css">
-    *{
-        font-family: 'TH SarabunPSK';
-        font-size: 15pt;
-    }
-    body{
-        padding: 2pt;
-    }
-    h3{
-        font-size: 18pt;
-        padding: 0;
-        margin: 0;
-    }
-    @media print{
-        .noPrint{
-            display: none;
-        }
-    }
-    .underline{
-        border-bottom: 1px solid black;
-        padding: 0 8px;
-    }
-    </style>
-    <!--
-    <h3 style="text-align: center;">Medication reconciliation(<?=$type_txt;?>)</h3>
-    -->
     <h3 style="text-align: center;">ยาเดิมของผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</h3>
     <table>
         <tr>
@@ -150,15 +155,15 @@ if( $action === 'print' ){
     <table width="100%">
         <tr>
             <td width="50%">แพทย์..................................................</td>
-            <td width="50%">วันที่..................................................</td>
+            <td>วันที่..................................................</td>
         </tr>
         <tr>
             <td width="50%">เภสัช..................................................</td>
-            <td width="50%">วันที่..................................................</td>
+            <td>วันที่..................................................</td>
         </tr>
         <tr>
             <td width="50%">พยาบาล..................................................</td>
-            <td width="50%">วันที่..................................................</td>
+            <td>วันที่..................................................</td>
         </tr>
         <tr>
             <td colspan="2">
@@ -168,12 +173,266 @@ if( $action === 'print' ){
                         <td>
                             พยาบาลหอผู้ป่วยตรวจสอบการจัดการยาเดิมของผู้ป่วยในฟอร์มนี้ให้เรียบร้อยครบถ้วน<br>
                             และส่งแบบฟอร์มนี้พร้อม Dr's order D/C ในวันที่ผู้ป่วยกลับบ้านทุกราย<br>
-                            เพื่อทำ Med.reconcile ให้สมบูรณ์ก่อนผู้ป่วยกลับบาน+นำสติกเกอร์ไปติด OPD Card
-                        </td>
+                            เพื่อทำ Med.reconcile ให้สมบูรณ์ก่อนผู้ป่วยกลับบ้าน+นำสติกเกอร์ไปติด OPD Card                        </td>
                     </tr>
-                </table>
-                
-            </td>
+                </table>            </td>
+        </tr>
+    </table>
+<div class="noPrint">
+        <button onclick="println()">พิมพ์ใบ</button>
+    </div>
+    <script type="text/javascript">
+        function println(){
+            window.print();
+        }
+    </script>
+    <?php
+    exit;
+}else if( $action == 'print' && $type=='mr'){
+    $ids = $_POST['rows_id'];
+    $hn = $_POST['hn'];
+//echo $type;
+    //$type_txt = ($type === 'admit') ? 'Admit' : 'D/C';
+	if($type == 'admit'){
+		$type_txt ="Admit";
+	}else if($type == 'dc'){
+		$type_txt ="D/C";
+	}else{
+		$type_txt ="MR";
+	}
+//echo $type_txt;    
+    $sql = "SELECT *, SUBSTRING(`bedcode`, 1, 2) AS `ward_code`
+    FROM `ipcard` 
+    WHERE `hn` = '$hn' 
+    ORDER BY `row_id` DESC 
+    LIMIT 1";
+    $q = mysql_query($sql) or die( mysql_error() );
+    $user = mysql_fetch_assoc($q);
+
+    $ward_name = $ward_lists[$user['ward_code']];
+
+    $wardExTest = preg_match('/45.+/', $user['bedcode']);
+    if( $wardExTest > 0 ){
+        
+        // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
+        $wardR3Test = preg_match('/R3\d+|B\d+/', $user['bedcode']);
+        $wardBxTest = preg_match('/B[0-9]+/', $user['bedcode']);
+        $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+        $ward_name = $ward_name.' '.$exName;
+    }
+
+
+    $id_lists = "'".implode("','", $ids)."'";
+    $sql = "SELECT a.`tradname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
+    FROM `drugrx` AS a 
+    LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode` 
+    WHERE a.`row_id` IN ($id_lists)";
+    $q = mysql_query($sql) or die( mysql_error() );
+
+    ?>
+    <h3 style="text-align: center;">ยาเดิมของผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</h3>
+    <table>
+        <tr>
+            <td><b>ชื่อ</b>: <span class="underline"><?=$user['ptname'];?></span></td>
+            <td><b>HN</b>: <span class="underline"><?=$user['hn'];?></span></td>
+            <td><b>AN</b>: <span class="underline"><?=$user['an'];?></span></td>
+        </tr>
+        <tr>
+            <td><b>หอผู้ป่วย</b>: <span class="underline"><?=$ward_name;?></span></td>
+            <td><strong>โรค</strong>: <span class="underline">
+              <?=$user['diag'];?>
+            </span></td>
+            <td><strong>แพทย์</strong>: <span class="underline"><?=substr($user['doctor'],5);?></span></td>
+        </tr>
+        <tr>
+          <td><b>วันที่ Admit: </b><span class="underline">
+          <?=$user['date'];?>
+          </span></td>
+          <td><b>วันที่ D/C: </b><span class="underline">
+          <?=$user['dcdate'];?>
+          </span></td>
+          <td>&nbsp;</td>
+        </tr>
+    </table>
+    <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
+        <tr>
+            <th rowspan="2" width="2%">#</th>
+            <th rowspan="2" width="15%">ชื่อยา</th>
+            <th rowspan="2" width="27%">วิธีใช้</th>
+            <th width="7%" rowspan="2">จำนวน</th>
+            <th width="15%" rowspan="2">วันที่ได้ยาล่าสุด</th>
+            <th colspan="3">Admit</th>
+            <th colspan="3">D/C</th>
+        </tr>
+        <tr>
+            <th width="4%">ใช้ต่อ</th>
+            <th width="4%">Off</th>
+            <th width="9%">เหตุผลที่สั่ง<br />
+            หยุดยา/เปลี่ยนยา</th>
+          <th width="4%">ใช้ต่อ</th>
+          <th width="4%">Off</th>
+          <th width="9%">เหตุผลที่สั่ง<br />
+          หยุดยา/เปลี่ยนยา</th>
+        </tr>
+        <?php
+        $i = 1;
+        while( $item = mysql_fetch_assoc($q) ) {
+            list($date, $time) = explode(' ', $item['date']);
+            ?>
+             <tr>
+                <td><?=$i;?></td>
+                <td><?=$item['tradname'];?></td>
+                <td><?=$item['detail1'].$item['detail2'].$item['detail3'];?></td>
+                <td align="right"><?=$item['amount'];?></td>
+                <td><?=$date;?></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <?php
+            ++$i;
+        }
+        
+        $other_name = $_POST['other_name'];
+        $other_sl = $_POST['other_sl'];
+        $other_amount = $_POST['other_amount'];
+        
+        $rows = count($other_name);
+        if( $rows > 0 ){
+            for( $x = 0; $x < $rows; $x++ ){
+                $tradname = $other_name[$x];
+                $other_sl = $other_sl[$x];
+                $other_amount = $other_amount[$x];
+                ?>
+                <tr>
+                    <td><?=$i;?></td>
+                    <td><?=$tradname;?></td>
+                    <td><?=$other_sl;?></td>
+                    <td align="right"><?=$other_amount;?></td>
+                    <td><?=$date;?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <?php
+                $i++;
+            }
+        }
+            
+        ?>
+    </table>
+    <table width="100%">
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td width="31%">แพทย์..................................................</td>
+            <td width="31%">วันที่..................................................</td>
+            <td width="38%">ความเห็นแพทย์</td>
+        </tr>
+        <tr>
+            <td width="31%">เภสัช..................................................</td>
+            <td width="31%">วันที่..................................................</td>
+            <td width="38%" rowspan="2" valign="top" bordercolor="#000000"><table width="90%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+              <tr>
+                <td width="16%">&nbsp;</td>
+                <td width="84%">คนไข้ได้รับยาต่อเนื่อง</td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td>ไม่ได้รับยาต่อเนื่อง</td>
+              </tr>
+            </table></td>
+        </tr>
+        <tr>
+            <td width="31%">พยาบาล..................................................</td>
+            <td width="31%">วันที่..................................................</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td valign="top" bordercolor="#000000">&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="3">Pharmacist note (ขอปรึกษาแพทย์)</td>
+        </tr>
+        <tr>
+          <td colspan="3"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+            <tr>
+              <td width="25%">&nbsp;</td>
+              <td width="7%">&nbsp;</td>
+              <td width="24%">Unnecessary drug therapy</td>
+              <td width="44%">ได้รับยาที่ไม่จำเป็น</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Need for additional drug therapy</td>
+              <td>สมควรได้รับยาเพิ่มเติม</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Improper drug selection</td>
+              <td>การเลือกใช้ยาที่ไม่เหมาะสม</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Dosage too low</td>
+              <td>ได้ขนาดยาต่ำเกินไป</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Dosage too hign</td>
+              <td>ได้ขนาดยาสูงเกินไป</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Adverse drug reaction</td>
+              <td>เกิดอาการไม่พึงประสงค์จากการใช้ยา</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Drug interaction</td>
+              <td>ปฏิกิริยาระหว่างยา</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>Non-Compliance</td>
+              <td>ความร่วมมือในการใช้ยา</td>
+            </tr>
+
+          </table></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td valign="top" bordercolor="#000000">&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <table>
+                    <tr>
+                        <td valign="top">Note: </td>
+                        <td>
+                            พยาบาลหอผู้ป่วยตรวจสอบการจัดการยาเดิมของผู้ป่วยในฟอร์มนี้ให้เรียบร้อยครบถ้วน<br>
+                            และส่งแบบฟอร์มนี้พร้อม Dr's order D/C ในวันที่ผู้ป่วยกลับบ้านทุกราย<br>
+                            เพื่อทำ Med.reconcile ให้สมบูรณ์ก่อนผู้ป่วยกลับบ้าน+นำสติกเกอร์ไปติด OPD Card                        </td>
+                    </tr>
+                </table>            </td>
         </tr>
     </table>
     <div class="noPrint">
@@ -186,8 +445,8 @@ if( $action === 'print' ){
     </script>
     <?php
     exit;
-}
 
+}
 ?>
 
 <form method="post" action="<?php echo $PHP_SELF ?>">
@@ -202,8 +461,9 @@ if( $action === 'print' ){
     <div>
         <button type="submit" value="admit" onclick="add_type('admit')">พิมพ์ใบ Admit</button>
         <button type="submit" value="dc" onclick="add_type('dc')">พิมพ์ใบ D/C</button>
+        <button type="submit" value="mr" onclick="add_type('mr')">พิมพ์ใบ MR</button>
         
-        <input type="hidden" name="type" id="type">
+<input type="hidden" name="type" id="type">
         <input type="hidden" name="hn" value="<?=$hn;?>">
         <input type="hidden" name="action" value="print">
     </div>

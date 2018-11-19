@@ -268,10 +268,10 @@ class Mysql
 			$this->db = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $user, $pass);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			
-			$match = preg_match('/(tis-620)/', $_SERVER['CONTENT_TYPE']);
-			if( empty($match) ){
-				$this->db->exec("SET NAMES $charset ;");
-			}
+			// $match = preg_match('/(tis-620)/', $_SERVER['CONTENT_TYPE']);
+			// if( empty($match) ){
+			// 	$this->db->exec("SET NAMES $charset ;");
+			// }
 
 		} catch (PDOException $e) {
 			print "Error!: " . $e->getMessage() . "<br/>";

@@ -83,6 +83,7 @@ font-size:18px;
 		$tmt = $row->tmt;
         $procat = $row->product_category;
 		$prodrugtype = $row->product_drugtype;
+		$drug_innovation = $row->drug_innovation;
 		
         $edpri_from = $row->edpri_from;
 		$grouptype = $row->grouptype;
@@ -301,6 +302,18 @@ print "<td colspan='2'>พัสดุส่งเสริมสุขภาพและสาธารณสุข&nbsp;&nbsp;&nbsp;";
 		  <option value='3'  <? if($prodrugtype=='3'){ echo "selected='selected'"; } ?>>3 = ยาที่อยู่ในบัญชียาหลักแห่งชาติหรือเวชภัณฑ์ ซึ่งองค์การเภสัชกรรมหรือโรงงานเภสัชกรรมทหาร มิได้เป็นผู้ผลิตแต่มีจำหน่าย</option>
 		  <option value='4'  <? if($prodrugtype=='4'){ echo "selected='selected'"; } ?>>4 = ยาและเวชภัณฑ์ที่ได้ขึ้นบัญชีนวัตกรรมไทย</option>
 		  <option value='5'  <? if($prodrugtype=='5'){ echo "selected='selected'"; } ?>>5 = วัคซีนโรคตับอักเสบบี และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่มีอยู่ในบัญชี</option> 
+</select>
+<?
+print "</td>";
+print "</tr>";
+print "<tr>";
+print "<td></td>";
+print "<td colspan='2'>คุณลักษณะ&nbsp;&nbsp;&nbsp;";
+?>
+<select name="drug_innovation" class="txtsarabun">
+          <option value='' <? if($drug_innovation==''){ echo "selected='selected'"; } ?>>ไม่ใช่ รายการนวัตกรรม</option>
+		  <option value='1' <? if($drug_innovation=='1'){ echo "selected='selected'"; } ?>>1 = เป็น รายการนวัตกรรม</option>
+          <option value='2' <? if($drug_innovation=='2'){ echo "selected='selected'"; } ?>>2 = ไม่เป็นรายการนวัตกรรม แต่ชื่อสามัญตรงตามรายการนวัตกรรม</option>  
 </select>
 <?
 print "</td>";

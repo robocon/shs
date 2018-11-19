@@ -8,22 +8,6 @@ body,td,th {
 </style>
 <? 
 include("connect.inc");
-////*runno ตรวจสุขภาพ*/////////
-	$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
-	$result = mysql_query($query) or die("Query failed");
-	
-	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-		if (!mysql_data_seek($result, $i)) {
-			echo "Cannot seek to row $i\n";
-			continue;
-		}
-			if(!($row = mysql_fetch_object($result)))
-			continue;
-	}
-	
-	$nPrefix=$row->prefix;
-	$nPrefix="61";
-////*runno ตรวจสุขภาพ*/////////
 ?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>
 <p align="center" style="font-weight:bold;">รายงานผลการตรวจสุขภาพกำลังพล ทบ. (ผสต.11) ประจำปี <?="25".$nPrefix;?> (ใหม่)
@@ -33,12 +17,28 @@ include("connect.inc");
 <input name="act" type="hidden" value="show">
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
-      <td align="center">หน่วย :
+      <td align="center">ปีงบประมาณ&nbsp;&nbsp;
+    <? 
+			   $Y=date("Y")+543;
+			   $date=date("Y")+543;
+			  
+				$dates=range(2560,$date);
+				echo "<select name='year1'  class='txt'>";
+				foreach($dates as $i){
+
+				?>
+    <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>>
+      <?=$i;?>
+    </option>
+    <?
+				}
+				echo "<select>";
+				?>&nbsp;&nbsp;หน่วย :
         <label>      
         <select name="camp" id="camp">
           <option value="all" selected>ทุกหน่วย</option>
 		 <?
-		 $sql="select distinct(camp) as camp from chkup_solider where yearchkup = '$nPrefix' and (camp !='D33 หน่วยทหารอื่นๆ' and camp!='') order by camp";
+		 $sql="select distinct(camp1) as camp from condxofyear_so where (camp1 !='D33 หน่วยทหารอื่นๆ' and camp1 !='D34 กทพ.33' and camp1 !='')";
 		 $query=mysql_query($sql);
 		 while($rows=mysql_fetch_array($query)){
 		 $camp=substr($rows["camp"],4);
@@ -55,14 +55,15 @@ include("connect.inc");
 </form>
 <?
 if($_POST["act"]=="show"){
+$nPrefix=substr($_POST["year1"],2,2);
 if($_POST["camp"]=="all"){
 $sql1="SELECT *
 FROM `armychkup`
-WHERE `yearchkup` = '$nPrefix'  and (camp !='D33 หน่วยทหารอื่นๆ' and camp !='')  order by age desc";
+WHERE `yearchkup` = '$nPrefix'  and (camp !='D33 หน่วยทหารอื่นๆ' and camp !='D34 กทพ.33' and camp !='')  order by camp asc, age desc";
 }else{
 $sql1="SELECT *
 FROM `armychkup`
-WHERE `camp`='$_POST[camp]' AND `yearchkup` = '$nPrefix' and camp !='' order by age desc";
+WHERE `camp`='$_POST[camp]' AND `yearchkup` = '$nPrefix' order by age desc";
 }
 //var_dump($sql1);
 $query1=mysql_query($sql1)or die ("Query armychkup Error");
@@ -75,7 +76,7 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
 <div align="right">( แบบ รง.ผสต.11 )</div>
 <h3 align="center">ผนวก ค</h3>
 <div align="center"><strong>ชื่อรายงาน และแบบฟอร์มรายงานการตรวจร่างกายประจำปี ของกำลังพลกองทัพบกและครอบครัว</strong></div>
-<div align="left"><strong>1. รายงานข้อมูลการตรวจร่างกายของกำลังพลกองทัพบก(รายบุคคล) ประจำปี</strong> <?="25".$nPrefix;?></div>
+<div align="left"><strong>1. รายงานข้อมูลการตรวจร่างกายของกำลังพลกองทัพบก(รายบุคคล) ประจำปี</strong> <?=$nPrefix;?></div>
 <div align="left"><strong>หน่วยสายแพทย์ที่ทำการตรวจ</strong>  <?="($pcucode) $pcuname";?></div>
 <div align="left"><strong>หน่วยทหารที่มารับการตรวจ</strong> <? if($_POST["camp"]=="all"){ echo $pcupart;}else{ echo substr($_POST["camp"],4);}?></div>
 <br />

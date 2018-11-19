@@ -6,7 +6,7 @@ include 'templates/classic/header.php';
 $doctors = array(
 	'87' => 'ขชล รวมทรัพย์', 
 	'20' => 'วรวิทย์ วงษ์มณี',
-	'129' => 'กฤษฎิ์พงษ์ ศิริสารศักดา'
+	'143' => 'รัตนเกียรติ พงษ์รัตนกุล'
 );
 
 $th_date = !empty($_POST['year_select']) ? trim($_POST['year_select']) : date('Y') + 543 ;

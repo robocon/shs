@@ -3,6 +3,9 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
+// dump($db);
+// $db->exec("SET NAMES TIS620");
+
 $ward_lists = array(
     42 => 'ËÍ¼Ùé»èÇÂÃÇÁ', 43 => 'ËÍ¼Ùé»èÇÂÊÙµÔ', 44 => 'ËÍ¼Ùé»èÇÂICU', 45 => 'ËÍ¼Ùé»èÇÂ¾ÔàÈÉ'
 );
@@ -65,6 +68,7 @@ $items = $db->get_items();
     </tr>
 <?php 
 $i = 1;
+// dump($items);
 foreach ($items as $key => $item) { 
 
     $ward_code = substr($item['bedcode'], 0, 2);

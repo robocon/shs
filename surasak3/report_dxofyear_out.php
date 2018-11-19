@@ -345,8 +345,12 @@ if(isset($_POST['hn'])){
 	
 $chkyear=substr($_GET["chkyear"],2);
 //echo $chkyear;	
-$sql1="CREATE TEMPORARY TABLE  result1  Select * from  resulthead  WHERE hn='".$result['hn']."' and clinicalinfo ='ตรวจสุขภาพประจำปี$chkyear' ";
-$query1 = mysql_query($sql1); 	
+$sql1="CREATE TEMPORARY TABLE  result1  
+Select * from  resulthead  
+WHERE hn='".$result['hn']."' 
+and clinicalinfo ='ตรวจสุขภาพประจำปี$chkyear' ";
+$query1 = mysql_query($sql1); 
+
 	?>
 <table width="100%">
 <tr>
@@ -925,7 +929,48 @@ mmHg.</u></span></td>
         <? if($result['stat_other7']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other7']."...";?>
       </span></td>
       </tr>
-      <? }?>
+      <? }
+
+	$q = mysql_query("SELECT * FROM `result1` WHERE `profilecode` = 'METAMP' ") or die( mysql_error() );
+	$amp_item = mysql_fetch_assoc($q);
+	$amp_autonumber = $amp_item['autonumber'];
+
+	$detail_sql = "SELECT * 
+	FROM `resultdetail` 
+	WHERE `autonumber` = '$amp_autonumber' 
+	AND `labcode` = 'METAMP' ";
+	$q = mysql_query($detail_sql);
+	$meta = mysql_fetch_assoc($q);
+
+
+if($meta['METAMP']!=""){
+	?>
+	<tr>
+		<td colspan="6" valign="top"><strong>การตรวจหาสารเสพติด</strong></td>
+	</tr>
+	<tr>
+		<td width="23%" valign="top" class="text3"><strong><?=$meta['other1']?>:</strong></td>
+		<td colspan="5" valign="top" class="text3">
+			<span class="text3">
+				<?php
+				
+				if($meta["result"]=="Negative"){
+					$app="ปกติ";	
+				}else if($meta["result"]=="Positive"){
+					$app="ผิดปกติ";	
+				}
+
+				echo $app;
+				?>
+			</span>
+		</td>
+	</tr>
+	<?php 
+}
+
+?>
+
+
     <tr>
       <td height="27" colspan="6" align="center" valign="top" class="text1"><hr /><strong>สรุปผลการตรวจสุขภาพ</strong>&nbsp;<u>
 	  <?

@@ -583,18 +583,15 @@ $strrows=mysql_fetch_array($strresult2);
 
 $user_ptright = substr($strrows["ptright"], 0, 3);
 
-// R06	พ.ร.บ.คุ้มครองผู้ประสบภัยจากรถ
+// 
 // R07 ประกันสังคม
-// R08	ก.ท.44(บาดเจ็บในงาน)
+// R08 ก.ท.44(บาดเจ็บในงาน)
+// เพิ่มสิทธิ พรบ. R06 เข้าไปด้วย 
 if( $user_ptright == "R07" || $user_ptright == "R06" || $user_ptright == "R08" ){
 $chkdate=substr($dateid,0,4);
 $chksql="SELECT sum( denta ) AS pricedental, sum( other ) AS priceother
 FROM `opday`
-WHERE toborow = 'EX07 ทันตกรรม' 
-AND hn='".$hnid."' 
-AND (thidate like '$chkdate%' AND thidate not like '$date%')  
-AND `denta` > 0 
-AND `other` > 0";	
+WHERE toborow = 'EX07 ทันตกรรม' AND hn='".$hnid."' and (thidate like '$chkdate%' AND thidate not like '$date%')  AND `denta` >0 AND `other` >0";	
 //echo $chksql;
 $chkquery= mysql_query($chksql);
 $chknum=mysql_num_rows($chkquery);
@@ -606,8 +603,56 @@ $sumprice=$chkrows["pricedental"]+$chkrows["priceother"];
 		echo "<script>alert('แจ้งเตือน : ผู้ป่วยมียอดรวมค่าทำหัตถการทันตกรรม ปี$chkdate รวม $sumprice บาท (จำนวนเงินนี้ไม่รวมกับวันที่ $date)') </script>";
 	}	
 }
-?>
-<?php 
+
+
+$q = mysql_query("select * from  opday  where thidate like '$dateid%' and  hn='$hnid'");
+$test_pt = mysql_fetch_assoc($q);
+$user_ptright = substr($test_pt["ptright"], 0, 3);
+if( $user_ptright == "R06" ){
+
+	// 2561-11-05
+	$chkdate = substr($dateid,0,4);
+	
+	$sql = "SELECT ( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
+	FROM `opday`
+	WHERE hn='$hnid' 
+	AND `thidate` LIKE '$chkdate%' 
+	AND `toborow` LIKE '$user_ptright%' ";
+	$q = mysql_query($sql);
+	$item = mysql_fetch_assoc($q);
+
+	if( $item['total'] > 0 ){
+		?>
+		<script type="text/javascript">
+			alert('แจ้งเตือน: ผู้ป่วย พ.ร.บ. มีค่าใช้จ่ายในปี<?=$chkdate;?> รวม <?=$item['total'];?> บาท');
+		</script>
+		<?php
+	}
+
+}
+
+if( $user_ptright == "R08" ){
+
+	// 2561-11-05
+	$chkdate = substr($dateid,0,4);
+	
+	$sql = "SELECT ( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
+	FROM `opday`
+	WHERE hn='$hnid' 
+	AND `thidate` LIKE '$chkdate%' 
+	AND `toborow` LIKE '$user_ptright%' ";
+	$q = mysql_query($sql);
+	$item = mysql_fetch_assoc($q);
+
+	if( $item['total'] > 0 ){
+		?>
+		<script type="text/javascript">
+			alert('แจ้งเตือน: ผู้ป่วย ก.ท.44 มีค่าใช้จ่ายในปี<?=$chkdate;?> รวม <?=$item['total'];?> บาท');
+		</script>
+		<?php
+	}
+
+}
 
 $sql = "SELECT `thidate`,`vn` 
 FROM `opday` WHERE `hn` = '$hnid' 

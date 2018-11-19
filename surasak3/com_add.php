@@ -77,6 +77,7 @@ print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหล
 print "<hr>";
 ?>
 <form method="POST" action="comadd1.php" name="f1" id="f1">
+<input name="act" type="hidden" value="add">
 <table width="1053" align="center" bgcolor="#66CCCC" class="forntsarabun">
   <tr>
     <td height="48" colspan="4" bgcolor="#0099CC"><span class="style2">ระบบแจ้งซ่อมระบบคอมพิวเตอร์ ปรับปรุงและพัฒนาโปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</span></td>
@@ -101,7 +102,7 @@ include("connect.inc");
     <td colspan="3" bgcolor="#66CCCC"><select name="jobtype" id="jobtype" class="forntsarabun">
       <option value="0" selected>เลือกงาน</option>
       <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
-      <option value="software">งานแก้ไข/พัฒนาโปรแกมโรงพยาบาล</option>
+      <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
         </select></td>
   </tr>
   <tr>
