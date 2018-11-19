@@ -21,12 +21,14 @@ CASE
     WHEN d.hphone <> '' THEN d.hphone 
     WHEN d.phone <> '' THEN d.phone
     WHEN d.ptffone <> '' THEN d.ptffone
-END AS `PHONE` 
+END AS `PHONE` ,
+d.`typearea` AS `TYPEAREA`
 
 FROM (
     SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
     FROM `opday` 
     WHERE `thidate` LIKE '$thimonth%' 
+    AND `hn` <> '' 
     AND ( `idcard` <> '' AND `idcard` IS NOT NULL )
 ) AS c 
 LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
@@ -37,11 +39,13 @@ $sql1="SELECT *
 From report_person1";
 $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
-while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone) = mysql_fetch_row ($result1)) {		
+while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea) = mysql_fetch_row ($result1)) {		
 
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
-    
+
+    $PID = $hn;
+
     if(empty($id) || $id=="-"){
         $cid="";
         $fstatus="";  //สถานะในครอบครัว
@@ -170,12 +174,16 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
 
     if(substr($idguard,0,4)== "MX04"){$dcstatus="1";}else{$dcstatus="9";}
 
-	$ptright=substr($ptright,0,2);
-	if($ptright=="R01"){
-		$typearea="4";
-	}else{
-    	$typearea="1";  //สถานะบุคคล
-	}
+    if ( empty($typearea) ) {
+        $ptright=substr($ptright,0,2);
+        if($ptright=="R01"){
+            $typearea="4";
+        }else{
+            $typearea="1";  //สถานะบุคคล
+        }
+    }
+	
+    
    //เชื้อชาติ
     if($race=="ไทย" || $race=="01 ไทย"){
 		$race="099";  
@@ -224,7 +232,7 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
 	
     $discharge="9";  //สถานะ/สาเหตุการจำหน่าย
     
-    $inline = "$hospcode|$cid|$hn|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update|$phone|$phone\r\n";
+    $inline = "$hospcode|$cid|$PID|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update|$phone|$phone\r\n";
 
     $txt .= $inline;
 
