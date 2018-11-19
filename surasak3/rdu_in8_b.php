@@ -20,11 +20,6 @@ AND (
     OR `icd10` regexp 'S(3[8-9]|4[0-1])' 
     OR `icd10` regexp 'S{1}([4-8]([6-9]|[0-1]))' 
     OR `icd10` regexp 'S(8[6-9]|9[0-1]|9[6-9])' 
-    OR `icd10` regexp 'T(0[0-1]|[4-7])' 
-    OR `icd10` regexp 'T([09|11|13|14][0-1])' 
-    OR `icd10` regexp 'T(14[6-9])' 
-    OR `icd10` regexp 'T(2[0-5])' 
-    OR `icd10` regexp 'T(29|3[0-2])' 
     OR `icd10` regexp 'X([0-1][0-9])' 
     OR `icd10` regexp 'X([2-3][0-9])' 
 )";
