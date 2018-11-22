@@ -1,4 +1,8 @@
-<?php
+<?php 
+
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
+
 //-------------------- Create file procedure_opd ‰ø≈Ï∑’Ë 11 --------------------//
 $temp11="CREATE  TEMPORARY  TABLE report_procedureopd 
 SELECT thidate, hn, vn, doctor, clinic, icd9cm, idcard 
@@ -8,10 +12,10 @@ AND icd9cm IS NOT NULL
 AND icd9cm <> '' 
 ORDER BY thidate ASC";
 
-$querytmp11 = mysql_query($temp11) or die("Query failed,Create temp11");
+$querytmp11 = mysql_query($temp11, $db2) or die("Query failed,Create temp11");
 
 $sql11="SELECT * FROM report_procedureopd";
-$result11= mysql_query($sql11) or die("Query failed, Select report_procedureopd (procedure_opd)");
+$result11= mysql_query($sql11, $db2) or die("Query failed, Select report_procedureopd (procedure_opd)");
 $num=mysql_num_rows($result11);
 $txt = '';
 while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_fetch_row ($result11)) {	
@@ -19,8 +23,27 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 
 
-    $newclinic=substr($cliniccode,0,2);
-    if($newclinic=="" || $newclinic=="»—"){ $newclinic="99";}else{ $newclinic=$newclinic;}
+    // $newclinic=substr($cliniccode,0,2);
+    // if($newclinic=="" || $newclinic=="»—"){ 
+    //     $newclinic="99";
+    // }else{ 
+    //     $newclinic=$newclinic;
+    // }
+
+    $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
+    if($test_match > 0){
+        list($old_clinic_code, $name) = explode(' ', $cliniccode);
+
+        $cliniccode = $name;
+    }
+
+    $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'", $db2) or die( mysql_error() );
+    $newclinic = '99';
+    if( mysql_num_rows($q) > 0 ){
+        $item = mysql_fetch_assoc($q);
+        $newclinic = $item['code'];
+    }
+
     if(!empty($vn)){ $firstcode="0";}
     $treecode="00";
     $clinic=$firstcode.$newclinic.$treecode;
@@ -40,7 +63,7 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
     $vn=sprintf("%03d",$vn);	
     $seq=$date_serv.$vn;	  //≈”¥—∫∑’Ë
         
-    $sqldoc=mysql_query("select doctorcode from doctor where name like'%$doctor%'");
+    $sqldoc=mysql_query("select doctorcode from doctor where name like'%$doctor%'", $db2);
     list($doctorcode)=mysql_fetch_array($sqldoc);
     if(empty($doctorcode)){
         $provider=$date_serv.$vn."00000";

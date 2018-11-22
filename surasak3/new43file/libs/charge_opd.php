@@ -1,4 +1,8 @@
-<?php
+<?php 
+
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
+
 //
 //-------------------- Create file charge_opd ‰ø≈Ï∑’Ë 18 --------------------//
 // 
@@ -21,18 +25,18 @@
 $sql13="SELECT `date`,`hn`,`depart`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dpy`,`dpn`,`dsy`,`dsn`,`ptright`,`credit`,
 SUBSTRING(`date`, 1, 10) AS `date2`, `vn` 
 FROM `opacc` 
-WHERE `date` like '$thimonth%' 
+WHERE `txdate` like '$thimonth%' 
 AND ( `vn` IS NOT NULL AND `vn` != '' ) 
 GROUP BY SUBSTRING(`date`, 1, 10), `hn` 
 ORDER BY `date` ASC";
-$result13= mysql_query($sql13) or die( mysql_error() );
+$result13= mysql_query($sql13, $db2) or die( mysql_error() );
 $num = mysql_num_rows($result13);
 
 $txt = '';
 
 while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy,$dsn,$ptright,$credit,$date2,$vn) = mysql_fetch_row ($result13)) {	
 
-	$sqlpt=mysql_query("SELECT `ptrightdetail` FROM `opcard` WHERE `hn`='$hn'");
+	$sqlpt=mysql_query("SELECT `ptrightdetail` FROM `opcard` WHERE `hn`='$hn'", $db2);
 	list($ptrightdetail)=mysql_fetch_array($sqlpt);	
 
 	list($chkdate) = explode(' ', $date);
@@ -42,19 +46,36 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	WHERE `thidate` LIKE '$date2%' 
 	AND `vn` = '$vn'";
 	
-	$sqlop = mysql_query($qOpday);
+	$sqlop = mysql_query($qOpday, $db2);
 	list($thidate,$idcard) = mysql_fetch_array($sqlop);
 
 	if( empty($thidate) ){
 		$thidate = $date;
 	}
 	
-	$newclinic=substr($cliniccode,0,2);
-	if($newclinic=="" || $newclinic=="»—"){ 
-		$newclinic = "99";
-	}else{
-		$newclinic = $newclinic;
+	// $newclinic=substr($cliniccode,0,2);
+	// if($newclinic=="" || $newclinic=="»—"){ 
+	// 	$newclinic = "99";
+	// }else{
+	// 	$newclinic = $newclinic;
+	// }
+
+
+	$test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
+    if($test_match > 0){
+        list($old_clinic_code, $name) = explode(' ', $cliniccode);
+
+        $cliniccode = $name;
 	}
+	
+	$q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'", $db2) or die( mysql_error() );
+    $newclinic = '99';
+    if( mysql_num_rows($q) > 0 ){
+        $item = mysql_fetch_assoc($q);
+        $newclinic = $item['code'];
+    }
+
+
 	if(!empty($vn)){ 
 		$firstcode="0";
 	}
@@ -62,7 +83,7 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	$clinic = $firstcode.$newclinic.$treecode;
 
 	$sqlptr = "Select code FROM  ptrightdetail WHERE detail='$ptrightdetail'";
-	$resultptr = mysql_query($sqlptr) or die(mysql_error());
+	$resultptr = mysql_query($sqlptr, $db2) or die(mysql_error());
 	list($instype) = mysql_fetch_row($resultptr);
 
 	$cost="0.00";  //√“§“∑ÿπ
