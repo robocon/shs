@@ -55,10 +55,13 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 				</form>
 				<?php
 				$show = isset($_POST['show']) ? true : false ;
-				if( $show ){
+				if( $show ){ 
 
-					$sql = "SELECT `name`,`doctorcode` FROM `doctor` WHERE `row_id` = :doctor_id;";
-					$doctor = DB::select($sql, array(':doctor_id' => $doctor_id), true);
+					$db = Mysql::load($shs_configs);
+
+					$sql = "SELECT `name`,`doctorcode` FROM `doctor` WHERE `row_id` = '$doctor_id';";
+					$db->select($sql);
+					$doctor = $db->get_item();
 					
 					// ลบช่องว่างสองช่องให้เหลือช่องเดียว
 					list($md, $name, $surname) = explode(' ', str_replace('  ', ' ', $doctor['name']));
@@ -68,13 +71,13 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 						$where = "AND ( a.`doctor` LIKE '%$name%' OR a.`doctor` LIKE '%จรรยวรรธน์%' ) ";
 					}
 
-					$sql = "
-					SELECT a.`thidate`,a.`diag`,a.`doctor`,CONCAT('in') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
+					$sql = "SELECT a.`thidate`,a.`diag`,a.`doctor`,CONCAT('in') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
 					TIMESTAMPDIFF( 
 						YEAR, 
 						b.`dbirth`, 
 						CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d' ) ) 
-					)  AS `age`
+					)  AS `age`,
+					SUBSTRING(a.`age`, 1, 2) AS `short_age` 
 					FROM `opday` AS a 
 					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 					WHERE a.`thidate` LIKE '$th_date%' 
@@ -82,10 +85,9 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
 					GROUP BY a.`diag`
 					
-					ORDER BY `diag_row` DESC
-					";
-					$items = DB::select($sql);
-					// $all_rows = DB::rows();
+					ORDER BY `diag_row` DESC";
+					$db->select($sql);
+					$items = $db->get_items();
 					
 					$all_rows = 0;
 					foreach ($items as $key => $item) {
@@ -117,7 +119,7 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 									foreach ($items as $key => $item) {
 										
 										// หมอวรวิทย์ จะคัดเอาเฉพาะคนที่อายุไม่เกิน 15ปี
-										if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
+										if( $doctor_id == 20 && $item['short_age'] > 15 ){ continue; }
 									?>
 									<tr>
 										<td><?=$i;?></td>
@@ -144,34 +146,30 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 									</td>
 									<td style="vertical-align: top!important;">
 										
-										
 										<?php
-										$sql = "
-										SELECT a.`date`,a.`diag`,a.`doctor`,CONCAT('out') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
-					TIMESTAMPDIFF( 
-						YEAR, 
-						b.`dbirth`, 
-						CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d' ) ) 
-					)  AS `age`
-					FROM `ipcard` AS a 
-					LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-					WHERE a.`date` LIKE '$th_date%' 
-					$where 
-					AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
-					GROUP BY a.`diag`
-					
-					ORDER BY `diag_row` DESC
-										";
-										
-										
-										$items = DB::select($sql);
-					// $all_rows = DB::rows();
-					$all_rows = 0;
-					foreach ($items as $key => $item) {
-						if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
-						
-						$all_rows += (int) $item['diag_row'];
-					}
+										$sql = "SELECT a.`date`,a.`diag`,a.`doctor`,CONCAT('out') AS `patient`,COUNT(a.`diag`) AS `diag_row`,a.`icd10`,
+										TIMESTAMPDIFF( 
+											YEAR, 
+											b.`dbirth`, 
+											CONCAT( ( YEAR( NOW() ) + 543 ), DATE_FORMAT( NOW(), '-%m-%d' ) ) 
+										)  AS `age`, 
+										SUBSTRING(a.`age`, 1, 2) AS `short_age` 
+										FROM `ipcard` AS a 
+										LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+										WHERE a.`date` LIKE '$th_date%' 
+										$where 
+										AND ( a.`diag` IS NOT NULL AND a.`diag` NOT LIKE '' )
+										GROUP BY a.`diag`
+										ORDER BY `diag_row` DESC";
+										$db->select($sql);
+										$items = $db->get_items();
+
+										$all_rows = 0;
+										foreach ($items as $key => $item) {
+											if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
+											
+											$all_rows += (int) $item['diag_row'];
+										}
 										?>
 										
 										
@@ -193,7 +191,7 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 									foreach ($items as $key => $item) {
 										
 										// หมอวรวิทย์ จะคัดเอาเฉพาะคนที่อายุไม่เกิน 15ปี
-										if( $doctor_id == 20 && $item['age'] > 15 ){ continue; }
+										if( $doctor_id == 20 && $item['short_age'] > 15 ){ continue; }
 									?>
 									<tr>
 										<td><?=$i;?></td>
