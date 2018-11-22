@@ -1,4 +1,7 @@
-<?php
+<?php 
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
+
 //-------------------- Create file charge_ipd ä¿Åì·Õè 18 --------------------//
 // $temp18="CREATE  TEMPORARY  TABLE report_admission4 
 // SELECT *  
@@ -9,7 +12,7 @@
 
 // ËÒ code ¨Ò¡ ptrightdetail
 $sql = "SELECT `code`,`detail` FROM `ptrightdetail`";
-$result = mysql_query($sql) or die(mysql_error());
+$result = mysql_query($sql, $db2) or die(mysql_error());
 $items = array();
 while( $item = mysql_fetch_assoc($result) ){
 	$key = $item['detail'];
@@ -25,7 +28,7 @@ AND a.`dcdate` IS NOT NULL
 AND b.`ptrightdetail` != '';";
 $ptLists = array();
 $ipcardLists = array();
-$query = mysql_query($sql);
+$query = mysql_query($sql, $db2);
 while( $item = mysql_fetch_assoc($query) ){
 	$key = $item['hn'];
     $ptLists[$key] = $item['ptrightdetail'];
@@ -37,24 +40,36 @@ $sql = "SELECT `an`,`credit`
 FROM `ipmonrep` 
 WHERE `dcdate` LIKE '$thimonth%' 
 AND `dcdate` IS NOT NULL 
+AND ( `price` > 0 AND `paid` > 0 )
 AND `credit` != '' ";
-$query = mysql_query($sql);
+$query = mysql_query($sql, $db2);
 $creditLists = array();
 while( $item = mysql_fetch_assoc($query) ){
 	$key = $item['an'];
 	$creditLists[$key] = $item['credit'];
 }
 
+$where = "AND `dcdate` LIKE '$thimonth%' ";
+
+$test_match_day = preg_match('\d{4}\-\d{2}\-\d{2}', $thimonth, $matchs);
+if( $test_match_day > 0 ){
+    $where = "AND ( `date` <= '$thimonth' AND `dcdate` >= '$thimonth' )";
+}
+
 $txt = '';
 $sql = "SELECT a.`date`,b.`hn`,b.`date`,b.`my_ward`,a.`an`,a.`depart`,a.`amount`,a.`price`,a.`paid`,a.`part` 
 FROM `ipacc` AS a, 
-`ipcard` AS b
+( 
+    SELECT * 
+    FROM `ipcard` 
+    WHERE `bedcode` <> '' 
+    $where 
+
+) AS b
 WHERE a.`an` = b.`an` 
-AND b.`dcdate` LIKE '$thimonth%' 
-AND b.`dcdate` IS NOT NULL 
 AND a.`amount` > 0 
 AND a.`price` > 0";
-$result = mysql_query($sql) or die("Query failed,Select report_admission4 And ipacc");
+$result = mysql_query($sql, $db2) or die("Query failed,Select report_admission4 And ipacc");
 while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) = mysql_fetch_row ($result)) {
 	
 	$chargelist="000000";

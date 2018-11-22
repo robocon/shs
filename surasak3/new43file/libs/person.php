@@ -35,8 +35,36 @@ LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
 GROUP BY d.`hn`";
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed,Create temp1");
 
-$sql1="SELECT * 
-From report_person1";
+
+$where = "AND `dcdate` LIKE '$thimonth%' ";
+
+$test_match_day = preg_match('\d{4}\-\d{2}\-\d{2}', $thimonth, $matchs);
+if( $test_match_day > 0 ){
+    $where = "AND ( `date` <= '$thimonth' AND `dcdate` >= '$thimonth' )";
+}
+
+$ipt_sql = "CREATE  TEMPORARY  TABLE person_ipt 
+SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright, 
+
+CASE 
+    WHEN d.hphone <> '' THEN d.hphone 
+    WHEN d.phone <> '' THEN d.phone
+    WHEN d.ptffone <> '' THEN d.ptffone
+END AS `PHONE` ,
+d.`typearea` AS `TYPEAREA`
+
+FROM ( 
+    SELECT * 
+    FROM `ipcard` 
+    WHERE `bedcode` <> '' 
+    $where 
+) AS c 
+LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn` ";
+mysql_query($ipt_sql, $db2) or die( mysql_error() );
+
+$sql1="SELECT * FROM report_person1 
+UNION 
+SELECT * FROM person_ipt ";
 $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
 while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea) = mysql_fetch_row ($result1)) {		
