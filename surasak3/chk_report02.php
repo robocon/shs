@@ -679,6 +679,11 @@ FROM (
 		#OR `profilecode`='PSA' 
 		
 		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
+		AND `profilecode` != 'AFP' 
+		AND `profilecode` != 'CEA' 
+		AND `profilecode` != 'PSA' 
+		AND `profilecode` != 'CA125' 
+		AND `profilecode` != '38302' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -707,15 +712,14 @@ FROM (
 	WHERE `hn` = '$hn' 
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 	AND `testgroupcode` = 'OUT' 
-	AND `profilecode` != '38302' 
 	GROUP BY `profilecode` 
 
 ) AS b 
 LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
 LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` 
 ORDER BY c.seq ASC";
-// $outlab_query = mysql_query($sql) or die( mysql_error() );
-// $outlab_row = mysql_num_rows($outlab_query);
+$outlab_query = mysql_query($sql) or die( mysql_error() );
+$outlab_row = mysql_num_rows($outlab_query);
 // ตัดพวก outlab ออกไปก่อน
 
  if( $other_result_row > 0 ){ 
@@ -1062,15 +1066,17 @@ ORDER BY c.seq ASC";
 								while( $outlab = mysql_fetch_assoc($outlab_query)){
 									// dump($outlab['labcode']);
 									if($outlab['labcode']=="38302"){
-										// $outlab_code = "<strong>PAP SMEAR</strong> <font size='-1'>(การตรวจหามะเร็งปากมดลูก)</font>";
+										$outlab_code = "<strong>การตรวจหามะเร็งปากมดลูก</strong> (PAP SMEAR)";
 									}else if( $outlab['labcode']=="OCCULT" ){
-										$outlab_code = "<strong>FOBT <font size='-1'>(การตรวจเลือดในอุจจาระ)</font></strong>";
+										$outlab_code = "<strong>การตรวจเลือดในอุจจาระ</strong> (FOBT)";
 									}else if( $outlab['labcode']=="AFP" ){
-										$outlab_code = "<strong>AFP <font size='-1'>(การตรวจมะเร็งตับ)</font></strong>";
+										$outlab_code = "<strong>การตรวจมะเร็งตับ</strong> (AFP)";
 									}else if( $outlab['labcode']=="CEA" ){
-										$outlab_code = "<strong>CEA <font size='-1'>(การตรวจมะเร็งลำไส้)</font></strong>";
+										$outlab_code = "<strong>การตรวจมะเร็งลำไส้</strong> (CEA)";
 									}else if( $outlab['labcode']=="PSA" ){
-										$outlab_code = "<strong>PSA <font size='-1'>(การตรวจมะเร็งต่อมลูกหมาก)</font></strong>";
+										$outlab_code = "<strong>การตรวจมะเร็งต่อมลูกหมาก</strong> (PSA)";
+									}else if( $outlab['labcode']=="CA125" ){
+										$outlab_code = "<strong>สารบ่งชี้มะเร็งรังไข่</strong> (CA125)";
 									}else{
 										$outlab_code = $outlab['labcode'];
 									}
@@ -1088,10 +1094,10 @@ ORDER BY c.seq ASC";
 									}
 									?>
 									<tr height="23">
-										<td align="center"><?=$outlab_code;?></td>
-										<td align="center"><?=$outlab_result;?></td>
-										<td align="center"><?=$outlab_range;?></td>
-										<td align="center">
+										<td><?=$outlab_code;?></td>
+										<td><?=$outlab_result;?></td>
+										<td><?=$outlab_range;?></td>
+										<td>
 											<?php
 											// default เป็นค่าปกติ
 											// if($hn=="49-2672"){
