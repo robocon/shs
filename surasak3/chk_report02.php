@@ -1064,7 +1064,9 @@ $outlab_row = mysql_num_rows($outlab_query);
 
 
 								while( $outlab = mysql_fetch_assoc($outlab_query)){
-									// dump($outlab['labcode']);
+									
+									$outlab_code = $outlab['labcode'];
+
 									if($outlab['labcode']=="38302"){
 										$outlab_code = "<strong>การตรวจหามะเร็งปากมดลูก</strong> (PAP SMEAR)";
 									}else if( $outlab['labcode']=="OCCULT" ){
@@ -1086,11 +1088,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 									// ค่า normal range ที่เป็นพวก outlab
 									$outlab_range = $normal_outlab[$outlab['labcode']];
 									if($outlab_result=="OL" || $outlab_result=="ol"){
-										// if($hn=="49-2672"){
-										// 	$outlab_result="ผิดปกติ";
-										// }else{
-											$outlab_result="&nbsp;";
-										// }
+										$outlab_result="&nbsp;";
 									}
 									?>
 									<tr height="23">
@@ -1099,15 +1097,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 										<td><?=$outlab_range;?></td>
 										<td>
 											<?php
-											// default เป็นค่าปกติ
-											// if($hn=="49-2672"){
-											// 	$result_outlab_txt = 'ผิดปกติ...นัดพบสูตินารีแพทย์';	
-											// }else{
-												$result_outlab_txt = 'ปกติ';
-												if( $outlab['flag'] != 'N' ){
-													$result_outlab_txt = 'ผิดปกติ';
-												}
-											// }
+											$result_outlab_txt = 'ปกติ';
+											if( $outlab['flag'] != 'N' ){
+												$result_outlab_txt = 'ผิดปกติ';
+											}
 		
 											echo $result_outlab_txt;
 											?>
