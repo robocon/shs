@@ -126,7 +126,7 @@ WHERE drugcode != '' AND (
 LEFT( drugcode, 2 ) !=  '12' AND LEFT( drugcode, 2 ) !=  '13' AND LEFT( drugcode, 2 ) !=  '14' AND LEFT( drugcode, 2 ) !=  '15' AND (
 LEFT( drugcode, 2 ) !=  '16' || drugcode =  '16OR014' || drugcode =  '16OR015' || drugcode =  '16OR016' || drugcode =  '16OR017'
 )  AND LEFT( drugcode, 2 ) != '17' AND LEFT( drugcode, 2 ) !=  '18' AND LEFT( drugcode, 2 ) !=  '19'
-)
+) 
 GROUP BY drugcode
 ORDER BY drugcode";
 $result = mysql_query($sql) or die("Query failed1");
@@ -217,7 +217,7 @@ while($rows = mysql_fetch_array($result)){
 		$result3 = mysql_query($query3) or die("Query failed");
    		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
 		
-					$querya1 = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' order by row_id desc limit 1";
+					$querya1 = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' and date like '$yearchk-$monthchk%'  order by row_id desc limit 1";
 					//echo $querya1."<br>";
 					$resulta1 = mysql_query($querya1) or die("Query failed");
 					list($unitpri) = mysql_fetch_row($resulta1);
@@ -246,7 +246,7 @@ while($rows = mysql_fetch_array($result)){
 		$result3 = mysql_query($query3) or die("Query failed");
    		list($getdate,$billno,$drugcode,$tname,$lotno,$department,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result3);
 		
-					$querya2 = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' order by row_id desc limit 1";
+					$querya2 = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' AND date like '$yearchk-$monthchk%' order by row_id desc limit 1";
 					//echo $querya2."<br>";
 					$resulta2 = mysql_query($querya2) or die("Query failed");
 					list($unitpri) = mysql_fetch_row($resulta2);
@@ -293,7 +293,7 @@ if($dbdcode=="4TA15 " || $dbdcode=="4ALC450 "){
    		while (list($getdate,$billno,$drugcode,$tname,$lotno,$department,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk,$amountfree) = mysql_fetch_row ($result2)) {
 			$k++;
 			
-				$querya = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' order by row_id desc limit 1";
+				$querya = "SELECT unitpri  FROM stktranx  WHERE drugcode ='".$dbdcode."' and stkcut ='0' AND date like '$yearchk-$monthchk%' order by row_id desc limit 1";
 				$resulta = mysql_query($querya) or die("Query failed");
 				list($unitpri) = mysql_fetch_row($resulta);	
 			

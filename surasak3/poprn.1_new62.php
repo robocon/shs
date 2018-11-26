@@ -179,9 +179,11 @@ return $vat;
 	$aMancode[14]='headtor';
 	$aMancode[15]='bordtor1';
 	$aMancode[16]='bordtor2';
-	$aMancode[17]='bordtor3';		
+	$aMancode[17]='bordtor3';
+	$aMancode[18]='pharmacy1';
+	$aMancode[19]='headpharmacy';		
 
-	for ($n=1; $n<=17; $n++){
+	for ($n=1; $n<=19; $n++){
 
 		$query = "SELECT * FROM officers WHERE mancode = '$aMancode[$n]'";
 		$result = mysql_query($query)
@@ -518,23 +520,23 @@ print "<DIV style='left:61PX;top:740PX;width:705PX;height:30PX;'><span class='fc
 //print "===>$prodrugtype";
 if($prodrugtype=="" || $prodrugtype=="1"){
 //print "===>".strlen($cComname);
-	if(strlen($cComname) <= 30){
-		print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+	if(strlen($cComname) <= 37){
+		print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยาและเวชภัณฑ์</span></DIV>";
 		print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";	
 		print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
 		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 
-	}else if(strlen($cComname) > 30 && strlen($cComname) <= 40){ 
-		print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
-		print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";
-		print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
+	}else if(strlen($cComname) > 37 && strlen($cComname) <= 43){ 
+		print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพ</span></DIV>";
+		print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
+		print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
 		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 	}else{
-		print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการ</span></DIV>";
 		print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่มีอาชีพขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
@@ -542,7 +544,7 @@ print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 	}
 }else if($prodrugtype=="2"){
-print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
 print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
@@ -550,14 +552,14 @@ print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc
 print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
 
 }else if($prodrugtype=="3"){
-print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
 print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา </span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
 print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของ</span></DIV>";	
 print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
 }else if($prodrugtype=="4"){
-print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นยาและเวชภัณฑ์</span></DIV>";
 print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่ได้ขึ้นบัญชีนวัตกรรมไทย ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";
@@ -566,7 +568,7 @@ print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc
 
 
 }else if($prodrugtype=="5"){
-print "<DIV style='left:105PX;top:765PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นวัคซีนโรคตับอักเสบบี</span></DIV>";
 print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่อยู่ในบัญชี ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
@@ -606,23 +608,23 @@ print "<DIV style='left:61PX;top:765PX;width:705PX;height:30PX;'><span class='fc
 //print "===>$prodrugtype";
 if($prodrugtype=="" || $prodrugtype=="1"){
 //print "===>".strlen($cComname);
-	if(strlen($cComname) <= 30){
-		print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+	if(strlen($cComname) <= 37){
+		print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยาและเวชภัณฑ์</span></DIV>";
 		print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";	
 		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
 		print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 
-	}else if(strlen($cComname) > 30 && strlen($cComname) <= 40){ 
-		print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
-		print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";
-		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
+	}else if(strlen($cComname) > 37 && strlen($cComname) <= 43){ 
+		print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพ</span></DIV>";
+		print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
+		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
 		print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 	}else{
-		print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+		print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการ</span></DIV>";
 		print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่มีอาชีพขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
 print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
@@ -630,7 +632,7 @@ print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc
 		print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 	}
 }else if($prodrugtype=="2"){
-print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
 print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
@@ -638,14 +640,14 @@ print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc
 print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
 
 }else if($prodrugtype=="3"){
-print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา </span></DIV>";
 print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
 print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของ</span></DIV>";	
 print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
 }else if($prodrugtype=="4"){
-print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นยาและเวชภัณฑ์</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่ได้ขึ้นบัญชีนวัตกรรมไทย ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
 print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";
@@ -654,7 +656,7 @@ print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc
 
 
 }else if($prodrugtype=="5"){
-print "<DIV style='left:105PX;top:790PX;width:661PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
 print " <B>$cComname</B> ซึ่งเป็นวัคซีนโรคตับอักเสบบี</span></DIV>";
 print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่อยู่ในบัญชี ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
 print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
@@ -1907,7 +1909,7 @@ print "<DIV style='left:163PX;top:7860PX;width:618PX;height:30PX;'><span class='
 
 //print "<DIV style='left:420PX;top:7976PX;width:55PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>(ลงชื่อ)</span></DIV>";
 
-print "<DIV style='left:484PX;top:7890PX;width:101PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aYot[2]</span></DIV>";
+print "<DIV style='left:499PX;top:7890PX;width:101PX;height:30PX;TEXT-ALIGN:LEFT;'><span class='fc1-0'>$aYot[2]</span></DIV>";
 print "<DIV style='left:485PX;top:7915PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[2])</span></DIV>";
 print "<DIV style='left:485PX;top:7940PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[2]</span></DIV>";
 print "<DIV style='left:485PX;top:7965PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[2]</span></DIV>";
@@ -1916,18 +1918,20 @@ print "<DIV style='left:163PX;top:7940PX;width:618PX;height:30PX;'><span class='
 print "<DIV style='left:195PX;top:7965PX;width:618PX;height:30PX;'><span class='fc1-0'>งบประมาณ รพ.ค่ายฯ ได้บันทึกควบคุมงบประมาณเรียบร้อยแล้ว</span></DIV>";  
 print "<DIV style='left:195PX;top:7990PX;width:618PX;height:30PX;'><span class='fc1-0'>จึงเรียนมาเพื่อกรุณาทราบและเห็นควรอนุมัติให้เบิกจ่ายได้</span></DIV>";  
 
-print "<DIV style='left:358PX;top:8020PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
-print "<DIV style='left:363PX;top:8045PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
-print "<DIV style='left:363PX;top:8070PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
-print "<DIV style='left:363PX;top:8095PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:499PX;top:8020PX;width:87PX;height:30PX;TEXT-ALIGN:LEFT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
+print "<DIV style='left:444PX;top:8045PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
+print "<DIV style='left:444PX;top:8070PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
+print "<DIV style='left:444PX;top:8095PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:444PX;top:8120PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 
 
 
-print "<DIV style='left:168PX;top:8065PX;width:55PX;height:30PX;'><span class='fc1-0'>- ทราบ</span></DIV>";
-print "<DIV style='left:168PX;top:8090PX;width:255PX;height:30PX;'><span class='fc1-0'>- อนุมัติให้เบิกจ่ายเงินได้</span></DIV>";
-print "<DIV style='left:148PX;top:8125PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[1]</span></DIV>";
-print "<DIV style='left:143PX;top:8150PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
-print "<DIV style='left:143PX;top:8175PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
+print "<DIV style='left:168PX;top:8020PX;width:55PX;height:30PX;'><span class='fc1-0'>- ทราบ</span></DIV>";
+print "<DIV style='left:168PX;top:8045PX;width:255PX;height:30PX;'><span class='fc1-0'>- อนุมัติให้เบิกจ่ายเงินได้</span></DIV>";
+print "<DIV style='left:148PX;top:8095PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[1]</span></DIV>";
+print "<DIV style='left:143PX;top:8125PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
+print "<DIV style='left:143PX;top:8150PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
+print "<DIV style='left:143PX;top:8175PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 print "<BR>";
 print "</BODY></HTML>";
 
@@ -2027,7 +2031,7 @@ print "<DIV style='left:674PX;top:8233PX;width:75PX;height:30PX;TEXT-ALIGN:RIGHT
 print "<DIV style='left:547PX;top:8258PX;width:75PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>เลขที่ผู้เบิก</span></DIV>";
 print "<DIV style='left:547PX;top:8283PX;width:75PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>เลขที่ผู้จ่าย</span></DIV>";
 print "<DIV style='left:433PX;top:8333PX;width:316PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ที่ทำการ กองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
-print "<DIV style='left:74PX;top:8383PX;width:675PX;height:30PX;'><span class='fc1-0'>ข้าพเจ้ า $aYot[2] $aFname[2] ตำแหน่ง$aPost[2] $aPost2[2] ขอเบิกเงินจาก</span></DIV>";
+print "<DIV style='left:74PX;top:8383PX;width:675PX;height:30PX;'><span class='fc1-0'>ข้าพเจ้า $aYot[19] $aFname[19] ตำแหน่ง$aPost[19] $aPost2[19] ขอเบิกเงินจาก</span></DIV>";
 print "<DIV style='left:24PX;top:8408PX;width:725PX;height:30PX;'><span class='fc1-0'>ฝกง. ร.พ.ค่ายสุรศักดิ์มนตรี เพื่อนำมาจ่าย ตามรายการต่อไปนี้</span></DIV>";
 print "<DIV style='left:24PX;top:8439PX;width:82PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
 print "<DIV style='left:355PX;top:8981PX;width:310PX;height:30PX;'><span class='fc1-0'>ผู้ตรวจ</span></DIV>";

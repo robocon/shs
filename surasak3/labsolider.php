@@ -36,6 +36,16 @@ return $pAge;
 				continue;
 		}
 		$nPrefix=$row->prefix;
+		
+		
+		 $y=date("Y")+543;
+		 $yy=substr($y,2,2);
+		 $mmdd=date("md");
+		 //echo $mmdd;
+		 $ymd=$yy.$mmdd;
+		 
+		 $labnumber=$ymd.sprintf("%03d", $nLab);
+		 //echo $labnumber;		
 ?>
 <style>
 	.font_title{
@@ -61,7 +71,10 @@ return $pAge;
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>
 <form action="labsolider.php" method="post"><!--labsolider.php-->
 <input name="act" type="hidden" value="show" />
-<div class="font_title">คิดค่าบริการตรวจสุขภาพทหารประจำปี<?=$nPrefix;?></div><br>
+<div class="font_title">คิดค่าบริการตรวจสุขภาพทหารประจำปี<?=$nPrefix;?> 
+  <br />
+  (เฉพาะทหารในหน่วยที่รับผิดชอบที่ส่งรายชื่อเข้ารับการตรวจเท่านั้น)</div>
+<br>
 <br>
 <TABLE width="447" border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
   <TR>

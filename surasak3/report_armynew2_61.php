@@ -19,6 +19,10 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
+.txt{
+	font-family: TH SarabunPSK;
+	font-size:16px;
+}
 -->
 </style>
 <p align="center" style="margin-top: 20px;"><strong>รายงานการรักษาพยาบาลทหารใหม่</strong></p>
@@ -27,7 +31,8 @@ a:active {
 <input type="hidden" name="act" value="show">
 	<strong>ระหว่างวันที่ : </strong>
     <input name="date1" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
-    <strong>เลือกเดือน : </strong><select size="1" name="month1" class="txt">
+    <strong>เดือน : </strong>
+    <select size="1" name="month1" class="txt">
     <option selected>-------เลือก-------</option>
     <option value="01" <? if(date("m")=="01"){ echo "selected";}?>>มกราคม</option>
     <option value="02" <? if(date("m")=="02"){ echo "selected";}?>>กุมภาพันธ์</option>
@@ -60,7 +65,8 @@ a:active {
 				?>
        &nbsp; <strong>ถึงวันที่</strong> 
     <input name="date2" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
-    <strong>เลือกเดือน : </strong><select size="1" name="month2" class="txt">
+    <strong>เดือน : </strong>
+    <select size="1" name="month2" class="txt">
     <option selected>-------เลือก-------</option>
     <option value="01" <? if(date("m")=="01"){ echo "selected";}?>>มกราคม</option>
     <option value="02" <? if(date("m")=="02"){ echo "selected";}?>>กุมภาพันธ์</option>
@@ -113,7 +119,7 @@ $chkdate2=$_POST["year2"]."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
     <td width="36%"><strong>ที่อยู่</strong></td>
   </tr>
 <?
-$sql="select * from opday where thidate >='$chkdate1' AND thidate <= '$chkdate2' and goup like 'G21%'";
+$sql="select * from opday where thidate >='$chkdate1' AND thidate <= '$chkdate2' and goup like 'G21%' and toborow NOT LIKE '%ยืมไม่เอาใบสั่งยา%'";
 //echo $sql;
 $query=mysql_query($sql);
 $i=0;
@@ -124,9 +130,39 @@ list($y,$m,$d)=explode("-",$date1);
 $date="$d/$m/$y";
 $time=substr($rows["thidate"],12,8);
 
+$toborow=substr($rows["toborow"],4);
+
+if(empty($rows["icd10"])){
+	$principle=$rows["icd10"];
+}else{
+	$sql8="select * from diag where hn='".$rows["hn"]."' and svdate like '$date1%' AND type='PRINCIPLE'";
+	//echo $sql8;
+	$query8=mysql_query($sql8);
+	$num8=mysql_num_rows($query8);
+	$rows8=mysql_fetch_array($query8);
+	$principle=$rows8["icd10"]." (".$rows8["diag_thai"].")";
+}
+
+
+if(empty($rows["icd10_other"])){
+	$comorbit=$rows["icd10_other"];
+}else{
+	$sql9="select * from diag where hn='".$rows["hn"]."' and svdate like '$date1%' AND type='OTHER'";
+	//echo $sql9;
+	$query9=mysql_query($sql9);
+	$num9=mysql_num_rows($query9);
+	if($num9 ==1){
+		$rows9=mysql_fetch_array($query9);
+		$principle=$rows9["icd10"];
+	}else{
+		while($rows9=mysql_fetch_array($query9)){
+			$principle=$rows9["icd10"]." (".$rows9["diag_thai"]."), ";
+		}
+	}
+}
+
+
 $diag=$rows["diag"];
-$principle=$rows["icd10"];
-$comorbit=$rows["icd10_other"];
 
 
 $sql1="select * from opcard where hn='".$rows["hn"]."' ";
@@ -207,7 +243,8 @@ while($rows3=mysql_fetch_array($query3)){
       </tr>
       <tr>
         <td>Medication :          </td>
-        <td>&nbsp;</td>
+        <td>การมาโรงพยาบาล :
+          <?=$toborow;?></td>
       </tr>
       <tr>
         <td><table width="100%" border="0" cellpadding="4" cellspacing="0">

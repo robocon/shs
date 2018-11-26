@@ -1,4 +1,10 @@
-<a href ="labsolider.php" >&lt;&lt; สั่งรายการใหม่</a><br />
+<style type="text/css">
+<!--
+body,td,th {
+	font-family: TH SarabunPSK;
+}
+-->
+</style><a href ="labsolider.php" >&lt;&lt; สั่งรายการใหม่</a><br />
 <style type="text/css">
 .font5 {
 	font-family: AngsanaUPC;
@@ -59,9 +65,7 @@ if(isset($_GET['id'])){
 <form name="form1" method="post" action="labofyear.php" onsubmit="return check()" >
   <span class="font5"><strong>เลือกโปรแกรมการตรวจ</strong><br />
 <input name="pro" type="radio" id="pro1" value="1" <? if(substr($age,0,2) < 35){ echo "checked='checked'";}?> /> โปรแกรม 1 (อายุไม่เกิน 35 ปี)<br />
-<input name="pro" type="radio" id="pro2" value="2" /> โปรแกรม 2+PAP (อายุไม่เกิน 35 ปี)<br />
-<input name="pro" type="radio" id="pro3" value="3" <? if(substr($age,0,2) >= 35){ echo "checked='checked'";}?> /> โปรแกรม 3 (อายุตั้งแต่ 35 ปี)<br />
-<input name="pro" type="radio"  id="pro4" value="4" /> โปรแกรม 4+PAP (อายุตั้งแต่ 35 ปีเฉพาะผู้หญิง)<br />
+<input name="pro" type="radio" id="pro3" value="3" <? if(substr($age,0,2) >= 35){ echo "checked='checked'";}?> /> โปรแกรม 3 (อายุตั้งแต่ 35 ปีขึ้นไป) + HDL<br />
 <input type="hidden" value="<?=$rep['hn']?>" name="hn" />
 <input type="submit" name="okbtn" value="ตกลง"/>
   </span>
@@ -74,7 +78,7 @@ if(isset($_GET['id'])){
 	$_SESSION['cHn'] = $_SESSION['hn'];
 	$thidate = (date("Y")+543).date("-m-d H:i:s");
 	$thdatehn= date("d-m-").(date("Y")+543).$_SESSION['hn'];
-	$vnlab = 'ตรวจสุขภาพประจำปีทหาร';   
+	$vnlab = 'ตรวจสุขภาพประจำปีกองทัพบก';   
 	// ตรวจดูว่าลงทะเบียนหรือยัง
     $query = "SELECT * FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC ";
     $result = mysql_query($query) or die("Query failed,opday");
@@ -163,44 +167,7 @@ if(isset($_GET['id'])){
 			$result = mysql_query($query) or die("Query failed,cannot insert into opday");
 			}
 		}
-		/////////////คิด50บาท//////////////////////
-/*		$check = "select * from depart where hn = '".$_SESSION['hn']."' and  detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
-		$resultcheck = mysql_query($check);
-		$cal = mysql_num_rows($resultcheck);
-		if($cal==0){
-		//runno  for chktranx
-			$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-			$result = mysql_query($query)
-				or die("Query failed");
 		
-			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-				if (!mysql_data_seek($result, $i)) {
-					echo "Cannot seek to row $i\n";
-					continue;
-				}
-		
-				if(!($row = mysql_fetch_object($result)))
-					continue;
-			}
-		
-			$nRunno=$row->runno;
-			$nRunno++;
-		
-			$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-			$result = mysql_query($query) or die("Query failed");
-			
-				/////////////////////////////////////////////////////////////
-			$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('$nRunno','$thidate','$cPtname','$chn','','OTHER','1','(55020/55021 ค่าบริการผู้ป่วยนอก)', '50','50','0','','$sOfficer','0','$nVn','$cPtright');";
-			$result = mysql_query($query);
-			$idno=mysql_insert_id();
-		 
-			$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
-VALUES('$thidate','$chn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50','0','OTHER','OTHER','$idno','$cPtright');";
-			$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-			
-			$query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
-      		$result = mysql_query($query) or die("Query failed,update opday");
-		}*/
 	/////////////////////////////////////
 	$_SESSION['aDgcode'] = array();
 	$sqlvn = "select vn from opday WHERE thdatehn= '$thdatehn'";
@@ -218,19 +185,17 @@ VALUES('$thidate','$chn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป
 	echo "โรค : ตรวจสุขภาพ &nbsp;&nbsp;สิทธิ : R22 ตรวจสุขภาพประจำปีกองทัพบก<br><br>";
 	echo "<fieldset><legend><strong>รายการตรวจ</strong></legend>";
 	$i=0;
-	$sql = "select * from labcare where chkup like '%".$_POST['pro']."%'";  //ค้นหา lab ที่ตรวจ
+	if($_POST['pro']=="3" || $_POST['pro']=="4"){
+		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' or code='HDL'";  //ค้นหา lab ที่ตรวจ
+	}else{
+		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%'";  //ค้นหา lab ที่ตรวจ
+	}
 	$row = mysql_query($sql);
 	while($rep = mysql_fetch_array($row)){
 		$i++;
 		echo "$i"." ".$rep['code']." ".$rep['detail']." ราคา ".$rep['price']." บาท<br>";
 		$allpri+=$rep['price'];
-		array_push($_SESSION['aDgcode'],$rep['code']);  //นำเข้า lab ที่ตรวจใน array
-		
-	}
-
-	if( $_POST['pro'] == '3' OR $_POST['pro'] == '4' ){
-		echo "แยก HDL ต่างหาก (32503)Lipid  - HDL-chol ราคา 100 บาท<br>";
-		$allpri = $allpri + 100;
+		array_push($_SESSION['aDgcode'],$rep['code']);  //นำเข้า lab ที่ตรวจใน array	
 	}
 	
 
@@ -257,7 +222,7 @@ VALUES('$thidate','$chn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป
 	$result = mysql_query($query) or die("Query failed");
 	$_SESSION['nRunno'] = $nRunno;
 	//echo "<a href='labofyeartranx.php?pro=$_POST[pro]' target='_blank'>หมดรายการใบแจ้งหนี้</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labslip4bc.php' target='_blank'>สติ๊กเกอร์</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labslip4cbc.php' target='_blank'>สติ๊กเกอร์ CBC</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labofyearstk.php' target='_blank'>ใบนำทาง</a></span>";
-	echo "<a href='labofyeartranx.php?pro=$_POST[pro]' target='_blank'>หมดรายการใบแจ้งหนี้</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labslip4bc.php' target='_blank'>สติ๊กเกอร์</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labslip4cbc.php' target='_blank'>สติ๊กเกอร์ CBC</a></span>";
+	echo "<a href='labofyeartranx.php?pro=$_POST[pro]' target='_blank'>หมดรายการใบแจ้งหนี้</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labslip4bc_chkup_solider.php' target='_blank'>สติ๊กเกอร์</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='labslip4cbc_chkup_solider.php' target='_blank'>สติ๊กเกอร์ CBC</a></span>";
 	
 	
 	
