@@ -172,10 +172,10 @@ print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash.ph
 			$color = "66CDAA";
 		}
 
-$sql = "Select credit,billno From opacc where txdate = '$date' and hn= '$hn' order by row_id desc limit 1";
+$sql = "Select credit,billno From opacc where txdate = '$date' and hn= '$hn' and price='$price' order by row_id desc limit 1";
 $result2 = Mysql_Query($sql);
 list($credit,$billno) = Mysql_fetch_row($result2);
-
+//echo $sql."<br>";
 if($credit=='เงินสด'){$color3='#CC0000';}
 else if($credit=='ทหารไทย'){$color3='#CC0000';}
 else {$color3='#00CC99';}
@@ -364,7 +364,7 @@ $totalpri3=$totalpri-$totalpri2;
 $totaltopay1=$totalpaid1+$totalpaid2;
 
  print "<center><font face='AngsanaUPC' size='5' COLOR='#000066'>รวมค่ารักษาพยาบาลทั้งสิ้น<b>  $totalpri</b> บาท</FONT>";
-  print "  &nbsp;&nbsp&nbsp;&nbsp  <font face='AngsanaUPC' size='5' COLOR='#FF0033'><U>**เบิกไม่ได้ &nbsp;&nbsp $totaltopay1 &nbsp;&nbsp บาท**</U> </b></FONT>";
+ print "  &nbsp;&nbsp&nbsp;&nbsp  <font face='AngsanaUPC' size='5' COLOR='#FF0033'><U>**เบิกไม่ได้ &nbsp;&nbsp $totaltopay1 &nbsp;&nbsp บาท**</U> </b></FONT>";
  print " <BR><font face='AngsanaUPC' size='5' COLOR='#000066'><b>ชำระเงินแล้ว <b>$totalpri2 </b>บาท</FONT>";
  print "&nbsp;&nbsp&nbsp;&nbsp <font face='AngsanaUPC' size='5' COLOR='#FF0033'>**ยังไม่ได้ชำระเงิน &nbsp;&nbsp $totalpri3 &nbsp;&nbsp บาท** </b></FONT></center>";
  
@@ -481,7 +481,7 @@ $totalpaid2=$topay;
 			$color = "66CDAA";
 		}
 $credit="";
-$sql = "Select credit,billno From opacc where txdate = '$date' and $paid1 > '0' and hn='$hn' order by row_id desc limit 1";
+$sql = "Select credit,billno From opacc where txdate = '$date' and $paid1 > '0' and hn='$hn' order by row_id desc limit 1";  
 //echo $sql;
 $result2 = Mysql_Query($sql);
 list($credit,$billno) = Mysql_fetch_row($result2);
@@ -613,18 +613,28 @@ if( $user_ptright == "R06" ){
 	// 2561-11-05
 	$chkdate = substr($dateid,0,4);
 	
-	$sql = "SELECT ( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
+	$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `date`,( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
 	FROM `opday`
 	WHERE hn='$hnid' 
 	AND `thidate` LIKE '$chkdate%' 
-	AND `toborow` LIKE '$user_ptright%' ";
+	AND `ptright` LIKE '$user_ptright%' 
+	GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10), `hn`)";
 	$q = mysql_query($sql);
-	$item = mysql_fetch_assoc($q);
+	$count = mysql_num_rows($q);
 
-	if( $item['total'] > 0 ){
+	if( $count > 0 ){
+		$text_list = 'แจ้งเตือน: ผู้ป่วย พ.ร.บ. มีค่าใช้จ่ายในปี '.$chkdate.'ดังนี้\n';
+		$total = 0;
+		while ($item = mysql_fetch_assoc($q)) {
+			$text_list .= 'เมื่อวันที่ '.$item['date'].' จำนวน '.$item['total'].' บาท\n';
+
+			$total += $item['total'];
+		}
+
+		$text_list .= 'รวมเป็นเงิน '.$total.' บาท\n';
 		?>
 		<script type="text/javascript">
-			alert('แจ้งเตือน: ผู้ป่วย พ.ร.บ. มีค่าใช้จ่ายในปี<?=$chkdate;?> รวม <?=$item['total'];?> บาท');
+			alert('<?=$text_list;?>');
 		</script>
 		<?php
 	}
