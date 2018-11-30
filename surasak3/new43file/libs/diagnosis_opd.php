@@ -10,9 +10,7 @@ $sql10 = "SELECT `thidate`, `hn`, `vn`, `doctor`, `clinic`, SUBSTRING(`thidate`,
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( `hn` != '' AND `vn` != '' ) 
-AND `icd10` != '' 
-AND ( `doctor` IS NOT NULL AND `doctor` != '' )
-GROUP BY `date2`, `hn` 
+GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10),`hn`)  
 ORDER BY `thidate`";
 $result10 = mysql_query($sql10, $db2) or die("Query failed, Select diagnosis_opd");
 $num = mysql_num_rows($result10);

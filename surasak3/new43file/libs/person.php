@@ -16,23 +16,22 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
 SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright, 
-
 CASE 
     WHEN d.hphone <> '' THEN d.hphone 
     WHEN d.phone <> '' THEN d.phone
     WHEN d.ptffone <> '' THEN d.ptffone
 END AS `PHONE` ,
 d.`typearea` AS `TYPEAREA`
-
 FROM (
     SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
     FROM `opday` 
     WHERE `thidate` LIKE '$thimonth%' 
-    AND `hn` <> '' 
-    AND ( `idcard` <> '' AND `idcard` IS NOT NULL )
+    AND ( `hn` <> '' AND `hn` IS NOT NULL ) 
+    AND ( `idcard` <> '' AND `idcard` IS NOT NULL AND `idcard` != '-' ) 
+    GROUP BY `hn`
 ) AS c 
 LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
-GROUP BY d.`hn`";
+ORDER BY d.`hn` ";
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed,Create temp1");
 
 
