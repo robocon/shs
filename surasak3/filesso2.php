@@ -5,7 +5,7 @@
 <body>
 <?
 
-if($_FILES["filUpload"]["name"]=='hospdbon.TXT'){
+if($_FILES["filUpload"]["name"]=='h1252002.txt'){
 
 if(copy($_FILES["filUpload"]["tmp_name"],"dataupdate/".$_FILES["filUpload"]["name"]))
 {

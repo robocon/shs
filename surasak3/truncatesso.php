@@ -1,4 +1,7 @@
-<?
+<?php 
+
+session_start();
+
 if($_GET['okbtn']=="true"){
 	include("connect.inc");
 	$trunc = "TRUNCATE TABLE ssodata";
@@ -11,8 +14,14 @@ if($_GET['okbtn']=="true"){
 	//echo $insert;
 		$result2 = mysql_query($insert) or die (mysql_error());
 		if($result2){
-			echo "ปรับปรุงข้อมูลสิทธิประกันสังคมเรียบร้อยแล้ว กำลังกลับหน้าแรก";
-			$insert2 = "insert into new (depart,new,datetime,status,user,date,numday) values ('ศูนย์บริการคอมพิวเตอร์','ศูนย์บริการคอมฯ ได้ทำการอัพเดทข้อมูลประกันสังคมแล้วค่ะ','".date("d/m")."/".(date("Y")+543)."','Y','".$_SESSION['sOfficer']."','".(date("Y")+543)."/".date("m/d H:i:s")."','".$end_date."')";
+			echo "ปรับปรุงข้อมูลสิทธิประกันสังคมเรียบร้อยแล้ว กำลังกลับหน้าแรก"; 
+
+			$part = 'ศูนย์บริการคอมพิวเตอร์';
+			if( $_SESSION['smenucode'] = 'ADMSSO' ){
+				$part = 'ห้องประกันสังคม';
+			}
+
+			$insert2 = "insert into new (depart,new,datetime,status,user,date,numday) values ('$part','$part ได้ทำการอัพเดทข้อมูลประกันสังคมแล้วค่ะ','".date("d/m")."/".(date("Y")+543)."','Y','".$_SESSION['sOfficer']."','".(date("Y")+543)."/".date("m/d H:i:s")."','".$end_date."')";
 			mysql_query($insert2);
 			echo "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=../nindex.htm'>";	
 			echo "<br><br><a href ='../nindex.htm' >&lt;&lt; ไปเมนู</a>";

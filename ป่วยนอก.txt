@@ -1,0 +1,117 @@
+### Faster
+SELECT a.`row_id`, a.`date`, a.`hn`, a.`an`, a.`ptname`, a.`dr_cancle`, b.`cashok`, b.`datedr` 
+FROM `dphardep` AS a 
+INNER JOIN `phardep` AS b ON b.`datedr` = a.`date` 
+WHERE (
+    ( a.`date` >= '2559-10-01' AND a.`date` <= '2559-10-31'  ) 
+    AND 
+    ( b.`date` >= '2559-10-01' AND b.`date` <= '2559-10-31'  ) 
+) 
+AND a.`dr_cancle` IS NULL 
+AND b.`cashok` IS NOT NULL 
+
+### ใบสั่งยา
+SELECT a.`date`, a.`hn`, a.`an`, a.`ptname`, COUNT(c.`hn`) AS `count_item` 
+FROM `dphardep` AS a 
+INNER JOIN `phardep` AS b ON b.`datedr` = a.`date` 
+INNER JOIN `drugrx` AS c ON c.`idno` = b.`row_id` 
+WHERE ( 
+    ( a.`date` >= '2558-10-01' AND a.`date` <= '2559-09-30' ) 
+    AND 
+    ( b.`date` >= '2558-10-01' AND b.`date` <= '2559-09-30' ) 
+) 
+AND a.`dr_cancle` IS NULL 
+AND b.`cashok` IS NOT NULL 
+GROUP BY a.`date` 
+
+### รายการยาต่อ1คน
+SELECT COUNT(c.`hn`)
+FROM `dphardep` AS a 
+INNER JOIN `phardep` AS b ON b.`datedr` = a.`date` 
+INNER JOIN `drugrx` AS c ON c.`idno` = b.`row_id` 
+WHERE ( 
+    ( a.`date` >= '2558-10-01' AND a.`date` <= '2559-09-30' ) 
+    AND 
+    ( b.`date` >= '2558-10-01' AND b.`date` <= '2559-09-30' ) 
+) 
+AND a.`dr_cancle` IS NULL 
+AND b.`cashok` IS NOT NULL 
+
+#############################################################################
+
+# รายการยาผู้ป่วยนอก ในเวลา
+SELECT c.* 
+FROM ( 
+    SELECT a.*, SUBSTRING(b.`date`, 12, 8) AS `testtime` 
+    FROM ( 
+        SELECT `hn`, `an`, `ptname`, `date` 
+        FROM `dphardep` 
+        WHERE `date` >= '2558-10-01' AND `date` <= '2558-12-31' 
+        AND `dr_cancle` IS NULL 
+        AND `stkcutdate` IS NOT NULL 
+        AND `an` IS NULL 
+        GROUP BY `date` 
+    ) AS a 
+    INNER JOIN (
+        SELECT `hn`, `an`, `ptname`, `date`, `datedr` 
+        FROM `phardep`
+        WHERE `datedr` >= '2558-10-01' AND `datedr` <= '2558-12-31' 
+        AND `datedr` != '' 
+        AND `cashok` IS NOT NULL 
+    ) AS b ON b.`datedr` = a.`date` 
+) AS c
+WHERE ( c.`testtime` >= '08:30:00' AND c.`testtime` <= '16:00:00' )
+
+
+
+
+#############################################################################
+
+### ป่วยใน 
+SELECT c.* 
+FROM (
+    SELECT a.*, SUBSTRING(b.`date`, 12, 8) AS `testtime`, b.`row_id`,b.`cashok`
+    FROM(
+        SELECT `row_id`,`hn`, `an`, `ptname`, `date`, `dgtake` 
+        FROM `dphardep` 
+        WHERE `date` >= '2558-10-01' AND `date` <= '2559-09-30'
+        AND `dgtake` IS NOT NULL 
+        AND `an` IS NOT NULL  
+        GROUP BY `date`
+    ) AS a 
+    INNER JOIN `phardep` AS b ON b.`date` = a.`dgtake` AND b.`an` = a.`an` 
+) AS c
+WHERE ( c.`testtime` >= '08:30:00' AND c.`testtime` <= '16:00:00' )
+
+#############################################################################
+
+drop temporary table if exists temp_dphardep;
+create temporary table temp_dphardep
+( `date` datetime NOT NULL ) 
+SELECT `row_id`,`hn`, `an`, `ptname`,
+CONCAT((substring(`date`,1,4)-543),substring(`date`,5,15)) AS `date`
+FROM `dphardep` 
+WHERE `date` >= '2559-01-01' AND `date` <= '2559-04-01' 
+AND `dr_cancle` IS NULL 
+AND `stkcutdate` IS NOT NULL 
+AND `an` IS NULL ;
+
+select * from temp_dphardep;
+
+drop temporary table if exists temp_phardep;
+create temporary table temp_phardep
+( `date` datetime NOT NULL, `datedr` datetime NOT NULL ) 
+SELECT `row_id`,`hn`, `an`, `ptname`, 
+CONCAT((substring(`date`,1,4)-543),substring(`date`,5,15)) AS `date`,
+CONCAT((substring(`datedr`,1,4)-543),substring(`datedr`,5,15)) AS `datedr`
+FROM `phardep`
+WHERE `datedr` >= '2559-01-01' AND `datedr` <= '2559-04-01' 
+AND `datedr` != '' 
+AND `cashok` IS NOT NULL ;
+
+select a.*, b.*  
+from temp_dphardep as a 
+inner join temp_phardep as b on b.`datedr` = a.`date` AND b.`hn` = a.`hn`
+group by a.date;
+
+select * from temp_dphardep

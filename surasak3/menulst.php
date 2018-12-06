@@ -97,9 +97,7 @@ if($menucode=='ADM' ){
 }else{
 	$sort = "ORDER BY menu_sort ASC ,menu ASC";
 }
-
- 		
-
+				 		
 if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
@@ -182,6 +180,15 @@ if($menucode=="ADM"){
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
 				" </tr>\n");
+
+if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
+	print (" <tr>\n".
+                "  <td BGCOLOR='#008400'><a target='main' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='3' >::เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
+				" </tr>\n");	
+	print (" <tr>\n".
+                "  <td BGCOLOR='#008400'><a target='main' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='3' >::ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
+				" </tr>\n");			
+}
 		
 		print (" <tr>\n".
                 "  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
