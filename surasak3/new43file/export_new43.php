@@ -166,6 +166,7 @@ if( $action === false ){
 	
 	$dateSelect = input_post('dateSelect');
 	
+	/*
 	$testMatch = preg_match('/\d+\-\d+$/', $dateSelect);
 	if( $testMatch === 0 ){
 		?>
@@ -174,26 +175,49 @@ if( $action === false ){
 		<?php
 		exit;
 	}
-	list($thiyr, $rptmo) = explode('-', $dateSelect);
+	*/
+
+	$rptday_for_day = '';
+	$rptday = '';
+	$day_parth = '';
+
+	$testMatch = preg_match('/\d+\-\d+$/', $dateSelect);
+	if( $testMatch === 0 ){
+		list($thiyr, $rptmo) = explode('-', $dateSelect);
+	}else{
+		list($thiyr, $rptmo, $rptday) = explode('-', $dateSelect);
+
+		$rptday_for_day = "-$rptday";
+
+		$day_parth = '/'.$rptday;
+	}
+
+
 	
-	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo";
+	
+	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo$day_parth";
 	
 	if( !is_dir("export/$thiyr") ){
 		mkdir("export/$thiyr", 0777);
 	}
 	
-	if( !is_dir($dirPath) ){
-		mkdir($dirPath, 0777);
+	if( !is_dir("export/$thiyr/$rptmo") ){
+		mkdir("export/$thiyr/$rptmo", 0777);
+	}
+
+	if( !is_dir("export/$thiyr/$rptmo$day_parth") ){
+		mkdir("export/$thiyr/$rptmo$day_parth", 0777);
 	}
 	
 	// define default val
 	// $newyear = "$thiyr$rptmo$day";
-	$thimonth = "$thiyr-$rptmo"; // e.g. 2559-05
-	$yrmonth = ( $thiyr - 543 )."-$rptmo"; // e.g. 2016-05
+	$thimonth = "$thiyr-$rptmo".$rptday_for_day; // e.g. 2559-05
+	$yrmonth = ( $thiyr - 543 )."-$rptmo$rptday_for_day"; // e.g. 2016-05
 	$yy = 543;
 	$hospcode = '11512';
 	$zipLists = array();
 	$qofLists = array();
+
 
 	if( $_POST['person'] ){
 		// á¿éÁ·Õè 1
@@ -361,7 +385,7 @@ if( $action === false ){
 	
 	
 	// ÊÃéÒ§ zip ä¿Åì
-	$main_folder = 'F43_11512_'.$thiyr.$rptmo.'01090000';
+	$main_folder = 'F43_11512_'.$thiyr.$rptmo.$rptday.'01090000';
 	$zipName = 'export/'.$main_folder.'.zip';
 	$zipNameQOF = 'export/QOF_'.$main_folder.'.zip';
 
