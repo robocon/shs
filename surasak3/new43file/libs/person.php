@@ -15,13 +15,14 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
-SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright, 
+SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright,  
 CASE 
     WHEN d.hphone <> '' THEN d.hphone 
     WHEN d.phone <> '' THEN d.phone
     WHEN d.ptffone <> '' THEN d.ptffone
 END AS `PHONE` ,
-d.`typearea` AS `TYPEAREA`
+d.`typearea` AS `TYPEAREA`,
+thDateTimeToEn(d.`lastupdate`) AS `d_update` 
 FROM (
     SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
     FROM `opday` 
@@ -50,7 +51,8 @@ CASE
     WHEN d.phone <> '' THEN d.phone
     WHEN d.ptffone <> '' THEN d.ptffone
 END AS `PHONE` ,
-d.`typearea` AS `TYPEAREA`
+d.`typearea` AS `TYPEAREA`, 
+thDateTimeToEn(d.`lastupdate`) AS `d_update` 
 
 FROM ( 
     SELECT * 
@@ -66,7 +68,7 @@ UNION
 SELECT * FROM person_ipt ";
 $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
-while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea) = mysql_fetch_row ($result1)) {		
+while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
 
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
@@ -163,7 +165,9 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
     $movein="$yy$mm$dd";  //วันที่ย้ายเข้ามาในเขตพื้นที่
     $ddischarge="$yy$mm$dd";  //วันที่จำหน่าย
     list($hh,$ss,$ii)=explode(":",$regis2);
-    $d_update=$yy.$mm.$dd.$hh.$ss.$ii;
+
+    // $d_update = str_replace(array(' ', ':', '-'), '', $lastupdate);
+    // $d_update=$yy.$mm.$dd.$hh.$ss.$ii;
 
 
     $thidated=substr($thidate,8,2);
@@ -257,13 +261,15 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
     	$neweducation="09";  //ระดับการศึกษา
 	}
 	
-    $discharge="9";  //สถานะ/สาเหตุการจำหน่าย
-    
+    $discharge = "9";  //สถานะ/สาเหตุการจำหน่าย
+    $occ_old = '';
+
     $inline = "$hospcode|$cid|$PID|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update|$phone|$phone\r\n";
 
     $txt .= $inline;
 
 } //close while
+
 $filePath = $dirPath.'/person.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;

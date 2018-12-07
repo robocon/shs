@@ -191,6 +191,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
 		$typearea = $row->typearea;
+		$vstatus = $row->vstatus;
 		//echo substr($cPtright,1,3);
 		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
 			echo '<script>alert("ผู้ป่วยสิทธิประกันสุขภาพถ้วนหน้า(ผู้พิการ)\กรุณาตรวจสอบสิทธิการรักษา\r\nเพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด");</script>';
@@ -937,9 +938,6 @@ return $pAge;
       <option value="บี" <? if($cBlood=='บี' || $cBlood=='B' ){ echo "selected";}?>>บี</option>
       <option value="เอบี" <? if($cBlood=='เอบี' || $cBlood=='AB' ){ echo "selected";}?>>เอบี</option>
       <option value="โอ" <? if($cBlood=='โอ' || $cBlood=='O' ){ echo "selected";}?>>โอ</option>
-
-	  <option value="RH Positive" <? if($cBlood=='RH Positive' ){ echo "selected";}?>>RH Positive</option>
-	  <option value="RH Negative" <? if($cBlood=='RH Negative' ){ echo "selected";}?>>RH Negative</option>
     </SELECT></td>
     <td class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
     <td class="fonthead"><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">  
@@ -986,7 +984,7 @@ return $pAge;
 		<td align="right" class="fonthead">สถานะในชุมชน</td>
 		<td>
 		<?php 
-		$vstatus = array(
+		$vstatus_list = array(
 			'1' => 'กำนัน ผู้ใหญ่บ้าน',
 			'2' => 'อสม.',
 			'3' => 'แพทย์ประจำตำบล',
@@ -994,11 +992,12 @@ return $pAge;
 			'5' => 'อื่นๆ'
 		);
 		?>
-		<select name="" id="">
+		<select name="vstatus" id="">
 			<option value="">-- เลือกข้อมูล --</option>
 			<?php
-			foreach ($vstatus as $key => $vitem) {
-				?><option value="<?=$key;?>"><?=$vitem;?></option><?php 
+			foreach ($vstatus_list as $key => $vitem) {
+				$selected = ( $key == $vstatus ) ? 'selected="selected"' : '' ;
+				?><option value="<?=$key;?>" <?=$selected;?> ><?=$vitem;?></option><?php 
 			}
 			?>
 		</select>
@@ -1315,7 +1314,7 @@ function checkForm(){
 			birth_m.focus();
 			return false;
 
-		} else if( birth_m.value.length < 4 ){
+		} else if( birth_y.value.length < 4 ){
 
 			alert("รูปแบบปีไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง \nตัวอย่างรูปแบบปี เช่น 2561 เป็นต้น");
 			birth_y.focus();
