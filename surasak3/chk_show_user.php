@@ -16,7 +16,8 @@ if( $page == false ){
 
     $sql = "SELECT *, `HN` AS `hn`  
     FROM `opcardchk` 
-    WHERE `part` = '$part' ";
+    WHERE `part` = '$part' 
+    ORDER BY `row`";
     $db->select($sql);
     $items = $db->get_items();
     $rows = $db->get_rows();
