@@ -603,6 +603,7 @@ return $pAge;
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
+  <?php /* ?>
   <tr>
     <td align="right" class="fonthead">เลขที่บัตรประชาชนบิดา:</td>
     <td> 
@@ -619,6 +620,7 @@ return $pAge;
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
+  <?php */ ?>
   <tr>
     <td align="right" class="fonthead">ผู้ที่สามารถติดต่อได้:</td>
     <td>
@@ -979,7 +981,7 @@ return $pAge;
     <td class="fonthead">หมายเหตุ</td>
     <td><input type="text" name="note" size="50" value="<?=$cNote;?>" id="note"></td>
     </tr>
-
+	<?php /* ?>
 	<tr>
 		<td align="right" class="fonthead">สถานะในชุมชน</td>
 		<td>
@@ -1005,6 +1007,7 @@ return $pAge;
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
+	<?php */ ?>
     </table>
 
 </fieldset>

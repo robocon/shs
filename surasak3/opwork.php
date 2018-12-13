@@ -12,7 +12,6 @@ session_register("thdatehn");
 session_register("admit_vn"); 
 
 include("connect.inc");   
-include 'includes/config.php';
 
 $code21 = '21';
 
@@ -553,12 +552,16 @@ $race = trim($race);
 $nation = trim($nation);
 $religion = trim($religion);
 $education = trim($education);
-$father = trim($_POST['idcard_father']);
-$mother = trim($_POST['idcard_mother']);
-$couple = trim($_POST['idcard_couple']);
+// $father = trim($_POST['idcard_father']);
+// $mother = trim($_POST['idcard_mother']);
+// $couple = trim($_POST['idcard_couple']);
+$father = NULL;
+$mother = NULL;
+$couple = NULL;
 $abogroup = trim($blood);
 $d_update = trim($thidate);
-$vstatus = $_POST['vstatus'];
+// $vstatus = $_POST['vstatus'];
+$vstatus = NULL;
 
 $telephone = str_replace(array(' ', '-'), '', trim($hphone));
 $mobile = str_replace(array(' ', '-'), '', trim($phone));
@@ -726,6 +729,18 @@ $structure = '../image_patient';
 <a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
+
+<?php 
+include 'includes/config.php';
+
+
+
+
+?>
+
+
+
+
 <script type="text/javascript">
 
 var queue = 0;
