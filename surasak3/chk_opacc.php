@@ -32,7 +32,7 @@ if(isset($_POST['Chkhn'])){
 	$strsql="SELECT *, CONCAT(`yot`,`name`,' ',`surname`) as ptname 
   FROM `opcardchk` 
   WHERE  HN = '".$_POST['Chkhn']."' 
-  and part='สอบตำรวจ60'";
+  and part='สอบตำรวจ62'";
 	$query=mysql_query($strsql) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 	
@@ -93,9 +93,9 @@ $Thidate2 =(date("Y")+543).date("-m-d H:i:s");
 $depart = "OTHER";
 
 $detail = "ค่าบริการตรวจสุขภาพตำรวจ";
-$price =900;
-$paid  =900;
-$idname='นางสาว นทีพร อุ่นม่อน';
+$price =880;
+$paid  =880;
+$idname='นางพวงเพ็ชร โนใจปิง';
 
 $credit="เงินสด";
 

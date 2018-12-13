@@ -2,45 +2,32 @@
 
 include 'bootstrap.php';
 
+// $Conn = mysql_connect('192.168.1.13', 'dottow', '') or die( mysql_error() );
+// mysql_select_db('smdb', $Conn) or die( mysql_error() );
+
 ?>
-<p align="center">นำเข้า Lab ตรวจสุขภาพสอบตำรวจ 2562
-<form name="form1" id="form1" method="post" action="policelab62.php">
-	<input name="act" type="hidden" value="add">   
-	<input name="Submit" type="submit" value="กดที่นี่ เพื่อนำเข้า Lab" />
-</form>
+<p align="center">นำเข้า Lab ตรวจสุขภาพสอบตำรวจ 2561
+	<form name="form1" id="form1" method="post" action="policelab62.php">
+		<input name="act" type="hidden" value="add">   
+		<input name="Submit" type="submit" value="กดที่นี่ เพื่อนำเข้า Lab" />
+	</form>
 </p>
-<?
-if($_POST["act"]=="add"){
-	// include("connect.inc"); 
+<?php
+if( $_POST["act"] == "add" ){
+	
+	$db = Mysql::load();
+
 	$sql = "SELECT `HN`,`yot`,`name`,`surname`,`dbirth`,`exam_no` 
 	FROM `opcardchk` 
 	WHERE `part` = 'สอบตำรวจ62' 
 	ORDER BY `row` ASC";
-	$query = mysql_query($sql);
-	$num = mysql_num_rows($query);
-	
-	while($rows = mysql_fetch_array($query)){
-		//list($d,$m,$y)=explode("/",$rows["dbirth"]);
-		//$y=$y-543;
-		//$dbirth="$y-$m-$d 00:00:00";
+	$db->select($sql);
+	$items = $db->get_items();
+
+	foreach( $items as $key => $item ){ 
+		
 		$dbirth = "00-00-00 00:00:00";
-		$ptname = $rows["yot"].' '.$rows["name"].' '.$rows["surname"];
-
-		// $query1 = "SELECT runno, startday FROM runno WHERE title = 'lab'";
-		// $result = mysql_query($query1) or die("Query failed");
-
-		// for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-		// 	if (!mysql_data_seek($result, $i)) {
-		// 		echo "Cannot seek to row $i\n";
-		// 		continue;
-		// 	}
-		// 		if(!($row = mysql_fetch_object($result)))
-		// 		continue;
-		// }
-
-		// $nLab=$row->runno;
-		// $dLabdate=$row->startday;
-		// $dLabdate=substr($dLabdate,0,10);
+		$ptname = $item["yot"].' '.$item["name"].' '.$item["surname"];
 
 		$Thidate2 = date("Y-m-d H:i:s");
 		$patienttype = "OPD";
@@ -49,8 +36,8 @@ if($_POST["act"]=="add"){
 		$gender = "M";
 		$priority = "R";
 		$cliniciancode = '';
-		$labnumber = $rows['exam_no'];
-		$hn = $rows['HN'];
+		$labnumber = $item['exam_no'];
+		$hn = $item['HN'];
 
 		$sql1 = "INSERT INTO `orderhead` ( 
 			`autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , 
@@ -61,34 +48,33 @@ if($_POST["act"]=="add"){
 			'$ptname', '$gender', '$dbirth', '', '', 
 			'','$cliniciancode', 'MD022 (ไม่ทราบแพทย์)', '$priority', '$clinicalinfo' 
 		);";
-
-		dump($sql1);
-		// $result1 = mysql_query($sql1)or die("Query failed,INSERT orderhead ");
+		$head_insert = $db->insert($sql1);
+		dump($head_insert);
 
 		// @stool ==> 10446, ST
-		$arrlab=array('CBC','UA','HIV','VDRL','AMP','10446','ST');
-		foreach ($arrlab as $value) {
-			list($code,$oldcode,$detail) = mysql_fetch_row(mysql_query("Select code,oldcode,detail From labcare where code = '".$value."' limit 0,1 "));   
+		$arrlab = array('CBC','UA','HIV','VDRL','AMP','10446','ST');
+		foreach ( $arrlab as $value ) {
+
+			$sql = "SELECT `code`,`oldcode`,`detail` FROM `labcare` WHERE `code` = '$value' LIMIT 0,1 ";
+			$db->select($sql);
+			$lab = $db->get_item();
+
+			$code = $lab['code'];
+			$oldcode = $lab['oldcode'];
+			$detail = $lab['detail'];
 			
 			$sql2 = "INSERT INTO `orderdetail` ( 
 				`labnumber` , `labcode`, `labcode1` , `labname` 
 			) VALUES ( 
-				'$labnumber', '".$code."', '".$oldcode."', '".$detail."' 
+				'$labnumber', '$code', '$oldcode', '$detail' 
 			);";
-			dump($sql2);
-			// $result2 = mysql_query($sql2) or die("Query failed,INSERT orderdetail");
+			$detail_insert = $db->insert($sql2);
+			dump($detail_insert);
 			
 		}
 
-
-
 		echo "$hn : นำเข้า Order Lab เรียบร้อยแล้ว<br>";
-
 		echo "<hr>";
-
-		// $nLab++;
-		// $query3 ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
-		// $result3 = mysql_query($query3) or die("Query failed runno");
 
 	}  //close while
 }  //close if act=add
