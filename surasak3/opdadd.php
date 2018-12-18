@@ -171,9 +171,9 @@ $education = trim($education);
 // $father = trim($_POST['idcard_father']);
 // $mother = trim($_POST['idcard_mother']);
 // $couple = trim($_POST['idcard_couple']);
-$father = NULL;
-$mother = NULL;
-$couple = NULL;
+$idcard_father = NULL;
+$idcard_mother = NULL;
+$idcard_couple = NULL;
 $abogroup = trim($blood);
 $d_update = trim($thidate);
 // $vstatus = $_POST['vstatus'];
@@ -193,7 +193,7 @@ if( mysql_num_rows($q) == 0 ){
 	) VALUES (
 		NULL, '$date_hn', '11512', '$cid', '$pid', NULL, '$prename', '$name', '$lname', '$hn', 
 		'$sex', '$birth', '$mstatus', NULL, '$occupation_new', '$race', '$nation', '$religion', '$education', NULL, 
-		'$father', '$mother', '$couple', '$vstatus', NULL, NULL, NULL, '$abogroup', NULL, NULL, 
+		'$idcard_father', '$idcard_mother', '$idcard_couple', '$vstatus', NULL, NULL, NULL, '$abogroup', NULL, NULL, 
 		NULL, '$typearea', '$d_update', '$telephone', '$mobile'
 	);";
 	mysql_query($sql);
@@ -205,7 +205,7 @@ if( mysql_num_rows($q) == 0 ){
 	`date_hn`='$date_hn', `HOSTPCODE`='11512', `CID`='$cid', `PID`='$pid', `HID`=NULL, 
 	`PRENAME`='$prename', `NAME`='$name', `LNAME`='$lname', `HN`='$hn', `SEX`='$sex', `BIRTH`='$birth', 
 	`MSTATUS`='$mstatus', `OCCUPATION_OLD`=NULL, `OCCUPATION_NEW`='$occupation_new', `RACE`='$race', `NATION`='$nation', `RELIGION`='$religion', 
-	`EDUCATION`='$education', `FSTATUS`=NULL, `FATHER`='$father', `MOTHER`='$mother', `COUPLE`='$couple', `VSTATUS`='$vstatus', 
+	`EDUCATION`='$education', `FSTATUS`=NULL, `FATHER`='$idcard_father', `MOTHER`='$idcard_mother', `COUPLE`='$idcard_couple', `VSTATUS`='$vstatus', 
 	`MOVEIN`=NULL, `DISCHARGE`=NULL, `DDISCHARGE`=NULL, `ABOGROUP`='$abogroup', `RHGROUP`=NULL, `LABOR`=NULL, 
 	`PASSPORT`=NULL, `TYPEAREA`='$typearea', `D_UPDATE`='$d_update', `TELEPHONE`='$telephone', `MOBILE`='$mobile' 
 	WHERE (`id`='$person_id');";
