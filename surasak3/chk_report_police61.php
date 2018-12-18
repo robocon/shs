@@ -501,7 +501,7 @@ while($result = mysql_fetch_assoc($row2)){
 			|| labcode ='RBCU' 
 			|| labcode ='BACTU' 
 			|| labcode ='MUCOSU' 
-			|| labcode ='OTHERU' 
+			
 
 		) ";
 		//echo $strSQL;
@@ -515,8 +515,8 @@ while($result = mysql_fetch_assoc($row2)){
 				$labmean="ความใส";
 			}else if($objResult["labcode"]=="SPGR"){
 				$labmean="ความถ่วงจำเพาะ";
-			}else if($objResult["labcode"]=="PHU"){
-				$labmean="ความเป็นกรด";
+			}else if($objResult["labcode"]=="PH"){
+				$labmean="ความเป็นกรดด่าง";
 			}else if($objResult["labcode"]=="BLOODU"){  //เลือดในปัสสาวะ
 				$labmean="เลือดในปัสสาวะ";
 				// if($objResult["result"]=="Negative" || $objResult["result"]=="Trace"){
