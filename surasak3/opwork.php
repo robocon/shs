@@ -534,8 +534,8 @@ $_SESSION['admit_vn']=$nVn;
 //END 
 
 // เก็บข้อมูลเข้า PERSON 
-$db43 = mysql_connect(HOST, USER, PASS);
-mysql_select_db("43files", $db43);
+// $db43 = mysql_connect(HOST, USER, PASS);
+// mysql_select_db("43files", $db43);
 
 $short_th_date = substr($thidate,0,10);
 $date_hn = $short_th_date.$cHn;
@@ -566,7 +566,7 @@ $vstatus = NULL;
 $telephone = str_replace(array(' ', '-'), '', trim($hphone));
 $mobile = str_replace(array(' ', '-'), '', trim($phone));
 
-$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ", $db43);
+$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ");
 if( mysql_num_rows($q) == 0 ){
 	// insert 
 	$sql = "INSERT INTO `PERSON` (
@@ -580,7 +580,7 @@ if( mysql_num_rows($q) == 0 ){
 		'$father', '$mother', '$couple', '$vstatus', NULL, NULL, NULL, '$abogroup', NULL, NULL, 
 		NULL, '$typearea', '$d_update', '$telephone', '$mobile'
 	);";
-	mysql_query($sql, $db43);
+	mysql_query($sql);
 }else{ 
 	$item = mysql_fetch_assoc($q);
 	$person_id = $item['id'];
@@ -593,7 +593,7 @@ if( mysql_num_rows($q) == 0 ){
 	`MOVEIN`=NULL, `DISCHARGE`=NULL, `DDISCHARGE`=NULL, `ABOGROUP`='$abogroup', `RHGROUP`=NULL, `LABOR`=NULL, 
 	`PASSPORT`=NULL, `TYPEAREA`='$typearea', `D_UPDATE`='$d_update', `TELEPHONE`='$telephone', `MOBILE`='$mobile' 
 	WHERE (`id`='$person_id');";
-	mysql_query($sql, $db43);
+	mysql_query($sql);
 }
 // จบการเก็บข้อมูลเข้า PERSON 
 
