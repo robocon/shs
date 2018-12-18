@@ -150,6 +150,72 @@ $result = mysql_query($query) or die("Query failed");
 //echo mysql_errno() . ": " . mysql_error(). "\n";
 //echo "<br>";
 
+$thidate = ( date('Y') + 543 ).date('-m-d');
+
+// เก็บข้อมูลเข้า PERSON
+$short_th_date = substr($thidate,0,10);
+$date_hn = $short_th_date.$vHN;
+$cid = trim($idcard);
+$hn = $pid = $vHN;
+$prename = trim($yot);
+$name = trim($name);
+$lname = trim($surname);
+$sex = trim($sex);
+$birth = trim($dbirth);
+$mstatus = trim($married);
+$occupation_new = trim($career);
+$race = trim($race);
+$nation = trim($nation);
+$religion = trim($religion);
+$education = trim($education);
+// $father = trim($_POST['idcard_father']);
+// $mother = trim($_POST['idcard_mother']);
+// $couple = trim($_POST['idcard_couple']);
+$father = NULL;
+$mother = NULL;
+$couple = NULL;
+$abogroup = trim($blood);
+$d_update = trim($thidate);
+// $vstatus = $_POST['vstatus'];
+$vstatus = NULL;
+
+$telephone = str_replace(array(' ', '-'), '', trim($hphone));
+$mobile = str_replace(array(' ', '-'), '', trim($phone));
+
+$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ");
+if( mysql_num_rows($q) == 0 ){
+	// insert 
+	$sql = "INSERT INTO `PERSON` (
+		`id`, `date_hn`, `HOSTPCODE`, `CID`, `PID`, `HID`, `PRENAME`, `NAME`, `LNAME`, `HN`, 
+		`SEX`, `BIRTH`, `MSTATUS`, `OCCUPATION_OLD`, `OCCUPATION_NEW`, `RACE`, `NATION`, `RELIGION`, `EDUCATION`, `FSTATUS`, 
+		`FATHER`, `MOTHER`, `COUPLE`, `VSTATUS`, `MOVEIN`, `DISCHARGE`, `DDISCHARGE`, `ABOGROUP`, `RHGROUP`, `LABOR`, 
+		`PASSPORT`, `TYPEAREA`, `D_UPDATE`, `TELEPHONE`, `MOBILE`
+	) VALUES (
+		NULL, '$date_hn', '11512', '$cid', '$pid', NULL, '$prename', '$name', '$lname', '$hn', 
+		'$sex', '$birth', '$mstatus', NULL, '$occupation_new', '$race', '$nation', '$religion', '$education', NULL, 
+		'$father', '$mother', '$couple', '$vstatus', NULL, NULL, NULL, '$abogroup', NULL, NULL, 
+		NULL, '$typearea', '$d_update', '$telephone', '$mobile'
+	);";
+	mysql_query($sql);
+}else{ 
+	$item = mysql_fetch_assoc($q);
+	$person_id = $item['id'];
+	// update
+	$sql = "UPDATE `PERSON` SET 
+	`date_hn`='$date_hn', `HOSTPCODE`='11512', `CID`='$cid', `PID`='$pid', `HID`=NULL, 
+	`PRENAME`='$prename', `NAME`='$name', `LNAME`='$lname', `HN`='$hn', `SEX`='$sex', `BIRTH`='$birth', 
+	`MSTATUS`='$mstatus', `OCCUPATION_OLD`=NULL, `OCCUPATION_NEW`='$occupation_new', `RACE`='$race', `NATION`='$nation', `RELIGION`='$religion', 
+	`EDUCATION`='$education', `FSTATUS`=NULL, `FATHER`='$father', `MOTHER`='$mother', `COUPLE`='$couple', `VSTATUS`='$vstatus', 
+	`MOVEIN`=NULL, `DISCHARGE`=NULL, `DDISCHARGE`=NULL, `ABOGROUP`='$abogroup', `RHGROUP`=NULL, `LABOR`=NULL, 
+	`PASSPORT`=NULL, `TYPEAREA`='$typearea', `D_UPDATE`='$d_update', `TELEPHONE`='$telephone', `MOBILE`='$mobile' 
+	WHERE (`id`='$person_id');";
+	mysql_query($sql);
+}
+
+// เก็บข้อมูลเข้า PERSON
+
+
+
 //print opd card ที่นี่ จาก opdcardprn.htm  by frontpage
 
 
