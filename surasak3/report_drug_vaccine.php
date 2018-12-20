@@ -28,10 +28,11 @@ $defMonth = empty($_POST['m_start']) ? date('m') : $_POST['m_start'];;
 	</div>
 	<h3>ค้นหารายชื่อเด็กที่ฉีดวัคซีน</h3>
     <form method="post" action="report_drug_vaccine.php" name="FrmR">
+
 		<select name="m_start">
 			<?php
 			foreach( $thaimonthFull as $key => $month ){
-				$select = ( $key === $defMonth ) ? 'selected="selected"' : '' ;
+				$select = ( $key == $defMonth ) ? 'selected="selected"' : '' ;
 				?>
 				<option value="<?=$key;?>" <?=$select?>><?=$month;?></option>
 				<?php
@@ -42,7 +43,7 @@ $defMonth = empty($_POST['m_start']) ? date('m') : $_POST['m_start'];;
 		$Y = date("Y") + 543;
 		$date = date("Y") + 543 + 5;
 		$dates = range(2547, $date);
-		
+
 		?>
 		<select name="y_start">
 			<?php
@@ -103,9 +104,38 @@ if( $show === 'report' ){
 		<?php
 		$r=0;
 		if($rows){
+
+			$ipv = 0;
+			$dpt_hb = 0;
+			$dpt_new = 0;
+			$opv_new = 0;
+			$hb = 0;
+
 			while($row= mysql_fetch_array($result)){
 				
 				$r++;
+
+				if( preg_match('/IPV/', $row['vac_name'], $matchs) > 0 ){
+					$ipv++;
+				}
+
+				if( preg_match('/OPV/', $row['vac_name'], $matchs) > 0 ){
+					$opv_new++;
+				}
+
+				if( preg_match('/DPT\+HB/', $row['vac_name'], $matchs) > 0 ){
+					$dpt_hb++;
+				}
+
+				if( preg_match('/DPT/', $row['vac_name'], $matchs) > 0 ){
+					$dpt_new++;
+				}
+
+				if( preg_match('/HB/', $row['vac_name'], $matchs) > 0 ){
+					$hb++;
+				}
+
+				$name2 = '';
 				
 				if($row['vac_name']=="VAC+OPV"){
 						
@@ -175,11 +205,11 @@ if( $show === 'report' ){
 					<td align="left"><?=$row['lotno'];?></td>
 					<td align="left"><?=$row['date_end'];?></td>
 					<td align="left">
-						<?php if ($row['lotno2']=='' and $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $name2; }?>
+						<?php if ($row['lotno2']=='' && $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $name2; }?>
 					</td>
-					<td align="right"><?php if ($row['lotno2']=='' and $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $row['num']; }?></td>
-					<td align="left"><?php if ($row['lotno2']=='' and $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $row['lotno2']; }?></td>
-					<td align="left"><?php if ($row['lotno2']=='' and $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $row['date_end2']; }?></td>
+					<td align="right"><?php if ($row['lotno2']=='' && $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $row['num']; }?></td>
+					<td align="left"><?php if ($row['lotno2']=='' && $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $row['lotno2']; }?></td>
+					<td align="left"><?php if ($row['lotno2']=='' && $row['date_end2']==''){ echo "&nbsp;"; }else{ echo $row['date_end2']; }?></td>
 					<td><?=$namedoc;?></td>
 				</tr>
 				<?php
@@ -198,23 +228,25 @@ if( $show === 'report' ){
 			<td bgcolor="#CCCCCC">วัคซีน</td>
 			<td>MMR</td>
 			<td>JEV</td>
-			<td>TT</td>
-			<td>VEROLAB</td>
+			<td>IPV</td>
+			<td>DPT+HB</td>
 			<td>OPV</td>
-			<td>VAC</td>
+			<td>BCG</td>
 			<td>DPT</td>
-			<td>HBV</td>
+			<td>DT</td>
+			<td>HB</td>
 		</tr>
 		<tr align="right">
 			<td bgcolor="#CCCCCC">จำนวนผู้รับบริการ</td>
-			<td><? if($mmr==''){ echo "0"; }else{ echo $mmr; }?></td>
-			<td><? if($jev){ echo $jev; }else{  echo "0"; }?></td>
-			<td><? if($tt){ echo $tt; }else{ echo "0"; }?></td>
-			<td><? if($vero){ echo $vero; }else{ echo "0";; }?></td>
-			<td><? if($opv){ echo $opv; }else{ echo "0"; }?></td>
-			<td><? if($vac){ echo $vac; }else{ echo "0"; }?></td>
-			<td><? if($dpt){ echo $dpt; }else{ echo "0"; }?></td>
-			<td><? if($hvb){ echo $hvb; }else{ echo "0"; }?></td>
+			<td><?php if($mmr==''){ echo "0"; }else{ echo $mmr; }?></td>
+			<td><?php if($jev){ echo $jev; }else{  echo "0"; }?></td>
+			<td><?php if($ipv){ echo $ipv; }else{ echo "0"; }?></td>
+			<td><?php if($dpt_hb){ echo $dpt_hb; }else{ echo "0";; }?></td>
+			<td><?php if($opv_new){ echo $opv_new; }else{ echo "0"; }?></td>
+			<td><?php if($bcg){ echo $bcg; }else{ echo "0"; }?></td>
+			<td><?php if($dpt_new){ echo $dpt_new; }else{ echo "0"; }?></td>
+			<td><?php if($dt){ echo $dt; }else{ echo "0"; }?></td>
+			<td><?php if($hb){ echo $hb; }else{ echo "0"; }?></td>
 		</tr>
 	</table>
 	<?php
