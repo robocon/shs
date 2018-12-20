@@ -629,14 +629,18 @@ while($result = mysql_fetch_assoc($row2)){
 
 		<?php
 		$sql = "SELECT b.* 
-		FROM `resulthead` AS a 
-		LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-		WHERE a.`hn` = '$hn' 
-		AND ( 
-			a.`profilecode` = 'HIV' 
-			OR a.`profilecode` = 'VDRL' 
-			OR a.`profilecode` = 'METAMP' 
-		) ;";
+		FROM ( 
+			SELECT MAX(`autonumber`) AS `latest_id` 
+			FROM `resulthead` 
+			WHERE `hn` = '$hn' 
+			AND ( 
+				`profilecode` = 'HIV' 
+				OR `profilecode` = 'VDRL' 
+				OR `profilecode` = 'METAMP' 
+			) 
+			GROUP BY `profilecode`
+		 ) AS a 
+		LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` ";
 		$q = mysql_query($sql) or die( mysql_error() );
 		?>
 		<td width="50%" valign="top">
@@ -677,13 +681,14 @@ while($result = mysql_fetch_assoc($row2)){
 
 		<?php
 		$sql = "SELECT b.* 
-		FROM `resulthead` AS a 
-		LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-		WHERE a.`hn` = '$hn' 
-		
-		AND a.`profilecode` = 'STOOL'
-
-		AND ( b.`labname` != 'Character' AND b.`labname` != 'Mucous' ) ;";
+		FROM ( 
+			SELECT MAX(`autonumber`) AS `latest_id` 
+			FROM `resulthead` 
+			WHERE `hn` = '$hn' 
+			AND `profilecode` = 'STOOL'
+		) AS a 
+		LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
+		WHERE ( b.`labname` != 'Character' AND b.`labname` != 'Mucous' ) ";
 		$q = mysql_query($sql) or die( mysql_error() );
 		?>
 		<td width="50%" valign="top">
