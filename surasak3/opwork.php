@@ -12,6 +12,7 @@ session_register("thdatehn");
 session_register("admit_vn"); 
 
 include("connect.inc");   
+
 $code21 = '21';
 
 if(substr($_POST["case"],0,4) == "EX19"||substr($_POST["case"],0,4) == "EX35")
@@ -78,6 +79,13 @@ if($_POST['lockptright5']=="lock"){
 	$hospcode=$_POST['hospcode'];
 	$ptrcode=$_POST['rdo1'];
 	$typearea = $_POST['typearea'];
+
+	$vstatus = $_POST['vstatus'];
+	$father_id = $_POST['father_id'];
+	$mother_id = $_POST['mother_id'];
+	$couple_id = $_POST['couple_id'];
+
+
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
@@ -90,8 +98,10 @@ phone='$phone',father='$father',mother='$mother',couple='$couple',
 note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
 ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
 officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
-employee='$employee', 
-opcardstatus='$opcardstatus',`typearea` = '$typearea' $where4 WHERE hn='$cHn' ";
+
+employee='$employee', opcardstatus='$opcardstatus',`typearea` = '$typearea',`vstatus`='$vstatus',
+`father_id`='$father_id',`mother_id`='$mother_id',`couple_id`='$couple_id' $where4 WHERE hn='$cHn' ";
+
 
 $result = mysql_query($sql) or die("Query failed ipcard".mysql_error());
 
@@ -463,14 +473,6 @@ print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้
 print "<br>ผู้ลงทะเบียน ..$sOfficer";
 }
 
-// เก็บข้อมูลผู้ป่วยที่ออก EX30 งดเว้นเกณฑ์ทหาร
-if(substr($_POST["case"],0,4) == "EX30"){ 
-	$sql = "INSERT INTO `ex30_log`
-	(`id`,`date`,`vn`,`hn`,`ptname`,`opday_id`)
-	VALUES
-	(NULL,'$thidate2','$nVn','$cHn','$cPtname','$opday_id');";
-	$insert = mysql_query($sql) or die( mysql_error() );
-}
 
 if(substr($_POST["case"],0,4)=="EX03"){  //คิดค่าบริการสมัครโครงการเบิกจ่ายตรงอัตโนมัติ
 	
@@ -534,6 +536,72 @@ if(substr($_POST["case"],0,4) == "EX23"){
 }
 $_SESSION['admit_vn']=$nVn;
 //END 
+
+// เก็บข้อมูลเข้า PERSON 
+// $db43 = mysql_connect(HOST, USER, PASS);
+// mysql_select_db("43files", $db43);
+
+$short_th_date = substr($thidate,0,10);
+$date_hn = $short_th_date.$cHn;
+$cid = trim($idcard);
+$hn = $pid = $cHn;
+$prename = trim($yot);
+$name = trim($name);
+$lname = trim($surname);
+$sex = trim($sex);
+$birth = trim($dbirth);
+$mstatus = trim($married);
+$occupation_new = trim($career);
+$race = trim($race);
+$nation = trim($nation);
+$religion = trim($religion);
+$education = trim($education);
+// $father = trim($_POST['idcard_father']);
+// $mother = trim($_POST['idcard_mother']);
+// $couple = trim($_POST['idcard_couple']);
+$father = NULL;
+$mother = NULL;
+$couple = NULL;
+$abogroup = trim($blood);
+$d_update = trim($thidate);
+// $vstatus = $_POST['vstatus'];
+$vstatus = NULL;
+
+$telephone = str_replace(array(' ', '-'), '', trim($hphone));
+$mobile = str_replace(array(' ', '-'), '', trim($phone));
+
+$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ");
+if( mysql_num_rows($q) == 0 ){
+	// insert 
+	$sql = "INSERT INTO `PERSON` (
+		`id`, `date_hn`, `HOSTPCODE`, `CID`, `PID`, `HID`, `PRENAME`, `NAME`, `LNAME`, `HN`, 
+		`SEX`, `BIRTH`, `MSTATUS`, `OCCUPATION_OLD`, `OCCUPATION_NEW`, `RACE`, `NATION`, `RELIGION`, `EDUCATION`, `FSTATUS`, 
+		`FATHER`, `MOTHER`, `COUPLE`, `VSTATUS`, `MOVEIN`, `DISCHARGE`, `DDISCHARGE`, `ABOGROUP`, `RHGROUP`, `LABOR`, 
+		`PASSPORT`, `TYPEAREA`, `D_UPDATE`, `TELEPHONE`, `MOBILE`
+	) VALUES (
+		NULL, '$date_hn', '11512', '$cid', '$pid', NULL, '$prename', '$name', '$lname', '$hn', 
+		'$sex', '$birth', '$mstatus', NULL, '$occupation_new', '$race', '$nation', '$religion', '$education', NULL, 
+		'$father', '$mother', '$couple', '$vstatus', NULL, NULL, NULL, '$abogroup', NULL, NULL, 
+		NULL, '$typearea', '$d_update', '$telephone', '$mobile'
+	);";
+	mysql_query($sql);
+}else{ 
+	$item = mysql_fetch_assoc($q);
+	$person_id = $item['id'];
+	// update
+	$sql = "UPDATE `PERSON` SET 
+	`date_hn`='$date_hn', `HOSTPCODE`='11512', `CID`='$cid', `PID`='$pid', `HID`=NULL, 
+	`PRENAME`='$prename', `NAME`='$name', `LNAME`='$lname', `HN`='$hn', `SEX`='$sex', `BIRTH`='$birth', 
+	`MSTATUS`='$mstatus', `OCCUPATION_OLD`=NULL, `OCCUPATION_NEW`='$occupation_new', `RACE`='$race', `NATION`='$nation', `RELIGION`='$religion', 
+	`EDUCATION`='$education', `FSTATUS`=NULL, `FATHER`='$father', `MOTHER`='$mother', `COUPLE`='$couple', `VSTATUS`='$vstatus', 
+	`MOVEIN`=NULL, `DISCHARGE`=NULL, `DDISCHARGE`=NULL, `ABOGROUP`='$abogroup', `RHGROUP`=NULL, `LABOR`=NULL, 
+	`PASSPORT`=NULL, `TYPEAREA`='$typearea', `D_UPDATE`='$d_update', `TELEPHONE`='$telephone', `MOBILE`='$mobile' 
+	WHERE (`id`='$person_id');";
+	mysql_query($sql);
+}
+// จบการเก็บข้อมูลเข้า PERSON 
+
+
 // รูปภาพ
 $dataf=$_FILES['filUpload']['tmp_name'];
 $dataf_name=$_FILES['filUpload']['name'];
@@ -665,6 +733,18 @@ $structure = '../image_patient';
 <a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
+
+<?php 
+include 'includes/config.php';
+
+
+
+
+?>
+
+
+
+
 <script type="text/javascript">
 
 var queue = 0;

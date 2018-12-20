@@ -193,16 +193,19 @@ if( $action === false ){
 	}
 
 
-	
-	
+
 	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo$day_parth";
 	
 	if( !is_dir("export/$thiyr") ){
 		mkdir("export/$thiyr", 0777);
 	}
 	
-	if( !is_dir($dirPath) ){
-		mkdir($dirPath, 0777);
+	if( !is_dir("export/$thiyr/$rptmo") ){
+		mkdir("export/$thiyr/$rptmo", 0777);
+	}
+
+	if( !is_dir("export/$thiyr/$rptmo$day_parth") ){
+		mkdir("export/$thiyr/$rptmo$day_parth", 0777);
 	}
 	
 	// define default val
@@ -214,11 +217,7 @@ if( $action === false ){
 	$zipLists = array();
 	$qofLists = array();
 
-	// dump($dirPath);
-	// dump($thimonth);
-	// dump($yrmonth);
 
-	// exit;
 
 	if( $_POST['person'] ){
 		// ·øÈ¡∑’Ë 1

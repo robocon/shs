@@ -305,8 +305,12 @@ function searchSuggest2(str,len,getto1) {
     <table border="0">
       <tr>
         <td align="right"  class="fonthead">คำนำหน้า:</td>
-        <td> 
-          <input type="text" name="yot" size="5" id="yot" >        </td>
+          <td> 
+            <div style="position: relative;">
+              <input type="text" name="yot" size="5" id="yot" onkeyup="check_yot()" >
+              <div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
+            </div>
+          </td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
           <input type="text" name="name" size="15" id="name" >        </td>
@@ -725,5 +729,17 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
       );
 
     }
+  }
+
+  function check_yot(){
+    var newSm = new SmHttp();
+    var input_yot = document.getElementById('yot');
+    newSm.ajax(
+      'pername_getfill.php', 
+      { 'action': 'yot', 'search2': input_yot.value, 'getto1' : 'yot' }, 
+      function(res){
+        document.getElementById('res_yot').innerHTML = res;
+      }
+    );
   }
 </script>

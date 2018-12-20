@@ -191,6 +191,9 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
 		$typearea = $row->typearea;
+
+		$vstatus = $row->vstatus;
+
 		//echo substr($cPtright,1,3);
 		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
 			echo '<script>alert("ผู้ป่วยสิทธิประกันสุขภาพถ้วนหน้า(ผู้พิการ)\กรุณาตรวจสอบสิทธิการรักษา\r\nเพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด");</script>';
@@ -398,8 +401,12 @@ return $pAge;
     	<table border="0">
       	<tr>
         <td align="right"  class="fonthead">คำนำหน้า:</td>
-        <td> 
-          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" >        </td>
+        <td>
+			<div style="position: relative;">
+				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" onkeyup="check_yot()" size="5" >
+				<div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
+			</div>
+		</td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
           <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
@@ -432,9 +439,9 @@ return $pAge;
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
-            <input type='text' name='d' size='2' value='<?=$cD;?>' maxlength='2'>
-            <input type='text' name='m' size='2' value='<?=$cM;?>' maxlength='2'>
-            <input type='text' name='y' size='4' value='<?=$cY;?>' maxlength='4'>
+            <input type='text' id="birth_d" name='d' size='2' value='<?=$cD;?>' maxlength='2'>
+            <input type='text' id="birth_m" name='m' size='2' value='<?=$cM;?>' maxlength='2'>
+            <input type='text' id="birth_y" name='y' size='4' value='<?=$cY;?>' maxlength='4'>
           เชื้อชาติ: <select size="1" name="race" id="race">
             <option value=""><-เลือก-></option>
             <option  value="ไทย"<? if($cRace=='ไทย'){ echo "selected";}?> >ไทย</option>
@@ -464,6 +471,8 @@ return $pAge;
             <option value="พุทธ"<? if($cReligion=='พุทธ'){ echo "selected";}?>>พุทธ</option>
             <option value="คริสต์"<? if($cReligion=='คริสต์'){ echo "selected";}?>>คริสต์</option>
             <option value="อิสลาม"<? if($cReligion=='อิสลาม'){ echo "selected";}?>>อิสลาม</option>
+			<option value="พราหมณ์-ฮินดู"<? if($cReligion=='พราหมณ์-ฮินดู'){ echo "selected";}?>>พราหมณ์-ฮินดู</option>
+			<option value="ซิกข์"<? if($cReligion=='ซิกข์'){ echo "selected";}?>>ซิกข์</option>
             <option value="อื่นๆ"<? if($cReligion=='อื่นๆ'){ echo "selected";}?>>อื่นๆ</option>
             </select>        </td>
         </tr>
@@ -596,6 +605,24 @@ return $pAge;
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
+  <?php /* ?>
+  <tr>
+    <td align="right" class="fonthead">เลขที่บัตรประชาชนบิดา:</td>
+    <td> 
+      <input type="text" name="idcard_father" size="13" value="">
+    </td>
+    <td align="right" class="fonthead">เลขที่บัตรประชาชนมารดา:</td>
+    <td> 
+      <input type="text" name="idcard_mother" size="13" value="" >
+    </td>
+    <td align="right" class="fonthead">เลขที่บัตรประชาชนคู่สมรส:</td>
+    <td> 
+      <input type="text" name="idcard_couple" size="13" value="">
+    </td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <?php */ ?>
   <tr>
     <td align="right" class="fonthead">ผู้ที่สามารถติดต่อได้:</td>
     <td>
@@ -956,6 +983,33 @@ return $pAge;
     <td class="fonthead">หมายเหตุ</td>
     <td><input type="text" name="note" size="50" value="<?=$cNote;?>" id="note"></td>
     </tr>
+	<?php /* ?>
+	<tr>
+		<td align="right" class="fonthead">สถานะในชุมชน</td>
+		<td>
+		<?php 
+		$vstatus_list = array(
+			'1' => 'กำนัน ผู้ใหญ่บ้าน',
+			'2' => 'อสม.',
+			'3' => 'แพทย์ประจำตำบล',
+			'4' => 'สมาชิกอบต. / เทศบาล',
+			'5' => 'อื่นๆ'
+		);
+		?>
+		<select name="vstatus" id="">
+			<option value="">-- เลือกข้อมูล --</option>
+			<?php
+			foreach ($vstatus_list as $key => $vitem) {
+				$selected = ( $key == $vstatus ) ? 'selected="selected"' : '' ;
+				?><option value="<?=$key;?>" <?=$selected;?> ><?=$vitem;?></option><?php 
+			}
+			?>
+		</select>
+		</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr>
+	<?php */ ?>
     </table>
 
 </fieldset>
@@ -1242,10 +1296,33 @@ function checkForm(){
 		var stat = true;
 		var stat2 = true;
 
+
+		var birth_d = document.getElementById('birth_d');
+		var birth_m = document.getElementById('birth_m');
+		var birth_y = document.getElementById('birth_y');
+
 		stat2 = checkID();
 		if(document.f1.new_vn.value == ''){
 			
 			alert("ผู้ป่วยเคยลงทะเบียนแล้ว กรุณาเลือกว่าต้องการใช้ VN เดิม หรือ ออก VN ใหม่ ด้วยครับ");
+			return false;
+
+		} else if( birth_d.value.length < 2 ){
+
+			alert("รูปแบบวันที่ไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง \nตัวอย่างรูปแบบวันที่ เช่น 05 เป็นต้น");
+			birth_d.focus();
+			return false;
+		
+		} else if( birth_m.value.length < 2 ){
+
+			alert("รูปแบบเดือนไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง \nตัวอย่างรูปแบบเดือน เช่น 02 เป็นต้น");
+			birth_m.focus();
+			return false;
+
+		} else if( birth_y.value.length < 4 ){
+
+			alert("รูปแบบปีไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง \nตัวอย่างรูปแบบปี เช่น 2561 เป็นต้น");
+			birth_y.focus();
 			return false;
 
 		}else if(document.f1.ptright1.value == '0'||document.f1.ptright.value == '0'){
@@ -1284,6 +1361,23 @@ function checkForm(){
 		
 }
 </SCRIPT>
+
+<?php
+include 'includes/ajax.php';
+?>
+<script type="text/javascript">
+function check_yot(){
+	var newSm = new SmHttp();
+	var input_yot = document.getElementById('yot');
+	newSm.ajax(
+		'pername_getfill.php', 
+		{ 'action': 'yot', 'search2': input_yot.value, 'getto1' : 'yot' }, 
+		function(res){
+			document.getElementById('res_yot').innerHTML = res;
+		}
+	);
+}
+</script>
 <?php
 print "</body>";
 include("unconnect.inc");
