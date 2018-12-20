@@ -627,7 +627,6 @@ if( $user_ptright == "R06" ){
 		$total = 0;
 		while ($item = mysql_fetch_assoc($q)) {
 			$text_list .= 'เมื่อวันที่ '.$item['date'].' จำนวน '.$item['total'].' บาท\n';
-
 			$total += $item['total'];
 		}
 
@@ -646,21 +645,34 @@ if( $user_ptright == "R08" ){
 	// 2561-11-05
 	$chkdate = substr($dateid,0,4);
 	
-	$sql = "SELECT ( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
+	$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `date`,( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
 	FROM `opday`
 	WHERE hn='$hnid' 
 	AND `thidate` LIKE '$chkdate%' 
-	AND `toborow` LIKE '$user_ptright%' ";
+	AND `toborow` LIKE '$user_ptright%' 
+	GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10), `hn`)";
 	$q = mysql_query($sql);
-	$item = mysql_fetch_assoc($q);
+	$count = mysql_num_rows($q);
 
-	if( $item['total'] > 0 ){
+	if( $count > 0 ){
+		$text_list = 'แจ้งเตือน: ก.ท.44. มีค่าใช้จ่ายในปี '.$chkdate.'ดังนี้\n';
+		$total = 0;
+
+		while ($item = mysql_fetch_assoc($q)) {
+			$text_list .= 'เมื่อวันที่ '.$item['date'].' จำนวน '.$item['total'].' บาท\n';
+			$total += $item['total'];
+		}
+
+		$text_list .= 'รวมเป็นเงิน '.$total.' บาท\n';
 		?>
 		<script type="text/javascript">
-			alert('แจ้งเตือน: ผู้ป่วย ก.ท.44 มีค่าใช้จ่ายในปี<?=$chkdate;?> รวม <?=$item['total'];?> บาท');
+			alert('<?=$text_list;?>');
 		</script>
 		<?php
+
 	}
+	
+
 
 }
 
