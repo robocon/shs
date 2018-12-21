@@ -9,13 +9,13 @@ $selmon = isset($_POST['month']) ? $_POST['month'] : date('m');
 $action = input('action');
 
 
-$file_lists = array(
+$file_lists = array( 
 	'person','address','chronic','disability','icf',
 	'provider','dental','home','drugallergy','service',
 	'admission','charge_opd','diagnosis_opd','drug_opd','epi',
 	'death','card','appointment','accident','procedure_opd',
 	'diagnosis_ipd','procedure_ipd','drug_ipd','charge_ipd','anc',
-	'prenatal','ncdscreen','labfu','chronicfu',
+	'prenatal','ncdscreen','labfu','chronicfu','specialpp'
 );
 
 if( $action === false ){
@@ -193,8 +193,7 @@ if( $action === false ){
 	}
 
 
-	
-	
+
 	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo$day_parth";
 	
 	if( !is_dir("export/$thiyr") ){
@@ -217,6 +216,7 @@ if( $action === false ){
 	$hospcode = '11512';
 	$zipLists = array();
 	$qofLists = array();
+
 
 
 	if( $_POST['person'] ){
@@ -381,7 +381,9 @@ if( $action === false ){
 		require_once 'libs/chronicfu.php';
 	}
 	
-	
+	if( $_POST['specialpp'] ){ 
+		require_once 'libs/specialpp.php';
+	}
 	
 	
 	// สร้าง zip ไฟล์
