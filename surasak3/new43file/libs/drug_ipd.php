@@ -8,10 +8,32 @@ $result = mysql_query($sql) or die(mysql_error());
 $txt = '';
 while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor) = mysql_fetch_row ($result)) {	
 
-	$drugsql="select code24,unit,unitpri,salepri from druglst where drugcode = '$code'";
+	$drugsql="select code24,unit,packing,salepri,unitpri from druglst where drugcode = '$code'";
 	//echo $drugsql."--->";
 	$drugquery=mysql_query($drugsql);
-	list($didstd,$unitpack,$drugcost,$drugprice)=mysql_fetch_array($drugquery);
+	list($didstd,$unit,$unit_packing,$drugprice,$drugcost)=mysql_fetch_array($drugquery);
+
+	$unit_packing = trim($unit_packing);
+	$unit = trim($unit);
+	$drugprice = number_format($drugprice, 2);
+	$drugcost = number_format($drugcost, 2);
+	
+
+	if( preg_match('/box/',$unit) > 0 ){
+        $unit = '003';
+
+    }elseif ( preg_match('/tube/',$unit) > 0 ) {
+        $unit = '031';
+
+    }elseif ( preg_match('/(bott)|(vial)/',$unit) > 0 ) {
+        $unit = '006';
+
+    }elseif ( preg_match('/amp/',$unit) > 0 ) {
+        $unit = '035';
+
+    }elseif ( preg_match('/(capsule)|(casules)/',$unit) > 0 ) {
+        $unit = '009';
+    }
 	
 	$drugsql1="select min(date) from ipacc where an='$an' and code = '$code'";
 	$drugquery1=mysql_query($drugsql1);
@@ -44,7 +66,9 @@ while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor
 	$sqlopd1="select vn, idcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	//echo $sqlopd1;
 	$resultopd1=mysql_query($sqlopd1);	
-	list($vn, $cid)=mysql_fetch_array($resultopd1);			
+	list($vn, $cid)=mysql_fetch_array($resultopd1);
+
+	$cid = trim($cid);
 	
 	$regis1=substr($admdate,0,10);
 	$regis2=substr($admdate,11,19);
@@ -52,6 +76,7 @@ while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor
 	$yy=$yy-543;
 	list($hh,$ss,$ii)=explode(":",$regis2);
 	$datetime_admit="$yy$mm$dd$hh$ss$ii";  //วันที่และเวลาที่รับบริการ	
+	$datefinish = $datestart = "$yy$mm$dd";
 	
 	$vn=sprintf("%03d",$vn);
 	$date_serv="$yy$mm$dd";  //วันที่มารับบริการ	
@@ -82,10 +107,10 @@ while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor
 	list($hh,$ss,$ii)=explode(":",$regis2);
 	$d_update=($yy-543).$mm.$dd.$hh.$ss.$ii;
 	
-	$datestart=$datetime_admit;  //วันที่เริ่มให้ยา
-	$datefinish=$datetime_admit;  //วันสุดท้ายที่ให้ยา
+	// $datestart=$datetime_admit;  //วันที่เริ่มให้ยา
+	// $datefinish=$datetime_admit;  //วันสุดท้ายที่ให้ยา
 
-    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$typedrug|$didstd|$dname|$datestart|$datefinish|$amount|$unit|$unitpack|$drugprice|$drugcost|$provider|$d_update|$cid\r\n";
+    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$typedrug|$didstd|$dname|$datestart|$datefinish|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update|$cid\r\n";
 
     // $strFileName17 = "drug_ipd.txt";
     // $objFopen17 = fopen($strFileName17, 'a');

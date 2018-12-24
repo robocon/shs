@@ -30,7 +30,7 @@ AND (
     AND b.`drugcode` NOT LIKE '25%' 
 ) 
 AND a.`an` IS NULL 
-AND ( b.`code24` IS NOT NULL AND b.`code24` != '' ) 
+#AND ( b.`code24` IS NOT NULL AND b.`code24` != '' ) 
 AND a.`status` = 'Y' 
 GROUP BY `date2`, a.`hn`";
 $querytmp12 = mysql_query($temp12) or die( mysql_error() );
@@ -40,15 +40,36 @@ From report_drugopd";
 $result12 = mysql_query($sql12) or die("Query failed, Select report_drugopd (drug_opd)");
 $num = mysql_num_rows($result12);
 
+
+
 $txt = '';
-while (list ($date,$hn,$an,$drugcode,$dname,$amount,$didstd,$unit,$unit_packing,$drugprice,$drugcost) = mysql_fetch_row ($result12)) {	
+while (list ($date,$hn,$an,$drugcode,$dname,$amount,$didstd,$unit,$unit_packing,$drugprice,$drugcost,$date2) = mysql_fetch_row ($result12)) {	
     // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
     // list($hospcode)=mysql_fetch_array($sqlhos);
+
+    $unit = trim($unit);
+    $drugcost = number_format($drugcost, 2);
+
+    if( preg_match('/box/',$unit) > 0 ){
+        $unit = '003';
+
+    }elseif ( preg_match('/tube/',$unit) > 0 ) {
+        $unit = '031';
+
+    }elseif ( preg_match('/(bott)|(vial)/',$unit) > 0 ) {
+        $unit = '006';
+
+    }elseif ( preg_match('/amp/',$unit) > 0 ) {
+        $unit = '035';
+
+    }elseif ( preg_match('/(capsule)|(casules)/',$unit) > 0 ) {
+        $unit = '009';
+    }
 
     $chkdate = substr($date,0,10);
     $sqlop = mysql_query("select thidate,vn,idcard from opday where hn ='$hn' and thidate like '$chkdate%'");
     list($thidate,$vn,$cid) = mysql_fetch_array($sqlop);
-
+    $cid = trim($cid);
 
     $newclinic = substr($cliniccode,0,2);
     if($newclinic=="" || $newclinic=="ÈÑ"){ $newclinic="99";}else{ $newclinic=$newclinic;}

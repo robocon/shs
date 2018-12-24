@@ -261,7 +261,7 @@ else{
   <input type='text' name='asses7' size='10'>
   <input type='text' name='reporter7' size='10' value='OPD'>
   <input type='text' name='repdate7' size='10' value='<?=$Thaidate?>'><br>
-&nbsp;&nbsp;&nbsp;*การประเมิน :&nbsp; &nbsp;(1=ใช่แน่นอน, 2=น่าจะใช่, 3=อาจจะใช่, 4=สงสัย&nbsp;)<br>  
+&nbsp;&nbsp;&nbsp;*การประเมิน :&nbsp; &nbsp;<span style="color: red;">1= ใช่แน่นอน (Certain), 2= น่าจะใช่ (Probable), 3= อาจจะใช่ (Possible), 4= ไม่น่าใช่ (Unlikely), 5= ไม่สามารถระบุระดับ (Unclassified)</span><br>  
 ** การใส่รหัสยาจะช่วยเพิ่มความสมบูรณ์ของ43แฟ้มไฟล์<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type='submit' value='          บันทึก          ' name='B1'>
