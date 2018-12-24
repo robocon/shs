@@ -599,6 +599,38 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 			$obj->setid($id);
 			$obj->inserttb();
 		}
+
+
+		// บันทึกข้อมูลเข้า ADMISSION 
+		$hn = $_POST['hn'];
+		$vn = sprintf("%03d",$_POST["vn"]);
+		$seq = date('Ymd').$vn;
+		$d_update = $dt_serv = date('YmdHis');
+		$aetype = $_POST['accident_detail'];
+		$typein_ae = $_POST['sender'];
+		$vehicle = $traffic = $_POST['wounded_vehicle'];
+		$alcohol = $_POST['spirits'];
+		$belt = $_POST['belt'];
+		$helmet = $_POST['helmet'];
+		$urgency = $_POST['type_wounded'];
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn'") or die( mysql_error() );
+		$opcard_item = mysql_fetch_assoc($q);
+		$cid = $opcard_item['idcard'];
+
+		$sql = "INSERT INTO `accident` (
+			`id`, `HOSPCODE`, `PID`, `SEQ`, `DATETIME_SERV`, `DATETIME_AE`, 
+			`AETYPE`, `AEPLACE`, `TYPEIN_AE`, `TRAFFIC`, `VEHICLE`, `ALCOHOL`, 
+			`NACROTIC_DRUG`, `BELT`, `HELMET`, `AIRWAY`, `STOPBLEED`, `SPLINT`, 
+			`FLUID`, `URGENCY`, `COMA_EYE`, `COMA_SPEAK`, `COMA_MOVEMENT`, `D_UPDATE`, `CID`
+		) VALUES (
+			NULL, '11512', '$hn', '$seq', '$dt_serv', '$dt_serv', 
+			'$aetype', NULL, '$typein_ae', '$traffic', '$vehicle', '$alcohol', 
+			NULL, '$belt', '$helmet', NULL, NULL, NULL, 
+			NULL, '$urgency', NULL, NULL, NULL, '$d_update', '$cid'
+		);";
+		mysql_query($sql) or die( mysql_error() );
+		// บันทึกข้อมูลเข้า ADMISSION
 		
 		
 		if($result){
@@ -821,6 +853,45 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 
 			$obj->updatetb();
 		}
+
+		// บันทึกข้อมูลเข้า ADMISSION 
+		$hn = $_POST['hn'];
+		$vn = sprintf("%03d",$_POST["vn"]);
+		$seq = date('Ymd').$vn;
+		$d_update = $dt_serv = date('YmdHis');
+		$aetype = $_POST['accident_detail'];
+		$typein_ae = $_POST['sender'];
+		$vehicle = $traffic = $_POST['wounded_vehicle'];
+		$alcohol = $_POST['spirits'];
+		$belt = $_POST['belt'];
+		$helmet = $_POST['helmet'];
+		$urgency = $_POST['type_wounded'];
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn'") or die( mysql_error() );
+		$opcard_item = mysql_fetch_assoc($q);
+		$cid = $opcard_item['idcard'];
+
+		$q = mysql_query("SELECT `id` FROM `accident` WHERE `PID` = '$hn' AND `SEQ` = '$seq' ") or die( mysql_error() );
+		$acc = mysql_fetch_assoc($q);
+		$accident_id = $acc['id'];
+
+		$sql = "UPDATE `accident` SET 
+		`PID`='$hn', `SEQ`='$seq', 
+		`DATETIME_SERV`='$dt_serv', `DATETIME_AE`='$dt_serv', 
+		`AETYPE`='$aetype', `AEPLACE`=NULL, 
+		`TYPEIN_AE`='$typein_ae', `TRAFFIC`='$traffic', 
+		`VEHICLE`='$vehicle', `ALCOHOL`='$alcohol', 
+		`NACROTIC_DRUG`=NULL, `BELT`='$belt', 
+		`HELMET`='$helmet', `AIRWAY`=NULL, 
+		`STOPBLEED`=NULL, `SPLINT`=NULL, 
+		`FLUID`=NULL, `URGENCY`='$urgency', 
+		`COMA_EYE`=NULL, `COMA_SPEAK`=NULL, 
+		`COMA_MOVEMENT`=NULL, `D_UPDATE`='$d_update', 
+		`CID`='$cid' WHERE (`id`='$accident_id');";
+		mysql_query($sql) or die( mysql_error() );
+
+		// บันทึกข้อมูลเข้า ADMISSION 
+
 
 		if($result){
 			

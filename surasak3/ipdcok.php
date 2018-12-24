@@ -299,6 +299,16 @@ if($oBedcode1 != '44'){
 		
 		//echo "จำนวนวัน  $d วัน $h ชั่วโมง &nbsp;&nbsp;";
 
+// backup ข้อมูล bed ก่อนที่จะ d/c กรณีลบข้อมูลผิดแล้วต้องการกู้ข้อมูลคืนมา
+$q = mysql_query("SELECT `row_id` FROM `bed` WHERE bedcode = '$Bedcode'");
+$bed_item = mysql_fetch_assoc($q);
+$bed_id = $bed_item['row_id'];
+
+// ข้อมูลใน bed_copy จะเหมือนกับ bed ทุกอย่าง ยกเว้น ไม่มี pk และ auto increment
+$sql = "INSERT INTO bed_copy SELECT * FROM bed WHERE row_id = '$bed_id'";
+mysql_query($sql);
+
+
 //ลบออกจากเตียงเก่า(ลบข้อมูล)
   $sql = "UPDATE bed SET ptname='',age='',idcard='',address='',muang='',ptright='',doctor='',date='',
            hn='',an='',diagnos='',price=0,paid=0,debt=0,food='',diag1='',officer='',

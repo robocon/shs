@@ -137,7 +137,7 @@ if( isset($chn) ){
 			$d = substr($result['thidate'],8,2);
 			$m = substr($result['thidate'],5,2);
 			$y = substr($result['thidate'],0,4)-543;
-			$seq = "$y$m$d".$result['vn'];
+			$seq = "$y$m$d".sprintf("%03d",$result['vn']);
 			?>
 		<tr>
 			<td>ลำดับที่ :</td>

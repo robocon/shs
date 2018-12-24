@@ -17,7 +17,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 		<tr align=\"center\" bgcolor=\"#333333\">
 		<td width=\"25\"><strong>&nbsp;</strong></td>
 		<td width=\"80\"><font style=\"color: #FFFFFF;\"><strong>Drugcode</strong></font></td>
-		<td width=\"30\"><font style=\"color: #FFFFFF;\"><strong>Tradname</strong></font></td>
+		<td width=\"80\"><font style=\"color: #FFFFFF;\"><strong>Tradname</strong></font></td>
 		<td width=\"20\"><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td>
 		</tr>";
 
@@ -68,17 +68,22 @@ function newXmlHttp(){
 }
 function searchSuggest(str,len,getto,getto2) {
 	
-		str = str+String.fromCharCode(event.keyCode);
+    console.log(str);
+    console.log(len);
+    console.log(getto);
+    console.log(getto2);
 
-		if(str.length >= len){
-			url = 'dgadv.php?action=drugreact&search='+ str+'&getto='+ getto+'&getto2='+ getto2;
+    // str = str+String.fromCharCode(event.keyCode);
 
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
+    if(str.length >= len){
+        url = 'dgadv.php?action=drugreact&search='+ str+'&getto='+ getto+'&getto2='+ getto2;
 
-			document.getElementById("list").innerHTML = xmlhttp.responseText;
-		}
+        xmlhttp = newXmlHttp();
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send(null);
+
+        document.getElementById("list").innerHTML = xmlhttp.responseText;
+    }
 }
 </script>
 <?
@@ -190,7 +195,7 @@ else{
 <input type='text' name='advreact10' size='10' value='อาการแพ้'>
 <input type='text' name='asses10' size='2' value='*'>
 <input type='text' name='reporter10' size='10' value='ผู้รายงาน'>
-<input type='text' name='repdate10' size='10' value='วันที่รายงาน'>
+<input type='text' name='repdate10' size='20' value='วันที่รายงาน'>
 
 <font face='Angsana New'>
 <form method='POST' action='dgadvadd.php'>
@@ -201,44 +206,44 @@ else{
   <input type='text' name='advreact1' size='10'>
   <input type='text' name='asses1' size='2'>
   <input type='text' name='reporter1' size='10' value='OPD'>
-  <input type='text' name='repdate1' size='10' value='<?=$Thaidate?>'><br>
+  <input type='text' name='repdate1' size='20' value='<?=$Thaidate?>'><br>
   2.&nbsp; <input type='text' name='drugcode2' size='10' id="drugcode2" onKeyPress="searchSuggest(this.value,2,'drugcode2','tradname2');">
 <input type='text' name='tradname2' size='20' id="tradname2" onKeyPress="searchSuggest(this.value,2,'drugcode2','tradname2');">
 <input type='text' name='advreact2' size='10'>
   <input type='text' name='asses2' size='2'>
   <input type='text' name='reporter2' size='10' value='OPD'>
-  <input type='text' name='repdate2' size='10' value='<?=$Thaidate?>'><br>
+  <input type='text' name='repdate2' size='20' value='<?=$Thaidate?>'><br>
   3.&nbsp; <input type='text' name='drugcode3' size='10' id="drugcode3" onKeyPress="searchSuggest(this.value,2,'drugcode3','tradname3');">
 <input type='text' name='tradname3' size='20' id="tradname3" onKeyPress="searchSuggest(this.value,2,'drugcode3','tradname3');">
 <input type='text' name='advreact3' size='10'>
   <input type='text' name='asses3' size='2'>
   <input type='text' name='reporter3' size='10' value='OPD'>
-  <input type='text' name='repdate3' size='10'  value='<?=$Thaidate?>'><br>
+  <input type='text' name='repdate3' size='20'  value='<?=$Thaidate?>'><br>
   4.&nbsp; <input type='text' name='drugcode4' size='10' id="drugcode4" onKeyPress="searchSuggest(this.value,2,'drugcode4','tradname4');">
 <input type='text' name='tradname4' size='20' id="tradname4" onKeyPress="searchSuggest(this.value,2,'drugcode4','tradname4');">
 <input type='text' name='advreact4' size='10'>
   <input type='text' name='asses4' size='2'>
   <input type='text' name='reporter4' size='10' value='OPD'>
-  <input type='text' name='repdate4' size='10' value='<?=$Thaidate?>'><br>
+  <input type='text' name='repdate4' size='20' value='<?=$Thaidate?>'><br>
   5.&nbsp; <input type='text' name='drugcode5' size='10' id="drugcode5" onKeyPress="searchSuggest(this.value,2,'drugcode5','tradname5');">
  <input type='text' name='tradname5' size='20' id="tradname5" onKeyPress="searchSuggest(this.value,2,'drugcode5','tradname5');">
  <input type='text' name='advreact5' size='10'>
   <input type='text' name='asses5' size='2'>
   <input type='text' name='reporter5' size='10' value='OPD'>
-  <input type='text' name='repdate5' size='10' value='<?=$Thaidate?>'><br>
+  <input type='text' name='repdate5' size='20' value='<?=$Thaidate?>'><br>
   6.&nbsp; <input type='text' name='drugcode6' size='10' id="drugcode6" onKeyPress="searchSuggest(this.value,2,'drugcode6','tradname6');">
 <input type='text' name='tradname6' size='20' id="tradname6" onKeyPress="searchSuggest(this.value,2,'drugcode6','tradname6');">
 <input type='text' name='advreact6' size='10'>
   <input type='text' name='asses6' size='2'>
   <input type='text' name='reporter6' size='10' value='OPD'>
-  <input type='text' name='repdate6' size='10' value='<?=$Thaidate?>'><br>
+  <input type='text' name='repdate6' size='20' value='<?=$Thaidate?>'><br>
   7.&nbsp; <input type='text' name='drugcode7' size='10' id="drugcode7" onKeyPress="searchSuggest(this.value,2,'drugcode7','tradname7');">
 <input type='text' name='tradname7' size='20' id="tradname7" onKeyPress="searchSuggest(this.value,2,'drugcode7','tradname7');">
 <input type='text' name='advreact7' size='10'>
   <input type='text' name='asses7' size='2'>
   <input type='text' name='reporter7' size='10' value='OPD'>
-  <input type='text' name='repdate7' size='10' value='<?=$Thaidate?>'><br>
-&nbsp;&nbsp;&nbsp;*การประเมิน :&nbsp; &nbsp;(1=ใช่แน่นอน, 2=น่าจะใช่, 3=อาจจะใช่, 4=สงสัย&nbsp;)<br>  
+  <input type='text' name='repdate7' size='20' value='<?=$Thaidate?>'><br>
+&nbsp;&nbsp;&nbsp;*การประเมิน :&nbsp; &nbsp;1=แน่นอน(certain), 2=น่าจะใช่(probable), 3=เป็นไปได้(possible), 4=ไม่ใช่(unlikely) 5=ไม่สามารถจำแนกได้(unclassified)&nbsp;<br>  
 ** การใส่รหัสยาจะช่วยเพิ่มความสมบูรณ์ของ43แฟ้มไฟล์<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type='submit' value='          บันทึก          ' name='B1'>

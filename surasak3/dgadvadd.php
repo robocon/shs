@@ -94,6 +94,59 @@ FOR ($no=1; $no<=7; $no++){
 		if( $result === false ){
 			$error_list[] = mysql_error();
 		}
+
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$test_drugcode = $aDrugcode[$no];
+		$dname = $aTradname[$no];
+		$typedx = $aAsses[$no];
+		$symptom = $aAdvreact[$no];
+		$provider = $_SESSION['sOfficer'];
+
+		$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
+		$item = mysql_fetch_assoc($q);
+		$drugallergy = $item['code24'];
+		$daterecord = date('Ymd');
+		$d_update = date('YmdHis');
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
+		$item = mysql_fetch_assoc($q);
+		$cid = $item['idcard'];
+
+		$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
+		$rows = mysql_num_rows($q);
+
+		if( $rows > 0 ){
+
+			// update 
+			$item = mysql_fetch_assoc($q);
+			$id = $item['id'];
+
+			$sql = "UPDATE `drugallergy` SET 
+			`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
+			`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
+			`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
+			`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
+			`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
+			mysql_query($sql);
+
+
+		}else{
+
+			$sql = "INSERT INTO `drugallergy` (
+				`id`, `HOSPCODE`, `PID`, `DATERECORD`, `DRUGALLERGY`, `DNAME`, 
+				`TYPEDX`, `ALEVEL`, `SYMPTOM`, `INFORMANT`, `INFORMHOSP`, `D_UPDATE`, 
+				`PROVIDER`, `CID`, `drugcode`
+			) VALUES (
+				NULL, '11512', '$sHn', '$daterecord', '$drugallergy', '$dname', 
+				'$typedx', NULL, '$symptom', NULL, '11512', '$d_update', 
+				'$provider', '$cid', '$test_drugcode' 
+			);";
+			mysql_query($sql);
+
+		}
+
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+
 	}
 }
 ////////////////
