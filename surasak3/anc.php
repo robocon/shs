@@ -70,7 +70,16 @@ if( isset($chn) ){
 	$ga = $_POST['ga'];
 	$ancres = $_POST['ancres'];
 	$cid = $_POST['idcard'];
+	$doctor = $_POST['doctor'];
 
+	$doctorcode = '00000';
+	$q = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` = '$doctor' ");
+	if ( mysql_num_row($q) > 0 ) {
+		$item = mysql_fetch_assoc($q);
+		$doctorcode = $item['doctorcode'];
+	}
+	
+	$provider = $seq.$doctorcode;
 
 	$q = mysql_query("SELECT * FROM `anc` WHERE `pid` = '$hn' and `seq` = '$seq' ") or die(mysql_error());
 	$test_row = mysql_num_rows($q);
@@ -89,7 +98,7 @@ if( isset($chn) ){
 		`ga`='$ga', 
 		`ancres`='$ancres', 
 		`aplace`='11512', 
-		`provider`=NULL, 
+		`provider`='$provider', 
 		`d_update`='$thidate', 
 		`cid`='$cid' 
 		WHERE (`row_id`='$id');";
@@ -97,10 +106,10 @@ if( isset($chn) ){
 
 	}else{	
 		
-		$sql = "INSERT INTO `smdb`.`anc` (
+		$sql = "INSERT INTO `anc` (
 		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid`
 		) VALUES (
-		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', NULL, '$thidate', '$cid'
+		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$provider', '$thidate', '$cid'
 		);";
 		$result = mysql_query($sql) or die(mysql_error());
 	}
@@ -179,11 +188,9 @@ if( isset($chn) ){
 			</td>
 		</tr>
 		<tr>
-			ผู้ให้บริการ <input type="text" readonly="readonly">
-		</tr>
-		<tr>
 			<td colspan="2" align="center">
 				<input name="conbtn" type="submit" value=" บันทึกข้อมูล " />
+				<input type="hidden" name="doctor" value="<?=$result['doctor'];?>">
 			</td>
 		</tr>
 		</table>

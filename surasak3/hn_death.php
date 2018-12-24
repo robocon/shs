@@ -138,10 +138,12 @@ if(isset($_POST['button2'])){
 	
 	$query ="UPDATE runno SET runno = $nRunno  WHERE title='death'";
 	$result = mysql_query($query) or die("Query failed runno");	
-		
+	$result = mysql_query($query) or die("Query failed runno");	
+	$result = mysql_query($query) or die("Query failed runno");	
+
 	if($_POST['an']!=''){
 		$an="AN: <strong>$_POST[an]</strong>";	
-    }
+	}
     
 
 	// เก็บข้อมูลเข้าแฟ้ม death
