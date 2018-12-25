@@ -6,7 +6,7 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 //
 //-------------------- Create file diagnosis_opd ‰ø≈Ï∑’Ë 15 --------------------//
 //
-$sql10 = "SELECT `thidate`, `hn`, `vn`, `doctor`, `clinic`, SUBSTRING(`thidate`, 1, 10) AS `date2`, `idcard`
+$sql10 = "SELECT `thidate`, `hn`, `vn`, `doctor`, `clinic`, SUBSTRING(`thidate`, 1, 10) AS `date2`, TRIM(`idcard`) AS `idcard`
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( `hn` != '' AND `vn` != '' ) 

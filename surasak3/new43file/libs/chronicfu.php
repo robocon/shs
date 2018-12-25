@@ -20,7 +20,7 @@ x.`retina` AS `RETINA`,
 CONCAT(thDateToEn(y.`thidate`), LPAD(y.`vn`, 3, 0),'0000') AS `PROVIDER`,
 thDateTimeToEn(y.`thidate`) AS `D_UPDATE`, 
 '11512' AS `CHRONICFUPLACE`, 
-c.`idcard` AS `CID`
+TRIM(c.`idcard`) AS `CID`
  FROM (
 
     SELECT a.`hn`,a.`dateN`,a.`thidate`,a.`height`,a.`weight`,a.`bp1`,a.`bp2`,
@@ -57,14 +57,19 @@ WHERE y.`vn` IS NOT NULL;";
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
 $txt = "";
-while ( $item = mysql_fetch_assoc($q) ) {
+while ( $item = mysql_fetch_assoc($q) ) { 
+
+    $weight = number_format($item['WEIGHT'], 1);
+    $height = number_format($item['HEIGHT'], 1);
+    $waist_cm = number_format($item['WAIST_CM'], 1);
+
     $txt .= $item['HOSPCODE'].'|'
     .$item['PID'].'|'
     .$item['SEQ'].'|'
     .$item['DATE_SERV'].'|'
-    .$item['WEIGHT'].'|'
-    .$item['HEIGHT'].'|'
-    .$item['WAIST_CM'].'|'
+    .$weight.'|'
+    .$height.'|'
+    .$waist_cm.'|'
     .$item['SBP'].'|'
     .$item['DBP'].'|'
     .$item['FOOT'].'|'

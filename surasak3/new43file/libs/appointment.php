@@ -24,32 +24,39 @@ while (list ($date,$hn,$appdate,$doctor,$detail,$depcode) = mysql_fetch_row ($re
 
     $newclinic=substr($cliniccode,0,2);
     if($newclinic==""){ $newclinic="99";}else{ $newclinic=$newclinic;}
-    if(!empty($vn)){ $firstcode="0";}
+    
+    if(!empty($vn)){ 
+        $firstcode="0"; 
+    }else{
+        $firstcode="1";
+    }
     $treecode="00";
     $clinic=$firstcode.$newclinic.$treecode;
 
+    $appdate = trim($appdate);
     $lenappdate=strlen($appdate);
     if($lenappdate < 12){
-    list($app1,$app2,$app3)=explode("-",$appdate);
-    list($yapp,$mapp,$dapp)=explode("-",$appdate);
-    $yapp=$yapp-543;
-    $apdate=$yapp.$mapp.$dapp;	
+        
+        list($yapp,$mapp,$dapp)=explode("-",$appdate);
+        $apdate = ($yapp-543).$mapp.$dapp;	
+
     }else{
-    list($app1,$app2,$app3)=explode(" ",$appdate);
-    if($app2=="มกราคม"){ $app2="01";}
-    if($app2=="กุมภาพันธ์"){ $app2="02";}
-    if($app2=="มีนาคม"){ $app2="03";}
-    if($app2=="เมษายน"){ $app2="04";}
-    if($app2=="พฤษภาคม"){ $app2="05";}
-    if($app2=="มิถุนายน"){ $app2="06";}
-    if($app2=="กรกฎาคม"){ $app2="07";}
-    if($app2=="สิงหาคม"){ $app2="08";}
-    if($app2=="กันยายน"){ $app2="09";}
-    if($app2=="ตุลาคม"){ $app2="10";}
-    if($app2=="พฤศจิกายน"){ $app2="11";}
-    if($app2=="ธันวาคม"){ $app2="12";}
-    if($app3=="2557"){ $app3="2014";}
-    $apdate=$app3.$app2.$app1;
+        
+        list($app1,$app2,$app3)=explode(" ",$appdate);
+        if($app2=="มกราคม"){ $app2="01";}
+        if($app2=="กุมภาพันธ์"){ $app2="02";}
+        if($app2=="มีนาคม"){ $app2="03";}
+        if($app2=="เมษายน"){ $app2="04";}
+        if($app2=="พฤษภาคม"){ $app2="05";}
+        if($app2=="มิถุนายน"){ $app2="06";}
+        if($app2=="กรกฎาคม"){ $app2="07";}
+        if($app2=="สิงหาคม"){ $app2="08";}
+        if($app2=="กันยายน"){ $app2="09";}
+        if($app2=="ตุลาคม"){ $app2="10";}
+        if($app2=="พฤศจิกายน"){ $app2="11";}
+        if($app2=="ธันวาคม"){ $app2="12";}
+        
+        $apdate=($app3 - 543).$app2.$app1;
     }
 
     $regis1=substr($date,0,10);
@@ -65,10 +72,12 @@ while (list ($date,$hn,$appdate,$doctor,$detail,$depcode) = mysql_fetch_row ($re
     $sqldoc=mysql_query("select doctorcode from doctor where name like'%$doctor%'");
     list($doctorcode)=mysql_fetch_array($sqldoc);
     if(empty($doctorcode)){
-    $provider=$date_serv.$vn."00000";
+        $provider=$date_serv.$vn."00000";
     }else{
-    $provider=$date_serv.$vn.$doctorcode;
+        $provider=$date_serv.$vn.$doctorcode;
     }
+    
+    $aptype = '';
 
     $txt .= "$hospcode|$hn|$an|$seq|$date_serv|$clinic|$apdate|$aptype|$apdiag|$provider|$d_update|$cid\r\n";	
     // $strFileName8 = "appointment.txt";

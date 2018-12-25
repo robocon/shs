@@ -57,7 +57,7 @@ if( $test_match_day > 0 ){
 }
 
 $txt = '';
-$sql = "SELECT a.`date`,b.`hn`,b.`date`,b.`my_ward`,a.`an`,a.`depart`,a.`amount`,a.`price`,a.`paid`,a.`part` 
+$sql = "SELECT a.`date`,b.`hn`,b.`date`,b.`my_ward`,a.`an`,a.`depart`,a.`amount`,SUM(a.`price`) AS `price` ,SUM(a.`paid`) AS `paid`,a.`part` 
 FROM `ipacc` AS a, 
 ( 
     SELECT * 
@@ -68,8 +68,10 @@ FROM `ipacc` AS a,
 ) AS b
 WHERE a.`an` = b.`an` 
 AND a.`amount` > 0 
-AND a.`price` > 0";
-$result = mysql_query($sql, $db2) or die("Query failed,Select report_admission4 And ipacc");
+AND a.`price` > 0 
+GROUP BY a.`an`,a.`depart`,a.`part`";
+
+$result = mysql_query($sql, $db2) or die( mysql_error() );
 while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) = mysql_fetch_row ($result)) {
 	
 	$chargelist="000000";
@@ -81,12 +83,16 @@ while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) 
 	// list($ptrightdetail) = mysql_fetch_array($sqlpt);
 	
     $ptrightdetail = ( isset($ptLists[$hn]) ) ? $ptLists[$hn] : false ;
-    $cid = ( isset($ipcardLists[$hn]) ) ? $ipcardLists[$hn] : '0000000000000' ;
+    // $cid = ( isset($ipcardLists[$hn]) ) ? $ipcardLists[$hn]['ipcard'] : '0000000000000' ;
     $instype = ( isset($items[$ptrightdetail]) ) ? $items[$ptrightdetail] : 9100 ;
     
 	// $sqlptr = "Select code From  ptrightdetail where detail='$ptrightdetail'";
 	// $resultptr = mysql_query($sqlptr) or die(mysql_error());
-	// list($instype) = mysql_fetch_row($resultptr);	
+    // list($instype) = mysql_fetch_row($resultptr);	
+    
+    $q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn' ");
+    $item = mysql_fetch_assoc($q);
+    $cid = trim($item['idcard']);
 
     $cost="0.00";  //�Ҥҷع
 

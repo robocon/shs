@@ -1,5 +1,8 @@
 <?php
 
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
+
 // ÃÍº 1µ¤ ¶Ö§ 30¡Â ¢Í§»Õ¶Ñ´ä»
 if( $rptmo >= 10 && $rptmo <= 12 ){
     $thiyr_end = $thiyr + 1;
@@ -12,13 +15,13 @@ $sql = "SELECT
 '11512' AS `HOSPCODE`, 
 '' AS `DISABID`, 
 a.`hn` AS `PID`, 
-a.`vn` AS `SEQ`, 
+a.`vn`, 
 thDateToEn(SUBSTRING(a.`thidate`, 1, 10)) AS `DATE_SERRV`, 
 b.`ICF`,
 '' AS `QUALIFIER`,
-'' AS `PROVIDER`,
+TRIM(`doctor`) AS `doctor`,
 thDateTimeToEn(a.`thidate`) AS `D_UPDATE`,
-a.`idcard` AS `CID` 
+TRIM(a.`idcard`) AS `CID` 
 FROM `opday` AS a 
 LEFT JOIN `ICF` AS b ON b.`hn` = a.`hn`  
 WHERE a.`thidate` LIKE '$thimonth%'
@@ -27,21 +30,48 @@ AND (
     OR a.`ptright` LIKE 'R40%' 
     OR a.`ptright` LIKE 'R27%' 
  );";
-$q = mysql_query($sql) or die( mysql_error() );
+$q = mysql_query($sql, $db2) or die( mysql_error() );
 
 $txt = "";
 while ( $item = mysql_fetch_assoc($q) ) {
+
+    $seq = $item['DATE_SERRV'].$item['vn'];
+
+
+    if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
+
+        $pre_doc = $matchs['1'];
+        $q2 = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doc%'", $db2) or die( mysql_error() );
+        if ( mysql_num_rows($q2) > 0 ) {
+            $dt = mysql_fetch_assoc($q2);
+            $code = $dt['doctorcode'];
+        }else{
+
+            $code = '00000';
+        }
+
+    }else{
+
+        $test_match = preg_match('/(\d+){4,5}/', $item['doctor'], $match);
+        if( $test_match > 0 ){
+            $code = $match['1'];
+        }
+
+    }
+
+    $provider = $seq.$code;
+
+
     $txt .= $item['HOSPCODE'].'|'
     .$item['DISABID'].'|'
     .$item['PID'].'|'
-    .$item['SEQ'].'|'
+    .$seq.'|'
     .$item['DATE_SERRV'].'|'
     .$item['ICF'].'|'
     .$item['QUALIFIER'].'|'
-    .$item['PROVIDER'].'|'
+    .$provider.'|'
     .$item['D_UPDATE'].'|'
-    .$item['CID']
-    ."\r\n";
+    .$item['CID']."\r\n";
 }
 
 $filePath = $dirPath.'/icf.txt';

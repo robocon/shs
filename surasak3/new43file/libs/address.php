@@ -7,7 +7,7 @@ opday as b
 where a.hn=b.hn AND a.regisdate like '$yrmonth%'  group by a.hn";
 $querytmp2 = mysql_query($temp2) or die("Query failed,Create temp2");
 
-$sql2="SELECT regisdate,hn,yot,name,surname,address,tambol,ampur,changwat,idguard,hphone,phone From report_person2";
+$sql2="SELECT regisdate,hn,yot,name,surname,address,tambol,ampur,changwat,idguard,hphone,phone,idcard From report_person2";
 $result2= mysql_query($sql2) or die("Query failed, Select report_person1 (address)");
 $txt = '';
 while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,$idguard,$hphone,$phone,$cid) = mysql_fetch_row ($result2)) {	

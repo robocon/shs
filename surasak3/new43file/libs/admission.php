@@ -49,9 +49,13 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     list($hh,$ss,$ii) = explode(":",$dcdate2);
     $datetime_disch = ($yy-543).$mm.$dd.$hh.$ss.$ii;	
     
-    $newclinic = substr($clinic,0,2);
-    if($newclinic == "12"){
-        $newclinic = "99";
+    if( !empty($clinic) ){
+        $newclinic = substr($clinic,0,2);
+        if($newclinic == "12"){
+            $newclinic = "99";
+        }
+    }else{
+        $clinic = '99';
     }
     
     $newptright = substr($ptright,0,3);
@@ -70,6 +74,7 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     $typein = "1";
 
     // วิธีการการจำหน่ายผู้ป่วย ถ้าเป็น null ตีเป็น 1
+    $dctype = trim($dctype);
     $dischtype = ( !empty($dctype) ) ? substr($dctype, 0, 1) : 1 ;
 
     // สถานะภาพการจำหน่ายผู้ป่วย ถ้าเป็น null ตีเป็น 1
@@ -108,7 +113,7 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
         $provider = $date_serv.$vn."00000";
     }else{
         $provider = $date_serv.$vn.$doctorcode;
-    }
+    }   
     
     // แผนกที่รับผู้ป่วยจากโค้ดหมอ อิงตามมาตรฐาน สนย
     // @todo สำหรับเทสเท่านั้น รอเพิ่มเติมหมอคนอื่น
@@ -130,20 +135,34 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     
     // Override wardadmit and warddisch FROM doctor code(MDxxx)
     $dr_code = trim($doctor);
-    $wardadmit = $warddisch = '1'.$doctor_sny[$dr_code].'00';
+
+    // 87,88,91,96,128,133,141,145,147,151.รหัสแผนกที่รับบริการ 26Sep16.xls
+    $wardadmit = $warddisch = '1'.$newclinic.'00';
     
     $causein = "1";  //สาเหตุการส่งผู้ป่วย
-    $cost = "0.00";  //ราคาทุน
+    $cost = "0.00";  //ราคาทุน 
 
-    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$cid\r\n";
-    // print($inline);
+    $drg = '';
+    $rw = '';
+    $adjrw = '';
+    $error = '';
+    $warning = '';
+    $actlos = '';
+    $grouper_version = '';
+
+    $admitweight = number_format($admitweight, 1);
+    $admitheight = number_format($admitheight, 2);
+    $price = number_format($price, 2);
+
+    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$drg|$rw|$adjrw|$error|$warning|$actlos|$grouper_version|$cid\r\n";
+    
     $txt .= $inline;
 } // End while
 $filePath = $dirPath.'/admission.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHSTATUS|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|DRG|RW|ADJRW|ERROR|WARNING|ACTLOS|GROUPER_VERSION|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_admission.txt';
 file_put_contents($qofPath, $txt);

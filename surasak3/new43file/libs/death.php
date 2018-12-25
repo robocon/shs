@@ -1,20 +1,24 @@
-<?php
-//-------------------- Create file death ไฟล์ที่ 3 --------------------//
-$temp3="CREATE  TEMPORARY  TABLE report_death SELECT date,dcdate,hn,an,icd10,doctor  From ipcard where dctype like '%dead%' and dcdate like '$thimonth%' and dcdate is not null";
-$querytmp3 = mysql_query($temp3) or die("Query failed,Create temp3");
+<?php 
 
-$sql3="SELECT date,dcdate,hn,an,icd10,doctor From report_death";
-$result3= mysql_query($sql3) or die("Query failed, Select report_death (death)");
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
+
+//-------------------- Create file death ไฟล์ที่ 3 --------------------//
+$temp3="CREATE  TEMPORARY  TABLE report_death SELECT date,dcdate,hn,an,icd10,doctor,SUBSTRING(result,1,1) AS result From ipcard where dctype like '%dead%' and dcdate like '$thimonth%' and dcdate is not null";
+$querytmp3 = mysql_query($temp3, $db2) or die("Query failed,Create temp3");
+
+$sql3="SELECT date,dcdate,hn,an,icd10,doctor,result From report_death";
+$result3= mysql_query($sql3, $db2) or die("Query failed, Select report_death (death)");
 $txt = '';
-while (list ($date,$dcdate,$hn,$an,$icd10,$doctor) = mysql_fetch_row ($result3)) {	
+while (list ($date,$dcdate,$hn,$an,$icd10,$doctor,$result) = mysql_fetch_row ($result3)) {	
 	// $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 	
 	$chkdate=substr($date,0,10);	
-	$sqlopd="select vn,idcard from opday where thidate like '$chkdate%' and hn='$hn'";
+	$sqlopd="select vn,TRIM(idcard) AS idcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	//echo $sqlopd."<br>";
-	$resultopd=mysql_query($sqlopd);	
-	list($vn, $cid)=mysql_fetch_array($resultopd);	
+	$resultopd=mysql_query($sqlopd, $db2);	
+	list($vn, $cid)=mysql_fetch_array($resultopd);
 
     $dateseq=substr($date,0,10);
     $timeseq=substr($date,11,19);
@@ -36,10 +40,13 @@ while (list ($date,$dcdate,$hn,$an,$icd10,$doctor) = mysql_fetch_row ($result3))
 
     $cdeath_a=$icd10;  //รหัสโรคที่เป็นสาเหตุการตาย
     $cdeath=$icd10;  //สาเหตุการตาย
-    $pregdeath="9";  //การตังครรภ์และการคลอด
+    $pregdeath="";  //การตังครรภ์และการคลอด
+    if( $result == '8' ){
+        $pregdeath="1";
+    }
     $pdeath="1";  //สถานที่ตาย
 
-    $sqldoc=mysql_query("select doctorcode from doctor where name like'%$doctor%'");
+    $sqldoc=mysql_query("select doctorcode from doctor where name like'%$doctor%'", $db2);
     list($doctorcode)=mysql_fetch_array($sqldoc);
     if(empty($doctorcode)){
     $provider=$date_serv.$vn."00000";

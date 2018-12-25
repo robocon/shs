@@ -18,7 +18,7 @@ b.`DISABTYPE`,
 '' AS `DATE_DETECT`, 
 '' AS `DATE_DISAB`, 
 thDateTimeToEn(a.`thidate`) AS `D_UPDATE`, 
-a.`idcard` AS `CID` 
+TRIM(a.`idcard`) AS `CID` 
 FROM `opday` AS a 
 LEFT JOIN `DISABILITY` AS b ON b.`hn` = a.`hn` 
 WHERE a.`thidate` LIKE '$thimonth%' 
