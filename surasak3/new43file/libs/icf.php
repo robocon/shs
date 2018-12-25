@@ -35,8 +35,7 @@ $q = mysql_query($sql, $db2) or die( mysql_error() );
 $txt = "";
 while ( $item = mysql_fetch_assoc($q) ) {
 
-    $seq = $item['DATE_SERRV'].$item['vn'];
-
+    $seq = $item['DATE_SERRV'].sprintf("%03d", $item['vn']);
 
     if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
 
@@ -44,7 +43,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
         $q2 = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doc%'", $db2) or die( mysql_error() );
         if ( mysql_num_rows($q2) > 0 ) {
             $dt = mysql_fetch_assoc($q2);
-            $code = $dt['doctorcode'];
+            $code = sprintf("%05d", $dt['doctorcode']);
         }else{
 
             $code = '00000';

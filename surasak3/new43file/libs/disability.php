@@ -40,8 +40,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['DATE_DETECT'].'|'
     .$item['DATE_DISAB'].'|'
     .$item['D_UPDATE'].'|'
-    .$item['CID']
-    ."\r\n";
+    .$item['CID']"\r\n";
 }
 
 $filePath = $dirPath.'/disability.txt';

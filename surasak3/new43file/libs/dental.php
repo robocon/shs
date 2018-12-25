@@ -6,7 +6,7 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 `hn` AS `PID`, 
 TRIM(`vn`) AS `vn`, 
-thDateToEn(SUBSTRING_INDEX(`thidate`, ' ', 1)) AS `DATE_SERV`, 
+thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERRV`, 
 '5' AS `DENTTYPE`, 
 '1' AS `SERVPLACE`, 
 '' AS `PTEETH`, '' AS `PCARIES`, '' AS `PFILLING`, '' AS `PEXTRACT`, 
@@ -43,8 +43,8 @@ while ( $item = mysql_fetch_assoc($q) ) {
 
     }
 
-    $provider = $item['DATE_SERV'].$item['vn'].$code;
-    $seq = $item['DATE_SERV'].$item['vn'];
+    $seq = $item['DATE_SERV'].sprintf("%03d",$item['vn']);
+    $provider = $seq.$code;
 
     $txt .= $item['HOSPCODE'].'|'.$item['PID'].'|'.$seq.'|'.$item['DATE_SERV'].'|';
     $txt .= $item['DENTTYPE'].'|'.$item['SERVPLACE'].'|'.$item['PTEETH'].'|'.$item['PCARIES'].'|';

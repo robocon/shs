@@ -8,15 +8,14 @@ $SERVPLACE = '1';
 
 //á¿éÁ 41 SPECIALPP
 $sql = "SELECT a.`date`, a.`hn`, a.`tvn`, 
-# YYYYMMDD
-CONCAT((SUBSTRING( a.`date`, 1, 4 ) - 543), SUBSTRING( a.`date`, 6, 2 ), SUBSTRING( a.`date`, 9, 2 )) AS `date_serv`,
+thDateToEn(SUBSTRING(a.`date`, 1, 10)) AS `date_serv`, 
 # HHIISS
 CONCAT(SUBSTRING( a.`date`, 12, 2 ), SUBSTRING( a.`date`, 15, 2 ), SUBSTRING( a.`date`, 18, 2 )) AS `time`,
-# Docter Code
 SUBSTRING( a.`doctor`, 1, 5) AS `dt_code`, 
-b.`idcard`, 
+TRIM(b.`idcard`) AS `idcard`, 
 TRIM( a.`idname` ) AS `idname`, 
-c.`icd10` 
+c.`icd10`,
+thDateTimeToEn(a.`date`) AS `d_update` 
 FROM `depart` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn`
 LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT( SUBSTRING( a.`date`, 9, 2 ),'-', SUBSTRING( a.`date`, 6, 2 ),'-', SUBSTRING( a.`date`, 1, 4 ), a.`hn`)  
@@ -44,16 +43,14 @@ $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {
     
     $PID = trim($item['hn']);
-    $SEQ = $item['date_serv'].(sprintf('%08d', trim($item['tvn'])));
+    $vn = sprintf('%03d', $item['tvn']);
+    $SEQ = $item['date_serv'].$vn;
     $DATE_SERV = $item['date_serv'];
-    $SERVPLACE = '1';
     $PPSPECIAL = $item['icd10'];
     $PPSPLACE = $HOSPCODE;
-    $CID = trim($item['idcard']);
-
-    $hn = str_replace('-', '', trim($item['hn']));
+    $CID = $item['idcard'];
     
-    $D_UPDATE = $item['date_serv'].$item['time'];
+    $D_UPDATE = $item['d_update'];
 
     $find_key = $item['idname'];
     if( isset($staff[$find_key]) ){
@@ -62,7 +59,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
         $dr_code = 00000;
     }
     
-    $PROVIDER = $item['date_serv'].(sprintf('%07d', $dr_code));
+    $PROVIDER = $SEQ.sprintf("%05d", $dr_code);
     
     $txt .= "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$SERVPLACE|$PPSPECIAL|$PPSPLACE|$PROVIDER|$D_UPDATE|$CID\r\n";
 

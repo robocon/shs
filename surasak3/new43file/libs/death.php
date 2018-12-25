@@ -49,9 +49,9 @@ while (list ($date,$dcdate,$hn,$an,$icd10,$doctor,$result) = mysql_fetch_row ($r
     $sqldoc=mysql_query("select doctorcode from doctor where name like'%$doctor%'", $db2);
     list($doctorcode)=mysql_fetch_array($sqldoc);
     if(empty($doctorcode)){
-    $provider=$date_serv.$vn."00000";
+    $provider=$seq."00000";
     }else{
-    $provider=$date_serv.$vn.$doctorcode;
+    $provider=$seq.$doctorcode;
     }
 
     $txt .= "$hospcode|$hn|$hospcode|$an|$seq|$ddeath|$cdeath_a|$cdeath_b|$cdeath_c|$cdeath_d|$odisease|$cdeath|$pregdeath|$pdeath|$provider|$d_update|$cid\r\n";				

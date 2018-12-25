@@ -5,7 +5,7 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 x.`hn` AS `PID`, 
-y.`vn` AS `SEQ`, 
+y.`vn` AS `vn`, 
 thDateToEn(SUBSTRING(y.`thidate`, 1,10)) AS `DATE_SERV`, 
 x.`weight` AS `WEIGHT`, 
 x.`height` AS `HEIGHT`, 
@@ -17,7 +17,7 @@ x.`bp1` AS `SBP`,
 x.`bp2` AS `DBP`, 
 x.`foot` AS `FOOT`, 
 x.`retina` AS `RETINA`, 
-CONCAT(thDateToEn(y.`thidate`), LPAD(y.`vn`, 3, 0),'0000') AS `PROVIDER`,
+TRIM(y.`doctor`) AS `doctor`,
 thDateTimeToEn(y.`thidate`) AS `D_UPDATE`, 
 '11512' AS `CHRONICFUPLACE`, 
 TRIM(c.`idcard`) AS `CID`
@@ -59,13 +59,38 @@ $q = mysql_query($sql, $db2) or die( mysql_error() );
 $txt = "";
 while ( $item = mysql_fetch_assoc($q) ) { 
 
+    $seq = $item['DATE_SERV'].$item['vn'];
+
+    if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
+
+        $pre_doc = $matchs['1'];
+        $q2 = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doc%'", $db2) or die( mysql_error() );
+        if ( mysql_num_rows($q2) > 0 ) {
+            $dt = mysql_fetch_assoc($q2);
+            $code = sprintf("%05d", $dt['doctorcode']);
+        }else{
+
+            $code = '00000';
+        }
+
+    }else{
+
+        $test_match = preg_match('/(\d+){4,5}/', $item['doctor'], $match);
+        if( $test_match > 0 ){
+            $code = $match['1'];
+        }
+
+    }
+
+    $provider = $seq.$code;
+
     $weight = number_format($item['WEIGHT'], 1);
     $height = number_format($item['HEIGHT'], 1);
     $waist_cm = number_format($item['WAIST_CM'], 1);
 
     $txt .= $item['HOSPCODE'].'|'
     .$item['PID'].'|'
-    .$item['SEQ'].'|'
+    .$seq.'|'
     .$item['DATE_SERV'].'|'
     .$weight.'|'
     .$height.'|'
@@ -74,7 +99,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['DBP'].'|'
     .$item['FOOT'].'|'
     .$item['RETINA'].'|'
-    .$item['PROVIDER'].'|'
+    .$provider.'|'
     .$item['D_UPDATE'].'|'
     .$item['CHRONICFUPLACE'].'|'
     .$item['CID']
