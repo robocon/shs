@@ -129,20 +129,76 @@ $result1 = mysql_Query($sql1);
 if(isset($_POST['button2'])){
 	
 	$d_update=date('Y-m-d H:i:s');
+	$death_number = $_POST['runno'];
+	$sqlstr="INSERT INTO `death` (`hospcode` , `pid` , `runno` , `hn` , `an` , `d_update` )
+	VALUES ('11512', '".$_POST['pid']."','".$_POST['prefix'].'/'.$_POST['runno']."', '".$_POST['hn']."', '".$_POST['an']."','".$d_update."');";
+	$strquery=mysql_query($sqlstr) or die (mysql_error());
 	
-$sqlstr="INSERT INTO `death` (`hospcode` , `pid` , `runno` , `hn` , `an` , `d_update` )
-VALUES ('11512', '".$_POST['pid']."','".$_POST['prefix'].'/'.$_POST['runno']."', '".$_POST['hn']."', '".$_POST['an']."','".$d_update."');";
-$strquery=mysql_query($sqlstr) or die (mysql_error());
+	$nRunno=$_POST['runno']+1;
 	
-		$nRunno=$_POST['runno']+1;
-		
-		$query ="UPDATE runno SET runno = $nRunno  WHERE title='death'";
-		$result = mysql_query($query) or die("Query failed runno");	
-		
-		if($_POST['an']!=''){
+	$query ="UPDATE runno SET runno = $nRunno  WHERE title='death'";
+	$result = mysql_query($query) or die("Query failed runno");	
+	$result = mysql_query($query) or die("Query failed runno");	
+	$result = mysql_query($query) or die("Query failed runno");	
+
+	if($_POST['an']!=''){
 		$an="AN: <strong>$_POST[an]</strong>";	
-		}
-		
+	}
+    
+
+	// เก็บข้อมูลเข้าแฟ้ม death
+	$hn = $_POST['hn'];
+	$an = $_POST['an'];
+	$cid = $_POST['pid'];
+
+
+
+	$q = mysql_query("SELECT `icd10`,SUBSTRING(`doctor`,1,5) FROM `ipcard` WHERE `an` = '$an'");
+	$ipcard = mysql_fetch_assoc($q);
+	$cdeath = $cdeath_a = $ipcard['icd10'];
+	$pre_doctor = $ipcard['doctor'];
+
+	$vn = sprintf('%03d', $death_number);
+	$seq = date('Ymd').$vn;
+	$d_update = date('YmdHis');
+	$ddeath = date('Ymd');
+
+	$q = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doctor%' ");
+	$dt = mysql_fetch_assoc($q);
+	$dt_code = $dt['doctorcode'];
+	$provider = $seq.$dt_code;
+
+	$q = mysql_query("SELECT * FROM `death43` WHERE `PID` = '$hn' AND `DDEATH` = '$ddeath' ");
+	$rows = mysql_num_rows($q);
+	if( $rows > 0 ){
+
+		// update
+		$item = mysql_fetch_assoc($q);
+		$id = $item['id'];
+
+		$sql = "UPDATE `death43` SET 
+		`HOSPCODE`='11512', `PID`='$hn', `HOSPDEATH`='11512', `AN`='$an', `SEQ`='$seq', `DDEATH`='$ddeath', 
+		`CDEATH_A`='$cdeath_a', `CDEATH_B`=NULL, `CDEATH_C`=NULL, `CDEATH_D`=NULL, `ODISEASE`=NULL, `CDEATH`='$cdeath', 
+		`PREGDEATH`=NULL, `PDEATH`=NULL, `PROVIDER`='$provider', `D_UPDATE`='$d_update', `CID`='$cid' WHERE (`id`='$id');";
+		mysql_query($sql);
+
+	}else{
+
+		$sql = "INSERT INTO `death43` (
+			`id`, `HOSPCODE`, `PID`, `HOSPDEATH`, `AN`, `SEQ`, 
+			`DDEATH`, `CDEATH_A`, `CDEATH_B`, `CDEATH_C`, `CDEATH_D`, `ODISEASE`, 
+			`CDEATH`, `PREGDEATH`, `PDEATH`, `PROVIDER`, `D_UPDATE`, `CID`
+		) VALUES (
+			NULL, '11512', '$hn', '11512', '$an', '$seq', 
+			'$ddeath', '$cdeath_a', NULL, NULL, NULL, NULL, 
+			'$cdeath', NULL, NULL, '$provider', '$d_update', '$cid'
+		);";
+		mysql_query($sql);
+
+	}
+	
+	// เก็บข้อมูลเข้าแฟ้ม death
+
 		if($strquery){
 		echo "<BR><BR>";	
 		echo "<div align=\"center\" class='fontsara2'><strong>$_POST[ptname]</strong>  HN: <strong>$_POST[hn]</strong> $an</div>";	

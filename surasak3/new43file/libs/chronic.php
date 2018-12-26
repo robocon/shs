@@ -27,7 +27,7 @@ thDateToEn(SUBSTRING_INDEX(`thidate`, ' ', 1)) AS `DATE_DIAG`,
 '' AS `DATE_DISCH`, 
 '03' AS `TYPEDISCH`, 
 thDateTimeToEn(`thidate`) AS `D_UPDATE`,
-`idcard` AS 'CID' 
+TRIM(`idcard`) AS 'CID' 
 FROM `opday` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND ( 

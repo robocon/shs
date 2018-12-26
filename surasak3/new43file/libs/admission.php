@@ -34,9 +34,18 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     $y1 = $y-$num2;
     $y2 = substr($y1,2,2);
     $dateserv = "$y1$m$d";
-    list($hn1,$hn2) = explode("-",$hn);
-    $seq = $dateserv.$hn1.$hn2;		
-    
+
+    // เปลี่ยนจาก seq จาก hn เป็น vn
+    // list($hn1,$hn2) = explode("-",$hn);
+    // $seq = $dateserv.$hn1.$hn2;
+
+    $thdatehn = "$d-$m-$y$hn";
+    $q = mysql_query("SELECT `vn`,`idcard` FROM `opday` WHERE `thdatehn` = '$thdatehn' LIMIT 1 ");
+    $item = mysql_fetch_assoc($q);
+    $vn = $item['vn'];
+    $cid = $item['idcard'];
+    $seq = $dateserv.sprintf("%03d", $item['vn']);
+
     $regis1 = substr($date,0,10);
     $regis2 = substr($date,11,19);
     list($yy,$mm,$dd) = explode("-",$regis1);
@@ -49,9 +58,13 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     list($hh,$ss,$ii) = explode(":",$dcdate2);
     $datetime_disch = ($yy-543).$mm.$dd.$hh.$ss.$ii;	
     
-    $newclinic = substr($clinic,0,2);
-    if($newclinic == "12"){
-        $newclinic = "99";
+    if( !empty($clinic) ){
+        $newclinic = substr($clinic,0,2);
+        if($newclinic == "12"){
+            $newclinic = "99";
+        }
+    }else{
+        $clinic = '99';
     }
     
     $newptright = substr($ptright,0,3);
@@ -70,6 +83,7 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     $typein = "1";
 
     // วิธีการการจำหน่ายผู้ป่วย ถ้าเป็น null ตีเป็น 1
+    $dctype = trim($dctype);
     $dischtype = ( !empty($dctype) ) ? substr($dctype, 0, 1) : 1 ;
 
     // สถานะภาพการจำหน่ายผู้ป่วย ถ้าเป็น null ตีเป็น 1
@@ -90,12 +104,6 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     // รหัส5ตัวหน้าของหมอ
     $doctor = substr($doctor,0,5);
     
-    // หา VN
-    $chkdate = substr($date, 0, 10);
-    $sqlopd1 = "select vn,idcard FROM opday WHERE thidate LIKE '$chkdate%' and hn='$hn'";
-    $resultopd1 = mysql_query($sqlopd1);	
-    list($vn,$cid) = mysql_fetch_array($resultopd1);
-    
     // date_serv สำหรับ provider
     list($yy,$mm,$dd) = explode("-", $regis1);
     $yy = $yy - 543;
@@ -108,42 +116,35 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
         $provider = $date_serv.$vn."00000";
     }else{
         $provider = $date_serv.$vn.$doctorcode;
-    }
-    
-    // แผนกที่รับผู้ป่วยจากโค้ดหมอ อิงตามมาตรฐาน สนย
-    // @todo สำหรับเทสเท่านั้น รอเพิ่มเติมหมอคนอื่น
-    $doctor_sny = array(
-        'MD100' => '01',
-        'MD007' => '01',
-        'MD006' => '01',
-        'MD009' => '01',
-        'MD056' => '02',
-        'MD054' => '02',
-        'MD101' => '03',
-        'MD041' => '05',
-        'MD036' => '06',
-        'MD065' => '07',
-        'MD089' => '07',
-        'MD079' => '08',
-        'MD013' => '08',
-    );
-    
-    // Override wardadmit and warddisch FROM doctor code(MDxxx)
-    $dr_code = trim($doctor);
-    $wardadmit = $warddisch = '1'.$doctor_sny[$dr_code].'00';
+    }   
+
+    // 87,88,91,96,128,133,141,145,147,151.รหัสแผนกที่รับบริการ 26Sep16.xls
+    $wardadmit = $warddisch = '1'.$newclinic.'00';
     
     $causein = "1";  //สาเหตุการส่งผู้ป่วย
-    $cost = "0.00";  //ราคาทุน
+    $cost = "0.00";  //ราคาทุน 
 
-    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$cid\r\n";
-    // print($inline);
+    $drg = '';
+    $rw = '';
+    $adjrw = '';
+    $error = '';
+    $warning = '';
+    $actlos = '';
+    $grouper_version = '';
+
+    $admitweight = number_format($admitweight, 1);
+    $admitheight = number_format($admitheight, 2);
+    $price = number_format($price, 2);
+
+    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$drg|$rw|$adjrw|$error|$warning|$actlos|$grouper_version|$cid\r\n";
+    
     $txt .= $inline;
 } // End while
 $filePath = $dirPath.'/admission.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHSTATUS|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|DRG|RW|ADJRW|ERROR|WARNING|ACTLOS|GROUPER_VERSION|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_admission.txt';
 file_put_contents($qofPath, $txt);

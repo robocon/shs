@@ -5,7 +5,7 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 a.`hn` AS `PID`,
-b.`vn` AS `SEQ`,
+b.`vn`,
 thDateToEn(b.`thidate`) AS `DATE_SERV`,
 '1' AS `SERVPLACE`,
 b.`cigarette` AS `SMOKE`,
@@ -18,10 +18,10 @@ CASE
     ELSE '0.0'  
 END AS `WEIGHT`,
 
-b.`height` AS `HEIGHT`,
+ROUND(b.`height`,0) AS `HEIGHT`,
 
 CASE 
-    WHEN b.`waist` <> '' THEN b.`waist` 
+    WHEN b.`waist` <> '' THEN ROUND(b.`waist`,0) 
     ELSE '0'  
 END AS `WAIST_CM`,
 
@@ -32,9 +32,9 @@ b.`bp4` AS `DBP_2`,
 '' AS `BSLEVEL`,
 '1' AS `BSTEST`,
 '11512' AS `SCREENPLACE`,
-CONCAT(thDateToEn(b.`thidate`), LPAD(b.`vn`, 3, 0),'0000') AS `PROVIDER`,
+b.`doctor`,
 thDateTimeToEn(b.`thidate`) AS `D_UPDATE`,
-c.`idcard` AS `CID`,
+TRIM(c.`idcard`) AS `CID`,
 toEn(SUBSTRING(b.`thidate`,1,10)) AS `toLis`
 FROM ( 
 
@@ -54,7 +54,7 @@ FROM (
 
 ) AS a 
 LEFT JOIN (  
-    SELECT `thidate`,`thdatehn`,`vn`,`weight`,`height`,`bp1`,`bp2`,`cigarette`,`alcohol`,`waist`,`bp3`,`bp4`  
+    SELECT `thidate`,`thdatehn`,`vn`,`weight`,`height`,`bp1`,`bp2`,`cigarette`,`alcohol`,`waist`,`bp3`,`bp4`,`doctor`  
     FROM `opd` 
     WHERE `thidate` LIKE '$thimonth%' 
 ) AS b ON b.`thdatehn` = a.`thdatehn` 
@@ -88,9 +88,33 @@ while ($item = mysql_fetch_assoc($q)) {
         $item['BSLEVEL'] = number_format($lab['result'], 2);
     }
 
+    $vn = sprintf("%03d", $item['vn']);
+    $seq = $item['DATE_SERV'].$vn;
+
+    $code = '00000';
+    if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
+
+        $pre_doc = $matchs['1'];
+        $q2 = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doc%'", $db2) or die( mysql_error() );
+        if ( mysql_num_rows($q2) > 0 ) {
+            $dt = mysql_fetch_assoc($q2);
+            $code = sprintf("%05d", $dt['doctorcode']);
+        }
+
+    }else{
+
+        $test_match = preg_match('/(\d+){4,5}/', $item['doctor'], $match);
+        if( $test_match > 0 ){
+            $code = $match['1'];
+        }
+
+    }
+
+    $provider = $seq.$code;
+
     $txt .= $item['HOSPCODE'].'|'
     .$item['PID'].'|'
-    .$item['SEQ'].'|'
+    .$seq.'|'
     .$item['DATE_SERV'].'|'
     .$item['SERVPLACE'].'|'
     .$item['SMOKE'].'|'
@@ -107,7 +131,7 @@ while ($item = mysql_fetch_assoc($q)) {
     .$item['BSLEVEL'].'|'
     .$item['BSTEST'].'|'
     .$item['SCREENPLACE'].'|'
-    .$item['PROVIDER'].'|'
+    .$provider.'|'
     .$item['D_UPDATE'].'|'
     .$item['CID']."\r\n";
 

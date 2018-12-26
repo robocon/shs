@@ -27,7 +27,7 @@ SUBSTRING(`date`, 1, 10) AS `date2`, `vn`
 FROM `opacc` 
 WHERE `txdate` like '$thimonth%' 
 AND ( `vn` IS NOT NULL AND `vn` != '' ) 
-GROUP BY SUBSTRING(`date`, 1, 10), `hn` 
+GROUP BY SUBSTRING(`date`, 1, 10), `hn`, `depart`
 ORDER BY `date` ASC";
 $result13= mysql_query($sql13, $db2) or die( mysql_error() );
 $num = mysql_num_rows($result13);
@@ -48,6 +48,7 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	
 	$sqlop = mysql_query($qOpday, $db2);
 	list($thidate,$idcard) = mysql_fetch_array($sqlop);
+	$idcard = trim($idcard);
 
 	if( empty($thidate) ){
 		$thidate = $date;

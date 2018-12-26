@@ -5,7 +5,7 @@ mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 //-------------------- Create file procedure_opd ‰ø≈Ï∑’Ë 11 --------------------//
 $temp11="CREATE  TEMPORARY  TABLE report_procedureopd 
-SELECT thidate, hn, vn, doctor, clinic, icd9cm, idcard 
+SELECT thidate, hn, vn, doctor, clinic, icd9cm, TRIM(idcard) 
 FROM opday 
 WHERE thidate LIKE '$thimonth%' 
 AND icd9cm IS NOT NULL 

@@ -18,7 +18,7 @@ b.`DISABTYPE`,
 '' AS `DATE_DETECT`, 
 '' AS `DATE_DISAB`, 
 thDateTimeToEn(a.`thidate`) AS `D_UPDATE`, 
-a.`idcard` AS `CID` 
+TRIM(a.`idcard`) AS `CID` 
 FROM `opday` AS a 
 LEFT JOIN `DISABILITY` AS b ON b.`hn` = a.`hn` 
 WHERE a.`thidate` LIKE '$thimonth%' 
@@ -40,8 +40,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['DATE_DETECT'].'|'
     .$item['DATE_DISAB'].'|'
     .$item['D_UPDATE'].'|'
-    .$item['CID']
-    ."\r\n";
+    .$item['CID']."\r\n";
 }
 
 $filePath = $dirPath.'/disability.txt';
