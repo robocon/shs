@@ -47,7 +47,7 @@ TRIM(c.`idcard`) AS `CID`
 
 ) AS x
 LEFT JOIN (  
-    SELECT `thidate`,`thdatehn`,`vn`,`weight`,`height`,`bp1`,`bp2`,`cigarette`,`alcohol`,`waist` 
+    SELECT `thidate`,`thdatehn`,`vn`,`weight`,`height`,`bp1`,`bp2`,`cigarette`,`alcohol`,`waist`,`doctor` 
     FROM `opd` 
     WHERE `thidate` LIKE '$thimonth%' 
 ) AS y ON y.`thdatehn` = x.`thdatehn` 

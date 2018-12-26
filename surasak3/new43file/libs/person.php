@@ -27,9 +27,7 @@ FROM (
     SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
     FROM `opday` 
     WHERE `thidate` LIKE '$thimonth%' 
-    AND ( `hn` <> '' AND `hn` IS NOT NULL ) 
-    AND ( `idcard` <> '' AND `idcard` IS NOT NULL AND `idcard` != '-' ) 
-    GROUP BY `hn`
+    GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10),`hn`)
 ) AS c 
 LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
 ORDER BY d.`hn` ";
@@ -70,20 +68,9 @@ $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 
 $txt = '';
 while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
 
-    // $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
-    // list($hospcode)=mysql_fetch_array($sqlhos);
-
     $PID = $hn;
-
-    if(empty($id) || $id=="-"){
-        $cid="";
-        $fstatus="";  //สถานะในครอบครัว
-        $vstatus="";  //สถานะในชุมชน		
-    }else{
-        $cid=$id;
-        $fstatus="2";  //สถานะในครอบครัว
-        $vstatus="5";  //สถานะในชุมชน		
-    }
+    $fstatus = "";
+    $vstatus = "";
     
     if(empty($dob)){
         $birth=date("Y")."0101";
