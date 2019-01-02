@@ -316,6 +316,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	
 	if($num1>0){
 		$sql = "INSERT INTO opacc (date,txdate,hn,an,depart,detail,price,paid,idname,ptright,credit,credit_detail ".$field_plus." ) VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$sHn','$sAn','$sDepart','$sDetail','$sNetprice','$sNetprice','$sOfficer','$sPtright','$credit','$detail_1' ".$values_plus.");";
+		//echo $sql;
 		$result = mysql_query($sql) or die("Query failed 296");
 		
 		
@@ -473,49 +474,67 @@ if($_POST["credit"] == "จ่ายตรง" ){
 			
 			
 			
-				////ให้คิวจ่ายยา
-				
-				
-    $cTdatehn1 =$sHn;
+////ให้คิวจ่ายยา
+if($sDepart=="PHAR"){							
+	$cTdatehn1 =$sHn;
 	$today1=(date("Y")+543).date("-m-d");	
+		
+	$sql = "Select kewphar,hn,ptright From dphardep WHERE hn ='$sHn'  AND  date LIKE '$today1%'  and (pharin != '' OR pharin IS NOT NULL)  and (kewphar is null or kewphar = '')";
+	//echo $sql ;
+	$result = Mysql_Query($sql);
 	
-   $sql = "Select kewphar,hn From dphardep WHERE hn ='$sHn'  AND  date LIKE '$today1%'  and pharin != '' and (kewphar is null or kewphar = '') ";
-
-//echo $sql ;
-	$result = Mysql_Query($sql);
-
 	if(Mysql_num_rows($result) > 0){
-		list($kewphar,$hn1) = Mysql_fetch_row($result);
+		list($kewphar,$hn1,$ptright) = Mysql_fetch_row($result);
 		
-	$query3 = "select idguard  from opcard where hn= '$hn1'  ";
-	$row3 = mysql_query($query3);
-	list($idguard) = mysql_fetch_array($row3);
+		$ptright111=substr($ptright,0,3);
+			
+		$query3 = "select idguard  from opcard where hn= '$hn1'";
+		$row3 = mysql_query($query3);
+		list($idguard) = mysql_fetch_array($row3);
+			
+		$idguard=substr($idguard,0,4);  //ประเภทผู้รับบริการ
 		
-$idguard=substr($idguard,0,4);
-
-
-if($idguard =='MX01' or $idguard =='MX03' or $idguard =='MX03' ){$pharinx="pharin_m";}else{$pharinx="pharin_l";};
-
-$sql = "Select prefix,runno From runno WHERE title ='$pharinx' ";
-	$result = Mysql_Query($sql);
+		
+		if($idguard =='MX01' or $idguard =='MX03' or $idguard =='MX03' ){
+			$pharinx="pharin_m";  //ทค=ทหาร/ครอบครัว
+		}else{
+			$pharinx="pharin_l";  //ทั่วไป
+		}
+	
+		$sql = "Select prefix,runno From runno WHERE title ='$pharinx' ";
+		$result = Mysql_Query($sql);
 		list($prefix,$runno) = Mysql_fetch_row($result);
-		
-$runno=sprintf('%03d',$runno);
+			
+		$runno=sprintf('%03d',$runno);
 		$kew=$prefix.$runno;
-		
-		
-
-		$query ="update dphardep SET  kewphar='$kew' WHERE hn = '$hn1' AND  date LIKE '$today1%'  and (kewphar is  null or kewphar = '')  ";
+			
+			
+	
+		$query ="update dphardep SET  kewphar='$kew' WHERE hn = '$hn1' AND  date LIKE '$today1%'  and (kewphar is  null or kewphar = '')";
 		$result = mysql_query($query) or die("Query failed,update thaywin");
 		//echo $query;
-
 	
-	  $sql ="update runno SET runno = runno+1 WHERE title='$pharinx'";
-					 $result = Mysql_Query($sql);
-
+		
+		$sql ="update runno SET runno = runno+1 WHERE title='$pharinx'";
+		$result = Mysql_Query($sql);
+	
+		if($ptright111=="R02" || $ptright111=="R03"){  //ถ้าเป็นสิทธิเบิกจ่ายตรง
+			$today=date("d-m-").(date("Y")+543);	
+			$todaytime=date("H:i:s");	
+/*			echo "<body Onload='window.print();'>";
+			echo "<font   style='line-height:18px;'  face='Angsana New' size='3'><center>ใบรอรับยา รพ.ค่ายสุรศักดิ์มนตรี<br></FONT>";
+			 //  echo "<font face='Angsana New' size='3'>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<br>";
+			echo " <font style='line-height:20px;'  face='Angsana New' size='3'>เวลารับคิว&nbsp;$today&nbsp;$todaytime<br>"; 
+			echo "<font style='line-height:20px;'  face='Angsana New' size='4'><b>ชื่อ &nbsp;$ptname <br> <font face='Angsana New' size='2'>&nbsp;HN:$hn&nbsp;VN:$tvn</b><br>";
+			echo " <font style='line-height:35px;'  face='Angsana New' size='7'>$kew<BR>";
+			echo " <font style='line-height:20px;'  face='Angsana New' size='3'>**กรุณารอเรียกชื่อและคิว**</center>";
+			echo " <font style='line-height:20px;'  face='Angsana New' size='3'><center>**ในกรณีที่เรียกผ่านแล้ว</center>";
+			echo " <font style='line-height:20px;'  face='Angsana New' size='3'><center>ให้ติดต่อช่องหมายเลข 6**</center>";	
+*/		}
+	}
+}
 ///จบการให้คิวยา
 
-		}
 	}
 
 };
@@ -593,7 +612,8 @@ if(count($_SESSION['tDiag'])==1){
 						echo $str;
 					}
 	//}
-} echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
+}
+//echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
 echo "</font></td>";
 	print "</tr>";
 	print "</table>";
@@ -734,7 +754,7 @@ echo "</font></td>";
 			
 			$result = mysql_query($query) or die("patdata2 Query failed");
 			$count = mysql_num_rows($result);
-			if($count <= 16){
+			if($count <= 16){ //กำหนดให้ค่า LAB แสดงรายการได้ไม่เกิน 16 บรรทัด
 				while (list ($code,$detail,$amount, $price,$yprice,$nprice) = mysql_fetch_row ($result)) {
 					$Items++;
 					if($code=="58002"){
@@ -756,8 +776,7 @@ echo "</font></td>";
 					print "</div>";
 				 //end แจงรายการถ้าไม่ใช่ค่าพยาธิ
 				}
-			}
-			else{
+			}else{
 				$Items++;
 				print "<div align='left'>";
 				print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
@@ -843,8 +862,7 @@ if($_POST["credit"] == "ค้างจ่าย"){
 			
 			$sql = "INSERT INTO accrued (date,txdate,hn,depart,detail,price,ptright,vn,status_pay,money_trust) VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$sHn','$sDepart','$sDetail', '$sNetprice','$sPtright','".$_SESSION["sVn"]."','n',$money_trust);";
 			$result = mysql_query($sql) or die("Query failed 662");
-		}
-		else{
+		}else{
 			$sDepart='PHAR';
 			$sDetail='ค่ายา';
 			$query = "SELECT * FROM phardep WHERE row_id = '".$_SESSION['idnumber'][$r]."' and hn='".$hn_now."' and tvn='".$_SESSION["sVn"]."'";
