@@ -732,6 +732,7 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
   }
 
   function check_yot(){
+    /*
     var newSm = new SmHttp();
     var input_yot = document.getElementById('yot');
     newSm.ajax(
@@ -741,5 +742,6 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
         document.getElementById('res_yot').innerHTML = res;
       }
     );
+    */
   }
 </script>
