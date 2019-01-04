@@ -345,7 +345,6 @@ $date_hn = date('Y-m-d').$hn;
 
 
 $sql = "SELECT a.*,
-
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
 FROM `dxofyear_out` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
@@ -628,7 +627,7 @@ h1,h3,p{
             <td valign="top">
                 <?php
 
-                $year_checkup = '61';
+                // $year_checkup = '61';
 
                 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`unit`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `resultdate`
                 FROM ( 
