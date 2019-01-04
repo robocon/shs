@@ -1366,6 +1366,7 @@ function checkForm(){
 include 'includes/ajax.php';
 ?>
 <script type="text/javascript">
+/*
 function check_yot(){
 	var newSm = new SmHttp();
 	var input_yot = document.getElementById('yot');
@@ -1377,6 +1378,7 @@ function check_yot(){
 		}
 	);
 }
+*/
 </script>
 <?php
 print "</body>";
