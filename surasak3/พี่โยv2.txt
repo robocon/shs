@@ -1,0 +1,51 @@
+สถิติหมอธนบดิน เสาร์-อาทิตย์ 3ปี
+
+DROP TEMPORARY TABLE IF EXISTS `tmp_depart`; 
+CREATE TEMPORARY TABLE `tmp_depart` 
+SELECT `row_id`,`date`,`ptname`,`hn`,`an`,`doctor`,`detail`,`price`, `depart`, 
+SUBSTRING(`date`, 1, 7) AS `only_month`, 
+DAYOFWEEK(CONCAT((SUBSTRING(`date`,1,4) - 3),SUBSTRING(`date`,5,6))) AS `day_in`,
+SUBSTRING(`ptright`, 1, 3) AS `pt_code` 
+FROM depart 
+WHERE ( `date` >= '2560-10-01 00:00:00' AND `date` <= '2561-09-31 23:59:59' ) 
+AND `doctor` LIKE 'MD013%' 
+AND `cashok` <> '' 
+AND `status` = 'Y' 
+AND `depart` = 'OTHER'  
+GROUP BY CONCAT(SUBSTRING(`date`, 1, 10), `hn`); 
+
+SELECT a.`only_month`,CONCAT(a.`pt_code`,' ',b.`name`) AS `ptright`,COUNT(a.`row_id`) AS `rows`,SUM(`price`) AS `price`
+FROM `tmp_depart` AS a, `ptright` AS b 
+WHERE b.`code` = a.`pt_code` 
+AND ( a.`day_in` = '6' OR a.`day_in` = '7' ) 
+AND ( a.`pt_code` = 'r01' OR a.`pt_code` = 'r03' OR a.`pt_code` = 'r07' )
+GROUP BY a.`only_month`,a.`pt_code`  
+
+
+
+
+// กายภาพ + แผนไทย
+DROP TEMPORARY TABLE IF EXISTS `tmp_depart`; 
+CREATE TEMPORARY TABLE `tmp_depart` 
+SELECT *, SUBSTRING(`date`, 1, 7) AS `only_month`, 
+CONCAT(SUBSTRING(`date`, 1, 10), `hn`) AS `date_hn`, 
+SUBSTRING(`date`, 12, 8) AS `time`, 
+DAYOFWEEK(CONCAT((SUBSTRING(`date`,1,4) - 3),SUBSTRING(`date`,5,6))) AS `day_in`,
+SUBSTRING(`ptright`, 1, 3) AS `pt_code` 
+FROM `depart` 
+WHERE ( `date` >= '2560-10-01 00:00:00' AND `date` <= '2561-09-31 23:59:59' ) 
+AND `depart` = 'PHYSI' 
+AND `cashok` <> '' 
+AND `status` = 'Y' 
+AND `staf_massage` <> '' 
+GROUP BY CONCAT(SUBSTRING(`date`, 1, 10), `hn`); 
+
+
+SELECT a.`only_month`,CONCAT(a.`pt_code`,' ',b.`name`) AS `ptright`,COUNT(a.`row_id`) AS `rows`,SUM(`price`) AS `price`
+FROM `tmp_depart` AS a, `ptright` AS b 
+WHERE b.`code` = a.`pt_code` 
+AND ( a.`pt_code` = 'r07' OR a.`pt_code` = 'r09' OR a.`pt_code` = 'r12' )
+GROUP BY a.`only_month`,a.`pt_code`  
+
+
+// แผนจีน
