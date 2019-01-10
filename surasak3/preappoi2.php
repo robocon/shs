@@ -721,7 +721,7 @@ function listb(number){
 
 function searchSuggest(action,str,len) {
 	
-		str = str+String.fromCharCode(event.keyCode);
+		// str = str+String.fromCharCode(event.keyCode);
 
 		if(str.length >= len){
 			url = 'preappoi2.php?action='+action+'&search=' + str;
