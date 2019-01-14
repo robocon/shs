@@ -8,38 +8,42 @@ $db = Mysql::load();
 
 // $db->select("SET NAMES UTF8");
 
+
+
+
+
+
 $action = input_post('action');
-if( $action == 'search' ){
+if( $action == 'save' ){
+
+    dump($_POST);
+
+    exit;
+
+} elseif( $action == 'search' ){
 
     $search_txt = iconv("UTF-8","TIS-620",$_POST['word']);
-    $sql = "SELECT * FROM `icf_code` WHERE `detail` LIKE '%$search_txt%'";
-    $db->select($sql);
 
-    $rows = $db->get_rows();
-    if( $rows > 0 ){
-        $items = $db->get_items();
+    // dump($search_txt);
+
+    if( is_null($_SESSION['icf_list']) ){
+
+        $sql = "SELECT * FROM `icf_code`";
+        $db->select($sql);
+        $icf_list = $db->get_items();
+    
+        dump($icf_list);
+        $_SESSION['icf_list'] = $icf_list;
+    
+    }
+
+    // $sql = "SELECT * FROM `icf_code` WHERE `detail` LIKE '%$search_txt%'";
+    // $db->select($sql);
+
+    // $rows = $db->get_rows();
+    // if( $rows > 0 ){
+        // $items = $db->get_items();
         ?>
-        <style>
-            .chk_table{
-                border-collapse: collapse;
-            }
-            .chk_table th,
-            .chk_table td{
-                padding: 3px;
-                border: 1px solid black;
-                font-size: 16pt;
-            }
-            .icf_code{
-                color: blue;
-            }
-            .icf_code:hover{
-                text-decoration: underline;
-                cursor: pointer;
-            }
-            .close-icf:hover{
-                cursor: pointer;
-            }
-        </style>
         <div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>
         <div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
             <table class="chk_table" style="width: 100%;">
@@ -48,19 +52,29 @@ if( $action == 'search' ){
                     <th>รายละเอียด</th>
                 </tr>
             <?php
-            foreach ($items as $key => $item) {
-                ?>
-                <tr>
-                    <td class="icf_code" item-data="<?=$item['code'];?>"><?=$item['code'];?></td>
-                    <td><?=$item['detail'];?></td>
-                </tr>
-                <?php
+            dump($search_txt);
+            foreach ($_SESSION['icf_list'] as $key => $item) {
+
+                $test_match = preg_match('/('.$search_txt.')/', $item['detail'], $matchs);
+                // dump($test_match);
+                
+                if( $test_match > 0 ){
+                    ?>
+                    <tr>
+                        <td class="icf_code" item-data="<?=$item['code'];?>"><?=$item['code'];?></td>
+                        <td><?=$item['detail'];?></td>
+                    </tr>
+                    <?php
+                }
+                
+                
+
             }
             ?>
             </table>
         </div>
         <?php
-    }
+    // }
     
     exit;
 }
@@ -88,6 +102,17 @@ if( $action == 'search' ){
         padding: 3px;
         border: 1px solid black;
         font-size: 16pt;
+    }
+
+    .icf_code{
+        color: blue;
+    }
+    .icf_code:hover{
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .close-icf:hover{
+        cursor: pointer;
     }
 </style>
 
@@ -117,7 +142,7 @@ $page = input('page');
 if ( $page == 'search' ) {
     
     $hn = input_post('hn');
-    $sql = "SELECT `row_id`,`thidate`,`hn`,`ptname`,`toborow`,`icd10` FROM `opday` WHERE `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 100";
+    $sql = "SELECT `row_id`,`thidate`,`hn`,`ptname`,`vn`,`toborow`,`icd10` FROM `opday` WHERE `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 100";
     $db->select($sql);
     $items = $db->get_items();
 
@@ -177,7 +202,7 @@ if ( $page == 'search' ) {
         3 => 'ความพิการจากโรค'
     );
     ?>
-    <form action="icf_form.php" method="post">
+    <form action="icf_form.php" method="post" id="userForm">
     <div>
         <fieldset>
             <legend>ฟอร์มบันทึกข้อมูล</legend>
@@ -204,7 +229,7 @@ if ( $page == 'search' ) {
             <fieldset>
                 <legend>Disability</legend>
                 <div>
-                    ประเภทความพิการ(DISABTYPE) <select name="disabtype" id="">
+                    ประเภทความพิการ(DISABTYPE): <select name="disabtype" id="">
                     <?php
                     foreach ($disabtype_list as $key => $dis) {
                         ?>
@@ -215,7 +240,7 @@ if ( $page == 'search' ) {
                     </select>
                 </div>
                 <div>
-                    สาเหตุความพิการ(DISABCAUSE) <select name="disabcause" id="">
+                    สาเหตุความพิการ(DISABCAUSE): <select name="disabcause" id="">
                     <?php
                     foreach ($disabcause_list as $key => $dis) {
                         ?>
@@ -226,10 +251,22 @@ if ( $page == 'search' ) {
                     </select>
                 </div>
                 <div>
-                    รหัสโรคหรือการบาดเจ็บที่เป็นสาเหตุของความพิการ
+                    รหัสโรคหรือการบาดเจ็บที่เป็นสาเหตุของความพิการ: 
+                    <?php 
+                    if( empty($item['icd10']) ){
+                        echo '<span style="background-color: red;">ไม่มีการลงข้อมูล</span>';
+                    }else{
+                        echo $item['icd10'];
+                    }
+                    ?>
                 </div>
             </fieldset>
-
+            <div>
+                <button type="submit">บันทึกข้อมูล</button>
+                <input type="hidden" name="action" value="save">
+                <input type="hidden" name="id" value="<?=$item['id'];?>">
+                <input type="hidden" name="test_icd" id="test_icd" value="<?=$item['icd10'];?>">
+            </div>
         </fieldset>
     </div>
     </form>
@@ -239,20 +276,62 @@ if ( $page == 'search' ) {
         (function( $ ) {
         $(function() {
 
-            $(document).on('keyup', '#icf', function(){
+            var icf_list = [];
+
+            <?php 
+            $sql = "SELECT * FROM `icf_code`";
+            $db->select($sql);
+            $icf_list = $db->get_items();
+            $i = 0;
+            foreach( $icf_list as $key => $item ){
+                ?> icf_list[<?=$i;?>] = '<?=$item['detail'];?>'; <?php
+                $i++;
+            }
+            ?>
+
+
+            $(document).on('keypress', '#icf', function(){
                 var search_txt = $(this).val();
-                $.ajax({
-                    method: "POST",
-                    url: "icf_form.php",
-                    data: { 'action': 'search', 'word': search_txt},
-                    success: function(res){
-                        // res = $.parseJSON(res);
-                        // if(res.length == 0){
-                        //     return false;
+
+                if( search_txt.length > 3 ){
+
+                    var regex1 = new RegExp(search_txt,'g');
+
+                    // search_txt.match(/(search_txt)/);
+
+                    for (let index = 0; index < icf_list.length; index++) {
+                        const element = icf_list[index];
+
+                        // console.log(regex1.test(element));
+
+                        console.log(element.match(regex1));
+
+                        // console.log(element);
+
+                        // if( regex1.test(element) == true ){
+                        //     console.log(element);
                         // }
-                        $("#icf_res").html(res);
+
+                        
                     }
-                });
+
+                    
+                    /*
+                    $.ajax({
+                        method: "POST",
+                        url: "icf_form.php",
+                        data: { 'action': 'search', 'word': search_txt},
+                        success: function(res){
+                            // res = $.parseJSON(res);
+                            // if(res.length == 0){
+                            //     return false;
+                            // }
+                            $("#icf_res").html(res);
+                        }
+                    }); 
+                    */
+
+                }
 
             });
 
@@ -263,10 +342,21 @@ if ( $page == 'search' ) {
 
             $(document).on('click', '.icf_code', function(){
                 var code = $(this).attr('item-data');
-                // console.log(code);
-
                 $('#icf').val(code);
                 $('#icf_res').hide();
+            });
+
+            $(document).on('submit', '#userForm', function(){
+
+                if( $('#test_icd').val() == '' ){
+
+                    var c = confirm("ยังไม่มีการลงข้อมูล ICD10 อาจทำให้ข้อมูล 43แฟ้ม ไม่ครบถ้วน\nยืนยันที่จะบันทึกข้อมูลหรือไม่");
+                    if( c==false ){
+                        return false;
+                    }
+
+                }
+
             });
             
         });
