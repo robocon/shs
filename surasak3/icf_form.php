@@ -2,7 +2,8 @@
 
 include 'bootstrap.php';
 
-$db = Mysql::load($shs_configs);
+//$shs_configs
+$db = Mysql::load();
 // $hn = input_post('hn');
 
 // $db->select("SET NAMES UTF8");
@@ -12,48 +13,55 @@ if( $action == 'search' ){
 
     $search_txt = iconv("UTF-8","TIS-620",$_POST['word']);
     $sql = "SELECT * FROM `icf_code` WHERE `detail` LIKE '%$search_txt%'";
-    
     $db->select($sql);
-    $items = $db->get_items();
-    ?>
-    <style>
-        .chk_table{
-            border-collapse: collapse;
-        }
-        .chk_table th,
-        .chk_table td{
-            padding: 3px;
-            border: 1px solid black;
-            font-size: 16pt;
-        }
-        .icf_code{
-            color: blue;
-        }
-        .icf_code:hover{
-            text-decoration: underline;
-            cursor: pointer;
-        }
-    </style>
-    <div style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>
-    <div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
-        <table class="chk_table" style="width: 100%;">
-            <tr>
-                <th>รหัส</th>
-                <th>รายละเอียด</th>
-            </tr>
-        <?php
-        foreach ($items as $key => $item) {
-            ?>
-            <tr>
-                <td class="icf_code"><?=$item['code'];?></td>
-                <td><?=$item['detail'];?></td>
-            </tr>
-            <?php
-        }
+
+    $rows = $db->get_rows();
+    if( $rows > 0 ){
+        $items = $db->get_items();
         ?>
-        </table>
-    </div>
-    <?php
+        <style>
+            .chk_table{
+                border-collapse: collapse;
+            }
+            .chk_table th,
+            .chk_table td{
+                padding: 3px;
+                border: 1px solid black;
+                font-size: 16pt;
+            }
+            .icf_code{
+                color: blue;
+            }
+            .icf_code:hover{
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .close-icf:hover{
+                cursor: pointer;
+            }
+        </style>
+        <div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>
+        <div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
+            <table class="chk_table" style="width: 100%;">
+                <tr>
+                    <th>รหัส</th>
+                    <th>รายละเอียด</th>
+                </tr>
+            <?php
+            foreach ($items as $key => $item) {
+                ?>
+                <tr>
+                    <td class="icf_code" item-data="<?=$item['code'];?>"><?=$item['code'];?></td>
+                    <td><?=$item['detail'];?></td>
+                </tr>
+                <?php
+            }
+            ?>
+            </table>
+        </div>
+        <?php
+    }
+    
     exit;
 }
 
@@ -147,7 +155,7 @@ if ( $page == 'search' ) {
 
 }elseif ( $page == 'form' ) {
     
-    $id = input_post('id');
+    $id = input_get('id');
 
     $sql = "SELECT * FROM `opday` WHERE `row_id` = '$id' ";
     $db->select($sql);
@@ -162,6 +170,12 @@ if ( $page == 'search' ) {
         6 => 'ความพิการทางการเรียนรู้',
         7 => 'ความพิการทางออทิสติก'
     );
+
+    $disabcause_list = array(
+        1 => 'ความพิการแต่กาเนิด',
+        2 => 'ความพิการจากการบาดเจ็บ',
+        3 => 'ความพิการจากโรค'
+    );
     ?>
     <form action="icf_form.php" method="post">
     <div>
@@ -171,15 +185,15 @@ if ( $page == 'search' ) {
             <fieldset>
                 <legend>ข้อมูลเบื้องต้น</legend>
                 <div>
-                    HN: <?=$item['hn'];?> ชื่อ-สกุล: <?=$item['ptname'];?> เลขที่บัตรปชช: <?=$item['idcard'];?>
-                    ตรวจวันที่: <?=$item['thidate'];?>
+                    <b>HN:</b> <?=$item['hn'];?> <b>ชื่อ-สกุล:</b> <?=$item['ptname'];?> <b>เลขที่บัตรปชช:</b> <?=$item['idcard'];?>
+                    <b>ตรวจวันที่:</b> <?=$item['thidate'];?>
                 </div>
             </fieldset>
 
             <fieldset>
                 <legend>ICF</legend>
                 <div>
-                    เลขทะเบียนผู้พิการ(DISABID): <input type="text" name="disabid" id="">
+                    เลขทะเบียนผู้พิการ(DISABID): <input type="text" name="disabid" id="disabid">
                 </div>
                 <div>
                     รหัสสภาวะสุขภาพ(ICF): <input type="text" name="icf" id="icf">
@@ -189,7 +203,31 @@ if ( $page == 'search' ) {
 
             <fieldset>
                 <legend>Disability</legend>
-
+                <div>
+                    ประเภทความพิการ(DISABTYPE) <select name="disabtype" id="">
+                    <?php
+                    foreach ($disabtype_list as $key => $dis) {
+                        ?>
+                        <option value="<?=$key;?>"><?=$key;?>. <?=$dis;?></option>
+                        <?php
+                    }
+                    ?>
+                    </select>
+                </div>
+                <div>
+                    สาเหตุความพิการ(DISABCAUSE) <select name="disabcause" id="">
+                    <?php
+                    foreach ($disabcause_list as $key => $dis) {
+                        ?>
+                        <option value="<?=$key;?>"><?=$key;?>. <?=$dis;?></option>
+                        <?php
+                    }
+                    ?>
+                    </select>
+                </div>
+                <div>
+                    รหัสโรคหรือการบาดเจ็บที่เป็นสาเหตุของความพิการ
+                </div>
             </fieldset>
 
         </fieldset>
@@ -216,6 +254,19 @@ if ( $page == 'search' ) {
                     }
                 });
 
+            });
+
+            
+            $(document).on('click', '.close-icf', function(){ 
+                $('#icf_res').hide();
+            });
+
+            $(document).on('click', '.icf_code', function(){
+                var code = $(this).attr('item-data');
+                // console.log(code);
+
+                $('#icf').val(code);
+                $('#icf_res').hide();
             });
             
         });
