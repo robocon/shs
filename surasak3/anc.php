@@ -74,7 +74,7 @@ if( isset($chn) ){
 
 	$doctorcode = '00000';
 	$q = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` = '$doctor' ");
-	if ( mysql_num_row($q) > 0 ) {
+	if ( mysql_num_rows($q) > 0 ) {
 		$item = mysql_fetch_assoc($q);
 		$doctorcode = $item['doctorcode'];
 	}
