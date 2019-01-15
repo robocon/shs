@@ -9,74 +9,128 @@ $db = Mysql::load();
 // $db->select("SET NAMES UTF8");
 
 
-
-
-
-
 $action = input_post('action');
 if( $action == 'save' ){
 
-    dump($_POST);
+    $disabid = input_post('disabid');
+    $id = input_post('id');
 
-    exit;
+    $icf = input_post('icf');
+    $disabtype = input_post('disabtype');
+    $disabcause = input_post('disabcause');
+    $diagcode = input_post('test_icd');
+    $d_update = date('Ymdhis');
 
-} elseif( $action == 'search' ){
+    $sql = "SELECT *,
+    thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `date_serv`
+    FROM `opday` WHERE `row_id` = '$id' ";
+    $db->select($sql);
+    $item = $db->get_item();
 
-    $search_txt = iconv("UTF-8","TIS-620",$_POST['word']);
+    $test_opday = $db->get_rows();
+    if ( $test_opday > 0 ) {
 
-    // dump($search_txt);
+        $opday_id = $item['row_id'];
+        $pid = $item['hn'];
+        $cid = trim($item['idcard']);
+        $date_serv = $item['date_serv'];
+        $seq = $item['date_serv'].sprintf("%03d", $item['vn']);
 
-    if( is_null($_SESSION['icf_list']) ){
+        if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
 
-        $sql = "SELECT * FROM `icf_code`";
+            $pre_doc = $matchs['1'];
+            $q2 = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doc%'") or die( mysql_error() );
+            if ( mysql_num_rows($q2) > 0 ) {
+                $dt = mysql_fetch_assoc($q2);
+                $code = sprintf("%05d", $dt['doctorcode']);
+            }else{
+
+                $code = '00000';
+            }
+
+        }else{
+
+            $test_match = preg_match('/(\d+){4,5}/', $item['doctor'], $match);
+            if( $test_match > 0 ){
+                $code = $match['1'];
+            }
+
+        }
+
+        $provider = $seq.$code;
+        
+        $sql = "SELECT `id` FROM `icf43` WHERE `opday_id` = '$opday_id' ";
         $db->select($sql);
-        $icf_list = $db->get_items();
-    
-        dump($icf_list);
-        $_SESSION['icf_list'] = $icf_list;
-    
+        $test_icf = $db->get_rows();
+        if ( $test_icf > 0 ) {
+
+            $icf_item = $db->get_item();
+            $icf_id = $icf_item['id'];
+
+            $sql = "UPDATE `icf43` SET 
+            `disabid`='$disabid', 
+            `pid`='$pid', 
+            `seq`='$seq', 
+            `date_serv`='$date_serv', 
+            `icf`='$icf', 
+            `provider`='$provider', 
+            `d_update`='$d_update', 
+            `cid`='$cid' 
+            WHERE (`id`='$icf_id');";
+            $db->update($sql);
+
+        }else{
+            $sql = "INSERT INTO `icf43` (
+                `id`, `hospcode`, `disabid`, `pid`, `seq`, `date_serv`, 
+                `icf`, `qualifier`, `provider`, `d_update`, `cid`, `opday_id`
+            ) VALUES (
+                NULL, '11512', '$disabid', '$pid', '$seq', '$date_serv', 
+                '$icf', NULL, '$provider', '$d_update', '$cid', '$opday_id'
+            );";
+            $db->insert($sql);
+        }
+
+        
+        $sql = "SELECT `id` FROM `disability43` WHERE `opday_id` = '$opday_id' ";
+        $db->select($sql);
+        $test_dis = $db->get_rows();
+        if ( $test_dis > 0 ) {
+
+            $dis_item = $db->get_item();
+            $dis_id = $dis_item['id'];
+
+            // update
+            $sql = "UPDATE `disability43` SET 
+            `disabid`='$disabid', 
+            `pid`='$pid', 
+            `disabtype`='$disabtype', 
+            `disabcause`='$disabcause', 
+            `diagcode`='$diagcode', 
+            `date_detect`='$date_serv', 
+            `date_disab`='$date_serv', 
+            `d_update`='$d_update', 
+            `cid`=' $cid' 
+            WHERE (`id`='$dis_id');";
+            $db->update($sql);
+
+        }else {
+            // 
+            $sql = "INSERT INTO `disability43` (
+                `id`, `hospcode`, `disabid`, `pid`, `disabtype`, `disabcause`, 
+                `diagcode`, `date_detect`, `date_disab`, `d_update`, `cid`, `opday_id`
+            ) VALUES (
+                NULL, '11512', '$disabid', '$pid', '$disabtype', '$disabcause', 
+                '$diagcode', '$date_serv', '$date_serv', '$d_update', '$cid', '$opday_id'
+            );";
+            $db->insert($sql);
+        }
+        
+
     }
 
-    // $sql = "SELECT * FROM `icf_code` WHERE `detail` LIKE '%$search_txt%'";
-    // $db->select($sql);
-
-    // $rows = $db->get_rows();
-    // if( $rows > 0 ){
-        // $items = $db->get_items();
-        ?>
-        <div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>
-        <div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
-            <table class="chk_table" style="width: 100%;">
-                <tr>
-                    <th>รหัส</th>
-                    <th>รายละเอียด</th>
-                </tr>
-            <?php
-            dump($search_txt);
-            foreach ($_SESSION['icf_list'] as $key => $item) {
-
-                $test_match = preg_match('/('.$search_txt.')/', $item['detail'], $matchs);
-                // dump($test_match);
-                
-                if( $test_match > 0 ){
-                    ?>
-                    <tr>
-                        <td class="icf_code" item-data="<?=$item['code'];?>"><?=$item['code'];?></td>
-                        <td><?=$item['detail'];?></td>
-                    </tr>
-                    <?php
-                }
-                
-                
-
-            }
-            ?>
-            </table>
-        </div>
-        <?php
-    // }
-    
+    redirect('icf_form.php','บันทึกข้อมูลเรียบร้อย');
     exit;
+
 }
 
 ?>
@@ -120,6 +174,18 @@ if( $action == 'save' ){
 <div>
     <div>บันทึกข้อมูล ICF & DISABILITY</div>
 </div>
+
+<?php 
+
+if($_SESSION['x-msg']){
+    ?>
+    <div style="border: 1px solid #abab00; background-color: #ffffce; padding: 4px;"><?=$_SESSION['x-msg'];?></div>
+    <?php
+    $_SESSION['x-msg'] = NULL;
+}
+
+?>
+
 <div>
     <fieldset>
         <legend>ค้นหาจาก HN</legend>
@@ -186,6 +252,19 @@ if ( $page == 'search' ) {
     $db->select($sql);
     $item = $db->get_item();
 
+    $opday_id = $item['row_id'];
+
+    $sql = "SELECT * FROM `icf43` WHERE `opday_id` = '$opday_id' ";
+    $db->select($sql);
+    $icf = $db->get_item();
+
+    $sql = "SELECT * FROM `disability43` WHERE `opday_id` = '$opday_id' ";
+    $db->select($sql);
+    $dis = $db->get_item();
+
+    $disabtype = $dis['disabtype'];
+    $disabcause = $dis['disabcause'];
+
     $disabtype_list = array(
         1 => 'ความพิการทางการเห็น',
         2 => 'ความพิการทางการได้ยินหรือการสื่อความหมาย',
@@ -210,18 +289,18 @@ if ( $page == 'search' ) {
             <fieldset>
                 <legend>ข้อมูลเบื้องต้น</legend>
                 <div>
-                    <b>HN:</b> <?=$item['hn'];?> <b>ชื่อ-สกุล:</b> <?=$item['ptname'];?> <b>เลขที่บัตรปชช:</b> <?=$item['idcard'];?>
+                    <b>HN:</b> <?=$item['hn'];?> <b>VN:</b> <?=$item['vn'];?> <b>ชื่อ-สกุล:</b> <?=$item['ptname'];?> <b>เลขที่บัตรปชช:</b> <?=$item['idcard'];?>
                     <b>ตรวจวันที่:</b> <?=$item['thidate'];?>
+                </div>
+                <div>
+                    เลขทะเบียนผู้พิการ(DISABID): <input type="text" name="disabid" id="disabid" value="<?=$icf['disabid'];?>">
                 </div>
             </fieldset>
 
             <fieldset>
                 <legend>ICF</legend>
                 <div>
-                    เลขทะเบียนผู้พิการ(DISABID): <input type="text" name="disabid" id="disabid">
-                </div>
-                <div>
-                    รหัสสภาวะสุขภาพ(ICF): <input type="text" name="icf" id="icf">
+                    รหัสสภาวะสุขภาพ(ICF): <input type="text" name="icf" id="icf" value="<?=$icf['icf'];?>">
                 </div>
                 <div id="icf_res" style="position:relative;"></div>
             </fieldset>
@@ -232,8 +311,11 @@ if ( $page == 'search' ) {
                     ประเภทความพิการ(DISABTYPE): <select name="disabtype" id="">
                     <?php
                     foreach ($disabtype_list as $key => $dis) {
+
+                        $selected = ( $key == $disabtype ) ? 'selected="selected"' : '';
+
                         ?>
-                        <option value="<?=$key;?>"><?=$key;?>. <?=$dis;?></option>
+                        <option value="<?=$key;?>" <?=$selected;?> ><?=$key.'.'.$dis;?></option>
                         <?php
                     }
                     ?>
@@ -243,8 +325,11 @@ if ( $page == 'search' ) {
                     สาเหตุความพิการ(DISABCAUSE): <select name="disabcause" id="">
                     <?php
                     foreach ($disabcause_list as $key => $dis) {
+
+                        $selected = ( $key == $disabcause ) ? 'selected="selected"' : '';
+
                         ?>
-                        <option value="<?=$key;?>"><?=$key;?>. <?=$dis;?></option>
+                        <option value="<?=$key;?>" <?=$selected;?> ><?=$key.'.'.$dis;?></option>
                         <?php
                     }
                     ?>
@@ -264,7 +349,7 @@ if ( $page == 'search' ) {
             <div>
                 <button type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
-                <input type="hidden" name="id" value="<?=$item['id'];?>">
+                <input type="hidden" name="id" value="<?=$item['row_id'];?>">
                 <input type="hidden" name="test_icd" id="test_icd" value="<?=$item['icd10'];?>">
             </div>
         </fieldset>
@@ -279,16 +364,22 @@ if ( $page == 'search' ) {
             var icf_list = [];
 
             <?php 
-            $sql = "SELECT * FROM `icf_code`";
+            $sql = "SELECT * FROM `icf_icf`";
             $db->select($sql);
             $icf_list = $db->get_items();
-            $i = 0;
+            $i = 0; 
+
             foreach( $icf_list as $key => $item ){
-                ?> icf_list[<?=$i;?>] = '<?=$item['detail'];?>'; <?php
+
+                ?>
+                var myObj = new Object();
+                myObj.code = '<?=$item['id'];?>';
+                myObj.detail = '<?=$item['detail'];?>';
+                icf_list[<?=$i;?>] = myObj; 
+                <?php
                 $i++;
             }
             ?>
-
 
             $(document).on('keypress', '#icf', function(){
                 var search_txt = $(this).val();
@@ -297,39 +388,33 @@ if ( $page == 'search' ) {
 
                     var regex1 = new RegExp(search_txt,'g');
 
-                    // search_txt.match(/(search_txt)/);
+                    var htm = '';
+                    htm += '<div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>';
+                    htm += '<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">';
+                    htm += '<table class="chk_table" style="width: 100%;">';
+                    htm += '<tr>';
+                    htm += '<th>รหัส</th>';
+                    htm += '<th>รายละเอียด</th>';
+                    htm += '</tr>';
 
                     for (let index = 0; index < icf_list.length; index++) {
-                        const element = icf_list[index];
 
-                        // console.log(regex1.test(element));
+                        var icf_item = icf_list[index];
+                        const element = icf_item.detail;
+                        const icf_code = icf_item.code;
 
-                        console.log(element.match(regex1));
-
-                        // console.log(element);
-
-                        // if( regex1.test(element) == true ){
-                        //     console.log(element);
-                        // }
-
-                        
+                        if( regex1.test(element) == true ){
+                            htm += '<tr>';
+                            htm += '<td class="icf_code" item-data="'+icf_code+'">'+icf_code+'</td>';
+                            htm += '<td>'+element+'</td>';
+                            htm += '</tr>';
+                        }
                     }
 
-                    
-                    /*
-                    $.ajax({
-                        method: "POST",
-                        url: "icf_form.php",
-                        data: { 'action': 'search', 'word': search_txt},
-                        success: function(res){
-                            // res = $.parseJSON(res);
-                            // if(res.length == 0){
-                            //     return false;
-                            // }
-                            $("#icf_res").html(res);
-                        }
-                    }); 
-                    */
+                    htm += '</table>';
+                    htm += '</div>';
+
+                    $("#icf_res").html(htm);
 
                 }
 
