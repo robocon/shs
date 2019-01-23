@@ -32,9 +32,10 @@ if( $action == false ){
                 <tr>
                     <td>Lab Number</td>
                     <td>HN</td>
-                    <td>ชื่อ-สกุล</td>
+                    <td>ชื่อ</td>
+                    <td>สกุล</td>
                     <td>เพศ</td>
-                    <td>วันเกิด <span style="color: red;">( LIS รองรับเป็นปี ค.ศ. เท่านั้น )</span></td>
+                    <td>วันเกิด <span style="color: red;">รองรับการป้อนข้อมูล DD/MM/YYYY แบบปีพ.ศ.</span></td>
                     <td>รายการตรวจ</td>
                 </tr>
             </table>
@@ -66,7 +67,7 @@ if( $action == false ){
                     </tr>
                     <tr>
                         <td>รายการตรวจ</td>
-                        <td>รหัสรายการตรวจคั่นด้วย Comma(,) เช่น CBC,UA,BUN เป็นต้น</td>
+                        <td>รหัสรายการตรวจคั่นด้วย Comma(,) เช่น CBC,UA,BUN เป็นต้น รองรับการใช้งาน @ เช่น @stool</td>
                     </tr>
                 </table>
             </div>
@@ -97,8 +98,23 @@ if( $action == false ){
 
             if( $i > 0 && !empty($item) ){
                 
-                list($labnumber, $hn, $ptname, $sex, $dob, $year, $lab_lists) = explode(',', $item, 7);
+                list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_lists) = explode(',', $item,8);
 
+                $match = preg_match('/\d+\/\d+\/\d+/', $dob, $matchs);
+                if ( $match > 0 ) {
+                    list($dd, $mm, $yy) = explode('/', $dob);
+
+                    if($yy > 2100){
+                        $yy = $yy - 543;
+                    }
+
+                    $dd = sprintf('%02d', $dd);
+                    $mm = sprintf('%02d', $mm);
+                    
+                    $dob = "$yy-$mm-$dd 00:00:00";
+                }
+                $year = get_year_checkup();
+                $ptname = $name.' '.$surname;
                 $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
 
                 $orderhead_sql = "INSERT INTO `orderhead` ( 
@@ -117,26 +133,75 @@ if( $action == false ){
 
                 $lab_lists = str_replace('"', '', $lab_lists);
                 $lab_items = explode(',', $lab_lists);
+                
                 foreach( $lab_items as $lab_key => $lab_item ){
-
-                    $sql_detail = "SELECT `code`,`oldcode`,`detail` 
-                    FROM `labcare` 
-                    WHERE `code` = '$lab_item' 
-                    LIMIT 1 ";
-                    $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
-                    $num = mysql_num_rows($q);
-                    if( $num > 0 ){
-                        list($code, $oldcode, $detail) = mysql_fetch_row($q);   
                     
-                        $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                            `labnumber` , `labcode`, `labcode1` , `labname` 
-                        ) VALUES ( 
-                            '$labnumber', '$code', '$oldcode', '$detail'
-                        );";
-                        $insert = $db->insert($orderdetail_sql);
-                        if( $insert !== true ){
-                            $msg .= errorMsg('delete', $insert['id']);
+                    $find_suit = strstr($lab_item,'@');
+                    if( $find_suit != false ){
+
+                        // ถ้าในรายการปกติไม่มีให้ไปหาใน labsuit
+                        $sql_at = "SELECT `code` FROM `labsuit` WHERE `suitcode` LIKE '$lab_item'";
+                        $db->select($sql_at);
+                        $suit_list = $db->get_items();
+
+                        if( count($suit_list) > 0 ){
+
+                            foreach ($suit_list as $key => $suit_item) {
+                                
+                                $suit_code = $suit_item['code'];
+                                $sql_detail = "SELECT `code`,`oldcode`,`detail` 
+                                FROM `labcare` 
+                                WHERE `code` = '$suit_code' 
+                                LIMIT 1 ";
+                                $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
+                                $test_row = mysql_num_rows($q);
+                                if ( $test_row > 0 ) {
+                                    
+                                    list($code, $oldcode, $detail) = mysql_fetch_row($q);   
+                                
+                                    $orderdetail_sql = "INSERT INTO `orderdetail` ( 
+                                        `labnumber` , `labcode`, `labcode1` , `labname` 
+                                    ) VALUES ( 
+                                        '$labnumber', '$code', '$oldcode', '$detail'
+                                    );";
+                                    $insert_detail = $db->insert($orderdetail_sql);
+
+                                    if( $insert_detail !== true ){
+                                        $msg .= errorMsg('delete', $insert_detail['id']);
+                                    }
+
+                                }
+                                
+
+                            }
+
                         }
+
+
+                    }else{
+
+                        // กรณีรายการ lab ปกติ
+                        $sql_detail = "SELECT `code`,`oldcode`,`detail` 
+                        FROM `labcare` 
+                        WHERE `code` = '$lab_item' 
+                        LIMIT 1 ";
+                        $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
+                        $num = mysql_num_rows($q);
+                        if( $num > 0 ){
+                            list($code, $oldcode, $detail) = mysql_fetch_row($q);   
+                        
+                            $orderdetail_sql = "INSERT INTO `orderdetail` ( 
+                                `labnumber` , `labcode`, `labcode1` , `labname` 
+                            ) VALUES ( 
+                                '$labnumber', '$code', '$oldcode', '$detail'
+                            );";
+                            $insert = $db->insert($orderdetail_sql);
+                            if( $insert !== true ){
+                                $msg .= errorMsg('delete', $insert['id']);
+                            }
+
+                        }
+
                     }
                     
 
