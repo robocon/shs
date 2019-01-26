@@ -98,7 +98,7 @@ if( $action == false ){
 
             if( $i > 0 && !empty($item) ){
                 
-                list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_lists) = explode(',', $item,8);
+                list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_lists) = explode(',', $item,7);
 
                 $match = preg_match('/\d+\/\d+\/\d+/', $dob, $matchs);
                 if ( $match > 0 ) {
