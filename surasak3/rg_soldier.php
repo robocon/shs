@@ -589,8 +589,8 @@ if( empty($page) ){
 
                 <div>
                     <span>ค้นหากฏกระทรวงที่ขัด: </span><input type="text" id="regular_search" >
-                    <div id="regular_result" style="color: blue; text-decoration: underline;"><?=$regular;?></div>
-                    <input type="hidden" id="regular" name="regular" value="<?=$regular;?>">
+                    <!--<div id="regular_result" style="color: blue; text-decoration: underline;"><?=$regular;?></div>-->
+                    <input type="text" id="regular" name="regular" value="<?=$regular;?>" style="width: 100%;">
                 </div>
     
                 <div>

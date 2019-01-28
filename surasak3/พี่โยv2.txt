@@ -48,4 +48,77 @@ AND ( a.`pt_code` = 'r07' OR a.`pt_code` = 'r09' OR a.`pt_code` = 'r12' )
 GROUP BY a.`only_month`,a.`pt_code`  
 
 
-// แผนจีน
+
+
+//หมอเป้
+// 1. ct scan
+// 2. ค่ายา 6เดือน ย้อนหลัง
+
+# ct scan
+DROP TEMPORARY TABLE IF EXISTS `tmp_depart`; 
+CREATE TEMPORARY TABLE `tmp_depart` 
+SELECT `row_id`,`date`,`ptname`,`hn`,`an`,`doctor`,`detail`,`price`, `depart`, 
+SUBSTRING(`date`, 1, 7) AS `only_month`, 
+DAYOFWEEK(CONCAT((SUBSTRING(`date`,1,4) - 3),SUBSTRING(`date`,5,6))) AS `day_in`,
+SUBSTRING(`ptright`, 1, 3) AS `pt_code` 
+FROM `depart` 
+WHERE ( `date` >= '2561-10-01 00:00:00' AND `date` <= '2561-10-31 23:59:59' ) 
+AND `depart` = 'XRAY' 
+AND `idname` = 'เจ้าหน้าที่ x-ray คอมพิวเตอร์' 
+AND `cashok` <> '' 
+AND `status` = 'Y'; 
+
+SELECT a.`only_month`,CONCAT(a.`pt_code`,' ',b.`name`) AS `ptright`,COUNT(a.`row_id`) AS `rows`,SUM(`price`) AS `price`
+FROM `tmp_depart` AS a, `ptright` AS b 
+WHERE b.`code` = a.`pt_code` 
+#AND ( a.`day_in` = '6' OR a.`day_in` = '7' ) 
+#AND ( a.`pt_code` = 'r01' OR a.`pt_code` = 'r03' OR a.`pt_code` = 'r07' )
+GROUP BY a.`only_month`,a.`pt_code`  
+
+##########################################################
+// รหัส (42702) ใน patdata 
+// ย้อนหลัง 1ปี
+##########################################################
+
+DROP TEMPORARY TABLE IF EXISTS `tmp_patdata`; 
+CREATE TEMPORARY TABLE `tmp_patdata` 
+SELECT `row_id`,`date`,`ptname`,`hn`,`an`,`doctor`,`detail`,`price`,`depart`,
+SUBSTRING(`date`, 1, 7) AS `only_month`, 
+DAYOFWEEK(CONCAT((SUBSTRING(`date`,1,4) - 3),SUBSTRING(`date`,5,6))) AS `day_in`,
+SUBSTRING(`ptright`, 1, 3) AS `pt_code` 
+FROM `patdata` 
+WHERE ( `date` >= '2561-01-01 00:00:00' AND `date` <= '2561-12-31 23:59:59' ) 
+AND `code` = '42702' 
+AND `status` = 'Y'; 
+
+
+SELECT a.`only_month`,CONCAT(a.`pt_code`,' ',b.`name`) AS `ptright`,COUNT(a.`row_id`) AS `rows`,SUM(`price`) AS `price`
+FROM `tmp_patdata` AS a, `ptright` AS b 
+WHERE b.`code` = a.`pt_code` 
+GROUP BY a.`only_month`,a.`pt_code`  
+
+##########################################################
+
+
+##########################################################
+#ค่ายา 6เดือน ย้อนหลัง 
+##########################################################
+
+DROP TEMPORARY TABLE IF EXISTS `tmp_phardep`; 
+CREATE TEMPORARY TABLE `tmp_phardep`
+
+SELECT `row_id`,`date`,`ptname`,`hn`,`an`,`doctor`,`price`,
+SUBSTRING(`date`, 1, 7) AS `only_month`, 
+DAYOFWEEK(CONCAT((SUBSTRING(`date`,1,4) - 3),SUBSTRING(`date`,5,6))) AS `day_in`,
+SUBSTRING(`ptright`, 1, 3) AS `pt_code` 
+
+FROM `phardep` 
+WHERE ( `date` >= '2561-06-01 00:00:00' AND `date` <= '2561-12-31 23:59:59' ) 
+AND ( `doctor` LIKE 'MD013%' OR `doctor` LIKE '%19921%' ) 
+AND ( `cashok` = '30บาท' OR `cashok` = 'ประกันสังคม' ) ; 
+
+SELECT a.`only_month`,CONCAT(a.`pt_code`,' ',b.`name`) AS `ptright`,COUNT(a.`row_id`) AS `rows`,SUM(`price`) AS `price` 
+FROM `tmp_phardep` AS a, `ptright` AS b 
+WHERE b.`code` = a.`pt_code` 
+AND ( a.`day_in` = '6' OR a.`day_in` = '7' ) 
+GROUP BY a.`only_month`,a.`pt_code`;  

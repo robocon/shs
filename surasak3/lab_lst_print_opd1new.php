@@ -66,8 +66,6 @@ hr {
 </head>
 <body>
 <? 
-
-// áÂ¡µÒÁ¡ÅØèÁ àªè¹ CHEMISTRY HEMATOLOGY
 $sqlop="select distinct(testgroupname) as newtestgroupname 
 from resulthead 
 where hn ='$gethn' 
@@ -142,10 +140,6 @@ while($rowsop=mysql_fetch_array($queryop)){
 	</tr>
 	</table>
 	<? 
-
-	
-
-	// áÊ´§¼ÅµÒÁ¡ÅØèÁ 
 	$sqlloop="select distinct(testgroupname) as newtestgroupname 
 	from resulthead 
 	where hn ='$gethn' 
@@ -177,8 +171,7 @@ while($rowsop=mysql_fetch_array($queryop)){
 				AND `testgroupname` ='$newtestgroupname' 
 				GROUP BY `profilecode`
 			) AS a 
-			LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` 
-			";
+			LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` ";
 
 			
 			// $sql1="select * 
@@ -222,7 +215,6 @@ while($rowsop=mysql_fetch_array($queryop)){
 	<div class="iBannerFix">  
 		<hr />
 	<?
-			// ´Ö§àÍÒ Reported by ¡Ñº Date Authorise
 			$sql3="select * from resulthead 
 			inner join resultdetail on resulthead.autonumber=resultdetail.autonumber 
 			where resulthead.hn ='$gethn' 

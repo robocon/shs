@@ -1,7 +1,6 @@
 <?php
 include 'bootstrap.php';
 
-$title = 'จำนวนผู้ป่วยทันตกรรมแยกตามสิทธิ์';
 include 'templates/classic/header.php';
 
 // Default year checkup
@@ -28,6 +27,7 @@ $yearSelect = input_post('year_select', $checkup);
 				<div class="col">
 					<label for="yearSelect">
 						เลือกปีงบประมาณ <input type="text" id="yearSelect" name="year_select" value="<?=$yearSelect;?>">
+						<div style="font-size:16px; color: red;">หากต้องการเลือกเป็นเดือนให้ใส่รูปแบบ YYYY-MM เช่น 2562-01 เป็นต้น</div>
 					</label>
 				</div>
 			</div>
@@ -47,15 +47,21 @@ if( $show == 'show' ){
 	
 	DB::load();
 	$yStart = $yearSelect - 1;
+
+	$test_match = preg_match('(\d{4}\-\d{2})',$yearSelect, $matchs);
+	$where = "`thidate` >=  '$yStart-10-01 00:00:00' AND  `thidate` <=  '$yearSelect-09-30 23:59:59' ";
+	if( $test_match > 0 ){
+		$where = "`thidate` LIKE '$yearSelect%'";
+	}
 	
 	$sql = "SELECT COUNT(  `hn` ) AS  `rows`, `ptright` 
 	FROM `opday` 
 	WHERE  `toborow` LIKE '%EX07%' 
 	AND (
-		`thidate` >=  '$yStart-10-01' AND  `thidate` <=  '$yearSelect-09-30'
+		$where
 	)
-	GROUP BY  `ptright`
-	";
+	GROUP BY  `ptright`";
+
 	$items = DB::select($sql);
 	$lists = array();
 	foreach( $items as $key => $item ){
@@ -84,16 +90,23 @@ if( $show == 'show' ){
 			</tr>
 		</thead>
 		<tbody>
-			<?php
-			foreach( $lists as $key => $list ){
+			<?php 
+			$total = 0;
+			foreach( $lists as $key => $list ){ 
+
+				$total += (int) $list['rows'];
 			?>
 			<tr>
 				<td><?=$list['name'];?></td>
-				<td><?=$list['rows'];?></td>
+				<td align="right"><?=$list['rows'];?></td>
 			</tr>
 			<?php
 			}
 			?>
+			<tr>
+				<td align="center">ยอดรวม</td>
+				<td align="right"><?=$total;?></td>
+			</tr>
 		</tbody>
 	</table>
 	<?php

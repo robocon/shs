@@ -17,7 +17,7 @@ $configs = array(
     'pass' => '12345678'
 );
 
-$db = Mysql::load($configs);
+$db = Mysql::load();
 
 $def_date = ( date('Y') + 543 ).date('-m-d');
 

@@ -1,23 +1,24 @@
 <?php 
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
+
+
 
 $sql = "SELECT '11512' AS `HOSPCODE`,
-`hn` AS `PID`, 
-`vn`, 
-thDateToEn(`thidate`) AS `DATE_SERV`, 
-'' AS `GRAVIDA`, 
-'' AS `ANCNO`, 
-'' AS `GA`, 
-'' AS `ANCRESULT`, 
-'' AS `ANCPLACE`, 
-TRIM(`doctor`) AS `doctor`, 
-thDateTimeToEn(`thidate`) AS `D_UPDATE`, 
-TRIM(`idcard`) AS `CID`
-FROM `opday` 
-WHERE `thidate` LIKE '$thimonth%' 
-AND `toborow` LIKE 'ex08%' ";
+`pid` AS `PID`, 
+`seq`, 
+`date_serv` AS `DATE_SERV`, 
+`gravida` AS `GRAVIDA`, 
+`ancno` AS `ANCNO`, 
+`ga` AS `GA`, 
+`ancres` AS `ANCRESULT`, 
+`aplace` AS `ANCPLACE`, 
+`provider` AS `PROVIDER`, 
+`d_update` AS `D_UPDATE`, 
+`cid` AS `CID`
+FROM `anc` 
+WHERE `date_serv` LIKE '$thimonth%' ";
 
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
@@ -79,4 +80,4 @@ $qofLists[] = $qofPath;
 
 echo "สร้างแฟ้ม anc เสร็จเรียบร้อย<br>";
 
-mysql_close($db2);
+// mysql_close($db2);

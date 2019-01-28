@@ -1,6 +1,6 @@
 <?php 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 //-------------------- Create file charge_ipd ä¿Åì·Õè 18 --------------------//
 // $temp18="CREATE  TEMPORARY  TABLE report_admission4 
