@@ -1,7 +1,7 @@
 <?php
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 // ÃÍº 1µ¤ ¶Ö§ 30¡Â ¢Í§»Õ¶Ñ´ä»
 if( $rptmo >= 10 && $rptmo <= 12 ){

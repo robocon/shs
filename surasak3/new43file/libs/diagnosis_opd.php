@@ -1,7 +1,7 @@
 <?php 
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 //
 //-------------------- Create file diagnosis_opd ä¿Åì·Õè 15 --------------------//

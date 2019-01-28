@@ -1,7 +1,7 @@
 <?php
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 x.`hn` AS `PID`, 
@@ -116,6 +116,6 @@ $qofPath = $dirPath.'/qof_chronicfu.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
-mysql_close($db2);
+// mysql_close($db2);
 
 echo "สร้างแฟ้ม chronicfu เสร็จเรียบร้อย<br>";

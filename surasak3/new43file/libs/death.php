@@ -1,7 +1,7 @@
 <?php 
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 //-------------------- Create file death ä¿Åì·Õè 3 --------------------//
 $temp3="CREATE  TEMPORARY  TABLE report_death SELECT date,dcdate,hn,an,icd10,doctor,SUBSTRING(result,1,1) AS result From ipcard where dctype like '%dead%' and dcdate like '$thimonth%' and dcdate is not null";
