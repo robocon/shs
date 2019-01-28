@@ -1,6 +1,6 @@
 <?php 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 mysql_query('DROP TEMPORARY TABLE IF EXISTS `pre_labfu`');
 $sql_pre_labfu = "CREATE TEMPORARY TABLE `pre_labfu` 
@@ -106,5 +106,5 @@ $qofLists[] = $qofPath;
 
 echo "สร้างแฟ้ม labfu2 เสร็จเรียบร้อย<br>";
 
-mysql_close($db2);
+// mysql_close($db2);
 ?>

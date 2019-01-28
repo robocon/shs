@@ -1,7 +1,7 @@
 <?php 
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 // ข้อมูลยาตามรายการที่ต้องตรวจในเดือนนั้นๆ
 $sql_pre_labfu = "CREATE TEMPORARY TABLE `pre_labfu` 
@@ -98,5 +98,5 @@ file_put_contents($qofPath, $txt);
 
 echo "สร้างแฟ้ม labfu เสร็จเรียบร้อย<br>";
 
-mysql_close($db2);
+// mysql_close($db2);
 ?>
