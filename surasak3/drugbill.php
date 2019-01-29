@@ -4,7 +4,7 @@ session_start();
 <html>
 <head>
 </head>
-<body onload="window.print();">
+<body onLoad="window.print();">
 <?php
 if(isset($_GET["hn"]) && isset($_GET["row_id"]) ){
 
@@ -31,8 +31,14 @@ list($bedcode, $bed, $age) = Mysql_fetch_row($result);
 
 	}
 
+$chkdate=substr($Thaidate,0,10);
+	$sqlopday = "select diag from opday where hn='$hn' and thidate like '$chkdate%' limit 0,1";
+	//echo $sqlopday;
+	$res= mysql_query($sqlopday) or die("Query failed");
+	list($diagnosis) = mysql_fetch_row($res);
 
-	 echo "<font face='Angsana New'>$status, วันที่ ".$Thaidate."<BR>".$bedcode.", เตียง : ".$bed.", ".$ptname.", อายุ ".$age.", HN:".$hn.", AN:".$an."<BR>สิทธิ:".$ptright.", แพทย์ : ".$doctor.", โรค ".$diag."<BR>";
+
+	 echo "<font face='Angsana New'>$status, วันที่ ".$Thaidate."<BR>".$bedcode.", เตียง : ".$bed.", ".$ptname.", อายุ ".$age.", HN:".$hn.", AN:".$an."<BR>สิทธิ:".$ptright.", แพทย์ : ".$doctor.", โรค ".$diagnosis."<BR>";
 
 	echo "
 		<table width='650' border='0' style='BORDER-COLLAPSE: collapse'>
@@ -40,6 +46,7 @@ list($bedcode, $bed, $age) = Mysql_fetch_row($result);
 		<td>#</td>
 		<td>รหัส</td>
 		<td width='150'>รายการ</td>
+		<td>เหตุผล</td>
 		<td>วิธีใช้</td>
 			<td width='30'></td>
 			<td width='30'></td>
@@ -49,14 +56,16 @@ list($bedcode, $bed, $age) = Mysql_fetch_row($result);
 		<td>PART</td>
 		</tr>
 	";
-	$sql = "Select a.date, a.drugcode, a.tradname ,a.slcode, b.unit, b.salepri, b.part, a.amount From drugrx as a, druglst as b where a.drugcode = b.drugcode AND a.hn= '".$_GET["hn"]."' AND a.idno = '".$_GET["row_id"]."' ";
+	$sql = "Select a.date, a.drugcode, a.tradname ,a.slcode, b.unit, b.salepri, b.part, a.amount, a.reason From drugrx as a, druglst as b where a.drugcode = b.drugcode AND a.hn= '".$_GET["hn"]."' AND a.idno = '".$_GET["row_id"]."' ";
 	$j=1;
 	$result = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
+	
 		echo "
 					<tr><td>".$j.". </td>
 						<td><font face='Angsana New'>".$arr["drugcode"]."</td>
 						<td width='150'><font face='Angsana New'>".$arr["tradname"]."&nbsp;(".$arr["unit"].")</td>
+						<td>".substr($arr["reason"],0,1)."</td>
 						<td><font face='Angsana New'>".$arr["slcode"]."</td>";
 
 					$sql = "Select date_format(date,'%d/%m/%Y') as date2, sum(amount) as samount From drugrx where hn='".$_GET["hn"]."' AND drugcode = '".$arr["drugcode"]."' AND date < '".(substr($arr["date"],0,-9))." 00:00:00"."'  Group by date2 Order by row_id DESC LIMIT 3 ";

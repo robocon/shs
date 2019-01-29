@@ -124,7 +124,8 @@ if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_no
 	list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
 	echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
 	$pay=700;
-}		
+}
+		
 	echo "<FORM name=\"form_list\" METHOD=POST ACTION=\"dt_drug_reason.php\" onsubmit=\"return viatch($count,'$code');\">
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
 	echo "| <A HREF=\"javascript:showremed2();checkall4(false);\">Remedผป.ใน</A> ";
@@ -1401,7 +1402,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 			echo "1";
 		}	
 	}else{
-		echo "0";
+		// echo "0";
 	}
 		
 exit();
@@ -1699,7 +1700,7 @@ function newXmlHttp(){
 
 function searchSuggest(action,str,len) {
 	
-		str = str+String.fromCharCode(event.keyCode);
+		/* str = str+String.fromCharCode(event.keyCode); */
 
 		if(str.length >= len){
 			url = 'dt_drug.php?action='+action+'&search=' + str;
