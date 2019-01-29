@@ -176,6 +176,7 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		}
 
 		$_SESSION['repeat_bp'] = ''; 
+		$_SESSION["stk_diag_other"] = '';
 
 
 	list($hn_now,$_SESSION["time_opday"],$mcheckdx) = Mysql_fetch_row($result);

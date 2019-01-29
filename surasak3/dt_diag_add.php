@@ -70,6 +70,9 @@ $result = Mysql_Query($sql);
 				$sql = "insert into diag (regisdate,hn,an,diag,icd10,type,office,svdate,status) values('".(date("Y")+543).date("-m-d H:i:s")."','".$_SESSION["hn_now"]."','".$_SESSION["vn_now"]."','".jschars($_POST['dt_diag_other'.$k])."','".$_POST['dt_icd10_other'.$k]."','OTHER','".$_SESSION["dt_doctor"]."','".(date("Y")+543).date("-m-d H:i:s")."','Y') ";
 
 				$result= mysql_query($sql);
+
+
+				$_SESSION["stk_diag_other"] .= jschars($_POST['dt_diag_other'.$k])."<br>";
 		}
 	}
 
