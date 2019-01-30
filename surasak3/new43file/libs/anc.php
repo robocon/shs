@@ -3,11 +3,25 @@
 // $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 // mysql_select_db('smdb', $db2) or die( mysql_error() );
 
+list($year, $month, $day) = explode('-', $thimonth);
+
+$dServ = ( $year - 543 ).$month.$day;
+
+// var_dump($dServ);
+// var_dump($day);
+
+if( $day == "" ){
+    $where = "`date_serv` LIKE '$dServ%'";
+}else{
+    $where = "`date_serv` LIKE '$dServ'";
+}
+
+// exit;
 
 
 $sql = "SELECT '11512' AS `HOSPCODE`,
 `pid` AS `PID`, 
-`seq`, 
+`seq` AS `SEQ`, 
 `date_serv` AS `DATE_SERV`, 
 `gravida` AS `GRAVIDA`, 
 `ancno` AS `ANCNO`, 
@@ -18,14 +32,15 @@ $sql = "SELECT '11512' AS `HOSPCODE`,
 `d_update` AS `D_UPDATE`, 
 `cid` AS `CID`
 FROM `anc` 
-WHERE `date_serv` LIKE '$thimonth%' ";
-
+WHERE $where ";
+// var_dump($sql);
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
 $txt = '';
 
 while ( $item = mysql_fetch_assoc($q) ) {
 
+    /*
     $seq = $item['DATE_SERV'].sprintf("%03d", $item['vn']); 
 
     if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
@@ -50,17 +65,18 @@ while ( $item = mysql_fetch_assoc($q) ) {
     }
 
     $provider = $seq.$code;
+    */
 
     $txt .= $item['HOSPCODE'].'|'
     .$item['PID'].'|'
-    .$seq.'|'
+    .$item['SEQ'].'|'
     .$item['DATE_SERV'].'|'
     .$item['GRAVIDA'].'|'
     .$item['ANCNO'].'|'
     .$item['GA'].'|'
     .$item['ANCRESULT'].'|'
     .$item['ANCPLACE'].'|'
-    .$provider.'|'
+    .$item['PROVIDER'].'|'
     .$item['D_UPDATE'].'|'
     .$item['CID']."\r\n";
 

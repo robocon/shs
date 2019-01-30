@@ -170,7 +170,10 @@ if( $action == 'save' ){
     }
 </style>
 
-ยอดผู้ป่วย ฟหกดฟหกดฟหกดหด ทันตกรรม
+<div>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;ไปเมนู</a>
+</div>
+
 <div>
     <div>บันทึกข้อมูล ICF & DISABILITY</div>
 </div>
