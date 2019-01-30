@@ -217,7 +217,7 @@ session_register("aCredit_8pd");
 print "เจ้าหน้าที่&nbsp;";
 print " <select  name='doctor1'>";
 print " <option value='0' ><-เลือก-></option>";
-$sqlw = "select name from inputm where menucode='ADMMON' where status = 'Y'";
+$sqlw = "select name from inputm where menucode='ADMMON' and status = 'Y'";
 $row2 = mysql_query($sqlw);
 while($result2 = mysql_fetch_array($row2)){
 	print " <option value='$result2[name]'>$result2[name]</option>";
