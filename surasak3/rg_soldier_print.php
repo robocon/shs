@@ -18,8 +18,8 @@ if( $user['pic'] != NULL ){
     $img = "certificate/$yearchk/".$user['pic'];
 }
 
-list($date, $time) = explode(' ',$user['last_update']);
-list($y, $m, $d) = explode('-', $date);
+// list($date, $time) = explode(' ',$user['date_certificate']);
+list($y, $m, $d) = explode('-', $user['date_certificate']);
 
 $doctor1 = $user['yot1'].$user['doctor1'];
 $doctor2 = $user['yot2'].$user['doctor2'];
