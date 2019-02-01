@@ -22,6 +22,18 @@ legend {
 	/* font-weight:bold;*/
  }
 
+ .chk_table{
+    border-collapse: collapse;
+	font-family: 'TH Sarabun New','TH SarabunPSK';
+	color: #000000;
+	font-size: 14pt;
+}
+
+.chk_table th, .chk_table td{
+    border: 1px solid black;
+	padding: 3px;
+}
+
 .icf_code{
 	color: blue;
 }
@@ -1020,7 +1032,7 @@ $dis = mysql_fetch_assoc($q);
 		<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
 			<table class="chk_table" style="width: 100%; color: #000000;">
 			<tr>
-				<th>รหัส</th>
+				<th width="5%">รหัส</th>
 				<th>รายละเอียด</th>
 			</tr>
 			<?php 
@@ -1527,7 +1539,7 @@ function check_yot(){
 								htm += '<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">';
 								htm += '<table class="chk_table" style="width: 100%;">';
 								htm += '<tr>';
-								htm += '<th>รหัส</th>';
+								htm += '<th width="5%">รหัส</th>';
 								htm += '<th>รายละเอียด</th>';
 								htm += '</tr>';
 

@@ -597,6 +597,86 @@ if( mysql_num_rows($q) == 0 ){
 }
 // จบการเก็บข้อมูลเข้า PERSON 
 
+// เก็บข้อมูลเข้า ICF กับ DISABILITY 
+$disabid = trim($_POST['disabid']);
+if( $disabid != '' ){ 
+
+	// อัพเดทฐานข้อมูลที่เก็บข้อมูลผู้พิการ
+    $icf = trim($_POST['icf']);
+    $disabtype = trim($_POST['disabtype']);
+    $disabcause = trim($_POST['disabcause']);
+
+	$sql = "UPDATE `disabled_user` SET 
+	`idcard` = '$cid', 
+	`disabid` = '$disabid', 
+	`icf` = '$icf', 
+	`disabtype` = '$disabtype', 
+	`disabcause` = '$disabcause', 
+	`lastupdate` = NOW()  
+	WHERE `hn` = '$pid' ";
+	mysql_query($sql); 
+	
+	// เก็บข้อมูลลงแฟ้ม icf
+	$d_update = date('Ymdhis');
+	$date_serv = date('Ymd');
+	$seq = $date_serv.sprintf("%03d", $nVn);
+
+	$sql = "SELECT `id` FROM `icf43` WHERE `opday_id` = '$opday_id' ";
+	$q = mysql_query($sql);
+	if ( mysql_num_rows($q) > 0 ) {
+		
+		$icf_item = mysql_fetch_assoc();
+		$icf_id = $icf_item['id'];
+
+		$sql = "UPDATE `icf43` SET 
+		`disabid`='$disabid', 
+		`pid`='$pid', 
+		`seq`='$seq', 
+		`date_serv`='$date_serv', 
+		`icf`='$icf', 
+		`d_update`='$d_update', 
+		`cid`='$cid' 
+		WHERE (`id`='$icf_id');";
+		mysql_query($sql);
+		
+	} else {
+		$sql = "INSERT INTO `icf43` (
+			`id`, `hospcode`, `disabid`, `pid`, `seq`, `date_serv`, 
+			`icf`, `qualifier`, `provider`, `d_update`, `cid`, `opday_id`
+		) VALUES (
+			NULL, '11512', '$disabid', '$pid', '$seq', '$date_serv', 
+			'$icf', NULL, NULL, '$d_update', '$cid', '$opday_id'
+		);";
+		mysql_query($sql);
+
+	} 
+
+	// เก็บข้อมูลลงแฟ้ม disability
+	$sql = "SELECT `id` FROM `disability43` WHERE `opday_id` = '$opday_id' ";
+	$q = mysql_query($sql);
+	if ( mysql_num_rows($q) > 0 ) {
+		// 
+		$sql = "UPDATE `disability43` SET 
+		`disabid`='$disabid', 
+		`disabtype`='$disabtype', 
+		`disabcause`='$disabcause', 
+		`d_update`='$d_update' 
+		WHERE (`id`='$dis_id');";
+		mysql_query($sql);
+		
+	} else { 
+		$sql = "INSERT INTO `disability43` (
+			`id`, `hospcode`, `disabid`, `pid`, `disabtype`, `disabcause`, 
+			`diagcode`, `date_detect`, `date_disab`, `d_update`, `cid`, `opday_id`
+		) VALUES (
+			NULL, '11512', '$disabid', '$pid', '$disabtype', '$disabcause', 
+			NULL, '$date_serv', '$date_serv', '$d_update', '$cid', '$opday_id'
+		);";
+		mysql_query($sql);
+	}
+}
+// เก็บข้อมูลเข้า ICF กับ DISABILITY 
+
 
 // รูปภาพ
 $dataf=$_FILES['filUpload']['tmp_name'];

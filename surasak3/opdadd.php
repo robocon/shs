@@ -217,17 +217,19 @@ if( mysql_num_rows($q) == 0 ){
 
 // เก็บข้อมูลเข้า ICF กับ DISABILITY 
 $disabid = trim($_POST['disabid']);
-$icf = trim($_POST['icf']);
-$disabtype = trim($_POST['disabtype']);
-$disabcause = trim($_POST['disabcause']);
-$date_dis = date('Ymd');
+if( $disabid != '' ){
+    $icf = trim($_POST['icf']);
+    $disabtype = trim($_POST['disabtype']);
+    $disabcause = trim($_POST['disabcause']);
+    $date_dis = date('Ymd');
 
-$sql = "INSERT INTO `disabled_user` (
-    `id`, `hn`, `idcard`, `disabid`, `icf`, `disabtype`, `disabcause`, `date_detect`, `date_disab`
-) VALUES (
-    NULL, '$pid', '$cid', '$disabid', '$icf', '$disabtype', '$disabcause', '$date_dis', '$date_dis'
-);";
-mysql_query($sql);
+    $sql = "INSERT INTO `disabled_user` (
+        `id`, `hn`, `idcard`, `disabid`, `icf`, `disabtype`, `disabcause`, `date_detect`, `date_disab`, `lastupdate` 
+    ) VALUES (
+        NULL, '$pid', '$cid', '$disabid', '$icf', '$disabtype', '$disabcause', '$date_dis', '$date_dis', NOW() 
+    );";
+    mysql_query($sql);
+}
 // เก็บข้อมูลเข้า ICF กับ DISABILITY 
 
 

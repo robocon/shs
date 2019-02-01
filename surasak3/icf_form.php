@@ -106,8 +106,6 @@ if( $action == 'save' ){
             `disabtype`='$disabtype', 
             `disabcause`='$disabcause', 
             `diagcode`='$diagcode', 
-            `date_detect`='$date_serv', 
-            `date_disab`='$date_serv', 
             `d_update`='$d_update', 
             `cid`=' $cid' 
             WHERE (`id`='$dis_id');";
