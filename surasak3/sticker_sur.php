@@ -61,26 +61,36 @@ body{
 $action = input_post('action');
 if ( $action === 'show' ) {
     
-    $db = Mysql::load($shs_configs);
+    $db = Mysql::load();
     $hn = input_post('hn');
-
+	$date=(date("Y")+543).date("-m-d");
     $sql = "SELECT * 
     FROM ( 
         SELECT * FROM `opcard` WHERE `hn` = '$hn' LIMIT 1 
     ) AS a 
     LEFT JOIN ( 
-        SELECT `hn`,`vn` FROM `opday` WHERE `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1 
-    ) AS b ON b.`hn` = a.`hn`";
+        SELECT `hn`,`vn` FROM `opday` WHERE `thidate` LIKE '$date%' AND `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1 
+    ) AS b ON b.`hn` = a.`hn` 
+    ";
+	//echo $sql;
     $db->select($sql);
 
-    $item = $db->get_item();
-
+    $items = $db->get_item();
+	
+	
+	if($items['hn']=="54-1681"){
+	//echo "-->".$items['hn'];
+		$vn="200";
+	}else{
+		$vn=$items['vn'];
+	}
+	
     ?>
     <div>
-        <div> <b>ชื่อ-สกุล:</b> <?=$item['yot'].$item['name'].' '.$item['surname'];?> </div>
-        <div> <b>อายุ:</b> <?=calcage($item['dbirth']);?> </div>
-        <div> <b>HN:</b> <?=$item['hn'];?> <b>VN:</b> <?=$item['vn'];?> </div>
-        <div> <b>สิทธิ:</b> <?=$item['ptright'];?> </div>
+        <div> <b>ชื่อ-สกุล:</b> <?=$items['yot'].$items['name'].' '.$items['surname'];?> </div>
+        <div> <b>อายุ:</b> <?=calcage($items['dbirth']);?> </div>
+        <div> <b>HN:</b> <?=$items['hn'];?> <b>VN:</b> <?=$vn;?> </div>
+        <div> <b>สิทธิ:</b> <?=$items['ptright'];?> </div>
     </div>
     <?php
 

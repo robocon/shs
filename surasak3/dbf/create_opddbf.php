@@ -1474,7 +1474,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			
 		$newreason='';
 		//$sql16 ="select *,sum(amount) as sumamount from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' or part != 'DSN' or part != 'DPN') and drugcode !='5VIAT ' group by drugcode";
-		$sql16 ="select *,sum(amount) as sumamount from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' or part != 'DSN' or part != 'DPN') group by drugcode";
+		$sql16 ="select *,sum(amount) as sumamount,sum(price) as sumprice from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' and part != 'DSN' and part != 'DPN') group by drugcode";
 		//echo $sql16."<br>";
 			
 		$result16 = mysql_query($sql16) or die("Query failed16");
@@ -1493,6 +1493,8 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			$amount16=$rows16["sumamount"];  //  AMOUNT ใช้ตัวแปรนี้นำเข้าข้อมูล
 			$price=$rows16["price"]; 
 			$amount=$rows16["amount"]; 
+			// $sumprice = ( $price * $amount16 );
+			$sumprice = $rows16["sumprice"];
 			$saleprice = $price/$amount;   //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
 			
 			
@@ -1561,7 +1563,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			if( $rows16['part'] == 'DDN' ){
 				$totcopay16 = $rows16['price'];
 			}else{
-				$total = $price;
+				$total = $sumprice;
 			}
 			
 			$db16 = dbase_open($dbname16, 2);

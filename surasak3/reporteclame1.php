@@ -134,7 +134,7 @@ $total=number_format($total,2);
 	WHERE `regisdate` LIKE '$date1%' 
 	AND `hn` = '$key' 
 	AND `icd10` != '' 
-	AND `type` = 'CO-MORBIDITY' 
+	AND ( `type` = 'CO-MORBIDITY' OR `type` = 'OTHER' ) 
 	GROUP BY `icd10` ;";
 	$q = mysql_query($sql) or die( mysql_error() );
 
