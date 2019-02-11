@@ -26,7 +26,7 @@ function jschars($str)
 //************************** แสดงรายการยาให้เลือก  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
-	$sql = "Select code, detail From labcare where labstatus = 'Y' AND detail like '%".$_GET["search"]."%'  Order by numbered ASC";
+	$sql = "Select code, detail,price,chkup From labcare where labstatus = 'Y' AND detail like '%".$_GET["search"]."%' Order by numbered ASC";
 
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -36,7 +36,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 		echo "<table bgcolor=\"#FFFFCC\" width=\"700\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"20\"><font style=\"color: #FFFFFF\"></font></td>
-			<td width=\"368\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
+			<td width=\"500\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
+			<td width=\"156\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td>
 			<td width=\"24\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td>
 		</tr>";
 
@@ -50,14 +51,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 					$bgcolor="#FFFFCC";
 
 
+				if($arr["chkup"]=="12" || $arr["chkup"]=="1234" || $arr["chkup"]=="34"){
+					$chkup=" (ตรวจสุขภาพ)";
+				}
 				$arr["detail"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["detail"]);
 
 
 			echo "<tr bgcolor=\"$bgcolor\">
-					<td >
-					<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)addtolist('".$arr["code"]."'); \" ondblclick=\"addtolist('".$arr["code"]."'); \">    </td>
-					<td bgcolor=\"$bgcolor\">",$arr["detail"],"</td>
-					<td colspan=\"2\"  bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
+					<td ><INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)addtolist('".$arr["code"]."'); \" ondblclick=\"addtolist('".$arr["code"]."'); \"></td>
+					<td bgcolor=\"$bgcolor\">",$arr["detail"].$chkup,"</td>
+					<td bgcolor=\"$bgcolor\" align=\"right\">",$arr["price"],"</td>
+					<td bgcolor=\"$bgcolor\">&nbsp;</td>
 				</tr>
 					<tr bgcolor=\"#A45200\">
 					<td height=\"5\"></td>
@@ -748,9 +752,9 @@ $i++;
 	$list_lab_check[$i]["code"] = "CPK";
 	$list_lab_check[$i]["detail"] = "CPK";
 	
-$i++;
+/* $i++;
 	$list_lab_check[$i]["code"] = "10212";
-	$list_lab_check[$i]["detail"] = "Stool exam";
+	$list_lab_check[$i]["detail"] = "Stool exam"; */
 
 $i++;
 	$list_lab_check[$i]["code"] = "C-S";
@@ -908,7 +912,8 @@ $i++;
 	<TD width="500">
 <TABLE width="100%" align="left" border="0">
 <TR  valign="top">
-	<TD  colspan="<?php echo $r*2;?>" align='left' >ตรวจLAB อื่นๆ ระบุ : <INPUT TYPE="text" NAME="" size="13" onKeyPress="searchSuggest('lab',this.value,2);"><Div id="list"></Div></TD>
+	<TD  colspan="<?php echo $r*2;?>" align='left' >สั่งตรวจLAB อื่นๆ ระบุ : 
+	  <INPUT TYPE="text" NAME="" size="13" onKeyPress="searchSuggest('lab',this.value,2);"><Div id="list"></Div></TD>
 </TR>
 <TR>
 <?php
