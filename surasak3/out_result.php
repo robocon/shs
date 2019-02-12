@@ -343,6 +343,16 @@ if(isset($_POST['hn'])){
 					  <td><input name="metal_result" type="text" class="pdxhead" size="50" value="<?=$arrchk['metal_result']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					<tr>
+					  <td class="pdx">ผลการตรวจสาร Benzene</td>
+					  <td><input name="benzene" type="text" class="pdxhead" size="50" value="<?=$arrchk['benzene']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+					<tr>
+					  <td class="pdx">สรุปผลการตรวจสาร Benzene</td>
+					  <td><input name="benzene_result" type="text" class="pdxhead" size="50" value="<?=$arrchk['benzene_result']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
 					<!--
 					<tr>
 						<td class="pdx">
@@ -436,7 +446,9 @@ if(isset($_POST['okhn2'])){
 		`blindness` = '".$_POST['blindness']."', 
 		`hearing` = '".$_POST['hearing']."', 
 		`metal` = '".$_POST['metal']."', 
-		`metal_result` = '".$_POST['metal_result']."'
+		`metal_result` = '".$_POST['metal_result']."',
+		`benzene` = '".$_POST['benzene']."',
+		`benzene_result` = '".$_POST['benzene_result']."'
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -487,7 +499,9 @@ if(isset($_POST['okhn2'])){
 			`blindness` = '".$_POST['blindness']."', 
 			`hearing` = '".$_POST['hearing']."', 
 			`metal` = '".$_POST['metal']."', 
-			`metal_result` = '".$_POST['metal_result']."'";
+			`metal_result` = '".$_POST['metal_result']."',
+			`benzene` = '".$_POST['benzene']."',
+			`benzene_result` = '".$_POST['benzene_result']."'";
 	}
 	
 	//echo $update;
