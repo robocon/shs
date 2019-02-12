@@ -117,6 +117,12 @@ array_push($list_witness2,'ประภาศรี เมฆเจริญ');
 array_push($list_witness,''); array_push($list_witness2,'**********  ห้องจักษุ ************');
 array_push($list_witness,'ศิริลักษณ์ เหมืองทอง'); array_push($list_witness2,'พท.หญิงศิริลักษณ์ เหมืองทอง');
 array_push($list_witness,'พยอม สมศิร'); array_push($list_witness2,'จสอ.หญิง พยอม สมศิริ');
+
+array_push($list_witness,'จารุมนต์ วุฒิ');
+array_push($list_witness2,'จารุมนต์ วุฒิ');
+array_push($list_witness,'พรทิพย์ ภักดี');
+array_push($list_witness2,'พรทิพย์ ภักดี');
+
 // array_push($list_witness,'กนกพร ไชยโส'); array_push($list_witness2,'นางสาว กนกพร ไชยโส');
 
 $count_list_witness = count($list_witness);
