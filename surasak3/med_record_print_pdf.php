@@ -190,6 +190,12 @@ foreach ($drug_lists as $drug_id) {
     $db->select($sql);
     $dSlip = $db->get_item();
 
+    $dDrugcode = $d['drugcode'];
+    $sql = "SELECT `genname` FROM `druglst` WHERE `drugcode` = '$dDrugcode' ";
+    $db->select($sql);
+    $dDruglst = $db->get_item();
+    $dGenname = $dDruglst['genname'];
+
     $detail_txt = $dSlip['detail1']." ";
     $detail_txt .= $dSlip['detail2']." ";
     $detail_txt .= $dSlip['detail3']." ";
@@ -207,7 +213,7 @@ foreach ($drug_lists as $drug_id) {
     $pdf->SetX(10);
     
     // หาความสูงของตัว Multicel ที่เป็นข้อความ
-    $message = $d['tradname'].'('.$slcode.')'."\n\r".$detail_txt."$drug_y   $tr_height";
+    $message = $d['tradname'].'('.$dGenname.')'.'('.$slcode.')'."&nbsp;".$detail_txt."$drug_y   $tr_height";
     $muticell_h = $pdf->GetMultiCellHeight(52, 6, $message);
 
     // หาร 6 เพราะ1บรรทัดสูง6หน่วย
@@ -220,7 +226,7 @@ foreach ($drug_lists as $drug_id) {
     // x y w h
     // เป็นกรอบข้อความยา
     $pdf->Rect(10, $drug_y, 52, ($tr_height * 6));
-    $pdf->MultiCell(52, 6, $d['tradname'].'('.$slcode.')'."\n\r".$detail_txt, 0);
+    $pdf->MultiCell(52, 6, $d['tradname'].'('.$dGenname.')'.'('.$slcode.')'."\n\r".$detail_txt, 0);
 
     ////// 
     // ในยาแต่ละตัวสูงกี่บรรทัด 
