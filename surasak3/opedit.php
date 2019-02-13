@@ -1,3 +1,4 @@
+<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=7,chrome=1">
 <style>
 body {
 	background-color:#CCE9FD;
@@ -46,6 +47,9 @@ legend {
 }
 #btn_show_icf{
 	color: blue;
+}
+.icf_static{
+	z-index: 99;
 }
 
 </style>
@@ -1543,11 +1547,11 @@ function check_yot(){
 								htm += '<th>รายละเอียด</th>';
 								htm += '</tr>';
 
-								for (let index = 0; index < icf_list.length; index++) {
+								for (var index = 0; index < icf_list.length; index++) {
 
 										var icf_item = icf_list[index];
-										const element = icf_item.detail;
-										const icf_code = icf_item.code;
+										var element = icf_item.detail;
+										var icf_code = icf_item.code;
 
 										if( regex1.test(element) == true ){
 												htm += '<tr valign="top">';
