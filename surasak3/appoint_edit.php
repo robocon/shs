@@ -2,10 +2,10 @@
 
 include 'bootstrap.php'; 
 $db = Mysql::load();
-// $db->set_charset('TIS620');
+$db->set_charset('TIS620');
 
 
-$action = input_post('action');
+$action = input('action');
 
 if ( $action == 'save' ) {
 
@@ -59,9 +59,18 @@ if ( $action == 'save' ) {
 
     // exit;
 
-    $_SESSION['msg'] = 'บันทึกข้อมูลเรียบร้อย';
-    header('Location: appoint_edit.php');
+    // $_SESSION['msg'] = 'บันทึกข้อมูลเรียบร้อย';
+    header('Location: appoint_edit.php?action=print&id='.$id);
 
+    exit;
+
+}else if( $action == 'print' ){
+
+    $id = input_get('id');
+
+    echo "<p>บันทึกข้อมูลเรียบร้อย</p>";
+    echo '<p><a href="appinsert2.php?row_id='.$id.'" target="_blank">พิมพ์ใบนัด</a></p>';
+    echo '<p><a href="appoint_edit.php">กลับหน้าเดิม</a></p>';
     exit;
 
 }
@@ -257,7 +266,7 @@ if ( $page == 'search' ) {
                         $xray2 = $xray1.( $xray2 != false ? $xray2 : false );
                     }
                     ?>
-                    <input type="text" name="xray2" id="" value="<?=$xray2;?>" style="width: 200px;">
+                    <input type="text" name="xray2" id="" value="<?=$xray2;?>" style="width: 200px;"> <span style="font-size: 14pt;color: red;">* หากมีมากกว่า 1รายการให้ใช้ Comma(,) ในการแบ่งรายการตรวจ เช่น CXR,KUB เป็นต้น</span>
                 </div>
 
                 <fieldset>
