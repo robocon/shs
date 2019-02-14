@@ -56,10 +56,26 @@ $DPN=$row->dpn;
 $DSY=$row->dsy;
 $DSN=$row->dsn;
 $Netprice=$row->price;
-$cDiag=$row->diag;
+$cDiag=$row->diag;  //diagnosis
 $tvn=$row->tvn;
 $cPtright=$row->ptright;
 $stkcutdate_now = $row->stkcutdate;
+
+if(empty($cDiag)){  //ถ้า diagnosis เป็นค่าว่าง
+
+	$sdate=substr($dr_date,0,10);
+	list($y1,$m1,$d1)=explode("-",$sdate);
+	$chkdatevn="$d1-$m1-$y1".$tvn;
+	
+	$sqlopday = "select diag from opday where hn='$cHn' and thdatevn = '$chkdatevn'";
+	//echo $sqlopday;
+	$res= mysql_query($sqlopday) or die("Query failed");
+	list($diagnosis) = mysql_fetch_row($res);
+	
+	if(!empty($diagnosis)){
+		$cDiag=$diagnosis;
+	}
+}
 
 if($stkcutdate_now != ""){
 	echo "<BR><BR><CENTER><FONT COLOR=\"#FF0000\"><B>รายการนี้เคยตัดสต๊อกไปแล้วไม่สามารถตัดอีกรอบได้</B></FONT></CENTER>";
@@ -137,6 +153,18 @@ for ($n=1; $n<=$x; $n++){
 	}
 };
 
+// ข้อมูลแพ้ยาเชิงรุก รุก รุก เฮ้
+$sql = "SELECT `drug_code` 
+FROM `allergic_list`";
+$query = mysql_query($sql);
+$drug_allergics = array();
+
+while ($item = mysql_fetch_assoc($query)) {
+	$drug_allergics[] = $item['drug_code'];
+}
+// ลุกแล้วจ้า
+
+
 $injectno=0;	
 //insert data into drugrx
 for ($n=1; $n<=$x; $n++){
@@ -151,7 +179,9 @@ for ($n=1; $n<=$x; $n++){
 		$c1 = substr($aDgcode[$n],0,1);
 		$c2 = substr($aDgcode[$n],0,2);
 			
-		if($aDgcode[$n]=='1DILA' || $aDgcode[$n]=='1GPO30*'  || $aDgcode[$n]=='20SGPO30'  || $aDgcode[$n]=='20SGPO30' || $aDgcode[$n]=='1COTR4' || $aDgcode[$n]=='1ALLO3'){
+		// if($aDgcode[$n]=='1DILA' || $aDgcode[$n]=='1GPO30*'  || $aDgcode[$n]=='20SGPO30'  || $aDgcode[$n]=='20SGPO30' || $aDgcode[$n]=='1COTR4' || $aDgcode[$n]=='1ALLO3'){
+		$drug_code = $aDgcode[$n];
+		if( array_search($drug_code, $drug_allergics) !== false ){
 		   
 			$sql="Select  * from drugrx  where drugcode='".$aDgcode[$n]."' and hn='".$cHn."' ";
 			$query = mysql_query($sql) or die("Query failed, chk drugrx");
@@ -279,6 +309,7 @@ if($result){
 	<?php
 }
 include("unconnect.inc");
-include("slipprntest1.php");
+//include("slipprntest1.php");
+include("slipprntest1_new.php"); //เริ่มใช้ 31/1/2561
 ?>
 

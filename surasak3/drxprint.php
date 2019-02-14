@@ -94,7 +94,7 @@ if(!empty($cStkcutdate)) {
 	print "<font face='cordia New'>&nbsp;&nbsp<b>อายุ&nbsp;$age</b>&nbsp;&nbsp; ";
 	print "<font face='THSarabunPSK'>โรค: $rxDiag&nbsp;&nbsp<b>คิว พ.:&nbsp;$phakew&nbsp;<font face='THSarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br>";
 	$num1='0';
-	$query = "SELECT tradname,advreact,asses FROM drugreact WHERE  hn = '$rxHn' ";
+	$query = "SELECT tradname,advreact,asses FROM drugreact WHERE  hn = '$rxHn' and groupname=''";
 	$result = mysql_query($query) or die("Query drugreact failed");
 
 	if(mysql_num_rows($result)){
@@ -103,17 +103,39 @@ if(!empty($cStkcutdate)) {
 		while (list ($tradname,$advreact,$asses) = mysql_fetch_row ($result)) {
 			$num1++;
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b><u>$num1</b></u></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b>$num1)</b></font ></td>\n".
 			" </tr>\n");
-
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...$advreact($asses)</b></u></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b>$tradname...$advreact($asses)</b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
 		print "</div>";
 
 	}
+	
+	//แพ้ยาเป็นกลุ่ม
+	$num2='0';
+	$query = "SELECT distinct(groupname) as groupname, advreact, asses FROM drugreact WHERE  hn = '$rxHn' and groupname!=''";
+	$result = mysql_query($query) or die("Query drugreact failed");
+
+	if(mysql_num_rows($result)){
+
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>แพ้ยาเป็นกลุ่ม </b></u>";
+		while (list ($groupname,$advreact,$asses) = mysql_fetch_row ($result)) {
+			$num2++;
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b>$num2)</b></font ></td>\n".
+			" </tr>\n");
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b>$groupname...$advreact($asses)</b></font >&nbsp;&nbsp;</td>\n".
+			" </tr>\n");
+		} // End while
+
+		print "</div>";
+	}	
+	
+	
 
 	/* แจ้งเตือน Warfarin */
 	if( !function_exists('ad_to_bc') ){
@@ -228,6 +250,9 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 				$allergics_txt = '(old)';
 			}
 		}
+
+		// น้องเนมบอกไม่เอาแบ๊ว เปลี่ยนไปใช้ทางขวาเหมือนเดิมเลยต้องไปปรับใน drxstkcut แทน
+		$allergics_txt = '';
 
 		echo " <tr style='line-height:18px;'>\n".
 		"  <td><font face='THSarabunPSK'>$num.</td>\n".
