@@ -352,7 +352,7 @@ if( $num > 0 ){
     <td <?=$table_width;?> valign="top">		
         <table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
 			<tr>
-				<td height="30" align="center">
+				<td height="30" align="center" style="padding: 0px;">
 					<strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong>
 				</td>
 			</tr>
@@ -499,7 +499,7 @@ if( $num > 0 ){
     <td <?=$table_width;?> valign="top">
 		<table width="100%" height="77" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
 			<tr>
-				<td height="30" align="center">
+				<td height="30" align="center" style="padding: 0px;">
 					<strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong>
 				</td>
 			</tr>
@@ -684,6 +684,9 @@ FROM (
 		AND `profilecode` != 'PSA' 
 		AND `profilecode` != 'CA125' 
 		AND `profilecode` != '38302' 
+
+		AND `profilecode` != 'AHAV' 
+		AND `profilecode` != 'BENZEN' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -731,9 +734,9 @@ $outlab_row = mysql_num_rows($outlab_query);
 					<td height="52" valign="top" style="padding: 2px;">
 						<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
 							<tr>
-								<td width="32%" valign="top" bgcolor="#CCCCCC" align="center"><strong>รายการตรวจ</strong></td>
-								<td width="10%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
-								<td width="10%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ค่าปกติ</strong></td>
+								<td width="28%" valign="top" bgcolor="#CCCCCC" align="center"><strong>รายการตรวจ</strong></td>
+								<td width="17%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ผลการตรวจ</strong></td>
+								<td width="7%" valign="top" bgcolor="#CCCCCC" align="center"><strong>ค่าปกติ</strong></td>
 								<td width="48%" valign="top" bgcolor="#CCCCCC" style="font-size:16px;" align="center"><strong>สรุปผลการตรวจ</strong></td>
 							</tr>
 							<?php
@@ -1036,6 +1039,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 											$objResult["labname"] = substr($objResult["labname"], 0, -5);
 										}
 
+										if( preg_match('/(Average)/', $objResult["normalrange"], $matchs) > 0 ){
+											$objResult["normalrange"] = str_replace('Average','Avg.',$objResult["normalrange"]);
+										}
+
 									?>
 									<tr height="23">
 										<td valign="top"><strong><?=$labmean;?></strong> (<?=$objResult["labname"];?>)</td>
@@ -1079,6 +1086,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$outlab_code = "<strong>การตรวจมะเร็งต่อมลูกหมาก</strong> (PSA)";
 									}else if( $outlab['labcode']=="CA125" ){
 										$outlab_code = "<strong>สารบ่งชี้มะเร็งรังไข่</strong> (CA125)";
+									}else if($outlab["labcode"]=="AHAV"){
+										$outlab_code = "<strong>ตรวจไวรัสตับอักเสบ A</strong> (Anti HAV IgM)";
 									}else{
 										$outlab_code = $outlab['labcode'];
 									}
@@ -1133,6 +1142,17 @@ $outlab_row = mysql_num_rows($outlab_query);
 									<td valign="top"><?=$result['metal'];?></td>
 									<td valign="top">0-40</td>
 									<td valign="top"><?=$result['metal_result'];?></td>
+								</tr>
+								<?php
+							}
+
+							if( $result['benzene'] != '' && $result['benzene_result'] != '' ){ 
+								?>
+								<tr height="23">
+									<td valign="top"><b>การตรวจสาร Benzene</b></td>
+									<td valign="top"><?=$result['benzene'];?></td>
+									<td valign="top"></td>
+									<td valign="top"><?=$result['benzene_result'];?></td>
 								</tr>
 								<?php
 							}
