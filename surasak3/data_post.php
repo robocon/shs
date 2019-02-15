@@ -4,7 +4,15 @@ header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
-
+?>
+<style type="text/css">
+<!--
+.txtsarabun {	font-family: TH SarabunPSK;
+	font-size: 16px;
+}
+-->
+</style>
+<?
 include("connect.inc");   
           
 $data = $_GET['data'];  //type
@@ -14,7 +22,7 @@ $valr = $_GET['valr'];  // id
 
      if ($data=='type') { 
 		 $val = substr($_GET['val'],0,3);  // id
-		  echo "<select name='subgroup'>\n";
+		  echo "<select name='subgroup' class='txtsarabun'>\n";
 		  if($val =="G40"){
                echo "<option value=\"(ก) บิดามารดาของสามีหรือภรรยาที่ถูกต้องตามกฎหมายของกำลังพล ทบ.\" >บิดามารดาของสามีหรือภรรยาที่ถูกต้องตามกฎหมายของกำลังพล ทบ.</option> \n" ;
 			   echo "<option value=\"(ข) พี่น้องร่วมบิดามารดาเดียวกันของกำลังพล ทบ.\" >พี่น้องร่วมบิดามารดาเดียวกันของกำลังพล ทบ.</option> \n" ;
@@ -27,7 +35,7 @@ $valr = $_GET['valr'];  // id
      echo "</select>\n";
 	 
 	if($data=='doctor') { 
-          echo "<select name='doctor' onChange=\"dochange('clinic', this.value)\">\n";
+          echo "<select name='doctor' onChange=\"dochange('clinic', this.value)\" class='txtsarabun'>\n";
           echo "<option value='0'>--------------- เลือกแพทย์ ---------------</option>\n";
           $result=mysql_query("select * from doctor where status='y' ORDER BY opdstatus DESC , row_id ASC");
           while($row = mysql_fetch_array($result)){
@@ -38,41 +46,21 @@ $valr = $_GET['valr'];  // id
 	
 	
 	if($data=='clinic' && $datar =='room'){
-		echo "<select name='clinic'>\n";
+		echo "<select name='clinic' class='txtsarabun'>\n";
 		echo "<option value='0'>----- เลือกคลีนิค -----</option>\n"; 
 		$result=mysql_query("SELECT * FROM doctor WHERE status='y' and row_id= '$val'");
 			while($row = mysql_fetch_array($result)){
-					echo "<option value=\"$row[position]\" selected=\"selected\">$row[position]</option> \n" ;
+					echo "<option value=\"$row[clinic]\" selected=\"selected\">$row[clinic]</option> \n" ;
 			}
-			echo " <option value='99 เวชปฏิบัติ'>เวชปฏิบัติ</option>";
-			echo " <option value='01 อายุรกรรม'>อายุรกรรม</option>";
-			echo " <option value='02 ศัลยกรรม'>ศัลยกรรม</option>";
-			echo " <option value='03 สูติกรรม'>สูติกรรม</option>";
-			echo " <option value='04 นารีเวชกรรม'>นารีเวชกรรม</option>";
-			echo " <option value='05 กุมารเวช'>กุมารเวช</option>";
-			echo " <option value='06 โสต ศอ นาสิก'>โสต สอ นาสิก</option>";
-			echo " <option value='07 จักษุ'>จักษุ</option>";
-			echo " <option value='08 ศัลยกรรมกระดูก'>ศัลยกรรมกระดุก</option>";
-			echo " <option value='09 จิตเวช'>จิตเวช</option>";
-			echo " <option value='10 รังษีวิทยา'>รังษีวิทยา</option>";
-			echo " <option value='11 ทันตกรรม'>ทันตกรรม</option>";
-			echo " <option value='12 ฉุกเฉิน'>ฉุกเฉิน</option>";
-			echo " <option value='13 กายภาพบำบัด'>กายภาพบำบัด</option>";
-			echo " <option value='14 แพทย์แผนไทย'>แพทย์แผนไทย</option>";
-			echo " <option value='15 PCU ใน รพ.'>PCU ใน รพ.</option>";
-			echo " <option value='01 คลินิก COPD'>คลินิก COPD</option>";
-			echo " <option value='99 ศัลยกรรมทางเดินปัสสาวะ'>ศัลยกรรมทางเดินปัสสาวะ</option>";
-			echo " <option value='16 คลินิกโรคไต'>คลินิกโรคไต</option>";
-			echo " <option value='99 อื่นๆ'>อื่นๆ</option>";
-					if($_SESSION["smenucode"] != "ADMMAINOPD"){
-					echo " <option value='14 เวชศาสตร์ฟื้นฟู'>เวชศาสตร์ฟื้นฟู</option>";
-					}
-					echo " <option value='99 อื่นๆ'>อื่นๆ</option>";					
+		$result1=mysql_query("SELECT * FROM clinic");
+			while($row1 = mysql_fetch_array($result1)){
+					echo "<option value=\"$row1[detail]\">$row1[detail]</option> \n" ;
+			}				
 		}			  
 		echo "</select>\n";
 	
 	if($data=='clinic' && $datar =='room'){
-		 echo "<select name='room'>\n";
+		 echo "<select name='room' class='txtsarabun'>\n";
 		echo "<option value='0'>----- เลือกห้อง -----</option>\n"; 
 		 $result=mysql_query("SELECT * FROM doctor WHERE status='y' and row_id= '$valr'");
 		 while($row = mysql_fetch_array($result)){

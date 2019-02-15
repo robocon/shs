@@ -34,7 +34,7 @@ function jschars($str)
 	$result = mysql_query($sql);
 
 	if(mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:600px; height:150px; overflow:auto; \">";
+		echo "<Div style=\"position: absolute;text-align: left; left:600px; top:300px; width:600px; height:150px; overflow:auto; \">";
 
 			echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
 		<TR>
@@ -104,16 +104,13 @@ if (preg_match("/V/i", $arr["code"]) || preg_match("/W/i", $arr["code"]) || preg
 	}
 		exit();
 }
-//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////ตัวช่วย PRINCIPLE////////////////////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "searchicd10a"){
 	
-
 	$sql = "Select * from  icd10 WHERE (code like '%".$_GET["search"]."%' OR detail LIKE '%".$_GET["search"]."%') limit 10";
 	$result = mysql_query($sql);
-
 	if(mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:600px; height:150px; overflow:auto; \">";
-
+		echo "<Div style=\"position: absolute;text-align: left; left:500px; top:250px; width:600px; height:150px; overflow:auto; \">";
 			echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
 		<TR>
 			<TD>
@@ -201,7 +198,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10b"){
 	$result = mysql_query($sql);
 
 	if(mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:600px; height:150px; overflow:auto; \">";
+		echo "<Div style=\"position: absolute;text-align: left; left:600px; top:600px; width:600px; height:150px; overflow:auto; \">";
 
 			echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
 		<TR>
@@ -259,18 +256,13 @@ if(isset($_GET['num'])||isset($_GET['num1'])||isset($_GET['num2'])||isset($_GET[
 	}
 		exit();
 }
-//////////////////////////////////////////
-
-	////////////////////////////////////////////////////////////////
+//////////////////////////////////////////ตัวช่วย OTHER และ EXTERNAL////////////////////////////////////////////////////////////////
 	if(isset($_GET["action"]) && $_GET["action"] == "searchicd10other"){
-	
 
 	$sql = "Select * from  icd10 WHERE (code like '%".$_GET["search"]."%' OR detail LIKE '%".$_GET["search"]."%') limit 10";
 	$result = mysql_query($sql);
-
 	if(mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:600px; height:150px; overflow:auto; \">";
-
+		echo "<Div style=\"position: absolute;text-align: left; left:500px; top:250px; width:600px; height:150px; overflow:auto; \">";
 			echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">
 		<TR>
 			<TD>
@@ -334,7 +326,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd9cm"){
 	$result = mysql_query($sql);
 
 	if(mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:600px; height:300px; overflow:auto; \">";
+		echo "<Div style=\"position: absolute;text-align: left; left:450px; top:100px; width:600px; height:300px; overflow:auto; \">";
 	
 		echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\" width='100%'>
 		<TR >
@@ -388,7 +380,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd9cma"){
 	$result = mysql_query($sql);
 
 	if(mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:600px; height:300px; overflow:auto; \">";
+		echo "<Div style=\"position: absolute;text-align: left; left:450px; top:100px; width:600px; height:300px; overflow:auto; \">";
 	
 		echo "<TABLE border=\"1\" bordercolor=\"#336600\" cellpadding=\"0\" cellspacing=\"0\" width='100%'>
 		<TR >
@@ -1014,84 +1006,7 @@ if($rs10>0){
   <td colspan="9" align="center"></td>
 </tr>
 <tr>
-  <td colspan="6"><table width="100%">
-  <?
-  $r=0;
-  $test2 = "select * from diag where hn='".$cHn."' and svdate like '".substr($cthidate,0,10)."%' and type='CO-MORBIDITY' and an='".$_GET["cVn"]."' and status='Y'";
-  $rows2 = mysql_query($test2);
-  while($rs2 = mysql_fetch_array($rows2)){
-  ?>
-    <tr>
-      <td width="21%"  align="right" valign="middle">CO-MORBIDITY</td>
-      <td width="9%"  valign="middle">
-        <input name="dt_icd10_morbiditya<?=$r?>" type="text" id="dt_icd10_morbiditya<?=$r?>" onkeypress="searchSuggest6(this.value,3,'<?=$r?>');"  onkeydown="if(event.keyCode == 40&&document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="8" value="<?=$rs2['icd10']?>" /></td>
-      <td width="70%"  valign="middle"><input name="dt_diag_morbiditya<?=$r?>" type="text" id="dt_diag_morbiditya<?=$r?>" onkeypress="searchSuggest6(this.value,2,'<?=$r?>');" size="40" value="<?=$rs2['diag']?>" />
-      <input name="como<?=$r?>" type="hidden" value="<?=$rs2['row_id']?>" />
-  	  <input name="thaicomo<?=$r?>" type="hidden" value="<?=$rs2['diag_thai']?>"/></td>
-    </tr>
-    <?
-	$r++;
-  }
-  $r=0;
-	?>
-    
-  </table>
-    <table id="tbExp1" width="100%">
-      <tr>
-        <td width="21%"  align="right" valign="middle">CO-MORBIDITY</td>
-        <td width="9%"  valign="middle">
-          <input name="dt_icd10_morbidity<?=$r?>" type="text"  id="dt_icd10_morbidity<?=$r?>" onkeypress="searchSuggest(this.value,3,'<?=$r?>');"  onkeydown="if(event.keyCode == 40&&document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="8" /></td>
-        <td width="70%"  valign="middle"><input name="dt_diag_morbidity<?=$r?>" type="text" id="dt_diag_morbidity<?=$r?>" onkeypress="searchSuggest(this.value,2,'<?=$r?>');" size="40" /></td>
-      </tr>
-    </table>
-    <table border="0" align="center">
-      <tr>
-        <td><input type="button" name="input" value="+ CO-MORBIDITY" onclick="addRow();" /></td>
-      </tr>
-    </table></td>
-</tr>
-<tr>
-  <td colspan="8"><hr /></td>
-</tr>
-
-<tr>
-  <td colspan="6" align="right">
-  <table width="100%">
-    <?
-  $r=0;
-  $test3 = "select * from diag where hn='".$cHn."' and svdate like '".substr($cthidate,0,10)."%' and type='COMPLICATION' and an='".$_GET["cVn"]."' and status='Y'";
-  $rows3 = mysql_query($test3);
-  while($rs3 = mysql_fetch_array($rows3)){
-  ?>
-    <tr>
-      <td width="21%"  align="right" valign="middle">COMPLICATION</td>
-      <td width="9%"  valign="middle"><input name="dt_icd10_complicationa<?=$r?>" type="text" id="dt_icd10_complicationa<?=$r?>"  onkeypress="searchSuggest7(this.value,3,'<?=$r?>');"  onkeydown="if(event.keyCode == 40&amp;&amp;document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="8" value="<?=$rs3['icd10']?>" /></td>
-      <td width="70%"  valign="middle"><input name="dt_diag_complicationa<?=$r?>" type="text" id="dt_diag_complicationa<?=$r?>" onkeypress="searchSuggest7(this.value,2,'<?=$r?>');" size="40" value="<?=$rs3['diag']?>" />
-        <input name="compli<?=$r?>" type="hidden" value="<?=$rs3['row_id']?>" />
-        <input name="thaicompli<?=$r?>" type="hidden" value="<?=$rs3['diag_thai']?>"/></td>
-    </tr>
-    <?
-	$r++;
-  }
-  $r=0;
-	?>
-  </table>
-<table id="tbExp3" width="100%">
-<tr>
-    <td width="21%"  align="right" valign="middle">COMPLICATION</td>
-    <td width="9%"  valign="middle"><input name="dt_icd10_complication<?=$r?>" type="text" id="dt_icd10_complication<?=$r?>" onkeypress="searchSuggest2(this.value,3,'<?=$r?>');"  onkeydown="if(event.keyCode == 40&amp;&amp;document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="8"  /></td>
-    <td width="70%"  valign="middle" colspan="3"><input name="dt_diag_complication<?=$r?>" type="text" id="dt_diag_complication<?=$r?>" onkeypress="searchSuggest2(this.value,2,'<?=$r?>');" size="40"  />
-        </td>    
-    </tr>
-</table>
-    <!--COMPLICATION
-<input type='text' name='complica' size='8' value=''  onkeypress="searchSuggest3(this.value,3,'complica','comdetail')" onkeydown="if(event.keyCode == 40&&document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }"/>    
-    <input name="comdetail" type="text" id="comdetail" size="40" value=""/>-->
-<table border="0" align="center">
-      <tr>
-        <td><input type="button" name="input3" value="+ COMPLICATION" onclick="addRow3();" /></td>
-      </tr>
-    </table></td>
+  <td colspan="6">&nbsp;</td>
 </tr>
 
 <tr>
@@ -1128,7 +1043,9 @@ if($rs10>0){
       </tr>
     </table></td>
   </tr>
-
+<tr>
+  <td colspan="8"><hr /></td>
+</tr>
   <tr>
   <td colspan="6" align="right">
     <!--EXTERNAL CAUSE 
@@ -1201,8 +1118,21 @@ if($rs10>0){
 </TR>-->
 <TR>
 	<TD colspan="6" align="center" ><?php //print "<input type='text' name='icd9cm' size='30' value='$cIcd9cm'>";?><hr />
-	  <strong>:
-	  ICD9CM :</strong>
+	  <strong>:ICD9CM :</strong>
+
+<?
+$sql2 = "select *  from patdata where date like '$date1%' and  hn='$cHn' and price >0 and amount >0 and part='SURG'";
+//echo $sql2."<br>";
+$rowp = mysql_query($sql2);
+$nump=mysql_num_rows($rowp);
+if($nump >0){
+	$i=0;
+	while($rows=mysql_fetch_array($rowp)){
+		$i++;
+		echo "<div>[".$i."] รหัส : ".$rows["code"]." รายละเอียด : ".$rows["detail"]."</div>";
+	}
+}
+?>      
 	  <table width="100%" border="0">
 	    <tr>
 	      <td><table width="100%" border="0" align="center" cellpadding="1" cellspacing="1">

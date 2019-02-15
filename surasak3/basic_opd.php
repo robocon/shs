@@ -605,10 +605,10 @@ function checkList(){
 
 
 function checkForm(){
-	if(document.f2.doctor.value == ""){
+	if(document.f2.doctor.value == "" || document.f2.doctor.value == 0){
 		alert('กรุณาเลือก แพทย์ด้วยครับ');
 		return false;
-	}else if(document.f2.clinic.value == ""){
+	}else if(document.f2.clinic.value == "" || document.f2.clinic.value == 0){
 		alert('กรุณาเลือก คลินิกด้วยครับ');
 		return false;
 	}else if(document.f2.cig1.checked == true&&document.f2.member2[0].checked == false&&document.f2.member2[1].checked == false){
