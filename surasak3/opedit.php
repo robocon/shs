@@ -1,3 +1,4 @@
+<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=7,chrome=1">
 <style>
 body {
 	background-color:#CCE9FD;
@@ -21,6 +22,36 @@ legend {
 	 size:16PX;
 	/* font-weight:bold;*/
  }
+
+ .chk_table{
+    border-collapse: collapse;
+	font-family: 'TH Sarabun New','TH SarabunPSK';
+	color: #000000;
+	font-size: 14pt;
+}
+
+.chk_table th, .chk_table td{
+    border: 1px solid black;
+	padding: 3px;
+}
+
+.icf_code{
+	color: blue;
+}
+.icf_code:hover, #btn_show_icf:hover{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.close-icf:hover, .close_icf_static{
+	cursor: pointer;
+}
+#btn_show_icf{
+	color: blue;
+}
+.icf_static{
+	z-index: 99;
+}
+
 </style>
 <script language="JavaScript1.2">
 <!--
@@ -927,6 +958,104 @@ return $pAge;
 
 </fieldset>
 <BR>
+<?php 
+$disabtype_list = array(
+  1 => 'ความพิการทางการเห็น',
+  2 => 'ความพิการทางการได้ยินหรือการสื่อความหมาย',
+  3 => 'ความพิการการเคลื่อนไหวหรือทางร่างกาย',
+  4 => 'ความพิการทางจิตใจหรือพฤติกรรมหรือออทิสติก',
+  5 => 'ความพิการทางสติปัญญา',
+  6 => 'ความพิการทางการเรียนรู้',
+  7 => 'ความพิการทางออทิสติก'
+);
+
+$disabcause_list = array(
+  1 => 'ความพิการแต่กาเนิด',
+  2 => 'ความพิการจากการบาดเจ็บ',
+  3 => 'ความพิการจากโรค'
+);
+
+
+$q = mysql_query("SELECT * FROM `disabled_user` WHERE `hn` = '$cHn' ");
+$dis = mysql_fetch_assoc($q);
+
+?>
+<fieldset>
+	<legend>ข้อมูลผู้พิการ:</legend>
+		<table>
+			<tr>
+				<td class="fonthead" width="25%" align="right">เลขทะเบียนผู้พิการ(DISABID):</td>
+				<td width="25%">
+					<input type="text" name="disabid" id="disabid" value="<?=$dis['disabid'];?>">
+				</td>
+				<td class="fonthead" width="25%" align="right">รหัสสภาวะสุขภาพ(ICF):</td>
+				<td width="25%">
+					<div>
+						<input type="text" name="icf" id="icf" value="<?=$dis['icf'];?>">
+					</div>
+					<span class="fonthead" id="btn_show_icf">แสดงรายละเอียดทั้งหมด</span>
+				</td>
+			</tr>
+			</tr>
+				<td class="fonthead" align="right">ประเภทความพิการ(DISABTYPE):</td>
+				<td>
+					<select name="disabtype" id="">
+					<?php
+					foreach ($disabtype_list as $key => $dis) {
+
+						$selected = ( $key == $dis['disabtype'] ) ? 'selected="selected"' : '' ;
+
+						?>
+						<option value="<?=$key;?>" <?=$selected;?> ><?=$key.'.'.$dis;?></option>
+						<?php
+					}
+					?>
+					</select>
+				</td>
+				<td class="fonthead" align="right">สาเหตุความพิการ(DISABCAUSE):</td>
+				<td>
+					<select name="disabcause" id="">
+					<?php
+					foreach ($disabcause_list as $key => $dis) {
+
+						$selected = ( $key == $dis['disabcause'] ) ? 'selected="selected"' : '' ;
+
+						?>
+						<option value="<?=$key;?>" <?=$selected;?> ><?=$key.'.'.$dis;?></option>
+						<?php
+					}
+					?>
+					</select>
+				</td>
+			</tr>
+		</table>
+	<div id="icf_res" style="position:relative;"></div>
+	<div id="icf_static" style="display: none;">
+		<?php 
+		$q = mysql_query("SELECT * FROM `icf_icf`");
+		?>
+		<div class="close_icf_static" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>
+		<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
+			<table class="chk_table" style="width: 100%; color: #000000;">
+			<tr>
+				<th width="5%">รหัส</th>
+				<th>รายละเอียด</th>
+			</tr>
+			<?php 
+			while( $item = mysql_fetch_assoc($q) ){
+					?>
+					<tr valign="top">
+						<td class="icf_code" item-data="<?=$item['id'];?>"><?=$item['id'];?></td>
+						<td><?=$item['detail'];?></td>
+					</tr>
+					<?php
+			}
+			?>
+			</table>
+		</div>
+	</div>
+</fieldset>
+<br>
 <fieldset>
     <legend>ข้อมูล อื่นๆ:</legend>
     
@@ -1380,6 +1509,96 @@ function check_yot(){
 }
 */
 </script>
+
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+		jQuery.noConflict();
+		(function( $ ) {
+		$(function() {
+
+				var icf_list = [];
+
+				<?php 
+				$q = mysql_query("SELECT * FROM `icf_icf`");
+				$i = 0; 
+
+				while( $item = mysql_fetch_assoc($q) ){
+						?>
+						var myObj = new Object();
+						myObj.code = '<?=$item['id'];?>';
+						myObj.detail = '<?=$item['detail'];?>';
+						icf_list[<?=$i;?>] = myObj; 
+						<?php
+						$i++;
+				}
+				?>
+
+				$(document).on('keyup', '#icf', function(){
+						var search_txt = $(this).val();
+						$('#icf_static').hide();
+						if( search_txt.length > 3 ){
+
+								var regex1 = new RegExp(search_txt,'g');
+
+								var htm = '';
+								htm += '<div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>';
+								htm += '<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">';
+								htm += '<table class="chk_table" style="width: 100%;">';
+								htm += '<tr>';
+								htm += '<th width="5%">รหัส</th>';
+								htm += '<th>รายละเอียด</th>';
+								htm += '</tr>';
+
+								for (var index = 0; index < icf_list.length; index++) {
+
+										var icf_item = icf_list[index];
+										var element = icf_item.detail;
+										var icf_code = icf_item.code;
+
+										if( regex1.test(element) == true ){
+												htm += '<tr valign="top">';
+												htm += '<td class="icf_code" item-data="'+icf_code+'">'+icf_code+'</td>';
+												htm += '<td>'+element+'</td>';
+												htm += '</tr>';
+										}
+								}
+
+								htm += '</table>';
+								htm += '</div>';
+								
+								$("#icf_res").html(htm);
+								$('#icf_res').show();
+						}
+
+				});
+
+				// ตัวที่เจนจาก js
+				$(document).on('click', '.close-icf', function(){ 
+						$('#icf_res').hide();
+				});
+
+				$(document).on('click', '.icf_code', function(){
+						var code = $(this).attr('item-data');
+						$('#icf').val(code);
+						$('#icf_res').hide();
+						$('#icf_static').hide();
+				});
+
+
+				// ตัวที่เจนจาก php
+				$(document).on('click', '#btn_show_icf', function(){
+					$('#icf_res').hide();
+					$('#icf_static').toggle();
+				})
+				$(document).on('click', '.close_icf_static', function(){
+					$('#icf_static').hide();
+				});
+				
+		});
+		})(jQuery);
+</script>
+
+
 <?php
 print "</body>";
 include("unconnect.inc");
