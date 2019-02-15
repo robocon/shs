@@ -21,6 +21,13 @@ if ( $action == 'save' ) {
     $officer_old = input_post('officer_old');
     $labextra_old = input_post('labextra_old');
 
+    $detail2 = input_post('detail2');
+
+    $where_detail2 = '';
+    if( $detail2 != false ){
+        $where_detail2 = ", `detail2` = '$detail2' ";
+    }
+
     $appoint_lab = array();
     foreach ($code as $key => $item) {
         $appoint_lab[] = $item;
@@ -34,12 +41,11 @@ if ( $action == 'save' ) {
         `patho`='$appoint_lab_txt', 
         `xray`='$xray_txt', 
         `labextra`='$labextra' 
+        $where_detail2
         WHERE (`row_id`='$id');";
-    // dump($sql);
     $db->update($sql);
 
     $sql = "DELETE FROM `appoint_lab` WHERE `id` = '$id' ";
-    // dump($sql);
     $db->delete($sql);
 
     foreach ($code as $key => $item) {
@@ -54,14 +60,9 @@ if ( $action == 'save' ) {
         NULL, NOW(), '$hn', '$lab_old', '$appoint_lab_txt', 
         '$labextra', '$labextra_old', '$xray_txt', '$xray_old', '$officer', '$officer_old'
     );";
-    // dump($sql);
     $db->insert($sql);
 
-    // exit;
-
-    // $_SESSION['msg'] = 'บันทึกข้อมูลเรียบร้อย';
     header('Location: appoint_edit.php?action=print&id='.$id);
-
     exit;
 
 }else if( $action == 'print' ){
@@ -125,7 +126,7 @@ $page = input('page');
 if ( $page == 'search' ) {
     
     $hn = input_post('hn');
-    $sql = "SELECT * FROM `appoint` WHERE `hn` = '$hn' ";
+    $sql = "SELECT * FROM `appoint` WHERE `hn` = '$hn' ORDER BY `row_id` DESC ";
     $db->select($sql);
     $rows = $db->get_rows();
 
@@ -226,11 +227,15 @@ if ( $page == 'search' ) {
                 // กรณีมี , แยก xray 
                 $item_xray = trim($item['xray']);
                 $xray1 = $xray2 = false;
-                $testpos = strpos($item_xray, ',');
-                if( $testpos !== false ){ 
 
-                    list($xray1, $xray2) = explode(',', $item_xray);
+                if( strpos($item_xray, ',') !== false ){ 
 
+                    list($xray1, $xray2) = explode(',', $item_xray,2);
+
+                }elseif( strpos($item_xray, ' ') !== false ){
+
+                    list($xray1, $xray2) = explode(' ', $item_xray,2);
+                    
                 }else{
 
                     $xray1 = $item_xray;
@@ -241,7 +246,15 @@ if ( $page == 'search' ) {
                     $xray1 = 'NA';
                 }
 
+                if( $item['detail'] == 'FU02 ตามผลตรวจ' ){
+                    ?>
+                    <div>
+                        นัดมาเพื่อ : ตามผลตรวจ <input type="text" name="detail2" value="<?=$item['detail2'];?>" style="width: 250px;">
+                    </div>
+                    <?php
+                }
                 ?>
+                
                 <div>
                     เอกซเรย์: <select name="xray" id="">
                         <option value="">-- เลือกการเอกซเรย์ --</option>

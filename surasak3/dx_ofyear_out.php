@@ -337,6 +337,15 @@ $choose2 = array();
 while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
+
+if( empty($arr_view["vn"]) ){
+	?>
+	<script type="text/javascript">
+		alert('ผู้ป่วยไม่มี VN ในวันนี้ หากมีการบันทึกข้อมูล อาจทำให้มีปัญหาในการลงผลในหน้าแพทย์');
+	</script>
+	<?php
+}
+
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
