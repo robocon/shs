@@ -735,11 +735,11 @@ function radiofocus(){
 }
 </script>
 <style type="text/css">
-<!--
+
 .font3 {
 	color:#000;
 }
--->
+
 </style>
 <?
     
@@ -880,7 +880,9 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
   </TR>
 <TR>
 	<TD >คลีนิก</TD>
-	<TD ><?php
+	<TD >
+	<?php
+						/*
 						print " <select  name='clinic' >";
 						print " <option value='$Cclinic' selected>$Cclinic</option>";
 						print " <option value='99' ><-เลือกคลีนิก-></option>";
@@ -901,7 +903,22 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 						print " <option value='15 PCU ใน รพ.'>PCU ใน รพ.</option>";
 						print " <option value='99 อื่นๆ'>อื่นๆ</option>";
 						print "   </select>";
-			?></TD>
+					 */
+			?>
+			<select name="clinic" id="">
+			<?php 
+			$q = mysql_query("SELECT * FROM `clinic` ") or die( mysql_error() );
+			while ($clin = mysql_fetch_assoc($q)) { 
+
+				$selected = ( $Cclinic == $clin['detail'] ) ? 'selected="selected"' : '' ;
+
+				?>
+					<option value="<?=$clin['detail'];?>" <?=$selected;?> ><?=$clin['detail'];?></option>
+				<?php
+			}
+			?>
+			</select>
+	</TD>
 	<TD>แพทย์</TD>
 	<TD><?php
 						print "<select  name='doctor1'>";
