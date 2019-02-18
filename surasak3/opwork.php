@@ -79,10 +79,12 @@ if($_POST['lockptright5']=="lock"){
 	$hospcode=$_POST['hospcode'];
 	$ptrcode=$_POST['rdo1'];
 	$typearea = $_POST['typearea'];
+
 	$vstatus = $_POST['vstatus'];
 	$father_id = $_POST['father_id'];
 	$mother_id = $_POST['mother_id'];
 	$couple_id = $_POST['couple_id'];
+
 
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
@@ -96,8 +98,10 @@ phone='$phone',father='$father',mother='$mother',couple='$couple',
 note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
 ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
 officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
+
 employee='$employee', opcardstatus='$opcardstatus',`typearea` = '$typearea',`vstatus`='$vstatus',
 `father_id`='$father_id',`mother_id`='$mother_id',`couple_id`='$couple_id' $where4 WHERE hn='$cHn' ";
+
 
 $result = mysql_query($sql) or die("Query failed ipcard".mysql_error());
 
@@ -606,15 +610,30 @@ if( $disabid != '' ){
     $disabtype = trim($_POST['disabtype']);
     $disabcause = trim($_POST['disabcause']);
 
-	$sql = "UPDATE `disabled_user` SET 
-	`idcard` = '$cid', 
-	`disabid` = '$disabid', 
-	`icf` = '$icf', 
-	`disabtype` = '$disabtype', 
-	`disabcause` = '$disabcause', 
-	`lastupdate` = NOW()  
-	WHERE `hn` = '$pid' ";
-	mysql_query($sql); 
+	$sql = "SELECT `id` FROM `disabled_user` WHERE `hn` = '$pid' ";
+	$q = mysql_query($sql);
+	$num_disuser = mysql_num_rows($q);
+	if( $num_disuser > 0 ){
+		$sql = "UPDATE `disabled_user` SET 
+		`idcard` = '$cid', 
+		`disabid` = '$disabid', 
+		`icf` = '$icf', 
+		`disabtype` = '$disabtype', 
+		`disabcause` = '$disabcause', 
+		`lastupdate` = NOW()  
+		WHERE `hn` = '$pid' ";
+		mysql_query($sql); 
+	}else{ 
+		$date_dis = date('Ymd');
+		$sql = "INSERT INTO `disabled_user` (
+			`id`, `hn`, `idcard`, `disabid`, `icf`, `disabtype`, `disabcause`, `date_detect`, `date_disab`, `lastupdate` 
+		) VALUES (
+			NULL, '$pid', '$cid', '$disabid', '$icf', '$disabtype', '$disabcause', '$date_dis', '$date_dis', NOW() 
+		);";
+		mysql_query($sql);
+	
+	}
+	
 	
 	// เก็บข้อมูลลงแฟ้ม icf
 	$d_update = date('Ymdhis');

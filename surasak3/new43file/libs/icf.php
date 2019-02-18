@@ -1,45 +1,36 @@
 <?php
 
-// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-// mysql_select_db('smdb', $db2) or die( mysql_error() );
+list($y, $m, $d) = explode('-', $thimonth);
 
-// รอบ 1ตค ถึง 30กย ของปีถัดไป
-if( $rptmo >= 10 && $rptmo <= 12 ){
-    $thiyr_end = $thiyr + 1;
-}else{
-    $thiyr_end = $thiyr;
-}
+$date_serv_selected = ( $y - 543 ).$m.$d;
 
-// สำรวจปีละ 1 ครั้ง ตามรอบปีงบประมาณ
-$sql = "SELECT 
-'11512' AS `HOSPCODE`, 
-'' AS `DISABID`, 
-a.`hn` AS `PID`, 
-a.`vn`, 
-thDateToEn(SUBSTRING(a.`thidate`, 1, 10)) AS `DATE_SERRV`, 
-b.`ICF`,
-'' AS `QUALIFIER`,
-TRIM(`doctor`) AS `doctor`,
-thDateTimeToEn(a.`thidate`) AS `D_UPDATE`,
-TRIM(a.`idcard`) AS `CID` 
-FROM `opday` AS a 
-LEFT JOIN `ICF` AS b ON b.`hn` = a.`hn`  
-WHERE a.`thidate` LIKE '$thimonth%'
-AND ( 
-    a.`ptright` LIKE 'R12%' 
-    OR a.`ptright` LIKE 'R40%' 
-    OR a.`ptright` LIKE 'R27%' 
- );";
+$sql = "SELECT a.`hospcode` AS `HOSPCODE`,
+a.`disabid` AS `DISABID`, 
+a.`pid` AS `PID`, 
+a.`seq` AS `SEQ`, 
+a.`date_serv` AS `DATE_SERV`, 
+a.`icf` AS `ICF`, 
+a.`qualifier` AS `QUALIFIER`, 
+a.`provider` AS `PROVIDER`, 
+a.`d_update` AS `D_UPDATE`, 
+a.`cid` AS `CID`,
+b.`doctor`,
+c.`disabtype` 
+FROM `icf43` AS a 
+LEFT JOIN `opday` AS b ON b.`row_id` = a.`opday_id` 
+LEFT JOIN `disability43` AS c ON c.`opday_id` = a.`opday_id`
+WHERE a.`d_update` LIKE '$date_serv_selected%' ";
+
+$icf_list = array(1=>'b210.8','b230.8','','','b117.8','d155.8','');
+
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
 $txt = "";
 while ( $item = mysql_fetch_assoc($q) ) {
 
-    $seq = $item['DATE_SERRV'].sprintf("%03d", $item['vn']);
-
     if( preg_match('/^(MD\d+)/', $item['doctor'], $matchs) > 0 ){ 
 
-        $pre_doc = $matchs['1'];
+        $pre_doc = $matchs['0'];
         $q2 = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$pre_doc%'", $db2) or die( mysql_error() );
         if ( mysql_num_rows($q2) > 0 ) {
             $dt = mysql_fetch_assoc($q2);
@@ -49,24 +40,25 @@ while ( $item = mysql_fetch_assoc($q) ) {
             $code = '00000';
         }
 
+    }else if( preg_match('/(\d+){4,5}/', $item['doctor'], $matchs) > 0 ){
+
+        $code = sprintf("%05d", $matchs['0']);
+
     }else{
-
-        $test_match = preg_match('/(\d+){4,5}/', $item['doctor'], $match);
-        if( $test_match > 0 ){
-            $code = $match['1'];
-        }
-
+        $code = '00000';
     }
 
-    $provider = $seq.$code;
+    $provider = $item['SEQ'].$code;
 
+    $disab_item = $item['disabtype'];
+    $icf = $icf_list[$disab_item];
 
     $txt .= $item['HOSPCODE'].'|'
     .$item['DISABID'].'|'
     .$item['PID'].'|'
-    .$seq.'|'
-    .$item['DATE_SERRV'].'|'
-    .$item['ICF'].'|'
+    .$item['SEQ'].'|'
+    .$item['DATE_SERV'].'|'
+    .$icf.'|'
     .$item['QUALIFIER'].'|'
     .$provider.'|'
     .$item['D_UPDATE'].'|'
