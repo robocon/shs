@@ -6,7 +6,7 @@ $date_serv_selected = ( $y - 543 ).$m.$d;
 
 // สำรวจปีละ 1 ครั้ง ตามรอบปีงบประมาณ
 $sql = "SELECT 
-'hospcode' AS `HOSPCODE`, 
+`hospcode` AS `HOSPCODE`, 
 `disabid` AS `DISABID`, 
 `pid` AS `PID`, 
 `disabtype` AS `DISABTYPE`, 
@@ -14,7 +14,7 @@ $sql = "SELECT
 `diagcode` AS `DIAGCODE`, 
 `date_detect` AS `DATE_DETECT`, 
 `date_disab` AS `DATE_DISAB`, 
-`d_update` AS D_UPDATE``, 
+`d_update` AS `D_UPDATE`, 
 `cid` AS `CID` 
 FROM `disability43` 
 WHERE `d_update` LIKE '$date_serv_selected%' ";

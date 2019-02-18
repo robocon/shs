@@ -1,8 +1,9 @@
 <?php
 include '../bootstrap.php';
 
-$Conn = mysql_connect('localhost', '43user', '1234') or die( mysql_error() );
-mysql_select_db('smdb', $Conn) or die( mysql_error() );
+// $Conn = mysql_connect('localhost', '43user', '1234') or die( mysql_error() );
+// dump($Conn);
+// mysql_select_db('smdb', $Conn) or die( mysql_error() );
 // mysql_query("SET NAMES UTF8", $Conn);
 
 $db2 = $Conn;
