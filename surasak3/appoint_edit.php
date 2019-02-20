@@ -2,7 +2,7 @@
 
 include 'bootstrap.php'; 
 $db = Mysql::load();
-$db->set_charset('TIS620');
+// $db->set_charset('TIS620');
 
 
 $action = input('action');
