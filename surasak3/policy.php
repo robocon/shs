@@ -73,13 +73,23 @@ if( $action == 'save' ){
 ?>
 
 <div>
-    <a href="../nindex.htm">หน้าหลักร.พ.</a>
+    <a href="../nindex.htm">หน้าหลักร.พ.</a> | <a href="policy_view.php">ดูข้อมูล policy</a>
 </div>
 
 <style>
 *{
     font-family: TH Sarabun New, TH SarabunPSK;
     font-size: 16pt;
+}
+h1,h3{
+    padding: 0;
+    margin: 0;
+}
+h1{
+    font-size: 28pt;
+}
+h3{
+    font-size: 20pt;
 }
 .alert{
     border: 1px solid #979700;
@@ -107,7 +117,9 @@ if ( isset($_SESSION['x-msg']) ) {
 }
 ?>
 
-
+<div>
+    <h1>แฟ้ม policy</h1>
+</div>
 <fieldset>
     <legend>ค้นหาตาม HN</legend>
     <form method="post" action="policy.php">
@@ -128,11 +140,12 @@ $page = input('page');
 if ( $page == 'search' ) { 
 
     $hn = input_post('hn');
-    $sql = "SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`vn`,a.`ptname`,a.`doctor`,b.`id` 
+    $sql = "SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`vn`,a.`ptname`,a.`doctor`,a.`age`,b.`id`
     FROM `opday` AS a 
     LEFT JOIN `policy` AS b ON b.`opday_id` = a.`row_id` 
     WHERE `hn` = '$hn' 
-    ORDER BY `thidate` DESC";
+    ORDER BY `thidate` DESC 
+    LIMIT 200";
     $db->select($sql);
 
     $items = $db->get_items();
@@ -141,10 +154,11 @@ if ( $page == 'search' ) {
         <h3>ข้อมูลการมาโรงพยาบาล</h3>
         <table class="chk_table">
             <tr>
-                <th>วันที่</th>
+                <th>วันที่มารับบริการ</th>
                 <th>HN</th>
                 <th>VN</th>
                 <th>ชื่อ-สกุุล</th>
+                <th>อายุ</th>
                 <th>แพทย์</th>
                 <th>บันทึก</th>
             </tr>
@@ -163,6 +177,7 @@ if ( $page == 'search' ) {
                     <td><?=$item['hn'];?></td>
                     <td><?=$item['vn'];?></td>
                     <td><?=$item['ptname'];?></td>
+                    <td><?=$item['age'];?></td>
                     <td><?=$item['doctor'];?></td>
                     <td><a href="policy.php?page=form&id=<?=$item['row_id'];?>">ลงข้อมูล</a></td>
                 </tr>
@@ -189,8 +204,8 @@ if ( $page == 'search' ) {
             <form action="policy.php" method="post">
                 
                 <div>
-                    <p><b>ชื่อ-สกุล:</b><?=$item['ptname'];?> <b>HN:</b><?=$item['hn'];?> <b>VN:</b><?=$item['vn'];?> </p>
-                    <p><b>วันที่รับการรักษา:</b><?=$item['thidate'];?> <b>แพทย์:</b><?=$item['doctor'];?></p>
+                    <p><b>ชื่อ-สกุล:</b><?=$item['ptname'];?> <b>HN:</b><?=$item['hn'];?> <b>VN:</b><?=$item['vn'];?> <b>อายุ:</b><?=$item['age'];?></p>
+                    <p><b>วันที่มารับบริการ:</b><?=$item['thidate'];?> <b>แพทย์:</b><?=$item['doctor'];?></p>
                 </div>
 
                 <div>
@@ -198,7 +213,7 @@ if ( $page == 'search' ) {
                 </div>
 
                 <div>
-                    <button type="submit">บันทึก</button>
+                    <button type="submit">บันทึกข้อมูล</button>
                     <input type="hidden" name="id" value="<?=$item['row_id'];?>">
                     <input type="hidden" name="action" value="save">
                 </div>

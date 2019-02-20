@@ -3,7 +3,18 @@
 include 'anc_menu.php';
 
 ?>
+<style>
+.chk_table{
+    border-collapse: collapse;
+}
 
+.chk_table th,
+.chk_table td{
+    border: 1px solid black;
+    font-size: 16pt;
+    padding: 3px;
+}
+</style>
 <form action="<? $_SERVER['PHP_SELF']?>" method="post" name="formdeath1">
 	<table width="50%" border="1" cellpadding="0" cellspacing="0">
 		<tr>
@@ -38,9 +49,23 @@ if( isset($chn) ){
 	if($result['name']==""){
 		echo "ไม่พบผู้ป่วย HN นี้คะ";	
 	}else{
-		echo "<table border=1><tr><th>HN</th><th>ชื่อ-สกุล</th><th>วันที่มารับบริการ</th></tr>";
-		$sql3 = "select * from opday where hn = '$chn' order by thidate desc limit 50";
+
+		$sql3 = "SELECT * 
+		FROM `opday` 
+		WHERE `hn` = '$chn' 
+		ORDER BY `thidate` 
+		DESC LIMIT 200";
 		$rows3 = mysql_query($sql3);
+
+		?>
+		<table class="chk_table">
+			<tr>
+				<th>HN</th>
+				<th>ชื่อ-สกุล</th>
+				<th>วันที่มารับบริการ</th>
+			</tr>
+		<?php
+		
 		while($result3 = mysql_fetch_array($rows3)){
 			$d = substr($result3['thidate'],8,2);
 			$m = substr($result3['thidate'],5,2);
@@ -54,7 +79,9 @@ if( isset($chn) ){
 		</tr>
 		<?php
 		}
-		echo "</table>";
+		?>
+		</table>
+		<?php
 	}
 
 }elseif(isset($_POST['conbtn'])){
@@ -71,6 +98,8 @@ if( isset($chn) ){
 	$ancres = $_POST['ancres'];
 	$cid = $_POST['idcard'];
 	$doctor = $_POST['doctor'];
+
+	$opday_id = $_POST['opday_id'];
 
 	$doctorcode = '00000';
 	$q = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` = '$doctor' ");
@@ -100,16 +129,17 @@ if( isset($chn) ){
 		`aplace`='11512', 
 		`provider`='$provider', 
 		`d_update`='$thidate', 
-		`cid`='$cid' 
+		`cid`='$cid', 
+		`opday_id` = '$opday_id' 
 		WHERE (`row_id`='$id');";
 		$result = mysql_query($sql) or die(mysql_error());
 
 	}else{	
 		
 		$sql = "INSERT INTO `anc` (
-		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid`
+		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid` ,`opday_id` 
 		) VALUES (
-		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$provider', '$thidate', '$cid'
+		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$provider', '$thidate', '$cid', '$opday_id'
 		);";
 		$result = mysql_query($sql) or die(mysql_error());
 	}
@@ -191,6 +221,7 @@ if( isset($chn) ){
 			<td colspan="2" align="center">
 				<input name="conbtn" type="submit" value=" บันทึกข้อมูล " />
 				<input type="hidden" name="doctor" value="<?=$result['doctor'];?>">
+				<input type="hidden" name="opday_id" value="<?=$result['row_id'];?>">
 			</td>
 		</tr>
 		</table>
