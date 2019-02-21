@@ -1,32 +1,24 @@
 <?php
 
-// รอบ 1ตค ถึง 30กย ของปีถัดไป
-if( $rptmo >= 10 && $rptmo <= 12 ){
-    $thiyr_end = $thiyr + 1;
-}else{
-    $thiyr_end = $thiyr;
-}
+list($y, $m, $d) = explode('-', $thimonth);
+
+$date_serv_selected = ( $y - 543 ).$m.$d;
 
 // สำรวจปีละ 1 ครั้ง ตามรอบปีงบประมาณ
 $sql = "SELECT 
-'11512' AS `HOSPCODE`, 
-'' AS `DISABID`, 
-a.`hn` AS `PID`, 
-b.`DISABTYPE`, 
-'' AS `DISABCAUSE`, 
-'' AS `DIAGCODE`, 
-'' AS `DATE_DETECT`, 
-'' AS `DATE_DISAB`, 
-thDateTimeToEn(a.`thidate`) AS `D_UPDATE`, 
-TRIM(a.`idcard`) AS `CID` 
-FROM `opday` AS a 
-LEFT JOIN `DISABILITY` AS b ON b.`hn` = a.`hn` 
-WHERE a.`thidate` LIKE '$thimonth%' 
-AND ( 
-    a.`ptright` LIKE 'R12%' 
-    OR a.`ptright` LIKE 'R40%' 
-    OR a.`ptright` LIKE 'R27%' 
-);";
+`hospcode` AS `HOSPCODE`, 
+`disabid` AS `DISABID`, 
+`pid` AS `PID`, 
+`disabtype` AS `DISABTYPE`, 
+`disabcause` AS `DISABCAUSE`, 
+`diagcode` AS `DIAGCODE`, 
+`date_detect` AS `DATE_DETECT`, 
+`date_disab` AS `DATE_DISAB`, 
+`d_update` AS `D_UPDATE`, 
+`cid` AS `CID` 
+FROM `disability43` 
+WHERE `d_update` LIKE '$date_serv_selected%' ";
+
 $q = mysql_query($sql) or die( mysql_error() );
 
 $txt = "";

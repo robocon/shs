@@ -1,12 +1,12 @@
 <?php
 include '../bootstrap.php';
 
+// $Conn = mysql_connect('localhost', '43user', '1234') or die( mysql_error() );
 // dump($Conn);
-// dump($db2);
+// mysql_select_db('smdb', $Conn) or die( mysql_error() );
+// mysql_query("SET NAMES UTF8", $Conn);
 
 $db2 = $Conn;
-
-// dump($db2);
 
 $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
 '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 

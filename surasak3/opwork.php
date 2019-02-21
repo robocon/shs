@@ -610,15 +610,30 @@ if( $disabid != '' ){
     $disabtype = trim($_POST['disabtype']);
     $disabcause = trim($_POST['disabcause']);
 
-	$sql = "UPDATE `disabled_user` SET 
-	`idcard` = '$cid', 
-	`disabid` = '$disabid', 
-	`icf` = '$icf', 
-	`disabtype` = '$disabtype', 
-	`disabcause` = '$disabcause', 
-	`lastupdate` = NOW()  
-	WHERE `hn` = '$pid' ";
-	mysql_query($sql); 
+	$sql = "SELECT `id` FROM `disabled_user` WHERE `hn` = '$pid' ";
+	$q = mysql_query($sql);
+	$num_disuser = mysql_num_rows($q);
+	if( $num_disuser > 0 ){
+		$sql = "UPDATE `disabled_user` SET 
+		`idcard` = '$cid', 
+		`disabid` = '$disabid', 
+		`icf` = '$icf', 
+		`disabtype` = '$disabtype', 
+		`disabcause` = '$disabcause', 
+		`lastupdate` = NOW()  
+		WHERE `hn` = '$pid' ";
+		mysql_query($sql); 
+	}else{ 
+		$date_dis = date('Ymd');
+		$sql = "INSERT INTO `disabled_user` (
+			`id`, `hn`, `idcard`, `disabid`, `icf`, `disabtype`, `disabcause`, `date_detect`, `date_disab`, `lastupdate` 
+		) VALUES (
+			NULL, '$pid', '$cid', '$disabid', '$icf', '$disabtype', '$disabcause', '$date_dis', '$date_dis', NOW() 
+		);";
+		mysql_query($sql);
+	
+	}
+	
 	
 	// เก็บข้อมูลลงแฟ้ม icf
 	$d_update = date('Ymdhis');
