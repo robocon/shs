@@ -13,9 +13,9 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2561-10-01';
-$date_end = '2561-10-31';
-$quarter = 1;
+$date_start = '2562-01-01';
+$date_end = '2562-01-31';
+$quarter = 2;
 $year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
@@ -50,7 +50,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $doctor = $item['doctor'];
     $date_hn = $item['date_hn'];
 
-    $match = preg_match('/(หญิง|นาง|น.ส|ด.ญ|ms|mis)/', iconv('TIS620','UTF-8',$ptname), $matchs);
+    $match = preg_match('/(�ҧ|˭ԧ|�.�|�.�|ms|mis)/', iconv('TIS620','UTF-8',$ptname), $matchs);
     $gender = 'm';
     if( $match > 0 ){
         $gender = 'f';

@@ -24,37 +24,47 @@ $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
-FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
-AND `drugcode` IN ( 
-    '1DIC250', 
-    '1DOXY', 
-    '1DALA300-N', 
-    '1CRAV-NN', 
-    '1ERYT', 
-    '1KLA500-C*', 
-    '1RUL150-C', 
-    '1ZITH*', 
-    '5ERY', 
-    '5ZITH*$', 
-    '5ZMAX', 
-    '1ZITH-C', 
-    '1KLA500-N', 
-    '2ZITH',
 
-    '1AMOX250',
-    '1AMOX500',
-    '1AMOX625',
-    '5AMOX',
-    '1DIC250',
-    '5AMOX250',
-    '1AUGM',
-    '5AUG35',
-    '1AUGM1-C',
-    '5AUG35-C'
-) 
-GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
+SELECT a.* 
+FROM ( 
+    SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
+    FROM `drugrx` 
+    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    AND `drugcode` IN ( 
+        '1DIC250', 
+        '1DOXY', 
+        '1DALA300-N', 
+        '1CRAV-NN', 
+        '1ERYT', 
+        '1KLA500-C*', 
+        '1RUL150-C', 
+        '1ZITH*', 
+        '5ERY', 
+        '5ZITH*$', 
+        '5ZMAX', 
+        '1ZITH-C', 
+        '1KLA500-N', 
+        '2ZITH',
+
+        '1AMOX250',
+        '1AMOX500',
+        '1AMOX625',
+        '5AMOX',
+        '1DIC250',
+        '5AMOX250',
+        '1AUGM',
+        '5AUG35',
+        '1AUGM1-C',
+        '5AUG35-C'
+    ) 
+    GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`) 
+) AS a 
+LEFT OUTER JOIN ( 
+    SELECT * FROM diag WHERE `year` = '$year' AND `quarter` = '$quarter' 
+) AS b ON b.`hn` = a.`hn` 
+WHERE b.`hn` IS NULL 
+
+"; 
 $db->exec($sql); 
 
 $in8a = $in8b = $in8_result = 0;

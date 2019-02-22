@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 
 $db = Mysql::load($rdu_configs);
-$db->exec("SET NAMES TIS620");
+// $db->exec("SET NAMES TIS620");
 
 $year = input_get('year');
 $quarter = input_get('quarter');
@@ -23,50 +23,67 @@ AND (
     OR `icd10` regexp 'X([0-1][0-9])' 
     OR `icd10` regexp 'X([2-3][0-9])' 
 )";
+// dump($sql);
 $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
-FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
-AND `drugcode` IN ( 
-    '1DIC250', 
-    '1DOXY', 
-    '1DALA300-N', 
-    '1CRAV-NN', 
-    '1ERYT', 
-    '1KLA500-C*', 
-    '1RUL150-C', 
-    '1ZITH*', 
-    '5ERY', 
-    '5ZITH*$', 
-    '5ZMAX', 
-    '1ZITH-C', 
-    '1KLA500-N', 
-    '2ZITH',
 
-    '1AMOX250',
-    '1AMOX500',
-    '1AMOX625',
-    '5AMOX',
-    '1DIC250',
-    '5AMOX250',
-    '1AUGM',
-    '5AUG35',
-    '1AUGM1-C',
-    '5AUG35-C'
-) 
-GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`)"; 
-$db->exec($sql); 
+SELECT a.* 
+FROM ( 
+    SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`,`amount` 
+    FROM `drugrx` 
+    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    AND `drugcode` IN ( 
+        '1DIC250', 
+        '1DOXY', 
+        '1DALA300-N', 
+        '1CRAV-NN', 
+        '1ERYT', 
+        '1KLA500-C*', 
+        '1RUL150-C', 
+        '1ZITH*', 
+        '5ERY', 
+        '5ZITH*$', 
+        '5ZMAX', 
+        '1ZITH-C', 
+        '1KLA500-N', 
+        '2ZITH',
+
+        '1AMOX250',
+        '1AMOX500',
+        '1AMOX625',
+        '5AMOX',
+        '1DIC250',
+        '5AMOX250',
+        '1AUGM',
+        '5AUG35',
+        '1AUGM1-C',
+        '5AUG35-C'
+    ) 
+    GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`) 
+) AS a 
+LEFT OUTER JOIN ( 
+    SELECT * FROM diag WHERE `year` = '$year' AND `quarter` = '$quarter' 
+) AS b ON b.`hn` = a.`hn` 
+WHERE b.`hn` IS NULL 
+
+";
+
+// dump($sql);
+$test_exec = $db->exec($sql); 
+
+// dump($test_exec);
 
 $sql = "SELECT a.`date`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,b.`drugcode`,b.`amount` 
 FROM `tmp_opday_in8` AS a 
 LEFT JOIN `tmp_drugrx_in8` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL";
+// dump($sql);
 $db->select($sql);
 $items = $db->get_items();
 
+// dump($items);
 ?>
 
 <style>
