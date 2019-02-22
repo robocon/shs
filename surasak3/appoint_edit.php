@@ -246,13 +246,13 @@ if ( $page == 'search' ) {
                     $xray1 = 'NA';
                 }
 
-                if( $item['detail'] == 'FU02 ตามผลตรวจ' ){
+                // if( $item['detail'] == 'FU02 ตามผลตรวจ' ){
                     ?>
                     <div>
-                        นัดมาเพื่อ : ตามผลตรวจ <input type="text" name="detail2" value="<?=$item['detail2'];?>" style="width: 250px;">
+                        อื่นๆ(หลังนัดมาเพื่อ) <input type="text" name="detail2" value="<?=$item['detail2'];?>" style="width: 250px;">
                     </div>
                     <?php
-                }
+                // }
                 ?>
                 
                 <div>
