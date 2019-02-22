@@ -1151,7 +1151,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 								<tr height="23">
 									<td valign="top"><b>การตรวจสาร Benzene</b></td>
 									<td valign="top"><?=$result['benzene'];?></td>
-									<td valign="top"></td>
+									<td valign="top">&lt;&nbsp;50</td>
 									<td valign="top"><?=$result['benzene_result'];?></td>
 								</tr>
 								<?php
