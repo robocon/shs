@@ -22,21 +22,29 @@ $file_lists = array(
 	'admission','charge_opd','diagnosis_opd','drug_opd','epi',
 	'death','card','appointment','accident','procedure_opd',
 	'diagnosis_ipd','procedure_ipd','drug_ipd','charge_ipd','anc',
-	'prenatal','ncdscreen','labfu','chronicfu','specialpp'
+	'prenatal','ncdscreen','labfu','chronicfu','specialpp','policy'
 );
 
 if( $action === false ){
 	include 'menu.php';
 	?>
+	<style>
+	.btn-log:hover, label.select_item:hover{
+		cursor: pointer;
+		text-decoration: underline;
+	}
+	</style>
 	<div>
 		<h3>ระบบส่งออก43แฟ้ม</h3>
 		<div class="btn-log"><b>Log</b></div>
 		<div style="display: none;" class="log-detail">
-			<p>1. ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
-			<p>2. 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
-			<p>3. 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
-			<p>4. 30-08-2561 - 06-09-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen, labfu, chronicfu</p>
-			<p>2561-09-07 ปรับปรุงแฟ้ม procedure_opd, procedure_ipd เพิ่ม CID และปรับปรุงการดึงข้อมูล icd9-cm</p>
+			<p>1.) ก่อนปี61 อัพเดทเฉพาะ admission, service, drugallergy, epi, diagnosis_opd, drug_opd</p>
+			<p>2.) 12-01-2561 เพิ่มเติมแฟ้ม chronic, disability, provider, dental</p>
+			<p>3.) 29-01-2561 เพิ่มเติมแฟ้ม home, icf</p>
+			<p>4.) 30-08-2561 - 06-09-2561 เพิ่มเติมแฟ้ม anc, prenatal, ncdscreen, labfu, chronicfu</p>
+			<p>5.) 07-09-2561 ปรับปรุงแฟ้ม procedure_opd, procedure_ipd เพิ่ม CID และปรับปรุงการดึงข้อมูล icd9-cm</p>
+			<p>6.) 30-01-2562 ยกเลิกการคีย์ข้อมูลตรงๆ ของแฟ้ม icf & disability โดยเปลี่ยนไปใช้ข้อมูลที่คีย์จากหน้างาน</p>
+			<p>7.) 25-02-2562 เพิ่มแฟ้ม policy</p>
 		</div>
 	</div>
 
@@ -63,7 +71,7 @@ if( $action === false ){
 							?>
 							<td>
 								<input type="checkbox" name="<?=$file_name;?>" id="<?=$file_name;?>"> 
-								<label for="<?=$file_name;?>"><?=$file_name;?></label>
+								<label class="select_item" for="<?=$file_name;?>"><?=$file_name;?></label>
 							</td>
 							<?php
 							if( $i % 8 == 0 ){
@@ -390,6 +398,10 @@ if( $action === false ){
 	
 	if( $_POST['specialpp'] ){ 
 		require_once 'libs/specialpp.php';
+	}
+
+	if( $_POST['policy'] ){ 
+		require_once 'libs/policy.php';
 	}
 	
 	
