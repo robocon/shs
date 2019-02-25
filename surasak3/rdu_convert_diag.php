@@ -17,9 +17,9 @@ mysql_select_db('smdb', $db) or die( mysql_error() );
 // Á¤ ÁÕ¤
 // àÁÂ ÁÔÂ
 // ¡¤ ¡Â
-$date_start = '2562-01-01';
-$date_end = '2562-01-31';
-$quarter = 2;
+$date_start = '2561-10-01';
+$date_end = '2561-12-31';
+$quarter = 1;
 $year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
@@ -28,7 +28,7 @@ $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';
 unlink($filePath);
 
 $sql = "SELECT *, 
-CONCAT(SUBSTRING(b.`regisdate`,1,10),`hn`) AS `date_hn`
+CONCAT(SUBSTRING(`regisdate`,1,10),`hn`) AS `date_hn`
 FROM `diag`
 WHERE ( `regisdate` >= '$date_start 00:00:00' AND `regisdate` <= '$date_end 23:59:59' ) 
 AND ( 
