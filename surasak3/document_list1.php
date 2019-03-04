@@ -64,7 +64,7 @@ while($objResult = mysql_fetch_array($objQuery))
 }*/
 ?>
   <tr>
-    <td align="center"><a href="javascript:MM_openBrWindow('document_download.php?doc_id=<?=$objResult['doc_id'];?>','','width=500,height=500')"><?=$objResult["doc_name"];?></a></td>
+    <td align="left"><a href="javascript:MM_openBrWindow('document_download.php?doc_id=<?=$objResult['doc_id'];?>','','width=500,height=500')"><?=$objResult["doc_name"];?></a></td>
     <td align="center"><?=$objResult["count"];?></td>
     <td align="center"><?=$link;?>&nbsp;&nbsp; <?=$linkdel;?></td>
     <!-- <td align="center"><a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='document_delete.php?doc_id=<?//=$objResult["doc_id"];?>';}">Delete</a></td>-->

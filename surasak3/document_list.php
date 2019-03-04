@@ -35,7 +35,7 @@ while($objResult = mysql_fetch_array($objQuery))
 	
 ?>
   <tr>
-    <td align="center"><a href="document_list1.php?depart=<?=$objResult["depart"];?>"><?=$objResult["depart"];?></a></td>
+    <td align="left"><a href="document_list1.php?depart=<?=$objResult["depart"];?>"><?=$objResult["depart"];?></a></td>
     <td align="center"><?=$objResult["count"];?></td>
     <!-- <td align="center"><a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='document_delete.php?doc_id=<?//=$objResult["doc_id"];?>';}">Delete</a></td>-->
   </tr>
