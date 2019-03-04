@@ -104,6 +104,7 @@ if($sex=='ช'){
 table.dctb{
     font-family:"TH SarabunPSK";
     border-collapse: collapse;
+    font-size:14pt;
 }
 table.dctb th,
 table.dctb td{
@@ -113,6 +114,13 @@ table.dctb td{
 
 .tb_hide_top td{
     border-top: 0;
+}
+
+.dbtb_bottom{
+    border-bottom: 1px solid black;
+}
+.dbtb_bottom_hide{
+    border-bottom: 0px!important;
 }
 
 .dctb_close th,
@@ -129,56 +137,52 @@ table.dctb td{
 <div align="center" class="head">DISCHARGE SUMMARY</div>
 <div align="center" class="head">FORT SURASAKMONTRI HOSPITAL เริ่มใช้  วันที่  4 มี.ค. 62</div>
 <BR />
-<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-bottom-color:#000000; border-bottom-style:none;" class="table">
+<table width="100%" class="" style="border-collapse: collapse; border: 1px solid black; border-bottom: none; font-family: TH SarabunPSK; font-size: 14pt;">
+    <tr>
+        <td class="dbtb_bottom">ADMIT: &nbsp;<?=$adate;?></td>
+        <td class="dbtb_bottom">เวลา:&nbsp;<?=$tdate;?>น.</td>
+        <td class="dbtb_bottom">AN:&nbsp; <?=$an;?></td>
+        <td class="dbtb_bottom">HN:&nbsp;<?=$hn;?></td>
+    </tr>
+    <tr>
+        <td class="dbtb_bottom">ชื่อ:&nbsp;<?=$cPtname;?></td>
+        <td class="dbtb_bottom">อายุ:&nbsp;<?=$cAge?></td>
+        <td class="dbtb_bottom">เพศ:<?=$sex1;?></td>
+        <td class="dbtb_bottom">สังกัด:&nbsp;<?=$camp;?></td>
+    </tr>
+    <tr>
+        <td class="dbtb_bottom">เลข ปชช.&nbsp;<?=$idcard;?></td>
+        <td class="dbtb_bottom"></td>
+        <td class="dbtb_bottom">ว/ด/ป.เกิด:&nbsp;<?=$birthdate;?></td>
+        <td class="dbtb_bottom"> สิทธิ:&nbsp;<?=$ptright;?></td>
+    </tr>
+    <tr>
+        <td class="dbtb_bottom">บ้านเลขที่ <?=$address;?>&nbsp;ตำบล<?=$tambol;?>&nbsp;อำเภอ <?=$ampur;?>&nbsp;</td>
+        <td class="dbtb_bottom"></td>
+        <td class="dbtb_bottom">จังหวัด: <?=$changwat;?></td>
+        <td class="dbtb_bottom">โทร: <?=$phone;?></td>
+    </tr>
+    <tr>
+        <td class="dbtb_bottom_hide">ผู้ที่ติดต่อได้:&nbsp;<?=$ptf;?></td>
+        <td class="dbtb_bottom_hide">เกี่ยวข้องเป็น:&nbsp;<?=$ptfadd;?></td>
+        <td class="dbtb_bottom_hide">&nbsp;โทรศัพท์:&nbsp;<?=$ptffone;?></td>
+        <td class="dbtb_bottom_hide">หอรับ&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;หอจำหน่าย</td>
+    </tr>
+</table>
+<table width="100%" class="dctb" style="font-size: 12pt; border-bottom: none!important;">
   <tr>
-    <td colspan="5">
-        <table width="100%" border="0" align="center" class="table2">
-        <tr>
-            <td>ADMIT: &nbsp;<?=$adate;?></td>
-            <td>เวลา:&nbsp;<?=$tdate;?></td>
-            <td>AN:&nbsp; <?=$an;?></td>
-            <td>HN:&nbsp;<?=$hn;?></td>
-        </tr>
-        <tr>
-            <td>ชื่อ:&nbsp;<?=$cPtname;?></td>
-            <td>อายุ:&nbsp;<?=$cAge?></td>
-            <td>เพศ:<?=$sex1;?></td>
-            <td>สังกัด:&nbsp;<?=$camp;?></td>
-        </tr>
-        <tr>
-            <td>เลข ปชช.&nbsp;<?=$idcard;?></td>
-            <td></td>
-            <td>ว/ด/ป.เกิด:&nbsp;<?=$birthdate;?></td>
-            <td> สิทธิ:&nbsp;<?=$ptright;?></td>
-        </tr>
-        <tr>
-            <td>บ้านเลขที่ <?=$address;?>&nbsp;ตำบล<?=$tambol;?>&nbsp;อำเภอ <?=$ampur;?>&nbsp;</td>
-            <td></td>
-            <td>จังหวัด: <?=$changwat;?></td>
-            <td>โทร: <?=$phone;?></td>
-        </tr>
-        <tr>
-            <td>ผู้ที่ติดต่อได้:&nbsp;<?=$ptf;?></td>
-            <td>เกี่ยวข้องเป็น:&nbsp;<?=$ptfadd;?></td>
-            <td>&nbsp;โทรศัพท์:&nbsp;<?=$ptffone;?></td>
-            <td>หอรับ&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;หอจำหน่าย</td>
-        </tr>
-        </table>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">Refer from</td>
-    <td align="center" valign="top">Discharge Date, Time    </td>
-    <td align="center" valign="top">
+    <td class="dbtb_bottom_hide" valign="top">Refer from</td>
+    <td class="dbtb_bottom_hide" align="center" valign="top">Discharge Date, Time</td>
+    <td class="dbtb_bottom_hide" align="center" valign="top">
         <div><font class="length">LENGTH OF STAY <br />( DAYS )</font></div>
         <div>&nbsp;</div>
         <div>TOTAL LEAVE DAYS</div>
         <div>&nbsp;</div>
     </td>
-    <td align="center" valign="bottom">CONDITION OF INFANT AT BIRTH
+    <td class="dbtb_bottom_hide" align="center" valign="bottom">CONDITION OF INFANT AT BIRTH
         <br>
         <br>
-        <table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0" class="table">
+        <table width="100%" class="dctb_close">
             <tr>
                 <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> LIVEBIRTH</td>
                 <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> CLINICALLY MATURE</td>
@@ -190,7 +194,7 @@ table.dctb td{
         </table>
         <p></p>
     </td>
-    <td align="center" valign="top">
+    <td class="dbtb_bottom_hide" align="center" valign="top">
         <p>BIRTH<br />WEIGHT</p>
         <p>GRAMS</p>
     </td>
@@ -199,7 +203,7 @@ table.dctb td{
 
 <table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
     <tr class="tb_hide_top">
-        <td rowspan="7">DIAGNOSIS</td>
+        <td rowspan="7" class="dbtb_bottom_hide">DIAGNOSIS</td>
         <td>1 PRINCIPAL DIAGNOSIS</td>
         <td>DIAGNOSIS   ICD  CODING<br>By CODER……………………………………………..<br>&nbsp;</td>
     </tr>
@@ -227,15 +231,14 @@ table.dctb td{
         <td>EXTERNAL CAUSE (S)<br>&nbsp;<br>&nbsp;<br>&nbsp;</td>
     </tr>
     <tr>
-        
-        <td>5 EXTERNAL CAUSE OF INJURY</td>
-        <td>PROCEDURES ICD CODEING<br>By CODER....</td>
+        <td class="dbtb_bottom_hide">5 EXTERNAL CAUSE OF INJURY</td>
+        <td class="dbtb_bottom_hide">PROCEDURES ICD CODEING<br>By CODER....</td>
     </tr>
 </table>
 
 <table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
     <tr>
-        <td rowspan="5">OPERATION</td>
+        <td rowspan="5" class="dbtb_bottom_hide">OPERATION</td>
         <td>OPERATING  ROOM  PROCEDURE</td>
         <td style="border-left: 0;">DATE</td>
         <td>TIME STARED</td>
@@ -247,13 +250,13 @@ table.dctb td{
     </tr>
     <tr>
         <td colspan="4">2.</td>
-        <td rowspan="3">OTHER (S)</td>
+        <td rowspan="3" class="dbtb_bottom_hide">OTHER (S)</td>
     </tr>
     <tr>
         <td colspan="4">3.</td>
     </tr>
     <tr>
-        <td colspan="4">&nbsp;</td>
+        <td colspan="4" class="dbtb_bottom_hide">&nbsp;</td>
     </tr>
 </table>
 
@@ -289,9 +292,9 @@ table.dctb td{
         <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Diagnosis ultrasound    ( specify )…………</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/></td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
+        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Diagnosis ultrasound    ( specify )…………</td>
+        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/></td>
+        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
     </tr>
 </table>
 
@@ -351,7 +354,7 @@ table.dctb td{
         </td>
     </tr>
     <tr>
-        <td colspan="2"><b>CAUSE  OF  DEATH</b></td>
+        <td colspan="2" class="dbtb_bottom_hide"><b>CAUSE  OF  DEATH</b></td>
     </tr>
 </table>
 
@@ -364,3 +367,8 @@ table.dctb td{
 </table>
 
 </body>
+<script>
+window.onload = function(){
+    window.print();
+}
+</script>

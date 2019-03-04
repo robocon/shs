@@ -3,9 +3,28 @@
 include 'bootstrap.php';
 
 $db = Mysql::load();
-$db->exec("SET NAMES TIS620");
 
-$an = input_get('an');
+?>
+
+<style>
+*{
+    font-family: TH Sarabun New, TH SarabunPSK;
+    font-size: 14pt;
+}
+p{
+    margin: 0;
+    padding: 0;
+}
+@media print{
+    .form_container{
+        display: none;
+    }
+}
+</style>
+
+<?php 
+
+$an = input('an');
 $sql = "SELECT a.*,b.`yot`,b.`idcard`,b.`dbirth` 
 FROM `ipcard` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
@@ -14,7 +33,7 @@ $db->select($sql);
 
 $item = $db->get_item();
 
-$match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', iconv('TIS620','UTF-8',$item['yot']), $matchs);
+$match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $item['yot'], $matchs);
 $gender = 'ชาย';
 if( $match > 0 ){
     $gender = 'หญิง';
@@ -29,19 +48,10 @@ function create_dot($dot_num){
 }
 
 ?>
-<style>
-*{
-    font-family: TH Sarabun New, TH SarabunPSK;
-    font-size: 14pt;
-}
-p{
-    margin: 0;
-    padding: 0;
-}
-</style>
+
 <div style="position: relative; padding: 3px;">
-    <div style="text-align: center;">Clinical  Summary</div>
-    <div style="text-align: center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี  จังหวัดลำปาง</div>
+    <div style="text-align: center; font-size: 16pt;">Clinical  Summary</div>
+    <div style="text-align: center; font-size: 16pt;">โรงพยาบาลค่ายสุรศักดิ์มนตรี  จังหวัดลำปาง</div>
 
     <div style="position: absolute; top: 0; right: 0;">MR – IPD - 002 (2)</div>
     <div style="position: absolute; top: 14pt; right: 0;">เริ่มใช้ วันที่ 4 มี.ค. 62</div>
@@ -99,3 +109,8 @@ p{
     <div style="text-align: right;">แพทย์ผู้รักษา..............................................................................</div>
     <div style="text-align: right;">(...........................................................................)</div>
 </div>
+<script>
+window.onload = function(){
+    window.print();
+}
+</script>

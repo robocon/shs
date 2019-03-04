@@ -63,6 +63,8 @@ print "  $cPtname<br>";
 print "สิทธิการรักษา : $cPtright<br>";
 print "<a target=_TOP  href=\"dcsum.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY<br> ";
 print "<a target=_TOP  href=\"dcsum.1.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARYแบบใหม่<br> ";
+print "<a target=_TOP  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY (เริ่มใช้ 4 มี.ค. 62)<br> ";
+print "<a target=_TOP  href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary (เริ่มใช้ 4 มี.ค. 62 ใช้กระดาษ A5)<br> ";
 print "<a target=_TOP  href=\"dcsum2.php?Can=$vAN&Chn=$cHn\">พิมพ์ ใบยินยอมสำหรับผู้ป่วย<br> ";
 print "<a target=_TOP  href=\"dcsum3.php?Can=$vAN&Chn=$cHn\">พิมพ์ ใบยินยอมสำหรับญาติ<br> ";
 //print "<a target=_TOP  href=\"dcsum4.php? Can=$vAN&Chn=$cHn\">พิมพ์ ใบคำแนะคำ<br> ";
