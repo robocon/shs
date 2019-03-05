@@ -8,7 +8,7 @@ $db = Mysql::load();
 
 <style>
 *{
-    font-family: TH Sarabun New, TH SarabunPSK;
+    font-family: "TH Sarabun New", "TH SarabunPSK";
     font-size: 14pt;
 }
 p{

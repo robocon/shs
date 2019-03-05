@@ -80,7 +80,9 @@ if($sex=='ª'){
 	font-weight: normal;
 	font-style: normal;
 }*/
-
+*{
+    font-family: "TH Sarabun New";
+}
 .head{
 	font-family:"TH Sarabun New", "TH SarabunPSK";
 	font-size:16pt;
@@ -171,7 +173,7 @@ table.dctb td{
 </table>
 <table width="100%" class="dctb" style="font-size: 12pt; border-bottom: none!important;">
   <tr>
-    <td class="dbtb_bottom_hide" valign="top">Refer from</td>
+    <td class="dbtb_bottom_hide" valign="top" width="12%">Refer from</td>
     <td class="dbtb_bottom_hide" align="center" valign="top">Discharge Date, Time</td>
     <td class="dbtb_bottom_hide" align="center" valign="top">
         <div><font class="length">LENGTH OF STAY <br />( DAYS )</font></div>
@@ -192,7 +194,6 @@ table.dctb td{
                 <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> CLINICALLY PREMATURE</td>
             </tr>
         </table>
-        <p></p>
     </td>
     <td class="dbtb_bottom_hide" align="center" valign="top">
         <p>BIRTH<br />WEIGHT</p>
@@ -203,8 +204,21 @@ table.dctb td{
 
 <table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
     <tr class="tb_hide_top">
-        <td rowspan="7" class="dbtb_bottom_hide">DIAGNOSIS</td>
-        <td>1 PRINCIPAL DIAGNOSIS</td>
+        <td rowspan="7" class="dbtb_bottom_hide" width="12%">DIAGNOSIS</td>
+        <td>
+            1 PRINCIPAL DIAGNOSIS<br>
+            <table class="dctb_close" width="100%">
+                <tr>
+                    <td>Cataract</td>
+                    <td>
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Right eye
+                    </td>
+                    <td>
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Left eye
+                    </td>
+                </tr>
+            </table>
+        </td>
         <td>DIAGNOSIS   ICD  CODING<br>By CODER……………………………………………..<br>&nbsp;</td>
     </tr>
     <tr>
@@ -228,7 +242,7 @@ table.dctb td{
     </tr>
     <tr>
         <td>4 OTHER DIAGNOSIS</td>
-        <td>EXTERNAL CAUSE (S)<br>&nbsp;<br>&nbsp;<br>&nbsp;</td>
+        <td>EXTERNAL CAUSE (S)<br>&nbsp;<br>&nbsp;</td>
     </tr>
     <tr>
         <td class="dbtb_bottom_hide">5 EXTERNAL CAUSE OF INJURY</td>
@@ -238,7 +252,7 @@ table.dctb td{
 
 <table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
     <tr>
-        <td rowspan="5" class="dbtb_bottom_hide">OPERATION</td>
+        <td rowspan="4" class="dbtb_bottom_hide" width="12%">OPERATION</td>
         <td>OPERATING  ROOM  PROCEDURE</td>
         <td style="border-left: 0;">DATE</td>
         <td>TIME STARED</td>
@@ -246,17 +260,42 @@ table.dctb td{
         <td rowspan="2">MAIN</td>
     </tr>
     <tr>
-        <td colspan="4">1.</td>
+        <td colspan="4">
+            <table class="dctb_close" width="55%">
+                <tr>
+                    <td width="50%">
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Phacoemulsification
+                    </td>
+                    <td width="25%">
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Right eye
+                    </td>
+                    <td width="25%">
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Left eye
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="font-size: 10pt;">
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Extracapsular cataract extraction/Manual small incision cataract surgery
+                    </td>
+                </tr>
+            </table>
+        </td>
     </tr>
     <tr>
-        <td colspan="4">2.</td>
+        <td colspan="4" class="dbtb_bottom_hide">
+            Intraocular Lens Implantation
+            <table width="50%" class="dctb_close">
+                <tr>
+                    <td>
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Right eye
+                    </td>
+                    <td>
+                        <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> Left eye
+                    </td>
+                </tr>
+            </table>
+        </td>
         <td rowspan="3" class="dbtb_bottom_hide">OTHER (S)</td>
-    </tr>
-    <tr>
-        <td colspan="4">3.</td>
-    </tr>
-    <tr>
-        <td colspan="4" class="dbtb_bottom_hide">&nbsp;</td>
     </tr>
 </table>
 
@@ -300,8 +339,8 @@ table.dctb td{
 
 <table width="100%" class="dctb" valign="top" style="font-size: 14pt;">
     <tr>
-        <td width="50%">DISCHARGE STATUS</td>
-        <td width="50%">DISCHARGE TYPE</td>
+        <td width="65%">DISCHARGE STATUS</td>
+        <td width="35%">DISCHARGE TYPE</td>
     </tr>
     <tr>
         <td>
@@ -331,8 +370,8 @@ table.dctb td{
         <td>
             <table class="dctb_close" width="100%">
                 <tr>
-                    <td>1&nbsp;&nbsp;WITH APPROVAL</td>
-                    <td>5&nbsp;&nbsp;OTHER</td>
+                    <td width="50%">1&nbsp;&nbsp;WITH APPROVAL</td>
+                    <td width="50%">5&nbsp;&nbsp;OTHER</td>
                 </tr>
                 <tr>
                     <td>2&nbsp;&nbsp;AGAINST ADVICE</td>
@@ -340,15 +379,14 @@ table.dctb td{
                 </tr>
                 <tr>
                     <td>3&nbsp;&nbsp;ESCAPE</td>
-                    <td>7&nbsp;&nbsp;DEAD  NO  SUTOPSY</td>
+                    <td>7&nbsp;&nbsp;DEAD NO SUTOPSY</td>
                 </tr>
                 <tr>
                     <td>4&nbsp;&nbsp;BY TRANSFER</td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td>ª×èÍÊ¶Ò¹¾ÂÒºÒÅ·ÕèÊè§µèÍ ..............................................................</td>
-                    <td></td>
+                    <td colspan="2">ª×èÍÊ¶Ò¹¾ÂÒºÒÅ·ÕèÊè§µèÍ .........................................................</td>
                 </tr>
             </table>
         </td>
