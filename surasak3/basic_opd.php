@@ -29,7 +29,6 @@ exit();
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>คัดแยกผู้ป่วย</title>
 <style type="text/css">
-<!--
 
 .data_show{ 
 	font-family:"TH SarabunPSK"; 
@@ -68,8 +67,8 @@ font-size:18px;
 	font-size: 28px;
 	font-weight: bold;
 }
--->
 </style>
+<link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
 
 <body >
@@ -667,6 +666,11 @@ function togglediv1(divid){
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
  </p>
+<style>
+label:hover{
+	cursor: pointer;
+}
+</style>
 <table width="95%" border="4" align="center" cellpadding="2" cellspacing="0" bordercolor="#339999">
 <tr valign="top">
        <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" >
@@ -727,32 +731,108 @@ mmHg </td>
 			 </tr>
            </table></td>
           </tr>
+
+		<?php 
+
+		$match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $cYot, $matchs);
+
+		// ประจำเดือน ญ 11-60ปี
+		if( $match > 0 ){
+
+			?>
+			<tr valign="top">
+				<td align="right"  class="data_show">ประจำเดือน : </td>
+				<td colspan="5">
+					<div>
+						<label for="mens1"><input type="radio" name="mens" id="mens1" value="1" class="lmp"> ยังไม่มีประจำเดือน</label>&nbsp;&nbsp;
+						<label for="mens2"><input type="radio" name="mens" id="mens2" value="2" class="lmp"> หมดประจำเดือน</label>&nbsp;&nbsp;
+						<label for="mens3"><input type="radio" name="mens" id="mens3" value="3" class="lmp"> ยังมีประจำเดือน</label> 
+					</div>
+					<div class="lmp_date" style="display: none; margin-bottom: 5px;">
+						LMP: <input type="text" name="mens_date" id="mens_date"> (วันที่ประจำเดือนมาครั้งสุดท้าย)
+					</div>
+				</td>
+			</tr>
+			<?php
+		}
+
+		// เด็ก 0-14 ปี 
+		if ( $age_matchs['1'] >= 0 && $age_matchs['1'] <= 14 ) {
+			?>
+			<tr valign="top">
+				<td align="right"  class="data_show">วัคซีนเด็ก : </td>
+				<td colspan="5">
+					<div>
+						<label for="vaccine1"><input type="radio" name="vaccine" id="vaccine1" value="1"> ตามเกณฑ์</label>&nbsp;&nbsp;
+						<label for="vaccine2"><input type="radio" name="vaccine" id="vaccine2" value="2"> ไม่ตามเกณฑ์</label> 
+					</div>
+					<div>
+						ผู้ปกครองสูบบุหรี่&nbsp;&nbsp;
+						<label for="parent_smoke1"><input type="radio" class="ps_smoke" name="parent_smoke" id="parent_smoke1" value="1">สูบ</label>&nbsp;&nbsp;
+						<label for="parent_smoke2"><input type="radio" class="ps_smoke"  name="parent_smoke" id="parent_smoke2" value="2">ไม่สูบ</label>
+						&nbsp;&nbsp;&nbsp;
+						<span style="display:none;" class="ps_contain"><label for="parent_smoke_amount">จำนวนที่สูบ<input type="text" name="parent_smoke_amount" id="parent_smoke_amount" size="3">มวน/วัน</label></span>
+					</div>
+					<div style="margin-bottom: 5px;">
+						ผู้ปกครองดื่มสุรา&nbsp;&nbsp;
+						<label for="parent_drink1"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink1" value="1">ดื่ม</label>&nbsp;&nbsp;
+						<label for="parent_drink2"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink2" value="2">ไม่ดื่ม</label>
+						&nbsp;&nbsp;&nbsp;
+						<span style="display:none;" class="pd_contain"><label for="parent_drink_amount">จำนวนที่ดื่ม<input type="text" name="parent_drink_amount" id="parent_drink_amount" size="3">แก้ว/สัปดาห์</label></span>
+					</div>
+				</td>
+			</tr>
+			<?php
+		}
+		?>
 		 <tr>
 		   <td width="116" align="right" class="data_show">แพ้ยา : </td>
-		   <td colspan="5" align="left" class="data_show"><input name="drugreact" type="radio" value="0" />
-		     ไม่แพ้ <input name="drugreact" type="radio" value="1" />
-		     แพ้
-		     <font class="data_drugreact"><?php echo $txt_react2;?></font></td>
+		   <td colspan="5" align="left" class="data_show">
+				<input name="drugreact" type="radio" value="0" />ไม่มีประวัติการแพ้ 
+				<input name="drugreact" type="radio" value="1" />แพ้
+				<input name="drugreact" type="radio" value="2" />ไม่ทราบ
+				<font class="data_drugreact"><?php echo $txt_react2;?></font>
+			</td>
 	      </tr>
 		  <tr>
-           <td align="right"  class="data_show">บุหรี่ : </td>
+           <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
 			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1">สูบ&nbsp;&nbsp;&nbsp;
 			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')">ไม่สูบ&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;สุรา : <INPUT TYPE="radio" NAME="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;<INPUT TYPE="radio" NAME="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;<INPUT TYPE="radio" NAME="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม
-		    <br />
-            <div id="kbk" style="display: none;"> 
-      <table id="member" class="fontthai">
-        <tr><td><input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
-          <input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก</td></tr>
-        </table>
-    </div> </td>
-          </tr>
-		<script>
-        if(document.f2.cig1.checked == true){
-			togglediv('kbk');
-		}
-        </script>
+			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;
+			<div id="kbk" style="display: none; margin-bottom: 8px;"> 
+				<table id="member" class="fontthai">
+					<tr>
+						<td>
+							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
+							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
+						</td>
+					</tr>
+				</table>
+			</div> 
+			<script>
+			if(document.f2.cig1.checked == true){
+				togglediv('kbk');
+			}
+			</script>
+		</td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" class="data_show">สุรา : </td>
+			<td colspan="5">
+				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม&nbsp;&nbsp;&nbsp;
+				<div style="display:none; margin-bottom: 8px;" class="da_amount">
+					<label for="drink_amount">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3">แก้ว/สัปดาห์</label>
+				</div>
+			</td>
+		</tr>
          <tr>
            <td align="right" class="data_show">โรคประจำตัว :</td>
            <td align="left" colspan="5"><span class="data_show">
@@ -760,6 +840,17 @@ mmHg </td>
              <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" class="txtsarabun" />
            </span></td>
          </tr>
+
+		<tr>
+			<td align="right" >HT: </td>
+			<td align="left" colspan="5"><input type="text" name="ht_amount" id="" size="3"></td>
+		</tr>
+
+		<tr>
+			<td align="right" >DM: </td>
+			<td align="left" colspan="5"><input type="text" name="dm_amount" id="" size="3"></td>
+		</tr>
+
          <tr>
            <td align="right" class="data_show">ลักษณะผู้ป่วย : </td>
            <td align="left" colspan="5"><span class="data_show">
@@ -773,7 +864,7 @@ mmHg </td>
              ญาติ </span></td>
          </tr>
          <tr>
-           <td align="right" valign="top" class="data_show">อาการ :</td>
+           <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
            &nbsp;&nbsp;</td>
            <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;" class="txtsarabun">
@@ -800,6 +891,12 @@ mmHg </td>
            <td align="right" valign="top" class="data_show">&nbsp;</td>
            <td width="796" align="left" valign="top">&nbsp;</td>
          </tr>
+		 <tr>
+			 <td align="right" valign="top" >HPI:</td>
+			 <td colspan="5"> 
+			 	<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ></textarea>
+			 </td>
+		 </tr>
 		<script language=Javascript>
             function Inint_AJAX() {
                try { return new ActiveXObject("Msxml2.XMLHTTP");  } catch(e) {} //IE
@@ -897,8 +994,61 @@ include("unconnect.inc");
 <script language="JavaScript" type="text/javascript">
 window.onload = function(){
 	document.getElementById("<?php echo $onfocus;?>").focus();
-	
 }
+</script>
+
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script type="text/javascript">
+	var popup1;
+	window.onload = function() {
+		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
+	};
+</script>
+
+<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	
+	$(document).on('click', '.lmp', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 3 ){
+			$('.lmp_date').show();
+		}else{
+			$('.lmp_date').hide();
+		}
+	});
+
+	$(document).on('click', '.ps_smoke', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 1 ){
+			$('.ps_contain').show();
+		}else{
+			$('.ps_contain').hide();
+		}
+	});
+
+	$(document).on('click', '.pd_drink', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 1 ){
+			$('.pd_contain').show();
+		}else{
+			$('.pd_contain').hide();
+		}
+	});
+
+	$(document).on('click', '.da_alcohol', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 1 ){
+			$('.da_amount').show();
+		}else{
+			$('.da_amount').hide();
+		}
+	});
+	
+});
+})(jQuery);
 </script>
 
 </body>
