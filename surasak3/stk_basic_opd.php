@@ -118,7 +118,7 @@ if ( !empty($mens) ) {
 	$mens_lists = array(1=>'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
 
 	$mens_txt = '';
-	if ( !empty($mens_date) ) {
+	if ( $mens == 3 ) {
 
 		$mens_y = substr($mens_date,0,4);
 		$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);
@@ -166,7 +166,7 @@ if ( !empty($ht_amount) OR !empty($dm_amount) ) {
 	$full_text .= $htdm." \n";
 }
 
-$full_text .= "อาการ: ".trim($organ);
+$full_text .= "อาการ: ".trim($organ)." \n";
 
 if ( !empty($hpi) ) { 
 	$full_text .= "HPI: ".$hpi." \n";

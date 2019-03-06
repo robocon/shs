@@ -134,7 +134,7 @@ $cAge = calcage($dbirth);
 		$mens_lists = array(1=>'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
 
 		$mens_txt = '';
-		if ( !empty($mens_date) ) {
+		if ( $mens == 3 ) {
 
 			$mens_y = substr($mens_date,0,4);
 			$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);

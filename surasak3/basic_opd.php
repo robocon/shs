@@ -121,18 +121,19 @@ if($_POST["cigarette"]=="1"){
 
 	$bp3 = $_POST['bp3'];
 	$bp4 = $_POST['bp4'];
+	$cAge = $_POST['age'];
 
-	$mens = $_POST['mens'];
-	$mens_date = $_POST['mens_date'];
-	$vaccine = $_POST['vaccine'];
-	$parent_smoke = $_POST['parent_smoke'];
-	$parent_smoke_amount = $_POST['parent_smoke_amount'];
-	$parent_drink = $_POST['parent_drink'];
-	$parent_drink_amount = $_POST['parent_drink_amount'];
-	$smoke_amount = $_POST['smoke_amount'];
-	$drink_amount = $_POST['drink_amount'];
-	$ht_amount = $_POST['ht_amount'];
-	$dm_amount = $_POST['dm_amount'];
+	$mens = ( empty($_POST['mens']) ) ? NULL : $_POST['mens'] ;
+	$mens_date = ( empty($_POST['mens_date']) ) ? NULL : $_POST['mens_date'] ;
+	$vaccine = ( empty($_POST['vaccine']) ) ? NULL : $_POST['vaccine'] ;
+	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? NULL : $_POST['parent_smoke'] ;
+	$parent_smoke_amount = ( empty($_POST['parent_smoke_amount']) ) ? NULL : $_POST['parent_smoke_amount'] ;
+	$parent_drink = ( empty($_POST['parent_drink']) ) ? NULL : $_POST['parent_drink'] ;
+	$parent_drink_amount = ( empty($_POST['parent_drink_amount']) ) ? NULL : $_POST['parent_drink_amount'] ;
+	$smoke_amount = ( empty($_POST['smoke_amount']) ) ? NULL : $_POST['smoke_amount'] ;
+	$drink_amount = ( empty($_POST['drink_amount']) ) ? NULL : $_POST['drink_amount'] ;
+	$ht_amount = ( empty($_POST['ht_amount']) ) ? NULL : $_POST['ht_amount'] ;
+	$dm_amount = ( empty($_POST['dm_amount']) ) ? NULL : $_POST['dm_amount'] ;
 	$hpi = $_POST['hpi'];
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
@@ -498,10 +499,16 @@ if(empty($_POST["unshow"])){
 			}
 }
 	
-$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END )   From opd where hn = '".$_REQUEST["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END )   
+,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`
+From opd 
+where hn = '".$_REQUEST["hn"]."' 
+AND type <> 'ญาติ' 
+Order by row_id DESC 
+limit 1";
 
 $result = Mysql_Query($sql);
-list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1) = Mysql_fetch_row($result);
+list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi) = Mysql_fetch_row($result);
 	if($congenital_disease == "")
 		$congenital_disease = "ปฎิเสธโรคประจำตัว";
 
@@ -805,6 +812,15 @@ mmHg </td>
 		preg_match('/(\d+)/',$age,$age_matchs);
 		$match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $cYot, $matchs);
 
+		$mens1 = $mens2 = $mens3 = '';
+		if( $mens == 1 ){
+			$mens1 = 'checked="checked"';
+		}elseif ( $mens == 2 ) {
+			$mens2 = 'checked="checked"';
+		}elseif ( $mens == 3 ) {
+			$mens3 = 'checked="checked"';
+		}
+
 		// ประจำเดือน ญ 11-60ปี
 		if( $match > 0 ){
 
@@ -813,12 +829,18 @@ mmHg </td>
 				<td align="right"  class="data_show">ประจำเดือน : </td>
 				<td colspan="5">
 					<div>
-						<label for="mens1"><input type="radio" name="mens" id="mens1" value="1" class="lmp"> ยังไม่มีประจำเดือน</label>&nbsp;&nbsp;
-						<label for="mens2"><input type="radio" name="mens" id="mens2" value="2" class="lmp"> หมดประจำเดือน</label>&nbsp;&nbsp;
-						<label for="mens3"><input type="radio" name="mens" id="mens3" value="3" class="lmp"> ยังมีประจำเดือน</label> 
+						<label for="mens1"><input type="radio" name="mens" id="mens1" value="1" class="lmp" <?=$mens1;?> > ยังไม่มีประจำเดือน</label>&nbsp;&nbsp;
+						<label for="mens2"><input type="radio" name="mens" id="mens2" value="2" class="lmp" <?=$mens2;?> > หมดประจำเดือน</label>&nbsp;&nbsp;
+						<label for="mens3"><input type="radio" name="mens" id="mens3" value="3" class="lmp" <?=$mens3;?> > ยังมีประจำเดือน</label> 
 					</div>
-					<div class="lmp_date" style="display: none; margin-bottom: 5px;">
-						LMP: <input type="text" name="mens_date" id="mens_date"> (วันที่ประจำเดือนมาครั้งสุดท้าย)
+					<?php 
+					$def_mens_style = 'display: none;';
+					if( $mens == '3' ){
+						$def_mens_style = '';
+					}
+					?>
+					<div class="lmp_date" style="<?=$def_mens_style;?> margin-bottom: 5px;">
+						LMP: <input type="text" name="mens_date" id="mens_date" value="<?=$mens_date;?>"> (วันที่ประจำเดือนมาครั้งสุดท้าย)
 					</div>
 				</td>
 			</tr>
@@ -836,16 +858,22 @@ mmHg </td>
 						<label for="vaccine2"><input type="radio" name="vaccine" id="vaccine2" value="2"> ไม่ตามเกณฑ์</label> 
 					</div>
 					<div>
+						<?php 
+						$def_psmoke2 = 'checked="checked"';
+						?>
 						ผู้ปกครองสูบบุหรี่&nbsp;&nbsp;
 						<label for="parent_smoke1"><input type="radio" class="ps_smoke" name="parent_smoke" id="parent_smoke1" value="1">สูบ</label>&nbsp;&nbsp;
-						<label for="parent_smoke2"><input type="radio" class="ps_smoke"  name="parent_smoke" id="parent_smoke2" value="2">ไม่สูบ</label>
+						<label for="parent_smoke2"><input type="radio" class="ps_smoke"  name="parent_smoke" id="parent_smoke2" value="2" <?=$def_psmoke2;?> >ไม่สูบ</label>
 						&nbsp;&nbsp;&nbsp;
 						<span style="display:none;" class="ps_contain"><label for="parent_smoke_amount">จำนวนที่สูบ<input type="text" name="parent_smoke_amount" id="parent_smoke_amount" size="3">มวน/วัน</label></span>
 					</div>
 					<div style="margin-bottom: 5px;">
+						<?php 
+						$def_pdrink2 = 'checked="checked"';
+						?>
 						ผู้ปกครองดื่มสุรา&nbsp;&nbsp;
 						<label for="parent_drink1"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink1" value="1">ดื่ม</label>&nbsp;&nbsp;
-						<label for="parent_drink2"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink2" value="2">ไม่ดื่ม</label>
+						<label for="parent_drink2"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink2" value="2" <?=$def_pdrink2;?> >ไม่ดื่ม</label>
 						&nbsp;&nbsp;&nbsp;
 						<span style="display:none;" class="pd_contain"><label for="parent_drink_amount">จำนวนที่ดื่ม<input type="text" name="parent_drink_amount" id="parent_drink_amount" size="3">แก้ว/สัปดาห์</label></span>
 					</div>
@@ -1003,7 +1031,7 @@ mmHg </td>
 		 <tr>
 			 <td align="right" valign="top" >HPI:</td>
 			 <td colspan="5"> 
-			 	<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ></textarea>
+			 	<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 			 </td>
 		 </tr>
 		<script language=Javascript>
@@ -1072,6 +1100,8 @@ mmHg </td>
            &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
            &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
            &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; สติกเกอร์" />
+
+		   <input type="hidden" name="age" value="<?=$age;?>">
            
            
 <?
