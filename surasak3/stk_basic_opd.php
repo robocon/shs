@@ -31,11 +31,12 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist 
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist, 
+`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`
 From opd 
 where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi) = Mysql_fetch_row($result_dt_hn);
 
 
 $ht = $height/100;
@@ -49,7 +50,7 @@ $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4
 if($cigarette==0){
 	$cigarette='ไม่สูบ';
 }else if($cigarette==1){
-	$cigarette='สูบ';
+	$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';
 }else{
 	$cigarette='เคยสูบ';
 }
@@ -57,7 +58,7 @@ if($cigarette==0){
 if($alcohol==0){
 	$alcohol='ไม่ดื่ม';
 }else if($alcohol==1){
-	$alcohol='ดื่ม';
+	$alcohol='ดื่ม '.$drink_amount.' แก้ว/วัน';
 }else{
 	$alcohol='เคยดื่ม';
 }
@@ -111,9 +112,66 @@ if( !empty($bp3) && !empty($bp4) ){
 }
 
 $full_text .= "บุหรี่: $cigarette, สุรา: $alcohol, bmi: $bmi, PS: $painscore\n";
+
+if ( !empty($mens) ) { 
+
+	$mens_lists = array(1=>'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
+
+	$mens_txt = '';
+	if ( !empty($mens_date) ) {
+
+		$mens_y = substr($mens_date,0,4);
+		$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);
+		$mens_txt = ' ล่าสุดวันที่: '.$mens_date_txt;
+	}
+
+	$full_text .= "ปจด: ".$mens_lists[$mens].$mens_txt."\n";
+}
+
+if ( !empty($vaccine) ) {
+
+	$vacc_lists = array(1=>'ตามเกณฑ์', 'ไม่ตามเกณฑ์');
+	$psmoke_lists = array(1=>'สูบบุหรี่','ไม่สูบบุหรี่');
+	$pdrink_lists = array(1=>'ดื่มสุรา','ไม่ดื่มสุรา');
+
+	$parent_txt = $psmoke_lists[$parent_smoke];
+	
+	if( $parent_smoke == 1 ){
+		$parent_txt .= ' '.$parent_smoke_amount.' มวน/สัปดาห์';
+	}
+	$parent_txt .= ' ';
+	$parent_txt .= $pdrink_lists[$parent_drink];
+	if( $parent_drink == 1 ){
+		$parent_txt .= ' '.$parent_drink_amount.' แก้ว/วัน';
+	}
+	
+	$full_text .= "วัคซีน: ".$vacc_lists[$vaccine].' ผปค: '.$parent_txt." \n";
+}
+
+
 $full_text .= "ลักษณะ: $type, คลินิก: ".(substr($clinic,3))."\n";
 $full_text .= "โรคประจำตัว: ".trim($congenital_disease)."\n";
+
+if ( !empty($ht_amount) OR !empty($dm_amount) ) {
+
+	$htdm = '';
+	if ( !empty($ht_amount) ) {
+		$htdm .= 'HT: เป็นมาแล้ว '.$ht_amount.'ปี';
+	}
+
+	if ( !empty($dm_amount) ) {
+		$htdm .= ' DM: เป็นมาแล้ว '.$dm_amount.'ปี';
+	}
+
+	$full_text .= $htdm." \n";
+}
+
 $full_text .= "อาการ: ".trim($organ);
+
+if ( !empty($hpi) ) { 
+	$full_text .= "HPI: ".$hpi." \n";
+}
+
 
 $pdf->SetXY(2, 2);
 $pdf->MultiCell(0, 5, $full_text);

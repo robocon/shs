@@ -121,22 +121,91 @@ if($_POST["cigarette"]=="1"){
 
 	$bp3 = $_POST['bp3'];
 	$bp4 = $_POST['bp4'];
+
+	$mens = $_POST['mens'];
+	$mens_date = $_POST['mens_date'];
+	$vaccine = $_POST['vaccine'];
+	$parent_smoke = $_POST['parent_smoke'];
+	$parent_smoke_amount = $_POST['parent_smoke_amount'];
+	$parent_drink = $_POST['parent_drink'];
+	$parent_drink_amount = $_POST['parent_drink_amount'];
+	$smoke_amount = $_POST['smoke_amount'];
+	$drink_amount = $_POST['drink_amount'];
+	$ht_amount = $_POST['ht_amount'];
+	$dm_amount = $_POST['dm_amount'];
+	$hpi = $_POST['hpi'];
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
 	list($rows) = Mysql_fetch_row($result);
 	
-	if($rows > 0){
+if($rows > 0){
 
-$sql = "Update `opd` set  `thidate` = '".$thidate_now."', `temperature`  = '".$_POST["temperature"]."', `pause`  = '".$_POST["pause"]."', `rate`  = '".$_POST["rate"]."', `weight`  = '".$_POST["weight"]."', `bp1`  = '".$_POST["bp1"]."', `bp2`  = '".$_POST["bp2"]."', `drugreact`  = '".$_POST["drugreact"]."', `congenital_disease`  = '".$_POST["congenital_disease"]."', `type`  = '".$_POST["type"]."', `organ`  = '".$_POST["organ"]."', `doctor` = '".$doctorname."',  `officer` = '".$_SESSION["sOfficer"]."' ,  `dc_diag` = Null, `vn`= '".$_POST["vn"]."', `toborow` = '".$_POST["toborow"]."', `height` = '".$_POST["height"]."' , `clinic`  = '".$_POST["clinic"]."' , `cigarette`= '".$_POST["cigarette"]."', `alcohol`= '".$_POST["alcohol"]."', `cigok`= '".$_POST["member2"]."', `waist`= '".$_POST["waist"]."',`chkup`= '".$_POST["typediag"]."',`room`= '".$_POST["room"]."' ,`painscore`= '".$_POST["painscore"]."',`age`='".$cAge."',`bp3`='$bp3',`bp4`='$bp4' where  `thdatehn` = '".$thidatehn."' limit 1 ";
+$sql = "Update `opd` set  `thidate` = '".$thidate_now."', 
+`temperature`  = '".$_POST["temperature"]."', 
+`pause`  = '".$_POST["pause"]."', 
+`rate`  = '".$_POST["rate"]."', 
+`weight`  = '".$_POST["weight"]."', 
+`bp1`  = '".$_POST["bp1"]."', 
+`bp2`  = '".$_POST["bp2"]."', 
+`drugreact`  = '".$_POST["drugreact"]."', 
+`congenital_disease`  = '".$_POST["congenital_disease"]."', 
+`type`  = '".$_POST["type"]."', 
+`organ`  = '".$_POST["organ"]."', 
+`doctor` = '".$doctorname."',  
+`officer` = '".$_SESSION["sOfficer"]."' ,  
+`dc_diag` = Null, `vn`= '".$_POST["vn"]."', 
+`toborow` = '".$_POST["toborow"]."', 
+`height` = '".$_POST["height"]."' , 
+`clinic`  = '".$_POST["clinic"]."' , 
+`cigarette`= '".$_POST["cigarette"]."', 
+`alcohol`= '".$_POST["alcohol"]."', 
+`cigok`= '".$_POST["member2"]."', 
+`waist`= '".$_POST["waist"]."',
+`chkup`= '".$_POST["typediag"]."',
+`room`= '".$_POST["room"]."' ,
+`painscore`= '".$_POST["painscore"]."',
+`age`='".$cAge."',
+`bp3`='$bp3',
+`bp4`='$bp4', 
+`mens` = '$mens', 
+`mens_date` = '$mens_date', 
+`vaccine` = '$vaccine', 
+`parent_smoke` = '$parent_smoke', 
+`parent_smoke_amount` = '$parent_smoke_amount', 
+`parent_drink` = '$parent_drink', 
+`parent_drink_amount` = '$parent_drink_amount', 
+`smoke_amount` = '$smoke_amount', 
+`drink_amount` = '$drink_amount', 
+`ht_amount` = '$ht_amount', 
+`dm_amount` = '$dm_amount', 
+`hpi` = '$hpi'
+
+where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
 
 
-	}else{
+}else{
 		
-		
-
-$sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , `toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,`bp4`)VALUES (NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', '".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3','$bp4');";
+$sql = "INSERT INTO `opd` (
+	`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
+	`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
+	`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , 
+	`toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,
+	`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
+	`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
+	`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,
+	`hpi`
+)VALUES (
+	NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
+	'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
+	'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
+	'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
+	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
+	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
+	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
+	'$hpi' 
+);";
 
 }
 
@@ -733,7 +802,7 @@ mmHg </td>
           </tr>
 
 		<?php 
-
+		preg_match('/(\d+)/',$age,$age_matchs);
 		$match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $cYot, $matchs);
 
 		// ประจำเดือน ญ 11-60ปี
@@ -842,13 +911,53 @@ mmHg </td>
          </tr>
 
 		<tr>
-			<td align="right" >HT: </td>
-			<td align="left" colspan="5"><input type="text" name="ht_amount" id="" size="3"></td>
+			<td align="right" >จำนวนปีที่เป็น HT: </td>
+			<td align="left" colspan="5">
+				<?php 
+				$cur_year = date('Y').'-01-01';
+
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,`thidate`,'$cur_year') AS `year_diff` 
+				FROM `hypertension_clinic` 
+				WHERE `hn` = '$cHn'";
+				
+				$q = mysql_query($sql) or die( mysql_error() );
+				$ht_year = '';
+				$ht_row = mysql_num_rows($q);
+
+				if( $ht_row > 0 ){
+					$ht = mysql_fetch_assoc($q);
+					$ht_year = $ht['year_diff'];
+				}
+				?>
+				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
+			</td>
 		</tr>
 
 		<tr>
-			<td align="right" >DM: </td>
-			<td align="left" colspan="5"><input type="text" name="dm_amount" id="" size="3"></td>
+			<td align="right" >จำนวนปีที่เป็น DM: </td>
+			<td align="left" colspan="5">
+				<?php 
+
+				$sql = "SELECT TIMESTAMPDIFF(
+					YEAR,
+					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$cur_year'
+				) AS `year_diff`
+								FROM `diabetes_clinic` 
+								WHERE `hn` = '$cHn'";
+
+				$q = mysql_query($sql) or die( mysql_error() );
+
+				$dm_year = '';
+				$dm_row = mysql_num_rows($q);
+
+				if( $dm_row > 0 ){
+					$dm = mysql_fetch_assoc($q);
+
+					$dm_year = $dm['year_diff'];
+				}
+				?>
+				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> ปี
+			</td>
 		</tr>
 
          <tr>
