@@ -13,7 +13,7 @@
 // AND b.thidate like '$thimonth%'  
 // GROUP BY a.hn";
 
-
+/*
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
 SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright,  
 CASE 
@@ -31,6 +31,28 @@ FROM (
 ) AS c 
 LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
 ORDER BY d.`hn` ";
+*/
+$temp1 = "CREATE  TEMPORARY  TABLE report_person1 
+SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright,  
+CASE 
+    WHEN d.hphone <> '' THEN d.hphone 
+    WHEN d.phone <> '' THEN d.phone
+    WHEN d.ptffone <> '' THEN d.ptffone
+END AS `PHONE` ,
+d.`typearea` AS `TYPEAREA`,
+thDateTimeToEn(d.`lastupdate`) AS `d_update` 
+FROM (
+    SELECT y.`hn`, SUBSTRING(y.`thidate`, 1, 10) AS `date2`
+		FROM ( 
+			SELECT MAX(`row_id`) as `row_id`,`hn` 
+			FROM `opday` 
+			WHERE `thidate` LIKE '$thimonth%' 
+			GROUP BY `hn` 
+		) AS x 
+		LEFT JOIN `opday` AS y ON y.`row_id` = x.`row_id` 
+) AS c 
+LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn` 
+WHERE d.`hn` IS NOT NULL ";
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed,Create temp1");
 
 
