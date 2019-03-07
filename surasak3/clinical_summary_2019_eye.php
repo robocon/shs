@@ -65,7 +65,7 @@ function create_dot($dot_num){
     <div style="text-align: center; font-size: 16pt;">Clinical  Summary</div>
     <div style="text-align: center; font-size: 16pt;">โรงพยาบาลค่ายสุรศักดิ์มนตรี  จังหวัดลำปาง</div>
 
-    <div style="position: absolute; top: 10px; right: 10px;">MR – IPD - 002 (2)</div>
+    <div style="position: absolute; top: 10px; right: 10px;">MR – IPD - 002 (4)</div>
     <div style="position: absolute; top: 24px; right: 10px;">เริ่มใช้ วันที่ 4 มี.ค. 62</div>
     <div>&nbsp;</div>
     <div>
@@ -85,19 +85,22 @@ function create_dot($dot_num){
         </table>
     </div>
     <div>
-        <p style="word-wrap: break-word;">Principle  Diagnosis <?=create_dot(280);?></p>
+        <table>
+            <tr>
+                <td>Principle  Diagnosis   Cataract&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Right eye&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Left eye 
+                </td>
+            </tr>
+        </table>
     </div>
     <div>
         <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
     </div>
-    <div><p>Lab <?=create_dot(308);?></p></div>
-    <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
-    </div>
-    <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
-    </div>
-    <div><p>Treatment  &  Operation <?=create_dot(271);?></p></div>
+    <div><p>Lab  CBC, FBS </p></div>
     <div>
         <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
     </div>
@@ -105,9 +108,46 @@ function create_dot($dot_num){
         <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
     </div>
     <div>
+        <table>
+            <tr>
+                <td colspan="3">Treatment  &  Operation</td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Phacoemulsification&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Right eye&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Left eye&nbsp;&nbsp;&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Extracapsular cataract extraction/Manual small incision cataract surgery 
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Intraocular Lens Implantation&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Right eye&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Left eye&nbsp;&nbsp;&nbsp;
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
         <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
     </div>
-    <div><p>Home Medication <?=create_dot(282);?></p></div>
+    <div><p>Home Medication</p></div>
+    <div>
+        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+    </div>
     <div>
         <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
     </div>

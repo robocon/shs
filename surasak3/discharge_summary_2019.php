@@ -49,62 +49,42 @@ Function calcage($birth){
     $birthdate="$d-$m-$y"; //print into opdcard
     $cAge=calcage($dbirth);
     $cPtname=$yot.' '.$name.' '.$surname;
-if($sex=='ช'){
-	$sex1='ชาย';
-}else {
-	$sex1='หญิง';
-}
+    if($sex=='ช'){
+        $sex1='ชาย';
+    }else {
+        $sex1='หญิง';
+    }
 
- $ddate=substr($date,8,2);
-    $mdate=substr($date,5,2); 
-    $ydate=substr($date,0,4); 
-	$tdate=substr($date,11,5); 
- $adate="$ddate-$mdate-$ydate"; 
-
-//print opd card ที่นี่ จาก opdcardprn.htm  by frontpage
-
-
+$ddate=substr($date,8,2);
+$mdate=substr($date,5,2); 
+$ydate=substr($date,0,4); 
+$tdate=substr($date,11,5); 
+$adate="$ddate-$mdate-$ydate"; 
 
 //end opdcard
 
 ?>
 <style type="text/css">
-
-/*@font-face{
-	font-family: "THSarabunNew";
-	src: url("fonts/webfont/THSarabunNew.eot");
-	src: url("fonts/webfont/THSarabunNew.eot#iefix"),
-	url("fonts/webfont/THSarabunNew.woff") format('embedded-opentype'),
-	url("fonts/THSarabunNew.ttf") format('truetype'),
-	url("fonts/webfont/THSarabunNew.svg#ludger_duvernayregular") format('svg');
-	font-weight: normal;
-	font-style: normal;
-}*/
-
-.head{
-	font-family:"TH Sarabun New", "TH SarabunPSK";
-	font-size:16pt;
-	line-height: 20px;
+*{
+    font-family:"TH Sarabun New", "TH SarabunPSK";
+    font-size:11pt;
 }
-.table2{
-	font-family:"TH Sarabun New", "TH SarabunPSK";
-	font-size:14pt;
-	line-height: 20px;
+/* ทดสอบความสูง td ตามฟอนต์ */
+.tb_normal_line td{
+    line-height: 11pt;
 }
-.table{
-	font-family:"TH Sarabun New", "TH SarabunPSK";
-	font-size:16px;
+.tb_info td{
+    font-size: 14pt;
+    line-height: 14pt;
 }
-.length{
-	font-family:"TH Sarabun New", "TH SarabunPSK";
-	font-size:14px;
+.head, 
+.bottom_sign td{
+    font-size: 16pt;
+    line-height: 16pt;
 }
-
 
 table.dctb{
-    font-family:"TH Sarabun New", "TH SarabunPSK";
     border-collapse: collapse;
-    font-size:14pt;
 }
 table.dctb th,
 table.dctb td{
@@ -122,13 +102,10 @@ table.dctb td{
 .dbtb_bottom_hide{
     border-bottom: 0px!important;
 }
-
 .dctb_close th,
 .dctb_close td{
     border: 0px!important;
 }
-
-
 </style>
 <!-- window.print(); -->
 <body onLoad="">
@@ -137,75 +114,78 @@ table.dctb td{
 <div align="center" class="head">DISCHARGE SUMMARY</div>
 <div align="center" class="head">FORT SURASAKMONTRI HOSPITAL เริ่มใช้  วันที่  4 มี.ค. 62</div>
 <BR />
-<table width="100%" class="" style="border-collapse: collapse; border: 1px solid black; border-bottom: none; font-family: TH SarabunPSK; font-size: 14pt;">
+<table width="100%" class="tb_info" style="border-collapse: collapse; border: 1px solid black; border-bottom: none;">
     <tr>
-        <td class="dbtb_bottom">ADMIT: &nbsp;<?=$adate;?></td>
-        <td class="dbtb_bottom">เวลา:&nbsp;<?=$tdate;?>น.</td>
-        <td class="dbtb_bottom">AN:&nbsp; <?=$an;?></td>
-        <td class="dbtb_bottom">HN:&nbsp;<?=$hn;?></td>
+        <td class="dbtb_bottom">ADMIT: <?=$adate;?></td>
+        <td class="dbtb_bottom">เวลา: <?=$tdate;?>น.</td>
+        <td class="dbtb_bottom">AN:  <?=$an;?></td>
+        <td class="dbtb_bottom">HN: <?=$hn;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">ชื่อ:&nbsp;<?=$cPtname;?></td>
-        <td class="dbtb_bottom">อายุ:&nbsp;<?=$cAge?></td>
-        <td class="dbtb_bottom">เพศ:<?=$sex1;?></td>
-        <td class="dbtb_bottom">สังกัด:&nbsp;<?=$camp;?></td>
+        <td class="dbtb_bottom">ชื่อ: <?=$cPtname;?></td>
+        <td class="dbtb_bottom">อายุ: <?=$cAge?></td>
+        <td class="dbtb_bottom">เพศ: <?=$sex1;?></td>
+        <td class="dbtb_bottom">สังกัด: <?=$camp;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">เลข ปชช.&nbsp;<?=$idcard;?></td>
+        <td class="dbtb_bottom">เลข ปชช. <?=$idcard;?></td>
         <td class="dbtb_bottom"></td>
-        <td class="dbtb_bottom">ว/ด/ป.เกิด:&nbsp;<?=$birthdate;?></td>
-        <td class="dbtb_bottom"> สิทธิ:&nbsp;<?=$ptright;?></td>
+        <td class="dbtb_bottom">ว/ด/ป.เกิด: <?=$birthdate;?></td>
+        <td class="dbtb_bottom">สิทธิ: <?=$ptright;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">บ้านเลขที่ <?=$address;?>&nbsp;ตำบล<?=$tambol;?>&nbsp;อำเภอ <?=$ampur;?>&nbsp;</td>
+        <td class="dbtb_bottom">บ้านเลขที่ <?=$address;?> ตำบล<?=$tambol;?> อำเภอ <?=$ampur;?></td>
         <td class="dbtb_bottom"></td>
         <td class="dbtb_bottom">จังหวัด: <?=$changwat;?></td>
         <td class="dbtb_bottom">โทร: <?=$phone;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide">ผู้ที่ติดต่อได้:&nbsp;<?=$ptf;?></td>
-        <td class="dbtb_bottom_hide">เกี่ยวข้องเป็น:&nbsp;<?=$ptfadd;?></td>
-        <td class="dbtb_bottom_hide">&nbsp;โทรศัพท์:&nbsp;<?=$ptffone;?></td>
-        <td class="dbtb_bottom_hide">หอรับ&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;หอจำหน่าย</td>
+        <td class="dbtb_bottom_hide">ผู้ที่ติดต่อได้: <?=$ptf;?></td>
+        <td class="dbtb_bottom_hide">เกี่ยวข้องเป็น: <?=$ptfadd;?></td>
+        <td class="dbtb_bottom_hide">โทรศัพท์: <?=$ptffone;?></td>
+        <td class="dbtb_bottom_hide">หอรับ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;หอจำหน่าย</td>
     </tr>
 </table>
-<table width="100%" class="dctb" style="font-size: 12pt; border-bottom: none!important;">
+<table width="100%" class="dctb">
   <tr>
-    <td class="dbtb_bottom_hide" valign="top">Refer from</td>
-    <td class="dbtb_bottom_hide" align="center" valign="top">Discharge Date, Time</td>
-    <td class="dbtb_bottom_hide" align="center" valign="top">
-        <div><font class="length">LENGTH OF STAY <br />( DAYS )</font></div>
+    <td class="dbtb_bottom_hide" valign="top" width="10%">Refer from</td>
+    <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">Discharge Date, Time</td>
+    <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">
+        <div>LENGTH OF STAY ( DAYS )</div>
         <div>&nbsp;</div>
         <div>TOTAL LEAVE DAYS</div>
         <div>&nbsp;</div>
     </td>
-    <td class="dbtb_bottom_hide" align="center" valign="bottom">CONDITION OF INFANT AT BIRTH
-        <br>
-        <br>
-        <table width="100%" class="dctb_close">
+    <td class="dbtb_bottom_hide" align="center" valign="bottom" style="vertical-align: bottom;">
+        <table width="100%" class="dctb_close tb_normal_line">
             <tr>
-                <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> LIVEBIRTH</td>
-                <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> CLINICALLY MATURE</td>
+                <td colspan="2" style="text-align: center;">CONDITION OF INFANT AT BIRTH</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">&nbsp;</td>
+            </tr>
+            <tr>
+                <td align="left" valign="top" width="50%"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> LIVEBIRTH</td>
+                <td align="left" valign="top" width="50%"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> CLINICALLY MATURE</td>
             </tr>
             <tr>
                 <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> STILLBRITH &nbsp;&nbsp;</td>
                 <td align="left" valign="top"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> CLINICALLY PREMATURE</td>
             </tr>
         </table>
-        <p></p>
     </td>
-    <td class="dbtb_bottom_hide" align="center" valign="top">
-        <p>BIRTH<br />WEIGHT</p>
-        <p>GRAMS</p>
+    <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">
+        <div>BIRTH WEIGHT<br><br></div>
+        <div>GRAMS</div>
     </td>
   </tr>
 </table>
 
-<table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
+<table width="100%" class="dctb" valign="top" style="">
     <tr class="tb_hide_top">
-        <td rowspan="7" class="dbtb_bottom_hide">DIAGNOSIS</td>
-        <td>1 PRINCIPAL DIAGNOSIS</td>
-        <td>DIAGNOSIS   ICD  CODING<br>By CODER……………………………………………..<br>&nbsp;</td>
+        <td rowspan="7" class="dbtb_bottom_hide" width="10%">DIAGNOSIS</td>
+        <td width="45%">1 PRINCIPAL DIAGNOSIS</td>
+        <td width="45%">DIAGNOSIS   ICD  CODING<br>By CODER……………………………………………..<br>&nbsp;</td>
     </tr>
     <tr>
         <td rowspan="2">
@@ -236,9 +216,9 @@ table.dctb td{
     </tr>
 </table>
 
-<table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
+<table width="100%" class="dctb" valign="top" >
     <tr>
-        <td rowspan="5" class="dbtb_bottom_hide">OPERATION</td>
+        <td rowspan="5" class="dbtb_bottom_hide" width="10%">OPERATION</td>
         <td>OPERATING  ROOM  PROCEDURE</td>
         <td style="border-left: 0;">DATE</td>
         <td>TIME STARED</td>
@@ -260,11 +240,11 @@ table.dctb td{
     </tr>
 </table>
 
-<table width="100%" class="dctb" valign="top" style="font-size: 12pt;">
+<table width="100%" class="dctb tb_normal_line" valign="top" >
     <tr>
-        <td style="position: relative;">NON or<br>PROCEDURE<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
-        <td style="position: relative;">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
-        <td style="position: relative;">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
+        <td style="position: relative;" class="dbtb_bottom_hide">NON or<br>PROCEDURE<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
+        <td style="position: relative;" class="dbtb_bottom_hide">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
+        <td style="position: relative;" class="dbtb_bottom_hide">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
     </tr>
     <tr>
         <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Arthrocentesis(8191)………………………..</td>
@@ -298,7 +278,7 @@ table.dctb td{
     </tr>
 </table>
 
-<table width="100%" class="dctb" valign="top" style="font-size: 14pt;">
+<table width="100%" class="dctb tb_normal_line" valign="top" style="">
     <tr>
         <td width="50%">DISCHARGE STATUS</td>
         <td width="50%">DISCHARGE TYPE</td>
@@ -358,7 +338,7 @@ table.dctb td{
     </tr>
 </table>
 
-<table width="100%" class="dctb" valign="top" style="font-size: 16pt;">
+<table width="100%" class="dctb bottom_sign" valign="top">
     <tr>
         <td>MEDLISENCE<br>……………………………</td>
         <td>ATTENDING<br>PHYSICIAN ………………………………………………</td>
@@ -369,6 +349,6 @@ table.dctb td{
 </body>
 <script>
 window.onload = function(){
-    // window.print();
+    window.print();
 }
 </script>

@@ -62,9 +62,14 @@ print "  HN:  $cHn       AN: $vAN <br> ";
 print "  $cPtname<br>"; 
 print "สิทธิการรักษา : $cPtright<br>";
 print "<a target=_TOP  href=\"dcsum.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY<br> ";
-print "<a target=_TOP  href=\"dcsum.1.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARYแบบใหม่<br> ";
-print "<a target=_TOP  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY (เริ่มใช้ 4 มี.ค. 62)<br> ";
-print "<a target=_TOP  href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary (เริ่มใช้ 4 มี.ค. 62 ใช้กระดาษ A5)<br> ";
+print "<a target=_TOP  href=\"dcsum.1.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARYแบบใหม่<br><br>";
+
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY (เริ่มใช้ 4 มี.ค. 62)<br> ";
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary (เริ่มใช้ 4 มี.ค. 62 ใช้กระดาษ A5)<br><br>";
+
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"discharge_summary_2019_eye.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY ต้อกระจก (เริ่มใช้ 4 มี.ค. 62)<br>";
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"clinical_summary_2019_eye.php?an=$vAN\">พิมพ์ Clinical Summary ต้อกระจก (เริ่มใช้ 4 มี.ค. 62 ใช้กระดาษ A5)<br><br> ";
+
 print "<a target=_TOP  href=\"dcsum2.php?Can=$vAN&Chn=$cHn\">พิมพ์ ใบยินยอมสำหรับผู้ป่วย<br> ";
 print "<a target=_TOP  href=\"dcsum3.php?Can=$vAN&Chn=$cHn\">พิมพ์ ใบยินยอมสำหรับญาติ<br> ";
 //print "<a target=_TOP  href=\"dcsum4.php? Can=$vAN&Chn=$cHn\">พิมพ์ ใบคำแนะคำ<br> ";
