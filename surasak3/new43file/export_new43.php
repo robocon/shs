@@ -1,10 +1,10 @@
-<?php
+<?php 
+// error_reporting(E_ALL);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+
 include '../bootstrap.php';
 
-// $Conn = mysql_connect('localhost', '43user', '1234') or die( mysql_error() );
-// dump($Conn);
-// mysql_select_db('smdb', $Conn) or die( mysql_error() );
-// mysql_query("SET NAMES UTF8", $Conn);
 
 $db2 = $Conn;
 
@@ -13,7 +13,7 @@ $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม',
 '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
 $selmon = isset($_POST['month']) ? $_POST['month'] : date('m');
-$action = input('action');
+$action = ( $_POST['action'] ) ? $_POST['action'] : false ;
 
 
 $file_lists = array( 
@@ -179,7 +179,7 @@ if( $action === false ){
 	
 } else if( $action === 'export' ){
 	
-	$dateSelect = input_post('dateSelect');
+	$dateSelect = $_POST['dateSelect'];
 	
 	/*
 	$testMatch = preg_match('/\d+\-\d+$/', $dateSelect);
