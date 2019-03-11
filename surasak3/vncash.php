@@ -58,7 +58,7 @@ function check(){
     print "<input type='submit' value='          ตกลง          ' name='B1'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
 //    print "<input type='reset' value='ลบทิ้ง' name='B2'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;";
     print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
-	print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='../surasak3/check_cash.php' target='_blank'><<รายการค้างจ่ายย้อนหลัง</a>"; print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='../surasak3/rprecipthn.php' target='_blank' ><<ค่าใช้จ่ายย้อนหลัง</a>";
+	print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='../surasak3/check_cash.php' target='_blank'><<รายการค้างจ่ายย้อนหลัง</a>"; print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='../surasak3/rprecipthn.php' target='_blank' ><<ค่าใช้จ่ายย้อนหลัง</a>"; print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='report_approvecode.php' target='_blank' >ข้อมูล Approve Code สิทธิเบิกจ่ายตรง</a>";
     print "</form>";
 ?>
 <?
