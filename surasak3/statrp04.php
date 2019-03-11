@@ -28,31 +28,32 @@ $pdf->AddPage();
 $pdf->SetFont('AngsanaNew', '', 14);
 
 if($_GET["day"] != ""){
-		$_GET["day"] = sprintf("%02d",$_GET["day"]);
+	$_GET["day"] = sprintf("%02d",$_GET["day"]);
 }else{
-		$_GET["day"]="";
+	$_GET["day"]="";
 }
 $time_zone = explode("-",$_GET["time"]);
 	
 if($_GET["code"] == "กายภาพ"){
-		$where = " AND code not like '58%' and depart = 'PHYSI' ";
+	$where = " AND code not like '58%' and depart = 'PHYSI' ";
 }else{
-		$where = "  AND code not like '58%' and depart = 'PHYSI' ";
+	$where = "  AND code not like '58%' and depart = 'PHYSI' ";
 }
 if($_GET["doctor"]!=''){
 			
-			$subcode=substr($_GET["doctor"],0,5);
-			$where .="AND doctor like '%$subcode%'";
-		}else{
-			$where .="";
-		}
+	$subcode=substr($_GET["doctor"],0,5);
+	$where .="AND doctor like '%$subcode%'";
+}else{
+	$where .="";
+}
 
 
 if($_GET["code"] == "กายภาพ"){//ฝังเข็ม
 		
-		$_GET['day'] = !empty($_GET['day']) ? $_GET['day'] : date('d') ;
-		// var_dump($_GET);
+	$_GET['day'] = !empty($_GET['day']) ? $_GET['day'] : '' ;
+	$get_day = $_GET['day'];
 
+	
 /*
 $sql = "
 	SELECT DISTINCT a.hn, a.ptname
@@ -74,21 +75,54 @@ $sql = "
 	) AS b ON a.hn = b.hn
 	Order by a.date ASC limit 70 
 ";*/
+	
+	/**
+	 * @readme 
+	 * ปรับเงื่อนไข ถ้าไม่ใส่วันที่ให้สามารถดูเป็นเดือนได้
+	 */
+	$normal_date_start = $_GET['year'].'-'.$_GET['month'].'-'.$_GET['day'].' '.$time_zone[0];
+	$normal_date_end = $_GET['year'].'-'.$_GET['month'].'-'.$_GET['day'].' '.$time_zone[1];
+
+	$like_month = $_GET['year'].'-'.$_GET['month'].'%';
+
+	$time_start = $time_zone[0];
+	$time_end = $time_zone[1];
+
+	$where_date = "  date BETWEEN '$normal_date_start' AND '$normal_date_end' ";
+
+	if ( $get_day == '' ) {
+		$where_date = " `date` LIKE '$like_month' 
+		AND ( 
+			SUBSTRING(`date`,12,8) >= '$time_start' AND SUBSTRING(`date`,12,8) <= '$time_end' 
+		)";
+	}
+
+	// 
+	$sql = "SELECT date,hn, ptname,ptright   
+	FROM patdata 
+	WHERE $where_date 
+	AND hn != '' 
+	$where 
+	Group by hn 
+	Having sum(amount)  > 0  
+	Order by date ASC  
+	limit 70 ";
+	$result2  = mysql_query($sql);
 
 
-			$sql = "SELECT date,hn, ptname,ptright   FROM patdata WHERE hn != '' AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  ".$where." Group by hn Having sum(amount)  > 0  Order by date ASC  limit 70 ";
-			
-			// var_dump($sql);
-			$result2  = mysql_query($sql);
-		//echo $sql;
-		
-		$tempsql1="CREATE TEMPORARY TABLE  depart1  SELECT  *  FROM  depart  WHERE (date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."') ";
-		$temquery1 = mysql_query($tempsql1);
-		
-		$tempsql="CREATE TEMPORARY TABLE  appoint1  SELECT  *  FROM  appoint  WHERE (date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."') ";
-		$temquery = mysql_query($tempsql);
-		
-	//echo $tempsql;
+	$tempsql1="CREATE TEMPORARY TABLE  depart1  
+	SELECT  *  
+	FROM  depart  
+	WHERE $where_date ";
+	$temquery1 = mysql_query($tempsql1); 
+
+	
+	$tempsql="CREATE TEMPORARY TABLE  appoint1  
+	SELECT  *  
+	FROM  appoint 
+	WHERE $where_date ";
+	$temquery = mysql_query($tempsql);
+
 
 //// โค๊ดเก่า
 		/*switch($_GET["time"]){
@@ -102,7 +136,6 @@ $sql = "
 		switch($_GET["time"]){
 			case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
 			case "16:00:00-21:00:00" : $txt .= "16.30 - 21.00"; break;
-
 			case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
 		}
 		
@@ -115,12 +148,15 @@ $sql = "
 		}*/
 		
 		
-		
+		$def_day_txt = "วันที่ ".$_GET["day"];
+		if( $_GET['day'] == '' ){
+			$def_day_txt = "เดือนที่ ";
+		}
 
 		$pdf->Cell(0,7,$txt,0,0,'C');
 		$pdf->Ln();
 
-		$pdf->Cell(0,7,"วันที่ ".$_GET["day"]." ".$month_[$_GET["month"]]." ".$_GET["year"],0,0,'C');
+		$pdf->Cell(0,7,$def_day_txt." ".$month_[$_GET["month"]]." ".$_GET["year"],0,0,'C');
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Cell(10,7,"ลำดับ",1,0,'C');
@@ -218,75 +254,84 @@ $sql = "
 ";*/
 
 
-			$sql = "SELECT hn, ptname,sum(price)  FROM patdata WHERE hn != '' AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  ".$where." Group by hn Having sum(amount)  > 0 Order by date ASC  limit 70 ";
+	$sql = "SELECT hn, ptname,sum(price)  
+	FROM patdata 
+	WHERE hn != '' 
+	AND ( date between '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[0]."' 
+	AND '".$_GET["year"]."-".$_GET["month"]."-".$_GET["day"]." ".$time_zone[1]."')  
+	".$where." 
+	Group by hn 
+	Having sum(amount)  > 0 
+	Order by date ASC  
+	limit 70 ";
 
 
 	$result2  = Mysql_Query($sql);
 
-$txt = "งานกายภาพ ";
-	switch($_GET["time"]){
-	case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
-	case "16:00:00-21:00:00" : $txt .= "16.30 - 21.00"; break;
+	$txt = "งานกายภาพ ";
+		switch($_GET["time"]){
+		case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
+		case "16:00:00-21:00:00" : $txt .= "16.30 - 21.00"; break;
 
-	case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
-	
-
+		case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
+		
 	}
-$pdf->Cell(0,7,$txt,0,0,'C');
-$pdf->Ln();
 
-$pdf->Cell(0,7,"วันที่ ".$_GET["day"]." ".$month_[$_GET["month"]]." ".$_GET["year"],0);
-$pdf->Ln();
+	$pdf->Cell(0,7,$txt,0,0,'C');
+	$pdf->Ln();
 
-$pdf->Cell(10,7,"ลำดับ",1,0,'C');
+	$pdf->Cell(0,7,"วันที่ ".$_GET["day"]." ".$month_[$_GET["month"]]." ".$_GET["year"],0);
+	$pdf->Ln();
 
-$pdf->Cell(60,7,"ชื่อ - สกุล ผู้รับบริการ",1,0,'C');
+	$pdf->Cell(10,7,"ลำดับ",1,0,'C');
 
-$pdf->Cell(30,7,"HN",1,0,'C');
+	$pdf->Cell(60,7,"ชื่อ - สกุล ผู้รับบริการ",1,0,'C');
 
-$pdf->Cell(60,7,"ราคา",1,0,'C');
+	$pdf->Cell(30,7,"HN",1,0,'C');
 
-$pdf->Cell(30,7,"หมายเหตุ",1,0,'C');
+	$pdf->Cell(60,7,"ราคา",1,0,'C');
 
-$pdf->Ln();
+	$pdf->Cell(30,7,"หมายเหตุ",1,0,'C');
 
-
-$i=1;
-while(list($hn,$ptname,$price) = Mysql_fetch_row($result2)){	
-
-$pdf->Cell(10,7,$i,1,0,'C');
-
-$pdf->Cell(60,7,$ptname,1,0);
-
-$pdf->Cell(30,7,$hn,1,0,'C');
-
-$pdf->Cell(60,7,$price,1,0,'C');
-
-$pdf->Cell(30,7,"",1,0,'C');
-$pdf->Ln();
-$i++;
-}
+	$pdf->Ln();
 
 
+	$i=1;
+	while(list($hn,$ptname,$price) = Mysql_fetch_row($result2)){	
+
+		$pdf->Cell(10,7,$i,1,0,'C');
+
+		$pdf->Cell(60,7,$ptname,1,0);
+
+		$pdf->Cell(30,7,$hn,1,0,'C');
+
+		$pdf->Cell(60,7,$price,1,0,'C');
+
+		$pdf->Cell(30,7,"",1,0,'C');
+		$pdf->Ln();
+		$i++;
+	}
 
 
-$pdf->Ln();
 
-$pdf->Cell(20,7,"ผู้บันทึก",0,0,'C');
-$pdf->Cell(100,7,"          ",0,0,'R');
-$pdf->Ln();
 
-$pdf->Cell(70,7,"(                                         )",0,0,'C');
-$pdf->Cell(88,7,"(                                         )",0,0,'R');
-$pdf->Ln();
+	$pdf->Ln();
 
-$pdf->Cell(66,7,"",0,0,'C');
-$pdf->Cell(140,7,"",0,0,'C');
-$pdf->Ln();
+	$pdf->Cell(20,7,"ผู้บันทึก",0,0,'C');
+	$pdf->Cell(100,7,"          ",0,0,'R');
+	$pdf->Ln();
 
-$pdf->Cell(65,7,"........../........../..........",0,0,'C');
-$pdf->Cell(140,7,"........../........../..........",0,0,'C');
-$pdf->Ln();
+	$pdf->Cell(70,7,"(                                         )",0,0,'C');
+	$pdf->Cell(88,7,"(                                         )",0,0,'R');
+	$pdf->Ln();
+
+	$pdf->Cell(66,7,"",0,0,'C');
+	$pdf->Cell(140,7,"",0,0,'C');
+	$pdf->Ln();
+
+	$pdf->Cell(65,7,"........../........../..........",0,0,'C');
+	$pdf->Cell(140,7,"........../........../..........",0,0,'C');
+	$pdf->Ln();
 
 }//นวดแผนไทย
 
