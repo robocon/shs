@@ -17,21 +17,6 @@ require("connect.php");
 	$month_["11"] = "พฤศจิกายน";
 	$month_["12"] = "ธันวาคม";
 
-
-
-
-
-
-$pdf = new PDF('L' ,'mm','A4');
-
-$pdf->SetThaiFont();
-
-$pdf->SetMargins(10, 10);
-
-$pdf->AddPage();
-
-$pdf->SetFont('AngsanaNew', '', 14);
-
 if($_GET["day"] != ""){
 	$_GET["day"] = sprintf("%02d",$_GET["day"]);
 }else{
@@ -129,113 +114,151 @@ $sql = "
 	$temquery = mysql_query($tempsql);
 
 
-//// โค๊ดเก่า
-		/*switch($_GET["time"]){
-			case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
-			case "16:00:00-21:00:00" : $txt .= "16.30 - 21.00"; break;
+	$txt = "ทะเบียนผู้มารับบริการ เวลา  ";
+	
+	switch($_GET["time"]){
+		case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
+		case "16:00:00-21:00:00" : $txt .= "16.30 - 21.00"; break;
+		case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
+	}
+	
+	$def_day_txt = "วันที่ ".$_GET["day"];
+	if( $_GET['day'] == '' ){
+		$def_day_txt = "เดือน ";
+	}
 
-			case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
-		}*/
-		$txt = "ทะเบียนผู้มารับบริการ เวลา  ";
-		
-		switch($_GET["time"]){
-			case "07:30:00-16:00:00" : $txt .= "08.00 - 16.00"; break;
-			case "16:00:00-21:00:00" : $txt .= "16.30 - 21.00"; break;
-			case "07:30:00-21:00:00" : $txt .= "08.00 - 21.00"; break;
+	$view_type = $_GET['view_type'];
+	// view_type = table คือให้หน้างานเค้าก๊อบไปวางใน excel ได้
+	if( $view_type == 'table' ){
+		// 
+		?>
+		<style>
+		*{
+			font-family: "TH Sarabun New"," TH SarabunPSK";
+			font-size: 14pt;
 		}
-		
-	/*	if($_GET["time"]=="07:30:00-16:00:00"){
-			$time="08.00 - 16.00";	
-		}else if($_GET["time"]=="16:00:00-21:00:00"){
-			$time="16.30 - 21.00";
-		}else if($_GET["time"]=="07:30:00-21:00:00"){
-			$time="08.00 - 21.00";
-		}*/
-		
-		
-		$def_day_txt = "วันที่ ".$_GET["day"];
-		if( $_GET['day'] == '' ){
-			$def_day_txt = "เดือนที่ ";
+		table.shsTb{
+			border-collapse: collapse;
+			width: 100%;
 		}
+		table.shsTb th,
+		table.shsTb td{
+			border: 1px solid black;
+			vertical-align: top;
+		}
+		</style>
+		<div>
+			<div style="text-align:center;">ทะเบียนผู้มารับบริการ เวลา <?=$_GET["time"];?></div>
+			<div style="text-align:center;"><?=$def_day_txt.' '.$month_[$_GET["month"]]." ".$_GET["year"];?></div>
+			<div >
+				<table class="shsTb">
+					<thead>
+						<tr>
+							<th>ลำดับ</th>
+							<th>ชื่อ-สกุล ผู้มารับบริการ</th>
+							<th>HN</th>
+							<th>การวินิจฉัยโรค</th>
+							<th>สิทธิการรักษา</th>
+							<th>นัดครั้งต่อไป</th>
+							<th>หมายเหตุ</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php 
+					$i = 1;
+					while(list($date,$hn,$ptname,$ptright) = mysql_fetch_assoc($result2)){ 
 
+						$subdate=explode(" ",$date);
+			
+						$strsql1="SELECT  diag  FROM  depart1   WHERE  date='$date' ";
+						$objquery1 = mysql_query($strsql1);
+						list($diag) = mysql_fetch_row($objquery1);
+						
+						$strsql2="SELECT  appdate  FROM appoint1    WHERE  hn='$hn'  and date like'$subdate[0]%' ";
+						$objquery2  = mysql_query($strsql2);
+						list($appdate) = mysql_fetch_row($objquery2);
+						
+						?>
+						<tr>
+							<td><?=$i;?></td>
+							<td><?=$ptname;?></td>
+							<td><?=$hn;?></td>
+							<td><?=$diag;?></td>
+							<td><?=$ptright;?></td>
+							<td><?=$appdate;?></td>
+							<td></td>
+						</tr>
+						<?php
+						$i++;
+					}
+					?>
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<table style="width: 30%">
+					<tr>
+						<td>ผู้บันทึก</td>
+						<td style="text-align:center;">..............................</td>
+					</tr>
+					<tr>
+						<td style="text-align:center;">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+						<td style="text-align:center;">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+					</tr>
+					<tr>
+						<td style="text-align:center;">..............................</td>
+						<td style="text-align:center;">แพทย์ผู้รักษา</td>
+					</tr>
+					<tr>
+						<td style="text-align:center;">........../........../..........</td>
+						<td style="text-align:center;">........../........../..........</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<?php 
 
-		// view_type
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	}else{
+		$pdf = new PDF('L' ,'mm','A4');
+		$pdf->SetThaiFont();
+		$pdf->SetMargins(10, 10);
+		$pdf->AddPage();
+		$pdf->SetFont('AngsanaNew', '', 14);
 		$pdf->Cell(0,7,$txt,0,0,'C');
 		$pdf->Ln();
-
 		$pdf->Cell(0,7,$def_day_txt." ".$month_[$_GET["month"]]." ".$_GET["year"],0,0,'C');
 		$pdf->Ln();
 		$pdf->Ln();
 		$pdf->Cell(10,7,"ลำดับ",1,0,'C');
-
 		$pdf->Cell(50,7,"ชื่อ - สกุล ผู้รับบริการ",1,0,'C');
-
 		$pdf->Cell(15,7,"HN",1,0,'C');
-		
 		$pdf->Cell(80,7,"การวินิจฉัยโรค",1,0,'C');
-		
 		$pdf->Cell(50,7,"สิทธิการรักษา",1,0,'C');
-		
 		$pdf->Cell(40,7,"นัดครั้งต่อไป",1,0,'C');
-
 		$pdf->Cell(30,7,"หมายเหตุ",1,0,'C');
-
 		$pdf->Ln();
-
-		
 
 		$i=1;
 		while(list($date,$hn,$ptname,$ptright) = mysql_fetch_row($result2)){	
 		
-				$subdate=explode(" ",$date);
-				
-				
-				$strsql1="SELECT  diag  FROM  depart1   WHERE  date='$date' ";
-				$objquery1 = mysql_query($strsql1);
-				list($diag) = mysql_fetch_row($objquery1);
-				
-				$strsql2="SELECT  appdate  FROM appoint1    WHERE  hn='$hn'  and date like'$subdate[0]%' ";
-				$objquery2  = mysql_query($strsql2);
-				list($appdate) = mysql_fetch_row($objquery2);
-				
-				/*$doctor=explode(" ",$_GET["doctor"]);
-				 ".$doctor[1].' '.$doctor[2]." */
-				
+			$subdate=explode(" ",$date);
 			
-		$pdf->Cell(10,7,$i,1,0,'C');
-
-		$pdf->Cell(50,7,$ptname,1,0);
-
-		$pdf->Cell(15,7,$hn,1,0,'L');
-		$pdf->Cell(80,7,$diag,1,0,'L');
-
-		$pdf->Cell(50,7,$ptright,1,0,'L');
-		$pdf->Cell(40,7,$appdate,1,0,'L');
-
-		$pdf->Cell(30,7,"",1,0,'C');
-		$pdf->Ln();
-		$i++;
+			$strsql1="SELECT  diag  FROM  depart1   WHERE  date='$date' ";
+			$objquery1 = mysql_query($strsql1);
+			list($diag) = mysql_fetch_row($objquery1);
+			
+			$strsql2="SELECT  appdate  FROM appoint1    WHERE  hn='$hn'  and date like'$subdate[0]%' ";
+			$objquery2  = mysql_query($strsql2);
+			list($appdate) = mysql_fetch_row($objquery2);
+			$pdf->Cell(10,7,$i,1,0,'C');
+			$pdf->Cell(50,7,$ptname,1,0);
+			$pdf->Cell(15,7,$hn,1,0,'L');
+			$pdf->Cell(80,7,$diag,1,0,'L');
+			$pdf->Cell(50,7,$ptright,1,0,'L');
+			$pdf->Cell(40,7,$appdate,1,0,'L');
+			$pdf->Cell(30,7,"",1,0,'C');
+			$pdf->Ln();
+			$i++;
 		}
 
 		$pdf->Ln();
@@ -255,6 +278,7 @@ $sql = "
 		$pdf->Cell(65,7,"........../........../..........",0,0,'C');
 		$pdf->Cell(140,7,"........../........../..........",0,0,'C');
 		$pdf->Ln();
+	}
 		//ฝังเข็ม
 }else{
 
