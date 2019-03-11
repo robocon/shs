@@ -8,7 +8,11 @@ $month_ = array(
 );
 
 ?>
-
+<style>
+label:hover{
+	cursor: pointer;
+}
+</style>
 <FORM METHOD=POST ACTION="statrp01.php" target="_blank">
 <TABLE border="1" bordercolor="#3300FF"  cellpadding="0" cellspacing="0">
 <TR>
@@ -351,6 +355,12 @@ $month_ = array(
 		?>
 		    </select></TD>
 	  </TR>
+	<tr>
+		<td></td>
+		<td>
+			<label for="view_type"><input type="checkbox" name="view_type" id="view_type" value="table"> เลือกการแสดงผลแบบปกติ</label>
+		</td>
+	</tr>
 	<TR>
 		<TD colspan="5" align="center"><INPUT TYPE="submit" name="submit" value="ตกลง"></TD>
 	</TR>

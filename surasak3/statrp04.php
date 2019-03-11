@@ -17,6 +17,11 @@ require("connect.php");
 	$month_["11"] = "พฤศจิกายน";
 	$month_["12"] = "ธันวาคม";
 
+
+
+
+
+
 $pdf = new PDF('L' ,'mm','A4');
 
 $pdf->SetThaiFont();
@@ -152,6 +157,29 @@ $sql = "
 		if( $_GET['day'] == '' ){
 			$def_day_txt = "เดือนที่ ";
 		}
+
+
+		// view_type
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		$pdf->Cell(0,7,$txt,0,0,'C');
 		$pdf->Ln();
