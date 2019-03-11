@@ -326,6 +326,13 @@ while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
 
+$his_hpi = array();
+$sql = "SELECT DISTINCT `hpi` FROM `opd` WHERE `hn` = '".$_REQUEST["hn"]."' AND `hpi` <> '' ORDER BY `row_id` DESC LIMIT 10";
+$q = mysql_query($sql) or die (mysql_error());
+while ($hpi_item = mysql_fetch_assoc($q)) {
+	$his_hpi[] = $hpi_item['hpi'];
+}
+
 $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 	
@@ -800,8 +807,8 @@ mmHg </td>
 				<td align="left">
 					<input name="painscore" type="text" id="painscore" size="3" value="" />
 				</td>
-				<td align="right"></td>
-				<td align="left"></td>
+				<td align="right">O<sub>2</sub> Sat: </td>
+				<td align="left"><input type="text" name="otwosat" id="">%</td>
 				<td align="right"></td>
 				<td align="left"></td>
 			 </tr>
@@ -1030,10 +1037,41 @@ mmHg </td>
          </tr>
 		 <tr>
 			 <td align="right" valign="top" >HPI:</td>
-			 <td colspan="5"> 
+			 <td rowspan="3" colspan="2"> 
 			 	<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 			 </td>
+			 <td colspan="3">
+
+				<select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
+					<option value="">--- ตัวช่วย ---</option>
+					<?php
+					foreach($choose as $value){
+						echo "<option value='".$value."'>".$value."</option>";
+					}
+					?>
+				</select>
+
+			 </td>
 		 </tr>
+		 <tr>
+			 <td></td>
+			 <td colspan="4">
+				 <select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
+					<option value="">--- ตัวช่วย ---</option>
+					<?php
+					foreach($his_hpi as $value){
+						echo "<option value='".$value."'>".$value."</option>";
+					}
+					?>
+				</select>
+			 </td>
+		 </tr>
+		 <tr>
+			 <td></td>
+			 <td colspan="4"></td>
+		 </tr>
+
+
 		<script language=Javascript>
             function Inint_AJAX() {
                try { return new ActiveXObject("Msxml2.XMLHTTP");  } catch(e) {} //IE
