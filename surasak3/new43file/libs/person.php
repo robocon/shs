@@ -1,7 +1,7 @@
 <?php
 
-// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-// mysql_select_db('smdb', $db2) or die( mysql_error() );
+$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 
 //-------------------- Create file person ไฟล์ที่ 1 --------------------//
@@ -13,25 +13,6 @@
 // AND b.thidate like '$thimonth%'  
 // GROUP BY a.hn";
 
-/*
-$temp1 = "CREATE  TEMPORARY  TABLE report_person1 
-SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright,  
-CASE 
-    WHEN d.hphone <> '' THEN d.hphone 
-    WHEN d.phone <> '' THEN d.phone
-    WHEN d.ptffone <> '' THEN d.ptffone
-END AS `PHONE` ,
-d.`typearea` AS `TYPEAREA`,
-thDateTimeToEn(d.`lastupdate`) AS `d_update` 
-FROM (
-    SELECT `hn`, SUBSTRING(`thidate`, 1, 10) AS `date2` 
-    FROM `opday` 
-    WHERE `thidate` LIKE '$thimonth%' 
-    GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10),`hn`)
-) AS c 
-LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
-ORDER BY d.`hn` ";
-*/
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
 SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright,  
 CASE 
@@ -52,47 +33,50 @@ FROM (
 		LEFT JOIN `opday` AS y ON y.`row_id` = x.`row_id` 
 ) AS c 
 LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn` 
-WHERE d.`hn` IS NOT NULL ";
+WHERE d.`hn` IS NOT NULL 
+AND ( d.`idguard` NOT LIKE 'MX05%' AND d.`idguard` NOT LIKE 'MX07%' ) ";
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed person ,Create temp1: ".mysql_error());
-
-
-$where = "AND `dcdate` LIKE '$thimonth%' ";
-
-$test_match_day = preg_match('\d{4}\-\d{2}\-\d{2}', $thimonth, $matchs);
-if( $test_match_day > 0 ){
-    $where = "AND ( `date` <= '$thimonth' AND `dcdate` >= '$thimonth' )";
-}
-
-/*
-$ipt_sql = "CREATE  TEMPORARY  TABLE person_ipt 
-SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright, 
-
-CASE 
-    WHEN d.hphone <> '' THEN d.hphone 
-    WHEN d.phone <> '' THEN d.phone
-    WHEN d.ptffone <> '' THEN d.ptffone
-END AS `PHONE` ,
-d.`typearea` AS `TYPEAREA`, 
-thDateTimeToEn(d.`lastupdate`) AS `d_update` 
-
-FROM ( 
-    SELECT * 
-    FROM `ipcard` 
-    WHERE `bedcode` <> '' 
-    $where 
-) AS c 
-LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn` ";
-mysql_query($ipt_sql, $db2) or die( mysql_error() );
-*/
 
 $sql1="SELECT * FROM report_person1 ";
 $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
-while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
+while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
 
     $PID = $hn;
     $fstatus = "";
     $vstatus = "";
+
+    $phone = trim($phone);
+    $phone = str_replace('-', '', $phone);
+
+    // ตัด / , ช่องว่าง เอาเฉพาะเบอร์แรก
+    $test_phone = strpos($phone,'/');
+    if( $test_phone > 0 ){
+        $phone = substr($phone, 0, $test_phone);
+    }
+
+    $test_phone = strpos($phone,',');
+    if( $test_phone > 0 ){
+        $phone = substr($phone, 0, $test_phone);
+    }
+
+    $test_phone = strpos($phone,' ');
+    if( $test_phone > 0 ){
+        $phone = substr($phone, 0, $test_phone);
+    }
+
+    // ตัด / , ช่องว่าง เอาเฉพาะเบอร์แรก
+
+    $yot = trim($yot);
+    if( stripos($yot,'หญิง') > 0 ){ 
+        $yot = str_replace('หญิง', '', $yot);
+    }
+
+    $yot = trim($yot);
+    if( stripos($yot,'พลทหาร') > 0 ){ 
+        $yot = str_replace('พลทหาร', 'พลฯ', $yot);
+    }
+    
     
     if(empty($dob)){
         $birth=date("Y")."0101";
@@ -188,7 +172,7 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$id,$thidate,$yot
 
     $thidatey1= $thidatey-543;
 
-    $sql ="select code from pername where (detail1='$yot' or detail2='$yot')   ";
+    $sql ="SELECT `code` FROM `pername` WHERE (`detail1`='$yot' OR `detail2`='$yot' OR `detail3`='$yot' OR `detail4`='$yot')";
     $row = mysql_query($sql, $db2);
     list($pername) = mysql_fetch_array($row);
 
