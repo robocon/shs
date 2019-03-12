@@ -1,4 +1,4 @@
-<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=7,chrome=1">
+<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8,chrome=1">
 <style>
 body {
 	background-color:#CCE9FD;
@@ -22,6 +22,12 @@ legend {
 	 size:16PX;
 	/* font-weight:bold;*/
  }
+ .fonthead1{
+	 font-family:"Angsana New";
+	 size:16PX;
+	 color:#FF0000;
+	/* font-weight:bold;*/
+ } 
 
  .chk_table{
     border-collapse: collapse;
@@ -47,9 +53,6 @@ legend {
 }
 #btn_show_icf{
 	color: blue;
-}
-.icf_static{
-	z-index: 99;
 }
 
 </style>
@@ -222,9 +225,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cPtright2 =$row->ptright2;
 		$cHospcode=$row->hospcode;
 		$typearea = $row->typearea;
-
 		$vstatus = $row->vstatus;
-
 		//echo substr($cPtright,1,3);
 		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
 			echo '<script>alert("ผู้ป่วยสิทธิประกันสุขภาพถ้วนหน้า(ผู้พิการ)\กรุณาตรวจสอบสิทธิการรักษา\r\nเพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด");</script>';
@@ -434,7 +435,7 @@ return $pAge;
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td>
 			<div style="position: relative;">
-				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" onkeyup="check_yot()" size="5" >
+				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" onKeyUp="check_yot()" size="5" >
 				<div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
 			</div>
 		</td>
@@ -1179,7 +1180,7 @@ while(list($rid,$typename,$typestatus)= mysql_fetch_array($rows)){
 }
 
 ?>
-</select></td>
+</select>&nbsp;&nbsp;ชื่อผู้ยืม : <input type='text' name='borow' size='30' value='<?=$borow;?>'> </td>
     <td class="fonthead">สิทธิการรักษาปัจจุบัน</td>
     <td class="fonthead">
     <input type="checkbox" value="lock" name="lockptright5" <? if($cPtright2!="") echo "checked";?>> (LOCK)&nbsp;
@@ -1250,8 +1251,10 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 </select></td>
   </tr>
   <tr>
-    <td align="right" class="fonthead">ชื่อผู้ยืม :</td>
-    <td><input type='text' name='borow' size='30' value='<?=$borow;?>'></td>
+    <td align="right" class="fonthead">ค่าบริการนอกเวลาราชการ</td>
+    <td class="fonthead1"><input name="doctor80" type="checkbox" value="doctor80">
+ค่าบริการทางการแพทย์ 80 บาท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="doctor50" type="checkbox" value="doctor50">
+ค่าบริการทางการแพทย์ 50 บาท</td>
     <td colspan="3" class="fonthead">**มาครั้งสุดท้าย <?=$cD1;?>-<?=$cM1;?>-<?=$cY1;?> <?=$cT1;?> **</td>
     </tr>
 </table>

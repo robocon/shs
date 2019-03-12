@@ -37,6 +37,9 @@ if($_POST["act"]=="edit"){
         <select name="year" id="year">
           <option value="58">2558</option>
           <option value="59">2559</option>
+          <option value="60">2560</option>
+          <option value="61">2561</option>
+          <option value="62">2562</option>          
         </select>
         <input type="submit" name="button" id="button" value="ปรับปรุงข้อมูล">
         </label></td>

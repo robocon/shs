@@ -74,7 +74,8 @@ if($_POST["act"]=="show"){
 		
 	}else{
 		$showcamp=substr($_POST["camp"],4);
-		$sql="CREATE  TEMPORARY  TABLE report_armychkup SELECT * FROM condxofyear_so where yearcheck = '$showyear' AND camp1 = '$_POST[camp]'";	
+		$sql="CREATE  TEMPORARY  TABLE report_armychkup SELECT * FROM condxofyear_so where yearcheck = '$showyear' AND camp1 = '$_POST[camp]'";
+		//echo $sql;
 		$query=mysql_query($sql);	
 	}
 	$chksql=mysql_query("select * from report_armychkup");
@@ -100,7 +101,9 @@ if($_POST["act"]=="show"){
 	$age35hct=0;	
 	$age35glu=0;
 	$age35chol=0;		
-	$age35trig=0;	
+	$age35trig=0;
+	$age35hdl=0;
+	$age35ldl=0;	
 	$age35bun=0;	
 	$age35crea=0;	
 	$age35sgot=0;	
@@ -379,6 +382,12 @@ if($_POST["act"]=="show"){
 			if($chkrows["stat_tg"]=="ผิดปกติ"){
 				$age35trig++;
 			}
+			if($chkrows["stat_hdl"]=="ผิดปกติ"){
+				$age35hdl++;
+			}
+			if($chkrows["stat_ldl"]=="ผิดปกติ"){
+				$age35ldl++;
+			}						
 			if($chkrows["stat_bun"]=="ผิดปกติ"){
 				$age35bun++;
 			}
@@ -654,6 +663,8 @@ if($_POST["act"]=="show"){
 		$sumdm=$age34dm+$age35dm;		
 		$sumchol=$age35chol;
 		$sumtrig=$age35trig;
+		$sumhdl=$age35hdl;
+		$sumldl=$age35ldl;
 		$sumcholtrig=$age35choltrig;
 		$sumsgot=$age35sgot;
 		$sumsgpt=$age35sgpt;
@@ -702,6 +713,8 @@ $percenht=$sumht*100/$numchkup;
 $percendm=$sumdm*100/$numchkup;
 $percenchol=$sumchol*100/$numchkup;
 $percentrig=$sumtrig*100/$numchkup;
+$percenhdl=$sumhdl*100/$numchkup;
+$percenldl=$sumldl*100/$numchkup;
 $percencholtrig=$sumcholtrig*100/$numchkup;
 $percensgot=$sumsgot*100/$numchkup;
 $percensgpt=$sumsgpt*100/$numchkup;
@@ -950,9 +963,9 @@ $percensgotsgpt=$sumsgotsgpt*100/$numchkup;
   <tr>
     <td>&nbsp;</td>
     <td align="left"><div style="margin-left:25px;">HDL-C ผิดปกติ</div></td>
-    <td align="right">ไม่มีการตรวจ</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    <td align="right"><?=$age35hdl;?></td>
+    <td>&nbsp;&nbsp;ราย</td>
   </tr>
   <tr>
     <td>&nbsp;</td>
@@ -964,9 +977,9 @@ $percensgotsgpt=$sumsgotsgpt*100/$numchkup;
   <tr>
     <td>&nbsp;</td>
     <td align="left"><div style="margin-left:25px;">LDL-C ผิดปกติ</div></td>
-    <td align="right">ไม่มีการตรวจ</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
+    <td align="right">&nbsp;</td>
+    <td align="right"><?=$age35ldl;?></td>
+    <td>&nbsp;&nbsp;ราย</td>
   </tr>
   <tr>
     <td>&nbsp;</td>

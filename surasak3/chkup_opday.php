@@ -30,10 +30,10 @@ function check(){
 		alert('กรุณาเลือกสังกัดที่ตรวจสุขภาพ');
 		document.form2.camp.focus();
 		return false;	
-	}else if(document.form2.position.value ==""){
+/*	}else if(document.form2.position.value ==""){
 		alert('กรุณากรอกข้อมูลตำแหน่ง');
 		document.form2.position.focus();
-		return false;																																
+		return false;	*/																															
 	}else if(document.form2.camp.value =="D33 หน่วยทหารอื่นๆ" && document.form2.othercamp.value ==""){
 		alert('กรุณากรอกข้อมูลชื่อหน่วยทหารที่สังกัด');
 		document.form2.othercamp.focus();
@@ -157,6 +157,36 @@ if(isset($_POST['save2'])){
 			$newcamp=substr($camp,4);
 			echo "<script>alert('$yot $ptname สังกัด $newcamp มีอยู่ในระบบแล้ว');</script>";
 		}
+		
+$sql1="select yot,ptname,chunyot, camp, othercamp, position, ratchakarn from chkup_solider where (idcard = '".$_POST['idcard']."' || hn='".$_POST['hn']."')  and yearchkup='".($nPrefix-1)."'";
+//echo $sql1;
+$query1=mysql_query($sql1);
+$rows1=mysql_fetch_array($query1);
+
+if(empty($chunyot)){
+	$chunyot=$rows1["chunyot"];
+}else{
+	$chunyot;
+}
+
+if(empty($camp)){
+	$camp=$rows1["camp"];
+}else{
+	$camp;
+}
+
+
+if(empty($position)){
+	$position=$rows1["position"];
+}else{
+	$position;
+}
+
+if(empty($ratchakarn)){
+	$ratchakarn=$rows1["ratchakarn"];
+}else{
+	$ratchakarn;
+}
 ?>		
 <table width="50%" border="0" align="center" cellpadding="3" cellspacing="0">
   <tr>
@@ -242,8 +272,9 @@ if(isset($_POST['save2'])){
       <option value="D30 ร.17 พัน.2">ร.17 พัน.2</option>  
       <option value="D31 ช.พัน.4 ร้อย4">ช.พัน.4 ร้อย4</option>  
       <option value="D32 ร้อย.ฝรพ.3">ร้อย.ฝรพ.3</option>
-        <option value="D34 กทพ.33">กทพ.33</option>
-      <option value="D33 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>                            
+      <option value="D34 กทพ.33">กทพ.33</option>
+      <option value="D33 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>
+      <option value="D35 สปร.เขตพื้นที่ มทบ.32">สปร.เขตพื้นที่ มทบ.32</option>                            
     </select></td>
   </tr>
   <tr>
@@ -297,7 +328,7 @@ if(isset($_POST['save2'])){
 <table width="40%" border="0" cellspacing="0" cellpadding="3">
   <tr>
     <td width="26%" align="right"><strong>HN :</strong></td>
-    <td width="74%"><input name="hn" type="text" class="forntsarabun" id="hn" />
+    <td width="74%"><input name="hn" type="text" class="forntsarabun" id="hn" autofocus="on" />
 หรือ</td>
   </tr>
   <tr>

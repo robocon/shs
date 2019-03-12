@@ -395,12 +395,9 @@ for($i=0;$i<$count;$i++)
 	<CENTER>***************************</CENTER>
 	<CENTER><B>เวลาฉีดยา</B></CENTER>
 	</FONT>
-	<FONT style="font-family: Angsana New; font-size: 20px;">
-	&nbsp;&nbsp;&nbsp;&nbsp;<B>เช้า</B>&nbsp;&nbsp;08.30  - 12.00 
-	&nbsp;&nbsp;<B>บ่าย</B>&nbsp;&nbsp;13.00  - 16.00 
-	&nbsp;&nbsp;<B>เย็น</B>&nbsp;&nbsp;16.30  - 20.00
-	
-	</FONT>
+	<div align="center"><FONT style="font-family: Angsana New; font-size: 20px;" >
+	<B>เช้า</B>&nbsp;&nbsp;08.30  - 12.00 
+	&nbsp;&nbsp;<B>บ่าย</B>&nbsp;&nbsp;13.00  - 16.00</FONT></div>
 	</TD>
 </TR>
 

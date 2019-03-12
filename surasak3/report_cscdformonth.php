@@ -21,7 +21,9 @@ body,td,th {
 </head>
 
 <body>
-<p align="center" style="margin-top: 20px;"><strong>เลือกวันที่ต้องการดูข้อมูลการส่งเบิกเงินผู้ป่วยนอกสิทธิเบิกจ่ายตรง (CSCD)</strong></p>
+<p align="center" style="margin-top: 20px;"><strong>เลือกเดือนที่ต้องการดูข้อมูลการส่งเบิกเงินผู้ป่วยนอกสิทธิเบิกจ่ายตรง (CSCD)</strong>
+<div align="center">เริ่มใช้ระบบใหม่ เมื่อวันที่ 1 เดือนกันยายน พ.ศ. 2561</div>
+</p>
 <div align="center">
   <form method="post" action="report_cscdformonth.php">
     <input type="hidden" name="act" value="show" />
@@ -223,7 +225,7 @@ $total_ca=$total_c+$total_a;
     <td align="right" bgcolor="#FF9966"><strong>
       <?=number_format($total_a,2);?>
     </strong></td>
-    <td align="right" bgcolor="#FF9966"><strong>
+    <td align="right" bgcolor="#33CCCC"><strong>
       <?=number_format($total_c,2);?>
     </strong></td>
   </tr>  
@@ -231,8 +233,25 @@ $total_ca=$total_c+$total_a;
 $avg=($total*100)/$sumprice;
 ?>  
 </table>
-
 <?
+	if($chkdate1=="2561-09"){
+		echo "<p align='center'>- เดือนกันยายน 2561 ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 4 วัน คือ วันที่ 17,18,20 และ26<br>
+		</p>";
+	}else if($chkdate1=="2561-10"){
+		echo "<p align='center'>- เดือนตุลาคม 2561 ส่งข้อมูลผ่าน 100% จำนวน 4 วัน คือ วันที่ 13,15,20 และ 24</p>";
+		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 2 วัน คือ วันที่ 14 และ 23</p>";
+	}else if($chkdate1=="2561-11"){
+		echo "<p align='center'>- เดือนพศจิกายน 2561 ส่งข้อมูลผ่าน 100% จำนวน 1 วัน คือ วันที่ 5</p>";
+	}else if($chkdate1=="2561-12"){
+		echo "<p align='center'>- เดือนธันวาคม 2561 ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 15,18 และ 31</p>";
+		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 16,23,25,29 และ 30</p>";			
+	}else if($chkdate1=="2562-01"){
+		echo "<p align='center'>- เดือนมกราคม 2562 ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 1,4 และ 12</p>";
+		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 8 วัน คือ วันที่ 3,6,10,15,18,20,24 และ 30</p>";
+	}else if($chkdate1=="2562-02"){
+		echo "<p align='center'>- เดือนกุมภาพันธ์ 2562 ส่งข้อมูลผ่าน 100% จำนวน 2 วัน คือ วันที่ 17 และ 24</p>";
+		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 2 วัน คือ วันที่ 11 และ 14</p>";		
+	}	
 }
 ?>
 </body>

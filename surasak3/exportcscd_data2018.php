@@ -20,8 +20,10 @@ body,td,th {
   ?>
 <form method="POST" action="datacscd2018/exportdatacscd.php">
 <p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD)<br />
-ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.ต. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
-<div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 1 เดือนกันยายน พ.ศ.2561 เป็นต้นไป</div></strong></p>
+ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.ท. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
+<div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 1 เดือนกันยายน พ.ศ.2561 เป็นต้นไป</div></strong>
+<div style="color:#0000FF">ค้างส่งข้อมูลของวันที่ 9 เดือน กุมภาพันธ์ พ.ศ.2562 และวันที่ 12-28 เดือน กุมภาพันธ์ พ.ศ.2562 เนื่องจากรอการลงรหัสโรค <a href="report_diagnotfound_cscd.php" target="_blank" >ICD10</a> และรหัสหัตถการ <a href="report_icd9cmnotfound_cscd.php" target="_blank" >ICD9CM</a> ให้ผู้ป่วย</div></strong>
+</p>
   <strong>ข้อมูลประจำวันที่ : </strong>
   <select name="rptdate" class="txt" id="rptdate">
   <?
