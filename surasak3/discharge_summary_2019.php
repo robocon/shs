@@ -320,7 +320,7 @@ table.dctb td{
                 </tr>
                 <tr>
                     <td>3&nbsp;&nbsp;ESCAPE</td>
-                    <td>7&nbsp;&nbsp;DEAD  NO  SUTOPSY</td>
+                    <td>7&nbsp;&nbsp;DEAD  NO  AUTOPSY</td>
                 </tr>
                 <tr>
                     <td>4&nbsp;&nbsp;BY TRANSFER</td>

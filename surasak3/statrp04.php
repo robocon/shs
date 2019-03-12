@@ -98,7 +98,7 @@ $sql = "
 	Order by date ASC  
 	limit 70 ";
 	$result2  = mysql_query($sql);
-
+	
 
 	$tempsql1="CREATE TEMPORARY TABLE  depart1  
 	SELECT  *  
@@ -166,7 +166,7 @@ $sql = "
 					<tbody>
 					<?php 
 					$i = 1;
-					while(list($date,$hn,$ptname,$ptright) = mysql_fetch_assoc($result2)){ 
+					while(list($date,$hn,$ptname,$ptright) = mysql_fetch_row($result2)){ 
 
 						$subdate=explode(" ",$date);
 			
@@ -195,22 +195,31 @@ $sql = "
 					</tbody>
 				</table>
 			</div>
+			<br>
 			<div>
-				<table style="width: 30%">
+				<table style="width: 50%">
 					<tr>
 						<td>ผู้บันทึก</td>
-						<td style="text-align:center;">..............................</td>
+						<td></td>
+						<td></td>
+						<td style="text-align:center;">.............................................</td>
 					</tr>
 					<tr>
-						<td style="text-align:center;">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
-						<td style="text-align:center;">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+						<td style="text-align:center;">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+						<td></td>
+						<td></td>
+						<td style="text-align:center;">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
 					</tr>
 					<tr>
-						<td style="text-align:center;">..............................</td>
+						<td style="text-align:center;">.............................................</td>
+						<td></td>
+						<td></td>
 						<td style="text-align:center;">แพทย์ผู้รักษา</td>
 					</tr>
 					<tr>
 						<td style="text-align:center;">........../........../..........</td>
+						<td></td>
+						<td></td>
 						<td style="text-align:center;">........../........../..........</td>
 					</tr>
 				</table>
