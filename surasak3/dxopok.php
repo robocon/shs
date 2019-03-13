@@ -89,6 +89,7 @@ else if($icd10_1=='X' ){
 else {$dxgroup1='21';};
 
 $thidate=(date("Y")+543).date("-m-d H:i:s");
+$clinic = $_POST['clinic'];
 
         $query ="UPDATE opday SET goup='$goup', 
   		                        dxgroup = '$dxgroup1',

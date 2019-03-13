@@ -906,6 +906,7 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 					 */
 			?>
 			<select name="clinic" id="">
+					 <option value="0"><-- เลือกคลีนิก --></option>
 			<?php 
 			$q = mysql_query("SELECT * FROM `clinic` ") or die( mysql_error() );
 			while ($clin = mysql_fetch_assoc($q)) { 

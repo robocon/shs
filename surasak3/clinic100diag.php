@@ -47,7 +47,7 @@ If (!empty($hn)){
     $yr=substr($today,6,4) +543;  
 	$thidatehn=$d.'-'.$m.'-'.$yr.$hn;
 
-	$sql = "Select vn From opday where thdatehn = '".$thidatehn."' limit 1";
+	$sql = "Select vn From opday where thdatehn = '".$thidatehn."' ORDER BY row_id DESC limit 1";
 	$opday_result = Mysql_Query($sql);
 	$opday_row = mysql_num_rows($opday_result);
 	
