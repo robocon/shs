@@ -240,7 +240,7 @@ OR $cDoctor2 == 'MD151'){
 }
 
 // เฉพาะแพทย์แผนไทย
-if( $cDoctor2 == 'MD058' ){
+if( $cDoctor2 == 'MD058' || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157'){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - อัจฉรา อวดห้าว</a>

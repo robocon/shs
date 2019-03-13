@@ -2014,7 +2014,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	<INPUT TYPE="text" id="an" NAME="an" size="6" value="<?php echo $arr["an"];?>" onKeyPress="check_number_an();">&nbsp;<INPUT TYPE="button" value="คิดเงิน ผป. ใน" onClick="if(document.f1.an.value !=''){window.open('eripage.php?get_hn='+document.f1.an.value,'_blank');} else{alert('กรุณากรอก AN');}">&nbsp;
 	<INPUT TYPE="button" value="ค่าใช้จ่าย" onClick="view_expenses(document.f1.an.value);">
 	&nbsp;
-	<button onClick="print_sticker_an(event)">Stick ผป.นอก</button>
+	<button onClick="print_sticker_an(event)">Stick ผป.ใน</button>
 	
 	<script tyep="text/javascript">
 		function print_sticker_an(event){
@@ -2035,8 +2035,32 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 			window.open('anchkstk_er.php?Can='+an);
 		}
 	</script>
+    
+	<script tyep="text/javascript">
+		function print_sticker_ipd(event){
+			
+			if( event.preventDefault ){
+				event.preventDefault();
+			}else{
+				event.returnValue = false;
+			}
+			
+			var hn = document.getElementById('hn').value;
+			// var hn = document.getElementById('hn').value;
+			if( hn === '' ){
+				alert('กรุณาใส่ hn');
+				return false;
+			}
+			
+			window.open('hnchkstk_er.php?Chn='+hn);
+		}
+	</script>    
 	
 	</TD>
+</TR>
+<TR>
+  <TD align="right">&nbsp;</TD>
+  <TD colspan="7"><button onClick="print_sticker_ipd(event)">Stick ผป.นอก</button></TD>
 </TR>
 <TR>
 	<TD>&nbsp;</TD>
