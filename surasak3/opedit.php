@@ -1271,11 +1271,11 @@ $result = Mysql_Query($sql);
 list($rows) = Mysql_fetch_row($result);
 if($rows > 0){ // ถ้ามีแสดงว่าเคยลงทะเบียนในวันนี้แล้ว
 
+	// <Option value=\"\">----------------</Option>
+	// <Option value=\"1\">ออก VN ใหม่</Option>
 	print "<BR><span style=\"background-color: #FFFFCC\"><FONT SIZE=\"3\" COLOR=\"red\">ผู้ป่วยเคยลงทะเบียนในวันนี้แล้ว ให้ออก VN ใหม่ในกรณีที่มารักษาครั้งใหม่ทุกครั้ง
 	<SELECT NAME=\"new_vn\">
-		<Option value=\"\">----------------</Option>
 		<Option value=\"0\">ใช้ VN เดิม</Option>
-		<Option value=\"1\">ออก VN ใหม่</Option>
 	</SELECT>";
 	
 	$sql = "Select date_format(thidate,'%d-%m-%Y %H:%i:%s'),toborow,kew,vn From opday where hn = '".trim($_GET["cHn"])."' ORder by thidate DESC limit 1 ";
