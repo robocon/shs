@@ -4,6 +4,8 @@
 // include 'connect.inc';
 include 'bootstrap.php';
 
+mysql_query("SET NAMES tis620");
+
 ?>
 <style>
 	*{
