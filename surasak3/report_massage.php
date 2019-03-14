@@ -144,7 +144,7 @@ $shtodate=($_POST['y_start']-543).'-'.$_POST['m_start'].'-'.$_POST['d_start'];
 
 print "<div align=\"center\" class=\"forntsarabun\">สถิติงานแพทย์แผนไทย  $sh  $dateshow</div><BR>";
 
-$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58130P','58131P','58130S','58131S')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";
+$query = "SELECT b.date, b.ptname, b.hn, b.an, b.depart, b.detail, b.price, b.paid, b.row_id, b.accno, b.tvn ,b.staf_massage,b.diag,b.ptright FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58130P','58131P','58130S','58131S','58133')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 Group by b.date ,b.hn,a.code ";
 	
 	
 	$result = mysql_query($query) or die("Query failed ".$query."");
