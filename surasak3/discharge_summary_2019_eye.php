@@ -380,7 +380,7 @@ table.dctb td{
 
 <table width="100%" class="dctb bottom_sign" valign="top">
     <tr>
-        <td>MEDLISENCE<br>……………………………</td>
+        <td>MEDLICENSE<br>……………………………</td>
         <td>ATTENDING<br>PHYSICIAN ………………………………………………</td>
         <td>APPROVED<br>BY ………………………………………………………</td>
     </tr>
