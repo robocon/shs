@@ -2,6 +2,17 @@
 session_start();
 include("connect.inc");
 
+/**
+CREATE TABLE `outlab_list` (
+  `id` int(11) NOT NULL auto_increment,
+  `lab_id` int(11) default NULL,
+  `company_part_id` int(11) default NULL,
+  `company` varchar(255) default NULL,
+  `name` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+ */
+
 function dump($txt){
 	echo "<pre>";
 	var_dump($txt);
@@ -10,7 +21,7 @@ function dump($txt){
 
 if(isset($_POST['b1'])){
 	include("connect.inc");
-
+	
 	$update = "UPDATE labcare SET  
 	codelab='".$_POST['codelab']."',
 	outlab_name='".$_POST['outlab_name']."',
@@ -24,31 +35,34 @@ if(isset($_POST['b1'])){
 
 
 	$lab_id = $_POST['rowid'];
+	$company = $_POST['outlab_name'];
 
 	if( count($_POST['company_part']) > 0 ){
-
-		$sql = "SELECT `code` FROM `labcare` WHERE `row_id` = '$lab_id' ";
-		$q = mysql_query($sql) or die(mysql_error());
-		$labcare = mysql_fetch_assoc($q);
-		$lab_code = $labcare['code'];
-
 
 		// ลบตัวเก่าไปก่อน
 		$sql = "DELETE FROM `outlab_list` WHERE `lab_id` = '$lab_id'";
 		$q = mysql_query($sql) or die(mysql_error());
 
-		foreach ($_POST['company_part'] as $key => $id) {
+		foreach ($_POST['company_part'] as $key => $company_part) {
 
-			$sql_company = "SELECT * FROM `outlab_company` WHERE `id` = '$id' LIMIT 1 ";
-			$qCompany = mysql_query($sql_company) or die(mysql_error());
-			$comm = mysql_fetch_assoc($qCompany);
+			if( $company_part > 0 ){
+				
+				// 
+				$sql = "SELECT a.`company_name`,b.`name` AS `part_name` 
+				FROM ( 
+					SELECT `id` AS `company_id` ,`name` AS `company_name` FROM `outlab_company` WHERE `labcare_name` = '$company' 
+				) AS a 
+				LEFT JOIN `outlab_company_part` AS b ON b.`company_id` = a.`company_id`
+				WHERE b.`id` = '$company_part' LIMIT 1";
+				$query = mysql_query($sql) or die( mysql_error() );
+				$part = mysql_fetch_assoc($query);
+				$part_name = $part['part_name'];
 
-			$company_id = $comm['id'];
-			$company_name = $comm['name'];
+				$sql = "INSERT INTO `outlab_list` (`lab_id`,`company_part_id`,`company`,`name`) VALUES 
+				('$lab_id','$company_part','$company','$part_name') ";
+				$query = mysql_query($sql) or die( mysql_error() );
 
-			$sql_insert = "INSERT INTO `outlab_list` (`lab_id`,`code`,`company_id`,`company`) VALUES 
-			('$lab_id','$lab_code','$company_id','$company_name') ";
-			$query_insert = mysql_query($sql_insert) or die( mysql_error() );
+			}
 
 		}
 
@@ -174,41 +188,36 @@ $dbarr=mysql_fetch_array($query);
         <option value="IN" <?php if($dbarr['labtype']=="IN"){ echo "selected"; }?>>LAB ใน</option>
         <option value="OUT"  <?php if($dbarr['labtype']=="OUT"){ echo "selected"; }?>>LAB นอก</option>
       </select>
-
-	<div id="sel" style="display:none">
-		<select name="outlab_name" class="font1">
-			<option value="" >--กรุณาเลือก Lab-นอก --</option>
-			<option value="รัฐบาล" <?php if($dbarr['outlab_name']=="รัฐบาล"){ echo "selected"; }?>>รัฐบาล</option>
-			<option value="อินเตอร์-แลป" <?php if($dbarr['outlab_name']=="อินเตอร์-แลป"){ echo "selected"; }?>>อินเตอร์-แลป</option>
-			<option value="ธนบุรี-แลป" <?php if($dbarr['outlab_name']=="ธนบุรี-แลป"){ echo "selected"; }?>>ธนบุรี-แลป</option>	  <option value="กรุงเทพ-พยาธิ" <?php if($dbarr['outlab_name']=="กรุงเทพ-พยาธิ"){ echo "selected"; }?>>กรุงเทพ-พยาธิ</option>
-			<option value="เมดสตาร์-แลป" <?php if($dbarr['outlab_name']=="เมดสตาร์-แลป"){ echo "selected"; }?>>เมดสตาร์-แลป</option>
-		</select>
-	</div>
-		
-</td>
+<div id="sel" style="display:none"><select name="outlab_name" class="font1">
+    <option value="" >--กรุณาเลือก Lab-นอก --</option>
+      <option value="รัฐบาล" <?php if($dbarr['outlab_name']=="รัฐบาล"){ echo "selected"; }?>>รัฐบาล</option>
+      <option value="อินเตอร์-แลป" <?php if($dbarr['outlab_name']=="อินเตอร์-แลป"){ echo "selected"; }?>>อินเตอร์-แลป</option>
+      <option value="ธนบุรี-แลป" <?php if($dbarr['outlab_name']=="ธนบุรี-แลป"){ echo "selected"; }?>>ธนบุรี-แลป</option>	  <option value="กรุงเทพ-พยาธิ" <?php if($dbarr['outlab_name']=="กรุงเทพ-พยาธิ"){ echo "selected"; }?>>กรุงเทพ-พยาธิ</option>
+      <option value="เมดสตาร์-แลป" <?php if($dbarr['outlab_name']=="เมดสตาร์-แลป"){ echo "selected"; }?>>เมดสตาร์-แลป</option>
+    </select></div></td>
   </tr>
 
   <?php 
 
     $outlab_name = $dbarr['outlab_name'];
 
-	// รายการ Outlab ที่แยกเป็นตามจุดต่างๆ
-	$sql = "SELECT * FROM `outlab_company` ORDER BY `id` ASC";
-	$q = mysql_query($sql) or die( mysql_error() );
-	$outlab_list = array();
-	while ( $item = mysql_fetch_assoc($q) ) {
-		$outlab_list[] = $item;
-	}
-
-
-
+    $sql = "SELECT b.* FROM `outlab_company` AS a 
+    LEFT JOIN `outlab_company_part` AS b ON b.`company_id` = a.`id` 
+    WHERE a.`labcare_name` = '$outlab_name' 
+    AND b.`id` IS NOT NULL ";
+    $q = mysql_query($sql);
 
 
 	?>
 	<tr id="outlab_part" style="display:none">
-		<td>รายการที่ส่ง</td>
+		<td>แผนกที่ส่ง</td>
 		<td>
 			<?php 
+
+			$outlab_list = array();
+			while ( $item = mysql_fetch_assoc($q) ) {
+				$outlab_list[] = $item;
+			}
 
 			$row_id = $dbarr['row_id'];
 
@@ -225,7 +234,7 @@ $dbarr=mysql_fetch_array($query);
 						foreach( $outlab_list as $item ){
 							$key = $item['id'];
 
-							$selected = ( $oLab['company_id'] == $item['id'] ) ? 'selected="selected"' : '' ;
+							$selected = ( $oLab['name'] == $item['name'] ) ? 'selected="selected"' : '' ;
 							?>
 							<option value="<?=$key;?>" <?=$selected;?>><?=$item['name'];?></option>
 							<?php

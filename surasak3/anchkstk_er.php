@@ -27,8 +27,8 @@ include("connect.inc");
 <html>
 <body BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>
     <style type="text/css">
-        .fc1-0 { color:000000; font-size:20pt; font-family:Cordia New; font-weight:bold;}
-        .fc1-1 { color:000000; font-size:18pt; font-family:Cordia New; font-weight:normal; line-height: 24px;}
+        .fc1-0 { color:000000; font-size:12pt; font-family:Cordia New; font-weight:bold;line-height: 16px;}
+        .fc1-1 { color:000000; font-size:12pt; font-family:Cordia New; font-weight:normal; line-height: 16px;}
         .fc1-2 { color:000000; font-size:16pt; font-family:Cordia New; font-weight:bold;}
         .fc1-3 { color:000000; font-size:15pt; font-family:Cordia New; font-weight:normal;}
         .ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
@@ -55,17 +55,17 @@ while (list ($an,$hn,$date,$bedcode,$yot,$name,$surname,$idcard,$ptright,$dbirth
     $ddate = substr($date,8,2);
     $mdate = substr($date,5,2); 
     $ydate = substr($date,0,4); 
-    $tdate = substr($date,11,5); 
-    $adate = "$ddate-$mdate-$ydate"; 
+    $tdate = substr($date,11,8); 
+    $adate = "$ddate-$mdate-$ydate $tdate"; 
     //print opd card ที่นี่ จาก opdcardprn.htm  by frontpage
     
     ?>
-    <div class="fc1-0">วันที่ : <?=$date;?></div>
+    <div class="fc1-0">วันที่ : <?=$adate;?></div>
     <div class="fc1-1">ชื่อ-สกุล : <?=$cPtname;?></div>
     <div class="fc1-1">อายุ : <?=$cAge;?></div>
     <div class="fc1-1">HN:&nbsp;<?=$hn;?>&nbsp;AN:&nbsp;<?=$an;?></div>
     <div style="height: 10px; padding: 0; margin: 0;">&nbsp;</div>
-    <div class="fc1-0">วันที่ : <?=$date;?></div>
+    <div class="fc1-0">วันที่ : <?=$adate;?></div>
     <div class="fc1-1">ชื่อ-สกุล : <?=$cPtname;?></div>
     <div class="fc1-1">อายุ : <?=$cAge;?></div>
     <div class="fc1-1">HN:&nbsp;<?=$hn;?>&nbsp;AN:&nbsp;<?=$an;?></div>

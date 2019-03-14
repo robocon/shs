@@ -27,8 +27,8 @@ include("connect.inc");
 <html>
 <body BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>
     <style type="text/css">
-        .fc1-0 { color:000000; font-size:16pt; font-family:Cordia New; font-weight:bold;}
-        .fc1-1 { color:000000; font-size:16pt; font-family:Cordia New; font-weight:normal; line-height: 22px;}
+        .fc1-0 { color:000000; font-size:12pt; font-family:Cordia New; font-weight:bold;line-height: 16px;}
+        .fc1-1 { color:000000; font-size:12pt; font-family:Cordia New; font-weight:normal; line-height: 16px;}
         .fc1-2 { color:000000; font-size:16pt; font-family:Cordia New; font-weight:bold;}
         .fc1-3 { color:000000; font-size:15pt; font-family:Cordia New; font-weight:normal;}
         .ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}

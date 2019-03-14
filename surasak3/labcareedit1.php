@@ -1,6 +1,6 @@
 <?php
 
-    print "รายการหัถการห้อง LAB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><< ไปเมนู</a><br><br>";
+    print "รายการหัตถการห้อง LAB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><< ไปเมนู</a><br><br>";
     include("connect.inc");
 	print "<form name='f1' method='post' action=''>";
 	 print "<table>";
@@ -25,6 +25,7 @@
     print "<table>";
     print "<tr>";
     print "<th bgcolor=CD853F><font face='Angsana New'><b>CODE</b></th>";
+	print "<th bgcolor=CD853F><font face='Angsana New'><b>รหัสกรมบัญชีกลาง</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'><b>รายการ</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'><b>แผนก</b></th>";
 	print "<th bgcolor=CD853F><font face='Angsana New'><b>ราคาเต็ม</b></th>";
@@ -53,14 +54,15 @@ if($_POST['status']=="Y"){
 	$where='';
 }
 
-    $query = "SELECT  row_id,code,detail,price,yprice,nprice,lablis,codex,depart,codelab,outlab_name,labpart,labtype,labstatus,chkup,reportlabno FROM labcare WHERE depart like '%patho%' and code not like '%@%' ".$where."  order by codex ";
+    $query = "SELECT  row_id,code,codex,detail,price,yprice,nprice,lablis,codex,depart,codelab,outlab_name,labpart,labtype,labstatus,chkup,reportlabno FROM labcare WHERE depart like '%patho%' and code not like '%@%' ".$where."  order by codex ";
     $result = mysql_query($query) or die("Query failed");
 	
-    while (list ($rowid,$code,$detail,$price,$yprice,$nprice,$lablis,$codex,$depart,$codelab,$outlab_name,$labpart,$labtype,$labstatus,$chkup,$reportlabno) = mysql_fetch_row ($result)) {
+    while (list ($rowid,$code,$codex,$detail,$price,$yprice,$nprice,$lablis,$codex,$depart,$codelab,$outlab_name,$labpart,$labtype,$labstatus,$chkup,$reportlabno) = mysql_fetch_row ($result)) {
 
 		if($price<=1){$color='#FF6699';}else{$color='F5DEB3';};
         print ("<tr>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$code</td>\n".
+		    "  <td BGCOLOR=$color><font face='Angsana New'>$codex</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'><B>$detail</B></td>\n".
 		   "  <td BGCOLOR=$color><font face='Angsana New'>$depart</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'><B><a target=_BLANK href=\"labedit.php? code=$code\">$price</B></a></td>\n".
