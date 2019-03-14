@@ -238,10 +238,15 @@ $today = date("Y-m-d");
 		}
 	}
  </script>
-<?
+<?php 
+// 
+$test_dayHn = date('d-m-').(date('Y')+543).$cHn;
+$sql = "SELECT `row_id` FROM `opday` WHERE `thdatehn` = '$test_dayHn'";
+$q = mysql_query($sql) or die( mysql_error() );
+$test_opday_row = mysql_num_rows($q);
 
 //กรณีขอ vn ใหม่
-If ($_POST["new_vn"] == "1"){
+If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
 	
 	//ยังไม่เปลี่ยนวันที่
 	if($today==$dVndate){
