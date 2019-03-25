@@ -184,12 +184,13 @@ if ( $action == 'show' ) {
     $year_end = (input_post('year_end')) + 543;
 
     $db = Mysql::load();
-    echo "-->".$key;
+
+
     $sql = "SELECT a.`hn`,a.`ptname`,a.`sumnprice`,a.`staf_massage`,
     DATE_FORMAT(a.`date`,'%H:%i:%s') AS `time`, 
     DATE_FORMAT( CONCAT((DATE_FORMAT(a.`date`,'%Y')-543), DATE_FORMAT(a.`date`, '-%m-%d')) , '%w') AS `day_name` ,
     SUBSTRING(a.`date`, 1, 10) AS `aDate`, 
-    b.`code`, b.`price` AS `aPrice`
+    b.`code`, a.`price` AS `aPrice`
     FROM `depart` AS a 
     LEFT JOIN `patdata` AS b ON b.`idno` = a.`row_id`
     WHERE a.`staf_massage` != '' 
@@ -197,6 +198,7 @@ if ( $action == 'show' ) {
     AND a.`date` >= '$year_start-$month_start-$day_start 00:00:00' AND a.`date` <= '$year_end-$month_end-$day_end 23:59:59' 
     AND b.`code` in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58102','58130','58131','58201','58301','58301a','58131P','58130P','58130S','58131S','58133')
     ORDER BY a.`date`, a.`staf_massage`";
+
 	
 	//print($sql);
 

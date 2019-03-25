@@ -369,10 +369,29 @@ for($i=0;$i<$count;$i++){
 		$sso_txt = ", `toborow` = 'EX46 ตรวจสุขภาพประกันสังคม', `checkdx` = 'sso' ";
 	}
 
+
+$sql1="select * from opday where thdatehn = '".(date("d-m-")).(date("Y")+543).($cHn)."' AND clinic !=''";
+$query1=mysql_query($sql1);
+$num1=mysql_num_rows($query1);
+
+if($num1 > 0){  //ถ้า clinic มีข้อมูล
 	$sql = "update opday set 
 	doctor = '$cDoctor' $sso_txt 
 	where  thdatehn = '".(date("d-m-")).(date("Y")+543).($cHn)."' ";
 	$result = @mysql_query($sql);
+}else{
+$strSQL = "SELECT clinic FROM doctor  where name='$cDoctor'"; 
+$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+list($clinic)=mysql_fetch_array($objQuery);
+
+	$sql = "update opday set clinic='$clinic', doctor = '$cDoctor' $sso_txt 
+	where  thdatehn = '".(date("d-m-")).(date("Y")+543).($cHn)."' ";
+	$result = @mysql_query($sql);
+}
+
+
+		
+
 
 
 	

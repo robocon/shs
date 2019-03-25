@@ -104,12 +104,15 @@ array_push($aStkcut,$cStkcut);
               //  "<td bgcolor=F5DEB3><a target='top'  href=\"stkdele.php? Delrow=$n\"><font face='Angsana New'>ลบ</td>\n".
                  " </tr>\n");
         }
-   
+if($cRestkcut > 0){
+echo "<script>alert('ให้เบิกเพิ่มจาก Lot.No ต่อไปอีกจำนวน $cRestkcut');</script>"; 
+}
 ?>
 </table>
-<?php
-    print "ให้เบิกเพิ่มจาก Lot.No ต่อไปอีกจำนวน $cRestkcut<br>";
-?>
+
+<div align="left" style="font-size:24px; color:#33CC99;">ให้เบิกเพิ่มจาก Lot.No ต่อไปอีกจำนวน <strong style="color:#FF0000; font-size:48px;"><?php
+    print " $cRestkcut";		
+?></strong></div>
 <a target=_BLANK href="stkbill.php" onclick="valid_cut_stock(event,'<?=$nRunno;?>')">พิมพ์ใบเบิก</a>
 &nbsp;&nbsp;&nbsp;<a target=_BLANK href="stktranx.php">ตัดสต๊อกยา</a>
 &nbsp;&nbsp;&nbsp;<a target=_BLANK href="notstk.php">(ยกเลิกทั้งหมด)</a>
