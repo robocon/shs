@@ -127,7 +127,7 @@ function header_sign($name){
     </div>
     <div>
         <?php
-        $type_list = array( 1 => 'นวดสุขภาพ(200)', 'นวดรักษา(250)', 'นวดรักษา(250+50)');
+        $type_list = array( 2 => 'นวดรักษา(250)', 'นวดรักษานอกเวลา(250+50)');
         $type_select = input('print_type');
         ?>
         ระบุการแสดงผล
@@ -184,7 +184,7 @@ if ( $action == 'show' ) {
     $year_end = (input_post('year_end')) + 543;
 
     $db = Mysql::load();
-    
+    echo "-->".$key;
     $sql = "SELECT a.`hn`,a.`ptname`,a.`sumnprice`,a.`staf_massage`,
     DATE_FORMAT(a.`date`,'%H:%i:%s') AS `time`, 
     DATE_FORMAT( CONCAT((DATE_FORMAT(a.`date`,'%Y')-543), DATE_FORMAT(a.`date`, '-%m-%d')) , '%w') AS `day_name` ,
@@ -195,13 +195,14 @@ if ( $action == 'show' ) {
     WHERE a.`staf_massage` != '' 
     AND a.`status` != 'N' 
     AND a.`date` >= '$year_start-$month_start-$day_start 00:00:00' AND a.`date` <= '$year_end-$month_end-$day_end 23:59:59' 
-    AND b.`code` in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a','58131P','58130P','58130S','58131S','58133')
+    AND b.`code` in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58102','58130','58131','58201','58301','58301a','58131P','58130P','58130S','58131S','58133')
     ORDER BY a.`date`, a.`staf_massage`";
+	
+	//print($sql);
 
     $db->select($sql);
     $items = $db->get_items();
 
-    $new_items = array();
     $new_items_250 = array();
     $new_items_250_plus = array();
     
@@ -238,66 +239,19 @@ if ( $action == 'show' ) {
 
         $key = $item['staf_massage'];
 
-        if( $item['aPrice'] == "200.00" ){
-            $new_items[$key][] = $item;
-        }
 
-        if( $item['aPrice'] == "250.00" AND $item['sumnprice'] == "0.00" ){
+        if($item['aPrice'] == "250.00"){
             $new_items_250[$key][] = $item;
         }
 
-        if( $item['aPrice'] == "250.00" AND $item['sumnprice'] == "50.00" ){
+        if($item['aPrice'] == "300.00"){
             $new_items_250_plus[$key][] = $item;
         }
-        
+		        
     }
 
     $notification = false;
 
-    if( count($new_items) > 0 && $print_type == 1 ){
-        $notification = true;
-        foreach ($new_items as $key => $item_list) {
-            ?>
-            <div>
-                <?=header_sign($key);?>
-                <table class="chk_table">
-                    <thead>
-                        <tr bgcolor="#e8e8e8">
-                            <th width="5%">ลำดับ</th>
-                            <th width="18%">วัน/เดือน/ปี</th>
-                            <th width="10%">HN</th>
-                            <th width="25%">ชื่อ - นามสกุล</th>
-                            <th width="25%">การจ่ายยา</th>
-                            <th class="no-print">ราคา</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $i = 1;
-                        foreach ($item_list as $key_list => $item) {
-                            // dump($item);
-                            ?>
-                            <tr>
-                                <td><?=$i;?></td>
-                                <td><?=$item['aDate'];?> <?=$item['time'];?></td>
-                                <td><?=$item['hn'];?></td>
-                                <td><?=$item['ptname'];?></td>
-                                <td><?=$item['tradname'];?></td>
-                                <td align="right" class="no-print"><?=$item['aPrice'];?></td>
-                            </tr>
-                            <?php
-                            $i++;
-                        }
-                        ?>
-                    </tbody>
-                </table>
-                <br>
-                <?=sign();?>
-            </div>
-            <div style="page-break-after:always;"></div>
-            <?php
-        }
-    }
 
     if ( count($new_items_250) > 0 && $print_type == 2 ) {
         $notification = true;
@@ -386,7 +340,7 @@ if ( $action == 'show' ) {
             <?php
         }
     }
-
+	
     if( $notification == false ){
         ?>
         <p><b>ไม่พบข้อมูล</b></p>

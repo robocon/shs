@@ -24,8 +24,9 @@
 	print "</form>";
     print "<table>";
     print "<tr>";
-    print "<th bgcolor=CD853F><font face='Angsana New'><b>CODE</b></th>";
+    print "<th bgcolor=CD853F><font face='Angsana New'><b>รหัสคิดเงิน</b></th>";
 	print "<th bgcolor=CD853F><font face='Angsana New'><b>รหัสกรมบัญชีกลาง</b></th>";
+	print "<th bgcolor=CD853F><font face='Angsana New'><b>รหัส Sticker</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'><b>รายการ</b></th>";
     print "<th bgcolor=CD853F><font face='Angsana New'><b>แผนก</b></th>";
 	print "<th bgcolor=CD853F><font face='Angsana New'><b>ราคาเต็ม</b></th>";
@@ -63,6 +64,7 @@ if($_POST['status']=="Y"){
         print ("<tr>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$code</td>\n".
 		    "  <td BGCOLOR=$color><font face='Angsana New'>$codex</td>\n".
+			"  <td BGCOLOR=$color><font face='Angsana New'>$codelab</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'><B>$detail</B></td>\n".
 		   "  <td BGCOLOR=$color><font face='Angsana New'>$depart</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'><B><a target=_BLANK href=\"labedit.php? code=$code\">$price</B></a></td>\n".

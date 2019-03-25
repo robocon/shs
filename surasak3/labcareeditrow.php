@@ -23,6 +23,8 @@ if(isset($_POST['b1'])){
 	include("connect.inc");
 	
 	$update = "UPDATE labcare SET  
+	code='".$_POST['code']."',
+	codex='".$_POST['codex']."',
 	codelab='".$_POST['codelab']."',
 	outlab_name='".$_POST['outlab_name']."',
 	labpart='".$_POST['part']."',
@@ -157,13 +159,25 @@ $dbarr=mysql_fetch_array($query);
 ?>
 
 <form name="f1" action="" method="post"   onSubmit="JavaScript:return fncSubmit();">
-<table border="1" cellspacing="0" cellpadding="0" class="font1" style="border-collapse:collapse; font-weight: bold;" bordercolor="#666666">
+<table width="685" border="1" cellpadding="3" cellspacing="0" bordercolor="#666666" class="font1" style="border-collapse:collapse; font-weight: bold;">
   <tr>
     <td colspan="2" align="center" bgcolor="#0099FF">แก้ไขข้อมูล</td>
  
   </tr>
   <tr>
-    <td>codelab</td>
+    <td width="150">รหัสคิดเงิน</td>
+    <td width="478"><input type="text" name="code"  value="<?php echo $dbarr['code'];?>" class="font1"/></td>
+  </tr>
+  <tr>
+    <td>รหัสกรมบัญชีกลาง</td>
+    <td><input type="text" name="codex"  value="<?php echo $dbarr['codex'];?>" class="font1"/></td>
+  </tr>
+  <tr>
+    <td>รายละเอียด</td>
+    <td><input name="detail" type="text" class="font1"  value="<?php echo $dbarr['detail'];?>" size="60"/></td>
+  </tr>    
+  <tr>
+    <td>รหัส Sticker</td>
     <td><input type="text" name="codelab"  value="<?php echo $dbarr['codelab'];?>" class="font1"/></td>
   </tr>
   <tr>
