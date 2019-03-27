@@ -1,6 +1,7 @@
 <?php
 //-------------------- Create file appointment ä¿Åì·Õè 8 --------------------//
-$temp8="CREATE  TEMPORARY  TABLE report_appointment SELECT date,hn,appdate,doctor,detail,depcode From  appoint where date like '$thimonth%' ORDER BY date ASC";
+$temp8="CREATE  TEMPORARY  TABLE report_appointment 
+SELECT date,hn,appdate,doctor,detail,depcode From  appoint where date like '$thimonth%' ORDER BY date ASC";
 //echo $temp8;
 $querytmp8 = mysql_query($temp8) or die("Query failed,Create temp8");
 
