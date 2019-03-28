@@ -3,6 +3,7 @@
 // $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 // mysql_select_db('smdb', $db2) or die( mysql_error() );
 
+
 //
 //-------------------- Create file charge_opd ‰ø≈Ï∑’Ë 18 --------------------//
 // 
@@ -22,29 +23,71 @@
 // $result13= mysql_query($sql13) or die( mysql_error() );
 // $num = mysql_num_rows($result13);
 
-$sql13="SELECT `date`,`hn`,`depart`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dpy`,`dpn`,`dsy`,`dsn`,`ptright`,`credit`,
-SUBSTRING(`date`, 1, 10) AS `date2`, `vn` 
+$sql13="CREATE  TEMPORARY  TABLE tmp_charge_opd  
+SELECT `date`,`hn`,`depart`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dpy`,`dpn`,`dsy`,`dsn`,`ptright`,`credit`,
+SUBSTRING(`date`, 1, 10) AS `date2`, `vn`,
+( CASE 
+	WHEN `depart` = 'OTHER' THEN 'OTHER' 
+	WHEN `depart` = 'EMER' THEN 'OTHER' 
+	WHEN `depart` = 'WARD' THEN 'OTHER' 
+	WHEN `depart` = 'EYE' THEN 'OTHER' 
+	ELSE `depart`
+END ) AS `depart2`
 FROM `opacc` 
 WHERE `txdate` like '$thimonth%' 
 AND ( `vn` IS NOT NULL AND `vn` != '' ) 
 GROUP BY SUBSTRING(`date`, 1, 10), `hn`, `depart`
-ORDER BY `date` ASC";
-$result13= mysql_query($sql13, $db2) or die( mysql_error() );
+ORDER BY `date` ASC; ";
+mysql_query($sql13, $db2) or die( mysql_error() );
+
+
+$sql = "SELECT `date`,`hn`,`depart`,
+SUM(`price`) AS `price`,
+SUM(`paid`) AS `paid`, 
+SUM(`essd`) AS `essd`, 
+SUM(`nessdy`) AS `nessdy`, 
+SUM(`nessdn`) AS `nessdn`, 
+SUM(`dpy`) AS `dpy`, 
+SUM(`dpn`) AS `dpn`, 
+SUM(`dsy`) AS `dsy`, 
+SUM(`dsn`) AS `dsn`, 
+`ptright`,`credit`,`date2`, `vn`,`depart2` FROM `tmp_charge_opd` GROUP BY `date2`,`hn`,`depart2` ORDER BY `date` ASC;";
+$result13= mysql_query($sql, $db2) or die( mysql_error() );
 $num = mysql_num_rows($result13);
+// dump($sql13);
+
+// exit;
 
 $txt = '';
 
-while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy,$dsn,$ptright,$credit,$date2,$vn) = mysql_fetch_row ($result13)) {	
+// $test_i = 1;
+
+
+while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy,$dsn,$ptright,$credit,$date2,$vn,$depart2) = mysql_fetch_row ($result13)) {	
 
 	$sqlpt=mysql_query("SELECT `ptrightdetail` FROM `opcard` WHERE `hn`='$hn'", $db2);
 	list($ptrightdetail)=mysql_fetch_array($sqlpt);	
 
 	list($chkdate) = explode(' ', $date);
 
+	list($y2,$m2,$d2) = explode('-', $date2);
+	$thdatehn_opday = "$d2-$m2-$y2$hn";
+	$thdatevn_opday = "$d2-$m2-$y2$vn";
+
 	$qOpday = "SELECT `thidate`,`idcard` 
 	FROM `opday` 
-	WHERE `thidate` LIKE '$date2%' 
-	AND `vn` = '$vn'";
+	WHERE `thdatehn` = '$thdatehn_opday' 
+	AND `thdatevn` = '$thdatevn_opday'";
+
+// $test_i++;
+
+
+// 	dump($qOpday);
+
+// 	if ($test_i == 10) {
+// 		# code...
+// 		exit;
+// 	}
 	
 	$sqlop = mysql_query($qOpday, $db2);
 	list($thidate,$idcard) = mysql_fetch_array($sqlop);
@@ -97,7 +140,7 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	}
 	$payprice=number_format($payprice,2);
 
-	if($depart=="PHAR"){
+	if($depart2=="PHAR"){
 		if((!empty($dpy) || $dpy !="0.00") || (!empty($dpn) || $dpn !="0.00")){
 			$chargeitem="02";
 		}
@@ -107,21 +150,21 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 		if((!empty($nessdy) || $nessdy !="0.00") || (!empty($nessdn) || $nessdn !="0.00")){
 			$chargeitem="17";
 		}	
-	}else if($depart=="PATHO"){
+	}else if($depart2=="PATHO"){
 		$chargeitem="07";
-	}else if($depart=="XRAY"){
+	}else if($depart2=="XRAY"){
 		$chargeitem="08";
-	}else if($depart=="HEMO"){
+	}else if($depart2=="HEMO"){
 		$chargeitem="09";
-	}else if($depart=="SURG"){
+	}else if($depart2=="SURG"){
 		$chargeitem="11";
-	}else if($depart=="OTHER" || $depart=="EMER" || $depart=="WARD" || $depart=="EYE"){
+	}else if($depart2=="OTHER" || $depart2=="EMER" || $depart2=="WARD" || $depart2=="EYE"){
 		$chargeitem="12";
-	}else if($depart=="DENTA"){
+	}else if($depart2=="DENTA"){
 		$chargeitem="13";
-	}else if($depart=="PHYSI"){
+	}else if($depart2=="PHYSI"){
 		$chargeitem="14";
-	}else if($depart=="NID"){
+	}else if($depart2=="NID"){
 		$chargeitem="15";
 	}
 
@@ -143,6 +186,12 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	// print($inline);
 	$txt .= $inline;
 }
+
+
+// dump($txt);
+
+// exit;
+
 $filePath = $dirPath.'/charge_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
