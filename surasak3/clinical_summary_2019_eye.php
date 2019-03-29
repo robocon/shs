@@ -100,14 +100,14 @@ function create_dot($dot_num){
         </table>
     </div>
     <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+        <p style="word-wrap: break-word;"><?=create_dot(290);?></p>
     </div>
     <div><p>Lab  CBC, FBS </p></div>
     <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+        <p style="word-wrap: break-word;"><?=create_dot(290);?></p>
     </div>
     <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+        <p style="word-wrap: break-word;"><?=create_dot(290);?></p>
     </div>
     <div>
         <table>
@@ -144,20 +144,14 @@ function create_dot($dot_num){
         </table>
     </div>
     <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+        <p style="word-wrap: break-word;"><?=create_dot(290);?></p>
     </div>
     <div><p>Home Medication</p></div>
     <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+        <p style="word-wrap: break-word;"><?=create_dot(290);?></p>
     </div>
     <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
-    </div>
-    <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
-    </div>
-    <div>
-        <p style="word-wrap: break-word;"><?=create_dot(316);?></p>
+        <p style="word-wrap: break-word;"><?=create_dot(290);?></p>
     </div>
     <div>&nbsp;</div>
     <div style="text-align: right;">แพทย์ผู้รักษา..............................................................................</div>
