@@ -37,13 +37,15 @@ p{
 <?php 
 
 $an = input('an');
-$sql = "SELECT a.*,b.`yot`,b.`idcard`,b.`dbirth` 
+$sql = "SELECT a.*,b.`yot`,b.`name`,b.`surname`,b.`idcard`,b.`dbirth`,b.`ptright` AS `ptright2` 
 FROM `ipcard` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`an` = '$an' ";
 $db->select($sql);
 
 $item = $db->get_item();
+
+$ptname = $item['yot'].$item['name'].' '.$item['surname'];
 
 $match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $item['yot'], $matchs);
 $gender = 'ชาย';
@@ -71,14 +73,14 @@ function create_dot($dot_num){
     <div>
         <table style="width: 100%;" class="tb_info">
             <tr>
-                <td width="35%">Name: <?=$item['ptname'];?></td>
+                <td width="35%">Name: <?=$ptname;?></td>
                 <td width="40%">HN: <?=$item['hn'];?></td>
                 <td width="10%">AN: <?=$item['an'];?></td>
                 <td width="15%">Sex: <?=$gender;?></td>
             </tr>
             <tr>
                 <td>เลขบัตรประจำตัวประชาชน: <?=$item['idcard'];?></td>
-                <td>สิทธิการรักษา: <?=$item['ptright'];?></td>
+                <td>สิทธิการรักษา: <?=$item['ptright2'];?></td>
                 <td>&nbsp;</td>
                 <td>DOB: <?=$item['dbirth'];?></td>
             </tr>

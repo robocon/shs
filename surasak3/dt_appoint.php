@@ -1565,24 +1565,23 @@ include("dt_patient.php");
 	<TD align="right" class="tb_detail">ยื่นใบนัดที่ : </TD>
 	<TD colspan="2">
 		<select name="room" id='room'>
-			<option <?php if($counter=="1") echo " Selected ";?>>จุดบริการนัดที่ 1</option>
-			<option <?php if($counter=="2") echo " Selected ";?>>จุดบริการนัดที่ 2</option>
-			<option <?php if($counter=="3") echo " Selected ";?>>แผนกทะเบียน</option>
-			<option>ห้องฉุกเฉิน</option>
-			<option>กองทันตกรรม</option>
-			<option>แผนกพยาธิวิทยา</option>
-			<option>แผนกเอกชเรย์</option>
-			<option>กองสูติ-นารี</option>
-			<option>กายภาพ</option>  <!--#8-->
-			<option>คลีนิกฝังเข็ม</option>
-			<option>ห้องตรวจจักษุ(ตา)</option>
-			<option>นวดแผนไทย</option>
-        	<option>ห้องตรวจจักษุ(ตา)</option>
-        	<option>ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)</option>
-        	<option>ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
-        	<option>คลีนิกโรคไต</option>
-		 	<option>กายภาพบำบัดชั้น 2</option>
-         	<option>ห้องเก็บเงินรายได้ เบอร์4</option>  <!--#17-->
+			<option <?php if($counter=="1") echo 'selected="selected"';?> value="จุดบริการนัดที่ 1">จุดบริการนัดที่ 1</option>
+			<option <?php if($counter=="2") echo 'selected="selected"';?> value="จุดบริการนัดที่ 2">จุดบริการนัดที่ 2</option>
+			<option <?php if($counter=="3") echo 'selected="selected"';?> value="แผนกทะเบียน">แผนกทะเบียน</option>
+			<option value="ห้องฉุกเฉิน">ห้องฉุกเฉิน</option>
+			<option value="กองทันตกรรม">กองทันตกรรม</option>
+			<option value="แผนกพยาธิวิทยา">แผนกพยาธิวิทยา</option>
+			<option value="แผนกเอกชเรย์">แผนกเอกชเรย์</option>
+			<option value="กองสูติ-นารี">กองสูติ-นารี</option>
+			<option value="กายภาพ">กายภาพ</option>  <!--#8-->
+			<option value="คลีนิกฝังเข็ม">คลีนิกฝังเข็ม</option>
+			<option value="ห้องตรวจจักษุ(ตา)">ห้องตรวจจักษุ(ตา)</option>
+			<option value="นวดแผนไทย">นวดแผนไทย</option>
+        	<option value="ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)">ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)</option>
+        	<option value="ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู">ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
+        	<option value="คลีนิกโรคไต">คลีนิกโรคไต</option>
+		 	<option value="กายภาพบำบัดชั้น 2">กายภาพบำบัดชั้น 2</option>
+         	<option value="ห้องเก็บเงินรายได้ เบอร์4">ห้องเก็บเงินรายได้ เบอร์4</option>  <!--#17-->
 		</select>
 	</TD>
 

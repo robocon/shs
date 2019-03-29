@@ -662,7 +662,7 @@ C&deg; </td>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0">
 	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?php echo $lab_date;?></TD>
+		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="font-weight:bold; color:red; font-size: 26px;"><?php echo $lab_date;?></span></TD>
 	</TR>
 	<TR class="tb_font">
 		<TD>
