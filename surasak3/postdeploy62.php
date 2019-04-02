@@ -145,18 +145,20 @@ if ( $action === false ) {
 
 }else if ( $action === 'import_lab' ) {
 
-    $en_date = '2018-04-02 10:28:30';
+    $en_date = '2019-04-02 17:00:00';
     
     $sql = "SELECT a.*
 	FROM `opcardchk` AS a 
 	WHERE a.`part` = '$part' 
-    AND a.`datechkup` = '$date_checkup' 
+    #AND a.`datechkup` = '$date_checkup' 
     #AND a.`row` >= '10589' AND a.`row` <= '10598'
     ORDER BY a.`row` ASC"; 
     
 
     $db->select($sql);
     $items = $db->get_items();
+    // dump($items);
+    exit;
 
     $clinicalinfo = "µÃÇ¨ÊØ¢ÀÒ¾»ÃĞ¨Ó»Õ62";
 
@@ -208,7 +210,7 @@ if ( $action === false ) {
             'R', 
             '$clinicalinfo'
         );";
-        // dump($orderhead_sql);
+        dump($orderhead_sql);
         $orderhead = $db->insert($orderhead_sql);
         dump($orderhead);
         
@@ -224,7 +226,7 @@ if ( $action === false ) {
             ) VALUES (
                 '$labnumber', '$code', '$oldcode', '$detail'
             );";
-            // dump($orderdetail_sql);
+            dump($orderdetail_sql);
             $orderdetail = $db->insert($orderdetail_sql);
             dump($orderdetail);
         }
