@@ -41,6 +41,10 @@ if( $action === 'save' ){
     $res_hbsag = $_POST['res_hbsag'];
     $res_occult = $_POST['res_occult'];
 
+    if($_POST['res_stocc']){
+        $res_occult = $_POST['res_stocc'];
+    }
+
     $diag = input_post('diag');
     $diag = htmlspecialchars($diag, ENT_QUOTES);
     
@@ -924,6 +928,7 @@ h1,h3,p{
             OR b.`labcode` = 'HBSAG' 
             OR b.`labcode` = 'OCCULT' 
             OR b.`labcode` = '38302' 
+            OR b.`labcode` = 'STOCC' 
         ) 
         ORDER BY b.seq ASC ";
 

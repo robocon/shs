@@ -125,6 +125,7 @@ AND (
     OR b.`labcode` = 'HBSAG' 
     OR b.`labcode` = 'OCCULT' 
     OR b.`labcode` = '38302' 
+    OR b.`labcode` = 'STOCC' 
 ) 
 ORDER BY b.seq ASC ";
 
@@ -821,14 +822,18 @@ $pdf->Cell(41, 6, 'Fecal occult blood test(FOBT)', 0, 1);
 
 $pdf->Rect(148, 217, 15, 12);
 $pdf->SetXY(148, 217);
-if( $etc_lists['occult']['flag'] != 'N' ){
+if( $etc_lists['occult']['flag'] != 'N' OR $etc_lists['stocc']['flag'] != 'N' ){
     $pdf->SetFont('AngsanaNew','B',13);
 }
-$pdf->Cell(15, 6, $etc_lists['occult']['result'], 0, 1, 'C');
+
+$occult_result = ( !empty($etc_lists['occult']['result']) ) ? $etc_lists['occult']['result'] : $etc_lists['stocc']['result'] ;
+$occult_normalrange = ( !empty($etc_lists['occult']['normalrange']) ) ? $etc_lists['occult']['normalrange'] : $etc_lists['stocc']['normalrange'] ;
+
+$pdf->Cell(15, 6, $occult_result, 0, 1, 'C');
 $pdf->SetFont('AngsanaNew','',11);
 $pdf->Rect(163, 217, 25, 12);
 $pdf->SetXY(163, 217);
-$pdf->Cell(25, 6, $etc_lists['occult']['normalrange'], 0, 1, 'C');
+$pdf->Cell(25, 6, $occult_normalrange, 0, 1, 'C');
 
 $pdf->SetXY(13, 229);
 $pdf->Cell(41, 6, 'สรุปผลตรวจ', 0, 1);
