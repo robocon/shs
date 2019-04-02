@@ -5,6 +5,8 @@
 ini_set('max_execution_time', 0);
 include '../bootstrap.php';
 
+$Conn = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+mysql_select_db('smdb', $Conn) or die( mysql_error() );
 
 $db2 = $Conn;
 

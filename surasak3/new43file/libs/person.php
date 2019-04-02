@@ -34,6 +34,9 @@ WHERE d.`hn` IS NOT NULL
 AND ( d.`idguard` NOT LIKE 'MX05%' AND d.`idguard` NOT LIKE 'MX07%' ) ";
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed person ,Create temp1: ".mysql_error());
 
+
+// จะลองปรับ ให้ดึงจากเดือนย้อนหลัง ว่าใน date มีรึป่าว
+
 $sql1="SELECT * FROM report_person1 ";
 $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
