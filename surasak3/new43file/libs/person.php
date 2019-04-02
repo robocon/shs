@@ -20,7 +20,7 @@ END AS `PHONE` ,
 d.`typearea` AS `TYPEAREA`,
 thDateTimeToEn(d.`lastupdate`) AS `d_update` 
 FROM (
-    SELECT y.`hn`, SUBSTRING(y.`thidate`, 1, 10) AS `date2`
+    SELECT y.`hn`, SUBSTRING(y.`thidate`, 1, 10) AS `date2` 
 		FROM ( 
 			SELECT MAX(`row_id`) as `row_id`,`hn` 
 			FROM `opday` 
@@ -31,13 +31,63 @@ FROM (
 ) AS c 
 LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn` 
 WHERE d.`hn` IS NOT NULL 
-AND ( d.`idguard` NOT LIKE 'MX05%' AND d.`idguard` NOT LIKE 'MX07%' ) ";
+#AND ( d.`idguard` NOT LIKE 'MX05%' AND d.`idguard` NOT LIKE 'MX07%' ) ";
+// dump($temp1);
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed person ,Create temp1: ".mysql_error());
 
 
 // จะลองปรับ ให้ดึงจากเดือนย้อนหลัง ว่าใน date มีรึป่าว
+// จะทำงานเมื่อเลือกเป็นเดือนเท่านั้น
+if( preg_match('/\d{4}\-\d{2}$/', $thimonth) > 0 ){
 
-$sql1="SELECT * FROM report_person1 ";
+    list($this_year, $this_month) = explode('-', $thimonth);
+
+    $val_this_month = $this_month - 1;
+    if($val_this_month == 0){
+        $val_this_month = '12';
+    }
+
+    $past_selected = $this_year.'-'.sprintf("%02d", $val_this_month);
+
+    $sql = "CREATE  TEMPORARY  TABLE tmp_ipcard 
+    SELECT b.regisdate, b.hn, b.dbirth, b.sex, b.married, b.career, b.nation, b.idcard, a.`date2` AS `thidate`, b.yot, b.name, b.surname, b.education, b.religion, b.blood, b.idguard, b.ptright,  
+    CASE 
+        WHEN b.hphone <> '' THEN b.hphone 
+        WHEN b.phone <> '' THEN b.phone
+        WHEN b.ptffone <> '' THEN b.ptffone
+    END AS `PHONE` ,
+    b.`typearea` AS `TYPEAREA`,
+    thDateTimeToEn(b.`lastupdate`) AS `d_update` 
+
+    FROM ( 
+        SELECT * , SUBSTRING(`date`, 1, 10) AS `date2` 
+        FROM `ipcard` 
+        WHERE `dcdate` LIKE '$past_selected%' OR `dcdate` LIKE '$thimonth%'
+    ) AS a 
+    LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+    #WHERE ( b.`idguard` NOT LIKE 'MX05%' AND b.`idguard` NOT LIKE 'MX07%' )";
+    $querytmp1 = mysql_query($sql, $db2) or die("Query failed person ,Create tmp_ipcard: ".mysql_error());
+    // dump($sql);
+}
+
+// exit;
+
+
+
+if( preg_match('/\d{4}\-\d{2}$/', $thimonth) > 0 ){
+    $sql1 = "SELECT a.*  
+    from (
+        select * from report_person1 
+        union all 
+        select * from tmp_ipcard 
+    ) as a 
+    GROUP BY a.hn 
+    order by a.hn ";
+} else{
+    $sql1="SELECT * FROM report_person1 ";
+}
+
+
 $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
 $txt = '';
 while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
@@ -262,6 +312,10 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yo
     $txt .= $inline;
 
 } //close while
+
+// dump($txt);
+
+// exit;
 
 $filePath = $dirPath.'/person.txt';
 file_put_contents($filePath, $txt);

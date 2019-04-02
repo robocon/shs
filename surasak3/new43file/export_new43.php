@@ -198,10 +198,12 @@ if( $action === false ){
 	$rptday = '';
 	$day_parth = '';
 
-	$testMatch = preg_match('/\d+\-\d+$/', $dateSelect);
-	if( $testMatch === 0 ){
+	$testMatch = preg_match('/^\d{4}\-\d{2}$/', $dateSelect);
+
+	// ถ้าคีย์มาเป็นเดือน
+	if( $testMatch == 1 ){
 		list($thiyr, $rptmo) = explode('-', $dateSelect);
-	}else{
+	}else{ // ถ้าคีย์มาเป็นวัน
 		list($thiyr, $rptmo, $rptday) = explode('-', $dateSelect);
 
 		$rptday_for_day = "-$rptday";
