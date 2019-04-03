@@ -45,9 +45,23 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_
                 if($type == "OTHER"){ $diagtype = "4";}
                 if($type == "EXTERNAL CAUSE"){ $diagtype = "5";}	
             }
+
+            $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
+            if($test_match > 0){
+                list($old_clinic_code, $name) = explode(' ', $cliniccode);
+
+                $cliniccode = $name;
+            }
+
+            $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'", $db2) or die( mysql_error() );
+            $newclinic = '99';
+            if( mysql_num_rows($q) > 0 ){
+                $item = mysql_fetch_assoc($q);
+                $newclinic = trim($item['code']);
+            }
             
-            $newclinic = substr($cliniccode,0,2);
-            if($newclinic=="" || $newclinic=="ÈÑ"){ $newclinic="99";}else{ $newclinic=$newclinic;}
+            // $newclinic = substr($cliniccode,0,2);
+            // if($newclinic=="" || $newclinic=="ÈÑ"){ $newclinic="99";}else{ $newclinic=$newclinic;}
             if(!empty($vn)){ $firstcode="0";}
             $treecode="00";
             $clinic = $firstcode.$newclinic.$treecode;	

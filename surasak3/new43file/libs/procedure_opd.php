@@ -5,7 +5,7 @@
 
 //-------------------- Create file procedure_opd ä¿Åì·Õè 11 --------------------//
 $temp11="CREATE  TEMPORARY  TABLE report_procedureopd 
-SELECT thidate, hn, vn, doctor, clinic, icd9cm, TRIM(idcard) 
+SELECT thidate, hn, vn, doctor, clinic, icd9cm, icd10, TRIM(idcard) 
 FROM opday 
 WHERE thidate LIKE '$thimonth%' 
 AND icd9cm IS NOT NULL 
@@ -18,7 +18,7 @@ $sql11="SELECT * FROM report_procedureopd";
 $result11= mysql_query($sql11, $db2) or die("Query failed, Select report_procedureopd (procedure_opd)");
 $num=mysql_num_rows($result11);
 $txt = '';
-while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_fetch_row ($result11)) {	
+while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode,$icd10, $idcard) = mysql_fetch_row ($result11)) {	
 	// $sqlhos=mysql_query("select pcucode from mainhospital where pcuid='1'");
 	// list($hospcode)=mysql_fetch_array($sqlhos);
 
@@ -29,6 +29,7 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
     // }else{ 
     //     $newclinic=$newclinic;
     // }
+
 
     $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
     if($test_match > 0){
@@ -41,12 +42,23 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
     $newclinic = '99';
     if( mysql_num_rows($q) > 0 ){
         $item = mysql_fetch_assoc($q);
-        $newclinic = $item['code'];
+        $newclinic = trim($item['code']);
     }
 
-    if(!empty($vn)){ $firstcode="0";}
+    
+
+    $firstcode="0";
+    // if(!empty($vn)){ $firstcode="0";}
     $treecode="00";
-    $clinic=$firstcode.$newclinic.$treecode;
+
+    if($newclinic == '88'){
+        $clinic = '08800';
+    }else{
+        $clinic=trim($firstcode.$newclinic.$treecode);
+    }
+
+
+    
 
     $regis1=substr($thidate,0,10);
     $regis2=substr($thidate,11,19);
@@ -72,6 +84,19 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
     }	
 
     $serviceprice="0.00";
+
+
+    // $procedcode = $icd10;
+    // if( empty($procedcode) ){
+        // $sql = "SELECT `icd9cm` FROM `opicd9cm` WHERE `svdate` LIKE '' AND `hn` = '' AND `vn` = '' ";
+        // $icd9query = mysql_query($sql);
+
+        // $icd9 = mysql_fetch_assoc($icd9query);
+
+        // $procedcode = $icd9['icd9cm'];
+    // }
+
+
     $txt .= "$hospcode|$hn|$seq|$date_serv|$clinic|$procedcode|$serviceprice|$provider|$d_update|$idcard\r\n";
     // $strFileName11 = "procedure_opd.txt";
     // $objFopen11 = fopen($strFileName11, 'a');
@@ -84,6 +109,10 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
     // }
     // fclose($objFopen11);
 }  //close while
+
+// dump($txt);
+
+// exit;
 
 $filePath = $dirPath.'/procedure_opd.txt';
 file_put_contents($filePath, $txt);
