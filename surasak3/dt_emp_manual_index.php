@@ -69,7 +69,7 @@ include 'connect.php';
 								FROM `doctor` AS a 
 								LEFT JOIN `inputm` AS b ON b.`codedoctor` = a.`doctorcode`
 								WHERE a.`status` = 'y' 
-								AND a.`menucode` = 'ADM' 
+								AND ( a.`menucode` = 'ADM' OR a.`menucode` = 'ADMNID' ) 
 								AND ( 
 									a.`doctorcode` IS NOT NULL 
 									AND a.`doctorcode` != '00000' 

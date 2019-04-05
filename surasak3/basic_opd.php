@@ -29,7 +29,6 @@ exit();
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>คัดแยกผู้ป่วย</title>
 <style type="text/css">
-<!--
 
 .data_show{ 
 	font-family:"TH SarabunPSK"; 
@@ -68,8 +67,8 @@ font-size:18px;
 	font-size: 28px;
 	font-weight: bold;
 }
--->
 </style>
+<link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
 
 <body >
@@ -120,22 +119,94 @@ if($_POST["cigarette"]=="1"){
 	$_POST["member2"]="";
 }
 
+	$bp3 = $_POST['bp3'];
+	$bp4 = $_POST['bp4'];
+	$cAge = $_POST['age'];
+
+	$mens = ( empty($_POST['mens']) ) ? NULL : $_POST['mens'] ;
+	$mens_date = ( empty($_POST['mens_date']) ) ? NULL : $_POST['mens_date'] ;
+	$vaccine = ( empty($_POST['vaccine']) ) ? NULL : $_POST['vaccine'] ;
+	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? NULL : $_POST['parent_smoke'] ;
+	$parent_smoke_amount = ( empty($_POST['parent_smoke_amount']) ) ? NULL : $_POST['parent_smoke_amount'] ;
+	$parent_drink = ( empty($_POST['parent_drink']) ) ? NULL : $_POST['parent_drink'] ;
+	$parent_drink_amount = ( empty($_POST['parent_drink_amount']) ) ? NULL : $_POST['parent_drink_amount'] ;
+	$smoke_amount = ( empty($_POST['smoke_amount']) ) ? NULL : $_POST['smoke_amount'] ;
+	$drink_amount = ( empty($_POST['drink_amount']) ) ? NULL : $_POST['drink_amount'] ;
+	$ht_amount = ( empty($_POST['ht_amount']) ) ? NULL : $_POST['ht_amount'] ;
+	$dm_amount = ( empty($_POST['dm_amount']) ) ? NULL : $_POST['dm_amount'] ;
+	$hpi = $_POST['hpi'];
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
 	list($rows) = Mysql_fetch_row($result);
 	
-	if($rows > 0){
+if($rows > 0){
 
-$sql = "Update `opd` set  `thidate` = '".$thidate_now."', `temperature`  = '".$_POST["temperature"]."', `pause`  = '".$_POST["pause"]."', `rate`  = '".$_POST["rate"]."', `weight`  = '".$_POST["weight"]."', `bp1`  = '".$_POST["bp1"]."', `bp2`  = '".$_POST["bp2"]."', `drugreact`  = '".$_POST["drugreact"]."', `congenital_disease`  = '".$_POST["congenital_disease"]."', `type`  = '".$_POST["type"]."', `organ`  = '".$_POST["organ"]."', `doctor` = '".$doctorname."',  `officer` = '".$_SESSION["sOfficer"]."' ,  `dc_diag` = Null, `vn`= '".$_POST["vn"]."', `toborow` = '".$_POST["toborow"]."', `height` = '".$_POST["height"]."' , `clinic`  = '".$_POST["clinic"]."' , `cigarette`= '".$_POST["cigarette"]."', `alcohol`= '".$_POST["alcohol"]."', `cigok`= '".$_POST["member2"]."', `waist`= '".$_POST["waist"]."',`chkup`= '".$_POST["typediag"]."',`room`= '".$_POST["room"]."' ,`painscore`= '".$_POST["painscore"]."',`age`='".$cAge."' where  `thdatehn` = '".$thidatehn."' limit 1 ";
+$sql = "Update `opd` set  `thidate` = '".$thidate_now."', 
+`temperature`  = '".$_POST["temperature"]."', 
+`pause`  = '".$_POST["pause"]."', 
+`rate`  = '".$_POST["rate"]."', 
+`weight`  = '".$_POST["weight"]."', 
+`bp1`  = '".$_POST["bp1"]."', 
+`bp2`  = '".$_POST["bp2"]."', 
+`drugreact`  = '".$_POST["drugreact"]."', 
+`congenital_disease`  = '".$_POST["congenital_disease"]."', 
+`type`  = '".$_POST["type"]."', 
+`organ`  = '".$_POST["organ"]."', 
+`doctor` = '".$doctorname."',  
+`officer` = '".$_SESSION["sOfficer"]."' ,  
+`dc_diag` = Null, `vn`= '".$_POST["vn"]."', 
+`toborow` = '".$_POST["toborow"]."', 
+`height` = '".$_POST["height"]."' , 
+`clinic`  = '".$_POST["clinic"]."' , 
+`cigarette`= '".$_POST["cigarette"]."', 
+`alcohol`= '".$_POST["alcohol"]."', 
+`cigok`= '".$_POST["member2"]."', 
+`waist`= '".$_POST["waist"]."',
+`chkup`= '".$_POST["typediag"]."',
+`room`= '".$_POST["room"]."' ,
+`painscore`= '".$_POST["painscore"]."',
+`age`='".$cAge."',
+`bp3`='$bp3',
+`bp4`='$bp4', 
+`mens` = '$mens', 
+`mens_date` = '$mens_date', 
+`vaccine` = '$vaccine', 
+`parent_smoke` = '$parent_smoke', 
+`parent_smoke_amount` = '$parent_smoke_amount', 
+`parent_drink` = '$parent_drink', 
+`parent_drink_amount` = '$parent_drink_amount', 
+`smoke_amount` = '$smoke_amount', 
+`drink_amount` = '$drink_amount', 
+`ht_amount` = '$ht_amount', 
+`dm_amount` = '$dm_amount', 
+`hpi` = '$hpi'
+
+where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
 
 
-	}else{
+}else{
 		
-		
-
-$sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , `toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,`waist`,`chkup`,`room`,`painscore`,`age`)VALUES (NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', '".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."');";
+$sql = "INSERT INTO `opd` (
+	`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
+	`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
+	`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , 
+	`toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,
+	`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
+	`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
+	`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,
+	`hpi`
+)VALUES (
+	NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
+	'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
+	'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
+	'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
+	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
+	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
+	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
+	'$hpi' 
+);";
 
 }
 
@@ -270,7 +341,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
+<p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
 <p class="txtsarabun"><a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a></p>
 <form id="f1" name="f1" method="post" action="">
     <strong>กรอก HN :</strong> 
@@ -428,10 +499,16 @@ if(empty($_POST["unshow"])){
 			}
 }
 	
-$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END )   From opd where hn = '".$_REQUEST["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END )   
+,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`
+From opd 
+where hn = '".$_REQUEST["hn"]."' 
+AND type <> 'ญาติ' 
+Order by row_id DESC 
+limit 1";
 
 $result = Mysql_Query($sql);
-list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1) = Mysql_fetch_row($result);
+list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi) = Mysql_fetch_row($result);
 	if($congenital_disease == "")
 		$congenital_disease = "ปฎิเสธโรคประจำตัว";
 
@@ -603,10 +680,10 @@ function checkList(){
 
 
 function checkForm(){
-	if(document.f2.doctor.value == ""){
+	if(document.f2.doctor.value == "" || document.f2.doctor.value == 0){
 		alert('กรุณาเลือก แพทย์ด้วยครับ');
 		return false;
-	}else if(document.f2.clinic.value == ""){
+	}else if(document.f2.clinic.value == "" || document.f2.clinic.value == 0){
 		alert('กรุณาเลือก คลินิกด้วยครับ');
 		return false;
 	}else if(document.f2.cig1.checked == true&&document.f2.member2[0].checked == false&&document.f2.member2[1].checked == false){
@@ -665,6 +742,11 @@ function togglediv1(divid){
 		 $bmi=number_format($weight /($ht*$ht),2);
 		 ?>
  </p>
+<style>
+label:hover{
+	cursor: pointer;
+}
+</style>
 <table width="95%" border="4" align="center" cellpadding="2" cellspacing="0" bordercolor="#339999">
 <tr valign="top">
        <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" >
@@ -708,39 +790,146 @@ mmHg </td>
                <td align="left"><input name="waist" type="text" id="waist" size="3" value="" />
 ซม.
   <?php //} ?></td>
-               <td align="right" class="data_show">Pain Score:</td>
-               <td align="left"><input name="painscore" type="text" id="painscore" size="3" value="" />
-
-  <?php //} ?></td>
+               <td align="right">Repeat BP :</td>
+				<td align="left">
+					<input name="bp3" type="text" id="bp3" size="3" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" />&nbsp;mmHg 
+				</td>
              </tr>
+			 <tr>
+				<td align="right" class="data_show">Pain Score:</td>
+				<td align="left">
+					<input name="painscore" type="text" id="painscore" size="3" value="" />
+				</td>
+				<td align="right"></td>
+				<td align="left"></td>
+				<td align="right"></td>
+				<td align="left"></td>
+			 </tr>
            </table></td>
           </tr>
+
+		<?php 
+		preg_match('/(\d+)/',$age,$age_matchs);
+		$match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $cYot, $matchs);
+
+		$mens1 = $mens2 = $mens3 = '';
+		if( $mens == 1 ){
+			$mens1 = 'checked="checked"';
+		}elseif ( $mens == 2 ) {
+			$mens2 = 'checked="checked"';
+		}elseif ( $mens == 3 ) {
+			$mens3 = 'checked="checked"';
+		}
+
+		// ประจำเดือน ญ 11-60ปี
+		if( $match > 0 ){
+
+			?>
+			<tr valign="top">
+				<td align="right"  class="data_show">ประจำเดือน : </td>
+				<td colspan="5">
+					<div>
+						<label for="mens1"><input type="radio" name="mens" id="mens1" value="1" class="lmp" <?=$mens1;?> > ยังไม่มีประจำเดือน</label>&nbsp;&nbsp;
+						<label for="mens2"><input type="radio" name="mens" id="mens2" value="2" class="lmp" <?=$mens2;?> > หมดประจำเดือน</label>&nbsp;&nbsp;
+						<label for="mens3"><input type="radio" name="mens" id="mens3" value="3" class="lmp" <?=$mens3;?> > ยังมีประจำเดือน</label> 
+					</div>
+					<?php 
+					$def_mens_style = 'display: none;';
+					if( $mens == '3' ){
+						$def_mens_style = '';
+					}
+					?>
+					<div class="lmp_date" style="<?=$def_mens_style;?> margin-bottom: 5px;">
+						LMP: <input type="text" name="mens_date" id="mens_date" value="<?=$mens_date;?>"> (วันที่ประจำเดือนมาครั้งสุดท้าย)
+					</div>
+				</td>
+			</tr>
+			<?php
+		}
+
+		// เด็ก 0-14 ปี 
+		if ( $age_matchs['1'] >= 0 && $age_matchs['1'] <= 14 ) {
+			?>
+			<tr valign="top">
+				<td align="right"  class="data_show">วัคซีนเด็ก : </td>
+				<td colspan="5">
+					<div>
+						<label for="vaccine1"><input type="radio" name="vaccine" id="vaccine1" value="1"> ตามเกณฑ์</label>&nbsp;&nbsp;
+						<label for="vaccine2"><input type="radio" name="vaccine" id="vaccine2" value="2"> ไม่ตามเกณฑ์</label> 
+					</div>
+					<div>
+						<?php 
+						$def_psmoke2 = 'checked="checked"';
+						?>
+						ผู้ปกครองสูบบุหรี่&nbsp;&nbsp;
+						<label for="parent_smoke1"><input type="radio" class="ps_smoke" name="parent_smoke" id="parent_smoke1" value="1">สูบ</label>&nbsp;&nbsp;
+						<label for="parent_smoke2"><input type="radio" class="ps_smoke"  name="parent_smoke" id="parent_smoke2" value="2" <?=$def_psmoke2;?> >ไม่สูบ</label>
+						&nbsp;&nbsp;&nbsp;
+						<span style="display:none;" class="ps_contain"><label for="parent_smoke_amount">จำนวนที่สูบ<input type="text" name="parent_smoke_amount" id="parent_smoke_amount" size="3">มวน/วัน</label></span>
+					</div>
+					<div style="margin-bottom: 5px;">
+						<?php 
+						$def_pdrink2 = 'checked="checked"';
+						?>
+						ผู้ปกครองดื่มสุรา&nbsp;&nbsp;
+						<label for="parent_drink1"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink1" value="1">ดื่ม</label>&nbsp;&nbsp;
+						<label for="parent_drink2"><input type="radio" class="pd_drink" name="parent_drink" id="parent_drink2" value="2" <?=$def_pdrink2;?> >ไม่ดื่ม</label>
+						&nbsp;&nbsp;&nbsp;
+						<span style="display:none;" class="pd_contain"><label for="parent_drink_amount">จำนวนที่ดื่ม<input type="text" name="parent_drink_amount" id="parent_drink_amount" size="3">แก้ว/สัปดาห์</label></span>
+					</div>
+				</td>
+			</tr>
+			<?php
+		}
+		?>
 		 <tr>
 		   <td width="116" align="right" class="data_show">แพ้ยา : </td>
-		   <td colspan="5" align="left" class="data_show"><input name="drugreact" type="radio" value="0" />
-		     ไม่แพ้ <input name="drugreact" type="radio" value="1" />
-		     แพ้
-		     <font class="data_drugreact"><?php echo $txt_react2;?></font></td>
+		   <td colspan="5" align="left" class="data_show">
+				<input name="drugreact" type="radio" value="0" />ไม่มีประวัติการแพ้ 
+				<input name="drugreact" type="radio" value="1" />แพ้
+				<input name="drugreact" type="radio" value="2" />ไม่ทราบ
+				<font class="data_drugreact"><?php echo $txt_react2;?></font>
+			</td>
 	      </tr>
 		  <tr>
-           <td align="right"  class="data_show">บุหรี่ : </td>
+           <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
 			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1">สูบ&nbsp;&nbsp;&nbsp;
 			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')">ไม่สูบ&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;สุรา : <INPUT TYPE="radio" NAME="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;<INPUT TYPE="radio" NAME="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;<INPUT TYPE="radio" NAME="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม
-		    <br />
-            <div id="kbk" style="display: none;"> 
-      <table id="member" class="fontthai">
-        <tr><td><input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
-          <input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก</td></tr>
-        </table>
-    </div> </td>
-          </tr>
-		<script>
-        if(document.f2.cig1.checked == true){
-			togglediv('kbk');
-		}
-        </script>
+			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;
+			<div id="kbk" style="display: none; margin-bottom: 8px;"> 
+				<table id="member" class="fontthai">
+					<tr>
+						<td>
+							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
+							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
+						</td>
+					</tr>
+				</table>
+			</div> 
+			<script>
+			if(document.f2.cig1.checked == true){
+				togglediv('kbk');
+			}
+			</script>
+		</td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" class="data_show">สุรา : </td>
+			<td colspan="5">
+				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม&nbsp;&nbsp;&nbsp;
+				<div style="display:none; margin-bottom: 8px;" class="da_amount">
+					<label for="drink_amount">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3">แก้ว/สัปดาห์</label>
+				</div>
+			</td>
+		</tr>
          <tr>
            <td align="right" class="data_show">โรคประจำตัว :</td>
            <td align="left" colspan="5"><span class="data_show">
@@ -748,6 +937,57 @@ mmHg </td>
              <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" class="txtsarabun" />
            </span></td>
          </tr>
+
+		<tr>
+			<td align="right" >จำนวนปีที่เป็น HT: </td>
+			<td align="left" colspan="5">
+				<?php 
+				$cur_year = date('Y').'-01-01';
+
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,`thidate`,'$cur_year') AS `year_diff` 
+				FROM `hypertension_clinic` 
+				WHERE `hn` = '$cHn'";
+				
+				$q = mysql_query($sql) or die( mysql_error() );
+				$ht_year = '';
+				$ht_row = mysql_num_rows($q);
+
+				if( $ht_row > 0 ){
+					$ht = mysql_fetch_assoc($q);
+					$ht_year = $ht['year_diff'];
+				}
+				?>
+				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
+			</td>
+		</tr>
+
+		<tr>
+			<td align="right" >จำนวนปีที่เป็น DM: </td>
+			<td align="left" colspan="5">
+				<?php 
+
+				$sql = "SELECT TIMESTAMPDIFF(
+					YEAR,
+					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$cur_year'
+				) AS `year_diff`
+								FROM `diabetes_clinic` 
+								WHERE `hn` = '$cHn'";
+
+				$q = mysql_query($sql) or die( mysql_error() );
+
+				$dm_year = '';
+				$dm_row = mysql_num_rows($q);
+
+				if( $dm_row > 0 ){
+					$dm = mysql_fetch_assoc($q);
+
+					$dm_year = $dm['year_diff'];
+				}
+				?>
+				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> ปี
+			</td>
+		</tr>
+
          <tr>
            <td align="right" class="data_show">ลักษณะผู้ป่วย : </td>
            <td align="left" colspan="5"><span class="data_show">
@@ -761,7 +1001,7 @@ mmHg </td>
              ญาติ </span></td>
          </tr>
          <tr>
-           <td align="right" valign="top" class="data_show">อาการ :</td>
+           <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
            &nbsp;&nbsp;</td>
            <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;" class="txtsarabun">
@@ -788,6 +1028,12 @@ mmHg </td>
            <td align="right" valign="top" class="data_show">&nbsp;</td>
            <td width="796" align="left" valign="top">&nbsp;</td>
          </tr>
+		 <tr>
+			 <td align="right" valign="top" >HPI:</td>
+			 <td colspan="5"> 
+			 	<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
+			 </td>
+		 </tr>
 		<script language=Javascript>
             function Inint_AJAX() {
                try { return new ActiveXObject("Msxml2.XMLHTTP");  } catch(e) {} //IE
@@ -854,6 +1100,8 @@ mmHg </td>
            &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
            &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
            &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; สติกเกอร์" />
+
+		   <input type="hidden" name="age" value="<?=$age;?>">
            
            
 <?
@@ -885,8 +1133,61 @@ include("unconnect.inc");
 <script language="JavaScript" type="text/javascript">
 window.onload = function(){
 	document.getElementById("<?php echo $onfocus;?>").focus();
-	
 }
+</script>
+
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script type="text/javascript">
+	var popup1;
+	window.onload = function() {
+		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
+	};
+</script>
+
+<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	
+	$(document).on('click', '.lmp', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 3 ){
+			$('.lmp_date').show();
+		}else{
+			$('.lmp_date').hide();
+		}
+	});
+
+	$(document).on('click', '.ps_smoke', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 1 ){
+			$('.ps_contain').show();
+		}else{
+			$('.ps_contain').hide();
+		}
+	});
+
+	$(document).on('click', '.pd_drink', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 1 ){
+			$('.pd_contain').show();
+		}else{
+			$('.pd_contain').hide();
+		}
+	});
+
+	$(document).on('click', '.da_alcohol', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 1 ){
+			$('.da_amount').show();
+		}else{
+			$('.da_amount').hide();
+		}
+	});
+	
+});
+})(jQuery);
 </script>
 
 </body>

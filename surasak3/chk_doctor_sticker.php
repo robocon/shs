@@ -49,7 +49,7 @@ include 'fpdf_thai/shspdf.php';
 $pdf = new SHSPdf('L','mm',array( 80,35 ));
 $pdf->SetThaiFont(); // à«çµ¿Í¹µì
 $pdf->SetAutoPageBreak(true, 2);
-$pdf->SetMargins(0, 0);
+$pdf->SetMargins(4, 0);
 
 $pdf->AddPage();
 

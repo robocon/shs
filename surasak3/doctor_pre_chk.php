@@ -41,6 +41,10 @@ if( $action === 'save' ){
     $res_hbsag = $_POST['res_hbsag'];
     $res_occult = $_POST['res_occult'];
 
+    if($_POST['res_stocc']){
+        $res_occult = $_POST['res_stocc'];
+    }
+
     $diag = input_post('diag');
     
     $sex = input_post('sex');

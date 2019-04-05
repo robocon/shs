@@ -223,7 +223,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
 	$date_after= date("Y-m-d H:i:s",$times);
 	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
-	$sql = "Select * From  `dxofyear_out` where  hn='".$arr_view["hn"]."' ORDER BY row_id DESC limit 0,1 ";
+	
+	$sql = "Select * From  `dxofyear_out` where  hn='".$arr_view["hn"]."' and yearchk = '$nPrefix' ORDER BY row_id DESC limit 0,1 ";
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
 
