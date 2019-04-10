@@ -41,7 +41,18 @@ ORDER BY b.`thidate` ASC;";
 $db->exec($sql);
 
 
-$sql = "SELECT * FROM `tmp_regis`";
+// $sql = "SELECT * FROM `tmp_regis`"; 
+
+$sql = "SELECT a.*,b.`thidate` AS `opd_date`,b.`hn` AS `opd_hn` 
+FROM `tmp_regis` AS a 
+LEFT JOIN ( 
+    SELECT `thidate`,`hn`,`ptname`,`vn`,CONCAT(( SUBSTRING(`thidate`,1,4) + 543 ),SUBSTRING(`thidate`,5,6),`hn`) AS `date_hn` 
+    FROM `dxofyear_out` 
+    WHERE `yearchk` = '62' 
+    ORDER BY `thidate` ASC 
+) AS b ON b.`date_hn` = a.`date_hn` 
+ORDER BY a.`hn`,a.`thidate` ASC ";
+
 $db->select($sql);
 $items = $db->get_items();
 
@@ -73,29 +84,65 @@ $items = $db->get_items();
             <th>HN</th>
             <th>ชื่อ-สกุล</th>
             <th>vn</th>
+            <th>ออกเพื่อ</th>
+            <th>opd date</th>
+            <th>opd hn</th>
+            <th>Doctor</th>
         </tr>
         <?php 
         $i = 1;
         foreach ($items as $key => $item) { 
 
             $hn = $item['hn'];
+            $date_hn = $item['date_hn'];
 
-            $sql = "SELECT `thidate`,`hn`,`ptname`,`vn`,CONCAT(( SUBSTRING(`thidate`,1,4) + 543 ),SUBSTRING(`thidate`,5,6),`hn`) AS `date_hn` 
-            FROM `dxofyear_out` 
-            WHERE `yearchk` = '62' 
-            AND `hn` = '$hn' 
-            ORDER BY `thidate` ASC ";
+            $sql = "SELECT `hn`,`date_chk` 
+            FROM `chk_doctor` 
+            WHERE CONCAT(( SUBSTRING(`date_chk`,1,4) + 543 ),SUBSTRING(`date_chk`,5,6),`hn`) = '$date_hn' ";
             $db->select($sql);
-            $test = $db->get_item();
+            $rows = $db->get_rows();
+            $date_chk = '';
+            $chk_dt = '';
+            if( $rows > 0 ){
+                $chk_dt = $db->get_item();
+                $date_chk = $chk_dt['date_chk'];
+            }
+            
 
-            dump($test);
+            $style = '';
+            // $test_chk = false;
+            $match = preg_match('/(EX16|EX46)/', $item['toborow'], $matchs);
+            if( $match > 0 ){
+                // $style = 'style="background-color: #a7ffa7;"';
+                // $test_chk = true;
+
+                if( !empty($item['opd_date']) ){
+                    $style = 'style="background-color: #a7ffa7;"';
+                }else{
+                    $style = 'style="background-color: #ffafaf;"';
+                }
+
+
+            }
+
+
+
+
+
+
+
+
             ?>
-            <tr>
+            <tr <?=$style;?>>
                 <td><?=$i;?></td>
                 <td><?=$item['thidate'];?></td>
                 <td><?=$item['hn'];?></td>
                 <td><?=$item['ptname'];?></td>
                 <td><?=$item['vn'];?></td>
+                <td><?=$item['toborow'];?></td>
+                <td><?=$item['opd_date'];?></td>
+                <td><?=$item['opd_hn'];?></td>
+                <td><?=$date_chk;?></td>
             </tr>
             <?php 
             $i++;
@@ -117,8 +164,8 @@ LEFT JOIN (
 ) AS b ON b.`date_hn` = a.`date_hn` 
 ORDER BY a.`hn`,a.`thidate` ASC ";
 // dump($sql);
-$db->select($sql);
-$items = $db->get_items();
+// $db->select($sql);
+// $items = $db->get_items();
 
 // dump($items);
 
