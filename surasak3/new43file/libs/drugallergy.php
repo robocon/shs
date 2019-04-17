@@ -3,11 +3,11 @@
 //-------------------- Create file drugallergy ไฟล์ที่ 11 --------------------//
 //
 $sql5 = "SELECT a.`regisdate`,b.`date`,b.`hn`,b.`drugcode`,b.`tradname`,b.`advreact`,b.`asses`,b.`reporter`, c.`code24`,
-a.`idcard` 
+a.`idcard`, CONCAT(b.`hn`,b.`drugcode`) AS `hn_drugcode`
 FROM `opcard` AS a 
 RIGHT JOIN `drugreact` AS b ON a.`hn`=b.`hn` 
 LEFT JOIN `druglst` AS c ON b.`drugcode` = c.`drugcode` 
-WHERE a.`regisdate` LIKE '$yrmonth%' 
+WHERE a.`hn` IS NOT NULL  
 AND b.`date` LIKE '$thimonth%';";
 $result5 = mysql_query($sql5) or die("Query failed, Select report_drugallergy (drugallergy)");
 $num = mysql_num_rows($result5);
@@ -58,6 +58,15 @@ while (list ($regisdate,$date,$hn,$drugcode,$tradname,$advreact,$asses,$reporter
     $informant = "1";  //ผู้ให้ประวัติการแพ้
 
     $provider = $sortdate.sprintf('%03d', $vn).$doctor_code;
+
+    if( empty($code24) ){
+        $sql = "SELECT `code24` FROM `druglst` WHERE `tradname` LIKE '%$dname%' AND `drug_active` = 'y' LIMIT 1 ";
+        $q = mysql_query($sql) or die( mysql_error() );
+        $drug = mysql_fetch_assoc($q);
+        $code24 = $drug['code24'];
+
+    }
+    
 
     $inline = "$hospcode|$hn|$daterecord|$code24|$dname|$typedx|$alevel|$symptom|$informant|$hospcode|$d_update|$provider|$cid\r\n";
     // print($inline);

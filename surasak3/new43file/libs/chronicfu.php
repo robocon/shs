@@ -52,7 +52,8 @@ LEFT JOIN (
     WHERE `thidate` LIKE '$thimonth%' 
 ) AS y ON y.`thdatehn` = x.`thdatehn` 
 LEFT JOIN `opcard` AS c ON c.`hn` = x.`hn` 
-WHERE y.`vn` IS NOT NULL;";
+WHERE y.`vn` IS NOT NULL 
+GROUP BY x.`thdatehn` ;";
 
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 

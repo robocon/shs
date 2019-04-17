@@ -38,7 +38,7 @@ AND (
 ) 
 AND `status` = 'Y' 
 ORDER BY `row_id` ASC;";
-$q = mysql_query($sql) or die( mysql_error() );
+// $q = mysql_query($sql) or die( mysql_error() );
 
 // DROP TEMPORARY TABLE IF EXISTS tmp_opcard;
 $sql = "CREATE TEMPORARY TABLE tmp_opcard 
@@ -69,19 +69,19 @@ FROM `tmp_inputm` AS a
 LEFT JOIN `tmp_opcard` AS b ON b.`fullname` = a.`ptname` 
 WHERE b.`idcard` IS NOT NULL 
 ORDER BY a.`row_id`;";
-$q = mysql_query($sql) or die( mysql_error() );
+// $q = mysql_query($sql) or die( mysql_error() );
 
 $txt = '';
-while ( $item = mysql_fetch_assoc($q) ) {
-	$txt .= $item['HOSPCODE'].'|'.$item['PROVIDER'].'|';
-	$txt .= $item['REGISTERNO'].'|'.$item['CONCIL'].'|';
-	$txt .= $item['CID'].'|'.$item['PRENAME'].'|';
-	$txt .= $item['NAME'].'|'.$item['LNAME'].'|';
-	$txt .= $item['SEX'].'|'.$item['BIRTH'].'|';
-	$txt .= $item['PROVIDERTYPE'].'|'.$item['STARTDATE'].'|';
-	$txt .= $item['OUTDATE'].'|'.$item['MOVEFROM'].'|';
-	$txt .= $item['MOVETO'].'|'.$item['D_UPDATE']."\r\n";
-}
+// while ( $item = mysql_fetch_assoc($q) ) {
+// 	$txt .= $item['HOSPCODE'].'|'.$item['PROVIDER'].'|';
+// 	$txt .= $item['REGISTERNO'].'|'.$item['CONCIL'].'|';
+// 	$txt .= $item['CID'].'|'.$item['PRENAME'].'|';
+// 	$txt .= $item['NAME'].'|'.$item['LNAME'].'|';
+// 	$txt .= $item['SEX'].'|'.$item['BIRTH'].'|';
+// 	$txt .= $item['PROVIDERTYPE'].'|'.$item['STARTDATE'].'|';
+// 	$txt .= $item['OUTDATE'].'|'.$item['MOVEFROM'].'|';
+// 	$txt .= $item['MOVETO'].'|'.$item['D_UPDATE']."\r\n";
+// }
 
 
 
@@ -105,7 +105,8 @@ REPLACE(SUBSTRING(b.`regisdate`,1,10),'-','') AS `STARTDATE`,
 '' AS `OUTDATE`, 
 '' AS `MOVEFROM`, 
 '' AS `MOVETO`, 
-thDateTimeToEn(b.`lastupdate`) AS `D_UPDATE`
+thDateTimeToEn(b.`lastupdate`) AS `D_UPDATE`,
+a.`name` AS `dr_name` 
 FROM ( 
 
 	SELECT *, 
@@ -127,7 +128,15 @@ LEFT JOIN (
 
 WHERE b.`idcard` IS NOT NULL ";
 $q = mysql_query($sql) or die( mysql_error() );
-while ( $item = mysql_fetch_assoc($q) ) {
+while ( $item = mysql_fetch_assoc($q) ) { 
+
+	$test_dt = substr($item['dr_name'], 0, 5);
+	if( $test_dt == 'MD020' ){
+		$item['PROVIDER'] = '3448';
+	}elseif ( $test_dt == 'MD030' ) {
+		$item['PROVIDER'] = '5947';
+	}
+
 	$txt .= $item['HOSPCODE'].'|'.$item['PROVIDER'].'|';
 	$txt .= $item['REGISTERNO'].'|'.$item['CONCIL'].'|';
 	$txt .= $item['CID'].'|'.$item['PRENAME'].'|';

@@ -1,11 +1,30 @@
 <?php
 //-------------------- Create file accident ไฟล์ที่ 9 --------------------//
+
+/**
+ * ปัญหาคือ 
+ * ใน trauma มาคนละเวลา คนละอาการ เลยทำให้พอทำการ group by date_hn แล้วจำนวนมันหายไป
+ * 
+ * [x] idea ที่ 1 คือ ใน trauma ให้ group จาก dx ไปเลย <<< ไม่เวิร์ค
+ * 2 อาจจะดูจาก cure ว่าสถานะเป็น d/c หรือ admit
+ */
+
 $temp9="CREATE  TEMPORARY  TABLE report_accident 
-SELECT  date,hn,date_in,time_in,type_accident,sender,type_wounded,wounded_vehicle,wounded_detail,spirits,belt,helmet,accident_detail  
-From  trauma 
-where hn !='' 
-and date_in like '$thimonth%' 
-ORDER BY date ASC";
+SELECT a.* 
+FROM ( 
+    SELECT  date,TRIM(hn) AS `hn`,date_in,time_in,type_accident,sender,type_wounded,wounded_vehicle,wounded_detail,spirits,belt,helmet,accident_detail,
+    CONCAT(`date_in`,`hn`) AS `date_hn`,`cure`
+    From  trauma 
+    where hn !='' 
+    and date_in like '$thimonth%' 
+) AS a 
+LEFT JOIN ( 
+    SELECT CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn` 
+    FROM `opday` WHERE `thidate` LIKE '$thimonth%' 
+) AS b ON b.`date_hn` = a.`date_hn` 
+WHERE b.`date_hn` IS NOT NULL 
+GROUP BY CONCAT(a.`date_hn`,a.`cure`) 
+ORDER BY a.date ASC";
 //echo $temp9;
 $querytmp9 = mysql_query($temp9) or die("Query failed,Create temp9");
 

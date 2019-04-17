@@ -4,6 +4,7 @@
 // mysql_select_db('smdb', $db2) or die( mysql_error() );
 
 // ข้อมูลยาตามรายการที่ต้องตรวจในเดือนนั้นๆ
+mysql_query('DROP TEMPORARY TABLE IF EXISTS `pre_labfu`');
 $sql_pre_labfu = "CREATE TEMPORARY TABLE `pre_labfu` 
 SELECT 
 a.*, b.`sex`,b.`hn`, CONCAT(SUBSTRING(b.`orderdate`,1,10),b.`hn`) AS `date_hn`
