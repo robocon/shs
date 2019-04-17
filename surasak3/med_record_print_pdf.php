@@ -194,7 +194,7 @@ foreach ($drug_lists as $drug_id) {
     $sql = "SELECT `genname` FROM `druglst` WHERE `drugcode` = '$dDrugcode' ";
     $db->select($sql);
     $dDruglst = $db->get_item();
-    $dGenname = $dDruglst['genname'];
+    $dGenname = substr($dDruglst['genname'],0,20);
 
     $detail_txt = $dSlip['detail1']." ";
     $detail_txt .= $dSlip['detail2']." ";

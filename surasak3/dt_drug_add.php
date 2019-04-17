@@ -4,15 +4,16 @@ session_start();
 include("connect.inc");
 function jschars($str)
 {
-    $str = str_replace("\\\\", "\\\\", $str);
-    $str = str_replace("\"", "\\\"", $str);
-    $str = str_replace("'", "\'", $str);
-    $str = str_replace("\r\n", "\\n", $str);
-    $str = str_replace("\r", "\\n", $str);
-    $str = str_replace("\n", "\\n", $str);
-    $str = str_replace("\t", "\\t", $str);
-    $str = str_replace("<", "\\x3C", $str); // for inclusion in HTML
-    $str = str_replace(">", "\\x3E", $str);
+	$str = str_replace("'", " ", $str);
+	$str = str_replace("\\\\", "\\\\", $str);
+	$str = str_replace("\"", "\\\"", $str);
+	$str = str_replace("'", "\'", $str);
+	$str = str_replace("\r\n", "\\n", $str);
+	$str = str_replace("\r", "\\n", $str);
+	$str = str_replace("\n", "\\n", $str);
+	$str = str_replace("\t", "\\t", $str);
+	$str = str_replace("<", "\\x3C", $str); // for inclusion in HTML
+	$str = str_replace(">", "\\x3E", $str);
 	$str = str_replace(",", "\,", $str);
     return $str;
 }
