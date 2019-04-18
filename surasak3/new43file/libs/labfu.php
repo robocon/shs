@@ -1,13 +1,8 @@
 <?php 
 
-// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-// mysql_select_db('smdb', $db2) or die( mysql_error() );
-
-// ข้อมูลยาตามรายการที่ต้องตรวจในเดือนนั้นๆ
 mysql_query('DROP TEMPORARY TABLE IF EXISTS `pre_labfu`');
 $sql_pre_labfu = "CREATE TEMPORARY TABLE `pre_labfu` 
-SELECT 
-a.*, b.`sex`,b.`hn`, CONCAT(SUBSTRING(b.`orderdate`,1,10),b.`hn`) AS `date_hn`
+SELECT a.*, b.`sex`,b.`hn`, CONCAT(SUBSTRING(b.`orderdate`,1,10),b.`hn`) AS `date_hn`
 FROM ( 
     SELECT `autonumber`,`labcode`,`labname`,`result`,`unit`,`normalrange`,`flag`,`authorisedate` 
     FROM  `resultdetail` 
@@ -23,12 +18,15 @@ FROM (
         OR `labname` = 'Blood Sugar' 
         OR `labname` = 'HBsAg' 
         OR `labname` = 'Creatinine' 
+        OR `labname` = 'Creatinine Urine' 
         OR `labname` = 'Urine-microalbumin' 
+        OR `labname` = 'eGFR' 
     ) 
     AND ( `result` != 'DELETE' AND `result` != '*' ) 
 ) AS a 
-LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`autonumber`";
-$q_test = mysql_query($sql_pre_labfu, $db2) or die( mysql_error() );
+LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`autonumber`;";
+// dump($sql_pre_labfu);
+mysql_query($sql_pre_labfu, $db2) or die( mysql_error() );
 
 // ผู้ป่วยโรคเบาหวาน-ความดันโลหิตสูง ที่ได้รับการตรวจทางห้องปฏิบัติการทุกครั้ง โดย่โรงพยาบาลและสถานบริการระดับปฐมภูมิ
 $sql_labfu1 = "SELECT 
@@ -44,17 +42,14 @@ CASE
     WHEN y.`labname` = 'LDLC' THEN '0541402' 
     WHEN y.`labname` = 'LDL' THEN '0541402' 
     WHEN y.`labname` = 'BUN' THEN '0583001' 
-    WHEN y.`labname` = 'Blood Sugar' THEN '0531002' 
+    WHEN y.`labname` = 'Blood Sugar' THEN '0531004' 
     WHEN y.`labname` = 'HBsAg' THEN '0746299' 
-    WHEN y.`labname` = 'Creatinine' THEN '0581904' 
+    WHEN y.`labname` = 'Creatinine' THEN '0581902' 
+    WHEN y.`labname` = 'Creatinine Urine' THEN '0581903' 
     WHEN y.`labname` = 'Urine-microalbumin' THEN '0440204' 
+    WHEN y.`labname` = 'eGFR' THEN '0581904' 
 END AS `LABTEST`, 
-
-CASE
-    WHEN y.`labname` = 'Creatinine' THEN ROUND(eGFR(x.`age`,y.`sex`,y.`result`), 2) 
-    ELSE ROUND(y.`result`, 2) 
-END AS `LABRESULT`, 
-
+ROUND(y.`result`, 2) AS `LABRESULT`, 
 x.`en_date` AS `D_UPDATE`, 
 '11512' AS `LABPLACE`, 
 x.`idcard` AS `CID` 
@@ -71,8 +66,12 @@ FROM (
 
 ) AS x 
 LEFT JOIN `pre_labfu` AS y ON y.`date_hn` = x.`date_hn` 
-WHERE y.`autonumber` IS NOT NULL ;";
+WHERE y.`autonumber` IS NOT NULL 
+GROUP BY CONCAT(x.`date_serv`,x.`vn`,`LABTEST`)
+ORDER BY x.`hn`;";
 $q = mysql_query($sql_labfu1, $db2) or die(mysql_error());
+// dump($sql_labfu1);
+// exit;
 
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) { 
