@@ -3,8 +3,14 @@
  * รอบปีงบประมาณคือ ต.ค. - ก.ย.
  */
 include 'bootstrap.php';
-
-$db = Mysql::load();
+$shs_configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'dottow',
+    'pass' => ''
+);
+$db = Mysql::load($shs_configs);
 
 /*
 $camp_lists = array(
@@ -83,8 +89,8 @@ foreach($items as $key => $item){
 ?>
 <style>
 *{
-    font-family: TH SarabunPSK;
-    font-size: 16pt;
+    font-family: "TH Sarabun New","TH SarabunPSK";
+    font-size: 14pt;
 }
 /* ตาราง */
 .chk_table{
@@ -142,6 +148,35 @@ foreach($items as $key => $item){
 		$ptname = preg_replace('/\s+/', ' ', $item['ptname']);
 		list($firstname, $lastname) = explode(' ', $ptname);
 
+
+		if( $item['birthday'] == "0000-00-00" ){
+
+			$test_hn = preg_match('/\d{2}\-\d.+/',$item['hn'],$matchs);
+			if( $test_hn > 0 ){
+				$sql_opcard = "SELECT `idcard`,`dbirth` FROM `opcard` WHERE `hn` = '".$item['hn']."' ";
+				$db->select($sql_opcard);
+				$opc = $db->get_item();
+
+				if( $opc != NULL ){
+
+					list($oy, $om, $od) = explode('-', $opc['dbirth']); 
+					$date_of_birth = intval($od)."/".intval($om)."/".$oy;
+
+
+					$item['idcard'] = $opc['idcard'];
+				}else{
+					$date_of_birth = '00/00/0000';
+				}
+
+			}else{
+				$date_of_birth = '00/00/0000';
+			}
+
+		}else{
+			list($y, $m, $d) = explode('-', $item['birthday']); 
+			$date_of_birth = intval($d)."/".intval($m)."/".($y+543);
+		}
+
 		?>
 		<tr>
 			<td><?php echo $i; ?></td>
@@ -157,8 +192,10 @@ foreach($items as $key => $item){
 			<td><?php echo $item['rankgroup'];?></td>
 			<td>
 				<?php 
-				list($y, $m, $d) = explode('-', $item['birthday']); 
-				echo intval($d)."/".intval($m)."/".($y+543);
+				
+
+				echo $date_of_birth
+				
 				?>
 			</td>
 			<td>

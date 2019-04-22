@@ -2,21 +2,43 @@
 
 include 'bootstrap.php';
 
-$db = Mysql::load();
+$shs_configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'dottow',
+    'pass' => ''
+);
+$db = Mysql::load($shs_configs);
 
 $camp = 'ลูกจ้าง61';
 
-$sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+// $sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+// c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
+// FROM ( 
+//     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
+// ) AS a 
+// LEFT JOIN ( 
+//     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '61' AND `camp` LIKE 'ตรวจสุขภาพ%'
+// ) AS b ON b.`hn` = a.`HN` 
+// LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN`
+// WHERE b.row_id IS NOT NULL 
+// ORDER BY a.`row`";
+
+$sql = "SELECT b.*,c.`id` AS `chk_doctor_id`,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
-    SELECT * FROM `opcardchk` WHERE `part` = '$camp'
-) AS a 
+	SELECT * FROM `dxofyear_out` WHERE `yearchk` = '62' AND `thidate` LIKE '2019-04%' order by hn 
+) AS b 
 LEFT JOIN ( 
-    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '61' AND `camp` LIKE 'ตรวจสุขภาพ%'
-) AS b ON b.`hn` = a.`HN` 
-LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN`
-WHERE b.row_id IS NOT NULL 
-ORDER BY a.`row`";
+	SELECT * FROM `chk_doctor` WHERE `date_chk` LIKE '2019-04%' AND `yearchk` = '62' 
+) AS c ON c.`hn` = b.`hn` 
+LEFT JOIN ( 
+	SELECT * FROM `opcard` WHERE `employee` = 'y' 
+) AS a ON a.`hn` = b.`hn` 
+#WHERE a.`row_id` IS NOT NULL 
+ORDER BY b.`thidate` ";
+
 $db->select($sql);
 $items = $db->get_items();
 
@@ -60,6 +82,8 @@ $company = $db->get_item();
             <th rowspan="2">BMI</th>
             <th width="5%" rowspan="2" align="center">BP</th>
             <th colspan="14" align="center">รายการตรวจ</th>
+            <th rowspan="2">ซักประวัติ</th>
+            <th rowspan="2">สรุปผล</th>
             <th width="8%" rowspan="2" align="center">สรุปผลการตรวจ</th>
             <th rowspan="2" align="center">คำแนะนำ</th>
         </tr>
@@ -120,8 +144,12 @@ $company = $db->get_item();
             $occult = $lab['flag'];
         }
 
+        $suggest_date = '';
+        $suggest_list = array();
+
         // สรุปผลจาก conclution ที่แพทย์ลง
         $conclution = $item['conclution'];
+        
         if( $conclution == 1 ){
             $suggest_list = array(
                 1 => 'ไม่ได้ให้คำแนะนำ', 
@@ -131,7 +159,7 @@ $company = $db->get_item();
             $suggest = $item['normal_suggest'];
             $suggest_date = ( $item['normal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
             
-        }else{
+        }else if( $conclution == 2 ){
             $suggest_list = array(
                 1 => 'ไม่ได้ให้คำแนะนำ', 
                 'ให้คำแนะนำในการตรวจติดตาม/ตรวจซ้ำ ครั้งต่อไป', 
@@ -326,7 +354,17 @@ $company = $db->get_item();
                 ?>
                 <span <?=$style;?> title="Normal: <?=$etc['alp']['normalrange'];?>"><?=$etc['alp']['result'];?></span>
             </td>
-            
+            <?php 
+            if( $item['chk_doctor_id'] != NULL ){
+                $bg = '';
+                $chk_txt = '';
+            }else{
+                $bg = 'style="background-color: red; color: #ffffff;"';
+                $chk_txt = 'ยังไม่ได้สรุปผลตรวจ';
+            }
+            ?>
+            <td><?=$item['thidate'];?></td>
+            <td <?=$bg;?>><?=$chk_txt;?></td>
             <td><?=( $item['conclution'] == '1' ? 'ปกติ' : ( $item['conclution'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
             <td><?=$conclution_detail;?></td>
             <!-- <td>สรุปผลการตรวจ</td> -->
