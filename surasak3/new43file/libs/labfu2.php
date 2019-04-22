@@ -75,7 +75,7 @@ $q_labfu2 = mysql_query($sql_labfu2, $db2) or die(mysql_error());
 
 
 
-SELECT a.*, b.`sex`,b.`hn`, 
+$sql = "SELECT a.*, b.`sex`,b.`hn`, 
 CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',( SUBSTRING(b.`orderdate`,1,4) + 543 ),b.`hn`) AS `date_hn`,
 c.`row_id`,c.`vn`,c.`ptname`,c.`icd10`,c.`diag`
 FROM ( 
@@ -99,9 +99,9 @@ LEFT JOIN (
 	AND ( `icd10` NOT REGEXP 'I(1[0-5])' AND `icd10` NOT REGEXP 'E(1[0-4])' )
 
  ) AS c ON c.`thdatehn` = CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',( SUBSTRING(b.`orderdate`,1,4) + 543 ),b.`hn`);
-WHERE c.`row_id` IS NOT NULL 
+WHERE c.`row_id` IS NOT NULL ";
 
-
+$q_labfu2 = mysql_query($sql, $db2) or die(mysql_error()); 
 
 $txt = '';
 while ( $item = mysql_fetch_assoc($q_labfu2) ) { 

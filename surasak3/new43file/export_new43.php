@@ -392,7 +392,7 @@ if( $action === false ){
 	
 
 	if( $_POST['labfu'] ){ 
-		require_once 'libs/labfu.php';
+		// require_once 'libs/labfu.php';
 		require_once 'libs/labfu2.php';
 	}
 	
