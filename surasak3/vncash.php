@@ -168,7 +168,7 @@ $query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$sta
 $null='NULL';
 $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From dphardep_pt where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,date ";
+	$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From dphardep_pt where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
 	$nows = date("H.i");
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
@@ -229,7 +229,7 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กร
 $null='NULL';
 $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From phardep where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,date ";
+	$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From phardep where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
 	$nows = date("H.i");
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
@@ -289,7 +289,7 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กร
     <TD bgcolor="6495ED"><font size='2'>นัดมาเพื่อ</font></TD>
 </TR>
 <?php 
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND (an = '' OR an is Null) AND `status` = 'Y' AND price > 0 ORDER BY ptright,date ";
+	$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND (an = '' OR an is Null) AND `status` = 'Y' AND price > 0 ORDER BY ptright,tvn,date ";
 	//echo $sql;
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){

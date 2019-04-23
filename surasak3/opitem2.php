@@ -530,9 +530,10 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 </SCRIPT>
 <?
-    print "รวมเงิน  $sNetprice บาท<br>";
+	$showNetprice=number_format($sNetprice,2);	
+    print "<font face='Angsana New' size='7' color='#009900'><b>รวมเป็นเงิน  $showNetprice บาท</b></font><br>";
 
-    print "<font face='Angsana New' size='5'><b>(เบิกไม่ได้ $sSumNprice บาท</b></font>, <font face='Angsana New' size='7' color='#009900'><b>เบิกได้ $sSumYprice บาท)</b></font><br>";
+    print "<font face='Angsana New' size='5'><b>(เบิกไม่ได้ $sSumNprice บาท</b></font>, <font face='Angsana New' size='5'><b>เบิกได้ $sSumYprice บาท)</b></font><br>";
 
     if (substr($sPtright,0,3)=='R03 ' OR 'R09' OR 'R07' OR 'R10' OR 'R11' OR 'R13' OR 'R33'){/********************************************************R03*/
           //$cPaid=$sSumNprice;

@@ -27,7 +27,9 @@
 </font>
 <? if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADM"){ ?>
 <br>
-<span style="font-weight:bold; font-size:14px; color:#FF0000;">*** ตรวจสุขภาพทหารประจำปี 62 ให้เข้าเมนู <a href="labsolider.php" target="_blank">สั่ง Lab ตรวจสุขภาพทหารประจำปี</a> เท่านั้น ***</span>
+<!--<span style="font-weight:bold; font-size:14px; color:#FF0000;">*** ตรวจสุขภาพทหารประจำปี 62 ให้เข้าเมนู <a href="labsolider.php" target="_blank">สั่ง Lab ตรวจสุขภาพทหารประจำปี</a> เท่านั้น ***</span>
+--><span style="font-weight:bold; font-size:14px; color:#FF0000;">*** ตรวจสุขภาพลูกจ้างประจำปี 62 ให้เข้าเมนู <a href="labemployee.php" target="_blank">สั่ง Lab ตรวจสุขภาพลูกจ้างประจำปี</a> เท่านั้น ***</span>
+
 <? } ?>
 </body>
 
