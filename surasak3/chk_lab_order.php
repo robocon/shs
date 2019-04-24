@@ -67,7 +67,6 @@ if( $action == false ){
                     <td>เพศ</td>
                     <td>วันเกิด <span style="color: red;">รองรับการป้อนข้อมูล DD/MM/YYYY แบบปีพ.ศ.</span></td>
                     <td>รายการตรวจ ประกันสังคม</td>
-                    <td>รายการตรวจ เงินสด</td>
                 </tr>
             </table>
             <br>
@@ -107,6 +106,10 @@ if( $action == false ){
     <div>
         <div><b>ตัวอย่างการจัดข้อมูล</b></div>
         <img src="images/sso-import-lab.PNG" alt="">
+    </div>
+    <div>
+        <div><b>ตัวอย่างการตั้งค่าไฟล์ Excel ก่อนที่จะนำเข้าข้อมูล</b></div>
+        <iframe src="images/excel-pre-import.pdf" frameborder="0" width="800" height="600"></iframe>
     </div>
     <?php
 

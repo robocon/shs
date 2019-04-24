@@ -1,8 +1,14 @@
 <?php
 
 include 'bootstrap.php';
-
-$db = Mysql::load();
+$shs_configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'dottow',
+    'pass' => ''
+);
+$db = Mysql::load($shs_configs);
 
 $camp = input_get('camp');
 if( empty($camp) ){
@@ -20,10 +26,17 @@ LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN`
 LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN` 
 WHERE b.row_id IS NOT NULL 
 AND b.`yearchk` = c.`yearchk`";
+
 $db->select($sql);
 $items = $db->get_items();
 
 $user_rows = $db->get_rows();
+
+if( $user_rows == 0 ){
+    echo "ไม่มีข้อมูลการลงข้อมูลซักประวัติ และสรุปผลจากแพทย์";
+    exit;
+}
+
 
 $sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
 $db->select($sql);
