@@ -3,14 +3,7 @@
  * รอบปีงบประมาณคือ ต.ค. - ก.ย.
  */
 include 'bootstrap.php';
-$shs_configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottow',
-    'pass' => ''
-);
-$db = Mysql::load($shs_configs);
+$db = Mysql::load();
 
 // $db->select("SET NAMES UTF-8");
 /*
@@ -43,7 +36,7 @@ waist
 $sql = "SELECT a.`row_id`,a.`hn`,a.`thidate`,a.`camp`,a.`ptname`,a.`age`,
 a.`cigarette`,a.`alcohol`,a.`exercise`,a.`weight`,a.`height`,a.`bp1`,
 a.`bp2`,a.`chol`,a.`chunyot1`,a.`hdl`,a.`ldl`,a.`bs`,a.`cr`,a.`bmi`,
-b.`idcard`,b.`dbirth`,a.`gender`,a.`round_`,
+b.`idcard`,b.`dbirth`,a.`gender`,a.`round_`,a.`tg`,
 (
     CASE 
         WHEN a.`camp` LIKE 'M04%' THEN '312600' 
@@ -189,12 +182,15 @@ foreach($items as $key => $item){
 			<td>
 				<?php echo $item['bmi'];?>
 			</td>
-			<td><?php echo number_format(($item['round_'] / 0.39370), 1);?></td>
+			<?php 
+			// number_format(($item['round_'] / 0.39370), 1);
+			?>
+			<td><?php echo $item['round_'];?></td>
 			<td><?php echo $item['bp1']; ?></td>
 			<td><?php echo $item['bp2']; ?></td>
 			<td><?php echo !empty($item['bs']) ? $item['bs'] : '' ; ?></td>
 			<td><?php echo !empty($item['chol']) ? $item['chol'] : '' ; ?></td>
-			<td><?php echo !empty($item['cr']) ? $item['cr'] : '' ; ?></td>
+			<td><?php echo !empty($item['tg']) ? $item['tg'] : '' ; ?></td>
 			<td><?php echo !empty($item['hdl']) ? $item['hdl'] : '' ; ?></td>
 			<td><?php echo !empty($item['ldl']) ? $item['ldl'] : '' ; ?></td>
 		</tr>
