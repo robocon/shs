@@ -160,12 +160,12 @@ $cAge = calcage($dbirth);
 				ผปค: <?php 
 				echo $psmoke_lists[$parent_smoke];
 				if( $parent_smoke == 1 ){
-					echo '&nbsp;'.$parent_smoke_amount.' มวน/สัปดาห์';
+					echo '&nbsp;'.$parent_smoke_amount.' มวน/วัน';
 				}
 				echo '&nbsp;';
 				echo $pdrink_lists[$parent_drink];
 				if( $parent_drink == 1 ){
-					echo '&nbsp;'.$parent_drink_amount.' แก้ว/วัน';
+					echo '&nbsp;'.$parent_drink_amount.' แก้ว/สัปดาห์';
 				}
 				?>
 			</td>
@@ -176,7 +176,7 @@ $cAge = calcage($dbirth);
 	?>
 
 	<tr>
-		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=substr($clinic,3);?></td>
+		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=$clinic;?></td>
 	</tr>
 	<tr>
 		<td>โรคประจำตัว : <?=trim($congenital_disease);?></td>

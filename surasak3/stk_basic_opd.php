@@ -106,7 +106,10 @@ $full_text = "HN: $hn, $thidate, $cAge\n";
 $full_text .= "VN: $vn, T: $temperature C, P: $pause ครั้ง/นาที, R: $rate ครั้ง/นาที\n";
 $full_text .= "BP: $bp1 / $bp2 mmHg, นน: $weight กก., สส: $height ซม.\n";
 
-$full_text .= "รอบเอว: $waist ซม., ";
+if( !empty( $waist ) ){
+	$full_text .= "รอบเอว: $waist ซม., ";
+}
+
 if( !empty($bp3) && !empty($bp4) ){
 	$full_text .= "Repeat BP: $bp3 / $bp4 mmHg\n";
 }
@@ -137,19 +140,19 @@ if ( !empty($vaccine) ) {
 	$parent_txt = $psmoke_lists[$parent_smoke];
 	
 	if( $parent_smoke == 1 ){
-		$parent_txt .= ' '.$parent_smoke_amount.' มวน/สัปดาห์';
+		$parent_txt .= ' '.$parent_smoke_amount.' มวน/วัน';
 	}
 	$parent_txt .= ' ';
 	$parent_txt .= $pdrink_lists[$parent_drink];
 	if( $parent_drink == 1 ){
-		$parent_txt .= ' '.$parent_drink_amount.' แก้ว/วัน';
+		$parent_txt .= ' '.$parent_drink_amount.' แก้ว/สัปดาห์';
 	}
 	
 	$full_text .= "วัคซีน: ".$vacc_lists[$vaccine].' ผปค: '.$parent_txt." \n";
 }
 
 
-$full_text .= "ลักษณะ: $type, คลินิก: ".(substr($clinic,3))."\n";
+$full_text .= "ลักษณะ: $type, คลินิก: ".$clinic."\n";
 $full_text .= "โรคประจำตัว: ".trim($congenital_disease)."\n";
 
 if ( !empty($ht_amount) OR !empty($dm_amount) ) {

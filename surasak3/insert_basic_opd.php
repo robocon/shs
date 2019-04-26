@@ -148,12 +148,12 @@ window.onload = function(){
 				¼»¤: <?php 
 				echo $psmoke_lists[$parent_smoke];
 				if( $parent_smoke == 1 ){
-					echo '&nbsp;'.$parent_smoke_amount.' ÁÇ¹/ÊÑ»´ÒËì';
+					echo '&nbsp;'.$parent_smoke_amount.' ÁÇ¹/ÇÑ¹';
 				}
 				echo '&nbsp;';
 				echo $pdrink_lists[$parent_drink];
 				if( $parent_drink == 1 ){
-					echo '&nbsp;'.$parent_drink_amount.' á¡éÇ/ÇÑ¹';
+					echo '&nbsp;'.$parent_drink_amount.' á¡éÇ/ÊÑ»´ÒËì';
 				}
 				?>
 			</td>

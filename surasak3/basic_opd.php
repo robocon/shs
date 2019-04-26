@@ -348,7 +348,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_emp.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
+<p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
 <p class="txtsarabun"><a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a></p>
 <form id="f1" name="f1" method="post" action="">
     <strong>กรอก HN :</strong> 
@@ -807,8 +807,8 @@ mmHg </td>
 				<td align="left">
 					<input name="painscore" type="text" id="painscore" size="3" value="" />
 				</td>
-				<td align="right">O<sub>2</sub> Sat: </td>
-				<td align="left"><input type="text" name="otwosat" id="">%</td>
+				<td align="right"></td>
+				<td align="left"></td>
 				<td align="right"></td>
 				<td align="left"></td>
 			 </tr>
@@ -1035,13 +1035,15 @@ mmHg </td>
            <td align="right" valign="top" class="data_show">&nbsp;</td>
            <td width="796" align="left" valign="top">&nbsp;</td>
          </tr>
-		 <tr>
-			 <td align="right" valign="top" >HPI:</td>
-			 <td rowspan="3" colspan="2"> 
-			 	<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
-			 </td>
-			 <td colspan="3">
+		<tr valign="top">
+			<td align="right" valign="top" >HPI:</td>
+			<td> 
+			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 
+			
+			</td>
+			<td colspan="4">
+			
 				<select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
 					<option value="">--- ตัวช่วย ---</option>
 					<?php
@@ -1051,26 +1053,23 @@ mmHg </td>
 					?>
 				</select>
 
-			 </td>
-		 </tr>
-		 <tr>
-			 <td></td>
-			 <td colspan="4">
-				 <select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
-					<option value="">--- ตัวช่วย ---</option>
+				<br>
+				<br>
+
+				<select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
+					<option value="">--- อาการเดิม ---</option>
 					<?php
 					foreach($his_hpi as $value){
 						echo "<option value='".$value."'>".$value."</option>";
 					}
 					?>
 				</select>
-			 </td>
-		 </tr>
-		 <tr>
-			 <td></td>
-			 <td colspan="4"></td>
-		 </tr>
-
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="4">&nbsp;</td>
+		</tr>
 
 		<script language=Javascript>
             function Inint_AJAX() {
