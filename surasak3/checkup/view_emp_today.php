@@ -9,49 +9,36 @@ include '../bootstrap.php';
  * - แพทย์
  */
 
-$configs = array(
-    'host' => '192.168.1.2',
+$shs_configs = array(
+    'host' => '192.168.1.13',
     'port' => '3306',
     'dbname' => 'smdb',
-    'user' => 'remoteuser',
+    'user' => 'dottow',
     'pass' => ''
 );
 
-$db = Mysql::load($configs);
+$db = Mysql::load($shs_configs);
 // $db->exec("SET NAMES UTF8");
 
-
-$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_regis`
-SELECT b.`thidate`, b.`hn`, b.`ptname`, b.`vn`, b.`date_hn`,b.`toborow` 
-FROM ( 
-    SELECT `hn` 
-    FROM `opcard` 
-    WHERE `employee` = 'y'
+$sql = "SELECT b.`row_id`,b.`thidate`,b.`hn`,b.`ptname`,b.`vn`,b.`age`,b.`toborow`,
+CONCAT(SUBSTRING(b.`thidate`,1,10),b.`hn`) AS `date_hn_bc`,
+CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),b.`hn`) AS `date_hn_ad`,
+d.`employee`,
+c.`camp`,c.`yearchk`,c.`bp1`,c.`bp2`,
+e.`date_chk`,e.`doctor` 
+FROM( 
+	SELECT MAX(`row_id`) AS `row_id` 
+	FROM `opday` 
+	WHERE `thidate` >= '2562-04-01 00:00:00' AND `thidate` <= '2562-04-24 23:23:59' 
+	AND ( `toborow` LIKE 'EX16%' OR `toborow` LIKE 'E46%' ) 
+	GROUP BY `hn` 
 ) AS a 
+LEFT JOIN `opday` AS b ON a.`row_id` = b.`row_id` 
+LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn` 
+LEFT JOIN `dxofyear_out` AS c ON c.`thdatehn` = CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),b.`hn`) 
 LEFT JOIN ( 
-    SELECT `row_id`,`thidate`,`hn`,`ptname`,`vn`,`age`,`toborow`,CONCAT(SUBSTRING(`thidate`,1,10),`hn`) AS `date_hn`
-    FROM `opday` 
-    WHERE `thidate` >= '2562-04-01 00:00:00' AND `thidate` <= '2562-04-12 23:23:59' 
-    #AND ( `toborow` LIKE 'EX16%' OR `toborow` LIKE 'E46%' ) 
-
-) AS b ON b.`hn` = a.`hn` 
-WHERE b.`row_id` IS NOT NULL 
-ORDER BY b.`thidate` ASC;";
-// dump($sql);
-$db->exec($sql);
-
-
-// $sql = "SELECT * FROM `tmp_regis`"; 
-
-$sql = "SELECT a.*,b.`thidate` AS `opd_date`,b.`hn` AS `opd_hn` 
-FROM `tmp_regis` AS a 
-LEFT JOIN ( 
-    SELECT `thidate`,`hn`,`ptname`,`vn`,CONCAT(( SUBSTRING(`thidate`,1,4) + 543 ),SUBSTRING(`thidate`,5,6),`hn`) AS `date_hn` 
-    FROM `dxofyear_out` 
-    WHERE `yearchk` = '62' 
-    ORDER BY `thidate` ASC 
-) AS b ON b.`date_hn` = a.`date_hn` 
-ORDER BY a.`hn`,a.`thidate` ASC ";
+	SELECT * FROM `chk_doctor` WHERE `date_chk` LIKE '2019-04%'
+) AS e ON e.`hn` = c.`hn` ";
 
 $db->select($sql);
 $items = $db->get_items();
@@ -83,54 +70,39 @@ $items = $db->get_items();
             <th>วันที่</th>
             <th>HN</th>
             <th>ชื่อ-สกุล</th>
-            <th>vn</th>
-            <th>ออกเพื่อ</th>
-            <th>opd date</th>
-            <th>opd hn</th>
-            <th>Doctor</th>
+            <th>VN</th>
+            <th>ออก VN เพื่อ</th>
+            <th>สถานะลูกจ้าง</th>
+            <th>CAMP</th>
+            <th>แพทย์สรุปผล</th>
         </tr>
         <?php 
         $i = 1;
         foreach ($items as $key => $item) { 
 
-            $hn = $item['hn'];
-            $date_hn = $item['date_hn'];
-
-            $sql = "SELECT `hn`,`date_chk` 
-            FROM `chk_doctor` 
-            WHERE CONCAT(( SUBSTRING(`date_chk`,1,4) + 543 ),SUBSTRING(`date_chk`,5,6),`hn`) = '$date_hn' ";
-            $db->select($sql);
-            $rows = $db->get_rows();
-            $date_chk = '';
-            $chk_dt = '';
-            if( $rows > 0 ){
-                $chk_dt = $db->get_item();
-                $date_chk = $chk_dt['date_chk'];
-            }
-            
-
             $style = '';
             // $test_chk = false;
-            $match = preg_match('/(EX16|EX46)/', $item['toborow'], $matchs);
-            if( $match > 0 ){
+            // $match = preg_match('/(EX16|EX46)/', $item['toborow'], $matchs);
+
+            $test_camp = preg_match('/(ลูกจ้าง|ตรวจสุขภาพ)/', $item['camp'], $matchs);
+
+            // if( $match > 0 ){
                 // $style = 'style="background-color: #a7ffa7;"';
                 // $test_chk = true;
 
-                if( !empty($item['opd_date']) ){
-                    $style = 'style="background-color: #a7ffa7;"';
-                }else{
-                    $style = 'style="background-color: #ffafaf;"';
+
+                // ถ้าสถานะไม่ใช่ลูกจ้างแต่มีการตรวจ
+                if( $item['employee'] == 'n' && $test_camp > 0 ){
+                    $style = 'style="background-color: #fffea7;"';
+
+                }
+                
+                if( $item['employee'] == 'y' && is_null($item['doctor']) ){
+                    $style = 'style="background-color: red;"';
                 }
 
 
-            }
-
-
-
-
-
-
-
+            // }
 
             ?>
             <tr <?=$style;?>>
@@ -140,9 +112,9 @@ $items = $db->get_items();
                 <td><?=$item['ptname'];?></td>
                 <td><?=$item['vn'];?></td>
                 <td><?=$item['toborow'];?></td>
-                <td><?=$item['opd_date'];?></td>
-                <td><?=$item['opd_hn'];?></td>
-                <td><?=$date_chk;?></td>
+                <td><?=$item['employee'];?></td>
+                <td><?=$item['camp'];?></td>
+                <td><?=$item['doctor'];?></td>
             </tr>
             <?php 
             $i++;
