@@ -52,8 +52,9 @@ if( $action == false ){
         <form action="chk_company.php" method="post">
             <div> เลือกปี : 
                 <?php 
+                $year_selected = input_post('year_selected', date('Y') );
                 $year_range = range('2018',get_year_checkup(true, true));
-                getYearList('year_selected', true, 'selected', $year_range);
+                getYearList('year_selected', true, $year_selected, $year_range);
                 ?>
             </div>
 
@@ -70,7 +71,7 @@ if( $action == false ){
     ?>
     <div>
         <?php 
-        $year_selected = input_post('year_selected');
+        
         $year_selected += 543;
 
         $sql = "SELECT * FROM `chk_company_list` 
