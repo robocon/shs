@@ -118,7 +118,9 @@ foreach($items as $key => $item){
 			continue;
 		}
 
-		if( empty($item['bs']) ){
+		$bs = (int) trim($item['bs']);
+
+		if( empty($bs) ){
 			continue;
 		}
 		
@@ -150,25 +152,29 @@ foreach($items as $key => $item){
 			</td>
 			<td><?php echo ( $item['gender'] == '1' ) ? 1 : 2 ; ?></td>
 
-			<td><?php echo $item['bs']; ?></td>
+			<td><?=$bs;?></td>
 
 			<td>
 			<?php 
-			if( !empty($item['bs']) && !empty($item['bs']) ){
-
-				if( $item['bs'] <= 100 ){
+			
+			if( !empty($bs) && !empty($bs) ){
+				
+				if( $bs <= 100 ){
 					echo "ปกติ";
 
-				}elseif( $item['bs'] > 100 && $item['bs'] <= 125 ){
+				}elseif( $bs > 100 && $bs <= 124 ){
 					echo "กลุ่มเสี่ยง";
 
-				}elseif( $item['bs'] > 125 && $item['bs'] <= 154 ){
+				}elseif( $bs == 125 ){
+					echo "ป่วยระดับ0";
+
+				}elseif( $bs >= 126 && $bs <= 154 ){
 					echo "ป่วยระดับ1";
 
-				}elseif( $item['bs'] > 154 && $item['bs'] <= 182 ){
+				}elseif( $bs > 154 && $bs <= 182 ){
 					echo "ป่วยระดับ2";
 
-				}elseif( $item['bs'] >= 183 ){
+				}elseif( $bs >= 183 ){
 					echo "ป่วยระดับ3";
 
 				}

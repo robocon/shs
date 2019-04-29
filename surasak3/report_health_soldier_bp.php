@@ -157,13 +157,13 @@ foreach($items as $key => $item){
 				if( $item['bp1'] <= 120 && $item['bp2'] <= 80 ){
 					echo "ปกติ";
 
-				}elseif( ( $item['bp1'] > 120 && $item['bp1'] <= 139 ) && ( $item['bp2'] > 80 && $item['bp2'] <= 89 ) ){
+				}elseif( ( $item['bp1'] > 120 && $item['bp1'] <= 139 ) OR ( $item['bp2'] > 80 && $item['bp2'] <= 89 ) ){
 					echo "กลุ่มเสี่ยง";
 
-				}elseif( ( $item['bp1'] >= 140 && $item['bp1'] <= 159 ) && ( $item['bp2'] >= 90 && $item['bp2'] <= 99 ) ){
+				}elseif( ( $item['bp1'] >= 140 && $item['bp1'] <= 159 ) OR ( $item['bp2'] >= 90 && $item['bp2'] <= 99 ) ){
 					echo "ป่วยระดับ1";
 
-				}elseif( ( $item['bp1'] >= 160 && $item['bp1'] <= 179 ) && ( $item['bp2'] >= 100 && $item['bp2'] <= 109 ) ){
+				}elseif( ( $item['bp1'] >= 160 && $item['bp1'] <= 179 ) OR ( $item['bp2'] >= 100 && $item['bp2'] <= 109 ) ){
 					echo "ป่วยระดับ2";
 
 				}elseif( $item['bp1'] >= 180 && $item['bp2'] >= 110 ){
