@@ -64,7 +64,7 @@ function create_dot($dot_num){
 ?>
 
 <div style="position: relative; padding: 10px;">
-    <div style="text-align: center; font-size: 16pt;">Clinical  Summary</div>
+    <div style="text-align: center; font-size: 16pt;">Clinical  Summary ต้อกระจก</div>
     <div style="text-align: center; font-size: 16pt;">โรงพยาบาลค่ายสุรศักดิ์มนตรี  จังหวัดลำปาง</div>
 
     <div style="position: absolute; top: 10px; right: 10px;">MR – IPD - 002 (4)</div>
