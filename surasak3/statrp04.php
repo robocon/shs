@@ -95,8 +95,7 @@ $sql = "
 	$where 
 	Group by hn 
 	Having sum(amount)  > 0  
-	Order by date ASC  
-	limit 70 ";
+	Order by date ASC ";
 	$result2  = mysql_query($sql);
 	
 
@@ -323,8 +322,7 @@ $sql = "
 	".$where." 
 	Group by hn 
 	Having sum(amount)  > 0 
-	Order by date ASC  
-	limit 70 ";
+	Order by date ASC  ";
 
 
 	$result2  = Mysql_Query($sql);
