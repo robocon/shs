@@ -90,10 +90,10 @@ $items = $db->get_items();
                 // $style = 'style="background-color: #a7ffa7;"';
                 // $test_chk = true;
 
-
+            $regis_warn = '';
                 // ¶éÒÊ¶Ò¹ĞäÁèãªèÅÙ¡¨éÒ§áµèÁÕ¡ÒÃµÃÇ¨
                 if( $item['employee'] == 'n' && $test_camp > 0 ){
-                    $style = 'style="background-color: #fffea7;"';
+                    $regis_warn = 'style="background-color: #fffea7;"';
 
                 }
                 
@@ -112,7 +112,7 @@ $items = $db->get_items();
                 <td><?=$item['ptname'];?></td>
                 <td><?=$item['vn'];?></td>
                 <td><?=$item['toborow'];?></td>
-                <td><?=$item['employee'];?></td>
+                <td <?=$regis_warn;?>><?=$item['employee'];?></td>
                 <td><?=$item['camp'];?></td>
                 <td><?=$item['doctor'];?></td>
             </tr>
