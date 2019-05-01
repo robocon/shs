@@ -111,6 +111,10 @@ if( $action == false ){
     $file = $_FILES['file'];
     $content = file_get_contents($file['tmp_name']);
     $part = input_post('part');
+
+    $def_month_en = array('01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April', 
+    '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August', 
+    '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December');
     
     // @todo
     // - check condition
@@ -128,6 +132,10 @@ if( $action == false ){
                 
                 list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
 
+                $dob = trim($dob);
+
+                // รูปแบบ วัน/เดือน/ปี
+                // โดยปี รองรับ พ.ศ. ค.ศ.
                 $match = preg_match('/\d+\/\d+\/\d+/', $dob, $matchs);
                 if ( $match > 0 ) {
                     list($dd, $mm, $yy) = explode('/', $dob);
@@ -141,6 +149,28 @@ if( $action == false ){
                     
                     $dob = "$yy-$mm-$dd 00:00:00";
                 }
+
+                // รูปแบบ ปี-เดือน-วัน
+                $match_ad = preg_match('/\d{4}\-\d{2}\-\d{2}/', $dob, $matchs);
+                if ( $match_ad > 0 ) {
+                    list($yy, $mm, $dd) = explode('-', $dob);
+                    $dd = sprintf('%02d', $dd);
+                    $mm = sprintf('%02d', $mm);
+                    
+                    $dob = "$yy-$mm-$dd 00:00:00";
+                }
+
+                // รูปแบบ 
+                $match_mix = preg_match('/\d{2}\s\w+\s\d{4}/', $dob, $matchs);
+                if ( $match_mix > 0 ) {
+                    list($dd, $mm_txt, $yy) = explode('-', $dob);
+                    $dd = sprintf('%02d', $dd);
+                    $yy = ( $yy - 543 );
+                    $mm = $def_month_en[$mm_txt];
+
+                    $dob = "$yy-$mm-$dd 00:00:00";
+                }
+
                 $year = get_year_checkup();
                 $ptname = $name.' '.$surname;
                 $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
