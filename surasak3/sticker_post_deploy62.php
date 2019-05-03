@@ -1,30 +1,33 @@
 <?php
 # หน้าสติกเกอร์ 
 # พี่สอง post deploy - pre deploy
-// include 'bootstrap.php';
+include 'bootstrap.php';
 
 
-// $db = Mysql::load($shs_configs);
+$db = Mysql::load($shs_configs);
 
-// $sql = "SELECT * 
-// FROM `opcardchk` 
-// WHERE `part` = 'มหาวิทยาลัยสวนดุสิต62' 
+$sql = "SELECT * 
+FROM `opcardchk` 
+WHERE `part` = 'newsoldier62in61' ";
+$db->select($sql);
 
-// ORDER BY `exam_no` ASC ";
-// $db->select($sql);
+$items = $db->get_items();
 
-// $items = $db->get_items();
-
-// $labin = '180510';
+$labin = '620507';
 // $labin = '';
+$i = 0;
 
-// foreach ($items as $key => $item) {
-for($i=1; $i<=54; $i++){
+foreach ($items as $key => $item) {
+// for($i=1; $i<=54; $i++){
 
     $hn = $item['HN'];
-    $code_exam = $labin.$item['exam_no'];
+    $code_exam = $item['exam_no'];
 
     $pid = (int) $item['pid'];
+
+    $pid = sprintf('%03d', $pid);
+
+    $branch = $item['branch'];
 
     $normal_code = $code_exam.'01';
     $chem_code = $code_exam.'02';
@@ -32,11 +35,11 @@ for($i=1; $i<=54; $i++){
 
     $fname = str_replace(array('นาย','นางสาว','นาง'), '', $item['name']);
 
-    $name = $fname.' '.$item['surname'];
+    $name = 'พลฯ'.$fname.' '.$item['surname'];
     ?>
     <!-- CBC -->
     <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$name;?></b></center></font>
-    <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (01)</b></center></font>
+    <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$pid.' '.$branch;?></b></center></font>
 	<div style='text-align:center;'>
 		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
 	</div>
@@ -44,21 +47,30 @@ for($i=1; $i<=54; $i++){
 
     <!-- CHEM -->
     <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$name;?></b></center></font>
-    <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (02)</b></center></font>
+    <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$pid.' '.$branch;?></b></center></font>
 	<div style='text-align:center;'>
-		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$chem_code;?>"></span>
+		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
 	</div>
 	<div style="page-break-before: always;"></div>
 
     <!-- UA -->
+    <!--
 	<font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$name;?></b></center></font>
     <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (03)</b></center></font>
 	<div style='text-align:center;'>
 		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span>
 	</div>
 	<div style="page-break-before: always;"></div>
-
+    -->
     <?php 
+
+    $i++;
+
+    // if( $i == 3 ){
+    //     exit;
+    // }
+
+
     /*
     if( $item['exam_no'] >= "622110" ){
     ?>
