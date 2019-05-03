@@ -112,9 +112,20 @@ if( $action == false ){
     $content = file_get_contents($file['tmp_name']);
     $part = input_post('part');
 
-    $def_month_en = array('01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April', 
-    '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August', 
-    '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December');
+    $def_month_en = array(
+        'January' => '01',
+        'February' => '02',
+        'March' => '03',
+        'April' => '04',
+        'May' => '05',
+        'June' => '06',
+        'July' => '07',
+        'August' => '08',
+        'September' => '09',
+        'October' => '10',
+        'November' => '11',
+        'December' => '12' 
+    );
     
     // @todo
     // - check condition
@@ -163,7 +174,7 @@ if( $action == false ){
                 // �ٻẺ 
                 $match_mix = preg_match('/\d{2}\s\w+\s\d{4}/', $dob, $matchs);
                 if ( $match_mix > 0 ) {
-                    list($dd, $mm_txt, $yy) = explode('-', $dob);
+                    list($dd, $mm_txt, $yy) = explode(' ', $dob);
                     $dd = sprintf('%02d', $dd);
                     $yy = ( $yy - 543 );
                     $mm = $def_month_en[$mm_txt];
