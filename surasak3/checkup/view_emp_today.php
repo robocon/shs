@@ -68,7 +68,16 @@ $items = $db->get_items();
 </style>
 
 <div>
-    <h3>ตรวจสุขภาพลูกจ้างชั่วคราว</h3>
+    <h3>สรุปผลตรวจสุขภาพลูกจ้างชั่วคราว ปี2562 (ช่วงทดสอบ)</h3>
+    <div style="border: 2px solid #7e7e00; background-color: #fefed3; padding: 4px; margin: 4px;">
+        <p>!!! READ ME !!!</p>
+        <ul>
+            <li><span style="color: red;"><b><u>สีแดง</u></b></span> ยังไม่ได้สรุปผลจากแพทย์</li>
+            <li><span style="color: yellow;"><b><u>สีเหลือง</u></b></span> ไม่มีการลงสถานะ<u>ลูกจ้าง</u>จากทะเบียน แต่มีการตรวจสุขภาพลูกจ้าง</li>
+            <li><span><b><u>สถานะลูกจ้าง</u></b></span> y: มีการยืนยันสถานะจากทะเบียน n: ยังไม่มีการยืนยันจากทะเบียน</li>
+            <li><span><b><u>แพทย์</u></b></span> คือ แพทย์ผู้สรุปผลตรวจ</li>
+        </ul>
+    </div>
     <table class="chk_table">
         <tr>
             <th rowspan="2">#</th>
