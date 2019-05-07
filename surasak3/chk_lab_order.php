@@ -171,14 +171,19 @@ if( $action == false ){
                     $dob = "$yy-$mm-$dd 00:00:00";
                 }
 
-                // รูปแบบ 
-                $match_mix = preg_match('/\d{2}\s\w+\s\d{4}/', $dob, $matchs);
+                // รูปแบบ วัน เดือน(อังกฤษ/ไทย) ปี(พ.ศ.)
+                $match_mix = preg_match('/\d{1,2}\s(.+)\s\d{4}/', $dob, $matchs);
                 if ( $match_mix > 0 ) {
                     list($dd, $mm_txt, $yy) = explode(' ', $dob);
                     $dd = sprintf('%02d', $dd);
                     $yy = ( $yy - 543 );
-                    $mm = $def_month_en[$mm_txt];
 
+                    if( isset($def_month_en[$mm_txt]) ){
+                        $mm = $def_month_en[$mm_txt];
+                    }elseif ( xxx ) {
+                        $mm = $def_fullm_th[$mm_txt];
+                    }
+                    
                     $dob = "$yy-$mm-$dd 00:00:00";
                 }
 
