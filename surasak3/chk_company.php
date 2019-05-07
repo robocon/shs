@@ -114,6 +114,7 @@ if( $action == false ){
                             <li><a href="dx_ofyear_out.php" target="_blank">ซักประวัติ(สิทธิ ปกส.)</a></li>
                             -->
                             <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
+                            <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">สติกเกอร์ LAB</a></li>
                         </ol>
                     </td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
@@ -121,29 +122,6 @@ if( $action == false ){
                 <?php
                 $i++;
             }
-            
-            /*
-            ?>
-            <tr>
-                <td></td>
-                <td>ตรวจสุขภาพ สอบตำรวจ 61</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ol>
-                        <li>
-                            <a href="out_result.php?part=สอบตำรวจ60" target="_blank">ลงข้อมูลซักประวัติ</a>
-                        </li>
-                        <li>
-                        <a href="chk_report_police60.php" target="_blank">พิมพ์ผลตรวจ</a>
-                        </li>
-                    </ol>
-                </td>
-                <td></td>
-            </tr>
-            <?php
-            */
             ?>
         </table>
         <?php
