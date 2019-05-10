@@ -20,7 +20,8 @@ $shs_configs = array(
 $db = Mysql::load($shs_configs);
 // $db->exec("SET NAMES UTF8");
 
-$sql = "SELECT b.`row_id`,b.`thidate`,b.`hn`,b.`ptname`,b.`vn`,b.`age`,b.`toborow`,
+$sql = "SELECT z.`HN` AS `pre_hn`, CONCAT(z.`name`,' ',z.`surname`) AS `pre_name`, 
+b.`row_id`,b.`thidate`,z.`HN` AS `hn`, CONCAT(z.`name`,' ',z.`surname`) AS `ptname`,b.`vn`,z.`agey` AS `age` ,b.`toborow`,
 CONCAT(SUBSTRING(b.`thidate`,1,10),b.`hn`) AS `date_hn_bc`,
 CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),b.`hn`) AS `date_hn_ad`,
 d.`employee`,
@@ -28,19 +29,32 @@ c.`camp`,c.`yearchk`,c.`weight`,c.`height`,c.`bmi`,c.`bp1`,c.`bp2`,
 e.`date_chk`,e.`doctor`,
 e.`cxr`,e.`res_cbc`,e.`res_ua`,e.`res_glu`,e.`res_crea`,e.`res_chol`,e.`res_hdl`,e.`res_hbsag`, 
 e.`conclution`,e.`normal_suggest`,e.`normal_suggest_date`,e.`abnormal_suggest`,e.`abnormal_suggest_date`,e.`diag` 
-FROM( 
-	SELECT MAX(`row_id`) AS `row_id` 
-	FROM `opday` 
-	WHERE `thidate` >= '2562-04-01 00:00:00' AND `thidate` <= '2562-04-24 23:23:59' 
-	AND ( `toborow` LIKE 'EX16%' OR `toborow` LIKE 'EX46%' ) 
-	GROUP BY `hn` 
-) AS a 
-LEFT JOIN `opday` AS b ON a.`row_id` = b.`row_id` 
-LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn` 
-LEFT JOIN `dxofyear_out` AS c ON c.`thdatehn` = CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),b.`hn`) 
+FROM (
+	SELECT * FROM `opcardchk` WHERE `part` = 'ลูกจ้าง62' 
+) AS z 
+
 LEFT JOIN ( 
-	SELECT * FROM `chk_doctor` WHERE `date_chk` LIKE '2019-04%'
-) AS e ON e.`hn` = c.`hn` ";
+
+	SELECT y.`row_id`,y.`thidate`,y.`thdatehn`,y.`hn`,y.`vn`,y.`thdatevn`,y.`ptname`,y.`age`,y.`ptright`,y.`idcard`,
+	y.`toborow`,y.`officer`
+	FROM ( 
+		SELECT MAX(`row_id`) AS `row_id` 
+		FROM `opday` 
+		WHERE `thidate` >= '2562-04-01 00:00:00' AND `thidate` <= '2562-05-10 23:23:59' 
+		AND ( `toborow` LIKE 'EX16%' OR `toborow` LIKE 'EX46%' ) 
+		GROUP BY `hn` 
+
+	) AS x 
+	LEFT JOIN `opday` AS y ON x.`row_id` = y.`row_id` 
+	
+) AS b ON b.`hn` = z.`HN` 
+
+LEFT JOIN `opcard` AS d ON d.`hn` = z.`HN` 
+LEFT JOIN `dxofyear_out` AS c ON c.`thdatehn` = CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),z.`HN`) 
+LEFT JOIN ( 
+	SELECT * FROM `chk_doctor` WHERE `date_chk` >= '2019-04-01 00:00:00' AND `date_chk` <= '2019-05-10 23:23:59' 
+) AS e ON e.`hn` = z.`HN` 
+ORDER BY z.`row` ASC ";
 
 $db->select($sql);
 $items = $db->get_items();
@@ -92,7 +106,7 @@ $items = $db->get_items();
             <th width="8%" rowspan="2">สรุปผลการตรวจ</th>
             <th rowspan="2">คำแนะนำ</th>
             <th rowspan="2">diag</th>
-            <th rowspan="2">วันที่</th>
+            <th rowspan="2">วันที่ลงทะเบียน</th>
             <th rowspan="2">VN</th>
             <th rowspan="2">ออก VN เพื่อ</th>
             <th rowspan="2">สถานะลูกจ้าง</th>
@@ -131,7 +145,7 @@ $items = $db->get_items();
 
             }
             
-            if( $item['employee'] == 'y' && is_null($item['doctor']) ){
+            if( ( $item['employee'] == 'y' OR empty($item['employee']) ) && is_null($item['doctor']) ){
                 $style = 'style="background-color: red;"';
             }
 

@@ -116,6 +116,7 @@ if( $action == false ){
                             <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
                             <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">สติกเกอร์ LAB</a></li>
                             <li><a href="chk_print_all_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ผลรายบุคคล(สิทธิประกันสังคม)</a></li>
+                            <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย(สิทธิประกันสังคม)</a></li>
                             
                         </ol>
                     </td>

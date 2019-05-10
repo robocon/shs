@@ -15,8 +15,29 @@ $shs_configs = array(
 );
 $db = Mysql::load();
 
-$sql = "SELECT * FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ";
+
+// left join กับ chk_doctor แล้วเอา id ที่เป็น null มาคิดอีกทีละกัน
+// $sql = "SELECT * FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ";
+$sql = "SELECT a.* 
+FROM `opcardchk` AS a 
+LEFT JOIN `chk_company_list` AS c ON c.`code` = a.`part` 
+LEFT JOIN `chk_doctor` AS b ON b.`hn` = a.`HN` 
+WHERE a.`part` = '$part'  
+AND b.`yearchk` = SUBSTRING(c.`yearchk`,3,2) 
+ORDER BY a.`row`";
 $db->select($sql);
+
+$row = $db->get_rows();
+// dump($row);
+
+// exit;
+
+if ( $row == 0 ) {
+    # code...
+    echo "ไม่พบข้อมูล";
+    exit;
+}
+
 $items = $db->get_items();
 
 /////////////////////////////

@@ -126,6 +126,21 @@ if( $action == false ){
         'November' => '11',
         'December' => '12' 
     );
+
+    $def_month_th = array(
+        'มกราคม' => '01',
+        'กุมภาพันธ์' => '02',
+        'มีนาคม' => '03',
+        'เมษายน' => '04',
+        'พฤษภาคม' => '05',
+        'มิถุนายน' => '06',
+        'กรกฎาคม' => '07',
+        'สิงหาคม' => '08',
+        'กันยายน' => '09',
+        'ตุลาคม' => '10',
+        'พฤศจิกายน' => '11',
+        'ธันวาคม' => '12' 
+    );
     
     // @todo
     // - check condition
@@ -162,7 +177,7 @@ if( $action == false ){
                 }
 
                 // รูปแบบ ปี-เดือน-วัน
-                $match_ad = preg_match('/\d{4}\-\d{2}\-\d{2}/', $dob, $matchs);
+                $match_ad = preg_match('/\d{4}\-\d{1,2}\-\d{1,2}/', $dob, $matchs);
                 if ( $match_ad > 0 ) {
                     list($yy, $mm, $dd) = explode('-', $dob);
                     $dd = sprintf('%02d', $dd);
@@ -174,18 +189,21 @@ if( $action == false ){
                 // รูปแบบ วัน เดือน(อังกฤษ/ไทย) ปี(พ.ศ.)
                 $match_mix = preg_match('/\d{1,2}\s(.+)\s\d{4}/', $dob, $matchs);
                 if ( $match_mix > 0 ) {
+
                     list($dd, $mm_txt, $yy) = explode(' ', $dob);
                     $dd = sprintf('%02d', $dd);
                     $yy = ( $yy - 543 );
 
-                    if( isset($def_month_en[$mm_txt]) ){
+                    if( !empty($def_month_en[$mm_txt]) ){
                         $mm = $def_month_en[$mm_txt];
-                    }elseif ( xxx ) {
-                        $mm = $def_fullm_th[$mm_txt];
+                    }elseif ( !empty($def_month_th[$mm_txt]) ) {
+                        $mm = $def_month_th[$mm_txt];
                     }
                     
                     $dob = "$yy-$mm-$dd 00:00:00";
+
                 }
+
 
                 $year = get_year_checkup();
                 $ptname = $name.' '.$surname;
@@ -205,11 +223,8 @@ if( $action == false ){
                     $msg = errorMsg(NULL, $insert['id']);
                 }
 
-                $lab_sso = str_replace('"', '', $lab_sso);
+                $lab_sso = str_replace(array('"',' '), '', $lab_sso);
                 $lab_sso_items = explode(',', $lab_sso);
-
-                $lab_cash = str_replace('"', '', $lab_cash);
-                $lab_cash_items = explode(',', $lab_cash);
 
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
