@@ -9,6 +9,18 @@ if( empty($action) ){
 
     ?>
     <h3>นำเข้ารายชื่อผู้ตรวจสุขภาพเข้าสู่ระบบโรงพยาบาล</h3>
+    <div>
+        
+        <div class="clearfix" style="height: 105px;">
+            <div class="chk_menu clearfix">
+                <ul>
+                    <li>
+                        <a href="chk_test_hn.php" target="_blank">ตรวจสอบรายชื่อจาก HN</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <form action="chk_import_user.php" method="post" enctype="multipart/form-data">
         <div>
             <?php

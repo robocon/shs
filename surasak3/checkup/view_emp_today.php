@@ -21,7 +21,7 @@ $db = Mysql::load($shs_configs);
 // $db->exec("SET NAMES UTF8");
 
 $sql = "SELECT z.`HN` AS `pre_hn`, CONCAT(z.`name`,' ',z.`surname`) AS `pre_name`, 
-b.`row_id`,b.`thidate`,z.`HN` AS `hn`, CONCAT(z.`name`,' ',z.`surname`) AS `ptname`,b.`vn`,z.`agey` AS `age` ,b.`toborow`,
+b.`row_id`,b.`thidate`,z.`HN` AS `hn`, CONCAT(z.`name`,' ',z.`surname`) AS `ptname`,b.`vn` AS `regis_vn`,b.`toborow`,c.`vn` AS `vs_vn`,z.`agey` AS `age` ,
 CONCAT(SUBSTRING(b.`thidate`,1,10),b.`hn`) AS `date_hn_bc`,
 CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),b.`hn`) AS `date_hn_ad`,
 d.`employee`,
@@ -29,28 +29,29 @@ c.`camp`,c.`yearchk`,c.`weight`,c.`height`,c.`bmi`,c.`bp1`,c.`bp2`,
 e.`date_chk`,e.`doctor`,
 e.`cxr`,e.`res_cbc`,e.`res_ua`,e.`res_glu`,e.`res_crea`,e.`res_chol`,e.`res_hdl`,e.`res_hbsag`, 
 e.`conclution`,e.`normal_suggest`,e.`normal_suggest_date`,e.`abnormal_suggest`,e.`abnormal_suggest_date`,e.`diag` 
+
 FROM (
-	SELECT * FROM `opcardchk` WHERE `part` = 'ลูกจ้าง62' 
+	SELECT *,CONCAT('2019',`HN`) AS `year_hn` FROM `opcardchk` WHERE `part` = 'ลูกจ้าง62' 
 ) AS z 
+LEFT JOIN ( 
+	SELECT *,CONCAT(SUBSTRING(`thidate`,1,4),`hn`) AS `year_hn` FROM `dxofyear_out` 
+) AS c ON c.`year_hn` = z.`year_hn` 
 
 LEFT JOIN ( 
 
 	SELECT y.`row_id`,y.`thidate`,y.`thdatehn`,y.`hn`,y.`vn`,y.`thdatevn`,y.`ptname`,y.`age`,y.`ptright`,y.`idcard`,
-	y.`toborow`,y.`officer`
+	y.`toborow`,y.`officer`,CONCAT('2019',y.`hn`) AS `year_hn`
 	FROM ( 
 		SELECT MAX(`row_id`) AS `row_id` 
 		FROM `opday` 
 		WHERE `thidate` >= '2562-04-01 00:00:00' AND `thidate` <= '2562-05-10 23:23:59' 
-		AND ( `toborow` LIKE 'EX16%' OR `toborow` LIKE 'EX46%' ) 
 		GROUP BY `hn` 
-
 	) AS x 
 	LEFT JOIN `opday` AS y ON x.`row_id` = y.`row_id` 
 	
-) AS b ON b.`hn` = z.`HN` 
+) AS b ON b.`year_hn` = z.`year_hn` 
 
 LEFT JOIN `opcard` AS d ON d.`hn` = z.`HN` 
-LEFT JOIN `dxofyear_out` AS c ON c.`thdatehn` = CONCAT((SUBSTRING(b.`thidate`,1,4) - 543),SUBSTRING(b.`thidate`,5,6),z.`HN`) 
 LEFT JOIN ( 
 	SELECT * FROM `chk_doctor` WHERE `date_chk` >= '2019-04-01 00:00:00' AND `date_chk` <= '2019-05-10 23:23:59' 
 ) AS e ON e.`hn` = z.`HN` 
@@ -84,15 +85,16 @@ $items = $db->get_items();
 <div>
     <h3>สรุปผลตรวจสุขภาพลูกจ้างชั่วคราว ปี2562 (ช่วงทดสอบ)</h3>
     <div style="border: 2px solid #7e7e00; background-color: #fefed3; padding: 4px; margin: 4px;">
-        <p>!!! READ ME !!!</p>
+        <p><b>!!! READ ME !!!</b></p>
         <ul>
-            <li><span style="color: red;"><b><u>สีแดง</u></b></span> ยังไม่ได้สรุปผลจากแพทย์</li>
-            <li><span style="color: yellow;"><b><u>สีเหลือง</u></b></span> ไม่มีการลงสถานะ<u>ลูกจ้าง</u>จากทะเบียน แต่มีการตรวจสุขภาพลูกจ้าง</li>
+            <li><span style="color: #ccca00;"><b><u>สีเหลือง</u></b></span> ขาดสรุปผลจากแพทย์</li>
+            <li><span style="color: #ff9c9c;"><b><u>สีแดง</u></b></span> ขาดข้อมูลซักประวัติ และ การสรุปผลจากแพทย์</li>
+            <li><span style="color: #d800f9;"><b><u>สีม่วง</u></b></span> ไม่พบการลงทะเบียน</li>
             <li><span><b><u>สถานะลูกจ้าง</u></b></span> y: มีการยืนยันสถานะจากทะเบียน n: ยังไม่มีการยืนยันจากทะเบียน</li>
             <li><span><b><u>แพทย์</u></b></span> คือ แพทย์ผู้สรุปผลตรวจ</li>
         </ul>
     </div>
-    <table class="chk_table">
+    <table class="chk_table" width="200%">
         <tr>
             <th rowspan="2">#</th>
             <th rowspan="2">HN</th>
@@ -145,8 +147,17 @@ $items = $db->get_items();
 
             }
             
-            if( ( $item['employee'] == 'y' OR empty($item['employee']) ) && is_null($item['doctor']) ){
-                $style = 'style="background-color: red;"';
+            // ขาดลงผลจากแพทย์ (เหลือง)
+            if( !is_null($item['yearchk']) && is_null($item['doctor']) ){
+                $style = 'style="background-color: #fffea7;"';
+
+            }elseif ( is_null($item['yearchk']) && is_null($item['doctor']) ) { // ขาดซักประวัติ และ ลงผลจากแพทย์ (แดง)
+                $style = 'style="background-color: #ff9c9c;"';
+
+            }
+            
+            if ( is_null($item['row_id']) ) { // ขาดตั้งแต่ลงทะเบียน (ม่วง)
+                $style = 'style="background-color: #d800f9;"';
             }
 
             $age = substr($item['age'], 0, 2);
@@ -205,6 +216,7 @@ $items = $db->get_items();
                 SELECT MAX(`autonumber`) AS `latest_number` 
                 FROM `resulthead` 
                 WHERE `hn` = '$hn' 
+                AND `orderdate` LIKE '2019-04%' 
                 AND ( `profilecode` != 'CBC' AND `profilecode` != 'UA' )
                 AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี62' 
                 GROUP BY `profilecode` 
@@ -379,7 +391,7 @@ $items = $db->get_items();
 
                 <td><?=$item['diag'];?></td>
                 <td><?=$item['thidate'];?></td>
-                <td><?=$item['vn'];?></td>
+                <td><?=$item['regis_vn'];?></td>
                 <td><?=$item['toborow'];?></td>
                 <td <?=$regis_warn;?>><?=$item['employee'];?></td>
                 <td><?=$item['camp'];?></td>

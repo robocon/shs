@@ -54,7 +54,7 @@ if ( $action == 'print' ) {
             for ($i=0; $i < $count_cbc; $i++) { 
                 ?>
                 <!-- CBC -->
-                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$name;?></b></center></font>
+                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (01)</b></center></font>
                 <div style='text-align:center;'>
                     <span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>

@@ -90,6 +90,7 @@ if( $action == false ){
                 <th>ช่วงเวลาที่ตรวจ</th>
                 <th>รอบปีงบประมาณ</th>
                 <th>ลงผล/พิมพ์ผล</th>
+                <th>พิมพ์ผล ปกส.</th>
                 <th></th>
             </tr>
             <?php
@@ -104,20 +105,20 @@ if( $action == false ){
                     <td><?=$item['code'];?></td>
                     <td><?=$item['date_checkup'];?></td>
                     <td align="center"><?=$item['yearchk'];?></td>
-                    <td>
+                    <td style="vertical-align: top;">
                         <ol>
                             <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                             <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                             <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
                             <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
-                            <!-- 
-                            <li><a href="dx_ofyear_out.php" target="_blank">ซักประวัติ(สิทธิ ปกส.)</a></li>
-                            -->
-                            <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
                             <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">สติกเกอร์ LAB</a></li>
-                            <li><a href="chk_print_all_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ผลรายบุคคล(สิทธิประกันสังคม)</a></li>
-                            <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย(สิทธิประกันสังคม)</a></li>
-                            
+                        </ol>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <ol>
+                            <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลรวม</a></li>
+                            <li><a href="chk_print_all_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
+                            <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย</a></li>
                         </ol>
                     </td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>

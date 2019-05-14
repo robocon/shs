@@ -1,13 +1,13 @@
 <?php
 
 include 'bootstrap.php';
-$shs_configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottow',
-    'pass' => ''
-);
+// $shs_configs = array(
+//     'host' => '192.168.1.13',
+//     'port' => '3306',
+//     'dbname' => 'smdb',
+//     'user' => 'dottow',
+//     'pass' => ''
+// );
 $db = Mysql::load($shs_configs);
 
 $camp = input_get('camp');
