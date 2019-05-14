@@ -14,18 +14,6 @@ $db = Mysql::load();
 
 $part = input('part');
 
-$item_price = array(
-    'cbc' => 80,
-    'ua' => 50,
-    'bs' => 40,
-    'cr' => 40,
-    'chol' => 200,
-    'hdl' => 200,
-    'hbsag' => 130,
-    'stocb' => 30,
-    'x-ray' => 200
-);
-
 $sql = "SELECT * FROM `chk_lab_items` WHERE `part` = 'ÃÒªÀÑ®61' ORDER BY `id` ASC ";
 $db->select($sql);
 $items = $db->get_items();
@@ -61,14 +49,27 @@ foreach ($items as $key => $item) {
 $new_header = array(
     'cbc' => 'cbc',
     'ua' => 'ua',
-    'bs' => 'bs',
-    'cr' => 'cr',
+    'glu' => 'bs',
+    'crea' => 'cr',
     'chol/hdl' => 'chol',
     'hbsag' => 'hbsag',
-    'stocb' => 'stocb',
+    // 'pap' => 'pap',
+    // 'via' => 'via',
+    'occult' => 'stocb',
     'x-ray' => 'x-ray'
 );
 
+$item_price = array(
+    'cbc' => 80,
+    'ua' => 50,
+    'bs' => 40,
+    'cr' => 40,
+    'chol' => 200,
+    'hdl' => 200,
+    'hbsag' => 130,
+    'stocb' => 30,
+    'x-ray' => 200
+);
 
 
 $test_count = count($new_header);
@@ -86,7 +87,7 @@ $test_count = count($new_header);
             <?php 
             foreach ($new_header as $key => $head) {
                 ?>
-                <th><?=$head;?></th>
+                <th><?=$key;?></th>
                 <?php
             }
             ?>

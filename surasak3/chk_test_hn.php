@@ -43,10 +43,6 @@ if( $action == false ){
         
         ?>
         <style>
-        /* *{
-            font-family: "TH SarabunNew","TH SarabunPSK";
-            font-size: 16pt;
-        } */
         .chk_table{
             border-collapse: collapse;
         }

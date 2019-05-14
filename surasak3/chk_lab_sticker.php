@@ -17,6 +17,7 @@ if ( $action == 'print' ) {
     $count_ua = input_post('count_ua');
     $count_stool = input_post('count_stool');
     $count_cs = input_post('count_cs');
+    $urine_cs = input_post('urine_cs');
     $count_etc = input_post('count_etc');
     $row_print = input_post('row_print');
 
@@ -114,6 +115,17 @@ if ( $action == 'print' ) {
             }
         }
 
+        if( $urine_cs > 0 ){
+            for ($i=0; $i < $urine_cs; $i++) { 
+                ?>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b>Urine C/S</b></center></font>
+                <div style="page-break-before: always;"></div>
+                <?php 
+            }
+        }
+
         if( $count_etc > 0 ){ 
             for ($i=0; $i < $count_etc; $i++) { 
                 ?>
@@ -153,6 +165,9 @@ include 'chk_menu.php';
     </div>
     <div>
         STOOL C/S: <input type="text" name="count_cs" size="3" value="">
+    </div>
+    <div>
+        Urine C/S: <input type="text" name="urine_cs" size="3" value="">
     </div>
     <div>
         อื่นๆ: <input type="text" name="count_etc" size="3" value="">
