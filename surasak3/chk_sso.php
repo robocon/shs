@@ -65,38 +65,40 @@ if( empty($page) ){
         $items = $db->get_items();
         if( count($items) > 0 ){
 
-        
-        ?>
-        <table class="chk_table">
-            <tr>
-                <th>#</th>
-                <th>HN</th>
-                <th>ชื่อ-สกุล</th>
-                <th>วันที่ตรวจ</th>
-                <th colspan="2">พิมพ์</th>
-            </tr>
-        <?php 
-        $i = 1;
-        foreach ($items as $key => $item) {
-
-            $vn = $item['vn'];
-            list($date, $time) = explode(' ', $item['date_chk']);
-            $hn = $item['hn'];
             ?>
-            <tr>
-                <td><?=$i;?></td>
-                <td><?=$item['hn'];?></td>
-                <td><?=$item['ptname'];?></td>
-                <td><?=$item['date_chk'];?></td>
-                <td><a href="chk_doctor_sticker.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">Sticker</a></td>
-                <td><a href="chk_doctor_print.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">ใบรายงานผล</a></td>
-            </tr>
+            <br>
+            <table class="chk_table">
+                <tr>
+                    <th>#</th>
+                    <th>HN</th>
+                    <th>ชื่อ-สกุล</th>
+                    <th>วันที่ตรวจ</th>
+                    <th>แพทย์</th>
+                    <th colspan="2">พิมพ์</th>
+                </tr>
+            <?php 
+            $i = 1;
+            foreach ($items as $key => $item) {
+
+                $vn = $item['vn'];
+                list($date, $time) = explode(' ', $item['date_chk']);
+                $hn = $item['hn'];
+                ?>
+                <tr>
+                    <td><?=$i;?></td>
+                    <td><?=$item['hn'];?></td>
+                    <td><?=$item['ptname'];?></td>
+                    <td><?=$item['date_chk'];?></td>
+                    <td><?=$item['doctor'];?></td>
+                    <td><a href="chk_doctor_sticker.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">Sticker</a></td>
+                    <td><a href="chk_doctor_print.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">ใบรายงานผล</a></td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+            </table>
             <?php
-            $i++;
-        }
-        ?>
-        </table>
-        <?php
         }else{
             ?>ไม่พบข้อมูลที่ค้นหา<?php
         }

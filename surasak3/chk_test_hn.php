@@ -14,7 +14,7 @@ include 'chk_menu.php';
             ไฟล์นำเข้า : <input type="file" name="file">
         </div>
         <div>
-            <p><b>ตัวอย่างไฟล์</b></p>
+            <p><b>ตัวอย่าง รูปแบบการจัดไฟล์ Excel</b></p>
             <table class="chk_table">
                 <tr>
                     <td>HN</td>
@@ -34,7 +34,7 @@ include 'chk_menu.php';
 if( $action == false ){ 
     
 }elseif ( $action == 'test' ) {
-    # code...
+    
     $file = $_FILES['file'];
     $content = file_get_contents($file['tmp_name']);
 
@@ -65,7 +65,6 @@ if( $action == false ){
         $i = 0;
         foreach ( $items as $key => $item ) {
 
-            // dump($item);
             list($hn, $name, $suname) = explode(',', $item,3);
 
             $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
@@ -83,10 +82,7 @@ if( $action == false ){
             </tr>
             <?php
 
-            // dump($user);
-
             $i++;
-
 
         }
 
