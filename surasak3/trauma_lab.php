@@ -24,7 +24,7 @@ function jschars($str)
 //************************** แสดงรายการยาให้เลือก  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
-	$sql = "Select code, detail From labcare where  detail like '%".$_GET["search"]."%' AND part = 'lab' AND (left(code,1) >='0' AND left(code,1) <='9') Order by numbered ASC";
+	$sql = "Select code, detail From labcare where  (code like '%".$_GET["search"]."%' OR detail like '%".$_GET["search"]."%') AND part = 'lab' AND (left(codex,1) >='0' AND left(codex,1) <='9') Order by numbered ASC";
 
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -444,7 +444,7 @@ $i++;
 	$list_lab_check[$i]["detail"] = "CR";
 $i++;
 
-	$list_lab_check[$i]["code"] = "E";
+	$list_lab_check[$i]["code"] = "ELYTE";
 	$list_lab_check[$i]["detail"] = "E'Lyte";
 $i++;
 
@@ -650,7 +650,7 @@ $i++;
 	$yr = date("Y")+543;
     $today="$yr-$m-$d";
 
-	 $sql = "SELECT date,ptname,hn,an,price,row_id,item FROM depart WHERE  date LIKE '$today%' and depart='PATHO' AND ( lab = 'DR' OR lab = 'ER' ) ";
+	 $sql = "SELECT date,ptname,hn,an,price,row_id,item FROM depart WHERE  date LIKE '$today%' and depart='PATHO' AND lab = 'DR' ";
 	 $result = Mysql_Query($sql);
 	 while(list($date,$ptname,$hn,$an,$price,$row_id,$item) = Mysql_fetch_row($result)){
 		
