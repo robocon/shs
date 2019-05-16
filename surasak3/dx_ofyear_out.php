@@ -110,7 +110,7 @@ $list_lab["URIC"] = "uric";
 <body>
 <a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>
 <center>
-  <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า61</div>
+  <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า62</div>
 </center>
 
 <form action="dx_ofyear_out.php" method="post">

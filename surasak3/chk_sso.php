@@ -43,24 +43,70 @@ if( empty($page) ){
             </form>
         </fieldset>
     </div>
+    <div>
+        <fieldset>
+            <legend>ค้นหาตามบริษัท</legend>
+            <form action="chk_sso.php" method="post">
+                <?php 
+                $db->select("SELECT `code`,`name` FROM `chk_company_list` ORDER BY `id` DESC");
+                $company_list = $db->get_items();
+                ?>
+                <div>
+                    เลือกบริษัท: 
+                    <select name="company_name" id="">
+                        <?php 
+                        foreach ($company_list as $key => $item) {
+                            ?>
+                            <option value="<?=$item['code'];?>"><?=$item['name'];?> (<?=$item['code'];?>)</option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit">ค้นหา</button>
+                    <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="by" value="company">
+                </div>
+            </form>
+        </fieldset>
+    </div>
     <?php
     if( $action == "search" ){
 
         $by = input_post('by');
         
-        if( $by === 'date' ){
-            $where = "`date_chk` LIKE '$date%'";
-        }else if( $by === 'hn' ){
+        if( $by == 'date' OR $by == 'hn' ){
 
-            $where = "`hn` = '$hn_search'";
+            if( $by === 'date' ){
+                $where = "`date_chk` LIKE '$date%'";
+    
+            }elseif ( $by === 'hn' ){
+                $where = "`hn` = '$hn_search'";
+    
+            }
+
+            $sql = "SELECT *, CONCAT(`prefix`,`name`,' ',`surname`) AS `ptname` 
+            FROM `chk_doctor` 
+            WHERE $where 
+            ORDER BY `id` ASC ";
+            $db->select($sql);
+
+
+        }elseif($by === 'company') {
+
+            $company_name = input_post('company_name');
+            $sql = "SELECT a.`HN` AS `hn2`,a.`ptname`,c.*  
+            FROM ( 
+                    SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `part` = '$company_name' 
+            ) AS a 
+            LEFT JOIN ( 
+                SELECT `code`,`name`,SUBSTRING(`yearchk`,3,2) AS `yearchk` FROM `chk_company_list` 
+            ) AS b ON b.`code` = a.`part` 
+            LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN` AND c.`yearchk` = b.`yearchk`  "; 
+            $db->select($sql);
 
         }
-        
-        $sql = "SELECT *, CONCAT(`prefix`,`name`,' ',`surname`) AS `ptname` 
-        FROM `chk_doctor` 
-        WHERE $where 
-        ORDER BY `id` ASC ";
-        $db->select($sql);
 
         $items = $db->get_items();
         if( count($items) > 0 ){
@@ -82,11 +128,12 @@ if( empty($page) ){
 
                 $vn = $item['vn'];
                 list($date, $time) = explode(' ', $item['date_chk']);
-                $hn = $item['hn'];
+                $hn = !empty($item['hn']) ? $item['hn'] : $item['hn2'] ;
+            
                 ?>
                 <tr>
                     <td><?=$i;?></td>
-                    <td><?=$item['hn'];?></td>
+                    <td><?=$hn;?></td>
                     <td><?=$item['ptname'];?></td>
                     <td><?=$item['date_chk'];?></td>
                     <td><?=$item['doctor'];?></td>
