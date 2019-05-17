@@ -47,7 +47,7 @@ if ( $action == 'print' ) {
             $code_exam = (date('y') + 43).date('md').sprintf('%03d', $item['pid']);
         }
 
-        $user_number = substr($code_exam,6);
+        $user_number = (int) substr($code_exam,6);
 
         $normal_code = $code_exam.'01';
         $chem_code = $code_exam.'02';
@@ -144,7 +144,7 @@ if ( $action == 'print' ) {
         if( $test_bs_row > 0 ){
             $bs = $db->get_item();
 
-            $bs_user_number = substr($bs['labnumber'],6);
+            $bs_user_number = (int) substr($bs['labnumber'],6);
 
             $bs_code = $bs['labnumber'].'02';
             ?>
