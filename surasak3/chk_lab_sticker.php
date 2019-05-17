@@ -47,6 +47,8 @@ if ( $action == 'print' ) {
             $code_exam = (date('y') + 43).date('md').sprintf('%03d', $item['pid']);
         }
 
+        $user_number = substr($code_exam,6);
+
         $normal_code = $code_exam.'01';
         $chem_code = $code_exam.'02';
         $ua_code = $code_exam.'03';
@@ -58,7 +60,7 @@ if ( $action == 'print' ) {
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (01)</b></center></font>
                 <div style='text-align:center;'>
-                    <span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
+                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -72,7 +74,7 @@ if ( $action == 'print' ) {
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (02)</b></center></font>
                 <div style='text-align:center;'>
-                    <span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$chem_code;?>"></span>
+                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$chem_code;?>"></span>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -86,7 +88,7 @@ if ( $action == 'print' ) {
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (03)</b></center></font>
                 <div style='text-align:center;'>
-                    <span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span>
+                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -142,13 +144,15 @@ if ( $action == 'print' ) {
         if( $test_bs_row > 0 ){
             $bs = $db->get_item();
 
+            $bs_user_number = substr($bs['labnumber'],6);
+
             $bs_code = $bs['labnumber'].'02';
             ?>
             <!-- BS -->
             <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
             <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (BS)</b></center></font>
             <div style='text-align:center;'>
-                <span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
+                <font size='5'><?=$bs_user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
             </div>
             <div style="page-break-before: always;"></div>
             <?php
