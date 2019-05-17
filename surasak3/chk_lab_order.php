@@ -5,6 +5,92 @@ include 'bootstrap.php';
 $action = input('action');
 $db = Mysql::load();
 
+$def_month_en = array(
+    'January' => '01',
+    'February' => '02',
+    'March' => '03',
+    'April' => '04',
+    'May' => '05',
+    'June' => '06',
+    'July' => '07',
+    'August' => '08',
+    'September' => '09',
+    'October' => '10',
+    'November' => '11',
+    'December' => '12' 
+);
+
+$def_month_th = array(
+    'มกราคม' => '01',
+    'กุมภาพันธ์' => '02',
+    'มีนาคม' => '03',
+    'เมษายน' => '04',
+    'พฤษภาคม' => '05',
+    'มิถุนายน' => '06',
+    'กรกฎาคม' => '07',
+    'สิงหาคม' => '08',
+    'กันยายน' => '09',
+    'ตุลาคม' => '10',
+    'พฤศจิกายน' => '11',
+    'ธันวาคม' => '12' 
+);
+
+/**
+ * @dob String
+ */
+function set_date($dob){
+
+    global $def_month_en, $def_month_th;
+
+    $dob = trim($dob);
+
+    // รูปแบบ วัน/เดือน/ปี
+    // โดยปี รองรับ พ.ศ. ค.ศ.
+    $match = preg_match('/\d+\/\d+\/\d+/', $dob, $matchs);
+    if ( $match > 0 ) {
+        list($dd, $mm, $yy) = explode('/', $dob);
+
+        if($yy > 2100){
+            $yy = $yy - 543;
+        }
+
+        $dd = sprintf('%02d', $dd);
+        $mm = sprintf('%02d', $mm);
+        
+        $dob = "$yy-$mm-$dd 00:00:00";
+    }
+
+    // รูปแบบ ปี-เดือน-วัน
+    $match_ad = preg_match('/\d{4}\-\d{1,2}\-\d{1,2}/', $dob, $matchs);
+    if ( $match_ad > 0 ) {
+        list($yy, $mm, $dd) = explode('-', $dob);
+        $dd = sprintf('%02d', $dd);
+        $mm = sprintf('%02d', $mm);
+        
+        $dob = "$yy-$mm-$dd 00:00:00";
+    }
+
+    // รูปแบบ วัน เดือน(อังกฤษ/ไทย) ปี(พ.ศ.)
+    $match_mix = preg_match('/\d{1,2}\s(.+)\s\d{4}/', $dob, $matchs);
+    if ( $match_mix > 0 ) {
+
+        list($dd, $mm_txt, $yy) = explode(' ', $dob);
+        $dd = sprintf('%02d', $dd);
+        $yy = ( $yy - 543 );
+
+        if( !empty($def_month_en[$mm_txt]) ){
+            $mm = $def_month_en[$mm_txt];
+        }elseif ( !empty($def_month_th[$mm_txt]) ) {
+            $mm = $def_month_th[$mm_txt];
+        }
+        
+        $dob = "$yy-$mm-$dd 00:00:00";
+
+    }
+
+    return $dob;
+}
+
 /*
 DROP TABLE IF EXISTS `chk_lab_items`;
 CREATE TABLE `chk_lab_items` (
@@ -111,39 +197,20 @@ if( $action == false ){
     $file = $_FILES['file'];
     $content = file_get_contents($file['tmp_name']);
     $part = input_post('part');
-
-    $def_month_en = array(
-        'January' => '01',
-        'February' => '02',
-        'March' => '03',
-        'April' => '04',
-        'May' => '05',
-        'June' => '06',
-        'July' => '07',
-        'August' => '08',
-        'September' => '09',
-        'October' => '10',
-        'November' => '11',
-        'December' => '12' 
-    );
-
-    $def_month_th = array(
-        'มกราคม' => '01',
-        'กุมภาพันธ์' => '02',
-        'มีนาคม' => '03',
-        'เมษายน' => '04',
-        'พฤษภาคม' => '05',
-        'มิถุนายน' => '06',
-        'กรกฎาคม' => '07',
-        'สิงหาคม' => '08',
-        'กันยายน' => '09',
-        'ตุลาคม' => '10',
-        'พฤศจิกายน' => '11',
-        'ธันวาคม' => '12' 
-    );
     
-    // @todo
-    // - check condition
+    // เอาไว้ใช้นับเลข bs
+    $sql = "SELECT `exam_no` FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` DESC LIMIT 1";
+    $db->select($sql);
+    $test_chk = $db->get_item();
+
+    // ตัดเลข 6ตัวแรกที่เป็น yymmdd
+    $first_lab_number = substr($test_chk['exam_no'],0,6);
+    $pre_bs_number = substr($test_chk['exam_no'],6);
+    $bs_number = (int) $pre_bs_number;
+
+    // นับ digi เพื่อเอาไปใช้ใน sprintf ทีหลัง เพราะบางบริษัทมีหลักร้อยหรือหลักพันไม่เท่ากัน
+    $number_digi = strlen($pre_bs_number);
+    
 
     if( $content !== false ){
 
@@ -158,57 +225,59 @@ if( $action == false ){
                 
                 list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
 
-                $dob = trim($dob);
-
-                // รูปแบบ วัน/เดือน/ปี
-                // โดยปี รองรับ พ.ศ. ค.ศ.
-                $match = preg_match('/\d+\/\d+\/\d+/', $dob, $matchs);
-                if ( $match > 0 ) {
-                    list($dd, $mm, $yy) = explode('/', $dob);
-
-                    if($yy > 2100){
-                        $yy = $yy - 543;
-                    }
-
-                    $dd = sprintf('%02d', $dd);
-                    $mm = sprintf('%02d', $mm);
-                    
-                    $dob = "$yy-$mm-$dd 00:00:00";
-                }
-
-                // รูปแบบ ปี-เดือน-วัน
-                $match_ad = preg_match('/\d{4}\-\d{1,2}\-\d{1,2}/', $dob, $matchs);
-                if ( $match_ad > 0 ) {
-                    list($yy, $mm, $dd) = explode('-', $dob);
-                    $dd = sprintf('%02d', $dd);
-                    $mm = sprintf('%02d', $mm);
-                    
-                    $dob = "$yy-$mm-$dd 00:00:00";
-                }
-
-                // รูปแบบ วัน เดือน(อังกฤษ/ไทย) ปี(พ.ศ.)
-                $match_mix = preg_match('/\d{1,2}\s(.+)\s\d{4}/', $dob, $matchs);
-                if ( $match_mix > 0 ) {
-
-                    list($dd, $mm_txt, $yy) = explode(' ', $dob);
-                    $dd = sprintf('%02d', $dd);
-                    $yy = ( $yy - 543 );
-
-                    if( !empty($def_month_en[$mm_txt]) ){
-                        $mm = $def_month_en[$mm_txt];
-                    }elseif ( !empty($def_month_th[$mm_txt]) ) {
-                        $mm = $def_month_th[$mm_txt];
-                    }
-                    
-                    $dob = "$yy-$mm-$dd 00:00:00";
-
-                }
-
+                $dob = set_date($dob);
+                $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
 
                 $year = get_year_checkup();
                 $ptname = $name.' '.$surname;
-                $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
+                $lab_sso = strtolower(str_replace(array('"',' '), '', $lab_sso));
+                $lab_sso_items = explode(',', $lab_sso);
+                $find_bs = false;
 
+                $test_bs = preg_match('/\,bs\,/', $lab_sso);
+                if( $test_bs > 0 ){
+
+                    $find_bs = true;
+                    $lab_sso = str_replace(',bs,',',', $lab_sso);
+
+                    ++$bs_number;
+
+                    $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
+
+                }
+
+
+                // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
+                $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
+                    `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`
+                ) VALUES (
+                    NULL, '$hn', '$ptname', '$labnumber', '$lab_sso', '$part'
+                );";
+                $insert = $db->insert($sql_chk_lab_items);
+                if( $insert !== true ){
+                    $msg = errorMsg(NULL, $insert['id']);
+                }
+
+                if( $find_bs === true ){
+
+                    
+                    $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
+                        `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`
+                    ) VALUES (
+                        NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part'
+                    );";
+                    $insert = $db->insert($sql_chk_lab_items);
+                    if( $insert !== true ){
+                        $msg = errorMsg(NULL, $insert['id']);
+                    }
+
+                }
+                // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
+
+                
+                ////////////////////////
+                // ORDER HEAD
+                ////////////////////////
                 $orderhead_sql = "INSERT INTO `orderhead` ( 
                     `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, 
                     `patientname`, `sex`, `dob`, `sourcecode`, `sourcename`, 
@@ -223,22 +292,28 @@ if( $action == false ){
                     $msg = errorMsg(NULL, $insert['id']);
                 }
 
-                $lab_sso = str_replace(array('"',' '), '', $lab_sso);
-                $lab_sso_items = explode(',', $lab_sso);
-
-                // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
-                $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
-                    `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`
-                ) VALUES (
-                    NULL, '$hn', '$ptname', '$labnumber', '$lab_sso', '$part'
-                );";
-                $db->insert($sql_chk_lab_items);
-                if( $insert !== true ){
-                    $msg = errorMsg(NULL, $insert['id']);
+                if( $find_bs === true ){
+                    $orderhead_sql = "INSERT INTO `orderhead` ( 
+                        `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, 
+                        `patientname`, `sex`, `dob`, `sourcecode`, `sourcename`, 
+                        `room`, `cliniciancode`, `clinicianname`, `priority`, `clinicalinfo` 
+                    ) VALUES ( 
+                        '', NOW(), '$lab_bs_number', '$hn', 'OPD', 
+                        '$ptname', '$sex', '$dob', '', '', 
+                        '','', 'MD022 (ไม่ทราบแพทย์)', 'R', '$clinicalinfo'
+                    );";
+                    $insert = $db->insert($orderhead_sql);
+                    if( $insert !== true ){
+                        $msg = errorMsg(NULL, $insert['id']);
+                    }
                 }
-                
                 ////////////////////////
-                // รายการตรวจ ปกส
+                // ORDER HEAD
+                ////////////////////////
+
+
+                ////////////////////////
+                // ORDER DETAIL
                 ////////////////////////
                 foreach( $lab_sso_items as $lab_key => $lab_item ){
                     
@@ -310,10 +385,37 @@ if( $action == false ){
                     
                 }
 
-            } 
+                if( $find_bs === true ){
+
+                    $sql_detail = "SELECT `code`,`oldcode`,`detail` FROM `labcare` WHERE `code` = 'bs' LIMIT 1 ";
+                    $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
+                    $num = mysql_num_rows($q);
+                    if( $num > 0 ){
+                        list($code, $oldcode, $detail) = mysql_fetch_row($q);   
+                    
+                        $orderdetail_sql = "INSERT INTO `orderdetail` ( 
+                            `labnumber` , `labcode`, `labcode1` , `labname` 
+                        ) VALUES ( 
+                            '$lab_bs_number', '$code', '$oldcode', '$detail'
+                        );";
+                        $insert = $db->insert($orderdetail_sql);
+                        if( $insert !== true ){
+                            $msg .= errorMsg(NULL, $insert['id']);
+                        }
+
+                    }
+                    
+                }
+                ////////////////////////
+                // ORDER DETAIL
+                ////////////////////////
+                
+
+            } // End ถ้าในแต่ละแถว not empty 
 
             $i++;
-        }
+
+        } // End excel ในแต่ละแถว
 
     }else{
         $msg = 'กรุณาใส่ข้อมูลให้ถูกต้อง';
@@ -323,5 +425,3 @@ if( $action == false ){
     exit;
 
 }
-
-

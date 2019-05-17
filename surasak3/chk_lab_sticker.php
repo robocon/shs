@@ -135,8 +135,25 @@ if ( $action == 'print' ) {
                 <?php 
             }
         }
-        
 
+        $sql = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
+        $db->select($sql);
+        $test_bs_row = $db->get_rows();
+        if( $test_bs_row > 0 ){
+            $bs = $db->get_item();
+
+            $bs_code = $bs['labnumber'].'02';
+            ?>
+            <!-- BS -->
+            <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+            <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (BS)</b></center></font>
+            <div style='text-align:center;'>
+                <span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
+            </div>
+            <div style="page-break-before: always;"></div>
+            <?php
+        }
+        
     }
 
     exit;
