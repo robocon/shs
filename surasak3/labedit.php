@@ -1,4 +1,28 @@
 <?php
+session_start();
+$user_code = $_SESSION['smenucode'];
+$user_id = $_SESSION['sIdname'];
+if( $user_code !== 'ADM' ){
+    
+    // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
+    $check_level = in_array($user_code, array('ADMLAB'));
+    $check_user = in_array($user_id, array('สมยศ','พิทักษ์1','พัชรี'));  //รับคำสั่ง หน.ห้อง LAB วันที่ 14/05/62
+    
+    if( $check_level === false OR $check_user === false ){
+        ?>
+        <p>คุณไม่มีสิทธิ์ในการแก้ไขข้อมูล กรุณาติดต่อ</p>
+        <ol>
+            <li>พ.ท. สมยศ แสงสุข</li>
+            <li>ร.อ. พิทักษ์  ตุ้มปามา</li>
+            <li>นางพัชรี  คำฟู</li>
+        </ol>
+        <p>เพื่อทำการแก้ไขข้อมูล</p>
+        <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
+        <?php
+        exit;
+    }
+}
+
     include("connect.inc");
 
     $query = "SELECT  code,detail,price,yprice,nprice FROM labcare WHERE code = '$code'";

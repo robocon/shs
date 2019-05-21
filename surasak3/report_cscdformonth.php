@@ -84,10 +84,11 @@ $resulttmp = mysql_query($querytmp) or die("Query reportcscd failed");
   <tr>
     <td width="4%" rowspan="2" align="center" bgcolor="#66CC99"><strong>ลำดับ</strong></td>
     <td width="11%" rowspan="2" align="center" bgcolor="#66CC99"><strong>วัน/เดือน/ปี</strong></td>
-    <td colspan="4" align="center" bgcolor="#66CC99"><strong>ข้อมูลที่จัดทำ</strong></td>
+    <td colspan="5" align="center" bgcolor="#66CC99"><strong>ข้อมูลที่จัดทำ</strong></td>
     <td colspan="5" align="center" bgcolor="#66CC99"><strong>จำนวนเงิน</strong></td>
   </tr>
   <tr>
+    <td width="8%" align="center" bgcolor="#FFCC66"><strong>ข้อมูลทั้งหมด</strong></td>
     <td width="8%" align="center" bgcolor="#FFCC66"><p><strong>ข้อมูลที่ส่ง</strong></p>    </td>
     <td width="8%" align="center" bgcolor="#FFCC66"><p><strong>ข้อมูลที่ผ่าน</strong></p></td>
     <td width="8%" align="center" bgcolor="#FFCC66"><p><strong>ข้อมูลที่ไม่ผ่าน</strong></p></td>
@@ -105,6 +106,7 @@ $total_c=0;
 $total_a=0;
 $sumnum=0;
 $sumnum_p=0;
+$sumnum_a=0;
 $sumnum_c=0;
 $avg_data=0;
 $sumavg_data=0;
@@ -122,17 +124,38 @@ $date=sprintf("%02d",$i);
 $chkdate=$_POST["year1"]."-".$_POST["month1"]."-".$date;
 $showdate=$date."/".$_POST["month1"]."/".$_POST["year1"];
 
+
+$sql01="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' group by hn,credit_detail";
+//echo $sql01;
+$query01=mysql_query($sql01);
+$numall=mysql_num_rows($query01);
+$sumall=$sumall+$numall;
+
+if($chkdate >= "2562-04-01"){
+$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' group by hn,credit_detail";
+}else{
 $sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' group by hn,credit_detail";
+}
 //echo $sql11;
 $query11=mysql_query($sql11);
 $num=mysql_num_rows($query11);
 $sumnum=$sumnum+$num;
-
+if($chkdate >= "2562-04-01"){
+$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' AND (typecscd='' OR typecscd='A') group by hn,credit_detail";
+}else{
 $sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='' OR typecscd='A') group by hn,credit_detail";
+
+}
 //echo $sql12;
 $query12=mysql_query($sql12);
 $num_p=mysql_num_rows($query12);
 $sumnum_p=$sumnum_p+$num_p;
+$a=0;
+while($result=mysql_fetch_array($query12)){
+if($result["typecscd"]=="A"){$a++;}
+}
+
+
 
 $sql13="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='C') group by hn,credit_detail";
 //echo $sql13;
@@ -140,13 +163,17 @@ $query13=mysql_query($sql13);
 $num_c=mysql_num_rows($query13);
 $sumnum_c=$sumnum_c+$num_c;
 
+
 $avg_data=($num_p*100)/$num;
 $sumavg_data=($sumnum_p*100)/$sumnum;
 
-if($avg_data >=100){
-	$bgcolor="#CC0033";
+
+if($avg_data >=100 && $a <=0){
+	$bgcolor="#33CC00";  //สีเขียว
+}else if($avg_data >=100 && $a > 0){
+	$bgcolor="#FFFF00";	//สีเหลือง
 }else{
-	$bgcolor="#FFFFFF";
+	$bgcolor="#CC0033";  //สีแดง
 }
 
 
@@ -194,6 +221,7 @@ $total_ca=$total_c+$total_a;
   <tr>
     <td align="center"><?=$i;?></td>
     <td align="center"><?=$showdate;?></td>
+    <td align="center"><?=$numall;?></td>
     <td align="center"><?=$num;?></td>
     <td align="center"><?=$num_p;?></td>
     <td align="center"><?=$num_c;?></td>
@@ -209,6 +237,7 @@ $total_ca=$total_c+$total_a;
 ?>
   <tr>
     <td colspan="2" align="right"><strong>รวมทั้งสิ้น</strong></td>
+    <td align="center" bgcolor="#FFCC66"><?=number_format($sumall);?></td>
     <td align="center" bgcolor="#FFCC66"><?=number_format($sumnum);?></td>
     <td align="center" bgcolor="#FFCC66"><?=number_format($sumnum_p);?></td>
     <td align="center" bgcolor="#FFCC66"><?=number_format($sumnum_c);?></td>
@@ -233,26 +262,39 @@ $total_ca=$total_c+$total_a;
 $avg=($total*100)/$sumprice;
 ?>  
 </table>
+<hr />
+<div><strong>
 <?
+echo "<div style='font-size:24px'><strong>ข้อมูลประจำเดือน $showdate1</strong></div>";
+
 	if($chkdate1=="2561-09"){
-		echo "<p align='center'>- เดือนกันยายน 2561 ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 7 วัน คือ วันที่ 16,17,18,20,22,23 และ26<br>
-		</p>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 8 วัน คือ วันที่ 14,16,17,18,20,22,23 และ26<br>
+		</div>";
 	}else if($chkdate1=="2561-10"){
-		echo "<p align='center'>- เดือนตุลาคม 2561 ส่งข้อมูลผ่าน 100% จำนวน 4 วัน คือ วันที่ 13,15,20 และ 24</p>";
-		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 4 วัน คือ วันที่ 12,14,21 และ 23</p>";
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 4 วัน คือ วันที่ 13,15,20 และ 24</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 3 วัน คือ วันที่ 12,21 และ 23</div>";
 	}else if($chkdate1=="2561-11"){
-		echo "<p align='center'>- เดือนพศจิกายน 2561 ส่งข้อมูลผ่าน 100% จำนวน 1 วัน คือ วันที่ 5</p>";
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 1 วัน คือ วันที่ 5</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 4 วัน คือ วันที่ 1,2,23 และ 27</div>";	
 	}else if($chkdate1=="2561-12"){
-		echo "<p align='center'>- เดือนธันวาคม 2561 ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 15,18 และ 31</p>";
-		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 16,23,25,29 และ 30</p>";			
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 15,18 และ 31</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 16,23,25,29 และ 30</div>";			
 	}else if($chkdate1=="2562-01"){
-		echo "<p align='center'>- เดือนมกราคม 2562 ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 1,4 และ 12</p>";
-		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 8 วัน คือ วันที่ 3,6,10,15,18,20,24 และ 30</p>";
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 1,4 และ 12</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 8 วัน คือ วันที่ 3,6,10,15,18,20,24 และ 30</div>";
 	}else if($chkdate1=="2562-02"){
-		echo "<p align='center'>- เดือนกุมภาพันธ์ 2562 ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 17,24 และ 26</p>";
-		echo "<p align='center'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 3 วัน คือ วันที่ 11,14 และ 19</p>";		
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 4 วัน คือ วันที่ 17,19,24 และ 26</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 3 วัน คือ วันที่ 11,14 และ 19</div>";		
 	}	
 }
 ?>
+</strong></div>
+<hr />
+<div style="font-size:18px"><strong>หมายเหตุ <br />
+- สีเขียว คือ ส่งข้อมูลผ่าน 100%<br />
+- สีเหลือง คือ ส่งข้อมูลแก้ติด C ผ่าน 100%<br />
+- สีแดง คือ ส่งข้อมูลติด C ต้องแก้ไข</strong></div>
+<hr />
+
 </body>
 </html>

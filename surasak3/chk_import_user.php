@@ -9,6 +9,18 @@ if( empty($action) ){
 
     ?>
     <h3>นำเข้ารายชื่อผู้ตรวจสุขภาพเข้าสู่ระบบโรงพยาบาล</h3>
+    <div>
+        
+        <div class="clearfix" style="height: 105px;">
+            <div class="chk_menu clearfix">
+                <ul>
+                    <li>
+                        <a href="chk_test_hn.php" target="_blank">ตรวจสอบรายชื่อจาก HN</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <form action="chk_import_user.php" method="post" enctype="multipart/form-data">
         <div>
             <?php
@@ -102,12 +114,13 @@ if( empty($action) ){
 
             if( !empty($pid) ){ 
 
-                $date_birth = trim($date_birth);
+                $dob = trim($date_birth);
 
-                // รูปแบบ dd/mm/yyyy 
-                $match = preg_match('/\d+\/\d+\/\d+/', $date_birth, $matchs);
+                // รูปแบบ วัน/เดือน/ปี
+                // โดยปี รองรับ พ.ศ. ค.ศ.
+                $match = preg_match('/\d+\/\d+\/\d+/', $dob, $matchs);
                 if ( $match > 0 ) {
-                    list($dd, $mm, $yy) = explode('/', $date_birth);
+                    list($dd, $mm, $yy) = explode('/', $dob);
 
                     if($yy > 2100){
                         $yy = $yy - 543;
@@ -118,22 +131,33 @@ if( empty($action) ){
                     
                     $date_birth = "$yy-$mm-$dd 00:00:00";
                 }
-                
-                // เปลี่ยนรูปแบบ พ.ศ. เป็น ค.ศ. เช่น 18 มกราคม 2561 เป็น 2018-01-11 
-                $match_thdate = preg_match('/(\d+)\s([ก-๙].+)\s(\d+)/', $date_birth, $matchs);
-                if ( $match_thdate > 0 ) {
 
-                    $dd = $matchs['1'];
-                    $mm = $matchs['2'];
-                    $yy = $matchs['3'];
-
-                    if($yy > 2100){
-                        $yy = $yy - 543;
-                    }
-
-                    $month_number = array_keys($def_fullm_th, $mm);
-                    $date_birth = $yy."-".$month_number['0']."-$dd 00:00:00";
+                // รูปแบบ ปี-เดือน-วัน
+                $match_ad = preg_match('/\d{4}\-\d{1,2}\-\d{1,2}/', $dob, $matchs);
+                if ( $match_ad > 0 ) {
+                    list($yy, $mm, $dd) = explode('-', $dob);
+                    $dd = sprintf('%02d', $dd);
+                    $mm = sprintf('%02d', $mm);
                     
+                    $date_birth = "$yy-$mm-$dd 00:00:00";
+                }
+
+                // รูปแบบ วัน เดือน(อังกฤษ/ไทย) ปี(พ.ศ.)
+                $match_mix = preg_match('/\d{1,2}\s(.+)\s\d{4}/', $dob, $matchs);
+                if ( $match_mix > 0 ) {
+
+                    list($dd, $mm_txt, $yy) = explode(' ', $dob);
+                    $dd = sprintf('%02d', $dd);
+                    $yy = ( $yy - 543 );
+
+                    if( !empty($def_month_en[$mm_txt]) ){
+                        $mm = $def_month_en[$mm_txt];
+                    }elseif ( !empty($def_month_th[$mm_txt]) ) {
+                        $mm = $def_month_th[$mm_txt];
+                    }
+                    
+                    $date_birth = "$yy-$mm-$dd 00:00:00";
+
                 }
 
                 if( !empty($idcard) ){

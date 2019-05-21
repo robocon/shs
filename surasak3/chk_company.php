@@ -52,8 +52,9 @@ if( $action == false ){
         <form action="chk_company.php" method="post">
             <div> เลือกปี : 
                 <?php 
+                $year_selected = input_post('year_selected', date('Y') );
                 $year_range = range('2018',get_year_checkup(true, true));
-                getYearList('year_selected', true, 'selected', $year_range);
+                getYearList('year_selected', true, $year_selected, $year_range);
                 ?>
             </div>
 
@@ -70,7 +71,7 @@ if( $action == false ){
     ?>
     <div>
         <?php 
-        $year_selected = input_post('year_selected');
+        
         $year_selected += 543;
 
         $sql = "SELECT * FROM `chk_company_list` 
@@ -89,6 +90,7 @@ if( $action == false ){
                 <th>ช่วงเวลาที่ตรวจ</th>
                 <th>รอบปีงบประมาณ</th>
                 <th>ลงผล/พิมพ์ผล</th>
+                <th>พิมพ์ผล ปกส.</th>
                 <th></th>
             </tr>
             <?php
@@ -103,16 +105,20 @@ if( $action == false ){
                     <td><?=$item['code'];?></td>
                     <td><?=$item['date_checkup'];?></td>
                     <td align="center"><?=$item['yearchk'];?></td>
-                    <td>
+                    <td style="vertical-align: top;">
                         <ol>
                             <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                             <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                             <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
                             <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
-                            <!-- 
-                            <li><a href="dx_ofyear_out.php" target="_blank">ซักประวัติ(สิทธิ ปกส.)</a></li>
-                            <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผล(สิทธิ ปกส.)</a></li>
-                            -->
+                            <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">สติกเกอร์ LAB</a></li>
+                        </ol>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <ol>
+                            <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลรวม</a></li>
+                            <li><a href="chk_print_all_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
+                            <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย</a></li>
                         </ol>
                     </td>
                     <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
@@ -120,29 +126,6 @@ if( $action == false ){
                 <?php
                 $i++;
             }
-            
-            /*
-            ?>
-            <tr>
-                <td></td>
-                <td>ตรวจสุขภาพ สอบตำรวจ 61</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <ol>
-                        <li>
-                            <a href="out_result.php?part=สอบตำรวจ60" target="_blank">ลงข้อมูลซักประวัติ</a>
-                        </li>
-                        <li>
-                        <a href="chk_report_police60.php" target="_blank">พิมพ์ผลตรวจ</a>
-                        </li>
-                    </ol>
-                </td>
-                <td></td>
-            </tr>
-            <?php
-            */
             ?>
         </table>
         <?php
