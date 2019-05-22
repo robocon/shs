@@ -16,7 +16,7 @@ body,td,th {
 </style>
   <?
   $seldate=date("d");
-  $selmon=date("m");
+  $selmon="04";
   ?>
 <form method="POST" action="datacscd2018_new_edit/exportdatacscd_edit.php">
 <p><strong style="color:#FF0000;">โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) กรณี ติด C (แบบใหม่)</strong><br />

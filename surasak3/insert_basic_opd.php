@@ -89,7 +89,18 @@ window.onload = function(){
 	window.close();
 }
 </script>
-<table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
+<style>
+body{
+	margin: 0;
+	padding: 0;
+}
+table td{
+	font-family: "Angsana New","TH SarabunPSK";
+	line-height: 18.897637795px;
+	font-size: 14pt;
+}
+</style>
+<table cellpadding="0" cellspacing="0" border="0" style="vertical-align: top;">
 	<tr>
 		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
@@ -180,6 +191,7 @@ window.onload = function(){
 			$htdm .= ' DM: เป็นมาแล้ว '.$dm_amount.'ปี';
 		}
 
+		if( !empty($htdm) ){
 		?>
 		<tr>
 			<td>
@@ -187,6 +199,7 @@ window.onload = function(){
 			</td>
 		</tr>
 		<?php
+		}
 	}
 	?>
 	<tr>
