@@ -231,7 +231,7 @@ if( $action == false ){
                 $year = get_year_checkup();
                 $ptname = $name.' '.$surname;
                 $lab_sso = strtolower(str_replace(array('"',' '), '', $lab_sso));
-                $lab_sso_items = explode(',', $lab_sso);
+                
                 $find_bs = false;
 
                 $test_bs = preg_match('/\,bs\,/', $lab_sso);
@@ -245,7 +245,8 @@ if( $action == false ){
                     $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
 
                 }
-
+                
+                $lab_sso_items = explode(',', $lab_sso);
 
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
