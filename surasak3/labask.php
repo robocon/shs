@@ -129,8 +129,14 @@
 			}
 ?>
  <? 
+if(substr($atoborow,0,4)=="EX26"){  
+   $sqlpt = "select * from ptright where code = 'R22' order by code asc";
+}else if(substr($atoborow,0,4)=="EX40"){  //EX40 ตรวจสุขภาพฮักกันยามเฒ่า
+   $sqlpt = "select * from ptright where code = 'R41' order by code asc";
+}else{
    $sqlpt = "select * from ptright where status = 'a' order by code asc";
-	//echo $sqlpt; 
+}  
+//echo $sqlpt; 
    $rowpt = mysql_query($sqlpt);
    
    
@@ -181,7 +187,7 @@ function sit2(){
     <p><font face="Angsana New">
 &nbsp;&nbsp;&#3650;&#3619;&#3588;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp;
-  <select size="1" name="diag" id="aLink" onchange="if(this.value=='ตรวจสุขภาพ'){sit();} else{sit2();}"><script type="text/javascript">
+  <select size="1" name="diag" id="aLink" onchange="if(this.value=='ตรวจสุขภาพ' || this.value=='ตรวจสุขภาพประกันสังคม'){sit();} else{sit2();}"><script type="text/javascript">
 document.getElementById('aLink').focus();
 </script>
     <option value="ตรวจวิเคราะห์เพื่อการรักษา" <?=$option_diag;?>>ตรวจวิเคราะห์เพื่อการรักษา</option>
@@ -195,16 +201,11 @@ document.getElementById('aLink').focus();
     <option value="ตรวจสุขภาพพบแพทย์">ตรวจสุขภาพพบแพทย์</option>
   </select>&nbsp;</font></p>
 <font face="Angsana New">สิทธิ&nbsp;
-
-<?
-if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADM"){ 
-//echo "===>$cPtright";
-?>
+<? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADM"){ ?>
 	<select name="pt" id="pt" style="display:">
 	<?
 	while($resultpt = mysql_fetch_array($rowpt)){
 		$re = $resultpt[0]." ".$resultpt[1];
-		
 		if($cPtright==$re){  //ถ้าสิทธิผู้ป่วยตรงกับสิทธิปัจจุบัน
 			$c=0;
 			 ?>
@@ -216,7 +217,7 @@ if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESS
 			$b=0;
 			?>
 			<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
-				<?=$re;?>  <!--R22-->
+				<?=$re?>  <!--R22-->
 			</option>
 			<?
 		}  //close if($cPtright==$re){
@@ -224,17 +225,13 @@ if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESS
 
 	if(!isset($c)){
 		?>
-  <? if(substr($atoborow,0,4)=="EX16" || substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45"){ ?>
-  		<option value="R01 เงินสด">R01 เงินสด</option>
-  <? }else{ ?>
-  		<option value="<?=$cPtright;?>" selected="selected"><?=$cPtright;?></option><!--ตามสิทธิผู้ป่วย-->
-  <? } ?>        
+  <option value="<?=$cPtright;?>" <? if(substr($atoborow,0,4)!="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>><?=$cPtright;?><!--ตามสิทธิผู้ป่วย--></option>
+  <option value="R01 เงินสด">R01 เงินสด</option>  
   <?
 	}
    ?>
 </select>
-<? }else{
- ?>
+<? }else{ ?>
 <select name="pt" id="pt" style="display:">
   <?
    while($resultpt = mysql_fetch_array($rowpt)){
@@ -244,7 +241,7 @@ if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESS
 			 $c=0;
 			 ?>
   <option value="<?=$cPtright;?>" selected="selected">
-  <?=$cPtright;?>
+  <?=$cPtright?>
   </option>
   <?
 		}
@@ -252,7 +249,7 @@ if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESS
 			$b=0;
 			?>
   <option value="<?=$re?>">
-  <?=$re;?>
+  <?=$re?>
   </option>
   <?
 		}
@@ -260,7 +257,7 @@ if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESS
 	if(!isset($c)){
 		?>
   <option value="<?=$cPtright?>" selected="selected">
-  <?=$cPtright;?>
+  <?=$cPtright?>
   </option>
   <?
 	}
@@ -268,34 +265,31 @@ if($_SESSION["smenucode"]=="ADMLAB" || $_SESSION["smenucode"]=="ADMXR" || $_SESS
 </select>
 <? } ?>
 
-
-
-
 <!--โชว์ข้อมูล กรณีที่เลือกเป็น ตรวจสุขภาพ-->
 <select name="pt2" id="pt2" style="display:none">
   <?
-   while($resultpt = mysql_fetch_array($rowpt1)){  //query line 137
+   while($resultpt = mysql_fetch_array($rowpt1)){
 	$re = $resultpt[0]." ".$resultpt[1];
 	//R01 เงินสด
 		if($cPtright==$re){
 			 $c=0;
   ?>
 
-  <?=$cPtright;?>
+  <?=$cPtright?>
   </option>
   <?
 		}else{
 			$b=0;
 ?>
 	<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  
-  <?=$re;?>
+  <?=$re?>
   </option>
   <?
 		}
 	}
 	if(!isset($c)){
 		?>
-  <?=$cPtright;?>
+  <?=$cPtright?>
   </option>
   <?
 	}
