@@ -23,7 +23,7 @@ if ( $action == 'save' ) {
 
         }elseif ( $row == 0 ) {
 
-            $sql = "SELECT *,,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `HN` = '$hn' AND `part` = '$part' ";
+            $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `HN` = '$hn' AND `part` = '$part' ";
             $db->select($sql);
             $user = $db->get_item();
 
@@ -31,10 +31,10 @@ if ( $action == 'save' ) {
 
             // insert 
             $sql = "INSERT INTO `out_result_chkup` 
-            (`row_id`, `hn`, `ptname`, `cxr`, `year_chk`, `officer`, `register`, `part`, `last_officer`, `last_update`, ) 
+            (`row_id`, `hn`, `ptname`, `cxr`, `year_chk`, `officer`, `register`, `part`, `last_officer`, `last_update` ) 
             VALUES 
             (NULL, '$hn', '$ptname', '$cxr', '', '', NOW(), '$part', '', NOW() );";
-
+            dump($sql);
 
 
         }
