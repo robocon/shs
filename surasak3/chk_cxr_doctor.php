@@ -7,7 +7,7 @@ $action = input_post('action');
 if ( $action == 'save' ) {
     
     $cxr_items = $_POST['cxr'];
-    $details = $_POST['cxr_detail'];
+    $detail = $_POST['cxr_detail'];
     $part = input_post('part');
 
     $officer = $_SESSION['sOfficer'];
@@ -16,23 +16,27 @@ if ( $action == 'save' ) {
 
     foreach ($cxr_items as $hn => $item) {
 
-        $cxr = $item.' '.$details[$hn];
         $yearchk = get_year_checkup();
         
-        $sql = "SELECT `row_id` FROM `out_result_chkup` WHERE `hn` = '$hn' AND `part` = '$part' ";
+        $sql = "SELECT `id` FROM `chk_cxr` WHERE `hn` = '$hn' AND `part` = '$part' ";
+
+        $cxr = $item;
+        $cxr_detail = $detail[$hn];
+
         $db->select($sql);
         $row = $db->get_rows();
         if( $row > 0 ){
+
             // update 
-
             $out_items = $db->get_item();
-            $row_id = $out_items['row_id'];
+            $row_id = $out_items['id'];
 
-            $sql = "UPDATE `out_result_chkup` SET 
+            $sql = "UPDATE `chk_cxr` SET 
             `cxr`='$cxr', 
-            `last_officer`='$officer', 
-            `last_update`=NOW()
-            WHERE (`row_id`='$row_id');";
+            `detail`='$cxr_detail', 
+            `editor`='$officer', 
+            `edit_date`=NOW()
+            WHERE (`id`='$row_id');";
             $save = $db->update($sql);
             if( $save !== true ){
                 $msg = errorMsg('update', $save['id']);
@@ -48,16 +52,18 @@ if ( $action == 'save' ) {
             $ptname = $user['ptname'];
 
             // insert 
-            $sql = "INSERT INTO `out_result_chkup` 
-            (`row_id`, `hn`, `ptname`, `cxr`, `year_chk`, `officer`, `register`, `part`, `last_officer`, `last_update` ) 
-            VALUES 
-            (NULL, '$hn', '$ptname', '$cxr', '$yearchk', '$officer', NOW(), '$part', '$officer', NOW() );";
+            $sql = "INSERT INTO `chk_cxr` (
+                `id`, `hn`, `ptname`, `cxr`, `detail`, `officer`, `date`, `editor`, `edit_date`, `part`, `year_chk` 
+            ) VALUES (
+                NULL, '$hn', '$ptname', '$cxr', '$cxr_detail', '$officer', NOW(), '$officer', NOW(), '$part', '$yearchk'
+            );";
             $save = $db->insert($sql);
             if( $save !== true ){
                 $msg = errorMsg('insert', $save['id']);
             }
 
         }
+
 
     } // end for 
 
@@ -186,7 +192,7 @@ if ( $page == 'search' ) {
         exit;
     }
 
-    $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `part` = '$part'");
+    $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$part'");
     $company = $db->get_item();
 
     $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ";
@@ -211,7 +217,7 @@ if ( $page == 'search' ) {
                         $row = $item['row'];
                         $hn = $item['HN'];
 
-                        $db->select("SELECT `cxr` FROM `out_result_chkup` WHERE `hn` = '$hn' AND `part` = '$part' ");
+                        $db->select("SELECT `cxr`,`detail` FROM `chk_cxr` WHERE `hn` = '$hn' AND `part` = '$part' ");
                         $user = $db->get_item();
 
                         $normal = 'checked="checked"';
@@ -220,7 +226,10 @@ if ( $page == 'search' ) {
 
                         if( $db->get_rows() > 0 ){
 
-                            list($res, $res_detail) = explode(' ', $user['cxr']);
+                            // list($res, $res_detail) = explode(' ', $user['cxr']);
+
+                            $res = $user['cxr'];
+                            $res_detail = $user['detail'];
 
                             if( $res == 'ปกติ' ){
                                 $normal = 'checked="checked"';

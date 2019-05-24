@@ -1032,6 +1032,33 @@ h1,h3,p{
             <td>
                 <label for="cxr1"><input type="radio" name="cxr" class="cxr" id="cxr1" value="1"> ปกติ </label>
                 <label for="cxr2"><input type="radio" name="cxr" class="cxr" id="cxr2" value="2"> ผิดปกติ </label>
+                <input type="text" name="cxr_detail" id="" size="40">
+                <?php 
+                $yearchk = get_year_checkup();
+                // ถ้ามีการลงผลจาก chk_cxr_doctor.php ของหมอวริท
+                $sql = "SELECT * FROM `chk_cxr` WHERE `hn` = '$hn' AND `year_chk` = '$yearchk' ";
+                $db->select($sql);
+
+                if( $db->get_rows() > 0 ){
+                    $user = $db->get_item();
+                    ?>
+                    <br>
+                    <div>
+                        ผลการตรวจจากรังษีแพทย์: <?=$user['cxr'].' '.$user['detail'];?> <span>คลิกที่นี่</span> เพื่อยืนยันตามรังษีแพทย์
+                    </div>
+                    <?php
+                }
+                
+
+                
+                /**
+                 * @todo 
+                 * มีข้อความแจ้งเตือนว่ามีการบันทึกข้อมูลจากหมอวริท
+                 * มีปุ่มให้คลิกว่าจะให้เลือกลงผลตามรังษีแพทย์หรือไม่
+                 */
+
+                
+                ?>
             </td>
         </tr>
     </table>
