@@ -10,16 +10,34 @@ if ( $action == 'save' ) {
     $details = $_POST['cxr_detail'];
     $part = input_post('part');
 
-    foreach ($cxr_items as $hn => $item) {
-        
-        $cxr = $item.' '.$details[$hn];
+    $officer = $_SESSION['sOfficer'];
 
-        $sql = "SELECT `row_id` WHERE `hn` = `$hn` AND `part` = '$part' ";
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+
+    foreach ($cxr_items as $hn => $item) {
+
+        $cxr = $item.' '.$details[$hn];
+        $yearchk = get_year_checkup();
+        
+        $sql = "SELECT `row_id` FROM `out_result_chkup` WHERE `hn` = '$hn' AND `part` = '$part' ";
         $db->select($sql);
         $row = $db->get_rows();
-
         if( $row > 0 ){
             // update 
+
+            $out_items = $db->get_item();
+            $row_id = $out_items['row_id'];
+
+            $sql = "UPDATE `out_result_chkup` SET 
+            `cxr`='$cxr', 
+            `last_officer`='$officer', 
+            `last_update`=NOW()
+            WHERE (`row_id`='$row_id');";
+            $save = $db->update($sql);
+            if( $save !== true ){
+                $msg = errorMsg('update', $save['id']);
+            }
+
 
         }elseif ( $row == 0 ) {
 
@@ -33,15 +51,101 @@ if ( $action == 'save' ) {
             $sql = "INSERT INTO `out_result_chkup` 
             (`row_id`, `hn`, `ptname`, `cxr`, `year_chk`, `officer`, `register`, `part`, `last_officer`, `last_update` ) 
             VALUES 
-            (NULL, '$hn', '$ptname', '$cxr', '', '', NOW(), '$part', '', NOW() );";
-            dump($sql);
-
+            (NULL, '$hn', '$ptname', '$cxr', '$yearchk', '$officer', NOW(), '$part', '$officer', NOW() );";
+            $save = $db->insert($sql);
+            if( $save !== true ){
+                $msg = errorMsg('insert', $save['id']);
+            }
 
         }
 
-    }
-    // dump($_POST);
+    } // end for 
+
+    redirect('chk_cxr_doctor.php', $msg);
     exit;
+}
+
+?>
+
+<style type="text/css">
+*{
+    font-family: "TH Sarabun New","TH SarabunPSK";
+    font-size: 14pt;
+}
+.clearfix:after{
+    content: ".";
+    display: block;
+    clear: both;
+    height: 0;
+    visibility: hidden;
+}
+.clearfix{
+    min-height: 1%;
+}
+.menu-container{
+    display: flow-root;
+}
+label{
+    cursor: pointer;
+}
+
+/* ตาราง */
+.chk_table{
+    border-collapse: collapse;
+}
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+    border: 1px solid black;
+}
+
+/* เมนู */
+.chk_menu{
+    margin-bottom: 1em;
+    padding-bottom: 5px;
+}
+.chk_menu ul{
+    margin: 0;
+    padding: 0;
+}
+.chk_menu ul li{
+    list-style: none;
+    float: left;
+}
+.chk_menu ul li a{
+    float: left;
+    padding: 10px;
+    text-decoration: none;
+    color: #000000;
+    background-color: #e2e2e2;
+    margin-right: 2px;
+}
+.chk_menu ul li a:hover{
+    background-color: #bfbfbf;
+}
+</style>
+<!--[if IE]>
+<style type="text/css">
+.clearfix{
+    zoom: 1;
+}
+</style>
+<![endif]-->
+<div class="menu-container">
+    <div class="chk_menu">
+        <ul>
+            <li><a href="../nindex.htm">หน้าหลัก ร.พ.ฯ</a></li>
+        </ul>
+    </div>
+    <p class="clearfix"></p>
+</div>
+
+<?php
+
+
+if( isset($_SESSION['x-msg']) ){
+    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+    unset($_SESSION['x-msg']);
 }
 
 ?>
@@ -53,7 +157,7 @@ if ( $action == 'save' ) {
             $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `status` = '1' ORDER BY `id` DESC");
             $items = $db->get_items();
             ?>
-            เลือกบริษัท : 
+            เลือกบริษัทที่จะบันทึกข้อมูล : 
             <select name="part" id="">
                 <option value="">-- รายชื่อบริษัท --</option>
                 <?php
@@ -82,20 +186,23 @@ if ( $page == 'search' ) {
         exit;
     }
 
+    $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `part` = '$part'");
+    $company = $db->get_item();
+
     $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ";
     $db->select($sql);
     $items = $db->get_items();
     
     ?>
     <fieldset>
-        <legend>บันทึกข้อมูล</legend>
+        <legend>บันทึกข้อมูล <?=$company['name'];?></legend>
         <form action="chk_cxr_doctor.php" method="post">
             <div>
-                <table>
+                <table class="chk_table">
                     <tr>
                         <th>HN</th>
                         <th>ชื่อ-สกุล</th>
-                        <th></th>
+                        <th>บันทึกผล</th>
                     </tr>
 
                     <?php 
@@ -103,14 +210,40 @@ if ( $page == 'search' ) {
                         
                         $row = $item['row'];
                         $hn = $item['HN'];
+
+                        $db->select("SELECT `cxr` FROM `out_result_chkup` WHERE `hn` = '$hn' AND `part` = '$part' ");
+                        $user = $db->get_item();
+
+                        $normal = 'checked="checked"';
+                        $res_detail = '';
+                        $unnormal = '';
+
+                        if( $db->get_rows() > 0 ){
+
+                            list($res, $res_detail) = explode(' ', $user['cxr']);
+
+                            if( $res == 'ปกติ' ){
+                                $normal = 'checked="checked"';
+                            } 
+
+                            if( $res == 'ผิดปกติ' ){
+                                $unnormal = 'checked="checked"';
+                            } 
+
+                        }
+
                         ?>
                         <tr>
-                            <td><?=$item[$hn];?></td>
+                            <td><?=$hn;?></td>
                             <td><?=$item['ptname'];?></td>
                             <td>
-                                <label for="cxr<?=$row;?>a"><input type="radio" name="cxr[<?=$hn;?>]" id="cxr<?=$row;?>a" value="ปกติ" checked="checked"> ปกติ</label>
-                                <label for="cxr<?=$row;?>b"><input type="radio" name="cxr[<?=$hn;?>]" id="cxr<?=$row;?>b" value="ผิดปกติ"> ผิดปกติ</label>
-                                <input type="text" name="cxr_detail[<?=$hn;?>]" id="" size="40">
+                                <label for="cxr<?=$row;?>a">
+                                    <input type="radio" name="cxr[<?=$hn;?>]" id="cxr<?=$row;?>a" value="ปกติ" <?=$normal;?> > ปกติ
+                                </label>
+                                <label for="cxr<?=$row;?>b">
+                                    <input type="radio" name="cxr[<?=$hn;?>]" id="cxr<?=$row;?>b" value="ผิดปกติ" <?=$unnormal;?> > ผิดปกติ
+                                </label>
+                                <input type="text" name="cxr_detail[<?=$hn;?>]" id="" size="40" value="<?=$res_detail;?>">
                                 <input type="hidden" name="hn[]" value="<?=$item['HN'];?>">
                             </td>
                         </tr>
