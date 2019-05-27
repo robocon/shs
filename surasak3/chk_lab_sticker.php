@@ -58,7 +58,7 @@ if ( $action == 'print' ) {
                 ?>
                 <!-- CBC -->
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (01)</b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (<span style="font-size:18pt;">01</span>)</b></center></font>
                 <div style='text-align:center;'>
                     <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
                 </div>
@@ -72,7 +72,7 @@ if ( $action == 'print' ) {
                 ?>
                 <!-- CHEM -->
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (02)</b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (<span style="font-size:18pt;">02</span>)</b></center></font>
                 <div style='text-align:center;'>
                     <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$chem_code;?>"></span>
                 </div>
@@ -86,7 +86,7 @@ if ( $action == 'print' ) {
                 ?>
                 <!-- UA -->
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (03)</b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (<span style="font-size:18pt;">03</span>)</b></center></font>
                 <div style='text-align:center;'>
                     <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span>
                 </div>
@@ -100,7 +100,7 @@ if ( $action == 'print' ) {
                 ?>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
-                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b>STOOL</b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span> STOOL</b></center></font>
                 <div style="page-break-before: always;"></div>
                 <?php 
             }
