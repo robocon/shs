@@ -55,6 +55,7 @@ LEFT JOIN `opcard` AS d ON d.`hn` = z.`HN`
 LEFT JOIN ( 
 	SELECT * FROM `chk_doctor` WHERE `date_chk` >= '2019-04-01 00:00:00' AND `date_chk` <= '2019-05-10 23:23:59' 
 ) AS e ON e.`hn` = z.`HN` 
+WHERE e.`date_chk` IS NOT NULL 
 ORDER BY z.`row` ASC ";
 
 $db->select($sql);
@@ -99,21 +100,7 @@ $items = $db->get_items();
             <th rowspan="2">#</th>
             <th rowspan="2">HN</th>
             <th rowspan="2">ชื่อ-สกุล</th>
-            <th rowspan="2">อายุ</th>
-            <th rowspan="2">น้ำหนัก</th>
-            <th rowspan="2">ส่วนสูง</th>
-            <th rowspan="2">BMI</th>
-            <th width="5%" rowspan="2">BP</th>
             <th colspan="14">รายการตรวจ</th>
-            <th width="8%" rowspan="2">สรุปผลการตรวจ</th>
-            <th rowspan="2">คำแนะนำ</th>
-            <th rowspan="2">diag</th>
-            <th rowspan="2">วันที่ลงทะเบียน</th>
-            <th rowspan="2">VN</th>
-            <th rowspan="2">ออก VN เพื่อ</th>
-            <th rowspan="2">สถานะลูกจ้าง</th>
-            <th rowspan="2">CAMP</th>
-            <th rowspan="2">แพทย์</th>
         </tr>
         <tr>
             <th>X-RAY</th>
@@ -261,11 +248,6 @@ $items = $db->get_items();
                 <td><?=$item['hn'];?></td>
                 <td><?=$item['ptname'];?></td>
 
-                <td><?=$age;?></td>
-                <td><?=$item['weight'];?></td>
-                <td><?=$item['height'];?></td>
-                <td><?=$item['bmi'];?></td>
-                <td><?=$bp1.'/'.$bp2;?></td>
 
                 <td>
                     <?php 
@@ -394,16 +376,10 @@ $items = $db->get_items();
                     <span <?=$style;?> title="Normal: <?=$etc['alp']['normalrange'];?>"><?=$etc['alp']['result'];?></span>
                 </td>
 
-                <td><?=( $item['conclution'] == '1' ? 'ปกติ' : ( $item['conclution'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
-                <td><?=$conclution_detail;?></td>
 
-                <td><?=$item['diag'];?></td>
-                <td><?=$item['thidate'];?></td>
-                <td><?=$item['regis_vn'];?></td>
-                <td><?=$item['toborow'];?></td>
-                <td <?=$regis_warn;?>><?=$item['employee'];?></td>
-                <td><?=$item['camp'];?></td>
-                <td><?=$item['doctor'];?></td>
+
+
+
             </tr>
 
 
