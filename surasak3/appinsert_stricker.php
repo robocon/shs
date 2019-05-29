@@ -1,12 +1,29 @@
 <?php session_start(); ?>
-<body >
+
 <html>
 <head>
-<title>�͡㺹Ѵ</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
-<link href="css/backoffice.css" rel="stylesheet" type="text/css">
-<!-- <meta http-equiv="refresh" content="3;URL=hnappoi1.php"> -->
+	<title>�͡㺹Ѵ</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
+	<link href="css/backoffice.css" rel="stylesheet" type="text/css">
+	<!-- <meta http-equiv="refresh" content="3;URL=hnappoi1.php"> -->
+	<style type="text/css">
+	* {
+		font-family: "TH Sarabun New","TH SarabunPSK";
+		line-height: 18.897637795px;
+		font-size: 12pt;
+	}
+	/* table{
+		width: 302.362205px;
+		height: 188.976378px;
+		border: 1px solid red;
+	} */
+	table, tr, td, th{
+		margin: 0;
+		padding: 0;
+	}
+	</style>
 </head>
+<body>
 <?php
 if (isset($cHn )){ 
 	
@@ -101,11 +118,11 @@ if (isset($cHn )){
 		?>
 		<SCRIPT LANGUAGE="JavaScript">
 		window.onload = function(){
-			window.print();
-			opener.location.href='hnappoi1.php';
+			// window.print();
+			// opener.location.href='hnappoi1.php';
 			
-			window.open('','_self');
-			self.close(); 
+			// window.open('','_self');
+			// self.close(); 
 		
 		}
 		</SCRIPT>
@@ -113,3 +130,5 @@ if (isset($cHn )){
 	}
 }
 ?>
+</body>
+</html>

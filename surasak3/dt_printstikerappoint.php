@@ -73,7 +73,7 @@ if($i){
 $drugstk .= "<DIV style=\"page-break-after:always\"></DIV>";
 $drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
 			<TR>
-				<TD align=\"center\"><font face='Angsana New' size= 3 >ใบนัดเจาะเลือด&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+				<TD align=\"center\"><font face='Angsana New' size= 3 ><b>ใบนัดเจาะเลือด</b></TD>
 			</TR>
 			<TR>
 				<TD><font face='Angsana New' size= 2 >ชื่อผู้ป่วย : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
@@ -101,7 +101,7 @@ if(trim($arr["xray"]) !=""  &&  trim($arr["xray"]) !="NA"){
 $drugstk .= "<DIV style=\"page-break-after:always\"></DIV>";
 $drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
 			<TR>
-				<TD align=\"center\"><font face='Angsana New' size= 3 >ใบนัด X-Ray&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+				<TD align=\"center\"><font face='Angsana New' size= 3 >ใบนัด X-Ray</TD>
 			</TR>
 			<TR>
 				<TD><font face='Angsana New' size= 2 >ชื่อผู้ป่วย : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
@@ -134,7 +134,7 @@ echo "
 		
 		window.onload = function(){
 			
-			print();
+			window.print();
 			//setTimeout(\"window.location.href='dt_index.php';\",5000);
 
 
