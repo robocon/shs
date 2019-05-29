@@ -23,9 +23,9 @@ while($arr2 = Mysql_fetch_assoc($result2)){
 }
 
 
-$drugstk = "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\" font style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
+$drugstk = "<TABLE cellpadding=\"0\" cellspacing=\"0\">
 			<TR>
-				<TD align=\"center\"><font face='Angsana New' size= 3 ><B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+				<TD align=\"center\"><font face='Angsana New' size= 3 ><B>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</B></TD>
 			</TR>
 			<TR>
 				<TD><font face='Angsana New' size= 2>ชื่อ : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
@@ -42,19 +42,19 @@ $drugstk = "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\" font style=
 
 if($i){
 
-$drugstk .="<TR  style=\"line-height: 14px;\">
+$drugstk .="<TR >
 				<TD><font face='Angsana New' size= 1 >LAB : ".implode(", ",$list_lab_appoint)."</TD>
 			</TR>";
 }
 
 if(trim($arr["xray"]) !="" &&  trim($arr["xray"]) !="NA"){
-$drugstk .="<TR  style=\"line-height: 14px;\">
+$drugstk .="<TR >
 				<TD><font face='Angsana New' size= 1 >X-Ray : ".$arr["xray"]."&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ".$arr["other"]."</TD>
 			</TR>";
 
 }
 
-$drugstk .="<TR style=\"line-height: 14px;\">
+$drugstk .="<TR>
 				<TD><font face='Angsana New' size= 1 >วันเวลาออกใบนัด : ".date("d/m/Y H:i:s")."</TD>
 			</TR>";
 
@@ -63,15 +63,16 @@ if( $user_code === 'ADMDEN' ){
 	$phone_intra = '1230';
 }
 
-$drugstk .= "<TR style=\"line-height: 14px;\">
+$drugstk .= "<TR>
 				<TD><font face='Angsana New' size= 1 > มีข้อสงสัยในการนัดติดต่อจุดบริการนัด โทร 054-839305 ต่อ $phone_intra</TD>
 			</TR>
 			</TABLE>
 			";
 
 if($i){
-$drugstk .= "<DIV style=\"page-break-after:always\"></DIV>";
-$drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
+	$drugstk .= '<div style="page-break-after: always;"></div>';
+	$drugstk .= '<div style="line-height:1px;">&nbsp;</div>';
+$drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" >
 			<TR>
 				<TD align=\"center\"><font face='Angsana New' size= 3 ><b>ใบนัดเจาะเลือด</b></TD>
 			</TR>
@@ -97,61 +98,47 @@ $drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"f
 			";
 }
 
+
 if(trim($arr["xray"]) !=""  &&  trim($arr["xray"]) !="NA"){
-$drugstk .= "<DIV style=\"page-break-after:always\"></DIV>";
-$drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" width=\"350\"  style=\"font-family:'MS Sans Serif'; font-size:14px; line-height: 20px;\">
+	$drugstk .= '<div style="page-break-after: always;"></div>';
+	$drugstk .= '<div style="line-height:1px;">&nbsp;</div>';
+$drugstk .= "<TABLE cellpadding=\"0\" cellspacing=\"0\">
 			<TR>
-				<TD align=\"center\"><font face='Angsana New' size= 3 >ใบนัด X-Ray</TD>
+				<TD align=\"center\"><font size= 3 ><b>ใบนัด X-Ray</b></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 2 >ชื่อผู้ป่วย : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
+				<TD><font size= 2 >ชื่อผู้ป่วย : ".$arr["ptname"]." &nbsp;&nbsp; HN : ".$arr["hn"]."</TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 3 ><B><U>นัดวันที่ : ".$arr["appdate"]."</U></B></TD>
+				<TD><font size= 3 ><B><U>นัดวันที่ : ".$arr["appdate"]."</U></B></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 2 >แพทย์ : ".$arr["doctor"]."</TD>
+				<TD><font size= 2 >แพทย์ : ".$arr["doctor"]."</TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 2 >X-Ray : <B>".$arr["xray"]."</B></TD>
+				<TD><font size= 2 >X-Ray : <B>".$arr["xray"]."</B></TD>
 			</TR>
 			<TR>
-				<TD><font face='Angsana New' size= 1 >".$arr["other"]."</TD>
+				<TD><font size= 1 >".$arr["other"]."</TD>
 			</TR>
-			</TABLE>
-			";
+			</TABLE>";
 }
 
 
 
-echo "
-
-
-
-	<html>
+echo "<html>
 	<head>
 		<SCRIPT LANGUAGE=\"JavaScript\">
-		
 		window.onload = function(){
-			
 			window.print();
 			//setTimeout(\"window.location.href='dt_index.php';\",5000);
-
-
 		}
-		
 		</SCRIPT>
 	</head>
-
 	<body leftmargin=\"0\" topmargin=\"0\">
 		",$drugstk,"
 	</body>
-	</html>
-				
-	";
-
-
-
+	</html>";
 
 
 	include("unconnect.inc");

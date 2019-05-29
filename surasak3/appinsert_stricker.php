@@ -4,26 +4,32 @@
 <head>
 	<title>�͡㺹Ѵ</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
-	<link href="css/backoffice.css" rel="stylesheet" type="text/css">
+	
 	<!-- <meta http-equiv="refresh" content="3;URL=hnappoi1.php"> -->
 	<style type="text/css">
 	* {
 		font-family: "TH Sarabun New","TH SarabunPSK";
-		line-height: 18.897637795px;
+		
 		font-size: 12pt;
 	}
-	/* table{
-		width: 302.362205px;
-		height: 188.976378px;
-		border: 1px solid red;
-	} */
+	b, u{
+		font-size: 13pt!important;
+		line-height: 18.897637795px;
+	}
+	table{
+		/* width: 302.362205px;
+		height: 188.976378px; */
+		width: 100%;
+		/* border: 1px solid red; */
+	}
 	table, tr, td, th{
 		margin: 0;
 		padding: 0;
+		line-height: 18.897637795px;
 	}
 	</style>
 </head>
-<body>
+
 <?php
 if (isset($cHn )){ 
 	
@@ -130,5 +136,5 @@ if (isset($cHn )){
 	}
 }
 ?>
-</body>
+
 </html>
