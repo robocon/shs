@@ -21,6 +21,7 @@ if( $action === 'save' ){
     $eye = $_POST['eye'];
     $snell_eye = $_POST['snell_eye'];
     $cxr = $_POST['cxr'];
+    $cxr_detail = $_POST['cxr_detail'];
     $conclution = $_POST['conclution'];
 
     $normal_suggest = $_POST['normal_suggest'];
@@ -66,14 +67,14 @@ if( $action === 'save' ){
             `eye`, `snell_eye`, `cxr`, `conclution`, `normal_suggest`,
             `normal_suggest_date`, `abnormal_suggest`, `abnormal_suggest_date`, `doctor`, `officer`, 
             `res_cbc`, `res_ua`, `res_glu`, `res_crea`, `res_chol`, `res_hdl`, 
-            `res_hbsag`,`res_occult`,`diag`
+            `res_hbsag`,`res_occult`,`diag`,`cxr_detail`
         ) VALUES (
             NULL, '$hn', '$vn', '$prefix', '$name', '$surname', 
             '$idcard', '$address', NOW(), '$yearchk', '$ear', '$breast', 
             '$eye', '$snell_eye', '$cxr', '$conclution', '$normal_suggest', 
             '$normal_suggest_date', '$abnormal_suggest', '$abnormal_suggest_date', '$doctor', '$officer', 
             '$res_cbc', '$res_ua', '$res_glu', '$res_crea', '$res_chol', '$res_hdl', 
-            '$res_hbsag', '$res_occult', '$diag'
+            '$res_hbsag', '$res_occult', '$diag', '$cxr_detail'
         );";
         $save = $db->insert($sql);
 
@@ -102,7 +103,8 @@ if( $action === 'save' ){
         `res_hdl` = '$res_hdl', 
         `res_hbsag` = '$res_hbsag',
         `res_occult` = '$res_occult',
-        `diag` = '$diag'
+        `diag` = '$diag',
+        `cxr_detail` = '$cxr_detail'
         WHERE `id` = '$id' ; ";
         $save = $db->update($sql);
 
@@ -424,6 +426,12 @@ h1,h3,p{
     text-decoration: underline;
     cursor: pointer;
 }
+.cxr-selected{
+    color:blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 </style>
 <div>
     <a href="dt_emp_manual_index.php">กลับไปหน้า ค้นหาตามHN </a>
@@ -1032,8 +1040,26 @@ h1,h3,p{
             <td>
                 <label for="cxr1"><input type="radio" name="cxr" class="cxr" id="cxr1" value="1"> ปกติ </label>
                 <label for="cxr2"><input type="radio" name="cxr" class="cxr" id="cxr2" value="2"> ผิดปกติ </label>
+                <input type="text" name="cxr_detail" id="cxr_detail" size="40">
             </td>
         </tr>
+        <?php 
+        $yearchk = get_year_checkup();
+        // ถ้ามีการลงผลจาก chk_cxr_doctor.php ของหมอวริท
+        $sql = "SELECT * FROM `chk_cxr` WHERE `hn` = '$hn' AND `year_chk` = '$yearchk' ";
+        $db->select($sql);
+        if( $db->get_rows() > 0 ){
+            $user = $db->get_item();
+            ?>
+            <tr>
+                <td class="tb-title">ผลการตรวจจากรังษีแพทย์</td>
+                <td>
+                    <?=$user['cxr'].' '.$user['detail'];?> <span class="cxr-selected" data-result="<?=$user['cxr'];?>" data-detail="<?=$user['detail'];?>">คลิกที่นี่</span> เพื่อยืนยันตามรังษีแพทย์
+                </td>
+            </tr>
+            <?php 
+        }
+        ?>
     </table>
     <br>
     <style type="text/css">
@@ -1361,6 +1387,21 @@ h1,h3,p{
                 }
             });
         }
+
+        $(document).on('click', '.cxr-selected', function(){
+
+            if( $(this).attr('data-result') == 'ปกติ' ){
+                $( "#cxr1" ).prop( "checked", true );
+
+            }else if( $(this).attr('data-result') == 'ผิดปกติ' ){
+                $( "#cxr2" ).prop( "checked", true );
+
+            }
+
+            var data_detail = $(this).attr('data-detail');
+            $('#cxr_detail').val(data_detail);
+
+        });
 
     });
 </script>

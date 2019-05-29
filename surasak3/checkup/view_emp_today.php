@@ -267,7 +267,15 @@ $items = $db->get_items();
                 <td><?=$item['bmi'];?></td>
                 <td><?=$bp1.'/'.$bp2;?></td>
 
-                <td><?=( $item['cxr'] == '1' ? '»¡µÔ' : '¼Ô´»¡µÔ' );?></td>
+                <td>
+                    <?php 
+                    if ( $item['cxr'] == '1' ) {
+                        echo '»¡µÔ';
+                    }elseif ( $item['cxr'] == '2' ) {
+                        echo '¼Ô´»¡µÔ';
+                    }
+                    ?>
+                </td>
                 <td>
                     <?php
                     if( $item['res_cbc'] == '1' ){
