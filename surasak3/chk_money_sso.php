@@ -16,7 +16,13 @@ include 'chk_menu.php';
 
 $part = input('part');
 
-$sql = "SELECT * FROM `chk_lab_items` WHERE `part` = '$part' ORDER BY `id` ASC ";
+$sql = "SELECT b.`hn`,b.`ptname`,CONCAT(b.`item_sso`,',',a.`item_sso`) AS `new_sso` 
+FROM ( 
+	SELECT * FROM `chk_lab_items` WHERE `part` = '$part' AND `item_sso` = 'bs' 
+) AS a 
+LEFT JOIN ( 
+	SELECT * FROM `chk_lab_items` WHERE `part` = '$part' AND `item_sso` != 'bs' 
+) AS b ON b.`hn` = a.`hn`";
 $db->select($sql);
 $row = $db->get_rows();
 
@@ -58,24 +64,25 @@ if( $row > 0 ){
         'UA' => 'ua',
         'GLU' => 'bs',
         'CREA' => 'cr',
-        'CHOL/HDL' => 'chol',
+        'CHOL' => 'chol',
+        'HDL' => 'hdl',
         'HBsAg' => 'hbsag',
         // 'pap' => 'pap',
         // 'via' => 'via',
         'OCCULT' => 'stocb',
-        // 'x-ray' => 'x-ray'
+        'X-Ray' => 'cxr'
     );
 
     $item_price = array(
         'cbc' => 80,
         'ua' => 50,
         'bs' => 40,
-        'cr' => 40,
-        'chol' => 200,
-        'hdl' => 200,
+        'cr' => 45,
+        'chol' => 100,
+        'hdl' => 100,
         'hbsag' => 130,
         'stocb' => 30,
-        'x-ray' => 200
+        'cxr' => 200
     );
 
     $test_count = count($new_header);
@@ -116,8 +123,9 @@ if( $row > 0 ){
         <tbody>
             <?php 
             $i = 1;
+            $over_all = 0;
             foreach ($items as $key => $item) {
-                $item_sso = strtolower($item['item_sso']);
+                $item_sso = strtolower($item['new_sso']);
                 $item_sso = str_replace('-sso','', $item_sso);
 
                 $sso_array = explode(',', $item_sso);
@@ -126,7 +134,7 @@ if( $row > 0 ){
                 <td><?=$i;?></td>
                 <td><?=$item['hn'];?></td>
                 <td><?=$item['ptname'];?></td>
-                <!-- for -->
+                
                 <?php 
                 $total = 0;
                 // เอาของแต่ละ user มาเทียบอีกที แล้วตีเป็นราคา
@@ -135,6 +143,7 @@ if( $row > 0 ){
                     $test = '';
 
                     if( in_array($head, $sso_array) ){
+                        
                         $test = $head;
                         $total += (int) $item_price[$test];
                     }
@@ -144,14 +153,20 @@ if( $row > 0 ){
                     
                     <?php
                 }
+
+                $over_all += $total;
                 ?>
-                <!-- for -->
+                
                 <td style="text-align:right;"><?=number_format($total, 2);?></td>
             </tr>
             <?php 
             $i++;
             }
             ?>
+            <tr>
+                <td style="text-align: center;" colspan="12"><b>รวมทั้งสิ้น</b></td>
+                <td><?=number_format($over_all, 2);?></td>
+            </tr>
         </tbody>
     </table>
 
