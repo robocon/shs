@@ -5,6 +5,11 @@ require("fpdf/pdf.php");
 
 include("connect.php");
 
+$cbedname = $_GET['cbedname'];
+if( $cbedname == 'รวม' ){
+	$cbedname = 'อายุรกรรม';
+}
+
 $sql = "SELECT hn,an,ptname,age,ptright,bedcode,doctor,bed,diagnos FROM bed WHERE an = '$cAn' ";
 $result_dt_hn =mysql_query($sql);
 list($chn, $can, $cptname , $cage , $cptright , $cbedcode , $cdoctor , $cBed1 ,$cdiagnos ) = Mysql_fetch_row($result_dt_hn);
