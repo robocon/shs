@@ -24,7 +24,7 @@ include 'chk_menu.php';
             </table>
         </div>
         <div>
-            <button type="submit">นำเข้า</button>
+            <button type="submit">ตรวจสอบตาม HN</button>
             <input type="hidden" name="action" value="test">
         </div>
     </form>
@@ -52,40 +52,50 @@ if( $action == false ){
             padding: 3px;
         }
         </style>
-        <table border="1" class="chk_table">
+        <table class="chk_table">
             <tr>
-                <th>#</th>
-                <th>HN ตรวจสอบ</th>
-                <th>ชื่อ สกุล ตรวจสอบ</th>
-                <th>HN ฐานข้อมูล</th>
-                <th>ชื่อ-สกุล</th>
+                <th rowspan="2">#</th>
+                <th colspan="3">ข้อมูลที่ตรวจสอบ</th>
+                <th colspan="4">ข้อมูลจากฐานข้อมูล</th>
+            </tr>
+            <tr>
+                <th>HN</th>
+                <th>ชื่อ</th>
+                <th>สกุล</th>
+                <th>HN</th>
+                <th>ชื่อ</th>
+                <th>สกุล</th>
+                <th>เลขบัตรประชาชน</th>
             </tr>
         <?php
 
         $i = 0;
         foreach ( $items as $key => $item ) {
 
-            list($hn, $name, $suname) = explode(',', $item,3);
+            list($hn, $name, $surname) = explode(',', $item,3);
 
-            $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
-            $db->select($sql);
+            if( !empty($hn) ){
 
-            $user = $db->get_item();
+                ++$i;
 
-            ?>
-            <tr>
-                <td><?=$i;?></td>
-                <td><?=$hn;?></td>
-                <td><?=$name.' '.$surname;?></td>
-                <td><?=$user['hn'];?></td>
-                <td><?=$user['ptname'];?></td>
-            </tr>
-            <?php
+                $sql = "SELECT `hn`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
+                $db->select($sql);
+                $user = $db->get_item();
 
-            $i++;
-
+                ?>
+                <tr>
+                    <td><?=$i;?></td>
+                    <td><?=$hn;?></td>
+                    <td><?=$name;?></td>
+                    <td><?=$surname;?></td>
+                    <td><?=$user['hn'];?></td>
+                    <td><?=$user['name'];?></td>
+                    <td><?=$user['surname'];?></td>
+                    <td><?=$user['idcard'];?></td>
+                </tr>
+                <?php
+            }
         }
-
         ?>
         </table>
         <?php
