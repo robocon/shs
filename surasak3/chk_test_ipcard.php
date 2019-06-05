@@ -4,12 +4,12 @@ include 'bootstrap.php';
 
 $action = input('action');
 $db = Mysql::load($shs_configs);
-
+// $db = Mysql::load();
 
 include 'chk_menu.php';
     ?>
-    <h3>ค้นหา ชื่อ-สกุล จาก HN</h3>
-    <form action="chk_test_hn.php" method="post" enctype="multipart/form-data">
+    <h3>ค้นหา ชื่อ-สกุล จากเลขบัตรประชาชน</h3>
+    <form action="chk_test_ipcard.php" method="post" enctype="multipart/form-data">
         <div>
             ไฟล์นำเข้า : <input type="file" name="file">
         </div>
@@ -17,14 +17,14 @@ include 'chk_menu.php';
             <p><b>ตัวอย่าง รูปแบบการจัดไฟล์ Excel</b></p>
             <table class="chk_table">
                 <tr>
-                    <td>HN</td>
+                    <td>เลขบัตรประชาชน</td>
                     <td>ชื่อ</td>
                     <td>สกุล</td>
                 </tr>
             </table>
         </div>
         <div>
-            <button type="submit">ตรวจสอบตาม HN</button>
+            <button type="submit">ตรวจสอบตามเลขบัตร</button>
             <input type="hidden" name="action" value="test">
         </div>
     </form>
@@ -59,42 +59,55 @@ if( $action == false ){
                 <th colspan="4">ข้อมูลจากฐานข้อมูล</th>
             </tr>
             <tr>
-                <th>HN</th>
-                <th>ชื่อ</th>
-                <th>สกุล</th>
-                <th>HN</th>
+                <th>เลขบัตรประชาชน</th>
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>เลขบัตรประชาชน</th>
+                <th>ชื่อ</th>
+                <th>สกุล</th>
+                <th>HN</th>
             </tr>
         <?php
 
         $i = 0;
         foreach ( $items as $key => $item ) {
 
-            list($hn, $name, $surname) = explode(',', $item,3);
+            list($idcard, $name, $surname) = explode(',', $item,3);
 
-            if( !empty($hn) ){
+            if( !empty($idcard) ){
 
                 ++$i;
-
-                $sql = "SELECT `hn`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
+            
+                $sql = "SELECT `hn`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` 
+                FROM `opcard` 
+                WHERE `idcard` = '$idcard' ";
                 $db->select($sql);
                 $user = $db->get_item();
+                
+                $color = '';
+
+                if( $name != $user['name'] ){
+                    $color = 'style="background-color: yellow;"';
+                }
+
+                if( $surname != $user['surname'] ){
+                    $color = 'style="background-color: yellow;"';
+                }
 
                 ?>
-                <tr>
+                <tr <?=$color;?>>
                     <td><?=$i;?></td>
-                    <td><?=$hn;?></td>
+                    <td><?=$idcard;?></td>
                     <td><?=$name;?></td>
                     <td><?=$surname;?></td>
-                    <td><?=$user['hn'];?></td>
+                    <td><?=$user['idcard'];?></td>
                     <td><?=$user['name'];?></td>
                     <td><?=$user['surname'];?></td>
-                    <td><?=$user['idcard'];?></td>
+                    <td><?=$user['hn'];?></td>
                 </tr>
                 <?php
             }
+
         }
         ?>
         </table>

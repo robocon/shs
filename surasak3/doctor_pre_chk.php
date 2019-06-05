@@ -1393,7 +1393,7 @@ h1,h3,p{
             if( $(this).attr('data-result') == 'ปกติ' ){
                 $( "#cxr1" ).prop( "checked", true );
 
-            }else if( $(this).attr('data-result') == 'ผิดปกติ' ){
+            }else if( $(this).attr('data-result') == 'ผิดปกติเล็กน้อย' || $(this).attr('data-result') == 'ผิดปกติควรพบแพทย์' ){
                 $( "#cxr2" ).prop( "checked", true );
 
             }

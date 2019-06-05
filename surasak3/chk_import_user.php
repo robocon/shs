@@ -17,6 +17,9 @@ if( empty($action) ){
                     <li>
                         <a href="chk_test_hn.php" target="_blank">ตรวจสอบรายชื่อจาก HN</a>
                     </li>
+                    <li>
+                        <a href="chk_test_ipcard.php" target="_blank">ตรวจสอบรายชื่อจาก เลขบัตรประชาชน</a>
+                    </li>
                 </ul>
             </div>
         </div>
