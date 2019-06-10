@@ -202,6 +202,7 @@ label{
     <div class="chk_menu">
         <ul>
             <li><a href="../nindex.htm">หน้าหลัก ร.พ.ฯ</a></li>
+            <li><a href="chk_report_cxr.php">รายงาน</a></li>
         </ul>
     </div>
     <p class="clearfix"></p>
@@ -258,6 +259,13 @@ if ( $page == 'search' ) {
 
     $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ";
     $db->select($sql);
+    
+
+    if ( $db->get_rows() == 0 ) {
+        // 
+        echo "ไม่พบข้อมูลบริษัท";
+        exit;
+    }
     $items = $db->get_items();
 
     $pre_items = array();
@@ -282,8 +290,8 @@ if ( $page == 'search' ) {
                         <th>#</th>
                         <th>HN</th>
                         <th>ชื่อ-สกุล</th>
-                        <th>บันทึกผล</th>
-                        <th></th>
+                        <th>ผลการ X-ray</th>
+                        <th>บันทึกข้อมูลรายบุคคล</th>
                     </tr>
 
                     <?php 
