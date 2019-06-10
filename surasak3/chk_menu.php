@@ -3,9 +3,17 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบ
 ?>
 <style type="text/css">
 .clearfix:after{
-    content: "";
-    display: table;
+    content: ".";
+    display: block;
     clear: both;
+    height: 0;
+    visibility: hidden;
+}
+.clearfix{
+    min-height: 1%;
+}
+.menu-container{
+    display: flow-root;
 }
 
 /* ตาราง */
@@ -34,6 +42,7 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบ
 .chk_menu ul li{
     list-style: none;
     float: left;
+    margin-bottom: 4px;
 }
 .chk_menu ul li a{
     float: left;
@@ -63,10 +72,16 @@ $menu_list = array(
 
 
 ?>
-<div class="clearfix" style="height: 105px;">
+<!--[if IE]>
+<style type="text/css">
+.clearfix{
+    zoom: 1;
+}
+</style>
+<![endif]-->
+<div class="menu-container">
     <h3>ระบบจัดการข้อมูล ตรวจสุขภาพ</h3>
-    <div class="chk_menu clearfix">
-
+    <div class="chk_menu">
         <ul>
             <?php 
             // ตรวจสอบสิทธิในการดูเมนู
@@ -87,6 +102,8 @@ $menu_list = array(
         </ul>
     </div>
 </div>
+<div class="clearfix"></div>
+<br>
 <?php
 if( isset($_SESSION['x-msg']) ){
     ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
