@@ -6,7 +6,7 @@ $year = input_get('year');
 $quarter = input_get('quarter');
 
 $db = Mysql::load($rdu_configs);
-$db->exec("SET NAMES TIS620");
+// $db->exec("SET NAMES TIS620");
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 

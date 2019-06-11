@@ -2,6 +2,22 @@
 
 set_time_limit(0);
 
+
+/**
+ * READ ME PLEASE อ่านตรงนี้หน่อย
+ * 
+ * ไตรมาสแบ่งออกเป็นดังนี้
+ * 1 ตค ธค
+ * 2 มค มีค
+ * 3 เมย มิย
+ * 4 กค กย
+ * 
+ * ไฟล์มี 4ไฟล์ คือ rdu_convert + _diag, _drug, _lab 
+ * ให้รันใน localhost ได้เลย
+ * พอได้ 4ไฟล์ที่เป็น .sql ค่อย import เข้าไปที่เซิฟ 192.168.1.13 -> rdu
+ */
+
+
 function dump($txt){
     echo "<pre>";
     var_dump($txt);
@@ -12,14 +28,10 @@ $db = mysql_connect('192.168.1.2', 'remoteuser', '') or die( mysql_error() );
 mysql_select_db('smdb', $db) or die( mysql_error() );
 
 // mysql_query('SET NAMES TIS620', $db);
-// ไตรมาส
-// ตค ธค
-// มค มีค
-// เมย มิย
-// กค กย
-$date_start = '2561-10-01';
-$date_end = '2561-12-31';
-$quarter = 1;
+
+$date_start = '2562-04-01';
+$date_end = '2562-06-30';
+$quarter = 3;
 $year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";

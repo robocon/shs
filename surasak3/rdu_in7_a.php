@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 
 $db = Mysql::load($rdu_configs);
-$db->exec("SET NAMES TIS620");
+// $db->exec("SET NAMES TIS620");
 
 $year = input_get('year');
 $quarter = input_get('quarter');
