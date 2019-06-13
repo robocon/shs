@@ -338,7 +338,7 @@ if ($row->depart=="PHAR"){
 }else if ($row->depart=="HEMO"){
             array_push($aHemo,$row->price);  
             array_push($aHemopd,$row->paid);
-}else if ($row->depart=="OTHER"){
+}else if ($row->depart=="OTHER" || $row->depart=="NCARE"){
     $paid = (int)$row->paid;
     if( strpos($row->ptright, 'R03') !== false && $paid == 30 ){
         
