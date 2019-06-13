@@ -70,7 +70,8 @@ $items = $db->get_items();
 <table class="chk_table">
     <tr>
         <th>#</th>
-        <th>ชื่อ-สกุล</th>
+        <th>ชื่อ</th>
+        <th>สกุล</th>
         <th>HN</th>
         <th>เลขบัตร</th>
         <th>วันเกิด</th>
@@ -95,11 +96,12 @@ $items = $db->get_items();
 $i = 1;
 foreach ($items as $key => $item) { 
 
-    $ptname = $item['yot'].$item['name'].' '.$item['surname'];
+    $ptname = $item['yot'].$item['name'];
     ?>
     <tr>
         <td><?=$i;?></td>
         <td><?=$ptname;?></td>
+        <td><?=$item['surname'];?></td>
         <td><?=$item['hn'];?></td>
         <td><?=$item['idcard'];?></td>
         <td><?=$item['dbirth'];?></td>
