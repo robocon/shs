@@ -400,8 +400,12 @@ for($i=0;$i<$count;$i++){
 				<TD  colspan=\"5\">";
 	if($_SESSION["dt_special"])
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
-
-		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";
+		$chkprice=$total_price;
+		if(substr($_SESSION["ptright_now"],0,3) == "R12" && $chkprice > 700){
+		echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
+		}else{
+		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";		
+		}
 	
 	echo "	</TD>
 	</TR>";
@@ -1384,7 +1388,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 	$sql = "SELECT count(drugcode) as amountcode, genname FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
-	$chkgenname1=substr($arr["genname"],0,7);
+	$chkgenname1=substr($arr["genname"],0,10);
 
 	
 	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";
@@ -1402,7 +1406,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 			echo "1";
 		}	
 	}else{
-		// echo "0";
+		echo "0";
 	}
 		
 exit();
@@ -1700,7 +1704,7 @@ function newXmlHttp(){
 
 function searchSuggest(action,str,len) {
 	
-		/* str = str+String.fromCharCode(event.keyCode); */
+		str = str+String.fromCharCode(event.keyCode);
 
 		if(str.length >= len){
 			url = 'dt_drug.php?action='+action+'&search=' + str;
