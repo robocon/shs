@@ -168,15 +168,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 	echo $_SESSION['nsaids13_count'];
 
 	exit;
-	/*
-	if( $_SESSION['nsaids13_count'] > 1 ){
-		?>
-		<script type="text/javascript">
-			alert('แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล มีการสั่งใช้ยาในกลุ่ม NSAIDs ซ้ำซ้อน');
-		</script>
-		<?php
-	}
-	*/
 
 }
 
@@ -1746,7 +1737,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 <head>
 <title><?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
-
+<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 22px;
@@ -1756,11 +1747,16 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_detail2 {background-color: #FFFFC1; color:#0000FF; }
 .tb_menu {background-color: #FFFFC1;  }
-
+-->
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
-
+/*Fix trim not work on IE8 or under*/
+if(typeof String.prototype.trim !== 'function'){
+	String.prototype.trim = function(){
+		return this.replace(/^\s+|\s+$/g, '');
+	}
+}
 var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
 var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
 
@@ -2278,11 +2274,11 @@ function viewlist(){
 	xmlhttp.send(null);
 	document.getElementById("druglist").innerHTML = xmlhttp.responseText;
 
-	xmlhttp = newXmlHttp();
+	xmlhttp2 = newXmlHttp();
 	url = 'dt_drug.php?action=rduin13';
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	var test_rud13_count = parseInt(xmlhttp.responseText.trim());
+	xmlhttp2.open("GET", url, false);
+	xmlhttp2.send(null);
+	var test_rud13_count = parseInt(xmlhttp2.responseText.trim());
 
 	if ( test_rud13_count > 1 ) {
 		alert('แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน');
