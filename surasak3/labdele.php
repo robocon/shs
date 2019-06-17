@@ -56,11 +56,54 @@ echo " <font color =FF0000> <b> ราคาเบิกไม่ได้   $aSumNprice บาท </b> ";
 <a target=_BLANK href="labslip4out.php">สติ๊กเกอร์ Lab นอก</a>&nbsp;&nbsp;
 <a target=_BLANK href="labslip5out.php">สติ๊กเกอร์ Lab นอก NAP</a>
 
-<br><br>
-<a target=_BLANK href="labtranxnid.php"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
-<br><br>
-<a target=_BLANK href="labtranxnid1.php">ใบรับรองแพทย์ ฝังเข็ม </a>
-<br><br>
-<a target=_BLANK href="labtranxnid1.php?subDoctor=1">ใบรับรองแพทย์ ฝังเข็ม(ภาคภูมิ พิสุทธิวงษ์)</a>
-<br><br>
-<a target=_BLANK href="labtranxnid1.php?subDoctor=2">ใบรับรองแพทย์ ฝังเข็ม(ศศิภา ศิริรัตน์)</a>
+<?php
+$cDoctor2 = substr($cDoctor,0,5);
+// หมอปฏิพงค์(MD037) หมอการุณย์(MD054) หมอกัณต์กัลยา(MD130) กับหมอฝังเข็มอีก 2 คน
+// MD128 ภาคภูมิ พิสุทธิวงษ์
+// MD129 ศศิภา ศิริรัตน์
+// MD116 วัชรพงษ์ รักษ์บำรุง
+// NID วัชรพงษ์ (ว.20014)
+// MD151 กันยกร มาเกตุ
+// MD115 คือแพทย์แผนจีน
+if( $cDoctor2 == 'MD037' 
+OR $cDoctor2 == 'MD054' 
+OR $cDoctor2 == 'MD115' 
+OR $cDoctor2 == 'MD128' 
+OR $cDoctor2 == 'MD129' 
+OR $cDoctor2 == 'MD130' 
+OR $cDoctor2 == 'MD116' 
+OR $cDoctor2 == 'NID ว' 
+OR $cDoctor2 == 'MD151'){
+    ?>
+    <br><br>
+    <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
+    <br><br>
+	<a target="_blank" href="labtranxnid1.php">ใบรับรองแพทย์ ฝังเข็ม</a>
+	<br><br>
+    <a target="_blank" href="labtranxnid1.php?subDoctor=1">ใบรับรองแพทย์ ฝังเข็ม(ภาคภูมิ พิสุทธิวงษ์)</a>
+	<br><br>
+    <a target="_blank" href="labtranxnid1.php?subDoctor=2">ใบรับรองแพทย์ ฝังเข็ม(ศศิภา ศิริรัตน์)</a>
+	<br><br>
+    <a target="_blank" href="labtranxnid1.php?subDoctor=3">ใบรับรองแพทย์ ฝังเข็ม(กันยกร มาเกตุ)</a>
+	<?php
+}
+
+// MD058  แพทย์แผนไทย 
+// MD155 หทัยรัตน์ กุลชิงชัย
+// MD156 อัจฉรา อวดห้าว
+// MD157 ธัญญาวดี มูลรัตน์
+// เฉพาะแพทย์แผนไทย
+if( $cDoctor2 == 'MD058' || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157'){
+    ?>
+    <br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - อัจฉรา อวดห้าว</a>
+    <br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์</a>
+	<br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - หทัยรัตน์ กุลชิงชัย</a>
+    <!--<br><br>
+    <a target="_blank" href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
+
+<?php
+}
+?>
