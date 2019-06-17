@@ -197,6 +197,7 @@
 </SCRIPT>
 <table>
  <tr>
+  <th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
   <th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
   <th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
   <th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
@@ -233,7 +234,8 @@
 			}
 
         print (" <tr>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$tradname  $dpy_code</td>\n".
+           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$drugcode</td>\n".
+		   "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$tradname  $dpy_code</td>\n".
            "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$amount</td>\n".
            "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$price</td>\n".
            "  <td BGCOLOR=F5DEB3><font face='Angsana New'>$part</td>\n".
