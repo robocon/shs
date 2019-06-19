@@ -104,6 +104,10 @@ label{
             </select>
         </div>
         <div>
+        <label for="orderby1"><input type="radio" name="orderby" id="orderby1" value="hn" checked>เรียงตามเลขHN</label>&nbsp;
+        <label for="orderby2"><input type="radio" name="orderby" id="orderby2" value="number">เรียงตามลำดับพี่หนา</label>
+        </div>
+        <div>
             <button type="submit">แสดงรายชื่อ</button>
             <input type="hidden" name="page" value="search">
         </div>
@@ -117,6 +121,7 @@ $page = input_post('page');
 if ( $page === 'search' ) {
 
     $part = input_post('part');
+    $order = input_post('orderby');
 
     $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$part'");
     $company = $db->get_item();
@@ -129,18 +134,23 @@ if ( $page === 'search' ) {
     }
     $items = $db->get_items();
 
+    if( $order == 'hn' ){
 
-    $pre_items = array();
-    foreach ($items as $key => $item) {
-        
-        list($year, $number) = explode('-', $item['hn']);
-        $number = sprintf('%05d', $number);
-        $key = $year.$number;
+        $pre_items = array();
+        foreach ($items as $key => $item) {
+            
+            list($year, $number) = explode('-', $item['hn']);
+            $number = sprintf('%05d', $number);
+            $key = $year.$number;
 
-        $pre_items[$key] = $item;
+            $pre_items[$key] = $item;
+
+        }
+        ksort($pre_items); 
+
+        $items = $pre_items;
 
     }
-    ksort($pre_items); 
 
     ?>
     <h3>ผลการตรวจรังษีบริษัท <?=$company['name'];?></h3>
@@ -157,7 +167,7 @@ if ( $page === 'search' ) {
         <tbody>
             <?php 
             $i = 1;
-            foreach ($pre_items as $key => $value) {
+            foreach ($items as $key => $value) {
             ?>
             <tr>
                 <td><?=$i;?></td>

@@ -266,19 +266,19 @@ if ( $page == 'search' ) {
         echo "äÁè¾º¢éÍÁÙÅºÃÔÉÑ·";
         exit;
     }
-    $items = $db->get_items();
+    $pre_items = $db->get_items();
 
-    $pre_items = array();
-    foreach ($items as $key => $item) {
+    // $pre_items = array();
+    // foreach ($items as $key => $item) {
         
-        list($year, $number) = explode('-', $item['HN']);
-        $number = sprintf('%05d', $number);
-        $key = $year.$number;
+    //     list($year, $number) = explode('-', $item['HN']);
+    //     $number = sprintf('%05d', $number);
+    //     $key = $year.$number;
 
-        $pre_items[$key] = $item;
+    //     $pre_items[$key] = $item;
 
-    }
-    ksort($pre_items);
+    // }
+    // ksort($pre_items);
     
     ?>
     <fieldset>
