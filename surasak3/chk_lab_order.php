@@ -203,6 +203,8 @@ if( $action == false ){
     $db->select($sql);
     $test_chk = $db->get_item();
 
+    exit;
+
     // ตัดเลข 6ตัวแรกที่เป็น yymmdd
     $first_lab_number = substr($test_chk['exam_no'],0,6);
     $pre_bs_number = substr($test_chk['exam_no'],6);
@@ -226,14 +228,13 @@ if( $action == false ){
                 list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
 
                 $dob = set_date($dob);
-                $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
-
-                $year = get_year_checkup();
+                
                 $ptname = $name.' '.$surname;
                 $lab_sso = strtolower(str_replace(array('"',' '), '', $lab_sso));
                 
                 $find_bs = false;
 
+                // ถ้ามี bs มันจะตัดออกจากรายการและเพิ่มเป็นรายการใหม่
                 $test_bs = preg_match('/\,bs\,/', $lab_sso);
                 if( $test_bs > 0 ){
 
@@ -246,13 +247,13 @@ if( $action == false ){
 
                 }
                 
-                $lab_sso_items = explode(',', $lab_sso);
+                // $lab_sso_items = explode(',', $lab_sso);
 
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
-                    `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`
+                    `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
                 ) VALUES (
-                    NULL, '$hn', '$ptname', '$labnumber', '$lab_sso', '$part'
+                    NULL, '$hn', '$ptname', '$labnumber', '$lab_sso', '$part', '$dob', '$sex'
                 );";
                 $insert = $db->insert($sql_chk_lab_items);
                 if( $insert !== true ){
@@ -263,9 +264,9 @@ if( $action == false ){
 
                     
                     $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
-                        `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`
+                        `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
                     ) VALUES (
-                        NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part'
+                        NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part', '$dob', '$sex'
                     );";
                     $insert = $db->insert($sql_chk_lab_items);
                     if( $insert !== true ){
@@ -274,144 +275,8 @@ if( $action == false ){
 
                 }
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
-
                 
-                ////////////////////////
-                // ORDER HEAD
-                ////////////////////////
-                $orderhead_sql = "INSERT INTO `orderhead` ( 
-                    `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, 
-                    `patientname`, `sex`, `dob`, `sourcecode`, `sourcename`, 
-                    `room`, `cliniciancode`, `clinicianname`, `priority`, `clinicalinfo` 
-                ) VALUES ( 
-                    '', NOW(), '$labnumber', '$hn', 'OPD', 
-                    '$ptname', '$sex', '$dob', '', '', 
-                    '','', 'MD022 (ไม่ทราบแพทย์)', 'R', '$clinicalinfo'
-                );";
-                $insert = $db->insert($orderhead_sql);
-                if( $insert !== true ){
-                    $msg = errorMsg(NULL, $insert['id']);
-                }
-
-                if( $find_bs === true ){
-                    $orderhead_sql = "INSERT INTO `orderhead` ( 
-                        `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, 
-                        `patientname`, `sex`, `dob`, `sourcecode`, `sourcename`, 
-                        `room`, `cliniciancode`, `clinicianname`, `priority`, `clinicalinfo` 
-                    ) VALUES ( 
-                        '', NOW(), '$lab_bs_number', '$hn', 'OPD', 
-                        '$ptname', '$sex', '$dob', '', '', 
-                        '','', 'MD022 (ไม่ทราบแพทย์)', 'R', '$clinicalinfo'
-                    );";
-                    $insert = $db->insert($orderhead_sql);
-                    if( $insert !== true ){
-                        $msg = errorMsg(NULL, $insert['id']);
-                    }
-                }
-                ////////////////////////
-                // ORDER HEAD
-                ////////////////////////
-
-
-                ////////////////////////
-                // ORDER DETAIL
-                ////////////////////////
-                foreach( $lab_sso_items as $lab_key => $lab_item ){
-                    
-                    $find_suit = strstr($lab_item,'@');
-                    if( $find_suit != false ){
-
-                        // ถ้าในรายการปกติไม่มีให้ไปหาใน labsuit
-                        $sql_at = "SELECT `code` FROM `labsuit` WHERE `suitcode` LIKE '$lab_item'";
-                        $db->select($sql_at);
-                        $suit_list = $db->get_items();
-
-                        if( count($suit_list) > 0 ){
-
-                            foreach ($suit_list as $key => $suit_item) {
-                                
-                                $suit_code = $suit_item['code'];
-                                $sql_detail = "SELECT `code`,`oldcode`,`detail` 
-                                FROM `labcare` 
-                                WHERE `code` = '$suit_code' 
-                                LIMIT 1 ";
-                                $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
-                                $test_row = mysql_num_rows($q);
-                                if ( $test_row > 0 ) {
-                                    
-                                    list($code, $oldcode, $detail) = mysql_fetch_row($q);   
-                                
-                                    $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                                        `labnumber` , `labcode`, `labcode1` , `labname` 
-                                    ) VALUES ( 
-                                        '$labnumber', '$code', '$oldcode', '$detail'
-                                    );";
-                                    $insert_detail = $db->insert($orderdetail_sql);
-
-                                    if( $insert_detail !== true ){
-                                        $msg .= errorMsg(NULL, $insert_detail['id']);
-                                    }
-
-                                }
-                                
-                            }
-
-                        }
-
-                    }else{
-
-                        // กรณีรายการ lab ปกติ
-                        $sql_detail = "SELECT `code`,`oldcode`,`detail` 
-                        FROM `labcare` 
-                        WHERE `code` = '$lab_item' 
-                        LIMIT 1 ";
-                        $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
-                        $num = mysql_num_rows($q);
-                        if( $num > 0 ){
-                            list($code, $oldcode, $detail) = mysql_fetch_row($q);   
-                        
-                            $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                                `labnumber` , `labcode`, `labcode1` , `labname` 
-                            ) VALUES ( 
-                                '$labnumber', '$code', '$oldcode', '$detail'
-                            );";
-                            $insert = $db->insert($orderdetail_sql);
-                            if( $insert !== true ){
-                                $msg .= errorMsg(NULL, $insert['id']);
-                            }
-
-                        }
-
-                    }
-                    
-                }
-
-                if( $find_bs === true ){
-
-                    $sql_detail = "SELECT `code`,`oldcode`,`detail` FROM `labcare` WHERE `code` = 'bs' LIMIT 1 ";
-                    $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
-                    $num = mysql_num_rows($q);
-                    if( $num > 0 ){
-                        list($code, $oldcode, $detail) = mysql_fetch_row($q);   
-                    
-                        $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                            `labnumber` , `labcode`, `labcode1` , `labname` 
-                        ) VALUES ( 
-                            '$lab_bs_number', '$code', '$oldcode', '$detail'
-                        );";
-                        $insert = $db->insert($orderdetail_sql);
-                        if( $insert !== true ){
-                            $msg .= errorMsg(NULL, $insert['id']);
-                        }
-
-                    }
-                    
-                }
-                ////////////////////////
-                // ORDER DETAIL
-                ////////////////////////
                 
-
             } // End ถ้าในแต่ละแถว not empty 
 
             $i++;
