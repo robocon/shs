@@ -24,7 +24,7 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบ
     border: 1px solid black;
 }
 
-ul {
+.chk_menu ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -32,11 +32,11 @@ ul {
   background-color: #808080;
 }
 
-li {
+.chk_menu li {
   float: left;
 }
 
-li a, .dropbtn {
+.chk_menu li a, .dropbtn {
   display: inline-block;
   color: white;
   text-align: center;
@@ -44,15 +44,15 @@ li a, .dropbtn {
   text-decoration: none;
 }
 
-li a:hover, .dropdown:hover .dropbtn {
+.chk_menu li a:hover, .dropdown:hover .dropbtn {
   background-color: #4ba800;
 }
 
-li.dropdown {
+.chk_menu li.dropdown {
   display: inline-block;
 }
 
-.dropdown-content {
+.chk_menu .dropdown-content {
   display: none;
   position: absolute;
   background-color: #808080;
@@ -61,7 +61,7 @@ li.dropdown {
   z-index: 1;
 }
 
-.dropdown-content a {
+.chk_menu .dropdown-content a {
   color: #ffffff;
   padding: 12px 16px;
   text-decoration: none;
@@ -69,9 +69,9 @@ li.dropdown {
   text-align: left;
 }
 
-.dropdown-content a:hover {background-color: #4ba800;}
+.chk_menu .dropdown-content a:hover {background-color: #4ba800;}
 
-.dropdown:hover .dropdown-content {
+.chk_menu .dropdown:hover .dropdown-content {
   display: block;
 }
 
@@ -91,6 +91,7 @@ $menu_list = array(
             array('link' => 'chk_import_user.php', 'name' => 'นำเข้าข้อมูลพื้นฐาน', 'access' => 'ADM|ADMNEWCHKUP'),
             array('link' => 'cxr_out_result.php', 'name' => 'นำเข้าข้อมูล X-Ray', 'access' => 'ADM|ADMNEWCHKUP'),
             array('link' => 'chk_lab_order.php', 'name' => 'นำเข้าOrder Lab', 'access' => 'ADM|ADMNEWCHKUP|ADMLAB'),
+            array('link' => 'chk_lab_lis.php', 'name' => 'สั่ง LAB เข้า LIS', 'access' => 'ADM|ADMNEWCHKUP|ADMLAB'),
         )
     ),
     array(
@@ -100,7 +101,7 @@ $menu_list = array(
         'submenu' => array( 
             array('link' => 'dt_emp_manual_index.php', 'name' => 'ลงผลตรวจ ปกส.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank'),
             array('link' => 'dx_ofyear_out.php', 'name' => 'ซักประวัติ(สิทธิ ปกส.)', 'access' => 'ALL', 'target' => '_blank'),
-            array('link' => 'chk_cxr_doctor.php', 'name' => 'ลงผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank')
+            array('link' => 'chk_cxr_doctor.php', 'name' => 'ลงผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP|ADMXR', 'target' => '_blank')
         )
     ),
     array(
@@ -194,7 +195,7 @@ function submenu($submenu_list){
 <![endif]-->
 <div class="">
     <h3>ระบบจัดการข้อมูล ตรวจสุขภาพ</h3>
-    <div class="">
+    <div class="chk_menu">
         
         <?php 
         create_menu($menu_list);

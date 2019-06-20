@@ -95,17 +95,6 @@ if ( $action == 'print' ) {
             }
         }
 
-        if( $count_stool > 0 ){ 
-            for ($i=0; $i < $count_stool; $i++) { 
-                ?>
-                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
-                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span>&nbsp;&nbsp;&nbsp;STOOL</b></center></font>
-                <div style="page-break-before: always;"></div>
-                <?php 
-            }
-        }
-
         if( $count_cs > 0 ){ 
             for ($i=0; $i < $count_cs; $i++) { 
                 ?>
@@ -156,6 +145,17 @@ if ( $action == 'print' ) {
             </div>
             <div style="page-break-before: always;"></div>
             <?php
+        }
+
+        if( $count_stool > 0 ){ 
+            for ($i=0; $i < $count_stool; $i++) { 
+                ?>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span>&nbsp;&nbsp;&nbsp;STOOL</b></center></font>
+                <div style="page-break-before: always;"></div>
+                <?php 
+            }
         }
         
     }
