@@ -9,7 +9,6 @@ if ($action == 'insert') {
     
     $part = input_get('part');
 
-
     $db->select("SELECT SUBSTRING(`yearchk`,3,2) AS `yearchk` FROM `chk_company_list` WHERE `code` = '$part'");
     $company = $db->get_item();
     $year = $company['yearchk'];
@@ -20,10 +19,14 @@ if ($action == 'insert') {
     AND `status` = 'N' 
     ORDER BY `id` ASC ";
     $db->select($sql);
+    
     if( $db->get_rows() > 0 ){
         $items = $db->get_items();
-
+        $msg = "บันทึกข้อมูลเรียบร้อย";
         foreach ($items as $key => $item) {
+
+            $id = $item['id'];
+
             $hn = $item['hn'];
             $ptname = $item['ptname'];
             $labnumber = $item['labnumber'];
@@ -54,22 +57,6 @@ if ($action == 'insert') {
             if( $insert !== true ){
                 $msg = errorMsg(NULL, $insert['id']);
             }
-
-            // if( $find_bs === true ){
-            //     $orderhead_sql = "INSERT INTO `orderhead` ( 
-            //         `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, 
-            //         `patientname`, `sex`, `dob`, `sourcecode`, `sourcename`, 
-            //         `room`, `cliniciancode`, `clinicianname`, `priority`, `clinicalinfo` 
-            //     ) VALUES ( 
-            //         '', NOW(), '$lab_bs_number', '$hn', 'OPD', 
-            //         '$ptname', '$sex', '$dob', '', '', 
-            //         '','', 'MD022 (ไม่ทราบแพทย์)', 'R', '$clinicalinfo'
-            //     );";
-            //     $insert = $db->insert($orderhead_sql);
-            //     if( $insert !== true ){
-            //         $msg = errorMsg(NULL, $insert['id']);
-            //     }
-            // }
             ////////////////////////
             // ORDER HEAD
             ////////////////////////
@@ -147,40 +134,58 @@ if ($action == 'insert') {
                 }
                 
             }
-
-            // if( $find_bs === true ){
-
-            //     $sql_detail = "SELECT `code`,`oldcode`,`detail` FROM `labcare` WHERE `code` = 'bs' LIMIT 1 ";
-            //     $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
-            //     $num = mysql_num_rows($q);
-            //     if( $num > 0 ){
-            //         list($code, $oldcode, $detail) = mysql_fetch_row($q);   
-                
-            //         $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-            //             `labnumber` , `labcode`, `labcode1` , `labname` 
-            //         ) VALUES ( 
-            //             '$lab_bs_number', '$code', '$oldcode', '$detail'
-            //         );";
-            //         $insert = $db->insert($orderdetail_sql);
-            //         if( $insert !== true ){
-            //             $msg .= errorMsg(NULL, $insert['id']);
-            //         }
-
-            //     }
-                
-            // }
             ////////////////////////
             // ORDER DETAIL
             ////////////////////////
             
-
-
-
-        }
-
+            $sql = "UPDATE `chk_lab_items` SET `status` = 'Y' WHERE `id` = '$id'";
+            $db->update($sql);
+            
+        }// end for
     }
-    
+    redirect('chk_lab_lis.php', $msg);
     exit;
+}elseif ($action == 'showlab') {
+    
+    $code = input_get('part');
+
+    $sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$part' ";
+    $db->select($sql);
+    $company = $db->get_item();
+
+    $sql = "SELECT * FROM `chk_lab_items` WHERE `part` = '$part' ORDER BY `id` ASC ";
+    $db->select($sql);
+    $items = $db->get_items();
+    ?>
+    <div>
+        <div>
+            <h3>รายการ Lab ที่จะตรวจ <?=$company['name'];?></h3>
+        </div>
+        <div>
+            <table class="chk_table">
+                <tr>
+                    <th>HN</th>
+                    <th>ชื่อ-สกุล</th>
+                    <th>Lab Nubmer</th>
+                    <th>รายการตรวจ</th>
+                </tr>
+                <?php 
+                foreach ($items as $key => $item) {
+                    ?>
+                    <tr>
+                        <td><?=$item['hn'];?></td>
+                        <td><?=$item['ptname'];?></td>
+                        <td><?=$item['labnumber'];?></td>
+                        <td><?=$item['item_sso'];?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+            </table>
+        </div>
+    </div>
+    <?php
+
 }
 ?>
 
@@ -194,7 +199,7 @@ include 'chk_menu.php';
 
 ?>
 <div>
-<h3>สั่ง Lab เข้าเครื่อง LIS</h3>
+    <h3>สั่ง Lab เข้าเครื่อง LIS</h3>
 </div>
 <fieldset>
     <legend>ค้นหาตามปีงบประมาณ</legend>
@@ -212,10 +217,9 @@ include 'chk_menu.php';
         </div>
     </form>
 </fieldset>
-
 <?php 
 
-$view = input_post('views');
+$view = input('views');
 if( $view == 'search' ){
 
     $year_selected = input_post('year_selected');
@@ -238,6 +242,7 @@ if( $view == 'search' ){
                 <th>ชื่อบริษัท</th>
                 <th>ส่งข้อมูลเข้า LIS</th>
                 <th>สถานะ</th>
+                <th>ตรวจข้อมูล</th>
             </tr>
         <?php
         $i = 0;
@@ -269,22 +274,35 @@ if( $view == 'search' ){
                 <td><?=$i;?></td>
                 <td><?=$item['name'];?></td>
                 <td align="center">
-                    <a href="chk_lab_lis.php?part=<?=$code;?>&action=insert" onclick="return chk_confirm()">บันทึกข้อมูล</a>
-                </td>
-                <td align="center">
                     <?php 
-
-                    
-
-                    if( $rows_n > 0 ){
+                    $show_link = true;
+                    if( $rows_n > 0 ){ 
                         echo "รอบันทึกเข้า LIS";
                     }elseif ($row_y > 0) {
                         echo "บันทึกข้อมูลเข้า LIS เรียบร้อย";
                     }else{
+                        $show_link = false;
                         echo "ไม่มีข้อมูล";
                     }
-
-                    // dump();
+                    ?>
+                </td>
+                <td align="center">
+                    <?php 
+                    if ( $show_link == true ) { 
+                        // 
+                        ?>
+                        <a href="chk_lab_lis.php?part=<?=$code;?>&action=insert" onclick="return chk_confirm()">บันทึกข้อมูล</a>
+                        <?php
+                    } 
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ( $show_link == true ) {
+                        ?>
+                        <a href="chk_lab_lis.php?action=showlab&part=<?=$code;?>" target="_blank">ตรวจสอบข้อมูล</a>
+                        <?php
+                    }
                     ?>
                 </td>
             </tr>
@@ -293,15 +311,16 @@ if( $view == 'search' ){
         ?>
         </table>
     </div>
+    <script>
+        function chk_confirm(){
+            var c=confirm("ยืนยันที่จะส่งข้อมูลเข้า LIS");
+            return c;
+        }
+    </script>
     <?php
 
 }
 ?>
-<script>
-    function chk_confirm(){
-        var c=confirm("ยืนยันที่จะส่งข้อมูลเข้า LIS");
-        return c;
-    }
-</script>
+
 </body>
 </html>

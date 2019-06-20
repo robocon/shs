@@ -91,20 +91,6 @@ function set_date($dob){
     return $dob;
 }
 
-/*
-DROP TABLE IF EXISTS `chk_lab_items`;
-CREATE TABLE `chk_lab_items` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `hn` varchar(50) DEFAULT NULL,
-  `ptname` varchar(255) DEFAULT NULL,
-  `labnumber` varchar(255) DEFAULT NULL,
-  `item_sso` varchar(255) DEFAULT NULL,
-  `item_cash` varchar(255) DEFAULT NULL,
-  `part` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-*/
-
 if( $action == false ){
     include 'chk_menu.php';
     ?>
@@ -202,18 +188,15 @@ if( $action == false ){
     $sql = "SELECT `exam_no` FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` DESC LIMIT 1";
     $db->select($sql);
     $test_chk = $db->get_item();
-
-    exit;
-
+    
     // ตัดเลข 6ตัวแรกที่เป็น yymmdd
     $first_lab_number = substr($test_chk['exam_no'],0,6);
     $pre_bs_number = substr($test_chk['exam_no'],6);
     $bs_number = (int) $pre_bs_number;
-
+    
     // นับ digi เพื่อเอาไปใช้ใน sprintf ทีหลัง เพราะบางบริษัทมีหลักร้อยหรือหลักพันไม่เท่ากัน
     $number_digi = strlen($pre_bs_number);
     
-
     if( $content !== false ){
 
         $items = explode("\r\n", $content);
@@ -244,11 +227,9 @@ if( $action == false ){
                     ++$bs_number;
 
                     $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
-
+                    
                 }
                 
-                // $lab_sso_items = explode(',', $lab_sso);
-
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
                     `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
