@@ -90,6 +90,11 @@ if( $rows == 0 && $date_start_th !== false && $date_end_th !== false ){
 
 
 $cDoctor1 = substr($cDoctor,5,50);
+// ถ้านำหน้าด้วย NID ให้ตัดออก
+if( preg_match('/NID\s/',$cDoctor, $matchs) > 0 ){
+    $cDoctor1 = str_replace('NID ','',$cDoctor);
+}
+
 $cDoctor2 = substr($cDoctor,0,5);
 
 /*if($cDoctor2=='MD054'){$doctorcode='ว.13553';}else
