@@ -1,5 +1,19 @@
+<?php 
+session_start();
+
+include 'includes/config.php';
+$Conn = mysql_connect($shs_configs['host'],$shs_configs['user'],$shs_configs['pass']) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้ ");
+mysql_select_db($shs_configs['dbname'],$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+
+
+function dump($txt){
+  echo "<pre>";
+var_dump($txt);
+    echo "</pre>";
+}
+?>
 <style type="text/css">
-<!--
+
 .forntsarabun {
 	font-family:"Angsana New";
 	font-size: 22px;
@@ -15,7 +29,7 @@
 background-color: #000; 
 color: #FFF; 
 } 
--->
+
 </style>
 <form name="f1" action="" method="post">
   <table  border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" style="border-collapse:collapse">
@@ -54,6 +68,11 @@ color: #FFF;
 				echo "<select>";
 				?></td>
     </tr>
+    <tr>
+        <td colspan="2" class="forntsarabun">
+          <label for="only_cd"><input type="checkbox" name="only_cd" id="only_cd" value="1"> เฉพาะรหัส C และ D45-D48</label>
+        </td>
+    </tr>
   <tr>
     <td colspan="2" align="center"><input name="submit" type="submit" class="forntsarabun" value="ค้นหา"/>&nbsp;&nbsp;
       <!--<input type="button" name="button" value="พิมพ์รายงาน"  onClick="JavaScript:window.print();" class="forntsarabun">-->
@@ -67,7 +86,7 @@ color: #FFF;
 
 if($_POST['submit']){
 
-include("connect.inc"); 
+
 
 
 $date1=$_POST['y_start'].'-'.$_POST['m_start'];
@@ -108,11 +127,43 @@ echo "<p class='forntsarabun'>สีชมพู = ลงทะเบียนแล้ว<p><br>";
 
 echo "<p class='forntsarabun'>สีขาว =ยังไม่ได้ลงทะเบียน<p><br>";
 
+if( $only_cd == '1' ){
+echo '<h3>ICD10 เฉพาะรหัส C และ D45-D48</h3>';
+}
 
 echo "<p class='forntsarabun'>ผู้ป่วยนอก<p>";
 /////////////////////////////////// ยังไม่ได้ลงทะเบียน /////////////////////////////
 
-	$sql1="SELECT * FROM opday1 WHERE icd10 like 'c%' or icd10_morbidity like 'c%' or icd10_complication like 'c%' or icd10_other  like 'c%' or  icd10_external_cause like 'c%' Group by hn  order by hn asc";
+  $only_cd = $_POST['only_cd'];
+
+  if( $only_cd == NULL ){
+    $sql1="SELECT * 
+    FROM opday1 
+    WHERE icd10 like 'c%' 
+    or icd10_morbidity like 'c%' 
+    or icd10_complication like 'c%' 
+    or icd10_other  like 'c%' 
+    or  icd10_external_cause like 'c%' 
+    Group by hn  
+    order by hn asc";
+  }elseif( $only_cd == '1' ){
+
+    $sql1 = "SELECT * 
+    FROM `opday` 
+    WHERE thidate LIKE  '$date1%'
+		AND ( 
+      ( `icd10` LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_morbidity LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_complication LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_other  LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_external_cause LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+		) 
+    GROUP BY `hn`  
+    ORDER BY `hn` ASC";
+
+  }
+
+	
 	$query1 = mysql_query($sql1);
 
 	
@@ -129,6 +180,7 @@ echo "<p class='forntsarabun'>ผู้ป่วยนอก<p>";
     <td align="center">สิทธิการรักษา</td>
     <td align="center">การวินิจฉัย</td>
     <td align="center">ICD10</td>
+    <td align="center">OTHER</td>
     </tr>
     <?
 	
@@ -149,6 +201,7 @@ echo "<p class='forntsarabun'>ผู้ป่วยนอก<p>";
       <td bgcolor="<?=$color1;?>"><?=$arr1['ptright']?></td>
       <td bgcolor="<?=$color1;?>"><?=$arr1['diag']?></td>
       <td bgcolor="<?=$color1;?>"><?=$arr1['icd10']?></td>
+      <td bgcolor="<?=$color1;?>"><?=$arr1['icd10_other']?></td>
      </tr>
          <?
 	 $n++;	 
@@ -160,7 +213,31 @@ echo "<p class='forntsarabun'>ผู้ป่วยนอก<p>";
 
 <?
 /////////////////////////////////// ลงทะเบียนแล้ว /////////////////////////////
-$sql1="SELECT * FROM opday1 WHERE icd10 like 'c%' or icd10_morbidity like 'c%' or icd10_complication like 'c%' or icd10_other  like 'c%' or  icd10_external_cause like 'c%' Group by hn  order by hn asc";
+if( $only_cd == NULL ){
+
+$sql1="SELECT * 
+FROM opday1 
+WHERE icd10 like 'c%' 
+or icd10_morbidity like 'c%' 
+or icd10_complication like 'c%' 
+or icd10_other  like 'c%' 
+or  icd10_external_cause like 'c%' 
+Group by hn  
+order by hn asc";
+}elseif( $only_cd == '1' ){
+  $sql1 = "SELECT * 
+    FROM `opday` 
+    WHERE thidate LIKE  '$date1%'
+		AND ( 
+      ( `icd10` LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_morbidity LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_complication LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_other  LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+      OR ( icd10_external_cause LIKE 'c%' OR `icd10` regexp 'D4[5-8]+' )
+		) 
+    GROUP BY `hn`  
+    ORDER BY `hn` ASC";
+}
 	$query1 = mysql_query($sql1);
 
 	
@@ -177,6 +254,7 @@ $sql1="SELECT * FROM opday1 WHERE icd10 like 'c%' or icd10_morbidity like 'c%' o
     <td align="center">สิทธิการรักษา</td>
     <td align="center">การวินิจฉัย</td>
     <td align="center">ICD10</td>
+    <td align="center">OTHER</td>
     </tr>
     <?
 	
@@ -197,6 +275,7 @@ $sql1="SELECT * FROM opday1 WHERE icd10 like 'c%' or icd10_morbidity like 'c%' o
       <td bgcolor="<?=$color1;?>"><?=$arr1['ptright']?></td>
       <td bgcolor="<?=$color1;?>"><?=$arr1['diag']?></td>
       <td bgcolor="<?=$color1;?>"><?=$arr1['icd10']?></td>
+      <td bgcolor="<?=$color1;?>"><?=$arr1['icd10_other']?></td>
      </tr>
          <?
 	 $n++;	 
@@ -211,7 +290,13 @@ $sql1="SELECT * FROM opday1 WHERE icd10 like 'c%' or icd10_morbidity like 'c%' o
     <? 
 	echo "<p class='forntsarabun'>ผู้ป่วยใน<p>";
 	
-	$sql1="SELECT * FROM ipcard1 WHERE  icd10 like 'c%' Group by hn";
+	if($only_cd == NULL){
+		$sql1="SELECT * FROM ipcard1 WHERE  icd10 like 'c%' Group by hn";
+
+	}elseif( $only_cd == '1' ){
+		$sql1="SELECT * FROM ipcard WHERE date LIKE '$date1%' AND ( icd10 like 'c%' OR `icd10` regexp 'D4[5-8]+' ) Group by hn";
+	}
+
 	$query1 = mysql_query($sql1);
 
 	$i=1;
@@ -259,8 +344,14 @@ $sql1="SELECT * FROM opday1 WHERE icd10 like 'c%' or icd10_morbidity like 'c%' o
 	}  
 	?>
     </table>
-    <?
-   	$sql1="SELECT * FROM ipcard1 WHERE  icd10 like 'c%' Group by hn";
+	<?php 
+	if($only_cd == NULL){
+		$sql1="SELECT * FROM ipcard1 WHERE  icd10 like 'c%' Group by hn";
+
+	}elseif( $only_cd == '1' ){
+		$sql1="SELECT * FROM ipcard WHERE date LIKE '$date1%' AND ( icd10 like 'c%' OR `icd10` regexp 'D4[5-8]+' ) Group by hn";
+
+	}
 	$query1 = mysql_query($sql1);
 
 	$i=1;
