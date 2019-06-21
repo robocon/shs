@@ -240,8 +240,8 @@ if( $view == 'search' ){
             <tr>
                 <th>#</th>
                 <th>ชื่อบริษัท</th>
-                <th>ส่งข้อมูลเข้า LIS</th>
                 <th>สถานะ</th>
+                <th>ส่งข้อมูลเข้า LIS</th>
                 <th>ตรวจข้อมูล</th>
             </tr>
         <?php
@@ -278,7 +278,7 @@ if( $view == 'search' ){
                     $show_link = true;
                     if( $rows_n > 0 ){ 
                         echo "รอบันทึกเข้า LIS";
-                    }elseif ($row_y > 0) {
+                    }elseif ($rows_y > 0) {
                         echo "บันทึกข้อมูลเข้า LIS เรียบร้อย";
                     }else{
                         $show_link = false;
