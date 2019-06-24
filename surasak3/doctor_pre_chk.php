@@ -967,6 +967,10 @@ h1,h3,p{
                                 $etc_abnormal = 'style="font-weight: bold; color: red;"';
                             }
 
+                            if( ( $labcode == 'occult' OR $labcode == 'hbsag' ) && $etc['result'] == 'Positive' ){
+                                $etc_abnormal = 'style="font-weight: bold; color: red;"';
+                            }
+
                             ?>
                             <tr>
                                 <td><?=$etc['labname'];?></td>
