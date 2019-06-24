@@ -125,25 +125,25 @@ $chkdate=$_POST["year1"]."-".$_POST["month1"]."-".$date;
 $showdate=$date."/".$_POST["month1"]."/".$_POST["year1"];
 
 
-$sql01="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' group by hn,credit_detail";
+$sql01="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' group by hn,credit_detail,billno";
 //echo $sql01;
 $query01=mysql_query($sql01);
 $numall=mysql_num_rows($query01);
 $sumall=$sumall+$numall;
 
 if($chkdate >= "2562-04-01"){
-$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' group by hn,credit_detail";
+$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' group by hn,credit_detail,billno";
 }else{
-$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' group by hn,credit_detail";
+$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' group by hn,credit_detail,billno";
 }
 //echo $sql11;
 $query11=mysql_query($sql11);
 $num=mysql_num_rows($query11);
 $sumnum=$sumnum+$num;
 if($chkdate >= "2562-04-01"){
-$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' AND (typecscd='' OR typecscd='A') group by hn,credit_detail";
+$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' AND (typecscd='' OR typecscd='A') group by hn,credit_detail,billno";
 }else{
-$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='' OR typecscd='A') group by hn,credit_detail";
+$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='' OR typecscd='A') group by hn,credit_detail,billno";
 
 }
 //echo $sql12;
@@ -157,7 +157,7 @@ if($result["typecscd"]=="A"){$a++;}
 
 
 
-$sql13="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='C') group by hn,credit_detail";
+$sql13="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='C') group by hn,credit_detail,billno";
 //echo $sql13;
 $query13=mysql_query($sql13);
 $num_c=mysql_num_rows($query13);
@@ -268,24 +268,27 @@ $avg=($total*100)/$sumprice;
 echo "<div style='font-size:24px'><strong>ข้อมูลประจำเดือน $showdate1</strong></div>";
 
 	if($chkdate1=="2561-09"){
-		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 8 วัน คือ วันที่ 14,16,17,18,20,22,23 และ26<br>
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 9 วัน คือ วันที่ 14,16,17,18,19,20,22,23 และ26<br>
 		</div>";
 	}else if($chkdate1=="2561-10"){
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 4 วัน คือ วันที่ 13,15,20 และ 24</div>";
-		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 3 วัน คือ วันที่ 12,21 และ 23</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 9 วัน คือ วันที่ 3,7,9,12,18,21,22,23 และ 29</div>";
 	}else if($chkdate1=="2561-11"){
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 1 วัน คือ วันที่ 5</div>";
-		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 4 วัน คือ วันที่ 1,2,23 และ 27</div>";	
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 10 วัน คือ วันที่ 1,2,4,12,13,23,24,25,27 และ 28</div>";	
 	}else if($chkdate1=="2561-12"){
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 15,18 และ 31</div>";
-		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 16,23,25,29 และ 30</div>";			
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 13 วัน คือ วันที่ 1,2,6,8,10,16,17,19,22,23,25,29 และ 30</div>";			
 	}else if($chkdate1=="2562-01"){
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 1,4 และ 12</div>";
-		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 8 วัน คือ วันที่ 3,6,10,15,18,20,24 และ 30</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 12 วัน คือ วันที่ 3,6,9,10,13,15,18,19,20,24,27 และ 30</div>";
 	}else if($chkdate1=="2562-02"){
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 4 วัน คือ วันที่ 17,19,24 และ 26</div>";
-		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 3 วัน คือ วันที่ 11,14 และ 19</div>";		
-	}	
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 10 วัน คือ วันที่ 2,3,4,5,9,11,12,14,15 และ 22</div>";		
+	}else if($chkdate1=="2562-03"){
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 0 วัน</div>";
+		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 1,2,3,6 และ 8</div>";		
+	}
 }
 ?>
 </strong></div>
