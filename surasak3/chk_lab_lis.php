@@ -157,6 +157,16 @@ if ($action == 'insert') {
     $db->select($sql);
     $items = $db->get_items();
     ?>
+    <style>
+        .chk_table{
+            border-collapse: collapse;
+        }
+        .chk_table th,
+        .chk_table td{
+            padding: 3px;
+            border: 1px solid black;
+        }
+    </style>
     <div>
         <div>
             <h3>รายการ Lab ที่จะตรวจ <?=$company['name'];?></h3>
@@ -186,6 +196,7 @@ if ($action == 'insert') {
     </div>
     <?php
 
+    exit;
 }
 ?>
 

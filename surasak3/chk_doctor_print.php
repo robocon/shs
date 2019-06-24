@@ -7,6 +7,15 @@ $hn = input_get('hn');
 $vn = input_get('vn');
 $date = input_get('date'); // date_chk ในตาราง chk_doctor
 
+# 2562-06-24 คุยกับแผนกตรวจสุขภาพแล้ว ไม่เอาชื่อ-สกุลจากทะเบียนเพราะทำงานล่าช้า
+# ให้ดึงข้อมูลจากของตรวจสุขภาพเลย
+$sql_opcard = "SELECT `name`,`surname`  
+FROM `opcardchk` 
+WHERE `HN` = '$hn' 
+ORDER BY `row` DESC LIMIT 1;";
+$db->select($sql_opcard);
+$regis_user = $db->get_item();
+
 # ข้อมูลผู้ป่วย
 $sql = "SELECT a.*, b.`ptffone`, b.`phone`
 FROM `chk_doctor` AS a 
@@ -16,6 +25,9 @@ AND a.`vn` = '$vn'
 AND a.`date_chk` LIKE '$date%' ";
 $db->select($sql);
 $user = $db->get_item();
+
+$user['name'] = str_replace($user['prefix'],'',$regis_user['name']);
+$user['surname'] = $regis_user['surname'];
 
 $year_checkup = $user['yearchk'];
 
@@ -220,7 +232,7 @@ $pdf->SetXY(56, 49);
 $pdf->Cell(5, 6, 'นาง', 0, 1);
 
 $pdf->Rect(62, 50, 3, 3);
-if( $user['prefix'] == 'น.ส.' ){
+if( $user['prefix'] == 'น.ส.' OR $user['prefix'] == 'นางสาว' ){
     $pdf->Line(62,53,65,50);
 }
 $pdf->SetXY(66, 49);
