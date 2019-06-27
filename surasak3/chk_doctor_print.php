@@ -936,7 +936,7 @@ print_dashed(5,245,188,245);
 if( !empty($user['cxr_detail']) ){
     
     $pdf->SetXY(5, 246);
-    $pdf->Cell(38, 6, 'Chest X-ray: '.htmlspecialchars_decode($user['cxr_detail']), 0, 1);
+    $pdf->Cell(38, 6, 'เอ็กซเรย์ทรวงอก: '.htmlspecialchars_decode($user['cxr_detail']), 0, 1);
 }
 
 print_dashed(5,251,188,251);
