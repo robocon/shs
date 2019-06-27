@@ -355,7 +355,7 @@ $pdf->Cell(41, 6, '7.การตรวจระดับน้ำตาลในเลือด FBS', 0, 1);
 
 $pdf->Rect(158, 85, 22, 12);
 $pdf->SetXY(158, 85);
-if( $etc_lists['glu']['flag'] != 'N' ){
+if( !empty($etc_lists['glu']['flag']) && $etc_lists['glu']['flag'] != 'N' ){
     call_alert_result(158, 85, 22, 12);
 }
 $pdf->Cell(22, 6, $etc_lists['glu']['result'], 0, 1, 'C');
@@ -742,15 +742,10 @@ $pdf->SetXY(107, 163);
 $pdf->Cell(51, 6, 'sp.gr', 0, 1);
 $pdf->Line(128, 169, 158, 169); //เส้นใต้บรรทัด
 $pdf->SetXY(158, 163);
-// if( !empty($ua_lists['spgr']['flag']) && $ua_lists['spgr']['flag'] != 'N' ){
+
+if( !empty($ua_lists['spgr']['flag']) && $ua_lists['spgr']['flag'] != 'N' ){
     call_alert_result(158, 163, 22, 6);
-// }
-
-/**
- * @testing
- */
-$ua_lists['spgr']['result'] = '11.11';
-
+}
 
 $pdf->Cell(22, 6, $ua_lists['spgr']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -761,8 +756,8 @@ $pdf->SetXY(107, 169);
 $pdf->Cell(51, 6, 'Ph', 0, 1);
 $pdf->Line(128, 175, 158, 175);
 $pdf->SetXY(158, 169);
-if( $ua_lists['phu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['phu']['flag']) && $ua_lists['phu']['flag'] != 'N' ){
+    call_alert_result(158, 169, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['phu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -773,8 +768,8 @@ $pdf->SetXY(107, 175);
 $pdf->Cell(51, 6, 'Glucose', 0, 1);
 $pdf->Line(128, 181, 158, 181);
 $pdf->SetXY(158, 175);
-if( $ua_lists['gluu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['gluu']['flag']) && $ua_lists['gluu']['flag'] != 'N' ){
+    call_alert_result(158, 175, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['gluu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -785,8 +780,8 @@ $pdf->SetXY(107, 181);
 $pdf->Cell(51, 6, 'Albumin', 0, 1);
 $pdf->Line(128, 187, 158, 187);
 $pdf->SetXY(158, 181);
-if( $ua_lists['prou']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['prou']['flag']) && $ua_lists['prou']['flag'] != 'N' ){
+    call_alert_result(158, 181, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['prou']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -797,8 +792,8 @@ $pdf->SetXY(107, 187);
 $pdf->Cell(51, 6, 'RBC', 0, 1);
 $pdf->Line(128, 193, 158, 193);
 $pdf->SetXY(158, 187);
-if( $ua_lists['rbcu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['rbcu']['flag']) && $ua_lists['rbcu']['flag'] != 'N' ){
+    call_alert_result(158, 187, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['rbcu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -809,8 +804,8 @@ $pdf->SetXY(107, 193);
 $pdf->Cell(51, 6, 'WBC', 0, 1);
 $pdf->Line(128, 199, 158, 199);
 $pdf->SetXY(158, 193);
-if( $ua_lists['wbcu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['wbcu']['flag']) && $ua_lists['wbcu']['flag'] != 'N' ){
+    call_alert_result(158, 193, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['wbcu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -821,8 +816,8 @@ $pdf->SetXY(107, 199);
 $pdf->Cell(51, 6, 'Epith cell', 0, 1);
 $pdf->Line(128, 205, 158, 205);
 $pdf->SetXY(158, 199);
-if( $ua_lists['epiu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['epiu']['flag']) && $ua_lists['epiu']['flag'] != 'N' ){
+    call_alert_result(158, 199, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['epiu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -833,8 +828,8 @@ $pdf->SetXY(107, 205);
 $pdf->Cell(51, 6, 'Blood', 0, 1);
 $pdf->Line(128, 211, 158, 211);
 $pdf->SetXY(158, 205);
-if( $ua_lists['bloodu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['bloodu']['flag']) && $ua_lists['bloodu']['flag'] != 'N' ){
+    call_alert_result(158, 205, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['bloodu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -845,8 +840,8 @@ $pdf->SetXY(107, 211);
 $pdf->Cell(51, 6, 'Ketone', 0, 1);
 $pdf->Line(128, 217, 158, 217);
 $pdf->SetXY(158, 211);
-if( $ua_lists['ketu']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
+if( !empty($ua_lists['ketu']['flag']) && $ua_lists['ketu']['flag'] != 'N' ){
+    call_alert_result(158, 211, 22, 6);
 }
 $pdf->Cell(22, 6, $ua_lists['ketu']['result'], 1, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
@@ -863,11 +858,13 @@ $pdf->Cell(51, 6, 'Fecal occult blood test(FOBT)', 0, 1);
 
 $pdf->Rect(158, 217, 22, 12);
 $pdf->SetXY(158, 217);
-if( $etc_lists['occult']['flag'] != 'N' OR $etc_lists['stocc']['flag'] != 'N' ){
-    $pdf->SetFont('AngsanaNew','B',13);
-}
 
 $occult_result = ( !empty($etc_lists['occult']['result']) ) ? $etc_lists['occult']['result'] : $etc_lists['stocc']['result'] ;
+$occult_result = strtolower($occult_result);
+
+if( !empty($occult_result) && $occult_result == 'positive' ){ 
+    call_alert_result(158, 217, 22, 12);
+}
 $occult_normalrange = ( !empty($etc_lists['occult']['normalrange']) ) ? $etc_lists['occult']['normalrange'] : $etc_lists['stocc']['normalrange'] ;
 
 $pdf->Cell(22, 6, $occult_result, 0, 1, 'C');
