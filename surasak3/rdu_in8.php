@@ -68,7 +68,7 @@ WHERE b.`hn` IS NULL
 $db->exec($sql); 
 
 $in8a = $in8b = $in8_result = 0;
-
+// ตั้ง
 $sql = "SELECT COUNT(b.`row_id`) AS `rows`
 FROM `tmp_opday_in8` AS a 
 LEFT JOIN `tmp_drugrx_in8` AS b ON b.`date_hn` = a.`date_hn` 
@@ -77,6 +77,7 @@ $db->select($sql);
 $items_in8_a = $db->get_item();
 $in8a = $items_in8_a['rows'];
 
+// หาร
 $sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday_in8`";
 $db->select($sql);
 $items_in8_b = $db->get_item();

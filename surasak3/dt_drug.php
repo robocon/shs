@@ -36,6 +36,24 @@ function jschars($str)
     return $str;
 }
 
+$_SESSION['nsaids13_count'] = 0;
+
+// หา eGFR
+$curr_date = date('Y-m-d');
+$sql_egfr = "SELECT b.`result` 
+FROM `resulthead` AS a 
+LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+WHERE a.`hn` = '".$_SESSION['hn_now']."' 
+AND a.`orderdate` LIKE '$curr_date%' 
+AND ( a.`profilecode` = 'CREA' OR a.`profilecode` = 'CREAG' ) 
+AND b.`labname` = 'eGFR' ";
+$q_egfr = mysql_query($sql_egfr);
+$res_egfr ='';
+if ( mysql_num_rows($q_egfr) > 0 ) {
+	$fetch_egfr = mysql_fetch_assoc($q_egfr);
+	$res_egfr = $fetch_egfr['result'];
+}
+
 
 //******************************* เรียกข้อมูลจาก SESSION มาแสดงเป็น Form ********************
 if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
@@ -103,6 +121,58 @@ $rows3 = mysql_fetch_array($result3);
 
 exit();
 }
+
+function dump($txt){
+	echo "<pre>";
+	var_dump($txt);
+	echo "</pre>";
+}
+
+
+if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
+
+	$nsaids13_list = Array("1CELE200*",
+	"1INDO",
+	"1LOXO",
+	"1NID",
+	"1VOL-C",
+	"1VOLSR",
+	"1PONS",
+	"1ARCO",
+	"1BREX",
+	"1MOBI",
+	"1ARCO30",
+	"1CELE_400",
+	"1MOBI-C",
+	"1ACEO",
+	"1NID-C",
+	"1ARCO_60",
+	"1LOXO-N",
+	"1NAPR",
+	"1MOB7.5",
+	"1VOL-N",
+	"1VOL-NN",
+	"1INDO-N",
+	"1NAPR-N",
+	"1ARCO120");
+	
+	foreach ($_SESSION["list_drugcode"] as $key_i => $dCode) {
+
+		$test_in = in_array($dCode, $nsaids13_list);
+		if ( $test_in == true ) {
+			$_SESSION['nsaids13_count']++;
+		}
+
+	}
+
+	echo $_SESSION['nsaids13_count'];
+
+	exit;
+
+}
+
+
+
 ///////////////////////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	$count = count($_SESSION["list_drugcode"]);
@@ -124,7 +194,8 @@ if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_no
 	list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
 	echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
 	$pay=700;
-}		
+}
+		
 	echo "<FORM name=\"form_list\" METHOD=POST ACTION=\"dt_drug_reason.php\" onsubmit=\"return viatch($count,'$code');\">
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
 	echo "| <A HREF=\"javascript:showremed2();checkall4(false);\">Remedผป.ใน</A> ";
@@ -399,8 +470,12 @@ for($i=0;$i<$count;$i++){
 				<TD  colspan=\"5\">";
 	if($_SESSION["dt_special"])
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
-
-		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";
+		$chkprice=$total_price;
+		if(substr($_SESSION["ptright_now"],0,3) == "R12" && $chkprice > 700){
+		echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
+		}else{
+		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";		
+		}
 	
 	echo "	</TD>
 	</TR>";
@@ -1383,7 +1458,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 	$sql = "SELECT count(drugcode) as amountcode, genname FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
-	$chkgenname1=substr($arr["genname"],0,7);
+	$chkgenname1=substr($arr["genname"],0,10);
 
 	
 	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";
@@ -1676,6 +1751,27 @@ body,td,th {
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
+/*Fix trim not work on IE8 or under*/
+if(typeof String.prototype.trim !== 'function'){
+	String.prototype.trim = function(){
+		return this.replace(/^\s+|\s+$/g, '');
+	}
+}
+
+if(!Array.prototype.indexOf){
+	Array.prototype.indexOf = function(obj, start){
+		for(var i = (start || 0), j=this.length; i<j; i++){
+			if(this[i] === obj){
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+
+var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
+var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2103,7 +2199,54 @@ function add_drug(drugcode){
 			document.getElementById('drug_inject_type').style.display = 'none';
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
+
+	glibenclamide_alert(drugcode.trim());
+
+	kidney_egfr_alert(drugcode.trim());
 		
+}
+
+function glibenclamide_alert(drugcode){
+
+	var hn_test = '<?=$_SESSION['hn_now'];?>';
+	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
+	age_test = parseInt(age_test);
+
+	var egfr_test = '<?=$res_egfr;?>';
+	egfr_test = parseFloat(egfr_test);
+
+	/* glibenclamide ในตัวชี้วัดที่ 11 */
+	if( drugcode == '1EUGL-C' ){
+
+		var gliben_txt = '';
+
+		if( age_test > 65 ){
+			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี'+"\n";
+		}
+
+		/* เหลือ เปรียบเทียบกับ egfr < 60 */
+		if( egfr_test < 60.00 ){
+			gliben_txt += '- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60'+"\n";
+		}
+
+		if( gliben_txt !== '' ){
+			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล ห้ามใช้ Glibenclamide\n"+gliben_txt);
+		}
+	}
+} 
+
+function kidney_egfr_alert(drugcode){
+	var egfr_test = '<?=$res_egfr;?>';
+	egfr_test = parseFloat(egfr_test);
+
+	var kidney_txt = '';
+	if( egfr_test < 60.00 && nsaids14_list.indexOf(drugcode) > -1 ){
+		kidney_txt += 'ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป';
+	}
+
+	if( kidney_txt !== '' ){
+		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs \n"+kidney_txt);
+	}
 }
 
 function addslip(drugslip){
@@ -2142,6 +2285,17 @@ function viewlist(){
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	document.getElementById("druglist").innerHTML = xmlhttp.responseText;
+
+	xmlhttp2 = newXmlHttp();
+	url = 'dt_drug.php?action=rduin13';
+	xmlhttp2.open("GET", url, false);
+	xmlhttp2.send(null);
+	var test_rud13_count = parseInt(xmlhttp2.responseText.trim());
+
+	if ( test_rud13_count > 1 ) {
+		alert('แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน');
+	}
+
 
 }
 
@@ -2479,7 +2633,12 @@ function addtolist_muli(){
 			
 		
 			addtolist(zz[0],zz[2],zz[1],'E', zz[4], zz[5], zz[6], zz[7], zz[8], zz[9], zz[10], '',zz[3],zz[13]);
+			
 
+			//ตรวจสอบ glibenclamide
+			glibenclamide_alert(zz[0].trim());
+
+			kidney_egfr_alert(zz[0].trim());
 		}
 	}
 	}

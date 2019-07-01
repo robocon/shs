@@ -44,13 +44,12 @@ CONCAT(SUBSTRING(`regisdate`,1,10),`hn`) AS `date_hn`
 FROM `diag`
 WHERE ( `regisdate` >= '$date_start 00:00:00' AND `regisdate` <= '$date_end 23:59:59' ) 
 AND ( 
-    ( `diag`LIKE '%dog%' AND `diag` LIKE '%bit%' ) 
+    ( `diag` NOT LIKE '%dog%' AND `diag` NOT LIKE '%bit%' ) 
     OR 
-    ( `diag`LIKE '%cat%' AND `diag` LIKE '%bit%' ) 
+    ( `diag` NOT LIKE '%cat%' AND `diag` NOT LIKE '%bit%' ) 
     OR 
-    ( `diag`LIKE '%mammals%' AND `diag` LIKE '%bit%' ) 
-) 
-GROUP BY `icd10` ";
+    ( `diag` NOT LIKE '%mammals%' AND `diag` NOT LIKE '%bit%' ) 
+);";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 $sql_header = "INSERT INTO `diag` ( `id`, `diag_id`, `regisdate`, `hn`, `an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
