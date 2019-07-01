@@ -1,7 +1,8 @@
 <?php 
 include 'bootstrap.php';
+include_once 'includes/JSON.php';
 $db = Mysql::load();
-$action = input_post('action');
+$action = input('action');
 if( $action == 'save_qr' ){
 
     $title = input_post('title');
@@ -29,7 +30,7 @@ if( $action == 'save_qr' ){
             
         }
 
-        $sql = "INSERT INTO `qr_pics` (`id`, `name`, `parth`, `status`) VALUES (NULL, '$title', '$full_parth', 'Y');";
+        $sql = "INSERT INTO `qr_pics` (`id`, `name`, `parth`, `status`) VALUES (NULL, '$title', '$full_parth', 1);";
         $db->select($sql);
 
     }else if($id > 0){
@@ -50,6 +51,43 @@ if( $action == 'save_qr' ){
 
     redirect('rdu_qrcode.php?page=qr', 'บันทึกข้อมูลเรียบร้อย');
 
+    exit;
+}elseif ( $action == 'bin_pic' ) {
+    $id = input_get('id');
+
+    $db->update("UPDATE `qr_pics` SET `status`='0 WHERE `id`='$id' LIMIT 1;");
+    redirect('rdu_qrcode.php?page=qr', 'ดำเนินการเรียบร้อย');
+
+    exit;
+}elseif ( $action == 'search_drug' ) {
+
+    $db->select("SELECT `drugcode`,`tradname`,`genname` FROM `druglst` WHERE `drugcode` LIKE '$drug_name%' OR `tradname` LIKE '$drug_name%' OR `genname` LIKE '$drug_name%' ");
+    $items = $db->get_items();
+
+    $json = new Services_JSON();
+    $output = $json->encode($items);
+    echo $output;
+
+    exit;
+}elseif ( $action == 'save_drug' ) { 
+
+    $code = trim(input_post('drug_name'));
+    $qr_pic_id = input_post('qr_id');
+
+    $db->select("SELECT `parth` FROM `qr_pics` WHERE `id` = '$qr_pic_id' ");
+    $qr = $db->get_item();
+
+    $parth = $qr['parth'];
+
+    $sql_insert = "INSERT INTO `qr_drugs` (
+        `id`, `drug_code`, `qr_pic_id`, `status`, `pic_parth`
+    ) VALUES (
+        NULL, '$code', '$qr_pic_id', 1, '$parth'
+    );";
+    $db->insert($sql_insert);
+    //
+
+    redirect('rdu_qrcode.php?page=drug', 'บันทึกข้อมูลเรียบร้อย');
     exit;
 }
 ?>
@@ -136,7 +174,7 @@ if( $action == 'save_qr' ){
         $id = false;
         if( $section == 'edit' ){
             $id = input_get('id');
-            $db->select("SELECT * FROM `qr_pics` WHERE `id` = '$id'");
+            $db->select("SELECT * FROM `qr_pics` WHERE `id` = '$id' ");
             $qr = $db->get_item();
 
             $name = $qr['name'];
@@ -183,7 +221,7 @@ if( $action == 'save_qr' ){
                     <th>จัดการ</th>
                 </tr>
                 <?php 
-                $db->select("SELECT * FROM `qr_pics` ORDER BY `id` DESC");
+                $db->select("SELECT * FROM `qr_pics` WHERE `status` = 1 ORDER BY `id` DESC");
                 $items = $db->get_items();
                 $i = 0;
                 foreach ($items as $key => $item) {
@@ -194,7 +232,7 @@ if( $action == 'save_qr' ){
                         <td><?=$item['name'];?></td>
                         <td><img src="<?=$item['parth'];?>" alt="<?=$item['name'];?>"></td>
                         <td>
-                            <a href="#">ลบ</a> | <a href="rdu_qrcode.php?page=qr&section=edit&id=<?=$item['id'];?>">แก้ไข</a>
+                            <a href="rdu_qrcode.php?action=bin_pic&id=<?=$item['id'];?>" onclick="return confirm('ยืนยันการลบข้อมูล?')">ลบ</a> | <a href="rdu_qrcode.php?page=qr&section=edit&id=<?=$item['id'];?>">แก้ไข</a>
                         </td>
                     </tr>
                     <?php
@@ -202,7 +240,145 @@ if( $action == 'save_qr' ){
                 ?>
             </table>
         </div>
+        <?php
+    }elseif ( $page == 'drug' ) {
+        //
+
+        $db->select("SELECT * FROM `qr_pics` ORDER BY `id` DESC");
+        $qr_items = $db->get_items();
+        ?>
+        <div>
+            <h3>เพิ่มยา</h3>
+        </div>
+        <div style="position: relative;">
+            <form action="rdu_qrcode.php" method="post">
+                <div>
+                    รหัสยา: <input type="text" name="drug_name" id="drug_name">
+                </div>
+                <div>
+                    QR Code: <select name="qr_id" id="qr_id">
+                    <?php 
+                    foreach ($qr_items as $key => $qr) {
+                        ?>
+                        <option value="<?=$qr['id'];?>"><?=$qr['name'];?></option>
+                        <?php
+                    }
+                    ?>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit">บันทึก</button>
+                    <input type="hidden" name="action" value="save_drug">
+                </div>
+            </form>
+            <div style="position: absolute; left: 0;">
+                <div id="drug_list" style="display: none; background-color: #ffffff; border: 6px solid #00ad02;"></div>
+            </div>
+        </div>
+        <div>
+            <div>
+                <h3>จัดการข้อมูล</h3>
+            </div>
+            <?php 
+            $sql = "SELECT *, b.`name` AS `group_name`,c.`tradname`,c.`genname`
+            FROM `qr_drugs` AS a 
+            LEFT JOIN `qr_pics` AS b ON b.`id` = a.`qr_pic_id` 
+            LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drug_code` 
+            ORDER BY a.`qr_pic_id`,a.`id` DESC";
+            
+            $db->select($sql);
+            $drug_items = $db->get_items();
+            ?>
+            <table class="chk_table">
+                <tr>
+                    <th>#</th>
+                    <th>รหัสยา</th>
+                    <th>กลุ่ม</th>
+                    <th>Trade name</th>
+                    <th>General name</th>
+                    <th>จัดการ</th>
+                </tr>
+            <?php
+            $i=0;
+            foreach ($drug_items as $key => $item) {
+                ++$i;
+                ?>
+                <tr>
+                    <td><?=$i;?></td>
+                    <td><?=$item['drug_code'];?></td>
+                    <td><?=$item['group_name'];?></td>
+                    <td><?=$item['tradname'];?></td>
+                    <td><?=$item['genname'];?></td>
+                    <td>
+                        <a href="#">ลบ</a> | <a href="#">แก้ไข</a>
+                    </td>
+                </tr>
+                <?php
+            }
+            ?>
+            </table>
+        </div>
+        <style>
+        .code_item{
+            color: blue;
+            text-decoration: underline;
+        }
+        .code_item:hover{
+            cursor: pointer;
+        }
+        </style>
         <script src="js/vendor/jquery-1.11.2.min.js"></script>
+        <script>
+        $(function(){
+            $(document).on('keyup', '#drug_name', function(){
+
+                var dCode = $(this).val().trim();
+                if(dCode.length > 2){
+
+                
+                $.ajax({
+                    url: 'rdu_qrcode.php',
+                    type: 'POST',
+                    data: {'action': 'search_drug', 'drug_name': dCode},
+                    dataType: 'json',
+                    success: function(res_html){
+
+                        var html = '<table class="chk_table test_drug_code">';
+                        html += '<tr class="close_btn"><td colspan="3" style="text-align: center;">[ ปิด ]</td></tr>';
+                        html += '<tr><th>Drug Code</th><th>Trad Name</th><th>General Name</th></tr>';
+                        var tb_tr = '';
+                        res_html.forEach(function(element){
+                            tb_tr += '<tr>';
+                            tb_tr += '<td class="code_item" data-code="'+element.drugcode+'">'+element.drugcode+'</td>';
+                            tb_tr += '<td>'+element.tradname+'</td>';
+                            tb_tr += '<td>'+element.genname+'</td>';
+                            tb_tr += '</tr>';
+                        });
+                        
+                        html += tb_tr;
+                        html += '</table>';
+
+                        $('#drug_list').html(html).show();
+                    }
+                });
+
+                }
+
+            });
+
+            $(document).on('click', '.code_item', function(){ 
+
+                var key_code = $(this).attr('data-code');
+                $('#drug_name').val(key_code);
+
+                $('#drug_list').hide().html('');
+            });
+
+            $(document).on('click', '.close_btn', function(){
+                $('#drug_list').hide().html('');
+            });
+        });
+        </script>
         <?php
     }
     ?>
