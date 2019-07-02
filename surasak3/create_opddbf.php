@@ -1058,45 +1058,59 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 			
 			
 		
-		if($chrgitem=="OTHER" || $chrgitem=="EMER" || $chrgitem=="WARD"){
+			if($chrgitem=="OTHER"){
 			
-			$sql121 ="select sum(paidcscd ) as sumcscd from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='OTHER' and an=' ' and  hn='$hnopacc' ";
-			
-		//	echo $sql121;
-		$result121 = mysql_query($sql121) or die("Query failed121");
-		list($paidcscd1) = Mysql_fetch_row($result121);
-		
+				$sql121 ="select sum(paidcscd ) as sumcscd from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='OTHER' and an=' ' and  hn='$hnopacc' ";
+				$result121 = mysql_query($sql121) or die("Query failed121");
+				list($paidcscd1) = Mysql_fetch_row($result121);
 	
-		
-					$sql122 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and depart='EMER' and  hn='$hnopacc' and an=' '";
-					
-					//echo $sql121;
-		$result122 = mysql_query($sql122) or die("Query failed122");
-		list($paidcscd2) = Mysql_fetch_row($result122);
-		
-							$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='WARD' and  hn='$hnopacc' and an=' '";
-							
-							//echo $sql123;
-		$result123 = mysql_query($sql123) or die("Query failed123");
-		list($paidcscd3) = Mysql_fetch_row($result123);
-			
-		//	echo $paidcscd1;	echo $paidcscd2;	echo $paidcscd3 ;	
-			
-			$amountopacc=$paidcscd1+$paidcscd2+$paidcscd3;
-			
-			$date12=$rows12["txdate"];
-			$datetimech=$date12;
-			$datech = substr($datetimech,0,10);
-			$datecha =explode("-",$datech);
-			$newdatech=$datecha[0]-543;
-			$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
-			
-			$chrgitem12 ="C1";
-			
-			
-			
-			
-		}
+				$amountopacc=$paidcscd1;
+	
+				$date12=$rows12["txdate"];
+				$datetimech=$date12;
+				$datech = substr($datetimech,0,10);
+				$datecha =explode("-",$datech);
+				$newdatech=$datecha[0]-543;
+				$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
+	
+				$chrgitem12 ="C1";
+				
+			}elseif($chrgitem=="EMER"){
+	
+				$sql122 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and depart='EMER' and  hn='$hnopacc' and an=' '";
+	
+				$result122 = mysql_query($sql122) or die("Query failed122");
+				list($paidcscd2) = Mysql_fetch_row($result122);
+	
+				$amountopacc=$paidcscd2;
+	
+				$date12=$rows12["txdate"];
+				$datetimech=$date12;
+				$datech = substr($datetimech,0,10);
+				$datecha =explode("-",$datech);
+				$newdatech=$datecha[0]-543;
+				$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
+	
+				$chrgitem12 ="C1";
+	
+			}elseif($chrgitem=="WARD"){
+	
+				$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='WARD' and  hn='$hnopacc' and an=' '";
+				$result123 = mysql_query($sql123) or die("Query failed123");
+				list($paidcscd3) = Mysql_fetch_row($result123);
+	
+				$amountopacc=$paidcscd3;
+	
+				$date12=$rows12["txdate"];
+				$datetimech=$date12;
+				$datech = substr($datetimech,0,10);
+				$datecha =explode("-",$datech);
+				$newdatech=$datecha[0]-543;
+				$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
+	
+				$chrgitem12 ="C1";
+	
+			}
 			
 			elseif($chrgitem=="PHAR"){
 				
