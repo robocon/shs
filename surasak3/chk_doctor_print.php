@@ -972,5 +972,5 @@ $pdf->Line(133,265,179,265);
 $pdf->SetXY(133, 266);
 $pdf->Cell(46, 6, '( '.$def_doctor.' )', 0, 1, 'C');
 
-// $pdf->AutoPrint(true);
+$pdf->AutoPrint(true);
 $pdf->Output();
