@@ -1757,6 +1757,16 @@ if(typeof String.prototype.trim !== 'function'){
 		return this.replace(/^\s+|\s+$/g, '');
 	}
 }
+if(!Array.prototype.indexOf){
+	Array.prototype.indexOf = function(obj, start){
+		for(var i = (start || 0), j=this.length; i<j; i++){
+			if(this[i] === obj){
+				return i;
+			}
+		}
+		return -1;
+	}
+}
 var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
 var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
 
@@ -2209,16 +2219,16 @@ function glibenclamide_alert(drugcode){
 		var gliben_txt = '';
 
 		if( age_test > 65 ){
-			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี';
+			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี'+"\n";
 		}
 
 		/* เหลือ เปรียบเทียบกับ egfr < 60 */
 		if( egfr_test < 60.00 ){
-			gliben_txt += "\n"+'- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60';
+			gliben_txt += '- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60'+"\n";
 		}
 
 		if( gliben_txt !== '' ){
-			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ Glibenclamide\n"+gliben_txt);
+			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล ห้ามใช้ Glibenclamide\n"+gliben_txt);
 		}
 	}
 } 
