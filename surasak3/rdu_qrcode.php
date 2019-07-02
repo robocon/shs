@@ -329,6 +329,9 @@ if( $action == 'save_qr' ){
         </style>
         <script src="js/vendor/jquery-1.11.2.min.js"></script>
         <script>
+
+        document.getElementById('drug_name').focus();
+
         $(function(){
             $(document).on('keyup', '#drug_name', function(){
 
