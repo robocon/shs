@@ -308,7 +308,7 @@ if ( $page == 'search' ) {
 
                         $normal = 'checked="checked"';
                         $res_detail = '';
-                        $unnormal = '';
+                        $unnormal_abit = $unnormal = '';
 
                         if( $db->get_rows() > 0 ){
 
@@ -319,7 +319,7 @@ if ( $page == 'search' ) {
 
                             if( $res == 'ปกติ' ){
                                 $normal = 'checked="checked"';
-                            } 
+                            }
 
                             if( $res == 'ผิดปกติเล็กน้อย' ){
                                 $unnormal_abit = 'checked="checked"';
