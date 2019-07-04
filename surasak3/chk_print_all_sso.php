@@ -99,6 +99,11 @@ foreach ($items as $key => $item) {
     //     continue;
     // }
 
+    // if( $regis_user !== false ){
+        $user['name'] = str_replace($item['prefix'],'',$item['name']);
+        $user['surname'] = $item['surname'];
+    // }
+
     // ++$test_count_user_hotfix;
 
     // if( $test_count_user_hotfix == 0 ){
