@@ -89,7 +89,6 @@ $menu_list = array(
         'access' => 'ALL',
         'submenu' => array(
             array('link' => 'chk_import_user.php', 'name' => 'นำเข้าข้อมูลพื้นฐาน', 'access' => 'ADM|ADMNEWCHKUP'),
-            array('link' => 'cxr_out_result.php', 'name' => 'นำเข้าข้อมูล X-Ray', 'access' => 'ADM|ADMNEWCHKUP'),
             array('link' => 'chk_lab_order.php', 'name' => 'นำเข้าOrder Lab', 'access' => 'ADM|ADMNEWCHKUP|ADMLAB'),
             array('link' => 'chk_lab_lis.php', 'name' => 'สั่ง LAB เข้า LIS', 'access' => 'ADM|ADMNEWCHKUP|ADMLAB'),
         )
@@ -101,7 +100,7 @@ $menu_list = array(
         'submenu' => array( 
             array('link' => 'dt_emp_manual_index.php', 'name' => 'ลงผลตรวจ ปกส.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank'),
             array('link' => 'dx_ofyear_out.php', 'name' => 'ซักประวัติ(สิทธิ ปกส.)', 'access' => 'ALL', 'target' => '_blank'),
-            array('link' => 'chk_cxr_doctor.php', 'name' => 'ลงผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP|ADMXR', 'target' => '_blank')
+            array('link' => 'cxr_out_result.php', 'name' => 'ลงผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP')
         )
     ),
     array(
@@ -112,6 +111,7 @@ $menu_list = array(
             array('link' => 'chk_sso.php', 'name' => 'ค้นหา Walk-in ปกส.', 'access' => 'ALL'),
             array('link' => 'chk_test_hn.php', 'name' => 'ตรวจสอบรายชื่อจาก HN', 'access' => 'ALL'),
             array('link' => 'chk_test_ipcard.php', 'name' => 'ตรวจสอบรายชื่อจาก เลขบัตรประชาชน', 'access' => 'ALL'),
+            array('link' => 'chk_report_cxr.php', 'name' => 'ดูผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP|ADMXR')
         ),
     ),
 );

@@ -5,88 +5,12 @@ include 'bootstrap.php';
 $db = Mysql::load();
 $action = input_post('action');
 $officer = $_SESSION['sOfficer'];
+
+include 'chk_menu.php';
 ?>
-<style type="text/css">
-*{
-    font-family: "TH Sarabun New","TH SarabunPSK";
-    font-size: 14pt;
-}
-.clearfix:after{
-    content: ".";
-    display: block;
-    clear: both;
-    height: 0;
-    visibility: hidden;
-}
-.clearfix{
-    min-height: 1%;
-}
-.menu-container{
-    display: flow-root;
-}
-label{
-    cursor: pointer;
-}
-
-/* ตาราง */
-.chk_table{
-    border-collapse: collapse;
-}
-.chk_table th,
-.chk_table td{
-    padding: 3px;
-    border: 1px solid black;
-}
-
-/* เมนู */
-.chk_menu{
-    margin-bottom: 1em;
-    padding-bottom: 5px;
-}
-.chk_menu ul{
-    margin: 0;
-    padding: 0;
-}
-.chk_menu ul li{
-    list-style: none;
-    float: left;
-}
-.chk_menu ul li a{
-    float: left;
-    padding: 10px;
-    text-decoration: none;
-    color: #000000;
-    background-color: #e2e2e2;
-    margin-right: 2px;
-}
-.chk_menu ul li a:hover{
-    background-color: #bfbfbf;
-}
-@media print{
-    .menu-container, fieldset{
-        display: none;
-    }
-}
-</style>
-<!--[if IE]>
-<style type="text/css">
-.clearfix{
-    zoom: 1;
-}
-</style>
-<![endif]-->
-<div class="menu-container">
-    <div class="chk_menu">
-        <ul>
-            <li><a href="../nindex.htm">หน้าหลัก ร.พ.ฯ</a></li>
-            <li><a href="chk_cxr_doctor.php">บันทึกผล X-Ray</a></li>
-        </ul>
-    </div>
-    <p class="clearfix"></p>
-</div>
 
 <fieldset>
-    <legend>ค้นหาตามบริษัท</legend>
+    <legend>ค้นหาการบันทึกผล X-Ray ตามบริษัท</legend>
     <form action="chk_report_cxr.php" method="post">
         <div>
             <?php 
