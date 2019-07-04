@@ -17,11 +17,17 @@ if ( $action === 'upload' ) {
     $content = file_get_contents($file['tmp_name']);
     $items = explode("\r\n", $content);
    
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+
     foreach($items as $key => $item){
 		
 		if(!empty($item)){
 
-            list($hn, $cxr, $cxr_detail) = explode(',', $item);
+            list($number, $hn, $name, $surname, $cxr1, $cxr2, $cxr3 , $cxr_detail) = explode(',', $item);
+
+            $cxr1 = trim($cxr1);
+            $cxr2 = trim($cxr2);
+            $cxr3 = trim($cxr3);
 
             $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `HN` = '$hn' AND `part` = '$part' ";
             $db->select($sql);
@@ -31,7 +37,15 @@ if ( $action === 'upload' ) {
                 $ptname = $user['ptname'];
 
                 $hn = trim($hn);
-                $cxr = trim($cxr);
+                
+                $cxr = '';
+                if( !empty($cxr1) ){
+                    $cxr = 'ปกติ';
+                }elseif( !empty($cxr2) ){
+                    $cxr = 'ผิดปกติเล็กน้อย';
+                }elseif( !empty($cxr3) ){
+                    $cxr = 'ผิดปกติควรพบแพทย์';
+                }
 
                 $cxr_detail = htmlspecialchars($cxr_detail, ENT_QUOTES);
                 $cxr_detail = trim(preg_replace('/\s+/',' ',$cxr_detail));
@@ -77,7 +91,7 @@ if ( $action === 'upload' ) {
 
 		}
 		
-	}
+    }
 
     redirect('cxr_out_result.php', $msg);
     exit;
@@ -123,11 +137,16 @@ include 'chk_menu.php';
             <p><b>รูปแบบการจัดวางข้อมูลในไฟล์ CSV(Comma Dilimited)</b></p>
         </div>
         <div>
-            <table class="chk_table">
+            <table class="chk_table" width="100%">
                 <tr>
-                    <th>HN</th>
-                    <th>ผล</th>
-                    <th>รายละเอียด</th>
+                    <td width="5%">ลำดับ</td>
+                    <td width="5%">HN</td>
+                    <td width="8%">ชื่อ</td>
+                    <td width="8%">สกุล</td>
+                    <td width="10%">ปกติ</td>
+                    <td width="10%">ผิดปกติ<br>เล็กน้อย</td>
+                    <td width="10%">ผิดปกติ<br>ควรพบแพทย์</td>
+                    <td>รายละเอียด</td>
                 </tr>
             </table>
         </div>
@@ -135,21 +154,36 @@ include 'chk_menu.php';
             <p><b>ตัวอย่าง</b></p>
         </div>
         <div>
-            <table class="chk_table">
+            <table class="chk_table" width="100%">
                 <tr>
-                    <td>48-7954</td>
-                    <td>ปกติ</td>
-                    <td></td>
+                    <td width="5%">1</td>
+                    <td width="5%">48-7954</td>
+                    <td width="8%">ทดสอบ</td>
+                    <td width="8%">ทดลอง</td>
+                    <td width="10%" align="center">/</td>
+                    <td width="10%" align="center">&nbsp;</td>
+                    <td width="10%" align="center">&nbsp;</td>
+                    <td>&nbsp;</td>
                 </tr>
                 <tr>
+                    <td>2</td>
                     <td>62-2599</td>
-                    <td>ผิดปกติเล็กน้อย</td>
-                    <td>รายละเอียด</td>
+                    <td>ทดสอบ2</td>
+                    <td>ทดลอง2</td>
+                    <td align="center">&nbsp;</td>
+                    <td align="center">/</td>
+                    <td align="center">&nbsp;</td>
+                    <td>รายละเอียด ผิดปกติเล็กน้อย</td>
                 </tr>
                 <tr>
+                    <td>3</td>
                     <td>62-2563</td>
-                    <td>ผิดปกติควรพบแพทย์</td>
-                    <td>รายละเอียด</td>
+                    <td>ทดสอบ3</td>
+                    <td>ทดลอง3</td>
+                    <td align="center">&nbsp;</td>
+                    <td align="center">&nbsp;</td>
+                    <td align="center">/</td>
+                    <td>รายละเอียด ผิดปกติควรพบแพทย์</td>
                 </tr>
             </table>
         </div>
