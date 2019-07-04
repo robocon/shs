@@ -28,10 +28,10 @@ $db->select($sql);
 $user = $db->get_item();
 
 // ตรวจเป็นกลุ่มจะดึงข้อมูลจากที่น้องนัทเอาเข้าระบบ
-if( $regis_user !== false ){
-    $user['name'] = str_replace($user['prefix'],'',$regis_user['name']);
-    $user['surname'] = $regis_user['surname'];
-}
+// if( !empty() ){
+//     $user['name'] = str_replace($user['prefix'],'',$regis_user['name']);
+//     $user['surname'] = $regis_user['surname'];
+// }
 
 $year_checkup = $user['yearchk'];
 
