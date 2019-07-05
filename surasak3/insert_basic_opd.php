@@ -52,7 +52,7 @@ else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';}
 else {$cigarette='เคยสูบ';};
 
 if($alcohol==0){$alcohol='ไม่ดื่ม';}
-else if($alcohol==1){$alcohol='ดื่ม '.$drink_amount.' แก้ว/วัน';}
+else if($alcohol==1){$alcohol='ดื่ม '.$drink_amount.' แก้ว/สัปดาห์';}
 else {$alcohol='เคยดื่ม';};
 
 if($drugreact == 0){
@@ -89,18 +89,7 @@ window.onload = function(){
 	window.close();
 }
 </script>
-<style>
-body{
-	margin: 0;
-	padding: 0;
-}
-table td{
-	font-family: "Angsana New","TH SarabunPSK";
-	line-height: 18.897637795px;
-	font-size: 14pt;
-}
-</style>
-<table cellpadding="0" cellspacing="0" border="0" style="vertical-align: top;">
+<table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
 		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
@@ -191,7 +180,6 @@ table td{
 			$htdm .= ' DM: เป็นมาแล้ว '.$dm_amount.'ปี';
 		}
 
-		if( !empty($htdm) ){
 		?>
 		<tr>
 			<td>
@@ -199,7 +187,6 @@ table td{
 			</td>
 		</tr>
 		<?php
-		}
 	}
 	?>
 	<tr>

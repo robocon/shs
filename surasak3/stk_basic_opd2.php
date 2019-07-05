@@ -60,7 +60,7 @@ if($cigarette==0){
 if($alcohol==0){
 	$alcohol='ไม่ดื่ม';
 }else if($alcohol==1){
-	$alcohol='ดื่ม '.$drink_amount.' แก้ว/วัน';
+	$alcohol='ดื่ม '.$drink_amount.' แก้ว/สัปดาห์';
 }else{
 	$alcohol='เคยดื่ม';
 }
