@@ -951,7 +951,7 @@ mmHg </td>
 				<?php 
 				$cur_year = date('Y').'-01-01';
 
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,`thidate`,'$cur_year') AS `year_diff` 
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$cur_year') AS `year_diff` 
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn'";
 				
@@ -977,18 +977,28 @@ mmHg </td>
 					YEAR,
 					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$cur_year'
 				) AS `year_diff`
-								FROM `diabetes_clinic` 
-								WHERE `hn` = '$cHn'";
-
+				FROM `diabetes_clinic` 
+				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
 
 				$dm_year = '';
-				$dm_row = mysql_num_rows($q);
+				
+				$dm_row = mysql_fetch_assoc($q);
+				$test_dm_row = (int)$dm_row['year_diff'];
+				
+				if( $test_dm_row > 0 ){
+					
+					$dm_year = $test_dm_row;
 
-				if( $dm_row > 0 ){
+				}else{
+
+					$sql = "SELECT TIMESTAMPDIFF(YEAR,`thidate`,'$cur_year') AS `year_diff` 
+					FROM `diabetes_clinic` 
+					WHERE `hn` = '$cHn'";
+					$q = mysql_query($sql) or die( mysql_error() );
 					$dm = mysql_fetch_assoc($q);
-
 					$dm_year = $dm['year_diff'];
+
 				}
 				?>
 				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> Ле
