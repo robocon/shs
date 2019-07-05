@@ -33,6 +33,7 @@ body,td,th {
 	$aDrugname = array("drugname");
 	$aDrug_nature = array("drug_nature");
 	$aDrug_properties = array("drug_properties");	
+	$aDrug_part = array("part");	
 
 
 	$query = "SELECT * FROM dphardep WHERE row_id = '$sRow_id' AND date = '".$_SESSION["session_Date"]."' "; 
@@ -109,7 +110,7 @@ body,td,th {
 	$total=$Essd+$Nessdy+$DSY+$DPY+$Nessdn+$DSN+$DPN;
 
 	for ($n=1; $n<=$x; $n++){
-		$query = "SELECT genname,drugnote, unit,typedrug,drugname,drug_nature,drug_properties  FROM druglst WHERE drugcode = '$aDgcode[$n]' ";
+		$query = "SELECT genname,drugnote, unit,typedrug,drugname,drug_nature,drug_properties, part  FROM druglst WHERE drugcode = '$aDgcode[$n]' ";
 		$result = mysql_query($query) or die("Query failed drugnote,druglst ");
 
 	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -128,7 +129,8 @@ body,td,th {
 		
 		array_push($aDrugname,$row->drugname); 
 		array_push($aDrug_nature,$row->drug_nature); 
-		array_push($aDrug_properties,$row->drug_properties); 		
+		array_push($aDrug_properties,$row->drug_properties);
+		array_push($aDrug_part,$row->part); 		
 	}
 
 	for ($n=1; $n<=$x; $n++){
@@ -246,6 +248,13 @@ body,td,th {
 		print "<div style='line-height:2px;'>&nbsp;</div>";
 		$trad =substr($aTrade[$n],0,27);
 		$lentrad=strlen($trad);
+		
+		if($aDrug_part[$n]=="DDL"){
+			$aText[$n]="(ยาหลักแห่งชาติ)";
+		}else if($aDrug_part[$n]=="DDY" || $aDrug_part[$n]=="DDN"){
+			$aText[$n]="(ยานอกบัญชี)";
+		}
+		
 		if($lentrad < 20){
 			print "<div style='line-height:20px; font-family:Angsana New; font-size: 20px;'><b>$trad&nbsp;($aDgcode[$n])&nbsp;&nbsp;=<B>&nbsp;$aAmount[$n]</B></b></div>";
 		}else if($lentrad < 25){
@@ -285,10 +294,10 @@ body,td,th {
 				if(!empty($chkdrugname)){ //ว่าง
 					print "<div style='line-height:3px;'>&nbsp;</div>";
 					if($lendrugname <= 15){
-						print "<div  style='margin-left: 10px; line-height:17px;'><b>ชื่อสามัญ $chkdrugname&nbsp;(ยาหลักแห่งชาติ)</b></div>";	  //17
+						print "<div  style='margin-left: 10px; line-height:17px;'><b>ชื่อสามัญ $chkdrugname&nbsp;$aText[$n]</b></div>";	  //17
 						print "<div style='margin-left: 10px; line-height:15px;'><u><b>$aDrugnote[$n]</b></u></div>";	  //คำเตือนล่าง						
 					}else{
-						print "<div style='margin-left: 10px; line-height:17px; font-size: 15px;'><b>ชื่อสามัญ $chkdrugname&nbsp;(ยาหลักแห่งชาติ)</b></div>";	
+						print "<div style='margin-left: 10px; line-height:17px; font-size: 15px;'><b>ชื่อสามัญ $chkdrugname&nbsp;$aText[$n]</b></div>";	
 						print "<div style='margin-left: 10px; line-height:15px; font-size: 15px;'><u><b>$aDrugnote[$n]</b></u></div>";	  //คำเตือนล่าง			
 					}
 			}	
@@ -322,10 +331,10 @@ body,td,th {
 						print "<div style='line-height:15px;'>&nbsp;</div>";
 					}
 					if($lendrugname <= 15){
-						print "<div  style='margin-left: 10px; line-height:17px;'><b>ชื่อสามัญ $chkdrugname&nbsp;(ยาหลักแห่งชาติ)</b></div>";	  //17
+						print "<div  style='margin-left: 10px; line-height:17px;'><b>ชื่อสามัญ $chkdrugname&nbsp;$aText[$n]</b></div>";	  //17
 						print "<div style='margin-left: 10px; line-height:15px;'><u><b>$aDrugnote[$n]</b></u></div>";	  //คำเตือนล่าง						
 					}else{
-						print "<div style='margin-left: 10px; line-height:17px; font-size: 15px;'><b>ชื่อสามัญ $chkdrugname&nbsp;(ยาหลักแห่งชาติ)</b></div>";	
+						print "<div style='margin-left: 10px; line-height:17px; font-size: 15px;'><b>ชื่อสามัญ $chkdrugname&nbsp;$aText[$n]</b></div>";	
 						print "<div style='margin-left: 10px; line-height:15px; font-size: 15px;'><u><b>$aDrugnote[$n]</b></u></div>";	  //คำเตือนล่าง			
 					}
 					//print "<div style='line-height:15px;'><b>($aPart[$x])</b></div>";
@@ -333,6 +342,8 @@ body,td,th {
 			}
 		}		
 		print "</div>";	
+
+		
 
 
 		}  //close if n==x

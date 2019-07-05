@@ -207,14 +207,21 @@ $n='0';
     $d=substr($dDate,8,2);
     $m=substr($dDate,5,2);
     $y=substr($dDate,0,4);
-	$sqlopday = "select toborow,diag_thai from opday where hn='$sHn' and thidate like '$y-$m-$d%'";
+	
+	$sdate=substr($_GET["sDate"],0,10);
+	list($y1,$m1,$d1)=explode("-",$sdate);
+	$chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
+	
+	$sqlopday = "select toborow,diag from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+	//echo $sqlopday;
 	$res= mysql_query($sqlopday) or die("Query failed");
-	list($toborow,$thai) = mysql_fetch_row($res);
+	list($toborow,$diagnosis) = mysql_fetch_row($res);
 	$tob = substr($toborow,0,4);
+	
 	
     print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
     print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <B>สิทธิ:$sPtright</B><br> ";
-    print "<font face='Angsana New'>โรค: $sDiag<br>";
+    print "<font face='Angsana New'>โรค: $diagnosis<br>";
 	print "<font face='Angsana New' size=5 color=FF0000>แพ้ยา: ";
 	$query12 = "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
     $result12 = mysql_query($query12) or die("Query failed");
@@ -317,7 +324,7 @@ echo "<table><tr>";
 	?>
     <a target="_blank" href="drxadddrug.php?sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>เพิ่มยา</font></a>&nbsp;&nbsp;
    
-	<A HREF="drxadddiag.php?sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>" target="_blank" ><font face='Angsana New'>แก้ไขชื่อโรค</font></A><BR> 
+	<!--<A HREF="drxadddiag.php?sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>" target="_blank" ><font face='Angsana New'>แก้ไขชื่อโรค</font></A>--> <!--รับคำสั่ง หน.ห้องยา (พี่ตู๋) ให้ปิดเมนู วันที่ 31/08/2560--><BR> 
     <td>
     <div id='cut1' style="display:block"><a target="_blank" href="drxstkcut.php?inject" <? if($inject==true){ ?> onclick="return confirm('ยืนยันการคิดค่าฉีดยา'); "<? }?>>ตัดสต๊อกยา</a></div><div id='cut2' style="display:none"><a target="_blank" href="drxstkcut.php">ตัดสต๊อกยา</a></div>
     </td>
@@ -326,7 +333,8 @@ echo "<table><tr>";
 	<?php }?>
     </td>
     <td><a target="_blank" href="drxprint.php"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
-    <td><a target="_blank" href="slipprntest1.php"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่</a></td>
+    <td><a target="_blank" href="slipprntest1.php"><font face='Angsana New'>พิมพ์สลากยารุ่นเก่า(2560)</a></td>
+    <td><a target="_blank" href="slipprntest1_new.php"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
 	<td><a target="_blank" href="drxprintopd.php"><font face='Angsana New'>พิมพ์ใบรายการยากลับบ้าน</a></td>
 	<td><a target="_blank" href="drxprintopd1.php"><font face='Angsana New'>พิมพ์สติกเกอร์ติด	OPD</a></td>
     <td><a target="_blank" href="appoilst_inj.php?Thn=<?=$sHn?>"><font face='Angsana New'>ออกใบนัดฉีดยา</a></td>
