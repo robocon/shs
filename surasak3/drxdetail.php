@@ -338,8 +338,11 @@ echo "<table><tr>";
 	<td><a target="_blank" href="drxprintopd.php"><font face='Angsana New'>พิมพ์ใบรายการยากลับบ้าน</a></td>
 	<td><a target="_blank" href="drxprintopd1.php"><font face='Angsana New'>พิมพ์สติกเกอร์ติด	OPD</a></td>
     <td><a target="_blank" href="appoilst_inj.php?Thn=<?=$sHn?>"><font face='Angsana New'>ออกใบนัดฉีดยา</a></td>
-	<td><a target=_blank  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
+	<td><a target="_blank"  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
  </tr></table>
+ <div>
+	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code(ช่วงทดลองใช้งาน)</a></p>
+ </div>
 <?php
 	$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
 	$strresult = mysql_query($strsql);
