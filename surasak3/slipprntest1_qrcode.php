@@ -3,15 +3,12 @@
     include("connect.inc");
 ?>	
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 17px;
 }
--->
 </style>
-
-<?
+<?php 
 
     $Thaidate=date("d/m/").(date("Y")+543)."  ".date("H:i:s");
     $aDetail1 = array("detail1");
@@ -165,7 +162,7 @@ body,td,th {
 				<Script Language=\"JavaScript\">
 					function CloseWindowsInTime(t){
 						t = t*1000;
-						setTimeout(\"window.close()\",t);
+						/* setTimeout(\"window.close()\",t); */
 					}
 					CloseWindowsInTime(2); 
 				</Script>
@@ -343,8 +340,23 @@ body,td,th {
 		}		
 		print "</div>";	
 
-		
-
+		$sql = "SELECT a.`pic_parth`,b.`name` 
+		FROM `qr_drugs` AS a 
+		LEFT JOIN `qr_pics` AS b ON b.`id` = a.`qr_pic_id` 
+		WHERE `drug_code` = '$dcode' "; 
+		$q = mysql_query($sql); 
+		if( mysql_num_rows($q) > 0 ){ 
+			$qr = mysql_fetch_assoc($q);
+			?>
+			<div style="text-align: center;">
+				<div>
+					<img src="<?=$qr['pic_parth'];?>" alt="">
+				</div>
+				<div style="line-height:22px; font-family:Angsana New; font-size: 22px;"><?=$qr['name'];?></div>
+			</div>
+			
+			<?php
+		}
 
 		}  //close if n==x
 	}else{ print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";}
