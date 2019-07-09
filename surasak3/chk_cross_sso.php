@@ -181,6 +181,7 @@ $company = $db->get_item();
             OR b.`labcode` = 'HBSAG' 
             OR b.`labcode` = 'OCCULT' 
             OR b.`labcode` = '38302' 
+            OR b.`labcode` = 'STOCC' 
         ) 
         ORDER BY b.seq ASC ";
         $db->select($sql);
@@ -279,6 +280,13 @@ $company = $db->get_item();
                 }elseif ( $etc['occult']['result'] == 'Positive' ) {
                     echo 'พบเลือด';
                 }
+
+                if( $etc['stocc']['result'] == 'Negative' ){
+                    echo 'ไม่พบเลือด';
+                }elseif ( $etc['stocc']['result'] == 'Positive' ) {
+                    echo 'พบเลือด';
+                }
+                
                 ?>
             </td>
 
