@@ -89,6 +89,17 @@ window.onload = function(){
 	window.close();
 }
 </script>
+<style type="text/css">
+body{
+	margin: 0;
+	padding: 0;
+}
+table td{
+	font-family: "Angsana New","TH SarabunPSK","TH Sarabun New";
+	line-height: 18.897637795px;
+	font-size: 14pt;
+}
+</style>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
 		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
