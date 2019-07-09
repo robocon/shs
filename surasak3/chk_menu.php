@@ -100,7 +100,8 @@ $menu_list = array(
         'submenu' => array( 
             array('link' => 'dt_emp_manual_index.php', 'name' => 'ลงผลตรวจ ปกส.', 'access' => 'ADM|ADMNEWCHKUP', 'target' => '_blank'),
             array('link' => 'dx_ofyear_out.php', 'name' => 'ซักประวัติ(สิทธิ ปกส.)', 'access' => 'ALL', 'target' => '_blank'),
-            array('link' => 'cxr_out_result.php', 'name' => 'ลงผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP|ADMXR')
+            array('link' => 'cxr_out_result.php', 'name' => 'ลงผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP|ADMXR'),
+            array('link' => 'cxr_edit_result.php', 'name' => 'แก้ไขผล X-Ray', 'access' => 'ADM|ADMNEWCHKUP|ADMXR')
         )
     ),
     array(
