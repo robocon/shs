@@ -84,34 +84,11 @@ if($drugreact == 0){
 ?>
 
 <script language="javascript">
-	window.onload = function(){
-		window.print();
-		window.close();
-	}
+window.onload = function(){
+	window.print();
+	window.close();
+}
 </script>
-<?php 
-$user_agent = $_SERVER['HTTP_USER_AGENT'];
-$windows8 = false;
-if( preg_match('/windows nt 6\.[2|3]/', $user_agent) ){
-	$windows8 = true;
-}
-
-if ( $_SESSION['sIdname'] != 'พรพันธ์' OR $windows8 == false ) {
-	?>
-	<style type="text/css">
-	body{
-		margin: 0;
-		padding: 0;
-	}
-	table td{
-		font-family: "Angsana New","TH SarabunPSK","TH Sarabun New";
-		line-height: 18.897637795px;
-		font-size: 14pt;
-	}
-	</style>
-	<?php
-}
-?>
 
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>

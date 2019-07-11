@@ -202,6 +202,7 @@ if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเ
 
 	if($_POST["credit"] == "จ่ายตรง" ){
 		$name_f = "billcscd";
+		$detail_1=trim($_POST["detail_2"]);
 	}
 	else
 		if($_POST["credit"] == "จ่ายตรง อปท." ){

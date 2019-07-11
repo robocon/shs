@@ -4,7 +4,7 @@ include 'bootstrap.php';
 $db = Mysql::load();
 
 $action = input('action');
-if ( $action === 'upload' ) {
+if ( $action == 'upload' ) {
 
     $part = input_post('part');
     $officer = $_SESSION['sOfficer'];

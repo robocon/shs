@@ -358,11 +358,27 @@ for($i=0;$i<$count;$i++){
 			////////////////---------- รายการยาที่สั่งจ่ายให้ผู้ป่วย--------------////////////////
 			//print_r($_SESSION);
 			//echo $_SESSION["list_drugcode"][$i]." Amont :".$_SESSION["list_drugamount"][$i]."<br>";
-			
+			if($part=="DDL"){
+				$showpart="ยาในบัญชี";
+			}else if($part=="DDY"){
+				$showpart="ยานอกบัญชีเบิกได้";
+			}else if($part=="DDN"){
+				$showpart="ยานอกบัญชีเบิกไม่ได้";
+			}else if($part=="DSY"){
+				$showpart="เวชภัณฑ์เบิกได้";
+			}else if($part=="DSN"){
+				$showpart="เวชภัณฑ์เบิกไม่ได้";			
+			}else if($part=="DPY"){
+				$showpart="อุปกรณ์เบิกได้";
+			}else if($part=="DPN"){
+				$showpart="อุปกรณ์เบิกไม่ได้";	
+			}else{
+				$showpart=$part;
+			}
 			echo "
 			<TR  class='tb_detail' ".$style.">
 				<TD align=\"center\"><INPUT TYPE=\"checkbox\" NAME=\"check_list[]\" value=\"".$i."\"></TD>
-				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$part." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," (ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท)</span><BR>".$list_remark."</TD>
+				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$showpart." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," (ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท)</span><BR>".$list_remark."</TD>
 				<TD align='right'>".$_SESSION["list_drugamount"][$i]."</TD>
 				<TD>",$unit,"</TD>
 				<TD><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$_SESSION["list_drugslip"][$i]."</span></TD>
@@ -1757,6 +1773,7 @@ if(typeof String.prototype.trim !== 'function'){
 		return this.replace(/^\s+|\s+$/g, '');
 	}
 }
+
 if(!Array.prototype.indexOf){
 	Array.prototype.indexOf = function(obj, start){
 		for(var i = (start || 0), j=this.length; i<j; i++){
@@ -1767,6 +1784,7 @@ if(!Array.prototype.indexOf){
 		return -1;
 	}
 }
+
 var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
 var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
 
@@ -2219,16 +2237,16 @@ function glibenclamide_alert(drugcode){
 		var gliben_txt = '';
 
 		if( age_test > 65 ){
-			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี'+"\n";
+			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี';
 		}
 
 		/* เหลือ เปรียบเทียบกับ egfr < 60 */
 		if( egfr_test < 60.00 ){
-			gliben_txt += '- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60'+"\n";
+			gliben_txt += "\n"+'- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60';
 		}
 
 		if( gliben_txt !== '' ){
-			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล ห้ามใช้ Glibenclamide\n"+gliben_txt);
+			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ Glibenclamide\n"+gliben_txt);
 		}
 	}
 } 
