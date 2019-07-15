@@ -232,7 +232,10 @@ if( $action == 'save_qr' ){
                         <td><?=$item['name'];?></td>
                         <td><img src="<?=$item['parth'];?>" alt="<?=$item['name'];?>"></td>
                         <td>
-                            <a href="rdu_qrcode.php?action=bin_pic&id=<?=$item['id'];?>" onclick="return confirm('ยืนยันการลบข้อมูล?')">ลบ</a> | <a href="rdu_qrcode.php?page=qr&section=edit&id=<?=$item['id'];?>">แก้ไข</a>
+                            <?php 
+                            /** rdu_qrcode.php?action=bin_pic&id=<?=$item['id'];?> */
+                            ?>
+                            <a href="javascript: void(0);" onclick="return confirm('ยืนยันการลบข้อมูล?')">ลบ</a> | <a href="rdu_qrcode.php?page=qr&section=edit&id=<?=$item['id'];?>">แก้ไข</a>
                         </td>
                     </tr>
                     <?php
@@ -302,8 +305,14 @@ if( $action == 'save_qr' ){
             $i=0;
             foreach ($drug_items as $key => $item) {
                 ++$i;
+
+                $bg = '';
+                if( $i % 2 != 0 ){
+                    $bg = 'style="background-color: #ececec;"';
+                }
+
                 ?>
-                <tr>
+                <tr <?=$bg;?>>
                     <td><?=$i;?></td>
                     <td><?=$item['drug_code'];?></td>
                     <td><?=$item['group_name'];?></td>
@@ -323,7 +332,7 @@ if( $action == 'save_qr' ){
             color: blue;
             text-decoration: underline;
         }
-        .code_item:hover{
+        .code_item:hover, .close_btn:hover{
             cursor: pointer;
         }
         </style>
@@ -347,15 +356,27 @@ if( $action == 'save_qr' ){
                     success: function(res_html){
 
                         var html = '<table class="chk_table test_drug_code">';
-                        html += '<tr class="close_btn"><td colspan="3" style="text-align: center;">[ ปิด ]</td></tr>';
+                        html += '<tr class="close_btn"><td colspan="3" style="text-align: center; background-color: #90ffa8;">[ ปิด ]</td></tr>';
                         html += '<tr><th>Drug Code</th><th>Trad Name</th><th>General Name</th></tr>';
                         var tb_tr = '';
+
+                        var test_i = 1;
+
                         res_html.forEach(function(element){
-                            tb_tr += '<tr>';
+
+                            var bg_tr = ''; 
+
+                            if ( test_i % 2 != 0 ) {
+                                bg_tr = 'style="background-color: #dddddd;"'; 
+                            }
+
+                            tb_tr += '<tr '+bg_tr+'>';
                             tb_tr += '<td class="code_item" data-code="'+element.drugcode+'">'+element.drugcode+'</td>';
                             tb_tr += '<td>'+element.tradname+'</td>';
                             tb_tr += '<td>'+element.genname+'</td>';
                             tb_tr += '</tr>';
+
+                            test_i++;
                         });
                         
                         html += tb_tr;
