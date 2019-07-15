@@ -191,32 +191,59 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 ////*runno ตรวจสุขภาพ*/////////
 
 //ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
-
-	$sql = "Select date_format(a.orderdate,'%d/%m/%Y'),date_format(a.orderdate,'%Y-%m-%d') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
+	// หาวันที่ตรวจ
+	$sql = "Select date_format(a.orderdate,'%d/%m/%Y'),date_format(a.orderdate,'%Y-%m-%d') 
+	From resulthead as a 
+	where a.hn='".$arr_view["hn"]."'  
+	AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  
+	Order by a.autonumber DESC limit 0,1";
 	list($lab_date,$labin_date) = mysql_fetch_row(mysql_query($sql));
 
-	$sql = "Select labcode, result, unit,normalrange,flag  
-	From resulthead as a , 
+	// หาผลที่ตรวจ UA
+	$sql = "Select b.labcode, b.result, b.unit,b.normalrange,b.flag  
+	From ( 
+		SELECT MAX(`autonumber`) AS `autonumber` 
+		FROM `resulthead` 
+		WHERE `hn` = '".$arr_view["hn"]."' 
+		AND `profilecode` = 'UA' 
+		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
+	) as a , 
 	resultdetail as b  
-	where a.hn='".$arr_view["hn"]."' 
-	AND a.autonumber = b.autonumber 
+	where a.autonumber = b.autonumber 
 	AND b.parentcode = 'UA' 
-	AND (a.clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' ) 
 	Order by b.seq ASC ";
-
 	$result_ua = mysql_query($sql);
 
-	$sql = "Select labcode, result, unit,normalrange,flag 
-	From resulthead as a , 
+	// หาผลที่ตรวจ CBC
+	$sql = "Select b.labcode, b.result, b.unit,b.normalrange,b.flag 
+	From ( 
+		SELECT MAX(`autonumber`) AS `autonumber` 
+		FROM `resulthead` 
+		WHERE `hn` = '".$arr_view["hn"]."' 
+		AND `profilecode` = 'CBC' 
+		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
+	) as a , 
 	resultdetail as b  
-	where a.hn='".$arr_view["hn"]."' 
-	AND a.autonumber = b.autonumber 
+	where a.autonumber = b.autonumber 
 	AND b.parentcode = 'CBC' 
-	AND (a.clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix') 
 	Order by b.seq ASC";
 	$result_cbc = mysql_query($sql);
 
-	$sql = "Select labcode, result, unit,normalrange,flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix') Order by a.autonumber ASC ";
+	// หาผลที่ตรวจ อื่นๆที่ไม่ใช่ UA CBC
+	$sql = "Select b.labcode, b.result, b.unit,b.normalrange,b.flag 
+	From ( 
+		SELECT MAX(`autonumber`) AS `autonumber` 
+		FROM `resulthead` 
+		WHERE `hn` = '".$arr_view["hn"]."' 
+		AND ( `profilecode` <> 'UA' AND `profilecode` <> 'CBC' )
+		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
+		GROUP BY `profilecode`
+	) as a , 
+	resultdetail as b  
+	where a.autonumber = b.autonumber 
+	AND parentcode <> 'UA' 
+	AND parentcode <> 'CBC' 
+	Order by a.autonumber ASC ";
 	$result_lab = mysql_query($sql);
 //ค้นหาข้อมูลเดิม
 	
