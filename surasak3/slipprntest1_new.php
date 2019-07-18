@@ -343,8 +343,6 @@ body,td,th {
 		}		
 		print "</div>";	
 
-		
-
 
 		}  //close if n==x
 	}else{ print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";}
