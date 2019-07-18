@@ -3,12 +3,15 @@
     include("connect.inc");
 ?>	
 <style type="text/css">
+<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 17px;
 }
+-->
 </style>
-<?php 
+
+<?
 
     $Thaidate=date("d/m/").(date("Y")+543)."  ".date("H:i:s");
     $aDetail1 = array("detail1");
@@ -162,7 +165,7 @@ body,td,th {
 				<Script Language=\"JavaScript\">
 					function CloseWindowsInTime(t){
 						t = t*1000;
-						/* setTimeout(\"window.close()\",t); */
+						setTimeout(\"window.close()\",t);
 					}
 					CloseWindowsInTime(2); 
 				</Script>

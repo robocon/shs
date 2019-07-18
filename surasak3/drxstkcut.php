@@ -310,6 +310,7 @@ if($result){
 }
 include("unconnect.inc");
 //include("slipprntest1.php");
-include("slipprntest1_new.php"); //เริ่มใช้ 31/1/2561
+// include("slipprntest1_new.php"); //เริ่มใช้ 31/1/2561
+include("slipprntest1_qr_code.php"); // 18-07-2562
 ?>
 
