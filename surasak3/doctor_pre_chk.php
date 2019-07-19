@@ -358,6 +358,18 @@ WHERE a.`hn` = '$hn'
 ORDER BY `row_id` DESC LIMIT 1";
 $db->select($sql);
 $opd = $db->get_item();
+
+// ไม่เอาชื่อสกุลจากทะเบียน ให้เอาชื่อสกุลจากทีมตรวจสุขภาพ
+// เพราะมีปัญหาคือทะเบียนไม่สามารถอัพเดทข้อมูลให้ได้
+$sql = "SELECT * FROM `opcardchk` WHERE `HN` = '$hn' ORDER BY `row` DESC LIMIT 1";
+$db->select($sql);
+if( $db->get_rows() > 0 ){
+
+    $chk = $db->get_item();
+    $opd['ptname'] = $chk['yot'].$chk['name'].' '.$chk['surname'];
+
+}
+
 $year_checkup = $opd['yearchk'];
 
 $bp1 = $opd['bp1'];

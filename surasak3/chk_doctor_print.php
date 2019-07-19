@@ -8,13 +8,12 @@ $vn = input_get('vn');
 $date = input_get('date'); // date_chk ในตาราง chk_doctor
 
 # กรณีที่ตรวจเป็นกลุ่มบริษัท
+
 # 2562-06-24 คุยกับแผนกตรวจสุขภาพแล้ว ไม่เอาชื่อ-สกุลจากทะเบียนเพราะทำงานล่าช้า
 # ให้ดึงข้อมูลจากของตรวจสุขภาพเลย
-$sql_opcard = "SELECT `name`,`surname`  
-FROM `opcardchk` 
-WHERE `HN` = '$hn' 
-ORDER BY `row` DESC LIMIT 1;";
+$sql_opcard = "SELECT `name`,`surname`  FROM `opcardchk` WHERE `HN` = '$hn' ORDER BY `row` DESC LIMIT 1;";
 $db->select($sql_opcard);
+$opcardchk_row = $db->get_rows();
 $regis_user = $db->get_item();
 
 # ข้อมูลผู้ป่วย
@@ -28,10 +27,12 @@ $db->select($sql);
 $user = $db->get_item();
 
 // ตรวจเป็นกลุ่มจะดึงข้อมูลจากที่น้องนัทเอาเข้าระบบ
-// if( !empty() ){
-//     $user['name'] = str_replace($user['prefix'],'',$regis_user['name']);
-//     $user['surname'] = $regis_user['surname'];
-// }
+if( $opcardchk_row > 0 ){ 
+
+    // เอา prefix ใน dbทะเบียนมาแทนที่ออกไป
+    $user['name'] = str_replace($user['prefix'],'',$regis_user['name']);
+    $user['surname'] = $regis_user['surname'];
+}
 
 $year_checkup = $user['yearchk'];
 
