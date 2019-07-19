@@ -940,6 +940,7 @@ h1,h3,p{
             OR b.`labcode` = 'HBSAG' 
             OR b.`labcode` = 'OCCULT' 
             OR b.`labcode` = '38302' 
+            OR b.`labcode` = 'STOCC' 
         ) 
         ORDER BY b.seq ASC ";
 
