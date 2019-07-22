@@ -67,7 +67,8 @@ return $pAge;
 
 <table>
  <tr>
-  <th bgcolor=CD853F>วันและเวลา</th>
+  <th bgcolor=CD853F>วัน</th>
+  <th bgcolor=CD853F>เวลา</th>
   <th bgcolor=CD853F>HN</th>
  <th bgcolor=CD853F>AN</th>
  <th bgcolor=CD853F>ชื่อ - สกุล</th>
@@ -104,7 +105,7 @@ return $pAge;
    $list_peoper = array();
   $list_hn = array();
  $query = "SELECT hn,an,date,drugcode,tradname,amount,price,stock,slcode,reason,part FROM drugrx WHERE (drugcode like '0INF2019_1%' || drugcode like '0INF2019_4%' || drugcode like '0INF2019_N%') and date LIKE '$yym%' ";
- echo $query;
+//  echo $query;
     $result = mysql_query($query)
         or die("Query failed");
 $j = $i= Mysql_num_rows($result);
@@ -112,7 +113,9 @@ $j = $i= Mysql_num_rows($result);
         $Total =$Total+$amount;  
 		$sal_price = $sal_price+$price;
 		$list_hn[$i] = $hn;
-		$list_peoper["A".$hn] = true;
+    $list_peoper["A".$hn] = true;
+    
+    list($dDate, $dTime) = explode(' ', $date);
 
 
 list($fullname,$ptright,$idcard,$dbirth) = mysql_fetch_row(mysql_query("Select concat(yot,' ',name,' ',surname),ptright,idcard,dbirth From opcard where hn = '".$hn."' limit 1 "));
@@ -122,7 +125,8 @@ $age=calcage($dbirth);
 list($congenital_disease) = mysql_fetch_row(mysql_query("Select congenital_disease From opcard where hn = '".$hn."' and congenital_disease NOT LIKE '%HIV%' limit 1 "));
 
  print (" <tr>\n".
-"  <td BGCOLOR=F5DEB3>$date</a></td>\n".
+"  <td BGCOLOR=F5DEB3>$dDate</a></td>\n".
+"  <td BGCOLOR=F5DEB3>$dTime</a></td>\n".
 "  <td BGCOLOR=F5DEB3>$hn</td>\n".
 "  <td BGCOLOR=F5DEB3>$an</td>\n".
 "  <td BGCOLOR=F5DEB3>$fullname</td>\n".
