@@ -17,7 +17,7 @@ $opcardchk_row = $db->get_rows();
 $regis_user = $db->get_item();
 
 # ข้อมูลผู้ป่วย
-$sql = "SELECT a.*, b.`ptffone`, b.`phone`
+$sql = "SELECT a.*, b.`yot` AS `prefix` ,b.`ptffone`, b.`phone`
 FROM `chk_doctor` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`hn` = '$hn' 
