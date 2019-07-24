@@ -1234,16 +1234,10 @@ h1,h3,p{
     $(function(){
 
         $(document).on('click', '#conclution1', function(){
-            // $('.normal').show();
-            // $('.abnormal').hide();
-
             clear_sub();
         });
 
         $(document).on('click', '#conclution2', function(){
-            // $('.normal').hide();
-            // $('.abnormal').show();
-            
             clear_sub();
         });
 
@@ -1313,11 +1307,11 @@ h1,h3,p{
                 alert('กรุณาเลือกผลการตรวจ เลือดในอุจจาระ');
                 ret_stat = false;
 
-            }else if( cxr === false ){
+            }/* else if( cxr === false ){
                 alert('กรุณาเลือกผลการตรวจ X-Ray');
                 ret_stat = false;
 
-            }else if( conclution === false ){
+            }*/ else if( conclution === false ){
                 alert('กรุณาเลือกสรุปผลการตรวจสุขภาพ');
                 ret_stat = false;
 

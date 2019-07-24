@@ -2,10 +2,13 @@
 session_start();
 error_reporting(0);
 ini_set('display_errors', 0);
-header('Content-Type: text/html; charset=tis-620');
+// header('Content-Type: text/html; charset=tis-620');
 
-include 'connect.php';
+// include 'connect.php';
 
+include 'bootstrap.php';
+$db = Mysql::load();
+$db->select("SET NAMES TIS620");
 ?>
 <html>
 <head>
@@ -125,13 +128,14 @@ if( $_POST["act"] == "show" ){
 	$query = mysql_query("SELECT * FROM `dxofyear_out` WHERE `hn`='$hn_now' ORDER BY `row_id` DESC ");
 
 	?>
-	<table width="60%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+	<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
 		<tr>
 			<td width="6%" align="center" bgcolor="#66CC99"><strong>#</strong></td>
-			<td width="19%" align="center" bgcolor="#66CC99"><strong>วัน/เดือน/ปี</strong></td>
+			<td width="15%" align="center" bgcolor="#66CC99"><strong>วัน/เดือน/ปี</strong></td>
 			<td width="14%" align="center" bgcolor="#66CC99"><strong>HN</strong></td>
-			<td width="29%" align="center" bgcolor="#66CC99"><strong>ชื่อสกุล</strong></td>
-			<td width="32%" align="center" bgcolor="#66CC99"><strong>ชื่อหน่วยงาน</strong></td>
+			<td width="15%" align="center" bgcolor="#66CC99"><strong>ชื่อสกุล</strong></td>
+			<td width="15%" align="center" bgcolor="#66CC99"><strong>ชื่อหน่วยงาน</strong></td>
+			<td align="center" bgcolor="#66CC99">แจ้งเตือน</td>
 		</tr>
 		<?php
 		if(mysql_num_rows($query) < 1){
@@ -140,6 +144,17 @@ if( $_POST["act"] == "show" ){
 
 		$i=0;
 		while($rows = mysql_fetch_array($query)){
+
+			// แจ้งเตือนแพทย์ในการบันทึกข้อมูล
+			$test_key = $rows['hn'].$rows['yearchk'];
+			$q_chk = mysql_query("SELECT *,SUBSTRING(`date_chk`, 1, 10) AS `date_chk` FROM `chk_doctor` WHERE CONCAT(`hn`,`yearchk`) = '$test_key' ");
+			$alert_color = '';
+			$date_chk = '';
+			if ( mysql_num_rows($q_chk) > 0 ) {
+				$alert_color = 'style="background-color: yellow;"';
+				$item_chk = mysql_fetch_assoc($q_chk);
+				$date_chk = 'มีการบันทึกข้อมูลเมื่อ '.$item_chk['date_chk'];
+			}
 
 			$i++;
 			$href = 'doctor_pre_chk.php?thidate='.$rows['thidate'].'&hn='.$rows['hn'].'&vn='.$rows['vn'];
@@ -152,6 +167,7 @@ if( $_POST["act"] == "show" ){
 				</td>
 				<td><?=$rows["ptname"];?></td>
 				<td><?=$rows["camp"];?></td>
+				<td align="center" <?=$alert_color;?>><?=$date_chk;?></td>
 			</tr>
 			<?php
 		}
