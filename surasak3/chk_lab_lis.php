@@ -197,6 +197,33 @@ if ($action == 'insert') {
     <?php
 
     exit;
+}elseif ( $action == 'delete' ) {
+
+    $user = $_SESSION['sIdname'];
+    $confirm_pass = input_post('confirm_pass');
+
+    $sql = "SELECT * 
+    FROM `inputm` 
+    WHERE `idname` = :idname 
+    AND `pword` = :password ";
+
+    $db->select($sql,array('idname' => $user, 'password' => $confirm_pass));
+    $test_row = $db->get_rows();
+    if( $test_row > 0 ){
+        $part = input_post('part');
+        $msg = 'ดำเนินการล้างข้อมูลเรียบร้อย';
+        $delete = $db->delete("DELETE FROM `chk_lab_items` WHERE `part` = '$part' ");
+        if( $delete !== true ){
+            $msg .= errorMsg(NULL, $insert['id']);
+        }
+
+        redirect('chk_lab_lis.php', $msg);
+
+    }else{
+        echo "ข้อมูลไม่ถูกต้อง กรุณากรอกรหัสใหม่อีกครั้ง<br>";
+        echo '<a href="chk_lab_lis.php?views=confirm_delete&part='.$part.'">กลับไปหน้าเดิม</a>';
+    }
+    exit;
 }
 ?>
 
@@ -254,6 +281,7 @@ if( $view == 'search' ){
                 <th>สถานะ</th>
                 <th>ส่งข้อมูลเข้า LIS</th>
                 <th>ตรวจข้อมูล</th>
+                <th>ลบ</th>
             </tr>
         <?php
         $i = 0;
@@ -316,6 +344,15 @@ if( $view == 'search' ){
                     }
                     ?>
                 </td>
+                <td>
+                    <?php 
+                    if( $rows_n > 0 && $show_link == true ){
+                        ?>
+                        <a href="chk_lab_lis.php?views=confirm_delete&part=<?=$code;?>">ลบข้อมูล</a>
+                        <?php
+                    }
+                    ?>
+                </td>
             </tr>
             <?php
         }
@@ -328,6 +365,29 @@ if( $view == 'search' ){
             return c;
         }
     </script>
+    <?php
+
+}elseif ( $view == 'confirm_delete' ) {
+    
+    $part = input_get('part');
+
+    $db->select("SELECT `name` FROM `chk_company_list` WHERE `code` = '$part' ");
+    $item = $db->get_item();
+    ?>
+    <form action="chk_lab_lis.php" method="post">
+        <div style="text-align: center; margin: 1em; font-size: 18px;">
+            <div style="margin-top:4px;">
+                <div>กรุณาใส่รหัสผ่านของท่านเอง</div>
+                <div>เพื่อยืนยันในการลบข้อมูลของ <b><u><?=$item['name'];?></u></b></div>
+                <div><input type="password" name="confirm_pass" id="" autocomplete="off"></div>
+            </div>
+            <div style="margin-top:4px;">
+                <button type="submit">ยืนยัน</button>
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="part" value="<?=$part;?>">
+            </div>
+        </div>
+    </form>
     <?php
 
 }
