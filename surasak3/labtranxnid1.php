@@ -122,6 +122,10 @@ if( $cDoctor2 === 'MD115' ){
         $yot = 'น.ส.';
         $cDoctor1 = "กันยกร มาเกตุ";
         $doctorcode = "พจ. 907";
+    }else if( $subDoctor === 4 ){
+        $yot = 'นาย';
+        $cDoctor1 = "ศุภกิตติ มงคล";
+        $doctorcode = "พจ. 1254";
     }
 
     $position = "แพทย์แผนจีน";
@@ -133,7 +137,7 @@ if( $cDoctor2 === 'MD115' ){
     $query = mysql_query($sql);
     $rows = mysql_fetch_array($query);
     $yot = $rows["yot"];
-	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ"){
+	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ" || $rows["name"]=="MD163 ศุภกิตติ มงคล"){
         
         $doctorcode = "พจ. ".$rows["doctorcode"];
         $position = "แพทย์แผนจีน";
@@ -153,7 +157,7 @@ if( $cDoctor2 === 'MD115' ){
 
 $date_log = date('Y-m-d H:i:s');
 $dt_log = "{\"yot\":\"$yot\",\"name\":\"$cDoctor1\",\"code\":\"$doctorcode\"}";
-$log = "INSERT INTO `smdb`.`medicalcertificate`
+$log = "INSERT INTO `medicalcertificate`
 (`thidate`,
 `hn`,
 `part`,

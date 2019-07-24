@@ -64,7 +64,8 @@ $cDoctor2 = substr($cDoctor,0,5);
 // MD116 วัชรพงษ์ รักษ์บำรุง
 // NID วัชรพงษ์ (ว.20014)
 // MD151 กันยกร มาเกตุ
-// MD115 คือแพทย์แผนจีน
+// MD115 คือแพทย์แผนจีน 
+// MD163 ศุภกิตติ มงคล พจ.1254
 if( $cDoctor2 == 'MD037' 
 OR $cDoctor2 == 'MD054' 
 OR $cDoctor2 == 'MD115' 
@@ -73,7 +74,8 @@ OR $cDoctor2 == 'MD129'
 OR $cDoctor2 == 'MD130' 
 OR $cDoctor2 == 'MD116' 
 OR $cDoctor2 == 'NID ว' 
-OR $cDoctor2 == 'MD151'){
+OR $cDoctor2 == 'MD151' 
+OR $cDoctor2 == 'MD163'){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
@@ -85,6 +87,8 @@ OR $cDoctor2 == 'MD151'){
     <a target="_blank" href="labtranxnid1.php?subDoctor=2">ใบรับรองแพทย์ ฝังเข็ม(ศศิภา ศิริรัตน์)</a>
 	<br><br>
     <a target="_blank" href="labtranxnid1.php?subDoctor=3">ใบรับรองแพทย์ ฝังเข็ม(กันยกร มาเกตุ)</a>
+    <br><br>
+    <a target="_blank" href="labtranxnid1.php?subDoctor=4">ใบรับรองแพทย์ ฝังเข็ม(ศุภกิตติ มงคล)</a>
 	<?php
 }
 
