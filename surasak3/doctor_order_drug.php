@@ -17,7 +17,9 @@ body, button{
 .chk_table{
     border-collapse: collapse;
 }
-
+.chk_table th{
+    background-color: #b5b5b5;
+}
 .chk_table th,
 .chk_table td{
     padding: 3px;
@@ -130,13 +132,14 @@ if ( $action == 'show' ) {
     $db->select($sql);
     $dt = $db->get_item();
 
-    $sql = "select a.ptname,a.date, b.hn, b.drugcode, b.tradname, b.amount, b.price, b.part
+    $sql = "select a.ptname,a.date, 
+    b.hn, b.drugcode, b.tradname, b.amount, b.price, b.part
     from dphardep as a 
     left join ddrugrx as b on b.idno = a.row_id 
     where a.ptright like 'R07%' 
     and a.date >= '$start_year-$start_month-01 00:00:00' and a.date <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
     and a.doctor like '%$doctor_code%' 
-    and a.dr_cancle is null ";
+    and (a.an is null and a.dr_cancle is null) ";
     $db->select($sql);
 
     $drug_list = $db->get_items();
@@ -159,6 +162,9 @@ if ( $action == 'show' ) {
         <?php 
         $i = 1; 
         $late_user_id = '';
+
+        $hn_i = 1;
+        $test_count_hn = array();
         foreach ($drug_list as $key => $d) {
 
             $c = '';
@@ -169,21 +175,16 @@ if ( $action == 'show' ) {
             $hn = $d['hn'];
             $ptname = $d['ptname'];
 
-            // if( $hn == $late_user_id ){
-            //     $hn = '';
-            //     $ptname = '';
-            // }
-
             ?>
             <tr <?=$c;?> >
-                <td><?=$i;?></td>
+                <td align="right"><?=$i;?></td>
                 <td><?=$d['date'];?></td>
                 <td><?=$hn;?></td>
                 <td><?=$ptname;?></td>
                 <td><?=$d['drugcode'];?></td>
                 <td><?=$d['tradname'];?></td>
-                <td><?=$d['amount'];?></td>
-                <td><?=$d['price'];?></td>
+                <td align="right"><?=$d['amount'];?></td>
+                <td align="right"><?=$d['price'];?></td>
                 <td>
                 <?php 
                 if( $d['part'] == 'DDL' ){
@@ -204,11 +205,51 @@ if ( $action == 'show' ) {
             </tr>
             <?php 
             $i++;
+            $hn_i++;
 
             $late_user_id = $d['hn'];
+            $late_month = $d['month'];
         }
         ?>
 
+    </table>
+    <br>
+    <br>
+    <?php
+    $sql = "SELECT b.`year_month`,count(b.`hn`) AS `all_pt`,sum(b.`price`) AS `total` 
+    FROM (
+        SELECT a.*, CONCAT(SUBSTRING(a.date,1,7)) AS `year_month`,CONCAT(SUBSTRING(a.date,1,10),a.hn,a.tvn) AS `super_id` 
+        FROM `dphardep` as a 
+        WHERE a.`ptright` LIKE 'R07%' 
+        AND a.`date` >= '$start_year-$start_month-01 00:00:00' AND a.`date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
+        AND a.`doctor` LIKE '%$doctor_code%' 
+        AND (a.`an` is null AND a.`dr_cancle` is null) 
+        GROUP BY CONCAT(SUBSTRING(a.`date`,1,10),a.`hn`,a.`tvn`)
+    ) AS b GROUP BY b.`year_month` ";
+
+    $db->select($sql);
+    $items = $db->get_items();
+
+    ?>
+    <table class="chk_table">
+        <tr>
+            <th>เดือน/ปี</th>
+            <th>จำนวนผู้ป่วยนอกต่อเดือน(vn)</th>
+            <th>รวมราคายา(บาท)</th>
+        </tr>
+        <?php 
+        foreach ($items as $key => $item) {
+            list($year,$m) = explode('-',$item['year_month']);
+            ?>
+            <tr>
+                <td><?=$def_fullm_th[$m];?> / <?=$year;?></td>
+                <td align="right"><?=$item['all_pt'];?></td>
+                <td align="right"><?=number_format($item['total'],2);?></td>
+            </tr>
+            <?php
+        }
+        ?>
+        
     </table>
     <?php
 }
