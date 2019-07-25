@@ -298,20 +298,16 @@ $page=1;
 		   "  <td  align='right'><font face='Angsana New'>$total</td>\n".
            "  <td  align='right'><font face='Angsana New'>".number_format($totalpri,2)."</td>\n".
            "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
-           " </tr>\n");
+           " </tr>\n");	
 		   
-		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '$drugcode' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."') ORDER BY getdate asc, row_id asc";
+		//$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '$drugcode' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."')  AND (stkcut >0 OR amount >0) ORDER BY getdate asc, row_id asc";
+		
+		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '$drugcode' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."')  ORDER BY getdate asc, row_id asc";		//พี่วาให้เอาข้อมูลติดลบออกมาแสดงข้อมูลด้วย
 		//echo $query."<br>";
 		$result = mysql_query($query) or die("Query failed");
     	$num=0;
    		while (list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,$amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result)) {
 			$k++;
-			if($stkcut > 0){
-				$querya = "SELECT unitpri  FROM stktranx  WHERE drugcode = '$drugcode' and stkcut ='0' order by row_id desc limit 1";
-				$resulta = mysql_query($querya) or die("Query failed");
-				list($inunitpri) = mysql_fetch_row($resulta);
-				$unitpri=$inunitpri;
-			}
 			
 			$sql3 = "select stkno,docno,packing from combill where getdate like '$getdate%' and lotno='$lotno' and drugcode='$drugcode' ";
 			//echo $sql3;
@@ -322,7 +318,7 @@ $page=1;
 			$docno = '';
 			$packing = '';
 			$pack = '';
-			if( $stk_row > 0){
+			if($stk_row > 0){
 				$item = mysql_fetch_assoc($row3);
 				$stkno = $item['stkno'];
 				$docno = $item['docno'];
@@ -358,15 +354,28 @@ $page=1;
 		   "  <td ><font face='Angsana New'>&nbsp;$docno</td>\n". //เลขที่ PO
 		   "  <td ><font face='Angsana New'>&nbsp;$stkno</td>\n".  //เลขที่รับลำดับคลัง
 		    "  <td ><font face='Angsana New'>&nbsp;$pack</td>\n");  //PACK
-		   if($netprice==0){
-			   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 
-			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
-			   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n");
+		   if($drugcode=="1COPE"){
+			   if($amount < 1){
+				   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 
+				   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
+				   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n");
+			   }else{
+				   print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
+				   "  <td  align='right'><font face='Angsana New'>$amount</td>\n".
+				   "  <td  align='right'><font face='Angsana New'>".number_format($netprice,2)."</td>\n");
+			   }
 		   }else{
-			   print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
-			   "  <td  align='right'><font face='Angsana New'>$amount</td>\n".
-			   "  <td  align='right'><font face='Angsana New'>".number_format($netprice,2)."</td>\n");
+			   if($netprice==0){
+				   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 
+				   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n".
+				   "  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n");
+			   }else{
+				   print ("  <td  align='right'><font face='Angsana New'>$unitpri</td>\n".
+				   "  <td  align='right'><font face='Angsana New'>$amount</td>\n".
+				   "  <td  align='right'><font face='Angsana New'>".number_format($netprice,2)."</td>\n");
+			   }		   
 		   }
+		   
 		   
 		   if($stkcut ==0 || $stkcut ==""){
 			   print ("  <td  align='right'><font face='Angsana New'>&nbsp;</td>\n". 

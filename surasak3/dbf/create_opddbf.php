@@ -19,7 +19,7 @@ color: #FFF;
 <div id="no_print" >
 <span class="font1">
 <font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน Dataset_V4.1_25591017 (อัพเดทโปรแกรม เมื่อวันที่ 29-11-59)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน dataset_v4.2_25611109 (อัพเดทล่าสุด วันที่ 15-02-62)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
 <span class="font1">
 <font face="Angsana New">
 <form action="<? $_SERVER['PHP_SELF']?>" method="post">
@@ -1119,7 +1119,7 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 				
 			}elseif($chrgitem=="PATHO"){
 				
-								$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='PATHO' and  hn='$hnopacc' ";
+				$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='PATHO' and  hn='$hnopacc' ";
 		$result123 = mysql_query($sql123) or die("Query failed123");
 		list($amountopacc) = Mysql_fetch_row($result123);
 				
@@ -1342,7 +1342,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 
 
 		//--------------------------------- ค่าใช้จ่ายผู้ป่วยนอก	---------------------------------//	
-		$sql14 ="select * from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and (depart ='DENTA' OR depart='NID')";
+		$sql14 ="select * from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and (depart ='DENTA' OR depart='NID' OR depart='PATHO')";
 		$result14 = mysql_query($sql14) or die("Query ADP Failed Line 1346");
 		//echo $sql14."<br>";
 		
@@ -1376,10 +1376,19 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 				$type="13";
 			}
 			
-			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
+			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay,depart from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
 			//echo $sqladp."<br>";
 			$queryadp=mysql_query($sqladp);
-			while(list($code14, $qty14, $rate14, $total14, $totcopay14)=mysql_fetch_array($queryadp)){
+			while(list($code14, $qty14, $rate14, $total14, $totcopay14,$depart14)=mysql_fetch_array($queryadp)){
+
+
+			if($depart14=="PATHO"){
+				$type="15";
+			}
+			
+				$chklabcare="select codex from labcare where code='$code14'";
+				$querylabcare=mysql_query($chklabcare);
+				list($codex)=mysql_fetch_array($querylabcare);			
 
 				$db14 = dbase_open($dbname14, 2);
 					if ($db14) {
@@ -1388,7 +1397,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 							$an14,
 							$dateopd,  //วันที่รับบริการ
 							$type,  // ประเภท หมวดหมู่
-							$code14,  //รหัสตาม สปสช.
+							$codex,  //รหัสตาม สปสช.
 							$qty14,  //หน่วยนับ เป็นจำนวนครั้งหรือจำนวนเม็ด
 							$rate14,  //ราคารวม
 							$newseq,  //รหัสการบริการที่กำหนดโดยโปรแกรมต้องไม่ซ้ำกัน

@@ -16,7 +16,7 @@ body,td,th {
 </style>
   <?
   $seldate=date("d");
-  $selmon="05";
+  $selmon="06";
   ?>
 <form method="POST" action="datacscd2018_icd10/exportdatacscd.php">
 <p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) ที่ค้างการลงรหัสโรค<br />
