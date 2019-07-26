@@ -28,12 +28,12 @@ body, button{
 }
 </style>
 <div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a>
 </div>
 <fieldset>
-    <legend>เลือกข้อมูลดูยา</legend>
+    <legend>เลือกข้อมูลดูยาที่มีมูลค่าสูง</legend>
 
-    <form action="doctor_order_drug.php" method="post">
+    <form action="doctor_order_drug2.php" method="post">
         <div>
             เดือน-ปี ที่เริ่ม 
             <?php 
@@ -132,21 +132,44 @@ if ( $action == 'show' ) {
     $db->select($sql);
     $dt = $db->get_item();
 
-    $sql = "select a.ptname,a.date, 
-    b.hn, b.drugcode, b.tradname, b.amount, b.price, b.part
-    from dphardep as a 
-    left join ddrugrx as b on b.idno = a.row_id 
-    where a.ptright like 'R07%' 
-    and b.part like 'dd%' 
-    and a.date >= '$start_year-$start_month-01 00:00:00' and a.date <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
-    and a.doctor like '%$doctor_code%' 
-    and (a.an is null and a.dr_cancle is null) ";
+    // $sql = "select a.ptname,a.date, 
+    // b.hn, b.drugcode, b.tradname, b.amount, b.price, b.part
+    // from dphardep as a 
+    // left join ddrugrx as b on b.idno = a.row_id 
+    // where a.ptright like 'R07%' 
+    // and b.part like 'dd%' 
+    // and a.date >= '$start_year-$start_month-01 00:00:00' and a.date <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
+    // and a.doctor like '%$doctor_code%' 
+    // and (a.an is null and a.dr_cancle is null) ";
+
+    $sql = "SELECT a.`ptname`,a.`date`, 
+    b.`hn`, b.`drugcode`, b.`tradname`, b.`salepri`,b.`amount`, b.`price`, b.`part`,
+    c.`row_id`, c.`unit` 
+    FROM ( 
+        SELECT * 
+        FROM `dphardep` 
+        WHERE `ptright` LIKE 'R07%' 
+        AND `date` >= '$start_year-$start_month-01 00:00:00' AND `date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
+        AND `doctor` LIKE '%$doctor_code%' 
+        AND (`an` IS NULL AND `dr_cancle` IS NULL)
+    ) AS a 
+    LEFT JOIN `ddrugrx` AS b ON b.`idno` = a.`row_id` 
+    LEFT JOIN ( 
+    
+        SELECT * 
+        FROM `druglst` 
+        WHERE `part` LIKE 'DD%' 
+        AND `salepri` > 5 
+        AND `drugcode` NOT IN ('1KALE*  ','20KALE    ','30LP200_RT','1TEEV','20STEEV','30TEEV','1GPO30*  ','20SGPO30','20SGPO40','20GPOZ250','30GPOZ250','drugcode','1EPIV-C*  ','20S3TC','30LAM_150','30LAM_300','20VIRE','20SZIL','20KALE    ','20STOC  ')
+    
+    ) AS c ON c.`drugcode` = b.`drugcode`
+    WHERE c.`row_id` IS NOT NULL ";
     $db->select($sql);
 
     $drug_list = $db->get_items();
     ?>
     <div>
-        <h3>รายการยาที่สั่งของแพทย์ <?=$dt['name'];?> ตั้งแต่ <?=$def_fullm_th[$start_month].' '.$start_year;?> ถึง <?=$def_fullm_th[$end_month].' '.$end_year;?></h3>
+        <h3>รายการยาที่มีมูลค่าสูงของแพทย์ <?=$dt['name'];?> ตั้งแต่ <?=$def_fullm_th[$start_month].' '.$start_year;?> ถึง <?=$def_fullm_th[$end_month].' '.$end_year;?></h3>
     </div>
     <table class="chk_table">
         <tr>
@@ -156,6 +179,8 @@ if ( $action == 'show' ) {
             <th>ชื่อ-สกุล</th>
             <th>รหัสยา</th>
             <th>Trade name</th>
+            <th>ราคาต่อหน่วย</th>
+            <th>หน่วยนับ</th>
             <th>จำนวนที่สั่ง</th>
             <th>รวมราคา</th>
             <th>ในบัญชี/นอกบัญชี</th>
@@ -184,8 +209,10 @@ if ( $action == 'show' ) {
                 <td><?=$ptname;?></td>
                 <td><?=$d['drugcode'];?></td>
                 <td><?=$d['tradname'];?></td>
+                <td align="right"><?=number_format($d['salepri'],2);?></td>
+                <td><?=$d['unit'];?></td>
                 <td align="right"><?=$d['amount'];?></td>
-                <td align="right"><?=$d['price'];?></td>
+                <td align="right"><?=number_format($d['price'],2);?></td>
                 <td>
                 <?php 
                 if( $d['part'] == 'DDL' ){
@@ -217,6 +244,7 @@ if ( $action == 'show' ) {
     <br>
     <br>
     <?php
+    /*
     $sql = "SELECT b.`year_month`,count(b.`hn`) AS `all_pt`,sum(b.`price`) AS `total` 
     FROM (
         SELECT a.`date`,a.`hn`,a.`an`,a.`tvn`,a.`ptright`,a.`doctor`,a.`dr_cancle`,
@@ -254,5 +282,7 @@ if ( $action == 'show' ) {
         
     </table>
     <?php
+    */
+
 }
 
