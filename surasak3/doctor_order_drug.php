@@ -28,7 +28,10 @@ body, button{
 }
 </style>
 <div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a>
+</div>
+<div>
+    <h3>ดูข้อมูลยา</h3>
 </div>
 <fieldset>
     <legend>เลือกข้อมูลดูยา</legend>
@@ -219,7 +222,7 @@ if ( $action == 'show' ) {
     <?php
     $sql = "SELECT b.`year_month`,count(b.`hn`) AS `all_pt`,sum(b.`price`) AS `total` 
     FROM (
-        SELECT a.`date`,a.`hn`,a.`an`,a.`tvn`,a.`ptright`,a.`doctor`,a.`dr_cancle`,
+        SELECT a.`date`,a.`hn`,a.`an`,a.`tvn`,a.`ptright`,a.`doctor`,a.`dr_cancle`,a.`price`,
         CONCAT(SUBSTRING(a.`date`,1,7)) AS `year_month`,CONCAT(SUBSTRING(a.`date`,1,10),a.`hn`,a.`tvn`) AS `super_id` 
         FROM `dphardep` as a 
         WHERE a.`ptright` LIKE 'R07%' 
@@ -228,7 +231,6 @@ if ( $action == 'show' ) {
         AND (a.`an` is null AND a.`dr_cancle` is null) 
         GROUP BY CONCAT(SUBSTRING(a.`date`,1,10),a.`hn`,a.`tvn`)
     ) AS b GROUP BY b.`year_month` ";
-
     $db->select($sql);
     $items = $db->get_items();
 
