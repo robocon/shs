@@ -13,8 +13,16 @@ $shs_configs = array(
     'user' => 'dottow',
     'pass' => ''
 );
-$db = Mysql::load();
+$db = Mysql::load($shs_configs);
 
+// กรณีบริษัทที่คนเยอะๆ แล้ว memory ไม่พอ 
+$start = $_GET['start'];
+$ended = $_GET['ended'];
+$point = $ended - $start;
+$limit = '';
+if( $start >= 0 && $ended > 0 ){
+    $limit = "LIMIT $start, $point";
+}
 
 // left join กับ chk_doctor แล้วเอา id ที่เป็น null มาคิดอีกทีละกัน
 // $sql = "SELECT * FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ";
@@ -24,14 +32,11 @@ LEFT JOIN `chk_company_list` AS c ON c.`code` = a.`part`
 LEFT JOIN `chk_doctor` AS b ON b.`hn` = a.`HN` 
 WHERE a.`part` = '$part'  
 AND b.`yearchk` = SUBSTRING(c.`yearchk`,3,2) 
-ORDER BY a.`row`";
+ORDER BY a.`row` 
+$limit";
 $db->select($sql);
 
 $row = $db->get_rows();
-// dump($row);
-
-// exit;
-
 if ( $row == 0 ) {
     # code...
     echo "ไม่พบข้อมูล";
