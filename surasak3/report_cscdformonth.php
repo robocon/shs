@@ -217,12 +217,18 @@ $total_c=$total_c+$sumprice_c;
 
 $sumprice_ca=$sumprice_c+$sumprice_a;
 $total_ca=$total_c+$total_a;
+
+if($numall==$num){
+	$numcolor="#33CC00";	//สีเขียว
+}else{
+	$numcolor="#FFFF00";	//สีเหลือง
+}
 ?>
   <tr>
     <td align="center"><?=$i;?></td>
-    <td align="center"><?=$showdate;?></td>
-    <td align="center"><?=$numall;?></td>
-    <td align="center"><?=$num;?></td>
+    <td align="center" bgcolor="<?=$numcolor;?>"><?=$showdate;?></td>
+    <td align="center" bgcolor="<?=$numcolor;?>"><?=$numall;?></td>
+    <td align="center" bgcolor="<?=$numcolor;?>"><?=$num;?></td>
     <td align="center"><?=$num_p;?></td>
     <td align="center"><?=$num_c;?></td>
     <td align="center" bgcolor="<?=$bgcolor;?>"><?=number_format($avg_data,2);?></td>
@@ -298,7 +304,7 @@ echo "<div style='font-size:24px'><strong>ข้อมูลประจำเดือน $showdate1</strong></
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 7 วัน คือ วันที่ 3,8,11,18,28,29 และ 30</div>";
 		//echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 1,2,3,6 และ 8</div>";		
 	}else if($chkdate1=="2562-07"){
-		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 1 วัน คือ วันที่ 4</div>";
+		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 2 วัน คือ วันที่ 4 และ 21</div>";
 		//echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 5 วัน คือ วันที่ 1,2,3,6 และ 8</div>";		
 	}
 }

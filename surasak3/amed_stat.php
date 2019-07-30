@@ -97,9 +97,25 @@ $showdate2=$_POST["date2"]."/".$_POST["month2"]."/".$_POST["year2"];
 $chkdate1=($_POST["year1"])."-".$_POST["month1"]."-".$_POST["date1"]." 00:00:00";
 $chkdate2=($_POST["year2"])."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
 
-//echo $chkdate1;
-//echo $chkdate2;
+$year1=$_POST["year1"]-543;
+$year2=$_POST["year2"]-543;
+$chkksdate1=$year1."-".$_POST["month1"]."-".$_POST["date1"];
+$chkksdate2=$year2."-".$_POST["month2"]."-".$_POST["date2"];
+
+$startdate=$year1."-".$_POST["month1"]."-".$_POST["date1"]." 00:00:00";
+$enddate=$year2."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
+
+$datenum = strtotime($enddate)-strtotime($startdate);
+$day = intval($datenum/86400);   //day
+$day=$day+1;
+
 ?>
+<div align="center" style="margin-top: 20px;"><strong>รายงานสถานภาพยาและเวชภัณฑ์</strong></div>
+<div align="center">ระว่างวันที่
+  <?=$showdate1;?>
+  ถึงวันที่
+  <?=$showdate2;?>
+</div>
 <table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
   <tr>
     <td rowspan="2" align="center">ลำดับ</td>
@@ -112,14 +128,16 @@ $chkdate2=($_POST["year2"])."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59"
     <td width="142" rowspan="2" align="center"> (4) ประเภทยา</td>
     <td width="112" rowspan="2" align="center">(5) ราคาทุน</td>
     <td width="78" rowspan="2" align="center">ราคาขาย</td>
-    <td colspan="2" align="center">สถานภาพ ณ สิ้น …………..</td>
+    <td colspan="4" align="center">สถานภาพ ณ สิ้น …………..</td>
     <td align="center">ยอดขายเฉลี่ยต่อเดือน</td>
     <td rowspan="2" align="center"> เป็นเงิน (9)    <span class="style1">จำนวนจ่ายยา (8) x ราคาทุน (5)</span></td>
     <td rowspan="2" align="center">มูลค่ายาและเวชภัณฑ์คงคลัง คิดเป็น..เท่าของต้นทุนขายเฉลี่ย/เดือน (7)/(9)</td>
   </tr>
   <tr>
     <td align="center">TPU code</td>
-    <td align="center">จำนวนในห้องจ่าย+คลัง (6)</td>
+    <td align="center">ห้องจ่าย</td>
+    <td align="center">คลัง</td>
+    <td align="center">รวม (6)</td>
     <td align="center">เป็นเงิน (7)<br>      
       <span class="style1">จำนวน (6) x ราคาทุน (5)</span></td>
     <td align="center">จำนวน (8)</td>
@@ -144,6 +162,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -162,7 +182,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+////$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>   
   <tr>
@@ -175,10 +201,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -188,7 +215,7 @@ $avg=$sumstock/$sumprice;  //7/9
   
 <?
 //----------------------------- ยาเม็ด รหัส 1 -----------------------------//
-$sql="select * from druglst where grouptype='' and drug_active='y' and drugcode like '1%'  and (drugcode NOT LIKE '10%' AND drugcode NOT LIKE '11%' AND drugcode NOT LIKE '12%' AND drugcode NOT LIKE '13%' AND drugcode NOT LIKE '14%' AND drugcode NOT LIKE '15%' AND drugcode NOT LIKE '16%' AND drugcode NOT LIKE '17%' AND drugcode NOT LIKE '18%' AND drugcode NOT LIKE '19%') order by length(drugcode) asc";
+$sql="select * from druglst where grouptype='' and drug_active='y' and drugcode like '1%'  and (drugcode NOT LIKE '10%' AND (drugcode NOT LIKE '11%' || drugcode like '11KETO*%')  AND drugcode NOT LIKE '12%' AND drugcode NOT LIKE '13%' AND drugcode NOT LIKE '14%' AND drugcode NOT LIKE '15%' AND drugcode NOT LIKE '16%' AND drugcode NOT LIKE '17%' AND drugcode NOT LIKE '18%' AND drugcode NOT LIKE '19%') order by length(drugcode) asc";
 //echo $sql."<br>";
 $query=mysql_query($sql);
 $i=0;
@@ -207,6 +234,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -225,7 +254,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -237,10 +272,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -269,6 +305,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -282,12 +320,23 @@ if($rows["ised"]=="e"){
 }
 
 $sumstock=$rows["totalstk"]*$rows["unitpri"];
-
+$chkdrugcode=trim($rows["drugcode"]);
+if($chkdrugcode=="2NSS3" || $chkdrugcode=="2NSS5ML" || $chkdrugcode=="2SWFI10" || $chkdrugcode=="2XY1_20" || $chkdrugcode=="2XY1A_20" || $chkdrugcode=="2XY1C" || $chkdrugcode=="2XY2_20" || $chkdrugcode=="2FORA" || $chkdrugcode=="2INTRAV" || $chkdrugcode=="2LINCO-N" || $chkdrugcode=="2SEVO*" || $chkdrugcode=="2SUCC" ){
+$dsql="select sum(stkcut) from stktranx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkksdate1' and date <='$chkksdate2')";
+}else{
 $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkdate1' and date <='$chkdate2')";
+}
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -299,10 +348,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -331,6 +381,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -344,12 +396,22 @@ if($rows["ised"]=="e"){
 }
 
 $sumstock=$rows["totalstk"]*$rows["unitpri"];
-
+$chkdrugcode=trim($rows["drugcode"]);
+if($chkdrugcode=="3NSSI" || $chkdrugcode=="3WFI"){
+$dsql="select sum(stkcut) from stktranx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkksdate1' and date <='$chkksdate2')";
+}else{
 $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkdate1' and date <='$chkdate2')";
+}
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -361,10 +423,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -374,7 +437,7 @@ $avg=$sumstock/$sumprice;  //7/9
 
 <?
 //----------------------------- ยาภายนอก รหัส 4 -----------------------------//
-$sql="select * from druglst where grouptype='' and drug_active='y' and drugcode like '4%'  and (drugcode NOT LIKE '40%' AND drugcode NOT LIKE '41%' AND drugcode NOT LIKE '42%' AND drugcode NOT LIKE '43%' AND drugcode NOT LIKE '44%' AND drugcode NOT LIKE '45%' AND drugcode NOT LIKE '46%' AND drugcode NOT LIKE '47%' AND drugcode NOT LIKE '48%' AND drugcode NOT LIKE '49%') order by length(drugcode) asc";
+$sql="select * from druglst where grouptype='' and drug_active='y' and drugcode like '4%'  and (drugcode NOT LIKE '40%' AND drugcode NOT LIKE '41%' AND drugcode NOT LIKE '42%' AND drugcode NOT LIKE '43%' AND drugcode NOT LIKE '44%' AND drugcode NOT LIKE '45%' AND drugcode NOT LIKE '46%' AND drugcode NOT LIKE '47%' AND drugcode NOT LIKE '48%' AND drugcode NOT LIKE '49%' AND drugcode NOT LIKE '4EKC%' AND drugcode NOT LIKE '4STGEL%') order by length(drugcode) asc";
 //echo $sql."<br>";
 $query=mysql_query($sql);
 $i=0;
@@ -393,6 +456,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -406,12 +471,22 @@ if($rows["ised"]=="e"){
 }
 
 $sumstock=$rows["totalstk"]*$rows["unitpri"];
-
+$chkdrugcode=trim($rows["drugcode"]);
+if($chkdrugcode=="4AMMO5" || $chkdrugcode=="4HYDR" || $chkdrugcode=="4PALC" || $chkdrugcode=="4VAS50" || $chkdrugcode=="4XYLJ@" || $chkdrugcode=="4XYLS" || $chkdrugcode=="4ALC450" || $chkdrugcode=="4ALC95" || $chkdrugcode=="4POVI30" ){
+$dsql="select sum(stkcut) from stktranx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkksdate1' and date <='$chkksdate2')";
+}else{
 $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkdate1' and date <='$chkdate2')";
+}
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -423,10 +498,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -455,6 +531,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -473,7 +551,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -485,10 +569,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -517,6 +602,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -530,12 +617,23 @@ if($rows["ised"]=="e"){
 }
 
 $sumstock=$rows["totalstk"]*$rows["unitpri"];
-
+//echo $rows["drugcode"]."<br>";
+$chkdrugcode=trim($rows["drugcode"]);
+if($chkdrugcode=="6MYDR" || $chkdrugcode=="6PHEN" || $chkdrugcode=="6TETR"){
+$dsql="select sum(stkcut) from stktranx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkksdate1' and date <='$chkksdate2')";
+}else{
 $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkdate1' and date <='$chkdate2')";
-//echo $dsql."<br>";
+}
+//var_dump($dsql);
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -547,10 +645,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -579,6 +678,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -597,7 +698,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -609,10 +716,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -641,6 +749,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -659,7 +769,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -671,10 +787,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -703,6 +820,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -721,7 +840,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -733,10 +858,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -765,6 +891,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -783,7 +911,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -795,10 +929,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -808,27 +943,29 @@ $avg=$sumstock/$sumprice;  //7/9
 
 <?
 //----------------------------- อุปกรณ์และเวชภัณฑ์ -----------------------------//
-$sql="select * from druglst where grouptype='' and drug_active='y' and (part like 'DS%' || part like 'DP%')order by drugcode asc";
+$sql="select * from druglst where grouptype='' and drug_active='y' and (part like 'DS%' || part like 'DP%') OR (drugcode LIKE '4EKC%' OR drugcode LIKE '4STGEL%') order by drugcode asc";
 //echo $sql."<br>";
 $query=mysql_query($sql);
 $i=0;
 ?>    
   <tr>
-    <td align="center" bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td align="center" bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99"><strong>อุปกรณ์และเวชภัณฑ์</strong></td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td align="center" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
+    <td align="center" bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td align="center" bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966"><strong>อุปกรณ์และเวชภัณฑ์</strong></td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td align="center" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
   </tr>
 <?  
 while($rows=mysql_fetch_array($query)){
@@ -841,13 +978,20 @@ if($rows["ised"]=="e"){
 
 $sumstock=$rows["totalstk"]*$rows["unitpri"];
 
-$dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkdate1' and date <='$chkdate2')";
+$dsql="select sum(stkcut) from stktranx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkksdate1' and date <='$chkksdate2')";
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
-?>  <tr>
+?>  
+<tr>
     <td align="center"><?=$i;?></td>
     <td>&nbsp;</td>
     <td align="center"><?=$rows["tmt"];?></td>
@@ -857,10 +1001,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -876,21 +1021,23 @@ $query=mysql_query($sql);
 $i=0;
 ?>    
   <tr>
-    <td align="center" bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td align="center" bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99"><strong>น้ำยาล้างไต</strong></td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td align="center" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td align="right" bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
-    <td bgcolor="#66CC99">&nbsp;</td>
+    <td align="center" bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td align="center" bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966"><strong>น้ำยาล้างไต</strong></td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td align="center" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td align="right" bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
+    <td bgcolor="#FF9966">&nbsp;</td>
   </tr>
 <?  
 while($rows=mysql_fetch_array($query)){
@@ -903,11 +1050,17 @@ if($rows["ised"]=="e"){
 
 $sumstock=$rows["totalstk"]*$rows["unitpri"];
 
-$dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkdate1' and date <='$chkdate2')";
+$dsql="select sum(stkcut) from stktranx where drugcode ='".$rows["drugcode"]."' and (date >= '$chkksdate1' and date <='$chkksdate2')";
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>  <tr>
     <td align="center"><?=$i;?></td>
@@ -919,10 +1072,11 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
@@ -951,6 +1105,8 @@ $i=0;
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
     <td bgcolor="#66CC99">&nbsp;</td>
   </tr>
@@ -969,7 +1125,13 @@ $dsql="select sum(amount) from drugrx where drugcode ='".$rows["drugcode"]."' an
 //echo $dsql."<br>";
 $dquery=mysql_query($dsql);
 list($amount)=mysql_fetch_array($dquery);
-$sumprice=$amount*$rows["unitpri"];  //8*5
+//$perday=$amount/$day;
+if($day >= 30){
+$perday=($amount/$day)*30;      //จำนวนใช้ต่อเดือน
+}else{
+$perday=$amount/$day;      //จำนวนใช้ต่อวัน
+}
+$sumprice=$perday*$rows["unitpri"];  //8*5
 $avg=$sumstock/$sumprice;  //7/9
 ?>     
   <tr>
@@ -982,17 +1144,22 @@ $avg=$sumstock/$sumprice;  //7/9
     <td><?=$rows["unit"];?></td>
     <td align="center"><?=$ised;?></td>
     <td align="right"><?=$rows["unitpri"];?></td>
-    <td align="right"><?=$rows["salepri"];?></td>
+    <td align="right"><?=$rows["salepri"];?></td>    <td align="right"><?=$rows["stock"];?></td>
+    <td align="right"><?=$rows["mainstk"];?></td>
     <td align="right"><?=$rows["totalstk"];?></td>
     <td align="right"><?=number_format($sumstock,4);?></td>
-    <td align="right"><?=$amount;?></td>
+    <td align="right" bgcolor="#CCCCCC"><?=number_format($perday,2);?></td>
     <td align="right"><?=number_format($sumprice,4);?></td>
     <td align="right"><?=number_format($avg,4);?></td>
   </tr>
 <?
 }
-?>  
+?>    
 </table>
 <?
 }
 ?>
+<br />
+<div style="font-weight:bold;">*** หมายเหตุ ***</div>
+<div style="margin-left:30px;">- กรณีเลือกช่วงเวลาไม่ถึงเดือนจะใช้<strong>จำนวนวัน</strong>&nbsp;คำนวณหายอดขายเฉลี่ยต่อเดือน</div>
+<div style="margin-left:30px;">- กรณีเลือกช่วงเวลาเกิน 1 เดือนจะใช้<strong>จำนวนเดือน</strong>&nbsp;คำนวณหายอดขายเฉลี่ยต่อเดือน</div>

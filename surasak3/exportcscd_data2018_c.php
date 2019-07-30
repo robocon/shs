@@ -18,26 +18,13 @@ body,td,th {
   $seldate=date("d");
   $selmon=date("m");
   ?>
-<form method="POST" action="datacscd/exportdatacscd.php">
-<p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (CSCD) ข้อมูลก่อน 1 ก.ย. 61<br />
- ปรับปรุงล่าสุด Date29/07/2562 By ส.ท. เทวิน  ศรีแก้ว โทร.8500 ลูกหนี้วันที่ 28 ก.ค. 62</strong></p>
-  <strong>ข้อมูลประจำวันที่ : </strong>
-  <select name="rptdate" class="txt" id="rptdate">
-  <?
-  for($i=1;$i<=31;$i++){
-	  if($i < 10){
-	  	$dd="0".$i;
-	  }else{
-	  	$dd=$i;
-	  }
-  ?>
-    <option value="<?=$dd;?>" <? if($seldate==$dd){ echo "selected='selected'";}?>><?=$dd;?></option>
-  <?
-  }
-  ?>
-  </select>
-  &nbsp; 
-
+<form method="POST" action="datacscd2018_c/exportdatacscd.php">
+<p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) กรณีติด C รายเดือน<br />
+ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.ท. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
+<div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 25 เดือนกรกฎาคม พ.ศ.2562 เป็นต้นไป (last update : 2019-07-25)</div></strong>
+<div style="color:#0000FF">ดูข้อมูลการลงรหัสโรค <a href="report_diagnotfound_cscd.php" target="_blank" >ICD10</a> และรหัสหัตถการ <a href="report_icd9cmnotfound_cscd.php" target="_blank" >ICD9CM</a> ให้ผู้ป่วย</div></strong>
+</p>
+  <strong>ข้อมูลประจำเดือน : </strong>
   <select size="1" name="rptmo" class="txt">
     <option selected>-------เลือก-------</option>
     <option value="01" <? if($selmon=="01"){ echo "selected='selected'";}?>>มกราคม</option>
