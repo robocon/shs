@@ -28,7 +28,7 @@ body, button{
 }
 </style>
 <div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a> | <a href="doctor_order_drug3.php">ข้อมูลการจ่ายยาเฉลี่ย 3 เดือนย้อนหลัง</a>
 </div>
 <div>
     <h3>ดูข้อมูลยา</h3>
@@ -106,11 +106,14 @@ if ( $action == 'show' ) {
 
     $start_month = input_post('start_month');
     $start_year = input_post('start_year');
-
+	
+	
     $end_month = input_post('end_month');
     $end_year = input_post('end_year');
 
     $end_day_ofmonth = date('t', "$end_year-$end_month-01");
+
+
 
     $doctor_code = input_post('doctor_code');
 
@@ -137,14 +140,15 @@ if ( $action == 'show' ) {
 
     $sql = "select a.ptname,a.date, 
     b.hn, b.drugcode, b.tradname, b.amount, b.price, b.part
-    from dphardep as a 
-    left join ddrugrx as b on b.idno = a.row_id 
+    from phardep as a 
+    left join drugrx as b on b.idno = a.row_id 
     where a.ptright like 'R07%' 
     and b.part like 'dd%' 
     and a.date >= '$start_year-$start_month-01 00:00:00' and a.date <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
     and a.doctor like '%$doctor_code%' 
-    and (a.an is null and a.dr_cancle is null) ";
+    and (a.an is null || a.an='') and (b.drugcode NOT LIKE '20%' AND b.drugcode NOT LIKE '30%') ";
     $db->select($sql);
+	//echo $sql;
 
     $drug_list = $db->get_items();
     ?>
@@ -222,15 +226,16 @@ if ( $action == 'show' ) {
     <?php
     $sql = "SELECT b.`year_month`,count(b.`hn`) AS `all_pt`,sum(b.`price`) AS `total` 
     FROM (
-        SELECT a.`date`,a.`hn`,a.`an`,a.`tvn`,a.`ptright`,a.`doctor`,a.`dr_cancle`,a.`price`,
+        SELECT a.`date`,a.`hn`,a.`an`,a.`tvn`,a.`ptright`,a.`doctor`,a.`price`,
         CONCAT(SUBSTRING(a.`date`,1,7)) AS `year_month`,CONCAT(SUBSTRING(a.`date`,1,10),a.`hn`,a.`tvn`) AS `super_id` 
-        FROM `dphardep` as a 
+        FROM `phardep` as a 
         WHERE a.`ptright` LIKE 'R07%' 
         AND a.`date` >= '$start_year-$start_month-01 00:00:00' AND a.`date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
         AND a.`doctor` LIKE '%$doctor_code%' 
-        AND (a.`an` is null AND a.`dr_cancle` is null) 
+        AND (a.`an` is null || a.`an` ='') 
         GROUP BY CONCAT(SUBSTRING(a.`date`,1,10),a.`hn`,a.`tvn`)
     ) AS b GROUP BY b.`year_month` ";
+	//echo $sql;
     $db->select($sql);
     $items = $db->get_items();
 

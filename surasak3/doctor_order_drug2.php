@@ -1,12 +1,18 @@
 <?php 
 include 'bootstrap.php';
-// $shs_configs
-$db = Mysql::load();
+$shs_configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'dottow',
+    'pass' => ''
+);
+$db = Mysql::load($shs_configs);
 if( $_SESSION["smenucode"] != 'ADM' && ( $_SESSION["smenucode"] != 'ADMSSO' && $_SESSION['sIdname'] != 'สุมนา1' ) ){
     echo "ไม่สามารถเข้าใช้งานได้";
     exit;
 }
-$db->exec("SET NAMES TIS620");
+
 ?>
 <style>
 /* ตาราง */
@@ -28,7 +34,7 @@ body, button{
 }
 </style>
 <div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a> | <a href="doctor_order_drug3.php">ข้อมูลการจ่ายยาเฉลี่ย 3 เดือนย้อนหลัง</a>
 </div>
 <div>
     <h3>ข้อมูลยาที่มีมูลค่าการใช้สูง</h3>
@@ -136,41 +142,35 @@ if ( $action == 'show' ) {
     $dt = $db->get_item();
 
     $sql = "SELECT a.`ptname`,a.`date`, 
-    b.`hn`, b.`drugcode`, b.`tradname`, b.`salepri`,b.`amount`, b.`price`, b.`part`,
-    c.`row_id`, c.`unit`, 
-    d.`cashok` 
+    b.`hn`, b.`drugcode`, b.`tradname`, c.`salepri`,b.`amount`, b.`price`, b.`part`,
+    c.`row_id`, c.`unit`,a.`cashok`,a.`year_month`,a.`super_id` 
     FROM ( 
-        SELECT * 
-        FROM `dphardep` 
+        SELECT *, 
+        CONCAT(SUBSTRING(`date`,1,7)) AS `year_month`, 
+        CONCAT(SUBSTRING(`date`,1,10),`hn`,`tvn`) AS `super_id` 
+        FROM `phardep` 
         WHERE `ptright` LIKE 'R07%' 
         AND `date` >= '$start_year-$start_month-01 00:00:00' AND `date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
         AND `doctor` LIKE '%$doctor_code%' 
-        AND (`an` IS NULL AND `dr_cancle` IS NULL)
+        AND ( `chktranx` IS NOT NULL AND `borrow` IS NULL )
+        AND ( `an` IS NULL )
+        ORDER BY `row_id` ASC 
     ) AS a 
-    LEFT JOIN `ddrugrx` AS b ON b.`idno` = a.`row_id` 
+    LEFT JOIN `drugrx` AS b ON b.`idno` = a.`row_id` 
     LEFT JOIN ( 
     
         SELECT * 
         FROM `druglst` 
         WHERE `part` LIKE 'DD%' 
-        AND `salepri` > 5 
-        AND `drugcode` NOT IN ('1KALE*  ','20KALE    ','30LP200_RT','1TEEV','20STEEV','30TEEV','1GPO30*  ','20SGPO30','20SGPO40','20GPOZ250','30GPOZ250','drugcode','1EPIV-C*  ','20S3TC','30LAM_150','30LAM_300','20VIRE','20SZIL','20KALE    ','20STOC  ')
-    
+        AND `salepri` >= 5 
+        AND `drugcode` NOT IN ('1KALE*  ','20KALE    ','30LP200_RT','1TEEV','20STEEV','30TEEV','1GPO30*  ','20SGPO30','20SGPO40','20GPOZ250','30GPOZ250','1EPIV-C*  ','20S3TC','30LAM_150','30LAM_300','20VIRE','20SZIL','20KALE    ','20STOC  ') AND (`drugcode` NOT LIKE  '20%' AND  `drugcode` NOT LIKE  '30%')
     ) AS c ON c.`drugcode` = b.`drugcode`
-    LEFT JOIN `phardep` AS d ON d.`datedr` = a.`date` 
-    WHERE c.`row_id` IS NOT NULL 
-    AND ( d.`borrow` IS NULL AND d.`cashok` IS NOT NULL )";
+    WHERE c.`row_id` IS NOT NULL ";
+	
     $db->select($sql);
 
     $drug_list = $db->get_items();
     ?>
-    <div>
-        รายละเอียดในการดึงข้อมูล
-        <ul>
-            <li>เป็นยาที่มีราคา 5บาทต่อหน่วยขึ้นไป</li>
-            <li>ตัดยา AIDS ออก</li>
-        </ul>
-    </div>
     <div>
         <h3>รายการยาที่มีมูลค่าสูงของแพทย์ <?=$dt['name'];?> ตั้งแต่ <?=$def_fullm_th[$start_month].' '.$start_year;?> ถึง <?=$def_fullm_th[$end_month].' '.$end_year;?></h3>
     </div>
@@ -194,7 +194,8 @@ if ( $action == 'show' ) {
         $late_user_id = '';
 
         $hn_i = 1;
-        $test_count_hn = array();
+
+        $all_items = array();
         foreach ($drug_list as $key => $d) {
 
             $c = '';
@@ -202,14 +203,26 @@ if ( $action == 'show' ) {
                 $c = 'style="background-color: #dddddd;"';
             }
 
-            $hn = $d['hn'];
+            $hn = $d['super_id'];
             $ptname = $d['ptname'];
+
+            $test_ym = $d['year_month'];
+            if( $test_ym == $late_month ){
+                if ($hn != $late_user_id) {
+                    $hn_i++;
+                }
+                
+                $ym_price += $d['price'];
+            }else{
+                $hn_i = 1;
+                $ym_price = $d['price'];
+            }
 
             ?>
             <tr <?=$c;?> >
                 <td align="right"><?=$i;?></td>
                 <td><?=$d['date'];?></td>
-                <td><?=$hn;?></td>
+                <td><?=$d['hn'];?></td>
                 <td><?=$ptname;?></td>
                 <td><?=$d['drugcode'];?></td>
                 <td><?=$d['tradname'];?></td>
@@ -238,10 +251,15 @@ if ( $action == 'show' ) {
             </tr>
             <?php 
             $i++;
-            $hn_i++;
+            // $hn_i++;
 
-            $late_user_id = $d['hn'];
-            $late_month = $d['month'];
+            $all_items[$test_ym] = array(
+                'vn' => $hn_i,
+                'sum' => $ym_price
+            );
+
+            $late_user_id = $d['super_id'];
+            $late_month = $d['year_month'];
         }
         ?>
 
@@ -249,33 +267,39 @@ if ( $action == 'show' ) {
     <br>
     <br>
     <?php 
+    dump($all_items);
+/*
+$sql = "SELECT a.`ptname`,a.`date`, 
+b.`hn`, b.`drugcode`, b.`tradname`, c.`salepri`,b.`amount`, b.`price`, b.`part`,
+c.`row_id`, c.`unit`,a.`cashok`
+FROM ( 
+    SELECT * 
+    FROM `phardep` 
+    WHERE `ptright` LIKE 'R07%' 
+    AND `date` >= '$start_year-$start_month-01 00:00:00' AND `date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
+    AND `doctor` LIKE '%$doctor_code%' 
+    AND (`an` IS NULL || `an`='') 
+    ORDER BY `row_id` ASC 
+) AS a 
+LEFT JOIN ( 
+    SELECT *,(`price`/`amount`) AS `saleprice`
+    FROM `drugrx` 
+    WHERE `date` >= '$start_year-$start_month-01 00:00:00' AND `date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
+    AND `part` LIKE 'DD%' 
+    AND ( 
+        `drugcode` NOT IN ('1KALE*  ','20KALE    ','30LP200_RT','1TEEV','20STEEV','30TEEV','1GPO30*  ','20SGPO30','20SGPO40','20GPOZ250','30GPOZ250','1EPIV-C*  ','20S3TC','30LAM_150','30LAM_300','20VIRE','20SZIL','20KALE    ','20STOC  ') 
+        AND `drugcode` NOT LIKE '20%' 
+        AND `drugcode` NOT LIKE '30%' 
+    )
 
-    $sql = "SELECT a.`year_month`,count(a.`hn`) AS `all_pt`,sum(b.`price`) AS `total` 
-    FROM ( 
-        SELECT *, 
-        CONCAT(SUBSTRING(`date`,1,7)) AS `year_month`, 
-        CONCAT(SUBSTRING(`date`,1,10),`hn`,`tvn`) AS `super_id` 
-        FROM `dphardep` 
-        WHERE `ptright` LIKE 'R07%' 
-        AND `date` >= '$start_year-$start_month-01 00:00:00' AND `date` <= '$end_year-$end_month-$end_day_ofmonth 23:59:59' 
-        AND `doctor` LIKE '%$doctor_code%' 
-        AND (`an` IS NULL AND `dr_cancle` IS NULL)
-    ) AS a 
-    LEFT JOIN `ddrugrx` AS b ON b.`idno` = a.`row_id` 
-    LEFT JOIN ( 
-    
-        SELECT * 
-        FROM `druglst` 
-        WHERE `part` LIKE 'DD%' 
-        AND `salepri` > 5 
-        AND `drugcode` NOT IN ('1KALE*  ','20KALE    ','30LP200_RT','1TEEV','20STEEV','30TEEV','1GPO30*  ','20SGPO30','20SGPO40','20GPOZ250','30GPOZ250','drugcode','1EPIV-C*  ','20S3TC','30LAM_150','30LAM_300','20VIRE','20SZIL','20KALE    ','20STOC  ')
-    
-    ) AS c ON c.`drugcode` = b.`drugcode`
-    WHERE c.`row_id` IS NOT NULL 
-    GROUP BY a.`year_month`";
+ ) AS b ON b.`idno` = a.`row_id` 
+WHERE b.`row_id` IS NOT NULL 
+AND b.`saleprice` > 5 ";
+dump($sql);
     $db->select($sql);
     $items = $db->get_items();
-
+    */
+    $items = array();
     ?>
     <table class="chk_table">
         <tr>
@@ -298,7 +322,6 @@ if ( $action == 'show' ) {
         
     </table>
     <?php
-    
 
 }
 
