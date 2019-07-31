@@ -67,14 +67,14 @@ if( $action === 'save' ){
             `eye`, `snell_eye`, `cxr`, `conclution`, `normal_suggest`,
             `normal_suggest_date`, `abnormal_suggest`, `abnormal_suggest_date`, `doctor`, `officer`, 
             `res_cbc`, `res_ua`, `res_glu`, `res_crea`, `res_chol`, `res_hdl`, 
-            `res_hbsag`,`res_occult`,`diag`,`cxr_detail`
+            `res_hbsag`,`res_occult`,`diag`,`cxr_detail`,`dxofyear_out_id`
         ) VALUES (
             NULL, '$hn', '$vn', '$prefix', '$name', '$surname', 
             '$idcard', '$address', NOW(), '$yearchk', '$ear', '$breast', 
             '$eye', '$snell_eye', '$cxr', '$conclution', '$normal_suggest', 
             '$normal_suggest_date', '$abnormal_suggest', '$abnormal_suggest_date', '$doctor', '$officer', 
             '$res_cbc', '$res_ua', '$res_glu', '$res_crea', '$res_chol', '$res_hdl', 
-            '$res_hbsag', '$res_occult', '$diag', '$cxr_detail'
+            '$res_hbsag', '$res_occult', '$diag', '$cxr_detail','$dxofyear_id'
         );";
         $save = $db->insert($sql);
 
@@ -104,7 +104,8 @@ if( $action === 'save' ){
         `res_hbsag` = '$res_hbsag',
         `res_occult` = '$res_occult',
         `diag` = '$diag',
-        `cxr_detail` = '$cxr_detail'
+        `cxr_detail` = '$cxr_detail',
+        `dxofyear_out_id` = '$dxofyear_id' 
         WHERE `id` = '$id' ; ";
         $save = $db->update($sql);
 

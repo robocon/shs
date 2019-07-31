@@ -36,10 +36,34 @@ if( $opcardchk_row > 0 ){
 
 $year_checkup = $user['yearchk'];
 
-$sql = "SELECT `camp`,`labin_date` 
+$sql = "SELECT `weight`,`height`,`bmi`,`bp1`,`bp2`,`bp21`,`bp22`,`pause`,`camp`,`labin_date` 
 FROM `dxofyear_out` WHERE `thdatehn` = '$date$hn' ";
 $db->select($sql);
-$dxofyear = $db->get_item();
+
+$camp = '';
+$nurse = '';
+
+if($db->get_rows() > 0){
+    $dxofyear = $db->get_item();
+    $camp = $dxofyear['camp'];
+    $bp1 = $dxofyear['bp1'];
+    $bp2 = $dxofyear['bp2'];
+
+    $weight = $dxofyear['weight'];
+    $height = $dxofyear['height'];
+    $bmi = $dxofyear['bmi'];
+    $pause = $dxofyear['pause'];
+
+    if( !empty($odxofyearpd['bp21']) ){
+        $bp1 = $dxofyear['bp21'];
+    }
+
+    if( !empty($dxofyear['bp22']) ){
+        $bp2 = $dxofyear['bp22'];
+    }
+
+    $nurse = "สัญญาณชีพ ชีพจร(p):$pause ครั้ง/นาที ความดันโลหิต: $bp1/$bp2 น้ำหนัก: $weight กก. ส่วนสูง: $height ซม. BMI: $bmi";
+}
 
 // ดึงวันที่ที่ตรวจ lab นับเป็นวันที่ได้รับการเข้ารับบริการ
 $sql = "SELECT SUBSTRING(`orderdate`,1,10) AS `lab_opd`  
@@ -210,7 +234,7 @@ $pdf->SetXY(5, 43);
 $pdf->Cell(51, 6, 'หน่วยงาน', 0, 1);
 
 $pdf->SetXY(20, 43);
-$pdf->Cell(20, 6, $dxofyear['camp'], 0, 1);
+$pdf->Cell(20, 6, $camp, 0, 1);
 
 $pdf->Rect(59, 43, 22, 6);
 $pdf->SetXY(59, 43);
@@ -283,10 +307,13 @@ if ( !empty($user['ptffone']) ) {
 $pdf->SetXY(5, 55);
 $pdf->Cell(27, 6, 'ที่อยู่ / Address', 0, 1);
 print_dashed(25,60,140,60);
-print_dashed(25,65.50,140,65.50);
-
 $pdf->SetXY(31, 55);
 $pdf->Cell(40, 6, $user['address'], 0, 1);
+
+// รายระเอียดสัญญาณชีพ
+$pdf->SetXY(5, 61);
+$pdf->Cell(200, 6, $nurse, 0, 1);
+// print_dashed(25,65.50,140,65.50);
 
 
 $pdf->Line(5, 67, 205, 67);
