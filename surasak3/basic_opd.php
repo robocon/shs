@@ -134,7 +134,7 @@ if($_POST["cigarette"]=="1"){
 	$drink_amount = ( empty($_POST['drink_amount']) ) ? NULL : $_POST['drink_amount'] ;
 	$ht_amount = ( empty($_POST['ht_amount']) ) ? NULL : $_POST['ht_amount'] ;
 	$dm_amount = ( empty($_POST['dm_amount']) ) ? NULL : $_POST['dm_amount'] ;
-	$hpi = $_POST['hpi'];
+	$hpi = htmlspecialchars($_POST['hpi'], ENT_QUOTES);
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
@@ -982,7 +982,6 @@ mmHg </td>
 				$q = mysql_query($sql) or die( mysql_error() );
 
 				$dm_year = '';
-				
 				$dm_row = mysql_fetch_assoc($q);
 				$test_dm_row = (int)$dm_row['year_diff'];
 				
