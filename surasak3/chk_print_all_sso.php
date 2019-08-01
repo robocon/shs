@@ -78,7 +78,6 @@ $pdf->SetMargins(2, 2);
 // fpdf header config
 /////////////////////////////
 
-// $test_count_user_hotfix = 0;
 
 foreach ($items as $key => $item) {
 
@@ -99,21 +98,9 @@ foreach ($items as $key => $item) {
     $db->select($sql);
     $user = $db->get_item();
 
-    // if( empty($user['hn']) ){
-    //     continue;
-    // }
-
-    // if( $regis_user !== false ){
-        $user['name'] = str_replace($item['prefix'],'',$item['name']);
-        $user['surname'] = $item['surname'];
-    // }
-
-    // ++$test_count_user_hotfix;
-
-    // if( $test_count_user_hotfix == 0 ){
-    //     echo "ไม่มีการสรุปผล ประกันสังคม ";
-    //     exit;
-    // }
+    // $user['name'] = str_replace($item['prefix'],'',$item['name']);
+    $user['name'] = $item['name'];
+    $user['surname'] = $item['surname'];
 
     list($date, $time) = explode(' ', $user['date_chk']);
 
@@ -1034,11 +1021,11 @@ foreach ($items as $key => $item) {
         $pdf->Cell(25, 6, 'ผู้ประกันตนลงนาม', 0, 1);
         $pdf->Line(40,265,86,265);
         $pdf->SetXY(40, 266);
-        $pdf->Cell(46, 6, '( '.$user['prefix'].$user['name'].' '.$user['surname'].' )', 0, 1, 'C');
+        $pdf->Cell(46, 6, '( '.$user['name'].' '.$user['surname'].' )', 0, 1, 'C');
 
         $def_doctor = $user['doctor'];
         $match = preg_match('/\d+/',$user['doctor'], $matchs);
-        // dump($matchs);
+        
         if( $match > 0 ){
 
             $code_doctor = $matchs['0'];
