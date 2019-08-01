@@ -49,7 +49,7 @@
 	//echo "----->".$cPtright;  //�Թʴ
     $cPart="";
     $cDiag=$_POST["diag"];
-    $cDoctor=$doctor;
+    $cDoctor=$_POST["doctor"];
 	$cstaf_massage=$_POST['staf_massage'];
 	$selnid1=$_POST['selnid1'];
 	$selnid2=$_POST['selnid2'];
