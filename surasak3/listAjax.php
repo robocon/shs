@@ -1,12 +1,22 @@
 <?php
 session_start();
+//print_r($_SESSION);
 header("content-type: application/x-javascript; charset=TIS-620");
 include("connect.inc");
+?>
 
+
+<?
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
 
+
+
+$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
+list($pass_drug) = mysql_fetch_row(mysql_query($sql));
+
 	$search_txt = trim($_GET['search']);
-	$sql = "SELECT a.`drugcode`,a.`tradname`,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`
+	
+	$sql = "SELECT a.`drugcode`,a.`tradname`,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`, a.`lock`, a.`lock_ipd`
 	FROM `druglst` AS a 
 	LEFT JOIN (
 
@@ -22,7 +32,7 @@ if($_GET["action"] == "drugcode"){// ชื่อยา*************************************
 		GROUP BY x.`drugcode` 
 
 	) AS b ON b.`drugcode` = a.`drugcode` 
-	WHERE ( a.`drugcode` LIKE '$search_txt%' OR a.`genname` LIKE '$search_txt%' OR a.`tradname` LIKE '$search_txt%' )  
+	WHERE ( a.`drugcode` LIKE '$search_txt%' OR a.`genname` LIKE '$search_txt%' OR a.`tradname` LIKE '$search_txt%' )  AND a.`drug_active`='y'
 	ORDER BY a.`drugcode` ASC";
 
 	$result = mysql_query($sql) or die( mysql_error() ) ;
@@ -62,7 +72,20 @@ if($_GET["action"] == "drugcode"){// ชื่อยา*************************************
 			}else{
 				$txt = "select_radio".$i;
 			}
-
+			
+			
+			if(($arr["lock"]=="N" && $arr["lock_ipd"]=="N") && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){  //ถ้า lock ยา
+			echo "
+			<TR>
+				<TD><INPUT TYPE=\"text\" ID = \"",$txt,"\" NAME=\"select_radio\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">
+					<FONT style=\"font-size: 16px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่ผู้อำนวยการโรงพยาบาลเท่านั้น</FONT></TD>
+				<TD>",$arr["drugcode"],"</TD>
+				<TD>",$arr["tradname"],"</TD>
+				<TD>",$arr["part"],"</TD>
+				<TD>",$arr["unitpri"],"</TD>
+				<TD>",$arr["stock"],"</TD>
+			</TR>";
+			}else{  //ถ้าไม่ได้ lock ยา
 			echo "
 			<TR>
 				<TD><INPUT TYPE=\"radio\" ID = \"",$txt,"\" NAME=\"select_radio\" onkeypress=\"if(event.keyCode == 13){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}\"></TD>
@@ -71,7 +94,8 @@ if($_GET["action"] == "drugcode"){// ชื่อยา*************************************
 				<TD>",$arr["part"],"</TD>
 				<TD>",$arr["unitpri"],"</TD>
 				<TD>",$arr["stock"],"</TD>
-			</TR>";
+			</TR>";			
+			}
 			$i++;
 		}
 		echo "</TABLE></TD>
