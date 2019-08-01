@@ -188,6 +188,11 @@ if( $action == false ){
     $sql = "SELECT `exam_no` FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` DESC LIMIT 1";
     $db->select($sql);
     $test_chk = $db->get_item();
+
+    if( empty($test_chk) ){
+        echo "ขาดข้อมูลพื้นฐาน กรุณานำเข้าข้อมูลหลักก่อนนำเข้าข้อมูลแลป";
+        exit;
+    }
     
     // ตัดเลข 6ตัวแรกที่เป็น yymmdd
     $first_lab_number = substr($test_chk['exam_no'],0,6);
