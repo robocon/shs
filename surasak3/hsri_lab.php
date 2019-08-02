@@ -28,13 +28,20 @@ $db = Mysql::load($shs_configs);
 }
 </style>
 <form action="hsri_lab.php" method="post">
-    <div>
-        HN : <input type="text" name="hn" id="">
-    </div>
-    <div>
-        <button type="submit">show</button>
-        <input type="hidden" name="action" value="show">
-    </div>
+    <fieldset>
+        <legend>ค้นหารายการทางห้องปฏิบัติการ</legend>
+    
+        <div>
+            HN : <input type="text" name="hn" id="">
+        </div>
+        <div>
+            <button type="submit">แสดงข้อมูล</button>
+            <input type="hidden" name="action" value="show">
+        </div>
+        <div>
+            ข้อมูลตั้งแต่ 01 สิงหาคม 2561 ถึง 31 กรกฎาคม 2562
+        </div>
+    </fieldset>
 </form>
 
 <?php

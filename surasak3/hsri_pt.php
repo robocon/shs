@@ -27,13 +27,19 @@ $db = Mysql::load($shs_configs);
 }
 </style>
 <form action="hsri_pt.php" method="post">
-    <div>
-        HN : <input type="text" name="hn" id="">
-    </div>
-    <div>
-        <button type="submit">show</button>
-        <input type="hidden" name="action" value="show">
-    </div>
+    <fieldset>
+        <legend>ค้นหารายรายการทางการแพทย์</legend>
+        <div>
+            HN : <input type="text" name="hn" id="">
+        </div>
+        <div>
+            <button type="submit">แสดงข้อมูล</button>
+            <input type="hidden" name="action" value="show">
+        </div>
+        <div>
+            ข้อมูลตั้งแต่ 01 สิงหาคม 2561 ถึง 31 กรกฎาคม 2562
+        </div>
+    </fieldset>
 </form>
 
 <?php
@@ -76,17 +82,28 @@ if ($action == 'show') {
         $date = $item['txdate'];
         
         if( $item['depart'] == 'PHAR' ){ 
-            $drug_sql = "SELECT a.`tradname` AS a.`detail`,a.`price` AS `yprice` ,a.`amount`,(a.`price`/a.`amount`) AS `item_price`
+
+            $drug_sql = "SELECT a.`tradname` AS `detail`, a.`amount`,(a.`price`/a.`amount`) AS `item_price` ,
+            CASE 
+                WHEN a.`part` = 'DDN' OR a.`part` = 'DPN' OR a.`part` = 'DSN' THEN a.`price` 
+                ELSE '' 
+            END AS `nprice`,
+            
+            CASE 
+                WHEN a.`part` = 'DDL' OR a.`part` = 'DDY' OR a.`part` = 'DPY' OR a.`part` = 'DSY' THEN a.`price` 
+                ELSE '' 
+            END AS `yprice` 
+
             FROM `drugrx` AS a 
             WHERE a.`date` = '$date' 
-            AND a.`hn` = '$hn' ";
+            AND a.`hn` = '$hn'";
             $db->select($drug_sql);
 
             $sub_items = $db->get_items();
 
         }else{
 
-            $etc_sql = "SELECT `detail`,`yprice`,`nprice`,`amount`,(`price`/`amount`) AS `item_price` 
+            $etc_sql = "SELECT `detail`,`yprice`,`nprice`,`amount`,(`price`/`amount`) AS `item_price`
             FROM `patdata` 
             WHERE `date` = '$date' 
             AND `hn` = '$hn' ";
@@ -96,10 +113,7 @@ if ($action == 'show') {
 
         }
 
-        // dump($sub_items);
         foreach ($sub_items as $key => $value) {
-            # code...
-        
             ?>
             <tr>
                 <td><?=$hn;?></td>
@@ -108,13 +122,12 @@ if ($action == 'show') {
                 <td><?=$value['detail'];?></td>
                 <td align="right"><?=$value['amount'];?></td>
                 <td align="right"><?=number_format($value['item_price'],2);?></td>
-                <td align="right"><?=$value['yprice'];?></td>
-                <td align="right"><?=$value['nprice'];?></td>
+                <td align="right"><?=number_format($value['yprice'],2);?></td>
+                <td align="right"><?=number_format($value['nprice'],2);?></td>
             </tr>
             <?php
         }
     }
-
     ?>
         </tbody>
     </table>
