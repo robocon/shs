@@ -14,6 +14,7 @@ include("connect.inc");
 //include("checklogin.php");
 
 $limit30checkday = 30;
+$limit90checkday = 90;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 
 	(
 		(left( drugcode, 1 ) = '0' AND drug_inject_amount ='' AND drug_inject_slip ='' AND  drug_inject_type ='' )
@@ -94,6 +95,25 @@ $rows = mysql_num_rows($result);
 	else{
 		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
 		echo "เคยจ่ายยา ".$tradname." ครั้งล่าสุดเมื่อวันที่ ".$date." จำนวน ".$amount." วิธีใช้ ".$slcode." \n ท่านต้องการสั่งยาหรือไม่?";
+	}
+exit();
+}
+
+
+if(isset($_GET["action"]) && $_GET["action"] == "check90day"){
+
+$times = mktime("0","0","0",date("m"),date("d")-$limit90checkday,date("Y"));
+$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
+$date2 = (date("Y")+543).date("-m-d H:i:s");
+$sql = " Select date_format(date,'%d-%m-%Y'), tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '2OSTE' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
+$result = mysql_query($sql);
+$rows = mysql_num_rows($result);
+	if($rows == 0){
+		echo "0";
+	}
+	else{
+		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
+		echo "เคยจ่ายยา ".$tradname." \nที่กำหนดให้จ่ายยาเว้นระยะ 3 เดือน ครั้งล่าสุดเมื่อวันที่ ".$date."\nจำนวน ".$amount." วิธีใช้ ".$slcode." \nท่านต้องการสั่งยาหรือไม่?";
 	}
 exit();
 }
@@ -2442,6 +2462,9 @@ function checkForm1(){
 	
 	txt3 = ajaxcheck("check30day",document.form1.drug_code.value);
 	txt3 = txt3.substr(4);
+	
+	txt3 = ajaxcheck("check90day",document.form1.drug_code.value);
+	txt3 = txt3.substr(4);	
 	
 	txt7 = ajaxcheck("checktoday",document.form1.drug_code.value);
 	txt7 = txt7.substr(4);
