@@ -265,35 +265,52 @@ if($rows){///  ถ้ามี rows
 				  		  
 }else{
 				  
- $query = "SELECT menu,script,target FROM menulst WHERE menucode like '$menucode%' AND status='Y' ".$where_search." ".$sort;
- $result = mysql_query($query) or die( mysql_error($Conn) );
+	$query = "SELECT menu,script,target FROM menulst WHERE menucode like '$menucode%' AND status='Y' ".$where_search." ".$sort;
+	$result = mysql_query($query) or die( mysql_error($Conn) );
 
-        while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-               print (" <tr>\n".
-                  "  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
-                  " </tr>\n");
-                  }		
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+	print (" <tr>\n".
+	"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
+	" </tr>\n");
+	}
 				  
 }/// ปิด if rows		  
 
 }
- //สารบัญทั่วไป ทุกคนดูได้
-        $query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
-        $result = mysql_query($query) or die( mysql_error($Conn) );
+	//สารบัญทั่วไป ทุกคนดูได้
+	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
+	$result = mysql_query($query) or die( mysql_error($Conn) );
 
-        while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-              print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
-                " </tr>\n");
-                     };
-		 print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
-                " </tr>\n");
-        include("unconnect.inc");
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+		print (" <tr>\n".
+		"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
+		" </tr>\n");
+	};
+	print (" <tr>\n".
+	"  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
+	" </tr>\n");
 
-        print "</table>";
-        print "</body>";
-                   }
+	print "</table>";
+	
+	// แจ้งเตือนในครั้งแรกที่ login 
+	if( $menucode == 'ADM' && empty($_SESSION['net_alert']) ){
+		$sql_internet = "SELECT COUNT(`idcard`) AS `count_id` 
+		FROM `internet` 
+		WHERE `idcard` = '' ;";
+		$q_net = mysql_query($sql_internet);
+		$net = mysql_fetch_assoc($q_net);
+		if( $net['count_id'] > 0 && $net['count_id'] < 20 ){
+			?>
+			<script>alert('จำนวนผู้ใช้ internet ใกล้หมด');</script>
+			<?php
+			$_SESSION['net_alert'] = true;
+		}
+	}
+
+	print "</body>";
+	include("unconnect.inc");
+
+}
    else {
         print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
         print "...<br>";
