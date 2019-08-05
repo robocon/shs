@@ -187,7 +187,10 @@ if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
 				" </tr>\n");	
 	print (" <tr>\n".
                 "  <td BGCOLOR='#008400'><a target='main' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='3' >::ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
-				" </tr>\n");			
+				" </tr>\n");
+	print (" <tr>\n".
+                "  <td BGCOLOR='#008400'><a target='main' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='3' >::รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
+				" </tr>\n");							
 }
 		
 		print (" <tr>\n".
