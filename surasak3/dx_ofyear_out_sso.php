@@ -119,6 +119,9 @@ if( $action === 'show' ){
                     <th>HDL Cholesterol</th>
                     <th>HBsAg</th>
                     <th>Diag</th>
+                    <th>เลขบัตร ปชช.</th>
+                    <th>ที่อยู่</th>
+                    <th>เบอร์โทร</th>
                 </tr>
             </thead>
             <tbody>
@@ -174,11 +177,34 @@ if( $action === 'show' ){
 
                 $db->select($sql);
                 $user = $db->get_item();
+
+                $hn = $item['hn'];
+
+                $sql_opcard = "SELECT `idcard`,`address`,`tambol`,`ampur`,`changwat`,`hphone`,`phone` 
+                FROM `opcard` 
+                WHERE `hn` = '$hn' ";
+                $db->select($sql_opcard);
+                $user = $db->get_item();
+
+                $address = $user['address'];
+                if( $user['tambol'] ){
+                    $address .= ' ต.'.$user['tambol'];
+                }
+
+                if( $user['ampur'] ){
+                    $address .= ' อ.'.$user['ampur'];
+                }
+
+                if( $user['changwat'] ){
+                    $address .= ' จ.'.$user['changwat'];
+                }
+
+                $phone = $user['phone'].' '.$user['hphone'];
                 ?>
                 <tr>
                     <td><?=$i;?></td>
                     <td><?=$item['thidate'];?></td>
-                    <td><?=$item['hn'];?></td>
+                    <td><?=$hn;?></td>
                     <td><?=$item['vn'];?></td>
                     <td><?=$item['ptname'];?></td>
                     <td align="right"><?=$item['height'];?></td>
@@ -198,6 +224,9 @@ if( $action === 'show' ){
                     <td><?=$user['res_hdl'];?></td>
                     <td><?=$user['res_hbsag'];?></td>
                     <td><?=$user['diag'];?></td>
+                    <td><?=$user['idcard'];?></td>
+                    <td><?=$address;?></td>
+                    <td><?=$phone;?></td>
                 </tr>
                 <?php
                 $i++;

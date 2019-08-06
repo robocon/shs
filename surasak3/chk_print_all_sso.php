@@ -83,6 +83,8 @@ foreach ($items as $key => $item) {
 
     $hn = $item['HN'];
 
+    $pid = $item['pid'];
+
     $sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$part' ";
     $db->select($sql);
     $company = $db->get_item();
@@ -266,6 +268,8 @@ foreach ($items as $key => $item) {
 
 
         $pdf->SetFont('AngsanaNew','',16); // เรียกใช้งานฟอนต์ที่เตรียมไว้
+        $pdf->SetXY(0, 15);
+        $pdf->Cell(200, 6, $pid, 0, 1, 'R');
         $pdf->SetXY(0, 25);
         $pdf->Cell(210, 6, 'ใบรายงานผลตรวจสุขภาพ', 0, 1, 'C');
 
