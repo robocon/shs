@@ -107,7 +107,7 @@ if( $test_real_item === 0 ){
 			<?php
 		}
 		?>
-		<button id="shsBtn">ใบเบิกใหม่</button>
+		<button id="shsBtn">บันทึกและพิมพ์ใบเบิกใหม่</button>
     </td>
     </tr>
   </table>

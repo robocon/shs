@@ -12,95 +12,16 @@
  * 
  */
 
-include 'fpdf_thai/fpdf_thai.php';
+// include 'fpdf_thai/fpdf_thai.php';
+include 'fpdf_thai/shspdf.php';
 
-class PDF_JavaScript extends FPDF_Thai {
+class MedSHS extends SHSPdf{
 
-    var $javascript;
-    var $n_js;
-
-    function IncludeJS($script) {
-        $this->javascript=$script;
-    }
-
-    function _putjavascript() {
-        $this->_newobj();
-        $this->n_js=$this->n;
-        $this->_out('<<');
-        $this->_out('/Names [(EmbeddedJS) '.($this->n+1).' 0 R]');
-        $this->_out('>>');
-        $this->_out('endobj');
-        $this->_newobj();
-        $this->_out('<<');
-        $this->_out('/S /JavaScript');
-        $this->_out('/JS '.$this->_textstring($this->javascript));
-        $this->_out('>>');
-        $this->_out('endobj');
-    }
-
-    function _putresources() {
-        parent::_putresources();
-        if (!empty($this->javascript)) {
-            $this->_putjavascript();
-        }
-    }
-
-    function _putcatalog() {
-        parent::_putcatalog();
-        if (!empty($this->javascript)) {
-            $this->_out('/Names <</JavaScript '.($this->n_js).' 0 R>>');
-        }
-    }
-}
-
-class PDF_AutoPrint extends PDF_JavaScript{
-    function AutoPrint($dialog=false){
-        //Open the print dialog or start printing immediately on the standard printer
-        $param=($dialog ? 'true' : 'false');
-        $script="print($param);";
-        $this->IncludeJS($script);
-    }
-
-    function AutoPrintToPrinter($server, $printer, $dialog=false){
-        //Print on a shared printer (requires at least Acrobat 6)
-        $script = "var pp = getPrintParams();";
-        if($dialog){
-            $script .= "pp.interactive = pp.constants.interactionLevel.full;";
-        }else{
-            $script .= "pp.interactive = pp.constants.interactionLevel.automatic;";
-        }
-        $script .= "pp.printerName = '\\\\\\\\".$server."\\\\".$printer."';";
-        $script .= "print(pp);";
-        $this->IncludeJS($script);
-    }
-
-    function _getfontpath(){
-        if(!defined('FPDF_FONTPATH')){
-            define('FPDF_FONTPATH',dirname(__FILE__).'/font/');
-        }
-        return defined('FPDF_FONTPATH') ? FPDF_FONTPATH : '';
-    }
-
-    function SetThaiFont() {
-        $this->_getfontpath();
-        $this->AddFont('AngsanaNew','','angsa.php');
-        $this->AddFont('THSarabun','','THSarabun.php');
-        $this->AddFont('THSarabun','B','THSarabun Bold.php');
+    function __construct($orientation='P', $unit='mm', $size='A4')
+	{
+		parent::__construct($orientation, $unit, $size);
     }
     
-    function conv($string) {
-        return iconv('UTF-8', 'TIS-620', $string);
-    }
-
-    function LoadData($file){
-        //Read file lines
-        $lines = file($file);
-        $data = array();
-        foreach($lines as $line)
-            $data[] = explode(';',chop($line));
-        return $data;
-    }
-
     function Header(){
 
         $date_serve = $GLOBALS['date_serve'];
@@ -155,56 +76,73 @@ class PDF_AutoPrint extends PDF_JavaScript{
 
     }
 
-    function Footer(){
-        $this->SetXY(8, 187);
+    
+    function Footer(){ 
+        
+        global $latest_line;
+
+        $latest_line += 6;
+
+        $this->SetXY(8, $latest_line);
         $this->Cell(85, 6, 'ตรวจแล้วเห็นว่า', 0, 1);
-        $this->SetXY(93, 187);
+        $this->SetXY(93, $latest_line);
         $this->Cell(85, 6, 'ขอเบิก สป. ตามที่ระบุไว้ในช่อง "จำนวนเบิก" และขอมอบ', 0, 1, 'R');
 
-        $this->SetXY(8, 193);
+        $latest_line += 6;
+
+        $this->SetXY(8, $latest_line);
         $this->Cell(85, 6, 'ควรจ่าย สป. ให้ตามจำนวนในช่อง "จ่ายจริง"', 0, 1);
-        $this->SetXY(93, 193);
+        $this->SetXY(93, $latest_line);
         $this->Cell(85, 6, 'ให้.................................................................เป็นผู้รับแทน', 0, 1, 'R');
 
-        $this->SetXY(8, 199);
+        $latest_line += 6;
+
+        $this->SetXY(8, $latest_line);
         $this->Cell(45, 11, '...................................................', 0, 1, 'B');
-        $this->SetXY(58, 199);
+        $this->SetXY(58, $latest_line);
         $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
-        $this->SetXY(94, 199);
+        $this->SetXY(94, $latest_line);
         $this->Cell(45, 11, '...................................................', 0, 1, 'B');
-        $this->SetXY(144, 199);
+        $this->SetXY(144, $latest_line);
         $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
 
-        $this->SetXY(8, 210);
+        $latest_line += 7;
+
+        $this->SetXY(8, $latest_line);
         $this->Cell(45, 7, 'ผู้ตรวจจ่าย', 0, 1, 'C');
-        $this->SetXY(58, 210);
+        $this->SetXY(58, $latest_line);
         $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
-        $this->SetXY(94, 210);
+        $this->SetXY(94, $latest_line);
         $this->Cell(45, 7, 'ผู้เบิก', 0, 1, 'C');
-        $this->SetXY(144, 210);
+        $this->SetXY(144, $latest_line);
         $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
 
-        $this->Line(8, 219, 178, 219);
+        $latest_line += 7;
 
-        $this->SetXY(8, 219);
+        $this->Line(8, $latest_line, 178, $latest_line);
+        $this->SetXY(8, $latest_line);
         $this->Cell(170, 7, 'ได้จ่าย สป. ตามรายการจำนวนที่แจ้งไว้ในช่องจ่ายจริงแล้ว ได้รับ สป. ตามรายการและจำนวนที่แจ้งไว้ในช่องจ่ายจริงแล้ว', 0, 1, 'C');
 
-        $this->SetXY(8, 224);
+        $latest_line += 6;
+
+        $this->SetXY(8, $latest_line);
         $this->Cell(45, 11, '...................................................', 0, 1, 'B');
-        $this->SetXY(58, 224);
+        $this->SetXY(58, $latest_line);
         $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
-        $this->SetXY(94, 224);
+        $this->SetXY(94, $latest_line);
         $this->Cell(45, 11, '...................................................', 0, 1, 'B');
-        $this->SetXY(144, 224);
+        $this->SetXY(144, $latest_line);
         $this->Cell(32, 11, '.........../.........../...........', 0, 1, 'B');
 
-        $this->SetXY(8, 235);
+        $latest_line += 7;
+
+        $this->SetXY(8, $latest_line);
         $this->Cell(45, 7, 'ผู้จ่ายของ', 0, 1, 'C');
-        $this->SetXY(58, 235);
+        $this->SetXY(58, $latest_line);
         $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
-        $this->SetXY(94, 235);
+        $this->SetXY(94, $latest_line);
         $this->Cell(45, 7, 'ผู้รับของ', 0, 1, 'C');
-        $this->SetXY(144, 235);
+        $this->SetXY(144, $latest_line);
         $this->Cell(32, 7, 'วัน เดือน ปี', 0, 1, 'C');
     }
 }
@@ -214,7 +152,7 @@ if( !isset($date_serve) ){
     $date_serve = date('d').' '.$def_fullm_th[$m].' '.( date('Y') + 543 );
 }
 
-$pdf = new PDF_AutoPrint("P",'mm', "A4");
+$pdf = new MedSHS("P",'mm', "A4");
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
 $pdf->SetAutoPageBreak(true, 0);
 $pdf->SetMargins(8, 4);
@@ -258,22 +196,18 @@ for ($i=1; $i <= $full_rows; $i++) {
 
         // รองรับแค่ที่2บรรทัด
         $tradename = trim($item['tradename']);
-        $test_count_tradename = strlen($item['tradename']);
-        if( !empty($item) && $test_count_tradename >= 48 ){
+        $tradename = preg_replace('/[[:space:]]+/',' ',$tradename);
 
-            $line_height += $default_line_height; // เบิ้ลความสูง
-            ++$line_number; // เบิ้ลจำนวนบรรทัด
-
-            ++$over_line_limit; // นับจำนวนที่มันเกินว่ามีกี่บรรทัด
-        }
+        // นับเอาความสูงของ tradename
+        $line_height = $pdf->GetMultiCellHeight(85, 7.5, $tradename,1);
 
         // รหัสยา
         $pdf->SetXY($x_drugcode, $y_start);
-        $pdf->Cell(25, $line_height, $item['drugcode'], 0, 0, 'L');
+        $pdf->Cell(25, $line_height, $item['drugcode'], 1, 1, 'L');
 
         // รายการยา
         $pdf->SetXY($x_tradename, $y_start);
-        $pdf->Multicell(85, $default_line_height, $tradename, 0, 'L');
+        $pdf->MultiCell(85, 7.5, $tradename, 1, L);
 
         // จำนวนเบิก
         $pdf->SetXY($x_drugbring, $y_start);
@@ -303,6 +237,9 @@ for ($i=1; $i <= $full_rows; $i++) {
     $pdf->Rect($x_smallbaht, $y_start, 12, $line_height); //เป็นเงิน(สต.)
 
     $y_start += $line_height; // ขึ้นบรรทัดใหม่ไปเรื่อยๆ
+
+    // เอา latest_line ไปใช้ใน footer
+    $latest_line = $y_start;
 
     if( $line_number == $max_row && !empty($item) ){
         $y_start = 59;
