@@ -221,7 +221,8 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 <strong>รายการยาที่รับผิดชอบ </strong>
 
 ช่วงวันที่ <?=$_SESSION['yymall']?><br />
-ตรวจสอบเมื่อวันที่ <?=date("d-m")."-".(date("Y")+543)?> เวลา <?=date("H:i:s")?></span>
+ตรวจสอบเมื่อวันที่ <?=date("d-m")."-".(date("Y")+543)?> เวลา <?=date("H:i:s")?><br />
+*** ช่องจ่ายยาไม่รวมกับ <u>แผนกต่างๆ</u> <u>ยาหมดอายุแลกเปลี่ยนบริษัท</u> และ <u>ส่งคืน/แลกเปลี่ยนยาและเวชภัณฑ์กับบริษัท</u> (21/06/2561)</span>
 
 <form id="form2" target="_blank" name="form2" method="post" action="drug_control_preview.php">
 	<table width="100%" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
@@ -267,9 +268,11 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 		WHERE `drugcode` = '".trim($result2['drugcode'])."' 
 		AND date BETWEEN '".$_SESSION['yym']." 00:00:00' AND '".$_SESSION['yym2']." 23:59:59' 
 		GROUP BY `drugcode`";
+		//echo $query1;
 		$resultq1 = mysql_query($query1) or die( mysql_error() );
 		list($drugcode1, $tradname1, $amount1) = mysql_fetch_row($resultq1);
-			$sumamount=$amount+$amount1;
+			//$sumamount=$amount+$amount1;  //ยกเลิกเมื่อ 21/06/2561
+			$sumamount=$amount;
 		?>
 		<tr>
 			<td bgcolor="#FFFFCC" class="font1"><input type="hidden" name="drx<?=$k?>" value="<?=$result2['drugcode']?>" /><a target="_blank" href="drugchkcode.php?code=<?=$result2['drugcode']?>"><?=$result2['drugcode']?></a></td>
