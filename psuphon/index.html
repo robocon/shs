@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>โรงพยาบาลค่ายสุรศักดิ์มนตรี</title>
+    <style>
+        body{
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+        img {
+            max-width:100%;
+            height:auto;
+        }
+        map {
+            display: inline;
+        }
+
+        @media only screen and (max-width: 600px) {
+            #for_desktop{
+                display: none;
+            }
+            #for_mobile{
+                display: block;
+            }
+        }
+
+        @media only screen and (min-width: 600px) {
+            #for_desktop{
+                display: block;
+            }
+            #for_mobile{
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="for_desktop">
+        <img id="desktop" usemap="#desktopmap" src="queen9.jpg" >
+        <map name="desktopmap" id="desktop">
+            <area alt="เข้าสู่เว็บไซต์" title="เข้าสู่เว็บไซต์" href="/index.php" shape="rect" coords="290,640,538,730" target="_self">
+            <area alt="ลงนามถวายพระพร" title="ลงนามถวายพระพร" href="http://culture.kapook.com/queen/all.php" shape="rect" coords="770,640,1049,730" target="_blank" >
+        </map>
+    </div>
+    <div id="for_mobile">
+        <img id="mobile" usemap="#mobilemap" src="queen9.jpg" >
+        <map name="mobilemap" id="mobile">
+            <area alt="เข้าสู่เว็บไซต์" title="เข้าสู่เว็บไซต์" href="/index.php" shape="rect" coords="72,148,196,239" target="_self">
+            <area alt="ลงนามถวายพระพร" title="ลงนามถวายพระพร" href="http://culture.kapook.com/queen/all.php" shape="rect" coords="225,148,390,239" target="_blank" >
+        </map>
+    </div>
+</body>
+</html>
