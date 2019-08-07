@@ -2,6 +2,8 @@
 
 include 'bootstrap.php';
 
+$db = Mysql::load();
+
 $def_date = input('date', date('Y-m-d'));
 $hn = input('hn');
 $action = input('action');
@@ -50,32 +52,71 @@ $action = input('action');
     </form>
 </fieldset>
 
-
+<fieldset class="no-print">
+    <legend>ค้นหาตามบริษัท</legend>
+    <form action="dx_ofyear_out_sso.php" method="post">
+        <?php 
+        $db->select("SELECT `code`,`name` FROM `chk_company_list` ORDER BY `id` DESC");
+        $company_list = $db->get_items();
+        ?>
+        <div>
+            เลือกบริษัท: 
+            <select name="company_name" id="">
+                <?php 
+                foreach ($company_list as $key => $item) {
+                    ?>
+                    <option value="<?=$item['code'];?>"><?=$item['name'];?> (<?=$item['code'];?>)</option>
+                    <?php
+                }
+                ?>
+            </select>
+        </div>
+        <div>
+            <button type="submit">แสดงข้อมูล</button>
+            <input type="hidden" name="action" value="show">
+            <input type="hidden" name="type" value="company">
+        </div>
+    </form>
+</fieldset>
 <?php
 if( $action === 'show' ){
 
-    // $match = preg_match('/\d{4,4}\-\d{2,2}\-\d{2,2}/', $def_date);
-    // if( $match == 0 ){
-    //     echo "กรุณาเลือกรูปแบบวันที่เป็น ปี-เดือน-วัน เช่น 2017-12-25 เป็นต้น";
-    //     exit;
-    // }
+    $test_type = input_post('type');
+    if( $test_type == 'company' ){
 
-    $db = Mysql::load();
+        $part = input('company_name');
 
-    $where = "AND `thidate` LIKE '$def_date%' ";
-    if( !empty($hn) ){
-        $where = "AND `hn` = '$hn' ORDER BY `row_id` DESC";
+        $sql_com = "SELECT * FROM `chk_company_list` WHERE `code` = '$part' ";
+        $db->select($sql_com);
+        $company = $db->get_item();
+
+        $sql = "SELECT b.* 
+        FROM `opcardchk` AS a 
+        LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+        WHERE a.`part` = '$part' 
+        AND b.`camp` LIKE 'ตรวจสุขภาพ%' ";
+
+        $db->select($sql);
+        $rows = $db->get_rows();
+
+    }else{
+
+        $where = "AND `thidate` LIKE '$def_date%' ";
+        if( !empty($hn) ){
+            $where = "AND `hn` = '$hn' ORDER BY `row_id` DESC";
+        }
+
+        // อันเก่าเป็น `camp` LIKE 'ตรวจสุขภาพ%'
+        $sql = "SELECT *, SUBSTRING(`thidate`, 1, 10) AS `short_date`  
+        FROM `dxofyear_out` 
+        WHERE `camp` LIKE 'ตรวจสุขภาพ%' 
+        $where ";
+
+        $db->select($sql);
+        $rows = $db->get_rows();
+        
     }
-
-    // อันเก่าเป็น `camp` LIKE 'ตรวจสุขภาพ%'
-    $sql = "SELECT *, SUBSTRING(`thidate`, 1, 10) AS `short_date`  
-    FROM `dxofyear_out` 
-    WHERE `camp` LIKE 'ตรวจสุขภาพ%' 
-    $where ";
-
-    $db->select($sql);
-    $rows = $db->get_rows();
-
+    
     if( $rows > 0 ){
         $items = $db->get_items();
         ?>
@@ -93,21 +134,29 @@ if( $action === 'show' ){
                 padding: 3px;
             }
         </style>
-        <h3>รายชื่อผู้ตรวจสุขภาพ Walk-in วันที่ <?=$def_date;?></h3>
+        <?php 
+        if( $test_type == 'company' ){
+            ?>
+            <div class="no-print" style="margin: 4px;">
+                <button onclick="window.print();">คลิกเพื่อสั่งพิมพ์ผล <?=$company['name'];?></button>
+            </div>
+            <h3>บริษัท <?=$company['name'];?></h3>
+            <?php
+        }else{
+            ?>
+            <h3>รายชื่อผู้ตรวจสุขภาพ Walk-in วันที่ <?=$def_date;?></h3>
+            <?php
+        }
+        ?>
         <table class="chk_table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>วันที่</th>
                     <th>HN</th>
-                    <th>VN</th>
                     <th>ชื่อ-สกุล</th>
                     <th>สูง(cm.)</th>
                     <th>นน.(kg.)</th>
-                    <th>T(&#8451;)</th>
-                    <th>pause</th>
-                    <th>rate</th>
-                    <th>bmi</th>
                     <th>bp1</th>
                     <th>bp2</th>
                     <th>CXR</th>
@@ -118,6 +167,8 @@ if( $action === 'show' ){
                     <th>Total Cholesterol</th>
                     <th>HDL Cholesterol</th>
                     <th>HBsAg</th>
+                    <th>Occult(FOBT)</th>
+                    <th>สรุปผลตรวจ</th>
                     <th>Diag</th>
                     <th>เลขบัตร ปชช.</th>
                     <th>ที่อยู่</th>
@@ -170,11 +221,20 @@ if( $action === 'show' ){
                     WHEN `cxr` = 2 THEN 'ผิดปกติ' 
                     ELSE ''
                 END AS `cxr`, 
+                CASE
+                    WHEN `res_occult` = 1 THEN 'ปกติ' 
+                    WHEN `res_occult` = 2 THEN 'ผิดปกติ' 
+                    ELSE ''
+                END AS `res_occult`, 
+                CASE 
+                    WHEN `conclution` = 1 THEN 'ปกติ' 
+                    WHEN `conclution` = 2 THEN 'ผิดปกติ' 
+                    ELSE '' 
+                END AS `conclution`, 
                 `diag` 
                 FROM `chk_doctor` 
                 WHERE `hn` = '".$item['hn']."' 
                 AND ( `date_chk` LIKE '".$item['short_date']."%' OR `vn` = '".$item['vn']."' )";
-
                 $db->select($sql);
                 $user = $db->get_item();
 
@@ -184,35 +244,30 @@ if( $action === 'show' ){
                 FROM `opcard` 
                 WHERE `hn` = '$hn' ";
                 $db->select($sql_opcard);
-                $user = $db->get_item();
+                $opcard = $db->get_item();
 
-                $address = $user['address'];
-                if( $user['tambol'] ){
-                    $address .= ' ต.'.$user['tambol'];
+                $address = $opcard['address'];
+                if( $opcard['tambol'] ){
+                    $address .= ' ต.'.$opcard['tambol'];
                 }
 
-                if( $user['ampur'] ){
-                    $address .= ' อ.'.$user['ampur'];
+                if( $opcard['ampur'] ){
+                    $address .= ' อ.'.$opcard['ampur'];
                 }
 
-                if( $user['changwat'] ){
-                    $address .= ' จ.'.$user['changwat'];
+                if( $opcard['changwat'] ){
+                    $address .= ' จ.'.$opcard['changwat'];
                 }
 
-                $phone = $user['phone'].' '.$user['hphone'];
+                $phone = $opcard['phone'].' '.$opcard['hphone'];
                 ?>
-                <tr>
+                <tr valign="top">
                     <td><?=$i;?></td>
                     <td><?=$item['thidate'];?></td>
                     <td><?=$hn;?></td>
-                    <td><?=$item['vn'];?></td>
                     <td><?=$item['ptname'];?></td>
                     <td align="right"><?=$item['height'];?></td>
                     <td align="right"><?=$item['weight'];?></td>
-                    <td align="right"><?=$item['temperature'];?></td>
-                    <td align="right"><?=$item['pause'];?></td>
-                    <td align="right"><?=$item['rate'];?></td>
-                    <td align="right"><?=$item['bmi'];?></td>
                     <td align="right"><?=$item['bp1'];?></td>
                     <td align="right"><?=$item['bp2'];?></td>
                     <td><?=$user['cxr'];?></td>
@@ -223,8 +278,10 @@ if( $action === 'show' ){
                     <td><?=$user['res_chol'];?></td>
                     <td><?=$user['res_hdl'];?></td>
                     <td><?=$user['res_hbsag'];?></td>
+                    <td><?=$user['res_occult'];?></td>
+                    <td><?=$user['conclution'];?></td>
                     <td><?=$user['diag'];?></td>
-                    <td><?=$user['idcard'];?></td>
+                    <td><?=$opcard['idcard'];?></td>
                     <td><?=$address;?></td>
                     <td><?=$phone;?></td>
                 </tr>
