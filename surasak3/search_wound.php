@@ -148,11 +148,11 @@ if(isset($_POST["submit"])){
 
 <?
 	
-	$sql = "Create temporary table sub_opacc Select date, hn, credit From opacc where  (date between '{$sdate}' AND '{$edate}' )";
+	$sql = "Create temporary table sub_opacc Select date, hn, credit From opacc where  (date between '$sdate' AND '$edate' )";
 	$result = mysql_query($sql);
 
 //$codes="";
-	$sql = "Select date_format(date,'%d/%m/%Y') as date2, date_format(date,'%Y-%m-%d') as date3, hn, ptname, doctor, sum(amount) From patdata  where amount <> 0 AND (date between '{$sdate}' AND '{$edate}' ) AND code ='{$codes}' Group by date2,hn,ptname,doctor Order by date, amount DESC ";
+	$sql = "Select date_format(date,'%d/%m/%Y') as date2, date_format(date,'%Y-%m-%d') as date3, hn, ptname, doctor, sum(amount) From patdata  where amount <> 0 AND (date between '$sdate' AND '$edate' ) AND code ='$codes' Group by date2,hn,ptname,doctor Order by date, amount DESC ";
 	//echo $sql;
 //
 	$result = mysql_query($sql) or die(mysql_error());
@@ -168,7 +168,7 @@ if(isset($_POST["submit"])){
 			$class = "left_detail";
 		}
 		$create = "";
-		list($create) = mysql_fetch_row(mysql_query("Select credit From sub_opacc where hn='{$hn}' AND date like '{$date2}%' limit 1"));
+		list($create) = mysql_fetch_row(mysql_query("Select credit From sub_opacc where hn='$hn' AND date like '$date2%' limit 1"));
 		echo "<TR  class=\"",$class,"\">
 						<TD align=\"center\">",$i,".</TD>
 						<TD>",$date,"</TD>

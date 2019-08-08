@@ -135,6 +135,7 @@ if($_GET["action"] == "carlendar"){
 
 	// ผู้ใช้งานปัจจุบันเป็นแพทย์เวชปฏิบัติหรือไม่ ถ้าใช่ค่อย query statement ออกมา
 	$dr_intern = false;
+	$total_items = array();
 	if( in_array($mdcode, $md_checklists) === true ){
 		$test_intern = $dr_intern = true;
 
@@ -149,7 +150,6 @@ if($_GET["action"] == "carlendar"){
 		GROUP BY `appdate` 
 		ORDER BY `appdate`";
 		$query = mysql_query($sql);
-		$total_items = array();
 		while( $item = mysql_fetch_assoc($query) ){
 			$code = 'A'.$item['code'];
 			$total_items[$code] = $item;
