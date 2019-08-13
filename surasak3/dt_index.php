@@ -64,7 +64,7 @@ window.onload = function(){
 </SCRIPT>
 </head>
 </body>
-<a href='../nindex.htm'>&lt;&lt;ไปเมนู</a>  || <a href="dt_emp_manual_index.php">ตรวจสุขภาพสิทธิประกันสังคม (แบบไม่ต้องใช้ VN)</a>
+<a href='../nindex.htm'>&lt;&lt;ไปเมนู</a>  || <a href="dt_emp_manual_index.php">ตรวจสุขภาพสิทธิประกันสังคม (แบบไม่ต้องใช้ VN)</a>  || <a href="dxdr_ofyear1_dr_manual.php">ตรวจสุขภาพประจำปีกองทัพบก (แบบไม่ต้องใช้ VN)</a>
 <BR>
 <table width="100%" border="0">
   <tr>
