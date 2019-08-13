@@ -1273,14 +1273,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 //************************** แสดงรายการยาให้เลือก Ajax ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
-
-	// ถ้าเข้าเกณฑ์ผู้ป่วย 30บาท
-	$ptright_code30 = false;
-	$test_pt = preg_match('/R(09|1[0-4]|36)/',$_SESSION["ptright_now"], $matchs);
-	if($test_pt > 0){
-		$ptright_code30 = true;
-	}
-
 	if($_GET["search"] == "viat"){
 		$where = "drugcode = '5FLES' OR ";
 	}
@@ -1308,16 +1300,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 
 		$i=1;
 		while($arr = Mysql_fetch_assoc($result)){
-
-			// ถ้าผู้ป่วยเป็นสิทธิ 30บาท และยาที่แสดงในรายการเป็น 0VERO จะข้ามการแสดงผลไป
-			$test_drugcode = trim($arr['drugcode']);
-			if( $test_drugcode == '0VERO' && $ptright_code30 === true ){
-				continue; 
-
-			// แต่ถ้าผู้ป่วยเป็นสิทธิอื่นๆ จะข้ามการแสดงผลของ 0VERO-C ที่เป็นยาเฉพาะของผู้ป่วย สปสช เท่านั้น
-			}elseif ( $test_drugcode == '0VERO-C' && $ptright_code30 === false ){
-				continue; 
-			}
 				
 				if($arr["lock_dr"] != "Y"){
 					if($arr["lock_dr"] =="N"){
