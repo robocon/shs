@@ -110,7 +110,7 @@ if($_GET["action"] == "carlendar"){
 	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
 	AND apptime <> 'ยกเลิกการนัด' 
 	GROUP BY appdate, apptime  ";
-	
+
 	$result = Mysql_Query($sql);
 	$list_app = array();
 	while($arr = Mysql_fetch_assoc($result)){
@@ -118,44 +118,13 @@ if($_GET["action"] == "carlendar"){
 		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
 
-	
-	// หาจำนวนผู้ป่วยนัดเฉพาะแพทย์เวชปฏิบัติ
-	// รายชื่อแพทย์เวชปฏิบัติ ไม่เช็ก status = y เพราะหมอบางคนนัดไว้นานมาาาาาก
-	$sql = "SELECT `name`, SUBSTRING(`name`, 1, 5) AS `mdcode`
-	FROM `doctor` 
-	WHERE `position` = '99 เวชปฏิบัติ';";
-	$query = mysql_query($sql);
-	$dr_lists = array();
-	$md_checklists = array();
-	while( $item = mysql_fetch_assoc($query) ){
-		$dr_lists[] = "'".$item['name']."'";
-		$md_checklists[] = $item['mdcode'];
-	}
-	$dr_name = implode(',', $dr_lists);
 
 	// ผู้ใช้งานปัจจุบันเป็นแพทย์เวชปฏิบัติหรือไม่ ถ้าใช่ค่อย query statement ออกมา
 	$dr_intern = false;
-	$total_items = array();
-	if( in_array($mdcode, $md_checklists) === true ){
-		$test_intern = $dr_intern = true;
-
-		$thai_date = $thmonthname[($month - 1)]." ".($year + 543);
-
-		// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
-		$sql = "SELECT `appdate`, COUNT(DISTINCT `hn`) AS `total`, SUBSTRING(`appdate`, 1, 2) AS `code` 
-		FROM `appoint` 
-		WHERE `appdate` LIKE '%$thai_date' 
-		AND `doctor` IN($dr_name) 
-		AND `apptime` != 'ยกเลิกการนัด' 
-		GROUP BY `appdate` 
-		ORDER BY `appdate`";
-		$query = mysql_query($sql);
-		while( $item = mysql_fetch_assoc($query) ){
-			$code = 'A'.$item['code'];
-			$total_items[$code] = $item;
-		}
+	
+	if( $_SESSION['sLevel'] == 'intern' ){
+		$dr_intern = true;
 	}
-	// หาจำนวนผู้ป่วยนัดเฉพาะแพทย์เวชปฏิบัติ
 
 	$sql = "Select date_format(date_holiday,'%d') as date_holiday2, detail From holiday where date_holiday like '".($year+543)."-".sprintf("%02d",$month)."%' ";
 	$result = Mysql_Query($sql);
@@ -238,41 +207,45 @@ if($_GET["action"] == "carlendar"){
 	}
 
 
-	// ของหมอวรวิทย์ จะเป็นนัดเด็ก 2.5ขวบ กับ 4ขวบ 
-	$sql = "SELECT a.`age`,b.`dbirth`  
-	FROM `opday` AS a 
-	LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-	WHERE a.`thdatevn` = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
-	$q = mysql_query($sql);
-	$pt = mysql_fetch_assoc($q);
-	$pt_age = calcage($pt['dbirth']);
+	if( $_SESSION['sIdname'] == 'md27035' OR $_SESSION['smenucode'] == 'ADM' ){
 
-	if( ( $_SESSION['sIdname'] == 'md27035' OR $_SESSION['smenucode'] == 'ADM' ) && $pt_age['year'] >= 0 && $pt_age['year'] < 4 ){
+		// ของหมอวรวิทย์ จะเป็นนัดเด็ก 2.5ขวบ กับ 4ขวบ 
+		$sql = "SELECT a.`age`,b.`dbirth`  
+		FROM `opday` AS a 
+		LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+		WHERE a.`thdatevn` = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
+		$q = mysql_query($sql);
+		$pt = mysql_fetch_assoc($q);
+		$pt_age = calcage($pt['dbirth']);
 
-		list($y, $m, $d) = explode('-', $pt['dbirth']);
-		
-		$next_2years = strtotime(($y - 543)."-$m-$d +2 years +6 months");
-		$next_4years = strtotime(($y - 543)."-$m-$d +4 years");
-		
-		
-		list($yinj, $minj, $dinj) = explode('-', date('Y-m-d', $next_2years));
-		list($yinj2, $minj2, $dinj2) = explode('-', date('Y-m-d', $next_4years));
+		if( $pt_age['year'] >= 0 && $pt_age['year'] < 4 ){
 
-		// คลิกแล้วเด้งไปตอน 2ขวบครึ่ง และ4ขวบ
-		echo '<br>';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">เลือกวันปัจจุบัน</a>';
+			list($y, $m, $d) = explode('-', $pt['dbirth']);
+			
+			$next_2years = strtotime(($y - 543)."-$m-$d +2 years +6 months");
+			$next_4years = strtotime(($y - 543)."-$m-$d +4 years");
+			
+			
+			list($yinj, $minj, $dinj) = explode('-', date('Y-m-d', $next_2years));
+			list($yinj2, $minj2, $dinj2) = explode('-', date('Y-m-d', $next_4years));
 
-		// 0 - 2ขวบครึ่ง
-		if( $pt_age['year'] <= 2 && $pt_age['month'] < 6 ) {
-			echo '&nbsp;||&nbsp;';
-			echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$dinj.'&dfMonth='.$minj.'&dfYear='.$yinj.'\')">นัดเด็ก 2ขวบครึ่ง</a>';
+			// คลิกแล้วเด้งไปตอน 2ขวบครึ่ง และ4ขวบ
+			echo '<br>';
+			echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">เลือกวันปัจจุบัน</a>';
+
+			// 0 - 2ขวบครึ่ง
+			if( $pt_age['year'] <= 2 && $pt_age['month'] < 6 ) {
+				echo '&nbsp;||&nbsp;';
+				echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$dinj.'&dfMonth='.$minj.'&dfYear='.$yinj.'\')">นัดเด็ก 2ขวบครึ่ง</a>';
+			}
+			
+			if( $pt_age['year'] < 4 ) {
+				echo '&nbsp;||&nbsp;';
+				echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$dinj2.'&dfMonth='.$minj2.'&dfYear='.$yinj2.'\')">นัดเด็ก 4ขวบ</a>';
+			}
+			
 		}
-		
-		if( $pt_age['year'] < 4 ) {
-			echo '&nbsp;||&nbsp;';
-			echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$dinj2.'&dfMonth='.$minj2.'&dfYear='.$yinj2.'\')">นัดเด็ก 4ขวบ</a>';
-		}
-		
+
 	}
 
 	echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
@@ -313,52 +286,24 @@ if($_GET["action"] == "carlendar"){
 			// คีย์ เอาไว้ตรวจสอบค่าจาก Array
 			$key = 'A'.sprintf("%02d",$iday);
 
-			// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-			$dr_intern_txt = '';
-			$intern_total = 0;
-			if( $dr_intern === true ){
-				if( !empty($total_items[$key]) ){
-					$item = $total_items[$key];
-					$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
-					// $intern_total = $item['total'];
-				}
-			}
-
-			$intern_limit = '';
-			$data_count = '';
-			if( $dr_intern === true ){
-				// วันจันทร์จะลิมิตไว้ที่ 40 วันอื่นๆที่ 50
-				$max_limit = 50;
-				if( $i == 1 ){
-					$max_limit = 40;
-				}
-
-				// $intern_limit = 'intern-limit="'.$max_limit.'"';
-				// $data_count = 'data-count="'.$intern_total.'"';
-			}
-
 			if ($i == 0 ) {
 			//กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
 				echo "<td width=\"50\" valign=\"top\" align=\"center\" class=\"sunday\">
-				<A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
+				<A class=\"sunday countnum\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
 				if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 					echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				else
 					echo "<BR>&nbsp;";
 
-				echo $dr_intern_txt;
-
 				echo "</td>\n";
 			}else  if ($i == 6 ) {
 			//กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
 				echo "<td width=\"50\" align=\"center\" class=\"saturday\">
-				<A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
+				<A class=\"saturday countnum\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
 				if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 					echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				else
 					echo "<BR>&nbsp;";
-
-				echo $dr_intern_txt;
 
 				echo "</td>\n";
 
@@ -372,13 +317,11 @@ if($_GET["action"] == "carlendar"){
 				}
 
 				echo "<td width=\"50\" align=\"center\" class=\"".$class."\">
-				<A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\"  ".$holiday_detail.">$iday</A>";
+				<A class=\"".$class." countnum\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\"  ".$holiday_detail.">$iday</A>";
 				if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 					echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				else
 					echo "<BR>&nbsp;";
-
-				echo $dr_intern_txt;
 
 				echo "</td>\n";
 
@@ -400,30 +343,6 @@ if($_GET["action"] == "carlendar"){
 						// คีย์ เอาไว้ตรวจสอบค่าจาก Array
 						$key = 'A'.sprintf("%02d",$iday);
 
-						// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-						$dr_intern_txt = '';
-						$intern_total = 0;
-						if( $dr_intern === true ){
-							if( !empty($total_items[$key]) ){
-								$item = $total_items[$key];
-								$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', 0, -260)">'.$item['total'].'</span>)</div>';
-								// $intern_total = $item['total'];
-							}
-						}
-
-						$intern_limit = '';
-						$data_count = '';
-						if( $dr_intern === true ){
-							// วันจันทร์จะลิมิตไว้ที่ 40 วันอื่นๆที่ 50
-							$max_limit = 50;
-							if( $i == 1 ){
-								$max_limit = 40;
-							}
-
-							// $intern_limit = 'intern-limit="'.$max_limit.'"';
-							// $data_count = 'data-count="'.$intern_total.'"';
-						}
-
 						if ($i == 0 ) { // ถ้าเป็นวันอาทิตย์
 							if($holiday["A".sprintf("%02d",$iday)]["date"]){
 								$class = "sunday";
@@ -433,15 +352,12 @@ if($_GET["action"] == "carlendar"){
 							}
 
 							echo "<td width=\"50\" align=\"center\" class=\"sunday\">
-							<A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail.">$iday</A>";
+							<A class=\"sunday countnum\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail.">$iday</A>";
 							
 							if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"])){
 								echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 								
 							}
-
-							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							echo $dr_intern_txt;
 
 							echo "</td>\n";
 						}else  if ($i == 6 ) { // ถ้าเป็นวันเสาร์
@@ -453,12 +369,9 @@ if($_GET["action"] == "carlendar"){
 							}
 
 							echo "<td width=\"50\" align=\"center\" class=\"saturday\">
-							<A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
+							<A class=\"saturday countnum\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
 								if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 									echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."<br>".$list_vac["A".sprintf("%02d",$iday)]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
-							
-							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							echo $dr_intern_txt;
 							
 							echo "</td>\n";
 						}else { // ถ้าเป็นวันธรรมดา
@@ -471,14 +384,11 @@ if($_GET["action"] == "carlendar"){
 							}
 							
 							echo "<td width=\"50\" align=\"center\" class=\"".$class."\">
-								<A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
+								<A class=\"".$class." countnum\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('date_appoint').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
 							if(!empty($list_app[$key]["sum"])){
 								echo "<BR>
 								(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app[$key]["detail"]."<br>".$list_vac[$key]["detail"]."','left',-280,-260);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app[$key]["sum"]."</A>)";
 							}
-
-							// ถ้าเป็นแพทย์ intern ค่อยแสดงข้อมูล
-							echo $dr_intern_txt;
 							
 							echo "</td>\n";
 						}
@@ -500,17 +410,6 @@ if($_GET["action"] == "carlendar"){
 	echo "</table></TD>
 	</TR>
 	</TABLE>";
-
-	
-	if( $dr_intern === true ){
-		?>
-		<div>
-			<span style="color: #FF0000; font-size: 18px;">(สีแดง) ผู้ป่วยนัดของตัวเองต่อวัน</span>
-			<br>
-			<span style="color: #008000; font-size: 18px;">(สีเขียว) ผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมดต่อวัน</span>
-		</div>
-		<?php
-	}
 	
 	exit();
 
@@ -1103,16 +1002,6 @@ body,td,th {
 </head>
 <body>
 
-<?php 
-$sIdname = $_SESSION['sIdname'];
-$sql = "SELECT b.`position` 
-FROM `inputm` AS a 
-LEFT JOIN `doctor` AS b ON b.`doctorcode` = a.`codedoctor`
-WHERE a.`idname` = '$sIdname'";
-$q = mysql_query($sql);
-$dr = mysql_fetch_assoc($q);
-?>
-
 <SCRIPT LANGUAGE="JavaScript">
 	
 	window.onload = function(){
@@ -1254,8 +1143,7 @@ function searchOther1(str,len) {
 }
 
 function listb(number){
-	//alert(document.getElementById("detail").value);
-	//alert(number);
+	
 	if(document.getElementById("detail").value=='FU01 ตรวจตามนัด'){
 		if(number=="2"){
 			document.getElementById("room").selectedIndex=1;
@@ -1425,40 +1313,11 @@ function listb(number){
 function frmchk(){
 
 	var test_return = true;
-	<?php
-	// if( $dr['position'] == '99 เวชปฏิบัติ' ){
-		
-		?>
-		//var input_checker = document.getElementById('intern_checker').value;
-		//var input_limit = document.getElementById('intern_limiter').value;
-		
-		//var test_checker = parseInt(input_checker);
-		//var test_limit = parseInt(input_limit);
-		<?php
-		
-	// }
-	?>
 
 	if(document.getElementById('date_appoint').value==""){
 		alert("กรุณาเลือกวันที่ด้วยค่ะ");
 		test_return = false;
 	}
-	
-	<?php
-	// if( $dr['position'] == '99 เวชปฏิบัติ' ){
-
-		?>
-		
-		// console.log('value test_checker '+test_checker);
-		// console.log('value test_limit '+test_limit);
-
-		// if( ( test_checker != 0 && test_limit != 0 ) && ( test_checker >= test_limit ) ){
-			// alert("จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด เกิน"+test_limit+"ท่านต่อวัน\nกรุณาเลือกนัดวันอื่นเพื่อความสะดวกในการตรวจรักษา\n\nรายละเอียดติดต่อหัวหน้าห้องตรวจโรคผู้ป่วยนอก (พ.ต.หญิงบุญทิวา เนียมทอง)");
-			// test_return = false;
-		// }
-		<?php
-	// }
-	?>
 
 	return test_return;
 }
@@ -1690,14 +1549,6 @@ include("dt_patient.php");
 <TR>
 	<TD align="center" colspan="3">
 		<INPUT TYPE="submit" value="ตกลง">
-		<?php
-		if( $dr['position'] == '99 เวชปฏิบัติ' ){
-			?>
-			<input type="hidden" id="intern_checker" class="intern_checker" value="0" >
-			<input type="hidden" id="intern_limiter" class="intern_limiter" value="0" >
-			<?php
-		}
-		?>
 	</TD>
 </TR>
 </TABLE>
@@ -1713,34 +1564,7 @@ include("dt_patient.php");
 	</TD>
 </TR>
 </TABLE>
-<?php
-if( $dr['position'] == '99 เวชปฏิบัติ' ){
-?>
 
-	<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
-	<script type="text/javascript">
-	jQuery.noConflict();
-	(function( $ ) {
-	$(function() {
-		// ตอนคลิกที่ตัวปฏิทิน
-		// $(document).on('click', '.countnum', function(){
-			
-			// var intern_count = $(this).attr('data-count');
-			// var intern_limit = $(this).attr('intern-limit');
-
-			// console.log('input intern_checker '+intern_count);
-			// console.log('input intern_limiter '+intern_limit);
-
-			// $('.intern_checker').val(intern_count);
-			// $('.intern_limiter').val(intern_limit);
-
-		// });
-	});
-	})(jQuery);
-	</script>
-<?php
-}
-?>
 <div id="slidemenubar2" style="left:-260" onMouseover="pull()" onMouseout="draw()">
 </div>
 <script language="JavaScript1.2">
