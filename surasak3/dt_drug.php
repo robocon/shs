@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-ini_set('display_errors', '1');
-error_reporting(1);
+// ini_set('display_errors', '1');
+// error_reporting(1);
 
 
 if(isset($_GET["action"])){
@@ -12,6 +12,11 @@ if(isset($_GET["action"])){
 
 include("connect.inc");
 //include("checklogin.php");
+
+// ทดสอบ user สำหรับหมอเป้คนเดียว
+if( $_SESSION['sIdname'] == 'md19921' ){
+	include_once 'includes/connect_md013.php';
+}
 
 $limit30checkday = 30;
 $limit90checkday = 90;

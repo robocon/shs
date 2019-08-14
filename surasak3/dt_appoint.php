@@ -10,6 +10,11 @@ if(isset($_GET["action"])){
 }
 include("connect.inc");
 
+// ทดสอบ user สำหรับหมอเป้คนเดียว
+if( $_SESSION['sIdname'] == 'md19921' ){
+	include_once 'includes/connect_md013.php';
+}
+
 $_SESSION["list_lab"] = array() ;
 
 function calcage($birth){
