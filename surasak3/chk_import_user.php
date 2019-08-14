@@ -104,6 +104,7 @@ if( empty($action) ){
             if( !empty($pid) ){ 
 
                 $dob = trim($date_birth);
+                $hn = trim($hn);
 
                 // รูปแบบ วัน/เดือน/ปี
                 // โดยปี รองรับ พ.ศ. ค.ศ.

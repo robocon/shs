@@ -29,7 +29,11 @@ if ( $action === 'upload' ) {
             $cxr2 = trim($cxr2);
             $cxr3 = trim($cxr3);
 
-            $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` FROM `opcardchk` WHERE `HN` = '$hn' AND `part` = '$part' ";
+            $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` 
+            FROM `opcardchk` 
+            WHERE `HN` = '$hn' 
+            AND `part` = '$part' 
+            AND `year_chk` = '$yearchk' ";
             $db->select($sql);
             if( $db->get_rows() > 0 ){
 

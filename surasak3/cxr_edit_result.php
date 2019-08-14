@@ -9,9 +9,7 @@ if ( $task == 'edit' ) {
     $id = input_post('id');
     
     $sql = "DELETE FROM `chk_cxr` WHERE `id` = '$id' LIMIT 1 ";
-    // dump($sql);
     $del = $db->delete($sql);
-    // dump($sql);
     $status = 1;
     if( $del !== true ){
         $status = 0;
@@ -43,7 +41,7 @@ include 'chk_menu.php';
                 </select>
             </div>
             <div>
-                <button type="submit">บันทึกข้อมูล</button>
+                <button type="submit">แสดงผล</button>
                 <input type="hidden" name="page" value="show">
             </div>
         </fieldset>
