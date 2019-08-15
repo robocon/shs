@@ -78,6 +78,13 @@ window.print() ;
 	
 <?php
 }else{
+  $idcard = $_POST['idcard'];
+  $sql_op = "SELECT * FROM `opcardchk` WHERE `part` = 'ลูกจ้าง62' AND `idcard` = '$idcard' ";
+  $q = mysql_query($sql_op);
+  if( mysql_num_rows($q) > 0 ){
+    echo "ลูกจ้างโรงพยาบาลค่ายฯ ขอความกรุณาใช้เลขบัตรประชาชนของตัวเองในการใช้งาน<br>หากยังไม่มีสามารถมาลงทะเบียนที่ศูนย์คอมพิวเตอร์<br>1 ไอดี สามารถใช้งานได้พร้อมกัน 3เครื่อง :)";
+    exit;
+  }
 
 
 $sql="select * from internet where idcard ='' and type_net='".$_POST['type_net']."' limit 1";

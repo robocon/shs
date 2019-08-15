@@ -687,7 +687,7 @@ C&deg;</td>
 		
 	    <td colspan="2" align="right" class="tb_font_2">Retinal Exam:</td>
 	    <td colspan="7" class="">
-			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" />
+			<input name="retinal_date" type="text" class="forntsarabun1" id="retinal" size="10" value="<?=$thaidate;?>"/>
 			<label>
 				<input type="radio" name="retinal" value="No DR"> No DR
 			</label>
