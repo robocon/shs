@@ -261,6 +261,32 @@ if(!checkdate  ( $month + 1, $today  , $year  )){
 	$today2 = $today;
 }
 
+if( $appoint_doctor == 'MD089  เลอปรัชญ์ มังกรกนกพงศ์' OR $appoint_doctor == 'MD065 พิศาล ศิริชีพชัยยันต์' ){
+	$next_1month = strtotime(date('Y-m-d')." +1 month");
+	$next_2month = strtotime(date('Y-m-d')." +2 months");
+	$next_3month = strtotime(date('Y-m-d')." +3 months");
+
+	$next_6month = strtotime(date('Y-m-d')." +6 months");
+	$next_1year = strtotime(date('Y-m-d')." +1 year");
+	$next_2year = strtotime(date('Y-m-d')." +2 years");
+
+	list($n1mY, $n1mM, $n1mD) = explode('-', date('Y-m-d', $next_1month));
+	list($n2mY, $n2mM, $n2mD) = explode('-', date('Y-m-d', $next_2month));
+	list($n3mY, $n3mM, $n3mD) = explode('-', date('Y-m-d', $next_3month));
+
+	list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
+	list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
+	list($n2yY, $n2yM, $n2yD) = explode('-', date('Y-m-d', $next_2year));
+
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">&gt;&gt; นัด 1เดือน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>';
+	echo '<br>';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
+	echo '<br>';
+}
 
 echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
