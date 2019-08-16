@@ -2,6 +2,9 @@
 include 'bootstrap.php';
 include_once 'includes/JSON.php';
 $db = Mysql::load();
+
+// $db->exec("SET NAMES TIS620");
+
 $action = input('action');
 if( $action == 'save_qr' ){
 
@@ -73,21 +76,55 @@ if( $action == 'save_qr' ){
 
     $code = trim(input_post('drug_name'));
     $qr_pic_id = input_post('qr_id');
+    $qr_drug_id = input('qr_drug_id');
 
     $db->select("SELECT `parth` FROM `qr_pics` WHERE `id` = '$qr_pic_id' ");
     $qr = $db->get_item();
-
     $parth = $qr['parth'];
 
-    $sql_insert = "INSERT INTO `qr_drugs` (
-        `id`, `drug_code`, `qr_pic_id`, `status`, `pic_parth`
-    ) VALUES (
-        NULL, '$code', '$qr_pic_id', 1, '$parth'
-    );";
-    $db->insert($sql_insert);
-    //
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( empty($qr_drug_id) ){
 
-    redirect('rdu_qrcode.php?page=drug', 'บันทึกข้อมูลเรียบร้อย');
+        $db->select("SELECT * FROM `qr_drugs` WHERE `drug_code` = '$code' ");
+        $row = $db->get_rows();
+        if( $row > 0 ){
+            redirect('rdu_qrcode.php?page=drug', 'เคยบันทึกยาตัวนี้ไปแล้ว');
+        }
+        
+        $sql_insert = "INSERT INTO `qr_drugs` (
+            `id`, `drug_code`, `qr_pic_id`, `status`, `pic_parth`
+        ) VALUES (
+            NULL, '$code', '$qr_pic_id', 1, '$parth'
+        );";
+        $save = $db->insert($sql_insert);
+        $state = 'save';
+
+    }else{
+        
+        $sql_update = "UPDATE `qr_drugs` SET 
+        `drug_code`='$code', 
+        `qr_pic_id`='$qr_pic_id' 
+        WHERE (`id`='$qr_drug_id');";
+        $save = $db->update($sql_update);
+        $state = 'edit';
+    }
+
+    if( $save !== true ){
+        $msg = errorMsg($state, $save['id']);
+    }
+    
+    redirect('rdu_qrcode.php?page=drug', $msg);
+    exit;
+}elseif ( $action == 'del_drug' ) { 
+
+    $msg = 'ดำเนินการเรียบร้อย';
+    $id = input('del_id');
+    $sql = "DELETE FROM `qr_drugs` WHERE `id` = :id ";
+    $delete = $db->delete($sql,array(':id' => $id));
+    if( $delete !== true ){
+        $msg = errorMsg('delete', $delete['id']);
+    }
+    redirect('rdu_qrcode.php?page=drug', $msg);
     exit;
 }
 ?>
@@ -146,6 +183,9 @@ if( $action == 'save_qr' ){
     .chk_menu ul li a:hover{
         background-color: #bfbfbf;
     }
+    .qr_drug_contain tr.drug_item:hover{
+        background-color: #c6fdd2!important;
+    }
     </style>
     <div>
         <h3>RDU - ระบบ QR Code ตามรหัสยา</h3>
@@ -161,7 +201,7 @@ if( $action == 'save_qr' ){
 
     <?php 
     if( isset($_SESSION['x-msg']) ){
-        ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+        ?><p style="background-color: #ffffc1; border: 2px solid #afaf00; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
         unset($_SESSION['x-msg']);
     }
     ?>
@@ -247,43 +287,66 @@ if( $action == 'save_qr' ){
     }elseif ( $page == 'drug' ) {
         //
 
+        $edit_id = input('edit_id');
+
         $db->select("SELECT * FROM `qr_pics` ORDER BY `id` DESC");
         $qr_items = $db->get_items();
+
+        $sql = "SELECT a.*, b.`name` AS `group_name` 
+        FROM `qr_drugs` AS a 
+        LEFT JOIN `qr_pics` AS b ON b.`id` = a.`qr_pic_id` 
+        WHERE a.`id` = '$edit_id' ";
+        $db->select($sql);
+
+        $drug_code = '';
+        $qr_pic_id = '';
+        $qr_drug_id = $edit_id;
+        $more_txt = '';
+        if( $db->get_rows() > 0 ){
+            $item = $db->get_item();
+            $drug_code = $item['drug_code'];
+            $qr_pic_id = $item['qr_pic_id'];
+            $more_txt = 'การแก้ไข';
+        }
+
         ?>
-        <div>
-            <h3>เพิ่มยา</h3>
-        </div>
-        <div style="position: relative;">
-            <form action="rdu_qrcode.php" method="post">
-                <div>
-                    รหัสยา: <input type="text" name="drug_name" id="drug_name">
-                </div>
-                <div>
-                    QR Code: <select name="qr_id" id="qr_id">
-                    <?php 
-                    foreach ($qr_items as $key => $qr) {
+        <fieldset>
+            <legend>เพิ่มยา</legend>
+            <div style="position: relative;">
+                <form action="rdu_qrcode.php" method="post">
+                    <div>
+                        รหัสยา: <input type="text" name="drug_name" id="drug_name" value="<?=$drug_code;?>">
+                    </div>
+                    <div>
+                        QR Code: <select name="qr_id" id="qr_id">
+                        <?php 
+                        foreach ($qr_items as $key => $qr) {
+
+                            $selected = ( $qr_pic_id == $qr['id'] ) ? 'selected="selected"' : '' ;
+                            ?>
+                            <option value="<?=$qr['id'];?>" <?=$selected;?> ><?=$qr['name'];?></option>
+                            <?php
+                        }
                         ?>
-                        <option value="<?=$qr['id'];?>"><?=$qr['name'];?></option>
-                        <?php
-                    }
-                    ?>
-                    </select>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit">บันทึก<?=$more_txt;?></button>
+                        <input type="hidden" name="action" value="save_drug">
+                        <input type="hidden" name="qr_drug_id" value="<?=$qr_drug_id;?>">
+                    </div>
+                </form>
+                <div style="position: absolute; left: 0;">
+                    <div id="drug_list" style="display: none; background-color: #ffffff; border: 6px solid #00ad02;"></div>
                 </div>
-                <div>
-                    <button type="submit">บันทึก</button>
-                    <input type="hidden" name="action" value="save_drug">
-                </div>
-            </form>
-            <div style="position: absolute; left: 0;">
-                <div id="drug_list" style="display: none; background-color: #ffffff; border: 6px solid #00ad02;"></div>
             </div>
-        </div>
+        </fieldset>
         <div>
             <div>
                 <h3>จัดการข้อมูล</h3>
             </div>
             <?php 
-            $sql = "SELECT *, b.`name` AS `group_name`,c.`tradname`,c.`genname`
+            $sql = "SELECT a.*, b.`name` AS `group_name`,c.`tradname`,c.`genname`
             FROM `qr_drugs` AS a 
             LEFT JOIN `qr_pics` AS b ON b.`id` = a.`qr_pic_id` 
             LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drug_code` 
@@ -292,7 +355,7 @@ if( $action == 'save_qr' ){
             $db->select($sql);
             $drug_items = $db->get_items();
             ?>
-            <table class="chk_table">
+            <table class="chk_table qr_drug_contain">
                 <tr>
                     <th>#</th>
                     <th>รหัสยา</th>
@@ -312,14 +375,14 @@ if( $action == 'save_qr' ){
                 }
 
                 ?>
-                <tr <?=$bg;?>>
+                <tr <?=$bg;?> class="drug_item">
                     <td><?=$i;?></td>
                     <td><?=$item['drug_code'];?></td>
                     <td><?=$item['group_name'];?></td>
                     <td><?=$item['tradname'];?></td>
                     <td><?=$item['genname'];?></td>
                     <td>
-                        <a href="#">ลบ</a> | <a href="#">แก้ไข</a>
+                        <a href="rdu_qrcode.php?action=del_drug&del_id=<?=$item['id'];?>" onclick="return confirm_del_drug();">ลบ</a> | <a href="rdu_qrcode.php?page=drug&edit_id=<?=$item['id'];?>">แก้ไข</a>
                     </td>
                 </tr>
                 <?php
@@ -340,6 +403,11 @@ if( $action == 'save_qr' ){
         <script>
 
         document.getElementById('drug_name').focus();
+
+        function confirm_del_drug(){
+            var c=confirm('ยืนยันที่จะลบข้อมูล');
+            return c;
+        }
 
         $(function(){
             $(document).on('keyup', '#drug_name', function(){
@@ -401,6 +469,7 @@ if( $action == 'save_qr' ){
             $(document).on('click', '.close_btn', function(){
                 $('#drug_list').hide().html('');
             });
+
         });
         </script>
         <?php
