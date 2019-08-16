@@ -50,48 +50,52 @@ div#copyright a:hover { color:#fff; }*/
 </style>
 <div id="no_print">
 <div id="menu">
-	<ul class="menu">
-		<li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน้าแรก</span></a></li>
-		<li><a href="gward_report_doctor.php" class="parent"><span>รายงานผู้ป่วยในตามแพทย์</span></a></li>
-		<li><a href="report_wardlog.php" class="parent"><span>รายงานการเปลี่ยนข้อมูลผู้ป่วย</span></a></li>
-		<li>
-			<a href="#"><span>สถิติหอผู้ป่วยประจำเดือน</span></a>
-			<ul>
-				<li class="last"><a href="report_fward.php"><span>หอผู้ป่วยรวม</span></a></li>
-				<li class="last"><a href="report_gward.php"><span>หอผู้ป่วยสูติ</span></a></li>
-				<li class="last"><a href="report_icuward.php"><span>หอผู้ป่วยหนัก</span></a></li>
-				<li class="last"><a href="report_vipward.php"><span>หอผู้ป่วยพิเศษ</span></a></li>
-			</ul>
-		</li>
-		<li>
-			<a href="#"><span>Diagnosis ประจำปี</span></a>
-			<ul>
-				<li class="last"><a href="report_icd10_ofyear.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
-				<li class="last"><a href="report_icd10_ofyear.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
-				<li class="last"><a href="report_icd10_ofyear.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
-				<li class="last"><a href="report_icd10_ofyear.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
-			</ul>
-		</li>
-		<li>
-			<a href="#"><span>Diagnosis Top5 ประจำปี</span></a>
-			<ul>
-				<li class="last"><a href="report_icd10_top5.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
-				<li class="last"><a href="report_icd10_top5.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
-				<li class="last"><a href="report_icd10_top5.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
-				<li class="last"><a href="report_icd10_top5.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
-			</ul>
-		</li>
-		<li>
-			<a href="#"><span>รายงานผู้ป่วยเสียชีวิต</span></a>
-			<ul>
-				<li class="last"><a href="report_dead.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
-				<li class="last"><a href="report_dead.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
-				<li class="last"><a href="report_dead.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
-				<li class="last"><a href="report_dead.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
-			</ul>
-		</li>
-		<li><a href="report_age15.php" class="parent"><span>รายชื่อเด็กอายุต่ำกว่า 15ปี</span></a></li>
-	</ul>
+<ul class="menu">
+  <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน้าแรก</span></a></li>
+  <li><a href="gward_report_doctor.php" class="parent"><span>รายงานผู้ป่วยในตามแพทย์</span></a></li>
+  <li><a href="report_wardlog.php" class="parent"><span>รายงานการเปลี่ยนข้อมูลผู้ป่วย</span></a></li>
+
+  <li>
+    <a href="#"><span>สถิติหอผู้ป่วยประจำเดือน</span></a>
+    <ul>
+      <li class="last"><a href="report_fward.php"><span>หอผู้ป่วยรวม</span></a></li>
+      <li class="last"><a href="report_gward.php"><span>หอผู้ป่วยสูติ</span></a></li>
+      <li class="last"><a href="report_icuward.php"><span>หอผู้ป่วยหนัก</span></a></li>
+      <li class="last"><a href="report_vipward.php"><span>หอผู้ป่วยพิเศษ</span></a></li>
+    </ul>
+  </li>
+     
+  <li>
+    <a href="#"><span>Diagnosis ประจำปี</span></a>
+    <ul>
+      <li class="last"><a href="report_icd10_ofyear.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
+      <li class="last"><a href="report_icd10_ofyear.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
+      <li class="last"><a href="report_icd10_ofyear.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
+      <li class="last"><a href="report_icd10_ofyear.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
+    </ul>
+  </li>
+
+  <li>
+    <a href="#"><span>Diagnosis Top5 ประจำปี</span></a>
+    <ul>
+      <li class="last"><a href="report_icd10_top5.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
+      <li class="last"><a href="report_icd10_top5.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
+      <li class="last"><a href="report_icd10_top5.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
+      <li class="last"><a href="report_icd10_top5.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
+    </ul>
+  </li>
+     
+  <li>
+    <a href="#"><span>รายงานผู้ป่วยเสียชีวิต</span></a>
+    <ul>
+      <li class="last"><a href="report_dead.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
+      <li class="last"><a href="report_dead.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
+      <li class="last"><a href="report_dead.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
+      <li class="last"><a href="report_dead.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
+    </ul>
+  </li>
+  <li><a href="report_age15.php" class="parent"><span>รายชื่อเด็กอายุต่ำกว่า 15ปี</span></a></li>
+  </ul>
 </div>
 
 <div style="visibility: hidden">
