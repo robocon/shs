@@ -57,6 +57,9 @@ if ( $page == 'show' ) {
     $db->select($sql);
     $items = $db->get_items();
 
+    $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$part'");
+    $company = $db->get_item();
+
     ?>
     <h3>ผลการตรวจรังษีบริษัท <?=$company['name'];?></h3>
     <table class="chk_table">
