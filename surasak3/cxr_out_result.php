@@ -3,8 +3,10 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
+// $db->exec("SET NAMES TIS620");
+
 $action = input('action');
-if ( $action === 'upload' ) {
+if ( $action == 'upload' ) {
 
     $part = input_post('part');
     $officer = $_SESSION['sOfficer'];
@@ -32,13 +34,13 @@ if ( $action === 'upload' ) {
             $sql = "SELECT *,CONCAT(`name`,' ',`surname`) AS `ptname` 
             FROM `opcardchk` 
             WHERE `HN` = '$hn' 
-            AND `part` = '$part' 
-            AND `year_chk` = '$yearchk' ";
+            AND `part` = '$part' ";
             $db->select($sql);
             if( $db->get_rows() > 0 ){
 
                 $user = $db->get_item();
-                $ptname = $user['ptname'];
+                // $ptname = $user['ptname'];
+                $ptname = $name.' '.$surname;
 
                 $hn = trim($hn);
                 
@@ -65,6 +67,7 @@ if ( $action === 'upload' ) {
                     $row_id = $out_items['id'];
 
                     $sql = "UPDATE `chk_cxr` SET 
+                    `ptname`='$ptname',
                     `cxr`='$cxr', 
                     `detail`='$cxr_detail', 
                     `editor`='$officer', 
@@ -199,4 +202,3 @@ include 'chk_menu.php';
         </div>
     </fieldset>
 </div>
-<php
