@@ -57,6 +57,9 @@ if ( $page == 'show' ) {
     $db->select($sql);
     $items = $db->get_items();
 
+    $db->select("SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$part'");
+    $company = $db->get_item();
+
     ?>
     <h3>ผลการตรวจรังษีบริษัท <?=$company['name'];?></h3>
     <table class="chk_table">
@@ -82,7 +85,10 @@ if ( $page == 'show' ) {
                 <td><?=$value['cxr'];?></td>
                 <td><?=$value['detail'];?></td>
                 <td>
-                    <a href="javascript:void(0);" onclick="javascript:alert('ช่วงทดสอบการแก้ไข');">แก้ไข</a> | <a href="javascript:void(0);" class="del_item" data-id="<?=$value['id'];?>">ลบ</a>
+                    <!-- 
+                    <a href="javascript:void(0);" onclick="javascript:alert('ช่วงทดสอบการแก้ไข');">แก้ไข</a> | 
+                    -->
+                    <a href="javascript:void(0);" class="del_item" data-id="<?=$value['id'];?>">ลบ</a>
                 </td>
             </tr>
             <?php 
