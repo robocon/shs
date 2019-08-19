@@ -14,6 +14,8 @@ if($_POST['do'] === 'save'){
 	$dateN = date("Y-m-d");
 	//$register=date("Y-m-d H:i:s");
 
+	$diag_date = $_POST['diag_date'];
+
 
 	/*$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date` )
 	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."');";
@@ -38,12 +40,14 @@ if($_POST['do'] === 'save'){
 	`rate` = '".$_POST["rate"]."',
 	`bp1` = '".$_POST["bp1"]."',
 	`bp2` = '".$_POST["bp2"]."',
-	`officer_edit` = '".$sOfficer."' WHERE `row_id` = '".$_POST["row_id"]."' ";
+	`officer_edit` = '".$sOfficer."',
+	`diag_date` = '$diag_date' 
+	WHERE `row_id` = '".$_POST["row_id"]."' ";
 
 
-	$logs = $strSQL."\r\n";
-	$logs .= "---------------------------\r\n\r\n";
-	file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
+	// $logs = $strSQL."\r\n";
+	// $logs .= "---------------------------\r\n\r\n";
+	// file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
 
 	$objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
 
@@ -56,17 +60,17 @@ if($_POST['do'] === 'save'){
 	`joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , 
 	`smork` , `bmi` , `height` , `weight` , `round` , 
 	`temperature` , `pause` , `rate` , `bp1` , `bp2` , 
-	`officer` , `register_date`,pension,`age_str` )
+	`officer` , `register_date`,pension,`age_str`,`diag_date` )
 	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', 
 	'".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', 
 	'".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', 
 	'".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', 
 	'".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', 
-	'".$sOfficer."', '".$register."','".$pension."','".$_POST['age']."');";
+	'".$sOfficer."', '".$register."','".$pension."','".$_POST['age']."','$diag_date');";
 
-	$logs = $strSQL."\r\n";
-	$logs .= "---------------------------\r\n\r\n";
-	file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
+	// $logs = $strSQL."\r\n";
+	// $logs .= "---------------------------\r\n\r\n";
+	// file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
 
 
 	$objQuery = mysql_query($strSQL) or die( mysql_error($Conn) );
@@ -85,7 +89,7 @@ if($_POST['do'] === 'save'){
 
 
 
-
+$web_title = 'หน้าอัพเดทข้อมูล Hypertension';
 
 require "header.php";
 
@@ -196,6 +200,7 @@ if(!empty($_POST["p_hn"]) != ""){
 
 		$arr_opd = mysql_fetch_array($cquery);
 
+		$diag_date = $arr_opd['diag_date'];
 	
 		$sqlht="select *,concat(yot,name,' ',surname)as ptname from opcard where hn='$hn' ";
 		$queryht=mysql_query($sqlht);
@@ -347,17 +352,22 @@ if(!empty($_POST["p_hn"]) != ""){
 			</table>
 		<TABLE class="forntsarabun1">
 		<tr>
-				<td align="right" class="tb_font_2">การวินิจฉัย : </td>
-				<td colspan="5" align="left" class="forntsarabun1"><input name="ht" type="radio" value="0" <?php if($arr_opd["ht"]==0){ echo "checked"; } ?> />
-		No
-		<input name="ht" type="radio" value="1" <?php if($arr_opd["ht"]==1){ echo "checked"; } ?>/>
-		Essential HT
-		<input name="ht" type="radio" value="2" <?php if($arr_opd["ht"]==2){ echo "checked"; } ?>/>
-		Secondary HT 
-		<input name="ht" type="radio" value="3"  <?php if($arr_opd["ht"]==3){ echo "checked"; } ?>/>
-		Uncertain type
-		</td>
-				</tr>
+			<td align="right" class="tb_font_2">การวินิจฉัย : </td>
+			<td colspan="5" align="left" class="forntsarabun1">
+			<input name="ht" type="radio" value="0" <?php if($arr_opd["ht"]==0){ echo "checked"; } ?> />No
+			<input name="ht" type="radio" value="1" <?php if($arr_opd["ht"]==1){ echo "checked"; } ?>/>Essential HT
+			<input name="ht" type="radio" value="2" <?php if($arr_opd["ht"]==2){ echo "checked"; } ?>/>Secondary HT 
+			<input name="ht" type="radio" value="3"  <?php if($arr_opd["ht"]==3){ echo "checked"; } ?>/>Uncertain type
+			</td>
+		</tr>
+
+		<tr>
+			<td align="right" class="tb_font_2"></td>
+			<td>
+				การวินิจฉัยครั้งแรกประมาณ พ.ศ. <input type="text" name="diag_date" id="diag_date" value="<?=$diag_date;?>">
+			</td>
+		</tr>
+
 		<tr>
 			<td align="right" class="tb_font_2">&nbsp;</td>
 			<td colspan="5" align="left" class="forntsarabun1">&nbsp;</td>
@@ -405,6 +415,12 @@ if(!empty($_POST["p_hn"]) != ""){
 		</TABLE>
 		<BR>&nbsp;
 		</FORM>
+		<script type="text/javascript">
+			var popup7;
+			window.onload = function() {
+				popup7 = new Epoch('popup7','popup',document.getElementById('diag_date'),false);
+			};
+		</script>
 	<?php
 	}
 } //ปิด ค้นหา hn ใน opcard	$_REQUEST["p_hn"]

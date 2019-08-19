@@ -951,10 +951,17 @@ mmHg </td>
 				<?php 
 				$cur_year = date('Y').'-01-01';
 
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$cur_year') AS `year_diff` 
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$cur_year') AS `year_diff`, 
+
+				TIMESTAMPDIFF(
+					YEAR,
+					CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),
+					'$cur_year'
+				) AS `diag_date_year`
+
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn'";
-				
+
 				$q = mysql_query($sql) or die( mysql_error() );
 				$ht_year = '';
 				$ht_row = mysql_num_rows($q);
@@ -962,6 +969,11 @@ mmHg </td>
 				if( $ht_row > 0 ){
 					$ht = mysql_fetch_assoc($q);
 					$ht_year = $ht['year_diff'];
+
+					if( !empty($ht['diag_date_year']) ){
+						$ht_year = $ht['diag_date_year'];
+					}
+					
 				}
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
@@ -1145,7 +1157,7 @@ mmHg </td>
            <input name="printvn" type="submit" class="txtsarabun" id="printvn" value="พิมพ์ใบตรวจโรค" />
            &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
            &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
-           &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; สติกเกอร์" />
+           &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; ปริ้นสติกเกอร์แบบ PDF" />
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
            

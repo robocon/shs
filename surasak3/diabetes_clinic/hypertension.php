@@ -1,18 +1,15 @@
 <?php
 include '../bootstrap.php';
-// session_start();
 
 // error_reporting(1);
 // ini_set('display_errors', 1);
 
-
-// require "../connect.php";
-// require "../includes/functions.php";
-	
+$web_title = 'หน้าลงทะเบียนผู้ป่วย Hypertension';
 require "header.php";
 
+// mysql_query("SET NAMES TIS620");
+
 $date_now = date("Y-m-d");
-// include("../connect.php");
 
 function calcage($birth){
 
@@ -294,18 +291,21 @@ mmHg</td>
       </tr>
     </table>
 <TABLE class="forntsarabun1">
-  <tr>
-           <td align="right" class="tb_font_2">การวินิจฉัย : </td>
-           <td colspan="5" align="left" class="forntsarabun1"><input name="ht" type="radio" value="0" />
-No
-  <input name="ht" type="radio" value="1" />
-Essential HT
-<input name="ht" type="radio" value="3" />
-Secondary HT 
-<input name="ht" type="radio" value="2" />
-Uncertain type
-</td>
-          </tr>
+	<tr>
+		<td align="right" class="tb_font_2">การวินิจฉัย : </td>
+		<td colspan="5" align="left" class="forntsarabun1">
+			<input name="ht" type="radio" value="0" /> No
+			<input name="ht" type="radio" value="1" /> Essential HT
+			<input name="ht" type="radio" value="3" /> Secondary HT 
+			<input name="ht" type="radio" value="2" /> Uncertain type
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="tb_font_2"></td>
+		<td>
+			การวินิจฉัยครั้งแรกประมาณ พ.ศ. <input type="text" name="diag_date" id="diag_date" value="<?=(date('Y')+543).date('-m-d');?>">
+		</td>
+	</tr>
   <tr>
     <td align="right" class="tb_font_2">&nbsp;</td>
     <td colspan="5" align="left" class="forntsarabun1">&nbsp;</td>
@@ -352,7 +352,12 @@ Uncertain type
 </TABLE>
 <BR>&nbsp;
 </FORM>
-
+<script type="text/javascript">
+	var popup7;
+	window.onload = function() {
+		popup7 = new Epoch('popup7','popup',document.getElementById('diag_date'),false);
+	};
+</script>
 <?php  }
  } //ปิด ค้นหา hn ใน opcard
 }
@@ -369,14 +374,16 @@ if($_REQUEST['do']=='save'){
 	OR $_POST['joint_disease_paralysis'] ){
 		$joint_disease = 1;
 	}
+
+	$diag_date = $_POST['diag_date'];
 	
-	$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str` )
-	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."');";
+	$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str`,`diag_date` )
+	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date');";
 	$objQuery = mysql_query($strSQL);
 	
 	// เพิ่มเข้าไปใน ประวัติผู้ป่วย
-	$strSQL="INSERT INTO `hypertension_history` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str` )
-	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."');";
+	$strSQL="INSERT INTO `hypertension_history` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str`,`diag_date` )
+	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date');";
 	$objQuery = mysql_query($strSQL);
 	
 	
