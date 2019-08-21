@@ -1,8 +1,14 @@
 <?php
 
 include 'bootstrap.php';
-
-$db = Mysql::load();
+$shs_configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'dottow',
+    'pass' => ''
+);
+$db = Mysql::load($shs_configs);
 
 $def_date = input('date', date('Y-m-d'));
 $hn = input('hn');
@@ -90,11 +96,19 @@ if( $action === 'show' ){
         $db->select($sql_com);
         $company = $db->get_item();
 
-        $sql = "SELECT b.* 
-        FROM `opcardchk` AS a 
+        // $sql = "SELECT b.* 
+        // FROM `opcardchk` AS a 
+        // LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+        // WHERE a.`part` = '$part' 
+        // AND b.`camp` LIKE 'µÃÇ¨ÊØ¢ÀÒ¾%' 
+        // ORDER BY a.`row`";
+
+        $sql = "SELECT a.`row`,a.`pid`,a.`HN` AS `hn2`,CONCAT(a.`name`,' ',a.`surname`) AS `ptname2`,b.* 
+        FROM ( 
+            SELECT * FROM `opcardchk` WHERE `part` = '$part' 
+        ) AS a 
         LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
-        WHERE a.`part` = '$part' 
-        AND b.`camp` LIKE 'µÃÇ¨ÊØ¢ÀÒ¾%' ";
+        WHERE b.row_id IS NOT NULL ";
 
         $db->select($sql);
         $rows = $db->get_rows();
@@ -180,67 +194,72 @@ if( $action === 'show' ){
             $i = 1;
             foreach ($items as $key => $item) {
                 
+                $hn = $item['hn'];
+                $yearchk = $item['yearchk'];
+
                 $sql = "SELECT 
                 CASE
-                    WHEN `res_cbc` = 1 THEN '»¡µÔ' 
-                    WHEN `res_cbc` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_cbc` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_cbc` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_cbc`,
                 CASE
-                    WHEN `res_ua` = 1 THEN '»¡µÔ' 
-                    WHEN `res_ua` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_ua` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_ua` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_ua`,
                 CASE
-                    WHEN `res_glu` = 1 THEN '»¡µÔ' 
-                    WHEN `res_glu` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_glu` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_glu` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_glu`,
                 CASE
-                    WHEN `res_crea` = 1 THEN '»¡µÔ' 
-                    WHEN `res_crea` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_crea` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_crea` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_crea`,
                 CASE
-                    WHEN `res_chol` = 1 THEN '»¡µÔ' 
-                    WHEN `res_chol` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_chol` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_chol` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_chol`,
                 CASE
-                    WHEN `res_hdl` = 1 THEN '»¡µÔ' 
-                    WHEN `res_hdl` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_hdl` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_hdl` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_hdl`,
                 CASE
-                    WHEN `res_hbsag` = 1 THEN '»¡µÔ' 
-                    WHEN `res_hbsag` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_hbsag` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_hbsag` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_hbsag`, 
                 CASE
-                    WHEN `cxr` = 1 THEN '»¡µÔ' 
-                    WHEN `cxr` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`cxr` = 1 THEN '»¡µÔ' 
+                    WHEN b.`cxr` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `cxr`, 
                 CASE
-                    WHEN `res_occult` = 1 THEN '»¡µÔ' 
-                    WHEN `res_occult` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`res_occult` = 1 THEN '»¡µÔ' 
+                    WHEN b.`res_occult` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE ''
                 END AS `res_occult`, 
                 CASE 
-                    WHEN `conclution` = 1 THEN '»¡µÔ' 
-                    WHEN `conclution` = 2 THEN '¼Ô´»¡µÔ' 
+                    WHEN b.`conclution` = 1 THEN '»¡µÔ' 
+                    WHEN b.`conclution` = 2 THEN '¼Ô´»¡µÔ' 
                     ELSE '' 
                 END AS `conclution`, 
                 `diag` 
-                FROM `chk_doctor` 
-                WHERE `hn` = '".$item['hn']."' 
-                AND ( `date_chk` LIKE '".$item['short_date']."%' OR `vn` = '".$item['vn']."' )";
+                FROM ( 
+                    SELECT MAX(`id`) AS `latest_id` FROM `chk_doctor` WHERE `hn` = '$hn' AND `yearchk` = '$yearchk' 
+                ) AS a 
+                LEFT JOIN `chk_doctor` AS b ON b.`id` = a.`latest_id` 
+                WHERE ( b.`date_chk` LIKE '".$item['short_date']."%' OR b.`vn` = '".$item['vn']."' )";
                 $db->select($sql);
                 $user = $db->get_item();
 
-                $hn = $item['hn'];
+                
 
-                $sql_opcard = "SELECT `idcard`,`address`,`tambol`,`ampur`,`changwat`,`hphone`,`phone` 
+                $sql_opcard = "SELECT `idcard`,`address`,`tambol`,`ampur`,`changwat`,`hphone`,`phone`,`ptffone` 
                 FROM `opcard` 
                 WHERE `hn` = '$hn' ";
                 $db->select($sql_opcard);
@@ -259,13 +278,31 @@ if( $action === 'show' ){
                     $address .= ' ¨.'.$opcard['changwat'];
                 }
 
-                $phone = $opcard['phone'].' '.$opcard['hphone'];
+                $phone = $opcard['phone'].' '.$opcard['hphone'].' '.$item['ptffone'];
+
+                
                 ?>
                 <tr valign="top">
                     <td><?=$i;?></td>
                     <td><?=$item['thidate'];?></td>
-                    <td><?=$hn;?></td>
-                    <td><?=$item['ptname'];?></td>
+                    <td>
+                    <?php
+                    if(empty($hn)){
+                        $hn = $item['hn2'];
+                    }
+
+                    echo $hn;
+                    ?>
+                    </td>
+                    <td>
+                        <?php 
+                        $ptname = $item['ptname'];
+                        if(empty($ptname)){
+                            $ptname = $item['ptname2'];
+                        }
+                        echo $ptname;
+                        ?>
+                    </td>
                     <td align="right"><?=$item['height'];?></td>
                     <td align="right"><?=$item['weight'];?></td>
                     <td align="right"><?=$item['bp1'];?></td>
