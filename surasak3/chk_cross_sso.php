@@ -122,8 +122,9 @@ $company = $db->get_item();
         $db->select($chk_sql);
         $chk_item = $db->get_item();
 
-        $item = array_merge_recursive($item, $chk_item);
-
+        
+        $item = array_merge($item, $chk_item);
+        
         // ตรวจ สตูล <-- ไม่ใช่จังหวัดนะเห้ย
         $occult = false;
         $sql = "SELECT b.* 

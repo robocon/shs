@@ -96,19 +96,31 @@ if( $action === 'show' ){
         $db->select($sql_com);
         $company = $db->get_item();
 
-        // $sql = "SELECT b.* 
-        // FROM `opcardchk` AS a 
-        // LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
-        // WHERE a.`part` = '$part' 
-        // AND b.`camp` LIKE 'ตรวจสุขภาพ%' 
-        // ORDER BY a.`row`";
+        // ตัวบริษัทเก่าอยากให้แสดงผลแบบเดิม -___-" เหมือนใน paper
+        if($company['id'] < 70){
 
-        $sql = "SELECT a.`row`,a.`pid`,a.`HN` AS `hn2`,CONCAT(a.`name`,' ',a.`surname`) AS `ptname2`,b.* 
-        FROM ( 
-            SELECT * FROM `opcardchk` WHERE `part` = '$part' 
-        ) AS a 
-        LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
-        WHERE b.row_id IS NOT NULL ";
+            //ตัวเดิม
+            $sql = "SELECT b.* 
+            FROM `opcardchk` AS a 
+            LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+            WHERE a.`part` = '$part' 
+            AND b.`camp` LIKE 'ตรวจสุขภาพ%' ";
+
+            // $sql = "SELECT b.* 
+            // FROM `opcardchk` AS a 
+            // LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+            // WHERE a.`part` = '$part' 
+            // AND b.`row_id` IS NOT NULL 
+            // ORDER BY b.`row_id` ASC ";
+
+        }else{ // ตัวใหม่จะ order ตามรายการนำเข้าของฝั่งแผนกตรวจสุขภาพ
+            $sql = "SELECT a.`row`,a.`pid`,a.`HN` AS `hn2`,CONCAT(a.`name`,' ',a.`surname`) AS `ptname2`,b.* 
+            FROM ( 
+                SELECT * FROM `opcardchk` WHERE `part` = '$part' 
+            ) AS a 
+            LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+            WHERE b.row_id IS NOT NULL ";
+        }
 
         $db->select($sql);
         $rows = $db->get_rows();
