@@ -16,16 +16,12 @@ if( empty($camp) ){
     exit;
 }
 
-$sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
-c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag`, 
-c.`yearchk` 
+$sql = "SELECT b.* 
 FROM ( 
     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
 ) AS a 
 LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
-LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN` 
 WHERE b.row_id IS NOT NULL 
-AND b.`yearchk` = c.`yearchk` 
 ORDER BY a.`row`";
 
 $db->select($sql);
@@ -116,6 +112,18 @@ $company = $db->get_item();
         $yearchk = $item['yearchk'];
         $hn = $item['hn'];
 
+        $chk_sql = "SELECT b.`cxr`,b.`res_cbc`,b.`res_ua`,b.`res_glu`,b.`res_crea`,b.`res_chol`,b.`res_hdl`,b.`res_hbsag`, 
+        b.`conclution`,b.`normal_suggest`,b.`normal_suggest_date`,b.`abnormal_suggest`,b.`abnormal_suggest_date`,b.`diag`, 
+        b.`yearchk` 
+        FROM ( 
+            SELECT MAX(`id`) AS `latest_id` FROM `chk_doctor` WHERE `hn` = '$hn' AND `yearchk` = '$yearchk' 
+        ) AS a 
+        LEFT JOIN `chk_doctor` AS b ON b.`id` = a.`latest_id` ";
+        $db->select($chk_sql);
+        $chk_item = $db->get_item();
+
+        $item = array_merge_recursive($item, $chk_item);
+
         // ตรวจ สตูล <-- ไม่ใช่จังหวัดนะเห้ย
         $occult = false;
         $sql = "SELECT b.* 
@@ -141,7 +149,7 @@ $company = $db->get_item();
             );
 
             $suggest = $item['normal_suggest'];
-            $suggest_date = ( $item['normal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
+            $suggest_date = ( !empty($item['normal_suggest_date']) && $item['normal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
             
         }else{
             $suggest_list = array(
@@ -152,7 +160,7 @@ $company = $db->get_item();
             );
 
             $suggest = $item['abnormal_suggest'];
-            $suggest_date = ( $item['abnormal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['abnormal_suggest_date'] : '' ;
+            $suggest_date = ( !empty($item['abnormal_suggest_date']) && $item['abnormal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['abnormal_suggest_date'] : '' ;
             
         }
 
@@ -210,7 +218,7 @@ $company = $db->get_item();
             <td><?=$bp1.'/'.$bp2?></td>
 
 
-            <td><?=( $item['cxr'] == '1' ? 'ปกติ' : 'ผิดปกติ' );?></td>
+            <td><?=( $item['cxr'] == '1' ? 'ปกติ' : ( $item['cxr'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
             <td>
                 <?php
                 if( $item['res_cbc'] == '1' ){
