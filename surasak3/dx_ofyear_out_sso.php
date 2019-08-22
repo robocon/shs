@@ -1,6 +1,53 @@
 <?php
 
 include 'bootstrap.php';
+$action = input_post('action');
+
+if ( $action == 'clear_data' ) {
+
+    $db = Mysql::load();
+
+    $db->exec("SET NAMES TIS620");
+
+    $part = input_post('part');
+    $sql = "SELECT b.`row_id`,b.`hn` 
+    FROM `opcardchk` AS a 
+    LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+    WHERE a.`part` = '$part' 
+    AND b.`camp` NOT LIKE 'ตรวจสุขภาพ%'";
+    $db->select($sql);
+    $items = $db->get_items();
+    
+    foreach ($items as $key => $item) {
+        
+        $row_id = $item['row_id'];
+        $hn = $item['hn'];
+
+        /**
+         * STEP คือ สร้าง temp file จาก row_id
+         * จากนั้นเซ็ต row_id ให้เป็น null เพื่อที่ตอน insert กลับเข้าไปจะได้ไอดีใหม่
+         * แล้วก็ลบตัวเก่า
+         */
+
+        $sql = "CREATE TEMPORARY TABLE `tmp` 
+        SELECT * FROM `dxofyear_out` WHERE `row_id` = '$row_id';";
+        $db->exec($sql);
+        $db->update("UPDATE `tmp` SET `row_id` = NULL, `camp` = 'ตรวจสุขภาพประกันสังคม';");
+        $db->insert("INSERT INTO `dxofyear_out` SELECT * FROM `tmp`;");
+        $latest_id = $db->get_last_id();
+        $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp`;");
+        $db->delete("DELETE FROM `dxofyear_out` WHERE `row_id` = '$row_id' LIMIT 1;");
+
+        // 
+        $sql = "UPDATE `chk_doctor` SET `dxofyear_out_id` = '$latest_id' WHERE `dxofyear_out_id` = '$row_id' ";
+        $db->update($sql);
+
+    }
+
+    redirect('dx_ofyear_out_sso.php','ปรับปรุงข้อมูลเรียบร้อย');
+    exit;
+}
+
 $shs_configs = array(
     'host' => '192.168.1.13',
     'port' => '3306',
@@ -31,6 +78,12 @@ $action = input('action');
     <a href="../nindex.htm">&lt;&lt;&nbsp;กลับไปหน้าโปรแกรม รพ.</a>
 </div>
 <br>
+<?php 
+if( isset($_SESSION['x-msg']) ){
+    ?><p style="background-color: #ffffc1; border: 2px solid #949400; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+    unset($_SESSION['x-msg']);
+}
+?>
 
 <fieldset class="no-print">
     <legend>ค้นหาตามวันที่</legend>
@@ -41,6 +94,7 @@ $action = input('action');
         <div>
             <button type="submit">แสดงข้อมูล</button>
             <input type="hidden" name="action" value="show">
+            <input type="hidden" name="type" value="date">
         </div>
     </form>
 </fieldset>
@@ -54,6 +108,7 @@ $action = input('action');
         <div>
             <button type="submit">แสดงข้อมูล</button>
             <input type="hidden" name="action" value="show">
+            <input type="hidden" name="type" value="hn">
         </div>
     </form>
 </fieldset>
@@ -341,6 +396,58 @@ if( $action === 'show' ){
             </tbody>
         </table>
         <?php
+
+        if( $test_type == 'company' ){
+
+            $sql = "SELECT b.`hn`,b.`ptname`,b.`camp` 
+            FROM `opcardchk` AS a 
+            LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+            WHERE a.`part` = '$part' 
+            AND b.`camp` NOT LIKE 'ตรวจสุขภาพ%'";
+            $db->select($sql);
+
+            if ( $db->get_rows() > 0 ) {
+                
+                $items = $db->get_items();
+                ?>
+                <h3>ซักประวัติคีย์ข้อมูลผิดหน่วยงาน</h3>
+                <table class="chk_table">
+                    <thead>
+                        <tr>
+                            <th>HN</th>
+                            <th>ชื่อ-สกุล</th>
+                            <th>หน่วยงาน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        foreach ($items as $key => $item) {
+                            ?>
+                            <tr>
+                                <td><?=$item['hn'];?></td>
+                                <td><?=$item['ptname'];?></td>
+                                <td><?=$item['camp'];?></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+
+                <form action="dx_ofyear_out_sso.php" method="post">
+                
+                    <button type="submit">ปรับปรุงข้อมูลให้เป็นตรวจสุขภาพ</button>
+                    <input type="hidden" name="part" value="<?=$part;?>">
+                    <input type="hidden" name="action" value="clear_data">
+                
+                </form>
+
+                <?php
+
+            }
+            
+        }
+
     }else{
         ?>
         <p>ไม่พบข้อมูล</p>
