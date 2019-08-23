@@ -951,23 +951,37 @@ $conclution_detail = $suggest_detail.$suggest_date;
 $pdf->SetXY(60, 235);
 $pdf->Cell(38, 6, $conclution_detail, 0, 1);
 
-print_dashed(58,240,188,240);
+print_dashed(58,240,205,240);
 
+$pdf->SetXY(5, 240);
+$diag_txt = '';
+$test_diag = false;
 if( !empty($user['diag']) ){
-    $pdf->SetXY(5, 240);
-    $pdf->Cell(38, 6, 'Diag แพทย์: '.htmlspecialchars_decode($user['diag']), 0, 1);
+    $pre_diag_txt = 'Diag แพทย์: '.htmlspecialchars_decode($user['diag']);
+    $diag_txt .= preg_replace('/\s+/',' ',$pre_diag_txt );
+    $test_diag = true;
 }
-print_dashed(5,245,188,245);
-
-
 
 if( !empty($user['cxr_detail']) ){
-    
-    $pdf->SetXY(5, 246);
-    $pdf->Cell(38, 6, 'เอ็กซเรย์ทรวงอก: '.htmlspecialchars_decode($user['cxr_detail']), 0, 1);
+    $pre_diag_txt = 'เอ็กซเรย์ทรวงอก: '.htmlspecialchars_decode($user['cxr_detail']);
+    $newline = '';
+    if($test_diag === true){
+        $newline = "\n";
+    }
+    $diag_txt .= $newline.preg_replace('/\s+/',' ',$pre_diag_txt );
+
 }
 
-print_dashed(5,251,188,251);
+// หาความสูงของแถวเอามานับเป็นจำนวนที่ต้องขีดเส้นประ
+$muticell_h = $pdf->GetMultiCellHeight(200, 6, $diag_txt);
+$dash_loop = $muticell_h/6;
+$y_dash = 245;
+for ($i=0; $i < $dash_loop; $i++) { 
+    print_dashed(5,$y_dash,205,$y_dash);
+    $y_dash+=6;
+}
+// ข้อความ diag + xray
+$pdf->multiCell(200,6,$diag_txt,0,'L');
 
 $pdf->SetFont('AngsanaNew','',13);
 
@@ -979,7 +993,7 @@ $pdf->Cell(46, 6, '( '.$user['prefix'].$user['name'].' '.$user['surname'].' )', 
 
 $def_doctor = $user['doctor'];
 $match = preg_match('/\d+/',$user['doctor'], $matchs);
-// dump($matchs);
+
 if( $match > 0 ){
 
     $code_doctor = $matchs['0'];
