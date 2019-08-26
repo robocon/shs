@@ -109,11 +109,26 @@ if($_GET["action"] == "carlendar"){
 	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
-	From appoint  
-	where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+	// สร้างชื่อ temp file แบบ rand ไม่ให้ไปชนกันใน db 
+	$tmp_appoint = 'tmp_'.rand(10000, 99999);
+	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
+	$sql_temp = "CREATE TEMPORARY TABLE `$tmp_appoint` 
+	SELECT `appdate`, `apptime`, `hn`, `other` 
+	FROM `appoint` 
+	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
 	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
-	AND apptime <> 'ยกเลิกการนัด' 
+	AND apptime <> 'ยกเลิกการนัด' ";
+	mysql_query($sql_temp);
+
+	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
+	// From appoint  
+	// where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+	// AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+	// AND apptime <> 'ยกเลิกการนัด' 
+	// GROUP BY appdate, apptime  ";
+
+	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
+	From `$tmp_appoint`  
 	GROUP BY appdate, apptime  ";
 
 	$result = Mysql_Query($sql);
@@ -139,7 +154,20 @@ if($_GET["action"] == "carlendar"){
 	}
 
 	/////vaccine
-	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other From appoint  where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' AND (doctor like '%".$_SESSION["dt_doctor"]."%' OR doctor like '%".substr($appoint_doctor,0,5)."%') AND apptime <> 'ยกเลิกการนัด' and other!='' GROUP BY appdate, apptime ,other ";
+	// $sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
+	// From `appoint` 
+	// where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+	// AND (doctor like '%".$_SESSION["dt_doctor"]."%' OR doctor like '%".substr($appoint_doctor,0,5)."%') 
+	// AND apptime <> 'ยกเลิกการนัด' 
+	// and other!='' 
+	// GROUP BY appdate, apptime ,other ";
+
+
+	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
+	From `$tmp_appoint` 
+	WHERE other!='' 
+	GROUP BY appdate, apptime ,other ";
+
 	$result = Mysql_Query($sql);
 	$list_vac = array();
 	while($arr = Mysql_fetch_assoc($result)){
