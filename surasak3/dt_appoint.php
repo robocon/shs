@@ -257,7 +257,7 @@ if($_GET["action"] == "carlendar"){
 	<tr class=\"norm\"><td width=\"50\" align=\"center\">
 	<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."');\">&lt;</a>
 	</td>
-	<td width=\"250\" align=\"center\" colspan=\"5\" bgcolor=\"#F9F4DD\">
+	<td width=\"250\" align=\"center\" colspan=\"5\" bgcolor=\"#00CC99\">
 	".$thmonthname[$month - 1]."&nbsp;
 	".($year + 543)." ".$title_time."
 	</td>
@@ -1330,8 +1330,8 @@ function frmchk(){
 
 <style type="text/css">
 	.today { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #C6B3FF; color: #000000;  }
-	.sunday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FF9393; color: #FFFFFF; }
-	.saturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #000000; }
+	.sunday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FF99CC; color: #FFFFFF; }
+	.saturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #9999FF; color: #000000; }
 	.norm     { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #000000; }
 	.link_calendar { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #000000; }
 	.total_appointnorm { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #FF0000; text-decoration:none;}
