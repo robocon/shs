@@ -61,7 +61,7 @@ echo $_SESSION["dt_drugstk"];
 	window.onload = function(){
 		window.print();
 		setTimeout(function(){
-			// window.location.href = 'dt_index.php';
+			window.location.href = 'dt_index.php';
 		},<?php echo $time;?>);
 	}
 </script>
