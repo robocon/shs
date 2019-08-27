@@ -64,13 +64,16 @@ $today = date("d-m-Y");
     $yr=substr($today,6,4) +543;  
 
 $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth,ptright1 FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
+ $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth,ptright1,SUBSTRING(`idguard`,1,4) FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
  $result = mysql_query($query) or die(Mysql_Error());
  $row=mysql_num_rows($result);
- list($ccc,$xxx,$yyy,$zzz,$dbirth,$ptright1) = Mysql_fetch_row($result);
+ list($ccc,$xxx,$yyy,$zzz,$dbirth,$ptright1,$idguard) = Mysql_fetch_row($result);
 $age=calcage($dbirth);	
 if($row){	
 	
+	if($idguard == 'MX07'){
+		echo '<h3 style="color: red;">OPDCARDมีสถานะ <u>ทำลายประวัติ</u> กรุณาติดต่อห้องทะเบียนเพื่อทำการตรวจสอบข้อมูลใหม่อีกครั้ง</h3>';
+	}
 
 	print "HN :$xxx<br>";
    	print "$yyy<br>";
