@@ -64,11 +64,10 @@ $today = date("d-m-Y");
     $yr=substr($today,6,4) +543;  
 
 $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
-
+ $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth,ptright1 FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
  $result = mysql_query($query) or die(Mysql_Error());
  $row=mysql_num_rows($result);
- list($ccc,$xxx,$yyy,$zzz,$dbirth) = Mysql_fetch_row($result);
+ list($ccc,$xxx,$yyy,$zzz,$dbirth,$ptright1) = Mysql_fetch_row($result);
 $age=calcage($dbirth);	
 if($row){	
 	
@@ -76,11 +75,11 @@ if($row){
 	print "HN :$xxx<br>";
    	print "$yyy<br>";
 	print "อายุ : $age<br>";
-   	print "สิทธิการรักษา :$zzz";
+	print "สิทธิหลัก : $ptright1<br>";
+   	print "สิทธิการรักษาครั้งล่าสุด :$zzz";
 	if(substr($zzz,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$ccc%' limit 1 ";
-
-			$query = mysql_query($sql) or die( mysql_error() );
+			$query = mysql_query($sql) or die(mysql_error());
 			$numrows_r07 = mysql_num_rows($query);
 
 			if( $numrows_r07 == 0 ){
@@ -183,12 +182,14 @@ if($row){
 	      $cSurname = $row->surname;
           $cPtname=$cYot.' '.$cName.'  '.$cSurname;
 	      $cPtright = $row->ptright;
+		  $cPtright1 = $row->ptright1;
           $cGoup=$row->goup;
 	      $cCamp=$row->camp;
           $cNote=$row->note;
    		  $cIdcard=$row->idcard;
 		  $dbirth=$row->dbirth;
 		  $cAge=calcage($dbirth);
+		  
 
     //print"$cPtname $cGoup<br>";
 
