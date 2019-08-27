@@ -207,11 +207,11 @@ $count = count($_SESSION["list_drugcode"]);
 	
 	//$_SESSION["dt_drugstk"] = "<font style=\"font-family:'MS Sans Serif'; font-size:12px\"  >&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thidate2.";&nbsp;&nbsp;HN:".$_SESSION["hn_now"].", &nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_SESSION["yot_now"]." ".$_SESSION["name_now"]." ".$_SESSION["surname_now"]."&nbsp;&nbsp;‚√§ ".$_SESSION["dt_diag"]."<BR>";
 	
-	if($_SESSION["dt_drugstk"] != ""){
-		$_SESSION["dt_drugstk"].= "<DIV style=\"page-break-after:always\"></DIV>";
+	if( !empty($_SESSION["dt_drugstk"]) ){
+		$_SESSION["dt_drugstk"] .= "<DIV style=\"page-break-after:always\"></DIV>";
 	}
 
-	$_SESSION["dt_drugstk"] .= "<TABLE cellpadding=\"0\" cellspacing=\"0\">
+	$_SESSION["dt_drugstk"] .= "<TABLE cellpadding=\"0\" cellspacing=\"0\" class=\"test_sticker_line\">
 	<TR>
 		<TD colspan=\"3\"><font style=\"font-family:'MS Sans Serif'; font-size:12px\"  >&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thidate2.";&nbsp;&nbsp;HN:".$_SESSION["hn_now"].",&nbsp;VN:".$_SESSION["vn_now"].",&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_SESSION["yot_now"]." ".$_SESSION["name_now"]." ".$_SESSION["surname_now"]."&nbsp;&nbsp;‚√§ ".$_SESSION["dt_diag"]."<br>OTHER: ".$_SESSION['stk_diag_other']."</TD>
 	</TR>";

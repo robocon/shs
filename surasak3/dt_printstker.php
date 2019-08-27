@@ -49,7 +49,9 @@ if($_SESSION["sIdname"] == "md19921"){
 .center{
     text-align: center;
 }
-
+.test_sticker_line tr{
+    line-height:4mm!important;
+}
 </style>
 <?php 
 echo $_SESSION["dt_drugstk"];
@@ -59,7 +61,7 @@ echo $_SESSION["dt_drugstk"];
 	window.onload = function(){
 		window.print();
 		setTimeout(function(){
-			window.location.href = 'dt_index.php';
+			// window.location.href = 'dt_index.php';
 		},<?php echo $time;?>);
 	}
 </script>
