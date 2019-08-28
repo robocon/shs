@@ -71,8 +71,8 @@ $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
 $age=calcage($dbirth);	
 if($row){	
 	
-	if($idguard == 'MX07'){
-		echo '<h3 style="color: red;">OPDCARDมีสถานะ <u>ทำลายประวัติ</u> กรุณาติดต่อห้องทะเบียนเพื่อทำการตรวจสอบข้อมูลใหม่อีกครั้ง</h3>';
+	if($idguard == 'MX05' OR $idguard == 'MX07'){
+		echo '<h3 style="color: red;">OPDCARDมีสถานะ <u>ทำลายประวัติ หรือ ยุบประวัติ</u> กรุณาติดต่อห้องทะเบียนเพื่อทำการตรวจสอบข้อมูลใหม่อีกครั้ง</h3>';
 	}
 
 	print "HN :$xxx<br>";
