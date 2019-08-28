@@ -16,12 +16,19 @@ if( empty($camp) ){
     exit;
 }
 
+$sql = "SELECT *,SUBSTRING(`yearchk`, 3, 2) AS `short_year` FROM `chk_company_list` WHERE `code` = '$camp' ";
+$db->select($sql);
+$company = $db->get_item();
+
+$com_yearchk = $company['short_year'];
+
 $sql = "SELECT b.* 
 FROM ( 
     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
 ) AS a 
 LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
 WHERE b.row_id IS NOT NULL 
+AND b.`yearchk` = '$com_yearchk'
 ORDER BY a.`row`";
 
 $db->select($sql);
@@ -35,9 +42,7 @@ if( $user_rows == 0 ){
 }
 
 
-$sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
-$db->select($sql);
-$company = $db->get_item();
+
 
 ?>
 <style>
