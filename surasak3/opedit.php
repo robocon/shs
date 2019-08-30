@@ -1257,6 +1257,12 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 ค่าบริการทางการแพทย์ 50 บาท</td>
     <td colspan="3" class="fonthead">**มาครั้งสุดท้าย <?=$cD1;?>-<?=$cM1;?>-<?=$cY1;?> <?=$cT1;?> **</td>
     </tr>
+  <tr>
+    <td align="right" class="fonthead">ค่าบริการตรวจสุขภาพ</td>
+    <td class="fonthead1"><input name="chkup50" type="checkbox" value="chkup50">
+ค่าบริการตรวจสุขภาพประกันสังคม รพ.อื่นๆ  50 บาท</td>
+    <td colspan="3" class="fonthead">&nbsp;</td>
+  </tr>
 </table>
 
 </fieldset>

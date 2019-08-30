@@ -202,12 +202,18 @@ if(isset($_POST['okbtn'])){
 			// date=เวลาที่หมอตรวจเสร็จ
 			// pharin=รับใบสั่งยา
 			// pharout=เรียกรับ
-			$sql3 = "SELECT date,pharin,stkcutdate,pharout,pharout1 
+			$sql3 = "SELECT date,stkcutdate,pharout,pharout1 
 			FROM dphardep_temp 
 			WHERE dr_cancle is null 
 			AND hn='".$result['hn']."' ";
 			$rows3 = mysql_query($sql3);
 			$result3 = mysql_fetch_array($rows3);
+			
+$sqlphar="select a.date as pharin from opacc as a inner join phardep as b ON a.txdate=b.date where depart='PHAR' and a.hn='".$result['hn']."' and a.txdate like '".$_POST['yr1']."-".$_POST['m1']."-".$_POST['d1']."%'";
+//echo $sqlphar;
+$rowsphar = mysql_query($sqlphar);
+$resultphar = mysql_fetch_array($rowsphar);			
+			
 			
 			$sql4 = "SELECT hn,idguard 
 			FROM opcard 
@@ -219,8 +225,8 @@ if(isset($_POST['okbtn'])){
 				$countmx++;
 			}
 			
-			if($result3['pharin'] && $result3['pharout'] !=''){
-				$starttime = $result3['pharin'];
+			if($resultphar['pharin'] && $result3['pharout'] !=''){
+				$starttime = substr($resultphar['pharin'],11,8);
 				$lasttime = $result3['pharout'];
 				if($starttime && $lasttime!=""){
 					$n++;
@@ -268,7 +274,7 @@ if(isset($_POST['okbtn'])){
 				<td><?=$result['hn']?></td>
 				<td><?=$result['ptname']?></td>
 				<td align="center"><?php if(empty($result3['date'])){ echo "-";}else{ echo substr($result3['date'],11);}?></td>
-				<td align="center"><?php if(empty($result3['pharin'])){ echo "-";}else{ echo $result3['pharin'];}?></td>
+				<td align="center"><?php if(empty($resultphar['pharin'])){ echo "-";}else{ echo substr($resultphar['pharin'],11,8);}?></td>
 				<td align="center"><?php if(empty($result3['stkcutdate'])){ echo "-";}else{ echo $result3['stkcutdate'];}?></td>
 				<td align="center"><?php if(empty($result3['pharout'])){ echo "-";}else{ echo $result3['pharout'];}?></td>  
 				<td align="center"><?php if(empty($result3['pharout1'])){ echo "-";}else{ echo $result3['pharout1'];}?></td>  

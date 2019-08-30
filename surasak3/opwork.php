@@ -316,10 +316,79 @@ $opergcode='x';
 	$result = mysql_query($query);
 	//        or die("Query failed runno update");
 
+if($_POST['case']=="EX46 ตรวจสุขภาพประกันสังคม" && $_POST["chkup50"]=="chkup50"){
+
+	// ถ้าในวันนี้ยังไม่มีค่าบริการตรวจสุขภาพ
+	$sql = "SELECT a.`row_id`
+	FROM `depart` AS a 
+	LEFT JOIN `patdata` as b ON b.`idno` = a.`row_id` 
+	WHERE a.`date` LIKE '$thidate3%' 
+	AND a.`hn` = '$cHn' 
+	AND a.`tvn` = '$nVn' 
+	AND b.`code` = 'chkup50'";
+	$q = mysql_query($sql);
+	$rows = mysql_num_rows($q);
+	if( $rows === 0 ){
+
+		//runno  for chktranx
+		$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
+		$result = mysql_query($query)
+			or die("Query failed");
+
+		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+			if (!mysql_data_seek($result, $i)) {
+				echo "Cannot seek to row $i\n";
+				continue;
+			}
+
+			if(!($row = mysql_fetch_object($result)))
+				continue;
+		}
+
+		$nRunno=$row->runno;
+		$nRunno++;
+
+		$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
+		$result = mysql_query($query) or die("Query failed");
+			/////////////////////////////////////////////////////////////
+			
+	$query = "SELECT * FROM labcare WHERE code = 'chkup50' ";
+    	$result = mysql_query($query)
+	        or die("Query failed");
+
+	    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	        if (!mysql_data_seek($result, $i)) {
+	            echo "Cannot seek to row $i\n";
+	            continue;
+	        }
+
+	        if(!($row = mysql_fetch_object($result)))
+	            continue;
+	         }
+	    $aDepart=$row->depart; 
+		$aPart=$row->part;
+		$aCode=$row->code; 
+	    $aDetail=$row->detail;
+	    $aPrice=$row->price;
+		$aYprice=$row->yprice;
+		$aNprice=$row->nprice;
+			
+		$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('$nRunno','$thidate','$cPtname','$cHn','','$aDepart','1','$aDetail', '$aPrice','$aYprice','$aNprice','','$sOfficer','0','$nVn','$cPtright');";
+		$result = mysql_query($query);
+		$idno=mysql_insert_id();
+		
+		$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
+		VALUES('$thidate','$cHn','','$cPtname','1','$aCode','$aDetail','1','$aPrice','$aYprice','$aNprice','$aDepart','$aPart','$idno','$cPtright');";
+		$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+		
+		$query ="UPDATE opday SET other=(other+$aPrice) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
+		$result = mysql_query($query) or die("Query failed,update opday");
+	}
+}else{
 	$query1 = "SELECT status FROM typeopcard WHERE type_name = '".$_POST['case']."'";
 	$result1 = mysql_query($query1) or die("Query failed");
 	list($statustype)=mysql_fetch_array($result1);
-	if($statustype=="Y"){
+	if($statustype=="Y" && $_POST["chkup50"]!="chkup50"){
 		$check = "select * from depart where hn = '".$cHn."' and  detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
 		$resultcheck = mysql_query($check);
 		$cal = mysql_num_rows($resultcheck);
@@ -357,6 +426,8 @@ VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป
       		$result = mysql_query($query) or die("Query failed,update opday");
 		}
 	}
+}
+	
 }else{
 
 $query = "SELECT row_id,hn,vn,kew,toborow FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
@@ -435,7 +506,7 @@ if($c_row == 0){
 	$query1 = "SELECT status FROM typeopcard WHERE type_name = '".$_POST['case']."'";
 	$result1 = mysql_query($query1) or die("Query failed");
 	list($statustype)=mysql_fetch_array($result1);
-	if($statustype=="Y"){
+	if($statustype=="Y" && $_POST["chkup50"]!="chkup50"){
 		$check = "select * from depart where hn = '".$cHn."' and  detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
 		$resultcheck = mysql_query($check);
 		$cal = mysql_num_rows($resultcheck);
@@ -477,6 +548,7 @@ VALUES('$thidate','$cHn','','$cPtname','1','SERVICE','(55020/55021 ค่าบริการผู้ป
 print "<font face='Angsana New' size=10>ผู้ป่วยได้ลงทะเบียนเรียบร้อยแล้ว <br>ได้ VN: $nVn ได้คิวที่..$kew...<br>เปลี่ยนจาก ..$toborow..<br>เป็น ...".$_POST['case']."...</font>";
 print "<br>ผู้ลงทะเบียน ..$sOfficer";
 }
+
 
 
 if(substr($_POST["case"],0,4)=="EX03"){  //คิดค่าบริการสมัครโครงการเบิกจ่ายตรงอัตโนมัติ
@@ -538,7 +610,7 @@ if($_POST["doctor50"]=="doctor50"){  //คิดค่าบริการทางการแพทย์ นอกเวลาราชการ
 	WHERE a.`date` LIKE '$thidate3%' 
 	AND a.`hn` = '$cHn' 
 	AND a.`tvn` = '$nVn' 
-	AND b.`code` = 'clinic50'";
+	AND b.`code` = 'doctor50'";
 	$q = mysql_query($sql);
 	$rows = mysql_num_rows($q);
 	if( $rows === 0 ){
@@ -610,7 +682,7 @@ if($_POST["doctor80"]=="doctor80"){  //คิดค่าบริการทางการแพทย์ นอกเวลาราชการ
 	WHERE a.`date` LIKE '$thidate3%' 
 	AND a.`hn` = '$cHn' 
 	AND a.`tvn` = '$nVn' 
-	AND b.`code` = 'clinic80'";
+	AND b.`code` = 'doctor80'";
 	$q = mysql_query($sql);
 	$rows = mysql_num_rows($q);
 	if( $rows === 0 ){

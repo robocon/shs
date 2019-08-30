@@ -103,17 +103,22 @@ $sql2 = "select thidate,dc_diag from opd  where thidate like '".$_POST['yr1']."-
 $rows2 = mysql_query($sql2);
 $result2 = mysql_fetch_array($rows2);
 
-$sql3 = "select date,pharin,stkcutdate,pharout,pharout1 from dphardep where  dr_cancle is null and date like '".$_POST['yr1']."-".$_POST['m1']."-".$_POST['d1']."%' and hn='".$result['hn']."' ";
+$sql3 = "select date,stkcutdate,pharout,pharout1 from dphardep where  dr_cancle is null and date like '".$_POST['yr1']."-".$_POST['m1']."-".$_POST['d1']."%' and hn='".$result['hn']."' ";
 
 $rows3 = mysql_query($sql3);
 $result3 = mysql_fetch_array($rows3);
+
+$sqlphar="select a.date as pharin from opacc as a inner join phardep as b ON a.txdate=b.date where depart='PHAR' and a.hn='".$result['hn']."' and a.txdate like '".$_POST['yr1']."-".$_POST['m1']."-".$_POST['d1']."%'";
+//echo $sqlphar;
+$rowsphar = mysql_query($sqlphar);
+$resultphar = mysql_fetch_array($rowsphar);
 
 	$Cidguard++;
 	if($Cidguard==0){
 		$Cidguard="0";
 	}
-	if($result3['pharin'] && $result3['pharout'] !=''){
-		$starttime = $result3['pharin'];
+	if($resultphar['pharin'] && $result3['pharout'] !=''){
+		$starttime = substr($resultphar['pharin'],11,8);
 		$lasttime = $result3['pharout'];
 		if($starttime && $lasttime!=""){
 			$n++;
@@ -157,7 +162,7 @@ $result3 = mysql_fetch_array($rows3);
   <td><?=$result['hn']?></td>
   <td><?=$result['ptname']?></td>
   <td align="center"><? if(empty($result3['date'])){ echo "-";}else{ echo substr($result3['date'],11);}?></td>
-  <td align="center"><? if(empty($result3['pharin'])){ echo "-";}else{ echo $result3['pharin'];}?></td>
+  <td align="center"><? if(empty($resultphar['pharin'])){ echo "-";}else{ echo substr($resultphar['pharin'],11,8);}?></td>
   <td align="center"><? if(empty($result3['stkcutdate'])){ echo "-";}else{ echo $result3['stkcutdate'];}?></td>
   <td align="center"><? if(empty($result3['pharout'])){ echo "-";}else{ echo $result3['pharout'];}?></td>  
   <td align="center"><? if(empty($result3['pharout1'])){ echo "-";}else{ echo $result3['pharout1'];}?></td>  

@@ -15,6 +15,8 @@ session_start();
 <table>
  <tr>
   <th bgcolor=6495ED>#</th>
+  <th bgcolor=6495ED>วันที่ทำธุรกรรม</th>
+  <th bgcolor=6495ED>วันที่ดีดลูกหนี้</th>
   <th bgcolor=6495ED>เวลา</th>
   <th bgcolor=6495ED>HN</th>
   <th bgcolor=6495ED>AN</th>
@@ -63,7 +65,7 @@ session_register("credit_8");
 
 
 
-    $query = "SELECT * FROM opacc WHERE date LIKE '$today%' ";
+    $query = "SELECT * FROM opacc WHERE date LIKE '$today%' order by  row_id asc";
     $result = mysql_query($query)
         or die("Query failed");
 
@@ -162,6 +164,13 @@ print "<font face='Angsana New'><br>จำนวนทั้งสิ้น $x รายการ ดังนี้<br>";
    $num=1;
    for ($n=$x; $n>=1; $n--){
         $time=substr($aDate[$n],11,5);
+		$subdate=substr($aDate[$n],0,10);  //วันที่
+		
+$sql1="select txdate from opacc where row_id='".$rowid[$n]."'";
+//echo $sql1."<br>";
+$query1=mysql_query($sql1);
+list($txdate)=mysql_fetch_array($query1);
+//$subtxdate=substr($txdate,0,10);
 		
 $color="#F5DEB3";		 //init
 
@@ -198,10 +207,12 @@ if($aCredit[$n]==""){
 			}
 		}
 		////////////////
-		
+
         print("<tr>\n".
                 "<td bgcolor=$color><font face='Angsana New'>$num</td>\n".
-                "<td bgcolor=$color><font face='Angsana New'>$time</td>\n".
+                "<td bgcolor=$color><font face='Angsana New'>$txdate</td>\n".
+			    "<td bgcolor=$color><font face='Angsana New'>$subdate</td>\n".
+				"<td bgcolor=$color><font face='Angsana New'>$time</td>\n".
                 "<td bgcolor=$color><font face='Angsana New'>$aHn[$n]</td>\n".
                 "<td bgcolor=$color><font face='Angsana New'>$aAn[$n]</td>\n".    
                 "<td bgcolor=$color><font face='Angsana New'>$aDepart[$n]</td>\n".
@@ -244,7 +255,9 @@ if($aCredit[$n]==""){
         if ($aPaid[$n]<0){
            print("<tr>\n".
                    "<td bgcolor=99CCCC><font face='Angsana New'>$num</td>\n".
-                   "<td bgcolor=99CCCC><font face='Angsana New'>$time</td>\n".
+				 "<td bgcolor=$color><font face='Angsana New'>$txdate</td>\n".
+			    "<td bgcolor=$color><font face='Angsana New'>$subdate</td>\n".                   
+				   "<td bgcolor=99CCCC><font face='Angsana New'>$time</td>\n".
                    "<td bgcolor=99CCCC><font face='Angsana New'>$aHn[$n]</td>\n".
                    "<td bgcolor=99CCCC><font face='Angsana New'>$aAn[$n]</td>\n". 
                    "<td bgcolor=99CCCC><font face='Angsana New'>$aDepart[$n]</td>\n".
