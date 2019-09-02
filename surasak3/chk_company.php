@@ -43,9 +43,9 @@ if( $action == 'save' ) {
             $year = get_year_checkup(true);
 
             if( $chk_row == 0 ){
-                $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status` ) 
+                $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
                 VALUES (
-                NULL,'$company','$company_code','$date_checkup','$year','1'
+                NULL,'$company','$company_code','$date_checkup','$year','1','chk_report02.php'
                 );";
                 $save = $db->insert($sql);
 
