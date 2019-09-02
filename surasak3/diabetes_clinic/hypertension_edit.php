@@ -16,6 +16,8 @@ if($_POST['do'] === 'save'){
 
 	$diag_date = $_POST['diag_date'];
 
+	$bp3 = $_POST['bp3'];
+	$bp4 = $_POST['bp4'];
 
 	/*$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date` )
 	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."');";
@@ -41,7 +43,9 @@ if($_POST['do'] === 'save'){
 	`bp1` = '".$_POST["bp1"]."',
 	`bp2` = '".$_POST["bp2"]."',
 	`officer_edit` = '".$sOfficer."',
-	`diag_date` = '$diag_date' 
+	`diag_date` = '$diag_date', 
+	`bp3` = '$bp3', 
+	`bp4` = '$bp4' 
 	WHERE `row_id` = '".$_POST["row_id"]."' ";
 
 
@@ -60,13 +64,13 @@ if($_POST['do'] === 'save'){
 	`joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , 
 	`smork` , `bmi` , `height` , `weight` , `round` , 
 	`temperature` , `pause` , `rate` , `bp1` , `bp2` , 
-	`officer` , `register_date`,pension,`age_str`,`diag_date` )
+	`officer` , `register_date`,pension,`age_str`,`diag_date`,`bp3`,`bp4` )
 	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', 
 	'".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', 
 	'".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', 
 	'".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', 
 	'".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', 
-	'".$sOfficer."', '".$register."','".$pension."','".$_POST['age']."','$diag_date');";
+	'".$sOfficer."', '".$register."','".$pension."','".$_POST['age']."','$diag_date','$bp3','$bp4');";
 
 	// $logs = $strSQL."\r\n";
 	// $logs .= "---------------------------\r\n\r\n";
@@ -347,6 +351,25 @@ if(!empty($_POST["p_hn"]) != ""){
 		mmHg</td>
 				<td>&nbsp;</td>
 				<td align="right" class="tb_font_2">&nbsp;</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tb_font_2">Repeat BP : </td>
+				<td>
+					<input name="bp3" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp3"]; ?>"class="forntsarabun1" />
+					/ 
+					<input name="bp4" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp4"]; ?>"class="forntsarabun1" />
+					mmHg
+				</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
 				<td></td>
 			</tr>
 			</table>
