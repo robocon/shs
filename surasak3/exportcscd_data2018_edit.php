@@ -16,7 +16,7 @@ body,td,th {
 </style>
   <?
   $seldate=date("d");
-  $selmon="09";
+  $selmon="08";
   ?>
 <form method="POST" action="datacscd2018_edit/exportdatacscd_edit.php">
 <p><strong style="color:#FF0000;">โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) กรณี ติด C</strong><br />
@@ -57,7 +57,7 @@ body,td,th {
 
   </select>
   <? 
-			   $Y=date("Y")+542;
+			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
 			  
 				$dates=range(2547,$date);
