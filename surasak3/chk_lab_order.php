@@ -209,7 +209,7 @@ if( $action == false ){
         $i = 0;
         foreach ( $items as $key => $item ) {
             
-            $msg = 'บันทึกข้อมูลเสร็จเรียบร้อย';
+            $msg = 'บันทึกข้อมูลเรียบร้อย <a href="chk_lab_sticker.php?part='.$part.'" target="_blank">คลิกที่นี่เพื่อพิมพ์สติกเกอร์แลป</a>';
 
             if( $i > 0 && !empty($item) ){
                 
