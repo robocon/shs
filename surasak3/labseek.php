@@ -20,6 +20,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
 	
 	$sql = "Select  code,detail,price,depart from labcare  where  labstatus !='N' AND code !='12723-sso' and code like '%".$_GET["search1"]."%' or detail 	 like '%".$_GET["search1"]."%' or codex 	 like '%".$_GET["search1"]."%' or icd9cm 	 like '%".$_GET["search1"]."%' limit 10 ";
+	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
