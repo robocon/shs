@@ -8,9 +8,9 @@ $quarter = input_get('quarter');
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
-SELECT `diag_id` AS `row_id` ,`regisdate`,`hn`,`icd10`,`date_hn` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");
+$sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
+SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn` 
 FROM `diag` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
@@ -25,11 +25,12 @@ AND (
     OR `icd10` IN ( 'J210', 'J218', 'J219' ) 
     OR `icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
 ) 
-GROUP BY `date_hn`";
+GROUP BY `date_hn` 
+ORDER BY `svdate`";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6`");
-$sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6_a`");
+$sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6_a` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
@@ -71,9 +72,9 @@ AND `drugcode` IN (
 GROUP BY `date_hn`"; 
 $db->exec($sql);
 
-$sql = "SELECT a.`date`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,b.`drugcode`,b.`amount`
-FROM `tmp_opday_in6` AS a 
-LEFT JOIN `tmp_drugrx_in6` AS b ON b.`date_hn` = a.`date_hn` 
+$sql = "SELECT a.*,b.* 
+FROM `tmp_diag_in6_a` AS a 
+LEFT JOIN `tmp_drugrx_in6_a` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL ";
 $db->select($sql);
 $items = $db->get_items();
@@ -83,7 +84,7 @@ $items = $db->get_items();
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: TH SarabunPSK, TH Sarabun New;
     font-size: 16pt;
 }
 .chk_table{
@@ -110,7 +111,7 @@ body, button{
         <th>HN</th>
         <th>ชื่อผู้ป่วย</th>
         <th>อายุ</th>
-        <th>Diag1</th>
+        <th>Diag</th>
         <th>ICD-10</th>
         <th>Drug code</th>
         <th>จำนวน</th>

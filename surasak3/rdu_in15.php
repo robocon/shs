@@ -1,20 +1,11 @@
 <?php 
 
-// $configs_rdu = array(
-//     'host' => '192.168.1.13',
-//     'port' => '3306',
-//     'dbname' => 'rdu',
-//     'user' => 'dottow',
-//     'pass' => ''
-// );
-// $db = Mysql::load($configs_rdu);
-// dump($db);
-
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT `hn`, `date_hn` 
 FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` LIKE 'J45%' 
+AND `toborow` != 'EX02' 
 GROUP BY `hn`";
 $test = $db->exec($sql);
 

@@ -24,8 +24,7 @@ function dump($txt){
     echo "</pre>";
 }
 
-$db = mysql_connect('192.168.1.2', 'remoteuser', '') or die( mysql_error() );
-mysql_select_db('smdb', $db) or die( mysql_error() );
+include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
@@ -40,9 +39,9 @@ $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';
 unlink($filePath);
 
 $sql = "SELECT *, 
-CONCAT(SUBSTRING(`regisdate`,1,10),`hn`) AS `date_hn`
+CONCAT(SUBSTRING(`svdate`,1,10),`hn`) AS `date_hn`
 FROM `diag`
-WHERE ( `regisdate` >= '$date_start 00:00:00' AND `regisdate` <= '$date_end 23:59:59' ) 
+WHERE ( `svdate` >= '$date_start 00:00:00' AND `svdate` <= '$date_end 23:59:59' ) 
 AND ( 
     ( `diag` NOT LIKE '%dog%' AND `diag` NOT LIKE '%bit%' ) 
     OR 
@@ -52,7 +51,7 @@ AND (
 );";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
-$sql_header = "INSERT INTO `diag` ( `id`, `diag_id`, `regisdate`, `hn`, `an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
+$sql_header = "INSERT INTO `diag` ( `id`, `diag_id`, `svdate`, `hn`, `an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
 $sql_data_list = '';
 
 $test_i = 0;
@@ -60,7 +59,7 @@ $test_i = 0;
 while ( $item = mysql_fetch_assoc($q) ) {
 
     $diag_id = $item['row_id'];
-    $regisdate = $item['regisdate'];
+    $svdate = $item['svdate'];
     $hn = $item['hn'];
     $an = $item['an'];
     $diag = htmlspecialchars($item['diag'], ENT_QUOTES);
@@ -70,7 +69,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $doctor = $item['office'];
     $date_hn = $item['date_hn'];
 
-    $sql_data_list = $sql_header."( NULL, '$diag_id', '$regisdate', '$hn', '$an', '$diag', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
+    $sql_data_list = $sql_header."( NULL, '$diag_id', '$svdate', '$hn', '$an', '$diag', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
     
     file_put_contents($filePath, $sql_data_list, FILE_APPEND);
 

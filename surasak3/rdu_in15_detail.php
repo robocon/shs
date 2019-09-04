@@ -15,6 +15,7 @@ SELECT *
 FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` LIKE 'J45%' 
+AND `toborow` != 'EX02' 
 GROUP BY `hn`";
 $test = $db->exec($sql);
 

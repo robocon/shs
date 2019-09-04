@@ -7,9 +7,9 @@ if ( !defined('RDU_TEST') ) {
 
 // ตัวหาร B
 // OPD + ICD10
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
-SELECT `diag_id` AS `row_id` ,`regisdate`,`hn`,`icd10`,`date_hn` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6`");
+$sql = "CREATE TEMPORARY TABLE `tmp_diag_in6` 
+SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`date_hn` 
 FROM `diag` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
@@ -73,7 +73,7 @@ $db->exec($sql);
 $in6a = $in6b = $in6_result = 0;
 
 $sql = "SELECT COUNT(b.`row_id`) AS `rows` 
-FROM `tmp_opday_in6` AS a 
+FROM `tmp_diag_in6` AS a 
 LEFT JOIN `tmp_drugrx_in6` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL ";
 $db->select($sql);
@@ -81,16 +81,9 @@ $items_a = $db->get_item();
 $in6a = $items_a['rows'];
 
 
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday_in6`";
+$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_diag_in6`";
 $db->select($sql);
 $items_b = $db->get_item();
 $in6b = $items_b['rows'];
 
 $in6_result = ( $in6a / $in6b ) * 100 ;
-
-dump($in6_result);
-
-dump($in6a);
-dump($in6b);
-
-exit;

@@ -149,7 +149,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
             <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
             <?php
-            include 'rdu_in1.php';
+            // include 'rdu_in1.php';
             ?>
             <td align="right"><?=number_format($in1a);?></td>
             <td align="right"><?=number_format($in1b);?></td>
@@ -191,7 +191,7 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            include 'rdu_in6.php';
+            // include 'rdu_in6.php';
             $url_in6 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -207,7 +207,7 @@ if ( $action == 'load' ) {
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
-            include 'rdu_in7.php';
+            // include 'rdu_in7.php';
             $url_in7 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -235,6 +235,9 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in8_result, 2);?></td>
         </tr>
+        <?php 
+        exit;
+        ?>
         <tr>
             <td align="center">9</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในหญิงคลอดปกติครบกำหนดทางช่องคลอด</td>

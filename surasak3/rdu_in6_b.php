@@ -8,10 +8,10 @@ $quarter = input_get('quarter');
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
-SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
-FROM `opday` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6b`");
+$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6b` 
+SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn` 
+FROM `diag` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
@@ -24,10 +24,12 @@ AND (
     OR `icd10` LIKE 'J20%' 
     OR `icd10` IN ( 'J210', 'J218', 'J219' ) 
     OR `icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
-)";
+) 
+GROUP BY `date_hn` 
+ORDER BY `svdate` ";
 $db->exec($sql);
 
-$sql = "SELECT * FROM `tmp_opday_in6`";
+$sql = "SELECT * FROM `tmp_opday_in6b`";
 $db->select($sql);
 $items = $db->get_items();
 ?> 
@@ -62,10 +64,8 @@ body, button{
         <th>HN</th>
         <th>ชื่อผู้ป่วย</th>
         <th>อายุ</th>
-        <th>Diag1</th>
+        <th>Diag</th>
         <th>ICD-10</th>
-        <th>Drug code</th>
-        <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
     <?php 
@@ -74,14 +74,12 @@ body, button{
         ?>
         <tr>
             <td><?=$i;?></td>
-            <td><?=$item['date'];?></td>
+            <td><?=$item['svdate'];?></td>
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['icd10'];?></td>
-            <td><?=$item['drugcode'];?></td>
-            <td><?=$item['amount'];?></td>
             <td><?=$item['doctor'];?></td>
         </tr>
         <?php 
