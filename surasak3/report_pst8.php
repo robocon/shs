@@ -26,7 +26,7 @@ $mon=$_SESSION["mon"];
       <p>ข้าราชการกลาโหมพลเรือน , ลูกจ้างประจำ , ลูกจ้างชั่วคราว</p></td>
       
        <?
-	  $sql1="select * from opday where an is null  and thidate  between '$thyear-$month-01 00:00:00' and '$thyear-$month-31 23:59:59'";
+	$sql1="select * from opday where an IS NULL AND thidate like '$thyear-$month%' ";
 	 // echo $sql1;
 	  $query1=mysql_query($sql1);
 	  $aball=0;
@@ -36,6 +36,7 @@ $mon=$_SESSION["mon"];
 	  while($rows1=mysql_fetch_array($query1)){
 		 //  $aball++;
 	  $group=substr($rows1["goup"],0,2);
+	  $group1=substr($rows1["goup"],0,3);
 	 // echo "--->".$group."<br>";
 	  	if($group=="G1"){
 			$ab1++;
@@ -43,13 +44,13 @@ $mon=$_SESSION["mon"];
 		if($group=="G2"){
 			$ab2++;		
 		}
-		if($group=="G3" || $group=="G4"){
+		if($group=="G3" && ($group1!="G39" && $group1!="G40")){
 			$ab3++;	
 		}
 	  }
 	  $aball=$ab1+$ab2+$ab3;
 	  
-	  $sql2="select * from ipcard where date between '$thyear-$month-01 00:00:00' and '$thyear-$month-31 23:59:59'";
+	  $sql2="select * from ipcard where date like '$thyear-$month%'";
 	 //  $sql2="select * from opday where an is not null  and thidate  between '$thyear-$month-01 00:00:00' and '$thyear-$month-31 23:59:59'";
 	// echo $sql2;
 	  $query2=mysql_query($sql2);

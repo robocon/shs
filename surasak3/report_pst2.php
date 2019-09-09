@@ -4,12 +4,8 @@ $ksyear=$_SESSION["ksyear"];
 $month=$_SESSION["month"];
 $mon=$_SESSION["mon"];
 $yrmonth="$thyear-$month";
-
-$sql="CREATE TEMPORARY TABLE ipgroup SELECT b.icd10, a.date, a.dcdate, a.days, a.an, a.result, a.camp, a.goup
-FROM ipcard AS a, diag AS b WHERE a.an = b.an   AND b.type = 'PRINCIPLE' AND a.date LIKE '$yrmonth%' 
-ORDER BY `b`.`icd10` ASC";
-$query = mysql_query($sql) or die("Query failed,ipgroup");
-$numrows=mysql_num_rows($query);
+$chkyrmonth2="$thyear-$month-01"; 
+$chkyrmonth3="$thyear-$month-31"; 
 
 ?>
 <p align="center"><strong>รายงานจำนวนผู้ป่วยในจำแนกตามสาเหตุป่วย ( รง.ผสต.2 )<br>
@@ -17,1100 +13,1274 @@ $numrows=mysql_num_rows($query);
   ประจำเดือน <?=$mon;?> &nbsp;ปี <?=$thyear;?></strong></p>
 <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
   <tr align="center">
-    <td width="3%" rowspan="2"><strong>ลำดับ</strong></td>
-    <td width="19%" rowspan="2"><strong>ประเภทบุคคล</strong></td>
-    <td width="14%" rowspan="2"><strong>รหัสโรคที่ 1</strong></td>
-    <td width="14%" rowspan="2"><strong>รหัสโรคที่ 2</strong></td>
+    <td width="38" rowspan="2"><strong>ลำดับ</strong></td>
+    <td width="149" height="66" rowspan="2" align="center"><strong>ประเภท<br />
+      บุคคลย่อย</strong></td>
+    <td width="197" rowspan="2" align="center"><strong>รหัสโรค ที่ 1<br />
+      (ICD10)</strong></td>
+    <td width="199" rowspan="2" align="center"><strong>รหัสโรค ที่ 2<br />
+      (ICD10)</strong></td>
     <td colspan="3"><strong>รับ</strong></td>
     <td colspan="4"><strong>จำหน่าย</strong></td>
   </tr>
   <tr align="center">
-    <td width="7%"><strong>ยกมา</strong></td>
-    <td width="9%"><strong>รับใหม่</strong></td>
-    <td width="5%"><strong>รวม</strong></td>
-    <td width="12%"><strong>ปลดพิการ</strong></td>
-    <td width="5%"><strong>ตาย</strong></td>
-    <td width="6%"><strong>อื่นๆ</strong></td>
-    <td width="6%"><strong>รวม</strong></td>
+    <td width="97"><strong>ยกมา</strong></td>
+    <td width="97"><strong>รับใหม่</strong></td>
+    <td width="102"><strong>รวม</strong></td>
+    <td width="96"><strong>ปลดพิการ</strong></td>
+    <td width="100"><strong>ตาย</strong></td>
+    <td width="98"><strong>อื่นๆ</strong></td>
+    <td width="167"><strong>รวม</strong></td>
   </tr>
 <?
 	//------------ ก.1 นายทหารประจำการ ------------//
-    $sql1 = "SELECT *, count(icd10) as icount  FROM ipgroup where goup like 'G11%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
+    $sql1 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G11%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql1."<br>";
 	$query1 = mysql_query($sql1) or die("Query failed G11");
 	$numrows1=mysql_num_rows($query1);
 	//echo "--->".$numrows1."<br>";
-	$num1=0;	
+	if(!empty($numrows1)){	
+	$num=0;
 	while($rows1=mysql_fetch_array($query1)){
-    $num1++;
+    $num++;
 	$goup=substr($rows1["goup"],4,3);
-	$icount1=$rows1["icount"];
 	$icd10=$rows1["icd10"];
+	if(!empty($rows1["comorbid"])){
+		$comorbid=$rows1["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G11%' and icd10='$icd10'";
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G11%' and icd10='$icd10'";
 	$query = mysql_query($sql) or die("Query failed line 54");
-	$improved1=0;
-    $dead1=0;	
+	$improved11=0;
+    $dead11=0;
+	$old11=0;
+	$new11=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved1++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new11++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old11++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead1++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc1=$improved1+$dead1;
-	$sumcount1=$icount1;
+	$sumin11=$old11+$new11;
+	$sumdc11=$improved11+$dead11;
 ?>  
   <tr>
-    <td align="center"><?=$num1;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows1["icd10"];?></td>
-    <td align="left">&nbsp;</td>
-    <td align="left">&nbsp;</td>
-    <td align="center"><?=$icount1;?></td>
-    <td align="center"><?=$sumcount1;?></td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old11;?></td>
+    <td align="center"><?=$new11;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin11;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead1==0){ echo "-";}else{ echo $dead1;}?></td>
-    <td align="center"><? if($improved1==0){ echo "-";}else{ echo $improved1;}?></td>
-    <td align="center"><?=$sumdc1;?></td>
+    <td align="center"><? if($dead11==0){ echo "-";}else{ echo $dead11;}?></td>
+    <td align="center"><? if($improved11==0){ echo "-";}else{ echo $improved11;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc11;?></td>
   </tr>
 <?
-	}  //close while rows1
+		}  //close while rows1
+	}
 	
 	//------------ ก.2 นายสิบ พลทหารประจำการ ------------//
-    $sql2= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G12%' GROUP BY icd10  ORDER BY goup asc, icd10 asc"; 
+    $sql2= "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G12%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql2."<br>";
 	$query2 = mysql_query($sql2) or die("Query failed G12");
 	$numrows2=mysql_num_rows($query2);
 	//echo "--->".$numrows2."<br>";
 	if(!empty($numrows2)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	$num2=0;
 	while($rows2=mysql_fetch_array($query2)){
-    $num2++;
+    $num++;
 	$goup=substr($rows2["goup"],4,3);
-	$icount2=$rows2["icount"];
 	$icd10=$rows2["icd10"];
+	if(!empty($rows2["comorbid"])){
+		$comorbid=$rows2["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}	
 	
-	$sql="select icd10,result from ipgroup where goup like 'G12%' and icd10='$icd10'";
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G12%' and icd10='$icd10'";
 	$query = mysql_query($sql) or die("Query failed line 101");
-	$improved2=0;
-    $dead2=0;	
+	$improved12=0;
+    $dead12=0;	
+	$old12=0;
+	$new12=0;
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved2++;
+
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new12++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old12++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead2++;
-		}	
-	}		
-	$sumdc2=$improved2+$dead2;	
-	$sumcount2=$icount2;
+		if($chkdcdate <= $chkyrmonth3){		
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+	}	
+	$sumin12=$old12+$new12;	
+	$sumdc12=$improved12+$dead12;	
 ?>   
   <tr>
-    <td align="center"><?=$num2;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows2["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old12;?></td>
+    <td align="center"><?=$new12;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin12;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount2;?></td>
-    <td align="center"><?=$sumcount2;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead2==0){ echo "-";}else{ echo $dead2;}?></td>
-    <td align="center"><? if($improved2==0){ echo "-";}else{ echo $improved2;}?></td>
-    <td align="center"><?=$sumdc2;?></td>
+    <td align="center"><? if($dead12==0){ echo "-";}else{ echo $dead12;}?></td>
+    <td align="center"><? if($improved12==0){ echo "-";}else{ echo $improved12;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc12;?></td>
   </tr>
 <?
 		}  //close while rows2
 	}  //close numrows2
 	
 	//------------ ก.3 ข้าราชการกลาโหมพลเรือน ------------//
-    $sql3= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G13%' GROUP BY icd10  ORDER BY goup asc, icd10 asc"; 
+    $sql3= "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G13%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql3."<br>";
 	$query3 = mysql_query($sql3) or die("Query failed G13");
 	$numrows3=mysql_num_rows($query3);
 	//echo "--->".$numrows3."<br>";
-	$num3=0;
 	if(!empty($numrows3)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
 	while($rows3=mysql_fetch_array($query3)){
-    $num3++;
+    $num++;
 	$goup=substr($rows3["goup"],4,3);
-	$icount3=$rows3["icount"];
 	$icd10=$rows3["icd10"];
+	if(!empty($rows3["comorbid"])){
+		$comorbid=$rows3["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}	
 	
-	$sql="select icd10,result from ipgroup where goup like 'G13%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 152");
-	$improved3=0;
-    $dead3=0;	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G13%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 101");
+	$improved13=0;
+    $dead13=0;	
+	$old13=0;
+	$new13=0;
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved3++;
+
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new13++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old13++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead3++;
+		if($chkdcdate <= $chkyrmonth3){		
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
 		}	
 	}	
-	$sumdc3=$improved3+$dead3;	
-	$sumcount3=$icount3;
+	$sumin13=$old13+$new13;	
+	$sumdc13=$improved13+$dead13;	
 ?>   
   <tr>
-    <td align="center"><?=$num3;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows3["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old13;?></td>
+    <td align="center"><?=$new13;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin13;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount3;?></td>
-    <td align="center"><?=$sumcount3;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead3==0){ echo "-";}else{ echo $dead3;}?></td>
-    <td align="center"><? if($improved3==0){ echo "-";}else{ echo $improved3;}?></td>
-    <td align="center"><?=$sumdc3;?></td>
+    <td align="center"><? if($dead13==0){ echo "-";}else{ echo $dead13;}?></td>
+    <td align="center"><? if($improved13==0){ echo "-";}else{ echo $improved13;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc13;?></td>
   </tr>
 <?
 		}  //close while rows3
 	}  //close numrows3
 	
-	//------------ ก.4 ลูกจ้างประจำ ------------//
-    $sql4= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G14%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
+	//------------ ก.4 ลูกจ้างประจำ ------------//		
+    $sql4= "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G14%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql4."<br>";
 	$query4 = mysql_query($sql4) or die("Query failed G14");
 	$numrows4=mysql_num_rows($query4);
 	//echo "--->".$numrows4."<br>";
-	$num4=0;
 	if(!empty($numrows4)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
 	while($rows4=mysql_fetch_array($query4)){
-    $num4++;
+    $num++;
 	$goup=substr($rows4["goup"],4,3);
-	$icount4=$rows4["icount"];
 	$icd10=$rows4["icd10"];
+	if(!empty($rows4["comorbid"])){
+		$comorbid=$rows4["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}	
 	
-	$sql="select icd10,result from ipgroup where goup like 'G14%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 203");
-	$improved4=0;
-    $dead4=0;	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G14%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 101");
+	$improved14=0;
+    $dead14=0;	
+	$old14=0;
+	$new14=0;
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved4++;
+
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new14++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old14++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead4++;
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
 		}	
 	}	
-	$sumdc4=$improved4+$dead4;	
-	$sumcount4=$icount4;	
+	$sumin14=$old14+$new14;	
+	$sumdc14=$improved14+$dead14;	
 ?>   
   <tr>
-    <td align="center"><?=$num4;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows4["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old14;?></td>
+    <td align="center"><?=$new14;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin14;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount4;?></td>
-    <td align="center"><?=$sumcount4;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead4==0){ echo "-";}else{ echo $dead4;}?></td>
-    <td align="center"><? if($improved4==0){ echo "-";}else{ echo $improved4;}?></td>
-    <td align="center"><?=$sumdc4;?></td>
+    <td align="center"><? if($dead14==0){ echo "-";}else{ echo $dead14;}?></td>
+    <td align="center"><? if($improved14==0){ echo "-";}else{ echo $improved14;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc14;?></td>
   </tr>
 <?
 		}  //close while rows4
 	}  //close numrows4
 
-	//------------ ก.5 ลูกจ้างชั่วคราว ------------//
-    $sql5= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G15%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
+	//------------ ก.5 ลูกจ้างชั่วคราว ------------//	
+    $sql5= "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G15%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql5."<br>";
 	$query5 = mysql_query($sql5) or die("Query failed G15");
 	$numrows5=mysql_num_rows($query5);
 	//echo "--->".$numrows5."<br>";
-	$num5=0;
 	if(!empty($numrows5)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
 	while($rows5=mysql_fetch_array($query5)){
-    $num5++;
-	$lengoup=strlen($rows5["goup"]);
-	if($lengoup =="24"){
-	$goup=substr($rows5["goup"],5,3);	
-	}else{
+    $num++;
 	$goup=substr($rows5["goup"],4,3);
-	}
-	$icount5=$rows5["icount"];
 	$icd10=$rows5["icd10"];
+	if(!empty($rows5["comorbid"])){
+		$comorbid=$rows5["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}	
 	
-	$sql="select icd10,result from ipgroup where goup like 'G15%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 259");
-	$improved5=0;
-    $dead5=0;	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G15%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 101");
+	$improved15=0;
+    $dead15=0;	
+	$old15=0;
+	$new15=0;
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved5++;
+
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new15++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old15++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead5++;
+		if($chkdcdate <= $chkyrmonth3){
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
 		}	
 	}	
-	$sumdc5=$improved5+$dead5;
-	$sumcount5=$icount5;		
-?>   
+	$sumin15=$old15+$new15;	
+	$sumdc15=$improved15+$dead15;	
+	?>   
   <tr>
-    <td align="center"><?=$num5;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows5["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old15;?></td>
+    <td align="center"><?=$new15;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin15;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount5;?></td>
-    <td align="center"><?=$sumcount5;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead5==0){ echo "-";}else{ echo $dead5;}?></td>
-    <td align="center"><? if($improved5==0){ echo "-";}else{ echo $improved5;}?></td>
-    <td align="center"><?=$sumdc5;?></td>
+    <td align="center"><? if($dead15==0){ echo "-";}else{ echo $dead15;}?></td>
+    <td align="center"><? if($improved15==0){ echo "-";}else{ echo $improved15;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc5;?></td>
   </tr>
 <?
 		}  //close while rows5
 	}  //close numrows5	
-?>  
-  <tr>
-    <td colspan="11" align="center" bgcolor="#FFCC99">&nbsp;</td>
-  </tr>
-<?
+
 	//------------ ข.1 นายสิบ พลทหารประจำการ ------------//
-    $sql1 = "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G21%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
+    $sql21 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G21%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql1."<br>";
-	$query1 = mysql_query($sql1) or die("Query failed G21");
-	$numrows1=mysql_num_rows($query1);
+	$query21 = mysql_query($sql21) or die("Query failed G21");
+	$numrows21=mysql_num_rows($query21);
 	//echo "--->".$numrows1."<br>";
-	$num1=0;
-	while($rows1=mysql_fetch_array($query1)){
-    $num1++;
-	$goup=substr($rows1["goup"],4,3);
-	$icount1=$rows1["icount"];		
-	$icd10=$rows1["icd10"];
+	if(!empty($numrows21)){	
+	while($rows21=mysql_fetch_array($query21)){
+    $num++;
+	$goup=substr($rows21["goup"],4,3);
+	$icd10=$rows21["icd10"];
+	if(!empty($rows21["comorbid"])){
+		$comorbid=$rows21["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G21%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 313");
-	$improved1=0;
-    $dead1=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G21%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved21=0;
+    $dead21=0;
+	$old21=0;
+	$new21=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved1++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new21++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old21++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead1++;
-		}	
-	}	
-	$sumdc1=$improved1+$dead1;
-	$sumcount1=$icount1;	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
 		
-?>  
-  <tr>
-    <td align="center"><?=$num1;?></td>
-    <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows1["icd10"];?></td>
-    <td align="left">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount1;?></td>
-    <td align="center"><?=$sumcount1;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead1==0){ echo "-";}else{ echo $dead1;}?></td>
-    <td align="center"><? if($improved1==0){ echo "-";}else{ echo $improved1;}?></td>
-    <td align="center"><?=$sumdc1;?></td>
-  </tr>
-<?
-	}  //close while rows1
-	
-	//------------ ก.2 นายสิบ พลทหารประจำการ ------------//
-    $sql2= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G22%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql2."<br>";
-	$query2 = mysql_query($sql2) or die("Query failed G22");
-	$numrows2=mysql_num_rows($query2);
-	//echo "--->".$numrows2."<br>";
-	$num2=0;
-	if(!empty($numrows2)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows2=mysql_fetch_array($query2)){
-    $num2++;
-	$goup=substr($rows2["goup"],4,3);
-	$icount2=$rows2["icount"];
-	$icd10=$rows2["icd10"];
-	
-	$sql="select icd10,result from ipgroup where goup like 'G22%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 343");
-	$improved2=0;
-    $dead2=0;	
-	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved2++;
-		}
-		if($rows["result"]=="9 Dead"){
-			$dead2++;
-		}	
-	}		
-	$sumdc2=$improved2+$dead2;
-	$sumcount2=$icount2;			
+	}	
+	$sumin21=$old21+$new21;
+	$sumdc21=$improved21+$dead21;
 ?>   
   <tr>
-    <td align="center"><?=$num2;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows2["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old21;?></td>
+    <td align="center"><?=$new21;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin21;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount2;?></td>
-    <td align="center"><?=$sumcount2;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead2==0){ echo "-";}else{ echo $dead2;}?></td>
-    <td align="center"><? if($improved2==0){ echo "-";}else{ echo $improved2;}?></td>
-    <td align="center"><?=$sumdc2;?></td>
+    <td align="center"><? if($dead21==0){ echo "-";}else{ echo $dead21;}?></td>
+    <td align="center"><? if($improved21==0){ echo "-";}else{ echo $improved21;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc21;?></td>
   </tr>
 <?
-		}  //close while rows2
-	}  //close numrows2
+		}  //close while rows21
+	}  //close numrows21
+		
+	//------------ ก.2 นายสิบ พลทหารประจำการ ------------//
+    $sql22 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G22%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query22 = mysql_query($sql22) or die("Query failed G22");
+	$numrows22=mysql_num_rows($query22);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows22)){	
+	while($rows22=mysql_fetch_array($query22)){
+    $num++;
+	$goup=substr($rows22["goup"],4,3);
+	$icd10=$rows22["icd10"];
+	if(!empty($rows22["comorbid"])){
+		$comorbid=$rows22["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
+	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G22%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved22=0;
+    $dead22=0;
+	$old22=0;
+	$new22=0;	
+	while($rows=mysql_fetch_array($query)){
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new22++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old22++;
+			//echo "ยกมา";
+		}
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
+	}	
+	$sumin22=$old22+$new22;
+	$sumdc22=$improved22+$dead22;
+?>   
+  <tr>
+    <td align="center"><?=$num;?></td>
+    <td align="left"><?=$goup;?></td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old22;?></td>
+    <td align="center"><?=$new22;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin22;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center"><? if($dead22==0){ echo "-";}else{ echo $dead22;}?></td>
+    <td align="center"><? if($improved22==0){ echo "-";}else{ echo $improved22;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc22;?></td>
+  </tr>
+<?
+		}  //close while rows22
+	}  //close numrows22
 	
 	//------------ ก.3 ข้าราชการกลาโหมพลเรือน ------------//
-    $sql3= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G23%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql3."<br>";
-	$query3 = mysql_query($sql3) or die("Query failed G23");
-	$numrows3=mysql_num_rows($query3);
-	//echo "--->".$numrows3."<br>";
-	$num3=0;
-	if(!empty($numrows3)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows3=mysql_fetch_array($query3)){
-    $num3++;
-	$goup=substr($rows3["goup"],4,3);
-	$icount3=$rows3["icount"];
-	$icd10=$rows3["icd10"];
+    $sql23 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G23%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query23 = mysql_query($sql23) or die("Query failed G23");
+	$numrows23=mysql_num_rows($query23);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows23)){	
+	while($rows23=mysql_fetch_array($query23)){
+    $num++;
+	$goup=substr($rows23["goup"],4,3);
+	$icd10=$rows23["icd10"];
+	if(!empty($rows23["comorbid"])){
+		$comorbid=$rows23["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G23%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 394");
-	$improved3=0;
-    $dead3=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G23%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved23=0;
+    $dead23=0;
+	$old23=0;
+	$new23=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved3++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new23++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old23++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead3++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc3=$improved3+$dead3;
-	$sumcount3=$icount3;			
+	$sumin23=$old23+$new23;
+	$sumdc23=$improved23+$dead23;
 ?>   
   <tr>
-    <td align="center"><?=$num3;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows3["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old23;?></td>
+    <td align="center"><?=$new23;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin23;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount3;?></td>
-    <td align="center"><?=$sumcount3;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead3==0){ echo "-";}else{ echo $dead3;}?></td>
-    <td align="center"><? if($improved3==0){ echo "-";}else{ echo $improved3;}?></td>
-    <td align="center"><?=$sumdc3;?></td>
+    <td align="center"><? if($dead23==0){ echo "-";}else{ echo $dead23;}?></td>
+    <td align="center"><? if($improved23==0){ echo "-";}else{ echo $improved23;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc23;?></td>
   </tr>
 <?
-		}  //close while rows3
-	}  //close numrows3
+		}  //close while rows23
+	}  //close numrows23
 	
 	//------------ ก.4 ลูกจ้างประจำ ------------//
-    $sql4= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G24%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql4."<br>";
-	$query4 = mysql_query($sql4) or die("Query failed G24");
-	$numrows4=mysql_num_rows($query4);
-	//echo "--->".$numrows4."<br>";
-	$num4=0;
-	if(!empty($numrows4)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows4=mysql_fetch_array($query4)){
-    $num4++;
-	$goup=substr($rows4["goup"],4,3);
-	$icount4=$rows4["icount"];
-	$icd10=$rows4["icd10"];
+    $sql24 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G24%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query24 = mysql_query($sql24) or die("Query failed G24");
+	$numrows24=mysql_num_rows($query24);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows24)){	
+	while($rows24=mysql_fetch_array($query24)){
+    $num++;
+	$goup=substr($rows24["goup"],4,3);
+	$icd10=$rows24["icd10"];
+	if(!empty($rows24["comorbid"])){
+		$comorbid=$rows24["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G24%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 445");
-	$improved4=0;
-    $dead4=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G24%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved24=0;
+    $dead24=0;
+	$old24=0;
+	$new24=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved4++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new24++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old24++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead4++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc4=$improved4+$dead4;	
-	$sumcount4=$icount4;	
+	$sumin24=$old24+$new24;
+	$sumdc24=$improved24+$dead24;
 ?>   
   <tr>
-    <td align="center"><?=$num4;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows4["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old24;?></td>
+    <td align="center"><?=$new24;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin24;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount4;?></td>
-    <td align="center"><?=$sumcount4;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead4==0){ echo "-";}else{ echo $dead4;}?></td>
-    <td align="center"><? if($improved4==0){ echo "-";}else{ echo $improved4;}?></td>
-    <td align="center"><?=$sumdc4;?></td>
+    <td align="center"><? if($dead24==0){ echo "-";}else{ echo $dead24;}?></td>
+    <td align="center"><? if($improved24==0){ echo "-";}else{ echo $improved24;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc24;?></td>
   </tr>
 <?
-		}  //close while rows4
-	}  //close numrows4
+		}  //close while rows24
+	}  //close numrows24
 
 	//------------ ก.5 ลูกจ้างชั่วคราว ------------//
-    $sql5= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G25%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql5."<br>";
-	$query5 = mysql_query($sql5) or die("Query failed G25");
-	$numrows5=mysql_num_rows($query5);
-	//echo "--->".$numrows5."<br>";
-	$num5=0;
-	if(!empty($numrows5)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows5=mysql_fetch_array($query5)){
-    $num5++;
-	$goup=substr($rows5["goup"],5,3);
-	$icount5=$rows5["icount"];
-	$icd10=$rows5["icd10"];
+    $sql25 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G25%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query25 = mysql_query($sql25) or die("Query failed G25");
+	$numrows25=mysql_num_rows($query25);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows25)){	
+	while($rows25=mysql_fetch_array($query25)){
+    $num++;
+	$goup=substr($rows25["goup"],4,3);
+	$icd10=$rows25["icd10"];
+	if(!empty($rows25["comorbid"])){
+		$comorbid=$rows25["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G25%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 259");
-	$improved5=0;
-    $dead5=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G25%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved25=0;
+    $dead25=0;
+	$old25=0;
+	$new25=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved5++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new25++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old25++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead5++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc5=$improved5+$dead5;
-	$sumcount5=$icount5;				
+	$sumin25=$old25+$new25;
+	$sumdc25=$improved25+$dead25;
 ?>   
   <tr>
-    <td align="center"><?=$num5;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows5["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old25;?></td>
+    <td align="center"><?=$new25;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin25;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount5;?></td>
-    <td align="center"><?=$sumcount5;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead5==0){ echo "-";}else{ echo $dead5;}?></td>
-    <td align="center"><? if($improved5==0){ echo "-";}else{ echo $improved5;}?></td>
-    <td align="center"><?=$sumdc5;?></td>
+    <td align="center"><? if($dead25==0){ echo "-";}else{ echo $dead25;}?></td>
+    <td align="center"><? if($improved25==0){ echo "-";}else{ echo $improved25;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc25;?></td>
   </tr>
 <?
-		}  //close while rows5
-	}  //close numrows5	
+		}  //close while rows25
+	}  //close numrows25
 ?>  
-  <tr>
-    <td colspan="11" align="center" bgcolor="#FFCC99">&nbsp;</td>
-  </tr>
 <?
 	//------------ ค.1 ครอบครัวทหาร ------------//
-    $sql1 = "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G31%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
+    $sql31 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G31%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql1."<br>";
-	$query1 = mysql_query($sql1) or die("Query failed G31");
-	$numrows1=mysql_num_rows($query1);
+	$query31 = mysql_query($sql31) or die("Query failed G31");
+	$numrows31=mysql_num_rows($query31);
 	//echo "--->".$numrows1."<br>";
-	$num1=0;
-	while($rows1=mysql_fetch_array($query1)){
-    $num1++;
-	$goup=substr($rows1["goup"],4,3);
-	$icount1=$rows1["icount"];	
-	$icd10=$rows1["icd10"];
+	if(!empty($numrows31)){	
+	while($rows31=mysql_fetch_array($query31)){
+    $num++;
+	$goup=substr($rows31["goup"],4,3);
+	$icd10=$rows31["icd10"];
+	if(!empty($rows31["comorbid"])){
+		$comorbid=$rows31["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G31%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed");
-	$improved1=0;
-    $dead1=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G31%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved31=0;
+    $dead31=0;
+	$old31=0;
+	$new31=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved1++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new31++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old31++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead1++;
-		}	
-	}	
-	
-	$sumdc1=$improved1+$dead1;	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
 		
-?>  
+	}	
+	$sumin31=$old31+$new31;
+	$sumdc31=$improved31+$dead31;
+?>   
   <tr>
-    <td align="center"><?=$num1;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows1["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old31;?></td>
+    <td align="center"><?=$new31;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin31;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount1;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead1==0){ echo "-";}else{ echo $dead1;}?></td>
-    <td align="center"><? if($improved1==0){ echo "-";}else{ echo $improved1;}?></td>
-    <td align="center"><?=$sumdc1;?></td>
+    <td align="center"><? if($dead31==0){ echo "-";}else{ echo $dead31;}?></td>
+    <td align="center"><? if($improved31==0){ echo "-";}else{ echo $improved31;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc31;?></td>
   </tr>
 <?
-	}  //close while rows1
+		}  //close while rows31
+	}  //close numrows31
 	
 	//------------ ค.2 ทหารนอกประจำการ ------------//
-    $sql2= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G32%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql2."<br>";
-	$query2 = mysql_query($sql2) or die("Query failed G32");
-	$numrows2=mysql_num_rows($query2);
-	//echo "--->".$numrows2."<br>";
-	$num2=0;
-	if(!empty($numrows2)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows2=mysql_fetch_array($query2)){
-    $num2++;
-	$goup=substr($rows2["goup"],4,3);
-	$icount=$rows2["icount"];
-	$icd10=$rows2["icd10"];
+    $sql32 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G32%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query32 = mysql_query($sql32) or die("Query failed G32");
+	$numrows32=mysql_num_rows($query32);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows32)){	
+	while($rows32=mysql_fetch_array($query32)){
+    $num++;
+	$goup=substr($rows32["goup"],4,3);
+	$icd10=$rows32["icd10"];
+	if(!empty($rows32["comorbid"])){
+		$comorbid=$rows32["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G32%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 597");
-	$improved2=0;
-    $dead2=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G32%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved32=0;
+    $dead32=0;
+	$old32=0;
+	$new32=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved2++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new32++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old32++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead2++;
-		}	
-	}		
-	$sumdc2=$improved2+$dead2;		
-?>   
-  <tr>
-    <td align="center"><?=$num2;?></td>
-    <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows2["icd10"];?></td>
-    <td align="left">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount2;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead2==0){ echo "-";}else{ echo $dead2;}?></td>
-    <td align="center"><? if($improved2==0){ echo "-";}else{ echo $improved2;}?></td>
-    <td align="center"><?=$sumdc2;?></td>
-  </tr>
-<?
-		}  //close while rows2
-	}  //close numrows2
-	
-	//------------ ค.3 นักศึกษาวิชาทหาร ------------//
-    $sql3= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G33%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql3."<br>";
-	$query3 = mysql_query($sql3) or die("Query failed G33");
-	$numrows3=mysql_num_rows($query3);
-	//echo "--->".$numrows3."<br>";
-	$num3=0;
-	if(!empty($numrows3)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows3=mysql_fetch_array($query3)){
-    $num3++;
-	$goup=substr($rows3["goup"],4,3);
-	$icount3=$rows3["icount"];
-	$icd10=$rows3["icd10"];
-	
-	$sql="select icd10,result from ipgroup where goup like 'G23%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 648");
-	$improved3=0;
-    $dead3=0;	
-	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved3++;
+		
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead3++;
-		}	
+		
 	}	
-	$sumdc3=$improved3+$dead3;		
+	$sumin32=$old32+$new32;
+	$sumdc32=$improved32+$dead32;
 ?>   
   <tr>
-    <td align="center"><?=$num3;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows3["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old32;?></td>
+    <td align="center"><?=$new32;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin32;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount3;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead3==0){ echo "-";}else{ echo $dead3;}?></td>
-    <td align="center"><? if($improved3==0){ echo "-";}else{ echo $improved3;}?></td>
-    <td align="center"><?=$sumdc3;?></td>
+    <td align="center"><? if($dead32==0){ echo "-";}else{ echo $dead32;}?></td>
+    <td align="center"><? if($improved32==0){ echo "-";}else{ echo $improved32;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc32;?></td>
   </tr>
 <?
-		}  //close while rows3
-	}  //close numrows3
+		}  //close while rows32
+	}  //close numrows32
 	
-	//------------ ค.4 วิวัฒน์พลเมือง ------------//
-    $sql4= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G34%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql4."<br>";
-	$query4 = mysql_query($sql4) or die("Query failed G34");
-	$numrows4=mysql_num_rows($query4);
-	//echo "--->".$numrows4."<br>";
-	$num4=0;
-	if(!empty($numrows4)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows4=mysql_fetch_array($query4)){
-    $num4++;
-	$goup=substr($rows4["goup"],4,3);
-	$icount4=$rows4["icount"];
-	$icd10=$rows4["icd10"];
+	//------------ ค.3 นักศึกษาวิชาทหาร(รด.) ระหว่างฝึก ------------//
+    $sql33 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G33%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query33 = mysql_query($sql33) or die("Query failed G33");
+	$numrows33=mysql_num_rows($query33);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows33)){	
+	while($rows33=mysql_fetch_array($query33)){
+    $num++;
+	$goup=substr($rows33["goup"],4,3);
+	$icd10=$rows33["icd10"];
+	if(!empty($rows33["comorbid"])){
+		$comorbid=$rows33["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G34%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 699");
-	$improved4=0;
-    $dead4=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G33%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved33=0;
+    $dead33=0;
+	$old33=0;
+	$new33=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved4++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new33++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old33++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead4++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc4=$improved4+$dead4;		
+	$sumin33=$old33+$new33;
+	$sumdc33=$improved33+$dead33;
 ?>   
   <tr>
-    <td align="center"><?=$num4;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows4["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old33;?></td>
+    <td align="center"><?=$new33;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin33;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount4;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead4==0){ echo "-";}else{ echo $dead4;}?></td>
-    <td align="center"><? if($improved4==0){ echo "-";}else{ echo $improved4;}?></td>
-    <td align="center"><?=$sumdc4;?></td>
+    <td align="center"><? if($dead33==0){ echo "-";}else{ echo $dead33;}?></td>
+    <td align="center"><? if($improved33==0){ echo "-";}else{ echo $improved33;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc33;?></td>
   </tr>
 <?
-		}  //close while rows4
-	}  //close numrows4
+		}  //close while rows33
+	}  //close numrows33
+	
+    //------------ ค.4 บุคคลที่เข้าร่วมโครงการวิวัฒน์พลเมือง ------------//
+	$sql34 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G34%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query34 = mysql_query($sql34) or die("Query failed G34");
+	$numrows34=mysql_num_rows($query34);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows34)){	
+	while($rows34=mysql_fetch_array($query34)){
+    $num++;
+	$goup=substr($rows34["goup"],4,3);
+	$icd10=$rows34["icd10"];
+	if(!empty($rows34["comorbid"])){
+		$comorbid=$rows34["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
+	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G34%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved34=0;
+    $dead34=0;
+	$old34=0;
+	$new34=0;	
+	while($rows=mysql_fetch_array($query)){
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new34++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old34++;
+			//echo "ยกมา";
+		}
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
+	}	
+	$sumin34=$old34+$new34;
+	$sumdc34=$improved34+$dead34;
+?>   
+  <tr>
+    <td align="center"><?=$num;?></td>
+    <td align="left"><?=$goup;?></td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old34;?></td>
+    <td align="center"><?=$new34;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin34;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center"><? if($dead34==0){ echo "-";}else{ echo $dead34;}?></td>
+    <td align="center"><? if($improved34==0){ echo "-";}else{ echo $improved34;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc34;?></td>
+  </tr>
+<?
+		}  //close while rows34
+	}  //close numrows34
+	
+
 
 	//------------ ค.5 พลเรือนใช้บัตรประกันสังคม ------------//
-    $sql5= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G35%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql5."<br>";
-	$query5 = mysql_query($sql5) or die("Query failed G35");
-	$numrows5=mysql_num_rows($query5);
-	//echo "--->".$numrows5."<br>";
-	$num5=0;
-	if(!empty($numrows5)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows5=mysql_fetch_array($query5)){
-    $num5++;
-	$goup=substr($rows5["goup"],4,3);
-	$icount5=$rows5["icount"];
-	$icd10=$rows5["icd10"];
+	$sql35 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G35%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query35 = mysql_query($sql35) or die("Query failed G35");
+	$numrows35=mysql_num_rows($query35);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows35)){	
+	while($rows35=mysql_fetch_array($query35)){
+    $num++;
+	$goup=substr($rows35["goup"],4,3);
+	$icd10=$rows35["icd10"];
+	if(!empty($rows35["comorbid"])){
+		$comorbid=$rows35["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G35%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 750");
-	$improved5=0;
-    $dead5=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G35%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved35=0;
+    $dead35=0;
+	$old35=0;
+	$new35=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved5++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new35++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old35++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead5++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc5=$improved5+$dead5;		
+	$sumin35=$old35+$new35;
+	$sumdc35=$improved35+$dead35;
 ?>   
   <tr>
-    <td align="center"><?=$num5;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows5["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old35;?></td>
+    <td align="center"><?=$new35;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin35;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount5;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead5==0){ echo "-";}else{ echo $dead5;}?></td>
-    <td align="center"><? if($improved5==0){ echo "-";}else{ echo $improved5;}?></td>
-    <td align="center"><?=$sumdc5;?></td>
+    <td align="center"><? if($dead35==0){ echo "-";}else{ echo $dead35;}?></td>
+    <td align="center"><? if($improved35==0){ echo "-";}else{ echo $improved35;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc35;?></td>
   </tr>
 <?
-		}  //close while rows5
-	}  //close numrows5	
-	
+		}  //close while rows35
+	}  //close numrows35
+		
 	//------------ ค.6 พลเรือนใช้บัตรประกันสุขภาพ ------------//
-    $sql6= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G36%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql6."<br>";
-	$query6 = mysql_query($sql6) or die("Query failed G36");
-	$numrows6=mysql_num_rows($query6);
-	//echo "--->".$numrows6."<br>";
-	$num6=0;
-	if(!empty($numrows6)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows6=mysql_fetch_array($query6)){
-    $num6++;
-	$goup=substr($rows6["goup"],4,3);
-	$icount6=$rows6["icount"];
-	$icd10=$rows6["icd10"];
+	$sql36 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G36%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query36 = mysql_query($sql36) or die("Query failed G36");
+	$numrows36=mysql_num_rows($query36);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows36)){	
+	while($rows36=mysql_fetch_array($query36)){
+    $num++;
+	$goup=substr($rows36["goup"],4,3);
+	$icd10=$rows36["icd10"];
+	if(!empty($rows36["comorbid"])){
+		$comorbid=$rows36["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G36%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 801");
-	$improved6=0;
-    $dead6=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G36%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved36=0;
+    $dead36=0;
+	$old36=0;
+	$new36=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved6++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new36++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old36++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead6++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc6=$improved6+$dead6;		
+	$sumin36=$old36+$new36;
+	$sumdc36=$improved36+$dead36;
 ?>   
   <tr>
-    <td align="center"><?=$num6;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows6["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old36;?></td>
+    <td align="center"><?=$new36;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin36;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount6;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead6==0){ echo "-";}else{ echo $dead6;}?></td>
-    <td align="center"><? if($improved6==0){ echo "-";}else{ echo $improved6;}?></td>
-    <td align="center"><?=$sumdc6;?></td>
+    <td align="center"><? if($dead36==0){ echo "-";}else{ echo $dead36;}?></td>
+    <td align="center"><? if($improved36==0){ echo "-";}else{ echo $improved36;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc36;?></td>
   </tr>
 <?
-		}  //close while rows6
-	}  //close numrows6
+		}  //close while rows36
+	}  //close numrows36
 	
 	//------------ ค.7 ข้าราชการพลเรือน ------------//
-    $sql7= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G37%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql7."<br>";
-	$query7 = mysql_query($sql7) or die("Query failed G37");
-	$numrows7=mysql_num_rows($query7);
-	//echo "--->".$numrows7."<br>";
-	$num7=0;
-	if(!empty($numrows7)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows7=mysql_fetch_array($query7)){
-    $num7++;
-	$goup=substr($rows7["goup"],4,3);
-	$icount7=$rows7["icount"];
-	$icd10=$rows7["icd10"];
+	$sql37 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G37%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query37 = mysql_query($sql37) or die("Query failed G37");
+	$numrows37=mysql_num_rows($query37);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows37)){	
+	while($rows37=mysql_fetch_array($query37)){
+    $num++;
+	$goup=substr($rows37["goup"],4,3);
+	$icd10=$rows37["icd10"];
+	if(!empty($rows37["comorbid"])){
+		$comorbid=$rows37["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G37%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 852");
-	$improved7=0;
-    $dead7=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G37%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved37=0;
+    $dead37=0;
+	$old37=0;
+	$new37=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved7++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new37++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old37++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead7++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc7=$improved7+$dead7;			
+	$sumin37=$old37+$new37;
+	$sumdc37=$improved37+$dead37;
 ?>   
   <tr>
-    <td align="center"><?=$num7;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows7["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old37;?></td>
+    <td align="center"><?=$new37;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin37;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount7;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead7==0){ echo "-";}else{ echo $dead7;}?></td>
-    <td align="center"><? if($improved7==0){ echo "-";}else{ echo $improved7;}?></td>
-    <td align="center"><?=$sumdc7;?></td>
+    <td align="center"><? if($dead37==0){ echo "-";}else{ echo $dead37;}?></td>
+    <td align="center"><? if($improved37==0){ echo "-";}else{ echo $improved37;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc37;?></td>
   </tr>
 <?
-		}  //close while rows7
-	}  //close numrows7	
+		}  //close while rows37
+	}  //close numrows37
 	
 	//------------ ค.8 พลเรือน (ไม่เบิกต้นสังกัด) ------------//
-    $sql8= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G38%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql8."<br>";
-	$query8 = mysql_query($sql8) or die("Query failed G38");
-	$numrows8=mysql_num_rows($query8);
-	//echo "--->".$numrows8."<br>";
-	$num8=0;
-	if(!empty($numrows8)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows8=mysql_fetch_array($query8)){
-    $num8++;
-	$goup=substr($rows8["goup"],4,3);
-	$icount8=$rows8["icount"];
-	$icd10=$rows8["icd10"];
+	$sql38 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G38%' group by icd10 ORDER BY icd10 asc"; 
+	//echo $sql1."<br>";
+	$query38 = mysql_query($sql38) or die("Query failed G38");
+	$numrows38=mysql_num_rows($query38);
+	//echo "--->".$numrows1."<br>";
+	if(!empty($numrows38)){	
+	while($rows38=mysql_fetch_array($query38)){
+    $num++;
+	$goup=substr($rows38["goup"],4,3);
+	$icd10=$rows38["icd10"];
+	if(!empty($rows38["comorbid"])){
+		$comorbid=$rows38["comorbid"];
+	}else{
+		$comorbid="&nbsp;";
+	}
 	
-	$sql="select icd10,result from ipgroup where goup like 'G38%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 903");
-	$improved8=0;
-    $dead8=0;	
+	
+	$sql="SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G38%' and icd10='$icd10'";
+	$query = mysql_query($sql) or die("Query failed line 54");
+	$improved38=0;
+    $dead38=0;
+	$old38=0;
+	$new38=0;	
 	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved8++;
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new38++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old38++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead8++;
-		}	
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
+		}
+		
 	}	
-	$sumdc8=$improved8+$dead8;	
+	$sumin38=$old38+$new38;
+	$sumdc38=$improved38+$dead38;
 ?>   
   <tr>
-    <td align="center"><?=$num8;?></td>
+    <td align="center"><?=$num;?></td>
     <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows8["icd10"];?></td>
-    <td align="left">&nbsp;</td>
+    <td align="left"><?=$icd10;?></td>
+    <td align="left"><?=$comorbid;?></td>
+    <td align="center"><?=$old38;?></td>
+    <td align="center"><?=$new38;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumin38;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount8;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead8==0){ echo "-";}else{ echo $dead8;}?></td>
-    <td align="center"><? if($improved8==0){ echo "-";}else{ echo $improved8;}?></td>
-    <td align="center"><?=$sumdc8;?></td>
+    <td align="center"><? if($dead38==0){ echo "-";}else{ echo $dead38;}?></td>
+    <td align="center"><? if($improved38==0){ echo "-";}else{ echo $improved38;}?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$sumdc38;?></td>
   </tr>
 <?
-		}  //close while rows8
-	}  //close numrows8	
-	
-	//------------ ค.9 อื่นๆ ไม่ระบุ ------------//
-    $sql9= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G39%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql9."<br>";
-	$query9 = mysql_query($sql9) or die("Query failed G39");
-	$numrows9=mysql_num_rows($query9);
-	//echo "--->".$numrows9."<br>";
-	$num9=0;
-	if(!empty($numrows9)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows9=mysql_fetch_array($query9)){
-    $num9++;
-	$goup=substr($rows9["goup"],4,3);
-	$icount9=$rows9["icount"];
-	$icd10=$rows9["icd10"];
-	
-	$sql="select icd10,result from ipgroup where goup like 'G39%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 954");
-	$improved9=0;
-    $dead9=0;	
-	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved9++;
-		}
-		if($rows["result"]=="9 Dead"){
-			$dead9++;
-		}	
-	}	
-	$sumdc9=$improved9+$dead9;		
-?>   
-  <tr>
-    <td align="center"><?=$num9;?></td>
-    <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows9["icd10"];?></td>
-    <td align="left">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount9;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead9==0){ echo "-";}else{ echo $dead9;}?></td>
-    <td align="center"><? if($improved9==0){ echo "-";}else{ echo $improved9;}?></td>
-    <td align="center"><?=$sumdc9;?></td>
-  </tr>
-<?
-		}  //close while rows9
-	}  //close numrows9	
+		}  //close while rows38
+	}  //close numrows38	
+?>
 
-	//------------ ค.10 ญาติสายตรงกับกำลังพล ทบ ------------//
-    $sql10= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G40%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql10."<br>";
-	$query10 = mysql_query($sql10) or die("Query failed G40");
-	$numrows10=mysql_num_rows($query10);
-	//echo "--->".$numrows10."<br>";
-	$num10=0;
-	if(!empty($numrows10)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
 <?
-	while($rows10=mysql_fetch_array($query10)){
-    $num10++;
-	$goup=substr($rows10["goup"],4,3);
-	$icount10=$rows10["icount"];
-	$icd10=$rows10["icd10"];
-	
-	$sql="select icd10,result from ipgroup where goup like 'G40%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 1005");
-	$improved10=0;
-    $dead10=0;	
-	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved10++;
+$sqlold= "SELECT * FROM ipcard where ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate > '$thyear-$month-31 23:59:59' OR dcdate like '$yrmonth%')) AND (goup NOT LIKE 'G39%' AND goup NOT LIKE 'G40%')"; 
+
+
+//$sqlold= "SELECT * FROM ipcard where ((date > '2560-01-01 00:00:00' AND date < '$thyear-$month-01 00:00:00' and icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate > '$thyear-$month-31 23:59:59')) OR (date < '$thyear-$month-01 00:00:00' AND dcdate like '$thyear-$month%') AND (goup NOT LIKE 'G39%' AND goup NOT LIKE 'G40%')";   //ยอดยกมา
+
+//echo $sqlold;
+$old=0;
+$new=0;
+$totalold=0;
+$totalnew=0;
+$totaloldnew=0;
+$improved=0;
+$dead=0;
+$totalimproved=0;
+$totaldead=0;
+$totalimpdead=0;
+
+$queryold = mysql_query($sqlold) or die("Query failed");
+while($rows=mysql_fetch_array($queryold)){
+		$chkyrmonth1=substr($rows["date"],0,10);
+		$chkdcdate=substr($rows["dcdate"],0,10);
+		//echo $chkyrmonth1;
+		if($chkyrmonth1 >= $chkyrmonth2){  //รับใหม่
+			$new++;
+			//echo "รับใหม่";
+		}else if($chkyrmonth1 < $chkyrmonth2){  //ยกมา
+			$old++;
+			//echo "ยกมา";
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead10++;
-		}	
-	}	
-	$sumdc10=$improved10+$dead10;	
-?>   
-  <tr>
-    <td align="center"><?=$num10;?></td>
-    <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows10["icd10"];?></td>
-    <td align="left">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount10;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead10==0){ echo "-";}else{ echo $dead10;}?></td>
-    <td align="center"><? if($improved10==0){ echo "-";}else{ echo $improved10;}?></td>
-    <td align="center"><?=$sumdc10;?></td>
-  </tr>
-<?
-		}  //close while rows10
-	}  //close numrows10	
-	
-	//------------ ค.11 บุคคลที่มีความสัมพันธกับกำลังพล ทบ ------------//
-    $sql11= "SELECT *, count(icd10) as icount FROM ipgroup where goup like 'G41%' GROUP BY icd10 ORDER BY goup asc, icd10 asc"; 
-	//echo $sql11."<br>";
-	$query11 = mysql_query($sql11) or die("Query failed G41");
-	$numrows11=mysql_num_rows($query11);
-	//echo "--->".$numrows11."<br>";
-	$num11=0;
-	if(!empty($numrows11)){
-?>	
-  <tr>
-    <td colspan="11" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-  </tr>
-<?
-	while($rows11=mysql_fetch_array($query11)){
-    $num11++;
-	$goup=substr($rows11["goup"],4,3);
-	$icount11=$rows11["icount"];
-	$icd10=$rows11["icd10"];
-	
-	$sql="select icd10,result from ipgroup where goup like 'G41%' and icd10='$icd10'";
-	$query = mysql_query($sql) or die("Query failed line 1056");
-	$improved11=0;
-    $dead11=0;	
-	while($rows=mysql_fetch_array($query)){
-	//echo "-->".$rows["icd10"]." - ".$rows["result"]."<br>";
-		if($rows["result"]=="2 Improved" || $rows["result"]=="1 Complete Recov" || $rows["result"]=="3 Not Improved"){
-			$improved11++;
+		
+		if($chkdcdate <= $chkyrmonth3){	
+			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved++;
+			}else if($rows["result"]=="9 Dead"){
+				$dead++;
+			}else{
+				$improved++;
+			}
 		}
-		if($rows["result"]=="9 Dead"){
-			$dead11++;
-		}	
-	}	
-	$sumdc11=$improved11+$dead11;	
-?>   
+				
+}
+$totalold=$totalold+$old;
+$totalnew=$totalnew+$new;
+$totaloldnew=$totalold+$totalnew;
+
+$totalimproved=$totalimproved+$improved;
+$totaldead=$totaldead+$dead;
+$totalimpdead=$totalimproved+$totaldead;
+?>
   <tr>
-    <td align="center"><?=$num11;?></td>
-    <td align="left"><?=$goup;?></td>
-    <td align="left"><?=$rows11["icd10"];?></td>
-    <td align="left">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><?=$icount11;?></td>
-    <td align="center">&nbsp;</td>
-    <td align="center">&nbsp;</td>
-    <td align="center"><? if($dead11==0){ echo "-";}else{ echo $dead11;}?></td>
-    <td align="center"><? if($improved11==0){ echo "-";}else{ echo $improved11;}?></td>
-    <td align="center"><?=$sumdc11;?></td>
-  </tr>
-<?
-		}  //close while rows11
-	}  //close numrows11	
-?>	   					   				
-  <tr>
-    <td colspan="11" align="center" bgcolor="#FFCC99">&nbsp;</td>
+    <td colspan="4" align="center">จำนวนผู้ป่วยรวม  หรือยอดยกไป</td>
+    <td align="center" bgcolor="#FFCC99"><?=$totalold;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$totalnew;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$totaloldnew;?></td>
+    <td align="center" bgcolor="#FFCC99">&nbsp;</td>
+    <td align="center" bgcolor="#FFCC99"><?=$totaldead;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$totalimproved;?></td>
+    <td align="center" bgcolor="#FFCC99"><?=$totalimpdead;?></td>
   </tr>  
 </table>
