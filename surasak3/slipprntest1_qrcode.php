@@ -353,7 +353,7 @@ body,td,th {
 			?>
 			<div style="text-align: center;">
 				<div>
-					<img src="<?=$qr['pic_parth'];?>" alt="">
+					<img src="<?=$qr['pic_parth'];?>" alt="" height="140px;">
 				</div>
 				<div style="line-height:22px; font-family:Angsana New; font-size: 22px;"><?=$qr['name'];?></div>
 			</div>
