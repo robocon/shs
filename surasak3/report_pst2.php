@@ -1,4 +1,5 @@
-<?
+<?php 
+
 $thyear=$_SESSION["thyear"];
 $ksyear=$_SESSION["ksyear"];
 $month=$_SESSION["month"];
@@ -32,7 +33,7 @@ $chkyrmonth3="$thyear-$month-31";
     <td width="98"><strong>อื่นๆ</strong></td>
     <td width="167"><strong>รวม</strong></td>
   </tr>
-<?
+<?php
 	//------------ ก.1 นายทหารประจำการ ------------//
     $sql1 = "SELECT *  FROM ipcard WHERE ((date >= '2560-01-01 00:00:00' AND date <= '$thyear-$month-31 23:59:59' AND icd10 !='') AND (dcdate = '0000-00-00 00:00:00' OR dcdate like '$yrmonth%' OR dcdate > '$thyear-$month-31 23:59:59'))  AND goup like 'G11%' group by icd10 ORDER BY icd10 asc"; 
 	//echo $sql1."<br>";
@@ -72,10 +73,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved11++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead11++;
 			}else{
 				$improved++;
+				$improved11++;
 			}
 		}
 		
@@ -138,10 +142,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){		
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved12++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead12++;
 			}else{
 				$improved++;
+				$improved12++;
 			}
 		}
 	}	
@@ -203,10 +210,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){		
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved13++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead13++;
 			}else{
 				$improved++;
+				$improved13++;
 			}
 		}	
 	}	
@@ -267,10 +277,13 @@ $chkyrmonth3="$thyear-$month-31";
 		}
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
+				$improved14++;
 				$improved++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead14++;
 			}else{
+				$improved14++;
 				$improved++;
 			}
 		}	
@@ -333,10 +346,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved15++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead15++;
 			}else{
 				$improved++;
+				$improved15++;
 			}
 		}	
 	}	
@@ -398,10 +414,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved21++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead21++;
 			}else{
 				$improved++;
+				$improved21++;
 			}
 		}
 		
@@ -464,10 +483,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved22++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead22++;
 			}else{
 				$improved++;
+				$improved22++;
 			}
 		}
 		
@@ -530,10 +552,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved23++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead23++;
 			}else{
 				$improved++;
+				$improved23++;
 			}
 		}
 		
@@ -596,10 +621,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved24++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead24++;
 			}else{
 				$improved++;
+				$improved24++;
 			}
 		}
 		
@@ -662,10 +690,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved25++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead25++;
 			}else{
 				$improved++;
+				$improved25++;
 			}
 		}
 		
@@ -729,10 +760,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved31++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead31++;
 			}else{
 				$improved++;
+				$improved31++;
 			}
 		}
 		
@@ -796,10 +830,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved32++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead32++;
 			}else{
 				$improved++;
+				$improved32++;
 			}
 		}
 		
@@ -862,10 +899,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved33++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead33++;
 			}else{
 				$improved++;
+				$improved33++;
 			}
 		}
 		
@@ -928,10 +968,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved34++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead34++;
 			}else{
 				$improved++;
+				$improved34++;
 			}
 		}
 		
@@ -996,10 +1039,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved35++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead35++;
 			}else{
 				$improved++;
+				$improved35++;
 			}
 		}
 		
@@ -1062,10 +1108,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved36++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead36++;
 			}else{
 				$improved++;
+				$improved36++;
 			}
 		}
 		
@@ -1128,10 +1177,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved37++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead37++;
 			}else{
 				$improved++;
+				$improved37++;
 			}
 		}
 		
@@ -1194,10 +1246,13 @@ $chkyrmonth3="$thyear-$month-31";
 		if($chkdcdate <= $chkyrmonth3){	
 			if($rows["result"]=="1 Complete Recov" || $rows["result"]=="2 Improved" || $rows["result"]=="3 Not Improved"){
 				$improved++;
+				$improved38++;
 			}else if($rows["result"]=="9 Dead"){
 				$dead++;
+				$dead38++;
 			}else{
 				$improved++;
+				$improved38++;
 			}
 		}
 		
