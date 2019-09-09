@@ -191,7 +191,18 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            // include 'rdu_in6.php';
+
+            $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` 
+            SELECT * 
+            FROM `diag` 
+            WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+            $test = $db->exec($sql);
+            dump($test);
+            include 'rdu_in6.php';
+
+            exit;
+
+
             $url_in6 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>

@@ -10,7 +10,7 @@ if ( !defined('RDU_TEST') ) {
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6` 
 SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`date_hn` 
-FROM `diag` 
+FROM `tmp_diag_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
@@ -25,7 +25,9 @@ AND (
     OR `icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
 ) 
 GROUP BY `date_hn`";
-$db->exec($sql);
+$test = $db->exec($sql);
+dump($test);
+exit;
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
