@@ -25,14 +25,12 @@ AND (
     OR `icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
 ) 
 GROUP BY `date_hn`";
-$test = $db->exec($sql);
-dump($test);
-exit;
+$db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn` 
-FROM `drugrx` 
+FROM `tmp_drugrx_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 

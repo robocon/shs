@@ -71,7 +71,7 @@ $in12b = $pre_in12b['rows'];
 $sql = "SELECT COUNT(a.`row_id`) AS `rows` 
 FROM ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-    FROM `drugrx` 
+    FROM `tmp_drugrx_main` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND `drugcode` IN ( 
         '1MET500-C', 

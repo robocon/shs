@@ -8,7 +8,7 @@ if ( !defined('RDU_TEST') ) {
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in7` 
 SELECT `diag_id` AS `row_id`,`svdate`,`hn`,`icd10`,`type`,`date_hn` 
-FROM `diag` 
+FROM `tmp_diag_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
@@ -25,7 +25,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-FROM `drugrx` 
+FROM `tmp_drugrx_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CIPR-C*?', 

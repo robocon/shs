@@ -1,19 +1,35 @@
 <?php 
 
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
-SELECT `hn`, `date_hn` 
-FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
-AND `icd10` LIKE 'J45%' 
-AND `toborow` != 'EX02' 
-GROUP BY `hn`";
+// B จำนวนผู้ป่วยนอกโรคหืดทั้งหมด นับตามhn
+// $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
+// SELECT `hn`, `date_hn` 
+// FROM `tmp_opday_main` 
+// WHERE `year` = '$year' AND `quarter` = '$quarter' 
+// AND `icd10` LIKE 'J45%' 
+// AND `toborow` != 'EX02' 
+// GROUP BY `hn`";
+$sql = "SELECT b.*  
+from ( 
+	SELECT *  
+	FROM `opday` 
+	WHERE `year` = '2562' AND `quarter` = '4' 
+	AND `toborow` != 'EX02' 
+	GROUP BY `hn` 
+) AS a 
+left join 
+( 
+	select * from diag where `year` = '2562' AND `quarter` = '4' and icd10 LIKE 'J45%'
+) AS b ON b.date_hn = a.date_hn 
+where b.id is not null 
+group by b.date_hn ";
 $test = $db->exec($sql);
 
+// A จำนวนผู้ป่วยนอกดรคหืดที่ได้รับยา inhaled corticosteroid นับตามhn อย่างน้อย1ครั้งใน 12เดือน
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `row_id`,`date`,`hn` AS `hn_drug`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter'  
+WHERE `year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 

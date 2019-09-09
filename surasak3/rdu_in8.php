@@ -11,14 +11,14 @@ SELECT a.`hn`,a.`organ`,a.`maintenance`,
 b.`row_id`,b.`svdate`,b.`icd10`,b.`date_hn`
 FROM ( 
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
-    FROM trauma 
+    FROM `tmp_trauma_main` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( `organ` REGEXP 'มีด|mc|แผล' AND `maintenance` REGEXP 'AP.+lat' )
     AND ( `organ` NOT REGEXP 'ไม่มีบาดแผล|ไม่มีแผล' )
 ) AS a 
 LEFT JOIN ( 
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn` 
-    FROM `diag` 
+    FROM `tmp_diag_main` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
@@ -38,7 +38,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
-FROM `drugrx` 
+FROM `tmp_drugrx_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1DIC250', 

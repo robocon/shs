@@ -3,7 +3,7 @@
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in18`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT `row_id`,`hn`,`date_hn` 
-FROM `opday` 
+FROM `tmp_opday_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (
@@ -33,7 +33,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in18`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
-FROM `drugrx` 
+FROM `tmp_drugrx_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1AERI*', 
