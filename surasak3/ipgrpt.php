@@ -1,6 +1,7 @@
 <?php
     $yrmonth="$thiyr-$rptmo";
-    include("connect.inc");
+    // include("connect.inc");
+    include 'includes/connect_sv13.php';
     $query="CREATE TEMPORARY TABLE ipgroup SELECT b.icd10, a.date, a.dcdate, a.days, a.an, a.result, a.camp, a.goup
 FROM ipcard AS a, diag AS b
 WHERE a.an = b.an   AND b.type = 'PRINCIPLE' AND a.date LIKE '$yrmonth%' 
