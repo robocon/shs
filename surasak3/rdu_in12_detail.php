@@ -8,32 +8,33 @@ $year = input_get('year');
 $quarter = input_get('quarter');
 $table = input_get('table');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `test_in12`");
-$sql = "CREATE TEMPORARY TABLE `test_in12` 
-SELECT a.*,b.`egfr` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in12`");
+$sql = "CREATE TEMPORARY TABLE `tmp_in12` 
+SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
 FROM ( 
-	SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' AND `icd10` regexp 'E11' GROUP BY `hn`
+	SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
-	SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' AND `egfr` > 30 
+	SELECT * FROM `lab` WHERE `year` = '$year' AND `egfr` > 30 GROUP BY `hn`
 ) AS b ON b.`hn` = a.`hn` 
-WHERE b.`autonumber` IS NOT NULL  ";
+WHERE b.`autonumber` IS NOT NULL ";
 $db->exec($sql);
 
 if( $table == 'b' ){
     // Table B
-    $sql = "SELECT * FROM `test_in12`";
+    $sql = "SELECT * FROM `tmp_in12`";
     $db->select($sql);
     $items = $db->get_items();
 
 }elseif( $table == 'a' ){
 
     // Table A
-    $sql = "SELECT b.*,a.`drugcode`,a.`amount`   
-    FROM ( 
-        SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`,`amount` 
+    $sql = "SELECT a.*,b.*
+    FROM tmp_in12 AS a 
+    LEFT JOIN ( 
+        SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
         FROM `drugrx` 
-        WHERE `year` = '$year' AND `quarter` = '$quarter' 
+        WHERE `year` = '$year' 
         AND `drugcode` IN ( 
             '1MET500-C', 
             '1METF', 
@@ -44,9 +45,8 @@ if( $table == 'b' ){
             '1METF500-N'  
         ) 
         GROUP BY `hn` 
-    ) AS a 
-    RIGHT JOIN test_in12 AS b ON b.`date_hn` = a.`date_hn` 
-    WHERE a.`row_id` IS NOT NULL ";
+    ) AS b  ON b.`hn` = a.`hn` 
+    WHERE b.`row_id` IS NOT NULL ";
     $db->select($sql);
     $items = $db->get_items();
 

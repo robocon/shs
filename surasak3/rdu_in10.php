@@ -8,7 +8,7 @@ if ( !defined('RDU_TEST') ) {
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
 SELECT a.`row_id`,a.`date`,a.`hn`,a.`icd10`,`date_hn`
-FROM `opday` AS a 
+FROM `tmp_opday_main` AS a 
 WHERE a.`year` = '$year' AND a.`quarter` = '$quarter' 
 AND a.`icd10` regexp 'I10' ";
 $db->exec($sql);
@@ -17,7 +17,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
-FROM `drugrx` 
+FROM `tmp_drugrx_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1RENI20-C', 

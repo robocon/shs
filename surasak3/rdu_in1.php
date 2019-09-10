@@ -18,7 +18,7 @@ DPN = อุปกรณ์เบิกไม่ได้
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in1`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
-FROM `drugrx` 
+FROM `tmp_drugrx_main` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' ";
 $db->exec($sql);
 

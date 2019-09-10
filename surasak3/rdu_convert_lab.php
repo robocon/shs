@@ -8,8 +8,7 @@ function dump($txt){
     echo "</pre>";
 }
 
-$db = mysql_connect('192.168.1.2', 'remoteuser', '') or die( mysql_error() );
-mysql_select_db('smdb', $db) or die( mysql_error() );
+include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
@@ -24,8 +23,8 @@ $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_lab_'.$quarter.'.sql';
 unlink($filePath);
 
 $sql = "SELECT b.`autonumber`,b.`orderdate`,b.`hn`,b.`sex`,c.`result`,
-TIMESTAMPDIFF(YEAR, CONCAT( (SUBSTRING(d.`dbirth`, 1, 4) - 543), SUBSTRING(d.`dbirth`, 5, 6) ), SUBSTRING(NOW(), 1, 10)) AS `age`, 
-eGFR(TIMESTAMPDIFF(YEAR, CONCAT( (SUBSTRING(d.`dbirth`, 1, 4) - 543), SUBSTRING(d.`dbirth`, 5, 6) ), SUBSTRING(NOW(), 1, 10)),b.`sex`,c.`result`) AS `egfr`, 
+TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age`, 
+eGFR(TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(NOW(), 1, 10)),b.`sex`,c.`result`) AS `egfr`, 
 CONCAT(SUBSTRING(b.`orderdate`,1,10),b.`hn`) AS `date_hn`
 FROM (  
 

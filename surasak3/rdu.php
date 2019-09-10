@@ -28,7 +28,7 @@ if( $quarter == 1 ){
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH SarabunPSK", "TH Sarabun New";
     font-size: 16pt;
 }
 .chk_table{
@@ -130,8 +130,21 @@ if ( $action == 'load' ) {
     $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 
     $year = $year + 543;
-    // $date_min = $year.'-'.$month_range['min'].'-01 00:00:00';
-    // $date_max = $year.'-'.$month_range['max'].'-'.$last_day.' 23:59:59';
+
+    $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    $db->exec($sql);
+
+    $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_main` SELECT * FROM `drugrx` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    $db->exec($sql);
+
+    $sql = "CREATE TEMPORARY TABLE `tmp_trauma_main` SELECT * FROM `trauma` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    $db->exec($sql);
+
+    $sql = "CREATE TEMPORARY TABLE `tmp_opday_main` SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    $db->exec($sql);
+
+    $sql = "CREATE TEMPORARY TABLE `tmp_lab_main` SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    $db->exec($sql);
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (ไตรมาส <?=$quarter;?>) </h3>
@@ -391,5 +404,12 @@ if ( $action == 'load' ) {
             <td align="right"><?=number_format($in18_result, 2);?></td>
         </tr>
     </table>
-    <?php
+    <?php 
+
+    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_main`");
+    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_main`");
+    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_trauma_main`");
+    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_main`");
+    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_lab_main`");
+
 }
