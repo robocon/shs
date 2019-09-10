@@ -8,22 +8,28 @@ $year = input_get('year');
 $quarter = input_get('quarter');
 $table = input_get('table');
 
-
-
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
-SELECT * 
-FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
-AND `icd10` LIKE 'J45%' 
-AND `toborow` != 'EX02' 
-GROUP BY `hn`";
+SELECT b.*  
+FROM ( 
+	SELECT *  
+	FROM `opday` 
+	WHERE `year` = '$year' AND `quarter` = '$quarter' 
+	AND `toborow` != 'EX02' 
+	GROUP BY `hn` 
+) AS a 
+LEFT JOIN 
+( 
+	SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' AND icd10 LIKE 'J45%' GROUP BY `hn` 
+) AS b ON b.`hn` = a.`hn` 
+WHERE b.`id` IS NOT NULL 
+GROUP BY a.`hn`";
 $test = $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
-SELECT `row_id`,`date`,`hn` AS `hn_drug`,`drugcode`,`amount`,COUNT(`hn`) AS `rows` ,`date_hn` 
+SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter'  
+WHERE `year` = '2562' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 
@@ -40,9 +46,9 @@ $db->exec($sql);
 
 if( $table == 'a' ){
 
-    $sql = "SELECT a.*,b.`drugcode`,b.`amount` 
+    $sql = "SELECT * 
     FROM `tmp_opday_in15` AS a 
-    LEFT JOIN `tmp_drugrx_in15` AS b ON b.`date_hn` = a.`date_hn` 
+    LEFT JOIN `tmp_drugrx_in15` AS b ON b.`hn` = a.`hn` 
     WHERE b.`row_id` IS NOT NULL 
     ORDER BY b.`row_id`";
     $db->select($sql);

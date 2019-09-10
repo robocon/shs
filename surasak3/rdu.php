@@ -28,7 +28,7 @@ if( $quarter == 1 ){
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH SarabunPSK", "TH Sarabun New";
     font-size: 16pt;
 }
 .chk_table{
@@ -162,7 +162,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
             <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
             <?php
-            // include 'rdu_in1.php';
+            include 'rdu_in1.php';
             ?>
             <td align="right"><?=number_format($in1a);?></td>
             <td align="right"><?=number_format($in1b);?></td>
@@ -204,7 +204,7 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            // include 'rdu_in6.php';
+            include 'rdu_in6.php';
             $url_in6 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -220,7 +220,7 @@ if ( $action == 'load' ) {
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
-            // include 'rdu_in7.php';
+            include 'rdu_in7.php';
             $url_in7 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -236,7 +236,7 @@ if ( $action == 'load' ) {
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
             <?php
-            // include 'rdu_in8.php';
+            include 'rdu_in8.php';
             $url_in8 = "year=$year&quarter=$quarter";
             ?>
             <td>&le; ร้อยละ 40</td>
@@ -261,7 +261,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
             <?php 
-            // include 'rdu_in10.php';
+            include 'rdu_in10.php';
             ?>
             <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด">
@@ -277,7 +277,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>
             หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
             <?php
-            // include 'rdu_in11.php';
+            include 'rdu_in11.php';
 
             $link_11 = "rdu_in11_detail.php?year=$year&quarter=$quarter";
             ?>
@@ -294,7 +294,7 @@ if ( $action == 'load' ) {
             <td align="center">12</td>
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
             <?php
-            // include 'rdu_in12.php';
+            include 'rdu_in12.php';
 
             $link_12 = "rdu_in12_detail.php?year=$year&quarter=$quarter";
             ?>
@@ -311,7 +311,7 @@ if ( $action == 'load' ) {
             <td align="center">13</td>
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
             <?php
-            // include 'rdu_in13.php';
+            include 'rdu_in13.php';
 
             $link_13 = "rdu_in13_detail.php?year=$year&quarter=$quarter";
             ?>
@@ -328,7 +328,7 @@ if ( $action == 'load' ) {
             <td align="center">14</td>
             <td>ร้อยละของผู้ป่วยโรคไตเรื้อรังระดับ 3 ขึ้นไปที่ได้รับยา NSAIDs</td>
             <?php
-            // include 'rdu_in14.php';
+            include 'rdu_in14.php';
 
             $link_14 = "rdu_in14_detail.php?year=$year&quarter=$quarter";
             ?>
@@ -362,7 +362,7 @@ if ( $action == 'load' ) {
             <td align="center">16</td>
             <td>ร้อยละผู้ป่วยนอกสูงอายุ ที่ใช้ยากลุ่ม long-acting benzodiazepine ได้แก่ chlordiazepoxide, diazepam, dipotassium chlorazepate</td>
             <?php
-            // include 'rdu_in16.php';
+            include 'rdu_in16.php';
 
             $link_16 = "rdu_in16_detail.php?year=$year&quarter=$quarter";
             ?>
@@ -379,7 +379,7 @@ if ( $action == 'load' ) {
             <td align="center">17</td>
             <td>จำนวนสตรีตั้งครรภ์ที่ได้รับยาที่ห้ามใช้ ได้แก่ ยา Warfarin/Statins/Ergot เมื่อรู้ว่าตั้งครรภ์แล้ว</td>
             <?php
-            // include 'rdu_in17.php';
+            include 'rdu_in17.php';
             ?>
             <td>0 คน</td>
             <td align="right">-</td>
@@ -390,7 +390,7 @@ if ( $action == 'load' ) {
             <td align="center">18</td>
             <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจแัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
             <?php
-            // include 'rdu_in18.php';
+            include 'rdu_in18.php';
 
             $link_18 = "rdu_in18_detail.php?year=$year&quarter=$quarter";
             ?>
