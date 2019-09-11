@@ -21,7 +21,7 @@ SELECT a.*,b.`drugcode`,'1' AS `test_hn`
 FROM `tmp_opday_in16` AS a 
 LEFT JOIN ( 
     SELECT `row_id`,`drugcode`,`part`,`amount`,`date_hn` 
-    FROM `drugrx` 
+    FROM `tmp_drugrx_main` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND `drugcode` IN (
         '1D2',
