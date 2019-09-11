@@ -12,14 +12,14 @@ $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15`
 SELECT b.*  
 FROM ( 
 	SELECT *  
-	FROM `opday` 
+	FROM `tmp_opday_main` 
 	WHERE `year` = '$year' AND `quarter` = '$quarter' 
 	AND `toborow` != 'EX02' 
 	GROUP BY `hn` 
 ) AS a 
 LEFT JOIN 
 ( 
-	SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' AND icd10 LIKE 'J45%' GROUP BY `hn` 
+	SELECT * FROM `tmp_diag_main` WHERE `year` = '$year' AND `quarter` = '$quarter' AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
 GROUP BY a.`hn`";
@@ -29,7 +29,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
-WHERE `year` = '2562' 
+WHERE `year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 

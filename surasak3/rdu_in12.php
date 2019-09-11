@@ -9,7 +9,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in12`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in12` 
 SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
 FROM ( 
-	SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
+	SELECT * FROM `tmp_opday_main` WHERE `year` = '$year' AND `quarter` = '$quarter' AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
 	SELECT * FROM `lab` WHERE `year` = '$year' AND `egfr` > 30 GROUP BY `hn`

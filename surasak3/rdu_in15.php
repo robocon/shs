@@ -22,8 +22,8 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
-FROM `tmp_drugrx_main` 
-WHERE `year` = '2562' 
+FROM `drugrx` 
+WHERE `year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 
