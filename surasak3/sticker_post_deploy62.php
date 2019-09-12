@@ -8,14 +8,14 @@ $db = Mysql::load($shs_configs);
 
 $sql = "SELECT * 
 FROM `opcardchk` 
-WHERE `part` = 'newsoldier62in61' ";
+WHERE `part` = 'soldier1722_62' ";
 $db->select($sql);
 
 $items = $db->get_items();
 
-$labin = '620507';
-// $labin = '';
 $i = 0;
+
+$branch = 'ร้อย.ร.1722';
 
 foreach ($items as $key => $item) {
 // for($i=1; $i<=54; $i++){
@@ -27,7 +27,7 @@ foreach ($items as $key => $item) {
 
     $pid = sprintf('%03d', $pid);
 
-    $branch = $item['branch'];
+    // $branch = $item['branch'];
 
     $normal_code = $code_exam.'01';
     $chem_code = $code_exam.'02';
@@ -35,13 +35,13 @@ foreach ($items as $key => $item) {
 
     $fname = str_replace(array('นาย','นางสาว','นาง'), '', $item['name']);
 
-    $name = 'พลฯ'.$fname.' '.$item['surname'];
+    $name = $fname.' '.$item['surname'];
     ?>
     <!-- CBC -->
     <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$name;?></b></center></font>
     <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$pid.' '.$branch;?></b></center></font>
 	<div style='text-align:center;'>
-		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
+		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"><font size='5'>01</font></span>
 	</div>
 	<div style="page-break-before: always;"></div>
 
@@ -49,7 +49,7 @@ foreach ($items as $key => $item) {
     <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$name;?></b></center></font>
     <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$pid.' '.$branch;?></b></center></font>
 	<div style='text-align:center;'>
-		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
+		<span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$chem_code;?>"><font size='5'>02</font></span>
 	</div>
 	<div style="page-break-before: always;"></div>
 
