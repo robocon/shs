@@ -5,23 +5,22 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
 SELECT a.`hn`,a.`organ`,a.`maintenance`,
-b.`row_id`,b.`svdate`,b.`icd10`,b.`date_hn`
+a.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor` 
 FROM ( 
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
-    FROM `tmp_trauma_main` 
+    FROM `trauma` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
-        AND ( `maintenance` REGEXP 'AP.+lat|lat|advice' ) 
     )
     AND ( `organ` NOT REGEXP 'ไม่มีบาดแผล|ไม่มีแผล|ทำแผล|ล้างแผล|แผลเย็บ|กัด|ข่วน|เขี้ยว|วัน|สัปดาห์|เดือน|ผ่าตัด|นัด|ตาย|day|bed' ) 
 ) AS a 
 LEFT JOIN ( 
-    SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn` 
-    FROM `tmp_diag_main` 
+    SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor` 
+    FROM `diag` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
@@ -38,10 +37,9 @@ LEFT JOIN (
 WHERE b.`row_id` IS NOT NULL ";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
-FROM `tmp_drugrx_main` 
+FROM `drugrx` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1DIC250', 
@@ -73,7 +71,7 @@ AND `drugcode` IN (
 GROUP BY `date_hn`"; 
 $db->exec($sql); 
 
-$in8a = $in8b = $in8_result = 0;
+$items_in8_a = $items_in8_b = $in8a = $in8b = $in8_result = 0;
 // ตั้ง
 $sql = "SELECT COUNT(a.`row_id`) AS `rows`
 FROM `tmp_opday_in8` AS a 
@@ -90,3 +88,6 @@ $items_in8_b = $db->get_item();
 $in8b = $items_in8_b['rows'];
 
 $in8_result = ( $in8a / $in8b ) * 100 ;
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");

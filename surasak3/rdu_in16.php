@@ -4,24 +4,20 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in16`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in16` 
 SELECT `row_id`,`hn`,`age`,`date_hn` 
-FROM `tmp_opday_main` 
+FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND TRIM(SUBSTRING(`age`,1,2)) > 65 
 GROUP BY `date_hn` ";
-// dump($sql );
 $db->exec($sql);
 
-
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drug_in16`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drug_in16` 
 SELECT a.*,b.`drugcode`,'1' AS `test_hn` 
-FROM `tmp_opday_in16` AS a 
+FROM `opday` AS a 
 LEFT JOIN ( 
     SELECT `row_id`,`drugcode`,`part`,`amount`,`date_hn` 
-    FROM `tmp_drugrx_main` 
+    FROM `drugrx` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND `drugcode` IN (
         '1D2',
@@ -34,8 +30,9 @@ LEFT JOIN (
 ) AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL 
 GROUP BY a.`date_hn`;";
-// dump($sql );
 $db->exec($sql);
+
+$items_in16_a = $in16a = $items_in16_b = $in16b = $in16_result = 0;
 
 // A
 $sql = "SELECT COUNT(`test_hn`) AS `rows` FROM `tmp_drug_in16` ";
@@ -50,3 +47,6 @@ $items_in16_b = $db->get_item();
 $in16b = $items_in16_b['rows'];
 
 $in16_result = ( $in16a / $in16b ) * 100 ;
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in16`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drug_in16`");

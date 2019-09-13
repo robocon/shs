@@ -11,14 +11,13 @@ $quarter = input_get('quarter');
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
 SELECT a.`hn`,a.`organ`,a.`maintenance`,
-b.`row_id`,b.`svdate`,b.`icd10`,b.`date_hn`,b.`diag`,b.`doctor` 
+b.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor` 
 FROM ( 
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
     FROM trauma 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
-        AND ( `maintenance` REGEXP 'AP.+lat|lat|advice' ) 
     )
     AND ( `organ` NOT REGEXP 'ไม่มีบาดแผล|ไม่มีแผล|ทำแผล|ล้างแผล|แผลเย็บ|กัด|ข่วน|เขี้ยว|วัน|สัปดาห์|เดือน|ผ่าตัด|นัด|ตาย|day|bed' ) 
 ) AS a 
