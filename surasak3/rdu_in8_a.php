@@ -16,8 +16,11 @@ FROM (
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
     FROM trauma 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
-    AND ( `organ` REGEXP 'มีด|mc|แผล' AND `maintenance` REGEXP 'AP.+lat' )
-    AND ( `organ` NOT REGEXP 'ไม่มีบาดแผล|ไม่มีแผล' )
+    AND ( 
+        `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
+        AND ( `maintenance` REGEXP 'AP.+lat|lat|advice' ) 
+    )
+    AND ( `organ` NOT REGEXP 'ไม่มีบาดแผล|ไม่มีแผล|ทำแผล|ล้างแผล|แผลเย็บ|กัด|ข่วน|เขี้ยว|วัน|สัปดาห์|เดือน|ผ่าตัด|นัด|ตาย|day|bed' ) 
 ) AS a 
 LEFT JOIN ( 
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor` 
