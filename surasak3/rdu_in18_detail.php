@@ -55,7 +55,11 @@ AND `drugcode` IN (
     '1ZYRT-N', 
     '1RUPA', 
     '5ZYR-N', 
-    '1XYZA-N'
+    '1XYZA-N', 
+
+    '1CETI', 
+    '1BILA', 
+    '5AERI-C' 
 );";
 $db->exec($sql);
 

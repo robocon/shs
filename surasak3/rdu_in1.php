@@ -15,15 +15,14 @@ DPY = อุปกรณ์เบิกได้
 DPN = อุปกรณ์เบิกไม่ได้ 
 */
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in1`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
-FROM `tmp_drugrx_main` 
+FROM `drugrx` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' ";
 $db->exec($sql);
 
 
-$in1a = $in1b = $in1_result = 0;
+$in1a = $items_a = $in1b = $items_b = $in1_result = 0;
 
 // xxx > '' is handle both between IS NOT EMPTY and = '' 
 // Question id 2327029 in StackOverflow
@@ -40,3 +39,5 @@ $items_b = $db->get_item();
 $in1b = $items_b['rows'];
 
 $in1_result = ( $in1a / $in1b ) * 100 ;
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in1`");
