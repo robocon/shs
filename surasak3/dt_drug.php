@@ -2259,19 +2259,19 @@ function glibenclamide_alert(drugcode){
 	/* glibenclamide ในตัวชี้วัดที่ 11 */
 	if( drugcode == '1EUGL-C' ){
 
-		var gliben_txt = '';
+		var gliben_txt = false;
 
 		if( age_test > 65 ){
-			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี';
+			gliben_txt = true;
 		}
 
 		/* เหลือ เปรียบเทียบกับ egfr < 60 */
 		if( egfr_test < 60.00 ){
-			gliben_txt += "\n"+'- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60';
+			gliben_txt = true;
 		}
 
-		if( gliben_txt !== '' ){
-			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ Glibenclamide\n"+gliben_txt);
+		if( gliben_txt === true ){
+			document.getElementById("glibenclamide").style.display = "block";
 		}
 	}
 } 
@@ -2909,6 +2909,38 @@ function viatch(ing,code){
 
 <?php include("dt_menu.php");?>
 <?php include("dt_patient.php");?>
+
+
+<div id="glibenclamide" style="display: none;">
+	<div id="close_gliben">[ปิดหน้าต่าง]</div>
+	<div>
+		<div style="text-align: center;"><u>การใช้ยาอย่างสมเหตุสมผล</u></div>
+		<div style="text-align: center;">ห้ามใช้ Glibenclamide ในผู้ป่วยอายุมากกว่า65ปี <br>หรือป่วยที่มีค่า eGFR น้อยว่า60 มล./นาที/1.73ตารางเมตร</div>
+	</div>
+</div>
+<style>
+#glibenclamide{
+	left:250px;
+	top:10px;
+	width:500px;
+	position:absolute;
+	padding: 4px;
+	background-color: #000000;
+	color: red;
+}
+#close_gliben{
+	text-align: center;
+	background-color: #5a5a5a;
+}
+#close_gliben:hover{
+	cursor: pointer;
+}
+</style>
+<script>
+	document.getElementById("close_gliben").onclick = function() {
+		document.getElementById("glibenclamide").style.display = "none";
+	};
+</script>
 
 
 <!-- Layer Remed ยา -->
