@@ -8,24 +8,31 @@ $year = input_get('year');
 $quarter = input_get('quarter');
 $table = input_get('table');
 
+$where_toborow = "AND `toborow` != 'EX02'";
+if ( $year <= '2562' ) {
+    if( $quarter < 4 ){
+        $where_toborow = "";
+    }
+}
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT b.*  
 FROM ( 
 	SELECT *  
-	FROM `tmp_opday_main` 
+	FROM `opday` 
 	WHERE `year` = '$year' AND `quarter` = '$quarter' 
-	AND `toborow` != 'EX02' 
+	$where_toborow 
 	GROUP BY `hn` 
 ) AS a 
 LEFT JOIN 
 ( 
-	SELECT * FROM `tmp_diag_main` WHERE `year` = '$year' AND `quarter` = '$quarter' AND icd10 LIKE 'J45%' GROUP BY `hn` 
+	SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
 GROUP BY a.`hn`";
 $test = $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
+
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
@@ -60,6 +67,9 @@ if( $table == 'a' ){
     $items = $db->get_items();
 
 }
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in15`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 
 ?>
 
