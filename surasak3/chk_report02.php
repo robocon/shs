@@ -687,6 +687,8 @@ FROM (
 
 		AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
+		AND `profilecode` != 'XYLENE' 
+		
     ) 
 	GROUP BY `profilecode` 
 
@@ -1088,6 +1090,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$outlab_code = "<strong>สารบ่งชี้มะเร็งรังไข่</strong> (CA125)";
 									}else if($outlab["labcode"]=="AHAV"){
 										$outlab_code = "<strong>ตรวจไวรัสตับอักเสบ A</strong> (Anti HAV IgM)";
+									}else if($outlab["labcode"]=="XYLENE"){
+										$outlab_code = "<strong>การตรวจสารโลหะหนัก</strong> (Xylene)";
 									}else{
 										$outlab_code = $outlab['labcode'];
 									}
@@ -1099,6 +1103,11 @@ $outlab_row = mysql_num_rows($outlab_query);
 									if($outlab_result=="OL" || $outlab_result=="ol"){
 										$outlab_result="&nbsp;";
 									}
+
+									if($outlab["labcode"]=="XYLENE"){ 
+										$outlab_range = "&lt; 1.5";
+									}
+
 									?>
 									<tr height="23">
 										<td><?=$outlab_code;?></td>
