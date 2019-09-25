@@ -1278,6 +1278,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 //************************** แสดงรายการยาให้เลือก Ajax ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
+	// ถ้าสิทธิเป็น30บาท
+	$ptright_code30 = false;
+	$test_pt = preg_match('/R(09|1[0-4]|17|36)/', $_SESSION['ptright_now'], $matchs);
+	if ( $test_pt > 0 ) {
+		$ptright_code30 = true;
+	}
+
 	if($_GET["search"] == "viat"){
 		$where = "drugcode = '5FLES' OR ";
 	}
@@ -1319,8 +1326,20 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่ผู้อำนวยการโรงพยาบาลเท่านั้น</FONT>";
 				}else{
-					$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
-					$alert="";
+					$test_drugcode = trim($arr['drugcode']);
+					
+					// ถ้าเป็น30บาทแต่อยากใช้ 0VERO จะแจ้งเตือน
+					if ($test_drugcode == '0VERO' && $ptright_code30 === true) {
+						$obj = 'เฉพาะผู้ป่วยที่ไม่ใช่ สปสช.';
+
+					// ถ้าไม่ใช่30บาทแต่อยากใช้ 0VERO-C จะแจ้งเตือนว่าเฉพาะ30บาท
+					}elseif( $test_drugcode == '0VERO-C' && $ptright_code30 === false ){
+						$obj = 'เฉพาะผู้ป่วย สปสช.';
+
+					}else{
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
+						$alert="";
+					}
 				}
 
 				
