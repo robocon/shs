@@ -456,7 +456,7 @@ include 'templates/classic/header.php';
 				FROM `ward_stat` 
 				WHERE `status` = 1
 				ORDER BY `id` DESC 
-				LIMIT $limit";
+				#LIMIT $limit";
 				$items = DB::select($sql);
 
 				include 'templates/ward/home.php';
