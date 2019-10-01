@@ -891,7 +891,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 									if($objResult["labcode"]=='TRIG'){
 										if($objResult["result"]<=150){
 											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
-										}else	if($objResult["result"]>150 && $objResult["result"]<250){
+										}else	if($objResult["result"]>150 && $objResult["result"]<=250){
 											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 										}else	if($objResult["result"]>250){
 											$app="ผิดปกติ ระดับไขมันในเลือดสูงมากผิดปกติ ควรปรึกษาแพทย์";	
