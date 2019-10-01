@@ -1163,9 +1163,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	
 	
 	// เก็บ log หลังจากคลิกแก้ไขยา
-	$logs = "ddrugrx - edit\r\n";
-	$logs .= "[idno] : $id\r\n";
-	$logs .= "[mysql] : $sql\r\n";
+	// $logs = "ddrugrx - edit\r\n";
+	// $logs .= "[idno] : $id\r\n";
+	// $logs .= "[mysql] : $sql\r\n";
 	
 	$result = mysql_query($sql) or die( mysql_error() );
 	while($arr = mysql_fetch_assoc($result)){
@@ -1209,15 +1209,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		
 	}  //close while
 
-	$logSession = $_SESSION['dt_doctor']."\r\n";
-	$logSession .= implode(',', $_SESSION['list_drugcode'])."\r\n";
-	$logSession .= implode(',', $_SESSION['list_drugamount'])."\r\n";
-	$logSession .= implode(',', $_SESSION['list_drugslip'])."\r\n";
+	// $logSession = $_SESSION['dt_doctor']."\r\n";
+	// $logSession .= implode(',', $_SESSION['list_drugcode'])."\r\n";
+	// $logSession .= implode(',', $_SESSION['list_drugamount'])."\r\n";
+	// $logSession .= implode(',', $_SESSION['list_drugslip'])."\r\n";
 	
-	$logs .= "[session] : $logSession\r\n";
-	$logs .= "---------------------------\r\n\r\n";
+	// $logs .= "[session] : $logSession\r\n";
+	// $logs .= "---------------------------\r\n\r\n";
 	
-	file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
+	// file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
 	
 	if($_SESSION["nRunno"] == ""){
 
