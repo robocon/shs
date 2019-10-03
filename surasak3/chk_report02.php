@@ -820,6 +820,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="eGFR";
 									}else if($objResult["labname"]=="Xylene"){
 										$labmean="การตรวจสารโลหะหนัก";
+									}else if($objResult["labname"]=="Blood group(Tube method)"){
+										$labmean="หมู่เลือด";
 									}
 
 									$app = '';
@@ -834,6 +836,11 @@ $outlab_row = mysql_num_rows($outlab_query);
 										}else if( $objResult["result"] < 74 ){
 											$app="ระดับน้ำตาลในเลือดมีค่าต่ำผิดปกติ";	
 										}
+									}
+
+									// หมุ่เลือด
+									if( $objResult["labcode"]=='GROUPT'){
+										$app="";
 									}
 
 									if($objResult["labcode"]=='BUN'){

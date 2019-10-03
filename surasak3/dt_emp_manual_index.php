@@ -157,7 +157,7 @@ if( $_POST["act"] == "show" ){
 			}
 
 			$i++;
-			$href = 'doctor_pre_chk.php?thidate='.$rows['thidate'].'&hn='.$rows['hn'].'&vn='.$rows['vn'];
+			$href = 'doctor_pre_chk.php?thidate='.$rows['thidate'].'&hn='.$rows['hn'].'&vn='.$rows['vn'].'&yearchk='.$rows['yearchk'];
 			?>  
 			<tr>
 				<td align="center"><?=$i;?></td>

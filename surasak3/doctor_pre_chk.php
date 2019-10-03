@@ -16,7 +16,8 @@ if( $action === 'save' ){
     $idcard = input_post('idcard');
     $address = input_post('address');
     $date_chk = input_post('date_chk');
-    $yearchk = get_year_checkup();
+    // $yearchk = get_year_checkup();
+    $yearchk = input_post('yearchk');
     $ear = $_POST['ear'];
     $eye = $_POST['eye'];
     $snell_eye = $_POST['snell_eye'];
@@ -1062,9 +1063,9 @@ h1,h3,p{
             </td>
         </tr>
         <?php 
-        $yearchk = get_year_checkup();
+        
         // ถ้ามีการลงผลจาก chk_cxr_doctor.php ของหมอวริท
-        $sql = "SELECT * FROM `chk_cxr` WHERE `hn` = '$hn' AND `year_chk` = '$yearchk' ";
+        $sql = "SELECT * FROM `chk_cxr` WHERE `hn` = '$hn' AND `year_chk` = '$year_checkup' ";
         $db->select($sql);
         if( $db->get_rows() > 0 ){
             $user = $db->get_item();
@@ -1249,6 +1250,8 @@ h1,h3,p{
         <input type="hidden" name="surname" value="<?=$opd['surname'];?>">
 
         <input type="hidden" name="sex" value="<?=$opd['sex'];?>">
+
+        <input type="hidden" name="yearchk" value="<?=$year_checkup;?>">
 
         <?php
         $address = $opd['address'].' '.( !empty($opd['tambol']) ? 'ต.'.$opd['tambol'] : '' ).' '.( !empty($opd['ampur']) ? 'อ.'.$opd['ampur'] : '' ).' '.( !empty($opd['changwat']) ? 'จ.'.$opd['changwat'] : '' );
