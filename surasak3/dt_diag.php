@@ -74,8 +74,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10"){
 			</tr>";
 
 		if(isset($_GET['num'])){
-			$_GET["getto2"]="dt_diag_morbidity".$_GET['num'];
-			$_GET["getto"]="dt_icd10_morbidity".$_GET['num'];
+			$_GET["getto2"]="dt_diag_other".$_GET['num'];
+			$_GET["getto"]="dt_icd10_other".$_GET['num'];
 		}
 		$i=1;
 		while($arr = Mysql_fetch_assoc($result)){
@@ -88,7 +88,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10"){
 		if(isset($_GET['num'])){
 			echo "<tr bgcolor=\"$bgcolor\" >
 					<td>",$arr["code"],"</td>
-					<td  align=\"center\"><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
+					<td align=\"center\"><A HREF=\"javascript:void(0);\" class=\"rediagkey\" data-code=\"".$arr["code"]."\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
 					<td>",$arr["diag_eng"],"</td>
 					<td >",$arr["diag_thai"],"</td>
 					<td></td>
@@ -97,7 +97,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10"){
 		}else{
 			echo "<tr bgcolor=\"$bgcolor\" >
 					<td>",$arr["code"],"</td>
-					<td  align=\"center\"><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('diag_thai').value = '",jschars($arr["diag_thai"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
+					<td align=\"center\"><A HREF=\"javascript:void(0);\" class=\"rediagkey\" data-code=\"".$arr["code"]."\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('diag_thai').value = '",jschars($arr["diag_thai"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
 					<td>",$arr["diag_eng"],"</td>
 					<td >",$arr["diag_thai"],"</td>
 					<td></td>
@@ -184,8 +184,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "diag"){
 
 		$i=1;
 		if(isset($_GET['num'])){
-			$_GET["getto"]="dt_diag_morbidity".$_GET['num'];
-			$_GET["getto2"]="dt_icd10_morbidity".$_GET['num'];
+			$_GET["getto"]="dt_diag_other".$_GET['num'];
+			$_GET["getto2"]="dt_icd10_other".$_GET['num'];
 		}
 		while($se = Mysql_fetch_assoc($result)){
 		echo "<tr><td valign=\"top\"><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",jschars($se["diag"]),"';document.getElementById('".$_GET["getto2"]."').value = '",$se["icd10"],"';document.getElementById('list1').innerHTML ='';\">&nbsp;",$se["diag"],"</A></td><td valign=\"top\">",$se["icd10"],"</td><td valign=\"top\">&nbsp;</td></tr>";
@@ -230,7 +230,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			  <?php  $i++; $j++;?><INPUT TYPE="checkbox" NAME="rediag<?php echo $i;?>" id="rediag<?php echo $i;?>" >
             </td>
             <td>&nbsp;
-<A HREF="javascript:void(0);" onClick="document.getElementById('dt_diag').value='<?=jschars($arr["diag"])?>';document.getElementById('dt_icd10').value='<?=$arr["icd10"]?>';document.getElementById('head_remed').style.display='none';"><?php echo $arr["diag"];?></A></td>
+<A HREF="javascript:void(0);" class="rediagtest" data-item-id="<?=$i?>" onClick="document.getElementById('dt_diag').value='<?=jschars($arr["diag"])?>';document.getElementById('dt_icd10').value='<?=$arr["icd10"]?>';document.getElementById('head_remed').style.display='none';"><?php echo $arr["diag"];?></A></td>
 			<td align="center">&nbsp;<?php echo $arr["icd10"];?>
             <input type="hidden" name="code<?=$i?>" id="code<?=$i?>" value="<?php echo $arr["icd10"];?>">
             <input type="hidden" name="detail<?=$i?>" id="detail<?=$i?>" value="<?php echo jschars($arr["diag"]);?>">
@@ -257,7 +257,7 @@ exit();
 <head>
 <title><?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: Angsana New;
 	font-size: 24px;
@@ -269,7 +269,7 @@ body,td,th {
 .font3 {
 	font-size: 18px;
 }
--->
+
 </style>
 
 </head>
@@ -412,14 +412,14 @@ function addRow()
 		var cell2 = _table.insertCell(2); 
 		var cell3 = _table.insertCell(3); 
 		var cell4 = _table.insertCell(4);
-		var getto = "dt_icd10_morbidity"+count_row;
-		var getto2 = "dt_diag_morbidity"+count_row;
+		var getto = "dt_icd10_other"+count_row;
+		var getto2 = "dt_diag_other"+count_row;
 		
 		cell0.align= "right";
-		cell0.innerHTML = '<font class="font3">CO-MORBIDITY ค้นหา:</font>';
-		cell1.innerHTML = '<input name="dt_icd10_morbidity'+(count_row)+'"  type="text" id="dt_icd10_morbidity'+(count_row)+'" size="8" onKeyPress="searchSuggest3(this.value,3,'+(count_row)+')" >';
+		cell0.innerHTML = '<font class="font3">OTHER ค้นหา:</font>';
+		cell1.innerHTML = '<input name="dt_icd10_other'+(count_row)+'" type="text" id="dt_icd10_other'+(count_row)+'" size="8" onKeyPress="searchSuggest3(this.value,3,'+(count_row)+')" >';
 		cell2.align= "right";
-		cell2.innerHTML = '<input name="dt_diag_morbidity'+(count_row)+'"  type="text" id="dt_diag_morbidity'+(count_row)+'" size="35" onKeyPress="searchSuggest2(this.value,2,'+(count_row)+')">';
+		cell2.innerHTML = '<input name="dt_diag_other'+(count_row)+'" class="other_diag" type="text" id="dt_diag_other'+(count_row)+'" size="35" onKeyPress="searchSuggest2(this.value,2,'+(count_row)+')">';
 		cell3.innerHTML=  '&nbsp;';
 	}
 }
@@ -458,22 +458,39 @@ function addtolist_muli(){
 	var count_row=document.getElementById('rowcomo').rows.length ;
 	k=count_row-1;
 	if(eval(max) > 0){
+
+		var test_from_list = false;
+
 		for(i=1;i<=max;i++){
 			if(document.getElementById("rediag"+i).checked == true){
 				if(document.getElementById("d_princ"+i).checked== true){
 					document.getElementById('dt_icd10').value =document.getElementById("code"+i).value;
 					document.getElementById('dt_diag').value = document.getElementById("detail"+i).value;
 					document.getElementById('diag_thai').value = document.getElementById("detailthai"+i).value;
-				}else{
-					
-					document.getElementById('dt_icd10_morbidity'+k).value =document.getElementById("code"+i).value;
-					document.getElementById('dt_diag_morbidity'+k).value = document.getElementById("detail"+i).value;
+				}else{		
+					document.getElementById('dt_icd10_other'+k).value =document.getElementById("code"+i).value;
+					document.getElementById('dt_diag_other'+k).value = document.getElementById("detail"+i).value;
 					addRow();
 					k++;
 				}
+
+				// เทสดูว่ามีตัวไหนในรายการติดรึป่าว
+				var icd = document.getElementById("code"+i).value.toLocaleLowerCase();
+				if( testRdu6(icd) === true ){
+					test_from_list = true;
+				}
 			}
+
+		} // end for
+
+		// ถ้ามีตัวใดตัวหนึ่งติดก็ให้แจ้งเตือน
+		if( test_from_list === true ){
+			notiPharyngitis();
 		}
+
 	}
+
+
 }
 
 
@@ -486,9 +503,7 @@ function addtolist_muli(){
 <TR valign="top">
   <TD width="250" height="69" rowspan="7" align="right">ความเห็นแพทย์
   </TD>
-  <TD >
-    <TEXTAREA id="dt_diag_detail" NAME="dt_diag_detail" ROWS="1" COLS="100" ><?php echo $_SESSION["dt_diag_detail"]?></TEXTAREA>
-  </TD>
+  <TD ><textarea id="dt_diag_detail" name="dt_diag_detail" rows="3" cols="100" ><?php echo $_SESSION["dt_diag_detail"]?></textarea></TD>
  </TR>
 <TR  colspan="5" valign="top">
 <TD ><A HREF="javascript:showremed();">Re-Diag</A><font   color="#FF0033" size="3"> *** การ DIAG สามารถค้นหาชื่อโรคทั้งภาษาไทยและภาษาอังกฤษได้ที่ช่องค้นหา *** <br><strong>*** ห้ามใส่สัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งยาไม่ได้***</strong></font></TD>
@@ -506,85 +521,24 @@ function addtolist_muli(){
     <input name="dt_diag" type="text" id="dt_diag" onKeyPress="searchSuggest1(this.value,2,'dt_diag','dt_icd10')" value="<?php echo $_SESSION["dt_diag"]?>" size="40">
     <? } ?>
 </TD>
-	<TD   class="font3">Thai :<input name="diag_thai" type="text" id="diag_thai" size="30" onKeyPress="searchSuggest4(this.value,2)" value="<?php echo $_SESSION["diag_thai"]?>" >
-	<!--<select name="choose_organ" onChange="if(this.value != ''){document.form_diag.dt_diag.value = document.form_diag.dt_diag.value+' '+this.value;}" style="position: absolute;">
-                   <option value="">--- ตัวช่วย ---</option>
-                     <?php
-			/* foreach($choose as $value){
-			 	echo "<option value='".$value."'>".$value."</option>";
-			 }*/
-			 ?>
-        </select>-->
-		<!--<select name="choose_organ" onChange="if(this.value != ''){document.form_diag.dt_diag.value = document.form_diag.dt_diag.value+' '+this.value;}" style="position: absolute;">
-		<option value="">--- ตัวช่วย ---</option>
-		<?php
-			/*$sql = "Select distinct date_format(thidate,'%d-%m-%Y'), diag From opday where thidate < '".(date("Y")+543)."".date("-m-d 00:00:00")."' AND diag is not null AND diag <> '' and hn ='".$_SESSION["hn_now"]."' Order by thidate DESC  limit 0,5 ";
-			$result = mysql_query($sql);
-			while(list($date,$dx) = mysql_fetch_row($result)){
-				echo "<option value='",$dx,"' >",$dx,"</option>";
-			}*/
-
-		?>
-		</select>--></TD>
+	<TD   class="font3">Thai :<input name="diag_thai" type="text" id="diag_thai" size="30" onKeyPress="searchSuggest4(this.value,2)" value="<?php echo $_SESSION["diag_thai"]?>" ></TD>
          </tr></table></td>
 </TR>
 <TR>
 <td colspan="5">
 	<table id="rowcomo" width="100%">
     <tr>
-	<TD width="144" align="right" valign="middle" class="font3">CO-MORBIDITY :ค้นหา </TD>
+	<TD width="144" align="right" valign="middle" class="font3">OTHER :ค้นหา </TD>
 	<TD width="53" valign="middle"><Div id="list" style="left:200PX;top:170PX;position:absolute;"></Div>
-	  <input name="dt_icd10_morbidity0" type="text" id="dt_icd10_morbidity0" onKeyPress="searchSuggest3(this.value,3,'0');" value="<?php echo $_SESSION["dt_icd10_morbidity"]?>" size="8"></TD>
+	  <input name="dt_icd10_other0" type="text" id="dt_icd10_other0" onKeyPress="searchSuggest3(this.value,3,'0');" value="<?php echo $_SESSION["dt_icd10_other"]?>" size="8"></TD>
 		<TD width="373" valign="middle">
 	<? if($_SESSION["dt_doctor"]=="ธนบดินทร์ ผลศรีนาค (ว.19921)" || $_SESSION["dt_doctor"]=="มนต์ชัย พรพัฒนะเจริญชัย (ว.25958)"){  //ได้รับคำสั่งจากหมอธนบดินทร์ เมื่อ 13/07/59 และหมอมนต์ชัย เมื่อ 21/07/59 ?>        
-        <input name="dt_diag_morbidity0" type="text" id="dt_diag_morbidity0" value="<?php echo $_SESSION["dt_diag_morbidity"]?>" size="35">
+        <input name="dt_diag_other0" type="text" class="other_diag" id="dt_diag_other0" value="<?php echo $_SESSION["dt_diag_other"]?>" size="35">
         <? }else{ ?>
-        <input name="dt_diag_morbidity0" type="text" id="dt_diag_morbidity0" onKeyPress="searchSuggest2(this.value,2,'0');" value="<?php echo $_SESSION["dt_diag_morbidity"]?>" size="35">
+        <input name="dt_diag_other0" type="text" class="other_diag" id="dt_diag_other0" onKeyPress="searchSuggest2(this.value,2,'0');" value="<?php echo $_SESSION["dt_diag_other"]?>" size="35">
         <? } ?>
         </TD>
-	<TD width="75" valign="bottom">&nbsp;
-    <!--<br>
-        <select name="choose_organ2" onChange="if(this.value != ''){document.form_diag.dt_diag.value = this.value;}" style="position: absolute;">
-		<option value="">--- ตัวช่วย ---</option>
-		<?php
-			/*$sql = "Select distinct date_format(thidate,'%d-%m-%Y'), diag From opday where thidate < '".(date("Y")+543)."".date("-m-d 00:00:00")."' AND diag is not null AND diag <> '' and hn ='".$_SESSION["hn_now"]."' Order by thidate DESC  limit 0,5 ";
-			$sql = "Select distinct diag,icd10 from opday where hn = '".$_SESSION["hn_now"]."' and icd10!='' and diag is not null ";
-			$result = mysql_query($sql);
-			while(list($diag,$icd10) = mysql_fetch_row($result)){
-				echo "<option value='",$diag,"' >",$diag,"</option>";
-			}*/
-
-		?>
-		</select>--></TD>
-       
-</TR>
-
-<TR style="display:none">
-
-	<TD width="41" align="right" valign="middle" class="font3">ICD10 : </TD>
-	<TD width="48" valign="middle"><Div id="list" style="left:200PX;top:70PX;position:absolute;"></Div>
-	  <input name="dt_icd10_complication" type="text" id="dt_icd10_complication" onKeyPress="searchSuggest(this.value,3,'dt_icd10_complication','dt_diag_complication');" value="<?php echo $_SESSION["dt_icd10_complication"]?>" size="8"></TD>
-	<TD width="106" align="right" valign="middle" class="font3">COMPLICATION :</TD>
-	<TD width="210" valign="middle"><input name="dt_diag_complication" type="text" id="dt_diag_complication" value="<?php echo $_SESSION["dt_diag_complication"]?>" size="35" ></TD>
-	<TD>&nbsp;</TD>
-</TR>
-<TR style="display:none">
-
-	<TD width="41" align="right" valign="middle" class="font3">ICD10 :</TD>
-	<TD width="48" valign="middle"><Div id="list" style="left:200PX;top:70PX;position:absolute;"></Div>
-	  <input name="dt_icd10_other" type="text" id="dt_icd10_other" onKeyPress="searchSuggest(this.value,3,'dt_icd10_other','dt_diag_other');" value="<?php echo $_SESSION["dt_icd10_other"]?>" size="8"></TD>
-	<TD width="106" align="right" valign="middle" class="font3">OTHER : </TD>
-	<TD width="210" valign="middle"><input name="dt_diag_other" type="text" id="dt_diag_other" value="<?php echo $_SESSION["dt_diag_other"]?>" size="35" ></TD>
-	<TD>&nbsp;</TD>
-</TR>
-<TR style="display:none">
-
-	<TD width="41" align="right" valign="middle" class="font3">ICD10 : </TD>
-	<TD width="48" valign="middle"><Div id="list" style="left:200PX;top:70PX;position:absolute;"></Div>
-	  <input name="dt_icd10_external" type="text" id="dt_icd10_external" onKeyPress="searchSuggest(this.value,3,'dt_icd10_external','dt_diag_external');" value="<?php echo $_SESSION["dt_icd10_external"]?>" size="8"></TD>
-	<TD width="106" align="right" valign="middle" class="font3">EXTERNAL CAUSE :</TD>
-	<TD width="210" valign="middle"><input name="dt_diag_external" type="text" id="dt_diag_external" value="<?php echo $_SESSION["dt_diag_external"]?>" size="35" ></TD>
-	<TD>&nbsp;</TD>
+	<TD width="75" valign="bottom">&nbsp;</TD>      
 </TR>
 
 <TR>
@@ -594,15 +548,23 @@ function addtolist_muli(){
     <TD valign="middle" id="dt_diag_value"></TD>
 </TR>
 <TR>
-<TD colspan="2" align="center"><input type="button" name="input" value="เพิ่มรายการ CO-MORBIDITY" onClick="addRow();" style="position: absolute;"></TD>
+<TD colspan="2" align="center"><input type="button" name="input" value="เพิ่มรายการ OTHER" onClick="addRow();" style="position: absolute;"></TD>
 
 	<TD colspan="2" align="center"><br>	  <INPUT TYPE="submit" value="        บันทึก         " name="save" onKeyDown=" if(event.keyCode == 38){document.form_diag.dt_icd10.focus();}"></TD>
 </TR>
 </TABLE>
 </FORM>
 
+<div id="notify_rdu6" style="position: absolute; left:25%; top:15%; border: 4px solid red; display: none;">
+	<div id="closeNotifyIdu6" style="background-color: red; font: #000000; text-align: center; font-weight: bold; cursor: pointer;">[ปิด]</div>
+	<div style="background-color: #ffffff; color: #000000; text-align: center;">
+		<div>แจ้งเตือน การใช้ยาอย่างสมเหตุผล</div>
+		<img src="images/noti_centorCriteria.jpg" alt="Centor Criteria">
+	</div>
+</div>
+
 <!-- Layer Remed ยา -->
-<div id="head_remed" style='left:220PX;top:10PX;width:100PX;height:30PX;position:absolute; display:none'>
+<div id="head_remed" style='left:300PX;top:60PX;width:100PX;height:30PX;position:absolute; display:none'>
 <TABLE align="center" border="1" bordercolor="#3300FF" width="100%" cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
@@ -647,6 +609,94 @@ window.onload = function(){
 }
 
 </SCRIPT>
+
+<script src="js/vendor/jquery-1.11.2.min.js"></script>
+<script>
+
+	if(typeof String.prototype.trim !== 'function'){
+		String.prototype.trim = function(){
+			return this.replace(/^\s+|\s+$/g, '');
+		}
+	}
+
+	if(!Array.prototype.indexOf){
+		Array.prototype.indexOf = function(obj, start){
+			for(var i = (start || 0), j=this.length; i<j; i++){
+				if(this[i] === obj){
+					return i;
+				}
+			}
+			return -1;
+		}
+	}
+
+	function testRdu6(icd){
+		var icdRdu6 = Array('j020','j039','j040','j20','j02','j03');
+		var in6test = false;
+		if( icdRdu6.indexOf(icd) > -1 ){
+			in6test = true;
+		}
+		return in6test;
+	}
+
+	function notiPharyngitis(){
+		document.getElementById('notify_rdu6').style.display = 'block';
+	}
+
+	function testRdu6KeyStroke(testText){
+		var res = testText.match(/pharyngitis/g);
+		if( res !== null ){
+			notiPharyngitis();
+		}
+	}
+
+	$.noConflict();
+	jQuery( document ).ready(function( $ ) {
+
+		// คลิกจาก rediag
+		$(document).on('click', '.rediagtest', function(){
+			
+			var get_data_id = $(this).attr('data-item-id');
+			var icd = $('#code'+get_data_id).val().toLocaleLowerCase();
+			
+			if( testRdu6(icd) === true ){
+				notiPharyngitis();
+			}
+
+		});
+
+		// คีย์มือแล้วเลือกจากpopup
+		$(document).on('click', '.rediagkey', function(){
+			
+			var icd = $(this).attr('data-code').toLocaleLowerCase();
+			if( testRdu6(icd) === true ){
+				notiPharyngitis();
+			}
+
+		});
+
+		// ปิด popup ตัวชี้วัดที่6
+		$(document).on('click', '#notify_rdu6', function(){
+			$('#notify_rdu6').hide();
+		});
+
+
+		$(document).on('focusout', '#dt_diag', function(){ 
+			var testText = $(this).val().toLocaleLowerCase();
+			testRdu6KeyStroke(testText);
+		});
+
+		$(document).on('focusout', '.other_diag', function(){ 
+			var testText = $(this).val().toLocaleLowerCase();
+			testRdu6KeyStroke(testText);
+		});
+
+		
+		
+	});
+
+</script>
+
 </body>
 <?php include("unconnect.inc");?>
 </html>
