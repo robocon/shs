@@ -60,7 +60,6 @@ if ( mysql_num_rows($q_egfr) > 0 ) {
 	$res_egfr = $fetch_egfr['result'];
 }
 
-
 //******************************* เรียกข้อมูลจาก SESSION มาแสดงเป็น Form ********************
 if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
 
@@ -1797,7 +1796,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 <head>
 <title><?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: Angsana New;
 	font-size: 22px;
@@ -1807,7 +1806,7 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_detail2 {background-color: #FFFFC1; color:#0000FF; }
 .tb_menu {background-color: #FFFFC1;  }
--->
+
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -1831,6 +1830,8 @@ if(!Array.prototype.indexOf){
 
 var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
 var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
+var rdu18_drug_list = ["1AERI*","1CLAR-C","5ZYR","1XYZA","1ZYRT-C","1TELF180","5AERI","1TELF-C","1ZYRT-N","1RUPA","5ZYR-N","1XYZA-N","1CETI","1BILA","5AERI-C"];
+var rdu18_icd10_list = ["J00","J010","J011","J012","J013","J014","J018","J019","J020","J029","J030","J038","J039","J040","J041","J042","J050","J051","J060","J068","J069","J101","J111","J200","J201","J202","J203","J204","J205","J206","J207","J208","J209","J210","J218","J219","H650","H651","H659","H660","H664","H669","H670","H671","H678","H720","H721","H722","H728","H729"]
 
 var drug_cc='';
 function newXmlHttp(){
@@ -2260,9 +2261,14 @@ function add_drug(drugcode){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
+	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
+	// RDUตัวชี้วัดที่14
 	kidney_egfr_alert(drugcode.trim());
+
+	// RDUตัวชี้วัดที่18
+	rdu18_alert(drugcode.trim());
 		
 }
 
@@ -2272,8 +2278,7 @@ function glibenclamide_alert(drugcode){
 	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
 	age_test = parseInt(age_test);
 
-	var egfr_test = '<?=$res_egfr;?>';
-	egfr_test = parseFloat(egfr_test);
+	var egfr_test = parseFloat('<?=$res_egfr;?>');
 
 	/* glibenclamide ในตัวชี้วัดที่ 11 */
 	if( drugcode == '1EUGL-C' ){
@@ -2285,7 +2290,8 @@ function glibenclamide_alert(drugcode){
 		}
 
 		/* เหลือ เปรียบเทียบกับ egfr < 60 */
-		if( egfr_test < 60.00 ){
+		if( isNaN(egfr_test) === false && egfr_test < 60.00 ){
+
 			gliben_txt = true;
 		}
 
@@ -2296,17 +2302,42 @@ function glibenclamide_alert(drugcode){
 } 
 
 function kidney_egfr_alert(drugcode){
-	var egfr_test = '<?=$res_egfr;?>';
-	egfr_test = parseFloat(egfr_test);
 
-	var kidney_txt = '';
-	if( egfr_test < 60.00 && nsaids14_list.indexOf(drugcode) > -1 ){
-		kidney_txt += 'ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป';
-	}
+	var egfr_test = parseFloat('<?=$res_egfr;?>');
 
-	if( kidney_txt !== '' ){
-		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs \n"+kidney_txt);
+	// < 60 คือไตเรื้อรังระดับ3
+	if( ( isNaN(egfr_test) === false && egfr_test < 60.00 ) && nsaids14_list.indexOf(drugcode) > -1 ){
+		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป");
 	}
+	
+}
+
+function rdu18_alert(drugcode){
+
+	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
+	age_test = parseInt(age_test);
+
+	if( age_test < 18 ){
+	
+		var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
+		var testRdu18 = false;
+
+		if( rdu18_icd10_list.indexOf(icd10_principle) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
+			testRdu18 = true;
+		}
+
+		if( testRdu18 === true ){
+
+			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
+			document.getElementById('rduContent').innerHTML = 'ผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine'; 
+
+			document.getElementById('rduAlertContainer').style.display = 'block';
+			
+			// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
+		}
+
+	}
+	
 }
 
 function addslip(drugslip){
@@ -2937,8 +2968,18 @@ function viatch(ing,code){
 		<div style="text-align: center;">ห้ามใช้ Glibenclamide ในผู้ป่วยอายุมากกว่า65ปี <br>หรือป่วยที่มีค่า eGFR น้อยว่า60 มล./นาที/1.73ตารางเมตร</div>
 	</div>
 </div>
+
+<div id="rduAlertContainer" style="display: none;">
+	<div id="closeAlert"><b>[ปิดหน้าต่าง]</b></div>
+	<div>
+		<div style="text-align: center;"><u id="rduAlertTitle"></u></div>
+		<div style="text-align: center;" id="rduContent"></div>
+	</div>
+</div>
+
 <style>
-#glibenclamide{
+#glibenclamide, #rduAlertContainer{
+
 	left:250px;
 	top:10px;
 	width:500px;
@@ -2947,17 +2988,33 @@ function viatch(ing,code){
 	background-color: #000000;
 	color: red;
 }
-#close_gliben{
+
+#close_gliben,#closeAlert{
 	text-align: center;
 	background-color: #5a5a5a;
 }
-#close_gliben:hover{
+#close_gliben:hover, #closeAlert:hover{
 	cursor: pointer;
 }
+
+#rduAlertContainer{
+	background-color: #feffb1;
+    color: black;
+	border: 3px solid #a8ab00;
+}
+#closeAlert{
+	background-color: #a8ab00;
+    color: black;
+}
+
 </style>
 <script>
 	document.getElementById("close_gliben").onclick = function() {
 		document.getElementById("glibenclamide").style.display = "none";
+	};
+
+	document.getElementById("closeAlert").onclick = function() {
+		document.getElementById("rduAlertContainer").style.display = "none";
 	};
 </script>
 
