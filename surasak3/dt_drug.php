@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-ini_set('display_errors', '1');
-error_reporting(1);
+// ini_set('display_errors', '1');
+// error_reporting(1);
 
 
 if(isset($_GET["action"])){
@@ -13,7 +13,13 @@ if(isset($_GET["action"])){
 include("connect.inc");
 //include("checklogin.php");
 
+// ทดสอบ user สำหรับหมอเป้คนเดียว
+if( $_SESSION['sIdname'] == 'md19921' ){
+	include_once 'includes/connect_md013.php';
+}
+
 $limit30checkday = 30;
+$limit90checkday = 90;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 
 	(
 		(left( drugcode, 1 ) = '0' AND drug_inject_amount ='' AND drug_inject_slip ='' AND  drug_inject_type ='' )
@@ -54,7 +60,6 @@ if ( mysql_num_rows($q_egfr) > 0 ) {
 	$res_egfr = $fetch_egfr['result'];
 }
 
-
 //******************************* เรียกข้อมูลจาก SESSION มาแสดงเป็น Form ********************
 if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
 
@@ -94,6 +99,25 @@ $rows = mysql_num_rows($result);
 	else{
 		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
 		echo "เคยจ่ายยา ".$tradname." ครั้งล่าสุดเมื่อวันที่ ".$date." จำนวน ".$amount." วิธีใช้ ".$slcode." \n ท่านต้องการสั่งยาหรือไม่?";
+	}
+exit();
+}
+
+
+if(isset($_GET["action"]) && $_GET["action"] == "check90day"){
+
+$times = mktime("0","0","0",date("m"),date("d")-$limit90checkday,date("Y"));
+$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
+$date2 = (date("Y")+543).date("-m-d H:i:s");
+$sql = " Select date_format(date,'%d-%m-%Y'), tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '2OSTE' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
+$result = mysql_query($sql);
+$rows = mysql_num_rows($result);
+	if($rows == 0){
+		echo "0";
+	}
+	else{
+		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
+		echo "เคยจ่ายยา ".$tradname." \nที่กำหนดให้จ่ายยาเว้นระยะ 3 เดือน ครั้งล่าสุดเมื่อวันที่ ".$date."\nจำนวน ".$amount." วิธีใช้ ".$slcode." \nท่านต้องการสั่งยาหรือไม่?";
 	}
 exit();
 }
@@ -358,11 +382,27 @@ for($i=0;$i<$count;$i++){
 			////////////////---------- รายการยาที่สั่งจ่ายให้ผู้ป่วย--------------////////////////
 			//print_r($_SESSION);
 			//echo $_SESSION["list_drugcode"][$i]." Amont :".$_SESSION["list_drugamount"][$i]."<br>";
-			
+			if($part=="DDL"){
+				$showpart="ยาในบัญชี";
+			}else if($part=="DDY"){
+				$showpart="ยานอกบัญชีเบิกได้";
+			}else if($part=="DDN"){
+				$showpart="ยานอกบัญชีเบิกไม่ได้";
+			}else if($part=="DSY"){
+				$showpart="เวชภัณฑ์เบิกได้";
+			}else if($part=="DSN"){
+				$showpart="เวชภัณฑ์เบิกไม่ได้";			
+			}else if($part=="DPY"){
+				$showpart="อุปกรณ์เบิกได้";
+			}else if($part=="DPN"){
+				$showpart="อุปกรณ์เบิกไม่ได้";	
+			}else{
+				$showpart=$part;
+			}
 			echo "
 			<TR  class='tb_detail' ".$style.">
 				<TD align=\"center\"><INPUT TYPE=\"checkbox\" NAME=\"check_list[]\" value=\"".$i."\"></TD>
-				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$part." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," (ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท)</span><BR>".$list_remark."</TD>
+				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$showpart." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," (ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท)</span><BR>".$list_remark."</TD>
 				<TD align='right'>".$_SESSION["list_drugamount"][$i]."</TD>
 				<TD>",$unit,"</TD>
 				<TD><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$_SESSION["list_drugslip"][$i]."</span></TD>
@@ -1122,9 +1162,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	
 	
 	// เก็บ log หลังจากคลิกแก้ไขยา
-	$logs = "ddrugrx - edit\r\n";
-	$logs .= "[idno] : $id\r\n";
-	$logs .= "[mysql] : $sql\r\n";
+	// $logs = "ddrugrx - edit\r\n";
+	// $logs .= "[idno] : $id\r\n";
+	// $logs .= "[mysql] : $sql\r\n";
 	
 	$result = mysql_query($sql) or die( mysql_error() );
 	while($arr = mysql_fetch_assoc($result)){
@@ -1168,15 +1208,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		
 	}  //close while
 
-	$logSession = $_SESSION['dt_doctor']."\r\n";
-	$logSession .= implode(',', $_SESSION['list_drugcode'])."\r\n";
-	$logSession .= implode(',', $_SESSION['list_drugamount'])."\r\n";
-	$logSession .= implode(',', $_SESSION['list_drugslip'])."\r\n";
+	// $logSession = $_SESSION['dt_doctor']."\r\n";
+	// $logSession .= implode(',', $_SESSION['list_drugcode'])."\r\n";
+	// $logSession .= implode(',', $_SESSION['list_drugamount'])."\r\n";
+	// $logSession .= implode(',', $_SESSION['list_drugslip'])."\r\n";
 	
-	$logs .= "[session] : $logSession\r\n";
-	$logs .= "---------------------------\r\n\r\n";
+	// $logs .= "[session] : $logSession\r\n";
+	// $logs .= "---------------------------\r\n\r\n";
 	
-	file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
+	// file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
 	
 	if($_SESSION["nRunno"] == ""){
 
@@ -1237,6 +1277,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 //************************** แสดงรายการยาให้เลือก Ajax ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
+	// ถ้าสิทธิเป็น30บาท
+	$ptright_code30 = false;
+	$test_pt = preg_match('/R(09|1[0-4]|17|36)/', $_SESSION['ptright_now'], $matchs);
+	if ( $test_pt > 0 ) {
+		$ptright_code30 = true;
+	}
+
 	if($_GET["search"] == "viat"){
 		$where = "drugcode = '5FLES' OR ";
 	}
@@ -1278,8 +1325,20 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่ผู้อำนวยการโรงพยาบาลเท่านั้น</FONT>";
 				}else{
-					$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
-					$alert="";
+					$test_drugcode = trim($arr['drugcode']);
+					
+					// ถ้าเป็น30บาทแต่อยากใช้ 0VERO จะแจ้งเตือน
+					if ($test_drugcode == '0VERO' && $ptright_code30 === true) {
+						$obj = 'เฉพาะผู้ป่วยที่ไม่ใช่ สปสช.';
+
+					// ถ้าไม่ใช่30บาทแต่อยากใช้ 0VERO-C จะแจ้งเตือนว่าเฉพาะ30บาท
+					}elseif( $test_drugcode == '0VERO-C' && $ptright_code30 === false ){
+						$obj = 'เฉพาะผู้ป่วย สปสช.';
+
+					}else{
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
+						$alert="";
+					}
 				}
 
 				
@@ -1737,7 +1796,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 <head>
 <title><?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: Angsana New;
 	font-size: 22px;
@@ -1747,7 +1806,7 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_detail2 {background-color: #FFFFC1; color:#0000FF; }
 .tb_menu {background-color: #FFFFC1;  }
--->
+
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -1771,6 +1830,8 @@ if(!Array.prototype.indexOf){
 
 var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
 var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
+var rdu18_drug_list = ["1AERI*","1CLAR-C","5ZYR","1XYZA","1ZYRT-C","1TELF180","5AERI","1TELF-C","1ZYRT-N","1RUPA","5ZYR-N","1XYZA-N","1CETI","1BILA","5AERI-C"];
+var rdu18_icd10_list = ["J00","J010","J011","J012","J013","J014","J018","J019","J020","J029","J030","J038","J039","J040","J041","J042","J050","J051","J060","J068","J069","J101","J111","J200","J201","J202","J203","J204","J205","J206","J207","J208","J209","J210","J218","J219","H650","H651","H659","H660","H664","H669","H670","H671","H678","H720","H721","H722","H728","H729"]
 
 var drug_cc='';
 function newXmlHttp(){
@@ -2200,9 +2261,14 @@ function add_drug(drugcode){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
+	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
+	// RDUตัวชี้วัดที่14
 	kidney_egfr_alert(drugcode.trim());
+
+	// RDUตัวชี้วัดที่18
+	rdu18_alert(drugcode.trim());
 		
 }
 
@@ -2212,41 +2278,65 @@ function glibenclamide_alert(drugcode){
 	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
 	age_test = parseInt(age_test);
 
-	var egfr_test = '<?=$res_egfr;?>';
-	egfr_test = parseFloat(egfr_test);
+	var egfr_test = parseFloat('<?=$res_egfr;?>');
 
 	/* glibenclamide ในตัวชี้วัดที่ 11 */
 	if( drugcode == '1EUGL-C' ){
 
-		var gliben_txt = '';
+		var gliben_txt = false;
 
 		if( age_test > 65 ){
-			gliben_txt = '- ในผู้ป่วยอายุมากกว่า 65ปี'+"\n";
+			gliben_txt = true;
 		}
 
 		/* เหลือ เปรียบเทียบกับ egfr < 60 */
-		if( egfr_test < 60.00 ){
-			gliben_txt += '- ในผู้ป่วยที่มีค่า eGFR น้อยว่า60'+"\n";
+		if( isNaN(egfr_test) === false && egfr_test < 60.00 ){
+			gliben_txt = true;
 		}
 
-		if( gliben_txt !== '' ){
-			alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล ห้ามใช้ Glibenclamide\n"+gliben_txt);
+		if( gliben_txt === true ){
+			document.getElementById("glibenclamide").style.display = "block";
 		}
 	}
 } 
 
 function kidney_egfr_alert(drugcode){
-	var egfr_test = '<?=$res_egfr;?>';
-	egfr_test = parseFloat(egfr_test);
 
-	var kidney_txt = '';
-	if( egfr_test < 60.00 && nsaids14_list.indexOf(drugcode) > -1 ){
-		kidney_txt += 'ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป';
-	}
+	var egfr_test = parseFloat('<?=$res_egfr;?>');
 
-	if( kidney_txt !== '' ){
-		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs \n"+kidney_txt);
+	// < 60 คือไตเรื้อรังระดับ3
+	if( ( isNaN(egfr_test) === false && egfr_test < 60.00 ) && nsaids14_list.indexOf(drugcode) > -1 ){
+		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป");
 	}
+	
+}
+
+function rdu18_alert(drugcode){
+
+	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
+	age_test = parseInt(age_test);
+
+	if( age_test < 18 ){
+	
+		var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
+		var testRdu18 = false;
+
+		if( rdu18_icd10_list.indexOf(icd10_principle) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
+			testRdu18 = true;
+		}
+
+		if( testRdu18 === true ){
+
+			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
+			document.getElementById('rduContent').innerHTML = 'ผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine'; 
+
+			document.getElementById('rduAlertContainer').style.display = 'block';
+			
+			// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
+		}
+
+	}
+	
 }
 
 function addslip(drugslip){
@@ -2426,6 +2516,9 @@ function checkForm1(){
 	
 	txt3 = ajaxcheck("check30day",document.form1.drug_code.value);
 	txt3 = txt3.substr(4);
+	
+	txt3 = ajaxcheck("check90day",document.form1.drug_code.value);
+	txt3 = txt3.substr(4);	
 	
 	txt7 = ajaxcheck("checktoday",document.form1.drug_code.value);
 	txt7 = txt7.substr(4);
@@ -2865,6 +2958,62 @@ function viatch(ing,code){
 
 <?php include("dt_menu.php");?>
 <?php include("dt_patient.php");?>
+
+
+<div id="glibenclamide" style="display: none;">
+	<div id="close_gliben">[ปิดหน้าต่าง]</div>
+	<div>
+		<div style="text-align: center;"><u>การใช้ยาอย่างสมเหตุสมผล</u></div>
+		<div style="text-align: center;">ห้ามใช้ Glibenclamide ในผู้ป่วยอายุมากกว่า65ปี <br>หรือป่วยที่มีค่า eGFR น้อยว่า60 มล./นาที/1.73ตารางเมตร</div>
+	</div>
+</div>
+
+<div id="rduAlertContainer" style="display: none;">
+	<div id="closeAlert"><b>[ปิดหน้าต่าง]</b></div>
+	<div>
+		<div style="text-align: center;"><u id="rduAlertTitle"></u></div>
+		<div style="text-align: center;" id="rduContent"></div>
+	</div>
+</div>
+
+<style>
+#glibenclamide, #rduAlertContainer{
+	left:250px;
+	top:10px;
+	width:500px;
+	position:absolute;
+	padding: 4px;
+	background-color: #000000;
+	color: red;
+}
+
+#close_gliben,#closeAlert{
+	text-align: center;
+	background-color: #5a5a5a;
+}
+#close_gliben:hover, #closeAlert:hover{
+	cursor: pointer;
+}
+
+#rduAlertContainer{
+	background-color: #feffb1;
+    color: black;
+	border: 3px solid #a8ab00;
+}
+#closeAlert{
+	background-color: #a8ab00;
+    color: black;
+}
+</style>
+<script>
+	document.getElementById("close_gliben").onclick = function() {
+		document.getElementById("glibenclamide").style.display = "none";
+	};
+
+	document.getElementById("closeAlert").onclick = function() {
+		document.getElementById("rduAlertContainer").style.display = "none";
+	};
+</script>
 
 
 <!-- Layer Remed ยา -->
