@@ -7,8 +7,7 @@ FROM `tmp_opday_main`
 WHERE `year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (
-	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 12 )
-	OR `age` = '12 Ле' 
+	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 18 )
 )
 AND ( 
     `icd10` IN ( 'J00', 'J000' ) 
