@@ -103,6 +103,7 @@ foreach ($items as $key => $item) {
     // $user['name'] = str_replace($item['prefix'],'',$item['name']);
     $user['name'] = $item['name'];
     $user['surname'] = $item['surname'];
+    $dxofyear_out_id = $user['dxofyear_out_id'];
 
     list($date, $time) = explode(' ', $user['date_chk']);
 
@@ -115,6 +116,32 @@ foreach ($items as $key => $item) {
 
     if($db->get_rows() > 0){
         $dxofyear = $db->get_item();
+        $camp = $dxofyear['camp'];
+        $bp1 = $dxofyear['bp1'];
+        $bp2 = $dxofyear['bp2'];
+
+        $weight = $dxofyear['weight'];
+        $height = $dxofyear['height'];
+        $bmi = $dxofyear['bmi'];
+        $pause = $dxofyear['pause'];
+
+        if( !empty($odxofyearpd['bp21']) ){
+            $bp1 = $dxofyear['bp21'];
+        }
+
+        if( !empty($dxofyear['bp22']) ){
+            $bp2 = $dxofyear['bp22'];
+        }
+
+        $nurse = "สัญญาณชีพ ชีพจร(p):$pause ครั้ง/นาที ความดันโลหิต: $bp1/$bp2 น้ำหนัก: $weight กก. ส่วนสูง: $height ซม. BMI: $bmi";
+    }else if( !empty($dxofyear_out_id) ){ // ถ้าหาไม่เจอให้เอา dxofyear_out_id มาหาแทน
+
+
+        $sql = "SELECT `weight`,`height`,`bmi`,`bp1`,`bp2`,`bp21`,`bp22`,`pause`,`camp`,`labin_date` 
+        FROM `dxofyear_out` WHERE `row_id` = '$dxofyear_out_id' ";
+        $db->select($sql);
+        $dxofyear = $db->get_item();
+
         $camp = $dxofyear['camp'];
         $bp1 = $dxofyear['bp1'];
         $bp2 = $dxofyear['bp2'];
