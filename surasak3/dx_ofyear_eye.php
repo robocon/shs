@@ -79,6 +79,9 @@ $thaidate = (date("Y")+543).date("-m-d");
 background-color: #000; 
 color: #FFF; 
 }
+label:hover{
+	cursor: pointer;
+}
 </style>
 <script>
 function togglediv1(divid){ 
@@ -133,7 +136,7 @@ if(isset($_POST['Submit1'])){
 
 
 
-<?
+<?php
 
 $sql1 = "select * from opcard where hn='".$_POST['p_hn']."' ";
 $row1 = mysql_query($sql1);
@@ -166,23 +169,35 @@ $query1 = mysql_fetch_array($row1);
     <tr>
       <td class="pdx"><table width="100%">
         <tr>
-          <td width="5%" align="center"><input type="radio" name="eye1" value="ปกติ" /></td>
-          <td width="20%">สายตาปกติ</td>
+          <td width="5%" align="center"><input type="radio" id="rEye1" name="eye1" value="ปกติ" /></td>
+          <td width="20%"><label for="rEye1">สายตาปกติ</label></td>
           <td width="">&nbsp;</td>
           </tr>
         <tr>
-          <td align="center"><input type="radio" name="eye1" value="สายตาสั้น" /></td>
-          <td>สายตาสั้น</td>
+          <td align="center"><input type="radio" id="rEye2"  name="eye1" value="สายตาสั้น" /></td>
+          <td><label for="rEye2">สายตาสั้น</label></td>
           <td>คำแนะนำ ตัดแว่น</td>
           </tr>
         <tr>
-          <td align="center"><input type="radio" name="eye1" value="สายตายาว" /></td>
-          <td>สายตายาว</td>
+          <td align="center"><input type="radio" id="rEye3"  name="eye1" value="สายตายาว" /></td>
+          <td><label for="rEye3">สายตายาว</label></td>
           <td>คำแนะนำ ตัดแว่น</td>
           </tr>
+
+		<tr>
+			<td align="center"><input type="radio" id="rEye4"  name="eye1" value="ความดันลูกตาปกติ" /></td>
+			<td><label for="rEye4">ความดันลูกตาปกติ</label></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="center"><input type="radio" id="rEye5"  name="eye1" value="ความดันลูกตาสูง" /></td>
+			<td><label for="rEye5">ความดันลูกตาสูง</label></td>
+			<td>คำแนะนำ ต้องพบแพทย์หรือรักษา <input type="text" name="eye2_ext" width="30%"></td>
+		</tr>
+
         <tr>
-          <td align="center"><input type="radio" name="eye1" value="สายตาผิดปกติอื่น" /></td>
-          <td>สายตาผิดปกติอื่น</td>
+          <td align="center"><input type="radio" id="rEye6"  name="eye1" value="สายตาผิดปกติอื่น" /></td>
+          <td><label for="rEye6">สายตาผิดปกติอื่น</label></td>
           <td>คำแนะนำ ต้องพบแพทย์หรือรักษา <input type="text" name="eye1_ext" width="30%"></td>
           </tr>
         <tr>
@@ -263,8 +278,32 @@ elseif(isset($_GET['del'])){
         <td><?=$result['ptname']?></td>
     	<td><?=$result['stat_eye']?></td>
         
-    	<td><? if($result['stat_eye']=="สายตาสั้น"){echo "ตัดแว่น";}elseif($result['stat_eye']=="สายตายาว"){echo "ตัดแว่น";}elseif($result['stat_eye']=="สายตาผิดปกติอื่น"){echo "ต้องพบแพทย์หรือรักษา";}?></td>
-    	<td><?=( !empty($result['eye1_ext']) ? $result['eye1_ext'] : '' )?></td>
+    	<td>
+		<?php 
+		if($result['stat_eye']=="สายตาสั้น"){
+			echo "ตัดแว่น";
+		}elseif($result['stat_eye']=="สายตายาว"){
+			echo "ตัดแว่น";
+		}elseif($result['stat_eye']=="สายตาผิดปกติอื่น"){
+			echo "ต้องพบแพทย์หรือรักษา";
+		}elseif($result['stat_eye']=="ความดันลูกตาปกติ"){
+			echo "ปกติ";
+		}elseif($result['stat_eye']=="ความดันลูกตาสูง"){
+			echo "ต้องพบแพทย์หรือรักษา";
+		}
+		?>
+		</td>
+    	<td>
+		<?php 
+		if( !empty($result['eye1_ext']) ){
+			echo $result['eye1_ext'];
+		}elseif( !empty($result['eye2_ext']) ){
+			echo $result['eye2_ext'];
+		}else{
+			echo '';
+		}
+		?>
+		</td>
 		<td align="center"><a href="dx_ofyear_eye.php?del=<?=$result['row_id']?>" onclick="return confirm('ยืนยันการลบ?')">ลบ</a></td>
    	    </tr>
 	<?

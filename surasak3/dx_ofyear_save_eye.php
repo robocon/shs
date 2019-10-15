@@ -9,6 +9,8 @@ list($prefix) = mysql_fetch_array($rowrun);
 $prefix="25".$prefix;
 
 $eye1_ext = $_POST['eye1_ext'];
+$eye2_ext = $_POST['eye2_ext'];
+
 $hn = $_POST['hn'];
 
 $sql = "SELECT * 
@@ -23,9 +25,9 @@ if ( $user_rows > 0 ) {
 	exit;
 }
 
-$sql = "INSERT INTO `chk_eye` (`date`,`hn`,`ptname`,`age`,`stat_eye`,`yearchk`,`eye1_ext`) 
+$sql = "INSERT INTO `chk_eye` (`date`,`hn`,`ptname`,`age`,`stat_eye`,`yearchk`,`eye1_ext`,`eye2_ext`) 
 value 
-('$daten','$hn','$ptname','$age','$eye1','$prefix','$eye1_ext')";
+('$daten','$hn','$ptname','$age','$eye1','$prefix','$eye1_ext','$eye2_ext')";
 $result = mysql_query($sql) or die( mysql_error() );
 if($result){
 	echo "บันทึกข้อมูลเรียบร้อยแล้วคะ";
