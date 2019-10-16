@@ -1,0 +1,55 @@
+////////////////
+// ประกันสังคม
+////////////////
+
+// อัพเดท resulthead 
+select b.* from ( 
+    select * from opcardchk where part = 'แขวงทางหลวง1' 
+) as a 
+left join ( 
+    select * from resulthead where orderdate like '2019-09-30%' and clinicalinfo like 'ตรวจสุขภาพประจำปี%' 
+) as b on b.hn = a.HN 
+where b.autonumber is not null 
+limit 1000
++ อัพเดท clinicalinfo ตรวจสุขภาพประจำปี62
+
+
+// ลงซักประวัติ
+select b.* from ( 
+    select * from opcardchk where part = 'แขวงทางหลวง1' 
+) as a 
+left join ( 
+    select * from dxofyear_out where thidate like '2019-10%' 
+) as b on b.hn = a.HN 
+where b.row_id is not null 
+order by b.hn 
+limit 1000
++ อัพเดท camp ตรวจสุขภาพประกันสังคม
+yearchk 62
+
+
+
+// ข้อมูลหมอ
+select b.* from ( 
+    select * from opcardchk where part = 'แขวงทางหลวง1' 
+) as a 
+left join ( 
+    select * from chk_doctor where date_chk like '2019-10%' 
+) as b on b.hn = a.HN 
+where b.id is not null
+order by b.hn 
+limit 1000
+
+yearchk 62
+
+
+
+
+select b.* from ( 
+    select * from opcardchk where part = 'เขลางค์นคร62' 
+) as a 
+left join ( 
+    select * from resulthead where orderdate like '2019-09-30%' and clinicalinfo like 'ตรวจสุขภาพประจำปี%' 
+) as b on b.hn = a.HN 
+where b.autonumber is not null 
+limit 1000
