@@ -8,14 +8,13 @@ function dump($txt){
     echo "</pre>";
 }
 
-$db = mysql_connect('192.168.1.2', 'remoteuser', '') or die( mysql_error() );
-mysql_select_db('smdb', $db) or die( mysql_error() );
+include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2562-04-01';
-$date_end = '2562-06-30';
-$quarter = 3;
+$date_start = '2562-07-01';
+$date_end = '2562-09-30';
+$quarter = 4;
 $year = '2562';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
