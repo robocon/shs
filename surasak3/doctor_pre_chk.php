@@ -652,9 +652,6 @@ h1,h3,p{
         <tr>
             <td valign="top">
                 <?php
-
-                // $year_checkup = '61';
-
                 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`unit`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `resultdate`
                 FROM ( 
 
@@ -717,9 +714,7 @@ h1,h3,p{
                         ?>
                         
                     </table>
-                    <?php 
-                    // dump($extra);
-                    ?>
+
                     <!-- สรุปผลการตรวจ สำหรับรายงานรายบุคคล -->
                     <table width="100%">
                         <tr style="background-color: #e6e6e6; font-size: 18px;">
