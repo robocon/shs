@@ -131,20 +131,20 @@ if ( $action == 'load' ) {
 
     $year = $year + 543;
 
-    $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    $db->exec($sql);
+    // $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    // $db->exec($sql);
 
-    $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_main` SELECT * FROM `drugrx` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    $db->exec($sql);
+    // $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_main` SELECT * FROM `drugrx` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    // $db->exec($sql);
 
-    $sql = "CREATE TEMPORARY TABLE `tmp_trauma_main` SELECT * FROM `trauma` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    $db->exec($sql);
+    // $sql = "CREATE TEMPORARY TABLE `tmp_trauma_main` SELECT * FROM `trauma` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    // $db->exec($sql);
 
-    $sql = "CREATE TEMPORARY TABLE `tmp_opday_main` SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    $db->exec($sql);
+    // $sql = "CREATE TEMPORARY TABLE `tmp_opday_main` SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    // $db->exec($sql);
 
-    $sql = "CREATE TEMPORARY TABLE `tmp_lab_main` SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    $db->exec($sql);
+    // $sql = "CREATE TEMPORARY TABLE `tmp_lab_main` SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+    // $db->exec($sql);
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (ไตรมาส <?=$quarter;?>) </h3>

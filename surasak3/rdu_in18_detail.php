@@ -8,7 +8,7 @@ $year = input_get('year');
 $quarter = input_get('quarter');
 $table = input_get('table');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in18`");
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
 FROM `opday` 
@@ -37,7 +37,7 @@ AND (
 GROUP BY `date_hn` ";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in18`");
+
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
 FROM `drugrx` 
@@ -79,12 +79,14 @@ if( $table == 'a' ){
 
 }
 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in18`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in18`");
 ?>
 
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH Sarabun New","TH SarabunPSK" ;
     font-size: 16pt;
 }
 .chk_table{
