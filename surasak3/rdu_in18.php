@@ -1,9 +1,8 @@
 <?php
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in18`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
-SELECT `row_id`,`hn`,`date_hn` 
-FROM `tmp_opday_main` 
+$sql18a = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
+SELECT * 
+FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (
@@ -27,12 +26,12 @@ AND (
     OR `icd10` IN ( 'H728', 'H729' ) 
 ) 
 GROUP BY `date_hn` ";
-$db->exec($sql);
+$db->exec($sql18a);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in18`");
-$sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
+
+$sql18b = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
-FROM `tmp_drugrx_main` 
+FROM `drugrx` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1AERI*', 
@@ -46,22 +45,32 @@ AND `drugcode` IN (
     '1ZYRT-N', 
     '1RUPA', 
     '5ZYR-N', 
-    '1XYZA-N'
-);";
-$db->exec($sql);
+    '1XYZA-N', 
 
-$sql = "SELECT COUNT(a.`row_id`) AS `rows` 
+    '1CETI', 
+    '1BILA', 
+    '5AERI-C' 
+
+);";
+$db->exec($sql18b);
+
+$pre_in18a = $in18a = $pre_in18b = $in18b = $in18_result = 0;
+
+$sqla = "SELECT COUNT(a.`row_id`) AS `rows` 
 FROM `tmp_opday_in18` AS a 
 LEFT JOIN `tmp_drugrx_in18` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL";
-$db->select($sql);
+$db->select($sqla);
 $pre_in18a = $db->get_item();
 $in18a = $pre_in18a['rows'];
 
 
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday_in18`";
-$db->select($sql);
+$sqlb = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_opday_in18`";
+$db->select($sqlb);
 $pre_in18b = $db->get_item();
 $in18b = $pre_in18b['rows'];
 
 $in18_result  = ( $in18a / $in18b ) * 100 ;
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in18`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in18`");
