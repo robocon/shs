@@ -7,13 +7,19 @@
 	
 	<!-- <meta http-equiv="refresh" content="3;URL=hnappoi1.php"> -->
 	<style type="text/css">
+	/**
+	 * 5mm = 18.897637795px
+	 * 6mm = 22.677165354px
+	 */
 	* {
 		font-family: "TH Sarabun New","TH SarabunPSK";
-		
-		font-size: 12pt;
+		font-size: 14pt;
+	}
+	body{
+		margin-top: 4px;
 	}
 	b, u{
-		font-size: 13pt!important;
+		/* font-size: 14pt!important; */
 		line-height: 18.897637795px;
 	}
 	table{
@@ -27,6 +33,17 @@
 		padding: 0;
 		line-height: 18.897637795px;
 	}
+
+	<?php 
+	$dep_shortcode = substr($depcode,0,3);
+	if($dep_shortcode=="U05"){
+		?>
+		* {
+			font-size: 15pt!important;
+		}
+		<?php
+	}
+	?>
 	</style>
 </head>
 
@@ -124,7 +141,7 @@ if (isset($cHn )){
 		?>
 		<SCRIPT LANGUAGE="JavaScript">
 		window.onload = function(){
-			// window.print();
+			window.print();
 			// opener.location.href='hnappoi1.php';
 			
 			// window.open('','_self');
