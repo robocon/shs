@@ -5,7 +5,7 @@ $action = input_post('action');
 
 if ( $action == 'clear_data' ) {
 
-    $db = Mysql::load();
+    $db = Mysql::load($shs_configs);
 
     $db->exec("SET NAMES TIS620");
 
@@ -147,9 +147,10 @@ if( $action === 'show' ){
 
         $part = input('company_name');
 
-        $sql_com = "SELECT * FROM `chk_company_list` WHERE `code` = '$part' ";
+        $sql_com = "SELECT *,SUBSTRING(`yearchk`, 3, 2) AS `short_year` FROM `chk_company_list` WHERE `code` = '$part' ";
         $db->select($sql_com);
         $company = $db->get_item();
+        $com_yearchk = $company['short_year'];
 
         // ตัวบริษัทเก่าอยากให้แสดงผลแบบเดิม -___-" เหมือนใน paper
         if($company['id'] < 70){
@@ -174,6 +175,7 @@ if( $action === 'show' ){
                 SELECT * FROM `opcardchk` WHERE `part` = '$part' 
             ) AS a 
             LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN` 
+            AND b.`yearchk` = '$com_yearchk'
             WHERE b.row_id IS NOT NULL ";
         }
 

@@ -1,13 +1,7 @@
 <?php
 
 include 'bootstrap.php';
-// $shs_configs = array(
-//     'host' => '192.168.1.13',
-//     'port' => '3306',
-//     'dbname' => 'smdb',
-//     'user' => 'dottow',
-//     'pass' => ''
-// );
+
 $db = Mysql::load($shs_configs);
 
 $camp = input_get('camp');
@@ -16,9 +10,12 @@ if( empty($camp) ){
     exit;
 }
 
+$Conn = mysql_connect(HOST13, USER13, PASS13) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
+mysql_select_db(DB13, $Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+
 $sql = "SELECT *,SUBSTRING(`yearchk`, 3, 2) AS `short_year` FROM `chk_company_list` WHERE `code` = '$camp' ";
-$db->select($sql);
-$company = $db->get_item();
+$q = mysql_query($sql);
+$company = mysql_fetch_assoc($q);
 
 $com_yearchk = $company['short_year'];
 
@@ -30,11 +27,12 @@ LEFT JOIN `dxofyear_out` AS b ON b.`hn` = a.`HN`
 WHERE b.row_id IS NOT NULL 
 AND b.`yearchk` = '$com_yearchk'
 ORDER BY a.`row`";
-
-$db->select($sql);
-$items = $db->get_items();
-
-$user_rows = $db->get_rows();
+$items = array();
+$q = mysql_query($sql);
+while ($item = mysql_fetch_assoc($q)) {
+    $items[] = $item;
+}
+$user_rows = count($items);
 
 if( $user_rows == 0 ){
     echo "ไม่มีข้อมูลการลงข้อมูลซักประวัติ และสรุปผลจากแพทย์";
@@ -61,6 +59,11 @@ if( $user_rows == 0 ){
 .chk_table th,
 .chk_table td{
     padding: 3px;
+}
+@media print{
+    .no-display{
+        display: none;
+    }
 }
 </style>
 <div style="text-align: center;">
@@ -124,27 +127,29 @@ if( $user_rows == 0 ){
             SELECT MAX(`id`) AS `latest_id` FROM `chk_doctor` WHERE `hn` = '$hn' AND `yearchk` = '$yearchk' 
         ) AS a 
         LEFT JOIN `chk_doctor` AS b ON b.`id` = a.`latest_id` ";
-        $db->select($chk_sql);
-        $chk_item = $db->get_item();
+        $chk_q = mysql_query($chk_sql);
+        $chk_item = mysql_fetch_assoc($chk_q);
+        // $db->select($chk_sql);
+        // $chk_item = $db->get_item();
 
         
         $item = array_merge($item, $chk_item);
-        
+        // dump($item);
         // ตรวจ สตูล <-- ไม่ใช่จังหวัดนะเห้ย
-        $occult = false;
-        $sql = "SELECT b.* 
-        FROM `resulthead` AS a 
-        LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-        WHERE a.`hn` = '$hn' 
-        AND a.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$yearchk' 
-        AND a.`profilecode` = 'OCCULT' ";
+        // $occult = false;
+        // $sql = "SELECT b.* 
+        // FROM `resulthead` AS a 
+        // LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+        // WHERE a.`hn` = '$hn' 
+        // AND a.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$yearchk' 
+        // AND a.`profilecode` = 'OCCULT' ";
 
-        $db->select($sql);
-        $occu_row = $db->get_rows();
-        if( $occu_row > 0 ){
-            $lab = $db->get_item();
-            $occult = $lab['flag'];
-        }
+        // $db->select($sql);
+        // $occu_row = $db->get_rows();
+        // if( $occu_row > 0 ){
+        //     $lab = $db->get_item();
+        //     $occult = $lab['flag'];
+        // }
 
         // สรุปผลจาก conclution ที่แพทย์ลง
         $conclution = $item['conclution'];
@@ -199,8 +204,13 @@ if( $user_rows == 0 ){
             OR b.`labcode` = 'STOCC' 
         ) 
         ORDER BY b.seq ASC ";
-        $db->select($sql);
-        $etc_items = $db->get_items();
+
+        $etc_items = array();
+        $etc_q = mysql_query($sql);
+        while ($etc_item = mysql_fetch_assoc($etc_q)) {
+            $etc_items[] = $etc_item;
+        }
+
         
         $etc = array();
         foreach ($etc_items as $key => $lab_item) {
@@ -243,7 +253,13 @@ if( $user_rows == 0 ){
                 }
                 ?>
             </td>
-            <td align="right">
+            <?php 
+            $bg = '';
+            if( !empty($etc['glu']['result']) && $item['res_glu'] == "0" ){
+                $bg = 'bgcolor="yellow"';
+            }
+            ?>
+            <td align="right" <?=$bg;?>>
                 <?php 
                 $style = '';
                 if( $etc['glu']['flag'] != 'N' ){
@@ -252,7 +268,13 @@ if( $user_rows == 0 ){
                 ?>
                 <span <?=$style;?> title="Normal: <?=$etc['glu']['normalrange'];?>"><?=$etc['glu']['result'];?></span>
             </td>
-            <td align="right">
+            <?php 
+            $bg = '';
+            if( !empty($etc['crea']['result']) && $item['res_crea'] == "0" ){
+                $bg = 'bgcolor="yellow"';
+            }
+            ?>
+            <td align="right" <?=$bg;?>>
                 <?php 
                 $style = '';
                 if( $etc['crea']['flag'] != 'N' ){
@@ -261,7 +283,13 @@ if( $user_rows == 0 ){
                 ?>
                 <span <?=$style;?> title="Normal: <?=$etc['crea']['normalrange'];?>"><?=$etc['crea']['result'];?></span>
             </td>
-            <td align="right">
+            <?php 
+            $bg = '';
+            if( !empty($etc['chol']['result']) && $item['res_chol'] == "0" ){
+                $bg = 'bgcolor="yellow"';
+            }
+            ?>
+            <td align="right" <?=$bg;?> >
                 <?php 
                 $style = '';
                 if( $etc['chol']['flag'] != 'N' ){
@@ -270,7 +298,13 @@ if( $user_rows == 0 ){
                 ?>
                 <span <?=$style;?> title="Normal: <?=$etc['chol']['normalrange'];?>"><?=$etc['chol']['result'];?></span>
             </td>
-            <td align="right">
+            <?php 
+            $bg = '';
+            if( !empty($etc['hdl']['result']) && $item['res_hdl'] == "0" ){
+                $bg = 'bgcolor="yellow"';
+            }
+            ?>
+            <td align="right" <?=$bg;?>>
                 <?php 
                 $style = '';
                 if( $etc['hdl']['flag'] != 'N' ){
@@ -279,7 +313,13 @@ if( $user_rows == 0 ){
                 ?>
                 <span <?=$style;?> title="Normal: <?=$etc['hdl']['normalrange'];?>"><?=$etc['hdl']['result'];?></span> 
             </td>
-            <td>
+            <?php 
+            $bg = '';
+            if( !empty($etc['hbsag']['result']) && $item['res_hbsag'] == "0" ){
+                $bg = 'bgcolor="yellow"';
+            }
+            ?>
+            <td <?=$bg;?>>
                 <?php
                 if( $etc['hbsag']['result'] == 'Negative' ){
                     echo 'ไม่พบเชื้อ';
@@ -288,7 +328,13 @@ if( $user_rows == 0 ){
                 }
                 ?>
             </td>
-            <td>
+            <?php 
+            $bg = '';
+            if( (!empty($etc['occult']['result']) OR !empty($etc['stocc']['result']) ) && $item['res_occult'] == "0" ){
+                $bg = 'bgcolor="yellow"';
+            }
+            ?>
+            <td <?=$bg;?>>
                 <?php
                 if( $etc['occult']['result'] == 'Negative' ){
                     echo 'ไม่พบเลือด';
@@ -301,6 +347,8 @@ if( $user_rows == 0 ){
                 }elseif ( $etc['stocc']['result'] == 'Positive' ) {
                     echo 'พบเลือด';
                 }
+
+                $bg = '';
                 
                 ?>
             </td>
@@ -318,3 +366,4 @@ if( $user_rows == 0 ){
     </tbody>
 </table>
 <p align="center">BS = น้ำตาลในเลือด  CHOL, HDL = ไขมันในเลือด CR = การทำงานของไต HBsAg = เชื้อไวรัสตับอักเสบ  FOBT = เลือดในอุจจาระ</p>
+<p class="no-display">ทดสอบแจ้งเตือน BS, CHOL, HDL, CR, HBsAg, FOBT ถ้าแสดงเป็นสีเหลือแสดงว่าแพทย์ยังไม่ได้ลงผล</p>
