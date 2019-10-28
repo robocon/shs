@@ -918,9 +918,9 @@ ORDER BY c.seq ASC";
 
 									if($objResult["labcode"]=='ANTIHB'){  //HBSAB
 										if($objResult["result"]=="Negative"){
-											$app="ปกติ";	
+											$app="ไม่มีภูมิต้านทานต่อเชื้อไวรัสตับอักเสบบี";	
 										}else if($objResult["result"]=="Positive"){
-											$app="ผิดปกติ";	
+											$app="มีภูมิต้านทานต่อเชื้อไวรัสตับอักเสบบี";	
 										}
 									}
 
