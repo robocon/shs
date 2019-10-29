@@ -1405,6 +1405,16 @@ if ( $group2_rows > 0 ) {
 								</strong> </td>
 							</tr>
 						<? } ?>
+				<?php 
+				if( !empty($result['bone_density']) ){
+					?>
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลตรวจความหนาแน่นของมวลกระดูก</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['bone_density'];?></strong> </td>
+					</tr>
+					<?php
+				}
+				?>
           </table>
           </td>
         </tr>

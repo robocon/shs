@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>บันทึกข้อมูลซักประวัตินอกหน่วย 2560</title>
+<title>บันทึกข้อมูลซักประวัตินอกหน่วย</title>
 <style type="text/css">
 body,td,th {
 	font-family: TH SarabunPSK;
@@ -353,6 +353,11 @@ if(isset($_POST['hn'])){
 					  <td><input name="benzene_result" type="text" class="pdxhead" size="50" value="<?=$arrchk['benzene_result']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+					<tr>
+						<td class="pdx">ผลตรวจความหนาแน่นของมวลกระดูก</td>
+						<td><input name="bone_density" type="text" class="pdxhead" size="50" value="<?=$arrchk['bone_density']?>" /></td>
+						<td>&nbsp;</td>
+					</tr>
 					<!--
 					<tr>
 						<td class="pdx">
@@ -448,7 +453,8 @@ if(isset($_POST['okhn2'])){
 		`metal` = '".$_POST['metal']."', 
 		`metal_result` = '".$_POST['metal_result']."',
 		`benzene` = '".$_POST['benzene']."',
-		`benzene_result` = '".$_POST['benzene_result']."'
+		`benzene_result` = '".$_POST['benzene_result']."',
+		`bone_density` = '".$_POST['bone_density']."'
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -501,7 +507,8 @@ if(isset($_POST['okhn2'])){
 			`metal` = '".$_POST['metal']."', 
 			`metal_result` = '".$_POST['metal_result']."',
 			`benzene` = '".$_POST['benzene']."',
-			`benzene_result` = '".$_POST['benzene_result']."'";
+			`benzene_result` = '".$_POST['benzene_result']."',
+			`bone_density` = '".$_POST['bone_density']."'";
 	}
 	
 	//echo $update;
@@ -515,7 +522,9 @@ if(isset($_POST['okhn2'])){
 			$querey=mysql_query($edit);
 			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
 		}
-		echo "<script>alert('$save');window.location='out_result.php?hn=$_POST[hn]&part=$_POST[part]&act=print';</script>" ;
+		$hn = $_POST['hn'];
+		$part = $_POST['part'];
+		echo "<script>alert('$save');window.location='out_result.php?hn=$hn&part=$part&act=print';</script>" ;
 	}
 }
 ?>
