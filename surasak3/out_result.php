@@ -401,6 +401,8 @@ if(isset($_POST['okhn2'])){
 	$hpv = ( trim($_POST['hpv']) != '' ) ? trim($_POST['hpv']) : NULL ;
 	$bone = ( trim($_POST['42702']) != '' ) ? trim($_POST['42702']) : NULL ;
 
+	$bone_density = htmlspecialchars($_POST['bone_density'], ENT_QUOTES);
+
 	if( $data1 == "update" ){
 		if($_POST['eye']=="ปกติ"){
 			$_POST['eye_detail']="";
@@ -454,7 +456,7 @@ if(isset($_POST['okhn2'])){
 		`metal_result` = '".$_POST['metal_result']."',
 		`benzene` = '".$_POST['benzene']."',
 		`benzene_result` = '".$_POST['benzene_result']."',
-		`bone_density` = '".$_POST['bone_density']."'
+		`bone_density` = '$bone_density'
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -508,7 +510,8 @@ if(isset($_POST['okhn2'])){
 			`metal_result` = '".$_POST['metal_result']."',
 			`benzene` = '".$_POST['benzene']."',
 			`benzene_result` = '".$_POST['benzene_result']."',
-			`bone_density` = '".$_POST['bone_density']."'";
+			`bone_density` = '$bone_density'";
+			
 	}
 	
 	//echo $update;
