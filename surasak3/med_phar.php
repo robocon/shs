@@ -146,6 +146,12 @@ tr{
     margin: 2px;
     text-decoration: none;
 }
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 </style>
 <div>
     <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
@@ -167,9 +173,9 @@ if ( $_GET['fill_an'] ) {
 
 if( $_SESSION['fix_an'] ){
     ?>
-    <div style="background-color: #fffa63;">
-        <div>Fillter By AN <?=$_SESSION['fix_an'];?></div>
-        <div style=""><a href="med_phar.php?action=clear_an&an=<?=$_SESSION['fix_an'];?>">[X]</a></div>
+    <div style="background-color: #fffa63;" class="clearfix">
+        <div style="float: left;">Fillter By AN <?=$_SESSION['fix_an'];?>&nbsp;</div>
+        <div><a href="med_phar.php?action=clear_an&an=<?=$_SESSION['fix_an'];?>" title="ปิด Filter">[X]</a></div>
     </div>
     <?php
 }
