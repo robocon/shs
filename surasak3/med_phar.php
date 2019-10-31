@@ -3,6 +3,32 @@
 include 'bootstrap.php';
 $action = input('action');
 $page = input('page');
+
+$wards = array(
+    '42' => 'หอผู้ป่วยหญิง',
+    '43' => 'หอผู้ป่วยสูติ',
+    '44' => 'หอผู้ป่วย',
+    '45' => 'หอผู้ป่วยพิเศษ'
+);
+
+function getFullWardName($cbedcode){
+    global $wards;
+    $wardExTest = preg_match('/45.+/', $cbedcode);
+    $exName = '';
+    if( $wardExTest > 0 ){
+        
+        // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
+        $wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
+        $wardBxTest = preg_match('/B[0-9]+/', $cBed1);
+        $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+        
+    }
+
+    $short_code = substr($cbedcode,0,2);
+    $fullWardName = $wards[$short_code].$exName;
+    return $fullWardName;
+}
+
 if ($action === 'active') {
     $confirm = trim($_SESSION['sOfficer']);
     $id = input_get('id');
@@ -53,6 +79,10 @@ if ($action === 'active') {
     </script>
     <?php
 
+    exit;
+}elseif ($action === 'clear_an') {
+    unset($_SESSION['fix_an']);
+    redirect('med_phar.php');
     exit;
 }
 
@@ -118,7 +148,7 @@ tr{
 }
 </style>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a> | <a href="med_ward.php">หน้าวอร์ด</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
@@ -129,24 +159,48 @@ if( isset($_SESSION['x-msg']) ){
 <div>
     <h3>นำร่องอายุรกรรม(ช่วงทดสอบ)</h3>
 </div>
-<?php
-$sql = "SELECT * FROM `med_scan` WHERE `confirm` IS NULL ORDER BY `id` DESC";
-$q = mysql_query($sql);
+<?php 
 
+if ( $_GET['fill_an'] ) {
+    $_SESSION['fix_an'] = $_GET['fill_an'];
+}
+
+if( $_SESSION['fix_an'] ){
+    ?>
+    <div style="background-color: #fffa63;">
+        <div>Fillter By AN <?=$_SESSION['fix_an'];?></div>
+        <div style=""><a href="med_phar.php?action=clear_an&an=<?=$_SESSION['fix_an'];?>">[X]</a></div>
+    </div>
+    <?php
+}
+
+$where = "";
+if( $_SESSION['fix_an'] ){
+    $where = "AND a.`an` = '".$_SESSION['fix_an']."' ";
+}
+
+$sql = "SELECT a.*,b.`bedcode` 
+FROM `med_scan` AS a 
+LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
+WHERE a.`confirm` IS NULL 
+$where
+ORDER BY a.`id` DESC";
+$q = mysql_query($sql);
 if ( mysql_num_rows($q) > 0 ) {
     
     ?>
     <table class="chk_table">
         <tr>
             <th>วันที่บันทึกข้อมูล</th>
-            <th>รายละเอียด</th>
+            <th>ข้อมูลผู้ป่วย</th>
             <th>ไฟล์</th>
             <th>ยืนยันการรับข้อมูล</th>
         </tr>
     
     <?php
     while ($item = mysql_fetch_assoc($q)) {
-        
+
+        $fullWardName = getFullWardName(trim($item['bedcode']));
         ?>
         <tr>
             <td>
@@ -156,6 +210,7 @@ if ( mysql_num_rows($q) > 0 ) {
                 <p>HN: <?=$item['hn'];?></p>
                 <p>AN: <?=$item['an'];?></p>
                 <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
+                <p><?=$fullWardName;?></p>
             </td>
             <td>
                 <a href="javascript:void(0)"><img src="<?=$item['path'];?>" class="showImg" alt="" width="200px;"></a>
@@ -172,12 +227,11 @@ if ( mysql_num_rows($q) > 0 ) {
 }
 ?>
 
-
 <fieldset>
     <legend>ค้นหาเอกสารด้วย AN</legend>
     <form action="med_phar.php" method="post">
         <div>
-            AN: <input type="text" name="an" id="">
+            AN: <input type="text" name="an" id="" value="<?=( isset($_SESSION['fix_an']) ? $_SESSION['fix_an'] : '' );?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -190,7 +244,12 @@ if ( mysql_num_rows($q) > 0 ) {
 if ( $page === 'searchFile' ) {
     
     $an = input('an');
-    $sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` = 'y' ORDER BY `id` DESC";
+    $sql = "SELECT a.*,b.`bedcode` 
+    FROM `med_scan` AS a 
+    LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
+    WHERE a.`an` = '$an' 
+    AND a.`confirm` = 'y' 
+    ORDER BY a.`id` DESC";
     $q = mysql_query($sql);
     if ( mysql_num_rows($q) > 0 ) {
 
@@ -204,7 +263,10 @@ if ( $page === 'searchFile' ) {
             </tr>
         
         <?php
-        while ($item = mysql_fetch_assoc($q)) {
+        while ($item = mysql_fetch_assoc($q)) { 
+
+            $fullWardName = getFullWardName(trim($item['bedcode']));
+
             ?>
             <tr>
                 <td>
@@ -214,6 +276,7 @@ if ( $page === 'searchFile' ) {
                     <p>HN: <?=$item['hn'];?></p>
                     <p>AN: <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
+                    <p><?=$fullWardName;?></p>
                 </td>
                 <td>
                     <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" alt="" width="200px;"></a>

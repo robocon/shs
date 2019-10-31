@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>รายงาน 10 อันดับโรคประจำเดือน</title>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 18px;
@@ -16,7 +16,7 @@ body,td,th {
 .forntsarabun1 {	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
--->
+
 </style>
 </head>
 <?
@@ -68,18 +68,27 @@ $m=date('m');
 </form>
 </div>
 <hr />
-<?
+<?php
 if($_POST["act"]=="show"){
 $clinic=$_POST["clinic"];
 $date=$_POST["y_start"]."-".$_POST["m_start"];
 $showdate=$_POST["m_start"]."/".$_POST["y_start"];
-	$sql="SELECT icd10, count( icd10 )  AS num
-	FROM  `opday` 
-	WHERE (icd10 IS NOT NULL AND icd10 !='') AND `thidate` 
-	LIKE  '$date%' AND clinic='$clinic' GROUP  BY icd10
-	ORDER  BY count( icd10 )  DESC 
-	LIMIT 10";
-//echo $sql;
+
+if( $clinic == '01 อายุรกรรม' ){
+  $where_clinic = " AND clinic LIKE '%อายุรกรรม%' ";
+}else{
+  $where_clinic = " AND clinic LIKE '%ศัลยกรรม%' ";
+}
+
+$sql="SELECT icd10, count( icd10 )  AS num
+FROM  `opday` 
+WHERE ( icd10 IS NOT NULL AND icd10 !='') 
+AND `thidate` LIKE  '$date%' 
+$where_clinic
+GROUP  BY icd10
+ORDER  BY count( icd10 )  DESC 
+LIMIT 10";
+
 $query= mysql_query($sql); 
 $rows=mysql_num_rows($query);
 ?>

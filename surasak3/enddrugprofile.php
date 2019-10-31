@@ -397,6 +397,15 @@ foreach ($build as $key => $value){
 
 while($arr = Mysql_fetch_assoc($result)){
 
+	$an = $arr['an'];
+
+	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL ";
+	$medScanQuery = mysql_query($sql);
+	$link_scan = "";
+	if ( mysql_num_rows($medScanQuery) > 0 ) {
+		$link_scan = '<a href="med_phar.php?fill_an='.$an.'" target="_blank">'.$an.'</a>';
+	}
+
 	if($arr["last_drug"] != "0000-00-00 00:00:00"){
 		$bgcolor = "#FFFF99";
 		$list_drug = explode(" ",$arr["last_drug"]);
@@ -447,7 +456,7 @@ echo "
 	<TD align=\"center\">$L3</TD>
 	<TD align=\"center\"><A HREF=\"rp_profile.php?an=".$arr["an"]."&month=".date("m")."&year=".(date("Y")+543)."&date=".date("dmy")."\" target=\"_blank\">ข้อมูล<BR>การจ่ายยา</A></TD>
 	<TD align=\"center\">",$arr["last_drug"],"</TD>
-	<TD align=\"center\">&nbsp;<div id='",$arr["an"],"'></div>&nbsp;</TD>
+	<TD align=\"center\">&nbsp;<div id='",$arr["an"],"'></div>&nbsp;$link_scan</TD>
 </TR>
 		";
 }
