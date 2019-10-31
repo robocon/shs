@@ -166,7 +166,7 @@ tr{
 
 </style>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a> | <a href="med_phar.php">หน้าเภสัชฯ</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
@@ -181,7 +181,7 @@ if( isset($_SESSION['x-msg']) ){
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
     <form action="med_ward.php" method="post">
         <div>
-            AN: <input type="text" name="an" >
+            AN: <input type="text" name="an" value="<?=$_GET['fill_an'];?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -193,7 +193,7 @@ if( isset($_SESSION['x-msg']) ){
     <legend>ค้นหาเอกสารด้วย AN</legend>
     <form action="med_ward.php" method="post">
         <div>
-            AN: <input type="text" name="an" >
+            AN: <input type="text" name="an" value="<?=$_GET['fill_an'];?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
