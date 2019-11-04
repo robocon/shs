@@ -67,7 +67,9 @@ if ($action === 'active') {
     <div class="no-print">
         <button type="button" onclick="print_img()" >พิมพ์</button> | <a href="med_phar.php">กลับหน้ารายการ</a>
     </div>
-    <img src="<?=$item['path'];?>" id="mainImg">
+    <!-- 210mm is 793.7007874px -->
+    <!-- 190mm is 718.11023622px -->
+    <img src="<?=$item['path'];?>" width="718.11023622px" id="mainImg">
     <script>
         function print_img(){
             window.print();
@@ -174,8 +176,8 @@ if ( $_GET['fill_an'] ) {
 if( $_SESSION['fix_an'] ){
     ?>
     <div style="background-color: #fffa63;" class="clearfix">
-        <div style="float: left;">Fillter By AN <?=$_SESSION['fix_an'];?>&nbsp;</div>
-        <div><a href="med_phar.php?action=clear_an&an=<?=$_SESSION['fix_an'];?>" title="ปิด Filter">[X]</a></div>
+        <div style="float: left;">แสดงผลเฉพาะ AN <?=$_SESSION['fix_an'];?>&nbsp;</div>
+        <div><a href="med_phar.php?action=clear_an&an=<?=$_SESSION['fix_an'];?>" title="ปิด Filter">[ปิด]</a></div>
     </div>
     <?php
 }
@@ -242,6 +244,30 @@ if ( mysql_num_rows($q) > 0 ) {
         <div>
             <button type="submit">ค้นหา</button>
             <input type="hidden" name="page" value="searchFile">
+            <input type="hidden" name="typeSearch" value="an">
+        </div>
+    </form>
+</fieldset>
+
+<?php 
+$dateSelected = input('days',date('d'));
+$monthSelected = input('months',date('m'));
+$yearSelected = input('years',date('Y'));
+
+$yearRange = range('2019', date('Y'));
+?>
+<fieldset>
+    <legend>ค้นหาเอกสารจากวันที่</legend>
+    <form action="med_phar.php" method="post">
+        <div>
+            วัน <?=getDateList('days',$dateSelected);?>
+            เดือน <?=getMonthList('months', $monthSelected);?>
+            ปี <?=getYearList('years',fase, $yearSelected,$yearRange);?>
+        </div>
+        <div>
+            <button type="submit">ค้นหา</button>
+            <input type="hidden" name="page" value="searchFile">
+            <input type="hidden" name="typeSearch" value="date">
         </div>
     </form>
 </fieldset>
@@ -249,13 +275,29 @@ if ( mysql_num_rows($q) > 0 ) {
 <?php 
 if ( $page === 'searchFile' ) {
     
+    $typeSearch = input_post('typeSearch');
     $an = input('an');
+
+    if($typeSearch=='an'){
+        $where = " AND a.`an` = '$an' ";
+
+    }elseif ($typeSearch=='date') {
+
+        $d = input_post('days');
+        $m = input_post('months');
+        $y = input_post('years');
+
+        $where = " AND a.`date` LIKE '$y-$m-$d%' ";
+
+    }
+    
     $sql = "SELECT a.*,b.`bedcode` 
     FROM `med_scan` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
-    WHERE a.`an` = '$an' 
-    AND a.`confirm` = 'y' 
+    WHERE a.`confirm` = 'y' 
+    $where
     ORDER BY a.`id` DESC";
+    
     $q = mysql_query($sql);
     if ( mysql_num_rows($q) > 0 ) {
 
@@ -306,7 +348,7 @@ if ( $page === 'searchFile' ) {
 ?>
 <div id="imgContainer" style="display: none;">
     <div id="imgBtnClose">[Close]</div>
-    <div><img src="" alt="" id="imgContent"></div>
+    <div><img src="" alt="" id="imgContent" style="max-width:210mm;"></div>
 </div>
 <script>
     

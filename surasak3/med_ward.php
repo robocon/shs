@@ -3,6 +3,31 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
+$wards = array(
+    '42' => 'หอผู้ป่วยรวม',
+    '43' => 'หอผู้ป่วยสูติ',
+    '44' => 'หอผู้ป่วยICU',
+    '45' => 'หอผู้ป่วยพิเศษ'
+);
+
+function getFullWardName($cbedcode){
+    global $wards;
+    $wardExTest = preg_match('/45.+/', $cbedcode);
+    $exName = '';
+    if( $wardExTest > 0 ){
+        
+        // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
+        $wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
+        $wardBxTest = preg_match('/B[0-9]+/', $cBed1);
+        $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+        
+    }
+
+    $short_code = substr($cbedcode,0,2);
+    $fullWardName = $wards[$short_code].$exName;
+    return $fullWardName;
+}
+
 function set_files($pure_file){
     $new_files = array();
 
@@ -251,7 +276,11 @@ if ( $page === 'search_an' ) {
 }elseif ( $page === 'searchFile' ) {
     
     $an = input('an');
-    $sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' ORDER BY `id` DESC";
+    $sql = "SELECT a.*,b.`bedcode` 
+    FROM `med_scan` AS a 
+    LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
+    WHERE a.`an` = '$an' 
+    ORDER BY a.`id` DESC";
     $q = mysql_query($sql);
     if ( mysql_num_rows($q) > 0 ) {
 
@@ -265,6 +294,8 @@ if ( $page === 'search_an' ) {
         
         <?php
         while ($item = mysql_fetch_assoc($q)) {
+
+            $fullWardName = getFullWardName(trim($item['bedcode']));
             ?>
             <tr>
                 <td>
@@ -274,6 +305,7 @@ if ( $page === 'search_an' ) {
                     <p>HN: <?=$item['hn'];?></p>
                     <p>AN: <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
+                    <p><?=$fullWardName;?></p>
                 </td>
                 <td>
                     <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>

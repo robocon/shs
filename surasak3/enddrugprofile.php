@@ -399,7 +399,7 @@ while($arr = Mysql_fetch_assoc($result)){
 
 	$an = $arr['an'];
 
-	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL ";
+	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' ";
 	$medScanQuery = mysql_query($sql);
 	$link_scan = "";
 	if ( mysql_num_rows($medScanQuery) > 0 ) {
