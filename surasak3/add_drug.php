@@ -711,7 +711,7 @@ echo "<TR>
 </TR>
 <TR>
 	<TD align="right">AN : </TD>
-	<TD bgcolor="#FFFFBC"><?php echo $arr["an"];?></TD>
+	<TD bgcolor="#FFFFBC"><a href="med_phar.php?fill_an=<?=$arr["an"];?>" target="_blank"><?=$arr["an"];?></a></TD>
 	<TD align="right">HN : </TD>
 	<TD bgcolor="#FFFFBC"><?php echo $arr["hn"];?></TD>
 	<TD align="right">ชื่อ-สกุล : </TD>
