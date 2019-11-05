@@ -942,10 +942,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 }
 
 if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
+//<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
+echo "<layer id=\"slidemenubar\">
 
-echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
-
-	<TABLE width=\"305\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
+	<TABLE width=\"310\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 	<TR>
 		<TD width=\"260\" bgcolor=\"#FFFFFF\" >";
 
@@ -971,7 +971,7 @@ $i=  count($_COOKIE);
 		}		
 		
 		echo "</TD>
-		<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
+		<TD valign=\"top\" width=\"50\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
 	</TR>
 	</TABLE>
 	
@@ -1020,16 +1020,19 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_menu {background-color: #FFFFC1;  }
 
-#slidemenubar, #slidemenubar2{
+#slidemenubar2{
 	position:absolute;
-	left:-155px;
-	width:300px;
+	left: -250px;
+	width:auto;
 	top:260px;
 
-	layer-background-color:#000000;
+	background-color:#ffffff;
 	font:bold 16px ms sans serif;
 	line-height:20px;
-
+	height:30px;
+}
+#slidemenubar2:hover{
+	left: 0;
 }
 </style>
 </head>
@@ -1597,20 +1600,20 @@ include("dt_patient.php");
 	</TD>
 </TR>
 </TABLE>
-
-<div id="slidemenubar2" style="left:-260" onMouseover="pull()" onMouseout="draw()">
+<!-- <div id="slidemenubar2" style="left:-260" onMouseover="pull()" onMouseout="draw()">-->
+<div id="slidemenubar2">
 </div>
 <script language="JavaScript1.2">
 
 	if (document.all){
 
-		themenu=document.all.slidemenubar2.style
-		rightboundary=0
-		leftboundary=-260
+		// themenu=document.all.slidemenubar2.style
+		// rightboundary=0
+		// leftboundary=-260
 	}else{
-		themenu=document.layers.slidemenubar
-		rightboundary=260
-		leftboundary=10
+		// themenu=document.layers.slidemenubar
+		// rightboundary=260
+		// leftboundary=10
 	}
 
 	function pull(){
