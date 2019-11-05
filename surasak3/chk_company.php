@@ -175,6 +175,8 @@ if ( $views == 'search' ) {
                         <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
                         <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
                         <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB</a></li>
+                        <li><a href="chk_sticker_deploy.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB พี่สอง</a></li>
+                        
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
