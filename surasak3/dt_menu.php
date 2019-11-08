@@ -92,7 +92,7 @@ menu5[0]='<a href="dt_chkup.php" >ใบรับรองแพทย์</a>'
 menu5[1]='<a href="dt_refer.php" >ใบ Refer</a>'
 
 var menu6=new Array();
-menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพทหารประจำปี</a>'
+menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพประจำปีกองทัพบก</a>'
 <!--menu6[1]='<a href="dxdr_ofyear_empsoldier.php">ตรวจสุขภาพลูกจ้าง รพ.</a>'-->
 menu6[2]='<a href="dxdr_ofyearout_dr.php" >ตรวจสุขภาพทั่วไป && ฮักกันยามเฒ่า</a>'
 

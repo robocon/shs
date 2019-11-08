@@ -536,7 +536,6 @@ function addtolist_muli(){
         <input name="dt_diag_other0" type="text" class="other_diag" id="dt_diag_other0" value="<?php echo $_SESSION["dt_diag_other"]?>" size="35">
         <? }else{ ?>
         <input name="dt_diag_other0" type="text" class="other_diag" id="dt_diag_other0" onKeyPress="searchSuggest2(this.value,2,'0');" value="<?php echo $_SESSION["dt_diag_other"]?>" size="35">
-
         <? } ?>
         </TD>
 	<TD width="75" valign="bottom">&nbsp;</TD>      

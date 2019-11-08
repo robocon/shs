@@ -198,15 +198,14 @@ if($rows > 0){
 <div id = "tooltip" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
 
-<?
-if($_SESSION["sIdname"] != "md19921" && $_SESSION["sIdname"] != "monchai"){
-
+<?php 
+if($_SESSION["sIdname"] != "md19921" && $_SESSION["sIdname"] != "monchai"){  //ไม่ให้แสดงรายละเอียดคลินิกเบาหวาน
 // ดึงข้อมูลผู้ป่วยคลินิกเบาหวาน
 $hn = $_SESSION['hn_now'];
 $year = date('Y');
 $sql = "SELECT * FROM diabetes_clinic WHERE hn = '$hn' AND `dateN` LIKE '$year-%'";
-$query = mysql_query($sql);
-$row = mysql_num_rows($query);
+$query_diabetes = mysql_query($sql);
+$row = mysql_num_rows($query_diabetes);
 
 if($row > 0){
 	
@@ -242,11 +241,11 @@ if($row > 0){
 	
 	#btn-dialog{
 		display: inline-block;
-  position: absolute;
-  top: 0.2em;
-  right: 0.2em;
-  border: 2px solid red;
-  padding: 0.4em;
+		position: absolute;
+		top: 0.2em;
+		right: 0.2em;
+		border: 2px solid red;
+		padding: 0.4em;
 	}
 	</style>
 	<?php
@@ -268,6 +267,7 @@ if($row > 0){
 						<td>Retinal Exam</td>
 						<td colspan="12">
 							<?php 
+							$item = mysql_fetch_assoc($query_diabetes);
 							if($item['retinal'] != ''){
 								
 								echo $item['retinal'];
@@ -299,13 +299,33 @@ if($row > 0){
 							?>
 						</td>
 					</tr>
-					<?php
+					<?php 
+
 					$year = date('Y');
 					$year_th = $year + 543;
 					$prev_ymd = ($year - 1).date('-m-d');
 					$current_ymd = date('Y-m-d');
-					$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.', '05' => 'พ.ค.', '06' => 'มิ.ย.'
-					, '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+					$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+					
+					$sql = "SELECT a.hn,a.ptname,a.dm_no, a.dummy_no,b.labname,b.result_lab,b.dateY,DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date`
+					FROM ( 
+						SELECT * FROM diabetes_clinic_history 
+						WHERE hn = '$hn' 
+						AND ( dateN > '$prev_ymd 00:00:00' AND dateN <= '$current_ymd 23:59:59' )
+					) AS a 
+					LEFT JOIN diabetes_lab AS b ON b.dm_no = a.dm_no 
+					WHERE b.dummy_no = a.dummy_no 
+					ORDER BY b.dateY ASC";
+					$qLab = mysql_query($sql);
+					
+					$labLists = array();
+					while ( $labItem = mysql_fetch_assoc($qLab) ) { 
+
+						$key = $labItem['labname'];
+						$subKey = $labItem['result_date'];
+						$labLists[$key][$subKey] = $labItem;
+					}
+
 					?>
 					<tr>
 						<td class="tb-bold">พ.ศ. <?php echo $year_th; ?></td>
@@ -320,31 +340,14 @@ if($row > 0){
 					<tr>
 						<td>BS (mg%)</td>
 						<?php
-						$sql = "
-						SELECT a.dm_no, a.dummy_no, b.labname, b.result_lab, DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date` 
-						FROM diabetes_clinic_history AS a , diabetes_lab AS b
-						WHERE a.hn = '$hn' 
-						AND b.dm_no = a.dm_no 
-						AND b.dummy_no = a.dummy_no
-						AND b.labname = 'BS'
-						AND ( b.dateY >= '$prev_ymd%' AND b.dateY <= '$current_ymd%' )
-						";
-						$query = mysql_query($sql);
-						
-						$items = array();
-						while($item = mysql_fetch_assoc($query)){
-							$key = $item['result_date'];
-							$items[$key] = $item;
-						}
-						
 						foreach($months as $mnum => $mname){
 							$find_key = "$year-$mnum";
 							
 							$val = '-';
-							if(isset($items[$find_key])){
-								$item = $items[$find_key];
-								$val = $item['result_lab'];
+							if(isset($labLists['BS'][$find_key])){
+								$val = $labLists['BS'][$find_key]['result_lab'];
 							}
+							
 							?>
 							<td align="center"><?php echo $val;?></td>
 							<?php
@@ -354,30 +357,13 @@ if($row > 0){
 					<tr>
 						<td>HbA1c (%)</td>
 						<?php
-						$sql = "
-						SELECT a.dm_no, a.dummy_no, b.labname, b.result_lab, DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date` 
-						FROM diabetes_clinic_history AS a , diabetes_lab AS b
-						WHERE a.hn = '$hn' 
-						AND b.dm_no = a.dm_no 
-						AND b.dummy_no = a.dummy_no
-						AND b.labname = 'HbA1c'
-						AND ( b.dateY >= '$prev_ymd%' AND b.dateY <= '$current_ymd%' )
-						";
-						$query = mysql_query($sql);
-						
-						$items = array();
-						while($item = mysql_fetch_assoc($query)){
-							$key = $item['result_date'];
-							$items[$key] = $item;
-						}
 						
 						foreach($months as $mnum => $mname){
 							$find_key = "$year-$mnum";
 							
 							$val = '-';
-							if(isset($items[$find_key])){
-								$item = $items[$find_key];
-								$val = $item['result_lab'];
+							if(isset($labLists['HbA1c'][$find_key])){
+								$val = $labLists['HbA1c'][$find_key]['result_lab'];
 							}
 							?>
 							<td align="center"><?php echo $val;?></td>
@@ -388,30 +374,13 @@ if($row > 0){
 					<tr>
 						<td>LDL (mg/dl)</td>
 						<?php
-						$sql = "
-						SELECT a.dm_no, a.dummy_no, b.labname, b.result_lab, DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date` 
-						FROM diabetes_clinic_history AS a , diabetes_lab AS b
-						WHERE a.hn = '$hn' 
-						AND b.dm_no = a.dm_no 
-						AND b.dummy_no = a.dummy_no
-						AND b.labname = 'LDL'
-						AND ( b.dateY >= '$prev_ymd%' AND b.dateY <= '$current_ymd%' )
-						";
-						$query = mysql_query($sql);
-						
-						$items = array();
-						while($item = mysql_fetch_assoc($query)){
-							$key = $item['result_date'];
-							$items[$key] = $item;
-						}
 						
 						foreach($months as $mnum => $mname){
 							$find_key = "$year-$mnum";
 							
 							$val = '-';
-							if(isset($items[$find_key])){
-								$item = $items[$find_key];
-								$val = $item['result_lab'];
+							if(isset($labLists['LDL'][$find_key])){
+								$val = $labLists['LDL'][$find_key]['result_lab'];
 							}
 							?>
 							<td align="center"><?php echo $val;?></td>
@@ -422,30 +391,13 @@ if($row > 0){
 					<tr>
 						<td>Creatinine (mg/dl)</td>
 						<?php
-						$sql = "
-						SELECT a.dm_no, a.dummy_no, b.labname, b.result_lab, DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date` 
-						FROM diabetes_clinic_history AS a , diabetes_lab AS b
-						WHERE a.hn = '$hn' 
-						AND b.dm_no = a.dm_no 
-						AND b.dummy_no = a.dummy_no
-						AND b.labname = 'Creatinine'
-						AND ( b.dateY >= '$prev_ymd%' AND b.dateY <= '$current_ymd%' )
-						";
-						$query = mysql_query($sql);
-						
-						$items = array();
-						while($item = mysql_fetch_assoc($query)){
-							$key = $item['result_date'];
-							$items[$key] = $item;
-						}
 						
 						foreach($months as $mnum => $mname){
 							$find_key = "$year-$mnum";
 							
 							$val = '-';
-							if(isset($items[$find_key])){
-								$item = $items[$find_key];
-								$val = $item['result_lab'];
+							if(isset($labLists['Creatinine'][$find_key])){
+								$val = $labLists['Creatinine'][$find_key]['result_lab'];
 							}
 							?>
 							<td align="center"><?php echo $val;?></td>
@@ -456,30 +408,12 @@ if($row > 0){
 					<tr>
 						<td>Urine protein (mg/dl)</td>
 						<?php
-						$sql = "
-						SELECT a.dm_no, a.dummy_no, b.labname, b.result_lab, DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date` 
-						FROM diabetes_clinic_history AS a , diabetes_lab AS b
-						WHERE a.hn = '$hn' 
-						AND b.dm_no = a.dm_no 
-						AND b.dummy_no = a.dummy_no
-						AND b.labname = 'Urine protein'
-						AND ( b.dateY >= '$prev_ymd%' AND b.dateY <= '$current_ymd%' )
-						";
-						$query = mysql_query($sql);
-						
-						$items = array();
-						while($item = mysql_fetch_assoc($query)){
-							$key = $item['result_date'];
-							$items[$key] = $item;
-						}
-						
 						foreach($months as $mnum => $mname){
 							$find_key = "$year-$mnum";
 							
 							$val = '-';
-							if(isset($items[$find_key])){
-								$item = $items[$find_key];
-								$val = $item['result_lab'];
+							if(isset($labLists['Urine protein'][$find_key])){
+								$val = $labLists['Urine protein'][$find_key]['result_lab'];
 							}
 							?>
 							<td align="center"><?php echo $val;?></td>
@@ -490,30 +424,12 @@ if($row > 0){
 					<tr>
 						<td>Microalbuminuria</td>
 						<?php
-						$sql = "
-						SELECT a.dm_no, a.dummy_no, b.labname, b.result_lab, DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date` 
-						FROM diabetes_clinic_history AS a , diabetes_lab AS b
-						WHERE a.hn = '$hn' 
-						AND b.dm_no = a.dm_no 
-						AND b.dummy_no = a.dummy_no
-						AND b.labname = 'Urine Microalbumin'
-						AND ( b.dateY >= '$prev_ymd%' AND b.dateY <= '$current_ymd%' )
-						";
-						$query = mysql_query($sql);
-						
-						$items = array();
-						while($item = mysql_fetch_assoc($query)){
-							$key = $item['result_date'];
-							$items[$key] = $item;
-						}
-						
 						foreach($months as $mnum => $mname){
 							$find_key = "$year-$mnum";
 							
 							$val = '-';
-							if(isset($items[$find_key])){
-								$item = $items[$find_key];
-								$val = $item['result_lab'];
+							if(isset($labLists['Urine Microalbumin'][$find_key])){
+								$val = $labLists['Urine Microalbumin'][$find_key]['result_lab'];
 							}
 							?>
 							<td align="center"><?php echo $val;?></td>
