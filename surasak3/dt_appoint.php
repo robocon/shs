@@ -118,6 +118,7 @@ if($_GET["action"] == "carlendar"){
 	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
 	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
 	AND apptime <> 'ยกเลิกการนัด' ";
+	//echo $sql_temp;
 	mysql_query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
@@ -134,6 +135,7 @@ if($_GET["action"] == "carlendar"){
 	$result = Mysql_Query($sql);
 	$list_app = array();
 	while($arr = Mysql_fetch_assoc($result)){
+		//echo "==><br>";
 		$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
@@ -942,12 +944,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 }
 
 if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
-//<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
-echo "<layer id=\"slidemenubar\">
 
-	<TABLE width=\"310\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
+echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
+
+	<TABLE width=\"450\" border=\"0\" cellpadding=\"4\" cellspacing=\"4\">
 	<TR>
-		<TD width=\"260\" bgcolor=\"#FFFFFF\" >";
+		<TD width=\"400\" bgcolor=\"#FFFFFF\" >";
 
 $i=  count($_COOKIE);
 		if($i > 1){
@@ -959,6 +961,7 @@ $i=  count($_COOKIE);
 				$zzz = $yyy[0];
 				
 				$sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') AND apptime <> 'ยกเลิกการนัด'  ";
+				
 
 				$result = Mysql_Query($sql) or die(mysql_error());
 				list($c_app) = Mysql_fetch_row($result);
@@ -971,7 +974,7 @@ $i=  count($_COOKIE);
 		}		
 		
 		echo "</TD>
-		<TD valign=\"top\" width=\"50\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
+		<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
 	</TR>
 	</TABLE>
 	
@@ -1020,19 +1023,16 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_menu {background-color: #FFFFC1;  }
 
-#slidemenubar2{
+#slidemenubar, #slidemenubar2{
 	position:absolute;
-	left: -250px;
-	width:auto;
+	left:-400px;
+	width:450px;
 	top:260px;
 
-	background-color:#ffffff;
+	layer-background-color:#000000;
 	font:bold 16px ms sans serif;
 	line-height:20px;
-	height:30px;
-}
-#slidemenubar2:hover{
-	left: 0;
+
 }
 </style>
 </head>
@@ -1600,20 +1600,20 @@ include("dt_patient.php");
 	</TD>
 </TR>
 </TABLE>
-<!-- <div id="slidemenubar2" style="left:-260" onMouseover="pull()" onMouseout="draw()">-->
-<div id="slidemenubar2">
+
+<div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()">
 </div>
 <script language="JavaScript1.2">
 
 	if (document.all){
 
-		// themenu=document.all.slidemenubar2.style
-		// rightboundary=0
-		// leftboundary=-260
+		themenu=document.all.slidemenubar2.style
+		rightboundary=0
+		leftboundary=-400
 	}else{
-		// themenu=document.layers.slidemenubar
-		// rightboundary=260
-		// leftboundary=10
+		themenu=document.layers.slidemenubar
+		rightboundary=400
+		leftboundary=10
 	}
 
 	function pull(){
