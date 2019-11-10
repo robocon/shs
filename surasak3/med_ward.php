@@ -134,14 +134,14 @@ if ( $action === 'save' ) {
     if( $uploadOk === 1 ){
 
         // ส่งข้อมูลไปเซิฟ.31 ที่เป็น linebot
-        // $buildUrl = http_build_query($ids);
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, "http://localhost/surasakbot/push_med.php");
-        // curl_setopt($ch, CURLOPT_POST, 1);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $buildUrl);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $output = curl_exec($ch);
-        // curl_close($ch);
+        $buildUrl = http_build_query($ids);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.31/surasakbot/push_med.php");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $buildUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
 
         redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
