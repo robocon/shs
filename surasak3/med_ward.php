@@ -65,7 +65,7 @@ function set_log($error){
 
 
 
-$action = input_post('action');
+$action = input('action');
 if ( $action === 'save' ) {
     
     $files = set_files($_FILES['file']);
@@ -79,6 +79,8 @@ if ( $action === 'save' ) {
     $path_file = 'med_scan/';
 
     $uploadOk = 0;
+
+    $ids = array();
 
     foreach ($files as $key => $file) {
 
@@ -111,12 +113,14 @@ if ( $action === 'save' ) {
 
             $test_upload = move_uploaded_file($tmp_name, $full_path);
 
-            $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`) 
+            $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
             VALUES 
-            (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW());";
+            (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW(), 'y');";
             $q = mysql_query($sqlInsert);
             if( $q === false ){
                 $err = set_log(mysql_error());
+            }else{
+                $ids[] = mysql_insert_id();
             }
 
             $uploadOk = 1;
@@ -128,12 +132,35 @@ if ( $action === 'save' ) {
     }
 
     if( $uploadOk === 1 ){
+
+        // ส่งข้อมูลไปเซิฟ.31 ที่เป็น linebot
+        // $buildUrl = http_build_query($ids);
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, "http://localhost/surasakbot/push_med.php");
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $buildUrl);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $output = curl_exec($ch);
+        // curl_close($ch);
+
         redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
         redirect('med_ward.php','ไฟล์อัพโหลดมีปัญหา '.$err['id'].' ' .$err['msg']);
     }
 
     exit;
+}elseif ($action === 'delete') {
+    
+    $id = input_get('id');
+    $sql = "UPDATE `med_scan` SET `status` = 'n' WHERE `id` = '$id' ";
+    $q = mysql_query($sql);
+    $msg = 'ดำเนินการเรียบร้อย';
+    $err = '';
+    if($q === false){
+        $err = set_log(mysql_error());
+        $msg = 'ไม่สามารถดำเนินการได้';
+    }
+    redirect('med_ward.php',$msg.$err['msg']);
 }
 
 ?>
@@ -280,6 +307,7 @@ if ( $page === 'search_an' ) {
     FROM `med_scan` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
     WHERE a.`an` = '$an' 
+    AND a.`status` = 'y' 
     ORDER BY a.`id` DESC";
     $q = mysql_query($sql);
     if ( mysql_num_rows($q) > 0 ) {
@@ -290,11 +318,12 @@ if ( $page === 'search_an' ) {
                 <th>วันที่บันทึกข้อมูล</th>
                 <th>ข้อมูลเบื้องต้น</th>
                 <th>ไฟล์</th>
+                <th>จัดการ</th>
             </tr>
         
         <?php
         while ($item = mysql_fetch_assoc($q)) {
-
+            $id = $item['id'];
             $fullWardName = getFullWardName(trim($item['bedcode']));
             ?>
             <tr>
@@ -310,11 +339,23 @@ if ( $page === 'search_an' ) {
                 <td>
                     <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>
                 </td>
+                <td>
+                    <a href="med_ward.php?action=delete&id=<?=$id;?>" onclick="return confirmDelete();">ลบ</a>
+                </td>
             </tr>
             <?php
         }
         ?>
         </table>
+        <script>
+            function confirmDelete(){
+                var c=confirm('ยืนยันที่จะลบข้อมูล');
+                if( c === true ){
+                    return true;
+                }
+                return false;
+            }
+        </script>
         <?php
     }else{
         echo "ไม่พบข้อมูล $an";

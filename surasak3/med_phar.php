@@ -50,7 +50,7 @@ if ($action === 'active') {
     exit;
 }elseif ( $action === 'print' ) {
     
-    $sql = "SELECT * FROM `med_scan` WHERE `id` = '$id' ";
+    $sql = "SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ";
     $q = mysql_query($sql);
 
     $item = mysql_fetch_assoc($q);
@@ -191,7 +191,8 @@ $sql = "SELECT a.*,b.`bedcode`
 FROM `med_scan` AS a 
 LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
 WHERE a.`confirm` IS NULL 
-$where
+$where 
+AND a.`status` = 'y' 
 ORDER BY a.`id` DESC";
 $q = mysql_query($sql);
 if ( mysql_num_rows($q) > 0 ) {
@@ -295,7 +296,8 @@ if ( $page === 'searchFile' ) {
     FROM `med_scan` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
     WHERE a.`confirm` = 'y' 
-    $where
+    $where 
+    AND a.`status` = 'y' 
     ORDER BY a.`id` DESC";
     
     $q = mysql_query($sql);
