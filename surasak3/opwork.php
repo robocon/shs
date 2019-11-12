@@ -80,7 +80,7 @@ if($_POST['lockptright5']=="lock"){
 	$ptrcode=$_POST['rdo1'];
 	$typearea = $_POST['typearea'];
 
-	$vstatus = $_POST['vstatus'];
+	$vstatus = (int)$_POST['vstatus'];
 	$father_id = $_POST['father_id'];
 	$mother_id = $_POST['mother_id'];
 	$couple_id = $_POST['couple_id'];
