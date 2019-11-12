@@ -674,6 +674,53 @@ C&deg; </td>
 </TR>
 </TABLE>
 <BR>
+<?php 
+
+$testDate = date('Y-m-d');
+$currHn = $arr_view["hn"];
+$sql = "SELECT a.`orderdate`,b.`labcode` 
+FROM `orderhead` AS a 
+LEFT JOIN `orderdetail` AS b ON b.`labnumber` = a.`labnumber` 
+WHERE a.`hn` = '$currHn' 
+AND a.`orderdate` LIKE '$testDate%' 
+AND a.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
+AND ( b.`labcode` = 'CBC' OR b.`labcode` = 'UA' ) ";
+$qLab = mysql_query($sql);
+$orderHeadTxt = '-';
+if( mysql_num_rows($qLab) > 0 ){
+	$headItem = mysql_fetch_assoc($qLab);
+	$orderHeadTxt = 'สั่งแล้วเมื่อ '.$headItem['orderdate'];
+}
+
+/**
+ * ปัญหา max id
+ */
+$resultTxt = '-';
+$sql = "SELECT a.`orderdate`,a.`hn`,a.`patientname`,a.`checkindate` 
+FROM `resulthead` AS a 
+WHERE a.`hn` = '$currHn' 
+AND a.`orderdate` LIKE '$testDate%' 
+AND a.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' ";
+$qRes = mysql_query($sql);
+if( mysql_num_rows($qRes) > 0 ){
+	$resItem = mysql_fetch_assoc($qRes);
+	$resultTxt = 'ผลแลปออกแล้วเมื่อ '.$resItem['checkindate'];
+}
+
+?>
+
+<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394">
+	<tr>
+		<td style="background-color: #0000CC; color: white;">สถานะการสั่งแลป</td>
+		<td><?=$orderHeadTxt;?></td>
+	</tr>
+	<tr>
+		<td style="background-color: #0000CC; color: white;">สถานะการ Authorise</td>
+		<td><?=$resultTxt;?></td>
+	</tr>
+</table>
+<br>
+
 
 <!-- ผลการตรวจทางพยาธิ -->
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
@@ -681,7 +728,7 @@ C&deg; </td>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0">
 	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?php echo $lab_date;?></TD>
+		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ <span style="font-weight: bold; color: red;">เมื่อวันที่ <u><?php echo $lab_date;?></u></span></TD>
 	</TR>
 	<TR class="tb_font">
 		<TD>
