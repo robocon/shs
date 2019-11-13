@@ -222,7 +222,12 @@ if ( mysql_num_rows($q) > 0 ) {
                 <p><?=$fullWardName;?></p>
             </td>
             <td>
-                <a href="javascript:void(0)"><img src="<?=$item['path'];?>" class="showImg" alt="" width="200px;"></a>
+                <!--[if lte IE 8]>
+                    <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
+                <![endif]-->
+                <!--[if gte IE 9]>
+                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
+                <![endif]-->
             </td>
             <td style="vertical-align: middle;">
                 <a href="med_phar.php?action=active&id=<?=$item['id'];?>&an=<?=$item['an'];?>" class="btnActive">Active & Print</a>
@@ -329,7 +334,12 @@ if ( $page === 'searchFile' ) {
                     <p><?=$fullWardName;?></p>
                 </td>
                 <td>
-                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" alt="" width="200px;"></a>
+                <!--[if lte IE 8]>
+                    <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
+                <![endif]-->
+                <!--[if gte IE 9]>
+                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
+                <![endif]-->
                 </td>
                 <td style="vertical-align: middle;">
                     <a href="med_phar.php?action=print&&id=<?=$item['id'];?>" class="btnActive" target="_blank">╬та╬Л</a>
