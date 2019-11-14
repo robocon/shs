@@ -39,7 +39,9 @@ session_start();
     return $str;
 }
 
-$addfood=jschars($_POST['addfood']);
+// $addfood=jschars($_POST['addfood']);
+$addfood = htmlspecialchars($_POST['addfood'], ENT_QUOTES);
+$food = $_POST['food'];
  
   $regisdate=(date("Y")+543).date("-m-d H:i:s");
   $sOfficer=$_SESSION["sOfficer"];

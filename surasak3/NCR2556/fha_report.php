@@ -1,5 +1,5 @@
 <body onLoad="window.print();">
-<style type="text/css">
+<style>
 .font1{
 	font-family:"TH SarabunPSK";
 	font-size:16pt;
@@ -9,15 +9,22 @@
 	font-family:"TH SarabunPSK";
 	font-size:14pt;
 }
+
 @media print{
-  #no_print{display:none;}
+#no_print{display:none;}
 }
-.theBlocktoPrint { 
-  background-color: #000; 
-  color: #FFF; 
+
+.theBlocktoPrint 
+{ 
+background-color: #000; 
+color: #FFF; 
 } 
 </style>
-<?php
+
+
+
+
+<?
 include("connect.inc");
 
   // สร้าง departments key
@@ -406,9 +413,14 @@ include("connect.inc");
   <tr>
     <td colspan="3"><?=$arr_edit['action_detail'] ?></td>
   </tr>
-  <tr id="no_print">
-    <td><a href="fha_from.php">กลับไปหน้าแบบฟอร์ม</a></td>
+  <tr>
+    <td colspan="3" align="center">
+   <!-- <div id=no_print><hr />
+    <input type="submit" name="button" id="button" value="บันทึกข้อมูล" class="font2"/>
+    </div>--></td>
   </tr>
 </table>
+
+
 </form>
 </body>

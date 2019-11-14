@@ -268,7 +268,24 @@ $arr_show=mysql_fetch_array($query);
 <input type="checkbox" name="topic8_9" value="1" <?php if($arr_show["topic8_9"] == "1") echo " Checked ";?>disabled />
 9. จนท. บาดเจ็บจากการทำงาน <br />
 <input type="checkbox" name="topic8_10" value="1" <?php if($arr_show["topic8_10"] == "1") echo " Checked ";?>disabled />
-10. ไม่ได้เรียกเก็บค่าใช้จ่าย<br /><?=$arr_show["topic8_11"];?></td>
+10. ไม่ได้เรียกเก็บค่าใช้จ่าย<br /><?=$arr_show["topic8_11"];?>
+
+<br> 
+
+<b>9. Miss-identification</b></br>
+<input type="checkbox" name="topic9_1" value="1" id="topic9_1" <?=($arr_show['topic9_1'] == '1' ? 'checked' : '' );?> disabled> <label for="topic9_1">1. ทำหัตถการผิดคน</label><br>
+<input type="checkbox" name="topic9_2" value="1" id="topic9_2" <?=($arr_show['topic9_2'] == '1' ? 'checked' : '' );?> disabled> <label for="topic9_2">2. ทำหัตถการผิดข้าง/ผิดอวัยวะ/ผิดตำแหน่ง</label><br>
+<input type="checkbox" name="topic9_3" value="1" id="topic9_3" <?=($arr_show['topic9_3'] == '1' ? 'checked' : '' );?> disabled> <label for="topic9_3">3. เจาะเลือดผิดคน</label><br>
+<input type="checkbox" name="topic9_4" value="1" id="topic9_4" <?=($arr_show['topic9_4'] == '1' ? 'checked' : '' );?> disabled> <label for="topic9_4">4. เอกสารผิดคน</label><br>
+<input type="checkbox" name="topic9_5" value="1" id="topic9_5" <?=($arr_show['topic9_5'] == '1' ? 'checked' : '' );?> disabled> <label for="topic9_5">5. ติดสติกเกอร์ผิดคน/ประเภท</label><br>
+
+<?php 
+if( !empty($arr_show["topic9_6"]) ){
+	echo $arr_show["topic9_6"];
+}
+?>
+
+</td>
   </tr>
 </table>
 

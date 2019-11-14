@@ -135,6 +135,31 @@ body,td,th {
 		}else{
 			$topic8="";
 		}
+
+		if($arr['topic9_1'] || $arr['topic9_2']|| $arr['topic9_3'] ||$arr['topic9_4'] ||$arr['topic9_5'] || $arr['topic9_6']!=''){
+			$topic9="9.Miss-identification ,";
+		}
+		
+		$topic9_list = array();
+		if ( $arr['topic9_1'] == 1 ) {
+			$topic9_list[] = 'ทำหัตถการผิดคน';
+		}
+		if ( $arr['topic9_2'] == 1 ) {
+			$topic9_list[] = 'ทำหัตถการผิดข้าง/ผิดอวัยวะ/ผิดตำแหน่ง';
+		}
+		if ( $arr['topic9_3'] == 1 ) {
+			$topic9_list[] = 'เจาะเลือดผิดคน';
+		}
+		if ( $arr['topic9_4'] == 1 ) {
+			$topic9_list[] = 'เอกสารผิดคน';
+		}
+		if ( $arr['topic9_5'] == 1 ) {
+			$topic9_list[] = 'ติดสติกเกอร์ผิดคน/ประเภท';
+		}
+		if ( !empty($arr['topic9_6']) ) {
+			$topic9_list[] = $arr['topic9_6'];
+		}
+		$topic9_detail = implode(',', $topic9_list);
 		
 		//1.
 		if($arr['topic1_1']==1){
@@ -522,7 +547,7 @@ body,td,th {
 		<b>$topic6</b>".$topic6_1.$topic6_2.$topic6_3.$topic6_4.$topic6_5."
 		<b>$topic7</b>".$topic7_1.$topic7_2.$topic7_3.$topic7_4.$topic7_5.$topic7_6.$topic7_7."
 		<b>$topic8</b>".$topic8_1.$topic8_2.$topic8_3.$topic8_4.$topic8_5.$topic8_6.$topic8_7.$topic8_8.$topic8_9.$topic8_10.$topic8_11."
-		
+		<b>$topic9</b>".$topic9_detail."
 		</TD>";
 		if( $_SESSION['Namencr'] === 'ชาตรี แสงประสาร' ){
 			?>

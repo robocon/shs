@@ -18,7 +18,7 @@ session_start();
 
 <div><!-- InstanceBeginEditable name="detail" -->
 <style type="text/css">
-<!--
+
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
@@ -32,7 +32,7 @@ session_start();
 background-color: #000; 
 color: #FFF; 
 } 
--->
+
 </style>
 <div id="no_print" >
 <form name="f1" action="" method="post">
@@ -106,7 +106,7 @@ $result = Mysql_Query($sqlncr) or die(mysql_error());
   <tr>
     <td rowspan="2" align="center" bgcolor="#00CCFF" class="forntsarabun"><p>เดือน</p></td>
     <td colspan="10" align="center" bgcolor="#00CCFF" class="forntsarabun">ระดับความรุนแรงทางคลินิก</td>
-    <td colspan="9" align="center" bgcolor="#00CCFF" class="forntsarabun">เหตุการณ์</td>
+    <td colspan="10" align="center" bgcolor="#00CCFF" class="forntsarabun">เหตุการณ์</td>
     <td colspan="10" align="center" bgcolor="#00CCFF" class="forntsarabun">ชนิดของความเสี่ยง</td>
     <td colspan="6" align="center" bgcolor="#00CCFF" class="forntsarabun">PSG</td>
     <!--<td rowspan="2" align="center" bgcolor="#00CCFF" class="forntsarabun"><p>รวมทั้งหมด</p></td>-->
@@ -119,9 +119,9 @@ $result = Mysql_Query($sqlncr) or die(mysql_error());
 	<td align="center" bgcolor="#FF9966" class="forntsarabun" width="2%">รวม</td>
 	<!--จบ หัวข้อ A - I -->
 
-	<!--หัวข้อ เหตการณ์ 1-8 -->
+	<!--หัวข้อ เหตการณ์ 1-9 -->
 	<? 
-	for($ev=1;$ev<=8;$ev++){
+	for($ev=1;$ev<=9;$ev++){
 	?>
 		<td align="center" bgcolor="#00CCFF" class="forntsarabun" width="2%"><?=$ev;?></td>
 	<? } ?>    
@@ -238,8 +238,12 @@ $selectsql_event8= "SELECT COUNT(*)as count8 FROM   ncr  WHERE  nonconf_date lik
 $result_event8= mysql_query($selectsql_event8); 
 $arrevent8  = mysql_fetch_array($result_event8);
 
-
-
+$sql_event9 = "SELECT COUNT(*) as count9 
+FROM ncr 
+WHERE nonconf_date like '$nonconf_date%' 
+and ( topic9_1 or topic9_2 or topic9_3 or topic9_4 or topic9_5 or topic9_6 !=0 or topic9_6 !='' ) ";
+$result_event9= mysql_query($sql_event9); 
+$arrevent9  = mysql_fetch_array($result_event9);
 	
 	######################## ทดสอบกรณีที่ 1 บันทึกรายงานมีมากกว่า 1 เหตุการณ์  ############################
 	
@@ -412,14 +416,6 @@ $arrevent8  = mysql_fetch_array($result_event8);
 		}
 
 	}
-	
-	
-			
-		// var_dump($item_already_exists);
-		// echo "<hr>";
-		
-		
-		
 	######################## จบการทดสอบกรณีที่ 1 บันทึกรายงานมีมากกว่า 1 เหตุการณ์  ############################
 
 
@@ -475,9 +471,27 @@ if($arrevent8['count8']!=0){
 <? }else{ ?>
 <td align="center" class="forntsarabun"><?=$arrevent8['count8'];?></td>
 <?  } ?>
-<? 
-$sumevent=$arrevent1['count1']+$arrevent2['count2']+$arrevent3['count3']+$arrevent4['count4']+$arrevent5['count5']+$arrevent6['count6']+$arrevent7['count7']+$arrevent8['count8'];
+
+
+<?php
+if($arrevent9['count9']!=0){
+	?>
+	<td align="center" class="forntsarabun">
+		<a href="detail_report_progarm_all.php?y=<?=$nonconf_date;?>&event=9" target="_blank"><?=$arrevent9['count9'];?></a>
+	</td>
+	<?php 
+}else{ 
+	?>
+	<td align="center" class="forntsarabun"><?=$arrevent9['count9'];?></td>
+	<?php 
+} 
 ?>
+
+
+<?php
+$sumevent=$arrevent1['count1']+$arrevent2['count2']+$arrevent3['count3']+$arrevent4['count4']+$arrevent5['count5']+$arrevent6['count6']+$arrevent7['count7']+$arrevent8['count8']+$arrevent9['count9'];
+?>
+<!-- sum แต่ละเดือน จาก 1-9 -->
     <td align="center" class="forntsarabun" bgcolor="#FF9966"><?=$sumevent;?></td>
     
 <!----///////////////// จบ เหตุการณ์ 1-8  ////////////////////////////////--->   
@@ -613,8 +627,15 @@ $selectsql_event8= "SELECT COUNT(*)as count8 FROM   ncr  WHERE  nonconf_date lik
 $result_event8= mysql_query($selectsql_event8); 
 $arrevent8  = mysql_fetch_array($result_event8);
 
+$sql_event9 = "SELECT COUNT(*)as count8 
+FROM   ncr  
+WHERE  nonconf_date like '$nonconf_date%' 
+and   (topic9_1 or topic9_2 or topic9_3 or topic9_4 or topic9_5 or topic9_6  !=0 or  topic9_6 !='' ) ";
+$result_event9= mysql_query($sql_event9); 
+$arrevent9  = mysql_fetch_array($result_event9);
 
-$sumevent=$arrevent1['count1']+$arrevent2['count2']+$arrevent3['count3']+$arrevent4['count4']+$arrevent5['count5']+$arrevent6['count6']+$arrevent7['count7']+$arrevent8['count8'];
+
+$sumevent=$arrevent1['count1']+$arrevent2['count2']+$arrevent3['count3']+$arrevent4['count4']+$arrevent5['count5']+$arrevent6['count6']+$arrevent7['count7']+$arrevent8['count8']+$arrevent9['count9'];
 	 ?>   
     <td align="center" class="forntsarabun"><?=$arrevent1['count1'];?></td>
     <td align="center" class="forntsarabun"><?=$arrevent2['count2'];?></td>
@@ -624,6 +645,7 @@ $sumevent=$arrevent1['count1']+$arrevent2['count2']+$arrevent3['count3']+$arreve
     <td align="center" class="forntsarabun"><?=$arrevent6['count6'];?></td>
     <td align="center" class="forntsarabun"><?=$arrevent7['count7'];?></td>
     <td align="center" class="forntsarabun"><?=$arrevent8['count8'];?></td>
+	<td align="center" class="forntsarabun"><?=$arrevent9['count9'];?></td>
     <td align="center" class="forntsarabun"  bgcolor="#FF9966"><?=$sumevent;?></td>
 <!-- //////////////////////////////////////////////////////// --->     
 <? 

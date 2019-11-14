@@ -89,6 +89,10 @@ if(isset($_GET['clinic'])){
 	if($_GET['event']==8){
 		$where="and   (topic8_1 or topic8_2 or topic8_3 or topic8_4 or topic8_5 or topic8_6 or topic8_7 or topic8_8 or topic8_9 or topic8_10  !=0 or  topic8_11 !='' )";
 	}
+
+	if($_GET['event']==9){
+		$where="AND (topic9_1 OR topic9_2 OR topic9_3 OR topic9_4 OR topic9_5 OR topic9_6 !='' )";
+	}
 	
 }else if(isset($_GET['risk'])){
 		$where="AND  ($_GET[risk] !=0 or $_GET[risk] !='')  ";
@@ -170,6 +174,37 @@ if(isset($_GET['until'])){
 			$topic8="8.อื่นๆ ,";
 		}else{
 			$topic8="";
+		}
+
+		$topic9 = '';
+		$topic9_detail = '';
+
+		if($_GET['event']==9){
+
+			if($arr['topic9_1'] || $arr['topic9_2']|| $arr['topic9_3'] ||$arr['topic9_4'] ||$arr['topic9_5'] || $arr['topic9_6']!=''){
+				$topic9="9.Miss-identification ,";
+			}
+			
+			$topic9_list = array();
+			if ( $arr['topic9_1'] == 1 ) {
+				$topic9_list[] = 'ทำหัตถการผิดคน';
+			}
+			if ( $arr['topic9_2'] == 1 ) {
+				$topic9_list[] = 'ทำหัตถการผิดข้าง/ผิดอวัยวะ/ผิดตำแหน่ง';
+			}
+			if ( $arr['topic9_3'] == 1 ) {
+				$topic9_list[] = 'เจาะเลือดผิดคน';
+			}
+			if ( $arr['topic9_4'] == 1 ) {
+				$topic9_list[] = 'เอกสารผิดคน';
+			}
+			if ( $arr['topic9_5'] == 1 ) {
+				$topic9_list[] = 'ติดสติกเกอร์ผิดคน/ประเภท';
+			}
+			if ( !empty($arr['topic9_6']) ) {
+				$topic9_list[] = $arr['topic9_6'];
+			}
+			$topic9_detail = implode(',', $topic9_list);
 		}
 		
 		//1.
@@ -558,7 +593,7 @@ if(isset($_GET['until'])){
 		<b>$topic6</b>".$topic6_1.$topic6_2.$topic6_3.$topic6_4.$topic6_5."
 		<b>$topic7</b>".$topic7_1.$topic7_2.$topic7_3.$topic7_4.$topic7_5.$topic7_6.$topic7_7."
 		<b>$topic8</b>".$topic8_1.$topic8_2.$topic8_3.$topic8_4.$topic8_5.$topic8_6.$topic8_7.$topic8_8.$topic8_9.$topic8_10.$topic8_11."
-		
+		<b>$topic9</b>".$topic9_detail."
 		</TD>";
 		echo "<TD>".$clinic."</TD>";
 		echo "<TD>".$showrisk1.$showrisk2.$showrisk3.$showrisk4.$showrisk5.$showrisk6.$showrisk7.$showrisk8.$showrisk9."</TD>";

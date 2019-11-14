@@ -44,6 +44,9 @@ body,td,th {
 	font-family:"TH SarabunPSK";
 	font-size: 18 px;
 }
+label:hover{
+	cursor: pointer;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="epoch_styles.css" />
 
@@ -201,6 +204,13 @@ body,td,th {
 		}else{
 			ff.topic8_11.disabled=false;
 		}	
+
+		if(ff.topic9_1.checked === true || ff.topic9_2.checked === true || ff.topic9_3.checked === true || ff.topic9_4.checked === true || ff.topic9_5.checked === true){
+			ff.topic9_6.disabled=true;
+			ff.topic9_6.value="";
+		}else{
+			ff.topic9_6.disabled=false;
+		}
 	}
 </script>
 
@@ -319,36 +329,36 @@ $arr_edit2["send_by"] = $_SESSION["firstname_now"];
   <TD colspan="3" bgcolor="#CCCCCC" ><strong style="font-weight:bold;">Sentinel Event ที่ต้องรายงานด่วนภายใน 6 ชั่วโมง ต่อ ผอ.รพ.ค่ายฯ หรือ ทีมจัดการความเสี่ยง</strong></TD>
   </TR>
 <TR valign="top">
-  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="1">
+  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event1" value="1">
     1.ผู้ป่วยเสียชีวิตจากการฆ่าตัวตาย</TD>
-  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="6"> 
+  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event6" value="6"> 
     6.ผู้ป่วยได้รับผลกระทบหรือความเสียหายอาจถึงพิการหรือเสียชีวิต อันเป็นเหตุความบกพร่องของอุปกรณ์/เครื่องมือทางการแพทย์ รวมถึงจากบุคลากรทางการแพทย์/กระบวนการรักษาในโรงพยาบาล
 </TD>
 </TR>
 <TR valign="top">
-  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="2">
+  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event2" value="2">
   2.การเสียชีวิตจากการให้เลือดผิดหมู่ ผิดคน</TD>
-  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="7"> 
+  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event7" value="7"> 
   7.การมีสิ่งของ/อุปกรณ์ตกค้างอยู่ในร่างกายผู้ป่วย
 </TD>
 </TR>
 <TR valign="top">
-  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="3"> 
+  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event3" value="3"> 
     3.ผู้ป่วยเสียชีวิตซึ่งไม่เกี่ยวกับการดำเนินของโรคหรือการเจ็บป่วยในขณะนั้น
 </TD>
-  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="8"> 
+  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event8" value="8"> 
     8.การทำร้ายร่างกาย/ข่มขืนหรือล่วงเกินทางเพศ/ฆาตกรรมในโรงพยาบาล
 </TD>
 </TR>
 <TR valign="top">
-  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="4"> 
+  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event4" value="4"> 
     4.การผ่าตัดผิดตำแหน่ง / ผิดประเภท / ผ่าตัดผิดคน
 </TD>
-  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="9"> 
+  <TD colspan="2" bgcolor="#CCCCCC" ><input name="event" type="radio" id="event9" value="9"> 
     9.การลักพาตัวทารก/การส่งมอบทารกผิดครอบครัว</TD>
 </TR>
 <TR valign="top">
-  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event" value="5"> 
+  <TD bgcolor="#CCCCCC" ><input name="event" type="radio" id="event5" value="5"> 
     5.ผู้ป่วยสูญเสียหน้าที่การทำงานของร่างกายหรือมีทุพลภาพอย่างถาวรโดยไม่เกี่ยวข้องกับการดำเนินของโรคหรือการเจ็บป่วยในขณะนั้น
 </TD>
   <TD colspan="2" bgcolor="#CCCCCC" ><!--<input type="button" onClick="clearRdo()" value='clear'>--><a href="javascript:clearChecks('event')">clear</a>
@@ -453,7 +463,7 @@ $arr_edit2["send_by"] = $_SESSION["firstname_now"];
       <INPUT TYPE="checkbox" NAME="topic5_7" value="1" <?php if($arr_edit["topic5_7"] == "1") echo " Checked ";?> onClick="textdisabled()"> 7. การเฝ้าระวังไม่เพียงพอ<BR>
       <INPUT TYPE="checkbox" NAME="topic5_8" value="1" <?php if($arr_edit["topic5_8"] == "1") echo " Checked ";?> onClick="textdisabled()"> 8. ใส่ Cath / Tube / Drain ไม่ถูก<BR>
       <INPUT TYPE="checkbox" NAME="topic5_9" value="1" <?php if($arr_edit["topic5_9"] == "1") echo " Checked ";?> onClick="textdisabled()"> 9. ดูแล Cath / Tube / Drain <BR>
-      <INPUT TYPE="checkbox" NAME="topic5_10" value="1" <?php if($arr_edit["topic5_10"] == "1") echo " Checked ";?>> 10. ย้ายผู้ป่วยเข้า ICU โดยไม่มีแผน<BR>
+      <INPUT TYPE="checkbox" NAME="topic5_10" value="1" <?php if($arr_edit["topic5_10"] == "1") echo " Checked ";?> onClick="textdisabled()"> 10. ย้ายผู้ป่วยเข้า ICU โดยไม่มีแผน<BR>
       <TABLE cellpadding="0" cellspacing="0">
         <TR valign="top">
           <TD>&nbsp;&nbsp;</TD>
@@ -531,6 +541,24 @@ $arr_edit2["send_by"] = $_SESSION["firstname_now"];
       </TABLE>
     
     <BR>
+
+	<table width="100%">
+		<tr>
+			<td>
+				<b>9. Miss-identification</b></br>
+				<input type="checkbox" name="topic9_1" value="1" id="topic9_1" onclick="textdisabled()" > <label for="topic9_1">1. ทำหัตถการผิดคน</label><br>
+				<input type="checkbox" name="topic9_2" value="1" id="topic9_2" onclick="textdisabled()" > <label for="topic9_2">2. ทำหัตถการผิดข้าง/ผิดอวัยวะ/ผิดตำแหน่ง</label><br>
+				<input type="checkbox" name="topic9_3" value="1" id="topic9_3" onclick="textdisabled()" > <label for="topic9_3">3. เจาะเลือดผิดคน</label><br>
+				<input type="checkbox" name="topic9_4" value="1" id="topic9_4" onclick="textdisabled()" > <label for="topic9_4">4. เอกสารผิดคน</label><br>
+				<input type="checkbox" name="topic9_5" value="1" id="topic9_5" onclick="textdisabled()" > <label for="topic9_5">5. ติดสติกเกอร์ผิดคน/ประเภท</label><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<textarea name="topic9_6" id="topic9_6" cols="30" rows="4"></textarea>
+			</td>
+		</tr>
+	</table>
     
     <!-- <TABLE  width='100%'>
 	<TR>

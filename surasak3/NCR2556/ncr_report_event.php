@@ -139,7 +139,16 @@ $sqlncr= "CREATE TEMPORARY TABLE ncrnew SELECT * FROM ncr2556  WHERE nonconf_dat
 $resultncr= Mysql_Query($sqlncr) or die(mysql_error());
 
 ///// หาผลรวมของแต่ละหัวข้อ  
-$sql="SELECT sum(topic1_1)as topic1_1 ,sum(topic1_2)as topic1_2,sum(topic1_3)as topic1_3,sum(topic1_4)as topic1_4 ,sum(topic1_5)as topic1_5  ,sum(topic1_6)as topic1_6 , sum(topic2_1)as topic2_1 ,sum(topic2_2)as topic2_2,sum(topic2_3)as topic2_3,sum(topic2_4)as topic2_4 ,sum(topic2_5)as topic2_5  ,sum(topic2_6)as topic2_6 ,sum(topic3_1)as topic3_1 ,sum(topic3_2)as topic3_2,sum(topic3_3)as topic3_3 ,sum(topic4_1)as topic4_1 ,sum(topic4_2)as topic4_2,sum(topic4_3)as topic4_3,sum(topic4_4)as topic4_4 ,sum(topic4_5)as topic4_5 ,sum(topic5_1)as topic5_1 ,sum(topic5_2)as topic5_2,sum(topic5_3)as topic5_3,sum(topic5_4)as topic5_4 ,sum(topic5_5)as topic5_5  ,sum(topic5_6)as topic5_6 ,sum(topic5_7)as topic5_7 ,sum(topic5_8)as topic5_8 ,sum(topic5_9)as topic5_9 ,sum(topic5_10)as topic5_10 ,sum(topic6_1)as topic6_1 ,sum(topic6_2)as topic6_2,sum(topic6_3)as topic6_3 ,sum(topic6_4)as topic6_4 ,sum(topic7_1)as topic7_1 ,sum(topic7_2)as topic7_2,sum(topic7_3)as topic7_3,sum(topic7_4)as topic7_4 ,sum(topic7_5)as topic7_5  ,sum(topic7_6)as topic7_6 ,sum(topic8_1)as topic8_1 ,sum(topic8_2)as topic8_2,sum(topic8_3)as topic8_3,sum(topic8_4)as topic8_4 ,sum(topic8_5)as topic8_5  ,sum(topic8_6)as topic8_6 ,sum(topic8_7)as topic8_7 ,sum(topic8_8)as topic8_8 ,sum(topic8_9)as topic8_9 ,sum(topic8_10)as topic8_10   FROM ncrnew WHERE 1";
+$sql="SELECT sum(topic1_1)as topic1_1 ,sum(topic1_2)as topic1_2,sum(topic1_3)as topic1_3,sum(topic1_4)as topic1_4 ,sum(topic1_5)as topic1_5  ,sum(topic1_6)as topic1_6 , 
+sum(topic2_1)as topic2_1 ,sum(topic2_2)as topic2_2,sum(topic2_3)as topic2_3,sum(topic2_4)as topic2_4 ,sum(topic2_5)as topic2_5  ,sum(topic2_6)as topic2_6 ,
+sum(topic3_1)as topic3_1 ,sum(topic3_2)as topic3_2,sum(topic3_3)as topic3_3 ,
+sum(topic4_1)as topic4_1 ,sum(topic4_2)as topic4_2,sum(topic4_3)as topic4_3,sum(topic4_4)as topic4_4 ,sum(topic4_5)as topic4_5 ,
+sum(topic5_1)as topic5_1 ,sum(topic5_2)as topic5_2,sum(topic5_3)as topic5_3,sum(topic5_4)as topic5_4 ,sum(topic5_5)as topic5_5  ,sum(topic5_6)as topic5_6 ,sum(topic5_7)as topic5_7 ,sum(topic5_8)as topic5_8 ,sum(topic5_9)as topic5_9 ,sum(topic5_10)as topic5_10 ,
+sum(topic6_1)as topic6_1 ,sum(topic6_2)as topic6_2,sum(topic6_3)as topic6_3 ,sum(topic6_4)as topic6_4 ,
+sum(topic7_1)as topic7_1 ,sum(topic7_2)as topic7_2,sum(topic7_3)as topic7_3,sum(topic7_4)as topic7_4 ,sum(topic7_5)as topic7_5  ,sum(topic7_6)as topic7_6 ,
+sum(topic8_1)as topic8_1 ,sum(topic8_2)as topic8_2,sum(topic8_3)as topic8_3,sum(topic8_4)as topic8_4 ,sum(topic8_5)as topic8_5  ,sum(topic8_6)as topic8_6 ,sum(topic8_7)as topic8_7 ,sum(topic8_8)as topic8_8 ,sum(topic8_9)as topic8_9 ,sum(topic8_10)as topic8_10,  
+SUM(`topic9_1`) AS `topic9_1`, SUM(`topic9_2`) AS `topic9_2`, SUM(`topic9_3`) AS `topic9_3`, SUM(`topic9_4`) AS `topic9_4`, SUM(`topic9_5`) AS `topic9_5` 
+FROM ncrnew WHERE 1";
 $result = mysql_query($sql) or die(mysql_error());
 $arr = mysql_fetch_array($result);
 
@@ -508,8 +517,9 @@ for($n=0;$n<=5;$n++)
         <td class="fontsara16b"><strong>8.อื่นๆ</strong></td>
 		<td align="center">&nbsp;</td>
       </tr>
- <? $arrtopic8=array("topic8_1","topic8_2","topic8_3","topic8_4","topic8_5","topic8_6","topic8_7","topic8_8","topic8_9","topic8_10");  ////หัวข้อที่ 8
-  	for($n=0;$n<=9;$n++){
+<?php 
+$arrtopic8 = array("topic8_1","topic8_2","topic8_3","topic8_4","topic8_5","topic8_6","topic8_7","topic8_8","topic8_9","topic8_10");  ////หัวข้อที่ 8
+for($n=0;$n<=9;$n++){
 	if($arrtopic8[$n]=="topic8_1"){
 		$topic8="8.1 ผู้ป่วย/ญาติ ไม่พึงพอใจ";		
 	}elseif($arrtopic8[$n]=="topic8_2"){
@@ -532,29 +542,80 @@ for($n=0;$n<=5;$n++)
 		$topic8="8.10 ไม่ได้เรียกเก็บค่าใช้จ่าย";
 	}
 	?>      
-       <tr class="fontsara14">
-         <td class="textline fontsara14"><?=$topic8;?></td>
-         <td align="center"><? if($arr[$arrtopic8[$n]]!=0){?>
-<a href="detail_report_event.php?y=<?=$date1;?><?=$getuntil;?>&topic=<?=$arrtopic8[$n];?>" target="_blank"><?=$arr[$arrtopic8[$n]];?><? }else{ echo $arr[$arrtopic8[$n]]; } ?></td>
-      </tr>
-      <? } ?>
-       <tr class="fontsara14">
-         <td class="textline fontsara14">8.11 อื่นๆ</td>
-        <td align="center"><? if($textresult[7]!=0){?><a href="detail_report_event.php?y=<?=$date1;?><?=$getuntil;?>&topicdetail=topic8_11" target="_blank"><?=$textresult[7];?></a><? }else{ echo $textresult[7]; } ?></td>
-      </tr>
-       <tr class="fontsara14">
-        <td align="center">รวม</td>
-        <td align="center"><strong>
-          <?=$sum8;?>
-        </strong></td>
-      </tr>
-       <tr class="fontsara14">
-         <td align="center"><strong>รวมยอด</strong></td>
-         <td align="center"><strong>
-           <?=$sum1+$sum2+$sum3+$sum4+$sum5+$sum6+$sum7+$sum8;?>
-         </strong></td>
-       </tr>
-    </table>
+	<tr class="fontsara14">
+		<td class="textline fontsara14"><?=$topic8;?></td>
+		<td align="center">
+			<?php
+			if($arr[$arrtopic8[$n]]!=0){ 
+				?>
+				<a href="detail_report_event.php?y=<?=$date1;?><?=$getuntil;?>&topic=<?=$arrtopic8[$n];?>" target="_blank"><?=$arr[$arrtopic8[$n]];?></a>
+				<?php 
+			}else{ 
+				echo $arr[$arrtopic8[$n]]; 
+			}
+			?>
+		</td>
+	</tr>
+<?php 
+} // end topic 8 
+?>
+	<tr class="fontsara14">
+		<td class="textline fontsara14">8.11 อื่นๆ</td>
+		<td align="center"><? if($textresult[7]!=0){?><a href="detail_report_event.php?y=<?=$date1;?><?=$getuntil;?>&topicdetail=topic8_11" target="_blank"><?=$textresult[7];?></a><? }else{ echo $textresult[7]; } ?></td>
+	</tr>
+	<tr class="fontsara14">
+		<td align="center">รวม</td>
+		<td align="center"><strong><?=$sum8;?></strong></td>
+	</tr>
+
+
+	<tr class="fontsara14">
+		<td><b>9. Miss-identification</b></td>
+		<td></td>
+	</tr>
+	<?php 
+	$topic9_list['topic9_1'] = 'ทำหัตถการผิดคน';
+	$topic9_list['topic9_2'] = 'ทำหัตถการผิดข้าง/ผิดอวัยวะ/ผิดตำแหน่ง';
+	$topic9_list['topic9_3'] = 'เจาะเลือดผิดคน';
+	$topic9_list['topic9_4'] = 'เอกสารผิดคน';
+	$topic9_list['topic9_5'] = 'ติดสติกเกอร์ผิดคน/ประเภท';
+	
+	$i = 1;
+	$sumTopic9 = 0;
+	foreach ($topic9_list as $key => $item) {
+		?>
+		<tr class="fontsara14">
+			<td class="textline fontsara14"><?='9.'.$i.' '.$item;?></td>
+			<td align="center">
+				<?php 
+				if ( $arr[$key] > 0 ) {
+					?>
+					<a href="detail_report_event.php?y=<?=$date1;?><?=$getuntil;?>&topic=<?=$key;?>" target="_blank"><?=$arr[$key];?></a>
+					<?php
+				}else{
+					echo "0";
+				}
+				$sumTopic9 += $arr[$key];
+				?>
+			</td>
+		</tr>
+		<?php
+		$i++;
+	}
+	?>
+	<tr class="fontsara14">
+		<td align="center">รวม</td>
+		<td align="center"><b><?=$sumTopic9;?></b></td>
+	</tr>
+	
+
+	<tr class="fontsara14">
+		<td align="center"><strong>รวมยอด</strong></td>
+		<td align="center"><strong>
+		<?=$sum1+$sum2+$sum3+$sum4+$sum5+$sum6+$sum7+$sum8;?>
+		</strong></td>
+	</tr>
+</table>
 
 <? } ?>
 <!-- InstanceEndEditable -->
