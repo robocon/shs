@@ -1,5 +1,10 @@
 <?php 
 include '../bootstrap.php';
+include 'connect2.php';
+
+$Conn = mysql_connect($SVNAME,$USER,$PASS);
+mysql_select_db($DBNAME,$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+    
 ?>
 <html>
 <head>

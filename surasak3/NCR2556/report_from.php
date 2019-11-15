@@ -1,5 +1,7 @@
 <?php 
 include '../bootstrap.php';
+include 'connect2.php';
+
 ?>
 <html>
 <head>
@@ -66,11 +68,11 @@ include '../bootstrap.php';
 			$date = input_post('date_format');
 			
 			$conf = array(
-				'host' => 'localhost',
+				'host' => $SVNAME,
 				'port' => 3306,
-				'dbname' => 'dbconform',
-				'user' => 'root',
-				'pass' => '1234',
+				'dbname' => $DBNAME,
+				'user' => $USER,
+				'pass' => $PASS,
 			);
 			$db = Mysql::load($conf);
 			
@@ -90,7 +92,6 @@ COUNT(`nonconf_id`) AS `rows`,
 			$db->select($sql, $data);
 			$items = $db->get_items();
 
-			
 			$ykey = bc_to_ad($date);
 			$new_item = array();
 			foreach ($items as $key => $item) {

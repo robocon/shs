@@ -10,17 +10,13 @@
 *.log
 *.db
 
-connect.inc
-connect.php
-surasak3/connect.inc
-surasak3/connect.inc.php
-surasak3/connect.php
-surasak3/connectlogin.inc
+connect*
+surasak3/med_scan/*
+surasak3/connect*
 surasak3/Connections/config.inc.php
 surasak3/Connections/connect.inc.php
 surasak3/Connections/dbconfig.php
-surasak3/NCR2556/connect.inc
-surasak3/NCR2556/connect2.inc
+surasak3/NCR2556/connect*
 surasak3/datacscd/cscd/*.txt
 surasak3/datacscd/*.txt
 surasak3/datacscd/backup*

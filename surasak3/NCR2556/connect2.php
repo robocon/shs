@@ -5,6 +5,11 @@ $DatabaseName = "smdb";
 $User = "root"; 
 $Password = "1234";
 
+$SVNAME = "localhost";
+$DBNAME = "dbconform";
+$USER = "root"; 
+$PASS = "1234";
+
 //ติดต่อกับฐานข้อมูลผ่านฟังก์ชัน MySQL
 $Conn = mysql_connect($ServerName,$User,$Password) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
 
