@@ -1,7 +1,26 @@
 <?php 
 session_start();
-require "../connect.php";
-require "../includes/functions.php";
+// require "../connect.php";
+// require "../includes/functions.php";
+
+include '../bootstrap.php';
+$db = Mysql::load();
+
+$configs = array(
+    'host' => '192.168.1.13',
+    'port' => '3306',
+    'dbname' => 'smdb',
+    'user' => 'remoteuser',
+    'pass' => ''
+);
+$Conn = mysql_connect($configs['host'],$configs['user'],$configs['pass']) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
+
+mysql_select_db($configs['dbname'],$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+// $db = Mysql::load($shs_configs);
+
+
+
+
 
 // Verify user before load content
 if( authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
@@ -19,7 +38,7 @@ require "header.php";
 						<select name="y_start" class="forntsarabun">
 						<?php 
 							$Y = date("Y")+543;
-							$date = date("Y")+543+5;
+							$date = date("Y")+543+2;
 							$dates = range(2547,$date);
 
 							foreach($dates as $i){
@@ -32,7 +51,7 @@ require "header.php";
 								
 								?>
 								<option value="<?=$i?>" <?php echo $select; ?>><?=$i;?></option>
-								<?php 						
+								<?php 
 							}
 						?>
 						<select>
@@ -72,13 +91,54 @@ $budget_range = array(
 
 // สร้าง temp สำหรับแสดงผลรายปี (ภายใน 1 ปี จะนับเพียงครั้งเดียว)
 $sql_temp = "CREATE TEMPORARY TABLE IF NOT EXISTS diabetes_temp 
-( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL, retinal_date DATE NOT NULL, foot_date DATE NOT NULL, tooth_date DATE NOT NULL ) 
+#( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL, retinal_date DATE NOT NULL, foot_date DATE NOT NULL, tooth_date DATE NOT NULL ) 
 SELECT * 
 FROM diabetes_clinic 
 WHERE `dateN` >= '$year_start' 
 AND `dateN` <= '$year_end';";
+
 // dump($sql_temp);
-mysql_query($sql_temp);
+// echo "<hr>";
+
+
+// $con=mysqli_connect("localhost","root","1234","smdb");
+// Check connection
+// if (mysqli_connect_errno())
+// {
+// 	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+// }
+
+// $sql = "CALL testDiabetesPro('2018-10-01','2019-09-30');";
+
+// Execute multi query
+// if (mysqli_multi_query($con,$sql))
+// {
+// 	do
+// 	{
+// 		// Store first result set
+// 		if ($result=mysqli_store_result($con)) {
+// 			// Fetch one and one row
+// 			while ($row=mysqli_fetch_assoc($result))
+// 			{
+// 				// printf("%s\n",$row);
+// 				dump($row);
+// 			}
+// 			// Free result set
+// 			mysqli_free_result($result);
+// 		}
+// 	}
+// 	while (mysqli_next_result($con));
+// }
+
+// $db->select($sql);
+
+// $items = $db->get_items();
+// dump($items);
+
+
+// $db_temp = mysql_query($sql_temp) or die( mysql_error() );
+// dump($db_temp);
+// exit;
 
 // temp สำหรับแสดงผลรายเดือน (ภายใน 1 ปี ผู้ป่วยมาตรวจกี่ครั้งก็จะนับไปตามจำนวนนั้น)
 // $sql_temp = "CREATE TEMPORARY TABLE diabetes_history_temp 
@@ -92,7 +152,7 @@ mysql_query($sql_temp);
 // dump($sql_temp);
 
 $sql_temp = "CREATE TEMPORARY TABLE diabetes_history_temp 
-( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
+#( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
 SELECT a.* 
 FROM `diabetes_clinic_history` AS a 
 RIGHT JOIN (
@@ -104,6 +164,8 @@ RIGHT JOIN (
 ) AS b ON b.`row_id` = a.`row_id`";
 
 // dump($sql_temp);
+// echo "<hr>";
+
 mysql_query($sql_temp);
 
 // จำนวนผู้ป่วยทั้งหมดในปีนี้
@@ -751,18 +813,8 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			
 			while($item = mysql_fetch_assoc($query)){
 				$ldl_dm_items[$item['new_daten']] = $item;
-				
-				// $key = $item['new_daten'];
-				// $rows = $item['rows'];
-
-				// if ( !isset($hba1c_dm_items[$key]) ) {
-				// 	$hba1c_dm_items[$key] = $rows;
-				// } else {
-				// 	$hba1c_dm_items[$key] += $rows;
-				// }
 			}
-			// echo "<pre>";
-			// var_dump($ldl_dm_items);
+
 			foreach($budget_range AS $key => $value){
 				$item_row = 0;
 				// $find_key = "$key_year-$key";
@@ -1050,7 +1102,177 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 		</tr>
 		<?php 
 		*/
+		
 		?>
+		<tr>
+			<td class="forntsarabun">อัตราผู้ป่วย DM มีระดับ LDL อยู่ในเกณฑ์เหมาะสม LDL &lt;70 mg/dl </td>
+			<td align="center" class="forntsarabun">&gt;60%</td>
+			<?php 
+				
+			$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+			FROM `diabetes_history_temp`	
+			WHERE `l_ldl` < 70 AND `l_ldl` > 0 
+			GROUP BY MONTH( dateN )
+			ORDER BY dateN ASC";
+			$query = mysql_query($sql) or die( mysql_error($Conn) );
+			$number100_items = array();
+			while($item = mysql_fetch_assoc($query)){
+				$number100_items[$item['new_daten']] = $item;
+			}
+			
+			foreach($budget_range AS $key => $value){
+				$item_row = 0;
+				$find_key = $key;
+				
+				$pre_row = 0;
+				$pre_total = 0;
+				if(isset($number100_items[$find_key])){
+					
+					$pre_row = $number100_items[$find_key]['rows'];
+					$pre_total = $user_total_items[$find_key]['rows'];
+					
+					$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
+					
+					if($item_percent > 0){
+						// $item_row = '<a href="diabetes_more.php?type=ldl&datemonth='.$key.'" target="_blank" title="คลิกเพื่อเปิดหน้าต่างใหม่">'.$item_percent.'</a>';
+						$item_row = $item_percent;
+						$item_row .= "<br>($pre_row/$pre_total)";
+					}
+				}
+				?>
+				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
+				<?php 
+			}
+			?>
+		</tr>
+		<tr>
+			<td class="forntsarabun">
+			อัตราผู้ป่วย DM มีระดับความดันโลหิต อยู่ในเกณฑ์เหมาะสม<br>
+			- SBP &lt; 130 mmHg - DBP &lt; 80 mmHg 
+			</td>
+			<td align="center" class="forntsarabun">&gt;60%</td>
+			<?php 
+			
+			// GET y_start from post
+			$year_current = intval($_POST['y_start']).date('-m-d');
+			
+			$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+			FROM `diabetes_history_temp`
+			WHERE 
+			( `bp1` < 130 AND `bp1` > 0 )
+			AND
+			( `bp2` < 80 AND `bp2` > 0 )
+			GROUP BY MONTH( dateN )
+			ORDER BY dateN ASC";
+
+			$query = mysql_query($sql) or die( mysql_error($Conn) );
+			$number101_items = array();
+			
+			while($item = mysql_fetch_assoc($query)){
+				$number101_items[$item['new_daten']] = $item;
+			}
+
+			foreach($budget_range AS $key => $value){
+				$item_row = 0;
+
+				$find_key = $key;
+
+				$pre_row = 0;
+				$pre_total = 0;
+				if(isset($number101_items[$find_key])){
+					
+					$pre_row = $number101_items[$find_key]['rows'];
+					$pre_total = $user_total_items[$find_key]['rows'];
+
+					$item_percent = round( ( ( $pre_row / $pre_total ) * 100 ) ,1);
+					
+					if($item_percent > 0){
+						// $item_row = '<a href="diabetes_more.php?type=bp&datemonth='.$key.'" target="_blank" title="คลิกเพื่อเปิดหน้าต่างใหม่">'.$item_percent.'</a>';
+						$item_row = $item_percent;
+						$item_row .= "<br>($pre_row/$pre_total)";
+					}
+				}
+				?>
+				<td align="center" class="forntsarabun"><?php echo $item_row;?></td>
+				<?php 
+			}
+			?>
+		</tr>
+
+		<tr>
+			<td class="forntsarabun">จำนวนผู้ป่วยเบาหวานที่มีภาวะเบาหวานขึ้นตา</td>
+			<td align="center" class="forntsarabun"></td>
+			<?php 
+			
+			// 
+			$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+			FROM `diabetes_history_temp` 
+			WHERE `retinal` <> '' 
+			GROUP BY MONTH( dateN ) 
+			ORDER BY dateN ASC ";
+			
+			$query = mysql_query($sql) or die( mysql_error($Conn) );
+			$retinal_items102 = array();
+			
+			while($item = mysql_fetch_assoc($query)){
+				$retinal_items102[$item['new_daten']] = $item;
+			}
+			
+			foreach($budget_range AS $key => $value){
+				$item_row = 0;
+				$find_key = $key;
+				
+				$pre_row = 0;
+				$pre_total = 0;
+				if(isset($retinal_items102[$find_key])){
+					$pre_row = $retinal_items102[$find_key]['rows'];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span><?php echo $pre_row;?></span>
+				</td>
+				<?php 
+			}
+			?>
+		</tr>
+
+		<tr>
+			<td class="forntsarabun">จำนวนผู้ป่วยที่มี Diabetic Neuropathy ที่ตรวจเท้าแล้วผิดปกติ</td>
+			<td align="center" class="forntsarabun"></td>
+			<?php 
+			
+			// 
+			$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+			FROM `diabetes_history_temp` 
+			WHERE `retinal` <> '' 
+			AND `foot` <> '' 
+			GROUP BY MONTH( dateN ) 
+			ORDER BY dateN ASC ";
+			
+			$query = mysql_query($sql) or die( mysql_error($Conn) );
+			$retinal_items103 = array();
+			
+			while($item = mysql_fetch_assoc($query)){
+				$retinal_items103[$item['new_daten']] = $item;
+			}
+			
+			foreach($budget_range AS $key => $value){
+				$item_row = 0;
+				$find_key = $key;
+				
+				$pre_row = 0;
+				$pre_total = 0;
+				if(isset($retinal_items103[$find_key])){
+					$pre_row = $retinal_items103[$find_key]['rows'];
+				}
+				?>
+				<td align="center" class="forntsarabun">
+					<span><?php echo $pre_row;?></span>
+				</td>
+				<?php 
+			}
+			?>
+		</tr>
 	</table>
 
 <?php } // End if submit ?>

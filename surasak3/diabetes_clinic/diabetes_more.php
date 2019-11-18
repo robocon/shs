@@ -16,6 +16,8 @@ $datemonth = input_get('datemonth');
 
 if(empty($type) OR empty($datemonth)){
 	echo 'System require type, year and month :)';
+	echo '<br>';
+	echo '<a href="report_diabetes.php">กลับไปหน้า สถิติDM</a>';
 	exit;
 }
 
@@ -115,7 +117,7 @@ include("../connect.inc");
 // $query = mysql_query($sql_temp) or die(mysql_error());
 
 $sql_temp = "CREATE TEMPORARY TABLE IF NOT EXISTS diabetes_history_temp 
-( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
+#( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
 SELECT a.* 
 FROM `diabetes_clinic_history` AS a 
 RIGHT JOIN (

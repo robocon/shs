@@ -184,7 +184,7 @@ if ( $action == 'show_data' ) {
             $test_criteria++;
         }
 
-        if ( $item['bp1'] < 140 && $item['bp2'] < 90 ) {
+        if ( $item['bp1'] < 130 && $item['bp2'] < 80 ) {
             $test_criteria++;
         }
 
@@ -235,9 +235,9 @@ if ( $action == 'show_data' ) {
             $a1c_more7++;
         }
 
-        if ( $item['bp1'] <= 140 && $item['bp2'] <= 90 ) {
+        if ( $item['bp1'] <= 130 && $item['bp2'] <= 80 ) {
             $bp_count++;
-        }elseif ( $item['bp1'] > 140 && $item['bp2'] > 90 ) {
+        }elseif ( $item['bp1'] > 130 && $item['bp2'] > 80 ) {
             $bp_more_count++;
         }
 
@@ -255,7 +255,7 @@ if ( $action == 'show_data' ) {
     
         <div style="float: left; width: 50%;">
 
-            <h3>รายชื่อผู้ป่วยเบาหวาน ปี<?=($year+543);?> ที่ผ่านเกณฑ์ HBA1C < 7 และ BP 140/90</h3>
+            <h3>รายชื่อผู้ป่วยเบาหวาน ปี<?=($year+543);?> ที่ผ่านเกณฑ์ HBA1C < 7 และ BP 130/80</h3>
             <table class="chk_table">
                 <tr>
                     <th>#</th>
@@ -385,7 +385,7 @@ if ( $action == 'show_data' ) {
                 <td align="right"><?=$i;?></td>
             </tr>
             <tr>
-                <td>จำนวนที่ผ่านเกณฑ์ HBA1C < 7 และ BP 140/90</td>
+                <td>จำนวนที่ผ่านเกณฑ์ HBA1C < 7 และ BP 130/80</td>
                 <td align="right"><?=$i1;?></td>
             </tr>
             <tr>
@@ -427,11 +427,11 @@ if ( $action == 'show_data' ) {
                 <td align="right"><?=$a1c_more7;?></td>
             </tr>
             <tr>
-                <td>จำนวนผู้ป่วยที่ BP น้อยกว่าหรือเท่ากับ 140/90</td>
+                <td>จำนวนผู้ป่วยที่ BP น้อยกว่าหรือเท่ากับ 130/80</td>
                 <td align="right"><?=$bp_count;?></td>
             </tr>
             <tr>
-                <td>จำนวนผู้ป่วยที่ BP มากกว่า 140/90</td>
+                <td>จำนวนผู้ป่วยที่ BP มากกว่า 130/80</td>
                 <td align="right"><?=$bp_more_count;?></td>
             </tr>
             <tr>
