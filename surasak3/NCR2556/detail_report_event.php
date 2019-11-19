@@ -73,8 +73,15 @@ body,td,th {
 	}else{
 	$where="AND ".$_GET['topic']." = '1'";
 	}
+	
 
-		$sql = "Select date_format(nonconf_date,'%d/%m/%Y')as nonconf_date, left(nonconf_time,5)as nonconf_time ,a.*  From  ncr2556 as a  where nonconf_date like '".$_GET["y"]."%'  $where  Order by nonconf_id DESC ";
+
+		$sql = "Select date_format(nonconf_date,'%d/%m/%Y')as nonconf_date, left(nonconf_time,5)as nonconf_time ,a.*  
+		From  ncr2556 as a  
+		where nonconf_date like '".$_GET["y"]."%'  
+		$where  
+		Order by nonconf_id DESC ";
+		
 		$result = mysql_query($sql) or die(mysql_error());
 		$i=0;
 		
