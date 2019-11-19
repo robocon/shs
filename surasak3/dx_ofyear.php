@@ -101,6 +101,7 @@ $list_lab["HDL"] = "hdl";
 $list_lab["10001"] = "ldl";
 $list_lab["LDL"] = "ldl";
 $list_lab["LDLC"] = "ldl";
+$list_lab["GFR"] = "gfr";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -124,7 +125,7 @@ $list_lab["LDLC"] = "ldl";
 	color: #FF0000;
 }
 </style>
-<script>
+<SCRIPT LANGUAGE="JavaScript">
 function check(){
 	if(document.vsform.height.value ==""){
 		alert('กรุณากรอกข้อมูลความสูง');
@@ -161,7 +162,10 @@ function check(){
 	}else if(document.vsform.drugreact1.checked == false && document.vsform.drugreact2.checked == false){
 		alert('กรุณากรอกเลือกข้อมูลการแพ้ยา');
 		document.vsform.drugreact1.focus();
-		return false;	
+		return false;
+	}else if(document.vsform.cig1.checked == true&&document.f2.member2[0].checked == false&&document.vsform.member2[1].checked == false){
+		alert('กรุณาเลือกความต้องการอยากเลิกบุหรี่ไหมด้วยครับ');
+		return false;		
 	}else if(document.vsform.prawat.value ==""){
 		alert('กรุณาเลือกข้อมูลประวัติโรคประจำตัว');
 		document.vsform.prawat.focus();
@@ -198,6 +202,66 @@ function check(){
 		return true;
 	}
 }
+
+function togglediv(divid){ 
+	if(document.getElementById(divid).style.display == 'none'){ 
+		document.getElementById(divid).style.display = 'block'; 
+	}else{ 
+		//document.getElementById(divid).style.display = 'none'; 
+	} 
+} 
+function togglediv1(divid){ 
+	if(document.getElementById(divid).style.display == 'block'){ 
+		document.getElementById(divid).style.display = 'none'; 
+	}else{
+		//sss
+	}
+}
+</script>
+<script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	
+	$(document).on('click', '.lmp', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 3 ){
+			$('.lmp_date').show();
+		}else{
+			$('.lmp_date').hide();
+		}
+	});
+
+	$(document).on('click', '.ps_smoke', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 3){
+			$('.ps_contain').show();
+		}else{
+			$('.ps_contain').hide();
+		}
+	});
+
+	$(document).on('click', '.pd_drink', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 3 ){
+			$('.pd_contain').show();
+		}else{
+			$('.pd_contain').hide();
+		}
+	});
+
+	$(document).on('click', '.da_alcohol', function(){
+		var test_lmp = $(this).val();
+		if( test_lmp == 3 ){
+			$('.da_amount').show();
+		}else{
+			$('.da_amount').hide();
+		}
+	});
+	
+});
+})(jQuery);
 </script>
 </head>
 
@@ -241,11 +305,11 @@ function check(){
 	}*/
 	$arr_view = mysql_fetch_assoc($result);
 
-$sql = "Select vn From opday where thidate like '".$thaidate."%' and (toborow like 'EX26%') and hn = '".$_POST["p_hn"]."' limit 0,1";
+$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
 //echo $sql;
 $resultvn=mysql_query($sql);
 if(mysql_num_rows($resultvn) < 1){
-	echo "<script>alert('ผู้ตรวจสุขภาพ HN: $_POST[p_hn] ยังไม่ได้ลงทะเบียนเพื่อออก VN EX26 ตรวจสุขภาพประจำปี กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
+	echo "<script>alert('ไม่พบข้อมูลผู้ป่วย HN: $_POST[p_hn] ลงทะเบียนตรวจสุขภาพประจำปีในวันนี้ กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
 }
 list($arr_view["vn"]) = mysql_fetch_row($resultvn);
 
@@ -338,6 +402,12 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$type=$arr_dxofyear["type"];
 		$doctor=$arr_dxofyear["doctor"];
 		$prawat = $arr_dxofyear["prawat"];
+		$cigok=$arr_dxofyear["cigok"];
+		$smoke_amount=$arr_dxofyear["smoke_amount"];
+		$drink_amount=$arr_dxofyear["drink_amount"];
+		
+		
+		
 		
 //		$arr_view["vn"]=$arr_dxofyear["vn"];
 		
@@ -422,6 +492,7 @@ while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
 ?>
+<div align="center" style="color:#FF0000;">ผล LAB ไม่ขึ้น กรุณาปรับสถานะ เป็น ตรวจสุขภาพประจำปี <?=$nPrefix;?></div>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM name="vsform" method="POST" ACTION="dx_ofyear_save.php" target="_blank" onsubmit="return check()" >
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
@@ -466,9 +537,9 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td width="132"><input name="round_" type="text" size="1" maxlength="3" value="<?php echo $waist; ?>" />
 			  ซม.</td>
 			<td width="67" align="left"><span class="tb_font_2">BP1 :</span></td>
-			<td width="130" align="left"><input name="bp1" type="text" size="1" maxlength="3"/>
+			<td width="130" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?=$bp1;?>"/>
 			  /
-			  <input name="bp2" type="text" size="1" maxlength="3" />
+			  <input name="bp2" type="text" size="1" maxlength="3" value="<?=$bp2;?>"/>
 			  mmHg</td>
 			</tr>
 		<tr>
@@ -482,9 +553,9 @@ C&deg; </td>
 		  <td align="left"><input name="rate" type="text" size="1" maxlength="3" value="<?php echo $rate;?>" />
 ครั้ง/นาที</td>
 		  <td align="left"><span class="tb_font_2">BP2 :</span></td>
-		  <td align="left"><input name="bp21" type="text" size="1" maxlength="3" />
+		  <td align="left"><input name="bp21" type="text" size="1" maxlength="3" value="<?=$bp21;?>" />
 /
-  <input name="bp22" type="text" size="1" maxlength="3" />
+  <input name="bp22" type="text" size="1" maxlength="3" value="<?=$bp22;?>" />
 mmHg</td>
 		  </tr>
 		<tr>
@@ -507,30 +578,56 @@ mmHg</td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2">บุหรี่ :</td>
-		  <td colspan="7"><input type="radio" name="cigarette" value="0" <?php if($cigarette==0){ echo "checked"; } ?> />
+		  <td colspan="7"><input type="radio" name="cigarette" value="0"  onClick="togglediv1('kbk')" <?php if($cigarette==0){ echo "checked"; } ?> />
 ไม่เคยสูบ&nbsp;&nbsp;&nbsp;
-<input type="radio" name="cigarette" value="1" <?php if($cigarette==1){ echo "checked"; } ?> />
+<input type="radio" name="cigarette" value="1"  onClick="togglediv1('kbk')" <?php if($cigarette==1){ echo "checked"; } ?> />
 เคยสูบ แต่เลิกแล้ว
 &nbsp;&nbsp;&nbsp;
-<input type="radio" name="cigarette" value="2" <?php if($cigarette==2){ echo "checked"; } ?> />
+<input type="radio" name="cigarette" value="2"  onClick="togglediv1('kbk')"  <?php if($cigarette==2){ echo "checked"; } ?> />
 		    สูบบุหรี่ เป็นครั้งคราว
 &nbsp;&nbsp;&nbsp;
-<input type="radio" name="cigarette" value="3" <?php if($cigarette==3){ echo "checked"; } ?> />
-สูบบุหรี่ เป็นประจำ</td>
+<input type="radio" name="cigarette" value="3"  onClick="togglediv('kbk')" id="cig1" <?php if($cigarette==3){ echo "checked"; } ?>/>
+สูบบุหรี่ เป็นประจำ
+
+			<div id="kbk" style="display: none; margin-bottom: 8px; margin-left:15px;"> 
+				<table id="member" class="fontthai">
+					<tr>
+						<td>
+							<input type="radio" name="member2" value="1" id="permiss1" <?php if($cigok1==1){ echo "checked"; } ?>/> อยากเลิก
+							<input type="radio" name="member2" value="0" id="permiss2" <?php if($cigok1==0){ echo "checked"; } ?>/> ไม่อยากเลิก
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="smoke_amount" >จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" value="<?=$drink_amount;?>" size="3">มวน/วัน</label>
+						</td>
+					</tr>
+				</table>
+			</div> 
+			<script>
+			if(document.vsform.cig1.checked == true){
+				togglediv('kbk');
+			}
+			</script>
+</td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2">สุรา : </td>
-		  <td colspan="7"><input type="radio" name="alcohol" value="0" <?php if($alcohol==0){ echo "checked"; } ?> />
-ไมเคย่ดื่ม&nbsp;&nbsp;&nbsp;
-<input type="radio" name="alcohol" value="1" <?php if($alcohol==1){ echo "checked"; } ?> />
+		  <td colspan="7"><input type="radio" name="alcohol" class="da_alcohol" value="0" <?php if($alcohol==0){ echo "checked"; } ?> />
+ไม่เคยดื่ม&nbsp;&nbsp;&nbsp;
+<input type="radio" name="alcohol" class="da_alcohol" value="1" <?php if($alcohol==1){ echo "checked"; } ?> />
 เคยดื่ม แต่เลิกแล้ว&nbsp;&nbsp;&nbsp;
  &nbsp;
- <input type="radio" name="alcohol" value="2" <?php if($alcohol==2){ echo "checked"; } ?> />
+ <input type="radio" name="alcohol" class="da_alcohol" value="2" <?php if($alcohol==2){ echo "checked"; } ?> />
 		    ดื่ม เป็นครั้งคราว&nbsp;&nbsp;&nbsp;
  &nbsp;
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- <input type="radio" name="alcohol" value="3" <?php if($alcohol==3){ echo "checked"; } ?> />
-ดื่ม เป็นประจำ</td>
+ <input type="radio" name="alcohol" class="da_alcohol" value="3" <?php if($alcohol==3){ echo "checked"; } ?> />
+ดื่ม เป็นประจำ
+<div style="display:none; margin-bottom: 8px;" class="da_amount">
+<label for="drink_amount" style="margin-left:15px;">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3" value="<?=$drink_amount;?>">แก้ว/สัปดาห์</label>
+</div>
+</td>
 		  </tr>
 		<tr>
           <td align="right" class="tb_font_2">ออกกำลังกาย : </td>
