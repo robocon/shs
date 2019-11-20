@@ -213,12 +213,14 @@ if($row > 0){
 	<style type="text/css">
 	#dialog-contain{
 		border: 1px solid #333333; 
-		width: auto; 
+		/* width: auto;  */
+		width: 90%; 
 		padding: 1.4em; 
 		position: absolute; 
 		top: 0.2em; 
 		right: 0.2em; 
 		background-color: #ffffff;
+		z-index: 10;
 	}
 	#dialog-contain p, 
 	#dialog-contain h2{
@@ -247,6 +249,19 @@ if($row > 0){
 		border: 2px solid red;
 		padding: 0.4em;
 	}
+
+	.chk_table{
+    border-collapse: collapse;
+	}
+
+	.chk_table, 
+	.chk_table th, 
+	.chk_table td{
+		border: 1px solid black;
+		font-size: 16pt;
+		padding: 3px;
+	}
+
 	</style>
 	<?php
 	$style = '';
@@ -262,43 +277,67 @@ if($row > 0){
 			<div title="ปิดหน้าต่าง" id="div-close">[ ปิดหน้าต่าง ]</div>
 			<h2>รายละเอียดผู้ป่วยคลินิกเบาหวาน</h2>
 			<div id="msg-contain">
+
+				<?php 
+				$dtNow = date('Y-m-d');
+				$dtPass = date('Y-m-d', strtotime("-2 years"));
+				$sql = "SELECT `row_id`,`dateN`,`foot`,`retinal`,`tooth`,
+				CONCAT((SUBSTRING(`dateN`,1,4)+543),SUBSTRING(`dateN`,5,6)) AS `thaidate`
+				FROM `diabetes_clinic_history` 
+				WHERE `hn` = '$hn' 
+				AND ( `dateN` >= '$dtPass' AND `dateN` <= '$dtNow' ) 
+				ORDER BY `row_id` DESC";
+				$q = mysql_query($sql);
+				if( mysql_num_rows($q) > 0 ){
+					?>
+					<table class="chk_table">
+						<tr>
+							<th>วันที่มารับบริการ</th>
+							<th>Foot Exam</th>
+							<th>Retinal Exam</th>
+							<th>ตรวจสุขภาพฟัน</th>
+						</tr>
+						<?php 
+						while ( $item = mysql_fetch_assoc($q) ) {
+							$id = $item['row_id'];
+							?>
+							<tr>
+								<td>
+									<?=$item['thaidate'];?>
+								</td>
+								<td>
+									<?=$item['foot'];?>&nbsp;
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+								</td>
+								<td>
+									<?=$item['retinal'];?>&nbsp;
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+								</td>
+								<td>
+									<?php 
+									if( !empty($item['tooth']) && $item['tooth'] == 1 ){
+										echo 'ได้รับการตรวจ';
+									}elseif ( !empty($item['tooth']) && $item['tooth'] == 2 ) {
+										echo 'ไม่ได้รับการตรวจ';
+									}
+									?>&nbsp;
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="tooth"><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+								</td>
+							</tr>
+							<?php
+						}
+						?>
+					</table>
+					<br>
+					<script>
+					var popUpWindowsFeature="location=yes,height=570,width=520,scrollbars=yes,status=yes";
+					</script>
+					<?php
+				}
+				?>
+
 				<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
-					<tr>
-						<td>Retinal Exam</td>
-						<td colspan="12">
-							<?php 
-							$item = mysql_fetch_assoc($query_diabetes);
-							if($item['retinal'] != ''){
-								
-								echo $item['retinal'];
-								
-								if($item['retinal_date'] != '0000-00-00 00:00:00'){
-									list($retinal_date, $time) = explode(' ', $item['retinal_date']);
-									echo '&nbsp;'.$retinal_date;
-								}
-							}else{
-								echo '-';
-							}
-							?>
-						</td>
-					</tr>
-					<tr>
-						<td>Foot Exam</td>
-						<td colspan="12">
-							<?php 
-							if($item['foot'] != ''){
-								echo $item['foot'];
-								
-								if($item['foot_date'] != '0000-00-00 00:00:00'){
-									list($foot_date, $time) = explode(' ', $item['foot_date']);
-									echo '&nbsp;'.$foot_date;
-								}
-							}else{
-								echo '-';
-							}
-							?>
-						</td>
-					</tr>
+					
 					<?php 
 
 					$year = date('Y');
@@ -316,6 +355,11 @@ if($row > 0){
 					LEFT JOIN diabetes_lab AS b ON b.dm_no = a.dm_no 
 					WHERE b.dummy_no = a.dummy_no 
 					ORDER BY b.dateY ASC";
+
+					// echo "<pre>";
+					// var_dump($sql);
+					// echo "</pre>";
+
 					$qLab = mysql_query($sql);
 					
 					$labLists = array();
@@ -441,9 +485,63 @@ if($row > 0){
 			</div>
 		</div>
 	</div>
+	<!-- form แก้ไขข้อมูล -->
+	<style>
+	#formEditPageBackground, #formEditPageContainer{
+		display: none;
+	}
+	</style>
+	<div id="formEditPageBackground" style="width: 100%;height: 100%;background-color: #000000c9;position: fixed;top: 0;left: 0;z-index: 11;"></div>
+	<div id="formEditPageContainer" style="z-index: 12;background: #ffffff;width: 600px;height: 200px;position: absolute;top: 25%;left: 29%; padding: 8px;">
+		
+		<div class="closeFormEditPage"><img src="images/icons/Remove_32x32.png" alt="Close" style="float: right; cursor: pointer;"></div>
+		<div id="editPageContent"></div>
+
+	</div>
 	<script src="js/vendor/jquery-1.11.2.min.js"></script>
 	<script type="text/javascript">
-	$(function(){
+	$(function(){ 
+
+		$(document).on('click', '.closeFormEditPage', function(){
+			$('#formEditPageBackground').hide();
+			$('#formEditPageContainer').hide();
+		});
+
+		$(document).on('click', '.editPart', function(){
+
+			$('#formEditPageBackground').show();
+			$('#formEditPageContainer').show();
+
+			var part = $(this).attr('data-part');
+			var id = $(this).attr('data-id');
+			$.ajax({
+				url: "dt_diabetes.php",
+				method: "post",
+				data: {'id':id,'part':part},
+				success: function(res){
+					$('#editPageContent').html(res);
+				}
+			});
+
+		});
+
+		$(document).on('click', '#btnSaveEditForm', function(e){
+			e.preventDefault();
+			var part = $('#editFormPart').val();
+			var id = $('#editFormId').val();
+			var itemRes = $('.itemEditForm:checked').val();
+			
+			$.ajax({
+				url: "dt_diabetes.php",
+				method: "post",
+				data: {'action':'save','part':part,'id':id,'result':itemRes},
+				success: function(res){
+					// $('#editPageContent').html(res);
+				}
+			});
+			
+		});
+
 		$(document).on('click', '#div-close', function(){
 			
 			$.ajax({
