@@ -213,8 +213,7 @@ if($row > 0){
 	<style type="text/css">
 	#dialog-contain{
 		border: 1px solid #333333; 
-		/* width: auto;  */
-		width: 90%; 
+		width: auto; 
 		padding: 1.4em; 
 		position: absolute; 
 		top: 0.2em; 
@@ -306,21 +305,26 @@ if($row > 0){
 									<?=$item['thaidate'];?>
 								</td>
 								<td>
-									<?=$item['foot'];?>&nbsp;
+									<span id="foot<?=$id;?>"><?=$item['foot'];?></span>&nbsp;
 									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
 								</td>
 								<td>
-									<?=$item['retinal'];?>&nbsp;
+									<span id="retinal<?=$id;?>"><?=$item['retinal'];?></span>&nbsp;
 									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
 								</td>
 								<td>
+									<span id="tooth<?=$id;?>">
 									<?php 
-									if( !empty($item['tooth']) && $item['tooth'] == 1 ){
-										echo 'ได้รับการตรวจ';
-									}elseif ( !empty($item['tooth']) && $item['tooth'] == 2 ) {
-										echo 'ไม่ได้รับการตรวจ';
+									if( $item['tooth'] !== '' ){
+										if ( $item['tooth'] == 0 ) {
+											echo 'ไม่ได้รับการตรวจ';
+	
+										}elseif( $item['tooth'] == 1 ){
+											echo 'ได้รับการตรวจ';
+										}
 									}
-									?>&nbsp;
+									?>
+									</span>&nbsp;
 									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="tooth"><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
 								</td>
 							</tr>
@@ -329,9 +333,6 @@ if($row > 0){
 						?>
 					</table>
 					<br>
-					<script>
-					var popUpWindowsFeature="location=yes,height=570,width=520,scrollbars=yes,status=yes";
-					</script>
 					<?php
 				}
 				?>
@@ -490,12 +491,33 @@ if($row > 0){
 	#formEditPageBackground, #formEditPageContainer{
 		display: none;
 	}
+	#formEditPageBackground{
+		width: 100%;
+		height: 100%;
+		background-color: #8c8c8c;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 11;
+	}
+	#formEditPageContainer{
+		z-index: 12;
+		background: #ffffff;
+		width: 600px;
+		height: 200px;
+		position: absolute;
+		padding: 8px; 
+		border: 6px solid #000000;
+		top: 25%;
+		left: 50%; 
+		margin-left: -25%;
+	}
 	</style>
-	<div id="formEditPageBackground" style="width: 100%;height: 100%;background-color: #000000c9;position: fixed;top: 0;left: 0;z-index: 11;"></div>
-	<div id="formEditPageContainer" style="z-index: 12;background: #ffffff;width: 600px;height: 200px;position: absolute;top: 25%;left: 29%; padding: 8px;">
+	<div id="formEditPageBackground" style=""></div>
+	<div id="formEditPageContainer" style="">
 		
-		<div class="closeFormEditPage"><img src="images/icons/Remove_32x32.png" alt="Close" style="float: right; cursor: pointer;"></div>
-		<div id="editPageContent"></div>
+		<div class="closeFormEditPage" style="float: right; cursor: pointer;"><img src="images/icons/Remove_32x32.png" alt="Close"></div>
+		<div id="editPageContent" style="float:left;"></div>
 
 	</div>
 	<script src="js/vendor/jquery-1.11.2.min.js"></script>
@@ -507,6 +529,7 @@ if($row > 0){
 			$('#formEditPageContainer').hide();
 		});
 
+		// โหลดหน้าแก้ไขข้อมูล Foot Exam Retinal Exam ตรวจสุขภาพฟัน
 		$(document).on('click', '.editPart', function(){
 
 			$('#formEditPageBackground').show();
@@ -519,12 +542,12 @@ if($row > 0){
 				method: "post",
 				data: {'id':id,'part':part},
 				success: function(res){
-					$('#editPageContent').html(res);
+					$('#editPageContent').html(res); 
 				}
 			});
-
 		});
 
+		// บันทึกข้อมูล
 		$(document).on('click', '#btnSaveEditForm', function(e){
 			e.preventDefault();
 			var part = $('#editFormPart').val();
@@ -536,10 +559,22 @@ if($row > 0){
 				method: "post",
 				data: {'action':'save','part':part,'id':id,'result':itemRes},
 				success: function(res){
-					// $('#editPageContent').html(res);
+					var item = JSON.parse(res);
+					if( item.resTxt === true ){ 
+						$('#formEditResponse').html(item.msg).show();
+
+						if(part==='tooth'){
+							if(itemRes == 0){
+								itemRes = 'ไม่ได้รับการตรวจ';
+							}else if(itemRes == 1){
+								itemRes = 'ได้รับการตรวจ';
+							}
+						}
+
+						$('#'+part+id).html(itemRes);
+					}
 				}
 			});
-			
 		});
 
 		$(document).on('click', '#div-close', function(){

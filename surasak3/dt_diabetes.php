@@ -7,7 +7,25 @@ $part = input_post('part');
 $action = input_post('action');
 if ( $action === 'save' ) {
 	
-	dump($_POST);
+	if( $part !== 'foot' AND $part !== 'retinal' AND $part !== 'tooth' ){
+		echo 'Invalid input';
+		exit;
+	}
+
+	$part = input_post('part');
+	$id = $_POST['id'];
+	$result = $_POST['result'];
+	
+	$sql = "UPDATE `diabetes_clinic_history` SET `$part` = :result WHERE `row_id` = :id ";
+	$save = $db->update($sql, array(':result' => $result, ':id' => $id));
+	$resTxt = 'true';
+	$msg = "บันทึกข้อมูลเรียบร้อย";
+	if( $save !== true ){
+		$resTxt = 'false';
+		$msg = errorMsg('save', $save['id']);
+	}
+	
+	echo '{"resTxt":'.$resTxt.',"msg":"'.$msg.'"}';
 	exit;
 	
 }
@@ -16,6 +34,12 @@ if ( $action === 'save' ) {
 label{
 	cursor: pointer;
 }
+#formEditResponse{
+	border: 2px solid #868800;
+    background-color: #ffff92;
+    padding: 2px;
+}
+
 </style>
 <form action="" id="formEditDiabetes" method="post">
 	<?php 
@@ -32,7 +56,7 @@ label{
 			foreach ($lists as $key => $list) {
 				$selected = ( $list == $item['foot'] ) ? 'checked="checked"' : '' ;
 				?>
-				<label><input type="radio" class="itemEditForm" name="foot" value="<?=$list;?>"><?=$list;?></label> 
+				<label><input type="radio" class="itemEditForm" name="foot" value="<?=$list;?>" <?=$selected;?>><?=$list;?></label> 
 				<?php
 			}
 			?>
@@ -60,9 +84,12 @@ label{
 			<div>แก้ไขข้อมูล ตรวจสุขภาพฟัน: </div>
 			<?php 
 			foreach ($lists as $key => $list) {
-				$selected = ( $key === $item['tooth'] ) ? 'checked="checked"' : '' ;
+				$selected = '';
+				if( $item['tooth'] != '' ){
+					$selected = ( $key == $item['tooth'] ) ? 'checked="checked"' : '' ;
+				}
 				?>
-				<label><input type="radio" class="itemEditForm" name="tooth" value="<?=$list;?>" <?=$selected;?>><?=$list;?></label> 
+				<label><input type="radio" class="itemEditForm" name="tooth" value="<?=$key;?>" <?=$selected;?>><?=$list;?></label> 
 				<?php
 			}
 			?>
@@ -76,3 +103,4 @@ label{
         <input type="hidden" name="editFormId" id="editFormId" value="<?=$id;?>">
     </div>
 </form>
+<div id="formEditResponse" style="display: none;"></div>
