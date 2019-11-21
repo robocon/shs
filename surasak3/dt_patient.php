@@ -281,6 +281,9 @@ if($row > 0){
 				$dtNow = date('Y-m-d');
 				$dtPass = date('Y-m-d', strtotime("-2 years"));
 				$sql = "SELECT `row_id`,`dateN`,`foot`,`retinal`,`tooth`,
+				IF(`foot_date`!='0000-00-00', CONCAT((SUBSTRING(`foot_date`,1,4)-543),SUBSTRING(`foot_date`,5,6)), '0000-00-00') AS `foot_date`,
+				IF(`retinal_date`!='0000-00-00', CONCAT((SUBSTRING(`retinal_date`,1,4)-543),SUBSTRING(`retinal_date`,5,6)), '0000-00-00') AS`retinal_date`,
+				IF(`tooth_date`!='0000-00-00', CONCAT((SUBSTRING(`tooth_date`,1,4)-543),SUBSTRING(`tooth_date`,5,6)), '0000-00-00') AS`tooth_date`,
 				CONCAT((SUBSTRING(`dateN`,1,4)+543),SUBSTRING(`dateN`,5,6)) AS `thaidate`
 				FROM `diabetes_clinic_history` 
 				WHERE `hn` = '$hn' 
@@ -305,11 +308,25 @@ if($row > 0){
 									<?=$item['thaidate'];?>
 								</td>
 								<td>
-									<span id="foot<?=$id;?>"><?=$item['foot'];?></span>&nbsp;
+									<span id="foot<?=$id;?>"><?=$item['foot'];?></span>
+									<span id="date_foot<?=$id;?>">
+									<?php 
+									if( $item['foot_date']!=='0000-00-00' ){
+										echo '('.$item['foot_date'].')';
+									}
+									?>
+									</span>
 									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
 								</td>
 								<td>
-									<span id="retinal<?=$id;?>"><?=$item['retinal'];?></span>&nbsp;
+									<span id="retinal<?=$id;?>"><?=$item['retinal'];?></span>
+									<span id="date_retinal<?=$id;?>">
+									<?php 
+									if( $item['retinal_date']!=='0000-00-00' ){
+										echo '('.$item['retinal_date'].')';
+									}
+									?>
+									</span>
 									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
 								</td>
 								<td>
@@ -324,7 +341,14 @@ if($row > 0){
 										}
 									}
 									?>
-									</span>&nbsp;
+									</span>
+									<span id="date_tooth<?=$id;?>">
+									<?php 
+									if( $item['tooth_date']!=='0000-00-00' ){
+										echo '('.$item['tooth_date'].')';
+									}
+									?>
+									</span>
 									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="tooth"><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
 								</td>
 							</tr>
@@ -340,7 +364,12 @@ if($row > 0){
 				<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
 					
 					<?php 
-
+					
+					/**
+					 * @todo 
+					 * [] ให้แสดงเฉพาะเดือนที่มีผล
+					 * [] แยกปี
+					 */
 					$year = date('Y');
 					$year_th = $year + 543;
 					$prev_ymd = ($year - 1).date('-m-d');
@@ -356,10 +385,6 @@ if($row > 0){
 					LEFT JOIN diabetes_lab AS b ON b.dm_no = a.dm_no 
 					WHERE b.dummy_no = a.dummy_no 
 					ORDER BY b.dateY ASC";
-
-					// echo "<pre>";
-					// var_dump($sql);
-					// echo "</pre>";
 
 					$qLab = mysql_query($sql);
 					
@@ -504,7 +529,7 @@ if($row > 0){
 		z-index: 12;
 		background: #ffffff;
 		width: 600px;
-		height: 200px;
+		height: 250px;
 		position: absolute;
 		padding: 8px; 
 		border: 6px solid #000000;
@@ -512,14 +537,25 @@ if($row > 0){
 		left: 50%; 
 		margin-left: -25%;
 	}
+	#epoch_popup_calendar{
+		z-index:90!important;
+	}
+	table.calendar input, table.calendar select {
+		font-size: 14px!important;
+	}
+	table.calendar td, table.calendar th {
+		font-size: 14px!important;
+	}
 	</style>
 	<div id="formEditPageBackground" style=""></div>
 	<div id="formEditPageContainer" style="">
-		
 		<div class="closeFormEditPage" style="float: right; cursor: pointer;"><img src="images/icons/Remove_32x32.png" alt="Close"></div>
 		<div id="editPageContent" style="float:left;"></div>
-
 	</div>
+
+	<link rel="stylesheet" type="text/css" href="epoch_styles.css" />
+	<script type="text/javascript" src="epoch_classes.js"></script>
+
 	<script src="js/vendor/jquery-1.11.2.min.js"></script>
 	<script type="text/javascript">
 	$(function(){ 
@@ -543,6 +579,12 @@ if($row > 0){
 				data: {'id':id,'part':part},
 				success: function(res){
 					$('#editPageContent').html(res); 
+
+					// Load Epoch Calendar
+					var map1  = new Epoch('epoch_popup','popup',document.getElementById('foot_date'));
+					var map2  = new Epoch('epoch_popup','popup',document.getElementById('retinal_date'));
+					var map3  = new Epoch('epoch_popup','popup',document.getElementById('tooth_date'));
+
 				}
 			});
 		});
@@ -553,11 +595,14 @@ if($row > 0){
 			var part = $('#editFormPart').val();
 			var id = $('#editFormId').val();
 			var itemRes = $('.itemEditForm:checked').val();
+			var itemDate = $('.itemDateForm').val();
+			var date_n = $('#editFormDateN').val();
+			var hn = $('#editFormHn').val();
 			
 			$.ajax({
 				url: "dt_diabetes.php",
 				method: "post",
-				data: {'action':'save','part':part,'id':id,'result':itemRes},
+				data: {'action':'save','part':part,'id':id,'result':itemRes,'date':itemDate,'date_n':date_n,'hn':hn},
 				success: function(res){
 					var item = JSON.parse(res);
 					if( item.resTxt === true ){ 
@@ -572,6 +617,8 @@ if($row > 0){
 						}
 
 						$('#'+part+id).html(itemRes);
+						$('#date_'+part+id).html('('+itemDate+')');
+
 					}
 				}
 			});
@@ -599,7 +646,12 @@ if($row > 0){
 		});
 	});
 	</script>
-<?php
+
+	<script type="text/javascript">
+
+		
+	</script>
+	<?php
 	}
 }  //close if session
 ?>
