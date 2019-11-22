@@ -86,6 +86,8 @@ label{
 				<label><input type="radio" class="itemEditForm" name="foot" value="<?=$list;?>" <?=$selected;?>><?=$list;?></label> 
 				<?php
 			}
+
+			// วันที่ในปฏิทินมันรับผลเป็นปี ค.ศ. เลยต้องปรับปี
 			?>
 			<div>วันที่วินิจฉัย:</div>
 			<div><input type="text" id="foot_date" name="foot_date" class="itemDateForm" value="<?=($item['foot_date']!=='0000-00-00' ? bc_to_ad($item['foot_date']) : '' );?>"></div>

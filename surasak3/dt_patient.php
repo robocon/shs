@@ -278,12 +278,14 @@ if($row > 0){
 			<div id="msg-contain">
 
 				<?php 
+				$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+				
 				$dtNow = date('Y-m-d');
 				$dtPass = date('Y-m-d', strtotime("-2 years"));
 				$sql = "SELECT `row_id`,`dateN`,`foot`,`retinal`,`tooth`,
-				IF(`foot_date`!='0000-00-00', CONCAT((SUBSTRING(`foot_date`,1,4)-543),SUBSTRING(`foot_date`,5,6)), '0000-00-00') AS `foot_date`,
-				IF(`retinal_date`!='0000-00-00', CONCAT((SUBSTRING(`retinal_date`,1,4)-543),SUBSTRING(`retinal_date`,5,6)), '0000-00-00') AS`retinal_date`,
-				IF(`tooth_date`!='0000-00-00', CONCAT((SUBSTRING(`tooth_date`,1,4)-543),SUBSTRING(`tooth_date`,5,6)), '0000-00-00') AS`tooth_date`,
+				SUBSTRING(`foot_date`,1,10) AS `foot_date`,
+				SUBSTRING(`retinal_date`,1,10) AS `retinal_date`,
+				SUBSTRING(`tooth_date`,1,10) AS `tooth_date`,
 				CONCAT((SUBSTRING(`dateN`,1,4)+543),SUBSTRING(`dateN`,5,6)) AS `thaidate`
 				FROM `diabetes_clinic_history` 
 				WHERE `hn` = '$hn' 
@@ -304,9 +306,7 @@ if($row > 0){
 							$id = $item['row_id'];
 							?>
 							<tr>
-								<td>
-									<?=$item['thaidate'];?>
-								</td>
+								<td><?=$item['thaidate'];?></td>
 								<td>
 									<span id="foot<?=$id;?>"><?=$item['foot'];?></span>
 									<span id="date_foot<?=$id;?>">
@@ -374,7 +374,6 @@ if($row > 0){
 					$year_th = $year + 543;
 					$prev_ymd = ($year - 1).date('-m-d');
 					$current_ymd = date('Y-m-d');
-					$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
 					
 					$sql = "SELECT a.hn,a.ptname,a.dm_no, a.dummy_no,b.labname,b.result_lab,b.dateY,DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date`
 					FROM ( 
@@ -563,6 +562,8 @@ if($row > 0){
 		$(document).on('click', '.closeFormEditPage', function(){
 			$('#formEditPageBackground').hide();
 			$('#formEditPageContainer').hide();
+
+			$('#editPageContent').html(''); 
 		});
 
 		// โหลดหน้าแก้ไขข้อมูล Foot Exam Retinal Exam ตรวจสุขภาพฟัน
@@ -580,10 +581,12 @@ if($row > 0){
 				success: function(res){
 					$('#editPageContent').html(res); 
 
+					var map1, map2, map3;
+
 					// Load Epoch Calendar
 					var map1  = new Epoch('epoch_popup','popup',document.getElementById('foot_date'));
-					var map2  = new Epoch('epoch_popup','popup',document.getElementById('retinal_date'));
-					var map3  = new Epoch('epoch_popup','popup',document.getElementById('tooth_date'));
+					var map2  = new Epoch('map2','popup',document.getElementById('retinal_date'));
+					var map3  = new Epoch('map3','popup',document.getElementById('tooth_date'));
 
 				}
 			});
