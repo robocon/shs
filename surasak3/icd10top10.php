@@ -174,8 +174,7 @@ if(isset($_POST['B1'])){
 	FROM opday1 
 	GROUP BY icd10 
 	HAVING duplicate > 0 
-	ORDER BY duplicate DESC 
-	limit 30";
+	ORDER BY duplicate DESC ";
 	$result = mysql_query($query) or die(mysql_error());
 	$n=0;
 
@@ -189,8 +188,7 @@ if(isset($_POST['B1'])){
 	FROM ipday1 
 	GROUP BY icd10 
 	HAVING duplicate > 0 
-	ORDER BY duplicate DESC  
-	limit 30";
+	ORDER BY duplicate DESC  ";
 	$result1 = mysql_query($query1);
 	$n1=0;
 	?>
@@ -286,7 +284,7 @@ if(isset($_POST['B1'])){
 				$result3 = mysql_query($query3)or die(mysql_error());
 				list ($c3) = mysql_fetch_row ($result3);
 
-				$query33="SELECT  icd10,COUNT(*) AS duplicate FROM ipday1 where dctype like '%Dead%' GROUP BY icd10 HAVING duplicate > 0 ORDER BY duplicate DESC  limit 30";
+				$query33="SELECT  icd10,COUNT(*) AS duplicate FROM ipday1 where dctype like '%Dead%' GROUP BY icd10 HAVING duplicate > 0 ORDER BY duplicate DESC ";
 				$result33 = mysql_query($query33) or die(mysql_error());
 				$n33=0;
 				?>
