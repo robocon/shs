@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 
 $action = input('action');
-$db = Mysql::load($shs_configs);
+$db = Mysql::load();
 
 
 include 'chk_menu.php';
