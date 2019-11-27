@@ -9,14 +9,6 @@ AND $_SESSION['smenucode'] != 'ADMNHSO' ){
     exit;
 }
 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottwo',
-    'pass' => '12345678'
-);
-
 $db = Mysql::load();
 
 $def_date = ( date('Y') + 543 ).date('-m-d');

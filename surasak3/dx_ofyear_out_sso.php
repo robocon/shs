@@ -48,14 +48,8 @@ if ( $action == 'clear_data' ) {
     exit;
 }
 
-$shs_configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottow',
-    'pass' => ''
-);
-$db = Mysql::load($shs_configs);
+
+$db = Mysql::load();
 
 $def_date = input('date', date('Y-m-d'));
 $hn = input('hn');

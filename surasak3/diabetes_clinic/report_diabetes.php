@@ -6,21 +6,6 @@ session_start();
 include '../bootstrap.php';
 $db = Mysql::load();
 
-$configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'remoteuser',
-    'pass' => ''
-);
-$Conn = mysql_connect($configs['host'],$configs['user'],$configs['pass']) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
-
-mysql_select_db($configs['dbname'],$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
-// $db = Mysql::load($shs_configs);
-
-
-
-
 
 // Verify user before load content
 if( authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }

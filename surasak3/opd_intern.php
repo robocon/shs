@@ -2,10 +2,6 @@
 
 include 'bootstrap.php';
 
-// ไปดึงข้อมูลจากเซิฟเวอร์ .13 เพื่อลดภาระเซิฟเวอร์หลัก 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('smdb', $db2) or die( mysql_error() );
-
 /*
 
 ขอยอดผู้ป่วยนัดกับแพทย์ Intern ที่เป็นโรคเรื้อรัง ได้แก่ 
