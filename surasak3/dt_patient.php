@@ -359,43 +359,101 @@ if($row > 0){
 					<br>
 					<?php
 				}
+
+				$year = date('Y');
+				$year_th = $year + 543;
+				$prev_ymd = ($year - 2).date('-m-d');
+				$current_ymd = date('Y-m-d');
+				
+				$sql = "SELECT a.hn,a.ptname,a.dm_no, a.dummy_no,b.labname,b.result_lab,b.dateY,
+				DATE_FORMAT(b.dateY, '%Y') AS `year`,
+				DATE_FORMAT(b.dateY, '%m') AS `month`,
+				DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date`
+				FROM ( 
+					SELECT * FROM diabetes_clinic_history 
+					WHERE hn = '$hn' 
+					AND ( dateN > '$prev_ymd 00:00:00' AND dateN <= '$current_ymd 23:59:59' ) 
+				) AS a 
+				LEFT JOIN diabetes_lab AS b ON b.dm_no = a.dm_no 
+				WHERE b.dummy_no = a.dummy_no 
+				ORDER BY b.dateY ASC";
+
+				$qLab = mysql_query($sql);
+			
+				$labLists = array(); // เก็บค่าผลแลป
+				$yearList = array(); // แสดงปีตรงหัวตาราง
+				$countYearMonth = array(); // แสดงเดือนตรงหัวตาราง
+				
+				// ตัวนับเดือนของแต่ละปี
+				while ( $labItem = mysql_fetch_assoc($qLab) ) { 
+
+					$kYear = $labItem['year'];
+					$kMonth = $labItem['month'];
+					$subKey = $labItem['result_date'];
+
+					$labname = $labItem['labname'];
+
+					$yearList[$kYear][$kMonth] = 1;
+					$countYearMonth[$subKey] = $kMonth;
+					
+					$labLists[$subKey.$labname] = $labItem;
+
+				}
+
+				// echo "<pre>";
+				// var_dump($labLists);
+				// echo "</pre>";
+
+				// รายการ Lab ที่จะแสดง
+				$labItemsTr = array('BS','HbA1c','LDL','Creatinine','Urine protein','Urine Microalbumin');
+
 				?>
-
-				<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
-					
+				<table class="chk_table">
+					<tr>
+						<th rowspan="2">รายการตรวจ</th>
+						<?php 
+						foreach ($yearList as $key => $y) {
+							$Col = count($y);
+							?>
+							<th colspan="<?=$Col;?>" align="center">ปี <?=$key+543;?></th>
+							<?php 
+							
+						}
+						?>
+					</tr>
+					<tr>
+						<?php 
+						foreach ($countYearMonth as $m => $mv) {
+							?>
+							<th align="center"><?=$months[$mv];?></th>
+							<?php
+						}
+						?>
+					</tr>
 					<?php 
-					
-					/**
-					 * @todo 
-					 * [] ให้แสดงเฉพาะเดือนที่มีผล
-					 * [] แยกปี
-					 */
-					$year = date('Y');
-					$year_th = $year + 543;
-					$prev_ymd = ($year - 1).date('-m-d');
-					$current_ymd = date('Y-m-d');
-					
-					$sql = "SELECT a.hn,a.ptname,a.dm_no, a.dummy_no,b.labname,b.result_lab,b.dateY,DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date`
-					FROM ( 
-						SELECT * FROM diabetes_clinic_history 
-						WHERE hn = '$hn' 
-						AND ( dateN > '$prev_ymd 00:00:00' AND dateN <= '$current_ymd 23:59:59' )
-					) AS a 
-					LEFT JOIN diabetes_lab AS b ON b.dm_no = a.dm_no 
-					WHERE b.dummy_no = a.dummy_no 
-					ORDER BY b.dateY ASC";
+					foreach ($labItemsTr as $trKey => $trVal) {
+						?>
+						<tr>
+							<td><?=$trVal;?></td>
+							<?php 
+							foreach ($countYearMonth as $m => $mv) { 
 
-					$qLab = mysql_query($sql);
-					
-					$labLists = array();
-					while ( $labItem = mysql_fetch_assoc($qLab) ) { 
-
-						$key = $labItem['labname'];
-						$subKey = $labItem['result_date'];
-						$labLists[$key][$subKey] = $labItem;
+								$res = '-';
+								if( $labLists[$m.$trVal]['labname'] == $trVal ){
+									$res = $labLists[$m.$trVal]['result_lab'];
+								}
+								?>
+								<td align="center"><?=$res;?></td>
+								<?php
+							}
+							?>
+						</tr>
+						<?php
 					}
-
 					?>
+				</table>
+				<?php /* ?>
+				<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
 					<tr>
 						<td class="tb-bold">พ.ศ. <?php echo $year_th; ?></td>
 						<?php
@@ -507,6 +565,7 @@ if($row > 0){
 						?>
 					</tr>
 				</table>
+				<?php */ ?>
 			</div>
 		</div>
 	</div>
@@ -585,8 +644,8 @@ if($row > 0){
 
 					// Load Epoch Calendar
 					var map1  = new Epoch('epoch_popup','popup',document.getElementById('foot_date'));
-					var map2  = new Epoch('map2','popup',document.getElementById('retinal_date'));
-					var map3  = new Epoch('map3','popup',document.getElementById('tooth_date'));
+					var map2  = new Epoch('epoch_popup','popup',document.getElementById('retinal_date'));
+					var map3  = new Epoch('epoch_popup','popup',document.getElementById('tooth_date'));
 
 				}
 			});
@@ -634,7 +693,7 @@ if($row > 0){
 				method: "post",
 				data: {'action':'close_popup','do':'true'},
 				success: function(res){
-					console.log(res);
+					// console.log(res);
 				}
 			});
 			
