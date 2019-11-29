@@ -628,7 +628,7 @@ h1,h3,p{
             <td valign="top">
                 <?php
 
-                $year_checkup = '62';
+                // $year_checkup = '62';
 
                 $sql = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`unit`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `resultdate`
                 FROM ( 
