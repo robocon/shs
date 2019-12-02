@@ -45,6 +45,7 @@ if($yyy[0] == "นาง"){
 }else{
 	$yyy1 = $arr["idname"];
 }
+echo $arr["idname"];
 	if($xxx1 != $yyy1){
 		if($_SESSION["sOfficer"] =="CSCD"){ //เงื่อนไข cscd พี่เพชร จัดเก็บรายได้ ให้เพิ่มเมื่อวันที่ 23/06/60
 		
@@ -88,7 +89,7 @@ include("unconnect.inc");
 		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false && document.f1.credit[8].checked == false && document.f1.credit[9].checked == false && document.f1.credit[10].checked == false && document.f1.credit[11].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
-		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
+		}else if(document.f1.credit[1].checked == true && document.f1.detail_1.value == ''){
 			alert("กรณี ที่ชำระเงินด้วย บัตรเครดิต ให้กรอกข้อมูล หมายเลขเลขบัตรเครดิต ด้วยครับ");
 			document.f1.detail_1.focus();
 			return false;
