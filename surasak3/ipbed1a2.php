@@ -20,7 +20,14 @@ $pdf = new PDF($ll,'mm',array( 55,30 ));
 $pdf->SetThaiFont();
 
 $exName = '';
+// Default ขนาดตัวหนังสือจะ 14
 $text_size = 14;
+
+// ถ้าเป็นหมอเลอปรัชชื่อจะยาวเลยต้องปรับให้เหลือตัวหนังสือ13
+$drCode = substr($cdoctor, 0, 5);
+if( $drCode == 'MD089' ){
+	$text_size = 13;
+}
 
 // เช็กว่าเป็นWardพิเศษรึป่าว
 $wardExTest = preg_match('/45.+/', $cbedcode);
