@@ -300,6 +300,7 @@ foreach ($build as $key => $value){
 	echo "<A HREF=\"#$value\">",$key,"</A>&nbsp;&nbsp;";
 }
 echo "<A HREF=\"drugprofile_today.php\" target='_blank'>ผู้ป่วยรับป่วยวันนี้</A>&nbsp;&nbsp;";
+echo "<A HREF=\"drugsummaryreport.php\" target='_blank'>Drug Summary Report</A>&nbsp;&nbsp;";
 echo "<BR><BR><A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A><BR>";?>
 </TD>
 	<TD align="right">
@@ -367,7 +368,7 @@ echo "<BR><BR><A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A><BR>";?>
 <?php
 foreach ($build as $key => $value){
 
-	$sql = "SELECT bed,date_format(date,'%d') as date1,date_format(date,'%m') as date2,date_format(date,'%Y') as date3,ptname,an,diagnos,doctor,ptright,age,accno, bedcode, last_drug FROM bed WHERE bedcode LIKE '".$value."%' AND an != '' ORDER BY bed ASC";
+	$sql = "SELECT bed,date_format(date,'%d') as date1,date_format(date,'%m') as date2,date_format(date,'%Y') as date3,ptname,hn,an,diagnos,doctor,ptright,age,accno, bedcode, last_drug FROM bed WHERE bedcode LIKE '".$value."%' AND an != '' ORDER BY bed ASC";
 	$result = Mysql_Query($sql);
 	if(Mysql_num_rows($result) == 0)
 		continue;
@@ -384,7 +385,8 @@ foreach ($build as $key => $value){
 	<TD bgcolor="#FFFFFF"><FONT COLOR="#000000"><B><A HREF="<?php echo $_SERVER["PHP_SELF"];?>">UP</A></B></FONT></TD>
 	<TD><B>เตียง</B></TD>
 	<TD><B><FONT COLOR="#FFFFDD">วันรับป่วย</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">AN</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">HN</FONT></B></TD>
+    <TD><B><FONT COLOR="#FFFFDD">AN</FONT></B></TD>
 	<TD><B><FONT COLOR="#FFFFDD">ชื่อผู้ป่วย</FONT></B></TD>
 	<TD><B><FONT COLOR="#FFFFDD">คืนยา</FONT></B></TD>
 	<TD><B><FONT COLOR="#FFFFDD">เพิ่ม/แก้ไข/OFF ยา</FONT></B></TD>
@@ -399,7 +401,7 @@ while($arr = Mysql_fetch_assoc($result)){
 
 	$an = $arr['an'];
 
-	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL ";
+	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL AND `status` = 'y' ";
 	$medScanQuery = mysql_query($sql);
 	$link_scan = "";
 	if ( mysql_num_rows($medScanQuery) > 0 ) {
@@ -449,6 +451,7 @@ echo "
 	<TD></TD>
 	<TD>",$arr["bed"],"</TD>
 	<TD align=\"center\">",$arr["date1"]," ",$month_[$arr["date2"]]," ",substr($arr["date3"],2),"</TD>
+	<TD align=\"center\">",$arr["hn"],"</TD>
 	<TD><a href='phardc.php?an=".$arr["an"]."' onclick=\"return confirm('".$message." an : ".$arr["an"]."?');\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('",$arr["diagnos"],"','",$arr["doctor"],"','",$arr["age"],"');\" OnmouseOut = \"hid_tooltip();\">",$arr["an"],"</a></span></TD>
 	<TD>",$arr["ptname"],"</TD>
 	<TD align=\"center\">$L1</TD>
