@@ -683,139 +683,101 @@ C&deg; </td>
 </TR>
 </TABLE>
 <BR>
-<?php 
-
-$testDate = date('Y-m-d');
-$currHn = $arr_view["hn"];
-$sql = "SELECT a.`orderdate`,b.`labcode` 
-FROM `orderhead` AS a 
-LEFT JOIN `orderdetail` AS b ON b.`labnumber` = a.`labnumber` 
-WHERE a.`hn` = '$currHn' 
-AND a.`orderdate` LIKE '$testDate%' 
-AND a.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
-AND ( b.`labcode` = 'CBC' OR b.`labcode` = 'UA' ) ";
-$qLab = mysql_query($sql);
-$orderHeadTxt = '-';
-if( mysql_num_rows($qLab) > 0 ){
-	$headItem = mysql_fetch_assoc($qLab);
-	$orderHeadTxt = 'สั่งแล้วเมื่อ '.$headItem['orderdate'];
-}
-
-/**
- * ปัญหา max id
- */
-$resultTxt = '-';
-$sql = "SELECT a.`orderdate`,a.`hn`,a.`patientname`,a.`checkindate` 
-FROM `resulthead` AS a 
-WHERE a.`hn` = '$currHn' 
-AND a.`orderdate` LIKE '$testDate%' 
-AND a.`clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' ";
-$qRes = mysql_query($sql);
-if( mysql_num_rows($qRes) > 0 ){
-	$resItem = mysql_fetch_assoc($qRes);
-	$resultTxt = 'ผลแลปออกแล้วเมื่อ '.$resItem['checkindate'];
-}
-
-?>
-
-<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394">
-	<tr>
-		<td style="background-color: #0000CC; color: white;">สถานะการสั่งแลป</td>
-		<td><?=$orderHeadTxt;?></td>
-	</tr>
-	<tr>
-		<td style="background-color: #0000CC; color: white;">สถานะการ Authorise</td>
-		<td><?=$resultTxt;?></td>
-	</tr>
-</table>
-<br>
-
 
 <!-- ผลการตรวจทางพยาธิ -->
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
 	<TR>
-	<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="font-weight:bold; color:red; font-size: 26px;"><?php echo $lab_date;?></span></TD>
-	</TR>
-	<TR class="tb_font">
 		<TD>
-	&nbsp;&nbsp; <span class="style5">UA :</span> 
-       <table border="0">
-	  <tr>
-	  <?php
-	  $i=1;
-	  	while(list($labname,$labresult, $unit) = mysql_fetch_row($result_ua)){
-		if($labname == "OTHERU"){
-			$size="13";
-		}else{
-			$size="6";
-		}
+			<TABLE border="0" cellpadding="0" cellspacing="0">
+			<TR>
+				<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="font-weight:bold; color:red; font-size: 26px;"><?php echo $lab_date;?></span></TD>
+			</TR>
+			<TR class="tb_font">
+				<TD>
+					&nbsp;&nbsp; <span class="style5">UA :</span>
+       				<table border="0">
+						<tr>
+						<?php
+						$i=1;
+						while(list($labname,$labresult, $unit) = mysql_fetch_row($result_ua)){
+							if($labname == "OTHERU"){
+								$size="13";
+							}else{
+								$size="6";
+							}
 
-		//if(!empty($arr_dxofyear[$list_ua[$labname]]))
-			//$labresult = $arr_dxofyear[$list_ua[$labname]];
-	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
-          <td>&nbsp;<input name="<?php echo  $list_ua[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
-	<?php 
-	if($i%5==0) echo "<tr></tr>";
-	$i++;
-			}?>
-		  </tr>
-      </table>
-	  <hr />
-	  &nbsp;&nbsp; <span class="style5">CBC :</span> 
-	<div style="margin-top: -30px;">
-    <table border="0">
-	  <tr>
-	  <?php
-	  $i=1;
-	  	while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_cbc)){
-		if($labname == "OTHER" || $labname == "PLTS"){
-			$size="13";
-		}else{
-			$size="6";
-		}
-		//if(!empty($arr_dxofyear[$list_cbc[$labname]]))
-			//$labresult = $arr_dxofyear[$list_cbc[$labname]];
-	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
-          <td>&nbsp;<input name="<?php echo  $list_cbc[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
-          <input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
-          <input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
-	<?php 
-	if($i%5==0) echo "<tr></tr>";
-	$i++;
-			}?>
-		  </tr>
-      </table>
-      </div>
-	  <hr />
-	  <table border="0">
-	  <tr>
-	  <?php
-	  $i=1;
-	  	while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab)){
+							//if(!empty($arr_dxofyear[$list_ua[$labname]]))
+							//$labresult = $arr_dxofyear[$list_ua[$labname]];
+							?>
+							<td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
+							<td>&nbsp;<input name="<?php echo  $list_ua[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
+							<?php 
+							if($i%5==0) echo "<tr></tr>";
+								$i++;
+						}
+						?>
+						</tr>
+					</table>
+					<hr />
+				</td>
+			</tr>
+			<tr class="tb_font">
+				<td>
+					&nbsp;&nbsp; <span class="style5">CBC :</span>
+					<table border="0">
+						<tr>
+						<?php
+						$i=1;
+						while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_cbc)){
+							if($labname == "OTHER" || $labname == "PLTS"){
+								$size="13";
+							}else{
+								$size="6";
+							}
+							//if(!empty($arr_dxofyear[$list_cbc[$labname]]))
+							//$labresult = $arr_dxofyear[$list_cbc[$labname]];
+							?>
+							<td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
+							<td>&nbsp;<input name="<?php echo  $list_cbc[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
+							<input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
+							<input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
+							<?php 
+							if($i%5==0) echo "<tr></tr>";
+								$i++;
+						}
+						?>
+						</tr>
+					</table>
+					<hr />
+				</td>
+			</tr>
+			<tr class="tb_font">
+				</td>
+					<table border="0">
+						<tr>
+						<?php
+						$i=1;
+						while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab)){
 
-			//if(!empty($arr_dxofyear[$list_lab[$labname]]))
-			//$labresult = $arr_dxofyear[$list_lab[$labname]];
+							//if(!empty($arr_dxofyear[$list_lab[$labname]]))
+							//$labresult = $arr_dxofyear[$list_lab[$labname]];
 
-	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
-          <td>&nbsp;<input name="<?php echo  $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;<?php //echo $unit;?>
-&nbsp;</td>
-		 <input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
-          <input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
-	<?php 
-	if($i%5==0) echo "<tr></tr>";
-	$i++;
-			}?>
-		  </tr>
-      </table>
-		</TD>
-	</TR>
-	</TABLE>
+							?>
+							<td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
+							<td>&nbsp;<input name="<?php echo  $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;<?php //echo $unit;?>
+							&nbsp;</td>
+							<input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
+							<input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
+							<?php 
+							if($i%5==0) echo "<tr></tr>";
+								$i++;
+						}
+						?>
+						</tr>
+					</table>
+				</TD>
+			</TR>
+		</TABLE>
 	</TD>
 </TR>
 </TABLE>

@@ -60,6 +60,18 @@ if( $action == 'save' ) {
 
     redirect('chk_company.php', $msg);
     exit;
+}elseif ($action == 'del') {
+    
+    if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
+
+    $id = input_get('id');
+    $del = $db->exec("DELETE FROM `chk_company_list` WHERE `id` = '$id' ");
+    $msg = 'ดำเนินการเรียบร้อย';
+    if( $del !== true ){
+        $msg = errorMsg('delete', $del['id']);
+    }
+    redirect('chk_company.php', $msg);
+    exit;
 }
 
 ?>
@@ -84,6 +96,15 @@ if( $id > 0 ){
     $date_checkup = $item['date_checkup'];
     
     $read_only = 'readonly="readonly"';
+
+    $db->select("SELECT `row` FROM `opcardchk` WHERE `part` = '$code' ");
+    $user_rows = $db->get_rows();
+    $del_txt = 'chk_company.php?action=del&id='.$id;
+    if( $user_rows > 0 ){
+        // ถ้ายังมี user จะลบไม่ได้
+        $del_txt = 'javascript: void(0); alert(\'กรุณาลบรายชื่อผู้ตรวจสุขภาพก่อนลบบริษัท\');';
+    }
+    
 }
 ?>
 <fieldset>
@@ -97,11 +118,18 @@ if( $id > 0 ){
         </div>
         <div>
             วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
-            <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u></span>
-            <div>
-                <span style="color: red;">ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
-            </div>
+            <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
         </div>
+        <?php 
+        if( $id > 0 ){
+            ?>
+            <div>
+                <a href="<?=$del_txt;?>">ลบข้อมูลบริษัท</a>
+            </div>
+            <?php 
+        }
+        ?>
+        
         <div>
             <button type="submit">บันทึกข้อมูล</button>
             <input type="hidden" name="action" value="save">
