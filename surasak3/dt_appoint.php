@@ -109,17 +109,19 @@ if($_GET["action"] == "carlendar"){
 	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-	// สร้างชื่อ temp file แบบ rand ไม่ให้ไปชนกันใน db 
-	$tmp_appoint = 'tmp_'.rand(10000, 99999);
-	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
-	$sql_temp = "CREATE TEMPORARY TABLE `$tmp_appoint` 
-	SELECT `appdate`, `apptime`, `hn`, `other` 
-	FROM `appoint` 
-	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
-	AND apptime <> 'ยกเลิกการนัด' ";
-	//echo $sql_temp;
-	mysql_query($sql_temp);
+	// ถ้าไม่ใช่หมอเป้ค่อยแสดงผลรายการผู้ป่วยในในเดือนนั้น
+	if($_SESSION["sIdname"] != "md19921"){
+		// สร้างชื่อ temp file แบบ rand ไม่ให้ไปชนกันใน db 
+		$tmp_appoint = 'tmp_'.rand(10000, 99999);
+		// ดึงข้อมูลแบบ temp โดยยังไม่ group 
+		$sql_temp = "CREATE TEMPORARY TABLE `$tmp_appoint` 
+		SELECT `appdate`, `apptime`, `hn`, `other` 
+		FROM `appoint` 
+		WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+		AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+		AND apptime <> 'ยกเลิกการนัด' ";
+		mysql_query($sql_temp);
+	}
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
 	// From appoint  
@@ -128,11 +130,16 @@ if($_GET["action"] == "carlendar"){
 	// AND apptime <> 'ยกเลิกการนัด' 
 	// GROUP BY appdate, apptime  ";
 
-	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
-	From `$tmp_appoint`  
-	GROUP BY appdate, apptime  ";
+	// ถ้าไม่ใช่หมอเป้ค่อยแสดงผลรายการผู้ป่วยในในเดือนนั้น
+	if($_SESSION["sIdname"] != "md19921"){
+		$sql = "Select appdate, apptime, count(distinct hn) as total_app 
+		From `$tmp_appoint`  
+		GROUP BY appdate, apptime  ";
+		$result = Mysql_Query($sql);
+	}else{
+		$result = array();
+	}
 
-	$result = Mysql_Query($sql);
 	$list_app = array();
 	while($arr = Mysql_fetch_assoc($result)){
 		//echo "==><br>";
@@ -164,13 +171,16 @@ if($_GET["action"] == "carlendar"){
 	// and other!='' 
 	// GROUP BY appdate, apptime ,other ";
 
-
-	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
-	From `$tmp_appoint` 
-	WHERE other!='' 
-	GROUP BY appdate, apptime ,other ";
-
-	$result = Mysql_Query($sql);
+	// ถ้าไม่ใช่หมอเป้ค่อยแสดงผลรายการผู้ป่วยในในเดือนนั้น
+	if($_SESSION["sIdname"] != "md19921"){
+		$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
+		From `$tmp_appoint` 
+		WHERE other!='' 
+		GROUP BY appdate, apptime ,other ";
+		$result = Mysql_Query($sql);
+	}else{
+		$result = array();
+	}
 	$list_vac = array();
 	while($arr = Mysql_fetch_assoc($result)){
 		$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
@@ -204,6 +214,7 @@ if($_GET["action"] == "carlendar"){
 		$today2 = $today;
 	}
 
+	// แพทย์intern 
 	if( $dr_intern == true OR $_SESSION['smenucode'] == 'ADM' ){
 
 		$next_1month = strtotime(date('Y-m-d')." +1 month");
@@ -452,356 +463,29 @@ if($_GET["action"] == "carlendar"){
 
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
-$i=0;
-$sql2 = "select * from labcare where lab_list !=0 order by lab_list asc";
-$rows2=mysql_query($sql2);
-while($result2=mysql_fetch_array($rows2)){	
-	$list_lab_check[$i]["code"] = $result2['code'];
-	$list_lab_check[$i]["detail"] = $result2['lab_listdetail'];
-	$i++;
-}
-
-/*$i=0;
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LIPID";
-	$list_lab_check[$i]["detail"] = "Lipid";
-
-$i++;
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TG";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-
-$i++;
-	$list_lab_check[$i]["code"] = "E";
-	$list_lab_check[$i]["detail"] = "E'Lyte";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGOT";
-	$list_lab_check[$i]["detail"] = "AST";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGPT";
-	$list_lab_check[$i]["detail"] = "ALT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALB";
-	$list_lab_check[$i]["detail"] = "Alb";
-	
-$i++;	
-	$list_lab_check[$i]["code"] = "CBC";
-	$list_lab_check[$i]["detail"] = "CBC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCT";
-	$list_lab_check[$i]["detail"] = "HCT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BG";
-	$list_lab_check[$i]["detail"] = "BG";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";25
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10530";
-	$list_lab_check[$i]["detail"] = "HIV VL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "VDRL";
-	$list_lab_check[$i]["detail"] = "VDRL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBSAG";
-	$list_lab_check[$i]["detail"] = "HBsAg";29
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBSAB";
-	$list_lab_check[$i]["detail"] = "HBsAb";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBCAB";
-	$list_lab_check[$i]["detail"] = "HBcAb";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCV";
-	$list_lab_check[$i]["detail"] = "HCV";32
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10508";
-	$list_lab_check[$i]["detail"] = "HBeAg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10509";
-	$list_lab_check[$i]["detail"] = "HBeAg titer";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10517";
-	$list_lab_check[$i]["detail"] = "HBV VL";35
-
-$i++;
-	$list_lab_check[$i]["code"] = "10522";
-	$list_lab_check[$i]["detail"] = "HCV VL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10523";
-	$list_lab_check[$i]["detail"] = "HCV genotype";
-
-$i++;
-	$list_lab_check[$i]["code"] = "HBTY";
-	$list_lab_check[$i]["detail"] = "Hb typing";
-		
-$i++;
-	$list_lab_check[$i]["code"] = "ESR";
-	$list_lab_check[$i]["detail"] = "ESR";	
-
-$i++;
-	$list_lab_check[$i]["code"] = "CRP";
-	$list_lab_check[$i]["detail"] = "CRP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "RF";
-	$list_lab_check[$i]["detail"] = "RF";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PSA";
-	$list_lab_check[$i]["detail"] = "PSA";42
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFP";
-	$list_lab_check[$i]["detail"] = "AFP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CPK";
-	$list_lab_check[$i]["detail"] = "CPK";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10212";
-	$list_lab_check[$i]["detail"] = "Stool exam";
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Stool C/S";
-
-$i++;
-	$list_lab_check[$i]["code"] = "STOCB";
-	$list_lab_check[$i]["detail"] = "Stool occult blood";48
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFB";
-	$list_lab_check[$i]["detail"] = "AFB";
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S1";
-	$list_lab_check[$i]["detail"] = "Sputum C/S";50
-
-$i++;
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "Ca";
-
-
-//************
-
-$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-$i++;
-	$list_lab_check[$i]["code"] = "k";
-	$list_lab_check[$i]["detail"] = "K";
-
-$i++;
-	$list_lab_check[$i]["code"] = "Cl";
-	$list_lab_check[$i]["detail"] = "Cl";
-
-$i++;
-	$list_lab_check[$i]["code"] = "co2";
-	$list_lab_check[$i]["detail"] = "CO2";56
-
-$i++;
-	$list_lab_check[$i]["code"] = "PH";
-	$list_lab_check[$i]["detail"] = "P";
-
-$i++;
-	$list_lab_check[$i]["code"] = "MAG";
-	$list_lab_check[$i]["detail"] = "Mg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "Iron";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10245";
-	$list_lab_check[$i]["detail"] = "Zinc";60
-
-$i++;
-	$list_lab_check[$i]["code"] = "10362";
-	$list_lab_check[$i]["detail"] = "Copper";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10360";
-	$list_lab_check[$i]["detail"] = "Cadmium";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PT";
-	$list_lab_check[$i]["detail"] = "PT,INR";
-
-$i++;
-	$list_lab_check[$i]["code"] = "BLTI";
-	$list_lab_check[$i]["detail"] = "Bleeding time";64
-
-$i++;
-	$list_lab_check[$i]["code"] = "FER";
-	$list_lab_check[$i]["detail"] = "SF";
-
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "SI";//รวมกะiron59
-
-$i++;
-	$list_lab_check[$i]["code"] = "TIBC";
-	$list_lab_check[$i]["detail"] = "TIBC";66
-
-$i++;
-	$list_lab_check[$i]["code"] = "10979";
-	$list_lab_check[$i]["detail"] = "IPTH";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANCA";//
-
-$i++;
-	$list_lab_check[$i]["code"] = "10617";
-	$list_lab_check[$i]["detail"] = "C3";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10623";
-	$list_lab_check[$i]["detail"] = "C4";69
-
-$i++;
-	$list_lab_check[$i]["code"] = "ASO";
-	$list_lab_check[$i]["detail"] = "ASOtiter";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PTT";
-	$list_lab_check[$i]["detail"] = "PTT,Ratio";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";72
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN2";//
-
-$i++;
-	$list_lab_check[$i]["code"] = "BUNHD";
-	$list_lab_check[$i]["detail"] = "BUN3";73
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT";
-	$list_lab_check[$i]["detail"] = "Urine Protein";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-CR";
-	$list_lab_check[$i]["detail"] = "Urine Cr";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10421";
-	$list_lab_check[$i]["detail"] = "Urine Microalbumin";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT24";
-	$list_lab_check[$i]["detail"] = "24 hr. Urine Vol";*/
+	$i=0;
+	$sql2 = "select * from labcare where lab_list !=0 order by lab_list asc";
+	$rows2=mysql_query($sql2);
+	while($result2=mysql_fetch_array($rows2)){	
+		$list_lab_check[$i]["code"] = $result2['code'];
+		$list_lab_check[$i]["detail"] = $result2['lab_listdetail'];
+		$i++;
+	}
 	
 	$r=4;
 	$count = count($list_lab_check);
 
 
-echo "
-<TABLE width=\"100%\" border=\"0\">
-<TR valign=\"top\">
-	<TD width=\"500\">
-<TABLE width=\"100%\" align=\"left\" border=\"0\">
-<TR  valign=\"top\">
-	<TD  colspan=\"".($r*2)."\" align='left' >LAB อื่นๆ : <INPUT TYPE=\"text\" NAME=\"\" size=\"8\" onkeypress=\"searchSuggest('lab',this.value,3);\"><Div id=\"list\"></Div></TD>
-</TR>
-<TR>
-";
+	echo "
+	<TABLE width=\"100%\" border=\"0\">
+	<TR valign=\"top\">
+		<TD width=\"500\">
+	<TABLE width=\"100%\" align=\"left\" border=\"0\">
+	<TR  valign=\"top\">
+		<TD  colspan=\"".($r*2)."\" align='left' >LAB อื่นๆ : <INPUT TYPE=\"text\" NAME=\"\" size=\"8\" onkeypress=\"searchSuggest('lab',this.value,3);\"><Div id=\"list\"></Div></TD>
+	</TR>
+	<TR>
+	";
 
 	for($i=1;$i<=$count;$i++){
 		
@@ -825,27 +509,7 @@ echo "
 			echo "</TR><TR>";
 	}
 
-echo "</TR><TR><TD colspan=\"".($r*2)."\">
-";
-	
-
-			/*$sql = "Select code, detail From labcare where left(code,3) ='DR@' ";
-			$result = Mysql_Query($sql);
-			if(Mysql_num_rows($result) > 0){
-				echo "สูตร LAB<BR>";
-			while($arr = Mysql_fetch_assoc($result)){
-				$i=0;
-				$list = array();
-				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
-				$result2 = Mysql_Query($sql2);
-				while($arr2 = Mysql_fetch_assoc($result2)){
-					$list[$i] = $arr2["code"];
-					$i++;
-				}
-
-				echo "<A HREF=\"#\" Onclick=\"addsuittolist('".implode("][",$list)."');\">".$arr["detail"]."</A><BR>";
-			}		
-			}*/
+	echo "</TR><TR><TD colspan=\"".($r*2)."\">";
 
 echo "	</TD>
 </TR>
@@ -945,46 +609,46 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 
 if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
 
-echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
+	//onMouseover=\"pull()\"
+	//onMouseout=\"draw()\"
+	//style=\"display:none\"
+	echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
 
 	<TABLE width=\"450\" border=\"0\" cellpadding=\"4\" cellspacing=\"4\">
 	<TR>
-		<TD width=\"400\" bgcolor=\"#FFFFFF\" >";
+	<TD width=\"400\" bgcolor=\"#FFFFFF\" >";
+	
+	$i=  count($_COOKIE);
+	if($i > 1){
 
-$i=  count($_COOKIE);
-		if($i > 1){
+		foreach($_COOKIE as $key => $value){
+			
+			$xxx = explode(">",$value);
+			$yyy = explode("<",$xxx[1]);
 
-			foreach($_COOKIE as $key => $value){
-				
-				$xxx = explode(">",$value);
-				$yyy = explode("<",$xxx[1]);
-				$zzz = $yyy[0];
-				
-				$sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') AND apptime <> 'ยกเลิกการนัด'  ";
-				
+			$zzz = $yyy[0];
+			// $sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor = '".$_SESSION["dt_doctor"]."' AND apptime <> 'ยกเลิกการนัด'  ";
+			// $result = Mysql_Query($sql) or die(mysql_error());
+			// list($c_app) = Mysql_fetch_row($result);
 
-				$result = Mysql_Query($sql) or die(mysql_error());
-				list($c_app) = Mysql_fetch_row($result);
-
-				echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
-				$i--;
-				if($i==1)
-					break;
-			}
-		}		
+			echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
+			$i--;
+			if($i==1)
+				break;
+		}
+	}
 		
-		echo "</TD>
-		<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
+	echo "</TD>
+	<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
 	</TR>
 	</TABLE>
-	
-</layer>";
-exit();
+	</layer>";
+	exit();
 }
 
 if(isset($_GET["action"]) && $_GET["action"] == "deletecookie"){
 	setcookie($_GET["id"], "", time()-(3600*6));
-exit();
+	exit();
 }
 
 
@@ -1600,9 +1264,10 @@ include("dt_patient.php");
 	</TD>
 </TR>
 </TABLE>
-
-<div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()">
-</div>
+<!-- 
+	<div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
+ -->
+ <div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
 <script language="JavaScript1.2">
 
 	if (document.all){

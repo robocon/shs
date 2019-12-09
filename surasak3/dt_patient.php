@@ -199,6 +199,7 @@ if($rows > 0){
 </div>
 
 <?php 
+// ถ้าไม่ใช่หมอธนบดินและหมอมนชัย
 if($_SESSION["sIdname"] != "md19921" && $_SESSION["sIdname"] != "monchai"){  //ไม่ให้แสดงรายละเอียดคลินิกเบาหวาน
 // ดึงข้อมูลผู้ป่วยคลินิกเบาหวาน
 $hn = $_SESSION['hn_now'];
@@ -452,120 +453,6 @@ if($row > 0){
 					}
 					?>
 				</table>
-				<?php /* ?>
-				<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#ffffff">
-					<tr>
-						<td class="tb-bold">พ.ศ. <?php echo $year_th; ?></td>
-						<?php
-						foreach($months as $mnum => $mname){
-							?>
-							<td class="tb-bold"><?php echo $mname;?></td>
-							<?php
-						}
-						?>
-					</tr>
-					<tr>
-						<td>BS (mg%)</td>
-						<?php
-						foreach($months as $mnum => $mname){
-							$find_key = "$year-$mnum";
-							
-							$val = '-';
-							if(isset($labLists['BS'][$find_key])){
-								$val = $labLists['BS'][$find_key]['result_lab'];
-							}
-							
-							?>
-							<td align="center"><?php echo $val;?></td>
-							<?php
-						}
-						?>
-					</tr>
-					<tr>
-						<td>HbA1c (%)</td>
-						<?php
-						
-						foreach($months as $mnum => $mname){
-							$find_key = "$year-$mnum";
-							
-							$val = '-';
-							if(isset($labLists['HbA1c'][$find_key])){
-								$val = $labLists['HbA1c'][$find_key]['result_lab'];
-							}
-							?>
-							<td align="center"><?php echo $val;?></td>
-							<?php
-						}
-						?>
-					</tr>
-					<tr>
-						<td>LDL (mg/dl)</td>
-						<?php
-						
-						foreach($months as $mnum => $mname){
-							$find_key = "$year-$mnum";
-							
-							$val = '-';
-							if(isset($labLists['LDL'][$find_key])){
-								$val = $labLists['LDL'][$find_key]['result_lab'];
-							}
-							?>
-							<td align="center"><?php echo $val;?></td>
-							<?php
-						}
-						?>
-					</tr>
-					<tr>
-						<td>Creatinine (mg/dl)</td>
-						<?php
-						
-						foreach($months as $mnum => $mname){
-							$find_key = "$year-$mnum";
-							
-							$val = '-';
-							if(isset($labLists['Creatinine'][$find_key])){
-								$val = $labLists['Creatinine'][$find_key]['result_lab'];
-							}
-							?>
-							<td align="center"><?php echo $val;?></td>
-							<?php
-						}
-						?>
-					</tr>
-					<tr>
-						<td>Urine protein (mg/dl)</td>
-						<?php
-						foreach($months as $mnum => $mname){
-							$find_key = "$year-$mnum";
-							
-							$val = '-';
-							if(isset($labLists['Urine protein'][$find_key])){
-								$val = $labLists['Urine protein'][$find_key]['result_lab'];
-							}
-							?>
-							<td align="center"><?php echo $val;?></td>
-							<?php
-						}
-						?>
-					</tr>
-					<tr>
-						<td>Microalbuminuria</td>
-						<?php
-						foreach($months as $mnum => $mname){
-							$find_key = "$year-$mnum";
-							
-							$val = '-';
-							if(isset($labLists['Urine Microalbumin'][$find_key])){
-								$val = $labLists['Urine Microalbumin'][$find_key]['result_lab'];
-							}
-							?>
-							<td align="center"><?php echo $val;?></td>
-							<?php
-						}
-						?>
-					</tr>
-				</table>
-				<?php */ ?>
 			</div>
 		</div>
 	</div>
@@ -708,12 +595,9 @@ if($row > 0){
 		});
 	});
 	</script>
-
-	<script type="text/javascript">
-
-		
-	</script>
 	<?php
-	}
+	} // ถ้าไม่ใช่หมอธนบดินและหมอมนชัย
+
+
 }  //close if session
 ?>
