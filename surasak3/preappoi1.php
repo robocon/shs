@@ -39,7 +39,13 @@ Function calcage($birth){
             $pAge="$ageY ปี $ageM เดือน";
                         }
       return $pAge;
-          }
+		  }
+
+function dump($txt){
+	echo "<pre>";
+	var_dump($txt);
+	echo "</pre>";
+}
 
 //$dbirth="$y-$m-$d"; เก็บวันเกิดใน opcard= "$y-$m-$d" ซึ่ง=$birth in function
 
@@ -152,12 +158,6 @@ $wday = $FTime["wday"];
 //สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-function dump($txt){
-	echo "<pre>";
-	var_dump($txt);
-	echo "</pre>";
-}
-
 // ถ้าหมอที่เลือกจาก dropdown เป็นหมอ intern
 $total_items = array();
 if( $dr_position == '99 เวชปฏิบัติ' ){
@@ -177,13 +177,20 @@ if( $dr_position == '99 เวชปฏิบัติ' ){
 		$code = 'A'.$item['code'];
 		$total_items[$code] = $item;
 	}
-	// dump($total_items);
+	
+}
+
+// WHERE 
+if( preg_match('/MD\d+/',$appoint_doctor,$matchs) > 0 ){
+	$where_doctor = " AND `doctor` LIKE '".$matchs['0']."%' ";
+}elseif( preg_match('/(HD|NID)\s?.+/',$appoint_doctor,$matchs) > 0 ){
+	$where_doctor = " AND `doctor` = '$appoint_doctor' ";
 }
 
 $sql = "Select appdate, apptime, count(distinct hn) as total_app 
 From appoint  
 where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+$where_doctor
 AND apptime <> 'ยกเลิกการนัด' 
 GROUP BY appdate, apptime  ";
 

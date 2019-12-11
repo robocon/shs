@@ -52,12 +52,11 @@ function dump($txt){
 if($_GET["action"] == "carlendar"){
 
 	// หา mdcode ของหมอ
-	$sql = "Select mdcode From inputm where name = '".$_SESSION["dt_doctor"]."' limit 1";
-	list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
+	// $sql = "Select mdcode From inputm where name = '".$_SESSION["dt_doctor"]."' limit 1";
+	// list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
 
-	// 
-	$sql = "Select name From doctor where name like '".$mdcode."%' limit 1 ";
-	list($appoint_doctor) = Mysql_fetch_row(Mysql_Query($sql));
+	// $sql = "Select name From doctor where name like '".$mdcode."%' limit 1 ";
+	// list($appoint_doctor) = Mysql_fetch_row(Mysql_Query($sql));
 
    /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ 
    ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 
@@ -109,19 +108,29 @@ if($_GET["action"] == "carlendar"){
 	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-	// ถ้าไม่ใช่หมอเป้ค่อยแสดงผลรายการผู้ป่วยในในเดือนนั้น
-	if($_SESSION["sIdname"] != "md19921"){
-		// สร้างชื่อ temp file แบบ rand ไม่ให้ไปชนกันใน db 
-		$tmp_appoint = 'tmp_'.rand(10000, 99999);
-		// ดึงข้อมูลแบบ temp โดยยังไม่ group 
-		$sql_temp = "CREATE TEMPORARY TABLE `$tmp_appoint` 
-		SELECT `appdate`, `apptime`, `hn`, `other` 
-		FROM `appoint` 
-		WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-		AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
-		AND apptime <> 'ยกเลิกการนัด' ";
-		mysql_query($sql_temp);
+	if( preg_match('/MD\d+/',$_SESSION["dt_doctor"],$matchs) > 0 ){ 
+		$where_doctor = " AND `doctor` LIKE '".$matchs['0']."%' "; 
+
+	}elseif( preg_match('/(HD|NID)\s?.+/',$_SESSION["dt_doctor"],$matchs) > 0 ){ 
+		$hdCode = str_replace(array(' ', '  '),' ',$_SESSION['dt_doctor']);
+		$where_doctor = " AND `doctor` = '".$hdCode."' "; 
+
+	}else{ 
+		// ถ้าชื่อ ไม่ได้ขึ้นต้นด้วย MD หรือ HD ให้ไปหา mdcode
+		$qInput = mysql_query("SELECT `mdcode` FROM `inputm` WHERE `idname` = '".$_SESSION['sIdname']."' ");
+		$fetchInput = mysql_fetch_assoc($qInput);
+		$where_doctor = " AND `doctor` LIKE '".$fetchInput['mdcode']."%' "; 
+		
 	}
+
+	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
+	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
+	SELECT `appdate`, `apptime`, `hn`, `other` 
+	FROM `appoint` 
+	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+	$where_doctor 
+	AND apptime <> 'ยกเลิกการนัด' ";
+	mysql_query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
 	// From appoint  
@@ -130,19 +139,12 @@ if($_GET["action"] == "carlendar"){
 	// AND apptime <> 'ยกเลิกการนัด' 
 	// GROUP BY appdate, apptime  ";
 
-	// ถ้าไม่ใช่หมอเป้ค่อยแสดงผลรายการผู้ป่วยในในเดือนนั้น
-	if($_SESSION["sIdname"] != "md19921"){
-		$sql = "Select appdate, apptime, count(distinct hn) as total_app 
-		From `$tmp_appoint`  
-		GROUP BY appdate, apptime  ";
-		$result = Mysql_Query($sql);
-	}else{
-		$result = array();
-	}
-
+	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
+	From `tmp_appointment`  
+	GROUP BY appdate, apptime  ";
+	$result = Mysql_Query($sql);
 	$list_app = array();
 	while($arr = Mysql_fetch_assoc($result)){
-		//echo "==><br>";
 		$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
@@ -171,21 +173,18 @@ if($_GET["action"] == "carlendar"){
 	// and other!='' 
 	// GROUP BY appdate, apptime ,other ";
 
-	// ถ้าไม่ใช่หมอเป้ค่อยแสดงผลรายการผู้ป่วยในในเดือนนั้น
-	if($_SESSION["sIdname"] != "md19921"){
-		$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
-		From `$tmp_appoint` 
-		WHERE other!='' 
-		GROUP BY appdate, apptime ,other ";
-		$result = Mysql_Query($sql);
-	}else{
-		$result = array();
-	}
+	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
+	From `tmp_appointment` 
+	WHERE other!='' 
+	GROUP BY appdate, apptime ,other ";
+	$result = Mysql_Query($sql);
 	$list_vac = array();
 	while($arr = Mysql_fetch_assoc($result)){
 		$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
+
+	mysql_query("DROP TEMPORARY TABLE `tmp_appointment`;");
 
 	$long_time = $month+$year;
 	$month2 = date("m");
