@@ -108,15 +108,12 @@ if($_GET["action"] == "carlendar"){
 	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-	if( preg_match('/MD\d+/',$_SESSION["dt_doctor"],$matchs) > 0 ){ 
-		$where_doctor = " AND `doctor` LIKE '".$matchs['0']."%' "; 
-
-	}elseif( preg_match('/(HD|NID)\s?.+/',$_SESSION["dt_doctor"],$matchs) > 0 ){ 
+	if( preg_match('/(HD|NID)\s?.+/',$_SESSION["dt_doctor"],$matchs) > 0 ){ 
 		$hdCode = str_replace(array(' ', '  '),' ',$_SESSION['dt_doctor']);
-		$where_doctor = " AND `doctor` = '".$hdCode."' "; 
+		$where_doctor = " AND `doctor` = '$hdCode' "; 
 
 	}else{ 
-		// ถ้าชื่อ ไม่ได้ขึ้นต้นด้วย MD หรือ HD ให้ไปหา mdcode
+		// ถ้าชื่อหมอเป็นชื่อปกติให้ดึงเอา mdcode มาใช้เลย
 		$qInput = mysql_query("SELECT `mdcode` FROM `inputm` WHERE `idname` = '".$_SESSION['sIdname']."' ");
 		$fetchInput = mysql_fetch_assoc($qInput);
 		$where_doctor = " AND `doctor` LIKE '".$fetchInput['mdcode']."%' "; 
@@ -239,6 +236,25 @@ if($_GET["action"] == "carlendar"){
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
+		echo '<br>';
+
+	}
+
+	// แสดงของหมอเป้
+	if( $_SESSION['sIdname'] == 'md19921' ){ 
+
+		$next_3month = strtotime(date('Y-m-d')." +3 months");
+		$next_6month = strtotime(date('Y-m-d')." +6 months");
+		$next_1year = strtotime(date('Y-m-d')." +1 year");
+
+		list($n3mY, $n3mM, $n3mD) = explode('-', date('Y-m-d', $next_3month));
+		list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
+		list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
+
+
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>';
 		echo '<br>';
 
 	}

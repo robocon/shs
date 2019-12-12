@@ -64,7 +64,7 @@ if(mysql_num_rows($result)){
 	
 	// เพิ่ม log กรณีที่ login ผ่านเรียบร้อยแล้ว
 	$user = mysql_fetch_assoc(mysql_query($query));
-	$sql = sprintf("INSERT INTO `smdb`.`log_inputm` (
+	$sql = sprintf("INSERT INTO `log_inputm` (
 	`log_date` ,`user_id` ,`name` ,`menucode` ,`login_date` ,`login_fail_date` ,`logout_date`
 	) VALUES (
 	'%s', '%s', '%s', '%s', '%s', '%s', '%s'
@@ -87,7 +87,7 @@ if(mysql_num_rows($result)){
 	// กรณีที่มีข้อมูลจากชื่อล็อกอิน ให้เก็บรายละเอียดเช่น ไอดี, ชื่อ, เมนูโค้ด
 	if($item !== false){
 		
-		$sql = sprintf("INSERT INTO `smdb`.`log_inputm` (
+		$sql = sprintf("INSERT INTO `log_inputm` (
 		`log_date` ,`user_id` ,`name` ,`menucode` ,`login_date` ,`login_fail_date` ,`logout_date`
 		) VALUES (
 		'%s', '%s', '%s', '%s', '%s', '%s', '%s'
@@ -95,7 +95,7 @@ if(mysql_num_rows($result)){
 		
 	}else{
 		
-		$sql = sprintf("INSERT INTO `smdb`.`log_inputm` (
+		$sql = sprintf("INSERT INTO `log_inputm` (
 		`log_date` ,`user_id` ,`name` ,`menucode` ,`login_date` ,`login_fail_date` ,`logout_date`
 		) VALUES (
 		'%s', '%s', '%s', '%s', '%s', '%s', '%s'
@@ -109,7 +109,6 @@ if(mysql_num_rows($result)){
 ////*runno ตรวจสุขภาพ*/////////
 $query = "SELECT `runno`, `prefix`  FROM `runno` WHERE `title` = 'y_chekup'";
 $result = mysql_query($query) or die( mysql_error($Conn) );
-// var_dump($result);
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	if (!mysql_data_seek($result, $i)) {
 		echo "Cannot seek to row $i\n";
