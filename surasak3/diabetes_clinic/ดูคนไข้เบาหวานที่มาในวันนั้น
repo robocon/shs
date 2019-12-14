@@ -1,6 +1,6 @@
 select a.row_id,a.hn,a.ptname,b.row_id,b.thidate,b.vn 
 from diabetes_clinic as a 
 left join (
-    select row_id,thidate,hn,vn,ptname from opday where thidate like '2562-11-28%' 
+    select row_id,thidate,hn,vn,ptname from opday where thidate like '2562-12-14%' 
 ) as b on b.hn = a.hn 
 where b.row_id is not null 

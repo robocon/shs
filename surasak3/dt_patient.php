@@ -31,7 +31,14 @@ function handlerMMY(e){
 
 <?php
 
+if( !function_exists('dump') ){
+	function dump($txt){
+		echo "<pre>";
+		echo var_dump($txt);
+		echo "</pre>";
+	}
 	
+}
 
 $sql = "Select toborow,diag From opday where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
 
@@ -199,17 +206,22 @@ if($rows > 0){
 </div>
 
 <?php 
-// ถ้าไม่ใช่หมอธนบดินและหมอมนชัย
 if($_SESSION["sIdname"] != "md19921" && $_SESSION["sIdname"] != "monchai"){  //ไม่ให้แสดงรายละเอียดคลินิกเบาหวาน
 // ดึงข้อมูลผู้ป่วยคลินิกเบาหวาน
 $hn = $_SESSION['hn_now'];
 $year = date('Y');
-$sql = "SELECT * FROM diabetes_clinic WHERE hn = '$hn' AND `dateN` LIKE '$year-%'";
-$query_diabetes = mysql_query($sql);
-$row = mysql_num_rows($query_diabetes);
 
-if($row > 0){
-	
+// ถ้ามีข้อมูล Active 3ปีย้อนหลัง
+$sql = "SELECT `row_id`,`hn`,`dm_no`,`dateN` 
+FROM diabetes_clinic 
+WHERE hn = '$hn' 
+AND TIMESTAMPDIFF(YEAR,`dateN`,NOW()) < 3";
+$query_diabetes = mysql_query($sql);
+$row_diabet = mysql_num_rows($query_diabetes);
+
+if($row_diabet > 0){
+	$dmUser = mysql_fetch_assoc($query_diabetes);
+	$dmNo = $dmUser['dm_no']
 	?>
 	<style type="text/css">
 	#dialog-contain{
@@ -279,21 +291,38 @@ if($row > 0){
 			<div id="msg-contain">
 
 				<?php 
-				$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
-				
 				$dtNow = date('Y-m-d');
 				$dtPass = date('Y-m-d', strtotime("-2 years"));
+
+				$tempSQL = "CREATE TEMPORARY TABLE `tmp_diabet_history` 
+				SELECT * 
+				FROM `diabetes_clinic_history` 
+				WHERE `hn` = '$hn' 
+				AND ( `dateN` >= '$dtPass 00:00:00' AND `dateN` <= '$dtNow 23:59:59' ) ";
+				$qTmp = mysql_query($tempSQL);
+				if($qTmp === false){
+					echo mysql_error();
+				}
+
+				$months = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+				
 				$sql = "SELECT `row_id`,`dateN`,`foot`,`retinal`,`tooth`,
 				SUBSTRING(`foot_date`,1,10) AS `foot_date`,
 				SUBSTRING(`retinal_date`,1,10) AS `retinal_date`,
 				SUBSTRING(`tooth_date`,1,10) AS `tooth_date`,
 				CONCAT((SUBSTRING(`dateN`,1,4)+543),SUBSTRING(`dateN`,5,6)) AS `thaidate`
-				FROM `diabetes_clinic_history` 
-				WHERE `hn` = '$hn' 
-				AND ( `dateN` >= '$dtPass' AND `dateN` <= '$dtNow' ) 
+				FROM `tmp_diabet_history` 
 				ORDER BY `row_id` DESC";
-				$q = mysql_query($sql);
-				if( mysql_num_rows($q) > 0 ){
+				$qDiabetHis = mysql_query($sql);
+				if($qTmp === false){
+					echo mysql_error();
+				}
+
+				// สถานะข้อมูลย้อนหลัง2ปี ถ้าไม่มีให้แจ้งเตือน
+				$diabetStatus = false;
+
+				if( mysql_num_rows($qDiabetHis) > 0 ){
+					$diabetStatus = true;
 					?>
 					<table class="chk_table">
 						<tr>
@@ -303,7 +332,7 @@ if($row > 0){
 							<th>ตรวจสุขภาพฟัน</th>
 						</tr>
 						<?php 
-						while ( $item = mysql_fetch_assoc($q) ) {
+						while ( $item = mysql_fetch_assoc($qDiabetHis) ) {
 							$id = $item['row_id'];
 							?>
 							<tr>
@@ -360,99 +389,106 @@ if($row > 0){
 					<br>
 					<?php
 				}
-
-				$year = date('Y');
-				$year_th = $year + 543;
-				$prev_ymd = ($year - 2).date('-m-d');
-				$current_ymd = date('Y-m-d');
 				
-				$sql = "SELECT a.hn,a.ptname,a.dm_no, a.dummy_no,b.labname,b.result_lab,b.dateY,
-				DATE_FORMAT(b.dateY, '%Y') AS `year`,
-				DATE_FORMAT(b.dateY, '%m') AS `month`,
-				DATE_FORMAT(b.dateY, '%Y-%m') AS `result_date`
-				FROM ( 
-					SELECT * FROM diabetes_clinic_history 
-					WHERE hn = '$hn' 
-					AND ( dateN > '$prev_ymd 00:00:00' AND dateN <= '$current_ymd 23:59:59' ) 
-				) AS a 
-				LEFT JOIN diabetes_lab AS b ON b.dm_no = a.dm_no 
-				WHERE b.dummy_no = a.dummy_no 
-				ORDER BY b.dateY ASC";
-
+				$sql = "SELECT a.`hn`,a.`ptname`,a.`dm_no`, a.`dummy_no`,b.`labname`,b.`result_lab`,b.`dateY`,
+				DATE_FORMAT(b.`dateY`, '%Y') AS `year`,
+				DATE_FORMAT(b.`dateY`, '%m') AS `month`,
+				DATE_FORMAT(b.`dateY`, '%Y-%m') AS `result_date`
+				FROM `tmp_diabet_history` AS a 
+				LEFT JOIN ( 
+					SELECT * FROM `diabetes_lab` 
+					WHERE `dm_no` = '$dmNo' 
+					AND ( `dateY` >= '$dtPass 00:00:00' AND `dateY` <= '$dtNow 23:59:59' )
+				) AS b ON b.`dm_no` = a.`dm_no` 
+				ORDER BY b.`dateY` ASC";
 				$qLab = mysql_query($sql);
-			
+				if($qLab === false){
+					echo mysql_error();
+				}
+
 				$labLists = array(); // เก็บค่าผลแลป
 				$yearList = array(); // แสดงปีตรงหัวตาราง
 				$countYearMonth = array(); // แสดงเดือนตรงหัวตาราง
 				
-				// ตัวนับเดือนของแต่ละปี
-				while ( $labItem = mysql_fetch_assoc($qLab) ) { 
+				if( mysql_num_rows($qLab) > 0 ){
 
-					$kYear = $labItem['year'];
-					$kMonth = $labItem['month'];
-					$subKey = $labItem['result_date'];
+					$diabetStatus = true;
+				
+					// ตัวนับเดือนของแต่ละปี
+					while ( $labItem = mysql_fetch_assoc($qLab) ) { 
 
-					$labname = $labItem['labname'];
+						$kYear = $labItem['year'];
+						$kMonth = $labItem['month'];
+						$subKey = $labItem['result_date'];
 
-					$yearList[$kYear][$kMonth] = 1;
-					$countYearMonth[$subKey] = $kMonth;
-					
-					$labLists[$subKey.$labname] = $labItem;
+						$labname = $labItem['labname'];
 
-				}
+						$yearList[$kYear][$kMonth] = 1;
+						$countYearMonth[$subKey] = $kMonth;
+						
+						$labLists[$subKey.$labname] = $labItem;
 
-				// echo "<pre>";
-				// var_dump($labLists);
-				// echo "</pre>";
+					}
 
-				// รายการ Lab ที่จะแสดง
-				$labItemsTr = array('BS','HbA1c','LDL','Creatinine','Urine protein','Urine Microalbumin');
+					mysql_query("DROP TEMPORARY TABLE `tmp_diabet_history`;");
 
-				?>
-				<table class="chk_table">
-					<tr>
-						<th rowspan="2">รายการตรวจ</th>
-						<?php 
-						foreach ($yearList as $key => $y) {
-							$Col = count($y);
-							?>
-							<th colspan="<?=$Col;?>" align="center">ปี <?=$key+543;?></th>
-							<?php 
-							
-						}
-						?>
-					</tr>
-					<tr>
-						<?php 
-						foreach ($countYearMonth as $m => $mv) {
-							?>
-							<th align="center"><?=$months[$mv];?></th>
-							<?php
-						}
-						?>
-					</tr>
-					<?php 
-					foreach ($labItemsTr as $trKey => $trVal) {
-						?>
+					// รายการ Lab ที่จะแสดง
+					$labItemsTr = array('BS','HbA1c','LDL','Creatinine','Urine protein','Urine Microalbumin');
+
+					?>
+					<table class="chk_table">
 						<tr>
-							<td><?=$trVal;?></td>
+							<th rowspan="2">รายการตรวจ</th>
 							<?php 
-							foreach ($countYearMonth as $m => $mv) { 
-
-								$res = '-';
-								if( $labLists[$m.$trVal]['labname'] == $trVal ){
-									$res = $labLists[$m.$trVal]['result_lab'];
-								}
+							foreach ($yearList as $key => $y) {
+								$Col = count($y);
 								?>
-								<td align="center"><?=$res;?></td>
+								<th colspan="<?=$Col;?>" align="center">ปี <?=$key+543;?></th>
+								<?php 
+								
+							}
+							?>
+						</tr>
+						<tr>
+							<?php 
+							foreach ($countYearMonth as $m => $mv) {
+								?>
+								<th align="center"><?=$months[$mv];?></th>
 								<?php
 							}
 							?>
 						</tr>
-						<?php
-					}
-					?>
-				</table>
+						<?php 
+						foreach ($labItemsTr as $trKey => $trVal) {
+							?>
+							<tr>
+								<td><?=$trVal;?></td>
+								<?php 
+								foreach ($countYearMonth as $m => $mv) { 
+
+									$res = '-';
+									if( $labLists[$m.$trVal]['labname'] == $trVal ){
+										$res = $labLists[$m.$trVal]['result_lab'];
+									}
+									?>
+									<td align="center"><?=$res;?></td>
+									<?php
+								}
+								?>
+							</tr>
+							<?php
+						}
+						?>
+					</table>
+					<?php 
+				}
+
+				if( $diabetStatus == false ){ 
+					// $months
+					list($yDM,$mDM,$dDM) = explode('-', $dmUser['dateN']);
+					echo "ไม่มีข้อมูล2ปีย้อนหลัง ผู้ป่วยมีข้อมูลDMครั้งสุดท้ายเมื่อ $dDM ".$months[$mDM].' '.($yDM+543);
+				}
+				?>
 			</div>
 		</div>
 	</div>
@@ -595,9 +631,12 @@ if($row > 0){
 		});
 	});
 	</script>
+
+	<script type="text/javascript">
+
+		
+	</script>
 	<?php
-	} // ถ้าไม่ใช่หมอธนบดินและหมอมนชัย
-
-
+	}
 }  //close if session
 ?>
