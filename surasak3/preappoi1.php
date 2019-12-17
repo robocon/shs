@@ -9,16 +9,28 @@ session_start();
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
-	session_register("cAge");
-    session_register("cHn");  
-    session_register("cPtname");
- 	session_register("cptright");
- 	session_register("cnote");
-	session_register("cidguard");
-	session_register("dt_doctor");
+
+session_register("cAge");
+session_register("cHn");  
+session_register("cPtname");
+session_register("cptright");
+session_register("cnote");
+session_register("cidguard");
+session_register("dt_doctor");
 //    $cHn="";
 
-    include("connect.inc");   
+include("connect.inc");
+
+// ปรับตอนดึงตารางให้มาใช้ mysqli
+$dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
+
+if( !function_exists('dump') ){
+	function dump($txt){
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
+}
 
 Function calcage($birth){
       $today = getdate();   
@@ -39,12 +51,6 @@ Function calcage($birth){
             $pAge="$ageY ปี $ageM เดือน";
                         }
       return $pAge;
-		  }
-
-function dump($txt){
-	echo "<pre>";
-	var_dump($txt);
-	echo "</pre>";
 }
 
 //$dbirth="$y-$m-$d"; เก็บวันเกิดใน opcard= "$y-$m-$d" ซึ่ง=$birth in function
@@ -56,8 +62,8 @@ if(isset($idguard)){
    	$cptright=$ptright;
  	$cnote=$note;
 	$cidguard=$idguard;
-$cAge=calcage($cAge);
-print "<p><font face='Angsana New' size = '5'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";
+	$cAge=calcage($cAge);
+	print "<p><font face='Angsana New' size = '5'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";
 }
 
 function LastDay($m, $y) {
@@ -69,13 +75,15 @@ function LastDay($m, $y) {
 }
 
 if($_GET["action"] == "carlendar"){
-	if($_GET['id']==""){
-	}
-	else{
-	$dt_doctor = $_GET['id'];
-	//echo $dt_doctor ;
-	}
+
 	
+
+	if( $_GET['id'] != "" ){
+		// header('Content-Type: text/html; charset=utf-8');
+		// $dt_doctor = iconv('TIS-620','UTF-8',$_GET['id']);
+		$dt_doctor = iconv('UTF-8','TIS-620',$_GET['id']);
+	}
+
 	
 //$sql = "Select mdcode From inputm where name = '".$_GET['id']."' limit 1";
 //list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
@@ -158,28 +166,43 @@ $wday = $FTime["wday"];
 //สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
+$thai_date = $thmonthname[($month - 1)]." ".($year + 543);
+
+$sqlAppTemp = "CREATE TEMPORARY TABLE `tmp_appoint_opd` 
+SELECT `appdate`,`apptime`,`hn`,`doctor` 
+FROM `appoint` 
+WHERE `appdate` LIKE '%$thai_date'";
+// mysql_query($sqlAppTemp);
+$dbi->query($sqlAppTemp);
+
+
 // ถ้าหมอที่เลือกจาก dropdown เป็นหมอ intern
 $total_items = array();
 if( $dr_position == '99 เวชปฏิบัติ' ){
-	$thai_date = $thmonthname[($month - 1)]." ".($year + 543);
 	
 	// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
 	$sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
 	FROM `doctor` AS a 
-	LEFT JOIN (
-		SELECT `appdate`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
-	) AS b ON a.name = b.`doctor` 
+	LEFT JOIN `tmp_appoint_opd` AS b ON a.`name` = b.`doctor` 
 	WHERE a.`position` = '99 เวชปฏิบัติ' 
 	AND b.`appdate` IS NOT NULL 
 	GROUP BY b.`appdate`  ";
-	$query = mysql_query($sql);
-	while( $item = mysql_fetch_assoc($query) ){
+	
+	// $query = mysql_query($sql);
+	// while( $item = mysql_fetch_assoc($query) ){
+	// 	$code = 'A'.$item['code'];
+	// 	$total_items[$code] = $item;
+	// }
+
+	$result = $dbi->query($sql);
+	while ($item = $result->fetch_assoc()) {
 		$code = 'A'.$item['code'];
 		$total_items[$code] = $item;
 	}
-	
 }
-
+?>
+<div style="display: none;" id="shs_debug"><?=$appoint_doctor;?></div>
+<?php
 // WHERE 
 if( preg_match('/MD\d+/',$appoint_doctor,$matchs) > 0 ){
 	$where_doctor = " AND `doctor` LIKE '".$matchs['0']."%' ";
@@ -188,21 +211,27 @@ if( preg_match('/MD\d+/',$appoint_doctor,$matchs) > 0 ){
 }
 
 $sql = "Select appdate, apptime, count(distinct hn) as total_app 
-From appoint  
-where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+From `tmp_appoint_opd` 
+WHERE apptime <> 'ยกเลิกการนัด' 
 $where_doctor
-AND apptime <> 'ยกเลิกการนัด' 
 GROUP BY appdate, apptime  ";
 
-$result = Mysql_Query($sql);
+// $result = Mysql_Query($sql);
 $list_app = array();
-while($arr = Mysql_fetch_assoc($result)){
-	
+// while($arr = Mysql_fetch_assoc($result)){
+// 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
+// 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
+// }
+
+$result = $dbi->query($sql);
+while ($arr = $result->fetch_assoc()) {
 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
-
-
 }
+
+
+// mysql_query("DROP TEMPORARY TABLE `tmp_appoint_opd`;");
+$dbi->query("DROP TEMPORARY TABLE `tmp_appoint_opd`;");
 
 $sql = "Select date_format(date_holiday,'%d') as date_holiday2, detail From holiday where date_holiday like '".($year+543)."-".sprintf("%02d",$month)."%' ";
 
@@ -542,7 +571,7 @@ function show_carlendar(xxx){
 	//alert(xxx);
 	xmlhttp = newXmlHttp();
 	
-	url = 'preappoi1.php?action=carlendar&id=' + xxx;
+	url = 'preappoi1.php?action=carlendar&id='+xxx;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	document.getElementById("div_right_list").innerHTML = xmlhttp.responseText;
@@ -600,27 +629,21 @@ function handlerMMY(e){
   $sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
 list($menucode) = Mysql_fetch_row(Mysql_Query($sql));
 
-  if($menucode == "ADMMAINOPD"){
-  ?>
-  
-  <? 
-
-$strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'  order by name "; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-?>
-<select name="doctor"  onChange="show_carlendar(this.value)"> 
-<? 
-while($objResult = mysql_fetch_array($objQuery)) 
-{ 
-?> 
-<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> 
-<? 
-} 
-?> 
-</select>
-
-
-  <?php }else  if($menucode == "ADMDEN"){
+if($menucode == "ADMMAINOPD"){
+	$strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'  order by name "; 
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	?>
+	<select name="doctor"  onChange="show_carlendar(this.value)"> 
+		<?php
+		while($objResult = mysql_fetch_array($objQuery)) { 
+			?> 
+			<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> 
+			<? 
+		} 
+		?> 
+	</select>
+	<?php 
+}else  if($menucode == "ADMDEN"){
 
 $strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMDEN'  order by name "; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
@@ -655,27 +678,24 @@ while($objResult = mysql_fetch_array($objQuery))
 ?>
 <option value="MD072 บุริน เลาหะวัฒนะ">MD072 บุริน เลาหะวัฒนะ</option> 
   </select>
-  <?php }else{?>
-	  <? 
-	 $strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-?>
-<select name="doctor" onChange="show_carlendar(this.value)"> 
-<? 
-while($objResult = mysql_fetch_array($objQuery)) 
-{ 
-?> 
-<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> 
-<? 
-} 
-?> 
-</select>
+  <?php 
+}else{
 
-	  <?php }?>
-  
-  <?
-  
-  ?>
+	$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	?>
+	<select name="doctor" onChange="show_carlendar(encodeURI(this.value))"> 
+		<?php
+		while($objResult = mysql_fetch_array($objQuery)) { 
+			?> 
+			<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> 
+			<?php
+		} 
+		?> 
+	</select>
+	<?php 
+}
+?>
   </font> </p>
 
   <div id="div_right_list" ></div>

@@ -15,6 +15,9 @@ if( $_SESSION['sIdname'] == 'md19921' ){
 	include_once 'includes/connect_md013.php';
 }
 
+// ปรับตอนดึงตารางให้มาใช้ mysqli
+$dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
+
 $_SESSION["list_lab"] = array() ;
 
 function calcage($birth){
@@ -42,21 +45,23 @@ function LastDay($m, $y) {
       }
    }
 }
-
-function dump($txt){
-	echo "<pre>";
-	var_dump($txt);
-	echo "</pre>";
+if( !function_exists('dump') ){
+	function dump($txt){
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
 }
 
 if($_GET["action"] == "carlendar"){
 
 	// หา mdcode ของหมอ
-	// $sql = "Select mdcode From inputm where name = '".$_SESSION["dt_doctor"]."' limit 1";
-	// list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
+	$sql = "Select mdcode From inputm where name = '".$_SESSION["dt_doctor"]."' limit 1";
+	list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
 
-	// $sql = "Select name From doctor where name like '".$mdcode."%' limit 1 ";
-	// list($appoint_doctor) = Mysql_fetch_row(Mysql_Query($sql));
+	// 
+	$sql = "Select name From doctor where name like '".$mdcode."%' limit 1 ";
+	list($appoint_doctor) = Mysql_fetch_row(Mysql_Query($sql));
 
    /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ 
    ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 
@@ -108,26 +113,15 @@ if($_GET["action"] == "carlendar"){
 	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-	if( preg_match('/(HD|NID)\s?.+/',$_SESSION["dt_doctor"],$matchs) > 0 ){ 
-		$hdCode = str_replace(array(' ', '  '),' ',$_SESSION['dt_doctor']);
-		$where_doctor = " AND `doctor` = '$hdCode' "; 
-
-	}else{ 
-		// ถ้าชื่อหมอเป็นชื่อปกติให้ดึงเอา mdcode มาใช้เลย
-		$qInput = mysql_query("SELECT `mdcode` FROM `inputm` WHERE `idname` = '".$_SESSION['sIdname']."' ");
-		$fetchInput = mysql_fetch_assoc($qInput);
-		$where_doctor = " AND `doctor` LIKE '".$fetchInput['mdcode']."%' "; 
-		
-	}
-
 	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
 	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
 	SELECT `appdate`, `apptime`, `hn`, `other` 
 	FROM `appoint` 
 	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-	$where_doctor 
+	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
 	AND apptime <> 'ยกเลิกการนัด' ";
-	mysql_query($sql_temp);
+	// mysql_query($sql_temp);
+	$dbi->query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
 	// From appoint  
@@ -139,13 +133,19 @@ if($_GET["action"] == "carlendar"){
 	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
 	From `tmp_appointment`  
 	GROUP BY appdate, apptime  ";
-	$result = Mysql_Query($sql);
+	// $result = Mysql_Query($sql);
 	$list_app = array();
-	while($arr = Mysql_fetch_assoc($result)){
+	// while($arr = Mysql_fetch_assoc($result)){
+	// 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
+	// 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
+	// }
+
+	$result = $dbi->query($sql);
+	while ($arr = $result->fetch_assoc()) {
 		$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
-
+	$result->free();
 
 	// ผู้ใช้งานปัจจุบันเป็นแพทย์เวชปฏิบัติหรือไม่ ถ้าใช่ค่อย query statement ออกมา
 	$dr_intern = false;
@@ -170,18 +170,27 @@ if($_GET["action"] == "carlendar"){
 	// and other!='' 
 	// GROUP BY appdate, apptime ,other ";
 
+
 	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
 	From `tmp_appointment` 
 	WHERE other!='' 
 	GROUP BY appdate, apptime ,other ";
-	$result = Mysql_Query($sql);
+	// $result = Mysql_Query($sql);
 	$list_vac = array();
-	while($arr = Mysql_fetch_assoc($result)){
+	// while($arr = Mysql_fetch_assoc($result)){
+	// 	$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
+	// 	$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
+	// }
+
+	$result = $dbi->query($sql);
+	while ($arr = $result->fetch_assoc()) {
 		$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
+	$result->free();
 
-	mysql_query("DROP TEMPORARY TABLE `tmp_appointment`;");
+	// mysql_query("DROP TEMPORARY TABLE `tmp_appointment`;");
+	$dbi->query("DROP TEMPORARY TABLE `tmp_appointment`;");
 
 	$long_time = $month+$year;
 	$month2 = date("m");
@@ -251,7 +260,7 @@ if($_GET["action"] == "carlendar"){
 		list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
 		list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
 
-
+		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">วันปัจจุบัน</a>&nbsp;||&nbsp;';
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>&nbsp;||&nbsp;';
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
 		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>';
