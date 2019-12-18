@@ -22,3 +22,15 @@ SET
 WHERE title = 'death' ;";
 $update_death = mysql_query($sql) or die( mysql_error() );
 var_dump($update_death);
+
+$sql = "UPDATE `runno` SET `prefix` = '$year_prefix', `runno` = '0' WHERE title = 'y_chekup' ;";
+$update_y_chekup = mysql_query($sql) or die( mysql_error() );
+var_dump($update_y_chekup);
+
+$sql = "UPDATE `runno` SET `prefix` = '$year_prefix', `runno` = '0' WHERE title = 'c_chekup' ;";
+$update_c_chekup = mysql_query($sql) or die( mysql_error() );
+var_dump($update_c_chekup);
+
+$sql = "UPDATE `runno` SET `prefix` = '$year_prefix', `runno` = '0' WHERE title = 's_chekup' ;";
+$update_s_chekup = mysql_query($sql) or die( mysql_error() );
+var_dump($update_s_chekup);

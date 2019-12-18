@@ -1,5 +1,9 @@
 <?php
 session_start();
+session_register("cdoctor");
+session_register("appd");
+
+global $dt_doctor, $cdoctor, $doctor;
 
  if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
@@ -320,13 +324,17 @@ if( empty($_GET['action'])
 <?php
 
 if(isset($_POST['B1'])){
-	  $cdoctor=$dt_doctor;
+
+	if( !isset($dt_doctor) && empty($dt_doctor) ){
+		$dt_doctor = $_POST['doctor_name'];
+	}
+
+	$cdoctor=$dt_doctor;
 	$cdate_appoint = $_POST['date_appoint'];
 	  // session_register("cappdate");
 	 // session_register("cappmo");
 	 // session_register("cthiyr");
-	 session_register("cdoctor");
-	session_register("appd");
+	 
 	//กรณีเลือกวันที่ย้อนหลัง
 	$yearnow = date("Y")+543;
 	$datenow =date("dm").$yearnow;
@@ -355,74 +363,71 @@ if(isset($_POST['B1'])){
 	else{*/
 	
 		$dd = getdate ( mktime ( 0, 0, 0, $month, $day, $year ));
-			if($cdoctor=="MD022 (ไม่ทราบแพทย์)"){
-			
-			}
-			elseif($dd['weekday']=="Saturday"|$dd['weekday']=="Sunday"){
-				$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
-					$rowdr1 = mysql_query($droffline);
-					$showdr1 = mysql_fetch_array($rowdr1);
-					if($showdr1[0]=="1"){
-						?>
-							<script>
-								if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-									
-								}  
-								else{
-									window.history.back();
-								}
-							</script>
-						<?
-					}
-			}
-			else{
-				include("connect.inc");   
-				$droff = "select count(*) from doctor where name = '$cdoctor' and ".$dd['weekday']." = '1' ";
-				//echo $droff;
-				$rowdr = mysql_query($droff);
-				$showdr = mysql_fetch_array($rowdr);
-				//echo $showdr[0];
-				if($showdr[0]!='1'){
+
+		/*
+		if($dd['weekday']=="Saturday" || $dd['weekday']=="Sunday"){
+			$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
+				$rowdr1 = mysql_query($droffline);
+				$showdr1 = mysql_fetch_array($rowdr1);
+				if($showdr1[0]=="1"){
 					?>
-					<script>
-						if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-							
-						}  
-						else{
-							window.history.back();
-						}
-					</script>
+						<script>
+							if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
+								
+							}  
+							else{
+								window.history.back();
+							}
+						</script>
 					<?
 				}
-				else{
-					$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
-					$rowdr1 = mysql_query($droffline);
-					$showdr1 = mysql_fetch_array($rowdr1);
-					if($showdr1[0]=="1"){
-						?>
-							<script>
-								if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-									
-								}  
-								else{
-									window.history.back();
-								}
-							</script>
-						<?
+		}else{
+			include("connect.inc");   
+			$droff = "select count(*) from doctor where name = '$cdoctor' and ".$dd['weekday']." = '1' ";
+			//echo $droff;
+			$rowdr = mysql_query($droff);
+			$showdr = mysql_fetch_array($rowdr);
+			//echo $showdr[0];
+			if($showdr[0]!='1'){
+				?>
+				<script>
+					if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
+						
+					}  
+					else{
+						window.history.back();
 					}
+				</script>
+				<?
+			}else{
+				$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
+				$rowdr1 = mysql_query($droffline);
+				$showdr1 = mysql_fetch_array($rowdr1);
+				if($showdr1[0]=="1"){
+					?>
+						<script>
+							if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
+								
+							}  
+							else{
+								window.history.back();
+							}
+						</script>
+					<?
 				}
-		//}
-	}
+			}
+		}
+		*/
 }
 
 $cappdate=$appdate;
 $cappmo=$appmo;
 $cthiyr=$thiyr;
-  $cdoctor=$doctor;
+$cdoctor=$doctor;
 $cdate_appoint = $_POST['date_appoint'];
-  session_register("cappdate");
- session_register("cappmo");
- session_register("cthiyr");
+session_register("cappdate");
+session_register("cappmo");
+session_register("cthiyr");
 session_register("cdoctor");
 session_register("appd");
 
@@ -457,6 +462,9 @@ $_SESSION['lab_lists'] = array();
 		}
 //$dbirth="$y-$m-$d"; เก็บวันเกิดใน opcard= "$y-$m-$d" ซึ่ง=$birth in function
 // print "<p><b><font face='Angsana New' size = '3'>โรงพยาบาลค่ายสุรศักดิ์มนตรี</font></b></p>";
+?>
+<div style="display: none;"><?=$dt_doctor;?> <?=$dd['weekday'];?>  </div>
+<?php
    print "<p><font face='Angsana New' size = '4'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B><br>";
   print "<font face='Angsana New' size = '4'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B></p>";
    $queryT="SELECT phone FROM opcard where hn='$cHn'";

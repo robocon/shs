@@ -297,7 +297,7 @@ if(!checkdate  ( $month + 1, $today  , $year  )){
 	$today2 = $today;
 }
 
-if( $appoint_doctor == 'MD089  เลอปรัชญ์ มังกรกนกพงศ์' OR $appoint_doctor == 'MD065 พิศาล ศิริชีพชัยยันต์' ){
+
 	$next_1month = strtotime(date('Y-m-d')." +1 month");
 	$next_2month = strtotime(date('Y-m-d')." +2 months");
 	$next_3month = strtotime(date('Y-m-d')." +3 months");
@@ -314,7 +314,8 @@ if( $appoint_doctor == 'MD089  เลอปรัชญ์ มังกรกนกพงศ์' OR $appoint_doctor == 'MD
 	list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
 	list($n2yY, $n2yM, $n2yD) = explode('-', date('Y-m-d', $next_2year));
 
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">&gt;&gt; นัด 1เดือน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">&gt;&gt; วันปัจจุบัน</a>&nbsp;||&nbsp;';
+	// echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">&gt;&gt; นัด 1เดือน</a>&nbsp;||&nbsp;';
 	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
 	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>';
 	echo '<br>';
@@ -322,7 +323,13 @@ if( $appoint_doctor == 'MD089  เลอปรัชญ์ มังกรกนกพงศ์' OR $appoint_doctor == 'MD
 	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
 	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
 	echo '<br>';
-}
+
+	// $sqlOff = "SELECT COUNT(*) 
+	// FROM `dr_offline` 
+	// WHERE `name` = '$appoint_doctor' 
+	// AND `dateoffline` LIKE '%".date('m').'-'.(date('Y')+543)."'";
+	// dump($sqlOff);
+
 
 echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
@@ -633,7 +640,7 @@ if($menucode == "ADMMAINOPD"){
 	$strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'  order by name "; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 	?>
-	<select name="doctor"  onChange="show_carlendar(this.value)"> 
+	<select name="doctor" id="selectDoctor" onChange="show_carlendar(this.value)"> 
 		<?php
 		while($objResult = mysql_fetch_array($objQuery)) { 
 			?> 
@@ -648,7 +655,7 @@ if($menucode == "ADMMAINOPD"){
 $strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMDEN'  order by name "; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 ?>
-<select name="doctor"  onChange="show_carlendar(this.value)">
+<select name="doctor" id="selectDoctor" onChange="show_carlendar(this.value)">
 <option value="0">กรุณาเลือกแพทย์</option>  
 <? 
 while($objResult = mysql_fetch_array($objQuery)) 
@@ -666,7 +673,7 @@ while($objResult = mysql_fetch_array($objQuery))
 $strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMNID'  order by name "; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 ?>
-  <select name="doctor" id="doctor"  onChange="show_carlendar(this.value)">
+  <select name="doctor" id="doctor" id="selectDoctor" onChange="show_carlendar(this.value)">
   <option value="0">กรุณาเลือกแพทย์</option> 
     <? 
 while($objResult = mysql_fetch_array($objQuery)) 
@@ -684,7 +691,7 @@ while($objResult = mysql_fetch_array($objQuery))
 	$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 	?>
-	<select name="doctor" onChange="show_carlendar(encodeURI(this.value))"> 
+	<select name="doctor" id="selectDoctor" onChange="show_carlendar(encodeURI(this.value))"> 
 		<?php
 		while($objResult = mysql_fetch_array($objQuery)) { 
 			?> 
@@ -739,6 +746,9 @@ body,td,th {
 </style>
   &nbsp;&nbsp;<input type="submit" value="    ต่อไป     " name="B1">
   &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< &#3648;&#3617;&#3609;<span class="t">&#3641;</span></a>&nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a></p>
+
+<input type="hidden" name="doctor_name" id="doctor_name">
+
 </form>
 
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
@@ -761,6 +771,12 @@ $(function() {
 		$("#date_appoint").val($(this).attr('data-date'));
 
 	});
+
+	$(document).on('change', '#selectDoctor', function(){
+		var dtName = $(this).val();
+		$('#doctor_name').val(dtName);
+	});
+
 });
 })(jQuery);
 </script>
