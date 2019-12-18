@@ -6,14 +6,7 @@
 include 'bootstrap.php';
 
 $part = input_get('part'); 
-$shs_configs = array(
-    'host' => '192.168.1.13',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottow',
-    'pass' => ''
-);
-$db = Mysql::load($shs_configs);
+$db = Mysql::load();
 
 // กรณีบริษัทที่คนเยอะๆ แล้ว memory ไม่พอ 
 $start = $_GET['start'];
