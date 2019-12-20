@@ -6,13 +6,14 @@ $db = Mysql::load();
 
 /**
  * ปี63 มันจะมีแบ่งสองวัน
+ * สอบตำรวจ63 กับ สอบตำรวจ63_02
  */
 $sql = "SELECT * 
 FROM `log_opcardchk` 
 WHERE `log_part` = 'สอบตำรวจ63' 
 GROUP BY `log_hn` 
 ORDER BY `log_id` ";
-dump($sql);
+
 $db->select($sql);
 $items = $db->get_items();
 
@@ -29,6 +30,7 @@ $billno = '';
 foreach ($items as $key => $value) {
 
     $hn = $value['log_hn'];
+    $logId = $value['log_id'];
     
     $sqlOpacc = "INSERT INTO `opacc` ( 
         `date` , `txdate` , `hn` , `depart` , `detail` , 
@@ -40,8 +42,17 @@ foreach ($items as $key => $value) {
         '', '$billno'
     );";
     dump($sqlOpacc);
+
     $insert = $db->insert($sqlOpacc);
+    $opaccId = $db->get_last_id();
     dump($insert);
+
+    
+    $logQL = "UPDATE `log_opcardchk` SET 
+    `opacc_id` = '$opaccId' 
+    WHERE `log_id` = '$logId' ";
+    $db->update($logQL);
+
     echo "<hr>";
 }
 
