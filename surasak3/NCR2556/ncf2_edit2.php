@@ -47,7 +47,12 @@ include("connect.inc");
 
 $_POST["nonconf_time"] = $_POST["nonconf_time1"].":".$_POST["nonconf_time2"].":00";
 
-
+$topic9_1 = $_POST['topic9_1'];
+$topic9_2 = $_POST['topic9_2'];
+$topic9_3 = $_POST['topic9_3'];
+$topic9_4 = $_POST['topic9_4'];
+$topic9_5 = $_POST['topic9_5'];
+$topic9_6 = $_POST['topic9_6'];
 
 $sql_update="UPDATE `ncr2556` SET `ncr` = '".$_POST['ncr']."',
 `until` = '".$_POST['until']."',
@@ -140,8 +145,15 @@ $sql_update="UPDATE `ncr2556` SET `ncr` = '".$_POST['ncr']."',
 `free_event` = '".$_POST['free_event']."' ,
 `return` = '".$_POST['return']."' ,
 `accept` = '".$_POST['accept']."', 
-`date_edit` = NOW()
+`date_edit` = NOW(), 
+`topic9_1` = '$topic9_1', 
+`topic9_2` = '$topic9_2', 
+`topic9_3` = '$topic9_3', 
+`topic9_4` = '$topic9_4', 
+`topic9_5` = '$topic9_5', 
+`topic9_6` = '$topic9_6'
 WHERE `nonconf_id` = '".$_POST['nonconf_id']."' ";
+
 $query_update=mysql_query($sql_update) or die (mysql_error());
 
 

@@ -119,7 +119,15 @@ if(document.getElementById('free_event').checked==false){
 	
 	
 	}else if(
-		ff.topic1_1.checked == false && ff.topic1_2.checked == false && ff.topic1_3.checked == false && ff.topic1_4.checked == false && ff.topic1_5.checked == false && ff.topic1_6.checked == false  && ff.topic1_7.value.length == 0 && ff.topic2_1.checked == false && ff.topic2_2.checked == false && ff.topic2_3.checked == false && ff.topic2_4.checked == false && ff.topic2_5.checked == false && ff.topic2_6.checked == false && ff.topic2_7.value.length == 0 && ff.topic3_1.checked == false && ff.topic3_2.checked == false && ff.topic3_3.checked == false && ff.topic3_4.value.length == 0 && ff.topic4_1.checked == false && ff.topic4_2.checked == false && ff.topic4_3.checked == false && ff.topic4_4.checked == false && ff.topic4_5.checked == false && ff.topic4_6.value.length == 0 && ff.topic5_1.checked == false && ff.topic5_2.checked == false && ff.topic5_3.checked == false && ff.topic5_4.checked == false && ff.topic5_5.checked == false && ff.topic5_6.checked == false && ff.topic5_7.checked == false && ff.topic5_8.checked == false && ff.topic5_9.checked == false && ff.topic5_10.checked == false && ff.topic5_11.value.length == 0 && ff.topic6_1.checked == false && ff.topic6_2.checked == false && ff.topic6_3.checked == false && ff.topic6_4.checked == false && ff.topic6_5.value.length == 0 && ff.topic7_1.checked == false && ff.topic7_2.checked == false && ff.topic7_3.checked == false && ff.topic7_4.checked == false && ff.topic7_5.checked == false && ff.topic7_6.checked == false  && ff.topic7_7.value.length == 0 && ff.topic8_1.checked == false && ff.topic8_2.checked == false && ff.topic8_3.checked == false && ff.topic8_4.checked == false && ff.topic8_5.checked == false && ff.topic8_6.checked == false && ff.topic8_7.checked == false && ff.topic8_8.checked == false && ff.topic8_9.checked == false && ff.topic8_10.checked == false && ff.topic8_11.value.length == 0
+		ff.topic1_1.checked == false && ff.topic1_2.checked == false && ff.topic1_3.checked == false && ff.topic1_4.checked == false && ff.topic1_5.checked == false && ff.topic1_6.checked == false  && ff.topic1_7.value.length == 0 
+		&& ff.topic2_1.checked == false && ff.topic2_2.checked == false && ff.topic2_3.checked == false && ff.topic2_4.checked == false && ff.topic2_5.checked == false && ff.topic2_6.checked == false && ff.topic2_7.value.length == 0 
+		&& ff.topic3_1.checked == false && ff.topic3_2.checked == false && ff.topic3_3.checked == false && ff.topic3_4.value.length == 0 
+		&& ff.topic4_1.checked == false && ff.topic4_2.checked == false && ff.topic4_3.checked == false && ff.topic4_4.checked == false && ff.topic4_5.checked == false && ff.topic4_6.value.length == 0 
+		&& ff.topic5_1.checked == false && ff.topic5_2.checked == false && ff.topic5_3.checked == false && ff.topic5_4.checked == false && ff.topic5_5.checked == false && ff.topic5_6.checked == false && ff.topic5_7.checked == false && ff.topic5_8.checked == false && ff.topic5_9.checked == false && ff.topic5_10.checked == false && ff.topic5_11.value.length == 0 
+		&& ff.topic6_1.checked == false && ff.topic6_2.checked == false && ff.topic6_3.checked == false && ff.topic6_4.checked == false && ff.topic6_5.value.length == 0 
+		&& ff.topic7_1.checked == false && ff.topic7_2.checked == false && ff.topic7_3.checked == false && ff.topic7_4.checked == false && ff.topic7_5.checked == false && ff.topic7_6.checked == false  && ff.topic7_7.value.length == 0 
+		&& ff.topic8_1.checked == false && ff.topic8_2.checked == false && ff.topic8_3.checked == false && ff.topic8_4.checked == false && ff.topic8_5.checked == false && ff.topic8_6.checked == false && ff.topic8_7.checked == false && ff.topic8_8.checked == false && ff.topic8_9.checked == false && ff.topic8_10.checked == false && ff.topic8_11.value.length == 0 
+		&& ff.topic9_1.checked == false && ff.topic9_2.checked == false && ff.topic9_3.checked == false && ff.topic9_4.checked == false && ff.topic9_5.checked == false && ff.topic9_6.value.length == 0
 		){
 		alert("กรุณาเลือกรายการที่ต้องการแจ้ง");
 		return false;
@@ -486,6 +494,38 @@ function clearChecks(radioName) {
       </TABLE>
     
     <BR>
+
+    <table width="100%" bgcolor="#FFCAB0">
+		<tr>
+			<td>
+				<b>9. Miss-identification</b></br>
+				<input type="checkbox" name="topic9_1" id="topic9_1" onclick="textdisabled()" value="1" <?php if($arr_edit["topic9_1"] == "1") echo 'checked="checked"';?> > <label for="topic9_1">1. ทำหัตถการผิดคน</label><br>
+				<input type="checkbox" name="topic9_2" id="topic9_2" onclick="textdisabled()" value="1" <?php if($arr_edit["topic9_2"] == "1") echo 'checked="checked"';?>> <label for="topic9_2">2. ทำหัตถการผิดข้าง/ผิดอวัยวะ/ผิดตำแหน่ง</label><br>
+				<input type="checkbox" name="topic9_3" id="topic9_3" onclick="textdisabled()" value="1" <?php if($arr_edit["topic9_3"] == "1") echo 'checked="checked"';?>> <label for="topic9_3">3. เจาะเลือดผิดคน</label><br>
+				<input type="checkbox" name="topic9_4" id="topic9_4" onclick="textdisabled()" value="1" <?php if($arr_edit["topic9_4"] == "1") echo 'checked="checked"';?>> <label for="topic9_4">4. เอกสารผิดคน</label><br>
+				<input type="checkbox" name="topic9_5" id="topic9_5" onclick="textdisabled()" value="1" <?php if($arr_edit["topic9_5"] == "1") echo 'checked="checked"';?>> <label for="topic9_5">5. ติดสติกเกอร์ผิดคน/ประเภท</label><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<textarea name="topic9_6" id="topic9_6" cols="30" rows="4"><?php echo $arr_edit["topic9_6"];?></textarea>
+			</td>
+		</tr>
+	</table>
+
+	<script>
+		function textdisabled(){
+			var ff = document.f1;
+
+			if(ff.topic9_1.checked === true || ff.topic9_2.checked === true || ff.topic9_3.checked === true || ff.topic9_4.checked === true || ff.topic9_5.checked === true){
+				ff.topic9_6.disabled=true;
+				ff.topic9_6.value="";
+			}else{
+				ff.topic9_6.disabled=false;
+			}
+			
+		}
+	</script>
     
     <!-- <TABLE bgcolor="#FFCAB0" width='100%'>
 	<TR>
