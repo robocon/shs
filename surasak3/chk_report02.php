@@ -161,7 +161,7 @@ while($result = mysql_fetch_assoc($row2)){
 		<td colspan="2">
 			<table width="100%">
 				<tr>
-					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="70" height="83" /></td>
+					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="60" /></td>
 					<td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
 					<td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 				</tr>
@@ -822,6 +822,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="การตรวจสารโลหะหนัก";
 									}else if($objResult["labname"]=="Blood group(Tube method)"){
 										$labmean="หมู่เลือด";
+									}else if($objResult["labname"]=="HIV Ab screening"){
+										$labmean="ไวรัส เอช ไอ วี";
+									}else if($objResult["labname"]=="VDRL/RPR"){
+										$labmean="เชื้อซิฟิลิส";
 									}
 
 									$app = '';
@@ -1023,6 +1027,15 @@ $outlab_row = mysql_num_rows($outlab_query);
 
 									}
 
+									if( $objResult["labcode"]=='HIV'){
+
+										// ค่าปกติของ HIV เป็น Negative
+										$objResult["result"] = 'Negative';
+										if( $objResult["flag"]!='N' ){
+											$objResult["result"] = 'Positive';
+										}
+									}
+
 
 									// if($objResult['labcode'] == 'HAVTOT'){
 									// 	if($objResult["flag"]=="N"){
@@ -1050,6 +1063,12 @@ $outlab_row = mysql_num_rows($outlab_query);
 
 										if( preg_match('/(Average)/', $objResult["normalrange"], $matchs) > 0 ){
 											$objResult["normalrange"] = str_replace('Average','Avg.',$objResult["normalrange"]);
+										}
+
+										if($objResult["labname"]=="HIV Ab screening"){
+											$objResult["labname"] = 'Anti-HIV';
+										}else if($objResult["labname"]=="VDRL/RPR"){
+											$objResult["labname"] = 'VDRL';
 										}
 
 									?>
@@ -1467,8 +1486,11 @@ if ( $group2_rows > 0 ) {
 </table>
 <table width="100%" border="0" class="text4">
   <tr>
-    <td  width="50%" align="center"><strong>Authorise LAB : </strong><?=$authorisename;?> <strong> (<?=$authorisedate;?>) </strong><strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate ;?>)</strong><br /></td>
-    
+    <td  width="50%" align="center">
+		<strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
+		<strong>Authorise LAB : </strong><?=$authorisename;?><strong> (<?=$authorisedate;?>) </strong>
+		<br />
+	</td>
   </tr>
 </table>
 <div class="text3"><strong>*** หมายเหตุ *** </strong></div>
