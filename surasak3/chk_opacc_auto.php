@@ -8,11 +8,17 @@ $db = Mysql::load();
  * »Õ63 ÁÑ¹¨ÐÁÕáºè§ÊÍ§ÇÑ¹
  * ÊÍºµÓÃÇ¨63 ¡Ñº ÊÍºµÓÃÇ¨63_02
  */
+// $sql = "SELECT * 
+// FROM `log_opcardchk` 
+// WHERE `log_part` = 'ÊÍºµÓÃÇ¨63_02' 
+// GROUP BY `log_hn` 
+// ORDER BY `log_hn` ";
 $sql = "SELECT * 
 FROM `log_opcardchk` 
-WHERE `log_part` = 'ÊÍºµÓÃÇ¨63' 
-GROUP BY `log_hn` 
-ORDER BY `log_id` ";
+WHERE `log_part` = 'ÊÍºµÓÃÇ¨63_02' 
+AND `log_id` = '707' 
+LIMIT 1";
+
 
 $db->select($sql);
 $items = $db->get_items();
@@ -20,17 +26,18 @@ $items = $db->get_items();
 $Thidate2 =(date("Y")+543).date("-m-d H:i:s");
 $depart = "OTHER";
 $detail = "¤èÒºÃÔ¡ÒÃµÃÇ¨ÊØ¢ÀÒ¾µÓÃÇ¨";
-$price = 880;
-$paid  = 880;
+$price = 880.00;
+$paid  = 880.00;
 $idname='¹Ò§¾Ç§à¾çªÃ â¹ã¨»Ô§';
-$credit="à§Ô¹Ê´";
+$credit="µÃÇ¨ÊØ¢ÀÒ¾";
 
-$billno = '';
+
 
 foreach ($items as $key => $value) {
 
     $hn = $value['log_hn'];
     $logId = $value['log_id'];
+    $billno = $value['bill'];
     
     $sqlOpacc = "INSERT INTO `opacc` ( 
         `date` , `txdate` , `hn` , `depart` , `detail` , 

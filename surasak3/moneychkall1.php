@@ -38,7 +38,20 @@ $num= $duplicate+$num;
                " </tr>\n<br>");
                }
 
-   include("unconnect.inc");
+if( $appd1 == '2562-12-22' ){
+  $part = urlencode('สอบตำรวจ63');
+  $appd = urlencode($appd);
+  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;417 &nbsp;&nbsp;รายการ';
+
+}elseif ( $appd1 == '2562-12-23' ) {
+  $part = urlencode('สอบตำรวจ63_02');
+  $appd = urlencode($appd);
+  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;281 &nbsp;&nbsp;รายการ';
+
+}
+
+
+include("unconnect.inc");
 ?>
 
 
