@@ -407,12 +407,12 @@ echo "<table width='90%' align='center' border ='1' bordercolor='#000000' cellsp
 				<td>เอกเรย์</td>
 				<td>ทันตกรรม</td>
 				<td>กายภาพ</td>
-				<td>บริการ</td>
+				<td>ฉุกเฉิน</td>
 				<td>ผ่าตัด</td>
 				<td>ฝังเข็ม</td>
 				<td>ไตเทียม</td>
 				<td>ตา</td>
-				<td>ตรวจอื่นๆ</td>
+				<td>ค่าบริการ<br>ทางการแพทย์</td>
 				<td>***</td>
 				<td>รวม</td>
 				</tr>
