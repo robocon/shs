@@ -15,11 +15,11 @@ include 'includes/connect_sv13.php';
 // $date_start = '2562-04-01';
 // $date_end = '2562-06-30';
 
-$date_start = '2562-07-01';
-$date_end = '2562-09-30';
+$date_start = '2562-10-01';
+$date_end = '2562-12-31';
 
-$quarter = 4;
-$year = '2562';
+$quarter = 1;
+$year = '2563';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_opday_'.$quarter.'.sql';
