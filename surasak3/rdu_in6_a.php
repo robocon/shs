@@ -66,8 +66,9 @@ AND `drugcode` IN (
     '2ZITH',
     '1DOXY',
     '1DALA300-N',
-    '1CRAV-NN'
-
+    '1CRAV-NN',
+    '1AUGM1-N',
+    '1AMOX500-N'
  ) 
 GROUP BY `date_hn`"; 
 $db->exec($sql);

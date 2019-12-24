@@ -42,7 +42,67 @@ $pre_in12a = $db->get_item();
 $in12a = $pre_in12a['rows']; 
 
 // Table B
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_in12`";
+$sql = "SELECT COUNT(a.`row_id`) AS `rows` 
+FROM `tmp_in12` AS a 
+LEFT JOIN ( 
+    SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
+    FROM `drugrx` 
+    WHERE `year` = '$year' 
+    AND `drugcode` IN ( 
+        '1ACTOS*',
+        '1AMAR',
+        '1AVAN*',
+        '1DIAM-MR',
+        '1EUGL-C',
+        '1MET500-C',
+        '1METF',
+        '1MINID',
+        '2HUMUN',
+        '2HUMUR',
+        '2HUMUR1',
+        '1MET850-C',
+        '1JANU',
+        '1UTMO',
+        '2LANTP',
+        '2GENN',
+        '2GENR',
+        '2GENM30',
+        '1GLUXR',
+        '2HN70_30',
+        '1GALV',
+        '1MINID-C',
+        '2HRPE',
+        '1DIAMR_60',
+        '1GLUB',
+        '1AMAR-C',
+        '1DIAM30-C',
+        '1AMAR-N',
+        '1TRAJ',
+        '1AMAR-NN',
+        '1AMAR-NNN',
+        '1FORX',
+        '1OSEN',
+        '1GLUX1000',
+        '2WIN30_70',
+        '1JARD',
+        '2WIN_N',
+        '2WIN_R',
+        '1MINID-N',
+        '1MET750',
+        '2WIN_N_1iu',
+        '2WIN_R_1iu',
+        '1METF500-N',
+        '1NOVO',
+        '2TOUJEO',
+        '1CANA300',
+        '1ZEMI',
+        '2VICTO',
+        '1GLYX',
+        '2INSU_R'
+    ) 
+    GROUP BY `hn` 
+) AS b ON b.`hn`=a.`hn`
+WHERE b.`row_id` IS NOT NULL ";
 $db->select($sql);
 $pre_in12b = $db->get_item();
 $in12b = $pre_in12b['rows'];

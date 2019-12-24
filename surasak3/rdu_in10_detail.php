@@ -41,7 +41,9 @@ AND `drugcode` IN (
     '1TANZ100', 
     '1EDAR', 
     '1APRO-N', 
-    '1TANZ50' 
+    '1TANZ50', 
+    '1CODI160-C', 
+    '1ENT100' 
 ); "; 
 $db->exec($sql); 
 

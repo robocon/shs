@@ -70,7 +70,9 @@ AND `drugcode` IN (
     '1AUGM',
     '5AUG35',
     '1AUGM1-C',
-    '5AUG35-C'
+    '5AUG35-C',
+    '1AUGM1-N',
+    '1AMOX500-N'
 ) 
 GROUP BY `date_hn`"; 
 $test_exec = $db->exec($sql); 

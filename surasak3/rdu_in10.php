@@ -5,19 +5,17 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
 SELECT a.`row_id`,a.`date`,a.`hn`,a.`icd10`,`date_hn`
-FROM `tmp_opday_main` AS a 
+FROM `opday` AS a 
 WHERE a.`year` = '$year' AND a.`quarter` = '$quarter' 
 AND a.`icd10` regexp 'I10' ";
 $db->exec($sql);
 
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
-FROM `tmp_drugrx_main` 
+FROM `drugrx` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1RENI20-C', 
@@ -37,10 +35,13 @@ AND `drugcode` IN (
     '1TANZ100', 
     '1EDAR', 
     '1APRO-N', 
-    '1TANZ50' 
+    '1TANZ50', 
+    '1CODI160-C', 
+    '1ENT100' 
 ); "; 
 $db->exec($sql); 
 
+$items_in10_a = $in10a = $items_in10_b = $in10b = $in10_result = 0;
 
 //  A 
 $sql = "SELECT COUNT(a.`hn_row`) AS `rows`
@@ -74,3 +75,6 @@ $items_in10_b = $db->get_item();
 $in10b = $items_in10_b['rows'];
 
 $in10_result = ( $in10a / $in10b ) * 100 ;
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");

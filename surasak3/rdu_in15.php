@@ -1,5 +1,12 @@
 <?php 
 
+$where_toborow = "AND `toborow` != 'EX02'";
+if ( $year <= '2562' ) {
+    if( $quarter < 4 ){
+        $where_toborow = "";
+    }
+}
+
 // B ¨Ó¹Ç¹¼Ùé»èÇÂ¹Í¡âÃ¤Ë×´·Ñé§ËÁ´ ¹ÑºµÒÁhn
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT b.*  
@@ -7,7 +14,7 @@ FROM (
 	SELECT *  
 	FROM `opday` 
 	WHERE `year` = '$year' AND `quarter` = '$quarter' 
-	AND `toborow` != 'EX02' 
+	$where_toborow
 	GROUP BY `hn` 
 ) AS a 
 LEFT JOIN 

@@ -12,7 +12,7 @@ if ( !defined('RDU_TEST') ) {
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_opday_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
-FROM `tmp_opday_main` 
+FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ";
@@ -23,7 +23,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_drugrx_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
-FROM `tmp_drugrx_main` 
+FROM `drugrx` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ";
@@ -50,7 +50,7 @@ FROM (
 ) AS a 
 LEFT JOIN ( 
     SELECT * 
-    FROM `tmp_lab_main` 
+    FROM `lab` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( `egfr` < 60 AND `egfr` > 0 ) 
 ) AS b ON b.`hn` = a.`hn` 

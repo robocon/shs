@@ -87,7 +87,7 @@ if ( $action === 'save' ) {
             (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW());";
             $q = mysql_query($sqlInsert);
             if( $q === false ){
-                set_log(mysql_error());
+                $err = set_log(mysql_error());
             }
 
             $uploadOk = 1;
@@ -101,7 +101,7 @@ if ( $action === 'save' ) {
     if( $uploadOk === 1 ){
         redirect('rdu_med.php','บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
-        redirect('rdu_med.php','ไฟล์อัพโหลดมีปัญหา');
+        redirect('rdu_med.php','ไฟล์อัพโหลดมีปัญหา '.$err['id'].' ' .$err['msg']);
     }
 
     exit;
@@ -116,9 +116,23 @@ if ( $action === 'save' ) {
 p{
     margin: 0;
 }
+.chk_table{
+    border-collapse: collapse;
+}
+
+.chk_table, th, td{
+    border: 1px solid black;
+    font-size: 16pt;
+}
+
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+}
+
 </style>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a> | <a href="med_phar.php">หน้าเภสัชฯ</a></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
@@ -126,6 +140,9 @@ if( isset($_SESSION['x-msg']) ){
     unset($_SESSION['x-msg']);
 }
 ?>
+<div>
+    นำร่องอายุรกรรม(ช่วงทดสอบ)
+</div>
 <fieldset>
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
     <form action="rdu_med.php" method="post">
@@ -204,10 +221,10 @@ if ( $page === 'search_an' ) {
     if ( mysql_num_rows($q) > 0 ) {
 
         ?>
-        <table>
+        <table class="chk_table">
             <tr>
-                <th></th>
-                <th></th>
+                <th>ข้อมูล</th>
+                <th>ไฟล์</th>
             </tr>
         
         <?php
