@@ -12,10 +12,10 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2562-07-01';
-$date_end = '2562-09-30';
-$quarter = 4;
-$year = '2562';
+$date_start = '2562-10-01';
+$date_end = '2562-12-31';
+$quarter = 1;
+$year = '2563';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_drug_'.$quarter.'.sql';

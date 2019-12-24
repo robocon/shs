@@ -53,7 +53,10 @@ body, button{
 <?php
 $default_year = date('Y');
 $year = input_post('year', $default_year);
-$year_range = array(2017,2018,2019);
+
+$yChk = get_year_checkup(true,true);
+
+$year_range = range(2017,$yChk);
 
 $quarter_range = array(
     1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',

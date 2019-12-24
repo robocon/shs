@@ -215,10 +215,9 @@ tr{
 #imgBtnClose:hover{
     cursor: pointer;
 }
-
 </style>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a> | <a href="med_phar.php">หน้าเภสัชฯ</a></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
@@ -227,7 +226,7 @@ if( isset($_SESSION['x-msg']) ){
 }
 ?>
 <div>
-    <h3>นำร่องอายุรกรรม(ช่วงทดสอบ)</h3>
+<h3>นำร่องอายุรกรรม(ช่วงทดสอบ)</h3>
 </div>
 <fieldset>
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
@@ -315,7 +314,7 @@ if ( $page === 'search_an' ) {
         ?>
         <table class="chk_table">
             <tr>
-                <th>วันที่บันทึกข้อมูล</th>
+            <th>วันที่บันทึกข้อมูล</th>
                 <th>ข้อมูลเบื้องต้น</th>
                 <th>ไฟล์</th>
                 <th>จัดการ</th>

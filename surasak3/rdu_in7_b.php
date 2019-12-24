@@ -8,8 +8,8 @@ $db = Mysql::load($rdu_configs);
 $year = input_get('year');
 $quarter = input_get('quarter');
 
-$sql = "SELECT `diag_id` AS `row_id`,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`type`,`date_hn` 
-FROM `diag` 
+$sql = "SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
+FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
@@ -59,6 +59,8 @@ body, button{
         <th>อายุ</th>
         <th>Diag1</th>
         <th>ICD-10</th>
+        <th>Drug code</th>
+        <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
 <?php 
@@ -67,12 +69,14 @@ foreach ($items as $key => $item) {
     ?>
     <tr>
     <td><?=$i;?></td>
-            <td><?=$item['svdate'];?></td>
+            <td><?=$item['date'];?></td>
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['icd10'];?></td>
+            <td><?=$item['drugcode'];?></td>
+            <td><?=$item['amount'];?></td>
             <td><?=$item['doctor'];?></td>
     </tr>
     <?php
