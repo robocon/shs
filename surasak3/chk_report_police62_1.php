@@ -644,8 +644,13 @@ while($result = mysql_fetch_assoc($row2)){
 							<?php 
 							while ($item = mysql_fetch_assoc($q)) {
 
-								if( $item['labcode'] == 'HIV' ){
+								if( $item['labcode'] == 'HIV' ){ 
+
 									$item['result'] = 'Negative by determine HIV 1/2';
+									if ( $item['flag'] != 'N' ) {
+										$item['result'] = 'Positive';
+									}
+									
 								}
 
 								?>
