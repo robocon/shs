@@ -547,31 +547,27 @@ while($result = mysql_fetch_assoc($row2)){
 			}
 						
 			if($objResult["labcode"]=="RBCU"){
-				if($hn=="53-6092"){
-					$showresultua="ผิดปกติ";
+				$rbculen=strlen($objResult6["result"]);
+				if($rbculen >=5){
+					$rbcu1=substr($objResult6["result"],0,2);
+					$rbcu2=substr($objResult6["result"],3,2);
+				}else if($rbculen ==4){
+					$rbcu1=substr($objResult6["result"],0,1);
+					$rbcu2=substr($objResult6["result"],2,2);						
 				}else{
-						$rbculen=strlen($objResult6["result"]);
-						if($rbculen >=5){
-							$rbcu1=substr($objResult6["result"],0,2);
-							$rbcu2=substr($objResult6["result"],3,2);
-						}else if($rbculen ==4){
-							$rbcu1=substr($objResult6["result"],0,1);
-							$rbcu2=substr($objResult6["result"],2,2);						
-						}else{
-							$rbcu1=substr($objResult6["result"],0,1);
-							$rbcu2=substr($objResult6["result"],2,1);
-						}
-						if($objResult6["result"] == "*" || $objResult6["result"] == "**"  || $objResult6["result"] == "--"){
-							$showresultua="*";
-						}else{									
-							if($objResult6["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult6["result"] != "*"){
-								$showresultua="ปกติ";
-							}else if($objResult6["result"] == "*"){
-								$showresultua="*";
-							}else{
-								$showresultua="ผิดปกติ";
-							}
-						}	
+					$rbcu1=substr($objResult6["result"],0,1);
+					$rbcu2=substr($objResult6["result"],2,1);
+				}
+				if($objResult6["result"] == "*" || $objResult6["result"] == "**"  || $objResult6["result"] == "--"){
+					$showresultua="*";
+				}else{									
+					if($objResult6["result"] == "Negative" || ($rbcu1 >=0 && $rbcu2 <=1) && $objResult6["result"] != "*"){
+						$showresultua="ปกติ";
+					}else if($objResult6["result"] == "*"){
+						$showresultua="*";
+					}else{
+						$showresultua="ผิดปกติ";
+					}
 				}
 			}else{
 				if($objResult['flag']=='L' || $objResult['flag']=='H' || $objResult['result']=='1+'|| $objResult['result']=='2+'|| $objResult['result']=='3+'|| $objResult['result']=='4+'|| $objResult['result']=='5+'|| $objResult['result']=='6+'|| $objResult['result']=='7+'|| $objResult['result']=='8+'|| $objResult['result']=='9+'){
@@ -642,10 +638,26 @@ while($result = mysql_fetch_assoc($row2)){
 								<td width="40%"><b>ผลตรวจ</b></td>
 							</tr>
 							<?php 
+
+							// ไม่มีผลจาก LIS เลยต้อง lock การแสดงผล
+							if ( $hn === '630497' ) {
+								?>
+								<tr>
+									<td><b>HIV Ab screening</b></td>
+									<td>Positive</td>
+								</tr>
+								<?php
+							}
+
 							while ($item = mysql_fetch_assoc($q)) {
 
-								if( $item['labcode'] == 'HIV' ){
+								if( $item['labcode'] == 'HIV' ){ 
+
 									$item['result'] = 'Negative by determine HIV 1/2';
+									if ( $item['flag'] != 'N' ) {
+										$item['result'] = 'Positive';
+									}
+									
 								}
 
 								?>
@@ -655,6 +667,7 @@ while($result = mysql_fetch_assoc($row2)){
 								</tr>
 								<?php
 							}
+							
 							?>
 							
 						</table>
