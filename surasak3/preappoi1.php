@@ -215,7 +215,8 @@ while ($arr = $callResult->fetch_assoc()) {
 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 }
-$callResult->free_result();
+$callResult->free();
+$dbi->next_result();
 
 $sql = "Select date_format(date_holiday,'%d') as date_holiday2, detail From holiday where date_holiday like '".($year+543)."-".sprintf("%02d",$month)."%' ";
 $result = Mysql_Query($sql);
