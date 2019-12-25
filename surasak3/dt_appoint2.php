@@ -150,14 +150,14 @@ if($_GET["action"] == "carlendar"){
 	$thai_date = $thmonthname[$month - 1].' '.($year+543);
 	$sqlCall = "CALL appoint_dt('$thai_date','$appoint_doctor'); ";
 	$callResult = $dbi->query($sqlCall);
-	if( $callResult->error ){
-		echo $callResult->error;
-	}
 	if( $callResult->num_rows > 0 ){
 		while ($arr = $callResult->fetch_assoc()) {
 			$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 			$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 		}
+	}
+	if( $callResult->error ){
+		echo $callResult->error;
 	}
 	$callResult->free();
 	$dbi->next_result();
@@ -208,14 +208,14 @@ if($_GET["action"] == "carlendar"){
 
 	$sqlCall = "CALL appoint_dt_vaccine('$thai_date','$appoint_doctor'); ";
 	$callResult = $dbi->query($sqlCall);
-	if( $callResult->error ){
-		echo $callResult->error;
-	}
 	if( $callResult->num_rows > 0 ){
 		while ($arr = $callResult->fetch_assoc()) {
 			$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
 			$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 		}
+	}
+	if( $callResult->error ){
+		echo $callResult->error;
 	}
 	$callResult->free();
 	$dbi->next_result();
@@ -512,28 +512,6 @@ if($_GET["action"] == "carlendar"){
 	echo "</table></TD>
 	</TR>
 	</TABLE>";
-	
-/*
-$thai_date = $thmonthname[$month - 1].' '.($year+543);
-$sqlCall = "CALL appoint_dt('$thai_date','$appoint_doctor'); ";
-$callResult = $dbi->query($sqlCall);
-
-?>
-<div style="display: none;">
-<?php 
-dump($sqlCall);
-dump($callResult);
-dump($callResult->num_rows);
-while ($arr = $callResult->fetch_assoc()) {
-	dump($arr);
-}
-?>
-</div>
-<?php
-$callResult->free();
-$dbi->next_result();
-*/
-
 
 	exit();
 
