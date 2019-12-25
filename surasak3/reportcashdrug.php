@@ -34,7 +34,8 @@ $thdatehn=$dd.'-'.$mm.'-'.$yy.$hn;
 
 ?>
 <?
-	  	  $sql3 = "SELECT vn,ptright from opday where thdatehn = '$thdatehn'";
+$sql3 = "SELECT vn,ptright from opday where thdatehn = '$thdatehn'";
+//echo $sql3;
 $result3 = mysql_query($sql3) ;
 $row3= mysql_fetch_array($result3);
 
@@ -70,10 +71,11 @@ $query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$d
     $result = mysql_query($query) or die("Query failed,warphar");
 
   $query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
-    $result10 = mysql_query($query10)
+  $result10 = mysql_query($query10)
         or die("Query failed");
 		while($fetch = mysql_fetch_array($result10)){
     $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and part = 'DDL'";
+	
     $result13 = mysql_query($query13)
         or die("Query failed");
 	$nn = @mysql_num_rows($result13);

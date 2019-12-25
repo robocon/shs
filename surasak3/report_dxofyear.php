@@ -54,7 +54,7 @@ if(isset($_POST['hn'])){
 	$num = mysql_num_rows($row);
 	if($num==0){
 		$select = "select * from condxofyear_so where hn = '".$_POST['hn']."' order by thidate desc";
-		//echo $select; thidate like '".($_POST['year']-543)."-".$_POST['month']."-".$_POST['day']."%' ";
+		//echo $select; 
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}else{
@@ -122,7 +122,7 @@ if(isset($_POST['hn'])){
 	</script>
 	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
 	<tr>
-	  <td>ผลการตรวจสุขภาพประจำปี</td>
+	  <td>ผลการตรวจสุขภาพประจำปี <?php echo $arrs["yearcheck"];?></td>
 	  </tr>
 	<tr>
 		<td>ชื่อ : <?php echo $arrs["ptname"];?> HN :<?php echo $arrs["hn"];?></td>
@@ -320,8 +320,8 @@ $query1 = mysql_query($sql1);
   <td colspan="2">
 <table width="100%">
 <tr>
-  <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" width="87" height="83" /></td>
-  <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพประจำปี <?=$_GET["chkyear"];?></strong></td>
+  <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" width="78" height="95" /></td>
+  <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพข้าราชการกองทัพบก ประจำปี <?=$_GET["chkyear"];?></strong></td>
   <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 </tr>
 <tr>
@@ -329,7 +329,7 @@ $query1 = mysql_query($sql1);
   <td align="center" valign="top" class="texthead">&nbsp;</td>
 </tr>
 <tr>
-  <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">ตรวจเมื่อวันที่ 
+  <td align="center" valign="top" class="text3"><span class="text"><span class="text1"><span class="text2">เมื่อวันที่ 
   <?
   $da = explode(" ",$result["thidate"]);
   $daten = explode("-",$da[0]);
@@ -348,7 +348,7 @@ $query1 = mysql_query($sql1);
   <td width="22%" valign="top" class="text2"><strong>อายุ :</strong>
     <?=$result['age']?></td>
   <td width="22%" valign="top" class="text3"><strong>สังกัด : </strong>
-    <span style="font-size:18px"><strong><?= substr($result['camp'],6)?></strong></span>  </td>
+    <span style="font-size:18px"><strong><?= substr($result['camp'],4)?></strong></span>  </td>
   </tr>
 <tr>
   <td valign="top"><span class="text3"><strong>น้ำหนัก: </strong>
@@ -362,12 +362,13 @@ $query1 = mysql_query($sql1);
   <td width="14%" valign="top"><span class="text3"><strong>รอบเอว:</strong>
     <?=$result['round_']?>
 ซม.</span></td>
-  <td colspan="2" valign="top"><span class="text3"><strong>แพ้ยา:</strong> 
+  <td colspan="2" valign="top"><span class="text3"><strong>แพ้ยา:</strong>
     <? if($result['drugreact']=="0" || $result['drugreact']==""){ echo "ไม่แพ้ยา"; }else{
 		$sql55 = "Select  drugreact From opcard  where hn = '".$result['hn']."' ";
+		//echo $sql55;
 		$result55 = mysql_query($sql55);
 		$arr55 = mysql_fetch_array($result55);
-			echo $arr55["drugreact"];
+			if($arr55["drugreact"]=="1"){ echo "แพ้ยา";}else{ echo $arr55["drugreact"];}
 		}	
 	?>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text3"><strong>โรคประจำตัว:
@@ -410,7 +411,7 @@ mmHg.</u></span></td>
   </table></td></tr></table></td>
   </tr>
 <tr class="text3">
-  <td align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+  <td width="57%" align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
     <tr>
       <td align="center"><strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong></td>
     </tr>
@@ -516,7 +517,7 @@ mmHg.</u></span></td>
       </table></td>
     </tr>
   </table>
-  <td align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+  <td width="41%" align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
     <tr>
       <td align="center"><strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong></td>
     </tr>
@@ -594,7 +595,7 @@ mmHg.</u></span></td>
         </tr>
         <?  } ?>
         <tr>
-          <td height="27" colspan="3">ผลตรวจ : <strong>
+          <td height="27" colspan="3"><span>ผลตรวจ : </span><strong>
         <?=$result['stat_ua']?>
         <? if($result['stat_ua']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ua']."...";?></strong></td>
         </tr>
@@ -607,23 +608,23 @@ mmHg.</u></span></td>
     <tr>
       <td valign="middle" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
       <!--<td valign="top" width="4%"  class="text3" bordercolor="#000000"><strong>2555</strong></td>-->
-      <td width="6%" align="right" valign="middle" bordercolor="#000000"  class="text3"><strong><?=$_GET["chkyear"];?></strong></td>
-      <td width="1%" align="center" valign="middle" bordercolor="#000000"  class="text3">&nbsp;</td>
+      <td width="4%" align="right" valign="middle" bordercolor="#000000"  class="text3"><strong><?=$_GET["chkyear"];?></strong></td>
+      <td width="3%" align="center" valign="middle" bordercolor="#000000"  class="text3">&nbsp;</td>
       <td valign="middle" class="text">&nbsp;</td>
       <td valign="middle" class="text">&nbsp;</td>
     </tr>
     <? if($result['bs']!=""){?>
     <tr>
-      <td width="21%" valign="middle" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
+      <td width="23%" valign="middle" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
      <!-- <td width="4%" align="right" valign="top" bordercolor="#000000"><strong>
         <?//=$result5['bs']?>
       </strong></td>-->
-        <td width="6%" align="right" valign="middle" bordercolor="#000000" class="text3"><strong>
+        <td width="4%" align="right" valign="middle" bordercolor="#000000" class="text3"><strong>
           <?=$result['bs']?>
         </strong></td>
-        <td width="1%" align="right" valign="middle" bordercolor="#000000" class="text3">&nbsp;</td>
+        <td width="3%" align="right" valign="middle" bordercolor="#000000" class="text3">&nbsp;</td>
         <td width="6%" valign="middle" class="text">(<?=$result['bsrange']?>)</td>
-        <td width="66%" valign="middle" class="text"><strong>
+        <td width="64%" valign="middle" class="text"><strong>
           <?=$result['stat_bs']?>
         </strong>
           <? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
@@ -819,7 +820,7 @@ mmHg.</u></span></td>
 	?>
     
     <tr>
-      <td valign="top" class="text3" width="21%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
+      <td valign="top" class="text3" width="23%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
      <!-- <td align="left" valign="top" class="text3" width="4%"><strong>
         <?//=$result5['cxr']?>
       </strong></td>-->
@@ -828,20 +829,38 @@ mmHg.</u></span></td>
       </strong>
         <? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?></td>
       </tr>
+      
     <?
- 	$query1 = "SELECT max_status  FROM survey_oral where hn='".$result['hn']."' order by id desc";
+ 	$query1 = "SELECT ph9q  FROM army_8q9q where hn='".$result['hn']."' AND yearchkup='$nPrefix' order by row_id desc";
+	//echo $query1;
 	$result1 = mysql_query($query1) or die("Query failed");   
-	list($dentalstatus)=mysql_fetch_array($result1);
-	if(empty($dentalstatus)){
-		$dentalstatus="5";
+	list($ph9q)=mysql_fetch_array($result1);
+	if(empty($ph9q)){
+		$ph9q="";
 	}else{
-		$dentalstatus;
+		$ph9q;
 	}
 	?>  
     <tr>
-      <td valign="top" class="text3" width="21%"><strong>การตรวจสุขภาพช่องปาก :</strong></td>
-      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$dentalstatus;?></strong></td>
-      </tr>
+      <td valign="top" class="text3" width="23%"><strong>ประเมินภาวะซึมเศร้า (PH9Q) :</strong></td>
+      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$ph9q;?></strong></td>
+      </tr>          
+ 
+     <?
+ 	$query1 = "SELECT ph8q  FROM army_8q9q where hn='".$result['hn']."' AND yearchkup='$nPrefix' order by row_id desc";
+	//echo $query1;
+	$result1 = mysql_query($query1) or die("Query failed");   
+	list($ph8q)=mysql_fetch_array($result1);
+	if(empty($ph8q)){
+		$ph8q="";
+	}else{
+		$ph8q;
+	}
+	?>  
+    <tr>
+      <td valign="top" class="text3" width="23%"><strong>ประเมินภาวะฆ่าตัวตาย (PH8Q) :</strong></td>
+      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$ph8q;?></strong></td>
+      </tr>    
       
       <? 
 	  if($result['pap']!=""){
@@ -859,7 +878,7 @@ mmHg.</u></span></td>
       <td colspan="6" valign="top"><strong>การตรวจพิเศษอื่น ๆ </strong></td>
     </tr>
     <tr>
-      <td width="21%" valign="top" class="text3"><strong>
+      <td width="23%" valign="top" class="text3"><strong>
         <?=$result['other1']?>
       :</strong></td>
       <td colspan="5" valign="top" class="text3"><span class="text3">
@@ -964,18 +983,10 @@ mmHg.</u></span></td>
     </tr>
 </table></td></tr>
     <tr>
-  <td  valign="top" class="text2"><? if(empty($result['diag'])){ echo "";}else{ echo "<strong>Diag</strong> : $result[diag] <strong >";}?> <strong>ความคิดเห็นจากแพทย์</strong>
+  <td colspan="2"  valign="top" class="text2"><? if(empty($result['diag'])){ echo "";}else{ echo "<strong>Diag</strong> : $result[diag] <strong >";}?> <strong>ความคิดเห็นจากแพทย์</strong>
 &nbsp;<?=$result['dx']?>&nbsp;&nbsp;<strong>การรักษา</strong>
 &nbsp;<?=$result['cure_disease']?>&nbsp;&nbsp;<strong>นัดครั้งต่อไป</strong>
-&nbsp;<?=$result['appoint']?></td>
-      <td  valign="top" class="text2">
-
-	</td>
-      <td  valign="top" class="text2">
-
-	</td> 
-    
-       
+&nbsp;<?=$result['appoint']?>	</td>
     </tr>
   <?
   $dr =explode(" ",$result['doctor']);
@@ -1018,8 +1029,8 @@ mmHg.</u></span></td>
   <input name="ok" type="submit" class="texthead" value="ตกลง">
   <br />
   <br />
-
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> 
+<a href ="report_doctorforamry.php" target="_blank" >รายชื่อกำลังพลที่แพทย์ลงผลตรวจเรียบร้อย</a> &nbsp;&nbsp;&nbsp;
+<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>
 </center>
 </form>
 

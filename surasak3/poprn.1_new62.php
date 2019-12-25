@@ -205,7 +205,7 @@ return $vat;
 						}
 ///////End Load offisers
 
-    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id ,ponoyear,chkindate,senddate,borrowdate,pobillno,pobilldate,fixdate FROM pocompany WHERE row_id = '$nRow_id' ";
+    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id ,ponoyear,chkindate,senddate,borrowdate,pobillno,pobilldate,fixdate,reportdate FROM pocompany WHERE row_id = '$nRow_id' ";
     $result = mysql_query($query) or die("Query pocompany fail");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -234,10 +234,16 @@ return $vat;
 	$cBillno=$row->pobillno;  //ใบเสนอราคาเลขที่
 	$cBilldate=$row->pobilldate;	//ใบเสนอราคาลงวันที่
 	$cFixdate=$row->fixdate;	//วันที่กำหนดส่งมอบ
+	$cReportdate=$row->reportdate;	//วันที่รายงานผลการจัดหา
 	//echo "-->".$cFixdate;
 	if(empty($cFixdate)){ 
 		$cFixdate=$cBorrowdate;
 	}
+	
+	if(empty($cReportdate)){ 
+		$cReportdate=$cBounddate;
+	}
+	//echo "==>".$cBounddate;
 	
 	if(empty($cBillno) || empty($cBilldate)){
 		$chksqlcom="select pobillno, pobilldate, pobillno2, pobilldate2, pobillno3, pobilldate3 from company where comcode='$cComcode'";
@@ -264,8 +270,12 @@ $nNetprice=$nNetprice-$nVat;
   $chkprice= $nPriadvat;
   $cPriadvat=baht($nPriadvat);//ตัวอักษร
 
-  $nTax=.01*$nNetprice;
-  $nNetpaid=$nPriadvat-$nTax;
+  $nTaxs=.01*$nNetprice;
+  //echo "==>".$nTaxs;
+  $nTax=number_format($nTaxs,2);
+  //echo "==>".$nTax;
+  $nNetpaid=$nPriadvat-$nTaxs;
+  //echo "$nNetpaid=$nPriadvat-$nTaxs";
 
   $cNetpaid=baht($nNetpaid);//ตัวอักษร
   
@@ -292,9 +302,11 @@ if ($nPriadvat < 100000){
 	//$nVat=number_format($nVat,2);
      $nVat=number_format($nVat,2,'.',',');
 	$nPriadvat=number_format($nPriadvat,2,'.',',');
-	$nTax=number_format($nTax,2,'.',',');
+	//echo "==>".$nTax;
+	//$nTax=number_format($nTax,2,'.',',');
+	//echo "==>".$nTax;
 	$nNetpaid=number_format($nNetpaid,2,'.',',');
-
+	//echo "==>".$nNetpaid;
 /////List รายการ
 $x=0;
 $aX   = array("x");
@@ -458,7 +470,7 @@ print "<DIV style='left:105PX;top:290PX;width:661PX;height:30PX;'><span class='f
 
 print "<DIV style='left:105PX;top:315PX;width:661PX;height:30PX;'><span class='fc1-0'>4. ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ.2560 ลง 23 ส.ค. 60</span></DIV>";
 
-print "<DIV style='left:105PX;top:340PX;width:661PX;height:30PX;'><span class='fc1-0'>5. คำสั่งกระทรวงกลาโหม (เฉพาะ) ที่ 400/60 เรื่องการจัดซื้อจัดจ้างและการบริหารพัสดุของกระทรวงกลาโหม ลง 26 ส.ค. 60</span></DIV>";
+print "<DIV style='left:105PX;top:340PX;width:661PX;height:30PX;'><span class='fc1-0'>5. คำสั่งกระทรวงกลาโหม (เฉพาะ) ที่ 62/62 เรื่องการจัดซื้อจัดจ้างและการบริหารพัสดุของกระทรวงกลาโหม ลง 30 ก.ย. 62</span></DIV>";
 
 print "<DIV style='left:54PX;top:365PX;width:106PX;height:30PX;'><span class='fc1-5'>สิ่งที่ส่งมาด้วย</span></DIV>";
 
@@ -509,8 +521,8 @@ print "<DIV style='left:105PX;top:615PX;width:189PX;height:30PX;'><span class='f
 print "<DIV style='left:293PX;top:615PX;width:99PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$nPriadvat</B></span></DIV>";
 print "<DIV style='left:391PX;top:615PX;width:40PX;height:30PX;'><span class='fc1-0'>บาท</span></DIV>";
 print "<DIV style='left:430PX;top:615PX;width:400PX;height:30PX;'><span class='fc1-0'>$cPriadvat</span></DIV>";  //จำนวนเงินตัวอักษร
-print "<DIV style='left:61PX;top:640PX;width:661PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
-print "<DIV style='left:105PX;top:665PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุในวันที่</span></DIV>";
+print "<DIV style='left:61PX;top:640PX;width:661PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วันทำการ อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
+print "<DIV style='left:105PX;top:665PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุภายในวันที่</span></DIV>";
 print "<DIV style='left:333PX;top:665PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
 print "<DIV style='left:509PX;top:665PX;width:257PX;height:30PX;'><span class='fc1-0'>ส่งที่หน่วย รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 print "<DIV style='left:105PX;top:690PX;width:661PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เป็นการจัดซื้อโดยวิธีเฉพาะเจาะจง เนื่องจากเป็นการจัดซื้อจัดจ้างพัสดุที่มีการผลิต จำหน่าย ก่อสร้าง หรือ</span></DIV>";
@@ -522,9 +534,9 @@ if($prodrugtype=="" || $prodrugtype=="1"){
 //print "===>".strlen($cComname);
 	if(strlen($cComname) <= 37){
 		print "<DIV style='left:105PX;top:765PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยาและเวชภัณฑ์</span></DIV>";
-		print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";	
-		print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
+		print "<DIV style='left:61PX;top:790PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";	
+		print "<DIV style='left:61PX;top:815PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
 		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 
@@ -597,7 +609,7 @@ print "<DIV style='left:430PX;top:640PX;width:400PX;height:30PX;'><span class='f
 
 print "<DIV style='left:61PX;top:665PX;width:661PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 
-print "<DIV style='left:105PX;top:690PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุในวันที่</span></DIV>";
+print "<DIV style='left:105PX;top:690PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุภายในวันที่</span></DIV>";
 print "<DIV style='left:333PX;top:690PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
 print "<DIV style='left:509PX;top:690PX;width:257PX;height:30PX;'><span class='fc1-0'>ส่งที่หน่วย รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
 
@@ -610,9 +622,9 @@ if($prodrugtype=="" || $prodrugtype=="1"){
 //print "===>".strlen($cComname);
 	if(strlen($cComname) <= 37){
 		print "<DIV style='left:105PX;top:790PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยาและเวชภัณฑ์</span></DIV>";
-		print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลง</span></DIV>";	
-		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>แทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
+		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
+		print "<DIV style='left:61PX;top:815PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";	
+		print "<DIV style='left:61PX;top:840PX;width:705PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
 		print "<DIV style='left:61PX;top:865PX;width:705PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
 		print "<DIV style='left:61PX;top:890PX;width:705PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 
@@ -1847,7 +1859,7 @@ print "<DIV style='left:88PX;top:7307PX;width:306PX;height:30PX;'><span class='f
 print "<DIV style='left:329PX;top:7246PX;width:155PX;height:34PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>บันทึกข้อความ</span></DIV>";
 print "<DIV style='left:88PX;top:7336PX;width:333PX;height:30PX;'><span class='fc1-5'>ที่</span><span class='fc1-0'> กห  0483.63.4/$cPono$cPonoyear</span></DIV>";
 print "<DIV style='left:378PX;top:7336PX;width:257PX;height:30PX;'><span class='fc1-5'>วันที่</span></DIV>";
-print "<DIV style='left:410PX;top:7336PX;width:257PX;height:30PX;'><span class='fc1-0'>$cBounddate</span></DIV>";
+print "<DIV style='left:410PX;top:7336PX;width:257PX;height:30PX;'><span class='fc1-0'>$cReportdate</span></DIV>";
 print "<DIV style='z-index:15;left:78PX;top:7224PX;width:73PX;height:80PX;'>
 <img  WIDTH=73 HEIGHT=80 SRC='bird.jpg'></DIV>";
 //print "<DIV style='left:445PX;top:7336PX;width:257PX;height:30PX;'><span class='fc1-0'></span></DIV>";

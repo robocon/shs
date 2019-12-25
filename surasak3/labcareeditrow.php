@@ -6,7 +6,7 @@ if( $user_code !== 'ADM' ){
     
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
     $check_level = in_array($user_code, array('ADMLAB'));
-    $check_user = in_array($user_id, array('สมยศ','พิทักษ์1','พัชรี'));  //รับคำสั่ง หน.ห้อง LAB วันที่ 14/05/62
+    $check_user = in_array($user_id, array('สมยศ','พิทักษ์1'));  //รับคำสั่ง หน.ห้อง LAB วันที่ 14/05/62
     
     if( $check_level === false OR $check_user === false ){
         ?>
@@ -14,7 +14,6 @@ if( $user_code !== 'ADM' ){
         <ol>
             <li>พ.ท. สมยศ แสงสุข</li>
             <li>ร.อ. พิทักษ์  ตุ้มปามา</li>
-            <li>นางพัชรี  คำฟู</li>
         </ol>
         <p>เพื่อทำการแก้ไขข้อมูล</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
