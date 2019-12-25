@@ -76,11 +76,7 @@ function LastDay($m, $y) {
 
 if($_GET["action"] == "carlendar"){
 
-	
-
 	if( $_GET['id'] != "" ){
-		// header('Content-Type: text/html; charset=utf-8');
-		// $dt_doctor = iconv('TIS-620','UTF-8',$_GET['id']);
 		$dt_doctor = iconv('UTF-8','TIS-620',$_GET['id']);
 	}
 
@@ -92,35 +88,7 @@ $sql = "Select name,position From doctor where name like '".$dt_doctor."%' limit
 list($appoint_doctor,$dr_position) = Mysql_fetch_row(Mysql_Query($sql));
 
 
-/*switch($_SESSION["dt_doctor"]){
-	case 'ปิยะบุตร บุญมี (ว.29265)': $appoint_doctor ="MD060  ปิยะบุตร บุญม"; Break;
-	case 'สมัชชา เบี้ยจรัส (ว.20182)': $appoint_doctor ="MD014 สมัชชา เบี้ยจรัส"; Break;
-	case 'พิพิธ บุรัสการ (ว.38220)': $appoint_doctor ="MD056  พิพิธ  บุรัสการ"; Break;
-	case 'สุรภัทร ศรีนนท์ (ว.29290)': $appoint_doctor ="MD048  สุรภัทร ศรีนนท์"; Break;
-	case 'วันชาติ นำประเสริฐชัย (ว.24535)': $appoint_doctor ="MD047  วันชาติ นำประเสริฐชัย"; Break;
-	case 'นิธิไชย บุญไชย (ว.28437)': $appoint_doctor ="MD053  นิธิไชย  บุญไชย"; Break;
-	case 'ปฎิพงค์ ศรีทิภัณฑ์ (ว.10212)': $appoint_doctor ="MD037 ปฏิพงค์  ศรีทิภัณฑ์"; break;
-	case 'ไพบูลย์ คูหเพ็ญแสง (ว.38222)': $appoint_doctor ="MD057  ไพบูลย์  คูหเพ็ญแสง"; Break;
-	case 'อัศวิน แก้วเนตร (ว.21329)': $appoint_doctor ="MD016 อัศวิน แก้วเนตร"; Break;
-	case 'ศุภสิทธิ์ คงมีผล (ว.20278)': $appoint_doctor ="MD036 ศุภสิทธิ์  คงมีผล"; Break;
-	case 'ธนบดินทร์ ผลศรีนาค (ว.19921)': $appoint_doctor ="MD013 ธนบดินทร์ ผลศรีนาค"; Break;
-	case 'อนุพงษ์ รอดสาย (ว.20186)': $appoint_doctor ="MD011 อนุพงษ์ รอดสาย"; Break;
-	case 'นภสมร ธรรมลักษมี (ว.19364)': $appoint_doctor ="MD009 นภสมร ธรรมลักษมี"; Break;
-	case 'ทองแดง อาฒยะพันธ์ (ว.24512)': $appoint_doctor ="MD051  ทองแดง  อาฒยะพันธ์"; Break;
-	case 'วุฒิไชย อิศระ (ว.14286)': $appoint_doctor ="MD052  วุฒิไชย  อิศระ"; Break;
-	case 'วรวิทย์ วงษ์มณี (ว.27035)': $appoint_doctor ="MD041  วรวิทย์ วงษ์มณี"; Break;
-	case 'เลือก  ด่านสว่าง  (ว.12891)': $appoint_doctor ="MD006 เลือก ด่านสว่าง"; Break;
-	case 'ณรงค์ ปรีดาอนันทสุข (ว.12456)': $appoint_doctor ="MD007 ณรงค์ ปรีดาอนันทสุข"; Break;
-	case 'อรรณพ ธรรมลักษมี (ว.16633)': $appoint_doctor ="MD008 อรรณพ ธรรมลักษมี"; Break;
-	case 'ชัยเนตรอาร์ เนตรพิชิต (ว.28422)': $appoint_doctor ="MD059  ชัยเนตรอาร์ เนตรพิชิต"; Break;
-	case 'การุณย์ สุริยวงศ์พงศา (ว.13553)': $appoint_doctor ="MD054  การุณย์  สุริยวงศ์พงศา"; Break;
-	case 'กฤษฎิ์พงษ์ ศิริสารศักดา': $appoint_doctor ="MD061 กฤษฎิ์พงษ์ ศิริสารศักดา"; Break;
-	case 'กัณฐรัตน์ จันรุ่งเรือง': $appoint_doctor ="MD062 กัณฐรัตน์ จันรุ่งเรือง"; Break;
-	case 'ณัฐพล แหยมแก้ว': $appoint_doctor ="MD063 ณัฐพล แหยมแก้ว"; Break;
-	case 'กฤษดากร ไวทยโยธิน (ว.37525)': $appoint_doctor ="MD050  กฤษดากร ไวทยโยธิน"; Break;
-}*/
-
-   /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 และกำหนด $diffMinute เป็น 15 */
+/* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 และกำหนด $diffMinute เป็น 15 */
 $diffHour = 0;
 $diffMinute = 0;
 
@@ -168,31 +136,24 @@ $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถ
 
 $thai_date = $thmonthname[($month - 1)]." ".($year + 543);
 
-$sqlAppTemp = "CREATE TEMPORARY TABLE `tmp_appoint_opd` 
-SELECT `appdate`,`apptime`,`hn`,`doctor` 
-FROM `appoint` 
-WHERE `appdate` LIKE '%$thai_date'";
-// mysql_query($sqlAppTemp);
-$dbi->query($sqlAppTemp);
-
-
 // ถ้าหมอที่เลือกจาก dropdown เป็นหมอ intern
 $total_items = array();
 if( $dr_position == '99 เวชปฏิบัติ' ){
 	
 	// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
 	$sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
-	FROM `doctor` AS a 
-	LEFT JOIN `tmp_appoint_opd` AS b ON a.`name` = b.`doctor` 
-	WHERE a.`position` = '99 เวชปฏิบัติ' 
-	AND b.`appdate` IS NOT NULL 
+	FROM ( 
+
+		SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
+
+	) AS a 
+	LEFT JOIN ( 
+		SELECT `appdate`,`apptime`,`hn`,`doctor` 
+		FROM `appoint` 
+		WHERE `appdate` LIKE '%$thai_date'
+	 ) AS b ON a.`name` = b.`doctor` 
+	WHERE b.`appdate` IS NOT NULL 
 	GROUP BY b.`appdate`  ";
-	
-	// $query = mysql_query($sql);
-	// while( $item = mysql_fetch_assoc($query) ){
-	// 	$code = 'A'.$item['code'];
-	// 	$total_items[$code] = $item;
-	// }
 
 	$result = $dbi->query($sql);
 	while ($item = $result->fetch_assoc()) {
@@ -200,47 +161,67 @@ if( $dr_position == '99 เวชปฏิบัติ' ){
 		$total_items[$code] = $item;
 	}
 }
-?>
-<div style="display: none;" id="shs_debug"><?=$appoint_doctor;?></div>
-<?php
-// WHERE 
-if( preg_match('/MD\d+/',$appoint_doctor,$matchs) > 0 ){
-	$where_doctor = " AND `doctor` LIKE '".$matchs['0']."%' ";
-}elseif( preg_match('/(HD|NID)\s?.+/',$appoint_doctor,$matchs) > 0 ){
-	$where_doctor = " AND `doctor` = '$appoint_doctor' ";
+
+$drfMonth = sprintf('%02d', $month);
+$drfYear = $year + 543;
+$appoint_doctor = trim($appoint_doctor);
+$sqlOff = "SELECT `dateoffline` FROM `dr_offline` WHERE `name` = '$appoint_doctor' AND `dateoffline` LIKE '%$drfMonth-$drfYear' ORDER BY `dateoffline`";
+$offResult = $dbi->query($sqlOff);
+$drTxtOffline = '';
+if( $offResult->num_rows > 0 ){
+
+	$drTxtOffline = '<div style="color: red; text-decoration: underline;">แจ้งแพทย์ '.$appoint_doctor.' ไม่อยู่วันที่ ';
+	$dayList = array();
+	while ($drOff = $offResult->fetch_assoc()) {
+
+		list($offD, $offM, $offY) = explode('-', $drOff['dateoffline']);
+
+		$holiday["A".$offD]["date"] = true;
+		$holiday["A".$offD]["detail"] = 'แพทย์ไม่อยู่';
+
+		$dayList[] = $offD;
+	}
+
+	$dayTxt = implode(', ',$dayList);
+
+	$drTxtOffline .= $dayTxt.' '.$thmonthname[($offM - 1)].' '.$offY.'</div>';
+
 }
 
+
+$list_app = array();
+
+// Query ตัวเก่า
+/*
 $sql = "Select appdate, apptime, count(distinct hn) as total_app 
 From `tmp_appoint_opd` 
-WHERE apptime <> 'ยกเลิกการนัด' 
-$where_doctor
+WHERE `appdate` LIKE '%$thai_date'
+AND apptime <> 'ยกเลิกการนัด' 
+AND `doctor` = '$appoint_doctor'
 GROUP BY appdate, apptime  ";
 
-// $result = Mysql_Query($sql);
-$list_app = array();
-// while($arr = Mysql_fetch_assoc($result)){
-// 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
-// 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
-// }
-
-$result = $dbi->query($sql);
-while ($arr = $result->fetch_assoc()) {
+$result = Mysql_Query($sql);
+while($arr = Mysql_fetch_assoc($result)){
 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 }
+*/
 
-
-// mysql_query("DROP TEMPORARY TABLE `tmp_appoint_opd`;");
-$dbi->query("DROP TEMPORARY TABLE `tmp_appoint_opd`;");
+// 2562-12-25 ทดสอบปรับมาใช้ Procedure 
+// ข้อมูลอื่นๆเกี่ยวกับ Store Procedure สามารถ Google จากคีย์เวิร์ด mysql stored procedure ตัวอย่าง
+$sqlCall = "CALL appoint_opd('$thai_date','$appoint_doctor'); ";
+$callResult = $dbi->query($sqlCall);
+while ($arr = $callResult->fetch_assoc()) {
+	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
+	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
+}
+$callResult->free_result();
 
 $sql = "Select date_format(date_holiday,'%d') as date_holiday2, detail From holiday where date_holiday like '".($year+543)."-".sprintf("%02d",$month)."%' ";
-
-
 $result = Mysql_Query($sql);
 while($arr = Mysql_fetch_assoc($result)){
 	$holiday["A".$arr["date_holiday2"]]["date"] = true;
 	$holiday["A".$arr["date_holiday2"]]["detail"] = $arr["detail"];
-
 }
 
 $long_time = $month+$year;
@@ -324,12 +305,7 @@ if(!checkdate  ( $month + 1, $today  , $year  )){
 	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
 	echo '<br>';
 
-	// $sqlOff = "SELECT COUNT(*) 
-	// FROM `dr_offline` 
-	// WHERE `name` = '$appoint_doctor' 
-	// AND `dateoffline` LIKE '%".date('m').'-'.(date('Y')+543)."'";
-	// dump($sqlOff);
-
+	echo $drTxtOffline;
 
 echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
