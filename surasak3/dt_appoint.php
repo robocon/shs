@@ -114,16 +114,14 @@ if($_GET["action"] == "carlendar"){
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
 	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
-	// $sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
-	// SELECT `appdate`, `apptime`, `hn`, `other` 
-	// FROM `appoint` 
-	// WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-	// AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
-	// AND apptime <> 'ยกเลิกการนัด' ";
+	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
+	SELECT `appdate`, `apptime`, `hn`, `other` 
+	FROM `appoint` 
+	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+	AND apptime <> 'ยกเลิกการนัด' ";
 	// mysql_query($sql_temp);
-	// $dbi->query($sql_temp);
-
-	$list_app = array();
+	$dbi->query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
 	// From appoint  
@@ -131,36 +129,23 @@ if($_GET["action"] == "carlendar"){
 	// AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
 	// AND apptime <> 'ยกเลิกการนัด' 
 	// GROUP BY appdate, apptime  ";
+
+	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
+	From `tmp_appointment`  
+	GROUP BY appdate, apptime  ";
 	// $result = Mysql_Query($sql);
+	$list_app = array();
 	// while($arr = Mysql_fetch_assoc($result)){
 	// 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 	// 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	// }
 
-	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
-	// From `tmp_appointment`  
-	// GROUP BY appdate, apptime  ";
-	// $result = $dbi->query($sql);
-	// while ($arr = $result->fetch_assoc()) {
-	// 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
-	// 	$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
-	// }
-	// $result->free();
-
-	$thai_date = $thmonthname[$month - 1].' '.($year+543);
-	$sqlCall = "CALL appoint_dt('$thai_date','$appoint_doctor'); ";
-	$callResult = $dbi->query($sqlCall);
-	if( $callResult->error ){
-		echo $callResult->error;
+	$result = $dbi->query($sql);
+	while ($arr = $result->fetch_assoc()) {
+		$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
+		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
-	if( $callResult->num_rows > 0 ){
-		while ($arr = $callResult->fetch_assoc()) {
-			$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
-			$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
-		}
-	}
-	$callResult->free();
-	$dbi->next_result();
+	$result->free();
 
 	// ผู้ใช้งานปัจจุบันเป็นแพทย์เวชปฏิบัติหรือไม่ ถ้าใช่ค่อย query statement ออกมา
 	$dr_intern = false;
@@ -177,9 +162,6 @@ if($_GET["action"] == "carlendar"){
 	}
 
 	/////vaccine
-
-	$list_vac = array();
-
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
 	// From `appoint` 
 	// where appdate like '% ".$thmonthname[$month - 1]." ".($year+543)."' 
@@ -189,40 +171,26 @@ if($_GET["action"] == "carlendar"){
 	// GROUP BY appdate, apptime ,other ";
 
 
-	// $sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
-	// From `tmp_appointment` 
-	// WHERE other!='' 
-	// GROUP BY appdate, apptime ,other ";
+	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
+	From `tmp_appointment` 
+	WHERE other!='' 
+	GROUP BY appdate, apptime ,other ";
 	// $result = Mysql_Query($sql);
+	$list_vac = array();
 	// while($arr = Mysql_fetch_assoc($result)){
 	// 	$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
 	// 	$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	// }
 
-	// $result = $dbi->query($sql);
-	// while ($arr = $result->fetch_assoc()) {
-	// 	$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
-	// 	$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
-	// }
-	// $result->free();
-
-	$sqlCall = "CALL appoint_dt_vaccine('$thai_date','$appoint_doctor'); ";
-	$callResult = $dbi->query($sqlCall);
-	if( $callResult->error ){
-		echo $callResult->error;
+	$result = $dbi->query($sql);
+	while ($arr = $result->fetch_assoc()) {
+		$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
+		$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
-	if( $callResult->num_rows > 0 ){
-		while ($arr = $callResult->fetch_assoc()) {
-			$list_vac["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["other"]." จำนวน ".$arr["total_app"]." คน<BR>";
-			$list_vac["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
-		}
-	}
-	$callResult->free();
-	$dbi->next_result();
-
+	$result->free();
 
 	// mysql_query("DROP TEMPORARY TABLE `tmp_appointment`;");
-	// $dbi->query("DROP TEMPORARY TABLE `tmp_appointment`;");
+	$dbi->query("DROP TEMPORARY TABLE `tmp_appointment`;");
 
 	$long_time = $month+$year;
 	$month2 = date("m");
@@ -513,31 +481,9 @@ if($_GET["action"] == "carlendar"){
 	</TR>
 	</TABLE>";
 	
-/*
-$thai_date = $thmonthname[$month - 1].' '.($year+543);
-$sqlCall = "CALL appoint_dt('$thai_date','$appoint_doctor'); ";
-$callResult = $dbi->query($sqlCall);
-
-?>
-<div style="display: none;">
-<?php 
-dump($sqlCall);
-dump($callResult);
-dump($callResult->num_rows);
-while ($arr = $callResult->fetch_assoc()) {
-	dump($arr);
-}
-?>
-</div>
-<?php
-$callResult->free();
-$dbi->next_result();
-*/
-
-
 	exit();
 
-} // end calendar
+}
 
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
