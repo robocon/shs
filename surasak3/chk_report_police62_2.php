@@ -638,17 +638,6 @@ while($result = mysql_fetch_assoc($row2)){
 								<td width="40%"><b>ผลตรวจ</b></td>
 							</tr>
 							<?php 
-
-							// ไม่มีผลจาก LIS เลยต้อง lock การแสดงผล
-							if ( $hn === '630497' ) {
-								?>
-								<tr>
-									<td><b>HIV Ab screening</b></td>
-									<td>Positive</td>
-								</tr>
-								<?php
-							}
-
 							while ($item = mysql_fetch_assoc($q)) {
 
 								if( $item['labcode'] == 'HIV' ){ 
