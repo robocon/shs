@@ -59,19 +59,27 @@
     <option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
     <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
 
-  </select><select size="1" name="thiyr">
-    <option selected>2552</option>
-   <option>2553</option>
-    <option>2554</option>
-    <option>2555</option>
-    <option>2556</option>
-    <option>2557</option>
-    <option>2558</option>
-    <option>2559</option>
-    <option>2560</option>
-    <option>2561</option>
-    <option>2562</option>
-  </select></p>
+  </select>
+
+  <?php 
+  $yearSelect = ( empty($_POST['thiyr']) ) ? (date('Y')+543) : $_POST['thiyr'] ;
+  $yearRange = range('2552', (date('Y')+543));
+  ?>
+  <select size="1" name="thiyr">
+    <?php 
+    foreach ($yearRange as $key => $year) {
+
+      $selected = ( $yearSelect == $year ) ? 'selected="selected"' : '' ;
+
+      ?>
+      <option value="<?=$year;?>" <?=$selected;?> ><?=$year;?></option>
+      <?php
+    }
+    ?>
+  </select>
+  
+  
+  </p>
 
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;

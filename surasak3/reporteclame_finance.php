@@ -8,7 +8,7 @@ if( $_SESSION['smenucode'] != "ADM" &&  $_SESSION['smenucode'] != "ADMFINANCE"){
 }
 ?>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 21px;  
@@ -16,7 +16,7 @@ body,td,th {
 body {
 	background-color: #CCFFCC;
 }
--->
+
 </style>
 <div align="center" style="margin-top:50px;">
 <form method="POST" action="reporteclame1_finance.php" target="_blank">
@@ -80,22 +80,24 @@ body {
     <option value="11">¾ÄÈ¨Ô¡ÒÂ¹</option>
     <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
 
-  </select><select size="1" name="thiyr">
-    <option selected>2552</option>
-    <option>2553</option>
-    <option>2554</option>
-    <option>2555</option>
-    <option>2556</option>
-    <option>2557</option>
-    <option>2558</option>
-    <option>2559</option>
-    <option>2560</option>
-    <option>2561</option>
-    <option>2562</option>
-    
-    
   </select>
   
+  <?php 
+  $yearSelect = ( empty($_POST['thiyr']) ) ? (date('Y')+543) : $_POST['thiyr'] ;
+  $yearRange = range('2552', (date('Y')+543));
+  ?>
+  <select size="1" name="thiyr">
+    <?php 
+    foreach ($yearRange as $key => $year) {
+
+      $selected = ( $yearSelect == $year ) ? 'selected="selected"' : '' ;
+
+      ?>
+      <option value="<?=$year;?>" <?=$selected;?> ><?=$year;?></option>
+      <?php
+    }
+    ?>
+  </select>
 
 <?php
 
