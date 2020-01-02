@@ -1,13 +1,26 @@
 <?php
+session_start();
 include 'bootstrap.php';
 
-if( $_SESSION['smenucode'] != "ADM" ){
+if( $_SESSION['smenucode'] != "ADM" &&  $_SESSION['smenucode'] != "ADMFINANCE"){
   echo "ให้สิทธิเฉพาะ Admin เท่านั้น";
   exit;
 }
 ?>
-<form method="POST" action="reporteclame1_finance.php">
-<p>ลูกหนี้หลักประกันสุขภาพ ประจำเดือน</p>
+<style type="text/css">
+<!--
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 21px;  
+}
+body {
+	background-color: #CCFFCC;
+}
+-->
+</style>
+<div align="center" style="margin-top:50px;">
+<form method="POST" action="reporteclame1_finance.php" target="_blank">
+<p><strong>ลูกหนี้หลักประกันสุขภาพ</strong></p>
 
 
 
@@ -64,7 +77,7 @@ if( $_SESSION['smenucode'] != "ADM" ){
     <option value="08">&#3626;&#3636;&#3591;&#3627;&#3634;&#3588;&#3617;</option>
     <option value="09">&#3585;&#3633;&#3609;&#3618;&#3634;&#3618;&#3609;</option>
     <option value="10">&#3605;&#3640;&#3621;&#3634;&#3588;&#3617;</option>
-    <option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
+    <option value="11">พฤศจิกายน</option>
     <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
 
   </select><select size="1" name="thiyr">
@@ -97,19 +110,13 @@ if( $_SESSION['smenucode'] != "ADM" ){
 
   เลือกสิทธิ
   <select name="ptright" id="">
+  <option value="">สิทธิประกันสุขภาพทั้งหมด</option>
   <?php
   while ( $item = mysql_fetch_assoc($q) ) {
-    ?><option value="<?=$item['code'];?>"><?=$item['code'].$item['name'];?></option><?php
+    ?><option value="<?=$item['code'];?>"><?=$item['code']." ".$item['name'];?></option><?php
   }
   ?>
   </select>
-  
-  
-  
-  </p>
-
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;
-    <input type="submit" value="    &#3605;&#3585;&#3621;&#3591;    " name="B1">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
+&nbsp;&nbsp;&nbsp;<input type="submit" value="    ดูรายงาน    " name="B1">  </p>
 </form>
+</div>
