@@ -80,16 +80,13 @@ if(isset($_POST['search'])){
 	<?php 
 	$date_filter = $_POST['yr']."-".$_POST['m'];
 	
-	$sql = "
-	CREATE TEMPORARY TABLE `dc_tmp`
+	$sql = "CREATE TEMPORARY TABLE `dc_tmp`
 	SELECT * FROM `dcstatus` 
 	WHERE `date` LIKE '$date_filter%' 
-	ORDER BY `date` ASC;
-	";
+	ORDER BY `date` ASC;";
 	mysql_query($sql);
 	
-	$sql = "
-	SELECT * 
+	$sql = "SELECT * 
 	FROM `ipcard` 
 	WHERE `dcdate` LIKE '$date_filter-%' 
 	ORDER BY `dcdate`;";
@@ -98,12 +95,10 @@ if(isset($_POST['search'])){
 	while($result = mysql_fetch_array($rows)){
 		$an_id = $result['an'];
 		
-		$sql = "
-		SELECT `status` FROM `dc_tmp`
+		$sql = "SELECT `status` FROM `dc_tmp`
 		WHERE `an` = '$an_id'
 		ORDER BY `date` DESC
-		LIMIT 1;
-		";
+		LIMIT 1;";
 		$q = mysql_query($sql);
 		$item = mysql_fetch_assoc($q);
 		$status_txt = 'N';

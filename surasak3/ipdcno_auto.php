@@ -1,3 +1,17 @@
+<?php 
+session_start();
+
+if( empty($_SESSION['sIdname']) ){
+	?>
+	<div style="text-align: center;">
+		<h1>กรุณาเข้าสู่ระบบอีกครั้งเพื่อใช้งาน</h1>
+		<a href="login_page.php">คลิกที่นี่ เพื่อเข้าสู่ระบบ</a>
+	</div>
+	<?php
+	exit;
+}
+
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -36,8 +50,11 @@ while($result = mysql_fetch_array($rows2)){
 
 	//echo "<tr><td align='center'>$i</td><td>".$date1."</td><td>".$date2."</td><td align='center'>".$result['hn']."</td><td align='center'>".$result['an']."</td><td>".$result['ptname']."</td><td align='center'>".$str."</td></tr>";		
 
-	$sqlup = "update ipcard SET dcnumber = '".$str."' where row_id = '".$result['row_id']."' ";
-	$result2 = mysql_query($sqlup) or die( mysql_error() );
+	if( empty($result['dcnumber']) ){
+		$sqlup = "update ipcard SET dcnumber = '".$str."' where row_id = '".$result['row_id']."' ";
+		$result2 = mysql_query($sqlup) or die( mysql_error() );
+	}
+	
 }
 
 $alert = false;
