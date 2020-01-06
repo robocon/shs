@@ -8,7 +8,10 @@ session_start();
 	<link type="text/css" href="chk_style.css" rel="stylesheet" />
 </head>
 <body>
-	<form name="frmbill" method="post" action="chk_opacc">
+	<div>
+		<a target=_self  href='../nindex.htm' class="fontsara"> &larr;ไปเมนู</a> 
+	</div>
+	<form name="frmbill" method="post" action="chk_opacc.php">
 		<table width="50%" border="0" align="center" class="fontsara">
 			<tr>
 				<td colspan="3" align="center">&nbsp;</td>
@@ -16,7 +19,7 @@ session_start();
 			<tr>
 				<td align="right" width="15%">ระบุ HN</td>
 				<td width="15%"><input type="text" name="Chkhn" value="<?=$_POST['Chkhn'];?>" class="fontsara" /></td>
-				<td width="20%"><input type="submit" name="submit" value=" ค้นหา " class="fontsara"><a target=_self  href='../nindex.htm' class="fontsara"> &larr;ไปเมนู</a> </td>
+				<td width="20%"><input type="submit" name="submit" value=" ค้นหา " class="fontsara"></td>
 			</tr>
 		</table>
 	</form>
@@ -33,7 +36,7 @@ if(isset($_POST['Chkhn'])){
 	$strsql="SELECT *, CONCAT(`yot`,`name`,' ',`surname`) as ptname 
 	FROM `opcardchk` 
 	WHERE  HN = '".$_POST['Chkhn']."' 
-	and part='สอบตำรวจ62'";
+	and part LIKE 'สอบตำรวจ63%'";
 	$query=mysql_query($strsql) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 
@@ -91,11 +94,11 @@ if(isset($_POST['Submit'])){
 	$depart = "OTHER";
 
 	$detail = "ค่าบริการตรวจสุขภาพตำรวจ";
-	$price =880;
-	$paid  =880;
+	$price =60;
+	$paid  =60;
 	$idname='นางพวงเพ็ชร โนใจปิง';
 
-	$credit="เงินสด";
+	$credit="ตรวจสุขภาพ";
 
 	$sql = "INSERT INTO `opacc` ( `date` , `txdate` , `hn` , `depart` , `detail` , `price` , `paid` , `idname` , `credit` , `ptright` , `credit_detail` , `billno`)
 	VALUES ('$Thidate2', '$Thidate2', '".$_POST['hn']."', '$depart', '$detail', '$price', '$paid', '$idname',  '$credit', 'R01 เงินสด', '', '".$_POST['billno']."');";
