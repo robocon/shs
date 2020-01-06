@@ -311,6 +311,10 @@ class Mysql
 			$sth = $this->prepare($sql, $data);
 			$this->items = $sth->fetchAll(PDO::FETCH_ASSOC);
 			$this->rows = count($this->items);
+			if( $sth !== false ){
+				$sth = NULL;
+			}
+
 			return true;
 			
 		} catch(exception $e) {
@@ -351,8 +355,12 @@ class Mysql
 	public function insert($sql, $data = NULL ){
 		try {
 			
-			$this->prepare($sql, $data);
+			$sth = $this->prepare($sql, $data);
 			$this->lastId = $this->db->lastInsertId();
+			if( $sth !== false ){
+				$sth = NULL;
+			}
+
 			return true;
 			
 		} catch(Exception  $e) {
@@ -368,7 +376,11 @@ class Mysql
 	public function update($sql, $data = NULL ){
 		try {
 			
-			$this->prepare($sql, $data);
+			$sth = $this->prepare($sql, $data);
+			if( $sth !== false ){
+				$sth = NULL;
+			}
+
 			return true;
 			
 		} catch(Exception  $e) {
@@ -384,7 +396,11 @@ class Mysql
 	public function delete($sql, $data = NULL ){
 		try {
 			
-			$this->prepare($sql, $data);
+			$sth = $this->prepare($sql, $data);
+			if( $sth !== false ){
+				$sth = NULL;
+			}
+
 			return true;
 			
 		} catch(Exception  $e) {
