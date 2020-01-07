@@ -1,22 +1,27 @@
-<html>
-<head>
-<title>add_user</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
-<link href="css/backoffice.css" rel="stylesheet" type="text/css">
-<meta http-equiv="refresh" content="1;URL=doctoredit1.php">
-</head>
+<?php 
+session_start();
+include("connect.inc");
 
+$row = mysql_escape_string($_GET['row']);
 
-<?php
-    include("connect.inc");
-  $num = N;
-    $query = "UPDATE  doctor SET status = '$num' WHERE row_id = '$row' ";
-    $result = mysql_query($query)
-        or die("Query failed");
+$sql = "SELECT `doctorcode` FROM `doctor` WHERE `row_id` = '$row' ";
+$q = mysql_query($sql);
+$dr = mysql_fetch_assoc($q);
+$doctorcode = $dr['doctorcode'];
 
-    If ($result){
-          print "ปรับปรุงข้อมูลเรียบร้อยแล้ว<br>";
-          print "ปิดหน้าต่างนี้";
- 	}
-    include("unconnect.inc");
+$query = "UPDATE `doctor` SET `status` = 'N' WHERE `row_id` = '$row' ";
+$result = mysql_query($query) or die("Query failed");
+
+$query = "UPDATE `inputm` SET `status` = 'N' WHERE `codedoctor` = '$doctorcode' ";
+$result = mysql_query($query) or die("Query failed");
+
+if($result){
+  print "ปรับปรุงข้อมูลเรียบร้อยแล้ว<br>";
+  print "ปิดหน้าต่างนี้";
+}
+
+$_SESSION['x-msg'] = 'ปรับปรุงข้อมูลเรียบร้อยแล้ว';
+header("Location: doctoredit1.php");
+
+include("unconnect.inc");
 ?>

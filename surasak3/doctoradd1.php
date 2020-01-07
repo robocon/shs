@@ -1,4 +1,4 @@
-<body bgcolor="#C0C0C0">
+ <body bgcolor="#C0C0C0">
 
 <form method="POST" action="doctoradd2.php">
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
