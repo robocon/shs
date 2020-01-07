@@ -48,6 +48,11 @@ if( $appd1 == '2562-12-22' ){
   $appd = urlencode($appd);
   echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;281 &nbsp;&nbsp;รายการ';
 
+}elseif ( $appd1 == '2563-01-06' ) {
+  $part = urlencode('สอบตำรวจ63_03');
+  $appd = urlencode($appd);
+  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ ตรวจซ้ำ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;11 &nbsp;&nbsp;รายการ';
+
 }
 
 

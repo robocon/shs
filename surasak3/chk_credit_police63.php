@@ -220,11 +220,24 @@ $doctor='ตรวจสุขภาพ';
  * สอบตำรวจ63 กับ สอบตำรวจ63_02
  */
 $part = urldecode($_GET['part']);
-$sql = "SELECT * 
-FROM `log_opcardchk` 
-WHERE `log_part` = '$part' 
-GROUP BY `log_hn` 
-ORDER BY `log_hn` ";
+
+if( $part == 'สอบตำรวจ63_03' ){
+    $sql = "SELECT * 
+    FROM `log_opcardchk` 
+    WHERE `log_part` LIKE 'สอบตำรวจ63%' 
+    GROUP BY `log_hn` 
+    ORDER BY `log_hn`";
+}else{
+    $sql = "SELECT * 
+    FROM `log_opcardchk` 
+    WHERE `log_part` = '$part' 
+    GROUP BY `log_hn` 
+    ORDER BY `log_hn` ";
+}
+
+
+
+
 $db->select($sql);
 $items = $db->get_items();
 $rows = $db->get_rows();
@@ -243,6 +256,7 @@ $rows = $db->get_rows();
         <th>#</th>
         <th>เวลา</th>
         <th>HN</th>
+        <th>ชื่อ-สกุล</th>
         <th>รายการ</th>
         <th>จ่ายเงิน</th>
         <th>ชำระ</th>
@@ -262,14 +276,19 @@ foreach ($items as $key => $value) {
 
     $hn = $value['log_hn'];
     $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date_like%' AND `hn` = '$hn'";
-    
     $db->select($sql);
     $item = $db->get_item();
+
+    if( empty($item['row_id']) ){
+        continue;
+    }
+
     ?>
     <tr bgcolor="F5DEB3">
         <td><?=$i;?></td>
         <td>13:00</td>
         <td><?=$hn;?></td>
+        <td><?=$value['log_ptname'];?></td>
         <td><?=$item['detail'];?></td>
         <td><?=$item['price'];?></td>
         <td><?=$item['credit'];?></td>
