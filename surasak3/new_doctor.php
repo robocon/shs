@@ -54,7 +54,7 @@ $room_list = array(
 );
 
 
-$jobs = array(
+$jobsList = array(
     'ศัลยกรรม',
     'ศัลยกรรมออร์โธปิดิกส์',
     'สูติกรรม',
@@ -78,6 +78,9 @@ if( $action === false ){
         label{
             cursor: pointer;
         }
+        table tr{
+            vertical-align: top;
+        }
     </style>
     <div><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก ร.พ.</a> | <a href="doctoredit1.php">หน้ารายชื่อแพทย์</a></div>
     <?php 
@@ -92,54 +95,125 @@ if( $action === false ){
         <h3>เพิ่มแพทย์ใหม่</h3>
     </div>
     <form action="new_doctor.php" method="post">
-        <div>
-            <span>ยศ</span> : <input type="text" name="pre_name" > <span>ร.อ., น.พ., พ.ญ. ฯลฯ</span>
-        </div>
-        <div>
-            <span>ชื่อ</span> : <input type="text" name="name" ><span style="color:red;">*</span> <span>สกุล</span> : <input type="text" name="surname" ><span style="color:red;">*</span> 
-        </div>
-        <div>
-            <span>เลขที่ ว.</span> : <input type="text" name="doctor_num"><span style="color:red;">*</span>
-        </div>
-        <div>
-            <span>แผนกที่ทำงาน : </span> 
-            <select name="doctor_type" id="">
-                <?php foreach( $section AS $key => $item ){ ?>
-                <option value="<?=$key;?> <?=$item;?>"><?=$item;?></option>
-                <?php } ?>
-            </select>
-        </div>
-        <div>
-            <span>ประเภทแพทย์</span>
-            <select name="่jobs" id="">
-                <?php foreach( $jobs AS $key => $item ){ ?>
-                <option value="<?=$key;?> <?=$item;?>"><?=$item;?></option>
-                <?php } ?>
-            </select>
-        </div>
-        <div>
-            <span>ห้องตรวจ : </span> 
-            <select name="room" id="">
-                <?php foreach( $room_list AS $key => $item ){ ?>
-                <option value="<?=$item;?>"><?=$item;?></option>
-                <?php } ?>
-            </select>
-        </div>
-        <div>
-            <div>กลุ่มแพทย์ : <span style="color:red;">*</span></div>
-            <input type="radio" name="drType" id="drType1" value="dr"><label for="drType1">แพทย์ประจำ</label>
-            <input type="radio" name="drType" id="drType2" value="intern"><label for="drType2">Intern</label>
-        </div>
-        <div>&nbsp;</div>
-        <div>
-            <button type="submit">เพิ่มข้อมูล</button>
-            <div>
-               <u>ระบบยังไม่รองรับแพทย์เฉพาะห้องไต กรุณาติดต่อโปรแกรมเมอร์</u>
-            </div>
-            <input type="hidden" name="action" value="save">
-        </div>
-        <div>** ชื่อผู้ใช้งานและรหัสผ่านคือ md__เลขว.__ เช่น md99999 </div>
+        <table>
+            <tr>
+                <td><span>ยศ/คำนำหน้าชื่อ</span> : </td>
+                <td>
+                    <input type="text" name="pre_name" id="pre_name" >
+                    ตัวช่วย : <select name="" id="helpPrefix">
+                        <option value="นาย">นาย</option>
+                        <option value="นาง">นาง</option>
+                        <option value="น.ส.">น.ส.</option>
+                        <option value="น.พ.">น.พ.</option>
+                        <option value="พ.ญ.">พ.ญ.</option>
+                        <option value="ร.ต.">ร.ต.</option>
+                        <option value="ร.ต.หญิง">ร.ต.หญิง</option>
+                        <option value="ร.ท.">ร.ท.</option>
+                        <option value="ร.ท.หญิง">ร.ท.หญิง</option>
+                        <option value="ร.อ.">ร.อ.</option>
+                        <option value="ร.อ.หญิง">ร.อ.หญิง</option>
+                        <option value="พ.ต.">พ.ต.</option>
+                        <option value="พ.ต.หญิง">พ.ต.หญิง</option>
+                        <option value="พ.ท.">พ.ท.</option>
+                        <option value="พ.ท.หญิง">พ.ท.หญิง</option>
+                        <option value="พ.อ.">พ.อ.</option>
+                        <option value="พ.อ.หญิง">พ.อ.หญิง</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><span>ชื่อ</span> : </td>
+                <td><input type="text" name="name" ><span style="color:red;">*</span></td>
+            </tr>
+            <tr>
+                <td><span>สกุล</span> : </td>
+                <td><input type="text" name="surname" ><span style="color:red;">*</span></td>
+            </tr>
+            <tr>
+                <td><span>เลขที่ ว./ท./พท.ป/พจ.</span> : </td>
+                <td><input type="text" name="doctor_num"><span style="color:red;">*</span></td>
+            </tr>
+            <tr>
+                <td><span>แผนกที่ทำงาน : </span></td>
+                <td>
+                    <select name="doctor_type" id="">
+                        <?php foreach( $section AS $key => $item ){ ?>
+                        <option value="<?=$key;?> <?=$item;?>"><?=$item;?></option>
+                        <?php } ?>
+                    </select>
+                    <div>
+                        <table>
+                            <tr>
+                                <td>ทันตกรรม</td>
+                                <td>ท.</td>
+                            </tr>
+                            <tr>
+                                <td>แพทย์แผนไทย</td>
+                                <td>พท.ป</td>
+                            </tr>
+                            <tr>
+                                <td>แพทย์แผนจีน</td>
+                                <td>พจ.</td>
+                            </tr>
+                            <tr>
+                                <td>ค่าปริยาย</td>
+                                <td>ว.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span>ประเภทแพทย์</span></td>
+                <td>
+                    <select name="drJobs" id="">
+                        <?php foreach( $jobsList AS $jobKey => $jobItem ){ ?>
+                        <option value="<?=$jobItem;?>"><?=$jobItem;?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><span>ห้องตรวจ : </span></td>
+                <td>
+                    <select name="room" id="">
+                        <?php foreach( $room_list AS $key => $item ){ ?>
+                        <option value="<?=$item;?>"><?=$item;?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>กลุ่มแพทย์ : <span style="color:red;">*</span></td>
+                <td>
+                    <input type="radio" name="drType" id="drType1" value="dr"><label for="drType1">แพทย์ประจำ</label>
+                    <input type="radio" name="drType" id="drType2" value="intern"><label for="drType2">Intern</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="checkbox" name="drHd" id="drHd" value="hd"> <label for="drHd">กรณีเพิ่มแพทย์สำหรับห้องไต</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">เพิ่มข้อมูล</button>
+                    <input type="hidden" name="action" value="save">
+                </td>
+            </tr>
+        </table>
+        <div>** ชื่อผู้ใช้งานและรหัสผ่านคือ md__เลขว.__ เช่น md99999 ถ้าเป็นแพทย์สำหรับห้องไต จะได้ชื่อผู้ใช้และรหัสผ่านเป็น hd__เลขว.__</div>
     </form>
+    <script>
+    
+        document.getElementById("helpPrefix").addEventListener("change",function(){
+            
+            var preName = document.getElementById("pre_name");
+            preName.value = preName.value+this.value;
+
+        });
+        
+    </script>
     <?php
 
 
@@ -152,7 +226,8 @@ if( $action === false ){
     $doctor_type = input_post('doctor_type');
     $room = input_post('room');
     $drType = input_post('drType');
-    $jobs = input_post('jobs');
+    $jobs = input_post('drJobs');
+    $drHd = input_post('drHd');
 
     $fullname = $name.' '.$surname;
 
@@ -179,13 +254,7 @@ if( $action === false ){
     $db->select($sql);
     $item = $db->get_item();
     $drRunno = intval($item['runno']) + 1;
-    $new_md = $item['prefix'].$drRunno;
-
-    $sql = "INSERT INTO `doctor` VALUES (NULL, '$pre_name', '', '$new_md $fullname', '$doctor_num', '$doctor_type', 'y', 'ADM', '$doctor_type', '1', '1', '1', '1', '1', '$room', '99', '', 'y', 'y','','$jobs');";
-    $save = $db->insert($sql);
-    if( $save !== true ){
-		$msg = errorMsg('save', $save['id']);
-    }
+    $new_md = $item['prefix'].$drRunno; // Default จะเป็น MD
 
     $prefixDr = 'ว.';
     // 11 ทันตกรรม
@@ -200,11 +269,32 @@ if( $action === false ){
         
     }
 
-    $sql = "INSERT INTO `inputm` VALUES (NULL, '$fullname ($prefixDr.$doctor_num)', 'md$doctor_num', 'md$doctor_num', 'ADMDR1', 'Y', '$doctor_num', '$new_md', '', '', NOW(), '$drType', '');";
-    $save = $db->insert($sql);
-    if( $save !== true ){
-		$msg = errorMsg('save', $save['id']);
+    $nameForDoctor = "$new_md $fullname";
+    $nameForInputm = "$fullname ($prefixDr$doctor_num)";
+    $idname = "md$doctor_num";
+
+    if( $drHd === 'hd' ){
+
+        $nameForInputm = $nameForDoctor = "HD $name ($prefixDr$doctor_num)";
+        $idname = "hd$doctor_num";
     }
+
+    $sql = "INSERT INTO `doctor` VALUES (NULL, '$pre_name', '', '$nameForDoctor', '$doctor_num', '$doctor_type', 'y', 'ADM', '$doctor_type', '1', '1', '1', '1', '1', '$room', '99', '', 'y', 'y','','$jobs');";
+    // $save = $db->insert($sql);
+    // if( $save !== true ){
+	// 	$msg = errorMsg('save', $save['id']);
+    // }
+
+    dump($sql);
+
+    $sql = "INSERT INTO `inputm` VALUES (NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', '$doctor_num', '$new_md', '', '', NOW(), '$drType', '');";
+    // $save = $db->insert($sql);
+    // if( $save !== true ){
+	// 	$msg = errorMsg('save', $save['id']);
+    // }
+
+    dump($sql);
+    exit;
 
     $now = date('Y-m-d H:i:s');
     $sql = "UPDATE `runno` SET 
