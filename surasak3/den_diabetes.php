@@ -55,7 +55,7 @@ label{
 }
 </style>
 <div>
-    <a href="../nindex.htm">หน้าหลัก ร.พ.</a>
+    <a href="../nindex.htm">หน้าหลัก ร.พ.</a> | <a href="diabetes_clinic/diabetes_lpho.php" target="_blank">รายงาน DM สสจ ตามปีงบฯ</a>
 </div>
 <form action="den_diabetes.php" method="post">
     <h3>ระบบแสดงรายชื่อผู้ป่วยเบาหวาน สำหรับกองทันตกรรม</h3>

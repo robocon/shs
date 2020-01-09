@@ -183,6 +183,8 @@ label{
 					<li class="last"><a href="report_hypertensionofyear.php"><span>รายงาน HT</span></a></li>
 					<li class="last"><a href="report_retinal_exam.php"><span>รายงาน Retinal Exam</span></a></li>
 					<li class="last"><a href="../den_diabetes.php" target="_blank"><span>รายงาน DM ห้องฟัน รายปี</span></a></li>
+					<li class="last"><a href="diabetes_lpho.php" target="_blank"><span>รายงาน DM สสจ ตามปีงบฯ</span></a></li>
+					
 				</ul> 
 			</li>
 			<li>
