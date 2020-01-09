@@ -69,6 +69,7 @@ label{
         <?php 
         getYearList('year_selected', true, $year, $year_range);
         ?>
+        <span>*ปีงบประมาณ</span>
     </div>
 
     <div>
@@ -104,23 +105,24 @@ if ( $action == 'show_data' ) {
     $year = input_post('year_selected');
     $type = input_post('type');
 
+    $yearStart = ($year-1).'-10-01';
+    $yearEnd = $year.'-09-30';
+
     if( $type == 1 ){
         $sql = "SELECT * 
         FROM `diabetes_clinic_history` 
-        WHERE `dateN` LIKE '$year%' 
+        WHERE ( `dateN` >= '$yearStart' AND `dateN` <= '$yearEnd' ) 
         AND `hn` <> '' 
         AND ( `bp1` <> '' AND `bp2` <> '' ) 
-        AND `l_hbalc` > 0 
-        -- AND ( `l_hbalc` > 0  AND `l_hbalc` < 7  ) 
-        -- AND `bp1` <> '' 
-        -- AND ( `bp1` < 140 AND `bp2` < 90 )";
+        AND `l_hbalc` > 0 ";
+
     }else if( $type == 2 ){
 
         $sql = "SELECT b.* 
         FROM ( 
             SELECT MAX(`row_id`) AS `max_id`, `hn` 
             FROM `diabetes_clinic_history` 
-            WHERE `dateN` LIKE '$year%' 
+            WHERE ( `dateN` >= '$yearStart' AND `dateN` <= '$yearEnd' ) 
             GROUP BY `hn` 
         ) AS a 
         LEFT JOIN  `diabetes_clinic_history` AS b ON b.`row_id` = a.`max_id` 
@@ -128,19 +130,6 @@ if ( $action == 'show_data' ) {
         AND ( b.`bp1` <> '' AND b.`bp2` <> '' ) 
         AND b.`l_hbalc` > 0 ";
         $db->select($sql);
-        // $count_all = $db->get_rows();
-
-        // $sql = "SELECT b.* 
-        // FROM ( 
-        //     SELECT MAX(`row_id`) AS `max_id`, `hn` 
-        //     FROM `diabetes_clinic_history` 
-        //     WHERE `dateN` LIKE '$year%' 
-        //     GROUP BY `hn` 
-        // ) AS a 
-        // LEFT JOIN  `diabetes_clinic_history` AS b ON b.`row_id` = a.`max_id`
-        // WHERE ( `l_hbalc` > 0  AND `l_hbalc` < 7  ) 
-        // AND b.`bp1` <> '' 
-        // AND ( b.`bp1` < 140 AND b.`bp2` < 90 ) ";
 
     }
     $db->select($sql);
@@ -157,7 +146,6 @@ if ( $action == 'show_data' ) {
     $count_non_smoke = 0;
 
     $age_list = array();
-
 
     // แยกกลุ่มคนที่เข้าเกณฑ์ hba1c กับ bp
     $criteria_pass = array();
@@ -186,7 +174,6 @@ if ( $action == 'show_data' ) {
             $criteria_not_pass[] = $item;
         }
         // เก็บข้อมูล
-
 
         ++$i;
 
