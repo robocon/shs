@@ -175,7 +175,7 @@ function dochange(src, val) {
     'locale.php?data='+src+'&val='+val,
     {},
     function(res){
-      console.log(res);
+      // console.log(res);
       document.getElementById(src).innerHTML=res; //รับค่ากลับมา
     }
   );
