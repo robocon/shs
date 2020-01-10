@@ -1,6 +1,11 @@
 <?php 
 include '../bootstrap.php';
 
+?>
+<h3>ระบบปิดปรับปรุงชั่วคราว ขออภัยในความไม่สะดวก</h3>
+<?php
+exit;
+
 $db = Mysql::load();
 $year_range = range(2016, date('Y'));
 
