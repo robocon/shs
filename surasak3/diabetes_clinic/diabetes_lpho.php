@@ -1,11 +1,6 @@
 <?php 
 include '../bootstrap.php';
 
-?>
-<h3>ระบบปิดปรับปรุงชั่วคราว ขออภัยในความไม่สะดวก</h3>
-<?php
-exit;
-
 $db = Mysql::load();
 $year_range = range(2016, date('Y'));
 
@@ -64,20 +59,20 @@ if ( $view === 'show' ) {
     $yearEnd = $year.'-09-30';
 
 
-
-
-
     $sql = "SELECT b.`dateN`,b.`hn`,b.`ptname`,b.`dbbirt`,b.`retinal`,b.`retinal_date`,b.`foot`,b.`foot_date`,b.`height`,b.`weight`,b.`round`, 
     b.`bp1`,b.`bp2`,b.`l_bs`,b.`l_creatinine`, 
     CONCAT(SUBSTRING(b.`thidate`,1,4)+543, SUBSTRING(b.`thidate`,5,6)) AS `thidate`,
     CONCAT(SUBSTRING(b.`dateN`,1,4)+543, SUBSTRING(b.`dateN`,5,6)) AS `dateOpd`,
     SUBSTRING(b.`retinal_date`,1,10) AS `retinal_date`, 
-    SUBSTRING(b.`foot_date`,1,10) AS `foot_date` 
+    SUBSTRING(b.`foot_date`,1,10) AS `foot_date`,
+    toTh(b.`dateN`) AS `comingDate` 
     FROM ( 
-        SELECT MAX(`row_id`) AS `max_id`, `hn` 
+        SELECT `row_id` AS `max_id`,`hn`
+        #SELECT MAX(`row_id`) AS `max_id`, `hn` 
         FROM `diabetes_clinic_history` 
         WHERE ( `dateN` >= '$yearStart' AND `dateN` <= '$yearEnd' ) 
-        GROUP BY `hn` 
+        #GROUP BY `hn` 
+        ORDER BY `row_id` 
     ) AS a 
     LEFT JOIN  `diabetes_clinic_history` AS b ON b.`row_id` = a.`max_id` 
     WHERE b.`hn` <> '' 
@@ -87,9 +82,6 @@ if ( $view === 'show' ) {
     $db->select($sql);
     $items = $db->get_items();
 
-
-
-
 ?>
 <div style="text-align:center;">
     <h3>ข้อมูลตั้งแต่ <?=ad_to_bc($yearStart);?> ถึง<?=ad_to_bc($yearEnd);?></h3>
@@ -97,9 +89,11 @@ if ( $view === 'show' ) {
 <table class="chk_table">
     <thead>
         <tr>
-            <th colspan="17">แบบเก็บข้อมูลผู้ป่วยโรคเรื้อรัง</th>
+            <th colspan="20">แบบเก็บข้อมูลผู้ป่วยโรคเรื้อรัง</th>
         </tr>
         <tr>
+            <th>ลำดับ</th>
+            <th>HN</th>
             <th>คำนำหน้า</th>
             <th>ชื่อ</th>
             <th>สกุล</th>
@@ -109,6 +103,7 @@ if ( $view === 'show' ) {
             <th>เลขที่ID</th>
             <th>รหัสโรค</th>
             <th>วันที่เริ่มรักษา</th>
+            <th>วันที่รับบริการ</th>
             <th>น้ำหนัก</th>
             <th>ส่วนสูง</th>
             <th>รอบเอว</th>
@@ -131,6 +126,7 @@ if ( $view === 'show' ) {
             return $years.'ปี '.$months.'เดือน ';
         }
 
+        $i = 1;
         foreach ($items as $key => $item) {
 
             $hn = $item['hn'];
@@ -174,6 +170,7 @@ if ( $view === 'show' ) {
                 $egfr = $egfrCall['egfr'];
             }
 
+            $icd10 = '';
             $dateOpd = $item['dateOpd'];
             $sql = "SELECT GROUP_CONCAT(DISTINCT icd10 SEPARATOR ', ') AS `icd10`
             FROM `diag`
@@ -182,10 +179,15 @@ if ( $view === 'show' ) {
             AND `icd10` <> '' 
             GROUP BY `hn` ";
             $db->select($sql);
-            $diag = $db->get_item();
-            $icd10 = $diag['icd10'];
-            
 
+            if ( $db->get_rows() > 0 ) {
+                
+                $diag = $db->get_item();
+                $icd10 = $diag['icd10'];
+
+            }
+            
+            
             $ratinal = '';
             if (!empty($item['retinal'])) {
                 $ratinal .= $item['retinal'];
@@ -206,6 +208,8 @@ if ( $view === 'show' ) {
 
             ?>
             <tr>
+                <th><?=$i;?></th>
+                <td><?=$hn;?></td>
                 <td><?=$prefix?></td>
                 <td><?=$name?></td>
                 <td><?=$surname?></td>
@@ -215,6 +219,7 @@ if ( $view === 'show' ) {
                 <td><?=$op['idcard'];?></td>
                 <td><?=$icd10;?></td>
                 <td><?=$item['thidate'];?></td>
+                <td><?=$item['comingDate'];?></td>
                 <td><?=$item['weight'];?></td>
                 <td><?=$item['height'];?></td>
                 <td><?=$item['round'];?></td>
@@ -226,6 +231,8 @@ if ( $view === 'show' ) {
             </tr>
             
             <?php
+
+            $i++;
         }
         ?>
         
