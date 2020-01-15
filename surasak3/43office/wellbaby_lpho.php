@@ -149,8 +149,52 @@ if( $page === 'searchHn' ){
                 </tr>
                 <tr>
                     <td>
-                        APGAR SCORE(1นาที) <input type="text" name="apgar1" id="" size="5"> 
-                        <!-- (5นาที) <input type="text" name="apgar5" id="" size="5"> -->
+                        APGAR SCORE(1นาที) <select name="apgar1" id="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="99">99</option>
+                        </select>
+                        (5นาที) <select name="apgar5" id="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="99">99</option>
+                        </select>
+                        (10นาที) <select name="apgar10" id="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="99">99</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         ความผิดปกติแต่กำเนิด <input type="radio" name="disorder" id="disorder1" value="ไม่มี"><label for="disorder1">ไม่มี</label> 
                         <input type="radio" name="disorder" id="disorder2" value="มี"><label for="disorder2">มี</label> 
                         ระบุ <input type="text" name="disorderDetail" id="">
@@ -161,6 +205,24 @@ if( $page === 'searchHn' ){
                         สภาวะสุขภาพแรกเกิด <input type="radio" name="health" id="health1" value="แข็งแรงดี"><label for="health1">แข็งแรงดี</label> 
                         <input type="radio" name="health" id="health2" value="ผิดปกติ"><label for="health2">ผิดปกติ</label> 
                         ระบุ <input type="text" name="healthDetail" id="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        ลำดับที่ของทารก <select name="birthNo" id="">
+                            <option value="1">คลอดเดี่ยว</option>
+                            <option value="2">เป็นแฝดลำดับที่ 1</option>
+                            <option value="3">เป็นแฝดลำดับที่ 2</option>
+                            <option value="4">เป็นแฝดลำดับที่ 3</option>
+                            <option value="5">เป็นแฝดลำดับที่ 4</option>
+                        </select>
+
+                        อาหารที่รับประทาน <select name="" id="">
+                            <option value="1">นมแม่อย่างเดียว</option>
+                            <option value="2">นมแม่และน้ำ</option>
+                            <option value="3">นมแม่และนมผสม</option>
+                            <option value="4">นมผสมอย่างเดียว</option>
+                        </select>
                     </td>
                 </tr>
                 <tr>
@@ -182,12 +244,12 @@ if( $page === 'searchHn' ){
                 </tr>
                 <tr>
                     <td>
-                        <input type="checkbox" name="bcg" id="bcg" value="1"> <label for="bcg">ได้ฉีดวัคซีนป้องกันโรค(BCG)</label>
+                        <input type="text" name="bcgDate" id="bcg" size="10"> วดป. ที่ได้ฉีดวัคซีนป้องกันโรค(BCG)
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <input type="checkbox" name="hb" id="hb" value="1"> <label for="hb">ได้ฉีดวัคซีนป้องกันโรคตับอักเสบบี(HB)</label>
+                        <input type="text" name="hbDate" id="hb" size="10"> วดป. ที่ได้ฉีดวัคซีนป้องกันโรคตับอักเสบบี(HB)
                     </td>
                 </tr>
             </table>
@@ -197,10 +259,12 @@ if( $page === 'searchHn' ){
             </div>
         </form>
         <script type="text/javascript">
-            var popup1, popup2;
+            var popup1, popup2, popup3, popup4;
             window.onload = function() {
                 popup1 = new Epoch('popup1','popup',document.getElementById('dateBorn'),false);
                 popup2 = new Epoch('popup2','popup',document.getElementById('dischargeDate'),false);
+                popup3 = new Epoch('popup2','popup',document.getElementById('bcg'),false);
+                popup4 = new Epoch('popup2','popup',document.getElementById('hb'),false);
             };
         </script>
         <?php
