@@ -21,7 +21,7 @@
 		<ul class="menu">
       <li><a href="../../nindex.htm" class="parent" title="หน้าหลัก ร.พ."><span>&#127968;</span></a></li>
       <li>
-        <a href="javascript: void(0);"><span>เด็ก</span></a>
+        <a href="javascript: void(0);"><span>ทารก</span></a>
         <ul>
           <li><a href="wellbaby_lpho.php"><span>ฟอร์มเด็กแรกเกิด</span></a></li>
           <li><a href="javascript: void(0);"><span>ฟอร์มเด็กหลังคลอด</span></a></li>
