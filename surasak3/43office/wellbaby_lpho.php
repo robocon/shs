@@ -209,7 +209,6 @@ if( $page === 'searchAn' ){
                                 <option value="3">VACUUM</option>
                                 <option value="4">FORCEPS</option>
                                 <option value="5">ท่าก้น</option>
-                                <option value="6">ABORTION</option>
                             </select></span>
 
                             <span class="sRow">ประเภทผู้ทำคลอด <select name="bdoctor" id="">
