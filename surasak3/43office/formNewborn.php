@@ -70,7 +70,7 @@ if( $page === 'searchAn' ){
                     <td><b>AN : </b><?=$item['an'];?> <b>HN : </b><?=$item['hn'];?> <b>ชื่อ-สกุล : </b><?=$item['ptname'];?></td>
                 </tr>
                 <tr>
-                    <td>วันที่รับบริการ : <?=$item['date'];?></td>
+                    <td><b>วันที่รับบริการ : </b><?=$item['date'];?></td>
                 </tr>
             </table>
         </fieldset>
@@ -141,7 +141,6 @@ if( $page === 'searchAn' ){
                             </select></span>
 
                             <!-- LABOR -->
-                            
                             <span class="sRow">สถานที่ <select name="bplace" id="">
                             <?php 
                             $db->select("SELECT * FROM `f43_labor_182_newborn_187`");
@@ -159,20 +158,22 @@ if( $page === 'searchAn' ){
                     <tr>
                         <td class="tdRow">
                             <!-- LABOR -->
-                            <span class="sRow">วิธีการคลอด <select name="btype" id="">
-                                <?php 
-                                $db->select("SELECT * FROM `f43_labor_184_newborn_190`");
-                                $bdoctorLists = $db->get_items();
-                                foreach ($bdoctorLists as $key => $bdoc) {
+                            <span class="sRow">
+                                วิธีการคลอด <select name="btype" id="">
+                                    <?php 
+                                    $db->select("SELECT * FROM `f43_labor_184_newborn_190`");
+                                    $bdoctorLists = $db->get_items();
+                                    foreach ($bdoctorLists as $key => $bdoc) {
+                                        ?>
+                                        <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                        <?php
+                                    }
                                     ?>
-                                    <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
-                                    <?php
-                                }
-                                ?>
-                            </select></span>
+                                </select>
+                            </span>
 
-                            <span class="sRow">ประเภทผู้ทำคลอด 
-                                <select name="bdoctor" id="">
+                            <span class="sRow">
+                                ประเภทผู้ทำคลอด <select name="bdoctor" id="">
                                 <?php 
                                 $db->select("SELECT * FROM `f43_labor_185_newborn_191`");
                                 $bdoctorLists = $db->get_items();
@@ -196,27 +197,36 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">APGAR SCORE(1นาที) <select name="apgar1" id="" class="important">
+
+                            <span class="sRow">APGAR SCORE</span>
+                            
+                            <span class="sRow">(1นาที) <select name="asphyxia" id="" class="important">
                                 <?php 
                                 foreach ($apgarList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
                                 }
                                 ?>
-                            </select></span>
+                                </select>
+                            </span>
                             <span class="sRow">(5นาที) <select name="apgar5" id="">
                                 <?php 
                                 foreach ($apgarList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
                                 }
                                 ?>
-                            </select></span>
+                                </select>
+                            </span>
                             <span class="sRow">(10นาที) <select name="apgar10" id="">
                                 <?php 
                                 foreach ($apgarList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
                                 }
                                 ?>
-                            </select></span>
+                                </select>
+                            </span>
+                            <span class="sRow">
+                                <input type="checkbox" name="asphyxia" id="noAsphyxia" value="99"> <label for="noAsphyxia">ไม่ทราบ</label>
+                            </span>
                         </td>
                     </tr>
                     <tr>
@@ -246,28 +256,51 @@ if( $page === 'searchAn' ){
                             }
                             ?>
                             </select></span>
+
+                            <span class="sRow">อาหารที่รับประทาน <select name="food" class="important">
+                            <?php 
+                            $db->select("SELECT * FROM `f43_newborncare_197`");
+                            $bdoctorLists = $db->get_items();
+                            foreach ($bdoctorLists as $key => $bdoc) {
+                                ?>
+                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                <?php
+                            }
+                            ?>
+                            </select></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            อาหารที่รับประทาน <select name="food" id="" class="important">
-                                <option value="1">นมแม่อย่างเดียว</option>
-                                <option value="2">นมแม่และน้ำ</option>
-                                <option value="3">นมแม่และนมผสม</option>
-                                <option value="4">นมผสมอย่างเดียว</option>
+                            ได้รับ VIT K หรือไม่<span style="color: red;">*</span> 
+                            <select name="vitk" class="important">
+                            <?php 
+                            $db->select("SELECT * FROM `f43_newborn_193`");
+                            $bdoctorLists = $db->get_items();
+                            foreach ($bdoctorLists as $key => $bdoc) {
+                                ?>
+                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                <?php
+                            }
+                            ?>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            วิตามินเค<span style="color: red;">*</span> <input type="radio" name="vitamink" id="vitamink1" value="ฉีด"><label for="vitamink1">ฉีด</label> 
-                            <input type="radio" name="vitamink" id="vitamink2" value="ไม่ฉีด"><label for="vitamink2">ไม่ฉีด</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdRow">
-                            <span class="sRow">การตรวจสภาวะพร่องไทรอยด์ฮอร์โมน<span style="color: red;">*</span> <input type="radio" name="thyroid" id="thyroid1" value="ปกติ"><label for="thyroid1">ปกติ</label> 
-                            <input type="radio" name="thyroid" id="thyroid2" value="ผิดปกติ"><label for="thyroid2">ผิดปกติ</label></span>
+                            <span class="sRow">ได้รับการตรวจ TSH หรือไม่<span style="color: red;">*</span> 
+                                <select name="tsh" class="important">
+                                <?php 
+                                $db->select("SELECT * FROM `f43_newborn_194`");
+                                $bdoctorLists = $db->get_items();
+                                foreach ($bdoctorLists as $key => $bdoc) {
+                                    ?>
+                                    <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                    <?php
+                                }
+                                ?>
+                                </select>
+                            </span>
                             <span class="sRow">ผลการตรวจไทรอยด์ <input type="text" name="thyroidResult" id="" size="5" class="important">mU/L</span>
                         </td>
                     </tr>
