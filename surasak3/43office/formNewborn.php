@@ -19,58 +19,9 @@ $apgarList = array(
 $gravidaList = array(1,2,3,4,5,6,7,8,9,10);
 
 ?>
-
-<style>
-/* ตาราง */
-body, button{
-    font-family: "TH Sarabun New","TH SarabunPSK";
-    font-size: 14pt;
-}
-/* select > option {
-    font-family: "TH Sarabun New","TH SarabunPSK";
-    font-size: 14pt;
-} */
-.chk_table{
-    border-collapse: collapse;
-}
-
-.chk_table th,
-.chk_table td{
-    padding: 3px;
-    border: 1px solid black;
-}
-
-fieldset{
-    border: 2px solid #656565;
-    padding: 4px;
-}
-legend{
-    margin-left: 10px;
-}
-label{
-    cursor: pointer;
-}
-.tdRow{
-    padding-bottom: 6px;
-    height: 32px;
-}
-.sRow{
-    padding-right: 15px;
-}
-.important{
-    border: 1px solid red;
-}
-
-@media print{
-    .div-hide{
-        display: none;
-    }
-}
-</style>
-
 <fieldset>
     <legend>ค้นหาข้อมูลตาม AN</legend>
-    <form action="wellbaby_lpho.php" method="post">
+    <form action="formNewborn.php" method="post">
         <div>
             AN : <input type="text" name="an" id="an">
         </div>
@@ -123,7 +74,7 @@ if( $page === 'searchAn' ){
                 </tr>
             </table>
         </fieldset>
-        <form action="wellbaby_lpho.php" method="post">
+        <form action="formNewborn.php" method="post">
             <fieldset>
                 <legend>ข้อมูลพื้นฐาน</legend>
                 <table>
@@ -190,12 +141,17 @@ if( $page === 'searchAn' ){
                             </select></span>
 
                             <!-- LABOR -->
+                            
                             <span class="sRow">สถานที่ <select name="bplace" id="">
-                                <option value="1">โรงพยาบาล</option>
-                                <option value="2">สถานีอนามัย</option>
-                                <option value="3">บ้าน</option>
-                                <option value="4">ระหว่างทาง</option>
-                                <option value="5">อื่นๆ</option>
+                            <?php 
+                            $db->select("SELECT * FROM `f43_labor_182_newborn_187`");
+                            $bdoctorLists = $db->get_items();
+                            foreach ($bdoctorLists as $key => $bdoc) {
+                                ?>
+                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                <?php
+                            }
+                            ?>
                             </select></span>
                             
                         </td>
@@ -204,21 +160,30 @@ if( $page === 'searchAn' ){
                         <td class="tdRow">
                             <!-- LABOR -->
                             <span class="sRow">วิธีการคลอด <select name="btype" id="">
-                                <option value="1">NORMAL</option>
-                                <option value="2">CESAREAN</option>
-                                <option value="3">VACUUM</option>
-                                <option value="4">FORCEPS</option>
-                                <option value="5">ท่าก้น</option>
+                                <?php 
+                                $db->select("SELECT * FROM `f43_labor_184_newborn_190`");
+                                $bdoctorLists = $db->get_items();
+                                foreach ($bdoctorLists as $key => $bdoc) {
+                                    ?>
+                                    <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                    <?php
+                                }
+                                ?>
                             </select></span>
 
-                            <span class="sRow">ประเภทผู้ทำคลอด <select name="bdoctor" id="">
-                                <option value="1">แพทย์</option>
-                                <option value="2">พยาบาล</option>
-                                <option value="3">จนท.สาธารณสุข(ที่ไม่ใช่แพทย์ พยาบาล)</option>
-                                <option value="4">ผดุงครรภ์โบราณ</option>
-                                <option value="5">คลอดเอง</option>
-                                <option value="6">อื่นๆ</option>
-                            </select></span>
+                            <span class="sRow">ประเภทผู้ทำคลอด 
+                                <select name="bdoctor" id="">
+                                <?php 
+                                $db->select("SELECT * FROM `f43_labor_185_newborn_191`");
+                                $bdoctorLists = $db->get_items();
+                                foreach ($bdoctorLists as $key => $bdoc) {
+                                    ?>
+                                    <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                    <?php
+                                }
+                                ?>
+                                </select>
+                            </span>
                         </td>
                     </tr>
                     <tr>
@@ -271,12 +236,26 @@ if( $page === 'searchAn' ){
                     <tr>
                         <td class="tdRow">
                             <span class="sRow">ลำดับที่ของทารก <select name="birthNo" class="important">
-                                <option value="1">คลอดเดี่ยว</option>
-                                <option value="2">เป็นแฝดลำดับที่ 1</option>
-                                <option value="3">เป็นแฝดลำดับที่ 2</option>
-                                <option value="4">เป็นแฝดลำดับที่ 3</option>
-                                <option value="5">เป็นแฝดลำดับที่ 4</option>
+                            <?php 
+                            $db->select("SELECT * FROM `f43_newborn_18_pp`");
+                            $bdoctorLists = $db->get_items();
+                            foreach ($bdoctorLists as $key => $bdoc) {
+                                ?>
+                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                <?php
+                            }
+                            ?>
                             </select></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdRow">
+                            อาหารที่รับประทาน <select name="food" id="" class="important">
+                                <option value="1">นมแม่อย่างเดียว</option>
+                                <option value="2">นมแม่และน้ำ</option>
+                                <option value="3">นมแม่และนมผสม</option>
+                                <option value="4">นมผสมอย่างเดียว</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -307,30 +286,6 @@ if( $page === 'searchAn' ){
                         <td class="tdRow">
                             <span class="sRow">วันที่จำหน่าย <input type="text" name="discharge" id="dischargeDate" size="10"> </span>
                             <span class="sRow">น้ำหนักวันที่จำหน่าย <input type="text" name="weightDischarge" id="" size="5">กรัม</span>
-                        </td>
-                    </tr>
-                </table>
-            </fieldset>
-            <fieldset>
-                <legend>พัฒนาการเด็ก</legend>
-                <table>
-                    <tr>
-                        <td class="tdRow">
-                            ระดับพัฒนาการเด็ก <select name="" id="">
-                            <option value="1">ปกติ</option>
-                            <option value="2">สงสัยช้ากว่าปกติ</option>
-                            <option value="3">ช้ากว่าปกติ</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdRow">
-                            อาหารที่รับประทาน <select name="food" id="" class="important">
-                                <option value="1">นมแม่อย่างเดียว</option>
-                                <option value="2">นมแม่และน้ำ</option>
-                                <option value="3">นมแม่และนมผสม</option>
-                                <option value="4">นมผสมอย่างเดียว</option>
-                            </select>
                         </td>
                     </tr>
                 </table>
