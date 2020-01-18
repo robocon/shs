@@ -23,8 +23,9 @@
       <li>
         <a href="javascript: void(0);"><span>เด็กแรกเกิด</span></a>
         <ul>
-          <li><a href="formNewborn.php"><span>ฟอร์มเด็กแรกเกิด</span></a></li>
-          <li><a href="formNewborncare.php"><span>ฟอร์มเด็กหลังคลอด</span></a></li>
+          <li><a href="formNewborn.php"><span>ฟอร์มทารกแรกเกิด</span></a></li>
+          <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
+          <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
           <li><a href="javascript: void(0);"><span>ฟอร์มพัฒนาการเด็ก0-12ปี</span></a></li>
           <li class="last"><a href="javascript: void(0);"><span>ดูข้อมูล</span></a></li>
         </ul>

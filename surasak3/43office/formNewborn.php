@@ -2,10 +2,109 @@
 
 include '../bootstrap.php';
 
+if( empty($_SESSION['sIdname']) ){
+    redirect('../login_page.php','ชื่อผู้ใช้งานไม่ถูกต้อง');
+    exit;
+}
+
+
 $action = input_post('action');
 if($action === 'save'){
     
-    dump($_POST);
+    $db = Mysql::load();
+
+    // dump($_POST);
+    $mpid = input_post('motherId');
+    $idcard = input_post('idcard');
+    $bhosp = $hospcode = '11512';
+    $garvida = input_post('gravida');
+    $ga = input_post('ga');
+    $bdate = input_post('dateBorn');
+    $btime = input_post('timeBorn');
+
+    $bdate = bc_to_ad($bdate);
+    $bdate = str_replace('-','', $bdate);
+
+    $btime = str_replace('.','', $btime);
+    $btime = $btime.'00';
+
+    $bplace = input_post('bplace'); //สถานที่เกิด
+    $birthno = input_post('birthNo');
+    $btype = input_post('btype');
+    $bdoctor = input_post('bdoctor');
+    $bweight = input_post('weight');
+    $asphyxia = input_post('asphyxia');
+    $vitk = input_post('vitk');
+    $tsh = input_post('tsh');
+    $tshresult = input_post('thyroidResult');
+    $d_update = date('YmdHis');
+
+    
+
+    exit;
+
+    /*
+    father
+    fatherId
+    mother
+    address
+    phone // เบอร์โทร
+    lborn // คนที่
+    head // รอบหัว
+    breast // รอบอก
+    apgar5 // แอพการ์ที่ 5นาที
+    apgar10
+
+    disorder // ความผิดปกติแต่กำเนิด -> BCARERESULT
+    disorderDetail
+    health // สภาวะสุขภาพแรกเกิด
+    healthDetail
+
+    food // อาหารที่รับประทาน
+    pku // การตรวจPKU
+
+    bcgDate // วันที่ได้รับ bcg
+    hbDate // วันที่ได้รับ hb
+
+    discharge // dc
+    weightDischarge
+    // $xxx = input_post('');
+    */
+
+    $sql = "INSERT INTO `43newborn` ( 
+        `id`, `HOSPCODE`, `PID`, `MPID`, `GRAVIDA`, `GA`, 
+        `BDATE`, `BTIME`, `BPLACE`, `BHOSP`, `BIRTHNO`, `BTYPE`, 
+        `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
+        `D_UPDATE`, `date_added`, `owner`) 
+    VALUES (
+        NULL, '$hospcode', '$idcard', '$mpid', '$garvida', '$ga', 
+        '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
+        '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
+        '$d_update', NOW(), 
+    );";
+    $save = $db->insert($sql);
+    dump($sql);
+    dump($save);
+
+    /**
+     * @toto
+     * SEQ ไปเอา vn จาก opday
+     * BCARE ไปเอา date จากใน ipcard
+     * PROVIDER เอาจาก doctor ใน ipcard
+     */
+    $bcareresult = input_post('disorder');
+    $food = input_post('food');
+
+    $sql = "INSERT INTO `43newborncare` (
+        `id`, `HOSPCODE`, `PID`, `SEQ`, `BDATE`, `BCARE`, 
+        `BCPLACE`, `BCARERESULT`, `FOOD`, `PROVIDER`, `D_UPDATE`
+    ) VALUES (
+        NULL, '$hospcode', '$idcard', NULL, '$bdate', NULL, 
+        '$hospcode', '$bcareresult', '$food', NULL, '$d_update'
+    );";
+    $save = $db->insert($sql);
+    dump($sql);
+    dump($save);
     exit;
 }
 
@@ -16,7 +115,7 @@ $apgarList = array(
     99 => 'ไม่ทราบ'
 );
 
-$gravidaList = array(1,2,3,4,5,6,7,8,9,10);
+$gravidaList = array(1 => 1,2,3,4,5,6,7,8,9,10);
 
 ?>
 <fieldset>
@@ -42,6 +141,8 @@ $page = input_post('page');
 if( $page === 'searchAn' ){ 
 
     $db = Mysql::load();
+    $db->exec("SET NAMES TIS620");
+
     $an = input_post('an');
     $sql = "SELECT * FROM `ipcard` WHERE `an` = '$an'";
     $db->select($sql);
@@ -231,8 +332,8 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            ความผิดปกติแต่กำเนิด<span style="color: red;">*</span> <input type="radio" name="disorder" id="disorder1" value="ไม่มี"><label for="disorder1">ไม่มี</label> 
-                            <input type="radio" name="disorder" id="disorder2" value="มี"><label for="disorder2">มี</label> 
+                            ความผิดปกติแต่กำเนิด<span style="color: red;">*</span> <input type="radio" name="disorder" id="disorder1" value="1"><label for="disorder1">ไม่มี</label> 
+                            <input type="radio" name="disorder" id="disorder2" value="2"><label for="disorder2">มี</label> 
                             ระบุ <input type="text" name="disorderDetail" id="">
                         </td>
                     </tr>
@@ -324,6 +425,7 @@ if( $page === 'searchAn' ){
                 </table>
             </fieldset>
             <div>
+                <div>&nbsp;</div>
                 <button type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
             </div>
@@ -344,14 +446,6 @@ if( $page === 'searchAn' ){
         <h1>ไม่พบข้อมูล</h1>
         <?php
     }
-    ?>
-    <?php
 }
-?>
-
-
-
-<?php 
-
 include 'footer.php';
 ?>
