@@ -3,9 +3,12 @@
 include '../bootstrap.php';
 
 if( empty($_SESSION['sIdname']) ){
-    redirect('../login_page.php','™◊ËÕºŸÈ„™Èß“π‰¡Ë∂Ÿ°µÈÕß');
+    redirect('../login_page.php','‡∏ä‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô‡πÑ‡∏°‡πà‡∏ñ‡∏π‡∏Å‡∏ï‡πâ‡∏≠‡∏á');
     exit;
 }
+
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 function genSEQ($date, $hn){
 
@@ -20,11 +23,7 @@ function genSEQ($date, $hn){
 $action = input_post('action');
 if($action === 'save'){
     
-    $db = Mysql::load();
-
-    // $db->exec("SET NAMES TIS620");
-
-    $mpid = input_post('motherId');
+    // $mpid = input_post('motherId');
     $idcard = input_post('idcard');
     $bhosp = $hospcode = '11512';
     $garvida = input_post('gravida');
@@ -38,7 +37,7 @@ if($action === 'save'){
     $btime = str_replace('.','', $btime);
     $btime = $btime.'00';
 
-    $bplace = input_post('bplace'); // ∂“π∑’Ë‡°‘¥
+    $bplace = input_post('bplace'); //‡∏™‡∏ñ‡∏≤‡∏ô‡∏ó‡∏µ‡πà‡πÄ‡∏Å‡∏¥‡∏î
     $birthno = input_post('birthNo');
     $btype = input_post('btype');
     $bdoctor = input_post('bdoctor');
@@ -73,23 +72,23 @@ if($action === 'save'){
     fatherId
     mother
     address
-    phone // ‡∫Õ√Ï‚∑√
-    lborn // §π∑’Ë
-    head // √Õ∫À—«
-    breast // √Õ∫Õ°
-    apgar5 // ·Õæ°“√Ï∑’Ë 5π“∑’
+    phone // ‡πÄ‡∏ö‡∏≠‡∏£‡πå‡πÇ‡∏ó‡∏£
+    lborn // ‡∏Ñ‡∏ô‡∏ó‡∏µ‡πà
+    head // ‡∏£‡∏≠‡∏ö‡∏´‡∏±‡∏ß
+    breast // ‡∏£‡∏≠‡∏ö‡∏≠‡∏Å
+    apgar5 // ‡πÅ‡∏≠‡∏û‡∏Å‡∏≤‡∏£‡πå‡∏ó‡∏µ‡πà 5‡∏ô‡∏≤‡∏ó‡∏µ
     apgar10
 
-    disorder // §«“¡º‘¥ª°µ‘·µË°”‡π‘¥ -> BCARERESULT
+    disorder // ‡∏Ñ‡∏ß‡∏≤‡∏°‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÅ‡∏ï‡πà‡∏Å‡∏≥‡πÄ‡∏ô‡∏¥‡∏î -> BCARERESULT
     disorderDetail
-    health //  ¿“«– ÿ¢¿“æ·√°‡°‘¥
+    health // ‡∏™‡∏†‡∏≤‡∏ß‡∏∞‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î
     healthDetail
 
-    food // Õ“À“√∑’Ë√—∫ª√–∑“π
-    pku // °“√µ√«®PKU
+    food // ‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏£‡∏±‡∏ö‡∏õ‡∏£‡∏∞‡∏ó‡∏≤‡∏ô
+    pku // ‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏àPKU
 
-    bcgDate // «—π∑’Ë‰¥È√—∫ bcg
-    hbDate // «—π∑’Ë‰¥È√—∫ hb
+    bcgDate // ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö bcg
+    hbDate // ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö hb
 
     discharge // dc
     weightDischarge
@@ -123,7 +122,7 @@ if($action === 'save'){
         `apgar10`, `disorder`, `disorderDetail`, `health`, `healthDetail`, `pku`, 
         `bcgDate`, `hbDate`, `discharge`, `weight_discharge`, `owner`
     ) VALUES (
-        NULL, '$hospcode', '$idcard', '$mpid', '$garvida', '$ga', 
+        NULL, '$hospcode', '$hn', '$mpid', '$garvida', '$ga', 
         '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
         '$d_update', '$date_visit', NOW(), '$hn', '$an', '$father', 
@@ -167,20 +166,20 @@ include 'head.php';
 
 $apgarList = array(
     0 => 0,1,2,3,4,5,6,7,8,9,10,
-    99 => '‰¡Ë∑√“∫'
+    99 => '‡πÑ‡∏°‡πà‡∏ó‡∏£‡∏≤‡∏ö'
 );
 
 $gravidaList = array(1 => 1,2,3,4,5,6,7,8,9,10);
 
 ?>
 <fieldset>
-    <legend>§ÈπÀ“¢ÈÕ¡Ÿ≈µ“¡ AN</legend>
+    <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ï‡∏≤‡∏° AN</legend>
     <form action="formNewborn.php" method="post">
         <div>
             AN : <input type="text" name="an" id="an">
         </div>
         <div>
-            <button type="submit">§ÈπÀ“</button>
+            <button type="submit">‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
             <input type="hidden" name="page" value="searchAn">
         </div>
     </form>
@@ -195,9 +194,6 @@ window.onload = function(){
 $page = input_post('page');
 if( $page === 'searchAn' ){ 
 
-    $db = Mysql::load();
-    // $db->exec("SET NAMES TIS620");
-
     $an = input_post('an');
     $sql = "SELECT * FROM `ipcard` WHERE `an` = '$an'";
     $db->select($sql);
@@ -210,72 +206,74 @@ if( $page === 'searchAn' ){
         $db->select("SELECT * FROM `opcard` WHERE `hn`= '$hn'");
         $opcard = $db->get_item();
 
-        if( $opcard['yot'] == '¥.™.' ){
+        if( $opcard['yot'] == '‡∏î.‡∏ä.' ){
             $sex = '1';
-        }elseif ( $opcard['yot'] == '¥.≠.' ) {
+        }elseif ( $opcard['yot'] == '‡∏î.‡∏ç.' ) {
             $sex = '2';
         }
         
-        $address = $opcard['address'].' µ.'.$opcard['tambol'].' Õ.'.$opcard['ampur'].' ®.'.$opcard['changwat'];
+        $address = $opcard['address'].' ‡∏ï.'.$opcard['tambol'].' ‡∏≠.'.$opcard['ampur'].' ‡∏à.'.$opcard['changwat'];
 
         ?>
         <fieldset>
-            <legend>¢ÈÕ¡Ÿ≈‡∫◊ÈÕßµÈπ«—π∑’Ë¡“√—∫∫√‘°“√</legend>
+            <legend>‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏ö‡∏∑‡πâ‡∏≠‡∏á‡∏ï‡πâ‡∏ô‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏°‡∏≤‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£</legend>
             <table>
                 <tr>
-                    <td><b>AN : </b><?=$item['an'];?> <b>HN : </b><?=$item['hn'];?> <b>™◊ËÕ- °ÿ≈ : </b><?=$item['ptname'];?></td>
+                    <td><b>AN : </b><?=$item['an'];?> <b>HN : </b><?=$item['hn'];?> <b>‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• : </b><?=$item['ptname'];?></td>
                 </tr>
                 <tr>
-                    <td><b>«—π∑’Ë√—∫∫√‘°“√ : </b><?=$item['date'];?></td>
+                    <td><b>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£ : </b><?=$item['date'];?></td>
                 </tr>
             </table>
         </fieldset>
         <form action="formNewborn.php" method="post">
             <fieldset>
-                <legend>¢ÈÕ¡Ÿ≈æ◊Èπ∞“π</legend>
+                <legend>‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏û‡∏∑‡πâ‡∏ô‡∏ê‡∏≤‡∏ô</legend>
                 <table>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">™◊ËÕ °ÿ≈∫‘¥“ <input type="text" name="father" id="" value="<?=trim($opcard['father']);?>"></span>
+                            <span class="sRow">‡∏ä‡∏∑‡πà‡∏≠‡∏™‡∏Å‡∏∏‡∏•‡∏ö‡∏¥‡∏î‡∏≤ <input type="text" name="father" id="" value="<?=trim($opcard['father']);?>"></span>
                             <span class="sRow">ID <input type="text" name="fatherId" size="12"></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">™◊ËÕ °ÿ≈¡“√¥“ <input type="text" name="mother" id="" value="<?=trim($opcard['mother']);?>"></span>
+                            <span class="sRow">‡∏ä‡∏∑‡πà‡∏≠‡∏™‡∏Å‡∏∏‡∏•‡∏°‡∏≤‡∏£‡∏î‡∏≤ <input type="text" name="mother" id="" value="<?=trim($opcard['mother']);?>"></span>
                             <span class="sRow">ID <input type="text" name="motherId" class="important" size="12"></span>
+                            <button type="button">‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö</button>
+                            <div></div>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">∫—π∑÷°∑“√°·√°‡°‘¥ <input type="radio" name="prefix" id="prefix1" value="¥.™." <?=($sex==1?'checked="checked"':'');?> > <label for="prefix1">¥.™.</label> 
-                            <input type="radio" name="prefix" id="prefix2" value="¥.≠." <?=($sex==2?'checked="checked"':'');?>> <label for="prefix2">¥.≠.</label></span>
+                            <span class="sRow">‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ó‡∏≤‡∏£‡∏Å‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î <input type="radio" name="prefix" id="prefix1" value="‡∏î.‡∏ä." <?=($sex==1?'checked="checked"':'');?> > <label for="prefix1">‡∏î.‡∏ä.</label> 
+                            <input type="radio" name="prefix" id="prefix2" value="‡∏î.‡∏ç." <?=($sex==2?'checked="checked"':'');?>> <label for="prefix2">‡∏î.‡∏ç.</label></span>
 
-                            <span class="sRow">™◊ËÕ- °ÿ≈ <input type="text" name="name" id="" value="<?=$opcard['name'].' '.$opcard['surname'];?>"></span>
+                            <span class="sRow">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• <input type="text" name="name" id="" value="<?=$opcard['name'].' '.$opcard['surname'];?>"></span>
                             <span class="sRow">ID <input type="text" name="idcard" id="" size="12" value="<?=$opcard['idcard'];?>"></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">∑’ËÕ¬ŸË <input type="text" name="address" id="" value="<?=$address;?>" size="40"></span>
-                            <span class="sRow">‡∫Õ√Ï‚∑√∑’Ëµ‘¥µËÕ‰¥È <input type="text" name="phone" id="" value="<?=$opcard['phone'];?>"></span>
+                            <span class="sRow">‡∏ó‡∏µ‡πà‡∏≠‡∏¢‡∏π‡πà <input type="text" name="address" id="" value="<?=$address;?>" size="40"></span>
+                            <span class="sRow">‡πÄ‡∏ö‡∏≠‡∏£‡πå‡πÇ‡∏ó‡∏£‡∏ó‡∏µ‡πà‡∏ï‡∏¥‡∏î‡∏ï‡πà‡∏≠‡πÑ‡∏î‡πâ <input type="text" name="phone" id="" value="<?=$opcard['phone'];?>"></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">«¥ª.‡°‘¥ <input type="text" name="dateBorn" class="important" id="dateBorn" value="<?=$opcard['dbirth'];?>"></span>
-                            <span class="sRow">‡«≈“ <input type="text" name="timeBorn" class="important" id="" size="10"> π.</span>
+                            <span class="sRow">‡∏ß‡∏î‡∏õ.‡πÄ‡∏Å‡∏¥‡∏î <input type="text" name="dateBorn" class="important" id="dateBorn" value="<?=$opcard['dbirth'];?>"></span>
+                            <span class="sRow">‡πÄ‡∏ß‡∏•‡∏≤ <input type="text" name="timeBorn" class="important" id="" size="10"> ‡∏ô.</span>
                         </td>
                     </tr>
                 </table>
             </fieldset>
             <fieldset>
-                <legend>¢ÈÕ¡Ÿ≈°“√§≈Õ¥</legend>
+                <legend>‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏Å‡∏≤‡∏£‡∏Ñ‡∏•‡∏≠‡∏î</legend>
                 <table>
                     <tr>
                         <td class="tdRow">
                             <!-- LABOR -->
-                            <span class="sRow">§√√¿Ï∑’Ë <select name="gravida">
+                            <span class="sRow">‡∏Ñ‡∏£‡∏£‡∏†‡πå‡∏ó‡∏µ‡πà <select name="gravida">
                             <?php 
                                 foreach ($gravidaList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -283,10 +281,10 @@ if( $page === 'searchAn' ){
                             ?>
                             </select></span>
                             
-                            <span class="sRow">Õ“¬ÿ§√√¿Ï <input type="text" name="ga" class="important" size="3"> —ª¥“ÀÏ</span>
+                            <span class="sRow">‡∏≠‡∏≤‡∏¢‡∏∏‡∏Ñ‡∏£‡∏£‡∏†‡πå <input type="text" name="ga" class="important" size="3">‡∏™‡∏±‡∏õ‡∏î‡∏≤‡∏´‡πå</span>
 
                             <!-- LABOR -->
-                            <span class="sRow">§π∑’Ë <select name="lborn" id="">
+                            <span class="sRow">‡∏Ñ‡∏ô‡∏ó‡∏µ‡πà <select name="lborn" id="">
                             <?php 
                                 foreach ($gravidaList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -295,7 +293,7 @@ if( $page === 'searchAn' ){
                             </select></span>
 
                             <!-- LABOR -->
-                            <span class="sRow"> ∂“π∑’Ë <select name="bplace" id="">
+                            <span class="sRow">‡∏™‡∏ñ‡∏≤‡∏ô‡∏ó‡∏µ‡πà <select name="bplace" id="">
                             <?php 
                             $db->select("SELECT * FROM `f43_labor_182_newborn_187`");
                             $bdoctorLists = $db->get_items();
@@ -313,7 +311,7 @@ if( $page === 'searchAn' ){
                         <td class="tdRow">
                             <!-- LABOR -->
                             <span class="sRow">
-                                «‘∏’°“√§≈Õ¥ <select name="btype" id="">
+                                ‡∏ß‡∏¥‡∏ò‡∏µ‡∏Å‡∏≤‡∏£‡∏Ñ‡∏•‡∏≠‡∏î <select name="btype" id="">
                                     <?php 
                                     $db->select("SELECT * FROM `f43_labor_184_newborn_190`");
                                     $bdoctorLists = $db->get_items();
@@ -327,7 +325,7 @@ if( $page === 'searchAn' ){
                             </span>
 
                             <span class="sRow">
-                                ª√–‡¿∑ºŸÈ∑”§≈Õ¥ <select name="bdoctor" id="">
+                                ‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó‡∏ú‡∏π‡πâ‡∏ó‡∏≥‡∏Ñ‡∏•‡∏≠‡∏î <select name="bdoctor" id="">
                                 <?php 
                                 $db->select("SELECT * FROM `f43_labor_185_newborn_191`");
                                 $bdoctorLists = $db->get_items();
@@ -343,10 +341,10 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">πÈ”Àπ—°·√°‡°‘¥ <input type="text" name="weight" id="" size="5" class="important">°√—¡ </span>
-                            <span class="sRow">§«“¡¬“« <input type="text" name="height" id="" size="5" class="important">´¡. </span>
-                            <span class="sRow">‡ Èπ√Õ∫»√’…– <input type="text" name="head" id="" size="5" class="important">´¡. </span>
-                            <span class="sRow">‡ Èπ√Õ∫Õ° <input type="text" name="breast" id="" size="5">´¡. </span>
+                            <span class="sRow">‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î <input type="text" name="weight" id="" size="5" class="important">‡∏Å‡∏£‡∏±‡∏° </span>
+                            <span class="sRow">‡∏Ñ‡∏ß‡∏≤‡∏°‡∏¢‡∏≤‡∏ß <input type="text" name="height" id="" size="5" class="important">‡∏ã‡∏°. </span>
+                            <span class="sRow">‡πÄ‡∏™‡πâ‡∏ô‡∏£‡∏≠‡∏ö‡∏®‡∏£‡∏µ‡∏©‡∏∞ <input type="text" name="head" id="" size="5" class="important">‡∏ã‡∏°. </span>
+                            <span class="sRow">‡πÄ‡∏™‡πâ‡∏ô‡∏£‡∏≠‡∏ö‡∏≠‡∏Å <input type="text" name="breast" id="" size="5">‡∏ã‡∏°. </span>
                         </td>
                     </tr>
                     <tr>
@@ -354,7 +352,7 @@ if( $page === 'searchAn' ){
 
                             <span class="sRow">APGAR SCORE</span>
                             
-                            <span class="sRow">(1π“∑’) <select name="asphyxia" id="" class="important">
+                            <span class="sRow">(1‡∏ô‡∏≤‡∏ó‡∏µ) <select name="asphyxia" id="" class="important">
                                 <?php 
                                 foreach ($apgarList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -362,7 +360,7 @@ if( $page === 'searchAn' ){
                                 ?>
                                 </select>
                             </span>
-                            <span class="sRow">(5π“∑’) <select name="apgar5" id="">
+                            <span class="sRow">(5‡∏ô‡∏≤‡∏ó‡∏µ) <select name="apgar5" id="">
                                 <?php 
                                 foreach ($apgarList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -370,7 +368,7 @@ if( $page === 'searchAn' ){
                                 ?>
                                 </select>
                             </span>
-                            <span class="sRow">(10π“∑’) <select name="apgar10" id="">
+                            <span class="sRow">(10‡∏ô‡∏≤‡∏ó‡∏µ) <select name="apgar10" id="">
                                 <?php 
                                 foreach ($apgarList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -379,27 +377,27 @@ if( $page === 'searchAn' ){
                                 </select>
                             </span>
                             <span class="sRow">
-                                <input type="checkbox" name="asphyxia" id="noAsphyxia" value="99"> <label for="noAsphyxia">‰¡Ë∑√“∫</label>
+                                <input type="checkbox" name="asphyxia" id="noAsphyxia" value="99"> <label for="noAsphyxia">‡πÑ‡∏°‡πà‡∏ó‡∏£‡∏≤‡∏ö</label>
                             </span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            §«“¡º‘¥ª°µ‘·µË°”‡π‘¥<span style="color: red;">*</span> <input type="radio" name="disorder" id="disorder1" value="1"><label for="disorder1">‰¡Ë¡’</label> 
-                            <input type="radio" name="disorder" id="disorder2" value="2"><label for="disorder2">¡’</label> 
-                            √–∫ÿ <input type="text" name="disorderDetail" id="">
+                            ‡∏Ñ‡∏ß‡∏≤‡∏°‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÅ‡∏ï‡πà‡∏Å‡∏≥‡πÄ‡∏ô‡∏¥‡∏î<span style="color: red;">*</span> <input type="radio" name="disorder" id="disorder1" value="1"><label for="disorder1">‡πÑ‡∏°‡πà‡∏°‡∏µ</label> 
+                            <input type="radio" name="disorder" id="disorder2" value="2"><label for="disorder2">‡∏°‡∏µ</label> 
+                            ‡∏£‡∏∞‡∏ö‡∏∏ <input type="text" name="disorderDetail" id="">
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                             ¿“«– ÿ¢¿“æ·√°‡°‘¥ <input type="radio" name="health" id="health1" value="·¢Áß·√ß¥’"><label for="health1">·¢Áß·√ß¥’</label> 
-                            <input type="radio" name="health" id="health2" value="º‘¥ª°µ‘"><label for="health2">º‘¥ª°µ‘</label> 
-                            √–∫ÿ <input type="text" name="healthDetail" id="">
+                            ‡∏™‡∏†‡∏≤‡∏ß‡∏∞‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î <input type="radio" name="health" id="health1" value="‡πÅ‡∏Ç‡πá‡∏á‡πÅ‡∏£‡∏á‡∏î‡∏µ"><label for="health1">‡πÅ‡∏Ç‡πá‡∏á‡πÅ‡∏£‡∏á‡∏î‡∏µ</label> 
+                            <input type="radio" name="health" id="health2" value="‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥"><label for="health2">‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</label> 
+                            ‡∏£‡∏∞‡∏ö‡∏∏ <input type="text" name="healthDetail" id="">
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">≈”¥—∫∑’Ë¢Õß∑“√° <select name="birthNo" class="important">
+                            <span class="sRow">‡∏•‡∏≥‡∏î‡∏±‡∏ö‡∏ó‡∏µ‡πà‡∏Ç‡∏≠‡∏á‡∏ó‡∏≤‡∏£‡∏Å <select name="birthNo" class="important">
                             <?php 
                             $db->select("SELECT * FROM `f43_newborn_18_pp`");
                             $bdoctorLists = $db->get_items();
@@ -411,7 +409,7 @@ if( $page === 'searchAn' ){
                             ?>
                             </select></span>
 
-                            <span class="sRow">Õ“À“√∑’Ë√—∫ª√–∑“π <select name="food" class="important">
+                            <span class="sRow">‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏£‡∏±‡∏ö‡∏õ‡∏£‡∏∞‡∏ó‡∏≤‡∏ô <select name="food" class="important">
                             <?php 
                             $db->select("SELECT * FROM `f43_newborncare_197`");
                             $bdoctorLists = $db->get_items();
@@ -426,7 +424,7 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            ‰¥È√—∫ VIT K À√◊Õ‰¡Ë<span style="color: red;">*</span> 
+                            ‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö VIT K ‡∏´‡∏£‡∏∑‡∏≠‡πÑ‡∏°‡πà<span style="color: red;">*</span> 
                             <select name="vitk" class="important">
                             <?php 
                             $db->select("SELECT * FROM `f43_newborn_193`");
@@ -442,7 +440,7 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">‰¥È√—∫°“√µ√«® TSH À√◊Õ‰¡Ë<span style="color: red;">*</span> 
+                            <span class="sRow">‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à TSH ‡∏´‡∏£‡∏∑‡∏≠‡πÑ‡∏°‡πà<span style="color: red;">*</span> 
                                 <select name="tsh" class="important">
                                 <?php 
                                 $db->select("SELECT * FROM `f43_newborn_194`");
@@ -455,24 +453,24 @@ if( $page === 'searchAn' ){
                                 ?>
                                 </select>
                             </span>
-                            <span class="sRow">º≈°“√µ√«®‰∑√Õ¬¥Ï <input type="text" name="thyroidResult" id="" size="5" class="important">mU/L</span>
+                            <span class="sRow">‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡πÑ‡∏ó‡∏£‡∏≠‡∏¢‡∏î‡πå <input type="text" name="thyroidResult" id="" size="5" class="important">mU/L</span>
                         </td>
                     </tr>
                     <tr>
-                        <td class="tdRow">°“√µ√«®PKU <input type="radio" name="pku" id="pku1" value="ª°µ‘"><label for="pku1">ª°µ‘</label> 
-                            <input type="radio" name="pku" id="pku2" value="º‘¥ª°µ‘"><label for="pku2">º‘¥ª°µ‘</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="tdRow">
-                            <input type="text" name="bcgDate" id="bcg" size="10"> «¥ª. ∑’Ë‰¥È©’¥«—§´’πªÈÕß°—π‚√§(BCG)
-                            <input type="text" name="hbDate" id="hb" size="10"> «¥ª. ∑’Ë‰¥È©’¥«—§´’πªÈÕß°—π‚√§µ—∫Õ—°‡ ∫∫’(HB)
+                        <td class="tdRow">‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏àPKU <input type="radio" name="pku" id="pku1" value="‡∏õ‡∏Å‡∏ï‡∏¥"><label for="pku1">‡∏õ‡∏Å‡∏ï‡∏¥</label> 
+                            <input type="radio" name="pku" id="pku2" value="‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥"><label for="pku2">‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</label>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">«—π∑’Ë®”ÀπË“¬ <input type="text" name="discharge" id="dischargeDate" value="<?=$dcdate;?>"> </span>
-                            <span class="sRow">πÈ”Àπ—°«—π∑’Ë®”ÀπË“¬ <input type="text" name="weightDischarge" id="" size="5">°√—¡</span>
+                            <input type="text" name="bcgDate" id="bcg" size="10"> ‡∏ß‡∏î‡∏õ. ‡∏ó‡∏µ‡πà‡πÑ‡∏î‡πâ‡∏â‡∏µ‡∏î‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡∏õ‡πâ‡∏≠‡∏á‡∏Å‡∏±‡∏ô‡πÇ‡∏£‡∏Ñ(BCG)
+                            <input type="text" name="hbDate" id="hb" size="10"> ‡∏ß‡∏î‡∏õ. ‡∏ó‡∏µ‡πà‡πÑ‡∏î‡πâ‡∏â‡∏µ‡∏î‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡∏õ‡πâ‡∏≠‡∏á‡∏Å‡∏±‡∏ô‡πÇ‡∏£‡∏Ñ‡∏ï‡∏±‡∏ö‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö‡∏ö‡∏µ(HB)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdRow">
+                            <span class="sRow">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏à‡∏≥‡∏´‡∏ô‡πà‡∏≤‡∏¢ <input type="text" name="discharge" id="dischargeDate" value="<?=$dcdate;?>"> </span>
+                            <span class="sRow">‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏à‡∏≥‡∏´‡∏ô‡πà‡∏≤‡∏¢ <input type="text" name="weightDischarge" id="" size="5">‡∏Å‡∏£‡∏±‡∏°</span>
                         </td>
                     </tr>
                 </table>
@@ -483,7 +481,7 @@ if( $page === 'searchAn' ){
             $prefixMd = substr($item['doctor'],0,5);
             $sql = "SELECT b.`PROVIDER` 
             FROM ( 
-                SELECT CONCAT('«.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
+                SELECT CONCAT('‡∏ß.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
             ) AS a 
             LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
             $db->select($sql);
@@ -491,7 +489,7 @@ if( $page === 'searchAn' ){
             ?>
             <div>
                 <div>&nbsp;</div>
-                <button type="submit">∫—π∑÷°¢ÈÕ¡Ÿ≈</button>
+                <button type="submit">‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</button>
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="sex" value="<?=$sex;?>">
                 <input type="hidden" name="hn" value="<?=$item['hn'];?>">
@@ -514,7 +512,7 @@ if( $page === 'searchAn' ){
 
     }else{
         ?>
-        <h1>‰¡Ëæ∫¢ÈÕ¡Ÿ≈</h1>
+        <h1>‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</h1>
         <?php
     }
 }

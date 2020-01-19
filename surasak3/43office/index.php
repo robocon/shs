@@ -2,12 +2,12 @@
 include 'head.php';
 include '../bootstrap.php';
 if( empty($_SESSION['sIdname']) ){
-    redirect('../login_page.php','ชื่อผู้ใช้งานไม่ถูกต้อง');
+    redirect('../login_page.php','เธเธทเนเธญเธเธนเนเนเธเนเธเธฒเธเนเธกเนเธ–เธนเธเธ•เนเธญเธ');
     exit;
 }
 
 ?>
-<h1>ทดสอบระบบคีย์ข้อมูล43แฟ้ม</h1>
+<h1>เธ—เธ”เธชเธญเธเธฃเธฐเธเธเธเธตเธขเนเธเนเธญเธกเธนเธฅ43เนเธเนเธก</h1>
 <?php
 include 'footer.php';
 ?>

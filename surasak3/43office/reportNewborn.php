@@ -9,26 +9,26 @@ include 'head.php';
 }
 </style>
 <fieldset>
-    <legend>§ÈπÀ“µ“¡«—π∑’Ë„™È∫√‘°“√</legend>
+    <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏°‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡πÉ‡∏ä‡πâ‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£</legend>
     <form action="reportNewborn.php" method="post">
         <div>
-            ‡≈◊Õ°«—π∑’Ë <input type="text" name="date" id="date">
+            ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà <input type="text" name="date" id="date">
         </div>
         <div>
-            <button type="submit">§ÈπÀ“</button>
+            <button type="submit">‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
             <input type="hidden" name="typeSearch" value="date">
             <input type="hidden" name="view" value="search">
         </div>
     </form>
 </fieldset>
 <fieldset>
-    <legend>§ÈπÀ“µ“¡ AN</legend>
+    <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏° AN</legend>
     <form action="reportNewborn.php" method="post">
         <div>
             AN <input type="text" name="an" id="an">
         </div>
         <div>
-            <button type="submit">§ÈπÀ“</button>
+            <button type="submit">‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
             <input type="hidden" name="typeSearch" value="an">
             <input type="hidden" name="view" value="search">
         </div>
@@ -85,7 +85,7 @@ if ( $view === 'search' ) {
                 <th class="warning">TSH</th>
                 <th class="warning">TSHRESULT</th>
                 <th class="warning">D_UPDATE</th>
-                <td>ª√—∫ª√ÿß</td>
+                <td>‡∏õ‡∏£‡∏±‡∏ö‡∏õ‡∏£‡∏∏‡∏á</td>
             </tr>
         <?php
         foreach ($items as $key => $item) {
@@ -110,7 +110,7 @@ if ( $view === 'search' ) {
                 <td class="warning"><?=$item['TSH'];?></td>
                 <td class="warning"><?=$item['TSHRESULT'];?></td>
                 <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td><a href="javascript: void(0);">·°È‰¢</a></td>
+                <td><a href="javascript: void(0);">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a></td>
             </tr>
             <?php
         }
@@ -120,7 +120,7 @@ if ( $view === 'search' ) {
 
     }else{
         ?>
-        <p>‰¡Ëæ∫¢ÈÕ¡Ÿ≈</p>
+        <p>‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</p>
         <?php
     }
     
