@@ -7,13 +7,23 @@ if( empty($_SESSION['sIdname']) ){
     exit;
 }
 
+function genSEQ($date, $hn){
+
+    $s1 = date('Ymd', strtotime($date));
+    list($prefix, $number) = explode('-', $hn);
+    $newHn = $prefix.( sprintf('%05d', intval($nubmer)) );
+
+    return $s1.$newHn;
+}
+
 
 $action = input_post('action');
 if($action === 'save'){
     
     $db = Mysql::load();
 
-    // dump($_POST);
+    // $db->exec("SET NAMES TIS620");
+
     $mpid = input_post('motherId');
     $idcard = input_post('idcard');
     $bhosp = $hospcode = '11512';
@@ -39,9 +49,24 @@ if($action === 'save'){
     $tshresult = input_post('thyroidResult');
     $d_update = date('YmdHis');
 
-    
+    $date_visit = input_post('date_visit');
+    $date_visit = bc_to_ad($date_visit);
 
-    exit;
+    $hn = input_post('hn');
+    $an = input_post('an');
+    $owner = $_SESSION['sIdname'];
+    
+    // 43newborncare
+    $bcare = date('Ymd', strtotime($date_visit));
+    $bcareresult = input_post('disorder');
+    $food = input_post('food');
+    $seq = genSEQ($date_visit, $hn);
+    $provider = input_post('provider');
+
+    // dump($date_visit);
+    // dump($bcare);
+
+    // exit;
 
     /*
     father
@@ -71,36 +96,66 @@ if($action === 'save'){
     // $xxx = input_post('');
     */
 
-    $sql = "INSERT INTO `43newborn` ( 
+    $father = input_post('father');
+    $father_id = input_post('fatherId');
+    $mother = input_post('mother');
+    $lborn = input_post('lborn');
+    $head = input_post('head');
+    $breast = input_post('breast');
+    $apgar5 = input_post('apgar5');
+    $apgar10 = input_post('apgar10');
+    $disorder = input_post('disorder');
+    $disorderDetail = input_post('disorderDetail');
+    $health = input_post('health');
+    $healthDetail = input_post('healthDetail');
+    $pku = input_post('pku');
+    $bcgDate = input_post('bcgDate');
+    $hbDate = input_post('hbDate');
+    $discharge = input_post('discharge');
+    $weight_discharge = input_post('weightDischarge');
+
+    $sql = "INSERT INTO `gyn_newborn` (
         `id`, `HOSPCODE`, `PID`, `MPID`, `GRAVIDA`, `GA`, 
         `BDATE`, `BTIME`, `BPLACE`, `BHOSP`, `BIRTHNO`, `BTYPE`, 
         `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
-        `D_UPDATE`, `date_added`, `owner`) 
-    VALUES (
+        `D_UPDATE`, `date_visit`, `date_added`, `hn`, `an`, `father`, 
+        `father_id`, `mother`, `lborn`, `head`, `breast`, `apgar5`, 
+        `apgar10`, `disorder`, `disorderDetail`, `health`, `healthDetail`, `pku`, 
+        `bcgDate`, `hbDate`, `discharge`, `weight_discharge`, `owner`
+    ) VALUES (
         NULL, '$hospcode', '$idcard', '$mpid', '$garvida', '$ga', 
         '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
-        '$d_update', NOW(), 
+        '$d_update', '$date_visit', NOW(), '$hn', '$an', '$father', 
+        '$father_id', '$mother', '$lborn', '$head', '$breast', '$apgar5', 
+        '$apgar10', '$disorder', '$disorderDetail', '$health', '$healthDetail', '$pku', 
+        '$bcgDate', '$hbDate', '$discharge', '$weight_discharge', '$owner' 
     );";
     $save = $db->insert($sql);
     dump($sql);
     dump($save);
 
-    /**
-     * @toto
-     * SEQ ไปเอา vn จาก opday
-     * BCARE ไปเอา date จากใน ipcard
-     * PROVIDER เอาจาก doctor ใน ipcard
-     */
-    $bcareresult = input_post('disorder');
-    $food = input_post('food');
+    $sql = "INSERT INTO `43newborn` ( 
+        `id`, `HOSPCODE`, `PID`, `MPID`, `GRAVIDA`, `GA`, 
+        `BDATE`, `BTIME`, `BPLACE`, `BHOSP`, `BIRTHNO`, `BTYPE`, 
+        `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
+        `D_UPDATE`, `date_visit`, `date_added`, `hn`, `an`, `owner`) 
+    VALUES (
+        NULL, '$hospcode', '$idcard', '$mpid', '$garvida', '$ga', 
+        '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
+        '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
+        '$d_update', '$date_visit', NOW(), '$hn', '$an', '$owner' 
+    );";
+    $save = $db->insert($sql);
+    dump($sql);
+    dump($save);
 
     $sql = "INSERT INTO `43newborncare` (
         `id`, `HOSPCODE`, `PID`, `SEQ`, `BDATE`, `BCARE`, 
         `BCPLACE`, `BCARERESULT`, `FOOD`, `PROVIDER`, `D_UPDATE`
     ) VALUES (
-        NULL, '$hospcode', '$idcard', NULL, '$bdate', NULL, 
-        '$hospcode', '$bcareresult', '$food', NULL, '$d_update'
+        NULL, '$hospcode', '$idcard', '$seq', '$bdate', '$bcare', 
+        '$hospcode', '$bcareresult', '$food', '$provider', '$d_update'
     );";
     $save = $db->insert($sql);
     dump($sql);
@@ -141,7 +196,7 @@ $page = input_post('page');
 if( $page === 'searchAn' ){ 
 
     $db = Mysql::load();
-    $db->exec("SET NAMES TIS620");
+    // $db->exec("SET NAMES TIS620");
 
     $an = input_post('an');
     $sql = "SELECT * FROM `ipcard` WHERE `an` = '$an'";
@@ -149,8 +204,8 @@ if( $page === 'searchAn' ){
 
     if( $db->get_rows() > 0 ){
         $item = $db->get_item();
-
         $hn = $item['hn'];
+        $dcdate = $item['dcdate'];
 
         $db->select("SELECT * FROM `opcard` WHERE `hn`= '$hn'");
         $opcard = $db->get_item();
@@ -198,8 +253,6 @@ if( $page === 'searchAn' ){
 
                             <span class="sRow">ชื่อ-สกุล <input type="text" name="name" id="" value="<?=$opcard['name'].' '.$opcard['surname'];?>"></span>
                             <span class="sRow">ID <input type="text" name="idcard" id="" size="12" value="<?=$opcard['idcard'];?>"></span>
-
-                            <input type="hidden" name="sex" value="<?=$sex;?>">
                         </td>
                     </tr>
                     <tr>
@@ -418,16 +471,34 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">วันที่จำหน่าย <input type="text" name="discharge" id="dischargeDate" size="10"> </span>
+                            <span class="sRow">วันที่จำหน่าย <input type="text" name="discharge" id="dischargeDate" value="<?=$dcdate;?>"> </span>
                             <span class="sRow">น้ำหนักวันที่จำหน่าย <input type="text" name="weightDischarge" id="" size="5">กรัม</span>
                         </td>
                     </tr>
                 </table>
             </fieldset>
+
+            <?php 
+            $dr['PROVIDER'] = NULL;
+            $prefixMd = substr($item['doctor'],0,5);
+            $sql = "SELECT b.`PROVIDER` 
+            FROM ( 
+                SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
+            ) AS a 
+            LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
+            $db->select($sql);
+            $dr = $db->get_item();
+            ?>
             <div>
                 <div>&nbsp;</div>
                 <button type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
+                <input type="hidden" name="sex" value="<?=$sex;?>">
+                <input type="hidden" name="hn" value="<?=$item['hn'];?>">
+                <input type="hidden" name="an" value="<?=$item['an'];?>">
+
+                <input type="hidden" name="provider" value="<?=$dr['PROVIDER'];?>">
+                <input type="hidden" name="date_visit" value="<?=$item['date'];?>">
             </div>
         </form>
         <script type="text/javascript">
