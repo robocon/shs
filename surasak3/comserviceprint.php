@@ -55,7 +55,7 @@ body,td,th {
   <tr>
     <td width="45%"><div style="margin-left:10px;"><p>- อนุมัติ <br />
       <span style="margin-left: 35px;">พ.อ......................................................</span><br />
-      <span style="margin-left: 85px;">(ณัฐนนท์  ภุคุกะ)</span><br />
+      <span style="margin-left: 85px;">(อรรณพ  ธรรมลักษมี)</span><br />
       <span style="margin-left: 95px;">ผอ. รพ.ค่ายฯ</span><br />
      <span style="margin-left: 45px;"> ............./................../..................</span></p></div></td>
     <td width="10%">&nbsp;</td>

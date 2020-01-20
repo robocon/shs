@@ -217,6 +217,7 @@ return $vat;
             continue;
          }
 //31
+	$cDate=$row->date;
 	$cPrepono=$row->prepono;
 	$cPrepodate=$row->prepodate;
 	$cComcode=$row->comcode;
@@ -984,7 +985,7 @@ if($chkrows==1){  //มี 1 แหล่งที่มา
 		$top=$top+25;
 		$toppx=$top."PX";
 		$drugcode=$result["drugcode"];
-		$sql12="select a.prepono, a.prepodate,a.podate,a.bounddate from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno WHERE b.drugcode = '$drugcode' and a.pono !='' AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') order by a.row_id desc limit 1,1";
+		$sql12="select a.prepono, a.prepodate,a.podate,a.bounddate from pocompany AS a INNER JOIN poitems AS b ON a.row_id=b.idno WHERE b.drugcode = '$drugcode' and a.pono !='' AND (a.prepono !='ยกเลิก' AND a.prepono !='0' AND a.prepono !='000') AND a.date <='$cDate' order by a.row_id desc limit 1,1";
 		//echo $sql12;
 		$query12=mysql_query($sql12);
 		$rows=mysql_fetch_array($query12);

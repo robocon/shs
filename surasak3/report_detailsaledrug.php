@@ -1,5 +1,24 @@
 <?php
     include("connect.inc");
+
+///function convert to float number ทศนิยม 2ตำแหน่ง
+function vat($nVArabic){
+    $nVArabic = number_format($nVArabic, 2, '.', ''); 
+    $cTarget = Ltrim($nVArabic);
+    $cLtnum="";
+    $x=0;
+    while (substr($cTarget,$x,1) <> "."){
+            $cLtnum=$cLtnum.substr($cTarget,$x,1);
+            $x++;
+	}
+   $cRtnum=substr($cTarget,$x+1);
+
+$cRtnum=$cRtnum/107;
+$cRtnum=intval($cRtnum);
+$vat=$nVArabic+$cRtnum;
+return $vat;
+	}
+///end of function convert to float number ทศนิยม 2ตำแหน่ง	
 ?>
 <style>
 @media print{
@@ -78,7 +97,7 @@ echo "<select>";
 <?
 if(isset($_POST['BOK'])){
 $year=$_POST["year"]+543;
-$yymm=$year."-".$_POST["mon"];
+//$yymm=$year."-".$_POST["mon"];
 	if($_POST['mon']=="01"){
 		$mon ="มกราคม";
 		$d1="01";
@@ -127,10 +146,12 @@ $yymm=$year."-".$_POST["mon"];
 		$mon ="ธันวาคม";
 		$d1="01";
 		$d2="31";
-	}																		
+	}
+	
+$yymm=$mon." ".$year;																		
 ?>
-<div align="center">สถานพยาบาล โรงพยาบาลค่ายสุรศักดิ์มนตรี</div>
-<div align="center">รายละเอียดการจัดซื้อ โดยวิธีการตกลงราคา (แผนกเภสัชกรรม)</div>
+<div align="center"><strong>สถานพยาบาล โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
+<div align="center">รายละเอียดการจัดซื้อ(ยา) โดยวิธีเฉพาะเจาะจง (กองเภสัชกรรม)</div>
 <div align="center">ระยะเวลาตั้งแต่เดือน <?=$d1." ".$mon." ".$year;?> ถึง <?=$d2." ".$mon." ".$year;?></div>
 <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
   <tr>
@@ -147,23 +168,93 @@ $yymm=$year."-".$_POST["mon"];
     <td width="5%" align="center"><strong>หมายเหตุ</strong></td>
   </tr>
 <?
-$sql = "SELECT * FROM pocompany  WHERE date LIKE '$yymm%' AND prepono !='ยกเลิก' ORDER BY date";
+
+$sql = "SELECT * FROM pocompany  WHERE bounddate LIKE '%$yymm' AND (potype IS NULL OR potype ='') AND (
+prepono !=  'ยกเลิก' AND prepono NOT LIKE  'DS%') and pono !=''  ORDER BY pono asc, ponoyear asc";
+//echo $sql;
+
 $result = mysql_query($sql) or die("Query failed1");
 $num=mysql_num_rows($result);
 $i=0;
+$total=0;
 while($rows = mysql_fetch_array($result)){
 $i++;
+$type=substr($rows["pono"],0,2);
+if($type=="DS"){
+	$typename="เวชภัณฑ์";
+}else{
+	$typename="ยา";
+}
+$total=$total+$rows["netprice"];
 ?>  
   <tr>
     <td align="center"><?=$i;?></td>
     <td align="center"><?=$rows["pono"].$rows["ponoyear"];?></td>
-    <td align="center">&nbsp;</td>
-    <td align="right"><?=number_format($rows["netprice"],2)?></td>
+    <td align="center"><?=$typename;?></td>
+    <td align="right"><?=number_format($rows["netprice"],2);?></td>
     <td><?=$rows["comname"];?></td>
     <td align="right"><?=$rows["podate"];?></td>
     <td align="right"><?=$rows["podate"];?></td>
-    <td align="right"><?=$rows["podate"];?></td>
+    <td align="right"><?=$rows["chkindate"];?></td>
+    <td align="right"><?=$rows["fixdate"];?></td>
     <td align="right"><?=$rows["bounddate"];?></td>
+    <td>&nbsp;</td>
+  </tr>
+<?
+}
+?>
+
+</table>
+<p align="center" style="font-size:24px;"><strong>รวมเป็นเงินทั้งสิ้น <?=number_format($total,2);?> บาท<strong></p>
+<p>&nbsp;</p>
+<div align="center"><strong>สถานพยาบาล โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
+<div align="center">รายละเอียดการจัดซื้อ(เวชภัณฑ์) โดยวิธีเฉพาะเจาะจง (กองเภสัชกรรม)</div>
+<div align="center">ระยะเวลาตั้งแต่เดือน <?=$d1." ".$mon." ".$year;?> ถึง <?=$d2." ".$mon." ".$year;?></div>
+<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
+  <tr>
+    <td width="2%" align="center"><strong>ลำดับ</strong></td>
+    <td width="5%" align="center"><strong>เลขที่สัญญา</strong></td>
+    <td width="4%" align="center"><strong>รายการ</strong></td>
+    <td width="5%" align="center"><strong>จำนวนเงิน</strong></td>
+    <td width="36%" align="center"><strong>คู่สัญญา</strong></td>
+    <td width="9%" align="center"><strong>อนุมัติงบประมาณ</strong></td>
+    <td width="9%" align="center"><strong>อนุมัติจัดซื้อ</strong></td>
+    <td width="9%" align="center"><strong>วันที่ลงนามในสัญญา</strong></td>
+    <td width="8%" align="center"><strong>กำหนดส่งมอบ</strong></td>
+    <td width="8%" align="center"><strong>วันที่ส่งมอบ</strong></td>
+    <td width="5%" align="center"><strong>หมายเหตุ</strong></td>
+  </tr>
+<?
+
+$sql = "SELECT * FROM pocompany  WHERE bounddate LIKE '%$yymm' AND potype IS NULL AND (
+prepono !=  'ยกเลิก' AND prepono LIKE  'DS%') and pono !=''  ORDER BY pono asc, ponoyear asc";
+//echo $sql;
+
+$result = mysql_query($sql) or die("Query failed1");
+$num=mysql_num_rows($result);
+$i=0;
+$total1=0;
+while($rows = mysql_fetch_array($result)){
+$i++;
+$type=substr($rows["pono"],0,2);
+if($type=="DS"){
+	$typename="เวชภัณฑ์";
+}else{
+	$typename="ยา";
+}
+$total1=$total1+$rows["netprice"];
+
+?>  
+  <tr>
+    <td align="center"><?=$i;?></td>
+    <td align="center"><?=$rows["pono"].$rows["ponoyear"];?></td>
+    <td align="center"><?=$typename;?></td>
+    <td align="right"><?=number_format($rows["netprice"],2);?></td>
+    <td><?=$rows["comname"];?></td>
+    <td align="right"><?=$rows["podate"];?></td>
+    <td align="right"><?=$rows["podate"];?></td>
+    <td align="right"><?=$rows["chkindate"];?></td>
+    <td align="right"><?=$rows["fixdate"];?></td>
     <td align="right"><?=$rows["bounddate"];?></td>
     <td>&nbsp;</td>
   </tr>
@@ -171,6 +262,8 @@ $i++;
 }
 ?>  
 </table>
+<p align="center" style="font-size:24px;"><strong>รวมเป็นเงินทั้งสิ้น <?=number_format($total1,2);?> บาท<strong></p>
+
 
 <?
 }  //if bok

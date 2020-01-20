@@ -105,7 +105,7 @@ if(!empty($cAn)){
 }
 
 if($cDepart == 'XRAY'){
-	//echo "==>$cDiag---->$aDetail";
+	echo "==>$cDiag---->$aDetail";
 	$sql = "Select xn From xrayno where hn = '".$cHn."' Order by row_id DESC limit 0,1 ";
 	list($xn) = mysql_fetch_row(mysql_query($sql));
 
@@ -144,40 +144,9 @@ if($cDepart == 'XRAY'){
 
 }
 
-
-		$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-		$result = mysql_query($query)
-			or die("Query failed");
-	
-		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-			if (!mysql_data_seek($result, $i)) {
-				echo "Cannot seek to row $i\n";
-				continue;
-			}
-	
-			if(!($row = mysql_fetch_object($result)))
-				continue;
-			 }
-	
-		$nRunno=$row->runno;
-		$nRunno++;
-	
-		$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-		$result = mysql_query($query) or die("Query failed");
-
 //insert data into depart
-$subThidate=substr($Thidate,0,14);
-//echo $subThidate;
-$chksql="select * from depart where date like '$subThidate%' AND hn='$cHn' AND tvn='$tvn' AND detail='$aDetail' AND price='$Netprice' and idname='$sOfficer'";
-//echo $chksql;
-$chkquery=mysql_query($chksql);
-$chknum=mysql_num_rows($chkquery);
-
-if($chknum < 1){
-
-
    $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab,staf_massage)VALUES('$nRunno','$Thidate','$cPtname','$cHn','$cAn','$cDoctor','$cDepart','$item','$aDetail', '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab','$cstaf_massage');";
-//echo "===>$chknum";
+
       $result = mysql_query($query) or 
                 die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>
 	*โปรดตรวจสอบว่ามีรายการในเมนู [ดูการจ่ายเงิน] หรือไม่<br>
@@ -198,24 +167,18 @@ if($chknum < 1){
 //test 9/4/47 to find the last row
 //printf ("Last inserted record has id %d\n",mysql_insert_id());
   $idno=mysql_insert_id();
-  //print "<br>$idno <br>";
+//print "<br>$idno <br>";
 //test 9/4/47 to find the last row
 
 //insert data into patdata
     for ($n=1; $n<=$x; $n++){
-         if(!empty($aDgcode[$n])){
+         If (!empty($aDgcode[$n])){
                 $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright,film_size)
                                  VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
                                  '$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright','$aFilmsize[$n]');";
                 $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
         }
-    }
-
-}else{
-	echo "<script>alert('!!!ผิดพลาด ท่านได้บันทึกข้อมูลค่ารักษาพยาบาลในระบบเรียบร้อยแล้ว กรุณาตรวจสอบข้อมูลที่เมนู การจ่ายเงิน');</script>";
-} //close if chknum
-
-
+        }
 
 // in case of inpatient insert data into ipacc
 

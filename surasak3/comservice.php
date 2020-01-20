@@ -236,7 +236,7 @@ $rows =mysql_fetch_array($query);
       <td align="right" bordercolor="#CCCCCC" bgcolor="#CCCCCC"><strong>ผู้รับผิดชอบงาน :</strong></td>
       <td bordercolor="#CCCCCC" bgcolor="#CCCCCC"><select name="user" id="user" class="forntsarabun">
         <option value="0" selected="selected" >----------เลือก----------</option>
-        <option value="นายเทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
+        <option value="ส.ท. เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
 		<option value="นายกฤษณะศักดิ์ กันธรส">กฤษณะศักดิ์ กันธรส</option>
       </select>      </td>
     </tr>

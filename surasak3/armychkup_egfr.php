@@ -41,7 +41,7 @@ body,td,th {
     <td width="14%" align="center"><strong>eGFR</strong></td>
   </tr>
 <?
-$sql1 = "select * from condxofyear_so where yearcheck='$newPrefix' and age >=35 order by camp1 asc, chunyot1 asc, age desc";
+$sql1 = "select * from condxofyear_so where yearcheck='$newPrefix' and (camp NOT LIKE 'M10%' AND camp NOT LIKE 'M07%') and age >=35 order by camp asc, age desc";
 //echo $sql1;
 $query1 = mysql_query($sql1);
 $num1 = mysql_num_rows($query1);
@@ -51,6 +51,17 @@ if(empty($num1)){
 $i=0;
 while($result1=mysql_fetch_array($query1)){
 $ptname=$result1["yot"]." ".$result1["ptname"];
+
+	$message = $ptname;
+    if( strrchr( $message,"À≠‘ß")) {
+        $gender="F";
+    } else {
+        $gender="M";
+    }
+	
+	
+	
+
 
 //$sqlq="select a.autonumber, b.result from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.hn='".$result1["hn"]."' and a.clinicalinfo='µ√«® ÿ¢¿“æª√–®”ª’61' and a.profilecode='CREAG' and b.labcode='CREA' AND b.flag !='N'";
 $sqlq="select a.autonumber, b.result from resulthead as a inner join resultdetail as b on a.autonumber=b.autonumber where a.hn='".$result1["hn"]."' and a.clinicalinfo='µ√«® ÿ¢¿“æª√–®”ª’62' and a.profilecode='CREAG' and b.labcode='GFR' AND b.result <=89";
@@ -71,8 +82,8 @@ $rows1=mysql_fetch_array($queryq1);
     <td align="center"><?=$i;?></td>
     <td><?=$result1["hn"];?></td>
     <td><?=$ptname;?></td>
-    <td><? if(empty($result1["camp1"])){ echo "&nbsp;";}else{ echo $result1["camp"];}?></td>
-    <td align="center"><? if($result1["gender"]=="1"){ echo "M";}else{ echo "F";}?></td>
+    <td><? echo $result1["camp"];?></td>
+    <td align="center"><? echo $gender;?></td>
     <td align="center"><? if(empty($result1["age"])){ echo "&nbsp;";}else{ echo $result1["age"];}?></td>
     <td align="center"><? if(empty($rows1["result"])){ echo "&nbsp;";}else{ echo $rows1["result"];}?></td>
     <td align="center"><? echo $rows["result"];?></td>

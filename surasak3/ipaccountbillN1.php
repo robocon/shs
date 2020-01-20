@@ -571,6 +571,7 @@ ipmonrep table:
 */
 
     $query = "SELECT * FROM ipacc WHERE an = '$an'  and billno ='$billno'  ";
+	//echo $query;
     $result = mysql_query($query)
         or die("Query failed ipacc");
 
