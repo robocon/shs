@@ -1,5 +1,5 @@
-AddDefaultCharset UTF-8
-php_flag register_globals On
-php_flag error_reporting E_ALL
-php_value display_errors 1
-php_value session.gc_maxlifetime 86400
+#AddDefaultCharset UTF-8
+#php_flag register_globals On
+#php_flag error_reporting E_ALL
+#php_value display_errors 1
+#php_value session.gc_maxlifetime 86400

@@ -5,13 +5,13 @@ include 'head.php';
 ?>
 
 <fieldset>
-    <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ï‡∏≤‡∏° AN</legend>
+    <legend>§ÈπÀ“¢ÈÕ¡Ÿ≈µ“¡ AN</legend>
     <form action="formNewborncare.php" method="post">
         <div>
             AN : <input type="text" name="an" id="an">
         </div>
         <div>
-            <button type="submit">‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
+            <button type="submit">§ÈπÀ“</button>
             <input type="hidden" name="page" value="searchAn">
         </div>
     </form>

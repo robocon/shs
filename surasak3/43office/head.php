@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>‡∏ó‡∏î‡∏™‡∏≠‡∏ö‡∏Å‡∏≤‡∏£‡∏•‡∏á‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏£‡∏∞‡∏ö‡∏ö43‡πÅ‡∏ü‡πâ‡∏°</title>
+    <title>∑¥ Õ∫°“√≈ß¢ÈÕ¡Ÿ≈√–∫∫43·øÈ¡</title>
 
     <link type="text/css" href="assets/menu.css" rel="stylesheet" />
     <link type="text/css" href="assets/epoch_styles.css" rel="stylesheet" />
@@ -19,15 +19,15 @@
 <div id="no_print">
 	<div id="menu">
 		<ul class="menu">
-      <li><a href="index.php" class="parent" title="‡∏´‡∏ô‡πâ‡∏≤‡∏´‡∏•‡∏±‡∏Å ‡∏£.‡∏û."><span>&#127968;</span></a></li>
+      <li><a href="index.php" class="parent" title="ÀπÈ“À≈—° √.æ."><span>&#127968;</span></a></li>
       <li>
-        <a href="javascript: void(0);"><span>‡πÄ‡∏î‡πá‡∏Å‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î</span></a>
+        <a href="javascript: void(0);"><span>‡¥Á°·√°‡°‘¥</span></a>
         <ul>
-          <li><a href="formNewborn.php"><span>‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏ó‡∏≤‡∏£‡∏Å‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î</span></a></li>
-          <li><a href="reportNewborn.php"><span>‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡∏ó‡∏≤‡∏£‡∏Å‡πÅ‡∏£‡∏Å‡πÄ‡∏Å‡∏¥‡∏î</span></a></li>
-          <li><a href="formNewborncare.php"><span>‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏ó‡∏≤‡∏£‡∏Å‡∏´‡∏•‡∏±‡∏á‡∏Ñ‡∏•‡∏≠‡∏î</span></a></li>
-          <li><a href="javascript: void(0);"><span>‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏û‡∏±‡∏í‡∏ô‡∏≤‡∏Å‡∏≤‡∏£‡πÄ‡∏î‡πá‡∏Å0-12‡∏õ‡∏µ</span></a></li>
-          <li class="last"><a href="javascript: void(0);"><span>‡∏î‡∏π‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</span></a></li>
+          <li><a href="formNewborn.php"><span>øÕ√Ï¡∑“√°·√°‡°‘¥</span></a></li>
+          <li><a href="reportNewborn.php"><span>√“¬ß“π∑“√°·√°‡°‘¥</span></a></li>
+          <li><a href="formNewborncare.php"><span>øÕ√Ï¡∑“√°À≈—ß§≈Õ¥</span></a></li>
+          <li><a href="javascript: void(0);"><span>øÕ√Ï¡æ—≤π“°“√‡¥Á°0-12ª’</span></a></li>
+          <li class="last"><a href="javascript: void(0);"><span>¥Ÿ¢ÈÕ¡Ÿ≈</span></a></li>
         </ul>
       </li>
 		</ul>
@@ -36,7 +36,7 @@
 </div>
 
 <style>
-/* ‡∏ï‡∏≤‡∏£‡∏≤‡∏á */
+/* µ“√“ß */
 body, button{
     font-family: "TH Sarabun New","TH SarabunPSK";
     font-size: 14pt;
@@ -78,3 +78,10 @@ label{
     }
 }
 </style>
+
+<?php 
+if( isset($_SESSION['x-msg']) ){
+    ?><p style="background-color: #ffffc1; border: 1px solid #f0f000; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+    unset($_SESSION['x-msg']);
+}
+?>
