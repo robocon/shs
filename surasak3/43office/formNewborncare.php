@@ -2,6 +2,8 @@
 
 include '../bootstrap.php';
 include 'head.php';
+$db = Mysql::load();
+$db->set_charset("TIS620");
 
 function genSEQ($date, $hn){
 
@@ -15,6 +17,35 @@ function genSEQ($date, $hn){
 $action = input_post('action');
 if( $action === 'save' ){
 
+    $bcareresult = input_post('bcareresult');
+    $food = input_post('food');
+    $hospcode = '11512';
+    $pid = input_post('PID');
+    $seq = input_post('SEQ');
+    $bdate = input_post('BDATE');
+    $bcare = input_post('BCARE');
+    $bcplace = input_post('BCPLACE');
+    $provider = input_post('PROVIDER');
+    $d_update = input_post('D_UPDATE');
+    $cid = input_post('CID');
+
+    $sql = "INSERT INTO `43newborncare` (
+        `id`, `HOSPCODE`, `PID`, `SEQ`, `BDATE`, `BCARE`, 
+        `BCPLACE`, `BCARERESULT`, `FOOD`, `PROVIDER`, `D_UPDATE`,
+        `CID`
+    ) VALUES (
+        NULL, '$hospcode', '$pid', '$seq', '$bdate', '$bcare', 
+        '$hospcode', '$bcareresult', '$food', '$provider', '$d_update',
+        '$cid'
+    );";
+
+    $save = $db->insert($sql);
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+    if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
+    }
+
+    redirect('formNewborncare.php', $msg);
     exit;
 }
 ?>
@@ -36,7 +67,6 @@ if( $action === 'save' ){
 $page = input('page');
 if ($page === 'searchHn') {
 
-    $db = Mysql::load();
     $hn = input_post('hn');
     $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`diag`,`doctor` FROM `opday` WHERE `hn` = '$hn' ORDER BY `thidate` DESC";
     $db->select($sql);
@@ -54,6 +84,7 @@ if ($page === 'searchHn') {
             </table>
         </fieldset>
     </div>
+    <div>&nbsp;</div>
     <table class="chk_table">
         <tr>
             <th>วันที่มารับบริการ</th>
@@ -80,32 +111,45 @@ if ($page === 'searchHn') {
     <?php
 }elseif ( $page==='form' ) {
 
-    $db = Mysql::load();
     $id = input_get('opdId');
-    $sql = "SELECT `hn`,`vn`,`ptname`,`thidate`,`doctor`,`idcard` FROM `opday` WHERE `row_id` = '$id' ";
+    $sql = "SELECT `hn`,`vn`,`ptname`,`thidate`,`doctor` FROM `opday` WHERE `row_id` = '$id' ";
     $db->select($sql);
     $item = $db->get_item();
 
     $hn = $item['hn'];
-    $idcard = $item['idcard'];
 
-    $db->select("SELECT `dbirth` FROM `opcard` WHERE `hn` = '$hn' ");
+    $db->select("SELECT `dbirth`,`idcard` FROM `opcard` WHERE `hn` = '$hn' ");
     $opcard = $db->get_item();
+    $idcard = $opcard['idcard'];
     $bdate = bc_to_ad($opcard['dbirth']);
     $bdate = str_replace('-','', $bdate);
 
     $seq = genSEQ(date('Ymd'),$hn);
 
+    // เฉพาะ MDxxx
+    if( preg_match('/MD\d+/', $item['doctor']) > 0 ){
+        $prefixMd = substr($item['doctor'],0,5);
+        $where = "`name` LIKE '$prefixMd%'";
+
+    }elseif ( preg_match('/(\d+){4,5}/', $item['doctor'], $matchs) ) {
+        $prefixMd = $matchs['0'];
+        $where = "`doctorcode` = '$prefixMd'";
+    }
+
+    // $sql = "SELECT b.`PROVIDER` 
+    // FROM ( 
+    //     SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where 
+    // ) AS a 
+    // LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
     
-    $prefixMd = substr($item['doctor'],0,5);
-    $sql = "SELECT b.`PROVIDER` 
-    FROM ( 
-        SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
-    ) AS a 
-    LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
+    $sql = "SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
     $db->select($sql);
     $dr = $db->get_item();
+    $doctorcode = $dr['doctorcode'];
 
+    $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
+    $db->select($sql);
+    $dr = $db->get_item();
     ?>
     <fieldset>
         <legend>บันทึกข้อมูลการดูแลทารกหลังคลอด</legend>
@@ -160,7 +204,7 @@ if ($page === 'searchHn') {
                         <input type="hidden" name="SEQ" value="<?=$seq;?>">
                         <input type="hidden" name="BDATE" value="bdate">
                         <input type="hidden" name="BCARE" value="<?=date('Ymd');?>">
-                        <input type="hidden" name="BCPlACE" value="11512">
+                        <input type="hidden" name="BCPLACE" value="11512">
                         <input type="hidden" name="PROVIDER" value="<?=$dr['PROVIDER'];?>">
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
                         <input type="hidden" name="CID" value="<?=$idcard;?>">

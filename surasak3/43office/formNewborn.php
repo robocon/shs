@@ -8,7 +8,7 @@ if( empty($_SESSION['sIdname']) ){
 }
 
 $db = Mysql::load();
-
+$db->set_charset("TIS620");
 
 function genSEQ($date, $hn){
 
@@ -175,8 +175,6 @@ $page = input_post('page');
 if( $page === 'searchAn' ){ 
 
     $an = input_post('an');
-    // $db->set_charset("TIS620");
-    // $db->exec("SET NAMES UTF8");
     $sql = "SELECT * FROM `ipcard` WHERE `an` = '$an'";
     $db->select($sql);
 
@@ -461,12 +459,30 @@ if( $page === 'searchAn' ){
 
             <?php 
             $dr['PROVIDER'] = NULL;
-            $prefixMd = substr($item['doctor'],0,5);
-            $sql = "SELECT b.`PROVIDER` 
-            FROM ( 
-                SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
-            ) AS a 
-            LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
+            // $prefixMd = substr($item['doctor'],0,5);
+            // $sql = "SELECT b.`PROVIDER` 
+            // FROM ( 
+            //     SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
+            // ) AS a 
+            // LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
+            // $db->select($sql);
+            // $dr = $db->get_item();
+
+            if( preg_match('/MD\d+/', $item['doctor']) > 0 ){
+                $prefixMd = substr($item['doctor'],0,5);
+                $where = "`name` LIKE '$prefixMd%'";
+        
+            }elseif ( preg_match('/(\d+){4,5}/', $item['doctor'], $matchs) ) {
+                $prefixMd = $matchs['0'];
+                $where = "`doctorcode` = '$prefixMd'";
+            }
+
+            $sql = "SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+            $db->select($sql);
+            $dr = $db->get_item();
+            $doctorcode = $dr['doctorcode'];
+
+            $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
             $db->select($sql);
             $dr = $db->get_item();
             ?>
