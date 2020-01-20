@@ -7,7 +7,7 @@ header ("Pragma: no-cache");
 ?>
 <style type="text/css">
 <!--
-.txtsarabun {	font-family: TH SarabunPSK;
+.txtsarabun {	font-family: "TH SarabunPSK";
 	font-size: 16px;
 }
 -->

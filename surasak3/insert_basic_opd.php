@@ -42,10 +42,10 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi` From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill` From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 if($cigarette==0){$cigarette='ไม่สูบ';}
 else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';}
@@ -125,9 +125,14 @@ window.onload = function(){
 		$mens_txt = '';
 		if ( $mens == 3 ) {
 
-			$mens_y = substr($mens_date,0,4);
-			$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);
-			$mens_txt = ' ล่าสุดวันที่: '.$mens_date_txt;
+			if( !empty($the_pill) ){
+				$mens_txt = ' คุมกำเนิด';
+			}else{
+				$mens_y = substr($mens_date,0,4);
+				$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);
+				$mens_txt = ' ล่าสุดวันที่: '.$mens_date_txt;
+			}
+			
 		}
 		?>
 		<tr>
@@ -163,6 +168,9 @@ window.onload = function(){
 	}
 
 	?>
+	<tr>
+		<td>Triage Gr. : <?=$grade;?> สภาวะจิตใจ : <?=$mind;?></td>
+	</tr>
 	<tr>
 		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=substr($clinic,3);?></td>
 	</tr>

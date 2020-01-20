@@ -124,17 +124,21 @@ if($_POST["cigarette"]=="1"){
 	$cAge = $_POST['age'];
 
 	$mens = ( empty($_POST['mens']) ) ? NULL : $_POST['mens'] ;
-	$mens_date = ( empty($_POST['mens_date']) ) ? NULL : $_POST['mens_date'] ;
+	$mens_date = ( empty($_POST['mens_date']) ) ? '0000-00-00' : $_POST['mens_date'] ;
 	$vaccine = ( empty($_POST['vaccine']) ) ? NULL : $_POST['vaccine'] ;
 	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? NULL : $_POST['parent_smoke'] ;
-	$parent_smoke_amount = ( empty($_POST['parent_smoke_amount']) ) ? NULL : $_POST['parent_smoke_amount'] ;
+	$parent_smoke_amount = ( empty($_POST['parent_smoke_amount']) ) ? 0 : $_POST['parent_smoke_amount'] ;
 	$parent_drink = ( empty($_POST['parent_drink']) ) ? NULL : $_POST['parent_drink'] ;
-	$parent_drink_amount = ( empty($_POST['parent_drink_amount']) ) ? NULL : $_POST['parent_drink_amount'] ;
-	$smoke_amount = ( empty($_POST['smoke_amount']) ) ? NULL : $_POST['smoke_amount'] ;
-	$drink_amount = ( empty($_POST['drink_amount']) ) ? NULL : $_POST['drink_amount'] ;
+	$parent_drink_amount = ( empty($_POST['parent_drink_amount']) ) ? 0 : $_POST['parent_drink_amount'] ;
+	$smoke_amount = ( empty($_POST['smoke_amount']) ) ? 0 : $_POST['smoke_amount'] ;
+	$drink_amount = ( empty($_POST['drink_amount']) ) ? 0 : $_POST['drink_amount'] ;
 	$ht_amount = ( empty($_POST['ht_amount']) ) ? NULL : $_POST['ht_amount'] ;
 	$dm_amount = ( empty($_POST['dm_amount']) ) ? NULL : $_POST['dm_amount'] ;
 	$hpi = htmlspecialchars($_POST['hpi'], ENT_QUOTES);
+
+	$grade = ( empty($_POST['grade']) ) ? NULL : $_POST['grade'] ;
+	$mind = ( empty($_POST['mind']) ) ? NULL : $_POST['mind'] ;
+	$the_pill = ( empty($_POST['the_pill']) ) ? NULL : $_POST['the_pill'] ;
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
@@ -180,7 +184,10 @@ $sql = "Update `opd` set  `thidate` = '".$thidate_now."',
 `drink_amount` = '$drink_amount', 
 `ht_amount` = '$ht_amount', 
 `dm_amount` = '$dm_amount', 
-`hpi` = '$hpi'
+`hpi` = '$hpi',
+`grade` = '$grade', 
+`mind` = '$mind', 
+`the_pill` = '$the_pill' 
 
 where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
@@ -196,7 +203,7 @@ $sql = "INSERT INTO `opd` (
 	`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
 	`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
 	`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,
-	`hpi`
+	`hpi`,`grade`,`mind`,`the_pill`
 )VALUES (
 	NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
 	'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
@@ -205,7 +212,7 @@ $sql = "INSERT INTO `opd` (
 	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
 	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
-	'$hpi' 
+	'$hpi', '$grade','$mind','$the_pill'
 );";
 
 }
@@ -264,60 +271,20 @@ $sql = "INSERT INTO `opd` (
 
 $choose = array();
 
-array_push($choose,"ตรวจตามนัด");
-array_push($choose,"มาก่อนนัด");
-array_push($choose,"มาหลังนัด");
-array_push($choose,"อาการทั่วไปปกติ");
-array_push($choose,"รับยาเดิม");
-array_push($choose,"..........วัน");
-array_push($choose,"ไข้");
-array_push($choose,"ไอ");
-array_push($choose,"เจ็บคอ");
-array_push($choose,"มีเสมหะ");
-array_push($choose,"มีน้ำมูก");
-array_push($choose,"ปวดศีรษะ");
-array_push($choose,"เวียนศีรษะ");
-array_push($choose,"บ้านหมุน");
-array_push($choose,"คลื่นไส้");
-array_push($choose,"อาเจียน");
-array_push($choose,"ใจสั่น");
-array_push($choose,"อ่อนเพลีย");
-array_push($choose,"เบื่ออาหาร");
-array_push($choose,"หายใจเหนื่อยหอบ");
-array_push($choose,"จุกแน่นท้อง");
-array_push($choose,"เจ็บหน้าอก");
-array_push($choose,"หน้ามืด ตาลาย");
-array_push($choose,"ปวดท้อง");
-array_push($choose,"อืดท้อง");
-array_push($choose,"ถ่านอุจจาระเหลว");
-array_push($choose,"ท้องผูก");
-array_push($choose,"ปัสสาวะแสบขัด");
-array_push($choose,"ปวดหลัง");
-array_push($choose,"ปวดเอว");
-array_push($choose,"ปวดแขน");
-array_push($choose,"ปวดขา");
-array_push($choose,"ปวดน่อง");
-array_push($choose,"ปวดไหล่");
-array_push($choose,"ปวดสะโพก");
-array_push($choose,"แผลที่.......");
-array_push($choose,"ก้อนที่........");
-array_push($choose,"ตรวจสุขภาพ");
+array_push($choose,"ไข้ ไอ เป็นมา_วัน");
+array_push($choose,"ปวดศรีษะ ตาพร่ามัว เป็นมา_วัน");
+array_push($choose,"รับ Fax ประสาน Refer จาก รพ.ลำปาง สิทธิ์ประกันสังคม รพ.ค่ายฯ");
+array_push($choose,"ขอสำเนาประวัติการรักษา");
 array_push($choose,"ขอใบรับรองแพทย์");
-array_push($choose,"ปรึกษาแพทย์");
-array_push($choose,"ปวดเมื่อยตามตัว");
-array_push($choose,"ครั่นเนื้อครั่นตัว");
-array_push($choose,"ผื่นคัน");
-array_push($choose,"ผู้ป่วยไม่มา ญาติชื่อ..ID..");
+array_push($choose,"ขอใบรับรองแพทย์งดเกณฑ์ทหาร");
+array_push($choose,"ขอใบรับรองแพทย์ ประกอบการอุปสมบท ระบุตรวจ HIV , Urine Amphetamine");
+array_push($choose,"ขอใบรับรองแพทย์ ประกอบการสมัครสมาชิก ธกส. ระบุตรวจ HIV , UA , Urine Amphetamine , CXR");
+array_push($choose,"ขอใบรับรองแพทย์ อุปสมบท");
+array_push($choose,"ขอสำเนาประวัติรักษา");
 array_push($choose,"ขอรับวัคซีนนัดฉีดโรคพิษสุนัขบ้า เข็มที่");
 array_push($choose,"ขอรับวัคซีนนัดฉีดบาดทะยัก เข็มที่");
 array_push($choose,"ขอรับวัคซีนนัดฉีดไวรัสตับอักเสบบี เข็มที่");
-array_push($choose,"ขอสำเนาประวัติรักษา");
-array_push($choose,"ชา");
-array_push($choose,"แขนขาอ่อนแรง");
-array_push($choose,"แขนอ่อนแรง");
-array_push($choose,"ขาอ่อนแรง");
-array_push($choose,"ขอใบรับรองแพทย์ ประกอบการอุปสมบท ระบุตรวจ HIV , Urine Amphetamine");
-array_push($choose,"ขอใบรับรองแพทย์ ประกอบการสมัครสมาชิก ธกส. ระบุตรวจ HIV , UA , Urine Amphetamine , CXR");
+
 sort($choose);
 $sql = "Select distinct organ From opd where hn = '".$_REQUEST["hn"]."' AND organ <> '' Order by row_id DESC limit 10";
 $result = Mysql_Query($sql);
@@ -847,7 +814,8 @@ mmHg </td>
 					}
 					?>
 					<div class="lmp_date" style="<?=$def_mens_style;?> margin-bottom: 5px;">
-						LMP: <input type="text" name="mens_date" id="mens_date" value="<?=$mens_date;?>"> (วันที่ประจำเดือนมาครั้งสุดท้าย)
+						LMP: <input type="text" name="mens_date" id="mens_date" value="<?=$mens_date;?>"> (วันที่ประจำเดือนมาครั้งสุดท้าย) 
+						<input type="checkbox" name="the_pill" id="the_pill" value="1"><label for="the_pill">คุมกำเนิด</label>
 					</div>
 				</td>
 			</tr>
@@ -1028,6 +996,26 @@ mmHg </td>
              <input name="type" type="radio" value="ญาติ" onclick="clear_textbox();"/>
              ญาติ </span></td>
          </tr>
+
+		<tr>
+			<td align="right" class="data_show">Griage Gr.</td>
+			<td align="left" colspan="5">
+				<input type="radio" name="grade" id="grade1" value="1"><label for="grade1">1</label>&nbsp;
+				<input type="radio" name="grade" id="grade2" value="2"><label for="grade2">2</label>&nbsp;
+				<input type="radio" name="grade" id="grade3" value="3"><label for="grade3">3</label>&nbsp;
+				<input type="radio" name="grade" id="grade4" value="4"><label for="grade4">4</label>&nbsp;
+				<input type="radio" name="grade" id="grade5" value="5"><label for="grade5">5</label>&nbsp;
+			</td>
+		</tr>
+
+		<tr>
+			<td align="right" class="data_show">สภาวะจิตใจ</td>
+			<td align="left" colspan="5">
+				<input type="radio" name="mind" id="mind1" value="มีความวิตกกังวล"><label for="mind1">มีความวิตกกังวล</label>&nbsp;
+				<input type="radio" name="mind" id="mind2" value="ไม่มีความวิตกกังวล"><label for="mind2">ไม่มีความวิตกกังวล</label>&nbsp;
+			</td>
+		</tr>
+
          <tr>
            <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
@@ -1064,11 +1052,22 @@ mmHg </td>
 			
 			</td>
 			<td colspan="4">
-			
-				<select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
+				<?php 
+				$hpiHelper = array(
+					'Case HT, DM, DLP, Gout ตรวจตามนัด รักษาต่อเนื่องที่ รพ.ค่ายสุรศักดิ์มนตรี อาการทั่วไปปกติ ผู้ป่วยเจาะเลือดตามใบนัดแล้ว',
+					'_วันก่อนมา รพ.', 
+					'_สัปดาห์ก่อนมา รพ.', 
+					'ยังไม่ได้รักษาที่ใด', 
+					'_วันก่อนมา รพ. ไข้ ไอ เจ็บคอ มีเสมหะสี_ มีน้ำมูกสี_ ปวดเมื่อยตามร่างกาย ปวดศรีษะ ไม่มีประวัติสัมผัสผู้ป่วยไข้หวัดใหญ่ ปฏิเสธเดินทาง/คนใกล้ชิดไปต่างประเทศ', 
+					'ขอใบรับรองแพทย์เพื่อสมัคร_ ระบุตรวจ_', 
+					'ระบุโรค_ รักษาที่_ มี F/U ต่อเนื่อง สำเนาประวัติการรักษา/ใบรับรองแพทย์มาพบแพทย์', 
+					'ระบุโรค_ รักษาที่_ มี F/U ต่อเนื่อง/ไม่ได้นัด F/U ไปเรียน/ทำงานได้ปกติ ไม่ได้นำสำเนาประวัติการรักษา/ใบรับรองแพทย์มาพบแพทย์ แนะนำผู้ป่วยไม่เข้าเกณฑ์ประเภทที่4 แนะนำให้ขอสำเนาประวัติแล้วไปยื่นที่จุดคัดเลือกทหาร ผู้ป่วยเข้าใจ'
+				);
+				?>
+				<select style="width:600px;" name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+this.value;}" class="txtsarabun">
 					<option value="">--- ตัวช่วย ---</option>
 					<?php
-					foreach($choose as $value){
+					foreach($hpiHelper as $value){
 						echo "<option value='".$value."'>".$value."</option>";
 					}
 					?>

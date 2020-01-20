@@ -45,9 +45,9 @@ function calcage($birth){
 
 include 'connect.inc'; 
 
-$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,vn,waist,bp3,bp4,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi` From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,vn,waist,bp3,bp4,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill` From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 $result_dt_hn = Mysql_Query($sql) or die( mysql_error() );
-list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$vn,$waist,$bp3,$bp4,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$vn,$waist,$bp3,$bp4,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 if($cigarette==0){
 	$cigarette='ไม่สูบ';
@@ -99,8 +99,9 @@ $cAge = calcage($dbirth);
 ?>
 <script type="text/javascript">
 	window.onload = function(){
-		window.print();
-		window.close();
+		setTimeout(function () { window.print(); }, 500);
+		window.onfocus = function () { setTimeout(function () { window.close(); }, 500); }
+		
 	}
 </script>
 <style>
@@ -124,10 +125,20 @@ table td{
 	<tr>
 		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, นน : <?=$weight;?> กก., สส : <?=$height;?> ซม.</td>
 	</tr>
+
+	<?php 
+	if( $waist OR ( !empty($bp3) && !empty($bp4) ) ){
+
+	
+	?>
 	<tr>
 		<td>
-		รอบเอว : <?=$waist;?> ซม., 
 		<?php 
+
+		if( $waist ){
+			?>รอบเอว : <?=$waist;?> ซม., <?php
+		}
+
 		if( !empty($bp3) && !empty($bp4) ){
 			?>
 			Repeat BP : <?=$bp3;?> / <?=$bp4;?> mmHg
@@ -136,6 +147,9 @@ table td{
 		?>
 		</td>
 	</tr>
+	<?php 
+	}
+	?>
 	<tr>
 		<td>บุหรี่ : <?=$cigarette;?>, สุรา : <?=$alcohol;?> , bmi : <?=$bmi;?>, PS : <?=$painscore;?></td>
 	</tr>
@@ -148,9 +162,13 @@ table td{
 		$mens_txt = '';
 		if ( $mens == 3 ) {
 
-			$mens_y = substr($mens_date,0,4);
-			$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);
-			$mens_txt = ' ล่าสุดวันที่: '.$mens_date_txt;
+			if( !empty($the_pill) ){
+				$mens_txt = ' คุมกำเนิด';
+			}else{
+				$mens_y = substr($mens_date,0,4);
+				$mens_date_txt = ($mens_y+543).substr($mens_date,4,10);
+				$mens_txt = ' ล่าสุดวันที่: '.$mens_date_txt;
+			}
 		}
 		?>
 		<tr>
@@ -186,7 +204,9 @@ table td{
 	}
 
 	?>
-
+	<tr>
+		<td>Triage Gr. : <?=$grade;?> สภาวะจิตใจ : <?=$mind;?></td>
+	</tr>
 	<tr>
 		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=$clinic;?></td>
 	</tr>
