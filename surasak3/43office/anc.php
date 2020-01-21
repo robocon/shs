@@ -1,11 +1,12 @@
 <?php 
 include '../bootstrap.php';
-include 'head.php';
+include 'libs/functions.php';
 
+$db = Mysql::load();
 $action = input_post('action');
 if ( $action == 'save' ) {
 	// บันทึกข้อมูล
-	$thidate = date("YmdHis");
+	$d_update = date("YmdHis");
 
 	$hn = $_POST['nHn'];
 	$seq = $_POST['seq'];
@@ -18,17 +19,26 @@ if ( $action == 'save' ) {
 	$doctor = $_POST['doctor'];
 
 	$opday_id = $_POST['opday_id'];
-
-	// $doctorcode = '00000';
-	// $q = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE `name` = '$doctor' ");
-	// if ( mysql_num_rows($q) > 0 ) {
-	// 	$item = mysql_fetch_assoc($q);
-	// 	$doctorcode = $item['doctorcode'];
-	// }
 	
-	$provider = $seq.$doctorcode;
+	if( preg_match('/MD\d+/', $doctor) > 0 ){
+		$prefixMd = substr($doctor,0,5);
+		$where = "`name` LIKE '$prefixMd%'";
 
-	exit;
+	}elseif ( preg_match('/(\d+){4,5}/', $doctor, $matchs) ) {
+		$prefixMd = $matchs['0'];
+		$where = "`doctorcode` = '$prefixMd'";
+	}
+
+	$sql = "SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+	$db->select($sql);
+	$dr = $db->get_item();
+	$doctorcode = $dr['doctorcode'];
+
+	$sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
+	$db->select($sql);
+	$dr = $db->get_item();
+
+	$provider = $dr['PROVIDER'];
 
 	$q = mysql_query("SELECT * FROM `anc` WHERE `pid` = '$hn' and `seq` = '$seq' ") or die(mysql_error());
 	$test_row = mysql_num_rows($q);
@@ -48,32 +58,34 @@ if ( $action == 'save' ) {
 		`ancres`='$ancres', 
 		`aplace`='11512', 
 		`provider`='$provider', 
-		`d_update`='$thidate', 
+		`d_update`='$d_update', 
 		`cid`='$cid', 
 		`opday_id` = '$opday_id' 
 		WHERE (`row_id`='$id');";
-		// $result = mysql_query($sql) or die(mysql_error());
+		$save = $db->update($sql);
+		// $result = mysql_query($sql);
 
 	}else{	
 		
 		$sql = "INSERT INTO `anc` (
 		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid` ,`opday_id` 
 		) VALUES (
-		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$provider', '$thidate', '$cid', '$opday_id'
+		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$provider', '$d_update', '$cid', '$opday_id'
 		);";
-		// $result = mysql_query($sql) or die(mysql_error());
+		// $result = mysql_query($sql);
+		$save = $db->insert($sql);
+	}
+
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
 	}
 	
-	// if($result){
-
-	// 	$_SESSION['msg'] = 'บันทึกข้อมูลเรียบร้อยแล้ว';
-	// 	header('Location: anc.php');
-	// }
-
-
+	redirect('anc.php',$msg);
 	exit;
 }
 
+include 'head.php';
 ?>
 <fieldset>
 	<legend>แฟ้ม : ANC</legend>
@@ -143,11 +155,11 @@ if( $page === 'search' ){
 
 	$id = input_get('id');
 
-	$sql = "select * from opday where row_id = '$id' ";
+	$sql = "select `row_id`,`hn`,`ptname`,`thidate`,`doctor` from opday where row_id = '$id' ";
 	$rows = mysql_query($sql);
 	$result = mysql_fetch_array($rows);
 	
-	$sql2 = "select * from opcard where hn='".$result['hn']."' ";
+	$sql2 = "select `idcard` from opcard where hn='".$result['hn']."' ";
 	$rows2 = mysql_query($sql2);
 	$result2 = mysql_fetch_array($rows2);
 	?>
@@ -175,21 +187,17 @@ if( $page === 'search' ){
 				<td>ลำดับที่ :</td>
 				<td>
 					<?php 
-					$d = substr($result['thidate'],8,2);
-					$m = substr($result['thidate'],5,2);
-					$y = substr($result['thidate'],0,4)-543;
-					$seq = "$y$m$d".sprintf("%03d",$result['vn']);
+					$thidate = bc_to_ad($result['thidate']);
+					$seq = genSEQ($thidate, $result['hn']);
 
-					
-					dump(bc_to_ad($result['thidate']));
-
+					$dserv = date('Ymd', strtotime($thidate));
 					?>
 					<input name="seq" type="text" id="seq" value="<?=$seq?>" readonly="readonly"/>
 				</td>
 			</tr>
 			<tr>
 				<td>วันที่รับบริการ :</td>
-				<td><input name="dserv" type="text" id="dserv" value="<?="$y$m$d"?>" readonly="readonly"/></td>
+				<td><input name="dserv" type="text" id="dserv" value="<?="$dserv"?>" readonly="readonly"/></td>
 			</tr>
 			<tr>
 				<td>ครรภ์ที่ :</td>

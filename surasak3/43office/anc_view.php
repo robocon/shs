@@ -1,6 +1,10 @@
 <?php 
 
-include 'anc_menu.php';
+include '../bootstrap.php';
+include 'libs/functions.php';
+
+include 'head.php';
+$db = Mysql::load();
 
 ?>
 <style>
@@ -89,31 +93,33 @@ if( $action == 'report' ){
     <div>&nbsp;</div>
     <table class="chk_table">
         <tr>
-            <th>ทะเบียนบุคคล</th>
-            <th>ลาดับที่</th>
-            <th>วันที่ให้บริการ</th>
-            <th>ครรภ์ที่</th>
+            <th class="warning">รหัสสถานบริการ</th>
+            <th class="warning">ทะเบียนบุคคล</th>
+            <th class="warning">ลาดับที่</th>
+            <th class="warning">วันที่ให้บริการ</th>
+            <th class="warning">ครรภ์ที่</th>
             <th>ANC ช่วงที่</th>
-            <th>อายุครรภ์</th>
-            <th>ผลการตรวจ</th>
-            <th>PROVIDER</th>
-            <th>วันเดือนปีที่ปรับปรุง</th>
-            <th>เลขที่บัตรประชาชน</th>
+            <th class="warning">อายุครรภ์</th>
+            <th class="warning">ผลการตรวจ</th>
+            <th class="warning">PROVIDER</th>
+            <th class="warning">วันเดือนปีที่ปรับปรุง</th>
+            <th class="warning">เลขที่บัตรประชาชน</th>
         </tr>
     <?php
     while ( $item = mysql_fetch_assoc($q) ) {
         ?>
         <tr>
-            <td><?=$item['pid'];?></td>
-            <td><?=$item['seq'];?></td>
-            <td><?=$item['date_serv'];?></td>
-            <td><?=$item['gravida'];?></td>
+            <td class="warning"><?=$item['hospcode'];?></td>
+            <td class="warning"><?=$item['pid'];?></td>
+            <td class="warning"><?=$item['seq'];?></td>
+            <td class="warning"><?=$item['date_serv'];?></td>
+            <td class="warning"><?=$item['gravida'];?></td>
             <td><?=$item['ancno'];?></td>
-            <td><?=$item['ga'];?></td>
-            <td><?=$item['ancres'];?></td>
-            <td><?=$item['provider'];?></td>
-            <td><?=$item['d_update'];?></td>
-            <td><?=$item['cid'];?></td>
+            <td class="warning"><?=$item['ga'];?></td>
+            <td class="warning"><?=$item['ancres'];?></td>
+            <td class="warning"><?=$item['provider'];?></td>
+            <td class="warning"><?=$item['d_update'];?></td>
+            <td class="warning"><?=$item['cid'];?></td>
         </tr>
         <?php
     }

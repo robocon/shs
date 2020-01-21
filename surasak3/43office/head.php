@@ -32,8 +32,10 @@
             <li>
                 <a href="javascript: void(0);"><span>หญิงตั้งครรภ์</span></a>
                 <ul>
-                    <li><a href="anc.php"><span>บริการฝากครรภ์</span></a></li>
-                    <li><a href="anc_view.php"><span>ประวัติตั้งครรภ์</span></a></li>
+                    <li><a href="anc.php"><span>บริการฝากครรภ์ ANC</span></a></li>
+                    <li><a href="anc_view.php"><span>รายงาน ANC</span></a></li>
+                    <li><a href="prenatal.php"><span>ประวัติตั้งครรภ์ PRENATAL</span></a></li>
+                    <li><a href="reportPrenatal.php"><span>รายงาน PRENATAL</span></a></li>
                 </ul>
             </li>
         </ul>
