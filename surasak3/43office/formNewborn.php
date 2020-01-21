@@ -1,25 +1,13 @@
 <?php 
 
 include '../bootstrap.php';
-
+include 'libs/functions.php';
 if( empty($_SESSION['sIdname']) ){
     redirect('../login_page.php','ชื่อผู้ใช้งานไม่ถูกต้อง');
     exit;
 }
 
 $db = Mysql::load();
-$db->set_charset("TIS620");
-
-function genSEQ($date, $hn){
-
-    $s1 = date('Ymd', strtotime($date));
-    list($prefix, $number) = explode('-', $hn);
-    $newHn = $prefix.( sprintf('%05d', intval($nubmer)) );
-
-    return $s1.$newHn;
-}
-
-
 $action = input_post('action');
 if($action === 'save'){
     

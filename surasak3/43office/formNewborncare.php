@@ -1,18 +1,6 @@
 <?php 
-
 include '../bootstrap.php';
-include 'head.php';
-$db = Mysql::load();
-$db->set_charset("TIS620");
-
-function genSEQ($date, $hn){
-
-    $s1 = date('Ymd', strtotime($date));
-    list($prefix, $number) = explode('-', $hn);
-    $newHn = $prefix.( sprintf('%05d', intval($nubmer)) );
-
-    return $s1.$newHn;
-}
+include 'libs/functions.php';
 
 $action = input_post('action');
 if( $action === 'save' ){
@@ -64,6 +52,7 @@ if( $action === 'save' ){
 </fieldset>
 
 <?php 
+include 'head.php';
 $page = input('page');
 if ($page === 'searchHn') {
 

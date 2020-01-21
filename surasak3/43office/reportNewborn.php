@@ -3,33 +3,14 @@ include '../bootstrap.php';
 
 include 'head.php';
 ?>
-<style>
-.warning{
-    background-color: yellow;
-}
-</style>
 <fieldset>
-    <legend>ค้นหาตามวันที่ใช้บริการ</legend>
+    <legend>ค้นหาตามวันที่บันทึก ทารกแรกเกิด</legend>
     <form action="reportNewborn.php" method="post">
         <div>
             เลือกวันที่ <input type="text" name="date" id="date">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
-            <input type="hidden" name="typeSearch" value="date">
-            <input type="hidden" name="view" value="search">
-        </div>
-    </form>
-</fieldset>
-<fieldset>
-    <legend>ค้นหาตาม AN</legend>
-    <form action="reportNewborn.php" method="post">
-        <div>
-            AN <input type="text" name="an" id="an">
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="typeSearch" value="an">
             <input type="hidden" name="view" value="search">
         </div>
     </form>
@@ -47,17 +28,11 @@ if ( $view === 'search' ) {
     
     $db = Mysql::load();
 
-    $type = input_post('typeSearch');
     $date = input_post('date');
     $date = bc_to_ad($date);
-    $an = input_post('an');
-    if( $type == 'date' ){
-        $where = "`date_visit` LIKE '$date%' ";
-    }elseif ( $type == 'an' ) {
-        $where = "`an` = '$an' ";
-    }
+    $date = str_replace('-', '', $date);
 
-    $sql = "SELECT * FROM `43newborn` WHERE $where ";
+    $sql = "SELECT * FROM `43newborn` WHERE `D_UPDATE` LIKE '$date%' ";
     $db->select($sql);
     if ( $db->get_rows() > 0 ) {
         
@@ -66,7 +41,6 @@ if ( $view === 'search' ) {
         <div>&nbsp;</div>
         <table class="chk_table">
             <tr>
-                <th>AN</th>
                 <th class="warning">HOSPCODE</th>
                 <th class="warning">PID</th>
                 <th class="warning">MPID</th>
@@ -91,7 +65,6 @@ if ( $view === 'search' ) {
         foreach ($items as $key => $item) {
             ?>
             <tr>
-                <td><?=$item['an'];?></td>
                 <td class="warning"><?=$item['HOSPCODE'];?></td>
                 <td class="warning"><?=$item['PID'];?></td>
                 <td class="warning"><?=$item['MPID'];?></td>

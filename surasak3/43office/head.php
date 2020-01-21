@@ -18,19 +18,25 @@
 
 <div id="no_print">
 	<div id="menu">
-		<ul class="menu">
-      <li><a href="index.php" class="parent" title="หน้าหลัก ร.พ."><span>&#127968;</span></a></li>
-      <li>
-        <a href="javascript: void(0);"><span>เด็กแรกเกิด</span></a>
-        <ul>
-          <li><a href="formNewborn.php"><span>ฟอร์มทารกแรกเกิด</span></a></li>
-          <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
-          <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
-          <li><a href="javascript: void(0);"><span>ฟอร์มพัฒนาการเด็ก0-12ปี</span></a></li>
-          <li class="last"><a href="javascript: void(0);"><span>ดูข้อมูล</span></a></li>
+        <ul class="menu">
+            <li><a href="index.php" class="parent" title="หน้าหลัก ร.พ."><span>&#127968;</span></a></li>
+            <li>
+                <a href="javascript: void(0);"><span>เด็กแรกเกิด</span></a>
+                <ul>
+                    <li><a href="formNewborn.php"><span>ฟอร์มทารกแรกเกิด</span></a></li>
+                    <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
+                    <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
+                    <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript: void(0);"><span>หญิงตั้งครรภ์</span></a>
+                <ul>
+                    <li><a href="anc.php"><span>บริการฝากครรภ์</span></a></li>
+                    <li><a href="anc_view.php"><span>ประวัติตั้งครรภ์</span></a></li>
+                </ul>
+            </li>
         </ul>
-      </li>
-		</ul>
 	</div>
 	<div style="visibility: hidden"><a href="http://apycom.com/">a</a></div>
 </div>
@@ -70,6 +76,9 @@ label{
 }
 .important{
     border: 1px solid red;
+}
+.warning{
+    background-color: yellow;
 }
 
 @media print{
