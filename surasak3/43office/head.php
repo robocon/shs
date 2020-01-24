@@ -49,6 +49,14 @@ body, button{
     font-family: "TH Sarabun New","TH SarabunPSK";
     font-size: 14pt;
 }
+input:-moz-read-only{
+  background-color: #bbbbbb;
+}
+
+input:read-only{
+  background-color: #bbbbbb;
+}
+
 .chk_table{
     border-collapse: collapse;
 }

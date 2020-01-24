@@ -5,6 +5,10 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
+
+    // INSERT INTO `43prenatal` (`id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, `D_UPDATE`) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+    // UPDATE `43prenatal` SET `id`=NULL, `HOSPCODE`=NULL, `PID`=NULL, `GRAVIDA`=NULL, `LMP`=NULL, `EDC`=NULL, `VDRL_RESULT`=NULL, `HB_RESULT`=NULL, `HIV_RESULT`=NULL, `DATE_HCT`=NULL, `HCT_RESULT`=NULL, `THALASSEMIA`=NULL, `D_UPDATE`=NULL WHERE (ISNULL(`id`));
     dump($_POST);
     exit;
 }
@@ -84,11 +88,11 @@ if ( $page === 'search' ) {
             <table>
                 <tr>
                     <td style="text-align: right;">รหัสสถานบริการ : </td>
-                    <td><input type="text" name="HOSPCODE" value="11512"></td>
+                    <td><input type="text" name="HOSPCODE" value="11512" readonly></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">ทะเบียนบุคคล : </td>
-                    <td><input type="text" name="PID" value="<?=$item['hn'];?>"></td>
+                    <td><input type="text" name="PID" value="<?=$item['hn'];?>" readonly></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">ครรภ์ที่ : </td>
@@ -96,11 +100,11 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td style="text-align: right;">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
-                    <td><input type="text" name="LMP" id=""></td>
+                    <td><input type="text" name="LMP" id="LMP"></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">วันที่กำหนดคลอด : </td>
-                    <td><input type="text" name="EDC" id=""></td>
+                    <td><input type="text" name="EDC" id="EDC"></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">ผลการตรวจ VDRL_RS : </td>
@@ -152,7 +156,7 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td style="text-align: right;">วันที่ตรวจ HCT</td>
-                    <td><input type="text" name="DATE_HCT" id=""></td>
+                    <td><input type="text" name="DATE_HCT" id="DATE_HCT"></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">ผลการตรวจ HCT</td>
@@ -171,6 +175,14 @@ if ( $page === 'search' ) {
             </table>
         </form>
     </fieldset>
+    <script type="text/javascript">
+        var popup1, popup2, popup3;
+        window.onload = function() {
+            popup1 = new Epoch('popup1','popup',document.getElementById('LMP'),false);
+            popup2 = new Epoch('popup2','popup',document.getElementById('EDC'),false);
+            popup3 = new Epoch('popup2','popup',document.getElementById('DATE_HCT'),false);
+        };
+    </script>
     <?php
 
 }
