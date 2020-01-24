@@ -25,12 +25,23 @@ body, button{
     border: 1px solid black;
     font-size: 16pt;
 }
+a:link {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
 </style>
 <div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a> | <a href="doctor_order_drug3.php">ข้อมูลการจ่ายยาเฉลี่ย 4 เดือนย้อนหลัง</a> | <a href="doctor_order_drug4.php">ข้อมูลการจ่ายยาเฉลี่ย 4 เดือนย้อนหลัง (MED)</a> | <a href="doctor_order_drug5.php">ข้อมูลยาที่มีการจ่ายมูลค่าสูงสุด 10 อันดับ</a>
-</div>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a> | <a href="doctor_order_drug.php">ข้อมูลยา</a> | <a href="doctor_order_drug2.php">ข้อมูลยาที่มีมูลค่าการใช้สูง</a> | <a href="doctor_order_drug3.php">ข้อมูลการจ่ายยาเฉลี่ย 4 เดือนย้อนหลัง</a> | <a href="doctor_order_drug4.php">ข้อมูลการจ่ายยาเฉลี่ย 4 เดือนย้อนหลัง (MED)</a> | <a href="doctor_order_drug5.php">ข้อมูลยาที่มีการจ่ายมูลค่าสูงสุด 10 อันดับ</a></div>
 <div>
-    <h3>ข้อมูลการจ่ายยาเฉลี่ย 4 เดือนย้อนหลัง</h3>
+    <h3>ข้อมูลการจ่ายยาเฉลี่ย 9 เดือนย้อนหลัง</h3>
 </div>
 <table width="100%" border="1" cellpadding="4" cellspacing="0" bordercolor="#000000" class="chk_table">
   <tr>
@@ -57,26 +68,20 @@ body, button{
     <td width="9%" align="center"><strong>เฉลี่ย</strong></td>    
   </tr>
  <?
- $sql = "SELECT CONCAT(a.`yot`,b.`name`) AS `doctor_name`,a.`doctorcode`, b.`name` 
+ $sql = "SELECT CONCAT(a.`yot`,b.`name`) AS `doctor_name`,a.`name` as ptname,a.`doctorcode`, b.`name` 
             FROM `doctor` AS a 
             LEFT JOIN `inputm` AS b ON b.`codedoctor` = a.`doctorcode`
             WHERE a.`status` = 'y'  and b.`status` = 'y'
-            AND ( a.`menucode` = 'ADM' OR a.`menucode` = 'ADMNID' OR a.`menucode` = 'ADMHEM' ) 
-            AND ( 
-                a.`doctorcode` IS NOT NULL 
-                AND a.`doctorcode` != '00000' 
-                AND a.`doctorcode` != '0000' 
-            ) 
             AND ( b.`name` NOT REGEXP '^HD' AND b.`name` NOT REGEXP '^NID' ) 
 			AND ( a.`name` NOT REGEXP '^HD' AND a.`name` NOT REGEXP '^NID' ) 
-			AND a.doctorcode NOT IN ('10212','17321','44155','714','819','41751','40252','61248','61219','61252','61241','61217','1254','907')
-            ORDER BY a.`row_id` ";
-			//echo $sql;
+			AND a.doctorcode IN ('12891','12456','16633','19364','37533','29760','38701','45985')
+            ORDER BY a.`row_id` ";			//echo $sql;
  $query=mysql_query($sql);
  $i=0;
  while($rows=mysql_fetch_array($query)){
  $i++;
  $doctor_code=$rows["doctorcode"];
+ $doctor_id=substr($rows["ptname"],0,5);
  //echo $i."==>".$doctor_code."<br>";
  
 
@@ -121,8 +126,6 @@ $avg7=number_format($avg7,2);
 
 
 
-
-
 $sql8="select * from phardep where doctor like '%$doctor_code%' and `date` >= '2562-11-01 00:00:00' AND `date` <= '2562-11-30 23:59:59' and (ptright like 'R07%' and cashok ='ประกันสังคม') and (an is null || an='') and doctor NOT REGEXP '^HD' group by substring(date,1,10), hn";
 //echo $sql8."<br>";
 $query8=mysql_query($sql8);
@@ -140,7 +143,6 @@ $query81=mysql_query($sql81);
 list($doctor,$sumprice8)=mysql_fetch_array($query81);
 $avg8=$sumprice8/$num8;
 $avg8=number_format($avg8,2);
-
 
 
 $sql9="select * from phardep where doctor like '%$doctor_code%' and `date` >= '2562-12-01 00:00:00' AND `date` <= '2562-12-31 23:59:59' and (ptright like 'R07%' and cashok ='ประกันสังคม') and (an is null || an='') and doctor NOT REGEXP '^HD' group by substring(date,1,10), hn";
