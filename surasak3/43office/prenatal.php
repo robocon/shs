@@ -5,19 +5,52 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
+    $HOSPCODE = input_post('HOSPCODE');
+    $PID = input_post('PID');
+    $GRAVIDA = input_post('GRAVIDA');
+    $LMP = input_post('LMP');
+    $LMP = bc_to_ad($LMP);
 
-    // INSERT INTO `43prenatal` (`id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, `D_UPDATE`) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    $EDC = input_post('EDC');
+    $EDC = bc_to_ad($EDC);
+
+    $VDRL_RESULT = input_post('VDRL_RESULT');
+    $HB_RESULT = input_post('HB_RESULT');
+    $HIV_RESULT = input_post('HIV_RESULT');
+    $DATE_HCT = input_post('DATE_HCT');
+    $DATE_HCT = bc_to_ad($DATE_HCT);
+
+    $HCT_RESULT = input_post('HCT_RESULT');
+    $THALASSAEMIA = input_post('THALASSAEMIA');
+    $D_UPDATE = input_post('D_UPDATE');
+    $PROVIDER = input_post('PROVIDER');
+    $CID = input_post('CID');
+
+    $sql = "INSERT INTO `43prenatal` ( 
+        `id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
+        `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, 
+        `D_UPDATE`,`PROVIDER`,`CID` 
+    ) VALUES ( 
+        NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
+        '$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
+        '$D_UPDATE','$PROVIDER','$CID' 
+    );";
+    $save = $db->insert($sql);
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
+    }
 
     // UPDATE `43prenatal` SET `id`=NULL, `HOSPCODE`=NULL, `PID`=NULL, `GRAVIDA`=NULL, `LMP`=NULL, `EDC`=NULL, `VDRL_RESULT`=NULL, `HB_RESULT`=NULL, `HIV_RESULT`=NULL, `DATE_HCT`=NULL, `HCT_RESULT`=NULL, `THALASSEMIA`=NULL, `D_UPDATE`=NULL WHERE (ISNULL(`id`));
-    dump($_POST);
+    // dump($_POST);
+
+    redirect('prenatal.php', $msg);
     exit;
 }
 
 include 'head.php';
 ?>
-<!-- <div>
-    <h1>แบบบันทึกข้อมูลประวัติตั้งครรภ์ PRENATAL</h1>
-</div> -->
 <fieldset>
     <legend>แฟ้ม : PRENATAL</legend>
     <form action="prenatal.php" method="post">
@@ -74,8 +107,25 @@ if ( $page === 'search' ) {
     $row_id = input_get('id');
     $sql = "SELECT * FROM `opday` WHERE `row_id` = '$row_id' LIMIT 1";
     $db->select($sql);
-    $item = $db->get_item();
+    $user = $db->get_item();
 
+    if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
+        $prefixMd = substr($user['doctor'],0,5);
+        $where = "`name` LIKE '$prefixMd%'";
+
+    }elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) {
+        $prefixMd = $matchs['0'];
+        $where = "`doctorcode` = '$prefixMd'";
+    }
+    $sql = "SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+    $db->select($sql);
+    $dr = $db->get_item();
+    $doctorcode = $dr['doctorcode'];
+
+    $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
+    $db->select($sql);
+    $dr = $db->get_item();
+    
     ?>
     <style type="text/css">
     table td{
@@ -87,12 +137,17 @@ if ( $page === 'search' ) {
         <form action="prenatal.php" method="post">
             <table>
                 <tr>
+                    <td colspan="2"> 
+                    <b>HN : </b><?=$user['hn'];?> <b>ชื่อ-สกุล : </b><?=$user['ptname'];?> <b>วันที่มารับบริการ : </b><?=$user['thidate'];?>
+                    </td>
+                </tr>
+                <tr>
                     <td style="text-align: right;">รหัสสถานบริการ : </td>
                     <td><input type="text" name="HOSPCODE" value="11512" readonly></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">ทะเบียนบุคคล : </td>
-                    <td><input type="text" name="PID" value="<?=$item['hn'];?>" readonly></td>
+                    <td><input type="text" name="PID" value="<?=$user['hn'];?>" readonly></td>
                 </tr>
                 <tr>
                     <td style="text-align: right;">ครรภ์ที่ : </td>
@@ -169,7 +224,10 @@ if ( $page === 'search' ) {
                 <tr>
                     <td colspan="2" style="text-align: center;">
                         <button type="submit">บันทึกข้อมูล</button>
-                        <input type="hidden" name="D_UPDATE">
+                        <input type="hidden" name="CID" value="<?=$user['idcard'];?>">
+                        <input type="hidden" name="PROVIDER" value="<?=$dr['PROVIDER'];?>">
+                        <input type="hidden" name="action" value="save">
+                        <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
                     </td>
                 </tr>
             </table>
