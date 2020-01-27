@@ -27,6 +27,9 @@
                     <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
                     <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
                     <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
+
+                    <!-- EPI
+                    NUTRITION -->
                 </ul>
             </li>
             <li>
@@ -36,6 +39,14 @@
                     <li><a href="reportPrenatal.php"><span>รายงาน PRENATAL</span></a></li>
                     <li><a href="anc.php"><span>บริการฝากครรภ์ ANC</span></a></li>
                     <li><a href="anc_view.php"><span>รายงาน ANC</span></a></li>
+                    <li><a href="labor.php"><span>ประวัติการคลอด LABOR</span></a></li>
+                    <li><a href="reportLabor.php"><span>รายงาน LABOR</span></a></li>
+                    <!-- LABOR
+                    POSNATAL
+                    WOMEN
+                    FP
+
+                    DENTAL -->
                 </ul>
             </li>
         </ul>
@@ -89,6 +100,11 @@ label{
 }
 .warning{
     background-color: yellow;
+}
+
+.txtRight{
+    text-align: right;
+    font-weight: bold;
 }
 
 @media print{

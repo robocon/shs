@@ -26,14 +26,16 @@ if( $action === 'save' ){
     $PROVIDER = input_post('PROVIDER');
     $CID = input_post('CID');
 
+    $opday_id = input_post('opday_id');
+
     $sql = "INSERT INTO `43prenatal` ( 
         `id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
         `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, 
-        `D_UPDATE`,`PROVIDER`,`CID` 
+        `D_UPDATE`,`PROVIDER`,`CID`,`opday_id` 
     ) VALUES ( 
         NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
         '$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
-        '$D_UPDATE','$PROVIDER','$CID' 
+        '$D_UPDATE','$PROVIDER','$CID', '$opday_id' 
     );";
     $save = $db->insert($sql);
 
@@ -142,27 +144,27 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">รหัสสถานบริการ : </td>
+                    <td class="txtRight">รหัสสถานบริการ : </td>
                     <td><input type="text" name="HOSPCODE" value="11512" readonly></td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ทะเบียนบุคคล : </td>
+                    <td class="txtRight">ทะเบียนบุคคล : </td>
                     <td><input type="text" name="PID" value="<?=$user['hn'];?>" readonly></td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ครรภ์ที่ : </td>
+                    <td class="txtRight">ครรภ์ที่ : </td>
                     <td><input type="text" name="GRAVIDA" id="">(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
+                    <td class="txtRight">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
                     <td><input type="text" name="LMP" id="LMP"></td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">วันที่กำหนดคลอด : </td>
+                    <td class="txtRight">วันที่กำหนดคลอด : </td>
                     <td><input type="text" name="EDC" id="EDC"></td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ผลการตรวจ VDRL_RS : </td>
+                    <td class="txtRight">ผลการตรวจ VDRL_RS : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_174`");
@@ -178,7 +180,7 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ผลการตรวจ HB_RS : </td>
+                    <td class="txtRight">ผลการตรวจ HB_RS : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_174`");
@@ -194,7 +196,7 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ผลการตรวจ HIV_RS : </td>
+                    <td class="txtRight">ผลการตรวจ HIV_RS : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_176`");
@@ -210,15 +212,15 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">วันที่ตรวจ HCT</td>
+                    <td class="txtRight">วันที่ตรวจ HCT : </td>
                     <td><input type="text" name="DATE_HCT" id="DATE_HCT"></td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ผลการตรวจ HCT</td>
+                    <td class="txtRight">ผลการตรวจ HCT : </td>
                     <td><input type="text" name="HCT_RESULT" id=""></td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">ผลการตรวจ THALASSAEMIA</td>
+                    <td class="txtRight">ผลการตรวจ THALASSAEMIA : </td>
                     <td><input type="text" name="THALASSAEMIA" id=""></td>
                 </tr>
                 <tr>
@@ -228,6 +230,7 @@ if ( $page === 'search' ) {
                         <input type="hidden" name="PROVIDER" value="<?=$dr['PROVIDER'];?>">
                         <input type="hidden" name="action" value="save">
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
+                        <input type="hidden" name="opday_id" value="<?=$user['row_id'];?>">
                     </td>
                 </tr>
             </table>
