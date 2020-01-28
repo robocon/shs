@@ -630,8 +630,12 @@ window.onload = function(){
 		}
 	}
 
+	/**
+	 * @readme default เป็น false แต่ถ้าเจอ icd10 ตามรายการจะ return เป็น true
+	 */
 	function testRdu6(icd){
-		var icdRdu6 = Array('j020','j039','j040','j20','j02','j03');
+		// var icdRdu6 = Array('j020','j039','j040','j20','j02','j03');
+		var icdRdu6 = Array('J00','J068','J069','J111','J209','J04','J05','J06','J07','J011');
 		var in6test = false;
 		if( icdRdu6.indexOf(icd) > -1 ){
 			in6test = true;
@@ -644,7 +648,7 @@ window.onload = function(){
 	}
 
 	function testRdu6KeyStroke(testText){
-		var res = testText.match(/pharyngitis/g);
+		var res = testText.match(/URI/g);
 		if( res !== null ){
 			notiPharyngitis();
 		}
