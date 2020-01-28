@@ -41,8 +41,10 @@
                     <li><a href="anc_view.php"><span>รายงาน ANC</span></a></li>
                     <li><a href="labor.php"><span>ประวัติการคลอด LABOR</span></a></li>
                     <li><a href="reportLabor.php"><span>รายงาน LABOR</span></a></li>
-                    <!-- LABOR
-                    POSNATAL
+                    <li><a href="postnatal.php"><span>ดูแลมารดาหลังคลอด POSTNATAL</span></a></li>
+                    <li><a href="reportPostnatal.php"><span>รายงาน POSTNATAL</span></a></li>
+                    <!-- 
+                    
                     WOMEN
                     FP
 

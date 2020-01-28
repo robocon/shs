@@ -1,6 +1,6 @@
 <?php 
 include '../bootstrap.php';
-include 'lib/functions.php';
+include 'libs/functions.php';
 
 $db = Mysql::load();
 $action = input_post('action');
@@ -24,8 +24,8 @@ if( $action === 'save' ){
     $BHOSP = input_post('BHOSP');
     $BTYPE = input_post('BTYPE');
     $BDOCTOR = input_post('BDOCTOR');
-    $LBORN = input_post('LBORN');
-    $SBORN = input_post('SBORN');
+    $LBORN = (int) $_POST['LBORN'];
+    $SBORN = (int) $_POST['SBORN'];
     $D_UPDATE = date('YmdHis');
     $CID = input_post('CID');
     $ipcard_id = input_post('ipcard_id');
