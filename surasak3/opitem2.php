@@ -499,11 +499,10 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 			return false;
 			return false;
 		}else if(document.f2.credit[0].checked == true && document.f2.detail_3.value == ''){
-			alert("กรณีที่เลือก เงินสด ให้กรอกจำนวนเงินที่รับด้วยครับ");
+			alert("กรณีที่เลือก เงินสด/ตรวจสุขภาพ ให้กรอกจำนวนเงินที่รับด้วยครับ");
 			document.f2.detail_3.focus();
-			return false;
-		}
-		else if(document.f2.credit[8].checked == true){
+			return false;		
+		}else if(document.f2.credit[8].checked == true){
 			
 			var checkvar = document.f2.elements['detail_2[]'];
 			var r_check = false;
@@ -642,7 +641,7 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 	<TD>จ่ายตรง อปท.</TD>			
 		</TR>
 		<TR>
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ตรวจสุขภาพ' onclick=\"detailhead4.style.display='none';\"></TD>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ตรวจสุขภาพ' onclick=\"document.getElementById('detail2').innerHTML='';detailhead2.style.display='none';document.getElementById('detail4').innerHTML='กรุณาระบุจำนวนเงิน ';detailhead4.style.display='';document.f2.detail_3.focus();\"></TD>
 		 	<TD>ตรวจสุขภาพ</TD>		
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='CHKUP$nPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ตรวจสุขภาพทหารประจำปี$nPrefix</TD>			
@@ -728,11 +727,31 @@ $billno='billno';
 		 $billno=$row->runno;
 		$title = $row->prefix;
  $billno= $billno+1;
-print "<FONT SIZE='3' COLOR='#FF0033'>ถ้าเก็บด้วยใบเสร็จ จะใช้เลขที่ <b>&nbsp;$title$billno &nbsp;</b> ถ้าไม่ถูกต้องให้ทำการเปลี่ยนให้ถูกต้อง</FONT><br>";
+ //ตรวจสุขภาพประจำปีกองทัพบก
+ $billno1='billchkup';
+ $query1 = "SELECT title,prefix,runno, left(startday,10) as startday2 FROM runno WHERE title = '".$billno1."'";
+    $result1 = mysql_query($query1)
+        or die("Query failed");
 
+    for ($i = mysql_num_rows($result1) - 1; $i >= 0; $i--) {
+        if (!mysql_data_seek($result, $i)) {
+            echo "Cannot seek to row $i\n";
+            continue;
+        }
+
+        if(!($row1 = mysql_fetch_object($result1)))
+            continue;
+         }
+
+		 $billnochkup=$row1->runno;
+		$titlechkup = $row1->prefix;
+ $billnochkup= $billnochkup+1;
+print "<FONT SIZE='3' COLOR='#FF0033'>ถ้าเก็บด้วยใบเสร็จ จะใช้เลขที่ <b>&nbsp;$title$billno &nbsp;</b> ถ้าไม่ถูกต้องให้ทำการเปลี่ยนให้ถูกต้อง</FONT><br>";
+print "<FONT SIZE='3' COLOR='#009900'>ตรวจสุขภาพประจำปีกองทัพบก ถ้าเก็บด้วยใบเสร็จ จะใช้เลขที่ <b>&nbsp;$titlechkup$billnochkup &nbsp;</b> ถ้าไม่ถูกต้องให้ทำการเปลี่ยนให้ถูกต้อง</FONT><br>";
 print "<FONT SIZE='3' >แสดงจำนวน row ที่จะพิมพ์ใบเสร็จรวมทั้งหมด <FONT SIZE='8'>$item2</FONT> แถว</FONT><br>";
 
 print "<input name='billcur' type='hidden' value='$title$billno'> ";
+print "<input name='billcurchkup' type='hidden' value='$titlechkup$billnochkup'> ";
 include("unconnect.inc");
 		  if($sPaid > 0){ print "<FONT SIZE='5' COLOR='#FF0033'>บัญชีนี้ได้ทำการบันทึกแล้ว กรุณาตรวจสอบบัญชีก่อนการบันทึก</FONT><br>";};
 		////////

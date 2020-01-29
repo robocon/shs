@@ -13,10 +13,19 @@ color: #FFF;
 <?php
 session_start();
 if(isset($sIdname)){} else {die;} //for security
-
+//echo "-->".$paid."<br>";
+//echo "==>".$sNetprice."<br>";
+$forthaibaht = $paid; // แยกตัวที่จะแสดงผลภาษาไทยออกมาต่างหาก เพราะพอเข้า number_format แล้วจะมี comma(,) เข้าไปด้วยทำให้นับค่าผิด
+$paid=number_format($paid,2);
+$sNetprice=number_format($sNetprice,2);
 if($paid<>$sNetprice){
 	die("จ่ายเงินไม่เท่ากับราคารวม ไม่สามารถออกใบเสร็จรับเงินได้");
 }
+
+//echo "credit-->".$_POST["credit"];
+//echo "billcurchkup-->".$_POST["billcurchkup"];
+//echo "detail_3-->".$_POST["detail_3"];
+//echo "detail_5-->".$_POST["detail_5"];
 
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 $billtime=substr($Thidate,11,5);
@@ -39,6 +48,19 @@ function baht($nArabic){
    $cRead  = "**";
 
 	include("connect.inc");
+ 
+		$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+		$result = mysql_query($query) or die("Query failed");
+		
+		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+			if (!mysql_data_seek($result, $i)) {
+				echo "Cannot seek to row $i\n";
+				continue;
+			}
+				if(!($row = mysql_fetch_object($result)))
+				continue;
+		}
+		$nPrefix=$row->prefix; 
  
  	if($cLtnum <> "0"){
   		$count=0;
@@ -198,7 +220,7 @@ if(empty($credit) ){
 	$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท.")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ")){
 
 	if($_POST["credit"] == "จ่ายตรง" ){
 		$name_f = "billcscd";
@@ -210,7 +232,9 @@ if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเ
 	else if($_POST["credit"] == "ประกันสังคม" ){
 		$name_f = "billcscd";
 	}
-	else{
+	else if($_POST["credit"] == "ตรวจสุขภาพ" ){
+		$name_f = "billchkup";	
+	}else{
 		$name_f = "billno";
 	}
 
@@ -428,7 +452,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			$aSumy = $aSumy+$sEssd+$sNessdy+$sDPY+$sDSY;
 			$aSumn = $aSumn+$sNessdn+$sDPN+$sDSN;
 			
-			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ"|| $_POST["credit"] == "จ่ายตรง อปท.")){
+			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ")){
 
 	/*	if($_POST["credit"] == "จ่ายตรง" ){
 			$name_f = "billcscd";
@@ -450,7 +474,9 @@ if($_POST["credit"] == "จ่ายตรง" ){
 	else if($_POST["credit"] == "ประกันสังคม" ){
 		$name_f = "billcscd";
 	}
-	else{
+	else if($_POST["credit"] == "ตรวจสุขภาพ" ){
+		$name_f = "billchkup";		
+	}else{
 		$name_f = "billno";
 	}
 
@@ -545,7 +571,7 @@ if(!$result){
 }
 else{
 
-	$cbaht=baht($paid);
+	$cbaht=baht($forthaibaht);
 	if($credit=='ทหารไทย'){
 		$credit1='บัตรเครดิต';
 	}
@@ -561,7 +587,11 @@ $current = $_POST["detail_3"]-$_POST['paid'];
 print "<font face='Angsana New' size='5'>รับเงิน ".$_POST["detail_3"]." บาท&nbsp;&nbsp;&nbsp;&nbsp;";
 print "ค่าใช้จ่าย ".$_POST["paid"]." บาท</font><br>";
 print "<font face='Angsana New' size='8' COLOR='#FF0033'>เงินทอน ".$current." บาท</font>";
-print "<font face='Angsana New' size='6' COLOR='#FF0033'>&nbsp;&nbsp;&nbsp;&nbsp;(".$_POST['billcur'].")</font><br>";
+	if($_POST["detail_3"]!="" && $_POST["credit"]=="ตรวจสุขภาพ"){
+	print "<font face='Angsana New' size='6' COLOR='#FF0033'>&nbsp;&nbsp;&nbsp;&nbsp;(".$_POST['billcurchkup'].")</font><br>";
+	}else{
+	print "<font face='Angsana New' size='6' COLOR='#FF0033'>&nbsp;&nbsp;&nbsp;&nbsp;(".$_POST['billcur'].")</font><br>";
+	}
 }
 ?>
 </div>
@@ -940,7 +970,9 @@ print "<td width='20%' align=center><font face='Angsana New'style='line-height:1
 print "<td width='20%'></td>";
 print "</tr>";
 print "<tr>";
+
 print "<td width='20%'><font face='Angsana New'style='line-height:15px; size='2'>ได้รับ $credit (".$_POST["detail_3"].",".$current.")</td>";
+
 $sql = "Select name From inputm where idname = '".$_SESSION["sIdname"]."' limit 1 ";
 $result = Mysql_Query($sql) or die("Query failed 721");
 list($name) = Mysql_fetch_row($result);
