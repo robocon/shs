@@ -171,7 +171,7 @@ if ( $action === 'save' ) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>นำร่องอายุรกรรม</title>
+    <title>อัพโหลดไฟล์ Doctor Order</title>
 </head>
 <body>
 
@@ -226,7 +226,7 @@ if( isset($_SESSION['x-msg']) ){
 }
 ?>
 <div>
-<h3>นำร่องอายุรกรรม(ช่วงทดสอบ)</h3>
+<h3>อัพโหลดไฟล์ Doctor Order</h3>
 </div>
 <fieldset>
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>

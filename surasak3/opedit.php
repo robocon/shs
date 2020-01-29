@@ -79,7 +79,8 @@ else if (document.layers||document.getElementById) {
     session_unregister("cPtright1");
     session_unregister("nVn");  
     session_unregister("cAge");  
-    session_unregister("cNote");  
+    session_unregister("cNote");
+	session_unregister("cNote_vip");  
  	session_unregister("cIdcard"); 
  	session_unregister("cIdguard"); 
     $nRunno="";
@@ -98,7 +99,8 @@ else if (document.layers||document.getElementById) {
     session_register("cPtright1");
     session_register("nVn");  
     session_register("cAge");  
-    session_register("cNote");  
+    session_register("cNote");
+	session_register("cNote_vip");  
  	session_register("cIdcard");  
   	session_register("cIdguard");  
 
@@ -211,6 +213,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cMother =$row->mother;
 		$cCouple =$row->couple;
 		$cNote=$row->note;
+		$cNote_vip=$row->note_vip;
 		$cSex =$row->sex;
 		$cCamp =$row->camp;
 		$cRace=$row->race;
@@ -1081,8 +1084,7 @@ $dis = mysql_fetch_assoc($q);
 <input name="rdo1" type="checkbox" id="rdo2" value="ปส." <? if($cPtright=="R07 ประกันสังคม"){ echo "checked"; }?>> 
 ประกันสังคม  
       รพ.ต้นสังกัด
-<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">
-    </td>
+<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    </td>
     </tr>
   <tr>
     <td align="right" class="fonthead">หมายเหตุ</td>
@@ -1113,6 +1115,12 @@ $dis = mysql_fetch_assoc($q);
     <td class="fonthead">หมายเหตุ</td>
     <td><input type="text" name="note" size="50" value="<?=$cNote;?>" id="note"></td>
     </tr>
+  <tr>
+    <td align="right" class="fonthead">Note VIP</td>
+    <td><input type="text" name="note_vip" size="50" value="<?=$cNote_vip;?>" id="note_vip"></td>
+    <td class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+    </tr>    
 	<?php /* ?>
 	<tr>
 		<td align="right" class="fonthead">สถานะในชุมชน</td>

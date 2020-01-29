@@ -117,6 +117,11 @@ exit();
 $officer_name = trim($_SESSION['sOfficer']);
 $doctor_name = trim($_POST['doctor']);
 
+if( !$_POST['date_appoint'] ){
+	?><p>กรุณาเลือกวันที่นัด <a href="javascript:window.history.back();">คลิกที่นี่</a> เพื่อกลับไปหน้าเลือกวันที่</p><?php
+	exit;
+}
+
 // @todo ยังไม่ได้ทำ lock นัดแบบแบ่งเช้า-บ่าย
 
 // ถ้าเป็น POST ที่ส่งมาจาก preappoi1.php ให้เข้าเงื่อนไขในการตรวจสอบ
@@ -195,7 +200,12 @@ if( empty($_GET['action'])
 			'04 กุมภาพันธ์ 2563' => 0,
 			'05 กุมภาพันธ์ 2563' => 0,
 			'06 กุมภาพันธ์ 2563' => 0,
-			'07 กุมภาพันธ์ 2563' => 0 
+			'07 กุมภาพันธ์ 2563' => 0, 
+
+			'11 กุมภาพันธ์ 2563' => 0,
+			'12 กุมภาพันธ์ 2563' => 0,
+			'13 กุมภาพันธ์ 2563' => 0,
+			'14 กุมภาพันธ์ 2563' => 0,
 		);
 	}elseif( $_POST['doctor'] == 'HD ณรงค์ (ว.12456)' OR $_POST['doctor'] == 'MD007 ณรงค์ ปรีดาอนันทสุข' ){
 		$dr_name = 'แพทย์ ณรงค์ ปรีดาอนันทสุข';
@@ -1033,6 +1043,7 @@ function fncSubmit(strPage)
         <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
         <option selected="selected">ห้อง CT SCAN (ตรวจมวลกระดูก)</option>
         <? } ?>
+		<option>ห้องตรวจเฉพาะโรค</option>
         </select>
       </font><font face="Angsana New" size = '4'><font face="Angsana New"></font></font></font><font face="Angsana New" size = '4'><font face="Angsana New">เวลา<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
 	   

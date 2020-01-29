@@ -15,7 +15,10 @@ session_start();
 if(isset($sIdname)){} else {die;} //for security
 //echo "-->".$paid."<br>";
 //echo "==>".$sNetprice."<br>";
-$forthaibaht = $paid; // แยกตัวที่จะแสดงผลภาษาไทยออกมาต่างหาก เพราะพอเข้า number_format แล้วจะมี comma(,) เข้าไปด้วยทำให้นับค่าผิด
+
+$paid = $_POST['paid'];
+$sNetprice = $_SESSION['sNetprice'];
+
 $paid=number_format($paid,2);
 $sNetprice=number_format($sNetprice,2);
 if($paid<>$sNetprice){
@@ -35,6 +38,7 @@ $hn_now=$_POST['aHn'];
 $money_trust=$_POST['money_trust'];
 //function baht///
 function baht($nArabic){
+	$nArabic = str_replace(',', '', $nArabic);
     $cTarget = Ltrim($nArabic);
     $cLtnum="";
     $x=0;
@@ -571,7 +575,7 @@ if(!$result){
 }
 else{
 
-	$cbaht=baht($forthaibaht);
+	$cbaht=baht($paid);
 	if($credit=='ทหารไทย'){
 		$credit1='บัตรเครดิต';
 	}
