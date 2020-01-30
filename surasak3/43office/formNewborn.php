@@ -10,6 +10,8 @@ if( empty($_SESSION['sIdname']) ){
 $db = Mysql::load();
 $action = input_post('action');
 if($action === 'save'){
+
+    include '../includes/JSON.php';
     
     $motherId = input_post('motherId');
     $mpid = input_post('motherHn');
@@ -64,10 +66,12 @@ if($action === 'save'){
     $health = input_post('health');
     $healthDetail = input_post('healthDetail');
     $pku = input_post('pku');
+    $pku_result = input_post('pku_result');
     $bcgDate = input_post('bcgDate');
     $hbDate = input_post('hbDate');
     $discharge = input_post('discharge');
     $weight_discharge = input_post('weightDischarge');
+    $ipcard_id = input_post('ipcard_id');
 
     $msg = "บันทึกข้อมูลเรียบร้อย";
 
@@ -77,7 +81,7 @@ if($action === 'save'){
         `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
         `D_UPDATE`, `date_visit`, `date_added`, `hn`, `an`, `father`, 
         `father_id`, `mother`, `mother_id`, `lborn`, `head`, `breast`, `apgar5`, 
-        `apgar10`, `disorder`, `disorderDetail`, `health`, `healthDetail`, `pku`, 
+        `apgar10`, `disorder`, `disorderDetail`, `health`, `healthDetail`, `pku`, `pku_result`, 
         `bcgDate`, `hbDate`, `discharge`, `weight_discharge`, `owner`
     ) VALUES (
         NULL, '$hospcode', '$hn', '$mpid', '$garvida', '$ga', 
@@ -85,7 +89,7 @@ if($action === 'save'){
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
         '$d_update', '$date_visit', NOW(), '$hn', '$an', '$father', 
         '$father_id', '$mother', '$motherId', '$lborn', '$head', '$breast', '$apgar5', 
-        '$apgar10', '$disorder', '$disorderDetail', '$health', '$healthDetail', '$pku', 
+        '$apgar10', '$disorder', '$disorderDetail', '$health', '$healthDetail', '$pku', '$pku_result', 
         '$bcgDate', '$hbDate', '$discharge', '$weight_discharge', '$owner' 
     );";
     $save = $db->insert($sql);
@@ -97,14 +101,14 @@ if($action === 'save'){
         `id`, `HOSPCODE`, `PID`, `MPID`, `GRAVIDA`, `GA`, 
         `BDATE`, `BTIME`, `BPLACE`, `BHOSP`, `BIRTHNO`, `BTYPE`, 
         `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
-        `D_UPDATE`,`CID`, `date_visit`, `date_added`, `hn`, `an`, 
+        `D_UPDATE`,`CID`, `date_visit`, `date_added`, `an`, 
         `owner` 
         ) 
     VALUES (
         NULL, '$hospcode', '$hn', '$mpid', '$garvida', '$ga', 
         '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
-        '$d_update', '$idcard', '$date_visit', NOW(), '$hn', '$an', 
+        '$d_update', '$idcard', '$date_visit', NOW(), '$an', 
         '$owner' 
     );";
     $save = $db->insert($sql);
@@ -120,6 +124,29 @@ if($action === 'save'){
         NULL, '$hospcode', '$hn', '$seq', '$bdate', '$bcare', 
         '$hospcode', '$bcareresult', '$food', '$provider', '$d_update',
         '$idcard'
+    );";
+    $save = $db->insert($sql);
+    if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
+    }
+
+
+    $policy_item = array(
+        'HOSPCODE' => $hospcode, 
+        'PID' => $hn, 
+        'BDATE' => $bdate, 
+        'HC' => number_format($head,1)
+    );
+
+    $json = new Services_JSON();
+    $policy_data = $json->encode($policy_item);
+
+    $sql = "INSERT INTO `43policy` ( 
+        `id`, `hospcode`, `policy_id`, `policy_year`, `policy_data`, 
+        `d_update`, `opday_id`, `last_update` 
+    ) VALUES ( 
+        NULL, '$hospcode', '001', '2017', '$policy_data', 
+        '$d_update', '$ipcard_id', NULL 
     );";
     $save = $db->insert($sql);
     if( $save !== true ){
@@ -144,7 +171,7 @@ $gravidaList = array(1 => 1,2,3,4,5,6,7,8,9,10);
     <legend>ค้นหาข้อมูลตาม AN</legend>
     <form action="formNewborn.php" method="post">
         <div>
-            AN : <input type="text" name="an" id="an">
+            AN มารดา : <input type="text" name="an" id="an">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -167,19 +194,19 @@ if( $page === 'searchAn' ){
     $db->select($sql);
 
     if( $db->get_rows() > 0 ){
-        $item = $db->get_item();
+        $ipcard = $db->get_item();
         
-        $hn = $item['hn'];
-        $dcdate = $item['dcdate'];
+        $hn = $ipcard['hn'];
+        list($dcdate, $dctime) = explode(' ', $ipcard['dcdate']);
 
         $db->select("SELECT * FROM `opcard` WHERE `hn`= '$hn'");
         $opcard = $db->get_item();
 
-        if( $opcard['yot'] == 'ด.ช.' ){
-            $sex = '1';
-        }elseif ( $opcard['yot'] == 'ด.ญ.' ) {
-            $sex = '2';
-        }
+        // if( $opcard['yot'] == 'ด.ช.' ){
+        //     $sex = '1';
+        // }elseif ( $opcard['yot'] == 'ด.ญ.' ) {
+        //     $sex = '2';
+        // }
         
         $address = $opcard['address'].' ต.'.$opcard['tambol'].' อ.'.$opcard['ampur'].' จ.'.$opcard['changwat'];
 
@@ -188,10 +215,10 @@ if( $page === 'searchAn' ){
             <legend>ข้อมูลเบื้องต้นวันที่มารับบริการ</legend>
             <table>
                 <tr>
-                    <td><b>AN : </b><?=$item['an'];?> <b>HN : </b><?=$item['hn'];?> <b>ชื่อ-สกุล : </b><?=$item['ptname'];?></td>
+                    <td><b>AN : </b><?=$ipcard['an'];?> <b>HN : </b><?=$ipcard['hn'];?> <b>ชื่อ-สกุล : </b><?=$ipcard['ptname'];?></td>
                 </tr>
                 <tr>
-                    <td><b>วันที่รับบริการ : </b><?=$item['date'];?></td>
+                    <td><b>วันที่รับบริการ : </b><?=$ipcard['date'];?></td>
                 </tr>
             </table>
         </fieldset>
@@ -201,37 +228,44 @@ if( $page === 'searchAn' ){
                 <table>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">ชื่อสกุลบิดา <input type="text" name="father" id="" value="<?=trim($opcard['father']);?>"></span>
-                            <span class="sRow">ID <input type="text" name="fatherId" size="12"></span>
+                            <span class="sRow">ชื่อสกุลบิดา : <input type="text" name="father" id="" value=""></span>
+                            <span class="sRow">ID : <input type="text" name="fatherId" size="12"></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">ชื่อสกุลมารดา <input type="text" name="mother" id="" value="<?=trim($opcard['mother']);?>"></span>
-                            <span class="sRow">ID <input type="text" name="motherId" id="motherId" class="important" size="12"></span>
-                            <button type="button" id="checkMId">ตรวจสอบ</button>
-                            <span class="sRow"> HN มารดา : <input type="text" name="motherHn" id="motherHn"></span>
+                            <span class="sRow">ชื่อสกุลมารดา : <input type="text" name="mother" id="" value="<?=trim($ipcard['ptname']);?>"></span>
+                            <span class="sRow">ID : <input type="text" name="motherId" id="motherId" class="important" size="12" value="<?=$opcard['idcard'];?>"></span>
+                            <input type="hidden" name="motherHn" value="<?=$ipcard['hn'];?>">
+                            <!-- <button type="button" id="checkMId">ตรวจสอบ</button> -->
+                            <!-- <span class="sRow"> HN มารดา : <input type="text" name="motherHn" id="motherHn"></span> -->
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">บันทึกทารกแรกเกิด <input type="radio" name="prefix" id="prefix1" value="ด.ช." <?=($sex==1?'checked="checked"':'');?> > <label for="prefix1">ด.ช.</label> 
+                            <span class="sRow">บันทึกทารกแรกเกิด : <input type="radio" name="prefix" id="prefix1" value="ด.ช." <?=($sex==1?'checked="checked"':'');?> > <label for="prefix1">ด.ช.</label> 
                             <input type="radio" name="prefix" id="prefix2" value="ด.ญ." <?=($sex==2?'checked="checked"':'');?>> <label for="prefix2">ด.ญ.</label></span>
 
-                            <span class="sRow">ชื่อ-สกุล <input type="text" name="name" id="" value="<?=$opcard['name'].' '.$opcard['surname'];?>"></span>
-                            <span class="sRow">ID <input type="text" name="idcard" id="" size="12" value="<?=$opcard['idcard'];?>"></span>
+                            <span class="sRow">ชื่อ-สกุล : <input type="text" name="name" id="name"></span>
+                            <span class="sRow">ID : <input type="text" name="idcard" id="idcard" size="12"></span>
+
+                            HN : <input type="text" name="findHN" id="findHN" size="6"> <button type="button" id="checkMId">ตรวจสอบจากHN</button>
+
+                            <input type="hidden"  name="hn" id="hn" value="">
+                            <input type="hidden" name="an" id="ptAN" value="">
+                            <input type="hidden" name="sex" id="sex" value="">
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">ที่อยู่ <input type="text" name="address" id="" value="<?=$address;?>" size="40"></span>
-                            <span class="sRow">เบอร์โทรที่ติดต่อได้ <input type="text" name="phone" id="" value="<?=$opcard['phone'];?>"></span>
+                            <span class="sRow">ที่อยู่ : <input type="text" name="address" id="" value="<?=$address;?>" size="40"></span>
+                            <span class="sRow">เบอร์โทรที่ติดต่อได้ : <input type="text" name="phone" id="" value="<?=$opcard['phone'];?>"></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">วดป.เกิด <input type="text" name="dateBorn" class="important" id="dateBorn" value="<?=$opcard['dbirth'];?>"></span>
-                            <span class="sRow">เวลา <input type="text" name="timeBorn" class="important" id="" size="10"> น.</span>
+                            <span class="sRow">วดป.เกิด : <input type="text" name="dateBorn" class="important" id="dateBorn" value=""></span>
+                            <span class="sRow">เวลา : <input type="text" name="timeBorn" class="important" id="" size="10"> น.</span>
                         </td>
                     </tr>
                 </table>
@@ -242,7 +276,7 @@ if( $page === 'searchAn' ){
                     <tr>
                         <td class="tdRow">
                             <!-- LABOR -->
-                            <span class="sRow">ครรภ์ที่ <select name="gravida">
+                            <span class="sRow">ครรภ์ที่ : <select name="gravida">
                             <?php 
                                 foreach ($gravidaList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -250,10 +284,10 @@ if( $page === 'searchAn' ){
                             ?>
                             </select></span>
                             
-                            <span class="sRow">อายุครรภ์ <input type="text" name="ga" class="important" size="3">สัปดาห์</span>
+                            <span class="sRow">อายุครรภ์ : <input type="text" name="ga" class="important" size="3">สัปดาห์</span>
 
                             <!-- LABOR -->
-                            <span class="sRow">คนที่ <select name="lborn" id="">
+                            <span class="sRow">คนที่ : <select name="lborn" id="">
                             <?php 
                                 foreach ($gravidaList as $key => $value) {
                                     ?><option value="<?=$key;?>"><?=$value;?></option><?php
@@ -262,7 +296,7 @@ if( $page === 'searchAn' ){
                             </select></span>
 
                             <!-- LABOR -->
-                            <span class="sRow">สถานที่ <select name="bplace" id="">
+                            <span class="sRow">สถานที่ : <select name="bplace" id="">
                             <?php 
                             $db->select("SELECT * FROM `f43_labor_182_newborn_187`");
                             $bdoctorLists = $db->get_items();
@@ -280,7 +314,7 @@ if( $page === 'searchAn' ){
                         <td class="tdRow">
                             <!-- LABOR -->
                             <span class="sRow">
-                                วิธีการคลอด <select name="btype" id="">
+                                วิธีการคลอด : <select name="btype" id="">
                                     <?php 
                                     $db->select("SELECT * FROM `f43_labor_184_newborn_190`");
                                     $bdoctorLists = $db->get_items();
@@ -294,7 +328,7 @@ if( $page === 'searchAn' ){
                             </span>
 
                             <span class="sRow">
-                                ประเภทผู้ทำคลอด <select name="bdoctor" id="">
+                                ประเภทผู้ทำคลอด : <select name="bdoctor" id="">
                                 <?php 
                                 $db->select("SELECT * FROM `f43_labor_185_newborn_191`");
                                 $bdoctorLists = $db->get_items();
@@ -310,16 +344,16 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">น้ำหนักแรกเกิด <input type="text" name="weight" id="" size="5" class="important">กรัม </span>
-                            <span class="sRow">ความยาว <input type="text" name="height" id="" size="5" class="important">ซม. </span>
-                            <span class="sRow">เส้นรอบศรีษะ <input type="text" name="head" id="" size="5" class="important">ซม. </span>
-                            <span class="sRow">เส้นรอบอก <input type="text" name="breast" id="" size="5">ซม. </span>
+                            <span class="sRow">น้ำหนักแรกเกิด : <input type="text" name="weight" id="" size="5" class="important">กรัม </span>
+                            <span class="sRow">ความยาว : <input type="text" name="height" id="" size="5" class="important">ซม. </span>
+                            <span class="sRow">เส้นรอบศรีษะ : <input type="text" name="head" id="" size="5" class="important">ซม. </span>
+                            <span class="sRow">เส้นรอบอก : <input type="text" name="breast" id="" size="5">ซม. </span>
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
 
-                            <span class="sRow">APGAR SCORE</span>
+                            <span class="sRow">APGAR SCORE : </span>
                             
                             <span class="sRow">(1นาที) <select name="asphyxia" id="" class="important">
                                 <?php 
@@ -352,21 +386,21 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            ความผิดปกติแต่กำเนิด<span style="color: red;">*</span> <input type="radio" name="disorder" id="disorder1" value="1"><label for="disorder1">ไม่มี</label> 
+                            ความผิดปกติแต่กำเนิด : <span style="color: red;">*</span> <input type="radio" name="disorder" id="disorder1" value="1"><label for="disorder1">ไม่มี</label> 
                             <input type="radio" name="disorder" id="disorder2" value="2"><label for="disorder2">มี</label> 
                             ระบุ <input type="text" name="disorderDetail" id="">
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            สภาวะสุขภาพแรกเกิด <input type="radio" name="health" id="health1" value="แข็งแรงดี"><label for="health1">แข็งแรงดี</label> 
+                            สภาวะสุขภาพแรกเกิด : <input type="radio" name="health" id="health1" value="แข็งแรงดี"><label for="health1">แข็งแรงดี</label> 
                             <input type="radio" name="health" id="health2" value="ผิดปกติ"><label for="health2">ผิดปกติ</label> 
                             ระบุ <input type="text" name="healthDetail" id="">
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">ลำดับที่ของทารก <select name="birthNo" class="important">
+                            <span class="sRow">ลำดับที่ของทารก : <select name="birthNo" class="important">
                             <?php 
                             $db->select("SELECT * FROM `f43_newborn_18_pp`");
                             $bdoctorLists = $db->get_items();
@@ -378,7 +412,7 @@ if( $page === 'searchAn' ){
                             ?>
                             </select></span>
 
-                            <span class="sRow">อาหารที่รับประทาน <select name="food" class="important">
+                            <span class="sRow">อาหารที่รับประทาน : <select name="food" class="important">
                             <?php 
                             $db->select("SELECT * FROM `f43_newborncare_197`");
                             $bdoctorLists = $db->get_items();
@@ -393,41 +427,47 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            ได้รับ VIT K หรือไม่<span style="color: red;">*</span> 
-                            <select name="vitk" class="important">
+                            ได้รับ VIT K หรือไม่<span style="color: red;">*</span> : 
+
                             <?php 
                             $db->select("SELECT * FROM `f43_newborn_193`");
-                            $bdoctorLists = $db->get_items();
-                            foreach ($bdoctorLists as $key => $bdoc) {
+                            $hivLists = $db->get_items();
+                            $i = 1;
+                            foreach ($hivLists as $key => $item) {
                                 ?>
-                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                <input type="radio" name="vitk" id="vitk<?=$i;?>" value="<?=$item['code'];?>"><label for="vitk<?=$i;?>"><?=$item['detail'];?></label>
                                 <?php
+                                $i++;
                             }
                             ?>
-                            </select>
+
                         </td>
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">ได้รับการตรวจ TSH หรือไม่<span style="color: red;">*</span> 
-                                <select name="tsh" class="important">
+                            <span class="sRow">ได้รับการตรวจ TSH หรือไม่<span style="color: red;">*</span> : 
+                                
                                 <?php 
                                 $db->select("SELECT * FROM `f43_newborn_194`");
-                                $bdoctorLists = $db->get_items();
-                                foreach ($bdoctorLists as $key => $bdoc) {
+                                $hivLists = $db->get_items();
+                                $i = 1;
+                                foreach ($hivLists as $key => $item) {
                                     ?>
-                                    <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
+                                    <input type="radio" name="tsh" id="tsh<?=$i;?>" value="<?=$item['code'];?>"><label for="tsh<?=$i;?>"><?=$item['detail'];?></label>
                                     <?php
+                                    $i++;
                                 }
                                 ?>
-                                </select>
+
                             </span>
                             <span class="sRow">ผลการตรวจไทรอยด์ <input type="text" name="thyroidResult" id="" size="5" class="important">mU/L</span>
                         </td>
                     </tr>
                     <tr>
-                        <td class="tdRow">การตรวจPKU <input type="radio" name="pku" id="pku1" value="ปกติ"><label for="pku1">ปกติ</label> 
+                        <td class="tdRow">การตรวจPKU : 
+                            <input type="radio" name="pku" id="pku1" value="ปกติ"><label for="pku1">ปกติ</label> 
                             <input type="radio" name="pku" id="pku2" value="ผิดปกติ"><label for="pku2">ผิดปกติ</label>
+                            ระบุ <input type="text" name="pku_result" id="">
                         </td>
                     </tr>
                     <tr>
@@ -456,11 +496,11 @@ if( $page === 'searchAn' ){
             // $db->select($sql);
             // $dr = $db->get_item();
 
-            if( preg_match('/MD\d+/', $item['doctor']) > 0 ){
-                $prefixMd = substr($item['doctor'],0,5);
+            if( preg_match('/MD\d+/', $ipcard['doctor']) > 0 ){
+                $prefixMd = substr($ipcard['doctor'],0,5);
                 $where = "`name` LIKE '$prefixMd%'";
         
-            }elseif ( preg_match('/(\d+){4,5}/', $item['doctor'], $matchs) ) {
+            }elseif ( preg_match('/(\d+){4,5}/', $ipcard['doctor'], $matchs) ) {
                 $prefixMd = $matchs['0'];
                 $where = "`doctorcode` = '$prefixMd'";
             }
@@ -478,12 +518,11 @@ if( $page === 'searchAn' ){
                 <div>&nbsp;</div>
                 <button type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
-                <input type="hidden" name="sex" value="<?=$sex;?>">
-                <input type="hidden" name="hn" value="<?=$item['hn'];?>">
-                <input type="hidden" name="an" value="<?=$item['an'];?>">
-
+                
                 <input type="hidden" name="provider" value="<?=$dr['PROVIDER'];?>">
-                <input type="hidden" name="date_visit" value="<?=$item['date'];?>">
+                <input type="hidden" name="date_visit" value="<?=$ipcard['date'];?>">
+
+                <input type="hidden" name="ipcard_id" value="<?=$ipcard['row_id'];?>">
             </div>
         </form>
         <script type="text/javascript">
@@ -499,24 +538,42 @@ if( $page === 'searchAn' ){
         include 'assets/ajax.php';
         ?>
         <script>
-        const btnMId = document.getElementById("checkMId");
+        var btnMId = document.getElementById("checkMId");
         btnMId.addEventListener('click', function(event) {
 
             event.preventDefault();
 
-            const motherId = document.getElementById("motherId").value;
+            var findHn = document.getElementById("findHN").value;
             var newSm = new SmHttp();
             newSm.ajax(
                 'checkMId.php', 
-                { 'idcard': motherId }, 
+                { 'hn': findHn }, 
                 function(res){
                     var txt = JSON.parse(res);
-                    console.log(txt);
+                    
                     if( txt.findStatus === 404 ){
-                        alert("ไม่พบข้อมูลมารดาในระบบโรงพยาบาล");
+                        alert("ไม่พบข้อมูลทารกในระบบโรงพยาบาล");
 
                     }else if( txt.findStatus === 200 ){
-                        document.getElementById("motherHn").value = txt.hn;
+                        
+                        if (txt.yot === 'ด.ช.') {
+                            document.getElementById("prefix1").checked = true;
+                            document.getElementById("sex").value = 1;
+                            
+                        }else if(txt.yot === 'ด.ญ.'){
+                            document.getElementById("prefix2").checked = true;
+                            document.getElementById("sex").value = 2;
+                        }
+
+                        document.getElementById("idcard").value = txt.idcard;
+                        document.getElementById("name").value = txt.ptname;
+
+                        document.getElementById("hn").value = txt.hn;
+                        document.getElementById("ptAN").value = txt.an;
+
+                        document.getElementById("dateBorn").value = txt.dbirth;
+                        
+                        
                     }
                 }
             );

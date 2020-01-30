@@ -2,6 +2,8 @@
 include '../bootstrap.php';
 include 'libs/functions.php';
 
+$db = Mysql::load();
+
 $action = input_post('action');
 if( $action === 'save' ){
 
@@ -36,6 +38,8 @@ if( $action === 'save' ){
     redirect('formNewborncare.php', $msg);
     exit;
 }
+
+include 'head.php';
 ?>
 
 <fieldset>
@@ -52,12 +56,12 @@ if( $action === 'save' ){
 </fieldset>
 
 <?php 
-include 'head.php';
+
 $page = input('page');
 if ($page === 'searchHn') {
 
     $hn = input_post('hn');
-    $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`diag`,`doctor` FROM `opday` WHERE `hn` = '$hn' ORDER BY `thidate` DESC";
+    $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`diag`,`doctor`,`toborow` FROM `opday` WHERE `hn` = '$hn' ORDER BY `thidate` DESC";
     $db->select($sql);
     $itemPop = $items = $db->get_items();
 
@@ -79,6 +83,7 @@ if ($page === 'searchHn') {
             <th>วันที่มารับบริการ</th>
             <th>Diag</th>
             <th>แพทย์</th>
+            <th>เพื่อ</th>
             <th>จัดการข้อมูล</th>
         </tr>
     
@@ -89,6 +94,7 @@ if ($page === 'searchHn') {
             <td><?=$item['thidate'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['doctor'];?></td>
+            <td><?=$item['toborow'];?></td>
             <td>
                 <a href="formNewborncare.php?opdId=<?=$item['row_id'];?>&page=form">ลงข้อมูล</a>
             </td>

@@ -23,6 +23,7 @@ window.onload = function() {
 </script>
 
 <?php 
+dump($_POST);
 $view = input_post('view');
 if ( $view === 'search' ) {
     
@@ -33,6 +34,7 @@ if ( $view === 'search' ) {
     $date = str_replace('-', '', $date);
 
     $sql = "SELECT * FROM `43newborn` WHERE `D_UPDATE` LIKE '$date%' ";
+    dump($sql);
     $db->select($sql);
     if ( $db->get_rows() > 0 ) {
         
