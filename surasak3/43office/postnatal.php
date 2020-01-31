@@ -19,6 +19,12 @@ if( $action === 'save' ){
     $CID = input_post('CID');
     $opday_id = input_post('opday_id');
 
+    $BDATE = bc_to_ad($BDATE);
+    $BDATE = str_replace('-','', $BDATE);
+
+    $PPCARE = bc_to_ad($PPCARE);
+    $PPCARE = str_replace('-','', $PPCARE);
+
     $sql = "INSERT INTO `43postnatal` ( 
         `id`, `HOSPCODE`, `PID`, `SEQ`, `GRAVIDA`, `BDATE`, 
         `PPCARE`, `PPPLACE`, `PPRESULT`, `PROVIDER`, `D_UPDATE`, `CID`, 

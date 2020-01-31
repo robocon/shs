@@ -12,12 +12,15 @@ if( $action === 'save' ){
 
     $LMP = input_post('LMP');
     $LMP = bc_to_ad($LMP);
+    $LMP = str_replace('-','', $LMP);
 
     $EDC = input_post('EDC');
     $EDC = bc_to_ad($EDC);
+    $EDC = str_replace('-','', $EDC);
 
     $BDATE = input_post('BDATE');
     $BDATE = bc_to_ad($BDATE);
+    $BDATE = str_replace('-','', $BDATE);
 
     $BRESULT = input_post('BRESULT');
     $BPLACE = input_post('BPLACE');

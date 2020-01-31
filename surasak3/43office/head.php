@@ -27,7 +27,7 @@
                     <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
                     <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
                     <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
-
+                    <li><a href="reportPolicy.php"><span>รายงานเส้นรอบศรีษะ</span></a></li>
                     <!-- EPI
                     NUTRITION -->
                 </ul>

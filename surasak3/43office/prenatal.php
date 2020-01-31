@@ -10,15 +10,19 @@ if( $action === 'save' ){
     $GRAVIDA = input_post('GRAVIDA');
     $LMP = input_post('LMP');
     $LMP = bc_to_ad($LMP);
+    $LMP = str_replace('-','', $LMP);
 
     $EDC = input_post('EDC');
     $EDC = bc_to_ad($EDC);
+    $EDC = str_replace('-','', $EDC);
 
     $VDRL_RESULT = input_post('VDRL_RESULT');
     $HB_RESULT = input_post('HB_RESULT');
     $HIV_RESULT = input_post('HIV_RESULT');
+
     $DATE_HCT = input_post('DATE_HCT');
     $DATE_HCT = bc_to_ad($DATE_HCT);
+    $DATE_HCT = str_replace('-','', $DATE_HCT);
 
     $HCT_RESULT = input_post('HCT_RESULT');
     $THALASSAEMIA = input_post('THALASSAEMIA');

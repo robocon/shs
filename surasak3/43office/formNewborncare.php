@@ -7,26 +7,32 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
-    $bcareresult = input_post('bcareresult');
-    $food = input_post('food');
-    $hospcode = '11512';
-    $pid = input_post('PID');
-    $seq = input_post('SEQ');
-    $bdate = input_post('BDATE');
-    $bcare = input_post('BCARE');
-    $bcplace = input_post('BCPLACE');
-    $provider = input_post('PROVIDER');
-    $d_update = input_post('D_UPDATE');
-    $cid = input_post('CID');
+    $HOSPCODE = '11512';
+    $PID = input_post('PID');
+    $SEQ = input_post('SEQ');
+    $BDATE = input_post('BDATE');
+    $BCARE = input_post('BCARE');
+    $BCPLACE = input_post('BCPLACE');
+    $BCARERESULT = input_post('BCARERESULT');
+    $FOOD = input_post('FOOD');
+    $PROVIDER = input_post('PROVIDER');
+    $D_UPDATE = input_post('D_UPDATE');
+    $CID = input_post('CID');
+
+    $bdate = bc_to_ad($BDATE);
+    $bdate = str_replace('-','', $bdate);
+
+    $bcare = bc_to_ad($BCARE);
+    $bcare = str_replace('-','', $bcare);
 
     $sql = "INSERT INTO `43newborncare` (
         `id`, `HOSPCODE`, `PID`, `SEQ`, `BDATE`, `BCARE`, 
         `BCPLACE`, `BCARERESULT`, `FOOD`, `PROVIDER`, `D_UPDATE`,
         `CID`
     ) VALUES (
-        NULL, '$hospcode', '$pid', '$seq', '$bdate', '$bcare', 
-        '$hospcode', '$bcareresult', '$food', '$provider', '$d_update',
-        '$cid'
+        NULL, '$HOSPCODE', '$PID', '$SEQ', '$bdate', '$bcare', 
+        '$BCPLACE', '$BCARERESULT', '$FOOD', '$PROVIDER', '$D_UPDATE',
+        '$CID'
     );";
 
     $save = $db->insert($sql);
@@ -116,8 +122,8 @@ if ($page === 'searchHn') {
     $db->select("SELECT `dbirth`,`idcard` FROM `opcard` WHERE `hn` = '$hn' ");
     $opcard = $db->get_item();
     $idcard = $opcard['idcard'];
-    $bdate = bc_to_ad($opcard['dbirth']);
-    $bdate = str_replace('-','', $bdate);
+    // $bdate = bc_to_ad($opcard['dbirth']);
+    // $bdate = str_replace('-','', $bdate);
 
     $seq = genSEQ(date('Ymd'),$hn);
 
@@ -130,12 +136,6 @@ if ($page === 'searchHn') {
         $prefixMd = $matchs['0'];
         $where = "`doctorcode` = '$prefixMd'";
     }
-
-    // $sql = "SELECT b.`PROVIDER` 
-    // FROM ( 
-    //     SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where 
-    // ) AS a 
-    // LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
     
     $sql = "SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
     $db->select($sql);
@@ -146,70 +146,129 @@ if ($page === 'searchHn') {
     $db->select($sql);
     $dr = $db->get_item();
     ?>
+    <style>
+        table tr{
+            vertical-align: top;
+        }
+    </style>
     <fieldset>
         <legend>บันทึกข้อมูลการดูแลทารกหลังคลอด</legend>
         <form action="formNewborncare.php" method="post">
             <table>
                 <tr>
-                    <td class="tdRow">
-                        <b>HN : </b><?=$item['hn'];?> <b>ชื่อ-สกุล : </b><?=$item['ptname'];?> <b>วันที่มารับบริการ : </b><?=$item['thidate'];?>
+                    <td colspan="2">
+                        <b>ชื่อ-สกุล : </b><?=$item['ptname'];?> <b>วันที่มารับบริการ : </b><?=$item['thidate'];?>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tdRow">
-                        เลขบัตรประชาชน <input type="text" name="idcard" class="important" value="<?=$idcard;?>">
-                    </td>
+                    <td class="txtRight">ทะเบียนบุคคลเด็ก : </td>
+                    <td><input type="text" name="PID" value="<?=$item['hn'];?>"></td>
                 </tr>
                 <tr>
-                    <td class="tdRow">
-                        <span class="sRow">ผลการตรวจทารกหลังคลอด <select name="bcareresult" class="important">
-                            <?php 
-                            $db->select("SELECT * FROM `f43_newborncare_196`");
-                            $bdoctorLists = $db->get_items();
-                            foreach ($bdoctorLists as $key => $bdoc) {
-                                ?>
-                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
-                                <?php
-                            }
-                            ?>
-                            </select>
-                        </span>
-                    </td>
+                    <td class="txtRight">เลขบัตรประชาชน : </td>
+                    <td><input type="text" name="CID" value="<?=$idcard;?>"></td>
                 </tr>
                 <tr>
-                    <td class="tdRow">
-                        <span class="sRow">อาหารที่รับประทาน <select name="food" class="important">
-                            <?php 
-                            $db->select("SELECT * FROM `f43_newborncare_197`");
-                            $bdoctorLists = $db->get_items();
-                            foreach ($bdoctorLists as $key => $bdoc) {
-                                ?>
-                                <option value="<?=$bdoc['code'];?>"><?=$bdoc['detail'];?></option>
-                                <?php
-                            }
-                            ?>
-                            </select>
-                        </span>
-                    </td>
+                    <td class="txtRight">ลำดับที่ : </td>
+                    <td><input type="text" name="SEQ" value="<?=$seq;?>" readonly></td>
                 </tr>
                 <tr>
+                    <td class="txtRight">วันที่คลอด : </td>
+                    <td><input type="text" name="BDATE" id="BDATE" value="<?=$opcard['dbirth'];?>"></td>
+                </tr>
+                <tr>
+                    <td class="txtRight">วันที่ดูแลลูก : </td>
                     <td>
+                        <input type="text" name="BCARE" id="BCARE" value="<?=$opcard['thidate'];?>">
+                        <div style="font-size:16px;">หมายเหตุ : กรณีที่บันทึกข้อมูลย้อนหลัง ให้เปลี่ยนวันกลับเป็นวันที่รับบริการจริง</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="txtRight">ผลการตรวจทารกหลังคลอด : </td>
+                    <td>
+                        <?php 
+                        $db->select("SELECT * FROM `f43_newborncare_196`");
+                        $hivLists = $db->get_items();
+                        $i = 1;
+                        foreach ($hivLists as $key => $list) {
+                            $selected = ( $list['code'] == $item['BCARERESULT'] ) ? 'checked="checked"' : '' ;
+                            ?>
+                            <input type="radio" name="BCARERESULT" id="bcareresult<?=$i;?>" value="<?=$list['code'];?>" <?=$selected;?> ><label for="bcareresult<?=$i;?>"><?=$list['detail'];?></label>
+                            <?php
+                            $i++;
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="txtRight">อาหารที่รับประทาน</td>
+                    <td>
+                        <?php 
+                        $db->select("SELECT * FROM `f43_newborncare_197`");
+                        $hivLists = $db->get_items();
+                        $i = 1;
+                        foreach ($hivLists as $key => $list) { 
+                            $selected = ( $list['code'] == $item['FOOD'] ) ? 'checked="checked"' : '' ;
+                            ?>
+                            <input type="radio" name="FOOD" id="food<?=$i;?>" value="<?=$list['code'];?>" <?=$selected;?> ><label for="food<?=$i;?>"><?=$list['detail'];?></label>
+                            <?php
+                            $i++;
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="txtRight">เลขที่ผู้ให้บริการ : </td>
+                    <td>
+                        <?php 
+                        if( empty($item['doctor']) ){ 
+                            $db->select("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` ORDER BY `ROW_ID` ");
+                            $providerLists = $db->get_items();
+                            ?>
+                            <select name="PROVIDER" id="">
+                                <option value="">กรุณาเลือกผู้ให้บริการ</option>
+                                <?php 
+                                foreach ($providerLists as $key => $pv) {
+                                    
+                                    $dr_no = '';
+                                    if( $pv['REGISTERNO'] ){
+                                        $dr_no = '('.$pv['REGISTERNO'].')';
+                                    }
+                                
+                                ?>
+                                <option value="<?=$pv['PROVIDER'];?>"><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                            <?php
+                        }else{
+                            ?>
+                            <input type="text" name="PROVIDER" value="<?=$dr['PROVIDER'];?>" readonly>
+                            <?php
+                        }
+                        ?>
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
                         <button type="submit">บันทึก</button>
-                        <input type="hidden" name="PID" value="<?=$hn;?>">
-                        <input type="hidden" name="SEQ" value="<?=$seq;?>">
-                        <input type="hidden" name="BDATE" value="bdate">
-                        <input type="hidden" name="BCARE" value="<?=date('Ymd');?>">
                         <input type="hidden" name="BCPLACE" value="11512">
-                        <input type="hidden" name="PROVIDER" value="<?=$dr['PROVIDER'];?>">
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
-                        <input type="hidden" name="CID" value="<?=$idcard;?>">
-
                         <input type="hidden" name="action" value="save">
                     </td>
                 </tr>
             </table>
         </form>
     </fieldset>
+    <script type="text/javascript">
+        var popup1,popup2;
+        window.onload = function() {
+            popup1 = new Epoch('popup1','popup',document.getElementById('BCARE'),false);
+            popup2 = new Epoch('popup2','popup',document.getElementById('BDATE'),false);
+        };
+    </script>
     <?php
 
 }

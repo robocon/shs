@@ -88,7 +88,7 @@ if ( $view === 'search' ) {
                 <td class="warning"><?=$item['TSH'];?></td>
                 <td class="warning"><?=$item['TSHRESULT'];?></td>
                 <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td><a href="editFormNewborn.php?id=<?=$id;?>">·°È‰¢</a></td>
+                <td><a href="editFormNewborn.php?id=<?=$id;?>" target="_blank">·°È‰¢</a></td>
             </tr>
             <?php
         }

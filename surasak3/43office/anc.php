@@ -167,24 +167,31 @@ if( $page === 'search' ){
 	input[readonly]{
 		background-color: #bbbbbb;
 	}
+	
+	table tr{
+		vertical-align: top;
+	}
+    
 	</style>
 	<h3>กรุณากรอกข้อมูลในช่องด้านล่าง แฟ้ม anc</h3>
 	<form action="anc.php" method="post" name="formdeath2">
 		<table width="100%">
 			<tr>
-				<td colspan="2">
-					HN : <input name="nHn" type="text" value="<?=$result['hn']?>" readonly="readonly"><br />
-					ชื่อ : <?=$result['ptname']?>
-				</td>
+				<td width="15%" class="txtRight">HN : </td>
+				<td width="85%"><input name="nHn" type="text" value="<?=$result['hn']?>" readonly="readonly"></td>
 			</tr>
 			<tr>
-				<td width="15%">เลขที่บัตรปชช. : </td>
-				<td width="85%">
+				<td class="txtRight">ชื่อ : </td>
+				<td><?=$result['ptname']?></td>
+			</tr>
+			<tr>
+				<td class="txtRight">เลขที่บัตรปชช. : </td>
+				<td>
 					<input name="idcard" type="text" value="<?=$result2['idcard']?>" readonly="readonly"/>
 				</td>
 			</tr>
 			<tr>
-				<td>ลำดับที่ :</td>
+				<td class="txtRight">ลำดับที่ : </td>
 				<td>
 					<?php 
 					$thidate = bc_to_ad($result['thidate']);
@@ -196,36 +203,49 @@ if( $page === 'search' ){
 				</td>
 			</tr>
 			<tr>
-				<td>วันที่รับบริการ :</td>
+				<td class="txtRight">วันที่รับบริการ : </td>
 				<td><input name="dserv" type="text" id="dserv" value="<?="$dserv"?>" readonly="readonly"/></td>
 			</tr>
 			<tr>
-				<td>ครรภ์ที่ :</td>
+				<td class="txtRight">ครรภ์ที่ : </td>
 				<td><input type="text" name="grav" id="grav" />(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
 			</tr>
 			<tr>
-				<td>ANC ช่วงที่ :</td>
+				<td class="txtRight">ANC ช่วงที่ :</td>
 				<td>
+					<?php 
+					$db->select("SELECT * FROM `f43_anc_178`");
+					$ancLists = $db->get_items();
+					?>
 					<select name="ancno">
-						<option value="1">การนัดช่วงที่ 1 เมื่ออายุครรภ์ &lt;12 สัปดาห์</option>
-						<option value="1">การนัดช่วงที่ 2 เมื่ออายุครรภ์ &ge;12 และ &lt;18 สัปดาห์</option>
-						<option value="1">การนัดช่วงที่ 3 เมื่ออายุครรภ์ &ge;18 และ &lt;26 สัปดาห์</option>
-						<option value="1">การนัดช่วงที่ 4 เมื่ออายุครรภ์ &ge;26 และ &lt;32 สัปดาห์</option>
-						<option value="1">การนัดช่วงที่ 5 เมื่ออายุครรภ์ &ge;32 และ &lt;38 สัปดาห์</option>
+						<?php
+						foreach ($ancLists as $key => $value) {
+							?><option value="<?=$value['code'];?>"><?=$value['detail'];?></option><?php
+						}
+						?>
 					</select><br>
 					* หมายเหตุ : กรณีอายุครรภ์ไม่อยู่ในช่วงของการฝากครรภ์ให้บันทึกเฉพาะอายุครรภ์ บันทึกช่วงครรภ์ กรณีมาตรงช่วงการนัดฝากครรภ์เท่านั้น
 				</td>
 			</tr>
 			<tr>
-				<td>อายุครรภ์ (สัปดาห์) : </td>
+				<td class="txtRight">อายุครรภ์ (สัปดาห์) : </td>
 				<td><input type="text" name="ga" id="ga" />(จำนวนเต็ม)</td>
 			</tr>
 			<tr>
-				<td>ผลการตรวจ : </td>
+				<td class="txtRight">ผลการตรวจ : </td>
 				<td>
-					<input type="radio" name="ancres" id="ancres1" value="1" /> <label class="radio" for="ancres1">ปกติ</label> 
-					<input type="radio" name="ancres" id="ancres2" value="2" /> <label class="radio" for="ancres2">ผิดปกติ</label> 
-					<input type="radio" name="ancres" id="ancres9" value="9" /> <label class="radio" for="ancres9">ไม่ทราบ</label> 
+					<?php 
+					$db->select("SELECT * FROM `f43_anc_179`");
+					$hivLists = $db->get_items();
+					$i = 1;
+					foreach ($hivLists as $key => $list) {
+						?>
+						<input type="radio" name="ancres" id="ancres<?=$i;?>" value="<?=$list['code'];?>" ><label for="ancres<?=$i;?>"><?=$list['detail'];?></label>
+						<?php
+						$i++;
+					}
+					?>
+					
 				</td>
 			</tr>
 			<tr>
