@@ -127,7 +127,7 @@ if( $action === 'save' ){
 
     $_POST['doctorn'] = $doctor;
     $_POST['dx'] = $diag;
-    $nPrefix = '2561';
+    $nPrefix = $yearchk;
 
 
 
@@ -332,7 +332,7 @@ if( $action === 'save' ){
 }
 
 // include 'dt_menu.php';
-// dump($_GET);
+dump($_GET);
 session_unregister("list_bill");
 session_register("list_bill");
 
@@ -351,7 +351,7 @@ $date_now = date("Y-m-d H:i:s");
 // $date_hn = date('d-m-').( date('Y') + 543 ).$hn;
 $date_hn = date('Y-m-d').$hn;
 
-
+// ดึงข้อมูลที่ลงซักประวัติจากพยาบาล
 $sql = "SELECT a.*,
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
 FROM `dxofyear_out` AS a 
@@ -372,6 +372,7 @@ if( $db->get_rows() > 0 ){
 
 }
 
+// เอาปีที่มา checkup จากหน้าซักประวัติ
 $year_checkup = $opd['yearchk'];
 
 $bp1 = $opd['bp1'];
@@ -385,18 +386,6 @@ if( !empty($opd['bp22']) ){
     $bp2 = $opd['bp22'];
 }
 
-// ดึงวันที่ที่ตรวจ lab นับเป็นวันที่ได้รับการเข้ารับบริการ
-// $sql = "SELECT SUBSTRING(`orderdate`,1,10) AS `lab_opd`  
-// FROM `resulthead` 
-// WHERE `hn` = '$hn' 
-// AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
-// ORDER BY `autonumber` DESC 
-// LIMIT 1 ";
-// $db->select($sql);
-// $res_head = $db->get_item();
-// $lab_opd = $res_head['lab_opd'];
-
-
 $cig_lists = array(0 => 'ไม่สูบ', 1 => 'สูบ', 2 => 'เคยสูบ');
 $cigok_lists = array(0 => 'ไม่อยากเลิก', 1 => 'อยากเลิก');
 $al_lists = array(0 => 'ไม่ดื่ม', 1 => 'ดื่ม', 2 => 'เคยดื่ม');
@@ -404,6 +393,18 @@ $drugreact_lists = array(0 => 'ไม่แพ้', 1 => 'แพ้');
 
 $type_lists = array('เดินมา','นั่งรถเข็น','นอนเปล','ญาติ',);
 
+// ดึงผลที่เคยบันทึก
+$chkDoctorId = $_GET['chkDoctorId'];
+$dxofyearOutId = $_GET['dxofyearOutId'];
+
+$sql = "SELECT * FROM `chk_doctor` WHERE `id` = '$chkDoctorId' LIMIT 1";
+$db->select($sql);
+$drItem = false;
+if( $db->get_rows() > 0 ){
+    $drItem = $db->get_item();
+}
+
+// dump($drItem);
 ?>
 <style type="text/css">
 table{

@@ -135,11 +135,11 @@ if( $_POST["act"] == "show" ){
 			<td width="14%" align="center" bgcolor="#66CC99"><strong>HN</strong></td>
 			<td width="15%" align="center" bgcolor="#66CC99"><strong>ชื่อสกุล</strong></td>
 			<td width="15%" align="center" bgcolor="#66CC99"><strong>ชื่อหน่วยงาน</strong></td>
-			<td align="center" bgcolor="#66CC99">แจ้งเตือน</td>
+			<td align="center" bgcolor="#66CC99"><b>แจ้งเตือน</b></td>
 		</tr>
 		<?php
 		if(mysql_num_rows($query) < 1){
-			echo "<tr><td colspan='5' align='center'>---------- ไม่มีข้อมูลซักประวัติ ----------</td></tr>";
+			echo "<tr><td colspan='6' align='center'>---------- ไม่มีข้อมูลซักประวัติ ----------</td></tr>";
 		}
 
 		$i=0;
@@ -150,14 +150,21 @@ if( $_POST["act"] == "show" ){
 			$q_chk = mysql_query("SELECT *,SUBSTRING(`date_chk`, 1, 10) AS `date_chk` FROM `chk_doctor` WHERE CONCAT(`hn`,`yearchk`) = '$test_key' ");
 			$alert_color = '';
 			$date_chk = '';
+			$chkId = '';
 			if ( mysql_num_rows($q_chk) > 0 ) {
 				$alert_color = 'style="background-color: yellow;"';
 				$item_chk = mysql_fetch_assoc($q_chk);
 				$date_chk = 'มีการบันทึกข้อมูลเมื่อ '.$item_chk['date_chk'];
+
+				$chkDoctorId = '&chkDoctorId='.$item_chk['id'];
+
+				
 			}
 
+			$dxofyearOutId = '&dxofyearOutId='.$rows['row_id'];
+
 			$i++;
-			$href = 'doctor_pre_chk.php?thidate='.$rows['thidate'].'&hn='.$rows['hn'].'&vn='.$rows['vn'].'&yearchk='.$rows['yearchk'];
+			$href = 'doctor_pre_chk.php?thidate='.$rows['thidate'].'&hn='.$rows['hn'].'&vn='.$rows['vn'].'&yearchk='.$rows['yearchk'].$chkId.$dxofyearOutId;
 			?>  
 			<tr>
 				<td align="center"><?=$i;?></td>

@@ -86,6 +86,10 @@ if($rows > 0){
 	mysql_query($sql);
 }
 
+/**
+ * ถ้ามีการบันทึกในวันนั้นไปแล้วจะเป็นการอัพเดท
+ * แต่ถ้าข้ามวันจะบันทึกใหม่
+ */
 $sql = "Select row_id From `dxofyear_out` where `thdatehn` = '$date_hn' order by row_id ASC limit 1 ";
 $dxQuery = mysql_query($sql);
 $count = mysql_num_rows($dxQuery);
