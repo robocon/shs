@@ -358,6 +358,12 @@ if(isset($_POST['hn'])){
 						<td><input name="bone_density" type="text" class="pdxhead" size="50" value="<?=$arrchk['bone_density']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
+					<tr>
+						<td class="pdx">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</td>
+						<td><input name="occupa_health" type="text" class="pdxhead" size="50" value="<?=$arrchk['occupa_health']?>" /></td>
+						<td>&nbsp;</td>
+					</tr>
+					
 					<!--
 					<tr>
 						<td class="pdx">
@@ -400,8 +406,9 @@ if(isset($_POST['okhn2'])){
 
 	$hpv = ( trim($_POST['hpv']) != '' ) ? trim($_POST['hpv']) : NULL ;
 	$bone = ( trim($_POST['42702']) != '' ) ? trim($_POST['42702']) : NULL ;
-
 	$bone_density = htmlspecialchars($_POST['bone_density'], ENT_QUOTES);
+
+	$occupa_health = htmlspecialchars($_POST['occupa_health'], ENT_QUOTES);
 
 	if( $data1 == "update" ){
 		if($_POST['eye']=="ปกติ"){
@@ -456,7 +463,8 @@ if(isset($_POST['okhn2'])){
 		`metal_result` = '".$_POST['metal_result']."',
 		`benzene` = '".$_POST['benzene']."',
 		`benzene_result` = '".$_POST['benzene_result']."',
-		`bone_density` = '$bone_density'
+		`bone_density` = '$bone_density',
+		`occupa_health` = '$occupa_health' 
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -510,7 +518,8 @@ if(isset($_POST['okhn2'])){
 			`metal_result` = '".$_POST['metal_result']."',
 			`benzene` = '".$_POST['benzene']."',
 			`benzene_result` = '".$_POST['benzene_result']."',
-			`bone_density` = '$bone_density'";
+			`bone_density` = '$bone_density', 
+			`occupa_health` = '$occupa_health' ";
 			
 	}
 	
