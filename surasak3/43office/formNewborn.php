@@ -93,6 +93,7 @@ if($action === 'save'){
         '$bcgDate', '$hbDate', '$discharge', '$weight_discharge', '$owner' 
     );";
     $save = $db->insert($sql);
+    $gyn_id = $db->get_last_id();
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
     }
@@ -101,15 +102,15 @@ if($action === 'save'){
         `id`, `HOSPCODE`, `PID`, `MPID`, `GRAVIDA`, `GA`, 
         `BDATE`, `BTIME`, `BPLACE`, `BHOSP`, `BIRTHNO`, `BTYPE`, 
         `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
-        `D_UPDATE`,`CID`, `date_visit`, `date_added`, `an`, 
-        `owner` 
+        `D_UPDATE`, `CID`, `date_visit`, `date_added`, `an`, 
+        `gyn_id`, `owner` 
         ) 
-    VALUES (
+    VALUES ( 
         NULL, '$hospcode', '$hn', '$mpid', '$garvida', '$ga', 
         '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
         '$d_update', '$idcard', '$date_visit', NOW(), '$an', 
-        '$owner' 
+        '$gyn_id', '$owner' 
     );";
     $save = $db->insert($sql);
     if( $save !== true ){
