@@ -49,6 +49,10 @@ if ( $action == 'print' ) {
 
         $user_number = (int) substr($code_exam,6);
 
+        if($part==='สวนดุสิต63'){
+            $user_number = $item['pid'];
+        }
+
         $normal_code = $code_exam.'01';
         $chem_code = $code_exam.'02';
         $ua_code = $code_exam.'03';
@@ -134,6 +138,9 @@ if ( $action == 'print' ) {
             $bs = $db->get_item();
 
             $bs_user_number = (int) substr($bs['labnumber'],6);
+            if($part==='สวนดุสิต63'){
+                $bs_user_number = $bs_user_number+147;
+            }
 
             $bs_code = $bs['labnumber'].'02';
             ?>
