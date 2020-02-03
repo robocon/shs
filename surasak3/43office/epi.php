@@ -5,33 +5,14 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
-    $HOSPCODE = input_post('HOSPCODE');
-    $PID = input_post('PID');
-    $CID = input_post('CID');
-    $SEQ = input_post('SEQ');
-    $DATE_SERV = input_post('DATE_SERV');
-    $FPTYPE = input_post('FPTYPE');
-    $PROVIDER = input_post('PROVIDER');
-    $D_UPDATE = input_post('D_UPDATE');
-    $opday_id = input_post('opday_id');
-    $FPPLACE = input_post('FPPLACE');
+    
+    // $save = $db->insert($sql);
 
-    $DATE_SERV = bc_to_ad($DATE_SERV);
-    $DATE_SERV = str_replace('-','', $DATE_SERV);
-
-    $sql = "INSERT INTO `43fp` ( 
-        `id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `FPTYPE`, 
-        `FPPLACE`, `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
-    ) VALUES ( 
-        NULL, '$HOSPCODE', '$PID', '$SEQ', '$DATE_SERV', '$FPTYPE', 
-        '$FPPLACE', '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id');";
-    $save = $db->insert($sql);
-
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-    if( $save !== true ){
-        $msg = errorMsg('save', $save['id']);
-    }
-    redirect('fp.php',$msg);
+    // $msg = 'บันทึกข้อมูลเรียบร้อย';
+    // if( $save !== true ){
+    //     $msg = errorMsg('save', $save['id']);
+    // }
+    // redirect('epi.php',$msg);
     exit;
 }
 
@@ -39,12 +20,12 @@ include 'head.php';
 
 ?>
 <div class="clearfix">
-    <h1 style="margin:0;">FP</h1> <span>บริการวางแผนครอบครัว</span>
+    <h1 style="margin:0;">EPI</h1> <span>บริการวัคซีนผู้ที่มารับบริการ</span>
 </div>
 
 <fieldset>
-    <legend>แฟ้ม : FP</legend>
-    <form action="fp.php" method="post">
+    <legend>แฟ้ม : EPI</legend>
+    <form action="epi.php" method="post">
         <table>
             <tr>
                 <td>ค้นหาตาม HN : </td>
@@ -67,7 +48,7 @@ if ($page === 'search') {
     
     $hn = input_post('hn');
 
-    $sql = "SELECT * FROM `opday` WHERE `hn` = '$hn' ORDER BY `row_id` DESC";
+    $sql = "SELECT * FROM `tb_service` WHERE `hn` = '$hn' ORDER BY `id_s` DESC";
     $db->select($sql);
     $itemPop = $items = $db->get_items();
 
@@ -80,17 +61,15 @@ if ($page === 'search') {
             <th>Diag</th>
             <th>แพทย์</th>
             <th>มาเพื่อ</th>
-            <th>จัดการข้อมูล</th>
         </tr>
     <?php
     foreach ($items as $key => $item) {
         ?>
         <tr>
-            <td><?=$item['thidate'];?></td>
+            <td><?=$item['date_ser'];?></td>
             <td><?=$item['diag'];?></td>
-            <td><?=$item['doctor'];?></td>
-            <td><?=$item['toborow'];?></td>
-            <td><a href="fp.php?page=form&id=<?=$item['row_id'];?>">บันทึก</a></td>
+            <td><?=$item['name_doc'];?></td>
+            <td><a href="epi.php?page=form&id=<?=$item['id_s'];?>">บันทึก</a></td>
         </tr>
         <?php
     }
