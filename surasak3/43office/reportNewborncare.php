@@ -9,7 +9,7 @@ include 'head.php';
 }
 </style>
 <fieldset>
-    <legend>ค้นหาตามวันที่บันทึก ทารกหลังคลอด</legend>
+    <legend>ค้นหาตามวันที่</legend>
     <form action="reportNewborncare.php" method="post">
         <div>
             เลือกวันที่ <input type="text" name="date" id="date">
@@ -37,7 +37,7 @@ if ( $view === 'search' ) {
     $date = bc_to_ad($date);
     $date = str_replace('-', '', $date);
 
-    $sql = "SELECT * FROM `43newborncare` WHERE `D_UPDATE` LIKE '$date%' ";
+    $sql = "SELECT * FROM `43newborncare` WHERE `SEQ` LIKE '$date%' ";
     $db->select($sql);
     $items = $db->get_items();
     ?>

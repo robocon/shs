@@ -32,7 +32,7 @@ if ( $view === 'search' ) {
     $date = bc_to_ad($date);
     $date = str_replace('-', '', $date);
 
-    $sql = "SELECT * FROM `43prenatal` WHERE `D_UPDATE` LIKE '$date%' ";
+    $sql = "SELECT * FROM `43prenatal` WHERE `SEQ` LIKE '$date%' ";
     $db->select($sql);
     if ( $db->get_rows() > 0 ) {
 

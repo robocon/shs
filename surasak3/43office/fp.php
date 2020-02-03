@@ -5,10 +5,37 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
+    dump($_POST);
+
+    $HOSPCODE = input_post('HOSPCODE');
+    $PID = input_post('PID');
+    $CID = input_post('CID');
+    $SEQ = input_post('SEQ');
+    $DATE_SERV = input_post('DATE_SERV');
+    $FPTYPE = input_post('FPTYPE');
+    $PROVIDER = input_post('PROVIDER');
+    $D_UPDATE = input_post('D_UPDATE');
+    $opday_id = input_post('opday_id');
+    $FPPLACE = input_post('FPPLACE');
+
+    $DATE_SERV = bc_to_ad($DATE_SERV);
+    $DATE_SERV = str_replace('-','', $DATE_SERV);
+
+    $sql = "INSERT INTO `43fp` ( 
+        `id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `FPTYPE`, 
+        `FPPLACE`, `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
+    ) VALUES ( 
+        NULL, '$HOSPCODE', '$PID', '$SEQ', '$DATE_SERV', '$FPTYPE', 
+        '$FPPLACE', '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id');";
+    $save = $db->insert($sql);
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
+    }
+    redirect('fp.php',$msg);
     exit;
 }
-
-
 
 include 'head.php';
 
@@ -149,7 +176,7 @@ if ($page === 'search') {
                 </tr>
                 <tr>
                     <td class="txtRight">สถานที่รับบริการ : </td>
-                    <td><input type="text" name="HOSPCODE" value="11512" readonly></td>
+                    <td><input type="text" name="FPPLACE" value="11512" readonly></td>
                 </tr>
                 <tr>
                     <td class="txtRight">เลขที่ผู้ให้บริการ : </td>
