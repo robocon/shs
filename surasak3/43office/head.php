@@ -45,11 +45,10 @@
                     <li><a href="reportPostnatal.php"><span>รายงาน POSTNATAL</span></a></li>
                     <li><a href="women.php"><span>หญิงเจริญพันธ์ WOMEN</span></a></li>
                     <li><a href="reportWomen.php"><span>รายงาน WOMEN</span></a></li>
+                    <li><a href="fp.php"><span>วางแผนครอบครัว FP</span></a></li>
                     <!-- 
-                    
-                    FP
-
-                    DENTAL -->
+                    DENTAL 
+                    -->
                 </ul>
             </li>
         </ul>
