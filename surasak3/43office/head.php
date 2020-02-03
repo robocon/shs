@@ -43,9 +43,10 @@
                     <li><a href="reportLabor.php"><span>รายงาน LABOR</span></a></li>
                     <li><a href="postnatal.php"><span>ดูแลมารดาหลังคลอด POSTNATAL</span></a></li>
                     <li><a href="reportPostnatal.php"><span>รายงาน POSTNATAL</span></a></li>
+                    <li><a href="women.php"><span>หญิงเจริญพันธ์ WOMEN</span></a></li>
+                    <li><a href="reportWomen.php"><span>รายงาน WOMEN</span></a></li>
                     <!-- 
                     
-                    WOMEN
                     FP
 
                     DENTAL -->
@@ -65,9 +66,13 @@ body, button{
 input:-moz-read-only{
   background-color: #bbbbbb;
 }
-
 input:read-only{
   background-color: #bbbbbb;
+}
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .chk_table{
