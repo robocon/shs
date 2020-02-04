@@ -19,13 +19,13 @@
 <div id="no_print">
 	<div id="menu">
         <ul class="menu">
-            <li><a href="index.php" class="parent" title="หน้าหลัก ร.พ."><span>&#127968;</span></a></li>
+            <li><a href="index.php" class="parent" title="หน้าหลัก ร.พ."><span>Home</span></a></li>
             <li>
                 <a href="javascript: void(0);"><span>เด็กแรกเกิด</span></a>
                 <ul>
                     <li><a href="formNewborn.php"><span>ฟอร์มทารกแรกเกิด</span></a></li>
                     <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
-                    <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
+                    <li><a href="formNewborncare.php"><span>c</span></a></li>
                     <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
                     <li><a href="reportPolicy.php"><span>รายงานเส้นรอบศรีษะ</span></a></li>
                 </ul>
@@ -55,8 +55,8 @@
                 <ul>
                     <li><a href="epi.php"><span>วัคซีนเด็ก EPI</span></a></li>
                     <li><a href="reportEpi.php"><span>รายงาน EPI</span></a></li>
-                    <li><a href="epi.php"><span>วัคซีนเด็ก EPI</span></a></li>
-                    <li><a href="reportEpi.php"><span>รายงาน EPI</span></a></li>
+                    <li><a href="nutrition.php"><span>ระดับโภชนาการ NUTRITION</span></a></li>
+                    <li><a href="reportNutrition.php"><span>รายงาน NUTRITION</span></a></li>
                 </ul>
             </li>
         </ul>
