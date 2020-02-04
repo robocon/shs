@@ -5,14 +5,33 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
-    
-    // $save = $db->insert($sql);
+    $HOSPCODE = input_post('HOSPCODE');
+    $PID = input_post('PID');
+    $SEQ = input_post('SEQ');
+    $DATE_SERV = input_post('DATE_SERV');
+    $DATE_SERV = bc_to_ad($DATE_SERV);
+    $DATE_SERV = str_replace('-','', $DATE_SERV);
+    $VACCINETYPE = input_post('VACCINETYPE');
+    $VACCINEPLACE = input_post('VACCINEPLACE');
+    $PROVIDER = input_post('PROVIDER');
+    $D_UPDATE = input_post('D_UPDATE');
+    $CID = input_post('CID');
+    $opday_id = input_post('opday_id');
 
-    // $msg = 'บันทึกข้อมูลเรียบร้อย';
-    // if( $save !== true ){
-    //     $msg = errorMsg('save', $save['id']);
-    // }
-    // redirect('epi.php',$msg);
+    $sql = "INSERT INTO `43epi` ( 
+        `id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `VACCINETYPE`, 
+        `VACCINEPLACE`, `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
+    ) VALUES ( 
+        NULL, '$HOSPCODE', '$PID', '$SEQ', '$DATE_SERV', '$VACCINETYPE', 
+        '$VACCINEPLACE', '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id' 
+    );";
+    $save = $db->insert($sql);
+    
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
+    }
+    redirect('epi.php',$msg);
     exit;
 }
 
@@ -48,13 +67,13 @@ if ($page === 'search') {
     
     $hn = input_post('hn');
 
-    $sql = "SELECT * FROM `tb_service` WHERE `hn` = '$hn' ORDER BY `id_s` DESC";
+    $sql = "SELECT * FROM `opday` WHERE `hn` = '$hn' ORDER BY `row_id` DESC";
     $db->select($sql);
     $itemPop = $items = $db->get_items();
-
     $user = array_pop($itemPop);
     ?>
-    <div>HN : <?=$user['ptname'];?></div>
+    <div>&nbsp;</div>
+    <div><b>HN : </b><?=$user['hn'];?> <b>ชื่อ-สกุล : </b><?=$user['ptname'];?></div>
     <table class="chk_table">
         <tr>
             <th>วันที่มารับบริการ</th>
@@ -66,10 +85,10 @@ if ($page === 'search') {
     foreach ($items as $key => $item) {
         ?>
         <tr>
-            <td><?=$item['date_ser'];?></td>
+            <td><?=$item['thidate'];?></td>
             <td><?=$item['diag'];?></td>
-            <td><?=$item['name_doc'];?></td>
-            <td><a href="epi.php?page=form&id=<?=$item['id_s'];?>">บันทึก</a></td>
+            <td><?=$item['doctor'];?></td>
+            <td><a href="epi.php?page=form&id=<?=$item['row_id'];?>">บันทึก</a></td>
         </tr>
         <?php
     }
@@ -104,11 +123,10 @@ if ($page === 'search') {
     $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
     $db->select($sql);
     $dr = $db->get_item();
-
     ?>
     <fieldset>
         <legend>ฟอร์มบันทึก FP</legend>
-        <form action="fp.php" method="post">
+        <form action="epi.php" method="post">
             <table>
                 <tr>
                     <td colspan="2"> 
@@ -133,33 +151,23 @@ if ($page === 'search') {
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่ให้บริการ : </td>
-                    <td><input type="text" name="DATE_SERV" value="<?=$user['shortdate'];?>"></td>
+                    <td><input type="text" name="DATE_SERV" id="DATE_SERV" value="<?=$user['shortdate'];?>"></td>
                 </tr>
                 <tr>
-                    <td class="txtRight">รหัสวิธีการคุมกำเนิด : </td>
+                    <td class="txtRight">รหัสวัคซีน : </td>
                     <td>
-                    <?php 
-                    $db->select("SELECT * FROM `f43_fp_172`");
-                    $ppLists = $db->get_items();
-                    $i = 1;
-                    foreach ($ppLists as $key => $item) {
-                        ?>
-                        <input type="radio" name="FPTYPE" id="fptype<?=$i;?>" value="<?=$item['code'];?>"><label for="fptype<?=$i;?>"><?=$item['detail'];?></label>
-                        <?php
-                        $i++;
-                    }
-                    ?>
+                        <input type="text" name="VACCINETYPE" id="VACCINETYPE"><span id="epi198" style="position: relative;"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="txtRight">สถานที่รับบริการ : </td>
-                    <td><input type="text" name="FPPLACE" value="11512" readonly></td>
+                    <td class="txtRight">สถานที่รับวัคซีน : </td>
+                    <td><input type="text" name="VACCINEPLACE" value="11512" readonly></td>
                 </tr>
                 <tr>
                     <td class="txtRight">เลขที่ผู้ให้บริการ : </td>
                     <td>
                         <?php 
-                        if( empty($dr['PROVIDER']) ){ 
+                        if( empty($user['doctor']) ){ 
                             $db->select("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` ORDER BY `ROW_ID` ");
                             $providerLists = $db->get_items();
                             ?>
@@ -199,6 +207,46 @@ if ($page === 'search') {
             </table>
         </form>
     </fieldset>
+    <?php
+    include 'assets/ajax.php';
+    ?>
+    <script type="text/javascript">
+        var popup1;
+        window.onload = function() {
+            popup1 = new Epoch('popup1','popup',document.getElementById('DATE_SERV'),false);
+        };
+
+        var btnVACCINETYPE = document.getElementById("VACCINETYPE");
+        btnVACCINETYPE.addEventListener('keyup', function(event) {
+
+            var newSm = new SmHttp();
+            newSm.ajax(
+                'epi198.php', 
+                { 'word': btnVACCINETYPE.value }, 
+                function(res){
+                    document.getElementById('epi198').innerHTML = res;
+
+                    /* https://clubmate.fi/detect-click-with-pure-javascript/ */
+                    var el = document.getElementsByClassName('icd10');
+                    for (var i=0; i < el.length; i++) {
+                        // Here we have the same onclick
+                        el.item(i).onclick = function(){
+
+                            document.getElementById('VACCINETYPE').value = this.getAttribute('data');
+                            document.getElementById('epi198').innerHTML = '';
+                        };
+                    }
+
+                    // ปุ่มปิด
+                    var btnClose = document.getElementById("btnLaborClose");
+                    btnClose.addEventListener('click', function(event) { 
+                        document.getElementById('epi198').innerHTML = '';
+                    });
+
+                }
+            );
+        });
+    </script>
     <?php
 
 }

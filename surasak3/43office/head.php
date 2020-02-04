@@ -28,8 +28,6 @@
                     <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
                     <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
                     <li><a href="reportPolicy.php"><span>รายงานเส้นรอบศรีษะ</span></a></li>
-                    <!-- EPI
-                    NUTRITION -->
                 </ul>
             </li>
             <li>
@@ -53,9 +51,12 @@
                 </ul>
             </li>
             <li>
-                <a href="javascript: void(0);"><span>วัคซีน</span></a>
+                <a href="javascript: void(0);"><span>วัคซีนและโภชนาการ</span></a>
                 <ul>
-                <li><a href="epi.php"><span>วัคซีนเด็ก EPI</span></a></li>
+                    <li><a href="epi.php"><span>วัคซีนเด็ก EPI</span></a></li>
+                    <li><a href="reportEpi.php"><span>รายงาน EPI</span></a></li>
+                    <li><a href="epi.php"><span>วัคซีนเด็ก EPI</span></a></li>
+                    <li><a href="reportEpi.php"><span>รายงาน EPI</span></a></li>
                 </ul>
             </li>
         </ul>

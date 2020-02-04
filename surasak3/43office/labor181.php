@@ -1,15 +1,10 @@
 <?php 
-
 include '../bootstrap.php';
-
 $db = Mysql::load();
-
 $word = input_post('word');
-
 $sql = "SELECT * FROM `f43_labor_181` WHERE `code` LIKE '%$word%' OR `detail` LIKE '%$word%' ";
 $db->select($sql);
 $items = $db->get_items();
-
 ?>
 <table class="chk_table" style="position: absolute; top: 0; right: 0; background-color: #bbbbbb;">
     <tr>

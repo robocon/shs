@@ -219,7 +219,7 @@ if ( $page === 'search' ) {
         };
 
 
-        const btnBRESULT = document.getElementById("BRESULT");
+        var btnBRESULT = document.getElementById("BRESULT");
         btnBRESULT.addEventListener('keyup', function(event) {
 
             var newSm = new SmHttp();
@@ -241,7 +241,7 @@ if ( $page === 'search' ) {
                     }
 
                     // ªÿË¡ª‘¥
-                    const btnClose = document.getElementById("btnLaborClose");
+                    var btnClose = document.getElementById("btnLaborClose");
                     btnClose.addEventListener('click', function(event) { 
                         document.getElementById('labor181').innerHTML = '';
                     });
