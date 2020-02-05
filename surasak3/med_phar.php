@@ -222,10 +222,10 @@ if ( mysql_num_rows($q) > 0 ) {
                 <p><?=$fullWardName;?></p>
             </td>
             <td>
-                <!--[if lte IE 8]>
+                <!--[if lte IE 8]><!-->
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
                 <![endif]-->
-                <!--[if gte IE 9]>
+                <!--[if gte IE 9 | !IE ]><!-->
                     <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
                 <![endif]-->
             </td>
@@ -337,7 +337,7 @@ if ( $page === 'searchFile' ) {
                 <!--[if lte IE 8]>
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
                 <![endif]-->
-                <!--[if gte IE 9]>
+                <!--[if gte IE 9 | !IE ]>
                     <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
                 <![endif]-->
                 </td>
