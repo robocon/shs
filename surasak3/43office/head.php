@@ -25,7 +25,7 @@
                 <ul>
                     <li><a href="formNewborn.php"><span>ฟอร์มทารกแรกเกิด</span></a></li>
                     <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
-                    <li><a href="formNewborncare.php"><span>c</span></a></li>
+                    <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
                     <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
                     <li><a href="reportPolicy.php"><span>รายงานเส้นรอบศรีษะ</span></a></li>
                 </ul>
@@ -45,9 +45,8 @@
                     <li><a href="reportWomen.php"><span>รายงาน WOMEN</span></a></li>
                     <li><a href="fp.php"><span>วางแผนครอบครัว FP</span></a></li>
                     <li><a href="reportFp.php"><span>รายงาน FP</span></a></li>
-                    <!-- 
-                    DENTAL 
-                    -->
+                    <li><a href="dental.php"><span>สภาวะทันต DENTAL</span></a></li>
+                    <li><a href="reportDental.php"><span>รายงาน DENTAL</span></a></li>
                 </ul>
             </li>
             <li>
