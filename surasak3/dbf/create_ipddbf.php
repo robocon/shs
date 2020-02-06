@@ -19,7 +19,7 @@ color: #FFF;
 <div id="no_print" >
 <span class="font1">
 <font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้ในประจำเดือน Dataset_V4.1_25591017 (อัพเดทโปรแกรม เมื่อวันที่ 29-11-59)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<strong>ส่งออกข้อมูล DBF คนไข้ในประจำเดือน dataset_v4.2_25611109 (อัพเดทล่าสุด เมื่อวันที่ 15-02-62)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
 <?php
 
 $mon = isset($_POST['mon']) ? $_POST['mon'] : '' ;
@@ -1811,7 +1811,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 			$part4 =$rowsip4["part"];
 			
 			if($part4=="DENTA" || $part4=="DENTAY"){
-						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part3'";
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part4'";
 						//echo $sqlds."</br>";
 						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
 						while($rowsds = mysql_fetch_array($resultds)){
@@ -1866,7 +1866,7 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 			$part5 =$rowsip5["part"];
 			
 			if($part5=="STX" || $part5=="STXY"){
-						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part3'";
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part5'";
 						//echo $sqlds."</br>";
 						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
 						while($rowsds = mysql_fetch_array($resultds)){
@@ -1909,6 +1909,114 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 					} // if part			
 			}  //while									
 
+
+		// 14 = ค่าบริการเลือด
+		$sqlip6 ="select * from  ipacc  where an='".$an14."' and (part='BLOOD' || part='BLOODY')   group by part ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
+		//echo $sqlip6."</br>";
+		$resultip6 = mysql_query($sqlip6) or die("Query ipcard failed14");
+		$numip6 = mysql_num_rows($resultip6);
+		//echo "$numip6 </br>";
+		while($rowsip6 = mysql_fetch_array($resultip6)){			
+			$part6 =$rowsip6["part"];
+			
+			if($part6=="BLOOD" || $part6=="BLOODY"){
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part6'";
+						//echo $sqlds."</br>";
+						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
+						while($rowsds = mysql_fetch_array($resultds)){
+						$ands=$rowsds["an"];						
+						//SEQ	
+						$rowidop=$rowsds["row_id"];
+						$newrowid = substr($rowidop,3,4);	
+						$newseq=$newdcdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+					//	$qty = $rowsds["amount"];
+						$qty = '1';
+						$rate =$rowsds["dsprice"];
+						$chrgitemip ="14";
+						$code =$rowsds["code"];
+						$use_status='1';						
+						if($ands !="" && $rate != 0){
+						//echo "BLOOD--->$ands/$qty/$rate/$newseq </br>";								
+						$db14 = dbase_open($dbname14, 2);
+							if ($db14) {
+								dbase_add_record($db14, array(
+									$hn14, //
+									$an14, //
+									$newdcdate,  //
+									$chrgitemip,  //
+									$code,
+									$qty,
+									$rate,
+									$newseq,
+									$cagcode, 	
+									$dose, 																															
+									$catype,
+									$serialno,
+									$totcopay,
+									$use_status,
+									$TOTAL,
+									$QTYDAY));     
+									dbase_close($db14);
+								}  //if db			
+							}   //if check an				
+						}  // while
+					} // if part			
+			}  //while
+			
+			
+		// 15 = ค่าบริการพยาธิ
+		$sqlip7 ="select * from  ipacc  where an='".$an14."' and (part='LAB' || part='LABY')   group by part ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
+		//echo $sqlip7."</br>";
+		$resultip7 = mysql_query($sqlip7) or die("Query ipcard failed17");
+		$numip7 = mysql_num_rows($resultip7);
+		//echo "$numip7 </br>";
+		while($rowsip7 = mysql_fetch_array($resultip7)){			
+			$part7 =$rowsip7["part"];
+			
+			if($part7=="LAB" || $part7=="LABY"){
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part7'";
+						//echo $sqlds."</br>";
+						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
+						while($rowsds = mysql_fetch_array($resultds)){
+						$ands=$rowsds["an"];						
+						//SEQ	
+						$rowidop=$rowsds["row_id"];
+						$newrowid = substr($rowidop,3,4);	
+						$newseq=$newdcdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+					//	$qty = $rowsds["amount"];
+						$qty = '1';
+						$rate =$rowsds["dsprice"];
+						$chrgitemip ="15";
+						$code =$rowsds["code"];
+						$use_status='1';						
+						if($ands !="" && $rate != 0){
+						//echo "BLOOD--->$ands/$qty/$rate/$newseq </br>";								
+						$db14 = dbase_open($dbname14, 2);
+							if ($db14) {
+								dbase_add_record($db14, array(
+									$hn14, //
+									$an14, //
+									$newdcdate,  //
+									$chrgitemip,  //
+									$code,
+									$qty,
+									$rate,
+									$newseq,
+									$cagcode, 	
+									$dose, 																															
+									$catype,
+									$serialno,
+									$totcopay,
+									$use_status,
+									$TOTAL,
+									$QTYDAY));     
+									dbase_close($db14);
+								}  //if db			
+							}   //if check an				
+						}  // while
+					} // if part			
+			}  //while			
+					
 					
 }  //while
 
