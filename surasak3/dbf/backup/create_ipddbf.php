@@ -142,7 +142,7 @@ if(file_exists("$dbf1") && file_exists("$dbf2") && file_exists("$dbf3") && file_
 }
 // จบ ลบไฟล์-----------------)
 
-$newcredit = 1;
+
 if($_POST['credit']=="OFC"){
 	$showptright="เบิกจ่ายตรง";
 	$newcredit = "(ptright like '%R02%' OR ptright
@@ -2090,7 +2090,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 					$newdatedc=$datedc[0]-543;
 					$newdcdate =$newdatedc.$datedc[1].$datedc[2];  //  DATE_SERV ใช้ตัวแปรนี้นำเข้าข้อมูล							
 					
-				$sqlip ="select *, sum(price) as sumprice, sum(amount) as sumamount from  ipacc  where $newcredit and an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code";
+				$sqlip ="select *, sum(price) as sumprice, sum(amount) as sumamount from  ipacc  where an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code";
 				//echo $sqlip."==>";
 				$resultip = mysql_query($sqlip) or die("Query ipcard failed16");
 					$i=0;
