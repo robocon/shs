@@ -46,7 +46,7 @@ include 'head.php';
 </div>
 
 <fieldset>
-    <legend>แฟ้ม : PRENATAL</legend>
+    <legend>แฟ้ม : WOMEN</legend>
     <form action="women.php" method="post">
         <table>
             <tr>
