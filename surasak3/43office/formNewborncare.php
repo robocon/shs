@@ -122,8 +122,6 @@ if ($page === 'searchHn') {
     $db->select("SELECT `dbirth`,`idcard` FROM `opcard` WHERE `hn` = '$hn' ");
     $opcard = $db->get_item();
     $idcard = $opcard['idcard'];
-    // $bdate = bc_to_ad($opcard['dbirth']);
-    // $bdate = str_replace('-','', $bdate);
 
     $seq = genSEQ(date('Ymd'),$hn);
 

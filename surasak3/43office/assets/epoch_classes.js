@@ -40,10 +40,10 @@ function Epoch(name,mode,targetelement,multiselect) {
 	* Check Date.dateFormat() for the Date object's language settings
 	*/
 	function setLang() {
-		self.daylist = new Array('อ.','จ.','อ.','พ.','พฤ.','ศ.','ส.','อ.','จ.','อ.','พ.','พฤ.','ศ.','ส.');
+		self.daylist = new Array('อา','จ','อ','พ','พฤ','ศ','ส','อา','จ','อ','พ','พฤ','ศ','ส');
 		self.months_sh = new Array('มค.','กพ.','มีค.','เมย.','พค.','มิย.','กค.','สค.','กย.','ตค.','พย.','ธค.');
-		self.monthup_title = 'ไปเดือนก่อนหน้า';
-		self.monthdn_title = 'ไปเดือนถัดไป';
+		self.monthup_title = 'เดือนถัดไป';
+		self.monthdn_title = 'เดือนก่อนหน้า';
 		self.clearbtn_caption = 'ล้างค่า';
 		self.clearbtn_title = 'ลบข้อมูลในช่อง';
 		self.maxrange_caption = 'This is the maximum range';
