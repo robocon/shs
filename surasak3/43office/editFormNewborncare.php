@@ -65,7 +65,7 @@ $bcare = ( substr($item['BCARE'],0,4) + 543).'-'.substr($item['BCARE'],4,2).'-'.
 </div>
 
 <fieldset>
-    <legend>ฟอร์ม NEWBORNCARE</legend>
+    <legend>ฟอร์มบันทึก NEWBORNCARE</legend>
     <form action="editFormNewborncare.php" method="post">
         <table>
             <tr>
@@ -82,7 +82,7 @@ $bcare = ( substr($item['BCARE'],0,4) + 543).'-'.substr($item['BCARE'],4,2).'-'.
             </tr>
             <tr>
                 <td class="txtRight">ลำดับที่ : </td>
-                <td><input type="text" name="SEQ" value="<?=$item['SEQ'];?>"></td>
+                <td><input type="text" name="SEQ" value="<?=$item['SEQ'];?>" readonly></td>
             </tr>
             <tr>
                 <td class="txtRight">วันที่คลอด : </td>
@@ -136,17 +136,21 @@ $bcare = ( substr($item['BCARE'],0,4) + 543).'-'.substr($item['BCARE'],4,2).'-'.
                 <td class="txtRight">เลขที่ผู้ให้บริการ : </td>
                 <td>
                     <select name="PROVIDER" id="">
+                        <option value="">กรุณาเลือกแพทย์</option>
                     <?php 
                     $sql = "SELECT a.`PROVIDER`,CONCAT(b.`abbreviations`,a.`NAME`,' ',a.`LNAME`) AS `PROVIDER_NAME` 
                     FROM `tb_provider_9` AS a 
                     LEFT JOIN `f43_person_1` AS b ON b.`code` = a.`PRENAME` 
-                    ORDER BY a.`PROVIDERTYPE` ASC ";
+                    ORDER BY a.`PROVIDERTYPE` ASC,a.`ROW_ID` ASC ";
                     $db->select($sql);
                     $providerList = $db->get_items();
 
-                    foreach ($providerList as $key => $pv) {
+                    foreach ($providerList as $key => $pv) { 
+
+                        $selected = ($item['PROVIDER'] == $pv['PROVIDER']) ? 'selected="selected"' : ''; 
+
                         ?>
-                        <option value="<?=$pv['PROVIDER'];?>"><?=$pv['PROVIDER_NAME'];?></option>
+                        <option value="<?=$pv['PROVIDER'];?>" <?=$selected;?> ><?=$pv['PROVIDER_NAME'];?></option>
                         <?php
                     }
                     ?>
@@ -155,7 +159,7 @@ $bcare = ( substr($item['BCARE'],0,4) + 543).'-'.substr($item['BCARE'],4,2).'-'.
             </tr>
             <tr>
                 <td class="txtRight">วันเดือนปีที่ปรับปรุง : </td>
-                <td><input type="text" name="D_UPDATE" value="<?=$item['D_UPDATE'];?>"></td>
+                <td><input type="text" name="D_UPDATE" value="<?=$item['D_UPDATE'];?>" readonly></td>
             </tr>
             <tr>
 				<td colspan="2" align="center">

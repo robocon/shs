@@ -25,7 +25,7 @@ include 'head.php';
 }
 </style>
 <div class="clearfix">
-    <h1 style="margin:0;">NEWBORNCARE</h1> <span>ดูแลทารกหลังคลอดของหญิงตั้งครรภ์</span>
+    <h1 style="margin:0;">รายงาน NEWBORNCARE</h1> <span>ดูแลทารกหลังคลอดของหญิงตั้งครรภ์</span>
 </div>
 <fieldset>
     <legend>ค้นหาตามวันที่</legend>
