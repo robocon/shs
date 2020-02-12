@@ -92,7 +92,28 @@ if(!empty($cStkcutdate)) {
 	print "<font face='cordia New'> $d/$m/$y&nbsp;&nbsp;$t";
 	print "<font face='cordia New'>&nbsp;HN:&nbsp;$rxHn&nbsp;&nbsp; ";
 	print "<font face='cordia New'>&nbsp;&nbsp<b>อายุ&nbsp;$age</b>&nbsp;&nbsp; ";
-	print "<font face='THSarabunPSK'>โรค: $rxDiag&nbsp;&nbsp<b>คิว พ.:&nbsp;$phakew&nbsp;<font face='THSarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br>";
+	// โรค: $rxDiag&nbsp;&nbsp
+	print "<font face='THSarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;<font face='THSarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br>";
+	
+	$visit_date = substr($dRxdate, 0, 10);
+	$sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$rxHn' ";
+	$res = mysql_query($sqlDiag);
+	if( mysql_num_rows($res) > 0 ){
+		$drI = 1;
+		echo "<b>Diag จากแพทย์ : </b>";
+		while ($list = mysql_fetch_assoc($res)) { 
+
+			$drDiag = $list['diag'];
+			if( $list['diag_thai'] ){
+				$drDiag .= ' ( '.$list['diag_thai'].' ) ';
+			}
+			echo $drI.') '.$drDiag.'&nbsp';
+			$drI++;
+			
+		}
+		echo "<br>";
+	}
+	
 	$num1='0';
 	$query = "SELECT tradname,advreact,asses FROM drugreact WHERE  hn = '$rxHn' and groupname=''";
 	$result = mysql_query($query) or die("Query drugreact failed");
@@ -348,16 +369,22 @@ if($nnnn>0 ){
 };
 	
 	 
-	 
+
+
 	 
 
 $today1=(date("Y")+543).date("-m-d");	
-$sql = "Select hn,ptname From dphardep WHERE hn = '".$rxHn."' AND  date LIKE '$today1%' and dr_cancle is null ";
+$sql = "SELECT @n := @n +1 AS 'NO', row_id,hn,ptname From dphardep, (
+SELECT @n :=0
+) AS R  WHERE hn = '".$rxHn."' AND  date LIKE '$today1%' and dr_cancle is null ";
 $result = Mysql_Query($sql);
-
-	if(Mysql_num_rows($result) > 1){
-		list($hn,$ptname) = Mysql_fetch_row($result);
-		echo "<br><font face='THSarabunPSK' size='5'><center>***ผู้ป่วยมีใบรายยามากกว่า 1 ใบ*** </center></FONT>";
+$num=Mysql_num_rows($result);
+	if($num > 1){
+		while(list($n,$rowid,$hn,$ptname) = Mysql_fetch_row($result)){
+			if($rowid==$sRow_id){
+				echo "<br><font face='THSarabunPSK' size='5'><center>***ผู้ป่วยมีใบรายการยามากกว่า 1 ใบ ($n/$num)*** </center></FONT>";
+			}
+		}
 	}
 }else{ 
 	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";

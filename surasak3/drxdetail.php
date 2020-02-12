@@ -179,19 +179,14 @@ function chkin(){
 }
 </script>
 <?php 
-// $visit_date = urldecode($_GET['sDate']);
-
 $visit_date = substr($_GET['sDate'], 0, 10);
 $sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$sHn' ";
-?>
-<div style="display: none;"><?=$sqlDiag;?></div>
-<?php
 $res = mysql_query($sqlDiag);
 if( mysql_num_rows($res) > 0 ){
 	?>
 	<div>
-		<b>Diag : </b>
-		<table cellpadding="3" cellspacing="0" bordercolor="#000000" border="1" style="font-size: 14px;">
+		<b>Diag จากแพทย์: </b>
+		<table cellpadding="3" cellspacing="0" bordercolor="#000000" border="1" style="font-size: 13px;">
 			<?php 
 			while ($item = mysql_fetch_assoc($res)) {
 				?>
@@ -201,7 +196,7 @@ if( mysql_num_rows($res) > 0 ){
 						<?php 
 						echo $item['diag'];
 						if( $item['diag_thai'] ){
-							echo '('.$item['diag_thai'].')';
+							echo ' ( '.$item['diag_thai'].' ) ';
 						}
 						?>
 					</td>
@@ -257,7 +252,7 @@ $n='0';
 	
     print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
     print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <B>สิทธิ:$sPtright</B><br> ";
-    print "<font face='Angsana New'>โรค: $diagnosis<br>";
+    // print "<font face='Angsana New'>โรค: $diagnosis<br>";
 	print "<font face='Angsana New' size=5 color=FF0000>แพ้ยา: ";
 	$query12 = "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
     $result12 = mysql_query($query12) or die("Query failed");
