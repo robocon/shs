@@ -24,10 +24,10 @@
                 <a href="javascript: void(0);"><span>เด็กแรกเกิด</span></a>
                 <ul>
                     <li><a href="formNewborn.php"><span>ฟอร์มทารกแรกเกิด</span></a></li>
-                    <li><a href="reportNewborn.php"><span>รายงานทารกแรกเกิด</span></a></li>
+                    <li><a href="reportNewborn.php"><span>รายงาน NEWBORN</span></a></li>
                     <li><a href="formNewborncare.php"><span>ฟอร์มทารกหลังคลอด</span></a></li>
-                    <li><a href="reportNewborncare.php"><span>รายงานทารกหลังคลอด</span></a></li>
-                    <li><a href="reportPolicy.php"><span>รายงานเส้นรอบศรีษะ</span></a></li>
+                    <li><a href="reportNewborncare.php"><span>รายงาน NEWBORNCARE</span></a></li>
+                    <li><a href="reportPolicy.php"><span>รายงาน POLICY</span></a></li>
                 </ul>
             </li>
             <li>

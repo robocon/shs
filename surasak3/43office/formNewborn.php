@@ -131,12 +131,18 @@ if($action === 'save'){
         $msg = errorMsg('save', $save['id']);
     }
 
+    if( strstr($head, '.') ){ 
+        list($dec, $tenths) = explode('.', $head);
+        $head = $dec.'.'.substr($tenths, 0, 1);
+    }else{
+        $head = number_format($head, 1);
+    }
 
     $policy_item = array(
         'HOSPCODE' => $hospcode, 
         'PID' => $hn, 
         'BDATE' => $bdate, 
-        'HC' => number_format($head,1)
+        'HC' => $head 
     );
 
     $json = new Services_JSON();
