@@ -178,6 +178,42 @@ function chkin(){
 	}
 }
 </script>
+<?php 
+// $visit_date = urldecode($_GET['sDate']);
+
+$visit_date = substr($_GET['sDate'], 0, 10);
+$sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$sHn' ";
+?>
+<div style="display: none;"><?=$sqlDiag;?></div>
+<?php
+$res = mysql_query($sqlDiag);
+if( mysql_num_rows($res) > 0 ){
+	?>
+	<div>
+		<b>Diag : </b>
+		<table cellpadding="3" cellspacing="0" bordercolor="#000000" border="1" style="font-size: 14px;">
+			<?php 
+			while ($item = mysql_fetch_assoc($res)) {
+				?>
+				<tr>
+					<td><?=$item['type'];?></td>
+					<td>
+						<?php 
+						echo $item['diag'];
+						if( $item['diag_thai'] ){
+							echo '('.$item['diag_thai'].')';
+						}
+						?>
+					</td>
+				</tr>
+				<?php
+			}
+			?>
+		</table>
+	</div>
+	<?php
+}
+?>
 <table>
  <tr >
  <th bgcolor=CD853F><font face='Angsana New'>#</th>
@@ -340,6 +376,9 @@ echo "<table><tr>";
     <td><a target="_blank" href="appoilst_inj.php?Thn=<?=$sHn?>"><font face='Angsana New'>ออกใบนัดฉีดยา</a></td>
 	<td><a target="_blank"  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
  </tr></table>
+ <div>
+	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code(ช่วงทดลองใช้งาน)</a></p>
+ </div>
 <?php
 	$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
 	$strresult = mysql_query($strsql);
