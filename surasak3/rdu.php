@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * ใช้ไฟล์ rdu_convert.php, rdu_convert_diag.php, rdu_convert_drug.php, rdu_convert_lab.php, rdu_convert_trauma.php 
+ * ดึงข้อมูลมาไว้ใน folder rdu แล้วเอาไฟล์Dumpใส่ Database rdu ใน 192.168.1.13 อีกที
+ */
 include 'bootstrap.php';
 define('RDU_TEST', '1');
 
@@ -391,7 +394,7 @@ if ( $action == 'load' ) {
         </tr>
         <tr>
             <td align="center">18</td>
-            <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจแัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
+            <td>ร้อยละของผู้ป่วยเด็ก ที่ได้รับการวินิจฉัยเป็นโรคติดเชื้อของทางเดินหายใจ (ครอบคลุมดรคตามรหัส ICD10 ตาม RUA-URI) และได้รับยาฮิสตามีนชนิด non-sedating</td>
             <?php
             include 'rdu_in18.php';
 
