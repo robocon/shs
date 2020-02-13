@@ -48,6 +48,9 @@ if( $action === 'save' ){
 
 include 'head.php';
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">POSTNATAL</h1> <span>ข้อมูลประวัติการดูแลมารดาหลังคลอด</span>
+</div>
 <fieldset>
     <legend>แฟ้ม : POSTNATAL</legend>
     <form action="postnatal.php" method="post">

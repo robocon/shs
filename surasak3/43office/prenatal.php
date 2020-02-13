@@ -57,6 +57,9 @@ if( $action === 'save' ){
 
 include 'head.php';
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">PRENATAL</h1> <span>ข้อมูลประวัติการตั้งครรภ์ ของหญิงตั้งครรภ์</span>
+</div>
 <fieldset>
     <legend>แฟ้ม : PRENATAL</legend>
     <form action="prenatal.php" method="post">

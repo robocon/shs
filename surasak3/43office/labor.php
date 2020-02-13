@@ -56,6 +56,9 @@ if( $action === 'save' ){
 
 include 'head.php';
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">LABOR</h1> <span>ข้อมูลประวัติการคลอด หรือการสิ้นสุดการตั้งครรภ์</span>
+</div>
 <fieldset>
     <legend>แฟ้ม : LABOR</legend>
     <form action="labor.php" method="post">

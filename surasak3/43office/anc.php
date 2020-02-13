@@ -87,6 +87,9 @@ if ( $action == 'save' ) {
 
 include 'head.php';
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">ANC</h1> <span>ข้อมูลการให้บริการฝากครรภ์กับหญิงตั้งครรภ์ที่มารับบริการ</span>
+</div>
 <fieldset>
 	<legend>แฟ้ม : ANC</legend>
 	<form action="anc.php" method="post" name="formdeath1">
