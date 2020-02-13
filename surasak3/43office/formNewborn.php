@@ -40,17 +40,21 @@ if($action === 'save'){
     $d_update = date('YmdHis');
 
     $date_visit = input_post('date_visit');
+    list($visitDate, $visitTime) = explode(' ', $date_visit);
     $date_visit = bc_to_ad($date_visit);
 
     $hn = input_post('hn');
     $an = input_post('an');
     $owner = $_SESSION['sIdname'];
     
+    $db->select("SELECT `vn`,`clinic` FROM `opday` WHERE `thidate` LIKE '$visitDate%' AND `hn` = '$hn' ");
+    $opday = $db->get_item();
+
     // 43newborncare
     $bcare = date('Ymd', strtotime($date_visit));
     $bcareresult = input_post('disorder');
     $food = input_post('food');
-    $seq = genSEQ($date_visit, $hn);
+    $seq = genSEQ($date_visit, '05',$opday['vn']);
     $provider = input_post('provider');
 
     $father = input_post('father');
@@ -494,14 +498,6 @@ if( $page === 'searchAn' ){
 
             <?php 
             $dr['PROVIDER'] = NULL;
-            // $prefixMd = substr($item['doctor'],0,5);
-            // $sql = "SELECT b.`PROVIDER` 
-            // FROM ( 
-            //     SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%'
-            // ) AS a 
-            // LEFT JOIN `tb_provider_9` AS b ON b.`REGISTERNO` = a.`doctorcode` ";
-            // $db->select($sql);
-            // $dr = $db->get_item();
 
             if( preg_match('/MD\d+/', $ipcard['doctor']) > 0 ){
                 $prefixMd = substr($ipcard['doctor'],0,5);
@@ -512,7 +508,7 @@ if( $page === 'searchAn' ){
                 $where = "`doctorcode` = '$prefixMd'";
             }
 
-            $sql = "SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+            $sql = "SELECT `doctorcode` AS `doctorcode` FROM `doctor` WHERE $where ";
             $db->select($sql);
             $dr = $db->get_item();
             $doctorcode = $dr['doctorcode'];

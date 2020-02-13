@@ -101,12 +101,12 @@ if ($page === 'search') {
 }elseif ($page === 'form') {
 
     $row_id = input_get('id');
-    $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`idcard`,`doctor`,SUBSTRING(`thidate`,1,10) AS `shortdate` FROM `opday` WHERE `row_id` = '$row_id' LIMIT 1";
+    $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`idcard`,`doctor`,SUBSTRING(`thidate`,1,10) AS `shortdate`,`vn`,`clinic` FROM `opday` WHERE `row_id` = '$row_id' LIMIT 1";
     $db->select($sql);
     $user = $db->get_item();
 
     $date_bc = bc_to_ad($user['thidate']);
-    $seq = genSEQ($date_bc, $user['hn']);
+    $seq = genSEQ($date_bc, $user['vn'], $user['clinic']);
 
     if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
         $prefixMd = substr($user['doctor'],0,5);
@@ -117,7 +117,7 @@ if ($page === 'search') {
         $where = "`doctorcode` = '$prefixMd'";
     }
 
-    $sql = "SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+    $sql = "SELECT `doctorcode` AS `doctorcode` FROM `doctor` WHERE $where ";
     $db->select($sql);
     $dr = $db->get_item();
     $doctorcode = $dr['doctorcode'];

@@ -6,6 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ทดสอบการลงข้อมูลระบบ43แฟ้ม</title>
 
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <![endif]-->
+
     <link type="text/css" href="assets/menu.css" rel="stylesheet" />
     <link type="text/css" href="assets/epoch_styles.css" rel="stylesheet" />
     <script type="text/javascript" src="assets/epoch_classes.js"></script>
