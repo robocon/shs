@@ -80,6 +80,7 @@ if ($page === 'search') {
             <th>Diag</th>
             <th>แพทย์</th>
             <th>มาเพื่อ</th>
+            <th></th>
         </tr>
     <?php
     foreach ($items as $key => $item) {
@@ -88,6 +89,7 @@ if ($page === 'search') {
             <td><?=$item['thidate'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['doctor'];?></td>
+            <td><?=$item['toborow'];?></td>
             <td><a href="epi.php?page=form&id=<?=$item['row_id'];?>">บันทึก</a></td>
         </tr>
         <?php
