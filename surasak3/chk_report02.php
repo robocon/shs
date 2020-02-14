@@ -75,7 +75,7 @@ function calcage($birth){
 // $xraydate ="18-09-2017";
 
 $sql1 = "SELECT a.*, a.`HN` AS `hn`, 
-b.`date_checkup` AS `show_date`, b.`name` AS `company_name`
+b.`date_checkup` AS `show_date`, b.`name` AS `company_name`,c.`agey` AS `age2`
 FROM `out_result_chkup` AS a 
 LEFT JOIN `chk_company_list` AS b ON b.`code` = a.`part` 
 LEFT JOIN (
@@ -96,6 +96,7 @@ if( $out_result_rows == 0 ){
 while($result = mysql_fetch_assoc($row2)){
 
 	$age = $result["age"];
+	$age2 = $result['age2'];
 	$hn = $result["hn"];
 	$show_date = $result['show_date'];
 
@@ -201,10 +202,19 @@ while($result = mysql_fetch_assoc($row2)){
 									<strong>ชื่อ : </strong>
 									<span style="font-size:24px">
 										<strong><?=$ptname;?></strong>&nbsp;&nbsp;&nbsp;
-										<?php if(!empty($age)){ ?>
+										<?php 
+										if(!empty($age)){ 
+										?>
 											<strong>อายุ : </strong> 
 											<strong><?=$age;?> ปี</strong>
-										<?php } ?>
+										<?php 
+										}else{
+										?>
+											<strong>อายุ : </strong> 
+											<strong><?=$age2;?> ปี</strong>
+										<?php 
+										}
+										?>
 									</span>
 								</td>
 							</tr>
