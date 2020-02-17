@@ -1443,6 +1443,15 @@ if ( $group2_rows > 0 ) {
 					</tr>
 					<?php
 				}
+				
+				if( !empty($result['occupa_health']) ){
+					?>
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>สายตาอาชีวอนามัย + สายตาสั้น, ยาว</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['occupa_health'];?></strong> </td>
+					</tr>
+					<?php
+				}
 				?>
           </table>
           </td>
