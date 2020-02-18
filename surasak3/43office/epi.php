@@ -158,7 +158,7 @@ if ($page === 'search') {
                 <tr>
                     <td class="txtRight">ÃËÑÊÇÑ¤«Õ¹ : </td>
                     <td>
-                        <input type="text" name="VACCINETYPE" id="VACCINETYPE"><span id="epi198" style="position: relative;"></div>
+                        <input type="text" name="VACCINETYPE" id="VACCINETYPE"><span id="epi198" style="position: relative;"></span>
                     </td>
                 </tr>
                 <tr>
