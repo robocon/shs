@@ -236,6 +236,8 @@ if(isset($_POST['hn'])){
                         <option value="ปกติ" <? if($arrchk['pt']=="ปกติ"){ echo "selected='selected'";} ?>>ปกติ</option>
                         <option value="ปอดจำกัดการขยายตัว" <? if($arrchk['pt']=="ปอดจำกัดการขยายตัว"){ echo "selected='selected'";} ?> >ปอดจำกัดการขยายตัว</option>
                         <option value="ปอดอุดกั้น" <? if($arrchk['pt']=="ปอดอุดกั้น"){ echo "selected='selected'";} ?>>ปอดอุดกั้น</option>
+						<option value="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)" <? if($arrchk['pt']=="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)"){ echo "selected='selected'";} ?>>มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)</option>
+						
                       </select>
 				      &nbsp;&nbsp;&nbsp;
 					  <? if($arrchk['pt']=="ปอดจำกัดการขยายตัว" || $arrchk['pt']=="ปอดอุดกั้น"){ echo "<span class='pdx'>".$arrchk['pt_detail']."</span>";} ?>
