@@ -16,7 +16,7 @@ if ( $year <= '2562' ) {
 }
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
-SELECT b.*  
+SELECT b.*, a.`doctor` AS `doctor2`, a.`ptname`,a.`age`
 FROM ( 
 	SELECT *  
 	FROM `opday` 
@@ -34,7 +34,7 @@ $test = $db->exec($sql);
 
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
-SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
+SELECT `id`,`row_id`,`date`,`hn`,`drugcode`,`amount`
 FROM `drugrx` 
 WHERE `year` = '$year' 
 AND `drugcode` IN ( 
@@ -53,7 +53,7 @@ $db->exec($sql);
 
 if( $table == 'a' ){
 
-    $sql = "SELECT * 
+    $sql = "SELECT a.*,b.* 
     FROM `tmp_opday_in15` AS a 
     LEFT JOIN `tmp_drugrx_in15` AS b ON b.`hn` = a.`hn` 
     WHERE b.`row_id` IS NOT NULL 
@@ -121,7 +121,7 @@ foreach ($items as $key => $item) {
         <td><?=$item['icd10'];?></td>
         <td><?=$item['drugcode'];?></td>
         <td><?=$item['amount'];?></td>
-        <td><?=$item['doctor'];?></td>
+        <td><?=$item['doctor2'];?></td>
     </tr>
     <?php
     $i++;
