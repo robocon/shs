@@ -1,39 +1,112 @@
 <?php
 session_start();
-include '../connect.php';
+include 'Connections/config.php';
 include 'Connections/all_function.php';
 
 $action = $_POST['action'];
 if( $action === 'save' ){
 
-  $hn=$_POST['hn'];
-  $vaccine = $_POST['vaccine'];
-  $vaccine_detail = $_POST['vaccine_detail'];
-  $unit=$_POST['unit'];
-  $doctor =$_POST['doctor'];
-  $lotno=$_POST['lotno'];
-  $lotno2=$_POST['lotno2'];
-  $date2 =$_POST['date2'];//date_end
-  $date3 =$_POST['date3'];//date_end2
-  
-  $y=date('Y')+543;
-  $m=date('m');
-  $d=date('d');
-  $datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
-  $date11=explode('/',$_POST['date1']);
-  $date1=$date11[2].'-'.$date11[1].'-'.$date11[0];
-  
-  $sql_add2="INSERT  INTO tb_service (date_ser,hn,id_vac,num,unit,name_doc,lotno,date_end,lotno2,date_end2,date_insert) VALUES ('$date1','$hn','$vaccine','$vaccine_detail','$unit','$doctor','$lotno','$date2','$lotno2','$date3','$datetime') ";
-  $query_add2=mysql_query($sql_add2) or die( mysql_error() );
-  
-  if($query_add2){
-    echo "บันทึกข้อมูลเรียบร้อยแล้ว";
-    echo "<meta http-equiv='refresh' content='2; url=service.php'>" ;
-  }else{
-    echo "Error Save [".$sql_add2."]";
-    echo "<meta http-equiv='refresh' content='2; url=service.php'>" ;
-  }
-  exit;
+	$hn=$_POST['hn'];
+	$vaccine = $_POST['vaccine'];
+	$vaccine_detail = $_POST['vaccine_detail'];
+	$unit=$_POST['unit'];
+	$doctor =$_POST['doctor'];
+	$lotno=$_POST['lotno'];
+	$lotno2=$_POST['lotno2'];
+	$date2 =$_POST['date2'];//date_end
+	$date3 =$_POST['date3'];//date_end2
+
+	$y=date('Y')+543;
+	$m=date('m');
+	$d=date('d');
+	$datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
+	$date11=explode('/',$_POST['date1']);
+	$date1=$date11[2].'-'.$date11[1].'-'.$date11[0];
+
+	$sql_add2="INSERT  INTO tb_service (date_ser,hn,id_vac,num,unit,name_doc,lotno,date_end,lotno2,date_end2,date_insert) VALUES ('$date1','$hn','$vaccine','$vaccine_detail','$unit','$doctor','$lotno','$date2','$lotno2','$date3','$datetime') ";
+	$query_add2=mysql_query($sql_add2) or die( mysql_error() );
+
+	/**
+	 * เก็บข้อมูล43แฟ้ม
+	 */
+	// เจน SEQ 
+	list($d1,$m1,$y1) = explode('/',$_POST['date1']);
+	$sql = "SELECT `row_id`,`vn`,`clinic` FROM `opday` WHERE `thidate` LIKE '".($y1+543)."-$m1-$d1%' AND `hn` = '$hn'";
+	$q = mysql_query($sql);
+
+	$vn = '00';
+	$clinicCode = '99';
+	$opday_id = '';
+	if ( mysql_num_rows($q) > 0 ) {
+		$item = mysql_fetch_assoc($q);
+		$clinicName = $item['clinic'];
+		$vn = $item['vn'];
+		$opday_id = $item['row_id'];
+	} 
+
+	if ( preg_match('/(\d+)\s(.+)/', $clinicName, $matchs) > 0 ) { 
+        
+        $clinicCode = $matchs['1'];
+
+    }elseif( $clinicName !== null ){ 
+		$q = mysql_query("SELECT `code` FROM `f43_clinic` WHERE `detail` = '$clinicName' ");
+		$clinicDb = mysql_fetch_assoc($q);
+		$clinicCode = $clinicDb['code'];
+    }
+
+    $s1 = date('Ymd', strtotime("$y1-$m1-$d1"));
+    $newHn = sprintf('%06d', $vn);
+	// เจน SEQ
+
+	$SEQ = $s1.$clinicCode.$newHn;
+	$DATE_SERV = $y1.$m1.$d1;
+
+	//
+	if( preg_match('/MD\d+/', $doctor) > 0 ){
+        $prefixMd = substr($doctor,0,5);
+        $where = "`name` LIKE '$prefixMd%'";
+
+    }elseif ( preg_match('/(\d+){4,5}/', $doctor, $matchs) ) {
+        $prefixMd = $matchs['0'];
+        $where = "`doctorcode` = '$prefixMd'";
+    }
+
+	$q = mysql_query("SELECT `doctorcode` FROM `doctor` WHERE $where ");
+	$dr = mysql_fetch_assoc($q);
+	$doctorcode = $dr['doctorcode'];
+
+	$q = mysql_query("SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ");
+	$dr = mysql_fetch_assoc($q);
+	$PROVIDER = $dr['PROVIDER'];
+	// 
+
+	$D_UPDATE = date('YmdHis'); 
+
+	$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn' ");
+	$opcard = mysql_fetch_assoc($q);
+	$CID = $opcard['idcard'];
+
+	// เก็บข้อมูล 43แฟ้ม
+	$sql = "INSERT INTO `43epi` ( 
+        `id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `VACCINETYPE`, 
+        `VACCINEPLACE`, `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
+    ) VALUES ( 
+        NULL, '11512', '$hn', '$SEQ', '$DATE_SERV', '$VACCINETYPE', 
+        '11512', '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id' 
+	);";
+	$query_add2 = mysql_query($sql);
+	if (!$query_add2) {
+		$sql_add2 = mysql_error();
+	}
+	
+	if($query_add2){
+		echo "บันทึกข้อมูลเรียบร้อยแล้ว";
+	}else{
+		echo "Error Save [".$sql_add2."]";
+	}
+
+	echo "<meta http-equiv='refresh' content='2; url=service.php'>" ;
+	exit;
 }
 
 
@@ -114,7 +187,15 @@ td,th {
 background-color: #000; 
 color: #FFF; 
 } 
-
+.chk_table{
+    border-collapse: collapse;
+	font-size:16pt;
+}
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+    border: 1px solid black;
+}
 /*div#copyright a { color:#00bfff; }
 div#copyright a:hover { color:#fff; }*/
 </style>
@@ -267,7 +348,7 @@ function fncSubmit()
 	
 	?>
 
-<form action="" method="post" name="sel" id="sel"  onsubmit="JavaScript:return fncSubmit();">
+<form action="service.php" method="post" name="sel" id="sel"  onsubmit="JavaScript:return fncSubmit();">
   <table width="50%" border="0" align="Center" cellpadding="2" cellspacing="2">
         <tr>
           <td colspan="2"><table width="100%"  border="0" align="center">
@@ -349,15 +430,38 @@ function fncSubmit()
 
 		if($dbarr2['name']=="MD041  วรวิทย์ วงษ์มณี"){
 			
-		echo "<option value='".$dbarr2['name']."' selected>".$dbarr2['name']."</option>";	
+			echo "<option value='".$dbarr2['name']."' selected>".$dbarr2['name']."</option>";	
 		}
 		else
 		{
-		echo "<option value='".$dbarr2['name']."' >".$dbarr2['name']."</option>";
+			echo "<option value='".$dbarr2['name']."' >".$dbarr2['name']."</option>";
 		}
 		}
 		?>
           </select></td>
+      </tr>
+	  <tr>
+	  	<td colspan="4" align="center" bgcolor="#E7E7E7" class="table_font1">ข้อมูล43แฟ้ม</td>
+	  </tr>
+	  <tr>
+          <td class="table_font1" style="text-align: right;">วัคซีนที่ฉีด : </td>
+          <td>
+            <input type="text" name="VACCINETYPE" id="VACCINETYPE" class="table_font2">
+			<span id="epi198" style="position: relative;"></span>
+          </td>
+      </tr> 
+	  <?php 
+	  	$thidate = (date('Y') + 543).date('-m-d');
+		// $sql = "SELECT `vn` FROM `opday` WHERE `hn` = '$hn' AND `thidate` LIKE '$thidate%' ";
+		$q = mysql_query("SELECT `vn` FROM `opday` WHERE `hn` = '$hn' AND `thidate` LIKE '$thidate%' ");
+		$opday = mysql_fetch_assoc($q);
+	  ?>
+	  <tr>
+          <td class="table_font1" style="text-align: right;">VN ที่มารับบริการ : </td>
+          <td>
+            <input type="text" name="VN" id="VN" class="table_font2" value="<?=$opday['vn'];?>"> 
+			<a href="javascript: void(0);" onclick="window.open('select_opday.php?hn=<?=$hn;?>','test','width=1024,height=300,status=1')">เลือก VN ย้อนหลังตามวันที่</a>
+          </td>
       </tr>
         <tr>
           <td colspan="2" align="center"><label>
@@ -370,13 +474,47 @@ function fncSubmit()
     </table>
      
 </form>
+<?php
+include '../includes/ajax.php';
+?>
+<script>
+	var btnVACCINETYPE = document.getElementById("VACCINETYPE");
+	btnVACCINETYPE.addEventListener('keyup', function(event) {
 
-  <?
-  }else{
-	  echo "<br/>";
-	    echo "<br/>";
-	 echo "<h1 align='left'>ไม่พบ HN </h1>";
-  }
+		var newSm = new SmHttp();
+		newSm.ajax(
+			'http://192.168.1.2/sm3/surasak3/43office/epi198.php', 
+			{ 'word': btnVACCINETYPE.value }, 
+			function(res){
+				document.getElementById('epi198').innerHTML = res;
+
+				/* https://clubmate.fi/detect-click-with-pure-javascript/ */
+				var el = document.getElementsByClassName('icd10');
+				for (var i=0; i < el.length; i++) {
+					// Here we have the same onclick
+					el.item(i).onclick = function(){
+
+						document.getElementById('VACCINETYPE').value = this.getAttribute('data');
+						document.getElementById('epi198').innerHTML = '';
+					};
+				}
+
+				// ปุ่มปิด
+				var btnClose = document.getElementById("btnLaborClose");
+				btnClose.addEventListener('click', function(event) { 
+					document.getElementById('epi198').innerHTML = '';
+				});
+
+			}
+		);
+	});
+</script>
+<?php 
+}else{
+	echo "<br/>";
+	echo "<br/>";
+	echo "<h1 align='left'>ไม่พบ HN </h1>";
+}
   }
 
   ?>

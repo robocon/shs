@@ -9,7 +9,7 @@
 
 // mysql_select_db($DatabaseName,$conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
 // mysql_query("SET NAMES TIS620", $conn);
-include '../connect.php';
+include 'Connections/config.php';
           
 $data = $_GET['data'];
 $val = $_GET['val'];

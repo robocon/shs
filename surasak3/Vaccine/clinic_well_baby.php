@@ -1,8 +1,28 @@
-<? 
+<?php
 session_start();
 
 include("Connections/connect.inc.php"); 
 include("Connections/all_function.php"); 
+
+if($_POST['button2']){
+	$register=date("Y-m-d H:i:s");
+	$thidate=explode('/',$_POST['date1']);
+	$thidate2=$thidate[2].'-'.$thidate[1].'-'.$thidate[0];
+	
+	$sql="INSERT INTO `well_baby` (thidate,`hn` , `age` , `weight` , `develop_age` , `growth` , `breastmilk` , `register` )
+	VALUES ('".$thidate2."','".$_POST['phn']."', '".$_POST['age']."', '".$_POST['weight']."', '".$_POST['develop_age']."', '".$_POST['growth']."', '".$_POST['breastmilk']."','".$register."');";
+	$query=mysql_query($sql)or die (mysql_error());
+
+	if($query){
+		echo"<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว </h1>";
+	}else {
+		echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้</h1>";
+	}
+
+	echo "<meta http-equiv='refresh' content='2; url=clinic_well_baby.php'>" ;
+	exit;
+}
+
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -80,6 +100,18 @@ td,th {
 background-color: #000; 
 color: #FFF; 
 } 
+label{
+	cursor: pointer;
+}
+table tr{
+	vertical-align: top;
+}
+.table43 td{
+	padding-bottom: 10px;
+}
+.table43 .table_font1{
+	/* text-align: right; */
+}
 
 /*div#copyright a { color:#00bfff; }
 div#copyright a:hover { color:#fff; }*/
@@ -196,80 +228,168 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 
 <fieldset><legend style="margin:0px 20px">ข้อมูลผู้ป่วย</legend>
   <form name="form2" method="post" action="" onSubmit="JavaScript:return fncSubmit();">
-    <table width="50%" border="0" align="center" >
-      <tr>
-        <td ><span class="table_font1">HN :</span><span class="table_font2">
-          <?=$fetch['hn'];?>
-          </span> <input name="phn" type="hidden" value="<?=$fetch['hn'];?>"><span class="table_font1">ชื่อ-สกุล :</span><span class="table_font2">
-            <?=$fetch['yot'].$fetch['name'].' '.$fetch['surname'];?>
-          </span></td>
-      </tr>
-      <tr>
-        <td ><span class="table_font1">สิทธิการรักษา :</span><span class="table_font2">
-          <?=$fetch['ptright'];?>
-        </span></td>
-      </tr>
-      <tr>
-        <td ><span class="table_font1">อายุ :</span><span class="table_font2">
-          <?=$age;?>
-        </span><input name="age" type="hidden" value="<?=$age;?>">
-        <input name="age1" id="age1" type="hidden" value="<?=$calage[0];?>">
-        <input name="age2" id="age2" type="hidden" value="<?=$calage[1];?>"></td>
-      </tr>
-      <tr>
-        <td ><span class="table_font1">วันที่ : 
-          <input name="date1" type="text" class="table_font2" id="date1" value="<?=date("d/m/Y");?>">
-        *เลือกวันที่จากปฎิทิน</span></td>
-      </tr>
-      <tr>
-        <td class="table_font1">น้ำหนัก : 
-          <label for="weight"></label>
-          <input name="weight" type="text" class="table_font2" id="weight" size="10">
-          ก.ก.</td>
-        </tr>
-      <tr>
-        <td class="table_font1">พัฒนาการสมวัย ด้านร่างกายและอารมณ์</td>
-        </tr>
-      <tr>
-        <td class="table_font1"><input name="develop_age" type="text" class="table_font2" id="develop_age" size="70"></td>
-      </tr>
-      <tr>
-        <td class="table_font1">การเจริญเติบโตตามมารตรฐานอายุและน้ำหนัก</td>
-      </tr>
-      <tr>
-        <td ><p>
-           <label class="table_font2">
-            <input type="radio" name="growth" value="N" id="growth_0">
-            ตามเกณฑ์</label>
-           <label class="table_font2">
-            <input type="radio" name="growth" value="L" id="growth_1">
-            ต่ำกว่าเกณฑ์</label>
-           <label class="table_font2">
-            <input type="radio" name="growth" value="M" id="growth_2">
-            เกินกว่าเกณฑ์</label>
-          <br>
-        </p></td>
-      </tr>
-        <? if($calage[0]<=0 && $calage[1]<=6 ){	?>
-      <tr>
-	
-        <td class="table_font1">
-        นมแม่ในเด็ก 2-6 เดือน
-	</td>
-      </tr>
-      <tr>
-        <td>
-        <label class="table_font2">
-            <input type="radio" name="breastmilk" value="นมแม่" id="breastmilk_0">
-            นมแม่</label>
-           <label class="table_font2">
-            <input type="radio" name="breastmilk" value="นมแม่+นมผสม" id="breastmilk_1">
-            นมแม่+นมผสม</label>
-           <label class="table_font2">
-            <input type="radio" name="breastmilk" value="นมผสม" id="breastmilk_2">
-            นมผสม</label></td>
-      </tr>
-       <?  } ?>
+    <table width="100%" border="0" align="center" >
+		<tr>
+			<td colspan="2">
+				<span class="table_font1">HN :</span><span class="table_font2"><?=$fetch['hn'];?></span> <input name="phn" type="hidden" value="<?=$fetch['hn'];?>"><span class="table_font1">ชื่อ-สกุล :</span><span class="table_font2"><?=$fetch['yot'].$fetch['name'].' '.$fetch['surname'];?></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class="table_font1">สิทธิการรักษา :</span><span class="table_font2"><?=$fetch['ptright'];?></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class="table_font1">อายุ : </span><span class="table_font2"><?=$age;?></span>
+				<input name="age" type="hidden" value="<?=$age;?>">
+				<input name="age1" id="age1" type="hidden" value="<?=$calage[0];?>">
+				<input name="age2" id="age2" type="hidden" value="<?=$calage[1];?>">
+			</td>
+		</tr>
+		<tr>
+			<td class="table_font1">วันที่รับบริการ : </td>
+			<td class="table_font2">
+				<input name="date1" type="text" class="table_font2" id="date1" value="<?=date("d/m/Y");?>"><span>*เลือกวันที่จากปฎิทิน</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="table_font1">น้ำหนัก : </td>
+			<td class="table_font2"><input name="weight" type="text" class="table_font2" id="weight" size="10">ก.ก.</td>
+		</tr>
+		<tr>
+			<td class="table_font1" colspan="2">พัฒนาการสมวัย ด้านร่างกายและอารมณ์</td>
+		</tr>
+		<tr>
+			<td class="table_font1" colspan="2"><input name="develop_age" type="text" class="table_font2" id="develop_age" size="70"></td>
+		</tr>
+		<tr>
+			<td class="table_font1" colspan="2">การเจริญเติบโตตามมารตรฐานอายุและน้ำหนัก</td>
+		</tr>
+		<tr>
+		<td colspan="2">
+			<label class="table_font2"><input type="radio" name="growth" value="N" id="growth_0">ตามเกณฑ์</label>
+			<label class="table_font2"><input type="radio" name="growth" value="L" id="growth_1">ต่ำกว่าเกณฑ์</label>
+			<label class="table_font2"><input type="radio" name="growth" value="M" id="growth_2">เกินกว่าเกณฑ์</label>
+		</td>
+		</tr>
+
+		<?php if($calage[0]<=0 && $calage[1]<=6 ){ ?>
+		<tr>
+			<td class="table_font1" colspan="2">นมแม่ในเด็ก 2-6 เดือน</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			<label class="table_font2">
+			<input type="radio" name="breastmilk" value="นมแม่" id="breastmilk_0">
+			นมแม่</label>
+			<label class="table_font2">
+			<input type="radio" name="breastmilk" value="นมแม่+นมผสม" id="breastmilk_1">
+			นมแม่+นมผสม</label>
+			<label class="table_font2">
+			<input type="radio" name="breastmilk" value="นมผสม" id="breastmilk_2">
+			นมผสม</label>
+			</td>
+		</tr>
+		<?php } ?>
+    <tr>
+		<td style="text-align: center; background-color: #b3b3b3;" class="table_font1" colspan="2">ข้อมูล 43แฟ้ม</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table class="table43">
+				<tr>
+					<td class="table_font1">ส่วนสูง : </td>
+					<td class="table_font2"><input type="text" name="HEIGHT" id="">ซม.</td>
+				</tr>
+				<tr>
+					<td class="table_font1">เส้นรอบศรีษะ : </td>
+					<td class="table_font2"><input type="text" name="HEADCIRCUM" id="">ซม.</td>
+				</tr>
+				<tr>
+					<td class="table_font1">ระดับพัฒนาการเด็ก : </td>
+					<td class="table_font2">
+					<?php 
+					$q = mysql_query("SELECT * FROM `f43_nutrition_201`");
+					$i = 1;
+					while( $item = mysql_fetch_assoc($q) ){ 
+						?>
+						<input type="radio" name="CHILDDEVELOP" id="cdev<?=$i;?>" value="<?=$item['code'];?>">&nbsp;<label for="cdev<?=$i;?>"><?=$item['detail'];?></label>
+						<?php
+						$i++;
+					}
+					?>
+					</td>
+				</tr>
+				<tr>
+					<td class="table_font1">อาหารที่รับประทานปัจจุบัน : </td>
+					<td class="table_font2">
+					<?php 
+					$q = mysql_query("SELECT * FROM `f43_nutrition_202`");
+					$i = 1;
+					while( $item = mysql_fetch_assoc($q) ){ 
+						?>
+						<input type="radio" name="FOOD" id="food<?=$i;?>" value="<?=$item['code'];?>">&nbsp;<label for="food<?=$i;?>"><?=$item['detail'];?></label><br>
+						<?php
+						$i++;
+					}
+					?>
+					</td>
+				</tr>
+				<tr>
+                    <td class="table_font1">การใช้ขวดนม : </td>
+                    <td class="table_font2">
+						<?php 
+						$q = mysql_query("SELECT * FROM `f43_nutrition_203`");
+						$i = 1;
+						while( $item = mysql_fetch_assoc($q) ){ 
+							?>
+							<input type="radio" name="BOTTLE" id="bottle<?=$i;?>" value="<?=$item['code'];?>">&nbsp;<label for="bottle<?=$i;?>"><?=$item['detail'];?></label><br>
+							<?php
+							$i++;
+						}
+						?>
+						</td>
+                    </td>
+                </tr>
+				<tr>
+                    <td class="table_font1">แพทย์ผู้ให้บริการ : </td>
+                    <td class="table_font2">
+                        <?php 
+                        // $db->select("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` ORDER BY `ROW_ID` ");
+						// $providerLists = $db->get_items();
+
+						$query = mysql_query("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` WHERE `REGISTERNO` <> '' ORDER BY `ROW_ID` ");
+						// mysql_fetch_assoc();
+						?>
+						<select name="PROVIDER" id="">
+							<option value="">กรุณาเลือกผู้ให้บริการ</option>
+							<?php 
+							// foreach ($providerLists as $key => $pv) {
+							while( $pv = mysql_fetch_assoc($query) ){
+								
+								$dr_no = '';
+								if( $pv['REGISTERNO'] ){
+									$dr_no = ' ('.$pv['REGISTERNO'].')';
+								}
+							
+							?>
+							<option value="<?=$pv['PROVIDER'];?>"><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
+							<?php
+							}
+							?>
+						</select>
+						<?php
+                        ?>
+                    </td>
+                </tr>
+				<tr class="table_font1">
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
       <tr>
         <td>&nbsp;</td>
       </tr>
@@ -283,31 +403,7 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 
 <? 
 }
-if($_POST['button2']){
 
-$register=date("Y-m-d H:i:s");
-
-$thidate=explode('/',$_POST['date1']);
-
-$thidate2=$thidate[2].'-'.$thidate[1].'-'.$thidate[0];
-
-$sql="INSERT INTO `well_baby` (thidate,`hn` , `age` , `weight` , `develop_age` , `growth` , `breastmilk` , `register` )
-VALUES ('".$thidate2."','".$_POST['phn']."', '".$_POST['age']."', '".$_POST['weight']."', '".$_POST['develop_age']."', '".$_POST['growth']."', '".$_POST['breastmilk']."','".$register."');";
-
-$query=mysql_query($sql)or die (mysql_error());
-		 
-		 
-			 if($query){
-			echo"<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว </h1>";
-			echo "<meta http-equiv='refresh' content='2; url=clinic_well_baby.php'>" ;
-	
-			}else {
-			echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้</h1>";
-			echo "<meta http-equiv='refresh' content='2; url=clinic_well_baby.php'>" ;
-			}	
-			
-			
-}
 ?>
 </div>
 <!-- InstanceEndEditable -->
