@@ -2090,7 +2090,7 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 					$newdatedc=$datedc[0]-543;
 					$newdcdate =$newdatedc.$datedc[1].$datedc[2];  //  DATE_SERV ใช้ตัวแปรนี้นำเข้าข้อมูล							
 					
-				$sqlip ="select *, sum(price) as sumprice, sum(amount) as sumamount from  ipacc  where $newcredit and an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code";
+				$sqlip ="select *, sum(price) as sumprice, sum(amount) as sumamount from  ipacc  where an='".$an16."' AND depart='PHAR' AND (part ='DDL' || part ='DDY') group by code having sum(price) > 0 ";
 				//echo $sqlip."==>";
 				$resultip = mysql_query($sqlip) or die("Query ipcard failed16");
 					$i=0;
