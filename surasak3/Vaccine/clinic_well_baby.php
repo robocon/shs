@@ -4,13 +4,19 @@ session_start();
 include("Connections/connect.inc.php"); 
 include("Connections/all_function.php"); 
 
-if($_POST['button2']){
+if($_POST['button2']){ 
+
 	$register=date("Y-m-d H:i:s");
 	$thidate=explode('/',$_POST['date1']);
 	$thidate2=$thidate[2].'-'.$thidate[1].'-'.$thidate[0];
+
+	$develop_age_id = $_POST['develop_age'];
+	$q = mysql_query("SELECT * FROM `f43_nutrition_201` WHERE `code` = '$develop_age_id' ");
+	$nu = mysql_fetch_assoc($q);
+	$develop_age = $nu['detail'];
 	
-	$sql="INSERT INTO `well_baby` (thidate,`hn` , `age` , `weight` , `develop_age` , `growth` , `breastmilk` , `register` )
-	VALUES ('".$thidate2."','".$_POST['phn']."', '".$_POST['age']."', '".$_POST['weight']."', '".$_POST['develop_age']."', '".$_POST['growth']."', '".$_POST['breastmilk']."','".$register."');";
+	$sql="INSERT INTO `well_baby` ( thidate,`hn` , `age` , `weight` , `develop_age` , `growth` , `breastmilk` , `register` )
+	VALUES ('".$thidate2."','".$_POST['phn']."', '".$_POST['age']."', '".$_POST['weight']."', '".$develop_age."', '".$_POST['growth']."', '".$_POST['breastmilk']."','".$register."');";
 	$query=mysql_query($sql)or die (mysql_error());
 
 	if($query){
@@ -257,12 +263,14 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 			<td class="table_font1">น้ำหนัก : </td>
 			<td class="table_font2"><input name="weight" type="text" class="table_font2" id="weight" size="10">ก.ก.</td>
 		</tr>
+		<!--
 		<tr>
 			<td class="table_font1" colspan="2">พัฒนาการสมวัย ด้านร่างกายและอารมณ์</td>
 		</tr>
 		<tr>
 			<td class="table_font1" colspan="2"><input name="develop_age" type="text" class="table_font2" id="develop_age" size="70"></td>
 		</tr>
+-->
 		<tr>
 			<td class="table_font1" colspan="2">การเจริญเติบโตตามมารตรฐานอายุและน้ำหนัก</td>
 		</tr>
@@ -314,7 +322,8 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 					$i = 1;
 					while( $item = mysql_fetch_assoc($q) ){ 
 						?>
-						<input type="radio" name="CHILDDEVELOP" id="cdev<?=$i;?>" value="<?=$item['code'];?>">&nbsp;<label for="cdev<?=$i;?>"><?=$item['detail'];?></label>
+						<!-- develop_age is CHILDDEVELOP-->
+						<input type="radio" name="develop_age" id="cdev<?=$i;?>" value="<?=$item['code'];?>">&nbsp;<label for="cdev<?=$i;?>"><?=$item['detail'];?></label>
 						<?php
 						$i++;
 					}
@@ -383,18 +392,14 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
                         ?>
                     </td>
                 </tr>
-				<tr class="table_font1">
-					<td></td>
-					<td></td>
-				</tr>
 			</table>
 		</td>
 	</tr>
       <tr>
-        <td>&nbsp;</td>
+        <td colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center"><input name="button2" type="submit" class="table_font1" id="button2" value="บันทึกข้อมูล"></td>
+        <td align="center" colspan="2"><input name="button2" type="submit" class="table_font1" id="button2" value="บันทึกข้อมูล"></td>
       </tr>
 	 
     </table>

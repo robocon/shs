@@ -1,5 +1,60 @@
-<? 
+<?php 
+include("Connections/connect.inc.php"); 
+include("Connections/all_function.php"); 
+
 session_start();
+
+if($_REQUEST['do']=="edit"){
+	
+	$y=date('Y')+543;
+	$m=date('m');
+	$d=date('d');
+	$datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
+	
+	if($_POST['vaccine']=='0' || $_POST['vaccine_detail']=='0'){
+	
+		$strSQL = "UPDATE tb_service  SET ";
+		$strSQL .="date_ser = '".$_POST["date1"]."' ";
+		$strSQL .=",hn = '".$_POST["hn"]."' ";
+		$strSQL .=",unit	 = '".$_POST["unit"]."' ";
+		$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
+		$strSQL .=",lotno = '".$_POST["lotno"]."' ";
+		$strSQL .=",date_end= '".$_POST["date2"]."' ";
+		$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
+		$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
+		$strSQL .=",date_insert = '".$datetime."' ";
+		$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
+	
+	}else{
+		
+		$strSQL = "UPDATE tb_service  SET ";
+		$strSQL .="date_ser = '".$_POST["date1"]."' ";
+		$strSQL .=",hn = '".$_POST["hn"]."' ";
+		$strSQL .=",id_vac = '".$_POST["vaccine"]."' ";
+		$strSQL .=",num = '".$_POST["vaccine_detail"]."' ";
+		$strSQL .=",unit	 = '".$_POST["unit"]."' ";
+		$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
+		$strSQL .=",lotno = '".$_POST["lotno"]."' ";
+		$strSQL .=",date_end= '".$_POST["date2"]."' ";
+		$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
+		$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
+		$strSQL .=",date_insert = '".$datetime."' ";
+		$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
+	}
+	$objQuery = mysql_query($strSQL);
+	if($objQuery){ 
+		echo "<H3 class='forntsarabun'>แก้ไขข้อมูลเรียบร้อยแล้ว</H3>";
+
+	}else{	
+		echo "<H3 class='forntsarabun'>ไม่สามารถแก้ไขได้</H3>";
+
+	}
+
+	echo "<meta http-equiv=refresh content=1;URL=show_edit.php>";
+	exit;
+}
+
+
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -133,8 +188,7 @@ window.onLoad=dochange('vaccine', -1);
 
 </script>
 <?
-@include("Connections/connect.inc.php"); 
-@include("Connections/all_function.php"); 
+
 
 	$id_s=$_GET['id_s'];
 
@@ -284,54 +338,6 @@ window.onLoad=dochange('vaccine', -1);
   </table>
 </form>
 <? } 
-
-if($_REQUEST['do']=="edit"){
-	
-	$y=date('Y')+543;
-	$m=date('m');
-	$d=date('d');
-	$datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
-	
-	if($_POST['vaccine']=='0' || $_POST['vaccine_detail']=='0'){
-	
-	$strSQL = "UPDATE tb_service  SET ";
-	$strSQL .="date_ser = '".$_POST["date1"]."' ";
-	$strSQL .=",hn = '".$_POST["hn"]."' ";
-	$strSQL .=",unit	 = '".$_POST["unit"]."' ";
-	$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
-	$strSQL .=",lotno = '".$_POST["lotno"]."' ";
-	$strSQL .=",date_end= '".$_POST["date2"]."' ";
-	$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
-	$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
-	$strSQL .=",date_insert = '".$datetime."' ";
-	$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
-	
-	}else{
-		
-	$strSQL = "UPDATE tb_service  SET ";
-	$strSQL .="date_ser = '".$_POST["date1"]."' ";
-	$strSQL .=",hn = '".$_POST["hn"]."' ";
-	$strSQL .=",id_vac = '".$_POST["vaccine"]."' ";
-	$strSQL .=",num = '".$_POST["vaccine_detail"]."' ";
-	$strSQL .=",unit	 = '".$_POST["unit"]."' ";
-	$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
-	$strSQL .=",lotno = '".$_POST["lotno"]."' ";
-	$strSQL .=",date_end= '".$_POST["date2"]."' ";
-	$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
-	$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
-	$strSQL .=",date_insert = '".$datetime."' ";
-	$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
-	}
-	$objQuery = mysql_query($strSQL);
-	if($objQuery){ 
-	echo "<H3 class='forntsarabun'>แก้ไขข้อมูลเรียบร้อยแล้ว</H3>";
-	echo "<meta http-equiv=refresh content=1;URL=show_edit.php>";
-	}else{	
-	echo "<H3 class='forntsarabun'>ไม่สามารถแก้ไขได้</H3>";
-	echo "<meta http-equiv=refresh content=1;URL=show_edit.php>";
-	}
-
-}
 ?>
 <!-- InstanceEndEditable -->
 
