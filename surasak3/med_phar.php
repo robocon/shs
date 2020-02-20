@@ -69,7 +69,7 @@ if ($action === 'active') {
     </div>
     <!-- 210mm is 793.7007874px -->
     <!-- 190mm is 718.11023622px -->
-    <img src="<?=$item['path'];?>" width="718.11023622px" id="mainImg">
+    <img src="<?=$item['path'];?>" width="700px" id="mainImg">
     <script>
         function print_img(){
             window.print();
@@ -167,7 +167,12 @@ if( isset($_SESSION['x-msg']) ){
 <div>
     <h3>นำร่องอายุรกรรม(ช่วงทดสอบ)</h3>
 </div>
+
+<div style="display: none;"><?=var_dump($_SERVER['HTTP_USER_AGENT']);?></div>
+
 <?php 
+
+
 
 if ( $_GET['fill_an'] ) {
     $_SESSION['fix_an'] = $_GET['fill_an'];
@@ -222,12 +227,22 @@ if ( mysql_num_rows($q) > 0 ) {
                 <p><?=$fullWardName;?></p>
             </td>
             <td>
-                <!--[if lte IE 8]><!-->
+                <?php 
+                if( preg_match('/MSIE/',$_SERVER['HTTP_USER_AGENT']) > 0 ){
+                    ?>
+                    <!--[if lt IE 9]>
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
-                <![endif]-->
-                <!--[if gte IE 9 | !IE ]><!-->
+                    <![endif]-->
+                    <!--[if gte IE 9]>
                     <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
-                <![endif]-->
+                    <![endif]-->
+                    <?php
+                }else{
+                    ?>
+                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
+                    <?php
+                }
+                ?>
             </td>
             <td style="vertical-align: middle;">
                 <a href="med_phar.php?action=active&id=<?=$item['id'];?>&an=<?=$item['an'];?>" class="btnActive">Active & Print</a>
@@ -334,15 +349,23 @@ if ( $page === 'searchFile' ) {
                     <p><?=$fullWardName;?></p>
                 </td>
                 <td>
-                <!--[if lte IE 8]>
+                <?php 
+                if( preg_match('/MSIE/',$_SERVER['HTTP_USER_AGENT']) > 0 ){ 
+                    ?>
+                    <!--[if lt IE 9]>
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
-                <![endif]-->
-                <!--[if gte IE 9 | !IE ]>
+                    <![endif]-->
+                    <!--[if gte IE 9]>
                     <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
-                <![endif]-->
+                    <![endif]-->
+                    <?php
+                }else{
+                    ?><a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a><?php
+                }
+                ?>
                 </td>
                 <td style="vertical-align: middle;">
-                    <a href="med_phar.php?action=print&&id=<?=$item['id'];?>" class="btnActive" target="_blank">พิมพ์</a>
+                    <a href="med_phar.php?action=print&id=<?=$item['id'];?>" class="btnActive" target="_blank">พิมพ์</a>
                 </td>
             </tr>
             <?php
