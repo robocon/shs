@@ -4,7 +4,7 @@ include 'Connections/config.php';
 include 'Connections/all_function.php';
 
 $hn = $_GET['hn'];
-$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `thidate`,`vn`,`diag`,`doctor`,`clinic`,`toborow` 
+$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `thidate`, toEn(SUBSTRING(`thidate`,1,10)) AS `date2`,`vn`,`diag`,`doctor`,`clinic`,`toborow` 
 FROM `opday` 
 WHERE `hn` = '$hn' 
 AND `thidate` >= '2561-01-01 00:00:00' 
@@ -32,11 +32,15 @@ if ( mysql_num_rows($q) > 0 ) {
             <th>มาเพื่อ</th>
         </tr>
         <?php
-        while ($item = mysql_fetch_assoc($q)) {
+        while ($item = mysql_fetch_assoc($q)) { 
+
+            list($y, $m, $d) = explode('-', $item['date2']);
+            $toCalendar = $m.'/'.$d.'/'.$y;
+
             ?>
             <tr>
                 <td><?=$item['thidate'];?></td>
-                <td><a href="javascript:void(0);" onclick="opener.document.sel.VN.value=<?=$item['vn'];?>;self.close();"><?=$item['vn'];?></a></td>
+                <td><a href="javascript:void(0);" onclick="opener.document.sel.date1.value='<?=$toCalendar;?>';self.close();"><?=$item['vn'];?></a></td>
                 <td><?=$item['doctor'];?></td>
                 <td><?=$item['diag'];?></td>
                 <td><?=$item['clinic'];?></td>

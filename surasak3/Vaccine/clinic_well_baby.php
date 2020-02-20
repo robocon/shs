@@ -19,10 +19,72 @@ if($_POST['button2']){
 	VALUES ('".$thidate2."','".$_POST['phn']."', '".$_POST['age']."', '".$_POST['weight']."', '".$develop_age."', '".$_POST['growth']."', '".$_POST['breastmilk']."','".$register."');";
 	$query=mysql_query($sql)or die (mysql_error());
 
+	$PID = $hn = $_POST['hn'];
+	$WEIGHT = $_POST['weight'];
+
+	// เอา VN ไปทำ SEQ 
+	$vn = '00';
+	$clinicCode = '99';
+	$opday_id = '';
+	list($m1,$d1,$y1) = explode('/',$_POST['date1']);
+	$sql = "SELECT `row_id`,`vn`,`clinic` FROM `opday` WHERE `thidate` LIKE '".($y1+543)."-$m1-$d1%' AND `hn` = '$hn'";
+	$q = mysql_query($sql);
+	if ( mysql_num_rows($q) > 0 ) {
+		$item = mysql_fetch_assoc($q);
+		$clinicName = $item['clinic'];
+		$vn = $item['vn'];
+		$opday_id = $item['row_id'];
+	}
+
+	$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn' ");
+	$opcard = mysql_fetch_assoc($q);
+	$CID = $opcard['idcard'];
+
+	// รหัสคลินิก
+	if ( preg_match('/(\d+)\s(.+)/', $clinicName, $matchs) > 0 ) { 
+        
+        $clinicCode = $matchs['1'];
+
+    }elseif( $clinicName !== null ){ 
+		$q = mysql_query("SELECT `code` FROM `f43_clinic` WHERE `detail` = '$clinicName' ");
+		$clinicDb = mysql_fetch_assoc($q);
+		$clinicCode = $clinicDb['code'];
+	}
+	
+	$s1 = date('Ymd', strtotime("$y1-$m1-$d1"));
+	$newHn = sprintf('%06d', $vn);
+	
+	$SEQ = $s1.$clinicCode.$newHn;
+	$DATE_SERV = $y1.$m1.$d1;
+	$D_UPDATE = date('YmdHis'); 
+
+	$NUTRITIONPLACE = $HOSPCODE = '11512';
+	$HEIGHT = $_POST['HEIGHT'];
+	$HEADCIRCUM = $_POST['HEADCIRCUM'];
+	$FOOD = $_POST['FOOD'];
+	$BOTTLE = $_POST['BOTTLE'];
+	$PROVIDER = $_POST['PROVIDER'];
+	$CHILDDEVELOP = $develop_age_id;
+
+	$sql = "INSERT INTO `43nutrition` ( 
+        `id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `NUTRITIONPLACE`, 
+        `WEIGHT`, `HEIGHT`, `HEADCIRCUM`, `CHILDDEVELOP`, `FOOD`, `BOTTLE`, 
+        `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
+    ) VALUES ( 
+        NULL, '$HOSPCODE', '$PID', '$SEQ', '$DATE_SERV', '$NUTRITIONPLACE', 
+        '$WEIGHT', '$HEIGHT', '$HEADCIRCUM', '$CHILDDEVELOP', '$FOOD', '$BOTTLE', 
+        '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id' 
+	);";
+	$query_add2 = mysql_query($sql);
+	if (!$query_add2) {
+		$sql_add2 = mysql_error();
+	}
+	// เพิ่มข้อมูลเข้า 43แฟ้ม
+
 	if($query){
-		echo"<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว </h1>";
+		echo "<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว</h1>";
 	}else {
-		echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้</h1>";
+		echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้ $sql_add2 </h1>";
 	}
 
 	echo "<meta http-equiv='refresh' content='2; url=clinic_well_baby.php'>" ;
@@ -174,12 +236,12 @@ window.onload = function () {
 
 </form>
 
-<? 
+<?php
 if($_POST['button']!=''){
 	
+	$postHn = trim($_POST['hn']);
 
-
-	$sql1 = "select *  from opcard Where  hn = '".$_POST['hn']."' ";
+	$sql1 = "select *  from opcard Where  hn = '$postHn' ";
 	$result1 = mysql_query($sql1);
 	$numrows=mysql_num_rows($result1);
 	$fetch= mysql_fetch_array($result1);
@@ -198,27 +260,27 @@ if($_POST['button']!=''){
 
 function fncSubmit()
 {
-	if(document.form2.weight.value=="")
+	if(document.sel.weight.value=="")
 	{
 		alert('กรุณาระบุน้ำหนักด้วยครับ');
-		document.form2.weight.focus();
+		document.sel.weight.focus();
 		return false;
 	}
-	if(document.form2.develop_age.value==""){
+	if(document.sel.develop_age.value==""){
 		alert("กรุณาระบุข้อมูล พัฒนาการสมวัย ด้านร่างกายและอารมณ์") ;
-		document.form2.develop_age.focus() ;
+		document.sel.develop_age.focus() ;
 		return false ;
 	}		
 
-	if(document.form2.growth_0.checked == false && document.form2.growth_1.checked == false && document.form2.growth_2.checked == false)
+	if(document.sel.growth_0.checked == false && document.sel.growth_1.checked == false && document.sel.growth_2.checked == false)
 	{
 		alert('กรุณาเลือก การเจริญเติบโตตามมารตรฐานอายุและน้ำหนัก');
 		
 		return false;
 	}	
 	
-if(document.form2.age1.value<=0 && document.form2.age2.value<=6){	
-	if(document.form2.breastmilk_0.checked == false && document.form2.breastmilk_1.checked == false && document.form2.breastmilk_2.checked == false)
+if(document.sel.age1.value<=0 && document.sel.age2.value<=6){	
+	if(document.sel.breastmilk_0.checked == false && document.sel.breastmilk_1.checked == false && document.sel.breastmilk_2.checked == false)
 	{
 		alert('กรุณาเลือก นมแม่ในเด็ก 2-6 เดือน');
 		
@@ -227,13 +289,13 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 	
 }
 	
-	document.form2.submit();
+	document.sel.submit();
 }
 
 </script>
 
 <fieldset><legend style="margin:0px 20px">ข้อมูลผู้ป่วย</legend>
-  <form name="form2" method="post" action="" onSubmit="JavaScript:return fncSubmit();">
+  <form name="sel" id="sel" method="post" action="clinic_well_baby.php" onSubmit="JavaScript:return fncSubmit();">
     <table width="100%" border="0" align="center" >
 		<tr>
 			<td colspan="2">
@@ -256,7 +318,8 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 		<tr>
 			<td class="table_font1">วันที่รับบริการ : </td>
 			<td class="table_font2">
-				<input name="date1" type="text" class="table_font2" id="date1" value="<?=date("d/m/Y");?>"><span>*เลือกวันที่จากปฎิทิน</span>
+				<input name="date1" type="text" class="table_font2" id="date1" value="<?=date("d/m/Y");?>"> 
+				<a href="javascript: void(0);" onclick="window.open('select_opday.php?hn=<?=$hn;?>','test','width=1024,height=300,status=1')">เลือกวันที่ย้อนหลังตามวันที่มารับบริการ</a>
 			</td>
 		</tr>
 		<tr>
@@ -308,11 +371,11 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
 			<table class="table43">
 				<tr>
 					<td class="table_font1">ส่วนสูง : </td>
-					<td class="table_font2"><input type="text" name="HEIGHT" id="">ซม.</td>
+					<td class="table_font2"><input type="text" class="table_font2" name="HEIGHT" id="">ซม.</td>
 				</tr>
 				<tr>
 					<td class="table_font1">เส้นรอบศรีษะ : </td>
-					<td class="table_font2"><input type="text" name="HEADCIRCUM" id="">ซม.</td>
+					<td class="table_font2"><input type="text" class="table_font2" name="HEADCIRCUM" id="">ซม.</td>
 				</tr>
 				<tr>
 					<td class="table_font1">ระดับพัฒนาการเด็ก : </td>
@@ -365,25 +428,22 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
                     <td class="table_font1">แพทย์ผู้ให้บริการ : </td>
                     <td class="table_font2">
                         <?php 
-                        // $db->select("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` ORDER BY `ROW_ID` ");
-						// $providerLists = $db->get_items();
-
 						$query = mysql_query("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` WHERE `REGISTERNO` <> '' ORDER BY `ROW_ID` ");
-						// mysql_fetch_assoc();
 						?>
 						<select name="PROVIDER" id="">
 							<option value="">กรุณาเลือกผู้ให้บริการ</option>
 							<?php 
-							// foreach ($providerLists as $key => $pv) {
 							while( $pv = mysql_fetch_assoc($query) ){
 								
 								$dr_no = '';
 								if( $pv['REGISTERNO'] ){
 									$dr_no = ' ('.$pv['REGISTERNO'].')';
 								}
+
+								$selected = ( $pv['PROVIDER'] == '11512270350101' ) ? 'selected="selected"' : '' ;
 							
 							?>
-							<option value="<?=$pv['PROVIDER'];?>"><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
+							<option value="<?=$pv['PROVIDER'];?>" <?=$selected;?>><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
 							<?php
 							}
 							?>
@@ -399,7 +459,10 @@ if(document.form2.age1.value<=0 && document.form2.age2.value<=6){
         <td colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td align="center" colspan="2"><input name="button2" type="submit" class="table_font1" id="button2" value="บันทึกข้อมูล"></td>
+        <td align="center" colspan="2">
+			<input name="button2" type="submit" class="table_font1" id="button2" value="บันทึกข้อมูล">
+			<input type="hidden" name="hn" value="<?=$fetch['hn'];?>">
+		</td>
       </tr>
 	 
     </table>

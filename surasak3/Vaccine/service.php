@@ -29,8 +29,10 @@ if( $action === 'save' ){
 	/**
 	 * เก็บข้อมูล43แฟ้ม
 	 */
+	$VACCINETYPE = $_POST['VACCINETYPE'];
 	// เจน SEQ 
-	list($d1,$m1,$y1) = explode('/',$_POST['date1']);
+	// @todo วันที่จาก date1 จะเป็น mmddYYYY
+	list($m1,$d1,$y1) = explode('/',$_POST['date1']);
 	$sql = "SELECT `row_id`,`vn`,`clinic` FROM `opday` WHERE `thidate` LIKE '".($y1+543)."-$m1-$d1%' AND `hn` = '$hn'";
 	$q = mysql_query($sql);
 
@@ -86,17 +88,25 @@ if( $action === 'save' ){
 	$opcard = mysql_fetch_assoc($q);
 	$CID = $opcard['idcard'];
 
-	// เก็บข้อมูล 43แฟ้ม
-	$sql = "INSERT INTO `43epi` ( 
-        `id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `VACCINETYPE`, 
-        `VACCINEPLACE`, `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
-    ) VALUES ( 
-        NULL, '11512', '$hn', '$SEQ', '$DATE_SERV', '$VACCINETYPE', 
-        '11512', '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id' 
-	);";
-	$query_add2 = mysql_query($sql);
-	if (!$query_add2) {
-		$sql_add2 = mysql_error();
+	$vaccList = array($VACCINETYPE);
+	if( strstr($VACCINETYPE, ',') !== false ){
+		$vaccList = explode(',', $VACCINETYPE);
+	}
+
+	foreach ($vaccList as $key => $value) {
+
+		// เก็บข้อมูล 43แฟ้ม
+		$sql = "INSERT INTO `43epi` ( 
+			`id`, `HOSPCODE`, `PID`, `SEQ`, `DATE_SERV`, `VACCINETYPE`, 
+			`VACCINEPLACE`, `PROVIDER`, `D_UPDATE`, `CID`, `opday_id` 
+		) VALUES ( 
+			NULL, '11512', '$hn', '$SEQ', '$DATE_SERV', '$value', 
+			'11512', '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id' 
+		);";
+		$query_add2 = mysql_query($sql);
+		if (!$query_add2) {
+			$sql_add2 = mysql_error();
+		}
 	}
 	
 	if($query_add2){
@@ -218,14 +228,10 @@ div#copyright a:hover { color:#fff; }*/
 <link rel="stylesheet" type="text/css" href="epoch_styles.css" />
 <script type="text/javascript" src="epoch_classes.js"></script>
 <script type="text/javascript">
-
-	var bas_cal,dp_cal,ms_cal;
-
-window.onload = function () {
-	dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('date1'));
-
-};
-
+	var dp_cal;
+	window.onload = function () {
+		dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('date1'),false);
+	};
 </script>
 <script src="../templates/classic/main.js"></script>
 
@@ -316,9 +322,9 @@ function fncSubmit()
 </form>
 
 <hr>
-  <?
+  <?php
 
- $hn=$_POST['hn'];
+ $hn=trim($_POST['hn']);
 
   if($_POST['button']=='ตกลง' || $hn!=''){
 
@@ -376,7 +382,10 @@ function fncSubmit()
       </tr>
         <tr>
           <td align="right" class="table_font1">วันที่รับบริการ:</td>
-          <td> <input name="date1" type="text" class="table_font2" id="date1"  value="<?=$dateN;?>" size="15"/></td>
+          <td>
+		  	<input name="date1" type="text" class="table_font2" id="date1"  value="<?=$dateN;?>" size="15"/> 
+			  <a href="javascript: void(0);" onclick="window.open('select_opday.php?hn=<?=$hn;?>','test','width=1024,height=300,status=1')">เลือกวันที่ย้อนหลังตามวันที่มารับบริการ</a>
+		  </td>
       </tr>
         <tr>
           <td align="right" class="table_font1">วัคซีนที่ฉีด :</td>
@@ -450,19 +459,6 @@ function fncSubmit()
 			<span id="epi198" style="position: relative;"></span>
           </td>
       </tr> 
-	  <?php 
-	  	$thidate = (date('Y') + 543).date('-m-d');
-		// $sql = "SELECT `vn` FROM `opday` WHERE `hn` = '$hn' AND `thidate` LIKE '$thidate%' ";
-		$q = mysql_query("SELECT `vn` FROM `opday` WHERE `hn` = '$hn' AND `thidate` LIKE '$thidate%' ");
-		$opday = mysql_fetch_assoc($q);
-	  ?>
-	  <tr>
-          <td class="table_font1" style="text-align: right;">VN ที่มารับบริการ : </td>
-          <td>
-            <input type="text" name="VN" id="VN" class="table_font2" value="<?=$opday['vn'];?>"> 
-			<a href="javascript: void(0);" onclick="window.open('select_opday.php?hn=<?=$hn;?>','test','width=1024,height=300,status=1')">เลือก VN ย้อนหลังตามวันที่</a>
-          </td>
-      </tr>
         <tr>
           <td colspan="2" align="center"><label>
             <input name="unit" type="hidden" id="unit" value="1" />
