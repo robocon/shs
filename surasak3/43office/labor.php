@@ -107,7 +107,7 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td class="txtRight">ทะเบียนบุคคล : </td>
+                    <td class="txtRight">ทะเบียนบุคคล(HN) : </td>
                     <td>
                         <input type="text" name="PID" value="<?=$ipcard['hn'];?>" readonly>
                     </td>
@@ -150,7 +150,7 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">รหัสสถานพยาบาลที่คลอด : </td>
-                    <td><input type="text" name="BHOSP" value="11512"></td>
+                    <td><input type="text" name="BHOSP" value="11512" readonly></td>
                 </tr>
                 <tr>
                     <td class="txtRight">วิธีการคลอด/สิ้นสุดการตั้งครรภ์ : </td>
@@ -193,7 +193,7 @@ if ( $page === 'search' ) {
                     <td><input type="text" name="SBORN" value="0"></td>
                 </tr>
                 <tr>
-                    <td class="txtRight">เลขที่บัตรประชาชน : </td>
+                    <td class="txtRight">เลขที่บัตรประชาชน(มารดา) : </td>
                     <td><input type="text" name="CID" value="<?=$opcard['idcard'];?>" readonly></td>
                 </tr>
                 <tr>

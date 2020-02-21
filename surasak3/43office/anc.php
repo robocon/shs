@@ -240,7 +240,7 @@ if( $page === 'search' ){
 					<td><input type="text" name="ga" id="ga" />(จำนวนเต็ม)</td>
 				</tr>
 				<tr>
-					<td class="txtRight">ผลการตรวจ : </td>
+					<td class="txtRight">ผลการตรวจครรภ์ : <br>(ณ วันที่มารับบริการ)</td>
 					<td>
 						<?php 
 						$db->select("SELECT * FROM `f43_anc_179`");

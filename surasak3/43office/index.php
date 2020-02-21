@@ -7,11 +7,12 @@ if( empty($_SESSION['sIdname']) ){
 }
 ?>
 <h1>ทดสอบระบบบันทึกข้อมูล43แฟ้ม</h1>
-<div>
 <!--[if lt IE 9]>
+<div>
 เบราเซอร์ของท่านไม่รองรับการทำงาน กรุณาเปิดใช้งานด้วย <a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Firefox</a> หรือ <a href="https://www.microsoft.com/en-us/edge" target="_blank">Microsoft Edge</a>
-<![endif]-->
 </div>
+<![endif]-->
+
 <?php
 include 'footer.php';
 ?>

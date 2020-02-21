@@ -26,67 +26,36 @@ $db = Mysql::load();
         padding: 3px;
     }
 </style>
-
-<fieldset>
-    <legend>
-        เรียกดูตาม HN
-    </legend>
-    <form action="anc_view.php" method="post">
-        <div>
-            HN: <input type="text" name="hn" id="hn">
-        </div>
-        <div>
-            <button type="submit">แสดงผล</button>
-            <input type="hidden" name="action" value="report">
-            <input type="hidden" name="type" value="hn">
-            
-        </div>
-    </form>
-</fieldset>
-
 <fieldset>
     <legend>
         เรียกดูตาม วัน-เดือน-ปี ที่ให้บริการ
     </legend>
     <form action="anc_view.php" method="post">
         <div>
-            <?php 
-            getDateList('days', $_POST['days']);
-
-            getMonthList('months', $_POST['months']);
-
-            getYearList('years', true, $_POST['years'], range(2017,date('Y')) );
-            ?>
+            เลือกวันที่ <input type="text" name="date" id="date">
         </div>
         <div>
             <button type="submit">แสดงผล</button>
             <input type="hidden" name="action" value="report">
-            <input type="hidden" name="type" value="date">
         </div>
     </form>
 </fieldset>
-
+<script type="text/javascript">
+var popup1;
+window.onload = function() {
+    popup1 = new Epoch('popup1','popup',document.getElementById('date'),false);
+};
+</script>
 <?php 
 
 $action = input_post('action');
 if( $action == 'report' ){
 
-    $type = input_post('type');
-    if ( $type == 'hn' ) {
-        $hn = input_post('hn');
-        $where = "`pid` = '$hn'";
+    $search = $date = input_post('date');
+    $date = bc_to_ad($date);
+    $date = str_replace('-', '', $date);
 
-    }elseif ( $type == 'date' ) {
-        $days = input_post('days');
-        $months = input_post('months');
-        $years = input_post('years');
-
-        $date_serv = $years.$months.sprintf('%02d',$days);
-
-        $where = "`date_serv` LIKE '$date_serv%'";
-    }
-
-    $sql = "SELECT * FROM `anc` WHERE $where ";
+    $sql = "SELECT * FROM `anc` WHERE `date_serv` LIKE '$date%' ";
     $q = mysql_query($sql) or die( mysql_error() );
 
     ?>
@@ -109,7 +78,7 @@ if( $action == 'report' ){
     while ( $item = mysql_fetch_assoc($q) ) {
         ?>
         <tr>
-            <td class="warning"><?=$item['hospcode'];?></td>
+            <td class="warning">11512</td>
             <td class="warning"><?=$item['pid'];?></td>
             <td class="warning"><?=$item['seq'];?></td>
             <td class="warning"><?=$item['date_serv'];?></td>
