@@ -79,7 +79,7 @@
     nav ul ul ul {
         position: absolute; left: 100%; top:0;
     }
-
+    /* Menu Pure CSS : */
 
 
     /* ตาราง */
