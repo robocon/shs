@@ -85,7 +85,7 @@ $items = $db->get_items();
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun New;
+    font-family: "TH Sarabun New","TH SarabunPSK";
     font-size: 16pt;
 }
 .chk_table{
@@ -136,6 +136,33 @@ body, button{
         </tr>
         <?php 
         $i++;
+    }
+    ?>
+</table>
+
+<?php 
+$sql = "SELECT a.`doctor`,COUNT(a.`doctor`) AS `count_dr` 
+FROM `tmp_diag_in6_a` AS a 
+LEFT JOIN `tmp_drugrx_in6_a` AS b ON b.`date_hn` = a.`date_hn` 
+WHERE b.`row_id` IS NOT NULL 
+GROUP BY a.`doctor` 
+ORDER BY COUNT(a.`doctor`) DESC";
+$db->select($sql);
+$items = $db->get_items();
+?>
+<table class="chk_table">
+    <tr>
+        <th>ชื่อแพทย์</th>
+        <th>จำนวน</th>
+    </tr>
+    <?php 
+    foreach ($items as $key => $item) {
+        ?>
+        <tr>
+            <td><?=$item['doctor'];?></td>
+            <td><?=$item['count_dr'];?></td>
+        </tr>
+        <?php
     }
     ?>
 </table>

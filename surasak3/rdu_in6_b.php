@@ -8,10 +8,10 @@ $quarter = input_get('quarter');
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in6`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in6` 
-SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
-FROM `opday` 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");
+$sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
+SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn` 
+FROM `diag` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
@@ -24,10 +24,11 @@ AND (
     OR `icd10` LIKE 'J20%' 
     OR `icd10` IN ( 'J210', 'J218', 'J219' ) 
     OR `icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
-)";
+) 
+GROUP BY `date_hn`";
 $db->exec($sql);
 
-$sql = "SELECT * FROM `tmp_opday_in6`";
+$sql = "SELECT * FROM `tmp_diag_in6_a`";
 $db->select($sql);
 $items = $db->get_items();
 ?> 
@@ -35,7 +36,7 @@ $items = $db->get_items();
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH Sarabun New","TH SarabunPSK";
     font-size: 16pt;
 }
 .chk_table{
@@ -86,6 +87,28 @@ body, button{
         </tr>
         <?php 
         $i++;
+    }
+    ?>
+</table>
+
+<?php 
+$sql = "SELECT `doctor`,COUNT(`doctor`) AS `count_dr` FROM `tmp_diag_in6_a` GROUP BY `doctor` ORDER BY COUNT(`doctor`) DESC";
+$db->select($sql);
+$items = $db->get_items();
+?>
+<table class="chk_table">
+    <tr>
+        <th>ชื่อแพทย์</th>
+        <th>จำนวน</th>
+    </tr>
+    <?php 
+    foreach ($items as $key => $item) {
+        ?>
+        <tr>
+            <td><?=$item['doctor'];?></td>
+            <td><?=$item['count_dr'];?></td>
+        </tr>
+        <?php
     }
     ?>
 </table>
