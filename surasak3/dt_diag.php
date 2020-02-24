@@ -460,6 +460,7 @@ function addtolist_muli(){
 	if(eval(max) > 0){
 
 		var test_from_list = false;
+		var testAcute = false;
 
 		for(i=1;i<=max;i++){
 			if(document.getElementById("rediag"+i).checked == true){
@@ -479,6 +480,10 @@ function addtolist_muli(){
 				if( testRdu6(icd) === true ){
 					test_from_list = true;
 				}
+
+				if( rduIn7(icd) === true ){
+					testAcute = true;
+				}
 			}
 
 		} // end for
@@ -486,6 +491,10 @@ function addtolist_muli(){
 		// ถ้ามีตัวใดตัวหนึ่งติดก็ให้แจ้งเตือน
 		if( test_from_list === true ){
 			notiPharyngitis();
+		}
+
+		if( testAcute === true ){
+			notifyAcuteDiarrhea();
 		}
 
 	}
@@ -563,8 +572,16 @@ function addtolist_muli(){
 	</div>
 </div>
 
+<div id="notify_rdu7" style="position: absolute; left:25%; top:15%; border: 4px solid #ffc107; display: none;">
+	<div id="closeNotifyIdu7" style="background-color: #ffc107; font: #000000; text-align: center; font-weight: bold; cursor: pointer;">[ปิด]</div>
+	<div style="background-color: #ffffff; color: #000000; text-align: center;">
+		<div>แจ้งเตือน การใช้ยาอย่างสมเหตุผล</div>
+		<div>กรณีที่ควรให้ยาปฏิชีวนะ : ท้องร่วงชนิด Invasive (แบคทีเรียลุกล้ำเข้าไปในผนังลำไส้) มีไข้ > 38 ํC<br><b><u>และ</u></b>อุจจาระมีเลือดปนเห็นได้ด้วยตาเปล่า หรือตรวจพบ RBC(เม็ดเลือดแดง) และ WBC(เม็ดเลือดขาว) ในอุจจาระ</div>
+	</div>
+</div>
+
 <!-- Layer Remed ยา -->
-<div id="head_remed" style='left:300PX;top:60PX;width:100PX;height:30PX;position:absolute; display:none'>
+<div id="head_remed" style='left:300PX;top:60PX;width:100PX;height:30PX;position:absolute; display:none;'>
 <TABLE align="center" border="1" bordercolor="#3300FF" width="100%" cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
@@ -655,6 +672,19 @@ window.onload = function(){
 		}
 	}
 
+	function notifyAcuteDiarrhea(){
+		document.getElementById('notify_rdu7').style.display = 'block';
+	}
+
+	function rduIn7(testText){
+		var testCase = Array('a000','a001','a009','a020','a030', 'a031', 'a032', 'a033', 'a038', 'a039','a040','a041','a042','a043','a044','a045','a046','a047','a048','a049','a050', 'a053', 'a054', 'a059','a080', 'a081', 'a082', 'a083', 'a084', 'a085','a09', 'a090', 'a099','k521', 'k528', 'k529');
+		var in7test = false;
+		if( testCase.indexOf(testText) > -1 ){
+			in7test = true;
+		}
+		return in7test;
+	}
+
 	$.noConflict();
 	jQuery( document ).ready(function( $ ) {
 
@@ -678,11 +708,19 @@ window.onload = function(){
 				notiPharyngitis();
 			}
 
+			if( rduIn7(icd) === true ){
+				notifyAcuteDiarrhea();
+			}
+
 		});
 
 		// ปิด popup ตัวชี้วัดที่6
-		$(document).on('click', '#notify_rdu6', function(){
+		$(document).on('click', '#closeNotifyIdu6', function(){
 			$('#notify_rdu6').hide();
+		});
+
+		$(document).on('click', '#closeNotifyIdu7', function(){
+			$('#notify_rdu7').hide();
 		});
 
 
