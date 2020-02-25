@@ -5,6 +5,8 @@ $db = Mysql::load();
 $action = input_post('action');
 if( $action === 'save' ){
 
+    include '../includes/JSON.php';
+
     $HOSPCODE = input_post('HOSPCODE');
     $PID = input_post('PID');
     $SEQ = input_post('SEQ');
@@ -33,11 +35,48 @@ if( $action === 'save' ){
         '$PROVIDER', '$D_UPDATE', '$CID', '$opday_id' 
     );";
     $save = $db->insert($sql);
-
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
     }
+
+    /* เส้นรอบศรีษะเด็ก */
+    $sql = "SELECT CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,6,2),SUBSTRING(`dbirth`,9,2)) AS `dbirth` FROM `opcard` WHERE `hn` = '$PID' ";
+    $db->select($sql);
+    $opcard = $db->get_item();
+    $bdate = $opcard['dbirth'];
+    
+    if( strstr($HEADCIRCUM, '.') ){ 
+        list($dec, $tenths) = explode('.', $HEADCIRCUM);
+        $HEADCIRCUM = $dec.'.'.substr($tenths, 0, 1);
+    }else{
+        $HEADCIRCUM = number_format($HEADCIRCUM, 1);
+    }
+
+    $policy_item = array(
+        'HOSPCODE' => $HOSPCODE, 
+        'PID' => $PID, 
+        'BDATE' => $bdate, 
+        'HC' => $HEADCIRCUM 
+    );
+
+    $json = new Services_JSON();
+    $policy_data = $json->encode($policy_item);
+
+    $sql = "INSERT INTO `43policy` ( 
+        `id`, `hospcode`, `policy_id`, `policy_year`, `policy_data`, 
+        `d_update`, `opday_id`, `last_update` 
+    ) VALUES ( 
+        NULL, '$HOSPCODE', '001', '2017', '$policy_data', 
+        '$D_UPDATE', '$opday_id', NULL 
+    );";
+    $save = $db->insert($sql);
+    if( $save !== true ){
+        $msg = errorMsg('save', $save['id']);
+    }
+    /* เส้นรอบศรีษะเด็ก */
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    
     redirect('nutrition.php',$msg);
     exit;
 }
