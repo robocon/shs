@@ -698,6 +698,10 @@ window.onload = function(){
 				notiPharyngitis();
 			}
 
+			if( rduIn7(icd) === true ){
+				notifyAcuteDiarrhea();
+			}
+
 		});
 
 		// คีย์มือแล้วเลือกจากpopup
