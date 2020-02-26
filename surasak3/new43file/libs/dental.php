@@ -6,7 +6,7 @@
 $sql = "SELECT '11512' AS `HOSPCODE`, 
 `hn` AS `PID`, 
 TRIM(`vn`) AS `vn`, 
-thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERRV`, 
+thDateToEn(SUBSTRING(`thidate`, 1, 10)) AS `DATE_SERV`, 
 '5' AS `DENTTYPE`, 
 '1' AS `SERVPLACE`, 
 '' AS `PTEETH`, '' AS `PCARIES`, '' AS `PFILLING`, '' AS `PEXTRACT`, 

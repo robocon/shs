@@ -5,6 +5,8 @@
 
 include '../bootstrap.php';
 
+$Conn = mysql_connect('localhost', 'root', '1234') or die( mysql_error() );
+mysql_select_db('smdb', $Conn) or die( mysql_error() );
 
 $db2 = $Conn;
 

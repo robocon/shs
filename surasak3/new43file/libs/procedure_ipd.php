@@ -21,7 +21,7 @@ while (list ($admdate,$an,$icd9cm,$hn,$my_ward,$doctor,$date) = mysql_fetch_row 
 	$procedcode=$icd9cm;
 	
 	$chkdate=substr($date,0,10);	
-	$sqlopd1="select vn,TRIM(ipcard) AS ipcard from opday where thidate like '$chkdate%' and hn='$hn'";
+	$sqlopd1="select vn,ipcard from opday where thidate like '$chkdate%' and hn='$hn'";
 	
 	$resultopd1=mysql_query($sqlopd1);	
 	list($vn, $idcard)=mysql_fetch_array($resultopd1);			

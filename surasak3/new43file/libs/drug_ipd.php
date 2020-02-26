@@ -3,7 +3,8 @@
 $temp17="CREATE  TEMPORARY  TABLE report_admission3 SELECT *  From ipcard where dcdate like '$thimonth%' and dcdate is not null";
 $querytmp17 = mysql_query($temp17) or die("Query failed,Create temp17");
 
-$sql="SELECT a.date,b.hn,a.an,a.code,a.detail,a.amount,b.date,b.dcdate,b.my_ward,b.doctor FROM ipacc as a, report_admission3 as b WHERE a.an=b.an and (part='DDL' or part='DDN' or part='DDY') group by a.code";
+$sql="SELECT a.date,b.hn,a.an,a.code,a.detail,a.amount,b.date,b.dcdate,b.my_ward,b.doctor 
+FROM ipacc as a, report_admission3 as b WHERE a.an=b.an and (part='DDL' or part='DDN' or part='DDY') group by a.code";
 $result = mysql_query($sql) or die(mysql_error());
 $txt = '';
 while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor) = mysql_fetch_row ($result)) {	

@@ -8,15 +8,14 @@ FROM `opcard` AS a
 RIGHT JOIN `drugreact` AS b ON a.`hn`=b.`hn` 
 LEFT JOIN `druglst` AS c ON b.`drugcode` = c.`drugcode` 
 WHERE a.`regisdate` LIKE '$yrmonth%' 
-AND b.`date` LIKE '$thimonth%';";
+AND b.`date` LIKE '$thimonth%' 
+AND b.`drugcode` != '' ;";
 $result5 = mysql_query($sql5) or die("Query failed, Select report_drugallergy (drugallergy)");
 $num = mysql_num_rows($result5);
 
 $txt = '';
 while (list ($regisdate,$date,$hn,$drugcode,$tradname,$advreact,$asses,$reporter,$code24, $cid) = mysql_fetch_row ($result5)) {	
-    
-    $dname = $tradname;
-    
+        
     $date = substr($date,0,10);
     list($yy,$mm,$dd) = explode("-",$date);
 
@@ -52,8 +51,8 @@ while (list ($regisdate,$date,$hn,$drugcode,$tradname,$advreact,$asses,$reporter
     list($hh,$ss,$ii) = explode(":",$regis2);
     $d_update = $yy.$mm.$dd.$hh.$ss.$ii;  //วันเดือนปีที่ปรับปรุงข้อมูล
 
-    $typedx = $asses;  //ประเภทการวินิจฉัย
-    $alevel = "";  //ระดับความรุนแรง
+    $typedx = "";  //ประเภทการวินิจฉัย
+    $alevel = $asses;  //ระดับความรุนแรง
     $symptom = $advreact;  //ลักษณะอาการ
     $informant = "1";  //ผู้ให้ประวัติการแพ้
 
