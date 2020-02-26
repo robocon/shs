@@ -19,17 +19,17 @@ if ( $action == 'save' ) {
 	$doctor = $_POST['doctor'];
 
 	$opday_id = $_POST['opday_id'];
-	
+
 	if( preg_match('/MD\d+/', $doctor) > 0 ){
-		$prefixMd = substr($doctor,0,5);
-		$where = "`name` LIKE '$prefixMd%'";
+        $prefixMd = substr($doctor,0,5);
+        $where = "`name` LIKE '$prefixMd%'";
 
-	}elseif ( preg_match('/(\d+){4,5}/', $doctor, $matchs) ) {
-		$prefixMd = $matchs['0'];
-		$where = "`doctorcode` = '$prefixMd'";
-	}
+    }elseif ( preg_match('/(\d+){4,5}/', $doctor, $matchs) ) {
+        $prefixMd = $matchs['0'];
+        $where = "`doctorcode` = '$prefixMd'";
+    }
 
-	$sql = "SELECT CONCAT('Ç.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+	$sql = "SELECT `doctorcode` FROM `doctor` WHERE $where ";
 	$db->select($sql);
 	$dr = $db->get_item();
 	$doctorcode = $dr['doctorcode'];
