@@ -5,18 +5,13 @@ list($year, $month, $day) = explode('-', $thimonth);
 $dServ = ( $year - 543 ).$month.$day;
 
 $sql = "SELECT * 
-FROM `policy` 
+FROM `43policy` 
 WHERE `d_update` LIKE '$dServ%' ";
-
 $q = mysql_query($sql, $db2);
 
 while ( $item = mysql_fetch_assoc($q) ) {
 
-    $txt .= $item['hospcode'].'|'
-    .$item['policy_id'].'|'
-    .$item['policy_year'].'|'
-    .$item['policy_data'].'|'
-    .$item['d_update']."\r\n";
+    $txt .= $item['hospcode'].'|'.$item['policy_id'].'|'.$item['policy_year'].'|'.$item['policy_data'].'|'.$item['d_update']."\r\n";
 
 }
 
@@ -31,5 +26,3 @@ file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
 echo "สร้างแฟ้ม policy เสร็จเรียบร้อย<br>";
-
-// exit;

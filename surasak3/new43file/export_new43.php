@@ -24,7 +24,8 @@ $file_lists = array(
 	'admission','charge_opd','diagnosis_opd','drug_opd','epi',
 	'death','card','appointment','accident','procedure_opd',
 	'diagnosis_ipd','procedure_ipd','drug_ipd','charge_ipd','anc',
-	'prenatal','ncdscreen','labfu','chronicfu','specialpp','policy'
+	'prenatal','ncdscreen','labfu','chronicfu','specialpp',
+	'policy','newborn','newborncare' 
 );
 
 if( $action === false ){
@@ -47,6 +48,7 @@ if( $action === false ){
 			<p>5.) 07-09-2561 ปรับปรุงแฟ้ม procedure_opd, procedure_ipd เพิ่ม CID และปรับปรุงการดึงข้อมูล icd9-cm</p>
 			<p>6.) 30-01-2562 ยกเลิกการคีย์ข้อมูลตรงๆ ของแฟ้ม icf & disability โดยเปลี่ยนไปใช้ข้อมูลที่คีย์จากหน้างาน</p>
 			<p>7.) 25-02-2562 เพิ่มแฟ้ม policy</p>
+			<p>8.) 26-02-2563 เพิ่มแฟ้ม newborn, newborncare และปรับปรุงโครงสร้างแฟ้ม policy, anc</p>
 		</div>
 	</div>
 
@@ -404,6 +406,14 @@ if( $action === false ){
 
 	if( $_POST['policy'] ){ 
 		require_once 'libs/policy.php';
+	}
+
+	if( $_POST['newborn'] ){ 
+		require_once 'libs/newborn.php';
+	}
+
+	if( $_POST['newborncare'] ){ 
+		require_once 'libs/newborncare.php';
 	}
 	
 	
