@@ -38,6 +38,8 @@ $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';
 
 unlink($filePath);
 
+file_put_contents($filePath, "DELETE FROM `diag` WHERE `quarter` = '$quarter' AND `year` = '$year';\n", FILE_APPEND);
+
 // $sql = "SELECT *, 
 // CONCAT(SUBSTRING(`svdate`,1,10),`hn`) AS `date_hn`
 // FROM `diag`
@@ -79,7 +81,8 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $diag = trim(preg_replace('/\s+/',' ',$diag));
     $icd10 = $item['icd10'];
     $type = $item['type'];
-    $doctor = $item['office'];
+    // $doctor = $item['office'];
+    $doctor = $item['doctor'];
     $date_hn = $item['date_hn'];
 
     $sql_data_list = $sql_header."( NULL, '$diag_id', '$svdate', '$hn', '$ptname', '$vn', '$diag', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
