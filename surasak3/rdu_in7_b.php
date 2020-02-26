@@ -8,7 +8,8 @@ $db = Mysql::load($rdu_configs);
 $year = input_get('year');
 $quarter = input_get('quarter');
 
-$sql = "SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
+$sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
+SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
 WHERE `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
@@ -21,16 +22,16 @@ AND (
     OR `icd10` IN ( 'A09', 'A090', 'A099' ) 
     OR `icd10` IN ( 'K521', 'K528', 'K529' ) 
 )";
-$db->select($sql);
+$db->exec($sql);
+
+$db->select("SELECT * FROM `tmp_opday_in7`");
 $items = $db->get_items();
 
-
 ?>
-
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH Sarabun New", "TH SarabunPSK";
     font-size: 16pt;
 }
 .chk_table{
@@ -84,3 +85,30 @@ foreach ($items as $key => $item) {
 }
 ?>
 </table>
+<div>&nbsp;</div>
+<?php 
+$sql = "SELECT a.`doctor`,a.`doctor`,COUNT(a.`doctor`) AS `count_dr` 
+FROM `tmp_opday_in7` AS a 
+GROUP BY a.`doctor` 
+ORDER BY COUNT(a.`doctor`) DESC";
+$db->select($sql);
+$items = $db->get_items();
+?>
+<table class="chk_table">
+    <tr>
+        <th>ชื่อแพทย์</th>
+        <th>จำนวน</th>
+    </tr>
+    <?php 
+    foreach ($items as $key => $item) {
+        ?>
+        <tr>
+            <td><?=$item['doctor'];?></td>
+            <td><?=$item['count_dr'];?></td>
+        </tr>
+        <?php
+    }
+    ?>
+</table>
+<?php 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");

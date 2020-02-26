@@ -8,7 +8,6 @@ $db = Mysql::load($rdu_configs);
 $year = input_get('year');
 $quarter = input_get('quarter');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
@@ -25,7 +24,6 @@ AND (
 )";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
@@ -61,7 +59,7 @@ $items = $db->get_items();
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH Sarabun New", "TH SarabunPSK";
     font-size: 16pt;
 }
 .chk_table{
@@ -115,3 +113,33 @@ foreach ($items as $key => $item) {
 }
 ?>
 </table>
+<div>&nbsp;</div>
+<?php 
+$sql = "SELECT a.`doctor`,a.`doctor`,COUNT(a.`doctor`) AS `count_dr` 
+FROM `tmp_opday_in7` AS a 
+LEFT JOIN `tmp_drugrx_in7` AS b ON b.`hn` = a.`hn` 
+WHERE b.`row_id` IS NOT NULL 
+GROUP BY a.`doctor` 
+ORDER BY COUNT(a.`doctor`) DESC";
+$db->select($sql);
+$items = $db->get_items();
+?>
+<table class="chk_table">
+    <tr>
+        <th>ชื่อแพทย์</th>
+        <th>จำนวน</th>
+    </tr>
+    <?php 
+    foreach ($items as $key => $item) {
+        ?>
+        <tr>
+            <td><?=$item['doctor'];?></td>
+            <td><?=$item['count_dr'];?></td>
+        </tr>
+        <?php
+    }
+    ?>
+</table>
+<?php 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");

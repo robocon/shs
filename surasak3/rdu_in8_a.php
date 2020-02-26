@@ -8,7 +8,6 @@ $db = Mysql::load($rdu_configs);
 $year = input_get('year');
 $quarter = input_get('quarter');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
 SELECT a.`hn`,a.`organ`,a.`maintenance`,
 b.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor` 
@@ -22,7 +21,7 @@ FROM (
     AND ( `organ` NOT REGEXP 'ไม่มีบาดแผล|ไม่มีแผล|ทำแผล|ล้างแผล|แผลเย็บ|กัด|ข่วน|เขี้ยว|วัน|สัปดาห์|เดือน|ผ่าตัด|นัด|ตาย|day|bed' ) 
 ) AS a 
 LEFT JOIN ( 
-    SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor` 
+    SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor`,`ptname` 
     FROM `diag` 
     WHERE `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
@@ -40,7 +39,6 @@ LEFT JOIN (
 WHERE b.`row_id` IS NOT NULL ";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`,`amount` 
 FROM `drugrx` 
@@ -84,13 +82,12 @@ WHERE b.`row_id` IS NOT NULL";
 
 $db->select($sql);
 $items = $db->get_items();
-
 ?>
 
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH Sarabun New", "TH SarabunPSK";
     font-size: 16pt;
 }
 .chk_table{
@@ -144,3 +141,34 @@ foreach ($items as $key => $item) {
 }
 ?>
 </table>
+
+<div>&nbsp;</div>
+<?php 
+$sql = "SELECT a.`doctor`,a.`doctor`,COUNT(a.`doctor`) AS `count_dr` 
+FROM `tmp_opday_in8` AS a 
+LEFT JOIN `tmp_drugrx_in8` AS b ON b.`date_hn` = a.`date_hn` 
+WHERE b.`row_id` IS NOT NULL 
+GROUP BY a.`doctor` 
+ORDER BY COUNT(a.`doctor`) DESC";
+$db->select($sql);
+$items = $db->get_items();
+?>
+<table class="chk_table">
+    <tr>
+        <th>ชื่อแพทย์</th>
+        <th>จำนวน</th>
+    </tr>
+    <?php 
+    foreach ($items as $key => $item) {
+        ?>
+        <tr>
+            <td><?=$item['doctor'];?></td>
+            <td><?=$item['count_dr'];?></td>
+        </tr>
+        <?php
+    }
+    ?>
+</table>
+<?php 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in8`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in8`");
