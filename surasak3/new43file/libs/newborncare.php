@@ -8,7 +8,7 @@ $sql = "SELECT *
 FROM `43newborncare` 
 WHERE `D_UPDATE` LIKE '$dServ%' ";
 $q = mysql_query($sql, $db2);
-
+$txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {
 
     $txt .= $item['HOSPCODE']
@@ -29,10 +29,9 @@ $filePath = $dirPath.'/newborncare.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|BDATE|BCARE|BCPLACE|BCARERESULT|FOOD|PROVIDER|D_UPDATE|CID\r\n";
-$txt = $header.$txt;
+$headerQof = "HOSPCODE|PID|SEQ|BDATE|BCARE|BCPLACE|BCARERESULT|FOOD|PROVIDER|D_UPDATE|CID\r\n";
 $qofPath = $dirPath.'/qof_newborncare.txt';
-file_put_contents($qofPath, $txt);
+file_put_contents($qofPath, $headerQof.$txt);
 $qofLists[] = $qofPath;
 
 echo "สร้างแฟ้ม newborncare เสร็จเรียบร้อย<br>";
