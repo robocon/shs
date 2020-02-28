@@ -88,7 +88,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10"){
 		if(isset($_GET['num'])){
 			echo "<tr bgcolor=\"$bgcolor\" >
 					<td>",$arr["code"],"</td>
-					<td align=\"center\"><A HREF=\"javascript:void(0);\" class=\"rediagkey\" data-code=\"".$arr["code"]."\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
+					<td align=\"center\"><A HREF=\"javascript:void(0);\" class=\"rediagkey\" Onclick=\"testNotiRdu('".strtolower($arr["code"])."');document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
 					<td>",$arr["diag_eng"],"</td>
 					<td >",$arr["diag_thai"],"</td>
 					<td></td>
@@ -97,7 +97,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10"){
 		}else{
 			echo "<tr bgcolor=\"$bgcolor\" >
 					<td>",$arr["code"],"</td>
-					<td align=\"center\"><A HREF=\"javascript:void(0);\" class=\"rediagkey\" data-code=\"".$arr["code"]."\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('diag_thai').value = '",jschars($arr["diag_thai"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
+					<td align=\"center\"><A HREF=\"javascript:void(0);\" class=\"rediagkey\" Onclick=\"testNotiRdu('".strtolower($arr["code"])."');document.getElementById('".$_GET["getto"]."').value = '",$arr["code"],"';document.getElementById('".$_GET["getto2"]."').value = '",jschars($arr["detail"]),"';document.getElementById('diag_thai').value = '",jschars($arr["diag_thai"]),"';document.getElementById('list').innerHTML ='';\">",$arr["detail"],"</A></td>
 					<td>",$arr["diag_eng"],"</td>
 					<td >",$arr["diag_thai"],"</td>
 					<td></td>
@@ -109,6 +109,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "searchicd10"){
 		echo "</TABLE></TD>
 		</TR>
 		</TABLE></Div>";
+		?>
+		<script>
+		
+		</script>
+		<?php
 	}
 		exit();
 }
@@ -230,7 +235,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			  <?php  $i++; $j++;?><INPUT TYPE="checkbox" NAME="rediag<?php echo $i;?>" id="rediag<?php echo $i;?>" >
             </td>
             <td>&nbsp;
-<A HREF="javascript:void(0);" class="rediagtest" data-item-id="<?=$i?>" onClick="document.getElementById('dt_diag').value='<?=jschars($arr["diag"])?>';document.getElementById('dt_icd10').value='<?=$arr["icd10"]?>';document.getElementById('head_remed').style.display='none';"><?php echo $arr["diag"];?></A></td>
+<A HREF="javascript:void(0);" class="rediagtest" onClick="testNotiRdu('<?=strtolower($arr["icd10"]);?>');document.getElementById('dt_diag').value='<?=jschars($arr["diag"])?>';document.getElementById('dt_icd10').value='<?=$arr["icd10"]?>';document.getElementById('head_remed').style.display='none';"><?php echo $arr["diag"];?></A></td>
 			<td align="center">&nbsp;<?php echo $arr["icd10"];?>
             <input type="hidden" name="code<?=$i?>" id="code<?=$i?>" value="<?php echo $arr["icd10"];?>">
             <input type="hidden" name="detail<?=$i?>" id="detail<?=$i?>" value="<?php echo jschars($arr["diag"]);?>">
@@ -314,19 +319,19 @@ function checkForm(pt){
 function newXmlHttp(){
 	var xmlhttp = false;
 
-		try{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}catch(e){
+	try{
+		xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+	}catch(e){
 		try{
 			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}catch(e){
-				xmlhttp = false;
-			}
+		}catch(e){
+			xmlhttp = false;
 		}
+	}
 
-		if(!xmlhttp && document.createElement){
-			xmlhttp = new XMLHttpRequest();
-		}
+	if(!xmlhttp && document.createElement){
+		xmlhttp = new XMLHttpRequest();
+	}
 	return xmlhttp;
 }
 
@@ -335,7 +340,7 @@ function searchSuggest(str,len,getto,getto2) {
 		str = str+String.fromCharCode(event.keyCode);
 		if(str.length >= len){
 			url = 'dt_diag.php?action=searchicd10&search=' + str+'&getto=' + getto+'&getto2=' + getto2;
-			
+
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
 			xmlhttp.send(null);
@@ -627,7 +632,7 @@ window.onload = function(){
 
 </SCRIPT>
 
-<script src="js/vendor/jquery-1.11.2.min.js"></script>
+
 <script>
 
 	if(typeof String.prototype.trim !== 'function'){
@@ -685,38 +690,23 @@ window.onload = function(){
 		return in7test;
 	}
 
-	$.noConflict();
-	jQuery( document ).ready(function( $ ) {
+	function testNotiRdu(icd10){
+		if( testRdu6(icd10) === true ){
+			notiPharyngitis();
+		}
 
-		// คลิกจาก rediag
-		$(document).on('click', '.rediagtest', function(){
-			
-			var get_data_id = $(this).attr('data-item-id');
-			var icd = $('#code'+get_data_id).val().toLocaleLowerCase();
-			
-			if( testRdu6(icd) === true ){
-				notiPharyngitis();
-			}
+		if( rduIn7(icd10) === true ){
+			notifyAcuteDiarrhea();
+		}
+	}
 
-			if( rduIn7(icd) === true ){
-				notifyAcuteDiarrhea();
-			}
+</script>
+<script src="js/jquery-1.8.0.min.js"></script>
+<script>
 
-		});
-
-		// คีย์มือแล้วเลือกจากpopup
-		$(document).on('click', '.rediagkey', function(){
-			
-			var icd = $(this).attr('data-code').toLocaleLowerCase();
-			if( testRdu6(icd) === true ){
-				notiPharyngitis();
-			}
-
-			if( rduIn7(icd) === true ){
-				notifyAcuteDiarrhea();
-			}
-
-		});
+jQuery.noConflict();
+(function( $ ) {
+  $(function() {
 
 		// ปิด popup ตัวชี้วัดที่6
 		$(document).on('click', '#closeNotifyIdu6', function(){
@@ -737,10 +727,9 @@ window.onload = function(){
 			var testText = $(this).val().toLocaleLowerCase();
 			testRdu6KeyStroke(testText);
 		});
-
-		
 		
 	});
+})(jQuery);
 
 </script>
 
