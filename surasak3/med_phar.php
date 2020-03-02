@@ -32,6 +32,7 @@ function getFullWardName($cbedcode){
 if ($action === 'active') {
     $confirm = trim($_SESSION['sOfficer']);
     $id = input_get('id');
+    $an = input_get('an');
 
     $sql = "UPDATE `med_scan` SET 
     `lastupdate`=NOW(), 
@@ -39,7 +40,25 @@ if ($action === 'active') {
     `lasteditor`='$confirm' 
     WHERE (`id`='$id');";
     $q = mysql_query($sql);
-    if( $q !== false ){
+    if( $q !== false ){ 
+
+        
+        // Line Notification ในไลน์กลุ่ม
+        $sToken = "Ym8Caq0OuSyu7ebmhAnS2g8ht1lSEi6E5AfmFDLQhWf";
+        $sMessage = "$an Active เรียบร้อย";
+        $chOne = curl_init(); 
+        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
+        curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+        curl_setopt( $chOne, CURLOPT_POST, 1); 
+        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
+        $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+        curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+        curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
+        $result = curl_exec( $chOne ); 
+        curl_close($chOne);
+
+
         $msg = 'บันทึกข้อมูลเรียบร้อย';
     }else{
         $err = set_log(mysql_error());
@@ -165,7 +184,7 @@ if( isset($_SESSION['x-msg']) ){
 }
 ?>
 <div>
-    <h3>นำร่องอายุรกรรม(ช่วงทดสอบ)</h3>
+    <h3>Doctor Order</h3>
 </div>
 
 <div style="display: none;"><?=var_dump($_SERVER['HTTP_USER_AGENT']);?></div>

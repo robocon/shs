@@ -74,6 +74,7 @@ if ( $action === 'save' ) {
     $hn = input_post('hn');
     $ptname = input_post('ptname');
     $idcard = input_post('idcard');
+    $bedcode = input_post('bedcode');
     $editor = trim($_SESSION['sOfficer']);
     
     $path_file = 'med_scan/';
@@ -134,14 +135,32 @@ if ( $action === 'save' ) {
     if( $uploadOk === 1 ){
 
         // Êè§¢éÍÁÙÅä»à«Ô¿.31 ·Õèà»ç¹ linebot
-        $buildUrl = http_build_query($ids);
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.1.31/surasakbot/push_med.php");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $buildUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
-        curl_close($ch);
+        // $buildUrl = http_build_query($ids);
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, "http://192.168.1.31/surasakbot/push_med.php");
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $buildUrl);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $output = curl_exec($ch);
+        // curl_close($ch);
+
+        $fullWardName = getFullWardName(trim($bedcode));
+
+        // Line Notification ã¹äÅ¹ì¡ÅØèÁ
+        $sToken = "Ym8Caq0OuSyu7ebmhAnS2g8ht1lSEi6E5AfmFDLQhWf";
+        $sMessage = "Orderá¾·Âì ¨Ò¡: $fullWardName AN: $an ª×èÍ-Ê¡ØÅ: $ptname";
+        $chOne = curl_init(); 
+        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
+        curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+        curl_setopt( $chOne, CURLOPT_POST, 1); 
+        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
+        $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+        curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+        curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
+        $result = curl_exec( $chOne ); 
+        curl_close($chOne);
+
 
         redirect('med_ward.php','ºÑ¹·Ö¡¢éÍÁÙÅàÃÕÂºÃéÍÂ');
     }elseif ( $uploadOk === 0 ) {
@@ -257,7 +276,7 @@ $page = input('page');
 if ( $page === 'search_an' ) {
     
     $an = input('an');
-    $sql = "SELECT a.`an`,a.`hn`,a.`ptname`,a.`doctor`,b.`idcard` 
+    $sql = "SELECT a.`an`,a.`hn`,a.`ptname`,a.`doctor`,a.`bedcode`,b.`idcard` 
     FROM `ipcard` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
     WHERE a.`an` = '$an' ";
@@ -270,6 +289,7 @@ if ( $page === 'search_an' ) {
         $hn = $ipt['hn'];
         $ptname = $ipt['ptname'];
         $idcard = $ipt['idcard'];
+        $bedcode = $ipt['bedcode'];
 
         ?>
         <fieldset>
@@ -292,6 +312,7 @@ if ( $page === 'search_an' ) {
                     <input type="hidden" name="hn" value="<?=$hn;?>" >
                     <input type="hidden" name="ptname" value="<?=$ptname;?>" >
                     <input type="hidden" name="idcard" value="<?=$idcard;?>" >
+                    <input type="hidden" name="bedCode" value="<?=$bedcode;?>">
                 </div>
             </form>
         </fieldset>
