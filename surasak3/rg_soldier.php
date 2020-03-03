@@ -8,14 +8,53 @@ if( empty($_SESSION['sOfficer']) ){
 
 $db = Mysql::load();
 
+/**
+ * @todo 
+ * [] form เพิ่มข้อมูล
+ *      [] แจ้งเตือนแพทย์ซ็ำ
+ *      [] แนบรูป + ตัดรูป 1 นิ้ว
+ * [] หน้าหลัก + ค้นหาตาม HN
+ *      [] ส่งออกเป็น pdf + xlsx
+ * [] หน้าแก้ไขข้อมูล
+ *      [] ฟอร์มเดียวกันกับหน้าเพิ่ม
+ */
+
+ /*
+CREATE TABLE `rg_soldier` (
+  `id` int(11) NOT NULL auto_increment,
+  `date` datetime default NULL,
+  `hn` varchar(45) default NULL,
+  `address` text,
+  `regular` text,
+  `last_update` datetime default NULL,
+  `yot_pt` varchar(50) NOT NULL,
+  `ptname` varchar(255) default NULL,
+  `yearchk` varchar(45) default NULL,
+  `pic` varchar(255) default NULL,
+  `book_id` varchar(50) NOT NULL,
+  `number_id` varchar(50) NOT NULL,
+  `yot1` varchar(50) NOT NULL,
+  `doctor1` varchar(255) NOT NULL,
+  `code1` varchar(50) NOT NULL,
+  `yot2` varchar(50) NOT NULL,
+  `doctor2` varchar(255) NOT NULL,
+  `code2` varchar(50) NOT NULL,
+  `yot3` varchar(50) NOT NULL,
+  `doctor3` varchar(255) NOT NULL,
+  `code3` varchar(50) NOT NULL,
+  `diag` text NOT NULL,
+  `province` varchar(255) NOT NULL,
+  `editor` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `hn` (`hn`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+ */
+
 $action = input('action');
 if( $action === "save" ){
 
     $id = input_post('id', false);
 
-    // $dr1 = input_post('dr1');
-    // $dr2 = input_post('dr2');
-    // $dr3 = input_post('dr3');
     $hn = input_post('hn');
     $book_id = input_post('book_id');
     $number_id = input_post('number_id');
@@ -25,7 +64,7 @@ if( $action === "save" ){
     $yearchk = get_year_checkup(true);
     $file_name = 'NULL';
     
-    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ',`tambol`,' ',`ampur`) AS `address`, `changwat` AS `province`
+    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ต.',`tambol`,' อ.',`ampur`) AS `address`, `changwat` AS `province`
     FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
     $db->select($sql);
     $pt = $db->get_item();
@@ -48,19 +87,15 @@ if( $action === "save" ){
         $db->select($sql);
         $dr = $db->get_item();
         
-        // $i = 0;
-        // foreach ( $items as $key => $dr ) {
-            // ++$i;
-            $dr_lists['yot'.$i] = $dr['yot'];
-            $dr_lists['doctor'.$i] = $dr['name'];
-            $dr_lists['code'.$i] = $dr['doctorcode'];
-        // }
+        $dr_lists['yot'.$i] = $dr['yot'];
+        $dr_lists['doctor'.$i] = $dr['name'];
+        $dr_lists['code'.$i] = $dr['doctorcode'];
 
     }
     
 
     if( empty($id) ){
-        $sql = "INSERT INTO `rg_soldier`
+        $sql = "INSERT INTO `smdb`.`rg_soldier`
         (`id`,`date`,`hn`,`address`,`regular`,
         `last_update`,`yot_pt`,`ptname`,`yearchk`,`book_id`,
         `number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
@@ -75,17 +110,10 @@ if( $action === "save" ){
         ";
         $save = $db->insert($sql);
         $last_id = $db->get_last_id();
-
-        $update_runno = (int) $number_id;
-        $sql = "UPDATE `runno` SET 
-        `runno` = '$update_runno', 
-        `startday` = NOW()
-        WHERE `title` = 'rg_sol'";
-        $db->update($sql);
-
     }else{
         $sql = "UPDATE `rg_soldier`
-        SET
+        SET 
+        `address` = '$address',
         `regular` = '$regular',
         `last_update` = NOW(),
         `book_id` = '$book_id',
@@ -117,17 +145,16 @@ if( $action === "save" ){
         move_uploaded_file($files['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name);
 
         $sql = "UPDATE `rg_soldier` SET `pic` = '$file_name' WHERE `id` = '$last_id';";
-        $save = $db->update($sql);
+        $db->update($sql);
 
     }
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-    if( $save !== true ){
-        $msg = errorMsg('save', $save['id']);
+
+    if( $save !== false ){
+        $_SESSION['x-msg'] = 'บันทึกข้อมูลเรียบร้อย';
+        header("Location: rg_soldier.php");
     }
 
-    redirect('rg_soldier.php', $msg);
     exit;
-
 } else if( $action === 'delete' ){
     $id = input_get('id');
 
@@ -224,7 +251,7 @@ $types = array(
                 )
             ),
             'ค' => 'คอเอียงหรือแข็งทื่อชนิดถาวร',
-            'ง' => 'กระดูกสันหลังโก่งหรือคดหรือแอ่นจนเห็นได้ชัด หรือแข็งทื่อชนิดถาวร',
+            'ง' => 'กระดูกสันหนังโก่งหรือคดหรือแอ่นจนเห็นได้ชัด หรือแข็งทื่อชนิดถาวร',
             'จ' => 'กล้ามเนื้อเหี่ยวลีบหรือหดสั้น (Atrophy or Contracture) จนเป็นผลให้อวัยวะส่วนหนึ่งส่วใดใช้การไม่ได้'
         )
     ),8 => array(
@@ -367,10 +394,23 @@ if( $action === "search_val" ){
 }
 
 
+
+
+?>
+<style type="text/css">
+#popup1_calendar *{
+    font-size: 18px!important;
+}
+#popup1_calendar{
+    z-index: 999;
+}
+</style>
+<?php
 include 'rg_menu.php';
+
 $page = input('page');
 if( empty($page) ){
-
+    
     ?>
     <div class="claearfix">
     <h3>รายงานการตรวจโรคชายไทยก่อนเกณฑ์ทหาร(ที่พบความผิดปกติ)</h3>
@@ -401,8 +441,8 @@ if( empty($page) ){
     $sql = "SELECT a.*, b.`idcard`, b.`changwat` 
     FROM `rg_soldier` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-    WHERE `date_certificate` LIKE '$selected_y-$selected_m%' 
-    ORDER BY number_id ASC";
+    WHERE a.`date_certificate` LIKE '$selected_y-$selected_m%' 
+    ORDER BY a.`number_id` ASC";
     $db->select($sql);
     $items = $db->get_items();
 
@@ -440,10 +480,10 @@ if( empty($page) ){
                     $board .= $item['yot2'].$item['doctor2'].'<br>';
                     $board .= $item['yot3'].$item['doctor3'];
 
-                    list($date, $time) = explode(' ',$item['date_certificate']);
-                    list($y, $m, $d) = explode('-', $date);
+                    // list($date, $time) = explode(' ',$item['date']);
+                    list($y, $m, $d) = explode('-', $item['date_certificate']);
 
-                    $lastupdate = $d.' '.$def_fullm_th[$m].' '.( $y + 543 );
+                    $date_certify = $d.' '.$def_fullm_th[$m].' '.( $y + 543 );
                     ?>
                     <tr>
                         <td><?=$i;?></td>
@@ -457,7 +497,7 @@ if( empty($page) ){
                         <td><?=$item['regular'];?></td>
                         <td><?=$item['address'];?></td>
                         <td><?=$item['changwat'];?></td>
-                        <td><?=$lastupdate;?></td>
+                        <td><?=$date_certify;?></td>
                         <td><?=$board;?></td>
                         <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
                         <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
@@ -469,23 +509,6 @@ if( empty($page) ){
                 ?>
             </tbody>
         </table>
-        </div>
-        <div>
-            <?php 
-            $selected_y_th = $selected_y + 543;
-            $date_th = "$selected_y_th-$selected_m";
-            
-            $sql = "SELECT COUNT(`hn`) AS `hn_row` 
-            FROM `opday2` 
-            WHERE `thidate` LIKE '$date_th%' 
-            AND `toborow` LIKE 'ex30%' ";
-            $db->select($sql);
-
-            $item_row = $db->get_item();
-
-            ?>
-            <p><a href="rg_solider_ex30.php?date_th=<?=$date_th;?>" target="_blank">จำนวนผู้มาขอรับใบรับรองแพทย์ <?=$item_row['hn_row'];?> ราย</a></p>
-            <p>จำนวนผู้ที่ได้รับใบรับรองแพทย์ <?=( $i -1 );?> ราย</p>
         </div>
         <script type="text/javascript">
             function del_confirm(){
@@ -506,6 +529,7 @@ if( empty($page) ){
     
     $id = input_get('id');
     
+    // ถ้าไม่มีไอดี จะเป็นการเพิ่มข้อมูลใหม่
     if( empty($id) ){
         $hn = input_post('hn', false);
         ?>
@@ -524,17 +548,16 @@ if( empty($page) ){
         </form>
         <?php
         $search_hn = input('search_hn', false);
-        $yearchk = $pic = $diag = $code3 = $code2 = $code1 = $regular = $number_id = $book_id = false;
+        $date_certificate = $yearchk = $pic = $diag = $code3 = $code2 = $code1 = $regular = $number_id = $book_id = false;
         
-        $sql = "SELECT * FROM `runno` WHERE `title` = 'rg_sol'";
+        $sql = "SELECT * FROM `runno` WHERE `title` = 'rg_sol' ";
         $db->select($sql);
-        $runno_item = $db->get_item();
-        $book_id = $runno_item['prefix'];
-        $number_id = sprintf('%03d', ($runno_item['runno'] + 1) );
-        $date_cer = date('Y-m-d');
-
+        $runno = $db->get_item();
+        $book_id = $runno['prefix'];
+        $number_id = sprintf('%03d', ($runno['runno'] + 1) );
 
     }else{
+
         $search_hn = 1;
         $sql = "SELECT * FROM `rg_soldier` WHERE `id` = '$id' ";
         $db->select($sql);
@@ -550,7 +573,7 @@ if( empty($page) ){
         $code3 = $user['code3'];
         $pic = $user['pic'];
         $yearchk = $user['yearchk'];
-        $date_cer = $user['date_certificate'];
+        $date_certificate = $user['date_certificate'];
         ?>
         <h3>ฟอร์มแก้ไขข้อมูล ตรช.</h3>
         <?php
@@ -566,7 +589,7 @@ if( empty($page) ){
         $sql = "SELECT IF(`yot` != '', `yot`, `yot2`) AS `yot`, TRIM(SUBSTRING(`name`,6)) AS `name`, `doctorcode` 
         FROM `doctor` 
         WHERE  `rg_status` != '' 
-        AND `name` REGEXP '^MD+' order by rg_status";
+        AND `name` REGEXP '^MD+'";
         $q = mysql_query($sql) or die( mysql_error() );
         $dr_items = array();
         while ( $dr = mysql_fetch_assoc($q) ) {
@@ -574,23 +597,28 @@ if( empty($page) ){
         }
     
         ?>
+        <link rel="stylesheet" type="text/css" media="all"  href="epoch_styles.css" />
+        <script src="epoch_classes.js"></script>
+        <script type="text/javascript">
+            var popup1;
+            window.onload = function() {
+                popup1 = new Epoch('popup1','popup',document.getElementById('date_certificate'),false);
+            };
+        </script>
         <div>
             <form action="rg_soldier.php" method="post" id="inputForm" enctype="multipart/form-data">
                 <div>ชื่อ-สกุล: <?=$user['ptname'];?></div>
-
                 <div>
                     เล่มที่ <input type="text" name="book_id" value="<?=$book_id;?>"> เลขที่ <input type="text" name="number_id" value="<?=$number_id;?>">
                 </div>
-
                 <div>
-                    วันที่ออกใบรับรอง <input type="text" name="date_certificate" value="<?=$date_cer;?>">
-                    <div style="color: red;">* <u>รูปแบบ</u> ปี(ค.ศ.)-เดือน-วัน <u>ตัวอย่างเช่น</u> 2017-12-03 เป็นตัน</div>
+                    วันที่ตรวจ <input type="text" name="date_certificate" id="date_certificate" value="<?=$date_certificate;?>">
+                    <div><span style="color: red; font-size: 16px;"><u>รูปแบบ</u> ปี-เดือน-วัน เช่น 2017-12-01 </span></div>
                 </div>
-
                 <div>
                     <span>ค้นหากฏกระทรวงที่ขัด: </span><input type="text" id="regular_search" >
-                    <!--<div id="regular_result" style="color: blue; text-decoration: underline;"><?=$regular;?></div>-->
-                    <input type="text" id="regular" name="regular" value="<?=$regular;?>" style="width: 100%;">
+                    <div id="regular_result" style="color: blue; text-decoration: underline;"><?=$regular;?></div>
+                    <input type="hidden" id="regular" name="regular" value="<?=$regular;?>">
                 </div>
     
                 <div>
@@ -703,7 +731,7 @@ if( empty($page) ){
                 ?>
             </div>
         </div>
-        
+    
     
         <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
         <script type="text/javascript">
