@@ -74,7 +74,7 @@ if ( $action === 'save' ) {
     $hn = input_post('hn');
     $ptname = input_post('ptname');
     $idcard = input_post('idcard');
-    $bedcode = input_post('bedcode');
+    $bedcode = input_post('bedCode');
     $editor = trim($_SESSION['sOfficer']);
     
     $path_file = 'med_scan/';
@@ -147,10 +147,10 @@ if ( $action === 'save' ) {
         $fullWardName = getFullWardName(trim($bedcode));
 
         // Line Notification ã¹äÅ¹ì¡ÅØèÁ
-        $sToken = "Ym8Caq0OuSyu7ebmhAnS2g8ht1lSEi6E5AfmFDLQhWf";
-        $sMessage = "Orderá¾·Âì ¨Ò¡: $fullWardName AN: $an ª×èÍ-Ê¡ØÅ: $ptname";
+        $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
+        $sMessage = iconv('TIS-620','UTF-8',"Orderá¾·Âì ¨Ò¡: $fullWardName AN: $an ª×èÍ-Ê¡ØÅ: $ptname");
         $chOne = curl_init(); 
-        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 
