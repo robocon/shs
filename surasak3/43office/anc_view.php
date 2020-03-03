@@ -62,6 +62,20 @@ if( $action == 'report' ){
     <div>&nbsp;</div>
     <table class="chk_table">
         <tr>
+            <th class="warning">HOSPCODE</th>
+            <th class="warning">PID</th>
+            <th class="warning">SEQ</th>
+            <th class="warning">DATE_SERV</th>
+            <th class="warning">GRAVIDA</th>
+            <th>ANCNO</th>
+            <th class="warning">GA</th>
+            <th class="warning">ANCRESULT</th>
+            <th class="warning">ANCPLACE</th>
+            <th class="warning">PROVIDER</th>
+            <th class="warning">D_UPDATE</th>
+            <th class="warning">CID</th>
+        </tr>
+        <tr>
             <th class="warning">รหัสสถานบริการ</th>
             <th class="warning">ทะเบียนบุคคล</th>
             <th class="warning">ลาดับที่</th>
@@ -70,7 +84,8 @@ if( $action == 'report' ){
             <th>ANC ช่วงที่</th>
             <th class="warning">อายุครรภ์</th>
             <th class="warning">ผลการตรวจ</th>
-            <th class="warning">PROVIDER</th>
+            <th class="warning">สถานที่รับบริการฝากครรภ์</th>
+            <th class="warning">เลขที่ผู้ให้บริการ</th>
             <th class="warning">วันเดือนปีที่ปรับปรุง</th>
             <th class="warning">เลขที่บัตรประชาชน</th>
         </tr>
@@ -86,6 +101,7 @@ if( $action == 'report' ){
             <td><?=$item['ancno'];?></td>
             <td class="warning"><?=$item['ga'];?></td>
             <td class="warning"><?=$item['ancres'];?></td>
+            <td class="warning"><?=$item['aplace'];?></td>
             <td class="warning"><?=$item['provider'];?></td>
             <td class="warning"><?=$item['d_update'];?></td>
             <td class="warning"><?=$item['cid'];?></td>
