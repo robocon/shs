@@ -557,8 +557,12 @@ $sqlchk1="SELECT * FROM  opcardchk where part='$showpart' and active='y'";
 //echo $sqlchk1;
 $querychk1=mysql_query($sqlchk1)or die (mysql_error());
 $numchk1=mysql_num_rows($querychk1);
+
+$q = mysql_query("SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$showpart' ");
+$company = mysql_fetch_assoc($q);
+
 ?>
-<h1 class="pdx" align="center">รายชื่อผู้ตรวจสุขภาพ <?=$showpart;?></h1>
+<h1 class="pdx" align="center" style="font-size:32px;">รายชื่อผู้ตรวจสุขภาพ <?=$company['name'].' ('.$company['code'].')';?></h1>
 
 <div class="pdx" align="center">ลงทะเบียนตรวจสุขภาพทั้งหมด <?=$numchk1;?> คน ลงซักประวัติจำนวน <?=$num1;?> คน</div>
 
