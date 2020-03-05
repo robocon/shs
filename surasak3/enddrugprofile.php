@@ -368,7 +368,8 @@ echo "<BR><BR><A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A><BR>";?>
 <?php
 foreach ($build as $key => $value){
 
-	$sql = "SELECT bed,date_format(date,'%d') as date1,date_format(date,'%m') as date2,date_format(date,'%Y') as date3,ptname,hn,an,diagnos,doctor,ptright,age,accno, bedcode, last_drug FROM bed WHERE bedcode LIKE '".$value."%' AND an != '' ORDER BY bed ASC";
+	$sql = "SELECT bed,date,date_format(date,'%d') as date1,date_format(date,'%m') as date2,date_format(date,'%Y') as date3,ptname,hn,an,diagnos,doctor,ptright,age,accno, bedcode, last_drug FROM bed WHERE bedcode LIKE '".$value."%' AND an != '' ORDER BY bed ASC";
+	//echo $sql;
 	$result = Mysql_Query($sql);
 	if(Mysql_num_rows($result) == 0)
 		continue;
@@ -400,6 +401,13 @@ foreach ($build as $key => $value){
 while($arr = Mysql_fetch_assoc($result)){
 
 	$an = $arr['an'];
+	$chkdate=substr($arr["date"],0,10);
+	//echo $chkdate;
+	if($chkdate=="2563-02-29"){
+		$arr["date1"]=substr($chkdate,8,2);
+		$arr["date2"]=substr($chkdate,5,2);
+		$arr["date3"]=substr($chkdate,0,4);
+	}
 
 	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL AND `status` = 'y' ";
 	$medScanQuery = mysql_query($sql);
