@@ -96,6 +96,7 @@ if( $view === 'report' ){
                 <th>ชื่อแพทย์</th>
                 <th>บริการ</th>
                 <th>รายละเอียด</th>
+                <th>จนท.</th>
                 <th>ราคา</th>
             </tr>
         
@@ -118,6 +119,7 @@ if( $view === 'report' ){
                 <td><?=$item['doctor'];?></td>
                 <td><?=$item['depart'];?></td>
                 <td><?=$item['detail'];?></td>
+                <td><?=$item['officer'];?></td>
                 <td><?=$item['price'];?></td>
             </tr>
             <?php
