@@ -412,8 +412,16 @@ while($arr = Mysql_fetch_assoc($result)){
 	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL AND `status` = 'y' ";
 	$medScanQuery = mysql_query($sql);
 	$link_scan = "";
-	if ( mysql_num_rows($medScanQuery) > 0 ) {
-		$link_scan = '<a href="med_phar.php?fill_an='.$an.'" target="_blank">'.$an.'</a>';
+	if ( mysql_num_rows($medScanQuery) > 0 ) { 
+
+		$qNum = mysql_query("SELECT * FROM `med_scan` WHERE `an` = '$an'");
+		$scanRow = mysql_num_rows($qNum);
+		$exText = '';
+		if( $scanRow == 1 ){
+			$exText = ' (รับใหม่)';
+		}
+
+		$link_scan = '<a href="med_phar.php?fill_an='.$an.'" target="_blank">'.$an.'</a>'.$exText;
 	}
 
 	if($arr["last_drug"] != "0000-00-00 00:00:00"){
