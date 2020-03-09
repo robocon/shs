@@ -342,21 +342,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	// ตรวจสอบการนัด **************************************************
 	$sql = "Select count(hn) From appoint where hn = '".$_REQUEST["hn"]."' AND appdate = '".$date_app."' AND apptime <> 'ยกเลิกการนัด'  limit 1";
 	list($app_row) = mysql_fetch_row(mysql_query($sql));
-	
+
 	// ตรวจสอบการลงทะเบียน **************************************************
-	$sql = "Select right(thidate,8), time2, vn, toborow, note, kew, row_id,hn,ptname   From opday where thdatehn = '".$thidatehn."' limit 1";
-	$result = Mysql_Query($sql);
-	list($regis_time, $time1, $vn, $toborow, $note, $kew, $row_id,$hn,$ptname) = mysql_fetch_row($result);
-	if(substr($toborow,0,4)=="EX16"||substr($toborow,0,4)=="EX26"){
+	$sqlOpdayRow = "Select right(thidate,8), time2, vn, toborow, note, kew, row_id,hn,ptname   From opday where thdatehn = '".$thidatehn."' limit 1";
+	$opdayResult = Mysql_Query($sqlOpdayRow);
+	$opday_row = mysql_num_rows($opdayResult);
+	list($regis_time, $time1, $vn, $toborow, $note, $kew, $row_id,$hn,$ptname) = mysql_fetch_row($opdayResult);
+	if(substr($toborow,0,4)=="EX16" || substr($toborow,0,4)=="EX26"){
 		?>
 		<script>
         	alert("ผู้ป่วยมีการลงทะเบียนแบบสุขภาพ\nถ้าผู้ป่วยตรวจสุขภาพประจำปี กรุณาใช้ซักประวัติแบบสุขภาพ");
         </script>
 		<?
 	}
-	
-	$result = Mysql_Query($sql);
-	$opday_row = mysql_num_rows($result);
 
 	
 	if($app_row > 0){
@@ -389,12 +387,12 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN' limit 1 ";
 		}
 			$result = mysql_query($query) or die("Query failed2");
+
 			$tvn=$nVn;
 			$time1 = date("H:i:s");
 			$thdatevn=$thidate.$nVn;
 			$thidate_now1 = (date("Y")+543).date("-m-d").date(" H:i:s");
-			 $query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,toborow,time1,idcard,dxgroup,officer)VALUES('".$thidate_now1."','".$thidatehn."','".$cHn."','".$nVn."', '".$thdatevn."','".$cPtname."','".$cAge."','".$cPtright."','".$cGoup."','".$cCamp."','".$cNote."','".$vnlab."','".$time1."','".$cIdcard."','21','".$_SESSION["sOfficer"]."');";
-
+			$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,toborow,time1,idcard,dxgroup,officer)VALUES('".$thidate_now1."','".$thidatehn."','".$cHn."','".$nVn."', '".$thdatevn."','".$cPtname."','".$cAge."','".$cPtright."','".$cGoup."','".$cCamp."','".$cNote."','".$vnlab."','".$time1."','".$cIdcard."','21','".$_SESSION["sOfficer"]."');";
 			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 311");
 			
 			$sql = "UPDATE opcard SET lastupdate='".$thidate_now."' WHERE hn='$cHn' ";
@@ -432,21 +430,24 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 				$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
 				$result = mysql_query($query) or die("Query failed");
 					/////////////////////////////////////////////////////////////
-				$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('".$nRunno."','".$thidate_now."','".$cPtname."','".$cHn."','','OTHER','1','(55020/55021 ค่าบริการผู้ป่วยนอก)', '50','50','0','','".$_SESSION["sOfficer"]."','0','".$nVn."','".$cPtright."');";
-				$result = mysql_query($query);
+				$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('".$nRunno."','".$thidate_now."','".$cPtname."','".$cHn."','','OTHER','1','(55020/55021 ค่าบริการผู้ป่วยนอก)', '50.00','50.00','0.00','0.00','".$_SESSION["sOfficer"]."','0','".$nVn."','".$cPtright."');";
+				$result = mysql_query($query) or die("Query failed,cannot insert into depart ".mysql_error());
 				$idno=mysql_insert_id();
 			 
-				$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright) VALUES('".$thidate_now."','".$cHn."','','".$cPtname."','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50','50','0','OTHER','OTHER','".$idno."','".$cPtright."');";
-				$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-				
+				$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright) VALUES('".$thidate_now."','".$cHn."','','".$cPtname."','1','SERVICE','(55020/55021 ค่าบริการผู้ป่วยนอก)','1','50.00','50.00','0.00','OTHER','OTHER','".$idno."','".$cPtright."');";
+				$result = mysql_query($query) or die("Query failed,cannot insert into patdata ".mysql_error());
+
 				$query ="UPDATE opday SET other=(other+50) WHERE thdatehn= '".$thidatehn."' AND vn = '".$nVn."' ";
       			$result = mysql_query($query) or die("Query failed,update opday");
 			}
+
+
 		////////////////////////////////จบคิดเงิน 50 บาท
 
 	}else if($opday_row > 0){
 		
-		list($regis_time, $time1, $vn, $toborow, $note, $kew, $row_id,$hn,$ptname) = mysql_fetch_row($result);
+		$opdayResult = Mysql_Query($sqlOpdayRow);
+		list($regis_time, $time1, $vn, $toborow, $note, $kew, $row_id,$hn,$ptname) = mysql_fetch_row($opdayResult);
 
 		if($toborow == "ออก VN โดย LAB" && app_row > 0){
 			$sql = "Update opday set toborow = 'EX04 ผู้ป่วยนัด' where row_id = '".$row_id."' AND vn = '".$vn."' limit 1 ";
@@ -1149,6 +1150,30 @@ mmHg </td>
            <td align="right" class="data_show">&nbsp;</td>
            <td align="left" colspan="5">&nbsp;</td>
          </tr>
+
+		<?php 
+		$testTime = date("H:i:s");
+
+		// ISO-8601 numeric representation of the day of the week -> 1 (for Monday) through 7 (for Sunday)
+		$testDate = date('N');
+		if ( $testDate >= 6 OR ( $testTime >= "16:00:00" && $testTime <= "23:59:59" ) ) {
+			
+			$sqlDepart50 = "select * from depart where hn = '$cHn' and detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
+			$resultDepart50 = mysql_query($sqlDepart50);
+			$testRows = mysql_num_rows($resultDepart50);
+			if( $testRows > 0 ){
+				?>
+				<tr>
+					<td>&nbsp;</td>
+					<td colspan="5" style="color: red;">
+						<u>ผู้ป่วยไม่ได้คิดค่าบริการ 50.- <b><a href="service50.php" target="_blank">คลิกที่นี่</a></b> เพื่อคิดค่าบริการ</u><br>
+					</td>
+				</tr>
+				<?php 
+			}
+
+		}
+		?>
 		 
          <tr>
            <td colspan="6" align="center" class="data_show">
