@@ -10,6 +10,7 @@
   <th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
   <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</th>
   <th bgcolor=6495ED><font face='Angsana New'>HN</th>
+  <th bgcolor=6495ED><font face='Angsana New'>VN</th>
   <th bgcolor=6495ED><font face='Angsana New'>ค่ายา</th>
     <th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th>
     <th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
@@ -20,11 +21,11 @@
     $num=0;
     include("connect.inc");
 
-    $query = "SELECT date,ptname,hn,price,row_id,accno,ptright,doctor FROM dphardep WHERE ( whokey='DR' or whokey like 'HD%')  and date LIKE '$today%' AND (dr_cancle is null || dr_cancle='') ORDER BY row_id DESC ";
+    $query = "SELECT date,ptname,hn,price,row_id,accno,ptright,doctor,tvn FROM dphardep WHERE ( whokey='DR' or whokey like 'HD%')  and date LIKE '$today%' AND (dr_cancle is null || dr_cancle='') ORDER BY row_id DESC ";
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($date,$ptname,$hn,$price,$row_id,$accno,$ptright,$doctor) = mysql_fetch_row ($result)) {
+    while (list ($date,$ptname,$hn,$price,$row_id,$accno,$ptright,$doctor,$vn) = mysql_fetch_row ($result)) {
         $num++;
         $time=substr($date,11);
         print (" <tr>\n".
@@ -32,6 +33,7 @@
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$time</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><a target=_BLANK  href=\"dt_printstikeropd.php?id=$row_id\">$ptname</a></td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'><A target=_BLANK HREF=\"dt_printstikerappoint.php?hn=".urlencode($hn)."\">$hn</A></td>\n".
+           "  <td BGCOLOR=66CDAA><font face='Angsana New'>$vn</td>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$price</td>\n".
 		   "  <td BGCOLOR=66CDAA><font face='Angsana New'>$ptright</td>\n".
    		   "  <td BGCOLOR=66CDAA><font face='Angsana New'>$doctor</td>\n".
