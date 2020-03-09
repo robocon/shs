@@ -20,7 +20,7 @@
     $num=0;
     include("connect.inc");
 
-    $query = "SELECT date,ptname,hn,price,row_id,accno,ptright,doctor FROM dphardep WHERE ( whokey='DR' or whokey like 'HD%')  and date LIKE '$today%' ORDER BY row_id DESC ";
+    $query = "SELECT date,ptname,hn,price,row_id,accno,ptright,doctor FROM dphardep WHERE ( whokey='DR' or whokey like 'HD%')  and date LIKE '$today%' AND (dr_cancle is null || dr_cancle='') ORDER BY row_id DESC ";
     $result = mysql_query($query)
         or die("Query failed");
 
