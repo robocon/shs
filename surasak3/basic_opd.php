@@ -1161,7 +1161,7 @@ mmHg </td>
 			$sqlDepart50 = "select * from depart where hn = '$cHn' and detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
 			$resultDepart50 = mysql_query($sqlDepart50);
 			$testRows = mysql_num_rows($resultDepart50);
-			if( $testRows > 0 ){
+			if( $testRows == 0 ){
 				?>
 				<tr>
 					<td>&nbsp;</td>
