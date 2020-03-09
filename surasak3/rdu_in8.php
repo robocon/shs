@@ -12,7 +12,8 @@ a.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor`
 FROM ( 
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
     FROM `trauma` 
-    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `date` LIKE '$whereMonthTH%' 
+    # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
     )
@@ -21,7 +22,8 @@ FROM (
 LEFT JOIN ( 
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor` 
     FROM `diag` 
-    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `svdate` LIKE '$whereMonthTH%' 
+    # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
         OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
@@ -40,7 +42,8 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+# `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1DIC250', 
     '1DOXY', 

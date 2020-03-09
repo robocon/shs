@@ -15,10 +15,10 @@ include 'includes/connect_sv13.php';
 // $date_start = '2562-04-01';
 // $date_end = '2562-06-30';
 
-$date_start = '2562-10-01';
-$date_end = '2562-12-31';
+$date_start = '2563-01-01';
+$date_end = '2563-01-31';
 
-$quarter = 1;
+$quarter = 2;
 $year = '2563';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";

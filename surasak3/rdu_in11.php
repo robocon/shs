@@ -13,10 +13,10 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_opday_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+# `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ";
-// dump($sql);
 $db->exec($sql); 
 
 // เตรียมข้อมูล drugrx
@@ -24,10 +24,10 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_drugrx_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+# `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ";
-// dump($sql);
 $test = $db->exec($sql); 
 
 // เอาสองตัวบนมารวมกัน จะได้ ผู้ป่วยที่ได้รับยา gibenclamide แบบที่ยังไม่ได้แบ่งตามอายุ
@@ -37,7 +37,6 @@ SELECT a.*,CONCAT( (SUBSTRING(a.`date`, 1, 4) - 543), SUBSTRING(a.`date`,5,6) ) 
 FROM `pre_opday_in11` AS a 
 LEFT JOIN `pre_drugrx_in11` AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`hn` IS NOT NULL "; 
-// dump($sql);
 $db->exec($sql); 
 
 // เตรียมหา A2 จากผลแลปครั้งล่าสุด
@@ -51,7 +50,8 @@ FROM (
 LEFT JOIN ( 
     SELECT * 
     FROM `lab` 
-    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `orderdate` LIKE '$whereMonth%' 
+    # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( `egfr` < 60 AND `egfr` > 0 ) 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 

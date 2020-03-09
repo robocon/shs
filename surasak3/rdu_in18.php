@@ -1,14 +1,10 @@
 <?php
 
-<<<<<<< HEAD
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
-SELECT `row_id`,`hn`,`date_hn` 
-=======
 $sql18a = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
->>>>>>> rdu
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter'  
+WHERE `date` LIKE '$whereMonthTH%' #
+#`year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (
 	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 18 )
@@ -34,14 +30,11 @@ GROUP BY `date_hn` ";
 $db->exec($sql18a);
 
 
-<<<<<<< HEAD
-$sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
-=======
 $sql18b = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
->>>>>>> rdu
 SELECT * 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1AERI*', 
     '1CLAR-C', 

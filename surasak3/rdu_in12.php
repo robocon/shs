@@ -8,10 +8,18 @@ if ( !defined('RDU_TEST') ) {
 $sql = "CREATE TEMPORARY TABLE `tmp_in12` 
 SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
 FROM ( 
-	SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
+	SELECT * 
+    FROM `opday` 
+    WHERE `date` LIKE '$whereMonthTH%' 
+    # `year` = '$year' AND `quarter` = '$quarter' 
+    AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
-	SELECT * FROM `lab` WHERE `year` = '$year' AND `egfr` > 30 GROUP BY `hn`
+	SELECT * 
+    FROM `lab` 
+    WHERE ( `orderdate` <= '$whereMonth-01' AND `orderdate` >= '$last6Month' ) 
+    # `year` = '$year' 
+    AND `egfr` > 30 GROUP BY `hn`
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`autonumber` IS NOT NULL ";
 $db->exec($sql);
@@ -24,7 +32,8 @@ FROM tmp_in12 AS a
 LEFT JOIN ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `drugrx` 
-    WHERE `year` = '$year' 
+    WHERE `date` LIKE '$whereMonthTH%' 
+    #`year` = '$year' 
     AND `drugcode` IN ( 
         '1MET500-C', 
         '1METF', 
@@ -47,7 +56,8 @@ FROM `tmp_in12` AS a
 LEFT JOIN ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `drugrx` 
-    WHERE `year` = '$year' 
+    WHERE `date` LIKE '$whereMonthTH%' 
+    #`year` = '$year' 
     AND `drugcode` IN ( 
         '1ACTOS*',
         '1AMAR',

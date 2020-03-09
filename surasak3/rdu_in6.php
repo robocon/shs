@@ -11,7 +11,8 @@ if ( !defined('RDU_TEST') ) {
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6` 
 SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`date_hn` 
 FROM `diag` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `svdate` LIKE '$whereMonthTH%'
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -31,7 +32,8 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 
     '1AMOX250',

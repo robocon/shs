@@ -89,7 +89,8 @@ $quarter_range = array(
                 }
                 ?>
             </select>
-
+            
+            <?php /* ?>
             เลือกช่วงไตรมาส 
             <select name="quarter" id="">
                 <?php
@@ -103,6 +104,12 @@ $quarter_range = array(
                 }
                 ?>
             </select>
+            <?php */ ?>
+
+            <?php 
+            $get_month = input_post('month', date('m'));
+            getMonthList('month', $get_month);
+            ?>
         </div>
 
         <div>
@@ -116,8 +123,6 @@ $quarter_range = array(
 
 <?php 
 
-
-
 // special char
 // w3schools.com/charsets/ref_utf_math.asp
 // &le; <=
@@ -127,11 +132,34 @@ $action = input_post('action');
 if ( $action == 'load' ) {
     
     $year_for_title = $year;
+
+    $yearSelectedTH = $yearSelected = input_post('year');
+    $monthSelected = input_post('month');
+
+    // EN
+    $whereMonth = $yearSelected.'-'.$monthSelected;
+
+    // TH
+    $whereMonthTH = ($yearSelectedTH + 543).'-'.$monthSelected;
+
+    // หาวันสุดท้ายของเดือน
+    $lastOfMonth = date('t', strtotime($whereMonth.'-01'));
+
+    // mktime format : H i s m d Y
+    // 6เดือนล่าสุด
+    $last6MonthMK = mktime(0,0,0,$monthSelected-6,$lastOfMonth,$yearSelected);
+    $last6Month = date('Y-m-d', $last6MonthMK);
+    $last6MonthTH = (date('Y', $last6MonthMK)+543).date('-m-d', $last6MonthMK);
+
+
+    $last1YearMK = mktime(0,0,0,$monthSelected,$lastOfMonth,$yearSelected-1);
+    $last1Year = date('Y-m-d', $last1YearMK);
+    $last1YearTH = (date('Y', $last1YearMK)+543).date('-m-d', $last1YearMK);
     
     // ถ้าไตรมาสแรกหักไป1ปี
-    if( $quarter == 1 ){
+    // if( $quarter == 1 ){
         // $year = $year - 1;
-    }
+    // }
 
     $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 

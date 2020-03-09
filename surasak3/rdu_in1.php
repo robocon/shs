@@ -18,7 +18,8 @@ DPN = อุปกรณ์เบิกไม่ได้
 $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' ";
+WHERE `date` LIKE '$whereMonthTH%' 
+#`year` = '$year' AND `quarter` = '$quarter' ";
 $db->exec($sql);
 
 

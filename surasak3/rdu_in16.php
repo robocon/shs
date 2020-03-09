@@ -7,7 +7,8 @@ if ( !defined('RDU_TEST') ) {
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in16` 
 SELECT `row_id`,`hn`,`age`,`date_hn` 
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND TRIM(SUBSTRING(`age`,1,2)) > 65 
 GROUP BY `date_hn` ";
 $db->exec($sql);
@@ -18,7 +19,8 @@ FROM `opday` AS a
 LEFT JOIN ( 
     SELECT `row_id`,`drugcode`,`part`,`amount`,`date_hn` 
     FROM `drugrx` 
-    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `date` LIKE '$whereMonthTH%' 
+    #`year` = '$year' AND `quarter` = '$quarter' 
     AND `drugcode` IN (
         '1D2',
         '1RIV2',

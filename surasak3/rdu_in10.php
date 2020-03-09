@@ -6,17 +6,19 @@ if ( !defined('RDU_TEST') ) {
 }
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
-SELECT a.`row_id`,a.`date`,a.`hn`,a.`icd10`,`date_hn`
-FROM `opday` AS a 
-WHERE a.`year` = '$year' AND a.`quarter` = '$quarter' 
-AND a.`icd10` regexp 'I10' ";
+SELECT `row_id`,`date`,`hn`,`icd10`, `date_hn`
+FROM `opday` 
+WHERE `date` LIKE '$whereMonthTH%' 
+# `year` = '$year' AND `quarter` = '$quarter' 
+AND `icd10` regexp 'I10' ";
 $db->exec($sql);
 
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$whereMonthTH%' 
+# `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1RENI20-C', 
     '1RENI5-C', 
