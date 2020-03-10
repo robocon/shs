@@ -181,7 +181,7 @@ if ( $action == 'load' ) {
     // $db->exec($sql);
 
     ?>
-    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (ไตรมาส <?=$quarter;?>) </h3>
+    <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
     <table class="chk_table">
         <tr>
             <th>ตัวชี้วัดที่</th>
