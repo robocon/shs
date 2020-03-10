@@ -12,9 +12,9 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2019-10-01';
-$date_end = '2019-12-31';
-$quarter = 1;
+$date_start = '2020-01-01';
+$date_end = '2020-01-31';
+$quarter = 2;
 $year = '2563';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
