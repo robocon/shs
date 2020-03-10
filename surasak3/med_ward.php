@@ -83,6 +83,13 @@ if ( $action === 'save' ) {
 
     $ids = array();
 
+    // count file
+    $firstTime = false;
+    $q = mysql_query("SELECT `id` FROM `med_scan` WHERE `an` = '$an' ");
+    if( mysql_num_rows($q) == 0 ){
+        $firstTime = true;
+    }
+
     foreach ($files as $key => $file) {
 
         $fileOk = 0;
@@ -145,10 +152,13 @@ if ( $action === 'save' ) {
         // curl_close($ch);
 
         $fullWardName = getFullWardName(trim($bedcode));
-
+        $newAn = '';
+        if ($firstTime == 0) {
+            $newAn = ' (รับใหม่)';
+        }
         // Line Notification ในไลน์กลุ่ม
         $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
-        $sMessage = iconv('TIS-620','UTF-8',"Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname");
+        $sMessage = iconv('TIS-620','UTF-8',"Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn);
         $chOne = curl_init(); 
         curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
