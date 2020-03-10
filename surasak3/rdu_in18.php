@@ -3,7 +3,7 @@
 $sql18a = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
 FROM `opday` 
-WHERE `date` LIKE '$whereMonthTH%' #
+WHERE `date` LIKE '$whereMonthTH%' 
 #`year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (

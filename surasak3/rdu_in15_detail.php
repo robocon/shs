@@ -20,13 +20,18 @@ SELECT b.*, a.`doctor` AS `doctor2`, a.`ptname`,a.`age`
 FROM ( 
 	SELECT *  
 	FROM `opday` 
-	WHERE `year` = '$year' AND `quarter` = '$quarter' 
+	WHERE `date` LIKE '$date%' 
+    #`year` = '$year' AND `quarter` = '$quarter' 
 	$where_toborow 
 	GROUP BY `hn` 
 ) AS a 
 LEFT JOIN 
 ( 
-	SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' AND icd10 LIKE 'J45%' GROUP BY `hn` 
+	SELECT * 
+    FROM `diag` 
+    WHERE `date` LIKE '$date%' 
+    #`year` = '$year' AND `quarter` = '$quarter' 
+    AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
 GROUP BY a.`hn`";
@@ -36,7 +41,8 @@ $test = $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`,`amount`
 FROM `drugrx` 
-WHERE `year` = '$year' 
+WHERE ( `date` >= '$minDate' AND `date` <= '$maxDate' )
+#`year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 

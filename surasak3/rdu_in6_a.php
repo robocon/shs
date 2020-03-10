@@ -2,17 +2,19 @@
 
 include 'bootstrap.php';
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");
+$date = input_get('date');
+
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
-SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn` 
+SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname`
 FROM `diag` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `svdate` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -29,11 +31,12 @@ GROUP BY `date_hn`
 ORDER BY `svdate`";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6_a`");
+
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6_a` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 
     '1AMOX250',
@@ -103,7 +106,7 @@ body, button{
 }
 </style>
 
-<h3><u>ตัวชี้วัดที่ 6 ไตรมาส <?=$quarter;?></u> ตัวตั้ง จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน ที่ได้รับยาปฏิชีวนะ</h3> 
+<h3><u>ตัวชี้วัดที่ 6 </u> ตัวตั้ง จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน ที่ได้รับยาปฏิชีวนะ</h3> 
 
 <table class="chk_table">
     <tr>
@@ -166,3 +169,7 @@ $items = $db->get_items();
     }
     ?>
 </table>
+<?php 
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6_a`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");

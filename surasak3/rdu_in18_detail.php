@@ -4,15 +4,16 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 $table = input_get('table');
-
+$date = input_get('date');
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter'  
+WHERE `date` LIKE '$date%'
+#`year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
 AND (
 	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 18 )
@@ -41,7 +42,8 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%'
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1AERI*', 
     '1CLAR-C', 

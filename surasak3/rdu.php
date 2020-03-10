@@ -239,7 +239,8 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
             include 'rdu_in6.php';
-            $url_in6 = "year=$year&quarter=$quarter";
+            // $url_in6 = "year=$year&quarter=$quarter";
+            $url_in6 = "date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
@@ -255,7 +256,8 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
             include 'rdu_in7.php';
-            $url_in7 = "year=$year&quarter=$quarter";
+            // $url_in7 = "year=$year&quarter=$quarter";
+            $url_in7 = "date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
@@ -271,7 +273,8 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
             <?php
             include 'rdu_in8.php';
-            $url_in8 = "year=$year&quarter=$quarter";
+            // $url_in8 = "year=$year&quarter=$quarter";
+            $url_in8 = "date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 40</td>
             <td align="right">
@@ -296,13 +299,14 @@ if ( $action == 'load' ) {
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
             <?php 
             include 'rdu_in10.php';
+            $url_in10 = "rdu_in10_detail.php?date=$whereMonthTH";
             ?>
             <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด">
-                <a href="rdu_in10_detail.php?year=<?=$year;?>&quarter=<?=$quarter;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
+                <a href="<?=$url_in10;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
             </td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด">
-                <a href="rdu_in10_detail.php?year=<?=$year;?>&quarter=<?=$quarter;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
+                <a href="<?=$url_in10;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
             </td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
@@ -312,8 +316,8 @@ if ( $action == 'load' ) {
             หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
             <?php
             include 'rdu_in11.php';
-
-            $link_11 = "rdu_in11_detail.php?year=$year&quarter=$quarter";
+            // $link_11 = "rdu_in11_detail.php?year=$year&quarter=$quarter";
+            $link_11 = "rdu_in11_detail.php?date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
@@ -329,8 +333,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
             <?php
             include 'rdu_in12.php';
-
-            $link_12 = "rdu_in12_detail.php?year=$year&quarter=$quarter";
+            $link_12 = "rdu_in12_detail.php?date=$whereMonthTH&maxDate=$whereMonth&minDate=$last6Month";
             ?>
             <td>&ge; ร้อยละ 80</td>
             <td align="right">
@@ -346,8 +349,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
             <?php
             include 'rdu_in13.php';
-
-            $link_13 = "rdu_in13_detail.php?year=$year&quarter=$quarter";
+            $link_13 = "rdu_in13_detail.php?date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
@@ -364,7 +366,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in14.php';
 
-            $link_14 = "rdu_in14_detail.php?year=$year&quarter=$quarter";
+            $link_14 = "rdu_in14_detail.php?date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 10</td>
             <td align="right">
@@ -381,7 +383,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in15.php';
 
-            $link_15 = "rdu_in15_detail.php?year=$year&quarter=$quarter";
+            $link_15 = "rdu_in15_detail.php?date=$whereMonthTH&minDate=$last1YearTH&maxDate=$whereMonthTH-$lastOfMonth";
             ?>
             <td>&ge; ร้อยละ 80</td>
             <td align="right">
@@ -398,7 +400,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in16.php';
 
-            $link_16 = "rdu_in16_detail.php?year=$year&quarter=$quarter";
+            $link_16 = "rdu_in16_detail.php?date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
@@ -426,7 +428,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in18.php';
 
-            $link_18 = "rdu_in18_detail.php?year=$year&quarter=$quarter";
+            $link_18 = "rdu_in18_detail.php?date=$whereMonthTH";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">

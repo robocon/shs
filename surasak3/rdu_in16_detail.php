@@ -4,15 +4,17 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 $table = input_get('table');
+$date = input_get('date');
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in16`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in16` 
 SELECT *  
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND TRIM(SUBSTRING(`age`,1,2)) > 65 
 GROUP BY `date_hn` ";
 $db->exec($sql);
@@ -25,7 +27,8 @@ FROM `tmp_opday_in16` AS a
 LEFT JOIN ( 
     SELECT `row_id`,`drugcode`,`part`,`amount`,`date_hn` 
     FROM `drugrx` 
-    WHERE `year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `date` LIKE '$date%' 
+    #`year` = '$year' AND `quarter` = '$quarter' 
     AND `drugcode` IN (
         '1D2',
         '1RIV2',

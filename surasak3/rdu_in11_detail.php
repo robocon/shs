@@ -4,17 +4,18 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 $table = input_get('table');
-
+$date = input_get('date');
 
 // เตรียมข้อมูล opday
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_opday_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage` 
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ";
 $db->exec($sql); 
@@ -24,7 +25,8 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_drugrx_in11`;");
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ";
 $test = $db->exec($sql); 

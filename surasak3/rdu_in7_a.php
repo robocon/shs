@@ -5,13 +5,15 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
+$date = input_get('date');
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn`
 FROM `opday` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
     OR `icd10` IN ( 'A020' ) 
@@ -27,7 +29,8 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `drugrx` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CIPR-C*?', 
     '1CRAV*', 
@@ -77,7 +80,7 @@ body, button{
 }
 </style>
 
-<h3><u>ตัวชี้วัดที่ 7 (ไตรมาส <?=$quarter;?>)</u> ตัวตั้ง จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันที่ได้รับยาปฏิชีวนะ</h3> 
+<h3><u>ตัวชี้วัดที่ 7</u> ตัวตั้ง จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันที่ได้รับยาปฏิชีวนะ</h3> 
 
 <table class="chk_table">
     <tr>

@@ -4,18 +4,29 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 $table = input_get('table');
+$date = input_get('date');
+$maxDate = input_get('maxDate');
+$minDate = input_get('minDate');
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in12`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in12` 
 SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
 FROM ( 
-	SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
+	SELECT * 
+    FROM `opday` 
+    WHERE `date` LIKE '$date%' 
+    #`year` = '$year' AND `quarter` = '$quarter' 
+    AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
-	SELECT * FROM `lab` WHERE `year` = '$year' AND `egfr` > 30 GROUP BY `hn`
+	SELECT * 
+    FROM `lab` 
+    WHERE ( `orderdate` <= '$maxDate-01' AND `orderdate` >= '$minDate' ) 
+    #`year` = '$year' 
+    AND `egfr` > 30 GROUP BY `hn`
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`autonumber` IS NOT NULL ";
 $db->exec($sql);
@@ -27,7 +38,8 @@ if( $table == 'b' ){
     LEFT JOIN ( 
         SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
         FROM `drugrx` 
-        WHERE `year` = '$year' 
+        WHERE `date` LIKE '$date%' 
+        #`year` = '$year' 
         AND `drugcode` IN ( 
             '1ACTOS*',
             '1AMAR',
@@ -94,7 +106,8 @@ if( $table == 'b' ){
     LEFT JOIN ( 
         SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
         FROM `drugrx` 
-        WHERE `year` = '$year' 
+        WHERE `date` LIKE '$date%' 
+        #`year` = '$year' 
         AND `drugcode` IN ( 
             '1MET500-C', 
             '1METF', 

@@ -2,17 +2,19 @@
 
 include 'bootstrap.php';
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
+$date = input_get('date');
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");
+
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
-SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn` 
+SELECT `diag_id` AS `row_id` ,`svdate` AS `date`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname` 
 FROM `diag` 
-WHERE `year` = '$year' AND `quarter` = '$quarter' 
+WHERE `svdate` LIKE '$date%' 
+#`year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -54,7 +56,7 @@ body, button{
 }
 </style>
 
-<h3><u>ตัวชี้วัดที่ 6 ไตรมาส <?=$quarter;?></u> ตัวหาร จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด</h3> 
+<h3><u>ตัวชี้วัดที่ 6</u> ตัวหาร จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด</h3> 
 
 <table class="chk_table">
     <tr>
@@ -65,8 +67,6 @@ body, button{
         <th>อายุ</th>
         <th>Diag1</th>
         <th>ICD-10</th>
-        <th>Drug code</th>
-        <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
     <?php 
@@ -81,8 +81,6 @@ body, button{
             <td><?=$item['age'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['icd10'];?></td>
-            <td><?=$item['drugcode'];?></td>
-            <td><?=$item['amount'];?></td>
             <td><?=$item['doctor'];?></td>
         </tr>
         <?php 
@@ -112,3 +110,5 @@ $items = $db->get_items();
     }
     ?>
 </table>
+<?php 
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");

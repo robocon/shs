@@ -34,7 +34,7 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
-WHERE ( `date` >= '$last1YearTH' AND `date` <= '$whereMonthTH-$lastOfMonth' )
+WHERE ( `date` >= '$last1YearTH' AND `date` <= '$whereMonthTH-$lastOfMonth' ) 
 #`year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
