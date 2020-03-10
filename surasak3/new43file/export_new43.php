@@ -25,7 +25,7 @@ $file_lists = array(
 	'death','card','appointment','accident','procedure_opd',
 	'diagnosis_ipd','procedure_ipd','drug_ipd','charge_ipd','anc',
 	'prenatal','ncdscreen','labfu','chronicfu','specialpp',
-	'policy','newborn','newborncare' 
+	'policy','newborn','newborncare','nutrition'
 );
 
 if( $action === false ){
@@ -49,6 +49,7 @@ if( $action === false ){
 			<p>6.) 30-01-2562 ยกเลิกการคีย์ข้อมูลตรงๆ ของแฟ้ม icf & disability โดยเปลี่ยนไปใช้ข้อมูลที่คีย์จากหน้างาน</p>
 			<p>7.) 25-02-2562 เพิ่มแฟ้ม policy</p>
 			<p>8.) 26-02-2563 เพิ่มแฟ้ม newborn, newborncare และปรับปรุงโครงสร้างแฟ้ม policy, anc</p>
+			<p>9.) 10-03-2563 เพิ่ม nutrition และอัพเดท EPI ตามโครงสร้างใหม่</p>
 		</div>
 	</div>
 
@@ -414,6 +415,10 @@ if( $action === false ){
 
 	if( $_POST['newborncare'] ){ 
 		require_once 'libs/newborncare.php';
+	}
+
+	if( $_POST['nutrition'] ){ 
+		require_once 'libs/nutrition.php';
 	}
 	
 	
