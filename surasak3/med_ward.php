@@ -153,7 +153,7 @@ if ( $action === 'save' ) {
 
         $fullWardName = getFullWardName(trim($bedcode));
         $newAn = '';
-        if ($firstTime == 0) {
+        if ($firstTime == true) {
             $newAn = ' (รับใหม่)';
         }
         // Line Notification ในไลน์กลุ่ม
