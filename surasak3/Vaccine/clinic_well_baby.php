@@ -30,7 +30,7 @@ if($_POST['button2']){
 	$vn = '00';
 	$clinicCode = '99';
 	$opday_id = '';
-	list($m1,$d1,$y1) = explode('/',$_POST['date1']);
+	list($d1,$m1,$y1) = explode('/',$_POST['date1']);
 	$sql = "SELECT `row_id`,`vn`,`clinic` FROM `opday` WHERE `thidate` LIKE '".($y1+543)."-$m1-$d1%' AND `hn` = '$hn'";
 	$q = mysql_query($sql);
 	if ( mysql_num_rows($q) > 0 ) {

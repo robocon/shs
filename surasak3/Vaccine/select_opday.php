@@ -35,7 +35,7 @@ if ( mysql_num_rows($q) > 0 ) {
         while ($item = mysql_fetch_assoc($q)) { 
 
             list($y, $m, $d) = explode('-', $item['date2']);
-            $toCalendar = $m.'/'.$d.'/'.$y;
+            $toCalendar = $d.'/'.$m.'/'.$y;
 
             ?>
             <tr>

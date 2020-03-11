@@ -32,7 +32,7 @@ if( $action === 'save' ){
 	$VACCINETYPE = $_POST['VACCINETYPE'];
 	// เจน SEQ 
 	// @todo วันที่จาก date1 จะเป็น mmddYYYY
-	list($m1,$d1,$y1) = explode('/',$_POST['date1']);
+	list($d1,$m1,$y1) = explode('/',$_POST['date1']);
 	$sql = "SELECT `row_id`,`vn`,`clinic` FROM `opday` WHERE `thidate` LIKE '".($y1+543)."-$m1-$d1%' AND `hn` = '$hn'";
 	$q = mysql_query($sql);
 
