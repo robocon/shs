@@ -15,7 +15,27 @@ $thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม',
 '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
 $selmon = isset($_POST['month']) ? $_POST['month'] : date('m');
-$action = ( $_POST['action'] ) ? $_POST['action'] : false ;
+$action = ( $_REQUEST['action'] ) ? $_REQUEST['action'] : false ;
+$make = ( $_REQUEST['make'] ) ? $_REQUEST['make'] : false ;
+
+
+// var_dump($_REQUEST);
+// exit;
+
+if ( $make === 'del' ) {
+	
+	$file = input_get('file');
+	$testMatch = preg_match('/.+\.zip$/', $file);
+	
+	$msg = 'ไฟล์ไม่ถูกต้อง';
+	if( $testMatch > 0 ){
+		$res = unlink('export/'.$file);
+		$msg = 'ลบไฟล์เรียบร้อย';
+	}
+
+	redirect('export_new43.php', $msg);
+	
+}
 
 
 $file_lists = array( 
@@ -37,6 +57,15 @@ if( $action === false ){
 		text-decoration: underline;
 	}
 	</style>
+
+	<?php
+	if( isset($_SESSION['x-msg']) ){
+		?><div style="color: #000000;border: 2px solid #FFC107;margin: 8px;padding: 4px;background-color: #fff3d0;"><?=$_SESSION['x-msg'];?></div><?php
+		$_SESSION['x-msg'] = NULL;
+	}
+	?>
+	<div>
+
 	<div>
 		<h3>ระบบส่งออก43แฟ้ม</h3>
 		<div class="btn-log"><b>Log</b></div>
@@ -117,15 +146,52 @@ if( $action === false ){
 		<div>
 			<h3>รายชื่อแฟ้มที่เคยดึงข้อมูลแล้ว</h3>
 		</div>
-		<?php
-		if( isset($_SESSION['x-msg']) ){
-			?><div style="color: #FFC107;"><?=$_SESSION['x-msg'];?></div><?php
-			$_SESSION['x-msg'] = NULL;
-		}
-		?>
-		<div>
+		<div style="float: left;">
+			<div><h3>43แฟ้ม</h3></div>
+			<div>
+				<?php 
+				$zipItems = glob('export/F43_11512_*.zip');
+				rsort($zipItems);
+				$i = 1;
+				?>
+				<table border="1" cellpadding="4" cellspacing="0" style="border-collapse:collapse" bordercolor="#000000">
+					<tr>
+						<th>#</th>
+						<th>ชื่อไฟล์(คลิกเพื่อดาวโหลดได้)</th>
+						<th>ครั้งล่าสุดที่ดึงข้อมูล</th>
+						<th>จัดการ</th>
+					</tr>
+					<?php
+					foreach( $zipItems as $key => $item ){
+					?>
+					<tr>
+						<td><?=$i;?></td>
+						<td>
+							<?php
+							preg_match('/\/(.+\.zip)/', $item, $matchs);
+							echo '<a href="'.$item.'">'.$matchs['1'].'</a>';
+							?>
+						</td>
+						<td>
+							<?php
+							echo date('Y-m-d H:i:s', filemtime($item));
+							?>
+						</td>
+						<td><a href="export_new43.php?make=del&file=<?=urlencode($matchs['1']);?>" onclick="return delFile()">[ลบข้อมูล]</a></td>
+					</tr>
+					<?php
+					$i++;
+					}
+					?>
+				</table>
+			</div>
+		</div>
+		<div style="float: left;">&nbsp;</div>
+		<div style="float: left;">
+			<div><h3>QOF</h3></div>
 			<?php 
-			$zipItems = glob('export/*.zip');
+			$zipItems = glob('export/QOF_F43_11512_*.zip');
+			rsort($zipItems);
 			$i = 1;
 			?>
 			<table border="1" cellpadding="4" cellspacing="0" style="border-collapse:collapse" bordercolor="#000000">
@@ -151,13 +217,15 @@ if( $action === false ){
 						echo date('Y-m-d H:i:s', filemtime($item));
 						?>
 					</td>
-					<td><a href="export_new43.php?action=del&file=<?=urlencode($matchs['1']);?>" onclick="return delFile()">[ลบข้อมูล]</a></td>
+					<td><a href="export_new43.php?make=del&file=<?=urlencode($matchs['1']);?>" onclick="return delFile()">[ลบข้อมูล]</a></td>
 				</tr>
 				<?php
 				$i++;
 				}
 				?>
 			</table>
+		</div>
+		
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -169,19 +237,6 @@ if( $action === false ){
 		}
 	</script>
 <?php
-} else if ( $action === 'del' ) {
-	
-	$file = input_get('file');
-	$testMatch = preg_match('/.+\.zip$/', $file);
-	
-	$msg = 'ไฟล์ไม่ถูกต้อง';
-	if( $testMatch > 0 ){
-		unlink('export/'.$file);
-		$msg = 'ลบไฟล์เรียบร้อย';
-	}
-	
-	redirect('export_new43.php', $msg);
-	
 } else if( $action === 'export' ){
 	
 	$dateSelect = $_POST['dateSelect'];

@@ -1,9 +1,18 @@
 <?php
 //-------------------- Create file diagnosis_ipd ä¿Åì·Õè 15 --------------------//
-$temp15="CREATE  TEMPORARY  TABLE report_admission1 SELECT *  From ipcard where dcdate like '$thimonth%' and dcdate is not null ";
+$temp15="CREATE  TEMPORARY  TABLE report_admission1 
+SELECT * 
+From ipcard 
+where dcdate like '$thimonth%' 
+and dcdate is not null ";
 $querytmp15 = mysql_query($temp15) or die("Query failed,Create temp15");
 	
-$sql15="SELECT  a.regisdate,a.hn,a.an,b.date,b.my_ward,b.doctor,a.icd10,a.type,a.svdate From diag as a,report_admission1 as b where a.an = b.an";
+$sql15="SELECT a.regisdate,a.hn,a.an,b.date,b.my_ward,b.doctor,a.icd10,a.type,a.svdate 
+From ( 
+	SELECT * FROM `diag` WHERE `svdate` LIKE '$thimonth%' AND `status` = 'Y' 
+ ) as a,
+report_admission1 as b 
+where a.an = b.an";
 $result15 = mysql_query($sql15) or die("Query failed,Select report_admission And diag");
 $txt = '';
 while (list ($regisdate,$hn,$an,$date,$my_ward,$doctor,$diagcode,$type,$svdate) = mysql_fetch_row ($result15)) {	
