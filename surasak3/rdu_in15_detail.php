@@ -2,7 +2,6 @@
 include 'bootstrap.php';
 
 $db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
 
 $year = input_get('year');
 $quarter = input_get('quarter');
@@ -16,12 +15,11 @@ if ( $year <= '2562' ) {
 }
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
-SELECT b.*, a.`doctor` AS `doctor2`, a.`ptname`,a.`age`
+SELECT b.*, a.`doctor` AS `doctor2`, a.`ptname` AS `ptname2` ,a.`age` AS `age2`
 FROM ( 
 	SELECT *  
 	FROM `opday` 
 	WHERE `date` LIKE '$date%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
 	$where_toborow 
 	GROUP BY `hn` 
 ) AS a 
@@ -29,8 +27,7 @@ LEFT JOIN
 ( 
 	SELECT * 
     FROM `diag` 
-    WHERE `date` LIKE '$date%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `svdate` LIKE '$date%' 
     AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
@@ -42,7 +39,6 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15`
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`,`amount`
 FROM `drugrx` 
 WHERE ( `date` >= '$minDate' AND `date` <= '$maxDate' )
-#`year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 
@@ -69,7 +65,7 @@ if( $table == 'a' ){
 
 }elseif( $table == 'b' ){
     
-    $db->select("SELECT * FROM `tmp_opday_in15`");
+    $db->select("SELECT *,`svdate` AS `date`,`doctor` AS `doctor2`,`ptname` AS `ptname2` FROM `tmp_opday_in15`");
     $items = $db->get_items();
 
 }
@@ -82,7 +78,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
 <style>
 /* ตาราง */
 body, button{
-    font-family: TH SarabunPSK, TH Sarabun NEW;
+    font-family: "TH Sarabun New","TH SarabunPSK";
     font-size: 16pt;
 }
 .chk_table{
@@ -121,7 +117,7 @@ foreach ($items as $key => $item) {
         <td><?=$i;?></td>
         <td><?=$item['date'];?></td>
         <td><?=$item['hn'];?></td>
-        <td><?=$item['ptname'];?></td>
+        <td><?=$item['ptname2'];?></td>
         <td><?=$item['age'];?></td>
         <td><?=$item['diag'];?></td>
         <td><?=$item['icd10'];?></td>

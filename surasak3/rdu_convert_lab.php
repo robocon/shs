@@ -13,7 +13,7 @@ include 'includes/connect_sv13.php';
 // mysql_query('SET NAMES TIS620', $db);
 
 $date_start = '2020-01-01';
-$date_end = '2020-01-31';
+$date_end = '2020-02-31';
 $quarter = 2;
 $year = '2563';
 
@@ -22,9 +22,13 @@ $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_lab_'.$quarter.'.sql';
 
 unlink($filePath);
 
+
+// file_put_contents($filePath, "DELETE FROM `lab` WHERE `quarter` = '$quarter' AND `year` = '$year';\n", FILE_APPEND);
+
+
 $sql = "SELECT b.`autonumber`,b.`orderdate`,b.`hn`,b.`sex`,c.`result`,
-TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age`, 
-eGFR(TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(NOW(), 1, 10)),b.`sex`,c.`result`) AS `egfr`, 
+TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(b.`orderdate`, 1, 10)) AS `age`, 
+eGFR(TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(b.`orderdate`, 1, 10)),b.`sex`,c.`result`) AS `egfr`, 
 CONCAT(SUBSTRING(b.`orderdate`,1,10),b.`hn`) AS `date_hn`
 FROM (  
 
@@ -44,7 +48,7 @@ ORDER BY b.`autonumber` ASC ";
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 
-$sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
+$sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
 $sql_data = '';
 
 while ( $item = mysql_fetch_assoc($q) ) {
@@ -53,11 +57,12 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $orderdate = $item['orderdate'];
     $hn = $item['hn'];
     $gender = strtolower($item['sex']);
+    $age = $item['age'];
     $egfr = $item['egfr'];
     $date_hn = $item['date_hn'];
 
     if( $egfr != '' && $egfr > 0 ){
-        $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$egfr','$date_hn','$quarter','$year');\n";
+        $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year');\n";
         file_put_contents($filePath, $sql_data, FILE_APPEND);
     }
 

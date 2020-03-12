@@ -16,7 +16,7 @@ include 'includes/connect_sv13.php';
 // $date_end = '2562-06-30';
 
 $date_start = '2563-01-01';
-$date_end = '2563-01-31';
+$date_end = '2563-02-31';
 
 $quarter = 2;
 $year = '2563';

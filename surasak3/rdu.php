@@ -316,8 +316,7 @@ if ( $action == 'load' ) {
             หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
             <?php
             include 'rdu_in11.php';
-            // $link_11 = "rdu_in11_detail.php?year=$year&quarter=$quarter";
-            $link_11 = "rdu_in11_detail.php?date=$whereMonthTH";
+            $link_11 = "rdu_in11_detail.php?date=$whereMonthTH&minDate=$last6Month&maxDate=$whereMonth-$lastOfMonth";
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
