@@ -77,6 +77,15 @@
     //  $cAccno=$row->accno;
    }
 
+   $sqlIP = "SELECT `row_id` FROM `ipcard` WHERE `an` = '$an' AND `dcdate` = '0000-00-00 00:00:00' ";
+   $qIP = mysql_query($sqlIP);
+   $ipRows = mysql_num_rows($qIP);
+   if($ipRows == 0){
+       echo "ผู้ป่วยได้ทำการ Discharge กรุณาประสาน ส่วนเก็บเงินรายได้เพื่อปลดล็อค และนำผู้ป่วยกลับขึ้นเตียง<br><br>";
+       echo '<a href="ptipage.php">คลิกที่นี่</a> เพื่อกลับไปหน้า สั่งรายการผู้ป่วยคนใหม่';
+       exit;
+   }
+
   $query = "SELECT * FROM bed WHERE an = '$an'";
     $result = mysql_query($query)
         or die("Query failed1");
