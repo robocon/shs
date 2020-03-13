@@ -14,7 +14,6 @@ FROM (
 	SELECT *  
 	FROM `opday` 
 	WHERE `date` LIKE '$whereMonthTH%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
 	$where_toborow
 	GROUP BY `hn` 
 ) AS a 
@@ -22,12 +21,11 @@ LEFT JOIN
 ( 
 	SELECT * 
     FROM `diag` 
-    WHERE `date` LIKE '$whereMonthTH%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
+    WHERE `svdate` LIKE '$whereMonthTH%' 
     AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
-GROUP BY a.`hn` ";
+GROUP BY a.`hn` ;";
 $db->exec($sql);
 
 // A จำนวนผู้ป่วยนอกดรคหืดที่ได้รับยา inhaled corticosteroid นับตามhn อย่างน้อย1ครั้งใน 12เดือน
@@ -35,7 +33,6 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15`
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
 FROM `drugrx` 
 WHERE ( `date` >= '$last1YearTH' AND `date` <= '$whereMonthTH-$lastOfMonth' ) 
-#`year` = '$year' 
 AND `drugcode` IN ( 
     '7PULR', 
     '7PULT', 
@@ -47,7 +44,7 @@ AND `drugcode` IN (
     '7BUDE-NN', 
     '7SER_EVO' 
 ) 
-GROUP BY `hn`";
+GROUP BY `hn`;";
 $db->exec($sql);
 
 $pre_in15a = $in15a = $pre_in15b = $in15b = $in15_result = 0;
