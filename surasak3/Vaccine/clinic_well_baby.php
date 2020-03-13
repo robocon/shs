@@ -85,38 +85,44 @@ if($_POST['button2']){
 	}
 
 	// แฟ้ม policy
-	$sql = "SELECT CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,6,2),SUBSTRING(`dbirth`,9,2)) AS `dbirth` FROM `opcard` WHERE `hn` = '$PID' ";
+	$sql = "SELECT CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,6,2),SUBSTRING(`dbirth`,9,2)) AS `dbirth`, 
+	TIMESTAMPDIFF(MONTH,toEn(`dbirth`),NOW()) AS `ageMonth` 
+	FROM `opcard` 
+	WHERE `hn` = '$PID' ";
 	$q = mysql_query($sql);
 	$opcard = mysql_fetch_assoc($q);
-    $bdate = $opcard['dbirth'];
-    
-    if( strstr($HEADCIRCUM, '.') ){ 
-        list($dec, $tenths) = explode('.', $HEADCIRCUM);
-        $HEADCIRCUM = $dec.'.'.substr($tenths, 0, 1);
-    }else{
-        $HEADCIRCUM = number_format($HEADCIRCUM, 1);
-    }
+	if ( $opcard['ageMonth'] <= 1 ) {
 
-    $policy_item = array(
-        'HOSPCODE' => $HOSPCODE, 
-        'PID' => $PID, 
-        'BDATE' => $bdate, 
-        'HC' => $HEADCIRCUM 
-    );
+		$bdate = $opcard['dbirth'];
+		
+		if( strstr($HEADCIRCUM, '.') ){ 
+			list($dec, $tenths) = explode('.', $HEADCIRCUM);
+			$HEADCIRCUM = $dec.'.'.substr($tenths, 0, 1);
+		}else{
+			$HEADCIRCUM = number_format($HEADCIRCUM, 1);
+		}
 
-    $json = new Services_JSON();
-    $policy_data = $json->encode($policy_item);
+		$policy_item = array(
+			'HOSPCODE' => $HOSPCODE, 
+			'PID' => $PID, 
+			'BDATE' => $bdate, 
+			'HC' => $HEADCIRCUM 
+		);
 
-    $sql = "INSERT INTO `43policy` ( 
-        `id`, `hospcode`, `policy_id`, `policy_year`, `policy_data`, 
-        `d_update`, `opday_id`, `last_update` 
-    ) VALUES ( 
-        NULL, '$HOSPCODE', '001', '2017', '$policy_data', 
-        '$D_UPDATE', '$opday_id', NULL 
-    );";
-	$query_add2 = mysql_query($sql);
-	if (!$query_add2) {
-		$sql_add2 .= mysql_error();
+		$json = new Services_JSON();
+		$policy_data = $json->encode($policy_item);
+
+		$sql = "INSERT INTO `43policy` ( 
+			`id`, `hospcode`, `policy_id`, `policy_year`, `policy_data`, 
+			`d_update`, `opday_id`, `last_update` 
+		) VALUES ( 
+			NULL, '$HOSPCODE', '001', '2017', '$policy_data', 
+			'$D_UPDATE', '$opday_id', NULL 
+		);";
+		$query_add2 = mysql_query($sql);
+		if (!$query_add2) {
+			$sql_add2 .= mysql_error();
+		}
 	}
 	// เพิ่มข้อมูลเข้า 43แฟ้ม
 
