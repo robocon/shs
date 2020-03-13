@@ -123,22 +123,22 @@ if($_POST["cigarette"]=="1"){
 	$bp4 = $_POST['bp4'];
 	$cAge = $_POST['age'];
 
-	$mens = ( empty($_POST['mens']) ) ? NULL : $_POST['mens'] ;
+	$mens = ( empty($_POST['mens']) ) ? 'NULL' : $_POST['mens'] ;
 	$mens_date = ( empty($_POST['mens_date']) ) ? '0000-00-00' : $_POST['mens_date'] ;
-	$vaccine = ( empty($_POST['vaccine']) ) ? NULL : $_POST['vaccine'] ;
-	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? NULL : $_POST['parent_smoke'] ;
+	$vaccine = ( empty($_POST['vaccine']) ) ? 'NULL' : $_POST['vaccine'] ;
+	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? 'NULL' : $_POST['parent_smoke'] ;
 	$parent_smoke_amount = ( empty($_POST['parent_smoke_amount']) ) ? 0 : $_POST['parent_smoke_amount'] ;
-	$parent_drink = ( empty($_POST['parent_drink']) ) ? NULL : $_POST['parent_drink'] ;
+	$parent_drink = ( empty($_POST['parent_drink']) ) ? 'NULL' : $_POST['parent_drink'] ;
 	$parent_drink_amount = ( empty($_POST['parent_drink_amount']) ) ? 0 : $_POST['parent_drink_amount'] ;
 	$smoke_amount = ( empty($_POST['smoke_amount']) ) ? 0 : $_POST['smoke_amount'] ;
 	$drink_amount = ( empty($_POST['drink_amount']) ) ? 0 : $_POST['drink_amount'] ;
-	$ht_amount = ( empty($_POST['ht_amount']) ) ? NULL : $_POST['ht_amount'] ;
-	$dm_amount = ( empty($_POST['dm_amount']) ) ? NULL : $_POST['dm_amount'] ;
+	$ht_amount = ( empty($_POST['ht_amount']) ) ? 'NULL' : $_POST['ht_amount'] ;
+	$dm_amount = ( empty($_POST['dm_amount']) ) ? 'NULL' : $_POST['dm_amount'] ;
+	
 	$hpi = htmlspecialchars($_POST['hpi'], ENT_QUOTES);
-
-	$grade = ( empty($_POST['grade']) ) ? NULL : $_POST['grade'] ;
-	$mind = ( empty($_POST['mind']) ) ? NULL : $_POST['mind'] ;
-	$the_pill = ( empty($_POST['the_pill']) ) ? NULL : $_POST['the_pill'] ;
+	$grade = ( empty($_POST['grade']) ) ? 'NULL' : $_POST['grade'] ;
+	$mind = ( empty($_POST['mind']) ) ? 'NULL' : $_POST['mind'] ;
+	$the_pill = ( empty($_POST['the_pill']) ) ? 'NULL' : $_POST['the_pill'] ;
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
@@ -185,9 +185,9 @@ $sql = "Update `opd` set  `thidate` = '".$thidate_now."',
 `ht_amount` = '$ht_amount', 
 `dm_amount` = '$dm_amount', 
 `hpi` = '$hpi',
-`grade` = '$grade', 
-`mind` = '$mind', 
-`the_pill` = '$the_pill' 
+`grade` = $grade, 
+`mind` = $mind, 
+`the_pill` = $the_pill 
 
 where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
@@ -212,11 +212,10 @@ $sql = "INSERT INTO `opd` (
 	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
 	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
-	'$hpi', '$grade','$mind','$the_pill'
+	'$hpi', $grade,$mind,$the_pill
 );";
 
 }
-
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	
 	$field="";
@@ -393,7 +392,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$thdatevn=$thidate.$nVn;
 			$thidate_now1 = (date("Y")+543).date("-m-d").date(" H:i:s");
 			$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,toborow,time1,idcard,dxgroup,officer)VALUES('".$thidate_now1."','".$thidatehn."','".$cHn."','".$nVn."', '".$thdatevn."','".$cPtname."','".$cAge."','".$cPtright."','".$cGoup."','".$cCamp."','".$cNote."','".$vnlab."','".$time1."','".$cIdcard."','21','".$_SESSION["sOfficer"]."');";
-			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 311");
+			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 311".mysql_error());
 			
 			$sql = "UPDATE opcard SET lastupdate='".$thidate_now."' WHERE hn='$cHn' ";
 			$result = mysql_query($sql) or die("Query failed UPDATE opcard line 315");
