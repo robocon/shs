@@ -31,25 +31,49 @@ if( $action === 'save' ){
     $CID = input_post('CID');
 
     $opday_id = input_post('opday_id');
+    $prenatal_id = input_post('prenatal_id');
 
-    $sql = "INSERT INTO `43prenatal` ( 
-        `id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
-        `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, 
-        `D_UPDATE`,`PROVIDER`,`CID`,`opday_id` 
-    ) VALUES ( 
-        NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
-        '$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
-        '$D_UPDATE','$PROVIDER','$CID', '$opday_id' 
-    );";
-    $save = $db->insert($sql);
+    if( $prenatal_id != false ){ 
+
+        $sql = "UPDATE `43prenatal` SET 
+        `HOSPCODE`='$HOSPCODE', 
+        `PID`='$PID', 
+        `GRAVIDA`='$GRAVIDA', 
+        `LMP`='$LMP', 
+        `EDC`='$EDC', 
+        `VDRL_RESULT`='$VDRL_RESULT', 
+        `HB_RESULT`='$HB_RESULT', 
+        `HIV_RESULT`='$HIV_RESULT', 
+        `DATE_HCT`='$DATE_HCT', 
+        `HCT_RESULT`='$HCT_RESULT', 
+        `THALASSEMIA`='$THALASSAEMIA', 
+        `D_UPDATE`='$D_UPDATE', 
+        `PROVIDER`='$PROVIDER', 
+        `CID`='$CID', 
+        `opday_id`='$opday_id' 
+        WHERE (`id`='$prenatal_id');";
+        $save = $db->update($sql);
+
+    }else{ 
+
+        $sql = "INSERT INTO `43prenatal` ( 
+            `id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
+            `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, 
+            `D_UPDATE`,`PROVIDER`,`CID`,`opday_id` 
+        ) VALUES ( 
+            NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
+            '$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
+            '$D_UPDATE','$PROVIDER','$CID', '$opday_id' 
+        );";
+        $save = $db->insert($sql);
+
+    }
+    
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
     }
-
-    // UPDATE `43prenatal` SET `id`=NULL, `HOSPCODE`=NULL, `PID`=NULL, `GRAVIDA`=NULL, `LMP`=NULL, `EDC`=NULL, `VDRL_RESULT`=NULL, `HB_RESULT`=NULL, `HIV_RESULT`=NULL, `DATE_HCT`=NULL, `HCT_RESULT`=NULL, `THALASSEMIA`=NULL, `D_UPDATE`=NULL WHERE (ISNULL(`id`));
-    // dump($_POST);
 
     redirect('prenatal.php', $msg);
     exit;
@@ -82,9 +106,14 @@ $page = input('page');
 if ( $page === 'search' ) {
     $hn = input_post('hn');
 
-    $sql = "SELECT * FROM `opday` WHERE `hn` = '$hn' AND `thidate` >= '2561-10-01 00:00:00' ORDER BY `row_id` DESC";
+    $sql = "SELECT a.`row_id`,a.`hn`, a.`ptname`,a.`diag`, a.`doctor`, a.`toborow`, a.`thidate`, b.`id` AS `prenatal_id` 
+    FROM `opday` AS a 
+    LEFT JOIN `43prenatal` AS b ON b.`opday_id` = a.`row_id` 
+    WHERE a.`hn` = '$hn' 
+    ORDER BY a.`thidate` 
+    DESC LIMIT 100";
     $db->select($sql);
-    $itemPop = $items = $db->get_items();
+    $itemPop = $items = $db->get_items(); 
 
     $user = array_pop($itemPop);
     ?>
@@ -98,14 +127,21 @@ if ( $page === 'search' ) {
             <th>จัดการข้อมูล</th>
         </tr>
     <?php
-    foreach ($items as $key => $item) {
+    foreach ($items as $key => $item) { 
+
+        $title = $color = '';
+        if ( $item['prenatal_id'] ) { 
+            $color = 'style="background-color: #abff90;"';
+            $title = 'เคยบันทึกข้อมูลแล้ว';
+        }
+        
         ?>
-        <tr>
+        <tr <?=$color;?>>
             <td><?=$item['thidate'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['doctor'];?></td>
             <td><?=$item['toborow'];?></td>
-            <td><a href="prenatal.php?page=form&id=<?=$item['row_id'];?>">บันทึก</a></td>
+            <td><a href="prenatal.php?page=form&id=<?=$item['row_id'];?>" title="<?=$title;?>">บันทึก</a></td>
         </tr>
         <?php
     }
@@ -120,6 +156,8 @@ if ( $page === 'search' ) {
     $db->select($sql);
     $user = $db->get_item();
 
+    $thdatehn = $user['thdatehn'];
+
     if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
         $prefixMd = substr($user['doctor'],0,5);
         $where = "`name` LIKE '$prefixMd%'";
@@ -128,7 +166,7 @@ if ( $page === 'search' ) {
         $prefixMd = $matchs['0'];
         $where = "`doctorcode` = '$prefixMd'";
     }
-    $sql = "SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
+    $sql = "SELECT `doctorcode` FROM `doctor` WHERE $where ";
     $db->select($sql);
     $dr = $db->get_item();
     $doctorcode = $dr['doctorcode'];
@@ -136,6 +174,45 @@ if ( $page === 'search' ) {
     $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
     $db->select($sql);
     $dr = $db->get_item();
+
+
+
+
+    // วันที่ประจำเดือนครั้งสุดท้ายจาก OPD
+    $db->select("SELECT `mens`,`mens_date` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
+    $mens = $db->get_item();
+    $mensId = $mens['mens'];
+    $mensList = array(1 => 'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
+
+    if( $mensList[$mensId] ){
+        $lmpNoti = $mensList[$mensId];
+    }
+
+    $LMP = '';
+    if( $mens['mens_date'] != '0000-00-00' ){
+        $LMP = ad_to_bc($mens['mens_date']);
+    }
+
+    $db->select("SELECT * FROM `43prenatal` WHERE `opday_id` = '$row_id'");
+    $prenatal = false;
+    if( $db->get_rows() > 0 ){
+        $prenatal = $db->get_item();
+        
+        $GRAVIDA = $prenatal['GRAVIDA'];
+        $VDRL_RESULT = $prenatal['VDRL_RESULT'];
+        $HB_RESULT = $prenatal['HB_RESULT'];
+        $HIV_RESULT = $prenatal['HIV_RESULT'];
+        $HCT_RESULT = $prenatal['HCT_RESULT'];
+        $THALASSEMIA = $prenatal['THALASSEMIA'];
+
+        $DATE_HCT = substr($prenatal['DATE_HCT'],0,4).'-'.substr($prenatal['DATE_HCT'],4,2).'-'.substr($prenatal['DATE_HCT'],6,2);
+        $DATE_HCT = ad_to_bc($DATE_HCT);
+
+        $EDC = substr($prenatal['EDC'],0,4).'-'.substr($prenatal['EDC'],4,2).'-'.substr($prenatal['EDC'],6,2);
+        $EDC = ad_to_bc($EDC);
+        
+    }
+    
     
     ?>
     <style type="text/css">
@@ -162,15 +239,15 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">ครรภ์ที่ : </td>
-                    <td><input type="text" name="GRAVIDA" id="">(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
+                    <td><input type="text" name="GRAVIDA" id="GRAVIDA" value="<?=$GRAVIDA;?>" >(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
-                    <td><input type="text" name="LMP" id="LMP"></td>
+                    <td><input type="text" name="LMP" id="LMP" value="<?=$LMP;?>" ><?=$lmpNoti;?></td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่กำหนดคลอด : </td>
-                    <td><input type="text" name="EDC" id="EDC"></td>
+                    <td><input type="text" name="EDC" id="EDC" value="<?=$EDC;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">ผลการตรวจ VDRL_RS : </td>
@@ -179,9 +256,12 @@ if ( $page === 'search' ) {
                         $db->select("SELECT * FROM `f43_prenatal_174`");
                         $vdrlLists = $db->get_items();
                         $i = 1;
-                        foreach ($vdrlLists as $key => $item) {
+                        foreach ($vdrlLists as $key => $item) { 
+
+                            $checkedVDRL = ( $VDRL_RESULT == $item['code'] ) ? 'checked="checked"' : '' ;
+
                             ?>
-                            <input type="radio" name="VDRL_RESULT" id="vdrl<?=$i;?>" value="<?=$item['code'];?>"><label for="vdrl<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="VDRL_RESULT" id="vdrl<?=$i;?>" value="<?=$item['code'];?>" <?=$checkedVDRL;?> ><label for="vdrl<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -195,9 +275,12 @@ if ( $page === 'search' ) {
                         $db->select("SELECT * FROM `f43_prenatal_174`");
                         $hbLists = $db->get_items();
                         $i = 1;
-                        foreach ($hbLists as $key => $item) {
+                        foreach ($hbLists as $key => $item) { 
+
+                            $checkedHB = ( $HB_RESULT == $item['code'] ) ? 'checked="checked"' : '' ;
+
                             ?>
-                            <input type="radio" name="HB_RESULT" id="hb<?=$i;?>" value="<?=$item['code'];?>"><label for="hb<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="HB_RESULT" id="hb<?=$i;?>" value="<?=$item['code'];?>" <?=$checkedHB;?> ><label for="hb<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -211,9 +294,12 @@ if ( $page === 'search' ) {
                         $db->select("SELECT * FROM `f43_prenatal_176`");
                         $hivLists = $db->get_items();
                         $i = 1;
-                        foreach ($hivLists as $key => $item) {
+                        foreach ($hivLists as $key => $item) { 
+
+                            $checkedHIV = ( $HIV_RESULT == $item['code'] ) ? 'checked="checked"' : '' ;
+
                             ?>
-                            <input type="radio" name="HIV_RESULT" id="hiv<?=$i;?>" value="<?=$item['code'];?>"><label for="hiv<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="HIV_RESULT" id="hiv<?=$i;?>" value="<?=$item['code'];?>" <?=$checkedHIV;?> ><label for="hiv<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -222,15 +308,30 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่ตรวจ HCT : </td>
-                    <td><input type="text" name="DATE_HCT" id="DATE_HCT"></td>
+                    <td><input type="text" name="DATE_HCT" id="DATE_HCT" value="<?=$DATE_HCT;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">ผลการตรวจ HCT : </td>
-                    <td><input type="text" name="HCT_RESULT" id=""></td>
+                    <td><input type="text" name="HCT_RESULT" id="HCT_RESULT" value="<?=$HCT_RESULT;?>" >(ระดับฮีมาโตคริค (%) ระบุเป็นตัวเลขไม่เกิน 2 หลัก)</td>
                 </tr>
                 <tr>
                     <td class="txtRight">ผลการตรวจ THALASSAEMIA : </td>
-                    <td><input type="text" name="THALASSAEMIA" id=""></td>
+                    <td>
+                        <?php 
+                        $db->select("SELECT * FROM `f43_prenatal_176`");
+                        $hctLists = $db->get_items();
+                        $i = 1;
+                        foreach ($hctLists as $key => $item) { 
+
+                            $checkedTHA = ( $THALASSEMIA == $item['code'] ) ? 'checked="checked"' : '' ;
+
+                            ?>
+                            <input type="radio" name="THALASSAEMIA" id="hct<?=$i;?>" value="<?=$item['code'];?>"  <?=$checkedTHA;?> ><label for="hct<?=$i;?>"><?=$item['detail'];?></label>
+                            <?php
+                            $i++;
+                        }
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;">
@@ -240,6 +341,7 @@ if ( $page === 'search' ) {
                         <input type="hidden" name="action" value="save">
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
                         <input type="hidden" name="opday_id" value="<?=$user['row_id'];?>">
+                        <input type="hidden" name="prenatal_id" value="<?=$prenatal['id'];?>">
                     </td>
                 </tr>
             </table>

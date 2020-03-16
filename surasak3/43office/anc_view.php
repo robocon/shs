@@ -55,12 +55,12 @@ if( $action == 'report' ){
     $date = bc_to_ad($date);
     $date = str_replace('-', '', $date);
 
-    $sql = "SELECT * FROM `anc` WHERE `date_serv` LIKE '$date%' ";
+    $sql = "SELECT * FROM `anc` WHERE `date_serv` LIKE '$date%' ORDER BY `row_id` DESC ";
     $q = mysql_query($sql) or die( mysql_error() );
 
     ?>
     <div>&nbsp;</div>
-    <table class="chk_table">
+    <table class="chk_table" width="110%">
         <tr>
             <th class="warning">HOSPCODE</th>
             <th class="warning">PID</th>
@@ -74,6 +74,7 @@ if( $action == 'report' ){
             <th class="warning">PROVIDER</th>
             <th class="warning">D_UPDATE</th>
             <th class="warning">CID</th>
+            <th rowspan="2">แก้ไข</th>
         </tr>
         <tr>
             <th class="warning">รหัสสถานบริการ</th>
@@ -105,6 +106,7 @@ if( $action == 'report' ){
             <td class="warning"><?=$item['provider'];?></td>
             <td class="warning"><?=$item['d_update'];?></td>
             <td class="warning"><?=$item['cid'];?></td>
+            <td><a href="anc.php?page=form&id=<?=$item['opday_id'];?>">แก้ไข</a> | ลบ</td>
         </tr>
         <?php
     }
