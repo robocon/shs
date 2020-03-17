@@ -13,6 +13,7 @@ $sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`statcon`,`
 SUBSTRING(`dateoff`,1,10) AS `dateoff` 
 FROM `dgprofile` 
 WHERE `an` = '$cAn' 
+AND `onoff` = 'ON' 
 ORDER BY `date` DESC ";
 $db->select($sql);
 $items = $db->get_items();
@@ -51,7 +52,7 @@ if( $wardExTest > 0 ){
 ?>
 <style>
 *{
-    font-family: TH Sarabun New, TH SarabunPSK;
+    font-family: "TH Sarabun New", "TH SarabunPSK";
     font-size: 16pt;
 }
 
