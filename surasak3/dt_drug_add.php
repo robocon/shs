@@ -379,7 +379,7 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 	}
 	
 }else if($_SESSION["list_drugcode"][$i]=="10H014"){
-	if($chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R12" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
+	if($chkPtright=="R02" || $chkPtright=="R03" || $chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R12" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
 	//เพิ่มสิทธิ R12 วันที่ 19/05/2559 ยืนยันโดยพี่อึ่ง หน.ประกันสังคม / 30 บาท
 		$sqlb="select * from drugrx 
 		where `date` like '$chkDate%' 
