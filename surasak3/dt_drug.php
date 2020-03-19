@@ -2642,6 +2642,9 @@ function checkForm1(){
 	txt11 = txt11.substr(4);		
 	//alert(txt11);	
 
+	var nameDrugCode = document.form1.drug_code.value.trim().toLowerCase();
+	var drugAmount = document.form1.drug_amount.value.trim();
+
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
 	if(document.form1.drug_code.value == ""){
@@ -2728,9 +2731,13 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
-	}else if( document.form1.drug_code.value.toLowerCase() == '10h005' && document.form1.drug_amount.value > 50 ){
+	}else if( nameDrugCode == '10h005' && drugAmount > 50 ){
 		
 		alert("จำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50 เม็ดต่อคน");
+
+	}else if( nameDrugCode == '1xa.5-nn' && drugAmount > 30 ){
+		
+		alert("จำกัดการสั่งใช้แอลปาโซแลม ไม่เกิน 30 เม็ดต่อคน");
 
 	}else{
 		
