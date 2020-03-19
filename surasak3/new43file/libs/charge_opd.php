@@ -54,16 +54,9 @@ SUM(`dsn`) AS `dsn`,
 `ptright`,`credit`,`date2`, `vn`,`depart2` FROM `tmp_charge_opd` GROUP BY `date2`,`hn`,`depart2` ORDER BY `date` ASC;";
 $result13= mysql_query($sql, $db2) or die( mysql_error() );
 $num = mysql_num_rows($result13);
-// dump($sql13);
-
-// exit;
 
 $txt = '';
-
-// $test_i = 1;
-
-
-while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy,$dsn,$ptright,$credit,$date2,$vn,$depart2) = mysql_fetch_row ($result13)) {	
+while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy,$dsn,$ptright,$credit,$date2,$vn,$depart2) = mysql_fetch_row($result13)) {	
 
 	$sqlpt=mysql_query("SELECT `ptrightdetail` FROM `opcard` WHERE `hn`='$hn'", $db2);
 	list($ptrightdetail)=mysql_fetch_array($sqlpt);	
@@ -74,57 +67,39 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	$thdatehn_opday = "$d2-$m2-$y2$hn";
 	$thdatevn_opday = "$d2-$m2-$y2$vn";
 
-	$qOpday = "SELECT `thidate`,`idcard` 
+	$qOpday = "SELECT `thidate`,`idcard`,`clinic` 
 	FROM `opday` 
 	WHERE `thdatehn` = '$thdatehn_opday' 
 	AND `thdatevn` = '$thdatevn_opday'";
-
-// $test_i++;
-
-
-// 	dump($qOpday);
-
-// 	if ($test_i == 10) {
-// 		# code...
-// 		exit;
-// 	}
-	
 	$sqlop = mysql_query($qOpday, $db2);
-	list($thidate,$idcard) = mysql_fetch_array($sqlop);
+	list($thidate,$idcard,$shsclinic) = mysql_fetch_array($sqlop);
 	$idcard = trim($idcard);
 
 	if( empty($thidate) ){
 		$thidate = $date;
 	}
-	
-	// $newclinic=substr($cliniccode,0,2);
-	// if($newclinic=="" || $newclinic=="ÈÑ"){ 
-	// 	$newclinic = "99";
-	// }else{
-	// 	$newclinic = $newclinic;
-	// }
 
 
-	$test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
-    if($test_match > 0){
-        list($old_clinic_code, $name) = explode(' ', $cliniccode);
 
-        $cliniccode = $name;
-	}
-	
-	$q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'", $db2) or die( mysql_error() );
-    $newclinic = '99';
-    if( mysql_num_rows($q) > 0 ){
-        $item = mysql_fetch_assoc($q);
-        $newclinic = $item['code'];
+	if ( preg_match('/(\d+)\s(.+)/', $shsclinic, $matchs) > 0 ) {
+        
+        $clinicCode = $matchs['1'];
+
+    }elseif( $shsclinic !== null ){
+
+        $db->select("SELECT `code` FROM `f43_clinic` WHERE `detail` = '$shsclinic' ");
+        $clinicDb = $db->get_item();
+        $clinicCode = $clinicDb['code'];
+    }else{
+        $clinicCode = '99';
     }
-
 
 	if(!empty($vn)){ 
 		$firstcode="0";
 	}
 	$treecode="00";
 	$clinic = $firstcode.$newclinic.$treecode;
+	
 
 	$sqlptr = "Select code FROM  ptrightdetail WHERE detail='$ptrightdetail'";
 	$resultptr = mysql_query($sqlptr, $db2) or die(mysql_error());
@@ -187,10 +162,6 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	$txt .= $inline;
 }
 
-
-// dump($txt);
-
-// exit;
 
 $filePath = $dirPath.'/charge_opd.txt';
 file_put_contents($filePath, $txt);

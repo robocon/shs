@@ -6,18 +6,20 @@ $date_serv_selected = ( $y - 543 ).$m.$d;
 
 // สำรวจปีละ 1 ครั้ง ตามรอบปีงบประมาณ
 $sql = "SELECT 
-`hospcode` AS `HOSPCODE`, 
-`disabid` AS `DISABID`, 
-`pid` AS `PID`, 
-`disabtype` AS `DISABTYPE`, 
-`disabcause` AS `DISABCAUSE`, 
-`diagcode` AS `DIAGCODE`, 
-`date_detect` AS `DATE_DETECT`, 
-`date_disab` AS `DATE_DISAB`, 
-`d_update` AS `D_UPDATE`, 
-`cid` AS `CID` 
-FROM `disability43` 
-WHERE `d_update` LIKE '$date_serv_selected%' ";
+a.`hospcode` AS `HOSPCODE`, 
+a.`disabid` AS `DISABID`, 
+a.`pid` AS `PID`, 
+a.`disabtype` AS `DISABTYPE`, 
+a.`disabcause` AS `DISABCAUSE`, 
+a.`diagcode` AS `DIAGCODE`, 
+b.`date_detect` AS `DATE_DETECT`, 
+b.`date_disab` AS `DATE_DISAB`, 
+a.`d_update` AS `D_UPDATE`, 
+a.`cid` AS `CID` 
+FROM `disability43` AS a 
+LEFT JOIN `disabled_user` AS b ON b.`hn` = a.`hn` 
+WHERE a.`d_update` LIKE '$date_serv_selected%' 
+GROUP BY a.`pid` ";
 
 $q = mysql_query($sql) or die( mysql_error() );
 
