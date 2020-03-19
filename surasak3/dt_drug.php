@@ -1336,7 +1336,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 						$obj = 'เฉพาะผู้ป่วย สปสช.';
 
 					}else{
-						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
 						$alert="";
 					}
 				}
@@ -2125,7 +2125,36 @@ function clearobt(nameojt){
 		document.form1.reason.remove(i);
 	}
 }
+<?
+if( $_SESSION['sIdname'] == 'md19921' ){
+?>
+function addobtreason(nameojt,path,dc,sl){
 
+	if(path == "DDY"){
+		
+		/*nameojt.options[nameojt.options.length]=new Option("ใช้ยาในบัญชียาหลักแล้วไม่ดีขึ้น","ใช้ยาในบัญชียาหลักแห่งชาติแล้วไม่ดีขึ้น");
+		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักที่ใช้รักษาตามข้อบ่งชี้","ไม่มียาในบัญชียาหลักแห่งชาติที่ใช้รักษาตามข้อบ่งชี้");
+		nameojt.options[nameojt.options.length]=new Option("แพ้ยาในบัญชียาหลักแห่งชาติ","แพ้ยาในบัญชียาหลักแห่งชาติ");
+		nameojt.options[nameojt.options.length]=new Option("มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชีได้","มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชียาหลักต่อไปได้");
+
+		nameojt.options[nameojt.options.length]=new Option("ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา","ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา(drug interaction)กับยาในบัญชียาหลักแห่งชาติ");
+		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน","ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน");
+		nameojt.options[nameojt.options.length]=new Option("มีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย","มีความจำเป็นที่ต้องใช้ยานอกบัญชียาหลักเพราะมีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย");*/
+		nameojt.options[nameojt.options.length]=new Option("","");  
+		nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา","A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา");  
+		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย","B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย");
+		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด","C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด");
+		nameojt.options[nameojt.options.length]=new Option("มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ","D มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ");
+
+		nameojt.options[nameojt.options.length]=new Option("ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า","E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า");
+		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)","F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)");
+		nameojt.value = sl;
+		
+
+	}/*else{
+<?
+}else{
+?>	
 function addobtreason(nameojt,path,dc,sl){
 
 	if(path == "DDY"){
@@ -2149,7 +2178,9 @@ function addobtreason(nameojt,path,dc,sl){
 		
 
 	}/*else{
-		
+<?
+}
+?>
 		if(dc=="1NEUT300*$"){
 			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
 			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
@@ -3285,8 +3316,9 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 					<Option value="ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา(drug interaction)กับยาในบัญชียาหลักแห่งชาติ">ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา</Option>
 					<Option value="ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน">ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน</Option>
 					<Option value="มีความจำเป็นที่ต้องใช้ยานอกบัญชียาหลักเพราะมีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย">มีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย</Option>-->
+                 <Option value="" selected></Option>
                 <Option value="A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา">เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา</Option>
-                <Option value="B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย" >ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย</Option>
+                <Option value="B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย">ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย</Option>
                 <Option value="C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด">ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด</Option>
                 <Option value="D มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ">มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ</Option>
                 <Option value="E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า">ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า</Option>
