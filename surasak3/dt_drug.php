@@ -1063,23 +1063,52 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 
 	if($_GET["addoredit"] != "E"){
 		$add = false;
-		
-				$_SESSION["list_drugcode"][$_GET["addoredit"]] = $_GET["drugcode"];
-				$_SESSION["list_drugamount"][$_GET["addoredit"]] = $_GET["drugamount"];
-				$_SESSION["list_drugslip"][$_GET["addoredit"]] = $_GET["drugslip"];
 
-				$_SESSION["list_drug_inject_amount"][$_GET["addoredit"]] = $_GET["drug_inject_amount"];
-				$_SESSION["list_drug_inject_unit"][$_GET["addoredit"]] = $_GET["drug_inject_unit"];
-				$_SESSION["list_drug_inject_amount2"][$_GET["addoredit"]] = $_GET["drug_inject_amount2"];
-				$_SESSION["list_drug_inject_unit2"][$_GET["addoredit"]] = $_GET["drug_inject_unit2"];
-				$_SESSION["list_drug_inject_time"][$_GET["addoredit"]] = $_GET["drug_inject_time"];
-				$_SESSION["list_drug_inject_slip"][$_GET["addoredit"]] = $_GET["drug_inject_slip"];
-				$_SESSION["list_drug_inject_type"][$_GET["addoredit"]] = $_GET["drug_inject_type"];
-				$_SESSION["list_drug_inject_etc"][$_GET["addoredit"]] = $_GET["drug_inject_etc"];
-				
-				$_SESSION["list_drug_reason"][$_GET["addoredit"]] = $_GET["reason"];
-				
-				$_SESSION["list_drug_reason2"][$_GET["addoredit"]] = $_GET["reason2"];
+		// สร้างตัวแปรใหม่ขึ้นมาก่อน จะได้ไม่ต้องไปยุ่งกับ $_SESSION
+		$testListDrugcode = $_SESSION["list_drugcode"];
+		$testListAmount = $_SESSION["list_drugamount"];
+
+		// แทนค่า amount ตัวใหม่จาก $_GET เข้าไปก่อน ถ้าเกิน 50เม็ดก็จะ exit 
+		$testListAmount[$_GET["addoredit"]] = $_GET["drugamount"];
+		$testDrugLists = array();
+		$i = 0;
+		foreach ($testListDrugcode as $key => $drugCode) {
+			$amount = $testListAmount[$i];
+			$testDrugLists[$i] = array(
+				'drugCode' => strtolower($drugCode),
+				'amount' => $amount,
+				'arrayNumber' => $i
+			);
+			$i++;
+		}
+
+		$sumAmount10H005 = 0;
+		foreach ($testDrugLists as $key => $testDrugItem) {
+			if($testDrugItem['drugCode'] == '10h005'){
+				$sumAmount10H005 += $testDrugItem['amount'];
+			}
+		}
+		
+		if( $sumAmount10H005 > 50 ){ 
+			echo '{"drugLimit":true,"drugcode":"10h005","message":"จำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50 เม็ดต่อคน"}';
+			exit;
+		}else{
+			echo '{"drugLimit":false}';
+		}
+		
+		$_SESSION["list_drugcode"][$_GET["addoredit"]] = $_GET["drugcode"];
+		$_SESSION["list_drugamount"][$_GET["addoredit"]] = $_GET["drugamount"];
+		$_SESSION["list_drugslip"][$_GET["addoredit"]] = $_GET["drugslip"];
+		$_SESSION["list_drug_inject_amount"][$_GET["addoredit"]] = $_GET["drug_inject_amount"];
+		$_SESSION["list_drug_inject_unit"][$_GET["addoredit"]] = $_GET["drug_inject_unit"];
+		$_SESSION["list_drug_inject_amount2"][$_GET["addoredit"]] = $_GET["drug_inject_amount2"];
+		$_SESSION["list_drug_inject_unit2"][$_GET["addoredit"]] = $_GET["drug_inject_unit2"];
+		$_SESSION["list_drug_inject_time"][$_GET["addoredit"]] = $_GET["drug_inject_time"];
+		$_SESSION["list_drug_inject_slip"][$_GET["addoredit"]] = $_GET["drug_inject_slip"];
+		$_SESSION["list_drug_inject_type"][$_GET["addoredit"]] = $_GET["drug_inject_type"];
+		$_SESSION["list_drug_inject_etc"][$_GET["addoredit"]] = $_GET["drug_inject_etc"];
+		$_SESSION["list_drug_reason"][$_GET["addoredit"]] = $_GET["reason"];
+		$_SESSION["list_drug_reason2"][$_GET["addoredit"]] = $_GET["reason2"];
 
 	}else{
 		$add = true;
@@ -1101,6 +1130,50 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		array_push($_SESSION["list_drug_inject_etc"],$_GET["drug_inject_etc"]);
 		array_push($_SESSION["list_drug_reason"],$_GET["reason"]);
 		array_push($_SESSION["list_drug_reason2"],$_GET["reason2"]);
+
+		// ฟ้าทะลายโจร
+		$testDrugLists = array();
+		$i = 0;
+		foreach ($_SESSION["list_drugcode"] as $key => $drugCode) {
+			$amount = $_SESSION["list_drugamount"][$i];
+			$testDrugLists[] = array(
+				'drugCode' => strtolower($drugCode),
+				'amount' => $amount,
+				'arrayNumber' => $i
+			);
+			$i++;
+		}
+
+		$sum10H005Amount = 0;
+		foreach ($testDrugLists as $key => $testDrug) {
+			if($testDrug['drugCode'] == '10h005'){
+				$sum10H005Amount += $testDrug['amount'];
+			}
+		}
+
+		// ถ้าจำนวนที่เพิ่ม เกิน50 ให้ pop ตัวที่เพิ่มออกไป
+		if( $sum10H005Amount > 50 ){ 
+			echo '{"drugLimit":true,"drugcode":"10h005","message":"จำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50 เม็ดต่อคน"}';
+
+			array_pop($_SESSION["list_drugcode"]);
+			array_pop($_SESSION["list_drugamount"]);
+			array_pop($_SESSION["list_drugslip"]);
+			array_pop($_SESSION["list_drug_inject_amount"]);
+			array_pop($_SESSION["list_drug_inject_unit"]);
+			array_pop($_SESSION["list_drug_inject_amount2"]);
+			array_pop($_SESSION["list_drug_inject_unit2"]);
+			array_pop($_SESSION["list_drug_inject_time"]);
+			array_pop($_SESSION["list_drug_inject_slip"]);
+			array_pop($_SESSION["list_drug_inject_type"]);
+			array_pop($_SESSION["list_drug_inject_etc"]);
+			array_pop($_SESSION["list_drug_reason"]);
+			array_pop($_SESSION["list_drug_reason2"]);
+
+		}else{
+			echo '{"drugLimit":false}';
+		}
+		// ฟ้าทะลายโจร
+
 		
 		$count = count($_SESSION["list_drugcode"]);
 
@@ -2426,17 +2499,17 @@ function viewlist(){
 function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
 	
 	xmlhttp = newXmlHttp();
-	
-	//alert(reason2);
-
-	
-	
-	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2
-	;
+	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
+	var testJSON = JSON.parse(xmlhttp.responseText.trim());
+
 	viewlist();
 	alert500();
+
+	if ( testJSON.drugcode == '10h005' && testJSON.message ) {
+		alert('จำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50 เม็ดต่อคน');
+	}
 
 }
 
@@ -2623,8 +2696,10 @@ function checkForm1(){
 	}else if((document.form1.drug_code.value == "1SUDO" || document.form1.drug_code.value == "1SUDO-N"  || document.form1.drug_code.value == "1SUDO-NN") && eval(document.form1.drug_amount.value) > 60 ){
 		alert("ยา PSEUDOEPHEDRINE  60 mg. 	วัตถุออกฤทธิ์ประเภท 2 \n ควบคุมการจ่ายได้ครั้งละไม่เกิน 60 เม็ด ครับ");  //ได้รับแจ้งจาก พี่ตู๋ หน.ห้องยา เมื่อ 25/05/2559
 		document.form1.drug_amount.focus();		
-	}else if((document.form1.drug_code.value == "6VISL  " || document.form1.drug_code.value == "6VISL") && eval(document.form1.drug_amount.value) > 60 ){
-		alert("ยา Sodium  hyaluronate 0.18% , 0.3 ml.  ยามีโควต้าจัดซื้อ \n ควบคุมการจ่ายได้ไม่เกิน 60 หลอด/คน/เดือน");  //ได้รับแจ้งจาก พี่ตู๋ หก.ห้องยา เมื่อ 02/03/2561
+	}else if((document.form1.drug_code.value == "6VISL  " || document.form1.drug_code.value == "6VISL") && eval(document.form1.drug_amount.value) > 100 ){ 
+		// ได้รับแจ้งจาก พี่ตู๋ หก.ห้องยา เมื่อ 02/03/2561 
+		// แก้ไขเมื่อวันที่ 19/03/63 ให้เพิ่มจาก 60 เป็น 100
+		alert("ยา Sodium  hyaluronate 0.18% , 0.3 ml.  ยามีโควต้าจัดซื้อ \n ควบคุมการจ่ายได้ไม่เกิน 100 หลอด/คน/เดือน");  
 		document.form1.drug_amount.focus();				
 	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
@@ -2653,6 +2728,10 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
+	}else if( document.form1.drug_code.value.toLowerCase() == '10h005' && document.form1.drug_amount.value > 50 ){
+		
+		alert("จำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50 เม็ดต่อคน");
+
 	}else{
 		
 			if(check_inject(document.form1.drug_code.value) == false){
