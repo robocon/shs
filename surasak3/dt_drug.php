@@ -2571,6 +2571,15 @@ function checkForm1(){
 
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
+	/*
+	else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 30 ){ 
+		
+		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้แอลปาโซแลม  ไม่เกิน 30เม็ดต่อคน");  
+		document.form1.drug_amount.focus();
+
+	}
+	 */
+
 	if(document.form1.drug_code.value == ""){
 		alert("กรุณาใส่รหัสยา");
 		document.form1.drug_code.focus();
@@ -2631,11 +2640,6 @@ function checkForm1(){
 	}else if( document.form1.drug_code.value == "10H005" && eval(document.form1.drug_amount.value) > 50 ){ 
 		
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");  
-		document.form1.drug_amount.focus();
-
-	}else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 30 ){ 
-		
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้แอลปาโซแลม  ไม่เกิน 30เม็ดต่อคน");  
 		document.form1.drug_amount.focus();
 
 	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
