@@ -27,6 +27,14 @@ $db = Mysql::load();
 h3{
     margin: 0;
 }
+
+/* Overdrive */
+table.calendar td, 
+table.calendar th,
+table.calendar input, 
+table.calendar select{ 
+    font-size: 14px;
+}
 </style>
 <form action="hsri_lab.php" method="post">
     <fieldset>
