@@ -1,11 +1,11 @@
 <?php 
 include 'bootstrap.php';
 
-$db = Mysql::load($shs_configs);
-
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
 
 ?>
+<link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+<script type="text/javascript" src="epoch_classes.js"></script>
 <style>
 @media print{
     form{
@@ -33,28 +33,46 @@ $db = Mysql::load($shs_configs);
             HN : <input type="text" name="hn" id="">
         </div>
         <div>
+            เลือกวันที่ ตั้งแต่วันที่ <input type="text" name="dateStart" id="dateStart"> ถึงวันที่ <input type="text" name="dateEnd" id="dateEnd">
+        </div>
+        <div>
             <button type="submit">แสดงข้อมูล</button>
             <input type="hidden" name="action" value="show">
         </div>
-        <div>
-            ข้อมูลตั้งแต่ 01 สิงหาคม 2561 ถึง 31 กรกฎาคม 2562
-        </div>
     </fieldset>
 </form>
-
+<script type="text/javascript">
+    var popup1,popup2;
+    window.onload = function() {
+        popup1 = new Epoch('popup1','popup',document.getElementById('dateStart'),false);
+        popup2 = new Epoch('popup2','popup',document.getElementById('dateEnd'),false);
+    };
+</script>
 <?php
 $action = input_post('action');
 if ($action == 'show') { 
 
     $hn = input_post('hn');
+    $dateStart = input_post('dateStart');
+    $dateEnd = input_post('dateEnd');
+
+    $dateStart = ad_to_bc($dateStart);
+    $dateEnd = ad_to_bc($dateEnd);
 
     $sql = "SELECT a.`hn`,a.`txdate`,a.`depart`,CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname` 
     FROM `opacc` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
     WHERE a.`hn` = '$hn' 
     AND a.`an` = '' 
-    AND a.`date` >= '2561-08-01 00:00:00' AND a.`date` <= '2562-07-31 23:59:59' ";
+    AND a.`date` >= '$dateStart 00:00:00' AND a.`date` <= '$dateEnd 23:59:59' 
+    ORDER BY a.`date` DESC";
     $db->select($sql);
+
+    if( $db->get_rows() == 0 ){
+        echo "ไม่พบข้อมูล กรุณาตรวจสอบ HN, วันที่เริ่มต้น และวันที่สิ้นสุด ในการดึงข้อมูล";
+        exit;
+    }
+
     $items = $db->get_items();
     
     ?>
@@ -72,9 +90,6 @@ if ($action == 'show') {
             </tr>
         </thead>
         <tbody>
-
-        
-    
     <?php
 
     foreach ($items as $key => $item) {
