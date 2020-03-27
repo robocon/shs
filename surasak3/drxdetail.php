@@ -372,7 +372,7 @@ echo "<table><tr>";
 	<td><a target="_blank"  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
  </tr></table>
  <div>
-	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code(ช่วงทดลองใช้งาน)</a> | <a href="sticker_manual.php?hn=<?=$sHn;?>" target="_blank">ฉลากยาแบบ Manual</a></p>
+	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a></p>
  </div>
 <?php
 	$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";

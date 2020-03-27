@@ -3,6 +3,10 @@ include 'bootstrap.php';
 $db = Mysql::load();
 
 $page = input_post('page');
+
+$name = '.................................................';
+$hn = '.....................';
+
 if ( $page ) {
 
     ?>
@@ -31,8 +35,10 @@ if ( $page ) {
     }
     </style>
     <?php
-    $hn = input_post('hn');
-    $name = input_post('name');
+    // $hn = input_post('hn');
+    // $name = input_post('name');
+
+    
 
     $inject = input_post('inject');
     if( $inject ){
@@ -128,7 +134,7 @@ if ( $page ) {
                     รับประทานครั้งละ.......ช้อนชา/ช้อนโต๊ะ/ซีซี&nbsp;&nbsp;&nbsp;&nbsp;จิบเวลาไอ
                 </div>
                 <div>
-                    วันละ.......ครั้ง&nbsp;&nbsp;ทุก.......ชั่วโมง
+                    วันละ..........ครั้ง&nbsp;&nbsp;ทุก..........ชั่วโมง
                 </div>
                 <div>
                     ก่อนอาหาร&nbsp;&nbsp;หลังอาหาร&nbsp;&nbsp;&nbsp;&nbsp;เช้า&nbsp;&nbsp;กลางวัน&nbsp;&nbsp;เย็น&nbsp;&nbsp;ก่อนนอน
@@ -169,11 +175,11 @@ if ( $page ) {
                     ข้อบ่งใช้ ..............................................................................
                 </div>
                 <div>
-                    หยอดตา/ป้ายตา/หยอดหู&nbsp;ครั้งละ.......หยด
+                    หยอดตา/ป้ายตา/หยอดหู&nbsp;ครั้งละ..........หยด
                 </div>
                 <div>สองข้าง/ข้างขวา/ข้างซ้าย</div>
                 <div>
-                    วันละ.......ครั้ง&nbsp;&nbsp;ทุก.......ชั่วโมง
+                    วันละ..........ครั้ง&nbsp;&nbsp;ทุก..........ชั่วโมง
                 </div>
             </div>
             <div style='page-break-after: always'></div>
@@ -198,7 +204,7 @@ if ( $page ) {
                     ข้อบ่งใช้ยาทา&nbsp;&nbsp;ผื่นคัน / เพิ่มความชุ่มชื่น / บรรเทาปวด
                 </div>
                 <div>
-                    ทาวันละ.......ครั้ง&nbsp;&nbsp;ทุก.......ชั่วโมง
+                    ทาวันละ..........ครั้ง&nbsp;&nbsp;ทุก..........ชั่วโมง
                 </div>
             </div>
             <div style='page-break-after: always'></div>
@@ -217,11 +223,11 @@ if ( $page ) {
 }
 
 
-$hn = input('hn');
+// $hn = input('hn');
 
-$sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn' ";
-$db->select($sql);
-$pt = $db->get_item();
+// $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn' ";
+// $db->select($sql);
+// $pt = $db->get_item();
 
 ?>
 <style>
@@ -243,10 +249,12 @@ label{
 }
 </style>
 <div><h1 style="font-size: 32pt">Sticker ยา(Manual)</h1></div>
+<!-- 
 <div>
     <p><b>HN</b> : <?=$pt['hn'];?> <b>ชื่อ-สกุล</b> : <?=$pt['ptname'];?></p>
 </div>
-<form action="sticker_manual.php" method="post">
+-->
+<form action="sticker_manual.php" method="post" onsubmit="return testSubmit()">
     <table class="chk_table">
         <tr>
             <td>เลือก</td>
@@ -255,7 +263,7 @@ label{
         </tr>
         <tr>
             <td>
-                <input type="checkbox" name="inject" id="inject" value="1">
+                <input type="checkbox" class="testCheck" name="inject" id="inject" value="1">
             </td>
             <td><label for="inject">ยาฉีด</label></td>
             <td>
@@ -264,7 +272,7 @@ label{
         </tr>
         <tr>
             <td>
-                <input type="checkbox" name="tablet" id="tablet" value="1">
+                <input type="checkbox" class="testCheck" name="tablet" id="tablet" value="1">
             </td>
             <td><label for="tablet">ยาเม็ด</label></td>
             <td>
@@ -273,7 +281,7 @@ label{
         </tr>
         <tr>
             <td>
-                <input type="checkbox" name="mixture" id="mixture" value="1">
+                <input type="checkbox" class="testCheck" name="mixture" id="mixture" value="1">
             </td>
             <td><label for="mixture">ยาน้ำ</label></td>
             <td>
@@ -282,7 +290,7 @@ label{
         </tr>
         <tr>
             <td>
-                <input type="checkbox" name="drops" id="drops" value="1">
+                <input type="checkbox" class="testCheck" name="drops" id="drops" value="1">
             </td>
             <td><label for="drops">ยาหยอด</label></td>
             <td>
@@ -291,7 +299,7 @@ label{
         </tr>
         <tr>
             <td>
-                <input type="checkbox" name="cream" id="cream" value="1">
+                <input type="checkbox" class="testCheck" name="cream" id="cream" value="1">
             </td>
             <td><label for="cream">ยาทา</label></td>
             <td>
@@ -308,3 +316,23 @@ label{
         </tr>
     </table>
 </form>
+<script>
+function testSubmit(){
+    var el = document.getElementsByClassName('testCheck');
+    var testCheckbox = false;
+    for (var i=0; i < el.length; i++) {
+
+        if( el.item(i).checked == true ){
+            testCheckbox = true;
+        }
+
+    }
+
+    if( testCheckbox === false ){
+        alert("เลือกอย่างน้อย 1รายการด้วยจ้า");
+        return false;
+    }
+
+    return true;
+}
+</script>
