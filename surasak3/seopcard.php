@@ -1,3 +1,5 @@
+<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8,chrome=1">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 <style>
 body {
 	background-color:#CCE9FD;
