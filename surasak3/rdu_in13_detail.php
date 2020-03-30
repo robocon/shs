@@ -40,7 +40,8 @@ AND `drugcode` IN (
     '1VOL-NN', 
     '1INDO-N', 
     '1NAPR-N', 
-    '1ARCO120'  
+    '1ARCO120',
+    '1ARCO120-C'
 ) 
 GROUP BY `date_hn`";
 $db->exec($sql);

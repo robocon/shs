@@ -26,26 +26,29 @@ FROM `drugrx`
 WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
-    '1RENI20-C', 
-    '1RENI5-C', 
-    '1TRIT5', 
-    '1COVE5', 
-    '1TRIT5-C', 
-    '1ENAL20', 
-    '1BLOP16*', 
-    '1OLME40', 
-    '1TANZ', 
-    '1APRO', 
-    '1CODI160', 
-    '1MICA40', 
-    '1COZA', 
-    '1APRO-C', 
-    '1TANZ100', 
-    '1EDAR', 
-    '1APRO-N', 
-    '1TANZ50', 
-    '1CODI160-C', 
-    '1ENT100' 
+'1RENI20-C',
+'1RENI5-C',
+'1ENAL5',
+'1TRIT5',
+'1COVE5',
+'1TRIT5-C',
+'1ENAL20',
+'1BLOP16*',
+'1OLME40',
+'1TANZ',
+'1LOSAR100',
+'1APRO',
+'1CODI160',
+'1MICA40',
+'1COZA',
+'1APRO-C',
+'1TANZ100',
+'1EDAR',
+'1APRO-N',
+'1TANZ50',
+'1CODI160-C',
+'1ENT100' 
+
 ); "; 
 $db->exec($sql); 
 

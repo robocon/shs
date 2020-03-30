@@ -27,7 +27,10 @@ LEFT JOIN (
         '1T5-C',
         '1RIV0.5-N',
         '1RIV0.5-C',
-        '1D5'
+        '1D5', 
+        '1LIBR-N', 
+        '1LIBR-C' 
+
     )
 ) AS b ON b.`date_hn` = a.`date_hn` 
 WHERE b.`row_id` IS NOT NULL 

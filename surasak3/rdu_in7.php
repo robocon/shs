@@ -30,21 +30,25 @@ FROM `drugrx`
 WHERE `date` LIKE '$whereMonthTH%'
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
-    '1CIPR-C*?', 
-    '1CRAV*', 
-    '1TARI-C', 
-    '1LEX400-C', 
-    '1CRAV-NN', 
-    '1TAR300', 
-    '1CRAV-C', 
-    '1CRAV-N', 
-    '1LEX400-N', 
-    '1OMNI*$', 
-    '1MEIA', 
-    '5CEFS', 
-    '5DIST', 
-    '5MEIA', 
-    '1CEFS' 
+    '1CIPR-C*?',
+    '1CRAV*',
+    '1TARI-C',
+    '1LEX400-C',
+    '1CRAV-NN',
+    '1TAR300',
+    '1CRAV-C',
+    '1CRAV-N',
+    '1TARI-N',
+    '1LEX400-N',
+    '1GRAC',
+    '1ERYT',
+    '5ERY',
+    '5ZITH*$',
+    '5ZMAX',
+    '1ZITH-C',
+    '1ZITH*',
+    '1DOXY',
+    '1COTR4' 
 ); "; 
 $db->exec($sql); 
 

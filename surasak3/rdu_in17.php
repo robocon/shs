@@ -36,6 +36,7 @@ AND `drugcode` IN (
 '1BLOP16*', 
 '1OLME40', 
 '1TANZ', 
+'1LOSAR100', 
 '1APRO', 
 '1CODI160', 
 '1MICA40', 
@@ -64,7 +65,7 @@ AND `drugcode` IN (
 '1CRES20-N', 
 '1ZOC10-NN', 
 '1ZOC20-NN', 
-'1ZIMMEX20', 
+'1zimmex20', 
 
 '1CAFE-C', 
 '1SER30-N', 
