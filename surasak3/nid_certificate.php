@@ -2,9 +2,6 @@
 
 include 'bootstrap.php';
 
-$Conn = mysql_connect("192.168.1.2", "remoteuser", "") or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
-mysql_select_db("smdb", $Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
-
 $action = input('action');
 if( $action === 'print' ){
 
