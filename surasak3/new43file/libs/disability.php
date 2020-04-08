@@ -17,7 +17,7 @@ b.`date_disab` AS `DATE_DISAB`,
 a.`d_update` AS `D_UPDATE`, 
 a.`cid` AS `CID` 
 FROM `disability43` AS a 
-LEFT JOIN `disabled_user` AS b ON b.`hn` = a.`hn` 
+LEFT JOIN `disabled_user` AS b ON b.`hn` = a.`pid` 
 WHERE a.`d_update` LIKE '$date_serv_selected%' 
 GROUP BY a.`pid` ";
 

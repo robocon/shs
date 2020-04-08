@@ -175,35 +175,7 @@ body,td,th {
 .style1 {color: #FFFFFF}
 </style>
 <script>
-function check(){
-	if(document.dxdrform.normal55.checked == false&document.dxdrform.normal55.checked == false){
-		alert('ยังไม่ได้เลือกค่าความดัน');
-		document.dxdrform.normal55.focus();
-		return false;
-	}else if(document.dxdrform.normal56.checked == false&document.dxdrform.normal56.checked == false){
-		alert('ยังไม่ได้เลือกค่า BMI');
-		document.dxdrform.normal56.focus();
-		return false;		
-/*	}else if(document.dxdrform.normal98.checked == false&document.dxdrform.normal99.checked == false){
-		alert('ยังไม่ได้เลือกผลการตรวจUA');
-		document.dxdrform.normal98.focus();
-		return false;
-	}else if(document.dxdrform.normal97.checked == false&document.dxdrform.normal96.checked == false){
-		alert('ยังไม่ได้เลือกผลการตรวจCBC');
-		document.dxdrform.normal97.focus();
-		return false;*/
-	}else if(document.dxdrform.normal58.checked == false&document.dxdrform.normal57.checked == false){
-		alert('ยังไม่ได้เลือกผลการตรวจเอ็กซ์เรย์ปอด');
-		document.dxdrform.normal58.focus();
-		return false;
-	}else if(document.dxdrform.normal61.checked == false&document.dxdrform.normal62.checked == false&document.dxdrform.normal63.checked == false&document.dxdrform.normal64.checked == false&document.dxdrform.normal65.checked == false&document.dxdrform.normal66.checked == false){
-		alert('ยังไม่ได้เลือกสรุปผลการตรวจ');
-		document.dxdrform.normal61.focus();
-		return false;
-	}else{
-		return true;
-	}
-}
+
 function togglediv1(divid){ 
 	if(document.getElementById(divid).style.display == 'none'){ 
 		document.getElementById(divid).style.display = 'block'; 
@@ -415,7 +387,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyearout_save.php"   onsubmit="return check()" target="_blank">
+<FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyearout_save.php"  target="_blank">
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_dxofyear["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />

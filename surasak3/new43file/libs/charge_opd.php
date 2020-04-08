@@ -87,9 +87,12 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 
     }elseif( $shsclinic !== null ){
 
-        $db->select("SELECT `code` FROM `f43_clinic` WHERE `detail` = '$shsclinic' ");
-        $clinicDb = $db->get_item();
-        $clinicCode = $clinicDb['code'];
+        // $db->select("SELECT `code` FROM `f43_clinic` WHERE `detail` = '$shsclinic' ");
+        // $clinicDb = $db->get_item();
+		// $clinicCode = $clinicDb['code'];
+		$qClinic = mysql_query("SELECT `code` FROM `f43_clinic` WHERE `detail` = '$shsclinic' ", $db2);
+		list($clinicCode) = mysql_fetch_array($qClinic);
+		
     }else{
         $clinicCode = '99';
     }
