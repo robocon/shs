@@ -2580,6 +2580,12 @@ function checkForm1(){
 	}
 	 */
 
+	if( document.form1.drug_code.value == "1PLAQ-N" || document.form1.drug_code.value == "1ZITH-C" ){ 
+	
+		alert("ขอสงวนสิทธิใช้กรณีคนไข้ โควิด-19");  
+
+	}
+
 	if(document.form1.drug_code.value == ""){
 		alert("กรุณาใส่รหัสยา");
 		document.form1.drug_code.focus();
