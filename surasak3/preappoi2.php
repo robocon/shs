@@ -179,7 +179,13 @@ if( empty($_GET['action'])
 	$query = mysql_query($sql);
 	$item = mysql_fetch_assoc($query);
 	$dr_limit = (int) $item['user_row'];
-	if( $item !== false && $appoint_rows >= $dr_limit ){
+
+	if( $dr_limit === 0 ){
+
+		echo 'แพทย์ '.substr($item['dr_name'],5).' งดนัดผู้ป่วยทุกวัน'.$th_day[$check_date].' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
+		exit;
+
+	}elseif( $item !== false && $appoint_rows >= $dr_limit ){
 		
 		$get_day = (int) $item['date'];
 		echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อ '.$item['dr_contact'];
