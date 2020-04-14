@@ -3,16 +3,19 @@ include 'bootstrap.php';
 
 $db = Mysql::load($rdu_configs);
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+// $year = input_get('year');
+// $quarter = input_get('quarter');
 $table = input_get('table');
+$date = input_get('date');
+$minDate = input_get('minDate');
+$maxDate = input_get('maxDate');
 
 $where_toborow = "AND `toborow` != 'EX02'";
-if ( $year <= '2562' ) {
-    if( $quarter < 4 ){
-        $where_toborow = "";
-    }
-}
+// if ( $year <= '2562' ) {
+//     if( $quarter < 4 ){
+//         $where_toborow = "";
+//     }
+// }
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT b.*, a.`doctor` AS `doctor2`, a.`ptname` AS `ptname2` ,a.`age` AS `age2`
