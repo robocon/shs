@@ -117,6 +117,7 @@ exit();
 $officer_name = trim($_SESSION['sOfficer']);
 $doctor_name = trim($_POST['doctor']);
 
+
 if( !$_POST['date_appoint'] ){
 	?><p>กรุณาเลือกวันที่นัด <a href="javascript:window.history.back();">คลิกที่นี่</a> เพื่อกลับไปหน้าเลือกวันที่</p><?php
 	exit;
@@ -166,7 +167,7 @@ if( empty($_GET['action'])
 	
 	list($day, $th_month, $th_year) = explode(' ', $_POST['date_appoint']);
 	$new_date = ($th_year-543).'-'.$months[$th_month].'-'.$day;
-
+	
 	$dr_cheaw_test = date('Y-m-d', strtotime($new_date));
 
 	// 0 -> อาทิตย์ ไปจนถึง 6 -> วันเสาร์
@@ -175,161 +176,58 @@ if( empty($_GET['action'])
 	$sql = "SELECT `dr_name`,`date`,`user_row`,`dr_contact` 
 	FROM `dr_limit_appoint` 
 	WHERE `dr_name` LIKE '$code%' 
-	AND `date` = '$check_date'";
+	AND `date` = '$check_date' 
+	AND `type` = 'lock' ";
 	$query = mysql_query($sql);
-	$item = mysql_fetch_assoc($query);
-	$dr_limit = (int) $item['user_row'];
-
-	/*if( $dr_limit === 0 ){
-
-		echo 'แพทย์ '.substr($item['dr_name'],5).' งดนัดผู้ป่วยทุกวัน'.$th_day[$check_date].' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
-		exit;
-
-	}else*/
+	if (mysql_num_rows($query) > 0) {
 	
-	if( $item !== false && $appoint_rows >= $dr_limit ){
-		
-		$get_day = (int) $item['date'];
-		echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อ '.$item['dr_contact'];
-		echo '<br>';
-		echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
-		exit;
+		$item = mysql_fetch_assoc($query);
+		$dr_limit = $item['user_row'];
+
+		if( $dr_limit == 0 ){
+
+			echo 'แพทย์ '.substr($item['dr_name'],5).' งดนัดผู้ป่วยทุกวัน'.$th_day[$check_date].' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
+			exit;
+
+		}elseif( $appoint_rows >= $dr_limit ){
+			
+			$get_day = (int) $item['date'];
+			$contactTxt = '';
+			if( !empty($item['dr_contact']) ){
+				$contactTxt = ' หากต้องการนัดเพิ่มกรุณาติดต่อ'.$item['dr_contact'];
+			}
+
+			echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน '.$item['user_row'].'คน '.$contactTxt;
+			echo '<br>';
+			echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
+			exit;
+		}
 	}
 	// จำกัดจำนวนผู้ป่วยนัด
 	
-	// กรณีนอกเหนือจาก dr_limit_appoint
-	$manual_lock = false;
-	if( $_POST['doctor'] == 'MD100 เชาวรินทร์ อุ่นเครือ' OR $_POST['doctor'] == 'HD เชาวรินทร์ (ว.37533)' ){
-		$dr_name = 'แพทย์ เชาวรินทร์ อุ่นเครือ';
-		$manual_lock = array( 
-			'01 กุมภาพันธ์ 2563' => 0,
-			'02 กุมภาพันธ์ 2563' => 0,
-			'03 กุมภาพันธ์ 2563' => 0,
-			'04 กุมภาพันธ์ 2563' => 0,
-			'05 กุมภาพันธ์ 2563' => 0,
-			'06 กุมภาพันธ์ 2563' => 0,
-			'07 กุมภาพันธ์ 2563' => 0,
-			'08 กุมภาพันธ์ 2563' => 0,
-			'11 กุมภาพันธ์ 2563' => 0,
-			'12 กุมภาพันธ์ 2563' => 0,
-			'13 กุมภาพันธ์ 2563' => 0,
-			'14 กุมภาพันธ์ 2563' => 0,
-			'24 กุมภาพันธ์ 2563' => 0,
-			'25 กุมภาพันธ์ 2563' => 0,
-			'26 กุมภาพันธ์ 2563' => 0,
-			'27 กุมภาพันธ์ 2563' => 0,
-			'28 กุมภาพันธ์ 2563' => 0,
-			'11 พฤษภาคม 2563' => 0
-		);
-	}elseif( $_POST['doctor'] == 'HD ณรงค์ (ว.12456)' OR $_POST['doctor'] == 'MD007 ณรงค์ ปรีดาอนันทสุข' ){
-		$dr_name = 'แพทย์ ณรงค์ ปรีดาอนันทสุข';
-		$manual_lock = array(
-			'10 ตุลาคม 2562' => 0,
-			'11 ตุลาคม 2562' => 0
-		);
-	}elseif( $_POST['doctor'] == 'MD009 นภสมร ธรรมลักษมี' OR $_POST['doctor'] == 'HD นภสมร (ว.19364)' ){
-		$dr_name = 'แพทย์ นภสมร ธรรมลักษมี';
-		$manual_lock = array(
-			'13 มกราคม 2563' => 0,
-			'14 มกราคม 2563' => 0,
-			'15 มกราคม 2563' => 0,
-			'16 มกราคม 2563' => 0,
-			'19 กุมภาพันธ์ 2563' => 0,
-			'03 เมษายน 2563' => 0,
-			'27 เมษายน 2563' => 0,
-			'28 เมษายน 2563' => 0,
-			'29 เมษายน 2563' => 0,
-			'30 เมษายน 2563' => 0
-		);
-	}elseif( $_POST['doctor'] == 'MD137 กฤษฎิ์พงษ์ ศิริสารศักดา' ){
-		$dr_name = 'แพทย์ กฤษฎิ์พงษ์ ศิริสารศักดา';
-		$manual_lock = array(
-			'25 กันยายน 2560' => 50
-		);
-	}elseif( $_POST['doctor'] == 'MD150 รัตนเกียรติ พงษ์รัตนกุล' ){
-		$dr_name = 'แพทย์ รัตนเกียรติ พงษ์รัตนกุล';
-		$manual_lock = array( 
-			'29 มกราคม 2563' => 0,
-			'03 กุมภาพันธ์ 2563' => 0,
-			'04 กุมภาพันธ์ 2563' => 0,
-			'05 กุมภาพันธ์ 2563' => 0,
-			'06 กุมภาพันธ์ 2563' => 0,
-			'07 กุมภาพันธ์ 2563' => 0,
-			'02 มีนาคม 2563' => 0,
-			'03 มีนาคม 2563' => 0,
-			'04 มีนาคม 2563' => 0,
-			'05 มีนาคม 2563' => 0,
-			'06 มีนาคม 2563' => 0 
-		);
-	}elseif( $_POST['doctor'] == 'MD152 ยิ่งวิชช์ วิทยาวิศวสกุล' ){
-		$dr_name = 'แพทย์ ยิ่งวิชช์ วิทยาวิศวสกุล';
-		$manual_lock = array( 
-			'10 กุมภาพันธ์ 2563' => 0,
-			'11 กุมภาพันธ์ 2563' => 0,
-			'19 กุมภาพันธ์ 2563' => 0,
-			'20 กุมภาพันธ์ 2563' => 0,
-			'21 กุมภาพันธ์ 2563' => 0
-		);
-	}elseif ( $_POST['doctor'] == 'MD164 ชนะรัตน์ โชคชัยสมุทร ' ) {
-		$dr_name = 'แพทย์ ชนะรัตน์ โชคชัยสมุทร';
-		$manual_lock = array( 
-			'28 มกราคม 2563' => 0,
-			'31 มกราคม 2563' => 0,
-			'24 กุมภาพันธ์ 2563' => 0,
-			'25 กุมภาพันธ์ 2563' => 0,
-			'26 กุมภาพันธ์ 2563' => 0,
-			'27 กุมภาพันธ์ 2563' => 0,
-			'28 กุมภาพันธ์ 2563' => 0,
-			'02 มีนาคม 2563' => 0,
-			'03 มีนาคม 2563' => 0,
-			'04 มีนาคม 2563' => 0,
-			'05 มีนาคม 2563' => 0,
-			'06 มีนาคม 2563' => 0
-			
-		);
-	}elseif ( $_POST['doctor'] == 'MD154 วศะ กสิวัฒน์' ) {
-		$dr_name = 'แพทย์ วศะ กสิวัฒน์';
-		$manual_lock = array( 
-			'24 มกราคม 2563' => 0
-		);
-	}
-	
-	/*elseif( $_POST['doctor'] == 'MD158 พงศ์พิสุทธิ์ ทาคำแปง' 
-		OR $_POST['doctor'] == 'MD159 ณัชพล ตรีเพชร' 
-		OR $_POST['doctor'] == 'MD160 พัชริดา บุญญสุวรรณ' 
-		OR $_POST['doctor'] == 'MD161 ปริญญา อุดมรัตนชัยกุล' 
-		OR $_POST['doctor'] == 'MD162 ณล ภาสุรปัญญา' ){ 
+	// จำกัดนัดรายวัน
+	$sql = "SELECT `dr_name`,`date`,`user_row`,`dr_contact` 
+	FROM `dr_limit_appoint` 
+	WHERE `dr_name` LIKE '$code%' 
+	AND `date_lock` = '$new_date' 
+	AND `type` = 'date_lock' ";
+	$query = mysql_query($sql);
 
-		$dr_name = 'แพทย์ เวชปฏิบัติ';
-		$manual_lock = array( 
-		);
-	}*/
-	
+	if( mysql_num_rows($query) > 0 ){
+		$item = mysql_fetch_assoc($query);
+		$limit = $item['user_row'];
 
-	if( isset($manual_lock[$date_appoint]) === true ){
-		
-		$limit = (int) $manual_lock[$date_appoint];
-		if( $limit <= $appoint_rows ){
-			
-			if( $limit === 0 ){
-				echo $dr_name.' ไม่ออกตรวจวันที่ '.$date_appoint;
-			}else{
-				echo $dr_name.' ได้จำกัดนัดในวันที่ '.$date_appoint.' ไว้ที่ '.$manual_lock[$date_appoint].'คน';
-			}
-			echo ' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
-			exit;
+		if( $limit == 0 ){
+			echo $dr_name.' ไม่ออกตรวจวันที่ '.$date_appoint;
+		}else{
+			echo $dr_name.' ได้จำกัดนัดในวันที่ '.$date_appoint.' ไว้ที่ '.$limit.'คน';
 		}
-	}
+		echo ' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
+		exit;
 
-	// หมอเชาวไม่รับตรวจทุกวันอังคาร ไม่มีกำหนดว่าจะยกเลิกเมื่อไร
-	if( $doctor_name == 'MD100 เชาวรินทร์ อุ่นเครือ' OR $doctor_name == 'HD เชาวรินทร์ (ว.37533)' ){
-		if( $check_date == 2 && $dr_cheaw_test > "2019-06-11" ){
-			echo 'แพทย์ เชาวรินทร์ อุ่นเครือ งดนัดผู้ป่วยทุกวันอังคาร กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
-			exit;
-		}
 	}
+	// จำกัดนัดรายวัน
 
-	
 }
 
 ?>
