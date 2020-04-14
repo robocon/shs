@@ -180,12 +180,14 @@ if( empty($_GET['action'])
 	$item = mysql_fetch_assoc($query);
 	$dr_limit = (int) $item['user_row'];
 
-	if( $dr_limit === 0 ){
+	/*if( $dr_limit === 0 ){
 
 		echo 'แพทย์ '.substr($item['dr_name'],5).' งดนัดผู้ป่วยทุกวัน'.$th_day[$check_date].' กรุณา<a href="#" onClick="window.history.back(); return false;">เลือกวันตรวจใหม่</a>';
 		exit;
 
-	}elseif( $item !== false && $appoint_rows >= $dr_limit ){
+	}else*/
+	
+	if( $item !== false && $appoint_rows >= $dr_limit ){
 		
 		$get_day = (int) $item['date'];
 		echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน  '.$item['user_row'].' คน หากต้องการนัดเพิ่มกรุณาติดต่อ '.$item['dr_contact'];
@@ -290,7 +292,9 @@ if( empty($_GET['action'])
 		$manual_lock = array( 
 			'24 มกราคม 2563' => 0
 		);
-	}elseif( $_POST['doctor'] == 'MD158 พงศ์พิสุทธิ์ ทาคำแปง' 
+	}
+	
+	/*elseif( $_POST['doctor'] == 'MD158 พงศ์พิสุทธิ์ ทาคำแปง' 
 		OR $_POST['doctor'] == 'MD159 ณัชพล ตรีเพชร' 
 		OR $_POST['doctor'] == 'MD160 พัชริดา บุญญสุวรรณ' 
 		OR $_POST['doctor'] == 'MD161 ปริญญา อุดมรัตนชัยกุล' 
@@ -299,7 +303,7 @@ if( empty($_GET['action'])
 		$dr_name = 'แพทย์ เวชปฏิบัติ';
 		$manual_lock = array( 
 		);
-	}
+	}*/
 	
 
 	if( isset($manual_lock[$date_appoint]) === true ){
