@@ -1,1 +1,0 @@
-<?="JUST TEST FILE IN THAI ENCODING á¤èà·Êà©Âæ ¨ÃéÒÒÒÒÒÒÒÒÒÒÒ :) ";?>
