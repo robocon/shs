@@ -5,16 +5,16 @@ include 'bootstrap.php';
 $db = Mysql::load($rdu_configs);
 // $db->exec("SET NAMES TIS620");
 
-$year = input_get('year');
-$quarter = input_get('quarter');
+$date = input_get('date');
 $table = input_get('table');
+
 
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in14`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in14` 
 SELECT *  
 FROM `opday` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND ( `icd10` = 'N183' 
     OR `icd10` = 'N184' 
@@ -27,7 +27,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in14`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in14` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CELE200*', 

@@ -1,7 +1,5 @@
 <?php
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in13`");
-
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in13` 
 SELECT `row_id`,`hn`,`date_hn` 
 FROM `opday` 
@@ -14,7 +12,6 @@ AND ( `icd10` = 'N183'
 GROUP BY `hn` ";
 $db->exec($sql);
 
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in13`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in13` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
@@ -70,3 +67,6 @@ $items_in14_b = $db->get_item();
 $in14b = $items_in14_b['rows'];
 
 $in14_result  = ( $in14a / $in14b ) * 100 ;
+
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in13`");
+$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in13`");
