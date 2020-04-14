@@ -13,7 +13,7 @@ $minDate = input_get('minDate');
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in12`");
 $sql = "CREATE TEMPORARY TABLE `tmp_in12` 
-SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
+SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr`,a.`ptname`,a.`age`,a.`diag` 
 FROM ( 
 	SELECT * 
     FROM `opday` 
