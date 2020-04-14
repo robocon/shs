@@ -127,8 +127,7 @@ if( !$_POST['date_appoint'] ){
 
 // ถ้าเป็น POST ที่ส่งมาจาก preappoi1.php ให้เข้าเงื่อนไขในการตรวจสอบ
 // ถ้าคนคีย์ไม่ใช่พี่หล้าสูติ หรือ หมอที่นัดไม่ใช่หมอขชล ก็ยังให้เข้าเงื่อนไขตรวจสอบอยู่
-if( empty($_GET['action']) 
-&& ( $doctor_name != 'MD101 ขชล รวมทรัพย์' OR $officer_name != 'กัลยรัตน์ ตาคำ' ) ){
+if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทรัพย์' OR $officer_name != 'กัลยรัตน์ ตาคำ' ) ){
 	
 	global $doctor;
 	$doctor = trim($doctor);
@@ -143,14 +142,13 @@ if( empty($_GET['action'])
 	// จำกัดจำนวนผู้ป่วยนัด
 	// ใน dr_limit_appoint จะเป็น lock นัดแบบตายตัว
 	// รองรับ format ว.xxxxx และ MDxxxxx
-	$testmatch = preg_match('/(\d+|MD\d+)/', $_POST['doctor'], $match);
-	$code = $match['1'];
+	$doctor_post = $_POST['doctor'];
 	$date_appoint = $_POST['date_appoint'];
 
 	$sql = "SELECT COUNT(`hn`) 
 	FROM `appoint` 
 	WHERE `appdate` = '$date_appoint' 
-	AND `doctor` LIKE '%$code%' 
+	AND `doctor` = '$doctor_post' 
 	AND `apptime` != 'ยกเลิกการนัด' 
 	GROUP BY `hn`;";
 	$query = mysql_query($sql);
@@ -175,7 +173,7 @@ if( empty($_GET['action'])
 	
 	$sql = "SELECT `dr_name`,`date`,`user_row`,`dr_contact` 
 	FROM `dr_limit_appoint` 
-	WHERE `dr_name` LIKE '$code%' 
+	WHERE `dr_name` = '$doctor_post' 
 	AND `date` = '$check_date' 
 	AND `type` = 'lock' ";
 	$query = mysql_query($sql);
@@ -208,7 +206,7 @@ if( empty($_GET['action'])
 	// จำกัดนัดรายวัน
 	$sql = "SELECT `dr_name`,`date`,`user_row`,`dr_contact` 
 	FROM `dr_limit_appoint` 
-	WHERE `dr_name` LIKE '$code%' 
+	WHERE `dr_name` = '$doctor_post' 
 	AND `date_lock` = '$new_date' 
 	AND `type` = 'date_lock' ";
 	$query = mysql_query($sql);
