@@ -7,6 +7,7 @@ if( $action === 'print' ){
 
     $id = input('id');
 
+    // หาจากตัวเดิมที่เคยคีย์
     $sql = "SELECT *
     FROM `depart`
     WHERE `row_id` = '$id' ";
@@ -19,14 +20,15 @@ if( $action === 'print' ){
     $cDoctor = $depart['doctor'];
     $Thaidate = $depart['date'];
 
+    $sql = "SELECT `row_id`,`yot`,`name`,`menucode`,`position`,`doctorcode` FROM `doctor` WHERE `name` = '$cDoctor' ";
+    $q = mysql_query($sql);
+    $doctorItem = mysql_fetch_assoc($q);
+    $yot = $doctorItem['yot'];
+
     $Thaidate1=substr($Thaidate,0,10);
 
     list($y, $m, $d) = explode('-', $Thaidate1);
     $thaiTxt = $d.' '.$def_fullm_th[$m].' '.$y;
-
-
-
-
 
     $cDoctor1 = substr($cDoctor,5,50);
     // ถ้านำหน้าด้วย NID ให้ตัดออก
@@ -36,37 +38,40 @@ if( $action === 'print' ){
 
     $cDoctor2 = substr($cDoctor,0,5);
 
-
-
-
     $licen = '';
 
-
-    // $subDoctor = (int) $_GET['subDoctor'];
-    $subDoctor = (int)input('doctorCert');
-    if( $subDoctor === 1 ){
+    if( $cDoctor2 === 'MD128' ){
         $yot = 'นาย';
         $cDoctor1 = 'ภาคภูมิ พิสุทธิวงษ์';
         $doctorcode = 'พจ. 714';
-    }else if( $subDoctor === 2 ){
+
+    }else if( $cDoctor2 === 'MD129' ){
         $yot = 'น.ส.';
         $cDoctor1 = "ศศิภา ศิริรัตน์";
         $doctorcode = "พจ. 819";
-    }else if( $subDoctor === 3 ){
+
+    }else if( $cDoctor2 === 'MD151' ){
         $yot = 'น.ส.';
         $cDoctor1 = "กันยกร มาเกตุ";
         $doctorcode = "พจ. 907";
-    }else if( $subDoctor === 4 ){
+
+    }else if( $cDoctor2 === 'MD163' ){
         $yot = 'นาย';
         $cDoctor1 = "ศุภกิตติ มงคล";
         $doctorcode = "พจ. 1254";
+
     }
 
     $position = "แพทย์แผนจีน";
     $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขาการแพทย์แผนจีน";
+    
+    if( $doctorItem['menucode'] != 'ADMNID' ){
+        $doctorcode = "ว. ".$doctorItem["doctorcode"];
+        $position = "แพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี";
+        $certificate = "ใบอนุญาตประกอบอาชีพเวชกรรม";
+    }
+
     $licen = "$position $doctorcode";
-
-
 
     $query = "SELECT * FROM runno WHERE title = 'nid_c'";
     $result = mysql_query($query) or die("Query failed");
@@ -81,7 +86,6 @@ if( $action === 'print' ){
             continue;
     }
     
-    //  	    $cTitle=$row->title;  //=VN
     $nNid=$row->runno;
     $fNid=$row->prefix;
     $today = date("Y-m-d"); 
@@ -89,10 +93,7 @@ if( $action === 'print' ){
     $nRunno=$fNid.''.$nNid;
     $cPart='nid';
 
-
-
     ?>
-
 
     <style type="text/css">
         .clearfix:after{
@@ -106,9 +107,7 @@ if( $action === 'print' ){
             }
         }
     </style>
-    <div class="noPrint">
-        <a href="nid_certificate.php">&lt;&lt;&nbsp;กลับหน้าออกใบรับรอง</a>
-    </div>
+    <div class="noPrint">&lt;&lt;&nbsp;<a href="nid_certificate.php">กลับหน้าออกใบรับรอง</a></div>
     <div style="text-align: center;">
         <img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'>
     </div>
@@ -207,12 +206,12 @@ if( $action === 'print' ){
     </script>
     <?php
 
-    $query = "INSERT INTO medicalcertificate (thidate,number,hn,part,doctor)VALUES('$Thaidate','$nRunno','$cHn','$cPart','$cDoctor');";
-    $result = mysql_query($query);
+    // $query = "INSERT INTO medicalcertificate (thidate,number,hn,part,doctor)VALUES('$Thaidate','$nRunno','$cHn','$cPart','$cDoctor');";
+    // $result = mysql_query($query);
 
     $nNid++;
-    $query ="UPDATE runno SET runno = $nNid WHERE title='nid_c'";
-    $result = mysql_query($query) or die("Query failed");
+    // $query ="UPDATE runno SET runno = $nNid WHERE title='nid_c'";
+    // $result = mysql_query($query) or die("Query failed");
 
     exit;
 }
@@ -221,12 +220,15 @@ if( $action === 'print' ){
 $view = input_post('view');
 if($view === false){
 
-    $doctorList = array(
-        1 => 'ภาคภูมิ พิสุทธิวงษ์', 
-        'ศศิภา ศิริรัตน์', 
-        'กันยกร มาเกตุ', 
-        'ศุภกิตติ มงคล' 
-    );
+    $sql = "SELECT `row_id`,`name`,`menucode`,`position`,`doctorcode` FROM `doctor` WHERE `row_id` = '158' 
+    OR `row_id` = '119' 
+    OR `row_id` = '120' 
+    OR `row_id` = '144' 
+    OR `row_id` = '157' ORDER BY `row_id` ASC";
+    $q = mysql_query($sql);
+    while ($item = mysql_fetch_assoc($q)) {
+        $doctorList[] = $item;
+    }
 
     ?>
     <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
@@ -242,25 +244,39 @@ if($view === false){
         <h1>ระบบออกใบรับรอง แพทย์แผนจีน ย้อนหลัง</h1>
     </div>
     <form action="nid_certificate.php" method="post">
-        <div>
-            HN : <input type="text" name="hn" id="">
-        </div>
-        <div>
-            วันที่มารับบริการ : <input type="text" name="date" id="date">
-        </div>
-        <div>
-            แพทย์ที่ทำการรักษา : <select name="doctor" id="">
-                <?php 
-                foreach ($doctorList as $key => $dr) {
-                    ?><option value="<?=$key;?>"><?=$dr;?></option><?php
-                }
-                ?>
-            </select>
-        </div>
-        <div>
-            <button type="submit">ค้นหาวันที่รับบริการ</button>
-            <input type="hidden" name="view" value="search">
-        </div>
+        <table>
+            <tr>
+                <td  align="right">HN : </td>
+                <td><input type="text" name="hn" id=""></td>
+            </tr>
+            <tr>
+                <td  align="right">วันที่มารับบริการ : </td>
+                <td><input type="text" name="date" id="date"></td>
+            </tr>
+
+            <!-- 
+            <tr>
+                <td  align="right">แพทย์ที่ทำการรักษา : </td>
+                <td>
+                    <select name="doctor" id="">
+                        <?php 
+                        foreach ($doctorList as $key => $dr) {
+                            ?><option value="<?=$dr['row_id'];?>" data-type="<?=$dr['menucode'];?>"><?=$dr['name'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            -->
+
+            <tr>
+                <td colspan="2" align="center">
+                    <button type="submit">ค้นหาวันที่รับบริการ</button>
+                    <input type="hidden" name="view" value="search">
+                </td>
+            </tr>
+        </table>
+        
         <div>
         * การพิมพ์ใบรับรองในแต่ละครั้ง เลขที่ใบรับรองจะเป็นเลขใหม่
         </div>
@@ -275,10 +291,13 @@ if($view === false){
 
 }elseif ($view === 'search') {
     
-
     $date = input_post('date');
     $hn = input_post('hn');
-    $doctor = input_post('doctor');
+
+    if (empty($date) OR empty($hn)) {
+        echo "กรุณาเลือกข้อมูล";
+        exit;
+    }
 
     $date = ad_to_bc($date);
 
@@ -306,6 +325,10 @@ if($view === false){
                 border: 1px solid black;
             }
         </style>
+        <div>&lt;&lt;&nbsp;<a href="nid_certificate.php">กลับหน้าค้นหา</a></div>
+        <div>
+            <h3>เลือกรายการตรวจย้อนหลัง</h3>
+        </div>
         <table class="chk_table">
             <tr>
                 <th>วันที่มารับบริการ</th>
@@ -320,7 +343,7 @@ if($view === false){
                 <td><?=$item['date'];?></td>
                 <td><?=$item['doctor'];?></td>
                 <td><?=$item['diag'];?></td>
-                <td><a href="nid_certificate.php?id=<?=$item['row_id'];?>&action=print&doctorCert=<?=$doctor;?>">ออกใบรับรองแพทย์แผนไทย</a></td>
+                <td><a href="nid_certificate.php?id=<?=$item['row_id'];?>&action=print">ออกใบรับรองแพทย์แผนไทย</a></td>
             </tr>
             <?php
         }
@@ -332,7 +355,7 @@ if($view === false){
     }else{
         echo "ไม่พบข้อมูล";
     }
-    // $item = mysql_fetch_a
+    
 }
 ?>
 

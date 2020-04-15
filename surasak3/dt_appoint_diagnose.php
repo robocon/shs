@@ -64,15 +64,21 @@ if($action === 'save'){
 		$first = input_post('date_start');
 		$last = input_post('date_end');
 
-		// SET DATE IN RANGE
-		$dates = array();
-		$current = strtotime( $first );
-		$last = strtotime( $last );
-		while( $current <= $last ) {
-			$dates[] = date( 'Y-m-d', $current );
-			$current = strtotime( '+1 day', $current );
+		if ( !empty($first) && empty($last) ) {
+			$dates = array($first);
+
+		}elseif ( !empty($first) && !empty($last) ) {
+			// SET DATE IN RANGE
+			$dates = array();
+			$current = strtotime( $first );
+			$last = strtotime( $last );
+			while( $current <= $last ) {
+				$dates[] = date( 'Y-m-d', $current );
+				$current = strtotime( '+1 day', $current );
+			}
+			// SET DATE IN RANGE
 		}
-		// SET DATE IN RANGE
+		
 
 		foreach ($dates as $key => $dateItem) {
 
@@ -156,17 +162,14 @@ if ( $page === 'showlist' ) {
 								<div class="cell">
 									<select id="doctor" name="id">
 										<?php
-										$sql = "SELECT `row_id`,`name` 
-										FROM `doctor` 
-										WHERE `status` = 'y'";
-										
+										$sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' ORDER BY `name` ASC";
 										$db->select($sql);
 										$items = $db->get_items();
 										
 										foreach($items as $key => $item){
-										?>
+											?>
 											<option value="<?php echo $item['row_id'];?>"><?php echo $item['name'];?></option>
-										<?php
+											<?php
 										}
 										?>
 									</select>
@@ -244,17 +247,13 @@ if ( $page === 'showlist' ) {
 								<div class="cell">
 									<select id="doctor" name="id">
 										<?php
-										$sql = "SELECT `row_id`,`name` 
-										FROM `doctor` 
-										WHERE `status` = 'y'";
-										
+										$sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' ORDER BY `name` ASC";
 										$db->select($sql);
 										$items = $db->get_items();
-										
 										foreach($items as $key => $item){
-										?>
+											?>
 											<option value="<?php echo $item['row_id'];?>"><?php echo $item['name'];?></option>
-										<?php
+											<?php
 										}
 										?>
 									</select>
