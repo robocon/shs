@@ -2,39 +2,50 @@
 
 include 'bootstrap.php';
 
-$rdu_configs = array(
-    'host' => '192.168.1.2',
-    'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'remoteuser',
-    'pass' => ''
-);
-
-$db = Mysql::load($rdu_configs);
-// $db->set_charset('TIS620');
+$db = Mysql::load();
 
 $page = input('page');
 $action = input('action');
 
 if ( $action == 'save' ) {
-    //
-
-    dump($_POST);
 
     $new_date = input_post('new_date');
     $appoint_id = input_post('appoint_id');
     $ddrugrx_id = input_post('ddrugrx_id');
+    // $ddrugrx_date = input_post('ddrugrx_date');
     $dphardep_id = input_post('dphardep_id');
     $hn = input_post('hn');
 
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+    
+    // ค.ศ. เป็น พ.ศ.
+    $new_date = ad_to_bc($new_date);
+
+    $sql = "UPDATE `ddrugrx` SET `date`='$new_date' WHERE `row_id`='$ddrugrx_id';";
+    $db->exec($sql);
+
+    $sql = "UPDATE `dphardep` SET `date`='$new_date' WHERE `row_id`='$dphardep_id';";
+    $db->exec($sql);
+
+    redirect('edit_appoint_inj.php', $msg);
     exit;
 }
-
-// if ( empty($page) ) {
-    ?>
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>แก้ไขฉีดยากรณีมาไม่ตรงนัด</title>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <![endif]-->
+</head>
+<body>
     <style>
     body, button{
-        font-family: TH Sarabun NEW, TH SarabunPSK;
+        font-family: "TH Sarabun New", "TH SarabunPSK";
         font-size: 16pt;
     }
     .chk_table{
@@ -53,7 +64,6 @@ if ( $action == 'save' ) {
     </div>
     <fieldset>
         <legend>ค้นหาจาก HN</legend>
-    
         <form action="edit_appoint_inj.php" method="post">
             <div>
                 HN: <input type="text" name="hn" id="">
@@ -63,12 +73,8 @@ if ( $action == 'save' ) {
                 <input type="hidden" name="page" value="search_hn">
             </div>
         </form>
-
     </fieldset>
-    <?php
-// }
-
-
+<?php
 if ( $page == 'search_hn' ) {
 
     $hn = input_post('hn');
@@ -131,49 +137,87 @@ if ( $page == 'search_hn' ) {
     $item = $db->get_item();
 
     $hn = $item['hn'];
-    $appdate = $item['appdate'];
+    $appdateTH = $item['appdate'];
+    $appdate = bc_to_ad($item['appdate']);
 
     list($y,$m,$d) = explode('-',$item['appdate']);
     $mTh = $def_fullm_th[$m];
 
     // หา vn
-    // $sql = "SELECT * FROM `opday` WHERE ";
-
-    $sql = "SELECT `row_id`,`tradname`,`injno` FROM `ddrugrx` WHERE `date` LIKE '$appdate%' AND `hn` = '$hn' ";
+    $sql = "SELECT `row_id`,`date`,`tradname`,`injno` FROM `ddrugrx` WHERE `date` LIKE '$appdateTH%' AND `hn` = '$hn' ";
     $db->select($sql);
     $drug = $db->get_item();
 
-    $sql = "SELECT `row_id` FROM `dphardep` WHERE `date` LIKE '$appdate%' AND `hn` = '$hn' ";
+    $sql = "SELECT `row_id` FROM `dphardep` WHERE `date` LIKE '$appdateTH%' AND `hn` = '$hn' ";
     $db->select($sql);
     $phar = $db->get_item();
+
+    // $sql = "SELECT * FROM `drugrx` WHERE `datedr` = '$ddrugrx_date'";
+    // $db->select($sql);
+    // if ( $db->get_rows() > 0 ) {
+    //     echo "ไม่สามารถแก้ไขได้ เนื่องจากมีการคิดค่าใช้จ่ายไปเรียบร้อยแล้ว";
+    //     exit;
+    // }
     
     ?>
+    <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+    <script type="text/javascript" src="epoch_classes.js"></script>
+    <style>
+    .shsTitle{
+        padding: 6px 0 12px;
+    }
+    .shsTitle p{
+        padding: 0;
+        margin: 0;
+    }
+    .shsTitle .shsHeader{
+        border-bottom: 1px solid #8b8b8b;
+        margin-bottom: 6px;
+    }
+    </style>
     <fieldset>
         <legend>แก้ไขวันนัดฉีดยา</legend>
-
-        <fieldset>
-            <legend>ข้อมูลเบื้องต้น</legend>
+        <div class="shsTitle">
+            <div class="shsHeader">ข้อมูลเบื้องต้น</div>
             <div>
                 <p><b>HN:</b> <?=$item['hn'];?> <b>ชื่อ-สกุล:</b> <?=$item['ptname'];?> <b>นัดวันที่:</b> <?=$d.' '.$mTh.' '.$y;?> <b>นัดมาเพื่อ:</b> <?=$item['detail'];?> </p>
                 <p><b>ยาฉีด:</b> <?=$drug['tradname'];?> <?=$drug['injno'];?></p>
             </div>
-        </fieldset>
-
+        </div>
         <form action="edit_appoint_inj.php" method="post">
             <div>
-                เลื่อนวันนัด: <input type="text" name="new_date" id="" value="<?=$appdate;?>">
+                เลื่อนวันนัด: <input type="text" name="new_date" id="new_date" value="<?=$appdate;?>">
             </div>
             <div>
+
+                <?php 
+                /**
+                 * @todo ทำเทส form event submit ให้ไปเช็กจากใน drugrx 
+                 * 
+                 * หรือ 
+                 * 
+                 * join แล้วทำเป็น alert ก็ได้
+                 */
+                ?>
                 <button type="submit">บันทึก</button>
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="appoint_id" value="<?=$item['row_id'];?>">
                 <input type="hidden" name="ddrugrx_id" value="<?=$drug['row_id'];?>">
+                <input type="hidden" name="ddrugrx_date" value="<?=$drug['date'];?>">
                 <input type="hidden" name="dphardep_id" value="<?=$phar['row_id'];?>">
                 <input type="hidden" name="hn" value="<?=$item['hn'];?>">
             </div>
         </form>
     </fieldset>
+    <script type="text/javascript">
+        var popup1;
+        window.onload = function() {
+            popup1 = new Epoch('popup1','popup',document.getElementById('new_date'),false);
+        };
+    </script>
     <?php
 
 }
 ?>
+</body>
+</html>

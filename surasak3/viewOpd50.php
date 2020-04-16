@@ -41,6 +41,9 @@ $title = 'ค้นหา 50บาท';
             เลือกวันที่ : <input type="text" name="dateSelect" id="dateSelect">
         </div>
         <div>
+            <input type="checkbox" name="doctor" id="" value="1"> หมอเป้
+        </div>
+        <div>
             <button type="submit">ค้นหาข้อมูล</button>
             <input type="hidden" name="view" value="report">
         </div>
@@ -60,6 +63,12 @@ if( $view === 'report' ){
     $db = Mysql::load();
     $dateSelect = input_post('dateSelect');
 
+    $whereDR = '';
+    $doctor = input_post('doctor');
+    if($doctor == 1){
+        $whereDR = "AND `doctor` LIKE '%MD013%' ";
+    }
+
     list($y, $m, $d) = explode('-', $dateSelect);
 
     $dateSelect = ($y+543).'-'.$m.'-'.$d;
@@ -67,9 +76,9 @@ if( $view === 'report' ){
     $sql = "SELECT a.*,b.`depart`,b.`detail`,b.`price`
     FROM ( 
         SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,`doctor`,`toborow`,`officer`
-        FROM `opday` 
+        FROM `opd` 
         WHERE `thidate` LIKE '$dateSelect%' 
-        AND `doctor` LIKE '%19921%' 
+        $whereDR 
     ) AS a 
     LEFT JOIN ( 
         SELECT `row_id`,`hn`,`depart`,`detail`,`price` 

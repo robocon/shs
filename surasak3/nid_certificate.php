@@ -1,5 +1,9 @@
 <?php 
 
+/**
+ * @link labtranxnid1.php ä¿Åìµé¹©ºÑº
+ */
+
 include 'bootstrap.php';
 
 $action = input('action');
