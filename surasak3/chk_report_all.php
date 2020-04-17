@@ -8,9 +8,20 @@ include 'bootstrap.php';
 <title>รายงานสรุปผลตรวจสุขภาพ</title>
 <style type="text/css">
 
-body,td,th {
-	font-family: TH SarabunPSK;
+/* 
+https://css-tricks.com/fixing-tables-long-strings/
+*/
+* {
+	font-family: "TH Sarabun New","TH SarabunPSK";
 	font-size: 18px;
+}
+.chk_table{
+        border-collapse: collapse;
+}
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+    border: 1px solid black;
 }
 
 </style>
@@ -40,52 +51,53 @@ $company = mysql_fetch_assoc($q);
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['company_name'];?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
 <div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?> จำนวน <?=$num;?> ราย</strong></div>
-<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+<table width="100%" class="chk_table">
   <tr>
-    <th width="3%" rowspan="2" align="center"><strong>ลำดับ</strong></th>
-    <th width="5%" rowspan="2" align="center"><strong>HN</strong></th>
-    <th width="15%" rowspan="2" align="center"><strong>ชื่อ - สกุล</strong></th>
-    <th width="4%" rowspan="2" align="center"><strong>อายุ</strong></th>
-    <th width="5%" rowspan="2" align="center"><strong>น้ำหนัก</strong></th>
-    <th width="5%" rowspan="2" align="center"><strong>ส่วนสูง</strong></th>
-    <th width="5%" rowspan="2" align="center"><strong>BP</strong></th>
-    <th colspan="28" align="center"><strong>รายการตรวจ</strong></th>
-    <th width="8%" rowspan="2" align="center"><strong>ภาวะสุขภาพโดยรวม</strong></th>
-    <th colspan="2" align="center"><strong>สรุปผลการตรวจ</strong></th>
+    <th width="3%" rowspan="2" align="center">ลำดับ</th>
+    <th width="5%" rowspan="2" align="center">HN</th>
+    <th width="15%" rowspan="2" align="center">ชื่อ - สกุล</th>
+    <th width="4%" rowspan="2" align="center">อายุ</th>
+    <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
+    <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
+    <th width="5%" rowspan="2" align="center">BP</th>
+    <th colspan="28" align="center">รายการตรวจ</th>
+    <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
+    <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
+
   <tr>
-    <th width="3%" align="center"><strong>PE</strong></th>
-    <th width="7%" align="center"><strong>X-RAY</strong></th>
-    <th width="5%" align="center"><strong>CBC</strong></th>
-    <th width="5%" align="center"><strong>UA</strong></th>
-    <th width="5%" align="center"><strong>BS</strong></th>
-    <th width="6%" align="center"><strong>CHOL</strong></th>
-    <th width="6%" align="center"><strong>TRIG</strong></th>
-    <th width="5%" align="center"><strong>HDL</strong></th>
-    <th width="5%" align="center"><strong>LDL</strong></th>
-    <th width="5%" align="center"><strong>BUN</strong></th>
-    <th width="3%" align="center"><strong>CR</strong></th>
-    <th width="6%" align="center"><strong>URIC</strong></th>
-    <th width="7%" align="center"><strong>SGOT</strong></th>
-    <th width="6%" align="center"><strong>SGPT</strong></th>
-    <th width="4%" align="center"><strong>ALK</strong></th>
-    <th width="7%" align="center"><strong>HBsAg</strong></th>
-    <th width="6%" align="center"><strong>FOBT</strong></th>
+    <th width="3%" align="center">PE</th>
+    <th width="7%" align="center">X-RAY</th>
+    <th width="5%" align="center">CBC</th>
+    <th width="5%" align="center">UA</th>
+    <th width="5%" align="center">BS</th>
+    <th width="6%" align="center">CHOL</th>
+    <th width="6%" align="center">TRIG</th>
+    <th width="5%" align="center">HDL</th>
+    <th width="5%" align="center">LDL</th>
+    <th width="5%" align="center">BUN</th>
+    <th width="3%" align="center">CR</th>
+    <th width="6%" align="center">URIC</th>
+    <th width="7%" align="center">SGOT</th>
+    <th width="6%" align="center">SGPT</th>
+    <th width="4%" align="center">ALK</th>
+    <th width="7%" align="center">HBsAg</th>
+    <th width="6%" align="center">FOBT</th>
 
-    <th width="6%" align="center"><strong>Anti-HAV IgG</strong></th>
-    <th width="6%" align="center"><strong>Stool Exam</strong></th>
-    <th width="6%" align="center"><strong>Stool Culture</strong></th>
+    <th width="6%" align="center">Anti-HAV IgG</th>
+    <th width="6%" align="center">Stool Exam</th>
+    <th width="6%" align="center">Stool Culture</th>
 
-    <th width="6%" align="center"><strong>METAMP</strong></th>
-    <th width="5%" align="center"><strong>ABOC</strong></th>
-    <th width="6%" align="center"><strong>EKG</strong></th>
-    <th width="6%" align="center"><strong>V/A</strong></th>
-    <th width="6%" align="center"><strong>สายตา</strong></th>
-    <th width="6%" align="center"><strong>สมรรถภาพปอด</strong></th>
-    <th width="6%" align="center"><strong>อัลตร้าซาวด์<br>ช่องท้อง</strong></th>
-    <th width="6%" align="center"><strong>ต่อมลูกหมาก<br>โดยการคลำ</strong></th>
-    <th width="5%" align="center"><strong>พบแพทย์</strong></th>
-    <th width="6%" align="center"><strong>ไม่พบแพทย์</strong></th>
+    <th width="6%" align="center">METAMP</th>
+    <th width="5%" align="center">ABOC</th>
+    <th width="6%" align="center">EKG</th>
+    <th width="6%" align="center">V/A</th>
+    <th width="6%" align="center">สายตา</th>
+    <th width="6%" align="center">สมรรถภาพปอด</th>
+    <th width="6%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
+    <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th width="5%" align="center">พบแพทย์</th>
+    <th width="6%" align="center">ไม่พบแพทย์</th>
   </tr>
 <?php
 $i=0;

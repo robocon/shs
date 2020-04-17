@@ -144,7 +144,11 @@ if ( $page == 'search_hn' ) {
     $mTh = $def_fullm_th[$m];
 
     // кр vn
-    $sql = "SELECT `row_id`,`date`,`tradname`,`injno` FROM `ddrugrx` WHERE `date` LIKE '$appdateTH%' AND `hn` = '$hn' ";
+    $sql = "SELECT a.`row_id`,a.`date`,a.`tradname`,a.`injno`,b.`row_id` AS `drugrxId` 
+    FROM `ddrugrx` AS a 
+    LEFT JOIN `drugrx` AS b ON b.`datedr` = a.`date` 
+    WHERE a.`date` LIKE '$appdateTH%' 
+    AND a.`hn` = '$hn' ";
     $db->select($sql);
     $drug = $db->get_item();
 
