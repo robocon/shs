@@ -63,7 +63,7 @@ if ( $action == 'save' ) {
         <h3>แก้ไขฉีดยากรณีมาไม่ตรงนัด</h3>
     </div>
     <fieldset>
-        <legend>ค้นหาจาก HN</legend>
+        <legend>ค้นหาการนัดจาก HN</legend>
         <form action="edit_appoint_inj.php" method="post">
             <div>
                 HN: <input type="text" name="hn" id="">
@@ -84,9 +84,13 @@ if ( $page == 'search_hn' ) {
     WHERE `detail` LIKE 'FU22%' 
     AND `hn` = '$hn' 
     GROUP BY `detail2`,`appdate` 
-    ORDER BY `detail2`,`appdate` DESC ";
-
+    ORDER BY `row_id` DESC ";
     $db->select($sql);
+    if ( $db->get_rows() == 0 ) {
+        echo "ไม่พบข้อมูลการนัด";
+        exit;
+    }
+
     $items = $db->get_items();
 
     ?>
@@ -103,15 +107,38 @@ if ( $page == 'search_hn' ) {
                 <th>เข็มที่</th>
                 <th>แก้ไข</th>
             </tr>
-        
         <?php
         foreach ($items as $key => $item) { 
 
             list($y,$m,$d) = explode('-',$item['appdate']);
 
+            $appoint = $item['appdate'];
+            $hn = $item['hn'];
+
+            $sql = "SELECT GROUP_CONCAT(`tradname`) AS `group_drug`, `idno` AS `phardep_id` 
+            FROM `drugrx` 
+            WHERE `date` LIKE '$appoint%' 
+            AND `hn` = '$hn' 
+            AND `drugcode` LIKE '0%' 
+            AND `status` = 'y' 
+            GROUP BY `idno` 
+            HAVING COUNT(`drugcode`) > 0";
+            $db->select($sql);
+
+            $title = '';
+            $color = '';
+            $onclick = '';
+            if( $db->get_rows() > 0 ){
+                $drugrxItem = $db->get_item();
+                $title = 'title="'.$drugrxItem['group_drug'].'"';
+                $color = 'style="background-color: yellow;"';
+                $onclick = 'onclick="return notify();"';
+            }
+            
+            
             $mTh = $def_fullm_th[$m];
             ?>
-            <tr>
+            <tr <?=$color;?>>
                 <td><?=$item['hn'];?></td>
                 <td><?=$item['ptname'];?></td>
                 <td><?=$d.' '.$mTh.' '.$y;?></td>
@@ -119,13 +146,19 @@ if ( $page == 'search_hn' ) {
                 <td><?=$item['detail'];?></td>
                 <td><?=$item['detail2'];?></td>
                 <td><?=$item['injno'];?></td>
-                <td><a href="edit_appoint_inj.php?id=<?=$item['row_id'];?>&page=edit_form">แก้ไข</a></td>
+                <td><a href="edit_appoint_inj.php?id=<?=$item['row_id'];?>&page=edit_form" <?=$title;?> <?=$onclick;?>>แก้ไข</a></td>
             </tr>
             <?php
         }
         ?>
         </table>
     </fieldset>
+    <script>
+    function notify(){
+        var c=confirm('รายการนี้มีการตัดยาไปเรียบร้อยแล้ว ท่านยืนยันที่จะเปลี่ยนข้อมูลวันที่ฉีดยาหรือไม่?');
+        return c;
+    }
+    </script>
     <?php
 }elseif ( $page == 'edit_form' ) {
     // 
@@ -149,6 +182,7 @@ if ( $page == 'search_hn' ) {
     LEFT JOIN `drugrx` AS b ON b.`datedr` = a.`date` 
     WHERE a.`date` LIKE '$appdateTH%' 
     AND a.`hn` = '$hn' ";
+    dump($sql);
     $db->select($sql);
     $drug = $db->get_item();
 
@@ -195,13 +229,12 @@ if ( $page == 'search_hn' ) {
             <div>
 
                 <?php 
-                /**
-                 * @todo ทำเทส form event submit ให้ไปเช็กจากใน drugrx 
-                 * 
-                 * หรือ 
-                 * 
-                 * join แล้วทำเป็น alert ก็ได้
-                 */
+                if ($drug['drugrxId']) {
+                    ?>
+                    <div>มีการจ่ายยาตัวนี้ไปแล้ว</div>
+                    <?php
+                }
+
                 ?>
                 <button type="submit">บันทึก</button>
                 <input type="hidden" name="action" value="save">
