@@ -97,6 +97,11 @@ if ( $page == 'search_hn' ) {
     $hn = input_post('hn');
     $dateInj = input_post('dateInj');
 
+    if (empty($hn) OR empty($dateInj)) {
+        echo "กรุณาตรวจสอบ HN และวันที่";
+        exit;
+    }
+
     $dateInj = ad_to_bc($dateInj);
 
     $sql = "SELECT a.`hn`,a.`ptname`,a.`row_id` AS `dphardep_id`, a.`date` AS `dphardep_date`, 
