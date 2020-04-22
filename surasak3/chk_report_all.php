@@ -169,7 +169,15 @@ if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"
         } 
         ?>
     </td>
-    <td align="center"><?php 
+    <td align="center">
+<?php 
+
+$stat_cbc = $stat_ua = '';
+$queryStat = mysql_query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
+$dxStat = mysql_fetch_assoc($queryStat);
+$stat_cbc = $dxStat['stat_cbc'];
+$stat_ua = $dxStat['stat_ua'];
+
 $sql18="SELECT * 
 FROM resulthead 
 WHERE profilecode = 'CBC' 
@@ -180,7 +188,10 @@ GROUP BY `profilecode` ";
 $query18=mysql_query($sql18);
 $numcbc=mysql_num_rows($query18);
 if($numcbc > 0){
-	echo "มี";
+    echo "มี";
+    if( !empty($stat_cbc) ){
+        echo "($stat_cbc)";
+    }
 }else if($numcbc < 1){
 	echo "<strong style='color:#FF0000'>ไม่มี</strong>";
 }else{
@@ -196,7 +207,10 @@ GROUP BY `profilecode` ";
 $query19=mysql_query($sql19);
 $numua=mysql_num_rows($query19);
 if($numua > 0){
-	echo "มี";
+    echo "มี";
+    if( !empty($stat_ua) ){
+        echo "($stat_ua)";
+    }
 }else if($numua < 1){
 	echo "<strong style='color:#FF0000'>ไม่มี</strong>";
 }else{

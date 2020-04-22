@@ -169,7 +169,6 @@ if ( $views == 'search' ) {
     WHERE `yearchk` = '$year_selected' AND `status` = '1' 
     ORDER BY `id` ASC";
     $db->select($sql);
-
     $items = $db->get_items();
     ?>
     <h3>รายชื่อบริษัท</h3>
@@ -188,12 +187,17 @@ if ( $views == 'search' ) {
         $i = 1;
         foreach ($items as $key => $item) {
 
+            $companyCode = $item['code']; 
+            $db->select("SELECT COUNT(`HN`) AS `rows` FROM `opcardchk` WHERE `part` = '$companyCode' ");
+            $op = $db->get_item();
+            $userRows = $op['rows'];
+
             $report = ( !empty($item['report']) ) ? $item['report'].'?camp='.$item['code'] : 'javascript:void(0);' ;
             ?>
             <tr>
                 <td><?=$i;?></td>
                 <td><a href="chk_show_user.php?part=<?=$item['code'];?>"><?=$item['name'];?></a></td>
-                <td><?=$item['code'];?></td>
+                <td><?=$item['code'];?> (<?=$userRows;?>ราย)</td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>
                 <td style="vertical-align: top;">
