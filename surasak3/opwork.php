@@ -80,7 +80,7 @@ if($_POST['lockptright5']=="lock"){
 	$ptrcode=$_POST['rdo1'];
 	$typearea = $_POST['typearea'];
 
-	$vstatus = (int)$_POST['vstatus'];
+	$vstatus = $_POST['vstatus'];
 	$father_id = $_POST['father_id'];
 	$mother_id = $_POST['mother_id'];
 	$couple_id = $_POST['couple_id'];
@@ -100,7 +100,7 @@ ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugre
 officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
 
 employee='$employee', opcardstatus='$opcardstatus',`typearea` = '$typearea',`vstatus`='$vstatus',
-`father_id`='$father_id',`mother_id`='$mother_id',`couple_id`='$couple_id' $where4 WHERE hn='$cHn' ";
+`father_id`='$father_id',`mother_id`='$mother_id',`couple_id`='$couple_id',`note_vip`='$note_vip' $where4 WHERE hn='$cHn' ";
 
 
 $result = mysql_query($sql) or die("Query failed ipcard".mysql_error());
@@ -160,6 +160,7 @@ If ($result){
 	$cGoup=$row->goup;
 	$cCamp=$row->camp;
 	$cNote=$row->note;
+	$cNote_vip=$row->note_vip;
   	               $cIdguard=$row->idguard;
  
 	echo "HN : $cHn, ª×èÍ-Ê¡ØÅ: $cYot   $cName  $cSurname<br>";  
@@ -288,7 +289,7 @@ $opergcode='x';
 	}else{
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','$checkdx');";
 	}
-		$result = mysql_query($query) or die("Query failed,cannot insert into opday".mysql_error());
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
 		$opday_id = mysql_insert_id();
 
 	
