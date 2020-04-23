@@ -1045,9 +1045,19 @@ $structure = '../image_patient';
 <a target="_top" href="report_opt.php?cHn=<?=$cHn;?>">สมัครจ่ายตรง อปท.</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdcard_reg.php?cHn=<?=$cHn;?>&cVn=<?=$nVn;?>">ใบต่อรายวัน</a><br><br><br>&nbsp;&nbsp;&nbsp;
 
-<a  href="opipcard.php" onclick="return chType();">รับป่วยเป็นคนไข้ใน (admit)</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a  href="opipcard.php" onclick="return chType();">รับป่วยเป็นคนไข้ใน (admit)</a>&nbsp;&nbsp;&nbsp;
+
+<?php 
+// ยกเลิกกรณีรับผิด
+$qIp = mysql_query("SELECT `row_id` FROM `ipcard` WHERE `date` LIKE '$thidate3%' AND `hn` = '$cHn' ");
+if ( mysql_num_rows($qIp) > 0 ) {
+	?>
+	<a href="remove_admit.php?cHn=<?=$cHn;?>" target="_blank">ยกเลิก Admit(กรณียังไม่รับขึ้นเตียง)</a>&nbsp;&nbsp;&nbsp;
+	<?php
+}
+?>
+
+<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
 
 <?php 
