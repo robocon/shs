@@ -174,7 +174,7 @@ if ($action == 'print') {
 
                 }else{
 
-                    $sql = "SELECT `name` FROM `inputm` WHERE `name` LIKE 'HD%' ";
+                    $sql = "SELECT `row_id`,`name`,`doctorcode` FROM `doctor` WHERE `status` = 'y' AND ( `menucode` = 'ADM' OR `menucode` = 'ADMHEM' ) AND ( `name` LIKE 'MD%' OR `name` LIKE 'HD%' ) AND `doctorcode` != '0000' ORDER BY `name` ASC";
                     $db->select($sql);
                     $drLists = $db->get_items();
                     ?>
