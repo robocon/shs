@@ -224,16 +224,6 @@ if( $action === 'print' ){
 $view = input_post('view');
 if($view === false){
 
-    $sql = "SELECT `row_id`,`name`,`menucode`,`position`,`doctorcode` FROM `doctor` WHERE `row_id` = '158' 
-    OR `row_id` = '119' 
-    OR `row_id` = '120' 
-    OR `row_id` = '144' 
-    OR `row_id` = '157' ORDER BY `row_id` ASC";
-    $q = mysql_query($sql);
-    while ($item = mysql_fetch_assoc($q)) {
-        $doctorList[] = $item;
-    }
-
     ?>
     <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
     <script type="text/javascript" src="epoch_classes.js"></script>
@@ -257,22 +247,6 @@ if($view === false){
                 <td  align="right">วันที่มารับบริการ : </td>
                 <td><input type="text" name="date" id="date"></td>
             </tr>
-
-            <!-- 
-            <tr>
-                <td  align="right">แพทย์ที่ทำการรักษา : </td>
-                <td>
-                    <select name="doctor" id="">
-                        <?php 
-                        foreach ($doctorList as $key => $dr) {
-                            ?><option value="<?=$dr['row_id'];?>" data-type="<?=$dr['menucode'];?>"><?=$dr['name'];?></option><?php
-                        }
-                        ?>
-                    </select>
-                </td>
-            </tr>
-            -->
-
             <tr>
                 <td colspan="2" align="center">
                     <button type="submit">ค้นหาวันที่รับบริการ</button>
@@ -347,7 +321,7 @@ if($view === false){
                 <td><?=$item['date'];?></td>
                 <td><?=$item['doctor'];?></td>
                 <td><?=$item['diag'];?></td>
-                <td><a href="nid_certificate.php?id=<?=$item['row_id'];?>&action=print">ออกใบรับรองแพทย์แผนไทย</a></td>
+                <td><a href="nid_certificate.php?id=<?=$item['row_id'];?>&action=print">ออกใบรับรองแพทย์แผนจีน</a></td>
             </tr>
             <?php
         }
