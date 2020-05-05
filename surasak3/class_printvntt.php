@@ -109,14 +109,14 @@ class printvn{
 		
 		
 		
-//		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
+		//print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
 
 		print "<font  style='line-height:24px;' face='Angsana New' size= 1 >หมายเหตุ ".$this->note."<BR>";
 		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
-print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
-//print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
-print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 >แพทย์..............................................<BR>";
-print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u>รับยายื่นที่ช่องหมายเลข 6</u><BR><BR>";
+		print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
+		//print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
+		print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 >แพทย์..............................................<BR>";
+		print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u>รับยายื่นที่ช่องหมายเลข 6</u><BR><BR>";
 
 
 		/*print "<font face='Angsana New' size= 3 ><b>XRAY</b><BR>";
@@ -148,10 +148,10 @@ print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u>รับ
 			</TR>
 			</TABLE>
 			*/
-		";
+		// ";
 		
-	//	print $this->inrxform;
-	//	print $this->drugreact;
+		//	print $this->inrxform;
+		//	print $this->drugreact;
 
 		print "</center>";
 	

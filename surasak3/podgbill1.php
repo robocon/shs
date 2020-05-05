@@ -155,8 +155,7 @@ print"<DIV class='box' style='z-index:10; border-color:000000;border-style:solid
 <table border=0 cellpadding=0 cellspacing=0 width=723px height=552px><TD>&nbsp;</TD></TABLE>
 </DIV>";
 //print"<DIV class='box' style='z-index:10; border-color:000000;border-style:solid;border-bottom-style:solid;border-bottom-width:1PX;border-left-style:solid;border-left-width:1PX;border-top-style:solid;border-top-width:1PX;border-right-style:solid;border-right-width:1PX;left:44PX;top:819PX;width:181PX;height:45PX;'>
-<table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE>
-</DIV>";
+print "<table border=0 cellpadding=0 cellspacing=0 width=174px height=38px><TD>&nbsp;</TD></TABLE></DIV>";
 print"<DIV style='left:518PX;top:195PX;width:105PX;height:26PX;'><span class='fc1-0'>$cPrepodate</span></DIV>";
 print"<DIV style='left:310PX;top:195PX;width:159PX;height:26PX;'><span class='fc1-0'>$cPrepono</span></DIV>";
 print"<DIV style='left:194PX;top:090PX;width:364PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-1'>ใบสั่งซื้อชั่วคราว (ยาและเวชภัณฑ์สิ้นเปลือง) </span></DIV>";

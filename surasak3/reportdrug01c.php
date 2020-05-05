@@ -252,7 +252,7 @@ echo "&lt;Dispensing&gt;<br>";
 		}
 
 	}
-          }
+        //   }
     print "<table>";
 
 print "<table>";

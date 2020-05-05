@@ -14,7 +14,7 @@ if (isset($sIdname)){} else {die;} //for security
  </tr>
 <?php
     include("connect.inc");
-    if substr('$Dgcode',0,1)=="@"){
+    if (substr('$Dgcode',0,1)=="@"){
        $aCode = array("code");
        $num=0;
        $query = "SELECT * FROM labsuit WHERE suitcode = '$Dgcode' ";
@@ -63,7 +63,7 @@ if (isset($sIdname)){} else {die;} //for security
 	                "<td bgcolor=F5DEB3>$aMoney[$n]</td>\n".
 	                " </tr>\n");
 	        }
-             }
+	}
     else {
  	$query = "SELECT * FROM labcare WHERE code = '$Dgcode' ";
     	$result = mysql_query($query)
