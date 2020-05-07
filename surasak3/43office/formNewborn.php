@@ -178,6 +178,9 @@ $apgarList = array(
 $gravidaList = array(1 => 1,2,3,4,5,6,7,8,9,10);
 
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">ฟอร์มทารกแรกเกิด</h1> <span>ในฟอร์มประกอบไปด้วยแฟ้ม newborn, newborncare และ policy</span>
+</div>
 <fieldset>
     <legend>ค้นหาข้อมูลตาม AN</legend>
     <form action="formNewborn.php" method="post">

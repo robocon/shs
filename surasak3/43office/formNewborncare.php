@@ -47,9 +47,11 @@ if( $action === 'save' ){
 
 include 'head.php';
 ?>
-
+<div class="clearfix">
+    <h1 style="margin:0;">NEWBORNCARE</h1> <span>ข้อมูลการดูแลทารกหลังคลอดของหญิงตั้งครรภ์ ในเขตรับผิดชอบ</span>
+</div>
 <fieldset>
-    <legend>ค้นหาข้อมูลตาม HN</legend>
+    <legend>แฟ้ม : NEWBORNCARE - ค้นหาข้อมูลตาม HN</legend>
     <form action="formNewborncare.php" method="post">
         <div>
         HN : <input type="text" name="hn" id="hn">
