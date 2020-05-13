@@ -1437,9 +1437,9 @@ exit();
 }
 
 //******************************************** เรียกวิธีใช้ และ จำนวน ที่ใช้บ่อยออกมาแสดง *****************************
-if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
+if(isset($_GET["action"]) && $_GET["action"] == "addamount"){ 
 
-if($_GET["search"] == "1BONA"){
+	if($_GET["search"] == "1BONA"){
 		echo "120,1*2";
 	}else if($_GET["search"] == "2HYRU"){
 		echo "3,C";
@@ -1462,27 +1462,43 @@ if($_GET["search"] == "1BONA"){
 	}else if($_GET["search"] == "1LYRI"){
 		echo "60,1HS";
 	}else{
+		
+		// Lock เงื่อนไขเฉาะหมอเป้ 
+		if( $_SESSION['sIdname'] == 'md19921' ){
 
-	$limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
-	$sql = "Select count(row_id) From drugrx where drugcode = '".$_GET["search"]."' AND date BETWEEN '".(date("Y",$limit_date)+543).date("-m-d H:i:s",$limit_date)."' AND '".(date("Y")+543).date("-m-d H:i:s")."' ";
-	
-	list($limit_row) = mysql_fetch_row(mysql_query($sql));
-	
-	if($limit_row > 30)
-		$limit_row = 30;
+			$drugCode = $_GET["search"];
+			$mkDate = mktime(0, 0, 0, date("m")-2, date("d"), date("Y"));
+			$minDate = (date("Y",$mkDate)+543).date("-m-d H:i:s",$mkDate);
+			$maxDate = (date("Y")+543).date("-m-d H:i:s");
 
-	$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where drugcode = '".$_GET["search"]."' Order by row_id DESC  limit ".$limit_row;
-	$result = Mysql_Query($sql);
+			$sql = "SELECT `slcode`, `drugcode`, `amount` FROM `drugrx` WHERE `drugcode` = '$drugCode' AND ( `date` >= '$minDate' AND `date` <= '$maxDate' ) AND `amount` > 0 ORDER BY `row_id` DESC LIMIT 1 ";
+			$item = mysql_fetch_assoc(mysql_query($sql));
+			echo $item["amount"].",".$item['slcode'];
 
-	$sql = "SELECT amount, count( amount ) FROM `drugrx2` where amount > 0 GROUP BY amount Order by `count( amount )` DESC limit 1";
-	$result = Mysql_Query($sql);
-	$arr = Mysql_fetch_assoc($result);
-	echo $arr["amount"].",";
+		}else{
+		
+			// ถ้าไม่มีใน code ด้านบนให้ไปหาใน drugrx หลักๆคือดึงค่า amount กับ slcode
+			$limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
+			$sql = "Select count(row_id) From drugrx where drugcode = '".$_GET["search"]."' AND date BETWEEN '".(date("Y",$limit_date)+543).date("-m-d H:i:s",$limit_date)."' AND '".(date("Y")+543).date("-m-d H:i:s")."' ";
+			list($limit_row) = mysql_fetch_row(mysql_query($sql));
+			if($limit_row > 30)
+				$limit_row = 30;
 
-	$sql = "SELECT slcode , count(slcode) FROM `drugrx2` where  amount > 0 AND slcode != 'er' AND slcode != 'hd'  GROUP BY slcode  Order by `count(slcode)` DESC limit 1";
-	$result = Mysql_Query($sql) or die(Mysql_ERROR());
-	$arr = Mysql_fetch_assoc($result);
-	echo $arr["slcode"];
+			// สร้าง TEMP จาก drugrx
+			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
+			$result = Mysql_Query($sql);
+
+			$sql = "SELECT amount, count( amount ) FROM `drugrx2` where amount > 0 GROUP BY amount Order by `count( amount )` DESC limit 1";
+			$result = Mysql_Query($sql);
+			$arr = Mysql_fetch_assoc($result);
+			echo $arr["amount"].",";
+
+			$sql = "SELECT slcode , count(slcode) FROM `drugrx2` where  amount > 0 AND slcode != 'er' AND slcode != 'hd' GROUP BY slcode Order by `count(slcode)` DESC limit 1";
+			$result = Mysql_Query($sql) or die(Mysql_ERROR());
+			$arr = Mysql_fetch_assoc($result);
+			echo $arr["slcode"]; 
+
+		}
 	}
 
 	$sql = "Select part From druglst Where drugcode = '".$_GET["search"]."' limit 1 ";
@@ -1495,7 +1511,9 @@ if($_GET["search"] == "1BONA"){
 	list($trad) = Mysql_fetch_row($result);
 	echo ",".$trad;
 
-exit();
+
+
+	exit();
 }
 
 //******************************************** ไม่ใช้งาน *****************************
