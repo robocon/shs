@@ -102,6 +102,7 @@
     .chk_table{
         border-collapse: collapse;
     }
+    .chk_table th{background-color: #ddd6ce;}
     .chk_table th,
     .chk_table td{
         padding: 3px;

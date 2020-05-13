@@ -7,6 +7,9 @@ if( $action == 'edit' ){
 
     $db->select("SELECT * FROM `43policy` WHERE `id` = :id ", array(':id' => input_get('id')) );
     $list = $db->get_item();
+
+    $itemId = $list['opday_id'];
+    dump($itemId);
     
     include 'head.php';
     include '../includes/JSON.php';
@@ -126,6 +129,10 @@ if( $action == 'edit' ){
 }
 
 include_once 'head.php';
+require_once '../includes/JSON.php';
+    
+$json = new Services_JSON();
+
 $sql = "SELECT * FROM `43policy` ORDER BY `id` DESC ";
 $db->select($sql);
 if ( $db->get_rows() > 0 ) {
@@ -152,14 +159,21 @@ if ( $db->get_rows() > 0 ) {
             <th class="warning">D_UPDATE</th>
         </tr>
     <?php 
-    foreach ($items as $key => $list) {
+    foreach ($items as $key => $list) { 
+
+        $policy_data = $json->decode($list['policy_data']);
+        $style = '';
+
+        if ( $policy_data->PID == false OR preg_match('/\d{8}/',$policy_data->BDATE) < 1 ) {
+            $style = 'class="warning"';
+        }
         ?>
-        <tr>
-            <td class="warning"><?=$list['hospcode'];?></td>
-            <td class="warning"><?=$list['policy_id'];?></td>
-            <td class="warning"><?=$list['policy_year'];?></td>
-            <td class="warning"><?=$list['policy_data'];?></td>
-            <td class="warning"><?=$list['d_update'];?></td>
+        <tr <?=$style;?>>
+            <td><?=$list['hospcode'];?></td>
+            <td><?=$list['policy_id'];?></td>
+            <td><?=$list['policy_year'];?></td>
+            <td><?=$list['policy_data'];?></td>
+            <td><?=$list['d_update'];?></td>
             <td>
                 <a href="reportPolicy.php?action=edit&id=<?=$list['id'];?>">·°È‰¢</a> | <a href="reportPolicy.php?action=edit&id=<?=$list['id'];?>" onclick="return notiConfirm()">≈∫</a>
             </td>

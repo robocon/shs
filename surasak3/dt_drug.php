@@ -1890,7 +1890,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>="56"){
+				if(agep>"56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -1940,7 +1940,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>="56"){
+				if(agep>"56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -1990,7 +1990,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>="56"){
+				if(agep>"56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -2040,7 +2040,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>="56"){
+				if(agep>"56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
