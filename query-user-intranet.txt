@@ -4,6 +4,7 @@ b.`name`,
 b.`surname`,
 '' AS `prefix_eng`,
 '' AS `fname_eng`,
+'' AS `lname_eng`,
 ( CASE 
 	WHEN b.`sex` = 'ช' THEN 'ชาย' 
 	WHEN b.`sex` = 'ญ' THEN 'หญิง' 
