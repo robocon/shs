@@ -1,0 +1,101 @@
+SELECT a.`idname`,
+b.`yot` AS `prefix`,
+b.`name`,
+b.`surname`,
+'' AS `prefix_eng`,
+'' AS `fname_eng`,
+( CASE 
+	WHEN b.`sex` = 'ช' THEN 'ชาย' 
+	WHEN b.`sex` = 'ญ' THEN 'หญิง' 
+	ELSE b.`sex`
+END ) AS `sex`,
+'' AS `emp_number`,
+b.`idcard`,
+b.`dbirth`,
+( CASE 
+	WHEN a.`menucode` = 'ADM' THEN '9' 
+	WHEN a.`menucode` = 'ADMCOM' THEN '9' ## จนท.คอมฯ
+	WHEN a.`menucode` = 'ADMDEN' THEN '8' ## ห้องฟัน
+	WHEN a.`menucode` = 'ADMER' THEN '7' ## ห้องฉุกเฉิน
+	WHEN a.`menucode` = 'ADMDR1' THEN '4' ## แพทย์
+	WHEN a.`menucode` = 'ADMEYE' THEN '19' ## ห้องตา
+	WHEN a.`menucode` = 'ADMFOD' THEN '23' ## โภชนาการ
+	WHEN a.`menucode` = 'ADMHEM' THEN '22' ## ห้องไต
+	WHEN a.`menucode` = 'ADMICU' THEN '16' ## หอผู้ป่วยพิเศษ
+	WHEN a.`menucode` = 'ADMLAB' THEN '24' ## พยาธิ
+	WHEN a.`menucode` = 'ADMLIBRARY' THEN '12' ## เวชกรรม
+	WHEN a.`menucode` = 'ADMMAINOPD' THEN '18' ## ห้องตรวจ + OPD
+	WHEN a.`menucode` = 'ADMMON' THEN '6' ## ส่วนเก็บเงิน
+	WHEN a.`menucode` = 'ADMNHSO' THEN '13' ## 30บาท
+	WHEN a.`menucode` = 'ADMNID' THEN '20' ## แพทย์ทางเลือก -> แผนจีน
+	WHEN a.`menucode` = 'ADMOBG' THEN '25' ## สูติ
+	WHEN a.`menucode` = 'ADMOPD' THEN '1' ## ทะเบียน
+	WHEN a.`menucode` = 'ADMPHA' THEN '5' ## เภสัช
+	WHEN a.`menucode` = 'ADMPH' THEN '5' ## คลัง
+	WHEN a.`menucode` = 'ADMPHARX' THEN '5' ## จนท.ในห้องยา
+	WHEN a.`menucode` = 'ADMPT' THEN '17' ## ภายภาพ
+	WHEN a.`menucode` = 'ADMSSO' THEN '13' ## ปกส
+	WHEN a.`menucode` = 'ADMSTD' THEN 'xx' ## Coder
+	WHEN a.`menucode` = 'ADMSUR' THEN '21' ## ผ่าตัด
+	WHEN a.`menucode` = 'ADMVIP' THEN '16' ## หอผู้ป่วยพิเศษ
+	WHEN a.`menucode` = 'ADMWF' THEN '16' ## หอผู้ป่วยรวม
+	WHEN a.`menucode` = 'ADMXR' THEN '10' ## X-Ray
+	WHEN a.`menucode` = 'ADMMMM' THEN 'xx' ## ส่งเสริมสุขภาพ
+	WHEN a.`menucode` = 'ADMCMS' THEN '26' ## จ่ายกลาง
+	ELSE a.`menucode`
+END ) AS `service_point`,
+( CASE 
+	WHEN a.`menucode` = 'ADM' THEN '9' 
+	WHEN a.`menucode` = 'ADMCOM' THEN '9' ## จนท.คอมฯ
+	WHEN a.`menucode` = 'ADMDEN' THEN '14' ## ห้องฟัน
+	WHEN a.`menucode` = 'ADMER' THEN '2' ## ห้องฉุกเฉิน
+	WHEN a.`menucode` = 'ADMDR1' THEN '3' ## แพทย์
+	WHEN a.`menucode` = 'ADMEYE' THEN '2' ## ห้องตา
+	WHEN a.`menucode` = 'ADMFOD' THEN '16' ## โภชนาการ
+	WHEN a.`menucode` = 'ADMHEM' THEN '2' ## ห้องไต
+	WHEN a.`menucode` = 'ADMICU' THEN '13' ## หอผู้ป่วยพิเศษ
+	WHEN a.`menucode` = 'ADMLAB' THEN '4' ## พยาธิ
+	WHEN a.`menucode` = 'ADMLIBRARY' THEN '12' ## เวชกรรม
+	WHEN a.`menucode` = 'ADMMAINOPD' THEN '2' ## ห้องตรวจ + OPD
+	WHEN a.`menucode` = 'ADMMON' THEN '7' ## ส่วนเก็บเงิน
+	WHEN a.`menucode` = 'ADMNHSO' THEN '11' ## 30บาท
+	WHEN a.`menucode` = 'ADMNID' THEN '15' ## แพทย์ทางเลือก -> แผนจีน
+	WHEN a.`menucode` = 'ADMOBG' THEN '13' ## สูติ
+	WHEN a.`menucode` = 'ADMOPD' THEN '1' ## ทะเบียน
+	WHEN a.`menucode` = 'ADMPHA' THEN '6' ## เภสัช
+	WHEN a.`menucode` = 'ADMPH' THEN '6' ## คลัง
+	WHEN a.`menucode` = 'ADMPHARX' THEN '2' ## จนท.ในห้องยา
+	WHEN a.`menucode` = 'ADMPT' THEN '98' ## ภายภาพ
+	WHEN a.`menucode` = 'ADMSSO' THEN '11' ## ปกส
+	WHEN a.`menucode` = 'ADMSTD' THEN '2' ## Coder
+	WHEN a.`menucode` = 'ADMSUR' THEN '2' ## ผ่าตัด
+	WHEN a.`menucode` = 'ADMVIP' THEN '13' ## หอผู้ป่วยพิเศษ
+	WHEN a.`menucode` = 'ADMWF' THEN '13' ## หอผู้ป่วยรวม
+	WHEN a.`menucode` = 'ADMXR' THEN '5' ## X-Ray
+	WHEN a.`menucode` = 'ADMMMM' THEN '12' ## ส่งเสริมสุขภาพ
+	WHEN a.`menucode` = 'ADMCMS' THEN '17' ## จ่ายกลาง
+	
+	ELSE a.`menucode` 
+END ) AS `emp_authen`, 
+a.`name`, 
+a.`menucode` 
+
+FROM ( 
+
+	SELECT `row_id`,REPLACE(`name`,'  ',' ') AS `name`,`idname`,`pword`,`menucode`,`level` 
+	FROM `inputm` 
+	WHERE ( `status` = 'y' OR `status` = 'Y' ) 
+
+) AS a 
+LEFT JOIN ( 
+
+	SELECT `row_id` AS `opcardId`,`idcard`,`hn`,`yot`,`name`,`surname`,`dbirth`,`sex`,CONCAT(`name`,' ',`surname`) AS `ptname`,`idguard`,`idguard2`
+	FROM `opcard` 
+	WHERE ( `idcard` <> '' AND `idcard` != '-' )
+	AND (`idguard` NOT LIKE 'MX07%' AND `idguard` NOT LIKE 'MX04%') 
+	AND (`idguard2` NOT LIKE 'MX07%' AND `idguard2` NOT LIKE 'MX04%') 
+
+) AS b ON b.`ptname` = a.`name` 
+
+ORDER BY a.`menucode` ASC ,a.`row_id` ASC 
+LIMIT 1000 
