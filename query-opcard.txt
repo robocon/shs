@@ -1,0 +1,60 @@
+SELECT `hn`,`idcard`,`yot`,`name`,`surname`,`dbirth`,
+( CASE 
+	WHEN `sex` = 'ช' THEN '1' 
+	WHEN `sex` = 'ญ' THEN '2' 
+	ELSE '3'
+END ) AS `sex`,
+`married`,
+`education`,
+`career` AS `occupation`,
+`nation`,
+`race`,
+`religion`,
+`father` AS `father_fname`,
+'' AS `father_lname`,
+`mother` AS `mother_fname`,
+'' AS `mother_lname`,
+`couple` AS `couple_fname`,
+'' AS `couple_lname`,
+( CASE 
+	WHEN `blood` = 'ไม่ทราบกรุ๊ปเลือด' THEN '1' 
+	WHEN `blood` = 'เอ' THEN '2' 
+    WHEN `blood` = 'บี' THEN '3' 
+    WHEN `blood` = 'เอบี' THEN '4' 
+    WHEN `blood` = 'โอ' THEN '5' 
+    ELSE `blood`
+END ) AS `blood`,
+`blood`,
+`address`,
+'' AS `road`,
+'' AS `moo`,
+`tambol`,
+`ampur`,
+`changwat`,
+`ptffone`, 
+`phone`, 
+'' AS `email`,
+`ptf` AS `contact_fname`,
+'' AS `contact_lname`,
+`ptfadd` AS `contact_relation`,
+'' AS `contact_gender`,
+'' AS `contact_house`,
+'' AS `contact_moo`,
+'' AS `contact_road`,
+'' AS `contact_tambol`,
+'' AS `contact_ampur`,
+'' AS `contact_changwat`,
+`ptffone` AS `contact_phone`,
+'' AS `contact_mobilephone`,
+'' AS `contact_email`,
+`goup`, ## ประเภท
+`camp`, ## สังกัด
+`ptright1`, ## สิทธิการรักษา
+`ptrightdetail`, ## ประเภทสิทธิ
+`ptfmon`, ## เบิกจาก
+`typearea` 
+FROM `opcard` 
+WHERE ( `idguard` NOT LIKE 'MX07%' AND `idguard` NOT LIKE 'MX04%' AND `idguard` NOT LIKE 'MX05%' ) 
+AND ( `idguard2` NOT LIKE 'MX07%' AND `idguard2` NOT LIKE 'MX04%' AND `idguard` NOT LIKE 'MX05%' ) 
+AND ( `name` <> 'ยุบประวัติ' AND `name` <> 'ยุบรวมประวัติ' ) 
+ORDER BY `row_id` ASC 
