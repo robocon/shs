@@ -39,7 +39,7 @@ $result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 
 $txt = '';
 while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
 
-    $PID = $hn;
+    $PID = trim($hn);
     $fstatus = "";
     $vstatus = "";
 
