@@ -231,7 +231,19 @@ if( mysql_num_rows($res) > 0 ){
 $inject = false;
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
 	
-	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."'   AND a.date = '".$_GET["sDate"]."' ";
+	// $query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno 
+	// FROM ddrugrx as a, 
+	// drugslip as b 
+	// WHERE a.slcode = b.slcode 
+	// AND a.idno = '".$_GET["nRow_id"]."'   
+	// AND a.date = '".$_GET["sDate"]."' ";
+
+	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno 
+	FROM ddrugrx as a  
+	LEFT JOIN drugslip as b ON b.slcode = a.slcode
+	WHERE a.idno = '".$_GET["nRow_id"]."'   
+	AND a.date = '".$_GET["sDate"]."' ";
+
 	//echo $query;
     $result = mysql_query($query) or die("Query failed");
 $n='0';

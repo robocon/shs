@@ -224,6 +224,7 @@ $current_date = strtotime(date('Y-m-d H:i:s'));
 // แพ้ยารุนแรง
 
 $num = '0';
+/*
 $query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode, a.drugcode, a.part, b.detail1, b.detail2, b.detail3, 
 b.detail4, a.drug_inject_amount, a.drug_inject_unit, a.drug_inject_amount2, a.drug_inject_unit2, a.drug_inject_time, 
 a.drug_inject_slip, a.drug_inject_type, a.drug_inject_etc, a.office, c.unit, a.reason 
@@ -234,6 +235,19 @@ WHERE a.slcode = b.slcode
 AND a.idno = '$sRow_id' 
 AND a.date = '$dRxdate' 
 AND a.drugcode = c.drugcode ";
+*/
+
+// ห้องยาแจ้งมาว่ามองไม่เห็นวิธีใช้ยาที่ผิด ทำให้มองไม่เห็นตัวยากับวิธีการใช้ยาด้วย
+// เลยปรับมาเป็น left join เพราะการ join statement แบบด้านบนเป็น inner join
+$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode, a.drugcode, a.part, b.detail1, b.detail2, b.detail3, 
+b.detail4, a.drug_inject_amount, a.drug_inject_unit, a.drug_inject_amount2, a.drug_inject_unit2, a.drug_inject_time, 
+a.drug_inject_slip, a.drug_inject_type, a.drug_inject_etc, a.office, c.unit, a.reason 
+FROM ddrugrx as a 
+LEFT JOIN drugslip as b ON b.slcode = a.slcode 
+LEFT JOIN druglst AS c ON c.drugcode = a.drugcode 
+WHERE a.idno = '$sRow_id' 
+AND a.date = '$dRxdate' ";
+
 $result = mysql_query($query) or die("Query failed");
 while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1, $detail2, $detail3, $detail4,$dia,$diu,$dia2,$diu2,$dtime,$dis,$dit,$die,$office,$unit,$reason) = mysql_fetch_row($result) ){
 	$num++;
