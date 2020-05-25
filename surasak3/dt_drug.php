@@ -1439,44 +1439,73 @@ exit();
 //******************************************** เรียกวิธีใช้ และ จำนวน ที่ใช้บ่อยออกมาแสดง *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "addamount"){ 
 
-	if($_GET["search"] == "1BONA"){
-		echo "120,1*2";
-	}else if($_GET["search"] == "2HYRU"){
-		echo "3,C";
-	}else if($_GET["search"] == "2ACLA"){
-		echo "1,IV";
-	}else if($_GET["search"] == "1BonOne"){
-		echo "60,1*1";
-	}else if($_GET["search"] == "1CALTR"){
-		echo "120,1*2";
-	}else if($_GET["search"] == "5FLES"){
-		echo "60,1F*1AC";
-	}else if($_GET["search"] == "5Artr"){
-		echo "180,1*2AC";
-	}else if($_GET["search"] == "1SULFIN"){
-		echo "90,1*1";
-	}else if($_GET["search"] == "14OR016" || $_GET["search"] == "14OR017"  || $_GET["search"] == "4PLAI" ){
-		echo "5,G*3";
-	}else if($_GET["search"] == "1GASM"){
-		echo "90,1*3";
-	}else if($_GET["search"] == "1LYRI"){
-		echo "60,1HS";
-	}else{
-		
-		// Lock เงื่อนไขเฉาะหมอเป้ 
-		if( $_SESSION['sIdname'] == 'md19921' ){
+	// Lock เงื่อนไขเฉาะหมอเป้ ให้จำค่ายากที่เคยคีย์
+	if( $_SESSION['sIdname'] == 'md19921' ){
 
-			$drugCode = $_GET["search"];
-			$mkDate = mktime(0, 0, 0, date("m")-2, date("d"), date("Y"));
+		$inputmId = $_SESSION['sRowid'];
+		$doctorcode = '';
+		$qInputm = mysql_query("SELECT `codedoctor` FROM `inputm` WHERE `row_id` = '$inputmId' ");
+		if( mysql_num_rows($qInputm) > 0 ){
+			$itemInputm = mysql_fetch_assoc($qInputm);
+			$doctorcode = $itemInputm['codedoctor'];
+		}
+
+		$drugCode = $_GET["search"];
+		$sqlDefault = "SELECT * FROM `default_drug` WHERE `drugcode` = '$drugCode' ";
+		$qDefault = mysql_query($sqlDefault);
+		if (mysql_num_rows($qDefault) == 0) { 
+
+			$mkDate = mktime(0, 0, 0, date("m")-3, date("d"), date("Y"));
 			$minDate = (date("Y",$mkDate)+543).date("-m-d H:i:s",$mkDate);
 			$maxDate = (date("Y")+543).date("-m-d H:i:s");
 
-			$sql = "SELECT `slcode`, `drugcode`, `amount` FROM `drugrx` WHERE `drugcode` = '$drugCode' AND ( `date` >= '$minDate' AND `date` <= '$maxDate' ) AND `amount` > 0 ORDER BY `row_id` DESC LIMIT 1 ";
-			$item = mysql_fetch_assoc(mysql_query($sql));
-			echo $item["amount"].",".$item['slcode'];
+			$sqlDrugrx = "SELECT `slcode`, `drugcode`, `amount` FROM `drugrx` WHERE `drugcode` = '$drugCode' AND ( `date` >= '$minDate' AND `date` <= '$maxDate' ) AND `amount` > 0 ORDER BY `row_id` DESC LIMIT 1 ";
+			$itemDrugrx = mysql_fetch_assoc(mysql_query($sqlDrugrx));
+			echo $itemDrugrx["amount"].",".$itemDrugrx['slcode'];
+
+			$result = mysql_query("SELECT `part`,`tradname` FROM `druglst` WHERE `drugcode` = '".$_GET["search"]."' LIMIT 1 ");
+			list($part,$trad) = mysql_fetch_row($result);
+			echo ",".$part.",".$trad;
+
+			$insertDefault = "INSERT INTO `default_drug` (`id`, `doctorcode`, `drugcode`, `amount`, `slcode`, `part`, `tradname`) 
+			VALUES (
+				NULL, '$doctorcode', '".$itemDrugrx['drugcode']."', '".$itemDrugrx['amount']."', '".$itemDrugrx['slcode']."', '$part', '$trad' 
+			);";
+			$test = mysql_query($insertDefault) or die(mysql_error());
 
 		}else{
+
+			$defDrug = mysql_fetch_assoc($qDefault);
+			echo $defDrug['amount'].','.$defDrug['slcode'].','.$defDrug['part'].','.$defDrug['tradname'];
+
+		}
 		
+	}else{
+
+		if($_GET["search"] == "1BONA"){
+			echo "120,1*2";
+		}else if($_GET["search"] == "2HYRU"){
+			echo "3,C";
+		}else if($_GET["search"] == "2ACLA"){
+			echo "1,IV";
+		}else if($_GET["search"] == "1BonOne"){
+			echo "60,1*1";
+		}else if($_GET["search"] == "1CALTR"){
+			echo "120,1*2";
+		}else if($_GET["search"] == "5FLES"){
+			echo "60,1F*1AC";
+		}else if($_GET["search"] == "5Artr"){
+			echo "180,1*2AC";
+		}else if($_GET["search"] == "1SULFIN"){
+			echo "90,1*1";
+		}else if($_GET["search"] == "14OR016" || $_GET["search"] == "14OR017"  || $_GET["search"] == "4PLAI" ){
+			echo "5,G*3";
+		}else if($_GET["search"] == "1GASM"){
+			echo "90,1*3";
+		}else if($_GET["search"] == "1LYRI"){
+			echo "60,1HS";
+		}else{
+			
 			// ถ้าไม่มีใน code ด้านบนให้ไปหาใน drugrx หลักๆคือดึงค่า amount กับ slcode
 			$limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
 			$sql = "Select count(row_id) From drugrx where drugcode = '".$_GET["search"]."' AND date BETWEEN '".(date("Y",$limit_date)+543).date("-m-d H:i:s",$limit_date)."' AND '".(date("Y")+543).date("-m-d H:i:s")."' ";
@@ -1497,21 +1526,20 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			$result = Mysql_Query($sql) or die(Mysql_ERROR());
 			$arr = Mysql_fetch_assoc($result);
 			echo $arr["slcode"]; 
-
+			
 		}
+		
+		$sql = "Select part From druglst Where drugcode = '".$_GET["search"]."' limit 1 ";
+		$result = Mysql_Query($sql);
+		list($part) = Mysql_fetch_row($result);
+		echo ",".$part;
+		
+		$sql = "Select tradname From druglst Where drugcode = '".$_GET["search"]."' limit 1 ";
+		$result = Mysql_Query($sql);
+		list($trad) = Mysql_fetch_row($result);
+		echo ",".$trad;
+
 	}
-
-	$sql = "Select part From druglst Where drugcode = '".$_GET["search"]."' limit 1 ";
-	$result = Mysql_Query($sql);
-	list($part) = Mysql_fetch_row($result);
-	echo ",".$part;
-	
-	$sql = "Select tradname From druglst Where drugcode = '".$_GET["search"]."' limit 1 ";
-	$result = Mysql_Query($sql);
-	list($trad) = Mysql_fetch_row($result);
-	echo ",".$trad;
-
-
 
 	exit();
 }
