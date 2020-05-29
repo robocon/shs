@@ -44,9 +44,15 @@ body,td,th {
 .tb_menu {background-color: #FFFFC1;  }
 .style1 {font-size: 16px}
 
+
+@media print{
+	div.iBannerFix{
+		position:fixed;
+	}
+}
+
     div.iBannerFix{  
-        height:50px;  
-        position:fixed;  
+        height:100px;  
         left:0px;  
         bottom:0px;  
         background-color:#FFFFFF;  
