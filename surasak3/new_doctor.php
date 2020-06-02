@@ -280,21 +280,16 @@ if( $action === false ){
     }
 
     $sql = "INSERT INTO `doctor` VALUES (NULL, '$pre_name', '', '$nameForDoctor', '$doctor_num', '$doctor_type', 'y', 'ADM', '$doctor_type', '1', '1', '1', '1', '1', '$room', '99', '', 'y', 'y','','$jobs');";
-    // $save = $db->insert($sql);
-    // if( $save !== true ){
-	// 	$msg = errorMsg('save', $save['id']);
-    // }
-
-    dump($sql);
+    $save = $db->insert($sql);
+    if( $save !== true ){
+		$msg = errorMsg('save', $save['id']);
+    }
 
     $sql = "INSERT INTO `inputm` VALUES (NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', '$doctor_num', '$new_md', '', '', NOW(), '$drType', '');";
-    // $save = $db->insert($sql);
-    // if( $save !== true ){
-	// 	$msg = errorMsg('save', $save['id']);
-    // }
-
-    dump($sql);
-    exit;
+    $save = $db->insert($sql);
+    if( $save !== true ){
+		$msg = errorMsg('save', $save['id']);
+    }
 
     $now = date('Y-m-d H:i:s');
     $sql = "UPDATE `runno` SET 
@@ -303,7 +298,7 @@ if( $action === false ){
     WHERE `title` = 'doctor' ";
     $save = $db->update($sql);
 
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    $msg = $idname.' บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
     }
