@@ -25,10 +25,7 @@ if(isset($_GET["lab_date"])){
 <head>
 <title>พิมพ์ผล LAB</title>
 <style type="text/css">
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 18px;
-}
+body,td,th {font-family: "TH SarabunPSK";font-size: 18px;}
 
 .tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
 .tb_head2 {background-color: #0C5A2F; color:#B9F2F7; font-weight: bold; text-align:center;  }
@@ -42,110 +39,95 @@ body,td,th {
 
 .tb_detail {background-color: #FFFFC1;  }
 .tb_menu {background-color: #FFFFC1;  }
-.style1 {font-size: 16px}
+.style1 {font-size: 13px}
 
 
 @media print{
 	div.iBannerFix{
 		position:fixed;
+		left: 0;
+  		bottom: 0;
 	}
 }
 
-    div.iBannerFix{  
-        height:100px;  
-        left:0px;  
-        bottom:0px;  
-        background-color:#FFFFFF;  
-        width:100%;  
-        z-index: 99;  
-    }  
-.style2 {
-	font-size: 18px;
-	font-weight: bold;
+div.iBannerFix{
+	/* height:100px;
+	left: 0;
+	bottom: 0; */
+	background-color:#FFFFFF;
+	width:100%;
+	z-index: 99;
+	
 }
+div.iBannerFix td{
+	font-family:"TH SarabunPSK";
+	font-size: 16px;
+}
+.style2 {font-size: 18px;font-weight: bold;}
 .style3 {font-size: 18px}
-hr {
-    margin: 2px;
-}
+hr {margin: 2px;}
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 </head>
 <body>
 <? 
-$sqlop="select distinct(testgroupname) as newtestgroupname 
-from resulthead 
-where hn ='$gethn' 
-AND labnumber = '$getlabnumber' ";
-//echo $sqlop;
+$sqlop="select distinct(testgroupname) as newtestgroupname from resulthead where hn ='$gethn' AND labnumber = '$getlabnumber' ";
 $queryop=mysql_query($sqlop);
-
 while($rowsop=mysql_fetch_array($queryop)){
 	$chktestgroupname=$rowsop["newtestgroupname"];
 
 	// ข้อมูลหัวกระดาษ
-	$sql = "Select date_format(orderdate,'%Y-%m-%d') as neworderdate,patientname,labnumber,sex,dob,comment 
-	From resulthead 
-	where hn = '$hn' 
-	AND labnumber = '$getlabnumber' 
-	limit 0,1";
-	//echo $sql;
+	$sql = "Select date_format(orderdate,'%Y-%m-%d') as neworderdate,patientname,labnumber,sex,dob,comment From resulthead where hn = '$hn' AND labnumber = '$getlabnumber' limit 0,1";
+	
 	$result = mysql_query($sql);
 	$rows = mysql_fetch_array($result);
 	$neworderdate =$rows["neworderdate"];
 	$dateB=$rows["dob"]; // ตัวแปรเก็บวันเกิด
-
-
 	?>
 	<div style="page-break-after: always">
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td width="28%" align="center"><strong>โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></td>
-		<td align="center"><strong>ใบรายงานผลทางห้องปฏิบัติการ</strong></td>
-	</tr>
-	<tr>
-		<td align="center">
-			<img src="images/surasak.jpg" width="52" height="52"><br>
-			<span class="style1">1 หมู่ 1 ต.พิชัย อ.เมือง จ.ลำปาง 52000 โทร 054-839305</span>
-		</td>
-		<td align="center"><table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td width="12%" align="right"><strong>Name :</strong></td>
-			<td width="27%" align="left"><?=$rows["patientname"];?></td>
-			<td width="9%" align="right"><strong>HN :</strong></td>
-			<td width="20%" align="left"><?=$gethn;?></td>
-			<td width="15%" align="right"><strong>Lab Number :</strong></td>
-			<td width="17%" align="left"><?=$getlabnumber;?></td>
+			<td width="28%" align="center"><strong>โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></td>
+			<td align="center"><strong>ใบรายงานผลทางห้องปฏิบัติการ</strong></td>
 		</tr>
 		<tr>
-			<td height="24" align="right"><strong>Ward :</strong></td>
-			<td align="left"><?=$getdepart;?></td>
-			<td align="right"><strong>Test :</strong></td>
-			<td align="left"><?=$getlistlab;?></td>
-			<td width="15%" align="right"><strong>Comment :</strong></td>
-			<td width="17%" align="left"><?=$rows["comment"];?></td>
+			<td align="center">
+				<img src="images/surasak.jpg" width="52" height="52"><br>
+				<span class="style1">1 หมู่ 1 ต.พิชัย อ.เมือง จ.ลำปาง 52000 โทร 054-839305</span>
+			</td>
+			<td align="center">
+				<table width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td width="12%" align="right"><strong>Name :</strong></td>
+						<td width="27%" align="left"><?=$rows["patientname"];?></td>
+						<td width="9%" align="right"><strong>HN :</strong></td>
+						<td width="20%" align="left"><?=$gethn;?></td>
+						<td width="15%" align="right"><strong>Lab Number :</strong></td>
+						<td width="17%" align="left"><?=$getlabnumber;?></td>
+					</tr>
+					<tr>
+						<td height="24" align="right">
+							<strong>Ward : </strong>
+						</td>
+						<td align="left" colspan="5"><?=$getdepart;?>&nbsp;&nbsp;&nbsp;<strong>Test : </strong><?=$getlistlab;?></td>
+					</tr>
+					<tr>
+						<td align="right"><strong>Age :</strong></td>
+						<td align="left" colspan="5"><?=getAge($dateB)." ปี";?>&nbsp;&nbsp;&nbsp;<strong>Doctor : </strong><?=$getdoctor;?> <strong>Comment : </strong><?=$rows["comment"];?></td>
+					</tr>
+				</table>
+			</td>
 		</tr>
-		<tr>
-			<td align="right"><strong>Age :</strong></td>
-			<td align="left"><?=getAge($dateB)." ปี";?></td>
-			<td align="right"><strong>Doctor :</strong></td>
-			<td align="left"><?=$getdoctor;?></td>
-			<td align="center">&nbsp;</td>
-			<td align="left">&nbsp;</td>
-		</tr>
-		</table>
-
-		</td>
-	</tr>
 	</table>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-bottom: solid 1px #000; border-top:solid 1px #000;">
-	<tr>
-		<td width="32%" align="center"><strong>Test</strong></td>
-		<td width="28%"><strong>Result</strong></td>
-		<td width="15%"><strong>Unit</strong></td>
-		<td width="25%"><strong>Reference Range</strong></td>
-	</tr>
+		<tr>
+			<td width="32%" align="center"><strong>Test</strong></td>
+			<td width="28%"><strong>Result</strong></td>
+			<td width="15%"><strong>Unit</strong></td>
+			<td width="25%"><strong>Reference Range</strong></td>
+		</tr>
 	</table>
-	<? 
+	<?php 
 	$sqlloop="select distinct(testgroupname) as newtestgroupname 
 	from resulthead 
 	where hn ='$gethn' 
@@ -156,11 +138,11 @@ while($rowsop=mysql_fetch_array($queryop)){
 		$newtestgroupname=$rowsloop["newtestgroupname"];
 	?>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td colspan="5" align="left">
-			<strong style="font-size:16px;"><u><?=$newtestgroupname;?></u></strong>
-		</td>
-	</tr>
+		<tr>
+			<td colspan="5" align="left">
+				<strong style="font-size:16px;"><u><?=$newtestgroupname;?></u></strong>
+			</td>
+		</tr>
 			<? 
 
 			/**
@@ -202,13 +184,13 @@ while($rowsop=mysql_fetch_array($queryop)){
 					$bgcolor="#FFFFFF";
 				}
 			?> 
-	<tr bgcolor="<?php echo $bgcolor;?>">
-		<td width="416"><font color="#000000" size ="2">&nbsp;&nbsp;&nbsp;<?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["labname"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
+		<tr bgcolor="<?php echo $bgcolor;?>">
+			<td width="416"><font color="#000000" size ="2">&nbsp;&nbsp;&nbsp;<?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["labname"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
 			<td align="left" width="248"><font  size ="2"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo $arr2["result"];?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
 			<td align="center" width="117"><font color="red" size ="2"><B><?php if($arr2["flag"] != 'N'){  echo"[", $arr2["flag"],"]";};?></B></font></td>
 			<td align="left" width="195"><font  size ="2"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php echo "". ($arr2["unit"] !=""?"".$arr2["unit"]."":"")."";?><?php if($arr2["flag"] != 'N'){ echo "</B>";};?></font></td>
 			<td align="left" width="325"><font  size ="2"><?php if($arr2["flag"] != 'N'){ echo "<B>";};?><?php if($arr2["normalrange"] != ""){ echo "[",$arr2["normalrange"],"]" ;};?><?php if($arr2["flag"] != 'N'){ echo "</B>";}?></font></td>
-	</tr>
+		</tr>
 		<?
 			}  // while result detail
 		}  // while result head
@@ -220,29 +202,28 @@ while($rowsop=mysql_fetch_array($queryop)){
 	?>
 	<div class="iBannerFix">  
 		<hr />
-	<?
-			$sql3="select * from resulthead 
-			inner join resultdetail on resulthead.autonumber=resultdetail.autonumber 
-			where resulthead.hn ='$gethn' 
-			and resulthead.labnumber = '$getlabnumber'";
-			$result3= mysql_query($sql3);
-			$arr3 = mysql_fetch_assoc($result3);
-	?>    
+		<?php
+		$sql3="select * from resulthead 
+		inner join resultdetail on resulthead.autonumber=resultdetail.autonumber 
+		where resulthead.hn ='$gethn' 
+		and resulthead.labnumber = '$getlabnumber'";
+		$result3= mysql_query($sql3);
+		$arr3 = mysql_fetch_assoc($result3);
+		?>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td width="67%"><span class="style2">Reported by : <?=$arr3["releasename"];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Authorize by : <?=$arr3["authorisename"];?></span></td>
-			<td width="6%" align="right"><span class="style2">หมายเหตุ&nbsp;</span></td>
-			<td width="27%"><span class="style2">L, H หมายถึง ค่าที่ต่ำหรือสูงกว่าค่าอ้างอิงในคน</span></td>
-		</tr>
-		<tr>
-			<td><span class="style2">Date Authorise : <?=$arr3["authorisedate"];?> &nbsp;&nbsp;&nbsp;Date Printed : <?=date("Y-m-d H:i:s");?></span></td>
-			<td align="right"><span class="style3"></span></td>
-			<td><span class="style3"><strong>LL, HH หมายถึง ค่าที่อยู่ในช่วงวิกฤต</strong></span></td>
-		</tr>
-		</table>  
+			<tr>
+				<td width="67%"><span class="">Reported by : <?=$arr3["releasename"];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Authorize by : <?=$arr3["authorisename"];?></span></td>
+				<td width="6%" align="right"><span class="">หมายเหตุ&nbsp;</span></td>
+				<td width="27%"><span class=""><b>L, H</b> หมายถึง ค่าที่ต่ำหรือสูงกว่าค่าอ้างอิงในคน</span></td>
+			</tr>
+			<tr>
+				<td><span class="">Date Authorise : <?=$arr3["authorisedate"];?> &nbsp;&nbsp;&nbsp;Date Printed : <?=date("Y-m-d H:i:s");?></span></td>
+				<td align="right"><span class=""></span></td>
+				<td><span class=""><strong>LL, HH</strong> หมายถึง ค่าที่อยู่ในช่วงวิกฤต</span></td>
+			</tr>
+		</table>
 	</div>
-	<br />
-	</div>  
+</div>  
 	<?
 }
 ?>  
