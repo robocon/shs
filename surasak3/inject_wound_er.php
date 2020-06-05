@@ -5,7 +5,7 @@ if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "v
 }
 
  include("connect.inc");
-
+// mysql_query("SET NAMES TIS620");
 $month['01'] = "มกราคม";
 $month['02'] = "กุมภาพันธ์";
 $month['03'] = "มีนาคม";

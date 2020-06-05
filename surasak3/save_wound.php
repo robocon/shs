@@ -93,58 +93,43 @@ return $i;
 
 if(isset($_POST["B1"])){
 
-include("connect.inc");
+	include("connect.inc");
 
-		$sql = "Select yot,  name,  surname From opcard where hn = '".$_POST["hn"]."'  limit 0,1 ";
-		$result  = Mysql_Query($sql);
-		$arr = Mysql_fetch_assoc($result);
+	$sql = "Select yot,  name,  surname From opcard where hn = '".$_POST["hn"]."'  limit 0,1 ";
+	$result  = Mysql_Query($sql);
+	$arr = Mysql_fetch_assoc($result);
 
+	$n=$_POST['amount'];
 
-		$n=$_POST['amount'];
-
- 		for($i=0;$i<$n;$i++){
-			
-			$c=$n-1;
-	$zz = explode(" ",$_POST["calendar_date".$i]);
-	$datexx = explode(" ",$_POST["calendar_date".$c]);
-	
-	
-	$date_2 = $zz[2]."-".date_month($zz[1])."-".$zz[0];
-	$date_3 = $datexx[2]."-".date_month($datexx[1])."-".$datexx[0];
-	
-	
-	$remark2=explode(" ",$_POST["remark2"]);
-	$date_remark2 = $remark2[2]."-".date_month($remark2[1])."-".$remark2[0];
-	
-	
-	$calendar_date = $_POST["calendar_date".$i];
- 			
+	for($i=0;$i<$n;$i++){
 		
-			//echo $date_2;
-			//echo '<br>';
-			//echo $date_3;
-			
-			$sql = "INSERT INTO `inhale_wound` ( `row_id` , `hn` , `date` , `yot` , `name` , `sname` , `startdate` , `enddate` , `idname` , `size_wound` , `total_day`, `detail`, `remark`, `remark2`,`detail2` ) 
-			VALUES ('', '".$_POST["hn"]."', '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["yot"]."', '".$arr["name"]."', '".$arr["surname"]."', '".$date_2."', '".$date_3."', '".$_SESSION["sIdname"]."', '".$_POST["size_wound"]."', '".$_POST["amount"]."', '".$_POST["detail"]."', '".$_POST["remark"]."', '".$date_remark2."', '".$_POST["detail2"]."');
-";
-			
-			///echo $sql."<br>";
+		$c=$n-1;
+		$zz = explode(" ",$_POST["calendar_date".$i]);
+		$datexx = explode(" ",$_POST["calendar_date".$c]);
+		
+		$date_2 = $zz[2]."-".date_month($zz[1])."-".$zz[0];
+		$date_3 = $datexx[2]."-".date_month($datexx[1])."-".$datexx[0];
+		
+		$remark2=explode(" ",$_POST["remark2"]);
+		$date_remark2 = $remark2[2]."-".date_month($remark2[1])."-".$remark2[0];
+		
+		$calendar_date = $_POST["calendar_date".$i];
+		
+		$sql = "INSERT INTO `inhale_wound` ( `row_id` , `hn` , `date` , `yot` , `name` , `sname` , `startdate` , `enddate` , `idname` , `size_wound` , `total_day`, `detail`, `remark`, `remark2`,`detail2` ) 
+		VALUES (NULL, '".$_POST["hn"]."', '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["yot"]."', '".$arr["name"]."', '".$arr["surname"]."', '".$date_2."', '".$date_3."', '".$_SESSION["sIdname"]."', '".$_POST["size_wound"]."', '".$_POST["amount"]."', '".$_POST["detail"]."', '".$_POST["remark"]."', '".$date_remark2."', '".$_POST["detail2"]."');";
+		
+		$result = Mysql_Query($sql) or die(mysql_error());
+	}
+
+	$sql ="Select `hn`, date From `inhale_wound` where `hn` = '".$_POST["hn"]."' Order by `row_id` DESC limit 0,1 ";
 	$result = Mysql_Query($sql);
-		}
+	$arr = Mysql_fetch_assoc($result);
 
- //$date2=$_POST['sdd'][$i].'-'.$_POST['smm'][$i].'-'.$_POST['syy'][$i];
- //echo $date2;
+	echo "<A HREF=\"",$_SERVER['PHP_SELF'],"\">ออกใบนัดผู้ป่วยคนใหม่</A>&nbsp;&nbsp;<A HREF=\"print_save_wound.php?date=$arr[date]&hn=",$arr["hn"],"\" target=\"_blank\">พิมพ์ใบนัด</A>";
 
-
-$sql ="Select `hn`, date From `inhale_wound` where `hn` = '".$_POST["hn"]."' Order by `row_id` DESC limit 0,1 ";
-$result = Mysql_Query($sql);
-$arr = Mysql_fetch_assoc($result);
-
-echo "<A HREF=\"",$_SERVER['PHP_SELF'],"\">ออกใบนัดผู้ป่วยคนใหม่</A>&nbsp;&nbsp;<A HREF=\"print_save_wound.php?date=$arr[date]&hn=",$arr["hn"],"\" target=\"_blank\">พิมพ์ใบนัด</A>";
-
-//echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=",$_SERVER['PHP_SELF'],"\">";
- include("unconnect.inc");
-exit();
+	//echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=",$_SERVER['PHP_SELF'],"\">";
+	include("unconnect.inc");
+	exit();
 }
 
 $month[0] = "มกราคม";

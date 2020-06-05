@@ -140,24 +140,24 @@ if (isset($cHn )){
 
 	$count = count($_SESSION["list_code"]);
 
-    if($count > 0){
+    // if($count > 0){
     
-        $sql = "INSERT INTO `appoint_lab` ( `id` , `code` )  VALUES ";
+    //     $sql = "INSERT INTO `appoint_lab` ( `id` , `code` )  VALUES ";
             
-        $list = array();
-        for ($n=0; $n<$count; $n++){
-            If (!empty($_SESSION["list_code"][$n])){
-                $q = "('".$idno."', '".$_SESSION["list_code"][$n]."')  ";
-                array_push($list,$q);
-            }
-        }
+    //     $list = array();
+    //     for ($n=0; $n<$count; $n++){
+    //         If (!empty($_SESSION["list_code"][$n])){
+    //             $q = "('".$idno."', '".$_SESSION["list_code"][$n]."')  ";
+    //             array_push($list,$q);
+    //         }
+    //     }
             
-        $sql .= implode(", ",$list);
-        $result = Mysql_Query($sql) or die("Error appoint_lab ".Mysql_Error());
-        $patho = implode(", ",$_SESSION["list_code"]);
-    }
+    //     $sql .= implode(", ",$list);
+    //     $result = Mysql_Query($sql) or die("Error appoint_lab ".Mysql_Error());
+    //     $patho = implode(", ",$_SESSION["list_code"]);
+    // }
 
-    $pathoall=$patho.' '.$patho2;
+    // $pathoall=$patho.' '.$patho2;
 
 	$sqltel = "update opcard SET phone='".$_POST['telp']."' where hn='".$cHn."'";
 	$result = mysql_query($sqltel);
@@ -166,9 +166,9 @@ if (isset($cHn )){
     $sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,
 detail,detail2,advice,patho,xray,other,depcode,labextra)
 VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$capptime',
-'$room','$detail','".jschars($detail2)."','$advice','$pathoall','$xrayall','".jschars($other)."','$depcode','".jschars($labm)."');";
+'$room','$detail','".jschars($detail2)."','$advice','NULL','$xrayall','".jschars($other)."','$depcode','".jschars($labm)."');";
 
-    $result = mysql_query($sql);
+    $result = mysql_query($sql) or die(mysql_error());
     $idno = mysql_insert_id();
 
     $convert_m = array('มกราคม' => '01', 'กุมภาพันธ์' => '02', 'มีนาคม' => '03', 'เมษายน' => '04', 
@@ -217,7 +217,9 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     }
 
     $pathoall=$patho.' '.$patho2;
-
+    
+    // $sql = "UPDATE appoint SET patho = '$pathoall' WHERE row_id = '$idno' ";
+    mysql_query("UPDATE appoint SET patho = '$pathoall' WHERE row_id = '$idno' ");
 //พิมพ์ใบนัด
 ////////////////////////
 

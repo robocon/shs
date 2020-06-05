@@ -62,7 +62,8 @@ function calcage($birth){
 return $pAge;
 }
 
-include("../Connections/connect.inc.php"); 
+// include("../Connections/connect.inc.php"); 
+include("../includes/connect.php");
 
 	$row_id=trim($_GET['row_id']);
 	
