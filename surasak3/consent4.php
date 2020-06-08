@@ -78,23 +78,23 @@ $list_witness2 = array();
 array_push($list_witness,''); array_push($list_witness2,'**********  ห้องฉุกเฉิน ************');
 //array_push($list_witness,'ปรีชาวรรณ อินอ่อน (GN)'); array_push($list_witness2,'พ.ต.หญิงปรีชาวรรณ อินอ่อน (GN)');
 //array_push($list_witness,'อาทิตยา อากรปรุ (GN)'); array_push($list_witness2,'พ.ต.หญิงอาทิตยา อากรปรุ (GN)');
-array_push($list_witness,'วราภรณ์ ศรีรัตนา (GN)'); array_push($list_witness2,'วราภรณ์ ศรีรัตนา (GN)');
+// array_push($list_witness,'วราภรณ์ ศรีรัตนา (GN)'); array_push($list_witness2,'วราภรณ์ ศรีรัตนา (GN)');
 //array_push($list_witness,'จิราภรณ์ คำวงสา (GN)'); array_push($list_witness2,'ร.ต.หญิงจิราภรณ์ คำวงสา (GN)');
 // array_push($list_witness,'จันทนา อินทรผูก (GN)'); array_push($list_witness2,'จันทนา อินทรผูก (GN)');
 // array_push($list_witness,'บัญญัติ ศรีวรกุลวงค์ (PN)'); array_push($list_witness2,'บัญญัติ ศรีวรกุลวงค์ (PN)');
-array_push($list_witness,'จันทร์เพ็ญ ยศแก้วอุด (PN)'); array_push($list_witness2,'จันทร์เพ็ญ ยศแก้วอุด (PN)');
+// array_push($list_witness,'จันทร์เพ็ญ ยศแก้วอุด (PN)'); array_push($list_witness2,'จันทร์เพ็ญ ยศแก้วอุด (PN)');
 // array_push($list_witness,'พยอม สมศิริ (PN)'); array_push($list_witness2,'พยอม สมศิริ (PN)');
 // array_push($list_witness,'ศกุนิชญ์ ใจการ (PN)'); array_push($list_witness2,'ศกุนิชญ์ ใจการ (PN)');
-array_push($list_witness,'สุรีรัตน์ คำปาเชื้อ (PN)'); array_push($list_witness2,'สุรีรัตน์ คำปาเชื้อ (PN)');
+// array_push($list_witness,'สุรีรัตน์ คำปาเชื้อ (PN)'); array_push($list_witness2,'สุรีรัตน์ คำปาเชื้อ (PN)');
 //array_push($list_witness,'วันัสชฎา ชื่นเมือง (PN)'); array_push($list_witness2,'วันัสชฎา ชื่นเมือง (PN)');
 //array_push($list_witness,'ดลญา ณ นคร (PN)'); array_push($list_witness2,'นางสาวดลญา ณ นคร (PN)');
 //array_push($list_witness,'จรีรัตน์ ถิ่นจันทร์ (GN)'); array_push($list_witness2,'ร.อ.หญิง จรีรัตน์ ถิ่นจันทร์ (GN)');
 //array_push($list_witness,'ทิพย์วรรณ จันทราช (PN)'); array_push($list_witness2,' ทิพย์วรรณ จันทราช (PN)');
 // array_push($list_witness,'อภิรมย์ ศรีมูล (GN)'); array_push($list_witness2,' อภิรมย์ ศรีมูล (GN)');
-array_push($list_witness,'อัจฉราภรณ์ สายเครือคำ (GN)'); array_push($list_witness2,'อัจฉราภรณ์ สายเครือคำ (GN)');
+// array_push($list_witness,'อัจฉราภรณ์ สายเครือคำ (GN)'); array_push($list_witness2,'อัจฉราภรณ์ สายเครือคำ (GN)');
 // array_push($list_witness,'เทพินทร์ ศิริพรวัฒนะกุล  (GN)'); array_push($list_witness2,'เทพินทร์ ศิริพรวัฒนะกุล  (GN)');
 array_push($list_witness,'วิลาวรรณ ศรีฟอง (GN)'); array_push($list_witness2,'วิลาวรรณ ศรีฟอง (GN)');
-array_push($list_witness,'ณัฐกฤตา มหาวัน (GN)'); array_push($list_witness2,'ณัฐกฤตา มหาวัน (GN)');
+// array_push($list_witness,'ณัฐกฤตา มหาวัน (GN)'); array_push($list_witness2,'ณัฐกฤตา มหาวัน (GN)');
 // array_push($list_witness,'ปริญญา หนูเมือง ');
 // array_push($list_witness2,'ปริญญา หนูเมือง ');
 array_push($list_witness,'พูนทรัพย์ ใจคำสุข '); 
@@ -111,17 +111,22 @@ array_push($list_witness2,'พัชรีญา ริยาพันธ์');
 array_push($list_witness,'ณัฐชนน ไชยา'); 
 array_push($list_witness2,'ณัฐชนน ไชยา');
 
-array_push($list_witness,'ประภาศรี เมฆเจริญ'); 
-array_push($list_witness2,'ประภาศรี เมฆเจริญ');
-
-array_push($list_witness,''); array_push($list_witness2,'**********  ห้องจักษุ ************');
-array_push($list_witness,'ศิริลักษณ์ เหมืองทอง'); array_push($list_witness2,'พท.หญิงศิริลักษณ์ เหมืองทอง');
-array_push($list_witness,'พยอม สมศิร'); array_push($list_witness2,'จสอ.หญิง พยอม สมศิริ');
+// array_push($list_witness,'ประภาศรี เมฆเจริญ'); 
+// array_push($list_witness2,'ประภาศรี เมฆเจริญ');
 
 array_push($list_witness,'จารุมนต์ วุฒิ');
 array_push($list_witness2,'จารุมนต์ วุฒิ');
 array_push($list_witness,'พรทิพย์ ภักดี');
 array_push($list_witness2,'พรทิพย์ ภักดี');
+
+array_push($list_witness,'เจษฎา ปู่ดี');
+array_push($list_witness2,'เจษฎา ปู่ดี');
+
+array_push($list_witness,''); array_push($list_witness2,'**********  ห้องจักษุ ************');
+array_push($list_witness,'ศิริลักษณ์ เหมืองทอง'); array_push($list_witness2,'พท.หญิงศิริลักษณ์ เหมืองทอง');
+array_push($list_witness,'พยอม สมศิร'); array_push($list_witness2,'จสอ.หญิง พยอม สมศิริ');
+
+
 
 // array_push($list_witness,'กนกพร ไชยโส'); array_push($list_witness2,'นางสาว กนกพร ไชยโส');
 
