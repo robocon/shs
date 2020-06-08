@@ -163,6 +163,11 @@ if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMDEN" || $_SESSIO
 
  
  echo $_SESSION["nPrintXray"];
+
+$thaiDate = (date('Y')+543).date('-m-d');
+$xraystklink = '?date='.$thaiDate.'&name='.urlencode($cPtname).'&hn='.urlencode($cHn).'&detail='.urlencode($_SESSION["cXraydetail"]);
+echo '&nbsp;|&nbsp;<a target="_blank" href="xraystk.php'.$xraystklink.'">สติ๊กเกอร์ X-Ray</a>';
+
 // echo "<br>คำสั่งพิเศษ $labex";
 if($cDepart  == "PATHO"){
 	if($labex!=""|| $other!=""){
