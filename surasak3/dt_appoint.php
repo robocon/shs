@@ -1097,15 +1097,16 @@ include("dt_patient.php");
 </TR>
 <?
 
-	if( $_SESSION["sIdname"] == "md19364" 
-		|| $_SESSION["sIdname"] == "md12456" 
+	if( $_SESSION["sIdname"] == "md12891" //หมอเลือก
+		|| $_SESSION["sIdname"] == "md19364" // หมอนภสมร
+		|| $_SESSION["sIdname"] == "md12456" // หมอณรงค์
 		|| $_SESSION["sIdname"] == "md29262" 
 		|| $_SESSION["sIdname"] == "md21329" 
 		|| $_SESSION["sIdname"] == "md24535" 
 		|| $_SESSION["sIdname"] == "คามิน" 
-		|| $_SESSION["sIdname"] == "md16633" 
-		|| $_SESSION["sIdname"] == "md37533" 
-		|| $_SESSION["sIdname"] == "md65035" // intern
+		|| $_SESSION["sIdname"] == "md16633" // หมออรรณพ
+		|| $_SESSION["sIdname"] == "md37533" // หมอเชาว์
+		|| $_SESSION["sIdname"] == "md65035" // intern 2020
 		|| $_SESSION["sIdname"] == "md65052" // intern
 		|| $_SESSION["sIdname"] == "md65067" // intern
 		|| $_SESSION["sIdname"] == "md65006" // intern
