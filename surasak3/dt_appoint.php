@@ -1097,10 +1097,25 @@ include("dt_patient.php");
 </TR>
 <?
 
-	if($_SESSION["sIdname"] == "md19364" || $_SESSION["sIdname"] == "md12456"|| $_SESSION["sIdname"] == "md29262"|| $_SESSION["sIdname"] == "md20278"|| $_SESSION["sIdname"] == "md27035"|| $_SESSION["sIdname"] == "md21329"|| $_SESSION["sIdname"] == "md24535"|| $_SESSION["sIdname"] == "คามิน" || $_SESSION["sIdname"] == "md16633"  || $_SESSION["sIdname"] == "md37533"){
+	if( $_SESSION["sIdname"] == "md19364" 
+		|| $_SESSION["sIdname"] == "md12456" 
+		|| $_SESSION["sIdname"] == "md29262" 
+		|| $_SESSION["sIdname"] == "md21329" 
+		|| $_SESSION["sIdname"] == "md24535" 
+		|| $_SESSION["sIdname"] == "คามิน" 
+		|| $_SESSION["sIdname"] == "md16633" 
+		|| $_SESSION["sIdname"] == "md37533" 
+		|| $_SESSION["sIdname"] == "md65035" // intern
+		|| $_SESSION["sIdname"] == "md65052" // intern
+		|| $_SESSION["sIdname"] == "md65067" // intern
+		|| $_SESSION["sIdname"] == "md65006" // intern
+		|| $_SESSION["sIdname"] == "md65053" // intern 
+	){
 		$counter="2";
 	}elseif($_SESSION["sIdname"] == "thaywin"){
 		$counter="3";
+	}elseif( $_SESSION["sIdname"] == "md20278" || $_SESSION["sIdname"] == "md27035" ){ // หมอศุภสิทธิ + หมอวริวิทย์ default ที่จุดนัดบริการที่1
+		$counter="1";
 	}else{ 			 
 		$counter="1";
 	}	
@@ -1149,7 +1164,7 @@ include("dt_patient.php");
 	<TD colspan="2">
 		<select name="room" id='room'>
 			<option <?php if($counter=="1") echo " Selected ";?>>จุดบริการนัดที่ 1</option>
-			<option <?php if($counter=="2") echo " Selected ";?>>จุดบริการนัดที่ 2</option>
+			<option <?php if($counter=="2") echo " Selected ";?>>อาคารเฉลิมพระเกียรติ</option>
 			<option <?php if($counter=="3") echo " Selected ";?>>แผนกทะเบียน</option>
 			<option>ห้องฉุกเฉิน</option>
 			<option>กองทันตกรรม</option>
