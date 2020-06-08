@@ -69,7 +69,7 @@ window.onload = function(){
 			//echo $_SESSION["smenucode"];
 				
 				//if( $_SESSION["smenucode"] == "ADMDEN")
-					$where = "AND (a.row_id = '161' || a.row_id = '162' || a.row_id = '163' || a.row_id = '164' )";
+					$where = "AND (a.row_id = '160' || a.row_id = '161' || a.row_id = '162' || a.row_id = '163' || a.row_id = '164' )";
 				//else
 					//$where = " AND  menucode like '%%' ";
 
