@@ -1054,7 +1054,7 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 			$chrgitem =$rows12["depart"];
 			
 			
-			
+			$amountopacc = 0;
 			
 			
 		
@@ -1376,15 +1376,20 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 				$type="13";
 			}
 			
-			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay,depart from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
+			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay,depart,part from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
 			//echo $sqladp."<br>";
 			$queryadp=mysql_query($sqladp);
-			while(list($code14, $qty14, $rate14, $total14, $totcopay14,$depart14)=mysql_fetch_array($queryadp)){
+			while(list($code14, $qty14, $rate14, $total14, $totcopay14,$depart14,$part14)=mysql_fetch_array($queryadp)){
 
 
 			if($depart14=="PATHO"){
-				$type="15";
-			}
+				if($part14=="BLOOD"){
+					$type="14";
+				}else if($part14=="LAB"){
+					$type="15";
+				}
+			}			
+								
 			
 				$chklabcare="select codex from labcare where code='$code14'";
 				$querylabcare=mysql_query($chklabcare);
