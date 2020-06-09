@@ -17,3 +17,8 @@ p{
 <p><b>วันที่เอกซเรย์</b> : <?=$date;?></p>
 <p><b>HN</b> : <?=$hn;?> <b>ชื่อ-สกุล</b> : <?=$name;?></p>
 <p><b>ท่าเอกซเรย์</b> : <?=$detail;?></p>
+<script>
+window.onload = function(){
+    window.print();
+}
+</script>
