@@ -145,6 +145,7 @@ echo "<tr><b>
 <td>&nbsp;</td>
 <td class=\"fontlist\"><b><center>รวม</center></td>
 <td class=\"fontlist\">&nbsp;</td>
+<td class=\"fontlist\">&nbsp;</td>
 <td align='right' class=\"fontlist\"></td>
 <td align='right' class=\"fontlist\">".number_format($sumdrug,2)."</td>
 <td align='right' class=\"fontlist\">".number_format($sumroom,2)."</td>
