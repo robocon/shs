@@ -17,19 +17,8 @@ FROM `opday` AS a
 WHERE a.`hn` = '$hn' 
 AND a.`thidate` >= '$thDate' 
 ORDER BY a.`row_id` DESC";
-
-
 $db->select($sql);
 $items = $db->get_items();
-
-/**
- * @todo
- * [x] select from opday 
- * [x] join opd 
- * [x] join diag 
- * [x] join drug 
- * [] link to resulthead + resultdetail 
- */
 
 ?>
 <style>
@@ -40,9 +29,16 @@ $items = $db->get_items();
 h3{
     font-size: 26pt;
 }
+.subTitle > u{
+    font-size: 18pt;
+}
+.subTitle{
+    padding: 2px 0 2px 8px;
+    background-color: #d4d4d4;
+}
 </style>
 <div>
-    <h3>ข้อมูลผู้ป่วยย้อนหลัง 1ปี</h3>
+    <h3>ข้อมูลผู้ป่วยย้อนหลัง 2ปี</h3>
 </div>
 <?php
 
@@ -53,11 +49,13 @@ foreach ($items as $key => $item) {
     ?>
     <div style="border:1px solid black; padding: 4px;">
         <div style="padding-bottom: 8px;">
-            <div><u>ข้อมูลเบื้องต้น</u></div>
+            <div class="subTitle"><u>ข้อมูลเบื้องต้น</u></div>
             <b>วันที่มารับบริการ : </b><?=$item['thidate'];?> 
-            <b>ชื่อ-สกุล : </b><?=$item['ptname'];?> 
             <b>HN : </b><?=$item['hn'];?> 
             <b>VN : </b><?=$item['vn'];?> 
+        </div>
+        <div>
+            <b>ชื่อ-สกุล : </b><?=$item['ptname'];?> 
             <b>อายุ : </b><?=$item['age'];?> 
             <b>สิทธิการรักษา : </b><?=$item['ptright'];?> 
             <b>มาเพื่อ : </b><?=$item['toborow'];?>
@@ -68,6 +66,8 @@ foreach ($items as $key => $item) {
         list($Y, $M, $D) = explode('-', $testDate);
         $thDateHn = "$D-$M-$Y".$item['hn'];
 
+        $enDate = ($Y-543)."-$M-$D";
+
         $sqlOpday = "SELECT * FROM `opd` WHERE `thdatehn` = '$thDateHn' ";
         $db->select($sqlOpday);
         if( $db->get_rows() > 0 ){
@@ -75,7 +75,7 @@ foreach ($items as $key => $item) {
             $opday = $db->get_item();
             ?>
             <div style="padding-bottom: 8px;">
-                <div><u>ข้อมูลซักประวัติ</u></div> 
+                <div class="subTitle"><u>ข้อมูลซักประวัติ</u></div> 
                 <b>T : </b><?=$opday['temperature'];?> 
                 <b>P : </b><?=$opday['pause'];?> 
                 <b>R : </b><?=$opday['rate'];?> 
@@ -91,27 +91,29 @@ foreach ($items as $key => $item) {
 
         $sqlDiag = "SELECT `diag`,`icd10`,`type`,`diag_thai` FROM `diag` WHERE `svdate` LIKE '$testDate%' AND `hn` = '$hn' ORDER BY `row_id` ASC";
         $db->select($sqlDiag);
-        $diag_items = $db->get_items();
-        ?>
-        <div style="padding-bottom: 8px;">
-            <div><u>Diag</u></div> 
-            <?php 
-            foreach ($diag_items as $key => $diag) {
-                ?>
-                <div>
-                    <b><?=$diag['type'];?> : </b>(<?=$diag['icd10'];?>) <?=$diag['diag'];?>
-                    <?php 
-                    if( !empty($diag['diag_thai']) ){
-                        echo ' - '.$diag['diag_thai'];
-                    }
-                    ?>
-                </div>
-                <?php
-            }
+        if( $db->get_rows() > 0 ){ 
+            $diag_items = $db->get_items();
             ?>
-        </div>
-
-        <?php 
+            <div style="padding-bottom: 8px;">
+                <div class="subTitle"><u>Diag</u></div> 
+                <?php 
+                foreach ($diag_items as $key => $diag) {
+                    ?>
+                    <div>
+                        <b><?=$diag['type'];?> : </b>(<?=$diag['icd10'];?>) <?=$diag['diag'];?>
+                        <?php 
+                        if( !empty($diag['diag_thai']) ){
+                            echo ' - '.$diag['diag_thai'];
+                        }
+                        ?>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php 
+        }
+        
         $sqlDrug = "SELECT a.*,CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `drug_detail` 
         FROM `drugrx` AS a 
         LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode` 
@@ -123,7 +125,7 @@ foreach ($items as $key => $item) {
             $drug_items = $db->get_items();
             ?>
             <div style="padding-bottom: 8px;">
-                <div><u>ยา</u></div> 
+                <div class="subTitle"><u>ยา</u></div> 
                 <table>
                     <tr>
                         <th>ชื่อยา</th>
@@ -148,21 +150,18 @@ foreach ($items as $key => $item) {
         ?>
 
         <?php 
-        
+        $sqlResultHead = "SELECT *,GROUP_CONCAT(`profilecode`) AS `group_name` FROM `resulthead` WHERE `orderdate` LIKE '$enDate%' AND `hn` = '$hn' GROUP BY `labnumber` ";
+        $db->select($sqlResultHead);
+        if( $db->get_rows() > 0 ){
+            $resHead = $db->get_item();
+            $link = "lab_lst_print_opd1new.php?hn=$hn&lab_date=".$resHead['orderdate']."&labnumber=".$resHead['labnumber']."&listlab=".$resHead['group_name']."&depart=".$resHead['sourcename']."&doctor=".$resHead['clinicianname'];
+            ?>
+            <div style="padding-bottom: 8px;">
+                <div><u><a href="<?=$link;?>" target="_blank">ดูผลแลป (<?=$resHead['group_name'];?>)</a></u></div> 
+            </div>
+            <?php
+        }
         ?>
-        // resulthead 
-        lab_lst_print_opd1new.php?
-        hn=<?=$hn;?>&
-        lab_date=<?php echo urlencode($arr["dateresult"]);?>&       --> orderdate
-        labnumber=<?=$arr['labnumber'];?>&                          --> labnumber
-        listlab=<?php echo implode(", ",$list_lab);?>&              --> ชื่อแลป CBC, UA
-        depart=<?php echo $sourcename;?>&                           --> sourcename
-        doctor=<?php echo $clinicianname;?>                         --> clinicianname
-        
-        <div style="padding-bottom: 8px;">
-            <div><u>ดูผลแลป</u></div> 
-            <b>XXX : </b> 
-        </div>
     </div>
     <?php
 
