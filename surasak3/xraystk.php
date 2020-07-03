@@ -7,9 +7,9 @@ $detail = urldecode($_GET['detail']);
 <style>
 *{
     font-family: "TH Sarabun New","TH SarabunPSK";
-    font-size: 16pt;
+    font-size: 13pt;
 }
-p{
+body,p{
     margin: 0;
     padding: 0;
 }
