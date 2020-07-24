@@ -907,10 +907,28 @@ function fncSubmit(strPage)
   <tr>
     <td width="115"><font face="Angsana New" size = '4'><font face="Angsana New">ยื่นใบนัดที่</font></font></td>
     <td colspan="2"><font face="Angsana New" size = '4'><font face="Angsana New">
+
+		<?php 
+		// default เป็นตึกใหม่
+		$testNewBuilding = array(
+			'MD009 นภสมร ธรรมลักษมี',
+			'MD006 เลือก ด่านสว่าง',
+			'MD007 ณรงค์ ปรีดาอนันทสุข',
+			'MD008 อรรณพ ธรรมลักษมี',
+			'MD100 เชาวรินทร์ อุ่นเครือ',
+			'MD171 วีรวัฒน์ เลิศฤทธิ์เดชา'
+		);
+
+		$preOpd = '';
+		if(in_array($doctor_post, $testNewBuilding)){
+			$preOpd = 'selected="selected"';
+		}
+		?>
+
       <select size="1" name="room" id="room">
-        <option selected value="NA">&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3627;&#3657;&#3629;&#3591;&#3605;&#3619;&#3623;&#3592;&gt;</option>
+        <option value="NA">&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3627;&#3657;&#3629;&#3591;&#3605;&#3619;&#3623;&#3592;&gt;</option>
         <option>จุดบริการนัดที่ 1</option>
-        <option id="pre-opd">อาคารเฉลิมพระเกียรติ</option>
+        <option id="pre-opd" <?=$preOpd;?>>อาคารเฉลิมพระเกียรติ</option>
         <option id="opd">แผนกทะเบียน</option>
         <option>ห้องฉุกเฉิน</option>
         <option>กองทันตกรรม</option>

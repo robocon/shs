@@ -1106,7 +1106,8 @@ include("dt_patient.php");
 		|| $_SESSION["sIdname"] == "คามิน" 
 		|| $_SESSION["sIdname"] == "md16633" // หมออรรณพ
 		|| $_SESSION["sIdname"] == "md37533" // หมอเชาว์
-		|| $_SESSION["sIdname"] == "md65035" // intern 2020
+		|| $_SESSION["sIdname"] == "md50807" // หมอวีรวัฒน์
+		|| $_SESSION["sIdname"] == "md65035" // intern ปี2020
 		|| $_SESSION["sIdname"] == "md65052" // intern
 		|| $_SESSION["sIdname"] == "md65067" // intern
 		|| $_SESSION["sIdname"] == "md65006" // intern
