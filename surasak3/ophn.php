@@ -120,7 +120,7 @@ session_unregister("Ptright1");
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</td>\n".
-            "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button></td>".
+            "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" onclick=\"checkPtRight(this, event, '$idcard')\">ทดสอบตรวจสอบสิทธิ</button></td>".
             " </tr>\n");
             $_SESSION['hn'] = $hn;
             $_SESSION['name'] = $name;
@@ -294,14 +294,36 @@ session_unregister("Ptright1");
     }
 
     function checkPtRight(link, ev, hn){
-        alert("อยู่ในช่วงการทดสอบการใช้งาน");
         var newSm = new SmHttp();
         newSm.ajax(
             'http://192.168.143.126/index.php',
             { "hn": hn },
             function(res){
                 var txt = JSON.parse(res);
-                alert("สิทธิที่ใช้เบิก : "+txt.maininscl_name);
+
+
+                var subInScl, hMain, hMainOp, hSub, mainInScl, alertTxt = '';
+                if( txt.maininscl_name !== undefined ){
+                    alertTxt += "สิทธิหลักในการรับบริการ : "+txt.maininscl+" "+txt.maininscl_name+"\n";
+                }
+
+                if( txt.subinscl_name !== undefined){
+                    alertTxt += "ประเภทสิทธิย่อย : "+txt.subinscl+" "+txt.subinscl_name+"\n";
+                }
+
+                if( txt.hmain_op_name !== undefined){
+                    alertTxt += "หน่วยบริการประจำ : "+txt.hmain_op+" "+txt.hmain_op_name+"\n";
+                } 
+            
+                if( txt.hmain_name !== undefined){
+                    alertTxt += "หน่วยบริการที่รับส่ง : "+txt.hmain+" "+txt.hmain_name+"\n";
+                } 
+
+                if( txt.hsub_name !== undefined){
+                    alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.hsub+" "+txt.hsub_name+"\n";
+                } 
+                
+                alert(alertTxt);
             },
             false // true is Syncronous and false is Assyncronous (Default by true)
         );
