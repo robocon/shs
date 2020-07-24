@@ -43,6 +43,7 @@ session_unregister("Ptright1");
         <th bgcolor=6495ED>ใบสั่งยา</th>
         <th bgcolor=6495ED>ใบตรวจโรค</th>-->
         <th bgcolor=6495ED colspan="5">ใบตรวจโรค</th>
+        <th bgcolor="6495ED">&nbsp;</th>
     </tr>
 
     <?php
@@ -119,7 +120,7 @@ session_unregister("Ptright1");
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</td>\n".
-
+            "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button></td>".
             " </tr>\n");
             $_SESSION['hn'] = $hn;
             $_SESSION['name'] = $name;
@@ -290,5 +291,19 @@ session_unregister("Ptright1");
             false // true is Syncronous and false is Assyncronous (Default by true)
         );
         
+    }
+
+    function checkPtRight(link, ev, hn){
+        alert("อยู่ในช่วงการทดสอบการใช้งาน");
+        var newSm = new SmHttp();
+        newSm.ajax(
+            'http://192.168.143.126/index.php',
+            { "hn": hn },
+            function(res){
+                var txt = JSON.parse(res);
+                alert("สิทธิที่ใช้เบิก : "+txt.maininscl_name);
+            },
+            false // true is Syncronous and false is Assyncronous (Default by true)
+        );
     }
 </script>
