@@ -147,7 +147,7 @@ echo "<FONT SIZE='5' COLOR='#0000FF'><CENTER>ชื่อผู้ป่วย&nbsp;<B>$patientname</B
 <?php
 $i=0;
 
-	$sql = "Select autonumber,date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d') as dateresult2, date_format(orderdate,'%m') as dateresult4, date_format(orderdate,'%Y') as dateresult3,labnumber From resulthead where hn = '".$_POST["search_hn"]."' Group by labnumber order by orderdate DESC";
+	$sql = "Select autonumber,date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d') as dateresult2, date_format(orderdate,'%m') as dateresult4, date_format(orderdate,'%Y') as dateresult3,labnumber,sourcename,clinicianname From resulthead where hn = '".$_POST["search_hn"]."' Group by labnumber order by orderdate DESC";
 
 	$result = mysql_query($sql);
 	while($arr = mysql_fetch_assoc($result)){
@@ -169,9 +169,11 @@ $i=0;
 
 
 		$i++;
-$sql = "Select sourcename,clinicianname From resulthead where hn = '".$_POST["search_hn"]."'  limit 1";
-$result2 = Mysql_Query($sql);
-list($sourcename,$clinicianname) = Mysql_fetch_row($result2);
+// $sql = "Select sourcename,clinicianname From resulthead where hn = '".$_POST["search_hn"]."'  limit 1";
+// $result2 = Mysql_Query($sql);
+// list($sourcename,$clinicianname) = Mysql_fetch_row($result2);
+		$sourcename = $arr['sourcename'];
+		$clinicianname = $arr['clinicianname'];
 		
 ?>
 <tr >
