@@ -35,6 +35,7 @@ if( $page == false ){
             <tr>
                 <th>เลือก</th>
                 <th>#</th>
+                <th>Lab Number</th>
                 <th>HN</th>
                 <th>ชื่อสกุล</th>
                 <th>เลขบัตรประชาชน</th>
@@ -52,6 +53,7 @@ if( $page == false ){
                         <input type="checkbox" name="ids[]" class="id" value="<?=$item['row'];?>">
                     </td>
                     <td><?=$i;?></td>
+                    <td><?=$item['exam_no'];?></td>
                     <td><?=$item['hn'];?></td>
                     <td><?=$item['name'];?> <?=$item['surname'];?></td>
                     <td><?=$item['idcard'];?></td>
