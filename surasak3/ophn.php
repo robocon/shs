@@ -270,6 +270,64 @@ session_unregister("Ptright1");
     } // End if not empty HN
     ?>
 </table>
+
+<style>
+.simpleTb{border-collapse: collapse;}.simpleTb th{background-color: #6495ED;}.simpleTb table,.simpleTb th,.simpleTb td {border: 1px solid black;padding: 4px;}
+</style>
+<?php 
+include("connect.inc");
+$last7DaysTime = strtotime("-7 Days");
+// $last7DaysTime = strtotime("-1 year");
+$last7Day = (date("Y",$last7DaysTime)+543).date("-m-d",$last7DaysTime).' 00:00:00';
+$sql = "SELECT `date`,`hn`,`an`,`ptname`,`bedcode`,`row_id` 
+FROM `ipcard` 
+WHERE `date` >= '$last7Day' 
+AND `dcdate` = '0000-00-00 00:00:00' 
+AND `bedcode` IS NULL ";
+$q = mysql_query($sql);
+if (mysql_num_rows($q) > 0) {
+    ?>
+    <p><b>ข้อมูลผู้ป่วย Admit ที่ค้างในระบบ</b></p>
+    <table class="simpleTb">
+        <tr>
+            <th>#</th>
+            <th>วันที่</th>
+            <th>HN</th>
+            <th>AN</th>
+            <th>ชื่อ-สกุล</th>
+            <th>เตียง</th>
+            <th>จัดการ</th>
+        </tr>
+        <?php 
+        $i = 1;
+        while ($it = mysql_fetch_assoc($q)) {
+            ?>
+            <tr>
+                <td><?=$i;?></td>
+                <td><?=$it['date'];?></td>
+                <td><?=$it['hn'];?></td>
+                <td><?=$it['an'];?></td>
+                <td><?=$it['ptname'];?></td>
+                <td><?=$it['bedcode'];?></td>
+                <td><a href="ophn_cancel.php?id=<?=$it['row_id'];?>" onclick="return cancelAdmit()">ยกเลิก</a></td>
+            </tr>
+            <?php
+            $i++;
+        }
+        ?>
+        
+    </table>
+    <script>
+    function cancelAdmit(){
+        return confirm("ยืนยันยกเลิกการ Admit ?");
+    }
+    </script>
+    <?php
+}
+
+include("unconnect.inc");
+?>
+
 <script type="text/javascript">
     /* checkIpd */
     function checkIpd(link, ev, hn){
