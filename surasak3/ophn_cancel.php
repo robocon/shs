@@ -13,4 +13,4 @@ if ( $db->get_rows() > 0 ) {
     $test = $db->exec($sql);
 }
 
-// redirect('ophn.php');
+redirect('ophn.php');
