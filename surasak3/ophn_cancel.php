@@ -9,8 +9,10 @@ if ( $db->get_rows() > 0 ) {
 
     $it = $db->get_item();
     $date = $it['date'];
-    $sql = "UPDATE `ipcard` SET `dcdate` = '$date' ";
+    $row_id = $it['row_id'];
+    $sql = "UPDATE `ipcard` SET `dcdate` = '$date' WHERE `row_id` = '$row_id' ";
     $test = $db->exec($sql);
+    
 }
 
 redirect('ophn.php');

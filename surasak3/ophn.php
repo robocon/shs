@@ -270,7 +270,9 @@ session_unregister("Ptright1");
     } // End if not empty HN
     ?>
 </table>
-
+<?php 
+/*
+?>
 <style>
 .simpleTb{border-collapse: collapse;}.simpleTb th{background-color: #6495ED;}.simpleTb table,.simpleTb th,.simpleTb td {border: 1px solid black;padding: 4px;}
 </style>
@@ -317,6 +319,7 @@ if (mysql_num_rows($q) > 0) {
         ?>
         
     </table>
+    <div style="color: red;">* ใช้ลบกรณีที่ Admit ผิด</div>
     <script>
     function cancelAdmit(){
         return confirm("ยืนยันยกเลิกการ Admit ?");
@@ -326,6 +329,8 @@ if (mysql_num_rows($q) > 0) {
 }
 
 include("unconnect.inc");
+
+*/
 ?>
 
 <script type="text/javascript">
