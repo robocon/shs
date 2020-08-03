@@ -699,7 +699,7 @@ FROM (
 		AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
-		
+		AND `profilecode` != 'WET' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -1007,10 +1007,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 										}
 									}
 
-									if( $objResult["labcode"]=='PARASI'){
+									if( $objResult["labcode"]=='PARASI' ){
 										
 										$clean_result = strtolower(trim($objResult["result"]));
-										$match_parasite = preg_match('/(not found)/', $clean_result, $matchs_parasite);
+										$match_parasite = preg_match('/(not\s+found)/', $clean_result, $matchs_parasite);
 
 										if( $match_parasite > 0 ){
 											$app="ปกติ";	
