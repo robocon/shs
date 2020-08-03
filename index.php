@@ -13,5 +13,9 @@
 // // Run base from bootstrap
 // bootstrap();
 
-header('Location: nindex.htm');
+if( preg_match('(windows)', $_SERVER['HTTP_USER_AGENT']) > 0 ){
+    header('Location: nindex.htm');
+}else{
+    header('Location: surasak3/login_mobile.php');
+}
 ?>
