@@ -294,6 +294,14 @@ session_unregister("Ptright1");
         
     }
 
+    /*
+    ระบบเช็กสิทธออนไลน์ผ่าน ucAuthen4.x ถ้าใน IE มีปัญหาสามารถแก้ไขได้โดยเข้าไปที่
+    Internet Options > Security > Internet > Custom level... 
+    ที่เมนู Miscellaneous 
+    1. Access data sources across domains เปิด Enable
+    2. Allow META REFRESH เปิด Enable
+    3. Allow scripting of Microsoft web browser control เปิด Enable
+    */
     function checkPtRight(link, ev, hn){
         var newSm = new SmHttp();
         newSm.ajax(
