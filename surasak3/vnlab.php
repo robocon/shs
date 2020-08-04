@@ -58,18 +58,18 @@ If (!empty($vn)){
     
 	
 	//กรณีลงทะเบียนแล้ว
-	}else { 
+	}else{ 
         $cHn=$row->hn;
         $cPtname=$row->ptname;
         $cPtright=$row->ptright;
 		
-        $ipsql="select * from ipcard where hn='".$cHn."' and dcdate='0000-00-00 00:00:00' AND my_ward IS NOT NULL";
+$ipsql="select * from ipcard where hn='".$cHn."' and dcdate='0000-00-00 00:00:00' AND bedcode <> '' ";
 $ipquery=mysql_query($ipsql);
 $iprows=mysql_fetch_array($ipquery);
 $my_ward=$iprows["my_ward"];
-if(mysql_num_rows($ipquery) > 0){
-	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
-}
+	if(mysql_num_rows($ipquery) > 0){
+		echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
+	}else{
 
         //print "VN  :$vn<br>";
         //print "HN :$cHn<br>";
@@ -101,6 +101,7 @@ if(mysql_num_rows($ipquery) > 0){
 //end  runno  for chktranx
            }
    include("unconnect.inc");
-   }
+	}  
+  }
 ?>
 

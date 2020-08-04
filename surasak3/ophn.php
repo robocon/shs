@@ -52,7 +52,6 @@ session_unregister("Ptright1");
         global $hn;
         $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
         $result = mysql_query($query)or die("Query failed");
-
         while (list ($hn,$yot,$name,$surname,$ptright,$ptright1,$idcard) = mysql_fetch_row ($result)) {
 
             if(substr($ptright,0,3)=='R07' && !empty($idcard)){
@@ -108,20 +107,21 @@ session_unregister("Ptright1");
             "  <td BGCOLOR=".$color.">$name</td>\n".
             "  <td BGCOLOR=".$color.">$surname</td>\n".
             "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opdcard_opregis.php?cHn=$hn\">$ptright</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
             // "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"opdprint2.php?cHn=$hn\">ใบต่อ</td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"opdprint2.php?cHn=$hn\">ใบต่อ</a></td>\n".
             /*"  <td BGCOLOR=".$color."><a target= _BLANK href=\"edprint.php?cHn=$hn\">ใบยานอก</td>\n".
             "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผู้ป่วยนัด</td>\n".
             "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint1.php?cHn=$hn\">ใบตรวจโรค</td>\n".*/
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointhdvn.php?cHn=$hn\">ไต</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointdenvn.php?cHn=$hn\">ฟัน</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointhdvn.php?cHn=$hn\">ไต</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointdenvn.php?cHn=$hn\">ฟัน</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</a></td>\n".
             "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" onclick=\"checkPtRight(this, event, '$idcard')\">ทดสอบตรวจสอบสิทธิ</button></td>".
             " </tr>\n");
+
             $_SESSION['hn'] = $hn;
             $_SESSION['name'] = $name;
             $_SESSION['surname'] = $surname;
@@ -154,7 +154,7 @@ session_unregister("Ptright1");
         }
         // END
         ?>
-    </table>
+</table>
 
     <FONT SIZE="2" COLOR="#990000">***คำอธิบาย***</FONT> <BR>
     <FONT SIZE="" COLOR="66CDAA">สีเขียว คือ ยังไม่ได้ทำการตรวจสิทธิการรักษา</FONT><BR>
@@ -246,21 +246,22 @@ session_unregister("Ptright1");
             while($dbarr= mysql_fetch_array($result_chkname)){
 
                 print (" <tr>\n".
-                "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php? cHn=$dbarr[hn] & cName=$dbarr[name] &cSurname=$dbarr[surname]\">$dbarr[hn]</a></td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[yot]</td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[name]</td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[surname]</td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[ptright]</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"hndaycheck.php?hn=$dbarr[hn]\">มา รพ.</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"appdaycheck.php?hn=$dbarr[hn]\">ตรวจนัด</td>\n".
-                // "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"opdprint2.php?cHn=$dbarr[hn]\">ใบต่อ</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"edprint.php?cHn=$dbarr[hn]\">ใบยานอก</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint.php?cHn=$dbarr[hn]\">ผู้ป่วยนัด</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint1.php?cHn=$dbarr[hn]\">ใบตรวจโรค</td>\n".
-
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\"  href=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['yot']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['name']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['surname']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['ptright']."</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=".$dbarr['hn']."\">มา รพ.</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=".$dbarr['hn']."\">ตรวจนัด</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"opdprint2.php?cHn=".$dbarr['hn']."\">ใบต่อ</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"edprint.php?cHn=".$dbarr['hn']."\">ใบยานอก</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"rg_appoint.php?cHn=".$dbarr['hn']."\">ผู้ป่วยนัด</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"rg_appoint1.php?cHn=".$dbarr['hn']."\">ใบตรวจโรค</a></td>\n".
                 " </tr>\n");
             }
+            ?>
+            </table>
+            <?php 
         }
         session_unregister("hn");
         session_unregister("name");
@@ -268,69 +269,6 @@ session_unregister("Ptright1");
 
         include("unconnect.inc");
     } // End if not empty HN
-    ?>
-</table>
-<?php 
-/*
-?>
-<style>
-.simpleTb{border-collapse: collapse;}.simpleTb th{background-color: #6495ED;}.simpleTb table,.simpleTb th,.simpleTb td {border: 1px solid black;padding: 4px;}
-</style>
-<?php 
-include("connect.inc");
-$last7DaysTime = strtotime("-7 Days");
-// $last7DaysTime = strtotime("-1 year");
-$last7Day = (date("Y",$last7DaysTime)+543).date("-m-d",$last7DaysTime).' 00:00:00';
-$sql = "SELECT `date`,`hn`,`an`,`ptname`,`bedcode`,`row_id` 
-FROM `ipcard` 
-WHERE `date` >= '$last7Day' 
-AND `dcdate` = '0000-00-00 00:00:00' 
-AND `bedcode` IS NULL ";
-$q = mysql_query($sql);
-if (mysql_num_rows($q) > 0) {
-    ?>
-    <p><b>ข้อมูลผู้ป่วย Admit ที่ค้างในระบบ</b></p>
-    <table class="simpleTb">
-        <tr>
-            <th>#</th>
-            <th>วันที่</th>
-            <th>HN</th>
-            <th>AN</th>
-            <th>ชื่อ-สกุล</th>
-            <th>เตียง</th>
-            <th>จัดการ</th>
-        </tr>
-        <?php 
-        $i = 1;
-        while ($it = mysql_fetch_assoc($q)) {
-            ?>
-            <tr>
-                <td><?=$i;?></td>
-                <td><?=$it['date'];?></td>
-                <td><?=$it['hn'];?></td>
-                <td><?=$it['an'];?></td>
-                <td><?=$it['ptname'];?></td>
-                <td><?=$it['bedcode'];?></td>
-                <td><a href="ophn_cancel.php?id=<?=$it['row_id'];?>" onclick="return cancelAdmit()">ยกเลิก</a></td>
-            </tr>
-            <?php
-            $i++;
-        }
-        ?>
-        
-    </table>
-    <div style="color: red;">* ใช้ลบกรณีที่ Admit ผิด</div>
-    <script>
-    function cancelAdmit(){
-        return confirm("ยืนยันยกเลิกการ Admit ?");
-    }
-    </script>
-    <?php
-}
-
-include("unconnect.inc");
-
-*/
 ?>
 
 <script type="text/javascript">
@@ -363,28 +301,33 @@ include("unconnect.inc");
             { "hn": hn },
             function(res){
                 var txt = JSON.parse(res);
+                if (txt.ws_status === "NHSO-00003") {
+                    alertTxt = txt.ws_status_desc+"\nกรุณาเปิดใช้งานโปรแกรม nhsoauthen4.x ก่อนการใช้งานตรวจสอบสิทธิออนไลน์";
 
+                }else{
+                
+                    var subInScl, hMain, hMainOp, hSub, mainInScl, alertTxt = '';
+                    if( txt.maininscl_name !== undefined ){
+                        alertTxt += "สิทธิหลักในการรับบริการ : "+txt.maininscl+" "+txt.maininscl_name+"\n";
+                    }
 
-                var subInScl, hMain, hMainOp, hSub, mainInScl, alertTxt = '';
-                if( txt.maininscl_name !== undefined ){
-                    alertTxt += "สิทธิหลักในการรับบริการ : "+txt.maininscl+" "+txt.maininscl_name+"\n";
+                    if( txt.subinscl_name !== undefined){
+                        alertTxt += "ประเภทสิทธิย่อย : "+txt.subinscl+" "+txt.subinscl_name+"\n";
+                    }
+
+                    if( txt.hmain_op_name !== undefined){
+                        alertTxt += "หน่วยบริการประจำ : "+txt.hmain_op+" "+txt.hmain_op_name+"\n";
+                    } 
+                
+                    if( txt.hmain_name !== undefined){
+                        alertTxt += "หน่วยบริการที่รับส่ง : "+txt.hmain+" "+txt.hmain_name+"\n";
+                    } 
+
+                    if( txt.hsub_name !== undefined){
+                        alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.hsub+" "+txt.hsub_name+"\n";
+                    } 
+
                 }
-
-                if( txt.subinscl_name !== undefined){
-                    alertTxt += "ประเภทสิทธิย่อย : "+txt.subinscl+" "+txt.subinscl_name+"\n";
-                }
-
-                if( txt.hmain_op_name !== undefined){
-                    alertTxt += "หน่วยบริการประจำ : "+txt.hmain_op+" "+txt.hmain_op_name+"\n";
-                } 
-            
-                if( txt.hmain_name !== undefined){
-                    alertTxt += "หน่วยบริการที่รับส่ง : "+txt.hmain+" "+txt.hmain_name+"\n";
-                } 
-
-                if( txt.hsub_name !== undefined){
-                    alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.hsub+" "+txt.hsub_name+"\n";
-                } 
                 
                 alert(alertTxt);
             },
