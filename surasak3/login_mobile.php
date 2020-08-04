@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 
 if( isset($_SESSION['sIdname']) ){
-	redirect('mb_page.php');
+    redirect('mb_index.php');
 }
 
 // redirect to where are you from
@@ -41,7 +41,7 @@ if( $action === 'login' ){
 		$_SESSION['sRowid'] = $item['row_id'];
 		$_SESSION['sLevel'] = $item['level'];
 	
-		$refer = isset($_SESSION['refer']) ? $_SESSION['refer'] : 'mb_page.php';
+		$refer = isset($_SESSION['refer']) ? $_SESSION['refer'] : 'mb_index.php';
 	
 		header('Location: '.$refer);
 		exit;
