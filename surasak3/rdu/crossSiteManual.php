@@ -57,14 +57,14 @@ function get_quarter(){
 // $year = get_year_checkup();
 // $quarter = get_quarter();
 $year = '2563';
-$quarter = '2';
+$quarter = '4';
 
 $time = strtotime("-1 month");
 // $setMonth = (date('Y')+543).date('-m', $time);
 // $setMonthEn = date('Y-m', $time);
 
-$setMonth = '2563-03';
-$setMonthEn = '2020-03';
+$setMonth = '2563-07';
+$setMonthEn = '2020-07';
 
 // $date_start = $setMonth.'-01';
 // $date_end = $setMonth.date('-t', $time);
