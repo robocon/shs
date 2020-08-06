@@ -34,3 +34,19 @@ require_once 'bootstrap.php';
         <button class="w3-bar-item w3-button w3-xxxlarge w3-hover-theme" onclick="openSidebar()">&#9776;</button>
         <h1 class="w3-bar-item">Intranet รพ.ค่ายฯ</h1>
     </div>
+    <?php 
+    if (isset($_SESSION['x-msg'])) {
+        ?>
+        <div class="w3-container">
+            <div class="w3-panel w3-yellow w3-card w3-display-container">
+                
+                <span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-topright">&times;</span>
+                <p><?=$_SESSION['x-msg'];?></p>
+            </div>
+        </div>
+        
+        <?php
+        $_SESSION['x-msg'] = null;
+    }
+
+    ?>
