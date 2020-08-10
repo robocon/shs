@@ -80,7 +80,7 @@ if($_POST['lockptright5']=="lock"){
 	$ptrcode=$_POST['rdo1'];
 	$typearea = $_POST['typearea'];
 
-	$vstatus = $_POST['vstatus'];
+	$vstatus = (int)$_POST['vstatus'];
 	$father_id = $_POST['father_id'];
 	$mother_id = $_POST['mother_id'];
 	$couple_id = $_POST['couple_id'];
@@ -225,21 +225,6 @@ $today = date("Y-m-d");
 //print "$today<br>";
 //print "$dVndate<br>";
 //print "$nVn.'A'<br>";
-?>
- <script>
- 	function chType(){
-		var text5='<?=$_POST['case']?>';
-		var text6 =text5.substring(0,4);
-		if(text6=="EX12"){
-			return confirm('ยืนยันการ admit ผู้ป่วย\nan:<?=$vAN?>\nhn:<?=$cHn?> \nชื่อ:<? echo $yot?> <? echo $name?> <? echo $surname?>\nสิทธิ:<?=$ptright?>');
-		}
-		else{
-			alert('กรุณาเลือกประเภทการลงทะเบียนผู้ป่วยให้ถูกต้อง\nในกรณีรับป่วยให้เลือกประเภท การนอนโรงพยาบาล');
-			return false;
-		}
-	}
- </script>
-<?php 
 // 
 $test_dayHn = date('d-m-').(date('Y')+543).$cHn;
 $sql = "SELECT `row_id` FROM `opday` WHERE `thdatehn` = '$test_dayHn'";
@@ -1049,17 +1034,37 @@ $structure = '../image_patient';
 
 <?php 
 // ยกเลิกกรณีรับผิด
-$qIp = mysql_query("SELECT `row_id` FROM `ipcard` WHERE `date` LIKE '$thidate3%' AND `hn` = '$cHn' ");
-if ( mysql_num_rows($qIp) > 0 ) {
+$qIp = mysql_query("select * from ipcard where hn='$cHn' and dcdate='0000-00-00 00:00:00' AND bedcode IS NULL ");
+if ( mysql_num_rows($qIp) > 0 ) { 
+	$ip = mysql_fetch_assoc($qIp);
+	$ipRowId = $ip['row_id'];
 	?>
-	<a href="remove_admit.php?cHn=<?=$cHn;?>" target="_blank">ยกเลิก Admit(กรณียังไม่รับขึ้นเตียง)</a>&nbsp;&nbsp;&nbsp;
+	<a href="remove_admit.php?cHn=<?=$cHn;?>&id=<?=$ipRowId;?>&action=update" target="_blank" onclick="return cancelAdmit()" >ยกเลิก Admit(กรณียังไม่รับขึ้นเตียง)</a>&nbsp;&nbsp;&nbsp;
+	<script>
+	function cancelAdmit(){
+		alert("การยกเลิกAdmit เป็นการยกเลิกในกรณีที่ทะเบียนลงทะเบียนผู้ป่วยใน แต่หอผู้ป่วยยังไม่มีการรับขึ้นเตียง");
+		return confirm("ยืนยันการยกเลิกหรือไม่?\nOK เพื่อยืนยัน\nCancel เพื่อยกเลิก");
+	}
+	</script>
 	<?php
 }
 ?>
 
 <a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
-
+<script>
+function chType(){
+	var text5='<?=$_POST['case']?>';
+	var text6 =text5.substring(0,4);
+	if(text6=="EX12"){
+		return confirm('ยืนยันการ admit ผู้ป่วย\nan:<?=$vAN?>\nhn:<?=$cHn?> \nชื่อ:<? echo $yot?> <? echo $name?> <? echo $surname?>\nสิทธิ:<?=$ptright?>');
+	}
+	else{
+		alert('กรุณาเลือกประเภทการลงทะเบียนผู้ป่วยให้ถูกต้อง\nในกรณีรับป่วยให้เลือกประเภท การนอนโรงพยาบาล');
+		return false;
+	}
+}
+</script>
 <?php 
 include 'includes/config.php';
 

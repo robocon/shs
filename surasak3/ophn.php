@@ -170,53 +170,22 @@ session_unregister("Ptright1");
     $hn = isset($_POST['hn']) ? $_POST['hn'] : null ;
     if($hn !== null){
 
-        $sql_pre = "SELECT a.`bedcode`,a.`bed`,b.`my_ward` FROM `bed` AS a
-        LEFT JOIN `ipcard` AS b ON b.`an` = a.`an`
-        WHERE a.`hn` = '%s' ;";
-        $sql = sprintf($sql_pre, $hn);
-        $query = mysql_query($sql);
-        $item = mysql_fetch_assoc($query);
-
-        $ward_code = substr($item['bedcode'], 0, 2);
-        $ward_txt = '';
-
-        if( $ward_code == '44' ){
-            // หอผู้ป่วย ICU
-            $ward_txt = 'หอผู้ป่วย ICU';
-
-        } elseif ( $ward_code == '42' ) {
-            // หอผู้ป่วยรวม
-            $ward_txt = 'หอผู้ป่วยรวม';
-
-        } elseif ( $ward_code == '43' ) {
-            // หอผู้ป่วยสูตินรี
-            $ward_txt = 'หอผู้ป่วยสูตินรี';
-
-        } elseif ( $ward_code == '45' ) {
-            // หอผู้ป่วยพิเศษ
-            $ward_txt = 'หอผู้ป่วยพิเศษ';
-                //
-                // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-            $wardR3Test = preg_match('/R3\d+|B\d+/', $item['bed']);
-            $wardBxTest = preg_match('/B[0-9]+/', $item['bed']);
-            $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
-            
-            $ward_txt = $ward_txt.$exName;
+        $query = mysql_query("select * from ipcard where hn='$hn' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ");
+        if (mysql_num_rows($query) > 0) {
+            $item = mysql_fetch_assoc($query);
+            $alert_msg = "ผู้ป่วยรายนี้ยังAdmit อยู่ที่".$item['my_ward'];
+            echo "<script>alert('".$alert_msg."');</script>";
         }
-
-        if( $item != false && $ward_txt != '' ) {
-            $alert_msg = 'ผู้ป่วยยังอยู่ที่ '.$ward_txt;
-        }
+        
     }
 
-    if($alert_msg !== null){
+    if (!empty($alert_msg)) {
         ?>
-        <script type="text/javascript">
-        alert('<?php echo $alert_msg;?>');
-        </script>
+        <h2 style="color: red;"><u>!!! <?=$alert_msg;?> !!!</u></h2>
         <?php
     }
-
+    ?>
+    <?php
     /////////////
     $sql_chkname="SELECT  * FROM opcard
     where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn !='". $_SESSION['hn']."'  limit 5";
