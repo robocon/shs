@@ -284,25 +284,49 @@ session_unregister("Ptright1");
                 }else{
                 
                     var subInScl, hMain, hMainOp, hSub, mainInScl, alertTxt = '';
-                    if( txt.maininscl_name !== undefined ){
-                        alertTxt += "สิทธิหลักในการรับบริการ : "+txt.maininscl+" "+txt.maininscl_name+"\n";
+
+                    if( txt.maininscl !== undefined ){
+                        if( txt.maininscl_name !== undefined ){
+                            alertTxt += "สิทธิหลักในการรับบริการ : "+txt.maininscl+" "+txt.maininscl_name+"\n";
+                        }
+
+                        if( txt.subinscl_name !== undefined){
+                            alertTxt += "ประเภทสิทธิย่อย : "+txt.subinscl+" "+txt.subinscl_name+"\n";
+                        }
+
+                        if( txt.hmain_op_name !== undefined){
+                            alertTxt += "หน่วยบริการประจำ : "+txt.hmain_op+" "+txt.hmain_op_name+"\n";
+                        } 
+                    
+                        if( txt.hmain_name !== undefined){
+                            alertTxt += "หน่วยบริการที่รับส่ง : "+txt.hmain+" "+txt.hmain_name+"\n";
+                        } 
+
+                        if( txt.hsub_name !== undefined){
+                            alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.hsub+" "+txt.hsub_name+"\n";
+                        } 
+                    }else if( txt.new_maininscl !== undefined ){
+                        if( txt.new_maininscl_name !== undefined ){
+                            alertTxt += "สิทธิหลักในการรับบริการ : "+txt.new_maininscl+" "+txt.new_maininscl_name+"\n";
+                        }
+
+                        if( txt.new_subinscl_name !== undefined){
+                            alertTxt += "ประเภทสิทธิย่อย : "+txt.new_subinscl+" "+txt.new_subinscl_name+"\n";
+                        }
+
+                        if( txt.new_hmain_op_name !== undefined){
+                            alertTxt += "หน่วยบริการประจำ : "+txt.new_hmain_op+" "+txt.new_hmain_op_name+"\n";
+                        } 
+                    
+                        if( txt.new_hmain_name !== undefined){
+                            alertTxt += "หน่วยบริการที่รับส่ง : "+txt.new_hmain+" "+txt.new_hmain_name+"\n";
+                        } 
+
+                        if( txt.new_hsub_name !== undefined){
+                            alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.new_hsub+" "+txt.new_hsub_name+"\n";
+                        } 
                     }
-
-                    if( txt.subinscl_name !== undefined){
-                        alertTxt += "ประเภทสิทธิย่อย : "+txt.subinscl+" "+txt.subinscl_name+"\n";
-                    }
-
-                    if( txt.hmain_op_name !== undefined){
-                        alertTxt += "หน่วยบริการประจำ : "+txt.hmain_op+" "+txt.hmain_op_name+"\n";
-                    } 
-                
-                    if( txt.hmain_name !== undefined){
-                        alertTxt += "หน่วยบริการที่รับส่ง : "+txt.hmain+" "+txt.hmain_name+"\n";
-                    } 
-
-                    if( txt.hsub_name !== undefined){
-                        alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.hsub+" "+txt.hsub_name+"\n";
-                    } 
+                    
 
                 }
                 
