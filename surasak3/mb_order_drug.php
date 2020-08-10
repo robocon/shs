@@ -36,7 +36,7 @@ if ( empty($page) ) {
 
         ?>
         <section class="w3-container">
-            <p><b>AN : </b><?=$item['an'];?> <b>ชื่อ-สกุล : </b><?=$item['ptname'];?></p>
+            <p><b>AN : </b><?=$item['an'];?> <b>ชื่อ-สกุล : </b><?=$item['ptname'];?> <b><?=$item['my_ward'];?></b></p>
         </section>
         <section class="w3-container">
             <div>
@@ -45,7 +45,11 @@ if ( empty($page) ) {
             </div>
             <div id="drugContent"></div>
             <div>
-                <button>เลือก</button>
+                <label><b>วิธีใช้</b></label>
+                <input class="w3-input w3-border" type="text" id="an" name="an" placeholder="">
+            </div>
+            <div>
+                <button>บันทึก</button>
             </div>
         </section>
         
