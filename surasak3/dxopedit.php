@@ -939,7 +939,7 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 <?
 $date=explode(" ",$cthidate);
 $date1=$date[0];
-$sqlxray="select * from xray_stat where date like '$date1%' and hn='$cHn' ";
+$sqlxray="select * from xray_stat where date like '$date1%' and hn='$cHn' AND `cancle` != '1' ";
 $objxray = mysql_query($sqlxray) or die ("Error Query [".$sqlxray."]");
 $row_xray=mysql_num_rows($objxray);
 
@@ -967,19 +967,23 @@ if($row_xray){
 <TR>
   <TD colspan="6" align="center" >การตรวจ Xray</TD>
   </TR>
-  <?
-	  	$query2 = "SELECT * FROM depart WHERE date like '$date1%' and hn='$cHn' and depart='xray' ";
-		//echo $query2;
-    	$result2 = mysql_query($query2);
+	<?
+	$query2 = "SELECT * FROM depart WHERE date like '$date1%' and hn='$cHn' and depart='xray' AND ( `status` != 'n' AND `price` > 0 )";
+	//echo $query2;
+	$result2 = mysql_query($query2);
+	if (mysql_num_rows($result2)>0) {
 		$arr2=mysql_fetch_array($result2);
-   ?>
-<TR>
-  <TD colspan="2" align="center" >&nbsp;</TD>
-  <TD colspan="2" ><a target="_blank" href="printcscd1.php?sDate=<?=$cthidate?>&nRow_id=<?=$arr2['row_id']?>"><?=$arr2['diag'];?></TD>
-  <TD align="left" >&nbsp;</TD>
-  <TD align="left" >&nbsp;</TD>
-  </TR>
-<?
+		?>
+		<TR>
+		  <TD colspan="2" align="center" >&nbsp;</TD>
+		  <TD colspan="2" ><a target="_blank" href="printcscd1.php?sDate=<?=$cthidate?>&nRow_id=<?=$arr2['row_id']?>"><?=$arr2['diag'];?></TD>
+		  <TD align="left" >&nbsp;</TD>
+		  <TD align="left" >&nbsp;</TD>
+		  </TR>
+		<?
+	}
+	
+
 }  //close if
 ?>
 <tr>
