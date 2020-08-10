@@ -906,7 +906,6 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 					 */
 			?>
 			<select name="clinic" id="">
-					 <option value="0"><-- เลือกคลีนิก --></option>
 			<?php 
 			$q = mysql_query("SELECT * FROM `clinic` ") or die( mysql_error() );
 			while ($clin = mysql_fetch_assoc($q)) { 
@@ -1136,7 +1135,7 @@ if($rs10>0){
 </TR>-->
 <TR>
 	<TD colspan="6" align="center" ><?php //print "<input type='text' name='icd9cm' size='30' value='$cIcd9cm'>";?><hr />
-	  <strong>:ICD9CM :</strong>
+	  <strong>ข้อมูลการทำหัตถการ :ICD9CM :</strong>
 
 <?
 $sql2 = "select *  from patdata where date like '$date1%' and  hn='$cHn' and price >0 and amount >0 and part='SURG'";
@@ -1147,7 +1146,7 @@ if($nump >0){
 	$i=0;
 	while($rows=mysql_fetch_array($rowp)){
 		$i++;
-		echo "<div>[".$i."] รหัส : ".$rows["code"]." รายละเอียด : ".$rows["detail"]."</div>";
+		echo "<div>รายการที่ [".$i."] รหัสหัตถการ : ".$rows["code"]." รายละเอียด : ".$rows["detail"]."</div>";
 	}
 }
 ?>      
