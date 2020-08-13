@@ -31,6 +31,7 @@
     AND a.depart='DENTA' ";
     $result = mysql_query($query) or die("Query failed");
     $lists = array();
+    $ptLists = array();
     $totalpri = 0;
     while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$paid,$row_id,$accno,$ptright,$tvn,$goup) = mysql_fetch_row ($result)) { 
 
@@ -44,6 +45,14 @@
         }else{
             $lists[$goup]['count']++;
             $lists[$goup]['price'] += (int)$price;
+        }
+
+        if(empty($ptLists[$ptright])){
+            $ptLists[$ptright]['count'] = 1;
+            $ptLists[$ptright]['price'] = (int)$price;
+        }else{
+            $ptLists[$ptright]['count']++;
+            $ptLists[$ptright]['price'] += (int)$price;
         }
         
 
@@ -69,7 +78,7 @@
 <?php 
 print "รวมค่ารักษาพยาบาลทั้งสิ้น  $totalpri บาท";
 ?>
-<p><b>สรุปตามประเภทของผู้มาใช้บริการ</b></p>
+<p style="margin-bottom: 0;"><b>สรุปตามประเภทของผู้มาใช้บริการ</b></p>
 <table>
     <tr>
         <td bgcolor="6495ED">ประเภท</td>
@@ -81,6 +90,26 @@ foreach ($lists as $name => $item) {
     ?>
     <tr>
         <td bgcolor="66CDAA"><?=$name;?></td>
+        <td align="right" bgcolor="66CDAA"><?=$item['count'];?></td>
+        <td align="right" bgcolor="66CDAA"><?=number_format($item['price'],2);?></td>
+    </tr>
+    <?php
+}
+?>
+</table>
+
+<p style="margin-bottom: 0;"><b>สรุปตามสิทธิการรักษาของผู้มาใช้บริการ</b></p>
+<table>
+    <tr>
+        <td bgcolor="6495ED">สิทธิการรักษา</td>
+        <td bgcolor="6495ED">ยอดรวม(คน)</td>
+        <td bgcolor="6495ED">รวมค่าใช้จ่าย(บาท)</td>
+    </tr>
+<?php
+foreach ($ptLists as $ptName => $item) {
+    ?>
+    <tr>
+        <td bgcolor="66CDAA"><?=$ptName;?></td>
         <td align="right" bgcolor="66CDAA"><?=$item['count'];?></td>
         <td align="right" bgcolor="66CDAA"><?=number_format($item['price'],2);?></td>
     </tr>
