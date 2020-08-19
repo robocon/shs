@@ -4,6 +4,12 @@ require_once 'mb_header.php';
 $page = $_REQUEST['page'];
 if ( empty($page) ) {
     ?>
+    <div class="w3-container w3-text-theme">
+        <h2>ระบบสั่งยาผู้ป่วยใน</h2>
+    </div>
+    <div class="w3-panel w3-pale-red w3-leftbar w3-border-red">
+    <p>กำลังหาแนวทาง ใจเย็นๆ ;)</p>
+    </div>
     <form action="mb_order_drug.php" method="post">
         <section class="w3-container">
             <div>
