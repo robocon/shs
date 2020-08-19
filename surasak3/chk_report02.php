@@ -209,7 +209,7 @@ while($result = mysql_fetch_assoc($row2)){
 											<strong>อายุ : </strong> 
 											<strong><?=$age;?> ปี</strong>
 										<?php 
-										}else{
+										}else if(!empty($age2)){
 										?>
 											<strong>อายุ : </strong> 
 											<strong><?=$age2;?> ปี</strong>
