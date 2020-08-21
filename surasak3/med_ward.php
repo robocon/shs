@@ -245,8 +245,14 @@ tr{
     cursor: pointer;
 }
 </style>
+<?php 
+$PharLink = '';
+if ($_SESSION['sLevel'] == "admin") {
+    $PharLink = ' | <a href="med_phar.php">หน้าเภสัชฯ</a>';
+}
+?>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a> | <a href="med_phar.php">หน้าเภสัชฯ</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
