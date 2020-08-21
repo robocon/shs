@@ -1,5 +1,11 @@
 <?php 
 require_once 'bootstrap.php';
+
+$auth = authen();
+if ($auth === false) {
+    redirect('login_mobile.php',"ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

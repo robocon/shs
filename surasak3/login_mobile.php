@@ -16,7 +16,7 @@ if( isset($_SERVER['HTTP_REFERER']) && $match === 0 ){
 $action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
 if( $action === 'login' ){
 	
-	DB::load();
+	$db = Mysql::load();
 	
 	$sql = "SELECT * FROM `inputm` 
 	WHERE `idname` = :test_idname 
@@ -28,9 +28,19 @@ if( $action === 'login' ){
 		':test_pword' => trim($_POST['password']),
     );
 
-	$item = DB::select($sql, $data, true);
+    $db->select($sql, $data);
+    $item = $db->get_item();
+
 	if( $item ){
-		
+        
+        // กลุ่มที่ให้เข้าช่วงทดสอบได้
+        $authenList = array('ADM','ADMDR','ADMDR1','ADMICU','ADMOBG','ADMSUR','ADMVIP','ADMWF');
+        if (in_array($item['menucode'],$authenList)===false) {
+            $msg = 'ใจเย็นๆ ช่วงนี้ให้ทาง Ward เข้าใช้งานได้ก่อน';
+            redirect('login_mobile.php',$msg);
+            exit;
+        }
+
 		// Set session to one day
 		ini_set('session.gc_maxlifetime', 60*60*24);
 		
