@@ -84,6 +84,8 @@ if($_GET["action"] == "carlendar"){
 //$sql = "Select mdcode From inputm where name = '".$_GET['id']."' limit 1";
 //list($mdcode) = Mysql_fetch_row(Mysql_Query($sql));
 
+$dr_position = '';
+$appoint_doctor = '';
 $sql = "Select name,position From doctor where name like '".$dt_doctor."%' limit 1 ";
 list($appoint_doctor,$dr_position) = Mysql_fetch_row(Mysql_Query($sql));
 

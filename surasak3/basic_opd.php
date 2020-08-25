@@ -919,19 +919,17 @@ mmHg </td>
 			<td align="left" colspan="5">
 				<?php 
 				$curYear = date('Y-m-d');
-
 				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, 
 				TIMESTAMPDIFF(
 					YEAR,
-					CONCAT( (SUBSTRING(`htdetail`,1,4)-543 ), SUBSTRING(`htdetail`,5,7)),
+					CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),
 					'$curYear'
 				) AS `diag_date_year`
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
 				$ht_year = '';
-				$ht_row = mysql_num_rows($q);
-				if( $ht_row > 0 ){
+				if( mysql_num_rows($q) > 0 ){
 					$ht = mysql_fetch_assoc($q);
 					$ht_year = $ht['diag_date_year'];
 				}
