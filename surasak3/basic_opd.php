@@ -964,7 +964,7 @@ mmHg </td>
          <tr>
            <td align="right" class="data_show">ลักษณะผู้ป่วย : </td>
            <td align="left" colspan="5"><span class="data_show">
-             <input name="type" type="radio" value="เดินมา" />
+             <input name="type" type="radio" value="เดินมา" checked="checked"/>
              เดินมา
              <input name="type" type="radio" value="นั่งรถเข็น" />
              นั่งรถเข็น
@@ -981,7 +981,7 @@ mmHg </td>
 				<input type="radio" name="grade" id="grade2" value="2"><label for="grade2">2</label>&nbsp;
 				<input type="radio" name="grade" id="grade3" value="3"><label for="grade3">3</label>&nbsp;
 				<input type="radio" name="grade" id="grade4" value="4"><label for="grade4">4</label>&nbsp;
-				<input type="radio" name="grade" id="grade5" value="5"><label for="grade5">5</label>&nbsp;
+				<input type="radio" name="grade" id="grade5" value="5" checked="checked"><label for="grade5">5</label>&nbsp;
 			</td>
 		</tr>
 
@@ -989,7 +989,7 @@ mmHg </td>
 			<td align="right" class="data_show">สภาวะจิตใจ</td>
 			<td align="left" colspan="5">
 				<input type="radio" name="mind" id="mind1" value="มีความวิตกกังวล"><label for="mind1">มีความวิตกกังวล</label>&nbsp;
-				<input type="radio" name="mind" id="mind2" value="ไม่มีความวิตกกังวล"><label for="mind2">ไม่มีความวิตกกังวล</label>&nbsp;
+				<input type="radio" name="mind" id="mind2" value="ไม่มีความวิตกกังวล" checked="checked"><label for="mind2">ไม่มีความวิตกกังวล</label>&nbsp;
 			</td>
 		</tr>
 
