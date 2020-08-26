@@ -653,7 +653,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		  <tr bgcolor="<?php echo $bgcolor;?>">
             <td colspan="7" align="left"><!--เหตุผล :--> 
                 <? if($arr["part"]=="DDY"){?>
-                <!--<SELECT id="chose_reason2<?php echo $j;?>" NAME="chose_reason<?php echo $j;?>" >
+                <!--<SELECT id="chose_reason2<?php //echo $j;?>" NAME="chose_reason<?php //echo $j;?>" >
           		<Option value="กรุณาระบุเหตุผล" >กรุณาระบุเหตุผล</Option>
                 <Option value="A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา" >เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา</Option>
                 <Option value="B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย">ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย</Option>
@@ -1718,6 +1718,26 @@ exit();
 }
 
 
+//////////////////////////// checkviatn //////////////////////////////////
+
+if(isset($_GET["action"]) && $_GET["action"] == "1viatcheck"){
+	$count = count($_SESSION["list_drugcode"]);
+	for($i=0;$i<$count;$i++){
+		if($_SESSION["list_drugcode"][$i]=="1VIAT500"&&$_SESSION["list_drug_reason"][$i]!="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
+			$sqlquery = "select * from drug_gruco where hn='".$_SESSION['hn_now']."' and dateup like '".date("d-m-Y")."%'";
+			$resultq = Mysql_Query($sqlquery) or die(Mysql_ERROR());
+			$arrq = mysql_num_rows($resultq);
+			if($arrq=='0'){
+				echo "0";
+			}else{
+				echo "1";
+			}
+		}
+	}
+exit();
+}
+
+
 
 //******************************************** ตรวจสอบจำนวนยา *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugamount"){
@@ -1930,7 +1950,7 @@ function check_drug(drug_cc){
 window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		return true;
 		}
-	}else if(drug_cc=='5VIAT' || drug_cc=='5VIAT    '){  //ยาไวอาทิล
+	}else if(drug_cc=='5VIAT' || drug_cc=='5VIAT    ' || drug_cc=='1VIAT500' || drug_cc=='1VIAT500  '){  //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
 		if(sit=="R02" || sit=="R03"){
@@ -2080,7 +2100,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 				return true;
 			}
 		}//สิทธิ์		
-	}else if(drug_cc=='5VIAT-N'){ //ยาไวอาทิล
+	}else if(drug_cc=='5VIAT-N' || drug_cc=='1VIAT500' || drug_cc=='1VIAT500  '){ //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
 		sit = sit.substring(0,3);
 		if(sit=="R02" || sit=="R03"){
@@ -2614,6 +2634,9 @@ function checkForm1(){
 	txt11 = ajaxcheck("checkdpycode",document.form1.drug_code.value);
 	txt11 = txt11.substr(4);		
 	//alert(txt11);	
+	
+	txt12 = ajaxcheck("checkptright",document.form1.drug_code.value);
+	txt12 = txt12.substr(4);	
 
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
@@ -2744,11 +2767,20 @@ function checkForm1(){
 					return false;
 				}
 			}else{
-				var lockpt = document.form1.reason.value;
-				
-
-				
+				var lockpt = document.form1.reason.value;	
 			}
+			
+			if(txt12!="0"){
+				var contxt12 = confirm(txt12);
+				if(contxt12==true){
+					var lockpt = "FPT ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)";
+				}else if(txt12!="0"&&contxt12==false){
+					return false;
+				}
+			}else{
+				var lockpt = document.form1.reason.value;	
+			}			
+			
 			if(check_drug(document.form1.drug_code.value)==true){
 				
 				
@@ -2995,7 +3027,10 @@ function viatch(ing,code){
 	txt7 = txt7.substr(4);	
 	
 	txt8 = ajaxcheck("viatncheck",document.form1.drug_code.value);
-	txt8 = txt8.substr(4);		
+	txt8 = txt8.substr(4);	
+	
+	txt12 = ajaxcheck("1viatcheck",document.form1.drug_code.value);
+	txt12 = txt12.substr(4);			
 	
 	
 	if(return_drug500=="1"){
@@ -3028,6 +3063,16 @@ function viatch(ing,code){
 				return true;
 			}else{
 				window.open('arbs.php?name=5VIAT-N',null,'height=550,width=600,scrollbars=1');
+				return false;
+			}
+		}		
+	}else if(txt12 == "0"){
+		var con = ing;
+		for(var m=0;m<con;m++){
+			if(document.getElementById("ch"+m).selectedIndex==6){
+				return true;
+			}else{
+				window.open('arbs.php?name=1VIAT500',null,'height=550,width=600,scrollbars=1');
 				return false;
 			}
 		}		
