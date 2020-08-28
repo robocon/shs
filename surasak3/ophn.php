@@ -14,6 +14,7 @@ session_unregister("Ptright1");
 ?>
 
 <script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 
 <form method="post" action="ophn.php">
@@ -119,7 +120,7 @@ session_unregister("Ptright1");
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</a></td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</a></td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</a></td>\n".
-            "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" onclick=\"checkPtRight(this, event, '$idcard')\">ทดสอบตรวจสอบสิทธิ</button></td>".
+            "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button></td>".
             " </tr>\n");
 
             $_SESSION['hn'] = $hn;
@@ -239,12 +240,22 @@ session_unregister("Ptright1");
         include("unconnect.inc");
     } // End if not empty HN
 ?>
-
+<style>
+#ptrightNotify{top: 2%;left: 50%;width:600px;height:400px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
+#ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
+#ptrightClose{font-size: 24px;color: #fff;text-decoration: none;}
+#ptnotifyContent{padding: 6px;}
+</style>
+<div id="ptrightNotify" style="display: none;">
+    <div id="ptnotifyHeader">
+        <a href="javascript:void(0);" id="ptrightClose">Close</a>
+    </div>
+    <div style="padding: 6px;" id="ptnotifyContent">testcontent</div>
+</div>
 <script type="text/javascript">
     /* checkIpd */
     function checkIpd(link, ev, hn){
-        // SmPreventDefault(ev);
-        // var href = this.href;
+        
         var newSm = new SmHttp();
         newSm.ajax(
             'templates/regis/checkIpd.php',
@@ -262,77 +273,14 @@ session_unregister("Ptright1");
         );
         
     }
+    
+    // ออกแบบไว้ก่อน 
+    // document.getElementById('checkPt').addEventListener("click", function(eventHandler){
+    //     document.getElementById('ptrightNotify').style.display = '';
+    // });
 
-    /*
-    ระบบเช็กสิทธออนไลน์ผ่าน ucAuthen4.x ถ้าใน IE มีปัญหาสามารถแก้ไขได้โดยเข้าไปที่
-    Internet Options > Security > Internet > Custom level... 
-    ที่เมนู Miscellaneous 
-    1. Access data sources across domains เปิด Enable
-    2. Allow META REFRESH เปิด Enable
-    3. Allow scripting of Microsoft web browser control เปิด Enable
-    */
-    function checkPtRight(link, ev, hn){
-        var newSm = new SmHttp();
-        newSm.ajax(
-            'http://192.168.143.126/index.php',
-            { "hn": hn },
-            function(res){
-                var txt = JSON.parse(res);
-                if (txt.ws_status === "NHSO-00003") {
-                    alertTxt = txt.ws_status_desc+"\nกรุณาเปิดใช้งานโปรแกรม nhsoauthen4.x ก่อนการใช้งานตรวจสอบสิทธิออนไลน์";
+    // document.getElementById('ptrightClose').addEventListener("click", function(eventHandler){
+    //     document.getElementById('ptrightNotify').style.display = 'none';
+    // });
 
-                }else{
-                
-                    var subInScl, hMain, hMainOp, hSub, mainInScl, alertTxt = '';
-
-                    if( txt.maininscl !== undefined ){
-                        if( txt.maininscl_name !== undefined ){
-                            alertTxt += "สิทธิหลักในการรับบริการ : "+txt.maininscl+" "+txt.maininscl_name+"\n";
-                        }
-
-                        if( txt.subinscl_name !== undefined){
-                            alertTxt += "ประเภทสิทธิย่อย : "+txt.subinscl+" "+txt.subinscl_name+"\n";
-                        }
-
-                        if( txt.hmain_op_name !== undefined){
-                            alertTxt += "หน่วยบริการประจำ : "+txt.hmain_op+" "+txt.hmain_op_name+"\n";
-                        } 
-                    
-                        if( txt.hmain_name !== undefined){
-                            alertTxt += "หน่วยบริการที่รับส่ง : "+txt.hmain+" "+txt.hmain_name+"\n";
-                        } 
-
-                        if( txt.hsub_name !== undefined){
-                            alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.hsub+" "+txt.hsub_name+"\n";
-                        } 
-                    }else if( txt.new_maininscl !== undefined ){
-                        if( txt.new_maininscl_name !== undefined ){
-                            alertTxt += "สิทธิหลักในการรับบริการ : "+txt.new_maininscl+" "+txt.new_maininscl_name+"\n";
-                        }
-
-                        if( txt.new_subinscl_name !== undefined){
-                            alertTxt += "ประเภทสิทธิย่อย : "+txt.new_subinscl+" "+txt.new_subinscl_name+"\n";
-                        }
-
-                        if( txt.new_hmain_op_name !== undefined){
-                            alertTxt += "หน่วยบริการประจำ : "+txt.new_hmain_op+" "+txt.new_hmain_op_name+"\n";
-                        } 
-                    
-                        if( txt.new_hmain_name !== undefined){
-                            alertTxt += "หน่วยบริการที่รับส่ง : "+txt.new_hmain+" "+txt.new_hmain_name+"\n";
-                        } 
-
-                        if( txt.new_hsub_name !== undefined){
-                            alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.new_hsub+" "+txt.new_hsub_name+"\n";
-                        } 
-                    }
-                    
-
-                }
-                
-                alert(alertTxt);
-            },
-            false // true is Syncronous and false is Assyncronous (Default by true)
-        );
-    }
 </script>

@@ -24,6 +24,7 @@ if(PHP_VERSION_ID <= 50217){
 	
 ?>
 <script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 
 <form method="post" action="opnameops.php">
@@ -43,16 +44,17 @@ if(PHP_VERSION_ID <= 50217){
 </script>
 <table>
     <tr>
-        <th bgcolor=6495ED>HN</th>
-        <th bgcolor=6495ED>ยศ</th>
-        <th bgcolor=6495ED>ชื่อ</th>
-        <th bgcolor=6495ED>สกุล</th>
-        <th bgcolor=6495ED>ว/ด/ป เกิด</th>
-        <th bgcolor=6495ED>บัตร ปชช.</th>
-        <th bgcolor=6495ED>มา รพ.</th>
-        <th bgcolor=6495ED>ตรวจนัด</th>
-        <th bgcolor=6495ED>ตรวจนอน</th>
-        <th bgcolor=6495ED>สถานะ ward</th>
+        <th bgcolor="6495ED">HN</th>
+        <th bgcolor="6495ED">ยศ</th>
+        <th bgcolor="6495ED">ชื่อ</th>
+        <th bgcolor="6495ED">สกุล</th>
+        <th bgcolor="6495ED">ว/ด/ป เกิด</th>
+        <th bgcolor="6495ED">บัตร ปชช.</th>
+        <th bgcolor="6495ED">มา รพ.</th>
+        <th bgcolor="6495ED">ตรวจนัด</th>
+        <th bgcolor="6495ED">ตรวจนอน</th>
+        <th bgcolor="6495ED">สถานะ ward</th>
+		<th></th>
     </tr>
 <?php
 $name = htmlspecialchars($_POST['name'], ENT_QUOTES);
@@ -86,16 +88,17 @@ if(!empty($name)){
 		}
 		
         print (" <tr>\n".
-        "  <td BGCOLOR=66CDAA><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn \">$hn</a></td>\n".
-        "  <td BGCOLOR=66CDAA>$yot</td>\n".
-        "  <td BGCOLOR=66CDAA>$name</td>\n".
-        "  <td BGCOLOR=66CDAA>$surname</td>\n".
-        "  <td BGCOLOR=66CDAA>$dbirth</td>\n".
-        "  <td BGCOLOR=66CDAA>$idcard</td>\n".
-        "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
-        "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
-        "  <td BGCOLOR=66CDAA><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-        "<td bgcolor='66cdaa' align='center'>$alert_msg</td>".
+        "  <td BGCOLOR='66CDAA'><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn \">$hn</a></td>\n".
+        "  <td BGCOLOR='66CDAA'>$yot</td>\n".
+        "  <td BGCOLOR='66CDAA'>$name</td>\n".
+        "  <td BGCOLOR='66CDAA'>$surname</td>\n".
+        "  <td BGCOLOR='66CDAA'>$dbirth</td>\n".
+        "  <td BGCOLOR='66CDAA'>$idcard</td>\n".
+        "  <td BGCOLOR='66CDAA'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
+        "  <td BGCOLOR='66CDAA'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
+		"  <td BGCOLOR='66CDAA'><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</a></td>\n".
+		"<td bgcolor='66cdaa' align='center'>$alert_msg</td>".
+		"  <td BGCOLOR=".$color."><button type=\"button\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button></td>\n".
         " </tr>\n");
     }
     include("unconnect.inc");
