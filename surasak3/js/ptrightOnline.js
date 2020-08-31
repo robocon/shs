@@ -103,6 +103,7 @@ function checkPtRight(link, ev, hn){
                     } 
                     
                 }else if( txt.new_maininscl !== undefined ){
+
                     if( txt.new_maininscl_name !== undefined ){
                         alertTxt += "สิทธิหลักในการรับบริการ : "+txt.new_maininscl+" "+txt.new_maininscl_name+"\n";
                     }
@@ -111,16 +112,32 @@ function checkPtRight(link, ev, hn){
                         alertTxt += "ประเภทสิทธิย่อย : "+txt.new_subinscl+" "+txt.new_subinscl_name+"\n";
                     }
 
-                    if( txt.new_hmain_op_name !== undefined){
-                        alertTxt += "หน่วยบริการประจำ : "+txt.new_hmain_op+" "+txt.new_hmain_op_name+"\n";
+                    if( txt.new_type_register !== undefined){
+                        alertTxt += "ประเภทการลงทะเบียนใหม่ : "+txt.new_type_register_desc+"\n";
+                    }
+
+                    if( txt.new_startdate !== undefined){
+                        alertTxt += "วันที่เริ่ม : "+txt.new_startdate.substring(6, 8)+"/"+txt.new_startdate.substring(4, 6)+"/"+txt.new_startdate.substring(0, 4)+"\n";
+                    }
+
+                    if( txt.new_expdate !== undefined){
+                        alertTxt += "วันที่หมดสิทธิ : "+txt.new_expdate.substring(6, 8)+"/"+txt.new_expdate.substring(4, 6)+"/"+txt.new_expdate.substring(0, 4)+"\n";
+                    }
+
+                    if( txt.new_purchaseprovince_name !== undefined){
+                        alertTxt += "จังหวัดที่ลงทะเบียน : "+txt.new_purchaseprovince_name+"\n";
+                    }
+
+                    if( txt.new_hsub_name !== undefined){
+                        alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.new_hsub+" "+txt.new_hsub_name+"\n";
                     } 
-                
+
                     if( txt.new_hmain_name !== undefined){
                         alertTxt += "หน่วยบริการที่รับส่ง : "+txt.new_hmain+" "+txt.new_hmain_name+"\n";
                     } 
 
-                    if( txt.new_hsub_name !== undefined){
-                        alertTxt += "หน่วยบริการปฐมภูมิ : "+txt.new_hsub+" "+txt.new_hsub_name+"\n";
+                    if( txt.new_hmain_op_name !== undefined){
+                        alertTxt += "หน่วยบริการประจำ : "+txt.new_hmain_op+" "+txt.new_hmain_op_name+"\n";
                     } 
                 }
                 
