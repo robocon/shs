@@ -197,6 +197,12 @@ if(empty($page)){
                             <li>
                                 <a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์</a>
                             </li>
+                            <li>
+                                <a href="chk_sticker_deploy.php?part=<?=$item['code'];?>" target="_blank">Sticker deploy</a>
+                            </li>
+                            <li>
+                                <a href="chk_sticker_deploy2.php?part=<?=$item['code'];?>" target="_blank">Sticker deploy 2</a>
+                            </li>
                         </ul>
                     </td>
                 </tr>
