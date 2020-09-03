@@ -63,8 +63,8 @@ $time = strtotime("-1 month");
 // $setMonth = (date('Y')+543).date('-m', $time);
 // $setMonthEn = date('Y-m', $time);
 
-$setMonth = '2563-07';
-$setMonthEn = '2020-07';
+$setMonth = '2563-08';
+$setMonthEn = '2020-08';
 
 // $date_start = $setMonth.'-01';
 // $date_end = $setMonth.date('-t', $time);
