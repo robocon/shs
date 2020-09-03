@@ -1,18 +1,21 @@
 <?php
 session_start();
 session_unregister("druglot");
+session_unregister("druglot_new");
 session_unregister("drugbill");
 session_unregister("drughome");
 session_unregister("drugstk");
 session_unregister("total_stiker");
 
 session_register("druglot");
+session_register("druglot_new");
 session_register("drugbill");
 session_register("drughome");
 session_register("drugstk");
 session_register("total_stiker");
 
 $_SESSION["druglot"] = "";
+$_SESSION["druglot_new"] = "";
 $_SESSION["drugbill"] = "";
 $_SESSION["drughome"] = "";
 $_SESSION["drugstk"] = "";
@@ -97,7 +100,7 @@ $item2=0;
 	$sql = "INSERT INTO phardep(chktranx,date,ptname,hn,an,price,doctor,item, idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,accno)VALUES('".$_SESSION["nRunno"]."','".$Thidate."','".$_POST["Ptname"]."','".$_POST["Hn"]."','".$_POST["An"]."', '".$total_price."','".$_POST["Doctor"]."','".$item2."','".$_SESSION["sOfficer"]."','".$_POST["Diag"]."','".$pricetype["DDL"]."','".$pricetype["DDY"]."','".$pricetype["DDN"]."','".$pricetype["DPY"]."','".$pricetype["DPN"]."','".$pricetype["DSY"]."','".$pricetype["DSN"]."','".$_POST["Bedcode"]."','".$_POST["Ptright"]."','".$cAccno."');";
 	//echo $sql;
 
-	$result = Mysql_Query($sql) or die("ไม่สามารถบันทึกรายการได้ท่านอาจเคยทำการบันทึกไปแล้ว");
+	$result = Mysql_Query($sql) or die("ไม่สามารถบันทึกรายการได้ ท่านอาจเคยทำการบันทึกไปแล้ว");
 	$idno=mysql_insert_id(); # ********** Cretae $idno ************
 
 	$sql = "Update bed set last_drug = '".(date("Y")+543)."".date("-m-d H:i:s")."' where an = '".$_POST["An"]."' ";
@@ -105,6 +108,7 @@ $item2=0;
 
 	$j=1;
 	$dlot = true;
+	$dlot_new = true;
 
 $i1=0;
 $j1=35;
@@ -241,7 +245,7 @@ $k31=$k21+50;
 				";
 				
 				#******************************* Session ทำสลากยา ***************************************
-				if($_POST["Drugcode"] != "INJ"){
+				if($_POST["Drugcode"] != "INJ"  && isset($_SESSION["druglot"])){
 
 					if($dlot == false){
 						$_SESSION["druglot"] .= "<div style=\"page-break-before: always;\"></div>";
@@ -279,6 +283,55 @@ $k31=$k21+50;
 					//$_SESSION["druglot"] .= "<font face='Angsana New' >".$detail4."<br><br><BR></font>";
 				}
 				#******************************* จบ Session ทำสลากยา ***************************************
+				
+				
+				#******************************* Session ทำสลากยาใหม่ ***************************************
+				if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_new"])){
+					
+					if($dlot_new == false){
+						$_SESSION["druglot_new"] .= "<div style=\"page-break-before: always;\"></div>";
+					}else{
+						$dlot_new = false;
+					}
+
+					$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><center><b>".$_POST["Ptname"]."</b><br></font>";
+
+					$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'>".$Thaidate."&nbsp;(AN:".$_POST["An"].")&nbsp;HN:".$_POST["Hn"].".&nbsp;&nbsp;NO.".$j."/".$total_item." <br></font>";
+					
+					$Trade = substr($_POST["Tradname"][$i],0,22);
+
+					$_SESSION["druglot_new"] .= "<font  style='line-height:14px;' face='Angsana New' size='2'><b>$Trade</b>&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")&nbsp;=<B>&nbsp;".$_POST["Amount"][$i]."</B><br></font>";
+
+
+						$sql = "Select drugname,drugnote,drug_nature,drug_properties From druglst  where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 " ;
+						$result = Mysql_Query($sql);
+						list($drugname,$drugnote,$drug_nature,$drug_properties) = Mysql_fetch_row($result);
+						$chkdrugname=trim($drugname);
+						$lendrugname=strlen($chkdrugname);
+					$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail1."</b></font><br>";
+					$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail2."</b></font><br>";
+					
+					if($j == $total_item){
+						if($detail3 !="")
+							$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail3."</b></font><br>";
+						if($drug_properties !="")  //ถ้ามีสรรพคุณ
+							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";
+						
+						if($drugnote !="")  //ถ้ามีคำเตือน
+							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b>".$drugnote."</b></font>";
+						
+					}else{
+							if($detail3 !="")
+							$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail3."</b></font><br>";  //br 2 อัน
+						if($drug_properties !="")  //ถ้ามีสรรพคุณ
+							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
+						if($drugnote !="")  //ถ้ามีคำเตือน
+							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b>".$drugnote."</b></font>";  
+					}
+					//$_SESSION["druglot_new"] .= "<font face='Angsana New' >".$detail4."<br><br><BR></font>";
+				}
+				#******************************* จบ Session ทำสลากยาใหม่ ***************************************
+				
 			
 
 		$j++;
@@ -298,7 +351,24 @@ for($i=0;$i<$item;$i++){
 				$_SESSION["druglot"] .= "<hr>";
 			}
 			$_SESSION["druglot"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." เตียง".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
+
+		}
+	}
+}
+
+for($i=0;$i<$item;$i++){
+	
+	$drugcode2 = $_POST["Drugcode"][$i];
+	if(($drugcode2[0] == "0" || $drugcode2[0] == "2") && !(ord($drugcode2[1])  >= 48 && ord($drugcode2[1]) <= 57 )){
 		
+		for($j=0;$j<$_POST["stiker"][$i];$j++){
+			if($j%2 == 0){
+				$_SESSION["druglot_new"] .= "<div style=\"page-break-before: always;\"></div>";
+			}else{
+				$_SESSION["druglot_new"] .= "<hr>";
+			}
+			$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." เตียง".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
+
 		}
 	}
 }
@@ -349,11 +419,11 @@ for($i=0;$i<$item;$i++){
 				}
 
 		$_SESSION["drugbill"] .="ผู้บันทึกข้อมูล <U>".$_SESSION["sOfficer"]."</U>&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ผู้คิดราคา......................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ผู้จัดยา..........................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ผู้ตรวจสอบ...................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ผู้จ่ายยา.........................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ผู้รับยา..........................";
+		$_SESSION["drugbill"] .="ผู้คิดราคา....................&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="ผู้ตรวจสอบ.................&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="ผู้จัดยา.....................&nbsp;&nbsp;";		
+		$_SESSION["drugbill"] .="ผู้จ่ายยา....................&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="ผู้รับยา.....................";
 		
 		$_SESSION["drugbill"] = "<BR>&nbsp;&nbsp;<font face='Angsana New'>$status, วันที่ ".$Thaidate."<BR>&nbsp;&nbsp;".$_POST["Ward"].", เตียง : ".$_POST["Bed"].", ".$_POST["Ptname"].", อายุ ".$_POST["age"].", HN:".$_POST["Hn"].", AN:".$_POST["An"]."<BR>&nbsp;&nbsp;สิทธิ:".$_POST["Ptright"].", แพทย์ : ".$_POST["Doctor"].", โรค ".$_POST["Diag"]."<BR>".$_SESSION["drugbill"];
 		
@@ -363,7 +433,7 @@ for($i=0;$i<$item;$i++){
 
 
 		echo "บันทึกข้อมูลเรียบร้อยแล้ว<BR>
-			<A HREF=\"drugbill.php\" target=\"_blank\">พิมพ์ใบสั่งยา</A>&nbsp;&nbsp;<A HREF=\"druglot.php\" target=\"_blank\">พิมพ์สลากยา</A>
+			<A HREF=\"drugbill.php\" target=\"_blank\">พิมพ์ใบสั่งยา</A>&nbsp;&nbsp;<A HREF=\"druglot.php\" target=\"_blank\">พิมพ์สลากยา</A>&nbsp;&nbsp;<A HREF=\"druglot_new.php\" target=\"_blank\">พิมพ์สลากยาใหม่</A>
 		";
 
 		echo "<BR><A HREF=\"drughome.php\" target=\"_blank\">พิมพ์ใบกลับบ้าน</A>&nbsp;&nbsp;<A HREF=\"drugstk.php\" target=\"_blank\">ติด OPD</A>";
