@@ -372,7 +372,11 @@ for($i=0;$i<$item;$i++){
 				$_SESSION["druglot_new"] .= "<hr>";
 			}
 			$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." เตียง".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
-
+			$_SESSION["druglot_new"] .= "<br>";
+			$_SESSION["druglot_new"] .= '<table style="font-size: 13px;font-family:Angsana New;border-collapse: collapse;">
+			<tr><td style="line-height: 14px;">เวลาที่ให้....................น.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
+			<tr><td style="line-height: 14px;">ผู้เตรียม....................</td><td style="line-height: 14px;">ผู้ให้....................</td></tr>
+			</table>';
 		}
 	}
 }
