@@ -88,26 +88,26 @@ if(!empty($cStkcutdate)) {
 		CloseWindowsInTime(2); 
 	</script>
 	<?php
-	print "<u><br><font face='THSarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='THSarabunPSK' size= 4 ><b><b>VN:$rxvn </b>&nbsp;$rxPtright</b></font></u><font face='THSarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\">&nbsp;<font face='THSarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
-	print "<font face='cordia New'> $d/$m/$y&nbsp;&nbsp;$t";
-	print "<font face='cordia New'>&nbsp;HN:&nbsp;$rxHn&nbsp;&nbsp; ";
-	print "<font face='cordia New'>&nbsp;&nbsp<b>อายุ&nbsp;$age</b>&nbsp;&nbsp; ";
+	print "<u><br><font face='THSarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='THSarabunPSK' size= 4 ><b>VN:$rxvn </b>&nbsp;<b>$rxPtright</b></font></u><font face='THSarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\"></font>&nbsp;<font face='THSarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
+	print "<font face='cordia New'> $d/$m/$y&nbsp;&nbsp;$t</font>";
+	print "<font face='cordia New'>&nbsp;HN:&nbsp;$rxHn&nbsp;&nbsp;</font>";
+	print "<font face='cordia New'>&nbsp;&nbsp<b>อายุ&nbsp;$age</b>&nbsp;&nbsp;</font>";
 	// โรค: $rxDiag&nbsp;&nbsp
-	print "<font face='THSarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;<font face='THSarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br>";
+	print "<font face='THSarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;</b><font face='THSarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br></font></font>";
 	
 	$visit_date = substr($dRxdate, 0, 10);
 	$sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$rxHn' ";
 	$res = mysql_query($sqlDiag);
 	if( mysql_num_rows($res) > 0 ){
 		$drI = 1;
-		echo "<b>Diag จากแพทย์ : </b>";
+		echo "<font size='2'>Diag จากแพทย์ : </font>";
 		while ($list = mysql_fetch_assoc($res)) { 
 
 			$drDiag = $list['diag'];
 			if( $list['diag_thai'] ){
 				$drDiag .= ' ( '.$list['diag_thai'].' ) ';
 			}
-			echo $drI.') '.$drDiag.'&nbsp';
+			echo "<font size='2'>".$drI.') '.$drDiag.'</font>&nbsp';
 			$drI++;
 			
 		}
@@ -120,14 +120,14 @@ if(!empty($cStkcutdate)) {
 
 	if(mysql_num_rows($result)){
 
-		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>ประวัติการแพ้ยา</b></u>";
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>ประวัติการแพ้ยา</b></u></font>";
 		while (list ($tradname,$advreact,$asses) = mysql_fetch_row ($result)) {
 			$num1++;
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b>$num1)</b></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b><u>$num1)</u></b></font ></td>\n".
 			" </tr>\n");
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b>$tradname...$advreact($asses)</b></font >&nbsp;&nbsp;</td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
