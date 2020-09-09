@@ -2744,6 +2744,11 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
+	}else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
+		
+		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ALPRAZOLAM 0.5 mg. ไม่เกิน 20เม็ดต่อคน");  
+		document.form1.drug_amount.focus();
+
 	}else{
 		
 			if(check_inject(document.form1.drug_code.value) == false){
