@@ -1053,11 +1053,11 @@ $outlab_row = mysql_num_rows($outlab_query);
 									if( $objResult["labcode"]=='STOCC'){
 										
 										if( $objResult['result'] == 'Negative' ){
-											$app = '¼Ô´»¡µÔ';
-										}elseif ( $objResult['result'] == 'Positive' ) {
 											$app = '»¡µÔ';
+										}elseif ( $objResult['result'] == 'Positive' ) {
+											$app = '¼Ô´»¡µÔ';
 										}
-										
+
 									}
 									
 
