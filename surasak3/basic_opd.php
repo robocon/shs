@@ -1186,8 +1186,16 @@ $room = $_POST['room'];
 <br />
 <?php } 
 include("unconnect.inc");
-?>
 
+if ($hn==='55-8821') {
+	?>
+	<script>
+	alert('กรุณาตรวจสอบ การจ่ายยา และปริมาณยา ในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ');
+	</script>
+	<?php
+}
+
+?>
 <script language="JavaScript" type="text/javascript">
 window.onload = function(){
 	document.getElementById("<?php echo $onfocus;?>").focus();
