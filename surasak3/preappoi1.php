@@ -298,28 +298,28 @@ if(!checkdate  ( $month + 1, $today  , $year  )){
 	list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
 	list($n2yY, $n2yM, $n2yD) = explode('-', date('Y-m-d', $next_2year));
 
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">&gt;&gt; วันปัจจุบัน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\''.$dt_doctor.'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">&gt;&gt; วันปัจจุบัน</a>&nbsp;||&nbsp;';
 	// echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">&gt;&gt; นัด 1เดือน</a>&nbsp;||&nbsp;';
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\''.$dt_doctor.'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\''.$dt_doctor.'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>';
 	echo '<br>';
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
-	echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\''.$dt_doctor.'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\''.$dt_doctor.'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
+	echo '<a href="javascript: void(0);" onclick="show_carlendar(\''.$dt_doctor.'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
 	echo '<br>';
 
 	echo $drTxtOffline;
 
 echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
-<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."');\">&lt;</a>
+<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('$dt_doctor&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."');\">&lt;</a>
 </td>
 <td width=\"250\" align=\"center\" colspan=\"5\" bgcolor=\"#F9F4DD\">
 ".$thmonthname[$month - 1]."&nbsp;
 ".($year + 543)." ".$title_time."
 </td>
 <td width=\"50\" align=\"center\">
-<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today2."&dfMonth=".($month + 1)."&dfYear=".$year."');\">&gt;</a>
+<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('$dt_doctor&today=".$today2."&dfMonth=".($month + 1)."&dfYear=".$year."');\">&gt;</a>
 </td></tr>
 
 <tr><td width=\"50\" align=\"center\" class=\"sunday\">อา</td>
@@ -352,7 +352,7 @@ for ($i=0; $i<=6; $i++) {
 	$intern_total = 0;
 	if( !empty($total_items[$key]) ){
 		$item = $total_items[$key];
-		$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -250, -210)">'.$item['total'].'</span>)</div>';
+		$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -10, -110)">'.$item['total'].'</span>)</div>';
 		$intern_total = $item['total'];
 	}
 
@@ -433,7 +433,7 @@ for ($j=0; $j<=4; $j++) {
 			$intern_total = 0;
 			if( !empty($total_items[$key]) ){
 				$item = $total_items[$key];
-				$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -0, -150)">'.$item['total'].'</span>)</div>';
+				$dr_intern_txt = '<br><div>(<span style="color: green;" onmouseout="hid_tooltip();" onmouseover="show_tooltip(\'ผู้ป่วยนัดของแพทย์เวชปฏิบัติ\',\''.$item['total'].' คน\', \'left\', -10, -110)">'.$item['total'].'</span>)</div>';
 				$intern_total = $item['total'];
 			}
 
