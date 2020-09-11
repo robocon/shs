@@ -837,6 +837,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="ไวรัส เอช ไอ วี";
 									}else if($objResult["labname"]=="VDRL/RPR"){
 										$labmean="เชื้อซิฟิลิส";
+									}else if($objResult["labname"]=="Stool Occult"){
+										$labmean="ตรวจเลือดในอุจจาระ";
 									}
 
 									$app = '';
@@ -1046,6 +1048,18 @@ $outlab_row = mysql_num_rows($outlab_query);
 											$objResult["result"] = 'Positive';
 										}
 									}
+
+									// Stool Occult ตรวจเลือดในอุจจาระ
+									if( $objResult["labcode"]=='STOCC'){
+										
+										if( $objResult['result'] == 'Negative' ){
+											$app = 'ผิดปกติ';
+										}elseif ( $objResult['result'] == 'Positive' ) {
+											$app = 'ปกติ';
+										}
+										
+									}
+									
 
 
 									// if($objResult['labcode'] == 'HAVTOT'){
