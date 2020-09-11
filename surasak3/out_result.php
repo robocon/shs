@@ -531,7 +531,7 @@ if(isset($_POST['okhn2'])){
 		if($_POST["form_status"]=="insert"){
 			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
 		}else{
-			$edit="update opcardchk set name='".$_POST['newname']."',`agey` = '".$_POST['age']."' where HN='".$_POST['hn']."' and part='".$_POST['part']."';";
+			$edit="update opcardchk set `agey` = '".$_POST['age']."' where HN='".$_POST['hn']."' and part='".$_POST['part']."';";
 			//echo $edit;
 			$querey=mysql_query($edit);
 			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
