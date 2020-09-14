@@ -87,6 +87,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">Anti-HAV IgG</th>
     <th width="6%" align="center">Stool Exam</th>
     <th width="6%" align="center">Stool Culture</th>
+    <th width="6%" align="center">Stool Occult</th>
 
     <th width="6%" align="center">METAMP</th>
     <th width="5%" align="center">ABOC</th>
@@ -502,6 +503,33 @@ if($hbsag=="Negative"){
 </td> 
 <!-- Stool Culture -->
 <td align="center"><?php echo $cs; ?></td>
+
+<?php
+// ตรวจเลือดในอุจจาระ - Stool Occult
+$sql = "SELECT b.`result`, b.`flag` 
+FROM ( 
+
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+    AND `profilecode` = 'STOCC' 
+    GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+WHERE b.result !='DELETE' OR b.result !='*' ";
+$query13 = mysql_query($sql);
+list($stoccRes, $flag) = mysql_fetch_array($query13);
+$stoccTxt = '';
+if( $stoccRes == 'Negative' ){
+    $stoccTxt = 'ปกติ';
+}elseif ( $stoccRes == 'Positive' ) {
+    $stoccTxt = 'ผิดปกติ';
+}
+
+?>
+<td align="center"><?=$stoccTxt;?></td>
 
 <td align="center">
 <?php 
