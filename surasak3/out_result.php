@@ -136,7 +136,7 @@ if(isset($_POST['hn'])){
 	$age= $arr['agey'];
 	$ptname = $arr['yot'].$arr['name'].' '.$arr['surname'];			
 
-	$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
+	$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and `part` = '$part' and year_chk ='$nPrefix' ";
 	//echo $sqlchk;
 	$querychk=mysql_query($sqlchk) or die (mysql_error());
 	$Rowchk=mysql_num_rows($querychk);
@@ -171,7 +171,7 @@ if(isset($_POST['hn'])){
 			$hn=$arr['HN'];
 			$ptname=$arr['ptname'];
 			
-			$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and year_chk ='$nPrefix' ";
+			$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and `part` = '$part' and year_chk ='$nPrefix' ";
 			//echo $sqlchk;
 			$querychk=mysql_query($sqlchk) or die (mysql_error());
 			$Rowchk=mysql_num_rows($querychk);
