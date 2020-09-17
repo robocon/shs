@@ -784,15 +784,17 @@ $outlab_row = mysql_num_rows($outlab_query);
 								$objQuery = mysql_query($strSQL);
 								while($objResult = mysql_fetch_array($objQuery)){
 
-									if(preg_match('/(Blood Sugar)/', $objResult["labname"]) > 0 ){
+									$objResult["labname"] = str_replace('*', '', $objResult["labname"]);
+
+									if($objResult["labname"]=="Blood Sugar"){
 										$labmean="ระดับน้ำตาลในเลือด";
-									}else if(preg_match('/(BUN)/', $objResult["labname"]) > 0 ){
+									}else if($objResult["labname"]=="BUN"){
 										$labmean="การทำงานของไต";
 									}else if($objResult["labname"]=="Creatinine"){
 										$labmean="การทำงานของไต";
 									}else if($objResult["labname"]=="Uric acid"){
 										$labmean="ยูริคในเลือด";
-									}else if( preg_match('/(Cholesterol)/', $objResult["labname"]) > 0 ){
+									}else if($objResult["labname"]=="Cholesterol"){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="HDL"){
 										$labmean="ไขมันความหนาแน่นสูง";			
@@ -802,7 +804,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="ไขมันความหนาแน่นต่ำ";	
 									}else if($objResult["labname"]=="LDLC"){
 										$labmean="ไขมันความหนาแน่นต่ำ";												
-									}else if( preg_match('/(SGOT\(AST\))/', $objResult["labname"]) > 0){
+									}else if($objResult["labname"]=="SGOT(AST)"){
 										$labmean="การทำงานของตับ";
 									}else if($objResult["labname"]=="SGPT(ALT)"){
 										$labmean="การทำงานของตับ";
