@@ -110,14 +110,14 @@ if ($action == 'insert') {
                 }else{
 
                     // กรณีรายการ lab ปกติ
-                    $sql_detail = "SELECT `code`,`oldcode`,`detail` 
-                    FROM `labcare` 
-                    WHERE `code` = '$lab_item' 
-                    LIMIT 1 ";
+                    $sql_detail = "SELECT `code`,`oldcode`,`detail`, `codex` FROM `labcare` WHERE `code` = '$lab_item' LIMIT 1 ";
                     $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
                     $num = mysql_num_rows($q);
                     if( $num > 0 ){
-                        list($code, $oldcode, $detail) = mysql_fetch_row($q);   
+                        list($code, $oldcode, $detail, $codex) = mysql_fetch_row($q); 
+
+                        if(empty($oldcode)){ $oldcode = $codex; }
+                        if(empty($detail)){ $detail = $codex; }
                     
                         $orderdetail_sql = "INSERT INTO `orderdetail` ( 
                             `labnumber` , `labcode`, `labcode1` , `labname` 
