@@ -1,7 +1,10 @@
 <?php 
 
 /**
- * รูปแบบที่สอง เริ่มใช้กับ บริษัท เอ็นเนอร์จีโซลูชั่น เมเนจเมน์ จำกัด
+ * รูปแบบที่3 
+ * สิ่งที่ต่างกันกับรูปแบบที่2 ก็คือ จะมีการกำหนด 
+ * AND `labnumber` = '$exam_no' 
+ * เพื่อระบุให้ชัดเจนไปเลยว่าเป็น lab ที่มาจากการ import โดยผู้ใช้งานที่ผ่านระบบ "นำเข้า Order Lab"
  */
 include 'bootstrap.php';
 
@@ -76,7 +79,7 @@ function calcage($birth){
 
 $sql1 = "SELECT a.*, a.`HN` AS `hn`, 
 b.`date_checkup` AS `show_date`, b.`name` AS `company_name`,c.`agey` AS `age2`,
-CONCAT(c.`name`,' ',c.`surname`) AS `opcardchk_name` 
+CONCAT(c.`name`,' ',c.`surname`) AS `opcardchk_name`, c.`exam_no` 
 FROM `out_result_chkup` AS a 
 LEFT JOIN `chk_company_list` AS b ON b.`code` = a.`part` 
 LEFT JOIN (
@@ -100,6 +103,8 @@ while($result = mysql_fetch_assoc($row2)){
 	$age2 = $result['age2'];
 	$hn = $result["hn"];
 	$show_date = $result['show_date'];
+
+	$exam_no = $result['exam_no'];
 
 	$c_s = $result['cs'];
 	$result_cs = $result['result_cs'];
@@ -142,6 +147,7 @@ while($result = mysql_fetch_assoc($row2)){
 		FROM `resulthead` 
 		WHERE `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 		AND `hn` = '$hn' 
+		AND `labnumber` = '$exam_no' 
 		ORDER BY `autonumber` 
 		DESC LIMIT 1 
 
@@ -315,6 +321,7 @@ while($result = mysql_fetch_assoc($row2)){
     WHERE (profilecode = 'CBC' OR profilecode = 'UA') 
     AND hn = '$hn' 
     AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND `labnumber` = '$exam_no' 
     GROUP BY `profilecode` 
 	ORDER BY `autonumber` desc";
     $query55 = mysql_query($sql55) or die( mysql_error() );
@@ -333,6 +340,7 @@ while($result = mysql_fetch_assoc($row2)){
 	WHERE profilecode='CBC' 
 	AND hn = '".$hn."' 
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND `labnumber` = '$exam_no' 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql) or die( mysql_error() );
 	$arrresult = mysql_fetch_array($query);
@@ -483,6 +491,7 @@ if( $num > 0 ){
 	WHERE profilecode='UA' 
 	and hn='$hn' 
 	and `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND `labnumber` = '$exam_no' 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
@@ -660,6 +669,7 @@ FROM (
     SELECT MAX(`autonumber`) AS `latest_id`   
     FROM `resulthead` 
     WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND `labnumber` = '$exam_no' 
     AND ( 
         #`profilecode`='GLU' 
         #OR `profilecode`='CREAG' 
@@ -727,6 +737,7 @@ FROM (
 	FROM `resulthead` 
 	WHERE `hn` = '$hn' 
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+	AND `labnumber` = '$exam_no' 
 	AND `testgroupcode` = 'OUT' 
 	GROUP BY `profilecode` 
 
