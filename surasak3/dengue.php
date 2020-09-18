@@ -89,6 +89,7 @@ if ($action === 'search') {
             <tr>
                 <th>HN</th>
                 <th>AN/AN</th>
+                <th>วันที่</th>
                 <th>Diag</th>
                 <th>ICD10</th>
                 <th>Type</th>
@@ -99,22 +100,24 @@ if ($action === 'search') {
         <?php
         foreach ($items as $key => $user) {
             
-            $price = '';
+            $price = $date = '';
             $hn = $user['hn'];
             $an = $user['an'];
             if ($user['optype'] === 'ipd') {
                 
-                $sql = "SELECT `price` FROM `ipcard` WHERE `an` = '$an'";
+                $sql = "SELECT `dcdate` AS `date`,`price` FROM `ipcard` WHERE `an` = '$an'";
                 $db->select($sql);
                 $ip = $db->get_item();
                 $price = $ip['price'];
+                $date = $ip['date'];
 
             }elseif ($user['optype'] === 'opd') {
 
-                $sql = "SELECT (`PHAR`+`xray`+`patho`+`emer`+`surg`+`physi`+`denta`+`other`) AS `price` FROM `opday` WHERE `hn` = '$hn' AND `vn` = '$an' ";
+                $sql = "SELECT `thidate` AS `date`, (`PHAR`+`xray`+`patho`+`emer`+`surg`+`physi`+`denta`+`other`) AS `price` FROM `opday` WHERE `hn` = '$hn' AND `vn` = '$an' ";
                 $db->select($sql);
                 $op = $db->get_item();
                 $price = $op['price'];
+                $date = $op['date'];
 
             }
 
@@ -122,6 +125,7 @@ if ($action === 'search') {
             <tr>
                 <td><?=$user['hn'];?></td>
                 <td><?=$user['an'];?></td>
+                <td><?=$date;?></td>
                 <td><?=$user['diag'];?></td>
                 <td><?=$user['icd10'];?></td>
                 <td><?=$user['type'];?></td>
