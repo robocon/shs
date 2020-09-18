@@ -49,29 +49,23 @@ function calcage($birth){
 <title>พิมพ์ใบตรวจสุขภาพ <?=$company['name'];?></title>
 <style type="text/css">
 	*{
-		font-family: "TH Sarabun New","TH SarabunPSK";
+		font-family: "TH SarabunPSK";
 	}
 	.text{ font-size: 16px; }
 	.text1{ font-size: 22px; }
 	.text2{ font-size: 20px; }
 	.text3{ font-size: 16px; }
 	.text4{ font-size: 14px; }
+
 	.texthead{ font-size: 25px; }
 	.textsub{ font-size: 15px;}
+
 	@media print{ #no_print{ display:none; } }
 	#divprint{ page-break-after:always; }
+
 	.theBlocktoPrint{ background-color: #000; color: #FFF; } 
 	label{ display: block; }
 	.etc label{ display: inline; }
-	.chkContain{
-		border-collapse: collapse;
-		border-top: 1px solid #000000;
-		border-right: 1px solid #000000;
-		border-left: 1px solid #000000;
-	}
-	.chkText{
-		padding: 3px;
-	}
 </style>
 </head>
 
@@ -164,10 +158,10 @@ while($result = mysql_fetch_assoc($row2)){
 
 ?>
 <div id="divprint">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+<table width="100%" border="0">
 	<tr>
 		<td colspan="2">
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+			<table width="100%">
 				<tr>
 					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="60" /></td>
 					<td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
@@ -198,92 +192,104 @@ while($result = mysql_fetch_assoc($row2)){
 	
 	<tr>
 		<td colspan="2">
-			<table width="100%" border="0" style="border-collapse:collapse; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+			<table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
 				<tr>
-					<td  valign="top" class="text2" style="padding: 3px;">
-						<strong class="text1"><u>ข้อมูลผู้ตรวจสุขภาพ</u></strong> 
-						<strong>HN : <?=$hn?>&nbsp;&nbsp;</strong> 
-						<strong>ชื่อ : </strong>
-						<span style="font-size:24px">
-							<strong><?=$ptname;?></strong>&nbsp;&nbsp;&nbsp;
-							<?php 
-							if(!empty($age)){ 
-							?>
-								<strong>อายุ : </strong> 
-								<strong><?=$age;?> ปี</strong>
-							<?php 
-							}else{
-							?>
-								<strong>อายุ : </strong> 
-								<strong><?=$age2;?> ปี</strong>
-							<?php 
-							}
-							?>
-						</span>
+					<td>
+						<table width="100%" class="text1" >
+							<tr>
+								<td  valign="top" class="text2">
+									<strong class="text1"><u>ข้อมูลผู้ตรวจสุขภาพ</u></strong> 
+									<strong>HN : <?=$hn?>&nbsp;&nbsp;</strong> 
+									<strong>ชื่อ : </strong>
+									<span style="font-size:24px">
+										<strong><?=$ptname;?></strong>&nbsp;&nbsp;&nbsp;
+										<?php 
+										if(!empty($age)){ 
+										?>
+											<strong>อายุ : </strong> 
+											<strong><?=$age;?> ปี</strong>
+										<?php 
+										}else if(!empty($age2)){
+										?>
+											<strong>อายุ : </strong> 
+											<strong><?=$age2;?> ปี</strong>
+										<?php 
+										}
+										?>
+									</span>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
-
-	
-
 	<tr>
 		<td colspan="2">
-			<table width="100%" border="0" style="border-collapse:collapse;border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;" bordercolor="#000000" cellpadding="0" cellspacing="0" class="text1">
+			<table width="100%" border="1" style="border-collapse:collapse;" bordercolor="#000000" cellpadding="0" cellspacing="0">
 				<tr>
-					<td width="100%" valign="top" style="padding: 3px;">
-						<strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;
-						<span class="text3">
-							<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
-							<strong>ส่วนสูง : </strong><?=$result['height']?>&nbsp;ซม. 
-							<strong>BMI : </strong> <u><?=$bmi?> </u>&nbsp;&nbsp;
-							<strong>BP : <u><? echo $result['bp1']; ?> / <? echo $result['bp2']; ?>mmHg. </u></strong>&nbsp;&nbsp;
-							
-							<?php if(!empty($result["bp3"]) && !empty($result["bp4"])){ ?>
-								<strong>RE-BP : <u><?php echo $result['bp3']; ?> / <?php echo $result['bp4']; ?>mmHg. </u></strong>&nbsp;&nbsp;
-							<?php } ?>
+					<td>
+						<table width="100%"  class="text1" >
+							<tr>
+								<td width="100%" valign="top">
+									<strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;
+									<span class="text3">
+										<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
+										<strong>ส่วนสูง : </strong><?=$result['height']?>&nbsp;ซม. 
+										<strong>BMI : </strong> <u><?=$bmi?> </u>&nbsp;&nbsp;
+										<strong>BP : <u><? echo $result['bp1']; ?> / <? echo $result['bp2']; ?>mmHg. </u></strong>&nbsp;&nbsp;
+										
+										<?php if(!empty($result["bp3"]) && !empty($result["bp4"])){ ?>
+											<strong>RE-BP : <u><?php echo $result['bp3']; ?> / <?php echo $result['bp4']; ?>mmHg. </u></strong>&nbsp;&nbsp;
+										<?php } ?>
 
-							<strong>T : </strong> <u><?=$result['temp']?> C</u>&nbsp;&nbsp;
-							<strong>P : </strong> <u><?=$result['p']?> ครั้ง/นาที</u>&nbsp;&nbsp;
-							<strong>R : </strong> <u><?=$result['rate']?> ครั้ง/นาที</u>
-						</span>
+										<strong>T : </strong> <u><?=$result['temp']?> C</u>&nbsp;&nbsp;
+										<strong>P : </strong> <u><?=$result['p']?> ครั้ง/นาที</u>&nbsp;&nbsp;
+										<strong>R : </strong> <u><?=$result['rate']?> ครั้ง/นาที</u>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td valign="top">
+									<strong style="font-size:20px;">ผลตรวจ : </strong>
+									<span style="font-size:16px;"> ดัชนีมวลกาย 
+									<?php 
+									if($bmi == '0.00' ){
+										echo "'ไม่ได้รับการตรวจ";
+									} else if($bmi >= 18.5 && $bmi <= 22.99){
+										echo "มีน้ำหนักตามเกณฑ์";
+									}else{
+										if($bmi < 18.5){ echo "มีน้ำหนักต่ำกว่าเกณฑ์";}
+										if($bmi >= 23 && $bmi <= 24.99){ echo "เริ่มมีน้ำหนักเกินเกณฑ์";}
+										if($bmi >= 25 && $bmi <= 29.99){ echo "มีน้ำหนักเกินเกณฑ์";}
+										if($bmi >= 30 && $bmi <= 34.99){ echo "มีภาวะอ้วนค่อนข้างมาก";}
+										if($bmi >= 35){ echo "มีภาวะอ้วนมาก";}
+									}
 
-						<strong style="font-size:20px;">ผลตรวจ : </strong>
-						<span style="font-size:16px;"> ดัชนีมวลกาย 
-						<?php 
-						if($bmi == '0.00' ){
-							echo "'ไม่ได้รับการตรวจ";
-						} else if($bmi >= 18.5 && $bmi <= 22.99){
-							echo "มีน้ำหนักตามเกณฑ์";
-						}else{
-							if($bmi < 18.5){ echo "มีน้ำหนักต่ำกว่าเกณฑ์";}
-							if($bmi >= 23 && $bmi <= 24.99){ echo "เริ่มมีน้ำหนักเกินเกณฑ์";}
-							if($bmi >= 25 && $bmi <= 29.99){ echo "มีน้ำหนักเกินเกณฑ์";}
-							if($bmi >= 30 && $bmi <= 34.99){ echo "มีภาวะอ้วนค่อนข้างมาก";}
-							if($bmi >= 35){ echo "มีภาวะอ้วนมาก";}
-						}
+									?>
+									/ ความดันโลหิต  
+									<?php 
+		
+									$bp1 = ( empty($result['bp3']) ) ? $result['bp1'] : $result['bp3'];
+									$bp2 = ( empty($result['bp4']) ) ? $result['bp2'] : $result['bp4'];
 
-						?>
-						/ ความดันโลหิต  
-						<?php 
-
-						$bp1 = ( empty($result['bp3']) ) ? $result['bp1'] : $result['bp3'];
-						$bp2 = ( empty($result['bp4']) ) ? $result['bp2'] : $result['bp4'];
-
-						if($bp1 =='NO'){
-								echo "ไม่ได้รับการตรวจ";
-						}else  if($bp1 <= 130){
-								echo "ปกติ";
-						}else{
-							if($bp1 >=140){ 
-								echo "มีความดันโลหิตสูง ควรออกกำลังอย่างสม่ำเสมอ ลดอาหารที่มีรสเค็ม หรือพบแพทย์เพื่อทำการรักษา";
-							}else if($bp1 >=131 && $bp1 < 140){
-								echo "เริ่มมีภาวะความดันโลหิตสูง ควรออกกำลังกายอย่างสม่ำเสมอ";
-							}
-						}
-						?>
-						</span>
+									if($bp1 =='NO'){
+											echo "ไม่ได้รับการตรวจ";
+									}else  if($bp1 <= 130){
+											echo "ปกติ";
+									}else{
+										if($bp1 >=140){ 
+											echo "มีความดันโลหิตสูง ควรออกกำลังอย่างสม่ำเสมอ ลดอาหารที่มีรสเค็ม หรือพบแพทย์เพื่อทำการรักษา";
+										}else if($bp1 >=131 && $bp1 < 140){
+											echo "เริ่มมีภาวะความดันโลหิตสูง ควรออกกำลังกายอย่างสม่ำเสมอ";
+										}
+									}
+									?>
+									</span>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 			</table>
@@ -291,7 +297,7 @@ while($result = mysql_fetch_assoc($row2)){
 	</tr>
   	<tr>
     	<td colspan="2">
-            <table width="100%" border="0" style="border-collapse:collapse; text-align: center; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+            <table width="100%" border="1" style="border-collapse:collapse; text-align: center;" bordercolor="#000000" cellpadding="0" cellspacing="0">
                 <tr>
                     <td>
                         <strong class="text" style="font-size:20px;"><u>ผลการตรวจทางห้องปฏิบัติการ</u></strong>
@@ -301,6 +307,7 @@ while($result = mysql_fetch_assoc($row2)){
 		</td>
   	</tr>
 	<?php 
+
 
 	// นับดูจำนวนของ CBC และ UA
     $sql55 = "SELECT * 
@@ -314,14 +321,9 @@ while($result = mysql_fetch_assoc($row2)){
     $num = mysql_num_rows($query55);
     $arrresult55 = mysql_fetch_array($query55); 
 
-	$table_width = 'width="100%"';
-	$cbcStyle="border-collapse:collapse; border-left: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;";
-	$uaStyle="border-collapse:collapse; border-left: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;";
+    $table_width = 'width="100%"';
 	if ( $num > 1 ) {
 		$table_width = 'width="50%"';
-
-		$cbcStyle="border-collapse:collapse; border-left: 1px solid #000000; border-top: 1px solid #000000;";
-		// $uaStyle="border-collapse:collapse; border-left: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;";
 	}
 
 
@@ -359,14 +361,14 @@ if( $num > 0 ){
 	?>
 	<!-- แสดงผล CBC -->
     <td <?=$table_width;?> valign="top">		
-        <table width="100%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000" class="text3" style="<?=$cbcStyle;?>">
+        <table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
 			<tr>
 				<td height="30" align="center" style="padding: 0px;">
-					<strong class="text1"><u>CBC : การตรวจเม็ดเลือด</u></strong>
+					<strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong>
 				</td>
 			</tr>
 			<tr>
-				<td style="padding: 3px;">
+				<td>
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr>
 							<td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด</strong></td>
@@ -506,14 +508,14 @@ if( $num > 0 ){
 
 	<!-- เริ่ม UA -->
     <td <?=$table_width;?> valign="top">
-		<table width="100%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000" style="<?=$uaStyle;?>">
+		<table width="100%" height="77" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
 			<tr>
 				<td height="30" align="center" style="padding: 0px;">
-					<strong class="text1"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong>
+					<strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong>
 				</td>
 			</tr>
 			<tr>
-				<td style="vertical-align: top; padding: 3px;">
+				<td style="vertical-align: top;">
 					<table width="100%" border="0" cellpadding="0" cellspacing="0" class="text3">
 						<tr>
 							<td width="49%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
@@ -635,12 +637,6 @@ if( $num > 0 ){
 						<?php 
 						}
 						?>
-						<tr height="23">
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>&nbsp;</td>
-						</tr>
         			</table>
 				</td>
       		</tr>
@@ -703,7 +699,7 @@ FROM (
 		AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
-		
+		AND `profilecode` != 'WET' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -746,9 +742,9 @@ $outlab_row = mysql_num_rows($outlab_query);
  ?>
 	<tr>
 		<td colspan="2" valign="top">
-			<table width="100%" border="0" style="border-collapse:collapse; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;" bordercolor="#000000" cellpadding="0" cellspacing="0">
+			<table width="100%" border="1" style="border-collapse:collapse; border-bottom-style:none;" bordercolor="#000000" cellpadding="0" cellspacing="0">
 				<tr>
-					<td height="52" valign="top" style="padding: 3px;">
+					<td height="52" valign="top" style="padding: 2px;">
 						<table width="100%" border="0" class="text3" cellpadding="0" cellspacing="0">
 							<tr>
 								<td width="28%" valign="top" bgcolor="#CCCCCC" align="center"><strong>รายการตรวจ</strong></td>
@@ -787,6 +783,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 								
 								$objQuery = mysql_query($strSQL);
 								while($objResult = mysql_fetch_array($objQuery)){
+
+									$objResult["labname"] = str_replace('*', '', $objResult["labname"]);
 
 									if($objResult["labname"]=="Blood Sugar"){
 										$labmean="ระดับน้ำตาลในเลือด";
@@ -841,6 +839,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="ไวรัส เอช ไอ วี";
 									}else if($objResult["labname"]=="VDRL/RPR"){
 										$labmean="เชื้อซิฟิลิส";
+									}else if($objResult["labname"]=="Stool Occult"){
+										$labmean="ตรวจเลือดในอุจจาระ";
 									}
 
 									$app = '';
@@ -1011,10 +1011,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 										}
 									}
 
-									if( $objResult["labcode"]=='PARASI'){
+									if( $objResult["labcode"]=='PARASI' ){
 										
 										$clean_result = strtolower(trim($objResult["result"]));
-										$match_parasite = preg_match('/(not found)/', $clean_result, $matchs_parasite);
+										$match_parasite = preg_match('/(not\s+found)/', $clean_result, $matchs_parasite);
 
 										if( $match_parasite > 0 ){
 											$app="ปกติ";	
@@ -1050,6 +1050,18 @@ $outlab_row = mysql_num_rows($outlab_query);
 											$objResult["result"] = 'Positive';
 										}
 									}
+
+									// Stool Occult ตรวจเลือดในอุจจาระ
+									if( $objResult["labcode"]=='STOCC'){
+										
+										if( $objResult['result'] == 'Negative' ){
+											$app = 'ปกติ';
+										}elseif ( $objResult['result'] == 'Positive' ) {
+											$app = 'ผิดปกติ';
+										}
+
+									}
+									
 
 
 									// if($objResult['labcode'] == 'HAVTOT'){
@@ -1260,8 +1272,9 @@ $group2_rows = 0;
 if ( $group2_rows > 0 ) {
 ?>
 <tr>
-	<td colspan="2" valign="top" style="padding: 3px;">
-		<table width="100%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
+	<td colspan="2"  valign="top">
+		
+		<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
 			<tr>
 				<td height="30" align="center">
 					<strong class="text" style="font-size:22px"><u>ผลการตรวจทางห้องปฏิบัติการ(เฉพาะกลุ่มผู้สัมผัสอาหาร)</u></strong>
@@ -1335,38 +1348,49 @@ if ( $group2_rows > 0 ) {
 
 ?>
 <tr>
-	<td colspan="2"  valign="top">
-		<table width="100%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">
-			<tr>
-				<td valign="bottom" style="padding: 3px;">
-				
-					<table width="100%" border="0" cellspacing="0" cellpadding="0">
-						<tr valign="middle">
-							<td width="30%"><strong class="text" style="font-size:18px"> <u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u> </strong> </td>
-							<td width="70%">
-								<strong class="text" style="margin-left: 9px;"> : <?php if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"];} ?></strong>
-							</td>
-						</tr>
-					<?php if( !empty($result['va']) ){ ?>           
-						<tr>
-							<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตาบอดสี</u> </strong> </td>
-							<td><strong class="text" style="margin-left: 9px;"> : <?=$result['va'];?></strong> </td>
-						</tr>
-					<?php } ?>
-					<?php if( !empty($result['eye']) ){ ?>           
-						<tr>
-							<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
-							<td><strong class="text" style="margin-left: 9px;"> : <?=$result['eye']." ".$result['eye_detail'];?></strong></td>
-						</tr>
-					<?php } ?>  
-					<?php if( !empty($result['pt']) ){ ?>           
-						<tr>
-							<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
-							<td><strong class="text" style="margin-left: 9px;"> : <?=$result['pt']." ".$result['pt_detail'];?></strong> </td>
-						</tr>
-					<?php } ?>
+    <td colspan="2"  valign="top">
+		<table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; border-top-style:none">          
+        <tr>
+          <td valign="bottom"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+            <tr valign="middle">
+              <td width="30%"><strong class="text" style="font-size:18px"> <u>ผลการตรวจเอกซ์เรย์ (X-RAY)</u> </strong> </td>
+              <td width="70%"><strong class="text" style="margin-left: 9px;"> :
+                <? if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"];} ?>
+              </strong> </td>
+            </tr>
+
+			<?php if( !empty($result['va']) ){ ?>           
+				<tr>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจตาบอดสี</u> </strong> </td>
+					<td><strong class="text" style="margin-left: 9px;"> :
+					<?=$result['va'];?>
+					</strong> </td>
+				</tr>
+			<?php } ?>
+			<?php if( !empty($result['eye']) ){ ?>           
+				<tr>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสายตาเบื้องต้น</u> </strong> </td>
+					<td><strong class="text" style="margin-left: 9px;"> :
+					<?=$result['eye']." ".$result['eye_detail'];?>
+					</strong> </td>
+				</tr>
+			<?php } ?>  
+			<?php if( !empty($result['pt']) ){ ?>           
+				<tr>
+					<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจสมรรถภาพปอด</u> </strong> </td>
+					<td><strong class="text" style="margin-left: 9px;"> :
+					<?=$result['pt']." ".$result['pt_detail'];?>
+					</strong> </td>
+				</tr>
+			<?php } ?>   
 			<?php
-			$sql3="select * from patdata where hn='".$hn."' and code='51410' and date like '$dateekg%' order by row_id desc";
+			$sql3="select * from 
+			patdata where 
+			hn='".$hn."' 
+			and code='51410' 
+			and date like '$dateekg%' 
+			order by row_id desc";
 			$query3=mysql_query($sql3);
 			$num3=mysql_num_rows($query3);
 			// if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
@@ -1383,50 +1407,50 @@ if ( $group2_rows > 0 ) {
 					<strong class="text" style="margin-left: 9px;"> : <?=( !empty($result["ekg"]) ? $result["ekg"] : 'ปกติ' );?></strong>
 				</td>
 			</tr>
-			<?php
-			}
-			?>
+			<?php 
+			} 
+			?>   
 
-				<?php if( !empty($result['altra']) ){ ?>           
-					<tr>
-						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
-						<td><strong class="text" style="margin-left: 9px;"> :
-							<?=$result['altra'];?>
-						</strong> </td>
-					</tr>
-				<?php } ?>
-				<?php if( !empty($result['psa']) ){ ?>           
-					<tr>
-						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
-						<td><strong class="text" style="margin-left: 9px;"> :
-							<?=$result['psa'];?>
-						</strong> </td>
-					</tr>
-				<? } ?>
-				<?php if( !empty($result['hpv']) ){ ?>           
-					<tr>
-						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
-						<td><strong class="text" style="margin-left: 9px;"> :
-							<?=$result['hpv'];?>
-						</strong> </td>
-					</tr>
-				<? } ?>
-				<?php if( !empty($result['mammogram']) ){ ?>           
-					<tr>
-						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
-						<td><strong class="text" style="margin-left: 9px;"> :
-							<?=$result['mammogram'];?>
-						</strong> </td>
-					</tr>
-				<? } ?>
-				<?php if( !empty($result['hearing']) ){ ?>           
-					<tr>
-						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจการได้ยิน</u> </strong> </td>
-						<td><strong class="text" style="margin-left: 9px;"> :
-							<?=$result['hearing'];?>
-						</strong> </td>
-					</tr>
-				<? } ?>
+						<?php if( !empty($result['altra']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['altra'];?>
+								</strong> </td>
+							</tr>
+						<?php } ?>
+						<?php if( !empty($result['psa']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['psa'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
+						<?php if( !empty($result['hpv']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['hpv'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
+						<?php if( !empty($result['mammogram']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['mammogram'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
+						<?php if( !empty($result['hearing']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจการได้ยิน</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['hearing'];?>
+								</strong> </td>
+							</tr>
+						<? } ?>
 				<?php 
 				if( !empty($result['bone_density']) ){
 					?>
@@ -1446,70 +1470,69 @@ if ( $group2_rows > 0 ) {
 					<?php
 				}
 				?>
-			</table>
+          </table>
+          </td>
+        </tr>
+        <tr>
+          <td valign="bottom"><strong class="text" style="font-size:20px">
+<?php
+ if(!empty($result["comment"])){
+	$comment=$result["comment"];
+	echo "ข้อมูลเพิ่มเติม : </strong><span class='text' style='font-size:20px'>$comment</span> <br />";
+ } ?>                
+            <strong class="text" style="font-size:20px">สรุปผลการตรวจ :</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text3">
+          <input type="checkbox" name="checkbox" id="checkbox" />
+          &nbsp;พบแพทย์
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <input type="checkbox" name="checkbox2" id="checkbox2" />
+&nbsp;ไม่ต้องพบแพทย์</span>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="50%" align="center" class="text3">&nbsp;</td>
+                <td width="48%" align="left" class="text3"><?php for($i=1; $i<5; $i++){ echo '&nbsp;'; } ?>แพทย์ผู้ตรวจ</td>
+                <td width="2%" class="text3">&nbsp;</td>
+              </tr>
+							<tr>
+                <td align="center" class="text3">&nbsp;</td>
+                <td align="center" class="text3">พ.อ.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td class="text3">&nbsp;</td>
+              </tr>
+              <tr>
+                <td align="center" class="text3">&nbsp;</td>
+                <td align="center" class="text3">(วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี)</td>
+                <td class="text3">&nbsp;</td>
+              </tr>
+			  <!--
+              <tr>
+                <td align="center" class="text3">&nbsp;</td>
+                <td align="center" class="text3">กุมารแพทย์</td>
+                <td class="text3">&nbsp;</td>
+              </tr>
+			  -->
+              <tr>
+                <td align="center" class="text3">&nbsp;</td>
+                <td align="center" class="text3">ปฏิบัติหน้าที่ประธานฝ่ายตรวจสุขภาพ โรงพยาบาลค่ายสุรศักดิ์มนตรี</td>
+                <td class="text3">&nbsp;</td>
+              </tr>
+            </table>
 			</td>
-			</tr>
-			</table>
-
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">
-				<tr>
-					<td valign="bottom" style="padding: 3px;">
-						<?php
-						if(!empty($result["comment"])){
-							$comment=$result["comment"];
-							echo "ข้อมูลเพิ่มเติม : <strong class=\"text\" style=\"font-size:20px\"><span class='text' style='font-size:20px'>$comment</span> </strong><br />";
-						}
-						?>
-						<strong class="text" style="font-size:20px">สรุปผลการตรวจ :</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text3">
-						<input type="checkbox" name="checkbox" id="checkbox" />&nbsp;พบแพทย์&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="checkbox2" id="checkbox2" />&nbsp;ไม่ต้องพบแพทย์</span>
-					</td>
-				</tr>
-			</table>
-
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-right: 1px solid #000000; border-left: 1px solid #000000;border-bottom: 1px solid #000000;">
-				<tr>
-					<td width="50%" align="center" class="text3">&nbsp;</td>
-					<td width="48%" align="left" class="text3"><?php for($i=1; $i<5; $i++){ echo '&nbsp;'; } ?>แพทย์ผู้ตรวจ</td>
-					<td width="2%" class="text3">&nbsp;</td>
-				</tr>
-				<tr>
-					<td align="center" class="text3">&nbsp;</td>
-					<td align="center" class="text3">พ.อ.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-					<td class="text3">&nbsp;</td>
-				</tr>
-				<tr>
-					<td align="center" class="text3">&nbsp;</td>
-					<td align="center" class="text3">(วรวิทย์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วงษ์มณี)</td>
-					<td class="text3">&nbsp;</td>
-				</tr>
-				<tr>
-					<td align="center" class="text3">&nbsp;</td>
-					<td align="center" class="text3">ปฏิบัติหน้าที่ประธานฝ่ายตรวจสุขภาพ โรงพยาบาลค่ายสุรศักดิ์มนตรี</td>
-					<td class="text3">&nbsp;</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
+          </tr>               
+    </table></td>
+  </tr>
 </table>
-
 <table width="100%" border="0" class="text4">
-	<tr>
-		<td  width="50%" align="center">
-			<strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
-			<strong>Authorise LAB : </strong><?=$authorisename;?><strong> (<?=$authorisedate;?>) </strong>
-			<br />
-		</td>
-	</tr>
+  <tr>
+    <td  width="50%" align="center">
+		<strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
+		<strong>Authorise LAB : </strong><?=$authorisename;?><strong> (<?=$authorisedate;?>) </strong>
+		<br />
+	</td>
+  </tr>
 </table>
-
-<div class="text4"><strong>*** หมายเหตุ *** </strong></div>
-<div class="text4">1. กรณีผลสรุปการตรวจคือพบแพทย์สามารถติดต่อผ่านทางฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.อ.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี ตั้งแต่เวลา 09.00-11.30 น.</div>
-
+<!-- <div class="text4"><strong>*** หมายเหตุ ***</strong> สามารถติดต่อฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.อ.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี เวลา 09.00-11.30 น.</div> -->
 </div>
-
 <?php 
 } // while
 ?>
-
 </body>
 </html>
