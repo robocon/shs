@@ -12,6 +12,8 @@ if( $action == 'save' ) {
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
 
+    $typeReport = $_REQUEST['typeReport'];
+
     $msg = 'บันทึกข้อมูลเรียบร้อย';
 
     if( empty($company) OR empty($company_code) ){
@@ -45,7 +47,7 @@ if( $action == 'save' ) {
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
                 VALUES (
-                NULL,'$company','$company_code','$date_checkup','$year','1','chk_report02.php'
+                    NULL,'$company','$company_code','$date_checkup','$year','1','$typeReport'
                 );";
                 $save = $db->insert($sql);
 
@@ -119,6 +121,12 @@ if( $id > 0 ){
         <div>
             วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
             <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
+        </div>
+        <div>
+            เลือกรายงาน : <select name="typeReport" id="">
+                <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
+                <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
+            </select>
         </div>
         <?php 
         if( $id > 0 ){
