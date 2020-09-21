@@ -11,7 +11,7 @@ function checkPtRight(link, ev, hn){
     // อย่าลืมตรวจดูก่อนว่า include ไฟล์ templates/classic/main.js แล้วรึยัง
     var newSm = new SmHttp();
     newSm.ajax(
-        'http://192.168.143.126/index.php',
+        'http://192.168.1.43/index.php',
         { "hn": hn },
         function(res){
             var txt = JSON.parse(res);
