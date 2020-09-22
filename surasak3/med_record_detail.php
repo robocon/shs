@@ -13,7 +13,7 @@ $sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`statcon`,`
 SUBSTRING(`dateoff`,1,10) AS `dateoff` 
 FROM `dgprofile` 
 WHERE `an` = '$cAn' 
-AND `onoff` = 'ON' 
+#AND `onoff` = 'ON' 
 ORDER BY `date` DESC ";
 $db->select($sql);
 $items = $db->get_items();
@@ -149,6 +149,10 @@ label{
                 $detail_txt .= $dSlip['detail3'].'<br>';
                 $detail_txt .= $dSlip['detail4'];
 
+                $colorOnOff = '';
+                if(strtolower($item['onoff']) === 'off'){
+                    $colorOnOff = 'style="color: red; font-weight: bold; font-size; 28px;"';
+                }
                 ?>
                 <tr>
                     <td align="center">
@@ -163,7 +167,7 @@ label{
                     <td><?=$item['unit'];?></td>
                     <td><b><?=$item['slcode'];?></b><br><?=$detail_txt;?></td>
                     <td><?=$item['statcon'];?></td>
-                    <td><?=$item['onoff'];?></td>
+                    <td <?=$colorOnOff;?> ><?=$item['onoff'];?></td>
                     <td><?=$item['dateoff'];?></td>
                     <td>
                         <input type="text" name="drug_height[<?=$item['row_id'];?>][]" id="" size="5" value="<?=$help_h;?>">
