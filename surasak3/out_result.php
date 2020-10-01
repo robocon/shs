@@ -365,6 +365,28 @@ if(isset($_POST['hn'])){
 						<td><input name="occupa_health" type="text" class="pdxhead" size="50" value="<?=$arrchk['occupa_health']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
+
+					<tr>
+						<td class="pdx">ผลการตรวจ AFP</td>
+						<td><input name="outAfp" type="text" class="pdxhead" size="50" value="<?=$arrchk['outAfp']?>" /></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="pdx">สรุปผลการตรวจ AFP</td>
+						<td><input name="outAfpResult" type="text" class="pdxhead" size="50" value="<?=$arrchk['outAfpResult']?>" /></td>
+						<td>&nbsp;</td>
+					</tr>
+
+					<tr>
+						<td class="pdx">ผลการตรวจ PSA</td>
+						<td><input name="outPsa" type="text" class="pdxhead" size="50" value="<?=$arrchk['outPsa']?>" /></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="pdx">สรุปผลการตรวจ PSA</td>
+						<td><input name="outPsaResult" type="text" class="pdxhead" size="50" value="<?=$arrchk['outPsaResult']?>" /></td>
+						<td>&nbsp;</td>
+					</tr>
 					
 					<!--
 					<tr>
@@ -411,6 +433,12 @@ if(isset($_POST['okhn2'])){
 	$bone_density = htmlspecialchars($_POST['bone_density'], ENT_QUOTES);
 
 	$occupa_health = htmlspecialchars($_POST['occupa_health'], ENT_QUOTES);
+
+
+	$outAfp = (!empty($_POST['outAfp'])) ? trim($_POST['outAfp']) : '';
+	$outAfpResult = (!empty($_POST['outAfpResult'])) ? trim($_POST['outAfpResult']) : '';
+	$outPsa = (!empty($_POST['outPsa'])) ? trim($_POST['outPsa']) : '';
+	$outPsaResult = (!empty($_POST['outPsaResult'])) ? trim($_POST['outPsaResult']) : '';
 
 	if( $data1 == "update" ){
 		if($_POST['eye']=="ปกติ"){
@@ -466,7 +494,11 @@ if(isset($_POST['okhn2'])){
 		`benzene` = '".$_POST['benzene']."',
 		`benzene_result` = '".$_POST['benzene_result']."',
 		`bone_density` = '$bone_density',
-		`occupa_health` = '$occupa_health' 
+		`occupa_health` = '$occupa_health',
+		`outAfp` = '$outAfp',
+		`outAfpResult` = '$outAfpResult',
+		`outPsa` = '$outPsa',
+		`outPsaResult` = '$outPsaResult'
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -521,7 +553,11 @@ if(isset($_POST['okhn2'])){
 			`benzene` = '".$_POST['benzene']."',
 			`benzene_result` = '".$_POST['benzene_result']."',
 			`bone_density` = '$bone_density', 
-			`occupa_health` = '$occupa_health' ";
+			`occupa_health` = '$occupa_health',
+			`outAfp` = '$outAfp',
+			`outAfpResult` = '$outAfpResult',
+			`outPsa` = '$outPsa',
+			`outPsaResult` = '$outPsaResult'";
 			
 	}
 	

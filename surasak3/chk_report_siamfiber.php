@@ -1226,6 +1226,29 @@ $outlab_row = mysql_num_rows($outlab_query);
 								</tr>
 								<?php
 							}
+
+							if( $result['outAfp'] != '' && $result['outAfpResult'] != '' ){ 
+								?>
+								<tr height="23">
+									<td valign="top"><b>การตรวจ AFP</b></td>
+									<td valign="top"><?=$result['outAfp'];?></td>
+									<td valign="top">-</td>
+									<td valign="top"><?=$result['outAfpResult'];?></td>
+								</tr>
+								<?php
+							}
+
+							if( $result['outPsa'] != '' && $result['outPsaResult'] != '' ){ 
+								?>
+								<tr height="23">
+									<td valign="top"><b>การตรวจ PSA</b></td>
+									<td valign="top"><?=$result['outPsa'];?></td>
+									<td valign="top">-</td>
+									<td valign="top"><?=$result['outPsaResult'];?></td>
+								</tr>
+								<?php
+							}
+							
 							?>
 						</table>
 					</td>
