@@ -2,7 +2,7 @@
     session_start();
     if (isset($sIdname)){} else {die;} //for security
     $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
-    $nNetprice =array_sum($aPrice);   
+    $nNetprice =array_sum($aPrice_vat);   
 	$arrmon = array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
 	$Todaynow = date("d")." ".$arrmon[date("n")]." ".(date("Y")+543);
 //    $x--;
@@ -35,7 +35,19 @@ for ($n=1; $n<=$x; $n++){
    if(!empty($aDgcode[$n])){
 		if($aSnspec[$n]!=''){$aSnspec1[$n]='('.$aSnspec[$n].')';}
 		else{$aSnspec1[$n]=$aSnspec[$n];};
-		$query = "INSERT INTO poitems(drugcode,tradname,packing,pack,amount,minimum,totalstk,packpri,price,free,specno,idno) VALUES ('$aDgcode[$n]','$aTrade[$n]','$aPacking[$n]','$aPack[$n]','$aAmount[$n]','$aMinimum[$n]','$aTotalstk[$n]','$aPackpri[$n]','$aPrice[$n]','','$aSpec[$n]','$idno');";
+		$query = "INSERT INTO poitems set drugcode='$aDgcode[$n]',
+		tradname='$aTrade[$n]',
+		packing='$aPacking[$n]',
+		pack='$aPack[$n]',
+		amount='$aAmount[$n]',
+		minimum='$aMinimum[$n]',
+		totalstk='$aTotalstk[$n]',
+		packpri='$aPackpri_vat[$n]',
+		price='$aPrice_vat[$n]',
+		free='',
+		specno='$aSpec[$n]',
+		idno='$idno';";	
+		//echo "==>",$query;
         $result = mysql_query($query) or die("Query failed,insert into poitems");
 	}
 };
@@ -202,24 +214,26 @@ print"<DIV style='left:586PX;top:222PX;width:104PX;height:26PX;'><span class='fc
 				<th style="width:38px;">ลำดับ</th>
 				<th style="width:258px;">รายการ</th>
 				<th style="width:51px;">หน่วยนับ</th>
+				<th style="width:75px;">ขนาดบรรจุ</th>
 				<th style="width:43px;">จำนวน</th>
 				<th style="width:75px;">หน่วยละ<br />
 			    รวม VAT</th>
 			  <th style="width:75px;">ราคา<br />
 		      รวม VAT</th>
-			  <th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
+			  <th  style="width:75px;" class="last_child">คุณลักษณะเฉพาะ สป.<br />
+สาย พ. ที่</th>
 			</tr>
 		</thead>
 		<tbody>
 			
 			<?php
 			$sumtotal=0;
-			for ($ii=1; $ii <= 18; $ii++) { 
+			for ($ii=1; $ii <= 19; $ii++) { 
 				 include("connect.inc");
-				$sql1="select unitpri,part,freelimit,edpri,edpri_from from druglst where drugcode='$aDgcode[$ii]'";
+				$sql1="select unitpri,part,freelimit,edpri,edpri_from,snspec from druglst where drugcode='$aDgcode[$ii]'";
 				//echo $sql;
 				$chkquery=mysql_query($sql1);
-				list($unitpri,$part,$freelimit,$edpri,$edprifrom)=mysql_fetch_array($chkquery);				
+				list($unitpri,$part,$freelimit,$edpri,$edprifrom,$snspec)=mysql_fetch_array($chkquery);				
 				// ราคากลาง
 				//echo "==>".$edpri;
 				
@@ -246,7 +260,7 @@ print"<DIV style='left:586PX;top:222PX;width:104PX;height:26PX;'><span class='fc
 				}
 
 				// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
-				if( empty($cost) ){
+				if(empty($cost) ){
 					if( !empty($unitpri) ){
 						$cost = $unitpri;
 						$from = 5;
@@ -255,24 +269,35 @@ print"<DIV style='left:586PX;top:222PX;width:104PX;height:26PX;'><span class='fc
 				
 				$aTotalpackprice=$aAmount[$ii]*$aPackpri[$ii];
 				$aTotalprice=$aAmount[$ii]*$aPackpri_vat[$ii];
+				
+				/*if(!empty($snspec)){
+					$snspec="<br>(หมายเลขสิ่งอุปกรณ์".$snspec.")";
+				}else{
+					$snspec="&nbsp;";
+				}		*/			
 				?>
 				<tr>
 					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
-					<td><?=( !empty($aTrade[$ii]) ? $aTrade[$ii] : '&nbsp;' );?></td>
+                    <td><? if(!empty($aTrade[$ii])){ echo $aTrade[$ii]; }else{ echo "&nbsp;";}?></td>
 					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
+					<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aPackpri_vat[$ii]) ? $aPackpri_vat[$ii] : '&nbsp;' );?></td><!--หน่วยละรวม VAT-->
 					<td align="right"><?=( !empty($aTotalprice) ? number_format($aTotalprice,2) : '&nbsp;' );?></td><!--ราคารวม VAT-->
 					<td class="last_child" align="center"><?=( !empty($aSpec[$ii]) ? $aSpec[$ii] : '&nbsp;' );?></td>
 				</tr>
 				<?php		  
-			  $sumtotal=$sumtotal+$aTotalpackprice;	  //รวมเงิน
+			 // $sumtotal=$sumtotal+$aTotalpackprice;	  //รวมเงิน
 			}	
 			//คำนวนค่าต่างๆ				
-			  $vat1=$sumtotal*7;			 
-			  $vat=	$vat1/100;	  //ภาษี
+			  $vat1=$nTotalprice*7;		
+			  //echo "$vat1=$nTotalprice*7";	 
+			  $vat=	$vat1/107;	  //ภาษี
+			  //echo "==>".$vat1;
+			  $sumtotal=$nTotalprice-$vat;   //รวมเงิน
 			?>
 			<tr>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -286,6 +311,7 @@ print"<DIV style='left:586PX;top:222PX;width:104PX;height:26PX;'><span class='fc
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 				<td style="border-bottom: 1px solid #000;">ภาษี 7.00 %</td>
 				<td style="border-bottom: 1px solid #000;" align="right"><?=number_format($vat,2);?></td>
 				<td class="last_child">&nbsp;</td>
@@ -295,11 +321,13 @@ print"<DIV style='left:586PX;top:222PX;width:104PX;height:26PX;'><span class='fc
 				<td>รวม <?=$nItems;?> รายการ</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 				<td style="border-bottom: 1px solid #000;">รวมสุทธิ</td>
 				<td style="border-bottom: 1px solid #000;" align="right"><?=$nNetprice_vat;?></td>
 				<td class="last_child">&nbsp;</td>
 			</tr>
 			<tr>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -318,15 +346,22 @@ print"<DIV style='left:597PX;top:703PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'
 print"<DIV style='left:597PX;top:730PX;width:79PX;height:26PX;TEXT-ALIGN:RIGHT;'>
 	<span class='fc1-0'></span></DIV>";
 print"<DIV style='left:496PX;top:730PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'> </span></DIV>";
-print"<DIV style='left:360PX;top:816PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 15 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
+print"<DIV style='left:360PX;top:816PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 30 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
 print"<DIV style='left:76PX;top:819PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ขอเอกสารใบส่งของ 7 ชุด</span></DIV>";
 print"<DIV style='left:76PX;top:840PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ใบกำกับภาษี 1 ชุด</span></DIV>";
-print"<DIV style='left:360PX;top:842PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
-print"<DIV style='left:360PX;top:868PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
+print"<DIV style='left:360PX;top:836PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
+print"<DIV style='left:360PX;top:856PX;width:319PX;height:27PX;'><span class='fc1-0'>รพ.ค่ายฯ รับเฉพาะยาและเวชภัณฑ์ที่มีอายุเกิน 1 ปีเท่านั้น</span></DIV>";
+print"<DIV style='left:360PX;top:876PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
+
 print"<DIV style='left:10PX;top:873PX;width:209PX;height:27PX;'><span class='fc1-0'>ได้รับใบสั่งซื้อไปแล้ว</span></DIV>";
 print"<DIV style='left:10PX;top:889PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>……………………………………...........</span></DIV>";
+if($sIdname=="ภูมิพัฒน์"){
+print"<DIV style='left:269PX;top:899PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.ต.</span></DIV>";
+print"<DIV style='left:344PX;top:922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(ภูมิพัฒน์&nbsp;&nbsp;สมิทธนโชติ)</span></DIV>";
+}else{
 print"<DIV style='left:269PX;top:899PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.อ. หญิง</span></DIV>";
 print"<DIV style='left:344PX;top:922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(พรทิพา&nbsp;&nbsp;จันทร์ณรงค์)</span></DIV>";
+}
 print"<DIV style='left:10PX;top:925PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
 print"<DIV style='left:344PX;top:942PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>หัวหน้าเจ้าหน้าที่</span></DIV>";
 print"<DIV style='left:10PX;top:951PX;width:209PX;height:27PX;'><span class='fc1-0'>บริษัท&nbsp;&nbsp;.....................................................</span></DIV>";
@@ -420,72 +455,85 @@ print"<DIV style='left:586PX;top:1312PX;width:104PX;height:26PX;'><span class='f
 				<th style="width:55px;">แหล่งที่มาของราคากลาง ***</th>
 				<th style="width:75px;">หน่วยละรวม VAT</th>
 				<th style="width:75px;">ราคารวม VAT</th>
-				<th  style="width:75px;" class="last_child">Spec พบ.ที่</th>
+				<th  style="width:75px;" class="last_child">คุณลักษณะเฉพาะ สป.<br />
+สาย พ. ที่</th>
 			</tr>
 		</thead>
 		<tbody>
 			
 			<?php
 			$sumtotal=0;
-			for ($ii=1; $ii <= 18; $ii++) { 
+			for ($ii=1; $ii <= 19; $ii++) { 
 				 include("connect.inc");
-				$sql1="select unitpri,part,freelimit,edpri,edpri_from from druglst where drugcode='$aDgcode[$ii]'";
+				$sql1="select unitpri,part,freelimit,edpri,edpri_from,snspec from druglst where drugcode='$aDgcode[$ii]'";
 				//echo $sql;
 				$chkquery=mysql_query($sql1);
-				list($unitpri,$part,$freelimit,$edpri,$edprifrom)=mysql_fetch_array($chkquery);				
+				list($unitpri,$part,$freelimit,$edpri,$edprifrom,$snspec)=mysql_fetch_array($chkquery);				
 				// ราคากลาง
 				//echo "==>".$edpri;
 				
 				$cost = false;
-				$from = '&nbsp;';
-
-				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรเบิกได้ไม่เกิน
+				
+				//  ถ้าเป็นอุปกรณ์ เทียบจาก อุปกรณ์เบิกได้ไม่เกิน
 				if( $part == 'DPY' OR $part == 'DPN' ){
 
 					// ราคาอุปกรณ์เบิกได้ไม่เกิน
 					if( $freelimit > 0 ){
-						$cost = $freelimit;
-						$from = 3;
+						$cost = $freelimit;  //
+						if($edprifrom==0 && $edprifrom !=""){  //ถ้าแหล่งที่มาราคากลางเป็นค่าว่าง
+							$from = 3;
+						}else{  //ถ้าแหล่งที่มาไม่ใช่ค่าว่าง
+							$from = $edprifrom;
+						}
 					}
-
-				}else{
-
-					// ราคากลาง
-					if( $edpri > 0 ){
+				}else{  //ถ้าเป็นยา/เวชภัณฑ์
+					// ราคากลางต้องมากกว่า 0
+					if( $edpri > 0 ){  //ถ้าราคากลางมากกว่า 0
 						$cost = $edpri;
-						$from = 3;
-					}
-
-				}
-
-				// ถ้าไม่มีราคากลาง หรือ ราคาอุปกรณ์ให้ใช้ราคาทุน
-				if( empty($cost) ){
-					if( !empty($unitpri) ){
-						$cost = $unitpri;
-						$from = 5;
+						if($edprifrom==0 && $edprifrom !=""){  //ถ้าแหล่งที่มาราคากลางยังไม่มีการกำหนดค่า
+							$from = 3;
+						}else{  //ถ้าแหล่งที่มามีข้อมูลแล้ว
+							$from = $edprifrom;
+						}
+					}else{
+						$cost = $edpri;
+						if($edprifrom==0 && $edprifrom !=""){  //ถ้าแหล่งที่มาราคากลางยังไม่มีการกำหนดค่า
+							$from = 5;
+						}else{  //ถ้าแหล่งที่มามีข้อมูลแล้ว
+							$from = $edprifrom;
+						}					
 					}
 				}
 				
 				$aTotalpackprice=$aAmount[$ii]*$aPackpri[$ii];
 				$aTotalprice=$aAmount[$ii]*$aPackpri_vat[$ii];
+				
+				/*if(!empty($snspec)){
+					$snspec="<br>(หมายเลขสิ่งอุปกรณ์".$snspec.")";
+				}else{
+					$snspec="&nbsp;";
+				}*/				
 				?>
 				<tr>
 					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
-					<td><?=( !empty($aTrade[$ii]) ? $aTrade[$ii] : '&nbsp;' );?></td>
+					<td><? if(!empty($aTrade[$ii])){ echo $aTrade[$ii]; }else{ echo "&nbsp;";}?></td>
 					<td><?=( !empty($aPacking[$ii]) ? $aPacking[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=$cost;?></td>
-					<td align="center"><?=$from;?></td>
+					<td align="center"><?=$from;?></td>  <!--แหล่งที่มาของราคากลาง-->
 					<td align="right"><?=( !empty($aPackpri_vat[$ii]) ? $aPackpri_vat[$ii] : '&nbsp;' );?></td><!--หน่วยละรวม VAT-->
 					<td align="right"><?=( !empty($aTotalprice) ? number_format($aTotalprice,2) : '&nbsp;' );?></td><!--ราคารวม VAT-->
 					<td class="last_child" align="center"><?=( !empty($aSpec[$ii]) ? $aSpec[$ii] : '&nbsp;' );?></td>
 				</tr>
 				<?php		  
-			  $sumtotal=$sumtotal+$aTotalpackprice;	  //รวมเงิน
+			 // $sumtotal=$sumtotal+$aTotalpackprice;	  //รวมเงิน
 			}	
 			//คำนวนค่าต่างๆ				
-			  $vat1=$sumtotal*7;			 
-			  $vat=	$vat1/100;	  //ภาษี
+			  $vat1=$nTotalprice*7;		
+			  //echo "$vat1=$nTotalprice*7";	 
+			  $vat=	$vat1/107;	  //ภาษี
+			  //echo "==>".$vat1;
+			  $sumtotal=$nTotalprice-$vat;   //รวมเงิน
 			?>
 			<tr>
 				<td>&nbsp;</td>
@@ -544,12 +592,20 @@ print"<DIV style='left:496PX;top:1820PX;width:86PX;height:26PX;TEXT-ALIGN:RIGHT;
 print"<DIV style='left:360PX;top:1933PX;width:263PX;height:27PX;'><span class='fc1-0'>ส่งของภายใน 15 วัน นับจากวันที่ที่ลงในใบสั่งซื้อ</span></DIV>";
 print"<DIV style='left:76PX;top:1936PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ขอเอกสารใบส่งของ 7 ชุด</span></DIV>";
 print"<DIV style='left:76PX;top:1957PX;width:128PX;height:27PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>ใบกำกับภาษี 1 ชุด</span></DIV>";
-print"<DIV style='left:360PX;top:1959PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
-print"<DIV style='left:360PX;top:1985PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
+print"<DIV style='left:360PX;top:1953PX;width:319PX;height:27PX;'><span class='fc1-0'>ถ้าไม่สามารถส่งของได้ตามกำหนด ให้ติดต่อกลับภายใน 5 วัน</span></DIV>";
+print"<DIV style='left:360PX;top:1973PX;width:319PX;height:27PX;'><span class='fc1-0'>รพ.ค่ายฯ รับเฉพาะยาและเวชภัณฑ์ที่มีอายุเกิน 1 ปีเท่านั้น</span></DIV>";
+print"<DIV style='left:360PX;top:1993PX;width:263PX;height:27PX;'><span class='fc1-0'>โทรศัพท์ 054-839305 ต่อ 1163    FAX. 054-839314</span></DIV>";
+
 print"<DIV style='left:10PX;top:1985PX;width:209PX;height:27PX;'><span class='fc1-0'>ได้รับใบสั่งซื้อไปแล้ว</span></DIV>";
+
 print"<DIV style='left:10PX;top:2006PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>……………………………………...........</span></DIV>";
+if($sIdname=="ภูมิพัฒน์"){
+print"<DIV style='left:269PX;top:2016PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.ต.</span></DIV>";
+print"<DIV style='left:344PX;top:2039PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(ภูมิพัฒน์&nbsp;&nbsp;สมิทธนโชติ)</span></DIV>";
+}else{
 print"<DIV style='left:269PX;top:2016PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.อ. หญิง</span></DIV>";
 print"<DIV style='left:344PX;top:2039PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(พรทิพา&nbsp;&nbsp;จันทร์ณรงค์)</span></DIV>";
+}
 print"<DIV style='left:10PX;top:2042PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
 print"<DIV style='left:344PX;top:2059PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>หัวหน้าเจ้าหน้าที่</span></DIV>";
 print"<DIV style='left:10PX;top:2068PX;width:209PX;height:27PX;'><span class='fc1-0'>บริษัท&nbsp;&nbsp;.....................................................</span></DIV>";
