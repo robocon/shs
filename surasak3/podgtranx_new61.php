@@ -359,8 +359,8 @@ if($sIdname=="ภูมิพัฒน์"){
 print"<DIV style='left:269PX;top:899PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.ต.</span></DIV>";
 print"<DIV style='left:344PX;top:922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(ภูมิพัฒน์&nbsp;&nbsp;สมิทธนโชติ)</span></DIV>";
 }else{
-print"<DIV style='left:269PX;top:899PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.อ. หญิง</span></DIV>";
-print"<DIV style='left:344PX;top:922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(พรทิพา&nbsp;&nbsp;จันทร์ณรงค์)</span></DIV>";
+print"<DIV style='left:269PX;top:899PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.ท. หญิง</span></DIV>";
+print"<DIV style='left:344PX;top:922PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(วนิดา&nbsp;&nbsp;โล่ห์สุวรรณ)</span></DIV>";
 }
 print"<DIV style='left:10PX;top:925PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
 print"<DIV style='left:344PX;top:942PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>หัวหน้าเจ้าหน้าที่</span></DIV>";
@@ -603,8 +603,8 @@ if($sIdname=="ภูมิพัฒน์"){
 print"<DIV style='left:269PX;top:2016PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.ต.</span></DIV>";
 print"<DIV style='left:344PX;top:2039PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(ภูมิพัฒน์&nbsp;&nbsp;สมิทธนโชติ)</span></DIV>";
 }else{
-print"<DIV style='left:269PX;top:2016PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.อ. หญิง</span></DIV>";
-print"<DIV style='left:344PX;top:2039PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(พรทิพา&nbsp;&nbsp;จันทร์ณรงค์)</span></DIV>";
+print"<DIV style='left:269PX;top:2016PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-5'>พ.ท. หญิง</span></DIV>";
+print"<DIV style='left:344PX;top:2039PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>(วนิดา&nbsp;&nbsp;โล่ห์สุวรรณ)</span></DIV>";
 }
 print"<DIV style='left:10PX;top:2042PX;width:209PX;height:27PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>(…………………………………….)</span></DIV>";
 print"<DIV style='left:344PX;top:2059PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>หัวหน้าเจ้าหน้าที่</span></DIV>";
