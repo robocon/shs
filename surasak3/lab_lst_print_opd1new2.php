@@ -273,5 +273,10 @@ function getFooter($arr3){
 		<?php
 	}
 	?>
+<script>
+window.onload = function(){
+	window.print();
+}
+</script>
 </body>
 </html>

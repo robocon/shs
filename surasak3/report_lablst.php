@@ -183,7 +183,10 @@ $i=0;
 	<td align="center" ><?php echo $sourcename;?></td>
 	<td align="center" ><?php echo $clinicianname;?></td>
 <!--	<td align="center"><A HREF="report_lablst_detail.php?hn=<?//php echo urlencode($_POST["search_hn"]);?>&lab_date=<?//php echo urlencode($arr["dateresult"]);?>&labnumber=<?//=$arr['labnumber'];?>" target="_blank" >ดูข้อมูล</A></td>-->
-	<td align="center"><A HREF="lab_lst_print_opd1new.php?hn=<?php echo urlencode($_POST["search_hn"]);?>&lab_date=<?php echo urlencode($arr["dateresult"]);?>&labnumber=<?=$arr['labnumber'];?>&listlab=<?php echo implode(", ",$list_lab);?>&depart=<?php echo $sourcename;?>&doctor=<?php echo $clinicianname;?>" target="_blank" >พิมพ์ใบรายงานผล</A></td>
+	<td align="center">
+		<A HREF="lab_lst_print_opd1new.php?hn=<?php echo urlencode($_POST["search_hn"]);?>&lab_date=<?php echo urlencode($arr["dateresult"]);?>&labnumber=<?=$arr['labnumber'];?>&listlab=<?php echo implode(", ",$list_lab);?>&depart=<?php echo $sourcename;?>&doctor=<?php echo $clinicianname;?>" target="_blank" >พิมพ์ใบรายงานผล</A> || 
+		<A HREF="lab_lst_print_opd1new2.php?hn=<?php echo urlencode($_POST["search_hn"]);?>&lab_date=<?php echo urlencode($arr["dateresult"]);?>&labnumber=<?=$arr['labnumber'];?>&listlab=<?php echo implode(", ",$list_lab);?>&depart=<?php echo $sourcename;?>&doctor=<?php echo $clinicianname;?>" target="_blank" >ใบรายงานใหม่</A>
+	</td>
 </tr>
 <?php
 	}	
