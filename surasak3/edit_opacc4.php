@@ -29,7 +29,7 @@ $items = $db->get_items();
 foreach ($items as $key => $item) {
     ?>
     <tr>
-        <td><a href="<?=$item['row_id'];?>"><?=$item['row_id'];?></a></td>
+        <td><?=$item['row_id'];?></td>
         <td><?=$item['date'];?></td>
         <td><?=$item['code'];?></td>
         <td><?=$item['detail'];?></td>
