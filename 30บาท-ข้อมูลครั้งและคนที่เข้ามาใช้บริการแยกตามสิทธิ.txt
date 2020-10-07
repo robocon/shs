@@ -1,0 +1,29 @@
+// ดูจำนวนครั้งในการเข้ามาใช้บริการแยกตามสิทธิ
+SELECT ptright,COUNT(row_id) 
+from opday 
+where thidate like '2563-04%' 
+group by substr(ptright,1,3)
+
+
+// ดูจำนวนครั้งในการเข้ามาใช้บริการนับเป็นคน
+SELECT a.ptright,COUNT(a.row_id) 
+from ( 
+select *,count(hn) as `perOne` from opday where thidate like '2563-04%' group by hn 
+) AS a 
+group by substr(a.ptright,1,3) 
+
+
+// r03 เบิกจ่ายตรง
+// r33 อปท
+select * 
+from opcard 
+where ptright like 'r33%' 
+and ( idcard != '-' and idcard != '' ) 
+and ( idguard NOT LIKE 'mx07%' and idguard NOT LIKE 'mx04%' ) 
+
+select * 
+from opcard 
+where regisdate like '2020-04%' 
+AND ptright like 'r33%' 
+and ( idcard != '-' and idcard != '' ) 
+and ( idguard NOT LIKE 'mx07%' and idguard NOT LIKE 'mx04%' ) 

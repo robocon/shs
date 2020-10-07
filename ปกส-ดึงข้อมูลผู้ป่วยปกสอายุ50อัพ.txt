@@ -1,0 +1,8 @@
+SELECT `row_id`,`idcard`,`hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `dbirth`, CONCAT(ptffone,',',phone,',',phone2) AS phone 
+,CONCAT((SUBSTR(`dbirth`,1,4)-543),SUBSTR(`dbirth`,5,6)), 
+TIMESTAMPDIFF(YEAR, thDateToEn(`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age` 
+FROM `opcard` 
+WHERE `ptright` LIKE 'R07%' 
+AND ( `idguard` NOT LIKE 'MX07%' AND `idguard` NOT LIKE 'MX04%' AND `idcard` != '' ) 
+AND TIMESTAMPDIFF(YEAR, thDateToEn(`dbirth`), SUBSTRING(NOW(), 1, 10)) >= 50
+ORDER BY row_id ASC 
