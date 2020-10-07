@@ -26,6 +26,7 @@ $items = $db->get_items();
     <td>paid</td>
     <td>tvn</td>
     <td>cashok</td>
+    <td></td>
 </tr>
 
 <?php
@@ -42,6 +43,7 @@ foreach ($items as $key => $item) {
         <td><?=$item['paid'];?></td>
         <td><?=$item['tvn'];?></td>
         <td><?=$item['cashok'];?></td>
+        <td><a href="edit_opacc5.php?type=depart&id=<?=$item['row_id'];?>" target="edit">edit</a></td>
     </tr>
     <?php
 }

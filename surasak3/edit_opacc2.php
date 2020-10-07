@@ -40,6 +40,7 @@ if ($_REQUEST['hn']) {
             <td>billno</td>
             <td>vn</td>
             <td>paidcscd</td>
+            <td></td>
         </tr>
     
     <?php
@@ -56,6 +57,7 @@ if ($_REQUEST['hn']) {
             <td><?=$item['billno'];?></td>
             <td><?=$item['vn'];?></td>
             <td><?=$item['paidcscd'];?></td>
+            <td><a href="edit_opacc5.php?type=opacc&id=<?=$item['row_id'];?>" target="edit">edit</a></td>
         </tr>
         <?php
     }
