@@ -85,6 +85,8 @@ if($_POST['lockptright5']=="lock"){
 	$mother_id = $_POST['mother_id'];
 	$couple_id = $_POST['couple_id'];
 
+	$name = $_POST['name'];
+	$surname = $_POST['surname'];
 
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
@@ -124,7 +126,6 @@ $sql = "UPDATE bed SET ptname='$fname' WHERE hn='$cHn' limit 1";
 $result = mysql_query($sql) or die("Query failed bed");
 
 $sql = "UPDATE ipcard SET ptname='$fname' WHERE hn='$cHn'  limit 1";
-
 $result = mysql_query($sql) or die("Query failed ipcard");
 
 If (!$result){
