@@ -282,7 +282,6 @@ while ($other = mysql_fetch_assoc($query1)) {
     $otherList[$key] = $other['autonumber'];
 }
 
-
 ?>
 
 
@@ -406,7 +405,7 @@ if($flag=="N" || $flag=="L"){
 ?></td>
     <td align="center"><?php 
     $autonumber = '';
-    $autonumber = $otherList['HDL'];
+    $autonumber = $otherList['BUN'];
 $sql6="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
@@ -426,10 +425,11 @@ if($flag=="N"){
     <td align="center"><?php 
     $autonumber = '';
     $autonumber = $otherList['CREA'];
+    $autonumber = $otherList['CREAG'];
 $sql7="SELECT b.result, b.flag 
-FROM resulthead AS a
+FROM resulthead AS a 
 INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
-WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+WHERE ( b.labcode = 'CREA' OR b.labcode = 'CREAG' ) AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql7;
@@ -742,16 +742,16 @@ if($flag=="N"){
 	?></td>
     <td>
     <?php
-    if( !empty($result['altra']) ){
-        echo $result['altra'];
+    if( !empty($result2['altra']) ){
+        echo $result2['altra'];
     }
     ?>
     </td>
     <td>
     <?php 
     // ต่อมลูกหมากโดยการคลำ
-    if( !empty($result['psa']) ){
-        echo $result['psa'];
+    if( !empty($result2['psa']) ){
+        echo $result2['psa'];
     }
     ?>
     </td>
