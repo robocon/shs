@@ -49,57 +49,57 @@ $company = mysql_fetch_assoc($q);
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['company_name'];?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
 <div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?> จำนวน <?=$num;?> ราย</strong></div>
-<table width="100%" class="chk_table">
+<table width="150%" class="chk_table">
   <tr>
-    <th width="3%" rowspan="2" align="center">ลำดับ</th>
+    <th width="5%" rowspan="2" align="center">ลำดับ</th>
     <th width="5%" rowspan="2" align="center">HN</th>
     <th width="15%" rowspan="2" align="center">ชื่อ - สกุล</th>
-    <th width="4%" rowspan="2" align="center">อายุ</th>
+    <th width="5%" rowspan="2" align="center">อายุ</th>
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th colspan="28" align="center">รายการตรวจ</th>
+    <th colspan="31" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
 
   <tr>
-    <th width="3%" align="center">PE</th>
-    <th width="7%" align="center">X-RAY</th>
+    <th width="5%" align="center">PE</th>
+    <th width="5%" align="center">X-RAY</th>
     <th width="5%" align="center">CBC</th>
     <th width="5%" align="center">UA</th>
     <th width="5%" align="center">BS</th>
-    <th width="6%" align="center">CHOL</th>
-    <th width="6%" align="center">TRIG</th>
+    <th width="5%" align="center">CHOL</th>
+    <th width="5%" align="center">TRIG</th>
     <th width="5%" align="center">HDL</th>
     <th width="5%" align="center">LDL</th>
     <th width="5%" align="center">BUN</th>
-    <th width="3%" align="center">CR</th>
-    <th width="6%" align="center">URIC</th>
-    <th width="7%" align="center">SGOT</th>
-    <th width="6%" align="center">SGPT</th>
-    <th width="4%" align="center">ALK</th>
-    <th width="7%" align="center">HBsAg</th>
-    <th width="6%" align="center">FOBT</th>
+    <th width="5%" align="center">CR</th>
+    <th width="5%" align="center">URIC</th>
+    <th width="5%" align="center">SGOT</th>
+    <th width="5%" align="center">SGPT</th>
+    <th width="5%" align="center">ALK</th>
+    <th width="5%" align="center">HBsAg</th>
+    <th width="5%" align="center">FOBT</th>
 
-    <th width="6%" align="center">Anti-HAV IgG</th>
-    <th width="6%" align="center">Stool Exam</th>
-    <th width="6%" align="center">Stool Culture</th>
-    <th width="6%" align="center">Stool Occult</th>
+    <th width="5%" align="center">Anti-HAV IgG</th>
+    <th width="5%" align="center">Stool Exam</th>
+    <th width="5%" align="center">Stool Culture</th>
+    <th width="5%" align="center">Stool Occult</th>
 
-    <th width="6%" align="center">AFP</th>
-    <th width="6%" align="center">PSA</th>
+    <th width="5%" align="center">AFP</th>
+    <th width="5%" align="center">PSA</th>
 
-    <th width="6%" align="center">METAMP</th>
+    <th width="5%" align="center">METAMP</th>
     <th width="5%" align="center">ABOC</th>
-    <th width="6%" align="center">EKG</th>
-    <th width="6%" align="center">V/A</th>
-    <th width="6%" align="center">สายตา</th>
-    <th width="6%" align="center">สมรรถภาพปอด</th>
-    <th width="6%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
-    <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
-    <th width="5%" align="center">พบแพทย์</th>
-    <th width="6%" align="center">ไม่พบแพทย์</th>
+    <th width="5%" align="center">EKG</th>
+    <th width="5%" align="center">V/A</th>
+    <th width="10%" align="center">สายตา</th>
+    <th width="10%" align="center">สมรรถภาพปอด</th>
+    <th width="10%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
+    <th width="10%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th width="10%" align="center">พบแพทย์</th>
+    <th width="10%" align="center">ไม่พบแพทย์</th>
   </tr>
 <?php
 $i=0;
@@ -116,28 +116,48 @@ while($result = mysql_fetch_array($out_result_sql)){
         $result["HN"] = $result["hn"];
     }
 
-$sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
-$query2 = mysql_query($sql2);
-$result2 = mysql_fetch_array($query2);
+    $hn = $result['HN'];
 
-if(empty($age)){
-$age=$result2["age"];
-}
+    $sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
+    $query2 = mysql_query($sql2);
+    $result2 = mysql_fetch_array($query2);
 
-$i++;
-$ptname=$result2["ptname"];
-if($result2["bp1"] && $result2["bp2"]){
-	$bp=$result2["bp1"]."/".$result2["bp2"];
-}else if($result2["bp3"] && $result2["bp4"]){
-	$bp=$result2["bp3"]."/".$result2["bp4"];
-}else{
-	$bp="&nbsp;";
-}
-if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
-	$disease="ไม่มี";
-}else{
-	$disease="มี";
-}
+    if(empty($age)){
+        $age=$result2["age"];
+    }
+
+    $i++;
+    $ptname=$result2["ptname"];
+    if($result2["bp1"] && $result2["bp2"]){
+        $bp=$result2["bp1"]."/".$result2["bp2"];
+    }else if($result2["bp3"] && $result2["bp4"]){
+        $bp=$result2["bp3"]."/".$result2["bp4"];
+    }else{
+        $bp="&nbsp;";
+    }
+    if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
+        $disease="ไม่มี";
+    }else{
+        $disease="มี";
+    }
+
+    $sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$camp' AND `hn` = '$hn' ";
+    $q = mysql_query($sql);
+    // $db->select($sql);
+    $labItemList = array();
+    while ($testLab = mysql_fetch_assoc($q)) {
+        # code...
+        $labItemList[] = $testLab;
+    }
+
+	// $labItemList = $db->get_items();
+	$labnumberArray = array();
+	foreach ($labItemList as $key => $lit) {
+		$labnumberArray[] = " `labnumber` = '".$lit['labnumber']."'";
+	}
+	$whereLabnumber = implode(' OR ', $labnumberArray);
+	$whereLabnumber = "( $whereLabnumber )";
+
 
     $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
     FROM `resulthead` 
@@ -180,13 +200,14 @@ $dxStat = mysql_fetch_assoc($queryStat);
 $stat_cbc = $dxStat['stat_cbc'];
 $stat_ua = $dxStat['stat_ua'];
 
+// CBC
 $sql18="SELECT * 
 FROM resulthead 
 WHERE profilecode = 'CBC' 
 AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+AND $whereLabnumber 
 GROUP BY `profilecode` ";
-
 $query18=mysql_query($sql18);
 $numcbc=mysql_num_rows($query18);
 if($numcbc > 0){
@@ -200,12 +221,15 @@ if($numcbc > 0){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?php
+    <td align="center"><?php 
+// UA 
 $sql19="SELECT * 
-FROM resulthead WHERE profilecode = 'UA' AND hn = '$pt_hn' 
+FROM resulthead 
+WHERE profilecode = 'UA' 
+AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+AND $whereLabnumber 
 GROUP BY `profilecode` ";
-//echo $sql19;
 $query19=mysql_query($sql19);
 $numua=mysql_num_rows($query19);
 if($numua > 0){
@@ -218,15 +242,64 @@ if($numua > 0){
 }else{
 	echo "&nbsp;";
 }
-?></td>
-    <td align="center"><?php
+?></td> 
+
+<?php 
+// แลปอื่นๆ ที่ไม่ใช่ CBC และ UA
+$sql1 = "SELECT x.`profilecode`,x.`autonumber`,b.seq 
+FROM ( 
+    SELECT MAX(`autonumber`) AS `latest_id` 
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+	AND $whereLabnumber 
+    AND ( 
+		`profilecode` != 'CBC' 
+        AND `profilecode` != 'UA' 
+		AND `profilecode` != 'AFP' 
+		AND `profilecode` != 'CEA' 
+		AND `profilecode` != 'PSA' 
+		AND `profilecode` != 'CA125' 
+		AND `profilecode` != '38302' 
+
+		AND `profilecode` != 'AHAV' 
+		AND `profilecode` != 'BENZEN' 
+		AND `profilecode` != 'XYLENE' 
+		AND `profilecode` != 'WET' 
+    ) 
+	GROUP BY `profilecode` 
+) AS a 
+LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
+LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
+WHERE b.`result` != 'DELETE' 
+GROUP BY x.`profilecode` 
+ORDER BY b.`seq` ASC, a.`latest_id` ASC ";
+$query1 = mysql_query($sql1) or die( mysql_error() );
+$otherResultLists = mysql_num_rows($query1);
+
+$otherList = array();
+while ($other = mysql_fetch_assoc($query1)) {
+    $key = $other['profilecode'];
+    $otherList[$key] = $other['autonumber'];
+}
+
+
+?>
+
+
+
+
+
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['GLU'];
+
 $sql1="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM resulthead AS a 
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
-//echo $sql1;
+
 $query1=mysql_query($sql1);
 list($glu,$flag)=mysql_fetch_array($query1);
 if($flag=="N" || $flag=="L"){
@@ -236,11 +309,15 @@ if($flag=="N" || $flag=="L"){
 }else{
 	echo "&nbsp;";
 }
+
 ?>    </td>
     <td align="center"><?php
+    $autonumber = '';
+    $autonumber = $otherList['CHOL'];
+
 $sql2="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'CHOL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -256,10 +333,12 @@ if($flag=="N"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?php
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['TRIG'];
 $sql3="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'TRIG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -275,10 +354,12 @@ if($flag=="N"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?php
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['HDL'];
 $sql4="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'HDL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -294,10 +375,20 @@ if($flag=="N" || $flag=="H"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+
+    $autonumber = '';
+    if ($otherList['LDL']) {
+        $autonumber = $otherList['LDL'];
+    }elseif ($otherList['LDLC']) {
+        $autonumber = $otherList['LDLC'];
+    }elseif ($otherList['10001']) {
+        $autonumber = $otherList['10001'];
+    }
+
 $sql5="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE (b.labcode = 'LDL' OR b.labcode = 'LDLC' OR b.labcode='10001') AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -313,10 +404,12 @@ if($flag=="N" || $flag=="L"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['HDL'];
 $sql6="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'BUN' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -330,10 +423,12 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$bun</strong>";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['CREA'];
 $sql7="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
@@ -347,10 +442,12 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$crea</strong>";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['URIC'];
 $sql8="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -364,10 +461,12 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$uric</strong>";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['AST'];
 $sql9="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'AST' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -381,10 +480,12 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$ast</strong>";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['ALT'];
 $sql10="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'ALT' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
@@ -398,10 +499,12 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$alt</strong>";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['ALP'];
 $sql11="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'ALP' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
@@ -415,10 +518,12 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$alp</strong>";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['HBSAG'];
 $sql12="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'HBSAG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
@@ -434,10 +539,12 @@ if($hbsag=="Negative"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+    <td align="center"><?php 
+    $autonumber = '';
+    $autonumber = $otherList['OCCULT'];
 $sql13="SELECT b.result, b.flag 
 FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
 WHERE b.labcode = 'OCCULT' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
@@ -458,7 +565,7 @@ if($hbsag=="Negative"){
 <td align="center">
     <?php 
 
-    $hn = $result['HN'];
+    
 
     $sql = "SELECT b.`result`, b.`flag` 
     FROM ( 
@@ -495,11 +602,17 @@ if($hbsag=="Negative"){
     ) AS a
     INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
     WHERE b.result !='DELETE' OR b.result !='*' ";
-
+    // dump($sql);
     $query13 = mysql_query($sql);
     list($result, $flag) = mysql_fetch_array($query13);
 
-    echo $result;
+    // echo $result;
+
+    $result_outlab_txt = 'ปกติ';
+    if( $flag != 'N' ){
+        $result_outlab_txt = 'ผิดปกติ';
+    }
+    echo $result_outlab_txt;
     ?>
 </td> 
 <!-- Stool Culture -->
@@ -531,6 +644,37 @@ if( $stoccRes == 'Negative' ){
 
 ?>
 <td align="center"><?=$stoccTxt;?></td>
+
+
+<?php 
+
+$sql = "SELECT a.*, c.`labcode`, c.`result`,c.`normalrange`,c.`flag`
+FROM (
+	SELECT MAX(`autonumber`) AS `autonumber`
+	FROM `resulthead` 
+	WHERE `hn` = '$hn' 
+	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+	AND $whereLabnumber 
+	AND `testgroupcode` = 'OUT' 
+	GROUP BY `profilecode` 
+) AS b 
+LEFT JOIN `resulthead` AS a ON a.`autonumber` = b.`autonumber` 
+LEFT JOIN `resultdetail` AS c ON c.`autonumber` = b.`autonumber` 
+ORDER BY c.seq ASC";
+$outlab_query = mysql_query($sql) or die( mysql_error() );
+
+$outLists = array();
+while( $outlab = mysql_fetch_assoc($outlab_query)){ 
+    $key = $outlab['labcode'];
+    $outLists[$key] = $outlab['result'];
+}
+
+$AFP = ( !empty($outLists['AFP']) ) ? $outLists['AFP'] : '' ;
+$PSA = ( !empty($outLists['PSA']) ) ? $outLists['PSA'] : '' ;
+?>
+<td><?=$AFP;?></td>
+<td><?=$PSA;?></td>
+
 
 <td align="center">
 <?php 
