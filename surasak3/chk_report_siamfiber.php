@@ -101,6 +101,16 @@ while($result = mysql_fetch_assoc($row2)){
 	$hn = $result["hn"];
 	$show_date = $result['show_date'];
 
+	$sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$showpart' AND `hn` = '$hn' ";
+	$db->select($sql);
+	$labItemList = $db->get_items();
+	$labnumberArray = array();
+	foreach ($labItemList as $key => $lit) {
+		$labnumberArray[] = " `labnumber` = '".$lit['labnumber']."'";
+	}
+	$whereLabnumber = implode(' OR ', $labnumberArray);
+	$whereLabnumber = "( $whereLabnumber )";
+
 	$exam_no = $result['exam_no'];
 
 	$c_s = $result['cs'];
@@ -144,7 +154,7 @@ while($result = mysql_fetch_assoc($row2)){
 		FROM `resulthead` 
 		WHERE `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 		AND `hn` = '$hn' 
-		AND `labnumber` = '$exam_no' 
+		AND $whereLabnumber 
 		ORDER BY `autonumber` 
 		DESC LIMIT 1 
 
@@ -316,7 +326,7 @@ while($result = mysql_fetch_assoc($row2)){
     $sql55 = "SELECT * 
     FROM resulthead 
     WHERE (profilecode = 'CBC' OR profilecode = 'UA') 
-	AND `labnumber` = '$exam_no' 
+	AND $whereLabnumber 
     AND hn = '$hn' 
     AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
     GROUP BY `profilecode` 
@@ -337,7 +347,7 @@ while($result = mysql_fetch_assoc($row2)){
 	WHERE profilecode='CBC' 
 	AND hn = '".$hn."' 
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
-	ANd `labnumber` = '$exam_no' 
+	ANd $whereLabnumber 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql) or die( mysql_error() );
 	$arrresult = mysql_fetch_array($query);
@@ -488,7 +498,7 @@ if( $num > 0 ){
 	WHERE profilecode='UA' 
 	and hn='$hn' 
 	and `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
-	AND `labnumber` = '$exam_no' 
+	AND $whereLabnumber 
 	ORDER BY `autonumber` desc";
 	$query = mysql_query($sql);
 	$arrresult = mysql_fetch_array($query);
@@ -662,40 +672,11 @@ if( $num > 0 ){
 // ผลการตรวจทางห้องปฏิบัติการ ตัด profilecode='OCCULT'
 $sql1 = "SELECT x.`profilecode`,x.`autonumber`,b.seq
 FROM ( 
-
     SELECT MAX(`autonumber`) AS `latest_id`   
     FROM `resulthead` 
     WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
-	AND `labnumber` = '$exam_no' 
+	AND $whereLabnumber 
     AND ( 
-        #`profilecode`='GLU' 
-        #OR `profilecode`='CREAG' 
-        #OR `profilecode`='BUN' 
-        #OR `profilecode`='URIC' 
-        #OR `profilecode`='CHOL' 
-        #OR `profilecode`='TRIG' 
-        #OR `profilecode`='AST' 
-        #OR `profilecode`='ALT' 
-        #OR `profilecode`='LIPID' 
-        #OR `profilecode`='ALP' 
-        #OR `profilecode`='ANTIHB' 
-        #OR `profilecode`='HDL' 
-        #OR `profilecode`='LDL' 
-        #OR `profilecode`='10001' 
-        #OR `profilecode`='ABOC' 
-        #OR `profilecode`='METAMP'	
-        #OR `profilecode`='OCCULT'
-
-		#OR `profilecode`='HBSAG' 
-        #OR `profilecode`='HAVTOT' 
-        #OR `profilecode`='WET' 
-		#OR `profilecode`='AHAV' 
-
-		#OR `profilecode`='STOOL' 
-		#OR `profilecode`='35101' 
-
-		#OR `profilecode`='PSA' 
-		
 		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
 		AND `profilecode` != 'AFP' 
 		AND `profilecode` != 'CEA' 
@@ -709,20 +690,12 @@ FROM (
 		AND `profilecode` != 'WET' 
     ) 
 	GROUP BY `profilecode` 
-
 ) AS a 
 LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
 WHERE b.`result` != 'DELETE' 
-#AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
-#AND ( b.`labcode` != 'COLORS'
-#	AND b.`labcode` != 'CHARAC' 
-#	AND b.`labcode` != 'WBCS' 
-#	AND b.`labcode` != 'RBCS' 
-#	AND b.`labcode` != 'MUCOUS'  ) 
 GROUP BY x.`profilecode` 
 ORDER BY b.`seq` ASC, a.`latest_id` ASC ";
-// dump($sql1);
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -734,7 +707,7 @@ FROM (
 	FROM `resulthead` 
 	WHERE `hn` = '$hn' 
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
-	AND `labnumber` = '$exam_no' 
+	AND $whereLabnumber 
 	AND `testgroupcode` = 'OUT' 
 	GROUP BY `profilecode` 
 
