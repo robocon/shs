@@ -58,7 +58,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th colspan="31" align="center">รายการตรวจ</th>
+    <th colspan="36" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -86,10 +86,12 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" align="center">Stool Exam</th>
     <th width="5%" align="center">Stool Culture</th>
     <th width="5%" align="center">Stool Occult</th>
+    <th width="5%" align="center">eGFR</th>
 
     <th width="5%" align="center">AFP</th>
     <th width="5%" align="center">PSA</th>
-
+    <th width="5%" align="center">CEA</th>
+    
     <th width="5%" align="center">METAMP</th>
     <th width="5%" align="center">ABOC</th>
     <th width="5%" align="center">EKG</th>
@@ -98,6 +100,11 @@ $company = mysql_fetch_assoc($q);
     <th width="10%" align="center">สมรรถภาพปอด</th>
     <th width="10%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
     <th width="10%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+
+    <th width="10%" align="center">ผลการตรวจมะเร็งปากมดลูก</th>
+    <th width="10%" align="center">ผลการตรวจแมมโมแกรม</th>
+    <th width="10%" align="center">ผลตรวจความหนาแน่นของมวลกระดูก</th>
+
     <th width="10%" align="center">พบแพทย์</th>
     <th width="10%" align="center">ไม่พบแพทย์</th>
   </tr>
@@ -422,26 +429,28 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$bun</strong>";
 }
 ?></td>
-    <td align="center"><?php 
+<td align="center">
+<?php 
     $autonumber = '';
-    $autonumber = $otherList['CREA'];
-    $autonumber = $otherList['CREAG'];
-$sql7="SELECT b.result, b.flag 
-FROM resulthead AS a 
-INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
-WHERE ( b.labcode = 'CREA' OR b.labcode = 'CREAG' ) AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
-GROUP BY a.`profilecode` ";
-//echo $sql7;
-$query7=mysql_query($sql7);
-list($crea,$flag)=mysql_fetch_array($query7);
+    $autonumber = (!empty($otherList['CREA'])) ? $otherList['CREA'] : (!empty($otherList['CREAG']) ? $otherList['CREAG'] : '' );
+    // $autonumber = $otherList['CREAG'];
+    $sql7="SELECT b.result, b.flag 
+    FROM resulthead AS a 
+    INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
+    WHERE ( b.labcode = 'CREA' OR b.labcode = 'CREAG' ) AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+    AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
+    GROUP BY a.`profilecode` ";
+    //echo $sql7;
+    $query7=mysql_query($sql7);
+    list($crea,$flag)=mysql_fetch_array($query7);
 
-if($flag=="N"){
-	echo $crea;
-}else{
-	echo "<strong style='color:#FF0000'>$crea</strong>";
-}
-?></td>
+    if($flag=="N"){
+        echo $crea;
+    }else{
+        echo "<strong style='color:#FF0000'>$crea</strong>";
+    }
+?>
+</td>
     <td align="center"><?php 
     $autonumber = '';
     $autonumber = $otherList['URIC'];
@@ -645,6 +654,26 @@ if( $stoccRes == 'Negative' ){
 ?>
 <td align="center"><?=$stoccTxt;?></td>
 
+<!-- eGFR -->
+<td align="center">
+    <?php 
+    $sql = "SELECT b.`result`, b.`flag` 
+    FROM ( 
+        SELECT *, MAX(`autonumber`) AS `latest_number` 
+        FROM `resulthead` 
+        WHERE `hn` = '$hn' 
+        AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+        AND ( `profilecode` = 'CREA' OR `profilecode` = 'CREAG' ) 
+        GROUP BY `profilecode` 
+    ) AS a
+    INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+    WHERE b.result !='DELETE' OR b.result !='*' 
+    AND `labname` LIKE 'eGFR%' ";
+    $query13 = mysql_query($sql);
+    list($result, $flag) = mysql_fetch_array($query13);
+    echo $result;
+    ?>
+</td>
 
 <?php 
 
@@ -671,10 +700,11 @@ while( $outlab = mysql_fetch_assoc($outlab_query)){
 
 $AFP = ( !empty($outLists['AFP']) ) ? $outLists['AFP'] : '' ;
 $PSA = ( !empty($outLists['PSA']) ) ? $outLists['PSA'] : '' ;
+$CEA = ( !empty($outLists['CEA']) ) ? $outLists['CEA'] : '' ;
 ?>
 <td><?=$AFP;?></td>
 <td><?=$PSA;?></td>
-
+<td><?=$CEA;?></td>
 
 <td align="center">
 <?php 
@@ -713,10 +743,12 @@ if($flag=="N"){
 }else{
 	echo "&nbsp;";
 }
-?></td>
-    <td><? 
+?>
+</td>
+<td>
+    <!-- ตรวจ EKG -->
+    <?php 
 	$sql3="select * from patdata where hn='$pt_hn' and code='51410' and date like '$dateekg%' order by row_id desc";
-	//echo $sql3;
 	$query3=mysql_query($sql3);
 	$num3=mysql_num_rows($query3);
 	if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
@@ -724,42 +756,45 @@ if($flag=="N"){
 	}else if($result["HN"]=="60-5189"){  //ตรวจแต่ไม่ได้คิดค่าใช้จ่าย
 		echo "ปกติ";
 	}
-	 ?></td>
+	 ?>
+    </td>
     <td>
-	<? 
-	if($month=="8"  || $month=="9"){
-		echo "&nbsp;";
-	}else{
-		if($result2["va"]==""){ echo "ปกติ"; }else{ echo $result2["va"];}
-	}
-	?></td>
-    <td><? 
+    <!-- V/A -->
+	<?php 
+	if($result2["va"]==""){ echo "ปกติ"; }else{ echo $result2["va"];}
+	?>
+    </td>
+    <td>
+    <!-- สายตา -->
+    <?php 
 		if($result2["eye"]=="ปกติ"){ echo $result2["eye"]; }else if($result2["eye"]=="ผิดปกติ"){ echo $result2["eye"]."...".$result2["eye_detail"];}else{ echo "&nbsp;";}
-	?></td>
+	?>
+    </td>
     <td>
-	<? 
+    <!-- สมรรถภาพปอด -->
+	<?php 
 		if($result2["pt"]=="ปกติ"){ echo $result2["pt"]; }else if($result2["pt"]=="ปอดจำกัดการขยายตัว" || $result2["pt"]=="ปอดอุดกั้น"){ echo $result2["pt"]."...".$result2["pt_detail"];}else{ echo "&nbsp;";}
 	?></td>
+
     <td>
-    <?php
-    if( !empty($result2['altra']) ){
-        echo $result2['altra'];
-    }
-    ?>
-    </td>
+    <!-- ผลการตรวจอัลตร้าซาวด์ช่องท้อง -->
+    <?php if( !empty($result2['altra']) ){ echo $result2['altra'];}?></td>
     <td>
-    <?php 
-    // ต่อมลูกหมากโดยการคลำ
-    if( !empty($result2['psa']) ){
-        echo $result2['psa'];
-    }
-    ?>
-    </td>
+    <!-- ต่อมลูกหมากโดยการคลำ -->
+    <?php if( !empty($result2['psa']) ){ echo $result2['psa'];}?></td>
+    <!-- ผลการตรวจมะเร็งปากมดลูก -->
+    <td><?=(!empty($result2['hpv']) ? $result2['hpv'] : '' );?></td>
+    <!-- ผลการตรวจแมมโมแกรม -->
+    <td><?=(!empty($result2['mammogram']) ? $result2['mammogram'] : '' );?></td>
+    <!-- ผลตรวจความหนาแน่นของมวลกระดูก -->
+    <td><?=(!empty($result2['bone_density']) ? $result2['bone_density'] : '' );?></td>
+    <!-- ภาวะสุขภาพโดยรวม -->
+    <td>&nbsp;</td>
+    <!-- สรุปผลการตรวจ -->
     <td>&nbsp;</td>
     <td>&nbsp;</td>
-     <td>&nbsp;</td>
   </tr>
-<? } ?>  
+<?php } ?>
 </table>
 <p align="center">PE = การตรวจร่างกายทั่วไป  BS = น้ำตาลในเลือด  CHOL,TRI, HDL, LDL= ไขมันในเลือด BUN, CR= การทำงานของไต  URIC = กรดยูริค SGOT,SGPT, ALK = การทำงานของตับ<br />
 HBsAg = เชื้อไวรัสตับอักเสบ  FOBT = เลือดในอุจจาระ METAMP = ตรวจหาสารเสพติด ABOC = กรุ๊ปเลือด EKG = คลื่นหัวใจไฟฟ้า V/A = ตรวจตา</p>
