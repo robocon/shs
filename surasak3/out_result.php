@@ -1,5 +1,217 @@
 <?php
-    session_start();
+session_start();
+	
+if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
+
+	include("connect.inc");
+	$data1 = $_POST['form_status'];
+
+	$hpv = ( trim($_POST['hpv']) != '' ) ? trim($_POST['hpv']) : NULL ;
+	$bone = ( trim($_POST['42702']) != '' ) ? trim($_POST['42702']) : NULL ;
+	$bone_density = htmlspecialchars($_POST['bone_density'], ENT_QUOTES);
+
+	$occupa_health = htmlspecialchars($_POST['occupa_health'], ENT_QUOTES);
+
+	$outAfp = (!empty($_POST['outAfp'])) ? trim($_POST['outAfp']) : '';
+	$outAfpResult = (!empty($_POST['outAfpResult'])) ? trim($_POST['outAfpResult']) : '';
+	$outPsa = (!empty($_POST['outPsa'])) ? trim($_POST['outPsa']) : '';
+	$outPsaResult = (!empty($_POST['outPsaResult'])) ? trim($_POST['outPsaResult']) : '';
+
+	$part = $_POST['part'];
+
+	if( $data1 == "update" ){
+		if($_POST['eye']=="ปกติ"){
+			$_POST['eye_detail']="";
+		}
+		if($_POST['pt']=="ปกติ"){
+			$_POST['pt_detail']="";
+		}
+		$ptname = $_POST['ptname'];
+		$update="UPDATE `out_result_chkup` SET 
+		`ptname` = '".$_POST['newname']."',
+		`age` = '".$_POST['age']."',
+		`weight` = '".$_POST['weight']."',
+		`height` = '".$_POST['height']."',
+		`bp1` = '".$_POST['bp1']."',
+		`bp2` ='".$_POST['bp2']."',
+		`p` = '".$_POST['p']."' ,
+		`ekg` = '".$_POST['ekg']."',
+		`va` = '".$_POST['va']."',
+		`stool` = '".$_POST['stool']."',
+		`cxr` = '".$_POST['cxr']."',
+		`doctor_result` = '".$_POST['doctor_result']."',
+		`year_chk` = '".$nPrefix."',
+		`part` = '$part',
+		`42702` = '$bone',
+		`hpv` = '$hpv',
+		`altra` = '".$_POST['altra']."',
+		`psa` = '".$_POST['psa']."',
+		`mammogram` = '".$_POST['mammogram']."',
+		`temp` = '".$_POST['temp']."',
+		`rate` ='".$_POST['rate']."',
+		`prawat` = '".$_POST['prawat']."' ,
+		`cigga` = '".$_POST['cigga']."',
+		`alcohol` = '".$_POST['alcohol']."',
+		`exercise` = '".$_POST['exercise']."',
+		`allergic` = '".$_POST['allergic']."',
+		`comment` = '".$_POST['comment']."'	,
+		`bp3` = '".$_POST['bp3']."',
+		`bp4` ='".$_POST['bp4']."',
+		`eye` ='".$_POST['eye']."',
+		`eye_detail` ='".$_POST['eye_detail']."',
+		`pt` ='".$_POST['pt']."',
+		`pt_detail` ='".$_POST['pt_detail']."',
+		`last_officer` = '$sOfficer',
+		`last_update` = '".date("Y-m-d H:i:s")."', 
+		`seq` = '".$_POST['seq']."', 
+		`cs` = '".$_POST['cs']."',
+		`result_cs` = '".$_POST['result_cs']."',
+		`blindness` = '".$_POST['blindness']."', 
+		`hearing` = '".$_POST['hearing']."', 
+		`metal` = '".$_POST['metal']."', 
+		`metal_result` = '".$_POST['metal_result']."',
+		`benzene` = '".$_POST['benzene']."',
+		`benzene_result` = '".$_POST['benzene_result']."',
+		`bone_density` = '$bone_density',
+		`occupa_health` = '$occupa_health',
+		`outAfp` = '$outAfp',
+		`outAfpResult` = '$outAfpResult',
+		`outPsa` = '$outPsa',
+		`outPsaResult` = '$outPsaResult'
+		WHERE `row_id` ='".$_POST['row_id']."';";
+	}else if( $data1=="insert" ){
+		$active = "y";
+		if($_POST['eye']=="ปกติ"){
+			$_POST['eye_detail']="";
+		}
+		if($_POST['pt']=="ปกติ"){
+			$_POST['pt_detail']="";
+		}		
+		$update = "INSERT INTO `out_result_chkup` SET 
+		`hn` = '".$_POST['hn']."',
+		`ptname` = '".$_POST['ptname']."',
+		`age` = '".$_POST['age']."',
+		`weight` = '".$_POST['weight']."',
+		`height` = '".$_POST['height']."',
+		`bp1` =  '".$_POST['bp1']."',
+		`bp2` = '".$_POST['bp2']."',
+		`p` = '".$_POST['p']."',
+		`ekg` = '".$_POST['ekg']."',
+		`va` = '".$_POST['va']."',
+		`cxr` = '".$_POST['cxr']."',
+		`year_chk` =  '$nPrefix',
+		`part` = '$part',
+		`officer` = '$sOfficer',
+		`register` = '".date("Y-m-d H:i:s")."',
+		`42702` = '$bone',
+		`hpv` = '$hpv',
+		`altra` = '".$_POST['altra']."',
+		`psa` = '".$_POST['psa']."',
+		`mammogram` = '".$_POST['mammogram']."',			
+		`temp` = '".$_POST['temp']."',
+		`rate` = '".$_POST['rate']."',
+		`prawat` =  '".$_POST['prawat']."',
+		`cigga` = '".$_POST['cigga']."',
+		`alcohol` = '".$_POST['alcohol']."',
+		`exercise` = '".$_POST['exercise']."',
+		`allergic` = '".$_POST['allergic']."',
+		`comment` = '".$_POST['comment']."',
+		`bp3` = '".$_POST['bp3']."',
+		`bp4` = '".$_POST['bp4']."',
+		`eye` = '".$_POST['eye']."',
+		`eye_detail` =  '".$_POST['eye_detail']."',
+		`pt` = '".$_POST['pt']."',
+		`pt_detail` = '".$_POST['pt_detail']."', 
+		`seq` = '".$_POST['seq']."', 
+		`cs` = '".$_POST['cs']."', 
+		`result_cs` = '".$_POST['result_cs']."', 
+		`blindness` = '".$_POST['blindness']."', 
+		`hearing` = '".$_POST['hearing']."', 
+		`metal` = '".$_POST['metal']."', 
+		`metal_result` = '".$_POST['metal_result']."',
+		`benzene` = '".$_POST['benzene']."',
+		`benzene_result` = '".$_POST['benzene_result']."',
+		`bone_density` = '$bone_density', 
+		`occupa_health` = '$occupa_health',
+		`outAfp` = '$outAfp',
+		`outAfpResult` = '$outAfpResult',
+		`outPsa` = '$outPsa',
+		`outPsaResult` = '$outPsaResult'";
+			
+	}
+	
+	$upquery = mysql_query($update) or die (mysql_error());
+	if($upquery){ //บันทึกสำเร็จ
+		if($_POST["form_status"]=="insert"){
+			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
+		}else{
+			$edit="update opcardchk set `agey` = '".$_POST['age']."' where HN='".$_POST['hn']."' and part='".$_POST['part']."';";
+			$querey=mysql_query($edit);
+			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
+		}
+		$hn = $_POST['hn'];
+		?>
+		<script>
+			alert('<?=$save;?>');
+			window.location='out_result.php?hn=<?=$hn;?>&part=<?=$part;?>&act=print';
+		</script>
+		<?php
+	}
+	exit;
+}
+
+if($_GET["act"]=="print"){ 
+	include("connect.inc");	
+	$showpart=$_GET["part"];
+	$sql1="SELECT * FROM  out_result_chkup where hn='$_GET[hn]' and part='$showpart'";
+	$query1=mysql_query($sql1)or die (mysql_error());
+	$arr1=mysql_fetch_array($query1);
+	$d=date("d");
+	$m=date("m");
+	$y=date("Y")+543;
+	$time=date("H:i:s");
+
+	$thidate="$d/$m/$y $time";
+	if($_SESSION["smenucode"]=="ADMMAINOPD"){ 
+		?>
+		<script type="text/javascript">
+		window.onload = function(){
+			window.print();
+			window.location='out_result.php?part=<?=$showpart;?>';
+		}
+		</script>
+	<?php 
+	} 
+	?>
+	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'TH SarabunPSK'; font-size:16px">
+	<tr>
+		<td>HN : <?=$arr1['hn'];?>&nbsp;&nbsp;(<?php echo $thidate;?>)</td>
+	</tr>
+	<tr>
+		<td>ชื่อ-นามสกุล : <?=$arr1['ptname'];?></td>
+	</tr>
+	<tr>
+		<td>ตรวจสุขภาพประจำปี (<?=$arr1['part'];?>)</td>
+	</tr>  
+	<tr>
+		<td>โรคประจำตัว : <?=$arr1["prawat"];?>, แพ้ยา : <?=$arr1["allergic"];?>, นน : <?php echo $arr1["weight"];?> กก., สส : <?php echo $arr1["height"];?> ซม.</td>
+	</tr>  
+	<tr>
+		<td>BP : <? echo $arr1["bp1"]."/".$arr1["bp2"];?> mmHg, <? if(!empty($arr1["bp3"]) || !empty($arr1["bp4"])){ ?>RE-BP : <? echo $arr1["bp3"]."/".$arr1["bp4"];?> mmHg, <? } ?> T : <?php echo $arr1["temp"];?> C, P : <?php echo $arr1["p"];?> ครั้ง/นาที</td>
+	</tr>
+	<tr>
+		<td>R : <?php echo $arr1["rate"];?> ครั้ง/นาที, บุหรี่ : <?php echo $arr1["cigga"];?>, สุรา : <?php echo $arr1["alcohol"];?>, ออกกำลังกาย : <?php echo $arr1["exercise"];?></td>
+	</tr>
+	<? if(!empty($arr1["comment"])){  ?>
+	<tr>
+		<td>หมายเหตุ : <?php echo $arr1["comment"];?></td>
+	</tr>  
+	<? } ?>  
+	</table>
+	<?php
+	exit;
+}
+
 ?>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -423,174 +635,18 @@ if(isset($_POST['hn'])){
 <p>
 <?
 }
-if(isset($_POST['okhn2'])){
-	
-	include("connect.inc");
-	$data1 = $_POST['form_status'];
 
-	$hpv = ( trim($_POST['hpv']) != '' ) ? trim($_POST['hpv']) : NULL ;
-	$bone = ( trim($_POST['42702']) != '' ) ? trim($_POST['42702']) : NULL ;
-	$bone_density = htmlspecialchars($_POST['bone_density'], ENT_QUOTES);
-
-	$occupa_health = htmlspecialchars($_POST['occupa_health'], ENT_QUOTES);
-
-
-	$outAfp = (!empty($_POST['outAfp'])) ? trim($_POST['outAfp']) : '';
-	$outAfpResult = (!empty($_POST['outAfpResult'])) ? trim($_POST['outAfpResult']) : '';
-	$outPsa = (!empty($_POST['outPsa'])) ? trim($_POST['outPsa']) : '';
-	$outPsaResult = (!empty($_POST['outPsaResult'])) ? trim($_POST['outPsaResult']) : '';
-
-	if( $data1 == "update" ){
-		if($_POST['eye']=="ปกติ"){
-			$_POST['eye_detail']="";
-		}
-		if($_POST['pt']=="ปกติ"){
-			$_POST['pt_detail']="";
-		}
-		$ptname = $_POST['ptname'];
-		$update="UPDATE `out_result_chkup` SET 
-		`ptname` = '".$_POST['newname']."',
-		`age` = '".$_POST['age']."',
-		`weight` = '".$_POST['weight']."',
-		`height` = '".$_POST['height']."',
-		`bp1` = '".$_POST['bp1']."',
-		`bp2` ='".$_POST['bp2']."',
-		`p` = '".$_POST['p']."' ,
-		`ekg` = '".$_POST['ekg']."',
-		`va` = '".$_POST['va']."',
-		`stool` = '".$_POST['stool']."',
-		`cxr` = '".$_POST['cxr']."',
-		`doctor_result` = '".$_POST['doctor_result']."',
-		`year_chk` = '".$nPrefix."',
-		`part` = '".$_POST['part']."',
-		`42702` = '$bone',
-		`hpv` = '$hpv',
-		`altra` = '".$_POST['altra']."',
-		`psa` = '".$_POST['psa']."',
-		`mammogram` = '".$_POST['mammogram']."',
-		`temp` = '".$_POST['temp']."',
-		`rate` ='".$_POST['rate']."',
-		`prawat` = '".$_POST['prawat']."' ,
-		`cigga` = '".$_POST['cigga']."',
-		`alcohol` = '".$_POST['alcohol']."',
-		`exercise` = '".$_POST['exercise']."',
-		`allergic` = '".$_POST['allergic']."',
-		`comment` = '".$_POST['comment']."'	,
-		`bp3` = '".$_POST['bp3']."',
-		`bp4` ='".$_POST['bp4']."',
-		`eye` ='".$_POST['eye']."',
-		`eye_detail` ='".$_POST['eye_detail']."',
-		`pt` ='".$_POST['pt']."',
-		`pt_detail` ='".$_POST['pt_detail']."',
-		`last_officer` = '$sOfficer',
-		`last_update` = '".date("Y-m-d H:i:s")."', 
-		`seq` = '".$_POST['seq']."', 
-		`cs` = '".$_POST['cs']."',
-		`result_cs` = '".$_POST['result_cs']."',
-		`blindness` = '".$_POST['blindness']."', 
-		`hearing` = '".$_POST['hearing']."', 
-		`metal` = '".$_POST['metal']."', 
-		`metal_result` = '".$_POST['metal_result']."',
-		`benzene` = '".$_POST['benzene']."',
-		`benzene_result` = '".$_POST['benzene_result']."',
-		`bone_density` = '$bone_density',
-		`occupa_health` = '$occupa_health',
-		`outAfp` = '$outAfp',
-		`outAfpResult` = '$outAfpResult',
-		`outPsa` = '$outPsa',
-		`outPsaResult` = '$outPsaResult'
-		WHERE `row_id` ='".$_POST['row_id']."';";
-	}else if( $data1=="insert" ){
-		$active = "y";
-		if($_POST['eye']=="ปกติ"){
-			$_POST['eye_detail']="";
-		}
-		if($_POST['pt']=="ปกติ"){
-			$_POST['pt_detail']="";
-		}		
-		$update = "INSERT INTO `out_result_chkup` SET 
-			`hn` = '".$_POST['hn']."',
-			`ptname` = '".$_POST['ptname']."',
-			`age` = '".$_POST['age']."',
-			`weight` = '".$_POST['weight']."',
-			`height` = '".$_POST['height']."',
-			`bp1` =  '".$_POST['bp1']."',
-			`bp2` = '".$_POST['bp2']."',
-			`p` = '".$_POST['p']."',
-			`ekg` = '".$_POST['ekg']."',
-			`va` = '".$_POST['va']."',
-			`cxr` = '".$_POST['cxr']."',
-			`year_chk` =  '$nPrefix',
-			`part` = '".$_POST['part']."',
-			`officer` = '$sOfficer',
-			`register` = '".date("Y-m-d H:i:s")."',
-			`42702` = '$bone',
-			`hpv` = '$hpv',
-			`altra` = '".$_POST['altra']."',
-			`psa` = '".$_POST['psa']."',
-			`mammogram` = '".$_POST['mammogram']."',			
-			`temp` = '".$_POST['temp']."',
-			`rate` = '".$_POST['rate']."',
-			`prawat` =  '".$_POST['prawat']."',
-			`cigga` = '".$_POST['cigga']."',
-			`alcohol` = '".$_POST['alcohol']."',
-			`exercise` = '".$_POST['exercise']."',
-			`allergic` = '".$_POST['allergic']."',
-			`comment` = '".$_POST['comment']."',
-			`bp3` = '".$_POST['bp3']."',
-			`bp4` = '".$_POST['bp4']."',
-			`eye` = '".$_POST['eye']."',
-			`eye_detail` =  '".$_POST['eye_detail']."',
-			`pt` = '".$_POST['pt']."',
-			`pt_detail` = '".$_POST['pt_detail']."', 
-			`seq` = '".$_POST['seq']."', 
-			`cs` = '".$_POST['cs']."', 
-			`result_cs` = '".$_POST['result_cs']."', 
-			`blindness` = '".$_POST['blindness']."', 
-			`hearing` = '".$_POST['hearing']."', 
-			`metal` = '".$_POST['metal']."', 
-			`metal_result` = '".$_POST['metal_result']."',
-			`benzene` = '".$_POST['benzene']."',
-			`benzene_result` = '".$_POST['benzene_result']."',
-			`bone_density` = '$bone_density', 
-			`occupa_health` = '$occupa_health',
-			`outAfp` = '$outAfp',
-			`outAfpResult` = '$outAfpResult',
-			`outPsa` = '$outPsa',
-			`outPsaResult` = '$outPsaResult'";
-			
-	}
-	
-	//echo $update;
-	$upquery = mysql_query($update) or die (mysql_error());
-	if($upquery){ //บันทึกสำเร็จ
-		if($_POST["form_status"]=="insert"){
-			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
-		}else{
-			$edit="update opcardchk set `agey` = '".$_POST['age']."' where HN='".$_POST['hn']."' and part='".$_POST['part']."';";
-			//echo $edit;
-			$querey=mysql_query($edit);
-			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
-		}
-		$hn = $_POST['hn'];
-		$part = $_POST['part'];
-		echo "<script>alert('$save');window.location='out_result.php?hn=$hn&part=$part&act=print';</script>" ;
-	}
-}
 ?>
 <br />
-<? 
-include("connect.inc");			
+<?php 
+include("connect.inc");
 $showpart=$_GET["part"];
 
 $sql1="SELECT * FROM  out_result_chkup where part='$showpart' ORDER BY row_id asc";
-//echo $sql1;
 $query1=mysql_query($sql1)or die (mysql_error());
 $num1=mysql_num_rows($query1);
 
-
 $sqlchk1="SELECT * FROM  opcardchk where part='$showpart' and active='y'";
-//echo $sqlchk1;
 $querychk1=mysql_query($sqlchk1)or die (mysql_error());
 $numchk1=mysql_num_rows($querychk1);
 
@@ -644,54 +700,6 @@ if($_GET["act"]=="del"){
 	}else{
 		echo "<script>alert('ผิดพลาด ไม่สามารถลบข้อมูลได้');window.location='out_result.php?part=$_GET[part]';</script>";
 	}
-}
-
-if($_GET["act"]=="print"){
-include("connect.inc");	
-$showpart=$_GET["part"];
-$sql1="SELECT * FROM  out_result_chkup where hn='$_GET[hn]' and part='$showpart'";
-//echo $sql1;
-$query1=mysql_query($sql1)or die (mysql_error());
-$arr1=mysql_fetch_array($query1);
-$d=date("d");
-$m=date("m");
-$y=date("Y")+543;
-$time=date("H:i:s");
-
-$thidate="$d/$m/$y $time";
-?>
-<? if($_SESSION["smenucode"]=="ADMMAINOPD"){ ?>
-<script type="text/javascript">
-window.print();
-</script>
-<? } ?>
-<table cellpadding="0" cellspacing="0" border="0" style="font-family:'TH SarabunPSK'; font-size:16px">
-<tr>
-    <td>HN : <?=$arr1['hn'];?>&nbsp;&nbsp;(<?php echo $thidate;?>)</td>
-  </tr>
-<tr>
-    <td>ชื่อ-นามสกุล : <?=$arr1['ptname'];?></td>
-  </tr>
-<tr>
-    <td>ตรวจสุขภาพประจำปี (<?=$arr1['part'];?>)</td>
-  </tr>  
-  <tr>
-    <td>โรคประจำตัว : <?=$arr1["prawat"];?>, แพ้ยา : <?=$arr1["allergic"];?>, นน : <?php echo $arr1["weight"];?> กก., สส : <?php echo $arr1["height"];?> ซม.</td>
-  </tr>  
-  <tr>
-    <td>BP : <? echo $arr1["bp1"]."/".$arr1["bp2"];?> mmHg, <? if(!empty($arr1["bp3"]) || !empty($arr1["bp4"])){ ?>RE-BP : <? echo $arr1["bp3"]."/".$arr1["bp4"];?> mmHg, <? } ?> T : <?php echo $arr1["temp"];?> C, P : <?php echo $arr1["p"];?> ครั้ง/นาที</td>
-  </tr>
-  <tr>
-    <td>R : <?php echo $arr1["rate"];?> ครั้ง/นาที, บุหรี่ : <?php echo $arr1["cigga"];?>, สุรา : <?php echo $arr1["alcohol"];?>, ออกกำลังกาย : <?php echo $arr1["exercise"];?></td>
-  </tr>
-<? if(!empty($arr1["comment"])){  ?>
-  <tr>
-    <td>หมายเหตุ : <?php echo $arr1["comment"];?></td>
-  </tr>  
-<? } ?>  
-</table>
-<?
-echo "<meta http-equiv='refresh' content='1; url=out_result.php?part=$arr1[part]'>" ;
 }
 ?>
 </html>
