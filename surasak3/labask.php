@@ -67,6 +67,18 @@
 	//echo $sql1;
 	list($aptright,$atoborow,$idcard)=mysql_fetch_array($sql1);
 	
+	
+ $query = "SELECT ptright1 FROM opcard WHERE hn = '".$cHn."'  limit 1 ";
+ $result = mysql_query($query) or die(Mysql_Error());
+ $row=mysql_num_rows($result);
+ list($ptright1) = Mysql_fetch_row($result);	
+ $codeptright=substr($ptright1,0,3);
+ 
+ if(substr($atoborow,0,4)=="EX04" && substr($aptright,0,3) == "R22"){
+ 	$showptright=$ptright1;
+	//echo $aptright;
+ }
+	
 	// ตรวจสอบกรณีผู้ป่วยเงินสด แล้วมีการอัพเดทสิทธิประกันสังคม ช่วงเสาร์อาทิตย์
 	$sso_alert = false;
 	if( substr($aptright,0,3) == 'R01' ){
@@ -112,7 +124,7 @@
     <td><font color='#0000FF' style='font-size:18px'><?=$atoborow;?></font></td>
     </tr> 
       <tr>
-    <td><font color='#0000FF' style='font-size:18px'><?=$aptright;?></font></td>
+    <td><font color='#0000FF' style='font-size:18px'><?=$showptright;?></font></td>
     </tr>
 	<?php if( $sso_alert !== false ){ ?>
 	<tr>
@@ -132,7 +144,9 @@
 if(substr($atoborow,0,4)=="EX26"){  
    $sqlpt = "select * from ptright where code = 'R22' order by code asc";
 }else if(substr($atoborow,0,4)=="EX40"){  //EX40 ตรวจสุขภาพฮักกันยามเฒ่า
-   $sqlpt = "select * from ptright where code = 'R41' order by code asc";
+   $sqlpt = "select * from ptright where code = 'R01' order by code asc";
+}else if(substr($atoborow,0,4)=="EX04" && substr($aptright,0,3) == 'R22'){  //EX04 ตรวจตามนัด
+   $sqlpt = "select * from ptright where code = '$codeptright' order by code asc";
 }else{
    $sqlpt = "select * from ptright where status = 'a' order by code asc";
 }  
@@ -216,8 +230,8 @@ document.getElementById('aLink').focus();
 		}else{
 			$b=0;
 			?>
-			<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
-				<?=$re?>  <!--R22-->
+			<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>
+				<?=$re;?>  <!--R22-->
 			</option>
 			<?
 		}  //close if($cPtright==$re){
@@ -241,15 +255,14 @@ document.getElementById('aLink').focus();
 			 $c=0;
 			 ?>
   <option value="<?=$cPtright;?>" selected="selected">
-  <?=$cPtright?>
+  <?=$cPtright;?>
   </option>
   <?
-		}
-		else{
+		}else{
 			$b=0;
 			?>
   <option value="<?=$re?>">
-  <?=$re?>
+  <?=$re;?>
   </option>
   <?
 		}
@@ -257,7 +270,7 @@ document.getElementById('aLink').focus();
 	if(!isset($c)){
 		?>
   <option value="<?=$cPtright?>" selected="selected">
-  <?=$cPtright?>
+  <?=$cPtright;?>
   </option>
   <?
 	}
@@ -281,7 +294,7 @@ document.getElementById('aLink').focus();
 		}else{
 			$b=0;
 ?>
-	<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX40" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  
+	<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  
   <?=$re?>
   </option>
   <?
@@ -308,6 +321,7 @@ document.getElementById('aLink').focus();
    
    $dd = date("d")." ".$month[date("n")]." ".(date("Y")+543);
    $sqlappoint = "select doctor from appoint where hn = '".$cHn."' and appdate like '$dd%'";
+   //echo $sqlappoint;
    $app1 = mysql_fetch_array(mysql_query($sqlappoint));
    ////////////////////////////////////
   $sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
@@ -394,23 +408,35 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 
 	$strSQL = "SELECT name FROM doctor where status='y' order by name"; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-	if( $app1 === false ){
+	if( $app1 === false ){		
 		$app1['doctor'] = 'MD022 (ไม่ทราบแพทย์)';
 	}
-
+	
+	//echo "------".$app1['doctor']."-------";
+	//echo substr($app1['doctor'],0,5);
+	
 	?>
 	<select name="doctor" id="doctor"> 
 		<option value="MD022 (ไม่ทราบแพทย์)">MD022 (ไม่ทราบแพทย์)</option>
 	<?php
+	//$i=0;
 	while($objResult = mysql_fetch_array($objQuery)) {
-		if( $app1['doctor'] == $objResult["name"] ){
-			?>
-			<option value="<?=$objResult["name"]?>" selected="selected"><?=$objResult["name"]?></option>
+	//$i++;
+		if(substr($app1['doctor'],0,5) == substr($objResult["name"],0,5) && (substr($objResult["name"],0,5)!="MD022")){
+		?>
+            <option value="<?=$objResult["name"]?>" selected="selected"><?=$objResult["name"]?></option>
 			<?php
-		}
-		else{
+		}else if(substr($objResult["name"],0,5)=="MD022 (ไม่ทราบแพทย์)"){
+		?>
+		<option value="MD022 (ไม่ทราบแพทย์)" selected="selected">MD022 (ไม่ทราบแพทย์)</option>
+		<?
+		}else if(substr($objResult["name"],0,5)=="MD022 แพทย์เวชปฎิบัติ"){
+		?>
+		<option value="MD022 แพทย์เวชปฎิบัติ">MD022 แพทย์เวชปฎิบัติ</option>
+		<?		
+		}else{	
 			?>
-			<option value="<?=$objResult["name"];?>" <? if($objResult["name"]=="MD022 (ไม่ทราบแพทย์)"&&$_SESSION["until_login"] == "LAB") echo "selected='selected'";?>><?=$objResult["name"];?></option>    
+			<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>    
 			<?php
 		}
 	}
