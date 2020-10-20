@@ -21,14 +21,17 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 	$nPrefix = $_POST['nPrefix'];
 
 	$part = $_POST['part'];
+	$seq = (int)$_POST['seq'];
 
 	if( $data1 == "update" ){
+
 		if($_POST['eye']=="ปกติ"){
 			$_POST['eye_detail']="";
 		}
 		if($_POST['pt']=="ปกติ"){
 			$_POST['pt_detail']="";
 		}
+
 		$ptname = $_POST['ptname'];
 		$update="UPDATE `out_result_chkup` SET 
 		`ptname` = '".$_POST['newname']."',
@@ -66,7 +69,7 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`pt_detail` ='".$_POST['pt_detail']."',
 		`last_officer` = '$sOfficer',
 		`last_update` = '".date("Y-m-d H:i:s")."', 
-		`seq` = '".$_POST['seq']."', 
+		`seq` = '$seq', 
 		`cs` = '".$_POST['cs']."',
 		`result_cs` = '".$_POST['result_cs']."',
 		`blindness` = '".$_POST['blindness']."', 
@@ -125,7 +128,7 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`eye_detail` =  '".$_POST['eye_detail']."',
 		`pt` = '".$_POST['pt']."',
 		`pt_detail` = '".$_POST['pt_detail']."', 
-		`seq` = '".$_POST['seq']."', 
+		`seq` = '$seq', 
 		`cs` = '".$_POST['cs']."', 
 		`result_cs` = '".$_POST['result_cs']."', 
 		`blindness` = '".$_POST['blindness']."', 
@@ -144,7 +147,7 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 	}
 	
 	$upquery = mysql_query($update) or die (mysql_error());
-	if($upquery){ //บันทึกสำเร็จ
+	if($upquery==true){ //บันทึกสำเร็จ
 		if($_POST["form_status"]=="insert"){
 			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
 		}else{
@@ -154,9 +157,11 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		}
 		$hn = $_POST['hn'];
 		?>
-		<script>
+		<script type="text/javascript">
 			alert('<?=$save;?>');
-			window.location='out_result.php?hn=<?=$hn;?>&part=<?=$part;?>&act=print';
+			setTimeout(function(){ 
+				window.location='out_result.php?hn=<?=$hn;?>&part=<?=$part;?>&act=print';
+			}, 1000);
 		</script>
 		<?php
 	}
@@ -164,9 +169,10 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 }
 
 if($_GET["act"]=="print"){ 
-	include("connect.inc");	
-	$showpart=$_GET["part"];
-	$sql1="SELECT * FROM  out_result_chkup where hn='$_GET[hn]' and part='$showpart'";
+	
+	$showpart = $_GET["part"];
+	$hn = $_GET['hn'];
+	$sql1="SELECT * FROM  out_result_chkup where hn='$hn' and part='$showpart'";
 	$query1=mysql_query($sql1)or die (mysql_error());
 	$arr1=mysql_fetch_array($query1);
 	$d=date("d");
@@ -175,17 +181,15 @@ if($_GET["act"]=="print"){
 	$time=date("H:i:s");
 
 	$thidate="$d/$m/$y $time";
-	if($_SESSION["smenucode"]=="ADMMAINOPD"){ 
-		?>
-		<script type="text/javascript">
-		window.onload = function(){
-			window.print();
-			window.location='out_result.php?part=<?=$showpart;?>';
-		}
-		</script>
-	<?php 
-	} 
 	?>
+	<script type="text/javascript">
+	window.onload = function(){
+		window.print();
+		setTimeout(function(){ 
+			window.location='out_result.php?part=<?=$showpart;?>';
+		}, 1000);
+	}
+	</script>
 	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'TH SarabunPSK'; font-size:16px">
 	<tr>
 		<td>HN : <?=$arr1['hn'];?>&nbsp;&nbsp;(<?php echo $thidate;?>)</td>
