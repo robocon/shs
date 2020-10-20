@@ -479,14 +479,40 @@ if(isset($_POST['hn'])){
 				      <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">ผลตรวจ วัดสายตา</td>
-					  <td colspan="2" class="pdx"><input type="radio" name="eye" id="eye1"  value="ปกติ" class="pdxhead" <? if($arrchk['eye']=="ปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye1()" />
-					    ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					    <input type="radio" name="eye" id="eye2" value="ผิดปกติ" class="pdxhead" <? if($arrchk['eye']=="ผิดปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye()" /> 
-					    ผิดปกติ&nbsp;&nbsp;&nbsp;<? if($arrchk['eye']=="ผิดปกติ"){ echo "<span class='pdx'>".$arrchk['eye_detail']."</span>";} ?>
-                        <div id="hidden_div1" style="display: none;" class="pdx">ระบุความผิดปกติ : 
-					    <input name="eye_detail" type="text" class="pdxhead" size="50" id="eye_detail" value="<?=$arrchk['eye_detail']?>" /></div></td>
-				  </tr>
+						<td class="pdx">ผลตรวจ วัดสายตา</td>
+						<td colspan="2" class="pdx">
+							<input type="radio" name="eye" id="eye1"  value="ปกติ" class="pdxhead eyeSelect" <? if($arrchk['eye']=="ปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye1()" />
+							ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="eye" id="eye2" value="ผิดปกติ" class="pdxhead eyeSelect" <? if($arrchk['eye']=="ผิดปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye()" /> 
+							ผิดปกติ&nbsp;&nbsp;&nbsp;<? if($arrchk['eye']=="ผิดปกติ"){ echo "<span class='pdx'>".$arrchk['eye_detail']."</span>";} ?>
+							<div id="hidden_div1" style="display: none;" class="pdx">
+							ระบุความผิดปกติ : 
+							<input name="eye_detail" type="text" class="pdxhead" size="50" id="eye_detail" value="<?=$arrchk['eye_detail']?>" />
+							</div>
+							
+							<a href="javascript: void(0);" onclick="return clearEyeSelect()">[ยกเลิก]</a>
+							<script>
+							// if not getElementsByClassName create it // 
+							if(!document.getElementsByClassName) {
+								document.getElementsByClassName = function(className) {
+									return this.querySelectorAll("." + className);
+								};
+								Element.prototype.getElementsByClassName = document.getElementsByClassName;
+							}
+
+							function clearEyeSelect(){
+								var tabs = document.getElementsByClassName('eyeSelect');
+								for (let index = 0; index < tabs.length; index++) {
+									const element = tabs[index];
+									element.checked = false;
+								}
+
+								document.getElementById('hidden_div1').style.display = "none";
+								return false;
+							}
+							</script>
+						</td>
+					</tr>
 					<tr>
 						<td class="pdx">
 							ผล EKG						</td>
