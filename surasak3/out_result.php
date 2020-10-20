@@ -1,9 +1,10 @@
 <?php
 session_start();
-	
+include("connect.inc");
+
 if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 
-	include("connect.inc");
+	
 	$data1 = $_POST['form_status'];
 
 	$hpv = ( trim($_POST['hpv']) != '' ) ? trim($_POST['hpv']) : NULL ;
@@ -16,6 +17,8 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 	$outAfpResult = (!empty($_POST['outAfpResult'])) ? trim($_POST['outAfpResult']) : '';
 	$outPsa = (!empty($_POST['outPsa'])) ? trim($_POST['outPsa']) : '';
 	$outPsaResult = (!empty($_POST['outPsaResult'])) ? trim($_POST['outPsaResult']) : '';
+
+	$nPrefix = $_POST['nPrefix'];
 
 	$part = $_POST['part'];
 
@@ -40,7 +43,7 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`stool` = '".$_POST['stool']."',
 		`cxr` = '".$_POST['cxr']."',
 		`doctor_result` = '".$_POST['doctor_result']."',
-		`year_chk` = '".$nPrefix."',
+		`year_chk` = '$nPrefix',
 		`part` = '$part',
 		`42702` = '$bone',
 		`hpv` = '$hpv',
@@ -287,7 +290,10 @@ function showDiveye1(){
 
 <body>
 <div id="no_print">
-<form action="" method="post" name="f1">
+<?php 
+$part = $_REQUEST['part'];
+?>
+<form action="out_result.php?part=<?=$part;?>" method="post" name="f1">
 	<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#339933" class="pdxhead">
 		<tr>
 			<td height="40" align="center" bgcolor="#66CC99">
@@ -303,11 +309,11 @@ function showDiveye1(){
 	</table>
 </form>
 <br />
-<?
-//echo $sOfficer;
+<?php
+
 if(isset($_POST['hn'])){
 				
-	include("connect.inc");		
+	
 	
 	////*runno ตรวจสุขภาพ*/////////
 	// $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -325,7 +331,7 @@ if(isset($_POST['hn'])){
 	
 	// $nPrefix=$row->prefix;
 	// $nPrefix2="25".$nPrefix;
-
+	$part = $_REQUEST['part'];
 
 	$sql = "SELECT SUBSTRING(`yearchk`, 3, 2) AS `checkup_year` FROM `chk_company_list` WHERE `code` = '$part' ";
 	$q = mysql_query($sql);
@@ -333,23 +339,20 @@ if(isset($_POST['hn'])){
 	$nPrefix = $chk['checkup_year'];
 
 	////*runno ตรวจสุขภาพ*/////////
-	$part=$_GET["part"];
-		
+	
+	
 	$sql1="SELECT * ,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` 
 	FROM `opcardchk` 
-	WHERE `HN` = '".(trim($_POST['hn']))."' and part='$part' ";	
-	//echo "-->".$sql1;
-	
+	WHERE `HN` = '".(trim($_POST['hn']))."' and part='$part' ";
 	$query=mysql_query($sql1) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 
 	$arr=mysql_fetch_array($query);   // list ข้อมูลจาก opcardchk
 	$hn = $arr['HN'];
 	$age= $arr['agey'];
-	$ptname = $arr['yot'].$arr['name'].' '.$arr['surname'];			
+	$ptname = $arr['yot'].$arr['name'].' '.$arr['surname'];
 
-	$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and `part` = '$part' and year_chk ='$nPrefix' ";
-	//echo $sqlchk;
+	$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='$hn' and `part` = '$part' and year_chk ='$nPrefix' ";
 	$querychk=mysql_query($sqlchk) or die (mysql_error());
 	$Rowchk=mysql_num_rows($querychk);
 
@@ -372,7 +375,6 @@ if(isset($_POST['hn'])){
 	if(!$Row){	
 	
 		$sql2="SELECT hn as HN ,concat(yot,name,' ',surname)as ptname FROM `opcard` WHERE hn='".$_POST['hn']."' ";	
-		//echo "-->".$sql2;
 		echo "<div class='pdx'><strong>แจ้งเตือน...</strong>บุคคลนี้ไม่ได้ลงทะเบียนตรวจสุขภาพแบบกลุ่มของหน่วย : <strong>$part</strong><br><span class='style1'>กรุณาเช็ครายชื่อบุคคลให้ตรงกับหน่วยงานที่มาตรวจสุขภาพ...!!!</span></div>";
 		$query=mysql_query($sql2) or die (mysql_error());
 		$Row2=mysql_num_rows($query);	
@@ -384,7 +386,6 @@ if(isset($_POST['hn'])){
 			$ptname=$arr['ptname'];
 			
 			$sqlchk="SELECT * FROM `out_result_chkup` WHERE hn='".$hn."' and `part` = '$part' and year_chk ='$nPrefix' ";
-			//echo $sqlchk;
 			$querychk=mysql_query($sqlchk) or die (mysql_error());
 			$Rowchk=mysql_num_rows($querychk);
 	
@@ -626,6 +627,7 @@ if(isset($_POST['hn'])){
         <input type="hidden" name="hn" value="<?=$hn?>" />
         <input type="hidden" name="part" value="<?=$part;?>" />
         <input type="hidden" name="row_id" value="<?=$arrchk['row_id']?>" />
+		<input type="hidden" name="nPrefix" value="<?=$nPrefix?>" />
         <?=$button;?></td>
       </tr>
       </table>
