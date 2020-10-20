@@ -308,6 +308,7 @@ $part = $_REQUEST['part'];
 			<td align="left">
 				HN: <input name="hn" type="text" size="20" class="pdxhead"  /> 
 				<input type="submit"  value="   ตกลง   " name="okhn" class="pdxhead"/>
+				<input type="hidden" name="action" value="searchHn">
 			</td>
 		</tr>
 	</table>
@@ -315,7 +316,7 @@ $part = $_REQUEST['part'];
 <br />
 <?php
 
-if(isset($_POST['hn'])){
+if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 				
 	
 	

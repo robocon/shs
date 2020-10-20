@@ -1545,7 +1545,7 @@ if ( $group2_rows > 0 ) {
 <table width="100%" border="0" class="text4">
   <tr>
     <td  width="50%" align="center">
-		<strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
+		<strong>CXR : </strong>พ.ท.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
 		<strong>Authorise LAB : </strong><?=$authorisename;?><strong> (<?=$authorisedate;?>) </strong>
 		<br />
 	</td>
