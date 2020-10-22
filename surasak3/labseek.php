@@ -19,7 +19,7 @@
 if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
 	
-	$sql = "Select  code,detail,price,depart from labcare  where  labstatus ='Y' AND code !='12723-sso' and (code like '%".$_GET["search1"]."%' or detail 	 like '%".$_GET["search1"]."%' or codex like '%".$_GET["search1"]."%' or icd9cm like '%".$_GET["search1"]."%') and version !='OLD' limit 10 ";
+	$sql = "Select  code,detail,price,depart from labcare  where  labstatus ='Y' AND code !='12723-sso' and code like '%".$_GET["search1"]."%' or detail 	 like '%".$_GET["search1"]."%' or codex like '%".$_GET["search1"]."%' or icd9cm like '%".$_GET["search1"]."%' and version !='OLD' limit 10 ";
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -431,8 +431,44 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 
 			}
 
-		////////////////////////
-	include("unconnect.inc");
+////////////////////////
+
+// แจ้งเตือน: ผู้ป่วย พ.ร.บ.
+$q = mysql_query("select * from opday where thidate like '$dateid%' and hn='$cHn' and `ptright` LIKE 'R06%'");
+$ptRows = mysql_num_rows($q);
+if( $ptRows > 0 ){
+
+	$test_pt = mysql_fetch_assoc($q);
+	$user_ptright = substr($test_pt["ptright"], 0, 3);
+
+	// 2561-11-05
+	$chkdate = substr($dateid,0,4);
+	
+	$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `date`,( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
+	FROM `opday`
+	WHERE hn='$cHn' 
+	AND `thidate` LIKE '$chkdate%' 
+	AND `ptright` LIKE '$user_ptright%' 
+	GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10), `hn`)";
+	$q = mysql_query($sql);
+	$count = mysql_num_rows($q);
+
+	if( $count > 0 ){
+		$text_list = '<br><span style="font-size: 18px;"><b><u>แจ้งเตือน: ผู้ป่วย พ.ร.บ. มีค่าใช้จ่ายในปี '.$chkdate.' ดังนี้</u></b></span><br>';
+		$total = 0;
+		while ($item = mysql_fetch_assoc($q)) { 
+			$testTotal = (int) $item['total'];
+			if($testTotal > 0){
+				$text_list .= 'เมื่อวันที่ '.$item['date'].' จำนวน '.$item['total'].' บาท<br>';
+					$total += $item['total'];
+			}
+		}
+		$text_list .= '<b>รวมเป็นเงิน '.$total.' บาท</b>';
+		echo $text_list;
+	}
+}
+
+include("unconnect.inc");
 ?>
 
 
