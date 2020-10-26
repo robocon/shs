@@ -479,26 +479,30 @@ if($hbsag=="Negative"){
     echo $result;
     ?>
 </td>
+<!-- WET µÃÇ¨ÍØ¨¨ÒÃÐÊÁºÙÃ³ìáºº Stool Exam -->
 <td align="center">
     <?php 
     $sql = "SELECT b.`result`, b.`flag` 
     FROM ( 
-
         SELECT *, MAX(`autonumber`) AS `latest_number`
         FROM `resulthead` 
         WHERE `hn` = '$hn' 
         AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
         AND `profilecode` = 'WET' 
         GROUP BY `profilecode` 
-
     ) AS a
     INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
     WHERE b.result !='DELETE' OR b.result !='*' ";
-
     $query13 = mysql_query($sql);
-    list($result, $flag) = mysql_fetch_array($query13);
-
-    echo $result;
+    $resutlWET = "";
+    if (mysql_num_rows($query13) > 0) {
+        list($result, $flag) = mysql_fetch_array($query13);
+        $resutlWET = '»¡µÔ';
+        if( $flag != 'N' ){
+            $resutlWET = '¼Ô´»¡µÔ';
+        }
+    }
+    echo $resutlWET;
     ?>
 </td> 
 <!-- Stool Culture -->
