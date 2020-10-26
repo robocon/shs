@@ -127,7 +127,7 @@ if ( $action == 'print' ) {
                 ?>
                 <font  style='line-height:23px;' face='Angsana New' size='4'><center><b>โรงพยาบาลค่ายสุรศักดิ์มนตรี</b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:23px;' face='Angsana New' size='4'><center><b><?=$hn;?> (ตรวจสุขภาพ)</b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='4'><center><b><?=$hn;?> (ตรวจสุขภาพ AFP)</b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='4'><center><b>OUTLAB <?=$chem_code;?></b></center></font>
                 <div style="page-break-before: always;"></div>
                 <?php 
