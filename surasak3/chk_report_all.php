@@ -60,7 +60,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th colspan="28" align="center">รายการตรวจ</th>
+    <th colspan="30" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -77,6 +77,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" align="center">LDL</th>
     <th width="5%" align="center">BUN</th>
     <th width="3%" align="center">CR</th>
+    <th width="3%" align="center">eGFR</th>
     <th width="6%" align="center">URIC</th>
     <th width="7%" align="center">SGOT</th>
     <th width="6%" align="center">SGPT</th>
@@ -105,9 +106,7 @@ $i=0;
 while($result = mysql_fetch_array($out_result_sql)){
 
     $yaer_chk = $result['year_chk'];
-
     $pt_hn = $result['hn'];
-
     $age = $result["age"];
     $cs = $result["cs"];
 
@@ -115,28 +114,44 @@ while($result = mysql_fetch_array($out_result_sql)){
         $result["HN"] = $result["hn"];
     }
 
-$sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
-$query2 = mysql_query($sql2);
-$result2 = mysql_fetch_array($query2);
+    $sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
+    $query2 = mysql_query($sql2);
+    $result2 = mysql_fetch_array($query2);
 
-if(empty($age)){
-$age=$result2["age"];
-}
+    if(empty($age)){
+        $age=$result2["age"];
+    }
 
-$i++;
-$ptname=$result2["ptname"];
-if($result2["bp1"] && $result2["bp2"]){
-	$bp=$result2["bp1"]."/".$result2["bp2"];
-}else if($result2["bp3"] && $result2["bp4"]){
-	$bp=$result2["bp3"]."/".$result2["bp4"];
-}else{
-	$bp="&nbsp;";
-}
-if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
-	$disease="ไม่มี";
-}else{
-	$disease="มี";
-}
+    /*
+    // กรณีที่มี labnumber จากใน chk_lab_items
+    $defLabNumber = "AND `labnumber` = '$exam_no'";
+    $sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$showpart' AND `hn` = '$hn' ";
+    $q = mysql_query($sql) or die(mysql_error());
+    if (mysql_num_rows($q) > 0) {
+        $labItemList = array();
+        while ($labChk = mysql_fetch_assoc($q)) { 
+            $testLabnumber = $labChk['labnumber'];
+            $labItemList[] = " `labnumber` = '$testLabnumber' ";
+        }
+        $defLabNumber = implode(' OR ', $labItemList);
+        $defLabNumber = " AND ( $defLabNumber )";
+    }
+    */
+
+    $i++;
+    $ptname=$result2["ptname"];
+    if($result2["bp1"] && $result2["bp2"]){
+        $bp=$result2["bp1"]."/".$result2["bp2"];
+    }else if($result2["bp3"] && $result2["bp4"]){
+        $bp=$result2["bp3"]."/".$result2["bp4"];
+    }else{
+        $bp="&nbsp;";
+    }
+    if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
+        $disease="ไม่มี";
+    }else{
+        $disease="มี";
+    }
 
     $strSQL11 = "SELECT date_format(`orderdate`,'%d-%m-%Y') as orderdate2 
     FROM `resulthead` 
@@ -329,23 +344,48 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$bun</strong>";
 }
 ?></td>
-    <td align="center"><?
-$sql7="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
-GROUP BY a.`profilecode` ";
-//echo $sql7;
-$query7=mysql_query($sql7);
-list($crea,$flag)=mysql_fetch_array($query7);
+<td align="center">
+    <?php 
+    // CREA
+    $sql7="SELECT b.result, b.flag 
+    FROM resulthead AS a
+    INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+    WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+    AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
+    GROUP BY a.`profilecode` ";
 
-if($flag=="N"){
-	echo $crea;
-}else{
-	echo "<strong style='color:#FF0000'>$crea</strong>";
-}
-?></td>
+    $query7=mysql_query($sql7);
+    list($crea,$flag)=mysql_fetch_array($query7);
+
+    if($flag=="N"){
+        echo $crea;
+    }else{
+        echo "<strong style='color:#FF0000'>$crea</strong>";
+    }
+    ?>
+</td>
+<td align="center">
+    <?php 
+    // CREA
+    $sql7="SELECT b.result, b.flag 
+    FROM resulthead AS a
+    INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+    WHERE b.labcode = 'GFR' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+    AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
+    GROUP BY a.`profilecode` ";
+
+    $query7=mysql_query($sql7);
+    list($crea,$flag)=mysql_fetch_array($query7);
+
+    if($flag=="N"){
+        echo $crea;
+    }else{
+        echo "<strong style='color:#FF0000'>$crea</strong>";
+    }
+    ?>
+</td>
+
+
     <td align="center"><?
 $sql8="SELECT b.result, b.flag 
 FROM resulthead AS a

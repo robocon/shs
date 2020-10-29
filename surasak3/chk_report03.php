@@ -660,7 +660,21 @@ if( $num > 0 ){
 
 <?php
 
-} // end ถ้ามี cbc หรือ ua
+} // end ถ้ามี cbc หรือ ua 
+
+// กรณีที่มี labnumber จากใน chk_lab_items
+$defLabNumber = "AND `labnumber` = '$exam_no'";
+$sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$showpart' AND `hn` = '$hn' ";
+$q = mysql_query($sql) or die(mysql_error());
+if (mysql_num_rows($q) > 0) {
+	$labItemList = array();
+	while ($labChk = mysql_fetch_assoc($q)) { 
+		$testLabnumber = $labChk['labnumber'];
+		$labItemList[] = " `labnumber` = '$testLabnumber' ";
+	}
+	$defLabNumber = implode(' OR ', $labItemList);
+	$defLabNumber = " AND ( $defLabNumber )";
+}
 
 // ผลการตรวจทางห้องปฏิบัติการ ตัด profilecode='OCCULT'
 $sql1 = "SELECT x.`profilecode`,x.`autonumber`,b.seq
@@ -669,36 +683,8 @@ FROM (
     SELECT MAX(`autonumber`) AS `latest_id`   
     FROM `resulthead` 
     WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
-	AND `labnumber` = '$exam_no' 
+	$defLabNumber 
     AND ( 
-        #`profilecode`='GLU' 
-        #OR `profilecode`='CREAG' 
-        #OR `profilecode`='BUN' 
-        #OR `profilecode`='URIC' 
-        #OR `profilecode`='CHOL' 
-        #OR `profilecode`='TRIG' 
-        #OR `profilecode`='AST' 
-        #OR `profilecode`='ALT' 
-        #OR `profilecode`='LIPID' 
-        #OR `profilecode`='ALP' 
-        #OR `profilecode`='ANTIHB' 
-        #OR `profilecode`='HDL' 
-        #OR `profilecode`='LDL' 
-        #OR `profilecode`='10001' 
-        #OR `profilecode`='ABOC' 
-        #OR `profilecode`='METAMP'	
-        #OR `profilecode`='OCCULT'
-
-		#OR `profilecode`='HBSAG' 
-        #OR `profilecode`='HAVTOT' 
-        #OR `profilecode`='WET' 
-		#OR `profilecode`='AHAV' 
-
-		#OR `profilecode`='STOOL' 
-		#OR `profilecode`='35101' 
-
-		#OR `profilecode`='PSA' 
-		
 		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
 		AND `profilecode` != 'AFP' 
 		AND `profilecode` != 'CEA' 
