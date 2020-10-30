@@ -253,10 +253,18 @@ if($flag=="N" || $flag=="L"){
 ?>    </td>
     <td align="center"><?php
 $sql2="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'CHOL' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'CHOL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql2;
 $query2=mysql_query($sql2);
@@ -272,10 +280,18 @@ if($flag=="N"){
 ?></td>
     <td align="center"><?php
 $sql3="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'TRIG' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'TRIG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql3;
 $query3=mysql_query($sql3);
@@ -291,10 +307,18 @@ if($flag=="N"){
 ?></td>
     <td align="center"><?php
 $sql4="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'HDL' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'HDL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql4;
 $query4=mysql_query($sql4);
@@ -310,12 +334,20 @@ if($flag=="N" || $flag=="H"){
 ?></td>
     <td align="center"><?
 $sql5="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND ( `profilecode` = 'LDL' OR `profilecode` = 'LDLC' OR `profilecode` = '10001' ) 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE (b.labcode = 'LDL' OR b.labcode = 'LDLC' OR b.labcode='10001') AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
-//echo $sql5;
+
 $query5=mysql_query($sql5);
 list($ldl,$flag)=mysql_fetch_array($query5);
 
@@ -329,12 +361,20 @@ if($flag=="N" || $flag=="L"){
 ?></td>
     <td align="center"><?
 $sql6="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'BUN' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'BUN' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
-//echo $sql6;
+
 $query6=mysql_query($sql6);
 list($bun,$flag)=mysql_fetch_array($query6);
 
@@ -348,10 +388,18 @@ if($flag=="N"){
     <?php 
     // CREA
     $sql7="SELECT b.result, b.flag 
-    FROM resulthead AS a
-    INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+    FROM ( 
+
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' 
+    AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+    AND `profilecode` = 'CREAG' 
+    GROUP BY `profilecode` 
+
+    ) AS a
+    INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
     WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-    AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
     GROUP BY a.`profilecode` ";
 
     $query7=mysql_query($sql7);
@@ -366,14 +414,22 @@ if($flag=="N"){
 </td>
 <td align="center">
     <?php 
-    // CREA
+    // GFR
     $sql7="SELECT b.result, b.flag 
-    FROM resulthead AS a
-    INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-    WHERE b.labcode = 'GFR' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-    AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
-    GROUP BY a.`profilecode` ";
+    FROM ( 
 
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'CREAG' 
+GROUP BY `profilecode` 
+
+) AS a
+    INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+    WHERE b.labcode = 'GFR' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+    GROUP BY a.`profilecode` ";
+    
     $query7=mysql_query($sql7);
     list($crea,$flag)=mysql_fetch_array($query7);
 
@@ -388,10 +444,18 @@ if($flag=="N"){
 
     <td align="center"><?
 $sql8="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'URIC' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql8;
 $query8=mysql_query($sql8);
@@ -405,10 +469,18 @@ if($flag=="N"){
 ?></td>
     <td align="center"><?
 $sql9="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'AST' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'AST' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql9;
 $query9=mysql_query($sql9);
@@ -422,10 +494,18 @@ if($flag=="N"){
 ?></td>
     <td align="center"><?
 $sql10="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'ALT' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'ALT' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 //echo $sql10;
 $query10=mysql_query($sql10);
@@ -439,10 +519,18 @@ if($flag=="N"){
 ?></td>
     <td align="center"><?
 $sql11="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'ALP' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'ALP' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
 //echo $sql11;
 $query11=mysql_query($sql11);
@@ -456,8 +544,17 @@ if($flag=="N"){
 ?></td>
     <td align="center"><?
 $sql12="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+AND `profilecode` = 'HBSAG' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'HBSAG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk'
 GROUP BY a.`profilecode` ";
