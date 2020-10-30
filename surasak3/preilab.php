@@ -77,10 +77,9 @@
     //  $cAccno=$row->accno;
    }
 
-   $sqlIP = "SELECT `row_id` FROM `ipcard` WHERE `an` = '$an' AND `dcdate` = '0000-00-00 00:00:00' ";
+   $sqlIP = "SELECT `row_id` FROM `ipcard` WHERE `an` = '$an' AND `status_log` = 'จำหน่าย' ";
    $qIP = mysql_query($sqlIP);
-   $ipRows = mysql_num_rows($qIP);
-   if($ipRows == 0){
+   if(mysql_num_rows($qIP) > 0){
        echo "ผู้ป่วยได้ทำการ Discharge กรุณาประสาน ส่วนเก็บเงินรายได้เพื่อปลดล็อค และนำผู้ป่วยกลับขึ้นเตียง";
        exit;
    }
