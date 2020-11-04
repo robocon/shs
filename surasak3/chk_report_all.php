@@ -60,7 +60,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th colspan="30" align="center">รายการตรวจ</th>
+    <th colspan="31" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -84,7 +84,7 @@ $company = mysql_fetch_assoc($q);
     <th width="4%" align="center">ALK</th>
     <th width="7%" align="center">HBsAg</th>
     <th width="6%" align="center">FOBT</th>
-
+    <th width="6%" align="center">AFP</th>
     <th width="6%" align="center">Anti-HAV IgG</th>
     <th width="6%" align="center">Stool Exam</th>
     <th width="6%" align="center">Stool Culture</th>
@@ -570,7 +570,8 @@ if($hbsag=="Negative"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td align="center"><?
+<td align="center">
+<?php
 $sql13="SELECT b.result, b.flag 
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
@@ -588,8 +589,37 @@ if($hbsag=="Negative"){
 }else{
 	echo "&nbsp;";
 }
-?></td>
+?>
+</td>
+<td align="center">
+    <?php
+    $sql13="SELECT b.result, b.flag 
+    FROM ( 
 
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+AND `profilecode` = 'AFP' 
+GROUP BY `profilecode` 
+
+) AS a
+    INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+    WHERE b.labcode = 'AFP' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+    GROUP BY a.`profilecode` ";
+    
+    $query13=mysql_query($sql13);
+    list($afp,$flag)=mysql_fetch_array($query13);
+
+    $result_outlab_txt = 'ปกติ';
+    if( $flag['flag'] != 'N' ){
+        $result_outlab_txt = 'ผิดปกติ';
+    }
+
+    echo $afp;
+    
+    ?>
+</td>
 <!-- Anti-HAV IgG -->
 <td align="center">
     <?php 
