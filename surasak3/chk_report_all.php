@@ -109,6 +109,7 @@ while($result = mysql_fetch_array($out_result_sql)){
     $pt_hn = $result['hn'];
     $age = $result["age"];
     $cs = $result["cs"];
+    $exam_no = $result["exam_no"];
 
     if(empty($result["HN"])){
         $result["HN"] = $result["hn"];
@@ -122,10 +123,10 @@ while($result = mysql_fetch_array($out_result_sql)){
         $age=$result2["age"];
     }
 
-    /*
+    
     // กรณีที่มี labnumber จากใน chk_lab_items
     $defLabNumber = "AND `labnumber` = '$exam_no'";
-    $sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$showpart' AND `hn` = '$hn' ";
+    $sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$camp' AND `hn` = '$pt_hn' ";
     $q = mysql_query($sql) or die(mysql_error());
     if (mysql_num_rows($q) > 0) {
         $labItemList = array();
@@ -136,7 +137,7 @@ while($result = mysql_fetch_array($out_result_sql)){
         $defLabNumber = implode(' OR ', $labItemList);
         $defLabNumber = " AND ( $defLabNumber )";
     }
-    */
+    
 
     $i++;
     $ptname=$result2["ptname"];
@@ -418,14 +419,15 @@ if($flag=="N"){
     $sql7="SELECT b.result, b.flag 
     FROM ( 
 
-SELECT *, MAX(`autonumber`) AS `latest_number`
-FROM `resulthead` 
-WHERE `hn` = '$pt_hn' 
-AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-AND `profilecode` = 'CREAG' 
-GROUP BY `profilecode` 
+        SELECT *, MAX(`autonumber`) AS `latest_number`
+        FROM `resulthead` 
+        WHERE `hn` = '$pt_hn' 
+        AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+        $defLabNumber 
+        AND `profilecode` = 'CREAG' 
+        GROUP BY `profilecode` 
 
-) AS a
+    ) AS a
     INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
     WHERE b.labcode = 'GFR' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
     GROUP BY a.`profilecode` ";

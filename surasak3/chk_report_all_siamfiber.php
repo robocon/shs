@@ -113,11 +113,10 @@ $i=0;
 while($result = mysql_fetch_array($out_result_sql)){
 
     $yaer_chk = $result['year_chk'];
-
     $pt_hn = $result['hn'];
-
     $age = $result["age"];
     $cs = $result["cs"];
+    $exam_no = $result["exam_no"];
 
     if(empty($result["HN"])){
         $result["HN"] = $result["hn"];
@@ -131,6 +130,20 @@ while($result = mysql_fetch_array($out_result_sql)){
 
     if(empty($age)){
         $age=$result2["age"];
+    }
+
+    // ¡Ã³Õ·ÕèÁÕ labnumber ¨Ò¡ã¹ chk_lab_items
+    $defLabNumber = "AND `labnumber` = '$exam_no'";
+    $sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$camp' AND `hn` = '$pt_hn' ";
+    $q = mysql_query($sql) or die(mysql_error());
+    if (mysql_num_rows($q) > 0) {
+        $labItemList = array();
+        while ($labChk = mysql_fetch_assoc($q)) { 
+            $testLabnumber = $labChk['labnumber'];
+            $labItemList[] = " `labnumber` = '$testLabnumber' ";
+        }
+        $defLabNumber = implode(' OR ', $labItemList);
+        $defLabNumber = " AND ( $defLabNumber )";
     }
 
     $i++;
@@ -294,18 +307,32 @@ while ($other = mysql_fetch_assoc($query1)) {
 
 
 
-
-    <td align="center"><?php 
+    <!-- BS -->
+    <td align="center">
+    <?php 
     $autonumber = '';
     $autonumber = $otherList['GLU'];
 
 $sql1="SELECT b.result, b.flag 
 FROM resulthead AS a 
 INNER JOIN resultdetail AS b ON b.autonumber = '$autonumber' 
-WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+WHERE b.labcode = 'GLU' 
+AND (b.result !='DELETE' OR b.result !='*') 
+AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
 GROUP BY a.`profilecode` ";
 
+
+$sql1 = "SELECT b.`result`, b.`flag` 
+FROM ( 
+    select `autonumber` 
+    from `resulthead` 
+    where `hn` = '$pt_hn' 
+    and `clinicalinfo` = 'µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+    and `autonumber` = '$autonumber' 
+) AS a 
+LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
+WHERE (b.`result` !='DELETE' OR b.`result` !='*') ";
 $query1=mysql_query($sql1);
 list($glu,$flag)=mysql_fetch_array($query1);
 if($flag=="N" || $flag=="L"){
@@ -659,16 +686,16 @@ if( $stoccRes == 'Negative' ){
     <?php 
     $sql = "SELECT b.`result`, b.`flag` 
     FROM ( 
-        SELECT *, MAX(`autonumber`) AS `latest_number` 
+        SELECT MAX(`autonumber`) AS `latest_number` 
         FROM `resulthead` 
         WHERE `hn` = '$hn' 
         AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
-        AND ( `profilecode` = 'CREA' OR `profilecode` = 'CREAG' ) 
-        GROUP BY `profilecode` 
+        $defLabNumber 
+        AND `profilecode` = 'CREAG' 
     ) AS a
     INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
-    WHERE b.result !='DELETE' OR b.result !='*' 
-    AND `labname` LIKE 'eGFR%' ";
+    WHERE b.`labname` LIKE 'eGFR%' 
+	AND ( b.result != 'DELETE' OR b.result != '*' )";
     $query13 = mysql_query($sql);
     list($result, $flag) = mysql_fetch_array($query13);
     echo $result;
