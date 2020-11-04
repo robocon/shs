@@ -333,20 +333,21 @@ if($flag=="N" || $flag=="H"){
 	echo "&nbsp;";
 }
 ?></td>
+    <!-- LDL ¸ÃÃÁ´Ò -->
     <td align="center"><?
 $sql5="SELECT b.result, b.flag 
 FROM ( 
 
-SELECT *, MAX(`autonumber`) AS `latest_number`
-FROM `resulthead` 
-WHERE `hn` = '$pt_hn' 
-AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
-AND ( `profilecode` = 'LDL' OR `profilecode` = 'LDLC' OR `profilecode` = '10001' ) 
-GROUP BY `profilecode` 
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' 
+    AND `clinicalinfo` ='µÃÇ¨ÊØ¢ÀÒ¾»ÃÐ¨Ó»Õ$yaer_chk' 
+    AND `profilecode` = 'LDL'
+    GROUP BY `profilecode` 
 
 ) AS a
 INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-WHERE (b.labcode = 'LDL' OR b.labcode = 'LDLC' OR b.labcode='10001') AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+WHERE `profilecode` = 'LDL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 GROUP BY a.`profilecode` ";
 
 $query5=mysql_query($sql5);
