@@ -57,7 +57,8 @@ $num = mysql_num_rows($out_result_sql);
 	<th width="4%" rowspan="2" align="center">อายุ</th>
 	<th width="5%" rowspan="2" align="center">น้ำหนัก</th>
 	<th width="5%" rowspan="2" align="center">ส่วนสูง</th>
-	<th width="5%" rowspan="2" align="center">BP</th>
+	<th width="5%" rowspan="2" align="center">BMI</th>
+	<th width="5%" rowspan="2" align="center">รอบเอว</th>
 	<th colspan="31" align="center">รายการตรวจ</th>
 	<th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
 	<th rowspan="2" align="center">สรุปผลการตรวจ</th>
@@ -124,11 +125,15 @@ while($result = mysql_fetch_array($out_result_sql)){
 
     $sql2 = "SELECT * FROM `dxofyear_out` WHERE `row_id` = '$dxofyear_out_id' ";
 	$query2 = mysql_query($sql2, $Conn) or die(mysql_error());
-	$weight = $height = $bp = $cxr = $stat_cbc = $stat_ua = $conclution = "";
+
+	$weight = $height = $bp = $cxr = $stat_cbc = $stat_ua = $conclution = $bmi = $round = "";
+
 	if( mysql_num_rows($query2) > 0 ){
 		$result2 = mysql_fetch_array($query2);
 		$weight = $result2["weight"];
 		$height = $result2["height"];
+		$bmi = $result2["bmi"];
+		$round = $result2['round_'];
 
 		if(empty($age)){
 			$age = $result2["age"];
@@ -196,11 +201,12 @@ while($result = mysql_fetch_array($out_result_sql)){
 	<td align="center"><?=$age;?></td>
 	<td align="center"><?=$weight;?></td>
 	<td align="center"><?=$height;?></td>
-	<td align="center"><?=$bp;?></td>
+	<!-- BMI -->
+	<td align="center"><?=$bmi;?></td>
+	<!-- รอบเอว -->
+	<td align="center"><?=$round;?></td>
 	<td>&nbsp;</td>
-	<td align="left">
-        <?=$cxr;?>
-    </td>
+	<td align="left"><?=$cxr;?></td>
     <td align="center">
 		<?php 
 		// $stat_cbc = $stat_ua = '';
