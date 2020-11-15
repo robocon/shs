@@ -13,5 +13,10 @@
 // // Run base from bootstrap
 // bootstrap();
 
-header('Location: nindex.htm');
+// landing from http://192.168.1.2/sm3
+if( preg_match('(Windows)', $_SERVER['HTTP_USER_AGENT']) > 0 ){
+    header('Location: nindex.htm');
+}else{
+    header('Location: surasak3/login_mobile.php');
+}
 ?>

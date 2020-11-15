@@ -22,5 +22,8 @@
   </table>
 </form>
 <font face="THSarabunPSK">.......<a target=_parent  href='../index.htm'>อินทราเนท</a></font>
+<p>
+  <a target="_parent" href='login_mobile.php'>Mobile Version</a>
+</p>
 </body>
 

@@ -18,6 +18,7 @@ if ( $action == 'print' ) {
     $count_stool = input_post('count_stool');
     $count_cs = input_post('count_cs');
     $urine_cs = input_post('urine_cs');
+    $afp = input_post('afp');
     $count_etc = input_post('count_etc');
     $row_print = input_post('row_print');
 
@@ -121,6 +122,18 @@ if ( $action == 'print' ) {
             }
         }
 
+        if( $afp > 0 ){
+            for ($i=0; $i < $afp; $i++) { 
+                ?>
+                <font  style='line-height:23px;' face='Angsana New' size='4'><center><b>โรงพยาบาลค่ายสุรศักดิ์มนตรี</b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='4'><center><b><?=$hn;?> (ตรวจสุขภาพ AFP)</b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='4'><center><b>OUTLAB <?=$chem_code;?></b></center></font>
+                <div style="page-break-before: always;"></div>
+                <?php 
+            }
+        }
+
         if( $count_etc > 0 ){ 
             for ($i=0; $i < $count_etc; $i++) { 
                 ?>
@@ -196,6 +209,9 @@ include 'chk_menu.php';
     </div>
     <div>
         Urine C/S: <input type="text" name="urine_cs" size="3" value="">
+    </div>
+    <div>
+        Outlab AFP: <input type="text" name="afp" size="3" value="">
     </div>
     <div>
         อื่นๆ: <input type="text" name="count_etc" size="3" value="">

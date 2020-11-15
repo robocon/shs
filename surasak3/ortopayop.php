@@ -140,7 +140,7 @@ function  checklist(){
     echo "โรค: $cDiag, แพทย์: $cDoctor<br>";
     echo "โปรดลงรายการค่าอุปกรณ์เวชภัณฑ์ในการผ่าตัด ลงราคาที่เบิกได้/ไม่ได้";
  print" <a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
- include("unconnect.inc");  
+ 
 ?>
 <p>>>>><input name="n1" type="text" value="ชื่อรายการ" size="20" readonly="readonly">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="T1" type="text" value="เลือกประเภท" size="22" readonly="readonly">
@@ -286,3 +286,41 @@ function  checklist(){
   <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="reset" value="  ลบทิ้ง  " name="B2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><< ไปเมนู</a></p>
 </form>
+<?php 
+$dateid = (date('Y') + 543).'-'.date('m-d');
+// แจ้งเตือน: ผู้ป่วย พ.ร.บ.
+$q = mysql_query("select * from opday where thidate like '$dateid%' and hn='$cHn' and `ptright` LIKE 'R06%'");
+$ptRows = mysql_num_rows($q);
+if( $ptRows > 0 ){
+
+	$test_pt = mysql_fetch_assoc($q);
+	$user_ptright = substr($test_pt["ptright"], 0, 3);
+
+	// 2561-11-05
+	$chkdate = substr($dateid,0,4);
+	
+	$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `date`,( SUM(`PHAR`) + SUM(`xray`) + SUM(`patho`) + SUM(`emer`) + SUM(`surg`) + SUM(`physi`) + SUM(`denta`) + SUM(`other`) ) AS `total` 
+	FROM `opday`
+	WHERE hn='$cHn' 
+	AND `thidate` LIKE '$chkdate%' 
+	AND `ptright` LIKE '$user_ptright%' 
+	GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10), `hn`)";
+	$q = mysql_query($sql);
+	$count = mysql_num_rows($q);
+
+	if( $count > 0 ){
+		$text_list = '<br><span style="font-size: 18px;"><b><u>แจ้งเตือน: ผู้ป่วย พ.ร.บ. มีค่าใช้จ่ายในปี '.$chkdate.' ดังนี้</u></b></span><br>';
+		$total = 0;
+		while ($item = mysql_fetch_assoc($q)) { 
+      $testTotal = (int) $item['total'];
+      if($testTotal > 0){
+        $text_list .= 'เมื่อวันที่ '.$item['date'].' จำนวน '.$item['total'].' บาท<br>';
+			  $total += $item['total'];
+      }
+		}
+		$text_list .= '<b>รวมเป็นเงิน '.$total.' บาท</b>';
+		echo $text_list;
+	}
+}
+
+include("unconnect.inc");  

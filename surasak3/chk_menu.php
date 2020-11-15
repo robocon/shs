@@ -115,6 +115,11 @@ $menu_list = array(
             array('link' => 'chk_report_cxr.php', 'name' => 'ดูผล X-Ray ออกหน่วย สิทธิ ปกส.', 'access' => 'ADM|ADMNEWCHKUP|ADMXR')
         ),
     ),
+    array(
+        'link' => 'pm_shs.php',
+        'name' => 'เมนูย่อย พี่สอง', 
+        'access' => 'ALL',
+    )
 );
 
 function create_menu($menu_list){

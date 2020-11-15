@@ -123,22 +123,22 @@ if($_POST["cigarette"]=="1"){
 	$bp4 = $_POST['bp4'];
 	$cAge = $_POST['age'];
 
-	$mens = ( empty($_POST['mens']) ) ? 'NULL' : $_POST['mens'] ;
+	$mens = ( empty($_POST['mens']) ) ? NULL : $_POST['mens'] ;
 	$mens_date = ( empty($_POST['mens_date']) ) ? '0000-00-00' : $_POST['mens_date'] ;
-	$vaccine = ( empty($_POST['vaccine']) ) ? 'NULL' : $_POST['vaccine'] ;
-	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? 'NULL' : $_POST['parent_smoke'] ;
+	$vaccine = ( empty($_POST['vaccine']) ) ? NULL : $_POST['vaccine'] ;
+	$parent_smoke = ( empty($_POST['parent_smoke']) ) ? NULL : $_POST['parent_smoke'] ;
 	$parent_smoke_amount = ( empty($_POST['parent_smoke_amount']) ) ? 0 : $_POST['parent_smoke_amount'] ;
-	$parent_drink = ( empty($_POST['parent_drink']) ) ? 'NULL' : $_POST['parent_drink'] ;
+	$parent_drink = ( empty($_POST['parent_drink']) ) ? NULL : $_POST['parent_drink'] ;
 	$parent_drink_amount = ( empty($_POST['parent_drink_amount']) ) ? 0 : $_POST['parent_drink_amount'] ;
 	$smoke_amount = ( empty($_POST['smoke_amount']) ) ? 0 : $_POST['smoke_amount'] ;
 	$drink_amount = ( empty($_POST['drink_amount']) ) ? 0 : $_POST['drink_amount'] ;
-	$ht_amount = ( empty($_POST['ht_amount']) ) ? 'NULL' : $_POST['ht_amount'] ;
-	$dm_amount = ( empty($_POST['dm_amount']) ) ? 'NULL' : $_POST['dm_amount'] ;
-	
+	$ht_amount = ( empty($_POST['ht_amount']) ) ? NULL : $_POST['ht_amount'] ;
+	$dm_amount = ( empty($_POST['dm_amount']) ) ? NULL : $_POST['dm_amount'] ;
 	$hpi = htmlspecialchars($_POST['hpi'], ENT_QUOTES);
-	$grade = ( empty($_POST['grade']) ) ? 'NULL' : $_POST['grade'] ;
-	$mind = ( empty($_POST['mind']) ) ? 'NULL' : $_POST['mind'] ;
-	$the_pill = ( empty($_POST['the_pill']) ) ? 'NULL' : $_POST['the_pill'] ;
+
+	$grade = ( empty($_POST['grade']) ) ? NULL : $_POST['grade'] ;
+	$mind = ( empty($_POST['mind']) ) ? NULL : $_POST['mind'] ;
+	$the_pill = ( empty($_POST['the_pill']) ) ? NULL : $_POST['the_pill'] ;
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
@@ -185,9 +185,9 @@ $sql = "Update `opd` set  `thidate` = '".$thidate_now."',
 `ht_amount` = '$ht_amount', 
 `dm_amount` = '$dm_amount', 
 `hpi` = '$hpi',
-`grade` = $grade, 
-`mind` = $mind, 
-`the_pill` = $the_pill 
+`grade` = '$grade', 
+`mind` = '$mind', 
+`the_pill` = '$the_pill' 
 
 where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
@@ -212,10 +212,11 @@ $sql = "INSERT INTO `opd` (
 	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
 	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
-	'$hpi', $grade,$mind,$the_pill
+	'$hpi', '$grade','$mind','$the_pill'
 );";
 
 }
+
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	
 	$field="";
@@ -392,7 +393,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$thdatevn=$thidate.$nVn;
 			$thidate_now1 = (date("Y")+543).date("-m-d").date(" H:i:s");
 			$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,toborow,time1,idcard,dxgroup,officer)VALUES('".$thidate_now1."','".$thidatehn."','".$cHn."','".$nVn."', '".$thdatevn."','".$cPtname."','".$cAge."','".$cPtright."','".$cGoup."','".$cCamp."','".$cNote."','".$vnlab."','".$time1."','".$cIdcard."','21','".$_SESSION["sOfficer"]."');";
-			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 311".mysql_error());
+			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 311");
 			
 			$sql = "UPDATE opcard SET lastupdate='".$thidate_now."' WHERE hn='$cHn' ";
 			$result = mysql_query($sql) or die("Query failed UPDATE opcard line 315");
@@ -917,31 +918,20 @@ mmHg </td>
 			<td align="right" >จำนวนปีที่เป็น HT: </td>
 			<td align="left" colspan="5">
 				<?php 
-				$cur_year = date('Y').'-01-01';
-
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$cur_year') AS `year_diff`, 
-
+				$curYear = date('Y-m-d');
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, 
 				TIMESTAMPDIFF(
 					YEAR,
 					CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),
-					'$cur_year'
+					'$curYear'
 				) AS `diag_date_year`
-
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn'";
-
 				$q = mysql_query($sql) or die( mysql_error() );
 				$ht_year = '';
-				$ht_row = mysql_num_rows($q);
-
-				if( $ht_row > 0 ){
+				if( mysql_num_rows($q) > 0 ){
 					$ht = mysql_fetch_assoc($q);
-					$ht_year = $ht['year_diff'];
-
-					if( !empty($ht['diag_date_year']) ){
-						$ht_year = $ht['diag_date_year'];
-					}
-					
+					$ht_year = $ht['diag_date_year'];
 				}
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
@@ -952,32 +942,19 @@ mmHg </td>
 			<td align="right" >จำนวนปีที่เป็น DM: </td>
 			<td align="left" colspan="5">
 				<?php 
-
 				$sql = "SELECT TIMESTAMPDIFF(
 					YEAR,
-					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$cur_year'
+					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear'
 				) AS `year_diff`
 				FROM `diabetes_clinic` 
 				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
-
 				$dm_year = '';
-				$dm_row = mysql_fetch_assoc($q);
-				$test_dm_row = (int)$dm_row['year_diff'];
-				
-				if( $test_dm_row > 0 ){
-					
-					$dm_year = $test_dm_row;
-
-				}else{
-
-					$sql = "SELECT TIMESTAMPDIFF(YEAR,`thidate`,'$cur_year') AS `year_diff` 
-					FROM `diabetes_clinic` 
-					WHERE `hn` = '$cHn'";
-					$q = mysql_query($sql) or die( mysql_error() );
-					$dm = mysql_fetch_assoc($q);
-					$dm_year = $dm['year_diff'];
-
+				if ( mysql_num_rows($q) > 0 ) {
+					$dm_row = mysql_fetch_assoc($q);
+					if($dm_row['year_diff'] > 0){
+						$dm_year = (int)$dm_row['year_diff'];
+					}
 				}
 				?>
 				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> ปี
@@ -987,7 +964,7 @@ mmHg </td>
          <tr>
            <td align="right" class="data_show">ลักษณะผู้ป่วย : </td>
            <td align="left" colspan="5"><span class="data_show">
-             <input name="type" type="radio" value="เดินมา" />
+             <input name="type" type="radio" value="เดินมา" checked="checked"/>
              เดินมา
              <input name="type" type="radio" value="นั่งรถเข็น" />
              นั่งรถเข็น
@@ -1004,7 +981,7 @@ mmHg </td>
 				<input type="radio" name="grade" id="grade2" value="2"><label for="grade2">2</label>&nbsp;
 				<input type="radio" name="grade" id="grade3" value="3"><label for="grade3">3</label>&nbsp;
 				<input type="radio" name="grade" id="grade4" value="4"><label for="grade4">4</label>&nbsp;
-				<input type="radio" name="grade" id="grade5" value="5"><label for="grade5">5</label>&nbsp;
+				<input type="radio" name="grade" id="grade5" value="5" checked="checked"><label for="grade5">5</label>&nbsp;
 			</td>
 		</tr>
 
@@ -1012,7 +989,7 @@ mmHg </td>
 			<td align="right" class="data_show">สภาวะจิตใจ</td>
 			<td align="left" colspan="5">
 				<input type="radio" name="mind" id="mind1" value="มีความวิตกกังวล"><label for="mind1">มีความวิตกกังวล</label>&nbsp;
-				<input type="radio" name="mind" id="mind2" value="ไม่มีความวิตกกังวล"><label for="mind2">ไม่มีความวิตกกังวล</label>&nbsp;
+				<input type="radio" name="mind" id="mind2" value="ไม่มีความวิตกกังวล" checked="checked"><label for="mind2">ไม่มีความวิตกกังวล</label>&nbsp;
 			</td>
 		</tr>
 
@@ -1209,8 +1186,16 @@ $room = $_POST['room'];
 <br />
 <?php } 
 include("unconnect.inc");
-?>
 
+if ($hn==='55-8821') {
+	?>
+	<script>
+	alert('กรุณาตรวจสอบ การจ่ายยา และปริมาณยา ในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ');
+	</script>
+	<?php
+}
+
+?>
 <script language="JavaScript" type="text/javascript">
 window.onload = function(){
 	document.getElementById("<?php echo $onfocus;?>").focus();

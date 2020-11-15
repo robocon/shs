@@ -55,7 +55,7 @@ if( $action === 'login' ){
 	
 }
 
-$title = 'เข้าสู่ระบบ Intranet รพ.ค่ายฯ';
+$title = 'เข้าสู่ระบบอินทราเน็ต รพ.ค่ายฯ';
 include 'templates/classic/header.php';
 ?>
 
@@ -79,7 +79,7 @@ include 'templates/classic/header.php';
 				<div class="col">
 					<div class="cell">
 						<div class="form-contain">
-							<h3>เข้าสู่ระบบ Intranet รพ.ค่ายฯ</h3>
+							<h3><?=$title;?></h3>
 							<?php
 							if( isset($_SESSION['x-msg']) ){
 								?><div class="notify-warning"><?=$_SESSION['x-msg'];?></div><?php

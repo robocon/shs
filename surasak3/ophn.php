@@ -14,6 +14,7 @@ session_unregister("Ptright1");
 ?>
 
 <script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 
 <form method="post" action="ophn.php">
@@ -43,6 +44,7 @@ session_unregister("Ptright1");
         <th bgcolor=6495ED>ใบสั่งยา</th>
         <th bgcolor=6495ED>ใบตรวจโรค</th>-->
         <th bgcolor=6495ED colspan="5">ใบตรวจโรค</th>
+        <th bgcolor="6495ED">&nbsp;</th>
     </tr>
 
     <?php
@@ -51,7 +53,6 @@ session_unregister("Ptright1");
         global $hn;
         $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
         $result = mysql_query($query)or die("Query failed");
-
         while (list ($hn,$yot,$name,$surname,$ptright,$ptright1,$idcard) = mysql_fetch_row ($result)) {
 
             if(substr($ptright,0,3)=='R07' && !empty($idcard)){
@@ -107,20 +108,21 @@ session_unregister("Ptright1");
             "  <td BGCOLOR=".$color.">$name</td>\n".
             "  <td BGCOLOR=".$color.">$surname</td>\n".
             "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opdcard_opregis.php?cHn=$hn\">$ptright</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
             // "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"opdprint2.php?cHn=$hn\">ใบต่อ</td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"opdprint2.php?cHn=$hn\">ใบต่อ</a></td>\n".
             /*"  <td BGCOLOR=".$color."><a target= _BLANK href=\"edprint.php?cHn=$hn\">ใบยานอก</td>\n".
             "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผู้ป่วยนัด</td>\n".
             "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint1.php?cHn=$hn\">ใบตรวจโรค</td>\n".*/
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointhdvn.php?cHn=$hn\">ไต</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointdenvn.php?cHn=$hn\">ฟัน</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</td>\n".
-
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointhdvn.php?cHn=$hn\">ไต</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointdenvn.php?cHn=$hn\">ฟัน</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</a></td>\n".
+            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</a></td>\n".
+            "<td bgcolor=\"$color\" align=\"center\"><button type=\"button\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button></td>".
             " </tr>\n");
+
             $_SESSION['hn'] = $hn;
             $_SESSION['name'] = $name;
             $_SESSION['surname'] = $surname;
@@ -153,7 +155,7 @@ session_unregister("Ptright1");
         }
         // END
         ?>
-    </table>
+</table>
 
     <FONT SIZE="2" COLOR="#990000">***คำอธิบาย***</FONT> <BR>
     <FONT SIZE="" COLOR="66CDAA">สีเขียว คือ ยังไม่ได้ทำการตรวจสิทธิการรักษา</FONT><BR>
@@ -169,53 +171,22 @@ session_unregister("Ptright1");
     $hn = isset($_POST['hn']) ? $_POST['hn'] : null ;
     if($hn !== null){
 
-        $sql_pre = "SELECT a.`bedcode`,a.`bed`,b.`my_ward` FROM `bed` AS a
-        LEFT JOIN `ipcard` AS b ON b.`an` = a.`an`
-        WHERE a.`hn` = '%s' ;";
-        $sql = sprintf($sql_pre, $hn);
-        $query = mysql_query($sql);
-        $item = mysql_fetch_assoc($query);
-
-        $ward_code = substr($item['bedcode'], 0, 2);
-        $ward_txt = '';
-
-        if( $ward_code == '44' ){
-            // หอผู้ป่วย ICU
-            $ward_txt = 'หอผู้ป่วย ICU';
-
-        } elseif ( $ward_code == '42' ) {
-            // หอผู้ป่วยรวม
-            $ward_txt = 'หอผู้ป่วยรวม';
-
-        } elseif ( $ward_code == '43' ) {
-            // หอผู้ป่วยสูตินรี
-            $ward_txt = 'หอผู้ป่วยสูตินรี';
-
-        } elseif ( $ward_code == '45' ) {
-            // หอผู้ป่วยพิเศษ
-            $ward_txt = 'หอผู้ป่วยพิเศษ';
-                //
-                // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-            $wardR3Test = preg_match('/R3\d+|B\d+/', $item['bed']);
-            $wardBxTest = preg_match('/B[0-9]+/', $item['bed']);
-            $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
-            
-            $ward_txt = $ward_txt.$exName;
+        $query = mysql_query("select * from ipcard where hn='$hn' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ");
+        if (mysql_num_rows($query) > 0) {
+            $item = mysql_fetch_assoc($query);
+            $alert_msg = "ผู้ป่วยรายนี้ยังAdmit อยู่ที่".$item['my_ward'];
+            echo "<script>alert('".$alert_msg."');</script>";
         }
-
-        if( $item != false && $ward_txt != '' ) {
-            $alert_msg = 'ผู้ป่วยยังอยู่ที่ '.$ward_txt;
-        }
+        
     }
 
-    if($alert_msg !== null){
+    if (!empty($alert_msg)) {
         ?>
-        <script type="text/javascript">
-        alert('<?php echo $alert_msg;?>');
-        </script>
+        <h2 style="color: red;"><u>!!! <?=$alert_msg;?> !!!</u></h2>
         <?php
     }
-
+    ?>
+    <?php
     /////////////
     $sql_chkname="SELECT  * FROM opcard
     where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn !='". $_SESSION['hn']."'  limit 5";
@@ -245,21 +216,22 @@ session_unregister("Ptright1");
             while($dbarr= mysql_fetch_array($result_chkname)){
 
                 print (" <tr>\n".
-                "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opedit.php? cHn=$dbarr[hn] & cName=$dbarr[name] &cSurname=$dbarr[surname]\">$dbarr[hn]</a></td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[yot]</td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[name]</td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[surname]</td>\n".
-                "  <td BGCOLOR=".$color.">$dbarr[ptright]</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"hndaycheck.php?hn=$dbarr[hn]\">มา รพ.</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"appdaycheck.php?hn=$dbarr[hn]\">ตรวจนัด</td>\n".
-                // "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"opdprint2.php?cHn=$dbarr[hn]\">ใบต่อ</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"edprint.php?cHn=$dbarr[hn]\">ใบยานอก</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint.php?cHn=$dbarr[hn]\">ผู้ป่วยนัด</td>\n".
-                "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint1.php?cHn=$dbarr[hn]\">ใบตรวจโรค</td>\n".
-
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\"  href=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['yot']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['name']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['surname']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">".$dbarr['ptright']."</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=".$dbarr['hn']."\">มา รพ.</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=".$dbarr['hn']."\">ตรวจนัด</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"opdprint2.php?cHn=".$dbarr['hn']."\">ใบต่อ</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"edprint.php?cHn=".$dbarr['hn']."\">ใบยานอก</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"rg_appoint.php?cHn=".$dbarr['hn']."\">ผู้ป่วยนัด</a></td>\n".
+                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"rg_appoint1.php?cHn=".$dbarr['hn']."\">ใบตรวจโรค</a></td>\n".
                 " </tr>\n");
             }
+            ?>
+            </table>
+            <?php 
         }
         session_unregister("hn");
         session_unregister("name");
@@ -267,13 +239,23 @@ session_unregister("Ptright1");
 
         include("unconnect.inc");
     } // End if not empty HN
-    ?>
-</table>
+?>
+<style>
+#ptrightNotify{top: 2%;left: 50%;width:600px;height:400px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
+#ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
+#ptrightClose{font-size: 24px;color: #fff;text-decoration: none;}
+#ptnotifyContent{padding: 6px;}
+</style>
+<div id="ptrightNotify" style="display: none;">
+    <div id="ptnotifyHeader">
+        <a href="javascript:void(0);" id="ptrightClose">Close</a>
+    </div>
+    <div style="padding: 6px;" id="ptnotifyContent">testcontent</div>
+</div>
 <script type="text/javascript">
     /* checkIpd */
     function checkIpd(link, ev, hn){
-        // SmPreventDefault(ev);
-        // var href = this.href;
+        
         var newSm = new SmHttp();
         newSm.ajax(
             'templates/regis/checkIpd.php',
@@ -291,4 +273,14 @@ session_unregister("Ptright1");
         );
         
     }
+    
+    // ออกแบบไว้ก่อน 
+    // document.getElementById('checkPt').addEventListener("click", function(eventHandler){
+    //     document.getElementById('ptrightNotify').style.display = '';
+    // });
+
+    // document.getElementById('ptrightClose').addEventListener("click", function(eventHandler){
+    //     document.getElementById('ptrightNotify').style.display = 'none';
+    // });
+
 </script>

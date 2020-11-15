@@ -24,22 +24,22 @@ function dump($txt){
     echo "</pre>";
 }
 
-// include 'includes/connect_sv13.php';
-$db = mysql_connect("192.168.1.13","remoteuser","");
-if (!$db) {
-    die('Not connected : ' . mysql_error());
-}
+include 'includes/connect_sv13.php';
+// $db = mysql_connect("192.168.1.13","remoteuser","");
+// if (!$db) {
+//     die('Not connected : ' . mysql_error());
+// }
 
-$db_selected = mysql_select_db('rdu_test', $db);
-if (!$db_selected) {
-    die ('Can\'t use foo : ' . mysql_error());
-}
+// $db_selected = mysql_select_db('rdu_test', $db);
+// if (!$db_selected) {
+//     die ('Can\'t use foo : ' . mysql_error());
+// }
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2563-02-01';
-$date_end = '2563-02-29';
-$quarter = 2;
+$date_start = '2563-07-01';
+$date_end = '2563-07-29';
+$quarter = 4;
 $year = '2563';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";

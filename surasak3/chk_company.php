@@ -12,6 +12,8 @@ if( $action == 'save' ) {
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
 
+    $typeReport = $_REQUEST['typeReport'];
+
     $msg = 'บันทึกข้อมูลเรียบร้อย';
 
     if( empty($company) OR empty($company_code) ){
@@ -45,7 +47,7 @@ if( $action == 'save' ) {
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
                 VALUES (
-                NULL,'$company','$company_code','$date_checkup','$year','1','chk_report02.php'
+                    NULL,'$company','$company_code','$date_checkup','$year','1','$typeReport'
                 );";
                 $save = $db->insert($sql);
 
@@ -120,6 +122,12 @@ if( $id > 0 ){
             วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
             <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
         </div>
+        <div>
+            เลือกรายงาน : <select name="typeReport" id="">
+                <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
+                <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
+            </select>
+        </div>
         <?php 
         if( $id > 0 ){
             ?>
@@ -193,6 +201,10 @@ if ( $views == 'search' ) {
             $userRows = $op['rows'];
 
             $report = ( !empty($item['report']) ) ? $item['report'].'?camp='.$item['code'] : 'javascript:void(0);' ;
+
+            $reportAllFile = (!empty($item['report_all'])) ? $item['report_all'] : 'chk_report_all.php' ;
+
+            $reportAll = $reportAllFile.'?camp='.$item['code'];
             ?>
             <tr>
                 <td><?=$i;?></td>
@@ -204,10 +216,9 @@ if ( $views == 'search' ) {
                     <ol>
                         <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                         <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
-                        <li><a href="chk_report_all.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลตรวจ</a></li>
+                        <li><a href="<?=$reportAll;?>" target="_blank">สรุปผลตรวจ</a></li>
                         <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
                         <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB</a></li>
-                        <li><a href="chk_sticker_deploy.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB พี่สอง</a></li>
                         <li><a href="chk_report_all_money.php?camp=<?=$item['code'];?>" target="_blank">ทดสอบ ค่าใช้จ่ายจากรายการแลป (ตรวจนอกรพ.)</a></li>
                     </ol>
                 </td>

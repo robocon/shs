@@ -160,7 +160,7 @@ if ( $action === 'save' ) {
         $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
         $sMessage = iconv('TIS-620','UTF-8',"Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn);
         $chOne = curl_init(); 
-        curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 
@@ -245,8 +245,14 @@ tr{
     cursor: pointer;
 }
 </style>
+<?php 
+$PharLink = '';
+if ($_SESSION['sLevel'] == "admin") {
+    $PharLink = ' | <a href="med_phar.php">หน้าเภสัชฯ</a>';
+}
+?>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a> | <a href="med_phar.php">หน้าเภสัชฯ</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){

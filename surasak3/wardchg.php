@@ -43,7 +43,7 @@ $thidate = (date("Y")+543).date("-m-d H:i:s");
 	list($dcdate) = Mysql_fetch_row($result2);
 	if($dcdate !='0000-00-00 00:00:00'){
   
-  $status_update="UPDATE ipcard SET status_log='จำหน่าย' WHERE an='$cAn'";
+  $status_update="UPDATE ipcard SET status_log='จำหน่าย',`dcdate` = '$thidate' WHERE an='$cAn'";
   $result_update = mysql_query($status_update)or die("Query failed ipcard");
   
 	}

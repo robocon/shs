@@ -104,7 +104,6 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		exit();
 }
 ?>
-<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=7,chrome=1">
 <body onLoad="document.f1.yot.focus();">
 <style>
 body {
@@ -142,9 +141,6 @@ legend {
 }
 #btn_show_icf{
 	color: blue;
-}
-.icf_static{
-	z-index: 99;
 }
 </style>
 <SCRIPT LANGUAGE="JavaScript">
@@ -308,6 +304,7 @@ function searchSuggest2(str,len,getto1) {
 }
 </SCRIPT>
 <?  include("connect.inc"); ?>
+<script type="text/javascript" src="js/ptrightOnline.js"></script>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
 
@@ -325,7 +322,7 @@ function searchSuggest2(str,len,getto1) {
         <td align="right"  class="fonthead">คำนำหน้า:</td>
           <td> 
             <div style="position: relative;">
-              <input type="text" name="yot" size="5" id="yot" onkeyup="check_yot()" >
+              <input type="text" name="yot" size="5" id="yot" onKeyUp="check_yot()" >
               <div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
             </div>
           </td>
@@ -351,7 +348,8 @@ function searchSuggest2(str,len,getto1) {
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input type="text" name="idcard" size="15" value="-" id="idcard" onblur="check_idcard(this,event)">
+          <input type="text" name="idcard" size="15" value="-" id="idcard" onBlur="check_idcard(this,event)">
+          <button type="button" onclick="runptRight(this,event)">ตรวจสอบสิทธิ</button>
         </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -792,11 +790,16 @@ $disabcause_list = array(
       <?
 		  }
 	  ?>
-    </select>
-    </td>
+    </select>    </td>
     <td class="fonthead">หมายเหตุ</td>
     <td><input type="text" name="note" size="50" value="-" id="note"></td>
     </tr>
+  <tr>
+    <td align="right" class="fonthead">Note VIP</td>
+    <td><input type="text" name="note_vip" size="50" value="-" id="note_vip"></td>
+    <td class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
     </table>
 
 </fieldset>
@@ -851,6 +854,11 @@ $disabcause_list = array(
     );
     */
   }
+
+  function runptRight(link,event){
+    var idCard = document.getElementById('idcard').value;
+    checkPtRight(link, event, idCard);
+  }
 </script>
 
 <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
@@ -892,11 +900,11 @@ $disabcause_list = array(
 								htm += '<th>รายละเอียด</th>';
 								htm += '</tr>';
 
-								for (var index = 0; index < icf_list.length; index++) {
+								for (let index = 0; index < icf_list.length; index++) {
 
 										var icf_item = icf_list[index];
-										var element = icf_item.detail;
-										var icf_code = icf_item.code;
+										const element = icf_item.detail;
+										const icf_code = icf_item.code;
 
 										if( regex1.test(element) == true ){
 												htm += '<tr valign="top">';

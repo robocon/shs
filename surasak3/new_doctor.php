@@ -131,7 +131,7 @@ if( $action === false ){
             </tr>
             <tr>
                 <td><span>เลขที่ ว./ท./พท.ป/พจ.</span> : </td>
-                <td><input type="text" name="doctor_num"><span style="color:red;">*</span></td>
+                <td><input type="text" name="doctor_num"><span style="color:red;">* ใส่แค่ตัวเลข</span></td>
             </tr>
             <tr>
                 <td><span>แผนกที่ทำงาน : </span></td>

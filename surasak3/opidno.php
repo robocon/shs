@@ -28,6 +28,7 @@ if(PHP_VERSION_ID <= 50217){
 }
 ?>
 <script type="text/javascript" src="templates/classic/main.js"></script>
+<script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -89,6 +90,7 @@ if(PHP_VERSION_ID <= 50217){
 		<th>มา รพ.</th>
 		<th>ตรวจนัด</th>
 		<th>ตรวจนอน</th>
+		<th></th>
 	</tr>
 
 <?php
@@ -145,15 +147,16 @@ If (!empty($idcard)){
 		}
 
 		print (" <tr>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cIdcard=$idcard&cHn=$hn & cName=$name &cSurname=$surname\">$idcard</a></td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php?cIdcard=$idcard&cHn=$hn&cName=$name&cSurname=$surname\">$idcard</a></td>\n".
 		"  <td BGCOLOR=".$color.">$hn</td>\n".
 		"  <td BGCOLOR=".$color.">$yot</td>\n".
 		"  <td BGCOLOR=".$color.">$name</td>\n".
 		"  <td BGCOLOR=".$color.">$surname</td>\n".
 		"  <td BGCOLOR=".$color.">$ptright</td>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=$hn\">มา รพ.</td>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</td>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"ancheck.php?hn=$hn\">ตรวจนอน</a></td>\n".
+		"  <td BGCOLOR=".$color."><button type=\"button\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button></td>\n".
 		" </tr>\n");
 	} // End while
 

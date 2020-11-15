@@ -58,49 +58,51 @@ If (!empty($vn)){
     
 	
 	//กรณีลงทะเบียนแล้ว
-	}else { 
+	}else{ 
         $cHn=$row->hn;
         $cPtname=$row->ptname;
         $cPtright=$row->ptright;
-		
-        $ipsql="select * from ipcard where hn='".$cHn."' and dcdate='0000-00-00 00:00:00' AND my_ward IS NOT NULL";
-$ipquery=mysql_query($ipsql);
-$iprows=mysql_fetch_array($ipquery);
-$my_ward=$iprows["my_ward"];
-if(mysql_num_rows($ipquery) > 0){
-	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
-}
+        
+        // สคริปเช็กอีกตัวอยู่ใน hnlab.php
+        $ipsql="select * from ipcard where hn='".$cHn."' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ";
+        $ipquery=mysql_query($ipsql);
+        if(mysql_num_rows($ipquery) > 0){ 
+            $iprows=mysql_fetch_array($ipquery);
+            $my_ward=$iprows["my_ward"];
+            echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
+        }else{
 
-        //print "VN  :$vn<br>";
-        //print "HN :$cHn<br>";
-        //print "$cPtname<br>";
-        //print "สิทธิการรักษา :$cPtright";
-        //print "<br><a href='labask.php'>ชื่อถูกต้อง ทำรายการต่อไป</a>";
-//runno  for chktranx
-		print "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php\">";
-    $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-    $result = mysql_query($query)
-        or die("Query failed");
+            //print "VN  :$vn<br>";
+            //print "HN :$cHn<br>";
+            //print "$cPtname<br>";
+            //print "สิทธิการรักษา :$cPtright";
+            //print "<br><a href='labask.php'>ชื่อถูกต้อง ทำรายการต่อไป</a>";
+            //runno  for chktranx
+            print "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php\">";
+            // window.location.replace("http://www.w3schools.com");
 
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
+            $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
+            $result = mysql_query($query) or die("Query failed");
+
+            for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+                if (!mysql_data_seek($result, $i)) {
+                    echo "Cannot seek to row $i\n";
+                    continue;
+                }
+
+                if(!($row = mysql_fetch_object($result)))
+                    continue;
+            }
+
+            $nRunno=$row->runno;
+            $nRunno++;
+
+            $query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
+            $result = mysql_query($query) or die("Query failed");
+            //end  runno  for chktranx
         }
-
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
-
-    $nRunno=$row->runno;
-    $nRunno++;
-
-    $query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-    $result = mysql_query($query)
-        or die("Query failed");
-//end  runno  for chktranx
-           }
-   include("unconnect.inc");
-   }
+        include("unconnect.inc");
+	}  
+  }
 ?>
 

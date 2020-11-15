@@ -112,7 +112,7 @@ $_GET['y'] = $_GET['y']-543;
 	}
 		
 	echo "</TABLE>";
-	}else if($_GET["druginj"] == "Tetanus Toxoid"){
+	}else if($_GET["druginj"] == "Tetanus Toxoid" || $_GET["druginj"] == "Adsorbed Td"){
 
 		echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
@@ -128,23 +128,6 @@ $_GET['y'] = $_GET['y']-543;
 		echo "
 		<TR>
 			<TD align='center'>";
-			
-			/*
-		echo date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
-		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
-		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543;
-		
-		echo "	<INPUT TYPE=\"hidden\" name=\"list_date[]\" value=\"".
-			(date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543)."-".
-			(date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."-".
-			(date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])))."\">
-
-			<INPUT TYPE=\"hidden\" name=\"list_date2[]\" value=\"",
-		date('d ',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y'])),'&nbsp;',
-		$month[date('m',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))],'&nbsp;',
-		date(' Y',mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']))+543,"\">
-			";
-		*/
 		
 		$get_time = mktime(0,0,0,$_GET['m']+$num[$i],$_GET['d'],$_GET['y']);
 		$dcheck = date('d', $get_time);
@@ -427,7 +410,8 @@ return stat;
 	<TD align="right">ยา : </TD><TD colspan="7">
 		<SELECT ID="drug_inj" NAME="drug_inj"  Onchange="view_inj();">
 			<Option value="">-- เลือกยา --</Option>
-			<Option value="Tetanus Toxoid">Tetanus Toxoid</Option>
+			<!--<Option value="Tetanus Toxoid">Tetanus Toxoid</Option>-->
+			<option value="Adsorbed Td">Adsorbed Td</option>
 			<Option value="VERO RABIES 2">VERO RABIES 2 เข็ม</Option>
 			<Option value="VERO RABIES 3">VERO RABIES 3 เข็ม</Option>
 			<Option value="VERO RABIES 5">VERO RABIES 5 เข็ม</Option>            

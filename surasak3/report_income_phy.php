@@ -81,10 +81,21 @@ if( $action === 'show_table' ){
 		if( $item['time'] >= "08:00:00" && $item['time'] <= "16:00:00" ){
 
 			$key = 'intime';
-		}elseif( $item['time'] > "16:00:00" ){ // นอกเวลาราชการ
+		}else{
 
 			$key = 'outtime';
 		}
+
+		if($item['day_name']=="6" || $item['day_name']=="0" ){
+			$key = 'outtime';
+		}
+		
+		/*
+		elseif( $item['time'] > "16:00:00" ){ // นอกเวลาราชการ
+
+			$key = 'outtime';
+		}
+		*/
 
 		$type[$key] = array(
 			'yprice' => (int) $item['yprice'],

@@ -16,7 +16,7 @@ if( $action === 'save' ){
     $idcard = input_post('idcard');
     $address = input_post('address');
     $date_chk = input_post('date_chk');
-    $yearchk = get_year_checkup();
+    $yearchk = $_POST['yearchk'];
     $ear = $_POST['ear'];
     $eye = $_POST['eye'];
     $snell_eye = $_POST['snell_eye'];
@@ -347,7 +347,6 @@ $date_hn = date('Y-m-d').$hn;
 
 
 $sql = "SELECT a.*,
-
 b.`idcard`, b.`blood`,b.`yot`,b.`name`,b.`surname`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`sex`
 FROM `dxofyear_out` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
@@ -1203,6 +1202,7 @@ h1,h3,p{
         <input type="hidden" name="surname" value="<?=$opd['surname'];?>">
 
         <input type="hidden" name="sex" value="<?=$opd['sex'];?>">
+        <input type="hidden" name="yearchk" value="<?=$year_checkup;?>">
 
         <?php
         $address = $opd['address'].' '.( !empty($opd['tambol']) ? 'µ.'.$opd['tambol'] : '' ).' '.( !empty($opd['ampur']) ? 'Í.'.$opd['ampur'] : '' ).' '.( !empty($opd['changwat']) ? '¨.'.$opd['changwat'] : '' );

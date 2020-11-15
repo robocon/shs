@@ -209,7 +209,7 @@ while($result = mysql_fetch_assoc($row2)){
 											<strong>อายุ : </strong> 
 											<strong><?=$age;?> ปี</strong>
 										<?php 
-										}else{
+										}else if(!empty($age2)){
 										?>
 											<strong>อายุ : </strong> 
 											<strong><?=$age2;?> ปี</strong>
@@ -699,7 +699,7 @@ FROM (
 		AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
-		
+		AND `profilecode` != 'WET' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -784,6 +784,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 								$objQuery = mysql_query($strSQL);
 								while($objResult = mysql_fetch_array($objQuery)){
 
+									$objResult["labname"] = str_replace('*', '', $objResult["labname"]);
+
 									if($objResult["labname"]=="Blood Sugar"){
 										$labmean="ระดับน้ำตาลในเลือด";
 									}else if($objResult["labname"]=="BUN"){
@@ -837,6 +839,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="ไวรัส เอช ไอ วี";
 									}else if($objResult["labname"]=="VDRL/RPR"){
 										$labmean="เชื้อซิฟิลิส";
+									}else if($objResult["labname"]=="Stool Occult"){
+										$labmean="ตรวจเลือดในอุจจาระ";
 									}
 
 									$app = '';
@@ -1007,10 +1011,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 										}
 									}
 
-									if( $objResult["labcode"]=='PARASI'){
+									if( $objResult["labcode"]=='PARASI' ){
 										
 										$clean_result = strtolower(trim($objResult["result"]));
-										$match_parasite = preg_match('/(not found)/', $clean_result, $matchs_parasite);
+										$match_parasite = preg_match('/(not\s+found)/', $clean_result, $matchs_parasite);
 
 										if( $match_parasite > 0 ){
 											$app="ปกติ";	
@@ -1046,6 +1050,18 @@ $outlab_row = mysql_num_rows($outlab_query);
 											$objResult["result"] = 'Positive';
 										}
 									}
+
+									// Stool Occult ตรวจเลือดในอุจจาระ
+									if( $objResult["labcode"]=='STOCC'){
+										
+										if( $objResult['result'] == 'Negative' ){
+											$app = 'ปกติ';
+										}elseif ( $objResult['result'] == 'Positive' ) {
+											$app = 'ผิดปกติ';
+										}
+
+									}
+									
 
 
 									// if($objResult['labcode'] == 'HAVTOT'){
@@ -1199,6 +1215,28 @@ $outlab_row = mysql_num_rows($outlab_query);
 									<td valign="top"><?=$result['benzene'];?></td>
 									<td valign="top">&lt;&nbsp;50</td>
 									<td valign="top"><?=$result['benzene_result'];?></td>
+								</tr>
+								<?php
+							}
+
+							if( $result['outAfp'] != '' && $result['outAfpResult'] != '' ){ 
+								?>
+								<tr height="23">
+									<td valign="top"><b>การตรวจ AFP</b></td>
+									<td valign="top"><?=$result['outAfp'];?></td>
+									<td valign="top">-</td>
+									<td valign="top"><?=$result['outAfpResult'];?></td>
+								</tr>
+								<?php
+							}
+
+							if( $result['outPsa'] != '' && $result['outPsaResult'] != '' ){ 
+								?>
+								<tr height="23">
+									<td valign="top"><b>การตรวจ PSA</b></td>
+									<td valign="top"><?=$result['outPsa'];?></td>
+									<td valign="top">-</td>
+									<td valign="top"><?=$result['outPsaResult'];?></td>
 								</tr>
 								<?php
 							}
@@ -1507,7 +1545,7 @@ if ( $group2_rows > 0 ) {
 <table width="100%" border="0" class="text4">
   <tr>
     <td  width="50%" align="center">
-		<strong>CXR : </strong>พ.ต.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
+		<strong>CXR : </strong>พ.ท.วริทธิ์ พสุธาดล (ว.38228) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
 		<strong>Authorise LAB : </strong><?=$authorisename;?><strong> (<?=$authorisedate;?>) </strong>
 		<br />
 	</td>

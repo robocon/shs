@@ -47,7 +47,7 @@ if ($action === 'active') {
         $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
         $sMessage = iconv('TIS-620','UTF-8',"$an Active เรียบร้อย");
         $chOne = curl_init(); 
-        curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 

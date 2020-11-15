@@ -71,6 +71,8 @@ function calcage($birth){
 
 if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "0DT";
+}else if($_POST["drug_inj"] == "Adsorbed Td"){
+	$dgcode = "0DT-N";
 }else if($_POST["drug_inj"] == "VERORAB"){
 	$dgcode = "0VERO";
 }else if($_POST["drug_inj"] == "VERO RABIES"){
@@ -109,6 +111,8 @@ if($rows_drugrx > 0){
 	
 	if($_POST["drug_inj"] == "Tetanus Toxoid"){
 		$dgcode = "0DT";//0TT
+	}else if($_POST["drug_inj"] == "Adsorbed Td"){
+		$dgcode = "0DT-N";
 	}else if($_POST["drug_inj"] == "VERORAB"){
 		$dgcode = "0VERO";
 	}else if($_POST["drug_inj"] == "VERO RABIES"){
