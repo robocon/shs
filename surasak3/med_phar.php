@@ -12,7 +12,7 @@ $wards = array(
 );
 
 function getFullWardName($cbedcode){
-    global $wards;
+    global $wards, $cBed1;
     $wardExTest = preg_match('/45.+/', $cbedcode);
     $exName = '';
     if( $wardExTest > 0 ){
@@ -45,7 +45,7 @@ if ($action === 'active') {
         
         // Line Notification ในไลน์กลุ่ม
         $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
-        $sMessage = iconv('TIS-620','UTF-8',"$an Active เรียบร้อย");
+        $sMessage = iconv('TIS-620','UTF-8',"ห้องยา $an Active เรียบร้อย");
         $chOne = curl_init(); 
         curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
@@ -302,7 +302,7 @@ $yearRange = range('2019', date('Y'));
         <div>
             วัน <?=getDateList('days',$dateSelected);?>
             เดือน <?=getMonthList('months', $monthSelected);?>
-            ปี <?=getYearList('years',fase, $yearSelected,$yearRange);?>
+            ปี <?=getYearList('years',false, $yearSelected,$yearRange);?>
         </div>
         <div>
             <button type="submit">ค้นหา</button>

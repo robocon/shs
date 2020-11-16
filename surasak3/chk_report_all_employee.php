@@ -57,6 +57,7 @@ $num = mysql_num_rows($out_result_sql);
 	<th width="4%" rowspan="2" align="center">อายุ</th>
 	<th width="5%" rowspan="2" align="center">น้ำหนัก</th>
 	<th width="5%" rowspan="2" align="center">ส่วนสูง</th>
+	<th width="5%" rowspan="2" align="center">BP</th>
 	<th width="5%" rowspan="2" align="center">BMI</th>
 	<th width="5%" rowspan="2" align="center">รอบเอว</th>
 	<th colspan="31" align="center">รายการตรวจ</th>
@@ -201,6 +202,8 @@ while($result = mysql_fetch_array($out_result_sql)){
 	<td align="center"><?=$age;?></td>
 	<td align="center"><?=$weight;?></td>
 	<td align="center"><?=$height;?></td>
+	<!-- BMI -->
+	<td align="center"><?=$bp;?></td>
 	<!-- BMI -->
 	<td align="center"><?=$bmi;?></td>
 	<!-- รอบเอว -->
