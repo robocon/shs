@@ -668,34 +668,6 @@ FROM (
     WHERE `hn` = '$hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 	$extraSQL 
     AND ( 
-        #`profilecode`='GLU' 
-        #OR `profilecode`='CREAG' 
-        #OR `profilecode`='BUN' 
-        #OR `profilecode`='URIC' 
-        #OR `profilecode`='CHOL' 
-        #OR `profilecode`='TRIG' 
-        #OR `profilecode`='AST' 
-        #OR `profilecode`='ALT' 
-        #OR `profilecode`='LIPID' 
-        #OR `profilecode`='ALP' 
-        #OR `profilecode`='ANTIHB' 
-        #OR `profilecode`='HDL' 
-        #OR `profilecode`='LDL' 
-        #OR `profilecode`='10001' 
-        #OR `profilecode`='ABOC' 
-        #OR `profilecode`='METAMP'	
-        #OR `profilecode`='OCCULT'
-
-		#OR `profilecode`='HBSAG' 
-        #OR `profilecode`='HAVTOT' 
-        #OR `profilecode`='WET' 
-		#OR `profilecode`='AHAV' 
-
-		#OR `profilecode`='STOOL' 
-		#OR `profilecode`='35101' 
-
-		#OR `profilecode`='PSA' 
-		
 		`profilecode` != 'CBC' AND `profilecode` != 'UA' 
 		AND `profilecode` != 'AFP' 
 		AND `profilecode` != 'CEA' 
@@ -707,6 +679,7 @@ FROM (
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
 		AND `profilecode` != 'WET' 
+		AND `profilecode` != 'HBTYPI' 
     ) 
 	GROUP BY `profilecode` 
 
@@ -714,15 +687,9 @@ FROM (
 LEFT JOIN `resulthead` AS x ON x.`autonumber` = a.`latest_id` 
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
 WHERE b.`result` != 'DELETE' 
-#AND ( b.`labcode` != 'GFR' AND b.`labcode` != 'HI' ) 
-#AND ( b.`labcode` != 'COLORS'
-#	AND b.`labcode` != 'CHARAC' 
-#	AND b.`labcode` != 'WBCS' 
-#	AND b.`labcode` != 'RBCS' 
-#	AND b.`labcode` != 'MUCOUS'  ) 
 GROUP BY x.`profilecode` 
 ORDER BY b.`seq` ASC, a.`latest_id` ASC ";
-// dump($sql1);
+
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -784,10 +751,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 								FROM resultdetail  
 								WHERE autonumber='".$arrresult['autonumber']."' 
 								AND `result` != 'DELETE' 
-								#AND ( labcode !='GFR' AND labcode !='HI' ) 
 								$where 
 								ORDER BY seq ASC";
-								// dump($strSQL);
 								
 								$objQuery = mysql_query($strSQL);
 								while($objResult = mysql_fetch_array($objQuery)){
@@ -1137,6 +1102,12 @@ $outlab_row = mysql_num_rows($outlab_query);
 									
 									$outlab_code = $outlab['labcode'];
 
+									// ข้ามรายการ ฮีโมโกลบิน
+									$skipList = array('%HBA','%HBA2','%HBE','%HBF','%HBOTH');
+									if( in_array($outlab['labcode'], $skipList) > 0 ){
+										continue;
+									}
+
 									if($outlab['labcode']=="38302"){
 										$outlab_code = "<strong>การตรวจหามะเร็งปากมดลูก</strong> (PAP SMEAR)";
 									}else if( $outlab['labcode']=="OCCULT" ){
@@ -1153,6 +1124,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$outlab_code = "<strong>ตรวจไวรัสตับอักเสบ A</strong> (Anti HAV IgM)";
 									}else if($outlab["labcode"]=="XYLENE"){
 										$outlab_code = "<strong>การตรวจสารโลหะหนัก</strong> (Xylene)";
+									}else if($outlab["labcode"]=="HBTYPE"){
+										$outlab_code = "<strong>ตรวจชนิดของฮีโมโกลบิน Hb TYPE</strong>";
 									}else{
 										$outlab_code = $outlab['labcode'];
 									}
@@ -1175,13 +1148,28 @@ $outlab_row = mysql_num_rows($outlab_query);
 										<td><?=$outlab_result;?></td>
 										<td><?=$outlab_range;?></td>
 										<td>
-											<?php
-											$result_outlab_txt = 'ปกติ';
-											if( $outlab['flag'] != 'N' ){
-												$result_outlab_txt = 'ผิดปกติ';
+											<?php 
+											if($outlab["labcode"]=="HBTYPE")
+											{ 
+												if($outlab['result'] == "EA")
+												{
+													echo "ผิดปกติ";
+												}
+												else
+												{
+													echo "ปกติ";
+												}
 											}
-		
-											echo $result_outlab_txt;
+											else
+											{
+												$result_outlab_txt = 'ปกติ';
+												if( $outlab['flag'] != 'N' ){
+													$result_outlab_txt = 'ผิดปกติ';
+												}
+			
+												echo $result_outlab_txt;
+											}
+											
 											?>
 										</td>
 									</tr>
