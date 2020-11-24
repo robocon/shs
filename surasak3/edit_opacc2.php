@@ -22,7 +22,7 @@ if ($_REQUEST['hn']) {
     $date = $_REQUEST['date'];
     $hn = $_REQUEST['hn'];
     $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date%' AND `hn` = '$hn' ";
-    $configs = array('host' => '192.168.1.2', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
+    $configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
     $db = Mysql::load($configs);
 
     $db->select($sql);

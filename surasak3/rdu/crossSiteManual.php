@@ -56,15 +56,15 @@ function get_quarter(){
 // ¹Ñº»ÕµÒÁ»Õ§º
 // $year = get_year_checkup();
 // $quarter = get_quarter();
-$year = '2563';
-$quarter = '4';
+$year = '2564';
+$quarter = '1';
 
 $time = strtotime("-1 month");
 // $setMonth = (date('Y')+543).date('-m', $time);
 // $setMonthEn = date('Y-m', $time);
 
-$setMonth = '2563-08';
-$setMonthEn = '2020-08';
+$setMonth = '2563-10';
+$setMonthEn = '2020-10';
 
 // $date_start = $setMonth.'-01';
 // $date_end = $setMonth.date('-t', $time);
@@ -194,7 +194,7 @@ FROM (
 LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` 
 LEFT JOIN `resultdetail` AS c ON c.`autonumber` = a.`latest_id` 
 LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn` 
-WHERE c.`labname` = 'Creatinine' 
+WHERE c.`labname` LIKE 'Creatinine%' 
 AND c.`result` != '*' 
 ORDER BY b.`autonumber` ASC ";
 $resultLab = $shs->query($sql);

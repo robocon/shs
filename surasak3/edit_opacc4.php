@@ -1,7 +1,7 @@
 <?php 
 include 'bootstrap.php';
 
-$configs = array('host' => '192.168.1.2', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
+$configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
 $db = Mysql::load($configs);
 
 $id = $_REQUEST['id'];
