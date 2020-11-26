@@ -154,6 +154,14 @@ foreach ($items as $key => $item) {
 
         $nurse = "สัญญาณชีพ ชีพจร(p):$pause ครั้ง/นาที ความดันโลหิต: $bp1/$bp2 น้ำหนัก: $weight กก. ส่วนสูง: $height ซม. BMI: $bmi";
     }
+
+    $papSmear = '';
+    $sql = "SELECT `hpv` FROM `out_result_chkup` WHERE `part` = '$camp' AND `hn` = '$hn' AND `year_chk` = '$year_checkup' ";
+    $db->select($sql);
+    if ($db->get_rows() > 0) {
+        $outResultChkup = $db->get_item();
+        $papSmear = $outResultChkup['hpv'];
+    }
     
     // ดึงวันที่ที่ตรวจ lab นับเป็นวันที่ได้รับการเข้ารับบริการ
     $sql = "SELECT SUBSTRING(`orderdate`,1,10) AS `lab_opd`  
@@ -611,7 +619,7 @@ foreach ($items as $key => $item) {
         $pdf->Rect(158, 133, 22, 12);
         $pdf->SetXY(158, 133);
         // ทดสอบ fill ค่า pap smear ผลปกติ
-        // $pdf->Cell(22, 6, '1234', 1, 1);
+        $pdf->Cell(22, 6, $papSmear, 0, 1, 'C');
 
         $pdf->Rect(180, 133, 25, 12);
         $pdf->SetXY(180, 133);
