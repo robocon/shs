@@ -49,16 +49,15 @@ $show_date = $company['show_date'];
 $sql = "SELECT a.*,b.`exam_no` 
 FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a 
 LEFT JOIN ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b ON b.`HN` = a.`hn` 
-ORDER BY b.`row` ASC";
+ORDER BY b.`row` ASC ";
 $q = $mysqli->query($sql);
 if($q->num_rows > 0 )
-{
-    
+{ 
     ?>
-    <h3>แบบรายงานการตรวจสุขภาพสอบเข้ารับราชการตำรวจ ภาค 5</h3>
-    <h3>โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3>หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
-    <h3>ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน 3226) ผู้รับผิดชอบผลการตรวจเอกซ์เรย์ พ.ท.วริทธิ์  พสุธาดล(ว.38228)</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพสอบเข้ารับราชการตำรวจ ภาค 5</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน 3226) ผู้รับผิดชอบผลการตรวจเอกซ์เรย์ พ.ท.วริทธิ์  พสุธาดล(ว.38228)</h3>
     <h3></h3>
     <table width="100%" class="chk_table">
         <tr>
@@ -109,24 +108,143 @@ if($q->num_rows > 0 )
         {
 
             $examNo = $outResult['exam_no'];
+
+            $stateCbC = "SELECT b.`autonumber`,b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`flag` 
+                FROM (
+                    SELECT MAX(`autonumber`) AS `LastAutonumber` FROM `resulthead` WHERE `labnumber` = '$examNo' AND `profilecode` = 'CBC' GROUP BY `profilecode` 
+                ) AS a 
+                LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`LastAutonumber` 
+                WHERE ( b.`result` != 'DELETE' OR b.`result` != '*' ) 
+                AND ( 
+                    b.`labcode` = 'WBC' || 
+                    b.`labcode` = 'NEU' || 
+                    b.`labcode` = 'LYMP' || 
+                    b.`labcode` = 'MONO' || 
+                    b.`labcode` = 'EOS' || 
+                    b.`labcode` = 'BASO' || 
+                    b.`labcode` = 'HB' || 
+                    b.`labcode` = 'HCT' || 
+                    b.`labcode` = 'MCV' || 
+                    b.`labcode` = 'MCH' || 
+                    b.`labcode` = 'MCHC' || 
+                    b.`labcode` = 'PLTC' 
+                ) 
+                ORDER BY b.`seq` ASC";
+                $qLab = $mysqli->query($stateCbC);
+                $cbcItems = array();
+                while ($lab = $qLab->fetch_assoc())
+                { 
+                    $key = $lab['labcode'];
+                    $cbcItems[$key] = array( 
+                        'autonumber' => $lab['autonumber'],
+                        'labname' => $lab['labname'],
+                        'flag' => $lab['flag'],
+                        'result' => $lab['result'],
+                        'normalrange' => $lab['normalrange']
+                    );
+                    
+                }
             ?>
             <tr>
                 <td><?=$i;?></td>
                 <td><?=$outResult['hn'];?></td>
                 <td><?=$outResult['ptname'];?></td>
-
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>
+                    <?php 
+                    if ($cbcItems['WBC'])
+                    {
+                        echo $cbcItems['WBC']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['NEU'])
+                    {
+                        echo $cbcItems['NEU']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['LYMP'])
+                    {
+                        echo $cbcItems['LYMP']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['MONO'])
+                    {
+                        echo $cbcItems['MONO']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['EOS'])
+                    {
+                        echo $cbcItems['EOS']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['BASO'])
+                    {
+                        echo $cbcItems['BASO']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['HB'])
+                    {
+                        echo $cbcItems['HB']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['HCT'])
+                    {
+                        echo $cbcItems['HCT']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['MCV'])
+                    {
+                        echo $cbcItems['MCV']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['MCH'])
+                    {
+                        echo $cbcItems['MCH']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['MCHC'])
+                    {
+                        echo $cbcItems['MCHC']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($cbcItems['PLTC'])
+                    {
+                        echo $cbcItems['PLTC']['result'];
+                    }
+                    ?>
+                </td>
                 
                 <?php 
                 $resultLab = "SELECT b.`autonumber`,b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`flag` 
@@ -148,11 +266,10 @@ if($q->num_rows > 0 )
                     b.`labcode` = 'RBCU' 
                 ) 
                 ORDER BY b.`seq` ASC";
-                
                 $qLab = $mysqli->query($resultLab);
                 $labItems = array();
-                while ($lab = $qLab->fetch_assoc()) { 
-
+                while ($lab = $qLab->fetch_assoc())
+                { 
                     $key = $lab['labcode'];
                     $labItems[$key] = array( 
                         'autonumber' => $lab['autonumber'],
@@ -161,9 +278,7 @@ if($q->num_rows > 0 )
                         'result' => $lab['result'],
                         'normalrange' => $lab['normalrange']
                     );
-                    
                 }
-
                 ?>
                 <td>
                     <?php 
@@ -194,25 +309,151 @@ if($q->num_rows > 0 )
                     <?php 
                     if ($labItems['BLOODU'])
                     {
-                        if ($labItems['BLOODU']['result'] == 'Negative') {
+                        if ($labItems['BLOODU']['result'] == 'Negative') 
+                        {
                             echo "N";
                         }
                     }
                     ?>
-                
                 </td>
-                <td>prot</td>
-                <td>Sugar</td>
-                <td>Ketone</td>
-                <td>Epi</td>
-                <td>WBC</td>
-                <td>RBC</td>
+                <td>
+                    <?php 
+                    if ($labItems['PROU'])
+                    {
+                        if ($labItems['PROU']['result'] == 'Negative') 
+                        {
+                            echo "N";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($labItems['GLUU'])
+                    {
+                        if ($labItems['GLUU']['result'] == 'Negative') 
+                        {
+                            echo "N";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($labItems['KETU'])
+                    {
+                        if ($labItems['KETU']['result'] == 'Negative') 
+                        {
+                            echo "N";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($labItems['EPIU'])
+                    {
+                        echo $labItems['EPIU']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($labItems['WBCU'])
+                    {
+                        echo $labItems['WBCU']['result'];
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($labItems['RBCU'])
+                    {
+                        if ($labItems['RBCU']['result'] == 'Negative') 
+                        {
+                            echo "N";
+                        }
+                    }
+                    ?>
+                </td>
+                <?php 
+                $etcLabState = "SELECT b.`autonumber`,b.`labcode`,b.`labname`,b.`result`,b.`normalrange`,b.`flag` 
+                FROM ( SELECT MAX(`autonumber`) AS `LastAutonumber` FROM `resulthead` WHERE `labnumber` = '$examNo' AND ( `profilecode` = 'STOOL' || `profilecode` = 'METAMP' || `profilecode` = 'HIV' || `profilecode` = 'VDRL' ) GROUP BY `profilecode` ) AS a 
+                LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`LastAutonumber` 
+                WHERE ( b.`result` != 'DELETE' OR b.`result` != '*' ) 
+                AND ( b.`labcode` = 'PARASI' || b.`labcode` = 'METAMP' || b.`labcode` = 'HIV' || b.`labcode` = 'VDRL' ) 
+                ORDER BY b.`seq` ASC";
+                $qLab = $mysqli->query($etcLabState);
+                $etcLabItems = array();
+                while ($lab = $qLab->fetch_assoc())
+                { 
+                    $key = $lab['labcode'];
+                    $etcLabItems[$key] = array( 
+                        'autonumber' => $lab['autonumber'],
+                        'labname' => $lab['labname'],
+                        'flag' => $lab['flag'],
+                        'result' => $lab['result'],
+                        'normalrange' => $lab['normalrange']
+                    );
+                }
 
-                <td>Meth Amphet</td>
-                <td>Stool</td>
-                <td>VDRL</td>
-                <td>HIV</td>
-                <td>X-RAY</td>
+                ?>
+                <td>
+                    <?php 
+                    if ($etcLabItems['METAMP'])
+                    {
+                        if ($etcLabItems['METAMP']['result'] == 'Negative') 
+                        {
+                            echo "N";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($etcLabItems['PARASI'])
+                    {
+                        if ($etcLabItems['PARASI']['result'] == 'Not found parasite') 
+                        {
+                            echo "NF";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($etcLabItems['VDRL'])
+                    {
+                        if ($etcLabItems['VDRL']['result'] == 'Non Reactive') 
+                        {
+                            echo "NR";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if ($etcLabItems['HIV'])
+                    {
+                        if ($etcLabItems['HIV']['result'] == 'COMPLETED') 
+                        {
+                            echo "N";
+                        }
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php 
+                    if($outResult["cxr"] == "")
+                    { 
+                        echo "ปกติ"; 
+                    }
+                    else
+                    { 
+                        echo $outResult["cxr"];
+                    }
+                    ?>
+                </td>
             </tr>
             <?php 
             $i++;
