@@ -27,7 +27,7 @@ $camp = "สอบตำรวจ63_02";
 <style type="text/css">
 * {
 	font-family: "TH Sarabun New","TH SarabunPSK";
-	font-size: 18px;
+	font-size: 14px;
 }
 .chk_table{
         border-collapse: collapse;
@@ -36,6 +36,18 @@ $camp = "สอบตำรวจ63_02";
 .chk_table td{
     padding: 3px;
     border: 1px solid black;
+}
+.headerExtra{
+    font-size: 18px; 
+    padding: 0; 
+    margin: 0; 
+    text-align:center;
+}
+.setFont16 > th{
+    font-size: 16px; 
+}
+.txtRight{
+    text-align: right;
 }
 </style>
 <?php 
@@ -54,53 +66,94 @@ $q = $mysqli->query($sql);
 if($q->num_rows > 0 )
 { 
     ?>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพสอบเข้ารับราชการตำรวจ ภาค 5</h3>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน 3226) ผู้รับผิดชอบผลการตรวจเอกซ์เรย์ พ.ท.วริทธิ์  พสุธาดล(ว.38228)</h3>
+    <h3 class="headerExtra">แบบรายงานการตรวจสุขภาพสอบเข้ารับราชการตำรวจ ภาค 5</h3>
+    <h3 class="headerExtra">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
+    <h3 class="headerExtra">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
+    <h3 class="headerExtra">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน 3226) ผู้รับผิดชอบผลการตรวจเอกซ์เรย์ พ.ท.วริทธิ์  พสุธาดล(ว.38228)</h3>
     <h3></h3>
     <table width="100%" class="chk_table">
-        <tr>
-            <th rowspan="2">ลำดับ</th>
-            <th rowspan="2">HN</th>
-            <th rowspan="2">ชื่อ-สกุล</th>
+        <thead>
+            <tr>
+                <th colspan="30" style="font-size: 18px;">N = negative , NF = not found parasite ova , NR = non reactive , Methamp = Methamphetamine</th>
+            </tr>
+            <tr class="setFont16">
+                <th rowspan="2">ลำดับ</th>
+                <th rowspan="2">HN</th>
+                <th rowspan="2">ชื่อ-สกุล</th>
 
-            <th colspan="12">CBC</th>
-            <th colspan="10">UA</th>
-            
-            <th rowspan="2">Meth<br>Amphet</th>
-            <th rowspan="2">Stool</th>
-            <th rowspan="2">VDRL</th>
-            <th rowspan="2">HIV</th>
-            <th rowspan="2">X-RAY</th>
-        </tr>
-        <tr>
-            <!-- CBC -->
-            <th>WBC</th>
-            <th>Neu</th>
-            <th>Lymp</th>
-            <th>Mo</th>
-            <th>Eos</th>
-            <th>Baso</th>
-            <th>Hb</th>
-            <th>Hct</th>
-            <th>MCV</th>
-            <th>MCH</th>
-            <th>MCHC</th>
-            <th>Plt</th>
+                <th colspan="12">CBC</th>
+                <th colspan="10">UA</th>
+                
+                <th rowspan="2">Meth<br>Amphet</th>
+                <th rowspan="2">Stool</th>
+                <th rowspan="2">VDRL</th>
+                <th rowspan="2">HIV</th>
+                <th rowspan="2">X-RAY</th>
+            </tr>
+            <tr>
+                <!-- CBC -->
+                <th>WBC</th>
+                <th>Neu</th>
+                <th>Lymp</th>
+                <th>Mo</th>
+                <th>Eos</th>
+                <th>Baso</th>
+                <th>Hb</th>
+                <th>Hct</th>
+                <th>MCV</th>
+                <th>MCH</th>
+                <th>MCHC</th>
+                <th>Plt</th>
 
-            <!-- UA -->
-            <th>Colour</th>
-            <th>SpGr</th>
-            <th>Ph</th>
-            <th>Blood</th>
-            <th>Prot</th>
-            <th>Sugar</th>
-            <th>Ketone</th>
-            <th>Epi</th>
-            <th>WBC</th>
-            <th>RBC</th>
-        </tr>
+                <!-- UA -->
+                <th>Colour</th>
+                <th>SpGr</th>
+                <th>Ph</th>
+                <th>Blood</th>
+                <th>Prot</th>
+                <th>Sugar</th>
+                <th>Ketone</th>
+                <th>Epi</th>
+                <th>WBC</th>
+                <th>RBC</th>
+            </tr>
+            <tr style="color: green;">
+                <th colspan="3" style="font-size: 16px;">ค่าปกติ</th>
+                <th>5.0-10.0</th>
+                <th>43-76</th>
+                <th>17-48</th>
+                <th>4-10</th>
+                <th>0-5</th>
+                <th>0-1</th>
+                <th>12.5-16.4</th>
+                <th>30-49</th>
+                <th>80-97</th>
+                <th>27.0-31.2</th>
+                <th>31.8-35.4</th>
+                <th>140-400</th>
+
+                <th></th>
+                <th>1.010-1.025</th>
+                <th></th>
+                <th>N</th>
+                <th>N</th>
+                <th>N</th>
+                <th></th>
+                <th>0-5</th>
+                <th>0-5</th>
+                <th>0-1</th>
+
+                <th>N</th>
+                <th>NF</th>
+                <th>NR</th>
+                <th>N</th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+        
         <?php 
         $i = 1; 
 
@@ -149,7 +202,7 @@ if($q->num_rows > 0 )
                 <td><?=$i;?></td>
                 <td><?=$outResult['hn'];?></td>
                 <td><?=$outResult['ptname'];?></td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['WBC'])
                     {
@@ -157,7 +210,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['NEU'])
                     {
@@ -165,7 +218,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['LYMP'])
                     {
@@ -173,7 +226,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['MONO'])
                     {
@@ -181,7 +234,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['EOS'])
                     {
@@ -189,7 +242,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['BASO'])
                     {
@@ -197,7 +250,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['HB'])
                     {
@@ -205,7 +258,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['HCT'])
                     {
@@ -213,7 +266,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['MCV'])
                     {
@@ -221,7 +274,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['MCH'])
                     {
@@ -229,7 +282,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['MCHC'])
                     {
@@ -237,7 +290,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($cbcItems['PLTC'])
                     {
@@ -288,7 +341,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($labItems['SPGR'])
                     {
@@ -297,7 +350,7 @@ if($q->num_rows > 0 )
                     ?> 
                     
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($labItems['PH'])
                     {
@@ -349,7 +402,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($labItems['EPIU'])
                     {
@@ -357,7 +410,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td class="txtRight">
                     <?php 
                     if ($labItems['WBCU'])
                     {
@@ -442,7 +495,7 @@ if($q->num_rows > 0 )
                     }
                     ?>
                 </td>
-                <td>
+                <td width="15%">
                     <?php 
                     if($outResult["cxr"] == "")
                     { 
@@ -459,6 +512,7 @@ if($q->num_rows > 0 )
             $i++;
         }
         ?>
+        </tbody>
     </table>
     <?php
 }
