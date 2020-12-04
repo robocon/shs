@@ -63,6 +63,7 @@ if( $action == false ){
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>HN</th>
+                <th>คำนำหน้า</th>
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>เลขบัตรประชาชน</th>
@@ -78,7 +79,7 @@ if( $action == false ){
 
                 ++$i;
 
-                $sql = "SELECT `hn`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
+                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
                 $db->select($sql);
                 $user = $db->get_item();
 
@@ -89,6 +90,7 @@ if( $action == false ){
                     <td><?=$name;?></td>
                     <td><?=$surname;?></td>
                     <td><?=$user['hn'];?></td>
+                    <td><?=$user['yot'];?></td>
                     <td><?=$user['name'];?></td>
                     <td><?=$user['surname'];?></td>
                     <td><?=$user['idcard'];?></td>
