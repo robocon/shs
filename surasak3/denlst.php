@@ -24,7 +24,8 @@
     $num=0;
     include("connect.inc");
   
-    $query = "SELECT a.date,a.ptname,a.hn,a.an,a.depart,a.detail,a.price,a.paid,a.row_id,a.accno,a.ptright,a.tvn,b.`goup` 
+    $query = "SELECT a.date,a.ptname,a.hn,a.an,a.depart,a.detail,a.price,a.paid,a.row_id,a.accno,a.ptright,a.tvn,b.`goup`, 
+    SUBSTRING(a.`ptright`,1,3) AS `ptRightCode` 
     FROM depart AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
     WHERE a.date LIKE '$today%' 
@@ -33,7 +34,7 @@
     $lists = array();
     $ptLists = array();
     $totalpri = 0;
-    while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$paid,$row_id,$accno,$ptright,$tvn,$goup) = mysql_fetch_row ($result)) { 
+    while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$paid,$row_id,$accno,$ptright,$tvn,$goup,$ptRightCode) = mysql_fetch_row ($result)) { 
 
         $num++;
         $time=substr($date,11);
@@ -47,12 +48,14 @@
             $lists[$goup]['price'] += (int)$price;
         }
 
-        if(empty($ptLists[$ptright])){
-            $ptLists[$ptright]['count'] = 1;
-            $ptLists[$ptright]['price'] = (int)$price;
+        $ptKey = trim($ptRightCode);
+
+        if(empty($ptLists[$ptKey])){
+            $ptLists[$ptKey]['count'] = 1;
+            $ptLists[$ptKey]['price'] = (int)$price;
         }else{
-            $ptLists[$ptright]['count']++;
-            $ptLists[$ptright]['price'] += (int)$price;
+            $ptLists[$ptKey]['count']++;
+            $ptLists[$ptKey]['price'] += (int)$price;
         }
         
 
@@ -72,7 +75,7 @@
         " </tr>\n");
     }
    
-    include("unconnect.inc");
+    
 ?>
 </table>
 <?php 
@@ -106,14 +109,20 @@ foreach ($lists as $name => $item) {
         <td bgcolor="6495ED">รวมค่าใช้จ่าย(บาท)</td>
     </tr>
 <?php
-foreach ($ptLists as $ptName => $item) {
+foreach ($ptLists as $ptName => $item) { 
+    
+    $q = mysql_query("SELECT CONCAT(`code`, ' ', `name`) AS `ptrightName` FROM `ptright` WHERE `code` = '$ptName' ") or die(mysql_error());
+    $ptright = mysql_fetch_assoc($q);
+
     ?>
     <tr>
-        <td bgcolor="66CDAA"><?=$ptName;?></td>
+        <td bgcolor="66CDAA"><?=$ptright['ptrightName'];?></td>
         <td align="right" bgcolor="66CDAA"><?=$item['count'];?></td>
         <td align="right" bgcolor="66CDAA"><?=number_format($item['price'],2);?></td>
     </tr>
     <?php
 }
+
+include("unconnect.inc");
 ?>
 </table>
