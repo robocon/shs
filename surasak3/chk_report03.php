@@ -170,15 +170,13 @@ while($result = mysql_fetch_assoc($row2)){
 			<table width="100%">
 				<tr>
 					<td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" alt="" width="60" /></td>
-					<td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
-					<td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
+					<td width="77%" colspan="2" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
 				</tr>
 				<tr>
-					<td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
-					<td align="center" valign="top" class="texthead">&nbsp;</td>
+					<td colspan="2" align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
 				</tr>
 				<tr>
-					<td align="center" valign="top" class="text3">
+					<td colspan="2" align="center" valign="top" class="text3">
 						<span class="text">
 							<span class="text1">
 								<span class="text2">
@@ -190,7 +188,6 @@ while($result = mysql_fetch_assoc($row2)){
 							</span>
 						</span>
 					</td>
-					<td align="center" valign="top" class="text3">&nbsp;</td>
 				</tr>
 			</table>
 		</td>
