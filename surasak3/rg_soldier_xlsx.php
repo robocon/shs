@@ -11,11 +11,16 @@ function iconv_utf8($txt){
     return $txt;
 }
 
+function iconv_tis($txt){
+    $txt = iconv('UTF-8','TIS-620',$txt);
+    return $txt;
+}
+
 $page = input('page');
 if( empty($page) ){
 
     ?>
-    <p><a href="http://192.168.1.2/sm3/surasak3/rg_soldier.php">&lt;&lt;&nbsp;กลับไปหน้าหลัก ตรช.</a></p>
+    <p><a href="http://192.168.131.250/sm3/surasak3/rg_soldier.php">&lt;&lt;&nbsp;กลับไปหน้าหลัก ตรช.</a></p>
     <h3>ส่งออกข้อมูล</h3>
     <form action="rg_soldier_xlsx.php" method="post" id="inputForm">
         <div>
@@ -43,9 +48,8 @@ if( empty($page) ){
 }elseif ( $page == 'export' ) {
     
     require_once 'includes/libs/excel18/Classes/PHPExcel.php';
-    
     $db = Mysql::load($from_sub_to_main);
-    
+
     $year_selected = input_post('year_selected');
     $selected_month = input_post('selected_month');
 
@@ -55,7 +59,17 @@ if( empty($page) ){
     WHERE `date_certificate` LIKE '$year_selected-$selected_month%' ";
     $db->select($sql);
     $items = $db->get_items();
-    
+    // dump($items);
+
+    // foreach ($items as $key => $item) {
+    //     dump($item['ptname']);
+    //     dump(iconv_tis($item['ptname']));
+    //     dump(iconv_utf8($item['ptname']));
+    //     echo "<hr>";
+    // }
+
+    // exit;
+
     // Create new PHPExcel object
     $objPHPExcel = new PHPExcel();
     
