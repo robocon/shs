@@ -81,7 +81,6 @@ foreach ($items as $key => $item) {
     $sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$part' ";
     $db->select($sql);
     $company = $db->get_item();
-
     $year_checkup = substr($company['yearchk'], 2);
 
     # ¢éÍÁÙÅ¼Ùé»èÇÂ
@@ -156,7 +155,7 @@ foreach ($items as $key => $item) {
     }
 
     $papSmear = '';
-    $sql = "SELECT `hpv` FROM `out_result_chkup` WHERE `part` = '$camp' AND `hn` = '$hn' AND `year_chk` = '$year_checkup' ";
+    $sql = "SELECT `hpv` FROM `out_result_chkup` WHERE `part` = '$part' AND `hn` = '$hn' AND `year_chk` = '$year_checkup' ";
     $db->select($sql);
     if ($db->get_rows() > 0) {
         $outResultChkup = $db->get_item();
