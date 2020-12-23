@@ -74,7 +74,7 @@ if($q->num_rows > 0 )
     <table width="100%" class="chk_table">
         <thead>
             <tr>
-                <th colspan="30" style="font-size: 18px;">N = negative , NF = not found parasite ova , NR = non reactive , Methamp = Methamphetamine</th>
+                <th colspan="30" style="font-size: 18px;">N = negative , P = positive, NF = not found parasite ova , NR = non reactive , R = Reactive, Methamp = Methamphetamine</th>
             </tr>
             <tr class="setFont16">
                 <th rowspan="2">�ӴѺ</th>
@@ -366,6 +366,10 @@ if($q->num_rows > 0 )
                         {
                             echo "N";
                         }
+                        elseif ($labItems['BLOODU']['result'] == 'Positive') 
+                        {
+                            echo "P";
+                        }
                     }
                     ?>
                 </td>
@@ -376,6 +380,10 @@ if($q->num_rows > 0 )
                         if ($labItems['PROU']['result'] == 'Negative') 
                         {
                             echo "N";
+                        }
+                        elseif ($labItems['PROU']['result'] == 'Positive') 
+                        {
+                            echo "P";
                         }
                     }
                     ?>
@@ -388,6 +396,10 @@ if($q->num_rows > 0 )
                         {
                             echo "N";
                         }
+                        elseif ($labItems['GLUU']['result'] == 'Positive') 
+                        {
+                            echo "P";
+                        }
                     }
                     ?>
                 </td>
@@ -398,6 +410,10 @@ if($q->num_rows > 0 )
                         if ($labItems['KETU']['result'] == 'Negative') 
                         {
                             echo "N";
+                        }
+                        elseif ($labItems['KETU']['result'] == 'Positive') 
+                        {
+                            echo "P";
                         }
                     }
                     ?>
@@ -425,6 +441,10 @@ if($q->num_rows > 0 )
                         if ($labItems['RBCU']['result'] == 'Negative') 
                         {
                             echo "N";
+                        }
+                        elseif ($labItems['RBCU']['result'] == 'Positive') 
+                        {
+                            echo "P";
                         }
                     }
                     ?>
@@ -459,6 +479,10 @@ if($q->num_rows > 0 )
                         {
                             echo "N";
                         }
+                        elseif ($labItems['METAMP']['result'] == 'Positive') 
+                        {
+                            echo "P";
+                        }
                     }
                     ?>
                 </td>
@@ -480,6 +504,10 @@ if($q->num_rows > 0 )
                         if ($etcLabItems['VDRL']['result'] == 'Non Reactive') 
                         {
                             echo "NR";
+                        }
+                        elseif ($labItems['VDRL']['result'] == 'Reactive') 
+                        {
+                            echo "R";
                         }
                     }
                     ?>
