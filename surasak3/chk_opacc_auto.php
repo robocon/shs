@@ -8,18 +8,9 @@ $db = Mysql::load();
  * »Õ63 ÁÑ¹¨ÐÁÕáºè§ÊÍ§ÇÑ¹
  * ÊÍºµÓÃÇ¨63 ¡Ñº ÊÍºµÓÃÇ¨63_02
  */
-// $sql = "SELECT * 
-// FROM `log_opcardchk` 
-// WHERE `log_part` = 'ÊÍºµÓÃÇ¨63_02' 
-// GROUP BY `log_hn` 
-// ORDER BY `log_hn` ";
-$sql = "SELECT * 
-FROM `log_opcardchk` 
-WHERE `log_part` = 'ÊÍºµÓÃÇ¨63_02' 
-AND `log_id` = '707' 
-LIMIT 1";
 
 
+$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ÊÍºµÓÃÇ¨ 64' ORDER BY `log_id` ASC ";
 $db->select($sql);
 $items = $db->get_items();
 
@@ -29,9 +20,7 @@ $detail = "¤èÒºÃÔ¡ÒÃµÃÇ¨ÊØ¢ÀÒ¾µÓÃÇ¨";
 $price = 880.00;
 $paid  = 880.00;
 $idname='¹Ò§¾Ç§à¾çªÃ â¹ã¨»Ô§';
-$credit="µÃÇ¨ÊØ¢ÀÒ¾";
-
-
+$credit="µÃÇ¨ÊØ¢ÀÒ¾µÓÃÇ¨";
 
 foreach ($items as $key => $value) {
 

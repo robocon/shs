@@ -244,7 +244,7 @@ session_register("ptname");
   <th bgcolor=6495ED><font size='2'>เวลา</th>
   <th bgcolor=6495ED><font size='2'>HN</th>
   <?php
-  if($doctor1=="ตรวจสุขภาพ" || $doctor1==$chkup){
+  if($doctor1=="ตรวจสุขภาพ" || $doctor1==$chkup || $doctor1=="ตรวจสุขภาพตำรวจ"){
 	?>
 	<th bgcolor=6495ED><font size='2'>ชื่อ-สกุล</th>
 	<?php
@@ -302,11 +302,20 @@ $prow_id     =array("prow_id");
  array_push($aPaidcscd,$row->paidcscd);
   array_push($aVn,$row->vn);
   
-  $qquery = "select concat(yot,' ',name,' ',surname) as ptname from opcard where hn='".$row->hn."' ";
-  $abrow = mysql_query($qquery);
-  list($aaptname) = mysql_fetch_array($abrow);
-  array_push($ptname,$aaptname);
-	
+    if( $doctor != "ตรวจสุขภาพตำรวจ" )
+    {
+        $qquery = "select concat(yot,' ',name,' ',surname) as ptname from opcard where hn='".$row->hn."' ";
+        $abrow = mysql_query($qquery);
+        list($aaptname) = mysql_fetch_array($abrow);
+        array_push($ptname,$aaptname);
+    }
+    else
+    {
+        $policeSql = mysql_query("SELECT `log_ptname` FROM `log_opcardchk` WHERE `log_hn` = '{$row->hn}' ");
+        $police = mysql_fetch_assoc($policeSql);
+        array_push($ptname,$police['log_ptname']);
+    }
+
 if ($row->depart=="PHAR"){
 	        array_push($aPhar,$row->price);  
             array_push($aPharpaid,$row->paid);
@@ -403,7 +412,7 @@ for ($n=$x; $n>=1; $n--){
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n".
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$time</td>\n".
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$aHn[$n]</td>\n");
-  if($doctor1=="ตรวจสุขภาพ"  || $doctor1==$chkup){
+  if($doctor1=="ตรวจสุขภาพ"  || $doctor1==$chkup || $doctor1=="ตรวจสุขภาพตำรวจ"){
 	?>
 	<td bgcolor=F5DEB3><font face='Angsana New'><?=$ptname[$n]?></td>
 	<?php 
