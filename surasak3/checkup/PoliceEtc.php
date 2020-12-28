@@ -1,17 +1,17 @@
 <?php 
 // include 'bootstrap.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-
-$mysqli = new mysqli("192.168.128.86","remoteuser","","smdb");
-
-if ($mysqli -> connect_errno)
+$mysqli = new mysqli("localhost","root","1234","smdb");
+if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
 
-// $camp = $_GET["camp"];
-$camp = "ÊÍºµÓÃÇ¨63_02";
+$camp = $_GET["camp"];
+// $camp = "ÊÍºµÓÃÇ¨63_02";
 ?>
 
 <!DOCTYPE html>
@@ -105,8 +105,8 @@ if($q->num_rows > 0 )
                 <td style="text-align: right;"><?=$bmi;?></td>
                 <td <?=($bp2===true) ? 'title="¤ÇÒÁ´Ñ¹ÃÍºáÃ¡ '.$bp1.'" bgcolor="yellow"' : '' ;?>  style="text-align: right;"><?=$bp;?></td>
                 <td style="text-align: right;"><?=$temp;?></td>
-                <td style="text-align: right;"><?=$rate;?></td>
                 <td style="text-align: right;"><?=$p;?></td>
+                <td style="text-align: right;"><?=$rate;?></td>
             </tr>
             <?php 
             $i++;

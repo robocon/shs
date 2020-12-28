@@ -4,16 +4,15 @@ error_reporting(1);
 ini_set('display_errors', 1);
 ini_set('max_execution_time', 0);
 
-$mysqli = new mysqli("192.168.128.86","remoteuser","","smdb");
-
-if ($mysqli -> connect_errno)
+$mysqli = new mysqli("localhost","root","1234","smdb");
+if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
 
-// $camp = $_GET["camp"];
-$camp = "ÊÍºµÓÃÇ¨63_02";
+$camp = $_GET["camp"];
+// $camp = "ÊÍºµÓÃÇ¨63_02";
 ?>
 
 <!DOCTYPE html>

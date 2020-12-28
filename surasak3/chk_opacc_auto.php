@@ -10,7 +10,7 @@ $db = Mysql::load();
  */
 
 
-$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ÊÍºµÓÃÇ¨ 64' ORDER BY `log_id` ASC ";
+$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ÊÍºµÓÃÇ¨64_02' ORDER BY `log_id` ASC ";
 $db->select($sql);
 $items = $db->get_items();
 
@@ -19,7 +19,7 @@ $depart = "OTHER";
 $detail = "¤èÒºÃÔ¡ÒÃµÃÇ¨ÊØ¢ÀÒ¾µÓÃÇ¨";
 $price = 880.00;
 $paid  = 880.00;
-$idname='¹Ò§¾Ç§à¾çªÃ â¹ã¨»Ô§';
+$idname='¹Ò§¹·Õ¾Ã àÃÕÂ§ÊØ¢';
 $credit="µÃÇ¨ÊØ¢ÀÒ¾µÓÃÇ¨";
 
 foreach ($items as $key => $value) {
