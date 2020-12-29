@@ -3,6 +3,13 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+function dump($txt)
+{
+    echo "<pre>";
+    var_dump($txt);
+    echo "</pre>";
+}
+
 $mysqli = new mysqli("localhost","root","1234","smdb");
 if ($mysqli->connect_errno)
 {
@@ -74,7 +81,6 @@ if($q->num_rows > 0 )
 
         while ($outResult = $q->fetch_assoc())
         {
-
             $examNo = $outResult['exam_no'];
 
             $temp = $outResult['temp'];
@@ -83,9 +89,12 @@ if($q->num_rows > 0 )
             $weight = $outResult['weight'];
             $height = $outResult['height'];
 
-            $h = ( $height / 100 );
-            $bmi = ( $weight / ( $h * $h ) );
-            $bmi = number_format($bmi, 2);
+            $bmi = 0;
+            if (!empty($weight) && !empty($height)) {
+                $h = ( $height / 100 );
+                $bmi = ( $weight / ( $h * $h ) );
+                $bmi = number_format($bmi, 2);
+            }
             
             $bp1 = $bp = $outResult["bp1"]."/".$outResult["bp2"];
             $bp2 = false;
@@ -94,7 +103,6 @@ if($q->num_rows > 0 )
                 $bp = $outResult["bp3"]."/".$outResult["bp4"];
                 // $bp2 = true;
             }
-
             ?>
             <tr>
                 <td style="text-align: right;"><?=$i;?></td>
