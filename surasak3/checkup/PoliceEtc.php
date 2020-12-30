@@ -64,6 +64,7 @@ if($q->num_rows > 0 )
     <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
     <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
     <table width="100%" class="chk_table">
+        <thead>
         <tr style="text-align: center;">
             <th>ลำดับ</th>
             <th>HN</th>
@@ -76,6 +77,8 @@ if($q->num_rows > 0 )
             <td>P</td>
             <td>R</td>
         </tr>
+        </thead>
+        <tbody>
         <?php 
         $i = 1; 
 
@@ -120,6 +123,7 @@ if($q->num_rows > 0 )
             $i++;
         }
         ?>
+        </tbody>
     </table>
     <?php
 }
