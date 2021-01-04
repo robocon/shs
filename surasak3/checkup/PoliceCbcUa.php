@@ -58,9 +58,10 @@ $company_name = $company['company_name'];
 $show_date = $company['show_date'];
 
 $sql = "SELECT a.*,b.`exam_no` 
-FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a 
-LEFT JOIN ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b ON b.`HN` = a.`hn` 
-ORDER BY b.`row` ASC ";
+FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b 
+LEFT JOIN ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a ON a.`hn` = b.`HN` 
+WHERE a.`hn` IS NOT NULL 
+ORDER BY b.`row` ASC  ";
 $q = $mysqli->query($sql);
 if($q->num_rows > 0 )
 { 
@@ -498,11 +499,11 @@ if($q->num_rows > 0 )
                     <?php 
                     if ($etcLabItems['VDRL'])
                     {
-                        if ($etcLabItems['VDRL']['result'] == 'Non Reactive') 
+                        if ($etcLabItems['VDRL']['result'] == 'Non-reactive') 
                         {
                             echo "NR";
                         }
-                        elseif ($labItems['VDRL']['result'] == 'Reactive') 
+                        elseif (preg_match('/Reactive/', $labItems['VDRL']['result']) > 0) 
                         {
                             echo "R";
                         }
