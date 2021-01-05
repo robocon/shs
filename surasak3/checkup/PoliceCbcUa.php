@@ -368,6 +368,10 @@ if($q->num_rows > 0 )
                         {
                             echo "P";
                         }
+                        else
+                        {
+                            echo $labItems['BLOODU']['result'];
+                        }
                     }
                     ?>
                 </td>
@@ -382,6 +386,10 @@ if($q->num_rows > 0 )
                         elseif ($labItems['PROU']['result'] == 'Positive') 
                         {
                             echo "P";
+                        }
+                        else
+                        {
+                            echo $labItems['PROU']['result'];
                         }
                     }
                     ?>
@@ -436,14 +444,7 @@ if($q->num_rows > 0 )
                     <?php 
                     if ($labItems['RBCU'])
                     {
-                        if ($labItems['RBCU']['result'] == 'Negative') 
-                        {
-                            echo "N";
-                        }
-                        elseif ($labItems['RBCU']['result'] == 'Positive') 
-                        {
-                            echo "P";
-                        }
+                        echo $labItems['RBCU']['result'];
                     }
                     ?>
                 </td>
@@ -488,9 +489,13 @@ if($q->num_rows > 0 )
                     <?php 
                     if ($etcLabItems['PARASI'])
                     {
-                        if ($etcLabItems['PARASI']['result'] == 'Not found parasite') 
+                        if (trim(strtolower($etcLabItems['PARASI']['result'])) == 'not found parasite') 
                         {
                             echo "NF";
+                        }
+                        else
+                        {
+                            echo $etcLabItems['PARASI']['result'];
                         }
                     }
                     ?>
