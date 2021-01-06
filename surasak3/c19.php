@@ -37,10 +37,10 @@ if ($action==='search') {
 
     $dateTH = $_REQUEST['dateSearch'];
     
-    $sql = "SELECT `row_id`, `hn`, `ptname`, `age`, SUBSTRING(`thidate`, 1, 10) AS `thDate` 
-    FROM `opday` 
+    $sql = "SELECT `row_id`, `thdatehn`, `hn`, `ptname`, `age`, SUBSTRING(`thidate`, 1, 10) AS `thDate`, `toborow` 
+    FROM `opday2` 
     WHERE `thidate` LIKE '$dateTH%' 
-    AND `borow` LIKE '%c19%'";
+    AND ( `borow` LIKE '%c19%' OR `toborow` LIKE 'EX50%' )";
     $db->select($sql);
 
     $items = $db->get_items();
@@ -53,11 +53,34 @@ if ($action==='search') {
             <th>HN</th>
             <th>ชื่อ-สกุล</th>
             <th>อายุ</th>
+            <th>Ex</th>
+            <th>แพทย์</th>
         </tr>
     
     <?php
     $i = 1;
-    foreach ($items as $key => $item) {
+
+    $doctorList = array();
+    $doctorNameList = array();
+    foreach ($items as $key => $item) { 
+
+        $opday2Thdatehn = $item['thdatehn'];
+
+        $sqlOpd = "SELECT `row_id`, `doctor` FROM `opd` WHERE `thidate` LIKE '$dateTH%' AND `thdatehn` = '$opday2Thdatehn' ";
+        $db->select($sqlOpd);
+        $opd = $db->get_item();
+
+        if(empty($opd))
+        {
+            $opd['doctor'] = "ไม่พบข้อมูลซักประวัติ";
+        }
+
+        $key = substr($opd['doctor'],0,5);
+        if(preg_match('/MD\d+/',$opd['doctor']) > 0)
+        {
+            $doctorList[$key][] = $item['hn'];
+            $doctorNameList[$key] = $opd['doctor'];
+        }
         ?>
         <tr>
             <td><?=$i;?></td>
@@ -65,12 +88,24 @@ if ($action==='search') {
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>
+            <td><?=$item['toborow'];?></td>
+            <td><?=$opd['doctor'];?></td>
         </tr>
         <?php
         $i++;
     }
     ?>
     </table>
+    <div>
+    <p><b>แพทย์และจำนวนผู้ป่วย</b></p>
+    <?php 
+    $i = 0;
+    foreach ($doctorList as $key => $hnList) { 
+        ++$i;
+        $dtName = $doctorNameList[$key];
+        echo $i.") ".$dtName." ( ".count($hnList)."ราย )<br>";
+    }
+    ?>
+    </div>
     <?php
-
 }
