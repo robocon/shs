@@ -83,7 +83,8 @@ if ($action==='search')
 
         if(empty($opd))
         {
-            $opd['doctor'] = "ไม่พบข้อมูลซักประวัติ";
+            continue;
+            // $opd['doctor'] = "ไม่พบข้อมูลซักประวัติ";
         }
 
         $key = substr($opd['doctor'],0,5);
