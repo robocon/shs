@@ -8,6 +8,10 @@ $db = Mysql::load();
     <a href="../nindex.htm">&lt;&lt;&nbsp;กลับหน้าหลัก ร.พ.</a>
 </div>
 <style>
+    *{
+        font-family: "TH Sarabun New", "TH SarabunPSK";
+        font-size: 16px;
+    }
 .chk_table{
     border-collapse: collapse;
 }
@@ -33,11 +37,13 @@ $db = Mysql::load();
 <?php 
 
 $action = $_REQUEST['action'];
-if ($action==='search') {
+if ($action==='search')
+{
 
     $dateTH = $_REQUEST['dateSearch'];
     
-    $sql = "SELECT `row_id`, `thdatehn`, `hn`, `ptname`, `age`, SUBSTRING(`thidate`, 1, 10) AS `thDate`, `toborow` 
+    $sql = "SELECT `row_id`, `thdatehn`, `hn`, `ptname`, `age`, SUBSTRING(`thidate`, 1, 10) AS `thDate`, `toborow`, 
+    `ptright`, SUBSTRING(`ptright`, 1, 3) AS `ptrightCode` 
     FROM `opday2` 
     WHERE `thidate` LIKE '$dateTH%' 
     AND ( `borow` LIKE '%c19%' OR `toborow` LIKE 'EX50%' )";
@@ -55,6 +61,7 @@ if ($action==='search') {
             <th>อายุ</th>
             <th>Ex</th>
             <th>แพทย์</th>
+            <th>สิทธิการรักษา</th>
         </tr>
     
     <?php
@@ -62,7 +69,11 @@ if ($action==='search') {
 
     $doctorList = array();
     $doctorNameList = array();
-    foreach ($items as $key => $item) { 
+
+    $ptrightList = array();
+    $ptrightNameList = array();
+    foreach ($items as $key => $item)
+    { 
 
         $opday2Thdatehn = $item['thdatehn'];
 
@@ -81,6 +92,10 @@ if ($action==='search') {
             $doctorList[$key][] = $item['hn'];
             $doctorNameList[$key] = $opd['doctor'];
         }
+
+        $ptrightCode = $item['ptrightCode'];
+        $ptrightList[$ptrightCode][] = $item['hn'];
+        $ptrightNameList[$ptrightCode] = $item['ptright'];
         ?>
         <tr>
             <td><?=$i;?></td>
@@ -90,6 +105,7 @@ if ($action==='search') {
             <td><?=$item['age'];?></td>
             <td><?=$item['toborow'];?></td>
             <td><?=$opd['doctor'];?></td>
+            <td><?=$item['ptright'];?></td>
         </tr>
         <?php
         $i++;
@@ -97,15 +113,40 @@ if ($action==='search') {
     ?>
     </table>
     <div>
-    <p><b>แพทย์และจำนวนผู้ป่วย</b></p>
-    <?php 
-    $i = 0;
-    foreach ($doctorList as $key => $hnList) { 
-        ++$i;
-        $dtName = $doctorNameList[$key];
-        echo $i.") ".$dtName." ( ".count($hnList)."ราย )<br>";
-    }
-    ?>
+        <p><b>แพทย์และจำนวนผู้ป่วย</b></p>
+        <table style="border: 0;">
+        <?php 
+        $i = 0;
+        foreach ($doctorList as $key => $hnList)
+        { 
+            ++$i;
+            $dtName = $doctorNameList[$key];
+            ?>
+            <tr>
+                <td><?=$dtName;?></td>
+                <td><?=count($hnList)." ราย";?></td>
+            </tr>
+            <?php
+        }
+        ?>
+        </table>
+    </div>
+
+    <div>
+        <p><b>สิทธิการรักษา</b></p>
+        <table style="border: 0;">
+        <?php 
+        foreach ($ptrightNameList as $key => $value)
+        {
+            ?>
+            <tr>
+                <td><?=$value;?></td>
+                <td><?=count($ptrightList[$key]);?></td>
+            </tr>
+            <?php
+        }
+        ?>
+        </table>
     </div>
     <?php
 }
