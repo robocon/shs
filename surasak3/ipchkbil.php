@@ -575,15 +575,16 @@ if ($row->part=="DPN"){
             } 
 
 //3. ยาที่ใช้ใน รพ.
-if ($row->part=="DDL" and substr($row->date,0,10)!="$sDiscdate1"){
+//echo "-->".$row->status."<br>";
+if ($row->part=="DDL" and $row->status!="จำหน่าย"){
             array_push($aEssd,$row->price);
             array_push($aBEssd,$row->price-$row->paid);
             } 
-if ($row->part=="DDY" and substr($row->date,0,10)!="$sDiscdate1"){
+if ($row->part=="DDY" and $row->status!="จำหน่าย"){
             array_push($aNessdy,$row->price);
             array_push($aBNessdy,$row->price-$row->paid);
             } 
-if ($row->part=="DDN" and substr($row->date,0,10)!="$sDiscdate1"){
+if ($row->part=="DDN" and $row->status!="จำหน่าย"){
             array_push($aNessdn,$row->price);
             array_push($aBNessdn,$row->price-$row->paid);
             } 
@@ -603,15 +604,15 @@ if ($row->part=="DDN" and substr($row->date,0,10)=="$sDiscdate1" ){
             } 
 
 //4. ยาที่นำไปใช้ต่อที่บ้าน   (วันที่จำหน่าย)
-if ($row->part=="DDL" and substr($row->date,0,10)=="$sDiscdate1"){
+if ($row->part=="DDL" and $row->status=="จำหน่าย"){
             array_push($aDEssd,$row->price);
             array_push($aBDEssd,$row->price-$row->paid);
             } 
-if ($row->part=="DDY" and substr($row->date,0,10)=="$sDiscdate1" ){
+if ($row->part=="DDY" and $row->status=="จำหน่าย"){
             array_push($aDNessdy,$row->price);
             array_push($aBDNessdy,$row->price-$row->paid);
             } 
-if ($row->part=="DDN" and substr($row->date,0,10)=="$sDiscdate1" ){
+if ($row->part=="DDN" and $row->status=="จำหน่าย"){
             array_push($aDNessdn,$row->price);
             array_push($aBDNessdn,$row->price-$row->paid);
             } 
@@ -790,7 +791,7 @@ $item++;
     $Essd    =array_sum($aEssd);   //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
     $Nessdy=array_sum($aNessdy);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
     $DDLDDY =$Essd+$Nessdy; //3.ยาและสารอาหารทางเส้นเลือด(เบิกได้)
-    $Nessdn=array_sum($aNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
+	$Nessdn=array_sum($aNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
 
 
 
@@ -801,7 +802,6 @@ $item++;
     $DNessdy=array_sum($aDNessdy);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
     $DDgy= $DEssd+$DNessdy; //ยาที่นำไปใช้ต่อที่บ้านและเบิกได้
     $DNessdn=array_sum($aDNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
-
 
 
 
@@ -954,9 +954,9 @@ if($enddatetime  == Null){
 		      }
 
 
-$sql = "Select sum(price),status FROM ipacc WHERE an = '$cAn' and status='จำหน่าย' group by status ";
+/*$sql = "Select sum(price),status FROM ipacc WHERE an = '$cAn' and status='จำหน่าย' group by status ";
 $result2 = Mysql_Query($sql) or die(mysql_error());
-list($pricedc,$status) = Mysql_fetch_row($result2);
+list($pricedc,$status) = Mysql_fetch_row($result2);*/
  include("unconnect.inc");
 /*
    $num=1;
@@ -982,8 +982,11 @@ print "</table>";
 /* $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx;
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc;*/
 $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
+
  
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc+$Bloodn+$Labon+$Xrayn+$Sinvn+$Tooln+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Mcn+$Mcy;
+
+//echo "==>".$DDLDDY;
 
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
@@ -1021,8 +1024,8 @@ print "        $DPY<br>";
 //$DDLDDY=$DDLDDY-$pricedc; //echo "$DDLDDY-$pricedc";
 $DDLDDY=$DDLDDY;
 print "        $DDLDDY<br>"; //3. ยาและสารอาหารทางเส้นเลือดที่ใช้ในโรงพยาบาล
-$pricedc=number_format($pricedc,0);
-print "        $pricedc<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
+//$pricedc=number_format($pricedc,0);
+print "        $DDgy<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
 print "        $DSY<br>";
 $Blood+=$Bloody;
 print "        $Blood<br>";
