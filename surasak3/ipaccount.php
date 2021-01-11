@@ -591,7 +591,7 @@ ipmonrep table:
     array_push($aPart,$row->part);
     array_push($aIdname,$row->idname);
 	
-
+	
 
 	//$sDiscdate=substr($sDiscdate,0,10);
 //1. ค่าห้อง/ค่าอาหาร(เบิกได้)
@@ -741,6 +741,20 @@ if ($row->part=="NCAREN"){
             array_push($aNcaren,$row->price);
             array_push($aBNcaren,$row->price-$row->paid);
             } 
+
+if ($row->part=="OTHER"){
+    array_push($aNcare,$row->price);
+    array_push($aBNcare,$row->price-$row->paid);
+} 
+if ($row->part=="OTHERY"){
+    array_push($aNcarey,$row->price);
+    array_push($aBNcarey,$row->price-$row->paid);
+} 
+if ($row->part=="OTHERN"){
+    array_push($aNcaren,$row->price);
+    array_push($aBNcaren,$row->price-$row->paid);
+} 
+
 //13. ค่าบริการทางทันตกรรม			
 if ($row->part=="DENTA"){
             array_push($aDent,$row->price);  
@@ -992,6 +1006,7 @@ print "</table>";
  //$nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx;
  //$nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc;
   $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
+  //echo "$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy";
  
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc+$Bloodn+$Labon+$Xrayn+$Sinvn+$Tooln+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Mcn+$Mcy;
 
