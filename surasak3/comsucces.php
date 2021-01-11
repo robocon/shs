@@ -1,5 +1,63 @@
+<?php 
+session_start();
+include("connect.inc");
+
+if($_REQUEST['do']=='edit'){
+
+	function DateDiff($strDate1,$strDate2){
+		return (strtotime($strDate2) - strtotime($strDate1))/ ( 60 * 60 * 24 ); // 1 day = 60*60*24
+	}
+	
+	$thidate = (date("Y")+543).date("-m-d H:i:s"); 
+	$row=$_POST['row'];
+	$p_edit=$_POST['p_edit'];
+	$programmer=$_POST['programmer'];
+	
+	$date=substr($_POST['date'],0,10);  //วันที่แจ้ง
+	list($y,$m,$d)=explode("-",$date);
+	$y=$y-543;
+	$date1="$y-$m-$d";
+	
+	$dateend=substr($thidate,0,10);  //วันที่เสร็จ
+	list($yy,$mm,$dd)=explode("-",$dateend);
+	$yy=$yy-543;
+	$date2="$yy-$mm-$dd";	
+	
+	$hold=DateDiff("$date1","$date2");
+	
+	$update="UPDATE com_support SET status='n', p_edit='".$p_edit."' ,dateend='$thidate' , programmer='$programmer', hold='$hold' Where row='$row' ";
+	$query=mysql_query($update);
+	if($query){ 
+
+		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
+		$sMessage = iconv('TIS-620','UTF-8',"เรื่อง: $head\nดำเนินการเรียบร้อยโดย $programmer");
+		$chOne = curl_init(); 
+		curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
+		curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+		curl_setopt( $chOne, CURLOPT_POST, 1); 
+		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&stickerPackageId=1&stickerId=114"); 
+		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+		curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+		curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
+		$result = curl_exec( $chOne ); 
+		curl_close($chOne);
+
+		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
+		header("Location: com_support.php");
+
+	}else { 
+
+		$_SESSION['supportMessage'] = "ไม่สามารถเพิ่มข้อมูลได้";
+		header("Location: com_support.php");
+	}
+		
+	exit;
+
+}
+
+?>
 <style type="text/css">
-<!--
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
@@ -9,7 +67,6 @@
 	font-size: 24px;
 	color: #FFFFFF;
 }
--->
 </style>
 <body bgcolor="#FFFFFF" >
 <script language="javascript">
@@ -27,15 +84,10 @@ function fncSubmit()
 
 </script>
 <?
- include("connect.inc");
-
- 
- $row=$_GET['row'];
- 
- $query = "SELECT  *  FROM com_support   WHERE row ='$row'";
- $result = mysql_query($query)or die("Query failed"); 
- $dbarr=mysql_fetch_array($result);
-
+$row=$_GET['row'];
+$query = "SELECT  *  FROM com_support   WHERE row ='$row'";
+$result = mysql_query($query)or die("Query failed"); 
+$dbarr=mysql_fetch_array($result);
 ?>
 
 <form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
@@ -107,62 +159,9 @@ function fncSubmit()
 </table>
 </form>
 
-<?
+<?php
 
-if($_REQUEST['do']=='edit'){
-function DateDiff($strDate1,$strDate2){
-return (strtotime($strDate2) - strtotime($strDate1))/ ( 60 * 60 * 24 ); // 1 day = 60*60*24
-}
-	$thidate = (date("Y")+543).date("-m-d H:i:s"); 
-	$row=$_POST['row'];
-	$p_edit=$_POST['p_edit'];
-	$programmer=$_POST['programmer'];
-	
-		$date=substr($_POST['date'],0,10);  //วันที่แจ้ง
-		list($y,$m,$d)=explode("-",$date);
-		$y=$y-543;
-		$date1="$y-$m-$d";
-		
-		$dateend=substr($thidate,0,10);  //วันที่เสร็จ
-		list($yy,$mm,$dd)=explode("-",$dateend);
-		$yy=$yy-543;
-		$date2="$yy-$mm-$dd";	
-		
-		$hold=DateDiff("$date1","$date2");
-	
-	$update="UPDATE com_support SET status='n', p_edit='".$p_edit."' ,dateend='$thidate' , programmer='$programmer', hold='$hold' Where row='$row' ";
-	$query=mysql_query($update);
-	
-	
-	//echo $update;
-	 if($query){
-			echo"<h1 align=center>บันทึกข้อมูลเรียบร้อยแล้ว</h1>";
-//		 	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
-			
-			?>
-<script>
 
-window.open('','_self');
-setTimeout("self.close()",2000);
-window.opener.location.reload();
-</script>
-            <?
-			}else {
-			echo "<h1 align=center>ไม่สามารถเพิ่มข้อมูลได้</h1>";
-		//	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
-			?>
-            <script>
-
-window.open('','_self');
-setTimeout("self.close()",2000);
-window.opener.location.reload();
-</script>
-            <?
-			}
-		
-	
-
-}
 ?>
 
 </body>

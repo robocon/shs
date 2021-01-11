@@ -87,7 +87,7 @@ print "<hr>";
     <td width="160" bgcolor="#66CCCC"><!--<input name="depart" type="text" class="forntsarabun" size="20">-->
     <select name="depart" id="depart" class="forntsarabun">
 	<option value="0">เลือกแผนก</option>
-<?
+<?php
 include("connect.inc");
 		$sql="select  *  from   departments where status='y' order by id asc";
 		$result=mysql_query($sql);

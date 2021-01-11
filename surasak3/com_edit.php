@@ -1,5 +1,41 @@
+<?php 
+session_start();
+include("connect.inc");
+if($_REQUEST['do']=='edit')
+{
+	$row=$_POST['row'];
+	$owner = $_REQUEST['programmer'];
+	$head = $_REQUEST['head'];
+	$update="UPDATE com_support SET status='a', programmer='$owner' Where row='$row' ";
+	$query=mysql_query($update);
+	if($query){
+
+		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
+		$sMessage = iconv('TIS-620','UTF-8',"เรื่อง: $head\nกำลังดำเนินการโดย $owner");
+		$chOne = curl_init(); 
+		curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
+		curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+		curl_setopt( $chOne, CURLOPT_POST, 1); 
+		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
+		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+		curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+		curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
+		$result = curl_exec( $chOne ); 
+		curl_close($chOne);
+
+		$_SESSION['supportMessage'] = "เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว";
+		header("Location: com_support.php");
+
+	}else {
+
+		$_SESSION['supportMessage'] = "ไม่สามารถเลือกผู้รับผิดชอบงานได้";
+		header("Location: com_support.php");
+	}
+	exit;
+}
+?>
 <style type="text/css">
-<!--
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
@@ -10,10 +46,9 @@
 	font-weight: bold;
 	color: #FFFFFF;
 }
--->
 </style>
 <body bgcolor="#FFFFFF" >
-<script language="javascript">
+<script type="text/javascript">
 function fncSubmit()
 {
 	if(document.edit.programmer.selectedIndex==0)
@@ -25,18 +60,15 @@ function fncSubmit()
 	
 	document.edit.submit();
 }
-
 </script>
-<?
- include("connect.inc");
- $row=$_GET['row'];
- 
- $query = "SELECT  *  FROM com_support   WHERE row ='$row'";
- $result = mysql_query($query)or die("Query failed"); 
- $dbarr=mysql_fetch_array($result);
+<?php
 
+
+$row=$_GET['row'];
+$query = "SELECT  *  FROM com_support   WHERE row ='$row'";
+$result = mysql_query($query)or die("Query failed"); 
+$dbarr=mysql_fetch_array($result);
 ?>
-
 <form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
 <table align="center" cellpadding="0" cellspacing="0" class="forntsarabun">
   <tr>
@@ -101,35 +133,5 @@ function fncSubmit()
     </tr>
 </table>
 </form>
-
-<?
-if($_REQUEST['do']=='edit'){
-	$row=$_POST['row'];
-	
-	$update="UPDATE com_support SET status='a', programmer='".$_REQUEST['programmer']."' Where row='$row' ";
-	$query=mysql_query($update);
-
-	 if($query){
-			echo"<h1 align=center>เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว</h1>";
-?>
-        <script>
-			setTimeout("self.close()",1000);
-			window.opener.location.reload();
-		</script>
-<?
-			}else {
-			echo "<h1 align=center>ไม่สามารถเลือกผู้รับผิดชอบงานได้</h1>";
-		//	echo "<meta http-equiv='refresh' content='2; url=com_support.php'>" ;
-		?>
-        <script>
-			window.open('','_self');
-			setTimeout("self.close()",2000);
-			window.opener.location.reload();
-		</script>
-        <?
-			}
-	}
-?>
-
 </body>
 

@@ -27,10 +27,17 @@ body {
 <?php
 print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
 print "<hr>";
-print"<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี โทร. 054-839305 ต่อ 6203</strong></div><BR>";
+
+if($_SESSION['supportMessage'])
+{
+    ?><div style="border: 2px solid #bdbd00;background-color: #fdfd8c;padding: 4px;text-align:center;"><?=$_SESSION['supportMessage'];?></div><?php
+    $_SESSION['supportMessage'] = NULL;
+}
+
+print"<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>";
     print"<div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong>$sOfficer</strong> เข้าสู่ระบบ</font></div>";
-    echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานแก้ไขปรับปรุงโปรแกรม....</b>ส.ต. เทวิน  ศรีแก้ว และนายกฤษณะศักดิ์  กันธรส</font></div>";
-	echo "<div align='center'><font size='1' class='forntsarabun'><b>ผู้รับผิดชอบงานซ่อมอุปกรณ์ทางคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ</font></div><br>";
+    echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.ต. เทวิน  ศรีแก้ว และนายกฤษณะศักดิ์  กันธรส<b>....โทร. 8500</b></font></div>";
+	echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>";
 $Thaidate=date("d-m-").(date("Y")+543);
 $n =0;
 $num = "Y";
