@@ -38,8 +38,24 @@ font-weight: bold;
 		$first_page = "dt_index.php";
 		$lab_page = "dt_lab.php";
 	}
+
+	$hnNow = $_SESSION['hn_now'];
+	$myPaper = new mysqli("localhost", "root", "1234", "paperless");
+	// ถ้ามีข้อมูลย้อนหลัง 5ครั้งล่าสุด
+	$paperLess = '';
+	$qPaper = $myPaper->query("SELECT `id` FROM `pdfs` WHERE `hn` = '$hnNow' ORDER BY `id` DESC LIMIT 10");
+	if ($qPaper->num_rows > 0)
+	{ 
+		$paperLess = 'menu1[1]=\'<a href="javascript:void(0)" onclick="newWindowsPaperless()" >e-OPD Card</a>\';';
+	}
+
 ?>
 <script type="text/javascript">
+
+function newWindowsPaperless()
+{
+	window.open("dt_paperLess.php?hn=<?=$hnNow;?>", "MsgWindow", "width=1024,height=768,scrollbars=yes,top=1,left=1");
+}
 
 /***********************************************
 * AnyLink Drop Down Menu- ? Dynamic Drive (www.dynamicdrive.com)
@@ -51,11 +67,12 @@ font-weight: bold;
 
 var menu1=new Array();
 menu1[0]='<a href="dt_diag.php" >บันทึกการวินิจฉัยโรค</a>'
-menu1[1]='<a href="dt_diag_lit.php" >ดูผลการวินิจฉัยย้อนหลัง</a>'
-menu1[2]='<a href="dt_admit_lit.php" >ดูประวัติการ Admit</a>'
-menu1[3]='<a href="dt_colonocopy.php" >Colonoscopy</a>'
-menu1[4]='<a href="dt_esophago.php" >Esophago</a>'
-menu1[5]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
+<?=$paperLess;?>
+menu1[2]='<a href="dt_diag_lit.php" >ดูผลการวินิจฉัยย้อนหลัง</a>'
+menu1[3]='<a href="dt_admit_lit.php" >ดูประวัติการ Admit</a>'
+menu1[4]='<a href="dt_colonocopy.php" >Colonoscopy</a>'
+menu1[5]='<a href="dt_esophago.php" >Esophago</a>'
+menu1[6]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
 <?php
 /*if($sIdname == "md19364" || $sIdname == "md28422" || $sIdname == "md31386" ){
 	echo "menu1[3]='<a href=\"dt_colonocopy.php\" >Colonoscopy</a>'\n";
