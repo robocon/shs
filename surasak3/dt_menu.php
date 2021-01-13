@@ -40,10 +40,10 @@ font-weight: bold;
 	}
 
 	$hnNow = $_SESSION['hn_now'];
-	$myPaper = new mysqli("localhost", "root", "1234", "paperless");
+	require_once 'includes/connectPaperLess.php';
 	// ถ้ามีข้อมูลย้อนหลัง 5ครั้งล่าสุด
 	$paperLess = '';
-	$qPaper = $myPaper->query("SELECT `id` FROM `pdfs` WHERE `hn` = '$hnNow' ORDER BY `id` DESC LIMIT 10");
+	$qPaper = $mysqli->query("SELECT `id` FROM `pdfs` WHERE `hn` = '$hnNow' ORDER BY `id` DESC LIMIT 10");
 	if ($qPaper->num_rows > 0)
 	{ 
 		$paperLess = 'menu1[1]=\'<a href="javascript:void(0)" onclick="newWindowsPaperless()" >e-OPD Card</a>\';';
