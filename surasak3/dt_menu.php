@@ -64,14 +64,15 @@ menu1[5]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
 ?>
 var menu2=new Array();
 menu2[0]='<a href="dt_drug.php" >สั่งจ่ายยา</a>'
-menu2[1]='<a href="dt_drug_lit.php" >ดูการสั่งจ่ายยาย้อนหลัง</a>'
-menu2[2]='<a href="dt_drugsult.php" >สร้างสูตรยา</a>'
+menu2[1]='<a href="dt_drugpay.php" >สั่งจ่ายยาชำระเงินเอง</a>'
+menu2[2]='<a href="dt_drug_lit.php" >ดูการสั่งจ่ายยาย้อนหลัง</a>'
+menu2[3]='<a href="dt_drugsult.php" >สร้างสูตรยา</a>'
 <?php
 if($sIdname == "md19921" || $sIdname == "thaywin"  ){
-	echo "menu2[3]='<a href=\"dt_drug_pt.php\" >สั่งอุปกรณ์ PT</a>'\n";
+	echo "menu2[4]='<a href=\"dt_drug_pt.php\" >สั่งอุปกรณ์ PT</a>'\n";
 };
 ?>
-menu2[4]='<a href="dt_slipadd.php" >เพิ่มวิธีใช้ยา</a>'
+menu2[5]='<a href="dt_slipadd.php" >เพิ่มวิธีใช้ยา</a>'
 
 var menu3=new Array();
 menu3[0]='<a href="<?php echo $lab_page;?>" >สั่งตรวจ LAB</a>'
