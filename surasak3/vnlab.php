@@ -64,7 +64,7 @@ If (!empty($vn)){
         $cPtright=$row->ptright;
         
         // สคริปเช็กอีกตัวอยู่ใน hnlab.php
-        $ipsql="select * from ipcard where hn='".$cHn."' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ";
+        $ipsql="select * from ipcard where hn='".$cHn."' and ( dcdate='0000-00-00 00:00:00' AND `lock_dc` IS NULL ) ";
         $ipquery=mysql_query($ipsql);
         if(mysql_num_rows($ipquery) > 0){ 
             $iprows=mysql_fetch_array($ipquery);

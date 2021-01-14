@@ -49,13 +49,16 @@ document.getElementById('aLink').focus();
 include("connect.inc");
 if(!empty($_POST['hn']) && $confirm != true){
 
-// สคริปเช็กอีกตัวอยู่ใน vnlab.php
-$ipsql="select * from ipcard where hn='".$_POST['hn']."' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ";
+// สคริปเช็กอีกตัวอยู่ใน vnlab.php 
+// dcdate เป็น 0 และ lock_dc เป็น null แสดงว่ายังอยู่ใน ward
+$ipsql="SELECT * FROM `ipcard` WHERE `hn` = '".$_POST['hn']."' AND ( `dcdate` = '0000-00-00 00:00:00' AND `lock_dc` IS NULL ) ";
 $ipquery=mysql_query($ipsql);
 if(mysql_num_rows($ipquery) > 0){
 	$iprows=mysql_fetch_array($ipquery);
 	$my_ward=$iprows["my_ward"];
 	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
+	echo "<h2 style=\"color:red;\">ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน</h2>";
+	exit;
 }
 
 $today = date("d-m-Y");   
@@ -73,6 +76,7 @@ if($row){
 	
 	if($idguard == 'MX05' OR $idguard == 'MX07'){
 		echo '<h3 style="color: red;">OPDCARDมีสถานะ <u>ทำลายประวัติ หรือ ยุบประวัติ</u> กรุณาติดต่อห้องทะเบียนเพื่อทำการตรวจสอบข้อมูลใหม่อีกครั้ง</h3>';
+		exit;
 	}
 
 	print "HN :$xxx<br>";
