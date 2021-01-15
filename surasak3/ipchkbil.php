@@ -905,11 +905,11 @@ print "  <th bgcolor=6495ED>เวลาออก</th>";
 print " </tr>";
 
 ////
-$query = "SELECT date,depart,detail,amount,price,paid,part,idname,billno,startdatetime,enddatetime FROM ipacc WHERE an = '$cAn'  ORDER BY date ASC ";
+$query = "SELECT date,depart,detail,amount,price,paid,part,idname,billno,startdatetime,enddatetime,code FROM ipacc WHERE an = '$cAn'  ORDER BY date ASC ";
     $result = mysql_query($query)
         or die("Query failed ipacc");
     $num=0;
-    while (list ($date,$depart,$detail,$amount,$price,$paid,$part,$idname,$billno,$startdatetime, $enddatetime) = mysql_fetch_row ($result)) {
+    while (list ($date,$depart,$detail,$amount,$price,$paid,$part,$idname,$billno,$startdatetime, $enddatetime,$code) = mysql_fetch_row ($result)) {
 	    $num++;
 		$day=substr($date,0,10);
 
@@ -950,19 +950,24 @@ if($enddatetime  == Null){
 		$out_surg = "".$edd."/".$emm."/".$eyy." ".$emi.":".$ese."";
 }
 
+        $bgColor = 'F5DEB3';
+        if ($code==='1XARE20') {
+            $bgColor = 'yellow';
+        }
+
 		print("<tr>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$date</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$depart</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$detail</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$amount</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$price</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$paid</td>\n".  
-			    "<td bgcolor=F5DEB3><font face='Angsana New'>$billno</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$part</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$idname</td>\n".
-				"<td bgcolor=F5DEB3><font face='Angsana New'>$in_surg</td>\n".  
-				"<td bgcolor=F5DEB3><font face='Angsana New'>$out_surg</td>\n".  
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$num</td>\n".
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$date</td>\n".
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$depart</td>\n".
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$detail</td>\n".  
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$amount</td>\n".  
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$price</td>\n".  
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$paid</td>\n".  
+			    "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$billno</td>\n".  
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$part</td>\n".  
+                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$idname</td>\n".
+				"<td bgcolor=\"$bgColor\"><font face='Angsana New'>$in_surg</td>\n".  
+				"<td bgcolor=\"$bgColor\"><font face='Angsana New'>$out_surg</td>\n".  
                 " </tr>\n");
 		      }
 
