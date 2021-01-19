@@ -27,7 +27,32 @@ print (" <tr>\n".
               "  <td BGCOLOR=66CDAA><font face='Angsana New'>รวมทั้งหมด</td>\n".
                "  <td BGCOLOR=66CDAA colspan=\"2\">$sum</td>\n".
                " </tr>\n<br>");
+?>
+<h3>แยกตามสิทธิ์</h3>
+<table border="1">
+    <tr>
+      <th>#</th>
+      <th>สิทธิ</th>
+      <th>จำนวน</th>
+    </tr>
+<?php
+$i = 1;
 
+$sql = "SELECT COUNT(a.`row_id`) AS `rows`, SUBSTRING(a.`ptright`,1,3) AS `ptCode`, b.`name` FROM ( SELECT * FROM `opday` WHERE `thidate` LIKE '$yrmonth%' ) AS a LEFT JOIN `ptright` AS b ON b.`code` = SUBSTRING(a.`ptright`,1,3) GROUP BY SUBSTRING(a.`ptright`,1,3) ORDER BY SUBSTRING(a.`ptright`,1,3) ";
+$q = mysql_query($sql);
+while ($item = mysql_fetch_assoc($q)) {
+  ?>
+    <tr>
+      <td><?=$i;?></td>
+      <td><?=$item['ptCode'].' '.$item['name'];?></td>
+      <td><?=$item['rows'];?></td>
+    </tr>
+  <?php
+  $i++;
+}
+?>
+</table>
+<?php
    include("unconnect.inc");
 ?>
 
