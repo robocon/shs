@@ -92,6 +92,9 @@ $Thidate = (date("Y")+543).date("-m-d H:i:s");
 
 
 print "<div align='right' style='margin-right: 10px;'><img src = \"printbcpha.php?cHn=".$cHn."\"></div>";
+?>
+<div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>"></div>
+<?php
 print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";  
 // print "<font face='Angsana New' size='1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;********FR-OPD-004/1,02, 23 ม.ค. 49 ********<br>";
 print "&nbsp;&nbsp;&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง </b> </center>";
@@ -99,8 +102,9 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง </b> </center>
 print "  <font face='Angsana New' size='2'><center>FR-NUR-003/2,04, 25 ธ.ค. 54 </center>";
 
   
- print "<b><font face='Angsana New' size='4'>ชื่อ: $cPtname  </b>&nbsp;&nbsp;&nbsp;<b>HN:</b> $cHn &nbsp;<b>อายุ:</b> $cAge&nbsp;<B>สิทธิ:$cptright&nbsp;:<u>$cidguard</u></font></B><br>";
+ print "<b><font face='Angsana New' size='4'>ชื่อ: $cPtname  </b>&nbsp;&nbsp;&nbsp;<b>HN:</b> $cHn &nbsp;<b>อายุ:</b> $cAge</font><br>";
 
+ print "<b><font face='Angsana New' size='4'><B>สิทธิการรักษา:$cptright&nbsp;&nbsp;ประเภท:<u>$cidguard</u></font></B><br>";
  
   print "<b><font face='Angsana New' size='5'><U>นัดมา: วัน$day ที่ $appd &nbsp;&nbsp;&nbsp; </b><b> เวลา:</b> $capptime</U></FONT><br>";
 

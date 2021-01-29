@@ -294,6 +294,9 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     $doctor=substr($doctor,5);
     $depcode=substr($depcode,4);
     print "<div align='right' style='margin-right: 10px;'><img src = \"printbcpha.php?cHn=".$cHn."\"></div>";
+    ?>
+    <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>"></div>
+    <?php
     print "<p class='size5 center'><b>ใบนัดผู้ป่วย โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</b></p>";
     print "<p class='size2 center'>FR-NUR-003/2,04, 25 ธ.ค. 54</p>";
     
