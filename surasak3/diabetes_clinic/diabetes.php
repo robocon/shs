@@ -751,7 +751,15 @@ C&deg;</td>
 	        </tr>
 	<?php
 	$year=date("Y");
-	$laball="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Blood Sugar'  and b.orderdate like '$year%' Order by b.orderdate desc ";
+	$laball="Select result,unit,orderdate 
+	from  resultdetail AS a, 
+	resulthead AS b   
+	WHERE  a.autonumber = b.autonumber 
+	AND b.hn='".$arr_view["hn"]."' 
+	#and  a.labname='Blood Sugar'  
+	and  a.labcode='GLU'  
+	and b.orderdate like '$year%' 
+	Order by b.orderdate desc ";
 	$result_laball=mysql_query($laball);
 	$rowall=mysql_num_rows($result_laball);
 	?>
@@ -909,7 +917,16 @@ C&deg;</td>
    <hr />
    </td>
    </tr>
-    <?php       $laball3="Select   result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc";
+	<?php 
+	$laball3="SELECT result,unit,orderdate 
+	FROM resultdetail AS a, 
+	resulthead AS b 
+	WHERE  a.autonumber = b.autonumber 
+	AND b.hn='".$arr_view["hn"]."' 
+	#and  a.labname='Creatinine' 
+	AND  a.labcode='CREA' 
+	AND b.orderdate LIKE '$year%' 
+	ORDER BY b.orderdate DESC";
 	  $result_laball3=mysql_query($laball3);
 	  $rowall3=mysql_num_rows($result_laball3);
 	?> 

@@ -207,9 +207,9 @@ if($do === 'save'){
 		'$retinal_date','$foot_date','$dummy_no','$tooth_date','$tooth',
 		'".$_POST['l_ua']."','$date_footcare','$date_nutrition')";
 
-		$logs = $insert."\r\n";
-		$logs .= "---------------------------\r\n\r\n";
-		file_put_contents('../logs/diabet-edit.log', $logs, FILE_APPEND);
+		//$logs = $insert."\r\n";
+		//$logs .= "---------------------------\r\n\r\n";
+		//file_put_contents('../logs/diabet-edit.log', $logs, FILE_APPEND);
 
 		mysql_query($insert) or die( mysql_error() );
 	}
@@ -784,14 +784,9 @@ if(!empty($hn) != ""){
 								</tr>
 								<?php
 								$year = date("Y");
-								/*
-								SELECT *
-								FROM `diabetes_lab`
-								WHERE `dm_no` LIKE '1903'
-								ORDER BY dateY DESC
-								*/
-
-								$laball = "Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Blood Sugar'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+								
+								// a.labname='Blood Sugar'
+								$laball = "Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labcode='GLU'  and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
 								$result_laball = mysql_query($laball);
 								$rowall = mysql_num_rows($result_laball);
 								?>
@@ -840,7 +835,8 @@ if(!empty($hn) != ""){
 										<hr />
 									</td>
 								</tr>
-								<?php
+								<?php 
+
 								$laball1="Select result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='HBA1C' and b.orderdate like '$year%' Order by b.orderdate desc  LIMIT 1";
 								$result_laball1=mysql_query($laball1);
 								$rowall1=mysql_num_rows($result_laball1);
@@ -947,7 +943,16 @@ if(!empty($hn) != ""){
 									</td>
 								</tr>
 								<?php
-								$laball3="Select   result,unit,orderdate from  resultdetail AS a, resulthead AS b   WHERE  a.autonumber = b.autonumber AND b.hn='".$arr_view["hn"]."' and  a.labname='Creatinine' and b.orderdate like '$year%' Order by b.orderdate desc LIMIT 1";
+								$laball3 = "SELECT a.autonumber,a.result,a.unit,b.orderdate 
+								FROM resultdetail AS a, 
+								resulthead AS b 
+								WHERE a.autonumber = b.autonumber 
+								AND b.hn='".$arr_view["hn"]."' 
+								#AND a.labname='Creatinine' 
+								AND a.labcode = 'CREA' 
+								AND b.orderdate LIKE '$year%' 
+								ORDER BY b.orderdate DESC LIMIT 1";
+								//dump($laball3);
 								$result_laball3=mysql_query($laball3);
 								$rowall3=mysql_num_rows($result_laball3);
 								?>
