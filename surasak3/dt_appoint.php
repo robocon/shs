@@ -1,10 +1,5 @@
 <?php 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
 session_start();
-
 if(isset($_GET["action"])){
 	// header("content-type: application/x-javascript; charset=TIS-620");
 }
@@ -113,14 +108,26 @@ if($_GET["action"] == "carlendar"){
 	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
-	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
-	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
-	SELECT `appdate`, `apptime`, `hn`, `other` 
-	FROM `appoint` 
-	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
-	AND apptime <> 'ยกเลิกการนัด' ";
-	// mysql_query($sql_temp);
+	if( $_SESSION['sIdname'] == 'md19921' ){
+
+		$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
+		SELECT `appdate`, `apptime`, `hn`, `other` 
+		FROM `appoint` 
+		WHERE ( YEAR(`appdate_en`) = '$year' AND MONTH(`appdate_en`) = '".sprintf("%02d",$month)."' ) 
+		AND `doctor` LIKE 'MD013%' 
+		AND `apptime` <> 'ยกเลิกการนัด'";
+
+	}else{
+
+		// ดึงข้อมูลแบบ temp โดยยังไม่ group 
+		$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
+		SELECT `appdate`, `apptime`, `hn`, `other` 
+		FROM `appoint` 
+		WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+		AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+		AND apptime <> 'ยกเลิกการนัด' ";
+		
+	}
 	$dbi->query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
@@ -141,7 +148,7 @@ if($_GET["action"] == "carlendar"){
 	// }
 
 	$result = $dbi->query($sql);
-	while ($arr = $result->fetch_assoc()) {
+	while ($arr = $result->fetch_assoc()) { 
 		$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
@@ -488,7 +495,10 @@ if($_GET["action"] == "carlendar"){
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
 	$i=0;
-	$sql2 = "select * from labcare where lab_list !=0 order by lab_list asc";
+	$sql2 = "SELECT *
+FROM labcare
+WHERE lab_list !=0 AND version != 'OLD' AND labstatus = 'Y'
+ORDER BY lab_list ASC";
 	$rows2=mysql_query($sql2);
 	while($result2=mysql_fetch_array($rows2)){	
 		$list_lab_check[$i]["code"] = $result2['code'];
