@@ -1439,7 +1439,7 @@ exit();
 //******************************************** เรียกวิธีใช้ และ จำนวน ที่ใช้บ่อยออกมาแสดง *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "addamount"){ 
 
-	// Lock เงื่อนไขเฉาะหมอเป้ ให้จำค่ายากที่เคยคีย์
+	// Lock เงื่อนไขเฉาะหมอเป้ ให้จำค่ายาที่เคยคีย์
 	if( $_SESSION['sIdname'] == 'md19921' ){
 
 		$inputmId = $_SESSION['sRowid'];
@@ -1504,6 +1504,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			echo "90,1*3";
 		}else if($_GET["search"] == "1LYRI"){
 			echo "60,1HS";
+		}else if($_GET["search"] == "6tears"){  //ยาตาหมอเลอปรัชญ์
+			echo "32,1eyhr*4";		
+		}else if($_GET["search"] == "6HIMINI"){  //ยาตาหมอเลอปรัชญ์
+			echo "100,1eyhr*4";		
 		}else{
 			
 			// ถ้าไม่มีใน code ด้านบนให้ไปหาใน drugrx หลักๆคือดึงค่า amount กับ slcode
