@@ -1,5 +1,10 @@
 <?php 
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 session_start();
+
 if(isset($_GET["action"])){
 	// header("content-type: application/x-javascript; charset=TIS-620");
 }
@@ -47,6 +52,10 @@ if( !function_exists('dump') ){
 		echo "</pre>";
 	}
 }
+
+//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
+$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
+
 
 if($_GET["action"] == "carlendar"){
 
@@ -105,20 +114,14 @@ if($_GET["action"] == "carlendar"){
 	//เก็บ "วันในสัปดาห์" (จันทร์, อังคาร ฯลฯ) ของวันที่ 1 ของเดือนไว้ในตัวแปร $wday
 	$wday = $FTime["wday"];
 
-	//สร้างตัวแปรชนิดอาร์เรย์เก็บชื่อเดือนภาษาไทย
-	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
-
 	if( $_SESSION['sIdname'] == 'md19921' ){
-
 		$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
 		SELECT `appdate`, `apptime`, `hn`, `other` 
 		FROM `appoint` 
 		WHERE ( YEAR(`appdate_en`) = '$year' AND MONTH(`appdate_en`) = '".sprintf("%02d",$month)."' ) 
 		AND `doctor` LIKE 'MD013%' 
 		AND `apptime` <> 'ยกเลิกการนัด'";
-
 	}else{
-
 		// ดึงข้อมูลแบบ temp โดยยังไม่ group 
 		$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
 		SELECT `appdate`, `apptime`, `hn`, `other` 
@@ -126,7 +129,6 @@ if($_GET["action"] == "carlendar"){
 		WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
 		AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
 		AND apptime <> 'ยกเลิกการนัด' ";
-		
 	}
 	$dbi->query($sql_temp);
 
@@ -148,7 +150,7 @@ if($_GET["action"] == "carlendar"){
 	// }
 
 	$result = $dbi->query($sql);
-	while ($arr = $result->fetch_assoc()) { 
+	while ($arr = $result->fetch_assoc()) {
 		$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
 		$list_app["A".substr($arr["appdate"],0,2)]["sum"] = $list_app["A".substr($arr["appdate"],0,2)]["sum"] + $arr["total_app"];
 	}
@@ -641,42 +643,56 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 	exit();
 }
 
+// reloadcookie ของหมอเป้เอาไว้ดูว่า ในวันนี้ลงนัด วันที่เท่าไรไปแล้วบ้างและมีจำนวนกี่คน
 if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
 
-	//onMouseover=\"pull()\"
-	//onMouseout=\"draw()\"
-	//style=\"display:none\"
-	echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
+	// <div id="slidemenubar" onMouseover="pull()" onMouseout="draw()" style="display:none">
+	?>
+	<div id="slidemenubar" onmouseleave="hideDateAppoint()">
+		<TABLE width="400" border="0" cellpadding="0" cellspacing="4">
+			<TR>
+				<TD width="400" bgcolor="#FFFFFF" >
+				<b>จำนวนนัดที่ลงนัดในวันนี้</b><br><a href="javascript:void(0)" onclick="hideDateAppoint()" style="position: absolute; top: 0; right: 0;">[ปิด]</a>
+				<?php
+				/*
+				$i=  count($_COOKIE);
+				if($i > 1){
+					foreach($_COOKIE as $key => $value){
+						$xxx = explode(">",$value);
+						$yyy = explode("<",$xxx[1]);
+						$zzz = $yyy[0];
+						// $sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor = '".$_SESSION["dt_doctor"]."' AND apptime <> 'ยกเลิกการนัด'  ";
+						// $result = Mysql_Query($sql) or die(mysql_error());
+						// list($c_app) = Mysql_fetch_row($result);
+						echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
+						$i--;
+						if($i==1)
+							break;
+					}
+				}
+				*/
 
-	<TABLE width=\"450\" border=\"0\" cellpadding=\"4\" cellspacing=\"4\">
-	<TR>
-	<TD width=\"400\" bgcolor=\"#FFFFFF\" >";
-	
-	$i=  count($_COOKIE);
-	if($i > 1){
+				$thiDate = (date('Y')+543).date('-m-d');
+				$sql = "SELECT COUNT(`row_id`) AS `rows`,`appdate_en` FROM `appoint` WHERE `date` LIKE '$thiDate%' AND `officer` LIKE '%19921%' GROUP BY `appdate_en` ";
+				$q = $dbi->query($sql);
+				while ($item = $q->fetch_assoc()) {
 
-		foreach($_COOKIE as $key => $value){
-			
-			$xxx = explode(">",$value);
-			$yyy = explode("<",$xxx[1]);
+					list($y,$m,$d) = explode('-', $item['appdate_en']);
 
-			$zzz = $yyy[0];
-			// $sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor = '".$_SESSION["dt_doctor"]."' AND apptime <> 'ยกเลิกการนัด'  ";
-			// $result = Mysql_Query($sql) or die(mysql_error());
-			// list($c_app) = Mysql_fetch_row($result);
+					$mInt = ((int)$m) -1;
+					$mTxt = $thmonthname[$mInt];
 
-			echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
-			$i--;
-			if($i==1)
-				break;
-		}
-	}
-		
-	echo "</TD>
-	<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
-	</TR>
-	</TABLE>
-	</layer>";
+					$appdateTxt = $d." $mTxt ".($y+543);
+					$rows = $item['rows'];
+
+					echo '<a href="javascript:void(0)" onclick="setDateAppoint(\''.$appdateTxt.'\')">'.$appdateTxt.'</a> ('.$rows.' คน)<br>';
+				}
+				?>
+				</TD>
+			</TR>
+		</TABLE>
+	</div>
+	<?php
 	exit();
 }
 
@@ -720,28 +736,53 @@ body,td,th {
 .tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
 .tb_detail {background-color: #FFFFC1;  }
 .tb_menu {background-color: #FFFFC1;  }
-
-#slidemenubar, #slidemenubar2{
-	position:absolute;
-	left:-400px;
-	width:450px;
-	top:260px;
-
-	layer-background-color:#000000;
-	font:bold 16px ms sans serif;
-	line-height:20px;
-
+#appointContainer{
+	position: absolute;
+	top: 20%;
+	left: 0;
+}
+#slidemenubar2{
+	position: relative;
+	background-color: #ffffff;
+}
+#slidemenubar{
+    position: absolute;
+	left: -400px;
+	transition: 0.5s;
+}
+#btnShowAppoint{ 
+	background-color: #33CCFF;
+    width: 60px;
+	height: 33px;
+    text-align: center;
+	cursor: pointer;
 }
 </style>
 </head>
 <body>
 
 <SCRIPT LANGUAGE="JavaScript">
-	
+
+	function showDateAppoint(){
+		document.getElementById("slidemenubar").style.left = 0;
+		if(window.navigator.userAgent.indexOf('MSIE 8') > 0 || window.navigator.userAgent.indexOf('MSIE 9') > 0){
+			document.getElementById('slidemenubar').style.display = '';
+		}
+	}
+	function hideDateAppoint(){
+		document.getElementById("slidemenubar").style.left = -400;
+		if(window.navigator.userAgent.indexOf('MSIE 8') > 0 || window.navigator.userAgent.indexOf('MSIE 9') > 0){
+			document.getElementById('slidemenubar').style.display = 'none';
+		}
+	}
+	function setDateAppoint(txt){
+		document.getElementById("date_appoint").value = txt;
+		hideDateAppoint();
+	}
+
 	window.onload = function(){
 		show_carlendar('');
 		reloadcookie();
-
 	}
 
 	function newXmlHttp(){
@@ -1318,9 +1359,15 @@ include("dt_patient.php");
 <!-- 
 	<div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
  -->
- <div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
+<div id="appointContainer">
+	<div id="btnShowAppoint" onmouseover="showDateAppoint()">วันนัด</div>
+	<div id="slidemenubar2"></div>
+</div>
+
+
 <script language="JavaScript1.2">
 
+	/*
 	if (document.all){
 
 		themenu=document.all.slidemenubar2.style
@@ -1331,14 +1378,13 @@ include("dt_patient.php");
 		rightboundary=400
 		leftboundary=10
 	}
+	*/
 
 	function pull(){
 		document.getElementById('room').style.display = 'none';
 		document.getElementById('capptime').style.display = 'none';
 		document.getElementById('detail').style.display = 'none';
 		document.getElementById('advice').style.display = 'none';
-
-		
 		
 		if (window.drawit)
 			clearInterval(drawit)

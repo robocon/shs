@@ -1459,7 +1459,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			$minDate = (date("Y",$mkDate)+543).date("-m-d H:i:s",$mkDate);
 			$maxDate = (date("Y")+543).date("-m-d H:i:s");
 
-			$sqlDrugrx = "SELECT `slcode`, `drugcode`, `amount` FROM `drugrx` WHERE `drugcode` = '$drugCode' AND ( `date` >= '$minDate' AND `date` <= '$maxDate' ) AND `amount` > 0 ORDER BY `row_id` DESC LIMIT 1 ";
+			$sqlDrugrx = "SELECT `slcode`, `drugcode`, `amount` FROM `ddrugrx` WHERE `drugcode` = '$drugCode' ORDER BY `row_id` DESC LIMIT 1";
 			$itemDrugrx = mysql_fetch_assoc(mysql_query($sqlDrugrx));
 			echo $itemDrugrx["amount"].",".$itemDrugrx['slcode'];
 

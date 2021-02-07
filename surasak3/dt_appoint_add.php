@@ -58,7 +58,9 @@ if($_POST["inj"] != ""){
 	$other2 .= $comma." ÇÑ¤«Õ¹ : <u>".$_POST["inj"]."</u>";
 }
 
-$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode)VALUES('".$Thidate."','".$_SESSION["dt_doctor"]."','".$_SESSION["hn_now"]."','".$cPtname."','".$cAge."','".$appoint_doctor."','".$_POST["date_appoint"]."','".$_POST["capptime"]."','".$_POST["room"]."','".$_POST["detail"]."','".$_POST["detail2"]."','".$_POST["advice"]."','".$lab_appoint_implode."','".$_POST["xray"]."','".$other2."','".$_POST["depcode"]."');";
+$appdate_en = date('Y-m-d');
+
+$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,`appdate_en`)VALUES('".$Thidate."','".$_SESSION["dt_doctor"]."','".$_SESSION["hn_now"]."','".$cPtname."','".$cAge."','".$appoint_doctor."','".$_POST["date_appoint"]."','".$_POST["capptime"]."','".$_POST["room"]."','".$_POST["detail"]."','".$_POST["detail2"]."','".$_POST["advice"]."','".$lab_appoint_implode."','".$_POST["xray"]."','".$other2."','".$_POST["depcode"]."','$appdate_en');";
 
 Mysql_Query($sql);
 
