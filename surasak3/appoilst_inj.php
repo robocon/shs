@@ -162,7 +162,7 @@ $_GET['y'] = $_GET['y']-543;
 		
 	echo "</TABLE>";
 
-	}else if($_GET["druginj"] == "Engerix-B" || $_GET["druginj"] == "Hepavax" || $_GET["druginj"] == "(30HBV)Euvax B" ){
+	}else if($_GET["druginj"] == "Engerix-B" || $_GET["druginj"] == "Hepavax" || $_GET["druginj"] == "(30HBV)Euvax B" || $_GET["druginj"] == "Euvax 3" ){
 
 		echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
@@ -421,6 +421,7 @@ return stat;
 			<Option value="SPEEDA 2">SPEEDA 2 ‡¢Á¡</Option>
 			<Option value="SPEEDA 3">SPEEDA 3 ‡¢Á¡</Option>
 			<Option value="SPEEDA 5">SPEEDA 5 ‡¢Á¡</Option>
+			<Option value="Euvax 3">Euvax 3 ‡¢Á¡</Option>
 			<Option value="Engerix-B">Engerix-B</Option>
 			<Option value="Hepavax">Hepavax</Option>
 			<Option value="(30HBV)Euvax B">(30HBV)Euvax B</Option>

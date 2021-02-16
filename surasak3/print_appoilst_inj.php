@@ -85,6 +85,8 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "0HB1.0";
 }else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
 	$dgcode = "30HBV";
+}else if($_POST["drug_inj"] == "Euvax 3"){
+	$dgcode = "0EB1.0";
 }
 
 //$sql = "Select inputm.name From inputm where mdcode = '".substr($_POST["doctor"],0,5)."' limit 1 ";
@@ -125,6 +127,8 @@ if($rows_drugrx > 0){
 		$dgcode = "0HB1.0";
 	}else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
 		$dgcode = "30HBV";
+	}else if($_POST["drug_inj"] == "Euvax 3"){
+		$dgcode = "0EB1.0";
 	}
 
 	$sql = "Select drugcode, tradname, part, salepri, freepri From druglst where drugcode = '".$dgcode."'  ";
