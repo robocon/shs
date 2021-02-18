@@ -39,7 +39,7 @@ function hide(){
       <input name="cAn" type="text" class="fontsara1" id="cAn" value="<?=$_POST['cAn'];?>" /></td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input name="button" type="submit" class="fontsara1" id="button" value="ตกลง" /><a target=_self  href='../nindex.htm'><<ไปเมนู</a>&nbsp;&nbsp;<a target=_self  href='report_death.php'>รายงานการแจ้งตาย</a>
+      <td colspan="2" align="center"><input name="button" type="submit" class="fontsara1" id="button" value="ตกลง" /><a target=_self  href='../nindex.htm'><<ไปเมนู</a>&nbsp;&nbsp;<a target=_self  href='report_death.php'>รายงานการแจ้งตาย</a>&nbsp;&nbsp;<a target=_self  href='dead_search.php'>รายงานผู้ป่วยเสียชีวิต</a>
     </td>
     </tr>
   </table>
