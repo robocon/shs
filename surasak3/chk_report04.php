@@ -171,7 +171,7 @@ while($result = mysql_fetch_assoc($row2)){
 					<td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 				</tr>
 				<tr>
-					<td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
+					<td align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1135</strong></td>
 					<td align="center" valign="top" class="texthead">&nbsp;</td>
 				</tr>
 				<tr>

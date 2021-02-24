@@ -173,7 +173,7 @@ while($result = mysql_fetch_assoc($row2)){
 					<td width="77%" colspan="2" align="center" valign="top" class="texthead"><strong>แบบรายงานผลการตรวจสุขภาพประจำปี <?=(date('Y') + 543);?></strong></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1132</strong></td>
+					<td colspan="2" align="center" valign="top" class="texthead"><strong class="text2">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร.054-839305-6 ต่อ 1135</strong></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center" valign="top" class="text3">
