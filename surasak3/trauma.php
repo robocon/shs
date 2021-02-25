@@ -544,7 +544,7 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		$woundhours = isset($_POST['woundhours']) ? (int)$_POST['woundhours'] : 'NULL' ;
 		$_POST["no_estimate"] = isset($_POST['no_estimate']) ? (int)$_POST['no_estimate'] : 'NULL' ;
 
-		$sql ="INSERT INTO `trauma` (  `date` , `vn` , `hn` , `an`, `age` , `list_ptright` , `list_ptright2` , `disease_people` , `drug_alert` , `dx`, `organ`, `maintenance`, `doctor`,  `type_accident` , `wounded_vehicle` , `wounded_detail` , `cause_accident` , `spirits` , `belt` , `helmet` , `sender` , `als_sender` , `cure`,  `time_diag` , `time_in` , `time_out`, `officer`, `trauma`, `obs`, `type_wounded`, `type_wounded2`, `accident_detail`, `date_in`,`etc_sender`, `with_cause_accident`, `list_with_cause_accident`, `admit_ward`, `refer_hospital`, `repeat`, `cause_refer`, `type_patient`, `means_refer`, `take_care`,`doc_refer`, `nurse`, `assistant_nurse`, `estimate`, `no_estimate`, `cradle`, `doc_txt`, `consult`, `to_or`, `to_lr`, `to_etc`, `er_tell`, `problem_refer`, `suggestion`, `to_hpt_lp`, `out_changwat` ,`fresh_wound`,`wound_hours` ) VALUES ('".$thaidate."', '".$_POST["vn"]."', '".$_POST["hn"]."', '".$_POST["an"]."', '".calcage($dbirth)."', '".$_POST["list_ptright"]."', '".$_POST["list_ptright2"]."', '".jschars($_POST["disease_people"])."', '".jschars($_POST["drug_alert"])."', '".jschars($_POST["dx"])."', '".jschars($_POST["organ"])."', '".jschars($_POST["maintenance"])."', '".$_POST["doctor"]."', '".$_POST["type_accident"]."', '".$_POST["wounded_vehicle"]."', '".$_POST["wounded_detail"]."', '".$_POST["cause_accident"]."', '".$_POST["spirits"]."', '".$_POST["belt"]."', '".$_POST["helmet"]."', '".$_POST["sender"]."', '".$_POST["als_sender"]."', '".$_POST["cure"]."', '".$time_diag."', '".$time_in."', '".$time_out."', '".$_SESSION["sOfficer"]."', '".$_POST["trauma"]."', '".$_POST["obs"]."', '".$_POST["type_wounded"]."', '".$_POST["type_wounded2"]."', '".$_POST["accident_detail"]."','".$_POST["date_in"]."','".$_POST["etc_sender"]."','".$_POST["with_cause_accident"]."','".$_POST["list_with_cause_accident"]."','".$_POST["admit_ward"]."','".$_POST["refer_hospital"]."', '".$_POST["repeat"]."', '".$_POST["cause_refer"]."', '".$_POST["type_patient"]."', '".$_POST["means_refer"]."', '".$_POST["take_care"]."','".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', ".$_POST["no_estimate"].", '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["consult"]."', '".$_POST["to_or"]."', '".$_POST["to_lr"]."', '".$_POST["to_etc"]."', '".$_POST["er_tell"]."', '".$_POST["problem_refer"]."', '".$_POST["suggestion"]."', '".$_POST["to_hpt_lp"]."','".$_POST["out_changwat"]."', $freshWound, $woundhours );";
+		$sql ="INSERT INTO `trauma` (  `date` , `vn` , `hn` , `an`, `age` , `list_ptright` , `list_ptright2` , `disease_people` , `drug_alert` , `dx`, `organ`, `maintenance`, `doctor`,  `type_accident` , `wounded_vehicle` , `wounded_detail` , `cause_accident` , `spirits` , `belt` , `helmet` , `sender` , `als_sender` , `cure`,  `time_diag` , `time_in` , `time_out`, `officer`, `trauma`, `obs`, `type_wounded`, `type_wounded2`, `accident_detail`, `date_in`,`etc_sender`, `with_cause_accident`, `list_with_cause_accident`, `admit_ward`, `refer_hospital`, `repeat`, `cause_refer`, `type_patient`, `means_refer`, `take_care`,`doc_refer`, `nurse`, `assistant_nurse`, `estimate`, `no_estimate`, `cradle`, `doc_txt`, `consult`, `to_or`, `to_lr`, `to_etc`, `er_tell`, `problem_refer`, `suggestion`, `to_hpt_lp`, `out_changwat` ,`fresh_wound`,`wound_hours`, `weight` ,`height`,`bmi`) VALUES ('".$thaidate."', '".$_POST["vn"]."', '".$_POST["hn"]."', '".$_POST["an"]."', '".calcage($dbirth)."', '".$_POST["list_ptright"]."', '".$_POST["list_ptright2"]."', '".jschars($_POST["disease_people"])."', '".jschars($_POST["drug_alert"])."', '".jschars($_POST["dx"])."', '".jschars($_POST["organ"])."', '".jschars($_POST["maintenance"])."', '".$_POST["doctor"]."', '".$_POST["type_accident"]."', '".$_POST["wounded_vehicle"]."', '".$_POST["wounded_detail"]."', '".$_POST["cause_accident"]."', '".$_POST["spirits"]."', '".$_POST["belt"]."', '".$_POST["helmet"]."', '".$_POST["sender"]."', '".$_POST["als_sender"]."', '".$_POST["cure"]."', '".$time_diag."', '".$time_in."', '".$time_out."', '".$_SESSION["sOfficer"]."', '".$_POST["trauma"]."', '".$_POST["obs"]."', '".$_POST["type_wounded"]."', '".$_POST["type_wounded2"]."', '".$_POST["accident_detail"]."','".$_POST["date_in"]."','".$_POST["etc_sender"]."','".$_POST["with_cause_accident"]."','".$_POST["list_with_cause_accident"]."','".$_POST["admit_ward"]."','".$_POST["refer_hospital"]."', '".$_POST["repeat"]."', '".$_POST["cause_refer"]."', '".$_POST["type_patient"]."', '".$_POST["means_refer"]."', '".$_POST["take_care"]."','".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', ".$_POST["no_estimate"].", '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["consult"]."', '".$_POST["to_or"]."', '".$_POST["to_lr"]."', '".$_POST["to_etc"]."', '".$_POST["er_tell"]."', '".$_POST["problem_refer"]."', '".$_POST["suggestion"]."', '".$_POST["to_hpt_lp"]."','".$_POST["out_changwat"]."', $freshWound, $woundhours, '".$_POST["weight"]."', '".$_POST["height"]."','".$_POST["bmi"]."');";
 		$result = Mysql_Query($sql) or die(Mysql_error());
 		$id= Mysql_insert_id();
 		
@@ -789,7 +789,10 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		`to_hpt_lp` = '".$_POST["to_hpt_lp"]."', 
 		`out_changwat` = '".$_POST["out_changwat"]."', 
 		`fresh_wound` = $freshWound, 
-		`wound_hours` = $woundhours 
+		`wound_hours` = $woundhours,
+		`weight` = '".$_POST["weight"]."', 
+		`height` = '".$_POST["height"]."', 
+		`bmi` = '".$_POST["bmi"]."'		
 		WHERE `row_id` = '".$_POST["row_id"]."' LIMIT 1 ;
 		";
 		//echo "--->".$sql;
@@ -1017,7 +1020,7 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		$freshWound = !empty($_POST['freshWound']) ? (int)$_POST['freshWound'] : 'NULL' ;
 		$woundhours = !empty($_POST['woundhours']) ? (int)$_POST['woundhours'] : 'NULL' ;
 
-				$sql ="INSERT INTO `trauma` (  `date` , `vn` , `hn` , `an`, `age` , `list_ptright` , `list_ptright2` , `disease_people` , `drug_alert` , `dx`, `organ`, `maintenance`, `doctor`,  `type_accident` , `wounded_vehicle` , `wounded_detail` , `cause_accident` , `spirits` , `belt` , `helmet` , `sender` , `cure`,  `time_diag` , `time_in` , `time_out`, `officer`, `trauma`, `obs`, `type_wounded`, `type_wounded2`, `accident_detail`, `date_in`,`etc_sender`, `with_cause_accident`, `list_with_cause_accident`, `admit_ward`, `refer_hospital`, `repeat`, `cause_refer`, `type_patient`, `means_refer`, `take_care`,`doc_refer`, `nurse`, `assistant_nurse`, `estimate`, `no_estimate`, `cradle`, `doc_txt`, `consult`, `to_or`, `to_lr`, `to_etc`, `er_tell`, `problem_refer`, `suggestion`, `to_hpt_lp`, `out_changwat`, `next_ka`, `fresh_wound`, `wound_hours`  ) VALUES ('".$thaidate."', '".$_POST["vn"]."', '".$_POST["hn"]."', '".$_POST["an"]."', '".calcage($dbirth)."', '".$_POST["list_ptright"]."', '".$_POST["list_ptright2"]."', '".jschars($_POST["disease_people"])."', '".jschars($_POST["drug_alert"])."', '".jschars($_POST["dx"])."', '".jschars($_POST["organ"])."', '".jschars($_POST["maintenance"])."', '".$_POST["doctor"]."', '".$_POST["type_accident"]."', '".$_POST["wounded_vehicle"]."', '".$_POST["wounded_detail"]."', '".$_POST["cause_accident"]."', '".$_POST["spirits"]."', '".$_POST["belt"]."', '".$_POST["helmet"]."', '".$_POST["sender"]."', '".$_POST["cure"]."', '".$time_diag."', '".$time_in."', '".$time_out."', '".$_SESSION["sOfficer"]."', '".$_POST["trauma"]."', '".$_POST["obs"]."', '".$_POST["type_wounded"]."', '".$_POST["type_wounded2"]."', '".$_POST["accident_detail"]."','".$_POST["date_in"]."','".$_POST["etc_sender"]."','".$_POST["with_cause_accident"]."','".$_POST["list_with_cause_accident"]."','".$_POST["admit_ward"]."','".$_POST["refer_hospital"]."', '".$_POST["repeat"]."', '".$_POST["cause_refer"]."', '".$_POST["type_patient"]."', '".$_POST["means_refer"]."', '".$_POST["take_care"]."','".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["consult"]."', '".$_POST["to_or"]."', '".$_POST["to_lr"]."', '".$_POST["to_etc"]."', '".$_POST["er_tell"]."', '".$_POST["problem_refer"]."', '".$_POST["suggestion"]."', '".$_POST["to_hpt_lp"]."', '".$_POST["out_changwat"]."', '1', $freshWound, $woundhours );";
+				$sql ="INSERT INTO `trauma` (  `date` , `vn` , `hn` , `an`, `age` , `list_ptright` , `list_ptright2` , `disease_people` , `drug_alert` , `dx`, `organ`, `maintenance`, `doctor`,  `type_accident` , `wounded_vehicle` , `wounded_detail` , `cause_accident` , `spirits` , `belt` , `helmet` , `sender` , `cure`,  `time_diag` , `time_in` , `time_out`, `officer`, `trauma`, `obs`, `type_wounded`, `type_wounded2`, `accident_detail`, `date_in`,`etc_sender`, `with_cause_accident`, `list_with_cause_accident`, `admit_ward`, `refer_hospital`, `repeat`, `cause_refer`, `type_patient`, `means_refer`, `take_care`,`doc_refer`, `nurse`, `assistant_nurse`, `estimate`, `no_estimate`, `cradle`, `doc_txt`, `consult`, `to_or`, `to_lr`, `to_etc`, `er_tell`, `problem_refer`, `suggestion`, `to_hpt_lp`, `out_changwat`, `next_ka`, `fresh_wound`, `wound_hours`, `weight`, `height`, `bmi`) VALUES ('".$thaidate."', '".$_POST["vn"]."', '".$_POST["hn"]."', '".$_POST["an"]."', '".calcage($dbirth)."', '".$_POST["list_ptright"]."', '".$_POST["list_ptright2"]."', '".jschars($_POST["disease_people"])."', '".jschars($_POST["drug_alert"])."', '".jschars($_POST["dx"])."', '".jschars($_POST["organ"])."', '".jschars($_POST["maintenance"])."', '".$_POST["doctor"]."', '".$_POST["type_accident"]."', '".$_POST["wounded_vehicle"]."', '".$_POST["wounded_detail"]."', '".$_POST["cause_accident"]."', '".$_POST["spirits"]."', '".$_POST["belt"]."', '".$_POST["helmet"]."', '".$_POST["sender"]."', '".$_POST["cure"]."', '".$time_diag."', '".$time_in."', '".$time_out."', '".$_SESSION["sOfficer"]."', '".$_POST["trauma"]."', '".$_POST["obs"]."', '".$_POST["type_wounded"]."', '".$_POST["type_wounded2"]."', '".$_POST["accident_detail"]."','".$_POST["date_in"]."','".$_POST["etc_sender"]."','".$_POST["with_cause_accident"]."','".$_POST["list_with_cause_accident"]."','".$_POST["admit_ward"]."','".$_POST["refer_hospital"]."', '".$_POST["repeat"]."', '".$_POST["cause_refer"]."', '".$_POST["type_patient"]."', '".$_POST["means_refer"]."', '".$_POST["take_care"]."','".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', '".$_POST["no_estimate"]."', '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["consult"]."', '".$_POST["to_or"]."', '".$_POST["to_lr"]."', '".$_POST["to_etc"]."', '".$_POST["er_tell"]."', '".$_POST["problem_refer"]."', '".$_POST["suggestion"]."', '".$_POST["to_hpt_lp"]."', '".$_POST["out_changwat"]."', '1', $freshWound, $woundhours, '".$_POST["weight"]."', '".$_POST["height"]."','".$_POST["bmi"]."');";
 
 		$result = Mysql_Query($sql) or Mysql_error();
 		$id= Mysql_insert_id();
@@ -1504,7 +1507,7 @@ function view_expenses(an) {
 		document.getElementById(name).value= val;
 	}
 	
-
+    
 </script>
 <div id = "tooltip" onMouseOver="tooltip.style.display=''; " onMouseOut="hid_tooltip();" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
@@ -1961,7 +1964,21 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 			return false;
 		}
 	}
-	
+
+
+
+	function calbmi(a,b){
+		//alert(a);
+		var h=a/100;
+		var bmi=b/(h*h);
+		document.f1.bmi.value=bmi.toFixed(2);
+	}
+	 </script>
+   <? 
+		 $ht = $arr["height"]/100;
+		 $bmi=number_format($arr["weight"]/($ht*$ht),2);
+	?>
+    	
 </script>
 
 <TABLE width="100%" border="0">
@@ -1976,7 +1993,8 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	<TD align="center"  bgcolor="#3366FF" class="font_title" colspan ="8">การบันทึกประวัติผู้ป่วย ER</TD>
 </TR>
 <TR>
-	<TD align="right">Hn</TD><TD colspan="7">
+	<TD width="77" align="right">Hn</TD>
+	<TD colspan="7">
 	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?php echo $arr["hn"];?>" onKeyPress="check_number_hn(event);" title="สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้น">&nbsp;<INPUT TYPE="button" value="View" Onclick="if(checksom()){viewdetail('view',document.getElementById('hn').value);document.getElementById('vn').value='';}">
 	&nbsp;<INPUT TYPE="button" value="ซักประวัติ" Onclick="window.open('basic_opd.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);">
@@ -2008,9 +2026,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 				document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
 			}
 		}
-	</script>
-	
-	</TD>
+	</script>	</TD>
 </TR>
 <TR>
 	<TD align="right">Vn</TD><TD colspan="7">
@@ -2077,7 +2093,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	<TD colspan="6" ><span id="div_viewdetail"></span></TD>
 </TR>
 <TR>
-	<TD  align="right" valign="top">สิทธิ์หลัก</TD><TD>
+	<TD  align="right" valign="top">สิทธิ์หลัก</TD><TD width="197">
 		<SELECT NAME="list_ptright">
 		<?php
 			foreach($list_ptright as $key => $value){
@@ -2103,16 +2119,36 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	</TD>
 </TR>
 <TR>
-	<TD  align="right" valign="top">โรคประจำตัว</TD><TD valign="top">
-		<TEXTAREA ID="disease_people" NAME="disease_people" ROWS="3" COLS="30"><?php echo $arr["disease_people"];?></TEXTAREA>
-		<INPUT TYPE="button" value="ปฏิเสธ" Onclick="document.getElementById('disease_people').value='ปฏิเสธ'; ">
-	</TD>
+  <TD  align="right" valign="top">น้ำหนัก</TD>
+  <TD valign="top" colspan="5"><input name="weight" type="text" id="weight" size="3" value="<?php echo $weight;?>"  onblur="calbmi(document.f1.height.value,this.value)"/>
+                 กก.</TD>
+  <td valign="top">&nbsp;</td>
 </TR>
 <TR>
-	<TD  align="right"  valign="top">การแพ้ยา</TD><TD colspan="3" valign="top">
-		<TEXTAREA ID="drug_alert" NAME="drug_alert" ROWS="3" COLS="30"><?php echo $arr["drug_alert"];?></TEXTAREA>
-		<INPUT TYPE="button" value="ปฏิเสธ" Onclick="document.getElementById('drug_alert').value='ปฏิเสธ'; ">
+  <TD  align="right" valign="top">ส่วนสูง</TD>
+  <TD valign="top" colspan="5"><input name="height" type="text" id="height" size="3" value="<?php echo $height;?>"  onblur="calbmi(this.value,document.f1.weight.value)"/>
+ซม.</TD>
+  <td valign="top">&nbsp;</td>
+</TR>
+<TR>
+  <TD  align="right" valign="top">ค่า BMI</TD>
+  <TD valign="top" colspan="5"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi;?>" /></TD>
+  <td valign="top">&nbsp;</td>
+</TR>
+<TR>
+	<TD  align="right" valign="top">โรคประจำตัว</TD><TD valign="top" colspan="5">
+		<TEXTAREA ID="disease_people" NAME="disease_people" ROWS="3" COLS="30"><?php echo $arr["disease_people"];?></TEXTAREA>
 	</TD>
+    <td width="51" valign="top">
+		<INPUT TYPE="button" value="ปฏิเสธ" Onclick="document.getElementById('disease_people').value='ปฏิเสธ'; ">    </td>    
+</TR>
+<TR>
+	<TD  align="right"  valign="top">การแพ้ยา</TD><TD colspan="5" valign="top">
+		<TEXTAREA ID="drug_alert" NAME="drug_alert" ROWS="3" COLS="30"><?php echo $arr["drug_alert"];?></TEXTAREA>
+		
+	</TD>
+    <td width="53" valign="top">
+		<INPUT TYPE="button" value="ปฏิเสธ" Onclick="document.getElementById('drug_alert').value='ปฏิเสธ'; ">    </td>
 </TR>
 <TR>
 	<TD  align="right" valign="top">Dx</TD><TD colspan="5">
@@ -2120,8 +2156,9 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	</TD>
 </TR>
 <TR>
-	<TD  align="right" valign="top">อาการ</TD><TD colspan="5">
-		<TEXTAREA ID="organ" NAME="organ" ROWS="3" COLS="30"><?php echo $arr["organ"];?></TEXTAREA>&nbsp;<BR>
+	<TD  align="right" valign="top">อาการ</TD><TD colspan="5" valign="top">
+		<TEXTAREA ID="organ" NAME="organ" ROWS="3" COLS="30"><?php echo $arr["organ"];?></TEXTAREA>
+        &nbsp;<BR>
 		<FONT COLOR="#FF0000">ตัวช่วย : </FONT>
 		<SELECT NAME="choose_organ" Onchange="document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;">
 			<option value="">-----------</option>
@@ -2129,9 +2166,13 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 			<option value="ฉีดยาตามนัด">ฉีดยาตามนัด</option>
 			<option value="ต่อใบนัดทำแผล">ต่อใบนัดทำแผล</option>
 			<option value="รับจาก OPD">รับจาก OPD</option>
+            <option value="รับจากจุดคัดกรอง">รับจากจุดคัดกรอง</option>
 			<option value="ตัดไหม">ตัดไหม ตามนัด</option>
 		</SELECT>
 	</TD>
+    <TD width="110" valign="top">
+        <div><INPUT TYPE="button" value="รับจากจุดคัดกรอง" Onclick="document.getElementById('organ').value='รับจากจุดคัดกรอง'; "></div>
+        <div style="margin-top:10px;"><INPUT TYPE="button" value="รับจาก OPD" Onclick="document.getElementById('organ').value='รับจาก OPD'; "></div>    </TD>    
 </TR>
 <TR>
 	<TD  align="right" valign="top">การรักษา</TD><TD colspan="5">
@@ -2467,8 +2508,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 							?><option value="<?=$i;?>"><?=$i;?></option><?php
 						}
 						?>
-					</select> ชั่วโมง
-				</td>
+					</select> ชั่วโมง				</td>
 			</tr>
 		</table>
 		
