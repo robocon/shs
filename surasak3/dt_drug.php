@@ -1511,11 +1511,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 		}else{
 			
 			// ถ้าไม่มีใน code ด้านบนให้ไปหาใน drugrx หลักๆคือดึงค่า amount กับ slcode
+			/*
 			$limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
 			$sql = "Select count(row_id) From drugrx where drugcode = '".$_GET["search"]."' AND date BETWEEN '".(date("Y",$limit_date)+543).date("-m-d H:i:s",$limit_date)."' AND '".(date("Y")+543).date("-m-d H:i:s")."' ";
 			list($limit_row) = mysql_fetch_row(mysql_query($sql));
 			if($limit_row > 30)
 				$limit_row = 30;
+			*/
+			$limit_row = 30;
 
 			// สร้าง TEMP จาก drugrx
 			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;

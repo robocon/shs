@@ -1,0 +1,26 @@
+// ตรวจสุขภาพลูกจ้าง 21-10-2563 ถึง 30-10-2563 ปี2563 ปีงบ 2564 
+select a.*, b.* 
+from ( 
+	select `hn`,CONCAT(`yot`,`name`,' ',`surname`) as `fullname`  
+	from `opcard` 
+	where `employee` = 'y' 
+) as a 
+left join ( 
+	select * from `opday2` 
+	where `toborow` LIKE 'ex46%' and ( `thidate` >= '2563-10-21 00:00:00' and `thidate` <= '2563-10-30 23:59:59' )  
+	group by hn 
+) as b on a.`hn` = b.`hn` 
+order by a.hn  
+
+
+
+select a.*, b.* 
+from ( select `hn`,CONCAT(`yot`,`name`,' ',`surname`) as `fullname`  from `opcard` where `employee` = 'y' ) as a 
+left join ( 
+	select y.* 
+	from ( 
+		select max(id) as lastId from chk_doctor where yearchk = '64' and (date_chk>='2020-10-21 00:00:00' and date_chk<='2020-11-02 23:59:59') group by hn 
+	) as x 
+	left join chk_doctor as y on y.id = x.lastId 
+) as b on a.`hn` = b.`hn` 
+order by a.hn  
