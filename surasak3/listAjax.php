@@ -159,10 +159,12 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 		$add_status = "true";
 
 		for($j=0;$j<$_SESSION["num_list"];$j++){
-
-			if($_SESSION["list_druglst"]["drugcode"][$j] == $_GET["drugcode"] && $_SESSION["list_druglst"]["slcode"][$j] == $_GET["slcode"]){
-				$add_status = "false1";
-				break;
+			
+			if($_GET["drugcode"] !="OLD"){
+				if($_SESSION["list_druglst"]["drugcode"][$j] == $_GET["drugcode"] && $_SESSION["list_druglst"]["slcode"][$j] == $_GET["slcode"]){
+					$add_status = "false1";
+					break;
+				}
 			}
 
 		}
