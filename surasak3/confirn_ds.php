@@ -55,7 +55,14 @@ body,td,th {
 
 </head>
 <body>
- <A HREF="report_ds.php" target="_blank">รายชื่อผู้มาทำแผลที่ยืนยันแล้ว</A>
+<?php 
+$url = "";
+if($_GET['forOpd']==1)
+{
+	$url = "?forOpd=1";
+}
+?>
+ <A HREF="report_ds.php<?=$url;?>" target="_blank">รายชื่อผู้มาทำแผลที่ยืนยันแล้ว</A>
 <?php
 	
 	if(isset($_GET["row_id"]) && $_GET["row_id"] != ""){
@@ -130,7 +137,20 @@ body,td,th {
 	พ.ศ. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
 		</TD>
 	</TR>
-	
+	<?php 
+	if($_SESSION['smenucode']=="ADMMAINOPD")
+	{
+		?>
+		<tr>
+			<td>
+				<label for="isOpd">
+					<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDทำแผล
+				</label>
+			</td>
+		</tr>
+		<?php
+	}
+	?>
 	<TR>
 		<TD><input type='submit' name="submit" value='     ตกลง     ' ></TD>
 	</TR>

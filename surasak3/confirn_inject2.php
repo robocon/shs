@@ -61,18 +61,23 @@ body,td,th {
 	if(isset($_POST["hn"]) && $_POST["hn"] != ""){
 		
 		$list = array();
-
+		$isOpd = NULL;
+		if(isset($_POST['isOpd']) && $_POST['isOpd'] == 1)
+		{
+			$isOpd = 1;
+		}
+		
 		$count = count($_POST["drugcode"]);
 		$j=0;
 		for($i=0;$i<$count;$i++){
 			
-		$sql = "INSERT INTO `trauma_inject` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `drugcode`, `tradname` ) VALUES ";
+		$sql = "INSERT INTO `trauma_inject` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `drugcode`, `tradname`, `opd`) VALUES ";
 		
 		$sql2 = "Select count(hn) as c_hn From `trauma_inject` where `thidate_regis` = '".$_POST["date"][$i]."' AND hn = '".$_POST["hn"]."' AND drugcode='".$_POST["drugcode"][$i]."' limit 1 ";
 		list($c_hn) = Mysql_fetch_row(Mysql_Query($sql2));
 
 		if($c_hn == 0){
-			array_push($list,"('".(date("Y")+543).date("-m-d H:i:s")."', '".$_POST["date"][$i]."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".calcage($_POST["dbirth"])."', '".$_POST["ptright"]."', '".$_POST["type"][$i]."', '".$_POST["drugcode"][$i]."', '".$_POST["tradname"][$i]."')");
+			array_push($list,"('".(date("Y")+543).date("-m-d H:i:s")."', '".$_POST["date"][$i]."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".calcage($_POST["dbirth"])."', '".$_POST["ptright"]."', '".$_POST["type"][$i]."', '".$_POST["drugcode"][$i]."', '".$_POST["tradname"][$i]."', '$isOpd')");
 			$j++;
 		}
 

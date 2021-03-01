@@ -55,7 +55,14 @@ body,td,th {
 
 </head>
 <body>
-<A HREF="report_inject.php" target="_blank">รายชื่อผู้มาฉีดยาที่ยืนยันแล้ว</A>
+<?php 
+$url = "";
+if($_GET['forOpd']==1)
+{
+	$url = "?forOpd=1";
+}
+?>
+<A HREF="report_inject.php<?=$url;?>" target="_blank">รายชื่อผู้มาฉีดยาที่ยืนยันแล้ว</A>
 <?php
 	
 	if(isset($_POST["hn"]) && $_POST["hn"] != ""){
@@ -120,7 +127,20 @@ body,td,th {
 	พ.ศ. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
 		</TD>
 	</TR>
-	
+	<?php 
+	if($_SESSION['smenucode']=="ADMMAINOPD")
+	{
+		?>
+		<tr>
+			<td>
+				<label for="isOpd">
+					<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDทำแผล
+				</label>
+			</td>
+		</tr>
+		<?php
+	}
+	?>
 	<TR>
 		<TD><input type='submit' name="submit" value='     ตกลง     ' ></TD>
 	</TR>
@@ -149,9 +169,14 @@ function checkForm(){
 	<TD>&nbsp;</TD>
 </TR>
 <?php
-		
+		$whereOpd = "";
+		if($_POST['isOpd'] == 1 OR $_GET['forOpd'] == 1)
+		{
+			$whereOpd = " AND `opd` = 1 ";
+		}
+
 		$list_count = array();
-		$sql = " Select thidate_regis, hn From `trauma_inject` where thidate_regis like '".$select_day."%' ";
+		$sql = " Select thidate_regis, hn From `trauma_inject` where thidate_regis like '".$select_day."%' $whereOpd ";
 		$result = Mysql_Query($sql);
 		$rows = Mysql_num_rows($result);
 		while(list($thidate_regis, $hn) = Mysql_fetch_row($result)){

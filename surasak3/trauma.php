@@ -244,6 +244,16 @@ return $pAge;
 		echo "<INPUT TYPE=\"hidden\" value=\"".$ptname."\" name=\"ptname\">";
 		echo "<INPUT TYPE=\"hidden\" value=\"".$dbirth."\" name=\"dbirth\">";
 		echo "<INPUT TYPE=\"hidden\" value=\"".$ptright."\" name=\"ptright\">";
+
+		if($_SESSION['smenucode']=="ADMMAINOPD")
+		{
+			?>
+			<label for="isOpd">
+				<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDฉีดยา 
+			</label>
+			<?php
+		}
+		
 		$submit_button = "<INPUT TYPE=\"submit\" value=\" ตกลง \" >";
 		}else{
 								echo "ไม่มีหมายเลข HN : ".$_GET["hn"]."";
@@ -285,7 +295,16 @@ return $pAge;
 							if($ptname != ""){
 								echo "HN : ".$_GET["hn"]."<BR>";
 								echo "ชื่อ-สกุล : ".$ptname."<BR>";
-								echo "สิทธิ์ : ".$ptright."";
+								echo "สิทธิ์ : ".$ptright."<br>";
+								if($_SESSION['smenucode']=="ADMMAINOPD")
+								{
+									?>
+									<label for="isOpd">
+										<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDทำแผล
+									</label>
+									<br>
+									<?php
+								}
 								$submit_button = "<INPUT TYPE=\"submit\" value=\" ตกลง \" >";
 							}else{
 								echo "ไม่มีหมายเลข HN : ".$_GET["hn"]."";
@@ -1511,8 +1530,14 @@ function view_expenses(an) {
 </script>
 <div id = "tooltip" onMouseOver="tooltip.style.display=''; " onMouseOut="hid_tooltip();" style="position:absolute;display:none;background-color:#FFFFFF;" >
 </div>
-<?php
-echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn_ds.php\" target=\"_blank\">ยืนยันการทำแผล</A>&nbsp;|&nbsp;<A HREF=\"confirn_inject.php\" target=\"_blank\">ยืนยันการฉีดยา</A>&nbsp;|&nbsp;";
+<?php 
+$urlOpd = "";
+if($_SESSION['smenucode']=="ADMMAINOPD")
+{
+	$urlOpd = "?forOpd=1";
+}
+
+echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn_ds.php$urlOpd\" target=\"_blank\">ยืนยันการทำแผล</A>&nbsp;|&nbsp;<A HREF=\"confirn_inject.php$urlOpd\" target=\"_blank\">ยืนยันการฉีดยา</A>&nbsp;|&nbsp;";
 ?>
 <A HREF="javascript:void(0);" Onclick="if(document.getElementById('menu').style.display=='') document.getElementById('menu').style.display='none'; else document.getElementById('menu').style.display=''; ">รายงานต่างๆ</A> | <A HREF="consent4.php" target="_blank">ใบยินยอม</A> | <A HREF="erstikerdrug.php" target="_blank">stiker ผสมยา</A> | <A HREF="admit_form.php" target="_blank">แจ้งADMIT</A> | <a target=_TOP href="oplist1.php">พิมพ์ใบสั่งยา</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DIV id="menu" bgcolor="#FFFFFF" style="position: absolute; display:none; "><BR>
@@ -1524,15 +1549,15 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\"confirn
 	</TR>
 	<TR>
 	<TD>
-<A HREF="concisely_trun.php" target="_blank">รายงานสรุปยอดเวร</A> <BR> <A HREF="report_labcare.php" target="_blank">รายการบันทึกหัตถการประจำวัน</A> <BR> 
+<A HREF="concisely_trun.php<?=$urlOpd;?>" target="_blank">รายงานสรุปยอดเวร</A> <BR> <A HREF="report_labcare.php" target="_blank">รายการบันทึกหัตถการประจำวัน</A> <BR> 
 <A HREF="report_trauma01.php" target="_blank">รายงานสรุป</A> <BR> 
 <A HREF="report_trauma01_2.php" target="_blank">รายงานสรุป(เลือกเป็นช่วง)</A> <BR> 
 <A HREF="report_trauma02.php" target="_blank">รายงานอุบัติเหตุการจราจร</A> <BR> 
 <A HREF="report_trauma03.php" target="_blank">แบบรายงานเฝ้าระวังการบาดเจ็บ 19 สาเหตุ</A> <BR> 
 <A HREF="report_trauma04.php" target="_blank">แบบรายงานการบาดเจ็บ/เสียชีวิตจากอุบัติเหตุจราจรของทหาร-ครอบครัว</A> <BR> 
 <A HREF="report_trauma05.php" target="_blank">รายงานผู้ป่วยนำส่งโดย อปพร/1669</A>
-<BR> <A HREF="report_ds.php" target="_blank">รายชื่อผู้มาทำแผล</A>
-<BR> <A HREF="report_inject.php" target="_blank">รายชื่อผู้มาฉีดยา</A>
+<BR> <A HREF="report_ds.php<?=$urlOpd;?>" target="_blank">รายชื่อผู้มาทำแผล</A>
+<BR> <A HREF="report_inject.php<?=$urlOpd;?>" target="_blank">รายชื่อผู้มาฉีดยา</A>
 <BR> <A HREF="report_groupdiag.php" target="_blank">สถิติกลุ่มโรค</A>
 <BR> <A HREF="report_trauma06.php" target="_blank">รายชื่อผู้ป่วย Refer</A>
 <BR> <A HREF="report_trauma07.php" target="_blank">สรุปยอดผู้ป่วยที่รอตรวจเกิน กำหนด</A>

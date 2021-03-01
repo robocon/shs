@@ -72,7 +72,19 @@ body,td,th {
 	<input type='text' name='d' size='4' value='<?php echo $day_now;?>'>&nbsp;&nbsp;
 	à´×Í¹&nbsp; <input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;&nbsp;
 	¾.È. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'></font></p>
-	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<?php 
+	if($_SESSION['smenucode']=="ADMMAINOPD")
+	{
+		?>
+		<p>
+		<label for="isOpd">
+			<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPD©Õ´ÂÒ + OPD·Óá¼Å
+		</label>
+		</p>
+		<?php
+	}
+	?>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 	<input type='submit' name="submit" value='     µ¡Å§     ' >&nbsp;&nbsp;&nbsp; <INPUT TYPE="button" value="Print" onClick="wprint();">
 	&nbsp;&nbsp;&nbsp; <INPUT TYPE="button" value="Word" onClick="window.open('trauma_word.php?file_name=<?php echo $_SESSION["name_trauma_word"];?>');">
 
@@ -169,12 +181,18 @@ while($arr = Mysql_fetch_assoc($result)){
 
 }
 
-$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day." 07:31:00' AND '".$select_day." 15:30:59' ) AND type = 'P' ";
+$whereOpd = "";
+if($_POST['isOpd'] == 1 OR $_GET['forOpd'] == 1)
+{
+	$whereOpd = " AND `opd` = 1 ";
+}
+
+$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day." 07:31:00' AND '".$select_day." 15:30:59' ) AND type = 'P' $whereOpd ";
 
 list($ds) = mysql_fetch_row(Mysql_Query($sql));
 
 $inject = array();
-$sql = "Select type, count(distinct hn) From trauma_inject   where ( thidate between '".$select_day." 07:31:00' AND '".$select_day." 15:30:59' ) AND type in ('V','M','SC') group by type ";
+$sql = "Select type, count(distinct hn) From trauma_inject   where ( thidate between '".$select_day." 07:31:00' AND '".$select_day." 15:30:59' ) AND type in ('V','M','SC') $whereOpd group by type ";
 
 $result = Mysql_Query($sql);
 while(list($type, $count) = mysql_fetch_row($result)){
@@ -381,11 +399,11 @@ while($arr = Mysql_fetch_assoc($result)){
 
 }
 
-$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day." 15:31:00' AND '".$select_day." 23:30:59' )  AND type = 'P' ";
+$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day." 15:31:00' AND '".$select_day." 23:30:59' )  AND type = 'P' $whereOpd ";
 list($ds) = mysql_fetch_row(Mysql_Query($sql));
 
 $inject = array();
-$sql = "Select type, count(distinct hn) From trauma_inject   where ( thidate between '".$select_day." 15:31:00' AND '".$select_day." 23:30:59' ) AND type in ('V','M','SC') group by type ";
+$sql = "Select type, count(distinct hn) From trauma_inject   where ( thidate between '".$select_day." 15:31:00' AND '".$select_day." 23:30:59' ) AND type in ('V','M','SC') $whereOpd group by type ";
 $result = Mysql_Query($sql);
 while(list($type, $count) = mysql_fetch_row($result)){
 	$inject[$type] = $count;
@@ -588,16 +606,16 @@ while($arr = Mysql_fetch_assoc($result)){
 
 }
 
-$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day." 23:31:00' AND '".$select_day." 23:59:59' )  AND type = 'P' ";
+$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day." 23:31:00' AND '".$select_day." 23:59:59' )  AND type = 'P' $whereOpd ";
 list($ds) = mysql_fetch_row(Mysql_Query($sql));
 
-$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day2." 00:00:00' AND '".$select_day2." 07:30:59' )  AND type = 'P' ";
+$sql = "Select count(hn) From trauma_ds where ( thidate between '".$select_day2." 00:00:00' AND '".$select_day2." 07:30:59' )  AND type = 'P' $whereOpd ";
 list($ds2) = mysql_fetch_row(Mysql_Query($sql));
 
 $ds = $ds+$ds2;
 
 $inject = array();
-$sql = "Select type, count(distinct hn) From trauma_inject   where (( thidate between '".$select_day." 23:31:00' AND '".$select_day." 23:59:59' ) OR ( thidate between '".$select_day2." 00:00:00' AND '".$select_day2." 07:30:59' ) ) AND type in ('V','M','SC') group by type ";
+$sql = "Select type, count(distinct hn) From trauma_inject   where (( thidate between '".$select_day." 23:31:00' AND '".$select_day." 23:59:59' ) OR ( thidate between '".$select_day2." 00:00:00' AND '".$select_day2." 07:30:59' ) ) AND type in ('V','M','SC') $whereOpd group by type ";
 $result = Mysql_Query($sql);
 while(list($type, $count) = mysql_fetch_row($result)){
 	$inject[$type] = $count;
