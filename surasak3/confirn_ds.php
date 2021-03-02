@@ -57,9 +57,11 @@ body,td,th {
 <body>
 <?php 
 $url = "";
+$where = "WHERE `opd` <> '1'";
 if($_GET['forOpd']==1)
 {
 	$url = "?forOpd=1";
+	$where = "WHERE `opd` = '1'";
 }
 ?>
  <A HREF="report_ds.php<?=$url;?>" target="_blank">รายชื่อผู้มาทำแผลที่ยืนยันแล้ว</A>
@@ -191,9 +193,10 @@ function send_data(row_id, stat){
 	<TD>เคยยืนยันการทำแผลแล้ว</TD>
 </TR>
 <?php
+	
 		
 		$list_count = array();
-		$sql = " Select thidate_regis, hn From trauma_ds where thidate_regis like '".$select_day."%' ";
+		$sql = " Select thidate_regis, hn From trauma_ds where thidate_regis like '".$select_day."%' $where ";
 		$result = Mysql_Query($sql);
 		while(list($thidate_regis, $hn) = Mysql_fetch_row($result)){
 			$list_count[$thidate_regis.$hn] = true;
