@@ -85,17 +85,18 @@ if($_GET['forOpd']==1)
 		$sql = "Select count(hn) as c_hn From `trauma_ds` where hn='' AND thidate_regis = '' limit 1";
 		list($rows) = Mysql_fetch_row(Mysql_Query($sql));
 		
-		if($rows == 0){
-		$sql = "INSERT INTO `trauma_ds` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `size`, `location` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["thidate"]."', '".$arr["hn"]."', '".$arr["ptname"]."', '".$age."', '".$arr["ptright"]."', '".$_GET["stat"]."', '".$size_wound."', '".$location."');";
-
-		Mysql_Query($sql);
-
-		echo "<meta http-equiv=\"REFRESH\" content=\"0;url=confirn_ds.php\">";
-		}else{
-		echo "<meta http-equiv=\"REFRESH\" content=\"0;url=confirn_ds.php\">";
-
+		if($rows == 0)
+		{
+			// แก้ปัญหาเฉพาะหน้าไปก่อน ถ้าคีย์จาก OPD
+			$opd = NULL;
+			if($_SESSION['smenucode']=="ADMMAINOPD")
+			{
+				$opd = "'1'";
+			}
+			$sql = "INSERT INTO `trauma_ds` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `size`, `location`,`opd` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["thidate"]."', '".$arr["hn"]."', '".$arr["ptname"]."', '".$age."', '".$arr["ptright"]."', '".$_GET["stat"]."', '".$size_wound."', '".$location."', $opd);";
+			Mysql_Query($sql);
 		}
-
+		echo "<meta http-equiv=\"REFRESH\" content=\"0;url=confirn_ds.php\">";
 	}
 
 	

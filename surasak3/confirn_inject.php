@@ -64,27 +64,28 @@ if($_GET['forOpd']==1)
 ?>
 <A HREF="report_inject.php<?=$url;?>" target="_blank">รายชื่อผู้มาฉีดยาที่ยืนยันแล้ว</A>
 <?php
-	
-	if(isset($_POST["hn"]) && $_POST["hn"] != ""){
-
-	for($i=1;$i<$_POST["max"];$i++){
-
+if(isset($_POST["hn"]) && $_POST["hn"] != "")
+{
+	for($i=1;$i<$_POST["max"];$i++)
+	{
 		list($hn,$datetime) = explode("[]",$_POST["list".$i]);
-
 		$sql = "Select CONCAT(yot,' ',name,' ',surname) as full_name, ptright, dbirth From opcard where hn = '".$hn."' limit 1 ";
 		list($ptname,$ptright, $dbirth) = Mysql_fetch_row(Mysql_Query($sql));
-		
 		$age = calcage($dbirth);
-		if($datetime != ""){
-		$sql = "INSERT INTO `trauma_inject` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `drugcode`, `tradname`, `number` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$datetime."', '".$hn."', '".$ptname."', '".$age."', '".$ptright."', '".$_POST["type".$i]."', '".$_POST["drugcode".$i]."', '".$_POST["tradname".$i]."', '".$_POST["number".$i]."');";
-		
-		Mysql_Query($sql);
+		if($datetime != "")
+		{ 
+			$opd = NULL;
+			if($_SESSION['smenucode']=="ADMMAINOPD")
+			{
+				$opd = "'1'";
+			}
+			$sql = "INSERT INTO `trauma_inject` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `drugcode`, `tradname`, `number` ,`opd` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$datetime."', '".$hn."', '".$ptname."', '".$age."', '".$ptright."', '".$_POST["type".$i]."', '".$_POST["drugcode".$i]."', '".$_POST["tradname".$i]."', '".$_POST["number".$i]."', $opd);";
+			Mysql_Query($sql);
 		}
 	}
-		echo "<meta http-equiv=\"REFRESH\" content=\"0;url=confirn_inject.php\">";
-		
+	echo "<meta http-equiv=\"REFRESH\" content=\"0;url=confirn_inject.php\">";
 	exit();
-	}
+}
 
 	
 

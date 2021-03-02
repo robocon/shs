@@ -148,7 +148,7 @@ $i=1;
 //		
 		$where = " (( thidate between '".$select_day." 07:31:00' AND '".$select_day." 23:59:59' ) OR ( thidate between '".$select_day2." 00:00:00' AND '".$select_day2." 07:30:59' ) ) ";
 		
-		$whereOpd = "";
+		$whereOpd = "AND ( `opd` = 0 OR `opd` IS NULL ) ";
 		$url = "";
 		if($_POST['isOpd'] == 1 OR $_GET['forOpd'] == 1)
 		{
