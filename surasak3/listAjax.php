@@ -15,7 +15,7 @@ $sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 
 	$search_txt = trim($_GET['search']);
-	
+	/*
 	$sql = "SELECT a.`drugcode`,a.`tradname`,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`, a.`lock`, a.`lock_ipd`
 	FROM `druglst` AS a 
 	LEFT JOIN (
@@ -34,6 +34,16 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	) AS b ON b.`drugcode` = a.`drugcode` 
 	WHERE ( a.`drugcode` LIKE '$search_txt%' OR a.`genname` LIKE '$search_txt%' OR a.`tradname` LIKE '$search_txt%' )  AND a.`drug_active`='y'
 	ORDER BY a.`drugcode` ASC";
+	*/
+	$sql = "SELECT a.`drugcode`,a.`tradname`,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`, a.`lock`, a.`lock_ipd`
+	FROM ( 
+		SELECT * FROM `druglst` WHERE ( `drugcode` LIKE '$search_txt%' OR `genname` LIKE '$search_txt%' OR `tradname` LIKE '$search_txt%' ) AND `drug_active`='y' 
+	) AS a 
+	LEFT JOIN (
+		SELECT `drugcode`,`slcode`,COUNT(`slcode`) AS `sl_rows` FROM `dgprofile` WHERE `drugcode` LIKE '$search_txt%' AND `slcode` != '' GROUP BY `drugcode` ORDER BY `sl_rows` DESC
+	) AS b ON b.`drugcode` = a.`drugcode` 
+	ORDER BY a.`drugcode` ASC;";
+
 
 	$result = mysql_query($sql) or die( mysql_error() ) ;
 	if(mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
