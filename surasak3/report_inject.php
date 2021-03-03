@@ -3,36 +3,24 @@ session_start();
 include("connect.inc");
 
 if($_GET["action"] == "del"){
-
 	$sql = "Delete From `trauma_inject` where row_id = '".$_GET["rowid"]."' ";
 	Mysql_Query($sql);
-
-	$url = "";
-	if($_GET['forOpd']==1)
-	{
-		$url = "?forOpd=1";
-	}
-
-	echo "<meta http-equiv=\"REFRESH\" content=\"0;url=report_inject.php$url\">";
-exit();
+	echo "<meta http-equiv=\"REFRESH\" content=\"0;url=report_inject.php\">";
+	exit();
 }
 
 function echo_ka($time){
-		
-
-		if($time >= "07:31:00" && $time < "15:31:00"){
-			$ka = "เช้า";
-		}else if($time >= "15:31:00" && $time < "23:31:00"){
-			$ka = "บ่าย";
-		}else if($time >= "23:31:00" && $time <= "23:59:59"){
-			$ka = "ดึก";
-		}else if($time >= "00:00:00" && $time < "07:31:00"){
-			$ka = "ดึก";
-		}
-		
-		return $ka;
-
+	if($time >= "07:31:00" && $time < "15:31:00"){
+		$ka = "เช้า";
+	}else if($time >= "15:31:00" && $time < "23:31:00"){
+		$ka = "บ่าย";
+	}else if($time >= "23:31:00" && $time <= "23:59:59"){
+		$ka = "ดึก";
+	}else if($time >= "00:00:00" && $time < "07:31:00"){
+		$ka = "ดึก";
 	}
+	return $ka;
+}
 
 if(isset($_POST["submit"])){
 
@@ -94,20 +82,6 @@ body,td,th {
 	พ.ศ. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
 		</TD>
 	</TR>
-	<?php 
-	if($_SESSION['smenucode']=="ADMMAINOPD")
-	{
-		?>
-		<tr>
-			<td>
-				<label for="isOpd">
-					<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDฉีดยา
-				</label>
-			</td>
-		</tr>
-		<?php
-	}
-	?>
 	<TR>
 		<TD><input type='submit' name="submit" value='     ตกลง     ' ></TD>
 	</TR>
@@ -149,11 +123,9 @@ $i=1;
 		$where = " (( thidate between '".$select_day." 07:31:00' AND '".$select_day." 23:59:59' ) OR ( thidate between '".$select_day2." 00:00:00' AND '".$select_day2." 07:30:59' ) ) ";
 		
 		$whereOpd = "AND ( `opd` = 0 OR `opd` IS NULL ) ";
-		$url = "";
-		if($_POST['isOpd'] == 1 OR $_GET['forOpd'] == 1)
+		if($_SESSION['smenucode']=="ADMMAINOPD")
 		{
 			$whereOpd = " AND `opd` = 1 ";
-			$url = "&forOpd=1";
 		}
 
 		$sql = "Select   row_id, right(thidate,8) as time_in , date_format(thidate,'%d/%m/%Y') , `hn` , `ptname` , `age` , `ptright` , `type` , `tradname` From `trauma_inject` where  ".$where." $whereOpd AND type <> 'NO' Order by thidate ASC ";
@@ -200,7 +172,7 @@ if($hn != $hn_now && $thidate.$time_in != $thidate_now){
 						<TD align=\"center\">",$type,"</TD>
 						<TD>",$tradname,"</TD>
 						<TD><A HREF=\"report_inj_edit.php?rowid=".$row_id."\" target=\"_blank\">แก้ไข</A></TD>
-						<TD align=\"center\"><A HREF=\"#\" Onclick=\"if(confirm('ท่านต้องการลบข้อมูลใช่หรือไม่?')){window.location.href='report_inject.php?action=del&rowid=".$row_id."$url';}\">ลบ</A></TD>
+						<TD align=\"center\"><A HREF=\"#\" Onclick=\"if(confirm('ท่านต้องการลบข้อมูลใช่หรือไม่?')){window.location.href='report_inject.php?action=del&rowid=".$row_id."';}\">ลบ</A></TD>
 					</TR>
 						";
 $i++;

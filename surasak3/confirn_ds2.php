@@ -88,12 +88,12 @@ body,td,th {
 		if($rows == 0){ 
 
 			$isOpd = NULL;
-			if(isset($_POST['isOpd']) && $_POST['isOpd'] == 1)
+			if($_SESSION['smenucode']=="ADMMAINOPD")
 			{
-				$isOpd = 1;
+				$isOpd = "'1'";
 			}
 
-		$sql = "INSERT INTO `trauma_ds` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `size`, `location`, `opd` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["thidate"]."', '".$arr["hn"]."', '".$arr["ptname"]."', '".$age."', '".$arr["ptright"]."', 'P', '".$size_wound."', '".$location."', '$isOpd');";
+		$sql = "INSERT INTO `trauma_ds` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `size`, `location`, `opd` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["thidate"]."', '".$arr["hn"]."', '".$arr["ptname"]."', '".$age."', '".$arr["ptright"]."', 'P', '".$size_wound."', '".$location."', $isOpd);";
 
 		Mysql_Query($sql);
 

@@ -128,20 +128,6 @@ if(isset($_POST["hn"]) && $_POST["hn"] != "")
 	æ.». <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
 		</TD>
 	</TR>
-	<?php 
-	if($_SESSION['smenucode']=="ADMMAINOPD")
-	{
-		?>
-		<tr>
-			<td>
-				<label for="isOpd">
-					<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPD∑”·º≈
-				</label>
-			</td>
-		</tr>
-		<?php
-	}
-	?>
 	<TR>
 		<TD><input type='submit' name="submit" value='     µ°≈ß     ' ></TD>
 	</TR>
@@ -171,7 +157,7 @@ function checkForm(){
 </TR>
 <?php
 		$whereOpd = "";
-		if($_POST['isOpd'] == 1 OR $_GET['forOpd'] == 1)
+		if($_SESSION['smenucode']=="ADMMAINOPD")
 		{
 			$whereOpd = " AND `opd` = 1 ";
 		}

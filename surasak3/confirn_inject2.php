@@ -62,9 +62,9 @@ body,td,th {
 		
 		$list = array();
 		$isOpd = NULL;
-		if(isset($_POST['isOpd']) && $_POST['isOpd'] == 1)
+		if($_SESSION['smenucode']=="ADMMAINOPD")
 		{
-			$isOpd = 1;
+			$isOpd = "'1'";
 		}
 		
 		$count = count($_POST["drugcode"]);
@@ -77,7 +77,7 @@ body,td,th {
 		list($c_hn) = Mysql_fetch_row(Mysql_Query($sql2));
 
 		if($c_hn == 0){
-			array_push($list,"('".(date("Y")+543).date("-m-d H:i:s")."', '".$_POST["date"][$i]."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".calcage($_POST["dbirth"])."', '".$_POST["ptright"]."', '".$_POST["type"][$i]."', '".$_POST["drugcode"][$i]."', '".$_POST["tradname"][$i]."', '$isOpd')");
+			array_push($list,"('".(date("Y")+543).date("-m-d H:i:s")."', '".$_POST["date"][$i]."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".calcage($_POST["dbirth"])."', '".$_POST["ptright"]."', '".$_POST["type"][$i]."', '".$_POST["drugcode"][$i]."', '".$_POST["tradname"][$i]."', $isOpd)");
 			$j++;
 		}
 

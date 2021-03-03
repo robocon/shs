@@ -30,7 +30,7 @@ return $pAge;
 ?>
 <html>
 <head>
-<title>สรุป</title>
+<title>ยืนยันการทำแผล</title>
 <style type="text/css">
 
 
@@ -56,15 +56,13 @@ body,td,th {
 </head>
 <body>
 <?php 
-$url = "";
-$where = "WHERE `opd` <> '1'";
+$whereOpd = "WHERE `opd` <> '1'";
 if($_GET['forOpd']==1)
 {
-	$url = "?forOpd=1";
-	$where = "WHERE `opd` = '1'";
+	$whereOpd = "WHERE `opd` = '1'";
 }
 ?>
- <A HREF="report_ds.php<?=$url;?>" target="_blank">รายชื่อผู้มาทำแผลที่ยืนยันแล้ว</A>
+ <A HREF="report_ds.php" target="_blank">รายชื่อผู้มาทำแผลที่ยืนยันแล้ว</A>
 <?php
 	
 	if(isset($_GET["row_id"]) && $_GET["row_id"] != ""){
@@ -93,7 +91,7 @@ if($_GET['forOpd']==1)
 			{
 				$opd = "'1'";
 			}
-			$sql = "INSERT INTO `trauma_ds` (  `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `size`, `location`,`opd` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["thidate"]."', '".$arr["hn"]."', '".$arr["ptname"]."', '".$age."', '".$arr["ptright"]."', '".$_GET["stat"]."', '".$size_wound."', '".$location."', $opd);";
+			$sql = "INSERT INTO `trauma_ds` ( `thidate` , `thidate_regis` , `hn` , `ptname` , `age` , `ptright`, `type`, `size`, `location`,`opd` ) VALUES ( '".(date("Y")+543).date("-m-d H:i:s")."', '".$arr["thidate"]."', '".$arr["hn"]."', '".$arr["ptname"]."', '".$age."', '".$arr["ptright"]."', '".$_GET["stat"]."', '".$size_wound."', '".$location."', $opd);";
 			Mysql_Query($sql);
 		}
 		echo "<meta http-equiv=\"REFRESH\" content=\"0;url=confirn_ds.php\">";
@@ -140,20 +138,6 @@ if($_GET['forOpd']==1)
 	พ.ศ. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>
 		</TD>
 	</TR>
-	<?php 
-	if($_SESSION['smenucode']=="ADMMAINOPD")
-	{
-		?>
-		<tr>
-			<td>
-				<label for="isOpd">
-					<input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDทำแผล
-				</label>
-			</td>
-		</tr>
-		<?php
-	}
-	?>
 	<TR>
 		<TD><input type='submit' name="submit" value='     ตกลง     ' ></TD>
 	</TR>
@@ -197,7 +181,7 @@ function send_data(row_id, stat){
 	
 		
 		$list_count = array();
-		$sql = " Select thidate_regis, hn From trauma_ds where thidate_regis like '".$select_day."%' $where ";
+		$sql = " Select thidate_regis, hn From trauma_ds where thidate_regis like '".$select_day."%' $whereOpd ";
 		$result = Mysql_Query($sql);
 		while(list($thidate_regis, $hn) = Mysql_fetch_row($result)){
 			$list_count[$thidate_regis.$hn] = true;

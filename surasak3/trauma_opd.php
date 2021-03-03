@@ -233,68 +233,99 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
 }
 
 ?>
-
-<div>
+<style>
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+    .menu_container ul{
+        margin: 0;
+        padding: 0;
+    }
+    .menu_container ul li{
+        float: left;
+        list-style-type: none;
+    }
+    .menu_container ul li a{
+        padding: 4px;
+    }
+    .menu_container ul li::after{
+        content:"|";
+    }
+</style>
+<div class="menu_container clearfix">
     <ul>
         <li><a href="../nindex.htm">&lt;&lt;&nbsp;เมนู</a></li>
-        <li><a href="confirn_ds.php">ยืนยันการทำแผล</a></li>
-        <li><a href="confirn_inject.php">ยืนยันการฉีดยา</a></li>
-        <li><a href="concisely_trun.php">รายงานสรุปยอดเวร</a></li>
+        <li><a href="confirn_ds.php" target="_blank">ยืนยันการทำแผล</a></li>
+        <li><a href="confirn_inject.php" target="_blank">ยืนยันการฉีดยา</a></li>
+        <li><a href="concisely_trun_opd.php" target="_blank">รายงานสรุปยอดเวร</a></li>
     </ul>
 </div>
-<div style="width:80%; margin:0;padding:0;">
-
-<FORM name="form_confirn_inject" METHOD=POST ACTION="confirn_inject2.php" onSubmit=" rediv('inj')" target="_blank">
-    <DIV ID="Div_Confirm_inject">
-        <TABLE  width="100%"  border="1" bordercolor="#3366FF">
-            <TR>
-                <TD>
-                    <table width="100%" border="0" align="center">
-                        <tr align="center" bgcolor="#3366FF" class="font_title">
-                            <td >ยืนยันการฉีดยา</td>
-                        </tr>
-                        <tr>
-                            <td >
-                                HN : <INPUT TYPE="text" NAME="hn">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td >
-                                <INPUT TYPE="button" value=" ตกลง " onClick="view_confirm_inj('confirm_inj',document.form_confirn_inject.hn.value);">
-                            </td>
-                        </tr>
-                    </table>
-                </TD>
-            </TR>
-        </TABLE>
-    </Div>
-</FORM>
-<FORM name="form_confirn_ds" METHOD=POST ACTION="confirn_ds2.php" onSubmit=" rediv('ds')" target="_blank" >
-    <Div ID="Div_Confirm_ds">
-        <TABLE  width="100%"  border="1" bordercolor="#3366FF">
-            <TR>
-                <TD>
-                    <table width="100%" border="0" align="center">
-                        <tr align="center" bgcolor="#3366FF" class="font_title">
-                            <td >ยืนยันการทำแผล</td>
-                        </tr>
-                        <tr>
-                            <td >
-                                HN : <INPUT TYPE="text" NAME="hn">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td >
-                                <INPUT TYPE="button" value=" ตกลง " onClick="view_confirm_ds('confirm_ds',document.form_confirn_ds.hn.value);">
-                            </td>
-                        </tr>
-                    </table>
-                </TD>
-            </TR>
-        </TABLE>
-    </DIV>
-</FORM>
+<div>
+    <h3>ทำแผล/ฉีดยา OPD</h3>
 </div>
+<table>
+    <tr>
+        <td valign="top" style="width: 50%;">
+            <FORM name="form_confirn_inject" METHOD=POST ACTION="confirn_inject2.php" onSubmit=" rediv('inj')" target="_blank">
+                <DIV ID="Div_Confirm_inject">
+                    <TABLE  width="100%"  border="1" bordercolor="#3366FF">
+                        <TR>
+                            <TD>
+                                <table width="100%" border="0" align="center">
+                                    <tr align="center" bgcolor="#3366FF" class="font_title">
+                                        <td >ยืนยันการฉีดยา</td>
+                                    </tr>
+                                    <tr>
+                                        <td >
+                                            HN : <INPUT TYPE="text" NAME="hn">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td >
+                                            <INPUT TYPE="button" value=" ตกลง " onClick="view_confirm_inj('confirm_inj',document.form_confirn_inject.hn.value);">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </TD>
+                        </TR>
+                    </TABLE>
+                </Div>
+            </FORM>
+        </td>
+        <td valign="top" style="width: 50%;">
+            <FORM name="form_confirn_ds" METHOD=POST ACTION="confirn_ds2.php" onSubmit=" rediv('ds')" target="_blank" >
+                <Div ID="Div_Confirm_ds">
+                    <TABLE  width="100%"  border="1" bordercolor="#3366FF">
+                        <TR>
+                            <TD>
+                                <table width="100%" border="0" align="center">
+                                    <tr align="center" bgcolor="#3366FF" class="font_title">
+                                        <td >ยืนยันการทำแผล</td>
+                                    </tr>
+                                    <tr>
+                                        <td >
+                                            HN : <INPUT TYPE="text" NAME="hn">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td >
+                                            <INPUT TYPE="button" value=" ตกลง " onClick="view_confirm_ds('confirm_ds',document.form_confirn_ds.hn.value);">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </TD>
+                        </TR>
+                    </TABLE>
+                </DIV>
+            </FORM>
+        </td>
+    </tr>
+</table>
+
+
+
 <script type="text/javascript">
 function newXmlHttp(){
 	var xmlhttp = false;
