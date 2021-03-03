@@ -26,7 +26,7 @@ function jschars($str)
 //************************** แสดงรายการยาให้เลือก  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
-	$sql = "Select code, detail,price,chkup From labcare where labstatus = 'Y' AND (code like '%".$_GET["search"]."%' || codex like '%".$_GET["search"]."%' || detail like '%".$_GET["search"]."%') Order by numbered ASC";
+	$sql = "Select code, detail,price,chkup,labtype From labcare where labstatus = 'Y' AND version !='OLD' AND (code like '%".$_GET["search"]."%' || codex like '%".$_GET["search"]."%' || detail like '%".$_GET["search"]."%') Order by labtype ASC, numbered ASC";
 
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -37,7 +37,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"20\"><font style=\"color: #FFFFFF\"></font></td>
 			<td width=\"500\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
-			<td width=\"156\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td>
+			<td width=\"80\"><font style=\"color: #FFFFFF\"><strong>ประเภท</strong></font></td>
+			<td width=\"120\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td>
 			<td width=\"24\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td>
 		</tr>";
 
@@ -56,14 +57,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 				}
 				$arr["detail"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["detail"]);
 
+				if($arr["labtype"]=="OUT"){
+					$color="#0000FF";
+				}else{
+					$color="#00000";
+				}
 
-			echo "<tr bgcolor=\"$bgcolor\">
+			echo "<tr bgcolor=\"$bgcolor\" style=\"color:$color\">
 					<td ><INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)addtolist('".$arr["code"]."'); \" ondblclick=\"addtolist('".$arr["code"]."'); \"></td>
 					<td bgcolor=\"$bgcolor\">",$arr["detail"].$chkup,"</td>
+					<td bgcolor=\"$bgcolor\" align=\"right\">",$arr["labtype"],"</td>
 					<td bgcolor=\"$bgcolor\" align=\"right\">",$arr["price"],"</td>
 					<td bgcolor=\"$bgcolor\">&nbsp;</td>
 				</tr>
 					<tr bgcolor=\"#A45200\">
+					<td height=\"5\"></td>
 					<td height=\"5\"></td>
 					<td height=\"5\"></td>
 					<td height=\"5\"></td>
@@ -155,7 +163,7 @@ for($i=0;$i<$count;$i++){
 
 //************************** แสดงรายการ lab  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
-	$sql = "Select detail, yprice, nprice From labcare where code = '".$_GET["code"]."' limit 1; ";
+	$sql = "Select detail, yprice, nprice From labcare where code = '".$_GET["code"]."' and labstatus = 'Y' AND version !='OLD' limit 1; ";
 	list($detail, $yprice, $nprice) = Mysql_fetch_row(Mysql_Query($sql));
 
 	array_push($_SESSION["list_code"],$_GET["code"]);
@@ -169,7 +177,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 
 if(isset($_GET["action"]) && $_GET["action"] == "checkELyte"){
 	
-	$array_e = array('Na','k','Cl','co2');
+	$array_e = array('Na','k','Cl','CO2');
 
 	$result = array_intersect($_SESSION["list_code"], $array_e);
 
@@ -305,7 +313,7 @@ function addtolist(code){
 	document.getElementById('list').innerHTML='';
 	document.getElementById('list').style.display='none';
 	if(checkELyte() == "4"){
-		alert("ท่านได้สั่งรายการ Na, K, Cl, Co2 แยกทั้ง 4 รายการ \n กรุณาสั่งเป็น E'Lyte ");
+		alert("ท่านได้สั่งรายการ Na, K, Cl, CO2 แยกทั้ง 4 รายการ \n กรุณาสั่งเป็น E'Lyte ");
 	}
 }
 
@@ -408,185 +416,158 @@ while($result2=mysql_fetch_array($rows2)){
 	$list_lab_check[$i]["detail"] = $result2['lab_listdetail'];
 	$i++;
 }
-/*$i=0;
+
+$i=0;
 	$list_lab_check[$i]["code"] = "CBC";
 	$list_lab_check[$i]["detail"] = "CBC";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-$i++;
-
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
-$i++;
-
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
-$i++;
-
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-$i++;
-
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
-$i++;
-
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TRI";
-$i++;
-
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-$i++;
-
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-$i++;
-
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-$i++;
-
 	$list_lab_check[$i]["code"] = "BUN";
 	$list_lab_check[$i]["detail"] = "BUN";
+	
 $i++;
-
 	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-$i++;
+	$list_lab_check[$i]["detail"] = "Creatinine";
 
-	$list_lab_check[$i]["code"] = "E";
-	$list_lab_check[$i]["detail"] = "E'Lyte";
 $i++;
+	$list_lab_check[$i]["code"] = "ELYTE";
+	$list_lab_check[$i]["detail"] = "Electrolyte";
 
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
 $i++;
-
-	$list_lab_check[$i]["code"] = "HBSAG";
-	$list_lab_check[$i]["detail"] = "HBsAg";
+	$list_lab_check[$i]["code"] = "BS";
+	$list_lab_check[$i]["detail"] = "Glucose";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "HBSAB";
-	$list_lab_check[$i]["detail"] = "HBsAb";
+	$list_lab_check[$i]["code"] = "LIPID";
+	$list_lab_check[$i]["detail"] = "Lipid profile";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "HBCAB";
-	$list_lab_check[$i]["detail"] = "HBcAb";
+	$list_lab_check[$i]["code"] = "CHOL";
+	$list_lab_check[$i]["detail"] = "Cholesterol";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "HCV";
-	$list_lab_check[$i]["detail"] = "HCV";
+	$list_lab_check[$i]["code"] = "TRI";
+	$list_lab_check[$i]["detail"] = "Triglyceride";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";
+	$list_lab_check[$i]["code"] = "HDL";
+	$list_lab_check[$i]["detail"] = "HDL";
+	
 $i++;
+	$list_lab_check[$i]["code"] = "LDL";
+	$list_lab_check[$i]["detail"] = "LDL";
 
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
 $i++;
-
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
+	$list_lab_check[$i]["code"] = "UA";
+	$list_lab_check[$i]["detail"] = "UA";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
+	$list_lab_check[$i]["code"] = "HBA1C	";
+	$list_lab_check[$i]["detail"] = "HbA1c";
+	
 $i++;
+	$list_lab_check[$i]["code"] = "CAL";
+	$list_lab_check[$i]["detail"] = "Clacium";
 
-	$list_lab_check[$i]["code"] = "BG";
-	$list_lab_check[$i]["detail"] = "BG";
 $i++;
+	$list_lab_check[$i]["code"] = "MG";
+	$list_lab_check[$i]["detail"] = "Magnesium";
 
-	$list_lab_check[$i]["code"] = "PH";
-	$list_lab_check[$i]["detail"] = "PHOS";
 $i++;
-
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
+	$list_lab_check[$i]["code"] = "Phos";
+	$list_lab_check[$i]["detail"] = "Phosphorus";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-$i++;
-
-	$list_lab_check[$i]["code"] = "VDRL";
-	$list_lab_check[$i]["detail"] = "VDRL";
-$i++;
-
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";
-$i++;
-
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
-$i++;
-
 	$list_lab_check[$i]["code"] = "SGOT";
 	$list_lab_check[$i]["detail"] = "AST";
+	
 $i++;
-
 	$list_lab_check[$i]["code"] = "SGPT";
 	$list_lab_check[$i]["detail"] = "ALT";
+	
 $i++;
-
 	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
+	$list_lab_check[$i]["detail"] = "ALP";
+	
 $i++;
-
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "CA";
+	$list_lab_check[$i]["code"] = "AMY";
+	$list_lab_check[$i]["detail"] = "Amylase";
+	
+$i++;	
+	$list_lab_check[$i]["code"] = "TROP-T";
+	$list_lab_check[$i]["detail"] = "Troponin T";
+	
 $i++;
-
+	$list_lab_check[$i]["code"] = "pro BNP";
+	$list_lab_check[$i]["detail"] = "NT-Pro BNP";
+	
+$i++;
 	$list_lab_check[$i]["code"] = "HCT";
 	$list_lab_check[$i]["detail"] = "HCT";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "BG";
+	$list_lab_check[$i]["detail"] = "BG";
+
+$i++;
+	$list_lab_check[$i]["code"] = "MB";
+	$list_lab_check[$i]["detail"] = "Microbilirubin";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "Lactate";
+	$list_lab_check[$i]["detail"] = "Lactate";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "PT";
+	$list_lab_check[$i]["detail"] = "PT,INR";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "PTT";
+	$list_lab_check[$i]["detail"] = "PTT";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "LFT";
+	$list_lab_check[$i]["detail"] = "Liver function test";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "B-PROT";
+	$list_lab_check[$i]["detail"] = "Total protein";
+
 $i++;
 	$list_lab_check[$i]["code"] = "ALB";
 	$list_lab_check[$i]["detail"] = "Albumin";
-//************
-
-$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-$i++;
-$list_lab_check[$i]["code"] = "k";
-$list_lab_check[$i]["detail"] = "K";
-
-$i++;
-$list_lab_check[$i]["code"] = "Cl";
-$list_lab_check[$i]["detail"] = "Cl";
-
-$i++;
-$list_lab_check[$i]["code"] = "co2";
-$list_lab_check[$i]["detail"] = "CO2";
-
-$i++;
-$list_lab_check[$i]["code"] = "PTT";
-$list_lab_check[$i]["detail"] = "PTT.Ratio";
-
-$i++;
-$list_lab_check[$i]["code"] = "PT";
-$list_lab_check[$i]["detail"] = "PT,INR";*/
-if( $_SESSION['sIdname'] == 'md19364' ){
-$i=0;
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";
 	
 $i++;
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
-
+	$list_lab_check[$i]["code"] = "TBI";
+	$list_lab_check[$i]["detail"] = "Total Bilirubin";	
+	
 $i++;
-	$list_lab_check[$i]["code"] = "10530";
-	$list_lab_check[$i]["detail"] = "HIV VL";
+	$list_lab_check[$i]["code"] = "BIL";
+	$list_lab_check[$i]["detail"] = "Direct bilirubin";	
+	
+$i++;
+	$list_lab_check[$i]["code"] = "URIC";
+	$list_lab_check[$i]["detail"] = "Uric acid";	
+	
+$i++;
+	$list_lab_check[$i]["code"] = "CPK";
+	$list_lab_check[$i]["detail"] = "CPK";	
+	
+$i++;
+	$list_lab_check[$i]["code"] = "HIV";
+	$list_lab_check[$i]["detail"] = "HIV";					
 	
 $i++;
 	$list_lab_check[$i]["code"] = "VDRL";
 	$list_lab_check[$i]["detail"] = "VDRL";
+	
+$i++;
+	$list_lab_check[$i]["code"] = "TPHA";
+	$list_lab_check[$i]["detail"] = "TPHA";	
+	
+$i++;
+	$list_lab_check[$i]["code"] = "RF";
+	$list_lab_check[$i]["detail"] = "RF";		
 	
 $i++;
 	$list_lab_check[$i]["code"] = "HBSAG";
@@ -605,632 +586,141 @@ $i++;
 	$list_lab_check[$i]["detail"] = "HCV";
 	
 $i++;
-	$list_lab_check[$i]["code"] = "10508";
-	$list_lab_check[$i]["detail"] = "HBeAg";
+	$list_lab_check[$i]["code"] = "Typhi";
+	$list_lab_check[$i]["detail"] = "Typhoid";
 	
 $i++;
-	$list_lab_check[$i]["code"] = "HBeAg";
-	$list_lab_check[$i]["detail"] = "HBeAg titer";
+	$list_lab_check[$i]["code"] = "Dengue Ag";
+	$list_lab_check[$i]["detail"] = "Dengue Ag";
 
 $i++;
-	$list_lab_check[$i]["code"] = "HBV-VL";
-	$list_lab_check[$i]["detail"] = "HBV VL";
+	$list_lab_check[$i]["code"] = "DengueAb";
+	$list_lab_check[$i]["detail"] = "Dengue Ab";
 
 $i++;
-	$list_lab_check[$i]["code"] = "HCV-VL";
-	$list_lab_check[$i]["detail"] = "HCV VL";
+	$list_lab_check[$i]["code"] = "Scrub";
+	$list_lab_check[$i]["detail"] = "Scrub typhus";
 
 $i++;
-	$list_lab_check[$i]["code"] = "HCV-Ge";
-	$list_lab_check[$i]["detail"] = "HCV genotype";
+	$list_lab_check[$i]["code"] = "Lepto";
+	$list_lab_check[$i]["detail"] = "Leptospira";
 
 $i++;
-	$list_lab_check[$i]["code"] = "HBTY";
-	$list_lab_check[$i]["detail"] = "Hb typing";
+	$list_lab_check[$i]["code"] = "Chikun";
+	$list_lab_check[$i]["detail"] = "Chikunganya";
 		
+$i++;
+	$list_lab_check[$i]["code"] = "INFLU";
+	$list_lab_check[$i]["detail"] = "Flu test";		
+	
+$i++;
+	$list_lab_check[$i]["code"] = "GRS";
+	$list_lab_check[$i]["detail"] = "Gram";	
+	
+$i++;
+	$list_lab_check[$i]["code"] = "AFB";
+	$list_lab_check[$i]["detail"] = "AFB";		
+	
+$i++;
+	$list_lab_check[$i]["code"] = "Mo-AFB";
+	$list_lab_check[$i]["detail"] = "Modified AFB";				
+	
+$i++;
+	$list_lab_check[$i]["code"] = "TZANK";
+	$list_lab_check[$i]["detail"] = "Tzank smear";		
+	
+$i++;
+	$list_lab_check[$i]["code"] = "WET-S";
+	$list_lab_check[$i]["detail"] = "Wet smear";			
+	
+$i++;
+	$list_lab_check[$i]["code"] = "KOH";
+	$list_lab_check[$i]["detail"] = "KOH";		
+	
+$i++;
+	$list_lab_check[$i]["code"] = "KOH";
+	$list_lab_check[$i]["detail"] = "KOH";		
+	
+$i++;
+	$list_lab_check[$i]["code"] = "BGT";
+	$list_lab_check[$i]["detail"] = "Blood group";		
+	
+$i++;
+	$list_lab_check[$i]["code"] = "10018";
+	$list_lab_check[$i]["detail"] = "Direct coomb test";				
+	
+$i++;
+	$list_lab_check[$i]["code"] = "ABS";
+	$list_lab_check[$i]["detail"] = "Indirect coomb test";		
+				
 $i++;
 	$list_lab_check[$i]["code"] = "ESR";
 	$list_lab_check[$i]["detail"] = "ESR";	
 
 $i++;
-	$list_lab_check[$i]["code"] = "CRP";
-	$list_lab_check[$i]["detail"] = "CRP";
-$i++;
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LIPID";
-	$list_lab_check[$i]["detail"] = "Lipid";
-
-$i++;
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TG";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-
-$i++;
-	$list_lab_check[$i]["code"] = "E";
-	$list_lab_check[$i]["detail"] = "E'Lyte";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGOT";
-	$list_lab_check[$i]["detail"] = "AST";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGPT";
-	$list_lab_check[$i]["detail"] = "ALT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALB";
-	$list_lab_check[$i]["detail"] = "Alb";
-	
-$i++;	
-	$list_lab_check[$i]["code"] = "CBC";
-	$list_lab_check[$i]["detail"] = "CBC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCT";
-	$list_lab_check[$i]["detail"] = "HCT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BG";
-	$list_lab_check[$i]["detail"] = "BG";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "RF";
-	$list_lab_check[$i]["detail"] = "RF";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PSA";
-	$list_lab_check[$i]["detail"] = "PSA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFP";
-	$list_lab_check[$i]["detail"] = "AFP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CPK";
-	$list_lab_check[$i]["detail"] = "CPK";
-	
-/* $i++;
-	$list_lab_check[$i]["code"] = "10212";
-	$list_lab_check[$i]["detail"] = "Stool exam"; */
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Stool C/S";
-
-$i++;
-	$list_lab_check[$i]["code"] = "STOCB";
-	$list_lab_check[$i]["detail"] = "Stool occult blood";
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFB";
-	$list_lab_check[$i]["detail"] = "AFB";
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Sputum C/S";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "Ca";
-
-
-//************
-
-$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-$i++;
-	$list_lab_check[$i]["code"] = "k";
-	$list_lab_check[$i]["detail"] = "K";
-
-$i++;
-	$list_lab_check[$i]["code"] = "Cl";
-	$list_lab_check[$i]["detail"] = "Cl";
-
-$i++;
-	$list_lab_check[$i]["code"] = "co2";
-	$list_lab_check[$i]["detail"] = "CO2";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PH";
-	$list_lab_check[$i]["detail"] = "P";
-
-$i++;
-	$list_lab_check[$i]["code"] = "MAG";
-	$list_lab_check[$i]["detail"] = "Mg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "Iron";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10245";
-	$list_lab_check[$i]["detail"] = "Zinc";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10362";
-	$list_lab_check[$i]["detail"] = "Copper";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10360";
-	$list_lab_check[$i]["detail"] = "Cadmium";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PT";
-	$list_lab_check[$i]["detail"] = "PT,INR";
+	$list_lab_check[$i]["code"] = "VCT";
+	$list_lab_check[$i]["detail"] = "VCT";
 
 $i++;
 	$list_lab_check[$i]["code"] = "BLTI";
 	$list_lab_check[$i]["detail"] = "Bleeding time";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FER";
-	$list_lab_check[$i]["detail"] = "SF";
-
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "SI";
-
-$i++;
-	$list_lab_check[$i]["code"] = "TIBC";
-	$list_lab_check[$i]["detail"] = "TIBC";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10979";
-	$list_lab_check[$i]["detail"] = "IPTH";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANCA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10617";
-	$list_lab_check[$i]["detail"] = "C3";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10623";
-	$list_lab_check[$i]["detail"] = "C4";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ASO";
-	$list_lab_check[$i]["detail"] = "ASOtiter";
 	
 $i++;
-	$list_lab_check[$i]["code"] = "PTT";
-	$list_lab_check[$i]["detail"] = "PTT,Ratio";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN2";
+	$list_lab_check[$i]["code"] = "MP";
+	$list_lab_check[$i]["detail"] = "Malaria";
 
 $i++;
-	$list_lab_check[$i]["code"] = "BUNHD";
-	$list_lab_check[$i]["detail"] = "BUN3";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
+	$list_lab_check[$i]["code"] = "31307";
+	$list_lab_check[$i]["detail"] = "Microfilaria";
 
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT";
-	$list_lab_check[$i]["detail"] = "Urine Protein";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-CR";
-	$list_lab_check[$i]["detail"] = "Urine Cr";
-	
 $i++;
 	$list_lab_check[$i]["code"] = "10421";
 	$list_lab_check[$i]["detail"] = "Urine Microalbumin";
 	
 $i++;
+	$list_lab_check[$i]["code"] = "U-PROT";
+	$list_lab_check[$i]["detail"] = "Urine Protein";	
+	
+$i++;
+	$list_lab_check[$i]["code"] = "U-CR";
+	$list_lab_check[$i]["detail"] = "Urine Creatinine";	
+	
+$i++;
 	$list_lab_check[$i]["code"] = "U-PROT24";
-	$list_lab_check[$i]["detail"] = "24 hr. Urine Vol";
-$i++;
-	$list_lab_check[$i]["code"] = "10516-500";
-	$list_lab_check[$i]["detail"] = "HBs-Ag titer";
-}else{
-$i=0;
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
+	$list_lab_check[$i]["detail"] = "Urine protein 24 hrs";
 	
 $i++;
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LIPID";
-	$list_lab_check[$i]["detail"] = "Lipid";
+	$list_lab_check[$i]["code"] = "U-CR24";
+	$list_lab_check[$i]["detail"] = "Urine creatinine 24 hrs";	
 
 $i++;
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
+	$list_lab_check[$i]["code"] = "UPT";
+	$list_lab_check[$i]["detail"] = "Urine pregtest";
 
 $i++;
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TG";
+	$list_lab_check[$i]["code"] = "AMP";
+	$list_lab_check[$i]["detail"] = "Urine amphetamine";	
 	
 $i++;
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-
-$i++;
-	$list_lab_check[$i]["code"] = "E";
-	$list_lab_check[$i]["detail"] = "E'Lyte";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGOT";
-	$list_lab_check[$i]["detail"] = "AST";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SGPT";
-	$list_lab_check[$i]["detail"] = "ALT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "ALB";
-	$list_lab_check[$i]["detail"] = "Alb";
-	
-$i++;	
-	$list_lab_check[$i]["code"] = "CBC";
-	$list_lab_check[$i]["detail"] = "CBC";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCT";
-	$list_lab_check[$i]["detail"] = "HCT";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BG";
-	$list_lab_check[$i]["detail"] = "BG";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10530";
-	$list_lab_check[$i]["detail"] = "HIV VL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "VDRL";
-	$list_lab_check[$i]["detail"] = "VDRL";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBSAG";
-	$list_lab_check[$i]["detail"] = "HBsAg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBSAB";
-	$list_lab_check[$i]["detail"] = "HBsAb";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBCAB";
-	$list_lab_check[$i]["detail"] = "HBcAb";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HCV";
-	$list_lab_check[$i]["detail"] = "HCV";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10508";
-	$list_lab_check[$i]["detail"] = "HBeAg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "HBeAg";
-	$list_lab_check[$i]["detail"] = "HBeAg titer";
-
-$i++;
-	$list_lab_check[$i]["code"] = "HBV-VL";
-	$list_lab_check[$i]["detail"] = "HBV VL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "HCV-VL";
-	$list_lab_check[$i]["detail"] = "HCV VL";
-
-$i++;
-	$list_lab_check[$i]["code"] = "HCV-Ge";
-	$list_lab_check[$i]["detail"] = "HCV genotype";
-
-$i++;
-	$list_lab_check[$i]["code"] = "HBTY";
-	$list_lab_check[$i]["detail"] = "Hb typing";
+	$list_lab_check[$i]["code"] = "10203";
+	$list_lab_check[$i]["detail"] = "Urine ketone";	
 		
 $i++;
-	$list_lab_check[$i]["code"] = "ESR";
-	$list_lab_check[$i]["detail"] = "ESR";	
-
-$i++;
-	$list_lab_check[$i]["code"] = "CRP";
-	$list_lab_check[$i]["detail"] = "CRP";
-
-$i++;
-	$list_lab_check[$i]["code"] = "RF";
-	$list_lab_check[$i]["detail"] = "RF";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PSA";
-	$list_lab_check[$i]["detail"] = "PSA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "AFP";
-	$list_lab_check[$i]["detail"] = "AFP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "CPK";
-	$list_lab_check[$i]["detail"] = "CPK";
-	
-/* $i++;
-	$list_lab_check[$i]["code"] = "10212";
-	$list_lab_check[$i]["detail"] = "Stool exam"; */
-
-$i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Stool C/S";
-
-$i++;
 	$list_lab_check[$i]["code"] = "STOCB";
 	$list_lab_check[$i]["detail"] = "Stool occult blood";
 
 $i++;
-	$list_lab_check[$i]["code"] = "AFB";
-	$list_lab_check[$i]["detail"] = "AFB";
+	$list_lab_check[$i]["code"] = "FLUID";
+	$list_lab_check[$i]["detail"] = "Cell count/ differential (body fluid)";
 
 $i++;
-	$list_lab_check[$i]["code"] = "C-S";
-	$list_lab_check[$i]["detail"] = "Sputum C/S";
+	$list_lab_check[$i]["code"] = "OGTT2";
+	$list_lab_check[$i]["detail"] = "OGTT (2 ครั้ง)";
 
 $i++;
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
+	$list_lab_check[$i]["code"] = "OGTT5";
+	$list_lab_check[$i]["detail"] = "OGTT (4 ครั้ง)";
 
-$i++;
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "Ca";
-
-
-//************
-
-$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-$i++;
-	$list_lab_check[$i]["code"] = "k";
-	$list_lab_check[$i]["detail"] = "K";
-
-$i++;
-	$list_lab_check[$i]["code"] = "Cl";
-	$list_lab_check[$i]["detail"] = "Cl";
-
-$i++;
-	$list_lab_check[$i]["code"] = "co2";
-	$list_lab_check[$i]["detail"] = "CO2";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PH";
-	$list_lab_check[$i]["detail"] = "P";
-
-$i++;
-	$list_lab_check[$i]["code"] = "MAG";
-	$list_lab_check[$i]["detail"] = "Mg";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "Iron";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10245";
-	$list_lab_check[$i]["detail"] = "Zinc";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10362";
-	$list_lab_check[$i]["detail"] = "Copper";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10360";
-	$list_lab_check[$i]["detail"] = "Cadmium";
-
-$i++;
-	$list_lab_check[$i]["code"] = "PT";
-	$list_lab_check[$i]["detail"] = "PT,INR";
-
-$i++;
-	$list_lab_check[$i]["code"] = "BLTI";
-	$list_lab_check[$i]["detail"] = "Bleeding time";
-
-$i++;
-	$list_lab_check[$i]["code"] = "FER";
-	$list_lab_check[$i]["detail"] = "SF";
-
-$i++;
-	$list_lab_check[$i]["code"] = "SI";
-	$list_lab_check[$i]["detail"] = "SI";
-
-$i++;
-	$list_lab_check[$i]["code"] = "TIBC";
-	$list_lab_check[$i]["detail"] = "TIBC";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10979";
-	$list_lab_check[$i]["detail"] = "IPTH";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ANA";
-	$list_lab_check[$i]["detail"] = "ANCA";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10617";
-	$list_lab_check[$i]["detail"] = "C3";
-
-$i++;
-	$list_lab_check[$i]["code"] = "10623";
-	$list_lab_check[$i]["detail"] = "C4";
-
-$i++;
-	$list_lab_check[$i]["code"] = "ASO";
-	$list_lab_check[$i]["detail"] = "ASOtiter";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "PTT";
-	$list_lab_check[$i]["detail"] = "PTT,Ratio";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN2";
-
-$i++;
-	$list_lab_check[$i]["code"] = "BUNHD";
-	$list_lab_check[$i]["detail"] = "BUN3";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT";
-	$list_lab_check[$i]["detail"] = "Urine Protein";
-
-$i++;
-	$list_lab_check[$i]["code"] = "U-CR";
-	$list_lab_check[$i]["detail"] = "Urine Cr";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "10421";
-	$list_lab_check[$i]["detail"] = "Urine Microalbumin";
-	
-$i++;
-	$list_lab_check[$i]["code"] = "U-PROT24";
-	$list_lab_check[$i]["detail"] = "24 hr. Urine Vol";
-$i++;
-	$list_lab_check[$i]["code"] = "10516-500";
-	$list_lab_check[$i]["detail"] = "HBs-Ag titer";
-}
 	$r=4;
 	$count = count($list_lab_check);
 
@@ -1269,6 +759,7 @@ $i++;
 				$i=0;
 				$list = array();
 				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
+				//echo $sql2;
 				$result2 = Mysql_Query($sql2);
 				while($arr2 = Mysql_fetch_assoc($result2)){
 					$list[$i] = $arr2["code"];
