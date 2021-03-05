@@ -307,6 +307,54 @@ if($rows){///  ถ้ามี rows
 		}
 	}
 
+	if($menucode=='ADMOPD') // ถ้าเป็นจนท.ทะเบียน
+	{
+		$prev1Year = ( date("Y", strtotime("-1 year")) + 543 ).'-'.date("m-d", strtotime("-1 year"));
+		$sql = "SELECT `row_id` FROM `ipcard` WHERE `date` >= '$prev1Year' AND `bedcode` IS NULL AND `dcdate` = '0000-00-00 00:00:00' ";
+		$q = mysql_query($sql);
+		if(mysql_num_rows($q) > 0)
+		{
+			?>
+			<style>
+				#regisNotify a {
+					color: black!important;
+				}
+			#regisNotify{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #ffffff;
+				color: #000;
+			}
+			#regisCloseBtn{
+				color: #000;
+				width: 100%;
+				display: table;
+				padding: 8px;
+			}
+			</style>
+			<div id="regisNotify">
+				<div>
+					<div style="text-align: center;"><a href="javascript:void(0); id="regisCloseBtn" onclick="btnClose()">[ปิด]</a></div>
+					<div>
+						<p>แจ้งเตือน!!! มีข้อมูลผู้ป่วยในที่ไม่ได้ยกเลิก admit </p>
+						<p>เข้าเมนู <a href="cancel_admit.php" target="_blank" onclick="btnClose()">ยกเลิก admit</a></p>
+					</div>
+				</div>
+			</div>
+			<script>
+				function btnClose()
+				{
+					document.getElementById('regisNotify').style.visibility = "hidden";
+				}
+			</script>
+			<?php 
+			//$_SESSION['regisNotify_SESS'] = 1;
+		}
+	}
+
 	print "</body>";
 	include("unconnect.inc");
 
