@@ -181,6 +181,8 @@ if(trim($_POST["xray"]) !=""){
 
 $_SESSION["dt_drugstk"] .= "</div>"; // End appoint
 
+$_SESSION['dt_drugstk'] .= '<div style="page-break-after:always;"><img src="printQrCode.php?hn='.$_SESSION['hn_now'].'"></div>';
+
 header('Location: dt_printstker.php');
 exit;
 ?>
