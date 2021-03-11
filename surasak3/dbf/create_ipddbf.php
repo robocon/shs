@@ -38,10 +38,10 @@ $credits = array(
 <span class="font1">
 <font face="Angsana New">
 <form action="<? $_SERVER['PHP_SELF']?>" method="post">
-  <table width="450" border="0">
+  <table width="745" border="0">
     <tr>
-      <td width="26">เดือน :</td>
-      <td width="94"> 
+      <td width="84">เดือน :</td>
+      <td width="103"> 
 	<select name="mon">
 		<?php
 		foreach($months as $key => $val){
@@ -51,7 +51,7 @@ $credits = array(
 		?>
 	</select>
 	   </td>
-			<td width="118">พ.ศ. : &nbsp;&nbsp;
+  <td width="132">พ.ศ. : &nbsp;&nbsp;
 			<?php
 			$Y=date("Y")+543;
 			$date=date("Y")+543+5;
@@ -60,15 +60,15 @@ $credits = array(
 			echo "<select name='year' class='forntsarabun'>";
 			foreach($dates as $i){
 				?>
-				<option value='<?=$i; ?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
+<option value='<?=$i; ?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
 				<?php
 			}
 			echo "<select>";
 			?>
 			</td>
         
-        <td width="32" align="right"><font face="Angsana New">สิทธิ :</font></td>
-      <td width="99"><select name="credit" id="credit">
+      <td width="91" align="right"><font face="Angsana New">สิทธิ :</font></td>
+      <td width="162"><select name="credit" id="credit">
         <option value="000">----ทั้งหมด----</option>
 		<?php
 		foreach($credits as $key => $val){
@@ -82,7 +82,7 @@ $credits = array(
         
         
         
-      <td width="46"><input name="BOK" value="ตกลง" type="submit" /></td>
+      <td width="147"><input name="BOK" value="ตกลง" type="submit" /></td>
     </tr>
   </table>
 </form>
@@ -1522,7 +1522,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 	  array("AN","C",15),
 	  array("DATEOPD","D"),	  
 	  array("TYPE","C",2), 
-	  array("CODE","C",11),	 
+	  array("CODE","C",20),	 
 	  array("QTY","N",4,0),
 	  array("RATE","N",12,2),
 	  array("SEQ","C",15),
@@ -2016,6 +2016,61 @@ while($rowsdb = mysql_fetch_array($dbresult)){
 						}  // while
 					} // if part			
 			}  //while			
+			
+			
+			
+		// 16 = ค่ารังสีวิทยา
+		$sqlip8 ="select * from  ipacc  where an='".$an14."' and (part='XRAY' || part='XRAYY')   group by part ";  // เอาข้อมูลมาตามเงื่อนไข โดยไม่สนวันที่
+		//echo $sqlip8."</br>";
+		$resultip8 = mysql_query($sqlip8) or die("Query ipcard failed18");
+		$numip8 = mysql_num_rows($resultip8);
+		//echo "$numip8 </br>";
+		while($rowsip8 = mysql_fetch_array($resultip8)){			
+			$part8 =$rowsip8["part"];
+			
+			if($part8=="XRAY" || $part8=="XRAYY"){
+						$sqlds ="select *,sum(price) as dsprice from  ipacc  where an='".$an14."' and part='$part8'";
+						//echo $sqlds."</br>";
+						$resultds = mysql_query($sqlds) or die("Query ipacc failed");
+						while($rowsds = mysql_fetch_array($resultds)){
+						$ands=$rowsds["an"];						
+						//SEQ	
+						$rowidop=$rowsds["row_id"];
+						$newrowid = substr($rowidop,3,4);	
+						$newseq=$newdcdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+					//	$qty = $rowsds["amount"];
+						$qty = '1';
+						$rate =$rowsds["dsprice"];
+						$chrgitemip ="16";  //ค่ารังสีวิทยา
+						$code =$rowsds["code"];
+						$use_status='1';						
+						if($ands !="" && $rate != 0){
+						//echo "XRAY--->$ands/$qty/$rate/$newseq </br>";								
+						$db14 = dbase_open($dbname14, 2);
+							if ($db14) {
+								dbase_add_record($db14, array(
+									$hn14, //
+									$an14, //
+									$newdcdate,  //
+									$chrgitemip,  //
+									$code,
+									$qty,
+									$rate,
+									$newseq,
+									$cagcode, 	
+									$dose, 																															
+									$catype,
+									$serialno,
+									$totcopay,
+									$use_status,
+									$TOTAL,
+									$QTYDAY));     
+									dbase_close($db14);
+								}  //if db			
+							}   //if check an				
+						}  // while
+					} // if part			
+			}  //while						
 					
 					
 }  //while

@@ -141,6 +141,7 @@ $dbarr=mysql_fetch_array($result);
      <option value="0" selected>==กรุณาเลือก==</option>
     <option value="เทวิน  ศรีแก้ว" <? if($dbarr['programmer']=="เทวิน  ศรีแก้ว"){ echo "selected"; } ?>>เทวิน  ศรีแก้ว</option>
 	<option value="กฤษณะศักดิ์  กันธะรส" <? if($dbarr['programmer']=="กฤษณะศักดิ์  กันธะรส"){ echo "selected"; } ?>>กฤษณะศักดิ์  กันธะรส</option>
+    <option value="ชาญวิทย์  ตากาบุตร" <? if($dbarr['programmer']=="ชาญวิทย์  ตากาบุตร"){ echo "selected"; } ?>>ชาญวิทย์  ตากาบุตร</option>
     <option value="จักรพันธ์  รุ่งเรืองศรี" <? if($dbarr['programmer']=="จักรพันธ์  รุ่งเรืองศรี"){ echo "selected"; } ?>>จักรพันธ์  รุ่งเรืองศรี</option>
 	<option value="ฐานะพัฒน์  นิลคำ" <? if($dbarr['programmer']=="ฐานะพัฒน์  นิลคำ"){ echo "selected"; } ?>>ฐานะพัฒน์  นิลคำ</option>    
     </select>    </td>

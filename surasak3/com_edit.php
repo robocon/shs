@@ -120,6 +120,7 @@ $dbarr=mysql_fetch_array($result);
      <option value="0" selected>==กรุณาเลือก==</option>
     <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
 	<option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
+    <option value="ชาญวิทย์  ตากาบุตร">ชาญวิทย์  ตากาบุตร</option>
     <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
 	<option value="ฐานพัฒน์  นิลคำ">ฐานพัฒน์  นิลคำ</option>    
     </select>    </td>
