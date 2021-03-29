@@ -64,7 +64,7 @@ body,td,th {
 		$isOpd = NULL;
 		if($_SESSION['smenucode']=="ADMMAINOPD")
 		{
-			$isOpd = "'1'";
+			$isOpd = "1";  //ถ้าฉีดที่ OPD
 		}
 		
 		$count = count($_POST["drugcode"]);
@@ -77,7 +77,7 @@ body,td,th {
 		list($c_hn) = Mysql_fetch_row(Mysql_Query($sql2));
 
 		if($c_hn == 0){
-			array_push($list,"('".(date("Y")+543).date("-m-d H:i:s")."', '".$_POST["date"][$i]."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".calcage($_POST["dbirth"])."', '".$_POST["ptright"]."', '".$_POST["type"][$i]."', '".$_POST["drugcode"][$i]."', '".$_POST["tradname"][$i]."', $isOpd)");
+			array_push($list,"('".(date("Y")+543).date("-m-d H:i:s")."', '".$_POST["date"][$i]."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".calcage($_POST["dbirth"])."', '".$_POST["ptright"]."', '".$_POST["type"][$i]."', '".$_POST["drugcode"][$i]."', '".$_POST["tradname"][$i]."', '$isOpd')");
 			$j++;
 		}
 
@@ -85,13 +85,14 @@ body,td,th {
 		if($j > 0){
 		$list2 = implode(", ",$list);
 		$sql .= $list2;
+		//print("-->$sql");
 
 		$result = Mysql_Query($sql);
 		
 			if($result)
 				echo "<CENTER>ได้ทำการยืนยันการฉีดยาของ <B>HN : ".$_POST["hn"]."</B> เรียบร้อยแล้ว<BR>";
 			else
-				echo "<CENTER>ไม่สามารถบันทึกข้อมูลได้<BR>";
+				echo "<CENTER>ไม่สามารถบันทึกข้อมูลได้<BR>".mysql_error();
 		}else{
 				echo "<CENTER>หมายเลขนี้เคยทำการบันทึกแล้ว<BR>";
 		}

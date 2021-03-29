@@ -187,14 +187,18 @@ include("unconnect.inc");
 	* ถ้าท่านมีอาการ ไข้สูง บาดแผลมีบวมแดงร้อน,<BR> แผลเย็บแยก, แผลมีหนองและมีกลิ่นเหม็น ควรมาพบแพทย์
 	
 	</FONT>
-	<TABLE  style="font-family: 'TH SarabunPSK'; font-size: 20px;">
+	<TABLE width="340"  style="font-family: 'TH SarabunPSK'; font-size: 20px;">
 			<TR>
 		<TD colspan='2' align="center" ><b><u>เวลาทำแผล</u></b></TD>
 	</TR>
 		<TR>
-		<TD >ทุกวันไม่เว้นวันหยุดราชการ</TD>
-		<TD>08.30-12.00 น. , 13.00-16.00 น.</TD>
+		<TD width="144" >ทุกวันไม่เว้นวันหยุดราชการ</TD>
+		<TD width="170">ช่วงเช้า &nbsp;08.00-11.30 น.</TD>
 	</TR>
+		<TR>
+		  <TD >&nbsp;</TD>
+		  <TD>ช่วงบ่าย 13.00-15.30 น.</TD>
+		  </TR>
 	<TR>
 	  <TD  colspan= '2' align="center" ><u><b>*** กรุณามาทำแผลตามเวลาทำการ ***</b></u></TD>
 	  </TR>

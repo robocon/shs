@@ -1,4 +1,12 @@
 <?php
+session_start();
+	if(empty($sOfficer) || $_SESSION["sOfficer"] == ""){
+		
+		echo "ขออภัยครับการ Login ของท่านหมดอายุ<BR> <A HREF=\"..\\sm3.php\">&lt;&lt; กลับหน้าหลัก</A>";
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"5;URL=..\sm3.php\">";
+
+	exit();
+	}
 set_time_limit(30);
 Function calcage($birth){
 
@@ -52,17 +60,12 @@ $month["01"] = "มกราคม";
 	<TD><input type="text" name="icd10" size="20" value="<?php echo isset( $_POST['icd10'] ) ?  $_POST['icd10'] : '' ;?>"></TD>
 </TR>
 <TR>
-	<TD>ICD 10 รอง</TD>
-	<TD><input type="text" name="icd101" size="20"></TD>
-</TR>
-<TR>
 	<TD align="right" valign="top">การเรียกข้อมูล :</TD>
 	<TD><INPUT TYPE="radio" NAME="type" value="1" onclick="hidden_style('1');" checked> เจาะจงเป็น ปี, เดือน หรือ วัน <BR><INPUT TYPE="radio" NAME="type" value="2"  onclick="hidden_style('2');"> เลือกเป็นช่วง </TD>
 </TR>
 <TR id="row1">
 	<TD align="right" valign="top">ปี :</TD>
-	<TD><input type="text" name="thiyr" size="10" value="<?php echo isset($_POST['thiyr']) ? $_POST['thiyr'] : date('Y')+543 ;?>"> <BR>*ถ้าต้องการเลือกเดือนหรือวันด้วย ให้ใส่ปีและตามด้วยเดือนและวัน เช่น 2550-06-03 เป็นต้น
-</TD>
+	<TD><input type="text" name="thiyr" size="10" value="<?php echo isset($_POST['thiyr']) ? $_POST['thiyr'] : date('Y')+543 ;?>"> <BR>*ถ้าต้องการเลือกเดือนหรือวันด้วย ให้ใส่ปีและตามด้วยเดือนและวัน เช่น 2550-06-03 เป็นต้น</TD>
 </TR>
 <TR id="row2" style="display:none">
 	<TD align="right">ตั้งแต่วันที่ :</TD>
@@ -76,10 +79,9 @@ $month["01"] = "มกราคม";
 			echo ">",$index;
 			
 			}	?>
-			
 		</SELECT> / 
 		<INPUT TYPE="text" NAME="start_year" value="<?php echo date("Y")+543;?>"  size="4" maxlength="4">
-	</TD>
+		วันที่ให้ระบุเป็นจำนวนเต็ม เช่น 01,02,03,...09</TD>
 </TR>
 <TR id="row3" style="display:none">
 	<TD align="right">ถึงวันที่ :</TD>
@@ -92,9 +94,9 @@ $month["01"] = "มกราคม";
 			echo ">",$index;
 			
 			}	?>
-			
 		</SELECT> / 
-		<INPUT TYPE="text" NAME="end_year" value="<?php echo date("Y")+543;?>"  size="4" maxlength="4"></TD>
+		<INPUT TYPE="text" NAME="end_year" value="<?php echo date("Y")+543;?>"  size="4" maxlength="4"> 
+		วันที่ให้ระบุเป็นจำนวนเต็ม เช่น  01,02,03,...09</TD>
 </TR>
 <TR>
 	<TD>อายุ : </TD>
@@ -189,11 +191,7 @@ $month["01"] = "มกราคม";
   
 <th bgcolor=CD853F>โรค</th>
 
-  <th bgcolor=CD853F>ICD10 หลัก</th>
-  
-  <th bgcolor=CD853F>ICD10 รอง</th>
-  
-
+  <th bgcolor=CD853F>ICD10</th>
   <th bgcolor=CD853F>ปัตร ปชช.</th>
   <th bgcolor=CD853F>ที่อยุ่</th>
   <th bgcolor=CD853F>ตำบล</th>
@@ -213,7 +211,42 @@ If (!empty($icd10)){
     global $icd10;
 	
 	$icd10 = trim(strtoupper($_POST['icd10']));
-	$icd101 = $_POST['icd101'];
+	
+if($_POST["type"] == "2"){	
+	$createtmp="CREATE TEMPORARY TABLE new_opday SELECT * FROM opday where `thidate` >= '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND `thidate` <='".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59'";
+	$querytmp=mysql_query($createtmp);
+	
+	$createtmp1="CREATE TEMPORARY TABLE new_diag SELECT * FROM diag where `svdate` >= '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND `svdate` <='".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59'";
+	$querytmp1=mysql_query($createtmp1);	
+	
+}else{
+	$createtmp="CREATE TEMPORARY TABLE new_opday SELECT * FROM opday where `thidate` LIKE '$thiyr%'";
+	$querytmp=mysql_query($createtmp);
+	
+	$createtmp1="CREATE TEMPORARY TABLE new_diag SELECT * FROM diag where `svdate` LIKE '$thiyr%'";
+	$querytmp1=mysql_query($createtmp1);		
+}
+		
+$dateexport=date("Y-m-d H:i:s");	
+if($_POST["type"] == "2"){
+$date_start=(($_POST["start_year"])-543)."-".$_POST["start_month"]."-".$_POST["start_day"];
+$date_end=(($_POST["end_year"])-543)."-".$_POST["end_month"]."-".$_POST["end_day"];
+}else{
+$date_start=$_POST["thiyr"];
+$date_end=$_POST["thiyr"];
+}
+
+$add="insert into log_export_icd10_opd set icd10='$icd10',
+															icd101='$icd101',
+															date_start='$date_start',
+															date_end='$date_end',
+															ptright='".$_POST["ptright"]."',
+															username='".$sOfficer."',
+															menucode='".$_SESSION["smenucode"]."',
+															date_export='$dateexport'";
+//echo $add;															
+mysql_query($add);
+	
 
 	if($_POST["list_age"] != "" && $_POST["age"] != ""){
 		$str_age = mktime(0,0,0,date("m"),date("d"),date("Y")-$_POST["age"]);
@@ -222,11 +255,11 @@ If (!empty($icd10)){
 	}
 	
 	if($_POST["type"] == "2"){
-		$where = " AND ( `thidate` BETWEEN '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND '".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59' ) ";
+		$where = " AND ( b.`thidate` >= '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND b.`thidate` <='".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59' ) ";
 	}else{
-		$where = " AND `thidate` LIKE '$thiyr%' ";
+		$where = " AND b.`thidate` LIKE '$thiyr%' ";
 	}
-	
+	//print("-->$where");
 	// ICD10 หลัก
 	$statement = array();
 	if( $icd10 != '' ){ 
@@ -235,7 +268,7 @@ If (!empty($icd10)){
 		
 		// If not match range format
 		if( $match === 0 ){
-			$statement[] = " `icd10` LIKE '%$icd10%' " ;
+			$statement[] = " a.`icd10` LIKE '%$icd10%'" ;
 		}else{
 			list($min_txt, $max_txt) = explode('-', $icd10);
 			
@@ -247,7 +280,7 @@ If (!empty($icd10)){
 			$filter_lists = array();
 			for ($num_start; $num_start <= $num_end; $num_start++) { 
 				$test_icd10 = sprintf('%0'.$sprint_len.'d', $num_start);
-				$filter_lists[] = " `icd10` LIKE '$key_txt$test_icd10%' ";
+				$filter_lists[] = " a.`icd10` LIKE '$key_txt$test_icd10%'";
 			}
 			$test_final = implode( ' OR ', $filter_lists);
 			
@@ -255,27 +288,32 @@ If (!empty($icd10)){
 		}
 	}
 	
-	// ICD10 รอง
-	if( $icd101 != '' ){
-		$statement[] = " `icd101` LIKE '%$icd101%'";
-	}
 	
 	$icd_where = ' 1 ';
 	if( !empty($statement) ){
 		$icd_where = '( '.implode(' AND ', $statement).' )';
 	}
 
-	$query = "SELECT MAX(`thidate`) AS `date`, `thidate`,`hn`,`ptname`,`diag`,`icd10`,`icd101`,`ptright` 
-	FROM `opday` 
+	if($_POST["search1"]=="1"){
+		$query = "SELECT b.`thidate`,b.`hn`,b.`ptname`,a.`diag`,a.`icd10`,b.`icd101`,b.`ptright`,a.`type`  
+	FROM new_diag as a INNER JOIN `new_opday` as b ON a.hn=b.hn 
 	WHERE $icd_where 
-	AND `ptright` LIKE '".$_POST["ptright"]."%' $where $where_age 
-	GROUP BY `hn`
-	ORDER BY `thidate` ASC 
+	AND b.`ptright` LIKE '".$_POST["ptright"]."%' $where $where_age 
+	ORDER BY b.`thidate` ASC 
 	";
+	}else{
+		$query = "SELECT b.`thidate`,b.`hn`,b.`ptname`,a.`diag`,a.`icd10`,b.`icd101`,b.`ptright`,a.`type` 
+	FROM new_diag as a INNER JOIN `new_opday` as b ON a.hn=b.hn 
+	WHERE $icd_where 
+	AND b.`ptright` LIKE '".$_POST["ptright"]."%' $where $where_age 
+	GROUP BY a.hn
+	ORDER BY b.`thidate` ASC 
+	";	
+	}
 	$result = mysql_query($query) or die( mysql_error() );
-
+	//print("-->$query");
    
-while (list ($date,$thidate,$hn, $ptname,$diag,$icd10,$icd101,$ptright) = mysql_fetch_row ($result)) 
+while (list ($thidate,$hn, $ptname,$diag,$icd10,$icd101,$ptright,$type) = mysql_fetch_row ($result)) 
 {
 	$Total =$Total+$amount; 
 	$num++;
@@ -296,7 +334,6 @@ while (list ($date,$thidate,$hn, $ptname,$diag,$icd10,$icd101,$ptright) = mysql_
 	"  <td BGCOLOR=F5DEB3>$ptright</a></td>\n".
 	"  <td BGCOLOR=F5DEB3>$diag</td>\n".
 	"  <td BGCOLOR=F5DEB3>$icd10</td>\n".
-	"  <td BGCOLOR=F5DEB3>$icd101</td>\n".
 	"  <td BGCOLOR=F5DEB3>$idcard</td>\n".
 	"  <td BGCOLOR=F5DEB3>$address</td>\n".
 	"  <td BGCOLOR=F5DEB3>$tambol</td>\n".
@@ -313,66 +350,7 @@ while (list ($date,$thidate,$hn, $ptname,$diag,$icd10,$icd101,$ptright) = mysql_
        }
 
 }
-$icd101=$icd10;
-If (!empty($icd10)){
-    include("connect.inc");
-    global $icd10;
-   
- $query = "SELECT thidate, hn,ptname,diag,icd10,icd101 FROM opday WHERE icd101 LIKE '%$icd10%' and thidate LIKE '$thiyr%'   ";
-    $result = mysql_query($query)
-        or die("Query failed");
-
-
-   
- while (list ($thidate,$hn,$ptname,$diag,$icd10,$icd101) = mysql_fetch_row ($result)) 
-{
-        $Total =$Total+$amount; 
-
-
-
-$sql = "SELECT idcard,address,tambol,ampur,changwat,phone FROM opcard WHERE  hn = '".$hn."' ";
-
-   list($idcard,$address,$tambol,$ampur,$changwat,$phone) = mysql_fetch_row(Mysql_Query($sql));
-
-
-
- $num++;
-
- print (" <tr>\n".
-
-       
-       "  <td BGCOLOR=F5DEB3>$num</td>\n".
-   
-       "  <td BGCOLOR=F5DEB3>$thidate</td>\n".
-   
-    "  <td BGCOLOR=F5DEB3>$hn</td>\n".
-  
-   "  <td BGCOLOR=F5DEB3>$ptname</a></td>\n".
-     
-      "  <td BGCOLOR=F5DEB3>$diag</td>\n".
-    
-  "  <td BGCOLOR=F5DEB3>$icd10</td>\n".
-      
-  "  <td BGCOLOR=F5DEB3>$icd101</td>\n".
-
-		      "  <td BGCOLOR=F5DEB3>$idcard</td>\n".
-				 "  <td BGCOLOR=F5DEB3>$address</td>\n".
-				 "  <td BGCOLOR=F5DEB3>$tambol</td>\n".
-				 "  <td BGCOLOR=F5DEB3>$ampur</td>\n".
-				 "  <td BGCOLOR=F5DEB3>$changwat</td>\n".
-				 "  <td BGCOLOR=F5DEB3>$phone</td>\n".
-      
-         " </tr>\n");
-			
-		
-
-       }
-
-
-include("unconnect.inc");
-       }
 ?>
-
 </table>
 
 <BR><BR>

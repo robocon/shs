@@ -404,8 +404,8 @@ for($i=0;$i<$count;$i++)
 	<CENTER><B>เวลาฉีดยา</B></CENTER>
 	</FONT>
 	<div align="center"><FONT style="font-family: Angsana New; font-size: 20px;" >
-	<B>เช้า</B>&nbsp;&nbsp;08.30  - 12.00 
-	&nbsp;&nbsp;<B>บ่าย</B>&nbsp;&nbsp;13.00  - 16.00</FONT></div>
+	<B>เช้า</B>&nbsp;&nbsp;08.00  - 11.30 
+	&nbsp;&nbsp;<B>บ่าย</B>&nbsp;&nbsp;13.00  - 15.30</FONT></div>
 	</TD>
 </TR>
 
