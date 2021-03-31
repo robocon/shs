@@ -4,7 +4,7 @@ include("connect.inc");
 ?>
 <style type="text/css">
 hr{
-	margin: 4px;
+	margin: 2px;
 }
 .tet {
 	font-family: "TH SarabunPSK";
@@ -372,7 +372,7 @@ $query1 = mysql_query($sql1);
   $da = explode(" ",$result["thidate"]);
   $daten = explode("-",$da[0]);
   ?>
-    <?=$daten[2]?>-<?=$daten[1]?>-<?=$daten[0]?>&nbsp;<?=$da[1]?>
+    <?=$daten[2]?>-<?=$daten[1]?>-<?=($daten[0]+543)?>&nbsp;<?=$da[1]?>
   </span></span></span></td>
   <td align="center" valign="top" class="text3">&nbsp;</td>
 </tr>
@@ -382,9 +382,9 @@ $query1 = mysql_query($sql1);
   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" width="100%" >
   <tr><td>
   <table width="100%" class="text1">
-    <tr><td width="15%" valign="top" class="text2"><strong>HN :</strong>    <?=$result['hn']?></td>
-  <td colspan="3" valign="top" class="text2"><strong>ชื่อ :</strong>    <span style=""><strong><?=$result['ptname']?></strong></span></td>
-  <td valign="top" class="text2"><strong>อายุ :</strong>
+    <tr><td width="15%" valign="top" class="text3"><strong>HN :</strong>    <?=$result['hn']?></td>
+  <td colspan="3" valign="top" class="text3"><strong>ชื่อ :</strong>    <span style=""><strong><?=$result['ptname']?></strong></span></td>
+  <td valign="top" class="text3"><strong>อายุ :</strong>
     <?=$result['age']?></td>
   <td valign="top" class="text3"><strong>สังกัด : </strong>
     <span style="font-size:18px"><strong><?=$result['camp'];?></strong></span>  </td>
@@ -416,12 +416,6 @@ $query1 = mysql_query($sql1);
   </span></td>
   </tr>
 <tr>
-  <td valign="top"><span class="text3"><strong>บุหรี่: </strong>
-    <? if($result['cigarette']=="0"){ echo "ไม่เคยสูบ";}else if($result['cigarette']=="1"){ echo "เคยสูบ แต่เลิกแล้ว";}else if($result['cigarette']=="2"){ echo "สูบเป็นครั้งคราว";}else if($result['cigarette']=="3"){ echo "สูบเป็นประจำ";}?>
-  </span></td>
-  <td valign="top"><span class="text3"><strong>สุรา: </strong>
-    <? if($result['alcohol']=="0"){ echo "ไม่เคยดื่ม";}else if($result['alcohol']=="1"){ echo "เคยดื่ม แต่เลิกแล้ว";}else if($result['alcohol']=="2"){ echo "ดื่มเป็นครั้งคราว";}else if($result['alcohol']=="3"){ echo "ดื่มเป็นประจำ";}?>  
-  </span></td>
   <td valign="top"><span class="text3"><strong>T:</strong>
 <u><?=$result['temperature']?></u>
 C ํ</span></td>
@@ -437,13 +431,19 @@ C ํ</span></td>
 /
 <?=$result['bp2']?>
 mmHg.</u></span></td>
+<td valign="top"><span class="text3"><strong>บุหรี่: </strong>
+    <? if($result['cigarette']=="0"){ echo "ไม่เคยสูบ";}else if($result['cigarette']=="1"){ echo "เคยสูบ แต่เลิกแล้ว";}else if($result['cigarette']=="2"){ echo "สูบเป็นครั้งคราว";}else if($result['cigarette']=="3"){ echo "สูบเป็นประจำ";}?>
+  </span></td>
+  <td valign="top"><span class="text3"><strong>สุรา: </strong>
+    <? if($result['alcohol']=="0"){ echo "ไม่เคยดื่ม";}else if($result['alcohol']=="1"){ echo "เคยดื่ม แต่เลิกแล้ว";}else if($result['alcohol']=="2"){ echo "ดื่มเป็นครั้งคราว";}else if($result['alcohol']=="3"){ echo "ดื่มเป็นประจำ";}?>  
+  </span></td>
 </tr>
 <tr>
-  <td colspan="6" valign="top" class="text2"><strong class="text2">ค่าความดัน : </strong><?=$result['stat_pressure']?>
+  <td colspan="6" valign="top" class="text3"><strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?>
     <? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?></td>
 </tr>
 <tr>
-  <td colspan="6" valign="top" class="text2"><strong class="text2">ค่า BMI : </strong>
+  <td colspan="6" valign="top" class="text3"><strong class="text3">ค่า BMI : </strong>
     <?=$result['stat_bmi']?>
     <? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?></td>
 </tr>
@@ -672,6 +672,7 @@ mmHg.</u></span></td>
 	?>
 
   <table width="100%"  bordercolor="#FFFFFF" border="0"  cellpadding="0" cellspacing="0">
+	  <!--
 	<tr>
 		<td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
 		<td width="4%" align="center" valign="top" bordercolor="#000000"  class="text3"><strong><?=$nPrefix2;?></strong></td>
@@ -679,7 +680,7 @@ mmHg.</u></span></td>
 		<td valign="top" class="text">&nbsp;</td>
 		<td valign="top" class="text">&nbsp;</td>
 	</tr>
-
+-->
 	<?php 
 	if($result['bs']!="")
 	{
@@ -973,8 +974,6 @@ if($extra_right_menu === true)
       <td colspan="2" align="right" valign="top" class="text2"><span class="text1">แพทย์ <?=$result['doctor']?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
     </tr>
 </table>
-
-<span class="text">
 <?
 }else{
 
