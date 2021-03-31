@@ -3,7 +3,9 @@ session_start();
 include("connect.inc");
 ?>
 <style type="text/css">
-<!--
+hr{
+	margin: 4px;
+}
 .tet {
 	font-family: "TH SarabunPSK";
 	font-size: 18px;
@@ -38,7 +40,6 @@ include("connect.inc");
 .text31 {font-family: "TH SarabunPSK";
 	font-size: 16px;
 }
--->
 </style>
 <?
 if(isset($_POST['hn'])){
@@ -378,11 +379,11 @@ $query1 = mysql_query($sql1);
 </table></td></tr>
 <tr>
   <td colspan="2" valign="top">
-  <table border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" width="100%" >
+  <table border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" width="100%" >
   <tr><td>
   <table width="100%" class="text1">
     <tr><td width="15%" valign="top" class="text2"><strong>HN :</strong>    <?=$result['hn']?></td>
-  <td colspan="3" valign="top" class="text2"><strong>ชื่อ :</strong>    <span style="font-size:24px"><strong><?=$result['ptname']?></strong></span></td>
+  <td colspan="3" valign="top" class="text2"><strong>ชื่อ :</strong>    <span style=""><strong><?=$result['ptname']?></strong></span></td>
   <td valign="top" class="text2"><strong>อายุ :</strong>
     <?=$result['age']?></td>
   <td valign="top" class="text3"><strong>สังกัด : </strong>
@@ -654,324 +655,282 @@ mmHg.</u></span></td>
   </table>    </tr>
 <tr>
   <td colspan="2" valign="top" class="text">
+
+	<?php 
+	$extra_right_menu = false;
+	if(!empty($result['dental_exam']) OR !empty($result['color_blind'])  OR !empty($result['audiogram'])  OR !empty($result['ekg'])  OR !empty($result['res_ekg']))
+	{
+		$extra_right_menu = true;
+	}
+
+	if($extra_right_menu === true)
+	{
+		?>
+
+		<?php
+	}
+	?>
+
   <table width="100%"  bordercolor="#FFFFFF" border="0"  cellpadding="0" cellspacing="0">
-  
-    <tr>
-      <td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
-      <!--<td valign="top" width="4%"  class="text3" bordercolor="#000000"><strong>2555</strong></td>-->
-      <td width="4%" align="center" valign="top" bordercolor="#000000"  class="text3"><strong><?=$nPrefix2;?></strong></td>
-      <td width="3%" align="center" valign="top" bordercolor="#000000"  class="text3">&nbsp;</td>
-      <td valign="top" class="text">&nbsp;</td>
-      <td valign="top" class="text">&nbsp;</td>
-    </tr>
-    <? if($result['bs']!=""){?>
-    <tr>
-      <td width="23%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
-     <!-- <td width="4%" align="right" valign="top" bordercolor="#000000"><strong>
-        <?//=$result5['bs']?>
-      </strong></td>-->
-        <td width="4%" align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-          <?=$result['bs']?>
-        </strong></td>
-        <td width="3%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
-        <td width="60%" valign="top" class="text"><strong>
-          <?=$result['stat_bs']?>
-        </strong>
-          <? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
-      </tr>
-      <? } 
-	  if($result['chol']!=""){
-	  ?>
-      <tr>
-        <td valign="top" class="text3"><strong>CHOL(การตรวจไขมัน) :</strong></td>
-        <!--<td align="right" valign="top" bordercolor="#000000"><strong>
-          <?//=$result5['chol']?>
-        </strong></td>-->
-        <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-          <?=$result['chol']?>
-        </strong></td>
-        <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td valign="top" class="text">(<?=$result['cholrange']?>)</td>
-        <td valign="top" class="text"><strong>
-          <?=$result['stat_chol']?>
-        </strong>
-          <? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
-      </tr>
-      <? } 
-	  if($result['tg']!=""){
-	  ?>
-      <tr>
-        <td valign="top" class="text3"><strong>TRIG(การตรวจไขมัน) :</strong></td>
-       <!-- <td align="right" valign="top" bordercolor="#000000"><strong>
-          <?//=$result5['tg']?>
-        </strong></td>-->
-        <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-          <?=$result['tg']?>
-        </strong></td>
-        <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td valign="top" class="text">(<?=$result['tgrange']?>)</td>
-        <td valign="top" class="text"><strong>
-          <?=$result['stat_tg']?>
-        </strong>
-          <? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
-      </tr>
-      <? } 
-	  if($result['bun']!=""){
-	  ?>
-      <tr>
-        <td valign="top" class="text3"><strong>BUN(การทำงานของไต) :</strong></td>
-        <!--<td align="right" valign="top" bordercolor="#000000"><strong>
-          <?//=$result5['bun']?>
-        </strong></td>-->
-        <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-          <?=$result['bun']?>
-        </strong></td>
-        <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td valign="top" class="text">(<?=$result['bunrange']?>)</td>
-        <td valign="top" class="text"><strong>
-          <?=$result['stat_bun']?>
-        </strong>
-          <? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
-      </tr>
-      <? } 
-	  if($result['cr']!=""){
-	  ?>
-      <tr>
-        <td valign="top" class="text3"><strong>CREA(การทำงานของไต) :</strong></td>
-       <!-- <td align="right" valign="top" bordercolor="#000000"><strong>
-          <?//=$result5['cr']?>
-        </strong></td>-->
-        <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-          <?=$result['cr']?>
-        </strong></td>
-        <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-        <td valign="top" class="text">(<?=$result['crrange']?>)</td>
-        <td valign="top" class="text"><strong>
-          <?=$result['stat_cr']?>
-        </strong>
-          <? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
-      </tr>
-      <? } 
+	<tr>
+		<td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
+		<td width="4%" align="center" valign="top" bordercolor="#000000"  class="text3"><strong><?=$nPrefix2;?></strong></td>
+		<td width="3%" align="center" valign="top" bordercolor="#000000"  class="text3">&nbsp;</td>
+		<td valign="top" class="text">&nbsp;</td>
+		<td valign="top" class="text">&nbsp;</td>
+	</tr>
+
+	<?php 
+	if($result['bs']!="")
+	{
+		?>
+		<tr>
+			<td width="28%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
+			<td width="4%" align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
+			<td width="3%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
+			<td width="55%" valign="top" class="text"><strong><?=$result['stat_bs']?></strong><? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
+		</tr>
+		<?php
+	}
+
+	if($result['chol']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>CHOL(การตรวจไขมัน) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['chol']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['cholrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_chol']?></strong><? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
+		</tr>
+		<?php
+	} 
+
+	if($result['tg']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>TRIG(การตรวจไขมัน) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['tg']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['tgrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_tg']?></strong><? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
+		</tr>
+		<?php
+	} 
+
+	if($result['bun']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>BUN(การทำงานของไต) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bun']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['bunrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_bun']?></strong><? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
+		</tr>
+		<?php
+	} 
+
+	if($result['cr']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>CREA(การทำงานของไต) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['cr']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['crrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_cr']?></strong><? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
+		</tr>
+		<? 
+	} 
+
+
 	  if($result['alk']!=""){
 	  ?>
     <tr>
       <td valign="top" class="text3"><strong>ALP(การทำงานของตับ,กระดูก) :</strong></td>
-     <!-- <td align="right" valign="top" bordercolor="#000000"><strong>
-        <?//=$result5['alk']?>
-      </strong></td>-->
-      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-        <?=$result['alk']?>
-      </strong></td>
+      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['alk']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['alkrange']?>)</td>
-      <td valign="top" class="text"><strong><strong>
-        <?=$result['stat_sgot']?>
-      </strong></strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
+      <td valign="top" class="text"><strong><strong><?=$result['stat_sgot']?></strong></strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
       </tr>
       <? } 
+
+
 	  if($result['sgpt']!=""){
 	  ?>
     <tr>
       <td valign="top" class="text3"><strong>ALT(การทำงานของตับ) :</strong></td>
-      <!--<td align="right" valign="top" bordercolor="#000000"><strong>
-        <?//=$result5['sgpt']?>
-      </strong></td>-->
-      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-        <?=$result['sgpt']?>
-      </strong></td>
+      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['sgpt']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['sgptrange']?>)</td>
-      <td valign="top" class="text"><strong>
-        <?=$result['stat_sgpt']?>
-      </strong>
-        <? if($result['stat_sgpt']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgpt']."...";?></td>
+      <td valign="top" class="text"><strong><?=$result['stat_sgpt']?></strong><? if($result['stat_sgpt']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgpt']."...";?></td>
     </tr>
     <? } 
+
+
 	  if($result['sgot']!=""){
 	  ?>
     <tr>
       <td valign="top" class="text3"><strong>AST(การทำงานของตับ) :</strong></td>
-      <!--<td align="right" valign="top" bordercolor="#000000"><strong>
-        <?//=$result5['sgot']?>
-      </strong></td>-->
-      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-        <?=$result['sgot']?>
-      </strong></td>
+      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['sgot']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['sgotrange']?>)</td>
-      <td valign="top" class="text"><strong>
-        <?=$result['stat_alk']?>
-      </strong>
-        <? if($result['stat_alk']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_alk']."...";?></td>
+      <td valign="top" class="text"><strong><?=$result['stat_alk']?></strong><? if($result['stat_alk']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_alk']."...";?></td>
     </tr>
     <? } 
+
+
 	  if($result['uric']!=""){
 	  ?>
     <tr>
       <td valign="top" class="text3"><strong>URIC(โรคเก๊าท์) :</strong></td>
-      <!--<td align="right" valign="top" bordercolor="#000000"><strong>
-        <?//=$result5['uric']?>
-      </strong></td>-->
-      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong>
-        <?=$result['uric']?>
-      </strong></td>
+      <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['uric']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['uricrange']?>)</td>
-      <td valign="top" class="text"><strong>
-        <?=$result['stat_uric']?>
-      </strong>
-        <? if($result['stat_uric']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_uric']."...";?></td>
+      <td valign="top" class="text"><strong><?=$result['stat_uric']?></strong><? if($result['stat_uric']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_uric']."...";?></td>
     </tr>
-    <tr>
-      <td colspan="6" align="center" valign="top"> <hr /></td>
-    </tr>
-	<? }
+	<? 
+	}
+
+
 	?>
-    
     <tr>
-      <td valign="top" class="text3" width="23%"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
-     <!-- <td align="left" valign="top" class="text3" width="4%"><strong>
-        <?//=$result5['cxr']?>
-      </strong></td>-->
-      <td colspan="4" align="left" valign="top" class="text3"><strong>
-        <?=$result['cxr']?>
-      </strong>
-        <? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?></td>
-      </tr>
+      <td valign="top" class="text3"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
+      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$result['cxr']?></strong><? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?></td>
+	</tr>
+
       <? 
 	  if($result['pap']!=""){
 	  ?>
     <tr>
       <td valign="top" class="text3"><strong>PAP การตรวจมะเร็งปากมดลูก :</strong></td>
-      <td colspan="5" align="left" valign="top" class="text3"><strong>
-        <?=$result['pap']?>
-        </strong>
-        <? if($result['pap']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pap']."...";?></td>
+      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$result['pap']?></strong><? if($result['pap']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pap']."...";?></td>
       </tr>
     <? }
+
 	if($result['other1']!=""){?>
     <tr>
-      <td colspan="6" valign="top"><strong>การตรวจพิเศษอื่น ๆ </strong></td>
+      <td colspan="5" valign="top"><strong>การตรวจพิเศษอื่น ๆ </strong></td>
     </tr>
+
     <tr>
-      <td width="23%" valign="top" class="text3"><strong>
-        <?=$result['other1']?>
-      :</strong></td>
-      <td colspan="5" valign="top" class="text3"><span class="text3">
-        <?=$result['stat_other1']?>
-        <? if($result['stat_other1']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other1']."...";?>
-      </span></td>
+      <td width="23%" valign="top" class="text3"><strong><?=$result['other1']?>:</strong></td>
+      <td colspan="4" valign="top" class="text3"><span class="text3"><?=$result['stat_other1']?><? if($result['stat_other1']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other1']."...";?></span></td>
       </tr>
       <? }
+
 	if($result['other2']!=""){?>
     <tr>
-      <td valign="top"><span class="text3"><strong>
-        <?=$result['other2']?> :
-      </strong>      </span></td>
-      <td colspan="5" valign="top"><span class="text3">
-        <?=$result['stat_other2']?>
-        <? if($result['stat_other2']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other2']."...";?>
-      </span></td>
+      <td valign="top"><span class="text3"><strong><?=$result['other2']?> :</strong></span></td>
+      <td colspan="4" valign="top"><span class="text3"><?=$result['stat_other2']?><? if($result['stat_other2']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other2']."...";?></span></td>
       </tr>
 	<? }
+
 	if($result['other3']!=""){?>
     <tr>
-      <td valign="top"><span class="text3"><strong>
-        <?=$result['other3']?> :
-      </strong>      </span></td>
-      <td colspan="5" valign="top"><span class="text3">
-        <?=$result['stat_other3']?>
-        <? if($result['stat_other3']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other3']."...";?>
-      </span></td>
+      <td valign="top"><span class="text3"><strong><?=$result['other3']?> :</strong>      </span></td>
+      <td colspan="4" valign="top"><span class="text3"><?=$result['stat_other3']?><? if($result['stat_other3']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other3']."...";?></span></td>
       </tr>
 	<? }
+
 	if($result['other4']!=""){?>
     <tr>
-      <td valign="top"><span class="text3"><strong>
-        <?=$result['other4']?> :
-      </strong>      </span></td>
-      <td colspan="5" valign="top"><span class="text3">
-        <?=$result['stat_other4']?>
-        <? if($result['stat_other4']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other4']."...";?>
-      </span></td>
+      <td valign="top"><span class="text3"><strong><?=$result['other4']?> :</strong>      </span></td>
+      <td colspan="4" valign="top"><span class="text3"><?=$result['stat_other4']?><? if($result['stat_other4']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other4']."...";?></span></td>
       </tr>
       <? }
+
 	if($result['other5']!=""){?>
     <tr>
-      <td valign="top"><span class="text3"><strong>
-        <?=$result['other5']?> :
-      </strong>      </span></td>
-      <td colspan="5" valign="top"><span class="text3">
+      <td valign="top"><span class="text3"><strong><?=$result['other5']?> :</strong>      </span></td>
+      <td colspan="4" valign="top"><span class="text3">
         <?=$result['stat_other5']?>
         <? if($result['stat_other5']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other5']."...";?>
       </span></td>
       </tr>
       <? }
+
 	if($result['other6']!=""){?>
     <tr>
-      <td valign="top"><span class="text3"><strong>
-        <?=$result['other6']?> :
-      </strong>      </span></td>
-      <td colspan="5" valign="top"><span class="text3">
-        <?=$result['stat_other6']?>
-        <? if($result['stat_other6']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other6']."...";?>
-      </span></td>
+      <td valign="top"><span class="text3"><strong><?=$result['other6']?> :</strong>      </span></td>
+      <td colspan="4" valign="top"><span class="text3"><?=$result['stat_other6']?><? if($result['stat_other6']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other6']."...";?></span></td>
       </tr>
       <? }
+
 	if($result['other7']!=""){?>
     <tr>
-      <td valign="top"><span class="text3"><strong>
-        <?=$result['other7']?> :
-      </strong>      </span></td>
-      <td colspan="5" valign="top"><span class="text3">
-        <?=$result['stat_other7']?>
-        <? if($result['stat_other7']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other7']."...";?>
-      </span></td>
+      <td valign="top"><span class="text3"><strong><?=$result['other7']?> :</strong>      </span></td>
+      <td colspan="4" valign="top"><span class="text3"><?=$result['stat_other7']?><? if($result['stat_other7']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_other7']."...";?></span></td>
       </tr>
       <? }
+
 
 	$q = mysql_query("SELECT * FROM `result1` WHERE `profilecode` = 'METAMP' ") or die( mysql_error() );
 	$amp_item = mysql_fetch_assoc($q);
 	$amp_autonumber = $amp_item['autonumber'];
 
-	$detail_sql = "SELECT * 
-	FROM `resultdetail` 
-	WHERE `autonumber` = '$amp_autonumber' 
-	AND `labcode` = 'METAMP' ";
+	$detail_sql = "SELECT * FROM `resultdetail` WHERE `autonumber` = '$amp_autonumber' AND `labcode` = 'METAMP' ";
 	$q = mysql_query($detail_sql);
 	$meta = mysql_fetch_assoc($q);
 
 
-if($meta['METAMP']!=""){
-	?>
-	<tr>
-		<td colspan="6" valign="top"><strong>การตรวจหาสารเสพติด</strong></td>
-	</tr>
-	<tr>
-		<td width="23%" valign="top" class="text3"><strong><?=$meta['other1']?>:</strong></td>
-		<td colspan="5" valign="top" class="text3">
-			<span class="text3">
-				<?php
-				
-				if($meta["result"]=="Negative"){
-					$app="ปกติ";	
-				}else if($meta["result"]=="Positive"){
-					$app="ผิดปกติ";	
-				}
+	if($meta['METAMP']!=""){
+		?>
+		<tr>
+			<td colspan="5" valign="top"><strong>การตรวจหาสารเสพติด</strong></td>
+		</tr>
+		<tr>
+			<td width="23%" valign="top" class="text3"><strong><?=$meta['other1']?>:</strong></td>
+			<td colspan="4" valign="top" class="text3">
+				<span class="text3">
+					<?php
+					if($meta["result"]=="Negative"){
+						$app="ปกติ";	
+					}else if($meta["result"]=="Positive"){
+						$app="ผิดปกติ";	
+					}
+					echo $app;
+					?>
+				</span>
+			</td>
+		</tr>
+		<?php 
+	}
+?>
+</table>
 
-				echo $app;
-				?>
-			</span>
-		</td>
-	</tr>
+<?php 
+
+if($extra_right_menu === true)
+{
+	?>
+	<table bordercolor="#FFFFFF" border="0"  cellpadding="0" cellspacing="0" width="100%" class="text3">
+		<tr>
+			<td width="45%"><b>ผลตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</b></td>
+			<td align="left"><?=$result['dental_exam'];?></td>
+		</tr>
+		<tr>
+			<td><b>ผลตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</b></td>
+			<td><?=$result['color_blind'];?></td>
+		</tr>
+		<tr>
+			<td><b>ผลตรวจการได้ยิน (Audiogram) :</b></td>
+			<td><?=$result['audiogram'];?></td>
+		</tr>
+		<tr>
+			<td><b>ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</b></td>
+			<td><?=$result['res_ekg'];?></td>
+		</tr>
+	</table>
 	<?php 
 }
-
 ?>
 
-
-    <tr>
+<table width="100%">
+	<tr>
       <td height="27" colspan="6" align="center" valign="top" class="text1"><hr /><strong>สรุปผลการตรวจสุขภาพ</strong>&nbsp;<u>
 	  <?
 	  $summary="";
@@ -999,8 +958,11 @@ if($meta['METAMP']!=""){
 	  
 	 ?></u>      </td>
     </tr>
-</table></td></tr>
-    <tr>
+</table>
+
+</td>
+</tr>
+<tr>
   <td colspan="2" valign="top" class="text2"><? if(empty($result['diag'])){ echo "";}else{ echo "<strong>Diag</strong> : $result[diag] <strong >";}?> <strong>ความคิดเห็นจากแพทย์</strong>
 &nbsp;<?=$result['dx']?></td>
   </tr>

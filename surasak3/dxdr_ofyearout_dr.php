@@ -1413,7 +1413,11 @@ DLP
 </span></td>
         <td><input name="normal661" type="text" id="normal661"  /></td>
       </tr>
-      <tr>
+      <tr class="tb_font_2">
+		 <td><span class="labfont">EKG :</span></td> 
+		 <td>
+			 <?=$arr_dxofyear['ekg'];?>&nbsp;<input name="res_ekg" type="radio" value="»¡µÔ">»¡µÔ&nbsp;<input name="res_ekg" type="radio" value="¼Ô´»¡µÔ">¼Ô´»¡µÔ
+		</td>
       </tr>
     </table></td>
   </tr>
