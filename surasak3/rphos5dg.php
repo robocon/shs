@@ -41,51 +41,47 @@ if (isset($Dgcode)){
 
 If (!empty($drugcode)){
     include("connect.inc");
-    $query = "SELECT drugcode,tradname,genname,unit,stock,mainstk,totalstk FROM druglst WHERE drugcode = '$drugcode' ";
-    $result = mysql_query($query) or die("Query failed");
+         $query = "SELECT drugcode,tradname,genname,unit,stock,mainstk,totalstk FROM druglst WHERE drugcode = '$drugcode' ";
+         $result = mysql_query($query) or die("Query failed");
 
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
+	 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	        if (!mysql_data_seek($result, $i)) {
+	            echo "Cannot seek to row $i\n";
+	            continue;
+	       }
 
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-    }
+	        if(!($row = mysql_fetch_object($result)))
+	            continue;
+ 	        }
 
-    if(mysql_num_rows($result)){
-        $dcode=$row->drugcode;
-        $tname=$row->tradname;
-        $nstock=$row->stock;
-        $nmainstk=$row->mainstk;
-        $ntotalstk=$row->totalstk;	
-        $cUnit  = $row->unit;
-    } else {
-        die("ไม่พบรหัส $drugcode <a target=_self  href='../nindex.htm'><ไปเมนู</a>");
-    }
-
-    print "<font face='Angsana New'>รหัส:$drugcode, ชื่อการค้า:$tname, ชื่อสามัญ:$tname <br>";
-    print "<font face='Angsana New'>ในคลัง.......... $nmainstk  $cUnit<br>";
-    print "ในห้องจ่าย..... $nstock<br>";
-    print "มีทั้งหมด....... $ntotalstk<br>";
-    print "<a href='rphos5dg_print.php?dg=$drugcode' target='_blank'>พิมพ์ทะเบียนคุมยาและเวชภัณฑ์</a>";
-    ///////////
-    $query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk 
-    FROM stktranx  
-    WHERE drugcode = '$drugcode' 
-    and status ='y' 
-    ORDER BY getdate ";
-    $result = mysql_query($query) or die("Query failed");
-    $num = 0;
+          if(mysql_num_rows($result)){
+                $dcode=$row->drugcode;
+	$tname=$row->tradname;
+	$nstock=$row->stock;
+	$nmainstk=$row->mainstk;
+	$ntotalstk=$row->totalstk;	
+	$cUnit  = $row->unit;
+                    }
+         else {
+                die("ไม่พบรหัส $drugcode <a target=_self  href='../nindex.htm'><ไปเมนู</a>");
+                 }
+         print "<font face='Angsana New'>รหัส:$drugcode, ชื่อการค้า:$tname, ชื่อสามัญ:$tname <br>";
+         print "<font face='Angsana New'>ในคลัง.......... $nmainstk  $cUnit<br>";
+         print "ในห้องจ่าย..... $nstock<br>";
+         print "มีทั้งหมด....... $ntotalstk<br>";
+		 print "<a href='rphos5dg_print.php?dg=$drugcode' target='_blank'>พิมพ์ทะเบียนคุมยาและเวชภัณฑ์</a>";
+///////////
+    $query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk                                    FROM stktranx  WHERE drugcode = '$drugcode' and status ='y' ORDER BY getdate asc, row_id asc";
+     $result = mysql_query($query)
+        or die("Query failed");
+    $num=0;
     while (list($getdate,$billno,$drugcode,$lotno,$department,$unitpri,
               $amount,$stkcut,$netlotno,$mainstk,$stock,$totalstk) = mysql_fetch_row ($result)) {
-        
-        $num++;
-        $netprice  =$unitpri*$amount;
-        $stkcutpri =$unitpri*$stkcut;
-        $netlotpri =$unitpri*$netlotno;
-        $mainstkpri =$unitpri*$mainstk;
+	$num++;
+	$netprice  =$unitpri*$amount;
+	$stkcutpri =$unitpri*$stkcut;
+	$netlotpri =$unitpri*$netlotno;
+	$mainstkpri =$unitpri*$mainstk;
 
         print (" <tr>\n".
            "  <td BGCOLOR=66CDAA><font face='Angsana New'>$num</td>\n".
@@ -112,12 +108,42 @@ If (!empty($drugcode)){
            "  <td BGCOLOR=FFCC99><font face='Angsana New'>$totalstk</td>\n".
 
            " </tr>\n");
-    }
-    
-    include("unconnect.inc");
-}
+          }
+?>		  
+</table>		  
+<p><hr /></p>
+<strong>ความเคลื่อนไหวห้องจ่ายยา</strong>
+<table>
+ <tr>
+  <th bgcolor=CC9900><font face='Angsana New'>#</th>
+  <th bgcolor=CC9900><font face='Angsana New'>วันที่รับ-จ่าย</th>
+  <th bgcolor=CC9900><font face='Angsana New'>ที่เอกสาร</th>
+  <th bgcolor=CC9900><font face='Angsana New'>จ่ายให้</th>
+  <th bgcolor=CC9900><font face='Angsana New'>จำนวนเบิก</th>
+  <th bgcolor=CC9900><font face='Angsana New'>คิดเป็นเงิน</th>
+ </tr>
+ <?
+	 $query = "SELECT *  FROM stkdata  WHERE drugcode = '$dcode' ORDER BY date ";
+	//echo $query;
+     $result = mysql_query($query)or die("Query failed");
+    $num=0;
+    while($rows = mysql_fetch_array($result)) {
+	$num++;
+
+        print (" <tr>\n".
+           "  <td BGCOLOR=FFCC99><font face='Angsana New'>$num</td>\n".
+           "  <td BGCOLOR=FFCC99><font face='Angsana New'>$rows[date]</td>\n".
+           "  <td BGCOLOR=FFCC99><font face='Angsana New'>$rows[billno]</td>\n".
+          "  <td BGCOLOR=FFCC99><font face='Angsana New'>$rows[depcode]</td>\n".
+           "  <td BGCOLOR=FFCC99><font face='Angsana New'>$rows[amount]</td>\n".
+           "  <td BGCOLOR=FFCC99><font face='Angsana New'>$rows[price]</td>\n".
+           " </tr>\n");
+          }
+        print "</table>";
+		  
+   include("unconnect.inc");
+   }
 ?>
 
-</table>
 
  
