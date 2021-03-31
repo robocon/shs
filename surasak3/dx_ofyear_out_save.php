@@ -86,10 +86,25 @@ if($rows > 0){
 	mysql_query($sql);
 }
 
-/**
- * ถ้ามีการบันทึกในวันนั้นไปแล้วจะเป็นการอัพเดท
- * แต่ถ้าข้ามวันจะบันทึกใหม่
- */
+$dental_exam = $color_blind = $audiogram = $ekg = '';
+
+if(!empty($_POST['dental_exam']))
+{
+	$dental_exam = $_POST['dental_exam'];
+}
+if(!empty($_POST['color_blind']))
+{
+	$color_blind = $_POST['color_blind'];
+}
+if(!empty($_POST['audiogram']))
+{
+	$audiogram = $_POST['audiogram'];
+}
+if(!empty($_POST['ekg']))
+{
+	$ekg = $_POST['ekg'];
+}
+
 $sql = "Select row_id From `dxofyear_out` where `thdatehn` = '$date_hn' order by row_id ASC limit 1 ";
 $dxQuery = mysql_query($sql);
 $count = mysql_num_rows($dxQuery);
@@ -207,11 +222,15 @@ if( ( isset($_POST["row_id"]) && $_POST["row_id"] != "" ) OR $count > 0 ){
 	`alkrange` ='".$_POST["ALPrange"]."',
 	`alkflag` ='".$_POST["ALPflag"]."' ,
 	`yearchk` ='".$nPrefix."',
-	`labin_date`='".$_POST['labin_date']."' 
+	`labin_date`='".$_POST['labin_date']."',
+	`dental_exam` = '$dental_exam',
+	`color_blind` = '$color_blind',
+	`audiogram` = '$audiogram',
+	`ekg` = '$ekg' 
 	where `row_id` = '".$_POST["row_id"]."'  limit 1";
 
 }else{
-	$sql = "INSERT INTO `dxofyear_out` ( `thidate`, `thdatehn`, `thdatevn`, `hn`, `vn`, `ptname`, `age`, `camp`, `camp_until`, `height`, `weight`, `round_`, `temperature`, `pause`, `rate`, `bmi`, `bp1`, `bp2`, `bp21`, `bp22`, `drugreact` , `cigarette` , `alcohol` , `exercise` , `congenital_disease` , `type` , `organ` , `clinic` , `doctor` , `ua_color`, `ua_appear`, `ua_spgr`, `ua_phu`, `ua_bloodu`, `ua_prou`, `ua_gluu`, `ua_ketu`, `ua_urobil`, `ua_bili`, `ua_nitrit`, `ua_wbcu`, `ua_rbcu`, `ua_epiu`, `ua_bactu`, `ua_yeast`, `ua_mucosu`, `ua_amopu`, `ua_castu`, `ua_crystu`, `ua_otheru`, `cbc_wbc`, `wbcrange`, `wbcflag`, `cbc_rbc`, `cbc_hb`, `cbc_hct`, `hctrange`, `hctflag`, `cbc_mcv`, `cbc_mch`, `cbc_mchc`, `cbc_pltc`,`pltcrange`, `pltcflag`, `cbc_plts`, `cbc_neu`, `cbc_lymp`, `cbc_mono`, `cbc_eos`, `cbc_baso`, `cbc_band`, `cbc_atyp`, `cbc_nrbc`, `cbc_rbcmor`, `cbc_other`, `cxr`, `bs`,`bsrange`, `bsflag`, `bun`,`bunrange`, `bunflag`, `cr`,`crrange`, `crflag`, `uric`,`uricrange`, `uricflag`, `chol`,`cholrange`, `cholflag`, `tg`,`tgrange`, `tgflag`, `sgot`,`sgotrange`, `sgotflag`, `sgpt`,`sgptrange`, `sgptflag`, `alk`,`alkrange`, `alkflag`, `dx`, `yearchk`,`labin_date`) VALUES ('".$date_now."','".$date_hn."','".$date_vn."','".$_POST["hn"]."','".$_POST["vn"]."','".$_POST["ptname"]."','".$_POST["age"]."','".$_POST["camp"]."','".$_POST["camp_until"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round_"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bmi"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$_POST["bp21"]."','".$_POST["bp22"]."','".$_POST["drugreact"]."','".$_POST["cigarette"]."','".$_POST["alcohol"]."','".$_POST["exercise"]."','".$_POST["congenital_disease"]."','".$_POST["type"]."','".$_POST["organ"]."','".$_POST["clinic"]."','".$_POST["doctor"]."','".$_POST["ua_color"]."','".$_POST["ua_appear"]."','".$_POST["ua_spgr"]."','".$_POST["ua_phu"]."','".$_POST["ua_bloodu"]."','".$_POST["ua_prou"]."','".$_POST["ua_gluu"]."','".$_POST["ua_ketu"]."','".$_POST["ua_urobil"]."','".$_POST["ua_bili"]."','".$_POST["ua_nitrit"]."','".$_POST["ua_wbcu"]."','".$_POST["ua_rbcu"]."','".$_POST["ua_epiu"]."','".$_POST["ua_bactu"]."','".$_POST["ua_yeast"]."','".$_POST["ua_mucosu"]."','".$_POST["ua_amopu"]."','".$_POST["ua_castu"]."','".$_POST["ua_crystu"]."','".$_POST["ua_otheru"]."','".$_POST["cbc_wbc"]."','".$_POST["WBCrange"]."','".$_POST["WBCflag"]."','".$_POST["cbc_rbc"]."','".$_POST["cbc_hb"]."','".$_POST["cbc_hct"]."','".$_POST["HCTrange"]."','".$_POST["HCTflag"]."','".$_POST["cbc_mcv"]."','".$_POST["cbc_mch"]."','".$_POST["cbc_mchc"]."','".$_POST["cbc_pltc"]."','".$_POST["PLTCrange"]."','".$_POST["PLTCflag"]."','".$_POST["cbc_plts"]."','".$_POST["cbc_neu"]."','".$_POST["cbc_lymp"]."','".$_POST["cbc_mono"]."','".$_POST["cbc_eos"]."','".$_POST["cbc_baso"]."','".$_POST["cbc_band"]."','".$_POST["cbc_atyp"]."','".$_POST["cbc_nrbc"]."','".$_POST["cbc_rbcmor"]."','".$_POST["cbc_other"]."','".$_POST["cxr"]."','".$_POST["bs"]."','".$_POST["GLUrange"]."','".$_POST["GLUflag"]."','".$_POST["bun"]."','".$_POST["BUNrange"]."','".$_POST["BUNflag"]."','".$_POST["cr"]."','".$_POST["CREArange"]."','".$_POST["CREAflag"]."','".$_POST["uric"]."','".$_POST["URICrange"]."','".$_POST["URICflag"]."','".$_POST["chol"]."','".$_POST["CHOLrange"]."','".$_POST["CHOLflag"]."','".$_POST["tg"]."','".$_POST["TRIGrange"]."','".$_POST["TRIGflag"]."','".$_POST["sgot"]."','".$_POST["ASTrange"]."','".$_POST["ASTflag"]."','".$_POST["sgpt"]."','".$_POST["ALTrange"]."','".$_POST["ALTflag"]."','".$_POST["alk"]."','".$_POST["ALPrange"]."','".$_POST["ALPflag"]."','".$_POST["dx"]."','".$nPrefix."','".$_POST['labin_date']."')";
+	$sql = "INSERT INTO `dxofyear_out` ( `thidate`, `thdatehn`, `thdatevn`, `hn`, `vn`, `ptname`, `age`, `camp`, `camp_until`, `height`, `weight`, `round_`, `temperature`, `pause`, `rate`, `bmi`, `bp1`, `bp2`, `bp21`, `bp22`, `drugreact` , `cigarette` , `alcohol` , `exercise` , `congenital_disease` , `type` , `organ` , `clinic` , `doctor` , `ua_color`, `ua_appear`, `ua_spgr`, `ua_phu`, `ua_bloodu`, `ua_prou`, `ua_gluu`, `ua_ketu`, `ua_urobil`, `ua_bili`, `ua_nitrit`, `ua_wbcu`, `ua_rbcu`, `ua_epiu`, `ua_bactu`, `ua_yeast`, `ua_mucosu`, `ua_amopu`, `ua_castu`, `ua_crystu`, `ua_otheru`, `cbc_wbc`, `wbcrange`, `wbcflag`, `cbc_rbc`, `cbc_hb`, `cbc_hct`, `hctrange`, `hctflag`, `cbc_mcv`, `cbc_mch`, `cbc_mchc`, `cbc_pltc`,`pltcrange`, `pltcflag`, `cbc_plts`, `cbc_neu`, `cbc_lymp`, `cbc_mono`, `cbc_eos`, `cbc_baso`, `cbc_band`, `cbc_atyp`, `cbc_nrbc`, `cbc_rbcmor`, `cbc_other`, `cxr`, `bs`,`bsrange`, `bsflag`, `bun`,`bunrange`, `bunflag`, `cr`,`crrange`, `crflag`, `uric`,`uricrange`, `uricflag`, `chol`,`cholrange`, `cholflag`, `tg`,`tgrange`, `tgflag`, `sgot`,`sgotrange`, `sgotflag`, `sgpt`,`sgptrange`, `sgptflag`, `alk`,`alkrange`, `alkflag`, `dx`, `yearchk`,`labin_date`,`dental_exam`,`color_blind`,`audiogram`,`ekg`) VALUES ('".$date_now."','".$date_hn."','".$date_vn."','".$_POST["hn"]."','".$_POST["vn"]."','".$_POST["ptname"]."','".$_POST["age"]."','".$_POST["camp"]."','".$_POST["camp_until"]."','".$_POST["height"]."','".$_POST["weight"]."','".$_POST["round_"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bmi"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$_POST["bp21"]."','".$_POST["bp22"]."','".$_POST["drugreact"]."','".$_POST["cigarette"]."','".$_POST["alcohol"]."','".$_POST["exercise"]."','".$_POST["congenital_disease"]."','".$_POST["type"]."','".$_POST["organ"]."','".$_POST["clinic"]."','".$_POST["doctor"]."','".$_POST["ua_color"]."','".$_POST["ua_appear"]."','".$_POST["ua_spgr"]."','".$_POST["ua_phu"]."','".$_POST["ua_bloodu"]."','".$_POST["ua_prou"]."','".$_POST["ua_gluu"]."','".$_POST["ua_ketu"]."','".$_POST["ua_urobil"]."','".$_POST["ua_bili"]."','".$_POST["ua_nitrit"]."','".$_POST["ua_wbcu"]."','".$_POST["ua_rbcu"]."','".$_POST["ua_epiu"]."','".$_POST["ua_bactu"]."','".$_POST["ua_yeast"]."','".$_POST["ua_mucosu"]."','".$_POST["ua_amopu"]."','".$_POST["ua_castu"]."','".$_POST["ua_crystu"]."','".$_POST["ua_otheru"]."','".$_POST["cbc_wbc"]."','".$_POST["WBCrange"]."','".$_POST["WBCflag"]."','".$_POST["cbc_rbc"]."','".$_POST["cbc_hb"]."','".$_POST["cbc_hct"]."','".$_POST["HCTrange"]."','".$_POST["HCTflag"]."','".$_POST["cbc_mcv"]."','".$_POST["cbc_mch"]."','".$_POST["cbc_mchc"]."','".$_POST["cbc_pltc"]."','".$_POST["PLTCrange"]."','".$_POST["PLTCflag"]."','".$_POST["cbc_plts"]."','".$_POST["cbc_neu"]."','".$_POST["cbc_lymp"]."','".$_POST["cbc_mono"]."','".$_POST["cbc_eos"]."','".$_POST["cbc_baso"]."','".$_POST["cbc_band"]."','".$_POST["cbc_atyp"]."','".$_POST["cbc_nrbc"]."','".$_POST["cbc_rbcmor"]."','".$_POST["cbc_other"]."','".$_POST["cxr"]."','".$_POST["bs"]."','".$_POST["GLUrange"]."','".$_POST["GLUflag"]."','".$_POST["bun"]."','".$_POST["BUNrange"]."','".$_POST["BUNflag"]."','".$_POST["cr"]."','".$_POST["CREArange"]."','".$_POST["CREAflag"]."','".$_POST["uric"]."','".$_POST["URICrange"]."','".$_POST["URICflag"]."','".$_POST["chol"]."','".$_POST["CHOLrange"]."','".$_POST["CHOLflag"]."','".$_POST["tg"]."','".$_POST["TRIGrange"]."','".$_POST["TRIGflag"]."','".$_POST["sgot"]."','".$_POST["ASTrange"]."','".$_POST["ASTflag"]."','".$_POST["sgpt"]."','".$_POST["ALTrange"]."','".$_POST["ALTflag"]."','".$_POST["alk"]."','".$_POST["ALPrange"]."','".$_POST["ALPflag"]."','".$_POST["dx"]."','".$nPrefix."','".$_POST['labin_date']."','$dental_exam','$color_blind','$audiogram','$ekg')";
 	
 }
 $result = mysql_query($sql) or die(mysql_error());
