@@ -21,7 +21,7 @@ function jschars($str)
 
 	$_SESSION["dt_diag_detail"]=str_replace(array("\r","\n","\r\n",'"',"'","<",">","&"),'',$_POST["dt_diag_detail"]);		//เอาสัญลักษณ์พิเศษออก
 	$_SESSION["dt_icd10"] = $_POST["dt_icd10"];  //ICD10 Principal Diagnosis
-	$_SESSION["dt_diag"] = $_POST["dt_diag"];  //Principal Diagnosis
+	$_SESSION["dt_diag"] =str_replace(array("\r","\n","\r\n",'"',"'","<",">","&"),'',$_POST["dt_diag"]);	//Principal Diagnosis
 	$_SESSION["diag_thai"] = $_POST["diag_thai"];  //Principal Diagnosis ภาษาไทย
 	
 	$_SESSION["dt_diag"]=$_SESSION["diag_thai"]." ".$_SESSION["dt_diag"];

@@ -707,6 +707,37 @@ window.onload = function(){
 jQuery.noConflict();
 (function( $ ) {
   $(function() {
+ 
+		// คลิกจาก rediag
+		// $(document).on('click', '.rediagtest', function(){
+			
+		// 	var get_data_id = $(this).attr('data-item-id');
+		// 	var icd = $('#code'+get_data_id).val().toLocaleLowerCase();
+			
+		// 	if( testRdu6(icd) === true ){
+		// 		notiPharyngitis();
+		// 	}
+
+		// 	if( rduIn7(icd) === true ){
+		// 		notifyAcuteDiarrhea();
+		// 	}
+
+		// });
+
+		// คีย์มือแล้วเลือกจากpopup
+		// $(document).on('click', '.rediagkey', function(){
+		// 	// console.log(this);
+		// 	var icd = $(this).attr('data-code').toLocaleLowerCase();
+		// 	// console.log(icd);
+		// 	if( testRdu6(icd) === true ){
+		// 		notiPharyngitis();
+		// 	}
+
+		// 	if( rduIn7(icd) === true ){
+		// 		notifyAcuteDiarrhea();
+		// 	}
+
+		// });
 
 		// ปิด popup ตัวชี้วัดที่6
 		$(document).on('click', '#closeNotifyIdu6', function(){
@@ -727,6 +758,8 @@ jQuery.noConflict();
 			var testText = $(this).val().toLocaleLowerCase();
 			testRdu6KeyStroke(testText);
 		});
+
+		
 		
 	});
 })(jQuery);
