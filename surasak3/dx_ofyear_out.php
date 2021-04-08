@@ -762,9 +762,14 @@ C&deg; </td>
 
 			//if(!empty($arr_dxofyear[$list_lab[$labname]]))
 			//$labresult = $arr_dxofyear[$list_lab[$labname]];
+			$extraName = "";
+			if($labname=='10001')
+			{
+				$extraName = '(LDLC)';
+			}
 
 	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
+          <td align="right" class="tb_font_2"><?php echo $labname.$extraName;?> : </td>
           <td>&nbsp;<input name="<?php echo  $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;<?php //echo $unit;?>
 &nbsp;</td>
 		 <input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
