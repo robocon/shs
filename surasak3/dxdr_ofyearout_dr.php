@@ -1235,47 +1235,96 @@ $bsult = mysql_fetch_array($brow);
         <div id="acnormal43" <? if(empty($result_dx['sgot']) || ($result_dx['sgot'] >= 15 && $result_dx['sgot'] <= 37)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch43'><option value="ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา" <? if($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37){ echo "selected='selected';";}?>>ค่าการทำงานของตับผิดปกติ ควรพบแพทย์เพื่อรับการประเมินและให้การรักษา</option></select></div>  </td>
 	    </tr>
-	  <tr>
-	    <td align="right" class="profilelab">URIC :</td>
-	    <td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">
-	      <?=$bssult['uric']?>
-	    </span></td>
-	    <td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">
-	      <?=$bsult['uric']?>
-	    </span></td>
-	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
-            <? 
-			if($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2){
-				echo "<span style='color:#F00'><strong>$result_dx[uric]</strong></span>";
-			}else{
-				echo "<span style='color:#00F'>$result_dx[uric]</span>";
-			}
-			?>         
-        </td>
-	    <td class="labfont">(<?=$result_dx['uricrange']?>)</td>
-	    <td align="center" class="labfont"><span <? if($result_dx['uricflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['uricflag']?></span></td>
-	    <td class="labfont"><input name='normal49' type='radio' value='ปกติ' onclick="togglediv2('acnormal49');" <? if($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2){ echo "checked";}?>/>
-ปกติ
-  <input name='normal49' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal49');"<? if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){ echo "checked";}?>/>
-            <? 
+
+
+
+<tr>
+	<td align="right" class="profilelab">URIC :</td>
+	<!--ย้อนหลัง2ปี-->
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['uric']?></span></td>
+	<!--ย้อนหลัง1ปี-->
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['uric']?></span></td>
+	<!--แลปปีปัจจุบัน-->
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<?php
+		if($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2){
+			echo "<span style='color:#F00'><strong>$result_dx[uric]</strong></span>";
+		}else{
+			echo "<span style='color:#00F'>$result_dx[uric]</span>";
+		}
+		?>
+	</td>
+	<td class="labfont">(<?=$result_dx['uricrange']?>)</td>
+	<td align="center" class="labfont"><span <? if($result_dx['uricflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['uricflag']?></span></td>
+	<td class="labfont">
+		<input name='normal49' type='radio' value='ปกติ' onclick="togglediv2('acnormal49');" <? if($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2){ echo "checked";}?>/> ปกติ
+		<input name='normal49' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal49');"<? if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){ echo "checked";}?>/>
+		<?php
 			if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){
 				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
-			?> 
-		</td>
-	    <td colspan="4">
-        <div id="acnormal49" <? if(empty($result_dx['uric']) || ($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
-        <select name='ch49'>
-        <option value="ปกติ" <? if($result_dx['uric'] <= 7){ echo "selected='selected';";}?>>ปกติ</option>
-		<option value="มีระดับกรดยูริคต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ" <? if($result_dx['uric'] < 2.6){ echo "selected='selected';";}?>>มีระดับกรดยูริคต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ</option>
-        <option value="มีระดับกรดยูริคสูงผิดปกติ ควรควบคุมอาหารจำพวกเครื่องใน, อาหารทะเล, เครื่องดื่มแอลกอฮอล์" <? if($result_dx['uric'] > 7.2){ echo "selected='selected';";}?>>มีระดับกรดยูริคสูงผิดปกติ ควรควบคุมอาหารจำพวกเครื่องใน, อาหารทะเล, เครื่องดื่มแอลกอฮอล์</option>
-        </select></div>            </td>
-	    </tr>
+		?> 
+	</td>
+	<td colspan="4">
+		<div id="acnormal49" <? if(empty($result_dx['uric']) || ($result_dx['uric'] >= 2.6 && $result_dx['uric'] <= 7.2)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+			<select name='ch49'>
+				<option value="ปกติ" <? if($result_dx['uric'] <= 7){ echo "selected='selected';";}?>>ปกติ</option>
+				<option value="มีระดับกรดยูริคต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ" <? if($result_dx['uric'] < 2.6){ echo "selected='selected';";}?>>มีระดับกรดยูริคต่ำกว่าปกติ ควรพบแพทย์หรือตรวจซ้ำ</option>
+				<option value="มีระดับกรดยูริคสูงผิดปกติ ควรควบคุมอาหารจำพวกเครื่องใน, อาหารทะเล, เครื่องดื่มแอลกอฮอล์" <? if($result_dx['uric'] > 7.2){ echo "selected='selected';";}?>>มีระดับกรดยูริคสูงผิดปกติ ควรควบคุมอาหารจำพวกเครื่องใน, อาหารทะเล, เครื่องดื่มแอลกอฮอล์</option>
+			</select>
+		</div>
+	</td>
+</tr>
+
+<tr>
+	<td align="right" class="profilelab">HDL :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hdl']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hdl']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<?php
+		if($result_dx['hdl'] < 40 || $result_dx['hdl'] > 60){
+			echo "<span style='color:#F00'><strong>$result_dx[hdl]</strong></span>";
+		}else{
+			echo "<span style='color:#00F'>$result_dx[hdl]</span>";
+		}
+		?>
+	</td>
+	<td class="labfont">(<?=$result_dx['hdl_range']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['hdl_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['hdl_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_hdl' type='radio' value='ปกติ' onclick="togglediv2('hdl_action');" <? if($result_dx['hdl'] >= 40 && $result_dx['hdl'] <= 60 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hdl' type='radio' value='ผิดปกติ' onclick="togglediv1('hdl_action');"<? if(!empty($result_dx['hdl']) && ($result_dx['hdl'] < 40 || $result_dx['hdl'] > 60 )){ echo "checked";}?>/>
+		<?php
+			if(!empty($result_dx['hdl']) && ($result_dx['hdl'] < 40 || $result_dx['hdl'] > 60)){
+				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+			}else{
+				echo "<span style='color:#000'>ผิดปกติ</span>";
+			}
+		?> 
+	</td>
+	<td colspan="4">
+		<div id="hdl_action" <? if(empty($result_dx['hdl']) || ($result_dx['hdl'] >= 40 && $result_dx['hdl'] <= 60)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+			<select name='reason_hdl'>
+				<option value="ปกติ" <? if($result_dx['hdl'] >= 40 && $result_dx['hdl'] <= 60){ echo "selected='selected';";}?>>ปกติ</option>
+				<option value="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ" <? if($result_dx['hdl'] > 60){ echo "selected='selected';";}?>>การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ</option>
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['hdl'] < 40){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+</tr>
+
+
+
+
 	<?php 
 	/*$i++;
 			}*/?>
+
+
             </table>
         <hr />   
 </TD>
@@ -1339,6 +1388,7 @@ $bsult = mysql_fetch_array($brow);
 	      <input name="ch53" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
 	      </div></td>
 	    </tr>
+
 	  <tr>
 	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ :</td>
 	    <td class="labfont"><input name="other2" type="text" size="20" /></td>
@@ -1350,6 +1400,7 @@ $bsult = mysql_fetch_array($brow);
 	      <input name="ch54" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
 	      </div></td>
 	    </tr>
+
 	  </table></td>
 </tr>
 </table>

@@ -74,6 +74,7 @@ $list_cbc["NRBC"] =  "cbc_nrbc";
 $list_cbc["RBCMOR"] =  "cbc_rbcmor";
 $list_cbc["OTHER"] =  "cbc_other";
 
+// รายการแลปอื่นๆที่ให้แสดงผลได้
 $list_lab["TRIG"] = "tg";
 $list_lab["GLU"] = "bs";
 $list_lab["CHOL"] = "chol";
@@ -83,6 +84,19 @@ $list_lab["ALP"] = "alk";
 $list_lab["BUN"] = "bun";
 $list_lab["CREA"] = "cr";
 $list_lab["URIC"] = "uric";
+
+$list_lab["HDL"] = "hdl";
+$list_lab["10001"] = "10001";//ldlc
+$list_lab["MALARI"] = "malari";
+$list_lab["METAMP"] = "metamp";
+$list_lab["HBSAG"] = "hbsag";
+$list_lab["HCVAB"] = "hcvab";
+$list_lab["HIV"] = "hiv";
+$list_lab["VDRL"] = "vdrl";
+$list_lab["PARASI"] = "parasi";
+$list_lab["GROUPT"] = "groupt";
+$list_lab["RH"] = "rh";
+$list_lab["UPT"] = "upt";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -228,7 +242,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	AND b.parentcode = 'CBC' 
 	Order by b.seq ASC";
 	$result_cbc = mysql_query($sql);
-
+	
 	// หาผลที่ตรวจ อื่นๆที่ไม่ใช่ UA CBC
 	$sql = "Select b.labcode, b.result, b.unit,b.normalrange,b.flag 
 	From ( 
@@ -727,8 +741,8 @@ C&deg; </td>
 		  </tr>
       </table>
 	  <hr />
-	  &nbsp;&nbsp; <span class="style5">CBC :</span> 
-	<div style="margin-top: -30px;">
+	  <div><span class="style5">&nbsp;&nbsp;CBC :</span></div>
+	<div >
     <table border="0">
 	  <tr>
 	  <?php
@@ -754,32 +768,51 @@ C&deg; </td>
       </table>
       </div>
 	  <hr />
-	  <table border="0">
-	  <tr>
-	  <?php
-	  $i=1;
-	  	while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab)){
 
-			//if(!empty($arr_dxofyear[$list_lab[$labname]]))
-			//$labresult = $arr_dxofyear[$list_lab[$labname]];
+	<?php 
+	$other_lab_rows = mysql_num_rows($result_lab);
+	if ($other_lab_rows > 0) 
+	{
+	?>
+	<div><span class="style5">&nbsp;&nbsp;แลปอื่นๆ :</span></div>
+	<table border="0">
+		<tr>
+		<?php
+		$i=1;
+		while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab))
+		{ 
+			if(empty($list_lab[$labname]))
+			{
+				continue;
+			}
+
 			$extraName = "";
 			if($labname=='10001')
 			{
 				$extraName = '(LDLC)';
 			}
-
-	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname.$extraName;?> : </td>
-          <td>&nbsp;<input name="<?php echo  $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;<?php //echo $unit;?>
-&nbsp;</td>
-		 <input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
-          <input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
+			?>
+			<td align="right" class="tb_font_2"><?php echo $labname.$extraName;?> : </td>
+			<td>
+				&nbsp;<input name="<?php echo $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;&nbsp;
+				<input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
+				<input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
+			</td>
+			<?php 
+			// ตัดบรรทัดใหม่
+			if($i%5==0) echo "<tr></tr>";
+			$i++;
+		}
+		?>
+		</tr>
+		<tr>
+			<td colspan="10">* ผลแลปอื่นๆที่ตรวจแล้วและแพทย์จำเป็นต้องบันทึกผล ถ้าไม่มีในรายการข้างต้น กรุณาแจ้งศูนย์คอมฯเพื่อปรับปรุงแก้ไข ขอบคุณครับ</td>
+		</tr>
+	</table>
 	<?php 
-	if($i%5==0) echo "<tr></tr>";
-	$i++;
-			}?>
-		  </tr>
-      </table>
+	}
+	?>
+
 		</TD>
 	</TR>
 	</TABLE>

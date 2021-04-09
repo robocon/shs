@@ -1,0 +1,50 @@
+ALTER TABLE `dxofyear_out` 
+ADD `hdl` VARCHAR( 50 ) ,
+ADD `hdl_range` VARCHAR( 50 ) ,
+ADD `hdl_flag` VARCHAR( 50 ) ,
+
+ADD `10001` VARCHAR( 50 ) ,
+ADD `10001_range` VARCHAR( 50 ) ,
+ADD `10001_flag` VARCHAR( 50 ) ,
+
+ADD `malari` VARCHAR( 50 ) ,
+ADD `malari_range` VARCHAR( 50 ) ,
+ADD `malari_flag` VARCHAR( 50 ) ,
+
+ADD `metamp` VARCHAR( 50 ) ,
+ADD `metamp_range` VARCHAR( 50 ) ,
+ADD `metamp_flag` VARCHAR( 50 ) ,
+
+ADD `hbsag` VARCHAR( 50 ) ,
+ADD `hbsag_range` VARCHAR( 50 ) ,
+ADD `hbsag_flag` VARCHAR( 50 ) ,
+
+ADD `hcvab` VARCHAR( 50 ) ,
+ADD `hcvab_range` VARCHAR( 50 ) ,
+ADD `hcvab_flag` VARCHAR( 50 ) ,
+
+ADD `hiv` VARCHAR( 50 ) ,
+ADD `hiv_range` VARCHAR( 50 ) ,
+ADD `hiv_flag` VARCHAR( 50 ) , 
+
+ADD `vdrl` VARCHAR( 50 ) ,
+ADD `vdrl_range` VARCHAR( 50 ) ,
+ADD `vdrl_flag` VARCHAR( 50 ) , 
+
+ADD `parasi` VARCHAR( 50 ) ,
+ADD `parasi_range` VARCHAR( 50 ) ,
+ADD `parasi_flag` VARCHAR( 50 ) , 
+
+ADD `groupt` VARCHAR( 50 ) ,
+ADD `groupt_range` VARCHAR( 50 ) ,
+ADD `groupt_flag` VARCHAR( 50 ) , 
+
+ADD `rh` VARCHAR( 50 ) ,
+ADD `rh_range` VARCHAR( 50 ) ,
+ADD `rh_flag` VARCHAR( 50 ) , 
+
+ADD `upt` VARCHAR( 50 ) ,
+ADD `upt_range` VARCHAR( 50 ) ,
+ADD `upt_flag` VARCHAR( 50 ) 
+
+;
