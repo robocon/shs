@@ -1,0 +1,51 @@
+ALTER TABLE `condxofyear_out` 
+ADD `hdl` VARCHAR( 50 ) ,
+ADD `hdl_range` VARCHAR( 50 ) ,
+ADD `stat_hdl` VARCHAR( 255 ) ,
+ADD `reason_hdl` VARCHAR( 255 ) ,
+
+ADD `ldl` VARCHAR( 50 ) ,
+ADD `ldl_range` VARCHAR( 50 ) ,
+ADD `stat_ldl` VARCHAR( 255 ) ,
+ADD `reason_ldl` VARCHAR( 255 ) ,
+
+ADD `malari` VARCHAR( 50 ) ,
+ADD `malari_range` VARCHAR( 50 ) ,
+ADD `stat_malari` VARCHAR( 255 ) ,
+
+ADD `metamp` VARCHAR( 50 ) ,
+ADD `metamp_range` VARCHAR( 50 ) ,
+ADD `stat_metamp` VARCHAR( 255 ) ,
+
+ADD `hbsag` VARCHAR( 50 ) ,
+ADD `hbsag_range` VARCHAR( 50 ) ,
+ADD `stat_hbsag` VARCHAR( 255 ) ,
+
+ADD `hcvab` VARCHAR( 50 ) ,
+ADD `hcvab_range` VARCHAR( 50 ) ,
+ADD `stat_hcvab` VARCHAR( 255 ) ,
+
+ADD `hiv` VARCHAR( 50 ) ,
+ADD `hiv_range` VARCHAR( 50 ) ,
+ADD `stat_hiv` VARCHAR( 255 ) , 
+
+ADD `vdrl` VARCHAR( 50 ) ,
+ADD `vdrl_range` VARCHAR( 50 ) ,
+ADD `stat_vdrl` VARCHAR( 255 ) , 
+
+ADD `parasi` VARCHAR( 50 ) ,
+ADD `parasi_range` VARCHAR( 50 ) ,
+ADD `stat_parasi` VARCHAR( 255 ) , 
+
+ADD `groupt` VARCHAR( 50 ) ,
+ADD `groupt_range` VARCHAR( 50 ) ,
+ADD `stat_groupt` VARCHAR( 255 ) , 
+
+ADD `rh` VARCHAR( 50 ) ,
+ADD `rh_range` VARCHAR( 50 ) ,
+ADD `stat_rh` VARCHAR( 255 ) , 
+
+ADD `upt` VARCHAR( 50 ) ,
+ADD `upt_range` VARCHAR( 50 ) ,
+ADD `stat_upt` VARCHAR( 255 ) ;
+

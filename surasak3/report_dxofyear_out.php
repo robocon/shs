@@ -656,23 +656,8 @@ mmHg.</u></span></td>
 <tr>
   <td colspan="2" valign="top" class="text">
 
-	<?php 
-	$extra_right_menu = false;
-	if(!empty($result['dental_exam']) OR !empty($result['color_blind'])  OR !empty($result['audiogram'])  OR !empty($result['ekg'])  OR !empty($result['res_ekg']))
-	{
-		$extra_right_menu = true;
-	}
-
-	if($extra_right_menu === true)
-	{
-		?>
-
-		<?php
-	}
-	?>
-
-  <table width="100%"  bordercolor="#FFFFFF" border="0"  cellpadding="0" cellspacing="0">
-	  <!--
+  <table width="100%"  bordercolor="#ffffff" border="0"  cellpadding="0" cellspacing="0">
+	<!--
 	<tr>
 		<td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
 		<td width="4%" align="center" valign="top" bordercolor="#000000"  class="text3"><strong><?=$nPrefix2;?></strong></td>
@@ -680,17 +665,17 @@ mmHg.</u></span></td>
 		<td valign="top" class="text">&nbsp;</td>
 		<td valign="top" class="text">&nbsp;</td>
 	</tr>
--->
+	-->
 	<?php 
 	if($result['bs']!="")
 	{
 		?>
 		<tr>
-			<td width="28%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
-			<td width="4%" align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
-			<td width="3%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td width="60%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
+			<td width="10%" align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
+			<td width="5%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
-			<td width="55%" valign="top" class="text"><strong><?=$result['stat_bs']?></strong><? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
+			<td width="20%" valign="top" class="text"><strong><?=$result['stat_bs']?></strong><? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
 		</tr>
 		<?php
 	}
@@ -798,19 +783,18 @@ mmHg.</u></span></td>
 
 
 	?>
-    <tr>
-      <td valign="top" class="text3"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong></td>
-      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$result['cxr']?></strong><? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?></td>
-	</tr>
+    
 
-      <? 
-	  if($result['pap']!=""){
-	  ?>
-    <tr>
-      <td valign="top" class="text3"><strong>PAP การตรวจมะเร็งปากมดลูก :</strong></td>
-      <td colspan="4" align="left" valign="top" class="text3"><strong><?=$result['pap']?></strong><? if($result['pap']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pap']."...";?></td>
-      </tr>
-    <? }
+	<?php
+	if($result['pap']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>PAP การตรวจมะเร็งปากมดลูก :</strong></td>
+			<td colspan="4" align="left" valign="top" class="text3"><strong><?=$result['pap']?></strong><? if($result['pap']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pap']."...";?></td>
+		</tr>
+		<?php
+	}
 
 	if($result['other1']!=""){?>
     <tr>
@@ -900,35 +884,188 @@ mmHg.</u></span></td>
 		</tr>
 		<?php 
 	}
+
+
+	if($result['hdl']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>HDL(ไขมันความหนาแน่นสูง) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['hdl']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['hdl_range']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_hdl']?></strong><? if($result['stat_hdl']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_hdl']."...";?></td>
+		</tr>
+		<? 
+	}
+
+	if($result['ldl']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>LDL(ไขมันความหนาแน่นต่ำ) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['ldl']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['ldl_range']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_ldl']?></strong><? if($result['stat_ldl']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ldl']."...";?></td>
+		</tr>
+		<? 
+	}
+
+	if($result['malari'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Malaria(ตรวจหาเชื้อมาลาเรีย) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_malari']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['metamp'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Amphetamine in urine(ตรวจสารเสพติดในปัสสาวะ) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_metamp']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['hbsag'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>HBsAg(ตรวจหาเชื้อไวรัสตับอักเสบบี) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_hbsag']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['hcvab'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Anti HCV(ตรวจหาเชื้อไวรัสตับอักเสบซี) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_hcvab']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['hiv'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Anti HIV(ตรวจหาภาวะภูมิคุ้มกันบกพร่อง) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_hiv']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['vdrl'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>VDRL (ตรวจหาโรคซิฟิลิส) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_vdrl']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['parasi'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Stool exam(ตรวจอุจจาระ) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_parasi']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['groupt'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>ABO blood group(ตรวจหาหมู่เลือดเอ บี โอ) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['groupt']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['rh'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Rh blood group(ตรวจหมู่เลือดอาร์เอช) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['rh']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['upt'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>Pregnancy test(ตรวจการตั้งครรภ์) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['stat_upt']?></b></span></td>
+		</tr>
+		<?php 
+	}
+
+	if($result['dental_exam'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['dental_exam']?></b></span></td>
+		</tr>
+		<?php
+	}
+
+	if($result['color_blind'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['color_blind']?></b></span></td>
+		</tr>
+		<?php
+	}
+
+	if($result['audiogram'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจการได้ยิน (Audiogram) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['audiogram']?></b></span></td>
+		</tr>
+		<?php
+	}
+
+	if($result['res_ekg'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</strong>      </span></td>
+			<td  valign="top"><span class="text"><b><?=$result['res_ekg']?></b></span></td>
+		</tr>
+		<?php
+	}
+
+	if($result['cxr'])
+	{
+		?>
+		<tr class="text3">
+			<td valign="top" colspan="4"><span class="text3"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong>      </span></td>
+			<td  valign="top">
+				<span class="text"><b><?=$result['cxr']?></b></span> <? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?>
+			</td>
+		</tr>
+		<?php
+	}
+
 ?>
 </table>
-
-<?php 
-
-if($extra_right_menu === true)
-{
-	?>
-	<table bordercolor="#FFFFFF" border="0"  cellpadding="0" cellspacing="0" width="100%" class="text3">
-		<tr>
-			<td width="45%"><b>ผลตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</b></td>
-			<td align="left"><?=$result['dental_exam'];?></td>
-		</tr>
-		<tr>
-			<td><b>ผลตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</b></td>
-			<td><?=$result['color_blind'];?></td>
-		</tr>
-		<tr>
-			<td><b>ผลตรวจการได้ยิน (Audiogram) :</b></td>
-			<td><?=$result['audiogram'];?></td>
-		</tr>
-		<tr>
-			<td><b>ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</b></td>
-			<td><?=$result['res_ekg'];?></td>
-		</tr>
-	</table>
-	<?php 
-}
-?>
 
 <table width="100%">
 	<tr>
