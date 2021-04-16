@@ -151,13 +151,13 @@ if($action == 'get_user')
         }, 1000);
 
         function addEventListener(el, eventName, handler) {
-        if (el.addEventListener) {
-            el.addEventListener(eventName, handler);
-        } else {
-            el.attachEvent('on' + eventName, function(){
-                handler.call(el);
-            });
-        }
+            if (el.addEventListener) {
+                el.addEventListener(eventName, handler);
+            } else {
+                el.attachEvent('on' + eventName, function(){
+                    handler.call(el);
+                });
+            }
         }
 
         // addEventListener(document.getElementById("test_data"), "onclick", function(){ 

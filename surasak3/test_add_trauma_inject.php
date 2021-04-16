@@ -33,7 +33,7 @@ $thai_date = (date('Y')+543).date('-m-d H:i:s');
 $rand_min = rand(10,29);
 $rand_sec = rand(10,50);
 
-$sql = "SELECT *,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`ptright1` FROM `opcard` WHERE `row_id` = '$test_row_id' ";
+$sql = "SELECT *,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`ptright1`,`dbirth` FROM `opcard` WHERE `row_id` = '$test_row_id' ";
 $op_q = $dbi->query($sql);
 $item = $op_q->fetch_assoc();
 
