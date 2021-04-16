@@ -671,7 +671,7 @@ mmHg.</u></span></td>
 	{
 		?>
 		<tr>
-			<td width="60%" valign="top" class="text3"><strong>GLU(เบาหวาน) :</strong></td>
+			<td width="60%" valign="top" class="text3"><strong>FBS(น้ำตาลในเลือด) :</strong></td>
 			<td width="10%" align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
 			<td width="5%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
@@ -745,10 +745,11 @@ mmHg.</u></span></td>
       <? } 
 
 
-	  if($result['sgpt']!=""){
+	  if($result['sgpt']!=""){ 
+		  // ตัวเดิม ALT
 	  ?>
     <tr>
-      <td valign="top" class="text3"><strong>ALT(การทำงานของตับ) :</strong></td>
+      <td valign="top" class="text3"><strong>SGPT(การทำงานของตับ) :</strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['sgpt']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['sgptrange']?>)</td>
@@ -758,9 +759,10 @@ mmHg.</u></span></td>
 
 
 	  if($result['sgot']!=""){
+		  //ตัวเดิม AST
 	  ?>
     <tr>
-      <td valign="top" class="text3"><strong>AST(การทำงานของตับ) :</strong></td>
+      <td valign="top" class="text3"><strong>SGOT(การทำงานของตับ) :</strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['sgot']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['sgotrange']?>)</td>
@@ -1056,7 +1058,7 @@ mmHg.</u></span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>CXR การตรวจเอ็กซ์เรย์ปอด :</strong>      </span></td>
+			<td valign="top" colspan="4"><span class="text3"><strong>CXR การตรวจเอกซเรย์ปอด :</strong>      </span></td>
 			<td  valign="top">
 				<span class="text"><b><?=$result['cxr']?></b></span> <? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?>
 			</td>
