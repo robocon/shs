@@ -10,57 +10,66 @@ ADD `countdown_c19` DATETIME NULL ;
 include 'bootstrap.php';
 $action = $_REQUEST['action'];
 $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES tis620");
+// $dbi->query("SET NAMES tis620");
 if($action == 'get_user')
 {
     $thai_date = (date('Y')+543).date('-m-d');
     $sql = "SELECT * 
-    FROM `trauma_inject` 
+    FROM `test_trauma_inject` 
     WHERE `thidate` LIKE '$thai_date%' 
     AND `drugcode` = 'C19' 
     AND `toborow` LIKE 'EX52%' 
     AND `status_c19` = 'N' 
     ORDER BY `row_id` DESC 
-    LIMIT 7";
+    LIMIT 10";
     $q = $dbi->query($sql);
-
-    ?>
-    <table class="w3-table w3-striped w3-xlarge">
-        <tr>
-            <th>HN</th>
-            <th>ชื่อ-สกุล</th>
-            <th>เวลา</th>
-        </tr>
-    <?php 
+    if ($q->num_rows > 0) {
     
-    $time_now = strtotime(date('Y-m-d H:i:s'));
-    while ($item = $q->fetch_assoc()) {
+        ?>
+        <table class="w3-table w3-striped w3-xlarge">
+            <tr>
+                <th>HN</th>
+                <th>ชื่อ-สกุล</th>
+                <th>อายุ</th>
+                <th>เวลา(นับถอยหลัง)</th>
+            </tr>
+        <?php 
+        
+        $time_now = strtotime(date('Y-m-d H:i:s'));
+        while ($item = $q->fetch_assoc()) {
 
-        $countdown_c19 = strtotime(date($item['countdown_c19']));
+            $countdown_c19 = strtotime(date($item['countdown_c19']));
 
-        $difference2 = $countdown_c19 - $time_now;
-        $min = date('i', $difference2);
-        $sec = date('s', $difference2);
-
-        if( ( $time_now >= $countdown_c19 ))
-        {
-            $display_time = "ครบ 30นาที";
-        }
-        else
-        {
-            $display_time = "$min นาที $sec วินาที";
+            $difference2 = $countdown_c19 - $time_now;
+            $min = date('i', $difference2);
+            $sec = date('s', $difference2);
+            $display_time = '';
+            if( ( $time_now >= $countdown_c19 ))
+            {
+                $display_time = "ครบ 30นาที";
+            }
+            else
+            {
+                $display_time = "$min นาที $sec วินาที";
+            }
+            ?>
+            <tr>
+                <td><?=$item['hn'];?></td>
+                <td><?=$item['ptname'];?></td>
+                <td><?=$item['age'];?></td>
+                <td><?=$display_time;?></td>
+            </tr>
+            <?php
         }
         ?>
-        <tr>
-            <td><?=$item['hn'];?></td>
-            <td><?=$item['ptname'];?></td>
-            <td><?=$display_time;?></td>
-        </tr>
+        </table>
         <?php
     }
-    ?>
-    </table>
-    <?php
+    else{
+        ?>
+        <p>ยังไม่มีข้อมูล</p>
+        <?php
+    }
     exit;
 }
 ?>
@@ -75,21 +84,18 @@ if($action == 'get_user')
     <link rel="stylesheet" href="w3.css">
 
 
-    <title>นับเวลาฉีดวัคซีน</title>
+    <title>รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</title>
 </head>
 <body>
 
-    <div class="w3-container w3-teal">
-        <h1>นับเวลาฉีดวัคซีน</h1>
+    <div class="w3-container w3-teal w3-bar">
+        <h2 class="w3-bar-item">รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</h2>
+        <h2><a href="javascript:void(0);" id="test_data" class="w3-bar-item w3-right w3-button">ทดสอบเพิ่มข้อมูล</a></h2>
     </div>
 
     <div class="w3-container">
-
         <div id="main_container"></div>
-
     </div>
-
-
     
     <script>
         // Set the date we're counting down to
@@ -143,6 +149,51 @@ if($action == 'get_user')
             request = null;
 
         }, 1000);
+
+        function addEventListener(el, eventName, handler) {
+        if (el.addEventListener) {
+            el.addEventListener(eventName, handler);
+        } else {
+            el.attachEvent('on' + eventName, function(){
+                handler.call(el);
+            });
+        }
+        }
+
+        // addEventListener(document.getElementById("test_data"), "onclick", function(){ 
+        //     alert('1234');
+        //     var request = new XMLHttpRequest();
+        //     request.open('POST', 'test_add_trauma_inject.php', true);
+        //     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        //     request.send(data);
+        // });
+
+        document.getElementById("test_data").addEventListener("click", function() {
+            // document.getElementById("demo").innerHTML = "Hello World";
+            // alert(1234);
+            var request = new XMLHttpRequest();
+            request.open('POST', 'test_add_trauma_inject.php', true);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            request.onreadystatechange = function() {
+                if (this.readyState === 4) {
+                    if (this.status >= 200 && this.status < 400) {
+                        // Success!
+                        // document.getElementById("main_container").innerHTML = this.responseText;
+                        // var data = JSON.parse(this.responseText);
+                        console.log(this.responseText);
+
+                    } else {
+                        // Error :(
+                    }
+                }
+            };
+            request.send();
+
+
+        });
+
+
+
     </script>
 </body>
 </html>
