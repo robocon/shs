@@ -1,7 +1,7 @@
 <?php 
 /*
 
-CREATE TABLE `c19_vaccine` (
+CREATE TABLE `c19_patients` (
 `id`  int(11) NOT NULL AUTO_INCREMENT,
 `date`  datetime NULL DEFAULT NULL ,
 `hn`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
@@ -21,14 +21,20 @@ ROW_FORMAT=DYNAMIC
 ;
 
 
-ALTER TABLE `c19_vaccine` ADD `toborow` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-ADD `status_c19` VARCHAR( 5 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+ALTER TABLE `c19_patients` ADD `toborow` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 ADD `countdown_c19` datetime NULL DEFAULT NULL ;
 
 */
-include 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
+include 'bootstrap.php'; 
 
+if(empty($_SESSION['sOfficer']))
+{
+    echo 'หมดอายุการใช้งาน กรุณา<a href="../nindex.htm">Login</a>อีกครั้ง';
+    exit;
+}
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES tis620");
 function calcage($birth){
 
 	$today = getdate();   
@@ -59,7 +65,7 @@ if($action=="test_hn")
 {
     $hn = $_POST['hn'];
 
-    $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn' ";
+    $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`dbirth` FROM `opcard` WHERE `hn` = '$hn' ";
     $opcard_q = $dbi->query($sql);
     if($opcard_q->num_rows > 0)
     {
@@ -70,7 +76,7 @@ if($action=="test_hn")
         if ($opday_q->num_rows > 0) 
         {
             $opday = $opday_q->fetch_assoc();
-            echo $opcard['ptname'].' '.$opday['toborow'];
+            echo $opcard['ptname'].' อายุ:'.calcage($opcard['dbirth']).' OPD CARD:'.$opday['toborow'];
         }
         else
         {
@@ -95,11 +101,7 @@ if($action=="test_hn")
     if ($opday_q->num_rows > 0) 
     {
         $opday = $opday_q->fetch_assoc();
-        // echo $opcard['ptname'].' '.$opday['toborow'];
     }
-
-    dump($item);
-    dump($opday);
 
     $doctor = $_POST['doctor'];
     $vaccine_name = $_POST['vaccine_name'];
@@ -112,23 +114,24 @@ if($action=="test_hn")
     $date = date('Y-m-d H:i:s');
     $ptname = trim($item['ptname']);
     $toborow = trim($opday['toborow']);
-    $status_c19 = 'n';
     $countdown_c19 = date('Y-m-d H:i:s', strtotime("+30 minutes"));
 
-    $sql = "INSERT INTO `c19_vaccine` (
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+    $sql = "INSERT INTO `c19_patients` (
         `id`, `date`, `hn`, `ptname`, `age`, `doctor`, 
         `staff`, `vaccine_name`, `lot_no`, `serial_no`, `vaccine_plant_no`, `toborow`, 
-        `status_c19`, `countdown_c19`
+        `countdown_c19`
     ) VALUES (
         NULL, '$date', '$hn', '$ptname', '$age', '$doctor', 
         '$staff', '$vaccine_name', '$lot_no', '$serial_no', '$vaccine_plan_no', '$toborow', 
-        '$status_c19', '$countdown_c19');";
-    $test = $dbi->query($sql);
-    if($test==false)
+        '$countdown_c19');";
+    $save = $dbi->query($sql);
+    if($save==false)
     {
-        echo $dbi->error;
+        $msg = "บันทึกข้อมูลไม่สำเร็จ Error: ".$dbi->error;
     }
-    dump($test);
+    
+    redirect('c19_form.php', $msg);
     exit;
 }
 
@@ -150,12 +153,21 @@ if($action=="test_hn")
             cursor: pointer;
         }
     </style>
-    <?php 
-    // dump($_SESSION);
-    ?>
     <div class="w3-container w3-teal w3-bar">
-        <h2 class="w3-bar-item">ฟอร์มบันทึกข้อมูลการฉีดวัคซีนโควิด19</h2>
+        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444;">ฟอร์มบันทึกข้อมูลการฉีดวัคซีนโควิด 19</h2>
     </div>
+
+    <?php 
+    if(!empty($_SESSION['x-msg']))
+    {
+        ?>
+        <div class="w3-panel w3-yellow w3-border">
+        <p><?=$_SESSION['x-msg'];?></p>
+        </div>
+        <?php 
+        $_SESSION['x-msg'] = null;
+    }
+    ?>
     
     <div class="w3-card-4">
         <!-- <div class="w3-container w3-teal">
@@ -174,7 +186,7 @@ if($action=="test_hn")
                 <select class="w3-select w3-border" id="doctor" name="doctor">
                     <option value="" disabled selected>เลือกแพทย์</option>
                     <?php 
-                    $sql = "SELECT * FROM `doctor` WHERE `status` = 'y' AND `name` LIKE 'MD%' AND `menucode` = 'ADM' ";
+                    $sql = "SELECT * FROM `doctor` WHERE `status` = 'y' AND `name` LIKE 'MD%' AND (`doctorcode` NOT LIKE '0000%' AND `doctorcode` REGEXP '[0-9]{5}')  ";
                     $dt_q = $dbi->query($sql);
                     while ($dt = $dt_q->fetch_assoc()) {
                         ?><option value="<?=trim($dt['name']);?>"><?=$dt['name'];?></option><?php 
@@ -183,14 +195,14 @@ if($action=="test_hn")
                 </select>
             </p>
 
-            <p><b>วัคซีน</b></p>
+            <p><b>วัคซีนโควิด 19</b></p>
             <div class="w3-row-padding">
                 <div class="w3-third">
                     <input class="w3-radio" type="radio" id="vaccine_name_1" name="vaccine_name" value="AstraZeneca">
                     <label for="vaccine_name_1">AstraZeneca</label>
                 </div>
                 <div class="w3-third">
-                    <input class="w3-radio" type="radio" id="vaccine_name_2" name="vaccine_name" value="Sinovac" checked>
+                    <input class="w3-radio" type="radio" id="vaccine_name_2" name="vaccine_name" value="Sinovac Life Sciences" checked>
                     <label for="vaccine_name_2">Sinovac Life Sciences</label>
                 </div>
             </div>
@@ -220,6 +232,7 @@ if($action=="test_hn")
             </div>
 
             <p>
+                <a href="../nindex.htm" class="w3-btn w3-teal w3-round">&lt;&lt;&nbsp;กลับหน้าหลัก</a>
                 <button class="w3-btn w3-teal" type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
             </p>

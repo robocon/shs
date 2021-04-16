@@ -1,26 +1,16 @@
 <?php 
-/**
- * MySQL LOG
- * 
-ALTER TABLE `trauma_inject` ADD `toborow` VARCHAR( 255 ) NULL ,
-ADD `status_c19` VARCHAR( 5 ) NULL ,
-ADD `countdown_c19` DATETIME NULL ;
-
- */
 include 'bootstrap.php';
 $action = $_REQUEST['action'];
 $dbi = new mysqli(HOST,USER,PASS,DB);
-// $dbi->query("SET NAMES tis620");
+$dbi->query("SET NAMES tis620");
 if($action == 'get_user')
 {
-    $thai_date = (date('Y')+543).date('-m-d');
+    $thai_date = date('Y-m-d');
     $sql = "SELECT * 
-    FROM `test_trauma_inject` 
-    WHERE `thidate` LIKE '$thai_date%' 
-    AND `drugcode` = 'C19' 
+    FROM `c19_patients` 
+    WHERE `date` LIKE '$thai_date%' 
     AND `toborow` LIKE 'EX52%' 
-    AND `status_c19` = 'N' 
-    ORDER BY `row_id` DESC 
+    ORDER BY `id` DESC 
     LIMIT 10";
     $q = $dbi->query($sql);
     if ($q->num_rows > 0) {
@@ -50,7 +40,11 @@ if($action == 'get_user')
             }
             else
             {
-                $display_time = "$min นาที $sec วินาที";
+                if((int)$min > 0)
+                {
+                    $display_time .= "$min นาที";
+                }
+                $display_time .= " $sec วินาที";
             }
             ?>
             <tr>
@@ -89,8 +83,8 @@ if($action == 'get_user')
 <body>
 
     <div class="w3-container w3-teal w3-bar">
-        <h2 class="w3-bar-item">รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</h2>
-        <h2><a href="javascript:void(0);" id="test_data" class="w3-bar-item w3-right w3-button">ทดสอบเพิ่มข้อมูล</a></h2>
+        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444;">รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</h2>
+        <!-- <h2><a href="javascript:void(0);" id="test_data" class="w3-bar-item w3-right w3-button">ทดสอบเพิ่มข้อมูล</a></h2> -->
     </div>
 
     <div class="w3-container">
