@@ -296,6 +296,11 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 		$doctor=$arr_dxofyear["doctor"];
 
 		$camp = $arr_dxofyear['camp'];
+
+		$dental_exam = $arr_dxofyear['dental_exam'];
+		$color_blind = $arr_dxofyear['color_blind'];
+		$audiogram = $arr_dxofyear['audiogram'];
+		$ekg = $arr_dxofyear['ekg'];
 		
 		//$arr_view["vn"]=$arr_dxofyear["vn"];
 		//echo "===>".$arr_view["vn"];
@@ -425,7 +430,7 @@ while($arr = Mysql_fetch_assoc($result)){
 					$selected = 'selected="selected"';
 				}
 
-				if( $camp == $result12['code'] ){
+				if( $camp == $result12['name'] ){
 					$selected = 'selected="selected"';
 				}
 
@@ -633,19 +638,19 @@ C&deg; </td>
 	<table class="tb_font">
 		<tr>
 			<td align="right" valign="top" class="tb_font_2">ตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</td>
-			<td><input type="text" name="dental_exam" size="50"></td>
+			<td><input type="text" name="dental_exam" size="50" value="<?=$arr_dxofyear['dental_exam'];?>"></td>
 		</tr>
 		<tr>
 			<td align="right" valign="top" class="tb_font_2">ตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</td>
-			<td><input type="text" name="color_blind" size="50"></td>
+			<td><input type="text" name="color_blind" size="50" value="<?=$arr_dxofyear['color_blind'];?>"></td>
 		</tr>
 		<tr>
 			<td align="right" valign="top" class="tb_font_2">ตรวจการได้ยิน (Audiogram) :</td>
-			<td><input type="text" name="audiogram" size="50"></td>
+			<td><input type="text" name="audiogram" size="50" value="<?=$arr_dxofyear['audiogram'];?>"></td>
 		</tr>
 		<tr>
 			<td align="right" valign="top" class="tb_font_2">ตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</td>
-			<td><input type="text" name="ekg" size="50"></td>
+			<td><input type="text" name="ekg" size="50" value="<?=$arr_dxofyear['ekg'];?>"></td>
 		</tr>
 	</table>
 	<TABLE class="tb_font">

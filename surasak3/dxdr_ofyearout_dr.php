@@ -1322,7 +1322,7 @@ $bsult = mysql_fetch_array($brow);
 		<span <? if($result_dx['10001_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['10001_flag']?></span>
 	</td>
 	<td class="labfont">
-		<input name='stat_ldlc' type='radio' value='»¡µÔ' onclick="togglediv2('ldlc_action');" <? if($result_dx['10001'] <= 100 ){ echo "checked";}?>/> »¡µÔ
+		<input name='stat_ldlc' type='radio' value='»¡µÔ' onclick="togglediv2('ldlc_action');" <? if( $result_dx['10001'] > 0 && $result_dx['10001'] <= 100 ){ echo "checked";}?>/> »¡µÔ
 		<input name='stat_ldlc' type='radio' value='¼Ô´»¡µÔ' onclick="togglediv1('ldlc_action');"<? if( $result_dx['10001'] > 100 ){ echo "checked";}?>/> ¼Ô´»¡µÔ
 	</td>
 	<td colspan="4">
@@ -1677,10 +1677,12 @@ DLP
         <td><input name="normal661" type="text" id="normal661"  /></td>
       </tr>
       <tr class="tb_font_2">
-		 <td><span class="labfont">EKG :&nbsp;<?=$arr_dxofyear['ekg'];?>&nbsp;</span></td> 
 		 <td>
-			<input name="res_ekg" type="radio" value="»¡µÔ">»¡µÔ&nbsp;<input name="res_ekg" type="radio" value="¼Ô´»¡µÔ">¼Ô´»¡µÔ
-		</td>
+		 	<span class="labfont">EKG :&nbsp;<?=$arr_dxofyear['ekg'];?>&nbsp;</span>&nbsp;
+			<input id="res_ekg_1" name="res_ekg" type="radio" value="»¡µÔ"><label for="res_ekg_1"> »¡µÔ</label>&nbsp;
+			<input id="res_ekg_2" name="res_ekg" type="radio" value="¼Ô´»¡µÔ"><label for="res_ekg_2"> ¼Ô´»¡µÔ</label>
+		 </td> 
+		 <td>&nbsp;</td>
       </tr>
     </table></td>
   </tr>
