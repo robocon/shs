@@ -86,11 +86,20 @@ if($action=="test_hn")
 }elseif ($action=='save') {
 
     $hn = $_POST['hn'];
-    $sql = "SELECT CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`ptright1`,`dbirth`,`toborow` FROM `opcard` WHERE `hn` = '$hn' ";
+    $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`ptright1`,`dbirth` FROM `opcard` WHERE `hn` = '$hn' ";
     $op_q = $dbi->query($sql);
     $item = $op_q->fetch_assoc();
 
+    $th_date_hn = date('d-m-').(date('Y')+543).$item['hn'];
+    $opday_q = $dbi->query("SELECT `toborow` FROM `opday` WHERE `thdatehn` = '$th_date_hn' AND `toborow` LIKE 'EX52%' ");
+    if ($opday_q->num_rows > 0) 
+    {
+        $opday = $opday_q->fetch_assoc();
+        // echo $opcard['ptname'].' '.$opday['toborow'];
+    }
+
     dump($item);
+    dump($opday);
 
     $doctor = $_POST['doctor'];
     $vaccine_name = $_POST['vaccine_name'];
@@ -102,7 +111,7 @@ if($action=="test_hn")
     $age = calcage($item['dbirth']);
     $date = date('Y-m-d H:i:s');
     $ptname = trim($item['ptname']);
-    $toborow = trim($item['toborow']);
+    $toborow = trim($opday['toborow']);
     $status_c19 = 'n';
     $countdown_c19 = date('Y-m-d H:i:s', strtotime("+30 minutes"));
 
