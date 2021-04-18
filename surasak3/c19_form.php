@@ -155,6 +155,7 @@ if($action=="test_hn")
     </style>
     <div class="w3-container w3-teal w3-bar">
         <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444;">ฟอร์มบันทึกข้อมูลการฉีดวัคซีนโควิด 19</h2>
+        <h2><a href="c19_form_edit.php" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;" target="_blank">แก้ไข</a></h2>
     </div>
 
     <?php 
@@ -170,9 +171,6 @@ if($action=="test_hn")
     ?>
     
     <div class="w3-card-4">
-        <!-- <div class="w3-container w3-teal">
-            <h2>Input Colors</h2>
-        </div> -->
         <form class="w3-container" id="c19_form" method="POST" action="c19_form.php">
             <p>      
                 <label class="w3-text"><b>HN</b></label>
