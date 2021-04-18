@@ -17,8 +17,8 @@ function getFullWardName($cbedcode){
     if( $wardExTest > 0 ){
         
         // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-        $wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
-        $wardBxTest = preg_match('/B[0-9]+/', $cBed1);
+        $wardR3Test = preg_match('/R3\d+|B\d+/', $cbedcode);
+        $wardBxTest = preg_match('/B[0-9]+/', $cbedcode);
         $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
         
     }
@@ -160,7 +160,9 @@ if ( $action === 'save' ) {
         $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
         $sMessage = iconv('TIS-620','UTF-8',"Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn);
         $chOne = curl_init(); 
-        curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+        // https://notify-api.line.me/api/notify
+        // http://203.104.138.174/api/notify
+        curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 
