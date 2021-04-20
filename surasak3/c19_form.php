@@ -25,6 +25,7 @@ ADD `countdown_c19` datetime NULL DEFAULT NULL ;
 ALTER TABLE `c19_patients` ADD `staff_edit` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 ADD `date_edit` datetime NULL DEFAULT NULL ;
 
+ALTER TABLE `c19_patients` ADD `bottle_no` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 */
 require_once 'bootstrap.php'; 
 
@@ -35,7 +36,7 @@ if(empty($_SESSION['sOfficer']))
 }
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES tis620");
+// $dbi->query("SET NAMES tis620");
 function calcage($birth)
 {
 
@@ -109,6 +110,7 @@ elseif ($action=='save')
     $doctor = $_POST['doctor'];
     $vaccine_name = $_POST['vaccine_name'];
     $lot_no = $_POST['lot_no'];
+    $bottle_no = $_POST['bottle_no'];
     $serial_no = $_POST['serial_no'];
     $vaccine_plan_no = $_POST['vaccine_plan_no'];
 
@@ -127,11 +129,11 @@ elseif ($action=='save')
         $sql = "INSERT INTO `c19_patients` (
             `id`, `date`, `hn`, `ptname`, `age`, `doctor`, 
             `staff`, `vaccine_name`, `lot_no`, `serial_no`, `vaccine_plant_no`, `toborow`, 
-            `countdown_c19`
+            `countdown_c19`,`bottle_no` 
         ) VALUES (
             NULL, '$date', '$hn', '$ptname', '$age', '$doctor', 
             '$staff', '$vaccine_name', '$lot_no', '$serial_no', '$vaccine_plan_no', '$toborow', 
-            '$countdown_c19');";
+            '$countdown_c19','$bottle_no');";
         
     }
     elseif ($form_type=='edit') 
@@ -148,7 +150,8 @@ elseif ($action=='save')
         `serial_no`='$serial_no', 
         `vaccine_plant_no`='$vaccine_plan_no',
         `staff_edit` = '$staff',
-        `date_edit` = '$date'
+        `date_edit` = '$date',
+        `bottle_no` = '$bottle_no'
         WHERE ( `id`='$id' );";
         
     }
@@ -303,11 +306,15 @@ elseif ($load_page=='load_edit_form')
 
             <p><b>Lot และ Serial</b></p>
             <div class="w3-row-padding">
-                <div class="w3-half">
+                <div class="w3-third">
                     <label>Lot.No.</label>
                     <input class="w3-input w3-border w3-light-grey" type="text" id="lot_no" name="lot_no">
                 </div>
-                <div class="w3-half">
+                <div class="w3-third">
+                    <label>ขวดที่</label>
+                    <input class="w3-input w3-border w3-light-grey" type="text" id="bottle_no" name="bottle_no" value="<?=$pt['bottle_no'];?>">
+                </div>
+                <div class="w3-third">
                     <label>Serial No.</label>
                     <input class="w3-input w3-border w3-light-grey" type="text" id="serial_no" name="serial_no">
                 </div>

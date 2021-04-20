@@ -2,7 +2,7 @@
 include 'bootstrap.php';
 $action = $_REQUEST['action'];
 $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES tis620");
+// $dbi->query("SET NAMES tis620");
 if($action == 'get_user')
 {
     $date = date('Y-m-d');

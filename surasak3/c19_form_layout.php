@@ -44,11 +44,15 @@
 
     <p><b>Lot และ Serial</b></p>
     <div class="w3-row-padding">
-        <div class="w3-half">
+        <div class="w3-third">
             <label>Lot.No.</label>
             <input class="w3-input w3-border w3-light-grey" type="text" id="lot_no" name="lot_no" value="<?=$pt['lot_no'];?>">
         </div>
-        <div class="w3-half">
+        <div class="w3-third">
+            <label>ขวดที่</label>
+            <input class="w3-input w3-border w3-light-grey" type="text" id="bottle_no" name="bottle_no" value="<?=$pt['bottle_no'];?>">
+        </div>
+        <div class="w3-third">
             <label>Serial No.</label>
             <input class="w3-input w3-border w3-light-grey" type="text" id="serial_no" name="serial_no" value="<?=$pt['serial_no'];?>">
         </div>
