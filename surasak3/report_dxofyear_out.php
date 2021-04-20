@@ -1044,12 +1044,12 @@ mmHg.</u></span></td>
 		<?php
 	}
 
-	if($result['res_ekg'])
+	if($result['ekg'])
 	{
 		?>
 		<tr class="text3">
 			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['res_ekg']?></b></span></td>
+			<td  valign="top"><span class="text"><b><?=$result['ekg']?></b></span></td>
 		</tr>
 		<?php
 	}

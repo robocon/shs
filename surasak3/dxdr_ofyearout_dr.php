@@ -1443,6 +1443,10 @@ $bsult = mysql_fetch_array($brow);
 	<td colspan="4"></td>
 </tr>
 
+<?php 
+if(!empty($result_dx["parasi"]))
+{
+?>
 <tr>
 	<?php 
 	$clean_result = strtolower(trim($result_dx["parasi"]));
@@ -1468,7 +1472,9 @@ $bsult = mysql_fetch_array($brow);
 	</td>
 	<td colspan="4"></td>
 </tr>
-
+<?php 
+}
+?>
 <tr>
 	<td align="right" class="profilelab">Blood group :</td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['groupt']?></span></td>
