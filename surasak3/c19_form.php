@@ -249,7 +249,9 @@ elseif ($load_page=='load_edit_form')
     <div class="w3-container w3-teal w3-bar w3-xlarge">
         <a href="../nindex.htm" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;" title="กลับหน้าหลัก"><i class="fa fa-home" aria-hidden="true"></i></a>
         <a href="javascript:void(0);" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;">ฟอร์มบันทึกข้อมูลการฉีดวัคซีนโควิด 19</a>
+        
         <a href="javascript:void(0);" onclick="edit_patient_load()" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">แก้ไข</a>
+        <a href="c19_report.php" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">รายงาน</a>
     </div>
 
     <?php 
