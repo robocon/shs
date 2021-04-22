@@ -6,7 +6,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 if($action == 'get_user')
 {
     $date = date('Y-m-d');
-    $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' ORDER BY `id` DESC LIMIT 10";
+    $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' GROUP BY `hn` ORDER BY `id` ASC ";
     $q = $dbi->query($sql);
     if ($q->num_rows > 0) {
     
@@ -31,7 +31,8 @@ if($action == 'get_user')
             $display_time = '';
             if( ( $time_now >= $countdown_c19 ))
             {
-                $display_time = "ครบ 30นาที";
+                // $display_time = "ครบ 30นาที";
+                continue;
             }
             else
             {
@@ -71,11 +72,21 @@ if($action == 'get_user')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="w3.css">
     <title>รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</title>
-</head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-874"><style type="text/css">
+<!--
+body,td,th {
+	font-family: Tahoma;
+	font-size: 48px;
+}
+body {
+	background-color: #ddffdd;
+}
+-->
+</style></head>
 <body>
 
     <div class="w3-container w3-teal w3-bar">
-        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444;">รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</h2>
+        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444; font:Tahoma; font-size:54px;">รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</h2>
         <!-- <h2><a href="javascript:void(0);" id="test_data" class="w3-bar-item w3-right w3-button">ทดสอบเพิ่มข้อมูล</a></h2> -->
     </div>
     <div class="w3-container">
