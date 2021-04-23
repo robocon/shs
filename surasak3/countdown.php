@@ -6,23 +6,32 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 if($action == 'get_user')
 {
     $date = date('Y-m-d');
-    $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' GROUP BY `hn` ORDER BY `id` ASC ";
+    $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' ORDER BY `id` ASC ";
+	
     $q = $dbi->query($sql);
     if ($q->num_rows > 0) {
     
         ?>
+<div style="margin-left:25px;">        
         <table class="w3-table w3-striped w3-xlarge">
             <tr>
-                <th>HN</th>
+                <th width="5">#</th>
                 <th>ชื่อ-สกุล</th>
-                <th>อายุ</th>
+                <th>คิว</th>
                 <th>เวลา(นับถอยหลัง)</th>
             </tr>
         <?php 
         
         $time_now = strtotime(date('Y-m-d H:i:s'));
+		$i=0;
         while ($item = $q->fetch_assoc()) {
-
+		$i++;
+		
+		$sql2="select * from queue_opd where register_date='".date('Y-m-d')."' and hn='".$item['hn']."' and queue_type='V' order by id desc limit 1";
+		$query2=mysql_query($sql2);
+		$num2=mysql_num_rows($query2);
+		$result2=mysql_fetch_array($query2);		
+		
             $countdown_c19 = strtotime(date($item['countdown_c19']));
 
             $difference2 = $countdown_c19 - $time_now;
@@ -42,20 +51,26 @@ if($action == 'get_user')
                 }
                 $display_time .= " $sec วินาที";
             }
+			
+			if($min <= 5){
+				$color="#FF0000";
+			}else{
+				$color="#0000FF";
+			}
             ?>
             <tr>
-                <td><?=$item['hn'];?></td>
+                <td align="center"><?=$i;?></td>
                 <td><?=$item['ptname'];?></td>
-                <td><?=$item['age'];?></td>
-                <td><?=$display_time;?></td>
+                <td><?=$result2['queue_no'];?></td>
+                <td style="color: <?=$color;?>;"><?=$display_time;?></td>
             </tr>
             <?php
         }
         ?>
         </table>
+</div>        
         <?php
-    }
-    else{
+    }else{
         ?>
         <p>ยังไม่มีข้อมูล</p>
         <?php
@@ -76,7 +91,7 @@ if($action == 'get_user')
 <!--
 body,td,th {
 	font-family: Tahoma;
-	font-size: 48px;
+	font-size: 36px;
 }
 body {
 	background-color: #ddffdd;
@@ -84,9 +99,8 @@ body {
 -->
 </style></head>
 <body>
-
     <div class="w3-container w3-teal w3-bar">
-        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444; font:Tahoma; font-size:54px;">รายชื่อผู้ฉีดวัคซีนโควิด 19 โรงพยาบาลค่ายสุรศักดิ์มนตรี</h2>
+        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444; font:Tahoma; font-size:48px; margin-left:25px;"><strong>รายชื่อผู้ฉีดวัคซีนโควิด 19 ร.พ.ค่ายสุรศักดิ์มนตรี</strong></h2>
         <!-- <h2><a href="javascript:void(0);" id="test_data" class="w3-bar-item w3-right w3-button">ทดสอบเพิ่มข้อมูล</a></h2> -->
     </div>
     <div class="w3-container">

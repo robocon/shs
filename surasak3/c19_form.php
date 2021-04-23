@@ -109,6 +109,7 @@ elseif ($action=='save')
 
     $doctor = $_POST['doctor'];
     $vaccine_name = $_POST['vaccine_name'];
+    $barcode_no = $_POST['barcode_no'];
     $lot_no = $_POST['lot_no'];
     $bottle_no = $_POST['bottle_no'];
     $serial_no = $_POST['serial_no'];
@@ -128,11 +129,11 @@ elseif ($action=='save')
     {
         $sql = "INSERT INTO `c19_patients` (
             `id`, `date`, `hn`, `ptname`, `age`, `doctor`, 
-            `staff`, `vaccine_name`, `lot_no`, `serial_no`, `vaccine_plant_no`, `toborow`, 
+            `staff`, `vaccine_name`, `barcode_no`,`lot_no`, `serial_no`, `vaccine_plant_no`, `toborow`, 
             `countdown_c19`,`bottle_no` 
         ) VALUES (
             NULL, '$date', '$hn', '$ptname', '$age', '$doctor', 
-            '$staff', '$vaccine_name', '$lot_no', '$serial_no', '$vaccine_plan_no', '$toborow', 
+            '$staff', '$vaccine_name', '$barcode_no', '$lot_no', '$serial_no', '$vaccine_plan_no', '$toborow', 
             '$countdown_c19','$bottle_no');";
         
     }
@@ -146,7 +147,8 @@ elseif ($action=='save')
         `age`='$age', 
         `doctor`='$doctor', 
         `vaccine_name`='$vaccine_name', 
-        `lot_no`='$lot_no', 
+        `barcode_no`='$barcode_no', 
+		`lot_no`='$lot_no', 
         `serial_no`='$serial_no', 
         `vaccine_plant_no`='$vaccine_plan_no',
         `staff_edit` = '$staff',
@@ -239,7 +241,7 @@ elseif ($load_page=='load_edit_form')
 
     <link rel="stylesheet" href="w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-874"></head>
 <body>
     <style>
         label:hover{
@@ -250,7 +252,7 @@ elseif ($load_page=='load_edit_form')
         <a href="../nindex.htm" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;" title="กลับหน้าหลัก"><i class="fa fa-home" aria-hidden="true"></i></a>
         <a href="javascript:void(0);" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;">ฟอร์มบันทึกข้อมูลการฉีดวัคซีนโควิด 19</a>
         
-        <a href="javascript:void(0);" onclick="edit_patient_load()" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">แก้ไข</a>
+        <a href="javascript:void(0);" onClick="edit_patient_load()" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">แก้ไข</a>
         <a href="c19_report.php" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">รายงาน</a>
     </div>
 
@@ -270,7 +272,7 @@ elseif ($load_page=='load_edit_form')
         <form class="w3-container" id="c19_admin_form" method="POST" action="c19_form.php">
             <p>      
                 <label class="w3-text"><b>HN</b></label>
-                <input class="w3-input w3-border w3-light-grey" id="hn" name="hn" type="text">
+                <input class="w3-input w3-border w3-light-grey" id="hn" name="hn" type="text" autofocus>
             </p>
             <div id="display-name" style="display: none;">
                 <p class="w3-large w3-text-teal" id="display-name-text">นายทดสอบ ทดลอง</p>
@@ -283,7 +285,7 @@ elseif ($load_page=='load_edit_form')
                     $sql = "SELECT * FROM `doctor` WHERE `status` = 'y' AND `name` LIKE 'MD%' AND (`doctorcode` NOT LIKE '0000%' AND `doctorcode` REGEXP '[0-9]{5}')  ";
                     $dt_q = $dbi->query($sql);
                     while ($dt = $dt_q->fetch_assoc()) {
-                        ?><option value="<?=trim($dt['name']);?>"><?=$dt['name'];?></option><?php 
+                        ?><option value="<?=trim($dt['name']);?>" <? if($dt['row_id']=="173"){ echo "selected";}?>><?=$dt['name'];?></option><?php 
                     }
                     ?>
                 </select>
@@ -306,9 +308,13 @@ elseif ($load_page=='load_edit_form')
                 ?>
             </div>
 
-            <p><b>Lot และ Serial</b></p>
+            <p><b>ข้อมูลวัคซีน</b></p>
             <div class="w3-row-padding">
                 <div class="w3-third">
+                    <label>รหัส Barcode</label>
+                    <input class="w3-input w3-border w3-light-grey" type="text" id="barcode_no" name="barcode_no">
+                </div>
+<!--                <div class="w3-third">
                     <label>Lot.No.</label>
                     <input class="w3-input w3-border w3-light-grey" type="text" id="lot_no" name="lot_no">
                 </div>
@@ -319,7 +325,7 @@ elseif ($load_page=='load_edit_form')
                 <div class="w3-third">
                     <label>Serial No.</label>
                     <input class="w3-input w3-border w3-light-grey" type="text" id="serial_no" name="serial_no">
-                </div>
+                </div>-->
             </div>
 
             <p><b>เข็มที่</b></p>
@@ -350,7 +356,7 @@ elseif ($load_page=='load_edit_form')
             <div class="w3-modal-content w3-animate-top">
 
                 <header class="w3-container w3-teal">
-                    <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                    <span onClick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
                     <h2>รายการที่ต้องการแก้ไข</h2>
                 </header>
                 <!-- load data from ajax -->
@@ -453,8 +459,9 @@ elseif ($load_page=='load_edit_form')
         document.getElementById("c19_admin_form").addEventListener("submit", function(ev) { 
             var id_hn = document.getElementById("hn");
             var id_doctor = document.getElementById("doctor");
-            var lot_no = document.getElementById("lot_no");
-            var serial_no = document.getElementById("serial_no");
+			 var barcode_no = document.getElementById("barcode_no");
+/*            var lot_no = document.getElementById("lot_no");
+            var serial_no = document.getElementById("serial_no");*/
 
             if(id_hn.value.trim() == '')
             {
@@ -467,7 +474,13 @@ elseif ($load_page=='load_edit_form')
                 alert("กรุณาเลือกแพทย์");
                 ev.preventDefault();
             }
-            else if( lot_no.value.trim() == '' )
+            else if( barcode_no.value.trim() == '' )
+            {
+                alert("กรุณาใส่ รหัส Barcode");
+                barcode_no.focus();
+                ev.preventDefault();
+            }
+/*            else if( lot_no.value.trim() == '' )
             {
                 alert("กรุณาใส่ Lot Number");
                 lot_no.focus();
@@ -478,7 +491,7 @@ elseif ($load_page=='load_edit_form')
                 alert("กรุณาใส่ Serial Number");
                 serial_no.focus();
                 ev.preventDefault();
-            }
+            }*/
         });
 
     </script>
