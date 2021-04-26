@@ -100,7 +100,7 @@ body {
 </style></head>
 <body>
     <div class="w3-container w3-teal w3-bar">
-        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444; font:Tahoma; font-size:48px; margin-left:25px;"><strong>รายชื่อผู้ฉีดวัคซีนโควิด 19 ร.พ.ค่ายสุรศักดิ์มนตรี</strong></h2>
+        <h2 class="w3-bar-item" style="text-shadow: 2px 2px 2px #444; font:Tahoma; font-size:48px; margin-left:25px;"><strong>รายชื่อผู้ฉีดวัคซีนโควิด 19 <br>โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></h2>
         <!-- <h2><a href="javascript:void(0);" id="test_data" class="w3-bar-item w3-right w3-button">ทดสอบเพิ่มข้อมูล</a></h2> -->
     </div>
     <div class="w3-container">
