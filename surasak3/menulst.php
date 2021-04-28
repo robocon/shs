@@ -387,21 +387,39 @@ if($rows){///  ถ้ามี rows
 <script language="javascript" src="js/jquery-1.8.0.min.js"></script>
 <script>
 function Realtime(){
-   $.ajax({url:"ajaxtime.php",
-   	async:false,
-	cache:false,
-	global:false,
-	type:"POST",
-	data:"",
-	dataType:"html",
-	success: function(result){
-		$('#divDetail').html(result);
-		setTimeout("Real();",1000);	
+	$.ajax({url:"ajaxtime.php",
+		async:false,
+		cache:false,
+		global:false,
+		type:"POST",
+		data:"",
+		dataType:"html",
+		success: function(result){ 
+
+			// เอามาแปลงเป็นตัวเลขสำหรับ JS
+			var prepare_date = Date.parse(result);
+			Real(prepare_date);
 		}
 	});
 }
 
-function Real(){
-	Realtime();	
+function Real(prepare_date){ 
+	setInterval(function(){ 
+
+		// +1 วิไปเรื่อยๆ
+		prepare_date += 1000;
+		var d = new Date(prepare_date);
+		var hour = to2Digit(d.getHours());
+		var min = to2Digit(d.getMinutes());
+		var sec = to2Digit(d.getSeconds());
+		document.getElementById("divDetail").innerHTML = hour+':'+min+':'+sec+' น.';
+	}, 1000);
+}
+
+function to2Digit(i){ 
+	if(i < 10){
+		i = "0"+i;
+	}
+	return i;
 }
 </script>
