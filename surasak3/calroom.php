@@ -100,9 +100,13 @@
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','NCARE','WARD','$cWname','$days','$cBedwcare','คอมพิวเตอร์','NCARE','$cAccno','$idno');";
 				//echo $query."<br>";
 				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc2 in page calroom");
+
+	if($diag!='COVID-19')
+	{
 	//ค่าห้องที่เบิกได้ ipacc	
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','BFY','WARD','$bedname ($bedcode) $stays','$days','$cYBedfood','คอมพิวเตอร์','BFY','$cAccno','$idno');";
 				//echo $query."<br>";
+	}
 				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc in page calroom");
 	//ค่าห้องส่วนเกิน dapart
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$cNBedfood','คอมพิวเตอร์','$diag','$cAccno');";
