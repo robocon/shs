@@ -77,7 +77,7 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
     $detail="¤èÒÂÒ";
     
 
-    $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' ";
+    $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' and toborow LIKE 'EX52%'";
     $result = mysql_query($query) or die("Query failed,opdoplis");
 
     $query = "SELECT a.vn,a.thdatehn,a.thidate,a.hn,a.ptname,a.an,a.diag,a.ptright,a.doctor,a.okopd,a.toborow,a.borow,a.goup,a.officer,a.kew,a.phaok,b.idcard FROM opday1 as a,opcard as b WHERE a.hn=b.hn and a.thidate LIKE '$today%'and a.phaok='$N' ";
@@ -213,7 +213,7 @@ if( in_array($_SESSION['smenucode'], $white_list) === true ){
         $detail="¤èÒÂÒ";
         include("connect.inc");
 
-        $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' ";
+        $query="CREATE TEMPORARY TABLE opday1 SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday WHERE thidate LIKE '$today%' and toborow LIKE 'EX52%'";
         $result = mysql_query($query) or die("Query failed,opdoplis");
 
         $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,ptright,doctor,okopd,toborow,borow,goup,officer,kew,phaok FROM opday1 WHERE thidate LIKE '$today%' and phaok='$N' ";
@@ -289,7 +289,7 @@ $ex='EX0';
         <th bgcolor=#008080 align="center"><font face='Angsana New'>ãºÂÔ¹ÂÍÁ©Õ´ÇÑ¤«Õ¹ COVID19</th>
     </tr>
 <?php
-$query = "SELECT a.vn,a.thdatehn,a.thidate,a.hn,a.ptname,a.an,a.diag,a.ptright,a.doctor,a.okopd,a.toborow,a.borow,a.goup,a.officer,a.kew,a.phaok,b.idcard,a.row_id FROM opday as a,opcard as b WHERE a.hn=b.hn and a.thidate LIKE '$today%' order by a.thidate desc ";
+$query = "SELECT a.vn,a.thdatehn,a.thidate,a.hn,a.ptname,a.an,a.diag,a.ptright,a.doctor,a.okopd,a.toborow,a.borow,a.goup,a.officer,a.kew,a.phaok,b.idcard,a.row_id FROM opday as a,opcard as b WHERE a.hn=b.hn and a.thidate LIKE '$today%' and toborow LIKE 'EX52%' order by a.thidate desc ";
 $result = mysql_query($query) or die("Query failed");
 
 while (list ($vn,$thdatehn,$thidate,$hn,$ptname,$an,$diag,$ptright,$doctor,$okopd,$toborow,$borow,$goup,$officer,$kew,$phaok,$idcard,$row_id) = mysql_fetch_row ($result)) {

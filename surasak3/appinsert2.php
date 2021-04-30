@@ -94,6 +94,7 @@ $Thidate = (date("Y")+543).date("-m-d H:i:s");
 print "<div align='right' style='margin-right: 10px;'><img src = \"printbcpha.php?cHn=".$cHn."\"></div>";
 ?>
 <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>"></div>
+<div style="margin-top: 35px;">
 <?php
 print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";  
 // print "<font face='Angsana New' size='1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;********FR-OPD-004/1,02, 23 ม.ค. 49 ********<br>";
@@ -296,7 +297,7 @@ $depcode=substr($depcode,4);
 
  include("unconnect.inc");
 ?>
-
+</div>
 
 
 
