@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบแสดงผล</title>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+</head>
+
+<body>
+    <form action="#" method="post" id="admin_form_get_appoint">
+        <div class="w3-container">
+            <h2>แสดงรายชื่อผู้จองฉีดวัคซีน</h2>
+            <p>ทดสอบการแสดงผล</p>
+        </div>
+        <div class="w3-row-padding">
+            <div class="w3-half">
+                <label>วันที่</label>
+                <input class="w3-input w3-border" type="date" placeholder="2021-05-01" min="2021-05-01" max="2021-07-31" name="date_start" id="date_start">
+            </div>
+            <div class="w3-half">
+                <label>ถึงวันที่</label>
+                <input class="w3-input w3-border" type="date" placeholder="2021-07-31" min="2021-05-01" max="2021-07-31" name="date_finish" id="date_finish">
+            </div>
+        </div>
+        <p>
+            <div class="w3-container">
+                <button class="w3-button w3-teal">ค้นหา</button>
+            </div>
+        </p>
+    </form>
+
+    <div id="response_get_slot"></div>
+
+    <script type="text/javascript">
+        document.getElementById("admin_form_get_appoint").addEventListener("submit", function(ev) { 
+            var date_start = document.getElementById('date_start');
+            var date_finish = document.getElementById('date_finish');
+            if(date_start.value.trim()=="" || date_finish.value.trim()=="")
+            { 
+                alert("กรุณาเลือกวันที่เริ่ม และวันที่สิ้นสุด");
+                ev.preventDefault();
+            }
+            else
+            {
+                var request = new XMLHttpRequest();
+                request.open('GET', 'http://SOME_HOSTING/moph/test_get_slot.php?date_start='+date_start.value+'&date_finish='+date_finish.value, true);
+                request.onload = function() {
+                    if (this.status >= 200 && this.status < 400) {
+                        // Success!
+                        var data = JSON.parse(this.response);
+                        // console.log(data);
+                        pre_list(data);
+                        
+                    } else {
+                        // We reached our target server, but it returned an error
+                
+                    }
+                };
+            
+                request.onerror = function() {
+                    // There was a connection error of some sort
+                };
+            
+                request.send();
+                ev.preventDefault();
+            }
+
+            ev.preventDefault();
+        });
+
+        function pre_list(data_items){
+
+            var pre_html = '<table class="w3-table-all w3-hoverable">';
+                pre_html += '<thead><tr class="w3-dark-grey"><th>test</th></tr></thead>';
+                
+
+            data_items.result.forEach(function(item, i){
+                pre_html += '<tr><td>'+item.cid+':'+item.person_name+'</td></tr>';
+            });
+
+            pre_html += '</table>';
+
+            document.getElementById('response_get_slot').innerHTML = pre_html;
+        }
+    </script>
+</body>
+
+</html>
