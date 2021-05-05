@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ทดสอบแสดงผล</title>
 
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="w3.css">
 
 </head>
 
@@ -20,11 +20,11 @@
         <div class="w3-row-padding">
             <div class="w3-half">
                 <label>วันที่</label>
-                <input class="w3-input w3-border" type="date" placeholder="2021-05-01" min="2021-05-01" max="2021-07-31" name="date_start" id="date_start">
+                <input class="w3-input w3-border" type="date" min="2021-05-01" max="2021-07-31" name="date_start" id="date_start">
             </div>
             <div class="w3-half">
                 <label>ถึงวันที่</label>
-                <input class="w3-input w3-border" type="date" placeholder="2021-07-31" min="2021-05-01" max="2021-07-31" name="date_finish" id="date_finish">
+                <input class="w3-input w3-border" type="date" min="2021-05-01" max="2021-07-31" name="date_finish" id="date_finish">
             </div>
         </div>
         <p>
@@ -37,6 +37,7 @@
     <div id="response_get_slot"></div>
 
     <script type="text/javascript">
+
         document.getElementById("admin_form_get_appoint").addEventListener("submit", function(ev) { 
             var date_start = document.getElementById('date_start');
             var date_finish = document.getElementById('date_finish');
@@ -48,7 +49,7 @@
             else
             {
                 var request = new XMLHttpRequest();
-                request.open('GET', 'http://SOME_HOSTING/moph/test_get_slot.php?date_start='+date_start.value+'&date_finish='+date_finish.value, true);
+                request.open('GET', 'http://71dca386afd6.ngrok.io/moph/test_get_slot.php?date_start='+date_start.value+'&date_finish='+date_finish.value, true);
                 request.onload = function() {
                     if (this.status >= 200 && this.status < 400) {
                         // Success!
@@ -76,11 +77,24 @@
         function pre_list(data_items){
 
             var pre_html = '<table class="w3-table-all w3-hoverable">';
-                pre_html += '<thead><tr class="w3-dark-grey"><th>test</th></tr></thead>';
-                
+                pre_html += '<thead><tr class="w3-dark-grey">';
+                pre_html += '<th>เลขที่บัตร</th>';
+                pre_html += '<th>วันที่จอง</th>';
+                pre_html += '<th>ชื่อสกุล</th>';
+                pre_html += '<th>เบอร์โทร</th>';
+                pre_html += '<th>จองผ่าน</th>';
+                pre_html += '<th>ร.พ.</th>';
+                pre_html += '</tr></thead>';
 
             data_items.result.forEach(function(item, i){
-                pre_html += '<tr><td>'+item.cid+':'+item.person_name+'</td></tr>';
+                pre_html += '<tr>';
+                pre_html += '<td>'+item.cid+'</td>';
+                pre_html += '<td>'+item.appointment_datetime+'</td>';
+                pre_html += '<td>'+item.person_name+'</td>';
+                pre_html += '<td>'+item.phone+'</td>';
+                pre_html += '<td>'+item.appointment_type+'</td>';
+                pre_html += '<td>'+item.hospital_code+'</td>';
+                pre_html += '</tr>';
             });
 
             pre_html += '</table>';
