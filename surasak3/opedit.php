@@ -231,6 +231,8 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$typearea = $row->typearea;
 		$vstatus = $row->vstatus;
 
+		$cToborow = $row->toborow;
+
 		//โควิด 19
 		$cPrename=$row->prename;
 		$cName_eng=$row->name_eng;
@@ -242,7 +244,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cAddress_road=$row->address_road;
 		$cTambol_eng =$row->tambol_eng;
 		$cAmpur_eng =$row->ampur_eng;
-		$cChangwat_eng =$row->changwat_eng;			
+		$cChangwat_eng =$row->changwat_eng;
 		
 		
 		//echo substr($cPtright,1,3);
@@ -1587,7 +1589,30 @@ function checkForm(){
 }
 </SCRIPT>
 
-<?php
+<?php 
+
+// if($ptCode == 'R45' && $toborowCode == 'EX52')
+if(preg_match("/(kiosk)/", strtolower($cNote)) > 0)
+{
+	?>
+	
+	<div style="position:absolute; top: 0; left: 0;" id="notify_c19_kiosk">
+		<div style="position: relative;border: 1px solid blue;color: #000;text-align: center;background-color: #ffffe6; width: 400px;">
+			<div style="position:absolute;top: 0;right: 0;background-color: #9c9c9c;padding: 3px;" onclick="do_notify_c19_kiosk()">[ปิด]</div>
+			<div>
+				<p><b>!!!!!! คำเตือน !!!!!</b><br>ผู้ป่วยมีการลงทะเบียนด้วยตู้คีออส<br>กรุณาทบทวนสิทธิในการรักษา</p>
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		alert("!!!!!! คำเตือน !!!!!\nผู้ป่วยมีการลงทะเบียนด้วยตู้คีออส\nกรุณาทบทวนสิทธิในการรักษา");
+		function do_notify_c19_kiosk(){
+			document.getElementById("notify_c19_kiosk").style.display = 'none';
+		}
+	</script>
+	<?php
+}
+
 include 'includes/ajax.php';
 ?>
 <script type="text/javascript">
