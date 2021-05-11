@@ -126,6 +126,7 @@ $sql = "UPDATE bed SET ptname='$fname' WHERE hn='$cHn' limit 1";
 $result = mysql_query($sql) or die("Query failed bed");
 
 $sql = "UPDATE ipcard SET ptname='$fname' WHERE hn='$cHn'  limit 1";
+
 $result = mysql_query($sql) or die("Query failed ipcard");
 
 If (!$result){
@@ -302,6 +303,81 @@ $opergcode='x';
 	$query ="UPDATE opday SET time1='$time' WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 	$result = mysql_query($query);
 	//        or die("Query failed runno update");
+
+
+
+if($_POST["E-DRESS-M"]=="E-DRESS-M"){  //ค่าบริการทำแผล
+
+	// ถ้าในวันนี้ยังไม่มีค่าบริการทำแผล
+	$sql = "SELECT a.`row_id`
+	FROM `depart` AS a 
+	LEFT JOIN `patdata` as b ON b.`idno` = a.`row_id` 
+	WHERE a.`date` LIKE '$thidate3%' 
+	AND a.`hn` = '$cHn' 
+	AND a.`tvn` = '$nVn' 
+	AND b.`code` = 'E-DRESS-M'";
+	$q = mysql_query($sql);
+	$rows = mysql_num_rows($q);
+	if( $rows === 0 ){
+
+		//runno  for chktranx
+		$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
+		$result = mysql_query($query)
+			or die("Query failed");
+
+		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+			if (!mysql_data_seek($result, $i)) {
+				echo "Cannot seek to row $i\n";
+				continue;
+			}
+
+			if(!($row = mysql_fetch_object($result)))
+				continue;
+		}
+
+		$nRunno=$row->runno;
+		$nRunno++;
+
+		$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
+		$result = mysql_query($query) or die("Query failed");
+			/////////////////////////////////////////////////////////////
+			
+	$query = "SELECT * FROM labcare WHERE code = 'E-DRESS-M' ";
+    	$result = mysql_query($query)
+	        or die("Query failed");
+
+	    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	        if (!mysql_data_seek($result, $i)) {
+	            echo "Cannot seek to row $i\n";
+	            continue;
+	        }
+
+	        if(!($row = mysql_fetch_object($result)))
+	            continue;
+	         }
+	    $aDepart=$row->depart; 
+		$aPart=$row->part;
+		$aCode=$row->code; 
+	    $aDetail=$row->detail;
+	    $aPrice=$row->price;
+		$aYprice=$row->yprice;
+		$aNprice=$row->nprice;
+			
+		$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('$nRunno','$thidate','$cPtname','$cHn','','$aDepart','1','$aDetail', '$aPrice','$aYprice','$aNprice','','$sOfficer','0','$nVn','$cPtright');";
+		$result = mysql_query($query);
+		$idno=mysql_insert_id();
+		
+		$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright)
+		VALUES('$thidate','$cHn','','$cPtname','1','$aCode','$aDetail','1','$aPrice','$aYprice','$aNprice','$aDepart','$aPart','$idno','$cPtright');";
+		$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+		
+		$query ="UPDATE opday SET other=(other+$aPrice) WHERE thdatehn= '$thdatehn' AND vn = '".$nVn."' ";
+		$result = mysql_query($query) or die("Query failed,update opday");
+	}
+
+}
+
+
 
 if($_POST['case']=="EX46 ตรวจสุขภาพประกันสังคม" && $_POST["chkup50"]=="chkup50"){
 

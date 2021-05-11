@@ -55,6 +55,7 @@ legend {
 	color: blue;
 }
 
+.style1 {color: #FF0000}
 </style>
 <script language="JavaScript1.2">
 <!--
@@ -229,6 +230,21 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cHospcode=$row->hospcode;
 		$typearea = $row->typearea;
 		$vstatus = $row->vstatus;
+
+		//โควิด 19
+		$cPrename=$row->prename;
+		$cName_eng=$row->name_eng;
+		$cSurname_eng =$row->surname_eng;
+		$cPassport =$row->passport;	
+		$cAddress_eng=$row->house_no;
+		$cAddress_moo=$row->address_moo;
+		$cAddress_soi=$row->address_soi;
+		$cAddress_road=$row->address_road;
+		$cTambol_eng =$row->tambol_eng;
+		$cAmpur_eng =$row->ampur_eng;
+		$cChangwat_eng =$row->changwat_eng;			
+		
+		
 		//echo substr($cPtright,1,3);
 		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
 			echo '<script>alert("ผู้ป่วยสิทธิประกันสุขภาพถ้วนหน้า(ผู้พิการ)\กรุณาตรวจสอบสิทธิการรักษา\r\nเพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด");</script>';
@@ -440,8 +456,7 @@ return $pAge;
 			<div style="position: relative;">
 				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" onKeyUp="check_yot()" size="5" >
 				<div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
-			</div>
-		</td>
+			</div>		</td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
           <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
@@ -454,6 +469,21 @@ return $pAge;
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         </tr>
+      	<tr>
+      	  <td align="right" bgcolor="#CCE9FD"  class="fonttitle">Prename:</td>
+      	  <td bgcolor="#CCE9FD" class="fonttitle"><span style="position: relative;">
+      	    <input name="prename" type="text" id="prename" value="<?=$cPrename;?>" size="5" >
+      	  </span></td>
+      	  <td align="right" bgcolor="#CCE9FD" class="fonttitle">Name:</td>
+      	  <td bgcolor="#CCE9FD" class="fonttitle"><input name="name_eng" type="text" id="name_eng" value="<?=$cName_eng;?>" size="15" ></td>
+      	  <td align="right" bgcolor="#CCE9FD" class="fonttitle">Surname:</td>
+      	  <td bgcolor="#CCE9FD" class="fonttitle"><input name="surname_eng" type="text" id="surname_eng" value="<?=$cSurname_eng;?>" size="15"></td>
+      	  <td><span class="style1">***</span></td>
+      	  <td>&nbsp;</td>
+      	  <td>&nbsp;</td>
+      	  <td>&nbsp;</td>
+      	  <td>&nbsp;</td>
+    	  </tr>
       <tr>
         <td align="right" class="fonthead">เพศ:</td>
         <td> 
@@ -471,6 +501,17 @@ return $pAge;
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         </tr>
+      <tr>
+        <td align="right" class="fonthead">&nbsp;</td>
+        <td>&nbsp;</td>
+        <td colspan="3" align="right" class="fonthead">เลขที่ Passport:</td>
+        <td><input name="passport" type="text" id="passport" value="<?=$cPassport;?>" size="15" maxlength="13" <? if(!empty($cIdcard) && $cIdcard != '-'){ echo "readonly";}?>></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
@@ -611,8 +652,46 @@ return $pAge;
     <td><input type="text" name="tambol" size="10" value="<?=$cTambol;?>"></td>
     <td align="right" class="fonthead">อำเภอ:</td>
     <td><input type="text" name="ampur" size="10"  value="<?=$cAmpur;?>"></td>
-    <td class="fonthead">จังหวัด:</td>
+    <td align="right" class="fonthead">จังหวัด:</td>
     <td><input type="text" name="changwat" size="10" value="<?=$cChangwat;?>"></td>
+  </tr>
+  <tr>
+    <td align="right" bgcolor="#CCE9FD" class="fonthead">&nbsp;</td>
+    <td colspan="7" bgcolor="#CCE9FD">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">ข้อมูลภาษาอังกฤษ</td>
+    <td colspan="7" bgcolor="#CCE9FD" class="fonttitle"><span class="style1">***</span></td>
+    </tr>
+  <tr>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">House No:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="address_eng" type="text" id="address_eng" value="<?=$cAddress_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">Moo:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="address_moo" type="text" id="address_moo" value="<?=$cAddress_moo;?>" size="10"></td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">Soi:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="address_soi" type="text" id="address_soi" value="<?=$cAddress_soi;?>" size="10"></td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">Road:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="address_road" type="text" id="address_road" value="<?=$cAddress_road;?>" size="10"></td>
+  </tr>
+  <tr>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">Sub-District:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="tambol_eng" type="text" id="tambol_eng" value="<?=$cTambol_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">District:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="ampur_eng" type="text" id="ampur_eng"  value="<?=$cAmpur_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">Province:</td>
+    <td bgcolor="#CCE9FD" class="fonttitle"><input name="changwat_eng" type="text" id="changwat_eng" value="<?=$cChangwat_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">&nbsp;</td>
+    <td bgcolor="#CCE9FD" class="fonttitle">&nbsp;</td>   
+  </tr>
+  <tr>
+    <td align="right" class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td align="right" class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td align="right" class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
   </tr>
   <tr>
     <td align="right" class="fonthead">โทรศัพท์บ้าน:</td>
@@ -627,16 +706,13 @@ return $pAge;
   <tr>
     <td align="right" class="fonthead">บิดา:</td>
     <td> 
-      <input type="text" name="father" size="15" value="<?=$cFather;?>">
-    </td>
+      <input type="text" name="father" size="15" value="<?=$cFather;?>">    </td>
     <td align="right" class="fonthead">มารดา:</td>
     <td> 
-      <input type="text" name="mother" size="15" value="<?=$cMother;?>" >
-    </td>
+      <input type="text" name="mother" size="15" value="<?=$cMother;?>" >    </td>
     <td align="right" class="fonthead">คู่สมรส:</td>
     <td> 
-      <input type="text" name="couple" size="15" value="<?=$cCouple;?>">
-    </td>
+      <input type="text" name="couple" size="15" value="<?=$cCouple;?>">    </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -661,14 +737,12 @@ return $pAge;
   <tr>
     <td align="right" class="fonthead">ผู้ที่สามารถติดต่อได้:</td>
     <td>
-      <input type='text' name="ptf" size='15'  value="<?=$cPtf;?>">
-    </td>
+      <input type='text' name="ptf" size='15'  value="<?=$cPtf;?>">    </td>
     <td align="right" class="fonthead">เกี่ยวข้องเป็น:</td>
     <td><input type='text' name="ptfadd" size='10'  value="<?=$cPtfadd;?>"></td>
     <td align="right" class="fonthead">โทรศัพท์:</td>
     <td>
-      <input type='text' name="ptffone" size='10'  value="<?=$cPtffone;?>">
-    </td>
+      <input type='text' name="ptffone" size='10'  value="<?=$cPtffone;?>">    </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -695,8 +769,7 @@ return $pAge;
 				<?php
 			}
 			?>
-		</select>
-	</td>
+		</select>	</td>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -974,7 +1047,7 @@ $disabtype_list = array(
 );
 
 $disabcause_list = array(
-  1 => 'ความพิการแต่กาเนิด',
+  1 => 'ความพิการแต่กำเนิด',
   2 => 'ความพิการจากการบาดเจ็บ',
   3 => 'ความพิการจากโรค'
 );
@@ -1271,6 +1344,12 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 ค่าบริการตรวจสุขภาพประกันสังคม รพ.อื่นๆ  50 บาท</td>
     <td colspan="3" class="fonthead">&nbsp;</td>
   </tr>
+  <tr>
+    <td align="right" class="fonthead">ค่าบริการทำแผล</td>
+    <td class="fonthead1"><input name="E-DRESS-M" type="checkbox" value="E-DRESS-M">
+ค่าบริการทำแผลเบื้องต้น  140 บาท</td>
+    <td colspan="3" class="fonthead">&nbsp;</td>
+  </tr>  
 </table>
 
 </fieldset>

@@ -12,39 +12,57 @@ session_unregister("cNote");
 session_unregister("Ptright1");
 //    session_destroy();
 ?>
-
+<style>
+body {
+	background-color: #FFFFF0;
+    font-family: "TH SarabunPSK";
+        font-size: 18px;
+    }
+.txtsarabun {
+font-family:"TH SarabunPSK";
+font-size:20px;
+}	
+.style2 {
+	font-family:"TH SarabunPSK";
+	font-size: 18;
+	}
+</style>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
-<script type="text/javascript" src="assets/js/json2.js"></script>
-
+<script type="text/javascript" src="assets/js/json2.js"></script><body bgcolor="#60c4b8">
+<div style="margin-left:50px; margin-top: 30px;">
 <form method="post" action="ophn.php">
-    <p>ค้นหาคนไข้จาก&nbsp; HN</p>
+    <p style="font-size:24px;"><b>ค้นหาคนไข้จาก&nbsp; HN</p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="text" name="hn" size="12" id="aLink"></p>
+    <input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40">
+    </p>
     
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ลบทิ้ง  " name="B2"></p>
+    <p style="margin-left:100px;">
+    <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
+    &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     ">
+    </p>
 </form>
 <script type="text/javascript">
     document.getElementById('aLink').focus();
 </script>
 
-<table>
-    <tr>
-        <th height="22" bgcolor=6495ED>HN</th>
-        <th bgcolor=6495ED width="70">ยศ</th>
-        <th bgcolor=6495ED>ชื่อ</th>
+<table width="83%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
+<tr>
+        <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
+      <th bgcolor=#009688 width="47"><span class="style2">ยศ</span></th>
+      <th width="77" bgcolor=#009688><span class="style2">ชื่อ</span></th>
 
-        <th bgcolor=6495ED>สกุล</th>
-        <th bgcolor=6495ED>ใบต่อแบบใหม่</th>
-        <th bgcolor=6495ED>มา รพ.</th>
-        <th bgcolor=6495ED>ตรวจนอน</th>
-        <th bgcolor=6495ED>ใบต่อ</th>
-        <!-- <th bgcolor=6495ED>ใบยานอก</th>
+      <th width="69" bgcolor=#009688><span class="style2">สกุล</span></th>
+      <th width="174" bgcolor=#009688><span class="style2">ใบต่อแบบใหม่</span></th>
+      <th width="98" bgcolor=#009688><span class="style2">มา รพ.</span></th>
+      <th width="130" bgcolor=#009688><span class="style2">ตรวจนอน</span></th>
+      <th width="81" bgcolor=#009688><span class="style2">ใบต่อ</span></th>
+<!-- <th bgcolor=6495ED>ใบยานอก</th>
         <th bgcolor=6495ED>ใบสั่งยา</th>
-        <th bgcolor=6495ED>ใบตรวจโรค</th>-->
-        <th bgcolor=6495ED colspan="5">ใบตรวจโรค</th>
-        <th bgcolor="6495ED">&nbsp;</th>
+        <th bgcolor=6495ED>ใบตรวจโรค</th>-->       
+        <th bgcolor=#009688 colspan="5"><span class="style2">ใบตรวจโรค</span></th>
+        <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธ.ออมสิน</span></th>
+      <th width="6" bgcolor="#009688">&nbsp;</th>
     </tr>
 
     <?php
@@ -59,7 +77,7 @@ session_unregister("Ptright1");
                 $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
 
                 if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-                    $color = "#CCFF00";
+                    $color = "#208eb4";
                 }else{
                     $color = "FF8C8C";
                 }
@@ -67,12 +85,12 @@ session_unregister("Ptright1");
                 $sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
 
                 if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-                    $color = "99CC00";
+                    $color = "7dcf80";
                 }else{
                     $color = "FF8C8C";
                 }
             }else{
-                $color = "66CDAA";
+                $color = "#fdee6e";
             }
 
             if(!empty($idcard)){
@@ -102,7 +120,7 @@ session_unregister("Ptright1");
                 echo"<FONT SIZE='' COLOR='#FF0033'>ผู้ป่วยไม่มี HN</FONT>";
             }
 
-            print (" <tr>\n".
+            print (" <tr style='font-size: 18px;'>\n".
             "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn & cName=$name &cSurname=$surname\">$hn</a></td>\n".
             "  <td BGCOLOR=".$color.">$yot</td>\n".
             "  <td BGCOLOR=".$color.">$name</td>\n".
@@ -120,8 +138,9 @@ session_unregister("Ptright1");
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</a></td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</a></td>\n".
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</a></td>\n".
+			"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"gsb_chk.php\">ตรวจสอบ</a></td>\n".
             "<td bgcolor=\"$color\" align=\"center\">
-            <button type=\"button\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
+            <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
             <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
             </td>".
             " </tr>\n");
@@ -159,14 +178,14 @@ session_unregister("Ptright1");
         // END
         ?>
 </table>
-
-    <FONT SIZE="2" COLOR="#990000">***คำอธิบาย***</FONT> <BR>
-    <FONT SIZE="" COLOR="66CDAA">สีเขียว คือ ยังไม่ได้ทำการตรวจสิทธิการรักษา</FONT><BR>
-    <FONT SIZE="" COLOR="#CCFF00">สีเขียวอ่อน คือ ตรวจสอบแล้ว มีสิทธิประกันสังคม</FONT><BR>
-    <FONT SIZE="" COLOR="#99CC00">สีเขียวอ่อน คือ ตรวจสอบแล้ว มีสิทธิจ่ายตรง</FONT><BR>
-    <FONT SIZE="" COLOR="#FF0033">สีแดง คือ ไม่มีสิทธิ</FONT><BR>
-
-    <hr />
+<div style="margin-top: 30px; font-size:18px; font-weight:bold;">
+<FONT COLOR="#990000">***คำอธิบาย***</FONT> <BR>
+    <FONT COLOR="#fdee6e">สีเหลือง คือ ยังไม่ได้ทำการตรวจสิทธิการรักษา</FONT><BR>
+    <FONT COLOR="#208eb4">สีน้ำเงิน คือ ตรวจสอบแล้ว มีสิทธิประกันสังคม</FONT><BR>
+    <FONT COLOR="#7dcf80">สีเขียว คือ ตรวจสอบแล้ว มีสิทธิจ่ายตรง</FONT><BR>
+    <FONT COLOR="#FF0033">สีแดง คือ ไม่มีสิทธิ</FONT><BR>
+</div>
+<hr />
 
     <?php 
 
@@ -243,6 +262,7 @@ session_unregister("Ptright1");
         include("unconnect.inc");
     } // End if not empty HN
 ?>
+
 <style>
 #ptrightNotify{top: 2%;left: 50%;width:600px;height:400px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
 #ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
@@ -255,6 +275,7 @@ session_unregister("Ptright1");
     </div>
     <div style="padding: 6px;" id="ptnotifyContent">testcontent</div>
 </div>
+
 <script type="text/javascript">
     /* checkIpd */
     function checkIpd(link, ev, hn){
@@ -287,3 +308,4 @@ session_unregister("Ptright1");
     // });
 
 </script>
+</div>

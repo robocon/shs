@@ -57,7 +57,8 @@ if ( $action === false ) {
 		'ADMXR' => 'รังษีกรรม',
 		'ADMLIBRARY' => 'เวชกรรมป้องกัน',
 		'ADMCMS' => 'หน่วยจ่ายกลาง',
-		'ADMNEWCHKUP' => 'ตรวจสุขภาพนอกโรงพยาบาล'
+		'ADMNEWCHKUP' => 'ตรวจสุขภาพนอกโรงพยาบาล',
+		'ADMCHKUP1' => 'อื่นๆ'
 	);
 	
 	include 'includes/ajax.php';
