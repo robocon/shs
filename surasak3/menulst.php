@@ -387,15 +387,14 @@ if($rows){///  ถ้ามี rows
 <script language="javascript" src="js/jquery-1.8.0.min.js"></script>
 <script>
 function Realtime(){
-	$.ajax({url:"ajaxtime.php",
-		async:false,
-		cache:false,
-		global:false,
-		type:"POST",
-		data:"",
-		dataType:"html",
-		success: function(result){ 
-
+   $.ajax({url:"ajaxtime.php",
+   	async:false,
+	cache:false,
+	global:false,
+	type:"POST",
+	data:"",
+	dataType:"html",
+	success: function(result){
 			// เอามาแปลงเป็นตัวเลขสำหรับ JS
 			var prepare_date = Date.parse(result);
 			Real(prepare_date);

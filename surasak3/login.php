@@ -22,8 +22,17 @@
   </table>
 </form>
 <font face="THSarabunPSK">.......<a target=_parent  href='../index.htm'>อินทราเนท</a></font>
-<p>
-  <a target="_parent" href='login_mobile.php'>Mobile Version</a>
-</p>
+<?php 
+$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+$isMob = is_numeric(strpos($ua, "mobile"));
+if($isMob === true)
+{
+  ?>
+  <p>
+    <a target="_parent" href='login_mobile.php'>Mobile Version</a>
+  </p>
+  <?php
+}
+?>
 </body>
 
