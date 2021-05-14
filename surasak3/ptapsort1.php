@@ -213,7 +213,13 @@ $chkrows=mysql_fetch_array($chkquery);
 				if( !empty($item['detail2']) && $_SESSION['smenucode'] != 'ADMOPD' ){
 					echo ' ('.$item['detail2'].')';
 				}
-				?>			</td>
+				
+				if($room == 'ห้องตรวจเฉพาะโรค')
+				{
+					echo '&nbsp;<span style="font-weight:bold; color: red;">(ARI คลินิก)</span>';
+				}
+				?>
+				</td>
 			<td><?=substr($chkrows["thidate"],0,10);?></td>
 			<!-- <td><?=$chkrows["okopd"];?></td> -->
 			<td>

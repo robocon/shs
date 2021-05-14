@@ -1349,7 +1349,7 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
   <tr>
     <td align="right" class="fonthead">ค่าบริการทำแผล</td>
     <td class="fonthead1"><input name="E-DRESS-M" type="checkbox" value="E-DRESS-M">
-ค่าบริการทำแผลเบื้องต้น  170 บาท</td>
+ค่าบริการทำแผลเบื้องต้น  140 บาท</td>
     <td colspan="3" class="fonthead">&nbsp;</td>
   </tr>  
 </table>

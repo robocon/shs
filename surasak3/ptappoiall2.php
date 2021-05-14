@@ -65,6 +65,7 @@ body,td,th {
 	<A HREF="ptapsort.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">ผู้ป่วยไตเทียม</A> 
 	&nbsp;&nbsp;<A HREF="ptapsort1.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">ผู้ป่วยOPD</A>
 	&nbsp;&nbsp;<a href="ptapsort3.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">คลีนิกฝังเข็ม</a>
+    &nbsp;&nbsp;<a href="ptapsort4.php?doctor=<?php echo $_GET["doctor"];?>&appd=<?php echo $_GET["appd"];?>" target="_blank">ฮักกันยามเฒ่า</a>
 	&nbsp;&nbsp;<a href="vnprintday.php?nat=<?=$_GET["appd"];?>&detail=<?=$dc;?>&doctor">พิมพ์ใบตรวจโรค</a>
 	&nbsp;&nbsp;<a href="opdcard_vnprintday.php?nat=<?=$_GET["appd"];?>&amp;detail=<?=$dc;?>&doctor">พิมพ์ใบต่อรายวัน</a>
 </div>
@@ -129,7 +130,7 @@ body,td,th {
 		//echo "==>".$arr["doctor"];
 
 		$link = 'ptappoiall2.php?doctor='.urlencode($arr["doctor"]).'&appd='.urlencode($appd);
-		$listhn[$arr["hn"]] .= "<A HREF=\"$link\" target='_blank' title=\"".$arr["doctor"]."\">".$name_dc."</A> &nbsp; ";
+		$listhn[$arr["hn"]] .= "<A HREF=\"$link\" target='_blank'>".$name_dc."</A> &nbsp; ";
 
 	}
 	///////////////////////
@@ -243,9 +244,16 @@ $chkrows=mysql_fetch_array($chkquery);
 				<?=$detail;?>
 				<?php 
 				// ถ้าไม่ใช่กลุ่มของห้องทะเบียนจะมองเห็น
-				if( !empty($item['detail2']) && $_SESSION['smenucode'] != 'ADMOPD' ){
+				if( !empty($item['detail2']) && $_SESSION['smenucode'] != 'ADMOPD' )
+				{
 					echo ' ('.$item['detail2'].')';
 				}
+
+				if($room == 'ห้องตรวจเฉพาะโรค')
+				{
+					echo '&nbsp;<span style="font-weight:bold; color: red;">(ARI คลินิก)</span>';
+				}
+
 				?>			</td>
 			<td><?=substr($chkrows["thidate"],0,10);?></td>
 			<!-- <td><?=$chkrows["okopd"];?></td> -->
