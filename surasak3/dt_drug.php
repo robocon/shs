@@ -3183,7 +3183,7 @@ function viatch(ing,code){
 	<TABLE width="100%" cellpadding="0" cellspacing="0">
 	<TR bgcolor="#3300FF" align="center">
 		<TD align="left">&nbsp;&nbsp;</TD>
-		<TD ><font color="#FFFFFF"><strong>วันที่มาตรวจ : </strong>
+		<TD ><font color="#FFFFFF"><strong>วันที่มาตรวจ [OPD] : </strong>
 		  <label>
 		  <select name="date_diag" onChange="select_dateremed(this.value);">
 		 <?php
@@ -3195,6 +3195,7 @@ function viatch(ing,code){
 		$where1 = "";
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
+//------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
 	$sql = "
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
@@ -3239,7 +3240,7 @@ function viatch(ing,code){
 	<TABLE width="100%" cellpadding="0" cellspacing="0">
 	<TR bgcolor="#3300FF" align="center">
 		<TD align="left">&nbsp;&nbsp;</TD>
-		<TD ><font color="#FFFFFF"><strong>วันที่มาตรวจ : </strong>
+		<TD ><font color="#FFFFFF"><strong>วันที่มาตรวจ [IPD] : </strong>
 		  <label>
 		  <select name="date_diag" onChange="select_dateremed2(this.value);">
 		 <?php
@@ -3252,16 +3253,15 @@ function viatch(ing,code){
 		$where1 = "";
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
-	$sql = "
-	SELECT DISTINCT  a.date AS date1,  a.date as date2 
+
+//------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
+	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY left(date2,10)
 	HAVING sum( a.amount ) >0
-	Order by a.date DESC limit 20
+	Order by a.date DESC limit 20";
 	
-	";
-
 			$result = Mysql_Query($sql) or die(mysql_error());
 			while($arr = Mysql_fetch_assoc($result)){
 				$arr["date1"] = substr($arr["date1"],8,2)."/".substr($arr["date1"],5,2)."/".substr($arr["date1"],0,4);
