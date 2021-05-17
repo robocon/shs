@@ -97,6 +97,7 @@ $list_lab["PARASI"] = "parasi";
 $list_lab["GROUPT"] = "groupt";
 $list_lab["RH"] = "rh";
 $list_lab["UPT"] = "upt";
+$list_lab["ANTIHB"] = "antihb";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -153,7 +154,6 @@ $list_lab["UPT"] = "upt";
 
 //ค้นหา hn จาก opday ****************************************************************************************
 	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$_POST["p_hn"]."' limit 0,1";
-	//echo $sql;
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
 	/*if(mysql_num_rows($result) <= 0){
 		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
@@ -786,6 +786,7 @@ C&deg; </td>
 		$i=1;
 		while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab))
 		{ 
+			// สกรีนผลแลปที่ให้แสดงผลได้
 			if(empty($list_lab[$labname]))
 			{
 				continue;
@@ -811,7 +812,14 @@ C&deg; </td>
 		?>
 		</tr>
 		<tr>
-			<td colspan="10">* ผลแลปอื่นๆที่ตรวจแล้วและแพทย์จำเป็นต้องบันทึกผล ถ้าไม่มีในรายการข้างต้น กรุณาแจ้งศูนย์คอมฯเพื่อปรับปรุงแก้ไข ขอบคุณครับ</td>
+			<td colspan="10">
+			<p style="margin: 0;">
+				<?php 
+				echo implode(', ', $list_lab);
+				?>
+			</p>
+			<p style="margin: 0;">*ผลแลปอื่นๆที่ไม่มีในรายการข้างต้น หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
+			</td>
 		</tr>
 	</table>
 	<?php 

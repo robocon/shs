@@ -79,6 +79,7 @@ $sql = "UPDATE opcard SET idcard = '$idcard',
 	mother = '$mother',
 	couple = '$couple',
 	note = '$note',
+	note_vip = '$note_vip',
 	sex = '$sex',
 	camp = '$camp',
 	race = '$race',
@@ -93,8 +94,20 @@ $sql = "UPDATE opcard SET idcard = '$idcard',
 	blood ='".$blood."',
 	drugreact ='".$drugreact."',
 	employee = '$employee',
-	typearea = '$typearea' WHERE hn = '$cHn' ";
-$result = mysql_query($sql) or die("Query failed ipcard");
+	typearea = '$typearea',
+	prename = '$prename',
+	name_eng = '$name_eng',
+	surname_eng = '$surname_eng',	
+	passport = '$passport',
+	house_no = '$address_eng',
+	address_moo = '$address_moo',
+	address_soi = '$address_soi',
+	address_road = '$address_road',
+	tambol_eng = '$tambol_eng',
+	ampur_eng = '$ampur_eng',
+	changwat_eng = '$changwat_eng'	 WHERE hn = '$cHn' ";
+	//echo $sql;
+$result = mysql_query($sql) or die("update failed opcard");
 
 if(!$result){
 	echo "update opcard fail";
@@ -111,6 +124,49 @@ if(!$result){
 		$result = mysql_query($sqlup) or die("Query failed condxofyear_so2");
 	}
 }
+
+
+$sql_ipcard = "SELECT a.`row_id` AS `ipcard_id`, a.`hn`, a.`an`,b.`row_id` AS `bed_id` 
+FROM (
+	SELECT * FROM `ipcard` WHERE `hn` = '$cHn' AND `dcdate` = '0000-00-00 00:00:00' ORDER BY `row_id` DESC LIMIT 1
+) AS a 
+LEFT JOIN `bed` AS b ON a.`hn` = b.`hn` 
+WHERE b.`row_id` IS NOT NULL";
+$q_ipcard = mysql_query($sql_ipcard);
+if($q_ipcard==true)
+{
+	if(mysql_num_rows($q_ipcard) > 0)
+	{
+
+		$ipd_item = mysql_fetch_assoc($q_ipcard);
+		$ipcard_id = $ipd_item['ipcard_id'];
+		$bed_id = $ipd_item['bed_id'];
+
+		$update_sql_ipcard = "UPDATE `ipcard` SET `ptright` = '$ptright1' WHERE `row_id` = '$ipcard_id' ";
+		$q_update_ipcard = mysql_query($update_sql_ipcard);
+		if($q_update_ipcard!=true)
+		{
+			echo '<p><b>Error : </b>'.mysql_error().'</p>';
+		}
+
+		$update_sql_bed = "UPDATE `bed` SET `ptright` = '$ptright1' WHERE `row_id` = '$bed_id' ";
+		$q_update_bed = mysql_query($update_sql_bed);
+		if($q_update_bed!=true)
+		{
+			echo '<p><b>Error : </b>'.mysql_error().'</p>';
+		}
+
+		if($q_update_ipcard==true && $q_update_bed==true)
+		{
+			echo '<p><b>อัพเดท</b> ข้อมูลสิทธิการรักษาผู้ป่วยในเรียบร้อย</p>';
+		}
+	}
+}
+else
+{
+	echo '<p><b>Error : </b>'.mysql_error().'</p>';
+}
+
 
 // require_once 'opdwork_json.php';
 

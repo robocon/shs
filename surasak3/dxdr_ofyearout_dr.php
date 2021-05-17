@@ -1358,7 +1358,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['metamp']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['metamp']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
-		<span <?=($result_dx['metamp'] == 'Negative') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['metamp'];?></span>
+		<span <?=($result_dx['metamp'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['metamp'];?></span>
 	</td>
 	<td class="labfont">-</td>
 	<td align="center" class="labfont">
@@ -1376,7 +1376,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hbsag']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hbsag']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
-		<span <?=($result_dx['hbsag'] == 'Negative') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hbsag'];?></span>
+		<span <?=($result_dx['hbsag'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hbsag'];?></span>
 	</td>
 	<td class="labfont">-</td>
 	<td align="center" class="labfont">
@@ -1394,7 +1394,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hcvab']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hcvab']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
-		<span <?=($result_dx['hcvab'] == 'Negative') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hcvab'];?></span>
+		<span <?=($result_dx['hcvab'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hcvab'];?></span>
 	</td>
 	<td class="labfont">-</td>
 	<td align="center" class="labfont">
@@ -1412,7 +1412,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hiv']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hiv']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
-		<span <?=($result_dx['hiv'] == 'Negative') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hiv'];?></span>
+		<span <?=($result_dx['hiv'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hiv'];?></span>
 	</td>
 	<td class="labfont">-</td>
 	<td align="center" class="labfont">
@@ -1430,7 +1430,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['vdrl']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['vdrl']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
-		<span <?=($result_dx['vdrl'] == 'Negative') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['vdrl'];?></span>
+		<span <?=($result_dx['vdrl'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['vdrl'];?></span>
 	</td>
 	<td class="labfont">-</td>
 	<td align="center" class="labfont">
@@ -1526,7 +1526,7 @@ if($age_int >= 18 && $sex == 0)
 		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['upt']?></span></td>
 		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['upt']?></span></td>
 		<td align="center" bgcolor="#FFFFFF" class="profilehead">
-			<span <?=($result_dx['upt'] == 'Negative') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['upt'];?></span>
+			<span <?=($result_dx['upt'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['upt'];?></span>
 		</td>
 		<td class="labfont">-</td>
 		<td align="center" class="labfont">
@@ -1539,6 +1539,31 @@ if($age_int >= 18 && $sex == 0)
 		<td colspan="4"></td>
 	</tr>
 	<?php 
+}
+?>
+
+<?php 
+if(!empty($result_dx["antihb"]))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">Anti-HBs :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['antihb']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['antihb']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['antihb'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <?php if($result_dx['antihb_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['antihb_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_antihb' type='radio' value='»¡µÔ' /> »¡µÔ
+		<input name='stat_antihb' type='radio' value='¼Ô´»¡µÔ' /> ¼Ô´»¡µÔ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
 }
 ?>
 

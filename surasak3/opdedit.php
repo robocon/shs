@@ -21,6 +21,7 @@ legend {
 	 size:16PX;
 	/* font-weight:bold;*/
  }
+.style1 {color: #FF0000}
 </style>
 <script language="JavaScript1.2">
 <!--
@@ -47,6 +48,7 @@ top.window.outerWidth = screen.availWidth;
     session_unregister("cAge");  
     session_unregister("cIdcard");  
     session_unregister("cNote");  
+	session_unregister("cNote_vip");  
  	session_unregister("cIdcard"); 
  	session_unregister("cIdguard"); 
     $nRunno="";
@@ -67,6 +69,7 @@ top.window.outerWidth = screen.availWidth;
     session_register("cAge");  
     session_register("cIdcard");   
     session_register("cNote");  
+	session_register("cNote_vip");  
   session_register("cIdcard");  
   session_register("cIdguard");  
 	
@@ -121,6 +124,7 @@ top.window.outerWidth = screen.availWidth;
 	$cMother =$row->mother;
 	$cCouple =$row->couple;
 	$cNote=$row->note;
+	$cNote_vip=$row->note_vip;
 	$cSex =$row->sex;
 	$cCamp =$row->camp;
 	$cRace=$row->race;
@@ -135,6 +139,19 @@ $cDrugreact=$row->drugreact;
 $cHospcode=$row->hospcode;
 $employee = $row->employee;
 $typearea = $row->typearea;
+
+		//โควิด 19
+		$cPrename=$row->prename;
+		$cName_eng=$row->name_eng;
+		$cSurname_eng =$row->surname_eng;
+		$cPassport =$row->passport;	
+		$cAddress_eng=$row->house_no;
+		$cAddress_moo=$row->address_moo;
+		$cAddress_soi=$row->address_soi;
+		$cAddress_road=$row->address_road;
+		$cTambol_eng =$row->tambol_eng;
+		$cAmpur_eng =$row->ampur_eng;
+		$cChangwat_eng =$row->changwat_eng;		
 
 		$hcode=explode("/",$cHospcode);
 		$hcode1=$hcode[0];
@@ -293,6 +310,21 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td>&nbsp;</td>
         </tr>
       <tr>
+        <td align="right" bgcolor="#66CC99"  class="fonthead">Prename:</td>
+        <td bgcolor="#66CC99"><span style="position: relative;">
+          <input name="prename" type="text" id="prename" value="<?=$cPrename;?>" size="5" >
+        </span></td>
+        <td align="right" bgcolor="#66CC99" class="fonthead">Name:</td>
+        <td bgcolor="#66CC99"><input name="name_eng" type="text" id="name_eng" value="<?=$cName_eng;?>" size="15" ></td>
+        <td align="right" bgcolor="#66CC99" class="fonthead">Surname:</td>
+        <td bgcolor="#66CC99"><input name="surname_eng" type="text" id="surname_eng" value="<?=$cSurname_eng;?>" size="15"></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
         <td align="right" class="fonthead">เพศ:</td>
         <td> 
           <select size="1" name="sex" id="sex">
@@ -309,6 +341,17 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         </tr>
+      <tr>
+        <td align="right" class="fonthead">&nbsp;</td>
+        <td>&nbsp;</td>
+        <td colspan="3" align="right" class="fonthead">เลขที่ Passport:</td>
+        <td><input name="passport" type="text" id="passport" value="<?=$cPassport;?>" size="15" maxlength="13" <? if(!empty($cIdcard) && $cIdcard != '-'){ echo "readonly";}?>></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
@@ -385,8 +428,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
               <?php
             }
             ?>
-            </select>
-          </td>
+            </select>          </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -450,6 +492,30 @@ echo "<tr bgcolor=\"$bgcolor\" >
     <td><input type="text" name="changwat" size="10" value="<?=$cChangwat;?>"></td>
   </tr>
   <tr>
+    <td align="right" bgcolor="#66CC99" class="fonthead">ข้อมูลภาษาอังกฤษ</td>
+    <td colspan="7" bgcolor="#66CC99"><span class="style1">***</span></td>
+    </tr>
+  <tr>
+    <td align="right" bgcolor="#66CC99" class="fonthead">House NO:</td>
+    <td bgcolor="#66CC99"><input name="address_eng" type="text" id="address_eng" value="<?=$cAddress_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#66CC99" class="fonthead">Moo:</td>
+    <td bgcolor="#66CC99"><input name="address_moo" type="text" id="address_moo" value="<?=$cAddress_moo;?>" size="10"></td>
+    <td align="right" bgcolor="#66CC99" class="fonthead">Soi:</td>
+    <td bgcolor="#66CC99"><input name="address_soi" type="text" id="address_soi" value="<?=$cAddress_soi;?>" size="10"></td>
+    <td align="right" bgcolor="#66CC99" class="fonthead">Road:</td>
+    <td bgcolor="#66CC99"><input name="address_road" type="text" id="address_road" value="<?=$cAddress_road;?>" size="10"></td>
+    </tr>
+  <tr>
+    <td align="right" bgcolor="#66CC99" class="fonthead">Sub-District:</td>
+    <td bgcolor="#66CC99"><input name="tambol_eng" type="text" id="tambol_eng" value="<?=$cTambol_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#66CC99" class="fonthead">District:</td>
+    <td bgcolor="#66CC99"><input name="ampur_eng" type="text" id="ampur_eng"  value="<?=$cAmpur_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#66CC99">Province:</td>
+    <td bgcolor="#66CC99"><input name="changwat_eng" type="text" id="changwat_eng" value="<?=$cChangwat_eng;?>" size="10"></td>
+    <td align="right" bgcolor="#66CC99">&nbsp;</td>
+    <td bgcolor="#66CC99">&nbsp;</td>
+    </tr>
+  <tr>
     <td align="right" class="fonthead">โทรศัพท์บ้าน:</td>
     <td><input type="text" name="hphone" size="10" value="<?=$chPhone;?>" id="hphone"></td>
     <td align="right" class="fonthead">มือถือ:</td>
@@ -462,30 +528,25 @@ echo "<tr bgcolor=\"$bgcolor\" >
   <tr>
     <td align="right" class="fonthead">บิดา:</td>
     <td> 
-      <input type="text" name="father" size="15" value="<?=$cFather;?>">
-    </td>
+      <input type="text" name="father" size="15" value="<?=$cFather;?>">    </td>
     <td align="right" class="fonthead">มารดา:</td>
     <td> 
-      <input type="text" name="mother" size="15" value="<?=$cMother;?>" >
-    </td>
+      <input type="text" name="mother" size="15" value="<?=$cMother;?>" >    </td>
     <td align="right" class="fonthead">คู่สมรส:</td>
     <td> 
-      <input type="text" name="couple" size="15" value="<?=$cCouple;?>">
-    </td>
+      <input type="text" name="couple" size="15" value="<?=$cCouple;?>">    </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
   <tr>
     <td align="right" class="fonthead">ผู้ที่สามารถติดต่อได้:</td>
     <td>
-      <input type='text' name="ptf" size='15'  value="<?=$cPtf;?>">
-    </td>
+      <input type='text' name="ptf" size='15'  value="<?=$cPtf;?>">    </td>
     <td align="right" class="fonthead">เกี่ยวข้องเป็น:</td>
     <td><input type='text' name="ptfadd" size='10'  value="<?=$cPtfadd;?>"></td>
     <td align="right" class="fonthead">โทรศัพท์:</td>
     <td>
-      <input type='text' name="ptffone" size='10'  value="<?=$cPtffone;?>">
-    </td>
+      <input type='text' name="ptffone" size='10'  value="<?=$cPtffone;?>">    </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -513,8 +574,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 				<?php
 			}
 			?>
-		</select>
-	</td>
+		</select>	</td>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -522,8 +582,6 @@ echo "<tr bgcolor=\"$bgcolor\" >
 	<td></td>
 	<td></td>
   </tr>
-
-
 </table>    
 </fieldset>
 <BR>
@@ -709,8 +767,8 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
     
     <table  border="0" align="center" width="100%">
   <tr>
-    <td align="right" class="fonthead">กลุ่มเลือด</td>
-    <td><SELECT NAME="blood" id="blood">
+    <td width="7%" align="right" class="fonthead">กลุ่มเลือด</td>
+    <td width="29%"><SELECT NAME="blood" id="blood">
      <option value="<?=$cBlood;?>"><?=$cBlood;?></option>
       <option value="ไม่ทราบกรุ๊ปเลือด">ไม่ทราบกรุ๊ปเลือด</option>
       <option value="ไม่เคยตรวจกรุ๊ปเลือด ">ไม่เคยตรวจกรุ๊ปเลือด </option>
@@ -719,15 +777,14 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
       <option value="เอบี">เอบี</option>
       <option value="โอ">โอ</option>
     </SELECT></td>
-    <td class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
-    <td><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">
+    <td width="6%" class="fonthead">แพ้ยา<div id="list3" style="position: absolute;"></div></td>
+    <td width="58%"><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">
 <input name="rdo1" type="checkbox"  id="rdo1" value="30 บาท" <? if($cPtright=="R09 ประกันสุขภาพถ้วนหน้า"){ echo "checked"; }?>> 
 30 บาท 
 <input name="rdo1" type="checkbox" id="rdo2" value="ปส." <? if($cPtright=="R07 ประกันสังคม"){ echo "checked"; }?>> 
 ประกันสังคม  
       รพ.ต้นสังกัด
-<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    
-    </td>
+<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    </td>
     </tr>
   <tr>
     <td align="right" class="fonthead">หมายเหตุ</td>
@@ -749,6 +806,12 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
     <td class="fonthead">หมายเหตุ</td>
     <td><input type="text" name="note" size="50" value="<?=$cNote;?>" id="note"></td>
     </tr>
+  <tr>
+    <td align="right" class="fonthead">Note VIP :</td>
+    <td><input type="text" name="note_vip" size="50" value="<?=$cNote_vip;?>" id="note_vip"></td>
+    <td class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
     </table>
 
 </fieldset>
