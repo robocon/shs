@@ -276,7 +276,7 @@ $opergcode='x';
 	}else{
 		$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age,ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw,opdreg,checkdx)VALUES('$thidate','$thdatehn','$cHn','$nVn',  '$thdatevn','$cPtname','$cAge','$cPtright','$cGoup','$cCamp','$note','$cIdcard','$case','$borow','$code21','$sOfficer',".$R03true1.",'$opergcode','$checkdx');";
 	}
-		$result = mysql_query($query) or die("Query failed,cannot insert into opday");
+		$result = mysql_query($query) or die("Query failed,cannot insert into opday".mysql_error());
 		$opday_id = mysql_insert_id();
 
 	

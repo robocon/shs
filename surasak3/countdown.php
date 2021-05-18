@@ -6,7 +6,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 if($action == 'get_user')
 {
     $date = date('Y-m-d');
-    $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' ORDER BY `id` ASC ";
+    $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' AND TIMESTAMPDIFF(FRAC_SECOND, NOW(), countdown_c19 ) > 0 ORDER BY `id` ASC ";
 	
     $q = $dbi->query($sql);
     if ($q->num_rows > 0) {
@@ -124,7 +124,7 @@ body {
             };
             request.send();
             request = null;
-        }, 1000);
+        }, 2000);
 
         function addEventListener(el, eventName, handler) {
             if (el.addEventListener) {

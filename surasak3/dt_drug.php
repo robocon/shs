@@ -565,13 +565,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		$where1 = "";
 	}
 
-	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
-	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
-	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
+	FROM drugrx as a 
+	INNER JOIN (SELECT `drugcode`,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	WHERE a.hn = '".$_SESSION["hn_now"]."' 
+	AND a.an is not null 
+	AND a.date like '".$_GET["date_remed"]."%' 
+	AND a.drugcode <> 'INJ' 
+	AND a.row_id not in (SELECT row_id FROM drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
-	HAVING sum( a.amount ) >0
-	";
+	HAVING sum( a.amount ) >0";
 
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	$i=0;
@@ -1520,8 +1523,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			*/
 			$limit_row = 30;
 
+			$l_year = date('Y', strtotime("-1 YEAR")) + 543;
+			$now_year = date('Y') + 543;
+			$where_date = " ( `date` LIKE '$now_year%' OR `date` LIKE '$l_year%' ) ";
+
 			// สร้าง TEMP จาก drugrx
-			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
+			$sql = "/*dt_drug.php action=addamount*/ CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
 			$result = Mysql_Query($sql);
 
 			$sql = "SELECT amount, count( amount ) FROM `drugrx2` where amount > 0 GROUP BY amount Order by `count( amount )` DESC limit 1";
@@ -3180,6 +3187,15 @@ function viatch(ing,code){
 <TABLE align="center" border="1" bordercolor="#3300FF" width="100%" cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
+
+	<?php 
+	$last_year = strtotime("-1 YEAR");
+	$l_year = date('Y', $last_year) + 543;
+	$now_year = date('Y') + 543;
+		var_dump($l_year);
+		var_dump($now_year);
+	?>
+
 	<TABLE width="100%" cellpadding="0" cellspacing="0">
 	<TR bgcolor="#3300FF" align="center">
 		<TD align="left">&nbsp;&nbsp;</TD>
@@ -3195,11 +3211,14 @@ function viatch(ing,code){
 		$where1 = "";
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
-//------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
-	$sql = "
+//------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก 
+
+	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
+
+	$sql = "/* head_remed */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
-	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 100";
@@ -3254,10 +3273,16 @@ function viatch(ing,code){
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
 
+
+
+	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
+
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
-	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
+
+	$sql = "/* head_remed2 */ 
+	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
-	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY left(date2,10)
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 20";
