@@ -676,14 +676,22 @@ if( $user_ptright == "R08" ){
 
 }
 
+// 1ปีย้อนหลัง
+$prev_date = (date('Y', strtotime('-1 year'))+543).date('-m-d', strtotime('-1 year'));
+
 $sql = "SELECT `thidate`,`vn` 
-FROM `opday` WHERE `hn` = '$hnid' 
-AND `thidate` < '$dateid' 
+FROM `opday` 
+WHERE (`thidate` >= '$prev_date' AND `thidate` < '$dateid' ) 
+AND `hn` = '$hnid' 
 ORDER BY `thidate` DESC LIMIT 1";
-$q = mysql_query($sql);
-$item_opday = mysql_fetch_assoc($q);
-echo '<br><br>';
-echo '<b style="color: red;">ผู้ป่วยมาครั้งสุดท้ายวันที่ '.$item_opday['thidate'].' ด้วย VN '.$item_opday['vn'].'</b>';
+$q_lastvisit = mysql_query($sql);
+if(mysql_num_rows($q_lastvisit) > 0)
+{
+	$item_opday = mysql_fetch_assoc($q_lastvisit);
+	echo '<br><br>';
+	echo '<b style="color: red;">ผู้ป่วยมาครั้งสุดท้ายวันที่ '.$item_opday['thidate'].' ด้วย VN '.$item_opday['vn'].'</b>';
+
+}
 
     include("unconnect.inc");
 ?>

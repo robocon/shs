@@ -7,22 +7,27 @@ if($_GET['cAn']==""){
 else{
 	$cAn =$_GET['cAn'];
 }
- $now = (date("Y")+543).date("-m-d").date(" H:i:s");
-	$query="CREATE TEMPORARY TABLE drug01 SELECT * FROM drugrx WHERE an = '$cAn' ";
+	$now = (date("Y")+543).date("-m-d").date(" H:i:s");
+	$query2 = "SELECT *,SUBSTRING(date,0,10) AS `admit_date` FROM `ipcard` WHERE `an`='$cAn' ";
+	$result2 = mysql_query($query2);
+	$rep2 = mysql_fetch_array($result2);
+
+	$admit_date = $rep2['admit_date'];
+	$date_current = (date('Y')+543).date('-m-d');
+
+	$query="CREATE TEMPORARY TABLE drug01 SELECT * FROM drugrx WHERE ( `date` >= '$admit_date' AND `date` <= '$date_current' ) AND an = '$cAn' ";
     $result = mysql_query($query) or die("Query failed");
-	$query="CREATE TEMPORARY TABLE ipacc01 SELECT * FROM ipacc WHERE an = '$cAn' ";
+	$query="CREATE TEMPORARY TABLE ipacc01 SELECT * FROM ipacc WHERE ( `date` >= '$admit_date' AND `date` <= '$date_current' ) AND an = '$cAn' ";
 	$result = mysql_query($query) or die("Query failed");
 	$query="CREATE TEMPORARY TABLE druglst01 SELECT * FROM druglst";
     $result = mysql_query($query) or die("Query failed");
 	
- 	$query1 = "SELECT *  FROM phardep WHERE an = '$cAn'";
+ 	$query1 = "SELECT * FROM phardep WHERE ( `date` >= '$admit_date' AND `date` <= '$date_current' ) AND an = '$cAn'";
 	//echo $query1;
     $result1 = mysql_query($query1);
 	$rep1 = mysql_fetch_array($result1);
 	
-	$query2 = "select * from ipcard where an='$cAn' ";
-	$result2 = mysql_query($query2);
-	$rep2 = mysql_fetch_array($result2);
+	
 	
 	
 ?>
