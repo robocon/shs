@@ -1341,15 +1341,19 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
     <td colspan="3" class="fonthead">**มาครั้งสุดท้าย <?=$cD1;?>-<?=$cM1;?>-<?=$cY1;?> <?=$cT1;?> **</td>
     </tr>
   <tr>
-    <td align="right" class="fonthead">ค่าบริการตรวจสุขภาพ</td>
-    <td class="fonthead1"><input name="chkup50" type="checkbox" value="chkup50">
+    <td height="37" align="right" valign="top" class="fonthead">ค่าบริการตรวจสุขภาพ</td>
+    <td valign="top" class="fonthead1"><input name="chkup50" type="checkbox" value="chkup50">
 ค่าบริการตรวจสุขภาพประกันสังคม รพ.อื่นๆ  50 บาท</td>
-    <td colspan="3" class="fonthead">&nbsp;</td>
+    <td colspan="3" valign="top" class="fonthead">&nbsp;</td>
   </tr>
   <tr>
     <td align="right" class="fonthead">ค่าบริการทำแผล</td>
-    <td class="fonthead1"><input name="E-DRESS-M" type="checkbox" value="E-DRESS-M">
-ค่าบริการทำแผลเบื้องต้น  140 บาท</td>
+    <td class="fonthead1"><div><input name="E-DRESS" type="checkbox" value="E-DRESS-S">
+ค่าบริการทำแผล Size S  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;70 บาท</div>
+<div><input name="E-DRESS" type="checkbox" value="E-DRESS-M">
+ค่าบริการทำแผล Size M  &nbsp;&nbsp;140 บาท</div>
+<div><input name="E-DRESS" type="checkbox" value="E-DRESS-L">
+ค่าบริการทำแผล Size L&nbsp;&nbsp;&nbsp;  270 บาท</div></td>
     <td colspan="3" class="fonthead">&nbsp;</td>
   </tr>  
 </table>
