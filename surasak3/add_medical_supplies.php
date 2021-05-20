@@ -1,6 +1,21 @@
 <?
 session_start();
-include("connect.inc");
+include("connect.inc"); 
+
+$an = $_REQUEST['an'];
+$date_current = (date('Y')+543).date('-m-d');
+$sql_ipcard = "SELECT `hn`,`an`,`date`,SUBSTRING(`date`,1,10) AS `admit_date` FROM `ipcard` WHERE `an` = '$an' ";
+$q_ipcard = mysql_query($sql_ipcard);
+if($q_ipcard !== false)
+{
+	$ipcard_item = mysql_fetch_assoc($q_ipcard);
+	$date_admit = $ipcard_item['admit_date'];
+}
+else
+{
+	echo mysql_error();
+}
+
 ?>
 <style type="text/css">
 <!--
@@ -91,7 +106,7 @@ for($i=0;$i<$item;$i++){
 	
 	$Netprice = $Netprice+$price;
 }
- 	$query1 = "SELECT *  FROM phardep WHERE an = '$an'";
+ 	$query1 = "SELECT *  FROM phardep WHERE ( date >= '$date_admit' AND date <= '$date_current' ) AND an = '$an'";
     $result1 = mysql_query($query1);
 	$rep1 = mysql_fetch_array($result1);
 	
@@ -184,7 +199,7 @@ print "<hr/>";
 	$query = mysql_query($return);
 	$sa = mysql_fetch_array($query);
 
-	$query1 = "SELECT *  FROM phardep WHERE an = '".$_POST['an']."'";
+	$query1 = "SELECT *  FROM phardep WHERE ( date >= '$date_admit' AND date <= '$date_current' ) AND an = '".$_POST['an']."'";
     $result1 = mysql_query($query1);
 	$rep1 = mysql_fetch_array($result1);
 ?>
@@ -284,7 +299,7 @@ print "<hr/>";
 	}else{
 	$sa = mysql_fetch_array($query);
 	
-	$query1 = "SELECT *  FROM phardep WHERE an = '".$sa['an']."'";
+	$query1 = "SELECT *  FROM phardep WHERE ( date >= '$date_admit' AND date <= '$date_current' ) AND an = '".$sa['an']."'";
 	$result1 = mysql_query($query1);
 	$rep1 = mysql_fetch_array($result1);
 	echo "<div id='no_print' > ";
@@ -313,7 +328,7 @@ if(isset($_GET['do'])){
 		$query = mysql_query($return);
 		$sa = mysql_fetch_array($query);
 		
-		$query1 = "SELECT *  FROM phardep WHERE an = '$an'";
+		$query1 = "SELECT * FROM phardep WHERE ( date >= '$date_admit' AND date <= '$date_current' ) AND an = '$an'";
 		$result1 = mysql_query($query1);
 		$rep1 = mysql_fetch_array($result1);
 		
@@ -379,7 +394,7 @@ if(isset($_GET['do'])){
 		$query = mysql_query($return);
 		$sa = mysql_fetch_array($query);
 		
-		$query1 = "SELECT *  FROM phardep WHERE an = '$an'";
+		$query1 = "SELECT *  FROM phardep WHERE ( date >= '$date_admit' AND date <= '$date_current' ) AND an = '$an'";
 		$result1 = mysql_query($query1);
 		$rep1 = mysql_fetch_array($result1);
 		

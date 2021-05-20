@@ -145,14 +145,10 @@ if( $dr_position == '99 เวชปฏิบัติ' ){
 	// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
 	$sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
 	FROM ( 
-
 		SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
-
 	) AS a 
 	LEFT JOIN ( 
-		SELECT `appdate`,`apptime`,`hn`,`doctor` 
-		FROM `appoint` 
-		WHERE `appdate` LIKE '%$thai_date'
+		SELECT `appdate`,`apptime`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
 	 ) AS b ON a.`name` = b.`doctor` 
 	WHERE b.`appdate` IS NOT NULL 
 	GROUP BY b.`appdate`  ";

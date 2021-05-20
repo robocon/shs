@@ -8,7 +8,7 @@ else{
 	$cAn =$_GET['cAn'];
 }
 	$now = (date("Y")+543).date("-m-d").date(" H:i:s");
-	$query2 = "SELECT *,SUBSTRING(date,0,10) AS `admit_date` FROM `ipcard` WHERE `an`='$cAn' ";
+	$query2 = "SELECT *,SUBSTRING(date,1,10) AS `admit_date` FROM `ipcard` WHERE `an`='$cAn' ";
 	$result2 = mysql_query($query2);
 	$rep2 = mysql_fetch_array($result2);
 

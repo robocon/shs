@@ -94,14 +94,24 @@ if (isset($cHn )){
 	
 	$sqltel = "update opcard SET phone='".$_POST['telp']."' where hn='".$cHn."'";
 	$result = mysql_query($sqltel);
+
+	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
+    list($th_d, $th_m, $th_y) = explode(' ', $appd);
+	$appdate_en = ($th_y-543).'-'.array_search($th_m, $def_fullm_th).'-'.$th_d;
 	
-	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,
-	detail,detail2,advice,patho,xray,other,depcode,labextra)
-	
-	VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$capptime',
-	
-	'$room','$detail','$detail2','$advice','$pathoall','$xrayall','$other','$depcode','$labm');";
-	
+$sql = "INSERT INTO appoint(
+	date,officer,hn,ptname,age,doctor,
+	appdate,apptime,room,detail,detail2,advice,
+	patho,xray,other,depcode,labextra, appdate_en
+)VALUES(
+	'$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor',
+	'$appd','$capptime','$room','$detail','$detail2','$advice',
+	'$pathoall','$xrayall','$other','$depcode','$labm', '$appdate_en'
+);";
+
 	$result = mysql_query($sql);
 	$idno=mysql_insert_id();
 	$count = count($_SESSION["list_code"]);

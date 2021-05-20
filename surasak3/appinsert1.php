@@ -161,19 +161,33 @@ if (isset($cHn )){
 
 	$sqltel = "update opcard SET phone='".$_POST['telp']."' where hn='".$cHn."'";
 	$result = mysql_query($sqltel);
-	
-    
-    $sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,
-detail,detail2,advice,patho,xray,other,depcode,labextra)
-VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$capptime',
-'$room','$detail','".jschars($detail2)."','$advice','$pathoall','$xrayall','".jschars($other)."','$depcode','".jschars($labm)."');";
-
-    $result = mysql_query($sql);
-    $idno = mysql_insert_id();
 
     $convert_m = array('มกราคม' => '01', 'กุมภาพันธ์' => '02', 'มีนาคม' => '03', 'เมษายน' => '04', 
     'พฤษภาคม' => '05', 'มิถุนายน' => '06', 'กรกฎาคม' => '07', 'สิงหาคม' => '08', 
     'กันยายน' => '09', 'ตุลาคม' => '10', 'พฤศจิกายน' => '11', 'ธันวาคม' => '12');
+
+    $def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
+    list($th_d, $th_m, $th_y) = explode(' ', $appd);
+	$appdate_en = ($th_y-543).'-'.array_search($th_m, $def_fullm_th).'-'.$th_d;
+
+    $sql = "INSERT INTO appoint(
+        date,officer,hn,ptname,age,doctor,
+        appdate,apptime,room,detail,detail2,advice,
+        patho,xray,other,depcode,labextra,appdate_en
+    )VALUES(
+        '$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor',
+        '$appd','$capptime','$room','$detail','".jschars($detail2)."','$advice',
+        '$pathoall','$xrayall','".jschars($other)."','$depcode','".jschars($labm)."','$appdate_en'
+    );";
+    $result = mysql_query($sql);
+    if($result==false)
+    {
+        echo '<p>'.mysql_error().'</p>';
+    }
+    $idno = mysql_insert_id();
     
     // เปลี่ยน format เป็น yyyy-mm-dd จะได้เหมือนกับนัดฉีดยา
     list($pre_d, $pre_m, $pre_y) = explode(' ', $appd);
@@ -295,7 +309,7 @@ VALUES('$Thidate','$sOfficer','$cHn','$cPtname','$cAge','$cdoctor','$appd','$cap
     $depcode=substr($depcode,4);
     print "<div align='right' style='margin-right: 10px;'><img src = \"printbcpha.php?cHn=".$cHn."\"></div>";
     ?>
-    <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>"></div>
+    <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>&margin=1"></div>
     <?php
     print "<p class='size5 center'><b>ใบนัดผู้ป่วย โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</b></p>";
     print "<p class='size2 center'>FR-NUR-003/2,04, 25 ธ.ค. 54</p>";

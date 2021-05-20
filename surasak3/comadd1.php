@@ -25,7 +25,9 @@ if($_POST["act"]=="add")
 			$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS";
 			$sMessage = iconv('TIS-620','UTF-8',"แจ้งซ่อมระบบคอมพิวเตอร์: \nผู้แจ้ง: $user\nแผนก: $depart\nหัวข้อ: $head\nรายละเอียด: $detail\n");
 			$chOne = curl_init(); 
-			curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+			// notify-api.line.me
+			// 203.104.138.174
+			curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
 			curl_setopt( $chOne, CURLOPT_POST, 1); 
