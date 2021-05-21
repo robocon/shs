@@ -81,12 +81,12 @@ function checkname(hn) {
 	function add_hn(){
 		var hn_true = "";
 
-		hn_true = checkname(document.getElementById('hn').value);
+		hn_true = checkname(document.getElementById('HN').value);
 		if(hn_true.length <= 4){
-			alert("ไม่มีหมายเลข HN "+document.getElementById('hn').value);
+			alert("ไม่มีหมายเลข HN "+document.getElementById('HN').value);
 		}else if(hn_true.length > 4){
-			document.getElementById('list_hn').innerHTML = document.getElementById('list_hn').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_hn[]\" value=\""+document.getElementById('hn').value+"\" checked>&nbsp;"+document.getElementById('hn').value + " "+hn_true+"<BR>";
-			document.getElementById("hn").select();
+			document.getElementById('list_hn').innerHTML = document.getElementById('list_hn').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_hn[]\" value=\""+document.getElementById('HN').value+"\" checked>&nbsp;"+document.getElementById('HN').value + " "+hn_true+"<BR>";
+			document.getElementById('HN').select();
 		}
 
 	}
@@ -149,7 +149,7 @@ while(list($hn,$ptname) = Mysql_fetch_row($result)){
  echo "
  <TR>
 	<TD>
-	 <A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('hn').value='".$hn."';add_hn(); \">",$hn,"</A>
+	 <A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('HN').value='".$hn."';add_hn(); \">",$hn,"</A>
 	</TD>
 	<TD>
 	",$ptname,"

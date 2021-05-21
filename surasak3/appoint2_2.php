@@ -42,6 +42,14 @@ $appd = $_POST["appdate"].' '.$_POST["appmo"].' '.$_POST["thiyr"];
 //echo $_POST["appdate"].' '.$_POST["appmo"].' '.$_POST["thiyr"];;
   $count = count($_POST["list_hn"]);
 
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
+$appdate_en = ($_POST["thiyr"]-543).'-'.array_search($_POST["appmo"], $def_fullm_th).'-'.sprintf('%02d', $_POST['appdate']);
+
+list($th_d, $th_m, $th_y) = explode(' ', $appd);
+
 
  for($i=0;$i<$count;$i++){
 	
@@ -56,10 +64,14 @@ $age = calcage($dbirth);
   if($_POST["list_hn"][$i] == "")
 	  continue;
 	 
-  $sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode)VALUES('".$Thidate."','".$_SESSION["sOfficer"]."','".$_POST["list_hn"][$i]."','".$fullname."','".$age."','".$_POST["doctor"]."','".$appd."','".$_POST["capptime"]."','".$_POST["room"]."','".$_POST["detail"]."','".$_POST["detail2"]."','".$_POST["advice"]."','".$_POST["patho"]."','".$_POST["xray"]."','".$_POST["other"]."','".$_POST["depcode"]."');";
+  $sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,appdate_en)VALUES('".$Thidate."','".$_SESSION["sOfficer"]."','".$_POST["list_hn"][$i]."','".$fullname."','".$age."','".$_POST["doctor"]."','".$appd."','".$_POST["capptime"]."','".$_POST["room"]."','".$_POST["detail"]."','".$_POST["detail2"]."','".$_POST["advice"]."','".$_POST["patho"]."','".$_POST["xray"]."','".$_POST["other"]."','".$_POST["depcode"]."','$appdate_en');";
 
 	$result = Mysql_Query($sql);
 	if($result){
+
+	?>
+    <div style="position: absolute;top: 0;right: 0;"><img src="printQrCode.php?hn=<?=$_POST["list_hn"][$i];?>&margin=1"></div>
+    <?php
 /************************ ออก ใบนัด ***************************/
 print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";
 print "&nbsp;&nbsp;&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง </b> </center>";

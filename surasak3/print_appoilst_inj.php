@@ -24,12 +24,18 @@ $month = array(
 
 $new_listdate = array();
 $new_listdate2 = array();
+
+$appdate_en_items = array();
+
 for($i; $i<$rows; $i++){
 	$m = $_POST['month'][$i];
 	
+	$appdate_en_items[] = ($_POST['year'][$i]-543).'-'.$_POST['month'][$i].'-'.$_POST['day'][$i];
+
 	$new_listdate[] = $_POST['year'][$i].'-'.$_POST['month'][$i].'-'.$_POST['day'][$i];
 	$new_listdate2[] = $_POST['day'][$i].' '.$month[$m].' '.$_POST['year'][$i];
 }
+
 unset($_POST['day']);
 unset($_POST['month']);
 unset($_POST['year']);
@@ -227,9 +233,11 @@ $count = count($_POST["list_date"]);
 
 for($i=0;$i<$count;$i++){
 
+	$appdate_en = $appdate_en_items[$i];
+
 	//******************************* ºÑ¹·Ö¡¢éÍÁÙÅ  ¡ÒÃ¹Ñ´**************************************************************
-	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno,detail_etc)VALUES
-	('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 ¹. - 11.00 ¹.','á¼¹¡·ĞàºÕÂ¹','FU22 ¹Ñ´©Õ´ÂÒ','¹Ñ´©Õ´ÂÒ ".$_POST["drug_inj"]."','','','','¹Ñ´©Õ´ÂÒ ".$_POST["drug_inj"]."','U22 ËéÍ§¨èÒÂÂÒ','à¢çÁ·Õè ".($i+1)."','".$_POST['detail_etc']."');";
+	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno,detail_etc,appdate_en)VALUES
+	('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 ¹. - 11.00 ¹.','á¼¹¡·ĞàºÕÂ¹','FU22 ¹Ñ´©Õ´ÂÒ','¹Ñ´©Õ´ÂÒ ".$_POST["drug_inj"]."','','','','¹Ñ´©Õ´ÂÒ ".$_POST["drug_inj"]."','U22 ËéÍ§¨èÒÂÂÒ','à¢çÁ·Õè ".($i+1)."','".$_POST['detail_etc']."','$appdate_en');";
 	
 	$result = Mysql_Query($sql);
 	

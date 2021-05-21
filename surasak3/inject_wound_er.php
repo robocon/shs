@@ -70,21 +70,21 @@ if(isset($_POST["add_app"]) && $_POST["add_app"] == "add"){
 	for($i=0;$i<$_POST["amount"];$i++){
 
 		$xx = explode("น ",$_POST["room"]);
+		$xx[0] = $xx[0]."น";
+		$zz = explode(" ",$_POST["calendar_date".$i]);
 
-	//echo $xx[0]," - ",$xx[1],"<BR>";
-	
-	$xx[0] = $xx[0]."น";
+		$appdate_en = ($zz['2']-543).'-'.date_month($zz['1']).'-'.$zz['0'];
 
-	$zz = explode(" ",$_POST["calendar_date".$i]);
-
-	$date_2 = $zz[2]."-".date_month($zz[1])."-".$zz[0];
-//$date_2 = $_POST["calendar_date".$i];
-	$calendar_date = $_POST["calendar_date".$i];
-	$calendar_time = $_POST["calendar_time".$i];
-	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room, detail,detail2,advice,patho,xray,other,depcode,remark) VALUES('".$Thidate."','".$_SESSION["sOfficer"]."','".$_POST["hn"]."','".$_POST["fullname"]."','".$_POST["age"]."','".$_POST["doctor"]."','".$date_2."','".$calendar_time."', '".$xx[0]."','FU01 ตรวจตามนัด','".$_POST["type"]."','NA','NA','NA','','U16  ห้องฉุกเฉิน','".$_POST["remark"]."');";
-	//echo $sql,"<BR><BR>";
-	mysql_query($sql) or die(mysql_error());
+		$date_2 = $zz[2]."-".date_month($zz[1])."-".$zz[0];
+		$calendar_date = $_POST["calendar_date".$i];
+		$calendar_time = $_POST["calendar_time".$i];
+		$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room, detail,detail2,advice,patho,xray,other,depcode,remark,appdate_en) VALUES('".$Thidate."','".$_SESSION["sOfficer"]."','".$_POST["hn"]."','".$_POST["fullname"]."','".$_POST["age"]."','".$_POST["doctor"]."','".$date_2."','".$calendar_time."', '".$xx[0]."','FU01 ตรวจตามนัด','".$_POST["type"]."','NA','NA','NA','','U16  ห้องฉุกเฉิน','".$_POST["remark"]."','$appdate_en');";
+		
+		$insert = mysql_query($sql) or die(mysql_error());
+		
 	}
+
+
 
 echo "<HTML>";
 echo "<HEAD>

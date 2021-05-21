@@ -19,7 +19,9 @@ $sum = count($_SESSION['putid']);
 
    		$depcode=substr($depcode,4);
 
-    
+		?>
+		<div style="position: absolute;top: 0;right: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>&margin=1"></div>
+		<?php
 		print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";
    		print "&nbsp;&nbsp;&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง </b> </center>";
 		print "  <font face='Angsana New' size='2'><center>FR-NUR-003/2,04, 25 ธ.ค. 54 </center>";

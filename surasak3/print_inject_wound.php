@@ -24,7 +24,9 @@ Function calcage($birth){
 
 	return $pAge;
 }
-
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 ?>
 <body Onload="window.print();">
 <html>
@@ -52,8 +54,13 @@ if (isset($_POST["hn"])){
 	$age = calcage($dbirth);
 
 	 for($i=1;$i<=5;$i++){
-		if(isset($_POST["number_inject".$i]) && trim($_POST["number_inject".$i]) != "" ){
-			$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room, detail,detail2,advice,patho,xray,other,depcode) VALUES('".$Thidate."','".$sOfficer."','".$_POST["hn"]."','".$Ptname."','".$age."','".$_POST["doctor"]."','".$_POST["calendar_date".$i]."','".$_POST["capptime".$i]."', 'จุดบริการนัดที่ 1','FU01 ตรวจตามนัด','ฉีด ".$_POST["type"]." เข็มที่ ".$_POST["number_inject".$i]." เข่า ".$_POST["knee"]." ".$_POST["detail".$i]."','NA','NA','NA','','U16  ห้องฉุกเฉิน');";
+		if(isset($_POST["number_inject".$i]) && trim($_POST["number_inject".$i]) != "" ){ 
+
+			list($th_d, $th_m, $th_y) = explode(' ', $_POST["calendar_date".$i]);
+
+			$appdate_en = ($th_y-543).'-'.array_search($th_m, $def_fullm_th).'-'.$th_d;
+
+			$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room, detail,detail2,advice,patho,xray,other,depcode,appdate_en) VALUES('".$Thidate."','".$sOfficer."','".$_POST["hn"]."','".$Ptname."','".$age."','".$_POST["doctor"]."','".$_POST["calendar_date".$i]."','".$_POST["capptime".$i]."', 'จุดบริการนัดที่ 1','FU01 ตรวจตามนัด','ฉีด ".$_POST["type"]." เข็มที่ ".$_POST["number_inject".$i]." เข่า ".$_POST["knee"]." ".$_POST["detail".$i]."','NA','NA','NA','','U16  ห้องฉุกเฉิน', '$appdate_en');";
 
 			$result = mysql_query($sql);
 		}

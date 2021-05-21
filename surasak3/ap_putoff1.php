@@ -254,7 +254,12 @@ $doctor111 =substr($_POST['dr'],0,5);
 	}
 	}
 	
-if(isset($_POST['ok2'])){
+if(isset($_POST['ok2'])){ 
+
+	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
+					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
 	$_SESSION['putid'] = array();
 	$_SESSION['cancle'] = array();
 	
@@ -267,10 +272,11 @@ if(isset($_POST['ok2'])){
 	
 	$newdate = $_POST['datenew']." ".$_POST['monnew']." ".$_POST['yrnew'];
 	$count = $_POST['count'];
+
+
+	$month = array_keys($def_fullm_th, $_POST['monnew']);
+	$appdate_en = ($_POST['yrnew']-543).'-'.$month['0'].'-'.sprintf('%02d', $_POST['datenew']);
 	
-	// echo "<pre>";
-	// var_dump($_POST);
-	// echo "</pre>";
 
 	for($a=0; $a<=$count; $a++){
 		
@@ -289,10 +295,10 @@ if(isset($_POST['ok2'])){
 
 			$insert1 = "insert into appoint(
 				row_id,date,officer,hn,ptname,age,doctor,appdate,apptime,room,
-				detail,detail2,advice,patho,xray,other,depcode,came,diag,remark,labextra) 
+				detail,detail2,advice,patho,xray,other,depcode,came,diag,remark,labextra,appdate_en) 
 				values
-				('','".$dateadd."','".$sOfficer."','".$result1['hn']."','".$result1['ptname']."','".$result1['age']."','".$result1['doctor']."','".$newdate."','".$_POST['capptime']."','".$result1['room']."',
-				'".$result1['detail']."','".$result1['detail2']."','".$result1['advice']."','".$result1['patho']."','".$result1['xray']."','".$result1['other']."','".$result1['depcode']."','".$result1['came']."','".$result1['diag']."','".$result1['remark']."','".$result1['labextra']."')";
+				(NULL,'".$dateadd."','".$sOfficer."','".$result1['hn']."','".$result1['ptname']."','".$result1['age']."','".$result1['doctor']."','".$newdate."','".$_POST['capptime']."','".$result1['room']."',
+				'".$result1['detail']."','".$result1['detail2']."','".$result1['advice']."','".$result1['patho']."','".$result1['xray']."','".$result1['other']."','".$result1['depcode']."','".$result1['came']."','".$result1['diag']."','".$result1['remark']."','".$result1['labextra']."','$appdate_en')";
 			
 			if(mysql_query($insert1)){
 
@@ -311,6 +317,10 @@ if(isset($_POST['ok2'])){
 				?>
 				<div style="page-break-after:always;"></div>
 				<?
+			}
+			else
+			{
+				echo mysql_error();
 			}
 			
 		}
