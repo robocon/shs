@@ -505,7 +505,7 @@ for($i=0;$i<$count;$i++){
 	echo "<TR class='tb_detail'>
 					<TD   colspan=\"6\">&nbsp;&nbsp;รวมค่ายา : $total_price บาท, ค่าบริการ : 50 บาท <BR>&nbsp;&nbsp;ค่ายาที่เบิกได้ : ".($pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DPY"]).", ค่ายาที่เบิกไม่ได้ : ".($pricetype["DSY"]+$pricetype["DDN"]+$pricetype["DSN"]+$pricetype["DPN"]).", รวมทั้งหมด : ".($total_price+50)." บาท</TD>
 	</TR>";
-	echo "<TR class='tb_detail'>
+	echo "<TR class='tb_detail' height='40'>
 				<TD  align=\"center\" ><INPUT TYPE=\"button\" value=\"  ลบ  \" onclick=\"del_list();\"></TD>
 				<TD  colspan=\"5\">";
 	if($_SESSION["dt_special"])
@@ -514,7 +514,7 @@ for($i=0;$i<$count;$i++){
 		if(substr($_SESSION["ptright_now"],0,3) == "R12" && $chkprice > 700){  //R12 ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
 		echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
 		}else{
-		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ตกลง     \" onclick=\"return chklist()\"></div>";		
+		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
 		}
 	
 	echo "	</TD>
@@ -608,14 +608,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 	
 			if(mysql_num_rows($dgrect)>0){
 				echo "<FONT COLOR=\"RED\" >แพ้ยา</FONT>";
-			}else if($arr["lock_dr"] == 'Y'){?>
+			}else if($arr["lock_dr"] == 'Y'){
+			?>
               <input type="checkbox" id="drug_remed2<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
-			  <?php $i++; $j++;}else{ 
-				if($arr["lock_dr"] =="N"){
-					echo "ยาตัดออก";
-				}else{
-					echo $arr["lock_dr"];
-				}
+			  <?php $i++; $j++;
+			}else{
+					if($arr["lock_dr"] =="N"){
+						echo "ยาตัดออก";
+					}else{
+						echo $arr["lock_dr"];
+					}
 			} 
 		
 			?>
@@ -732,7 +734,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		<table width="722" border="0" align="center" cellpadding="0" cellspacing="0">
           <tr>
             <td width="45" align="center"><input type="checkbox" name="checkbox2" value="" Onclick="checkall(this.checked)"/></td>
-            <td align="center" >รายการยาOPD</td>
+            <td align="center" >รายการยา OPD</td>
 			<td align="center" >วิธีใช้</td>
             <td align="center" >ประเภท</td>
 			<td align="center" width="70" >จำนวนยา</td>
@@ -803,9 +805,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 							echo "<FONT COLOR=\"RED\" >ใส่รหัสผ่านทุกครั้ง</FONT>";
 						}else{  //ยาที่ไม่ต้องใส่รหัสผ่าน
 							if($arr["lock_dr"] == 'Y'){
+								if($arr["drugcode"] =="1XA.5-NN"){
+									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";
+								}else{
+							
 						?>
 							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
 			  <?php $i++; $j++;
+			  					}
 			  				}else if($arr["lock_dr"] == 'N'){
 								echo "<FONT COLOR=\"RED\" >ยาตัดออก</FONT>";
 							}else{
@@ -814,9 +821,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 						}					
 					}else{  //ถ้าเป็นสิทธิอื่นๆ
 						if($arr["lock_dr"] == 'Y'){
+							if($arr["drugcode"] =="1XA.5-NN"){
+								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";
+							}else{
 					?>
 						<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
 			  		<?php $i++; $j++;	
+							}
 			  				}else if($arr["lock_dr"] == 'N'){
 								echo "<FONT COLOR=\"RED\" >ยาตัดออก</FONT>";
 							}else{
@@ -1523,12 +1534,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			*/
 			$limit_row = 30;
 
-			$l_year = date('Y', strtotime("-1 YEAR")) + 543;
-			$now_year = date('Y') + 543;
-			$where_date = " ( `date` LIKE '$now_year%' OR `date` LIKE '$l_year%' ) ";
+			$where_date = " ( `date` LIKE '2564%' OR `date` LIKE '2563%' ) ";
 
 			// สร้าง TEMP จาก drugrx
-			$sql = "/*dt_drug.php action=addamount*/ CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
+			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
 			$result = Mysql_Query($sql);
 
 			$sql = "SELECT amount, count( amount ) FROM `drugrx2` where amount > 0 GROUP BY amount Order by `count( amount )` DESC limit 1";
@@ -2610,6 +2619,13 @@ function drug_interaction(drugcode){
 	return return_drug_interaction;
 }
 
+/*function chklist(){
+	if((document.form_list.drug_code.value == "1XA.5-NN") && eval(document.form_list.drug_amount.value) > 10 ){
+		alert("ยา Alprazolam 0.5 mg. เนื่องจากขาดเคมีในการผลิตยา ทำให้ยาขาดชั่วคราว\nควบคุมการจ่ายได้ครั้งละไม่เกิน 10 เม็ด ครับ");  //ได้รับแจ้งห้องยา เมื่อ 20/05/2564
+	}
+
+}
+*/
 
 function checkForm1(){
 	var txt ;
@@ -2718,6 +2734,8 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
 		document.form1.drug_amount.focus();
+	}else if((document.form1.drug_code.value == "1XA.5-NN") && eval(document.form1.drug_amount.value) > 10 ){
+		alert("ยา Alprazolam 0.5 mg. เนื่องจากขาดเคมีในการผลิตยา ทำให้ยาขาดชั่วคราว\nควบคุมการจ่ายได้ครั้งละไม่เกิน 10 เม็ด ครับ");  //ได้รับแจ้งห้องยา เมื่อ 20/05/2564
 	}else if((document.form1.drug_code.value == "1SUDO" || document.form1.drug_code.value == "1SUDO-N"  || document.form1.drug_code.value == "1SUDO-NN") && eval(document.form1.drug_amount.value) > 60 ){
 		alert("ยา PSEUDOEPHEDRINE  60 mg. 	วัตถุออกฤทธิ์ประเภท 2 \n ควบคุมการจ่ายได้ครั้งละไม่เกิน 60 เม็ด ครับ");  //ได้รับแจ้งจาก พี่ตู๋ หน.ห้องยา เมื่อ 25/05/2559
 		document.form1.drug_amount.focus();		
@@ -3187,15 +3205,6 @@ function viatch(ing,code){
 <TABLE align="center" border="1" bordercolor="#3300FF" width="100%" cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
-
-	<?php 
-	$last_year = strtotime("-1 YEAR");
-	$l_year = date('Y', $last_year) + 543;
-	$now_year = date('Y') + 543;
-		var_dump($l_year);
-		var_dump($now_year);
-	?>
-
 	<TABLE width="100%" cellpadding="0" cellspacing="0">
 	<TR bgcolor="#3300FF" align="center">
 		<TD align="left">&nbsp;&nbsp;</TD>
@@ -3215,13 +3224,20 @@ function viatch(ing,code){
 
 	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
 
-	$sql = "/* head_remed */ 
-	SELECT DISTINCT  a.date AS date1,  a.date as date2 
+/*	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
 	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
-	Order by a.date DESC limit 100";
+	Order by a.date DESC limit 100";*/
+	
+	$sql = "/* head_remed */ 
+	SELECT DISTINCT  a.date AS date1,  a.date as date2 
+	FROM drugrx as a 
+	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	GROUP BY date2, a.drugcode, a.slcode
+	HAVING sum( a.amount ) >0
+	Order by a.date DESC limit 100";	
 
 			$result = Mysql_Query($sql) or die(mysql_error());
 			while($arr = Mysql_fetch_assoc($result)){
@@ -3273,19 +3289,24 @@ function viatch(ing,code){
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
 
-
-
 	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
 
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
 
-	$sql = "/* head_remed2 */ 
-	SELECT DISTINCT  a.date AS date1,  a.date as date2 
+/*	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
 	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY left(date2,10)
 	HAVING sum( a.amount ) >0
-	Order by a.date DESC limit 20";
+	Order by a.date DESC limit 20";*/
+	
+	$sql = "/* head_remed2 */ 
+	SELECT DISTINCT  a.date AS date1,  a.date as date2 
+	FROM drugrx as a 
+	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	GROUP BY left(date2,10)
+	HAVING sum( a.amount ) >0
+	Order by a.date DESC limit 20";	
 	
 			$result = Mysql_Query($sql) or die(mysql_error());
 			while($arr = Mysql_fetch_assoc($result)){
@@ -3485,8 +3506,8 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 </TR>
 <TR>
 	<TD align="center" colspan="2">
-		<INPUT id="form_submit" TYPE="submit" value="   ตกลง    " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;<INPUT TYPE="button" value="ยกเลิก" onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';">
-		<input type="hidden" id="doctor_id" name="doctor_id" value="<?=$_SESSION['sIdname'];?>">
+<div style="margin-left:20px;"><INPUT id="form_submit" TYPE="submit" value="  ตกลง   " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;&nbsp;<INPUT TYPE="button" value=" ยกเลิก " onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';">
+		<input type="hidden" id="doctor_id" name="doctor_id" value="<?=$_SESSION['sIdname'];?>"></div>
 	</TD>
 </TR>
 </TABLE>
