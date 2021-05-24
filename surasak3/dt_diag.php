@@ -520,7 +520,7 @@ function addtolist_muli(){
   <TD ><textarea id="dt_diag_detail" name="dt_diag_detail" rows="3" cols="100" ><?php echo $_SESSION["dt_diag_detail"]?></textarea></TD>
  </TR>
 <TR  colspan="5" valign="top">
-<TD ><A HREF="javascript:showremed();">Re-Diag</A><font   color="#FF0033" size="3"> *** การ DIAG สามารถค้นหาชื่อโรคทั้งภาษาไทยและภาษาอังกฤษได้ที่ช่องค้นหา *** <br><strong>*** ห้ามใส่สัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งยาไม่ได้***</strong></font></TD>
+<TD ><A HREF="javascript:showremed();">Re-Diag</A><font   color="#FF0033" size="3"> *** การ DIAG สามารถค้นหาชื่อโรคทั้งภาษาไทยและภาษาอังกฤษได้ที่ช่องค้นหา *** <br><strong>*** ห้ามใส่สัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งยาไม่ได้&nbsp;***&nbsp;ใช้ตัวพิมพ์ใหญ่ในการให้รหัสICD&nbsp;***</strong></font></TD>
 <TD ></TD>
  </tr>
 <TR   colspan="5" valign="top">

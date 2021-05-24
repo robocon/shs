@@ -114,13 +114,28 @@ if($_GET["action"] == "carlendar"){
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
 	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
-	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
-	SELECT `appdate`, `apptime`, `hn`, `other` 
-	FROM `appoint` 
-	WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
-	AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
-	AND apptime <> 'ยกเลิกการนัด' ";
+	// $sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
+	// SELECT `appdate`, `apptime`, `hn`, `other` 
+	// FROM `appoint` 
+	// WHERE `appdate` LIKE '% ".$thmonthname[$month - 1]." ".($year+543)."' 
+	// AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."') 
+	// AND apptime <> 'ยกเลิกการนัด' ";
 	// mysql_query($sql_temp);
+
+	$where_doctor = "AND `doctor` = '$appoint_doctor' ";
+	if(preg_match("/^HD\s/", $_SESSION["dt_doctor"]) > 0)
+	{
+		$where_doctor = "AND `doctor` = '".$_SESSION["dt_doctor"]."' ";
+	}
+
+	$appdate_en = $year.'-'.sprintf('%02d', $month);
+
+	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
+	SELECT `appdate`,`apptime`,`hn`,`other`,`appdate_en` 
+	FROM `appoint` 
+	WHERE `appdate_en` LIKE '$appdate_en%' 
+	$where_doctor 
+	AND `apptime` <> 'ยกเลิกการนัด' ";
 	$dbi->query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 

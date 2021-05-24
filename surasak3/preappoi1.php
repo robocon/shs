@@ -138,20 +138,32 @@ $thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถ
 
 $thai_date = $thmonthname[($month - 1)]." ".($year + 543);
 
+$en_year_month = "$year-".sprintf('%02d', $month);
+
 // ถ้าหมอที่เลือกจาก dropdown เป็นหมอ intern
 $total_items = array();
 if( $dr_position == '99 เวชปฏิบัติ' ){
 	
 	// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
+	// $sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
+	// FROM ( 
+	// 	SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
+	// ) AS a 
+	// LEFT JOIN ( 
+	// 	SELECT `appdate`,`apptime`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
+	//  ) AS b ON a.`name` = b.`doctor` 
+	// WHERE b.`appdate` IS NOT NULL 
+	// GROUP BY b.`appdate`  ";
+
 	$sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
 	FROM ( 
 		SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
 	) AS a 
 	LEFT JOIN ( 
-		SELECT `appdate`,`apptime`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
-	 ) AS b ON a.`name` = b.`doctor` 
-	WHERE b.`appdate` IS NOT NULL 
-	GROUP BY b.`appdate`  ";
+		SELECT `appdate`,`apptime`,`hn`,`doctor`,`appdate_en` FROM `appoint` WHERE `appdate_en` LIKE '$en_year_month%' AND `apptime` <> 'ยกเลิกการนัด'
+	) AS b ON a.`name` = b.`doctor` 
+	WHERE appdate IS NOT NULL 
+	GROUP BY b.`appdate_en`";
 
 	$result = $dbi->query($sql);
 	while ($item = $result->fetch_assoc()) {
@@ -207,7 +219,14 @@ while($arr = Mysql_fetch_assoc($result)){
 
 // 2562-12-25 ทดสอบปรับมาใช้ Procedure 
 // ข้อมูลอื่นๆเกี่ยวกับ Store Procedure สามารถ Google จากคีย์เวิร์ด mysql stored procedure ตัวอย่าง
-$sqlCall = "CALL appoint_opd('$thai_date','$appoint_doctor'); ";
+// $sqlCall = "CALL appoint_opd('$thai_date','$appoint_doctor'); ";
+$sqlCall = "SELECT `row_id`,`date`,`officer`,`hn`,`ptname`,`age`,`doctor`,`appdate`,`apptime`,COUNT(distinct `hn`) AS `total_app` 
+FROM `appoint` 
+WHERE `appdate_en` LIKE '$en_year_month%' 
+AND `doctor` = '$appoint_doctor' 
+AND `apptime` <> 'ยกเลิกการนัด' 
+GROUP BY `appdate_en`,`apptime`;";
+
 $callResult = $dbi->query($sqlCall);
 while ($arr = $callResult->fetch_assoc()) {
 	$list_app["A".substr($arr["appdate"],0,2)]["detail"] .= " ".$arr["apptime"]." จำนวน ".$arr["total_app"]." คน<BR>";
