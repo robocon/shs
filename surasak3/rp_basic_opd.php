@@ -159,9 +159,9 @@ body,td,th {
         </tr>
 		<?php
 		if(empty($_POST["search"])){
-			$search_date = (date("Y")+543).date("-m-d");
+			$search_date = date('d-m-').(date("Y")+543);
 		}else{
-			$search_date = $_POST["year"]."-".$_POST["month"]."-".$_POST["day"];
+			$search_date = $_POST["day"].'-'.$_POST["month"].'-'.$_POST["year"];
 		}
 
 		$where_doctor = "";
@@ -176,7 +176,7 @@ body,td,th {
 			$where_toborow = " AND toborow like '".$_POST["case"]."%' ";
 		}
 
-			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight, height,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn,waist,cigarette  From opd where thidate like '".$search_date."%' $where_doctor  $where_toborow ";
+			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight, height,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn,waist,cigarette  From opd where thdatehn like '".$search_date."%' $where_doctor  $where_toborow ";
 
 			$result = Mysql_Query($sql);
 			$no=1;

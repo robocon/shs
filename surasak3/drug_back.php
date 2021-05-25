@@ -51,7 +51,8 @@ line-height:20px;
 </HEAD>
 
 <BODY>
-<?php
+<?php 
+$pAn = $_POST['pAn'];
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 
 $item = 0;
@@ -207,7 +208,7 @@ for($i=0;$i<$item;$i++){
 	list($drugcode,$tradname,$amount,$price,$slcode,$part, $statcon,$rdpy,$rdpn,$dd) = mysql_fetch_row(mysql_query($sql));
 	
 	///***เช็คสถานะจำหน่าย***///
-	$sqlx = "Select status From ipacc where date = '".$dd."' and code ='".$drugcode."' and amount='".$amount."' ";
+	$sqlx = "Select status From ipacc where date = '".$dd."' AND an = '$pAn' and code ='".$drugcode."' and amount='".$amount."' ";
 	list($statusx) = mysql_fetch_row(mysql_query($sqlx));
 	
 		$amount2 = $list_amount[$i];

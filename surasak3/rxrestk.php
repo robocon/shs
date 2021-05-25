@@ -105,12 +105,17 @@ function jschars($str)
 //insert data into drugrx
     $query = "SELECT drugcode,tradname,amount,price,slcode,part,statcon,DPY,DPN,date FROM drugrx WHERE date = '$dDate' and hn='$cHn' ";
     $result = mysql_query($query) or die("Query failed");
-$item=0;
+	$item=0;
     while (list ($drugcode,$tradname,$amount,$price,$slcode,$part, $statcon,$rdpy,$rdpn,$dd) = mysql_fetch_row ($result)) {
-//        $x++;
-		///***เช็คสถานะจำหน่าย***///
-		$sqlx = "Select status From ipacc where date = '".$dd."' and code ='".$drugcode."' and amount='".$amount."' ";
-		list($statusx) = mysql_fetch_row(mysql_query($sqlx));
+
+		$statusx = "";
+
+		if(!empty($cAn))
+		{
+			///***เช็คสถานะจำหน่าย***///
+			$sqlx = "Select status From ipacc where date = '".$dd."' AND an = '$cAn' and code ='".$drugcode."' and amount='".$amount."' ";
+			list($statusx) = mysql_fetch_row(mysql_query($sqlx));
+		}
 		
         array_push($aDgcode,$drugcode);
         array_push($aTrade,$tradname);
@@ -123,7 +128,7 @@ $item=0;
 		array_push($aDpn,$rdpn);
 		array_push($aStatus,$statusx);
 		$item++;
-      }
+	}
 
 $x=$item;
 //update data in druglst 
