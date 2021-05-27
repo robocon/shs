@@ -145,25 +145,25 @@ $total_items = array();
 if( $dr_position == '99 เวชปฏิบัติ' ){
 	
 	// จำนวนผู้ป่วยนัดของแพทย์เวชปฏิบัติทั้งหมด
-	// $sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
-	// FROM ( 
-	// 	SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
-	// ) AS a 
-	// LEFT JOIN ( 
-	// 	SELECT `appdate`,`apptime`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
-	//  ) AS b ON a.`name` = b.`doctor` 
-	// WHERE b.`appdate` IS NOT NULL 
-	// GROUP BY b.`appdate`  ";
-
 	$sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
 	FROM ( 
 		SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
 	) AS a 
 	LEFT JOIN ( 
-		SELECT `appdate`,`apptime`,`hn`,`doctor`,`appdate_en` FROM `appoint` WHERE `appdate_en` LIKE '$en_year_month%' AND `apptime` <> 'ยกเลิกการนัด'
-	) AS b ON a.`name` = b.`doctor` 
-	WHERE appdate IS NOT NULL 
-	GROUP BY b.`appdate_en`";
+		SELECT `appdate`,`apptime`,`hn`,`doctor` FROM `appoint` WHERE `appdate` LIKE '%$thai_date'
+	 ) AS b ON a.`name` = b.`doctor` 
+	WHERE b.`appdate` IS NOT NULL 
+	GROUP BY b.`appdate`  ";
+
+	// $sql = "SELECT b.`appdate`, COUNT(DISTINCT b.`hn`) AS `total`, SUBSTRING(b.`appdate`, 1, 2) AS `code` 
+	// FROM ( 
+	// 	SELECT * FROM `doctor` WHERE `position` = '99 เวชปฏิบัติ' AND `status` = 'y' 
+	// ) AS a 
+	// LEFT JOIN ( 
+	// 	SELECT `appdate`,`apptime`,`hn`,`doctor`,`appdate_en` FROM `appoint` WHERE `appdate_en` LIKE '$en_year_month%' AND `apptime` <> 'ยกเลิกการนัด'
+	// ) AS b ON a.`name` = b.`doctor` 
+	// WHERE appdate IS NOT NULL 
+	// GROUP BY b.`appdate_en`";
 
 	$result = $dbi->query($sql);
 	while ($item = $result->fetch_assoc()) {
@@ -222,7 +222,7 @@ while($arr = Mysql_fetch_assoc($result)){
 // $sqlCall = "CALL appoint_opd('$thai_date','$appoint_doctor'); ";
 $sqlCall = "SELECT `row_id`,`date`,`officer`,`hn`,`ptname`,`age`,`doctor`,`appdate`,`apptime`,COUNT(distinct `hn`) AS `total_app` 
 FROM `appoint` 
-WHERE `appdate_en` LIKE '$en_year_month%' 
+WHERE ( `appdate_en` LIKE '$en_year_month%' AND `appdate` LIKE '%$thai_date' ) 
 AND `doctor` = '$appoint_doctor' 
 AND `apptime` <> 'ยกเลิกการนัด' 
 GROUP BY `appdate_en`,`apptime`;";

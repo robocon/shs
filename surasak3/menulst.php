@@ -100,7 +100,7 @@ if($menucode=='ADM' ){
 				 		
 if($menucode=="ADM"){
 		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
+                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
 				" </tr>\n");
 				
 		print (" <tr>\n".
@@ -132,7 +132,7 @@ if($menucode=="ADM"){
 				" </tr>\n");	
 }else if($sLevel=="admin"){
 		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
+                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
 				" </tr>\n");
 				
 		print (" <tr>\n".
@@ -174,7 +174,7 @@ if($menucode=="ADM"){
 				" </tr>\n");	
 }else{
 		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'></div></font></strong></td>\n".
+                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
 				" </tr>\n");
 							
 		print (" <tr>\n".

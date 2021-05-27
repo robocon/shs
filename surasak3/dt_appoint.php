@@ -114,6 +114,7 @@ if($_GET["action"] == "carlendar"){
 	$thmonthname = array("มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
 
 	// ดึงข้อมูลแบบ temp โดยยังไม่ group 
+	// ถ้าตัวด้านล่างมีปัญหาให้ใช้ตัวนี้ครับ
 	// $sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
 	// SELECT `appdate`, `apptime`, `hn`, `other` 
 	// FROM `appoint` 
@@ -122,6 +123,7 @@ if($_GET["action"] == "carlendar"){
 	// AND apptime <> 'ยกเลิกการนัด' ";
 	// mysql_query($sql_temp);
 
+	
 	$where_doctor = "AND `doctor` = '$appoint_doctor' ";
 	if(preg_match("/^HD\s/", $_SESSION["dt_doctor"]) > 0)
 	{
@@ -130,12 +132,16 @@ if($_GET["action"] == "carlendar"){
 
 	$appdate_en = $year.'-'.sprintf('%02d', $month);
 
+	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+	$full_th_month = $def_fullm_th[$month].' '.($year+543);
+
 	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
 	SELECT `appdate`,`apptime`,`hn`,`other`,`appdate_en` 
 	FROM `appoint` 
-	WHERE `appdate_en` LIKE '$appdate_en%' 
+	WHERE ( `appdate_en` LIKE '$appdate_en%' AND `appdate` LIKE '%$full_th_month' ) 
 	$where_doctor 
 	AND `apptime` <> 'ยกเลิกการนัด' ";
+	
 	$dbi->query($sql_temp);
 
 	// $sql = "Select appdate, apptime, count(distinct hn) as total_app 
@@ -147,7 +153,7 @@ if($_GET["action"] == "carlendar"){
 
 	$sql = "Select appdate, apptime, count(distinct hn) as total_app 
 	From `tmp_appointment`  
-	GROUP BY appdate, apptime  ";
+	GROUP BY appdate_en, apptime  ";
 	// $result = Mysql_Query($sql);
 	$list_app = array();
 	// while($arr = Mysql_fetch_assoc($result)){
@@ -189,7 +195,7 @@ if($_GET["action"] == "carlendar"){
 	$sql = "Select appdate, apptime, count(distinct hn) as total_app,other 
 	From `tmp_appointment` 
 	WHERE other!='' 
-	GROUP BY appdate, apptime ,other ";
+	GROUP BY appdate_en, apptime ,other ";
 	// $result = Mysql_Query($sql);
 	$list_vac = array();
 	// while($arr = Mysql_fetch_assoc($result)){
