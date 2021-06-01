@@ -212,18 +212,38 @@ If (!empty($icd10)){
 	
 	$icd10 = trim(strtoupper($_POST['icd10']));
 	
+	// ถ้าเลือกเป็นช่วงวัน
 if($_POST["type"] == "2"){	
 	$createtmp="CREATE TEMPORARY TABLE new_opday SELECT * FROM opday where `thidate` >= '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND `thidate` <='".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59'";
 	$querytmp=mysql_query($createtmp);
 	
-	$createtmp1="CREATE TEMPORARY TABLE new_diag SELECT * FROM diag where `svdate` >= '".($_POST["start_year"])."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00' AND `svdate` <='".($_POST["end_year"])."-".$_POST["end_month"]."-".$_POST["end_day"]." 23:59:59'";
+	$createtmp1="CREATE TEMPORARY TABLE new_diag SELECT * FROM diag where `svdate_en` >= '".($_POST["start_year"]-543)."-".$_POST["start_month"]."-".$_POST["start_day"]."' AND `svdate_en` <='".($_POST["end_year"]-543)."-".$_POST["end_month"]."-".$_POST["end_day"]."'";
 	$querytmp1=mysql_query($createtmp1);	
 	
 }else{
+
 	$createtmp="CREATE TEMPORARY TABLE new_opday SELECT * FROM opday where `thidate` LIKE '$thiyr%'";
 	$querytmp=mysql_query($createtmp);
+
+	if(preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $thiyr) > 0)
+	{
+		list($thi_y, $thi_m, $thi_d) = explode('-', $thiyr);
+		$svdate_en = ($thi_y-543).'-'.$thi_m.'-'.$thi_d;
+		$where_svdate = " WHERE `svdate_en` = '$svdate_en' ";
+	}
+	elseif (preg_match('/^\d{4}\-\d{2}$/', $thiyr) > 0) 
+	{
+		list($thi_y, $thi_m) = explode('-', $thiyr);
+		$svdate_en = ($thi_y-543).'-'.$thi_m;
+		$where_svdate = " WHERE `svdate_en` LIKE '$svdate_en%' ";
+	}
+	elseif (preg_match('/^\d{4}$/', $thiyr) > 0) 
+	{
+		$svdate_en = $thiyr-543;
+		$where_svdate = " WHERE `svdate_en` LIKE '$svdate_en%' ";
+	}
 	
-	$createtmp1="CREATE TEMPORARY TABLE new_diag SELECT * FROM diag where `svdate` LIKE '$thiyr%'";
+	$createtmp1="CREATE TEMPORARY TABLE new_diag SELECT * FROM diag $where_svdate ";
 	$querytmp1=mysql_query($createtmp1);		
 }
 		
