@@ -12,22 +12,32 @@ background-color: #000;
 color: #FFF; 
 }
 .font1 {
-	font-family: AngsanaUPC;
-	font-size:14px;
+	font-family: TH SarabunPSK;
+	font-size:18px;
+}
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 20px;
 }
 </style>
 <div id="no_print" >
 <span class="font1">
-<font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน dataset_v4.2_25611109 (อัพเดทล่าสุด วันที่ 15-02-62)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<font face="TH SarabunPSK" size="+2">
+<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน dataset_V25640115 (อัพเดทล่าสุด วันที่ 15-01-64)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<br />
+<hr />
 <span class="font1">
-<font face="Angsana New">
+<font face="TH SarabunPSK">
+  <?
+  $seldate=date("d");
+  $selmon=date("m");
+  ?>
 <form action="<? $_SERVER['PHP_SELF']?>" method="post">
-  <table width="563" border="0">
+  <table width="794" border="0">
     <tr>
-      <td width="33"><font face="Angsana New">วันที่ :</font></td>
-      <td width="81"><label>
-        <select name="day" id="day">
+      <td width="51"><font face="TH SarabunPSK">วันที่ :</font></td>
+      <td width="103"><label>
+        <select name="day" id="day" class="font1">
           <option value="00" selected="selected">--เลือก--</option>
           <option value="01">01</option>
           <option value="02">02</option>
@@ -62,29 +72,29 @@ color: #FFF;
           <option value="31">31</option>
         </select>
       </label></td>
-      <td width="26">เดือน :</td>
-      <td width="94"> 
-     <select name="mon">
-           <option value="01" >มกราคม</option>
-           <option value="02" >กุมภาพันธ์</option>
-           <option value="03">มีนาคม</option>
-           <option value="04">เมษายน</option>
-           <option value="05">พฤษภาคม</option>
-           <option value="06">มิถุนายน</option>
-           <option value="07">กรกฎาคม</option>
-           <option value="08">สิงหาคม</option>
-           <option value="09">กันยายน</option>
-           <option value="10">ตุลาคม</option>
-           <option value="11" selected="selected">พฤศจิกายน</option>
-           <option value="12">ธันวาคม</option>
+      <td width="56">เดือน :</td>
+      <td width="117"> 
+<select name="mon" class="font1">
+    <option value="01" <? if($selmon=="01"){ echo "selected='selected'";}?>>มกราคม</option>
+    <option value="02" <? if($selmon=="02"){ echo "selected='selected'";}?>>กุมภาพันธ์</option>
+    <option value="03" <? if($selmon=="03"){ echo "selected='selected'";}?>>มีนาคม</option>
+    <option value="04" <? if($selmon=="04"){ echo "selected='selected'";}?>>เมษายน</option>
+    <option value="05" <? if($selmon=="05"){ echo "selected='selected'";}?>>พฤษภาคม</option>
+    <option value="06" <? if($selmon=="06"){ echo "selected='selected'";}?>>มิถุนายน</option>
+    <option value="07" <? if($selmon=="07"){ echo "selected='selected'";}?>>กรกฎาคม</option>
+    <option value="08" <? if($selmon=="08"){ echo "selected='selected'";}?>>สิงหาคม</option>
+    <option value="09" <? if($selmon=="09"){ echo "selected='selected'";}?>>กันยายน</option>
+    <option value="10" <? if($selmon=="10"){ echo "selected='selected'";}?>>ตุลาคม</option>
+    <option value="11" <? if($selmon=="11"){ echo "selected='selected'";}?>>พฤศจิกายน</option>
+    <option value="12" <? if($selmon=="12"){ echo "selected='selected'";}?>>ธันวาคม</option>
        </select></td>
-      <td width="118">พ.ศ. : &nbsp;&nbsp;
+      <td width="128">พ.ศ. : &nbsp;&nbsp;
 		<?
         $Y=date("Y")+543;
         $date=date("Y")+543+5;
                       
         $dates=range(2547,$date);
-        echo "<select name='year' class='forntsarabun'>";
+        echo "<select name='year' class='font1'>";
         foreach($dates as $i){
         ?>
 <option value='<?=$i; ?>' <? if($Y==$i){ echo "selected"; }?>>
@@ -94,15 +104,15 @@ color: #FFF;
         }
         echo "<select>";
         ?>      </td>
-      <td width="32" align="right"><font face="Angsana New">สิทธิ :</font></td>
-      <td width="99"><select name="credit" id="credit">
+      <td width="62" align="right"><font face="TH SarabunPSK">สิทธิ :</font></td>
+      <td width="148"><select name="credit" id="credit" class="font1">
         <option value="000">----ทั้งหมด----</option>
         <option value="OFC">จ่ายตรง</option>
         <option value="SSS">ประกันสังคม</option>
         <option value="LGO">อปท</option>
          <option value="UCS" >UCS</option>
       </select>      </td>
-      <td width="46"><input name="BOK" value="ตกลง" type="submit" /></td>
+      <td width="95"><input name="BOK" value=" ส่งออกข้อมูล " type="submit" class="font1" /></td>
     </tr>
   </table>
 </form>
@@ -203,7 +213,7 @@ if($_POST['credit']	=="000"){
 		$sqlop1 ="select hn, txdate from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' group by substring(date,1,10), hn";
 }	
 //echo 	$sqlop1 ;
-		//echo "test-->".$sqlop3."<br>";
+		//echo "test-->".$sqlop1."<br>";
    		$resultop1 = mysql_query($sqlop1) or die("Query failed3");
 		while($rowsop1 = mysql_fetch_array($resultop1)){
 			$hnop=$rowsop1["hn"];	
@@ -211,7 +221,8 @@ if($_POST['credit']	=="000"){
 			$datetime=$rowsop1["txdate"];
 			$dateopacc = substr($datetime,0,10);	
 	
-		$sql1 ="select * from opday where hn ='".$hnop."' and thidate like '$dateopacc%'";   //  Query เอาข้อมูลจากตาราง opday
+		$sql1 ="select row_id,thidate,hn,an,vn,ptright from opday where hn ='".$hnop."' and thidate like '$dateopacc%'";   //  Query เอาข้อมูลจากตาราง opday
+		//echo "test-->".$sql1."<br>";
 		$result1 = mysql_query($sql1) or die("Query failed1");
    		$rows1 = mysql_fetch_array($result1);
 		$hcode1 ="11512";
@@ -657,6 +668,7 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 
 //---------------------ใช้ข้อมูลจากตาราง opday---------------------//
 		$sqlop ="select * from opday where hn ='".$hn5."' and thidate like '$date5%'";   //  Query เอาข้อมูลจากตาราง opday
+		//echo $sqlop."<br>";
 		$resultop = mysql_query($sqlop) or die("Query opday failed");
    		$rowsop = mysql_fetch_array($resultop);
 			$hn=$rowsop["hn"]; 
@@ -682,9 +694,14 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 			$clinic3=$rowsop["clinic"];
 			$clinic1=0;
 			$clinic2=1;
-			$clinic=substr($clinic3,0,2);
+			
+			$seldr = "select code from clinic where detail ='$clinic3' ";
+			$rowdr = mysql_query($seldr);
+			list($clinic) = mysql_fetch_array($rowdr);			
+			
 			if($clinic==''){$clinic="00";} ;
-			$newclinic=$clinic1.$clinic.$clinic2;  //  CLINIC ใช้ตัวแปรนี้นำเข้าข้อมูล					
+			$newclinic=$clinic1.$clinic.$clinic2;  //  CLINIC ใช้ตัวแปรนี้นำเข้าข้อมูล			
+			//echo $newclinic."<br>";		
 			
 			//SEQ
 			$rowidop=$rowsop["row_id"];
@@ -1321,7 +1338,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 	  array("AN","C",15),
 	  array("DATEOPD","D"),	  
 	  array("TYPE","C",2), 
-	  array("CODE","C",11),	 
+	  array("CODE","C",20),	 
 	  array("QTY","N",4,0),
 	  array("RATE","N",12,2),
 	  array("SEQ","C",15),
@@ -1342,7 +1359,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 
 
 		//--------------------------------- ค่าใช้จ่ายผู้ป่วยนอก	---------------------------------//	
-		$sql14 ="select * from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and (depart ='DENTA' OR depart='NID' OR depart='PATHO')";
+		$sql14 ="select * from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and (depart ='DENTA' OR depart='NID' OR depart='PATHO' OR depart='XRAY' OR  depart='SURG' OR  depart='EMER' OR  depart='OTHER')";
 		$result14 = mysql_query($sql14) or die("Query ADP Failed Line 1346");
 		//echo $sql14."<br>";
 		
@@ -1370,31 +1387,53 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 			$newdate="$yy14$mm14$dd14";
 			$newseq=$newdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล					
 			
-			if($depart=="DENTA"){  //ค่าบริการทันตกรรม
-				$type="12";
-			}else if($depart=="NID"){  //ค่าบริการฝังเข็ม
-				$type="13";
-			}
+
 			
-			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay,depart,part from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
+			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay,depart,part,detail from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
 			//echo $sqladp."<br>";
 			$queryadp=mysql_query($sqladp);
-			while(list($code14, $qty14, $rate14, $total14, $totcopay14,$depart14,$part14)=mysql_fetch_array($queryadp)){
+			while(list($code14, $qty14, $rate14, $total14, $totcopay14,$depart14,$part14,$detail14)=mysql_fetch_array($queryadp)){
+			
 
-
-			if($depart14=="PATHO"){
+			if($depart14=="DENTA"){  //ค่าบริการทันตกรรม
+				$type="12";
+			}else if($depart14=="NID"){  //ค่าบริการฝังเข็ม
+				$type="13";
+			}else if($depart14=="PATHO"){
 				if($part14=="BLOOD"){
 					$type="14";
 				}else if($part14=="LAB"){
 					$type="15";
 				}
-			}			
-								
+			}else if($depart14=="XRAY"){
+				$type="16";
+			}else if($depart14=="SURG" || $depart14=="EMER" ){  //ค่าบริการทางการพยาบาล
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="SURG"){
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="NCARE"){
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="SINV"){
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="OTHER"){
+				$type="17";
+			}else{
+				$type="3";
+			}
 			
-				$chklabcare="select codex from labcare where code='$code14'";
-				$querylabcare=mysql_query($chklabcare);
-				list($codex)=mysql_fetch_array($querylabcare);			
-
+			
+				if($code14=="INJ"){
+					$codex="55823";	
+				}else if($code14=="SERVICE"){
+					$codex="55020";		
+				}else{
+					$chklabcare="select codex from labcare where code='$code14'";
+					$querylabcare=mysql_query($chklabcare);
+					list($codex)=mysql_fetch_array($querylabcare);					
+				}
+			
+						
+								
 				$db14 = dbase_open($dbname14, 2);
 					if ($db14) {
 						dbase_add_record($db14, array(
