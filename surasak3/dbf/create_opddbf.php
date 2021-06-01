@@ -633,7 +633,9 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 	if (!dbase_create($dbname5, $def5)) {
 	  echo "Error, can't create the database\n";
 	}	
-		$sql5 ="select * from diag  where svdate like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'";
+
+		$svdate_en = ($_POST['year']-543)."-".$_POST['mon']."-".$_POST['day'];
+		$sql5 ="select * from diag  where svdate_en = '$svdate_en'";
 		$result5 = mysql_query($sql5) or die("Query failed5");
    		while($rows5 = mysql_fetch_array($result5)){
 		$doctor_name=$rows5["office"];

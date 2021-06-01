@@ -589,8 +589,10 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 	}else{
 	echo "<p style='color:#0000FF; font-weight:bold;'>สร้างไฟล์ dbf เดือน $fullm แฟ้มที่ 5 สำเร็จ...!!!</p>";				
 	}
-	
-		$sql5 ="select * from diag  where svdate like '".$_POST['year']."-".$_POST['mon']."%'";
+
+		$svdate_en = ($_POST['year']-543)."-".$_POST['mon'];
+
+		$sql5 ="select * from diag  where svdate_en like '$svdate_en%'";
 		$result5 = mysql_query($sql5) or die("Query failed5");
    		while($rows5 = mysql_fetch_array($result5)){
 		$doctor_name=$rows5["office"];
