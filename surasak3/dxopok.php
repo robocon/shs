@@ -114,10 +114,12 @@ $clinic = $_POST['clinic'];
 		$result = mysql_query($query) or die("Query failed,update druglst");
 		
 
+		$regisdate_en = $svdate_en = date('Y-m-d');
+
 //print_r($_POST);
 if($_POST['prin']==""){
-	$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status)
-VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['diag'])."', '".$_POST['icd10']."','PRINCIPLE', '".$_SESSION['sOfficer']."','".jschars($_POST['thaiprin'])."','".$_POST['cTdate']."','Y')";
+	$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status,regisdate_en,svdate_en)
+VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['diag'])."', '".$_POST['icd10']."','PRINCIPLE', '".$_SESSION['sOfficer']."','".jschars($_POST['thaiprin'])."','".$_POST['cTdate']."','Y','$regisdate_en','$svdate_en')";
 	$result1 = mysql_query($strsql1)or die(mysql_error());
 }elseif($_POST['icd10']==""&&$_POST['diag']==""){
 	$update1="UPDATE diag SET status='N' WHERE row_id='".$_POST['prin']."' ";	
@@ -130,7 +132,7 @@ VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['diag'])."', '"
 
 for($k=0;$k<16;$k++){
 	if($_POST['dt_diag_morbidity'.$k]!=""){
-		$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status) VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_morbidity'.$k])."', '".$_POST['dt_icd10_morbidity'.$k]."','CO-MORBIDITY', '".$_SESSION['sOfficer']."','".jschars($_POST['thaicomo'.$k])."','".$_POST['cTdate']."','Y')";
+		$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status,regisdate_en,svdate_en) VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_morbidity'.$k])."', '".$_POST['dt_icd10_morbidity'.$k]."','CO-MORBIDITY', '".$_SESSION['sOfficer']."','".jschars($_POST['thaicomo'.$k])."','".$_POST['cTdate']."','Y','$regisdate_en','$svdate_en')";
 		
 		$result1 = mysql_query($strsql1)or die(mysql_error());
 	}
@@ -148,8 +150,8 @@ for($k=0;$k<16;$k++){
 
 for($k=0;$k<16;$k++){
 	if($_POST['dt_diag_complication'.$k]!=""){
-			$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status)
-	VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_complication'.$k])."', '".$_POST['dt_icd10_complication'.$k]."','COMPLICATION', '".$_SESSION['sOfficer']."','".jschars($_POST['thaicompli'.$k])."','".$_POST['cTdate']."','Y')";
+			$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status,regisdate_en,svdate_en)
+	VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_complication'.$k])."', '".$_POST['dt_icd10_complication'.$k]."','COMPLICATION', '".$_SESSION['sOfficer']."','".jschars($_POST['thaicompli'.$k])."','".$_POST['cTdate']."','Y','$regisdate_en','$svdate_en')";
 			$result1 = mysql_query($strsql1)or die(mysql_error());
 	}
 }
@@ -166,7 +168,7 @@ for($k=0;$k<16;$k++){
 
 for($k=0;$k<16;$k++){
 	if($_POST['dt_diag_other'.$k]!=""){
-		$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status) VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_other'.$k])."', '".$_POST['dt_icd10_other'.$k]."','OTHER', '".$_SESSION['sOfficer']."','".jschars($_POST['thaiother'.$k])."','".$_POST['cTdate']."','Y')";
+		$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status,regisdate_en,svdate_en) VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_other'.$k])."', '".$_POST['dt_icd10_other'.$k]."','OTHER', '".$_SESSION['sOfficer']."','".jschars($_POST['thaiother'.$k])."','".$_POST['cTdate']."','Y','$regisdate_en','$svdate_en')";
 	
 		$result1 = mysql_query($strsql1)or die(mysql_error());
 	}
@@ -184,7 +186,7 @@ for($k=0;$k<16;$k++){
 
 for($k=0;$k<16;$k++){
 	if($_POST['dt_diag_external'.$k]!=""){
-		$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status) VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_external'.$k])."', '".$_POST['dt_icd10_external'.$k]."','EXTERNAL CAUSE', '".$_SESSION['sOfficer']."','".jschars($_POST['thaiexternal'.$k])."','".$_POST['cTdate']."','Y')";
+		$strsql1="INSERT INTO diag ( regisdate , hn , an , diag , icd10 , type , office ,diag_thai,svdate,status,regisdate_en,svdate_en) VALUES ('".$thidate."', '".$hn."', '".$cVn."', '".jschars($_POST['dt_diag_external'.$k])."', '".$_POST['dt_icd10_external'.$k]."','EXTERNAL CAUSE', '".$_SESSION['sOfficer']."','".jschars($_POST['thaiexternal'.$k])."','".$_POST['cTdate']."','Y','$regisdate_en','$svdate_en')";
 			
 		$result1 = mysql_query($strsql1)or die(mysql_error());
 	}

@@ -48,13 +48,15 @@
 	}
 
 /////////////////////////////////////
+
+$regisdate_en = $svdate_en = date('Y-m-d');
 	
 if($_POST['icd10']!=''){
 	
 	if($_POST['dx1']==''){
 		
-$strsql1="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office` )
-VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['icd10detail'])."', '".$_POST['icd10']."','PRINCIPLE', '".$sOfficer."')";
+$strsql1="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office`, `regisdate_en`, `svdate_en`)
+VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['icd10detail'])."', '".$_POST['icd10']."','PRINCIPLE', '".$sOfficer."', '$regisdate_en', '$svdate_en')";
 	$result1 = mysql_query($strsql1)or die(mysql_error());
 	
 	}else{
@@ -83,8 +85,8 @@ for($c2=0;$c2<16;$c2++){
 		
 		$type="COMPLICATION";
 	
-	$sqlc="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office` )
-VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['comdetail'.$c2])."', '".$_POST['complica'.$c2]."', '".$type."', '".$sOfficer."');";
+	$sqlc="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office`, `regisdate_en`, `svdate_en`)
+VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['comdetail'.$c2])."', '".$_POST['complica'.$c2]."', '".$type."', '".$sOfficer."', '$regisdate_en', '$svdate_en');";
  	$sqlresult = mysql_query($sqlc) or die(mysql_error());
 	
 //echo $sqldiag."<br>";
@@ -109,8 +111,8 @@ for($ot2=0;$ot2<16;$ot2++){
 		
 		$type="OTHER";
 	
-	$sqlc="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office` )
-VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['otherdetail'.$ot2])."', '".$_POST['other'.$ot2]."', '".$type."', '".$sOfficer."');";
+	$sqlc="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office`, `regisdate_en`, `svdate_en`)
+VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['otherdetail'.$ot2])."', '".$_POST['other'.$ot2]."', '".$type."', '".$sOfficer."', '$regisdate_en', '$svdate_en');";
  	$sqlresult = mysql_query($sqlc) or die(mysql_error());
 	
 //echo $sqldiag."<br>";
@@ -131,8 +133,8 @@ for($ex2=0;$ex2<16;$ex2++){
 		
 		$type="EXTERNAL CAUSE";
 	
-	$sqlc="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office` )
-VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['externadetail'.$ex2])."', '".$_POST['extcause'.$ex2]."', '".$type."', '".$sOfficer."');";
+	$sqlc="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office`, `regisdate_en`, `svdate_en` )
+VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['externadetail'.$ex2])."', '".$_POST['extcause'.$ex2]."', '".$type."', '".$sOfficer."', '$regisdate_en', '$svdate_en');";
  	$sqlresult = mysql_query($sqlc) or die(mysql_error());
 	
 	}
@@ -192,8 +194,8 @@ for($x=0;$x<16;$x++){
 		
 		$type="CO-MORBIDITY";
 	
-	$sqldiag="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office` )
-VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['dt_diag_morbidity'.$x])."', '".$_POST['dt_icd10_morbidity'.$x]."', '".$type."', '".$sOfficer."');";
+	$sqldiag="INSERT INTO `diag` ( `regisdate` , `hn` , `an` , `diag` , `icd10` , `type` , `office`, `regisdate_en`, `svdate_en` )
+VALUES ('".$thidate."', '".$cHn."', '".$cAn."', '".jschars($_POST['dt_diag_morbidity'.$x])."', '".$_POST['dt_icd10_morbidity'.$x]."', '".$type."', '".$sOfficer."', '$regisdate_en', '$svdate_en');";
  	$sqlresult = mysql_query($sqldiag) or die(mysql_error());
 	
 //echo $sqldiag."<br>";

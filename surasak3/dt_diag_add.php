@@ -59,20 +59,15 @@ function jschars($str)
 $sql = "Update dxofyear  set dx='".$_SESSION["dt_diag_detail"]."' where thdatevn = '".(date("Y").date("-m-d")).$_SESSION["vn_now"]."' limit 1";
 $result = Mysql_Query($sql);
 	
-	
-
-		$sql = "insert into diag (regisdate,hn,an,diag,icd10,type,office,diag_thai,svdate,status) values('".(date("Y")+543).date("-m-d H:i:s")."','".$_SESSION["hn_now"]."','".$_SESSION["vn_now"]."','".jschars($_POST['dt_diag'])."','".$_POST['dt_icd10']."','PRINCIPLE','".$_SESSION["dt_doctor"]."','".$thai."','".(date("Y")+543).date("-m-d H:i:s")."','Y') ";
-
+		$regisdate_en = $svdate_en = date('Y-m-d');
+		$sql = "insert into diag (regisdate,hn,an,diag,icd10,type,office,diag_thai,svdate,status,regisdate_en,svdate_en) values('".(date("Y")+543).date("-m-d H:i:s")."','".$_SESSION["hn_now"]."','".$_SESSION["vn_now"]."','".jschars($_POST['dt_diag'])."','".$_POST['dt_icd10']."','PRINCIPLE','".$_SESSION["dt_doctor"]."','".$thai."','".(date("Y")+543).date("-m-d H:i:s")."','Y','$regisdate_en', '$svdate_en') ";
 		$result1= mysql_query($sql);
-	
+		
 	for($k=0;$k<16;$k++){
 		if($_POST['dt_diag_other'.$k]!=""){
-				$sql = "insert into diag (regisdate,hn,an,diag,icd10,type,office,svdate,status) values('".(date("Y")+543).date("-m-d H:i:s")."','".$_SESSION["hn_now"]."','".$_SESSION["vn_now"]."','".jschars($_POST['dt_diag_other'.$k])."','".$_POST['dt_icd10_other'.$k]."','OTHER','".$_SESSION["dt_doctor"]."','".(date("Y")+543).date("-m-d H:i:s")."','Y') ";
-
-				$result= mysql_query($sql);
-
-
-				$_SESSION["stk_diag_other"] .= jschars($_POST['dt_diag_other'.$k])."<br>";
+			$sql = "insert into diag (regisdate,hn,an,diag,icd10,type,office,svdate,status,regisdate_en,svdate_en) values('".(date("Y")+543).date("-m-d H:i:s")."','".$_SESSION["hn_now"]."','".$_SESSION["vn_now"]."','".jschars($_POST['dt_diag_other'.$k])."','".$_POST['dt_icd10_other'.$k]."','OTHER','".$_SESSION["dt_doctor"]."','".(date("Y")+543).date("-m-d H:i:s")."','Y','$regisdate_en', '$svdate_en') ";
+			$result= mysql_query($sql);
+			$_SESSION["stk_diag_other"] .= jschars($_POST['dt_diag_other'.$k])."<br>";
 		}
 	}
 
