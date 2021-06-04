@@ -129,9 +129,8 @@ function checkname(hn) {
 </TR>
 </TABLE>
 
-
 <?php
-
+	
 	$sql = "Select distinct hn, ptname  From appoint where officer in (Select name From inputm where menucode in (Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' )) Order by row_id DESC limit 20";
 	//$result = @Mysql_Query($sql);
 	//if(@Mysql_num_rows($result) > 0){
@@ -252,8 +251,13 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 <? 
 while($objResult = mysql_fetch_array($objQuery)) 
 { 
+	$selected = "";
+	if($_SESSION['sIdname']==='เมธาวารินทร์')
+	{
+		$selected = ($objResult["name"] == 'MD074  นักกายภาพบำบัด') ? 'selected="selected"' : '' ;
+	}
 ?> 
-<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option> 
+<option value="<?=$objResult["name"];?>" <?=$selected;?> ><?=$objResult["name"];?></option> 
 <? 
 } 
 ?> 
@@ -382,43 +386,30 @@ while($objResult = mysql_fetch_array($objQuery))
 <TR>
 	<TD align="right">ยื่นใบนัดที่ : </TD>
 	<TD>
-	<select size="1" name="room">
-		<option>จุดบริการนัดที่ 1</option>
-		<option>จุดบริการนัดที่ 2</option>
-		<option>แผนกทะเบียน</option>
-		<option>ห้องฉุกเฉิน</option>
-		<option>กองทันตกรรม</option>
-		<option>แผนกพยาธิวิทยา</option>
-		<option>แผนกเอกชเรย์</option>
-		<option>กองสูติ-นารี</option>
-		<option>กายภาพ</option>
-		<option>คลีนิกฝังเข็ม</option>
-		<option>นวดแผนไทย</option>
-		<option>ห้องไตเทียม</option>
-		<option>แผนกฝังเข็ม</option>
-		<option>แผนกจักษุ</option>
-		<option>OPD เวชศาสตร์ฟื้นฟู</option>
-        <option>กายภาพบำบัดชั้น2</option>
-   </select>
+		<?php 
+		$appoint_at = array('จุดบริการนัดที่ 1', 'จุดบริการนัดที่ 2', 'แผนกทะเบียน', 'ห้องฉุกเฉิน', 'กองทันตกรรม','แผนกพยาธิวิทยา', 'แผนกเอกชเรย์', 'กองสูติ-นารี', 'กายภาพ', 'คลีนิกฝังเข็ม', 'นวดแผนไทย', 'ห้องไตเทียม', 'แผนกฝังเข็ม', 'แผนกจักษุ', 'OPD เวชศาสตร์ฟื้นฟู', 'กายภาพบำบัดชั้น2');
+		?>
+		<select size="1" name="room">
+		<?php 
+		foreach ($appoint_at as $at_item) { 
+			$selected = '';
+			if($_SESSION['sIdname']==='เมธาวารินทร์')
+			{
+				$selected = ($at_item == 'กายภาพ') ? 'selected="selected"' : '' ;
+			}
+			?>
+			<option value="<?=$at_item;?>" <?=$selected;?> ><?=$at_item;?></option>
+			<?php
+		}
+		?>
+		</select>
    </TD>
 </TR>
 <TR>
 	<TD align="right">นัดมาเพื่อ : </TD>
 	<TD>
 		<select size="1" name="detail">
-			<!--<option value="FU01 ตรวจตามนัด">ตรวจตามนัด</option>
-			<option value="FU02 ตามผลตรวจ">ตามผลตรวจ</option>
-			<option value="FU03 นอนโรงพยาบาล">นอนโรงพยาบาล</option>
-			<option value="FU04 ทันตกรรม">ทันตกรรม</option>
-			<option value="FU05 ผ่าตัด">ผ่าตัด</option>
-			<option value="FU06 สูติ">สูติ</option>
-			<option value="FU07 คลีนิกฝังเข็ม">คลีนิกฝังเข็ม</option>
-			<option value="FU08 Echo">Echo</option>
-			<option value="FU09 มวลกระดูก">มวลกระดูก</option>
-			<option value="FU10 กายภาพ">กายภาพ</option>
-			<option value="FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"-->
             <?
-			
 			$app = "select * from applist where status='Y' ";
 	 		$row = mysql_query($app);
 	 		while($result = mysql_fetch_array($row)){
@@ -432,12 +423,17 @@ while($objResult = mysql_fetch_array($objQuery))
 							$str= "  Selected  ";
 					}
 				}
-?>
-      	<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
-        
-		<?
+				
+				if($_SESSION['sIdname']==='เมธาวารินทร์' && $result['applist'] == 'กายภาพ') 
+				{
+					$str = 'selected="selected"';
 				}
-		?>
+
+				?>
+				<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
+				<?
+			}
+			?>
 			<!--ตรวจตามนัดพร้อมประวัติผู้ป่วยใน</option>
 			<option value="FU12 นวดแผนไทย">นวดแผนไทย</option>
 			<option value="FU13 ส่องกระเพาะ">ส่องกระเพาะ</option>
