@@ -806,7 +806,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 						}else{  //ยาที่ไม่ต้องใส่รหัสผ่าน
 							if($arr["lock_dr"] == 'Y'){
 								if($arr["drugcode"] =="1XA.5-NN"){
-									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";
+									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";								
+								}else if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
+									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
+								}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
+									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";	
 								}else{
 							
 						?>
@@ -823,6 +827,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 						if($arr["lock_dr"] == 'Y'){
 							if($arr["drugcode"] =="1XA.5-NN"){
 								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";
+							}else if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
+								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
+							}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
+								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";									
 							}else{
 					?>
 						<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
@@ -1304,7 +1312,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
-	$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	
+	
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -2678,6 +2689,8 @@ function checkForm1(){
 
 	}
 	 */
+	 
+	 
 
 	if( document.form1.drug_code.value == "1PLAQ-N" || document.form1.drug_code.value == "1ZITH-C" ){ 
 	
@@ -2736,6 +2749,16 @@ function checkForm1(){
 		document.form1.drug_amount.focus();
 	}else if((document.form1.drug_code.value == "1XA.5-NN") && eval(document.form1.drug_amount.value) > 10 ){
 		alert("ยา Alprazolam 0.5 mg. เนื่องจากขาดเคมีในการผลิตยา ทำให้ยาขาดชั่วคราว\nควบคุมการจ่ายได้ครั้งละไม่เกิน 10 เม็ด ครับ");  //ได้รับแจ้งห้องยา เมื่อ 20/05/2564
+	}else if((document.form1.drug_code.value == "1VIAT500  ") && eval(document.form1.drug_amount.value) > 252 ){
+		alert("ยา VIARTRIL-S 500 MG. ควบคุมการจ่ายได้ครั้งละไม่เกิน 252 capsule ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564	
+	}else if((document.form1.drug_code.value == "1VIAT500") && eval(document.form1.drug_amount.value) > 252 ){
+		alert("ยา VIARTRIL-S 500 MG. ควบคุมการจ่ายได้ครั้งละไม่เกิน 252 capsule ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564	
+	}else if((document.form1.drug_code.value == "1VIAT500") && eval(document.form1.drug_amount.value) > 252 ){
+		alert("ยา VIARTRIL-S 500 MG. ควบคุมการจ่ายได้ครั้งละไม่เกิน 252 capsule ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564	
+	}else if((document.form1.drug_code.value == "5ARTR  ") && eval(document.form1.drug_amount.value) > 84 ){
+		alert("ยา ARTROFORT COMPLEX ควบคุมการจ่ายได้ครั้งละไม่เกิน 84 ซอง ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564
+	}else if((document.form1.drug_code.value == "5ARTR") && eval(document.form1.drug_amount.value) > 84 ){
+		alert("ยา ARTROFORT COMPLEX ควบคุมการจ่ายได้ครั้งละไม่เกิน 84 ซอง ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564										  		
 	}else if((document.form1.drug_code.value == "1SUDO" || document.form1.drug_code.value == "1SUDO-N"  || document.form1.drug_code.value == "1SUDO-NN") && eval(document.form1.drug_amount.value) > 60 ){
 		alert("ยา PSEUDOEPHEDRINE  60 mg. 	วัตถุออกฤทธิ์ประเภท 2 \n ควบคุมการจ่ายได้ครั้งละไม่เกิน 60 เม็ด ครับ");  //ได้รับแจ้งจาก พี่ตู๋ หน.ห้องยา เมื่อ 25/05/2559
 		document.form1.drug_amount.focus();		
