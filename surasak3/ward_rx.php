@@ -446,8 +446,13 @@ exit();
 #### click drug list ####
 if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 
-	$limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
-	$sql = "Select count(row_id) From drugrx where drugcode = '".$_GET["search"]."' AND date BETWEEN '".(date("Y",$limit_date)+543).date("-m-d H:i:s",$limit_date)."' AND '".(date("Y")+543).date("-m-d H:i:s")."' ";
+	// $limit_date = mktime(0,0,0,date("m")-2,date("d"),date("Y"));
+
+	$time_int = strtotime("-6 months");
+	$prev_2months = (date('Y', $time_int)+543).date('-m-d', $time_int);
+	$current_date = (date("Y")+543).date("-m-d H:i:s");
+
+	$sql = "SELECT COUNT(`row_id`) FROM `drugrx` WHERE `drugcode` = '".$_GET["search"]."' AND ( `date` >= '$prev_2months' AND `date` <= '$current_date' ) ";
 	
 	list($limit_row) = mysql_fetch_row(mysql_query($sql));
 	
