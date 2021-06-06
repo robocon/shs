@@ -923,6 +923,17 @@ function fncSubmit(strPage)
 		if(in_array($doctor_post, $testNewBuilding)){
 			$preOpd = 'selected="selected"';
 		}
+
+		$sql = "SELECT `row_id` FROM `doctor` WHERE `name` = '$doctor_post' AND `position` = '99 เวชปฏิบัติ' LIMIT 1 ";
+		$q = mysql_query($sql);
+		if($q !== false)
+		{
+			if(mysql_num_rows($q) > 0)
+			{
+				$preOpd = 'selected="selected"';
+			}
+		}
+
 		?>
 
       <select size="1" name="room" id="room">
