@@ -1,12 +1,14 @@
-<?php
-require("fpdf/fpdf.php");
-require("fpdf/pdf.php");
-
+<?php 
 include("connect.php");
 
-
-
 $hn=$_POST["hn"];
+if (empty($hn)) {
+	echo "กรุณาใส่ HN";
+	exit;
+}
+
+require("fpdf/fpdf.php");
+require("fpdf/pdf.php");
 
 Function calcage($birth){
 
@@ -29,45 +31,54 @@ Function calcage($birth){
 		$pAge="$ageY ปี $ageM เดือน";
 	}
 
-return $pAge;
+	return $pAge;
 }
 
 $sql = "SELECT hn,concat(yot,name,' ',surname) as ptname,ptright,dbirth  FROM opcard  WHERE hn = '$hn' ";
 $result_dt_hn =mysql_query($sql);
 $arr = mysql_fetch_array($result_dt_hn);
-
-
 $age=calcage($arr['dbirth']);
 
-$ll = "P";
+list($width,$height) = explode('x', $_POST['paper_size']);
 
-$pdf = new PDF($ll,'mm',array( 55,30 ));
+if(!empty($_POST['paper_width']))
+{
+	$width = $_POST['paper_width'];
+}
+
+if(!empty($_POST['paper_height']))
+{
+	$height = $_POST['paper_height'];
+}
+
+// 55,30
+$pdf = new PDF("P",'mm',array( $width,$height ));
 $pdf->SetThaiFont();
 
-$pdf->SetAutoPageBreak(false,0);
+$pdf->SetAutoPageBreak(true,0);
 $pdf->SetMargins(0, 0);
-$pdf->SetTopMargin(2); // กำหนดค่า กั้นหน้าด้านบน
+$pdf->SetTopMargin(0); // กำหนดค่า กั้นหน้าด้านบน
 
 //for($i=0;$i<count($_POST["drugprint"]);$i++){
 	
 $pdf->AddPage();
-$pdf->SetFont('AngsanaNew','',8);
 
 
-$pdf->Cell(0,3,"ชื่อ-สกุล : ".$arr['ptname']."",0,0);
-$pdf->Ln();
-$pdf->Cell(0,3,"อายุ : ".$age."",0,0);
-$pdf->Ln();
-$pdf->Cell(0,3,"สิทธิ : ".$arr['ptright']."",0,0);
-$pdf->Ln();
-$pdf->Cell(0,4,"",0,0);
-$pdf->Ln();
-$pdf->Cell(0,4,"ชื่อ-สกุล : ".$arr['ptname']."",0,0);
-$pdf->Ln();
-$pdf->Cell(0,3,"อายุ : ".$age."",0,0);
-$pdf->Ln();
-$pdf->Cell(0,3,"สิทธิ : ".$arr['ptright']."",0,0);
-$pdf->Ln();
+// $pdf->SetFont('AngsanaNew','',16);
+$pdf->SetFont('THSarabun','',14);
+
+$copy = $_POST['copy'];
+for ($i=0; $i < $copy; $i++) { 
+		
+	$pdf->Cell(0,8,"ชื่อ-สกุล : ".$arr['ptname']."",0,0);
+	$pdf->Ln();
+	$pdf->Cell(0,8,"อายุ : ".$age."",0,0);
+	$pdf->Ln();
+	$pdf->Cell(0,8,"สิทธิ : ".$arr['ptright']."",0,0);
+	$pdf->Ln();
+	
+}
+
 
 //}
 //$pdf->MultiCell(0,6,"S : ".$organ,0,"L");
