@@ -227,7 +227,7 @@ if( $action == false ){
                 if( $test_bs > 0 ){
 
                     $find_bs = true;
-                    $lab_sso = str_replace(array(',bs,',',bs'),array(',',''), $lab_sso);
+                    $lab_sso = str_replace(array('bs,',',bs,',',bs'),array(',',''), $lab_sso);
 
                     ++$bs_number;
 
