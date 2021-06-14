@@ -913,6 +913,19 @@ mmHg.</u></span></td>
 		</tr>
 		<? 
 	}
+	
+	if(!empty($result['ldlc']))
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>LDLC(ไขมันความหนาแน่นต่ำ) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['ldlc']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['ldlc_range']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_ldlc']?></strong><? if($result['stat_ldlc']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ldlc']."...";?></td>
+		</tr>
+		<? 
+	}
 
 	if($result['malari'])
 	{

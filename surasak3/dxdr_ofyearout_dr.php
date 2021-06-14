@@ -1310,6 +1310,38 @@ $bsult = mysql_fetch_array($brow);
 	</td>
 </tr>
 
+<?php 
+if(!empty($result_dx['ldl']))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">LDL :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['ldl']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['ldl']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['ldl'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['ldl'];?></span>
+	</td>
+	<td class="labfont">(<?=$result_dx['ldl_range']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['ldl_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['ldl_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_ldl' type='radio' value='ปกติ' onclick="togglediv2('ldl_action');" <? if( $result_dx['ldl'] > 0 && $result_dx['ldl'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_ldl' type='radio' value='ผิดปกติ' onclick="togglediv1('ldl_action');"<? if( $result_dx['ldl'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4">
+		<div id="ldl_action" <?=($result_dx['ldl'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
+			<select name='reason_ldl'>
+				<option value="ปกติ" <?=($result_dx['ldl'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['ldl'] > 100){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+</tr>
+<?php 
+}
+?>
+
 <tr>
 	<td align="right" class="profilelab">LDLC :</td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['10001']?></span></td>

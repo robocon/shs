@@ -86,6 +86,7 @@ $list_lab["CREA"] = "cr";
 $list_lab["URIC"] = "uric";
 
 $list_lab["HDL"] = "hdl";
+$list_lab["LDL"] = "ldl";
 $list_lab["10001"] = "10001";//ldlc
 $list_lab["MALARI"] = "malari";
 $list_lab["METAMP"] = "metamp";
@@ -787,10 +788,10 @@ C&deg; </td>
 		while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab))
 		{ 
 			// สกรีนผลแลปที่ให้แสดงผลได้
-			if(empty($list_lab[$labname]))
-			{
-				continue;
-			}
+			// if(empty($list_lab[$labname]))
+			// {
+			// 	continue;
+			// }
 
 			$extraName = "";
 			if($labname=='10001')
@@ -811,16 +812,18 @@ C&deg; </td>
 		}
 		?>
 		</tr>
+
 		<tr>
 			<td colspan="10">
 			<p style="margin: 0;">
 				<?php 
-				echo implode(', ', $list_lab);
+				echo implode(', ', array_keys($list_lab));
 				?>
 			</p>
-			<p style="margin: 0;">*ผลแลปอื่นๆที่ไม่มีในรายการข้างต้น หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
+			<p style="margin: 0;">*ผลแลปอื่นๆที่ไม่มีในรายการข้างต้น <b><u>หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน</u></b> กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
 			</td>
 		</tr>
+
 	</table>
 	<?php 
 	}
