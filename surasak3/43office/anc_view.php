@@ -32,7 +32,12 @@ $db = Mysql::load();
     </legend>
     <form action="anc_view.php" method="post">
         <div>
-            เลือกวันที่ <input type="text" name="date" id="date">
+            <?php 
+            $def_date = (date('Y')+543).date('-m-d');
+            ?>
+            เลือกวันที่ <input type="text" name="date" id="date" autocomplete="off" value="<?=$def_date;?>"><br>
+            แสดงข้อมูลตามวันที่ 2564-01-30 <br>
+            แสดงข้อมูลตามเดือน 2564-01
         </div>
         <div>
             <button type="submit">แสดงผล</button>

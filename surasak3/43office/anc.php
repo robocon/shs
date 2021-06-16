@@ -365,10 +365,12 @@ if( $page === 'search' ){
                                     if( $pv['REGISTERNO'] ){
                                         $dr_no = ' ('.$pv['REGISTERNO'].')';
                                     }
+
+									$selected_default = ($pv['PROVIDER'] == '11512382120101') ? 'selected="selected"' : '' ;
                                 
-                                ?>
-                                <option value="<?=$pv['PROVIDER'];?>"><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
-                                <?php
+									?>
+									<option value="<?=$pv['PROVIDER'];?>" <?=$selected_default;?> ><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
+									<?php
                                 }
                                 ?>
                             </select>
@@ -530,7 +532,6 @@ if( $page === 'search' ){
 						<input type="hidden" name="action" value="save">
 
 						<input type="hidden" name="CID" value="<?=$idcard;?>">
-						<input type="hidden" name="PROVIDER" value="<?=$dr['PROVIDER'];?>">
 						
 						<input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
 						<input type="hidden" name="opday_id" value="<?=$opday_id;?>">

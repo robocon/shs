@@ -4,10 +4,15 @@ include '../bootstrap.php';
 include 'head.php';
 ?>
 <fieldset>
-    <legend>ค้นหาตามวันที่</legend>
+    <legend>ค้นหาตามวันที่ปรับปรุงข้อมูล</legend>
     <form action="reportPrenatal.php" method="post">
         <div>
-            เลือกวันที่ <input type="text" name="date" id="date">
+            <?php 
+            $def_date = (date('Y')+543).date('-m-d');
+            ?>
+            เลือกวันที่ <input type="text" name="date" id="date" autocomplete="off" value="<?=$def_date;?>"><br>
+            แสดงข้อมูลตามวันที่ 2564-01-30 <br>
+            แสดงข้อมูลตามเดือน 2564-01
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -32,7 +37,7 @@ if ( $view === 'search' ) {
     $date = bc_to_ad($date);
     $date = str_replace('-', '', $date);
 
-    $sql = "SELECT * FROM `43prenatal` WHERE `SEQ` LIKE '$date%' ";
+    $sql = "SELECT * FROM `43prenatal` WHERE `D_UPDATE` LIKE '$date%' ";
     $db->select($sql);
     if ( $db->get_rows() > 0 ) {
 
@@ -76,7 +81,7 @@ if ( $view === 'search' ) {
                 <td class="warning"><?=$item['D_UPDATE'];?></td>
                 <td class="warning"><?=$item['PROVIDER'];?></td>
                 <td class="warning"><?=$item['CID'];?></td>
-                <td><a href="javascript:void(0);">แก้ไข</a></td>
+                <td><a href="prenatal.php?page=form&id=<?=$item['opday_id'];?>">แก้ไข</a></td>
             </tr>
             <?php
         }

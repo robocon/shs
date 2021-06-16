@@ -204,6 +204,8 @@ if ( $page === 'search' ) {
         $HIV_RESULT = $prenatal['HIV_RESULT'];
         $HCT_RESULT = $prenatal['HCT_RESULT'];
         $THALASSEMIA = $prenatal['THALASSEMIA'];
+        $LMP = substr($prenatal['LMP'],0,4).'-'.substr($prenatal['LMP'],4,2).'-'.substr($prenatal['LMP'],6,2);
+        $LMP = ad_to_bc($LMP);
 
         $DATE_HCT = substr($prenatal['DATE_HCT'],0,4).'-'.substr($prenatal['DATE_HCT'],4,2).'-'.substr($prenatal['DATE_HCT'],6,2);
         $DATE_HCT = ad_to_bc($DATE_HCT);
@@ -243,7 +245,7 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
-                    <td><input type="text" name="LMP" id="LMP" value="<?=$LMP;?>" ><?=$lmpNoti;?></td>
+                    <td><input type="text" name="LMP" id="LMP" value="<?=$LMP;?>" ><?=$lmpNoti;?> เช่น 2564-01-31</td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่กำหนดคลอด : </td>
@@ -308,7 +310,7 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่ตรวจ HCT : </td>
-                    <td><input type="text" name="DATE_HCT" id="DATE_HCT" value="<?=$DATE_HCT;?>"></td>
+                    <td><input type="text" name="DATE_HCT" id="DATE_HCT" value="<?=$DATE_HCT;?>">  เช่น 2564-01-31</td>
                 </tr>
                 <tr>
                     <td class="txtRight">ผลการตรวจ HCT : </td>
