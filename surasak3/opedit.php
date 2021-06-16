@@ -452,13 +452,49 @@ return $pAge;
     <IMG SRC='../image_patient/<?=$img;?>' WIDTH='100' HEIGHT='150' BORDER='0' ALT=''></a></td>
     <td width="85%" valign="top">
     	<table border="0">
-      	<tr>
+      	<tr style="vertical-align:top;">
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td>
 			<div style="position: relative;">
-				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" onKeyUp="check_yot()" size="5" >
-				<div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
-			</div>		</td>
+				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" >
+				<div><a href="javascript:void(0);" class="fonthead" style="color:#a67a42;" onclick="check_yot()">รหัสนำหน้าชื่อ กระทรวงมหาดไทย</a></div>
+
+				<div id="res_yot" style="position: absolute; top: 0; left: 0; background-color: #ffffff; z-index: 1; padding: 4px; display: none;">
+					<div id="close_res_yot" style="text-align: center; background-color: #bbbbbb;" onclick="close_res_yot()">[ปิดหน้าต่าง]</div>
+					
+					<table style="width:600px;">
+						<tr>
+							<td colspan="4">ค้นหาคำนำหน้า : <input type="text" id="search_res_yot"></td>
+						</tr>
+						<tr>
+							<th>ตัวย่อ</th>
+							<th>รายละเอียด</th>
+							<th></th>
+						</tr>
+						<?php 
+						$sql_prefix = "SELECT * FROM `f43_person_1`";
+						$q = mysql_query($sql_prefix);
+						if($q!==false)
+						{
+							$pref_i = 0;
+							while ($pref = mysql_fetch_assoc($q)) {
+								$mod = ( ($pref_i % 2) == 0 ) ? 'style="background-color: #bbbbbb;"' : '';
+								?>
+								<tr <?=$mod;?> class="find_my_prefix" data-prefix="<?=$pref['detail'];?>">
+									<td><?=$pref['abbreviations'];?></td>
+									<td><?=$pref['detail'];?></td>
+									<td><a href="javascript:void(0)" style="color: #a67a42;" data-prefix-selected="<?=$pref['abbreviations'];?>" class="prefix-selected">เลือก</a></td>
+								</tr>
+								<?php
+								$pref_i++;
+							}
+							
+						}
+						?>
+					</table>
+				</div>
+			</div>
+		</td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
           <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
@@ -1062,7 +1098,7 @@ $dis = mysql_fetch_assoc($q);
 <fieldset>
 	<legend>ข้อมูลผู้พิการ:</legend>
 		<table>
-			<tr>
+			<tr style="vertical-align: top;">
 				<td class="fonthead" width="25%" align="right">เลขทะเบียนผู้พิการ(DISABID):</td>
 				<td width="25%">
 					<input type="text" name="disabid" id="disabid" value="<?=$dis['disabid'];?>">
@@ -1072,7 +1108,7 @@ $dis = mysql_fetch_assoc($q);
 					<div>
 						<input type="text" name="icf" id="icf" value="<?=$dis['icf'];?>">
 					</div>
-					<span class="fonthead" id="btn_show_icf">แสดงรายละเอียดทั้งหมด</span>
+					<span class="fonthead" id="btn_show_icf" style="color: #a67a42;">แสดงรายละเอียดทั้งหมด</span>
 				</td>
 			</tr>
 			</tr>
@@ -1620,19 +1656,15 @@ if(preg_match("/(kiosk)/", strtolower($cNote)) > 0)
 include 'includes/ajax.php';
 ?>
 <script type="text/javascript">
-/*
+
 function check_yot(){
-	var newSm = new SmHttp();
-	var input_yot = document.getElementById('yot');
-	newSm.ajax(
-		'pername_getfill.php', 
-		{ 'action': 'yot', 'search2': input_yot.value, 'getto1' : 'yot' }, 
-		function(res){
-			document.getElementById('res_yot').innerHTML = res;
-		}
-	);
+	document.getElementById('res_yot').style.display = '';
 }
-*/
+
+function close_res_yot(){
+	document.getElementById('res_yot').style.display = 'none';
+}
+
 </script>
 
 <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
@@ -1719,6 +1751,39 @@ function check_yot(){
 					$('#icf_static').hide();
 				});
 				
+
+
+			// input ค้นหาคำนำหน้าชื่อ
+			$(document).on('keyup', '#search_res_yot', function(){
+				var search_key = this.value;
+				var patt = new RegExp("("+search_key+")");
+				if(search_key.length < 3)
+				{
+					return;
+				}
+
+				for (let index = 0; index < $('.find_my_prefix').length; index++) {
+					var find_item = $('.find_my_prefix')[index];
+					var data_value = $(find_item).attr('data-prefix');
+					if(patt.test(data_value)!==true)
+					{
+						$(find_item).hide();
+					}
+					else
+					{
+						$(find_item).show();
+					}
+				}
+
+			});
+
+			// คลิกเลือกคำนำหน้าชื่อ
+			$(document).on('click', '.prefix-selected', function(){ 
+				var prefix = $(this).attr('data-prefix-selected');
+				document.getElementById('yot').value = prefix;
+				document.getElementById('res_yot').style.display = 'none';
+			});
+
 		});
 		})(jQuery);
 </script>

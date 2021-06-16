@@ -293,10 +293,51 @@ echo "<tr bgcolor=\"$bgcolor\" >
     <IMG SRC='../image_patient/<?=$cIdcard;?>.jpg' WIDTH='100' HEIGHT='150' BORDER='0' ALT='' style="border: #FFFFFF solid 3px; padding: 2px 2px 2px 2px;"></a></td>
     <td width="85%" valign="top">
     <table border="0">
-      <tr>
+      <tr style="vertical-align:top;">
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td> 
-          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" >        </td>
+        <div style="position: relative;">
+          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" >
+
+            <div><a href="javascript:void(0);" class="fonthead" style="color:#a67a42;" onclick="check_yot()">รหัสนำหน้าชื่อ กระทรวงมหาดไทย</a></div>
+
+            <div id="res_yot" style="position: absolute; top: 0; left: 0; background-color: #ffffff; z-index: 1; padding: 4px; display: none;">
+              <div id="close_res_yot" style="text-align: center; background-color: #bbbbbb;" onclick="close_res_yot()">[ปิดหน้าต่าง]</div>
+              
+              <table style="width:600px;">
+                <tr>
+                  <td colspan="4">ค้นหาคำนำหน้า : <input type="text" id="search_res_yot"></td>
+                </tr>
+                <tr>
+                  <th>ตัวย่อ</th>
+                  <th>รายละเอียด</th>
+                  <th></th>
+                </tr>
+                <?php 
+                $sql_prefix = "SELECT * FROM `f43_person_1`";
+                $q = mysql_query($sql_prefix);
+                if($q!==false)
+                {
+                  $pref_i = 0;
+                  while ($pref = mysql_fetch_assoc($q)) {
+                    $mod = ( ($pref_i % 2) == 0 ) ? 'style="background-color: #bbbbbb;"' : '';
+                    ?>
+                    <tr <?=$mod;?> class="find_my_prefix" data-prefix="<?=$pref['detail'];?>">
+                      <td><?=$pref['abbreviations'];?></td>
+                      <td><?=$pref['detail'];?></td>
+                      <td><a href="javascript:void(0)" style="color: #a67a42;" data-prefix-selected="<?=$pref['abbreviations'];?>" class="prefix-selected">เลือก</a></td>
+                    </tr>
+                    <?php
+                    $pref_i++;
+                  }
+                  
+                }
+                ?>
+              </table>
+            </div>
+          </div>
+
+        </td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
           <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
@@ -761,6 +802,104 @@ while(list($ptrcode, $ptrname) = mysql_fetch_row($resultptr)){
 
 </fieldset>
 <BR>
+<?php 
+$disabtype_list = array(
+  1 => 'ความพิการทางการเห็น',
+  2 => 'ความพิการทางการได้ยินหรือการสื่อความหมาย',
+  3 => 'ความพิการการเคลื่อนไหวหรือทางร่างกาย',
+  4 => 'ความพิการทางจิตใจหรือพฤติกรรมหรือออทิสติก',
+  5 => 'ความพิการทางสติปัญญา',
+  6 => 'ความพิการทางการเรียนรู้',
+  7 => 'ความพิการทางออทิสติก'
+);
+
+$disabcause_list = array(
+  1 => 'ความพิการแต่กำเนิด',
+  2 => 'ความพิการจากการบาดเจ็บ',
+  3 => 'ความพิการจากโรค'
+);
+
+
+$q = mysql_query("SELECT * FROM `disabled_user` WHERE `hn` = '$cHn' ");
+$dis = mysql_fetch_assoc($q);
+
+?>
+<fieldset>
+	<legend>ข้อมูลผู้พิการ:</legend>
+		<table>
+			<tr style="vertical-align: top;">
+				<td class="fonthead" width="25%" align="right">เลขทะเบียนผู้พิการ(DISABID):</td>
+				<td width="25%">
+					<input type="text" name="disabid" id="disabid" value="<?=$dis['disabid'];?>">
+				</td>
+				<td class="fonthead" width="25%" align="right">รหัสสภาวะสุขภาพ(ICF):</td>
+				<td width="25%">
+					<div>
+						<input type="text" name="icf" id="icf" value="<?=$dis['icf'];?>">
+					</div>
+					<span class="fonthead" id="btn_show_icf" style="color: #a67a42;">แสดงรายละเอียดทั้งหมด</span>
+				</td>
+			</tr>
+			</tr>
+				<td class="fonthead" align="right">ประเภทความพิการ(DISABTYPE):</td>
+				<td>
+					<select name="disabtype" id="">
+					<?php
+					foreach ($disabtype_list as $key => $dis) {
+
+						$selected = ( $key == $dis['disabtype'] ) ? 'selected="selected"' : '' ;
+
+						?>
+						<option value="<?=$key;?>" <?=$selected;?> ><?=$key.'.'.$dis;?></option>
+						<?php
+					}
+					?>
+					</select>
+				</td>
+				<td class="fonthead" align="right">สาเหตุความพิการ(DISABCAUSE):</td>
+				<td>
+					<select name="disabcause" id="">
+					<?php
+					foreach ($disabcause_list as $key => $dis) {
+
+						$selected = ( $key == $dis['disabcause'] ) ? 'selected="selected"' : '' ;
+
+						?>
+						<option value="<?=$key;?>" <?=$selected;?> ><?=$key.'.'.$dis;?></option>
+						<?php
+					}
+					?>
+					</select>
+				</td>
+			</tr>
+		</table>
+	<div id="icf_res" style="position:relative;"></div>
+	<div id="icf_static" style="display: none;">
+		<?php 
+		$q = mysql_query("SELECT * FROM `icf_icf`");
+		?>
+		<div class="close_icf_static" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>
+		<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">
+			<table class="chk_table" style="width: 100%; color: #000000;">
+			<tr>
+				<th width="5%">รหัส</th>
+				<th>รายละเอียด</th>
+			</tr>
+			<?php 
+			while( $item = mysql_fetch_assoc($q) ){
+					?>
+					<tr valign="top">
+						<td class="icf_code" item-data="<?=$item['id'];?>"><?=$item['id'];?></td>
+						<td><?=$item['detail'];?></td>
+					</tr>
+					<?php
+			}
+			?>
+			</table>
+		</div>
+	</div>
+</fieldset>
+<br>
 <fieldset>
     <legend>ข้อมูล อื่นๆ:</legend>
     
@@ -822,5 +961,133 @@ print "  <font face='Angsana New' size='4' color =red>&nbsp;&nbsp;&nbsp; **มาครั
 <p align="center"><input type='submit' value='แก้ไข/ลงทะเบียน' name='B1'>&nbsp;&nbsp;
 </p>
 </form>
+<script>
+function check_yot(){
+	document.getElementById('res_yot').style.display = '';
+}
 
+function close_res_yot(){
+	document.getElementById('res_yot').style.display = 'none';
+}
+</script>
+<script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	jQuery.noConflict();
+	(function( $ ) {
+	$(function() {
+
+			var icf_list = [];
+
+			<?php 
+			$q = mysql_query("SELECT * FROM `icf_icf`");
+			$i = 0; 
+
+			while( $item = mysql_fetch_assoc($q) ){
+					?>
+					var myObj = new Object();
+					myObj.code = '<?=$item['id'];?>';
+					myObj.detail = '<?=$item['detail'];?>';
+					icf_list[<?=$i;?>] = myObj; 
+					<?php
+					$i++;
+			}
+			?>
+
+			$(document).on('keyup', '#icf', function(){
+					var search_txt = $(this).val();
+					$('#icf_static').hide();
+					if( search_txt.length > 3 ){
+
+							var regex1 = new RegExp(search_txt,'g');
+
+							var htm = '';
+							htm += '<div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>';
+							htm += '<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">';
+							htm += '<table class="chk_table" style="width: 100%;">';
+							htm += '<tr>';
+							htm += '<th width="5%">รหัส</th>';
+							htm += '<th>รายละเอียด</th>';
+							htm += '</tr>';
+
+							for (var index = 0; index < icf_list.length; index++) {
+
+									var icf_item = icf_list[index];
+									var element = icf_item.detail;
+									var icf_code = icf_item.code;
+
+									if( regex1.test(element) == true ){
+											htm += '<tr valign="top">';
+											htm += '<td class="icf_code" item-data="'+icf_code+'">'+icf_code+'</td>';
+											htm += '<td>'+element+'</td>';
+											htm += '</tr>';
+									}
+							}
+
+							htm += '</table>';
+							htm += '</div>';
+							
+							$("#icf_res").html(htm);
+							$('#icf_res').show();
+					}
+
+			});
+
+			// ตัวที่เจนจาก js
+			$(document).on('click', '.close-icf', function(){ 
+					$('#icf_res').hide();
+			});
+
+			$(document).on('click', '.icf_code', function(){
+					var code = $(this).attr('item-data');
+					$('#icf').val(code);
+					$('#icf_res').hide();
+					$('#icf_static').hide();
+			});
+
+
+			// ตัวที่เจนจาก php
+			$(document).on('click', '#btn_show_icf', function(){
+				$('#icf_res').hide();
+				$('#icf_static').toggle();
+			})
+			$(document).on('click', '.close_icf_static', function(){
+				$('#icf_static').hide();
+			});
+			
+
+
+		// input ค้นหาคำนำหน้าชื่อ
+		$(document).on('keyup', '#search_res_yot', function(){
+			var search_key = this.value;
+			var patt = new RegExp("("+search_key+")");
+			if(search_key.length < 3)
+			{
+				return;
+			}
+
+			for (let index = 0; index < $('.find_my_prefix').length; index++) {
+				var find_item = $('.find_my_prefix')[index];
+				var data_value = $(find_item).attr('data-prefix');
+				if(patt.test(data_value)!==true)
+				{
+					$(find_item).hide();
+				}
+				else
+				{
+					$(find_item).show();
+				}
+			}
+		});
+
+		// คลิกเลือกคำนำหน้าชื่อ
+		$(document).on('click', '.prefix-selected', function(){ 
+			var prefix = $(this).attr('data-prefix-selected');
+			document.getElementById('yot').value = prefix;
+			document.getElementById('res_yot').style.display = 'none';
+
+		});
+
+	});
+	})(jQuery);
+</script>
 </body>

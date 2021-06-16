@@ -125,6 +125,160 @@ if(!$result){
 	}
 }
 
+$short_th_date = substr($thidate,0,10);
+$date_hn = $short_th_date.$cHn;
+$cid = trim($idcard);
+$hn = $pid = $cHn;
+$prename = trim($yot);
+$name = trim($name);
+$lname = trim($surname);
+$sex = trim($sex);
+$birth = trim($dbirth);
+$mstatus = trim($married);
+$occupation_new = trim($career);
+$race = trim($race);
+$nation = trim($nation);
+$religion = trim($religion);
+$education = trim($education);
+// $father = trim($_POST['idcard_father']);
+// $mother = trim($_POST['idcard_mother']);
+// $couple = trim($_POST['idcard_couple']);
+$father = NULL;
+$mother = NULL;
+$couple = NULL;
+$abogroup = trim($blood);
+$d_update = trim($thidate);
+// $vstatus = $_POST['vstatus'];
+$vstatus = NULL;
+
+$telephone = str_replace(array(' ', '-'), '', trim($hphone));
+$mobile = str_replace(array(' ', '-'), '', trim($phone));
+
+$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ");
+if( mysql_num_rows($q) == 0 ){
+	// insert 
+	$sql = "INSERT INTO `PERSON` (
+		`id`, `date_hn`, `HOSTPCODE`, `CID`, `PID`, `HID`, `PRENAME`, `NAME`, `LNAME`, `HN`, 
+		`SEX`, `BIRTH`, `MSTATUS`, `OCCUPATION_OLD`, `OCCUPATION_NEW`, `RACE`, `NATION`, `RELIGION`, `EDUCATION`, `FSTATUS`, 
+		`FATHER`, `MOTHER`, `COUPLE`, `VSTATUS`, `MOVEIN`, `DISCHARGE`, `DDISCHARGE`, `ABOGROUP`, `RHGROUP`, `LABOR`, 
+		`PASSPORT`, `TYPEAREA`, `D_UPDATE`, `TELEPHONE`, `MOBILE`
+	) VALUES (
+		NULL, '$date_hn', '11512', '$cid', '$pid', NULL, '$prename', '$name', '$lname', '$hn', 
+		'$sex', '$birth', '$mstatus', NULL, '$occupation_new', '$race', '$nation', '$religion', '$education', NULL, 
+		'$father', '$mother', '$couple', '$vstatus', NULL, NULL, NULL, '$abogroup', NULL, NULL, 
+		NULL, '$typearea', '$d_update', '$telephone', '$mobile'
+	);";
+	mysql_query($sql);
+}else{ 
+	$item = mysql_fetch_assoc($q);
+	$person_id = $item['id'];
+	// update
+	$sql = "UPDATE `PERSON` SET 
+	`date_hn`='$date_hn', `HOSTPCODE`='11512', `CID`='$cid', `PID`='$pid', `HID`=NULL, 
+	`PRENAME`='$prename', `NAME`='$name', `LNAME`='$lname', `HN`='$hn', `SEX`='$sex', `BIRTH`='$birth', 
+	`MSTATUS`='$mstatus', `OCCUPATION_OLD`=NULL, `OCCUPATION_NEW`='$occupation_new', `RACE`='$race', `NATION`='$nation', `RELIGION`='$religion', 
+	`EDUCATION`='$education', `FSTATUS`=NULL, `FATHER`='$father', `MOTHER`='$mother', `COUPLE`='$couple', `VSTATUS`='$vstatus', 
+	`MOVEIN`=NULL, `DISCHARGE`=NULL, `DDISCHARGE`=NULL, `ABOGROUP`='$abogroup', `RHGROUP`=NULL, `LABOR`=NULL, 
+	`PASSPORT`=NULL, `TYPEAREA`='$typearea', `D_UPDATE`='$d_update', `TELEPHONE`='$telephone', `MOBILE`='$mobile' 
+	WHERE (`id`='$person_id');";
+	mysql_query($sql);
+}
+// จบการเก็บข้อมูลเข้า PERSON 
+
+// เก็บข้อมูลเข้า ICF กับ DISABILITY 
+$disabid = trim($_POST['disabid']);
+if( $disabid != '' ){ 
+
+	// อัพเดทฐานข้อมูลที่เก็บข้อมูลผู้พิการ
+    $icf = trim($_POST['icf']);
+    $disabtype = trim($_POST['disabtype']);
+    $disabcause = trim($_POST['disabcause']);
+
+	$sql = "SELECT `id` FROM `disabled_user` WHERE `hn` = '$pid' ";
+	$q = mysql_query($sql);
+	$num_disuser = mysql_num_rows($q);
+	if( $num_disuser > 0 ){
+		$sql = "UPDATE `disabled_user` SET 
+		`idcard` = '$cid', 
+		`disabid` = '$disabid', 
+		`icf` = '$icf', 
+		`disabtype` = '$disabtype', 
+		`disabcause` = '$disabcause', 
+		`lastupdate` = NOW()  
+		WHERE `hn` = '$pid' ";
+		mysql_query($sql); 
+	}else{ 
+		$date_dis = date('Ymd');
+		$sql = "INSERT INTO `disabled_user` (
+			`id`, `hn`, `idcard`, `disabid`, `icf`, `disabtype`, `disabcause`, `date_detect`, `date_disab`, `lastupdate` 
+		) VALUES (
+			NULL, '$pid', '$cid', '$disabid', '$icf', '$disabtype', '$disabcause', '$date_dis', '$date_dis', NOW() 
+		);";
+		mysql_query($sql);
+	
+	}
+	
+	
+	// เก็บข้อมูลลงแฟ้ม icf
+	$d_update = date('Ymdhis');
+	$date_serv = date('Ymd');
+	$seq = $date_serv.sprintf("%03d", $nVn);
+
+	$sql = "SELECT `id` FROM `icf43` WHERE `opday_id` = '$opday_id' ";
+	$q = mysql_query($sql);
+	if ( mysql_num_rows($q) > 0 ) {
+		
+		$icf_item = mysql_fetch_assoc();
+		$icf_id = $icf_item['id'];
+
+		$sql = "UPDATE `icf43` SET 
+		`disabid`='$disabid', 
+		`pid`='$pid', 
+		`seq`='$seq', 
+		`date_serv`='$date_serv', 
+		`icf`='$icf', 
+		`d_update`='$d_update', 
+		`cid`='$cid' 
+		WHERE (`id`='$icf_id');";
+		mysql_query($sql);
+		
+	} else {
+		$sql = "INSERT INTO `icf43` (
+			`id`, `hospcode`, `disabid`, `pid`, `seq`, `date_serv`, 
+			`icf`, `qualifier`, `provider`, `d_update`, `cid`, `opday_id`
+		) VALUES (
+			NULL, '11512', '$disabid', '$pid', '$seq', '$date_serv', 
+			'$icf', NULL, NULL, '$d_update', '$cid', '$opday_id'
+		);";
+		mysql_query($sql);
+
+	} 
+
+	// เก็บข้อมูลลงแฟ้ม disability
+	$sql = "SELECT `id` FROM `disability43` WHERE `opday_id` = '$opday_id' ";
+	$q = mysql_query($sql);
+	if ( mysql_num_rows($q) > 0 ) {
+		// 
+		$sql = "UPDATE `disability43` SET 
+		`disabid`='$disabid', 
+		`disabtype`='$disabtype', 
+		`disabcause`='$disabcause', 
+		`d_update`='$d_update' 
+		WHERE (`id`='$dis_id');";
+		mysql_query($sql);
+		
+	} else { 
+		$sql = "INSERT INTO `disability43` (
+			`id`, `hospcode`, `disabid`, `pid`, `disabtype`, `disabcause`, 
+			`diagcode`, `date_detect`, `date_disab`, `d_update`, `cid`, `opday_id`
+		) VALUES (
+			NULL, '11512', '$disabid', '$pid', '$disabtype', '$disabcause', 
+			NULL, '$date_serv', '$date_serv', '$d_update', '$cid', '$opday_id'
+		);";
+		mysql_query($sql);
+	}
+}
+// เก็บข้อมูลเข้า ICF กับ DISABILITY 
 
 $sql_ipcard = "SELECT a.`row_id` AS `ipcard_id`, a.`hn`, a.`an`,b.`row_id` AS `bed_id` 
 FROM (
