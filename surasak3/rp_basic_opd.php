@@ -176,7 +176,7 @@ body,td,th {
 			$where_toborow = " AND toborow like '".$_POST["case"]."%' ";
 		}
 
-			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight, height,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn,waist,cigarette  From opd where thdatehn like '".$search_date."%' $where_doctor  $where_toborow ";
+			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight, height,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn,waist,cigarette  From opd where thdatehn like '".$search_date."%' $where_doctor  $where_toborow ORDER BY row_id ASC";
 
 			$result = Mysql_Query($sql);
 			$no=1;
