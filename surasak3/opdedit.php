@@ -1065,7 +1065,7 @@ function close_res_yot(){
 				return;
 			}
 
-			for (let index = 0; index < $('.find_my_prefix').length; index++) {
+			for (var index = 0; index < $('.find_my_prefix').length; index++) {
 				var find_item = $('.find_my_prefix')[index];
 				var data_value = $(find_item).attr('data-prefix');
 				if(patt.test(data_value)!==true)

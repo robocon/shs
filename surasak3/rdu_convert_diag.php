@@ -37,10 +37,10 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2563-07-01';
-$date_end = '2563-07-29';
-$quarter = 4;
-$year = '2563';
+$date_start = '2564-01-01';
+$date_end = '2564-03-31';
+$quarter = 2;
+$year = '2564';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';

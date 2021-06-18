@@ -51,7 +51,7 @@ $ptrcode = $_POST['rdo1'];
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 $typearea = $_POST['typearea'];
 
-$cHn = $_POST["hn"];
+$cHn = trim($_POST["hn"]);
 
 $sql = "UPDATE opcard SET idcard = '$idcard',
 	mid = '$mid',
@@ -154,7 +154,7 @@ $vstatus = NULL;
 $telephone = str_replace(array(' ', '-'), '', trim($hphone));
 $mobile = str_replace(array(' ', '-'), '', trim($phone));
 
-$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ");
+$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `PID` = '$cHn' ");
 if( mysql_num_rows($q) == 0 ){
 	// insert 
 	$sql = "INSERT INTO `PERSON` (

@@ -234,6 +234,9 @@
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="reportPerson.php">แฟ้มบุคคล</a>
+            </li>
         </ul>
     </nav>
 </div>

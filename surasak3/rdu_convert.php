@@ -1,4 +1,18 @@
 <?php 
+/**
+ * READ ME PLEASE อ่านตรงนี้หน่อย
+ * 
+ * ไตรมาสแบ่งออกเป็นดังนี้
+ * 1 ตค ธค
+ * 2 มค มีค
+ * 3 เมย มิย
+ * 4 กค กย
+ * 
+ * ไฟล์มี 4ไฟล์ คือ rdu_convert + _diag, _drug, _lab 
+ * ให้รันใน localhost ได้เลย
+ * พอได้ 4ไฟล์ที่เป็น .sql ค่อย import เข้าไปที่เซิฟ 192.168.1.13 -> rdu
+ */
+
 // just for testing
 set_time_limit(0);
 
@@ -12,14 +26,11 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-// $date_start = '2562-04-01';
-// $date_end = '2562-06-30';
-
-$date_start = '2563-07-01';
-$date_end = '2563-07-31';
+$date_start = '2564-01-01';
+$date_end = '2564-07-31';
 
 $quarter = 4;
-$year = '2563';
+$year = '2564';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_opday_'.$quarter.'.sql';

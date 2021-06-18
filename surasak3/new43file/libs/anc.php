@@ -16,7 +16,7 @@ $sql = "SELECT '11512' AS `HOSPCODE`,
 `d_update` AS `D_UPDATE`, 
 `cid` AS `CID`
 FROM `anc` 
-WHERE `d_update` LIKE '$dServ%' ";
+WHERE `date_serv` LIKE '$dServ%' ";
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
 $txt = '';

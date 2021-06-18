@@ -853,7 +853,7 @@ $vstatus = NULL;
 $telephone = str_replace(array(' ', '-'), '', trim($hphone));
 $mobile = str_replace(array(' ', '-'), '', trim($phone));
 
-$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `date_hn` = '$date_hn' ");
+$q = mysql_query("SELECT `id` FROM `PERSON` WHERE `PID` = '$cHn' ");
 if( mysql_num_rows($q) == 0 ){
 	// insert 
 	$sql = "INSERT INTO `PERSON` (
