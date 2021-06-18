@@ -67,6 +67,19 @@ font-size:18px;
 	font-size: 28px;
 	font-weight: bold;
 }
+.buttonred {
+  background-color: #f44336; /* red */
+  font-family:"TH SarabunPSK"; 
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 12px 28px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 22px;
+  font-weight:bold;
+}
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
@@ -284,6 +297,8 @@ array_push($choose,"ขอสำเนาประวัติรักษา");
 array_push($choose,"ขอรับวัคซีนนัดฉีดโรคพิษสุนัขบ้า เข็มที่");
 array_push($choose,"ขอรับวัคซีนนัดฉีดบาดทะยัก เข็มที่");
 array_push($choose,"ขอรับวัคซีนนัดฉีดไวรัสตับอักเสบบี เข็มที่");
+array_push($choose,"กลุ่มเสี่ยงมารับบริการฉีดวัคซีนโควิด 19 เข็มที่ 1 อาการทั่วไปปกติ แนะนำอาการข้างเคียงและอาการผิดปกติหลังฉีดวัคซีน ผู้ป่วยรับทราบแล้ว");
+array_push($choose,"กลุ่มเสี่ยงมารับบริการฉีดวัคซีนโควิด 19 เข็มที่ 2 อาการทั่วไปปกติ แนะนำอาการข้างเคียงและอาการผิดปกติหลังฉีดวัคซีน ผู้ป่วยรับทราบแล้ว");
 
 sort($choose);
 $sql = "Select distinct organ From opd where hn = '".$_REQUEST["hn"]."' AND organ <> '' Order by row_id DESC limit 10";
@@ -360,6 +375,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	if($app_row > 0){
 		$og="ตรวจตามนัด";
 	}
+	
 	
 		
 
@@ -518,7 +534,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
         <td colspan="2"align="center" class="data_title">ข้อมูลผู้ป่วย </td>
       </tr>
 	  <tr>
-        <td class="headsarabun"><p>HN : <strong><?php echo $hn;?></strong>, ชื่อ-สกุล : <strong><?php echo $fullname;?></strong>,&nbsp;ID:<strong><?php echo $idcard;?></strong>,&nbsp;VN&nbsp;:&nbsp;<B><?php echo $vn;?></B>&nbsp;, คิว : <B><?php echo $kew;?></B>, <B><?php echo substr($toborow,4);?></B></td>
+        <td class="headsarabun"><p>HN : <strong><?php echo $hn;?></strong>, ชื่อ-สกุล : <strong><?php echo $fullname;?></strong>,&nbsp;ID:<strong><?php echo $idcard;?></strong>,&nbsp;VN&nbsp;:&nbsp;<B><?php echo $vn;?></B>&nbsp;, คิว : <B><?php echo $kew;?></B>, <font color="#CE0000"><B><?php echo substr($toborow,4);?></B></font></td>
 		<td rowspan="4">
 		<IMG SRC="../image_patient/<?php echo $idcard;?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">		</td>
       </tr>
@@ -535,9 +551,9 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
       <tr>
         <td>
         <?
-        $query = "SELECT `idcard` , `hn` , `yot` , `name` , `surname` , `goup` , `dbirth` , `idguard` , `ptright` , `note` , `camp`,`typeservice`   FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
+        $query = "SELECT `idcard` , `hn` , `yot` , `name` , `surname` , `goup` , `dbirth` , `idguard` , `ptright` , `note` , `camp`,`typeservice`,`sex`   FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
 	    $result = mysql_query($query) or die("Query failed");
-		list($cIdcard,$cHn,$cYot,$cName,$cSurname,$cGoup,$dbirth,$cIdguard,$cPtright,$cNote,$cCamp,$cTypeservice) = mysql_fetch_row($result);
+		list($cIdcard,$cHn,$cYot,$cName,$cSurname,$cGoup,$dbirth,$cIdguard,$cPtright,$cNote,$cCamp,$cTypeservice,$cSex) = mysql_fetch_row($result);
 		?>
         ประเภท : 
           <select name="goup" class="txtsarabun" id="goup" onChange="dochange('type', this.value)">
@@ -797,7 +813,7 @@ mmHg </td>
 		}
 
 		// ประจำเดือน ญ 11-60ปี
-		if( $match > 0 ){
+		if( $match > 0 && $cSex == 'ญ'){
 
 			?>
 			<tr valign="top">
@@ -997,7 +1013,7 @@ mmHg </td>
            <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
            &nbsp;&nbsp;</td>
-           <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;" class="txtsarabun">
+           <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+''+this.value;}" style="position: absolute;" class="txtsarabun">
              <option value="">--- ตัวช่วย ---</option>
              <?php
 			 foreach($choose as $value){
@@ -1031,6 +1047,8 @@ mmHg </td>
 			<td colspan="4">
 				<?php 
 				$hpiHelper = array(
+					'ฉีดวัคซีนโควิด 19 เข็มที่ 1',
+					'ฉีดวัคซีนโควิด 19 เข็มที่ 2',
 					'Case HT, DM, DLP, Gout ตรวจตามนัด รักษาต่อเนื่องที่ รพ.ค่ายสุรศักดิ์มนตรี อาการทั่วไปปกติ ผู้ป่วยเจาะเลือดตามใบนัดแล้ว',
 					'_วันก่อนมา รพ.', 
 					'_สัปดาห์ก่อนมา รพ.', 
@@ -1116,6 +1134,7 @@ mmHg </td>
            <td align="right" class="data_show">การตรวจ :</td>
            <td colspan="2" align="left"><select name="typediag" class="txtsarabun" id="typediag">
              <option selected="selected" value="ตรวจทั่วไป" >ตรวจทั่วไป</option>
+             <option value="ฉีดวัคซีนโควิด 19" <?php if($toborow=="EX52 ฉีดวัคซีนโควิด 19"){ echo "selected='selected'";} ?>>ฉีดวัคซีนโควิด 19</option>
              <option value="ตรวจสุขภาพตามกรมบัญชีกลาง">ตรวจสุขภาพตามกรมบัญชีกลาง</option>
              <option value="ธกส">ธกส</option>
              <option value="บวช">บวช</option>
@@ -1158,6 +1177,7 @@ mmHg </td>
            &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
            &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
            &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; ปริ้นสติกเกอร์แบบ PDF" />
+           &nbsp;&nbsp;<a href="" target="_blank"><input name="button" type="button" class="buttonred" value=" คัดกรอง COVID 19 " /></a>
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
            
