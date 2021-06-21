@@ -26,17 +26,17 @@ if ($dbi->connect_error) {
         </div>
         -->
         <?php 
-        $curr_thai_year = date('Y');
-        $year_range = range(2014, $curr_thai_year);
+        $default_year = (empty($_POST['year_selected'])) ? date('Y') : $_POST['year_selected'] ;
+        $year_range = range(2014, date('Y'));
         ?>
         <div>
             เลือกปี <select name="year_selected" id="year_selected">
             <?php 
-            foreach ($year_range as $key => $year_item) {
-                ?><option value="<?=$year_item;?>"><?=$year_item+543;?></option><?php
-            }
+            foreach ($year_range as $key => $year_item) { 
+                $selected = ($year_item == $default_year) ? 'selected="selected"' : '' ;
+                ?><option value="<?=$year_item;?>" <?=$selected;?>><?=$year_item+543;?></option><?php
+            } 
             ?>
-            
             </select>
         </div>
         <div>

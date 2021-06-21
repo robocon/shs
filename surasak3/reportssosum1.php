@@ -55,7 +55,7 @@ $p='1';
 		$SURG = $SURG+$list["SURG"];
 		$NID = $NID+$list["NID"];
 		$HEMO = $HEMO+$list["HEMO"];
-		$EYE = $HEMO+$list["EYE"];
+		$EYE = $EYE+$list["EYE"];
 		$OTHER = $OTHER+$list["OTHER"];
 		$OTHER1 = $OTHER1+$list["OTHER2"];
 
