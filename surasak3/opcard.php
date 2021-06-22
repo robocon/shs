@@ -142,6 +142,9 @@ legend {
 #btn_show_icf{
 	color: blue;
 }
+.notify43{
+	border: 2px solid #f95506;
+}
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -318,20 +321,56 @@ function searchSuggest2(str,len,getto1) {
     <td width="15%" align="center"><IMG SRC='../image_patient/NoPicture.jpg' WIDTH='100' HEIGHT='150' BORDER='0' ALT=''></td>
     <td width="85%" valign="top">
     <table border="0">
-      <tr>
+      <tr valign="top">
         <td align="right"  class="fonthead">คำนำหน้า:</td>
           <td> 
             <div style="position: relative;">
-              <input type="text" name="yot" size="5" id="yot" onKeyUp="check_yot()" >
-              <div id="res_yot" style="position: absolute; top: 0; right: 0;"></div>
+              <input type="text" name="yot" size="5" id="yot" class="notify43">
+
+              <div><a href="javascript:void(0);" class="fonthead" style="color:#a67a42;" onClick="check_yot()">รหัสนำหน้าชื่อ กระทรวงมหาดไทย</a></div>
+
+              <div id="res_yot" style="position: absolute; top: 0; left: 0; background-color: #ffffff; z-index: 1; padding: 4px; display: none;">
+                <div id="close_res_yot" style="text-align: center; background-color: #bbbbbb;" onClick="close_res_yot()">[ปิดหน้าต่าง]</div>
+                
+                <table style="width:600px;">
+                  <tr>
+                    <td colspan="4">ค้นหาคำนำหน้า : <input type="text" id="search_res_yot"></td>
+                  </tr>
+                  <tr>
+                    <th>ตัวย่อ</th>
+                    <th>รายละเอียด</th>
+                    <th></th>
+                  </tr>
+                  <?php 
+                  $sql_prefix = "SELECT * FROM `f43_person_1`";
+                  $q = mysql_query($sql_prefix);
+                  if($q!==false)
+                  {
+                    $pref_i = 0;
+                    while ($pref = mysql_fetch_assoc($q)) {
+                      $mod = ( ($pref_i % 2) == 0 ) ? 'style="background-color: #bbbbbb;"' : '';
+                      ?>
+                      <tr <?=$mod;?> class="find_my_prefix" data-prefix="<?=$pref['detail'];?>">
+                        <td><?=$pref['abbreviations'];?></td>
+                        <td><?=$pref['detail'];?></td>
+                        <td><a href="javascript:void(0)" style="color: #a67a42;" data-prefix-selected="<?=$pref['abbreviations'];?>" class="prefix-selected">เลือก</a></td>
+                      </tr>
+                      <?php
+                      $pref_i++;
+                    }
+                    
+                  }
+                  ?>
+                </table>
+              </div>
             </div>
           </td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
-          <input type="text" name="name" size="15" id="name" >        </td>
+          <input type="text" name="name" size="15" id="name" class="notify43">        </td>
         <td align="right" class="fonthead">สกุล:</td>
         <td> 
-          <input type="text" name="surname" size="15" id="surname">        </td>
+          <input type="text" name="surname" size="15" id="surname" class="notify43">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -348,8 +387,7 @@ function searchSuggest2(str,len,getto1) {
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input type="text" name="idcard" size="15" value="-" id="idcard" onBlur="check_idcard(this,event)">
-          <button type="button" onclick="runptRight(this,event)">ตรวจสอบสิทธิ</button>
+          <input type="text" name="idcard" size="15" value="-" id="idcard" onBlur="check_idcard(this,event)" class="notify43">
         </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -360,9 +398,9 @@ function searchSuggest2(str,len,getto1) {
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
-          <input type="text" name="d" size="2" value="วว" maxlength="2" id="d">
-          <input type="text" name="m" size="2" value="ดด" maxlength="2" id="m">
-          <input type="text" name="y" size="4" value="พ.ศ." maxlength="4" id="y">
+          <input type="text" name="d" size="2" value="วว" maxlength="2" id="d" class="notify43">
+          <input type="text" name="m" size="2" value="ดด" maxlength="2" id="m" class="notify43">
+          <input type="text" name="y" size="4" value="พ.ศ." maxlength="4" id="y" class="notify43">
           เชื้อชาติ: 
         <select size="1" name="race" id="race">
                <option value="ไทย" selected>ไทย</option>
@@ -437,7 +475,7 @@ function searchSuggest2(str,len,getto1) {
       </tr>
       <tr>
         <td align="right" class="fonthead">ระดับการศึกษา</td>
-        <td colspan="5"><select name="education" id="education">
+        <td colspan="5"><select name="education" id="education" class="notify43">
           <option value="">----- กรุณาเลือกข้อมูล -----</option>
           <?
         $sql="select * from education order by row_id asc";
@@ -539,7 +577,7 @@ function searchSuggest2(str,len,getto1) {
         5 => 'มาอาศัยในเขตรับผิดชอบแต่ไม่ได้อยู่ตามทะเบียนบ้านในเขตรับผิดชอบ เช่น คนเร่ร่อน ไม่มีที่พักอาศัย เป็นต้น'
       );
       ?>
-      <select name="typearea" id="typearea">
+      <select name="typearea" id="typearea" class="notify43">
         <option value="">-- เลือกข้อมูล สถานะบุคคล --</option>
         <?php
         foreach ($typearea_list as $key => $item) { 
@@ -841,24 +879,14 @@ $disabcause_list = array(
     }
   }
 
-  function check_yot(){
-    /*
-    var newSm = new SmHttp();
-    var input_yot = document.getElementById('yot');
-    newSm.ajax(
-      'pername_getfill.php', 
-      { 'action': 'yot', 'search2': input_yot.value, 'getto1' : 'yot' }, 
-      function(res){
-        document.getElementById('res_yot').innerHTML = res;
-      }
-    );
-    */
-  }
+function check_yot(){
+	document.getElementById('res_yot').style.display = '';
+}
 
-  function runptRight(link,event){
-    var idCard = document.getElementById('idcard').value;
-    checkPtRight(link, event, idCard);
-  }
+function close_res_yot(){
+	document.getElementById('res_yot').style.display = 'none';
+}
+
 </script>
 
 <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
@@ -944,6 +972,37 @@ $disabcause_list = array(
 				$(document).on('click', '.close_icf_static', function(){
 					$('#icf_static').hide();
 				});
+
+        // input ค้นหาคำนำหน้าชื่อ
+			$(document).on('keyup', '#search_res_yot', function(){
+				var search_key = this.value;
+				var patt = new RegExp("("+search_key+")");
+				if(search_key.length < 3)
+				{
+					return;
+				}
+
+				for (var index = 0; index < $('.find_my_prefix').length; index++) {
+					var find_item = $('.find_my_prefix')[index];
+					var data_value = $(find_item).attr('data-prefix');
+					if(patt.test(data_value)!==true)
+					{
+						$(find_item).hide();
+					}
+					else
+					{
+						$(find_item).show();
+					}
+				}
+
+			});
+
+			// คลิกเลือกคำนำหน้าชื่อ
+			$(document).on('click', '.prefix-selected', function(){ 
+				var prefix = $(this).attr('data-prefix-selected');
+				document.getElementById('yot').value = prefix;
+				document.getElementById('res_yot').style.display = 'none';
+			});
 				
 		});
 		})(jQuery);

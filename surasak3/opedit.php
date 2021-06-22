@@ -55,6 +55,10 @@ legend {
 	color: blue;
 }
 
+.notify43{
+	border: 2px solid #f95506;
+}
+
 .style1 {color: #FF0000}
 </style>
 <script language="JavaScript1.2">
@@ -456,11 +460,11 @@ return $pAge;
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td>
 			<div style="position: relative;">
-				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" >
-				<div><a href="javascript:void(0);" class="fonthead" style="color:#a67a42;" onclick="check_yot()">รหัสนำหน้าชื่อ กระทรวงมหาดไทย</a></div>
+				<input name="yot" type="text" id="yot" value="<?=$cYot;?>" class="notify43">
+				<div><a href="javascript:void(0);" class="fonthead" style="color:#a67a42;" onClick="check_yot()">รหัสนำหน้าชื่อ กระทรวงมหาดไทย</a></div>
 
 				<div id="res_yot" style="position: absolute; top: 0; left: 0; background-color: #ffffff; z-index: 1; padding: 4px; display: none;">
-					<div id="close_res_yot" style="text-align: center; background-color: #bbbbbb;" onclick="close_res_yot()">[ปิดหน้าต่าง]</div>
+					<div id="close_res_yot" style="text-align: center; background-color: #bbbbbb;" onClick="close_res_yot()">[ปิดหน้าต่าง]</div>
 					
 					<table style="width:600px;">
 						<tr>
@@ -497,10 +501,10 @@ return $pAge;
 		</td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
-          <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
+          <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" class="notify43">        </td>
         <td align="right" class="fonthead">สกุล:</td>
         <td> 
-          <input name="surname" type="text" id="surname" value="<?=$cSurname;?>" size="15">        </td>
+          <input name="surname" type="text" id="surname" value="<?=$cSurname;?>" size="15" class="notify43">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -532,7 +536,7 @@ return $pAge;
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13" <? if(!empty($cIdcard) && $cIdcard != '-'){ echo "readonly";}?>>        </td>
+          <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13" <? if(!empty($cIdcard) && $cIdcard != '-'){ echo "readonly";}?> class="notify43">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -553,9 +557,9 @@ return $pAge;
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
-            <input type='text' id="birth_d" name='d' size='2' value='<?=$cD;?>' maxlength='2'>
-            <input type='text' id="birth_m" name='m' size='2' value='<?=$cM;?>' maxlength='2'>
-            <input type='text' id="birth_y" name='y' size='4' value='<?=$cY;?>' maxlength='4'>
+            <input type='text' id="birth_d" name='d' size='2' value='<?=$cD;?>' maxlength='2' class="notify43">
+            <input type='text' id="birth_m" name='m' size='2' value='<?=$cM;?>' maxlength='2' class="notify43">
+            <input type='text' id="birth_y" name='y' size='4' value='<?=$cY;?>' maxlength='4' class="notify43">
           เชื้อชาติ: <select size="1" name="race" id="race">
             <option value=""><-เลือก-></option>
             <option  value="ไทย"<? if($cRace=='ไทย'){ echo "selected";}?> >ไทย</option>
@@ -630,7 +634,7 @@ return $pAge;
       </tr>
       <tr>
         <td align="right" class="fonthead">ระดับการศึกษา</td>
-        <td colspan="5"><select name="education" id="education">
+        <td colspan="5"><select name="education" id="education" class="notify43">
             <option value="">----- กรุณาเลือกข้อมูล -----</option>
             <?
         $sql="select * from education order by row_id asc";
@@ -796,7 +800,7 @@ return $pAge;
 			5 => 'มาอาศัยในเขตรับผิดชอบแต่ไม่ได้อยู่ตามทะเบียนบ้านในเขตรับผิดชอบ เช่น คนเร่ร่อน ไม่มีที่พักอาศัย เป็นต้น'
 		);
 		?>
-		<select name="typearea" id="typearea">
+		<select name="typearea" id="typearea" class="notify43">
 			<option value="">-- เลือกข้อมูล สถานะบุคคล --</option>
 			<?php
 			foreach ($typearea_list as $key => $item) { 
@@ -1308,7 +1312,7 @@ while(list($rid,$typename,$typestatus)= mysql_fetch_array($rows)){
 	//////////////////////////////////การอัพเดทสิทธิปัจจุบัน//////////////////////////////////////
 if($cPtright2==""){
 	if($cIdcard !="" || $cIdcard !="-"){
-	if(substr($cPtright1,0,3)=='R03'||substr($cPtright1,0,3)=='R07'){
+	if(substr($cPtright1,0,3)=='R03' || substr($cPtright1,0,3)=='R07'){
 		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
 		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 		?>
@@ -1395,7 +1399,7 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 </table>
 
 </fieldset>
-
+<br>
 <?php
 // เช็กว่าใน opday มี thdatehn นี้แล้วรึยัง
 $sql = "SELECT COUNT(`row_id`) AS `crow_id` 
@@ -1466,7 +1470,7 @@ if(substr($cPtright,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"5\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
+			echo "<div style=\"background-color: #0033CC; height: 30px;\"><B><FONT SIZE=\"5\"  COLOR=\"#FFFF00\">&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></div>";
 			}else{
 				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"5\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 			}
@@ -1474,7 +1478,7 @@ if(substr($cPtright,0,3)=='R07'){
 			$sql = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"5\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
+			echo "<div style=\"background-color: #0033CC; height: 30px;\"><B><FONT SIZE=\"5\"  COLOR=\"#FFFF00\">&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></div>";
 			}else{
 				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"5\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 			}
@@ -1484,15 +1488,30 @@ if(substr($cPtright,0,3)=='R07'){
 
 
 if(!empty($cIdcard)){
-$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยมีสิทธิประกันสังคม</FONT>";
-			}else{
-				echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิประกันสังคม</FONT>";
-			}
+	$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
+	if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+		echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยมีสิทธิประกันสังคม</FONT>";
 	}else{
-			echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีเลขประจำตัวประชาชน</FONT>";
-		}
+		echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิประกันสังคม</FONT>";
+	}
+	
+	$sql1 = "Select Idcard From gsbdata where Idcard LIKE '$cIdcard%' limit 1 ";
+	if(Mysql_num_rows(Mysql_Query($sql1)) > 0){
+		echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยมีสิทธิธนาคารออมสิน</FONT>";
+	}else{
+		echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิธนาคารออมสิน</FONT>";
+	}
+	
+	$sql2 = "Select emp_idcard From botdata where emp_idcard LIKE '$cIdcard%' limit 1 ";
+	if(Mysql_num_rows(Mysql_Query($sql2)) > 0){
+		echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยมีสิทธิธนาคารแห่งประเทศไทย</FONT>";
+	}else{
+		echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิธนาคารแห่งประเทศไทย</FONT>";
+	}
+			
+}else{
+	echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีเลขประจำตัวประชาชน</FONT>";
+}
 
 
 if(!empty($cHn)){
@@ -1500,14 +1519,14 @@ $sql = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%
 if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 				echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยมีสิทธิจ่ายตรง</FONT><br>";
 			}else{
-				echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิจ่ายตรง</FONT><br>";
+				echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิจ่ายตรง</FONT><br>";
 			}
 	}else{
-			echo"<FONT SIZE='5' COLOR='#0000FF'>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มี HN</FONT><br>";
+			echo"<FONT SIZE='5' COLOR='#FF3366'>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มี HN</FONT><br>";
 		}
 
 if(substr($cPtright,0,3)=="R12" || substr($cPtright,0,3)=="R13" || substr($cPtright,0,3)=="R14" || substr($cPtright,0,3)=="R36"){
-	echo"<FONT SIZE='5' COLOR='#FF0000'>&nbsp;&nbsp;กรุณาตรวจสอบสิทธิการรักษา เพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด</FONT><br>";
+	echo"<FONT SIZE='5' COLOR='#FFCC66'>&nbsp;&nbsp;กรุณาตรวจสอบสิทธิการรักษา เพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด</FONT><br>";
 }
 
 
@@ -1538,9 +1557,14 @@ echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"5\"  COLOR=\"#FF
 		}
 
 ?>
-<p align="center"><input type='submit' value='บันทึก/ลงทะเบียน' name='B1'>
+<p align="center">
+<input type='submit' value='   บันทึก / ลงทะเบียน   ' name='B1' style="height:50px;">
 </p>
-
+<!--<p align="center">
+<input type="button" value=" ตรวจสอบสิทธิ ธ.ออมสิน " onclick="window.location.href='gsb_chk.php' " style="height:50px;"  />&nbsp;&nbsp;&nbsp;
+<input type="button" value=" ตรวจสอบสิทธิ ธปท. " onclick="window.location.href='bot_chk.php' " style="height:50px;"  />&nbsp;&nbsp;&nbsp;
+</p>
+-->
 </td>
  </tr>
 </table>

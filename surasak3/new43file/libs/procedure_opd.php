@@ -1,16 +1,22 @@
 <?php 
 
-$db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-mysql_select_db('rdu_test', $db2) or die( mysql_error() );
+// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
+// mysql_select_db('rdu_test', $db2) or die( mysql_error() );
+
+$where_thdate = " thdatehn LIKE '$thdate_opday%' ";
+if (strlen($thdate_opday)==7) {
+    $where_thdate = " thdatehn LIKE '%$thdate_opday%' ";
+}
+
 
 //-------------------- Create file procedure_opd ä¿Åì·Õè 11 --------------------//
 $temp11 = "SELECT thidate, hn, vn, doctor, clinic, icd9cm, TRIM(idcard) AS `idcard` 
 FROM opday 
-WHERE thidate LIKE '$thimonth%' 
+WHERE $where_thdate 
 AND icd9cm IS NOT NULL 
 AND icd9cm <> '' 
 ORDER BY thidate ASC";
-$querytmp11 = mysql_query($temp11, $db2) or die("Query failed,Create temp11 : ".mysql_error());
+$querytmp11 = mysql_query($temp11) or die("Query failed,Create temp11 : ".mysql_error());
 
 $txt = '';
 while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_fetch_row($querytmp11)) {	
@@ -25,7 +31,7 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
         $cliniccode = 99;
 
     }else{
-        $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'", $db2) or die( mysql_error() );
+        $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'") or die( mysql_error() );
         if( mysql_num_rows($q) > 0 ){
             $item = mysql_fetch_assoc($q);
             $cliniccode = $item['code'];
@@ -58,7 +64,7 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
 
     $s1 = date('Ymd', strtotime($d_update));
     $date_serv = $s1;
-    $vn = sprintf('%06d', $vn);
+    $vn = sprintf('%03d', $vn);
     $seq = $s1.$$cliniccode.$vn;
 
     // PROVIDER
@@ -70,14 +76,14 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
         $prefixMd = substr($doctor,0,5);
 
         $sqlDR = "SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%' ";
-        $qDR = mysql_query($sqlDR, $db2);
+        $qDR = mysql_query($sqlDR);
         $dr = mysql_fetch_assoc($qDR);
         $doctorcode = $dr['doctorcode'];
 
     }
 
     if( !empty($doctorcode) ){
-        $qtb9 = mysql_query("SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ", $db2);
+        $qtb9 = mysql_query("SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ");
         $tb = mysql_fetch_assoc($qtb9);
         if (mysql_num_rows($tb) > 0) {
             $provider = $tb['PROVIDER'];

@@ -96,14 +96,12 @@
 global   $regisdate,$idcard,$mid,$hn,$yot,$name,$surname,$education,$goup,$married,$Y,$y,$m,$d,
            $dbirth,$guardian,$idguard,$nation,$religion,$career,$ptright,$ptrightdetail,$address,
            $tambol,$ampur,$changwat,$hphone,$phone,$father,$mother,$couple,$note,
-           $sex,$camp,$race,$ptf,$ptfadd,$ptffone,$ptfmon,$blood,$drugreact,$phone2,$hospcode,$ptrcode,$typeservice;
+           $sex,$camp,$race,$ptf,$ptfadd,$ptffone,$ptfmon,$blood,$drugreact,$phone2,$hospcode,$ptrcode,$typeservice,$note_vip;
 //   $Thaidate=date("d-m-").(date("Y")+543)."  ".date("G:i:s");
 
 // รับค่าจาก $_POST ดีที่สุด เพราะ global มีกาสที่ตัวแปรจะซ้ำได้จากการเปิด tab ซ้อน
 $name = trim($_POST['name']);
 $surname = trim($_POST['surname']);
-
-$typearea = $_POST['typearea'];
 
 $Thaidate = date("d-m-").(date("Y")+543);
 
@@ -133,18 +131,15 @@ Function calcage($birth){
 //
 //$Y=($y-543);
 //$dbirth="$Y-$m-$d";
-$d = sprintf('%02d', $d);
-$m = sprintf('%02d', $m);
-
 $dbirth="$y-$m-$d"; //insert to opcard
 $birthdate="$d-$m-$y"; //print into opdcard
 $cAge=calcage($dbirth);
 $ptname=$yot.' '.$name.' '.$surname;
 $sql = "INSERT INTO opcard (regisdate,idcard,mid,hn,yot,name,surname,education,goup,married,
-dbirth,guardian,idguard,nation,religion,career,ptright,ptrightdetail,address,tambol,ampur,changwat,hphone,phone,father,mother,couple,note,sex,camp,race,ptf,ptfadd,ptffone,ptfmon, ptright1, officer, blood, drugreact,phone2,hospcode,ptrcode,typeservice,typearea) VALUES (now(),'$idcard','$mid','$vHN',
+dbirth,guardian,idguard,nation,religion,career,ptright,ptrightdetail,address,tambol,ampur,changwat,hphone,phone,father,mother,couple,note,sex,camp,race,ptf,ptfadd,ptffone,ptfmon, ptright1, officer, blood, drugreact,phone2,hospcode,ptrcode,typeservice,note_vip) VALUES (now(),'$idcard','$mid','$vHN',
 '$yot','$name','$surname','$education','$goup','$married','$dbirth','$guardian','$idguard',
 '$nation','$religion','$career','$ptright','$ptrightdetail','$address','$tambol','$ampur','$changwat',
-'$hphone','$phone','$father','$mother','$couple','$note','$sex','$camp','$race','$ptf','$ptfadd','$ptffone','$ptfmon','$ptright','".$_SESSION["sOfficer"]."','$blood', '$drugreact','$phone2','$hospcode','$ptrcode','$typeservice','$typearea');";
+'$hphone','$phone','$father','$mother','$couple','$note','$sex','$camp','$race','$ptf','$ptfadd','$ptffone','$ptfmon','$ptright','".$_SESSION["sOfficer"]."','$blood', '$drugreact','$phone2','$hospcode','$ptrcode','$typeservice','$note_vip');";
 
 $result = mysql_query($sql) or die( mysql_error() . "หมายเลข HN $vHN ซ้ำ    ไม่สามารถบันทึกได้    โปรดทำบัตรใหม่ !");
 
@@ -286,6 +281,7 @@ print "<DIV style='left:90PX;top:820PX;width:200PX;height:30PX;'><span class='fc
 print "<DIV style='left:130PX;top:840PX;width:300PX;height:30PX;'><span class='fc1-1'>$ptright</span></DIV>";
 print "<DIV style='left:240PX;top:850PX;width:200PX;height:30PX;'><span class='fc1-3 '>ID:$idcard</span></DIV>";
 print "<DIV style='left:150PX;top:870PX;width:200PX;height:30PX;'><span class='fc1-1'>$idguard</span></DIV>";
+print "<DIV style='left:150PX;top:870PX;width:200PX;height:30PX;'><span class='fc1-1'>$note_vip</span></DIV>";
 
 print "<DIV style='left:110PX;top:880PX;width:600PX;height:30PX;'><span class='fc1-0'><img src = \"opdprintbchn.php?cHn=$idcard\"></span></DIV>";
 print "</BODY></HTML>";

@@ -22,6 +22,9 @@ legend {
 	/* font-weight:bold;*/
  }
 .style1 {color: #FF0000}
+.notify43{
+	border: 2px solid #f95506;
+}
 </style>
 <script language="JavaScript1.2">
 <!--
@@ -297,7 +300,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
         <td align="right"  class="fonthead">คำนำหน้า:</td>
         <td> 
         <div style="position: relative;">
-          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" >
+          <input name="yot" type="text" id="yot" value="<?=$cYot;?>" size="5" class="notify43">
 
             <div><a href="javascript:void(0);" class="fonthead" style="color:#a67a42;" onclick="check_yot()">รหัสนำหน้าชื่อ กระทรวงมหาดไทย</a></div>
 
@@ -340,10 +343,10 @@ echo "<tr bgcolor=\"$bgcolor\" >
         </td>
         <td align="right" class="fonthead">ชื่อ:</td>
         <td> 
-          <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" >        </td>
+          <input name="name" type="text" id="name" value="<?=$cName;?>" size="15" class="notify43">        </td>
         <td align="right" class="fonthead">สกุล:</td>
         <td> 
-          <input name="surname" type="text" id="surname" value="<?=$cSurname;?>" size="15">        </td>
+          <input name="surname" type="text" id="surname" value="<?=$cSurname;?>" size="15" class="notify43">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -375,7 +378,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
           </select>        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
-          <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13">        </td>
+          <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13" class="notify43">        </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -396,9 +399,9 @@ echo "<tr bgcolor=\"$bgcolor\" >
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
-<input type='text' name='d' size='2' value='<?=$cD;?>' maxlength='2'>
-<input type='text' name='m' size='2' value='<?=$cM;?>' maxlength='2'>
-<input type='text' name='y' size='4' value='<?=$cY;?>' maxlength='4'>
+<input type='text' name='d' size='2' value='<?=$cD;?>' maxlength='2' class="notify43">
+<input type='text' name='m' size='2' value='<?=$cM;?>' maxlength='2' class="notify43">
+<input type='text' name='y' size='4' value='<?=$cY;?>' maxlength='4' class="notify43">
           เชื้อชาติ: 
             <select size="1" name="race" id="race">
 <option <? if($cRace=='ไทย'){ echo "selected";}?>value="ไทย">ไทย</option>
@@ -478,7 +481,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
       </tr>
       <tr>
         <td align="right" class="fonthead">ระดับการศึกษา</td>
-        <td colspan="5"><select name="education" id="education">
+        <td colspan="5"><select name="education" id="education" class="notify43">
         <option value="">----- กรุณาเลือกข้อมูล -----</option>
         <?
         $sql="select * from education order by row_id asc";
@@ -604,7 +607,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 			5 => 'มาอาศัยในเขตรับผิดชอบแต่ไม่ได้อยู่ตามทะเบียนบ้านในเขตรับผิดชอบ เช่น คนเร่ร่อน ไม่มีที่พักอาศัย เป็นต้น'
 		);
 		?>
-		<select name="typearea" id="typearea">
+		<select name="typearea" id="typearea" class="notify43">
 			<option value="">-- เลือกข้อมูล สถานะบุคคล --</option>
 			<?php
 			foreach ($typearea_list as $key => $item) { 

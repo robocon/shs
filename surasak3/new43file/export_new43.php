@@ -267,6 +267,12 @@ if( $action === false ){
 		$day_parth = '/'.$rptday;
 	}
 
+	// สำหรับ opday
+	$thdate_opday = $rptmo.'-'.$thiyr;
+	if(!empty($rptday))
+	{
+		$thdate_opday = $rptday.'-'.$rptmo.'-'.$thiyr;
+	}
 
 
 	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo$day_parth";

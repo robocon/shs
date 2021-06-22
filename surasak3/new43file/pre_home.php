@@ -10,8 +10,7 @@ $db = Mysql::load();
  */
 $sql = "SELECT `row_id`,TRIM(`address`) AS `address`,`tambol`,`ampur`,`changwat`,thDateTimeToEn(`lastupdate`) AS `lastupdate` 
 FROM `opcard` 
-WHERE `idguard` NOT LIKE 'mx07%' 
-AND `tambol` LIKE '%พิชัย%' 
+WHERE `tambol` LIKE '%พิชัย%' 
 AND ( 
 	`address` regexp 'ม\.1\s?$' 
 ) 

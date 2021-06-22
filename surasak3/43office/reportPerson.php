@@ -3,7 +3,7 @@ session_start();
 
 if($_SESSION['smenucode'] !== 'ADM' && $_SESSION['smenucode'] !== 'ADM43FILE' && $_SESSION['smenucode'] !== 'ADMOPD')
 {
-    echo 'อนุญาตเฉพาะเจ้าหน้าที่ห้องทะเบียนเท่านั้น';
+    echo 'อนุญาตเฉพาะเจ้าหน้าที่ห้องทะเบียนเท่านั้น ถ้ายังไม่ได้ Login สามารถ<a href="../login_page.php">คลิกได้ที่นี่</a>';
     exit;
 }
 include_once '../includes/config.php';
@@ -40,11 +40,15 @@ if ($dbi->connect_error) {
             </select>
         </div>
         <div>
+            <input type="checkbox" name="show_error" id="show_error" value="show"><label for="show_error">แสดงเฉพาะ Error</label>
+        </div>
+        <div>
             <button type="submit">ค้นหา</button>
             <input type="hidden" name="view" value="search">
         </div>
     </form>
 </fieldset>
+<div>&nbsp;</div>
 <?php 
 $view = $_POST['view'];
 if ( $view === 'search' ) { 
@@ -130,76 +134,111 @@ if ( $view === 'search' ) {
         $abbreviations_items[] = $per['abbreviations'];
     }
 
+    $person_items = array();
+    $error_case = array();
+
     $sql = "SELECT a.*,b.*
     FROM ( 
-        SELECT `row_id` AS `opcard_id`, `hn` AS `opcard_hn`, `idcard` AS `opcard_idcard`, `name` AS `opcard_name`, `surname` FROM `opcard` WHERE `regisdate` LIKE '$year_selected%' 
+        SELECT `row_id` AS `opcard_id`, 
+        `hn` AS `opcard_hn`, 
+        `idcard` AS `opcard_idcard`, 
+        `name` AS `opcard_name`, `surname`, `dbirth` FROM `opcard` WHERE `regisdate` LIKE '$year_selected%' 
      ) AS a 
     LEFT JOIN `PERSON` AS b ON b.`PID` = a.`opcard_hn` 
     ORDER BY a.`opcard_id` ASC ";
     $q = $dbi->query($sql);
     while ($item = $q->fetch_assoc()) { 
 
-        $color_noti = '';
+        $error = false;
+        if(empty($item['id']))
+        {
+            $error = true;
+        }
+        if(empty($item['CID']) OR strlen($item['CID']) < 13)
+        {
+            $error = true;
+        }
         if(in_array($item['PRENAME'], $abbreviations_items) === false)
         {
-            $color_noti = 'style="background-color: #ecff4f;" title="คำนำหน้าชื่อไม่ตรงกับข้อมูลของกระทรวงมหาดไทย"';
+            $error = true;
+        }
+        if($item['BIRTH'] === '-----' OR $item['BIRTH'] === '------' OR $item['BIRTH'] === 'พ.ศ.-ดด-วว')
+        {
+            $error = true;
         }
 
+        $item['CID'] = (empty($item['CID'])) ? $item['opcard_idcard'] : $item['CID'] ;
+        $item['PID'] = empty($item['PID']) ? $item['opcard_hn'] : $item['PID'] ;
+        $item['NAME'] = (empty($item['NAME'])) ? $item['opcard_name'] : $item['NAME'] ;
+        $item['LNAME'] = (empty($item['LNAME'])) ? $item['surname'] : $item['LNAME'] ;
+
+        if($error === true)
+        {
+            $error_case[] = $item;
+        }
+
+        $person_items[] = $item;
+    }
+
+
+    if(count($error_case) > 0 && $_POST['show_error'] === 'show')
+    {
+        $person_items = $error_case;
+    }
+
+    foreach($person_items AS $key => $item) {
+    
+        $color_prename = '';
+        if(in_array($item['PRENAME'], $abbreviations_items) === false)
+        {
+            $color_prename = 'style="background-color: #ecff4f;"';
+        }
+
+        // cid เป็นค่าว่าง
+        $cid_color = ( empty($item['CID']) OR strlen($item['CID']) < 13 ) ? 'style="background-color: #ecff4f;"' : '';
+
+        // ถ้ามีใน opcard แต่ยังไม่มีใน person ให้แสดงเป็นพื้นหลังสีแดง
         $color_row = empty($item['id']) ? 'style="background-color: #ff8383;"' : '' ;
+
         ?>
         <tr <?=$color_row;?> >
-            <td><?=$item['HOSTPCODE'];?></td>
             <td>
-                <?php 
-                if(empty($item['CID']))
-                {
-                    echo $item['opcard_idcard'];
-                }
-                else
-                {
-                    echo $item['CID'];
-                }
-                ?>
+            <?php 
+            echo $item['HOSTPCODE'];
+            if(empty($item['HOSTPCODE']))
+            {
+                echo "ยังไม่มีข้อมูลในแฟ้ม PERSON";
+            }
+            ?>
+            </td>
+            <td <?=$cid_color;?> >
+                <?=$item['CID'];?>
             </td>
             <td>
-                <?php 
-                $show_pid = $item['PID'];
-                if(empty($item['PID']))
-                {
-                    $show_pid =  $item['opcard_hn'];
-                }
-                ?>
-                <a href="../opdedit.php?cHn=<?=$show_pid;?>" target="_blank" title="แก้ไขข้อมูล"><?=$show_pid;?></a>
+                <a href="../opdedit.php?cHn=<?=$item['PID'];?>" target="_blank" title="แก้ไขข้อมูล"><?=$item['PID'];?></a>
             </td>
             <td><?=$item['HID'];?></td>
-            <td <?=$color_noti;?> ><?=$item['PRENAME'];?></td>
+            <td <?=$color_prename;?> ><?=$item['PRENAME'];?></td>
             <td>
-                <?php 
-                if (empty($item['NAME'])) 
-                {
-                    echo $item['opcard_name'];
-                }
-                else
-                {
-                    echo $item['NAME'];
-                }
-                ?>
+                <?=$item['NAME'];?>
             </td>
             <td>
-                <?php 
-                if (empty($item['LNAME'])) 
-                {
-                    echo $item['surname'];
-                }
-                else
-                {
-                    echo $item['LNAME'];
-                }
-                ?>
+                <?=$item['LNAME'];?>
             </td>
             <td><?=$item['HN'];?></td>
             <td><?=$item['SEX'];?></td>
-            <td><?=$item['BIRTH'];?></td>
+            
+            <?php 
+            $birth = $item['BIRTH'];
+            $color_birth = '';
+            if($birth === '-----' OR $birth === '------' OR $birth === 'พ.ศ.-ดด-วว')
+            {
+                $color_birth = 'style="background-color: #ecff4f;"';
+            }
+            ?>
+            <td <?=$color_birth;?>>
+                <?=$birth;?>
+            </td>
             <td><?=$item['MSTATUS'];?></td>
             <td><?=$item['OCCUPATION_OLD'];?></td>
             <td><?=$item['OCCUPATION_NEW'];?></td>
