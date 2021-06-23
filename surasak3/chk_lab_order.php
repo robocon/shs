@@ -223,11 +223,14 @@ if( $action == false ){
                 $find_bs = false;
 
                 // ถ้ามี bs มันจะตัดออกจากรายการและเพิ่มเป็นรายการใหม่
-                $test_bs = preg_match('/\,bs\,?/', $lab_sso);
+                $test_bs = preg_match('/\,?(bs)\,?/', $lab_sso);
                 if( $test_bs > 0 ){
 
                     $find_bs = true;
-                    $lab_sso = str_replace(array('bs,',',bs,',',bs'),array(',',''), $lab_sso);
+                    
+                    $lab_sso = str_replace('bs,','',$lab_sso);
+                    $lab_sso = str_replace(',bs,', ',', $lab_sso);
+                    $lab_sso = str_replace(',bs','',$lab_sso);
 
                     ++$bs_number;
 

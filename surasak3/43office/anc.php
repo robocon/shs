@@ -326,7 +326,7 @@ if( $page === 'search' ){
 				</tr>
 				<tr>
 					<td class="txtRight">อายุครรภ์ (สัปดาห์) : </td>
-					<td><input type="text" name="ga" id="ga" value="<?=$ga;?>"/>(จำนวนเต็ม)</td>
+					<td><input type="text" name="ga" id="ga" value="<?=$ga;?>"/>(จำนวนเต็ม)<b>ไม่ต้องใส่เครื่องหมาย</b></td>
 				</tr>
 				<tr>
 					<td class="txtRight">ผลการตรวจครรภ์ : (ณ วันที่มารับบริการ)</td>

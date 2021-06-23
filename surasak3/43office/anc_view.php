@@ -67,50 +67,53 @@ if( $action == 'report' ){
     <div>&nbsp;</div>
     <table class="chk_table" width="110%">
         <tr>
-            <th class="warning">HOSPCODE</th>
-            <th class="warning">PID</th>
-            <th class="warning">SEQ</th>
-            <th class="warning">DATE_SERV</th>
-            <th class="warning">GRAVIDA</th>
+            <th>HOSPCODE</th>
+            <th>PID</th>
+            <th>SEQ</th>
+            <th>DATE_SERV</th>
+            <th>GRAVIDA</th>
             <th>ANCNO</th>
-            <th class="warning">GA</th>
-            <th class="warning">ANCRESULT</th>
-            <th class="warning">ANCPLACE</th>
-            <th class="warning">PROVIDER</th>
-            <th class="warning">D_UPDATE</th>
-            <th class="warning">CID</th>
+            <th>GA</th>
+            <th>ANCRESULT</th>
+            <th>ANCPLACE</th>
+            <th>PROVIDER</th>
+            <th>D_UPDATE</th>
+            <th>CID</th>
             <th rowspan="2">แก้ไข</th>
         </tr>
         <tr>
-            <th class="warning">รหัสสถานบริการ</th>
-            <th class="warning">ทะเบียนบุคคล</th>
-            <th class="warning">ลาดับที่</th>
-            <th class="warning">วันที่ให้บริการ</th>
-            <th class="warning">ครรภ์ที่</th>
+            <th>รหัสสถานบริการ</th>
+            <th>ทะเบียนบุคคล</th>
+            <th>ลาดับที่</th>
+            <th>วันที่ให้บริการ</th>
+            <th>ครรภ์ที่</th>
             <th>ANC ช่วงที่</th>
-            <th class="warning">อายุครรภ์</th>
-            <th class="warning">ผลการตรวจ</th>
-            <th class="warning">สถานที่รับบริการฝากครรภ์</th>
-            <th class="warning">เลขที่ผู้ให้บริการ</th>
-            <th class="warning">วันเดือนปีที่ปรับปรุง</th>
-            <th class="warning">เลขที่บัตรประชาชน</th>
+            <th>อายุครรภ์</th>
+            <th>ผลการตรวจ</th>
+            <th>สถานที่รับบริการฝากครรภ์</th>
+            <th>เลขที่ผู้ให้บริการ</th>
+            <th>วันเดือนปีที่ปรับปรุง</th>
+            <th>เลขที่บัตรประชาชน</th>
         </tr>
     <?php
     while ( $item = mysql_fetch_assoc($q) ) {
         ?>
         <tr>
-            <td class="warning">11512</td>
-            <td class="warning"><?=$item['pid'];?></td>
-            <td class="warning"><?=$item['seq'];?></td>
-            <td class="warning"><?=$item['date_serv'];?></td>
-            <td class="warning"><?=$item['gravida'];?></td>
+            <td>11512</td>
+            <td><?=$item['pid'];?></td>
+            <td><?=$item['seq'];?></td>
+            <td><?=$item['date_serv'];?></td>
+            <td><?=$item['gravida'];?></td>
             <td><?=$item['ancno'];?></td>
-            <td class="warning"><?=$item['ga'];?></td>
-            <td class="warning"><?=$item['ancres'];?></td>
-            <td class="warning"><?=$item['aplace'];?></td>
-            <td class="warning"><?=$item['provider'];?></td>
-            <td class="warning"><?=$item['d_update'];?></td>
-            <td class="warning"><?=$item['cid'];?></td>
+            <?php 
+            $color_ga = is_numeric($item['ga'])===false ? 'class="warning"' : '' ;
+            ?>
+            <td <?=$color_ga;?>><?=$item['ga'];?></td>
+            <td><?=$item['ancres'];?></td>
+            <td><?=$item['aplace'];?></td>
+            <td><?=$item['provider'];?></td>
+            <td><?=$item['d_update'];?></td>
+            <td><?=$item['cid'];?></td>
             <td><a href="anc.php?page=form&id=<?=$item['opday_id'];?>">แก้ไข</a> | ลบ</td>
         </tr>
         <?php

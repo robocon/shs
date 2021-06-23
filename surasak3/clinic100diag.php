@@ -217,7 +217,7 @@ If (!empty($hn)){
 <option value="MD105 ภควดี วุฒิพิทยามงคล" >MD105 ภควดี วุฒิพิทยามงคล</option> 
 <option value="MD106 มนัสจิตต์ บุณยทรรพ" >MD106 มนัสจิตต์ บุณยทรรพ</option> 
 <option value="MD107 รวี อัศวกิติพงษ์" >MD107 รวี อัศวกิติพงษ์</option> 
-<option value="MD117 แสงระวี บุรีคำ" >MD117 แสงระวี บุรีคำ</option> 
+<option value="MD117 ณัชญ์ระวี บุรีคำ" >MD117 ณัชญ์ระวี บุรีคำ</option> 
 <option value="MD122 นวมน สุนทรวราภาส" >MD122 นวมน สุนทรวราภาส</option> 
 <option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option>
 <!-- <option value="MD125 จรรยวรรธน์  สร้างสมวงษ์" >MD125 จรรยวรรธน์  สร้างสมวงษ์</option> -->
@@ -230,6 +230,8 @@ If (!empty($hn)){
 <option value="MD144 อนวัช บุปผาเจริญสุข" >MD144 อนวัช บุปผาเจริญสุข</option>
 <option value="MD150 รัตนเกียรติ พงษ์รัตนกุล" >MD150 รัตนเกียรติ พงษ์รัตนกุล</option>
 <option value="MD152 ยิ่งวิชช์ วิทยาวิศวสกุล" >MD152 ยิ่งวิชช์ วิทยาวิศวสกุล</option>
+<option value="MD164 ชนะรัตน์ โชคชัยสมุทร" >MD164 ชนะรัตน์ โชคชัยสมุทร</option>
+<option value="MD171 วีรวัฒน์ เลิศฤทธิ์เดชา" >MD171 วีรวัฒน์ เลิศฤทธิ์เดชา</option>
 </select>
 <?
 	print "<br><br>ราคา :";
@@ -238,7 +240,8 @@ If (!empty($hn)){
 <option value="" >- - กรุณาเลือกค่าบริการ- -</option>
 <option value="100">100 บาท</option>  
 <option value="150">150 บาท</option>
-<option value="200" selected="selected" >200 บาท</option>  
+<option value="200">200 บาท</option>
+<option value="300" selected="selected">300 บาท</option>  
 </select>
 <br /><br />
 <input name="save" type="submit" value="ชื่อถูกต้อง คิดค่าใช้จ่าย" />
