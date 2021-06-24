@@ -1533,6 +1533,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			echo "32,1eyhr*4";		
 		}else if($_GET["search"] == "6HIMINI"){  //ยาตาหมอเลอปรัชญ์
 			echo "100,1eyhr*4";		
+		}else if($_GET["search"] == "6VISL  " && $_SESSION['sIdname'] == 'md32166'){  //ยาตาหมอเลอปรัชญ์
+			echo "60,1eyhr*4";		
 		}else{
 			
 			// ถ้าไม่มีใน code ด้านบนให้ไปหาใน drugrx หลักๆคือดึงค่า amount กับ slcode
