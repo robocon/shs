@@ -37,8 +37,14 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$procedcode, $idcard) = mysql_
             $cliniccode = $item['code'];
             
         }
-
     }
+
+    // แทนที่แผนจีนด้วยแพทย์ทางเลือก
+    if($cliniccode=='88')
+    {
+        $cliniccode = '25';
+    }
+
     $clinic = '0'.$cliniccode.'00';
     
 
