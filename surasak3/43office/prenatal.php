@@ -32,6 +32,7 @@ if( $action === 'save' ){
 
     $opday_id = input_post('opday_id');
     $prenatal_id = input_post('prenatal_id');
+    $date_serv = input_post('date_serv');
 
     if( $prenatal_id != false ){ 
 
@@ -157,6 +158,11 @@ if ( $page === 'search' ) {
     $user = $db->get_item();
 
     $thdatehn = $user['thdatehn'];
+
+    $day = substr($user['thdatehn'], 0, 2);
+    $month = substr($user['thdatehn'], 3, 2);
+    $year_en = (substr($user['thdatehn'], 6, 4) - 543);
+    $date_serv = $year_en.$month.$day;
 
     if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
         $prefixMd = substr($user['doctor'],0,5);
@@ -344,6 +350,7 @@ if ( $page === 'search' ) {
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
                         <input type="hidden" name="opday_id" value="<?=$user['row_id'];?>">
                         <input type="hidden" name="prenatal_id" value="<?=$prenatal['id'];?>">
+                        <input type="hidden" name="date_serv" value="<?=$date_serv;?>">
                     </td>
                 </tr>
             </table>

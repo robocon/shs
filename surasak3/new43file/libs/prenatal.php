@@ -3,21 +3,21 @@
 // $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 // mysql_select_db('smdb', $db2) or die( mysql_error() );
 
-$sql = "SELECT '11512' AS `HOSPCODE`,
-`hn` AS `PID`, 
-'' AS `GRAVIDA`, 
-'' AS `LMP`, 
-'' AS `EDC`, 
-'' AS `VDRL_RESULT`, 
-'' AS `HB_RESULT`, 
-'' AS `HIV_RESULT`, 
-'' AS `DATE_HCT`, 
-'' AS `HCT_RESULT`, 
-'' AS `THALASSEMIA`, 
-thDateTimeToEn(`thidate`) AS `D_UPDATE`, 
-CONCAT(thDateToEn(`thidate`), LPAD(`vn`, 3, 0),'0000') AS `PROVIDER`, 
-`idcard` AS `CID` 
-FROM `opday` 
+$sql = "SELECT `HOSPCODE`,
+`PID`, 
+`GRAVIDA`, 
+`LMP`, 
+`EDC`, 
+`VDRL_RESULT`, 
+`HB_RESULT`, 
+`HIV_RESULT`, 
+`DATE_HCT`, 
+`HCT_RESULT`, 
+`THALASSEMIA`, 
+`D_UPDATE`, 
+`PROVIDER`, 
+`CID` 
+FROM `43prenatal` 
 WHERE `thidate` LIKE '$thimonth%' 
 AND `toborow` LIKE 'ex08%' ";
 
