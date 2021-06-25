@@ -6,7 +6,7 @@ $dServ = ( $year - 543 ).$month.$day;
 
 $sql = "SELECT * 
 FROM `43newborn` 
-WHERE `D_UPDATE` LIKE '$dServ%' ";
+WHERE `date_visit` LIKE '$yrmonth%' ";
 $q = mysql_query($sql, $db2);
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {

@@ -257,14 +257,12 @@ if( $action === false ){
 	$rptday = '';
 	$day_parth = '';
 
-	$testMatch = preg_match('/\d+\-\d+$/', $dateSelect);
-	if( $testMatch === 0 ){
+	$testMatch = preg_match('/\d{4}\-\d{2}\-\d{2}/', $dateSelect);
+	if( $testMatch === 0 ){ // ถ้าไม่เข้าเงื่อนไขตามรูปแบบ yyyy-mm-dd
 		list($thiyr, $rptmo) = explode('-', $dateSelect);
-	}else{
+	}else{ 
 		list($thiyr, $rptmo, $rptday) = explode('-', $dateSelect);
-
 		$rptday_for_day = "-$rptday";
-
 		$day_parth = '/'.$rptday;
 	}
 
