@@ -29,6 +29,7 @@ if( $action === 'save' ){
     $D_UPDATE = input_post('D_UPDATE');
     $PROVIDER = input_post('PROVIDER');
     $CID = input_post('CID');
+    $HEIGHT = input_post('HEIGHT');
 
     $opday_id = input_post('opday_id');
     $prenatal_id = input_post('prenatal_id');
@@ -51,7 +52,9 @@ if( $action === 'save' ){
         `D_UPDATE`='$D_UPDATE', 
         `PROVIDER`='$PROVIDER', 
         `CID`='$CID', 
-        `opday_id`='$opday_id' 
+        `HEIGHT`='$HEIGHT', 
+        `opday_id`='$opday_id', 
+        `date_serv` = '$date_serv' 
         WHERE (`id`='$prenatal_id');";
         $save = $db->update($sql);
 
@@ -60,11 +63,11 @@ if( $action === 'save' ){
         $sql = "INSERT INTO `43prenatal` ( 
             `id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
             `VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, 
-            `D_UPDATE`,`PROVIDER`,`CID`,`opday_id` 
+            `D_UPDATE`,`PROVIDER`,`CID`, `HEIGHT`,`opday_id`,`date_serv`
         ) VALUES ( 
             NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
             '$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
-            '$D_UPDATE','$PROVIDER','$CID', '$opday_id' 
+            '$D_UPDATE','$PROVIDER','$CID', '$HEIGHT', '$opday_id', `$date_serv`
         );";
         $save = $db->insert($sql);
 
@@ -164,29 +167,34 @@ if ( $page === 'search' ) {
     $year_en = (substr($user['thdatehn'], 6, 4) - 543);
     $date_serv = $year_en.$month.$day;
 
-    if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
-        $prefixMd = substr($user['doctor'],0,5);
-        $where = "`name` LIKE '$prefixMd%'";
+    $dr = '';
+    if(!empty($user['doctor']))
+    {
+        // MDxxxx
+        if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
+            $prefixMd = substr($user['doctor'],0,5);
+            $where = "`name` LIKE '$prefixMd%'";
 
-    }elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) {
-        $prefixMd = $matchs['0'];
-        $where = "`doctorcode` = '$prefixMd'";
+            $sql = "SELECT `doctorcode` FROM `doctor` WHERE $where ";
+            $db->select($sql);
+            $dr = $db->get_item();
+            $doctorcode = $dr['doctorcode'];
+
+        }elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) { // ท.xxxx
+            $doctorcode = $matchs['0'];
+        }
+        
+        $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
+        $db->select($sql);
+        $dr = $db->get_item();
     }
-    $sql = "SELECT `doctorcode` FROM `doctor` WHERE $where ";
-    $db->select($sql);
-    $dr = $db->get_item();
-    $doctorcode = $dr['doctorcode'];
-
-    $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
-    $db->select($sql);
-    $dr = $db->get_item();
-
 
 
 
     // วันที่ประจำเดือนครั้งสุดท้ายจาก OPD
-    $db->select("SELECT `mens`,`mens_date` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
+    $db->select("SELECT `mens`,`mens_date`,`height` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
     $mens = $db->get_item();
+    $height = $mens['height'];
     $mensId = $mens['mens'];
     $mensList = array(1 => 'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
 
@@ -342,10 +350,48 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
+					<td class="txtRight">ส่วนสูง : </td>
+					<td><input type="text" name="HEIGHT" id="HEIGHT" value="<?=$height;?>">(ซม.) ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง เช่น 155.9</td>
+				</tr>
+                <tr>
+                    <td class="txtRight">เลขที่ผู้ให้บริการ(แพทย์ผู้ตรวจ) : </td>
+                    <td>
+                        <?php 
+                        if( empty($dr) ){ 
+                            $db->select("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` ORDER BY `ROW_ID` ");
+                            $providerLists = $db->get_items();
+                            ?>
+                            <select name="PROVIDER" id="">
+                                <option value="">กรุณาเลือกผู้ให้บริการ</option>
+                                <?php 
+                                foreach ($providerLists as $key => $pv) {
+                                    
+                                    $dr_no = '';
+                                    if( $pv['REGISTERNO'] ){
+                                        $dr_no = ' ('.$pv['REGISTERNO'].')';
+                                    }
+
+									$selected_default = ($pv['PROVIDER'] == '11512382120101') ? 'selected="selected"' : '' ;
+                                
+									?>
+									<option value="<?=$pv['PROVIDER'];?>" <?=$selected_default;?> ><?=$pv['NAME'].' '.$pv['LNAME'].$dr_no;?></option>
+									<?php
+                                }
+                                ?>
+                            </select>
+                            <?php
+                        }else{
+                            ?>
+                            <input type="text" name="PROVIDER" value="<?=$dr['PROVIDER'];?>" readonly>
+                            <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="2" style="text-align: center;">
                         <button type="submit">บันทึกข้อมูล</button>
                         <input type="hidden" name="CID" value="<?=$user['idcard'];?>">
-                        <input type="hidden" name="PROVIDER" value="<?=$dr['PROVIDER'];?>">
                         <input type="hidden" name="action" value="save">
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">
                         <input type="hidden" name="opday_id" value="<?=$user['row_id'];?>">

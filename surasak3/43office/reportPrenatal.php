@@ -3,6 +3,9 @@ include '../bootstrap.php';
 
 include 'head.php';
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">รายงาน PRENATAL</h1> <span>ข้อมูลประวัติการตั้งครรภ์ ของหญิงตั้งครรภ์ในเขตรับผิดชอบ หรือหญิงตั้งครรภ์ผู้มารับบริการ</span>
+</div>
 <fieldset>
     <legend>ค้นหาตามวันที่ปรับปรุงข้อมูล</legend>
     <form action="reportPrenatal.php" method="post">
@@ -47,40 +50,66 @@ if ( $view === 'search' ) {
         <div>พบการค้นหา : <b><?=$search;?></b> ดังนี้</div>
         <table class="chk_table">
             <tr>
-                <th class="warning">HOSPCODE</th>
-                <th class="warning">PID</th>
-                <th class="warning">GRAVIDA</th>
-                <th class="warning">LMP</th>
-                <th class="warning">EDC</th>
-                <th class="warning">VDRL_RESULT</th>
-                <th class="warning">HB_RESULT</th>
-                <th class="warning">HIV_RESULT</th>
-                <th class="warning">DATE_HCT</th>
-                <th class="warning">HCT_RESULT</th>
-                <th class="warning">THALASSEMIA</th>
-                <th class="warning">D_UPDATE</th>
-                <th class="warning">PROVIDER</th>
-                <th class="warning">CID</th>
+                <th>HOSPCODE</th>
+                <th>PID</th>
+                <th>GRAVIDA</th>
+                <th>LMP</th>
+                <th>EDC</th>
+                <th>VDRL_RESULT</th>
+                <th>HB_RESULT</th>
+                <th>HIV_RESULT</th>
+                <th>DATE_HCT</th>
+                <th>HCT_RESULT</th>
+                <th>THALASSEMIA</th>
+                <th>D_UPDATE</th>
+                <th>PROVIDER</th>
+                <th>CID</th>
+                <th>HEIGHT</th>
                 <td>ปรับปรุง</td>
+            </tr>
+            <tr>
+                <th>รหัสหน่วยบริการ</th>
+                <th>ทะเบียนบุคคล</th>
+                <th>ครรภ์ที่</th>
+                <th>วันแรกของการมี<br>ประจําเดือนครั้งสุดท้าย</th>
+                <th>วันที่กําหนดคลอด</th>
+                <th>รหัสผลการตรวจ VDRL_RS</th>
+                <th>รหัสผลการตรวจ VDRL_RS</th>
+                <th>รหัสผลการตรวจ HIV_RS</th>
+                <th>วันที่ตรวจ HCT</th>
+                <th>ผลการตรวจ HCT</th>
+                <th>รหัสผลการตรวจ<br>THALASSAEMIA</th>
+                <th>วันเดือนที่ปรับปรุง</th>
+                <th>เลขที่ผู้ให้บริการ</th>
+                <th>เลขที่บัตรประชาชน</th>
+                <th>ส่วนสูง (ซม.)</th>
+                <td></td>
             </tr>
         <?php 
         foreach ($items as $key => $item) {
             ?>
             <tr>
-                <td class="warning"><?=$item['HOSPCODE'];?></td>
-                <td class="warning"><?=$item['PID'];?></td>
-                <td class="warning"><?=$item['GRAVIDA'];?></td>
-                <td class="warning"><?=$item['LMP'];?></td>
-                <td class="warning"><?=$item['EDC'];?></td>
-                <td class="warning"><?=$item['VDRL_RESULT'];?></td>
-                <td class="warning"><?=$item['HB_RESULT'];?></td>
-                <td class="warning"><?=$item['HIV_RESULT'];?></td>
-                <td class="warning"><?=$item['DATE_HCT'];?></td>
-                <td class="warning"><?=$item['HCT_RESULT'];?></td>
-                <td class="warning"><?=$item['THALASSEMIA'];?></td>
-                <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td class="warning"><?=$item['PROVIDER'];?></td>
-                <td class="warning"><?=$item['CID'];?></td>
+                <td><?=$item['HOSPCODE'];?></td>
+                <td><?=$item['PID'];?></td>
+                <td><?=$item['GRAVIDA'];?></td>
+                <td><?=$item['LMP'];?></td>
+                <td><?=$item['EDC'];?></td>
+                <td><?=$item['VDRL_RESULT'];?></td>
+                <td><?=$item['HB_RESULT'];?></td>
+                <td><?=$item['HIV_RESULT'];?></td>
+                <td><?=$item['DATE_HCT'];?></td>
+                <td><?=$item['HCT_RESULT'];?></td>
+                <td><?=$item['THALASSEMIA'];?></td>
+                <td><?=$item['D_UPDATE'];?></td>
+                <?php 
+                $color_provider = (empty($item['PROVIDER'])) ? 'class="warning"' : '' ;
+                ?>
+                <td <?=$color_provider;?>><?=$item['PROVIDER'];?></td>
+                <td><?=$item['CID'];?></td>
+                <?php 
+                $color_height = (empty($item['HEIGHT'])) ? 'class="warning"' : '' ;
+                ?>
+                <td <?=$color_height;?>><?=$item['HEIGHT'];?></td>
                 <td><a href="prenatal.php?page=form&id=<?=$item['opday_id'];?>">แก้ไข</a></td>
             </tr>
             <?php

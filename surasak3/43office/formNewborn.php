@@ -61,7 +61,9 @@ if($action === 'save'){
     $father_id = input_post('fatherId');
     $mother = input_post('mother');
     $lborn = input_post('lborn');
+
     $head = input_post('head');
+
     $breast = input_post('breast');
     $apgar5 = input_post('apgar5');
     $apgar10 = input_post('apgar10');
@@ -76,6 +78,9 @@ if($action === 'save'){
     $discharge = input_post('discharge');
     $weight_discharge = input_post('weightDischarge');
     $ipcard_id = input_post('ipcard_id');
+
+    $LENGTH = input_post('LENGTH');
+    $HEADCIRCUM = input_post('HEADCIRCUM');
 
     $msg = "บันทึกข้อมูลเรียบร้อย";
 
@@ -92,7 +97,7 @@ if($action === 'save'){
         '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
         '$d_update', '$date_visit', NOW(), '$hn', '$an', '$father', 
-        '$father_id', '$mother', '$motherId', '$lborn', '$head', '$breast', '$apgar5', 
+        '$father_id', '$mother', '$motherId', '$lborn', '$HEADCIRCUM', '$breast', '$apgar5', 
         '$apgar10', '$disorder', '$disorderDetail', '$health', '$healthDetail', '$pku', '$pku_result', 
         '$bcgDate', '$hbDate', '$discharge', '$weight_discharge', '$owner' 
     );";
@@ -107,14 +112,14 @@ if($action === 'save'){
         `BDATE`, `BTIME`, `BPLACE`, `BHOSP`, `BIRTHNO`, `BTYPE`, 
         `BDOCTOR`, `BWEIGHT`, `ASPHYXIA`, `VITK`, `TSH`, `TSHRESULT`, 
         `D_UPDATE`, `CID`, `date_visit`, `date_added`, `an`, 
-        `gyn_id`, `owner` 
+        `gyn_id`, `owner`, `LENGTH`, `HEADCIRCUM`
         ) 
     VALUES ( 
         NULL, '$hospcode', '$hn', '$mpid', '$garvida', '$ga', 
         '$bdate', '$btime', '$bplace', '$bhosp', '$birthno', '$btype', 
         '$bdoctor', '$bweight', '$asphyxia', '$vitk', '$tsh', '$tshresult', 
         '$d_update', '$idcard', '$date_visit', NOW(), '$an', 
-        '$gyn_id', '$owner' 
+        '$gyn_id', '$owner', '$LENGTH', '$HEADCIRCUM' 
     );";
     $save = $db->insert($sql);
     if( $save !== true ){
@@ -135,18 +140,18 @@ if($action === 'save'){
         $msg = errorMsg('save', $save['id']);
     }
 
-    if( strstr($head, '.') ){ 
-        list($dec, $tenths) = explode('.', $head);
-        $head = $dec.'.'.substr($tenths, 0, 1);
+    if( strstr($HEADCIRCUM, '.') ){ 
+        list($dec, $tenths) = explode('.', $HEADCIRCUM);
+        $HEADCIRCUM = $dec.'.'.substr($tenths, 0, 1);
     }else{
-        $head = number_format($head, 1);
+        $HEADCIRCUM = number_format($HEADCIRCUM, 1);
     }
 
     $policy_item = array(
         'HOSPCODE' => $hospcode, 
         'PID' => $hn, 
         'BDATE' => $bdate, 
-        'HC' => $head 
+        'HC' => $HEADCIRCUM 
     );
 
     $json = new Services_JSON();
@@ -358,9 +363,9 @@ if( $page === 'searchAn' ){
                     </tr>
                     <tr>
                         <td class="tdRow">
-                            <span class="sRow">น้ำหนักแรกเกิด : <input type="text" name="weight" id="" size="5" class="important">กรัม </span>
-                            <span class="sRow">ความยาว : <input type="text" name="height" id="" size="5" class="important">ซม. </span>
-                            <span class="sRow">เส้นรอบศรีษะ : <input type="text" name="head" id="" size="5" class="important">ซม. </span>
+                            <span class="sRow">น้ำหนักแรกเกิด : <input type="text" name="weight" id="" size="5" class="important">กรัม </span><br>
+                            <span class="sRow">ความยาว : <input type="text" name="LENGTH" id="LENGTH" size="5" class="important">ซม. ระบุเป็นตัวเลขไม่เกิน 2 หลัก และทศนิยม 1 ตําแหน่ง</span><br>
+                            <span class="sRow">เส้นรอบศรีษะ : <input type="text" name="HEADCIRCUM" id="HEADCIRCUM" size="5" class="important">ซม. ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง</span><br>
                             <span class="sRow">เส้นรอบอก : <input type="text" name="breast" id="" size="5">ซม. </span>
                         </td>
                     </tr>

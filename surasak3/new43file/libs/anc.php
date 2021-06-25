@@ -1,8 +1,5 @@
 <?php 
 
-list($year, $month, $day) = explode('-', $thimonth);
-$dServ = ( $year - 543 ).$month.$day;
-
 $sql = "SELECT '11512' AS `HOSPCODE`,
 `pid` AS `PID`, 
 `seq` AS `SEQ`, 
@@ -14,9 +11,10 @@ $sql = "SELECT '11512' AS `HOSPCODE`,
 `aplace` AS `ANCPLACE`, 
 `provider` AS `PROVIDER`, 
 `d_update` AS `D_UPDATE`, 
-`cid` AS `CID`
+`cid` AS `CID`, 
+`height` AS `HEIGHT`
 FROM `anc` 
-WHERE `date_serv` LIKE '$dServ%' ";
+WHERE `date_serv` LIKE '$date_serv%' ";
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
 $txt = '';
@@ -33,14 +31,15 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['ANCPLACE'].'|'
     .$item['PROVIDER'].'|'
     .$item['D_UPDATE'].'|'
-    .$item['CID']."\r\n";
+    .$item['CID'].'|'
+    .$item['HEIGHT']."\r\n";
 }
 
 $filePath = $dirPath.'/anc.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|GRAVIDA|ANCNO|GA|ANCRESULT|ANCPLACE|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|GRAVIDA|ANCNO|GA|ANCRESULT|ANCPLACE|PROVIDER|D_UPDATE|CID|HEIGHT\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_anc.txt';
 file_put_contents($qofPath, $txt);

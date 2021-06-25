@@ -3,6 +3,9 @@ include '../bootstrap.php';
 
 include 'head.php';
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">รายงาน LABOR</h1> <span>ข้อมูลประวัติการคลอด หรือการสิ้นสุดการตั้งครรภ์ ของหญิงคลอดในเขตรับผิดชอบ และ/หรือหญิงคลอดผู้มารับบริการ</span>
+</div>
 <fieldset>
     <legend>ค้นหาตามวันที่</legend>
     <form action="reportLabor.php" method="post">

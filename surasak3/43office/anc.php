@@ -16,6 +16,7 @@ if ( $action == 'save' ) {
 	$ga = $_POST['ga'];
 	$ancres = $_POST['ancres'];
 	$cid = $_POST['idcard'];
+	$HEIGHT_ANC = input_post('HEIGHT_ANC');
 	$doctor = $_POST['doctor'];
 
 	$opday_id = $_POST['opday_id'];
@@ -45,6 +46,7 @@ if ( $action == 'save' ) {
     $THALASSAEMIA = input_post('THALASSAEMIA');
     $D_UPDATE = $d_update = input_post('D_UPDATE');
     $CID = input_post('CID');
+	$HEIGHT_PRENATAL = input_post('HEIGHT_PRENATAL');
 
 	$opday_id = input_post('opday_id');
 	
@@ -67,6 +69,7 @@ if ( $action == 'save' ) {
 		`provider`='$PROVIDER', 
 		`d_update`='$d_update', 
 		`cid`='$cid', 
+		`height`='$HEIGHT_ANC',
 		`opday_id` = '$opday_id' 
 		WHERE (`row_id`='$anc_id');";
 		$save = $db->update($sql);
@@ -87,6 +90,7 @@ if ( $action == 'save' ) {
 			`D_UPDATE`='$D_UPDATE', 
 			`PROVIDER`='$PROVIDER', 
 			`CID`='$CID', 
+			`HEIGHT` = '$HEIGHT_PRENATAL',
 			`opday_id`='$opday_id' 
 			WHERE (`id`='$prenatal_id');";
 			$save = $db->update($sql);
@@ -96,9 +100,9 @@ if ( $action == 'save' ) {
 	}else{	
 		
 		$sql = "INSERT INTO `anc` (
-		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid` ,`opday_id` 
+		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid`, `height` ,`opday_id` 
 		) VALUES (
-		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$PROVIDER', '$d_update', '$cid', '$opday_id'
+		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$PROVIDER', '$d_update', '$cid', '$HEIGHT_ANC', '$opday_id'
 		);";
 		$save = $db->insert($sql); 
 
@@ -107,11 +111,11 @@ if ( $action == 'save' ) {
 			$sql = "INSERT INTO `43prenatal` ( 
 				`id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
 				`VDRL_RESULT`, `HB_RESULT`, `HIV_RESULT`, `DATE_HCT`, `HCT_RESULT`, `THALASSEMIA`, 
-				`D_UPDATE`,`PROVIDER`,`CID`,`opday_id` 
+				`D_UPDATE`,`PROVIDER`,`CID`,`HEIGHT`,`opday_id` 
 			) VALUES ( 
 				NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
 				'$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
-				'$D_UPDATE','$PROVIDER','$CID', '$opday_id' 
+				'$D_UPDATE','$PROVIDER','$CID','$HEIGHT_PRENATAL', '$opday_id' 
 			);";
 			$save = $db->insert($sql);
 		}
@@ -257,6 +261,14 @@ if( $page === 'search' ){
 		$ancres = $anc['ancres'];
 
 	}
+
+	// วันที่ประจำเดือนครั้งสุดท้ายจาก OPD
+	$db->select("SELECT `mens`,`mens_date`,`height` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
+	$mens = $db->get_item();
+	$height = $mens['height'];
+	$mensId = $mens['mens'];
+	$mensList = array(1 => 'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
+
 	?>
 	<style>
 	input[readonly]{background-color: #bbbbbb;}
@@ -349,6 +361,10 @@ if( $page === 'search' ){
 					</td>
 				</tr>
 				<tr>
+					<td class="txtRight">ส่วนสูง : </td>
+					<td><input type="text" name="HEIGHT_ANC" id="HEIGHT_ANC" onkeyup="copy_height(this.value)" value="<?=$height;?>">(ซม.) ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง เช่น 155.9</td>
+				</tr>
+				<tr>
                     <td class="txtRight">เลขที่ผู้ให้บริการ(แพทย์ผู้ตรวจ) : </td>
                     <td>
                         <?php 
@@ -387,14 +403,6 @@ if( $page === 'search' ){
 		</fieldset>
 		
 		<?php 
-		
-
-		// วันที่ประจำเดือนครั้งสุดท้ายจาก OPD
-		$db->select("SELECT `mens`,`mens_date` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
-		$mens = $db->get_item();
-		$mensId = $mens['mens'];
-		$mensList = array(1 => 'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
-
 		if( $mensList[$mensId] ){
 			$lmpNoti = $mensList[$mensId];
 		}
@@ -526,6 +534,10 @@ if( $page === 'search' ){
 					</td>
 				</tr>
 				<tr>
+					<td class="txtRight">ส่วนสูง : </td>
+					<td><input type="text" name="HEIGHT_PRENATAL" id="HEIGHT_PRENATAL" value="<?=$height;?>">(ซม.) ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง เช่น 155.9</td>
+				</tr>
+				<tr>
 					<td colspan="2" style="text-align: center;">
 						
 						<input name="conbtn" type="submit" value=" บันทึกข้อมูล " />
@@ -545,6 +557,9 @@ if( $page === 'search' ){
 		</fieldset>
 		
 		<script type="text/javascript">
+			function copy_height(height){
+				document.getElementById('HEIGHT_PRENATAL').value = height;
+			}
 			var popup1, popup2, popup3;
 			window.onload = function() {
 				popup1 = new Epoch('popup1','popup',document.getElementById('LMP'),false);

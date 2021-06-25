@@ -16,10 +16,10 @@ $sql = "SELECT `HOSPCODE`,
 `THALASSEMIA`, 
 `D_UPDATE`, 
 `PROVIDER`, 
-`CID` 
+`CID`, 
+`HEIGHT`
 FROM `43prenatal` 
-WHERE `thidate` LIKE '$thimonth%' 
-AND `toborow` LIKE 'ex08%' ";
+WHERE `date_serv` LIKE '$date_serv%' ";
 
 $q = mysql_query($sql, $db2) or die( mysql_error() );
 
@@ -40,7 +40,8 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['THALASSEMIA'].'|'
     .$item['D_UPDATE'].'|'
     .$item['PROVIDER'].'|'
-    .$item['CID']."\r\n";
+    .$item['CID'].'|'
+    .$item['HEIGHT']."\r\n";
 
 }
 
@@ -48,7 +49,7 @@ $filePath = $dirPath.'/prenatal.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|GRAVIDA|LMP|EDC|VDRL_RESULT|HB_RESULT|HIV_RESULT|DATE_HCT|HCT_RESULT|THALASSEMIA|D_UPDATE|PROVIDER|CID\r\n";
+$header = "HOSPCODE|PID|GRAVIDA|LMP|EDC|VDRL_RESULT|HB_RESULT|HIV_RESULT|DATE_HCT|HCT_RESULT|THALASSEMIA|D_UPDATE|PROVIDER|CID|HEIGHT\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_prenatal.txt';
 file_put_contents($qofPath, $txt);

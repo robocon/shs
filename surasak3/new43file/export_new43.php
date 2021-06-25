@@ -79,6 +79,7 @@ if( $action === false ){
 			<p>7.) 25-02-2562 เพิ่มแฟ้ม policy</p>
 			<p>8.) 26-02-2563 เพิ่มแฟ้ม newborn, newborncare และปรับปรุงโครงสร้างแฟ้ม policy, anc</p>
 			<p>9.) 10-03-2563 เพิ่ม nutrition และอัพเดท EPI ตามโครงสร้างใหม่</p>
+			<p>10.) 25-06-2564 อัพเดทแฟ้ม เป็น v2.4 anc, prenatal, newborn</p>
 		</div>
 	</div>
 
@@ -274,6 +275,8 @@ if( $action === false ){
 		$thdate_opday = $rptday.'-'.$rptmo.'-'.$thiyr;
 	}
 
+	// format yyyymmdd เช่น 20210131
+	$date_serv = ($thiyr-543).$rptmo.$rptday;
 
 	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo$day_parth";
 	

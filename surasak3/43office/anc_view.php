@@ -7,25 +7,9 @@ include 'head.php';
 $db = Mysql::load();
 
 ?>
-<style>
-	*{
-		font-family: 'TH Sarabun New','TH SarabunPSK';
-		font-size: 18px;
-	}
-    .chk_table{
-        border-collapse: collapse;
-    }
-
-    .chk_table, th, td{
-        border: 1px solid black;
-        font-size: 16pt;
-    }
-
-    .chk_table th,
-    .chk_table td{
-        padding: 3px;
-    }
-</style>
+<div class="clearfix">
+    <h1 style="margin:0;">รายงาน ANC</h1> <span>ข้อมูลการให้บริการฝากครรภ์กับหญิงตั้งครรภ์ที่มารับบริการ และประวัติการฝากครรภ์ของหญิงตั้งครรภ์ในเขตรับผิดชอบ</span>
+</div>
 <fieldset>
     <legend>
         เรียกดูตาม วัน-เดือน-ปี ที่ให้บริการ
@@ -79,6 +63,7 @@ if( $action == 'report' ){
             <th>PROVIDER</th>
             <th>D_UPDATE</th>
             <th>CID</th>
+            <th>HEIGHT</th>
             <th rowspan="2">แก้ไข</th>
         </tr>
         <tr>
@@ -94,6 +79,7 @@ if( $action == 'report' ){
             <th>เลขที่ผู้ให้บริการ</th>
             <th>วันเดือนปีที่ปรับปรุง</th>
             <th>เลขที่บัตรประชาชน</th>
+            <th>ส่วนสูง (ซม.)</th>
         </tr>
     <?php
     while ( $item = mysql_fetch_assoc($q) ) {
@@ -114,6 +100,10 @@ if( $action == 'report' ){
             <td><?=$item['provider'];?></td>
             <td><?=$item['d_update'];?></td>
             <td><?=$item['cid'];?></td>
+            <?php 
+            $color_height = (empty($item['height'])) ? 'class="warning"' : '' ;
+            ?>
+            <td <?=$color_height;?>><?=$item['height'];?></td>
             <td><a href="anc.php?page=form&id=<?=$item['opday_id'];?>">แก้ไข</a> | ลบ</td>
         </tr>
         <?php
