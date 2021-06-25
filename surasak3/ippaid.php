@@ -37,6 +37,10 @@ global $cHn, $cAn, $electric;
     $aDetail[4]  = "ค่ารถพยาบาล";
     $aMCprice[4]  = $ambulance;
 
+    $aCode[4] = "food";
+    $aDetail[4]  = "ค่าอาหารญาติผู้ป่วย";
+    $aMCprice[4]  = $food;
+
     $aCode[5] = "death";
     $aDetail[5]  = "ค่าบริการศพ";
     $aMCprice[5]  = $death;
@@ -54,6 +58,7 @@ global $cHn, $cAn, $electric;
 	AND empty($_POST['phone']) 
 	AND empty($_POST['loss']) 
 	AND empty($_POST['ambulance']) 
+  AND empty($_POST['food']) 
 	AND empty($_POST['death']) 
 	AND empty($_POST['preserve']) 
 	AND empty($_POST['robe'])){

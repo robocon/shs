@@ -22,6 +22,9 @@
   &nbsp;&nbsp;&nbsp;&nbsp; &#3588;&#3656;&#3634;&#3619;&#3606;&#3614;&#3618;&#3634;&#3610;&#3634;&#3621;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <!--webbot bot="Validation" S-Data-Type="Number" S-Number-Separators="x." -->
   <input type="text" name="ambulance" size="10">&nbsp; &#3610;&#3634;&#3607;<br>
+
+  ค่าอาหาร <input type="text" name="food" size="10">บาท<br>
+
   &nbsp;&nbsp;&nbsp;
   <b>&#3585;&#3619;&#3603;&#3637;&#3648;&#3626;&#3637;&#3618;&#3594;&#3637;&#3623;&#3636;&#3605;:</b> &nbsp; <br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
