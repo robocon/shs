@@ -235,13 +235,16 @@ If (!empty($hn)){
 </select>
 <?
 	print "<br><br>ราคา :";
+
+
+	
 	?>
 <select name="cPrice" id="cPrice"> 
 <option value="" >- - กรุณาเลือกค่าบริการ- -</option>
 <option value="100">100 บาท</option>  
 <option value="150">150 บาท</option>
-<option value="200">200 บาท</option>
-<option value="300" selected="selected">300 บาท</option>  
+<option value="200" selected="selected">200 บาท</option>
+<option value="300">300 บาท</option>  
 </select>
 <br /><br />
 <input name="save" type="submit" value="ชื่อถูกต้อง คิดค่าใช้จ่าย" />
