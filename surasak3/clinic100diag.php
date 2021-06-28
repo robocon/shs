@@ -249,6 +249,26 @@ If (!empty($hn)){
 <br /><br />
 <input name="save" type="submit" value="ชื่อถูกต้อง คิดค่าใช้จ่าย" />
 </form>
+<script type="text/javascript">
+function addEventListener(el, eventName, handler) {
+  if (el.addEventListener) {
+    el.addEventListener(eventName, handler);
+  } else {
+    el.attachEvent('on' + eventName, function(){
+      handler.call(el);
+    });
+  }
+}
+
+addEventListener(document.getElementById("cDoctor"), "change", doChangeDoctor);
+
+function doChangeDoctor(){
+	if(this.value==='MD117 ณัชญ์ระวี บุรีคำ')
+	{
+		document.getElementById("cPrice").value='300';
+	}
+}
+</script>
 	<?
       //  print "VN  :$vn<br>";
       //  print "HN :$cHn<br>";
