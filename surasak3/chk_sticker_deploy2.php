@@ -36,7 +36,7 @@ foreach ($items as $key => $item) {
     $branch = $item['branch'];
     
     // ปริ้นเผื่อมาสัก 3 ใบ พี่สมยศบอก
-    for ($i=0; $i < 1; $i++) { 
+    for ($i=0; $i < 4; $i++) { 
 
         $last_code = '';
 

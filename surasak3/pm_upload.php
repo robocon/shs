@@ -31,6 +31,8 @@ if ( $action === 'import' ) {
 
             list($pid, $exam_no, $hn, $idcard, $fname, $lname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
 
+            dump($fname);
+            dump($lname);
 
             if( !empty($pid) ){ 
 
@@ -127,7 +129,7 @@ if ( $action === 'import' ) {
                 '$date_chkup',
                 'y');";
 
-                $insert = $db->insert($sql);
+                // $insert = $db->insert($sql);
 
             }
             
@@ -136,7 +138,7 @@ if ( $action === 'import' ) {
         $msg = 'นำเข้าข้อมูลเรียบร้อย';
     }
 
-    redirect('pm_shs.php', $msg);
+    // redirect('pm_shs.php', $msg);
     exit;
 }
 
