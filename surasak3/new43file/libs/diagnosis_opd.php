@@ -3,29 +3,23 @@
 // $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
 // mysql_select_db('smdb', $db2) or die( mysql_error() );
 
-$where_thdate = " thdatehn LIKE '$thdate_opday%' ";
-if (strlen($thdate_opday)==7) {
-    $where_thdate = " thdatehn LIKE '%$thdate_opday%' ";
-}
-
 //
 //-------------------- Create file diagnosis_opd ไฟล์ที่ 15 --------------------//
 //
 $sql10 = "SELECT `thidate`, `hn`, `vn`, `doctor`, `clinic`, SUBSTRING(`thidate`, 1, 10) AS `date2`, TRIM(`idcard`) AS `idcard`
 FROM `opday` 
-WHERE $where_thdate 
+WHERE thidate LIKE '$thimonth%' 
 AND ( `hn` != '' AND `vn` != '' ) 
 GROUP BY CONCAT(SUBSTRING(`thidate`, 1, 10),`hn`)  
 ORDER BY `thidate`";
-$result10 = mysql_query($sql10, $db2) or die("Query failed, Select diagnosis_opd");
+$result10 = mysql_query($sql10, $db2) or die(mysql_error()."Query failed, Select diagnosis_opd");
 $num = mysql_num_rows($result10);
 
 $ii = 0;
 $txt = '';
 
-while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_row ($result10)) {
+while (list ($thidate,$hn,$vn,$doctor,$clinic_name,$date2,$idcard) = mysql_fetch_row ($result10)) {
     
-
     $chkdate = substr($thidate,0,10);	
     $sqlopd = "SELECT  regisdate,icd10,type 
     From diag 
@@ -51,29 +45,29 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_
                 if($type == "EXTERNAL CAUSE"){ $diagtype = "5";}	
             }
             
-            // $newclinic = substr($cliniccode,0,2);
+            // $newclinic = substr($clinic_name,0,2);
             // if($newclinic=="" || $newclinic=="ศั"){ $newclinic="99";}else{ $newclinic=$newclinic;}
             // if(!empty($vn)){ $firstcode="0";}
             // $treecode="00";
             // $clinic = $firstcode.$newclinic.$treecode;	
 
-
             // ถ้ามีตัวเลขนำหน้าแสดงว่าเป็นรหัสคลินิกแบบเก่า
-            $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
+            $test_match = preg_match('^\d{2}.+', $clinic_name, $matchs);
             if($test_match > 0){
-                list($old_clinic_code, $name) = explode(' ', $cliniccode);
+                list($old_clinic_code, $name) = explode(' ', $clinic_name);
                 $cliniccode = $name;
 
-            }elseif (empty($cliniccode)) {
-                $cliniccode = 99;
-
             }else{
-                $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'") or die( mysql_error() );
+                $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$clinic_name%'") or die( mysql_error() );
                 if( mysql_num_rows($q) > 0 ){
                     $item = mysql_fetch_assoc($q);
                     $cliniccode = $item['code'];
-                    
                 }
+            }
+
+            // ถ้าไม่มีเลยให้ default เป็น 99
+            if (empty($cliniccode)) {
+                $cliniccode = '99';
             }
 
             // แทนที่แผนจีนด้วยแพทย์ทางเลือก
@@ -129,35 +123,11 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_
             if($type == "EXTERNAL CAUSE"){ $diagtype = "5";}	
         }
         
-        // $newclinic = substr($cliniccode,0,2);
-        // if($newclinic=="" || $newclinic=="ศั"){ $newclinic="99";}else{ $newclinic=$newclinic;}
-
-        // $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
-        // if($test_match > 0){
-        //     list($old_clinic_code, $name) = explode(' ', $cliniccode);
-
-        //     $cliniccode = $name;
-        // }
-        
-        // $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'", $db2) or die( mysql_error() );
-        // $newclinic = '99';
-        // if( mysql_num_rows($q) > 0 ){
-        //     $item = mysql_fetch_assoc($q);
-        //     $newclinic = $item['code'];
-        // }
-
-        // if(!empty($vn)){ $firstcode="0";}
-        // $treecode = "00";
-        // $clinic = $firstcode.$newclinic.$treecode;
-
         // ถ้ามีตัวเลขนำหน้าแสดงว่าเป็นรหัสคลินิกแบบเก่า
         $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
         if($test_match > 0){
             list($old_clinic_code, $name) = explode(' ', $cliniccode);
             $cliniccode = $name;
-
-        }elseif (empty($cliniccode)) {
-            $cliniccode = 99;
 
         }else{
             $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'") or die( mysql_error() );
@@ -168,6 +138,11 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_
             }
         }
 
+        // ถ้าไม่มีเลยให้ default เป็น 99
+        if (empty($cliniccode)) {
+            $cliniccode = 99;
+        }
+
         // แทนที่แผนจีนด้วยแพทย์ทางเลือก
         if($cliniccode=='88')
         {
@@ -175,7 +150,6 @@ while (list ($thidate,$hn,$vn,$doctor,$cliniccode,$date2,$idcard) = mysql_fetch_
         }
 
         $clinic = '0'.$cliniccode.'00';
-        
 
         $regis1 = substr($thidate,0,10);
         $regis2 = substr($thidate,11,19);

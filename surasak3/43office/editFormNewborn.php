@@ -1,12 +1,26 @@
 <?php 
 include '../bootstrap.php';
-include 'head.php';
 
 $db = Mysql::load();
+
+$page = input('page');
+if ($page === 'search') {
+    # code...
+
+    $idcard = input('idcard');
+    $sql = "SELECT `hn`,`yot`,`name`,`surname` FROM `opcard` WHERE `idcard` = '$idcard' ";
+    dump($sql);
+    $db->select($sql);
+    $item = $db->get_item();
+    dump($item);
+    exit;
+}
 
 $action = input_post('action');
 if ($action === 'save') {
     
+    $owner = $_SESSION['sIdname'];
+
     $HOSPCODE = input_post('HOSPCODE');
     $PID = input_post('PID');
     $CID = input_post('CID');
@@ -56,16 +70,18 @@ if ($action === 'save') {
     `D_UPDATE`='$D_UPDATE', 
     `CID`='$CID', 
     `latest_edit`=NOW(), 
-    `owner`='krit' WHERE ( `id`='$id' );";
+    `owner`='$owner' WHERE ( `id`='$id' );";
     $save = $db->update($sql);
     $msg = "บันทึกข้อมูลเรียบร้อย";
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
     }
-
+    
     redirect('editFormNewborn.php?id='.$id, $msg);
     exit;
 }
+
+include 'head.php';
 
 $id = input('id');
 $sql = "SELECT a.*,b.`discharge`
@@ -94,11 +110,11 @@ $pt = $db->get_item();
             </tr>
             <tr>
                 <td class="txtRight">ทะเบียนบุคคลเด็ก : </td>
-                <td><input type="text" name="PID" value="<?=$item['PID'];?>"></td>
+                <td><input type="text" name="PID" value="<?=$item['PID'];?>"><button>ค้นหา เลขบัตรเด็ก</button></td>
             </tr>
             <tr>
                 <td class="txtRight">เลขที่บัตรประชาชนเด็ก : </td>
-                <td><input type="text" name="CID" value="<?=$item['CID'];?>"></td>
+                <td><input type="text" id="CID" name="CID" value="<?=$item['CID'];?>"><button onclick="return searchChildIdcard(event)">ค้นหา PIDเด็ก</button></td>
             </tr>
             <tr>
                 <td class="txtRight">ทะเบียนบุคคลแม่ : </td>
@@ -206,8 +222,11 @@ $pt = $db->get_item();
                         0 => 0,1,2,3,4,5,6,7,8,9,10,
                         99 => 'ไม่ทราบ'
                     );
-                    foreach ($apgarList as $key => $value) {
-                        ?><option value="<?=$key;?>"><?=$value;?></option><?php
+                    foreach ($apgarList as $key => $value) { 
+
+                        $selected = ($value == $item['ASPHYXIA']) ? 'selected="selected"' : '' ;
+
+                        ?><option value="<?=$key;?>" <?=$selected;?> ><?=$value;?></option><?php
                     }
                     ?>
                     </select>
@@ -261,3 +280,36 @@ $pt = $db->get_item();
         </table>
     </fieldset>
 </form>
+<script type="text/javascript">
+
+
+
+
+
+function searchChildIdcard(ev)
+{   
+    var idcard = document.getElementById("CID").value;
+    console.log(idcard);
+
+    ev.preventDefault();
+    
+    var request = new XMLHttpRequest();
+    request.open('GET', 'editFormNewborn.php?page=search&idcard='+idcard, true);
+
+    request.onreadystatechange = function() {
+    if (this.readyState === 4) {
+        if (this.status >= 200 && this.status < 400) {
+            // Success!
+            var resp = this.responseText;
+            console.log(resp);
+        } else {
+            
+        }
+    }
+    };
+
+    request.send();
+    request = null;
+    // return false;
+}
+</script>

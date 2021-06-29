@@ -10,6 +10,7 @@
 // AND b.thidate like '$thimonth%'  
 // GROUP BY a.hn";
 
+/*
 $temp1 = "CREATE  TEMPORARY  TABLE report_person1 
 SELECT d.regisdate, d.hn, d.dbirth, d.sex, d.married, d.career, d.nation, d.idcard, c.`date2` AS `thidate`, d.yot, d.name, d.surname, d.education, d.religion, d.blood, d.idguard, d.ptright,  
 CASE 
@@ -33,9 +34,11 @@ LEFT JOIN `opcard` AS d ON d.`hn` = c.`hn`
 WHERE d.`hn` IS NOT NULL 
 AND ( d.`idguard` NOT LIKE 'MX05%' AND d.`idguard` NOT LIKE 'MX07%' ) ";
 $querytmp1 = mysql_query($temp1, $db2) or die("Query failed person ,Create temp1: ".mysql_error());
-
 $sql1="SELECT * FROM report_person1 ";
-$result1 = mysql_query($sql1, $db2) or die("Query failed, Select report_person1 (person)");
+*/
+
+$sql1 = "SELECT * FROM `PERSON` ORDER BY `id` ASC";
+$result1 = mysql_query($sql1, $db2) or die( mysql_error()." Query failed, Select report_person1 (person)");
 $txt = '';
 while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yot,$name,$lname,$education,$religion,$blood,$idguard,$ptright,$phone,$typearea,$d_update) = mysql_fetch_row ($result1)) {		
 
