@@ -82,6 +82,7 @@ if( $action === false ){
 			<p>8.) 26-02-2563 เพิ่มแฟ้ม newborn, newborncare และปรับปรุงโครงสร้างแฟ้ม policy, anc</p>
 			<p>9.) 10-03-2563 เพิ่ม nutrition และอัพเดท EPI ตามโครงสร้างใหม่</p>
 			<p>10.) 25-06-2564 อัพเดทแฟ้ม เป็น v2.4 anc, prenatal, newborn</p>
+			<p>11.) 30-06-2564 แก้ error clinic code แฟ้ม diagnosis_opd, procedure_opd</p>
 		</div>
 	</div>
 
