@@ -5,14 +5,38 @@ $db = Mysql::load();
 
 $page = input('page');
 if ($page === 'search') {
-    # code...
 
     $idcard = input('idcard');
     $sql = "SELECT `hn`,`yot`,`name`,`surname` FROM `opcard` WHERE `idcard` = '$idcard' ";
-    dump($sql);
     $db->select($sql);
-    $item = $db->get_item();
-    dump($item);
+
+    if($db->get_rows() > 0)
+    {
+        $item = $db->get_item();
+        echo $item['hn'];
+    }
+    else
+    {
+        echo "N";
+    }
+    
+    exit;
+}
+elseif ($page === 'searchhn') {
+    $hn = input('hn');
+    $sql = "SELECT `idcard`,`yot`,`name`,`surname` FROM `opcard` WHERE `hn` = '$hn' ";
+    $db->select($sql);
+
+    if($db->get_rows() > 0)
+    {
+        $item = $db->get_item();
+        echo $item['idcard'];
+    }
+    else
+    {
+        echo "N";
+    }
+    
     exit;
 }
 
@@ -38,7 +62,9 @@ if ($action === 'save') {
     $TSH = input_post('TSH');
     $TSHRESULT = input_post('TSHRESULT');
     $ASPHYXIA = input_post('ASPHYXIA');
-
+    $LENGTH = input_post('LENGTH');
+    $HEADCIRCUM = input_post('HEADCIRCUM');
+    
     $id = input_post('id');
 
     $bdate = bc_to_ad($BDATE);
@@ -70,7 +96,10 @@ if ($action === 'save') {
     `D_UPDATE`='$D_UPDATE', 
     `CID`='$CID', 
     `latest_edit`=NOW(), 
-    `owner`='$owner' WHERE ( `id`='$id' );";
+    `owner`='$owner', 
+    `LENGTH`='$LENGTH', 
+    `HEADCIRCUM`='$HEADCIRCUM' 
+    WHERE ( `id`='$id' );";
     $save = $db->update($sql);
     $msg = "บันทึกข้อมูลเรียบร้อย";
     if( $save !== true ){
@@ -110,7 +139,7 @@ $pt = $db->get_item();
             </tr>
             <tr>
                 <td class="txtRight">ทะเบียนบุคคลเด็ก : </td>
-                <td><input type="text" name="PID" value="<?=$item['PID'];?>"><button>ค้นหา เลขบัตรเด็ก</button></td>
+                <td><input type="text" id="PID" name="PID" value="<?=$item['PID'];?>"><button onclick="return searchChildHn(event)">ค้นหา เลขบัตรเด็ก</button></td>
             </tr>
             <tr>
                 <td class="txtRight">เลขที่บัตรประชาชนเด็ก : </td>
@@ -271,6 +300,14 @@ $pt = $db->get_item();
                 <td><input type="text" name="TSHRESULT" value="<?=$item['TSHRESULT'];?>">mU/L</td>
             </tr>
             <tr>
+                <td class="txtRight">ความยาว : </td>
+                <td><input type="text" name="LENGTH" value="<?=$item['LENGTH'];?>">ซม. ระบุเป็นตัวเลขไม่เกิน 2 หลัก และทศนิยม 1 ตําแหน่ง </td>
+            </tr>
+            <tr>
+                <td class="txtRight">เส้นรอบศีรษะ : </td>
+                <td><input type="text" name="HEADCIRCUM" value="<?=$item['HEADCIRCUM'];?>">ซม. ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง</td>
+            </tr>
+            <tr>
                 <td colspan="2" align="center">
                     <button type="submit">บันทึก</button>
                     <input type="hidden" name="action" value="save">
@@ -282,14 +319,41 @@ $pt = $db->get_item();
 </form>
 <script type="text/javascript">
 
+function searchChildHn(ev)
+{
+    var hn = document.getElementById("PID").value;
 
+    ev.preventDefault();
+    
+    var request = new XMLHttpRequest();
+    request.open('GET', 'editFormNewborn.php?page=searchhn&hn='+hn, true);
 
+    request.onreadystatechange = function() {
+    if (this.readyState === 4) {
+        if (this.status >= 200 && this.status < 400) {
+            // Success!
+            var resp = this.responseText;
+            if(resp === 'N')
+            {
+                alert("ไม่พบ เลขบัตรประชาชนจาก HN");
+            }
+            else
+            {
+                document.getElementById("CID").value = resp;
+            }
+        } else {
+            
+        }
+    }
+    };
 
+    request.send();
+    request = null;
+}
 
 function searchChildIdcard(ev)
 {   
     var idcard = document.getElementById("CID").value;
-    console.log(idcard);
 
     ev.preventDefault();
     
@@ -301,7 +365,14 @@ function searchChildIdcard(ev)
         if (this.status >= 200 && this.status < 400) {
             // Success!
             var resp = this.responseText;
-            console.log(resp);
+            if(resp === 'N')
+            {
+                alert("ไม่พบ HN จากเลขบัตรประชาชน");
+            }
+            else
+            {
+                document.getElementById("PID").value = resp;
+            }
         } else {
             
         }
@@ -310,6 +381,5 @@ function searchChildIdcard(ev)
 
     request.send();
     request = null;
-    // return false;
 }
 </script>

@@ -266,7 +266,7 @@ if( $page === 'searchAn' ){
                             <input type="radio" name="prefix" id="prefix2" value="ด.ญ." <?=($sex==2?'checked="checked"':'');?>> <label for="prefix2">ด.ญ.</label></span>
 
                             <span class="sRow">ชื่อ-สกุล : <input type="text" name="name" id="name"></span>
-                            <span class="sRow">ID : <input type="text" name="idcard" id="idcard" size="12"></span>
+                            <span class="sRow">ID : <input type="text" name="idcard" id="idcard" size="12" class="important"></span>
 
                             HN : <input type="text" name="findHN" id="findHN" size="6"> <button type="button" id="checkMId">ตรวจสอบจากHN</button>
 

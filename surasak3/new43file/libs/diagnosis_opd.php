@@ -124,17 +124,16 @@ while (list ($thidate,$hn,$vn,$doctor,$clinic_name,$date2,$idcard) = mysql_fetch
         }
         
         // ถ้ามีตัวเลขนำหน้าแสดงว่าเป็นรหัสคลินิกแบบเก่า
-        $test_match = preg_match('^\d{2}.+', $cliniccode, $matchs);
+        $test_match = preg_match('^\d{2}.+', $clinic_name, $matchs);
         if($test_match > 0){
-            list($old_clinic_code, $name) = explode(' ', $cliniccode);
+            list($old_clinic_code, $name) = explode(' ', $clinic_name);
             $cliniccode = $name;
 
         }else{
-            $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$cliniccode%'") or die( mysql_error() );
+            $q = mysql_query("SELECT `code` FROM `clinic` WHERE detail LIKE '$clinic_name%'") or die( mysql_error() );
             if( mysql_num_rows($q) > 0 ){
                 $item = mysql_fetch_assoc($q);
                 $cliniccode = $item['code'];
-                
             }
         }
 
