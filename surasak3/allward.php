@@ -76,13 +76,13 @@ $sortname="พิเศษ";
 		}
 		echo"</tr></table>";*/
 	
-    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
+    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days,row_id FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
   //echo "==>".$query;
     $result = mysql_query($query)or die("Query failed");
 
 $i=1;
 
-    while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall) = mysql_fetch_row ($result)) {
+    while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall,$bed_row_id) = mysql_fetch_row ($result)) {
 
 if($diag1=='' and $an!=''){ $diag1='ไม่มี'; }			
 $status2 = substr($status,0,3);
@@ -204,7 +204,10 @@ $(document).ready(function(){
             <td colspan="10" valign="top" ><font class='tablefontt1'>ฉลาก : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname&cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname\" class='tablefont3'>ยา(1 ดวง)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>ยา(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>เอกสาร(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname\" class='tablefont3'>เอกสาร(1 ดวง)</a>";?></td>
 		  </tr>
 		  <tr>
-			<td colspan="10"><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a></td>
+			<td colspan="10">
+				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a>
+				&nbsp;&nbsp;<label for="ptC19"><input type="checkbox" name="ptC19" id="ptC19" value="1" onclick="update_pt_c19(event,'<?=$bed_row_id;?>',this.checked)">ผู้ป่วยCovid19</label>
+			</td>
 		  </tr>
         </table></td>
       </tr>
@@ -215,6 +218,46 @@ $(document).ready(function(){
     </td>
   </tr>
 </table>
+
+<?php 
+if($lbedcode=='42'){ 
+?>
+<script type="text/javascript">
+	function update_pt_c19(ev,bed_row_id,status_checkbox){
+		// ev.preventDefault();
+		console.log(bed_row_id);
+		console.log(status_checkbox);
+		/*
+		var request = new XMLHttpRequest();
+		request.open('GET', 'allward.php?id='+bed_row_id, true);
+
+		request.onreadystatechange = function() {
+		if (this.readyState === 4) {
+			if (this.status >= 200 && this.status < 400) {
+				// Success!
+				var resp = this.responseText;
+				if(resp === 'N')
+				{
+					alert("ไม่พบ HN จากเลขบัตรประชาชน");
+				}
+				else
+				{
+					document.getElementById("PID").value = resp;
+				}
+			} else {
+				
+			}
+		}
+		};
+
+		request.send();
+		request = null;
+		*/
+	}
+</script>
+<?php
+}
+?>
 
 <a  href="#top" class="tablefont3">^ Back to Top</a>
 <? 
