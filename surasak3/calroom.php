@@ -10,10 +10,10 @@
 	session_start();
 	include("connect.inc");
 	///$bbbbcode มาจากหน้า ward
- 	$query1 = "SELECT bed,date, ptname, an, hn, caldate, bedname, bedcode, status FROM bed WHERE bedcode LIKE  '$bbbbcode%' and an!='' ";
+ 	$query1 = "SELECT bed,date, ptname, an, hn, caldate, bedname, bedcode, status, c19status FROM bed WHERE bedcode LIKE  '$bbbbcode%' and an!='' ";
 	//echo $query1;
   	$result1 = mysql_query($query1);
- 	while(list($bed,$date,$ptname,$an,$hn,$caldate,$bedname,$bedcode,$status)=Mysql_fetch_row($result1)){
+ 	while(list($bed,$date,$ptname,$an,$hn,$caldate,$bedname,$bedcode,$status,$c19status)=Mysql_fetch_row($result1)){
 		$query2 = "SELECT lastcalroom,accno,bedpri,date FROM bed WHERE bedcode = '$bedcode'";
 		//echo $query2."<br>";
 		$result2 = mysql_query($query2);
@@ -28,6 +28,8 @@
 	    $h  = intval($s/3600);    //hour
 	    //echo "จำนวนวัน  $d วัน $h ชั่วโมง &nbsp;&nbsp;";
 	    $days= $d;
+
+		$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 		
 		//หาวันนอนรวม
 			$chgdatesall=(substr($datestart,0,4)-543).substr($datestart,4); //วันนอน
@@ -82,11 +84,14 @@
 			  }
 			  $cBedwcare  =$days*$cWcare;  //รวมค่าบริการทางพยาบาล
 			  /////////
-			  $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
+			  
 
 			//   $diag = htmlspecialchars($diag, ENT_QUOTES);
 			$diag = str_replace("'", ' ', $diag);
 
+			if($c19status!='y')
+			{
+			
 	//ค่าห้องที่เบิกได้ depart	
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','$bedname (เฉพาะที่เบิกได้) $stays','$cYBedfood','คอมพิวเตอร์','$diag','$cAccno');";
 				//echo $query."<br>";
@@ -100,20 +105,10 @@
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','NCARE','WARD','$cWname','$days','$cBedwcare','คอมพิวเตอร์','NCARE','$cAccno','$idno');";
 				//echo $query."<br>";
 				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc2 in page calroom");
-
-
-
-				if($diag!='COVID-19')
-				{
-					//ค่าห้องที่เบิกได้ ipacc	
-					$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)
-					VALUES
-					('$Thidate','$an','BFY','WARD','$bedname ($bedcode) $stays','$days','$cYBedfood','คอมพิวเตอร์','BFY','$cAccno','$idno');";
-					//echo $query."<br>";
-					$result = mysql_query($query) or die("Query failed,cannot insert into ipacc in page calroom");
-				}
-
-				
+	//ค่าห้องที่เบิกได้ ipacc	
+				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','BFY','WARD','$bedname ($bedcode) $stays','$days','$cYBedfood','คอมพิวเตอร์','BFY','$cAccno','$idno');";
+				//echo $query."<br>";
+				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc in page calroom");
 	//ค่าห้องส่วนเกิน dapart
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$cNBedfood','คอมพิวเตอร์','$diag','$cAccno');";
 				//echo $query."<br>";
@@ -127,6 +122,8 @@
 				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','BFN','WARD','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$days','$cNBedfood','คอมพิวเตอร์','BFN','$cAccno','$idno');";
 				//echo $query."<br>";
 				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc1 in page calroom");
+			}
+
 				$daytime =explode(" ",$lastcalroom);
 				$timeadmit = $daytime[1]; //เอาเวลาที่ admit ออกมาก่อน
 				$caldate =explode("-",$daytime[0]); //ตัดเอาวันที่ในเบสออกมาเพื่อไปทำ mktime
@@ -141,8 +138,47 @@
 				//$daycalroom = (date("Y")+543).date("-m-d ").$timeadmit;
 				$query4 = "update bed SET lastcalroom ='$daycalroom',days ='$daysallstart' where bedcode = '$bedcode'";
 				$result4 = mysql_query($query4) or die("Query failed,cannot update bed in page calroom");
+				
+			} // end day > 0 
+
+
+			if($c19status=='y' && $oBedcode1 == '42')
+			{
+				$shortThDate = (date("Y")+543).date("-m-d");
+				// ในวันนี้มีการเพิ่มไปแล้วรึยัง
+				$sql = "SELECT `row_id` FROM `ipacc` WHERE `date` LIKE '$shortThDate%' AND `an` = '$an' AND `code` = '21401' LIMIT 1";
+				$q_ipacc = mysql_query($sql);
+				if(mysql_num_rows($q_ipacc) == 0) // ถ้ายังไม่ได้เพิ่ม
+				{
+					//ค่าห้องที่เบิกได้ depart	
+					$query = "INSERT INTO `depart`(`date`,`ptname`,`hn`,`an`,`doctor`,`depart`,`item`,`detail`,`price`,`idname`,`diag`,`accno`)
+					VALUES
+					('$Thidate','$ptname','$hn','$an','$doctor','WARD','1','ค่าห้องควบคุมผู้ป่วย COVID ใน รพ.','2500','คอมพิวเตอร์','$diag','$cAccno');";
+					$result = mysql_query($query) or die(mysql_error().$query);
+					$idno=mysql_insert_id();
+
+					//ค่าห้องที่เบิกได้ patdata
+					$query = "INSERT INTO `patdata`(`date`,`hn`,`an`,`ptname`,`doctor`,`item`,`code`,`detail`,`amount`,`price`,`depart`,`part`,`idno`) 
+					VALUES
+					('$Thidate','$hn','$an','$ptname','$doctor','2','BFY','ค่าห้องควบคุมผู้ป่วย COVID ใน รพ.','$days','2500','WARD','BFY','$idno');";
+					$result = mysql_query($query) or die(mysql_error().$query);
+
+					//ค่าบริการทางพยาบาล
+					$query = "INSERT INTO `ipacc`(`date`,`an`,`code`,`depart`,`detail`,`amount`,`price`,`idname`,`part`,`accno`,`idno`)
+					VALUES
+					('$Thidate','$an','21401','WARD','ค่าห้องควบคุมผู้ป่วย COVID ใน รพ.','$days','2500','คอมพิวเตอร์','BFY','$cAccno','$idno');";
+					$result = mysql_query($query) or die(mysql_error().$query);
+					
+					// ค่าบริการพยาบาลทั่วไป
+					$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$an','NCARE','WARD','(55010)ค่าบริการพยาบาลทั่วไป (IPD)','1','300','คอมพิวเตอร์','NCARE','$cAccno','$idno');";
+					$result = mysql_query($query) or die(mysql_error().$query);
+				}
+
+				
+
 			}
-		}
+
+		} // end dcdate == '0000-00-00 00:00:00'
 	}
 	
 ?>

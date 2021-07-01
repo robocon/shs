@@ -1,8 +1,37 @@
 <?php
     session_start();
-    if (isset($sIdname)){
-		} else {die;}
-		
+    if (isset($sIdname)){ } else {die;}
+	
+	include("connect.inc");
+
+	$action = $_GET['action'];
+	if($action==='update')
+	{
+		$id = (int)$_GET['id'];
+		$status = htmlentities($_GET['status'], ENT_QUOTES);
+
+		if($status=='n')
+		{
+			$status = 'NULL';
+		}
+		else
+		{
+			$status = "'$status'";
+		}
+
+		$sql = "UPDATE `bed` SET `c19status` = $status WHERE `row_id` = '$id' LIMIT 1 ";
+		$q = mysql_query($sql);
+		if($q==false)
+		{
+			echo mysql_error();
+		}
+		elseif ($q===true && $status == 'y') 
+		{
+			echo 'ตั้งค่าเรียบร้อย กรุณา Refresh หน้าจอ1ครั้งเพื่อให้ระบบคำนวณค่าเตียงใหม่';
+		}
+		exit;
+	}
+
 	//header("content-type: application/x-javascript; charset=TIS-620");
 ?>
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
@@ -12,7 +41,7 @@
 <br />
 <?php
 	
-    include("connect.inc");
+    
 	
 	
 	
@@ -76,13 +105,13 @@ $sortname="พิเศษ";
 		}
 		echo"</tr></table>";*/
 	
-    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days,row_id FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
+    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days,row_id,c19status FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
   //echo "==>".$query;
     $result = mysql_query($query)or die("Query failed");
 
 $i=1;
 
-    while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall,$bed_row_id) = mysql_fetch_row ($result)) {
+    while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall,$bed_row_id,$c19status) = mysql_fetch_row ($result)) {
 
 if($diag1=='' and $an!=''){ $diag1='ไม่มี'; }			
 $status2 = substr($status,0,3);
@@ -206,7 +235,15 @@ $(document).ready(function(){
 		  <tr>
 			<td colspan="10">
 				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a>
-				&nbsp;&nbsp;<label for="ptC19"><input type="checkbox" name="ptC19" id="ptC19" value="1" onclick="update_pt_c19(event,'<?=$bed_row_id;?>',this.checked)">ผู้ป่วยCovid19</label>
+
+				<?php 
+				if($lbedcode=='42'){
+					$c19checked = ($c19status=='y') ? 'checked="checked"' : '' ;
+					?>
+					&nbsp;&nbsp;<label for="ptC19<?=$bed_row_id;?>"><input type="checkbox" name="ptC19[]" id="ptC19<?=$bed_row_id;?>" class="ptC19" bed-id="<?=$bed_row_id;?>" value="1" <?=$c19checked;?>>คิดค่าห้องควบคุมผู้ป่วย COVID ใน รพ.</label>
+					<?php 
+				}
+				?>
 			</td>
 		  </tr>
         </table></td>
@@ -219,30 +256,60 @@ $(document).ready(function(){
   </tr>
 </table>
 
-<?php 
+
+
+<a  href="#top" class="tablefont3">^ Back to Top</a>
+<? 
+        
+		$i++;
+}
+
+
+
+
+
 if($lbedcode=='42'){ 
 ?>
 <script type="text/javascript">
-	function update_pt_c19(ev,bed_row_id,status_checkbox){
-		// ev.preventDefault();
-		console.log(bed_row_id);
-		console.log(status_checkbox);
-		/*
+
+	function addEventListener(el, eventName, handler) {
+		if (el.addEventListener) {
+			el.addEventListener(eventName, handler);
+		} else {
+			el.attachEvent('on' + eventName, function(){
+			handler.call(el);
+			});
+		}
+	}
+
+	var ptc19items = document.getElementsByClassName("ptC19");
+	if(ptc19items.length > 0)
+	{
+		for (let index = 0; index < ptc19items.length; index++) {
+			ptc19items[index].addEventListener("change", update_c19_inpt);
+		}
+	}
+
+	// ตั้งค่าเตียงผู้ป่วยโควิด
+	function update_c19_inpt(){ 
+		var status;
+		if(this.checked===true){
+			status = 'y';
+		}else{
+			status = 'n';
+		}
+
+		var bed_row_id = this.getAttribute("bed-id");
 		var request = new XMLHttpRequest();
-		request.open('GET', 'allward.php?id='+bed_row_id, true);
+		request.open('GET', 'allward.php?action=update&id='+bed_row_id+'&status='+status, true);
 
 		request.onreadystatechange = function() {
 		if (this.readyState === 4) {
 			if (this.status >= 200 && this.status < 400) {
 				// Success!
 				var resp = this.responseText;
-				if(resp === 'N')
-				{
-					alert("ไม่พบ HN จากเลขบัตรประชาชน");
-				}
-				else
-				{
-					document.getElementById("PID").value = resp;
+				if(resp.trim()!==''){
+					alert(resp);
 				}
 			} else {
 				
@@ -252,18 +319,12 @@ if($lbedcode=='42'){
 
 		request.send();
 		request = null;
-		*/
+
 	}
 </script>
 <?php
 }
-?>
 
-<a  href="#top" class="tablefont3">^ Back to Top</a>
-<? 
-        
-		$i++;
-		}
 		
 	
     include("unconnect.inc");
