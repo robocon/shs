@@ -14,7 +14,7 @@ if ($dbi->connect_error) {
     die("Connection failed: " . $dbi->connect_error);
 }
 
-$dbi->query("SET NAMES TIS620");
+// $dbi->query("SET NAMES TIS620");
 ?>
 <div class="clearfix">
     <h1 style="margin:0;">รายงานแฟ้ม PERSON</h1> <span>ข้อมูลทั่วไปของประชาชนในเขตรับผิดชอบ และผู้ที่มาใช้บริการ</span>
