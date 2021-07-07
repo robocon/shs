@@ -2,12 +2,17 @@
 include '../bootstrap.php';
 
 include 'head.php';
+
+$def_date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
 ?>
+<div class="clearfix">
+    <h1 style="margin:0;">รายงาน POSTNATAL</h1>
+</div>
 <fieldset>
     <legend>ค้นหาตามวันที่</legend>
     <form action="reportPostnatal.php" method="post">
         <div>
-            เลือกวันที่ <input type="text" name="date" id="date">
+            เลือกวันที่ <input type="text" name="date" id="date" value="<?=$def_date;?>" autocomplete="off">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -32,7 +37,7 @@ if ( $view === 'search' ) {
     $date = bc_to_ad($date);
     $date = str_replace('-', '', $date);
 
-    $sql = "SELECT * FROM `43postnatal` WHERE `SEQ` LIKE '$date%' ";
+    $sql = "SELECT * FROM `43postnatal` WHERE `SEQ` LIKE '$date%' ORDER BY `id` DESC ";
     $db->select($sql);
     if ( $db->get_rows() > 0 ) {
 
@@ -42,35 +47,35 @@ if ( $view === 'search' ) {
         <div>พบการค้นหา : <b><?=$search;?></b> ดังนี้</div>
         <table class="chk_table">
             <tr>
-                <th class="warning">HOSPCODE</th>
-                <th class="warning">PID</th>
-                <th class="warning">SEQ</th>
-                <th class="warning">GRAVIDA</th>
-                <th class="warning">BDATE</th>
-                <th class="warning">PPCARE</th>
-                <th class="warning">PPPLACE</th>
-                <th class="warning">PPRESULT</th>
-                <th class="warning">PROVIDER</th>
-                <th class="warning">D_UPDATE</th>
-                <th class="warning">CID</th>
+                <th>HOSPCODE</th>
+                <th>PID</th>
+                <th>SEQ</th>
+                <th>GRAVIDA</th>
+                <th>BDATE</th>
+                <th>PPCARE</th>
+                <th>PPPLACE</th>
+                <th>PPRESULT</th>
+                <th>PROVIDER</th>
+                <th>D_UPDATE</th>
+                <th>CID</th>
                 <td>ปรับปรุง</td>
             </tr>
         <?php 
         foreach ($items as $key => $item) {
             ?>
             <tr>
-                <td class="warning"><?=$item['HOSPCODE'];?></td>
-                <td class="warning"><?=$item['PID'];?></td>
-                <td class="warning"><?=$item['SEQ'];?></td>
-                <td class="warning"><?=$item['GRAVIDA'];?></td>
-                <td class="warning"><?=$item['BDATE'];?></td>
-                <td class="warning"><?=$item['PPCARE'];?></td>
-                <td class="warning"><?=$item['PPPLACE'];?></td>
-                <td class="warning"><?=$item['PPRESULT'];?></td>
-                <td class="warning"><?=$item['PROVIDER'];?></td>
-                <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td class="warning"><?=$item['CID'];?></td>
-                <td><a href="javascript:void(0);">แก้ไข</a></td>
+                <td><?=$item['HOSPCODE'];?></td>
+                <td><?=$item['PID'];?></td>
+                <td><?=$item['SEQ'];?></td>
+                <td><?=$item['GRAVIDA'];?></td>
+                <td><?=$item['BDATE'];?></td>
+                <td><?=$item['PPCARE'];?></td>
+                <td><?=$item['PPPLACE'];?></td>
+                <td><?=$item['PPRESULT'];?></td>
+                <td><?=$item['PROVIDER'];?></td>
+                <td><?=$item['D_UPDATE'];?></td>
+                <td><?=$item['CID'];?></td>
+                <td><a href="postnatal.php?page=form&opday_id=<?=$item['opday_id'];?>&postnatal_id=<?=$item['id'];?>">แก้ไข</a></td>
             </tr>
             <?php
         }

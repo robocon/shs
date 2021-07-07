@@ -32,15 +32,18 @@ if( $action === 'save' ){
     $D_UPDATE = date('YmdHis');
     $CID = input_post('CID');
     $ipcard_id = input_post('ipcard_id');
+    $ipcard_date = input_post('ipcard_date');
 
     $sql = "INSERT INTO `43labor` ( 
         `id`, `HOSPCODE`, `PID`, `GRAVIDA`, `LMP`, `EDC`, 
         `BDATE`, `BRESULT`, `BPLACE`, `BHOSP`, `BTYPE`, `BDOCTOR`, 
-        `LBORN`, `SBORN`, `D_UPDATE`, `CID`, `ipcard_id` 
+        `LBORN`, `SBORN`, `D_UPDATE`, `CID`, `ipcard_id`, 
+        `ipcard_date` 
     ) VALUES ( 
         NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
         '$BDATE', '$BRESULT', '$BPLACE', '$BHOSP', '$BTYPE', '$BDOCTOR', 
-        '$LBORN', '$SBORN', '$D_UPDATE', '$CID', '$ipcard_id' 
+        '$LBORN', '$SBORN', '$D_UPDATE', '$CID', '$ipcard_id', 
+        '$ipcard_date' 
     );";
     
     $save = $db->insert($sql);
@@ -79,17 +82,62 @@ include 'head.php';
 <?php
 $page = input('page');
 if ( $page === 'search' ) {
-    $an = input_post('an');
 
-    $sql = "SELECT * FROM `ipcard` WHERE `an` = '$an' ";
-    $db->select($sql);
-    $ipcard = $db->get_item();
+    $labor_id = input_get('labor_id');
 
-    $hn = $ipcard['hn'];
-    $sql = "SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn'";
-    $db->select($sql);
-    $opcard = $db->get_item();
-    
+    if(empty($labor_id))
+    {
+        $an = input_post('an');
+
+        $sql = "SELECT * FROM `ipcard` WHERE `an` = '$an' ";
+        $db->select($sql);
+        $ipcard = $db->get_item();
+
+        $hn = $ipcard['hn'];
+        $sql = "SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn'";
+        $db->select($sql);
+        $opcard = $db->get_item();
+
+        $an = $ipcard['an'];
+        $ptname = $ipcard['ptname'];
+        $date = $ipcard['date'];
+        $PID = $ipcard['hn'];
+        $CID = $opcard['idcard'];
+
+        $ipcard_id = $ipcard['row_id'];
+
+        $ipcard_date = bc_to_ad(substr($ipcard['date'], 0, 10));
+        $ipcard_date = str_replace('-', '', $ipcard_date);
+    }
+    else
+    {
+        $db->select("SELECT * FROM `43labor` WHERE `id` = '$labor_id' ");
+        $item = $db->get_item();
+
+        $sql = "SELECT * FROM `ipcard` WHERE `row_id` = '".$item['ipcard_id']."' ";
+        $db->select($sql);
+        $ipcard = $db->get_item();
+
+        $an = $ipcard['an'];
+        $ptname = $ipcard['ptname'];
+        $date = $ipcard['date'];
+        $PID = $item['PID'];
+        $GRAVIDA = $item['GRAVIDA'];
+        $LMP = $item['LMP'];
+        $EDC = $item['EDC'];
+        $BDATE = $item['BDATE'];
+        $BRESULT = $item['BRESULT'];
+        $BPLACE = $item['BPLACE'];
+        $BTYPE = $item['BTYPE'];
+        $BDOCTOR = $item['BDOCTOR'];
+        $LBORN = $item['LBORN'];
+        $SBORN = $item['SBORN'];
+        $CID = $item['CID'];
+
+        $ipcard_id = $item['ipcard_id'];
+        $ipcard_date = $item['ipcard_date'];
+
+    }
     ?>
     <fieldset>
         <legend>ฟอร์มบันทึก LABOR</legend>
@@ -97,7 +145,7 @@ if ( $page === 'search' ) {
             <table>
                 <tr>
                     <td colspan="2">
-                    <b>AN : </b> <?=$ipcard['an'];?> <b>ชื่อ-สกุล : </b> <?=$ipcard['ptname'];?> <b>วันที่มารับบริการ : </b> <?=$ipcard['date'];?>
+                    <b>AN : </b> <?=$an;?> <b>ชื่อ-สกุล : </b> <?=$ptname;?> <b>วันที่มารับบริการ : </b> <?=$date;?>
                     </td>
                 </tr>
                 <tr>
@@ -109,28 +157,28 @@ if ( $page === 'search' ) {
                 <tr>
                     <td class="txtRight">ทะเบียนบุคคล(HN) : </td>
                     <td>
-                        <input type="text" name="PID" value="<?=$ipcard['hn'];?>" readonly>
+                        <input type="text" name="PID" value="<?=$PID;?>" readonly>
                     </td>
                 </tr>
                 <tr>
                     <td class="txtRight">ครรภ์ที่ : </td>
-                    <td><input type="text" name="GRAVIDA" id="">(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
+                    <td><input type="text" name="GRAVIDA" id="GRAVIDA" value="<?=$GRAVIDA;?>">(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
-                    <td><input type="text" name="LMP" id="LMP"></td>
+                    <td><input type="text" name="LMP" id="LMP" value="<?=$LMP;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่กำหนดคลอด : </td>
-                    <td><input type="text" name="EDC" id="EDC"></td>
+                    <td><input type="text" name="EDC" id="EDC" value="<?=$EDC;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันคลอด/วันสิ้นสุดการตั้งครรภ์ : </td>
-                    <td><input type="text" name="BDATE" id="BDATE"></td>
+                    <td><input type="text" name="BDATE" id="BDATE" value="<?=$BDATE;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">ผลสิ้นสุดการตั้งครรภ์ : </td>
-                    <td><input type="text" name="BRESULT" id="BRESULT">รหัสโรค ICD - 10 TM <span id="labor181" style="position: relative;"></div></td>
+                    <td><input type="text" name="BRESULT" id="BRESULT" value="<?=$BRESULT;?>" >รหัสโรค ICD - 10 TM <span id="labor181" style="position: relative;"></div></td>
                 </tr>
                 <tr>
                     <td class="txtRight">สถานที่คลอด : </td>
@@ -140,8 +188,9 @@ if ( $page === 'search' ) {
                         $labor182Lists = $db->get_items();
                         $i = 1;
                         foreach ($labor182Lists as $key => $item) {
+                            $checked = ($BPLACE==$item['code']) ? 'checked="checked"' : '' ;
                             ?>
-                            <input type="radio" name="BPLACE" id="bplace<?=$i;?>" value="<?=$item['code'];?>"><label for="bplace<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="BPLACE" id="bplace<?=$i;?>" value="<?=$item['code'];?>" <?=$checked;?> ><label for="bplace<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -159,9 +208,10 @@ if ( $page === 'search' ) {
                         $db->select("SELECT * FROM `f43_labor_184_newborn_190`");
                         $btypeLists = $db->get_items();
                         $i = 1;
-                        foreach ($btypeLists as $key => $item) {
+                        foreach ($btypeLists as $key => $item) { 
+                            $checked = ($BTYPE==$item['code']) ? 'checked="checked"' : '' ;
                             ?>
-                            <input type="radio" name="BTYPE" id="btype<?=$i;?>" value="<?=$item['code'];?>"><label for="btype<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="BTYPE" id="btype<?=$i;?>" value="<?=$item['code'];?>" <?=$checked;?> ><label for="btype<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -175,9 +225,10 @@ if ( $page === 'search' ) {
                         $db->select("SELECT * FROM `f43_labor_185_newborn_191`");
                         $hivLists = $db->get_items();
                         $i = 1;
-                        foreach ($hivLists as $key => $item) {
+                        foreach ($hivLists as $key => $item) { 
+                            $checked = ($BDOCTOR==$item['code']) ? 'checked="checked"' : '' ;
                             ?>
-                            <input type="radio" name="BDOCTOR" id="bdoctor<?=$i;?>" value="<?=$item['code'];?>"><label for="bdoctor<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="BDOCTOR" id="bdoctor<?=$i;?>" value="<?=$item['code'];?>" <?=$checked;?> ><label for="bdoctor<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -186,20 +237,21 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">จำนวนเกิดมีชีพ : </td>
-                    <td><input type="text" name="LBORN" value="0"></td>
+                    <td><input type="text" name="LBORN" value="0" value="<?=$LBORN;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">จำนวนตายคลอด : </td>
-                    <td><input type="text" name="SBORN" value="0"></td>
+                    <td><input type="text" name="SBORN" value="0" value="<?=$SBORN;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">เลขที่บัตรประชาชน(มารดา) : </td>
-                    <td><input type="text" name="CID" value="<?=$opcard['idcard'];?>" readonly></td>
+                    <td><input type="text" name="CID" value="<?=$CID;?>" readonly></td>
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
                         <button type="submit">บันทึก</button>
-                        <input type="hidden" name="ipcard_id" value="<?=$ipcard['row_id'];?>">
+                        <input type="hidden" name="ipcard_id" value="<?=$ipcard_id;?>">
+                        <input type="hidden" name="ipcard_date" value="<?=$ipcard_date;?>">
                         <input type="hidden" name="action" value="save">
                     </td>
                 </tr>

@@ -66,14 +66,16 @@ $page = input('page');
 if ($page === 'search') {
     
     $hn = input_post('hn');
+    $gettime = strtotime("-2 YEARS");
+    $lastdate = (date('Y', $gettime)+543).date('-m-d', $gettime);
 
-    $sql = "SELECT * FROM `opday` WHERE `hn` = '$hn' ORDER BY `row_id` DESC";
+    $sql = "SELECT * FROM `opday` WHERE `thidate` >= '$lastdate' AND `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 100";
     $db->select($sql);
     $itemPop = $items = $db->get_items();
 
     $user = array_pop($itemPop);
     ?>
-    <div>HN : <?=$user['ptname'];?></div>
+    <div>HN : <?=$user['hn'];?> ชื่อ-สกุล : <?=$user['ptname'];?></div>
     <table class="chk_table">
         <tr>
             <th>วันที่มารับบริการ</th>
@@ -90,7 +92,7 @@ if ($page === 'search') {
             <td><?=$item['diag'];?></td>
             <td><?=$item['doctor'];?></td>
             <td><?=$item['toborow'];?></td>
-            <td><a href="fp.php?page=form&id=<?=$item['row_id'];?>">บันทึก</a></td>
+            <td><a href="fp.php?page=form&opday_id=<?=$item['row_id'];?>">บันทึก</a></td>
         </tr>
         <?php
     }
@@ -100,8 +102,8 @@ if ($page === 'search') {
     <?php
 }elseif ($page === 'form') {
 
-    $row_id = input_get('id');
-    $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`idcard`,`doctor`,SUBSTRING(`thidate`,1,10) AS `shortdate`,`vn`,`clinic` FROM `opday` WHERE `row_id` = '$row_id' LIMIT 1";
+    $opday_id = input_get('opday_id');
+    $sql = "SELECT `row_id`,`hn`,`ptname`,`thidate`,`idcard`,`doctor`,SUBSTRING(`thidate`,1,10) AS `shortdate`,`vn`,`clinic` FROM `opday` WHERE `row_id` = '$opday_id' LIMIT 1";
     $db->select($sql);
     $user = $db->get_item();
 
@@ -125,6 +127,16 @@ if ($page === 'search') {
     $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
     $db->select($sql);
     $dr = $db->get_item();
+
+    $fp_id = input_get('fp_id');
+    if(!empty($fp_id))
+    {
+        $db->select("SELECT * FROM `43fp` WHERE `id` = '$fp_id' ");
+        $fp = $db->get_item();
+        $FPTYPE = $fp['FPTYPE'];
+    }else{
+        $FPTYPE = ''; 
+    }
 
     ?>
     <fieldset>
@@ -163,9 +175,12 @@ if ($page === 'search') {
                     $db->select("SELECT * FROM `f43_fp_172`");
                     $ppLists = $db->get_items();
                     $i = 1;
-                    foreach ($ppLists as $key => $item) {
+                    foreach ($ppLists as $key => $item) { 
+
+                        $checked = ($FPTYPE == $item['code']) ? 'checked="checked"' : '' ;
+
                         ?>
-                        <input type="radio" name="FPTYPE" id="fptype<?=$i;?>" value="<?=$item['code'];?>"><label for="fptype<?=$i;?>"><?=$item['detail'];?></label>
+                        <input type="radio" name="FPTYPE" id="fptype<?=$i;?>" value="<?=$item['code'];?>" <?=$checked;?> ><label for="fptype<?=$i;?>"><?=$item['detail'];?></label>
                         <?php
                         $i++;
                     }

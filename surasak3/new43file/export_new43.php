@@ -47,7 +47,8 @@ $file_lists = array(
 	'death','card','appointment','accident','procedure_opd',
 	'diagnosis_ipd','procedure_ipd','drug_ipd','charge_ipd','anc',
 	'prenatal','ncdscreen','labfu','chronicfu','specialpp',
-	'policy','newborn','newborncare','nutrition'
+	'policy','newborn','newborncare','nutrition','women',
+	'fp'
 );
 
 if( $action === false ){

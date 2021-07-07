@@ -11,7 +11,7 @@ include 'head.php';
     <form action="reportPrenatal.php" method="post">
         <div>
             <?php 
-            $def_date = (date('Y')+543).date('-m-d');
+            $def_date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
             ?>
             เลือกวันที่ <input type="text" name="date" id="date" autocomplete="off" value="<?=$def_date;?>"><br>
             แสดงข้อมูลตามวันที่ 2564-01-30 <br>

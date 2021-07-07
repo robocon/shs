@@ -144,19 +144,19 @@ if ( $db->get_rows() > 0 ) {
     </div>
     <table class="chk_table">
         <tr>
-            <th class="warning">รหัสสถานบริการ</th>
-            <th class="warning">รหัสนโยบาย</th>
-            <th class="warning">ปีนโยบาย</th>
-            <th class="warning">รายละเอียดข้อมูล</th>
-            <th class="warning">วันเดือนปีที่ปรับปรุง</th>
+            <th>รหัสสถานบริการ</th>
+            <th>รหัสนโยบาย</th>
+            <th>ปีนโยบาย</th>
+            <th>รายละเอียดข้อมูล</th>
+            <th>วันเดือนปีที่ปรับปรุง</th>
             <th rowspan="2">ปรับปรุง</th>
         </tr>
         <tr>
-            <th class="warning">HOSPCODE</th>
-            <th class="warning">POLICY_ID</th>
-            <th class="warning">POLICY_YEAR</th>
-            <th class="warning">POLICY_DATA</th>
-            <th class="warning">D_UPDATE</th>
+            <th>HOSPCODE</th>
+            <th>POLICY_ID</th>
+            <th>POLICY_YEAR</th>
+            <th>POLICY_DATA</th>
+            <th>D_UPDATE</th>
         </tr>
     <?php 
     foreach ($items as $key => $list) { 
@@ -165,7 +165,7 @@ if ( $db->get_rows() > 0 ) {
         $style = '';
 
         if ( $policy_data->PID == false OR preg_match('/\d{8}/',$policy_data->BDATE) < 1 ) {
-            $style = 'class="warning"';
+            $style = ';
         }
         ?>
         <tr <?=$style;?>>

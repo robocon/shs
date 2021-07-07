@@ -2,6 +2,8 @@
 include '../bootstrap.php';
 
 include 'head.php';
+
+$def_date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
 ?>
 <div class="clearfix">
     <h1 style="margin:0;">รายงาน FP</h1> <span>บริการวางแผนครอบครัว</span>
@@ -10,7 +12,7 @@ include 'head.php';
     <legend>ค้นหาตามวันที่</legend>
     <form action="reportFp.php" method="post">
         <div>
-            เลือกวันที่ <input type="text" name="date" id="date">
+            เลือกวันที่ <input type="text" name="date" id="date" value="<?=$def_date;?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -45,31 +47,42 @@ if ( $view === 'search' ) {
         <div>พบการค้นหา : <b><?=$search;?></b> ดังนี้</div>
         <table class="chk_table">
             <tr>
-                <th class="warning">HOSPCODE</th>
-                <th class="warning">PID</th>
-                <th class="warning">SEQ</th>
-                <th class="warning">DATE_SERV</th>
-                <th class="warning">FPTYPE</th>
+                <th>HOSPCODE</th>
+                <th>PID</th>
+                <th>SEQ</th>
+                <th>DATE_SERV</th>
+                <th>FPTYPE</th>
                 <th>FPPLACE</th>
-                <th class="warning">PROVIDER</th>
-                <th class="warning">D_UPDATE</th>
-                <th class="warning">CID</th>
-                <td>ปรับปรุง</td>
+                <th>PROVIDER</th>
+                <th>D_UPDATE</th>
+                <th>CID</th>
+                <td rowspan="2">ปรับปรุง</td>
+            </tr>
+            <tr>
+                <th>รหัสหน่วยบริการ</th>
+                <th>ทะเบียนบุคคล</th>
+                <th>ลําดับที่</th>
+                <th>วันที่ให้บริการ</th>
+                <th>รหัสวิธีการคุมกําเเนิด</th>
+                <th>รหัสหน่วยบริการที่รับบริการ</th>
+                <th>เลขที่ผู้ให้บริการ</th>
+                <th>วันเดือนปีที่ปรับปรุง</th>
+                <th>เลขที่บัตรประชาชน</th>
             </tr>
         <?php 
         foreach ($items as $key => $item) {
             ?>
             <tr>
-                <td class="warning"><?=$item['HOSPCODE'];?></td>
-                <td class="warning"><?=$item['PID'];?></td>
-                <td class="warning"><?=$item['SEQ'];?></td>
-                <td class="warning"><?=$item['DATE_SERV'];?></td>
-                <td class="warning"><?=$item['FPTYPE'];?></td>
+                <td><?=$item['HOSPCODE'];?></td>
+                <td><?=$item['PID'];?></td>
+                <td><?=$item['SEQ'];?></td>
+                <td><?=$item['DATE_SERV'];?></td>
+                <td><?=$item['FPTYPE'];?></td>
                 <td><?=$item['FPPLACE'];?></td>
-                <td class="warning"><?=$item['PROVIDER'];?></td>
-                <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td class="warning"><?=$item['CID'];?></td>
-                <td><a href="javascript:void(0);">แก้ไข</a></td>
+                <td><?=$item['PROVIDER'];?></td>
+                <td><?=$item['D_UPDATE'];?></td>
+                <td><?=$item['CID'];?></td>
+                <td><a href="fp.php?page=form&fp_id=<?=$item['id'];?>&opday_id=<?=$item['opday_id']?>">แก้ไข</a></td>
             </tr>
             <?php
         }

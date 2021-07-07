@@ -18,6 +18,7 @@ if( $action === 'save' ){
     $D_UPDATE = date('YmdHis');
     $CID = input_post('CID');
     $opday_id = input_post('opday_id');
+    $postnatal_id = input_post('postnatal_id');
 
     $BDATE = bc_to_ad($BDATE);
     $BDATE = str_replace('-','', $BDATE);
@@ -25,19 +26,34 @@ if( $action === 'save' ){
     $PPCARE = bc_to_ad($PPCARE);
     $PPCARE = str_replace('-','', $PPCARE);
 
-    $sql = "INSERT INTO `43postnatal` ( 
-        `id`, `HOSPCODE`, `PID`, `SEQ`, `GRAVIDA`, `BDATE`, 
-        `PPCARE`, `PPPLACE`, `PPRESULT`, `PROVIDER`, `D_UPDATE`, `CID`, 
-        `opday_id` 
-    ) VALUES ( 
-        NULL, '$HOSPCODE', '$PID', '$SEQ', '$GRAVIDA', '$BDATE', 
-        '$PPCARE', '$PPPLACE', '$PPRESULT', '$PROVIDER', '$D_UPDATE', '$CID', 
-        '$opday_id' 
-    );";
-    $save = $db->insert($sql);
+    if(empty($postnatal_id))
+    {
+        $sql = "INSERT INTO `43postnatal` ( 
+            `id`, `HOSPCODE`, `PID`, `SEQ`, `GRAVIDA`, `BDATE`, 
+            `PPCARE`, `PPPLACE`, `PPRESULT`, `PROVIDER`, `D_UPDATE`, `CID`, 
+            `opday_id` 
+        ) VALUES ( 
+            NULL, '$HOSPCODE', '$PID', '$SEQ', '$GRAVIDA', '$BDATE', 
+            '$PPCARE', '$PPPLACE', '$PPRESULT', '$PROVIDER', '$D_UPDATE', '$CID', 
+            '$opday_id' 
+        );";
+        $save = $db->insert($sql);
+    }
+    else
+    {
+        $sql = "UPDATE `43postnatal` SET 
+        `SEQ`='$SEQ', 
+        `GRAVIDA`='$GRAVIDA', 
+        `BDATE`='$BDATE', 
+        `PPCARE`='$PPCARE', 
+        `PPPLACE`='$PPPLACE', 
+        `PPRESULT`='$PPRESULT', 
+        `PROVIDER`='$PROVIDER', 
+        `D_UPDATE`='$D_UPDATE' 
+        WHERE (`id`='$postnatal_id');";
+        $save = $db->insert($sql);
+    }
 
-    // UPDATE `43postnatal` SET `id`=NULL, `HOSPCODE`=NULL, `PID`=NULL, `SEQ`=NULL, `GRAVIDA`=NULL, `BDATE`=NULL, `PPCARE`=NULL, `PPPLACE`=NULL, `PPRESULT`=NULL, `PROVIDER`=NULL, `D_UPDATE`=NULL, `CID`=NULL, `opday_id`=NULL WHERE (ISNULL(`id`));
-    
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
@@ -73,7 +89,10 @@ $page = input('page');
 if ( $page === 'search' ) {
     $hn = input_post('hn');
 
-    $sql = "SELECT * FROM `opday` WHERE `hn` = '$hn' AND `thidate` >= '2561-10-01 00:00:00' ORDER BY `row_id` DESC";
+    $gettime = strtotime("-2 YEARS");
+    $lastdate = (date('Y', $gettime)+543).date('-m-d', $gettime);
+
+    $sql = "SELECT * FROM `opday` WHERE `hn` = '$hn' AND `thidate` >= '$lastdate' ORDER BY `row_id` DESC";
     $db->select($sql);
     $itemPop = $items = $db->get_items();
 
@@ -96,7 +115,7 @@ if ( $page === 'search' ) {
             <td><?=$item['diag'];?></td>
             <td><?=$item['doctor'];?></td>
             <td><?=$item['toborow'];?></td>
-            <td><a href="postnatal.php?page=form&id=<?=$item['row_id'];?>">บันทึก</a></td>
+            <td><a href="postnatal.php?page=form&opday_id=<?=$item['row_id'];?>">บันทึก</a></td>
         </tr>
         <?php
     }
@@ -106,32 +125,52 @@ if ( $page === 'search' ) {
     <?php
 }elseif ($page === 'form') {
 
-    $row_id = input_get('id');
-    $sql = "SELECT * FROM `opday` WHERE `row_id` = '$row_id' LIMIT 1";
+    $opday_id = input_get('opday_id');
+    $sql = "SELECT * FROM `opday` WHERE `row_id` = '$opday_id' LIMIT 1";
     $db->select($sql);
     $user = $db->get_item();
 
-    if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
-        $prefixMd = substr($user['doctor'],0,5);
-        $where = "`name` LIKE '$prefixMd%'";
+    $doctorcode = false;
+	if( preg_match('/MD\d+/', $user['doctor']) > 0 ){
+		$prefixMd = substr($user['doctor'],0,5);
 
-    }elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) {
-        $prefixMd = $matchs['0'];
-        $where = "`doctorcode` = '$prefixMd'";
-    }
+		$sql = "SELECT `doctorcode` FROM `doctor` WHERE `name` LIKE '$prefixMd%' ";
+		$db->select($sql);
+		$dr = $db->get_item();
+		$doctorcode = $dr['doctorcode'];
 
-    $sql = "SELECT CONCAT('ว.',`doctorcode`) AS `doctorcode` FROM `doctor` WHERE $where ";
-    $db->select($sql);
-    $dr = $db->get_item();
-    $doctorcode = $dr['doctorcode'];
+	}elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) {
+		$doctorcode = $matchs['0'];
 
-    $sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
-    $db->select($sql);
-    $dr = $db->get_item();
+	}
+
+	$dr = false;
+	if( $doctorcode !== false ){
+		$sql = "SELECT `PROVIDER` FROM `tb_provider_9` WHERE `REGISTERNO` = '$doctorcode' ";
+		$db->select($sql);
+		$dr = $db->get_item();
+	}
 
     $date_bc = bc_to_ad($user['thidate']);
     $seq = genSEQ($date_bc, $user['hn']);
 
+    $postnatal_id = input('postnatal_id');
+    $postnatal_id = $PROVIDER = '';
+    if(!empty($postnatal_id))
+    {
+        $db->select("SELECT * FROM `43postnatal` WHERE `id` = '$postnatal_id' ");
+        $post = $db->get_item();
+        $postnatal_id = $post['id'];
+        $GRAVIDA = $post['GRAVIDA'];
+        $BDATE = $post['BDATE'];
+        $PPCARE = $post['PPCARE'];
+        $PPRESULT = $post['PPRESULT'];
+        $GRAVIDA = $post['GRAVIDA'];
+
+        $dr['PROVIDER'] = $PROVIDER = $post['PROVIDER'];
+        
+    }
+    
     ?>
     <fieldset>
         <legend>ฟอร์มบันทึก PRENATAL</legend>
@@ -156,15 +195,15 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td class="txtRight">ครรภ์ที่ : </td>
-                    <td><input type="text" name="GRAVIDA" id="">(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
+                    <td><input type="text" name="GRAVIDA" id="GRAVIDA" value="<?=$GRAVIDA;?>" >(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันคลอด/สิ้นสุดการตั้งครรภ์ : </td>
-                    <td><input type="text" name="BDATE" id="BDATE"></td>
+                    <td><input type="text" name="BDATE" id="BDATE" value="<?=$BDATE;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">วันที่ดูแลแม่ : </td>
-                    <td><input type="text" name="PPCARE" id="PPCARE"></td>
+                    <td><input type="text" name="PPCARE" id="PPCARE" value="<?=$PPCARE;?>"></td>
                 </tr>
                 <tr>
                     <td class="txtRight">รหัสสถานพยาบาลที่ดูแลแม่ : </td>
@@ -178,9 +217,11 @@ if ( $page === 'search' ) {
                         $db->select("SELECT * FROM `f43_postnatal_186`");
                         $ppLists = $db->get_items();
                         $i = 1;
-                        foreach ($ppLists as $key => $item) {
+                        foreach ($ppLists as $key => $item) { 
+
+                            $checked = ($PPRESULT==$item['code']) ? 'checked="checked"' : '' ;
                             ?>
-                            <input type="radio" name="PPRESULT" id="pp<?=$i;?>" value="<?=$item['code'];?>"><label for="pp<?=$i;?>"><?=$item['detail'];?></label>
+                            <input type="radio" name="PPRESULT" id="pp<?=$i;?>" value="<?=$item['code'];?>" <?=$checked;?> ><label for="pp<?=$i;?>"><?=$item['detail'];?></label>
                             <?php
                             $i++;
                         }
@@ -191,7 +232,7 @@ if ( $page === 'search' ) {
                     <td class="txtRight">เลขที่ผู้ให้บริการ : </td>
                     <td>
                         <?php 
-                        if( empty($dr['PROVIDER']) ){ 
+                        if( empty($dr['PROVIDER']) && !empty($PROVIDER) ){ 
                             $db->select("SELECT `PROVIDER`,`REGISTERNO`,`NAME`,`LNAME` FROM `tb_provider_9` ORDER BY `ROW_ID` ");
                             $providerLists = $db->get_items();
                             ?>
@@ -230,6 +271,7 @@ if ( $page === 'search' ) {
                         <button type="submit">บันทึก</button>
                         <input type="hidden" name="action" value="save">
                         <input type="hidden" name="opday_id" value="<?=$user['row_id'];?>">
+                        <input type="hidden" name="postnatal_id" value="<?=$postnatal_id;?>">
                     </td>
                 </tr>
             </table>

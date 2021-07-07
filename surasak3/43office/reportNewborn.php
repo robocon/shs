@@ -19,7 +19,7 @@ if ( $action === 'delete' ) {
 
 include 'head.php';
 
-
+$def_date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
 ?>
 <div class="clearfix">
     <h1 style="margin:0;">รายงาน NEWBORN</h1> <span>ข้อมูลประวัติการคลอดของทารกจากหญิง ในเขตรับผิดชอบ หรือทารกที่คลอดที่หน่วยบริการ</span>
@@ -28,7 +28,7 @@ include 'head.php';
     <legend>ค้นหาตามวันที่ Discharge</legend>
     <form action="reportNewborn.php" method="post">
         <div>
-            เลือกวันที่ <input type="text" name="date" id="date">
+            เลือกวันที่ <input type="text" name="date" id="date" autocomplete="off" value="<?=$def_date;?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>

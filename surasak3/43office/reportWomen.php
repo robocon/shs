@@ -24,7 +24,7 @@ if ( $db->get_rows() > 0 ) {
             <th>ABORTION</th>
             <th>STILLBIRTH</th>
             <th>D_UPDATE</th>
-            <th class="warning">CID</th>
+            <th>CID</th>
             <td>ปรับปรุง</td>
         </tr>
     <?php 
@@ -40,8 +40,8 @@ if ( $db->get_rows() > 0 ) {
             <td><?=$item['ABORTION'];?></td>
             <td><?=$item['STILLBIRTH'];?></td>
             <td><?=$item['D_UPDATE'];?></td>
-            <td class="warning"><?=$item['CID'];?></td>
-            <td><a href="javascript:void(0);">แก้ไข</a></td>
+            <td><?=$item['CID'];?></td>
+            <td><a href="women.php?page=search&hn=<?=$item['PID'];?>">แก้ไข</a></td>
         </tr>
         <?php
     }
