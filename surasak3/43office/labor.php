@@ -93,6 +93,12 @@ if ( $page === 'search' ) {
         $db->select($sql);
         $ipcard = $db->get_item();
 
+        if(empty($ipcard))
+        {
+            echo "ไม่พบข้อมูล $an กรุณาตรวจสอบการค้นหาอีกครั้ง";
+            exit;
+        }
+
         $hn = $ipcard['hn'];
         $sql = "SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn'";
         $db->select($sql);
