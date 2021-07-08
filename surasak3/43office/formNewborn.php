@@ -44,6 +44,9 @@ if($action === 'save'){
     $date_visit = bc_to_ad($date_visit);
 
     $hn = input_post('hn');
+    if(empty($hn)){
+        $hn = input_post('findHN');
+    }
     $an = input_post('an');
     $owner = $_SESSION['sIdname'];
     
@@ -268,9 +271,9 @@ if( $page === 'searchAn' ){
                             <span class="sRow">ª×èÍ-Ê¡ØÅ : <input type="text" name="name" id="name"></span>
                             <span class="sRow">ID : <input type="text" name="idcard" id="idcard" size="12" class="important"></span>
 
-                            HN : <input type="text" name="findHN" id="findHN" size="6"> <button type="button" id="checkMId">µÃÇ¨ÊÍº¨Ò¡HN</button>
+                            HN : <input type="text" name="findHN" id="findHN" size="6" class="important"> <button type="button" onclick="return checkMIdByHn(event)">µÃÇ¨ÊÍº¨Ò¡HN</button>
 
-                            <input type="hidden"  name="hn" id="hn" value="">
+                            <input type="hidden" name="hn" id="hn" value="">
                             <input type="hidden" name="an" id="ptAN" value="">
                             <input type="hidden" name="sex" id="sex" value="">
                         </td>
@@ -548,11 +551,11 @@ if( $page === 'searchAn' ){
         <?php
         include 'assets/ajax.php';
         ?>
-        <script>
-        var btnMId = document.getElementById("checkMId");
-        btnMId.addEventListener('click', function(event) {
+        <script type="text/javascript">
 
-            event.preventDefault();
+        function checkMIdByHn(ev){ 
+
+            ev.preventDefault ? ev.preventDefault() : (ev.returnValue = false);
 
             var findHn = document.getElementById("findHN").value;
             var newSm = new SmHttp();
@@ -584,11 +587,13 @@ if( $page === 'searchAn' ){
 
                         document.getElementById("dateBorn").value = txt.dbirth;
                         
-                        
                     }
                 }
             );
-        });
+
+            return false;
+        };
+        
         </script>
         <?php
 

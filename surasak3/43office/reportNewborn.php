@@ -52,8 +52,8 @@ if ( $view === 'search' ) {
     $sql = "SELECT a.*,b.`discharge`
     FROM `43newborn` AS a 
     LEFT JOIN `gyn_newborn` AS b ON a.`gyn_id` = b.`id` 
-    WHERE `discharge` LIKE '$date%' 
-    ORDER BY `id` DESC";
+    WHERE b.`discharge` LIKE '$date%' 
+    ORDER BY a.`id` DESC";
     $db->select($sql);
     if ( $db->get_rows() > 0 ) {
         

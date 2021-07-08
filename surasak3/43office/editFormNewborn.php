@@ -355,7 +355,7 @@ function searchChildIdcard(ev)
 {   
     var idcard = document.getElementById("CID").value;
 
-    ev.preventDefault();
+    ev.preventDefault ? ev.preventDefault() : (ev.returnValue = false);
     
     var request = new XMLHttpRequest();
     request.open('GET', 'editFormNewborn.php?page=search&idcard='+idcard, true);
@@ -381,5 +381,7 @@ function searchChildIdcard(ev)
 
     request.send();
     request = null;
+
+    return false;
 }
 </script>
