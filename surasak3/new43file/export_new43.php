@@ -48,7 +48,7 @@ $file_lists = array(
 	'diagnosis_ipd','procedure_ipd','drug_ipd','charge_ipd','anc',
 	'prenatal','ncdscreen','labfu','chronicfu','specialpp',
 	'policy','newborn','newborncare','nutrition','women',
-	'fp'
+	'fp', 'labor', 'postnatal'
 );
 
 if( $action === false ){
@@ -84,6 +84,8 @@ if( $action === false ){
 			<p>9.) 10-03-2563 เพิ่ม nutrition และอัพเดท EPI ตามโครงสร้างใหม่</p>
 			<p>10.) 25-06-2564 อัพเดทแฟ้ม เป็น v2.4 anc, prenatal, newborn</p>
 			<p>11.) 30-06-2564 แก้ error clinic code แฟ้ม diagnosis_opd, procedure_opd</p>
+			<p>12.) 07-07-2564 เพิ่มการส่งออกแฟ้ม women, fp</p>
+			<p>13.) 08-07-2564 เพิ่มการส่งออกแฟ้ม labor, postnatal</p>
 		</div>
 	</div>
 
@@ -486,7 +488,22 @@ if( $action === false ){
 	if( $_POST['nutrition'] ){ 
 		require_once 'libs/nutrition.php';
 	}
+
+	if( $_POST['women'] ){ 
+		require_once 'libs/women.php';
+	}
+
+	if( $_POST['fp'] ){ 
+		require_once 'libs/fp.php';
+	}
 	
+	if( $_POST['labor'] ){ 
+		require_once 'libs/labor.php';
+	}
+
+	if( $_POST['postnatal'] ){ 
+		require_once 'libs/postnatal.php';
+	}
 	
 	// สร้าง zip ไฟล์
 	$main_folder = 'F43_11512_'.$thiyr.$rptmo.$rptday.'01090000';

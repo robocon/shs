@@ -1,30 +1,7 @@
 <?php 
-
-// $db2 = mysql_connect('192.168.1.13', 'dottwo', '') or die( mysql_error() );
-// mysql_select_db('smdb', $db2) or die( mysql_error() );
-
-$sql = "SELECT `HOSPCODE`,
-`PID`, 
-`GRAVIDA`, 
-`LMP`, 
-`EDC`, 
-`VDRL_RESULT`, 
-`HB_RESULT`, 
-`HIV_RESULT`, 
-`DATE_HCT`, 
-`HCT_RESULT`, 
-`THALASSEMIA`, 
-`D_UPDATE`, 
-`PROVIDER`, 
-`CID`, 
-`HEIGHT`
-FROM `43prenatal` 
-WHERE `date_serv` LIKE '$date_serv%' ";
-
+$sql = "SELECT *FROM `43prenatal` WHERE `date_serv` LIKE '$date_serv%' ";
 $q = mysql_query($sql, $db2) or die( mysql_error() );
-
 $txt = '';
-
 while ( $item = mysql_fetch_assoc($q) ) {
 
     $txt .= $item['HOSPCODE'].'|'

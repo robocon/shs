@@ -1,32 +1,35 @@
 <?php
 
 $dbi = new mysqli(HOST, USER, PASS, DB);
+$q_fp = $dbi->query("SELECT * FROM `43fp` WHERE `DATE_SERV` LIKE '$date_serv%' ORDER BY `id` ASC ");
+$txt = $fp_data = "";
 
-$q_women = $dbi->query("SELECT * FROM fp ORDER BY `id` ASC ");
-$txt = $women_data = "";
-
-while ($item = $q_women->fetch_assoc()) {
-
+while ($item = $q_fp->fetch_assoc()) {
+    
     $HOSPCODE = $item['HOSPCODE'];
     $PID = $item['PID'];
+    $SEQ = $item['SEQ'];
+    $DATE_SERV = $item['DATE_SERV'];
     $FPTYPE = $item['FPTYPE'];
-    $NOFPCAUSE = $item['NOFPCAUSE'];
-    $TOTALSON = $item['TOTALSON'];
-    $NUMBERSON = $item['NUMBERSON'];
-    $ABORTION = $item['ABORTION'];
-    $STILLBIRTH = $item['STILLBIRTH'];
+    $FPPLACE = $item['FPPLACE'];
+    $PROVIDER = $item['PROVIDER'];
     $D_UPDATE = $item['D_UPDATE'];
     $CID = $item['CID'];
 
-    $women_data = "$HOSPCODE|$PID|$FPTYPE|$NOFPCAUSE|$TOTALSON|$NUMBERSON|$ABORTION|$STILLBIRTH|$D_UPDATE|$CID\r\n";
-    $txt .= $women_data;
+
+    $fp_data = "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$FPTYPE|$FPPLACE|$PROVIDER|$D_UPDATE|$CID\r\n";
+    $txt .= $fp_data;
     
 }
 
-$zipLists[] = $filePath = $dirPath.'/women.txt';
+$filePath = $dirPath.'/fp.txt';
 file_put_contents($filePath, $txt);
+$zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|FPTYPE|NOFPCAUSE|TOTALSON|NUMBERSON|ABORTION|STILLBIRTH|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|FPTYPE|FPPLACE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
-$qofLists[] = $qofPath = $dirPath.'/qof_women.txt';
+$qofPath = $dirPath.'/qof_fp.txt';
 file_put_contents($qofPath, $txt);
+$qofLists[] = $qofPath;
+
+echo "สร้างแฟ้ม fp เสร็จเรียบร้อย<br>";

@@ -4,9 +4,7 @@ list($year, $month, $day) = explode('-', $thimonth);
 
 $dServ = ( $year - 543 ).$month.$day;
 
-$sql = "SELECT * 
-FROM `43newborn` 
-WHERE `date_visit` LIKE '$yrmonth%' ";
+$sql = "SELECT * FROM `43newborn` WHERE `date_visit` LIKE '$yrmonth%' ";
 $q = mysql_query($sql, $db2);
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {

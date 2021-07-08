@@ -2,7 +2,7 @@
 
 $dbi = new mysqli(HOST, USER, PASS, DB);
 
-$q_women = $dbi->query("SELECT * FROM WOMEN ORDER BY `id` ASC ");
+$q_women = $dbi->query("SELECT * FROM `43women` ORDER BY `id` ASC ");
 $txt = $women_data = "";
 
 while ($item = $q_women->fetch_assoc()) {
@@ -23,10 +23,14 @@ while ($item = $q_women->fetch_assoc()) {
     
 }
 
-$zipLists[] = $filePath = $dirPath.'/women.txt';
+$filePath = $dirPath.'/women.txt';
 file_put_contents($filePath, $txt);
+$zipLists[] = $filePath;
 
 $header = "HOSPCODE|PID|FPTYPE|NOFPCAUSE|TOTALSON|NUMBERSON|ABORTION|STILLBIRTH|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
-$qofLists[] = $qofPath = $dirPath.'/qof_women.txt';
+$qofPath = $dirPath.'/qof_women.txt';
 file_put_contents($qofPath, $txt);
+$qofLists[] = $qofPath;
+
+echo "สร้างแฟ้ม women เสร็จเรียบร้อย<br>";

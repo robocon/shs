@@ -29,7 +29,7 @@ if ($dbi->connect_error) {
         -->
         <?php 
         $default_year = (empty($_POST['year_selected'])) ? date('Y') : $_POST['year_selected'] ;
-        $year_range = range(2014, date('Y'));
+        $year_range = range(2004, date('Y'));
         ?>
         <div>
             เลือกปี <select name="year_selected" id="year_selected">
@@ -148,6 +148,7 @@ if ( $view === 'search' ) {
      ) AS a 
     LEFT JOIN `PERSON` AS b ON b.`PID` = a.`opcard_hn` 
     ORDER BY a.`opcard_id` ASC ";
+    var_dump($sql);
     $q = $dbi->query($sql);
     while ($item = $q->fetch_assoc()) { 
 
