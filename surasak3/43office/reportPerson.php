@@ -57,41 +57,6 @@ if ( $view === 'search' ) {
     ?>
     <table class="chk_table">
         <tr>
-            <th>รหัสหน่วยบริการ</th>
-            <th>เลขที่บัตรประชาชน</th>
-            <th>ทะเบียนบุคคล</th>
-            <th>รหัสบ้าน</th>
-            <th>คํานําหน้า</th>
-            <th>ชื่อ</th>
-            <th>นามสกุล</th>
-            <th>เลขที่ผู้ป่วยนอก (HN)</th>
-            <th>เพศ</th>
-            <th>วันเกิด</th>
-            <th>รหัสสถานะสมรส</th>
-            <th>รหัสอาชีพ(เก่า)</th>
-            <th>รหัสอาชีพ(ใหม่)</th>
-            <th>รหัสเชื้อชาติ</th>
-            <th>รหัสสัญชาติ</th>
-            <th>รหัสศาสนา</th>
-            <th>รหัสระดับการศึกษา</th>
-            <th>รหัสสถานะในครอบครัว</th>
-            <th>รหัส CID มารดา</th>
-            <th>รหัส CID มารดา</th>
-            <th>รหัส CID คู่สมรส</th>
-            <th>รหัสสถานะในชุมชน</th>
-            <th>วันที่ย้ายเข้ามาเขตพื้นที</th>
-            <th>รหัสสถานะ/สาเหตุการจําหน่าย</th>
-            <th>วันที่จําหน่าย</th>
-            <th>รหัสหมู่เลือด</th>
-            <th>รหัสหมู่เลือด RH</th>
-            <th>รหัสความเป็นคนต่างด้าว</th>
-            <th>เลขที่ passport</th>
-            <th>รหัสสถานะบุคคล</th>
-            <th>วันเดือนปีที่ปรับปรุงข้อมูล</th>
-            <th>เบอร์โทรศัพท์</th>
-            <th>เบอร์โทรศัพท์มือถือ</th>
-        </tr>
-        <tr>
             <th>HOSPCODE</th>
             <th>CID</th>
             <th>PID</th>
@@ -126,6 +91,41 @@ if ( $view === 'search' ) {
             <th>TELEPHONE</th>
             <th>MOBILE</th>
         </tr>
+        <tr>
+            <th>รหัสหน่วยบริการ</th>
+            <th>เลขที่บัตรประชาชน</th>
+            <th>ทะเบียนบุคคล</th>
+            <th>รหัสบ้าน</th>
+            <th>คํานําหน้า</th>
+            <th>ชื่อ</th>
+            <th>นามสกุล</th>
+            <th>เลขที่ผู้ป่วยนอก (HN)</th>
+            <th>เพศ</th>
+            <th>วันเกิด</th>
+            <th>รหัสสถานะสมรส</th>
+            <th>รหัสอาชีพ(เก่า)</th>
+            <th>รหัสอาชีพ(ใหม่)</th>
+            <th>รหัสเชื้อชาติ</th>
+            <th>รหัสสัญชาติ</th>
+            <th>รหัสศาสนา</th>
+            <th>รหัสระดับการศึกษา</th>
+            <th>รหัสสถานะในครอบครัว</th>
+            <th>รหัส CID มารดา</th>
+            <th>รหัส CID มารดา</th>
+            <th>รหัส CID คู่สมรส</th>
+            <th>รหัสสถานะในชุมชน</th>
+            <th>วันที่ย้ายเข้ามาเขตพื้นที</th>
+            <th>รหัสสถานะ/สาเหตุการจําหน่าย</th>
+            <th>วันที่จําหน่าย</th>
+            <th>รหัสหมู่เลือด</th>
+            <th>รหัสหมู่เลือด RH</th>
+            <th>รหัสความเป็นคนต่างด้าว</th>
+            <th>เลขที่ passport</th>
+            <th>รหัสสถานะบุคคล</th>
+            <th>วันเดือนปีที่ปรับปรุงข้อมูล</th>
+            <th>เบอร์โทรศัพท์</th>
+            <th>เบอร์โทรศัพท์มือถือ</th>
+        </tr>
     <?php
 
     $year_selected = $_POST['year_selected'];
@@ -136,22 +136,22 @@ if ( $view === 'search' ) {
         $abbreviations_items[] = $per['abbreviations'];
     }
 
-    $person_items = array();
-    $error_case = array();
+    $year_selected = substr(($year_selected+543),2,2);
 
-    $sql = "SELECT a.*,b.*
-    FROM ( 
-        SELECT `row_id` AS `opcard_id`, 
-        `hn` AS `opcard_hn`, 
-        `idcard` AS `opcard_idcard`, 
-        `name` AS `opcard_name`, `surname`, `dbirth` FROM `opcard` WHERE `regisdate` LIKE '$year_selected%' 
-     ) AS a 
-    LEFT JOIN `PERSON` AS b ON b.`PID` = a.`opcard_hn` 
-    ORDER BY a.`opcard_id` ASC ";
-    var_dump($sql);
+    $sql = "SELECT `row_id`,`hn`,`idcard`,`name`,`surname`, `dbirth` FROM `opcard` WHERE `hn` LIKE '$year_selected%' ORDER BY `row_id` ASC ";
     $q = $dbi->query($sql);
-    while ($item = $q->fetch_assoc()) { 
+    while ($opcard = $q->fetch_assoc()) { 
 
+        $id = $opcard['row_id'];
+        $opcard_hn = $opcard['hn'];
+
+        $item = array();
+        $sql = "SELECT * FROM `PERSON` WHERE `HN` = '$opcard_hn' ";
+        $q_person = $dbi->query($sql);
+        if ($q_person->num_rows > 0) {
+            $item = $q_person->fetch_assoc();
+        }
+        
         $error = false;
         if(empty($item['id']))
         {
@@ -175,22 +175,11 @@ if ( $view === 'search' ) {
         $item['NAME'] = (empty($item['NAME'])) ? $item['opcard_name'] : $item['NAME'] ;
         $item['LNAME'] = (empty($item['LNAME'])) ? $item['surname'] : $item['LNAME'] ;
 
-        if($error === true)
+        if($error === false && $_POST['show_error'] === 'show')
         {
-            $error_case[] = $item;
+            continue;
         }
 
-        $person_items[] = $item;
-    }
-
-
-    if(count($error_case) > 0 && $_POST['show_error'] === 'show')
-    {
-        $person_items = $error_case;
-    }
-
-    foreach($person_items AS $key => $item) {
-    
         $color_prename = '';
         if(in_array($item['PRENAME'], $abbreviations_items) === false)
         {
@@ -218,6 +207,12 @@ if ( $view === 'search' ) {
                 <?=$item['CID'];?>
             </td>
             <td>
+                <?php 
+                if(empty($item['PID']))
+                {
+                    $item['PID'] = $opcard_hn;
+                }
+                ?>
                 <a href="../opdedit.php?cHn=<?=$item['PID'];?>" target="_blank" title="แก้ไขข้อมูล"><?=$item['PID'];?></a>
             </td>
             <td><?=$item['HID'];?></td>
@@ -267,7 +262,8 @@ if ( $view === 'search' ) {
             <td><?=$item['MOBILE'];?></td>
         </tr>
         <?php
-    }
+
+    } // ena while
     ?>
     </table>
     <?php
