@@ -14,6 +14,7 @@ class printvn{
 	var $inrxform;
 	var $note;
 	var $drugreact;
+	var $drugreact2;
 	var $Thaidate;
 	var $clinic;
 	var $doctor;
@@ -80,17 +81,33 @@ class printvn{
 			$this->inrxform = "<table width='210' border='0'><TR><TD align='center'>".$this->inrxform;
 			$this->inrxform .= "<TD></TR></Table>";
 		}
-		
-		$sql = "Select tradname, advreact  From drugreact where hn = '".$this->hn."' ";
+		//แพ้ยาเป็นตัว
+		$sql = "Select tradname, advreact  From drugreact where hn = '".$this->hn."' and groupname =''";
+		//echo $sql;
 		$result = Mysql_Query($sql);
 		
 		if(Mysql_num_rows($result) > 0){
+		
 			$this->drugreact = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>แพ้ยา</B></U></TD></TR>";
 				while($arr = Mysql_fetch_assoc($result)){
+				
 					$this->drugreact .= "<TR><TD>ยา:".$arr["tradname"]."<BR>อาการ:".$arr["advreact"]."</TD></TR>";
 				}
 			$this->drugreact .= "</Table>";
 			}
+		
+		//แพ้ยาเป็นกลุ่ม	
+		$sql2= "Select distinct(groupname) as groupname, advreact  From drugreact where hn = '".$this->hn."' and groupname !=''";
+		$result2 = Mysql_Query($sql2);
+		
+		if(Mysql_num_rows($result2) > 0){
+			$this->drugreact2 = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>แพ้ยาตามกลุ่ม</B></U></TD></TR>";
+				while($arr = Mysql_fetch_assoc($result2)){
+					$this->drugreact2 .= "<TR><TD>กลุ่มที่แพ้:".$arr["groupname"]."<BR>อาการ:".$arr["advreact"]."</TD></TR>";
+				}
+			$this->drugreact2 .= "</Table>";
+			}			
+			
 		include("unconnect.inc");
 	}
 
@@ -136,7 +153,7 @@ class printvn{
 		print "<font face='Angsana New' size= 3 >แพทย์ : ".$this->doctor."<BR>";
 		if($this->room != "")
 		print "<font face='Angsana New' size= 3 >ห้องตรวจ : ".$this->room."<BR>";		
-print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."<BR>";
+print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."&nbsp;&nbsp;".$this->drugreact2."<BR>";
 //print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
 print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 >แพทย์..............................................<BR>";
 print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> รับยายื่นที่ช่องหมายเลข 6</u><BR>";
