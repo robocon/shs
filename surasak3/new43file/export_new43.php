@@ -20,10 +20,6 @@ $selmon = isset($_POST['month']) ? $_POST['month'] : date('m');
 $action = ( $_REQUEST['action'] ) ? $_REQUEST['action'] : false ;
 $make = ( $_REQUEST['make'] ) ? $_REQUEST['make'] : false ;
 
-
-// var_dump($_REQUEST);
-// exit;
-
 if ( $make === 'del' ) {
 	
 	$file = input_get('file');
@@ -36,7 +32,7 @@ if ( $make === 'del' ) {
 	}
 
 	redirect('export_new43.php', $msg);
-	
+	exit;
 }
 
 
@@ -67,7 +63,7 @@ if( $action === false ){
 		$_SESSION['x-msg'] = NULL;
 	}
 	?>
-	<div>
+<div class="w3-container">
 
 	<div>
 		<h3>ระบบส่งออก43แฟ้ม</h3>
@@ -150,6 +146,25 @@ if( $action === false ){
 	</script>
 
 	<div>
+	<fieldset>
+		<legend>ค้นหาไฟล์จากวันที่</legend>
+		<form action="export_new43.php" method="post">
+			<div>
+				เลือกวันที่ : <input type="text" name="date_file" id="date_file"> 
+				- รูปแบบการค้นหาเช่น 2564-03-30
+			</div>
+			<div>
+				<button type="submit">ค้นหา</button>
+				<input type="hidden" name="page" value="search_file">
+			</div>
+		</form>
+	</fieldset>
+		<?php 
+		$page = $_POST['page'];
+		if($page === 'search_file')
+		{
+		
+		?>
 		<div>
 			<h3>รายชื่อแฟ้มที่เคยดึงข้อมูลแล้ว</h3>
 		</div>
@@ -157,9 +172,28 @@ if( $action === false ){
 			<div><h3>43แฟ้ม</h3></div>
 			<div>
 				<?php 
-				$zipItems = glob('export/F43_11512_*.zip');
+				
+				$extract_date = explode('-', $_POST['date_file']);
+				$pre_file = '';
+				if(!empty($extract_date['0']))
+				{
+					$pre_file .= $extract_date['0'];
+				}
+
+				if(!empty($extract_date['1']))
+				{
+					$pre_file .= $extract_date['1'];
+				}
+
+				if(!empty($extract_date['2']))
+				{
+					$pre_file .= $extract_date['2'];
+				}
+
+				$zipItems = glob('export/F43_11512_'.$pre_file.'*.zip');
 				rsort($zipItems);
 				$i = 1;
+				
 				?>
 				<table border="1" cellpadding="4" cellspacing="0" style="border-collapse:collapse" bordercolor="#000000">
 					<tr>
@@ -195,9 +229,9 @@ if( $action === false ){
 		</div>
 		<div style="float: left;">&nbsp;</div>
 		<div style="float: left;">
-			<div><h3>QOF</h3></div>
+			<div><h3>QOF 43แฟ้ม</h3></div>
 			<?php 
-			$zipItems = glob('export/QOF_F43_11512_*.zip');
+			$zipItems = glob('export/QOF_F43_11512_'.$pre_file.'*.zip');
 			rsort($zipItems);
 			$i = 1;
 			?>
@@ -232,9 +266,11 @@ if( $action === false ){
 				?>
 			</table>
 		</div>
-		
-		</div>
+		<?php 
+		}
+		?>
 	</div>
+</div>
 	<script type="text/javascript">
 		function delFile(){
 			var c = confirm("ยืนยันที่จะลบข้อมูล?");
@@ -243,21 +279,17 @@ if( $action === false ){
 			}
 		}
 	</script>
+
+
 <?php
 } else if( $action === 'export' ){
 	
 	$dateSelect = $_POST['dateSelect'];
-	
-	/*
-	$testMatch = preg_match('/\d+\-\d+$/', $dateSelect);
-	if( $testMatch === 0 ){
-		?>
-		<p>อนุญาตให้ใช้รูปแบบ ปี-เดือน เช่น 2559-04 เท่านั้น</p>
-		<a href="export_new43.php">ย้อนกลับ</a>
-		<?php
+	if(empty($dateSelect))
+	{
+		echo "กรุณาเลือกวันที่";
 		exit;
 	}
-	*/
 
 	$rptday_for_day = '';
 	$rptday = '';
