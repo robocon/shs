@@ -171,7 +171,7 @@ label:hover{
 				?><option value="<?=substr($objResult["name"],0,5);?>"><?=$objResult["name"];?></option><?php
 			} 
 			?> 
-
+			<option value="MD184 สัมมา เลิศธีรกุล">MD184 สัมมา เลิศธีรกุล</option>
             <Option value="MD058">แพทย์แผนไทย</Option>
       		</Select>
 		</TD>
@@ -253,6 +253,7 @@ label:hover{
 							?><option value="<?=substr($res["name"],0,5);?>"><?=$res["name"];?></option><?php
 						} 
 						?> 
+						<option value="MD184 สัมมา เลิศธีรกุล">MD184 สัมมา เลิศธีรกุล</option>
 						</select>
 					</td>
 				</tr>

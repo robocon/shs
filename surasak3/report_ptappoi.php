@@ -20,7 +20,7 @@ color: #FFF;
 <form name="f1" action="" method="post">
   <table  border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" style="border-collapse:collapse">
   <tr class="forntsarabun">
-    <td colspan="2" bgcolor="#99CC99">สถิติ   ผู้ป่วยตรวจตามนัดเวชศาสตร์ฟื้นฟู แพทย์ชนศักดิ์ หทัยอารีย์รักษ์</td>
+    <td colspan="2" bgcolor="#99CC99">สถิติ   ผู้ป่วยตรวจตามนัดเวชศาสตร์ฟื้นฟู แพทย์สัมมา เลิศธีรกุล</td>
     </tr>
   <tr class="forntsarabun">
     <td  align="right"><span class="forntsarabun">วัน/เดือน/ปี</span></td>
@@ -100,7 +100,7 @@ switch($_POST['m_start']){
 
 
 $tsql1="CREATE TEMPORARY TABLE   opday1  Select * from   opday   WHERE thidate
-LIKE  '$date1%' AND clinic like '%14 เวชศาสตร์ฟื้นฟู%' and doctor like '%ชนศักดิ์ หทัยอารีย์รักษ์%'";
+LIKE  '$date1%' AND clinic like '%14 เวชศาสตร์ฟื้นฟู%' and doctor like '%สัมมา เลิศธีรกุล%'";
 $tquery1 = mysql_query($tsql1);
 
 
