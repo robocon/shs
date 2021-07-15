@@ -1136,6 +1136,10 @@ include("dt_patient.php");
 		|| $_SESSION["sIdname"] == "md65067" // intern
 		|| $_SESSION["sIdname"] == "md65006" // intern
 		|| $_SESSION["sIdname"] == "md65053" // intern 
+		|| $_SESSION["sIdname"] == "md66983" // intern Ле2021
+		|| $_SESSION["sIdname"] == "md67005" // intern
+		|| $_SESSION["sIdname"] == "md67020" // intern
+		|| $_SESSION["sIdname"] == "md67054" // intern
 	){
 		$counter="2";
 	}elseif($_SESSION["sIdname"] == "thaywin"){
