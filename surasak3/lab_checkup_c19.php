@@ -6,7 +6,7 @@ require_once 'bootstrap.php';
  * [x] step1 สร้างฟอร์ม อัพโหลดไฟล์ 
  * [x] step2 เลือก labcode แล้วคอนเฟิร์ม
  * [x] ออก VN
- * [] เพิ่มค่าใช้จ่ายใน depart กับ patdata
+ * [x] เพิ่มค่าใช้จ่ายใน depart กับ patdata
  */
 
 $dbi = new mysqli(HOST, USER, PASS, DB);
@@ -33,6 +33,9 @@ function calcage($birth){
 
 if ($page === 'step3' && $action === 'save')
 {
+    redirect('lab_checkup_c19.php', 'แจ้งเตือน!!! โปรแกรมอยู่ในช่วงการพัฒนา เพื่อปรับปรุงUI(User Interface)');
+    exit;
+
     $labcode = $_POST['labcode'];
     $doctor = $_POST['doctor'];
     $today = date('Y-m-d');
@@ -59,15 +62,18 @@ if ($page === 'step3' && $action === 'save')
 
         $thdatehn = $thdate.$hn;
 
-        // ออก VN
+        /**
+         * ออก VN
+         */
         $q_opday = $dbi->query("SELECT * FROM `opday` WHERE `hn` = '$hn' AND `thdatehn` = '$thdatehn' ");
-        if($q_opday->num_rows === 0)
+        if($q_opday->num_rows == 0)
         {
             $q_runno = $dbi->query("SELECT *, SUBSTRING(`startday`,1,10) AS `startday` FROM runno WHERE title = 'VN'");
             $runno = $q_runno->fetch_assoc();
+            
             if($today == $runno['startday'])
             {
-                $vn = $runno['runno']++;
+                $vn = $runno['runno']+1;
                 $dbi->query("UPDATE `runno` SET `runno` = '$vn' WHERE `title` = 'VN'");
             }
             else
@@ -92,31 +98,11 @@ if ($page === 'step3' && $action === 'save')
         else
         {
             $opday = $q_opday->fetch_assoc();
+            $vn = $opday['vn'];
         }
-
-
         /**
-         * @todo
-         * [] orderhead
-         * [] orderdetail
+         * ออก VN
          */
-        $q_runno_lab = $dbi->query("SELECT `runno`, `startday` FROM `runno` WHERE `title` = 'lab'");
-        $lab = $q_runno_lab->fetch_assoc();
-        if($today == $lab['startday'])
-        {
-            $nLab = $lab['runno']++;
-            $dbi->query("UPDATE `runno` SET `runno` = '$nLab' WHERE `title` = 'lab'");
-        }
-        else
-        {
-            $nLab = 1;
-            $dbi->query("UPDATE `runno` SET `runno` = '$nLab' AND `startday` = '$today' WHERE `title` = 'lab'");
-        }
-
-        $labnumber = date("ymd").sprintf("%03d", $nLab);
-        $gender = ($sex=='ช') ? 'M' : 'F' ;
-        $patienttype = 'OPD';
-        $dob = bc_to_ad($opcard['dbirth']);
 
         $q_doctor = $dbi->query("SELECT `name`, `doctorcode` FROM `doctor` WHERE `name` = '$doctor'");
         $dr = $q_doctor->fetch_assoc();
@@ -136,49 +122,79 @@ if ($page === 'step3' && $action === 'save')
         $cAccno = 0;
         $oldcode = $labcare['oldcode'];
 
-        $sql_insert_orderhead = "INSERT INTO `orderhead` ( 
-            `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , 
-            `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , 
-            `clinicianname` , `priority` , `clinicalinfo` 
-        ) VALUES (
-            '', '$enDateTime', '$labnumber', '$hn', '$patienttype', '$cPtname', 
-            '$gender', '$dob', '', '', '$vn','$cliniciancode', 
-            '$clinicianname', 'R', '$labcode' 
-        );";
-        $dbi->query($sql_insert_orderhead);
-
-        $sql_insert_orderdetail = "INSERT INTO `orderdetail` ( 
-            `labnumber` , `labcode`, `labcode1` , `labname` 
-        ) VALUES (
-            '$labnumber', '$labcode', '$oldcode', '$aDetail'
-        );";
-		$dbi->query($sql_insert_orderdetail);
-
-
-
-        // เพิ่มค่าใช้จ่าย
         /**
-         * @todo เช็กก่อนว่ามีค่าใช้จ่ายแล้วรึยัง
+         * ORDER LAB 
+         */
+        $sql_test_orderhead = "SELECT `autonumber` FROM `orderhead` WHERE `orderdate` LIKE '$today%' AND `hn` = '$hn' AND `clinicalinfo` = '$labcode' ";
+        $q_test_orderhead = $dbi->query($sql_test_orderhead);
+        if($q_test_orderhead->num_rows == 0)
+        {
+            $q_runno_lab = $dbi->query("SELECT `runno`, `startday` FROM `runno` WHERE `title` = 'lab'");
+            $lab = $q_runno_lab->fetch_assoc();
+            if($today == $lab['startday'])
+            {
+                $nLab = $lab['runno']+1;
+                $dbi->query("UPDATE `runno` SET `runno` = '$nLab' WHERE `title` = 'lab'");
+            }
+            else
+            {
+                $nLab = 1;
+                $dbi->query("UPDATE `runno` SET `runno` = '$nLab', `startday` = '$today' WHERE `title` = 'lab'");
+            }
+            
+            $labnumber = date("ymd").sprintf("%03d", $nLab);
+            $gender = ($sex=='ช') ? 'M' : 'F' ;
+            $patienttype = 'OPD';
+            $dob = bc_to_ad($opcard['dbirth']);
+            
+            $sql_insert_orderhead = "INSERT INTO `orderhead` ( 
+                `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , 
+                `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , 
+                `clinicianname` , `priority` , `clinicalinfo` 
+            ) VALUES (
+                NULL, '$enDateTime', '$labnumber', '$hn', '$patienttype', '$cPtname', 
+                '$gender', '$dob', '', '', '$vn','$cliniciancode', 
+                '$clinicianname', 'R', '$labcode' 
+            );";
+            $save_orderhead = $dbi->query($sql_insert_orderhead);
+    
+            $sql_insert_orderdetail = "INSERT INTO `orderdetail` ( 
+                `labnumber` , `labcode`, `labcode1` , `labname` 
+            ) VALUES (
+                '$labnumber', '$labcode', '$oldcode', '$aDetail'
+            );";
+            $dbi->query($sql_insert_orderdetail);
+        }
+        else
+        {
+            $orderhead = $q_test_orderhead->fetch_assoc();
+            $nLab = (int)substr($orderhead['labnumber'], 5, 3);
+        }
+        /**
+         * ORDER LAB 
+         */
+
+        /**
+         * เพิ่มค่าใช้จ่ายเข้าไปใน depart กับ patdata
          */
         $sql_test_patdata = "SELECT `row_id` FROM `patdata` WHERE `date` LIKE '$thai_date%' AND `hn` = '$hn' AND `code` = '$labcode' AND `status` = 'Y' ";
-        $q_test_patdata = $dbi->query($sql_patdata);
-        if($q_test_patdata->num_rows === 0)
+        $q_test_patdata = $dbi->query($sql_test_patdata);
+        if($q_test_patdata->num_rows == 0)
         {
-            
             $q_depart_runno = $dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
             $depart_runno = $q_depart_runno->fetch_assoc();
-            $depart_chktranx = $depart_runno['runno']++;
+            $depart_chktranx = $depart_runno['runno']+1;
             $dbi->query("UPDATE `runno` SET `runno` = '$depart_chktranx' WHERE `title` = 'depart'");
             
             $sql_insert_depart = "INSERT INTO `depart` (
                 `chktranx`,`date`,`ptname`,`hn`,`an`,`doctor`,
                 `depart`,`item`,`detail`,`price`,`sumyprice`,`sumnprice`,
-                `paid`, `idname`,`diag`,`accno`,`tvn`,`ptright`,
+                `idname`,`diag`,`accno`,`tvn`,`ptright`,
                 `lab`,`staf_massage`
             )VALUES(
                 '$depart_chktranx','$thidatetime','$cPtname','$hn','','$doctor',
                 '$cDepart','$cItem','$aDetail', '$price','$yprice','$nprice',
-                '','$sOfficer','$cDiag','$cAccno','$vn','$cPtright',
+                '$sOfficer','$cDiag','$cAccno','$vn','$cPtright',
                 '$nLab','$cstaf_massage'
             );";
             $dbi->query($sql_insert_depart);
@@ -194,12 +210,11 @@ if ($page === 'step3' && $action === 'save')
                 '$cDepart','$cPart','$depart_id','$cPtright',''
             );";
             $dbi->query($sql_insert_patdata);
-
         }
         
-        
-    }
-    // dump($_REQUEST);
+    } // end foreach
+    
+    redirect('lab_checkup_c19.php', 'บันทึกข้อมูลเรียบร้อย');
     exit;
 }
 
@@ -221,6 +236,16 @@ if ($page === 'step3' && $action === 'save')
     </div>
     
 <?php 
+if($_SESSION['x-msg'])
+{
+    ?>
+    <div class="w3-panel w3-pale-yellow">
+    <p><?=$_SESSION['x-msg'];?></p>
+    </div>
+    <?php 
+    $_SESSION['x-msg'] = NULL;
+}
+
 if(empty($page))
 {
     ?>
@@ -237,6 +262,10 @@ if(empty($page))
                     <input type="hidden" name="page" value="step2">
                 </div>
             </p>
+            <h4>วิธีSaveไฟล์เป็น .csv</h4>
+            <p>1. คีย์ HN เฉพาะในช่อง A<br><img src="images/lab/lab-01.PNG" alt=""></p>
+            <p>2. เลือกแฟ้ม > บันทึกเป็น<br><img src="images/lab/lab-02.PNG" alt=""></p>
+            <p>3. ในช่องบันทึกเป็นชนิด CSV (Comma delimited) (*.csv)<br><img src="images/lab/lab-03.PNG" alt=""></p>
         </form>
     </div>
     <?php 
@@ -245,7 +274,7 @@ elseif ($page==='step2')
 {
 
     $file = $_FILES['file_csv'];
-    if ( preg_match("/\.csv$/", $file['name'], $mathcs) === false )
+    if ( preg_match("/\.csv$/", $file['name'], $mathcs) === false OR empty($file['name']) )
     {
         echo "อนุญาตเฉพาะไฟล์ .csv เท่านั้น";
         exit;
