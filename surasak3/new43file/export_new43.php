@@ -1,7 +1,7 @@
 <?php 
-// error_reporting(E_ALL);
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
 
 include '../bootstrap.php';
 
@@ -82,6 +82,7 @@ if( $action === false ){
 			<p>11.) 30-06-2564 แก้ error clinic code แฟ้ม diagnosis_opd, procedure_opd</p>
 			<p>12.) 07-07-2564 เพิ่มการส่งออกแฟ้ม women, fp</p>
 			<p>13.) 08-07-2564 เพิ่มการส่งออกแฟ้ม labor, postnatal</p>
+			<p>14.) 19-07-2564 เพิ่มการฉีดวัคซีนโควิดเข้าแฟ้ม epi</p>
 		</div>
 	</div>
 
@@ -337,144 +338,143 @@ if( $action === false ){
 	$zipLists = array();
 	$qofLists = array();
 
-
-
 	if( $_POST['person'] ){
 		// แฟ้มที่ 1
-		include 'libs/person.php';
+		require_once 'libs/person.php';
 	}
 	
 	if( $_POST['address'] ){
 		// แฟ้มที่ 2
-		include 'libs/address.php';
+		require_once 'libs/address.php';
 	}
 	
 
 	if( $_POST['chronic'] ){ 
 		// 4
-		include 'libs/chronic.php';
+		require_once 'libs/chronic.php';
 	}
 	
 
 	if( $_POST['disability'] ){
 		// 8
-		include 'libs/disability.php';
+		require_once 'libs/disability.php';
 	}
 	
 	if( $_POST['icf'] ){
-		include 'libs/icf.php';
+		require_once 'libs/icf.php';
 	}
 	
 
 	if( $_POST['provider'] ){
-		include 'libs/provider.php';
+		require_once 'libs/provider.php';
 	}
 	
 
 	if( $_POST['dental'] ){
-		include 'libs/dental.php';
+		require_once 'libs/dental.php';
 	}
 	
 
 	if( $_POST['home'] ){
-		include 'libs/home.php';
+		require_once 'libs/home.php';
 	}
 	
 	
 	if( $_POST['drugallergy'] ){
 		// แฟ้มที่ 11
-		include 'libs/drugallergy.php';
+		require_once 'libs/drugallergy.php';
 	}
 	
 	
 	if( $_POST['service'] ){
 		// แฟ้มที่ 14
-		include 'libs/service.php';
+		require_once 'libs/service.php';
 	}
 	
 	
 	if( $_POST['admission'] ){
 		// แฟ้มที่ 23
-		include 'libs/admission.php';
+		require_once 'libs/admission.php';
 	}
 	
 	
 	if( $_POST['charge_opd'] ){
 		// แฟ้มที่ 18
-		include 'libs/charge_opd.php';
+		require_once 'libs/charge_opd.php';
 	}
 	
 	
 	if( $_POST['diagnosis_opd'] ){
 		// แฟ้มที่ 15
-		include 'libs/diagnosis_opd.php';
+		require_once 'libs/diagnosis_opd.php';
 	}
 	
 	
 	if( $_POST['drug_opd'] ){
 		// แฟ้มที่ 16
-		include 'libs/drug_opd.php';
+		require_once 'libs/drug_opd.php';
 	}
 	
 	
 	if( $_POST['epi'] ){
 		// แฟ้มที่ 39
-		include 'libs/epi.php';
+		require_once 'libs/epi.php';
 	}
-	
 	
 	// ==== ด้านล่างยังไม่ได้ปรับ SQL PERFORMANCE ====
 	
 	if( $_POST['death'] ){ 
 		// แฟ้มที่ 3
-		include 'libs/death.php';
+		require_once 'libs/death.php';
 	}
 	
 	
 	if( $_POST['card'] ){ 
 		// แฟ้มที่ 5
-		include 'libs/card.php';
+		require_once 'libs/card.php';
 	}
 	
 	
 	if( $_POST['appointment'] ){ 
 		// แฟ้มที่ 28
-		include 'libs/appointment.php';
+		require_once 'libs/appointment.php';
 	}
 	
 	
 	if( $_POST['accident'] ){ 
 		// แฟ้มที่ 20
-		include 'libs/accident.php';
+		require_once 'libs/accident.php';
 	}
 	
 	
 	if( $_POST['procedure_opd'] ){ 
 		// แฟ้มที่ 17
-		include 'libs/procedure_opd.php';
+		require_once 'libs/procedure_opd.php';
 	}
 	
 	
 	if( $_POST['diagnosis_ipd'] ){ 
 		// แฟ้มที่ 24
-		include 'libs/diagnosis_ipd.php';
+		require_once 'libs/diagnosis_ipd.php';
 	}
 	
 	if( $_POST['procedure_ipd'] ){ 
 		// แฟ้มที่ 26
-		include 'libs/procedure_ipd.php';
+		require_once 'libs/procedure_ipd.php';
 	}
 	
 	
 	if( $_POST['drug_ipd'] ){ 
 		// แฟ้มที่ 25
-		include 'libs/drug_ipd.php';
+		require_once 'libs/drug_ipd.php';
 	}
 	
 	if( $_POST['charge_ipd'] ){ 
 		// แฟ้มที่ 27
-		include 'libs/charge_ipd.php';
+		require_once 'libs/charge_ipd.php';
 	}
+
+	// ==== จบตัวเก่า
 	
 
 	// แฟ้มใหม่
