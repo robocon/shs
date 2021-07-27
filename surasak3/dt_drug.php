@@ -1533,7 +1533,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			echo "32,1eyhr*4";		
 		}else if($_GET["search"] == "6HIMINI"){  //ยาตาหมอเลอปรัชญ์
 			echo "100,1eyhr*4";		
-		}else if($_GET["search"] == "6VISL  " && $_SESSION['sIdname'] == 'md32166'){  //ยาตาหมอเลอปรัชญ์
+		}else if( preg_match("/(6VISL)/", $_GET["search"], $matchs) > 0 && $_SESSION['sIdname'] == 'md32166'){  //ยาตาหมอเลอปรัชญ์
 			echo "60,1eyhr*4";		
 		}else{
 			

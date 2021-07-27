@@ -276,7 +276,7 @@ elseif ($page==='step2')
     $file = $_FILES['file_csv'];
     if ( preg_match("/\.csv$/", $file['name'], $mathcs) === false OR empty($file['name']) )
     {
-        echo "อนุญาตเฉพาะไฟล์ .csv เท่านั้น";
+        echo "อนุญาตเฉพาะไฟล์ .csv เท่านั้น <br>".'<a href="lab_checkup_c19.php">กลับไปหน้าแรก</a>';
         exit;
     }
 

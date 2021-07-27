@@ -7,7 +7,7 @@ list($year, $month, $day) = explode('-', $thimonth);
 
 $dServ = ( $year - 543 ).$month.$day;
 
-$sql = "SELECT * FROM `43epi` WHERE `D_UPDATE` LIKE '$dServ%' ";
+$sql = "SELECT * FROM `43epi` WHERE `D_UPDATE` LIKE '$dServ%' GROUP BY `opday_id` ";
 $qEPI = mysql_query($sql, $db2) or die(mysql_error());
 $epiTXT = '';
 while ($item = mysql_fetch_assoc($qEPI)) { 
@@ -35,7 +35,7 @@ $custom_vaccine_list = array(
 );
 
 $c19_thDate = ($year-543)."-$month-$day";
-$sql_c19Patient = "SELECT *, CONCAT(`vaccine_name`,`vaccine_plant_no`) AS `custom_code` FROM `c19_patients` WHERE `date` LIKE '$c19_thDate%'";
+$sql_c19Patient = "SELECT *, CONCAT(`vaccine_name`,`vaccine_plant_no`) AS `custom_code` FROM `c19_patients` WHERE `date` LIKE '$c19_thDate%' GROUP BY `hn` ";
 $q_c19 = mysql_query($sql_c19Patient, $db2);
 while ($c19 = mysql_fetch_assoc($q_c19)) {
     
