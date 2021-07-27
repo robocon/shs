@@ -1,13 +1,10 @@
 <?php 
 require_once 'bootstrap.php';
 
-/**
- * @todo
- * [x] step1 สร้างฟอร์ม อัพโหลดไฟล์ 
- * [x] step2 เลือก labcode แล้วคอนเฟิร์ม
- * [x] ออก VN
- * [x] เพิ่มค่าใช้จ่ายใน depart กับ patdata
- */
+if (empty($_SESSION["sOfficer"])) {
+    redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
+    exit;
+}
 
 $dbi = new mysqli(HOST, USER, PASS, DB);
 $page = $_REQUEST['page'];
