@@ -51,7 +51,7 @@ $company = mysql_fetch_assoc($q);
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['company_name'];?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
 <div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?> จำนวน <?=$num;?> ราย</strong></div>
-<table width="100%" class="chk_table">
+<table width="200%" class="chk_table">
   <tr>
     <th width="3%" rowspan="2" align="center">ลำดับ</th>
     <th width="5%" rowspan="2" align="center">HN</th>
@@ -60,7 +60,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th colspan="31" align="center">รายการตรวจ</th>
+    <th colspan="32" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -98,6 +98,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">สมรรถภาพปอด</th>
     <th width="6%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th width="7%">ผลการได้ยิน</th>
     <th width="5%" align="center">พบแพทย์</th>
     <th width="6%" align="center">ไม่พบแพทย์</th>
   </tr>
@@ -110,6 +111,7 @@ while($result = mysql_fetch_array($out_result_sql)){
     $age = $result["age"];
     $cs = $result["cs"];
     $exam_no = $result["exam_no"];
+    $hearing = $result['hearing'];
 
     if(empty($result["HN"])){
         $result["HN"] = $result["hn"];
@@ -781,6 +783,14 @@ if($flag=="N"){
     // ต่อมลูกหมากโดยการคลำ
     if( !empty($result['psa']) ){
         echo $result['psa'];
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
+    // ผลการได้ยิน
+    if( !empty($hearing) ){
+        echo $hearing;
     }
     ?>
     </td>

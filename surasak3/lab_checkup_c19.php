@@ -6,32 +6,35 @@ if (empty($_SESSION["sOfficer"])) {
     exit;
 }
 
-$dbi = new mysqli(HOST, USER, PASS, DB);
+// $dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi = new mysqli('localhost','root','1234','smdb'); 
 $page = $_REQUEST['page'];
 $action = $_REQUEST['action'];
 
 function calcage($birth){
-
-	$today = getdate();   
-	$nY  = $today['year']; 
-	$nM = $today['mon'] ;
-	$bY=substr($birth,0,4)-543;
-	$bM=substr($birth,5,2);
-	$ageY=$nY-$bY;
-	$ageM=$nM-$bM;
-
-	if ($ageM<0) {
-		$ageY=$ageY-1;
-		$ageM=12+$ageM;
-	}
-
-    return $ageY;
+    $today = getdate();   
+    $nY  = $today['year']; 
+    $nM = $today['mon'] ;
+    $bY = substr($birth,0,4)-543;
+    $bM = substr($birth,5,2);
+    $ageY = $nY-$bY;
+    $ageM = $nM-$bM;
+    if ($ageM<0) {
+        $ageY = $ageY-1;
+        $ageM = 12+$ageM;
+    }
+    if ($ageM==0){
+        $pAge="$ageY ปี";
+    }else{
+        $pAge="$ageY ปี $ageM เดือน";
+    }
+    return $pAge;
 }
 
 if ($page === 'step3' && $action === 'save')
 {
-    redirect('lab_checkup_c19.php', 'แจ้งเตือน!!! โปรแกรมอยู่ในช่วงการพัฒนา เพื่อปรับปรุงUI(User Interface)');
-    exit;
+    // redirect('lab_checkup_c19.php', 'แจ้งเตือน!!! โปรแกรมอยู่ในช่วงการพัฒนา เพื่อปรับปรุงUI(User Interface)');
+    // exit;
 
     $labcode = $_POST['labcode'];
     $doctor = $_POST['doctor'];
@@ -42,6 +45,9 @@ if ($page === 'step3' && $action === 'save')
     $thidatetime = $thai_date.date(' H:i:s');
     $thdate = date('d-m-').(date('Y')+543);
     $toborow = 'EX93 ออก VN โดย LAB';
+
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+    $db_error = false;
 
     foreach ($_POST['hn'] as $key => $hn) {
         
@@ -182,7 +188,7 @@ if ($page === 'step3' && $action === 'save')
             $depart_runno = $q_depart_runno->fetch_assoc();
             $depart_chktranx = $depart_runno['runno']+1;
             $dbi->query("UPDATE `runno` SET `runno` = '$depart_chktranx' WHERE `title` = 'depart'");
-            
+
             $sql_insert_depart = "INSERT INTO `depart` (
                 `chktranx`,`date`,`ptname`,`hn`,`an`,`doctor`,
                 `depart`,`item`,`detail`,`price`,`sumyprice`,`sumnprice`,
@@ -207,11 +213,12 @@ if ($page === 'step3' && $action === 'save')
                 '$cDepart','$cPart','$depart_id','$cPtright',''
             );";
             $dbi->query($sql_insert_patdata);
+
         }
         
     } // end foreach
     
-    redirect('lab_checkup_c19.php', 'บันทึกข้อมูลเรียบร้อย');
+    redirect('lab_checkup_c19.php', $msg);
     exit;
 }
 
@@ -228,21 +235,26 @@ if ($page === 'step3' && $action === 'save')
     <title>โปรแกรมคิดเงินตรวจโควิดเชิงรุกของกำลังพลและครอบครัว</title>
 </head>
 <body>
+    <div class="w3-bar w3-dark-grey">
+        <a href="../nindex.htm" class="w3-bar-item w3-button w3-mobile w3-green">หน้าหลัก รพ.</a>
+        <a href="lab_checkup_c19.php" class="w3-bar-item w3-button w3-mobile w3-green">คิดเงินตรวจโควิดเชิงรุก</a>
+        <a href="lab_update_date.php" class="w3-bar-item w3-button w3-mobile w3-green">แก้ไขคิดเงินตรวจเชิงรุก</a>
+    </div>
+    <?php 
+    if($_SESSION['x-msg'])
+    {
+        ?>
+        <div class="w3-panel w3-pale-yellow">
+        <p><?=$_SESSION['x-msg'];?></p>
+        </div>
+        <?php 
+        $_SESSION['x-msg'] = NULL;
+    }
+    ?>
     <div class="w3-container">
         <h3>โปรแกรมคิดเงินตรวจโควิดเชิงรุกของกำลังพลและครอบครัว</h3>
     </div>
-    
 <?php 
-if($_SESSION['x-msg'])
-{
-    ?>
-    <div class="w3-panel w3-pale-yellow">
-    <p><?=$_SESSION['x-msg'];?></p>
-    </div>
-    <?php 
-    $_SESSION['x-msg'] = NULL;
-}
-
 if(empty($page))
 {
     ?>
@@ -273,7 +285,12 @@ elseif ($page==='step2')
     $file = $_FILES['file_csv'];
     if ( preg_match("/\.csv$/", $file['name'], $mathcs) === false OR empty($file['name']) )
     {
-        echo "อนุญาตเฉพาะไฟล์ .csv เท่านั้น <br>".'<a href="lab_checkup_c19.php">กลับไปหน้าแรก</a>';
+        ?>
+        <div class="w3-container">
+            <p>อนุญาตเฉพาะไฟล์ .csv เท่านั้น</p>
+            <p><a href="lab_checkup_c19.php">กลับไปหน้าแรก</a></p>
+        </div>
+        <?php
         exit;
     }
 
@@ -287,7 +304,7 @@ elseif ($page==='step2')
             $hn_lists[] = $hn;
         }
     }
-    
+
     ?>
     <div class="">
         <form action="lab_checkup_c19.php" method="post" class="w3-container" id="admin_form_confirm" onsubmit="return test_form_confirm()">
@@ -304,8 +321,8 @@ elseif ($page==='step2')
                     $i = 1;
                     foreach ($hn_lists as $key => $hn)
                     {
-                        $q_opcard = $dbi->query("SELECT `hn`, CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` , `ptright` FROM `opcard` WHERE `hn` = '$hn' ");
-                        $user = $q_opcard->fetch_assoc();
+                        $q_opcard2 = $dbi->query("SELECT `hn`, CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` , `ptright` FROM `opcard` WHERE `hn` = '$hn' ");
+                        $user = $q_opcard2->fetch_assoc();
                         ?>
                         <tr>
                             <td><?=$i;?></td>
@@ -323,7 +340,7 @@ elseif ($page==='step2')
                 </table>
             </div>
             <?php 
-            $q_labcare = $dbi->query("SELECT * FROM `labcare` WHERE `code` LIKE '%covid%'");
+            $q_labcare = $dbi->query("SELECT * FROM `labcare` WHERE `code` = 'AgCG1'");
             ?>
             <p>
                 <div class="w3-row-padding">

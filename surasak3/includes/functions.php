@@ -223,7 +223,7 @@ function getMonthValue($keyMatch){
 function getDateList($name = 'days', $match = null){
 	$def_day = range(1, 31);
 	?>
-	<select name="<?=$name;?>">
+	<select name="<?=$name;?>" id="<?=$name;?>">
 		<?php foreach($def_day as $key => $day): ?>
 		<?php $select = ( $match == $day ) ? 'selected="selected"' : '' ; ?>
 		<option value="<?=sprintf('%02d',$day);?>" <?=$select;?>><?=$day;?></option>
@@ -244,7 +244,7 @@ function getMonthList($name = 'months', $match = null, $class_name = false){
 		exit;
 	}
 	?>
-	<select name="<?=$name;?>" class="<?=$class_name;?>">
+	<select name="<?=$name;?>" class="<?=$class_name;?>" id="<?=$name;?>">
 		<?php foreach($def_month_th as $key => $month): ?>
 		<?php $select = ( $match == $key ) ? 'selected="selected"' : '' ; ?>
 		<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
@@ -253,20 +253,21 @@ function getMonthList($name = 'months', $match = null, $class_name = false){
 	<?php
 }
 
+// https://manual.phpdoc.org/HTMLSmartyConverter/HandS/phpDocumentor/tutorial_tags.param.pkg.html
 /**
  * แสดงปีเป็น Dropdown
- * $name	string	ชื่อของ input
- * $thai	bool	เป็นตัวบอกว่าจะให้แสดงเป็นปี พศ หรือไม่
- * $year	int		เป็นตัวกำหนดการแสดง selected
- * range	mixed	กำหนดค่าน้อยสุดไปจนถึงมากสุดโดยใช้ปี คศ เป็นหลัก
- *
- * @example
- * getYearList('new_name', true, 2558, array(2556,2557,2558,2559));
+ * @param string $name	ชื่อของ input
+ * @param bool $thai	เป็นตัวบอกว่าจะให้แสดงเป็นปี พศ หรือไม่
+ * @param int $year	เป็นตัวกำหนดการแสดง selected
+ * @param mixed $range	กำหนดค่าน้อยสุดไปจนถึงมากสุดโดยใช้ปี คศ เป็นหลัก
+ * @param string $class_name สามารถกำหนดชื่อคลาสให้กับ select ได้
+ *  
+ * @example getYearList('new_name', true, 2558, array(2556,2557,2558,2559));
  * เป็นการตั้งชื่อ input ชื่อ new_name แสดงเป็นปี พศ และแสดงปี 2558 เป็นค่าเริ่มต้นโดยมีช่วงการแสดงผลตั้งแต่ปี 2556 ถึง 2559
  */
 function getYearList($name = 'years', $thai = false, $year = null, $range = array(), $class_name = false){
 	?>
-	<select name="<?=$name;?>" class="<?=$class_name;?>">
+	<select name="<?=$name;?>" class="<?=$class_name;?>" id="<?=$name;?>">
 		<?php
 		if( !empty($range) ){
 			$y_min = min($range);
