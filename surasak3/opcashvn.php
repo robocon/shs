@@ -129,9 +129,10 @@ print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash.ph
   <th bgcolor=6495ED><font face='Angsana New'>รวมเงิน</th>
   <th bgcolor=F08080><font face='Angsana New'>เบิกไม่ได้</th>
   <th bgcolor=#99FF99><font face='Angsana New'>จ่ายเงิน</th>
-    <th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th> 
+   <th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th> 
 	<th bgcolor=#CC0000><font face='Angsana New'>ชำระโดย</th>
     <th bgcolor=6495ED><font face='Angsana New' size='1'>ออกopcard</th>
+    <th bgcolor=6495ED><font face='Angsana New' size='1'>เจ้าหน้าที่</th>
   </tr>
 
 <?php
@@ -139,12 +140,12 @@ print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash.ph
     $num=0;
     include("connect.inc");
   
-    $query = "SELECT date,ptname,hn,an,depart,detail,price,sumnprice,paid,row_id,accno,tvn,ptright FROM depart WHERE date LIKE '$today%' AND `hn` = '$hn_opday' and tvn='$vn' ";
+    $query = "SELECT date,ptname,hn,an,depart,detail,price,sumnprice,paid,row_id,accno,tvn,ptright,idname FROM depart WHERE date LIKE '$today%' AND `hn` = '$hn_opday' and tvn='$vn' ";
 	//echo $query;
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$sumnprice,$paid,$row_id,$accno,$tvn,$ptright) = mysql_fetch_row ($result)) {
+    while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$sumnprice,$paid,$row_id,$accno,$tvn,$ptright,$idname) = mysql_fetch_row ($result)) {
         $num++;
         $time=substr($date,11);
  $totalpri1=$totalpri1+$price;
@@ -208,6 +209,7 @@ $totalpaid1=$sumnprice;
 	       "  <td BGCOLOR=$color><font face='Angsana New' size='1'>$ptright</td>\n".
 		   "  <td BGCOLOR=$color3><font face='Angsana New' size='1'>$credit($billno)</td>\n".
 		   "  <td BGCOLOR=$color3><font face='Angsana New' size='1'>$toborow</td>\n".
+		    "  <td BGCOLOR=$color3><font face='Angsana New' size='1'>$idname</td>\n".
            " </tr>\n";
 		echo "<input name='sDate$num' value='$date' type='hidden' />";
 		echo "<input name='nhn' value='$hn' type='hidden' />";
