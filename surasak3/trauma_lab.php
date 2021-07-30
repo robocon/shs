@@ -24,7 +24,7 @@ function jschars($str)
 //************************** แสดงรายการยาให้เลือก  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
-	$sql = "Select code, detail From labcare where  (code like '%".$_GET["search"]."%' OR detail like '%".$_GET["search"]."%') AND part = 'lab' AND (left(codex,1) >='0' AND left(codex,1) <='9') Order by numbered ASC";
+	$sql = "Select code, detail,labtype From labcare where  (code like '%".$_GET["search"]."%' OR codex like '%".$_GET["search"]."%' OR detail like '%".$_GET["search"]."%') AND part = 'lab' AND (left(codex,1) >='0' AND left(codex,1) <='9') and labstatus = 'Y' and version !='OLD' Order by labtype ASC, numbered ASC";
 
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -34,7 +34,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 		echo "<table bgcolor=\"#FFFFCC\" width=\"700\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"20\"><font style=\"color: #FFFFFF\"></font></td>
-			<td width=\"368\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
+			<td width=\"300\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
+			<td width=\"80\"><font style=\"color: #FFFFFF\"><strong>ประเภท</strong></font></td>
 			<td width=\"24\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td>
 		</tr>";
 
@@ -50,14 +51,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
 				$arr["detail"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["detail"]);
 
+				if($arr["labtype"]=="OUT"){
+					$color="#0000FF";
+				}else{
+					$color="#00000";
+				}
 
-			echo "<tr bgcolor=\"$bgcolor\">
+			echo "<tr bgcolor=\"$bgcolor\" style=\"color:$color\">
 					<td >
 					<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)addtolist('".$arr["code"]."'); \" ondblclick=\"addtolist('".$arr["code"]."'); \">    </td>
 					<td bgcolor=\"$bgcolor\">",$arr["detail"],"</td>
+					<td bgcolor=\"$bgcolor\" align=\"right\">",$arr["labtype"],"</td>
 					<td colspan=\"2\"  bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 				</tr>
 					<tr bgcolor=\"#A45200\">
+					<td height=\"5\"></td>
 					<td height=\"5\"></td>
 					<td height=\"5\"></td>
 					<td height=\"5\"></td>
@@ -154,7 +162,7 @@ echo "<TR align=\"center\">
 
 //************************** แสดงรายการ lab  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
-	$sql = "Select detail, yprice, nprice From labcare where code = '".$_GET["code"]."' limit 1; ";
+	$sql = "Select detail, yprice, nprice From labcare where code = '".$_GET["code"]."' and labstatus = 'Y' AND version !='OLD' limit 1; ";
 	list($detail, $yprice, $nprice) = Mysql_fetch_row(Mysql_Query($sql));
 
 	array_push($_SESSION["list_code"],$_GET["code"]);
@@ -545,6 +553,31 @@ $i++;
 			echo "</TR><TR>";
 	}
 ?>
+</TR>
+<TR>
+	<TD colspan="2">
+	
+		<?php
+			$sql = "Select code, detail From labcare where left(code,3) ='@er' ";
+			$result = Mysql_Query($sql);
+			if(Mysql_num_rows($result) > 0){
+				echo "สูตร LAB<BR>";
+			while($arr = Mysql_fetch_assoc($result)){
+				$i=0;
+				$list = array();
+				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
+				//echo $sql2;
+				$result2 = Mysql_Query($sql2);
+				while($arr2 = Mysql_fetch_assoc($result2)){
+					$list[$i] = $arr2["code"];
+					$i++;
+				}
+
+				echo "<A HREF=\"#\" Onclick=\"addsuittolist('".implode("][",$list)."');\">".$arr["detail"]."</A><BR>";
+			}		
+			}
+		?>
+	</TD>
 </TR>
 </TABLE>
 </TD>

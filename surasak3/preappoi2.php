@@ -127,7 +127,7 @@ if( !$_POST['date_appoint'] ){
 
 // ถ้าเป็น POST ที่ส่งมาจาก preappoi1.php ให้เข้าเงื่อนไขในการตรวจสอบ
 // ถ้าคนคีย์ไม่ใช่พี่หล้าสูติ หรือ หมอที่นัดไม่ใช่หมอขชล ก็ยังให้เข้าเงื่อนไขตรวจสอบอยู่
-if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทรัพย์' OR $officer_name != 'กัลยรัตน์ ตาคำ' ) ){
+if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทรัพย์' OR $officer_name != 'กัลยรัตน์ ตาคำ' OR $officer_name != 'วิรัชรา เชื้อผาเต่า' ) ){
 	
 	global $doctor;
 	$doctor = trim($doctor);
