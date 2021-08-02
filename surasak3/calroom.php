@@ -42,14 +42,17 @@
 	    //echo "จำนวนวัน  $d วัน $h ชั่วโมง &nbsp;&nbsp;";
 	    $daysallstart= $dallstart;
 		
+		$prefix_bedcode = substr($bedcode, 0, 2);
 		
 		$query5 = "update bed SET days ='$daysallstart' where bedcode = '$bedcode'";
 				$result5 = mysql_query($query5) or die("Query failed,cannot update beddays");
 				
 		
-		$query3 = "Select my_food,doctor,diag,dcdate From ipcard where an = '$an' limit 1";
+		$query3 = "Select my_food,doctor,diag,dcdate,date From ipcard where an = '$an' limit 1";
 		$result3 = Mysql_Query($query3) or die(mysql_error());
-		list($myfood,$doctor,$diag,$dcdate) = Mysql_fetch_row($result3);
+		list($myfood,$doctor,$diag,$dcdate,$date_from_ipcard) = Mysql_fetch_row($result3);
+
+		list($ipcard_date,$ipcard_time) = explode(' ',$date_from_ipcard);
 		
 		if($dcdate=="0000-00-00 00:00:00"){
 			if($days>0){
@@ -140,11 +143,21 @@
 				$result4 = mysql_query($query4) or die("Query failed,cannot update bed in page calroom");
 				
 			} // end day > 0 
-
-
-			if($c19status=='y' && $oBedcode1 == '42')
+			
+			if($c19status=='y' && $prefix_bedcode == '42')
 			{
 				$shortThDate = (date("Y")+543).date("-m-d");
+
+				// คิดแค่วันแรกที่เกิน6ชั่วโมง
+				if($ipcard_date == $shortThDate)
+				{
+					// คิดเงินค่าห้อง ถ้าเวลาในตอนนี้ เกิน6โมงเย็นจะไม่คิดค่าห้อง
+					if($ipcard_time >= "18:00:00")
+					{
+						continue;
+					}
+				}
+
 				// ในวันนี้มีการเพิ่มไปแล้วรึยัง
 				$sql = "SELECT `row_id` FROM `ipacc` WHERE `date` LIKE '$shortThDate%' AND `an` = '$an' AND `code` = '21401' LIMIT 1";
 				$q_ipacc = mysql_query($sql);
