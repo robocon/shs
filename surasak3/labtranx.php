@@ -1,5 +1,4 @@
 <body Onload="window.print();">
-
 <?php
     session_start();
 
@@ -50,8 +49,9 @@ return $ageY;
     include("connect.inc");
 
 //เลข LAB
+echo "[ $cDepart ]";
 
-if ($cDepart == 'PATHO'){
+if($cDepart == 'PATHO'){
 
 $query = "SELECT runno, startday FROM runno WHERE title = 'lab'";
 $result = mysql_query($query) or die("Query failed");
@@ -105,7 +105,7 @@ if(!empty($cAn)){
 }
 
 if($cDepart == 'XRAY'){
-	echo "==>$cDiag---->$aDetail";
+	//echo "==>$cDiag---->$aDetail";
 	$sql = "Select xn From xrayno where hn = '".$cHn."' Order by row_id DESC limit 0,1 ";
 	list($xn) = mysql_fetch_row(mysql_query($sql));
 

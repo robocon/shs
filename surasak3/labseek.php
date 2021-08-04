@@ -366,8 +366,11 @@ $sql = "Select b.id, b.code From appoint as a, appoint_lab as b where appdate li
 		if($cDepart  == "PATHO" ){
 
 
-//$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
 $date_n1=$_SESSION['appyr']."-".$_SESSION['appmon']."-".$_SESSION['appday'];
+if(empty($date_n1) OR $date_n1 == '--')
+{
+	$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
+}
 $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' ";
 
 			$result1 = mysql_query($sql1) or die(mysql_error());

@@ -19,11 +19,11 @@ if(isset($sIdname)){} else {die;} //for security
 $paid = $_POST['paid'];
 $sNetprice = $_SESSION['sNetprice'];
 
-$paid=number_format($paid,2);
-$sNetprice=number_format($sNetprice,2);
-if($paid<>$sNetprice){
-	die("จ่ายเงินไม่เท่ากับราคารวม ไม่สามารถออกใบเสร็จรับเงินได้");
-}
+// $paid=number_format($paid,2);
+// $sNetprice=number_format($sNetprice,2);
+// if($paid<>$sNetprice){
+// 	die("จ่ายเงินไม่เท่ากับราคารวม ไม่สามารถออกใบเสร็จรับเงินได้");
+// }
 
 //echo "credit-->".$_POST["credit"];
 //echo "billcurchkup-->".$_POST["billcurchkup"];
@@ -38,7 +38,6 @@ $hn_now=$_POST['aHn'];
 $money_trust=$_POST['money_trust'];
 //function baht///
 function baht($nArabic){
-	$nArabic = str_replace(',', '', $nArabic);
     $cTarget = Ltrim($nArabic);
     $cLtnum="";
     $x=0;
@@ -184,9 +183,17 @@ $cRead = $cRead."บาท";
 ///end function baht
 
 include("connect.inc");
-	$sqlname = "select ptname from opday where hn = '".$hn_now."' and thidate like '%".substr($_SESSION['dDate'][0],0,10)."%' ";
+	$sqlname = "select ptname from opday,icd10 where hn = '".$hn_now."' and thidate like '%".substr($_SESSION['dDate'][0],0,10)."%' ";
 	$rowname = mysql_query($sqlname);
-	list($sPtname) = mysql_fetch_array($rowname);
+	list($sPtname,$icd10) = mysql_fetch_array($rowname);
+	
+	if(!empty($icd10)){
+		$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
+		//echo $query."<br>";
+		$result1 = mysql_query($query1) or die(mysql_error());
+		list($diag_thai) = mysql_fetch_array($result1);
+		
+	}	
 	
 for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	//insert into depart table
@@ -613,6 +620,16 @@ print "<font face='Angsana New' size='8' COLOR='#FF0033'>เงินทอน ".$current." บา
 		print "<tr>";
 //	print "<td width='100%'><font face='Angsana New' size='4'></td>";
 echo "<td width='45%'><font face='Angsana New'  size ='3'><b>โรค:</b></> ";
+
+
+if(!empty($diag_thai)){ //ถ้ามีการให้รหัสโรคของแพทย์ ให้เอาชื่อภาษาไทยมาแสดงในใบเสร็จรับเงิน แก้ไขวันที่ 6/1/64
+	if($icd10=="B24"){
+		echo "เชื้อราในสมอง";
+	}else{
+		echo $diag_thai;
+	}
+}else{
+
 if(count($_SESSION['tDiag'])==1){
 			$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
 			//echo $chksql;
@@ -647,6 +664,13 @@ if(count($_SESSION['tDiag'])==1){
 					}
 	//}
 }
+
+}
+
+
+
+
+
 //echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
 echo "</font></td>";
 	print "</tr>";
@@ -736,20 +760,24 @@ echo "</font></td>";
 		//begin แจงรายการถ้าไม่ใช่ค่าพยาธิ
 		//$Items=0;
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
-			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
+			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice,a.part FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
 			
 			$result = mysql_query($query) or die("patdata2 Query failed");
 			$count = mysql_num_rows($result);
 			if($count <= 16){
 				
-				while (list ($code,$detail,$amount, $price,$yprice,$nprice) = mysql_fetch_row ($result)) {
+				while (list ($code,$detail,$amount, $price,$yprice,$nprice,$part) = mysql_fetch_row ($result)) {
 					$Items++;
 					if($code=="58002"){
 					$detail1=substr($detail,0,13);
 					$detail2=substr($detail,18,25);
 					$detail = $detail1.$detail2;			
 					}else{
-					$detail = substr($detail,0,40);
+						if($part=="XRAY"){
+							$detail = "(".$code.")".substr($detail,0,40);	
+						}else{
+							$detail = substr($detail,0,40);						
+						}
 					}
 					print "<div align='left'>";
 					print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
@@ -784,19 +812,23 @@ echo "</font></td>";
 	 	//$Items=0;
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			//$query = "SELECT detail,amount,price,yprice,nprice FROM patdata WHERE  idno = '".$_SESSION['idnumber'][$r]."' and hn='".$hn_now."'  "; 
-			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
+			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice,a.part FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
 			
 			$result = mysql_query($query) or die("patdata2 Query failed");
 			$count = mysql_num_rows($result);
 			if($count <= 16){ //กำหนดให้ค่า LAB แสดงรายการได้ไม่เกิน 16 บรรทัด
-				while (list ($code,$detail,$amount, $price,$yprice,$nprice) = mysql_fetch_row ($result)) {
+				while (list ($code,$detail,$amount, $price,$yprice,$nprice,$part) = mysql_fetch_row ($result)) {
 					$Items++;
 					if($code=="58002"){
 					$detail1=substr($detail,0,13);
 					$detail2=substr($detail,18,25);
 					$detail = $detail1.$detail2;
 					}else{
-					$detail = substr($detail,0,40);
+						if($part=="XRAY"){
+							$detail = "(".$code.")".substr($detail,0,40);	
+						}else{
+							$detail = substr($detail,0,40);						
+						}
 					}
 					print "<div align='left'>";
 					print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
