@@ -31,6 +31,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "code"){
 		<td><strong>&nbsp;</strong></td>
 		<td><font style=\"color: #FFFFFF;\"><strong>รหัส</strong></font></td>
 		<td><font style=\"color: #FFFFFF;\"><strong>รายการ</strong></font></td>
+		<td><font style=\"color: #FFFFFF;\"><strong>ราคา</strong></font></td>
 		<td><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td>
 		</tr>";
 
@@ -39,7 +40,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "code"){
 		while($se = Mysql_fetch_assoc($result)){
 		echo "<tr>
 		<td valign=\"top\"></td>
-		<td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value='",trim($se["code"]),"';document.getElementById('list').innerHTML ='';\">",$se["code"],"</A></td><td>".$se['detail']."</td><td>&nbsp;</td></tr>";
+		<td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value='",trim($se["code"]),"';document.getElementById('list').innerHTML ='';\">",$se["code"],"</A></td><td>".$se['detail']."</td><td>".$se['price']."</td><td>&nbsp;</td></tr>";
 		}
 		
 		echo "</TABLE></Div>";
@@ -270,7 +271,8 @@ document.getElementById('aLink').focus();
   <th bgcolor=6495ED>รหัส</th>
   <th bgcolor=6495ED>รายการ</th>
   <th bgcolor=6495ED>ราคารวม</th>
-    <th bgcolor=6495ED>เบิกไม่ได้</th>
+  <th bgcolor=6495ED>เบิกได้</th>
+  <th bgcolor=6495ED>เบิกไม่ได้</th>
  </tr>
 
 <?php
@@ -278,16 +280,16 @@ document.getElementById('aLink').focus();
  If (!empty($_POST["code"])){
 
 	if($_POST["code"]=="12723" && $_POST["amount"]=="2500" && $_SESSION["cPtright"]=="R07 ประกันสังคม"){
-    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '12723-sso') AND labstatus ='Y'";	
+    $query = "SELECT code,depart,detail,price,yprice,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '12723-sso') AND labstatus ='Y'";	
 	}else if($_POST["code"]=="12723"){
-    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
+    $query = "SELECT code,depart,detail,price,yprice,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
 	}else{   
-    $query = "SELECT code,depart,detail,price,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '".$_POST["code"]."%') AND labstatus ='Y' and version !='OLD'";
+    $query = "SELECT code,depart,detail,price,yprice,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '".$_POST["code"]."%') AND labstatus ='Y' and version !='OLD'";
 	}
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($code,$depart,$detail,$price,$nprice) = mysql_fetch_row ($result)) {
+    while (list ($code,$depart,$detail,$price,$yprice,$nprice) = mysql_fetch_row ($result)) {
 		if(isset($_SESSION["list_codeed"][$code])){
 			$color = "#FF6464";
 		}else{
@@ -299,9 +301,11 @@ document.getElementById('aLink').focus();
            "  <td BGCOLOR='$color'>");
 		   print $detail;
 $priceall1=$price*$amount;
+$ypriceall1=$yprice*$amount;
 $npriceall1=$nprice*$amount;
 		   print ("</td>\n".
            "  <td BGCOLOR='$color'>$priceall1</td>\n".
+		   "  <td BGCOLOR='$color'>$ypriceall1</td>\n".
 			   "  <td BGCOLOR='$color'>$npriceall1</td>\n".
            " </tr>\n");
 		}
