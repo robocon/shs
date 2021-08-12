@@ -26,7 +26,7 @@
 
 
 		$_SESSION["num_list"] = 0;
-		$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
+		$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
 		
 		$result = Mysql_Query($sql);
 		while($arr = Mysql_fetch_assoc($result)){
@@ -251,6 +251,9 @@ $list_status_drug["OLD"] = "ยาเดิม";
 $sqlslcode  = "select * from drugslip where slcode ='".$_SESSION["list_druglst"]["slcode"][$j]."' ";
 $rowssl = mysql_query($sqlslcode);
 $resultsl = mysql_fetch_array($rowssl);
+if($resultsl["slcode"]=="1*1ad"){
+	echo "<script>alert('ผู้ป่วยรับประทานยาวันเว้นวัน โปรดใช้ความระมัดระวังในการตัดจ่ายยา');</script>";
+}
 //<br><font size='2'>(".$resultsl['detail1']." ".$resultsl['detail2']." ".$resultsl['detail3'].")</font>
 echo "
 <TR bgcolor=\"",$bgcolor,"\">

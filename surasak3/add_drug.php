@@ -1,10 +1,23 @@
 <?php
-    session_start();
+session_start();
+include("connect.inc");
+
+	$sql = "SELECT an,drugcode,tradname,firstdate,enddate  FROM `dgprofile`  where an='".$_GET["an"]."' and statcon = 'CONT' and onoff='ON' and enddate='".date("Y-m-d")."'";
+	//echo $sql;
+	$result = mysql_query($sql);
+	$num = mysql_num_rows($result);
+	$rows=mysql_fetch_array($result);
+	$show_an=$rows["an"];
+	if($num > 0){
+			echo "<script>alert('ผู้ป่วย AN : $show_an มียาที่ครบกำหนด Cont ยาในวันนี้จำนวน $num รายการ');</script>";
+	}
 
 if(isset($_GET["action"]) && ($_GET["action"] == "drug_interaction" || $_GET["action"] == "drug_alert")){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
-	 include("connect.inc");
+
+
+
 
 if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 	
@@ -89,6 +102,8 @@ if(isset($_POST["Save_dgprofile"]) && $_POST["Save_dgprofile"] == "บันทึกข้อมูลใ
 			$w["statcon"][$i] = $_SESSION["list_druglst"]["statcon"][$j];
 			$w["amount"][$i] = $_SESSION["list_druglst"]["amount"][$j];
 			$w["row_id"][$i] = $_SESSION["list_druglst"]["row_id"][$j];
+			$w["firstdate"][$i] = $_SESSION["list_druglst"]["firstdate"][$j];			
+			$w["enddate"][$i] = $_SESSION["list_druglst"]["enddate"][$j];			
 			$i++;
 
 		}
@@ -106,7 +121,7 @@ $Thidate = (date("Y")+543).date("-m-d H:i:s");
 	";
 */
 	
-	$sql2 = "INSERT INTO dgprofile(date,an,drugcode,tradname,unit,salepri,freepri,amount,price,slcode,part,statcon,onoff,dateoff,officer )VALUES ";
+	$sql2 = "INSERT INTO dgprofile(date,an,drugcode,tradname,unit,salepri,freepri,amount,price,slcode,part,statcon,onoff,dateoff,officer,firstdate,enddate )VALUES ";
 	
 	$add_status = false;
 
@@ -118,14 +133,14 @@ $Thidate = (date("Y")+543).date("-m-d H:i:s");
 			list($salepri, $freepri, $part, $unit, $tradname) = Mysql_fetch_row(Mysql_Query($sql));
 
 		 $sql2 .= "
-			('".$Thidate."','".$_GET["an"]."','".$_SESSION["list_druglst"]["drugcode"][$j]."','".$tradname."','".$unit."','".$salepri."','".$freepri."', '".$_SESSION["list_druglst"]["amount"][$j]."','".($salepri * $_SESSION["list_druglst"]["amount"][$j])."','".$_SESSION["list_druglst"]["slcode"][$j]."','".$part."','".$_SESSION["list_druglst"]["statcon"][$j]."','ON','','".$_SESSION["sOfficer"]."'), ";  
+			('".$Thidate."','".$_GET["an"]."','".$_SESSION["list_druglst"]["drugcode"][$j]."','".$tradname."','".$unit."','".$salepri."','".$freepri."', '".$_SESSION["list_druglst"]["amount"][$j]."','".($salepri * $_SESSION["list_druglst"]["amount"][$j])."','".$_SESSION["list_druglst"]["slcode"][$j]."','".$part."','".$_SESSION["list_druglst"]["statcon"][$j]."','ON','','".$_SESSION["sOfficer"]."', '".$_SESSION["list_druglst"]["firstdate"][$j]."', '".$_SESSION["list_druglst"]["enddate"][$j]."'), ";  
 			
 			$i++;
 		}
 	}
 		
 		$sql2 = substr($sql2,0,-2);
-
+		//echo $sql2."<br>";
 		if($add_status == true)
 			$result = Mysql_Query($sql2);
 		else
@@ -158,7 +173,7 @@ exit();
 
 		$_SESSION["num_list"] = 0;
 
-		$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
+		$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
 
 
 		$result = Mysql_Query($sql);
@@ -171,6 +186,8 @@ exit();
 			$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
 			$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $arr["amount"];
 			$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
+			$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $arr["firstdate"];
+			$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $arr["enddate"];
 
 
 			$_SESSION["num_list"]++;
@@ -188,8 +205,8 @@ a:visited {color:#FF0000; text-decoration:underline;}
 a:active {color:#FF0000; text-decoration:underline;}
 a:hover {color:#FF0000; text-decoration:underline;}
 body,td,th {
-font-family:  MS Sans Serif;
-font-size: 16 px;
+	font-family:  TH SarabunPSK;
+	font-size: 18px;
 }
 .font_title{
 	font-family:  MS Sans Serif;
@@ -213,12 +230,30 @@ line-height:20px;
 
 }
 
+.txtsarabun {
+font-family:"TH SarabunPSK";
+font-size:20px;
+}	
+
+
+body {
+	background-color: #FFFFF0;
+	font-family:  TH SarabunPSK;
+	font-size: 18px;
+}
 </style>
+<link rel="stylesheet" type="text/css" href="epoch_styles.css" />
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script type="text/javascript" src="epoch_classes_korsor.js"></script>
+<script type="text/javascript">
+var bas_cal,dp_cal,ms_cal;
 
+window.onload = function () {
+	dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('firstdate'));
+	dp_cal  = new Epoch1('epoch_popup','popup',document.getElementById('enddate'));
+};
+</script>
 <SCRIPT LANGUAGE="JavaScript">
-
-
-
 function newXmlHttp(){
 	var xmlhttp = false;
 
@@ -324,6 +359,8 @@ function clearData(){
 	document.getElementById('unit').value = "";
 	document.getElementById('unit2').value = "";
 	document.getElementById('statcon').options[0].selected = true;
+	document.getElementById('firstdate').value = "";
+	document.getElementById('enddate').value = "";	
 
 }
 
@@ -339,6 +376,8 @@ function add_session(){
 		var statcon;
 		var tradname;
 		var part;
+		var firstdate;
+		var enddate;
 		an = '<?php echo $_GET["an"];?>';
 		drugcode = document.getElementById('drugcode').value;
 		drugcode = encodeURI(drugcode);
@@ -348,12 +387,14 @@ function add_session(){
 		part = document.getElementById('unit2').value;
 		amount = document.getElementById('amount').value;
 		statcon = document.getElementById('statcon').value;
+		firstdate = document.getElementById('firstdate').value;
+		enddate = document.getElementById('enddate').value;		
 	
 		if(drug_alert(document.getElementById('drugcode').value)){ //ตรวจสอบการแพ้ยา
 		if(drug_interaction(document.getElementById('drugcode').value)){ //ตรวจสอบ drug interaction
 
 		action = "add";
-		url = 'listAjax.php?action='+action+'&drugcode='+drugcode+'&tradname='+tradname+'&slcode='+slcode+'&amount='+amount+'&statcon='+statcon+'&part='+part+'&an='+an;
+		url = 'listAjax.php?action='+action+'&drugcode='+drugcode+'&tradname='+tradname+'&slcode='+slcode+'&amount='+amount+'&statcon='+statcon+'&part='+part+'&an='+an+'&firstdate='+firstdate+'&enddate='+enddate;
 
 		xmlhttp = newXmlHttp();
 		xmlhttp.open("GET", url, false);
@@ -493,7 +534,7 @@ function drug_interaction(drugcode){
 }
 
 </SCRIPT>
-</head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-874"></head>
 <body>
 
 <!-- div Drug List -->
@@ -510,14 +551,14 @@ function drug_interaction(drugcode){
 <BR>
 
 
-<TABLE id="layer2" border = 1 bordercolor="#3300FF"  cellpadding="0" cellspacing="0">
+<TABLE id="layer2" border = 1 bordercolor="009688"  cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
 	<CENTER>รายการยาที่เคยจ่าย</CENTER>
 <TABLE>
 <TR align="center" bgcolor="#3300FF" class="font_title">
-	<TD width="200"><FONT COLOR="#FFFFFF"><B>รหัสยา</B></FONT></TD>
-	<TD width="150"><FONT COLOR="#FFFFFF"><B>วิธีใช้</B></FONT></TD>
+	<TD width="200" bgcolor="009688"><FONT COLOR="#FFFFFF"><B>รหัสยา</B></FONT></TD>
+	<TD width="150" bgcolor="009688"><FONT COLOR="#FFFFFF"><B>วิธีใช้</B></FONT></TD>
 </TR>
 <?php
 
@@ -702,34 +743,46 @@ echo "<TR>
 ?>
 
 <BR>
-<TABLE align="center"  border="1" bordercolor="#3300FF" cellspacing="0" cellpadding="0" width="80%">
+<TABLE align="center"  border="1" bordercolor="009688" cellspacing="0" cellpadding="0" width="80%">
 <TR>
 	<TD>
-<TABLE width="100%" align="center">
-<TR bgcolor="#3300FF">
-	<TD align="center" colspan="6"><FONT COLOR="#FFFFFF"><B>รายละเอียดผู้ป่วย</B></FONT></TD>
+<TABLE width="100%" align="center" cellpadding="6" cellspacing="3">
+<TR bgcolor="009688">
+	<TD height="46" colspan="6" align="center"><FONT COLOR="#FFFFFF"><B>รายละเอียดผู้ป่วยใน</B></FONT></TD>
 </TR>
 <TR>
-	<TD align="right">AN : </TD>
-	<TD bgcolor="#FFFFBC"><a href="med_phar.php?fill_an=<?=$arr["an"];?>" target="_blank"><?=$arr["an"];?></a></TD>
-	<TD align="right">HN : </TD>
-	<TD bgcolor="#FFFFBC"><?php echo $arr["hn"];?></TD>
-	<TD align="right">ชื่อ-สกุล : </TD>
-	<TD bgcolor="#FFFFBC"><?php echo $arr["ptname"];?></TD>
+	<TD align="right" bgcolor="#009688"><strong>AN : </strong></TD>
+	<TD bgcolor="#00CC99"><a href="med_phar.php?fill_an=<?=$arr["an"];?>" target="_blank"><?=$arr["an"];?></a></TD>
+	<TD align="right" bgcolor="009688"><strong>HN : </strong><div id="listdrugcode" style="position: absolute; text-align: left; width:600px; height:100px; overflow:auto;"></div>		
+</TD>
+	<TD bgcolor="#00CC99"><?php echo $arr["hn"];?></TD>
+	<TD align="right" bgcolor="#009688"><strong>ชื่อ-สกุล : </strong></TD>
+	<TD bgcolor="#00CC99"><?php echo $arr["ptname"];?></TD>
 </TR>
 <TR>
-	<TD align="right">หอผู้ป่วย : </TD>
-	<TD bgcolor="#FFFFBC"><?php echo $build[substr($arr["bedcode"],0,2)];?></TD>
-	<TD align="right">สิทธิ์ : </TD>
-	<TD bgcolor="#FFFFBC"><?php echo $arr["ptright"];?></TD>
-	<TD align="right">แพทย์ : </TD>
-	<TD bgcolor="#FFFFBC"><?php echo $arr["doctor"];?></TD>
+	<TD align="right" bgcolor="#009688"><strong>หอผู้ป่วย : </strong></TD>
+	<TD bgcolor="#00CC99"><?php echo $build[substr($arr["bedcode"],0,2)];?></TD>
+	<TD align="right" bgcolor="009688"><strong>สิทธิ์ : </strong></TD>
+	<TD bgcolor="#00CC99"><?php echo $arr["ptright"];?></TD>
+	<TD align="right" bgcolor="#009688"><strong>แพทย์ : </strong></TD>
+	<TD bgcolor="#00CC99"><?php echo $arr["doctor"];?></TD>
 </TR>
 </TABLE>
 </TD>
 </TR>
 </TABLE>
-
+<?
+$chkdate=(date("Y")+543)."".date("-m-d");
+$sql1="select * from phardep where hn = '".$arr["hn"]."' and date like '$chkdate%' and an is null ";
+//echo $sql1;
+$query1=mysql_query($sql1);
+$num=mysql_num_rows($query1);
+$result=mysql_fetch_array($query1);
+$lastdate=$result["date"];
+if($num >0){
+echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมีประวัติการจ่ายยา OPD CASE ล่าสุดเมื่อ $lastdate</strong></p>";
+}
+?>
 <TABLE align="center"   cellspacing="4" cellpadding="0" width="80%">
 <TR>
 	<TD>
@@ -749,63 +802,68 @@ echo "<TR>
 </TR>
 </TABLE>
 
-<BR><BR>
-
-
-	<TABLE align="center">
+<div align="center" ><BR>
+</div>
+<TABLE width="55%" align="center" cellpadding="6" cellspacing="3">
 	<TR>
-		<TD>รหัสยา : 
-		</TD>
-		<TD>
-		<INPUT TYPE="text" ID = "drugcode" NAME="drugcode" size="13" onKeyPress="searchSuggest('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }"
-		onfocus="document.getElementById('listdrugcode').innerHTML = '';"
-		>
-		</TD>
-		<TD>ชื่อยา : 
-		</TD>
-		<TD><INPUT TYPE="text" ID = "drugname" NAME="drugname"  size="20" onKeyPress="submit_button('drugcode');" onFocus="document.getElementById('listdrugcode').innerHTML = '';" readonly></TD>
-		<TD>วิธีใช้ : 
-		</TD>
-		<TD><INPUT TYPE="text" ID = "drugslip" NAME="drugslip" size="10"  onkeypress="searchSuggest('drugslip',this.value);" onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }"
-		onfocus="document.getElementById('listdrugcode').innerHTML = '';"
+		<TD width="14%"><strong>รหัสยา : 
+		</strong></TD>
+	  <TD width="17%">
+		<INPUT NAME="drugcode" TYPE="text" class="txtsarabun" ID = "drugcode"
+		onfocus="document.getElementById('listdrugcode').innerHTML = '';" onKeyPress="searchSuggest('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="13" autofocus>		</TD>
+		<TD width="14%"><strong>ชื่อยา :		</strong></TD>
+		<TD width="25%"><INPUT NAME="drugname" TYPE="text" class="txtsarabun" ID = "drugname" onFocus="document.getElementById('listdrugcode').innerHTML = '';" onKeyPress="submit_button('drugcode');"  size="25" readonly></TD>
+		<TD width="15%"><strong>วิธีใช้ :		</strong></TD>
+		<TD width="15%"><INPUT NAME="drugslip" TYPE="text" class="txtsarabun" ID = "drugslip"
+		onfocus="document.getElementById('listdrugcode').innerHTML = '';"  onkeypress="searchSuggest('drugslip',this.value);" onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="11"
 		></TD>
 	</TR>
 	<TR>
-		<TD>จำนวน : 
-		</TD>
-		<TD><INPUT TYPE="text" ID="amount" NAME="amount" size="4"  onkeypress="submit_button('amount');" onFocus="document.getElementById('listdrugcode').innerHTML = '';">
-		<BR><div id="listdrugcode" style="position: absolute;text-align: left; width:600px; height:100px; overflow:auto; "></div>
-		</TD>
-		<TD>หน่วย : 
-		</TD>
-		<TD><INPUT TYPE="text" ID="unit" NAME="unit"  size="5" onKeyPress="submit_button('amount');" onFocus="document.getElementById('listdrugcode').innerHTML = '';" readonly> 
-		ประเภท:
-		<INPUT TYPE="text" ID="unit2" NAME="unit2"  size="5"  onFocus="document.getElementById('listdrugcode').innerHTML = '';" readonly></TD>
-		<TD>สถานะ : 
-		</TD>
+		<TD><strong>จำนวน : 
+		</strong></TD>
+	  <TD><INPUT NAME="amount" TYPE="text" class="txtsarabun" ID="amount" onFocus="document.getElementById('listdrugcode').innerHTML = '';"  onkeypress="submit_button('amount');" size="4"></TD>
+		<TD><strong>หน่วย :		</strong></TD>
+		<TD><INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onFocus="document.getElementById('listdrugcode').innerHTML = '';" onKeyPress="submit_button('amount');"  size="5" readonly> 
+		<strong>ประเภท:</strong>
+		<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"  onFocus="document.getElementById('listdrugcode').innerHTML = '';"  size="5" readonly></TD>
+		<TD><strong>สถานะ :		</strong></TD>
 		<TD>
-						<SELECT ID="statcon" NAME="statcon"  onkeypress="submit_button('statcon');" >
-							<OPTION VALUE="" SELECTED>-- สถานะ --</OPTION>
+						<SELECT NAME="statcon" class="txtsarabun" ID="statcon"  onkeypress="submit_button('statcon');" >
+					    <OPTION VALUE="" SELECTED>-- สถานะ --</OPTION>
 							<OPTION VALUE="STAT1">STAT</OPTION>
 							<OPTION VALUE="STAT">จ่ายวันเดียว</OPTION>
-							<OPTION VALUE="CONT">ยา continuen</OPTION>
+							<OPTION VALUE="CONT">ยา continue</OPTION>
 							<OPTION VALUE="OLD">ยาเดิม</OPTION>
-						</SELECT>
-		</TD>
+						</SELECT>		</TD>
 	</TR>
 	<TR>
-		<TD colspan="6" align="center">
-			<INPUT ID="button_submit" TYPE="button" VALUE=" ตกลง " ONCLICK="add_session();">
-			<INPUT TYPE="button" VALUE=" เลือกผู้ป่วยใหม่ " ONCLICK="window.location.href='enddrugprofile.php';">
-			<INPUT TYPE="button" VALUE=" ข้อมูลการจ่ายยา " ONCLICK="window.open('rp_profile.php?an=<?php echo $arr["an"];?>&month=<?php echo date("m");?>&year=<?php echo (date("Y")+543);?>&date=<?php echo date("dmy");?>','_blank');">
-			
-		</TD>
-	</TR>
-	</TABLE><BR>
+	  <TD colspan="6" align="center"><table width="90%" border="0" cellspacing="2" cellpadding="4">
+        <TR>
+          <TD align="center"><strong>วันที่เริ่มต้น : </strong>            &nbsp;
+            <input name="firstdate" type="text" class="txtsarabun" id="firstdate" size="15" placeholder="Ex. 2021-01-01">
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่สิ้นสุด : </strong>
+            &nbsp;
+          <input name="enddate" type="text" class="txtsarabun" id="enddate" size="15" placeholder="Ex. 2021-01-07"></TD>
+        </TR>
+        
+      </table></TD>
+  </TR>
+	<TR>
+		<TD height="50" colspan="6" align="center" valign="bottom">
+			<INPUT ID="button_submit" TYPE="button" class="txtsarabun" VALUE=" เพิ่มข้อมูล " ONCLICK="add_session();">&nbsp;&nbsp;&nbsp;
+			<INPUT TYPE="button" class="txtsarabun" VALUE=" เลือกผู้ป่วยใหม่ " ONCLICK="window.location.href='enddrugprofile.php';">&nbsp;&nbsp;&nbsp;
+			<INPUT TYPE="button" class="txtsarabun" VALUE=" ข้อมูลการจ่ายยา " ONCLICK="window.open('rp_profile.php?an=<?php echo $arr["an"];?>&month=<?php echo date("m");?>&year=<?php echo (date("Y")+543);?>&date=<?php echo date("dmy");?>','_blank');">&nbsp;&nbsp;&nbsp;
+            <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" /></TD>
+  </TR>
+	</TABLE>
+<BR>
 	<div align="center"><a href="add_drugold.php?an=<?=$_GET["an"];?>" target="_blank">เพิ่มยาเดิม (นอกโรงพยาบาล)</a></div>
 <BR><BR>
 
-<CENTER>[ รายการยา ]</CENTER><BR>
+<CENTER>
+  <strong>[ รายการยา ]</strong>
+</CENTER>
+<BR>
 <?php
 	$sql = "Select date_format(date,'%d/%m/%Y') as dateform From dgprofile  where an = '".$_GET["an"]."' Order by date DESC limit 0,1 ";
 	$result = Mysql_Query($sql);
@@ -814,19 +872,19 @@ echo "<TR>
 	echo "<DD>วันที่ปรับปรุงล่าสุด : ",$arr["dateform"],"<BR><BR>";
 ?>
 <div id = "show_druglst">
-<TABLE align="center"  border="1" bordercolor="#3300FF" cellspacing="0" cellpadding="0" width="85%">
+<TABLE align="center"  border="1" bordercolor="009688" cellspacing="0" cellpadding="0" width="85%">
 <TR>
 	<TD>
 <TABLE width="100%">
 <TR bgcolor="#3300FF" class="font_title" align="center">
-	<TD>รหัสยา</TD>
-	<TD>ชื่อยา</TD>
-    <TD>ประเภท</TD>
-	<TD>วิธีใช้</TD>
-	<TD>จำนวน</TD>
-	<TD>สถานะ</TD>
-	<TD>OFF / ลบ</TD>
-	<TD>แก้ไข</TD>
+	<TD bgcolor="009688">รหัสยา</TD>
+	<TD bgcolor="009688">ชื่อยา</TD>
+    <TD bgcolor="009688">ประเภท</TD>
+	<TD bgcolor="009688">วิธีใช้</TD>
+	<TD bgcolor="009688">จำนวน</TD>
+	<TD bgcolor="009688">สถานะ</TD>
+	<TD bgcolor="009688">OFF / ลบ</TD>
+	<TD bgcolor="009688">แก้ไข</TD>
 </TR>
 <?php
 
@@ -841,26 +899,40 @@ $list_status_drug["OLD"] = "ยาเดิม";
 for($j=0;$j<$_SESSION["num_list"];$j++){
 
 	if($_SESSION["list_druglst"]["statcon"][$j] == "CONT")
-		$bgcolor = "#99FFFF";
+		$bgcolor = "#00CC99";
 	else
 		$bgcolor = "#FFFFCC";
 		
+
+	$sql = "SELECT an,drugcode,tradname,firstdate,enddate  FROM `dgprofile`  where an='".$_GET["an"]."' and statcon = 'CONT' and onoff='ON' and enddate='".date("Y-m-d")."' and drugcode='".$_SESSION["list_druglst"]["drugcode"][$j]."'";
+	//echo $sql;
+	$result = mysql_query($sql);
+	$num = mysql_num_rows($result);
+	$rows=mysql_fetch_array($result);
+
+
 //$list_status_drug[$_SESSION["list_druglst"]["statcon"][$j]];
 echo "
 <TR bgcolor=\"",$bgcolor,"\">
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
 	<TD>",$_SESSION["list_druglst"]["tradname"][$j],"</TD>
 	<TD>",$_SESSION["list_druglst"]["part"][$j],"</TD>
-	<TD><INPUT TYPE=\"text\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
-	<TD ><INPUT TYPE=\"text\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";
+	<TD><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
+	<TD ><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";
 	?>
 	<TD align="center">
-    <select name="statusdrug<?=$j?>" id="statusdrug<?=$j?>">
+    <select name="statusdrug<?=$j?>" class="txtsarabun" id="statusdrug<?=$j?>">
     <option value="STAT1" <? if($_SESSION["list_druglst"]["statcon"][$j]=="STAT1"){ echo "selected";}?>>Stat</option>
     <option value="STAT" <? if($_SESSION["list_druglst"]["statcon"][$j]=="STAT"){ echo "selected";}?>>One day</option>
     <option value="CONT" <? if($_SESSION["list_druglst"]["statcon"][$j]=="CONT"){ echo "selected";}?>>Continue</option>
     <option value="OLD" <? if($_SESSION["list_druglst"]["statcon"][$j]=="OLD"){ echo "selected";}?>>ยาเดิม</option>
-    </select></TD>
+    </select>
+    <?php
+	if($num >0){
+    echo "<div style=\"color:#FF0000; font-size: 16px;\"><strong>ครบกำหนด CONT ยา</strong></div>";
+	}
+	?>
+</TD>
     <?
 	
 	echo "<TD align=\"center\">",(
@@ -878,11 +950,12 @@ echo "
 </TD>
 </TR>
 </TABLE>
+<br>
 <?php
 if($_SESSION["num_list"] > 0)
 	echo "
 	<FORM METHOD=POST ACTION=\"\">
-	<CENTER><INPUT TYPE=\"submit\" Name=\"Save_dgprofile\"  VALUE=\"บันทึกข้อมูลใน DrugProfile\" ></CENTER>
+	<CENTER><INPUT TYPE=\"submit\" class=\"txtsarabun\" Name=\"Save_dgprofile\"  VALUE=\"บันทึกข้อมูลใน DrugProfile\" ></CENTER>
 	</FORM>";
 ?>
 </div>
