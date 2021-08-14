@@ -382,6 +382,8 @@ if ($page=='search')
             <table class="chk_table">
                 <tr>
                     <th>#</th>
+                    <th>ID</th>
+                    <th>ID NO</th>
                     <th>วันที่</th>
                     <th>code</th>
                     <th>depart</th>
@@ -395,6 +397,8 @@ if ($page=='search')
                     ?>
                     <tr>
                         <td><?=$i;?></td>
+                        <td><?=$item['row_id'];?></td>
+                        <td><?=$item['idno'];?></td>
                         <td><?=$item['date'];?></td>
                         <td><?=$item['code'];?></td>
                         <td><?=$item['depart'];?></td>
