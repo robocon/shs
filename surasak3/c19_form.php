@@ -294,8 +294,12 @@ elseif ($load_page=='load_edit_form')
             <p><b>ÇÑ¤«Õ¹â¤ÇÔ´ 19</b></p>
             <div class="w3-row-padding">
                 <?php 
+                // DATA FROM : https://cvp1.moph.go.th/api/LookupTable?table_name=vaccine_manufacturer
                 $manufacturer_lists = array(
-                    '1' => 'AstraZeneca', '7' => 'Sinovac Life Sciences'
+                    '1' => 'AstraZeneca', 
+                    '7' => 'Sinovac Life Sciences',
+                    '6' => 'Pfizer, BioNTech',
+                    '8' => 'Sinopharm'
                 );
                 foreach ($manufacturer_lists as $key => $fac) { 
                     $checked = ('Sinovac Life Sciences'==$fac) ? 'checked="checked"' : '' ;
@@ -332,7 +336,7 @@ elseif ($load_page=='load_edit_form')
             <div class="w3-row-padding">
 
                 <?php 
-                $plan_count_list = array(1,2);
+                $plan_count_list = array(1,2,3);
                 foreach ($plan_count_list as $key => $plan) {
                     $plan_checked = (1==$plan) ? 'checked="checked"' : '';
                     ?>
