@@ -960,6 +960,8 @@ function fncSubmit(strPage)
         <option selected="selected">ห้อง CT SCAN (ตรวจมวลกระดูก)</option>
         <? } ?>
 		<option>ห้องตรวจเฉพาะโรค</option>
+		<option>แผนกตรวจสุขภาพ</option>
+		<option>คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)</option>
         </select>
       </font><font face="Angsana New" size = '4'><font face="Angsana New"></font></font></font><font face="Angsana New" size = '4'><font face="Angsana New">เวลา<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
 	   
@@ -1126,6 +1128,7 @@ function fncSubmit(strPage)
 	<? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
        <option selected="selected">U28&nbsp; ตรวจมวลกระดูก</option>
      <? } ?>
+	 <option>U29&nbsp;แผนกตรวจสุขภาพ</option>
     </select>
   </font></td>
   <td>&nbsp;</td>

@@ -209,6 +209,7 @@ $doctor111 =substr($_POST['dr'],0,5);
 		<option>10:30 &#3609;.</option>
 		<option>11:00 &#3609;.</option>
 		<option>11:30 &#3609;.</option>
+		<option>12:30 &#3609;.</option>
 		<option>13:00 &#3609;.</option>
 		<option>13:30 &#3609;.</option>
 		<option>14:00 &#3609;.</option>
