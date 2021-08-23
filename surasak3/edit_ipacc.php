@@ -6,7 +6,8 @@ if (empty($_SESSION["sOfficer"])) {
     exit;
 }
 
-$dbi = new mysqli(HOST,USER,PASS,DB);
+// $dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
 
 $action = $_REQUEST['action'];
 $page = $_REQUEST['page'];
@@ -437,7 +438,7 @@ if($_SESSION['x-msg'])
 </fieldset>
 
 <fieldset class="clearfix">
-    <legend>ยกเลิกค่าห้อง</legend>
+    <legend>แก้ไข/ยกเลิก ค่าห้อง</legend>
     <form action="edit_ipacc.php" method="post">
         <table>
             <tr>
@@ -461,9 +462,7 @@ if($_SESSION['x-msg'])
 if ($page=='search')
 { 
     require_once 'class_file/InPatient.php';
-
     
-
     $an = $_REQUEST['an'];
 
     // $ipc = new InPatient();
@@ -482,9 +481,9 @@ if ($page=='search')
 
 
     $sql_ipacc = "SELECT * FROM `ipacc` WHERE `an` = '$an' AND ( `part` = 'NCARE' OR `part` = 'BFY' ) ORDER BY `date` ASC";
-    echo "<pre>";
-    var_dump($sql_ipacc);
-    echo "</pre>";
+    // echo "<pre>";
+    // var_dump($sql_ipacc);
+    // echo "</pre>";
     $q_ipacc = $dbi->query($sql_ipacc);
     if($dbi->error)
     {
@@ -493,7 +492,7 @@ if ($page=='search')
 
     if($q_ipacc->num_rows > 0)
     {
-        $ipcard_sql = "SELECT `ptname`,`bedcode` FROM `ipcard` WHERE `an` = '$an' ";
+        $ipcard_sql = "SELECT `hn`,`ptname`,`bedcode`,`ptright` FROM `ipcard` WHERE `an` = '$an' ";
         $q_ipcard = $dbi->query($ipcard_sql);
         $ipcard = $q_ipcard->fetch_assoc();
 
@@ -510,8 +509,9 @@ if ($page=='search')
         <div style="clear: left;">
             <p>&nbsp;</p>
             <p>
-                <b>AN : </b><?=$an;?><br>
+                <b>AN : </b><?=$an;?> <b>HN : </b><?=$ipcard['hn'];?><br>
                 <b>ชื่อ-สกุล : </b><?=$ipcard['ptname'];?><br>
+                <b>สิทธิ : </b><?=$ipcard['ptright'];?><br>
                 <b>หอผู้ป่วย : </b><?=$ward_list[$ward_code];?> <b>เตียง : </b><?=$bed_number;?>
             </p>
             <table class="chk_table">
@@ -597,7 +597,7 @@ elseif ($page === 'edit_page') {
                 <?php 
                 while ($item = $q_bfy->fetch_assoc()) {
                     ?>
-                    <option value="<?=$item['code'];?>"><?='('.$item['code'].') '.$item['note'];?></option>
+                    <option value="<?=$item['code'];?>"><?='('.$item['code'].') '.' - '.$item['price'].' - ' .$item['note'];?></option>
                     <?php
                 }
                 ?>
