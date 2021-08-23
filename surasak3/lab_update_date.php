@@ -7,8 +7,8 @@ if (empty($_SESSION["sOfficer"])) {
     exit;
 }
 
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli('localhost','root','1234','smdb'); 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+// $dbi = new mysqli('localhost','root','1234','smdb'); 
 $page = $_REQUEST['page'];
 if($page === 'save')
 {

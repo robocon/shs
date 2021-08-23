@@ -1,9 +1,9 @@
 <?php 
 
 include 'bootstrap.php'; 
+
 $db = Mysql::load();
 // $db->set_charset('TIS620');
-
 
 $action = input('action');
 
@@ -126,7 +126,10 @@ $page = input('page');
 if ( $page == 'search' ) {
     
     $hn = input_post('hn');
-    $sql = "SELECT * FROM `appoint` WHERE `hn` = '$hn' ORDER BY `row_id` DESC ";
+
+    $curr_date = date('Y-m-d');
+
+    $sql = "SELECT * FROM `appoint` WHERE `hn` = '$hn' AND `appdate_en` >= '$curr_date' ORDER BY `row_id` DESC ";
     $db->select($sql);
     $rows = $db->get_rows();
 
@@ -161,7 +164,7 @@ if ( $page == 'search' ) {
         <?php
     }else{
         ?>
-        <p><b>ไม่พบข้อมูล</b></p>
+        <p><b>ไม่พบข้อมูลการนัด</b></p>
         <?php
     }
 
