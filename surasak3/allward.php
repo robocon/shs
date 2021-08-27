@@ -29,6 +29,9 @@ $sortname="ICU";
 	}elseif($lbedcode=='45'){
 $wardname="ËÍ¼Ùé»èÇÂ¾ÔàÈÉ";	
 $sortname="¾ÔàÈÉ";
+	}elseif($lbedcode=='46'){
+$wardname="ËÍ¼Ùé»èÇÂ Cohort Ward";	
+$sortname="cohortward";
 	}
 	//echo "==>$lbedcode";
 	$bbbbcode=$lbedcode;
