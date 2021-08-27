@@ -2160,6 +2160,32 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; ‡¡πŸ</A>&nbsp;|&nbsp;<A HREF=\"confirn
   <TD valign="top" colspan="5"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi;?>" /></TD>
   <td valign="top">&nbsp;</td>
 </TR>
+
+<tr>
+	<td align="right" valign="top">T</td>
+	<td><input type="text" size="3">&#8451;</td>
+	<td>P</td>
+	<td colspan="2"><input type="text" size="3"></td>
+</tr>
+<tr>
+	<td align="right" valign="top">R</td>
+	<td><input type="text" size="3"></td>
+	<td>BP</td>
+	<td><input type="text" size="3"></td>
+	<td>/</td>
+	<td><input type="text" size="3"></td>
+	<td>mmHg</td>
+</tr>
+<tr>
+	<td align="right" valign="top">PS</td>
+	<td><input type="text" size="3"></td>
+	<td>O2sat</td>
+	<td><input type="text" size="3"></td>
+	<td>/</td>
+	<td><input type="text" size="3"></td>
+	<td></td>
+</tr>
+
 <TR>
 	<TD  align="right" valign="top">‚√§ª√–®”µ—«</TD><TD valign="top" colspan="5">
 		<TEXTAREA ID="disease_people" NAME="disease_people" ROWS="3" COLS="30"><?php echo $arr["disease_people"];?></TEXTAREA>
