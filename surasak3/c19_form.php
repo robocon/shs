@@ -120,7 +120,7 @@ elseif ($action=='save')
     $date = date('Y-m-d H:i:s');
     $ptname = trim($item['ptname']);
     $toborow = trim($opday['toborow']);
-    $countdown_c19 = date('Y-m-d H:i:s', strtotime("+30 minutes"));
+    $countdown_c19 = date('Y-m-d H:i:s', strtotime("+15 minutes"));
 
     $msg = "บันทึกข้อมูลเรียบร้อย";
     $form_type = $_POST['form_type'];

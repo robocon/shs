@@ -1,7 +1,7 @@
 <?php 
 require_once 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
-
+// $dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,8 +34,47 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
         <a href="javascript:void(0);" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;">รายงานผู้ฉีดวัคซีนโควิด 19</a>
         <a href="c19_form.php" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">ฟอร์มบันทึก</a>
     </div>
+
+    
     
     <div class="w3-card-4">
+        <?php 
+        $thDate = (date('Y')+543).date('-m-d');
+        $date = date('Y-m-d');
+        $m = date('m');
+        ?>
+        <div class="w3-container w3-cell">
+            <header class="w3-container w3-blue">
+                <h1>วันที่ <?=date('d');?> เดือน<?=$def_fullm_th[$m].' '.(date('Y')+543);?></h1>
+            </header>
+        </div>
+        <div class="w3-container w3-cell">
+            <?php 
+            $sql_opday = "SELECT COUNT(`row_id`) AS `opday_count` FROM `opday` WHERE `thidate` LIKE '$thDate%' AND `toborow` LIKE 'EX52%' GROUP BY  SUBSTR(`toborow`,1,4) ";
+            $q = $dbi->query($sql_opday);
+            $opday = $q->fetch_assoc();
+            $count_opday = $opday['opday_count'];
+            ?>
+            <header class="w3-container w3-blue">
+                <h1>ลงทะเบียนแล้ว <?=$count_opday;?>ราย</h1>
+            </header>
+        </div>
+
+        <div class="w3-container w3-cell">
+            <?php 
+            $sql_c19 = "SELECT COUNT(a.`id`) AS `count_c19` 
+            FROM ( 
+                SELECT `id`,`hn`,`date` FROM `c19_patients` WHERE `date` LIKE '$date%' GROUP BY `hn` 
+            ) AS a ";
+            $q_c19 = $dbi->query($sql_c19);
+            $c19 = $q_c19->fetch_assoc();
+            $count_c19 = $c19['count_c19'];
+            ?>
+            <header class="w3-container w3-blue">
+                <h1>ฉีดวัคซีนแล้ว <?=$count_c19;?>ราย</h1>
+            </header>
+        </div>
+        
         <?php 
         $def_day = ($_POST['day']) ? $_POST['day'] : date('d');
         $def_month = ($_POST['month']) ? $_POST['month'] : date('m');

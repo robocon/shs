@@ -7,17 +7,14 @@ if($action == 'get_user')
 {
     $date = date('Y-m-d');
     $sql = "SELECT * FROM `c19_patients` WHERE `date` LIKE '$date%' AND TIMESTAMPDIFF(FRAC_SECOND, NOW(), countdown_c19 ) > 0 ORDER BY `id` ASC ";
-	
     $q = $dbi->query($sql);
     if ($q->num_rows > 0) {
-    
         ?>
 <div style="margin-left:25px;">        
         <table class="w3-table w3-striped w3-xlarge">
             <tr>
                 <th width="5">#</th>
                 <th>ชื่อ-สกุล</th>
-                <th>คิว</th>
                 <th>ระยะเวลา</th>
             </tr>
         <?php 
@@ -25,12 +22,12 @@ if($action == 'get_user')
         $time_now = strtotime(date('Y-m-d H:i:s'));
 		$i=0;
         while ($item = $q->fetch_assoc()) {
-		$i++;
+		    $i++;
 		
-		$sql2="select * from queue_opd where register_date='".date('Y-m-d')."' and hn='".$item['hn']."' and queue_type='V' order by id desc limit 1";
-		$query2=mysql_query($sql2);
-		$num2=mysql_num_rows($query2);
-		$result2=mysql_fetch_array($query2);		
+            $sql2="select * from queue_opd where register_date='".date('Y-m-d')."' and hn='".$item['hn']."' and queue_type='V' order by id desc limit 1";
+            $query2=mysql_query($sql2);
+            $num2=mysql_num_rows($query2);
+            $result2=mysql_fetch_array($query2);		
 		
             $countdown_c19 = strtotime(date($item['countdown_c19']));
 
@@ -41,6 +38,7 @@ if($action == 'get_user')
             if( ( $time_now >= $countdown_c19 ))
             {
                 // $display_time = "ครบ 30นาที";
+                // ปรับใหม่เป็น 15นาที
                 continue;
             }
             else
@@ -61,7 +59,6 @@ if($action == 'get_user')
             <tr>
                 <td align="center"><?=$i;?></td>
                 <td><?=$item['ptname'];?></td>
-                <td><?=$result2['queue_no'];?></td>
                 <td style="color: <?=$color;?>;"><?=$display_time;?></td>
             </tr>
             <?php
