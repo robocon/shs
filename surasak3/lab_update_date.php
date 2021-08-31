@@ -8,7 +8,6 @@ if (empty($_SESSION["sOfficer"])) {
 }
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
-// $dbi = new mysqli('localhost','root','1234','smdb'); 
 $page = $_REQUEST['page'];
 if($page === 'save')
 {
@@ -156,7 +155,7 @@ if($page === 'search')
 
     $date = ($year+543)."-$month-$day";
 
-    $sql_patdata = "SELECT * FROM `patdata` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND `code` = 'AgCG1' ";
+    $sql_patdata = "SELECT * FROM `patdata` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND `code` LIKE 'AgCG%' ";
     $q_pat = $dbi->query($sql_patdata);
     if($q_pat->num_rows>0)
     {
@@ -200,7 +199,7 @@ if($page === 'search')
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;">
-                            <label for="confirm_data"><input type="checkbox" name="confirm_data" id="confirm_data"> ยืนยันการแก้ไขข้อมูล</label>
+                            <label for="confirm_data"><input type="checkbox" name="confirm_data" id="confirm_data" onclick="alertForNoti()"> ยืนยันการแก้ไขข้อมูล</label>
                             <br><button type="submit">ดำเนินการแก้ไข</button>
 
                             <input type="hidden" name="page" value="save">
@@ -212,6 +211,11 @@ if($page === 'search')
             </form>
         </div>
         <script>
+        function alertForNotif()
+        {
+            var c=confirm("");
+        }
+
         function test_form_confirm()
         {
             var checkbox_confirm = document.getElementById("confirm_data").checked;
