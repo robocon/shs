@@ -56,8 +56,11 @@ $dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
             $count_opday = $opday['opday_count'];
             ?>
             <header class="w3-container w3-blue">
-                <h1>ลงทะเบียนแล้ว <?=$count_opday;?>ราย</h1>
+                <h1>เข้ารับบริการ </h1>
             </header>
+            <header class="w3-container w3-blue">
+                <h1 align="center" style="font-size: 64px;"><strong style='color:red;'><?=$count_opday;?> ราย</strong></h1>
+            </header>			
         </div>
 
         <div class="w3-container w3-cell">
@@ -71,10 +74,13 @@ $dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
             $count_c19 = $c19['count_c19'];
             ?>
             <header class="w3-container w3-blue">
-                <h1>ฉีดวัคซีนแล้ว <?=$count_c19;?>ราย</h1>
+                <h1>ฉีดวัคซีนแล้ว </h1>
             </header>
+            <header class="w3-container w3-blue">
+                <h1 align="center" style="font-size: 64px;"><strong style='color:yellow;'><?=$count_c19;?> ราย</strong></h1>
+            </header>			
         </div>
-        
+        <br>
         <?php 
         $def_day = ($_POST['day']) ? $_POST['day'] : date('d');
         $def_month = ($_POST['month']) ? $_POST['month'] : date('m');
