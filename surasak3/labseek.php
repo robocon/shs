@@ -363,16 +363,23 @@ $sql = "Select b.id, b.code From appoint as a, appoint_lab as b where appdate li
 			}
 		}
 
-		if($cDepart  == "PATHO" ){
+if($cDepart  == "PATHO" ){
 
+	$date_n1=$_SESSION['appyr']."-".$_SESSION['appmon']."-".$_SESSION['appday'];
+	if(empty($_SESSION['appyr']) OR empty($_SESSION['appmon']) OR empty($_SESSION['appday']))
+	{
+		$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
+	}
+	
+	$sql_for_num = "Select code,an,no From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' GROUP BY `no` ORDER BY `no` DESC";
+	$res_num = mysql_query($sql_for_num) or die(mysql_error());
+	$row_num = mysql_num_rows($res_num);
+	if($row_num > 0)
+	{
+		while($num = mysql_fetch_assoc($res_num)){
+			$no = $num['no'];
 
-$date_n1=$_SESSION['appyr']."-".$_SESSION['appmon']."-".$_SESSION['appday'];
-if(empty($date_n1) OR $date_n1 == '--')
-{
-	$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
-}
-$sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' ";
-
+			$sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' and `no`='$no' ";
 			$result1 = mysql_query($sql1) or die(mysql_error());
 			$row_app1 = mysql_num_rows($result1);
 			
@@ -390,18 +397,24 @@ $sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = 
 				<TR>
 					<TD><table  width='300'>";
 					echo "<tr  bgcolor=\"#000080\">";
-						echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการจากหอผู้ป่วย</FONT></td>";
+						echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการจากหอผู้ป่วย (".$no.")</FONT></td>";
 					echo "</tr>";
 					echo "<tr>";
-						echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode1=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
+						echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode1=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn&no=$no\">คิดเงิน</A></td>";
 						echo "<td>",implode("<BR> ",$list_app),"</td>";
 					echo "</tr>";
 				echo "</table></TD>
 				</TR>
 				</TABLE>";
-
 			}
 		}
+
+	}
+
+
+	
+
+}
 		////////////////////////
 		
 		$sql ="SELECT date,ptname,hn,an,depart,detail,price,paid,row_id,accno,ptright,lab FROM labdepart WHERE hn = '".$cHn."' and date LIKE '$date_n1%' and depart='PATHO' AND (lab = 'DR' OR lab = 'ER') ";

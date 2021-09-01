@@ -31,7 +31,10 @@
     session_unregister("aSumYprice");
     session_unregister("aSumNprice");
 
-////
+////    
+    session_unregister("appyr");
+    session_unregister("appmon");
+    session_unregister("appday");
 
  $cDepart = 'PATHO';
  $aDetail='ค่าตรวจวิเคราะห์โรค';

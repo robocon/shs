@@ -44,10 +44,12 @@ if (isset($sIdname)){} else {die;} //for security
 			AND a.`row_id` = b.`id` ";
 
 		}else if(substr($Dgcode1,0,2)=='AN'){
-		$code_app = substr($Dgcode1,2);
-		$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
 
-		$query = "SELECT code,1 as amount FROM lab_ward WHERE an = '$code_app'  and date like '".$date_n1."%'";
+			$no = $_GET['no'];
+			$code_app = substr($Dgcode1,2);
+			$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
+
+			$query = "SELECT code,1 as amount FROM lab_ward WHERE an = '$code_app'  and date like '".$date_n1."%' and `no` = '$no' ";
 		
 		}else if(substr($Dgcode,0,2)=='HN'){
 		$code_app = substr($Dgcode,2);
