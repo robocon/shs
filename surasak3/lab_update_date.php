@@ -1,6 +1,17 @@
 <?php 
 
 require_once 'bootstrap.php';
+require_once 'includes/JSON.php';
+
+/*
+CREATE TABLE `log_patdata` (
+  `id` bigint(20) NOT NULL,
+  `patdata_id` bigint(20) NOT NULL,
+  `data` longtext,
+  `session` longtext,
+  KEY `patdata_id` (`patdata_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+*/
 
 if (empty($_SESSION["sOfficer"])) {
     redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
@@ -11,6 +22,12 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $page = $_REQUEST['page'];
 if($page === 'save')
 {
+
+    $services_json = new Services_JSON();
+    $encode_str = $services_json->encode($_REQUEST);
+    dump($encode_str);
+    exit; 
+
     $patdata_id = $_POST['patdata_id'];
 
     $sql = "SELECT * FROM `patdata` WHERE `row_id` = '$patdata_id' ";
@@ -199,7 +216,7 @@ if($page === 'search')
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;">
-                            <label for="confirm_data"><input type="checkbox" name="confirm_data" id="confirm_data" onclick="alertForNoti()"> ยืนยันการแก้ไขข้อมูล</label>
+                            <label for="confirm_data"><input type="checkbox" name="confirm_data" id="confirm_data" onclick="return alertForNoti()"> ยืนยันการแก้ไขข้อมูล</label>
                             <br><button type="submit">ดำเนินการแก้ไข</button>
 
                             <input type="hidden" name="page" value="save">
@@ -211,9 +228,19 @@ if($page === 'search')
             </form>
         </div>
         <script>
-        function alertForNotif()
+        function alertForNoti()
         {
-            var c=confirm("");
+            var date_from = '<?=$date_from;?>';
+            var date_to = document.getElementById("to_years").value+'-'+document.getElementById("to_months").value+'-'+document.getElementById("to_day").value;
+            
+            if(date_from == date_to)
+            {
+                alert("คำเตือน! วันที่แก้ไขซ้ำกัน กรุณาเลือกวันที่ต้องการแก้ไขอีกครั้ง");
+                return false;
+            }
+
+            var c=confirm("ระบบจะทำการบันทึกข้อมูลในการแก้ไขทั้งหมด ท่านยินยอมที่จะให้บันทึกหรือไม่?");
+            return c;
         }
 
         function test_form_confirm()
@@ -226,14 +253,6 @@ if($page === 'search')
             else
             {
                 alert("กรุณายืนยันการแก้ไขข้อมูล");
-            }
-
-            var date_from = '<?=$date_from;?>';
-            var date_to = document.getElementById("to_years").value+'-'+document.getElementById("to_months").value+'-'+document.getElementById("to_day").value;
-
-            if(date_from == date_to)
-            {
-                alert("คำเตือน! วันที่แก้ไขซ้ำกัน กรุณาเลือกวันที่ต้องการแก้ไขอีกครั้ง");
             }
             
             return false;

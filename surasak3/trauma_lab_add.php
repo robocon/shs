@@ -45,8 +45,8 @@ if($item == 0){
 	$aSumNprice = array_sum($nprice);
 
 	$Netprice = $aSumYprice+$aSumNprice;
-
-	$sql = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,detailbydr,lab)VALUES('".$nRunno."','".$Thidate."','".$cPtname."','".$cHn."','".$cAn."','".$cDoctor."','".$cDepart."','".$item."','".$aDetail."','".$Netprice."','".$aSumYprice."','".$aSumNprice."','','".$sOfficer."','".$cDiag."','".$cAccno."','".$tvn."','".$cPtright."','".$_POST["detailbydr"]."','".$cLab."');";
+	$cAccno = 1;
+	$sql = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,detailbydr,lab)VALUES('".$nRunno."','".$Thidate."','".$cPtname."','".$cHn."','".$cAn."','".$cDoctor."','".$cDepart."','".$item."','".$aDetail."','".$Netprice."','".$aSumYprice."','".$aSumNprice."','0','".$sOfficer."','".$cDiag."','".$cAccno."','".$tvn."','".$cPtright."','".$_POST["detailbydr"]."','".$cLab."');";
 		$result = Mysql_Query($sql) or die("Error depart ".Mysql_Error());
 		$idno=mysql_insert_id();
 		

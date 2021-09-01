@@ -1,10 +1,10 @@
 <style type="text/css">
-<!--
+
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
--->
+
 </style>
 <?php
 //Update 31 พค. 53 bbm
@@ -154,9 +154,55 @@ list ($bed,$date,$ptname,$age,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$pa
    
 //$dbirth="$y-$m-$d"; เก็บวันเกิดใน opcard= "$y-$m-$d" ซึ่ง=$birth in function
 // print "<p><b><font face='Angsana New' size = '3'>โรงพยาบาลค่ายสุรศักดิ์มนตรี</font></b></p>";
-   print "<p><font class='forntsarabun' size = '4'>ชื่อ $ptname  HN: $hn อายุ $age &nbsp;<B>สิทธิ:$ptright</font></B><br>";
-  print "<font class='forntsarabun' size = '4'>แพทย์ $doctor </font></B></p>";
+print "<p><font class='forntsarabun' size = '4'>ชื่อ $ptname  HN: $hn AN: $an อายุ $age &nbsp;<B>สิทธิ:$ptright</font></B><br>";
+print "<font class='forntsarabun' size = '4'>แพทย์ $doctor </font></B></p>";
 
+$sql = "SELECT * FROM `lab_ward` WHERE `an` = '$an' GROUP BY `an`,`no` ORDER BY `no` DESC";
+$q = mysql_query($sql);
+if(mysql_num_rows($q) > 0)
+{
+	?>
+	<style>
+		/* ตาราง */
+.chk_table{
+    border-collapse: collapse;
+}
+.chk_table th,
+.chk_table td{
+    padding: 3px;
+    border: 1px solid black;
+}
+	</style>
+	<div class="forntsarabun">
+		<div><b>รายการแลปที่เคยสั่ง</b></div>
+		<table class="chk_table forntsarabun">
+		<?php 
+		while ($lw = mysql_fetch_assoc($q)) {
+			$no = $lw['no'];
+			$date = $lw['date'];
+			?>
+			<tr>
+				<td>ครั้งที่ <?=$no;?> (<?=$date;?>)</td>
+			</tr>
+			<?php 
+			$sql_lab_ward = "SELECT * FROM `lab_ward` WHERE `an` = '$an' AND `no` = '$no' ORDER BY `row_id` ASC";
+			$q_lw = mysql_query($sql_lab_ward);
+			$item_lw_list = array();
+			while ($item_lw = mysql_fetch_assoc($q_lw)) {
+				$item_lw_list[] = $item_lw['code'];
+			}
+			$lw_item_merge = implode(', ', $item_lw_list);
+			?>
+			<tr>
+				<td><?=$lw_item_merge;?></td>
+			</tr>
+			<?php
+		}
+		?>
+		</table>
+	</div>
+	<?php
+}
 ?>
 <SCRIPT LANGUAGE="JavaScript">
 
