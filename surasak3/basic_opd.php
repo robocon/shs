@@ -1177,7 +1177,7 @@ mmHg </td>
            &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
            &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
            &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; ปริ้นสติกเกอร์แบบ PDF" />
-           &nbsp;&nbsp;<a href="" target="_blank"><input name="button" type="button" class="buttonred" value=" คัดกรอง COVID 19 " /></a>
+           
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
            
