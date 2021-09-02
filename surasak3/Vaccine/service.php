@@ -479,7 +479,7 @@ include '../includes/ajax.php';
 
 		var newSm = new SmHttp();
 		newSm.ajax(
-			'http://192.168.1.2/sm3/surasak3/43office/epi198.php', 
+			'http://192.168.131.250/sm3/surasak3/43office/epi198.php', 
 			{ 'word': btnVACCINETYPE.value }, 
 			function(res){
 				document.getElementById('epi198').innerHTML = res;

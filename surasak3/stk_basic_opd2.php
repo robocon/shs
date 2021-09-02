@@ -239,10 +239,10 @@ table td{
 	</tr>
 
 	<?php 
-	if ( !empty($hpi) ) {
+	if ( !empty($hpi) ) { 
 		?>
 		<tr>
-			<td>HPI: <?=$hpi;?></td>
+			<td>HPI: <?=nl2br($hpi);?></td>
 		</tr>
 		<?php
 	}
