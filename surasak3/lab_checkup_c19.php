@@ -340,7 +340,7 @@ elseif ($page==='step2')
                 </table>
             </div>
             <?php 
-            $q_labcare = $dbi->query("SELECT * FROM `labcare` WHERE `code` = 'AgCG1'");
+            $q_labcare = $dbi->query("SELECT * FROM `labcare` WHERE `code` LIKE 'AgCG%'");
             ?>
             <p>
                 <div class="w3-row-padding">

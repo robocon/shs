@@ -1,50 +1,6 @@
 <?php 
 
 require_once 'bootstrap.php';
-require_once 'includes/JSON.php';
-
-/*
-CREATE TABLE `log_patdata` (
-`id` BIGINT NOT NULL AUTO_INCREMENT ,
-`patdata_id` BIGINT,
-`data` LONGTEXT,
-`session` LONGTEXT,
-PRIMARY KEY ( `id` )
-) CHARACTER SET = utf8;
-ALTER TABLE `log_patdata` ADD INDEX ( `patdata_id` );
-*/
-
-function testArray($variable)
-{
-    $test = array();
-    foreach ($variable as $key => $value) {
-        if(is_array($value)===false)
-        {
-            $test[] = iconv("tis-620","utf-8",$value);
-        }
-        else
-        {
-            $test[] = testArray($value);
-        }
-    }
-    return $test;
-}
-
-function jsonToUtf($someArray)
-{
-    $test = array();
-    foreach ($someArray as $key => $value) {
-        if(is_array($value)===false)
-        {
-            $test[] = iconv("tis-620","utf-8",$value);
-        }
-        else
-        {
-            $test[] = testArray($value);
-        }
-    }
-    return $test;
-}
 
 if (empty($_SESSION["sOfficer"])) {
     redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
@@ -55,25 +11,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $page = $_REQUEST['page'];
 if($page === 'save')
 {
-    var_dump($_REQUEST);
-    $services_json = new Services_JSON();
-    $request_json = $services_json->encode(jsonToUtf($_REQUEST));
-    $session_json = $services_json->encode(jsonToUtf($_SESSION));
-    var_dump($services_json->decode($session_json));
     $patdata_id = $_POST['patdata_id'];
-    exit;
-    $sql_insert_log = "INSERT INTO `log_patdata` ( `id` , `patdata_id` , `data` , `session` )
-    VALUES (
-        NULL, '$patdata_id', '$request_json', '$session_json'
-    );";
-    $dbi->query($sql_insert_log);
-
-    $q = $dbi->query("SELECT * FROM `log_patdata`");
-    $qq = $q->fetch_assoc();
-
-    $test = $services_json->decode($qq['session']);
-    dump($test);
-    exit;
 
     $sql = "SELECT * FROM `patdata` WHERE `row_id` = '$patdata_id' ";
     $pat_q = $dbi->query($sql);
@@ -261,7 +199,7 @@ if($page === 'search')
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;">
-                            <label for="confirm_data"><input type="checkbox" name="confirm_data" id="confirm_data" onclick="return alertForNoti()"> ยืนยันการแก้ไขข้อมูล</label>
+                            <label for="confirm_data"><input type="checkbox" name="confirm_data" id="confirm_data"> ยืนยันการแก้ไขข้อมูล</label>
                             <br><button type="submit">ดำเนินการแก้ไข</button>
 
                             <input type="hidden" name="page" value="save">
@@ -273,21 +211,6 @@ if($page === 'search')
             </form>
         </div>
         <script>
-        function alertForNoti()
-        {
-            var date_from = '<?=$date_from;?>';
-            var date_to = document.getElementById("to_years").value+'-'+document.getElementById("to_months").value+'-'+document.getElementById("to_day").value;
-            
-            if(date_from == date_to)
-            {
-                alert("คำเตือน! วันที่แก้ไขซ้ำกัน กรุณาเลือกวันที่ต้องการแก้ไขอีกครั้ง");
-                return false;
-            }
-
-            var c=confirm("ระบบจะทำการบันทึกข้อมูลในการแก้ไขทั้งหมด ท่านยินยอมที่จะให้บันทึกหรือไม่?");
-            return c;
-        }
-
         function test_form_confirm()
         {
             var checkbox_confirm = document.getElementById("confirm_data").checked;
@@ -298,6 +221,14 @@ if($page === 'search')
             else
             {
                 alert("กรุณายืนยันการแก้ไขข้อมูล");
+            }
+
+            var date_from = '<?=$date_from;?>';
+            var date_to = document.getElementById("to_years").value+'-'+document.getElementById("to_months").value+'-'+document.getElementById("to_day").value;
+
+            if(date_from == date_to)
+            {
+                alert("คำเตือน! วันที่แก้ไขซ้ำกัน กรุณาเลือกวันที่ต้องการแก้ไขอีกครั้ง");
             }
             
             return false;
