@@ -1,22 +1,16 @@
 <?php 
-// require_once 'bootstrap.php';
 
 $id = input_get('id');
 
 $sql = "SELECT * FROM `appoint` WHERE `row_id` = '$id' ";
 $db->select($sql);
 $rows = $db->get_rows();
-
-if( $rows > 0 ){
-
+if( $rows > 0 )
+{
     $item = $db->get_item();
 
-    $sql = "SELECT a.*, b.`detail`
-    FROM `appoint_lab` AS a 
-    LEFT JOIN `labcare` AS b ON b.`code` = a.`code` 
-    WHERE a.`id` = '$id'";
+    $sql = "SELECT a.*, b.`detail` FROM `appoint_lab` AS a LEFT JOIN `labcare` AS b ON b.`code` = a.`code` WHERE a.`id` = '$id'";
     $db->select($sql);
-
     $row_lab = $db->get_rows();
     // 
 
@@ -50,28 +44,48 @@ if( $rows > 0 ){
                     <b>แพทย์:</b> <?=$item['doctor'];?> <b>วันที่:</b> <?=$item['appdate'];?> <a href="javascript:void(0);">แก้ไข</a>
                 </p>
             </div>
+            <?php 
+            // ถ้ามีใน array ตาม md ด้านล่างจะเป็นจุดนัดที่2
+            $codedr = substr($item['doctor'],0,5);
+            $arrdr2 = array('MD008','MD009','MD007','MD072','MD036','MD041','MD016','MD047','MD088','MD100');
+            if(in_array($codedr, $arrdr2)){
+                $counter = '2'; //จุดนัดที่ 2
+            }else{
+                $counter = '1'; //จุดนัดที่ 1
+            }
 
+            ?>
 
+            <!-- ยังไม่ได้ทำแจ้งเตือน ซ้ำกับแพทย์ท่านอื่นในวันเดียวกัน -->
 
             <div>
                 <table>
                     <tr>
                         <td>นัดมาเพื่อ:</td>
                         <td>
-                            <select name="detail" id="detail">
+                            <select name="detail" id="detail" onchange="listb(<?=$counter;?>)">
+                                <option value="NA"><<นัดมาเพื่อ>></option>
                             <?php 
                             $sql_applist = "SELECT * FROM `applist` WHERE `status` = 'Y'";
                             $q_applist = $dbi->query($sql_applist);
-                            while ($applist = $q_applist->fetch_assoc()) {
+                            while ($applist = $q_applist->fetch_assoc())
+                            {
                                 $applist_selected = ($applist['appvalue']==$item['detail']) ? 'selected="selected"' : '' ;
                                 ?>
                                 <option value="<?=$applist['appvalue'];?>" <?=$applist_selected;?> ><?=$applist['applist'];?></option>
                                 <?php
                             }
                             ?>
-                                
                             </select>&nbsp;
-                            <b>อื่นๆ:</b><input type="text" id="detail2" name="detail2" size="50" value="<?=$item['detail2'];?>">
+
+                            <select size="1" name="detail_list" id="detail_list" style="display:none">
+                            <option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
+                            <option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
+                            <option value="ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่">ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่</option>
+                            </select>
+
+
+                            <b>เลขที่AN/อื่นๆ:</b><input type="text" id="detail2" name="detail2" size="50" value="<?=$item['detail2'];?>">
                         </td>
                     </tr>
                     <tr>
@@ -80,9 +94,10 @@ if( $rows > 0 ){
                         <?php 
                         $room_list = array('จุดบริการนัดที่ 1','อาคารเฉลิมพระเกียรติ','แผนกทะเบียน','ห้องฉุกเฉิน','กองทันตกรรม','แผนกพยาธิวิทยา','แผนกเอกชเรย์','กองสูติ-นารี','กายภาพ','คลีนิกฝังเข็ม','นวดแผนไทย','ห้องตรวจจักษุ(ตา)','ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)','ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู','คลีนิกโรคไต','กายภาพบำบัดชั้น 2','ห้อง CT SCAN','ห้องเก็บเงินรายได้ เบอร์4','ห้อง CT SCAN (ตรวจมวลกระดูก)','ห้องตรวจเฉพาะโรค','แผนกตรวจสุขภาพ','คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)',);
                         ?>
-                        <select name="" id="">
+                        <select name="room" id="room">
                             <?php 
-                            foreach ($room_list as $room_item) {
+                            foreach ($room_list as $room_item) 
+                            {
                                 $room_selected = ($room_item==$item['room']) ? 'selected="selected"' : '' ;
                                 ?>
                                 <option value="<?=$room_item;?>" <?=$room_selected;?> ><?=$room_item;?></option>
@@ -153,6 +168,9 @@ if( $rows > 0 ){
                     </tr>
                 </table>
             </div>
+
+            <!-- ใบเซ็ตผ่าตัด -->
+            <div id="setor"></div>
 
 
             <?php 
@@ -383,6 +401,169 @@ if( $rows > 0 ){
                 $(this).parent().remove();
             }
         });
+
+
+        // SCRIPT เก่าจาก preappoi2.php
+        function listb(number){
+            console.log(number);
+            
+            if(document.getElementById("detail").value!='FU05 ผ่าตัด'){
+                document.getElementById("setor").style.display='none';
+            }
+            if(document.getElementById("detail").value=='FU01 ตรวจตามนัด'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU02 ตามผลตรวจ'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU03 นอนโรงพยาบาล'){
+                document.getElementById("room").selectedIndex=3;
+            }
+            else if(document.getElementById("detail").value=='FU04 ทันตกรรม'){
+                document.getElementById("room").selectedIndex=5;
+            }
+            else if(document.getElementById("detail").value=='FU05 ผ่าตัด'){
+                document.getElementById("room").selectedIndex=3;
+                document.getElementById("setor").style.display='block';
+            }
+            else if(document.getElementById("detail").value=='FU06 สูติ'){
+                document.getElementById("room").selectedIndex=8;
+            }
+            else if(document.getElementById("detail").value=='FU07 คลีนิกฝังเข็ม'){
+                document.getElementById("room").selectedIndex=10;
+            }
+            else if(document.getElementById("detail").value=='FU08 Echo'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU09 มวลกระดูก'){
+                document.getElementById("room").selectedIndex=3;
+            }
+            else if(document.getElementById("detail").value=='FU10 กายภาพ'){
+                document.getElementById("room").selectedIndex=9;
+            }
+            else if(document.getElementById("detail").value=='FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU12 นวดแผนไทย'){
+                document.getElementById("room").selectedIndex=11;
+            }
+            else if(document.getElementById("detail").value=='FU20 ส่องกระเพาะ(คลินิกพิเศษ)'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU14 เจาะเลือดไม่พบแพทย์'){
+                document.getElementById("room").selectedIndex=6;
+            }
+            else if(document.getElementById("detail").value=='FU15 OPD นอกเวลา'){
+                document.getElementById("room").selectedIndex=3;
+            }
+            else if(document.getElementById("detail").value=='FU16 คลินิกพิเศษ'){
+                document.getElementById("room").selectedIndex=0;
+            }
+            else if(document.getElementById("detail").value=='FU17 X-ray ไม่พบแพทย์'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU18 ตัดไหมที่ ER ไม่พบแพทย์'){
+                document.getElementById("room").selectedIndex=4;
+            }
+            else if(document.getElementById("detail").value=='FU19 อัลตร้าซาวด์'){
+                document.getElementById("room").selectedIndex=3;
+            }
+            else if(document.getElementById("detail").value=='FU21 คลินิก COPD'){
+                document.getElementById("room").selectedIndex=3;
+            }
+            else if(document.getElementById("detail").value=='FU22 ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู'){
+                document.getElementById("room").selectedIndex=14;
+            }
+            else if(document.getElementById("detail").value=='FU23 OPD กายภาพ'){
+                document.getElementById("room").selectedIndex=9;
+            }
+            else if(document.getElementById("detail").value=='FU24 ตรวจตามนัด OPD จักษุ(ตา)'){
+                document.getElementById("room").selectedIndex=12;
+            }
+            else if(document.getElementById("detail").value=='FU25 CT Scan'){
+                document.getElementById("room").selectedIndex=0;
+            }
+            else if(document.getElementById("detail").value=='FU26 EMG'){
+                document.getElementById("room").selectedIndex=3;
+            }
+            else if(document.getElementById("detail").value=='FU27 X-ray ก่อนพบแพทย์'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+            }
+            else if(document.getElementById("detail").value=='FU28 Lab ก่อนพบแพทย์'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+                else if(number=="3"){
+                    document.getElementById("room").selectedIndex=18;
+                }	
+            }
+            else if(document.getElementById("detail").value=='FU29 X-ray + Lab ก่อนพบแพทย์'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+                else if(number=="3"){
+                    document.getElementById("room").selectedIndex=18;
+                }	
+            }
+            else if(document.getElementById("detail").value=='FU30 คลินิกโรคไต'){
+                document.getElementById("room").selectedIndex=15;
+            }
+            else if(document.getElementById("detail").value=='FU13 ตรวจระบบทางเดินอาหาร'){
+                if(number=="2"){
+                    document.getElementById("room").selectedIndex=2;
+                }
+                else if(number=="1"){
+                    document.getElementById("room").selectedIndex=1;
+                }
+                document.getElementById("detail_list").style.display ="block";
+                document.getElementById("detail2").style.display ="none";
+            }
+            else{
+                document.getElementById("detail2").style.display ="block";
+                document.getElementById("detail_list").style.display ="none";
+            }
+        }
         
     </script>
 

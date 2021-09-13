@@ -285,14 +285,11 @@ if(isset($_POST['B1'])){
 	$datenut = $day.$month.$year;
 	$datenut1 = $day."-".$month."-".$year;
 	$year -=543; 
-/*	if($datenut<$datenow){
-		?>
-		<script>
-		//alert("เลือกวันที่ไม่ถูกต้อง กรุณาเลือกวันใหม่");
-        //window.history.back();
-        </script>
-		<?
+	if($datenut<$datenow){
+		echo "ไม่สามารถเลือกวันที่ย้อนหลังได้ กรุณาเลือกวันใหม่";
+		exit;
 	}
+	/*
 	else{*/
 	
 		$dd = getdate ( mktime ( 0, 0, 0, $month, $day, $year ));

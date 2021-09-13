@@ -5,12 +5,13 @@ include 'bootstrap.php';
 $db = Mysql::load();
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
-
-// $db->set_charset('TIS620');
+$dbi->query("SET NAMES TIS620");
+$db->set_charset('TIS620');
 
 $action = input('action');
 
-if( $action == 'print' ){
+if( $action == 'print' )
+{
 
     $id = input_get('id');
 
@@ -20,7 +21,8 @@ if( $action == 'print' ){
     exit;
 
 }
-elseif ($action=='search') {
+elseif ($action=='search') 
+{
     $value = trim(input_get('value'));
 
     if(empty($value))
@@ -40,7 +42,8 @@ elseif ($action=='search') {
             <th>olddetail</th>
         </tr>
     <?php
-    while ($item = $q->fetch_assoc()) {
+    while ($item = $q->fetch_assoc()) 
+    {
         ?>
         <tr>
             <td><a href="javascript:void(0);" data-detail="<?=$item['detail'];?>" data-code="<?=$item['code'];?>" class="lab_add selected_code_detail"><?=$item['code'];?></a></td>
@@ -79,7 +82,8 @@ elseif ($action=='search') {
 
 <h3>ระบบแก้ไข LAB, X-RAY ผู้ป่วยนัด(ช่วงทดสอบ)</h3>
 <?php 
-if( isset($_SESSION['msg']) ){
+if( isset($_SESSION['msg']) )
+{
     ?><div style="border: 1px solid #bfbf00;padding: 4px;background-color: #ffffbc;display: table;width: 50%;"><?=$_SESSION['msg'];?></div><?php
     $_SESSION['msg'] = NULL;
 }
@@ -100,7 +104,8 @@ if( isset($_SESSION['msg']) ){
 
 $page = input('page');
 
-if ( $page == 'search' ) {
+if ( $page == 'search' )
+{
     
     $hn = input_post('hn');
 
@@ -114,7 +119,8 @@ if ( $page == 'search' ) {
     $db->select($sql);
     $rows = $db->get_rows();
 
-    if ( $rows > 0 ) {
+    if ( $rows > 0 )
+    {
         $items = $db->get_items();
 
         ?>
@@ -128,7 +134,8 @@ if ( $page == 'search' ) {
                 <th></th>
             </tr>
             <?php 
-            foreach ($items as $key => $item) {
+            foreach ($items as $key => $item) 
+            {
                 ?>
                 <tr>
                     <td><?=$item['date'];?></td>
@@ -143,13 +150,16 @@ if ( $page == 'search' ) {
             ?>
         </table>
         <?php
-    }else{
+    }
+    else
+    {
         ?>
         <p><b>ไม่พบข้อมูลการนัด</b></p>
         <?php
     }
 
-}elseif($page=="form")
+}
+elseif($page=="form")
 {
     require_once 'appoint_edit_form.php';
 }
