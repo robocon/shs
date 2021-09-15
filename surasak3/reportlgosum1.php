@@ -1,6 +1,14 @@
 <?php
 session_start();
 include("connect.inc");
+
+function dump($txt){
+	echo "<pre>";
+	var_dump($txt);
+	echo "</pre>";
+
+}
+
 $_POST["start_year"]="$start_year";
 $_POST["start_month"]="$start_month";
 $_POST["start_day"]="$start_day";
@@ -12,38 +20,49 @@ $_POST["end_day"]="$end_day";
 //$date2 ="$date-$rptmo-$thiyr";
 //$date1 ="$start_year-$start_month";
 //$date3 ="$start_month-$start_year";
-$sql = "Select  a.depart, sum(a.paidcscd),sum(a.price) From opacc as a where  ( a.date between '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='¨èÒÂµÃ§ Í»·.' group by  a.depart   ORDER by a.date";
+$sql = "Select a.depart, sum(a.paidcscd),sum(a.price)
+, SUBSTRING(a.date,1,10) AS test_date, a.`hn` 
+From opacc as a 
+where ( 
+	a.date between 
+	'".($start_year)."-".$start_month."-".$start_day." 00:00:00' 
+	AND '".($end_year)."-".$end_month."-".$end_day." 23:59:59' 
+)  
+AND a.credit ='¨èÒÂµÃ§ Í»·.'  and txdate !=''
+group by SUBSTRING(a.date,1,10), a.`hn`, a.`depart` 
+ORDER by a.date";
 //echo $sql;
+?>
+<div style="display: none;"><?=dump($sql);?></div>
+<?php
 
 $result = mysql_Query($sql) or die(mysql_error());
- //$count =mysql_num_rows($result);
 $list = array();
 $list2 = array();
-
 
 while(list( $depart, $paidcscd,$price) = Mysql_fetch_row($result)){
  
 
-switch($depart){
+	switch($depart){
 
-	case "PHAR" : $list["PHAR"] = $list["PHAR"] + $paidcscd; break;
-	case "PATHO" : $list["PATHO"] = $list["PATHO"] + $paidcscd; break;
-	case "XRAY" : $list["XRAY"] = $list["XRAY"] + $price; break;
-	case "DENTA" : $list["DENTA"] = $list["DENTA"] + $paidcscd; break;
-	case "PHYSI" : $list["PHYSI"] = $list["PHYSI"] + $paidcscd; break;
-	case "EMER" : $list["EMER"] = $list["EMER"] + $price; break;
-	case "SURG" : $list["SURG"] = $list["SURG"] + $price; break;
-	case "NID" : $list["NID"] = $list["NID"] + $paidcscd; break;
-	case "HEMO" : $list["HEMO"] = $list["HEMO"] + $price; break;
+		case "PHAR" : $list["PHAR"] = $list["PHAR"] + $paidcscd; break;
+		case "PATHO" : $list["PATHO"] = $list["PATHO"] + $paidcscd; break;
+		case "XRAY" : $list["XRAY"] = $list["XRAY"] + $paidcscd; break;
+		case "DENTA" : $list["DENTA"] = $list["DENTA"] + $paidcscd; break;
+		case "PHYSI" : $list["PHYSI"] = $list["PHYSI"] + $paidcscd; break;
+		case "EMER" : $list["EMER"] = $list["EMER"] + $paidcscd; break;
+		case "SURG" : $list["SURG"] = $list["SURG"] + $paidcscd; break; // price to paid cscd
+		case "NID" : $list["NID"] = $list["NID"] + $paidcscd; break;
+		case "HEMO" : $list["HEMO"] = $list["HEMO"] + $paidcscd; break;
 		case "OTHER" : $list["OTHER"] = $list["OTHER"] + $paidcscd; break;
-	default:  $list["OTHER2"] = $list["OTHER2"] + $paidcscd; break;
+		default:  $list["OTHER2"] = $list["OTHER2"] + $paidcscd; break;
+
+	}
 
 }
-
-}
-$num='0';
-$i='0';
-$p='1';
+	$num='0';
+	$i='0';
+	$p='1';
 
 
 		$PHAR = $PHAR+$list["PHAR"];
@@ -347,13 +366,13 @@ $row='0';
 	switch($depart){
 		case "PHAR" : $list[$date]['PHAR'] = $list[$date]['PHAR'] + $paidcscd; break;
 		case "PATHO" : $list[$date]['PATHO'] = $list[$date]['PATHO'] + $paidcscd; break;
-		case "XRAY" : $list[$date]['XRAY']  = $list[$date]['XRAY'] +$price; break;
+		case "XRAY" : $list[$date]['XRAY']  = $list[$date]['XRAY'] +$paidcscd; break;
 		case "DENTA" : $list[$date]['DENTA'] = $list[$date]['DENTA'] + $paidcscd; break;
 		case "PHYSI" : $list[$date]['PHYSI'] = $list[$date]['PHYSI'] + $paidcscd; break;
-		case "EMER" : $list[$date]['EMER'] = $list[$date]['EMER'] + $price; break;
-		case "SURG" : $list[$date]['SURG'] = $list[$date]['SURG'] + $price; break;
+		case "EMER" : $list[$date]['EMER'] = $list[$date]['EMER'] + $paidcscd; break;
+		case "SURG" : $list[$date]['SURG'] = $list[$date]['SURG'] + $paidcscd; break;
 		case "NID" : $list[$date]['NID'] = $list[$date]['NID'] + $paidcscd; break;
-		case "HEMO" : $list[$date]['HEMO'] = $list[$date]['HEMO'] + $price; break;
+		case "HEMO" : $list[$date]['HEMO'] = $list[$date]['HEMO'] + $paidcscd; break;
 		case "OTHER" : $list[$date]['OTHER'] = $list[$date]['OTHER'] + $paidcscd; break;
 		default:  $list[$date]['OTHER2'] = $list[$date]['OTHER2'] + $paidcscd; break;
 	}

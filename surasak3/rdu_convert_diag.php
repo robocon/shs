@@ -49,7 +49,7 @@ unlink($filePath);
 
 // file_put_contents($filePath, "DELETE FROM `diag` WHERE `quarter` = '$quarter' AND `year` = '$year';\n", FILE_APPEND);
 
-
+/*
 $sql = "SELECT a.*,b.`ptname`,b.`doctor`, b.`pre_age` 
 FROM ( 
 
@@ -71,6 +71,13 @@ LEFT JOIN (
 
 ) AS b ON b.`thdatehn` = a.`date_opday` 
 WHERE b.`ptname` IS NOT NULL ";
+*/
+
+$sql = "SELECT `thdatehn`,`ptname`,`doctor`,`hn`,SUBSTRING(toEn(`thidate`), 1, 10) AS `pre_age` 
+FROM `opday` 
+WHERE `thidate` >= '$date_start 00:00:00' AND `thidate` <= '$date_end 23:59:59' 
+AND `doctor` <> '' ";
+
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 $sql_header = "INSERT INTO `diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
