@@ -37,10 +37,12 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2564-01-01';
-$date_end = '2564-03-31';
-$quarter = 2;
+$date_start = '2564-07-01';
+$date_end = '2564-09-15';
+$quarter = 4;
 $year = '2564';
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';
@@ -73,7 +75,7 @@ LEFT JOIN (
 WHERE b.`ptname` IS NOT NULL ";
 */
 
-$sql = "SELECT `thdatehn`,`ptname`,`doctor`,`hn`,SUBSTRING(toEn(`thidate`), 1, 10) AS `pre_age` 
+$sql = "SELECT SUBSTRING(`thidate`,1,10) AS `thiDateShort`,`thdatehn`,`ptname`,`doctor`,`hn`,`vn`,SUBSTRING(toEn(`thidate`), 1, 10) AS `pre_age` 
 FROM `opday` 
 WHERE `thidate` >= '$date_start 00:00:00' AND `thidate` <= '$date_end 23:59:59' 
 AND `doctor` <> '' ";
@@ -87,30 +89,43 @@ while ( $item = mysql_fetch_assoc($q) ) {
 
     $preAge = $item['pre_age'];
     $hn = $item['hn'];
-    
+
     $sql = "SELECT `dbirth`,`hn`,TIMESTAMPDIFF(YEAR, SUBSTRING(toEn(`dbirth`), 1, 10), '$preAge') AS `age` 
     FROM `opcard` 
     WHERE `hn` = '$hn' ";
     $qOP = mysql_query($sql, $db) or die( mysql_error() );
     $opc = mysql_fetch_assoc($qOP);
-
-    $diag_id = $item['row_id'];
-    $svdate = $item['svdate'];
-    $ptname = $item['ptname'];
     $age = $opc['age'];
+
+    $ptname = $item['ptname'];
     $vn = $item['vn'];
-    $diag = htmlspecialchars($item['diag'], ENT_QUOTES);
-    $diag = trim(preg_replace('/\s+/',' ',$diag));
-    $icd10 = $item['icd10'];
-    $type = $item['type'];
-    // $doctor = $item['office'];
     $doctor = $item['doctor'];
-    $date_hn = $item['date_hn'];
 
-    $sql_data_list = $sql_header."( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
+    $thidate_short = $item['thiDateShort'];
+    $sql_diag = "SELECT `row_id`,`hn`,`an` AS `vn`,`diag`,`icd10`,`type`,`svdate`, 
+	CONCAT(SUBSTRING(`svdate`,1,10),`hn`) AS `date_hn`, 
+	CONCAT(SUBSTRING(`svdate`,9,2),'-',SUBSTRING(`svdate`,6,2),'-',SUBSTRING(`svdate`,1,4),`hn`) AS `date_opday`
+	FROM `diag` 
+	WHERE ( `svdate` LIKE '$thidate_short%' AND `hn` = '$hn' ) 
+	AND `icd10` <> '' 
+	AND `status` = 'Y' ";
+    $q_diag = $dbi->query($sql_diag);
+
+    while ($diag = $q_diag->fetch_assoc()) {
+        
+        $diag_id = $diag['row_id'];
+        $svdate = $diag['svdate'];
+        $pre_diag = htmlspecialchars($diag['diag'], ENT_QUOTES);
+        $diag_txt = trim(preg_replace('/\s+/',' ',$pre_diag));
+        $icd10 = $diag['icd10'];
+        $type = $diag['type'];
+        $date_hn = $diag['date_hn'];
+
+        $sql_data_list = $sql_header."( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
+        file_put_contents($filePath, $sql_data_list, FILE_APPEND);
+
+    }
     
-    file_put_contents($filePath, $sql_data_list, FILE_APPEND);
-
 }
 
 mysql_close($db);

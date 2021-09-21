@@ -26,8 +26,8 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2564-01-01';
-$date_end = '2564-07-31';
+$date_start = '2564-07-01';
+$date_end = '2564-09-15';
 
 $quarter = 4;
 $year = '2564';

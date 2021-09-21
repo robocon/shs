@@ -6,9 +6,17 @@
 include 'bootstrap.php';
 define('RDU_TEST', '1');
 
+$rdu_configs = array(
+    'host' => '192.168.131.250',
+    'port' => '3306',
+    'dbname' => 'rdu',
+    'user' => 'remoteuser',
+    'pass' => ''
+);
 
 $db = Mysql::load($rdu_configs);
 $quarter = input_post('quarter');
+
 if( $quarter == 1 ){
     $month_range['min'] = '10';
     $month_range['max'] = '12'; //¤Á

@@ -12,9 +12,9 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2021-01-01';
-$date_end = '2021-03-31';
-$quarter = 2;
+$date_start = '2021-06-01';
+$date_end = '2021-06-31';
+$quarter = 5;
 $year = '2564';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
@@ -42,9 +42,12 @@ FROM (
 LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` 
 LEFT JOIN `resultdetail` AS c ON c.`autonumber` = a.`latest_id` 
 LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn` 
-WHERE c.`labname` = 'Creatinine' 
+WHERE c.`labcode` = 'CREA' 
 AND c.`result` != '*' 
 ORDER BY b.`autonumber` ASC ";
+
+dump($sql);
+
 $q = mysql_query($sql, $db) or die( mysql_error() );
 
 
