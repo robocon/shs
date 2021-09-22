@@ -192,6 +192,9 @@ if(empty($page)){
                                 <a href="pm_shs.php?page=edit_user&part=<?=$item['code'];?>">แก้ไขรายชื่อผู้เข้าตรวจ</a>
                             </li>
                             <li>
+                                <a href="pm_shs_remove_user.php?part=<?=$item['code'];?>" onclick="return confirm_remove_part();">ยกเลิกรายชื่อทั้งหมด</a>
+                            </li>
+                            <li>
                                 <a href="pm_upload.php?part=<?=$item['code'];?>">เพิ่มรายชื่อด้วย CSV</a>
                             </li>
                             <li>
@@ -212,6 +215,12 @@ if(empty($page)){
             ?>
             </table>
         </div>
+        <script>
+            function confirm_remove_part(){
+                var c = confirm("ยืนยันการล้างข้อมูลทั้งหมด? ");
+                return c;
+            }
+        </script>
         <?php 
     }
 
