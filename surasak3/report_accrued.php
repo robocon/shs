@@ -73,7 +73,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
     <td colspan="2" align="center">* ค้นหาจากวันที่รับบริการ
       <input name="submit" type="submit" class="forntsarabun" value="ค้นหา"/>&nbsp;&nbsp;
     <!--<input type="button" name="button" value="พิมพ์รายงาน"  onClick="JavaScript:window.print();" class="forntsarabun">-->
-      <a href="../nindex.htm" class="forntsarabun">กลับเมนูหลัก</a>  ||  <a href="report_accrueddetail.php" target="_blank">รายงานค้างชำระแบบละเอียด</a>
+      <a href="../nindex.htm" class="forntsarabun">กลับเมนูหลัก</a>  ||  <a href="report_accrueddetail.php" target="_blank">รายงานค้างชำระแบบละเอียด</a> || <a href="accrued_status_y.php" target="_blank">สถานะการชำระจากค้างจ่าย ปีงบ64</a>
       </td>
   </tr>
 </table>
@@ -201,66 +201,5 @@ $sumtotal+=$objResult1["price"];
     <td colspan="8" align="center">รวมเงินทั้งหมด</td>
     <td align="right"><?=number_format($sumtotal,2)?></td>
     <td align="center">&nbsp;</td>
-  </tr>
-</table>
-<BR />
-<BR />
-
-<?  
-echo "<font size='+2' class='angsana'>แสดงรายการที่ชำระแล้ว</font>";
-?>
-<br />
-<br />
-<table  border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse"  bordercolor="#000000" width="100%" class="angsana">
-  <tr bgcolor="#ADDFFF" onmouseover="this.style.backgroundColor='#ADDFFF'" onmouseout="this.style.backgroundColor=''">
-
-    <th align="center">ลำดับ</th>
-    <th align="center">วันที่รับบริการ</th>
-    <th align="center">วันที่บันทึกข้อมูล</th>
-    <th align="center">เลขที่ใบเสร็จ</th>
-    <th align="center">VN</th>
-    <th align="center">HN</th>
-    <th align="center">ชื่อ-สกุล</th>
-    <th align="center">รายการ</th>
-    <th align="center">สิทธิ</th>
-    <th align="center">จำนวนเงิน</th>
-	<!--<th align="center">ลบ</th>-->
-    <!--<th>ลบ</th>-->
-  </tr>
-<?
-$i=1;
-while($objResult2 = mysql_fetch_array($objQuery2))
-{
-	
-	$ptname=$objResult2['yot'].$objResult2['name'].' '.$objResult2['surname'];
-	
-	if($objResult2["depart"]=='PHAR'){
-	$link="<a href='acc_phardetail.php?pdate=$objResult2[txdate]&phn=$objResult2[hn]' target='_blank'>$objResult2[detail]</a>";	
-	}else{
-	$link="<a href='acc_hudthakandetail.php?pdate=$objResult2[txdate]&phn=$objResult2[hn]' target='_blank'>$objResult2[detail]</a>";		
-	}
-?>
-  <tr  onmouseover="this.style.backgroundColor='#ADDFFF'" onmouseout="this.style.backgroundColor=''">
-
-    <td align="center"><?=$i;?></td>
-    <td><?=$objResult2["txdate"];?></td>
-    <td><?=$objResult2["date"];?></td>
-    <td><?=$objResult2["billno"];?></td>
-    <td align="center"><?=$objResult2["vn"];?></td>
-    <td align="center"><?=$objResult2["hn"];?></td>
-    <td align="left"><?=$ptname;?></td>
-    <td align="left"><?=$link;?></td>
-    <td align="left"><?=$objResult2["ptright"];?></td>
-   <td align="right"><?=$objResult2["price"];?></td>
-   <!--<td align="center"><a href="JavaScript:if(confirm('ยืนยันการชำระเงินค้างจ่าย?')==true){ window.location='accrued_delete.php?row_id=<?//=$objResult2[0];?>';}">ลบ</a></td>-->
-  </tr>
- <?
-$i++;
-$sumtotal2+=$objResult2["price"];
-}
-?>
-  <tr  onmouseover="this.style.backgroundColor='#ADDFFF'" onmouseout="this.style.backgroundColor=''">
-    <td colspan="8" align="center">รวมเงินทั้งหมด</td>
-    <td align="right"><?=number_format($sumtotal2,2);?></td>
   </tr>
 </table>
