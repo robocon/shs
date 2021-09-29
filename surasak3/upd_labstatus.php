@@ -59,6 +59,7 @@ elseif(isset($_GET['ids'])){
     <select  name='clinic'>
         <option value='<?=$result2['clinicalinfo']?>'><?=$result2['clinicalinfo']?></option>
         <option value='µ√«® ÿ¢¿“æª√–®”ª’<?=$nPrefix?>'>µ√«® ÿ¢¿“æª√–®”ª’<?=$nPrefix?></option>
+		<option value='µ√«® ÿ¢¿“æª√–®”ª’64'>µ√«® ÿ¢¿“æª√–®”ª’64</option>
 		<option value='µ√«® ÿ¢¿“æª√–®”ª’63'>µ√«® ÿ¢¿“æª√–®”ª’63</option>
 		<option value='µ√«® ÿ¢¿“æª√–®”ª’62'>µ√«® ÿ¢¿“æª√–®”ª’62</option>
 		<option value='µ√«® ÿ¢¿“æª√–®”ª’61'>µ√«® ÿ¢¿“æª√–®”ª’61</option>

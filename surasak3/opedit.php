@@ -448,7 +448,7 @@ return $pAge;
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
 <form name='f1' method='POST' action='opwork.php' onsubmit='return checkForm();' enctype="multipart/form-data">
 <fieldset>
-    <legend>ข้อมูลประวัติส่วนตัว :  HN : <a href="printpt.php" target="_blank"><font color="#FF0000"><?=$cHn;?></font></a></legend>
+    <legend>ข้อมูลประวัติส่วนตัว :  HN : <a href="printpt.php?hn=<?=$cHn;?>" target="_blank"><font color="#FF0000"><?=$cHn;?></font></a></legend>
 <table width="100%" border="0">
   <tr>
     <td width="15%" align="center">
