@@ -13,6 +13,7 @@ $dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
 
     <link rel="stylesheet" href="w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2021.css">
 </head>
 <body>
     <style>
@@ -35,51 +36,55 @@ $dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
         <a href="c19_form.php" class="w3-bar-item w3-right w3-button" style="text-shadow: 2px 2px 2px #444;">ฟอร์มบันทึก</a>
     </div>
 
-    
-    
-    <div class="w3-card-4">
+    <div class="w3-container w3-teal w3-bar w3-xlarge hide-print w3-center">
         <?php 
         $thDate = (date('Y')+543).date('-m-d');
         $date = date('Y-m-d');
         $m = date('m');
         ?>
-        <div class="w3-container w3-cell">
-            <header class="w3-container w3-blue">
+        <div class="">
+            <header class="">
                 <h1>วันที่ <?=date('d');?> เดือน<?=$def_fullm_th[$m].' '.(date('Y')+543);?></h1>
             </header>
         </div>
-        <div class="w3-container w3-cell">
-            <?php 
-            $sql_opday = "SELECT COUNT(`row_id`) AS `opday_count` FROM `opday` WHERE `thidate` LIKE '$thDate%' AND `toborow` LIKE 'EX52%' GROUP BY  SUBSTR(`toborow`,1,4) ";
-            $q = $dbi->query($sql_opday);
-            $opday = $q->fetch_assoc();
-            $count_opday = $opday['opday_count'];
-            ?>
-            <header class="w3-container w3-blue">
-                <h1>เข้ารับบริการ </h1>
-            </header>
-            <header class="w3-container w3-blue">
-                <h1 align="center" style="font-size: 64px;"><strong style='color:red;'><?=$count_opday;?> ราย</strong></h1>
-            </header>			
-        </div>
+    </div>
 
-        <div class="w3-container w3-cell">
-            <?php 
-            $sql_c19 = "SELECT COUNT(a.`id`) AS `count_c19` 
-            FROM ( 
-                SELECT `id`,`hn`,`date` FROM `c19_patients` WHERE `date` LIKE '$date%' GROUP BY `hn` 
-            ) AS a ";
-            $q_c19 = $dbi->query($sql_c19);
-            $c19 = $q_c19->fetch_assoc();
-            $count_c19 = $c19['count_c19'];
-            ?>
-            <header class="w3-container w3-blue">
-                <h1>ฉีดวัคซีนแล้ว </h1>
-            </header>
-            <header class="w3-container w3-blue">
-                <h1 align="center" style="font-size: 64px;"><strong style='color:yellow;'><?=$count_c19;?> ราย</strong></h1>
-            </header>			
+    <div class="w3-container">
+        <div class="w3-cell-row">
+            <div class="w3-container w3-2021-french-blue w3-cell">
+                <h1 class="w3-center" style="font-size: 70px;">เข้ารับบริการ</h1>
+                <?php 
+                $date = date('Y-m-d');
+                $sql_c19_count = "SELECT COUNT(`hn`) AS `count`  
+                FROM ( 
+                    SELECT `hn`FROM `c19_count` WHERE `date` = '$date' GROUP BY `hn`
+                ) AS a ";
+                $q = $dbi->query($sql_c19_count);
+                $opday = $q->fetch_assoc();
+                $count_opday = (int) $opday['count'];
+                ?>
+                <h1 align="center" style="font-size: 64px;" class="w3-2021-amethyst-orchid"><strong><?=$count_opday;?> ราย</strong></h1>
+            </div>
+
+            <div class="w3-container w3-2021-french-blue w3-cell">
+                <h1 class="w3-center" style="font-size: 70px;">ฉีดวัคซีนแล้ว</h1>
+                <?php 
+                $sql_c19 = "SELECT COUNT(a.`id`) AS `count_c19` 
+                FROM ( 
+                    SELECT `id`,`hn`,`date` FROM `c19_patients` WHERE `date` LIKE '$date%' GROUP BY `hn` 
+                ) AS a ";
+                $q_c19 = $dbi->query($sql_c19);
+                $c19 = $q_c19->fetch_assoc();
+                $count_c19 = (int) $c19['count_c19'];
+                ?>
+                <h1 align="center" style="font-size: 64px;" class="w3-2021-mint"><strong><?=$count_c19;?> ราย</strong></h1>
+                
+            </div>
         </div>
+    </div>
+    
+    <div class="w3-card-4">
+        
         <br>
         <?php 
         $def_day = ($_POST['day']) ? $_POST['day'] : date('d');
