@@ -10,17 +10,21 @@ $wards = array(
     '45' => 'หอผู้ป่วยพิเศษ'
 );
 
-function getFullWardName($cbedcode){
+/*
+เตียง1-9 ,301-310 พิเศษชั้นสาม
+เตียง10-17,201-207 พิเศษชั้นสอง
+*/
+function getFullWardName($cbedcode)
+{
     global $wards;
-    $wardExTest = preg_match('/45.+/', $cbedcode);
+    $bed_code45_test = preg_match('/45.+/', $cbedcode);
     $exName = '';
-    if( $wardExTest > 0 ){
-        
+    if( $bed_code45_test > 0 )
+    {
         // เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-        $wardR3Test = preg_match('/R3\d+|B\d+/', $cbedcode);
-        $wardBxTest = preg_match('/B[0-9]+/', $cbedcode);
-        $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
-        
+        $wardBxTest = preg_match('/45(F[1-3]|M[1-6])/', $cbedcode); // B1-B9
+        $wardR3Test = preg_match('/45R3[0-9]{2}/', $cbedcode); // R301-R310
+        $exName = ($wardBxTest > 0 || $wardR3Test > 0) ? 'ชั้น3' : 'ชั้น2' ;
     }
 
     $short_code = substr($cbedcode,0,2);
