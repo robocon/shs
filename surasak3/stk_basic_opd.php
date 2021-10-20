@@ -174,7 +174,7 @@ if ( !empty($ht_amount) OR !empty($dm_amount) ) {
 	$full_text .= $htdm." \n";
 }
 
-$full_text .= "อาการ: ".trim($organ)." \n";
+$full_text .= "อาการ: ".trim(htmlspecialchars_decode($organ, ENT_QUOTES))." \n";
 
 if ( !empty($hpi) ) { 
 	$full_text .= "HPI: ".$hpi." \n";
