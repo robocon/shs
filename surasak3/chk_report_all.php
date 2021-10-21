@@ -60,7 +60,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th colspan="32" align="center">รายการตรวจ</th>
+    <th colspan="33" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -99,6 +99,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
     <th width="7%">ผลการได้ยิน</th>
+    <th width="7%">แมมโมแกรม</th>
     <th width="5%" align="center">พบแพทย์</th>
     <th width="6%" align="center">ไม่พบแพทย์</th>
   </tr>
@@ -781,16 +782,17 @@ if($flag=="N"){
 	?></td>
     <td>
     <?php
-    if( !empty($result['altra']) ){
-        echo $result['altra'];
+    //อัลตร้าซาวด์ช่องท้อง
+    if( !empty($result2['altra']) ){
+        echo $result2['altra'];
     }
     ?>
     </td>
     <td>
     <?php 
     // ต่อมลูกหมากโดยการคลำ
-    if( !empty($result['psa']) ){
-        echo $result['psa'];
+    if( !empty($result2['psa']) ){
+        echo $result2['psa'];
     }
     ?>
     </td>
@@ -799,6 +801,14 @@ if($flag=="N"){
     // ผลการได้ยิน
     if( !empty($hearing) ){
         echo $hearing;
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
+    // แมมโมแกรม
+    if( !empty($result2["mammogram"]) ){
+        echo $result2["mammogram"];
     }
     ?>
     </td>
