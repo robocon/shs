@@ -74,7 +74,7 @@ if( $action == false ){
         foreach ( $items as $key => $item ) {
 
             list($idcard, $name, $surname) = explode(',', $item,3);
-
+            $idcard = trim($idcard);
             if( !empty($idcard) ){
 
                 ++$i;
