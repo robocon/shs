@@ -755,16 +755,20 @@ if($flag=="N"){
 }
 ?></td>
     <td><? 
-	$sql3="select * from patdata where hn='$pt_hn' and code='51410' and date like '$dateekg%' order by row_id desc";
+	// $sql3="select * from patdata where hn='$pt_hn' and code='51410' and date like '$dateekg%' order by row_id desc";
 	//echo $sql3;
-	$query3=mysql_query($sql3);
-	$num3=mysql_num_rows($query3);
-	if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
-		if($result["HN"]=="56-9685"){ echo $result2["ekg"]; }else{ echo "ปกติ"; }
-	}else if($result["HN"]=="60-5189"){  //ตรวจแต่ไม่ได้คิดค่าใช้จ่าย
-		echo "ปกติ";
-	}
-	 ?></td>
+	// $query3=mysql_query($sql3);
+	// $num3=mysql_num_rows($query3);
+	// if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
+	// 	if($result["HN"]=="56-9685"){ echo $result2["ekg"]; }else{ echo "ปกติ"; }
+	// }else if($result["HN"]=="60-5189"){  //ตรวจแต่ไม่ได้คิดค่าใช้จ่าย
+	// 	echo "ปกติ";
+	// }
+    if(!empty($result2['ekg']))
+    {
+        echo $result2['ekg'];
+    }
+	?></td>
     <td>
 	<? 
 	if($month=="8"  || $month=="9"){

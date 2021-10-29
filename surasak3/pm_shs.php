@@ -108,7 +108,7 @@ if ( $action == 'save' ) {
 }
 </style>
 <div>
-    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลักร.พ.</a> | <a href="pm_shs.php">หน้าแรกพิมพ์สติกเกอร์</a>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลักร.พ.</a> | <a href="pm_shs.php">หน้าแรกพิมพ์สติกเกอร์</a> | <a href="chk_test_ipcard.php">ค้นหา ชื่อ-สกุล จากเลขบัตรประชาชน</a>
 </div>
 
 <?php
@@ -153,7 +153,8 @@ if(empty($page)){
 
     <?php 
 
-    $sql = "SELECT * FROM `chk_company_list` WHERE `code` LIKE 'checkup_solider%' AND `status` = '1' ORDER BY `id` ASC";
+    $thYear = date('Y')+543;
+    $sql = "SELECT * FROM `chk_company_list` WHERE `code` LIKE 'checkup_solider%' AND `status` = '1' AND `yearchk` >= '$thYear' ORDER BY `id` ASC";
     $db->select($sql);
     $chk_rows = $db->get_rows();
     if ( $chk_rows > 0 ) {

@@ -38,7 +38,7 @@ foreach ($items as $key => $item) {
     }
     
     // ปริ้นเผื่อมาสัก 3 ใบ พี่สมยศบอก
-    // for ($i=0; $i < 2; $i++) { 
+    for ($i=0; $i < 2; $i++) { 
 
         $last_code = '';
 
@@ -55,7 +55,7 @@ foreach ($items as $key => $item) {
         </div>
         <div style="page-break-before: always;"></div>
         <?php
-    // }
+    }
 
     // if( $ii == 5 ){ exit; }
     
