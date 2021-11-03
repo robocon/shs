@@ -11,7 +11,7 @@
             height: 100%;
         }
     </style>
-    <table border="1" width="100%" height="100%">
+    <table border="1" width="100%" valign="top">
         <tr>
             <td>
                 <iframe src="edit_opacc2.php" name="opacc" frameborder="0" width="100%"></iframe>
@@ -28,8 +28,8 @@
             </td>
         </tr>
         <tr>
-            <td>
-                <iframe src="edit_opacc5.php" name="edit" frameborder="0" width="100%"></iframe>
+            <td style="height: 400px;">
+                <iframe src="edit_opacc5.php" name="edit" frameborder="0" width="100%" height="100%"></iframe>
             </td>
         </tr>
     </table>
