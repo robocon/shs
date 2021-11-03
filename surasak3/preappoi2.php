@@ -5,6 +5,16 @@ session_register("appd");
 
 global $dt_doctor, $cdoctor, $doctor;
 
+if(!function_exists('dump'))
+{
+	function dump($txt)
+	{
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
+}
+
  if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
@@ -114,11 +124,18 @@ exit();
 }
 
 
+if(isset($_POST['date_appoint_old']) && !empty($_POST['date_appoint_old']))
+{
+	$_POST['date_appoint'] = $_POST['date_appoint_old'];
+	$doctor = $dt_doctor = $_POST['doctor'] = $_POST['doctor_name'];
+}
+
 $officer_name = trim($_SESSION['sOfficer']);
 $doctor_name = trim($_POST['doctor']);
 
 
-if( !$_POST['date_appoint'] ){
+if( !$_POST['date_appoint'])
+{
 	?><p>กรุณาเลือกวันที่นัด <a href="javascript:window.history.back();">คลิกที่นี่</a> เพื่อกลับไปหน้าเลือกวันที่</p><?php
 	exit;
 }
@@ -760,6 +777,21 @@ function fncSubmit(strPage)
 <TABLE border="0">
 <TR valign="top">
 	<TD>
+
+	<?php 
+	// ดึงข้อมูลนัดเวลาแก้ไข
+	$appoint_id = $_POST['appoint_id'];
+	$appoint = array();
+	if(isset($appoint_id) && !empty($appoint_id))
+	{
+		$app_sql = "SELECT * FROM `appoint` WHERE `row_id` = '$appoint_id' ";
+		$q_appoint = mysql_query($app_sql);
+		
+		if (mysql_num_rows($q_appoint) > 0) {
+			$appoint = mysql_fetch_assoc($q_appoint);
+		}
+	}
+	?>
 <form  name="form1" method="POST" action="appinsert1.php" target="_blank" onSubmit="return checktext();">
 <font face="Angsana New" size = '4'>กรุณาระบุการนัดมาเพื่อ เพื่อที่แผนกทะเบียนจะทำการค้นหา OPD Card ได้ถูกต้อง
 <br>
@@ -781,77 +813,55 @@ function fncSubmit(strPage)
 
 	  $an_check = false;
 
-	  while($result = mysql_fetch_array($row)){
-		  $str="";
+	while($result = mysql_fetch_array($row)){
+		$str="";
 		if($result['applist']=="ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"){
-			$sql1 = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
-			$result1 = Mysql_Query($sql1);
-			$arr = Mysql_fetch_row($result1);
-			
-			if($arr[0] == "ADMICU" || $arr[0] == "ADMWF" || $arr[0] == "ADMVIP" || $arr[0] == "ADMOBG"){
-					$str= "  Selected  ";
-					$an_check = true;
+			if($_SESSION['smenucode'] == "ADMICU" || $_SESSION['smenucode'] == "ADMWF" || $_SESSION['smenucode'] == "ADMVIP" || $_SESSION['smenucode'] == "ADMOBG"){
+				$str= "  Selected  ";
+				$an_check = true;
 			}
 		}
 		
 		if($result['applist']=="กายภาพ"){
-			$sql1 = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
-			$result1 = Mysql_Query($sql1);
-			$arr = Mysql_fetch_row($result1);
-			
-			if($arr[0] == "ADMPT"){
-					$str= "  Selected  ";
+			if($_SESSION['smenucode']=="ADMPT")
+			{
+				$str= "  Selected  ";
 			}
-		}		
-?>
+		}
+
+		if(empty($str))
+		{
+			$str = ( $result['appvalue'] == $appoint['detail'] ) ? 'selected' : '' ;
+		}
+
+		?>
       	<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
-        <!--<option value="FU01 ตรวจตามนัด">ตรวจตามนัด</option>
-        <option value="FU02 ตามผลตรวจ">ตามผลตรวจ</option>
-        <option value="FU03 นอนโรงพยาบาล">นอนโรงพยาบาล</option>
-        <option value="FU04 ทันตกรรม">ทันตกรรม</option>
-        <option value="FU05 ผ่าตัด">ผ่าตัด</option>
-        <option value="FU06 สูติ">สูติ</option>
-        <option value="FU07 คลีนิกฝังเข็ม">คลีนิกฝังเข็ม</option>
-        <option value="FU08 Echo">Echo</option>
-        <option value="FU09 มวลกระดูก">มวลกระดูก</option>
-        <option value="FU10 กายภาพ">กายภาพ</option>
-        <option value="FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"
-
-
->ตรวจตามนัดพร้อมประวัติผู้ป่วยใน</option>-->
-       <!-- <option value="FU12 นวดแผนไทย">นวดแผนไทย</option>
-        //ไม่ได้ใช้ <option value="FU13 ส่องกระเพาะ">ส่องกระเพาะ</option>
-<option value="FU20 ส่องกระเพาะ(คลินิกพิเศษ)">ส่องกระเพาะ(คลินิกพิเศษ)</option>//ไม่ได้ใช้
-        <option value="FU13 ตรวจระบบทางเดินอาหาร">ตรวจระบบทางเดินอาหาร</option>
-        <option value="FU14 เจาะเลือดไม่พบแพทย์">เจาะเลือดไม่พบแพทย์</option>
-        <option value="FU15 OPD นอกเวลา">OPD นอกเวลาราชการ</option>
-        <option value="FU16 คลินิกพิเศษ">คลินิกศัลยกรรมนอกเวลาพิเศษ(ค่าบริการ 100 บาท)</option>
-        <option value="FU17 X-ray ไม่พบแพทย์">X-ray ไม่พบแพทย์</option>
-        <option value="FU18 ตัดไหมที่ ER ไม่พบแพทย์">ตัดไหมที่ ER ไม่พบแพทย์</option>
-        <option value="FU19 อัลตร้าซาวด์"> อัลตร้าซาวด์</option>
-        <option value="FU21 คลินิก COPD">คลินิก C OPD</option>
-        <option value="FU22 ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู">ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู</option>
-        <option value="FU23 OPD กายภาพ">OPD กายภาพ</option>
-        <option value="FU24 ตรวจตามนัด OPD จักษุ(ตา)">ตรวจตามนัด OPD จักษุ(ตา)</option>
-        <option value="FU25 CT Scan">CT Scan</option>
-        <option value="FU26 EMG">EMG</option>
-        <option value="FU27 X-ray ก่อนพบแพทย์">X-ray ก่อนพบแพทย์</option>
-        <option value="FU28 Lab ก่อนพบแพทย์">Lab ก่อนพบแพทย์</option>
-        <option value="FU29 X-ray + Lab ก่อนพบแพทย์">X-ray + Lab ก่อนพบแพทย์</option>
-        <option value="FU30 คลินิกโรคไต">คลินิกโรคไต</option>-->
-        <!-- นัดมาเพื่อ มีถึง FU30 -->
         <?
-	  }
+	}
 		?>
       </select>
     </font></td>
     <td width="280"><font face="Angsana New">
 
 	<?php 
+	// U08  หอผู้ป่วยรวม
+	// U19  หอผู้ป่วยพิเศษ3
+	// U03  หอผู้ป่วยสูตินรี
+	// U04  หอผู้ป่วยหนักICU
+	// U05  ห้องผ่าตัด
+	$dep_ward_lists = array('U08','U19','U03','U04','U05');
+	$dep_short = substr($appoint['depcode'], 0, 3);
+
+	if(in_array($dep_short, $dep_ward_lists)==true)
+	{
+		$an_check = true;
+	}
+
+
 	// ถ้านัดจาก Ward จะแสดงข้อความให้กรอก AN
 	if( $an_check === true ){ echo "เลขที่AN/อื่นๆ : "; }
 	?>
-	<input type="text" id="detail2" name="detail2" size="20">
+	<input type="text" id="detail2" name="detail2" size="20" value="<?=$appoint['detail2'];?>">
 
  <select size="1" name="detail_list" id="detail_list" style="display:none">
 <option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
@@ -906,7 +916,11 @@ function fncSubmit(strPage)
     <td colspan="2"><font face="Angsana New" size = '4'><font face="Angsana New">
 
 		<?php 
-		// default เป็นตึกใหม่
+		// เงื่อนไขที่จะให้ default เป็นตึกใหม่คือ 
+		// 1. มีชื่อตามรายการข้างล่างนี้
+		// 2. เป็นหมอIntern 
+		$status_new_build = false;
+
 		$testNewBuilding = array(
 			'MD009 นภสมร ธรรมลักษมี',
 			'MD006 เลือก ด่านสว่าง',
@@ -919,6 +933,7 @@ function fncSubmit(strPage)
 		$preOpd = '';
 		if(in_array($doctor_post, $testNewBuilding)){
 			$preOpd = 'selected="selected"';
+			$status_new_build = true;
 		}
 
 		$sql = "SELECT `row_id` FROM `doctor` WHERE `name` = '$doctor_post' AND `position` = '99 เวชปฏิบัติ' LIMIT 1 ";
@@ -928,127 +943,264 @@ function fncSubmit(strPage)
 			if(mysql_num_rows($q) > 0)
 			{
 				$preOpd = 'selected="selected"';
+				$status_new_build = true;
 			}
 		}
 
+		$room_lists = array(
+			'NA' => '<เลือกห้องตรวจ>',
+			'จุดบริการนัดที่ 1',
+			'อาคารเฉลิมพระเกียรติ',
+			'แผนกทะเบียน',
+			'ห้องฉุกเฉิน',
+			'กองทันตกรรม',
+			'แผนกพยาธิวิทยา',
+			'แผนกเอกชเรย์',
+			'กองสูติ-นารี',
+			'กายภาพ',
+			'คลีนิกฝังเข็ม',
+			'นวดแผนไทย',
+			'ห้องตรวจจักษุ(ตา)',
+			'ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)',
+			'ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู',
+			'คลีนิกโรคไต',
+			'กายภาพบำบัดชั้น 2',
+			'ห้อง CT SCAN',
+			'ห้องเก็บเงินรายได้ เบอร์4',
+			'ห้อง CT SCAN (ตรวจมวลกระดูก)',
+			'ห้องตรวจเฉพาะโรค',
+			'แผนกตรวจสุขภาพ',
+			'คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)' 
+		);
+
 		?>
 
-      <select size="1" name="room" id="room">
-        <option value="NA">&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3627;&#3657;&#3629;&#3591;&#3605;&#3619;&#3623;&#3592;&gt;</option>
-        <option>จุดบริการนัดที่ 1</option>
-        <option id="pre-opd" <?=$preOpd;?>>อาคารเฉลิมพระเกียรติ</option>
-        <option id="opd">แผนกทะเบียน</option>
-        <option>ห้องฉุกเฉิน</option>
-        <option>กองทันตกรรม</option>
-        <option>แผนกพยาธิวิทยา</option>
-        <option>แผนกเอกชเรย์</option>
-        <option>กองสูติ-นารี</option>
-        <option <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>กายภาพ</option>
-        <option>คลีนิกฝังเข็ม</option>
-        <option>นวดแผนไทย</option>
-        <option>ห้องตรวจจักษุ(ตา)</option>
-        <option>ห้องตรวจกายภาพบำบัด(ตึกกายภาพ)</option>
-        <option>ตรวจตามนัด OPDเวชศาสตร์ฟื้นฟู</option>
-        <option>คลีนิกโรคไต</option>
-		<option>กายภาพบำบัดชั้น 2</option>
-         <option>ห้อง CT SCAN</option>  
-        <option>ห้องเก็บเงินรายได้ เบอร์4</option>  <!--#18-->             
-        <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
-        <option selected="selected">ห้อง CT SCAN (ตรวจมวลกระดูก)</option>
-        <? } ?>
-		<option>ห้องตรวจเฉพาะโรค</option>
-		<option>แผนกตรวจสุขภาพ</option>
-		<option>คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)</option>
-        </select>
-      </font><font face="Angsana New" size = '4'><font face="Angsana New"></font></font></font><font face="Angsana New" size = '4'><font face="Angsana New">เวลา<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
-	   
-	   if(empty($_COOKIE["until"])){
-		 @setcookie("until", "ฝังเข็ม", time()+(3600*12));
-	   }
+<select size="1" name="room" id="room">
+<?php 
+foreach ($room_lists as $key => $room) {
+	$room_value = $room;
 
-	   ?>
-        <select size="1" name="capptime">
-          <option value="07:30 น. - 08:00 น.">07:30 น. - 08:00 น.</option>
-          <option value="08:30 น. - 09:00 น.">08:30 น. - 09:00 น.</option>
-          <option value="09:30 น. - 10:00 น.">09:30 น. - 10:00 น.</option>
-          <option value="10:30 น. - 11:00 น.">10:30 น. - 11:00 น.</option>
-          <option value="11:30 น. - 12:00 น.">11:30 น. - 12:00 น.</option>
-          <option value="12:30 น. - 13:00 น.">12:30 น. - 13:00 น.</option>
-          <option value="15:30 น. - 16:00 น.">15:30 น. - 16:00 น.</option>
-          <option value="16:30 น. - 17:00 น.">16:30 น. - 17:00 น.</option>
-          <option value="17:30 น. - 18:00 น.">17:30 น. - 18:00 น.</option>
-          <option value="18:30 น. - 19:00 น.">18:30 น. - 19:00 น.</option>
-          </select>
-         <? }else if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
-        <select size="1" name="capptime">
-          <option value="09:30 น.">09:30 น.</option>
-          <option value="13:30 น.">13:30 น.</option>
-          </select>         
-        <?php }else{ ?>
-        <select size="1" name="capptime">
-          <option selected>&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3648;&#3623;&#3621;&#3634;&#3609;&#3633;&#3604;&gt;</option>
-          <option selected>08:00 &#3609;. - 10.00 &#3609;.</option>
-          <option>08:00 &#3609;. - 11.00 &#3609;.</option>
-          <option>07:00 &#3609;.</option>
-          <option>07:30 &#3609;.</option>
-          <option>08:00 &#3609;.</option>
-          <option>08:30 &#3609;.</option>
-          <option>09:00 &#3609;.</option>
-          <option>09:30 &#3609;.</option>
-          <option>10:00 &#3609;.</option>
-          <option>10:30 &#3609;.</option>
-          <option>11:00 &#3609;.</option>
-          <option>11:30 &#3609;.</option>
-          <option>12:30 &#3609;.</option>
-          <option>13:00 &#3609;.</option>
-          <option>13:30 &#3609;.</option>
-          <option>14:00 &#3609;.</option>
-          <option>14:30 &#3609;.</option>
-          <option>15:00 &#3609;.</option>
-          <option>15:30 &#3609;.</option>
-          <option>16:00 &#3609;.</option>
-          <option>16:30 &#3609;.</option>
-          <option>17:00 &#3609;.</option>
-          <option>17:30 &#3609;.</option>
-          <option>18:00 &#3609;.</option>
-          <option>18:30 &#3609;.</option>
-          <option>19:00 &#3609;.</option>
-          <option>19:30 &#3609;.</option>
-          <option>20:00 &#3609;.</option>
-          <option>21:00 &#3609;.</option>
-          </select>
-        <?php } ?>
-      </font></font></td>
+	$select = $id = '';
+
+
+	if($room=='อาคารเฉลิมพระเกียรติ'){
+		$id = 'id="pre-opd"';
+	}elseif ($room=='แผนกทะเบียน') {
+		$id = 'id="opd"';
+	}
+
+	if($status_new_build==true && $room=='อาคารเฉลิมพระเกียรติ')
+	{
+		$select = 'selected';
+	}
+	elseif($_SESSION["smenucode"]=="ADMPT" && $room=='กายภาพ')
+	{
+		$select = 'selected';
+	}
+	elseif($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ" && $room=='กายภาพ' )
+	{
+		$select = 'selected';
+	}
+	else
+	{
+		$select = ($room==$appoint['room']) ? 'selected' : 'ห้อง CT SCAN (ตรวจมวลกระดูก)' ;
+	}
+
+	if($room == '<เลือกห้องตรวจ>')
+	{
+		$room_value = 'NA';
+	}
+
+	?>
+	<option value="<?=$room_value;?>" <?=$id;?> <?=$select;?>><?=$room;?></option>
+	<?php
+}
+?>
+</select></font></font>
+
+<font face="Angsana New" size = '4'>
+	<font face="Angsana New">เวลา
+		<?php 
+		if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
+
+			if(empty($_COOKIE["until"])){
+				@setcookie("until", "ฝังเข็ม", time()+(3600*12));
+			}
+
+			$time_appoint = array(
+				'07:30 น. - 08:00 น.',
+				'08:30 น. - 09:00 น.',
+				'09:30 น. - 10:00 น.',
+				'10:30 น. - 11:00 น.',
+				'11:30 น. - 12:00 น.',
+				'12:30 น. - 13:00 น.',
+				'15:30 น. - 16:00 น.',
+				'16:30 น. - 17:00 น.',
+				'17:30 น. - 18:00 น.',
+				'18:30 น. - 19:00 น.'
+			);
+
+		}else if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ 
+			$time_appoint = array( 
+				'09:30 น.',
+				'13:30 น.'
+			);
+		
+		}else{ 
+			$time_appoint = array(
+				'08:00 น. - 10:00 น.',
+				'08:00 น. - 11:00 น.',
+				'07:00 น.','07:30 น.','08:00 น.','08:30 น.',
+				'09:00 น.','09:30 น.','10:00 น.','10:30 น.',
+				'11:00 น.','11:30 น.','12:30 น.','13:00 น.',
+				'13:30 น.','14:00 น.','14:30 น.','15:00 น.',
+				'15:30 น.','16:00 น.','16:30 น.','17:00 น.',
+				'17:30 น.','18:00 น.','18:30 น.','19:00 น.',
+				'19:30 น.','20:00 น.','21:00 น.'
+			);
+		} 
+		?>
+		<select size="1" name="capptime">
+			<?php
+			foreach ($time_appoint as $key => $value) { 
+				$selected = ($value===$appoint['apptime']) ? 'selected' : '' ;
+				?>
+				<option value="<?=$value;?>" <?=$selected;?> ><?=$value;?></option>
+				<?php
+			}
+			?>
+		</select>
+
+</font></font>
+	</td>
     </tr>
 <tr>
-  <td colspan="3"><font face="Angsana New"><A HREF="javascript:show_bock();">เจาะเลือด</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; เจาะเลือดเพิ่มเติม <font face="Angsana New">
-    <input type="text" name="labm" size="30" />
-  </font></td>
+  <td colspan="3"><font face="Angsana New"><A HREF="javascript:show_bock();">เจาะเลือด</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; เจาะเลือดเพิ่มเติม </font>
+  <font face="Angsana New">
+    <input type="text" name="labm" size="30" value="<?=$appoint['labm'];?>"/>
+  </font>
+</td>
   </tr>
  
 <tr>
-  <td colspan="3"><div id="list_patho"></div></td>
+  <td colspan="3">
+	  <!-- แสดงรายการแลป -->
+	  <!-- 
+		  // เรียกตัวนีก่อน เพื่อเก็บใน session
+			$_GET["action"] == "addtolist"
+
+			$sql = "Select detail, yprice, nprice, lab_listdetail From labcare where code = '".$_GET["code"]."' limit 1; ";
+	list($detail, $yprice, $nprice, $lab_listdetail) = Mysql_fetch_row(Mysql_Query($sql));
+
+	array_push($_SESSION["list_code"],$_GET["code"]);
+	array_push($_SESSION["list_detail"],$detail);
+	array_push($_SESSION["lab_lists"],$lab_listdetail);
+
+
+			แล้วเรียก ajax ตัวนี้ viewlist อีกทีเพื่อแสดงผล
+			echo "<TABLE bgcolor='#FFFFD2'>
+	<TR>
+		<TD>";
+	for($i=0;$i<$count;$i++){
+		echo "<A HREF=\"javascript:del_list(",$i,");\" >",$_SESSION["list_detail"][$i],"</A><BR>";
+	}
+	echo "</TD>
+	</TR>
+	</TABLE>";
+
+		-->
+
+
+<div id="list_patho">
+<?php 
+$appoint_lab = $appoint['row_id'];
+$sql = "SELECT * FROM `appoint_lab` WHERE `id` = '$appoint_lab' ";
+$q = mysql_query($sql);
+if(mysql_num_rows($q) > 0)
+{
+	?>
+	<table bgcolor="#FFFFD2">
+	<?php 
+	$lab_i = 0;
+	while ($app_lab = mysql_fetch_assoc($q)) {
+
+		$lab_code = $app_lab['code'];
+
+		$sql = "Select detail, yprice, nprice, lab_listdetail From labcare where code = '$lab_code' limit 1; ";
+		list($detail, $yprice, $nprice, $lab_listdetail) = mysql_fetch_row(mysql_query($sql));
+
+		array_push($_SESSION["list_code"],$lab_code);
+		array_push($_SESSION["list_detail"],$detail);
+		array_push($_SESSION["lab_lists"],$lab_listdetail);
+
+		?>
+		<tr>
+			<td>
+			<A HREF="javascript:del_list(<?=$lab_i;?>);" ><?=$detail;?></A><BR>
+			</td>
+		</tr>
+		<?php 
+		$lab_i++;
+	}
+	?>
+	</table>
+	<?php
+}
+?>
+</div>
+  </td>
 </tr>
 <tr>
-  <td><font face="Angsana New">เอกซเรย์&nbsp;</font></td>
-  <td colspan="2"><font face="Angsana New">
-    <select size="1" name="xray">
-      <option selected value="NA">&#3652;&#3617;&#3656;&#3617;&#3637;&#3585;&#3634;&#3619;&#3648;&#3629;&#3585;&#3595;&#3648;&#3619;&#3618;&#3660;</option>
-      <option>CXR</option>
-      <option>KUB</option>
-      <option>เอกซเรย์ ก่อนพบแพทย์</option>
-      <option>อัลตราซาวนด์</option>
-      <option>ตรวจ IVP</option>
-      &nbsp;
-      </select>
-    </font><font face="Angsana New">
-      <input type="text" name="xray2" size="30" />
-    </font></td>
-  </tr>
+	<td><font face="Angsana New">เอกซเรย์&nbsp;</font></td>
+	<td colspan="2">
+	<?php 
+	$xray_lists = array(
+		'NA' => 'ไม่มีการเอกซเรย์', 
+		'CXR', 
+		'KUB', 
+		'เอกซเรย์ ก่อนพบแพทย์', 
+		'อัลตราซาวนด์', 
+		'ตรวจ IVP'
+	);
+
+	// dump($appoint);
+
+	$appoint_xray = trim($appoint['xray']);
+	if($appoint_xray === 'cxr')
+	{
+		$appoint_xray = strtoupper($appoint_xray);
+	}
+
+	?>
+	<font face="Angsana New">
+	<select size="1" name="xray">
+		<?php 
+		
+		foreach ($xray_lists as $key => $xray) {
+			$xray_value = $xray;
+
+			if($xray == 'ไม่มีการเอกซเรย์')
+			{
+				$xray_value = $key;
+			}
+
+			$selected = ($xray==$appoint_xray) ? 'selected' : '' ;
+			?>
+			<option value="<?=$xray_value;?>" <?=$selected;?>><?=$xray;?></option>
+			<?php
+		}
+		?>
+	</select>
+	</font>
+	<font face="Angsana New">
+		<input type="text" name="xray2" size="30" />
+	</font>
+	</td>
+</tr>
 <tr>
   <td><font face="Angsana New">อื่นๆ&nbsp;&nbsp;</font></td>
   <td colspan="2"><font face="Angsana New">
-    <input type="text" name="other" size="30" /></font></td>
+    <input type="text" name="other" size="30" value="<?=$appoint['other'];?>"/></font></td>
   </tr>
  <tr>
   <td>ข้อควรปฏิบัติก่อนพบแพทย์</td>

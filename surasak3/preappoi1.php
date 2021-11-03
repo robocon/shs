@@ -635,6 +635,7 @@ if($menucode == "ADMMAINOPD"){
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 	?>
 	<select name="doctor" id="selectDoctor" onChange="show_carlendar(this.value)"> 
+	<option value="0">กรุณาเลือกแพทย์</option> 
 		<?php
 		while($objResult = mysql_fetch_array($objQuery)) { 
 			?> 
@@ -686,6 +687,7 @@ while($objResult = mysql_fetch_array($objQuery))
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 	?>
 	<select name="doctor" id="selectDoctor" onChange="show_carlendar(encodeURI(this.value))"> 
+	<option value="0">กรุณาเลือกแพทย์</option> 
 		<?php
 		while($objResult = mysql_fetch_array($objQuery)) { 
 			?> 
@@ -738,10 +740,37 @@ body,td,th {
 	.total_appointsaturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #FF0000;
 	text-decoration:none;}
 </style>
+
+
+<?php 
+// ถ้าคลิกมาจากหน้าแก้ไขจะมีค่า appoint_id, doctor, appdate
+$doctor_name = "";
+if($_GET['view']=="edit_form"){ 
+	$appoint_id = $_GET['appoint_id'];
+	$doctor_name = $_GET['doctor'];
+	$old_appdate = $_GET['appdate'];
+	?>
+	<style> 
+		fieldset{display: inline;}
+		fieldset p{margin: 0;}
+	</style>
+	<fieldset>
+		<legend>นัดเดิม</legend>
+		<p><b>แพทย์ผู้นัดเดิม :</b> <?=$doctor_name;?></p>
+		<p><b>วันนัดเดิม :</b> <?=$old_appdate;?></p>
+		<input type="hidden" name="appoint_id" value="<?=$appoint_id;?>">
+		<input type="hidden" name="date_appoint_old" value="<?=$old_appdate;?>">
+		<p style="font-size:16px; border:1px solid #7e7c60; background-color:#fff9c0; padding:4px; display:inline;">หากไม่ต้องการเปลี่ยนแพทย์และวันที่สามารถคลิก ต่อไป ได้ทันที</p>
+	</fieldset>
+	<br>
+	<?php
+}
+?>
   &nbsp;&nbsp;<input type="submit" value="    ต่อไป     " name="B1">
   &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< &#3648;&#3617;&#3609;<span class="t">&#3641;</span></a>&nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a></p>
 
-<input type="hidden" name="doctor_name" id="doctor_name">
+
+<input type="hidden" name="doctor_name" id="doctor_name" value="<?=$doctor_name;?>" >
 
 </form>
 
