@@ -173,6 +173,11 @@ if (isset($cHn )){
     list($th_d, $th_m, $th_y) = explode(' ', $appd);
 	$appdate_en = ($th_y-543).'-'.array_search($th_m, $def_fullm_th).'-'.$th_d;
 
+
+
+    /**
+     * [] เพิ่ม update appoint
+     */
     $sql = "INSERT INTO appoint(
         date,officer,hn,ptname,age,doctor,
         appdate,apptime,room,detail,detail2,advice,
@@ -194,15 +199,20 @@ if (isset($cHn )){
     $appdate_en = $pre_y.'-'.$convert_m[$pre_m].'-'.$pre_d;
 
     // เก็บข้อมูลนัด
-    $appoint_opd = array(
-        'date' => $Thidate,'officer' => urlencode($sOfficer),'hn' => $cHn,'ptname' => urlencode($cPtname),
-        'age' => urlencode($cAge),'doctor' => urlencode($cdoctor),'appdate' => $appdate_en,'apptime' => urlencode($capptime),
-        'room' => urlencode($room),'detail' => urlencode($detail),'detail2' => urlencode($detail2),'advice' => urlencode($advice),
-        'patho' => urlencode($pathoall),'xray' => urlencode($xrayall),'other' => urlencode($other),'depcode' => urlencode($depcode),
-        'labextra' => urlencode($labm),'id' => $idno
-    );
+    // $appoint_opd = array(
+    //     'date' => $Thidate,'officer' => urlencode($sOfficer),'hn' => $cHn,'ptname' => urlencode($cPtname),
+    //     'age' => urlencode($cAge),'doctor' => urlencode($cdoctor),'appdate' => $appdate_en,'apptime' => urlencode($capptime),
+    //     'room' => urlencode($room),'detail' => urlencode($detail),'detail2' => urlencode($detail2),'advice' => urlencode($advice),
+    //     'patho' => urlencode($pathoall),'xray' => urlencode($xrayall),'other' => urlencode($other),'depcode' => urlencode($depcode),
+    //     'labextra' => urlencode($labm),'id' => $idno
+    // );
 
 
+
+
+    /**
+     * [] ลบของเก่าออกไปก่อนแล้วให้สคริปด้านล่างเพิ่มไปเอง
+     */
     // เก็บข้อมูลนัดเจาะ lab 
     $appoint_lab = array();
 
@@ -273,7 +283,7 @@ if (isset($cHn )){
     }
     
     // เก็บข้อมูลนัดผ่าตัด
-    $appoint_or = array();
+    // $appoint_or = array();
 
     if($detail=="FU05 ผ่าตัด"){
         $wardor=substr($depcode,4);//ward or
@@ -292,10 +302,10 @@ if (isset($cHn )){
         mysql_query($sqlor);
 
         
-        $appoint_or = array('ward' => urlencode($wardor),'hn' => $cHn,'an' => '','ptname' => urlencode($cPtname),
-        'age' => $cAge,'ptright' => urlencode($cptright),'diag' => urlencode($ordetail1),'surg' => urlencode($ordetail2),
-        'doctor' => urlencode($cdoctor),'inhalation_type' => urlencode($ordetail3),'date_surg' => urlencode($date_surg),'time' => urlencode($timeor),
-        'officer' => urlencode($sOfficer),'comment' => urlencode($ordetail4),'idno' => $idno);
+        // $appoint_or = array('ward' => urlencode($wardor),'hn' => $cHn,'an' => '','ptname' => urlencode($cPtname),
+        // 'age' => $cAge,'ptright' => urlencode($cptright),'diag' => urlencode($ordetail1),'surg' => urlencode($ordetail2),
+        // 'doctor' => urlencode($cdoctor),'inhalation_type' => urlencode($ordetail3),'date_surg' => urlencode($date_surg),'time' => urlencode($timeor),
+        // 'officer' => urlencode($sOfficer),'comment' => urlencode($ordetail4),'idno' => $idno);
     }
 ///////////////////////
 
