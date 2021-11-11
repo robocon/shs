@@ -25,6 +25,7 @@ $dbi = new mysqli(HOST, USER, PASS, DB);
 <div>
     <table class="myborder">
         <tr>
+            <th>#</th>
             <th>วันนัด</th>
             <th>เวลา</th>
             <th>แพทย์</th>
@@ -61,6 +62,7 @@ $dbi = new mysqli(HOST, USER, PASS, DB);
                 $new_link = "&view=edit_form&appoint_id=".$item['row_id'].'&doctor='.$doctor.'&appdate='.$item['appdate'];
                 ?>
                 <tr>
+                    <td><?=$item['row_id'];?></td>
                     <td><?=$item['appdate'];?></td>
                     <td><?=$item['apptime'];?></td>
                     <td><?=$item['doctor'];?></td>

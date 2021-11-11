@@ -124,7 +124,7 @@ exit();
 }
 
 
-if(isset($_POST['date_appoint_old']) && !empty($_POST['date_appoint_old']))
+if(empty($_POST['date_appoint']) && !empty($_POST['date_appoint_old']))
 {
 	$_POST['date_appoint'] = $_POST['date_appoint_old'];
 	$doctor = $dt_doctor = $_POST['doctor'] = $_POST['doctor_name'];
@@ -297,12 +297,19 @@ if(isset($_POST['B1'])){
 			else $month = $i;
 		}
 	}
+
+	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+	$month_int = array_search($arr[1], $def_fullm_th);
+	$from_date_th = strtotime(($arr['2'] - 543).'-'.$month_int.'-'.$arr['0']);
+	$test_curr_date_en = strtotime(date('Y-m-d'));
+
 	$day = $arr[0];
 	$year = $arr[2];
 	$datenut = $day.$month.$year;
 	$datenut1 = $day."-".$month."-".$year;
 	$year -=543; 
-	if($datenut<$datenow){
+
+	if($from_date_th < $test_curr_date_en){
 		echo "ไม่สามารถเลือกวันที่ย้อนหลังได้ กรุณาเลือกวันใหม่";
 		exit;
 	}
@@ -792,7 +799,7 @@ function fncSubmit(strPage)
 		}
 	}
 	?>
-<form  name="form1" method="POST" action="appinsert1.php" target="_blank" onSubmit="return checktext();">
+<form  name="form1" method="POST" action="appinsert1.php" onSubmit="return checktext();">
 <font face="Angsana New" size = '4'>กรุณาระบุการนัดมาเพื่อ เพื่อที่แผนกทะเบียนจะทำการค้นหา OPD Card ได้ถูกต้อง
 <br>
 
@@ -876,7 +883,7 @@ function fncSubmit(strPage)
 <?php 
 $or_item = array();
 $or_display = 'style="display: none;"';
-
+$or_id = false;
 if(isset($appoint_id))
 {
 	$appdate_en = $appoint['appdate_en'];
@@ -887,6 +894,7 @@ if(isset($appoint_id))
 	{
 		$or_display = '';
 		$or_item = mysql_fetch_assoc($q_or);
+		$or_id = $or_item['row_id'];
 		list($time1, $time2, $timexxx) = explode(':', $or_item['time']);
 	}
 }
@@ -901,6 +909,15 @@ if(isset($appoint_id))
 				<tr>
 					<td width="64">วัน/เดือน/ปี</td>
 					<td width="287">
+
+						<?php 
+						if(!empty($or_id))
+						{
+							?>
+							<input type="hidden" name="or_id" value="<?=$or_id;?>">
+							<?php
+						}
+						?>
 						<input type="text" name="date_surg" id="date_surg" size="10" value="<?=$or_item['date_surg'];?>"> เวลา
 						<select name="time1">
 							<option value="-" selected="selected">-</option>
