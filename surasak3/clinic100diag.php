@@ -217,6 +217,7 @@ If (!empty($hn)){
 <option value="MD105 ภควดี วุฒิพิทยามงคล" >MD105 ภควดี วุฒิพิทยามงคล</option> 
 <option value="MD106 มนัสจิตต์ บุณยทรรพ" >MD106 มนัสจิตต์ บุณยทรรพ</option> 
 <option value="MD107 รวี อัศวกิติพงษ์" >MD107 รวี อัศวกิติพงษ์</option> 
+<option value="MD112 สาริศ เฉลิมพงศ์ชัย" >MD112 สาริศ เฉลิมพงศ์ชัย</option>
 <option value="MD117 ณัชญ์ระวี บุรีคำ" >MD117 ณัชญ์ระวี บุรีคำ</option> 
 <option value="MD122 นวมน สุนทรวราภาส" >MD122 นวมน สุนทรวราภาส</option> 
 <option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option>
@@ -232,6 +233,7 @@ If (!empty($hn)){
 <option value="MD152 ยิ่งวิชช์ วิทยาวิศวสกุล" >MD152 ยิ่งวิชช์ วิทยาวิศวสกุล</option>
 <option value="MD164 ชนะรัตน์ โชคชัยสมุทร" >MD164 ชนะรัตน์ โชคชัยสมุทร</option>
 <option value="MD171 วีรวัฒน์ เลิศฤทธิ์เดชา" >MD171 วีรวัฒน์ เลิศฤทธิ์เดชา</option>
+<option value="MD183 ธนาคาร ศรีพนม" >MD183 ธนาคาร ศรีพนม</option>
 </select>
 <?
 	print "<br><br>ราคา :";

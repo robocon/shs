@@ -765,6 +765,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	$i=0;
 	$j=0;
 	while($arr = Mysql_fetch_assoc($result)){
+	
+			//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
+			if($arr["drugcode"]=="4MET25"){
+					if($arr["amount"] > 10){
+						$arr["amount"]=10;
+					}else{
+						$arr["amount"]=$arr["amount"];
+					}
+			}	
+	
+	
 		$arr["reason"] = "";
 		if($arr["part"] == "DDY" && $arr["reason"] == ""){
 				//$arr["reason"] = "ไม่มีสูตรยานี้ในบัญชียา ED";
@@ -805,9 +816,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 							echo "<FONT COLOR=\"RED\" >ใส่รหัสผ่านทุกครั้ง</FONT>";
 						}else{  //ยาที่ไม่ต้องใส่รหัสผ่าน
 							if($arr["lock_dr"] == 'Y'){
-								if($arr["drugcode"] =="1XA.5-NN"){
-									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";								
-								}else if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
+								if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
 									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
 								}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
 									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";	
@@ -825,9 +834,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 						}					
 					}else{  //ถ้าเป็นสิทธิอื่นๆ
 						if($arr["lock_dr"] == 'Y'){
-							if($arr["drugcode"] =="1XA.5-NN"){
-								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 10 เม็ด/คน</FONT>";
-							}else if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
+							if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
 								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
 							}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
 								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";									
@@ -844,7 +851,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 					}  //close 672
 				}  //close 667
 			}  //close 664
-				
+			
 			?>
             </td>
             <td >&nbsp;<?php echo $arr["tradname"];?></td>
@@ -2042,7 +2049,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>"56"){
+				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -2092,7 +2099,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>"56"){
+				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -2142,7 +2149,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>"56"){
+				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -2749,8 +2756,8 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
 		document.form1.drug_amount.focus();
-	}else if((document.form1.drug_code.value == "1XA.5-NN") && eval(document.form1.drug_amount.value) > 10 ){
-		alert("ยา Alprazolam 0.5 mg. เนื่องจากขาดเคมีในการผลิตยา ทำให้ยาขาดชั่วคราว\nควบคุมการจ่ายได้ครั้งละไม่เกิน 10 เม็ด ครับ");  //ได้รับแจ้งห้องยา เมื่อ 20/05/2564
+/*	}else if((document.form1.drug_code.value == "1XA.5-NN") && eval(document.form1.drug_amount.value) > 10 ){
+		alert("ยา Alprazolam 0.5 mg. เนื่องจากขาดเคมีในการผลิตยา ทำให้ยาขาดชั่วคราว\nควบคุมการจ่ายได้ครั้งละไม่เกิน 10 เม็ด ครับ");  //ได้รับแจ้งห้องยา เมื่อ 20/05/2564*/
 	}else if((document.form1.drug_code.value == "1VIAT500  ") && eval(document.form1.drug_amount.value) > 252 ){
 		alert("ยา VIARTRIL-S 500 MG. ควบคุมการจ่ายได้ครั้งละไม่เกิน 252 capsule ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564	
 	}else if((document.form1.drug_code.value == "1VIAT500") && eval(document.form1.drug_amount.value) > 252 ){
@@ -2769,11 +2776,11 @@ function checkForm1(){
 		// แก้ไขเมื่อวันที่ 19/03/63 ให้เพิ่มจาก 60 เป็น 100
 		alert("ยา Sodium  hyaluronate 0.18% , 0.3 ml.  ยามีโควต้าจัดซื้อ \n ควบคุมการจ่ายได้ไม่เกิน 100 หลอด/คน/เดือน");  
 		document.form1.drug_amount.focus();				
-	}else if( document.form1.drug_code.value == "10H005" && eval(document.form1.drug_amount.value) > 50 ){ 
+/*	}else if( document.form1.drug_code.value == "10H005" && eval(document.form1.drug_amount.value) > 50 ){ 
 		
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");  
 		document.form1.drug_amount.focus();
-
+*/
 	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
 		document.form1.drug_inject_amount.focus();
@@ -2795,16 +2802,16 @@ function checkForm1(){
 		document.form1.drug_code.focus();
 	}else if(return_drug_interaction.substring(0,1) == "1" && !confirm(return_drug_interaction)){  //popup
 		document.form1.drug_code.focus();	
-/*	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
+	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
-		document.form1.drug_amount.focus();	*/
+		document.form1.drug_amount.focus();	
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
-	}else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
+/*	}else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
 		
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ALPRAZOLAM 0.5 mg. ไม่เกิน 20เม็ดต่อคน");  
-		document.form1.drug_amount.focus();
+		document.form1.drug_amount.focus();*/
 
 	}else{
 		
