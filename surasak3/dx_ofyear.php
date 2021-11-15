@@ -1,5 +1,6 @@
 <?php
 session_start();
+//echo $_SESSION["sOfficer"];
 include("connect.inc");
 
 $date_now = date("Y-m-d H:i:s");
@@ -305,11 +306,11 @@ $(function() {
 	}*/
 	$arr_view = mysql_fetch_assoc($result);
 
-$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
+$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' and toborow='EX26 ตรวจสุขภาพประจำปี' limit 0,1";
 //echo $sql;
 $resultvn=mysql_query($sql);
 if(mysql_num_rows($resultvn) < 1){
-	echo "<script>alert('ไม่พบข้อมูลผู้ป่วย HN: $_POST[p_hn] ลงทะเบียนตรวจสุขภาพประจำปีในวันนี้ กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
+	echo "<script>alert('ไม่พบข้อมูลผู้ป่วย HN: $_POST[p_hn] ลงทะเบียน EX26 ตรวจสุขภาพประจำปีในวันนี้ กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
 }
 list($arr_view["vn"]) = mysql_fetch_row($resultvn);
 
@@ -405,6 +406,11 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$cigok=$arr_dxofyear["cigok"];
 		$smoke_amount=$arr_dxofyear["smoke_amount"];
 		$drink_amount=$arr_dxofyear["drink_amount"];
+		
+		$covaccine_amount=$arr_dxofyear["covaccine_amount"];
+		$covaccine_1=$arr_dxofyear["covaccine_1"];
+		$covaccine_2=$arr_dxofyear["covaccine_2"];
+		$covaccine_3=$arr_dxofyear["covaccine_3"];
 		
 		
 		
@@ -594,13 +600,11 @@ mmHg</td>
 					<tr>
 						<td>
 							<input type="radio" name="member2" value="1" id="permiss1" <?php if($cigok1==1){ echo "checked"; } ?>/> อยากเลิก
-							<input type="radio" name="member2" value="0" id="permiss2" <?php if($cigok1==0){ echo "checked"; } ?>/> ไม่อยากเลิก
-						</td>
+							<input type="radio" name="member2" value="0" id="permiss2" <?php if($cigok1==0){ echo "checked"; } ?>/> ไม่อยากเลิก						</td>
 					</tr>
 					<tr>
 						<td>
-							<label for="smoke_amount" >จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" value="<?=$drink_amount;?>" size="3">มวน/วัน</label>
-						</td>
+							<label for="smoke_amount" >จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" value="<?=$drink_amount;?>" size="3">มวน/วัน</label>						</td>
 					</tr>
 				</table>
 			</div> 
@@ -608,8 +612,7 @@ mmHg</td>
 			if(document.vsform.cig1.checked == true){
 				togglediv('kbk');
 			}
-			</script>
-</td>
+			</script></td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2">สุรา : </td>
@@ -626,8 +629,7 @@ mmHg</td>
 ดื่ม เป็นประจำ
 <div style="display:none; margin-bottom: 8px;" class="da_amount">
 <label for="drink_amount" style="margin-left:15px;">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3" value="<?=$drink_amount;?>">แก้ว/สัปดาห์</label>
-</div>
-</td>
+</div></td>
 		  </tr>
 		<tr>
           <td align="right" class="tb_font_2">ออกกำลังกาย : </td>
@@ -637,6 +639,73 @@ mmHg</td>
 		    ออกกำลังกาย ต่ำกว่าเกณฑ์ &nbsp;&nbsp;&nbsp;
             <input type="radio" name="exercise" value="2" <?php if($exercise==2){ echo "checked"; } ?> />
 ออกกำลังกาย ตามเกณฑ์ </td>
+		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">ฉีดวัคซีนโควิด 19&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_amount" id="covaccine_amount1" value="1" <?php if($covaccine_amount==1){ echo "checked"; } ?> />
+		  1 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_amount" id="covaccine_amount2" value="2" <?php if($covaccine_amount==2){ echo "checked"; } ?> />
+		  2 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_amount" id="covaccine_amount3" value="3" <?php if($covaccine_amount==3){ echo "checked"; } ?> />
+		  3 เข็ม</label></td>
+		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">เข็มที่ 1&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_1" id="covaccine_11" value="sinovac" <?php if($covaccine_1=="sinovac"){ echo "checked"; } ?> />
+		    sinovac
+		  </label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_1" id="covaccine_12" value="astrazeneca" <?php if($covaccine_1=="astrazeneca"){ echo "checked"; } ?> />
+		  astrazeneca</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_1" id="covaccine_13" value="sinopharm" <?php if($covaccine_1=="sinopharm"){ echo "checked"; } ?> />
+		  sinopharm</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_1" id="covaccine_14" value="pfizer" <?php if($covaccine_1=="pfizer"){ echo "checked"; } ?> />
+		  pfizer</label>
+          &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_1" id="covaccine_15" value="moderna" <?php if($covaccine_1=="moderna"){ echo "checked"; } ?> />
+		  moderna</label></td>
+		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">เข็มที่ 2&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_2" id="covaccine_21" value="sinovac" <?php if($covaccine_2=="sinovac"){ echo "checked"; } ?> />
+		    sinovac
+		  </label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_2" id="covaccine_22" value="astrazeneca" <?php if($covaccine_2=="astrazeneca"){ echo "checked"; } ?> />
+		  astrazeneca</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_2" id="covaccine_23" value="sinopharm" <?php if($covaccine_2=="sinopharm"){ echo "checked"; } ?> />
+		  sinopharm</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_2" id="covaccine_24" value="pfizer" <?php if($covaccine_2=="pfizer"){ echo "checked"; } ?> />
+		  pfizer</label>
+          &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_2" id="covaccine_25" value="moderna" <?php if($covaccine_2=="moderna"){ echo "checked"; } ?> />
+		  moderna</label></td>
+		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">เข็มที่ 3&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_3" id="covaccine_31" value="sinovac" <?php if($covaccine_3=="sinovac"){ echo "checked"; } ?> />
+		    sinovac
+		  </label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_3" id="covaccine_32" value="astrazeneca" <?php if($covaccine_3=="astrazeneca"){ echo "checked"; } ?> />
+		  astrazeneca</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_3" id="covaccine_33" value="sinopharm" <?php if($covaccine_3=="sinopharm"){ echo "checked"; } ?> />
+		  sinopharm</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_3" id="covaccine_34" value="pfizer" <?php if($covaccine_3=="pfizer"){ echo "checked"; } ?> />
+		  pfizer</label>
+          &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_3" id="covaccine_35" value="moderna" <?php if($covaccine_3=="moderna"){ echo "checked"; } ?> />
+		  moderna</label></td>
 		  </tr>
 	</table>
 	<TABLE class="tb_font">

@@ -1279,7 +1279,7 @@ if($time >='16:00:00'){
 ?>
 <table width="100%" border="0">
   <tr>
-    <td align="right" class="fonthead">ออก OPD CARD </td>
+    <td align="right" class="fonthead">ออก OPD CARD</td>
     <td colspan="2" class="fonthead"><!--<?//=$time;?>--> <select  id='case1' name='case'>
 <?
 
@@ -1373,6 +1373,10 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 ?>
 </select></td>
   </tr>
+  <tr style="background-color: #FFFF99">
+    <td align="right" class="fonthead">แจ้งทราบ&nbsp;</td>
+    <td colspan="4" class="fonthead">*** <span class="fonthead1">วันที่ 15 พ.ย. 64 ถึง 13 ธ.ค. 64</span> ตรวจสุขภาพประจำปีกองทัพบก เลือก <span class="fonthead1">EX26 ตรวจสุขภาพประจำปี</span> สิทธิการรักษาเลือก <span class="fonthead1">R22 ตรวจสุขภาพประจำปีกองทัพบก</span> ***</td>
+    </tr>
   <tr>
     <td align="right" class="fonthead">ค่าบริการนอกเวลาราชการ</td>
     <td class="fonthead1"><input name="doctor80" type="checkbox" value="doctor80">
