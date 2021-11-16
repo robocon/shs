@@ -4,15 +4,26 @@ include("connect.inc");
 //  $yrmonth="$thiyr-$rptmo-$date";
 $dateopday = $date1 ="$thiyr-$rptmo-$date";
 $date2 ="$date-$rptmo-$thiyr";
-$sql = "Select a.date,a.txdate, a.hn, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.depart, sum(a.paid),a.credit_detail From opacc as a, opcard as b where a.hn=b.hn AND a.date like '".$date1."%' AND a.credit ='HD' group by a.hn, a.depart   ORDER by a.date,a.credit_detail";
+$sql = "Select a.date,a.txdate, a.hn, a.depart, sum(a.paid),a.credit_detail 
+From opacc as a 
+where a.date like '".$date1."%' 
+AND a.credit ='HD' 
+group by a.hn, a.depart   ORDER by a.date,a.credit_detail";
 
 $result = mysql_Query($sql) or die(mysql_error());
 $list = array();
 $list2 = array();
 
-while(list($date1, $date, $hn, $full_name, $depart, $paidcscd,$credit_detail) = Mysql_fetch_row($result)){
-	$sql2 = "select vn from opday where hn='$hn' and thidate like '".$dateopday."%' limit 1";
-	list($vn) = mysql_fetch_array(mysql_query($sql2));
+while(list($date1, $date, $hn, $depart, $paidcscd,$credit_detail) = Mysql_fetch_row($result)){ 
+
+	list($opacc_date, $opacc_time) = explode(' ', $date1);
+	list($opY, $opM, $opD) = explode('-', $opacc_date);
+	$thdatehn = "$opD-$opM-$opY".$hn;
+
+	// ตัวเดิมsearchจากการ where date like % จะทำให้ช้า ถ้าsearchจาก Key Index จะเร็วกว่า
+	// $sql2 = "select vn, ptname from opday where hn='$hn' and thidate like '".$dateopday."%' limit 1";
+	$sql2 = "select vn, ptname from opday where thdatehn='$thdatehn' limit 1";
+	list($vn, $full_name) = mysql_fetch_array(mysql_query($sql2));
 	
  $date=substr($date,0,10);
  $d=substr($date,8,2);
@@ -93,7 +104,26 @@ $total=number_format($total,2);
 
 
 
-    echo "<tr  ><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$num."&nbsp;</td><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$xx[0]."&nbsp;</td><td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[1]."&nbsp;</b><td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[2]."&nbsp;</b></td><td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$key."&nbsp;</td><td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[3]."&nbsp;</b></td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PHAR1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PATHO1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["XRAY1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["DENTA1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PHYSI1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["EMER1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["SURG1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["NID1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["HEMO1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["OTHER1"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["OTHER21"]."&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td></tr>";
+    echo "<tr  >
+	<td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$num."&nbsp;</td>
+	<td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$xx[0]."&nbsp;</td>
+	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[1]."&nbsp;</b>
+	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[2]."&nbsp;</b></td>
+	<td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$key."&nbsp;</td>
+	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[3]."&nbsp;</b></td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PHAR1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PATHO1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["XRAY1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["DENTA1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PHYSI1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["EMER1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["SURG1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["NID1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["HEMO1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["OTHER1"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["OTHER21"]."&nbsp;</td>
+	<td align='right'><font face='Angsana New' size ='3'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td>
+	</tr>";
 
 
 
