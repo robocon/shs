@@ -18,4 +18,97 @@ CREATE TABLE `hemo_checkout` (
 
 include 'bootstrap.php';
 
+if(empty($_SESSION['sRowid']))
+{
+	redirect('../nindex.htm');
+	exit;
+}
 
+$action = $_POST['action'];
+if($action == 'checkout')
+{
+	$hemo_list = array(
+		1 => 'ไตเทียม 1',
+		2 => 'ไตเทียม 2'
+	);
+
+	$dbi = new mysqli(HOST,USER,PASS,DB);
+	$dbi->query("SET NAMES TIS620");
+
+	$inputm_id = $_SESSION['sRowid'];
+	$sOfficer = $_SESSION['sOfficer'];
+
+	$depart = $_POST['depart'];
+	$depart_detail = $hemo_list[$depart];
+
+	$now = date('Y-m-d');
+
+	$sql = "SELECT * FROM `hemo_checkout` WHERE `input_id` = '$inputm_id' AND `date` = '$now' ";
+	$q = $dbi->query($sql);
+	if($q->num_rows > 0)
+	{
+		$sql_update = "UPDATE `hemo_checkout` SET 
+		`input_name`='$sOfficer', 
+		`depart`='$depart', 
+		`depart_detail`='$depart_detail', 
+		`date_edit`=NOW() 
+		WHERE `input_id`='$inputm_id';";
+		$q_save = $dbi->query($sql_update);
+	}
+	else
+	{
+		$sql_insert = "INSERT INTO `hemo_checkout` ( 
+			`id`, `input_id`, `input_name`, `date`, `depart`, `depart_detail`
+		) VALUES (
+			NULL, '$inputm_id', '$sOfficer', NOW(), '$depart', '$depart_detail'
+		);";
+		$q_save = $dbi->query($sql_insert);
+	}
+
+	$msg = "บันทึกข้อมูลเรียบร้อย";
+	if($q_save === false)
+	{
+		$msg = "MySQL failure : ".$dbi->error;
+	}
+
+	redirect('hemo_checkout.php', $msg);
+	exit;
+}
+
+?>
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<div class="w3-bar w3-teal">
+  <a href="../nindex.htm" class="w3-bar-item w3-button">หน้าหลัก</a>
+</div>
+
+<?php 
+if(!empty($_SESSION['x-msg']))
+{
+	?>
+	<div class="w3-container">
+		<div class="w3-panel w3-pale-yellow w3-border">
+			<p><?=$_SESSION['x-msg'];?></p>
+		</div>
+	</div>
+	<?php
+	$_SESSION['x-msg'] = null;
+}
+?>
+
+<div class="w3-container">
+	<h3>ฟอร์ม Checkout</h3>
+	<form action="hemo_checkout.php" method="post">
+		<p>
+			<select class="w3-select w3-border" name="depart">
+				<option value="1">ไตเทียม 1</option>
+				<option value="2">ไตเทียม 2</option>
+			</select>
+		</p>
+		<p>
+			<button type="submit">CHECKOUT</button>
+			<input type="hidden" name="action" value="checkout">
+		</p>
+	</form>
+</div>
