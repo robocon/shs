@@ -1,6 +1,12 @@
 <?php 
 include 'bootstrap.php';
 
+if(empty($_SESSION['sRowid']))
+{
+    redirect('../nindex.htm');
+    exit;
+}
+
 // $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
 
@@ -77,7 +83,7 @@ elseif($view=='display_doctor')
         );
         ?>
         <h2>เลือกแพทย์</h2>
-        <form action="physi_certificate_print.php" method="post" id="form_print_pdf" class="" target="_blank">
+        <form action="physi_certificate_print.php" method="post" id="form_print_pdf" target="_blank">
             <p>
                 <select class="w3-select w3-border" name="physi_dt">
                     <option value="3023">พ.ต.สุทัศน์ เครือแก้ว</option>
@@ -89,6 +95,7 @@ elseif($view=='display_doctor')
             <p>
                 <button class="w3-button w3-teal" id="btn-print-pdf" type="submit">พิมพ์ใบรับรองแพทย์</button>
                 <input type="hidden" name="id" value="<?=$item['row_id'];?>">
+                <input type="hidden" name="dep_id" value="<?=$item['dep_id'];?>">
             </p>
         </form>
         <?php
@@ -108,8 +115,8 @@ elseif($view=='display_doctor')
 
 <div class="w3-top">
     <div class="w3-bar w3-teal">
-        <a href="../nindex.htm" class="w3-bar-item w3-button">หน้าหลัก ร.พ.</a>
-        <a href="javascript:void(0);" class="w3-bar-item w3-button" id="history_page">ข้อมูลย้อนหลัง</a>
+        <a href="../nindex.htm" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;">หน้าหลัก ร.พ.</a>
+        <a href="javascript:void(0);" class="w3-bar-item w3-button" id="history_page" style="text-shadow: 2px 2px 2px #444;">ข้อมูลย้อนหลัง</a>
     </div>
 </div>
 
