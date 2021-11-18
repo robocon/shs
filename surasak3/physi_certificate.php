@@ -95,7 +95,6 @@ elseif($view=='display_doctor')
             <p>
                 <button class="w3-button w3-teal" id="btn-print-pdf" type="submit">พิมพ์ใบรับรองแพทย์</button>
                 <input type="hidden" name="id" value="<?=$item['row_id'];?>">
-                <input type="hidden" name="dep_id" value="<?=$item['dep_id'];?>">
             </p>
         </form>
         <?php
@@ -108,6 +107,50 @@ elseif($view=='display_doctor')
     }
     exit;
 }
+elseif ($view == 'load_edit_list') {
+
+    $date = $_REQUEST['selected_date'];
+    $sql = "SELECT * FROM `physi_cert_history` WHERE `date_save` = '$date' ";
+    $q = $dbi->query($sql);
+    if($q->num_rows > 0)
+    {
+        ?>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <table class="w3-table-all">
+            <tr>
+                <th>เล่มที่</th>
+                <th>วันที่ออกใบรับรอง</th>
+                <th>แพทย์</th>
+                <th>ผู้มารับบริการ</th>
+                <th>Diag</th>
+                <th></th>
+            </tr>
+        
+        <?php
+        while ($item = $q->fetch_assoc()) {
+            ?>
+            <tr>
+                <td><?=$item['number'];?></td>
+                <td><?=$item['date'];?></td>
+                <td><?=$item['physi_dt_name'];?></td>
+                <td><?=$item['ptname']."(".$item['hn'].")";?></td>
+                <td><?=$item['diag'];?></td>
+                <td><a href="physi_certificate_reprint.php?id=<?=$item['id'];?>" title="Print" target="_blank"><i class="material-icons">print</i></a></td>
+            </tr>
+            <?Php
+        }
+        ?>
+        </table>
+        <div>&nbsp;</div>
+        <?php
+    }
+    else
+    {
+        ?><p>ไม่พบข้อมูล</p><?php
+    }
+    
+    exit;
+}
 ?>
 
 
@@ -116,7 +159,7 @@ elseif($view=='display_doctor')
 <div class="w3-top">
     <div class="w3-bar w3-teal">
         <a href="../nindex.htm" class="w3-bar-item w3-button" style="text-shadow: 2px 2px 2px #444;">หน้าหลัก ร.พ.</a>
-        <a href="javascript:void(0);" class="w3-bar-item w3-button" id="history_page" style="text-shadow: 2px 2px 2px #444;">ข้อมูลย้อนหลัง</a>
+        <a href="javascript:void(0);" class="w3-bar-item w3-button" onclick="open_history()" style="text-shadow: 2px 2px 2px #444;">ข้อมูลย้อนหลัง</a>
     </div>
 </div>
 
@@ -136,9 +179,26 @@ elseif($view=='display_doctor')
 <div class="w3-container" id="response-form"></div>
 <div class="w3-container" id="response-form-2"></div>
 
+<!-- The Modal -->
+<div id="id01" class="w3-modal">
+    <div class="w3-modal-content">
+        <div class="w3-container">
+            <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+            <p>
+                <label for="hn">ค้นหาตามวันที่ : </label>
+                <input type="text" name="selected_date" id="selected_date" class="w3-input w3-border">
+                <button type="button" class="w3-button w3-teal" onclick="load_edit_items()">ค้นหา</button>
+            </p>
+            <div id="edit_main_container"></div>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Start to lern vanilla.js here ==> https://youmightnotneedjquery.com/ <==
     // event listener support IE8
-    function addEventListener(el, eventName, handler) {
+    function addEventListener(el, eventName, handler) 
+    {
         if (el.addEventListener) {
             el.addEventListener(eventName, handler);
         } else {
@@ -149,7 +209,8 @@ elseif($view=='display_doctor')
     }
 
     // ajax with GET method
-    function xmlHttpGET(url, functionName){
+    function xmlHttpGET(url, functionName)
+    {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4) {
@@ -175,26 +236,44 @@ elseif($view=='display_doctor')
 
     });
 
-    function display_patient_list(xhttp){
+    function display_patient_list(xhttp)
+    {
         document.getElementById("response-form").innerHTML = xhttp.responseText;
 
         // ถ้ามีการคลิกจากคลาส next_select_doctor
         var edit_items = document.getElementsByClassName("next_select_doctor");
         if(edit_items.length > 0)
         {
-            for (let index = 0; index < edit_items.length; index++) {
+            for (let index = 0; index < edit_items.length; index++) 
+            {
                 edit_items[index].addEventListener("click", open_select_doctor);
             }
         }
     }
 
-    function open_select_doctor(){ 
+    function open_select_doctor()
+    { 
         var get_href = this.getAttribute("data-href");
         xmlHttpGET(get_href, display_select_doctor);
     }
 
-    function display_select_doctor(xhttp){
+    function display_select_doctor(xhttp)
+    {
         document.getElementById("response-form-2").innerHTML = xhttp.responseText;
+    }
+
+    function open_history()
+    {
+        document.getElementById('id01').style.display='block';
+    }
+
+    function load_edit_items()
+    {
+        var selected_date = document.getElementById('selected_date').value;
+        xmlHttpGET('physi_certificate.php?view=load_edit_list&selected_date='+selected_date, function(xhttp){
+            
+            document.getElementById("edit_main_container").innerHTML = xhttp.responseText;
+        });
     }
 
 </script>

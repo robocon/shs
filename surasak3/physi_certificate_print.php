@@ -29,8 +29,7 @@ if(empty($_SESSION['sRowid']))
 // $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
 
-$id = $_REQUEST['id'];
-$dep_id = $_REQUEST['dep_id'];
+$id = $_REQUEST['id']; // depart_id
 $physi_dt = $_REQUEST['physi_dt'];
 if(empty($id) OR empty($physi_dt))
 {
@@ -58,23 +57,27 @@ $ptname = $pt['ptname'];
 $pt_hn = $pt['hn'];
 $pt_diag = $pt['diag'];
 
+if(!file_exists('physi_certificate'))
+{
+    mkdir('physi_certificate', 0777);
+}
+
 $file_name = date('Ymd').'-'.$pt_hn.'-'.$physi_dt.".pdf";
 $file_path = 'physi_certificate/'.$file_name;
 
 $editor_id = get_session('sRowid');
-
 $curr_date = date('Y-m-d');
 
-/**
- * ¤éÒ§ÍÑ¾à´·áÅéÇÅºä¿Åìà¡èÒ
- */
-
-$sql_his = "SELECT * FROM `physi_cert_history` WHERE `depart_id` = '$dep_id'";
+$sql_his = "SELECT * FROM `physi_cert_history` WHERE `depart_id` = '$id'";
 $q_his = $dbi->query($sql_his);
 if($q_his->num_rows > 0 )
 {
     $cert = $q_his->fetch_assoc();
     $cert_id = $cert['id'];
+    $txt_number = $cert['number'];
+
+    // Åºä¿Åìà´ÔÁ
+    $test = unlink($cert['file_path']);
 
     $sql_his_update = "UPDATE `physi_cert_history` 
     SET `physi_dt_name`='$physi_dt_name', 
@@ -83,9 +86,10 @@ if($q_his->num_rows > 0 )
     `ptname`='$ptname', 
     `diag`='$pt_diag', 
     `file_path`='$file_path', 
-    `editor`='$editor' 
+    `editor`='$editor_id' 
     WHERE `id` = '$cert_id' ;";
     $save = $dbi->query($sql_his_update);
+
 }
 else
 {
@@ -100,15 +104,13 @@ else
     $sql_update_runno = "UPDATE `runno` SET `runno` = '$next_number' WHERE `title` = 'physi_cert' ";
     $dbi->query($sql_update_runno);
 
-
     $sql_cert = "INSERT INTO `physi_cert_history` ( 
         `date_save`,`number`, `date`, `physi_dt_name`, `physi_license`, `hn`, `ptname`, `diag`, `file_path`, `editor`, `depart_id`
     ) VALUES ( 
-        '$curr_date', '$txt_number', '$full_date_th', '$physi_dt_name', '$physi_dt_code', '$pt_hn', '$ptname', '$pt_diag', '$file_path', '$editor_id', '$dep_id'
+        '$curr_date', '$txt_number', '$full_date_th', '$physi_dt_name', '$physi_dt_code', '$pt_hn', '$ptname', '$pt_diag', '$file_path', '$editor_id', '$id'
     );";
     $save = $dbi->query($sql_cert);
 }
-
 
 
 /**
