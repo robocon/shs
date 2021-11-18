@@ -155,6 +155,12 @@ elseif ($view == 'load_edit_list') {
 
 
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" type="text/css" href="epoch_styles.css" />
+<style>
+    #epoch_popup_calendar{
+        z-index: 4;
+    }
+</style>
 
 <div class="w3-top">
     <div class="w3-bar w3-teal">
@@ -179,9 +185,11 @@ elseif ($view == 'load_edit_list') {
 <div class="w3-container" id="response-form"></div>
 <div class="w3-container" id="response-form-2"></div>
 
+<script type="text/javascript" src="epoch_classes.js"></script>
+
 <!-- The Modal -->
 <div id="id01" class="w3-modal">
-    <div class="w3-modal-content">
+    <div class="w3-modal-content w3-animate-top">
         <div class="w3-container">
             <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
             <p>
@@ -195,6 +203,11 @@ elseif ($view == 'load_edit_list') {
 </div>
 
 <script>
+
+    window.onload = function () {
+		var selected_date  = new Epoch('epoch_popup','popup',document.getElementById('selected_date'));
+	};
+
     // Start to lern vanilla.js here ==> https://youmightnotneedjquery.com/ <==
     // event listener support IE8
     function addEventListener(el, eventName, handler) 
