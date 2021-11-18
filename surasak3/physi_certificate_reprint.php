@@ -7,8 +7,7 @@ if(empty($id))
     echo "Invalid value";
     exit;
 }
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
 
 $sql = "SELECT * FROM `physi_cert_history` WHERE `id` = '$id'";
 $q = $dbi->query($sql);

@@ -26,8 +26,7 @@ if(empty($_SESSION['sRowid']))
     exit;
 }
 
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
 
 $id = $_REQUEST['id']; // depart_id
 $physi_dt = $_REQUEST['physi_dt'];

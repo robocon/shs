@@ -7,8 +7,7 @@ if(empty($_SESSION['sRowid']))
     exit;
 }
 
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
 
 $view = $_REQUEST['view'];
 if($view == 'hn_lists')
