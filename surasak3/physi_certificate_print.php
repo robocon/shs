@@ -58,7 +58,7 @@ $pt_diag = $pt['diag'];
 
 if(!file_exists('physi_certificate'))
 {
-    mkdir('physi_certificate', 0777);
+    mkdir('physi_certificate');
 }
 
 $file_name = date('Ymd').'-'.$pt_hn.'-'.$physi_dt.".pdf";
@@ -125,10 +125,17 @@ else
  * @param string $file_path physi_certificate/_pdf_name.pdf เซฟไฟล์ไปตามพาธที่กำหนด
  */
 require_once 'physi_certificate_template.php';
-
 ?>
 <button type="button">ปิดหน้าต่าง</button>
 <iframe src="<?=$file_path;?>" frameborder="0" width="100%" height="100%" id="printf" name="printf"></iframe>
+<!--
+<div id="new_embed">
+    <object data="<?=$file_path;?>" type="application/pdf">
+        <p>It appears you don't have Adobe Reader or PDF support in this web browser. <a href="<?=$file_path;?>">Click here to download the PDF</a>. Or <a href="http://get.adobe.com/reader/" target="_blank">click here to install Adobe Reader</a>.</p>
+       <embed src="<?=$file_path;?>" type="application/pdf" />
+    </object>
+</div>
+-->
 <script>
     setTimeout(function(){ 
         window.frames["printf"].focus();
