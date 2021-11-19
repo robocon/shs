@@ -52,11 +52,11 @@ $subappd=explode(' ',$appd);
 		case "ธันวาคม": $printmonth = "12"; break;
 	}
 $newappd=$subappd[2].'-'.$printmonth.'-'.$subappd[0];
- 
+
+$pre_thdatehn = $subappd[0].'-'.$printmonth.'-'.$subappd[2];
+
 
 $sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` =  '$seldepart' AND appdate ='$appd' ";
-var_dump($sqltem);
-exit;
 $querytem = mysql_query($sqltem);
 
 $sqltime="SELECT COUNT( * ) AS cnum, apptime
@@ -86,26 +86,28 @@ while($arrtime=mysql_fetch_array($querytime)){
 	$show="SELECT * FROM  appoint1 WHERE  apptime ='".$arrtime['apptime']."'";
 	$queryshow=mysql_query($show);
 	$rows=mysql_num_rows($queryshow);
-			while($arrshow=mysql_fetch_array($queryshow)){
+	while($arrshow=mysql_fetch_array($queryshow)){
 		
-				$ptright="SELECT * FROM  `opday` WHERE  `hn` =  '".$arrshow['hn']."'  and thidate like '$newappd%'  limit 0,1";
-				$querypt=mysql_query($ptright);
-				$arrpt=mysql_fetch_array($querypt);
-	if($n>$rows){
-	$n=1;
+		$thdatehn = $pre_thdatehn.$arrshow['hn'];
+		// $ptright="SELECT * FROM  `opday` WHERE  `hn` =  '".$arrshow['hn']."'  and thidate like '$newappd%'  limit 0,1";
+		$ptright="SELECT * FROM  `opday` WHERE  `thdatehn` =  '$thdatehn' limit 0,1";
+
+		$querypt=mysql_query($ptright);
+		$arrpt=mysql_fetch_array($querypt);
+		if($n>$rows){
+			$n=1;
+		}
+		print " <tr>
+		<td align='center'><font face='Angsana New'>$n</td>
+		<td><font face='Angsana New'>$arrshow[ptname]</td>
+		<td><font face='Angsana New'>$arrshow[hn]</td>
+		<td align='center'><font face='Angsana New' >$arrpt[vn]</td>
+		<td><font face='Angsana New'>$arrpt[ptright]</td>
+		<td align='center'>&nbsp;</td>
+		</tr>";
+
+		$n++;
 	}
-print " <tr>
-          <td align='center'><font face='Angsana New'>$n</td>
-		  <td><font face='Angsana New'>$arrshow[ptname]</td>
-		  <td><font face='Angsana New'>$arrshow[hn]</td>
-		  <td align='center'><font face='Angsana New' >$arrpt[vn]</td>
-		  <td><font face='Angsana New'>$arrpt[ptright]</td>
-		  <td align='center'>&nbsp;</td>
-          </tr>";
-?>
-<? 
-$n++;
-}
 $i++;
 }
 
