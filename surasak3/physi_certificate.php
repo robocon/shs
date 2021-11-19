@@ -3,7 +3,8 @@ include 'bootstrap.php';
 
 if(empty($_SESSION['sRowid']))
 {
-    redirect('../nindex.htm');
+    $_SESSION['refer'] = 'physi_certificate.php';
+    redirect('login_page.php');
     exit;
 }
 

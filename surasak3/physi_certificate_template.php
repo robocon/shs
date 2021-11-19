@@ -50,7 +50,7 @@ $pdf->Write(8, " $physi_dt_code ");
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"ได้ทำการรักษาทางกายภาพบำบัด");
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Write(8," $ptname HN.$pt_hn ");
+$pdf->Write(8,"\n$ptname HN.$pt_hn ");
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"ตามที่แพทย์ได้วินิจฉัยโรค");
 $pdf->SetFont('THSarabun','B',18);
