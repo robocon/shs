@@ -64,8 +64,12 @@
       <?
 				}
 				echo "<select>";
-				?></p>
- 
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="     &#3605;&#3585;&#3621;&#3591;     " name="B1">
+				?>
+  &nbsp;&nbsp;เลือกแผนก : <select name="depart">
+    <option value="FU18 ไตเทียม">ไตเทียม 1</option>
+    <option value="FU39 ไตเทียม 2">ไตเทียม 2</option>
+  </select></p>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <input type="submit" value="     &#3605;&#3585;&#3621;&#3591;     " name="B1">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< &#3648;&#3617;&#3609;&#3641;</a></p>
   </form>

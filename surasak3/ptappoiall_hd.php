@@ -17,13 +17,19 @@ color: #FFF;
 // Update 31 พค 2553 
 //bbm
 $appd=$_POST['appdate'].' '.$_POST['appmo'].' '.$_POST['thiyr'];
+$seldepart=$_POST['depart'];
+if($seldepart=="FU18 ไตเทียม"){
+	$showdepart="แผนกไตเทียม 1";
+}else{
+	$showdepart="แผนกไตเทียม 2";
+}
 
   $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-   print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ   แผนกไตเทียม</b><br>";
+   print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ   $showdepart</b><br>";
    print "<b>นัดมาวันที่</b> $appd<br> ";
    print "วัน/เวลาทำการตรวจสอบ....$Thaidate"; 
    ?>
- <div id="no_print" >  <a href="JavaScript:window.print();">พิมพ์ใบรายชื่อ</a> </div>
+ <div id="no_print" >  <a href="JavaScript:window.print();">พิมพ์ใบรายชื่อ</a>  || <a href="appoichkall_hd.php">เลือกวันที่ใหม่</a> </div>
    <?
 
 
@@ -48,8 +54,9 @@ $subappd=explode(' ',$appd);
 $newappd=$subappd[2].'-'.$printmonth.'-'.$subappd[0];
  
 
-$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` 
-LIKE  '%ไตเทียม%' AND appdate ='$appd' ";
+$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` =  '$seldepart' AND appdate ='$appd' ";
+var_dump($sqltem);
+exit;
 $querytem = mysql_query($sqltem);
 
 $sqltime="SELECT COUNT( * ) AS cnum, apptime
