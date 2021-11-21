@@ -656,41 +656,80 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 }
 
 if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
-
-	//onMouseover=\"pull()\"
-	//onMouseout=\"draw()\"
-	//style=\"display:none\"
-	echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
-
-	<TABLE width=\"450\" border=\"0\" cellpadding=\"4\" cellspacing=\"4\">
-	<TR>
-	<TD width=\"400\" bgcolor=\"#FFFFFF\" >";
-	
-	$i=  count($_COOKIE);
-	if($i > 1){
-
-		foreach($_COOKIE as $key => $value){
-			
-			$xxx = explode(">",$value);
-			$yyy = explode("<",$xxx[1]);
-
-			$zzz = $yyy[0];
-			// $sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor = '".$_SESSION["dt_doctor"]."' AND apptime <> 'ยกเลิกการนัด'  ";
-			// $result = Mysql_Query($sql) or die(mysql_error());
-			// list($c_app) = Mysql_fetch_row($result);
-
-			echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
-			$i--;
-			if($i==1)
-				break;
+	$match = preg_match('/MSIE\s(\d{1,2})\.\d\;/',$_SERVER['HTTP_USER_AGENT'], $matchs);
+	$ie_older_version = false;
+	if($match > 0)
+	{
+		if($matchs['1'] <= 8)
+		{
+			$ie_older_version = true;
 		}
 	}
+	if($ie_older_version===true)
+	{
+		echo "<layer id=\"slidemenubar\" onMouseover=\"pull()\" onMouseout=\"draw()\" style=\"display:none\">
+
+		<TABLE width=\"450\" border=\"0\" cellpadding=\"4\" cellspacing=\"4\">
+		<TR>
+		<TD width=\"400\" bgcolor=\"#FFFFFF\" >";
 		
-	echo "</TD>
-	<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
-	</TR>
-	</TABLE>
-	</layer>";
+		$i=  count($_COOKIE);
+		if($i > 1){
+
+			foreach($_COOKIE as $key => $value){
+				
+				$xxx = explode(">",$value);
+				$yyy = explode("<",$xxx[1]);
+
+				$zzz = $yyy[0];
+				// $sql = "Select count(appdate) as c_app From appoint where appdate = '".$zzz."' AND doctor = '".$_SESSION["dt_doctor"]."' AND apptime <> 'ยกเลิกการนัด'  ";
+				// $result = Mysql_Query($sql) or die(mysql_error());
+				// list($c_app) = Mysql_fetch_row($result);
+
+				echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
+				$i--;
+				if($i==1)
+					break;
+			}
+		}
+			
+		echo "</TD>
+		<TD valign=\"top\" width=\"45\"><Span style=\"background-color: #33CCFF\";><B>วันนัด</B></Span></TD>
+		</TR>
+		</TABLE>
+		</layer>";
+	}
+	elseif($ie_older_version===false)
+	{
+		$i=  count($_COOKIE);
+		if($i > 1){
+		?>
+			<table width="100%">
+				<tr>
+					<td style="background-color: #fff;">
+					<?php 
+					foreach($_COOKIE as $key => $value){
+							
+						$xxx = explode(">",$value);
+						$yyy = explode("<",$xxx[1]);
+			
+						$zzz = $yyy[0];
+						echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
+						$i--;
+						if($i==1)
+							break;
+					}
+					?>
+					</td>
+					<td style="text-align:center; vertical-align: top;">
+						<div style="height:100%; background: #33CCFF;"><b>วันนัด</b></div>
+					</td>
+				</tr>
+			</table>
+		<?php
+		}
+	}
+
 	exit();
 }
 
@@ -816,13 +855,32 @@ function show_listlab(){
 
 function reloadcookie(){
 
+	var matchs = navigator.userAgent.match(/MSIE\s(\d{1,2})\.\d\;/);
+	var ie_older_version = false;
+	if(matchs !== null)
+	{
+		if(matchs['1'] <= 8)
+		{
+			ie_older_version = true;
+		}
+	}
+
+	console.log(ie_older_version);
+
 	xmlhttp = newXmlHttp();
-	
 	url = 'dt_appoint.php?action=reloadcookie';
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
-	document.getElementById("slidemenubar2").innerHTML = xmlhttp.responseText;
 
+	if(ie_older_version===true)
+	{
+		document.getElementById("slidemenubar2").innerHTML = xmlhttp.responseText;
+	}
+	else
+	{
+		document.getElementById("new-slide-inner-content").innerHTML = xmlhttp.responseText;
+	}
+	
 }
 
 function deletecookie(xxx){
@@ -1333,10 +1391,42 @@ include("dt_patient.php");
 	</TD>
 </TR>
 </TABLE>
-<!-- 
-	<div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
- -->
- <div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
+
+<!-- เมนู slide ตัวเดิม -->
+<div id="slidemenubar2" style="left:-405" onMouseover="pull()" onMouseout="draw()"></div>
+
+
+<style>
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+#new-slide-container:hover{
+	left:0!important;
+}
+
+</style>
+
+<!-- <table width="100%">
+			<tr>
+				<td>
+					<a href="javascript:void(0);" onclick="document.getElementById('date_appoint').value='21 พฤศจิกายน 2564'">21 พฤศจิกายน 2564</a>(xxคน) <a href="#" title="ลบ">[X]</a><br>
+					<a href="#">30 พฤศจิกายน 2564</a>(xxคน) <a href="#" title="ลบ">[X]</a>
+				</td>
+				<td style="text-align:center; vertical-align: top;">
+					<div style="height:100%;"><b>วันนัด</b></div>
+				</td>
+			</tr>
+		</table> -->
+
+<div style="position: absolute; top: 50%; left: -333px; width: 400px;" id="new-slide-container">
+	<div style="position:relative;" class="clearfix" id="new-slide-inner-content">
+		
+	</div>
+</div>
+
 <script language="JavaScript1.2">
 
 	if (document.all){
@@ -1344,10 +1434,14 @@ include("dt_patient.php");
 		themenu=document.all.slidemenubar2.style
 		rightboundary=0
 		leftboundary=-400
+
 	}else{
-		themenu=document.layers.slidemenubar
-		rightboundary=400
-		leftboundary=10
+		if(document.getElementById('slidemenubar')!=null)
+		{
+			themenu=document.layers.slidemenubar
+			rightboundary=400
+			leftboundary=10
+		}
 	}
 
 	function pull(){
