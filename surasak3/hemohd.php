@@ -211,7 +211,7 @@ function add_hn(){
 	}
 	else
 	{
-		document.getElementById('list_hn').innerHTML = hn_true;
+		document.getElementById('list_hn').innerHTML += hn_true+"<br>";
 	}
 	document.getElementById("hn").select();
 
