@@ -3701,6 +3701,14 @@ if ( $patient_hn==='55-8821' OR $patient_hn==='48-4304' OR $patient_hn==='48-406
 	</script>
 	<?php
 }
+elseif ($patient_hn==='50-4904') 
+{
+	?>
+	<script>
+	alert('ระวังการจ่ายยา เนื่องจากผู้ป่วยรายนี้เบิกยาเกินความจำเป็น');
+	</script>
+	<?php
+}
 ?>
 </body>
 <?php include("unconnect.inc");?>
