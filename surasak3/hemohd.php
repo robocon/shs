@@ -1,4 +1,4 @@
-<?
+<?php 
 session_start();
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	header("content-type: application/x-javascript; charset=TIS-620");
@@ -16,10 +16,19 @@ if(isset($_GET["action"]) && $_GET["action"] != ""){
         $yr=substr($today,6,4) +543;  
         $thdatevn=$d.'-'.$m.'-'.$yr.$tvn;
 			
-	$sql = "Select `hn`,`ptname`,`ptright` From opday where thdatevn = '".$thdatevn."' limit 1 ";
-	$result = mysql_query($sql);
-		list($hn,$ptname,$ptright) = mysql_fetch_row($result);
-		echo "$ptname ($hn) $ptright";
+		$sql = "Select `hn`,`ptname`,`ptright` From opday where thdatevn = '".$thdatevn."' limit 1 ";
+		$result = mysql_query($sql);
+		if(mysql_num_rows($result) > 0)
+		{
+			
+			echo 'ไม่พบข้อมูลการออก VN';
+			
+		}
+		else
+		{
+			list($hn,$ptname,$ptright) = mysql_fetch_row($result);
+			echo "$ptname ($hn) $ptright";
+		}
 		exit();
 	}
 }
@@ -184,16 +193,22 @@ function add_hn(){
 	var match_r = /R\d{2}/;
 	var r_result = hn_true.match(match_r);
 	
-	if(r_result[0]=='R01' || r_result[0]=='R02' || r_result[0]=='R03' || r_result[0]=='R04')
+	if(r_result!=null)
 	{
-		document.getElementById('outlay1').checked = true;
+		if(r_result[0]=='R01' || r_result[0]=='R02' || r_result[0]=='R03' || r_result[0]=='R04')
+		{
+			document.getElementById('outlay1').checked = true;
+		}
+		else if(r_result[0]=='R07' || r_result[0]=='R09' || r_result[0]=='R10' || r_result[0]=='R11' || r_result[0]=='R12' || r_result[0]=='R13' || r_result[0]=='R14' || r_result[0]=='R15' || r_result[0]=='R36')
+		{
+			document.getElementById('outlay2').checked = true;
+		}
+		document.getElementById('list_hn').innerHTML = document.getElementById('list_hn').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_hn[]\" value=\""+document.getElementById('hn').value+"\" checked>&nbsp;"+document.getElementById('hn').value + " "+hn_true+"<BR>";
 	}
-	else if(r_result[0]=='R07' || r_result[0]=='R09' || r_result[0]=='R10' || r_result[0]=='R11' || r_result[0]=='R12' || r_result[0]=='R13' || r_result[0]=='R14' || r_result[0]=='R15' || r_result[0]=='R36')
+	else
 	{
-		document.getElementById('outlay2').checked = true;
+		document.getElementById('list_hn').innerHTML = hn_true;
 	}
-	
-	document.getElementById('list_hn').innerHTML = document.getElementById('list_hn').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_hn[]\" value=\""+document.getElementById('hn').value+"\" checked>&nbsp;"+document.getElementById('hn').value + " "+hn_true+"<BR>";
 	document.getElementById("hn").select();
 
 }
