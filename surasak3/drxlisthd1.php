@@ -5,11 +5,6 @@ include("connect.inc");
 $vn= $_GET["vn"];
 
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
-print "<font face='Angsana New'>ระบบเบิกยาห้องไตเทียม ";
-print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งยาจากแพทย์ VN : $vn ";
-print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
-print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datehd1.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
-
 ?>
 <html>
 <head></head>
@@ -20,7 +15,28 @@ print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datehd1.php'>&lt;&lt;เล
 	clear: both;
 	display: table;
 }
+
+@media print {
+	#screen_hide_print{
+		display: none;
+	}
+	#hemo_item_1, #hemo_item_2{
+		float: none;
+		width: 100%!important;
+	}
+}
 </style>
+
+<div id="screen_hide_print">
+<?php
+print "<font face='Angsana New'>ระบบเบิกยาห้องไตเทียม ";
+print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งยาจากแพทย์ VN : $vn ";
+print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
+print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datehd1.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
+?>
+</div>
+
+
 <SCRIPT LANGUAGE="JavaScript">
 t = 1*1000;
 function newXmlHttp(){
@@ -54,11 +70,11 @@ function searchSuggest() {
 </SCRIPT>
 
 <div class="clearfix">
-	<div style="float:left; width: 50%;">
+	<div style="float:left; width: 50%;" id="hemo_item_1">
 		<div style="text-align: center;">
 			<h2>เบิกยาไตเทียม 1</h2>
 		</div>
-		<table width="100%">
+		<table>
 			<tr>
 				<th bgcolor=6495ED><font face='Angsana New'>#</th>
 				<th bgcolor=6495ED><font face='Angsana New'>VN</th>
@@ -69,8 +85,9 @@ function searchSuggest() {
 				<th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th>
 				<th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
 			</tr>
-			<?php
-			$today_en=date('Y-m-d');
+			<?php 
+
+			$today_en = ($_GET["yr"]-543)."-".$_GET["m"]."-".$_GET["d"];
 
 			$HD1="HD";
 			$query = "SELECT tvn,date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,whokey 
@@ -130,11 +147,11 @@ function searchSuggest() {
 		</table>
 	</div>
 
-	<div style="float:right; width: 50%; ">
+	<div style="float:left; width: 50%; " id="hemo_item_2">
 		<div style="text-align: center;">
 			<h2>เบิกยาไตเทียม 2</h2>
 		</div>
-		<table width="100%">
+		<table >
 			<tr>
 				<th bgcolor=6495ED><font face='Angsana New'>#</th>
 				<th bgcolor=6495ED><font face='Angsana New'>VN</th>
@@ -146,7 +163,6 @@ function searchSuggest() {
 				<th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
 			</tr>
 			<?php 
-			$today_en=date('Y-m-d');
 
 			$HD1="HD";
 			$query = "SELECT tvn,date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,whokey 
