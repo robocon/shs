@@ -13,6 +13,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $view = $_REQUEST['view'];
 if($view == 'hn_lists')
 {
+    exit;
     $hn = $_REQUEST['hn'];
 
     $last_3_months = strtotime("-3 months");
@@ -66,13 +67,19 @@ if($view == 'hn_lists')
 }
 elseif($view=='display_doctor')
 {
-    $dep_id = $_REQUEST['dep_id'];
-    $sql = "SELECT * FROM `depart` WHERE `row_id` = '$dep_id' ";
-    $q = $dbi->query($sql);
-
-    if($q->num_rows > 0)
+    $hn = $_REQUEST['hn'];
+    $check_status = false;
+    if(!empty($hn))
     {
-        $item = $q->fetch_assoc();
+        $currdate = (date('Y')+543).date('-m-d');
+        $thdatehn = date('d-m-').(date('Y')+543).$hn;
+        $sql_opday = "SELECT `row_id`,`vn` FROM `opday` WHERE `thidatehn` = '$thdatehn' ";
+        $q_opday = $dbi->query($sql_opday);
+        if($q_opday->num_rows > 0)
+        {
+            $op = $q_opday->fetch_assoc();
+            $check_status = true;
+        }
 
         $physi_dt_list = array(
             '3023' => 'พ.ต.สุทัศน์ เครือแก้ว', 
@@ -81,10 +88,22 @@ elseif($view=='display_doctor')
             '12560' => 'นางสาววรดา เตจะน้อย' 
         );
         ?>
-        <h2>เลือกแพทย์</h2>
+        <h2>ข้อมูลใบรับรองแพทย์แผนไทย</h2>
         <form action="physi_certificate_print.php" method="post" id="form_print_pdf" target="_blank">
             <p>
-                <select class="w3-select w3-border" name="physi_dt">
+                
+            </p>
+            <p>
+                <label for="date_save">วันที่ตรวจ</label>
+                <input type="text" name="date_save" id="date_save" class="w3-input w3-border" value="<?=$currdate;?>">
+            </p>
+            <p>
+                <label for="diag">Diag</label>
+                <input type="text" name="diag" id="diag" class="w3-input w3-border">
+            </p>
+            <p>
+                <label for="physi_dt">เลือกแพทย์</label>
+                <select class="w3-select w3-border" name="physi_dt" id="physi_dt">
                     <option value="3023">พ.ต.สุทัศน์ เครือแก้ว</option>
                     <option value="10399">ร.ท.หญิงปุณนาพร อินทรรักษ์</option>
                     <option value="9927">นางสาววรางคณา ธาตุรักษ์</option>
@@ -93,17 +112,19 @@ elseif($view=='display_doctor')
             </p>
             <p>
                 <button class="w3-button w3-teal" id="btn-print-pdf" type="submit">พิมพ์ใบรับรองแพทย์</button>
-                <input type="hidden" name="id" value="<?=$item['row_id'];?>">
+                <input type="hidden" name="hn" value="<?=$hn;?>">
             </p>
         </form>
         <?php
     }
-    else
+
+    if($status == false)
     {
         ?>
-        <p>ไม่พบข้อมูล</p>
+        <p class="w3-text-red">ไม่พบข้อมูลการออก VN ในวันนี้</p>
         <?php
     }
+
     exit;
 }
 elseif ($view == 'load_edit_list') {
@@ -198,7 +219,7 @@ elseif ($view == 'load_edit_list') {
             <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
             <p>
                 <label for="hn">ค้นหาตามวันที่ : </label>
-                <input type="text" name="selected_date" id="selected_date" class="w3-input w3-border">
+                <input type="text" name="selected_date" id="selected_date" class="w3-input w3-border" autocomplete="off">
             </p>
             <p>
                 <button type="button" class="w3-button w3-teal" onclick="load_edit_items()">ค้นหา</button>
@@ -251,8 +272,10 @@ elseif ($view == 'load_edit_list') {
         document.getElementById('loading').style.display = '';
 
         var form_hn = document.getElementById('form_hn').value;
-        xmlHttpGET("physi_certificate.php?hn="+form_hn+"&view=hn_lists", display_patient_list);
+        // xmlHttpGET("physi_certificate.php?hn="+form_hn+"&view=hn_lists", display_patient_list);
+        // physi_certificate.php?view=display_doctor
 
+        xmlHttpGET("physi_certificate.php?hn="+form_hn+"&view=display_doctor", display_select_doctor);
     });
     
     function disable_loading(){
@@ -286,6 +309,11 @@ elseif ($view == 'load_edit_list') {
 
     function display_select_doctor(xhttp)
     {
+
+        xhttp.onload = function(){
+            disable_loading();
+        }
+
         document.getElementById("response-form-2").innerHTML = xhttp.responseText;
     }
 
