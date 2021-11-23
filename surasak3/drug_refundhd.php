@@ -3,9 +3,6 @@ session_start();
 set_time_limit();
 include("connect.inc");
 
-$Conn = mysql_connect('192.168.131.250','remoteuser','') or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้ ");
-mysql_select_db('smdb',$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
-
 ?>
 <html>
 <head>
@@ -70,7 +67,6 @@ if(isset($_POST["submit"])){
 ?>
 <SCRIPT LANGUAGE="JavaScript">
 	function wprint(){
-		// document.getElementById("form_01").style.display='none';
 		window.print();
 	}
 </SCRIPT>
@@ -126,8 +122,6 @@ if(isset($_POST["submit"])){
 	$rows = Mysql_num_rows($result);
 	?>
 	จำนวนข้อมูลทั้งหมด  <?php echo $rows;?>
-
-
 	<style>
 	.clearfix::after {
 		content: "";
@@ -146,21 +140,11 @@ if(isset($_POST["submit"])){
 					<TD align="center">จำนวน</TD>
 				</TR>
 				<?php
-				
 				$drug_hemo_1 = array();
 				$today_en = ($_POST["yr"]-543)."-".$_POST["m"]."-".$_POST["d"];
 
 				while(list($hn, $drugcode , $tradname , $amount, $ptname, $time_in) = Mysql_fetch_row($result)){
 					
-					// if(!in_array($drugcode, $drug_hemo_1))
-					// {
-						// $drug_hemo_1[$drugcode] += $amount;
-					// }
-					// else
-					// {
-					// 	$drug_hemo_1[$drugcode] += $amount;
-					// }
-
 					$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today_en' AND `detail` LIKE 'FU18%' AND `hn` = '$hn' ";
 					$q1 = mysql_query($sql_hemo_1);
 					if(mysql_num_rows($q1) == 0)
@@ -229,27 +213,19 @@ if(isset($_POST["submit"])){
 					SELECT ptname, row_id FROM dphardep where date LIKE '".$select_day."%'  AND doctor LIKE 'HD%' AND dr_cancle IS NULL 
 				) as b ON a.idno = b.row_id 
 				ORDER BY a.date ASC ";
-
 				$result = Mysql_Query($sql) or die(mysql_error());
-
 				$drug_hemo_2 = array();
-
 				while(list($hn, $drugcode , $tradname , $amount, $ptname, $time_in) = Mysql_fetch_row($result)){
-
 					
-
 					$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today_en' AND `detail` LIKE 'FU39%' AND `hn` = '$hn' ";
 					$q1 = mysql_query($sql_hemo_1);
 					if(mysql_num_rows($q1) == 0)
 					{
 						continue;
 					}
-
-
-					// $drug_hemo_2[$drugcode] += $amount;
+					
 					$drug_hemo_2[$drugcode]['name'] = $tradname;
 					$drug_hemo_2[$drugcode]['amount'] += $amount;
-
 
 					if($i%2==0)
 						$bgcolor= "#FFFFFF";	
