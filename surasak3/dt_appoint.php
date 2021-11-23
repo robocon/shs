@@ -655,7 +655,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 	exit();
 }
 
-if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
+if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){ 
 	$match = preg_match('/MSIE\s(\d{1,2})\.\d\;/',$_SERVER['HTTP_USER_AGENT'], $matchs);
 	$ie_older_version = false;
 	if($match > 0)
@@ -864,8 +864,6 @@ function reloadcookie(){
 			ie_older_version = true;
 		}
 	}
-
-	console.log(ie_older_version);
 
 	xmlhttp = newXmlHttp();
 	url = 'dt_appoint.php?action=reloadcookie';
