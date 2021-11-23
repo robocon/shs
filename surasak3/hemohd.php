@@ -1,9 +1,11 @@
-<?
+<?php 
 session_start();
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
 include("connect.inc");
+
+// ค้นหารายละเอียดจาก VN
 if(isset($_GET["action"]) && $_GET["action"] != ""){
 	
     $tvn=$_GET["action"];
@@ -14,15 +16,28 @@ if(isset($_GET["action"]) && $_GET["action"] != ""){
         $yr=substr($today,6,4) +543;  
         $thdatevn=$d.'-'.$m.'-'.$yr.$tvn;
 			
-	$sql = "Select `hn`,`ptname`,`ptright` From opday where thdatevn = '".$thdatevn."' limit 1 ";
-	$result = mysql_query($sql);
-		list($hn,$ptname,$ptright) = mysql_fetch_row($result);
-		echo "$ptname ($hn) $ptright";
+		$sql = "Select `hn`,`ptname`,`ptright` From opday where thdatevn = '".$thdatevn."' limit 1 ";
+		$result = mysql_query($sql);
+		if(mysql_num_rows($result) == 0)
+		{
+			echo '<span style="color:red;">ไม่พบข้อมูลการออก VN</span>';
+		}
+		else
+		{
+			list($hn,$ptname,$ptright) = mysql_fetch_row($result);
+			echo "$ptname ($hn) $ptright";
+		}
 		exit();
 	}
 }
 
 if($_POST["act"]=="add"){
+	if(empty($_POST["list_hn"]))
+	{
+		echo "ข้อมูลผิดพลาด กรุณาเลือกข้อมูลใหม่อีกครั้ง";
+		exit;
+	}
+
 	$count = count($_POST["list_hn"]);
 	$diag=$_POST["diag"];
 	$doctor=$_POST["doctor"];
@@ -57,11 +72,11 @@ if($_POST["act"]=="add"){
         $thdatevn=$d.'-'.$m.'-'.$yr.$_POST["list_hn"][$i];
 		$newdate ="$yr-$m-$d ".date("H:i:s");
 		
-	$sql="select hn, vn, ptname, ptright from opday where thdatevn='$thdatevn' and vn='".$_POST["list_hn"][$i]."' ";
-	//echo $sql."<br>";
-	$query=mysql_query($sql);
-	$num=mysql_num_rows($query);
-	//echo $num."<br>";
+		$sql="select hn, vn, ptname, ptright from opday where thdatevn='$thdatevn' and vn='".$_POST["list_hn"][$i]."' ";
+		//echo $sql."<br>";
+		$query=mysql_query($sql);
+		$num=mysql_num_rows($query);
+		//echo $num."<br>";
 		if($num >= 1){
 			$rows=mysql_fetch_array($query);
 			$hn=$rows["hn"];
@@ -88,54 +103,56 @@ if($_POST["act"]=="add"){
 			}			
 					
 			$add1="insert into depart set chktranx='$nRunno',
-															   `date`='$newdate',
-															   ptname='$ptname',
-															   hn='$hn',
-															   an='',
-															   doctor='$doctor',
-															   depart='$depart',
-															   item='$item',
-															   detail='$detaildepart',
-															   price='$sumprice',
-															   sumyprice='$yprice',
-															   sumnprice='$nprice',
-															   idname='$sOfficer',
-															   diag='$diag',
-															   accno='0',
-															   tvn='".$_POST["list_hn"][$i]."',
-															   ptright='$ptright',
-															   status='$status';";
+			`date`='$newdate',
+			ptname='$ptname',
+			hn='$hn',
+			an='',
+			doctor='$doctor',
+			depart='$depart',
+			item='$item',
+			detail='$detaildepart',
+			price='$sumprice',
+			sumyprice='$yprice',
+			sumnprice='$nprice',
+			idname='$sOfficer',
+			diag='$diag',
+			accno='0',
+			tvn='".$_POST["list_hn"][$i]."',
+			ptright='$ptright',
+			status='$status';";
 			//echo $add1."<br>";															   
 			if(mysql_query($add1)){
-			$insert_id=mysql_insert_id();
-			$add2="insert into patdata set date='$newdate',
-															   hn='$hn',
-															   ptname='$ptname',
-															   doctor='$doctor',
-															   item='$item',
-															   code='$code',
-															   detail='$detail',
-															   amount='$amount',
-															   price='$sumprice',
-															   yprice='$yprice',
-															   nprice='$nprice',
-															   depart='$depart',
-															   part='$part',
-															   idno='$insert_id',
-															   ptright='$ptright',
-															   status='$status';";
-			//echo $add2."<br>";
-			mysql_query($add2);
-			
-			$Thdhn=date("d-m-").(date("Y")+543).$hn;
-		    $add3 ="UPDATE opday SET  other='$sumprice' WHERE thdatehn= '$Thdhn' AND vn = '".$_POST["list_hn"][$i]."' ";
-			mysql_query($add3);			
-			
-			
-			echo "<script>alert('บันทึกข้อมูลค่าใช้จ่ายเสร็จแล้ว');window.location='hemohd.php?page=show&hemodate=$newdate&depart=$depart&doctor=$doctor&diag=$diag';</script>";
+				$insert_id=mysql_insert_id();
+				$add2="insert into patdata set date='$newdate',
+				hn='$hn',
+				ptname='$ptname',
+				doctor='$doctor',
+				item='$item',
+				code='$code',
+				detail='$detail',
+				amount='$amount',
+				price='$sumprice',
+				yprice='$yprice',
+				nprice='$nprice',
+				depart='$depart',
+				part='$part',
+				idno='$insert_id',
+				ptright='$ptright',
+				status='$status';";
+				//echo $add2."<br>";
+				mysql_query($add2);
+				
+				$Thdhn=date("d-m-").(date("Y")+543).$hn;
+				$add3 ="UPDATE opday SET  other='$sumprice' WHERE thdatehn= '$Thdhn' AND vn = '".$_POST["list_hn"][$i]."' ";
+				mysql_query($add3);			
+				
+				
+				echo "<script>alert('บันทึกข้อมูลค่าใช้จ่ายเสร็จแล้ว');window.location='hemohd.php?page=show&hemodate=$newdate&depart=$depart&doctor=$doctor&diag=$diag';</script>";
 			}  //close insert depart															   			
 	 	}  //close check num rows
 	 }  //close for
+
+	exit;
 }  //close if act
 ?>
 <script language="JavaScript">
@@ -174,14 +191,31 @@ function checkname(hn) {
 }
 
 function add_hn(){
-		var hn_true = "";	
-		hn_true = checkname(document.getElementById('hn').value);
-		//alert(hn_true);
-		
-			document.getElementById('list_hn').innerHTML = document.getElementById('list_hn').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_hn[]\" value=\""+document.getElementById('hn').value+"\" checked>&nbsp;"+document.getElementById('hn').value + " "+hn_true+"<BR>";
-			document.getElementById("hn").select();
-
+	var hn_true = "";	
+	hn_true = checkname(document.getElementById('hn').value);
+	
+	var match_r = /R\d{2}/;
+	var r_result = hn_true.match(match_r);
+	
+	if(r_result!=null)
+	{
+		if(r_result[0]=='R01' || r_result[0]=='R02' || r_result[0]=='R03' || r_result[0]=='R04')
+		{
+			document.getElementById('outlay1').checked = true;
+		}
+		else if(r_result[0]=='R07' || r_result[0]=='R09' || r_result[0]=='R10' || r_result[0]=='R11' || r_result[0]=='R12' || r_result[0]=='R13' || r_result[0]=='R14' || r_result[0]=='R15' || r_result[0]=='R36')
+		{
+			document.getElementById('outlay2').checked = true;
+		}
+		document.getElementById('list_hn').innerHTML = document.getElementById('list_hn').innerHTML + "<INPUT TYPE=\"checkbox\" name=\"list_hn[]\" value=\""+document.getElementById('hn').value+"\" checked>&nbsp;"+document.getElementById('hn').value + " "+hn_true+"<BR>";
 	}
+	else
+	{
+		document.getElementById('list_hn').innerHTML += hn_true+"<br>";
+	}
+	document.getElementById("hn").select();
+
+}
 </script>
 
 <script>
@@ -198,7 +232,6 @@ function check(){
 }
 </script>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 18px;
@@ -215,7 +248,6 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
--->
 </style>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
@@ -366,8 +398,7 @@ $diag=$_GET["diag"];
 /*	echo "<p align=\"center\"><a href=\"labtranxhemo.php?hemodate=$hemodate&depart=$depart&doctor=$doctor&diag=$diag\" target=\"_blank\" onclick=\"location.href='hemohd.php'\">ใบแจ้งหนี้รายบุคคล</a></p>";*/
 	echo "<p align=\"center\"><a href=\"labtranxhemogroup.php?hemodate=$hemodate&depart=$depart&doctor=$doctor&diag=$diag\" target=\"_blank\" onclick=\"location.href='hemohd.php'\">ใบแจ้งหนี้แบบกลุ่ม</a></p>";	
 }
-?>
-<? 
+
 function displaydate($x) {
 	$thai_m=array("มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฏาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
 	$date_array=explode("-",$x);
@@ -383,7 +414,7 @@ function displaydate($x) {
 } // end function displaydate
 
 ?>
-<p align="center"><strong>ข้อมูลค่าใช้จ่าย ประจำวันที่ <?=displaydate(date('Y-m-d'));?></strong></p>
+<p align="center"><strong>ข้อมูลค่าใช้จ่าย ไตเทียม1 ประจำวันที่ <?=displaydate(date('Y-m-d'));?></strong></p>
 <table width="80%" border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#000000">
   <tr>
     <td width="6%" align="center" bgcolor="#3399CC"><strong>ลำดับ</strong></td>
@@ -395,7 +426,7 @@ function displaydate($x) {
     <td width="9%" align="center" bgcolor="#3399CC"><strong>เบิกได้</strong></td>
     <td width="9%" align="center" bgcolor="#3399CC"><strong>เบิกไม่ได้</strong></td>
   </tr>
-<?
+<?php 
 $today=date('Y-m-d');
 list($y,$m,$d)=explode("-",$today);
 $y=$y+543;
@@ -403,48 +434,123 @@ $newdate="$y-$m-$d";
 $code="HEMO";
 $detail="ค่าบริการฟอกเลือดด้วยเครื่องไตเทียม";
 
-	  $sql="select * from depart where date like '$newdate%' && depart='$code' && detail='$detail'";
-	  //echo $sql;
-	  $query=mysql_query($sql);
-	  if(mysql_num_rows($query) < 1){
-	  	echo "<tr>
-					<td colspan='8' align='center' style='color: red;'><strong>ยังไม่มีข้อมูลคิดค่าใช้จ่ายของวันนี้ในระบบ</strong></td>
-				  </tr>";
-	  }
-	  $no=0;
-	  $totalprice=0;
-	  $totalyprice=0;
-	  $totalnprice=0;
-	  while($rows=mysql_fetch_array($query)){
-	  $no++;
-	  $totalprice=$totalprice+$rows["price"];
-	  $totalyprice=$totalyprice+$rows["sumyprice"];
-	  $totalnprice=$totalnprice+$rows["sumnprice"];	  	  
-?>  
-  <tr>
-    <td align="center" bgcolor="#FFFFCC"><?=$no;?></td>
-    <td bgcolor="#FFFFCC"><?=$rows["hn"];?></td>
-    <td bgcolor="#FFFFCC"><?=$rows["tvn"];?></td>
-    <td bgcolor="#FFFFCC"><?=$rows["ptname"];?></td>
-    <td bgcolor="#FFFFCC"><?=$rows["ptright"];?></td>
-    <td align="right" bgcolor="#FFFFCC"><?=$rows["price"];?></td>
-    <td align="right" bgcolor="#FFFFCC"><?=$rows["sumyprice"];?></td>
-    <td align="right" bgcolor="#FFFFCC"><?=$rows["sumnprice"];?></td>
-  </tr>
-<?
+// เรียก depart ครั้งเเดียวใส่ใน Array แล้วค่อยให้เงื่อนไขไต1 ไต2 ไปแยกเอาเอง
+$sql="select * from depart where date like '$newdate%' && depart='$code' && detail='$detail' ORDER BY `hn`";
+$query=mysql_query($sql);
+if(mysql_num_rows($query) < 1){
+	echo "<tr>
+	<td colspan='8' align='center' style='color: red;'><strong>ยังไม่มีข้อมูลคิดค่าใช้จ่ายของวันนี้ในระบบ</strong></td>
+	</tr>";
+}
+
+$rows_depart = array();
+while($depart_item=mysql_fetch_array($query)){ 
+	$rows_depart[] = $depart_item;
+}
+
+$no=0;
+$totalprice=0;
+$totalyprice=0;
+$totalnprice=0;
+foreach($rows_depart AS $rows){
+
+	$depart_hn = $rows['hn'];
+
+	// ถ้าไม่ใช่ไต1จะข้ามไปเลย
+	$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today' AND `detail` LIKE 'FU18%' AND `hn` = '$depart_hn' ";
+	$q1 = mysql_query($sql_hemo_1);
+	if(mysql_num_rows($q1) == 0)
+	{
+		continue;
 	}
-?>   
-  <tr>
-    <td colspan="5" align="right" bgcolor="#66CCCC"><strong>รวมเป็นเงิน</strong></td>
-    <td align="right" bgcolor="#66CCCC"><strong>
-      <?=number_format($totalprice,2);?>
-    </strong></td>
-    <td align="right" bgcolor="#66CCCC"><strong>
-      <?=number_format($totalyprice,2);?>
-    </strong></td>
-    <td align="right" bgcolor="#66CCCC"><strong>
-      <?=number_format($totalnprice,2);?>
-    </strong></td>
-  </tr> 
+
+	$no++;
+	$totalprice=$totalprice+$rows["price"];
+	$totalyprice=$totalyprice+$rows["sumyprice"];
+	$totalnprice=$totalnprice+$rows["sumnprice"];	  	  
+	?>  
+	<tr>
+		<td align="center" bgcolor="#FFFFCC"><?=$no;?></td>
+		<td bgcolor="#FFFFCC"><?=$rows["hn"];?></td>
+		<td bgcolor="#FFFFCC"><?=$rows["tvn"];?></td>
+		<td bgcolor="#FFFFCC"><?=$rows["ptname"];?></td>
+		<td bgcolor="#FFFFCC"><?=$rows["ptright"];?></td>
+		<td align="right" bgcolor="#FFFFCC"><?=$rows["price"];?></td>
+		<td align="right" bgcolor="#FFFFCC"><?=$rows["sumyprice"];?></td>
+		<td align="right" bgcolor="#FFFFCC"><?=$rows["sumnprice"];?></td>
+	</tr>
+	<?php
+}
+?>
+<tr>
+	<td colspan="5" align="right" bgcolor="#66CCCC"><strong>รวมเป็นเงิน</strong></td>
+	<td align="right" bgcolor="#66CCCC"><strong>
+	<?=number_format($totalprice,2);?>
+	</strong></td>
+	<td align="right" bgcolor="#66CCCC"><strong>
+	<?=number_format($totalyprice,2);?>
+	</strong></td>
+	<td align="right" bgcolor="#66CCCC"><strong>
+	<?=number_format($totalnprice,2);?>
+	</strong></td>
+</tr> 
 </table>
 
+
+<p align="center"><strong>ข้อมูลค่าใช้จ่าย ไตเทียม2 ประจำวันที่ <?=displaydate(date('Y-m-d'));?></strong></p>
+<table width="80%" border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#000000">
+	<tr>
+		<td width="6%" align="center" bgcolor="#3399CC"><strong>ลำดับ</strong></td>
+		<td width="9%" align="center" bgcolor="#3399CC"><strong>HN</strong></td>
+		<td width="8%" align="center" bgcolor="#3399CC"><strong>VN</strong></td>
+		<td width="26%" align="center" bgcolor="#3399CC"><strong>ชื่อ - นามสกุล</strong></td>
+		<td width="24%" align="center" bgcolor="#3399CC"><strong>สิทธิ์การรักษา</strong></td>
+		<td width="9%" align="center" bgcolor="#3399CC"><strong>จำนวนเงิน</strong></td>
+		<td width="9%" align="center" bgcolor="#3399CC"><strong>เบิกได้</strong></td>
+		<td width="9%" align="center" bgcolor="#3399CC"><strong>เบิกไม่ได้</strong></td>
+	</tr>
+	<?php 
+	$no=0;
+	$totalprice=0;
+	$totalyprice=0;
+	$totalnprice=0;
+	foreach($rows_depart AS $rows){
+		$depart_hn = $rows['hn'];
+
+		$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today' AND `detail` LIKE 'FU39%' AND `hn` = '$depart_hn' ";
+		$q1 = mysql_query($sql_hemo_1);
+		if(mysql_num_rows($q1) == 0)
+		{
+			continue;
+		}
+		$no++;
+		$totalprice=$totalprice+$rows["price"];
+		$totalyprice=$totalyprice+$rows["sumyprice"];
+		$totalnprice=$totalnprice+$rows["sumnprice"];	  	  
+		?>  
+		<tr>
+			<td align="center" bgcolor="#FFFFCC"><?=$no;?></td>
+			<td bgcolor="#FFFFCC"><?=$rows["hn"];?></td>
+			<td bgcolor="#FFFFCC"><?=$rows["tvn"];?></td>
+			<td bgcolor="#FFFFCC"><?=$rows["ptname"];?></td>
+			<td bgcolor="#FFFFCC"><?=$rows["ptright"];?></td>
+			<td align="right" bgcolor="#FFFFCC"><?=$rows["price"];?></td>
+			<td align="right" bgcolor="#FFFFCC"><?=$rows["sumyprice"];?></td>
+			<td align="right" bgcolor="#FFFFCC"><?=$rows["sumnprice"];?></td>
+		</tr>
+		<?php
+	}
+	?>
+	<tr>
+		<td colspan="5" align="right" bgcolor="#66CCCC"><strong>รวมเป็นเงิน</strong></td>
+		<td align="right" bgcolor="#66CCCC"><strong>
+		<?=number_format($totalprice,2);?>
+		</strong></td>
+		<td align="right" bgcolor="#66CCCC"><strong>
+		<?=number_format($totalyprice,2);?>
+		</strong></td>
+		<td align="right" bgcolor="#66CCCC"><strong>
+		<?=number_format($totalnprice,2);?>
+		</strong></td>
+	</tr> 
+</table>
