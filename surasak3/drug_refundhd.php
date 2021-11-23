@@ -3,6 +3,9 @@ session_start();
 set_time_limit();
 include("connect.inc");
 
+$Conn = mysql_connect('192.168.131.250','remoteuser','') or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้ ");
+mysql_select_db('smdb',$Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+
 ?>
 <html>
 <head>
@@ -144,17 +147,29 @@ if(isset($_POST["submit"])){
 				</TR>
 				<?php
 				
+				$drug_hemo_1 = array();
 				$today_en = ($_POST["yr"]-543)."-".$_POST["m"]."-".$_POST["d"];
 
 				while(list($hn, $drugcode , $tradname , $amount, $ptname, $time_in) = Mysql_fetch_row($result)){
 					
-					$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today_en' AND `detail` LIKE 'FU18%' AND `hn` = '$hn' ";
+					// if(!in_array($drugcode, $drug_hemo_1))
+					// {
+						// $drug_hemo_1[$drugcode] += $amount;
+					// }
+					// else
+					// {
+					// 	$drug_hemo_1[$drugcode] += $amount;
+					// }
 
+					$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today_en' AND `detail` LIKE 'FU18%' AND `hn` = '$hn' ";
 					$q1 = mysql_query($sql_hemo_1);
 					if(mysql_num_rows($q1) == 0)
 					{
 						continue;
 					}
+
+					$drug_hemo_1[$drugcode]['name'] = $tradname;
+					$drug_hemo_1[$drugcode]['amount'] += $amount;
 
 					if($i%2==0)
 						$bgcolor= "#FFFFFF";	
@@ -179,6 +194,22 @@ if(isset($_POST["submit"])){
 				}
 				?>
 			</table>
+			<br>
+			<p><b>สรุปรวมรายการยาทั้งหมด</b></p>
+			<table cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
+				<?php 
+				foreach ($drug_hemo_1 as $d_hemo) {
+					?>
+					<tr>
+						<td><?=$d_hemo['name'];?></td>
+						<td><?=$d_hemo['amount'];?></td>
+						<td width='150'></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+
 		</div>
 		<div style="float:right; width:50%;" id="hemo_item_2">
 			<h2>ไตเทียม 2</h2>
@@ -201,7 +232,11 @@ if(isset($_POST["submit"])){
 
 				$result = Mysql_Query($sql) or die(mysql_error());
 
+				$drug_hemo_2 = array();
+
 				while(list($hn, $drugcode , $tradname , $amount, $ptname, $time_in) = Mysql_fetch_row($result)){
+
+					
 
 					$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today_en' AND `detail` LIKE 'FU39%' AND `hn` = '$hn' ";
 					$q1 = mysql_query($sql_hemo_1);
@@ -209,6 +244,12 @@ if(isset($_POST["submit"])){
 					{
 						continue;
 					}
+
+
+					// $drug_hemo_2[$drugcode] += $amount;
+					$drug_hemo_2[$drugcode]['name'] = $tradname;
+					$drug_hemo_2[$drugcode]['amount'] += $amount;
+
 
 					if($i%2==0)
 						$bgcolor= "#FFFFFF";	
@@ -233,13 +274,27 @@ if(isset($_POST["submit"])){
 				}
 				?>
 			</table>
+			<br>
+			<p><b>สรุปรวมรายการยาทั้งหมด</b></p>
+			<table cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
+				<?php 
+				foreach ($drug_hemo_2 as $d_hemo) {
+					?>
+					<tr>
+						<td><?=$d_hemo['name'];?></td>
+						<td><?=$d_hemo['amount'];?></td>
+						<td width='150'></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
 		</div>
 	</div>
 	<?php
 
+	/*
 	echo "<br>";
-
-
 	echo "<TABLE cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>";
 	echo "<strong>สรุปรวมรายการยาทั้งหมด</strong>";
 	$sql = "SELECT a.drugcode , a.tradname , a.amount, b.ptname, date_format( a.date, '%H:%i:%s' ),sum(a.amount) as num  FROM ( SELECT drugcode , tradname , amount, idno, date  FROM ddrugrx where  date like '".$select_day."%' ) as a  INNER JOIN (Select ptname, row_id From dphardep where date like '".$select_day."%'  AND doctor like 'HD%' AND dr_cancle is null) as b ON a.idno = b.row_id Group by a.tradname Order by a.date ASC";
@@ -247,13 +302,14 @@ if(isset($_POST["submit"])){
 	$rows = Mysql_num_rows($result);
 	while(list($drugcode , $tradname , $amount, $ptname, $time_in,$num) = Mysql_fetch_row($result)){
 		echo "<TR>
-							<TD>",$tradname,"</TD>
-							<TD>",$num,"</TD>
-							<TD width='150'>&nbsp;</TD>";
+		<TD>",$tradname,"</TD>
+		<TD>",$num,"</TD>
+		<TD width='150'>&nbsp;</TD>";
 		echo "</TR>";
 		$sum +=$num;
 	}
 	echo "</div>";
+	*/
 }
 ?>
 </TABLE>
