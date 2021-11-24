@@ -61,9 +61,9 @@ function  checklist(){
  include("unconnect.inc");  
 ?>
 
-<p>>>>><input name="n1" type="text" value="ชื่อรายการ" size="20" readonly="readonly">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p>>>>><input name="n1" type="text" value="รหัส ชื่อรายการ" size="20" readonly="readonly">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="T1" type="text" value="เลือกประเภท" size="22" readonly="readonly">
-&nbsp;&nbsp;&nbsp;&nbsp;<input name="T2" type="text" value="รหัสอุปรณ์" size="5" readonly="readonly">&nbsp;<input name="T2" type="text" value="จำนวน" size="3" readonly="readonly">
+&nbsp;&nbsp;<input name="T2" type="text" value="รหัสอุปรณ์" size="8" readonly="readonly">&nbsp;<input name="T2" type="text" value="จำนวน" size="3" readonly="readonly">
   <input name="T5" type="text" value="ราคารวม" size="8" readonly="readonly" />
   <input name="T3" type="text" value="เบิกได้(รวม)" size="8" readonly="readonly"><input name="T4" type="text" value="เบิกไม่ได้(รวม)" size="8" readonly="readonly">
 <form method="POST" action="orpaid.php" onsubmit="return checklist()" name="form11">
@@ -200,8 +200,8 @@ function  checklist(){
   <input name="price12" type="text" size="8" id="price12" onkeyup="cal('price12');"/>
   <input name="yprice12" type="text" id="yprice12" value="0" size="8" onkeyup="cal('price12');"><input name="nprice12" type="text" id="nprice12" value="0" size="8" >
   <br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="submit" value="      &#3605;&#3585;&#3621;&#3591;      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="reset" value="  &#3621;&#3610;&#3607;&#3636;&#3657;&#3591;  " name="B2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
+  <input type="reset" value="  &#3621;&#3610;&#3607;&#3636;&#3657;&#3591;  " name="B2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></div></p>
 </form>
 
