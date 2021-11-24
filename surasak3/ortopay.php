@@ -1,6 +1,17 @@
 <?php
     session_start();
     include("connect.inc");
+
+    $an_ipcard = $_POST['an'];
+    $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+    $sql_ipcard = "SELECT `status_log` FROM `ipcard` WHERE `an` = '$an_ipcard' ";
+    $q_ipcard = $dbi->query($sql_ipcard);
+    $ip = $q_ipcard->fetch_assoc();
+    if($ip['status_log']=='จำหน่าย')
+    {
+      echo "ผู้ป่วยได้ทำการ D/C เรียบร้อยแล้ว หากต้องการคีย์ค่าใช้จ่ายเพิ่มเติม กรุณาติดต่อส่วนเก็บเงินรายได้เพื่อปลดล็อค";
+      exit;
+    }
 ?>
 <script>
 function cal(nameid){
