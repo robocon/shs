@@ -565,6 +565,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		$where1 = "";
 	}
 
+	if(empty($_GET["date_remed"]))
+	{
+		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
+	}
+
 	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
 	FROM drugrx as a 
 	INNER JOIN (SELECT `drugcode`,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
@@ -752,6 +757,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}else{
 		$where1 = "";
 	}*/
+
+	if(empty($_GET["date_remed"]))
+	{
+		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
+	}
 
 	$sql = "
 	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
@@ -3255,7 +3265,8 @@ function viatch(ing,code){
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก 
 
 	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
-
+	$pre_date_time = strtotime('-3 YEAR');
+	$pre_date = (date("Y", $pre_date_time)+543).date("-m-d", $pre_date_time);
 /*	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
 	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
@@ -3266,7 +3277,7 @@ function viatch(ing,code){
 	$sql = "/* head_remed */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a 
-	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE a.`date` >= '$pre_date 00:00:00'  AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 100";	
@@ -3335,7 +3346,7 @@ function viatch(ing,code){
 	$sql = "/* head_remed2 */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a 
-	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE a.`date` >= '$pre_date 00:00:00' AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY left(date2,10)
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 20";	
