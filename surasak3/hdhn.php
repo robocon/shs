@@ -8,7 +8,7 @@
 
 <body>
 	<a href="../nindex.htm">&lt;&lt; ไปเมนู</a>
-	<form id="form1" name="form1" method="post" action="hd_sticker_item.php" target="_blank">
+	<form id="form1" name="form1" method="post" action="hd_sticker_item.php">
 		<table width="26%" border="0">
 			<tr>
 				<td align="center">พิมพ์สติ๊กเกอร์ติด Tube Lab</td>
