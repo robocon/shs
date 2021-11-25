@@ -21,9 +21,10 @@ $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
 
 if($rows <=0 ){
-	echo "<CENTER>ขออภัยผู้ป่วยไม่มีรายการตรวจ Lab วันนี้</CENTER>";
+	echo "<CENTER>ขออภัยผู้ป่วยไม่มีรายการตรวจLabจากแพทย์ในวันนี้</CENTER>";
 	exit();
 }
+
 list($rowid, $doctor, $price , $sumnprice) = Mysql_fetch_row($result);
 
 $sql = "Select code From labpatdata  where idno = '".$rowid."' ";
