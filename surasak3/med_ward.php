@@ -243,6 +243,9 @@ tr{
     background-color: #ffffff;
     border: 2px solid #000000;
 }
+#imgContent{
+    max-width: 210mm;
+}
 #imgBtnClose{
     text-align: center; 
     background-color: #b8b8b8;
@@ -265,6 +268,8 @@ if( isset($_SESSION['x-msg']) ){
     ?><p style="background-color: #ffffc1; border: 2px solid #afaf00; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
     unset($_SESSION['x-msg']);
 }
+
+$default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
 ?>
 <div>
 <h3>อัพโหลดไฟล์ Doctor Order</h3>
@@ -273,7 +278,7 @@ if( isset($_SESSION['x-msg']) ){
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
     <form action="med_ward.php" method="post">
         <div>
-            AN: <input type="text" name="an" value="<?=$_GET['fill_an'];?>">
+            AN: <input type="text" name="an" value="<?=$default_an;?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
@@ -285,7 +290,7 @@ if( isset($_SESSION['x-msg']) ){
     <legend>ค้นหาเอกสารด้วย AN</legend>
     <form action="med_ward.php" method="post">
         <div>
-            AN: <input type="text" name="an" value="<?=$_GET['fill_an'];?>">
+            AN: <input type="text" name="an" value="<?=$default_an;?>">
         </div>
         <div>
             <button type="submit">ค้นหา</button>
