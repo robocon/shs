@@ -1,6 +1,7 @@
 <?php 
 
 session_start();
+include("connect.inc");
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -21,6 +22,16 @@ if($_SESSION["sOfficer"] == ""){
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 exit();
+}
+
+
+$page = $_GET['page'];
+if($page=='')
+{
+	$showdrug = $_GET['showdrug'];
+	dump($showdrug);
+
+	exit;
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -110,7 +121,7 @@ function calcage($birth){
 return $pAge;
 }
 
-include("connect.inc");   
+
 
 $thidate = date("d-m-").(date("Y")+543);
 $thidatehn = $thidate.$_REQUEST["hn"];
@@ -882,14 +893,54 @@ mmHg </td>
 				<input name="drugreact" type="radio" value="2" id="drugreact3"><label for="drugreact3">ไม่ทราบ</label> 
 				<font class="data_drugreact"><?php echo $txt_react2;?></font>
 				<span style="position:relative;">
-					<input type="text" name="drugreact_code">
+					<input type="text" name="drugreact_code" id="drugreact_code">
 					<div style="position:absolute; top:0px; left: 177px;">
 						<div style="position:relative; border:1px solid red; width: 400px;">
 							Response Here
 						</div>
 					</div>
 				</span>
+				<script type="text/javascript">
 
+					function addEventListener(el, eventName, handler) 
+					{
+						if (el.addEventListener) {
+							el.addEventListener(eventName, handler);
+						} else {
+							el.attachEvent('on' + eventName, function(){
+								handler.call(el);
+							});
+						}
+					}
+
+					function xmlHttpGET(url, functionName)
+					{
+						var xhttp = new XMLHttpRequest();
+						xhttp.onreadystatechange = function() {
+							if (this.readyState === 4) {
+								if (this.status >= 200 && this.status < 400) {
+									// Success!
+									functionName(this);
+								} else {
+									// Error :(
+								}
+							}
+						};
+						xhttp.open('GET', url, true);
+						xhttp.send();
+						xhttp = null;
+					}
+
+					document.getElementById('drugreact_code').addEventListener('onkeyup', function(){
+						var drugcode = this.value;
+						xmlHttpGET('basic_opd.php?page=showdrug&drugcode='+drugcode, show_druglist);
+					});
+
+					function show_druglist(xhttp){
+						console.log(xhttp);
+					}
+
+				</script>
 			</td>
 	      </tr>
 		  <?php 
