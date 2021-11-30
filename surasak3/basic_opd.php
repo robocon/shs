@@ -977,18 +977,29 @@ mmHg </td>
 			</td>
 		</tr>
 
-         <tr>
-           <td align="right" class="data_show">ลักษณะผู้ป่วย : </td>
-           <td align="left" colspan="5"><span class="data_show">
-             <input name="type" type="radio" value="เดินมา" checked="checked"/>
-             เดินมา
-             <input name="type" type="radio" value="นั่งรถเข็น" />
-             นั่งรถเข็น
-             <input name="type" type="radio" value="นอนเปล" />
-             นอนเปล
-             <input name="type" type="radio" value="ญาติ" onclick="clear_textbox();"/>
-             ญาติ </span></td>
-         </tr>
+		<tr class="data_show">
+			<td align="right" >ลักษณะผู้ป่วย : </td>
+			<td align="left" colspan="5">
+				<input name="type" type="radio" value="เดินมา" id="type1" checked="checked"><label for="type1">เดินมา</label>
+				<input name="type" type="radio" value="นั่งรถเข็น" id="type2"><label for="type2">นั่งรถเข็น</label>
+				<input name="type" type="radio" value="นอนเปล" id="type3"><label for="type3">นอนเปล</label>
+				<input name="type" type="radio" value="ญาติ" id="type4"><label for="type4">ญาติ</label>
+			</td>
+		</tr>
+		<?php 
+		if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
+		{
+		?>
+		<tr class="data_show">
+			<td align="right" >ข้อมูลจาก : </td>
+			<td align="left" colspan="5">
+				<input type="radio" name="type_from" id="type_from1" checked="checked"><label for="type_from1">ผู้ป่วย</label> 
+				<input type="radio" name="type_from" id="type_from2"><label for="type_from2">ญาติ</label> 
+			</td>
+		</tr>
+		<?php 
+		}
+		?>
 
 		<tr>
 			<td align="right" class="data_show">Griage Gr.</td>
