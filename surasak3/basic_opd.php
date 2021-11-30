@@ -874,32 +874,71 @@ mmHg </td>
 			<?php
 		}
 		?>
-		 <tr>
-		   <td width="116" align="right" class="data_show">แพ้ยา : </td>
-		   <td colspan="5" align="left" class="data_show">
-				<input name="drugreact" type="radio" value="0" />ไม่มีประวัติการแพ้ 
-				<input name="drugreact" type="radio" value="1" />แพ้
-				<input name="drugreact" type="radio" value="2" />ไม่ทราบ
+		 <tr class="data_show">
+		   <td width="116" align="right">แพ้ยา : </td>
+		   <td colspan="5" align="left">
+				<input name="drugreact" type="radio" value="0" id="drugreact1"><label for="drugreact1">ไม่มีประวัติการแพ้</label> 
+				<input name="drugreact" type="radio" value="1" id="drugreact2"><label for="drugreact2">แพ้</label> 
+				<input name="drugreact" type="radio" value="2" id="drugreact3"><label for="drugreact3">ไม่ทราบ</label> 
 				<font class="data_drugreact"><?php echo $txt_react2;?></font>
+				<span style="position:relative;">
+					<input type="text" name="drugreact_code">
+					<div style="position:absolute; top:0px; left: 177px;">
+						<div style="position:relative; border:1px solid red; width: 400px;">
+							Response Here
+						</div>
+					</div>
+				</span>
+
 			</td>
 	      </tr>
+		  <?php 
+		  if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
+		  {
+		  ?>
+		  <tr class="data_show" style="vertical-align: top;">
+			  <td align="right">ยาต้านการแข็งตัว :<br>ของเกล็ดเลือด</td>
+			  <td>
+				  <input type="radio" name="antiplatelet" id="antiplatelet1" onclick="focus_antiplatelet1()" checked="checked"><label for="antiplatelet1">ไม่มี</label>
+				  <input type="radio" name="antiplatelet" id="antiplatelet2" onclick="focus_antiplatelet2()"><label for="antiplatelet2">มี</label>
+				  <input type="text" name="antiplatelet_txt" id="antiplatelet_txt" onfocus="focus_antiplate_txt()" onfocusout="unfocus_antiplate_txt()">
+
+				  <script type="text/javascript">
+
+					  function focus_antiplatelet1(){
+						document.getElementById('antiplatelet_txt').value = '';
+					  }
+					  function focus_antiplatelet2(){
+						document.f2.antiplatelet_txt.focus();
+					  }
+
+					  function focus_antiplate_txt(){
+						document.f2.antiplatelet2.checked = true;
+					  }
+					  function unfocus_antiplate_txt(){
+						if(document.getElementById('antiplatelet_txt').value==''){
+							document.f2.antiplatelet2.checked = false;
+						}
+					  }
+				  </script>
+			  </td>
+		  </tr>
+		  <?php 
+		  }
+		  ?>
 		  <tr>
            <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
-			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1">สูบ&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')">ไม่สูบ&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;
+			<input type="radio" name="cigarette" value="1" <?php echo $cigarette1;?> onclick="togglediv('kbk')" id="cig1"><label for="cig1">สูบ</label> &nbsp;&nbsp;&nbsp;
+			<input type="radio" name="cigarette" value="0" <?php echo $cigarette0;?> onclick="togglediv1('kbk')" id="cig0"><label for="cig0">ไม่สูบ</label> &nbsp;&nbsp;&nbsp;
+			<input type="radio" name="cigarette" value="2" <?php echo $cigarette2;?> onclick="togglediv1('kbk')" id="cig2"><label for="cig2">เคยสูบ</label> &nbsp;&nbsp;&nbsp;
 			<div id="kbk" style="display: none; margin-bottom: 8px;"> 
 				<table id="member" class="fontthai">
 					<tr>
 						<td>
-							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
-							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
+							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/><label for="permiss1">อยากเลิก</label>
+							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/><label for="permiss2">ไม่อยากเลิก</label>
+							&nbsp;&nbsp;&nbsp;<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
 						</td>
 					</tr>
 				</table>
@@ -914,9 +953,9 @@ mmHg </td>
 		<tr>
 			<td align="right" valign="top" class="data_show">สุรา : </td>
 			<td colspan="5">
-				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;
-				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;
-				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> id="alcohol1"><label for="alcohol1">ดื่ม</label>&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> id="alcohol0"><label for="alcohol0">ไม่ดื่ม</label>&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> id="alcohol2"><label for="alcohol2">เคยดื่ม</label>&nbsp;&nbsp;&nbsp;
 				<div style="display:none; margin-bottom: 8px;" class="da_amount">
 					<label for="drink_amount">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3">แก้ว/สัปดาห์</label>
 				</div>
@@ -1069,7 +1108,7 @@ mmHg </td>
 					$hpi = '';
 				}
 				?>
-				<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
+				<textarea name="hpi" cols="40" rows="6" class="hpi txtsarabun" id="hpi" ><?=$hpi;?></textarea>
 			</td>
 			<td colspan="4">
 				<?php 
@@ -1108,6 +1147,114 @@ mmHg </td>
 				</select>
 			</td>
 		</tr>
+
+		<tr>
+			<td align="left" colspan="6">
+				<table width="100%">
+					<tr>
+						<td><b style="font-weight:bold; font-size: 22px; text-decoration: underline;">EYE screening</b>&nbsp;&nbsp;VA</td>
+						<td>R <input type="text" name="esr" id="esr"></td>
+						<td>PH <input type="text" name="esr_ph" id="esr_ph"></td>
+						<td>with glass <input type="text" name="esr_glass" id="esr_glass"></td>
+						<td>NOT <input type="text" name="esr_not" id="esr_not"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>L <input type="text" name="esl" id=""></td>
+						<td>PH <input type="text" name="esl" id=""></td>
+						<td>with glass <input type="text" name="esl" id=""></td>
+						<td>NOT <input type="text" name="esl" id=""></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;">ข้อวินิจฉัยทางการพยาบาล Nursingh DX:</td>
+		</tr>
+		<tr>
+			<td colspan="6">
+				<table style="min-width: 600px;">
+					<tr>
+						<td><input type="checkbox" name="nurse_dx[]" id="nurse_dx1" value="มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค"> <label for="nurse_dx1">มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค</label></td>
+						<td><input type="checkbox" name="nurse_dx[]" id="nurse_dx2" value="ต้องการข้อมูลเกี่ยวกับการให้บริการ"> <label for="nurse_dx2">ต้องการข้อมูลเกี่ยวกับการให้บริการ</label></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="nurse_dx[]" id="nurse_dx3" value="ต้องการความรู้/การปรึกษาเรื่อง"> <label for="nurse_dx3">ต้องการความรู้/การปรึกษาเรื่อง</label></td>
+						<td><input type="checkbox" name="nurse_dx[]" id="nurse_dx4" value="ไม่สุขสบาย: ปวด, เคืองตา"> <label for="nurse_dx4">ไม่สุขสบาย: ปวด, เคืองตา</label></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="checkbox" name="nurse_dx[]" id="nurse_dx5" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง"> <label for="nurse_dx5">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง</label></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;"><b>การยาบาลและการประเมินผล Implamentation</b></td>
+		</tr>
+		<tr>
+			<td colspan="6">
+				<table>
+					<tr>
+						<td colspan="2"><input type="checkbox" name="imp[]" id="imp1"><label for="imp1">เฝ้าระวังการเกิด fall</label></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="checkbox" name="imp[]" id="imp2"><label for="imp2">ให้ความรู้/การปรึกษาเรื่อง</label><input type="text" name="imp2_txt" id="imp2_txt"></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="imp[]" id="imp3"><label for="imp3">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
+						<td><input type="checkbox" name="imp[]" id="imp4"><label for="imp4">เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา</label></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" name="imp[]" id="imp5"><label for="imp5">ประเมินศักยภาพในการดูแลตนเอง</label></td>
+						<td><input type="checkbox" name="imp[]" id="imp6"><label for="imp6">บรรเทาอาการเจ็บปวด ดูแล</label><input type="text" name="" id=""></td>
+					</tr>
+				</table>
+				<script type="text/javascript">
+					document.getElementById('imp2').addEventListener('click', function () {
+						if(this.checked==true)
+						{
+							document.getElementById('imp2_txt').focus();
+						}
+					}, false);
+				</script>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;"><b>Evaluation</b></td>
+		</tr>
+		<tr>
+			<td colspan="6">
+				<table>
+					<tr>
+						<td>ให้คำแนะนำตาม D METHOD</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="" id=""> ผู้ป่วยมีความรู้เรื่องโรคที่เป็ฯ</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="" id=""> แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="" id=""> แนะนำการระมัดระวังพลัดตกหกล้ม</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="" id=""> สังเกตอาการผิดปกติ ถ้าตาแดงมากขึ้น ปวดตามาก น้ำตาไหล การมองเห็นลดลงให้มาพบแพทย์</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="" id=""> เน้นย้ำการมาตรวจตามนัด <input type="radio" name="" id="">รักษาตามสิทธิ <input type="radio" name="" id="">ส่งตัวรักษาต่อ <input type="radio" name="" id="">ไม่นัด <input type="radio" name="" id="">ทานยาและหยอดยาตามแผนการักษา</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="" id=""> อื่นๆ <input type="text" name="" id=""></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+
 		<tr>
 			<td></td>
 			<td colspan="4">&nbsp;</td>
