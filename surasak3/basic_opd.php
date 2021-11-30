@@ -922,12 +922,23 @@ mmHg </td>
 				</div>
 			</td>
 		</tr>
-         <tr>
+         <tr class="data_show">
            <td align="right" class="data_show">‚√§ª√–®”µ—« :</td>
-           <td align="left" colspan="5"><span class="data_show">
+           <td align="left" colspan="5">
              <input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>" class="txtsarabun"/>
-             <input type="button"  onclick="document.getElementById('congenital_disease').value='ªÆ‘‡ ∏';" name="Submit3" value="ªÆ‘‡ ∏" class="txtsarabun" />
-           </span></td>
+             <input type="button" onclick="document.getElementById('congenital_disease').value='ªÆ‘‡ ∏';" name="Submit3" value="ªÆ‘‡ ∏" class="txtsarabun" />
+			<?php 
+			if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
+			{
+				?>
+				<input type="button" onclick="document.getElementById('congenital_disease').value+=' DM';" value="DM" class="txtsarabun">
+				<input type="button" onclick="document.getElementById('congenital_disease').value+=' HT';" value="HT" class="txtsarabun">
+				<input type="button" onclick="document.getElementById('congenital_disease').value+=' DLP';" value="DLP" class="txtsarabun">
+				<input type="button" onclick="document.getElementById('congenital_disease').value+=' CAD';" value="CAD" class="txtsarabun">
+				<?php 
+			}
+			?>
+           </td>
          </tr>
 
 		<tr>
