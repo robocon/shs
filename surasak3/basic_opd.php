@@ -1062,9 +1062,14 @@ mmHg </td>
 		<tr valign="top">
 			<td align="right" valign="top" >HPI:</td>
 			<td> 
-			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
-
-			
+			 	<?php 
+				// เฉพาะห้องตา อยากให้ HPI เป็นค่าว่าง ไม่ต้องดึงประวัติเดิม
+				if($_SESSION['smenucode'] == 'ADMEYE')
+				{
+					$hpi = '';
+				}
+				?>
+				<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 			</td>
 			<td colspan="4">
 				<?php 
