@@ -1040,6 +1040,12 @@ mmHg </td>
 		<tr valign="top">
 			<td align="right" valign="top" >HPI:</td>
 			<td> 
+			<?php
+			if($_SESSION['smenucode'] == 'ADMEYE')
+			{
+				$hpi = '';
+			}
+			?>
 			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 
 			
