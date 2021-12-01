@@ -26,11 +26,45 @@ exit();
 
 
 $page = $_GET['page'];
-if($page=='')
+if($page=='showdrug')
 {
-	$showdrug = $_GET['showdrug'];
-	dump($showdrug);
+	$drugcode = trim($_GET['drugcode']);
 
+	$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+	$sql = "SELECT * FROM `druglst` WHERE `drugcode` LIKE '$drugcode%' OR `tradname` LIKE '%$drugcode%' OR `genname` LIKE '%$drugcode%' ";
+	$q_drug = $dbi->query($sql);
+	?>
+	<div style="background-color: #bbbbbb; text-align: center; font-weight: bold;" id="drugreact_close"><a href="javascript:void(0);">[ปิด]</a></div>
+	<table width="100%" style="background-color: #ffffff; border: 1px solid #bbb;">
+		<tr style="background-color: #50d18f;">
+			<th>รหัสยา</th>
+			<th>ชื่อทางการค้า</th>
+			<th>ชื่อสามัญ</th>
+		</tr>
+		<?php 
+		if($q_drug->num_rows > 0)
+		{
+			while ($item = $q_drug->fetch_assoc()) {
+				?>
+				<tr>
+					<td><a href="javascript:void(0);" data-drugcode="<?=$item['drugcode'];?>" class="select_drugreact_item"><?=$item['drugcode'];?></a></td>
+					<td><?=$item['tradname'];?></td>
+					<td><?=$item['genname'];?></td>
+				</tr>
+				<?php 
+			}
+		}
+		else
+		{
+			?>
+			<tr>
+				<td colspan="3">ไม่พบข้อมูล</td>
+			</tr>
+			<?php
+		}
+		?>
+	</table>
+	<?php
 	exit;
 }
 
@@ -895,23 +929,10 @@ mmHg </td>
 				<span style="position:relative;">
 					<input type="text" name="drugreact_code" id="drugreact_code">
 					<div style="position:absolute; top:0px; left: 177px;">
-						<div style="position:relative; border:1px solid red; width: 400px;">
-							Response Here
-						</div>
+						<div style="position:relative; min-width: 400px; z-index:1;" id="drugreact_res"></div>
 					</div>
 				</span>
 				<script type="text/javascript">
-
-					function addEventListener(el, eventName, handler) 
-					{
-						if (el.addEventListener) {
-							el.addEventListener(eventName, handler);
-						} else {
-							el.attachEvent('on' + eventName, function(){
-								handler.call(el);
-							});
-						}
-					}
 
 					function xmlHttpGET(url, functionName)
 					{
@@ -931,15 +952,47 @@ mmHg </td>
 						xhttp = null;
 					}
 
-					document.getElementById('drugreact_code').addEventListener('onkeyup', function(){
-						var drugcode = this.value;
-						xmlHttpGET('basic_opd.php?page=showdrug&drugcode='+drugcode, show_druglist);
-					});
-
-					function show_druglist(xhttp){
-						console.log(xhttp);
+					// ยกปุ่มขึ้นแล้วค่อย get value
+					document.getElementById('drugreact_code').onkeyup = function(){ 
+						doKeyup_drugreact(this.value);
 					}
 
+					function doKeyup_drugreact(drugcode){
+						if(drugcode.length >= 2)
+						{
+							xmlHttpGET('basic_opd.php?page=showdrug&drugcode='+drugcode, show_druglist);
+						}
+					}
+
+					function show_druglist(xhttp){
+						
+						// ส่งค่ากลับมาก่อนแล้วค่อยแสดงผล drugreact_res
+						document.getElementById('drugreact_res').innerHTML = xhttp.responseText.trim();
+						document.getElementById('drugreact_res').style.display = '';
+
+						// listen event ปุ่มปิด
+						document.getElementById('drugreact_close').onclick = function()
+						{
+							document.getElementById('drugreact_res').style.display = 'none';
+						}
+						
+						// ถ้ามีการคลิกภายในรายการ
+						var select_drugreact = document.getElementsByClassName("select_drugreact_item");
+						if(select_drugreact.length > 0)
+						{
+							for (let index = 0; index < select_drugreact.length; index++) 
+							{
+								select_drugreact[index].onclick = open_select_doctor;
+							}
+						}
+					}
+
+					function open_select_doctor(){ 
+						// ดูค่าใน Attribute data-drugcode แล้วค่อยปิดหน้าต่างเลือก
+						var drugcode = this.getAttribute("data-drugcode");
+						document.getElementById('drugreact_code').value = drugcode;
+						document.getElementById('drugreact_res').style.display = 'none';
+					}
 				</script>
 			</td>
 	      </tr>
