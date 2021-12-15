@@ -89,13 +89,32 @@ window.onload = function(){
 	window.close();
 }
 </script>
-
+<style>
+body{
+	margin: 0;
+	padding: 0;
+}
+table td, .display-sticker{
+	font-family: "Angsana New","TH SarabunPSK";
+	line-height: 18.897637795px;
+	font-size: 14pt;
+}
+.underline{
+	width: 50px;
+    display: inline-block;
+    border-bottom: 1px dashed #000;
+}
+.underline_notfix{
+	display: inline-block;
+    border-bottom: 1px dashed #000;
+}
+</style>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
-		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
+		<td>HN : <?=$hn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
 	<tr>
-		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
+		<td>VN:<?=$vn;?>, T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
 	</tr>
 	<tr>
 		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, นน : <?=$weight;?> กก., สส : <?=$height;?> ซม.</td>
@@ -103,8 +122,12 @@ window.onload = function(){
 	
 	<tr>
 		<td>
-		รอบเอว : <?=$waist;?> ซม., 
 		<?php 
+		if(!empty($waist))
+		{
+			?>รอบเอว : <?=$waist;?> ซม., <?php
+		}
+
 		if( !empty($bp3) && !empty($bp4) ){
 			?>
 			Repeat BP : <?=$bp3;?> / <?=$bp4;?> mmHg
@@ -172,7 +195,7 @@ window.onload = function(){
 		<td>Triage Gr. : <?=$grade;?> สภาวะจิตใจ : <?=$mind;?></td>
 	</tr>
 	<tr>
-		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=substr($clinic,3);?></td>
+		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=$clinic;?></td>
 	</tr>
 	<tr>
 		<td>โรคประจำตัว : <?=trim($congenital_disease);?></td>
@@ -197,11 +220,16 @@ window.onload = function(){
 		</tr>
 		<?php
 	}
-	?>
-	<tr>
-		<td>อาการ : <?=trim($organ);?></td>
-	</tr>
-	<?php 
+
+	if(!empty($organ))
+	{
+		?>
+		<tr>
+			<td>อาการ : <?=trim($organ);?></td>
+		</tr>
+		<?php
+	}
+
 	if ( !empty($hpi) ) {
 		?>
 		<tr>
@@ -211,3 +239,57 @@ window.onload = function(){
 	}
 	?>
 </table>
+
+<?php 
+$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
+$q = mysql_query($sql);
+$item = mysql_fetch_assoc($q);
+
+if(empty($item['esr_not']))
+{
+	$item['esr_not'] = '';
+}
+
+?>
+<div style="page-break-after: always;"></div>
+<table>
+	<tr>
+		<td>NOT</td>
+		<td>RE <span class="underline"><?=$item['esr_not'];?></span></td>
+		<td>LE <span class="underline"><?=$item['esl_not'];?></span></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>VA</td>
+		<td>RE <span class="underline"><?=$item['esr'];?></span></td>
+		<td>PH <span class="underline"><?=$item['esr_ph'];?></span></td>
+		<td>with glass <span class="underline"><?=$item['esr_glass'];?></span></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>LE <span class="underline"><?=$item['esl'];?></span></td>
+		<td>PH <span class="underline"><?=$item['esl_ph'];?></span></td>
+		<td>with glass <span class="underline"><?=$item['esl_glass'];?></span></td>
+	</tr>
+</table>
+
+
+<div style="page-break-after: always;"></div>
+<div class="display-sticker">
+	<div><b>Nursingh DX</b></div>
+	<div>
+		- <?=$item['nurse_dx1'];?> <span class="underline_notfix"><?=$item['nurse_dx1_txt'];?></span>
+	</div>
+	<div>
+		- <?=$item['nurse_dx2'];?> <span class="underline_notfix"><?=$item['nurse_dx2_txt'];?></span>
+	</div>
+	<div>
+		- <?=$item['nurse_dx3'];?> <span class="underline_notfix"><?=$item['nurse_dx3_txt'];?></span>
+	</div>
+	<div>
+		- <?=$item['nurse_dx4'];?>
+	</div>
+	<div>
+		- <?=$item['nurse_dx5'];?>
+	</div>
+</div>
