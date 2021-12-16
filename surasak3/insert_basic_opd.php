@@ -273,7 +273,6 @@ if(empty($item['esr_not']))
 	</tr>
 </table>
 
-
 <div style="page-break-after: always;"></div>
 <div class="display-sticker">
 	<div><b>Nursingh DX</b></div>
@@ -291,5 +290,28 @@ if(empty($item['esr_not']))
 	</div>
 	<div>
 		- <?=$item['nurse_dx5'];?>
+	</div>
+</div>
+
+<div style="page-break-after: always;"></div>
+<div class="display-sticker">
+	<div><b>Implementation</b></div>
+	<div>
+		- <?=$item['imp1'];?>
+	</div>
+	<div>
+		- <?=$item['imp2'];?> <span class="underline_notfix"><?=$item['imp2_txt'];?></span>
+	</div>
+	<div>
+		- <?=$item['imp3'];?>
+	</div>
+	<div>
+		- <?=$item['imp4'];?>
+	</div>
+	<div>
+		- <?=$item['imp5'];?>
+	</div>
+	<div>
+		- <?=$item['imp6'];?> <span class="underline_notfix"><?=$item['imp6_txt'];?></span>
 	</div>
 </div>
