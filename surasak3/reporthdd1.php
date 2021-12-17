@@ -9,7 +9,8 @@ From opacc as a
 where a.date like '".$date1."%' 
 AND a.credit ='HD' 
 group by a.hn, a.depart   ORDER by a.date,a.credit_detail";
-
+// var_dump($sql);
+// 	echo "<br>";
 $result = mysql_Query($sql) or die(mysql_error());
 $list = array();
 $list2 = array();
@@ -19,10 +20,12 @@ while(list($date1, $date, $hn, $depart, $paidcscd,$credit_detail) = Mysql_fetch_
 	list($opacc_date, $opacc_time) = explode(' ', $date1);
 	list($opY, $opM, $opD) = explode('-', $opacc_date);
 	$thdatehn = "$opD-$opM-$opY".$hn;
-
-	// ตัวเดิมsearchจากการ where date like % จะทำให้ช้า ถ้าsearchจาก Key Index จะเร็วกว่า
+	// var_dump($opacc_vn);
+	// echo "<br>";
 	// $sql2 = "select vn, ptname from opday where hn='$hn' and thidate like '".$dateopday."%' limit 1";
 	$sql2 = "select vn, ptname from opday where thdatehn='$thdatehn' limit 1";
+	// var_dump($sql2);
+	// echo "<br>";
 	list($vn, $full_name) = mysql_fetch_array(mysql_query($sql2));
 	
  $date=substr($date,0,10);
