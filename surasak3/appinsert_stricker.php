@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php 
+session_start();
+include("connect.inc");
+?>
 
 <html>
 <head>
@@ -47,7 +50,12 @@
 	</style>
 </head>
 
-<?php
+<?php 
+if(empty($patho2))
+{
+	$patho2 = '';
+}
+
 if (isset($cHn )){ 
 	
 	// โค้ดผู้ใช้งาน
@@ -55,7 +63,7 @@ if (isset($cHn )){
 
 	$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 	$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
-	include("connect.inc");
+	
 	
 	if($detail=="FU13 ตรวจระบบทางเดินอาหาร"){
 		$detail2 = $detail_list;
@@ -228,7 +236,7 @@ if (isset($cHn )){
 
 	
 	//พิมพ์ใบนัด
-	$doctor = substr($doctor,5);
+	// $doctor = substr($doctor,5);
 	$depcode = substr($depcode,4);
 	
 	if($result){
@@ -242,7 +250,7 @@ if (isset($cHn )){
 			window.print();
 			setTimeout(function(){ 
 				document.location.href = "hnappoi1.php";
-			}, 2000);
+			}, 1000);
 		}
 		</script>
 		<?php

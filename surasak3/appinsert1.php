@@ -1,12 +1,13 @@
 <?php
 session_start();
 ?>
-<body>
+
 <html>
 <head>
 <title>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 <link href="css/backoffice.css" rel="stylesheet" type="text/css">
+<body>
 <style type="text/css">
 /* CSS Rest */
 /* http://meyerweb.com/eric/tools/css/reset/
@@ -407,7 +408,7 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
         1. กรณีนัดหมาย หากมาช้าเกิน 10 นาที โดยมิได้โทรแจ้งขอสงวนสิทธิ์ให้ผู้รับบริการท่านอื่นได้รับบริการก่อน<BR>
         2. หากท่านมีอาการ ไอ เจ็บคอ ไข้ อ่อนเพลีย ให้งดการนวด<br>
         3. ทางโรงพยาบาลไม่สามารถรับผิดชอบสิ่งของมีค่าของท่านได้<BR>
-        <B>หมายเลขโทรศัพท์ 054-839305-6 ต่อ 8002</B>
+        <B>หมายเลขโทรศัพท์ 054-839305-6 ต่อ 8004</B>
         ";  
     
     }else if ($detail =='FU10 กายภาพ'){ 
@@ -520,8 +521,8 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
 <script type="text/javascript">
 window.onload = function(){
 	window.print();
-    setTimeout(function(){ 
-        document.location.href = "hnappoi1.php";
-    }, 2000);
-}
+    setTimeout(function () { 
+        window.location.href = "hnappoi1.php";
+    }, 1000);
+};
 </script>
