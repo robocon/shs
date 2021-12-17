@@ -1,19 +1,22 @@
 <?php
 session_start();
 ?>
-<body>
+
 <html>
 <head>
 <title>ใบนัดผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874">
 <link href="css/backoffice.css" rel="stylesheet" type="text/css">
-
+<body>
 <script type="text/javascript">
 window.onload = function(){
 	window.print();
-	// opener.location.href='hnappoi1.php';
-	// window.close();
-}
+
+    setTimeout(function () { 
+        window.location.href = "hnappoi1.php";
+    }, 1000);
+
+};
 </script>
 <style type="text/css">
 /* CSS Rest */
@@ -392,12 +395,10 @@ if (isset($cHn )){
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; </B><br><b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 2 วันทำการ<br> ในวันเวลาราชการ เวลา 13.30 น. - 15.00 น. โทร 054-839305-6 ต่อ 1100 , 1125</b>"; 
     }else if ($detail =='FU12 นวดแผนไทย'){ 
         
-        print "
-        1. กรณีนัดหมาย หากมาช้าเกิน 10 นาที โดยมิได้โทรแจ้งขอสงวนสิทธิ์ให้ผู้รับบริการท่านอื่นได้รับบริการก่อน<BR>
+        print "1. กรณีนัดหมาย หากมาช้าเกิน 10 นาที โดยมิได้โทรแจ้งขอสงวนสิทธิ์ให้ผู้รับบริการท่านอื่นได้รับบริการก่อน<BR>
         2. หากท่านมีอาการ ไอ เจ็บคอ ไข้ อ่อนเพลีย ให้งดการนวด<br>
         3. ทางโรงพยาบาลไม่สามารถรับผิดชอบสิ่งของมีค่าของท่านได้<BR>
-        <B>หมายเลขโทรศัพท์ 054-839305-6 ต่อ 8002</B>
-        ";  
+        <B>หมายเลขโทรศัพท์ 054-839305-6 ต่อ 8004</B>";  
     
     }else if ($detail =='FU10 กายภาพ'){ 
         print "
