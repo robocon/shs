@@ -649,8 +649,8 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินสด' onclick=\"document.getElementById('detail2').innerHTML='';detailhead2.style.display='none';document.getElementById('detail4').innerHTML='ระบุจำนวนเงินที่รับ';detailhead4.style.display='';document.f2.detail_3.focus();\"></TD>
 		 	<TD>เงินสด</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>เช็ค</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอนผ่านระบบโทรศัพท์' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>เงินโอนผ่านระบบโทรศัพท์</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML='เลข Approve Code '; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
@@ -658,14 +658,14 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 	
 		 </TR>
 		 <TR>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
+		 	<TD>เช็ค</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคม' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>ประกันสังคม</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='30บาท' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>30บาท</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='HD' onclick=\"document.getElementById('detail2').innerHTML='สิทธิ์'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>HD</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick=\"document.getElementById('detail2').innerHTML='ข้อมูลเพิ่มเติม'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>อื่นๆ</TD>
 		 </TR>
 		<TR>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='สวัสดิการทันตกรรม' onclick=\"document.getElementById('detail3').innerHTML='ประเภทการตรวจ'; detailhead3.style.display='';detailhead4.style.display='none';\"></TD>
@@ -684,16 +684,16 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 	<TD>ตรวจสุขภาพทหารประจำปี$nPrefix</TD>			
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='พรบ.' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>พรบ.</TD>	
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ยกเว้น' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>ยกเว้น</TD>	
 			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>		
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>
 		 </TR>
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทันตสาธารณสุข' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ทันตสาธารณสุข</TD>		
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการนภา' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>โครงการนภา</TD>		
+			<TD align='right'>&nbsp;&nbsp;</TD>
+		 	<TD></TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='นอนโรงพยาบาล' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>นอนโรงพยาบาล</TD>			
 			<TD align='right'>&nbsp;</TD>
@@ -705,8 +705,12 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ฮักกันยามเฒ่า$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ฮักกันยามเฒ่า$yPrefix</TD>			
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เซ็นทรัล' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>บริษัทเซ็นทรัล</TD>			
+			<TD align='right'>&nbsp;&nbsp;
+				<!--<INPUT TYPE='radio' NAME='credit' VALUE='เซ็นทรัล' onclick=\"detailhead4.style.display='none';\">-->
+			</TD>
+		 	<TD>
+				<!--บริษัทเซ็นทรัล-->
+			</TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการต้อหิน' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>โครงการต้อหิน</TD>			
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHKUP$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
@@ -728,21 +732,21 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ออมสิน' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ธนาคารออมสิน</TD>	
 			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>																 
+			<TD>&nbsp;</TD>
 		 </TR>
 		 
 		 <TR>
 			<TD align='right'>
 				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ธปท' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>ธนาคารแห่งประเทศไทย</TD>			
+		 	<TD>ธนาคารแห่งประเทศไทย</TD>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick=\"document.getElementById('detail2').innerHTML='ข้อมูลเพิ่มเติม'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
+		 	<TD>อื่นๆ</TD>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ยกเว้น' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ยกเว้น</TD>	
 			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>			
 			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>					
 			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>			
 			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>																 
 		 </TR>		 
 		 		 
 		 </TABLE>";
