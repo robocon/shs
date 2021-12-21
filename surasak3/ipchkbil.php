@@ -1309,6 +1309,18 @@ print "<b>ค้างจ่ายทั้งหมด $debt บาท</b><br>";
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ค้างจ่าย'\"></TD>
 		 	<TD>ค้างจ่าย</TD>
 		 </TR>
+         <tr>
+            <td>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอนผ่านระบบโทรศัพท์' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></td>
+            <td>เงินโอนผ่านระบบโทรศัพท์</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+         </tr>
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";
 
