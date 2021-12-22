@@ -427,24 +427,40 @@ else
 		$plus = "";
 	}
 
-
-	echo "<pre>";
-	var_dump();
-	echo "</pre>";
-	exit;
-
 	if((isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "")){
-		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
-	$time = "6";
+		?>
+		<script type="text/javascript">
+		window.onload = function(){
+			var stkBasic = window.open("stk_basic_opd.php?dthn=<?=urlencode($thidatehn);?>");
+			stkBasic.onload = function(){
+				location.href = "basic_opd.php";
+			}
+		};
+		</script>
+		<?php
+		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+		// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
+		// $time = "6";
 	}else{
-		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
-		$time = "3";
+		?>
+		<script type="text/javascript">
+		window.onload = function(){
+			var stkBasic = window.open("insert_basic_opd.php?dthn=<?=urlencode($thidatehn);?>");
+		};
+		</script>
+		<?php 
+		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+		// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
+		// $time = "3";
 	}
+	?>
+	<p>
+		<a href="basic_opd.php" style="font-size:14px; color:#FF0000;">&lt;&lt;กลับไปหน้าซักประวัติ</a>
+	</p>
+	<?php
 
 	if($plus == ""){
-		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
+		// echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
 	}
 	exit();
 }

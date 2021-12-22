@@ -86,15 +86,33 @@ if($drugreact == 0){
 <script language="javascript">
 window.onload = function(){
 	window.print();
-	window.close();
-}
+
+    setTimeout(function () { 
+        window.close();
+
+		<?php 
+		// หน้า reprint (rp_basic_opd.php) จะส่ง $_GET reprint=yes ไม่ต้องให้ redirect ทำงาน
+		// ถ้ามาจากหน้าบันทึกซักประวัติ จะสั่งให้หน้า parent (basic_opd.php) redirect กลับไปที่ basic_opd.php ให้กรอก HN คนต่อไป
+		if(empty($_GET['reprint'] == 'yes'))
+		{
+			?>
+			// force parent redirect to basic_opd.php
+			window.opener.location.href = "basic_opd.php";
+			<?php
+		}
+		?>
+		
+    }, 1000);
+
+};
+
 </script>
 <style>
 body{
 	margin: 0;
 	padding: 0;
 }
-table td, .display-sticker{
+table td, .display-sticker>div{
 	font-family: "Angsana New","TH SarabunPSK";
 	line-height: 18.897637795px;
 	font-size: 14pt;
@@ -273,45 +291,100 @@ if(empty($item['esr_not']))
 	</tr>
 </table>
 
+<?php 
+if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
+{
+?>
 <div style="page-break-after: always;"></div>
 <div class="display-sticker">
 	<div><b>Nursingh DX</b></div>
-	<div>
-		- <?=$item['nurse_dx1'];?> <span class="underline_notfix"><?=$item['nurse_dx1_txt'];?></span>
-	</div>
-	<div>
-		- <?=$item['nurse_dx2'];?> <span class="underline_notfix"><?=$item['nurse_dx2_txt'];?></span>
-	</div>
-	<div>
-		- <?=$item['nurse_dx3'];?> <span class="underline_notfix"><?=$item['nurse_dx3_txt'];?></span>
-	</div>
-	<div>
-		- <?=$item['nurse_dx4'];?>
-	</div>
-	<div>
-		- <?=$item['nurse_dx5'];?>
-	</div>
+	<?php 
+	if(!empty($item['nurse_dx1'])){
+		?><div>- <?=$item['nurse_dx1'];?> <span class="underline_notfix"><?=$item['nurse_dx1_txt'];?></span></div><?php
+	}
+	if(!empty($item['nurse_dx2'])){
+		?><div>- <?=$item['nurse_dx2'];?> <span class="underline_notfix"><?=$item['nurse_dx2_txt'];?></span></div><?php
+	}
+	if(!empty($item['nurse_dx3'])){
+		?><div>- <?=$item['nurse_dx3'];?> <span class="underline_notfix"><?=$item['nurse_dx3_txt'];?></span></div><?php
+	}
+	if(!empty($item['nurse_dx4'])){
+		?><div>- <?=$item['nurse_dx4'];?></div><?php
+	}
+	if(!empty($item['nurse_dx5'])){
+		?><div>- <?=$item['nurse_dx5'];?></div><?php
+	}
+	?>
 </div>
+<?php 
+}
 
+if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+{
+?>
 <div style="page-break-after: always;"></div>
 <div class="display-sticker">
 	<div><b>Implementation</b></div>
-	<div>
-		- <?=$item['imp1'];?>
-	</div>
-	<div>
-		- <?=$item['imp2'];?> <span class="underline_notfix"><?=$item['imp2_txt'];?></span>
-	</div>
-	<div>
-		- <?=$item['imp3'];?>
-	</div>
-	<div>
-		- <?=$item['imp4'];?>
-	</div>
-	<div>
-		- <?=$item['imp5'];?>
-	</div>
-	<div>
-		- <?=$item['imp6'];?> <span class="underline_notfix"><?=$item['imp6_txt'];?></span>
-	</div>
+	<?php 
+	if(!empty($item['imp1'])){
+		?><div>- <?=$item['imp1'];?></div><?php
+	}
+	if(!empty($item['imp2'])){
+		?><div>- <?=$item['imp2'];?> <span class="underline_notfix"><?=$item['imp2_txt'];?></span></div><?php
+	}
+	if(!empty($item['imp3'])){
+		?><div>- <?=$item['imp3'];?></div><?php
+	}
+	if(!empty($item['imp5'])){
+		?><div>- <?=$item['imp5'];?></div><?php
+	}
+	if(!empty($item['imp6'])){
+		?><div>- <?=$item['imp6'];?> <span class="underline_notfix"><?=$item['imp6_txt'];?></span></div><?php
+	}
+	?>
 </div>
+<?php 
+}
+
+if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+{
+	?>
+	<div style="page-break-after: always;"></div>
+	<div class="display-sticker">
+		<div><b>Evaluation</b></div>
+		<?php 
+		if(!empty($item['eva1'])){
+			?><div>- <?=$item['eva1'];?></div><?php
+		}
+		if(!empty($item['eva2'])){
+			?><div>- <?=$item['eva2'];?></div><?php
+		}
+		if(!empty($item['eva3'])){
+			?><div>- <?=$item['eva3'];?></div><?php
+		}
+		if(!empty($item['eva4'])){
+			?><div>- <?=$item['eva4'];?></div><?php
+		}
+		if(!empty($item['eva5'])){
+			?><div>- <?=$item['eva5'];?></div><?php
+		}
+		if(!empty($item['eva6'])){
+			?><div>- <?=$item['eva6'];?></div><?php
+		}
+		if(!empty($item['eva7'])){
+			?><div>- <?=$item['eva7'];?></div><?php
+		}
+		if(!empty($item['eva8'])){
+			?><div>- <?=$item['eva8'];?></div><?php
+		}
+		if(!empty($item['eva9'])){
+			?><div>- <?=$item['eva9'];?></div><?php
+		}
+		if(!empty($item['eva10'])){
+			?><div>- <?=$item['eva10'];?> <span class="underline_notfix"><?=$item['eva10_txt'];?></span></div><?php
+		}
+		?>
+	</div>
+	<?php
+}
+?>

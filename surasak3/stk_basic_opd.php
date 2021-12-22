@@ -2,10 +2,96 @@
 // README! 
 // พิมพ์สติกเกอร์แบบ PDF สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล และหน้าของ OPD แบบพิมพ์ย้อนหลัง
 // require("fpdf_thai/fpdf_thai.php");
-include 'fpdf_thai/shspdf.php';
+require_once 'fpdf_thai/shspdf.php';
 include("connect.php");
 
-class PDF extends FPDF_Thai{}
+class PDF_JavaScript2 extends FPDF_Thai {
+
+	var $javascript;
+	var $n_js;
+
+	function IncludeJS($script) {
+		$this->javascript=$script;
+	}
+
+	function _putjavascript() {
+		$this->_newobj();
+		$this->n_js=$this->n;
+		$this->_out('<<');
+		$this->_out('/Names [(EmbeddedJS) '.($this->n+1).' 0 R]');
+		$this->_out('>>');
+		$this->_out('endobj');
+		$this->_newobj();
+		$this->_out('<<');
+		$this->_out('/S /JavaScript');
+		$this->_out('/JS '.$this->_textstring($this->javascript));
+		$this->_out('>>');
+		$this->_out('endobj');
+	}
+
+	function _putresources() {
+		parent::_putresources();
+		if (!empty($this->javascript)) {
+			$this->_putjavascript();
+		}
+	}
+
+	function _putcatalog() {
+		parent::_putcatalog();
+		if (!empty($this->javascript)) {
+			$this->_out('/Names <</JavaScript '.($this->n_js).' 0 R>>');
+		}
+	}
+}
+
+class PDF_AutoPrint2 extends PDF_JavaScript2{
+	function AutoPrint($dialog=false){
+		//Open the print dialog or start printing immediately on the standard printer
+		$param=($dialog ? 'true' : 'false');
+		$script="print($param);";
+		$this->IncludeJS($script);
+	}
+
+	function AutoPrintToPrinter($server, $printer, $dialog=false){
+		//Print on a shared printer (requires at least Acrobat 6)
+		$script = "var pp = getPrintParams();";
+		if($dialog){
+			$script .= "pp.interactive = pp.constants.interactionLevel.full;";
+		}else{
+			$script .= "pp.interactive = pp.constants.interactionLevel.automatic;";
+		}
+		$script .= "pp.printerName = '\\\\\\\\".$server."\\\\".$printer."';";
+		$script .= "print(pp);";
+		$this->IncludeJS($script);
+	}
+
+	function _getfontpath(){
+		if(!defined('FPDF_FONTPATH')){
+			define('FPDF_FONTPATH',dirname(__FILE__).'/font/');
+		}
+		return defined('FPDF_FONTPATH') ? FPDF_FONTPATH : '';
+	}
+
+	function SetThaiFont() {
+		$this->_getfontpath();
+		$this->AddFont('AngsanaNew','','angsa.php');
+		$this->AddFont('THSarabun','','THSarabun.php');
+		$this->AddFont('THSarabun','B','THSarabun Bold.php');
+	}
+	
+	function conv($string) {
+		return iconv('UTF-8', 'TIS-620', $string);
+	}
+
+	function LoadData($file){
+		//Read file lines
+		$lines = file($file);
+		$data = array();
+		foreach($lines as $line)
+			$data[] = explode(';',chop($line));
+		return $data;
+	}
+}
 
 function calcage($birth){
 
@@ -95,7 +181,7 @@ list($dbirth) = Mysql_fetch_row($result111);
 $cAge = calcage($dbirth);
 
 
-$pdf = new SHSPdf('L', 'mm', array( 85, 53));
+$pdf = new PDF_AutoPrint2('L', 'mm', array( 85, 53));
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
 $pdf->SetFont('THSarabun','',14); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 $pdf->SetAutoPageBreak(true, 2);
@@ -168,13 +254,21 @@ if ( !empty($ht_amount) OR !empty($dm_amount) ) {
 	}
 
 	if ( !empty($dm_amount) ) {
-		$htdm .= ' DM: เป็นมาแล้ว '.$dm_amount.'ปี';
+		if(!empty($ht_amount))
+		{
+			$htdm .= ' ';
+		}
+		$htdm .= 'DM: เป็นมาแล้ว '.$dm_amount.'ปี';
 	}
 
 	$full_text .= $htdm." \n";
 }
 
-$full_text .= "อาการ: ".trim(htmlspecialchars_decode($organ, ENT_QUOTES))." \n";
+if(!empty($organ))
+{
+	$full_text .= "อาการ: ".trim(htmlspecialchars_decode($organ, ENT_QUOTES))." \n";
+}
+
 
 if ( !empty($hpi) ) { 
 	$full_text .= "HPI: ".$hpi." \n";
