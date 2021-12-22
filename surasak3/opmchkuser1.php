@@ -44,6 +44,8 @@
 	$credit6   =array_sum($aCredit_6pd);
 	$credit7   =array_sum($aCredit_7pd);
 	$credit8   =array_sum($aCredit_8pd);
+	$credit9   =array_sum($aCredit_9pd);
+	echo "==>".$aCredit_9pd;
 /* 
 เภสัชกรรม
 ค่ายาในบัญชียาหลักแห่งชาติ
@@ -143,6 +145,7 @@ print "</table>";
 print "<BR><table style='font-family: Angsana New;' border='0' cellpadding='0' cellspacing='0' width='60%'>";
 print "<tr><td colspan='2' align='center' font size='4'><b>สรุปข้อมูลการรับชำระเงิน</b></font></td></tr>";
 print "<tr><td width='5%'>&nbsp;</td><td width='50%'>เงินสด</td><td width='5%'>$credit1</td></tr>";
+print "<tr><td width='5%'>&nbsp;</td><td width='50%'>เงินโอน</td><td width='5%'>$credit9</td></tr>";
 print "<tr><td width='5%'>&nbsp;</td><td width='50%'>กรุงเทพ</td><td width='5%'>$credit2</td></tr>";
 print "<tr><td width='5%'>&nbsp;</td><td width='50%'>ทหารไทย</td><td width='5%'>$credit3</td></tr>";
 print "<tr><td width='5%'>&nbsp;</td><td width='50%'>จ่ายตรง</td><td width='5%'>$credit4</td></tr>";

@@ -64,6 +64,7 @@ session_unregister("aCredit_d");
 	session_unregister("aCredit_6pd");
 	session_unregister("aCredit_7pd");
 	session_unregister("aCredit_8pd");
+	session_unregister("aCredit_9pd");
 
 
 
@@ -131,6 +132,8 @@ session_unregister("aCredit_d");
 	 $aCredit_7pd =array("credit_7pd");
 	 $aCredit_8 =array("credit_8");
 	 $aCredit_8pd =array("credit_8pd");
+	 $aCredit_9 =array("credit_9");
+	 $aCredit_9pd =array("credit_9pd");	 
 	
 
     session_register("x");
@@ -197,6 +200,8 @@ session_register("aCredit_7");
 session_register("aCredit_7pd");
 session_register("aCredit_8");
 session_register("aCredit_8pd");
+session_register("aCredit_9");
+session_register("aCredit_9pd");
 
 
 

@@ -139,10 +139,13 @@ if ($row->credit=="เงินเชื่อ"){
 if ($row->credit=="อื่นๆ"){
             array_push($aCredit_8,$row->price);  
             array_push($aCredit_8pd,$row->paid);
-
-
-
             } 
+if ($row->credit=="เงินโอน"){
+            array_push($aCredit_9,$row->price);  
+            array_push($aCredit_9pd,$row->paid);
+			
+  } 			
+			
 $x++;
        }
  include("unconnect.inc");
