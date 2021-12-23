@@ -237,7 +237,7 @@ if (empty($sAn)){
 */
 //เข้าบัญชีผู้ป่วยนอก
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "จ่ายตรง")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เงินโอน")){
 
 if($_POST["credit"] != "จ่ายตรง"){
 echo "
@@ -374,11 +374,20 @@ $cbaht=baht($xpaid);
 	print "</tr>";
 		print "<tr>";
 //	print "<td width='100%'><font face='Angsana New' size='4'></td>";
-echo "<td width='45%'><font face='Angsana New'  size ='3'><b>โรค:</b></> $sDiag ";
+echo "<td width='45%'><font face='Angsana New'  size ='3'><b>โรค:</b></>";
+
 if(count($_SESSION['tDiag'])==1){
-	echo $_SESSION['tDiag'][0];
-}
-elseif(count($_SESSION['tDiag'])>1){
+			$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+			//echo $chksql;
+			$chkquery=mysql_query($chksql);
+			$chknum=mysql_num_rows($chkquery);
+		
+			if($chknum > 0){
+				echo "เชื้อราในสมอง";
+			}else{
+				echo $_SESSION['tDiag'][0];
+			}
+}elseif(count($_SESSION['tDiag'])>1){
 	/*if(in_array("ตรวจวิเคราะห์เพื่อการรักษา",$_SESSION['tDiag'])){
 		echo "<td width='45%'><font face='Angsana New'  size ='3'>โรค: ตรวจวิเคราะห์เพื่อการรักษา</font></td>";
 	}
@@ -389,9 +398,20 @@ elseif(count($_SESSION['tDiag'])>1){
 			$str.=$_SESSION['tDiag'][$p];
 		}
 		//$str.="</font></td>";
-		echo $str;
+					$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+					//echo $chksql;
+					$chkquery=mysql_query($chksql);
+					$chknum=mysql_num_rows($chkquery);
+		
+					if($chknum > 0){
+						echo "เชื้อราในสมอง";
+					}else{
+						echo $str;
+					}
 	//}
-}echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
+}
+
+echo '&nbsp;&nbsp;คิวรับยาที่ ' ; echo $kew;
 echo "</font></td>";
 	print "</tr>";
 	print "</table>";
