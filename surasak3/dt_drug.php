@@ -305,6 +305,17 @@ for($i=0;$i<$count;$i++){
 			//echo "$i==>".$sql."<br>";
 			$result = Mysql_Query($sql);
 			list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);		
+			
+			//echo $_SESSION["list_drug_part"][$i]."<br>";
+			
+			if(isset($_SESSION["list_drug_part"][$i])){
+				if($_SESSION["list_drug_part"][$i]==$part){
+					$part=$part;
+				}else{
+					$part=$_SESSION["list_drug_part"][$i];
+					//echo "==>".$sql."<br>";
+				}
+			}
 				
 				if($_SESSION["list_drugamount"][$i] > 0){
 					if($part == "DPY"){
@@ -1166,7 +1177,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 }
 
 
-// ********************************* ดึกรายการยาเดิมออกมาแสดงเพื่อทำการแก้ไข *****************************************
+// ********************************* ดึงรายการยาเดิมออกมาแสดงเพื่อทำการแก้ไข *****************************************
 if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	
 	$_SESSION["list_drugcode"] = array() ;
@@ -1183,6 +1194,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$_SESSION["list_drug_inject_etc"] = array() ;
 	$_SESSION["list_drug_reason"] = array() ;
 	$_SESSION["list_drug_reason2"] = array() ;
+	$_SESSION["list_drug_part"] = array() ;
 
 	$sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1";
 	$result = Mysql_Query($sql);
@@ -1193,7 +1205,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		$_SESSION["cancle_row_id"] = $id;
 
 	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_amount2`,`drug_inject_unit2`,`drug_inject_time`,
-	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`   
+	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`,`part`   
 	FROM `ddrugrx` 
 	WHERE `idno` = '".$id."' 
 	AND `hn` = '".$_SESSION["hn_now"]."' 
@@ -1208,27 +1220,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$result = mysql_query($sql) or die( mysql_error() );
 	while($arr = mysql_fetch_assoc($result)){
 		
-		if($arr["drugcode"] === '4MET25'){  //กรณีเป็น balm
-		
-			$sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit,drug_inject_amount2, drug_inject_unit2, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' GROUP BY amount  order by row_id desc limit 1";
-			$res = mysql_query($sql2) or die( mysql_error() ) ;
-			$arr2 = mysql_fetch_assoc($res);
-			
-			array_push($_SESSION["list_drugcode"],$arr2["drugcode"]);
-			array_push($_SESSION["list_drugamount"],$arr2["amount"]);
-			array_push($_SESSION["list_drugslip"],$arr2["slcode"]);
-			array_push($_SESSION["list_drug_inject_amount"],$arr2["drug_inject_amount"]);
-			array_push($_SESSION["list_drug_inject_unit"],$arr2["drug_inject_unit"]);
-			array_push($_SESSION["list_drug_inject_amount2"],$arr2["drug_inject_amount2"]);
-			array_push($_SESSION["list_drug_inject_unit2"],$arr2["drug_inject_unit2"]);
-			array_push($_SESSION["list_drug_inject_time"],$arr2["drug_inject_time"]);
-			array_push($_SESSION["list_drug_inject_slip"],$arr2["drug_inject_slip"]);
-			array_push($_SESSION["list_drug_inject_type"],$arr2["drug_inject_type"]);
-			array_push($_SESSION["list_drug_inject_etc"],$arr2["drug_inject_etc"]);
-			array_push($_SESSION["list_drug_reason"],$arr2["reason"]);
-			array_push($_SESSION["list_drug_reason2"],$arr2["reason2"]);
-			
-		}else{
+
 			
 			array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
 			array_push($_SESSION["list_drugamount"],$arr["amount"]);
@@ -1243,7 +1235,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 			array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
 			array_push($_SESSION["list_drug_reason"],$arr["reason"]);
 			array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
-		}  //close if
+			array_push($_SESSION["list_drug_part"],$arr["part"]);
+
 		
 	}  //close while
 
@@ -1294,6 +1287,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 			$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
 			
 			$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
+			$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
 		
 	}
 
@@ -1310,6 +1304,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	unset($_SESSION["list_drug_inject_etc"][$count-1]);
 	unset($_SESSION["list_drug_reason"][$count-1]);
 	unset($_SESSION["list_drug_reason2"][$count-1]);
+	unset($_SESSION["list_drug_part"][$count-1]);
 	exit();
 }
 
@@ -1388,7 +1383,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				
 				if($arr["part"] == "DDY"){
 					$style = " style='color:#0000FF;' ";
-				}elseif($arr["part"] == "DDN"||$arr["part"] == "DSN"||$arr["part"] == "DPN"){
+				}elseif($arr["part"] == "DDN" || $arr["part"] == "DSN" || $arr["part"] == "DPN"){
 					$style = " style='color:#FF0000;' ";
 				}else{
 					$style = "";
