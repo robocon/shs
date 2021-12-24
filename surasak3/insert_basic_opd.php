@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // README! 
 // พิมพ์สติกเกอร์แบบ HTML สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล
 session_start();
@@ -83,17 +87,15 @@ if($drugreact == 0){
 
 ?>
 
-<script language="javascript">
+<script type="text/javascript">
 window.onload = function(){
 	window.print();
-
     setTimeout(function () { 
         window.close();
-
 		<?php 
 		// หน้า reprint (rp_basic_opd.php) จะส่ง $_GET reprint=yes ไม่ต้องให้ redirect ทำงาน
 		// ถ้ามาจากหน้าบันทึกซักประวัติ จะสั่งให้หน้า parent (basic_opd.php) redirect กลับไปที่ basic_opd.php ให้กรอก HN คนต่อไป
-		if(empty($_GET['reprint'] == 'yes'))
+		if(!empty($_GET['reprint']) && $_GET['reprint'] != 'yes')
 		{
 			?>
 			// force parent redirect to basic_opd.php
@@ -101,11 +103,8 @@ window.onload = function(){
 			<?php
 		}
 		?>
-		
     }, 1000);
-
-};
-
+}
 </script>
 <style>
 body{
@@ -113,7 +112,7 @@ body{
 	padding: 0;
 }
 table td, .display-sticker>div{
-	font-family: "Angsana New","TH SarabunPSK";
+	font-family: "TH SarabunPSK","TH Sarabun New";
 	line-height: 18.897637795px;
 	font-size: 14pt;
 }

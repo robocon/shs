@@ -454,6 +454,12 @@ else
 		// $time = "3";
 	}
 	?>
+	<script type="text/javascript">
+		setTimeout(function () { 
+			// force parent redirect to basic_opd.php
+			window.location.href = "basic_opd.php";
+		}, 1500);
+	</script>
 	<p>
 		<a href="basic_opd.php" style="font-size:14px; color:#FF0000;">&lt;&lt;กลับไปหน้าซักประวัติ</a>
 	</p>
