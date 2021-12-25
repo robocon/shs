@@ -120,7 +120,7 @@ elseif ($action=='save')
     $date = date('Y-m-d H:i:s');
     $ptname = trim($item['ptname']);
     $toborow = trim($opday['toborow']);
-    $countdown_c19 = date('Y-m-d H:i:s', strtotime("+30 minutes"));
+    $countdown_c19 = date('Y-m-d H:i:s', strtotime("+15 minutes"));
 
     $msg = "บันทึกข้อมูลเรียบร้อย";
     $form_type = $_POST['form_type'];
@@ -295,14 +295,15 @@ elseif ($load_page=='load_edit_form')
             <div class="w3-row-padding">
                 <?php 
                 // DATA FROM : https://cvp1.moph.go.th/api/LookupTable?table_name=vaccine_manufacturer
-                $manufacturer_lists = array(
-                    '1' => 'AstraZeneca', 
+                $manufacturer_lists = array( 
                     '7' => 'Sinovac Life Sciences',
+                    '1' => 'AstraZeneca', 
+                    '8' => 'Sinopharm',
                     '6' => 'Pfizer, BioNTech',
-                    '8' => 'Sinopharm'
+                    '5' => 'Moderna'
                 );
                 foreach ($manufacturer_lists as $key => $fac) { 
-                    $checked = ('Sinovac Life Sciences'==$fac) ? 'checked="checked"' : '' ;
+                    $checked = ('Pfizer, BioNTech'==$fac) ? 'checked="checked"' : '' ;
                     ?>
                     <div class="w3-third">
                         <label><input class="w3-radio" type="radio" name="vaccine_name" value="<?=$fac;?>" <?=$checked;?> > <?=$fac;?></label>
@@ -336,9 +337,9 @@ elseif ($load_page=='load_edit_form')
             <div class="w3-row-padding">
 
                 <?php 
-                $plan_count_list = array(1,2,3);
+                $plan_count_list = array(1,2,3,4);
                 foreach ($plan_count_list as $key => $plan) {
-                    $plan_checked = (1==$plan) ? 'checked="checked"' : '';
+                    $plan_checked = (3==$plan) ? 'checked="checked"' : '';
                     ?>
                     <div class="w3-third">
                         <label><input class="w3-radio" type="radio" name="vaccine_plan_no" value="<?=$plan;?>" <?=$plan_checked;?> > เข็มที่ <?=$plan;?></label>
@@ -349,7 +350,7 @@ elseif ($load_page=='load_edit_form')
             </div>
 
             <p>
-                <button class="w3-btn w3-teal" type="submit">บันทึกข้อมูล</button>
+                <button class="w3-btn w3-teal w3-round" type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="form_type" value="save">
             </p>
