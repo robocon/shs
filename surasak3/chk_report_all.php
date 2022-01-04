@@ -60,6 +60,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
+    <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
     <th colspan="33" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
@@ -122,6 +123,7 @@ while($result = mysql_fetch_array($out_result_sql)){
     $query2 = mysql_query($sql2);
     $result2 = mysql_fetch_array($query2);
 
+    $prawat = $result2['prawat'];
     if(empty($age)){
         $age=$result2["age"];
     }
@@ -179,6 +181,7 @@ while($result = mysql_fetch_array($out_result_sql)){
     <td align="center"><?=$result2["weight"];?></td>
     <td align="center"><?=$result2["height"];?></td>
     <td align="center"><?=$bp;?></td>
+    <td><?=$prawat;?></td>
     <td>&nbsp;</td>
     <td align="left">
         <?php 
