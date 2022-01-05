@@ -183,7 +183,7 @@ if (empty($credit) ){
 			$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "จ่ายตรง")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เงินโอน")){
 
 if($_POST["credit"] != "จ่ายตรง"){
 	$name_f = "billno";
