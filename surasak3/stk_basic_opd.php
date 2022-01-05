@@ -2,6 +2,7 @@
 // README! 
 // พิมพ์สติกเกอร์แบบ PDF สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล และหน้าของ OPD แบบพิมพ์ย้อนหลัง
 // require("fpdf_thai/fpdf_thai.php");
+session_start();
 require_once 'fpdf_thai/shspdf.php';
 include("connect.php");
 
@@ -274,9 +275,64 @@ if ( !empty($hpi) ) {
 	$full_text .= "HPI: ".$hpi." \n";
 }
 
-
 $pdf->SetXY(2, 2);
 $pdf->MultiCell(0, 5, $full_text);
+
+if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
+{
+	$dthn = $_GET['dthn'];
+	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
+	$q = mysql_query($sql);
+	$item = mysql_fetch_assoc($q);
+
+	$pdf->AddPage();
+	$pdf->SetXY(2, 2);
+	$esr_not = empty($item['esr_not']) ? '            ' : ' '.$item['esr_not'].' ' ;
+	$esl_not = empty($item['esl_not']) ? '            ' : ' '.$item['esl_not'].' ' ;
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, "NOT RE ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esr_not);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, " LE ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esl_not);
+	
+	$esr = empty($item['esr']) ? '            ' : ' '.$item['esr'].' ' ;
+	$esr_ph = empty($item['esr_ph']) ? '            ' : ' '.$item['esr_ph'].' ' ;
+	$esr_glass = empty($item['esr_glass']) ? '            ' : ' '.$item['esr_glass'].' ' ;
+	$pdf->SetXY(9, 7);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, "VA RE ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esr);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, " PH ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esr_ph);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, " with glass ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esr_glass);
+
+	$esl = empty($item['esl']) ? '            ' : ' '.$item['esl'].' ' ;
+	$esl_ph = empty($item['esl_ph']) ? '            ' : ' '.$item['esl_ph'].' ' ;
+	$esl_glass = empty($item['esl_glass']) ? '            ' : ' '.$item['esl_glass'].' ' ;
+	$pdf->SetXY(14, 12);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, "LE ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esl);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, " PH ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esl_ph);
+	$pdf->SetFont('THSarabun','',14);
+	$pdf->Write(5, " with glass ");
+	$pdf->SetFont('THSarabun','U',14);
+	$pdf->Write(5, $esl_glass);
+
+}
 
 $pdf->AutoPrint(true);
 $pdf->Output();
