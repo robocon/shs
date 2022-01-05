@@ -211,6 +211,7 @@
 </SCRIPT>
 <table>
  <tr>
+  <th bgcolor=CD853F>รหัส</th>
   <th bgcolor=CD853F>รายการ</th>
   <th bgcolor=CD853F>จำนวน</th>
   <th bgcolor=CD853F>ราคา</th>
@@ -230,7 +231,8 @@
     while (list ($code, $detail,$amount, $price,$yprice,$nprice) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
 
-           "  <td BGCOLOR=F5DEB3>$detail</td>\n".
+           "  <td BGCOLOR=F5DEB3>$code</td>\n".
+		   "  <td BGCOLOR=F5DEB3>$detail</td>\n".
            "  <td BGCOLOR=F5DEB3>$amount</td>\n".
            "  <td BGCOLOR=F5DEB3>$price</td>\n".
            "  <td BGCOLOR=99CCCC>$yprice</td>\n".
