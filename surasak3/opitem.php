@@ -133,7 +133,7 @@
 		var pt = '<?php echo substr($sPtright,0,3);?>';
 		var pt2 = '<?php echo substr($sPtright,3);?>';
 
-			if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15" ) && opt != "เงินสด"){
+			if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15" ) && opt != "เงินสด" && opt != "เงินโอน"){
 				
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
 
