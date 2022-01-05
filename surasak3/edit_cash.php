@@ -86,7 +86,7 @@ include("unconnect.inc");
 
 	function checkformf1(){
 		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false && document.f1.credit[8].checked == false && document.f1.credit[9].checked == false && document.f1.credit[10].checked == false && document.f1.credit[11].checked == false){
+		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false && document.f1.credit[8].checked == false && document.f1.credit[9].checked == false && document.f1.credit[10].checked == false && document.f1.credit[11].checked == false && document.f1.credit[12].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if(document.f1.credit[1].checked == true && document.f1.detail_1.value == ''){
@@ -145,7 +145,7 @@ body,td,th {
 		 	    <input type='radio' name='credit' value='อื่นๆ' onclick="document.getElementById('detail1').innerHTML='ข้อมูลเพิ่มเติม'; detailhead1.style.display='';document.f1.detail_1.focus();" /></td>
 		 	<td>อื่นๆ</td>
 		 	<td align='right'>&nbsp;&nbsp;
-                <input type='radio' name='credit' value='HD' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+                <input type='radio' name='credit' value='HD' onclick="document.getElementById('detail1').innerHTML='ข้อมูลเพิ่มเติม'; detailhead1.style.display='';document.f1.detail_1.value='';" /></td>
 		 	<td>HD</td>           
 		 </TR>
 		 <TR>
@@ -155,8 +155,10 @@ body,td,th {
 		   <td align='right'>&nbsp;&nbsp;
 		       <input type='radio' name='credit' value='กท44' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
 		   <td>กท.44</td>
-		   <TD align='right'>&nbsp;</TD>
-		 	<TD>&nbsp;</TD>                    
+		   <TD align='right'>&nbsp;&nbsp;
+		   	<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอน' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';">
+		   </TD>
+		 	<TD>เงินโอน</TD>                    
 		    <TD>&nbsp;</TD>
 		    <TD>&nbsp;</TD>
 		 </TR>
