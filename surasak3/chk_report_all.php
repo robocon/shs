@@ -1,9 +1,5 @@
 <?php
 include 'bootstrap.php';
-/**
- * ลองแก้ 1
- * ลองแก้ 2
- */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -750,7 +746,6 @@ INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ABOC' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
-//echo $sql1;
 $query17=mysql_query($sql17);
 list($aboc,$flag)=mysql_fetch_array($query17);
 if($flag=="N"){
@@ -761,23 +756,16 @@ if($flag=="N"){
 	echo "&nbsp;";
 }
 ?></td>
-    <td><? 
-	// $sql3="select * from patdata where hn='$pt_hn' and code='51410' and date like '$dateekg%' order by row_id desc";
-	//echo $sql3;
-	// $query3=mysql_query($sql3);
-	// $num3=mysql_num_rows($query3);
-	// if(!empty($num3)){  //ถ้ามีการคิดค่าใช้จ่าย
-	// 	if($result["HN"]=="56-9685"){ echo $result2["ekg"]; }else{ echo "ปกติ"; }
-	// }else if($result["HN"]=="60-5189"){  //ตรวจแต่ไม่ได้คิดค่าใช้จ่าย
-	// 	echo "ปกติ";
-	// }
+    <td>
+    <?php 
     if(!empty($result2['ekg']))
     {
         echo $result2['ekg'];
     }
-	?></td>
+	?>
+    </td>
     <td>
-	<? 
+	<?php
 	if($month=="8"  || $month=="9"){
 		echo "&nbsp;";
 	}else{
