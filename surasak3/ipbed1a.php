@@ -34,9 +34,9 @@ $wardExTest = preg_match('/45.+/', $cbedcode);
 if( $wardExTest > 0 ){
 	//
 	// เช็กว่าเป็นชั้น3 ถ้าไม่ใช่เป็นชั้น2
-	$wardR3Test = preg_match('/R3\d+|B\d+/', $cBed1);
-	$wardBxTest = preg_match('/B[0-9]+/', $cBed1);
-	$exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? 'ชั้น3' : 'ชั้น2' ;
+	$wardBxTest = preg_match('/45(F[1-3]|M[1-6])/', $cbedcode); // B1-B9
+	$wardR3Test = preg_match('/45R3[0-9]{2}/', $cbedcode); // R301-R310
+	$exName = ($wardBxTest > 0 || $wardR3Test > 0) ? 'ชั้น3' : 'ชั้น2' ;
 
 	// เฉพาะ ward พิเศษที่ตัวหนังสือ 11
 	$text_size = 13;
