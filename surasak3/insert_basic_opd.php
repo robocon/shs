@@ -272,33 +272,38 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 	}
 
 	?>
-	<div style="page-break-after: always;"></div>
-	<table>
-		<tr>
-			<td>NOT</td>
-			<td>RE <span class="underline"><?=$item['esr_not'];?></span></td>
-			<td>LE <span class="underline"><?=$item['esl_not'];?></span></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>VA</td>
-			<td>RE <span class="underline"><?=$item['esr'];?></span></td>
-			<td>PH <span class="underline"><?=$item['esr_ph'];?></span></td>
-			<td>with glass <span class="underline"><?=$item['esr_glass'];?></span></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>LE <span class="underline"><?=$item['esl'];?></span></td>
-			<td>PH <span class="underline"><?=$item['esl_ph'];?></span></td>
-			<td>with glass <span class="underline"><?=$item['esl_glass'];?></span></td>
-		</tr>
-	</table>
+	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<div class="display-sticker">
+		<div><b>EYE Screening</b></div>
+		<table>
+			<tr>
+				<td>NOT</td>
+				<td>RE <span class="underline"><?=$item['esr_not'];?></span></td>
+				<td>LE <span class="underline"><?=$item['esl_not'];?></span></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>VA</td>
+				<td>RE <span class="underline"><?=$item['esr'];?></span></td>
+				<td>PH <span class="underline"><?=$item['esr_ph'];?></span></td>
+				<td>with glass <span class="underline"><?=$item['esr_glass'];?></span></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>LE <span class="underline"><?=$item['esl'];?></span></td>
+				<td>PH <span class="underline"><?=$item['esl_ph'];?></span></td>
+				<td>with glass <span class="underline"><?=$item['esl_glass'];?></span></td>
+			</tr>
+		</table>
+	</div>
 
 	<?php 
 	if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
 	{
 	?>
-	<div style="page-break-after: always;"></div>
+	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="line-height: 18.897637795px;">&nbsp;</div>
 	<div class="display-sticker">
 		<div><b>Nursingh DX</b></div>
 		<?php 
@@ -325,7 +330,8 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
 	{
 	?>
-	<div style="page-break-after: always;"></div>
+	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="line-height: 18.897637795px;">&nbsp;</div>
 	<div class="display-sticker">
 		<div><b>Implementation</b></div>
 		<?php 
@@ -352,7 +358,8 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
 	{
 		?>
-		<div style="page-break-after: always;"></div>
+		<!-- <div style="page-break-after: always;"></div> -->
+		<div style="line-height: 18.897637795px;">&nbsp;</div>
 		<div class="display-sticker">
 			<div><b>Evaluation</b></div>
 			<?php 
