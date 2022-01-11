@@ -144,11 +144,24 @@ include("connect.inc");
 $query = "SELECT row,depart,head,datetime,programmer,date,p_edit,dateend 
 FROM com_support 
 WHERE status ='$num' 
-ORDER BY dateend desc, programmer asc";
+ORDER BY dateend desc ";
+$result_all = mysql_query($query) or die("Query failed111");
+$all_rows = mysql_num_rows($result_all);
+
+$limit = '50';
+
+$page = (empty($_GET['page'])) ? '0' : $_GET['page'] - 1 ;
+
+$page_start = $page * $limit;
+
+$total_pages = $all_rows / $limit;
+$total_pages = (int) ceil($total_pages);
+
+$query .= " LIMIT $page_start, $limit";
 $result = mysql_query($query) or die("Query failed111");
 
    if($num3=mysql_num_rows($result)){
-	    print"<div align='center' class='forntsarabun'><strong>งานที่ดำเนินการเสร็จแล้ว จำนวน $num3 รายการ</strong></div>";
+	    print"<div align='center' class='forntsarabun' id='work_done'><strong>งานที่ดำเนินการเสร็จแล้ว จำนวน $num3 รายการ</strong></div>";
         print"<table class='forntsarabun'  align='center' width='98%'>";
         print" <tr>";
         print"  <th bgcolor=#339966>ลำดับแจ้ง</th>";
@@ -174,6 +187,42 @@ $result = mysql_query($query) or die("Query failed111");
                 " </tr>\n");
   				}
         print "</table>";
-			}
+
+        ?>
+        <style>
+            .chk_table{
+                border-collapse: collapse;
+            }
+            .chk_table th{background-color: #ddd6ce;}
+            .chk_table th,
+            .chk_table td{
+                padding: 4px 0;
+                /* border: 1px solid black; */
+                
+            }
+            .chk_table td a {
+                padding: 0 6px;
+                color: #000;
+            }
+        </style>
+        <table class="chk_table">
+            <tr>
+                <td><a href="com_support.php?page=1#work_done">&lt;&lt;</a></td>
+                <td>
+                    <?php 
+                    for ($i=1; $i <= $total_pages; $i++) { 
+                        $bg_style = ($i==$_GET['page']) ? 'style="background-color: #bbb"' : '' ;
+                        ?>
+                        <td><a href="com_support.php?page=<?=$i;?>#work_done" <?=$bg_style;?> ><?=$i;?></a></td>
+                        <?php 
+                    }
+                    ?>
+                </td>
+                <td><a href="com_support.php?page=<?=$total_pages;?>#work_done">&gt;&gt;</a></td>
+            </tr>
+        </table>
+        <?php
+
+        }
  include("unconnect.inc");  
 ?>
