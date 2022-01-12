@@ -7,41 +7,46 @@ if($_GET["action"] == "add"){
 	
 	if($_POST["chkdepart"]=="p"){	  //สั่งจ่ายยา
 	
-	$sdate=substr($_GET["sDate"],0,10);
-	list($y1,$m1,$d1)=explode("-",$sdate);
-	$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
+		$sdate=substr($_GET["sDate"],0,10);
+		list($y1,$m1,$d1)=explode("-",$sdate);
+		$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
 
 		$sql = "Update opday set  diag='".$_POST["diag"]."' where thdatevn = '".$chkdatevn."' limit 1";
-	$result = Mysql_Query($sql);
-	
+		$result = Mysql_Query($sql);
+
 		$sql = "Update phardep set diag = '".$_POST["diag"]."' WHERE row_id = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' limit 1"; 
-	$result = Mysql_Query($sql);
+		$result = Mysql_Query($sql);
 	}
 	
 	if($_POST["chkdepart"]=="y"){  //หัตถการ/การรักษา
-	
-	$sdate=substr($_POST["chkdate"],0,10);
-	list($y1,$m1,$d1)=explode("-",$sdate);
-	$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
-	
-		$sql = "Update opday set  diag='".$_POST["diag"]."' where thdatevn = '".$chkdatevn."' limit 1";
-	$result = Mysql_Query($sql);
 		
+		if (empty($_POST["diag"]) || empty($_POST["hn"]) || empty($_SESSION["sVn"]) || empty($_POST["chkdate"])) {
+			echo "ข้อมูลไม่ครบ กรุณาตรวจสอบข้อมูลอีกครั้ง";
+			exit;
+		}
+
+		$sdate=substr($_POST["chkdate"],0,10);
+		list($y1,$m1,$d1)=explode("-",$sdate);
+		$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
+
+		$sql = "Update opday set  diag='".$_POST["diag"]."' where thdatevn = '".$chkdatevn."' limit 1";
+		$result = Mysql_Query($sql);
+
 		$sql = "Update depart set diag = '".$_POST["diag"]."' WHERE hn = '".$_POST["hn"]."' AND tvn='".$_SESSION["sVn"]."'  AND date like '".$sdate."%'"; 
-			$result = Mysql_Query($sql);
+		$result = Mysql_Query($sql);
+
 	}
 	
-		$sql="insert into log_editdiag set log_date='".date("Y-m-d H:i:s")."',
-															log_officer='".$_SESSION["sOfficer"]."',
-															log_datevn='".$chkdatevn."',
-															log_hn = '".$_POST["hn"]."',
-															log_ptname = '".$_POST["ptname"]."',
-															log_ptright = '".$_POST["ptright"]."',
-															log_olddiag = '".$_POST["olddiag"]."',
-															log_diag = '".$_POST["diag"]."',
-															log_doctor = '".$_POST["doctor"]."'";
-		
-		$result = Mysql_Query($sql);
+	$sql="insert into log_editdiag set log_date='".date("Y-m-d H:i:s")."',
+	log_officer='".$_SESSION["sOfficer"]."',
+	log_datevn='".$chkdatevn."',
+	log_hn = '".$_POST["hn"]."',
+	log_ptname = '".$_POST["ptname"]."',
+	log_ptright = '".$_POST["ptright"]."',
+	log_olddiag = '".$_POST["olddiag"]."',
+	log_diag = '".$_POST["diag"]."',
+	log_doctor = '".$_POST["doctor"]."'";
+	$result = Mysql_Query($sql);
 		
 	
 	if($result){
