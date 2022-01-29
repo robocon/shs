@@ -23,18 +23,19 @@ document.getElementById('aLink').focus();
   <th bgcolor=CD853F>เตียง</th>
   <th bgcolor=CD853F>ใบข้อมูลเจ็บป่วย</th>
   <th bgcolor=CD853F>สถานะ</th>
- 
+  <th bgcolor=CD853F>หมายเลขอนุมัติ</th>
+ <th bgcolor=CD853F>วันที่และเวลา</th>
  </tr>
 
 <?php
 If (!empty($an)){
     include("connect.inc");
     global $hn;
-    $query = "SELECT an,hn,ptname,ptright,date,dcdate,diag,doctor,bedcode,status_log FROM ipcard WHERE an = '$an'";
+    $query = "SELECT an,hn,ptname,ptright,date,dcdate,diag,doctor,bedcode,status_log,opreg,authdt FROM ipcard WHERE an = '$an'";
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($an,$hn,$ptname,$ptright,$date,$dcdate,$diag,$doctor,$bedcode,$status_log) = mysql_fetch_row ($result)) {
+    while (list ($an,$hn,$ptname,$ptright,$date,$dcdate,$diag,$doctor,$bedcode,$status_log,$opreg,$authdt) = mysql_fetch_row ($result)) {
        
 
 	    print "<tr>";
@@ -59,6 +60,36 @@ If (!empty($an)){
 	   }
        
 		echo   "</td>";
+ 	    print	  "  <td align='center' BGCOLOR=F5DEB3>";  
+		 $newptright=substr($ptright,0,3);
+          if($newptright=='R02' || $newptright=='R03'){
+		  	if($opreg==""){
+		  ?>
+        	<a href="opregedit.php?Can=<?=$an;?>">ระบุหมายเลข</a>
+           <? 
+		   }else{
+		   	echo "<a href='opregedit.php?Can=$an&act=edit'>".$opreg."</a>";
+		   }
+	   }else{
+		  print "-";
+	   }
+       
+		echo   "</td>";
+		
+ 	    print	  "  <td align='center' BGCOLOR=F5DEB3>";  
+		 $newptright=substr($ptright,0,3);
+          if($newptright=='R02' || $newptright=='R03'){
+		  	if($authdt=="0000-00-00 00:00:00"){
+			echo "0000-00-00 00:00:00";
+		   }else{
+		   	echo $authdt;
+		   }
+	   }else{
+		  print "-";
+	   }
+       
+		echo   "</td>";		
+
         echo   " </tr>";
 		
 			     /// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
