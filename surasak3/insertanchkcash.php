@@ -28,7 +28,7 @@ $book = array("มาแล้ว", "ยังไม่มา", "ออกด้วยคอมพิวเตอร์", "ไม่มี");
 
 include("connect.inc");
 
-if(isset($_POST["add"]) && trim($_POST["add"]) =="ตกลง"){
+if(isset($_POST["add"]) && trim($_POST["add"]) =="บันทึกข้อมูล"){
 
 $sql = "UPDATE `ipcard` SET 
 `my_ward` = '".$_POST["ward"]."',
@@ -43,7 +43,7 @@ $sql = "UPDATE `ipcard` SET
 `my_office` = '".$_SESSION["sOfficer"]."',
 `ptright` = '".$_POST["ptright"]."'
 WHERE `date` = '".$_GET["Cdate"]."' AND `an` = '".$_GET["Can"]."' AND `hn` = '".$_GET["Chn"]."' LIMIT 1 ;";
-
+//echo $sql;
 $result = mysql_query($sql);
 
 $sql = "update bed set ptright = '".$_POST["ptright"]."' where an = '".$_GET["Can"]."' limit 1";
@@ -277,7 +277,7 @@ return stat;
 </TR>
 <TR>
 	<TD align="center"></TD>
-    <TD align="left"><INPUT TYPE="submit" name="add" value="  บันทึกข้อมูล  ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="reset" value="  ยกเลิก  "> </TD>
+    <TD align="left"><INPUT TYPE="submit" name="add" value="บันทึกข้อมูล">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="reset" value="  ยกเลิก  "> </TD>
 </TR>
 </TABLE>
 </TD>
