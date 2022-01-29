@@ -22,7 +22,7 @@ top.window.outerWidth = screen.availWidth;
 <?php 
 session_start();
 
-$ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45");
+$ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47");
 $room = array("ธรรมดา 300", "พิเศษ 600", "พิเศษ 800", "พิเศษ 1,200");
 $book = array("มาแล้ว", "ยังไม่มา", "ออกด้วยคอมพิวเตอร์", "ไม่มี");
 
@@ -140,32 +140,28 @@ return stat;
 </SCRIPT>
 
 <FORM name="f1" METHOD=POST ACTION="" Onsubmit="return checkForm();">
-<TABLE bgcolor="#FFFFDD" width="500" align="center" border="1" bordercolor="#0046D7" cellpadding="0" cellspacing="0">
+<TABLE bgcolor="#FFFFDD" width="713" align="center" border="1" bordercolor="#0046D7" cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
-<TABLE width="100%">
+<TABLE width="138%">
 <TR class="tb_head">
 	<TD colspan="2" align="center"> บันทึกข้อมูลสถานะผู้ป่วย </TD>
 </TR>
 <TR>
-	<TD width="50%" align="right">HN : </TD>
-	<TD><?php echo $hn;?>
-	</TD>
+	<TD width="34%" align="right">HN : </TD>
+	<TD width="66%"><?php echo $hn;?>	</TD>
 </TR>
 <TR>
 	<TD align="right">AN : </TD>
-	<TD><?php echo $an;?>
-	</TD>
+	<TD><?php echo $an;?>	</TD>
 </TR>
 <TR>
 	<TD align="right">ชื่อ - สกุล : </TD>
-	<TD><?php echo $ptname;?>
-	</TD>
+	<TD><?php echo $ptname;?>	</TD>
 </TR>
 <TR>
 	<TD align="right">หมายเหตุ: </TD>
-	<TD><?php echo $note;?>
-	</TD>
+	<TD><?php echo $note;?>	</TD>
 </TR>
 <TR>
 	<TD align="right">หอผู้ป่วยรับ : </TD>
@@ -180,14 +176,12 @@ return stat;
 				echo ">".$key."</Option>";
 			}			
 			?>
-		</select>
-	</TD>
+		</select>	</TD>
 </TR>
 <TR>
 	<TD align="right">เตียง/ห้อง : </TD>
 	<TD>
-		<input name="room" type="text" size="5" value="<?php echo $bedcode;?>" />
-	</TD>
+		<input name="room" type="text" size="5" value="<?php echo $bedcode;?>" />	</TD>
 </TR>
 <TR>
 	<TD align="right">น้ำหนักตัว (กก.): </TD>
@@ -232,8 +226,7 @@ return stat;
 				//echo "<Option value=\"".$ptright."\" ";			
 				//echo ">".$ptright."</Option>";
 			?>
-		</select>
-	</TD>
+		</select>	</TD>
 </TR>
 <TR>
 	<TD align="right" valign="top">หนังสือรับรองสิทธิ์ : </TD>
@@ -246,12 +239,25 @@ return stat;
 				echo ">".$value."</Option>";
 			}
 		?>
-		</select>
-	</TD>
+		</select>	</TD>
 </TR>
 <TR>
 	<TD align="right"><B>ค่าห้องค่าอาหารไม่เกินวันละ : </B></TD>
-	<TD><input name="food_money" type="text" size="6" Onkeypress="check_number();" value="<?php echo $my_food;?>"/>&nbsp;บาท <B>(ตามสิทธิ์การรักษา)</B></TD>
+	<TD><input name="food_money" type="text" size="10" Onkeypress="check_number();" value="<?php echo $my_food;?>"/>&nbsp;บาท <B>(ตามสิทธิ์การรักษา)</B></TD>
+</TR>
+<TR>
+  <TD align="right">&nbsp;</TD>
+  <TD><div style="font-size:14px;"><div><strong>1. ผู้ป่วย HI เบิกค่าห้องได้ 1000 บาท (รวมอาหาร 3 มื้อ) ไม่เกิน 10 วัน</strong></div>
+  <div><strong>2. ผู้ป่วย Cohort Ward</strong></div>
+  <div style="margin-left:5px;"><strong>สิทธิประกันสังคม</strong></div>
+  <div style="margin-left:10px;">- อาการเล็กน้อย (สีเขียว) เบิกค่าห้องได้ 1500 บาท </div>
+  <div style="margin-left:10px;">- อาการปานกลาง (สีเหลือง) เบิกค่าห้องได้ 3000 บาท </div>
+  <div style="margin-left:10px;">- อาการรุนแรง (สีแดง) เบิกค่าห้องได้ 7500 บาท </div>
+  <div style="margin-left:5px;"><strong>สิทธิอื่นๆ</strong></div>
+  <div style="margin-left:10px;">- อาการเล็กน้อย (สีเขียว) เบิกค่าห้องได้ 1000 บาท </div>
+  <div style="margin-left:10px;">- อาการปานกลาง (สีเหลือง) เบิกค่าห้องได้ 3000 บาท </div>
+  <div style="margin-left:10px;">- อาการรุนแรง (สีแดง) เบิกค่าห้องได้ 7500 บาท </div>
+  <div><strong>*** ข้อมูลอ้างอิงจากพี่อึ่ง เมื่อ 27/01/65 ***</strong></div></div>  </TD>
 </TR>
 <TR>
 	<TD align="right">ค่ารักษาพยาบาลไม่เกินครั้งละ : </TD>
@@ -270,7 +276,8 @@ return stat;
 	<TD><?php echo $_SESSION["sOfficer"];?></TD>
 </TR>
 <TR>
-	<TD colspan="2" align="center"> <INPUT TYPE="submit" name="add" value=" ตกลง ">&nbsp;<INPUT TYPE="reset" value=" ยกเลิก "> </TD>
+	<TD align="center"></TD>
+    <TD align="left"><INPUT TYPE="submit" name="add" value="  บันทึกข้อมูล  ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="reset" value="  ยกเลิก  "> </TD>
 </TR>
 </TABLE>
 </TD>
