@@ -825,6 +825,7 @@ print " <tr>";
 print "  <th bgcolor=6495ED>#</th>";
 print "  <th bgcolor=6495ED>วันที่</th>";
 print "  <th bgcolor=6495ED>แผนก</th>";
+print "  <th bgcolor=6495ED>รหัส</th>";
 print "  <th bgcolor=6495ED>รายการ</th>";
 print "  <th bgcolor=6495ED>จำนวน</th>";
 print "  <th bgcolor=6495ED>ราคา</th>";

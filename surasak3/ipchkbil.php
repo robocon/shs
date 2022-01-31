@@ -893,6 +893,7 @@ print " <tr>";
 print "  <th bgcolor=6495ED>#</th>";
 print "  <th bgcolor=6495ED>วันที่</th>";
 print "  <th bgcolor=6495ED>แผนก</th>";
+print "  <th bgcolor=6495ED>รหัส</th>";
 print "  <th bgcolor=6495ED>รายการ</th>";
 print "  <th bgcolor=6495ED>จำนวน</th>";
 print "  <th bgcolor=6495ED>ราคา</th>";
@@ -905,11 +906,11 @@ print "  <th bgcolor=6495ED>เวลาออก</th>";
 print " </tr>";
 
 ////
-$query = "SELECT date,depart,detail,amount,price,paid,part,idname,billno,startdatetime,enddatetime,code FROM ipacc WHERE an = '$cAn'  ORDER BY date ASC ";
+$query = "SELECT date,depart,code,detail,amount,price,paid,part,idname,billno,startdatetime,enddatetime,code FROM ipacc WHERE an = '$cAn'  ORDER BY date ASC ";
     $result = mysql_query($query)
         or die("Query failed ipacc");
     $num=0;
-    while (list ($date,$depart,$detail,$amount,$price,$paid,$part,$idname,$billno,$startdatetime, $enddatetime,$code) = mysql_fetch_row ($result)) {
+    while (list ($date,$depart,$code,$detail,$amount,$price,$paid,$part,$idname,$billno,$startdatetime, $enddatetime,$code) = mysql_fetch_row ($result)) {
 	    $num++;
 		$day=substr($date,0,10);
 
@@ -959,7 +960,8 @@ if($enddatetime  == Null){
                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$num</td>\n".
                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$date</td>\n".
                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$depart</td>\n".
-                "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$detail</td>\n".  
+                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$code</td>\n". 
+				"<td bgcolor=\"$bgColor\"><font face='Angsana New'>$detail</td>\n".  
                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$amount</td>\n".  
                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$price</td>\n".  
                 "<td bgcolor=\"$bgColor\"><font face='Angsana New'>$paid</td>\n".  
