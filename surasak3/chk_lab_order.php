@@ -221,9 +221,9 @@ if( $action == false ){
                 $lab_sso = strtolower(str_replace(array('"',' '), '', $lab_sso));
                 
                 $find_bs = false;
-
+                
                 // ถ้ามี bs มันจะตัดออกจากรายการและเพิ่มเป็นรายการใหม่
-                $test_bs = preg_match('/\,?(bs)\,?/', $lab_sso);
+                $test_bs = preg_match('/(bs\,)|(\,bs\,)|(\,bs)/', $lab_sso);
                 if( $test_bs > 0 ){
 
                     $find_bs = true;
@@ -264,7 +264,6 @@ if( $action == false ){
 
                 }
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
-                
                 
             } // End ถ้าในแต่ละแถว not empty 
 
