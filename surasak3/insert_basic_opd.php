@@ -55,9 +55,19 @@ if($cigarette==0){$cigarette='äÁèÊÙº';}
 else if($cigarette==1){$cigarette='ÊÙº '.$smoke_amount.' ÁÇ¹/ÊÑ»´ÒËì';}
 else {$cigarette='à¤ÂÊÙº';};
 
-if($alcohol==0){$alcohol='äÁè´×èÁ';}
-else if($alcohol==1){$alcohol='´×èÁ '.$drink_amount.' á¡éÇ/ÊÑ»´ÒËì';}
-else {$alcohol='à¤Â´×èÁ';};
+if($alcohol==0){
+	$alcohol='äÁè´×èÁ';
+}else if($alcohol==1){
+
+	if(intval($drink_amount)===0){
+		$alcohol='´×èÁ '.$drink_amount.' á¡éÇ/ÊÑ»´ÒËì';
+	}else{
+		$alcohol='äÁè´×èÁ';
+	}
+	
+}else{
+	$alcohol='à¤Â´×èÁ';
+}
 
 if($drugreact == 0){
 	$congenital_disease .=" , ¼Ùé»èÇÂäÁèá¾éÂÒ";
@@ -112,7 +122,7 @@ body{
 	padding: 0;
 }
 table td, .display-sticker>div, p{
-	font-family: "TH SarabunPSK","TH Sarabun New";
+	font-family: "Angsana New","TH SarabunPSK","TH Sarabun New";
 	line-height: 18.897637795px;
 	font-size: 14pt;
 }
@@ -305,7 +315,7 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 	<!-- <div style="page-break-after: always;"></div> -->
 	<div style="line-height: 18.897637795px;">&nbsp;</div>
 	<div class="display-sticker">
-		<div><b>Nursingh DX</b></div>
+		<div><b>Nursing DX</b></div>
 		<?php 
 		if(!empty($item['nurse_dx1'])){
 			?><div>- <?=$item['nurse_dx1'];?> <span class="underline_notfix"><?=$item['nurse_dx1_txt'];?></span></div><?php

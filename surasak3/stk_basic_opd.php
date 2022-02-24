@@ -346,7 +346,7 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 		$getY = $pdf->getY();
 		$pdf->SetXY(2, $getY+10);
 		$pdf->SetFont('THSarabun','B',14);
-		$pdf->Write(5, "Nursingh DX");
+		$pdf->Write(5, "Nursing DX");
 		
 		if(!empty($item['nurse_dx1'])){ 
 			$getY = $pdf->getY();

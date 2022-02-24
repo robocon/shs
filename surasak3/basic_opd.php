@@ -1466,7 +1466,7 @@ mmHg </td>
 		</tr>
 
 		<tr>
-			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;">ข้อวินิจฉัยทางการพยาบาล Nursingh DX:</td>
+			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;">ข้อวินิจฉัยทางการพยาบาล Nursing DX:</td>
 		</tr>
 		<tr>
 			<td colspan="6">
@@ -1529,7 +1529,7 @@ mmHg </td>
 		</script>
 
 		<tr>
-			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;"><b>การยาบาลและการประเมินผล Implamentation</b></td>
+			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;"><b>การพยาบาลและการประเมินผล Implementation</b></td>
 		</tr>
 		<tr>
 			<td colspan="6">
