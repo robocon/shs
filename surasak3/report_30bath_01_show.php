@@ -96,12 +96,16 @@ $selmon2 = $month2;
  
 $i = 1; 
 //-----> sql
-$sql = "SELECT patdata. * , opcard.idcard, opcard.phone
-FROM patdata
-INNER JOIN opcard ON patdata.hn = opcard.hn
-WHERE patdata.date like '%".$year_th."-".$month."-".$day."%' AND patdata.amount >0 AND patdata.part = 'LAB' AND patdata.STATUS = 'Y' AND (
-patdata.code = 'SWAB' OR patdata.code = 'AgCG3' OR patdata.code = 'Covid19'
-) ";
+$sql = "SELECT a.* , b.idcard, b.phone
+FROM 
+( 
+	SELECT * FROM `patdata` WHERE `date` LIKE '$year_th-$month-$day%' 
+	AND `amount` > 0 
+	AND `part` = 'LAB' 
+	AND `status` = 'Y' 
+	AND (`code`='SWAB' OR `code`='AgCG3' OR `code`='Covid19') 
+) AS a 
+LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` ";
 
 //echo $sql;exit();
 $query = mysql_query($sql); 
