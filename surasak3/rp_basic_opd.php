@@ -320,7 +320,7 @@ print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.12765807381873
         <td align="center"><?php echo $no;?></td>
         <td align="center"><?php echo $thidate;?></td>
         <td align="center"><A HREF="stk_basic_opd.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $hn;?></A></td>
-        <td><A HREF="stk_basic_opd2.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $ptname;?></A></td>
+        <td><A HREF="insert_basic_opd.php?dthn=<?php echo $thdatehn;?>&reprint=yes" target="_blank"><?php echo $ptname;?></A></td>
         <td width="40" align="center"><?php echo $temperature;?></td>
         <td width="40" align="center"><?php echo $pause;?></td>
         <td width="40" align="center"><?php echo $rate;?></td>

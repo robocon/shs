@@ -31,14 +31,15 @@ session_unregister("cidguard");
 </form>
 
 <table>
- <tr>
-  <th bgcolor=CD853F>ออกใบนัด</th>
-  <th bgcolor=CD853F>ยศ</th>
-  <th bgcolor=CD853F>ตรวจนัด</th>
-  <th bgcolor=CD853F>สกุล</th>
-    <th bgcolor=CD853F>สิทธิ</th>
- <th bgcolor=CD853F>หมายเหตุ</th>
- </tr>
+<tr bgcolor="CD853F">
+    <th>ออกใบนัด</th>
+    <th>ยศ</th>
+    <th>ตรวจนัด</th>
+    <th>สกุล</th>
+    <th>สิทธิ</th>
+    <th>หมายเหตุ</th>
+    <th>แก้ไขใบนัด</th>
+</tr>
 
 <?php
 $hn = trim($_POST['hn']);
@@ -50,15 +51,18 @@ If (!empty($hn)){
         or die("Query failed");
 
     while (list ($hn,$yot,$name,$surname,$dbirth,$ptright,$note,$idguard) = mysql_fetch_row ($result)) {
-        print (" <tr>\n".
+        print (" <tr bgcolor=\"F5DEB3\">\n".
            "  <td BGCOLOR=F5DEB3><a   href=\"preappoi1.php? cHn=$hn&cYot=$yot & cName=$name &cSurname=$surname&Age=$dbirth&ptright=$ptright&note=$note&idguard=$idguard\">$hn</a></td>\n".
            "  <td BGCOLOR=F5DEB3>$yot</td>\n".
            "  <td BGCOLOR=F5DEB3><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">$name</td>\n".
            "  <td BGCOLOR=F5DEB3>$surname</td>\n".
 			          "  <td BGCOLOR=F5DEB3>$ptright</td>\n".
-    "  <td BGCOLOR=F5DEB3>$idguard</td>\n".
+    "  <td BGCOLOR=F5DEB3>$idguard</td>\n");
+    ?>
+    <td><a href="preform_preappoint.php?hn=<?=$hn;?>">แก้ไข</a></td>
+    <?php
 
-           " </tr>\n");
+           print("</tr>\n");
        }
 include("unconnect.inc");
 }
