@@ -84,6 +84,10 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">SGPT</th>
     <th width="4%" align="center">ALK</th>
     <th width="7%" align="center">HBsAg</th>
+
+    <th width="7%" align="center">Anti HCV</th>
+    <th width="7%" align="center">Anti-HIV</th>
+
     <th width="6%" align="center">FOBT</th>
     <th width="6%" align="center">AFP</th>
     <th width="6%" align="center">Anti-HAV IgG</th>
@@ -551,7 +555,9 @@ if($flag=="N"){
 	echo "<strong style='color:#FF0000'>$alp</strong>";
 }
 ?></td>
-    <td align="center"><?
+
+<td align="center">
+<?php
 $sql12="SELECT b.result, b.flag 
 FROM ( 
 
@@ -578,7 +584,55 @@ if($hbsag=="Negative"){
 }else{
 	echo "&nbsp;";
 }
+?>
+</td>
+
+<td align="center">
+<!-- เชื้อไวรัสตับอักเสบบี (Anti HCV) -->
+<?php
+$sql12="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` FROM `resulthead` WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'HCVAB' GROUP BY `profilecode` 
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+WHERE b.labcode = 'HCVAB' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
+GROUP BY a.`profilecode` ";
+$query12=mysql_query($sql12);
+list($hcvab,$flag)=mysql_fetch_array($query12);
+
+if($hcvab=="Negative"){
+	echo "ไม่พบเชื้อ";
+}else if($hcvab=="Positive"){
+	echo "<strong style='color:#FF0000'>พบเชื้อ</strong>";
+}else{
+	echo "&nbsp;";
+}
 ?></td>
+
+<td align="center">
+<!-- ไวรัส เอช ไอ วี (Anti-HIV) -->
+<?php
+$sql12="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` FROM `resulthead` WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'HIV' GROUP BY `profilecode` 
+) AS a 
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber 
+WHERE b.labcode = 'HIV' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+GROUP BY a.`profilecode` ";
+$query12=mysql_query($sql12);
+if(mysql_num_rows($query12) > 0)
+{
+    list($hcvab,$flag)=mysql_fetch_array($query12);
+    $result = 'Negative';
+    if( $flag != 'N' ){ 
+        $result = 'Positive';
+    }
+    echo $result;
+}
+?></td>
+
 <td align="center">
 <?php
 $sql13="SELECT b.result, b.flag 
