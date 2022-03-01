@@ -1,7 +1,6 @@
 <?php 
 require_once 'bootstrap.php';
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
+$dbi = new mysqli(HOST,USER,PASS,DB);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,8 +59,12 @@ $dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
                     SELECT `hn`FROM `c19_count` WHERE `date` = '$date' GROUP BY `hn`
                 ) AS a ";
                 $q = $dbi->query($sql_c19_count);
-                $opday = $q->fetch_assoc();
-                $count_opday = (int) $opday['count'];
+                $count_opday = 0;
+                if($q->num_rows > 0)
+                {
+                    $opday = $q->fetch_assoc();
+                    $count_opday = (int) $opday['count'];
+                }
                 ?>
                 <h1 align="center" style="font-size: 64px;" class="w3-2021-amethyst-orchid"><strong><?=$count_opday;?> ราย</strong></h1>
             </div>

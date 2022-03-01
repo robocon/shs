@@ -150,10 +150,18 @@ $sVn=$_POST['vnnow'];
 			array_push($sAccno,$_POST['nAccno'.$r]);
 		}	
 	}
-	$sqlname = "select ptname from opday where hn = '$nhn' and thidate like '%".substr($_SESSION['dDate'][0],0,10)."%' ";
+	$sqlname = "select ptname,icd10 from opday where hn = '$nhn' and thidate like '%".substr($_SESSION['dDate'][0],0,10)."%' ";
 	//echo $sqlname;
 	$rowname = mysql_query($sqlname);
-	list($sPtname) = mysql_fetch_array($rowname);
+	list($sPtname,$icd10) = mysql_fetch_array($rowname);
+	
+	if(!empty($icd10)){
+		$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
+		//echo $query."<br>";
+		$result1 = mysql_query($query1) or die(mysql_error());
+		list($diag_thai) = mysql_fetch_array($result1);
+		
+	}	
 	
 	if($idno==""){
 		echo "ไม่สามารถทำรายการได้ กรุณาเลือกรายการก่อน";
@@ -274,12 +282,37 @@ $sVn=$_POST['vnnow'];
 	//echo $sqlopcard;
 	$resopcard= mysql_query($sqlopcard) or die("Query failed");
 	list($idcard) = mysql_fetch_row($resopcard);
+
+	if(!empty($pdate)){
+		$showdate=substr($pdate,0,10);
+		list($ys,$ms,$ds)=explode("-",$showdate);
+		$showdate="$ds/$ms/$ys";
+		print "<font face='Angsana New' size='5'><b>วัน/เดือน/ปี: $showdate</font><br> ";
+	}else if(!empty($ddate)){
+		$showdate=substr($ddate,0,10);
+		list($ys,$ms,$ds)=explode("-",$showdate);
+		$showdate="$ds/$ms/$ys";		
+		print "<font face='Angsana New' size='5'><b>วัน/เดือน/ปี: $showdate</font><br> ";
+	}else{
+		print "<font face='Angsana New' size='5'><b>วัน/เดือน/ปี: $showdate</font><br> ";
+	}			
 			
+		
 		print "<font face='Angsana New' size='5'><b>ชื่อ-สกุล: $sPtname, HN: $sHn, VN: $showvn</font><br> ";
 		print "<font face='Angsana New' size='5'><b>เลขที่บัตรประชาชน : $idcard</font><br> ";		
 		print "<font face='Angsana New' size='4'><b>ผู้ป่วยสิทธิ: <span style='color:red;'>$sPtright</span></b></font><br />";
 		print "<font face='Angsana New' size='4'><b>ออก OPD CARD โดย : <span style='color:blue;'>$toborow</span></b></font><br> ";
 		print "<font face='Angsana New' size='4'><b>โรค: ";
+		
+		
+	if(!empty($diag_thai)){ //ถ้ามีการให้รหัสโรคของแพทย์ ให้เอาชื่อภาษาไทยมาแสดงในใบเสร็จรับเงิน แก้ไขวันที่ 6/1/64
+		if($icd10=="B24"){
+			echo "เชื้อราในสมอง";
+		}else{
+			echo $diag_thai;
+		}
+	}else{		
+			
 		if(count($_SESSION['tDiag'])==1){
 			$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$nhn' and tvn = '$sVn' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
 			//echo $chksql;
@@ -291,8 +324,7 @@ $sVn=$_POST['vnnow'];
 			}else{
 				echo $_SESSION['tDiag'][0];
 			}
-		}
-		elseif(count($_SESSION['tDiag'])>1){
+		}elseif(count($_SESSION['tDiag'])>1){
 			/*if(in_array("ตรวจวิเคราะห์เพื่อการรักษา",$_SESSION['tDiag'])){
 				echo "ตรวจวิเคราะห์เพื่อการรักษา";
 			}
@@ -313,6 +345,11 @@ $sVn=$_POST['vnnow'];
 					}				
 			//}
 		}
+		
+	}		
+		
+		
+		
 		print ", แพทย์ :$sDoctor</b></font><br>";
 		
 		//print_r($_SESSION);
@@ -473,7 +510,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 			alert("กรณี ที่ชำระเงินด้วย บัตรเครดิต ให้กรอกข้อมูล หมายเลขเลขบัตรเครดิต ด้วยครับ");
 			document.f1.detail_1.focus();
 			return false;
-		}else if(document.f1.credit[7].checked == true && document.f1.detail_1.value == ''){
+		}else if(document.f1.credit[19].checked == true && document.f1.detail_1.value == ''){
 			alert("กรณีที่เลือก อื่นๆ ให้กรอกข้อมูล เพิ่มเติม ด้วยครับ");
 			document.f1.detail_1.focus();
 			return false;
@@ -483,23 +520,23 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
-		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
+		}else if((document.f2.credit[2].checked == true || document.f2.credit[4].checked == true) && document.f2.detail_1.value == ''){
 			alert("กรณี ที่ชำระเงินด้วย บัตรเครดิต ให้กรอกข้อมูล หมายเลขเลขบัตรเครดิต ด้วยครับ");
 			document.f2.detail_1.focus();
 			return false;
-		}else if(document.f2.credit[7].checked == true && document.f2.detail_1.value == ''){
+		}else if(document.f2.credit[19].checked == true && document.f2.detail_1.value == ''){
 			alert("กรณีที่เลือก อื่นๆ ให้กรอกข้อมูล เพิ่มเติม ด้วยครับ");
 			document.f2.detail_1.focus();
-				}else if(document.f2.credit[6].checked == true && document.f2.detail_1.value == ''){
-			alert("กรณีที่เลือก อื่นHD ให้กรอกสิทธิ์ด้วยครับ");
+			return false;
+		}else if(document.f2.credit[7].checked == true && document.f2.detail_1.value == ''){
+			alert("กรณีที่เลือก HD ให้กรอกสิทธิ์ด้วยครับ");
 			document.f2.detail_1.focus();
 			return false;
-			return false;
-		}else if(document.f2.credit[0].checked == true && document.f2.detail_3.value == ''){
-			alert("กรณีที่เลือก เงินสด/ตรวจสุขภาพ ให้กรอกจำนวนเงินที่รับด้วยครับ");
+		}else if((document.f2.credit[0].checked == true || document.f2.credit[1].checked == true) && document.f2.detail_3.value == ''){
+			alert("กรณีที่เลือก เงินสด/เงินโอน/ตรวจสุขภาพ ให้กรอกจำนวนเงินที่รับด้วยครับ");
 			document.f2.detail_3.focus();
 			return false;		
 		}else if(document.f2.credit[8].checked == true){
@@ -609,26 +646,27 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		///////ใช้บัตรเครดิด
         print "<font face='Angsana New' size='3'>ใช้บัตรเครดิด ? &nbsp;&nbsp;&nbsp;";
 		  print "<TABLE>
+	 
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินสด' onclick=\"document.getElementById('detail2').innerHTML='';detailhead2.style.display='none';document.getElementById('detail4').innerHTML='ระบุจำนวนเงินที่รับ';detailhead4.style.display='';document.f2.detail_3.focus();\"></TD>
 		 	<TD>เงินสด</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>เช็ค</TD>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอน' onclick=\"document.getElementById('detail2').innerHTML='';detailhead2.style.display='none';document.getElementById('detail4').innerHTML='ระบุจำนวนเงินที่รับ';detailhead4.style.display='';document.f2.detail_3.focus();\"></TD>
+		 	<TD>เงินโอน</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
+		 	<TD>บัตรเครดิต ธ.ทหารไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML='เลข Approve Code '; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>จ่ายตรง <a href='inputpharkew_cscd.php?cTdatehn=$sHn' target='_blank'>พิมพ์คิวรับยา</a></TD>
 		 	
 		 </TR>
 		 <TR>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
+		 	<TD>เช็ค</TD>		 		 
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคม' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>ประกันสังคม</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='30บาท' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>30บาท</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='HD' onclick=\"document.getElementById('detail2').innerHTML='สิทธิ์'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>HD</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick=\"document.getElementById('detail2').innerHTML='ข้อมูลเพิ่มเติม'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>อื่นๆ</TD>
 		 </TR>
 		<TR>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='สวัสดิการทันตกรรม' onclick=\"document.getElementById('detail3').innerHTML='ประเภทการตรวจ'; detailhead3.style.display='';detailhead4.style.display='none';\"></TD>
@@ -659,8 +697,8 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 		 	<TD>โครงการนภา</TD>		
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='นอนโรงพยาบาล' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>นอนโรงพยาบาล</TD>			
-			<TD align='right'>&nbsp;</TD>
-		 	<TD>&nbsp;</TD>	
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick=\"document.getElementById('detail2').innerHTML='ข้อมูลเพิ่มเติม'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
+		 	<TD>อื่นๆ</TD>
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>												 
 		 </TR>
@@ -684,13 +722,29 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 			<TD align='right'>
 				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='PAYCHKUP$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>เรียกเก็บตรวจสุขภาพ</TD>			
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>			
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>	
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='DENTALSSO$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ทันตกรรมประกันสังคม</TD>				
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ออมสิน' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ธนาคารออมสิน</TD>	
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>																 
 		 </TR>
+		 
+		 <TR>
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ธปท' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ธนาคารแห่งประเทศไทย</TD>			
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>			
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>					
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>			
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>																 
+		 </TR>		 
 		 		 
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";

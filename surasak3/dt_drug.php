@@ -305,6 +305,17 @@ for($i=0;$i<$count;$i++){
 			//echo "$i==>".$sql."<br>";
 			$result = Mysql_Query($sql);
 			list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);		
+			
+			//echo $_SESSION["list_drug_part"][$i]."<br>";
+			
+			if(isset($_SESSION["list_drug_part"][$i])){
+				if($_SESSION["list_drug_part"][$i]==$part){
+					$part=$part;
+				}else{
+					$part=$_SESSION["list_drug_part"][$i];
+					//echo "==>".$sql."<br>";
+				}
+			}
 				
 				if($_SESSION["list_drugamount"][$i] > 0){
 					if($part == "DPY"){
@@ -565,6 +576,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		$where1 = "";
 	}
 
+	if(empty($_GET["date_remed"]))
+	{
+		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
+	}
+
 	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
 	FROM drugrx as a 
 	INNER JOIN (SELECT `drugcode`,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
@@ -752,6 +768,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}else{
 		$where1 = "";
 	}*/
+
+	if(empty($_GET["date_remed"]))
+	{
+		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
+	}
 
 	$sql = "
 	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
@@ -1156,7 +1177,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 }
 
 
-// ********************************* ดึกรายการยาเดิมออกมาแสดงเพื่อทำการแก้ไข *****************************************
+// ********************************* ดึงรายการยาเดิมออกมาแสดงเพื่อทำการแก้ไข *****************************************
 if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	
 	$_SESSION["list_drugcode"] = array() ;
@@ -1173,6 +1194,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$_SESSION["list_drug_inject_etc"] = array() ;
 	$_SESSION["list_drug_reason"] = array() ;
 	$_SESSION["list_drug_reason2"] = array() ;
+	$_SESSION["list_drug_part"] = array() ;
 
 	$sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1";
 	$result = Mysql_Query($sql);
@@ -1183,7 +1205,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		$_SESSION["cancle_row_id"] = $id;
 
 	$sql = "SELECT `drugcode`,`amount`,`slcode`,`drug_inject_amount`,`drug_inject_unit`,`drug_inject_amount2`,`drug_inject_unit2`,`drug_inject_time`,
-	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`   
+	`drug_inject_slip`,`drug_inject_type`,`drug_inject_etc`,`reason`,`part`   
 	FROM `ddrugrx` 
 	WHERE `idno` = '".$id."' 
 	AND `hn` = '".$_SESSION["hn_now"]."' 
@@ -1198,27 +1220,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$result = mysql_query($sql) or die( mysql_error() );
 	while($arr = mysql_fetch_assoc($result)){
 		
-		if($arr["drugcode"] === '4MET25'){  //กรณีเป็น balm
-		
-			$sql2 = "Select drugcode, sum(amount) as amount, slcode, drug_inject_amount, drug_inject_unit,drug_inject_amount2, drug_inject_unit2, drug_inject_time,  drug_inject_slip,  drug_inject_type,  drug_inject_etc, reason   From ddrugrx where idno = '".$id."' AND hn='".$_SESSION["hn_now"]."' AND  date like '".((date("Y")+543).date("-m-d"))."%' GROUP BY amount  order by row_id desc limit 1";
-			$res = mysql_query($sql2) or die( mysql_error() ) ;
-			$arr2 = mysql_fetch_assoc($res);
-			
-			array_push($_SESSION["list_drugcode"],$arr2["drugcode"]);
-			array_push($_SESSION["list_drugamount"],$arr2["amount"]);
-			array_push($_SESSION["list_drugslip"],$arr2["slcode"]);
-			array_push($_SESSION["list_drug_inject_amount"],$arr2["drug_inject_amount"]);
-			array_push($_SESSION["list_drug_inject_unit"],$arr2["drug_inject_unit"]);
-			array_push($_SESSION["list_drug_inject_amount2"],$arr2["drug_inject_amount2"]);
-			array_push($_SESSION["list_drug_inject_unit2"],$arr2["drug_inject_unit2"]);
-			array_push($_SESSION["list_drug_inject_time"],$arr2["drug_inject_time"]);
-			array_push($_SESSION["list_drug_inject_slip"],$arr2["drug_inject_slip"]);
-			array_push($_SESSION["list_drug_inject_type"],$arr2["drug_inject_type"]);
-			array_push($_SESSION["list_drug_inject_etc"],$arr2["drug_inject_etc"]);
-			array_push($_SESSION["list_drug_reason"],$arr2["reason"]);
-			array_push($_SESSION["list_drug_reason2"],$arr2["reason2"]);
-			
-		}else{
+
 			
 			array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
 			array_push($_SESSION["list_drugamount"],$arr["amount"]);
@@ -1233,7 +1235,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 			array_push($_SESSION["list_drug_inject_etc"],$arr["drug_inject_etc"]);
 			array_push($_SESSION["list_drug_reason"],$arr["reason"]);
 			array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
-		}  //close if
+			array_push($_SESSION["list_drug_part"],$arr["part"]);
+
 		
 	}  //close while
 
@@ -1284,6 +1287,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 			$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
 			
 			$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
+			$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
 		
 	}
 
@@ -1300,6 +1304,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	unset($_SESSION["list_drug_inject_etc"][$count-1]);
 	unset($_SESSION["list_drug_reason"][$count-1]);
 	unset($_SESSION["list_drug_reason2"][$count-1]);
+	unset($_SESSION["list_drug_part"][$count-1]);
 	exit();
 }
 
@@ -1378,7 +1383,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				
 				if($arr["part"] == "DDY"){
 					$style = " style='color:#0000FF;' ";
-				}elseif($arr["part"] == "DDN"||$arr["part"] == "DSN"||$arr["part"] == "DPN"){
+				}elseif($arr["part"] == "DDN" || $arr["part"] == "DSN" || $arr["part"] == "DPN"){
 					$style = " style='color:#FF0000;' ";
 				}else{
 					$style = "";
@@ -3255,7 +3260,8 @@ function viatch(ing,code){
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก 
 
 	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
-
+	$pre_date_time = strtotime('-3 YEAR');
+	$pre_date = (date("Y", $pre_date_time)+543).date("-m-d", $pre_date_time);
 /*	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
 	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
@@ -3266,7 +3272,7 @@ function viatch(ing,code){
 	$sql = "/* head_remed */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a 
-	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE a.`date` >= '$pre_date 00:00:00'  AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 100";	
@@ -3335,7 +3341,7 @@ function viatch(ing,code){
 	$sql = "/* head_remed2 */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a 
-	WHERE $where_date AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE a.`date` >= '$pre_date 00:00:00' AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY left(date2,10)
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 20";	
@@ -3698,6 +3704,14 @@ if ( $patient_hn==='55-8821' OR $patient_hn==='48-4304' OR $patient_hn==='48-406
 	?>
 	<script>
 	alert('กรุณาตรวจสอบ การจ่ายยา และปริมาณยาในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ<?=$moretxt;?>');
+	</script>
+	<?php
+}
+elseif ($patient_hn==='50-4904') 
+{
+	?>
+	<script>
+	alert('ระวังการจ่ายยา เนื่องจากผู้ป่วยรายนี้เบิกยาเกินความจำเป็น');
 	</script>
 	<?php
 }

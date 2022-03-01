@@ -89,13 +89,23 @@ window.onload = function(){
 	window.close();
 }
 </script>
-
+<style>
+body{
+	margin: 0;
+	padding: 0;
+}
+table td{
+	font-family: "Angsana New","TH SarabunPSK";
+	line-height: 18.897637795px;
+	font-size: 14pt;
+}
+</style>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
-		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
+		<td>HN : <?=$hn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
 	<tr>
-		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
+		<td>VN:<?=$vn;?>, T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
 	</tr>
 	<tr>
 		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, นน : <?=$weight;?> กก., สส : <?=$height;?> ซม.</td>
@@ -103,8 +113,12 @@ window.onload = function(){
 	
 	<tr>
 		<td>
-		รอบเอว : <?=$waist;?> ซม., 
 		<?php 
+		if(!empty($waist))
+		{
+			?>รอบเอว : <?=$waist;?> ซม., <?php
+		}
+
 		if( !empty($bp3) && !empty($bp4) ){
 			?>
 			Repeat BP : <?=$bp3;?> / <?=$bp4;?> mmHg
@@ -172,7 +186,7 @@ window.onload = function(){
 		<td>Triage Gr. : <?=$grade;?> สภาวะจิตใจ : <?=$mind;?></td>
 	</tr>
 	<tr>
-		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=substr($clinic,3);?></td>
+		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=$clinic;?></td>
 	</tr>
 	<tr>
 		<td>โรคประจำตัว : <?=trim($congenital_disease);?></td>

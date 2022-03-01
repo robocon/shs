@@ -1,5 +1,7 @@
-<?php session_start(); ?>
-
+<?php 
+session_start(); 
+include("connect.inc");
+?>
 <html>
 <head>
 	<title>ออกใบนัด</title>
@@ -48,6 +50,11 @@
 </head>
 
 <?php
+if(empty($patho2))
+{
+	$patho2 = '';
+}
+
 if (isset($cHn )){ 
 	
 	// โค้ดผู้ใช้งาน
@@ -55,7 +62,7 @@ if (isset($cHn )){
 
 	$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 	$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
-	include("connect.inc");
+	
 	
 	if($detail=="FU13 ตรวจระบบทางเดินอาหาร"){
 		$detail2 = $detail_list;
@@ -113,6 +120,10 @@ $sql = "INSERT INTO appoint(
 );";
 
 	$result = mysql_query($sql);
+	if($result === false)
+	{
+		echo mysql_error();
+	}
 	$idno=mysql_insert_id();
 	$count = count($_SESSION["list_code"]);
 	
@@ -140,7 +151,7 @@ $sql = "INSERT INTO appoint(
 	//    echo "<br>";
 	
 	//พิมพ์ใบนัด
-	$doctor = substr($doctor,5);
+	// $doctor = substr($doctor,5);
 	$depcode = substr($depcode,4);
 	
 	if($result){
@@ -149,16 +160,16 @@ $sql = "INSERT INTO appoint(
 		$_GET['hn'] = $cHn;	
 		include("dt_printstikerappoint.php");
 		?>
-		<SCRIPT LANGUAGE="JavaScript">
-		window.onload = function(){
-			window.print();
-			// opener.location.href='hnappoi1.php';
-			
-			// window.open('','_self');
-			// self.close(); 
-		
-		}
-		</SCRIPT>
+		<script type="text/javascript">
+			window.onload = function(){
+				window.print();
+
+				setTimeout(function () { 
+					window.location.href = "hnappoi1.php";
+				}, 1000);
+
+			};
+		</script>
 		<?php
 	}
 }

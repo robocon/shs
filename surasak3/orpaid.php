@@ -15,9 +15,6 @@
     $no=0;
 	for($no=1; $no<=12; $no++){
 		if($_POST['item'.$no] !=""){
-
-            $_POST['item'.$no] = str_replace(array("\'",'\"'), ' ', $_POST['item'.$no]);
-
 			$NetMcpri=$NetMcpri+$_POST['price'.$no]; //รวมเงินทั้งหมด
 			$Netyprice=$Netyprice+$_POST['yprice'.$no]; //รวมเงินที่เบิกได้
 			$Netnprice=$Netnprice+$_POST['nprice'.$no]; //รวมเงินที่เบิกไม่ได้
@@ -33,7 +30,12 @@
 				$ndspp="DPN";
 			}
 			
-			$aCode[$no] = "SURG";
+			if($ydspp=="DPY" || $ydspp=="DPN"){  //อวัยวะเทียม/อุปกรณ์
+				$aCode[$no] = $_POST['dpycode'.$no];
+			}else{
+				$aCode[$no] ="SURG";
+			}
+			
 			$aDetail[$no]  = $_POST['dpycode'.$no].' '.$_POST['item'.$no];
 			$aDSPY[$no]= $ydspp;
 			$aDSPN[$no]= $ndspp;
@@ -198,10 +200,10 @@ for($no=1; $no<=12; $no++){
    if($_POST['item'.$no] !="") {
        //insert data into patdata
 	   if($_POST['yprice'.$no] >0){
-		   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','SURG','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPY[$no]','$cPtright','$idno');";
+		   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aCode[$no]','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPY[$no]','$cPtright','$idno');";
 		  	$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
 	   }else{
-		   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','SURG','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPN[$no]','$cPtright','$idno');";
+		   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aCode[$no]','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPN[$no]','$cPtright','$idno');";
 		  	$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
 	   }
 
@@ -214,6 +216,9 @@ for($no=1; $no<=12; $no++){
 	   }
        if($aNprino[$no] > 0 and $aDSPN[$no]=="DPN"){
             $cNprice='(เบิกไม่ได้)';
+			if($aAmount[$no]==0){  
+				$aAmount[$no]=="1";  //ถ้าจำนวนเท่ากับ 0 ให้ใส่ค่าเป็น 1
+			}
             $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
                     idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn',
 	'$aCode[$no]','SURG','$aDetail[$no] $cNprice',
@@ -222,6 +227,9 @@ for($no=1; $no<=12; $no++){
 	   }
 		if($aNprino[$no] > 0 and $aDSPN[$no]=="DSN"){
             $cNprice='(เบิกไม่ได้)';
+			if($aAmount[$no]==0){  
+				$aAmount[$no]=="1";  //ถ้าจำนวนเท่ากับ 0 ให้ใส่ค่าเป็น 1
+			}			
             $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
                     idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn',
 	'$aCode[$no]','SURG','$aDetail[$no] $cNprice',
@@ -243,9 +251,9 @@ print"  <th bgcolor=6495ED>เบิกได้</th>";
 print"  <th bgcolor=6495ED>เบิกไม่ได้</th>";
 print"  </tr>";
 if($result1){
-	$sql2 ="select detail,part,amount,price,yprice,nprice from patdata where an='$cAn' and date ='$Thidate' and code='SURG' ";
+	$sql2 ="select detail,part,amount,price,yprice,nprice from patdata where an='$cAn' and date ='$Thidate' and depart='SURG'";
 }elseif($result){
-	$sql2 ="select detail,part,amount,price,yprice,nprice from patdata where hn='$cHn' and date ='$Thidate' and code='SURG' ";
+	$sql2 ="select detail,part,amount,price,yprice,nprice from patdata where hn='$cHn' and date ='$Thidate' and depart='SURG'";
 }
 $result5 = mysql_query($sql2);
 while(list($detail,$part,$amount,$price,$yprice,$nprice) = mysql_fetch_array($result5)){

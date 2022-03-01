@@ -223,6 +223,7 @@ print "รับชำระโดย&nbsp;";
 	 
 print " <option value='0' ><-เลือก-></option>"; 
 	 print " <option value='เงินสด'>เงินสด</option>";
+	  print " <option value='เงินโอน'>เงินโอน</option>";
 
 	// print " <option value='กรุงเทพ'>กรุงเทพ</option>";
 

@@ -231,7 +231,7 @@ if(empty($credit) ){
 	$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ")){
 
 	if($_POST["credit"] == "จ่ายตรง" ){
 		$name_f = "billcscd";
@@ -463,7 +463,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			$aSumy = $aSumy+$sEssd+$sNessdy+$sDPY+$sDSY;
 			$aSumn = $aSumn+$sNessdn+$sDPN+$sDSN;
 			
-			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ")){
+			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ")){
 
 	/*	if($_POST["credit"] == "จ่ายตรง" ){
 			$name_f = "billcscd";

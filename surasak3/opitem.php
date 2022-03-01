@@ -133,7 +133,7 @@
 		var pt = '<?php echo substr($sPtright,0,3);?>';
 		var pt2 = '<?php echo substr($sPtright,3);?>';
 
-			if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15" ) && opt != "เงินสด"){
+			if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15" ) && opt != "เงินสด" && opt != "เงินโอน"){
 				
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
 
@@ -155,7 +155,7 @@
 
 	function checkformf1(){
 		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false){
+		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false && document.f1.credit[8].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
@@ -211,6 +211,7 @@
 </SCRIPT>
 <table>
  <tr>
+  <th bgcolor=CD853F>รหัส</th>
   <th bgcolor=CD853F>รายการ</th>
   <th bgcolor=CD853F>จำนวน</th>
   <th bgcolor=CD853F>ราคา</th>
@@ -230,7 +231,8 @@
     while (list ($code, $detail,$amount, $price,$yprice,$nprice) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
 
-           "  <td BGCOLOR=F5DEB3>$detail</td>\n".
+           "  <td BGCOLOR=F5DEB3>$code</td>\n".
+		   "  <td BGCOLOR=F5DEB3>$detail</td>\n".
            "  <td BGCOLOR=F5DEB3>$amount</td>\n".
            "  <td BGCOLOR=F5DEB3>$price</td>\n".
            "  <td BGCOLOR=99CCCC>$yprice</td>\n".
@@ -286,6 +288,16 @@
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick=\"document.getElementById('detail1').innerHTML='ข้อมูลเพิ่มเติม'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
 		 	<TD>อื่นๆ</TD>
 		 </TR>
+		 <tr>
+		 	 <td align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอน' onclick=\"document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';checkptring(this.value);\"></td>
+			 <td>เงินโอน</td>
+			 <td></td>
+			 <td></td>
+			 <td></td>
+			 <td></td>
+			 <td></td>
+			 <td></td>
+		 </tr>
 		 </TABLE>";
 		 print "<span id='detailhead1' style='display:none'><span id='detail1'></span><INPUT TYPE='text' NAME='detail_1'></span>";
   		 print"&nbsp;&nbsp;&nbsp;<br>";

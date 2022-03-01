@@ -55,12 +55,13 @@ if( $show == 'show' ){
 	}
 	
 	$sql = "SELECT COUNT(  `hn` ) AS  `rows`, `ptright` 
-	FROM `opday` 
-	WHERE  `toborow` LIKE '%EX07%' 
+	FROM `opday2` 
+	WHERE  `toborow` LIKE 'EX07%' 
+	AND `ptright` <> '' 
 	AND (
 		$where
 	)
-	GROUP BY  `ptright`";
+	GROUP BY `ptright`";
 
 	$items = DB::select($sql);
 	$lists = array();
