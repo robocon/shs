@@ -806,6 +806,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="การทำงานของตับ";
 									}else if($objResult["labname"]=="HBsAg"){
 										$labmean="เชื้อไวรัสตับอักเสบบี";
+									}else if($objResult["labname"]=="Anti HCV"){
+										$labmean="เชื้อไวรัสตับอักเสบซี";
 									}else if($objResult["labname"]=="Anti-HBs"){
 										$labmean="ภูมิต้านทานไวรัสตับอักเสบบี";
 									}else if($objResult["labname"]=="Occult blood"){
