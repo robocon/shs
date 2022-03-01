@@ -337,10 +337,89 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
   <input name="hn" type="text" class="txtsarabun" id="hn" size="10" maxlength="10" />
 
   <input name="Submit" type="submit" class="txtsarabun" value=" ตกลง " />&nbsp;
-  <button type="button" class="txtsarabun" onclick="return findVaccMoph()">ค้นหา Vaccine จาก MophIC</button>
+  <input type="button" class="txtsarabun" onclick="findVaccMoph()" value="ค้นหา Vaccine จาก MophIC">
   <BR>
  <INPUT TYPE="checkbox" NAME="unshow" value="1">&nbsp;&nbsp;ไม่ประกาศ คิว ผู้ป่วย
 </form>
+
+
+<div id="vaccBorder" style="position:absolute; background-color: #ffffff; top: 10%; left: 5%; display:none;">
+	<div id="vaccContainer" style="position:relative; border: 2px solid #525252;">
+		<div style="background-color: #bbbbbb; text-align:center; cursor: pointer;" id="vaccClose" onclick="vaccClose()"><b>ปิด [X]</b></div>
+		<div id="vaccContaint">
+			<table>
+				<tr>
+					<td align="right"><b>ชื่อ สกุล: </b></td>
+					<td><div id="vaccPatient"></div></td>
+				</tr>
+				<tr>
+					<td align="right" valign="top"><b>รายการวัคซีน: </b></td>
+					<td><div id="vaccInfo"></div></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+function findVaccMoph(){
+
+	var hn = document.getElementById("hn");
+	if(hn.value.trim()==""){
+		alert("กรุณากรอก HN");
+		event.preventDefault();
+		return false;
+	}
+
+	var request = new XMLHttpRequest();
+	request.open('GET', 'http://192.168.129.20/shs_moph/index.php?hn='+hn.value.trim(), true);
+
+	request.onreadystatechange = function() {
+	if (this.readyState === 4) {
+		if (this.status >= 200 && this.status < 400) {
+			// Success!
+			var data = JSON.parse(this.responseText);
+			if(data.MessageCode===200)
+			{
+				var pt = data.result.patient;
+				var ptHtml = pt.first_name+' '+pt.last_name;
+				document.getElementById("vaccPatient").innerHTML = ptHtml;
+
+				var vaccList = data.result.vaccine_certificate[0].vaccination_list;
+				
+				var vaccHtml = "<table><tr><th>เข็มที่</th><th>วันที่</th><th>วัคซีน</th><th>สถานที่</th>";
+				vaccList.forEach(function(vac, i){
+					vaccHtml+="<tr><td>"+vac.vaccine_dose_no+"</td>";
+					vaccHtml+="<td>"+vac.vaccine_date+"</td>";
+					vaccHtml+="<td>"+vac.vaccine_manufacturer_name+"</td>";
+					vaccHtml+="<td>"+vac.vaccine_place+"</td></tr>";
+				});
+				vaccHtml+="</table>";
+				
+				document.getElementById("vaccInfo").innerHTML = vaccHtml;
+				document.getElementById("vaccBorder").style.display = '';
+			}
+			else
+			{
+				alert("ไม่พบข้อมูล!\nตรวจสอบ HN อีกครั้ง");
+			}
+			
+		} else {
+			// Error :(
+			alert("การเชื่อมต่อมีปัญหา");
+		}
+	}
+	};
+
+	request.send();
+	request = null;
+}
+
+function vaccClose(){
+	document.getElementById("vaccBorder").style.display = 'none';
+}
+</script>
+
  <p><span class="tb_font">
   <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" />
  </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></p>
@@ -1275,83 +1354,7 @@ $(function() {
 	
 });
 })(jQuery);
-
-function findVaccMoph(){
-
-	var hn = document.getElementById("hn");
-	if(hn.value.trim()==""){
-		alert("กรุณากรอก HN");
-		event.preventDefault();
-		return false;
-	}
-
-	var request = new XMLHttpRequest();
-	request.open('GET', 'moph/index.php?hn='+hn.value.trim(), true);
-
-	request.onreadystatechange = function() {
-	if (this.readyState === 4) {
-		if (this.status >= 200 && this.status < 400) {
-			// Success!
-			var data = JSON.parse(this.responseText);
-			if(data.MessageCode===200)
-			{
-				var pt = data.result.patient;
-				var ptHtml = pt.first_name+' '+pt.last_name;
-				document.getElementById("vaccPatient").innerHTML = ptHtml;
-
-				var vaccList = data.result.vaccine_certificate[0].vaccination_list;
-				
-				var vaccHtml = "<table><tr><th>เข็มที่</th><th>วันที่</th><th>วัคซีน</th><th>สถานที่</th>";
-				vaccList.forEach(vac => {
-					vaccHtml+="<tr><td>"+vac.vaccine_dose_no+"</td>";
-					vaccHtml+="<td>"+vac.vaccine_date+"</td>";
-					vaccHtml+="<td>"+vac.vaccine_manufacturer_name+"</td>";
-					vaccHtml+="<td>"+vac.vaccine_place+"</td></tr>";
-				});
-				vaccHtml+="</table>";
-				
-				document.getElementById("vaccInfo").innerHTML = vaccHtml;
-
-				document.getElementById("vaccBorder").style.display = '';
-			}
-			else
-			{
-				alert("ไม่พบข้อมูล");
-			}
-			
-		} else {
-			// Error :(
-		}
-	}
-	};
-
-	request.send();
-	request = null;
-}
-
-function vaccClose(){
-	document.getElementById("vaccBorder").style.display = 'none';
-}
 </script>
-
-<div id="vaccBorder" style="position:absolute; background-color: #ffffff; top: 10%; left: 5%; display:none;">
-	<div id="vaccContainer" style="position:relative; border: 2px solid #525252;">
-		<div style="background-color: #bbbbbb; text-align:center; cursor: pointer;" id="vaccClose" onclick="vaccClose()">ปิด [X]</div>
-		<div id="vaccContaint">
-			<table>
-				<tr>
-					<td align="right"><b>ชื่อ สกุล: </b></td>
-					<td><div id="vaccPatient"></div></td>
-				</tr>
-				<tr>
-					<td align="right" valign="top"><b>รายการวัคซีน: </b></td>
-					<td><div id="vaccInfo"></div></td>
-				</tr>
-			</table>
-		</div>
-	</div>
-</div>
-
 </body>
 
 </html>
