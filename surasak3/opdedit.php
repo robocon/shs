@@ -957,6 +957,36 @@ $dis = mysql_fetch_assoc($q);
     </table>
 
 </fieldset>
+<br>
+<fieldset>
+	<legend>สำหรับแก้ไขข้อมูลผู้ป่วยใน</legend>
+	<table>
+		<tr>
+			<td align="right" class="fonthead">สิทธิการรักษาปัจจุบัน: </td>
+			<td>
+				<?php 
+				$cPtrightCode = substr($cPtright,0,3);
+				$querytype = "Select * From ptright where status !='n' Order by code ASC";
+				$q_type = mysql_query($querytype);
+				?>
+				<select name="ptright" id="ptright">
+				<?php
+				while($type = mysql_fetch_assoc($q_type)){ 
+					$ptright = $type['code'].'&nbsp;'.$type['name'];
+
+					$selected = ($type['code'] == $cPtrightCode) ? 'selected="selected"' : '';
+					?>
+					<option value="<?=$ptright;?>" <?=$selected;?>><?=$ptright;?></option>
+					<?php
+				}
+				?>
+				</select>
+			</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+</fieldset>
 <BR>
 <?
 print "  <font face='Angsana New' size='4' color =red>&nbsp;&nbsp;&nbsp; **มาครั้งสุดท้าย&nbsp;&nbsp;&nbsp; $cD1-$cM1-$cY1&nbsp;$cT1 **</font>";

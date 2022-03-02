@@ -50,6 +50,7 @@ $hospcode = $_POST['hospcode'];
 $ptrcode = $_POST['rdo1'];
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 $typearea = $_POST['typearea'];
+$ptright = $_POST['ptright'];
 
 $cHn = trim($_POST["hn"]);
 
@@ -68,7 +69,7 @@ $sql = "UPDATE opcard SET idcard = '$idcard',
 	nation = '$nation',
 	religion = '$religion',
 	career = '$career',
-	ptright = '$ptright1',
+	ptright = '$ptright',
 	ptrightdetail = '$ptrightdetail',
 	address = '$address',
 	tambol = '$tambol',
@@ -296,14 +297,14 @@ if($q_ipcard==true)
 		$ipcard_id = $ipd_item['ipcard_id'];
 		$bed_id = $ipd_item['bed_id'];
 
-		$update_sql_ipcard = "UPDATE `ipcard` SET `ptright` = '$ptright1' WHERE `row_id` = '$ipcard_id' ";
+		$update_sql_ipcard = "UPDATE `ipcard` SET `ptright` = '$ptright' WHERE `row_id` = '$ipcard_id' ";
 		$q_update_ipcard = mysql_query($update_sql_ipcard);
 		if($q_update_ipcard!=true)
 		{
 			echo '<p><b>Error : </b>'.mysql_error().'</p>';
 		}
 
-		$update_sql_bed = "UPDATE `bed` SET `ptright` = '$ptright1' WHERE `row_id` = '$bed_id' ";
+		$update_sql_bed = "UPDATE `bed` SET `ptright` = '$ptright' WHERE `row_id` = '$bed_id' ";
 		$q_update_bed = mysql_query($update_sql_bed);
 		if($q_update_bed!=true)
 		{
