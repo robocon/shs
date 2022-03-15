@@ -2,6 +2,9 @@
 session_start();
 include("connect.inc");
 
+$Conn = mysql_connect('192.168.131.250','remoteuser','');
+mysql_select_db('smdb',$Conn);
+
 ?>
 <html>
 <head>
@@ -166,14 +169,18 @@ if(isset($_POST["submit"])){
 		if(!empty($_POST["d"])){
 			$select_day2 = (date("Y",mktime(0,0,0,$_POST["m"],$_POST["d"]+1,$_POST["yr"]-543))+543).date("-m-d",mktime(0,0,0,$_POST["m"],$_POST["d"]+1,$_POST["yr"]-543));
 		
-			$where = " AND ((date_in = '".$select_day."' AND (time_in >= '07:31:00' AND time_in <= '23:59:59' )) OR (date_in = '".$select_day2."' AND (time_in >= '00:00:00' AND time_in < '07:31:00' ))) ";
+			$where_date = " ( 
+			(date_in = '".$select_day."' AND (time_in >= '07:31:00' AND time_in <= '23:59:59' )) 
+				OR 
+			(date_in = '".$select_day2."' AND (time_in >= '00:00:00' AND time_in < '07:31:00' ))
+			) ";
 		}else{
 			
-			$where = " AND `date_in` like '".$select_day."%' ";
+			$where_date = " `date_in` like '".$select_day."%' ";
 
 		}
 
-
+		$where = "1 ";
 		if($_POST["trauma"] != ""){
 			$where .= " AND `trauma` = '".$_POST["trauma"]."'";
 		}
@@ -195,7 +202,19 @@ if(isset($_POST["submit"])){
 		}
 		
 
-				$sql = "SELECT a.`row_id` , a.`vn` , a.`hn` , a.`an` , a.`dx` , a.`organ` , a.`maintenance` , a.`doctor` , CONCAT( b.`yot` , ' ', b.`name` , ' ', b.`surname` ) AS `full_name` , `age` , `list_ptright` , left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , `type_wounded2` , `repeat`, `to_or`,  `to_lr`,  `to_etc`,  `to_hpt_lp`  FROM `trauma` AS a, `opcard` AS b WHERE a.`hn` = b.`hn` ".$where." ORDER BY a.`date_in` ASC , `h_date` ASC";
+				$sql = "SELECT a.`row_id` , a.`vn` , a.`hn` , a.`an` , a.`dx` , a.`organ` , a.`maintenance` , a.`doctor` , 
+				CONCAT( b.`yot` , ' ', b.`name` , ' ', b.`surname` ) AS `full_name` , `age` , `list_ptright` , 
+				left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , 
+				CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , 
+				left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , 
+				`type_wounded2` , `repeat`, `to_or`,  `to_lr`,  `to_etc`,  `to_hpt_lp`  
+				
+				FROM ( 
+					SELECT * FROM `trauma` WHERE $where_date
+				) AS a 
+				LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+				WHERE $where 
+				ORDER BY a.`date_in` ASC , `h_date` ASC";
 
 		$echoka = "";
 		$echoka1 = "";
