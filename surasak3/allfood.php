@@ -24,7 +24,17 @@ $sortname="ICU";
 	}elseif($lbedcode=='45'){
 $wardname="ËÍ¼Ùé»èÇÂ¾ÔàÈÉ";	
 $sortname="¾ÔàÈÉ";
+	}elseif($lbedcode=='46'){
+$wardname="ËÍ¼Ùé»èÇÂ Cohort Ward";	
+$sortname="Cohort Ward";
+	}elseif($lbedcode=='47'){
+$wardname="ËÍ¼Ùé»èÇÂ Home Isolation";	
+$sortname="Home Isolation";
+	}elseif($lbedcode=='48'){
+$wardname="ËÍ¼Ùé»èÇÂ Ã¾.Ê¹ÒÁ";	
+$sortname="Ã¾.Ê¹ÒÁ";
 	}
+	
 
 
 ?>
@@ -51,28 +61,31 @@ $sortname="¾ÔàÈÉ";
    $ckdate=(date("Y")+543).date("-m-d"); 
  	$datenow=(date("Y")+543).date("-m-d H:i:s"); 
 	
-    $query = "SELECT an,bed,ptname,diagnos,diag1,food,bedcode,age,hn,ptright,bedname,bedpri
-                     FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
-  
+    $query = "SELECT a.an,a.bed,a.ptname,a.diagnos,a.diag1,a.food,a.bedcode,a.age,a.hn,a.ptright,a.bedname,a.bedpri,b.hi_type
+                     FROM bed as a INNER JOIN ipcard as b ON a.an=b.an WHERE a.bedcode LIKE '$lbedcode%' and b.hi_type !='out' ORDER BY a.bed ASC ";
+	//echo $query;
     $result = mysql_query($query) or die("Query failed");
 
-    while (list ($an,$bed,$ptname,$diagnos,$diag1,$food,$bedcode,$age,$hn,$ptright,$bedname,$bedpri) = mysql_fetch_row ($result)) {
+    while (list ($an,$bed,$ptname,$diagnos,$diag1,$food,$bedcode,$age,$hn,$ptright,$bedname,$bedpri,$hi_type) = mysql_fetch_row ($result)) {
 
 		if($diag1 == "âÃ¤»ÃÐ¨ÓµÑÇ"){
 			$diag1_value = "";
 		}else{
 			$diag1_value = $diag1;
 		}
+		
+		
 
-
+if(!empty($hn)){
  $sql = "SELECT thidate,weight,height FROM opd WHERE  hn ='$hn' order by thidate DESC limit 1 ";
+// echo $sql;
 
    list($thidate,$weight,$height) = mysql_fetch_row(Mysql_Query($sql));
 
    $bmi='';
    if($height != "" && $height > 0 && $weight != "" && $weight > 0){$ht = $height/100;
 	$bmi =	number_format(($weight/($ht*$ht)),2); }
-		
+}
 
 print (" <tr>\n".
            "  <td BGCOLOR=66FFCC>$bed</td>\n".

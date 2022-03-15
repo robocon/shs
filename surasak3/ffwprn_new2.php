@@ -9,9 +9,10 @@ body,td,th {
 }
 </style>
 <?
+$xxx = false;
 include("connect.inc");
-$query = "SELECT bed,ptname,diagnos,diag1,food,bedcode,age,hn,bedpri
-                     FROM bed WHERE bedcode LIKE '".$_GET['id']."%' and an!='' ORDER BY bed ASC ";
+$query = "SELECT a.bed,a.ptname,a.diagnos,a.diag1,a.food,a.bedcode,a.age,a.hn,a.bedpri,b.hi_type
+                     FROM bed as a INNER JOIN ipcard as b ON a.an=b.an WHERE a.bedcode LIKE '".$_GET['id']."%' and a.an!='' and b.hi_type !='out' ORDER BY a.bed ASC ";
   
 $result = mysql_query($query) or die("Query failed");  
 ?>
@@ -35,6 +36,8 @@ $result = mysql_query($query) or die("Query failed");
 		
 	?>
 	<td>
+    
+    
     <table width="323" class="font" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
     <tr>
       <td>
@@ -83,21 +86,25 @@ $result = mysql_query($query) or die("Query failed");
     </tr>
     </table></td></tr>
     </table>
+    
+    
     </td>
     <?
 		if($k%2==0){
 			echo "</tr>";
 			//$k=0;
-		}
-		
-		if($k==10||$k==20||$k==30){
-			?>
-  </tr></table>
-			<div style='page-break-after:always'></div>
+		}	
+		//echo "-->".$k;
+		if($k==10 || $k==20 || $k==30){
+?>
+      </tr>
+      </table>
             <table width="100%" align="center" border="0">
 			<tr>
 			<?
+			print "<div style=\"page-break-before: always;\"></div>";
 		}
+			
 	}
 	?>
 </table>

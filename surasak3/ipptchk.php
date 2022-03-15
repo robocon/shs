@@ -39,6 +39,13 @@
     $result = mysql_query($query) or die("Query failed");
     while (list ($bed,$date,$hn,$an,$ptname,$diagnos,$ptright,$doctor,$bedname,$age,$lastcalroom,$bedcode) = mysql_fetch_row ($result)) {
 $num++;
+
+$sql = "SELECT hi_type FROM ipcard  WHERE `an` = '".$an."' limit 1 ";
+
+$rows = mysql_query($sql);
+
+list($hi_type) = Mysql_fetch_row($rows);
+
 if($lastcalroom=="0000-00-00 00:00:00"||$lastcalroom=="") $cloor="#FF0000";
 else $cloor="#F5DEB3";
 
@@ -60,6 +67,22 @@ $color="#FF9B9B";
 $wardname="หอผู้ป่วยพิเศษ";	
 $sortname="พิเศษ";
 $color="#66CDAA";
+	}elseif($lbedcode=='46'){
+$wardname="หอผู้ป่วย Cohort Ward";	
+$sortname="Cohort Ward";
+$color="#FF0033";
+	}elseif($lbedcode=='47'){
+$wardname="ผู้ป่วย Home Isolation";	
+$sortname="Home Isolation";
+	if($hi_type=="in"){
+		$color="#3399CC";
+	}else{
+		$color="#36CFD9";	
+	}
+	}elseif($lbedcode=='48'){
+$wardname="ผู้ป่วย รพ.สนาม";	
+$sortname="รพ.สนาม";
+$color="#9966FF	";
 	}
 	$numall++;
 	$lbedcode1=$lbedcode;

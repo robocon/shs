@@ -22,7 +22,7 @@ top.window.outerWidth = screen.availWidth;
 <?php 
 session_start();
 
-$ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47");
+$ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47","หอผู้ป่วย รพ.สนาม"=>"48");
 $room = array("ธรรมดา 300", "พิเศษ 600", "พิเศษ 800", "พิเศษ 1,200");
 $book = array("มาแล้ว", "ยังไม่มา", "ออกด้วยคอมพิวเตอร์", "ไม่มี");
 
@@ -41,13 +41,15 @@ $sql = "UPDATE `ipcard` SET
 `my_blood` = '".$_POST["blood_money"]."',
 	`adm_w` = '".$_POST["weight"]."',
 `my_office` = '".$_SESSION["sOfficer"]."',
+`hi_type` = '".$_POST["hi_type"]."',
 `ptright` = '".$_POST["ptright"]."'
 WHERE `date` = '".$_GET["Cdate"]."' AND `an` = '".$_GET["Can"]."' AND `hn` = '".$_GET["Chn"]."' LIMIT 1 ;";
 //echo $sql;
 $result = mysql_query($sql);
 
+
 $sql = "update bed set ptright = '".$_POST["ptright"]."' where an = '".$_GET["Can"]."' limit 1";
-$result = mysql_query($sql);
+$result = mysql_query($sql);	
 
 	if($result){
 		echo "<meta http-equiv=\"refresh\" content=\"0; URL=ancashdetail.php?Can=".$_GET["Can"]."&Chn=".$_GET["Chn"]."&Cdate=".$_GET["Cdate"]."&weight=".$_POST["weight"]."\">";
@@ -58,11 +60,11 @@ $result = mysql_query($sql);
 exit();
 }
 
-$sql = "SELECT an,hn,ptname,bedcode,my_ward, my_bedcode, my_earnest, my_confirmbk, my_food, my_cure, my_etc, my_blood,adm_w,ptright FROM ipcard  WHERE `date` = '".$_GET["Cdate"]."' AND `an` = '".$_GET["Can"]."' AND `hn` = '".$_GET["Chn"]."' limit 1 ";
+$sql = "SELECT an,hn,ptname,bedcode,my_ward, my_bedcode, my_earnest, my_confirmbk, my_food, my_cure, my_etc, my_blood,adm_w,ptright,hi_type FROM ipcard  WHERE `date` = '".$_GET["Cdate"]."' AND `an` = '".$_GET["Can"]."' AND `hn` = '".$_GET["Chn"]."' limit 1 ";
 
 $result = mysql_query($sql);
 
-list($an,$hn,$ptname,$bedcode,$my_ward, $my_bedcode, $my_earnest, $my_confirmbk, $my_food, $my_cure, $my_etc, $my_blood,$adm_w,$ptright) = Mysql_fetch_row($result);
+list($an,$hn,$ptname,$bedcode,$my_ward, $my_bedcode, $my_earnest, $my_confirmbk, $my_food, $my_cure, $my_etc, $my_blood,$adm_w,$ptright,$hi_type) = Mysql_fetch_row($result);
 
 $sql = "SELECT note FROM opcard  WHERE `hn` = '".$_GET["Chn"]."' limit 1 ";
 
@@ -246,9 +248,29 @@ return stat;
 	<TD><input name="food_money" type="text" size="10" Onkeypress="check_number();" value="<?php echo $my_food;?>"/>&nbsp;บาท <B>(ตามสิทธิ์การรักษา)</B></TD>
 </TR>
 <TR>
+	<TD align="right"><B>ประเภทผู้ป่วย HI : </B></TD>
+	<TD><select size="1" name="hi_type">
+	<option value="">-------------- เลือกข้อมูล --------------</option>
+	<option value="in" <?php if($hi_type=="in"){ echo "selected='selected'";} ?>>ผู้ป่วย  HI รักษาเรือนรับรอง (ใน)</option>
+	<option value="out" <?php if($hi_type=="out"){ echo "selected='selected'";} ?>>ผู้ป่วย  HI รักษาที่บ้าน (นอก)</option>
+	
+        <?php while($item = mysql_fetch_assoc($q)){ ?>
+        <option value="<?php echo $item['name'];?>"><?php echo $item['name'];?></option>
+        <?php } ?>
+    </select></TD>
+</TR>
+<TR>
   <TD align="right">&nbsp;</TD>
-  <TD><div style="font-size:14px;"><div><strong>1. ผู้ป่วย HI เบิกค่าห้องได้ 1000 บาท (รวมอาหาร 3 มื้อ) ไม่เกิน 10 วัน</strong></div>
-  <div><strong>2. ผู้ป่วย Cohort Ward</strong></div>
+  <TD><div style="font-size:14px;"><div><strong>1. ผู้ป่วย Home Isolation </strong></div>
+  <div style="margin-left:5px;"><strong>สิทธิจ่ายตรง</strong></div>
+    <div style="margin-left:10px;">- เบิกค่าห้องได้ 1000 บาท (รวมอาหาร 3 มื้อ) ไม่เกิน 10 วัน </div>
+	<div style="margin-left:10px;">- เบิกค่าห้องได้ 600 บาท (ไม่รวมอาหาร) ไม่เกิน 10 วัน </div>
+  <div><strong>2. ผู้ป่วย รพ.สนาม</strong></div>
+  <div style="margin-left:5px;"><strong>สิทธิประกันสังคม</strong></div>
+  <div style="margin-left:10px;">- เบิกค่าห้องได้ 1500 บาท </div>
+  <div style="margin-left:5px;"><strong>สิทธิอื่นๆ</strong></div>
+  <div style="margin-left:10px;">- เบิกค่าห้องได้ 1000 บาท </div>
+  <div><strong>3. ผู้ป่วย Cohort Ward</strong></div>
   <div style="margin-left:5px;"><strong>สิทธิประกันสังคม</strong></div>
   <div style="margin-left:10px;">- อาการเล็กน้อย (สีเขียว) เบิกค่าห้องได้ 1500 บาท </div>
   <div style="margin-left:10px;">- อาการปานกลาง (สีเหลือง) เบิกค่าห้องได้ 3000 บาท </div>
@@ -257,7 +279,7 @@ return stat;
   <div style="margin-left:10px;">- อาการเล็กน้อย (สีเขียว) เบิกค่าห้องได้ 1000 บาท </div>
   <div style="margin-left:10px;">- อาการปานกลาง (สีเหลือง) เบิกค่าห้องได้ 3000 บาท </div>
   <div style="margin-left:10px;">- อาการรุนแรง (สีแดง) เบิกค่าห้องได้ 7500 บาท </div>
-  <div><strong>*** ข้อมูลอ้างอิงจากพี่อึ่ง เมื่อ 27/01/65 ***</strong></div></div>  </TD>
+  <div><strong>*** ข้อมูลอ้างอิงจากพี่อึ่ง เมื่อ 18/02/65 ***</strong></div></div>  </TD>
 </TR>
 <TR>
 	<TD align="right">ค่ารักษาพยาบาลไม่เกินครั้งละ : </TD>

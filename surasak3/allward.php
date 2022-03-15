@@ -32,13 +32,20 @@ $sortname="พิเศษ";
 	}elseif($lbedcode=='46'){
 $wardname="หอผู้ป่วย Cohort Ward";	
 $sortname="cohortward";
+	}elseif($lbedcode=='47'){
+$wardname="ผู้ป่วย Home Isolation";	
+$sortname="Home Isolation";
+	}elseif($lbedcode=='48'){
+$wardname="ผู้ป่วย รพ.สนาม";	
+$sortname="รพ.สนาม";
 	}
+	
 	//echo "==>$lbedcode";
 	$bbbbcode=$lbedcode;
 	include("calroom.php");
 	include("alert_booking.php");
 	?>
-<?=$wardname;?> &nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='ipdcost.php'>รวมเงินทุกเตียง</a>
+<strong style="font-size:24px"><?=$wardname;?></strong> &nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='ipdcost.php'>รวมเงินทุกเตียง</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='ipstikerdrug.php'>STICKER</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='booking_system/booking_confirm.php?code=<?=$lbedcode?>'>ระบบจองเตียง</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
@@ -79,6 +86,7 @@ $sortname="cohortward";
 		}
 		echo"</tr></table>";*/
 	
+	
     $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
   //echo "==>".$query;
     $result = mysql_query($query)or die("Query failed");
@@ -114,6 +122,23 @@ $time=explode(" ",$date1);
 		}else{
 			$img='../image_patient/NoPicture.jpg';
 		}
+
+
+
+$sql = "SELECT hi_type FROM ipcard  WHERE `an` = '".$an."' limit 1 ";
+
+$rows = mysql_query($sql);
+
+list($hi_type) = Mysql_fetch_row($rows);
+
+	if($hi_type=="in"){
+		$location="ผู้ป่วย HI รักษาเรือนรับรอง";
+	}else 	if($hi_type=="out"){
+		$location="ผู้ป่วย HI รักษาที่บ้าน";
+	}else{
+		$location="";
+	}
+
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -181,7 +206,7 @@ $(document).ready(function(){
             </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top">
-            <font class='tablefontt1'>อาหาร : </font><? echo "<a target=_blank  href=\"ipfood.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cFood=$food&cbedname=$wardname\" class='tablefont3'>$food</a>"; ?></td>
+            <font class='tablefontt1'>อาหาร : </font><? echo "<a target=_blank  href=\"ipfood.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cFood=$food&cbedname=$wardname\" class='tablefont3'>$food</a>"; ?><strong style="margin-left:20px; color:#FC0944;"><?php echo $location;?></strong></td>
           </tr>
           <tr style="line-height:25PX;">
             <td colspan="10" valign="top" ><font class='tablefontt1'>หัตถการ  :</font>

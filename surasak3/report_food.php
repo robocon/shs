@@ -133,7 +133,9 @@ color: #FFF;
 </div>
 <?
 if($_POST['submit']=="ค้นหา"){
-
+?>
+<p align="center" style="font-size: 20px; font-weight:bold;">รายงานแบบเดิม</p>
+<?
 $month['01'] = "มกราคม";
 $month['02'] = "กุมภาพันธ์";
 $month['03'] = "มีนาคม";
@@ -173,8 +175,8 @@ $end_date1=($_POST['y_end']-543).'-'.$_POST['m_end'].'-'.$_POST['endday'];
 $sumday = Dbetween($start_date1,$end_date1);
 
 		
-$tsql1="CREATE TEMPORARY TABLE   food1  SELECT *  FROM food WHERE SUBSTRING( regisdate, 1, 10 ) 
-BETWEEN '$start_date' AND '$end_date'";
+$tsql1="CREATE TEMPORARY TABLE   food1  SELECT a.*,b.hi_type  FROM food as a INNER JOIN ipcard as b ON a.an=b.an WHERE SUBSTRING( a.regisdate, 1, 10 ) 
+BETWEEN '$start_date' AND '$end_date' and b.hi_type='in'";
 $tquery1 = mysql_query($tsql1) or die (mysql_error());
 
 
@@ -340,6 +342,7 @@ if($avg2[1]>0){
 }*/
 
 ?>
+
 <h1 class="font" align="center">จำนวนผู้ป่วยที่รับประทานอาหาร วันที่  <?=$value2;?></h1>
 
 <table border="1" class="font" cellpadding="0" cellspacing="0" style="border-collapse:collapse;" bordercolor="#000000" align="center">
@@ -382,9 +385,9 @@ if($avg2[1]>0){
     <td align="center"><?=$arr421['count421']?></td>
     <td align="center"><?=$fward2;?></td>
     <td align="center">&nbsp;</td>
-    <td rowspan="2" align="center"><?=number_format($avg*120);?></td>
-    <td rowspan="2" align="center"><?=number_format($avg2*170);?></td>
-    <td rowspan="2" align="center"><?=number_format(($avg*120)+($avg2*170));?></td>
+    <td rowspan="2" align="center">&nbsp;</td>
+    <td rowspan="2" align="center">&nbsp;</td>
+    <td rowspan="2" align="center">&nbsp;</td>
   </tr>
   <tr>
     <td>สูติฯ</td>
@@ -413,9 +416,9 @@ if($avg2[1]>0){
     <td align="center"><?=$arr451['count451']?></td>
     <td align="center"><?=$vipward2;?></td>
     <td align="center">&nbsp;</td>
-    <td align="center">H</td>
-    <td align="center">H</td>
-    <td align="center">( H )</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
   </tr>
   <tr>
     <td>ICU</td>
@@ -454,7 +457,431 @@ $no++;
 	}
 	
 ?>
+<p><hr /></p>
+<p align="center" style="font-size: 20px; font-weight:bold;">รายงานแบบใหม่ (Cohort Ward & Home Isolation & รพ.สนาม)</p>
+<?
+
+$no=1;
+
+foreach ($sumday as $value) {
+	
+$value1=explode("-",$value);
+
+$value2=$value1[2].' '.$month[$value1[1]].' '.($value1[0]+543);
+
+$regisdate=($value1[0]+543).'-'.$value1[1].'-'.$value1[2];
+
+//// มื้อเช้า  เตียงสามัญ///
+$sql42="Select count(an)as count42 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '42%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query42 = mysql_query($sql42) or die (mysql_error());
+$arr42=mysql_fetch_array($query42);
+
+$sql43="Select count(an)as count43 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query43 = mysql_query($sql43) or die (mysql_error());
+$arr43=mysql_fetch_array($query43);
+
+$sql44="Select count(an)as count44 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '44%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query44 = mysql_query($sql44) or die (mysql_error());
+$arr44=mysql_fetch_array($query44);
+
+$sql45="Select count(an)as count45 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '45%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query45 = mysql_query($sql45) or die (mysql_error());
+$arr45=mysql_fetch_array($query45);
+
+$sql46="Select count(an)as count46 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '46%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query46 = mysql_query($sql46) or die (mysql_error());
+$arr46=mysql_fetch_array($query46);
+
+$sql47="Select count(an)as count47 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '47%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query47 = mysql_query($sql47) or die (mysql_error());
+$arr47=mysql_fetch_array($query47);
+
+$sql48="Select count(an)as count48 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '48%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query48 = mysql_query($sql48) or die (mysql_error());
+$arr48=mysql_fetch_array($query48);
+
+
+/////////  มื้อกลางวัน  สามัญ ///
+
+$sql142="Select count(an)as count142 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query142 = mysql_query($sql142) or die (mysql_error());
+$arr142=mysql_fetch_array($query142);
+
+$sql143="Select count(an)as count143 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query143 = mysql_query($sql143) or die (mysql_error());
+$arr143=mysql_fetch_array($query143);
+
+$sql144="Select count(an)as count144 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query144 = mysql_query($sql144) or die (mysql_error());
+$arr144=mysql_fetch_array($query144);
+
+$sql145="Select count(an)as count145 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '45%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query145 = mysql_query($sql145) or die (mysql_error());
+$arr145=mysql_fetch_array($query145);
+
+$sql146="Select count(an)as count146 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '46%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query146 = mysql_query($sql146) or die (mysql_error());
+$arr146=mysql_fetch_array($query146);
+
+$sql147="Select count(an)as count147 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '47%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query147 = mysql_query($sql147) or die (mysql_error());
+$arr147=mysql_fetch_array($query147);
+
+$sql148="Select count(an)as count148 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '48%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query148 = mysql_query($sql148) or die (mysql_error());
+$arr148=mysql_fetch_array($query148);
+
+/////////  มื้อกลางเย็น  สามัญ ///
+
+$sql242="Select count(an)as count242 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query242 = mysql_query($sql242) or die (mysql_error());
+$arr242=mysql_fetch_array($query242);
+
+$sql243="Select count(an)as count243 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query243 = mysql_query($sql243) or die (mysql_error());
+$arr243=mysql_fetch_array($query243);
+
+$sql244="Select count(an)as count244 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query244 = mysql_query($sql244) or die (mysql_error());
+$arr244=mysql_fetch_array($query244);
+
+$sql245="Select count(an)as count245 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query245 = mysql_query($sql245) or die (mysql_error());
+$arr245=mysql_fetch_array($query245);
+
+$sql246="Select count(an)as count246 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '46%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query246 = mysql_query($sql246) or die (mysql_error());
+$arr246=mysql_fetch_array($query246);
+
+$sql247="Select count(an)as count247 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '47%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query247 = mysql_query($sql247) or die (mysql_error());
+$arr247=mysql_fetch_array($query247);
+
+$sql248="Select count(an)as count248 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '48%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query248 = mysql_query($sql248) or die (mysql_error());
+$arr248=mysql_fetch_array($query248);
+
+
+//////////////////////// ผลรวม สามัญ 4 ward ///
+
+
+$fward=$arr42['count42']+$arr242['count242']+$arr142['count142']; 
+$gward=$arr43['count43']+$arr243['count243']+$arr143['count143']; 
+$vipward=$arr45['count45']+$arr245['count245']+$arr145['count145']; 
+$icuward=$arr44['count44']+$arr244['count244']+$arr144['count144']; 
+
+$newsum1=$fward+$gward+$vipward+$icuward;
+
+$newavg=ceil($newsum1/3);
+
+
+///////////////////////// จบ เตียงสามัญ ///////////////////
+
+
+
+
+
+
+////////////// เตียงพิเศษ //////
+//// มื้อเช้า  เตียงพิเศษ///1.
+$sql421="Select count(an)as count421 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '42%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query421= mysql_query($sql421) or die (mysql_error());
+$arr421=mysql_fetch_array($query421);
+
+$sql431="Select count(an)as count431 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query431 = mysql_query($sql431) or die (mysql_error());
+$arr431=mysql_fetch_array($query431);
+
+$sql441="Select count(an)as count441 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '44%' AND food !=  'NPO (งดอาหาร, น้ำ)' ";
+$query441 = mysql_query($sql441) or die (mysql_error());
+$arr441=mysql_fetch_array($query441);
+
+$sql451="Select count(an)as count451 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '45%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query451 = mysql_query($sql451) or die (mysql_error());
+$arr451=mysql_fetch_array($query451);
+
+$sql461="Select count(an)as count461 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '46%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+//echo $sql461;
+$query461 = mysql_query($sql461) or die (mysql_error());
+$arr461=mysql_fetch_array($query461);
+
+$sql471="Select count(an)as count471 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '47%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query471 = mysql_query($sql471) or die (mysql_error());
+$arr471=mysql_fetch_array($query471);
+
+$sql481="Select count(an)as count481 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '48%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$query481 = mysql_query($sql481) or die (mysql_error());
+$arr481=mysql_fetch_array($query481);
+
+
+///  มื้อกลางวัน  พิเศษ ///2.
+
+$sql422="Select count(an)as count422 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query422 = mysql_query($sql422) or die (mysql_error());
+$arr422=mysql_fetch_array($query422);
+
+$sql432="Select count(an)as count432 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query432 = mysql_query($sql432) or die (mysql_error());
+$arr432=mysql_fetch_array($query432);
+
+$sql442="Select count(an)as count442 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query442 = mysql_query($sql442) or die (mysql_error());
+$arr442=mysql_fetch_array($query442);
+
+$sql452="Select count(an)as count452 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query452 = mysql_query($sql452) or die (mysql_error());
+$arr452=mysql_fetch_array($query452);
+
+$sql462="Select count(an)as count462 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '46%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query462 = mysql_query($sql462) or die (mysql_error());
+$arr462=mysql_fetch_array($query462);
+
+$sql472="Select count(an)as count472 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '47%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query472 = mysql_query($sql472) or die (mysql_error());
+$arr472=mysql_fetch_array($query472);
+
+$sql482="Select count(an)as count482 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '48%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query482 = mysql_query($sql482) or die (mysql_error());
+$arr482=mysql_fetch_array($query482);
+
+
+///  มื้อเย็น  พิเศษ ///3.
+
+$sql423="Select count(an)as count423 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query423 = mysql_query($sql423) or die (mysql_error());
+$arr423=mysql_fetch_array($query423);
+
+$sql433="Select count(an)as count433 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query433 = mysql_query($sql433) or die (mysql_error());
+$arr433=mysql_fetch_array($query433);
+
+$sql443="Select count(an)as count443 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query443 = mysql_query($sql443) or die (mysql_error());
+$arr443=mysql_fetch_array($query443);
+
+$sql453="Select count(an)as count453 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query453 = mysql_query($sql453) or die (mysql_error());
+$arr453=mysql_fetch_array($query453);
+
+$sql463="Select count(an)as count463 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '46%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query463 = mysql_query($sql463) or die (mysql_error());
+$arr463=mysql_fetch_array($query463);
+
+$sql473="Select count(an)as count473 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '47%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+//echo $sql473;
+$query473 = mysql_query($sql473) or die (mysql_error());
+$arr473=mysql_fetch_array($query473);
+
+$sql483="Select count(an)as count483 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '48%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$query483 = mysql_query($sql483) or die (mysql_error());
+$arr483=mysql_fetch_array($query483);
+
+
+
+//////////////////////// ผลรวม พิเศษ 4 ward ///
+
+$fward2=$arr421['count421']+$arr422['count422']+$arr423['count423']; 
+$gward2=$arr431['count431']+$arr432['count432']+$arr433['count433']; 
+$vipward2=$arr451['count451']+$arr452['count452']+$arr453['count453']; 
+$icuward2=$arr441['count441']+$arr442['count442']+$arr443['count443']; 
+$cward=$arr461['count461']+$arr462['count462']+$arr463['count463']; 
+$hward=$arr471['count471']+$arr472['count472']+$arr473['count473']; 
+$fward=$arr481['count481']+$arr482['count482']+$arr483['count483']; 
+
+
+//$newsum2=$fward2+$gward2+$vipward2+$icuward2;  //ถ้าเปิด ward รวม ปิด cohort wart ใช้ตัวนี้
+//$newsum2=$cward+$gward2+$vipward2+$icuward2;  //ถ้าปิด ward รวม เปิด cohort wart ใช้ตัวนี้
+//$newsum2=$fward2+$gward2+$vipward2+$icuward2+$hward;  //ถ้าเปิด ward รวม และ home isolation แต่ปิด cohort wart ใช้ตัวนี้
+//$newsum2=$gward2+$vipward2+$icuward2+$cward+$hward; //ถ้าปิด ward รวม เปิด cohort wart และ home isolation ใช้ตัวนี้
+$newsum2=$fward2+$gward2+$vipward2+$icuward2+$cward+$hward+$fward; //ถ้าเปิด ward รวม , cohort wart home isolation และ รพ.สนาม ใช้ตัวนี้
+
+$newavg2=ceil($newsum2/3); 
+
+
+
+
+/*$avg2=explode(".",$avg2);
+
+if($avg2[1]>0){
+	$avg2=$avg2+1;
+}else{
+	$avg2=$avg2;
+}*/
+
+?>
+
+<h1 class="font" align="center">จำนวนผู้ป่วยที่รับประทานอาหาร วันที่  <?=$value2;?></h1>
+
+<table border="1" class="font" cellpadding="0" cellspacing="0" style="border-collapse:collapse;" bordercolor="#000000" align="center">
+  <tr>
+    <td rowspan="2" align="center">หอผู้ป่วย</td>
+    <td colspan="3" align="center">มื้ออาหารเตียงสามัญ</td>
+    <td colspan="2" align="center">รวม</td>
+    <td rowspan="2" align="center">หอผู้ป่วย</td>
+    <td colspan="3" align="center">มื้ออาหารเตียงพิเศษ</td>
+    <td colspan="2" align="center">รวม</td>
+    <td align="center">&nbsp; &nbsp;สามัญ&nbsp;&nbsp;</td>
+    <td align="center">&nbsp;&nbsp;พิเศษ&nbsp;&nbsp;</td>
+    <td align="center">&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="center">ก.</td>
+    <td align="center">ย.</td>
+    <td align="center">ช.</td>
+    <td>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
+    <td align="center">&nbsp;&nbsp;เฉลี่ย&nbsp;&nbsp;</td>
+    <td align="center">ก.</td>
+    <td align="center">ย.</td>
+    <td align="center">ช.</td>
+    <td>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
+    <td align="center">&nbsp;&nbsp;เฉลี่ย&nbsp;&nbsp;</td>
+    <td align="center">R</td>
+    <td align="center">R</td>
+    <td align="center">( R )</td>
+  </tr>
+  <tr>
+    <td>Home Isolation</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center"></td>
+    <td>Home Isolation</td>
+    <td align="center"><?=$arr472['count472']?></td>
+    <td align="center"><?=$arr473['count473']?></td>
+    <td align="center"><?=$arr471['count471']?></td>
+    <td align="center"><?=$hward;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>รพ.สนาม</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center"></td>
+    <td>รพ.สนาม</td>
+    <td align="center"><?=$arr482['count482']?></td>
+    <td align="center"><?=$arr483['count483']?></td>
+    <td align="center"><?=$arr481['count481']?></td>
+    <td align="center"><?=$cward;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>cohort ward</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center"></td>
+    <td>cohort ward</td>
+    <td align="center"><?=$arr462['count462']?></td>
+    <td align="center"><?=$arr463['count463']?></td>
+    <td align="center"><?=$arr461['count461']?></td>
+    <td align="center"><?=$cward;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>รวม</td>
+    <td align="center"><?=$arr142['count142']?></td>
+    <td align="center"><?=$arr242['count242']?></td>
+    <td align="center"><?=$arr42['count42']?></td>
+    <td align="center"><?=$fward;?>    </td>
+    <td align="center"></td>
+    <td>รวม</td>
+    <td align="center"><?=$arr422['count422']?></td>
+    <td align="center"><?=$arr423['count423']?></td>
+    <td align="center"><?=$arr421['count421']?></td>
+    <td align="center"><?=$fward2;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>สูติฯ</td>
+    <td align="center"><?=$arr143['count143']?></td>
+    <td align="center"><?=$arr243['count243']?></td>
+    <td align="center"><?=$arr43['count43']?></td>
+    <td align="center"><?=$gward;?></td>
+    <td align="center">&nbsp;</td>
+    <td>สูติฯ</td>
+    <td align="center"><?=$arr432['count432']?></td>
+    <td align="center"><?=$arr433['count433']?></td>
+    <td align="center"><?=$arr431['count431']?></td>
+    <td align="center"><?=$gward2;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>พิเศษ</td>
+    <td align="center"><?=$arr145['count145']?></td>
+    <td align="center"><?=$arr245['count245']?></td>
+    <td align="center"><?=$arr45['count45']?></td>
+    <td align="center"><?=$vipward;?></td>
+    <td align="center">&nbsp;</td>
+    <td>พิเศษ</td>
+    <td align="center"><?=$arr452['count452']?></td>
+    <td align="center"><?=$arr453['count453']?></td>
+    <td align="center"><?=$arr451['count451']?></td>
+    <td align="center"><?=$vipward2;?></td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>ICU</td>
+    <td align="center"><?=$arr144['count144']?></td>
+    <td align="center"><?=$arr244['count244']?></td>
+    <td align="center"><?=$arr44['count44']?></td>
+    <td align="center"><?=$icuward;?></td>
+    <td align="center">&nbsp;</td>
+    <td>ICU</td>
+    <td align="center"><?=$arr442['count442']?></td>
+    <td align="center"><?=$arr443['count443']?></td>
+    <td align="center"><?=$arr441['count441']?></td>
+    <td align="center"><?=$icuward2;?></td>
+    <td align="center">&nbsp;</td>
+    <td rowspan="2" align="center"><?=number_format($newavg*150);?></td>
+    <td rowspan="2" align="center"><?=number_format($newavg2*200);?></td>
+    <td rowspan="2" align="center"><?=number_format(($newavg*150)+($newavg2*200));?></td>
+  </tr>
+  <tr>
+    <td colspan="4">จำนวนผู้ป่วยสามัญต่อวัน</td>
+    <td align="center"><?=number_format($newsum1);?></td>
+    <td align="center"><?=$newavg;?></td>
+    <td colspan="4">จำนวนผู้ป่วยพิเศษต่อวัน</td>
+    <td align="center"><?=number_format($newsum2);?></td>
+    <td align="center"><?=$newavg2;?></td>
+  </tr>
+</table>
+
+<?
+if($no%4==0){ ?>
+<div style="page-break-before:always;">
+<?	
+} // if
+	
+$no++;	
+	}
+	
+?>
+
 
 <?
 }// ค้นหา
 ?>
+<br />
+<br />
