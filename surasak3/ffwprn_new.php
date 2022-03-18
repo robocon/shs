@@ -12,6 +12,12 @@
     	print "รายการอาหาร หอผู้ป่วยหนัก(ICU)<br>";
 	}elseif($_GET['id']=="45"){
     	print "รายการอาหาร หอผู้ป่วยพิเศษ<br>";
+	}elseif($_GET['id']=="46"){
+    	print "รายการอาหาร Cohort Ward<br>";
+	}elseif($_GET['id']=="47"){
+    	print "รายการอาหาร Home Isolation<br>";
+	}elseif($_GET['id']=="48"){
+    	print "รายการอาหาร รพ.สนาม<br>";
 	}
 	?>
 <style>
@@ -40,8 +46,8 @@ color: #FFF;
     <?
     include("connect.inc");
  
-    $query = "SELECT bed,ptname,diagnos,diag1,food,bedcode,age,hn
-                     FROM bed WHERE bedcode LIKE '".$_GET['id']."%' ORDER BY bed ASC ";
+    $query = "SELECT a.bed,a.ptname,a.diagnos,a.diag1,a.food,a.bedcode,a.age,a.hn
+                     FROM bed as a INNER JOIN ipcard as b ON a.an=b.an WHERE b.hi_type !='out' and a.bedcode LIKE '".$_GET['id']."%' ORDER BY a.bed ASC ";
   
     $result = mysql_query($query)
         or die("Query failed");

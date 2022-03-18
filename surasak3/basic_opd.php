@@ -1,8 +1,6 @@
 <?php 
 
 session_start();
-include("connect.inc");
-$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -23,51 +21,6 @@ if($_SESSION["sOfficer"] == ""){
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 exit();
-}
-
-
-$page = $_GET['page'];
-// รายการแพ้ยา
-if($page=='showdrug')
-{
-	$drugcode = trim($_GET['drugcode']);
-
-	$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-	$sql = "SELECT * FROM `druglst` WHERE `drugcode` LIKE '$drugcode%' OR `tradname` LIKE '%$drugcode%' OR `genname` LIKE '%$drugcode%' ";
-	$q_drug = $dbi->query($sql);
-	?>
-	<div style="background-color: #bbbbbb; text-align: center; font-weight: bold;" id="drugreact_close"><a href="javascript:void(0);">[ปิด]</a></div>
-	<table width="100%" style="background-color: #ffffff; border: 1px solid #bbb;">
-		<tr style="background-color: #50d18f;">
-			<th>รหัสยา</th>
-			<th>ชื่อทางการค้า</th>
-			<th>ชื่อสามัญ</th>
-		</tr>
-		<?php 
-		if($q_drug->num_rows > 0)
-		{
-			while ($item = $q_drug->fetch_assoc()) {
-				?>
-				<tr>
-					<td><a href="javascript:void(0);" data-drugcode="<?=$item['drugcode'];?>" data-genname="<?=$item['genname'];?>" class="select_drugreact_item"><?=$item['drugcode'];?></a></td>
-					<td><?=$item['tradname'];?></td>
-					<td><?=$item['genname'];?></td>
-				</tr>
-				<?php 
-			}
-		}
-		else
-		{
-			?>
-			<tr>
-				<td colspan="3">ไม่พบข้อมูล</td>
-			</tr>
-			<?php
-		}
-		?>
-	</table>
-	<?php
-	exit;
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -127,12 +80,6 @@ font-size:18px;
   font-size: 22px;
   font-weight:bold;
 }
-select{
-	max-width:600px;
-}
-input[type=radio]:hover{
-	cursor: pointer;
-}
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
@@ -163,7 +110,7 @@ function calcage($birth){
 return $pAge;
 }
 
-
+include("connect.inc");   
 
 $thidate = date("d-m-").(date("Y")+543);
 $thidatehn = $thidate.$_REQUEST["hn"];
@@ -204,194 +151,86 @@ if($_POST["cigarette"]=="1"){
 
 	$grade = ( empty($_POST['grade']) ) ? NULL : $_POST['grade'] ;
 	$mind = ( empty($_POST['mind']) ) ? NULL : $_POST['mind'] ;
-	$the_pill = ( empty($_POST['the_pill']) ) ? '0' : $_POST['the_pill'] ;
-
-
-	$antiplatelet = $_POST['antiplatelet'];
-	$antiplatelet_txt = $_POST['antiplatelet_txt'];
-	$esr = $_POST['esr'];
-	$esr_ph = $_POST['esr_ph'];
-	$esr_glass = $_POST['esr_glass'];
-	$esr_not = $_POST['esr_not'];
-	$esl = $_POST['esl'];
-	$esl_ph = $_POST['esl_ph'];
-	$esl_glass = $_POST['esl_glass'];
-	$esl_not = $_POST['esl_not'];
-	$nurse_dx1 = $_POST['nurse_dx1'];
-	$nurse_dx1_txt = $_POST['nurse_dx1_txt'];
-	$nurse_dx2 = $_POST['nurse_dx2'];
-	$nurse_dx2_txt = $_POST['nurse_dx2_txt'];
-	$nurse_dx3 = $_POST['nurse_dx3'];
-	$nurse_dx3_txt = $_POST['nurse_dx3_txt'];
-	$nurse_dx4 = $_POST['nurse_dx4'];
-	$nurse_dx5 = $_POST['nurse_dx5'];
-	$imp1 = $_POST['imp1'];
-	$imp2 = $_POST['imp2'];
-	$imp2_txt = $_POST['imp2_txt'];
-	$imp3 = $_POST['imp3'];
-	$imp4 = $_POST['imp4'];
-	$imp5 = $_POST['imp5'];
-	$imp6 = $_POST['imp6'];
-	$imp6_txt = $_POST['imp6_txt'];
-	$eva1 = $_POST['eva1'];
-	$eva2 = $_POST['eva2'];
-	$eva3 = $_POST['eva3'];
-	$eva4 = $_POST['eva4'];
-	$eva5 = $_POST['eva5'];
-	$eva6 = $_POST['eva6'];
-	$eva7 = $_POST['eva7'];
-	$eva8 = $_POST['eva8'];
-	$eva9 = $_POST['eva9'];
-	$eva10 = $_POST['eva10'];
-	$eva10_txt = $_POST['eva10_txt'];
-
-	$react_hn = $_REQUEST["hn"];
-
-	$drugreact_selected = $_POST['drugreact_selected'];
-	foreach ($drugreact_selected as $key => $dreact_item) {
-
-		$sql_druglst = "SELECT `tradname`,`genname` FROM `druglst` WHERE `drugcode` = '$dreact_item' ";
-		$q_druglst = mysql_query($sql_druglst);
-		$druglst = mysql_fetch_assoc($q_druglst);
-		$tradname = $druglst['tradname'];
-		$genname = $druglst['genname'];
-		$officer = $_SESSION['sOfficer'];
-
-		$sql_find_drugreact = "SELECT * FROM `drugreact` WHERE `hn` = '$react_hn' AND `drugcode` = '$dreact_item' ";
-		$q_d = mysql_query($sql_find_drugreact);
-		if(mysql_num_rows($q_d) == 0)
-		{
-			$sql_insert_drugreact = "INSERT INTO `drugreact` (`hn`,`drugcode`,`tradname`,`genname`,`officer`,`date`,`reporter`,`groupname`) VALUE (
-				'$react_hn','$dreact_item','$tradname','$genname','$officer','$thidate_now','OPD',''
-			);";
-			$drug_save = mysql_query($sql_insert_drugreact);
-		}
-
-	}
+	$the_pill = ( empty($_POST['the_pill']) ) ? NULL : $_POST['the_pill'] ;
 	
-	
-	$sql = "Select row_id From opd where thdatehn = '".$thidatehn."' limit 1";
+	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
+	list($rows) = Mysql_fetch_row($result);
 	
-	
-if(mysql_num_rows($result) > 0){ 
+if($rows > 0){
 
-	$opd_item = mysql_fetch_assoc($result);
-	$opd_id = $opd_item['row_id'];
+$sql = "Update `opd` set  `thidate` = '".$thidate_now."', 
+`temperature`  = '".$_POST["temperature"]."', 
+`pause`  = '".$_POST["pause"]."', 
+`rate`  = '".$_POST["rate"]."', 
+`weight`  = '".$_POST["weight"]."', 
+`bp1`  = '".$_POST["bp1"]."', 
+`bp2`  = '".$_POST["bp2"]."', 
+`drugreact`  = '".$_POST["drugreact"]."', 
+`congenital_disease`  = '".$_POST["congenital_disease"]."', 
+`type`  = '".$_POST["type"]."', 
+`organ`  = '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', 
+`doctor` = '".$doctorname."',  
+`officer` = '".$_SESSION["sOfficer"]."' ,  
+`dc_diag` = Null, `vn`= '".$_POST["vn"]."', 
+`toborow` = '".$_POST["toborow"]."', 
+`height` = '".$_POST["height"]."' , 
+`clinic`  = '".$_POST["clinic"]."' , 
+`cigarette`= '".$_POST["cigarette"]."', 
+`alcohol`= '".$_POST["alcohol"]."', 
+`cigok`= '".$_POST["member2"]."', 
+`waist`= '".$_POST["waist"]."',
+`chkup`= '".$_POST["typediag"]."',
+`room`= '".$_POST["room"]."' ,
+`painscore`= '".$_POST["painscore"]."',
+`age`='".$cAge."',
+`bp3`='$bp3',
+`bp4`='$bp4', 
+`mens` = '$mens', 
+`mens_date` = '$mens_date', 
+`vaccine` = '$vaccine', 
+`parent_smoke` = '$parent_smoke', 
+`parent_smoke_amount` = '$parent_smoke_amount', 
+`parent_drink` = '$parent_drink', 
+`parent_drink_amount` = '$parent_drink_amount', 
+`smoke_amount` = '$smoke_amount', 
+`drink_amount` = '$drink_amount', 
+`ht_amount` = '$ht_amount', 
+`dm_amount` = '$dm_amount', 
+`hpi` = '$hpi',
+`grade` = '$grade', 
+`mind` = '$mind', 
+`the_pill` = '$the_pill' 
 
-	$sql = "Update `opd` set  `thidate` = '".$thidate_now."', 
-	`temperature`  = '".$_POST["temperature"]."', 
-	`pause`  = '".$_POST["pause"]."', 
-	`rate`  = '".$_POST["rate"]."', 
-	`weight`  = '".$_POST["weight"]."', 
-	`bp1`  = '".$_POST["bp1"]."', 
-	`bp2`  = '".$_POST["bp2"]."', 
-	`drugreact`  = '".$_POST["drugreact"]."', 
-	`congenital_disease`  = '".$_POST["congenital_disease"]."', 
-	`type`  = '".$_POST["type"]."', 
-	`organ`  = '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', 
-	`doctor` = '".$doctorname."',  
-	`officer` = '".$_SESSION["sOfficer"]."' ,  
-	`dc_diag` = Null, `vn`= '".$_POST["vn"]."', 
-	`toborow` = '".$_POST["toborow"]."', 
-	`height` = '".$_POST["height"]."' , 
-	`clinic`  = '".$_POST["clinic"]."' , 
-	`cigarette`= '".$_POST["cigarette"]."', 
-	`alcohol`= '".$_POST["alcohol"]."', 
-	`cigok`= '".$_POST["member2"]."', 
-	`waist`= '".$_POST["waist"]."',
-	`chkup`= '".$_POST["typediag"]."',
-	`room`= '".$_POST["room"]."' ,
-	`painscore`= '".$_POST["painscore"]."',
-	`age`='".$cAge."',
-	`bp3`='$bp3',
-	`bp4`='$bp4', 
-	`mens` = '$mens', 
-	`mens_date` = '$mens_date', 
-	`vaccine` = '$vaccine', 
-	`parent_smoke` = '$parent_smoke', 
-	`parent_smoke_amount` = '$parent_smoke_amount', 
-	`parent_drink` = '$parent_drink', 
-	`parent_drink_amount` = '$parent_drink_amount', 
-	`smoke_amount` = '$smoke_amount', 
-	`drink_amount` = '$drink_amount', 
-	`ht_amount` = '$ht_amount', 
-	`dm_amount` = '$dm_amount', 
-	`hpi` = '$hpi',
-	`grade` = '$grade', 
-	`mind` = '$mind', 
-	`the_pill` = '$the_pill' 
+where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
-	where  `thdatehn` = '".$thidatehn."' limit 1 ";
-	$result = Mysql_Query($sql) or die(Mysql_Error());
+
+
 }else{
 		
-	$sql = "INSERT INTO `opd` (
-		`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
-		`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
-		`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , 
-		`toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,
-		`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
-		`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
-		`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,
-		`hpi`,`grade`,`mind`,`the_pill`
-	)VALUES (
-		NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
-		'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
-		'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
-		'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
-		'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
-		'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
-		'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
-		'$hpi', '$grade','$mind','$the_pill'
-	);";
+$sql = "INSERT INTO `opd` (
+	`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
+	`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
+	`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , 
+	`toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,
+	`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
+	`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
+	`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,
+	`hpi`,`grade`,`mind`,`the_pill`
+)VALUES (
+	NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
+	'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
+	'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
+	'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
+	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
+	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
+	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
+	'$hpi', '$grade','$mind','$the_pill'
+);";
+
+}
+
 	$result = Mysql_Query($sql) or die(Mysql_Error());
-	$opd_id = mysql_insert_id();
-	
-}
-
-
-
-
-$sql_find_opd_eye = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$thidatehn' ";
-$q_opd_eye = mysql_query($sql_find_opd_eye);
-if(mysql_num_rows($q_opd_eye) == 0)
-{
-	$hn = $_REQUEST['hn'];
-	$ptname = $_POST["ptname"];
-	
-	$opd_eye_sql = "INSERT INTO `pt_opd_eye` (
-		`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
-		`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
-		`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
-		`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
-		`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`
-	) VALUES (
-		NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
-		'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
-		'$nurse_dx1', '$nurse_dx1_txt', '$nurse_dx2', '$nurse_dx2_txt', '$nurse_dx3', '$nurse_dx3_txt', '$nurse_dx4', '$nurse_dx5', 
-		'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
-		'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt' 
-	);";
-	$opd_eye_save = mysql_query($opd_eye_sql);
-}
-else 
-{
-
-	$opd_eye = mysql_fetch_assoc($q_opd_eye);
-	$id = $opd_eye['id'];
-
-	$opd_eye_sql = "UPDATE `pt_opd_eye` SET 
-	`thdatehn`='$thidatehn', `opd`='$opd_id', `hn`='$hn', `ptname`='$ptname', `antiplatelet`='$antiplatelet', `antiplatelet_txt`='$antiplatelet_txt', 
-	`esr`='$esr', `esr_ph`='$esr_ph', `esr_glass`='$esr_glass', `esr_not`='$esr_not', `esl`='$esl', `esl_ph`='$esl_ph', `esl_glass`='$esl_glass', `esl_not`='$esl_not', 
-	`nurse_dx1`='$nurse_dx1', `nurse_dx1_txt`='$nurse_dx1_txt', `nurse_dx2`='$nurse_dx2', `nurse_dx2_txt`='$nurse_dx2_txt', `nurse_dx3`='$nurse_dx3', `nurse_dx3_txt`='$nurse_dx3_txt', `nurse_dx4`='$nurse_dx4', `nurse_dx5`='$nurse_dx5', 
-	`imp1`='$imp1', `imp2`='$imp2', `imp2_txt`='$imp2_txt', `imp3`='$imp3', `imp4`='$imp4', `imp5`='$imp5', `imp6`='$imp6', `imp6_txt`='$imp6_txt', 
-	`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt' 
-	WHERE `id` = '$id' ;";
-	$opd_eye_save = mysql_query($opd_eye_sql);
-
-}
-	
 	
 	$field="";
 	if($_POST["appoint"] > 0){
@@ -428,45 +267,17 @@ else
 	}
 
 	if((isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "")){
-		?>
-		<script type="text/javascript">
-		window.onload = function(){
-			var stkBasic = window.open("stk_basic_opd.php?dthn=<?=urlencode($thidatehn);?>");
-			stkBasic.onload = function(){
-				location.href = "basic_opd.php";
-			}
-		};
-		</script>
-		<?php
-		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-		// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
-		// $time = "6";
+		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
+	$time = "6";
 	}else{
-		?>
-		<script type="text/javascript">
-		window.onload = function(){
-			var stkBasic = window.open("insert_basic_opd.php?dthn=<?=urlencode($thidatehn);?>");
-		};
-		</script>
-		<?php 
-		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-		// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
-		// $time = "3";
+		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
+		$time = "3";
 	}
-	?>
-	<script type="text/javascript">
-		setTimeout(function () { 
-			// force parent redirect to basic_opd.php
-			window.location.href = "basic_opd.php";
-		}, 1500);
-	</script>
-	<p>
-		<a href="basic_opd.php" style="font-size:14px; color:#FF0000;">&lt;&lt;กลับไปหน้าซักประวัติ</a>
-	</p>
-	<?php
 
 	if($plus == ""){
-		// echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
 	}
 	exit();
 }
@@ -531,7 +342,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 </form>
  <p><span class="tb_font">
   <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" />
- </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></p>
+ </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></p>
 <p>&nbsp; </p>
  
  <?php
@@ -704,9 +515,9 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$i=0;
 	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ $txt_react[$i] = "&nbsp;&nbsp;&nbsp;<b>[".$drugcode."]</b> ".$tradname.", "; $i++; }
 	
-	$txt_react2 = implode("<br>",$txt_react);
+	$txt_react2 = implode("",$txt_react);
 	
-	// $txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
+	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
  ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -731,9 +542,9 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
       <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><strong><?php echo $ptright;?></strong></font> &nbsp;&nbsp;&nbsp;
 				, หมายเหตุ : <?php echo $note;?>		</td>
       </tr>
-      <!-- <tr class="headsarabun">
+      <tr class="headsarabun">
         <td><font class="data_drugreact"><?php echo $txt_react2;?></font></td>
-      </tr> -->
+      </tr>
       <tr>
         <td>เวลาลงทะเบียน : <strong><?php echo $regis_time;?></strong>          , เวลาจ่ายOPD Card : <strong><?php echo $time1;?></strong> , เวลาซักประวัติ : <strong><?php echo date("H:i:s");?></strong></td>
       </tr>
@@ -931,7 +742,7 @@ label:hover{
 <tr valign="top">
        <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" >
          <tr>
-           <td colspan="6" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ </td>
+           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ </td>
          </tr>
          <tr>
            <td height="28" colspan="6" align="center" class="data_show"><table width="100%" border="0">
@@ -1063,173 +874,32 @@ mmHg </td>
 			<?php
 		}
 		?>
-		 <tr class="data_show" style="vertical-align: top;">
-		   <td width="116" align="right">แพ้ยา : </td>
-		   <td colspan="5" align="left">
-				<input name="drugreact" type="radio" value="0" id="drugreact1"><label for="drugreact1">ไม่มีประวัติการแพ้</label> 
-				<input name="drugreact" type="radio" value="1" id="drugreact2"><label for="drugreact2">แพ้</label> 
-				<input name="drugreact" type="radio" value="2" id="drugreact3"><label for="drugreact3">ไม่ทราบ</label> 
-				<font class="data_drugreact">ยาที่แพ้ </font>
-				<span style="position:relative;">
-					<input type="text" name="drugreact_code" id="drugreact_code">
-					<div style="position:absolute; top:0px; left: 177px;">
-						<div style="position:relative; min-width: 400px; z-index:1;" id="drugreact_res"></div>
-					</div>
-				</span>
-				<font class="data_drugreact"><br><?php echo $txt_react2;?></font>
-				<div id="select-drugreact-items"></div>
-				<script type="text/javascript">
-
-					function xmlHttpGET(url, functionName)
-					{
-						var xhttp = new XMLHttpRequest();
-						xhttp.onreadystatechange = function() {
-							if (this.readyState === 4) {
-								if (this.status >= 200 && this.status < 400) {
-									// Success!
-									functionName(this);
-								} else {
-									// Error :(
-								}
-							}
-						};
-						xhttp.open('GET', url, true);
-						xhttp.send();
-						xhttp = null;
-					}
-
-					// ถ้าคลิกในช่องให้ default ที่แพ้
-					document.getElementById('drugreact_code').onclick = function(){ 
-						document.getElementById('drugreact2').checked = true;
-					}
-
-					// ยกปุ่มขึ้นแล้วค่อย get value
-					document.getElementById('drugreact_code').onkeyup = function(){ 
-						doKeyup_drugreact(this.value);
-					}
-
-					function doKeyup_drugreact(drugcode){
-						if(drugcode.length >= 2)
-						{
-							xmlHttpGET('basic_opd.php?page=showdrug&drugcode='+drugcode, show_druglist);
-						}
-					}
-
-					function show_druglist(xhttp){
-						
-						// ส่งค่ากลับมาก่อนแล้วค่อยแสดงผล drugreact_res
-						document.getElementById('drugreact_res').innerHTML = xhttp.responseText.trim();
-						document.getElementById('drugreact_res').style.display = '';
-
-						// listen event ปุ่มปิด
-						document.getElementById('drugreact_close').onclick = function()
-						{
-							document.getElementById('drugreact_res').style.display = 'none';
-						}
-						
-						// ถ้ามีการคลิกภายในรายการ
-						var select_drugreact = document.getElementsByClassName("select_drugreact_item");
-						if(select_drugreact.length > 0)
-						{
-							for (let index = 0; index < select_drugreact.length; index++) 
-							{
-								select_drugreact[index].onclick = open_select_doctor;
-							}
-						}
-					}
-
-					function open_select_doctor(){ 
-						// ดูค่าใน Attribute data-drugcode แล้วค่อยปิดหน้าต่างเลือก
-						var drugcode = this.getAttribute("data-drugcode");
-						var genName = this.getAttribute("data-genname");
-						document.getElementById('drugreact_code').value = '';
-						document.getElementById('drugreact_res').style.display = 'none';
-
-						var idKey = Math.floor((Math.random() * 100) + 1)+drugcode.trim();
-						var select_drug_html = '<div id="'+idKey+'">&nbsp;&nbsp;&nbsp;<span style="color: red;"><b>['+drugcode+']</b> '+genName+'</span><a href="javascript:void(0)" onclick="cancel_drugreact(\''+idKey+'\')">[ยกเลิก]</a><input type="hidden" name="drugreact_selected[]" value="'+drugcode+'"></div>';
-						document.getElementById('select-drugreact-items').innerHTML += select_drug_html;
-
-					}
-
-					// ยกเลิกยาที่แพ้
-					function cancel_drugreact(key){
-						document.getElementById(key).remove();
-					}
-				</script>
+		 <tr>
+		   <td width="116" align="right" class="data_show">แพ้ยา : </td>
+		   <td colspan="5" align="left" class="data_show">
+				<input name="drugreact" type="radio" value="0" />ไม่มีประวัติการแพ้ 
+				<input name="drugreact" type="radio" value="1" />แพ้
+				<input name="drugreact" type="radio" value="2" />ไม่ทราบ
+				<font class="data_drugreact"><?php echo $txt_react2;?></font>
 			</td>
 	      </tr>
-		  <?php 
-		  if( $_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
-		  {
-
-			$eye_thdatehn = $thidate.$cHn;
-			$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$eye_thdatehn' ";
-			$q = $dbi->query($sql);
-			$eye = array();
-			if($q->num_rows > 0)
-			{
-				$eye = $q->fetch_assoc();
-			}
-
-		  ?>
-		  <tr class="data_show" style="vertical-align: top;">
-			  <td align="right">ยาต้านการแข็งตัว :<br>ของเกล็ดเลือด</td>
-			  <td colspan="5">
-				<?php 
-				$antiplatelet_list = array(
-					'ไม่มี', 'มี'
-				);
-
-				if(empty($eye['antiplatelet_txt']))
-				{
-					$eye['antiplatelet'] = 'ไม่มี';
-				}
-
-				foreach ($antiplatelet_list as $key => $platelet) 
-				{ 
-					$default_platelet = ($platelet == $eye['antiplatelet']) ? 'checked="checked"' : '' ;
-					?>
-					<input type="radio" name="antiplatelet" id="antiplatelet<?=$key;?>" onclick="focus_antiplatelet<?=$key;?>()" value="<?=$platelet;?>" <?=$default_platelet;?> ><label for="antiplatelet<?=$key;?>"><?=$platelet;?></label>
-					<?php
-				}
-				  ?>
-				  <input type="text" name="antiplatelet_txt" id="antiplatelet_txt" onfocus="focus_antiplate_txt()" onfocusout="unfocus_antiplate_txt()" value="<?=$eye['antiplatelet_txt'];?>">
-				  <script type="text/javascript">
-
-					  function focus_antiplatelet0(){
-						document.getElementById('antiplatelet_txt').value = '';
-					  }
-					  function focus_antiplatelet1(){
-						document.f2.antiplatelet_txt.focus();
-					  }
-
-					  function focus_antiplate_txt(){
-						document.f2.antiplatelet1.checked = true;
-					  }
-					  function unfocus_antiplate_txt(){
-						if(document.getElementById('antiplatelet_txt').value==''){
-							document.f2.antiplatelet1.checked = false;
-						}
-					  }
-				  </script>
-			  </td>
-		  </tr>
-		  <?php 
-		  }
-		  ?>
 		  <tr>
            <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
-			<input type="radio" name="cigarette" value="1" <?php echo $cigarette1;?> onclick="togglediv('kbk')" id="cig1"><label for="cig1">สูบ</label> &nbsp;&nbsp;&nbsp;
-			<input type="radio" name="cigarette" value="0" <?php echo $cigarette0;?> onclick="togglediv1('kbk')" id="cig0"><label for="cig0">ไม่สูบ</label> &nbsp;&nbsp;&nbsp;
-			<input type="radio" name="cigarette" value="2" <?php echo $cigarette2;?> onclick="togglediv1('kbk')" id="cig2"><label for="cig2">เคยสูบ</label> &nbsp;&nbsp;&nbsp;
+			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1">สูบ&nbsp;&nbsp;&nbsp;
+			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')">ไม่สูบ&nbsp;&nbsp;&nbsp;
+			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;
 			<div id="kbk" style="display: none; margin-bottom: 8px;"> 
 				<table id="member" class="fontthai">
 					<tr>
 						<td>
-							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/><label for="permiss1">อยากเลิก</label>
-							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/><label for="permiss2">ไม่อยากเลิก</label>
-							&nbsp;&nbsp;&nbsp;<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
+							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
+							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
 						</td>
 					</tr>
 				</table>
@@ -1244,31 +914,20 @@ mmHg </td>
 		<tr>
 			<td align="right" valign="top" class="data_show">สุรา : </td>
 			<td colspan="5">
-				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> id="alcohol1"><label for="alcohol1">ดื่ม</label>&nbsp;&nbsp;&nbsp;
-				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> id="alcohol0"><label for="alcohol0">ไม่ดื่ม</label>&nbsp;&nbsp;&nbsp;
-				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> id="alcohol2"><label for="alcohol2">เคยดื่ม</label>&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;
+				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม&nbsp;&nbsp;&nbsp;
 				<div style="display:none; margin-bottom: 8px;" class="da_amount">
 					<label for="drink_amount">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3">แก้ว/สัปดาห์</label>
 				</div>
 			</td>
 		</tr>
-         <tr class="data_show">
+         <tr>
            <td align="right" class="data_show">โรคประจำตัว :</td>
-           <td align="left" colspan="5">
+           <td align="left" colspan="5"><span class="data_show">
              <input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>" class="txtsarabun"/>
-             <input type="button" onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" class="txtsarabun" />
-			<?php 
-			if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
-			{
-				?>
-				<input type="button" onclick="document.getElementById('congenital_disease').value+=',DM';" value="DM" class="txtsarabun">
-				<input type="button" onclick="document.getElementById('congenital_disease').value+=',HT';" value="HT" class="txtsarabun">
-				<input type="button" onclick="document.getElementById('congenital_disease').value+=',DLP';" value="DLP" class="txtsarabun">
-				<input type="button" onclick="document.getElementById('congenital_disease').value+=',CAD';" value="CAD" class="txtsarabun">
-				<?php 
-			}
-			?>
-           </td>
+             <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" class="txtsarabun" />
+           </span></td>
          </tr>
 
 		<tr>
@@ -1318,29 +977,18 @@ mmHg </td>
 			</td>
 		</tr>
 
-		<tr class="data_show">
-			<td align="right" >ลักษณะผู้ป่วย : </td>
-			<td align="left" colspan="5">
-				<input name="type" type="radio" value="เดินมา" id="type1" checked="checked"><label for="type1">เดินมา</label>
-				<input name="type" type="radio" value="นั่งรถเข็น" id="type2"><label for="type2">นั่งรถเข็น</label>
-				<input name="type" type="radio" value="นอนเปล" id="type3"><label for="type3">นอนเปล</label>
-				<input name="type" type="radio" value="ญาติ" id="type4"><label for="type4">ญาติ</label>
-			</td>
-		</tr>
-		<?php 
-		if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
-		{
-		?>
-		<tr class="data_show">
-			<td align="right" >ข้อมูลจาก : </td>
-			<td align="left" colspan="5">
-				<input type="radio" name="type_from" id="type_from1" checked="checked"><label for="type_from1">ผู้ป่วย</label> 
-				<input type="radio" name="type_from" id="type_from2"><label for="type_from2">ญาติ</label> 
-			</td>
-		</tr>
-		<?php 
-		}
-		?>
+         <tr>
+           <td align="right" class="data_show">ลักษณะผู้ป่วย : </td>
+           <td align="left" colspan="5"><span class="data_show">
+             <input name="type" type="radio" value="เดินมา" checked="checked"/>
+             เดินมา
+             <input name="type" type="radio" value="นั่งรถเข็น" />
+             นั่งรถเข็น
+             <input name="type" type="radio" value="นอนเปล" />
+             นอนเปล
+             <input name="type" type="radio" value="ญาติ" onclick="clear_textbox();"/>
+             ญาติ </span></td>
+         </tr>
 
 		<tr>
 			<td align="right" class="data_show">Griage Gr.</td>
@@ -1365,15 +1013,14 @@ mmHg </td>
            <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
            &nbsp;&nbsp;</td>
-           <td align="left" colspan="2" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+''+this.value;}" style="position: absolute;" class="txtsarabun">
+           <td align="left" valign="top"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+''+this.value;}" style="position: absolute;" class="txtsarabun">
              <option value="">--- ตัวช่วย ---</option>
              <?php
 			 foreach($choose as $value){
 			 	echo "<option value='".$value."'>".$value."</option>";
 			 }
 			 ?>
-           </select>
-		</td>
+           </select></td>
          </tr>
          <tr>
            <td align="right" valign="top" class="data_show">&nbsp;</td>
@@ -1392,17 +1039,12 @@ mmHg </td>
          </tr>
 		<tr valign="top">
 			<td align="right" valign="top" >HPI:</td>
-			<td colspan="3"> 
-			 	<?php 
-				// เฉพาะห้องตา อยากให้ HPI เป็นค่าว่าง ไม่ต้องดึงประวัติเดิม
-				if($_SESSION['smenucode'] == 'ADMEYE')
-				{
-					$hpi = '';
-				}
-				?>
-				<textarea name="hpi" cols="40" rows="6" class="hpi txtsarabun" id="hpi" ><?=$hpi;?></textarea>
+			<td> 
+			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
+
+			
 			</td>
-			<td colspan="2">
+			<td colspan="4">
 				<?php 
 				$hpiHelper = array(
 					'ฉีดวัคซีนโควิด 19 เข็มที่ 1',
@@ -1439,210 +1081,9 @@ mmHg </td>
 				</select>
 			</td>
 		</tr>
-		
-		<?php 
-		if( $_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
-		{
-		?>
 		<tr>
-			<td align="left" colspan="6">
-				<table width="100%">
-					<tr>
-						<td><b style="font-weight:bold; font-size: 22px; text-decoration: underline;">EYE screening</b>&nbsp;&nbsp;VA</td>
-						<td>R <input type="text" name="esr" id="esr" value="<?=$eye['esr'];?>"></td>
-						<td>PH <input type="text" name="esr_ph" id="esr_ph" value="<?=$eye['esr_ph'];?>"></td>
-						<td>with glass <input type="text" name="esr_glass" id="esr_glass" value="<?=$eye['esr_glass'];?>"></td>
-						<td>NOT <input type="text" name="esr_not" id="esr_not" value="<?=$eye['esr_not'];?>"></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>L <input type="text" name="esl" id="esl" value="<?=$eye['esl'];?>"></td>
-						<td>PH <input type="text" name="esl_ph" id="esl_ph" value="<?=$eye['esl_ph'];?>"></td>
-						<td>with glass <input type="text" name="esl_glass" id="esl_glass" value="<?=$eye['esl_glass'];?>"></td>
-						<td>NOT <input type="text" name="esl_not" id="esl_not" value="<?=$eye['esl_not'];?>"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;">ข้อวินิจฉัยทางการพยาบาล Nursing DX:</td>
-		</tr>
-		<tr>
-			<td colspan="6">
-				<?php 
-				$nurse_dx1 = (!empty($eye['nurse_dx1'])) ? 'checked="checked"' : '' ;
-				$nurse_dx2 = (!empty($eye['nurse_dx2'])) ? 'checked="checked"' : '' ;
-				$nurse_dx3 = (!empty($eye['nurse_dx3'])) ? 'checked="checked"' : '' ;
-				$nurse_dx4 = (!empty($eye['nurse_dx4'])) ? 'checked="checked"' : '' ;
-				$nurse_dx5 = (!empty($eye['nurse_dx5'])) ? 'checked="checked"' : '' ;
-				?>
-				<table style="min-width: 800px;">
-					<tr>
-						<td><input type="checkbox" name="nurse_dx1" id="nurse_dx1" value="มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค" <?=$nurse_dx1;?> > <label for="nurse_dx1">มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค</label><input type="text" name="nurse_dx1_txt" id="nurse_dx1_txt" value="<?=$eye['nurse_dx1_txt'];?>" ></td>
-						<td><input type="checkbox" name="nurse_dx2" id="nurse_dx2" value="ต้องการข้อมูลเกี่ยวกับการให้บริการ" <?=$nurse_dx2;?>> <label for="nurse_dx2">ต้องการข้อมูลเกี่ยวกับการให้บริการ</label><input type="text" name="nurse_dx2_txt" id="nurse_dx2_txt" value="<?=$eye['nurse_dx2_txt'];?>" ></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="nurse_dx3" id="nurse_dx3" value="ต้องการความรู้/การปรึกษาเรื่อง" <?=$nurse_dx3;?>> <label for="nurse_dx3">ต้องการความรู้/การปรึกษาเรื่อง</label><input type="text" name="nurse_dx3_txt" id="nurse_dx3_txt" value="<?=$eye['nurse_dx3_txt'];?>" ></td>
-						<td><input type="checkbox" name="nurse_dx4" id="nurse_dx4" value="ไม่สุขสบาย: ปวด, เคืองตา" <?=$nurse_dx4;?>> <label for="nurse_dx4">ไม่สุขสบาย: ปวด, เคืองตา</label></td>
-					</tr>
-					<tr>
-						<td colspan="2"><input type="checkbox" name="nurse_dx5" id="nurse_dx5" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง" <?=$nurse_dx5;?>> <label for="nurse_dx5">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง</label></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<script type="text/javascript">
-			document.getElementById('nurse_dx1').onclick = function(){
-				
-				if(this.checked==true)
-				{
-					document.getElementById('nurse_dx1_txt').focus();
-				}
-				else
-				{
-					document.getElementById('nurse_dx1_txt').value = '';
-				}
-			};
-
-			document.getElementById('nurse_dx2').onclick = function(){
-				if(this.checked==true)
-				{
-					document.getElementById('nurse_dx2_txt').focus();
-				}
-				else
-				{
-					document.getElementById('nurse_dx2_txt').value = '';
-				}
-			};
-
-			document.getElementById('nurse_dx3').onclick = function(){
-				if(this.checked==true)
-				{
-					document.getElementById('nurse_dx3_txt').focus();
-				}
-				else
-				{
-					document.getElementById('nurse_dx3_txt').value = '';
-				}
-			};
-		</script>
-
-		<tr>
-			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;"><b>การพยาบาลและการประเมินผล Implementation</b></td>
-		</tr>
-		<tr>
-			<td colspan="6">
-				<?php 
-				$imp1 = (!empty($eye['imp1'])) ? 'checked="checked"' : '' ;
-				$imp2 = (!empty($eye['imp2'])) ? 'checked="checked"' : '' ;
-				$imp3 = (!empty($eye['imp3'])) ? 'checked="checked"' : '' ;
-				$imp4 = (!empty($eye['imp4'])) ? 'checked="checked"' : '' ;
-				$imp5 = (!empty($eye['imp5'])) ? 'checked="checked"' : '' ;
-				$imp6 = (!empty($eye['imp6'])) ? 'checked="checked"' : '' ;
-				?>
-				<table>
-					<tr>
-						<td colspan="2"><input type="checkbox" name="imp1" id="imp1" value="เฝ้าระวังการเกิด fall" <?=$imp1;?> ><label for="imp1">เฝ้าระวังการเกิด fall</label></td>
-					</tr>
-					<tr>
-						<td colspan="2"><input type="checkbox" name="imp2" id="imp2" value="ให้ความรู้/การปรึกษาเรื่อง" <?=$imp2;?>><label for="imp2">ให้ความรู้/การปรึกษาเรื่อง</label><input type="text" name="imp2_txt" id="imp2_txt" value="<?=$eye['imp2_txt'];?>"></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="imp3" id="imp3" value="แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$imp3;?>><label for="imp3">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
-						<td><input type="checkbox" name="imp4" id="imp4" value="เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา" <?=$imp4;?>><label for="imp4">เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา</label></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="imp5" id="imp5" value="ประเมินศักยภาพในการดูแลตนเอง" <?=$imp5;?>><label for="imp5">ประเมินศักยภาพในการดูแลตนเอง</label></td>
-						<td><input type="checkbox" name="imp6" id="imp6" value="บรรเทาอาการเจ็บปวด ดูแล" <?=$imp6;?>><label for="imp6">บรรเทาอาการเจ็บปวด ดูแล</label><input type="text" name="imp6_txt" id="imp6_txt" value="<?=$eye['imp6_txt'];?>"></td>
-					</tr>
-				</table>
-				<script type="text/javascript">
-					document.getElementById('imp2').addEventListener('click', function () {
-						if(this.checked==true)
-						{
-							document.getElementById('imp2_txt').focus();
-						}
-						else
-						{
-							document.getElementById('imp2_txt').value = '';
-						}
-					}, false);
-
-					document.getElementById('imp6').onclick = function(){
-						if(this.checked==true)
-						{
-							document.getElementById('imp6_txt').focus();
-						}
-						else
-						{
-							document.getElementById('imp6_txt').value = '';
-						}
-					};
-				</script>
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="6" style="font-weight:bold; font-size: 22px; text-decoration: underline;"><b>Evaluation</b></td>
-		</tr>
-		<tr>
-			<td colspan="6">
-				<?php 
-				$eva1 = (!empty($eye['eva1'])) ? 'checked="checked"' : '' ;
-				$eva2 = (!empty($eye['eva2'])) ? 'checked="checked"' : '' ;
-				$eva3 = (!empty($eye['eva3'])) ? 'checked="checked"' : '' ;
-				$eva4 = (!empty($eye['eva4'])) ? 'checked="checked"' : '' ;
-				$eva5 = (!empty($eye['eva5'])) ? 'checked="checked"' : '' ;
-				$eva6 = (!empty($eye['eva6'])) ? 'checked="checked"' : '' ;
-				$eva7 = (!empty($eye['eva7'])) ? 'checked="checked"' : '' ;
-				$eva8 = (!empty($eye['eva8'])) ? 'checked="checked"' : '' ;
-				$eva9 = (!empty($eye['eva9'])) ? 'checked="checked"' : '' ;
-				$eva10 = (!empty($eye['eva10'])) ? 'checked="checked"' : '' ;
-				?>
-				<table>
-					<tr>
-						<td>ให้คำแนะนำตาม D METHOD</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="eva1" id="eva1" value="ผู้ป่วยมีความรู้เรื่องโรคที่เป็น" <?=$eva1;?> > <label for="eva1">ผู้ป่วยมีความรู้เรื่องโรคที่เป็น</label></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="eva2" id="eva2" value="แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$eva2;?>> <label for="eva2">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="eva3" id="eva3" value="แนะนำการระมัดระวังพลัดตกหกล้ม" <?=$eva3;?>> <label for="eva3">แนะนำการระมัดระวังพลัดตกหกล้ม</label></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="eva4" id="eva4" value="สังเกตอาการผิดปกติ ถ้าตาแดงมากขึ้น ปวดตามาก น้ำตาไหล การมองเห็นลดลงให้มาพบแพทย์" <?=$eva4;?>> <label for="eva4">สังเกตอาการผิดปกติ ถ้าตาแดงมากขึ้น ปวดตามาก น้ำตาไหล การมองเห็นลดลงให้มาพบแพทย์</label></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="eva5" id="eva5" value="เน้นย้ำการมาตรวจตามนัด" <?=$eva5;?>> <label for="eva5">เน้นย้ำการมาตรวจตามนัด</label> <input type="checkbox" name="eva6" id="eva6" value="รักษาตามสิทธิ" <?=$eva6;?>><label for="eva6">รักษาตามสิทธิ</label> <input type="checkbox" name="eva7" id="eva7" value="ส่งตัวรักษาต่อ" <?=$eva7;?>><label for="eva7">ส่งตัวรักษาต่อ</label> <input type="checkbox" name="eva8" id="eva8" value="ไม่นัด" <?=$eva8;?>><label for="eva8">ไม่นัด</label> <input type="checkbox" name="eva9" id="eva9" value="ทานยาและหยอดยาตามแผนการักษา" <?=$eva9;?>><label for="eva9">ทานยาและหยอดยาตามแผนการักษา</label></td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="eva10" id="eva10" value="อื่นๆ" <?=$eva10;?>> <label for="eva10">อื่นๆ</label> <input type="text" name="eva10_txt" id="eva10_txt" value="<?=$eye['eva10_txt'];?>"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<script type="text/javascript">
-			document.getElementById('eva10').onclick = function(){
-				if(this.checked==true)
-				{
-					document.getElementById('eva10_txt').focus();
-				}
-				else
-				{
-					document.getElementById('eva10_txt').value = '';
-				}
-			};
-		</script>
-		<?php 
-		}
-		?>
-
-		<tr>
-			<td colspan="6">&nbsp;</td>
+			<td></td>
+			<td colspan="4">&nbsp;</td>
 		</tr>
 
 		<script language=Javascript>

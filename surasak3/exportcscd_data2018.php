@@ -1,6 +1,7 @@
 <?
 session_start();
 include("connect.inc");
+if($_SESSION["smenucode"]=="ADM"){
 ?>
 <style type="text/css">
 <!--
@@ -20,7 +21,7 @@ body,td,th {
   ?>
 <form method="POST" action="datacscd2018/exportdatacscd.php">
 <p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD)<br />
-ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.ท. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
+ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.อ. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
 <div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 1 เดือนกันยายน พ.ศ.2561 เป็นต้นไป (last update : 2021-05-11)</div></strong>
 <div style="color: #339966">- เพิ่ม TMTLAB</div></strong>
 <div style="color:#0000FF">ดูข้อมูลการลงรหัสโรค <a href="report_diagnotfound_cscd.php" target="_blank" >ICD10</a> และรหัสหัตถการ <a href="report_icd9cmnotfound_cscd.php" target="_blank" >ICD9CM</a> ให้ผู้ป่วย</div></strong>
@@ -76,3 +77,4 @@ body,td,th {
       <p style="margin-left: 65px;"><input type="submit" value="ส่งออกข้อมูล" name="B1"  class="txt" />&nbsp;&nbsp;&nbsp;<input type="button" value="กลับหน้าหลัก" onclick="window.location.href='../nindex.htm' " class="txt" /></p>
 </form>
 
+<? } ?>
