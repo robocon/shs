@@ -117,6 +117,7 @@ if(!empty($_SESSION['x-msg'])){
     $_SESSION['x-msg'] = null;
 }
 ?>
+<h3>คีย์งานแบบบันทึกเอง</h3>
 <form action="com_support_v2.php" method="post" id="adminForm">
     <div>
         <?php 
