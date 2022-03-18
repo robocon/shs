@@ -26,8 +26,48 @@ if ($action === 'search_user') {
     echo $json->encode(array('phone'=>$user['phone']));
     exit;
 
+}elseif ($action==='save') {
+
+    $depart = $_POST['depart'];
+    $head = $_POST['head'];
+    $detail = $_POST['detail'];
+    $user = $_POST['user'];
+    $date = $_POST['date'];
+    $programmer = $_POST['programmer'];
+    $phone = $_POST['phone'];
+    $dateend = $_POST['dateend'];
+    $p_edit = $_POST['p_edit'];
+    $ignore = $_POST['ignore'];
+
+    $sql = "INSERT INTO `com_support` (
+        `row`, `depart`, `head`, `detail`, `datetime`, `status`, 
+        `user`, `date`, `programmer`, `phone`, `user1`, `p_edit`, 
+        `dateend`, `hold`, `jobtype`,`ignore`
+    ) VALUES ( 
+        NULL, '$depart', '$head', '$detail', '', 'n', 
+        '$user', '$date', '$programmer', '$phone', '$user', '$p_edit', 
+        '$dateend', '0', 'software', '$ignore' 
+    );";
+    $save = $dbi->query($sql);
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+    if($save===false)
+    {
+        $msg = $dbi->error;
+    }
+    redirect("com_support_v2.php", $msg);
+    exit;
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
 <style>
     form{
         /* display: flex;
@@ -36,6 +76,8 @@ if ($action === 'search_user') {
     }
     input[type=text],select,.input_text{
         width: 100%;
+        padding: 4px;
+        border-width: 1px;
     }
     div{
         /* display: inline-block; */
@@ -64,8 +106,18 @@ if ($action === 'search_user') {
     input[type=checkbox]:hover,label{
         cursor: pointer;
     }
+    .notify{
+        padding:8px;
+        border: 1px solid red;
+    }
 </style>
-<form action="com_support_v2.php" method="post">
+<?php 
+if(!empty($_SESSION['x-msg'])){
+    ?><p class="notify"><?=$_SESSION['x-msg'];?></p><?php
+    $_SESSION['x-msg'] = null;
+}
+?>
+<form action="com_support_v2.php" method="post" id="adminForm">
     <div>
         <?php 
         $departs = array(
@@ -96,6 +148,7 @@ if ($action === 'search_user') {
             'ADMNEWCHKUP' => 'ตรวจสุขภาพ',
             'ADMMON' => 'ส่วนเก็บเงินรายได้'
         );
+        $start = $end = (date('Y')+543).date('-m-d H:i:s');
         ?>
         <span>แผนก</span>
         <select name="depart" id="depart" >
@@ -111,7 +164,7 @@ if ($action === 'search_user') {
     </div>
     <div>
         <span>ประเภทงาน</span>
-        <input type="text" name="jobtype" value="software" readonly>
+        <input type="text" name="jobtype" id="jobtype" value="software" readonly>
     </div>
     <div>
         <span>หัวข้อ</span>
@@ -131,16 +184,68 @@ if ($action === 'search_user') {
     </div>
     <div>
         <span>ผู้รับผิดชอบ</span>
-        <input type="text" name="programmer" value="กฤษณะศักดิ์  กันธรส" readonly>
+        <input type="text" name="programmer" id="programmer" value="กฤษณะศักดิ์  กันธรส" readonly>
+    </div>
+    <div>
+        <span>เริ่ม</span>
+        <input type="text" name="date" id="date" value="<?=$start;?>">
+    </div>
+    <div>
+        <span>สิ้นสุด</span>
+        <input type="text" name="dateend" id="dateend" value="<?=$end;?>">
+    </div>
+    <div>
+        <span>การทำเนินการ</span>
+        <textarea name="p_edit" id="p_edit">ดำเนินการแก้ไขเรียบร้อย</textarea>
     </div>
     <div>
         <input type="checkbox" name="ignore" id="ignore" value="1"> <label for="ignore">Ignore</label>
     </div>
     <div>
         <button type="submit">บันทึก</button>
+        <input type="hidden" name="action" value="save">
     </div>
 </form>
 <script>
+    var SmHttp = function(){}
+    SmHttp.prototype = {
+        ajax: function(url, data, callback){
+            try{
+                xHttp = new ActiveXObject("Msxml2.XMLHTTP");
+            }catch(e){
+                try{
+                    xHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }catch(e){
+                    xHttp = false;
+                }
+            }
+            if(!xHttp && document.createElement){
+                xHttp = new XMLHttpRequest();
+            }
+            
+            xHttp.onreadystatechange = function(){
+                if( xHttp.readyState == 4 && xHttp.status == 200 ){
+                    callback(xHttp.responseText);
+                }
+            };
+            xHttp.open("POST", url, true);
+            xHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=TIS-620");
+            data = this.objToStr(data);
+            xHttp.send(data);
+        },
+        objToStr: function(data){
+            
+            if( data === null ){
+                return null;
+            }
+            
+            test_str = [];
+            for(var p in data){
+                test_str.push(encodeURIComponent(p)+"="+encodeURIComponent(data[p]));
+            }
+            return test_str.join("&");
+        }
+    }
 
     function xmlHttpGET(url, functionName)
     {
@@ -160,17 +265,10 @@ if ($action === 'search_user') {
         xhttp = null;
     }
 
-
-
     document.getElementById("depart").onchange = function(){
         var depart = this.value;
         var code = this.options[this.selectedIndex].getAttribute('data-key');
-
         xmlHttpGET("com_support_v2.php?action=search_user&code="+code, createSelectOption);
-
-        // หลังจากที่สร้าง user
-        
-
     }
     
     async function createSelectOption(xhttp){
@@ -178,7 +276,6 @@ if ($action === 'search_user') {
         await createHtmlOption(data_list)
         .then(
             document.getElementById('user').onchange = function(){
-                console.log(this.value)
                 xmlHttpGET("com_support_v2.php?action=find_phone&name="+this.value, createPhone);
             }
         );
@@ -204,15 +301,10 @@ if ($action === 'search_user') {
                 const element = data_list[index];
 
                 var option = document.createElement("option");
-                // option.value = element.row_id;
                 option.value = element.name;
                 option.text = element.name;
-                // option.setAttribute("data-id", item.id);
-                // option.setAttribute("data-color", item.data().color);
                 selectList.appendChild(option);
-                
             }
-
             document.getElementById('input_text').appendChild(selectList);
 
         })
@@ -220,8 +312,30 @@ if ($action === 'search_user') {
 
     async function createPhone(xhttp){
         var data_list = JSON.parse(xhttp.responseText);
-        // console.log(data_list);
         document.getElementById('phone').value = data_list.phone;
+    }
+
+    document.getElementById('adminForm').onsubmit = function(){ 
+        var resAlert = false;
+        var user = document.getElementById('user');
+
+        if(user===null){
+            var message = "กรุณาระบุแผนกและเลือกผู้แจ้ง";
+            resAlert = true;
+
+        }else if(user.value === ''){
+            var message = "กรุณาเลือกผู้แจ้ง";
+            resAlert = true;
+        }
+
+        if(resAlert === true){
+            event.preventDefault();
+            alert(message);
+            return;
+        }
     }
     
 </script>
+
+</body>
+</html>
