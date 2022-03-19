@@ -176,7 +176,7 @@ $sumday = Dbetween($start_date1,$end_date1);
 
 		
 $tsql1="CREATE TEMPORARY TABLE   food1  SELECT a.*,b.hi_type  FROM food as a INNER JOIN ipcard as b ON a.an=b.an WHERE SUBSTRING( a.regisdate, 1, 10 ) 
-BETWEEN '$start_date' AND '$end_date' and b.hi_type='in'";
+BETWEEN '$start_date' AND '$end_date' and b.hi_type !='out'";
 $tquery1 = mysql_query($tsql1) or die (mysql_error());
 
 

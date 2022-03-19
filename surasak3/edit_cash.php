@@ -159,8 +159,9 @@ body,td,th {
 		   	<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอน' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';">
 		   </TD>
 		 	<TD>เงินโอน</TD>                    
-		    <TD>&nbsp;</TD>
-		    <TD>&nbsp;</TD>
+		 	<td align='right'>&nbsp;&nbsp;
+		 	    <input type='radio' name='credit' value='จ่ายตรง อปท. (HD)' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
+		 	<td>จ่ายตรง อปท. (HD)</td>
 		 </TR>
 		 <TR>
 		   <td align='right'>&nbsp;&nbsp;
