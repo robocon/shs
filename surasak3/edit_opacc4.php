@@ -19,6 +19,8 @@ $items = $db->get_items();
     <td>date</td>
     <td>code</td>
     <td>detail</td>
+    <td>depart</td>
+    <td>part</td>
     <td>price</td>
     <td>yprice</td>
     <td>nprice</td>
@@ -31,8 +33,10 @@ foreach ($items as $key => $item) {
     <tr>
         <td><?=$item['row_id'];?></td>
         <td><?=$item['date'];?></td>
-        <td><?=$item['code'];?></td>
+        <td><a href="javascript:voide(0);" onclick="openCode('<?=$item['code'];?>')"><?=$item['code'];?></a></td>
         <td><?=$item['detail'];?></td>
+        <td><?=$item['depart'];?></td>
+        <td><?=$item['part'];?></td>
         <td><?=$item['price'];?></td>
         <td><?=$item['yprice'];?></td>
         <td><?=$item['nprice'];?></td>
@@ -42,6 +46,11 @@ foreach ($items as $key => $item) {
 }
 ?>
 </table>
-
+<script>
+    function openCode(code){
+        var myWin = window.open("openCode.php?code="+code,"MsgWindow","toolbar=no,scrollbars=no,resizable=yes,width=600,height=200");
+    }
+    
+</script>
 <?php 
 }

@@ -16,9 +16,10 @@ if($type === 'patdata' && $action === 'save'){
     $code = $_POST['code'];
     $detail = $_POST['detail'];
     $part = $_POST['part'];
+    $depart = $_POST['depart'];
 
     $sql = "UPDATE `patdata` SET `price`='$price', `yprice`='$yprice', `nprice`='$nprice', 
-    `code`='$code', `detail`='$detail', `part`='$part' 
+    `code`='$code', `detail`='$detail', `part`='$part', `depart`='$depart'
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
@@ -91,6 +92,9 @@ if ($type === 'patdata') {
         </div>
         <div>
             detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
+        </div>
+        <div>
+            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
         </div>
         <div>
             part <input type="text" name="part" id="part" value="<?=$item['part'];?>">

@@ -13,7 +13,7 @@
         <a href="krit.php" class="w3-bar-item w3-button"><i class="fa fa-home"></i></a>
         <a href="edit_ipacc.php" class="w3-bar-item w3-button" target="_blank">แก้ค่าใช้จ่ายผู้ป่วยใน</a>
         <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">แก้ค่าใช้จ่ายผู้ป่วยนอก</a>
-        <a href="#" class="w3-bar-item w3-button">Link 3</a>
+        <a href="find_part.php" class="w3-bar-item w3-button" target="_blank">หา part ที่หายไป</a>
         <button class="w3-button w3-block w3-left-align" onclick="myAccFunc()">Accordion <i class="fa fa-caret-down"></i></button>
         <div id="demoAcc" class="w3-hide w3-white w3-card">
             <a href="#" class="w3-bar-item w3-button">Link</a>

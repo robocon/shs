@@ -21,7 +21,13 @@ if (empty($_SESSION["sOfficer"])) {
     <table border="1" width="100%" valign="top">
         <tr>
             <td>
-                <iframe src="edit_opacc2.php" name="opacc" frameborder="0" width="100%"></iframe>
+                <?php 
+                $url = "";
+                if (!empty($_REQUEST['hn'])) {
+                    $url = '?hn='.$_REQUEST['hn'].'&date='.$_REQUEST['date'];
+                }
+                ?>
+                <iframe src="edit_opacc2.php<?=$url?>" name="opacc" frameborder="0" width="100%"></iframe>
             </td>
         </tr>
         <tr>
