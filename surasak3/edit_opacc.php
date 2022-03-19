@@ -1,9 +1,16 @@
+<?php 
+include_once 'bootstrap.php';
+if (empty($_SESSION["sOfficer"])) {
+    redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>แก้ไขค่าใช้จ่ายผู้ป่วยนอกที่ไม่ใช่ยา</title>
 </head>
 <body>
     <style>

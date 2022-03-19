@@ -1,5 +1,6 @@
 <?php 
 require_once 'bootstrap.php';
+error_reporting(1);
 
 if (empty($_SESSION["sOfficer"])) {
     redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
@@ -7,7 +8,8 @@ if (empty($_SESSION["sOfficer"])) {
 }
 
 // $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+// $dbi = new mysqli('192.168.131.250', 'remoteuser', '', 'smdb');
+$dbi = new mysqli('localhost', 'root', '12345678', 'smdb');
 
 $action = $_REQUEST['action'];
 $page = $_REQUEST['page'];
@@ -217,12 +219,18 @@ if($action === 'add')
 }
 elseif ($action=='soft_remove') 
 {
+    /**
+     * @readme
+     * ในเงื่อนไขนี้คือเฉพาะตัวที่ ipacc มี depart แบบ one to one
+     */
     $ipacc_id = trim($_GET['ipacc_id']);
     if(empty($ipacc_id))
     {
         redirect('edit_ipacc.php', 'ข้อมูลไม่ถูกต้อง');
         exit;
     }
+
+    exit;
     
     $sql_ipacc = "SELECT * FROM `ipacc` WHERE `row_id` = '$ipacc_id' ";
     $q_ipacc = $dbi->query($sql_ipacc);
@@ -257,62 +265,47 @@ elseif ($action=='soft_remove')
         }
     }
 
-    // var_dump($dbi->error);
-
     redirect('edit_ipacc.php?page=search&an='.$an, 'แก้ไขข้อมูลเรียบร้อย');
     exit;
 }
 elseif ($action=='save_from_edit') 
 { 
     $ipacc_id = $_POST['ipacc_id'];
-    $new_code = $_POST['new_code'];
-    $old_code = $_POST['old_code'];
+
+    $depart = $_POST['depart'];
+    $part = $_POST['part'];
+    $detail = $_POST['detail'];
+    $amount = $_POST['amount'];
+    $price = $_POST['price'];
+    $yprice = $_POST['yprice'];
+    $nprice = $_POST['nprice'];
+    $ptright = $_POST['ptright'];
     $an = $_POST['an'];
 
-    $labcare_sql = "SELECT * FROM `labcare` WHERE `code` = '$new_code' ";
-    $q_labcare = $dbi->query($labcare_sql);
-    $labcare = $q_labcare->fetch_assoc();
-
-    $code = $labcare['code'];
-    $part = $labcare['part'];
-    $depart = $labcare['depart'];
-    $detail = $labcare['detail'];
-    $price = $labcare['price'];
-    $yprice = $labcare['yprice'];
-    $nprice = $labcare['nprice'];
-
+    $msg = "บันทึกข้อมูลเรียบร้อย";
     $ipacc_sql = "SELECT * FROM `ipacc` WHERE `row_id` = '$ipacc_id' ";
     $q_ipacc = $dbi->query($ipacc_sql);
     if($q_ipacc->num_rows > 0)
     {
+        $err_msg = "";
+
         $ipacc = $q_ipacc->fetch_assoc();
         $ipacc_idno = $ipacc['idno'];
-
-        $ipacc_paid = '';
-        if($ipacc['idno'])
-        {
-            $ipacc_paid = ", `paid` = '$price' ";
-        }
-
         $ipacc_update_sql = "UPDATE `ipacc` SET 
-        `code` = '$code', 
-        `part` = '$part', 
-        `depart` = '$depart', 
+        `depart` = '$depart',
+        `part` = '$part',
         `detail` = '$detail',
-        `price` = '$price', 
-        `yprice` = '$yprice' 
-        $ipacc_paid
+        `amount` = '$amount',
+        `price` = '$price',
+        `yprice` = '$yprice',
+        `nprice` = '$nprice',
+        `ptright` = '$ptright'
         WHERE `row_id` = '$ipacc_id' ";
-
-        echo "<pre>";
-        var_dump($ipacc_update_sql);
-        echo "</pre>";
-
         $update_ipacc = $dbi->query($ipacc_update_sql);
-        echo "<pre>";
-        var_dump($update_ipacc);
-        echo "</pre>";
-
+        if(!empty($dbi->error))
+        {
+            $err_msg .= $dbi->error."<br>";
+        }
 
         // DEPART 
         $depart_update_sql = "UPDATE `depart` SET 
@@ -320,17 +313,14 @@ elseif ($action=='save_from_edit')
         `detail` = '$detail', 
         `price` = '$price', 
         `sumyprice` = '$yprice', 
-        `sumnprice` = '$nprice' 
+        `sumnprice` = '$nprice',
+        `ptright` = '$ptright'
         WHERE `row_id` = '$ipacc_idno'";
-        echo "<pre>";
-        var_dump($depart_update_sql);
-        echo "</pre>";
-
         $update_depart = $dbi->query($depart_update_sql);
-        echo "<pre>";
-        var_dump($update_depart);
-        echo "</pre>";
-
+        if(!empty($dbi->error))
+        {
+            $err_msg .= $dbi->error."<br>";
+        }
 
         // PATDATA
         $patdata_update_sql = "UPDATE `patdata` SET 
@@ -340,23 +330,39 @@ elseif ($action=='save_from_edit')
         `yprice` = '$yprice', 
         `nprice` = '$nprice',
         `depart` = '$depart', 
-        `part` = '$part' 
+        `part` = '$part', 
+        `ptright` = '$ptright'
         WHERE `idno` = '$ipacc_idno' ";
-        echo "<pre>";
-        var_dump($patdata_update_sql);
-        echo "</pre>";
-
         $update_patdata = $dbi->query($patdata_update_sql);
-        echo "<pre>";
-        var_dump($update_patdata);
-        echo "</pre>";
+        if(!empty($dbi->error))
+        {
+            $err_msg .= $dbi->error."<br>";
+        }
+
+        if(!empty($err_msg)){
+            $msg = $err_msg;
+        }
+
     }
 
-    redirect('edit_ipacc.php?page=search&an='.$an, 'แก้ไขข้อมูลเรียบร้อย');
+    redirect('edit_ipacc.php?page=search&an='.$an, $msg);
     exit;
 }
 
-$an_def = ($_REQUEST['an']) ? $_REQUEST['an'] : '64/' ;
+$def_an = (substr((date('Y')+543),2)).'/';
+// $sql_def = "SELECT `prefix` FROM `runno` WHERE `title` = 'AN' ";
+// $q_def = $dbi->query($sql_def);
+// if (!empty($dbi->error))
+// {
+//     dump($dbi->error);
+// }
+// else
+// {
+//     $run = $q_def->fetch_assoc();
+//     $def_an = $run['prefix'];
+// }
+
+$an_def = ($_REQUEST['an']) ? $_REQUEST['an'] : $def_an ;
 $fix_date_def = ($_POST['fix_date']) ? $_POST['fix_date'] : (date('Y')+543).date('-m') ;
 
 ?>
@@ -367,8 +373,8 @@ $fix_date_def = ($_POST['fix_date']) ? $_POST['fix_date'] : (date('Y')+543).date
     display: table;
 }
 *{
-    font-family: 'TH Sarabun New','TH SarabunPSK';
-    font-size: 17px;
+    /* font-family: 'TH Sarabun New','TH SarabunPSK'; */
+    /* font-size: 17px; */
 }
 h3{font-size: 23px;}
 .chk_table{
@@ -384,7 +390,7 @@ h3{font-size: 23px;}
 
 
 </style>
-<div>
+<div class="clearfix">
 
 <?php 
 if($_SESSION['x-msg'])
@@ -437,7 +443,7 @@ if($_SESSION['x-msg'])
     </form>
 </fieldset>
 
-<fieldset class="clearfix">
+<fieldset class="">
     <legend>แก้ไข/ยกเลิก ค่าห้อง</legend>
     <form action="edit_ipacc.php" method="post">
         <table>
@@ -461,29 +467,15 @@ if($_SESSION['x-msg'])
 <?php 
 if ($page=='search')
 { 
-    require_once 'class_file/InPatient.php';
-    
     $an = $_REQUEST['an'];
-
     // $ipc = new InPatient();
     // $ipc->an = $an;
-    // echo "<pre>";
-    // var_dump($ipc->getBed());
-    // echo "</pre>";
-
     // $data = $ipc->getIpcard();
     // $where = "WHERE `an` = '$an' AND ( `code` = '21401' OR `code` = 'NCARE' OR `code` = '045002' ) ORDER BY `date` ASC";
     // $data = $ipc->getIpacc($where);
-    // echo "<pre>";
-    // var_dump($data);
-    // echo "</pre>";
-    // exit;
 
-
-    $sql_ipacc = "SELECT * FROM `ipacc` WHERE `an` = '$an' AND ( `part` = 'NCARE' OR `part` = 'BFY' ) ORDER BY `date` ASC";
-    // echo "<pre>";
-    // var_dump($sql_ipacc);
-    // echo "</pre>";
+    #AND ( `part` = 'NCARE' OR `part` = 'BFY' ) 
+    $sql_ipacc = "SELECT * FROM `ipacc` WHERE `an` = '$an'";
     $q_ipacc = $dbi->query($sql_ipacc);
     if($dbi->error)
     {
@@ -541,19 +533,15 @@ if ($page=='search')
                         <td><?=$item['detail'];?></td>
                         <td align="right"><?=$item['price'];?></td>
                         <?php 
-                        $link = '<a href="edit_ipacc.php?action=soft_remove&ipacc_id='.$item['row_id'].'" onclick="return confirm(\'ยืนยันการลบข้อมูล\')">ยกเลิก</a>'; 
-                        if($item['price']==0)
-                        {
+                        // $link = '<a href="edit_ipacc.php?action=soft_remove&ipacc_id='.$item['row_id'].'" onclick="return confirm(\'ยืนยันการลบข้อมูล\')">ยกเลิก</a>'; 
+                        // if($item['price']==0)
+                        // {
                             $link = 'ยกเลิก'; 
-                        }
+                        // }
                         ?>
                         <td><?=$link;?></td>
                         <?php 
-                        $bfy_link = 'javascript:void(0);';
-                        if($item['part'] === 'BFY')
-                        {
-                            $bfy_link = 'edit_ipacc.php?page=edit_page&ipacc_id='.$item['row_id'];
-                        }
+                        $bfy_link = 'edit_ipacc.php?page=edit_page&ipacc_id='.$item['row_id'];
                         ?>
                         <td><a href="<?=$bfy_link;?>">แก้ไข</a></td>
                     </tr>
@@ -582,36 +570,57 @@ elseif ($page === 'edit_page') {
     $old_code = $ipacc['code'];
     $an = $ipacc['an'];
 
-    ?>
-    <form action="edit_ipacc.php" method="post" style="clear: left;">
-        <div>
-            old_code : <?=$old_code;?>
-        </div>
-        <div>
-            <?php 
-            $bfy_sql = "SELECT * FROM `labcare` WHERE `part` = 'BFY' ";
-            $q_bfy = $dbi->query($bfy_sql);
+    $ipcard_sql = "SELECT `an`,`hn`,`ptname`,`ptright`,`age` FROM `ipcard` WHERE `an` = '$an' ";
+    $q_ipcard = $dbi->query($ipcard_sql);
+    $ip = $q_ipcard->fetch_assoc();
 
-            ?>
-            ค่าเตียง(new_code) : <select name="new_code" id="">
-                <?php 
-                while ($item = $q_bfy->fetch_assoc()) {
-                    ?>
-                    <option value="<?=$item['code'];?>"><?='('.$item['code'].') '.' - '.$item['price'].' - ' .$item['note'];?></option>
-                    <?php
-                }
-                ?>
-                
-            </select>
-        </div>
-        <div>
-            Amount : <input type="text" name="amount" id="" value="1">
-        </div>
+    ?>
+    <p>
+        <b>AN: </b><?=$ip['an'];?><br/>
+        <b>HN: </b><?=$ip['hn'];?><br/>
+        <b>ชื่อ-สกุล: </b><?=$ip['ptname'];?><br/>
+        <b>สิทธิ์: </b><?=$ip['ptright'];?><br/>
+        <b>อายุ: </b><?=$ip['age'];?><br/>
+    </p>
+    <form action="edit_ipacc.php" method="post" style="clear: left;">
+        <table>
+            <tr>
+                <td>Depart:</td>
+                <td><input type="text" name="depart" id="depart" value="<?=$ipacc['depart'];?>"></td>
+            </tr>
+            <tr>
+                <td>Part:</td>
+                <td><input type="text" name="part" id="part" value="<?=$ipacc['part'];?>"></td>
+            </tr>
+            <tr>
+                <td>Detail:</td>
+                <td><input type="text" name="detail" id="detail" value="<?=$ipacc['detail'];?>"></td>
+            </tr>
+            <tr>
+                <td>Amount:</td>
+                <td><input type="text" name="amount" id="amount" value="<?=$ipacc['amount'];?>"></td>
+            </tr>
+            <tr>
+                <td>Price:</td>
+                <td><input type="text" name="price" id="price" value="<?=$ipacc['price'];?>"></td>
+            </tr>
+            <tr>
+                <td>YPrice:</td>
+                <td><input type="text" name="yprice" id="yprice" value="<?=$ipacc['yprice'];?>"></td>
+            </tr>
+            <tr>
+                <td>NPrice:</td>
+                <td><input type="text" name="nprice" id="nprice" value="<?=$ipacc['nprice'];?>"></td>
+            </tr>
+            <tr>
+                <td>PTRight:</td>
+                <td><input type="text" name="ptright" id="ptright" value="<?=$ip['ptright'];?>"></td>
+            </tr>
+        </table>
         <div>
             <button type="submit">บันทึก</button>
             <input type="hidden" name="action" value="save_from_edit">
             <input type="hidden" name="ipacc_id" value="<?=$ipacc_id;?>">
-            <input type="hidden" name="old_code" value="<?=$old_code;?>">
             <input type="hidden" name="an" value="<?=$an;?>">
         </div>
     </form>
