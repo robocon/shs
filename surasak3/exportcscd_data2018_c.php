@@ -19,9 +19,10 @@ body,td,th {
   $selmon=date("m");
   ?>
 <form method="POST" action="datacscd2018_c/exportdatacscd.php">
-<p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) กรณีติด C รายเดือน<br />
-ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.ท. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
-<div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 25 เดือนกรกฎาคม พ.ศ.2562 เป็นต้นไป (last update : 2019-07-25)</div></strong>
+<p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) กรณีติด C รายเดือน (datacscd2018_c/...)<br />
+ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.อ. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
+<div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 25 เดือนกรกฎาคม พ.ศ.2562 เป็นต้นไป (last update : 2022-03-19)</div>
+<div style="color: #339966">- เพิ่ม TMTLAB</div></strong>
 <div style="color:#0000FF">ดูข้อมูลการลงรหัสโรค <a href="report_diagnotfound_cscd.php" target="_blank" >ICD10</a> และรหัสหัตถการ <a href="report_icd9cmnotfound_cscd.php" target="_blank" >ICD9CM</a> ให้ผู้ป่วย</div></strong>
 </p>
   <strong>ข้อมูลประจำเดือน : </strong>
@@ -42,7 +43,7 @@ body,td,th {
 
   </select>
   <? 
-			   $Y=date("Y")+543;
+			   $Y="2565";
 			   $date=date("Y")+543+5;
 			  
 				$dates=range(2547,$date);

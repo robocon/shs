@@ -237,7 +237,7 @@ $sql = "INSERT INTO `opd` (
 		$field = ", toborow = 'EX04 ผู้ป่วยนัด' ";
 	}
 
-	$sql ="UPDATE opday SET clinic = '".$_POST["clinic"]."' ".$field.", typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  thdatehn='".$thidatehn."' AND vn = '".$_POST["vn"]."' ";   // แก้ไขข้อมูลตาราง opday ตามวันที่ และ vn
+	$sql ="UPDATE opday SET clinic = '".$_POST["clinic"]."' ".$field.", typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."',opdtype='".$_POST["opdtype"]."'  WHERE  thdatehn='".$thidatehn."' AND vn = '".$_POST["vn"]."' ";   // แก้ไขข้อมูลตาราง opday ตามวันที่ และ vn
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	
 	$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
@@ -359,10 +359,10 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	list($app_row) = mysql_fetch_row(mysql_query($sql));
 
 	// ตรวจสอบการลงทะเบียน **************************************************
-	$sqlOpdayRow = "Select right(thidate,8), time2, vn, toborow, note, kew, row_id,hn,ptname   From opday where thdatehn = '".$thidatehn."' limit 1";
+	$sqlOpdayRow = "Select right(thidate,8), time2, vn, toborow, note, kew, row_id,hn,ptname,opdtype   From opday where thdatehn = '".$thidatehn."' limit 1";
 	$opdayResult = Mysql_Query($sqlOpdayRow);
 	$opday_row = mysql_num_rows($opdayResult);
-	list($regis_time, $time1, $vn, $toborow, $note, $kew, $row_id,$hn,$ptname) = mysql_fetch_row($opdayResult);
+	list($regis_time, $time1, $vn, $toborow, $note, $kew, $row_id,$hn,$ptname,$opdtype) = mysql_fetch_row($opdayResult);
 	if(substr($toborow,0,4)=="EX16" || substr($toborow,0,4)=="EX26"){
 		?>
 		<script>
@@ -680,6 +680,9 @@ function checkForm(){
 	}else if(document.f2.cig1.checked == true&&document.f2.member2[0].checked == false&&document.f2.member2[1].checked == false){
 		alert('กรุณาเลือกความต้องการอยากเลิกบุหรี่ไหมด้วยครับ');
 		return false;
+	}else if(document.f2.opdtype1.checked == false && document.f2.opdtype2.checked == false && document.f2.opdtype3.checked == false){
+		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
+		return false;		
 	}else{
 		return true;
 	}
@@ -1009,6 +1012,16 @@ mmHg </td>
 			</td>
 		</tr>
 
+		<tr>
+			<td align="right" class="data_show">ประเภทผู้ป่วย</td>
+			<td align="left" colspan="5">
+				<input type="radio" name="opdtype" id="opdtype1" value="OPD" <? if($opdtype=="OPD"){ echo "checked='checked'";}?>><label for="opdtype1">ผู้ป่วยนอก</label>&nbsp;
+				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?>><label for="opdtype2">ผู้ป่วย OP self Isolation</label>&nbsp;
+				<input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp; <strong style="color:red;">*** ระบุข้อมูล***</strong>
+
+			</td>
+		</tr>
+		
          <tr>
            <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>
