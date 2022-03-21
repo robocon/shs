@@ -93,8 +93,6 @@ if($page==='load25page'){
 
 <style>
     form{
-        /* display: flex;
-        justify-content: space-between; */
         width: 400px;
     }
     input[type=text],select,.input_text{
@@ -103,12 +101,7 @@ if($page==='load25page'){
         border-width: 1px;
     }
     div{
-        /* display: inline-block; */
-        width: 100%;
-        /* display: flex;
-        justify-content: space-between; */
-        padding: 8px;
-        margin-bottom: 8px;
+        margin-bottom: 16px;
     }
     div span{
         display: block;
@@ -146,22 +139,35 @@ if($page==='load25page'){
         position: absolute; 
         top:0; 
         left:0; 
-        width:100%;
     }
     #resPageClose{
-        display: inline-block;
         text-align: center;
+        background: #b8b8b8;
+        padding: 8px;
     }
     #resPageClose:hover{
         cursor: pointer;
     }
     #resPage {
         position: relative;
-        
+    }
+    ul.nav{
+        padding: 0;
+        margin: 0;
+    }
+    ul.nav > li{
+        list-style-type: none;
+        display: inline-block;
+    }
+    ul.nav > li > a{
+        padding: 8px;
+        background: #8b8b8b;
+        color: #fff;
+        text-decoration: none;
     }
 </style>
 <div>
-    <ul>
+    <ul class="nav">
         <li>
             <a href="javascript:void(0)" onclick="get25Page()">50 รายการล่าสุด</a>
         </li>
@@ -399,11 +405,6 @@ if(!empty($_SESSION['x-msg'])){
 
     async function get25Page(){
         var res = load25Page();
-        // console.log(res);
-        // if(res===true)
-        // {
-        //     document.getElementById('resPageContainer').style.display = '';
-        // }
     }
 
     function load25Page(){
@@ -426,9 +427,8 @@ if(!empty($_SESSION['x-msg'])){
                 preHtml += '</table>';
 
                 document.getElementById('resPage').innerHTML = preHtml;
-
                 document.getElementById('resPageContainer').style.display = '';
-                // resPageContainer
+                
             });
 
             resolve(true);
