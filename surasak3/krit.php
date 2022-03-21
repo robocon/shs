@@ -28,6 +28,7 @@ if($_SESSION['sIdname']!=='krit')
             <a href="#" class="w3-bar-item w3-button">Link</a>
             <a href="#" class="w3-bar-item w3-button">Link</a>
         </div>
+        <a href="addNewUser.php" class="w3-bar-item w3-button" target="_blank">เพิ่มผู้ใช้งานในระบบ</a>
     </div>
     <div class="w3-container" style="margin-left:25%">
         <h3>ซะป๊ะเมนูไม่ไหวจะเคลียร์</h3>
