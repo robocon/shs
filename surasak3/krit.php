@@ -1,3 +1,11 @@
+<?php 
+include_once 'bootstrap.php';
+if($_SESSION['sIdname']!=='krit')
+{
+    echo "Invalid";
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

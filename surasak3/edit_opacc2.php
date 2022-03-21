@@ -45,10 +45,11 @@ if ($_REQUEST['hn']) {
     
     <?php
     foreach ($items as $key => $item) { 
-
+        // txdate ใน opacc จะตรงกับ date ใน depart
+        $txdate = $item['txdate'];
         ?>
         <tr>
-            <td><a href="edit_opacc3.php?date=<?=$date;?>&hn=<?=$hn;?>" target="depart"><?=$item['row_id'];?></a></td>
+            <td><a href="edit_opacc3.php?date=<?=$txdate;?>&hn=<?=$hn;?>" target="depart"><?=$item['row_id'];?></a></td>
             <td><?=$item['date'];?></td>
             <td><?=$item['depart'];?></td>
             <td><?=$item['detail'];?></td>
