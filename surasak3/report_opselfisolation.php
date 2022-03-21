@@ -1,0 +1,151 @@
+<?
+session_start();
+include("connect.inc");
+?>
+<style type="text/css">
+<!--
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 16px;
+}
+.txt{
+	font-family: TH SarabunPSK;
+	font-size: 16px;
+}
+a:link {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
+-->
+</style>
+<p align="center" style="margin-top: 20px;"><strong>เลือกวันที่ต้องการดูข้อมูลผู้ป่วย OP Self Isolation สิทธิเบิกจ่ายตรง</strong></p>
+<div align="center">
+<form method="POST" action="report_opselfisolation.php">
+<input type="hidden" name="act" value="show" />
+	<strong>ระหว่างวันที่ : </strong>
+    <input name="date1" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
+    <strong>เลือกเดือน : </strong><select size="1" name="month1" class="txt">
+    <option selected>-------เลือก-------</option>
+    <option value="01" <? if(date("m")=="01"){ echo "selected";}?>>มกราคม</option>
+    <option value="02" <? if(date("m")=="02"){ echo "selected";}?>>กุมภาพันธ์</option>
+    <option value="03" <? if(date("m")=="03"){ echo "selected";}?>>มีนาคม</option>
+    <option value="04" <? if(date("m")=="04"){ echo "selected";}?>>เมษายน</option>
+    <option value="05" <? if(date("m")=="05"){ echo "selected";}?>>พฤษภาคม</option>
+    <option value="06" <? if(date("m")=="06"){ echo "selected";}?>>มิถุนายน</option>
+    <option value="07" <? if(date("m")=="07"){ echo "selected";}?>>กรกฎาคม</option>
+    <option value="08" <? if(date("m")=="08"){ echo "selected";}?>>สิงหาคม</option>
+    <option value="09" <? if(date("m")=="09"){ echo "selected";}?>>กันยายน</option>
+    <option value="10" <? if(date("m")=="10"){ echo "selected";}?>>ตุลาคม</option>
+    <option value="11" <? if(date("m")=="11"){ echo "selected";}?>>พฤศจิกายน</option>
+    <option value="12" <? if(date("m")=="12"){ echo "selected";}?>>ธันวาคม</option>
+
+  </select>
+  <? 
+			   $Y=date("Y")+543;
+			   $date=date("Y")+543+5;
+			  
+				$dates=range(2547,$date);
+				echo "<select name='year1'  class='txt'>";
+				foreach($dates as $i){
+
+				?>
+      
+      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
+      <?
+				}
+				echo "<select>";
+				?>
+       &nbsp; <strong>ถึงวันที่</strong> 
+    <input name="date2" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
+    <strong>เลือกเดือน : </strong><select size="1" name="month2" class="txt">
+    <option selected>-------เลือก-------</option>
+    <option value="01" <? if(date("m")=="01"){ echo "selected";}?>>มกราคม</option>
+    <option value="02" <? if(date("m")=="02"){ echo "selected";}?>>กุมภาพันธ์</option>
+    <option value="03" <? if(date("m")=="03"){ echo "selected";}?>>มีนาคม</option>
+    <option value="04" <? if(date("m")=="04"){ echo "selected";}?>>เมษายน</option>
+    <option value="05" <? if(date("m")=="05"){ echo "selected";}?>>พฤษภาคม</option>
+    <option value="06" <? if(date("m")=="06"){ echo "selected";}?>>มิถุนายน</option>
+    <option value="07" <? if(date("m")=="07"){ echo "selected";}?>>กรกฎาคม</option>
+    <option value="08" <? if(date("m")=="08"){ echo "selected";}?>>สิงหาคม</option>
+    <option value="09" <? if(date("m")=="09"){ echo "selected";}?>>กันยายน</option>
+    <option value="10" <? if(date("m")=="10"){ echo "selected";}?>>ตุลาคม</option>
+    <option value="11" <? if(date("m")=="11"){ echo "selected";}?>>พฤศจิกายน</option>
+    <option value="12" <? if(date("m")=="12"){ echo "selected";}?>>ธันวาคม</option>
+
+  </select>
+  <? 
+			   $Y=date("Y")+543;
+			   $date=date("Y")+543+5;
+			  
+				$dates=range(2547,$date);
+				echo "<select name='year2'  class='txt'>";
+				foreach($dates as $i){
+
+				?>
+      
+      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
+      <?
+				}
+				echo "<select>";
+				?>       
+       <input type="submit" value="ดูข้อมูล" name="B1"  class="txt" />
+       &nbsp;&nbsp;
+       <input type="button" value="ไปเมนูหลัก" name="B2"  class="txt" onclick="window.location='../nindex.htm' " />
+</form>
+</div>
+<?
+if($_POST["act"]=="show"){
+$showdate1=$_POST["date1"]."/".$_POST["month1"]."/".$_POST["year1"];
+$showdate2=$_POST["date2"]."/".$_POST["month2"]."/".$_POST["year2"];
+?>
+<hr />
+<div align="center" style="margin-top: 20px;"><strong>รายงานแสดงหมายเลข Approve Code สิทธิเบิกจ่ายตรง</strong></div>
+<div align="center">ระว่างวันที่ <?=$showdate1;?> ถึงวันที่ <?=$showdate2;?>
+</div>
+<table width="57%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#000000">
+  <tr>
+    <td width="3%" align="center" bgcolor="#66CC99"><strong>ลำดับ</strong></td>
+    <td width="7%" align="center" bgcolor="#66CC99"><strong>วัน/เดือน/ปี</strong></td>
+    <td width="2%" align="center" bgcolor="#66CC99"><strong>VN</strong></td>
+    <td width="4%" align="center" bgcolor="#66CC99"><strong>HN</strong></td>
+    <td width="12%" align="center" bgcolor="#66CC99"><strong>ชื่อผู้ป่วย</strong></td>
+	<td width="8%" align="center" bgcolor="#66CC99"><strong>สิทธิการรักษา</strong></td>	
+	<td width="5%" align="center" bgcolor="#66CC99"><strong>จัดการ</strong></td>
+  </tr>
+<?
+$chkdate1=$_POST["year1"]."-".$_POST["month1"]."-".$_POST["date1"]." 00:00:00";
+$chkdate2=$_POST["year2"]."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
+
+$sql="select * from opday where (thidate >= '$chkdate1' and thidate <='$chkdate2') and opdtype='SI' and (ptright LIKE 'R02%' || ptright LIKE 'R03%') order by thidate,hn asc";
+
+//echo $sql;
+$query=mysql_query($sql);
+$i=0;
+while($rows=mysql_fetch_array($query)){
+	$i++;
+	$ptname=$rows["ptname"];
+?>  
+  <tr bgcolor="<?=$bg;?>">
+    <td align="center"><?=$i;?></td>
+    <td align="center"><?=$rows["thidate"]?></td>
+    <td align="center"><?=$rows["vn"]?></td>
+    <td align="center"><?=$rows["hn"]?></td>
+    <td><?=$ptname;?></td>
+	<td align="center"><?=$rows["ptright"]?></td>
+    <td align="center"><a href="report_approvecode.php?getid=<?=$rows["row_id"];?>&act=edit">แก้ไข</a></td>
+  </tr>
+<?
+}
+?>  
+<?
+}
+
+?>

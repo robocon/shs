@@ -1,6 +1,7 @@
 <?
 session_start();
 include("connect.inc");
+if($_SESSION["smenucode"]=="ADM"){
 ?>
 <style type="text/css">
 <!--
@@ -59,4 +60,4 @@ body,td,th {
 				?>
       <p style="margin-left: 65px;"><input type="submit" value="ส่งออกข้อมูล" name="B1"  class="txt" />&nbsp;&nbsp;&nbsp;<input type="button" value="กลับหน้าหลัก" onclick="window.location.href='../nindex.htm' " class="txt" /></p>
 </form>
-
+<? } ?>

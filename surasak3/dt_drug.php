@@ -311,8 +311,10 @@ for($i=0;$i<$count;$i++){
 			if(isset($_SESSION["list_drug_part"][$i])){
 				if($_SESSION["list_drug_part"][$i]==$part){
 					$part=$part;
+					//echo "-->$part";
 				}else{
 					$part=$_SESSION["list_drug_part"][$i];
+					//echo "==>$part";
 					//echo "==>".$sql."<br>";
 				}
 			}
@@ -366,8 +368,10 @@ for($i=0;$i<$count;$i++){
 
 			if($part == "DDY"){
 				$style=" style=\"color:#0000FF\" ";
-			}elseif($part == "DDN"||$part == "DSN"||$part == "DPN"){
+			}else if($part == "DDN"|| $part == "DSN" || $part == "DPN"){
 				$style = " style=\"color:#FF0000\" ";
+			}else if($part == "DDL"){
+				$style = " style=\"color:#000000\" ";
 			}else{
 				$style="";	
 			}
@@ -523,7 +527,11 @@ for($i=0;$i<$count;$i++){
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
 		$chkprice=$total_price;
 		if(substr($_SESSION["ptright_now"],0,3) == "R12" && $chkprice > 700){  //R12 ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
-		echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
+			if($_SESSION["hn_now"]=="60-10215"){  //ผอ.อรรณพ อนุมัติเคสบิดาพลทหาร 20/03/65
+				echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
+			}else{
+				echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
+			}
 		}else{
 		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
 		}
@@ -795,6 +803,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 						$arr["amount"]=$arr["amount"];
 					}
 			}	
+
+			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 14 เม็ดให้ Remed ได้แค่ 14 เม็ด  12/03/65
+			if($arr["drugcode"]=="1NEX40"){
+					if($arr["amount"] > 14){
+						$arr["amount"]=14;
+					}else{
+						$arr["amount"]=$arr["amount"];
+					}
+			}
+
+
 	
 	
 		$arr["reason"] = "";
@@ -2783,9 +2802,15 @@ function checkForm1(){
 		document.form1.drug_amount.focus();				
 /*	}else if( document.form1.drug_code.value == "10H005" && eval(document.form1.drug_amount.value) > 50 ){ 
 		
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");  
+		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");
 		document.form1.drug_amount.focus();
 */
+	}else if( document.form1.drug_code.value == "1NEX40" && eval(document.form1.drug_amount.value) > 14 ){ 
+		
+		
+		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ยาNEXIUM ไม่เกิน 14เม็ดต่อคน");  
+		document.form1.drug_amount.focus();
+
 	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
 		document.form1.drug_inject_amount.focus();

@@ -207,7 +207,7 @@ if(isset($_POST["submit"])){
 				left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , 
 				CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , 
 				left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , 
-				`type_wounded2` , `repeat`, `to_or`,  `to_lr`,  `to_etc`,  `to_hpt_lp`  
+				`type_wounded2` , `repeat`, `to_or`,  `to_lr`,  `to_etc`, `to_hpt_lp`, `condition`,  `temperature`,  `pause`,  `rate`,  `bp1`,  `bp2`,  `o2sat`  
 				
 				FROM ( 
 					SELECT * FROM `trauma` WHERE $where_date
@@ -229,7 +229,6 @@ if(isset($_POST["submit"])){
 	<TD align="center">No.</TD>
 	<TD align="center">HN</TD>
 	<TD align="center">AN</TD>
-	
 	<TD>ยศชื่อ-สกุล</TD>
 	<TD align="center">อายุ</TD>
 	<TD align="center">สังกัด</TD>
@@ -239,6 +238,12 @@ if(isset($_POST["submit"])){
 	<TD align="center">ประเภทที่ 2</TD>
 	<TD align="center">อาการ</TD>
 	<TD align="center">การรักษา</TD>
+	<TD align="center">สภาพแรกรับ</TD>
+	<TD align="center">T</TD>
+	<TD align="center">P</TD>
+	<TD align="center">R</TD>
+	<TD align="center">BP</TD>
+	<TD align="center">O2sat</TD>
 	<TD align="center">เวลาเข้า</TD>
 	<TD align="center">เวลาตรวจ</TD>
 	<TD align="center">ช่วงเวลา1</TD>
@@ -249,15 +254,20 @@ if(isset($_POST["submit"])){
 <?php
 
 
-
-		while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded, $type_wounded2, $repeat, $to_or, $to_lr,$to_etc, $to_hpt_lp) = Mysql_fetch_row($result)){
+		while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded, $type_wounded2, $repeat, $to_or, $to_lr,$to_etc, $to_hpt_lp,$condition,$temperature,$pause,$rate,$bp1,$bp2,$o2sat) = Mysql_fetch_row($result)){
 
 $bgcolor= "#FFFFFF";	
 
 	$echoka = echo_ka($time_in);
+	
+	if(!empty($bp1) && !empty($bp2)){
+		$bp="$bp1/$bp2";
+	}else{
+		$bp="";
+	}
 
 	if($echoka != $echoka1 && !empty($_POST["d"])){
-		echo "<TR bgcolor=\"#FFFFCC\"><TD colspan=\"17\">&nbsp;&nbsp;<B>วันที่ ".$select_day3." เวร ".$echoka."</B></TD></TR>";
+		echo "<TR bgcolor=\"#FFFFCC\"><TD colspan=\"24\">&nbsp;&nbsp;<B>วันที่ ".$select_day3." เวร ".$echoka."</B></TD></TR>";
 		$echoka1 = $echoka;
 		$i=0;
 	}
@@ -329,6 +339,12 @@ $bgcolor= "#FFFFFF";
 						<TD align=\"center\">",$type_wounded2,"</TD>
 						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("อาการ")."&fn=organ&row_id=".$row_id."\" target=\"_blank\">",$organ,"</A></TD>
 						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("การรักษา")."&fn=maintenance&row_id=".$row_id."\" target=\"_blank\">",$maintenance,"</A></TD>
+						<TD align=\"center\">",$condition,"</TD>
+						<TD align=\"center\">",$temperature,"</TD>
+						<TD align=\"center\">",$pause,"</TD>
+						<TD align=\"center\">",$rate,"</TD>
+						<TD align=\"center\">",$bp,"</TD>
+						<TD align=\"center\">",$o2sat,"</TD>							
 						<TD align=\"center\">",$time_in,"</TD>
 						<TD>&nbsp;",($time_diag=='00:00' ? '&nbsp;':$time_diag),"</TD>
 						<TD align=\"center\">".$sec_between1."</TD>
