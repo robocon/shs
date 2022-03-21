@@ -57,6 +57,29 @@ if ($action === 'search_user') {
     redirect("com_support_v2.php", $msg);
     exit;
 }
+
+
+$page = $_REQUEST['page'];
+if($page==='load25page'){
+    $sql = "SELECT * FROM `com_support` ORDER BY `row` DESC LIMIT 50";
+    $q = $dbi->query($sql);
+    $items = array();
+    while ($item = $q->fetch_assoc()) {
+
+        $item['depart'] = iconv("TIS-620","UTF-8",$item['depart']);
+        $item['head'] = iconv("TIS-620","UTF-8",$item['head']);
+        $item['detail'] = iconv("TIS-620","UTF-8",$item['detail']);
+        $item['user'] = iconv("TIS-620","UTF-8",$item['user']);
+        $item['programmer'] = iconv("TIS-620","UTF-8",$item['programmer']);
+        $item['user1'] = iconv("TIS-620","UTF-8",$item['user1']);
+        $item['p_edit'] = iconv("TIS-620","UTF-8",$item['p_edit']);
+
+        $items[] = $item;
+    }
+    echo $json->encode($items);
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +87,7 @@ if ($action === 'search_user') {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>คีย์งานแบบบันทึกเอง</title>
 </head>
 <body>
 
@@ -110,7 +133,40 @@ if ($action === 'search_user') {
         padding:8px;
         border: 1px solid red;
     }
+    .chk_table{
+        border-collapse: collapse;
+    }
+    .chk_table th,
+    .chk_table td{
+        padding: 3px;
+        border: 1px solid black;
+    }
+    #resPageContainer{
+        background: #ffffff;
+        position: absolute; 
+        top:0; 
+        left:0; 
+        width:100%;
+    }
+    #resPageClose{
+        display: inline-block;
+        text-align: center;
+    }
+    #resPageClose:hover{
+        cursor: pointer;
+    }
+    #resPage {
+        position: relative;
+        
+    }
 </style>
+<div>
+    <ul>
+        <li>
+            <a href="javascript:void(0)" onclick="get25Page()">50 รายการล่าสุด</a>
+        </li>
+    </ul>
+</div>
 <?php 
 if(!empty($_SESSION['x-msg'])){
     ?><p class="notify"><?=$_SESSION['x-msg'];?></p><?php
@@ -208,6 +264,10 @@ if(!empty($_SESSION['x-msg'])){
         <input type="hidden" name="action" value="save">
     </div>
 </form>
+<div id="resPageContainer" style="display:none;">
+    <div id="resPageClose">[ ปิด ]</div>
+    <div id="resPage"></div>
+</div>
 <script>
     var SmHttp = function(){}
     SmHttp.prototype = {
@@ -334,6 +394,54 @@ if(!empty($_SESSION['x-msg'])){
             event.preventDefault();
             alert(message);
             return;
+        }
+    }
+
+    async function get25Page(){
+        var res = load25Page();
+        // console.log(res);
+        // if(res===true)
+        // {
+        //     document.getElementById('resPageContainer').style.display = '';
+        // }
+    }
+
+    function load25Page(){
+        return new Promise(function(resolve){
+            xmlHttpGET("com_support_v2.php?page=load25page", function(xhttp){
+                var dataObj = JSON.parse(xhttp.responseText);
+                
+                var preHtml = '<table class="chk_table">';
+                preHtml += '<tr><td>แผนก</td><td>รายละเอียด</td><td>ผู้ร้องขอ</td><td>วันที่</td></tr>';
+                for (var index = 0; index < dataObj.length; index++) {
+                    var element = dataObj[index];
+                    // console.log(element);
+                    preHtml += '<tr>';
+                    preHtml += '<td>'+element.depart+'</td>';
+                    preHtml += '<td>'+element.detail+'</td>';
+                    preHtml += '<td>'+element.user+'</td>';
+                    preHtml += '<td>'+element.date+'</td>';
+                    preHtml += '</td>';
+                }
+                preHtml += '</table>';
+
+                document.getElementById('resPage').innerHTML = preHtml;
+
+                document.getElementById('resPageContainer').style.display = '';
+                // resPageContainer
+            });
+
+            resolve(true);
+
+        })
+    }
+
+    var clostTab = document.getElementById('resPageClose');
+    if(clostTab!==null)
+    {
+        // clostTab.style.display = 'none';
+        clostTab.onclick = function(){
+            document.getElementById('resPageContainer').style.display = 'none';
         }
     }
     
