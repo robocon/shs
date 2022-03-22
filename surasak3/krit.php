@@ -19,15 +19,22 @@ if($_SESSION['sIdname']!=='krit')
 <body>
     <div class="w3-sidebar w3-bar-block w3-light-grey w3-card" style="width:25%">
         <a href="krit.php" class="w3-bar-item w3-button"><i class="fa fa-home"></i></a>
-        <a href="edit_ipacc.php" class="w3-bar-item w3-button" target="_blank">แก้ค่าใช้จ่ายผู้ป่วยใน</a>
-        <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">แก้ค่าใช้จ่ายผู้ป่วยนอก</a>
+
+        <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc')">แก้ค่าใช้จ่าย <i class="fa fa-caret-down"></i></button>
+        <div id="demoAcc" class="w3-hide w3-white w3-card">
+            <a href="edit_ipacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน</a>
+            <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก</a>
+        </div>
+
+        <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc2')">แก้ยา <i class="fa fa-caret-down"></i></button>
+        <div id="demoAcc2" class="w3-hide w3-white w3-card">
+            <a href="javascript:void(0)" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน</a>
+            <a href="editPharOpacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก</a>
+        </div>
+
         <a href="find_part.php" class="w3-bar-item w3-button" target="_blank">หา part ที่หายไป</a>
         <a href="com_support_v2.php" class="w3-bar-item w3-button" target="_blank">คีย์งานแบบบันทึกเอง</a>
-        <button class="w3-button w3-block w3-left-align" onclick="myAccFunc()">Accordion <i class="fa fa-caret-down"></i></button>
-        <div id="demoAcc" class="w3-hide w3-white w3-card">
-            <a href="#" class="w3-bar-item w3-button">Link</a>
-            <a href="#" class="w3-bar-item w3-button">Link</a>
-        </div>
+        
         <a href="addNewUser.php" class="w3-bar-item w3-button" target="_blank">เพิ่มผู้ใช้งานในระบบ</a>
     </div>
     <div class="w3-container" style="margin-left:25%">
@@ -35,8 +42,8 @@ if($_SESSION['sIdname']!=='krit')
         <p>เอาไว้แก้นั่นๆ นี่ๆ ไม่ต้องผ่าน phpmyadmin</p>
     </div>
     <script>
-        function myAccFunc() {
-        var x = document.getElementById("demoAcc");
+        function myAccFunc(divId) {
+        var x = document.getElementById(divId);
             if (x.className.indexOf("w3-show") == -1) {
                 x.className += " w3-show";
                 x.previousElementSibling.className += " w3-green";
