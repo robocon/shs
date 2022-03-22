@@ -1,6 +1,10 @@
 <?php 
 include_once 'bootstrap.php';
-
+if($_SESSION['sIdname']!=='krit')
+{
+    echo "Invalid";
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +16,7 @@ include_once 'bootstrap.php';
 </head>
 <body>
     <style>
-        body{
+        html,body,iframe,table{
             height: 100%;
         }
     </style>
@@ -36,6 +40,11 @@ include_once 'bootstrap.php';
         <tr>
             <td>
                 <iframe src="editPharOpacc4.php" name="dphardep" id="dphardep" frameborder="0" width="100%"></iframe>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <iframe src="editPharOpacc5.php" name="dphardep" id="editPage" frameborder="0" width="100%"></iframe>
             </td>
         </tr>
     </table>

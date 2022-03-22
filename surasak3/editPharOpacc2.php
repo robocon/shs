@@ -1,5 +1,10 @@
 <?php 
 include_once 'bootstrap.php';
+if($_SESSION['sIdname']!=='krit')
+{
+    echo "Invalid";
+    exit;
+}
 ?>
 <form action="editPharOpacc2.php" method="post">
     <div>
@@ -65,15 +70,6 @@ if($_REQUEST['hn']){
     }
     else
     {
-        echo 'OPACC IS EMPTY <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep" onclick="setOtherTarget()">SHOW IN phardep</a>';
-
-        ?>
-        <script>
-            function setOtherTarget(){
-                document.querySelector('iframe[name="dphardep"]').src = "editPharOpacc4.php?date=<?=$date;?>&hn=<?=$hn;?>";
-            }
-        </script>
-        <?php
-
+        echo 'OPACC IS EMPTY <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">SHOW IN phardep</a>';
     }
 }

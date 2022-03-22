@@ -1,25 +1,41 @@
 <?php 
 include_once 'bootstrap.php';
+if($_SESSION['sIdname']!=='krit')
+{
+    echo "Invalid";
+    exit;
+}
+
 $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
 $txdate = $_REQUEST['txdate'];
 $hn = $_REQUEST['hn'];
+
+if(empty($txdate) OR empty($hn))
+{
+    exit;
+}
+
+$bypass = '';
 if($_REQUEST['bypass'] === 'yes')
 {
     $where = "WHERE `date` LIKE '$txdate%' AND `hn` = '$hn'";
+    $bypass = '&bypass=yes';
 }
 else
 {
     $where = "WHERE `date` = '$txdate' AND `hn` = '$hn'";
 }
-
+$sql = "SELECT * FROM `phardep` $where ";
+$q = $dbi->query($sql);
+if($q->num_rows===0)
+{
+    echo "ไม่พบข้อมูล";
+    exit;
+}
 ?>
 <fieldset>
     <legend>phardep</legend>
     <div>
-        <?php 
-        $sql = "SELECT * FROM `phardep` $where ";
-        $q = $dbi->query($sql);
-        ?>
         <table>
             <tr>
                 <th>row_id</th>
@@ -35,7 +51,7 @@ else
                 $phardepRowId[] = $a['row_id'];
                 ?>
                 <tr>
-                    <td><a href="javascript:void(0);"><?=$a['row_id'];?></a></td>
+                    <td><a href="editPharOpacc4.php?date=<?=$a['datedr'];?>&hn=<?=$a['hn'];?>&type=dphardep" target="dphardep"><?=$a['row_id'];?></a></td>
                     <td><?=$a['date'];?></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['hn'];?></td>
@@ -84,12 +100,3 @@ else
         </table>
     </div>
 </fieldset>
-<script>
-    window.onload = function(){
-        // document.getElementById('dphardep').attributes.src = "";
-
-        document.querySelector('iframe[name="dphardep"]').src = "editPharOpacc4.php?date=<?=$txdate;?>&hn=<?=$hn;?>";
-
-
-    }
-</script>
