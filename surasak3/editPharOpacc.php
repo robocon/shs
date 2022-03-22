@@ -30,7 +30,12 @@ include_once 'bootstrap.php';
         </tr>
         <tr>
             <td>
-                <iframe src="editPharOpacc3.php" name="depart" frameborder="0" width="100%"></iframe>
+                <iframe src="editPharOpacc3.php" name="phardep" frameborder="0" width="100%"></iframe>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <iframe src="editPharOpacc4.php" name="dphardep" id="dphardep" frameborder="0" width="100%"></iframe>
             </td>
         </tr>
     </table>
