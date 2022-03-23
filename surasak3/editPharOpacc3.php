@@ -6,7 +6,8 @@ if($_SESSION['sIdname']!=='krit')
     exit;
 }
 
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+// $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
 $txdate = $_REQUEST['txdate'];
 $hn = $_REQUEST['hn'];
 
@@ -56,7 +57,7 @@ if($q->num_rows===0)
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['price'];?></td>
-                    <td><a href="javascript:void(0)">·°È‰¢</a><td>
+                    <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=phardep" target="editPage">·°È‰¢</a><td>
                 </tr>
                 <?php
             }

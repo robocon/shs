@@ -19,6 +19,12 @@ if($_SESSION['sIdname']!=='krit')
         html,body,iframe,table{
             height: 100%;
         }
+        body{
+            margin: 0;
+        }
+        table{
+            width: 100%;
+        }
     </style>
     <table border="1" width="100%" valign="top">
         <tr>
@@ -44,7 +50,7 @@ if($_SESSION['sIdname']!=='krit')
         </tr>
         <tr>
             <td>
-            <iframe src="editPharOpacc5.php" name="dphardep" id="editPage" frameborder="0" width="100%"></iframe>
+            <iframe src="editPharOpacc5.php" name="editPage" id="editPage" frameborder="0" width="100%"></iframe>
             </td>
         </tr>
     </table>

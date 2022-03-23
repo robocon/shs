@@ -20,7 +20,8 @@ if($_SESSION['sIdname']!=='krit')
 <?php 
 if($_REQUEST['hn']){
     
-    $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+    // $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+    $dbi = new mysqli(HOST,USER,PASS,DB);
 
     $date = $_REQUEST['date'];
     $hn = $_REQUEST['hn'];
@@ -70,6 +71,6 @@ if($_REQUEST['hn']){
     }
     else
     {
-        echo 'OPACC IS EMPTY <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">SHOW IN phardep</a>';
+        echo 'ไม่มีข้อมูลใน OPACC <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">แสดงข้อมูล phardep</a>';
     }
 }
