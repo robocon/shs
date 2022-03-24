@@ -93,7 +93,7 @@ if($q->num_rows===0)
                     <td><?=$a['drugcode'];?></td>
                     <td><?=$a['amount'];?></td>
                     <td><?=$a['price'];?></td>
-                    <td><a href="javascript:void(0)">·°È‰¢</a><td>
+                    <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=drugrx" target="editPage">·°È‰¢</a><td>
                 </tr>
                 <?php
             }
