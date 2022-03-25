@@ -6,6 +6,37 @@ $dbi = new mysqli(REMOTE_HOST,REMOTE_USER,'',DB);
  * -> เอาไปหาใน opacc2 ก่อนว่ามี depart อะไรบ้าง
  *      ->ถ้าเป็น LAB(PATHO) ไปหาใน resulthead ได้ว่ามี lab อะไรที่สั่งไปบ้าง
  *      ->ถ้าเป็น ค่ายา(PHAR) ไปที่หน้าฟอร์ม
+ * 
+
+select * 
+from opday 
+where thdatehn like '23-03-2565%' 
+and ( thidate >= '2565-03-23 03:00:00' and thidate <= '2565-03-23 10:00:00' ) 
+and ( 
+    ptright not like 'R03%' 
+    and ptright not like 'R01%' 
+    and ptright not like 'R33%' 
+    and ptright not like 'R02%' 
+    and ptright not like 'R49%' 
+) 
+GROUP BY ptright 
+order by thidate asc 
+limit 500 
+
+
+R23 นักเรียน/นักศึกษาทหาร
+R07 ประกันสังคม
+R04 รัฐวิสาหกิจ
+R09 ประกันสุขภาพถ้วนหน้า
+R16 ศึกษาธิการ(ครูเอกชน)
+R06 พ.ร.บ.คุ้มครองผู้ประสบภัยจากรถ
+R12 ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
+R22 ตรวจสุขภาพประจำปีกองทัพบก
+R48 ธนาคารแห่งประเทศไทย
+R47 ธนาคารออมสิน
+
+
+
  */
 $sql = "select `thidate`,`thdatehn`,`hn`,`vn`,`ptname`,`ptright` 
 from opday 
