@@ -110,6 +110,7 @@ LEFT JOIN (
 	SELECT * 
 	FROM `nhsoatk` 
 	WHERE `date_service` = '$year_eng2-$month-$day' 
+	GROUP BY `idcard` 
 ) AS c ON c.`idcard` = b.`idcard`";
 
 //echo $sql;exit();
@@ -199,10 +200,16 @@ $tmp_hn = "";
 	$certifier = $rows["certifier"];
 	$authen_method = $rows["authen_method"];
 
+	$color = "";
+	if(empty($authen_code))
+	{
+		$color = 'style="background-color: #ffff7b;"';
+	}
+
 if($tmp_hn != $hn){
 
   echo '
-	<tr>
+	<tr '.$color.'>
 	<td align="center" style="font-size:15">'.$i.'</td>
 	<td align="center" style="font-size:15">'.$date.'</td>
 	<td align="center" style="font-size:15">'.$time.'</td>
