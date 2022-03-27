@@ -8,8 +8,8 @@ if (empty($_SESSION["sOfficer"])) {
 }
 
 // $dbi = new mysqli(HOST,USER,PASS,DB);
-// $dbi = new mysqli('192.168.131.250', 'remoteuser', '', 'smdb');
-$dbi = new mysqli('localhost', 'root', '12345678', 'smdb');
+$dbi = new mysqli('192.168.131.250', 'remoteuser', '', 'smdb');
+// $dbi = new mysqli('localhost', 'root', '12345678', 'smdb');
 
 $action = $_REQUEST['action'];
 $page = $_REQUEST['page'];
@@ -17,7 +17,7 @@ $page = $_REQUEST['page'];
 if($action === 'add')
 {
     $item_code = trim($_POST['code']);
-    if($item_code!="21401" AND $item_code!="NCARE" AND $item_code!="045002")
+    if($item_code!="21401" AND $item_code!="21501" AND $item_code!="NCARE" AND $item_code!="045002")
     {
         echo "รายการไม่ถูกต้อง กรุณาตรวจสอบข้อมูลอีกครั้ง";
         exit;
@@ -52,18 +52,18 @@ if($action === 'add')
 
     require_once 'class_file/PatientLab.php';
 
-    $ptlab = new PatientLab();
-    $ptlab->data_input = array(
-        'an' => $an,
-        'lab_code' => $item_code,
-        'amount' => $amount,
-        'fix_date' => $fix_date,
-        'sOfficer' => $_SESSION["sOfficer"]
-    );
+    // $ptlab = new PatientLab();
+    // $ptlab->data_input = array(
+    //     'an' => $an,
+    //     'lab_code' => $item_code,
+    //     'amount' => $amount,
+    //     'fix_date' => $fix_date,
+    //     'sOfficer' => $_SESSION["sOfficer"]
+    // );
     
-    $test = $ptlab->SaveExpense();
-    dump($test);
-    exit;
+    // $test = $ptlab->SaveExpense();
+    // dump($test);
+    // exit;
     
     $sql = "SELECT `hn`,`an`,`ptname`,`doctor`,`diag`,`ptright` FROM `ipcard` WHERE `an` = '$an' ";
     $ipcard_q = $dbi->query($sql);
@@ -81,7 +81,7 @@ if($action === 'add')
     $diag = $ipcard['diag'];
     $ptright = $ipcard['ptright'];
 
-    if($item_code=="21401" OR $item_code=="045002")
+    if($item_code=="21401" OR $item_code=="21501" OR $item_code=="045002")
     {
         $sql = "SELECT `row_id`,`depart`,`part`,`code`,`detail`,`price`,`yprice` FROM `labcare` WHERE `code` = '$item_code' ";
         $lab_q = $dbi->query($sql);
@@ -417,6 +417,7 @@ if($_SESSION['x-msg'])
                 <td>
                     <select name="code" id="code">
                         <option value="21401">21401 ค่าห้องควบคุมผู้ป่วย COVID ใน รพ.</option>
+                        <option value="21501">21501 ค่าบริการและดูแลผู้ป่วยกรณีพักรอก่อนเข้ารักษา (รวมอาหาร 3 มื้อ)</option>
                         <option value="NCARE">NCARE</option>
                         <option value="045002">045002 ค่าชุด PPE เจ้าหน้าที่ป้องกันส่วนบุคคล</option>
                     </select>
