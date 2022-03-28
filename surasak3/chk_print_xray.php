@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
+<body style="margin:0px;padding:0px;overflow:hidden">
     <?php 
 	//just example
 	$_REQUEST['company'] = 'ÊÍºµÓÃÇ¨64_02';
 	?>
-    <iframe src="chk_print_xray_page.php?company=<?=$_REQUEST['company'];?>" frameborder="0" name="xrayPage" id="xrayPage" width="800px" height="600px"></iframe>
+	<!-- https://stackoverflow.com/questions/5867985/full-screen-iframe-with-a-height-of-100 -->
+    <iframe src="chk_print_xray_page.php?company=<?=$_REQUEST['company'];?>" frameborder="0" name="xrayPage" id="xrayPage" style="overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px" height="100%" width="100%"></iframe>
 	<script>
         window.onload = function(){
 			// window.frames["xrayPage"].focus();
