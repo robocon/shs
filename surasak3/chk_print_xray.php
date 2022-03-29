@@ -1,4 +1,8 @@
 <?php 
+if(empty($_REQUEST['id']))
+{
+    echo "กรุณาเลือกบริษัท";
+}
 $id = $_REQUEST['id'];
 ?>
 <!DOCTYPE html>
