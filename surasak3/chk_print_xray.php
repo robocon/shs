@@ -2,6 +2,7 @@
 if(empty($_REQUEST['id']))
 {
     echo "กรุณาเลือกบริษัท";
+    exit;
 }
 $id = $_REQUEST['id'];
 ?>
