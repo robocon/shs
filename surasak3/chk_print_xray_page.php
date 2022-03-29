@@ -95,15 +95,9 @@ $pdf->SetFont('THSarabun','',18);
 $pdf->SetXY(70, 53);
 $pdf->Cell(35, 7, 'เลขบัตรประชาชน', 0, 1, 'R');
 
-$idcard = $a['idcard'];
-if(empty($a['idcard']))
-{
-    $idcard = $a['HN'];
-}
-
-$pdf->Code128(110,53, $idcard,80,15);
+$pdf->Code128(110,53, $a['HN'],80,15);
 $pdf->SetXY(110, 67);
-$pdf->Write(7, $idcard);
+$pdf->Write(7, $a['HN']);
 
 $pdf->Image('images/LogoFSH.jpg', 9, 11, 20);
 
