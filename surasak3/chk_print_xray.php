@@ -1,3 +1,6 @@
+<?php 
+$id = $_REQUEST['id'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,16 +10,12 @@
     <title>Document</title>
 </head>
 <body style="margin:0px;padding:0px;overflow:hidden">
-    <?php 
-	//just example
-	$_REQUEST['company'] = 'ÊÍºµÓÃÇ¨64_02';
-	?>
 	<!-- https://stackoverflow.com/questions/5867985/full-screen-iframe-with-a-height-of-100 -->
-    <iframe src="chk_print_xray_page.php?company=<?=$_REQUEST['company'];?>" frameborder="0" name="xrayPage" id="xrayPage" style="overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px" height="100%" width="100%"></iframe>
+    <iframe src="chk_print_xray_page.php?id=<?=$id;?>" frameborder="0" name="xrayPage" id="xrayPage" style="overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px" height="100%" width="100%"></iframe>
 	<script>
-        window.onload = function(){
-			// window.frames["xrayPage"].focus();
-			// window.frames["xrayPage"].print();
+        window.onload = function(){ 
+            window.frames["xrayPage"].focus();
+            window.frames["xrayPage"].print();
         }
     </script>
 </body>

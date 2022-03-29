@@ -220,6 +220,9 @@ if ( $views == 'search' ) {
                         <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
                         <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB</a></li>
                         <li><a href="chk_report_all_money.php?camp=<?=$item['code'];?>" target="_blank">ทดสอบ ค่าใช้จ่ายจากรายการแลป (ตรวจนอกรพ.)</a></li>
+                        <li>
+                            <a href="chk_print_xray.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ใบนำทาง X-Ray</a>
+                        </li>
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
