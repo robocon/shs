@@ -85,9 +85,9 @@ $pdf->SetFont('THSarabun','B',18);
 $pdf->SetXY(120, 32);
 $pdf->Cell(50, 7, ' '.$a['HN'], 0, 1, 'L');
 
-$pdf->SetXY(90, 39);
+$pdf->SetXY(9, 42);
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Cell(60, 7, ' '.$companyName, 0, 1, 'L');
+$pdf->Cell(0, 7, ' '.$companyName, 0, 1, 'L');
 
 
 
