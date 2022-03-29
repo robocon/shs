@@ -1,6 +1,6 @@
 <?php 
 require 'bootstrap.php';
-$dbi = new mysqli(REMOTE_HOST,REMOTE_USER,'',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
 
 ?>
 <!DOCTYPE html>
@@ -26,8 +26,9 @@ $dbi = new mysqli(REMOTE_HOST,REMOTE_USER,'',DB);
                 <th>สิทธิ</th>
                 <th>แพทย์</th>
             </tr>
-        <?php
-        $sql = "SELECT * FROM `ipcard` WHERE `date` LIKE '2565-03-29%' AND `dcstatus` IS NULL ORDER BY `row_id` DESC";
+        <?php 
+        $today = (date('Y')+543).date('-m-d');
+        $sql = "SELECT * FROM `ipcard` WHERE `date` LIKE '$today%' AND `dcstatus` IS NULL ORDER BY `row_id` DESC";
         $q = $dbi->query($sql);
         while ($a = $q->fetch_assoc()) {
             $hn = $a['hn'];
