@@ -80,6 +80,13 @@ font-size:18px;
   font-size: 22px;
   font-weight:bold;
 }
+
+.button-green {
+	background-color: #4CAF50;
+	font-family:"TH SarabunPSK"; 
+	font-size: 18px;
+	
+}
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
@@ -240,6 +247,50 @@ $sql = "INSERT INTO `opd` (
 	$sql ="UPDATE opday SET clinic = '".$_POST["clinic"]."' ".$field.", typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."',opdtype='".$_POST["opdtype"]."'  WHERE  thdatehn='".$thidatehn."' AND vn = '".$_POST["vn"]."' ";   // แก้ไขข้อมูลตาราง opday ตามวันที่ และ vn
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	
+	
+	
+	if($_POST["opdtype"]=="SI"){
+		$sql = "Select age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
+		$arr = mysql_fetch_assoc(mysql_query($sql));
+		
+		$sql1 = "Select phone From opcard where hn = '".$_REQUEST["hn"]."' limit 1";
+		$query1=mysql_query($sql1);
+		$arr1 = mysql_fetch_assoc($query1);
+		
+		$registerdate=date("Y-m-d");
+		$officer_date=date("Y-m-d H:i:s");
+		
+		$plandate1 = date ("Y-m-d", strtotime("+2 day", strtotime($registerdate)));
+		$plandate2 = date ("Y-m-d", strtotime("+6 day", strtotime($registerdate)));
+
+		$sql2 = "Select status_day1,status_day2 From opselfisolation where hn = '".$_REQUEST["hn"]."' limit 1";
+		//echo $sql2."<br>";
+		$query2=mysql_query($sql2);
+		$num2=mysql_num_rows($query2);
+		$arr2 = mysql_fetch_assoc($query2);
+		//echo "==>".$num2."<br>";
+		
+		if($num2 < 1){  //ภายในวันลงทะเบียนแค่ 1 ครั้ง
+			$add="insert into opselfisolation set registerdate='$registerdate',
+												  thdatehn='$thidatehn',
+												  hn='".$_REQUEST["hn"]."',
+												  vn='".$_POST["vn"]."',
+												  ptname='".$_POST["ptname"]."',
+												  age='".$arr["age"]."',
+												  ptright='".$arr["ptright"]."',
+												  phone='".$arr1["phone"]."',
+												  plandate1='$plandate1',
+												  plandate2='$plandate2',
+												  status_day1='n',
+												  status_day2='n',
+												  officer = '".$_SESSION["sOfficer"]."',
+												  officer_date='$officer_date'";
+			$result = Mysql_Query($add) or die(Mysql_Error());
+		}
+	}
+	
+	
+	
 	$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
 	$result1 = Mysql_Query($sql1) or die(Mysql_Error());	
 	
@@ -330,19 +381,29 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p class="txtsarabun"><strong>โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> </p>
-<p class="txtsarabun"><a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a></p>
+<p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a></p>
 <form id="f1" name="f1" method="post" action="">
+<div><strong>ประเภทผู้ป่วย :</strong></div>
+<input type="radio" name="type" id="type1" value="SI"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
+<input type="radio" name="type" id="type2" value="HI"><label for="type2">ผู้ป่วย Home Isolation</label>&nbsp;
+<div><strong>กลุ่มอาการ :</strong></div>
+<input type="radio" name="color" id="color1" value="green"><label for="color1">ผู้ป่วยกลุ่มอาการสีเขียว</label>&nbsp;&nbsp;&nbsp;
+<input type="radio" name="color" id="color2" value="yellow"><label for="color2">ผู้ป่วยกลุ่มอาการสีเหลือง</label>&nbsp;&nbsp;&nbsp;
+<input type="radio" name="color" id="color3" value="red"><label for="color3">ผู้ป่วยกลุ่มอาการสีแดง</label>
+<div>&nbsp;</div>
     <strong>กรอก HN :</strong> 
-  <input name="hn" type="text" class="txtsarabun" id="hn" size="10" maxlength="10" />
+  <input name="hn" type="text" class="txtsarabun" id="hn" size="20" maxlength="20" />&nbsp;&nbsp;
+  <input name="Submit" type="submit" class="txtsarabun" value="   ตกลง   " />
 
-  <input name="Submit" type="submit" class="txtsarabun" value=" ตกลง " />
+
+
   <BR>
- <INPUT TYPE="checkbox" NAME="unshow" value="1">&nbsp;&nbsp;ไม่ประกาศ คิว ผู้ป่วย
+ <INPUT TYPE="hidden" NAME="unshow" value="1">&nbsp;&nbsp;<!--ไม่ประกาศ คิว ผู้ป่วย-->
 </form>
  <p><span class="tb_font">
   <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" />
- </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></p>
+ </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />&nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" /></p>
+<hr>
 <p>&nbsp; </p>
  
  <?php
@@ -409,7 +470,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$thdatevn=$thidate.$nVn;
 			$thidate_now1 = (date("Y")+543).date("-m-d").date(" H:i:s");
 			$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,toborow,time1,idcard,dxgroup,officer)VALUES('".$thidate_now1."','".$thidatehn."','".$cHn."','".$nVn."', '".$thdatevn."','".$cPtname."','".$cAge."','".$cPtright."','".$cGoup."','".$cCamp."','".$cNote."','".$vnlab."','".$time1."','".$cIdcard."','21','".$_SESSION["sOfficer"]."');";
-			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 311");
+			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 433");
 			
 			$sql = "UPDATE opcard SET lastupdate='".$thidate_now."' WHERE hn='$cHn' ";
 			$result = mysql_query($sql) or die("Query failed UPDATE opcard line 315");
