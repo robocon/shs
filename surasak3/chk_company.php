@@ -223,6 +223,9 @@ if ( $views == 'search' ) {
                         <li>
                             <a href="chk_print_xray.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ใบนำทาง X-Ray</a>
                         </li>
+                        <li>
+                            <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">ปริ้นแลป</a>
+                        </li>
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
