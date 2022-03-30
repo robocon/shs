@@ -22,9 +22,11 @@ $pdf->SetThaiFont(); // เซ็ตฟอนต์
 $pdf->SetAutoPageBreak(true, 2);
 $pdf->SetMargins(9, 11, 9);
 
-$sql = "SELECT * FROM opcardchk WHERE part = '$company' ";
+$sql = "SELECT * FROM opcardchk WHERE part = '$company' ORDER BY `row` ASC ";
 
 $q = $dbi->query($sql);
+
+$number = 1;
 while ($a = $q->fetch_assoc()) {
 
 $pdf->AddPage();
@@ -51,6 +53,11 @@ $pdf->Cell(60, 7, 'โทร.053-839305', 0, 1, 'L');
 // if(strstr('วันที่', $date_checkup)){
 //     $datechkup = trim(str_replace('วันที่', '', $date_checkup));
 // }
+$txtNumber = sprintf('%03d', $number);
+$pdf->SetFont('THSarabun','B',32);
+// $number = substr($a['HN'], -3);
+$pdf->SetXY(160, 4);
+$pdf->Cell(30, 7, $txtNumber, 0, 1, 'R');
 
 $pdf->SetFont('THSarabun','',18);
 $pdf->SetXY(90, 11);
@@ -92,8 +99,8 @@ $pdf->Cell(0, 7, ' '.$companyName, 0, 1, 'L');
 
 
 $pdf->SetFont('THSarabun','',18);
-$pdf->SetXY(70, 53);
-$pdf->Cell(35, 7, 'เลขบัตรประชาชน', 0, 1, 'R');
+// $pdf->SetXY(70, 53);
+// $pdf->Cell(35, 7, 'เลขบัตรประชาชน', 0, 1, 'R');
 
 $pdf->Code128(110,53, $a['HN'],80,15);
 $pdf->SetXY(110, 67);
@@ -127,7 +134,7 @@ $pdf->Cell(40, 7, 'เจ้าหน้าที่ X-Ray', 0, 1, 'R');
 $pdf->SetXY(129, 84);
 $pdf->Cell(0, 7, '.................................', 0, 1, 'L');
 
-    
+$number++;
 }
 
 $pdf->Output();

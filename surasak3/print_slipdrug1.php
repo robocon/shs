@@ -16,54 +16,10 @@ body,td,th {
 $Thaidate=date("d/m/").(date("Y")+543)."  ".date("H:i:s");
 
 $thdatehn=date("d-m-").(date("Y")+543).$_GET["hn"];
-
 if($_GET["type"]=="SI"){
-	$type="OP self Isolation";
-	$sql ="UPDATE opday SET opdtype='".$_GET["type"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
-	$result = Mysql_Query($sql) or die(Mysql_Error());
-	
-		$sql = "Select vn,ptname,age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
-		$arr = mysql_fetch_assoc(mysql_query($sql));
-		
-		$sql1 = "Select phone From opcard where hn = '".$_REQUEST["hn"]."' limit 1";
-		$query1=mysql_query($sql1);
-		$arr1 = mysql_fetch_assoc($query1);
-		
-		$registerdate=date("Y-m-d");
-		$officer_date=date("Y-m-d H:i:s");
-		
-		$plandate1 = date ("Y-m-d", strtotime("+2 day", strtotime($registerdate)));
-		$plandate2 = date ("Y-m-d", strtotime("+6 day", strtotime($registerdate)));
-
-		$sql2 = "Select status_day1,status_day2 From opselfisolation where hn = '".$_GET["hn"]."' limit 1";
-		//echo $sql2."<br>";
-		$query2=mysql_query($sql2);
-		$num2=mysql_num_rows($query2);
-		$arr2 = mysql_fetch_assoc($query2);
-		//echo "==>".$num2."<br>";
-		
-		if($num2 < 1){  //ภายในวันลงทะเบียนแค่ 1 ครั้ง
-			$add="insert into opselfisolation set registerdate='$registerdate',
-												  thdatehn='$thdatehn',
-												  hn='".$_GET["hn"]."',
-												  vn='".$arr["vn"]."',
-												  ptname='".$arr1["ptname"]."',
-												  age='".$arr["age"]."',
-												  ptright='".$arr["ptright"]."',
-												  phone='".$arr1["phone"]."',
-												  plandate1='$plandate1',
-												  plandate2='$plandate2',
-												  status_day1='n',
-												  status_day2='n',
-												  officer = '".$_SESSION["sOfficer"]."',
-												  officer_date='$officer_date'";
-			$result = Mysql_Query($add) or die(Mysql_Error());
-		}		
-	
+	$type="OP self Isolation";	
 }else if($_GET["type"]=="HI"){
 	$type="Home Isolation";
-	$sql ="UPDATE opday SET opdtype='".$_GET["type"]."',opdcolor='".$_GET["color"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
-	$result = Mysql_Query($sql) or die(Mysql_Error());	
 }else{
 	$type="";
 }

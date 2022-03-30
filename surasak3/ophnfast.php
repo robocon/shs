@@ -31,10 +31,10 @@ font-size:20px;
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script><body bgcolor="#60c4b8">
 <div style="margin-left:50px; margin-top: 30px;">
-<form method="post" action="ophn.php">
+<form method="post" action="ophnfast.php">
     <p style="font-size:24px;"><b>ค้นหาคนไข้จาก&nbsp; HN</p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40">
+    <input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40" autofocus>
     </p>
     
     <p style="margin-left:100px;">
@@ -51,20 +51,9 @@ font-size:20px;
         <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
       <th bgcolor=#009688 width="47"><span class="style2">ยศ</span></th>
       <th width="77" bgcolor=#009688><span class="style2">ชื่อ</span></th>
-
       <th width="69" bgcolor=#009688><span class="style2">สกุล</span></th>
-      <th width="174" bgcolor=#009688><span class="style2">ใบต่อแบบใหม่</span></th>
-      <th width="98" bgcolor=#009688><span class="style2">มา รพ.</span></th>
-      <th width="130" bgcolor=#009688><span class="style2">ตรวจนอน</span></th>
-      <th width="81" bgcolor=#009688><span class="style2">ใบต่อ</span></th>
-<!-- <th bgcolor=6495ED>ใบยานอก</th>
-        <th bgcolor=6495ED>ใบสั่งยา</th>
-        <th bgcolor=6495ED>ใบตรวจโรค</th>-->       
-        <th bgcolor=#009688 colspan="5"><span class="style2">ใบตรวจโรค</span></th>
-        <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธ.ออมสิน</span></th>
-        <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธปท.</span></th>
-		<th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ททท.</span></th>
-      <th width="6" bgcolor="#009688">&nbsp;</th>
+	  <th width="100" bgcolor=#009688><span class="style2">สิทธิการรักษา</span></th>
+      <th width="100" bgcolor=#009688><span class="style2">ดำเนินการ</span></th>
     </tr>
 
     <?php
@@ -133,30 +122,12 @@ font-size:20px;
             }
 
             print (" <tr style='font-size: 18px;'>\n".
-            "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn & cName=$name &cSurname=$surname\">$hn</a></td>\n".
+            "  <td BGCOLOR=".$color.">$hn</td>\n".
             "  <td BGCOLOR=".$color.">$yot</td>\n".
             "  <td BGCOLOR=".$color.">$name</td>\n".
             "  <td BGCOLOR=".$color.">$surname</td>\n".
-            "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opdcard_opregis.php?cHn=$hn\">$ptright</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
-            // "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"opdprint2.php?cHn=$hn\">ใบต่อ</a></td>\n".
-            /*"  <td BGCOLOR=".$color."><a target= _BLANK href=\"edprint.php?cHn=$hn\">ใบยานอก</td>\n".
-            "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผู้ป่วยนัด</td>\n".
-            "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint1.php?cHn=$hn\">ใบตรวจโรค</td>\n".*/
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointhdvn.php?cHn=$hn\">ไต</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointdenvn.php?cHn=$hn\">ฟัน</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</a></td>\n".
-			"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"gsb_chk.php\">ตรวจสอบ</a></td>\n".
-			"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"bot_chk.php\">ตรวจสอบ</a></td>\n".
-			"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".
-            "<td bgcolor=\"$color\" align=\"center\">
-            <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
-            <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
-            </td>".
+			"  <td BGCOLOR=".$color.">$ptright</td>\n".
+            "  <td align=\"center\" BGCOLOR=".$color."><input type=\"button\" name=\"button\" id=\"button\" value=\"ลงทะเบียนผู้ป่วย\" onclick=\"window.open('print_slipdrug.php?hn=$hn')\" class=\"txtsarabun\" /></td>\n".
             " </tr>\n");
 
             $_SESSION['hn'] = $hn;
