@@ -638,8 +638,17 @@ if(isset($_POST['ok2'])){
 			  if($_POST['chdr']=="1"){
 			 	$result1['doctor']=$_POST['dr2'];
 			 }
-			 $insert1 = "insert into appoint(row_id,date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,came,diag,remark,appdate_en) values(NULL,'".$dateadd."','".$sOfficer."','".$result1['hn']."','".$result1['ptname']."','".$result1['age']."','".$result1['doctor']."','".$newdate."','".$_POST['capptime']."','".$result1['room']."','".$result1['detail']."','".$result1['detail2']."','".$result1['advice']."','".$result1['patho']."','".$result1['xray']."','".$result1['other']."','".$result1['depcode']."','".$result1['came']."','".$result1['diag']."','".$result1['remark']."','$appdate_en')";
-
+			 $insert1 = "insert into appoint(
+				row_id,date,officer,hn,ptname,age,
+				doctor,appdate,apptime,room,detail,detail2,
+				advice,patho,xray,other,depcode,came,
+				diag,remark,appdate_en
+			) values(
+				NULL,'".$dateadd."','".$sOfficer."','".$result1['hn']."','".$result1['ptname']."','".$result1['age']."',
+				'".$result1['doctor']."','".$newdate."','".$_POST['capptime']."','".$result1['room']."','".$result1['detail']."','".$result1['detail2']."',
+				'".$result1['advice']."','".$result1['patho']."','".$result1['xray']."','".$result1['other']."','".$result1['depcode']."','".$result1['came']."',
+				'".$result1['diag']."','".$result1['remark']."','$appdate_en'
+			)";
 			if(mysql_query($insert1)){
 				$idno=mysql_insert_id();
 				$cHn = $result1['hn'];

@@ -55,5 +55,6 @@ body,td,th {
 <a href="solider2.php" target="_blank">-ผลการตรวจร่างกายประจำปี</a><BR>
 <A target='right' href="icd10top10.php?">-รายงานผู้ป่วย TOP10 </a><BR>
 <A target='right' href="chk_opd_vip.php?">-รายชื่อผู้ป่วยVIP </a><BR>
+<A target='right' href="regis_find_oldman.php">-รายชื่อผู้สูงอายุในเดือน </a><BR>
 </BODY>
 </HTML>

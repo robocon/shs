@@ -8,7 +8,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>Untitled Document</title>
 <style type="text/css">
-<!--
 .font3 {
 	font-family: "TH SarabunPSK";
 	font-size:30px;
@@ -26,11 +25,9 @@
 background-color: #000; 
 color: #FFF; 
 }
--->
 </style>
 </head>
 <script language=JavaScript type=text/javascript>
-<!-- 
 function CheckAll() {
 	for (var i = 0; i < document.form12.elements.length; i++) {
 		if(document.form12.elements[i].type == 'checkbox'){
@@ -38,7 +35,6 @@ function CheckAll() {
 		}
 	}
 }
-//-->
 </script>
 <body>
 <div id="no_print" >
@@ -51,32 +47,35 @@ function CheckAll() {
 	<table width="100%">
   <tr>
     <td>วันที่
+		<?php 
+		$dSelect = !empty($_POST['d']) ? $_POST['d'] : '' ;
+		$mSelect = !empty($_POST['m']) ? $_POST['m'] : '' ;
+		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : '' ;
+		?>
       <select name="d">
         <option value="0">-</option>
-        <?
+        <?php
 		for($a=1;$a<=31;$a++){
-		if($a<10) $ss = "0";
-		else $ss='';
-	?>
-        <option value="<?=$ss?><?=$a?>">
-          <?=$a?>
-          </option>
-        <?
-	}
+			$a = sprintf('%02d',$a);
+			$selected = ($a==$dSelect) ? 'selected="selected"' : '' ;
+			?>
+			<option value="<?=$a?>" <?=$selected;?>><?=$a?></option>
+			<?
+		}
 	?>
         </select>
       เดือน
       <select name="m">
         <?
-	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-	for($a=1;$a<13;$a++){
-	?>
-        <option value="<?=$month[$a]?>">
-          <?=$month[$a]?>
-          </option>
-        <?
-	}
-	?>
+		$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+		for($a=1;$a<13;$a++){
+			// $b = sprintf('%02d', $a);
+			$selected = ($month[$a]===$mSelect) ? 'selected="selected"' : '' ;
+			?>
+			<option value="<?=$month[$a]?>" <?=$selected;?>><?=$month[$a]?></option>
+			<?
+		}
+		?>
         </select>
       พ.ศ.
       <select name="yr">
