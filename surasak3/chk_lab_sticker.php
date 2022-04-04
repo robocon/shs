@@ -15,6 +15,7 @@ if ( $action == 'print' ) {
     $count_cbc = input_post('count_cbc');
     $count_chem = input_post('count_chem');
     $count_ua = input_post('count_ua');
+    $count_ua_barcode = input_post('count_ua_barcode');
     $count_stool = input_post('count_stool');
     $count_cs = input_post('count_cs');
     $urine_cs = input_post('urine_cs');
@@ -36,6 +37,20 @@ if ( $action == 'print' ) {
     WHERE `part` = '$part' 
     ORDER BY `row` ".$limit_txt;
     $db->select($sql);
+
+    ?>
+    <style>
+    .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+    }
+    .vertical-num{
+        float:left;
+    }
+
+    </style>
+    <?php
 
     $items = $db->get_items();
     foreach ($items as $key => $item) {
@@ -62,10 +77,24 @@ if ( $action == 'print' ) {
             for ($i=0; $i < $count_cbc; $i++) { 
                 ?>
                 <!-- CBC -->
-                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
-                <div style='text-align:center;'>
-                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span><font size='5'>01</font>
+                <div class="clearfix">
+                    <div class="vertical-num">
+                        <img src="vertical_number.php?font=<?=$user_number;?>&font_size=10" alt="">
+                    </div>
+
+                    <div style="float: left;">
+                        <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+                        <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
+                        <div style='text-align:center;'>
+                            <font size='5'></font>
+                            <span class='fc1-0'><img src="barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
+                            <font size='5'></font>
+                        </div>
+                    </div>
+                    
+                    <div style="float: left;">
+                        <img src="vertical_number.php?font=01" alt="">
+                    </div>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -90,6 +119,20 @@ if ( $action == 'print' ) {
             for ($i=0; $i < $count_ua; $i++) { 
                 ?>
                 <!-- UA -->
+                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
+                <div style='text-align:center;'>
+                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span></span><font size='5'>03</font>
+                </div>
+                <div style="page-break-before: always;"></div>
+                <?php 
+            }
+        }
+
+        if( $count_ua_barcode > 0 ){ 
+            for ($i=0; $i < $count_ua_barcode; $i++) { 
+                ?>
+                <!-- UA แบบมี Barcode -->
                 <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
                 <div style='text-align:center;'>
@@ -200,6 +243,9 @@ include 'chk_menu.php';
     </div>
     <div>
         UA: <input type="text" name="count_ua" size="3" value="1">
+    </div>
+    <div>
+        UA Barcode: <input type="text" name="count_ua_barcode" size="3" value="1">
     </div>
     <div>
         STOOL: <input type="text" name="count_stool" size="3" value="">
