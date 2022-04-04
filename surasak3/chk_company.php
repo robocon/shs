@@ -109,6 +109,11 @@ if( $id > 0 ){
     
 }
 ?>
+<style>
+ol > li {
+    margin-bottom: 6px;
+}
+</style>
 <fieldset>
     <legend>เพิ่มบริษัทใหม่</legend>
     <form action="chk_company.php" method="post">
@@ -183,8 +188,8 @@ if ( $views == 'search' ) {
     <table class="chk_table">
         <tr>
             <th>#</th>
-            <th>ชื่อบริษัท</th>
-            <th>รหัสเชื่อมข้อมูล</th>
+            <th style="width: 15%;">ชื่อบริษัท</th>
+            <th style="width: 20%;">รหัสเชื่อมข้อมูล</th>
             <th>ช่วงเวลาที่ตรวจ</th>
             <th>รอบปีงบประมาณ</th>
             <th>ลงผล/พิมพ์ผล</th>
@@ -206,30 +211,30 @@ if ( $views == 'search' ) {
 
             $reportAll = $reportAllFile.'?camp='.$item['code'];
             ?>
-            <tr>
+            <tr style="vertical-align:top;">
                 <td><?=$i;?></td>
                 <td><a href="chk_show_user.php?part=<?=$item['code'];?>"><?=$item['name'];?></a></td>
                 <td><?=$item['code'];?> (<?=$userRows;?>ราย)</td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>
                 <td style="vertical-align: top;">
-                    <ol>
+                    <ol style="margin:0;">
                         <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                         <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                         <li><a href="<?=$reportAll;?>" target="_blank">สรุปผลตรวจ</a></li>
                         <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
                         <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB</a></li>
-                        <li><a href="chk_report_all_money.php?camp=<?=$item['code'];?>" target="_blank">ทดสอบ ค่าใช้จ่ายจากรายการแลป (ตรวจนอกรพ.)</a></li>
+                        <!-- <li><a href="chk_report_all_money.php?camp=<?=$item['code'];?>" target="_blank">ทดสอบ ค่าใช้จ่ายจากรายการแลป (ตรวจนอกรพ.)</a></li> -->
                         <li>
                             <a href="chk_print_xray.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ใบนำทาง X-Ray</a>
                         </li>
                         <li>
-                            <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">ปริ้นแลป</a>
+                            <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ผลแลป METAMP</a>
                         </li>
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
-                    <ol>
+                    <ol style="margin:0;">
                         <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลรวม</a></li>
                         <li><a href="chk_print_all_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
                         <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย</a></li>

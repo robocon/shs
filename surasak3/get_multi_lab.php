@@ -7,7 +7,7 @@
  * ตอนนี้ให้มันปริ้น METAMP ได้ก่อน
  */
 require 'bootstrap.php';
-$dbi = new mysqli(REMOTE_HOST,REMOTE_USER,'',DB);
+$dbi = new mysqli(HOST, USER, PASS, DB);
 
 function getAge($birthday) {
 	$then = strtotime($birthday);

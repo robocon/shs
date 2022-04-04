@@ -1,6 +1,6 @@
 <?php 
 require 'bootstrap.php';
-$dbi = new mysqli(REMOTE_HOST, REMOTE_USER, '', DB);
+$dbi = new mysqli(HOST, USER, PASS, DB);
 if(empty($_REQUEST['id']))
 {
     exit;
@@ -68,16 +68,33 @@ else
 	</style>
 </head>
 <body>
-<?php
-$base_url = 'http://'.$_SERVER['HTTP_HOST'];
+<?php 
 $sql = "SELECT `HN`,`exam_no` FROM `opcardchk` WHERE `part` = '$code' ORDER BY `row` ASC ";
 $q = $dbi->query($sql);
+
+$testContent = array();
 while ($a = $q->fetch_assoc()) {
     $exam_no = $a['exam_no'];
+	if(empty($exam_no))
+	{
+		echo "ไม่สามารถพิมพ์ผลได้เนื่องจากจำเป็นต้องใช้ exam_no";
+		exit;
+	}
     $hn = $a['HN'];
-    $url = $base_url."/sm3dev/surasak3/get_multi_lab.php?hn=$hn&labnumber=$exam_no";
-    $test = file_get_contents($url);
-    echo $test;
+    $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/get_multi_lab.php?hn=$hn&labnumber=$exam_no";
+    $content = file_get_contents($url);
+	if(empty($content))
+	{
+		$testContent[] = $hn;
+	}
+	else{
+		echo $content;
+	}
+}
+
+if(!empty($testContent))
+{
+	echo 'ไม่พบข้อมูลการตรวจ METAMP ใน HN '.implode(', ', $testContent);
 }
 ?>
 </body>
