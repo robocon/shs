@@ -381,18 +381,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a></p>
+<p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพลูกจ้าง รพ.ค่ายฯ</a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a>&nbsp;&nbsp;<a href="appoint_covid.php" target="_blank">ออกใบนัด ATK ล่วงหน้า (กลุ่มเสี่ยง)</a></p>
 <form id="f1" name="f1" method="post" action="">
 <div><strong>ประเภทผู้ป่วย :</strong></div>
 <input type="radio" name="type" id="type1" value="SI"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
-<input type="radio" name="type" id="type2" value="HI"><label for="type2">ผู้ป่วย Home Isolation</label>&nbsp;
+<input type="radio" name="type" id="type2" value="HI"><label for="type2">ผู้ป่วย Home Isolation</label>&nbsp;&nbsp;&nbsp;
+<input type="radio" name="type" id="type3" value="FI" onClick="window.alert('ฮั่นแน่ !!!\n อยู่ รพ.สนามจริงรึป่าว? อย่ามั่วนะครับ');"><label for="type3">ผู้ป่วย รพ.สนาม</label>&nbsp;
 <div><strong>กลุ่มอาการ :</strong></div>
 <input type="radio" name="color" id="color1" value="green"><label for="color1">ผู้ป่วยกลุ่มอาการสีเขียว</label>&nbsp;&nbsp;&nbsp;
 <input type="radio" name="color" id="color2" value="yellow"><label for="color2">ผู้ป่วยกลุ่มอาการสีเหลือง</label>&nbsp;&nbsp;&nbsp;
 <input type="radio" name="color" id="color3" value="red"><label for="color3">ผู้ป่วยกลุ่มอาการสีแดง</label>
 <div>&nbsp;</div>
     <strong>กรอก HN :</strong> 
-  <input name="hn" type="text" class="txtsarabun" id="hn" size="20" maxlength="20" />&nbsp;&nbsp;
+  <input name="hn" type="text" class="txtsarabun" id="hn" size="20" maxlength="20" autofocus />&nbsp;&nbsp;
   <input name="Submit" type="submit" class="txtsarabun" value="   ตกลง   " />
 
 
@@ -740,10 +741,7 @@ function checkForm(){
 		return false;
 	}else if(document.f2.cig1.checked == true&&document.f2.member2[0].checked == false&&document.f2.member2[1].checked == false){
 		alert('กรุณาเลือกความต้องการอยากเลิกบุหรี่ไหมด้วยครับ');
-		return false;
-	}else if(document.f2.opdtype1.checked == false && document.f2.opdtype2.checked == false && document.f2.opdtype3.checked == false){
-		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
-		return false;		
+		return false;	
 	}else{
 		return true;
 	}
@@ -1076,9 +1074,9 @@ mmHg </td>
 		<tr>
 			<td align="right" class="data_show">ประเภทผู้ป่วย</td>
 			<td align="left" colspan="5">
-				<input type="radio" name="opdtype" id="opdtype1" value="OPD" <? if($opdtype=="OPD"){ echo "checked='checked'";}?>><label for="opdtype1">ผู้ป่วยนอก</label>&nbsp;
+				<input type="radio" name="opdtype" id="opdtype1" value="FI" <? if($opdtype=="FI"){ echo "checked='checked'";}?> onClick="window.alert('ฮั่นแน่ !!!\n อยู่ รพ.สนามจริงรึป่าว? อย่ามั่วนะครับ');"><label for="opdtype1">ผู้ป่วย รพ.สนาม</label>&nbsp;
 				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?>><label for="opdtype2">ผู้ป่วย OP self Isolation</label>&nbsp;
-				<input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp; <strong style="color:red;">*** ระบุข้อมูล***</strong>
+				<input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp; <strong style="color:red;">*** ผู้ป่วยโควิดระบุข้อมูลทุกเคส***</strong>
 
 			</td>
 		</tr>

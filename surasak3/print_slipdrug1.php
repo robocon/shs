@@ -20,6 +20,8 @@ if($_GET["type"]=="SI"){
 	$type="OP self Isolation";	
 }else if($_GET["type"]=="HI"){
 	$type="Home Isolation";
+}else if($_GET["type"]=="FI"){
+	$type="รพ.สนาม";
 }else{
 	$type="";
 }
@@ -67,7 +69,7 @@ $result = mysql_query($query) or die("Query failed");
 				";
 				
 print "<div align='center'>";
-print "<div style='margin-left: 30px; line-height:24px; font-family:Angsana New; font-size: 28px;'><b>สติ๊กเกอร์ผู้ป่วย $type&nbsp;&nbsp;กลุ่มอาการสี$color</b></div>";				
+print "<div style='line-height:24px; font-family:Angsana New; font-size: 26px;'><b>ผู้ป่วย $type<br>กลุ่มอาการสี$color</b></div>";				
 print "</div>";			
 print "<div align='center'>";
 print "<div style='line-height:25px;'>&nbsp;</div>";

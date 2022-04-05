@@ -16,13 +16,16 @@ body,td,th {
 $Thaidate=date("d/m/").(date("Y")+543)."  ".date("H:i:s");
 
 $thdatehn=date("d-m-").(date("Y")+543).$_GET["hn"];
+//echo $thdatehn;
+
+
 
 if($_GET["type"]=="SI"){
 	$type="OP self Isolation";
-	$sql ="UPDATE opday SET opdtype='".$_GET["type"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
+	$sql ="UPDATE opday SET opdtype='".$_GET["type"]."', opdcolor='".$_GET["color"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	
-		$sql = "Select vn,ptname,age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
+		$sql = "Select vn,ptname,age,ptright From opday where thdatehn = '".$thdatehn."'  limit 1";
 		$arr = mysql_fetch_assoc(mysql_query($sql));
 		
 		$sql1 = "Select phone From opcard where hn = '".$_REQUEST["hn"]."' limit 1";
@@ -47,7 +50,7 @@ if($_GET["type"]=="SI"){
 												  thdatehn='$thdatehn',
 												  hn='".$_GET["hn"]."',
 												  vn='".$arr["vn"]."',
-												  ptname='".$arr1["ptname"]."',
+												  ptname='".$arr["ptname"]."',
 												  age='".$arr["age"]."',
 												  ptright='".$arr["ptright"]."',
 												  phone='".$arr1["phone"]."',
@@ -57,16 +60,30 @@ if($_GET["type"]=="SI"){
 												  status_day2='n',
 												  officer = '".$_SESSION["sOfficer"]."',
 												  officer_date='$officer_date'";
+			//echo $add;									  
 			$result = Mysql_Query($add) or die(Mysql_Error());
-		}		
+		}else{
+			$add ="UPDATE opselfisolation SET vn='".$arr["vn"]."', ptname='".$arr["ptname"]."',age='".$arr["age"]."',ptright='".$arr["ptright"]."',phone='".$arr1["phone"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
+			//echo $add;
+			$result = Mysql_Query($add) or die(Mysql_Error());	
+		}
 	
 }else if($_GET["type"]=="HI"){
 	$type="Home Isolation";
 	$sql ="UPDATE opday SET opdtype='".$_GET["type"]."',opdcolor='".$_GET["color"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
 	$result = Mysql_Query($sql) or die(Mysql_Error());	
+
+}else if($_GET["type"]=="FI"){
+	$type="รพ.สนาม";
+	$sql ="UPDATE opday SET opdtype='".$_GET["type"]."',opdcolor='".$_GET["color"]."'  WHERE  thdatehn='".$thdatehn."'";   // แก้ไขข้อมูลตาราง opday
+	$result = Mysql_Query($sql) or die(Mysql_Error());	
 }else{
 	$type="";
 }
+
+
+
+
 
 if($_GET["color"]=="green"){
 	$color="เขียว";
@@ -77,6 +94,10 @@ if($_GET["color"]=="green"){
 }else{
 	$color="";
 }
+
+
+
+
 
 $query = "SELECT * FROM opday WHERE hn = '".$_GET["hn"]."' and thdatehn='$thdatehn' limit 1"; 
 //echo $query;
@@ -111,7 +132,7 @@ $result = mysql_query($query) or die("Query failed");
 				";
 				
 print "<div align='center'>";
-print "<div style='margin-left: 30px; line-height:24px; font-family:Angsana New; font-size: 28px;'><b>สติ๊กเกอร์ผู้ป่วย $type&nbsp;&nbsp;กลุ่มอาการสี$color</b></div>";				
+print "<div style='line-height:24px; font-family:Angsana New; font-size: 26px;'><b>ผู้ป่วย $type<br>กลุ่มอาการสี$color</b></div>";				
 print "</div>";			
 print "<div align='center'>";
 print "<div style='line-height:25px;'>&nbsp;</div>";

@@ -1,3 +1,20 @@
+<?php 
+session_start();
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+exit();
+}
+
+?>
+
+<style type="text/css">
+body{ font-family:"TH SarabunPSK"; 
+font-size:20px;
+}
+</style>
+
 <form method="post" action="<?php echo $PHP_SELF ?>">
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตรวจสอบหมายเลข  AN</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -10,46 +27,56 @@ document.getElementById('aLink').focus();
   <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
 </form>
 
-<table>
+<table width="100%" border="0" align="center" cellpadding="5" cellspacing="5" >
  <tr>
-  <th bgcolor=CD853F>AN</th>
-  <th bgcolor=CD853F>HN</th>
-  <th bgcolor=CD853F>ชื่อ-สกุล</th>
-  <th bgcolor=CD853F>สิทธิ</th>
-  <th bgcolor=CD853F>รับป่วย</th>
-  <th bgcolor=CD853F>จำหน่าย</th>
-  <th bgcolor=CD853F>โรค</th>
-  <th bgcolor=CD853F>แพทย์</th>
-  <th bgcolor=CD853F>เตียง</th>
-  <th bgcolor=CD853F>ใบข้อมูลเจ็บป่วย</th>
-  <th bgcolor=CD853F>สถานะ</th>
-  <th bgcolor=CD853F>หมายเลขอนุมัติ</th>
- <th bgcolor=CD853F>วันที่และเวลา</th>
+  <th bgcolor=16A085 >AN</th>
+  <th bgcolor=16A085 >HN</th>
+  <th bgcolor=16A085 >ชื่อ-สกุล</th>
+  <th bgcolor=16A085 >สิทธิ</th>
+  <th bgcolor=16A085 >รับป่วย</th>
+  <th bgcolor=16A085 >จำหน่าย</th>
+  <th bgcolor=16A085 >โรค</th>
+  <th bgcolor=16A085 >แพทย์</th>
+  <th bgcolor=16A085 >เตียง</th>
+  <th bgcolor=16A085 >ราคาเตียง<br> ณ ปัจจุบัน</th>
+  <th bgcolor=16A085 >ค่าห้อง/อาหาร<br>ตามสิทธิ</th>
+  <th bgcolor=16A085 >ใบข้อมูลเจ็บป่วย</th>
+  <th bgcolor=16A085 >สถานะ</th>
+  <th bgcolor=16A085 >หมายเลขอนุมัติ</th>
+ <th bgcolor=16A085 >วันที่และเวลา</th>
  </tr>
 
 <?php
 If (!empty($an)){
     include("connect.inc");
     global $hn;
-    $query = "SELECT an,hn,ptname,ptright,date,dcdate,diag,doctor,bedcode,status_log,opreg,authdt FROM ipcard WHERE an = '$an'";
+    $query = "SELECT an,hn,ptname,ptright,date,dcdate,diag,doctor,bedcode,status_log,opreg,authdt,my_food FROM ipcard WHERE an = '$an'";
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($an,$hn,$ptname,$ptright,$date,$dcdate,$diag,$doctor,$bedcode,$status_log,$opreg,$authdt) = mysql_fetch_row ($result)) {
+    while (list ($an,$hn,$ptname,$ptright,$date,$dcdate,$diag,$doctor,$bedcode,$status_log,$opreg,$authdt,$my_food) = mysql_fetch_row ($result)) {
        
-
+ 	$sql = "SELECT bedpri FROM bed where an = '".$an."' ";
+	$query = mysql_query($sql);
+	list($bedpri) = mysql_fetch_array($query);
+	
+	$my_food = number_format($my_food,2);
+	
+	
 	    print "<tr>";
-        print   "  <td BGCOLOR=F5DEB3>$an</a></td>";
-        print   "  <td BGCOLOR=F5DEB3>$hn</td>";
-   	    print      "  <td BGCOLOR=F5DEB3>$ptname</td>";
-        print    "  <td BGCOLOR=F5DEB3>$ptright</a></td>";
-        print     "  <td BGCOLOR=F5DEB3>$date</a></td>";
-        print      "  <td BGCOLOR=F5DEB3>$dcdate</td>";
-        print      "  <td BGCOLOR=F5DEB3>$diag</td>";
-        print     "  <td BGCOLOR=F5DEB3>$doctor</td>";
-        print    "  <td BGCOLOR=F5DEB3>$bedcode</td>";
-    	print	  "  <td BGCOLOR=F5DEB3><a target=_BLANK  href=\"insertanchkcash.php?Can=$an&Chn=$hn&Cdate=$date\">พิมพ์</td>";
- 	    print	  "  <td BGCOLOR=F5DEB3>";  
+        print   "  <td BGCOLOR=A9DFBF>$an</a></td>";
+        print   "  <td BGCOLOR=A9DFBF>$hn</td>";
+   	    print      "  <td BGCOLOR=A9DFBF>$ptname</td>";
+        print    "  <td BGCOLOR=A9DFBF>$ptright</a></td>";
+        print     "  <td BGCOLOR=A9DFBF>$date</a></td>";
+        print      "  <td BGCOLOR=A9DFBF>$dcdate</td>";
+        print      "  <td BGCOLOR=A9DFBF>$diag</td>";
+        print     "  <td BGCOLOR=A9DFBF>$doctor</td>";
+        print    "  <td BGCOLOR=A9DFBF>$bedcode</td>";
+		print    "  <td BGCOLOR=A9DFBF align=center><strong style='color:red;'>$bedpri</strong></td>";
+		print    "  <td BGCOLOR=A9DFBF align=center><strong style='color:blue;'>$my_food</strong></td>";
+    	print	  "  <td BGCOLOR=A9DFBF align=center><a target=_BLANK  href=\"insertanchkcash.php?Can=$an&Chn=$hn&Cdate=$date\">พิมพ์</td>";
+ 	    print	  "  <td BGCOLOR=A9DFBF>";  
 		 
           if($status_log=='จำหน่าย'){
 		  ?>
@@ -60,7 +87,7 @@ If (!empty($an)){
 	   }
        
 		echo   "</td>";
- 	    print	  "  <td align='center' BGCOLOR=F5DEB3>";  
+ 	    print	  "  <td align='center' BGCOLOR=A9DFBF>";  
 		 $newptright=substr($ptright,0,3);
           if($newptright=='R02' || $newptright=='R03'){
 		  	if($opreg==""){
@@ -76,7 +103,7 @@ If (!empty($an)){
        
 		echo   "</td>";
 		
- 	    print	  "  <td align='center' BGCOLOR=F5DEB3>";  
+ 	    print	  "  <td align='center' BGCOLOR=A9DFBF>";  
 		 $newptright=substr($ptright,0,3);
           if($newptright=='R02' || $newptright=='R03'){
 		  	if($authdt=="0000-00-00 00:00:00"){

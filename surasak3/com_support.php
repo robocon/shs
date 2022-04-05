@@ -25,7 +25,11 @@ body {
 }
 </style>
 <?php
-print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>||&nbsp;&nbsp;<a target=_blank  href='ot_programmer.php'><font size='4' class='forntsarabun'>OT Programmer</font></a>";
+if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCOM"){
+print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='ot_programmer.php'><font size='4' class='forntsarabun'>OT Programmer</font></a>";
+}else{
+print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";	
+}	
 print "<hr>";
 
 if($_SESSION['supportMessage'])
@@ -36,17 +40,24 @@ if($_SESSION['supportMessage'])
 
 print"<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>";
     print"<div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong>$sOfficer</strong> เข้าสู่ระบบ</font></div>";
-    echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.ต. เทวิน  ศรีแก้ว และนายกฤษณะศักดิ์  กันธรส<b>....โทร. 8500</b></font></div>";
+    echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว นายกฤษณะศักดิ์  กันธรส และนายชาญวิทย์  ตากาบุตร<b>....โทร. 8500</b></font></div>";
 	echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>";
 $Thaidate=date("d-m-").(date("Y")+543);
 $n =0;
 $num = "Y";
 
 // งานค้างที่ยังไม่ได้รับผิดชอบ
-$query = "SELECT row,depart,head,datetime,programmer,date,user1 
+if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCOM"){
+	$query = "SELECT row,depart,head,datetime,programmer,date,user1 
 FROM com_support 
-WHERE status ='$num' 
+WHERE status ='$num'
 ORDER BY row desc";
+}else{
+	$query = "SELECT row,depart,head,datetime,programmer,date,user1 
+FROM com_support 
+WHERE status ='$num' and date >= '2565-01-01 00:00:00'
+ORDER BY row desc";
+}
 $result = mysql_query($query) or die("Query failed111");
 if($num1=mysql_num_rows($result)){
     print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
@@ -148,7 +159,7 @@ ORDER BY dateend desc ";
 $result_all = mysql_query($query) or die("Query failed111");
 $all_rows = mysql_num_rows($result_all);
 
-$limit = '50';
+$limit = '1000';
 
 $page = (empty($_GET['page'])) ? '0' : $_GET['page'] - 1 ;
 

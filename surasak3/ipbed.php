@@ -223,8 +223,8 @@ else{
   &#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3607;&#3637;&#3656;&#3605;&#3657;&#3629;&#3591;&#3585;&#3634;&#3619;&#3619;&#3633;&#3610;&#3652;&#3623;&#3657;&#3609;&#3629;&#3609;&#3648;&#3605;&#3637;&#3618;&#3591;&#3609;&#3637;&#3657;</font></p>
   <p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   &nbsp;&nbsp; AN&nbsp; <input type="text" name="an" size="10"></font></p>
-  <p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;&nbsp;
-  <input type="reset" value="  &#3621;&#3610;&#3607;&#3636;&#3657;&#3591;  " name="B2"></font></p>
+  <p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;
+  <input type="reset" value="  ลบทิ้ง  " name="B2"></font></p>
 </form></td>
             </tr>
           </table>
@@ -246,12 +246,14 @@ else{
                   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   &#3619;&#3633;&#3610;&#3618;&#3657;&#3634;&#3618;&#3592;&#3634;&#3585;&#3627;&#3629; <select size="1" name="ward">
                     <option selected>-&#3648;&#3621;&#3639;&#3629;&#3585;&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;-</option>
-                    <option value="41">&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3594;&#3634;&#3618;</option>
-                    <option value="42">&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3627;&#3597;&#3636;&#3591;</option>
-                    <option value="43">&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3626;&#3641;&#3605;&#3636;&#3609;&#3619;&#3637;</option>
-                    <option value="44">&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;
-                    ICU</option>
-                    <option value="45">&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3614;&#3636;&#3648;&#3624;&#3625;</option>
+<!--                    <option value="41">&#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3594;&#3634;&#3618;</option>
+-->                    <option value="42">หอผู้ป่วยรวม</option>
+                    <option value="43">หอผู้ป่วยสูตินรี</option>
+                    <option value="44">หอผู้ป่วย ICU</option>
+                    <option value="45">หอผู้ป่วยพิเศษ</option>
+ <option value="46">หอผู้ป่วย Cohort Ward</option>
+ <option value="47">หอผู้ป่วย Home Isolation</option>
+ <option value="48">หอผู้ป่วย รพ.สนาม</option> 
                   </select></p>
                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;
                   <input type="reset" value="  &#3621;&#3610;&#3607;&#3636;&#3657;&#3591;  " name="B2"></p>

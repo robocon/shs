@@ -42,16 +42,19 @@ $sortname="รพ.สนาม";
 	
 	//echo "==>$lbedcode";
 	$bbbbcode=$lbedcode;
-	include("calroom.php");
+include("calroom.php");
 	include("alert_booking.php");
 	?>
 <strong style="font-size:24px"><?=$wardname;?></strong> &nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='ipdcost.php'>รวมเงินทุกเตียง</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='ipstikerdrug.php'>STICKER</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='booking_system/booking_confirm.php?code=<?=$lbedcode?>'>ระบบจองเตียง</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="med_record.php?code=<?=$lbedcode;?>">Med Record</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด (เริ่ม 1 เม.ย. 65)</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 <br />
+
+
     
     <?
 	/*$sql="SELECT * FROM bed WHERE bedcode LIKE '$lbedcode%'";
@@ -87,8 +90,11 @@ $sortname="รพ.สนาม";
 		}
 		echo"</tr></table>";*/
 	
-	
-    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bed ASC ";
+	if($lbedcode=='47'){
+    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY row_id ASC ";
+	}else{
+    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bedcode ASC ";
+	}
   //echo "==>".$query;
     $result = mysql_query($query)or die("Query failed");
 

@@ -22,7 +22,7 @@ top.window.outerWidth = screen.availWidth;
 <?php 
 session_start();
 
-$ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45");
+$ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47","หอผู้ป่วย รพ.สนาม"=>"48");
 $room = array("ธรรมดา 300", "พิเศษ 600", "พิเศษ 800", "พิเศษ 1,200");
 $book = array("มาแล้ว", "ยังไม่มา", "ออกด้วยคอมพิวเตอร์", "ไม่มี");
 
@@ -31,9 +31,10 @@ include("connect.inc");
 if(isset($_POST["add"]) && (trim($_POST["add"]) =="บันทึกข้อมูล" || trim($_POST["add"]) =="แก้ไขข้อมูล")){
 
 $sql = "UPDATE `ipcard` SET 
-`opreg` = '".$_POST["opreg"]."'
-WHERE `an` = '".$_GET["Can"]."';";
-
+`opreg` = '".$_POST["opreg"]."',
+`authdt` = '".$_POST["authdt"]."'
+WHERE `an` = '".$_POST["an"]."';";
+//echo $sql;
 $result = mysql_query($sql);
 
 	if($result){
@@ -46,17 +47,18 @@ $result = mysql_query($sql);
 exit();
 }
 
-$sql = "SELECT an,hn,ptname,bedcode,my_ward, my_bedcode, my_earnest, my_confirmbk, my_food, my_cure, my_etc, my_blood,adm_w,ptright,opreg FROM ipcard  WHERE `an` = '".$_GET["Can"]."' ";
+$sql = "SELECT an,hn,ptname,bedcode,my_ward, my_bedcode, my_earnest, my_confirmbk, my_food, my_cure, my_etc, my_blood,adm_w,ptright,opreg,authdt FROM ipcard  WHERE `an` = '".$_GET["Can"]."' ";
 
 $result = mysql_query($sql);
 
-list($an,$hn,$ptname,$bedcode,$my_ward, $my_bedcode, $my_earnest, $my_confirmbk, $my_food, $my_cure, $my_etc, $my_blood,$adm_w,$ptright,$opreg) = Mysql_fetch_row($result);
+list($an,$hn,$ptname,$bedcode,$my_ward, $my_bedcode, $my_earnest, $my_confirmbk, $my_food, $my_cure, $my_etc, $my_blood,$adm_w,$ptright,$opreg,$authdt) = Mysql_fetch_row($result);
 
 $sql = "SELECT note FROM opcard  WHERE `hn` = '".$hn."' limit 1 ";
 
 $result = mysql_query($sql);
 
 list($note) = Mysql_fetch_row($result);
+
 ?>
 <html>
 <head>
@@ -103,16 +105,17 @@ e_k=event.keyCode
 <body>
 <div align="center"><a href="../nindex.htm">ไปเมนูหลัก</a> || <a href="anchkcash.php">บันทึกรับผู้ป่วยใน</a></div>
 <FORM name="f1" METHOD=POST ACTION="" Onsubmit="return checkForm();">
-<TABLE bgcolor="#FFFFDD" width="500" align="center" border="1" bordercolor="#0046D7" cellpadding="0" cellspacing="0">
+<input type="hidden" name="an" value="<?php echo $an;?>">
+<TABLE bgcolor="#FFFFDD" width="80%" align="center" border="1" bordercolor="#0046D7" cellpadding="0" cellspacing="0">
 <TR>
 	<TD>
-<TABLE width="100%">
+<TABLE width="100%" height="408">
 <TR class="tb_head">
 	<TD colspan="2" align="center"> บันทึกข้อมูลหมายเลขอนุมัติ</TD>
 </TR>
 <TR>
-	<TD width="50%" align="right">HN : </TD>
-	<TD><?php echo $hn;?>	</TD>
+	<TD width="40%" align="right">HN : </TD>
+	<TD width="60%"><?php echo $hn;?>	</TD>
 </TR>
 <TR>
 	<TD align="right">AN : </TD>
@@ -133,6 +136,10 @@ e_k=event.keyCode
 <TR>
 	<TD align="right">หมายเลขอนุมัติ : </TD>
 	<TD><input name="opreg" type="text" value="<?php echo $opreg;?>" /></TD>
+</TR>
+<TR>
+	<TD align="right">วันที่และเวลา : </TD>
+	<TD><input name="authdt" type="text" value="<?php echo $authdt;?>" /> <span style="color:#FF0000; font-size:16px;">ตัวอย่าง 2020-01-01 08:00:00</span></TD>
 </TR>
 <TR>
 	<TD align="right">ผู้บันทึกข้อมูล : </TD>

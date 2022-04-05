@@ -125,32 +125,32 @@
 				
 			}else if($oBedcode1=="47"){	 //Home Isolation
 				$chkptright=substr($ptright,0,3);			
-				if($chkptright=="R02" || $chkptright=="R03"){  //สิทธิจ่ายตรง
+				if($chkptright=="R02" || $chkptright=="R03" || $chkptright=="R33" || $chkptright=="R16"){  //เบิกจ่ายตรง จ่ายตรง อปท. ครูเอกชน ยืนยันจากพี่อึ่ง 22/03/65
 					if($cBedpri=="1000.00"){
 						$claimcode="21501";
 						$bedname="ค่าบริการและดูแลผู้ป่วยกรณีพักรอก่อนเข้ารักษา (รวมอาหาร 3 มื้อ)";
-					}else{
+					}else if($cBedpri=="600.00"){
 						$claimcode="21502";
 						$bedname="ค่าบริการและดูแลผู้ป่วยกรณีพักรอก่อนเข้ารักษา (ไม่รวมอาหาร 3 มื้อ)";						
-					}
-				}else if($chkptright=="R07"){ //สิทธิประกันสังคม
+					}else{
 						$claimcode="21501";
-						$bedname="ค่าบริการและดูแลผู้ป่วยกรณีพักรอก่อนเข้ารักษา";				
+						$bedname="ค่าบริการและดูแลผู้ป่วยกรณีพักรอก่อนเข้ารักษา (รวมอาหาร 3 มื้อ)";					
+					}			
 				}else{
-						$claimcode="COVR05";
-						$bedname="ค่าดูแลรักษาในที่พัก (Home Isolation)";								
+						$claimcode="21501";
+						$bedname="ค่าบริการและดูแลผู้ป่วยกรณีพักรอก่อนเข้ารักษา (รวมอาหาร 3 มื้อ)";								
 				}												
 			}else if($oBedcode1=="48"){  //รพ.สนาม
 				$chkptright=substr($ptright,0,3);				
-				if($chkptright=="R02" || $chkptright=="R03"){  //สิทธิจ่ายตรง
+				if($chkptright=="R02" || $chkptright=="R03" || $chkptright=="R33" || $chkptright=="R16"){  //เบิกจ่ายตรง จ่ายตรง อปท. ครูเอกชน ยืนยันจากพี่อึ่ง 22/03/65
 						$claimcode="21421";
 						$bedname="ค่าห้องควบคุม/ดูแลสำหรับผู้ติดเชื้อมีอาการเล็กน้อย";
 				}else if($chkptright=="R07"){ //สิทธิประกันสังคม
 						$claimcode="21421";
 						$bedname="ค่าห้องควบคุม/ดูแลสำหรับผู้ติดเชื้อมีอาการเล็กน้อย";				
 				}else{
-						$claimcode="COVR13";
-						$bedname="ค่าบริการให้การดูแลผู้ป่วยโรคโควิด 19 สำหรับกลุ่มอาการสีเขียว";								
+						$claimcode="COVR18";
+						$bedname="ค่าห้องรวมค่าอาหาร เตียงระดับ 1 ไม่ใช้ oxygen";						
 				}
 			
 			
