@@ -32,6 +32,30 @@ legend{
 		exit();
 	}
 
+  $wardCode = substr($cBedcode, 0, 2);
+ 	$sql1 = "SELECT an,ptright,bedpri FROM bed where an = '".$_POST["an"]."' and bedcode like '47%' and (ptright LIKE 'R02%' || ptright LIKE 'R03%' || ptright LIKE 'R16%' || ptright LIKE 'R33%')";
+	$query1 = mysql_query($sql1);
+	$rows1 = Mysql_num_rows($query1);
+	$result1 = mysql_fetch_array($query1);
+	
+	if($result1['bedpri'] <= 0 && $wardCode=='47'){
+		echo "ยังไม่ได้ระบุค่าห้องโควิด Home Isolation ของผู้ป่วยรายนี้ ให้เอาข้อมูลผู้ป่วยผ่านส่วนเก็บเงินรายได้ก่อน<BR><BR><input type=button onclick='history.back()' value='&lt;&lt; กลับไป'><br>";
+		exit();
+	}
+	
+	
+ 	$sql2 = "SELECT an,ptright,bedpri FROM bed where an = '".$_POST["an"]."' and bedcode like '48%'";
+	$query2 = mysql_query($sql2);
+	$rows2 = Mysql_num_rows($query2);
+	$result2 = mysql_fetch_array($query2);
+	
+	if($result2['bedpri'] <= 0 && $wardCode=='48'){
+		echo "ยังไม่ได้ระบุค่าห้องโควิด รพ.สนาม ของผู้ป่วยรายนี้ ให้เอาข้อมูลผู้ป่วยผ่านส่วนเก็บเงินรายได้ก่อน<BR><BR><input type=button onclick='history.back()' value='&lt;&lt; กลับไป'><br>";
+		exit();
+	}	
+	
+	
+
     $cAdmitd="";
     $cHn="";
     $cAn=$an;
@@ -208,6 +232,7 @@ function chkother(){
 		document.getElementById('hosother').style.display='none';
 	}
 }
+
 </SCRIPT>
 <?
 $query11 = "SELECT * FROM ipcard WHERE an = '$an'";
@@ -228,6 +253,19 @@ if($arr['diag']==''){ $diag="ระบุโรคเบื้องต้น";}else{ $diag=$arr['diag'];}
 
 <form name="f1" method="POST" action="<?=$action;?>" onsubmit="return checkForm();">
    <p><b>โปรดลงข้อมูลต่อไปนี้</b></p>
+<div>น้ำหนักแรกรับ&nbsp;&nbsp;
+  <input type="text" name="weight" size="30" />&nbsp;&nbsp; ตัวอย่าง 60.00&nbsp;&nbsp;&nbsp;<span style="color:#FF0000; font-size:12px;">*** เด็กแรกเกิดระบุน้ำหนักเป็นทศนิยม 3 ตำแหน่ง เช่น 3.000</span></div>
+<div>ประเภทการรับ Admit&nbsp;&nbsp;
+  <select name="typeadmit" id="typeadmit">
+   <option value="A">accident</option>
+   <option value="E">emergency</option>
+   <option value="C">elective</option>
+   <option value="L">labor & delivery</option>
+   <option value="N">newborn</option>
+   <option value="U">urgent</option>
+   <option value="O">all other</option>
+   </select>
+</div>
    รับผู้ป่วยจาก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <select name="rep" id="rep" onchange="chkother()">
    <option value="er">ER</option>
@@ -306,14 +344,18 @@ while($objResult = mysql_fetch_array($objQuery))
   
   </p>
   <?
-  if($_SESSION['cBedcode']=="42R5"||$_SESSION['cBedcode']=="42R8"){
+  if($_SESSION['cBedcode']=="42R5"||$_SESSION['cBedcode']=="42R8"){  //R5 ห้องเด็ก R8 ห้องแยกโรค  แก้ไขเมื่อ 25/07/2559
   ?>
   <fieldset><legend>ค่าห้อง</legend>
    <p>&nbsp;&nbsp;ให้ระบุค่าห้องของผู้ป่วย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      <select name="price" id="price">
        <option value="">-เลือกราคาค่าห้อง-</option>
-       <option value="300">300</option>
-       <option value="600">600</option>
+       <option value="400">400</option>
+       <option value="1000">1000</option>
+       <option value="1500">ค่าห้องโควิด 1500</option>
+       <option value="2500">ค่าห้องโควิด 2500</option>
+       <option value="3000">ค่าห้องโควิด 3000</option>
+       <option value="7500">ค่าห้องโควิด 7500</option>
      </select>&nbsp;&nbsp;บาท </p>
      <br /></fieldset>
    <?
