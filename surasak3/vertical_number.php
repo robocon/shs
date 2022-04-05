@@ -12,13 +12,14 @@ width
 |   |
 -----
 */
-$im = imagecreate(40, 90);
-// $im = imagecreatetruecolor(40, 90);
+// $im = imagecreate(40, 90);
+$im = imagecreatetruecolor(25, 90);
 $string = $_REQUEST['font'];
 
-$bg = imagecolorallocate($im, 255, 255, 255);
-$black = imagecolorallocate($im, 0, 0, 0);
-
+// $bg = imagecolorallocate($im, 255, 255, 255);
+// $black = imagecolorallocate($im, 0, 0, 0);
+$bg = imagecolorallocate($im, 0xFF, 0xFF, 0xFF);
+imagefill($im, 0, 0, $bg);
 
 // prints a black "Z" on a white background
 //imagecharup($im, 5, 10, 25, $string, $black);
@@ -37,7 +38,10 @@ $font_size = (empty($_REQUEST['font_size'])) ? 5 : $_REQUEST['font_size'] ;
 // $white = imagecolorallocate($im, 255, 255, 255);
 // imagefill($im, 0, 0, $white);
 
-imagestringup($im, 5, 40, 90, $string, $black);
+// imagestringup($im, 5, 40, 90, $string, $black);
+$fontColor = imagecolorallocate($im, 0, 0, 0);
+imagestringup($im, 5, 4, 50, $string, $fontColor);
 
 //header('Content-type: image/png');
 imagepng($im);
+imagedestroy($im);
