@@ -279,8 +279,12 @@ if($num < 1){
     <td width="10%" align="center" bgcolor="#0099CC"><strong>วัน/เดือน/ปี</strong></td>
     <td width="6%" align="center" bgcolor="#0099CC"><strong>HN</strong></td>
     <td width="5%" align="center" bgcolor="#0099CC"><strong>VN</strong></td>
-	 <td width="5%" align="center" bgcolor="#0099CC"><strong>AN</strong></td>
+	<td width="5%" align="center" bgcolor="#0099CC"><strong>AN</strong></td>
+	<td width="5%" align="center" bgcolor="#0099CC"><strong>บัตรปชช</strong></td>
     <td width="17%" align="center" bgcolor="#0099CC"><strong>ชื่อ - นามสกุล</strong></td>
+	<td width="5%" align="center" bgcolor="#0099CC"><strong>อายุ</strong></td>
+	<td width="5%" align="center" bgcolor="#0099CC"><strong>เบอร์โทร</strong></td>
+	<td width="11%" align="center" bgcolor="#0099CC"><strong>ที่อยู่</strong></td>
     <td width="15%" align="center" bgcolor="#0099CC"><strong>สิทธิการักษา</strong></td>
     <td width="11%" align="center" bgcolor="#0099CC"><strong>ประเภท</strong></td>
     <td width="6%" align="center" bgcolor="#0099CC"><strong>กลุ่มอาการ</strong></td>
@@ -300,7 +304,26 @@ if($num < 1){
 <?
 }else{
 	$i=0;
-	while($rows=mysql_fetch_array($query)){
+	while($rows=mysql_fetch_array($query)){ 
+
+		$hn = $rows['hn'];
+		$sqlOpcard = "SELECT `phone`,`address`, `tambol`, `ampur`, `changwat` FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
+		$qOpcard=mysql_query($sqlOpcard);
+		$a = mysql_fetch_assoc($qOpcard);
+		$phone = $a['phone'];
+
+		$address = $a['address'];
+		if(!empty($a['tambol'])){
+			$address .= ' ต.'.$a['tambol'];
+		}
+		if(!empty($a['ampur'])){
+			$address .= ' อ.'.$a['ampur'];
+		}
+		if(!empty($a['changwat'])){
+			$address .= ' จ.'.$a['changwat'];
+		}
+		
+
 	$i++;
 	$y=substr($rows["thidate"],0,4);
 	$m=substr($rows["thidate"],5,2);
@@ -345,7 +368,11 @@ if($rows["opdcolor"]=="green"){
     <td align="center"><?=$rows["hn"]?></td>
     <td align="center"><?=$rows["vn"];?></td>
 	<td align="center"><?=$rows["an"];?></td>
+	<td><?=$rows["idcard"]?></td>
     <td><?=$rows["ptname"]?></td>
+	<td><?=$rows["age"]?></td>
+	<td><?=$phone;?></td>
+	<td><?=$address;?></td>
     <td><?=$rows["ptright"]?></td>
     <td align="center"><?=$type;?></td>
     <td align="center"><?=$color;?></td>

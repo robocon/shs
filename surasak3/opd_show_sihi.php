@@ -1,7 +1,7 @@
 <?php 
 require 'bootstrap.php';
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi = new mysqli(REMOTE_HOST,REMOTE_USER,'',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
+// $dbi = new mysqli(REMOTE_HOST,REMOTE_USER,'',DB);
 ?>
 <!DOCTYPE html>
 <html lang="en">
