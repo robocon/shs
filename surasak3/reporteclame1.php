@@ -15,6 +15,7 @@ AND a.date like '".$date1."%'
 AND a.credit ='30บาท' 
 group by a.hn, a.depart 
 ORDER by a.date";
+//echo $sql;
 $result = mysql_Query($sql) or die(mysql_error());
 
 $list = array();
@@ -108,7 +109,7 @@ $total=number_format($total,2);
 
 
  $sql = "SELECT icd10,icd9cm,icd101,doctor FROM opday WHERE  hn = '".$key."' and  thdatehn like '".$date2."%' ";
-
+	//echo $sql;
    list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
 
     // ICD10 หลัก
