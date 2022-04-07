@@ -236,7 +236,7 @@ if ( $action == 'print' ) {
             $pdf->SetFont('AngsanaNew','B',13);
             $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
 
-            $pdf->SetXY(2, 12);
+            $pdf->SetXY(2, 7);
             $pdf->SetFont('AngsanaNew','B',20);
             $pdf->Cell(0, 5, $hn.' (BS)', 0, 1, 'C');
 
