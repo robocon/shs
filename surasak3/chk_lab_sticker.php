@@ -231,7 +231,7 @@ if ( $action == 'print' ) {
 
 include 'chk_menu.php';
 ?>
-<form action="chk_lab_sticker.php" method="post">
+<form action="chk_lab_stickerv2.php" method="post">
     <div>
         <h3>พิมพ์สติกเกอร์LAB บริษัท <u><?=$part;?></u></h3>
     </div>
