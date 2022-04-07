@@ -38,20 +38,6 @@ if ( $action == 'print' ) {
     ORDER BY `row` ".$limit_txt;
     $db->select($sql);
 
-    ?>
-    <style>
-    .clearfix::after {
-    content: "";
-    clear: both;
-    display: table;
-    }
-    .vertical-num{
-        float:left;
-    }
-
-    </style>
-    <?php
-
     $items = $db->get_items();
     foreach ($items as $key => $item) {
         
@@ -77,24 +63,10 @@ if ( $action == 'print' ) {
             for ($i=0; $i < $count_cbc; $i++) { 
                 ?>
                 <!-- CBC -->
-                <div class="clearfix">
-                    <div class="vertical-num">
-                        <img src="vertical_number.php?font=<?=$user_number;?>&font_size=10" alt="">
-                    </div>
-
-                    <div style="float: left;">
-                        <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                        <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
-                        <div style='text-align:center;'>
-                            <font size='5'></font>
-                            <span class='fc1-0'><img src="barcode/labstk.php?cLabno=<?=$normal_code;?>"></span>
-                            <font size='5'></font>
-                        </div>
-                    </div>
-                    
-                    <div style="float: left;">
-                        <img src="vertical_number.php?font=01" alt="">
-                    </div>
+                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
+                <div style='text-align:center;'>
+                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$normal_code;?>"></span><font size='5'>01</font>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -231,45 +203,72 @@ if ( $action == 'print' ) {
 
 include 'chk_menu.php';
 ?>
-<form action="chk_lab_stickerv2.php" method="post">
-    <div>
-        <h3>พิมพ์สติกเกอร์LAB บริษัท <u><?=$part;?></u></h3>
-    </div>
-    <div>
-        CBC: <input type="text" name="count_cbc" size="3" value="1">
-    </div>
-    <div>
-        CHEM: <input type="text" name="count_chem" size="3" value="1">
-    </div>
-    <div>
-        UA: <input type="text" name="count_ua" size="3" value="1">
-    </div>
-    <div>
-        UA Barcode: <input type="text" name="count_ua_barcode" size="3" value="1">
-    </div>
-    <div>
-        STOOL: <input type="text" name="count_stool" size="3" value="">
-    </div>
-    <div>
-        STOOL C/S: <input type="text" name="count_cs" size="3" value="">
-    </div>
-    <div>
-        Urine C/S: <input type="text" name="urine_cs" size="3" value="">
-    </div>
-    <div>
-        Outlab AFP: <input type="text" name="afp" size="3" value="">
-    </div>
-    <div>
-        อื่นๆ: <input type="text" name="count_etc" size="3" value="">
-    </div>
-    <div>
-        ลำดับที่ <input type="text" name="row_print" > <span>ตัวอย่างเช่น 6-29 หรือเป็นค่าว่างเพื่อพิมพ์ทั้งหมด</span> 
-    </div>
-    <div>
-        <button type="submit">พิมพ์</button>
-        <input type="hidden" name="part" value="<?=$part;?>">
-        <input type="hidden" name="action" value="print">
-    </div>
-</form>
-<?php 
+<form action="#" method="post" id="printForm">
+    <table>
+        <tr>
+            <td colspan="2">
+                <h3>พิมพ์สติกเกอร์LAB บริษัท <u><?=$part;?></u></h3>
+            </td>
+        </tr>
+        <tr>
+            <td>CBC</td>
+            <td><input type="text" name="count_cbc" size="3" value="1"></td>
+        </tr>
+        <tr>
+            <td>CHEM</td>
+            <td><input type="text" name="count_chem" size="3" value="1"></td>
+        </tr>
+        <tr>
+            <td>UA</td>
+            <td>
+                <input type="text" name="count_ua" size="3" value="1"><br>
+                <input type="checkbox" name="ua_check" id="ua_check" value="1"> <label for="ua_check">เพิ่มสติกเกอร์แบบไม่มีบาร์โค้ด</label>
+            </td>
+        </tr>
+        <tr>
+            <td>STOOL</td>
+            <td><input type="text" name="count_stool" size="3" value=""></td>
+        </tr>
+        <tr>
+            <td>STOOL C/S</td>
+            <td><input type="text" name="count_cs" size="3" value=""></td>
+        </tr>
+        <tr>
+            <td>Urine C/S</td>
+            <td><input type="text" name="urine_cs" size="3" value=""></td>
+        </tr>
+        <tr>
+            <td>Outlab AFP</td>
+            <td><input type="text" name="afp" size="3" value=""></td>
+        </tr>
+        <tr>
+            <td>อื่นๆ</td>
+            <td><input type="text" name="count_etc" size="3" value=""></td>
+        </tr>
+        <tr>
+            <td>ลำดับที่</td>
+            <td><input type="text" name="row_print" > <span>ตัวอย่างเช่น 6-29 หรือเป็นค่าว่างเพื่อพิมพ์ทั้งหมด</span> </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="button" onclick="printNormal()">พิมพ์</button>
+                <button type="button" onclick="printPdf()">พิมพ์แบบ PDF</button>
 
+                <input type="hidden" name="part" value="<?=$part;?>">
+                <input type="hidden" name="action" value="print">
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    function printNormal(){
+        document.getElementById('printForm').setAttribute('action', 'chk_lab_sticker.php');
+        // document.getElementById('printForm').action = 'chk_lab_sticker.php';
+        document.getElementById('printForm').submit();
+    }
+    function printPdf(){
+        document.getElementById('printForm').setAttribute('action', 'chk_lab_stickerv2.php');
+        // document.getElementById('printForm').action = 'chk_lab_stickerv2.php';
+        document.getElementById('printForm').submit();
+    }
+</script>

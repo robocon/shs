@@ -21,6 +21,8 @@ if ( $action == 'print' ) {
     $count_etc = input_post('count_etc');
     $row_print = input_post('row_print');
 
+    $ua_check = $_POST['ua_check'];
+
     if ( !empty($row_print) ) {
         list($min,$max) = explode('-', $row_print);
 
@@ -127,6 +129,28 @@ if ( $action == 'print' ) {
 
                 $pdf->SetFont('AngsanaNew','',23);
                 $pdf->TextWithDirection(48,18,'03','U');
+
+                if(!empty($ua_check))
+                {
+                    $pdf->AddPage();
+                    $pdf->SetFont('AngsanaNew','',23);
+                    $pdf->TextWithDirection(5,20,$user_number,'U');
+
+                    $pdf->SetXY(2, 2);
+                    $pdf->SetFont('AngsanaNew','',13);
+                    $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
+
+                    $pdf->SetFont('AngsanaNew','B',23);
+                    $pdf->SetXY(2, 7);
+                    $pdf->Cell(0, 5, $hn, 0, 1, 'C');
+
+                    $pdf->SetXY(2, 12);
+                    $pdf->Cell(0, 5, 'UA', 0, 1, 'C');
+
+                    $pdf->SetFont('AngsanaNew','',23);
+                    $pdf->TextWithDirection(48,18,'03','U');
+                }
+
             }
         }
 
