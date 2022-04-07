@@ -290,9 +290,13 @@ $sql = "INSERT INTO `opd` (
 	}
 	
 	
-	
-	$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
-	$result1 = Mysql_Query($sql1) or die(Mysql_Error());	
+	if($_POST["phone"]==""){  //เพิ่มเงื่อนไขเมื่อ 6/4/65 รคส. พี่แอน OPD
+		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
+		$result1 = Mysql_Query($sql1) or die(Mysql_Error());
+	}else{
+		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', phone= '".$_POST["phone"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
+		$result1 = Mysql_Query($sql1) or die(Mysql_Error());		
+	}
 	
 	if($_POST["appoint"] > 0){
 	$sql = "Select count(row_id) From opday2 where thdatehn = '".$thidatehn."' AND toborow like 'EX04%' limit 1";
@@ -387,6 +391,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 <input type="radio" name="type" id="type1" value="SI"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
 <input type="radio" name="type" id="type2" value="HI"><label for="type2">ผู้ป่วย Home Isolation</label>&nbsp;&nbsp;&nbsp;
 <input type="radio" name="type" id="type3" value="FI" onClick="window.alert('ฮั่นแน่ !!!\n อยู่ รพ.สนามจริงรึป่าว? อย่ามั่วนะครับ');"><label for="type3">ผู้ป่วย รพ.สนาม</label>&nbsp;
+<input type="radio" name="type" id="type4" value="OP"><label for="type4">ผู้ป่วยทั่วไป</label>&nbsp;
 <div><strong>กลุ่มอาการ :</strong></div>
 <input type="radio" name="color" id="color1" value="green"><label for="color1">ผู้ป่วยกลุ่มอาการสีเขียว</label>&nbsp;&nbsp;&nbsp;
 <input type="radio" name="color" id="color2" value="yellow"><label for="color2">ผู้ป่วยกลุ่มอาการสีเหลือง</label>&nbsp;&nbsp;&nbsp;
@@ -472,6 +477,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 			$thidate_now1 = (date("Y")+543).date("-m-d").date(" H:i:s");
 			$query = "INSERT INTO opday(thidate,thdatehn,hn,vn,thdatevn,ptname,age, ptright,goup,camp,note,toborow,time1,idcard,dxgroup,officer)VALUES('".$thidate_now1."','".$thidatehn."','".$cHn."','".$nVn."', '".$thdatevn."','".$cPtname."','".$cAge."','".$cPtright."','".$cGoup."','".$cCamp."','".$cNote."','".$vnlab."','".$time1."','".$cIdcard."','21','".$_SESSION["sOfficer"]."');";
 			$result = mysql_query($query) or die("Query failed,cannot insert into opday line 433");
+			
 			
 			$sql = "UPDATE opcard SET lastupdate='".$thidate_now."' WHERE hn='$cHn' ";
 			$result = mysql_query($sql) or die("Query failed UPDATE opcard line 315");
@@ -722,6 +728,7 @@ function checkList(){
 		alert("กรุณาเลือกประเภทผู้มารับบริการ");
 		document.getElementById("typeservice").focus()
 		return false;
+		
 /*	}else if(document.getElementById("typediag").value=="0"){
 		alert("กรุณาเลือกประเภทการตรวจ");
 		document.getElementById("typediag").focus()
@@ -741,6 +748,9 @@ function checkForm(){
 		return false;
 	}else if(document.f2.cig1.checked == true&&document.f2.member2[0].checked == false&&document.f2.member2[1].checked == false){
 		alert('กรุณาเลือกความต้องการอยากเลิกบุหรี่ไหมด้วยครับ');
+		return false;	
+	}else if(document.f2.opdtype1.checked == false && document.f2.opdtype2.checked == false && document.f2.opdtype3.checked == false && document.f2.opdtype4.checked == false){
+		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
 		return false;	
 	}else{
 		return true;
@@ -1076,11 +1086,24 @@ mmHg </td>
 			<td align="left" colspan="5">
 				<input type="radio" name="opdtype" id="opdtype1" value="FI" <? if($opdtype=="FI"){ echo "checked='checked'";}?> onClick="window.alert('ฮั่นแน่ !!!\n อยู่ รพ.สนามจริงรึป่าว? อย่ามั่วนะครับ');"><label for="opdtype1">ผู้ป่วย รพ.สนาม</label>&nbsp;
 				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?>><label for="opdtype2">ผู้ป่วย OP self Isolation</label>&nbsp;
-				<input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp; <strong style="color:red;">*** ผู้ป่วยโควิดระบุข้อมูลทุกเคส***</strong>
+				<input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp;
+				<input type="radio" name="opdtype" id="opdtype4" value="OP" <? if($opdtype=="OP"){ echo "checked='checked'";}?>><label for="opdtype4">ผู้ป่วยทั่วไป</label>&nbsp; <strong style="color:red;">*** ระบุข้อมูลทุกเคส รคส.พี่แอน 05/04/65***</strong>
 
 			</td>
 		</tr>
-		
+		<tr>
+			<td align="right" class="data_show">เบอร์โทรศัพท์ : </td>
+			<td align="left" colspan="5">
+			<?
+				$sql1 = "Select phone From opcard where hn = '".$hn."' limit 1";
+				//echo $sql1;
+				$query1=mysql_query($sql1);
+				list($phone) = mysql_fetch_array($query1);
+				//echo $phone;
+			?>
+				<label for="phone"><input type="text" name="phone" id="phone" value="<?=$phone;?>"></label>
+			</td>
+		</tr>		
          <tr>
            <td align="right" valign="top" class="data_show">อาการนำ :</td>
            <td colspan="3" rowspan="3" align="left" valign="top"><textarea name="organ" cols="40" rows="6" class="txtsarabun" id="organ" ><?php echo $og;?></textarea>

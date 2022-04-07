@@ -161,7 +161,7 @@
 
 	//ค่าห้องที่เบิกได้ depart	
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','$bedname (เฉพาะที่เบิกได้) $stays','$cYBedfood','คอมพิวเตอร์','$diag','$cAccno');";
-				//echo $query."<br>";
+				echo $query."<br>";
 				$result = mysql_query($query) or die("Query failed,cannot insert into depart in page calroom");
 				$idno=mysql_insert_id();
 	//ค่าห้องที่เบิกได้ patdata
@@ -180,7 +180,7 @@
 				$result = mysql_query($query) or die("Query failed,cannot insert into ipacc in page calroom");
 	//ค่าห้องส่วนเกิน dapart
 				$query = "INSERT INTO depart(date,ptname,hn,an,doctor,depart,item,detail,price,idname,diag,accno)VALUES('$Thidate','$ptname','$hn','$an','$doctor','WARD','2','ค่าห้องส่วนเกิน $cNBedpri บาท $stays','$cNBedfood','คอมพิวเตอร์','$diag','$cAccno');";
-				//echo $query."<br>";
+				echo $query."<br>";
 				$result = mysql_query($query) or die("Query failed,cannot insert into depart in page calroom");
 				$idno=mysql_insert_id();
 	//ค่าห้องส่วนเกิน patdata
