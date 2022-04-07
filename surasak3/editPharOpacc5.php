@@ -9,8 +9,8 @@ if($_SESSION['sIdname']!=='krit')
 }
 
 $json = new Services_JSON();
-// $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+// $dbi = new mysqli(HOST,USER,PASS,DB);
 $part = $_REQUEST['part'];
 $row_id = $_REQUEST['row_id'];
 

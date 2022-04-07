@@ -6,8 +6,8 @@ if($_SESSION['sIdname']!=='krit')
     exit;
 }
 
-// $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+// $dbi = new mysqli(HOST,USER,PASS,DB);
 $txdate = $_REQUEST['txdate'];
 $hn = $_REQUEST['hn'];
 
