@@ -38,9 +38,12 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
     if($action==='findPart')
     {
         $date = $_POST['findDate'];
-        $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date%' AND ( `depart` = '' OR `depart` IS NULL )";
+        $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date%' AND ( 
+            ( `depart` = '' OR `depart` IS NULL )
+            OR 
+            (`detail` IS NULL OR `detail` = '')
+        ) ";
         $q = $dbi->query($sql);
-
         ?>
         <table class="chk_table">
             <tr>
@@ -48,6 +51,7 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
                 <td>date</td>
                 <td>hn</td>
                 <td>depart</td>
+                <td>detail</td>
                 <td>price</td>
             </tr>
         <?php
@@ -59,6 +63,7 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
                 <td><?=$item['date'];?></td>
                 <td><?=$item['hn'];?></td>
                 <td><?=$item['depart'];?></td>
+                <td><?=$item['detail'];?></td>
                 <td><?=$item['price'];?></td>
             </tr>
             <?php
