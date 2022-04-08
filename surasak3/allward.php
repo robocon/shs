@@ -42,7 +42,7 @@ $sortname="รพ.สนาม";
 	
 	//echo "==>$lbedcode";
 	$bbbbcode=$lbedcode;
-include("calroom.php");
+	include("calroom.php");
 	include("alert_booking.php");
 	?>
 <strong style="font-size:24px"><?=$wardname;?></strong> &nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='ipdcost.php'>รวมเงินทุกเตียง</a>
