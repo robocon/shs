@@ -21,6 +21,9 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
             padding: 3px;
             border: 1px solid black;
         }
+        a.opaccId:visited{
+            color: green;
+        }
     </style>
 
     <form action="find_part.php" method="post">
@@ -59,7 +62,7 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
             $shortDate = substr($item['date'],0,10);
             ?>
             <tr>
-                <td><a href="edit_opacc.php?date=<?=$shortDate;?>&hn=<?=$item['hn'];?>" target="_blank"><?=$item['row_id'];?></a></td>
+                <td><a href="edit_opacc.php?date=<?=$shortDate;?>&hn=<?=$item['hn'];?>" target="_blank" class="opaccId"><?=$item['row_id'];?></a></td>
                 <td><?=$item['date'];?></td>
                 <td><?=$item['hn'];?></td>
                 <td><?=$item['depart'];?></td>

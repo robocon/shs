@@ -22,20 +22,24 @@ if($_SESSION['sIdname']!=='krit')
 
         <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc')">แก้ค่าใช้จ่าย <i class="fa fa-caret-down"></i></button>
         <div id="demoAcc" class="w3-hide w3-white w3-card">
-            <a href="edit_ipacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน</a>
-            <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก</a>
+            <a href="edit_ipacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
+            <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
         </div>
 
         <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc2')">แก้ยา <i class="fa fa-caret-down"></i></button>
         <div id="demoAcc2" class="w3-hide w3-white w3-card">
-            <a href="javascript:void(0)" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน</a>
+            <a href="javascript:void(0)" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
             <a href="editPharOpacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก</a>
         </div>
 
         <a href="find_part.php" class="w3-bar-item w3-button" target="_blank">หา part ที่หายไป</a>
         <a href="com_support_v2.php" class="w3-bar-item w3-button" target="_blank">คีย์งานแบบบันทึกเอง</a>
         
-        <a href="addNewUser.php" class="w3-bar-item w3-button" target="_blank">เพิ่มผู้ใช้งานในระบบ</a>
+        <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc3')">เพิ่มผู้ใช้งาน <i class="fa fa-caret-down"></i></button>
+        <div id="demoAcc3" class="w3-hide w3-white w3-card">
+            <a href="addNewUser.php" class="w3-bar-item w3-button" target="_blank">เพิ่มผู้ใช้งานในระบบ</a>
+            <a href="#" class="w3-bar-item w3-button" target="_blank">เพิ่มแพทย์ใหม่ <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
+        </div>
     </div>
     <div class="w3-container" style="margin-left:25%">
         <h3>ซะป๊ะเมนูไม่ไหวจะเคลียร์</h3>

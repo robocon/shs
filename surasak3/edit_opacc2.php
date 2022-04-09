@@ -1,6 +1,11 @@
 <?php 
 include 'bootstrap.php';
 ?>
+<style>
+    .myTable tr:hover{
+        background-color: #bbb;
+    }
+</style>
 <form action="edit_opacc2.php" method="post">
 
     <div>
@@ -29,7 +34,7 @@ if ($_REQUEST['hn']) {
     $items = $db->get_items();
 
     ?>
-    <table>
+    <table class="myTable">
         <tr>
             <td>row_id</td>
             <td>date</td>
