@@ -43,7 +43,7 @@ list($menucode) = Mysql_fetch_row(Mysql_Query($sql));
   
   <? 
 
-$strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'  order by name "; 
+$strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'  ORDER BY opdstatus DESC , row_id ASC"; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 ?>
 <select name="doctor"> 
@@ -62,7 +62,7 @@ while($objResult = mysql_fetch_array($objQuery))
   
 	  <?php }else{?>
 	  <? 
-	 $strSQL = "SELECT name FROM doctor where status='y' order by name"; 
+	 $strSQL = "SELECT name FROM doctor where status='y' ORDER BY opdstatus DESC , row_id ASC"; 
 $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 ?>
 <select name="doctor"> 
