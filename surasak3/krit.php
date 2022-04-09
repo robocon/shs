@@ -38,7 +38,7 @@ if($_SESSION['sIdname']!=='krit')
         <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc3')">เพิ่มผู้ใช้งาน <i class="fa fa-caret-down"></i></button>
         <div id="demoAcc3" class="w3-hide w3-white w3-card">
             <a href="addNewUser.php" class="w3-bar-item w3-button" target="_blank">เพิ่มผู้ใช้งานในระบบ</a>
-            <a href="#" class="w3-bar-item w3-button" target="_blank">เพิ่มแพทย์ใหม่ <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
+            <a href="new_doctor.php" class="w3-bar-item w3-button" target="_blank">เพิ่มแพทย์ใหม่ <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
         </div>
     </div>
     <div class="w3-container" style="margin-left:25%">
