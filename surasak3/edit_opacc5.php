@@ -10,6 +10,7 @@ $type = $_REQUEST['type'];
 if($type === 'patdata' && $action === 'save'){
 
     $id = $_POST['id'];
+    $date = $_POST['date'];
     $price = $_POST['price'];
     $yprice = $_POST['yprice'];
     $nprice = $_POST['nprice'];
@@ -18,7 +19,8 @@ if($type === 'patdata' && $action === 'save'){
     $part = $_POST['part'];
     $depart = $_POST['depart'];
 
-    $sql = "UPDATE `patdata` SET `price`='$price', `yprice`='$yprice', `nprice`='$nprice', 
+    $sql = "UPDATE `patdata` SET 
+    `date`='$date',`price`='$price', `yprice`='$yprice', `nprice`='$nprice', 
     `code`='$code', `detail`='$detail', `part`='$part', `depart`='$depart'
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
@@ -31,6 +33,7 @@ if($type === 'patdata' && $action === 'save'){
 }elseif ($type === 'depart' && $action === 'save') {
     
     $id = $_POST['id'];
+    $date = $_POST['date'];
     $price = $_POST['price'];
     $sumyprice = $_POST['sumyprice'];
     $sumnprice = $_POST['sumnprice'];
@@ -38,8 +41,9 @@ if($type === 'patdata' && $action === 'save'){
     $depart = $_POST['depart'];
     $detail = $_POST['detail'];
     $cashok = $_POST['cashok'];
-    $sql = "UPDATE `depart` SET `price`='$price', `sumyprice`='$sumyprice', `sumnprice`='$sumnprice', `paid`='$paid', 
-    `depart`='$depart', `detail`='$detail', `cashok`='$cashok' 
+    $sql = "UPDATE `depart` SET 
+    `date`='$date',`price`='$price', `sumyprice`='$sumyprice', `sumnprice`='$sumnprice', 
+    `paid`='$paid', `depart`='$depart', `detail`='$detail', `cashok`='$cashok' 
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
@@ -51,6 +55,7 @@ if($type === 'patdata' && $action === 'save'){
 }elseif ($type === 'opacc' && $action === 'save') {
     
     $id = $_POST['id'];
+    $date = $_POST['date'];
     $price = $_POST['price'];
     $paid = $_POST['paid'];
     $paidcscd = $_POST['paidcscd'];
@@ -59,7 +64,8 @@ if($type === 'patdata' && $action === 'save'){
     $credit = $_POST['credit'];
     $credit_detail = $_POST['credit_detail'];
     
-    $sql = "UPDATE `opacc` SET `price`='$price', `paid`='$paid', `paidcscd`='$paidcscd' , 
+    $sql = "UPDATE `opacc` SET 
+    `date`='$date',`price`='$price', `paid`='$paid', `paidcscd`='$paidcscd' , 
     `depart`='$depart', `detail`='$detail', `credit`='$credit', `credit_detail`='$credit_detail' 
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
@@ -86,6 +92,9 @@ if ($type === 'patdata') {
     <form action="edit_opacc5.php" method="post">
         <div>
             PATDATA ==> <b><?=$item['hn'];?></b> <b><?=$item['ptname'];?></b> <b>id</b> <?=$item['row_id'];?> <b>code</b> <?=$item['code'];?> <b>detail</b> <?=$item['detail'];?>
+        </div>
+        <div>
+            date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
         </div>
         <div>
             code <input type="text" name="code" id="code" value="<?=$item['code'];?>">
@@ -129,6 +138,9 @@ if ($type === 'patdata') {
             DEPART ==> <b><?=$item['hn'];?></b> <b><?=$item['ptname'];?></b> <b>id</b> <?=$item['row_id'];?> <b>code</b> <?=$item['code'];?> <b>detail</b> <?=$item['detail'];?>
         </div>
         <div>
+            date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
+        </div>
+        <div>
             depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
         </div>
         <div>
@@ -168,6 +180,9 @@ if ($type === 'patdata') {
     <form action="edit_opacc5.php" method="post">
         <div>
             OPACC ==> <b><?=$item['hn'];?></b> <b>id</b> <?=$item['row_id'];?> <b>depart</b> <?=$item['depart'];?> <b>detail</b> <?=$item['detail'];?>
+        </div>
+        <div>
+            date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
         </div>
         <div>
             depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
