@@ -23,7 +23,7 @@ if($_SESSION['sIdname']!=='krit')
         <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc')">แก้ค่าใช้จ่าย <i class="fa fa-caret-down"></i></button>
         <div id="demoAcc" class="w3-hide w3-white w3-card">
             <a href="edit_ipacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยใน <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
-            <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
+            <a href="edit_opacc.php" class="w3-bar-item w3-button" target="_blank">ผู้ป่วยนอก</a>
         </div>
 
         <button class="w3-button w3-block w3-left-align" onclick="myAccFunc('demoAcc2')">แก้ยา <i class="fa fa-caret-down"></i></button>
@@ -40,6 +40,9 @@ if($_SESSION['sIdname']!=='krit')
             <a href="addNewUser.php" class="w3-bar-item w3-button" target="_blank">เพิ่มผู้ใช้งานในระบบ</a>
             <a href="new_doctor.php" class="w3-bar-item w3-button" target="_blank">เพิ่มแพทย์ใหม่ <span class="w3-tag w3-yellow">ยังไม่เสร็จ</span></a>
         </div>
+
+        <a href="dt_appoint_diagnose.php" class="w3-bar-item w3-button" target="_blank">Lock นัดแพทย์</a>
+        
     </div>
     <div class="w3-container" style="margin-left:25%">
         <h3>ซะป๊ะเมนูไม่ไหวจะเคลียร์</h3>
