@@ -431,7 +431,11 @@ if($_SESSION['x-msg'])
             </tr>
             <tr>
                 <td align="right">ผู้บันทึก : </td>
-                <td><input type="text" name="staff" id="staff" value="บุณฑริกา ใหม่แก้ว">บุณฑริกา ใหม่แก้ว</td>
+                <td>
+                    <input type="text" name="staff" id="staff" value="">
+                    <span >บุณฑริกา ใหม่แก้ว</span><br>
+                    <span >แพรวรดา ใจตาบุตร</span>
+                </td>
             </tr>
             <tr>
                 <td></td>
