@@ -1381,6 +1381,7 @@ if ( $group2_rows > 0 ) {
 				</tr>
 			<?php } ?>   
 			<?php
+			/*
 			$sql3="select * from 
 			patdata where 
 			hn='".$hn."' 
@@ -1405,6 +1406,7 @@ if ( $group2_rows > 0 ) {
 			</tr>
 			<?php 
 			} 
+			*/
 			?>   
 
 						<?php if( !empty($result['altra']) ){ ?>           
