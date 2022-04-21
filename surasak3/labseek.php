@@ -239,7 +239,7 @@ function searchSuggest(str,len,getto) {
 	?>
   <input type="text" name="code" size="8" id="aLink" value="<?=$default;?>" onkeypress="searchSuggest(this.value,2,'code');">
 <? }else{ ?>
-  <input type="text" name="code" size="8" id="aLink" value="<?=$xray_sso;?>" onkeypress="searchSuggest(this.value,2,'code');">
+  <input type="text" name="code" size="8" id="aLink" value="<?=$xray_sso;?>" onkeypress="searchSuggest(this.value,2,'aLink');">
  <? } ?> 
 <script type="text/javascript">
 document.getElementById('aLink').focus();
