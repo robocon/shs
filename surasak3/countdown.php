@@ -121,7 +121,7 @@ body {
             };
             request.send();
             request = null;
-        }, 2000);
+        }, 10000);
 
         function addEventListener(el, eventName, handler) {
             if (el.addEventListener) {

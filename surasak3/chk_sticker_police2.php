@@ -10,7 +10,7 @@ $pdf->SetAutoPageBreak(true, 2);
 $pdf->SetMargins(2, 2);
 
 $sql = "SELECT * FROM `opcardchk` 
-WHERE part = 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (1)' 
+WHERE part = 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (2)' 
 ORDER BY `row` ASC ";
 $q = $dbi->query($sql);
 while ($a = $q->fetch_assoc()) {

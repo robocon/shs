@@ -258,6 +258,14 @@ include 'chk_menu.php';
                 <input type="hidden" name="action" value="print">
             </td>
         </tr>
+        <tr>
+            <td colspan="2">
+                <br>
+                <a href="chk_sticker_police.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 28 เมษายน 65</a><img src="images/icons/new-icon.gif" alt="">
+                <br>
+                <a href="chk_sticker_police2.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 29 เมษายน 65</a><img src="images/icons/new-icon.gif" alt="">
+            </td>
+        </tr>
     </table>
 </form>
 <script>

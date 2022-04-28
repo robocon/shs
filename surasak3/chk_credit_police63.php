@@ -213,6 +213,8 @@ session_register("ptname");
 session_register("medical_service");
 
 $repdate=urldecode($_GET['repdate']); 
+$type=urldecode($_GET['type']); 
+
 $doctor='µ√«® ÿ¢¿“æ';
 
 /**
@@ -220,20 +222,31 @@ $doctor='µ√«® ÿ¢¿“æ';
  *  Õ∫µ”√«®63 °—∫  Õ∫µ”√«®63_02
  */
 $part = urldecode($_GET['part']);
+if( $part == '»Ÿπ¬ÏΩ÷°Õ∫√¡µ”√«®¿Ÿ∏√ ¿“§ 5 (1)' ){ 
 
-if( $part == ' Õ∫µ”√«®63_03' ){
     $sql = "SELECT * 
     FROM `log_opcardchk` 
-    WHERE `log_part` LIKE ' Õ∫µ”√«®63%' 
+    WHERE `log_part` LIKE '»Ÿπ¬ÏΩ÷°Õ∫√¡µ”√«®¿Ÿ∏√ ¿“§ 5 (1)' 
+    AND `type` = '$type' 
     GROUP BY `log_hn` 
     ORDER BY `log_hn`";
-}else{
-    $sql = "SELECT * 
-    FROM `log_opcardchk` 
-    WHERE `log_part` = '$part' 
-    GROUP BY `log_hn` 
-    ORDER BY `log_hn` ";
+    
 }
+
+
+// if( $part == ' Õ∫µ”√«®63_03' ){
+//     $sql = "SELECT * 
+//     FROM `log_opcardchk` 
+//     WHERE `log_part` LIKE ' Õ∫µ”√«®63%' 
+//     GROUP BY `log_hn` 
+//     ORDER BY `log_hn`";
+// }else{
+//     $sql = "SELECT * 
+//     FROM `log_opcardchk` 
+//     WHERE `log_part` = '$part' 
+//     GROUP BY `log_hn` 
+//     ORDER BY `log_hn` ";
+// }
 
 
 
