@@ -1,2 +1,2 @@
 <?php 
-header("Location: http://192.168.129.20/nhsoatk/index.php");
+header("Location: http://192.168.129.143/nhsoatk/index.php");
