@@ -226,10 +226,22 @@ if( $part == 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (1)' ){
 
     $sql = "SELECT * 
     FROM `log_opcardchk` 
-    WHERE `log_part` LIKE 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (1)' 
+    WHERE `log_part` = 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (1)' 
     AND `type` = '$type' 
     GROUP BY `log_hn` 
-    ORDER BY `log_hn`";
+    ORDER BY `log_id` ASC";
+    
+}
+
+if( $part == 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (2)' ){ 
+
+    $sql = "SELECT * 
+    FROM `log_opcardchk` 
+    WHERE `log_part` = 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (2)' 
+    AND `type` = '$type' 
+    GROUP BY `log_hn` 
+    ORDER BY `log_id` ASC";
+    // var_dump($sql);
     
 }
 
@@ -252,7 +264,9 @@ if( $part == 'ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (1)' ){
 
 
 $db->select($sql);
+
 $items = $db->get_items();
+// var_dump($items);
 $rows = $db->get_rows();
 
 ?>
