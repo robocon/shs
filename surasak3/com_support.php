@@ -47,17 +47,17 @@ $n =0;
 $num = "Y";
 
 // งานค้างที่ยังไม่ได้รับผิดชอบ
-if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCOM"){
+/*if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCOM"){
 	$query = "SELECT row,depart,head,datetime,programmer,date,user1 
 FROM com_support 
 WHERE status ='$num'
 ORDER BY row desc";
-}else{
-	$query = "SELECT row,depart,head,datetime,programmer,date,user1 
+}else{*/
+	$query = "SELECT row,jobtype,depart,head,datetime,programmer,date,user1 
 FROM com_support 
 WHERE status ='$num' and date >= '2565-01-01 00:00:00'
 ORDER BY row desc";
-}
+//}
 $result = mysql_query($query) or die("Query failed111");
 if($num1=mysql_num_rows($result)){
     print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
@@ -71,7 +71,7 @@ if($num1=mysql_num_rows($result)){
     print"  <th bgcolor=#FF0033>ผู้รับผิดชอบ</th>";
     print"  <th bgcolor=#FF0033>พิมพ์</th>";
     print" </tr>";
-    while (list ($row,$depart,$head,$datetime,$programmer,$date,$user1) = mysql_fetch_row ($result)) {
+    while (list ($row,$jobtype,$depart,$head,$datetime,$programmer,$date,$user1) = mysql_fetch_row ($result)) {
         $n++;
 
         $programmer = ( !empty($programmer) ) ? $programmer : 'รอการตอบรับ' ;
@@ -81,15 +81,18 @@ if($num1=mysql_num_rows($result)){
         } else {
             $where="$programmer";
         }
+		
+		$color="#F1948A";
+
 	
         print (" <tr>\n".
-        "  <td BGCOLOR=#FF8080 align='center'>$row</td>\n".
-        "  <td BGCOLOR=#FF8080>$depart</td>\n".
-        "  <td BGCOLOR=#FF8080><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
-        "  <td BGCOLOR=#FF8080>$user1</td>\n".
-        "  <td BGCOLOR=#FF8080>$date</td>\n".
-        "  <td BGCOLOR=#FF8080>$where</td>\n".
-        "  <td BGCOLOR=#FF8080><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
+        "  <td BGCOLOR=$color align='center'>$row</td>\n".
+		"  <td BGCOLOR=$color>$depart</td>\n".
+        "  <td BGCOLOR=$color><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
+        "  <td BGCOLOR=$color>$user1</td>\n".
+        "  <td BGCOLOR=$color>$date</td>\n".
+        "  <td BGCOLOR=$color>$where</td>\n".
+        "  <td BGCOLOR=$color><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
         " </tr>\n");
 		
     }

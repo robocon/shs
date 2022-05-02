@@ -17,6 +17,15 @@ $rward = substr($Bcode,0,2);
 		 }elseif($rward=='45'){
 			 $wname='หอผู้ป่วยพิเศษ';	
 			 $linkward="vipward.php";
+		 }elseif($rward=='46'){
+			 $wname='หอผู้ป่วย Cohort Ward';	
+			 $linkward="cward.php";
+		 }elseif($rward=='47'){
+			 $wname='หอผู้ป่วย Home Isolation';	
+			 $linkward="hward.php";
+		 }elseif($rward=='48'){
+			 $wname='หอผู้ป่วย รพ.สนาม';	
+			 $linkward="hward.php";
 		 }
 include("connect.inc");
 
@@ -55,9 +64,11 @@ $sql = "UPDATE ipcard SET date='$cAdmitd',
 		             diag='$diag',
 		             doctor='$doctor',
 					 repadmit='$repadmit',
-					 hospital='$hospital'
+					 hospital='$hospital',
+					 typeadmit='$typeadmit',
+					 weight='$weight' 
              WHERE an='$cAn';";
-             $result = mysql_query($sql) or die("Query failed ipcard");
+             $result = mysql_query($sql) or die(mysql_error()." Query failed ipcard");
 
 $sql = "UPDATE opday SET ptright='$cPtright',
 		             goup='$cGoup',
@@ -65,16 +76,84 @@ $sql = "UPDATE opday SET ptright='$cPtright',
                      diag='$diag',
 		             doctor='$doctor' 
              WHERE an='$cAn';";
-$result = mysql_query($sql) or die("Query failed ipcard");
+$result = mysql_query($sql) or die(mysql_error()." Query failed ipcard");
 
+
+
+
+
+$query11 = "SELECT hi_type FROM ipcard WHERE an = '$cAn'";
+$result11 = mysql_query($query11);
+$rows11=mysql_num_rows($result11);
+$arr=mysql_fetch_array($result11);
+
+$subbedcode=substr($Bcode,0,2);
+$subptright=substr($cPtright,0,3);
+
+if($subbedcode=="47"){  //Ward Home Isolation
+	if($subptright=="R02" || $subptright=="R03" || $subptright=="R16" || $subptright=="R33"){
+		if($arr["hi_type"]=="in"){
+		//$admitD=date("Y-m-d H:i:s");
+		  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
+						muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
+						an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='1000.00'  WHERE bedcode='$Bcode' ";
+		  $result = mysql_query($query) or die("Query failed bed");  
+		 //// ward_log  admit ครั้งแรก  //// 
+		}else if($arr["hi_type"]=="out"){
+		//$admitD=date("Y-m-d H:i:s");
+		  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
+						muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
+						an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='1000.00'  WHERE bedcode='$Bcode' ";
+		  $result = mysql_query($query) or die("Query failed bed");  
+		 //// ward_log  admit ครั้งแรก  //// 				
+		}else{
+		//$admitD=date("Y-m-d H:i:s");
+		  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
+						muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
+						an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='0.00'  WHERE bedcode='$Bcode' ";
+		  $result = mysql_query($query) or die("Query failed bed");  
+		 //// ward_log  admit ครั้งแรก  //// 			
+		}
+	}else{ //สิทธิอื่นๆ
+	//$admitD=date("Y-m-d H:i:s");
+	  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
+					muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
+					an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='0.00'  WHERE bedcode='$Bcode' ";
+	  $result = mysql_query($query) or die("Query failed bed");  
+	 //// ward_log  admit ครั้งแรก  //// 		
+	}
+
+}else if($subbedcode=="48"){ //Ward รพ.สนาม
+	if($subptright=="R07" || $subptright=="R50"){  //สิทธิประกันสังคม
+	//$admitD=date("Y-m-d H:i:s");
+	  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
+					muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
+					an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='1500.00'  WHERE bedcode='$Bcode' ";
+	  $result = mysql_query($query) or die("Query failed bed");  
+	 //// ward_log  admit ครั้งแรก  //// 	
+	}else{ //สิทธิอื่นๆ
+	//$admitD=date("Y-m-d H:i:s");
+	  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
+					muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
+					an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='1000.00'  WHERE bedcode='$Bcode' ";
+	  $result = mysql_query($query) or die("Query failed bed");  
+	 //// ward_log  admit ครั้งแรก  //// 			
+	}
+	
+}else{ //Ward อื่นๆ
 //$admitD=date("Y-m-d H:i:s");
   $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
                 muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
                 an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1  WHERE bedcode='$Bcode' ";
-  $result = mysql_query($query) or die("Query failed bed");
+  $result = mysql_query($query) or die("Query failed bed");  
+ //// ward_log  admit ครั้งแรก  //// 	
+}
   
- //// ward_log  admit ครั้งแรก  //// 
-  
+
+
+
+
+
    
    
    $chgcode="Admit/1";
@@ -104,7 +183,7 @@ $result = mysql_query($sql) or die("Query failed ipcard");
 					 repadmit='$repadmit',
 					 hospital='$hospital'
              WHERE an='$cAn';";
-             $result = mysql_query($sql) or die("Query failed ipcard");
+             $result = mysql_query($sql) or die(mysql_error()." Query failed ipcard");
    
 }		
 	if($Bcode=="42R5") $room_name="ค่าห้องพิเศษ ($price บาท)";
@@ -134,6 +213,12 @@ $rward = substr($Bcode,0,2);
 				echo "<a href='allward.php?code=44'>กลับหน้า ward</a>";
 			}elseif($rward=='45'){
 				echo "<a href='allward.php?code=45'>กลับหน้า ward</a>";
+			}elseif($rward=='46'){
+				echo "<a href='allward.php?code=46'>กลับหน้า ward</a>";
+			}elseif($rward=='47'){
+				echo "<a href='allward.php?code=47'>กลับหน้า ward</a>";
+			}elseif($rward=='48'){
+				echo "<a href='allward.php?code=48'>กลับหน้า ward</a>";
 			}
          }
 //session_destroy();

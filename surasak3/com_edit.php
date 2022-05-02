@@ -97,7 +97,7 @@ $dbarr=mysql_fetch_array($result);
     <td colspan="3" bgcolor="#66CCCC"><select name="jobtype" id="jobtype" class="forntsarabun">
         <option value="0">เลือกงาน</option>
         <option value="hardware" <? if($dbarr['jobtype']=="hardware"){ echo "selected";}?>>งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
-        <option value="software" <? if($dbarr['jobtype']=="software"){ echo "selected";}?>>งานแก้ไข/พัฒนาโปรแกมโรงพยาบาล</option>
+        <option value="software" <? if($dbarr['jobtype']=="software"){ echo "selected";}?>>งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ</option>
     </select></td>
     </tr>
   <tr>

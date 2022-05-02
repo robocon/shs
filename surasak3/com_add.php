@@ -13,6 +13,7 @@ session_start();
 	font-weight: bold;
 	color: #FFFFFF;
 }
+
 a:link {
 	text-decoration: none;
 }
@@ -102,18 +103,22 @@ include("connect.inc");
     <td colspan="3" bgcolor="#66CCCC"><select name="jobtype" id="jobtype" class="forntsarabun">
       <option value="0" selected>เลือกงาน</option>
       <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
-      <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
+      <option value="software">งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ</option>
         </select></td>
   </tr>
   <tr>
-    <td bgcolor="#66CCCC"><strong>หัวข้อ</strong></td>
-    <td colspan="3" bgcolor="#66CCCC"><input name="head" id="head" type="text" class="forntsarabun" size="40">  
-    <font color="#FF0000">*** ระบุปัญหาหรืออาการที่ต้องการแก้ไขด้วยครับ ***</font></td>
+    <td bgcolor="#66CCCC"><strong>เรื่องที่จะแจ้ง</strong></td>
+    <td colspan="3" bgcolor="#66CCCC"><input name="head" id="head" type="text" class="forntsarabun" size="60">
+      <font color="#FF0000">*** ระบุปัญหาหรืออาการที่ต้องการแก้ไขด้วยครับ ***</font></td>
     </tr>
   <tr>
-    <td valign="top" bgcolor="#66CCCC"><strong>รายละเอียด</strong></td>
+    <td valign="top" bgcolor="#66CCCC"><strong>รายละเอียดงาน</strong></td>
     <td colspan="3" bgcolor="#66CCCC"><TEXTAREA NAME="detail" id="detail" COLS="100" ROWS="10" class="forntsarabun"></TEXTAREA></td>
     </tr>
+  <tr>
+    <td valign="top" bgcolor="#66CCCC"><strong>หมายเหตุ</strong></td>
+    <td colspan="3" bgcolor="#66CCCC"><font color="#FF0000" size='4'>กรณีที่ ต้องการแจ้งแก้ไขปรับปรุงโปรแกรมมากกว่า 1 เรื่อง ให้แยกใบงาน เนื่องจากใช้ระยะเวลาดำเนินการที่แตกต่างกัน ใบงานของท่านอาจจะค้างในระบบเป็นเวลานาน</font></td>
+    </tr>	
   <tr>
     <td bgcolor="#66CCCC"><strong>ชื่อ - นามสกุล<br>
       (ผู้แจ้งเรื่อง)</strong></td>

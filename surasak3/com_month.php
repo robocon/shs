@@ -59,7 +59,15 @@ if(!isset($_POST['search'])){
       <option value="0" selected>เลือกงานทั้งหมด</option>
       <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
       <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
-        </select>&nbsp;&nbsp;เดือน
+        </select><p><strong>ผู้รับผิดชอบ&nbsp;</strong><select name="programmer" class="forntsarabun">
+     <option value="0" selected>==กรุณาเลือก==</option>
+    <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
+	<option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
+    <option value="ชาญวิทย์  ตากาบุตร">ชาญวิทย์  ตากาบุตร</option>
+    <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
+	<option value="ฐานะพัฒน์  นิลคำ">ฐานพัฒน์  นิลคำ</option>    
+    </select></p>
+	<p>เดือน
           <select name="m" class="forntsarabun">
 <?
 	$m=date("m");
@@ -87,7 +95,7 @@ if(!isset($_POST['search'])){
             <?
 	}
 	?>
-          </select>      </td>
+          </select></p>      </td>
 </tr>
       <tr>
   <td align="center" class="font1">
@@ -102,9 +110,17 @@ if(isset($_POST['search'])){
 	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 	
 if($_POST['jobtype']=="0"){
-	$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+	if($_POST['programmer']=="0"){
+		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+	}else{
+		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and programmer LIKE '".$_POST['programmer']."'";
+	}
 }else{
-	$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."'";
+	if($_POST['programmer']=="0"){
+		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."'";
+	}else{
+		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."' and programmer LIKE'".$_POST['programmer']."'";		
+	}
 }	
 	//echo $sql;
 	$row = mysql_query($sql);
