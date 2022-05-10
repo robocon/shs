@@ -842,14 +842,15 @@ $outlab_row = mysql_num_rows($outlab_query);
 									$app = '';
 											
 									if( $objResult["labcode"]=='GLU'){
-										if( $objResult["result"] >= 74 && $objResult["result"] <= 106 ){
+										// if( $objResult["result"] >= 74 && $objResult["result"] <= 106 ){
+										if( $objResult["result"] <= 106 ){
 											$app="ระดับน้ำตาลในเลือดมีค่าอยู่ในเกณฑ์ปกติ";
 										}else if( $objResult["result"] > 106 && $objResult["result"] <= 125 ){
 											$app="ระดับน้ำตาลในเลือดมีค่าสูงผิดปกติ";
 										}else if( $objResult["result"] > 125 ){
 											$app="ระดับน้ำตาลในเลือดมีค่าสูงมากผิดปกติ";	
 										}else if( $objResult["result"] < 74 ){
-											$app="ระดับน้ำตาลในเลือดมีค่าต่ำผิดปกติ";	
+											// $app="ระดับน้ำตาลในเลือดมีค่าต่ำผิดปกติ";	
 										}
 									}
 
@@ -858,13 +859,14 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$app="";
 									}
 
-									if($objResult["labcode"]=='BUN'){
-										if($objResult["result"]>18){
-											$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
-										}else if($objResult["result"]>=7 && $objResult["result"]<=18){
-											$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ";	
-										}else if($objResult["result"]<7 ){
-											$app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
+									if($objResult["labcode"]=='BUN'){ 
+										if($objResult["result"]>18){ 
+											$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด"; 
+										// }else if($objResult["result"]>=7 && $objResult["result"]<=18){
+										}else if($objResult["result"]<=18){ 
+											$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ"; 
+										}else if($objResult["result"]<7 ){ 
+											// $app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ"; 
 										}
 										
 									}
@@ -872,20 +874,22 @@ $outlab_row = mysql_num_rows($outlab_query);
 									if($objResult["labcode"]=='CREA'){
 										if($objResult["result"]>1.3){
 											$app="ผิดปกติ ควรควบคุมอาหารที่มีโซเดียมสูง และแคลเซียมสูง เช่น นม ถั่วลิสง ของเค็มทุกชนิด";	
-										}else if($objResult["result"]>=0.6 && $objResult["result"]<=1.3){
+										// }else if($objResult["result"]>=0.6 && $objResult["result"]<=1.3){
+										}else if($objResult["result"]<=1.3){
 											$app="การทำงานของไตมีค่าอยู่ในเกณฑ์ปกติ";	
 										}else if($objResult["result"]<0.6){
-											$app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
+											// $app="ผิดปกติ การทำงานของไตต่ำกว่าปกติ";	
 										}
 									}
 
 									if($objResult["labcode"]=='URIC'){
 										if($objResult["result"]>7.2){
 											$app="ผิดปกติ ควรงดเครื่องดื่มที่มีแอลกอฮอล์ เครื่องในสัตว์ สัตว์ปีก";	
-										}else if($objResult["result"] >=2.6 && $objResult["result"] <=7.2){
+										// }else if($objResult["result"] >=2.6 && $objResult["result"] <=7.2){
+										}else if($objResult["result"] <=7.2){
 											$app="ระดับกรดยูริคมีค่าอยู่ในเกณฑ์ปกติ";	
 										}else if($objResult["result"]<2.6){
-											$app="ผิดปกติ ระดับกรดยูริคต่ำกว่าปกติ";	
+											// $app="ผิดปกติ ระดับกรดยูริคต่ำกว่าปกติ";	
 										}
 									}
 
@@ -901,12 +905,13 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 
 									if($objResult["labcode"]=='HDL'){
-										if($objResult["result"]>=40 && $objResult["result"]<=60){
+										// if($objResult["result"]>=40 && $objResult["result"]<=60){
+										if($objResult["result"]<=60){
 											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 										}else	if($objResult["result"]>60){  //สูงดี
 											$app="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ";	
 										}else	if($objResult["result"]<40){  //ต่ำไม่ดี
-											$app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
+											// $app="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ";	
 										}
 									}
 
@@ -945,12 +950,13 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 
 									if($objResult["labcode"]=='AST'){  //SGOT
-										if($objResult["result"]>=15 && $objResult["result"]<=37){
+										// if($objResult["result"]>=15 && $objResult["result"]<=37){
+										if($objResult["result"]<=37){
 											$app="การทำงานของตับปกติ";	
 										}else	if($objResult["result"]>37){
 											$app="การทำงานของตับผิดปกติ";	
 										}else	if($objResult["result"]<15){
-											$app="การทำงานของตับผิดปกติ";	
+											// $app="การทำงานของตับผิดปกติ";	
 										}
 									}
 									if($objResult["labcode"]=='ALT'){  //SGPT
@@ -962,12 +968,13 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 
 									if($objResult["labcode"]=='ALP'){  //ALK
-										if($objResult["result"]>=46 && $objResult["result"]<=116){
+										// if($objResult["result"]>=46 && $objResult["result"]<=116){
+										if($objResult["result"]<=116){
 											$app="การทำงานของตับปกติ";	
 										}else	if($objResult["result"]>116){
 											$app="การทำงานของตับผิดปกติ";	
 										}else	if($objResult["result"]<46){
-											$app="การทำงานของตับผิดปกติ";	
+											// $app="การทำงานของตับผิดปกติ";	
 										}
 									}
 
