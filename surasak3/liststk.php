@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>Untitled Document</title>
+<title>เอกสาร(1 ดวง) ผู้ป่วยใน</title>
 </head>
 <style type="text/css">
 
@@ -46,8 +46,18 @@ left: 60px; /*position where enlarged image should offset horizontally */
     <td colspan="2" align="center">เลือกรูปแบบ Sticker ติดเอกสาร</td>
   </tr>
   <tr>
-<td align="center"><a href="ipbed1a.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>" class="thumbnail">แบบที่ 1<span><img src="images/stk1.JPG" title="ตัวอย่าง"/><br />ตัวอย่างรูปแบบ 1</span></a></td>
+    <td align="center"><a href="ipbed1a.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>" class="thumbnail">แบบที่ 1<span><img src="images/stk1.JPG" title="ตัวอย่าง"/><br />ตัวอย่างรูปแบบ 1</span></a></td>
     <td align="center"><a href="ipbed1a2.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>" class="thumbnail">แบบที่ 2<span><img src="images/stk2.JPG" /  title="ตัวอย่าง"><br /> ตัวอย่างรูปแบบ 2</span></a></td>
+  </tr>
+</table>
+<br>
+<table width="50%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#000000" >
+  <tr>
+    <td colspan="2" align="center">กรณีที่ปริ้นแบบ PDF ด้านบนไม่ได้</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="ipbed1a_basic.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>&type_sticker=1" target="_blank">แบบที่ 1</a></td>
+    <td align="center"><a href="ipbed1a_basic.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>&type_sticker=2" target="_blank">แบบที่ 2</a></td>
   </tr>
 </table>
 
