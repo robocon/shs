@@ -136,9 +136,9 @@ if($_POST['jobtype']=="0"){
 <table width="100%" border="1" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; font-size: 14px;">
 <tr><td width="3%" align="center" valign="top" class="font1"><strong>ลำดับ</strong></td>
   <td width="7%" align="center" valign="top" class="style1">วันที่แจ้ง</td>
+  <td width="7%" align="center" valign="top" class="style1">เลขที่ใบงาน</td>
   <td width="7%" align="center" valign="top" class="style1">แผนก</td>
   <td width="10%" align="center" valign="top" class="style1">ผู้ร้องขอ</td>
-  <td width="10%" align="center" valign="top" class="style1">ประเภทงาน</td>
   <td width="10%" align="center" valign="top" class="style1">หัวข้อ</td>
   <td width="28%" align="center" valign="top" class="style1">รายละเอียด</td>
   <td width="20%" align="center" valign="top" class="style1">ผลการดำเนินการ</td>
@@ -158,11 +158,12 @@ if($_POST['jobtype']=="0"){
 		</td>
 		  <td valign="top" class="font1">
 	      <?=$result['date']?>		  </td>
+		  <td align="center" valign="top" class="font1">
+	      <?=$result['row']?>		  </td>		  
 		  <td valign="top" class="font1">
 	      <?=$result['depart']?>		  </td>
 		  <td valign="top" class="font1">
 	      <?=$result['user1']?>		  </td>
-		  <td valign="top" class="font1"><?=$result['jobtype']?>          </td>
 		  <td valign="top" class="font1">
 	      <?=$result['head']?>		  </td>
 		  <td valign="top" class="font1">

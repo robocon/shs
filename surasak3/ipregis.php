@@ -91,7 +91,7 @@ $subbedcode=substr($Bcode,0,2);
 $subptright=substr($cPtright,0,3);
 
 if($subbedcode=="47"){  //Ward Home Isolation
-	if($subptright=="R02" || $subptright=="R03" || $subptright=="R16" || $subptright=="R33"){
+	if($subptright=="R02" || $subptright=="R03" || $subptright=="R04" || $subptright=="R16" || $subptright=="R33"){
 		if($arr["hi_type"]=="in"){
 		//$admitD=date("Y-m-d H:i:s");
 		  $query ="UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',

@@ -117,15 +117,15 @@ print "<font face='Angsana New' size='4' >เอกสารที่ผู้ป่วยต้องเตรียม</font><br>"
 print "<font face='Angsana New' size='2' ><input type='checkbox' >สำเนาบัตรประจำตัวประชาชน</font><br>";
 print "<font face='Angsana New' size='2' ><input type='checkbox' >บัตรประจำตัวประชาชนตัวจริงมาให้แผนกทะเบียน</font><br>";
 print "<font face='Angsana New' size='4' >การคิดค่าบริการของโรงพยาบาล</font><br>";
-print "<font face='Angsana New' size='3' ><input type='checkbox' >คิดค่าห้องค่าอาหารต่อวัน&nbsp;ราคาต่อวัน<input type='checkbox' >ห้องสามัญ 400 บาท&nbsp;<input type='checkbox' >ห้องพิเศษ (<input type='checkbox' >1000/<input type='checkbox' >1200/<input type='checkbox' >1600) บาท</font><br>";
+print "<font face='Angsana New' size='3' ><input type='checkbox' >คิดค่าห้องค่าอาหารต่อวัน&nbsp;ราคาต่อวัน<input type='checkbox' >ห้องสามัญ 400 บาท&nbsp;<input type='checkbox' >ห้องพิเศษ (<input type='checkbox' >1000/<input type='checkbox' >1200/<input type='checkbox' >1600<input type='checkbox' >1800) บาท</font><br>";
 
 print "<font face='Angsana New' size='3' ><input type='checkbox' >ค่าห้องส่วนเกิน(สิทธิ์เบิกได้ห้องสามัญ) จำนวน....................../คืน</font><br>";
 print "<font face='Angsana New' size='3' ><input type='checkbox' ><b>ผู้ป่วยที่นอนห้องพิเศษ ต้องมีญาติเฝ้า 24 ชั่วโมง</b> ............................................รับทราบ</font><br>";
 
 print "<font face='Angsana New' size='3' ><input type='checkbox' >ค่ายา ค่าเวชภัณฑ์ ค่าบริการ ชำระส่วนที่เบิกไม่ได้จากสิทธิประกันสุขภาพถ้วนหน้า</font><br>";
 print "<font face='Angsana New' size='3' ><input type='checkbox' >สรุปค่าใช้จ่ายส่วนที่เบิกไม่ได้และเรียกเก็บทุกวันพุธ</font><br>";
-print "<br>";
-print "<font face='Angsana New' size='3' ><center>ทะเบียน..................................................&nbsp;ผู้รับการทบทวน..................................................</center></font><br>";
+//print "<br>";
+print "<font face='Angsana New' size='3' ><center>ทะเบียน..................................................&nbsp;ผู้รับการทบทวน..................................................</center></font>";
 print "<font face='Angsana New' size='3' ><center>ส่วนเก็บเงินรายได้..................................................&nbsp;ผู้รับการทบทวน..................................................</center></font>";
 
 

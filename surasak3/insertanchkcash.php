@@ -23,7 +23,7 @@ top.window.outerWidth = screen.availWidth;
 session_start();
 
 $ward = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47","หอผู้ป่วย รพ.สนาม"=>"48");
-$room = array("ธรรมดา 300", "พิเศษ 600", "พิเศษ 800", "พิเศษ 1,200");
+$room = array("ธรรมดา 300", "พิเศษ 600", "พิเศษ 800","พิเศษ 1200","พิเศษ 1800");
 $book = array("มาแล้ว", "ยังไม่มา", "ออกด้วยคอมพิวเตอร์", "ไม่มี");
 
 include("connect.inc");
@@ -65,27 +65,33 @@ $querylog=mysql_query($sqllog);
 $my_ward=$_POST["ward"];
 $ptright=substr($_POST["ptright"],0,3);
 //echo "$bedcode  $ptright";
-if($my_ward=="หอผู้ป่วย Home Isolation"){  
-	if($ptright=="R02" || $ptright=="R03" || $ptright=="R16" || $ptright=="R33"){  //เบิกจ่ายตรง จ่ายตรง อปท. ครูเอกชน ยืนยันจากพี่อึ่ง 22/03/65
-		$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '".$_POST["food_money"]."' where an = '".$_GET["Can"]."' limit 1";
-		$result = mysql_query($sql);
-		//echo $sql;
-	}else{
-		$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '0.00' where an = '".$_GET["Can"]."' limit 1";
-		$result = mysql_query($sql);
+if($my_ward=="หอผู้ป่วย Home Isolation"){
+	if(isset($_GET["Can"])){
+		if($ptright=="R02" || $ptright=="R03" || $ptright=="R04" || $ptright=="R16" || $ptright=="R33"){  //เบิกจ่ายตรง จ่ายตรง อปท. ครูเอกชน ยืนยันจากพี่อึ่ง 22/03/65
+			$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '".$_POST["food_money"]."' where an = '".$_GET["Can"]."' limit 1";
+			$result = mysql_query($sql);
+			//echo $sql;
+		}else{
+			$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '0.00' where an = '".$_GET["Can"]."' limit 1";
+			$result = mysql_query($sql);
+		}
 	}
 	
 }else if($my_ward=="หอผู้ป่วย รพ.สนาม"){
-	if($ptright=="R07" || $ptright=="R50"){  //ประกันสังคม
-		$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '".$_POST["food_money"]."' where an = '".$_GET["Can"]."' limit 1";
-		$result = mysql_query($sql);
-	}else{
-		$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '1000.00' where an = '".$_GET["Can"]."' limit 1";
-		$result = mysql_query($sql);
+	if(isset($_GET["Can"])){
+		if($ptright=="R07" || $ptright=="R50"){  //ประกันสังคม
+			$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '".$_POST["food_money"]."' where an = '".$_GET["Can"]."' limit 1";
+			$result = mysql_query($sql);
+		}else{
+			$sql = "update bed set ptright = '".$_POST["ptright"]."', bedpri = '1000.00' where an = '".$_GET["Can"]."' limit 1";
+			$result = mysql_query($sql);
+		}
 	}
 }else{
-	$sql = "update bed set ptright = '".$_POST["ptright"]."' where an = '".$_GET["Can"]."' limit 1";
-	$result = mysql_query($sql);
+	if(isset($_GET["Can"])){
+		$sql = "update bed set ptright = '".$_POST["ptright"]."' where an = '".$_GET["Can"]."' limit 1";
+		$result = mysql_query($sql);
+	}
 }
 	
 	if($result){
@@ -309,8 +315,7 @@ return stat;
   <TD align="right">&nbsp;</TD>
   <TD><div style="font-size:14px;"><div><strong>1. ผู้ป่วย Home Isolation </strong></div>
   <div style="margin-left:5px;"><strong>สิทธิจ่ายตรง</strong></div>
-    <div style="margin-left:10px;">- เบิกค่าห้องได้ 1000 บาท (รวมอาหาร 3 มื้อ) ไม่เกิน 10 วัน </div>
-	<div style="margin-left:10px;">- เบิกค่าห้องได้ 600 บาท (ไม่รวมอาหาร) ไม่เกิน 10 วัน </div>
+    <div style="margin-left:10px;">- เบิกค่าห้องได้ 1000 บาท  ไม่เกิน 10 วัน </div>
   <div><strong>2. ผู้ป่วย รพ.สนาม</strong></div>
   <div style="margin-left:5px;"><strong>สิทธิประกันสังคม</strong></div>
   <div style="margin-left:10px;">- เบิกค่าห้องได้ 1500 บาท </div>

@@ -109,15 +109,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "check90day"){
 $times = mktime("0","0","0",date("m"),date("d")-$limit90checkday,date("Y"));
 $date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
 $date2 = (date("Y")+543).date("-m-d H:i:s");
-$sql = " Select date_format(date,'%d-%m-%Y'), tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '2OSTE' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
+$sql = " Select date_format(date,'%d-%m-%Y'), drugcode,tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_GET["search"]."' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
 $result = mysql_query($sql);
 $rows = mysql_num_rows($result);
-	if($rows == 0){
-		echo "0";
-	}
-	else{
-		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
+$tbrows = mysql_fetch_array($result);
+	if($tbrows["drugcode"] == "2OSTE"){
+				list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
 		echo "เคยจ่ายยา ".$tradname." \nที่กำหนดให้จ่ายยาเว้นระยะ 3 เดือน ครั้งล่าสุดเมื่อวันที่ ".$date."\nจำนวน ".$amount." วิธีใช้ ".$slcode." \nท่านต้องการสั่งยาหรือไม่?";
+	}else{
+		echo "0";
 	}
 exit();
 }
@@ -858,8 +858,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 							if($arr["lock_dr"] == 'Y'){
 								if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
 									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
-								}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
-									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";	
+								//}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
+									//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";	
 								}else{
 							
 						?>
@@ -876,8 +876,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 						if($arr["lock_dr"] == 'Y'){
 							if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
 								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
-							}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
-								echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";									
+							//}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
+								//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";									
 							}else{
 					?>
 						<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
@@ -1578,7 +1578,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			*/
 			$limit_row = 30;
 
-			$where_date = " ( `date` LIKE '2564%' OR `date` LIKE '2563%' ) ";
+			$where_date = " ( `date` LIKE '2564%' ) ";
 
 			// สร้าง TEMP จาก drugrx
 			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
@@ -2820,9 +2820,9 @@ function checkForm1(){
 	}else if(document.getElementById('drug_inject_type').style.display == '' && document.form1.drug_inject_type.value==''){
 		alert("กรุณาเลือก แบบในการฉีด");
 		document.form1.drug_inject_type.focus();
-	}else if(document.getElementById('reason').style.display == '' && document.form1.reason.value==''){
+	/*}else if(document.getElementById('reason').style.display == '' && document.form1.reason.value==''){
 		alert("กรุณาระบุเหตุผลในการเลือกใช้ยา NED");
-		document.form1.reason.focus();
+		document.form1.reason.focus();*/
 	}else if(document.getElementById('reason').style.display == '' && document.form1.reason2.value==''){
 	//(document.getElementById('reason11').checked==false && document.getElementById('reason22').checked==false)){
 		alert("กรุณาระบุข้อบ่งชี้ในการใช้ยานอก");
