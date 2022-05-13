@@ -1180,7 +1180,7 @@ $dis = mysql_fetch_assoc($q);
     
     
     <table  border="0" align="center" width="100%">
-  <tr>
+  <tr valign="top">
     <td align="right" class="fonthead">กลุ่มเลือด</td>
     <td><SELECT NAME="blood" id="blood">
      <option value="<?=$cBlood;?>"><?=$cBlood;?> </option>
@@ -1195,11 +1195,14 @@ $dis = mysql_fetch_assoc($q);
     <td class="fonthead"><INPUT TYPE="text" NAME="drugreact" id="drugreact" value="<?=$cDrugreact;?>">  
  
 <input name="rdo1" type="checkbox"  id="rdo1" value="30 บาท" <? if($cPtright=="R09 ประกันสุขภาพถ้วนหน้า"){ echo "checked"; }?>> 
-30 บาท
+<label for="rdo1">30 บาท</label>
+
 <input name="rdo1" type="checkbox" id="rdo2" value="ปส." <? if($cPtright=="R07 ประกันสังคม"){ echo "checked"; }?>> 
-ประกันสังคม  
-      รพ.ต้นสังกัด
-<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>">    </td>
+<label for="hospcode">ประกันสังคม รพ.ต้นสังกัด</label>
+<INPUT NAME="hospcode" TYPE="text" id="hospcode" onKeyPress="searchSuggest2(this.value,3,'hospcode');" size="40" value="<?=$cHospcode;?>"> 
+</div>
+
+</td>
     </tr>
   <tr>
     <td align="right" class="fonthead">หมายเหตุ</td>
@@ -1278,7 +1281,7 @@ if($time >='16:00:00'){
 }
 ?>
 <table width="100%" border="0">
-  <tr>
+  <tr valign="top">
     <td align="right" class="fonthead">ออก OPD CARD</td>
     <td colspan="2" class="fonthead"><!--<?//=$time;?>--> <select  id='case1' name='case'>
 <?
@@ -1371,7 +1374,8 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 	print " <option value='{$ptright_code}&nbsp;{$ptright_name}' >{$ptright_code}&nbsp;{$ptright_name}</option>";
 }
 ?>
-</select></td>
+</select>
+</td>
   </tr>
   <tr style="background-color: #FFFF99">
     <td align="right" class="fonthead">แจ้งทราบ&nbsp;</td>

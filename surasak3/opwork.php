@@ -261,7 +261,7 @@ If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
 	$toborow = strtolower(substr($_POST['case'],0,4));
 	$ptright = strtolower(substr($_POST['ptright'],0,3));
 	$checkdx = '';
-	if( $toborow == 'ex46' && $ptright == 'r07' ){
+	if( $toborow == 'ex46' ){
 		$checkdx = "sso";
 	}
 
@@ -463,7 +463,7 @@ WHERE thdatehn = '$thdatehn' AND vn ='$nVn' ";
 	$toborow = strtolower(substr($_POST['case'],0,4));
 	$ptright = strtolower(substr($_POST['ptright'],0,3));
 	$checkdx = '';
-	if( $toborow == 'ex46' && $ptright == 'r07' ){
+	if( $toborow == 'ex46' ){
 		$checkdx = ", `checkdx` = 'sso' ";
 	}
 

@@ -92,7 +92,7 @@ $dbarr=mysql_fetch_array($result);
 
 <form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
 <input type="hidden" name="date" value="<?=$dbarr["date"];?>">
-<table align="center" cellpadding="0" cellspacing="0" class="forntsarabun">
+<table align="center" cellpadding="5" cellspacing="0" class="forntsarabun">
   <tr>
     <td height="48" colspan="4" bgcolor="#CC6699"><span class="style2"><strong>ระบบแจ้ง เพิ่มแก้ไข/ปรับปรุง เพิ่มเติม โปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></span></td>
     </tr>
@@ -133,14 +133,14 @@ $dbarr=mysql_fetch_array($result);
     <td bgcolor="#FF99CC"><strong>ผู้แจ้ง</strong></td>
     <td width="160" bgcolor="#FF99CC"><input name="user" type="text" class="forntsarabun" value="<?=$dbarr['user'];?>" size="20" readonly></td>
     <td width="102" bgcolor="#FF99CC">โทรศัพท์ภายใน</td>
-    <td width="553" bgcolor="#FF99CC"><input name="phone" type="text" class="forntsarabun" value="<?=$dbarr['phone'];?>" size="20" readonly></td>
+    <td width="553" bgcolor="#FF99CC"><input name="phone" type="text" class="forntsarabun" value="<?=$dbarr['phone'];?>" size="10" readonly><span style="margin-left:10px;">วันที่แจ้ง : <?=$dbarr['date'];?></span></td>
   </tr>
   <tr>
     <td bgcolor="#FF99CC"><strong>ผู้รับผิดชอบ</strong></td>
     <td colspan="3" bgcolor="#FF99CC"><select name="programmer" class="forntsarabun" >
      <option value="0" selected>==กรุณาเลือก==</option>
     <option value="เทวิน  ศรีแก้ว" <? if($dbarr['programmer']=="เทวิน  ศรีแก้ว"){ echo "selected"; } ?>>เทวิน  ศรีแก้ว</option>
-	<option value="กฤษณะศักดิ์  กันธะรส" <? if($dbarr['programmer']=="กฤษณะศักดิ์  กันธะรส"){ echo "selected"; } ?>>กฤษณะศักดิ์  กันธะรส</option>
+	<option value="กฤษณะศักดิ์  กันธรส" <? if($dbarr['programmer']=="กฤษณะศักดิ์  กันธรส"){ echo "selected"; } ?>>กฤษณะศักดิ์  กันธรส</option>
     <option value="ชาญวิทย์  ตากาบุตร" <? if($dbarr['programmer']=="ชาญวิทย์  ตากาบุตร"){ echo "selected"; } ?>>ชาญวิทย์  ตากาบุตร</option>
     <option value="จักรพันธ์  รุ่งเรืองศรี" <? if($dbarr['programmer']=="จักรพันธ์  รุ่งเรืองศรี"){ echo "selected"; } ?>>จักรพันธ์  รุ่งเรืองศรี</option>
 	<option value="ฐานะพัฒน์  นิลคำ" <? if($dbarr['programmer']=="ฐานะพัฒน์  นิลคำ"){ echo "selected"; } ?>>ฐานะพัฒน์  นิลคำ</option>    
