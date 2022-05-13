@@ -1,8 +1,31 @@
 <?php
 include 'bootstrap.php';
+include 'includes/JSON.php';
 
 if( $_SESSION['smenucode'] !== 'ADM' AND $_SESSION['smenucode'] !== 'ADMCOM' ){ 
     echo "เฉพาะเจ้าหน้าที่ศูนย์คอม";
+    exit;
+}
+
+$page = $_GET['page'];
+if($page==='search')
+{
+    $json = new Services_JSON();
+
+    $dtId = $_GET['id'];
+    $dbi = new mysqli(HOST,USER,PASS,DB);
+    $q = $dbi->query("SELECT `row_id`,`status` FROM `inputm` WHERE `codedoctor` = '$dtId' ");
+    if($q->num_rows > 0)
+    {
+        $dt = $q->fetch_assoc();
+        $arr = array('member'=>$dt['row_id'],'status'=>$dt['status']);
+    }
+    else
+    {
+        $arr = array('member'=>0);
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $json->encode($arr);
     exit;
 }
 
@@ -94,7 +117,7 @@ if( $action === false ){
     <div>
         <h3>เพิ่มแพทย์ใหม่</h3>
     </div>
-    <form action="new_doctor.php" method="post">
+    <form action="new_doctor.php" method="post" id="adminForm">
         <table>
             <tr>
                 <td><span>ยศ/คำนำหน้าชื่อ</span> : </td>
@@ -123,15 +146,19 @@ if( $action === false ){
             </tr>
             <tr>
                 <td><span>ชื่อ</span> : </td>
-                <td><input type="text" name="name" ><span style="color:red;">*</span></td>
+                <td><input type="text" name="name" id="name"><span style="color:red;">*</span></td>
             </tr>
             <tr>
                 <td><span>สกุล</span> : </td>
-                <td><input type="text" name="surname" ><span style="color:red;">*</span></td>
+                <td><input type="text" name="surname" id="surname"><span style="color:red;">*</span></td>
             </tr>
             <tr>
                 <td><span>เลขที่ ว./ท./พท.ป/พจ.</span> : </td>
-                <td><input type="text" name="doctor_num"><span style="color:red;">* ใส่แค่ตัวเลข</span></td>
+                <td>
+                    <input type="text" name="doctor_num" id="doctor_num"><span style="color:red;">* ใส่แค่ตัวเลข</span> <button type="button" onclick="searchId()">ค้นหา</button>
+                    <br>
+                    <span id="resDt"></span>
+                </td>
             </tr>
             <tr>
                 <td><span>แผนกที่ทำงาน : </span></td>
@@ -186,8 +213,8 @@ if( $action === false ){
             <tr>
                 <td>กลุ่มแพทย์ : <span style="color:red;">*</span></td>
                 <td>
-                    <input type="radio" name="drType" id="drType1" value="dr"><label for="drType1">แพทย์ประจำ</label>
-                    <input type="radio" name="drType" id="drType2" value="intern"><label for="drType2">Intern</label>
+                    <input type="radio" name="drType" id="drType1" class="dtType" value="dr"><label for="drType1">แพทย์ประจำ</label>
+                    <input type="radio" name="drType" id="drType2" class="dtType" value="intern"><label for="drType2">Intern</label>
                 </td>
             </tr>
             <tr>
@@ -212,6 +239,85 @@ if( $action === false ){
             preName.value = preName.value+this.value;
 
         });
+
+        function searchId(){
+            var dtId = document.getElementById('doctor_num').value.replace(/^\s+|\s+$/g, '');
+            if(dtId==='')
+            {
+                alert('กรุณาใส่เลข ว. ของแพทย์');
+                return false;
+            }
+
+            var request = new XMLHttpRequest();
+            request.open('GET', 'new_doctor.php?page=search&id='+dtId, true);
+
+            request.onreadystatechange = function() {
+            if (this.readyState === 4) {
+                if (this.status >= 200 && this.status < 400) {
+                    // Success!
+                    var data = JSON.parse(this.responseText);
+                    console.log(data);
+                    if(data.member>0)
+                    {
+                        document.getElementById('resDt').innerHTML = '<span style="color:red">มีผู้ใช้งาน '+dtId+' อยู่แล้ว สถานะ: '+data.status+'</span><input type="hidden" id="checkdt" value="0">';
+                    }
+                    else
+                    {
+                        document.getElementById('resDt').innerHTML = '<span style="color:green">สามารถใช้งานได้</span><input type="hidden" id="checkdt" value="1">';
+                    }
+                } else {
+                // Error :(
+                }
+            }
+            };
+
+            request.send();
+            request = null;
+
+        }
+
+        document.getElementById('adminForm').onsubmit = function(ev){ 
+            
+
+            var errMsg = '';
+            var pre_name = document.getElementById('pre_name').value;
+            var name = document.getElementById('name').value;
+            var surname = document.getElementById('surname').value;
+            if(pre_name=='' || name=='' || surname=='')
+            {
+                errMsg += '- กรุณากรอกข้อมูลให้ครบถ้วน'+"\n";
+            }
+
+            var el = document.getElementById('checkdt');
+            if(el===null)
+            {
+                errMsg += '- กรุณาตรวจสอบเลข ว. ของแพทย์ก่อนทำการบันทึก'+"\n";
+            }
+            else if(el.value==0)
+            {
+                errMsg += '- เลข ว. มีแพทย์ท่านอื่นใช้งานแล้ว กรุณาตรวจสอบข้อมูลอีกครั้ง'+"\n";
+            }
+
+            var testCheck = false;
+            var x = document.getElementsByClassName('dtType');
+            for (var i = 0; i < x.length; i++) {
+                if(x[i].checked)
+                {
+                    testCheck = true;
+                }
+            }
+            if(testCheck===false){
+                errMsg += '- กรุณาเลือกกลุ่มแพทย์'+"\n";
+            }
+
+            if(errMsg!=='')
+            {
+                ev.preventDefault();
+                alert(errMsg);
+                return;
+            }
+
+        }
         
     </script>
     <?php
@@ -236,10 +342,10 @@ if( $action === false ){
         exit;
     }
 
-    if ( strlen($doctor_num) > 5 ) {
-        echo 'รหัสแพทย์ไม่ถูกต้อง<br><a href="javascript: window.history.back(-1);">กลับไปหน้าฟอร์ม</a>';
-        exit;
-    }
+    // if ( strlen($doctor_num) > 5 ) {
+    //     echo 'รหัสแพทย์ไม่ถูกต้อง<br><a href="javascript: window.history.back(-1);">กลับไปหน้าฟอร์ม</a>';
+    //     exit;
+    // }
 
     $db = Mysql::load();
 
@@ -279,13 +385,35 @@ if( $action === false ){
         $idname = "hd$doctor_num";
     }
 
-    $sql = "INSERT INTO `doctor` VALUES (NULL, '$pre_name', '', '$nameForDoctor', '$doctor_num', '$doctor_type', 'y', 'ADM', '$doctor_type', '1', '1', '1', '1', '1', '$room', '99', '', 'y', 'y','','$jobs');";
+    $sql = "INSERT INTO `doctor` 
+    (
+        `row_id`, `yot`, `yot2`, `name`, `doctorcode`, `position2`, 
+        `status`, `menucode`, `position`, `monday`, `tuesday`, `wednesday`, 
+        `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, 
+        `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
+    ) 
+    VALUES 
+    (
+        NULL, '$pre_name', '', '$nameForDoctor', '$doctor_num', '$doctor_type', 
+        'y', 'ADM', '$doctor_type', '1', '1', '1', 
+        '1', '1', '$room', '99', '', 'y', 
+        'y', '', '$jobs', '', ''
+    );";
     $save = $db->insert($sql);
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
     }
 
-    $sql = "INSERT INTO `inputm` VALUES (NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', '$doctor_num', '$new_md', '', '', NOW(), '$drType', '');";
+    $sql = "INSERT INTO `inputm` ( 
+        `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, 
+        `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, 
+        `report_tnb`
+    ) VALUES (
+        NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', 
+        '$doctor_num', '$new_md', '', '', NOW(), '$drType', 
+        '' 
+    );
+    ";
     $save = $db->insert($sql);
     if( $save !== true ){
 		$msg = errorMsg('save', $save['id']);
