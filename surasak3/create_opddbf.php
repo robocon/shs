@@ -12,22 +12,32 @@ background-color: #000;
 color: #FFF; 
 }
 .font1 {
-	font-family: AngsanaUPC;
-	font-size:14px;
+	font-family: TH SarabunPSK;
+	font-size:18px;
+}
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 20px;
 }
 </style>
 <div id="no_print" >
 <span class="font1">
-<font face="Angsana New" size="+2">
-<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน (อัพเดท. 29-11-59)</strong></font></span><span class="font1"><font face="Angsana New" size="+2"><strong></strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<font face="TH SarabunPSK" size="+2">
+<strong>ส่งออกข้อมูล DBF คนไข้นอกประจำวัน dataset_V25640115 (อัพเดทล่าสุด วันที่ 15-01-64)</strong></font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../../nindex.htm"><< ไปเมนู</a>
+<br />
+<hr />
 <span class="font1">
-<font face="Angsana New">
+<font face="TH SarabunPSK">
+  <?
+  $seldate=date("d");
+  $selmon=date("m");
+  ?>
 <form action="<? $_SERVER['PHP_SELF']?>" method="post">
-  <table width="563" border="0">
+  <table width="794" border="0">
     <tr>
-      <td width="33"><font face="Angsana New">วันที่ :</font></td>
-      <td width="81"><label>
-        <select name="day" id="day">
+      <td width="51"><font face="TH SarabunPSK">วันที่ :</font></td>
+      <td width="103"><label>
+        <select name="day" id="day" class="font1">
           <option value="00" selected="selected">--เลือก--</option>
           <option value="01">01</option>
           <option value="02">02</option>
@@ -62,29 +72,29 @@ color: #FFF;
           <option value="31">31</option>
         </select>
       </label></td>
-      <td width="26">เดือน :</td>
-      <td width="94"> 
-     <select name="mon">
-           <option value="01" >มกราคม</option>
-           <option value="02" >กุมภาพันธ์</option>
-           <option value="03">มีนาคม</option>
-           <option value="04">เมษายน</option>
-           <option value="05">พฤษภาคม</option>
-           <option value="06">มิถุนายน</option>
-           <option value="07">กรกฎาคม</option>
-           <option value="08">สิงหาคม</option>
-           <option value="09">กันยายน</option>
-           <option value="10">ตุลาคม</option>
-           <option value="11" selected="selected">พฤศจิกายน</option>
-           <option value="12">ธันวาคม</option>
+      <td width="56">เดือน :</td>
+      <td width="117"> 
+<select name="mon" class="font1">
+    <option value="01" <? if($selmon=="01"){ echo "selected='selected'";}?>>มกราคม</option>
+    <option value="02" <? if($selmon=="02"){ echo "selected='selected'";}?>>กุมภาพันธ์</option>
+    <option value="03" <? if($selmon=="03"){ echo "selected='selected'";}?>>มีนาคม</option>
+    <option value="04" <? if($selmon=="04"){ echo "selected='selected'";}?>>เมษายน</option>
+    <option value="05" <? if($selmon=="05"){ echo "selected='selected'";}?>>พฤษภาคม</option>
+    <option value="06" <? if($selmon=="06"){ echo "selected='selected'";}?>>มิถุนายน</option>
+    <option value="07" <? if($selmon=="07"){ echo "selected='selected'";}?>>กรกฎาคม</option>
+    <option value="08" <? if($selmon=="08"){ echo "selected='selected'";}?>>สิงหาคม</option>
+    <option value="09" <? if($selmon=="09"){ echo "selected='selected'";}?>>กันยายน</option>
+    <option value="10" <? if($selmon=="10"){ echo "selected='selected'";}?>>ตุลาคม</option>
+    <option value="11" <? if($selmon=="11"){ echo "selected='selected'";}?>>พฤศจิกายน</option>
+    <option value="12" <? if($selmon=="12"){ echo "selected='selected'";}?>>ธันวาคม</option>
        </select></td>
-      <td width="118">พ.ศ. : &nbsp;&nbsp;
+      <td width="128">พ.ศ. : &nbsp;&nbsp;
 		<?
         $Y=date("Y")+543;
         $date=date("Y")+543+5;
                       
         $dates=range(2547,$date);
-        echo "<select name='year' class='forntsarabun'>";
+        echo "<select name='year' class='font1'>";
         foreach($dates as $i){
         ?>
 <option value='<?=$i; ?>' <? if($Y==$i){ echo "selected"; }?>>
@@ -94,15 +104,15 @@ color: #FFF;
         }
         echo "<select>";
         ?>      </td>
-      <td width="32" align="right"><font face="Angsana New">สิทธิ :</font></td>
-      <td width="99"><select name="credit" id="credit">
+      <td width="62" align="right"><font face="TH SarabunPSK">สิทธิ :</font></td>
+      <td width="148"><select name="credit" id="credit" class="font1">
         <option value="000">----ทั้งหมด----</option>
         <option value="OFC">จ่ายตรง</option>
         <option value="SSS">ประกันสังคม</option>
         <option value="LGO">อปท</option>
          <option value="UCS" >UCS</option>
       </select>      </td>
-      <td width="46"><input name="BOK" value="ตกลง" type="submit" /></td>
+      <td width="95"><input name="BOK" value=" ส่งออกข้อมูล " type="submit" class="font1" /></td>
     </tr>
   </table>
 </form>
@@ -203,7 +213,7 @@ if($_POST['credit']	=="000"){
 		$sqlop1 ="select hn, txdate from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' group by substring(date,1,10), hn";
 }	
 //echo 	$sqlop1 ;
-		//echo "test-->".$sqlop3."<br>";
+		//echo "test-->".$sqlop1."<br>";
    		$resultop1 = mysql_query($sqlop1) or die("Query failed3");
 		while($rowsop1 = mysql_fetch_array($resultop1)){
 			$hnop=$rowsop1["hn"];	
@@ -211,7 +221,8 @@ if($_POST['credit']	=="000"){
 			$datetime=$rowsop1["txdate"];
 			$dateopacc = substr($datetime,0,10);	
 	
-		$sql1 ="select * from opday where hn ='".$hnop."' and thidate like '$dateopacc%'";   //  Query เอาข้อมูลจากตาราง opday
+		$sql1 ="select row_id,thidate,hn,an,vn,ptright from opday where hn ='".$hnop."' and thidate like '$dateopacc%'";   //  Query เอาข้อมูลจากตาราง opday
+		//echo "test-->".$sql1."<br>";
 		$result1 = mysql_query($sql1) or die("Query failed1");
    		$rows1 = mysql_fetch_array($result1);
 		$hcode1 ="11512";
@@ -622,46 +633,58 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 	if (!dbase_create($dbname5, $def5)) {
 	  echo "Error, can't create the database\n";
 	}	
-		$sql5 ="select * from diag  where svdate like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'";
+
+		$txdate = $_POST['year']."-".$_POST['mon']."-".$_POST['day'];
+		$sql5 ="select txdate,hn from opacc where txdate = '$txdate%' and credit='$newcredit' group by hn";
+		
 		$result5 = mysql_query($sql5) or die("Query failed5");
    		while($rows5 = mysql_fetch_array($result5)){
-		$doctor_name=$rows5["office"];
 		$hn5=$rows5["hn"];   //  HN ใช้ตัวแปรนี้นำเข้าข้อมูล
 		
 		
 		//DATEDX
-		$datedx5=$rows5["svdate"];
+		$datedx5=$rows5["txdate"];
 		$date5 = substr($datedx5,0,10);
 		$date =explode("-",$date5);
 		$newdate=$date[0]-543;
 		$newdatedx =$newdate.$date[1].$date[2];  //  DATEDX ใช้ตัวแปรนี้นำเข้าข้อมูล
 				
-		$diag5=$rows5["icd10"];  //  DIAG ใช้ตัวแปรนี้นำเข้าข้อมูล
+				
+		$sql51="select icd10,type from diag where hn='$hn5' and svdate LILE '$date5%'"		
+		echo $sql51."<br>";
+		$result51 = mysql_query($sql51) or die("Query failed51");
+		while($rows51=mysql_fetch_array($result51)){
+			$diag5=$rows51["icd10"];  //  DIAG ใช้ตัวแปรนี้นำเข้าข้อมูล
 		
-		//------------------กำหนดตัวแปรของ ชนิดของโรค
-		$dxtype5=$rows5["type"];
-		if($dxtype5=="PRINCIPLE"){		
-			$dxtype ="1";
-		}else if(dxtype5=="CO-MORBIDITY"){
-			$dxtype ="2";
-		}else if(dxtype5=="COMPLICATION"){
-			$dxtype ="3";
-		}else if(dxtype5=="OTHER"){
-			$dxtype ="4";
-		}else if(dxtype5=="EXTERNAL CAUSE"){
-			$dxtype ="5";
-		}else{
-			$dxtype ="2";
-		}
+			//------------------กำหนดตัวแปรของ ชนิดของโรค
+			$dxtype5=$rows51["type"];
+			if($dxtype5=="PRINCIPLE"){		
+				$dxtype ="1";
+			}else if($dxtype5=="CO-MORBIDITY"){
+				$dxtype ="2";
+			}else if($dxtype5=="COMPLICATION"){
+				$dxtype ="3";
+			}else if($dxtype5=="OTHER"){
+				$dxtype ="4";
+			}else if($dxtype5=="EXTERNAL CAUSE"){
+				$dxtype ="5";
+			}else{
+				$dxtype ="2";
+			}
 
 
-//---------------------ใช้ข้อมูลจากตาราง opday---------------------//
+		//---------------------ใช้ข้อมูลจากตาราง opday---------------------//
 		$sqlop ="select * from opday where hn ='".$hn5."' and thidate like '$date5%'";   //  Query เอาข้อมูลจากตาราง opday
+		echo $sqlop."<br>";
 		$resultop = mysql_query($sqlop) or die("Query opday failed");
    		$rowsop = mysql_fetch_array($resultop);
 			$hn=$rowsop["hn"]; 
 			$personid=$rowsop["idcard"];  //  PERSON_ID ใช้ตัวแปรนี้นำเข้าข้อมูล
-			
+			$doctor_name=$rowsop["doctor"];
+			if($diag5==""){
+				$diag5=$rowsop["icd10"];
+				$dxtype ="1";
+			}
 				
 				//---------------------หารหัสและชื่อหมอ-------------------------//
 				$sqldoc ="select doctorcode from doctor where  name like  '%$doctor_name%' ";   //  Query เอาข้อมูลจากตาราง doctor
@@ -682,9 +705,14 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 			$clinic3=$rowsop["clinic"];
 			$clinic1=0;
 			$clinic2=1;
-			$clinic=substr($clinic3,0,2);
+			
+			$seldr = "select code from clinic where detail ='$clinic3' ";
+			$rowdr = mysql_query($seldr);
+			list($clinic) = mysql_fetch_array($rowdr);			
+			
 			if($clinic==''){$clinic="00";} ;
-			$newclinic=$clinic1.$clinic.$clinic2;  //  CLINIC ใช้ตัวแปรนี้นำเข้าข้อมูล					
+			$newclinic=$clinic1.$clinic.$clinic2;  //  CLINIC ใช้ตัวแปรนี้นำเข้าข้อมูล			
+			//echo $newclinic."<br>";		
 			
 			//SEQ
 			$rowidop=$rowsop["row_id"];
@@ -703,7 +731,7 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 			
 			//DRDX
 
-	$db5 = dbase_open($dbname5, 2);
+		$db5 = dbase_open($dbname5, 2);
 		if ($db5) {
 			  dbase_add_record($db5, array(
 				  $hn5, 
@@ -716,6 +744,7 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 				  $newseq));   
 					dbase_close($db5);
 				}  //if db
+			} //while 51
 		}  //while
 //--------------------End DataSet5-------------------------//
 
@@ -1054,63 +1083,49 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 			$chrgitem =$rows12["depart"];
 			
 			
-			
+			$amountopacc = 0;
 			
 			
 		
-			if($chrgitem=="OTHER"){
+		if($chrgitem=="OTHER" || $chrgitem=="EMER" || $chrgitem=="WARD"){
 			
-				$sql121 ="select sum(paidcscd ) as sumcscd from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='OTHER' and an=' ' and  hn='$hnopacc' ";
-				$result121 = mysql_query($sql121) or die("Query failed121");
-				list($paidcscd1) = Mysql_fetch_row($result121);
+			$sql121 ="select sum(paidcscd ) as sumcscd from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='OTHER' and an=' ' and  hn='$hnopacc' ";
+			
+		//	echo $sql121;
+		$result121 = mysql_query($sql121) or die("Query failed121");
+		list($paidcscd1) = Mysql_fetch_row($result121);
+		
 	
-				$amountopacc=$paidcscd1;
-	
-				$date12=$rows12["txdate"];
-				$datetimech=$date12;
-				$datech = substr($datetimech,0,10);
-				$datecha =explode("-",$datech);
-				$newdatech=$datecha[0]-543;
-				$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
-	
-				$chrgitem12 ="C1";
-				
-			}elseif($chrgitem=="EMER"){
-	
-				$sql122 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and depart='EMER' and  hn='$hnopacc' and an=' '";
-	
-				$result122 = mysql_query($sql122) or die("Query failed122");
-				list($paidcscd2) = Mysql_fetch_row($result122);
-	
-				$amountopacc=$paidcscd2;
-	
-				$date12=$rows12["txdate"];
-				$datetimech=$date12;
-				$datech = substr($datetimech,0,10);
-				$datecha =explode("-",$datech);
-				$newdatech=$datecha[0]-543;
-				$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
-	
-				$chrgitem12 ="C1";
-	
-			}elseif($chrgitem=="WARD"){
-	
-				$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='WARD' and  hn='$hnopacc' and an=' '";
-				$result123 = mysql_query($sql123) or die("Query failed123");
-				list($paidcscd3) = Mysql_fetch_row($result123);
-	
-				$amountopacc=$paidcscd3;
-	
-				$date12=$rows12["txdate"];
-				$datetimech=$date12;
-				$datech = substr($datetimech,0,10);
-				$datecha =explode("-",$datech);
-				$newdatech=$datecha[0]-543;
-				$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
-	
-				$chrgitem12 ="C1";
-	
-			}
+		
+					$sql122 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and depart='EMER' and  hn='$hnopacc' and an=' '";
+					
+					//echo $sql121;
+		$result122 = mysql_query($sql122) or die("Query failed122");
+		list($paidcscd2) = Mysql_fetch_row($result122);
+		
+							$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='WARD' and  hn='$hnopacc' and an=' '";
+							
+							//echo $sql123;
+		$result123 = mysql_query($sql123) or die("Query failed123");
+		list($paidcscd3) = Mysql_fetch_row($result123);
+			
+		//	echo $paidcscd1;	echo $paidcscd2;	echo $paidcscd3 ;	
+			
+			$amountopacc=$paidcscd1+$paidcscd2+$paidcscd3;
+			
+			$date12=$rows12["txdate"];
+			$datetimech=$date12;
+			$datech = substr($datetimech,0,10);
+			$datecha =explode("-",$datech);
+			$newdatech=$datecha[0]-543;
+			$newdatecha =$newdatech.$datecha[1].$datecha[2];  //  DATE ใช้ตัวแปรนี้นำเข้าข้อมูล
+			
+			$chrgitem12 ="C1";
+			
+			
+			
+			
+		}
 			
 			elseif($chrgitem=="PHAR"){
 				
@@ -1133,7 +1148,7 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 				
 			}elseif($chrgitem=="PATHO"){
 				
-								$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='PATHO' and  hn='$hnopacc' ";
+				$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='PATHO' and  hn='$hnopacc' ";
 		$result123 = mysql_query($sql123) or die("Query failed123");
 		list($amountopacc) = Mysql_fetch_row($result123);
 				
@@ -1335,7 +1350,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 	  array("AN","C",15),
 	  array("DATEOPD","D"),	  
 	  array("TYPE","C",2), 
-	  array("CODE","C",11),	 
+	  array("CODE","C",20),	 
 	  array("QTY","N",4,0),
 	  array("RATE","N",12,2),
 	  array("SEQ","C",15),
@@ -1356,7 +1371,7 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 
 
 		//--------------------------------- ค่าใช้จ่ายผู้ป่วยนอก	---------------------------------//	
-		$sql14 ="select * from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and (depart ='DENTA' OR depart='NID')";
+		$sql14 ="select * from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and (depart ='DENTA' OR depart='NID' OR depart='PATHO' OR depart='XRAY' OR  depart='SURG' OR  depart='EMER' OR  depart='OTHER')";
 		$result14 = mysql_query($sql14) or die("Query ADP Failed Line 1346");
 		//echo $sql14."<br>";
 		
@@ -1364,7 +1379,6 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 			$hn14=$rows14["hn"];  //  HN ใช้ตัวแปรนี้นำเข้าข้อมูล
 			$an14=$rows14["an"]; //  AN ใช้ตัวแปรนี้นำเข้าข้อมูล
 			$depart =$rows14["depart"];
-			$qty="1";
 			
 			$subdate = substr($rows14["txdate"],0,10);
 			list($yy14,$mm14,$dd14) =explode("-",$subdate);
@@ -1385,39 +1399,77 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 			$newdate="$yy14$mm14$dd14";
 			$newseq=$newdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล					
 			
-			if($depart=="DENTA"){  //ค่าบริการทันตกรรม
-				$type="12";
-			}else if($depart=="NID"){  //ค่าบริการฝังเข็ม
-				$type="13";
-			}
+
 			
-			$sqladp="select code, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart'";
+			$sqladp="select code, sum(amount) as qty, sum(price) as rate, sum(yprice) as total, sum(nprice) as totcopay,depart,part,detail from  patdata  where date like '".$subdate."%' and hn='".$hn14."' and depart='$depart' group by code";
 			//echo $sqladp."<br>";
 			$queryadp=mysql_query($sqladp);
-			list($code,$rate,$total, $totcopay)=mysql_fetch_array($queryadp);
+			while(list($code14, $qty14, $rate14, $total14, $totcopay14,$depart14,$part14,$detail14)=mysql_fetch_array($queryadp)){
+			
+
+			if($depart14=="DENTA"){  //ค่าบริการทันตกรรม
+				$type="12";
+			}else if($depart14=="NID"){  //ค่าบริการฝังเข็ม
+				$type="13";
+			}else if($depart14=="PATHO"){
+				if($part14=="BLOOD"){
+					$type="14";
+				}else if($part14=="LAB"){
+					$type="15";
+				}
+			}else if($depart14=="XRAY"){
+				$type="16";
+			}else if($depart14=="SURG" || $depart14=="EMER" ){  //ค่าบริการทางการพยาบาล
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="SURG"){
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="NCARE"){
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="SINV"){
+				$type="17";
+			}else if($depart14=="OTHER" && $part14=="OTHER"){
+				$type="17";
+			}else{
+				$type="3";
+			}
 			
 			
-			$db14 = dbase_open($dbname14, 2);
-				if ($db14) {
-					dbase_add_record($db14, array(
-						$hn14,
-						$an14,
-						$dateopd,  //วันที่รับบริการ
-						$type,  // ประเภท หมวดหมู่
-						$code,  //รหัสตาม สปสช.
-						$qty,  //หน่วยนับ เป็นจำนวนครั้งหรือจำนวนเม็ด
-						$rate,  //ราคารวม
-						$newseq,  //รหัสการบริการที่กำหนดโดยโปรแกรมต้องไม่ซ้ำกัน
-						$cagcode, 	
-						$dose, 																															
-						$catype,
-						$serialno,
-						$totcopay,  //ราคาเบิกไม่ได้
-						$use_status,
-						$total, //ราคาเบิกได้
-						$QTYDAY));     
-					dbase_close($db14);
-				}  //if db
+				if($code14=="INJ"){
+					$codex="55823";	
+				}else if($code14=="SERVICE"){
+					$codex="55020";		
+				}else if($code14=="AgCG3" && $newcredit=="30บาท"){
+					$codex="AgCG3";
+				}else{
+					$chklabcare="select codex from labcare where code='$code14'";
+					$querylabcare=mysql_query($chklabcare);
+					list($codex)=mysql_fetch_array($querylabcare);					
+				}
+			
+						
+								
+				$db14 = dbase_open($dbname14, 2);
+					if ($db14) {
+						dbase_add_record($db14, array(
+							$hn14,
+							$an14,
+							$dateopd,  //วันที่รับบริการ
+							$type,  // ประเภท หมวดหมู่
+							$codex,  //รหัสตาม สปสช.
+							$qty14,  //หน่วยนับ เป็นจำนวนครั้งหรือจำนวนเม็ด
+							$rate14,  //ราคารวม
+							$newseq,  //รหัสการบริการที่กำหนดโดยโปรแกรมต้องไม่ซ้ำกัน
+							$cagcode, 	
+							$dose, 																															
+							$catype,
+							$serialno,
+							$totcopay14,  //ราคาเบิกไม่ได้
+							$use_status,
+							$total14, //ราคาเบิกได้
+							$QTYDAY));     
+						dbase_close($db14);
+					}  //if db
+				}  //close while
 		}
 //---------------End Dataset14---------------//
 
@@ -1475,26 +1527,26 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 	  echo "Error, can't create the database16\n";
 	}
 	
-		$sql161 ="select * from  drugrx  where date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and  (an is null or an = '')  group by hn";
+	$sql161 ="select * from  drugrx  where date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%' and  (an is null or an = '')  group by hn";
 		
 		
 		
 		
-		//echo $sql161;
-		$result161 = mysql_query($sql161) or die("Query failed16");
-		$num161= mysql_num_rows($result161);
-   		while($rows161 = mysql_fetch_array($result161)){	
+	//echo $sql161;
+	$result161 = mysql_query($sql161) or die("Query failed16");
+	$num161= mysql_num_rows($result161);
+	while($rows161 = mysql_fetch_array($result161)){	
 		$chkhn = $rows161["hn"];
 		$chkdate = substr($rows161["date"],0,10);		
-		
-$newreason='';
+			
+		$newreason='';
 		//$sql16 ="select *,sum(amount) as sumamount from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' or part != 'DSN' or part != 'DPN') and drugcode !='5VIAT ' group by drugcode";
-		$sql16 ="select *,sum(amount) as sumamount from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' or part != 'DSN' or part != 'DPN') group by drugcode";
+		$sql16 ="select *,sum(amount) as sumamount,sum(price) as sumprice from  drugrx  where hn='$chkhn' and date like '$chkdate%'  and (an is null or an = '') and (part != 'DSY' and part != 'DSN' and part != 'DPN') group by drugcode";
 		//echo $sql16."<br>";
-		
+			
 		$result16 = mysql_query($sql16) or die("Query failed16");
 		$num16= mysql_num_rows($result16);
-   		while($rows16 = mysql_fetch_array($result16)){	
+		while($rows16 = mysql_fetch_array($result16)){	
 			$hcode16 ="11512";
 			$hn16=$rows16["hn"];  //  HN ใช้ตัวแปรนี้นำเข้าข้อมูล	
 			$an16=$rows16["an"]; //  AN ใช้ตัวแปรนี้นำเข้าข้อมูล
@@ -1508,6 +1560,8 @@ $newreason='';
 			$amount16=$rows16["sumamount"];  //  AMOUNT ใช้ตัวแปรนี้นำเข้าข้อมูล
 			$price=$rows16["price"]; 
 			$amount=$rows16["amount"]; 
+			// $sumprice = ( $price * $amount16 );
+			$sumprice = $rows16["sumprice"];
 			$saleprice = $price/$amount;   //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
 			
 			
@@ -1516,33 +1570,33 @@ $newreason='';
 			$datedrug =explode("-",$datedrg);
 			$newdatedrug=$datedrug[0]-543;
 			$newdateserv =$newdatedrug.$datedrug[1].$datedrug[2];  		  //  DATE_SERV ใช้ตัวแปรนี้นำเข้าข้อมูล						
-			
+				
 			// ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF
 			$reason16=$rows16["reason"]; 
 			$reason=substr($reason16,0,1);
 			$reasondefault ="00";
-			
+				
 
-//---------------------ใช้ข้อมูลยาจากตาราง druglst---------------------//					
+	//---------------------ใช้ข้อมูลยาจากตาราง druglst---------------------//					
 			$sqldrx= "SELECT * FROM  druglst WHERE drugcode ='".$drugcode16."' ";
 			$resultdrx = mysql_query($sqldrx) or die("Query druglst failed");
 			$rowsdrx=mysql_fetch_array($resultdrx);
-				$code24=$rowsdrx["code24"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
-				//$saleprice=$rowsdrx["salepri"];    //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
-				$unitprice=$rowsdrx["unitpri"];    //  DRUGCOST(ราคาทุน) ใช้ตัวแปรนี้นำเข้าข้อมูล
-				$unit=$rowsdrx["unit"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
-				$packing=$rowsdrx["packing"];    //  UNIT_PACK ใช้ตัวแปรนี้นำเข้าข้อมูล
-						
-	
-				// หา drugtype=2 ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF, PA
-				
+			$code24=$rowsdrx["code24"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
+			//$saleprice=$rowsdrx["salepri"];    //  DRUGPRICE(ราคาขาย) ใช้ตัวแปรนี้นำเข้าข้อมูล
+			$unitprice=$rowsdrx["unitpri"];    //  DRUGCOST(ราคาทุน) ใช้ตัวแปรนี้นำเข้าข้อมูล
+			$unit=$rowsdrx["unit"];    //  DIDSTD ใช้ตัวแปรนี้นำเข้าข้อมูล
+			$packing=$rowsdrx["packing"];    //  UNIT_PACK ใช้ตัวแปรนี้นำเข้าข้อมูล
+							
+		
+			// หา drugtype=2 ระบุรหัสเหตุผล EA, EB, EC, ED, EE, EF, PA
+					
 
-//---------------------ใช้ข้อมูลการรับบริการจากตาราง opday---------------------//					
-		$sqlop ="select * from opday where hn ='".$hn16."' and thidate like '$datedrg%'";   //  Query เอาข้อมูลจากตาราง opday
-		$resultop = mysql_query($sqlop) or die("Query opday failed");
-   		$rowsop = mysql_fetch_array($resultop);	
+	//---------------------ใช้ข้อมูลการรับบริการจากตาราง opday---------------------//					
+			$sqlop ="select * from opday where hn ='".$hn16."' and thidate like '$datedrg%'";   //  Query เอาข้อมูลจากตาราง opday
+			$resultop = mysql_query($sqlop) or die("Query opday failed");
+			$rowsop = mysql_fetch_array($resultop);	
 			$personid=$rowsop["idcard"]; //  PERSON_ID ใช้ตัวแปรนี้นำเข้าข้อมูล	
-			
+				
 			//CLINIC
 			$clinic3=$rowsop["clinic"];
 			$clinic1=0;
@@ -1571,36 +1625,43 @@ $newreason='';
 			if(($reason =="A" || $reason =="B" || $reason =="C" || $reason =="D" || $reason =="E" || $reason =="F") && $reason !=" "){
 			$newreason ="E".$reason;} else {$newreason =='';};
 			
+			$totcopay16 = 0;
+			$total = 0;
+			if( $rows16['part'] == 'DDN' ){
+				$totcopay16 = $rows16['price'];
+			}else{
+				$total = $sumprice;
+			}
 			
 			$db16 = dbase_open($dbname16, 2);
-				if ($db16) {
-					dbase_add_record($db16, array(
-						$hcode16, 
-						$hn16, 
-						$an16, 
-						$newclinic,
-						$personid, 
-						$newdateserv,
-						$drugcode16,  // drugcode
-						$drugname16, 
-						$amount16, 
-						$saleprice,
-						$unitprice, 
-						$code24, 	
-						$unit, 	
-						$packing, 	
-						$newseq, 	
-						$newreason, 																																		  				  
-						$pano,
-						$totcopay,  //เพิ่มใหม่
-						$use_status,
-						$total  //เพิ่มใหม่
-						));     
-						dbase_close($db16);
-					}  //if db		
-			
+			if ($db16) {
+				dbase_add_record($db16, array(
+					$hcode16, 
+					$hn16, 
+					$an16, 
+					$newclinic,
+					$personid, 
+					$newdateserv,
+					$drugcode16,  // drugcode
+					$drugname16, 
+					$amount16, 
+					$saleprice,
+					$unitprice, 
+					$code24, 	
+					$unit, 	
+					$packing, 	
+					$newseq, 	
+					$newreason, 																																		  				  
+					$pano,
+					$totcopay16,  //เพิ่มใหม่ เบิกไม่ได้
+					$use_status,
+					$total  //เพิ่มใหม่ เบิกได้
+					));     
+					dbase_close($db16);
+				}  //if db		
+				
+		}  // while
 	}  // while
-}  // while
 	//---------------End Dataset16---------------//
 	
 	
