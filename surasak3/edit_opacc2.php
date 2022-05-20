@@ -38,12 +38,14 @@ if ($_REQUEST['hn']) {
         <tr>
             <td>row_id</td>
             <td>date</td>
+            <td>txdate</td>
             <td>depart</td>
             <td>detail</td>
             <td>credit</td>
             <td>ptright</td>
             <td>billno</td>
             <td>vn</td>
+            <td>price</td>
             <td>paidcscd</td>
             <td></td>
         </tr>
@@ -54,14 +56,33 @@ if ($_REQUEST['hn']) {
         $txdate = $item['txdate'];
         ?>
         <tr>
-            <td><a href="edit_opacc3.php?date=<?=$txdate;?>&hn=<?=$hn;?>" target="depart"><?=$item['row_id'];?></a></td>
+            <td>
+                <?php 
+                if($item['depart']==='PHAR')
+                {
+                    $phar_date = substr($txdate, 0, 10);
+                    ?>
+                    <a href="editPharOpacc.php?date=<?=$phar_date;?>&hn=<?=$hn;?>" target="_blank"><?=$item['row_id'];?></a>
+                    <?php
+                }
+                else
+                {
+                    ?>
+                    <a href="edit_opacc3.php?date=<?=$txdate;?>&hn=<?=$hn;?>" target="depart"><?=$item['row_id'];?></a>
+                    <?php
+                }
+                ?>
+                
+            </td>
             <td><?=$item['date'];?></td>
+            <td><?=$item['txdate'];?></td>
             <td><?=$item['depart'];?></td>
             <td><?=$item['detail'];?></td>
             <td><?=$item['credit'];?></td>
             <td><?=$item['ptright'];?></td>
             <td><?=$item['billno'];?></td>
             <td><?=$item['vn'];?></td>
+            <td><?=$item['price'];?></td>
             <td><?=$item['paidcscd'];?></td>
             <td><a href="edit_opacc5.php?type=opacc&id=<?=$item['row_id'];?>" target="edit">edit</a></td>
         </tr>

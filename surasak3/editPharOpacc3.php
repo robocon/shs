@@ -87,7 +87,7 @@ if($q->num_rows===0)
             while ($a = $q->fetch_assoc()) { 
                 ?>
                 <tr>
-                    <td><a href="javascript:void(0);"><?=$a['row_id'];?></a></td>
+                    <td><?=$a['row_id'];?></td>
                     <td><?=$a['date'];?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['drugcode'];?></td>

@@ -56,6 +56,7 @@ if($type === 'patdata' && $action === 'save'){
     
     $id = $_POST['id'];
     $date = $_POST['date'];
+    $txdate = $_POST['txdate'];
     $price = $_POST['price'];
     $paid = $_POST['paid'];
     $paidcscd = $_POST['paidcscd'];
@@ -65,7 +66,7 @@ if($type === 'patdata' && $action === 'save'){
     $credit_detail = $_POST['credit_detail'];
     
     $sql = "UPDATE `opacc` SET 
-    `date`='$date',`price`='$price', `paid`='$paid', `paidcscd`='$paidcscd' , 
+    `date`='$date',`txdate`='$txdate',`price`='$price', `paid`='$paid', `paidcscd`='$paidcscd' , 
     `depart`='$depart', `detail`='$detail', `credit`='$credit', `credit_detail`='$credit_detail' 
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
@@ -183,6 +184,9 @@ if ($type === 'patdata') {
         </div>
         <div>
             date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
+        </div>
+        <div>
+            txdate <input type="text" name="txdate" id="txdate" value="<?=$item['txdate'];?>">
         </div>
         <div>
             depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
