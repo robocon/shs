@@ -98,7 +98,7 @@ if ($type === 'patdata') {
             date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
         </div>
         <div>
-            code <input type="text" name="code" id="code" value="<?=$item['code'];?>">
+            code <input type="text" name="code" id="code" value="<?=$item['code'];?>"> <button type="button" onclick="searchLab()">Search</button>
         </div>
         <div>
             detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
@@ -125,6 +125,34 @@ if ($type === 'patdata') {
         <input type="hidden" name="id" value="<?=$item['row_id'];?>">
         <input type="hidden" name="action" value="save">
     </form>
+    <script>
+        function searchLab(){
+            var lc = document.getElementById('code').value;
+
+            var myWindow = window.open("edit_opacc_lab.php?action=searchLab&code="+lc, "myWindow", "width=600,height=200");
+
+            /*
+            var request = new XMLHttpRequest();
+            request.open('GET', 'edit_opacc5.php?action=searchLab&code='+lc, true);
+
+            request.onreadystatechange = function() {
+            if (this.readyState === 4) {
+                if (this.status >= 200 && this.status < 400) {
+                    // Success!
+                    var data = JSON.parse(this.responseText);
+
+                } else {
+                    // Error :(
+                }
+            }
+            };
+
+            request.send();
+            request = null;
+            */
+
+        }
+    </script>
     <?php
 }elseif ($type === 'depart') {
 
