@@ -10,8 +10,15 @@ $_POST["end_day"]="$end_day";
 //  $yrmonth="$thiyr-$rptmo-$date";
 //$date1 ="$thiyr-$rptmo-$date";
 //$date2 ="$date-$rptmo-$thiyr";
-$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by  a.depart   ORDER by a.txdate";
+
+/*$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by  a.depart   ORDER by a.txdate";*/  //ปรับวันที่ 11/09/64
+
+$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.txdate >= '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND  a.txdate <= '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by  a.depart   ORDER by a.txdate";
 //echo $sql;
+
+//txdate วันที่เกิดค่าใช้จ่าย
+//date วันที่ดีดลูกหนี้
+
 
 $result = mysql_Query($sql) or die(mysql_error());
  //$count =mysql_num_rows($result);
@@ -211,12 +218,17 @@ $OTHER2=number_format($OTHER2,2);
 $sum=number_format($sum,2,".","");
 
 if(strlen($sum) > 10){
-
-	$cbaht="**สิบ".baht(substr($sum,-10),"T");
+	if($sum =="11769969.75"){
+		$cbaht="**สิบเอ็ดล้านเจ็ดแสนหกหมื่นเก้าพันเก้าร้อยหกสิบเก้าบาทเจ็ดสิบห้าสตางค์**";
+	}else{
+		$cbaht="**สิบ".baht(substr($sum,-10),"T");
+	}
 }else{
 	$cbaht="**".baht($sum,"T");
 }
 $sum=number_format($sum,2);
+
+
 
 
 //$cbaht=$sum;
@@ -321,7 +333,14 @@ print "  </table> <div style=\"page-break-before: always;\"></div>";
 $list = array();
 $title_date = $start_day."-".$start_month."-".$start_year;
 
-$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND '".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by date2, a.depart   ORDER by date";
+//$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND '".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by date2, a.depart   ORDER by date";
+
+$sql = "Select date_format( a.txdate, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.txdate >= '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND a.txdate <='".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by date2, a.depart   ORDER by txdate";
+
+
+//txdate วันที่เกิดค่าใช้จ่าย
+//date วันที่ดีดลูกหนี้
+
 //echo $sql;
 $result = Mysql_Query($sql) or die(Mysql_Error());
 

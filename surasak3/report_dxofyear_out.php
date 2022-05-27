@@ -47,12 +47,12 @@ if(isset($_POST['hn'])){
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
 	if($num==0){
-		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
+		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' AND (camp not like '%E_CERT%') order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}else{
 		$numn = mysql_fetch_array($row);
-		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' order by thidate desc";
+		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' AND (camp not like '%E_CERT%') order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}	

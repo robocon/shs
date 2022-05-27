@@ -37,6 +37,7 @@ a:active {
 	<select size="1" name="typeprice" class="txt">
     <option value="all" selected>---------------------เลือก---------------------</option>
 	<option value="1000">ค่ารักษาพยาบาลแบบเหมาจ่าย 1000 บาท</option>
+	<option value="600">ค่ารักษาพยาบาลแบบเหมาจ่าย 600 บาท</option>
     <option value="300">ค่าติดตามอาการหลัง 48 ชั่วโมง 300 บาท</option>
 	</select> </p>
 	<strong>ระหว่างวันที่ : </strong>
@@ -140,7 +141,9 @@ $chkdate2=$_POST["year2"]."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
 
 //$sql="select * from opday where (thidate >= '$chkdate1' and thidate <='$chkdate2') and opdtype='SI' order by thidate asc";
 if($_POST["typeprice"]=="1000"){
-	$sql="SELECT date, hn, ptname, code, detail, sum(amount) as amount,sum(price) as price,idno from patdata where (date >= '$chkdate1' and date <='$chkdate2') and (code='COVR22' || code='9902') and amount >0 and price >0 group by idno order by date,hn,code asc";
+	$sql="SELECT date, hn, ptname, code, detail, sum(amount) as amount,sum(price) as price,idno from patdata where (date >= '$chkdate1' and date <='$chkdate2') and (code='COVR22' || code='9902') and price=1000 and amount >0 and price >0 group by idno order by date,hn,code asc";
+}else if($_POST["typeprice"]=="600"){
+	$sql="SELECT date, hn, ptname, code, detail, sum(amount) as amount,sum(price) as price,idno from patdata where (date >= '$chkdate1' and date <='$chkdate2') and (code='COVR22' || code='9902') and price=600 and amount >0 and price >0 group by idno order by date,hn,code asc";
 }else if($_POST["typeprice"]=="300"){
 	$sql="SELECT date, hn, ptname, code, detail, sum(amount) as amount,sum(price) as price,idno from patdata where (date >= '$chkdate1' and date <='$chkdate2') and (code='COVR23' || code='55080') and amount >0 and price >0 group by idno order by date,hn,code asc";
 }else{

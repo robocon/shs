@@ -174,7 +174,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 
 
     $query = "SELECT * FROM opcard WHERE hn = '$cHn' limit 0,1";
-    $result = mysql_query($query)or die("Query failed");
+    $result = mysql_query($query)or die("Query failed".mysql_error());
  
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {

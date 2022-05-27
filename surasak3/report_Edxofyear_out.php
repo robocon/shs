@@ -1,6 +1,15 @@
-<?
+<? //echo "ไม่อยู่ในช่วงเวลาทดสอบ";exit();
 session_start();
 include("connect.inc");
+
+$officer = $_SESSION["sOfficer"];
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+exit();
+}//end if
+
 ?>
 <style type="text/css">
 hr{
@@ -47,26 +56,28 @@ if(isset($_POST['hn'])){
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
 	if($num==0){
-		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
+		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' AND (camp like '%E_CERT%') order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}else{
 		$numn = mysql_fetch_array($row);
-		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' order by thidate desc";
+		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' AND (camp like '%E_CERT%') order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}	
 	if($num>0){
 	?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_Edxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="485" border="1" cellpadding="0" cellspacing="0"><tr>
+<table  border="1" cellpadding="0" cellspacing="0"><tr>
     <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
     <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
     <td width="37" align="center"><span class="tet">ปี</span></td>
-    <td width="37" align="center">&nbsp;</td>
+    <td width="400" align="center">&nbsp;</td>
+	<td width="400" align="center">&nbsp;</td>
+	<td width="400" align="center">&nbsp;</td>
     <td width="53" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>    
+    <!--td width="46" align="center">&nbsp;</td-->
+    <!--td width="46" align="center">&nbsp;</td-->    
     </tr>
     <?
 		$i=0;
@@ -88,8 +99,41 @@ if(isset($_POST['hn'])){
 		  <td align="center"><span class="tet">
 		    <?=$result["yearcheck"]?>
 		  </span></td>
-		  <td align="center"><span class="tet"><a href="report_Edxofyear_out.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_Edxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
+	
+<?
+		if($result["camp"] == "ใบรับรองแพทย์ 5 โรค (E_CERT-001)"){
+
+			echo '
+			<td align="center"><span class="tet"><a href="Checkup_Medical_Cert.php?hn='.$_POST['hn'].'&rowid='.$result["row_id"].'&vn='.$result["vn"].'&type=A" target="_blank">ใบรับรองแพทย์ 5 โรค</a> <br>เลขที่เอกสาร : A'.$result["row_id"].'-'.$result["vn"].'</span></td>
+			';
+
+			echo '<td></td>';
+
+			echo '
+			<td align="center"><span class="tet"><a href="Checkup_Medical_Cert_WithLab.php?hn='.$_POST['hn'].'&rowid='.$result["row_id"].'&vn='.$result["vn"].'&type=C" target="_blank">ใบรับรองแพทย์ + ผล LAB</a> <br>เลขที่เอกสาร : C'.$result["row_id"].'-'.$result["vn"].'</span></td>
+			';
+
+			 
+
+		}else if($result["camp"] == "ใบรับรองแพทย์ สำหรับใบอนุญาตขับรถ (E_CERT-002)"){
+
+			echo '<td></td>';
+			echo '
+			<td align="center"><span class="tet"><a href="Checkup_Medical_Cert_Drive.php?hn='.$_POST['hn'].'&rowid='.$result["row_id"].'&vn='.$result["vn"].'&type=B" target="_blank">ใบรับรองแพทย์ สำหรับใบอนุญาตขับรถ</a> <br>เลขที่เอกสาร : B'.$result["row_id"].'-'.$result["vn"].'</span></td>
+			';
+			echo '<td></td>';   
+
+		}else{
+
+		}//end if
+
+?>
+
+
+		  <!--td align="center"><span class="tet"><a href="Checkup_Medical_Cert.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=A" target="_blank">ใบรับรองแพทย์ 5 โรค</a> <br>เลขที่เอกสาร : A<?=$result["row_id"]?>-<?=$result["vn"]?></span></td-->
+          <!--td align="center"><span class="tet"><a href="Checkup_Medical_Cert_Drive.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=B" target="_blank">ใบรับรองแพทย์ (สำหรับขับรถ)</a> <br>เลขที่เอกสาร : B<?=$result["row_id"]?>-<?=$result["vn"]?></span></td-->
+          <!--td align="center"><span class="tet"><a href="Checkup_Medical_Cert_WithLab.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=C" target="_blank">ใบรับรองแพทย์ + ผล LAB</a> <br>เลขที่เอกสาร : C<?=$result["row_id"]?>-<?=$result["vn"]?></span></td-->
+          <!--td align="center"><span class="tet"><a href="report_Edxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td-->
 		  <td align="center"><span class="tet"><a href="report_Edxofyear_out.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
 		  <!--td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td-->
           
@@ -99,11 +143,13 @@ if(isset($_POST['hn'])){
 	}else if($num==0){
 	?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_Edxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="485" border="1" cellpadding="0" cellspacing="0"><tr>
+<table width="800" border="1" cellpadding="0" cellspacing="0"><tr>
     <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
     <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
     <td width="37" align="center"><span class="tet">ปี</span></td>
-    <td width="37" align="center">&nbsp;</td>
+    <td width="250" align="center">&nbsp;</td>
+	<td width="250" align="center">&nbsp;</td>
+	<td width="250" align="center">&nbsp;</td>
     <td width="53" align="center">&nbsp;</td>
     <td width="46" align="center">&nbsp;</td>
     <td width="37" align="center">&nbsp;</td>
@@ -130,8 +176,10 @@ if(isset($_POST['hn'])){
 		  <td align="center"><span class="tet">
 		    <?=$result["yearcheck"]?>
 		  </span></td>
-		  <td align="center"><span class="tet"><a href="report_Edxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_Edxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
+		  <td align="center"><span class="tet"><a href="Checkup_Medical_Cert.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=A" target="_blank">ใบรับรองแพทย์ 5 โรค</a></span></td>
+          <td align="center"><span class="tet"><a href="Checkup_Medical_Cert_Drive.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=B" target="_blank">ใบรับรองแพทย์ (สำหรับขับรถ)</a></span></td>
+          <td align="center"><span class="tet"><a href="Checkup_Medical_Cert_WithLab.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=C" target="_blank">ใบรับรองแพทย์ + ผล LAB</a></span></td>
+          <!--td align="center"><span class="tet"><a href="report_Edxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td-->
 		  <td align="center"><span class="tet"><a href="report_Edxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
 		  <!--td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td-->
 		</tr>
@@ -1153,7 +1201,10 @@ mmHg.</u></span></td>
 </div>
 <form name="formdx" action="<? $_SERVER['PHP_SELF']?>" method="post">
 <center>
-<span class="tet1">พิมพ์ใบรับรองแพทย์ 5 โรค</span> <br />
+
+
+
+<span class="tet1">พิมพ์ใบรับรองแพทย์อิเล็กทรอนิกส์ (E-Medical Certificate)</span> <br />
   <br />
   <span class="tet1">&nbsp;&nbsp;&nbsp;&nbsp;กรอก HN : </span>
     <input name="hn" type="text" size="10" class="tet1" value="<?=$_GET["hn"];?>">
@@ -1163,11 +1214,22 @@ mmHg.</u></span></td>
   <br />
 
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> 
+
+
+<hr>
+
+<h1 style='color:red'>สำหรับระบบทดสอบเท่านั้น!!</h1>
+
+<hr>
+
+<a href="Edx_ofyear_out.php">พยาบาลบันทึกผล</a> | <a href="Edt_index.php">หมอบันทึกผล</a>
+
 </center>
 </form>
 
 <table border="1" width="30%" class="text1" style="border-collapse:collapse" cellpadding="0" cellspacing="0">
 <?	
+/*
 //	$Aquery = "select * from condxofyear_out where yearcheck='$nPrefix2' and printok='N' group by hn order by row_id desc";
 	$rw = mysql_query($Aquery);
 	while($fet = mysql_fetch_array($rw)){
@@ -1179,5 +1241,34 @@ mmHg.</u></span></td>
 		<?
 	}
 	echo "</table>";
-}
+*/
+
+}//this
+
+?>
+
+
+
+
+<?
+///////////////////////////////////////////////////////////////////////
+/////////////////////////// start report /////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+if(isset($_POST['tmp_hn'])){
+
+?>
+
+<script>
+    	window.location.href="Checkup_Medical_Cert.php?hn=<?echo $_POST['tmp_hn'];?>";
+</script>
+
+<?
+
+}//end if
+
+///////////////////////////////////////////////////////////////////////
+/////////////////////////// end report /////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
 ?>
