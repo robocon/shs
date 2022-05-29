@@ -805,9 +805,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			}	
 
 			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 14 เม็ดให้ Remed ได้แค่ 14 เม็ด  12/03/65
+			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 30 เม็ดให้ Remed ได้แค่ 30 เม็ด  24/05/65
 			if($arr["drugcode"]=="1NEX40"){
-					if($arr["amount"] > 14){
-						$arr["amount"]=14;
+					if($arr["amount"] > 30){
+						$arr["amount"]=30;
 					}else{
 						$arr["amount"]=$arr["amount"];
 					}
@@ -1367,6 +1368,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 
 		$i=1;
 		while($arr = Mysql_fetch_assoc($result)){
+
+			$extra_obj = '';
 				
 				if($arr["lock_dr"] != "Y"){
 					if($arr["lock_dr"] =="N"){
@@ -1392,6 +1395,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 						$obj = 'เฉพาะผู้ป่วย สปสช.';
 
 					}else{
+
+						if($test_drugcode == '0SPEE' && $ptright_code30 === true)
+						{
+							$extra_obj = '<br><span style="padding: 0 4px; background-color: yellow; color: red; font-size: 16px;">ผู้ป่วย สปสช แนะนำให้ใช้ VERO RABIES</span>';
+						}
+
 						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."'); \">";
 						$alert="";
 					}
@@ -1415,7 +1424,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					<td rowspan=\"3\" align=\"center\">
 					".$obj."</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">ชื่อยา : </td>
-					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"],"</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"]," $extra_obj</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td valign='top' colspan=\"2\" rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 				</tr>
@@ -2805,7 +2814,7 @@ function checkForm1(){
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");
 		document.form1.drug_amount.focus();
 */
-	}else if( document.form1.drug_code.value == "1NEX40" && eval(document.form1.drug_amount.value) > 14 ){ 
+	}else if( document.form1.drug_code.value == "1NEX40" && eval(document.form1.drug_amount.value) > 30 ){ 
 		
 		
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ยาNEXIUM ไม่เกิน 14เม็ดต่อคน");  
