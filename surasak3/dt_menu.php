@@ -40,14 +40,14 @@ font-weight: bold;
 	}
 
 	$hnNow = $_SESSION['hn_now'];
-	require_once 'includes/connectPaperLess.php';
+	// require_once 'includes/connectPaperLess.php';
 	// ถ้ามีข้อมูลย้อนหลัง 5ครั้งล่าสุด
 	$paperLess = '';
-	$qPaper = $mysqli->query("SELECT `id` FROM `pdfs` WHERE `hn` = '$hnNow' ORDER BY `id` DESC LIMIT 10");
-	if ($qPaper->num_rows > 0)
-	{ 
-		$paperLess = 'menu1[1]=\'<a href="javascript:void(0)" onclick="newWindowsPaperless()" >e-OPD Card</a>\';';
-	}
+	// $qPaper = $mysqli->query("SELECT `id` FROM `pdfs` WHERE `hn` = '$hnNow' ORDER BY `id` DESC LIMIT 10");
+	// if ($qPaper->num_rows > 0)
+	// { 
+	// 	$paperLess = 'menu1[1]=\'<a href="javascript:void(0)" onclick="newWindowsPaperless()" >e-OPD Card</a>\';';
+	// }
 
 ?>
 <script type="text/javascript">

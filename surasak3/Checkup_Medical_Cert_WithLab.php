@@ -108,9 +108,9 @@ while($rows = mysql_fetch_array($query)){
     $Txt_Surname = $rows["surname"];
     $Txt_Idcard = $rows["idcard"];
     $Txt_Address1 = $rows["address"];
-    $Txt_Address2 = $rows["tambol"];
-    $Txt_Address3 = $rows["ampur"];
-    $Txt_Address4 = $rows["changwat"];
+    $Txt_Address2 = "ตำบล ".$rows["tambol"];
+    $Txt_Address3 = "อำเภอ ".$rows["ampur"];
+    $Txt_Address4 = "จังหวัด ".$rows["changwat"];
     // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
     $Txt_Phone = $rows["phone"];
     $Txt_Dbirth = $rows["dbirth"];
@@ -215,6 +215,7 @@ while($rows = mysql_fetch_array($query)){
  
     $Txt_Doctor_Ans= $rows["doctor_ans"]; // สรุปความคิดเห็นและข้อแนะนำของแพทย์
     $Txt_Doctor_Dx= $rows["dx"]; // dx จากแพทย์
+    $Txt_Age = $rows["age"]; // อายุ
 
 }//end while
 
@@ -363,7 +364,7 @@ font.txt_dotted {
 </table> 
 <table>
     <tr>
-        <td width="180px">ข้าพเจ้า นายแพทย์/แพทย์หญิง</td>
+        <td width="180px">(1) ข้าพเจ้า นายแพทย์/แพทย์หญิง</td>
         <td width="220px" align="center"><p><? echo "$Txt_DocTitle $Txt_DocName";?></p></td>
         <td width="100px">ใบประกอบวิชาชีพ </td>
         <td width="100px" align="center"><p><? echo "$Txt_DocCode";?></p></td>
@@ -428,10 +429,10 @@ font.txt_dotted {
         <td width="550px"><p>  </p></td>
     </tr>
     <tr>
-        <td width="200px">
-        สรุปความเห็น<br>และข้อแนะนำของแพทย์ 
+        <td width="450px">
+        (2) สรุปความเห็นและข้อแนะนำของแพทย์ 
         </td>
-        <td width="650px"><p ><font class="txt_dotted"><? echo $Txt_Doctor_Ans." ".$Txt_Doctor_Dx; ?></font></p></td>
+        <td width="350px"><p ><font class="txt_dotted"><? echo $Txt_Doctor_Ans." ".$Txt_Doctor_Dx; ?></font></p></td>
     </tr>
     <!--tr>
         <td width="160px">  
@@ -451,7 +452,8 @@ font.txt_dotted {
         <td><font size="3">
 หมายเหตุ (1) ต้องเป็นแพทย์ซึ่งได้ขึ้นทะเบียนรับใบอนุญาตประกอบวิชาชีพเวชกรรม <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2) ให้แสดงว่าเป็นผู้มีร่างกายสมบูรณ์เพียงใด ใบรับรองแพทย์ฉบับนี้ให้ใช้ได้1 เดือนนับแต่วันที่ตรวจร่างกาย <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) คำรับรองนี้เป็นการตรวจวินิจฉัยเบื้องต้น
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) คำรับรองนี้เป็นการตรวจวินิจฉัยเบื้องต้น <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; แบบฟอร์มนี้ได้รับการรับรองจากมติคณะกรรมการแพทย์สภาในการประชุมครั้งที่ 4/2561 วันที่ 19 เมษายน 2561
         </font></td>
     </tr>
 </table>
@@ -477,23 +479,28 @@ font.txt_dotted {
         <td>
             ชื่อ-นามสกุล 
         </td>
-        <td>
-           <p><? echo "$Txt_Title $Txt_Name $Txt_Surname"; ?></p>
+        <td width="250px">
+           <p align="center"><? echo "$Txt_Title $Txt_Name $Txt_Surname"; ?></p>
         </td>
         <td>
-            HN  
+              
         </td>
         <td>
-           <p><? echo $hn; ?></p>
+           HN
+        </td>
+        <td width="80px">
+           <p align="center"><? echo $hn; ?></p>
         </td>
         <td>
             อายุ 
         </td>
-        <td>
-           <p><? echo $Txt_Dbirth; ?></p>
+        <td width="80px">
+           <p align="center"><? echo $Txt_Age; ?></p>
         </td>
-    </tr>
+    </tr> 
+</table>
 
+<table border="0"> 
     <tr>
         <td>
            วันที่เข้ารับบริการ
@@ -516,24 +523,24 @@ font.txt_dotted {
     </tr>
 </table>
 
-
-<h3 align="center">ข้อมูลผลตรวจ</h3>
+<br>
+<!--h3 align="center">ข้อมูลผลตรวจ</h3-->
 
 <table border="1" style="border: 1px solid black;border-collapse: collapse;">
     <tr>
-        <td width="400px" align="center">
-            รายการตรวจ
+        <td width="400px" align="center" style="font-size:17px">
+            <b>รายการตรวจ</b>
         </td>
-        <td width="100px" align="center">
-            ผลปกติ<br>NORMAL
+        <td width="100px" align="center" style="font-size:17px">
+            <b>ผลปกติ<br>NORMAL</b>
         </td>
-        <td width="100px" align="center">
-            ผิดปกติ<br>ABNORMAL
+        <td width="100px" align="center" style="font-size:17px">
+            <b>ผิดปกติ<br>ABNORMAL</b>
         </td>
     </tr>
 <?php
 //-----> ข้อมูล LAB สรุป
-$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn'   "; //AND row_id = '".$_GET['rowid']."'
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' AND row_id = '".$_GET['rowid']."'  "; //AND row_id = '".$_GET['rowid']."'
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query); 
@@ -552,13 +559,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_glu = $count++.".ผลตรวจน้ำตาลในปัสสาวะ (GLU)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_glu."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_glu."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_glu."
                 </td>
             </tr>";
@@ -572,13 +579,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_trig = $count++.".ผลตรวจไขมัน (TRIG)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_trig."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_trig."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_trig."
                 </td>
             </tr>";
@@ -591,13 +598,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_chol = $count++.".ผลตรวจไขมัน (CHOL)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_chol."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_chol."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_chol."
                 </td>
             </tr>";
@@ -610,13 +617,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_alk = $count++.".ตรวจการทำงานของตับ (AST)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_alk."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_alk."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_alk."
                 </td>
             </tr>";
@@ -629,13 +636,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_sgpt = $count++.".ตรวจการทำงานของตับ (ALT)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_sgpt."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_sgpt."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_sgpt."
                 </td>
             </tr>";
@@ -648,13 +655,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_sgot = $count++.".ตรวจการทำงานของตับ,กระดูก (ALP)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_sgot."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_sgot."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_sgot."
                 </td>
             </tr>";
@@ -667,13 +674,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_bun = $count++.".ตรวจการทำงานของไต (BUN)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_bun."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_bun."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_bun."
                 </td>
             </tr>";
@@ -686,13 +693,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_cr = $count++.".ตรวจการทำงานของไต (CREA)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_cr."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_cr."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_cr."
                 </td>
             </tr>";
@@ -705,13 +712,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_uric = $count++.".ตรวจโรคเก๊าท์ (URIC)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_uric."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_uric."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_uric."
                 </td>
             </tr>";
@@ -724,13 +731,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_hdl = $count++.".ตรวจไขมันความหนาแน่นสูง (HDL)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_hdl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_hdl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_hdl."
                 </td>
             </tr>";
@@ -740,24 +747,22 @@ while($rows = mysql_fetch_array($query)){
         if($stat_ldl == "ปกติ"){$nomal_ldl = "/";$abnomal_ldl = "";}else if($stat_ldl == "ผิดปกติ"){$nomal_ldl = "";$abnomal_ldl = "/";}else{$nomal_ldl = "No Result";$abnomal_ldl = "No Result";}
         
         if($stat_ldl){
-            $txt_ldl = $count++.".ไขมันความหนาแน่นต่ำ (LDL)";
+            $txt_ldl = $count++.".ตรวจหาไขมันความหนาแน่นต่ำ (LDL)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_ldl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_ldl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_ldl."
                 </td>
             </tr>";
         }//end if
             
-//---->$stat_10001 = $rows["stat_10001"]; // ผลสรุป 10001
-//        if($stat_ldl == "ปกติ"){$nomal_ldl = "/";$abnomal_ldl = "";}else if($stat_ldl == "ผิดปกติ"){$nomal_ldl = "";$abnomal_ldl = "/";}else{$nomal_ldl = "No Result";$abnomal_ldl = "No Result";}
-//        $txt_ldl = $count++."ตรวจ ... (10001)";
+ 
 
     $stat_malari = $rows["stat_malari"]; // ผลสรุป MALARI
         if($stat_malari == "ปกติ"){$nomal_malari = "/";$abnomal_malari = "";}else if($stat_malari == "ผิดปกติ"){$nomal_malari = "";$abnomal_malari = "/";}else{$nomal_malari = "No Result";$abnomal_malari = "No Result";}
@@ -766,13 +771,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_malari = $count++.".ตรวจหาเชื้อมาลาเรีย (Malaria)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_malari."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_malari."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_malari."
                 </td>
             </tr>";
@@ -785,13 +790,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_metamp = $count++.".ตรวจสารเสพติดในปัสสาวะ (Amphetamine in urine)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_metamp."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_metamp."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_metamp."
                 </td>
             </tr>";
@@ -804,13 +809,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_hbsag = $count++.".ตรวจหาเชื้อไวรัสตับอักเสบบี (HBsAg)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_hbsag."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_hbsag."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_hbsag."
                 </td>
             </tr>";
@@ -823,13 +828,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_hcvab = $count++.".ตรวจหาเชื้อไวรัสตับอักเสบซี (Anti HCV)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_hcvab."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_hcvab."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_hcvab."
                 </td>
             </tr>";
@@ -842,13 +847,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_vdrl = $count++.".ตรวจหาโรคซิฟิลิส (VDRL)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_vdrl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_vdrl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_vdrl."
                 </td>
             </tr>";
@@ -861,13 +866,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_parasi = $count++.".ตรวจอุจจาระ (Stool exam)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_parasi."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_parasi."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_parasi."
                 </td>
             </tr>";
@@ -886,13 +891,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_upt = $count++.".ตรวจการตั้งครรภ์ (Pregnancy test)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_upt."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_upt."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_upt."
                 </td>
             </tr>";
@@ -909,13 +914,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_cbc = $count++.".ความสมบูรณ์ทางเม็ดเลือด CBC";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_cbc."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_cbc."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_cbc."
                 </td>
             </tr>";
@@ -928,122 +933,18 @@ while($rows = mysql_fetch_array($query)){
             $txt_ua = $count++.".ตรวจปัสสาวะ (Urine Examination)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_ua."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_ua."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_ua."
                 </td>
             </tr>";
         }//end if
-
-        /*
-    $stat_ekg = $rows["ekg"]; // ผลสรุป ekg
-        if($stat_ekg == "ปกติ"){$nomal_ekg = "/";$abnomal_ekg = "";}else if($stat_ekg == "ผิดปกติ"){$nomal_ekg = "";$abnomal_ekg = "/";}else{$nomal_ekg = "No Result";$abnomal_ekg = "No Result";}
-        
-        if($stat_ekg){
-            $txt_ekg = $count++.".ตรวจคลื่นไฟฟ้าหัวใจ (EKG)";
-            echo "
-            <tr>
-                <td width='400px' align='left'>
-                ".$txt_ekg."
-                </td>
-                <td width='100px' align='center'>
-                ".$nomal_ekg."
-                </td>
-                <td width='100px' align='center'>
-                ".$abnomal_ekg."
-                </td>
-            </tr>";
-        }//end if
-        */
-
-/*
-    $stat_color_blind = $rows["color_blind"]; // ผลสรุป ตา color_blind (va)
-        if($stat_color_blind == "ปกติ"){$nomal_colorblind = "/";$abnomal_colorblind = "";}else if($stat_color_blind == "ผิดปกติ"){$nomal_colorblind = "";$abnomal_colorblind = "/";}else{$nomal_colorblind = "No Result";$abnomal_colorblind = "No Result";}
-        
-        if($stat_color_blind){
-            $txt_color_blind = $count++.".ตรวจสายตา (VA)";
-            echo "
-            <tr>
-                <td width='400px' align='left'>
-                ".$txt_color_blind."
-                </td>
-                <td width='100px' align='center'>
-                ".$nomal_color_blind."
-                </td>
-                <td width='100px' align='center'>
-                ".$abnomal_color_blind."
-                </td>
-            </tr>";
-        }//end if
-        */
-
-        /*
-    $stat_audiogram = $rows["audiogram"]; // ผลสรุป การฟัง (audiogram)
-        if($stat_audiogram == "ปกติ"){$nomal_audiogram = "/";$abnomal_audiogram = "";}else if($stat_audiogram == "ผิดปกติ"){$nomal_audiogram = "";$abnomal_audiogram = "/";}else{$nomal_audiogram = "No Result";$abnomal_audiogram = "No Result";}
-        
-        if($stat_audiogram){
-            $txt_audiogram = $count++.".ตรวจการได้ยิน";
-            echo "
-            <tr>
-                <td width='400px' align='left'>
-                ".$txt_audiogram."
-                </td>
-                <td width='100px' align='center'>
-                ".$nomal_audiogram."
-                </td>
-                <td width='100px' align='center'>
-                ".$abnomal_audiogram."
-                </td>
-            </tr>";
-        }//end if
-        */
-
-        /*
-    $stat_hbsag = $rows["stat_hbsag"]; // ผลสรุป ไวรัสตับอักเสบบี (hbsag)
-        if($stat_hbsag == "ปกติ"){$nomal_hbsag = "/";$abnomal_hbsag = "";}else if($stat_hbsag == "ผิดปกติ"){$nomal_hbsag = "";$abnomal_hbsag = "/";}else{$nomal_hbsag = "No Result";$abnomal_hbsag = "No Result";}
-        
-        if($stat_hbsag){
-            $txt_hbsag = $count++.".ตรวจหาไวรัสตับอักเสบบี (HBsAg)";
-            echo "
-            <tr>
-                <td width='400px' align='left'>
-                ".$txt_hbsag."
-                </td>
-                <td width='100px' align='center'>
-                ".$nomal_hbsag."
-                </td>
-                <td width='100px' align='center'>
-                ".$abnomal_hbsag."
-                </td>
-            </tr>";
-        }//end if
-        */
-
-        /*
-    $stat_metamp = $rows["stat_metamp"]; // ผลสรุป สารเสพติด Amphetamine
-        if($stat_metamp == "ปกติ"){$nomal_metamp  = "/";$abnomal_metamp  = "";}else if($stat_metamp == "ผิดปกติ"){$nomal_metamp  = "";$abnomal_metamp  = "/";}else{$nomal_metamp  = "No Result";$abnomal_metamp  = "No Result";}
-        
-        if($stat_metamp){
-            $txt_metamp = $count++.".ตรวจหาสารเสพติด (Amphetamine)";
-            echo "
-            <tr>
-                <td width='400px' align='left'>
-                ".$txt_metamp."
-                </td>
-                <td width='100px' align='center'>
-                ".$nomal_metamp."
-                </td>
-                <td width='100px' align='center'>
-                ".$abnomal_metamp."
-                </td>
-            </tr>";
-        }//end if
-        */
+ 
 
     $stat_hiv = $rows["stat_hiv"]; // ผลสรุป HIV
         if($stat_hiv == "ปกติ"){$nomal_hiv = "/";$abnomal_hiv = "";}else if($stat_hiv == "ผิดปกติ"){$nomal_hiv = "";$abnomal_hiv = "/";}else{$nomal_hiv = "No Result";$abnomal_hiv = "No Result";}
@@ -1052,13 +953,13 @@ while($rows = mysql_fetch_array($query)){
             $txt_hiv = $count++.".ตรวจหาภูมิคุ้มกันบกพร่อง (Anti HIV)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_hiv."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_hiv."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_hiv."
                 </td>
             </tr>";
@@ -1071,33 +972,72 @@ while($rows = mysql_fetch_array($query)){
             $txt_upt = $count++.".ตรวจการตั้งครรภ์ (Pregnacy test)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_upt."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_upt."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_upt."
                 </td>
             </tr>";
         }//end if
 
-    $stat_vdrl = $rows["stat_vdrl	"]; // ผลสรุป vdrl
+    $stat_vdrl = $rows["stat_vdrl"]; // ผลสรุป vdrl
         if($stat_vdrl == "ปกติ"){$nomal_vdrl = "/";$abnomal_vdrl = "";}else if($stat_vdrl == "ผิดปกติ"){$nomal_vdrl = "";$abnomal_vdrl = "/";}else{$nomal_vdrl = "No Result";$abnomal_vdrl = "No Result";}
         
         if($stat_vdrl){
             $txt_vdrl = $count++.".ตรวจหาโรคซิฟิลิส (VDRL)";
             echo "
             <tr>
-                <td width='400px' align='left'>
+                <td width='400px' align='left' style='font-size:17px'>
                 ".$txt_vdrl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$nomal_vdrl."
                 </td>
-                <td width='100px' align='center'>
+                <td width='100px' align='center' style='font-size:17px'>
                 ".$abnomal_vdrl."
+                </td>
+            </tr>";
+        }//end if
+
+    
+    $stat_ldlc = $rows["stat_ldlc"]; // ผลสรุป ldlc / 10001
+        if($stat_ldlc == "ปกติ"){$nomal_ldlc = "/";$abnomal_ldlc = "";}else if($stat_ldlc == "ผิดปกติ"){$nomal_ldlc = "";$abnomal_ldlc = "/";}else{$nomal_ldlc = "No Result";$abnomal_ldlc = "No Result";}
+        
+        if($stat_ldlc){
+            $txt_ldlc = $count++.".ตรวจหาไขมันความหนาแน่นต่ำ (LDLC)";
+            echo "
+            <tr>
+                <td width='400px' align='left' style='font-size:17px'>
+                ".$txt_ldlc."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$nomal_ldlc."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$abnomal_ldlc."
+                </td>
+            </tr>";
+        }//end if
+
+        $stat_cxr = $rows["cxr"]; // ผลสรุป cxr
+        if($stat_cxr == "ปกติ"){$nomal_cxr = "/";$abnomal_cxr = "";}else if($stat_cxr == "ผิดปกติ"){$nomal_cxr = "";$abnomal_cxr = "/";}else{$nomal_cxr = "No Result";$abnomal_cxr = "No Result";}
+        
+        if($stat_cxr){
+            $txt_cxr = $count++.".ตรวจสุขภาพปอด (cxr)";
+            echo "
+            <tr>
+                <td width='400px' align='left' style='font-size:17px'>
+                ".$txt_cxr."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$nomal_cxr."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$abnomal_cxr."
                 </td>
             </tr>";
         }//end if
@@ -1141,6 +1081,7 @@ while($rows = mysql_fetch_array($query)){
 </table>
 <br>
 <b>รายการตรวจอื่นๆ</b> <br>
+<font size="4">
 <? 
     if($stat_dental != "" OR $stat_dental != null){
         echo "- ผลตรวจสุขภาพช่องปากและฟัน (Dental Examination) : <b>".$stat_dental."</b><br>"; //dental_exam
@@ -1170,3 +1111,5 @@ while($rows = mysql_fetch_array($query)){
         echo "- ตรวจหาหมู่เลือดเอ บี โอ (ABO blood group) : <b>".$stat_groupt."</b><br>"; //ABO blood group
     }//end if
 ?>
+
+</font>

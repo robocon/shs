@@ -20,7 +20,7 @@ body,td,th {
 -->
 </style>
 <title>ใบรับรองแพทย์ Covid-19</title>
-<div style="margin-left: 40px;">
+
 <p align="center" style="margin-top: 20px;"><strong><u>ใบรับรองแพทย์ Covid-19</u></strong></p>
 
  
@@ -120,9 +120,9 @@ if(empty($num)){
     </p>
         <strong>HN : </strong> '.$hn.' 
         &nbsp;&nbsp;&nbsp;
-        <strong>ชื่อ-นามสกุล : </strong> '.$Pt_Yot.' ' .$Pt_Name.' ' .$Pt_Surname.' 
+        <strong>ชื่อ-นามสกุล : </strong> '.$Pt_Yot.'' .$Pt_Name.'' .$Pt_Surname.' 
         <br>
-        <strong>ที่อยู่ : </strong> '.$Pt_Address.' ต.' .$Pt_Tambol.' อ.' .$Pt_Ampur.' จ.'.$Pt_Changwat.' 
+        <strong>ที่อยู่ : </strong> '.$Pt_Address.'' .$Pt_Tambol.'' .$Pt_Ampur.' '.$Pt_Changwat.' 
         &nbsp;&nbsp;&nbsp;
         <br>
         <strong>หมายเลขบัตรประชาชน : </strong> '.$Pt_Idcard.' 
@@ -158,6 +158,7 @@ if(empty($num)){
           
          echo '<strong>ปี : </strong><select name="year1"  class="txt">';
          echo '<option value="2565">2565</option>';
+         echo '<option value="2566">2566</option>';
          echo '<select>';
     
 
@@ -166,14 +167,14 @@ if(empty($num)){
         <br>  
         <strong>ป่วยด้วยโรค : </strong> 
         <br>
-        <textarea id="diagnosis" name="diagnosis" rows="4" cols="50" class="txt">ติดเชื้อเข้าข่ายโควิด - 19 (ATK positive)</textarea>
+        <textarea id="diagnosis" name="diagnosis" rows="4" cols="50">ติดเชื้อเข้าข่ายโควิด - 19 (ATK positive)</textarea>
         <br>
         <strong>มีความเห็นว่า : </strong> 
         <br>
-        <textarea id="comment" name="comment" rows="4" cols="50" class="txt">ได้มาตรวจจริง ให้รักษาแบบผู้ป่วยนอกและแยกกักตัว 10 วัน</textarea>
+        <textarea id="comment" name="comment" rows="4" cols="50">ได้มาตรวจจริง ให้รักษาแบบผู้ป่วยนอกและแยกกักตัว 10 วัน</textarea>
         <br>
         <strong>แพทย์ผู้ตรวจ : </strong><br>
-        <select name="doctor" class="txt">
+        <select name="doctor">
         ';
 
         while($rows = mysql_fetch_array($query)){
@@ -212,7 +213,30 @@ if(empty($num)){
  
 
  
-}//end if empty['hn']
+
 ?>
-</div> 
+
+
+<!------------ start log    --------------->
+<br>
+<hr>
+<br>
+<h3>ประวัติการพิมพ์</h3>
+<? 
+$sql = "select * from log_ecert where hn = '".$_POST['hn']."' order by DatePrint desc";
+$row = mysql_query($sql);      
+$i=0;	
+while($result = mysql_fetch_array($row)){ 
+
+	echo "<font size=3>HN : ".$result["HN"]." | เวลาพิมพ์ : ".$result["DatePrint"]." | ผู้พิมพ์ : ".$result["UserPrint"]." | เอกสาร : ".$result["Desc_Type"]." | เลขที่เอกสาร : ".$result["Code_RowidVn"]."</font><br>";
+	$i++;
+}//emd while
+if($i==0){echo "::: ไม่มีข้อมูลการพิมพ์ :::";}
+?>
+
+<!------------  end log   --------------->
+
+<?  }//end if empty['hn']  ?>
+
+<h4 align="center" style="color:red">*** ระบบนี้มีการเก็บข้อมูลการพิมพ์เอกสาร ***</h4>
  

@@ -124,7 +124,7 @@ $list_lab["ANTIHB"] = "antihb";
 </head>
 
 <body>
-<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>
+<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a> || <a href="Edx_ofyear_out.php">โปรแกรมซักประวัติตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
 <center>
   <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า62</div>
 </center>

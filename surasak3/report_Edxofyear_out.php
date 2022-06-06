@@ -10,6 +10,7 @@ if($_SESSION["sOfficer"] == ""){
 exit();
 }//end if
 
+
 ?>
 <style type="text/css">
 hr{
@@ -50,6 +51,8 @@ hr{
 	font-size: 16px;
 }
 </style>
+
+<title>พิมพ์ใบรับรองแพทย์อิเล็กทรอนิกส์ (E-Medical Certificate)</title>
 <?
 if(isset($_POST['hn'])){
 	$select = "select * from opcard where idcard = '".$_POST['hn']."'";
@@ -101,17 +104,85 @@ if(isset($_POST['hn'])){
 		  </span></td>
 	
 <?
+//////////////////////////////// เงื่อนไขแสดงรายงาน + lab ////////////////////////////////////////////////////////
+
+//-----> ข้อมูล LAB เอามาเช็คเงื่อนไขการแสดงผล
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' AND row_id = '".$result["row_id"]."'  "; 
+//echo $sql;exit();
+$query = mysql_query($sql); 
+$num = mysql_num_rows($query); 
+
+if(empty($num)){
+	echo "<h1 align='center'>ไม่พบสรุปข้อมูล LAB</h1>";echo "<br>".exit();
+}//end if
+$status_show = "";
+while($rows = mysql_fetch_array($query)){
+
+	if(
+		$rows["ua_gluu"] == "" AND 
+		$rows["stat_tg"] == "" AND 
+		$rows["stat_chol"] == "" AND 
+		$rows["stat_alk"] == "" AND 
+		$rows["stat_sgpt"] == "" AND 
+		$rows["stat_sgot"] == "" AND 
+		$rows["stat_bun"] == "" AND 
+		$rows["stat_cr"] == "" AND 
+		$rows["stat_uric"] == "" AND 
+		$rows["stat_hdl"] == "" AND 
+		$rows["stat_ldl"] == "" AND 
+		$rows["stat_malari"] == "" AND 
+		$rows["stat_metamp"] == "" AND 
+		$rows["stat_hbsag"] == "" AND 
+		$rows["stat_hcvab"] == "" AND 
+		$rows["stat_vdrl"] == "" AND 
+		$rows["stat_parasi"] == "" AND 
+		$rows["stat_upt"] == "" AND 
+		$rows["stat_cbc"] == "" AND 
+		$rows["stat_ua"] == "" AND 
+		$rows["stat_hiv"] == "" AND 
+		$rows["stat_ldlc"] == "" AND 
+		$rows["cxr"] == "" AND 
+		$rows["ekg"] == "" AND 
+		$rows["color_blind"] == "" AND 
+		$rows["audiogram"] == "" AND 
+		$rows["dental_exam"] == "" AND 
+		$rows["rh"] == "" AND 
+		$rows["groupt"] == "" AND 
+		$rows["pft"] == "" 
+	){
+		$status_show = false;
+	}else{
+		$status_show = true;
+	}//end if
+
+}//enf while
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 		if($result["camp"] == "ใบรับรองแพทย์ 5 โรค (E_CERT-001)"){
 
+			if($status_show == false){ //echo "this1";
 			echo '
 			<td align="center"><span class="tet"><a href="Checkup_Medical_Cert.php?hn='.$_POST['hn'].'&rowid='.$result["row_id"].'&vn='.$result["vn"].'&type=A" target="_blank">ใบรับรองแพทย์ 5 โรค</a> <br>เลขที่เอกสาร : A'.$result["row_id"].'-'.$result["vn"].'</span></td>
 			';
+			}else{
+			echo '<td></td>';	
+			}//end if
 
 			echo '<td></td>';
 
+			if($status_show == true){ //echo "this2";
 			echo '
 			<td align="center"><span class="tet"><a href="Checkup_Medical_Cert_WithLab.php?hn='.$_POST['hn'].'&rowid='.$result["row_id"].'&vn='.$result["vn"].'&type=C" target="_blank">ใบรับรองแพทย์ + ผล LAB</a> <br>เลขที่เอกสาร : C'.$result["row_id"].'-'.$result["vn"].'</span></td>
 			';
+			}else{
+			echo '<td></td>';	
+			}//end if
 
 			 
 
@@ -126,6 +197,10 @@ if(isset($_POST['hn'])){
 		}else{
 
 		}//end if
+
+
+
+
 
 ?>
 
@@ -178,8 +253,12 @@ if(isset($_POST['hn'])){
 		  </span></td>
 		  <td align="center"><span class="tet"><a href="Checkup_Medical_Cert.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=A" target="_blank">ใบรับรองแพทย์ 5 โรค</a></span></td>
           <td align="center"><span class="tet"><a href="Checkup_Medical_Cert_Drive.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=B" target="_blank">ใบรับรองแพทย์ (สำหรับขับรถ)</a></span></td>
-          <td align="center"><span class="tet"><a href="Checkup_Medical_Cert_WithLab.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=C" target="_blank">ใบรับรองแพทย์ + ผล LAB</a></span></td>
-          <!--td align="center"><span class="tet"><a href="report_Edxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td-->
+		  
+		  <? //if($status_show == true){ ?>
+           <td align="center"><span class="tet"><a href="Checkup_Medical_Cert_WithLab.php?hn=<? echo $_POST['hn']; ?>&rowid=<?=$result["row_id"]?>&vn=<?=$result["vn"]?>&type=C" target="_blank">ใบรับรองแพทย์ + ผล LAB</a></span></td>
+		  <? //}//end if $status_show ?>
+
+		  <!--td align="center"><span class="tet"><a href="report_Edxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td-->
 		  <td align="center"><span class="tet"><a href="report_Edxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
 		  <!--td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td-->
 		</tr>
@@ -192,6 +271,25 @@ if(isset($_POST['hn'])){
 	}
 	?>
 </table>
+
+<!------------ start log    --------------->
+<br>
+<hr>
+<br>
+<h3>ประวัติการพิมพ์</h3>
+<? 
+$sql = "select * from log_ecert where hn = '".$_POST['hn']."' order by DatePrint desc";
+$row = mysql_query($sql);      
+$i=0;	
+while($result = mysql_fetch_array($row)){ 
+
+	echo "<font size=2>HN : ".$result["HN"]." | เวลาพิมพ์ : ".$result["DatePrint"]." | ผู้พิมพ์ : ".$result["UserPrint"]." | เอกสาร : ".$result["Desc_Type"]." | เลขที่เอกสาร : ".$result["Type"].$result["Code_RowidVn"]."</font><br>";
+	$i++;
+}//emd while
+if($i==0){echo "::: ไม่มีข้อมูลการพิมพ์ :::";}
+?>
+
+<!------------  end log   --------------->
 <?
 }elseif(isset($_GET['ids'])){
 	$detail = "select * from condxofyear_out where row_id = '".$_GET['ids']."' ";
@@ -203,7 +301,7 @@ if(isset($_POST['hn'])){
 	</script>
 	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
 	<tr>
-	  <td>ผลการตรวจสุขภาพประจำปี</td>
+	  <td>ใบรับรองแพทย์อิเล็กทรอนิกส์</td>
 	  </tr>
 	<tr>
 		<td>ชื่อ : <?php echo $arrs["ptname"];?> HN :<?php echo $arrs["hn"];?></td>
@@ -1218,11 +1316,7 @@ mmHg.</u></span></td>
 
 <hr>
 
-<h1 style='color:red'>สำหรับระบบทดสอบเท่านั้น!!</h1>
-
-<hr>
-
-<a href="Edx_ofyear_out.php">พยาบาลบันทึกผล</a> | <a href="Edt_index.php">หมอบันทึกผล</a>
+<h4 style="color:red"> *** ระบบนี้มีการเก็บข้อมูลการพิมพ์เอกสาร ***</h4>
 
 </center>
 </form>

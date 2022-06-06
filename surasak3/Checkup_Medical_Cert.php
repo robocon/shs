@@ -2,11 +2,21 @@
 session_start();
 include("connect.inc");
 
+
+$officer = $_SESSION["sOfficer"];
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+exit();
+}//end if
+
 $hn = $_GET['hn']; //get hn
 
 //////////////////////////////////////////////////////////////////
 
 date_default_timezone_set('Asia/Bangkok');
+$Txt_DateTime = date("H:m:s");
 $Txt_Datetime_d = date("d");
 $Txt_Datetime_m = date("m");
 $Txt_Datetime_y = date("Y");
@@ -57,6 +67,30 @@ $Txt_Datetime = $Txt_Datetime_d." ".$mon2." ".$Txt_Datetime_y;
 $Txt_Datetime2 = $Txt_Datetime_y."-".$selmon2."-".$Txt_Datetime_d;
 
 //////////////////////////////////////////////////////////////////
+/////////////////// เก็บ Log การพิมพ์ //////////////////////////////
+
+//-----> log
+$sql = " INSERT INTO log_ecert (
+    Id  ,
+    UserPrint ,
+    DatePrint ,
+    HN ,
+    Type ,
+    Desc_Type , 
+    Code_RowidVn 
+    )
+    VALUES ( '','$officer','$Txt_Datetime $Txt_DateTime','".$_GET['hn']."','A','ใบรับรองแพทย์ 5 โรค','".$_GET['rowid'].'-'.$_GET['vn']."' )";
+//echo $sql;exit();
+$query = mysql_query($sql);  
+
+if(!$query){
+	echo "<h1 align='center'>Log Save Error : (Code : C)</h1>";echo "<br>".exit();
+}//end if
+ 
+//////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////
 
 //-----> sql ข้อมูลคนไข้
 $sql = "SELECT * FROM `opcard` WHERE hn = '$hn' ";
@@ -75,9 +109,9 @@ while($rows = mysql_fetch_array($query)){
     $Txt_Surname = $rows["surname"];
     $Txt_Idcard = $rows["idcard"];
     $Txt_Address1 = $rows["address"];
-    $Txt_Address2 = $rows["tambol"];
-    $Txt_Address3 = $rows["ampur"];
-    $Txt_Address4 = $rows["changwat"];
+    $Txt_Address2 = "ตำบล ".$rows["tambol"];
+    $Txt_Address3 = "อำเภอ ".$rows["ampur"];
+    $Txt_Address4 = "จังหวัด ".$rows["changwat"];
     // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
 }//end while
 
@@ -109,7 +143,7 @@ while($rows = mysql_fetch_array($query)){
 //-----> sql ข้อมูลซักประวัติ
 
 //$sql = "SELECT * FROM `opd` WHERE hn = '$hn'  "; //AND thidate like '%$Txt_Datetime2%' ORDER BY row_id ASC 
-$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn'  ";
+$sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn'  ";
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
@@ -128,41 +162,36 @@ while($rows = mysql_fetch_array($query)){
     $Txt_Bp1 = $rows["bp1"];
     $Txt_Bp2 = $rows["bp2"];
     $Txt_Congenital_disease = $rows["congenital_disease"]; // โรคประจำตัว
-    
-    // ค้าง
-    // 2.ซักประวัติ อุบัติเหตุและผ่าตัด
-    // 3.ซักประวัติ เคยเข้ารับการรักษาในโรงพยาบาล
-    // 4.ซักประวัติ โรคลมชัก
-    // 5.ซักประวัติ อื่นๆที่สำคัญ
-    // สภาพร่างกาย ปกติ/ไม่ปกติ
+    $Txt_Accident_Surgery = $rows["accident_surgery"]; // อุบัติเหตุและผ่าตัด
+    $Txt_Treat_Hospital = $rows["treat_hospital"]; // เคยเข้ารับการรักษาในโรงพยาบาล
+    $Txt_Epilepsy = $rows["epilepsy"]; // โรคลมชัก
+    $Txt_Treat_other = $rows["treat_other"]; // อื่นๆที่สำคัญ
+    //$Txt_Doctor_Ans= $rows["doctor_ans"]; // สรุปความคิดเห็นและข้อแนะนำของแพทย์
+
 
 }//end while
 
 /////////////////////////////////////////////////////////////////
-/*
-//-----> sql ข้อมูลเลขที่เอกสาร ----> tb:log_ecert
 
-$sql = "SELECT * FROM `log_ecert` WHERE HN = '000' AND DatePtint = '2022-05-17' ";
+//-----> ข้อมูล dx และ doctor_ans จากหมอ
+ 
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn'  ";
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
 
-if($num > 1){
-
-//-----> พบข้อมูลใน log_ecert ต้อง Re-print เก็บ log
-    echo "<h1 align='center'>พบข้อมูลการพิมพ์เอกสารนี้ไปแล้ว หากต้องการ Re-Print [ กรุณากดที่นี่ ]</h1>";echo "<br>".exit();
-    
-}else{
-
-//-----> เพิ่มข้อมูลใน log_ecert เพื่อรับเลข Runno
-    $sql = "INSERT INTO ";
-    //echo $sql;exit();
-    $query = mysql_query($sql); 
-    
+if(empty($num)){
+	echo "<h1 align='center'>ไม่พบข้อมูล dx , doctor_ans </h1>";echo "<br>".exit();
 }//end if
 
-*/
-/////////////////////////////////////////////////////////////////
+while($rows = mysql_fetch_array($query)){
+ 
+    $Txt_Doctor_Ans= $rows["doctor_ans"]; // สรุปความคิดเห็นและข้อแนะนำของแพทย์
+    $Txt_Doctor_Dx= $rows["dx"]; // dx จากแพทย์
+
+}//end while
+
+///////////////////////////////////////////////////////////////// 
 ?>
 <style type="text/css">
 <!--
@@ -225,7 +254,7 @@ font.txt_dotted {
 
 
 </style>
-<title>ใบรับรองแพทย์</title>
+<title>ใบรับรองแพทย์ 5 โรค</title>
 
 <table border=0>
     <tr> 
@@ -235,7 +264,7 @@ font.txt_dotted {
             </h3>
         </td>
         <td width="100px">
-            <font size="3" align="right">เลขที่ A6504-0001</font>
+        <font size="3" align="right">เลขที่ <? echo $_GET['type'].$_GET['rowid']."-".$_GET['vn']; ?></font>
         </td>
     </tr>
 </table>
@@ -266,15 +295,15 @@ font.txt_dotted {
     </tr>
     <tr>
         <td>2.อุบัติเหตุ และ ผ่าตัด</td>
-        <td><p>ปฏิเสธ</p></td>
+        <td><p><? echo $Txt_Accident_Surgery;?></p></td>
     </tr>
     <tr>
         <td>3.เคยเข้ารับการรักษาใบโรงพยาบาล</td>
-        <td><p>ปฏิเสธ</p></td>
+        <td><p><? echo $Txt_Treat_Hospital;?></p></td>
     </tr>
     <tr>
         <td>4.ประวัติอื่นสำคัญ</td>
-        <td><p>ไม่ระบุ</p></td>
+        <td><p><? echo $Txt_Treat_other;?></p></td>
     </tr> 
 </table> 
 
@@ -304,7 +333,7 @@ font.txt_dotted {
 </table> 
 <table>
     <tr>
-        <td width="180px">ข้าพเจ้า นายแพทย์/แพทย์หญิง</td>
+        <td width="180px">(1) ข้าพเจ้า นายแพทย์/แพทย์หญิง</td>
         <td width="220px" align="center"><p><? echo "$Txt_DocTitle $Txt_DocName";?></p></td>
         <td width="100px">ใบประกอบวิชาชีพ </td>
         <td width="100px" align="center"><p><? echo "$Txt_DocCode";?></p></td>
@@ -369,10 +398,10 @@ font.txt_dotted {
         <td width="550px"><p>  </p></td>
     </tr>
     <tr>
-        <td width="200px">
-        สรุปความเห็น<br>และข้อแนะนำของแพทย์ 
+        <td width="350px">
+        (2) สรุปความเห็นและข้อแนะนำของแพทย์ 
         </td>
-        <td width="650px"><p ><font class="txt_dotted">ร่างกายปกติ สมบูรณ์แข็งแรง , ตรวจหาสารเสพติดในปัสสาวะ = ไม่พบ , ตรวจหาไวรัสตับอักเสบ บี = ไม่พบ , ตรวจเลือด = ปกติ , สายตา = ปกติ , ตรวจการได้ยิน = ปกติ , ตรวจฟัน = ปกติ</font></p></td>
+        <td width="450px"><p ><font class="txt_dotted"><? echo $Txt_Doctor_Ans." ".$Txt_Doctor_Dx; ?></font></p></td>
     </tr>
     <!--tr>
         <td width="160px">  
@@ -389,10 +418,11 @@ font.txt_dotted {
 <div align="center">
 <table> 
     <tr>
-        <td><font size="3">
+        <td><font size="2">
 หมายเหตุ (1) ต้องเป็นแพทย์ซึ่งได้ขึ้นทะเบียนรับใบอนุญาตประกอบวิชาชีพเวชกรรม <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2) ให้แสดงว่าเป็นผู้มีร่างกายสมบูรณ์เพียงใด ใบรับรองแพทย์ฉบับนี้ให้ใช้ได้1 เดือนนับแต่วันที่ตรวจร่างกาย <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) คำรับรองนี้เป็นการตรวจวินิจฉัยเบื้องต้น
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) คำรับรองนี้เป็นการตรวจวินิจฉัยเบื้องต้น <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; แบบฟอร์มนี้ได้รับการรับรองจากมติคณะกรรมการแพทย์สภาในการประชุมครั้งที่ 4/2561 วันที่ 19 เมษายน 2561
         </font></td>
     </tr>
 </table>

@@ -64,11 +64,11 @@ window.onload = function(){
 </SCRIPT>
 </head>
 </body>
-<a href='../nindex.htm'>&lt;&lt;ไปเมนู</a>  || <a href="dt_emp_manual_index.php">ตรวจสุขภาพสิทธิประกันสังคม (แบบไม่ต้องใช้ VN)</a>  || <a href="dxdr_ofyear1_dr_manual.php">ตรวจสุขภาพประจำปีกองทัพบก (แบบไม่ต้องใช้ VN)</a>  || <a href="dxdr_ofyearout_dr_hn.php">ตรวจสุขภาพประจำปีฮักกันยามเฒ่า (แบบไม่ต้องใช้ VN)</a>
+<a href='../nindex.htm'>&lt;&lt;ไปเมนู</a>  || <a href="dt_emp_manual_index.php">ตรวจสุขภาพสิทธิประกันสังคม (แบบไม่ต้องใช้ VN)</a>  || <a href="dxdr_ofyear1_dr_manual.php">ตรวจสุขภาพประจำปีกองทัพบก (แบบไม่ต้องใช้ VN)</a>  || <a href="dxdr_ofyearout_dr_hn.php">ตรวจสุขภาพประจำปีฮักกันยามเฒ่า (แบบไม่ต้องใช้ VN)</a>  || <a href="Edt_index.php">ตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
 <BR>
 <table width="100%" border="0">
   <tr>
-    <td>
+    <td> 
 	<FORM name="form_vn" METHOD=POST ACTION="Edt_add_patient.php">
 <TABLE>
 <TR>
@@ -101,6 +101,7 @@ window.onload = function(){
   </tr>
 </table>
 
+<h3 align="center"><u>ตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</u></h3>
 
 <BR><FONT SIZE="4" COLOR="#990033"><B>ข่าวสาร</B></FONT><BR>
 <?php
