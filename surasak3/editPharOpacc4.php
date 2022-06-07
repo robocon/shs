@@ -71,6 +71,7 @@ if($type === 'dphardep')
                     <th>date</th>
                     <th>hn</th>
                     <th>drugcode</th>
+                    <th>tradname</th>
                     <th>amount</th>
                     <th>price</th>
                     <th></th>
@@ -83,6 +84,7 @@ if($type === 'dphardep')
                         <td><?=$a['date'];?></td>
                         <td><?=$a['hn'];?></td>
                         <td><?=$a['drugcode'];?></td>
+                        <td><?=$a['tradname'];?></td>
                         <td><?=$a['amount'];?></td>
                         <td><?=$a['price'];?></td>
                         <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=ddrugrx" target="editPage">·°È‰¢</a><td>
