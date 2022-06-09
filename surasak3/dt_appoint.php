@@ -1267,6 +1267,7 @@ include("dt_patient.php");
         	<option>คลีนิกโรคไต</option>
 		 	<option>กายภาพบำบัดชั้น 2</option>
          	<option>ห้องเก็บเงินรายได้ เบอร์4</option>  <!--#17-->
+			<option>คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)</option>
 		</select>
 	</TD>
 
