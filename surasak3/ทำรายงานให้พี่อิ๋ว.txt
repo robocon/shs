@@ -1,0 +1,29 @@
+ยอดตรวจตามนัด 35ปีขึ้นไป + เจาะ blood sugar หรือ a1c อย่างใดอย่างหนึ่ง 
+โดยไม่ใช่คนไข้เบาหวาน
++ เป็นคนไข้นัด
++ นับเป็นคน
++ เอาเป็นปีงบ64 ต.ค. 
+
+resultdetail / resulthead
+labname='HBA1C' หรือ labcode='GLU' 
+
+
+select a.* from 
+(
+    select thidate,hn,vn,ptname,age,ptright,diag,icd10,CAST(SUBSTRING(age,1,2) AS UNSIGNED) AS age2, 
+    CONCAT(SUBSTRING(thidate,1,4)-543,SUBSTRING(thidate,5,6)) AS date2, 
+    MAX(row_id) as max_id, 
+    CONCAT(SUBSTRING(thidate,1,4)-543,SUBSTRING(thidate,5,6),hn) AS dateHn 
+    from opday where 
+    ( thidate >= '2564-10-01' and thidate <= '2565-09-31' ) 
+    and toborow like 'ex04%' and CAST(SUBSTRING(age,1,2) AS UNSIGNED) >= 35 
+    and patho > 0 
+    group by hn
+) as a 
+left join opday as b on b.row_id = a.max_id 
+left join ( 
+	select autonumber,labnumber,hn,patientname,profilecode,CONCAT(SUBSTRING(checkindate,1,10),hn) AS dateHn 
+	from resulthead where checkindate >= '2021-10-01' and checkindate <= '2022-09-31' 
+	and ( profilecode = 'HBA1C' OR profilecode = 'GLU' ) 
+) as c ON c.dateHn = a.dateHn 
+WHERE c.autonumber IS NULL 
