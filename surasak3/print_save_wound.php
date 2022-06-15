@@ -13,7 +13,6 @@
 
 $sql = "Select * From `inhale_wound` where hn = '".$_GET["hn"]."' and date like '".$_GET["date"]."%' order by startdate  asc";
 
-
 //echo $sql;
 
 $result = Mysql_Query($sql);
@@ -217,5 +216,10 @@ include("unconnect.inc");
 </TD>
 </TR>
 </TABLE>
+<script>
+	window.onload = function(){
+		window.print();
+	}
+</script>
 </body>
 </html>

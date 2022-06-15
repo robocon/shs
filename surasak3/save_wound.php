@@ -1,9 +1,35 @@
-
 <?php
 session_start();
-if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "view_inj" )){
-	header("content-type: application/x-javascript; charset=TIS-620");
+include("connect.inc");
+// include("connect.inc");
+// if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "view_inj" )){
+	// header("content-type: application/x-javascript; charset=TIS-620");
+// }
+function calcage($birth)
+{
+
+	$today = getdate();   
+	$nY  = $today['year']; 
+	$nM = $today['mon'] ;
+	$bY=substr($birth,0,4)-543;
+	$bM=substr($birth,5,2);
+	$ageY=$nY-$bY;
+	$ageM=$nM-$bM;
+
+	if ($ageM<0) {
+		$ageY=$ageY-1;
+		$ageM=12+$ageM;
+	}
+
+	if ($ageM==0){
+		$pAge="$ageY ปี";
+	}else{
+		$pAge="$ageY ปี $ageM เดือน";
+	}
+
+    return $pAge;
 }
+
 $month['01'] = "มกราคม";
 $month['02'] = "กุมภาพันธ์";
 $month['03'] = "มีนาคม";
@@ -17,16 +43,19 @@ $month['10'] = "ตุลาคม";
 $month['11'] = "พฤศจิกายน";
 $month['12'] = "ธันวาคม";
 
-if(isset($_GET["action"]) && $_GET["action"] == "view"){
-include("connect.inc");	
+if($_GET["action"] == "view"){
+	$dbi = new mysqli('localhost','root','1234','smdb');
+	
+	// var_dump($_REQUEST);
 	$sql = "Select concat(yot,' ',name,' ',surname) as fullname, ptright, idcard, dbirth  From opcard where hn = '".$_GET["hn"]."' limit 1 ";
-	$result = Mysql_Query($sql);
-	list($fullname, $ptright,$idcard,$dbirth) = Mysql_fetch_row($result);
+	// $result = Mysql_Query($sql);
+	// list($fullname, $ptright,$idcard,$dbirth) = Mysql_fetch_row($result);
+	$q = $dbi->query($sql);
+	list($fullname, $ptright,$idcard,$dbirth) = $q->fetch_row();
 	echo "<FONT COLOR=\"red\">ชื่อ-สกุล ",$fullname,"&nbsp;&nbsp;สิทธิการรักษา ", $ptright,"</FONT>";
 	echo "<INPUT TYPE=\"hidden\" Name=\"fullname\" Value=\"".$fullname."\"><INPUT TYPE=\"hidden\" Name=\"ptright\" value=\"".$ptright."\"><INPUT TYPE=\"hidden\" Name=\"idcard\" value=\"".$idcard."\"><INPUT TYPE=\"hidden\" Name=\"dbirth\" value=\"".$dbirth."\"><INPUT TYPE=\"hidden\" Name=\"age\" value=\"".calcage($dbirth)."\">";
-	
-	 include("unconnect.inc");
 	exit();
+
 }
 
 
@@ -93,7 +122,7 @@ return $i;
 
 if(isset($_POST["B1"])){
 
-	include("connect.inc");
+	
 
 	$sql = "Select yot,  name,  surname From opcard where hn = '".$_POST["hn"]."'  limit 0,1 ";
 	$result  = Mysql_Query($sql);
@@ -128,7 +157,7 @@ if(isset($_POST["B1"])){
 	echo "<A HREF=\"",$_SERVER['PHP_SELF'],"\">ออกใบนัดผู้ป่วยคนใหม่</A>&nbsp;&nbsp;<A HREF=\"print_save_wound.php?date=$arr[date]&hn=",$arr["hn"],"\" target=\"_blank\">พิมพ์ใบนัด</A>";
 
 	//echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=",$_SERVER['PHP_SELF'],"\">";
-	include("unconnect.inc");
+	// include("unconnect.inc");
 	exit();
 }
 
@@ -145,6 +174,7 @@ $month[9] = "ตุลาคม";
 $month[10] = "พฤศจิกายน";
 $month[11] = "ธันวาคม";
 
+include("connect.inc");
 ?>
 <script language="JavaScript" src="calendar/calendar.js"></script>
 <link href="calendar/calendar.css" rel="stylesheet" type="text/css">
@@ -169,20 +199,33 @@ function newXmlHttp(){
 }
 
 function viewdetail(action,hn) {
-	var stat;
-	
-		if(document.getElementById("hn").value != ""){
 
-			url = 'save_wound.php?action='+action+'&hn=' + hn;
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
+	var resText = document.getElementById("div_viewdetail");
+	if(hn.trim()==''){
+		document.getElementById("div_viewdetail").style.color = 'red';
+		resText.innerHTML = 'กรุณาใส่ HN ';
+		return;
+	}
 
-			stat = xmlhttp.responseText;
-			stat = stat.substr(4);
+	var url = 'save_wound.php?action='+action+'&hn='+hn;
+	try {
+		var request  = new XMLHttpRequest();
+		request.open('GET', url, true);
+		request.onreadystatechange = function() {
+			if (this.readyState === 4) {
+				if (this.status >= 200 && this.status < 400) {
+					resText.innerHTML = this.responseText.trim();
+				} else {
 
-			document.getElementById("div_viewdetail").innerHTML = stat;
-		}
+				}
+			}
+		};
+		request.send();
+		request = null;
+	}
+	catch(err) {
+		resText.innerHTML = err.message;
+	}
 }
 
 function view_inj(w){
@@ -225,13 +268,14 @@ function fncSubmit()
 }
 
 </script>
+<div><h3>ออกใบนัดทำแผล</h3></div>
+<A HREF="..\nindex.htm">&lt;&lt;เมนู</A> | <a href="reprint_wound.php">พิมพ์ใบนัดทำแผลย้อนหลัง</a>
 
- ออกใบนัดทำแผล <A HREF="..\nindex.htm">&lt;&lt;เมนู</A>
 <FORM METHOD=POST ACTION="" name="f1" onSubmit="JavaScript:return fncSubmit();">
 	<TABLE align="center">
 	<TR>
 	  <TD align="right">HN :</TD>
-	  <TD><INPUT id="hn" TYPE="text" NAME="hn"  onblur="viewdetail('view',document.getElementById('hn').value);">
+	  <TD><INPUT id="hn" TYPE="text" NAME="hn"  onblur="viewdetail('view',this.value);">
 	    &nbsp;&nbsp;
 	    <!--<INPUT TYPE="button" VALUE="ตรวจสอบ HN" Onclick="viewdetail('view',document.getElementById('hn').value);">--></TD>
 	  </TR>
@@ -306,7 +350,7 @@ function fncSubmit()
 
 
 		</SELECT>
-		<INPUT TYPE="text" NAME="remark2"><input type="button" name="calendar_button" value="....." onClick="document.f1.remark2.value='';showCalendar('remark2','DD-MM-YYYY')">
+		<INPUT TYPE="text" id="remark2" NAME="remark2"><input type="button" name="calendar_button" value="....." onClick="document.f1.remark2.value='';showCalendar('remark2','DD-MM-YYYY')">
 		</TD>
 	</TR>
 	<TR>
