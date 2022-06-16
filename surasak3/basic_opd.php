@@ -389,8 +389,10 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 <form id="f1" name="f1" method="post" action="">
 <div><strong>ประเภทผู้ป่วย :</strong></div>
 <input type="radio" name="type" id="type1" value="SI"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
+<!--
 <input type="radio" name="type" id="type2" value="HI"><label for="type2">ผู้ป่วย Home Isolation</label>&nbsp;&nbsp;&nbsp;
 <input type="radio" name="type" id="type3" value="FI"><label for="type3">ผู้ป่วย รพ.สนาม</label>&nbsp;
+-->
 <input type="radio" name="type" id="type4" value="OP"><label for="type4">ผู้ป่วยทั่วไป</label>&nbsp;
 <div><strong>กลุ่มอาการ :</strong></div>
 <input type="radio" name="color" id="color1" value="green"><label for="color1">ผู้ป่วยกลุ่มอาการสีเขียว</label>&nbsp;&nbsp;&nbsp;
