@@ -372,7 +372,7 @@ return stat;
 
 
 </SCRIPT>
-<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
+<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a> | <a href="reprint_inj_appoint.php">พิมพ์ใบนัดฉีดยาย้อนหลัง</a>
 <script language="JavaScript" src="calendar/calendar.js">
 </script>
 <link href="calendar/calendar.css" rel="stylesheet" type="text/css">
