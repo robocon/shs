@@ -28,6 +28,7 @@ $item = $q->fetch_assoc();
         <th>depart</th>
         <th>part</th>
         <th>code</th>
+        <th>price</th>
         <th>codebak</th>
         <th>codex</th>
         <th>detail</th>
@@ -37,6 +38,7 @@ $item = $q->fetch_assoc();
         <td><?=$item['depart'];?></td>
         <td><?=$item['part'];?></td>
         <td><?=$item['code'];?></td>
+        <td><?=$item['price'];?></td>
         <td><?=$item['codebak'];?></td>
         <td><?=$item['codex'];?></td>
         <td><?=$item['detail'];?></td>
