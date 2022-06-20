@@ -26,11 +26,11 @@ session_unregister("cidguard");
 </p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="submit" value="  ตกลง  " name="B1">
-    &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< เมนู</a>&nbsp;|
-    &nbsp;<a target=_self  href='appoilst.php'>ดูรายชื่อผู้ป่วยนัด</a>&nbsp;|
-    &nbsp;<a href="appoint_edit.php" target="_blank">แก้ไข LAB,X-Ray ใบนัด</a>
-    |
-    &nbsp;<a href="reprint_wound.php" target="_blank">ใบนัดทำแผลย้อนหลัง</a>
+    &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< เมนู</a>&nbsp;|&nbsp;
+    <a target=_self  href='appoilst.php'>ดูรายชื่อผู้ป่วยนัด</a>&nbsp;|&nbsp;
+    <a href="appoint_edit.php" target="_blank">แก้ไข LAB,X-Ray ใบนัด</a>&nbsp;|&nbsp;
+    <a href="reprint_wound.php" target="_blank">ใบนัดทำแผลย้อนหลัง</a>&nbsp;|&nbsp;
+    <a href="reprint_inj_appoint.php" target="_blank">ใบนัดฉีดยาย้อนหลัง</a>
   </p>
 คำเตือน  .....  การออกใบนัด กรุณาอย่าใช้อักษรที่พิเศษเช่น (  , "  '  เป็นต้น)   อาจทำให้ข้อมูลไม่สามารถบันทึกลงในคอมพิวเตอร์
 </form>
