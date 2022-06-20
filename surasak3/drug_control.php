@@ -25,20 +25,21 @@ function dump($str){
 if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 	include("connect.inc");
 	
-	$sql = "SELECT `row_id`,`drugcode`,`tradname`,`genname` 
+	$sql = "SELECT `row_id`,`drugcode`,`tradname`,`genname`,`stock`
 	FROM `druglst` 
 	WHERE `drugcode` LIKE '%".$_GET["search1"]."%' ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
 		echo "<Div style=\"position: absolute;text-align: center; width:500px; height:430px; overflow:auto; \">";
-
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\"><tr align=\"center\" bgcolor=\"#333333\"><td ><strong>&nbsp;</strong></td><td ><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td><td ><font style=\"color: #FFFFFF;\"><strong>ชื่อยา(การค้า)</strong></font></td><td ><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td></tr>";
-
-
 		$i=1;
 		while($se = Mysql_fetch_assoc($result)){
-		echo "<tr><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value = '",jschars($se["drugcode"]),"';document.getElementById('txt1').value = '",jschars($se["tradname"]),"';document.getElementById('txt2').value = '",jschars($se["genname"]),"';document.getElementById('list').innerHTML ='';document.getElementById('drug_id').value = '".$se["row_id"]."';\">",$se["drugcode"],"</A></td><td>".$se['tradname']."</td><td>&nbsp;</td></tr>";
+			$stockTxt = '';
+			if($se['stock']==0){
+				$stockTxt = ' <span style="color:red; text-decoration:underline;">(แจ้งเตือน! จำนวนยาในคลังเป็นศูนย์)</span>';
+			}
+			echo "<tr><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"check_amount('".$_GET["getto"]."','".jschars($se["drugcode"])."','".jschars($se["tradname"])."','".jschars($se["genname"])."','".$se["row_id"]."','".$se['stock']."');\">",$se["drugcode"],"</A></td><td>".$se['tradname'].$stockTxt."</td><td>&nbsp;</td></tr>";
 		}
 		
 		echo "</TABLE></Div>";
@@ -136,6 +137,20 @@ function searchSuggest(str,len,getto) {
 		document.getElementById("list").innerHTML = xmlhttp.responseText;
 	}
 }
+
+function check_amount(getto,drugcode,tradname,genname,row_id,stock){ 
+	
+	if(parseInt(stock)<=0){
+		alert("แจ้งเตือน! จำนวนยาในคลังเป็นศูนย์");
+	}
+
+	document.getElementById(getto).value = drugcode;
+	document.getElementById('txt1').value = tradname;
+	document.getElementById('txt2').value = genname;
+	document.getElementById('list').innerHTML ='';
+	document.getElementById('drug_id').value = row_id;
+}
+
 </script>
 <style type="text/css">
 .font1 {
