@@ -8,33 +8,42 @@ function dump($txt){
     echo "</pre>";
 }
 
-include 'includes/connect_sv13.php';
-
+// include 'includes/connect_sv13.php';
 // mysql_query('SET NAMES TIS620', $db);
+define('HOST', '192.168.131.250');
+define('PORT', '3306');
+define('DB', 'smdb');
+define('USER', 'remoteuser');
+define('PASS', '');
 
-$date_start = '2564-06-01';
-$date_end = '2564-06-31';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+
+$date_start = '2565-04-01';
+$date_end = '2565-06-30';
 $quarter = 3;
-$year = '2564';
+$year = '2565';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_trauma_'.$quarter.'.sql';
-
-unlink($filePath);
+if(file_exists($filePath))
+{
+    unlink($filePath);
+}
 
 $sql = "SELECT *, 
 CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn`
 FROM `trauma`
 WHERE ( `date` >= '$date_start 00:00:00' AND `date` <= '$date_end 23:59:59' ) ";
-$q = mysql_query($sql, $db) or die( mysql_error() );
-
+// $q = mysql_query($sql, $db) or die( mysql_error() );
+$q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `trauma` (`id`, `trauma_id`, `date`, `hn`, `ptright`, `dx`, `organ`, `maintenance`, `cure`, `doctor`, `trauma`, `type_wounded`, `type_wounded2`, `date_hn`, `quarter`, `year`) VALUES ";
 
 $sql_data_list = array();
 $test_i = 0;
 
-while ( $item = mysql_fetch_assoc($q) ) {
+// while ( $item = mysql_fetch_assoc($q) ) {
+while ( $item = $q->fetch_assoc() ) {
 
     $trauma_id = $item['row_id'];
     $date = $item['date'];
@@ -69,6 +78,6 @@ while ( $item = mysql_fetch_assoc($q) ) {
 // file_put_contents($filePath, $sql_header."\n".$data_sql, FILE_APPEND);
 // file_put_contents($filePath, ';', FILE_APPEND);
 
-mysql_close($db);
+// mysql_close($db);
 
 echo "Success";

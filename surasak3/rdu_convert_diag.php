@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php 
 
 set_time_limit(0);
@@ -24,7 +25,7 @@ function dump($txt){
     echo "</pre>";
 }
 
-include 'includes/connect_sv13.php';
+// include 'includes/connect_sv13.php';
 // $db = mysql_connect("192.168.1.13","remoteuser","");
 // if (!$db) {
 //     die('Not connected : ' . mysql_error());
@@ -37,18 +38,29 @@ include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
 
-$date_start = '2564-07-01';
-$date_end = '2564-09-15';
-$quarter = 4;
-$year = '2564';
+$date_start = '2565-04-01';
+$date_end = '2565-06-30';
+$quarter = 3;
+$year = '2565';
+
+define('HOST', '192.168.131.250');
+define('PORT', '3306');
+define('DB', 'smdb');
+define('USER', 'remoteuser');
+define('PASS', '');
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';
+if(file_exists($filePath))
+{
+    unlink($filePath);
+}
 
-unlink($filePath);
-
+$myfile = fopen($filePath, "w") or die("Unable to open file!");
+// dump($myfile);
+fclose($myfile);
 // file_put_contents($filePath, "DELETE FROM `diag` WHERE `quarter` = '$quarter' AND `year` = '$year';\n", FILE_APPEND);
 
 /*
@@ -79,22 +91,26 @@ $sql = "SELECT SUBSTRING(`thidate`,1,10) AS `thiDateShort`,`thdatehn`,`ptname`,`
 FROM `opday` 
 WHERE `thidate` >= '$date_start 00:00:00' AND `thidate` <= '$date_end 23:59:59' 
 AND `doctor` <> '' ";
-
-$q = mysql_query($sql, $db) or die( mysql_error() );
+// dump($sql);
+// $q = mysql_query($sql, $db) or die( mysql_error() );
+$q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
 $sql_data_list = '';
 
-while ( $item = mysql_fetch_assoc($q) ) {
+while ( $item = $q->fetch_assoc() ) {
+// while ( $item = mysql_fetch_assoc($q) ) {
 
     $preAge = $item['pre_age'];
     $hn = $item['hn'];
 
-    $sql = "SELECT `dbirth`,`hn`,TIMESTAMPDIFF(YEAR, SUBSTRING(toEn(`dbirth`), 1, 10), '$preAge') AS `age` 
+    $sql_opcard = "SELECT `dbirth`,`hn`,TIMESTAMPDIFF(YEAR, SUBSTRING(toEn(`dbirth`), 1, 10), '$preAge') AS `age` 
     FROM `opcard` 
     WHERE `hn` = '$hn' ";
-    $qOP = mysql_query($sql, $db) or die( mysql_error() );
-    $opc = mysql_fetch_assoc($qOP);
+    // $qOP = mysql_query($sql, $db) or die( mysql_error() );
+    // $opc = mysql_fetch_assoc($qOP);
+    $qOP = $dbi->query($sql_opcard);
+    $opc = $qOP->fetch_assoc();
     $age = $opc['age'];
 
     $ptname = $item['ptname'];
@@ -128,6 +144,6 @@ while ( $item = mysql_fetch_assoc($q) ) {
     
 }
 
-mysql_close($db);
+// mysql_close($db);
 
 echo "Success";

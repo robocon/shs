@@ -8,19 +8,28 @@ function dump($txt){
     echo "</pre>";
 }
 
-include 'includes/connect_sv13.php';
+// include 'includes/connect_sv13.php';
 
 // mysql_query('SET NAMES TIS620', $db);
+define('HOST', '192.168.131.250');
+define('PORT', '3306');
+define('DB', 'smdb');
+define('USER', 'remoteuser');
+define('PASS', '');
 
-$date_start = '2021-06-01';
-$date_end = '2021-06-31';
-$quarter = 5;
-$year = '2564';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+
+$date_start = '2022-04-01';
+$date_end = '2022-06-30';
+$quarter = 3;
+$year = '2565';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_lab_'.$quarter.'.sql';
-
-unlink($filePath);
+if(file_exists($filePath))
+{
+    unlink($filePath);
+}
 
 
 // file_put_contents($filePath, "DELETE FROM `lab` WHERE `quarter` = '$quarter' AND `year` = '$year';\n", FILE_APPEND);
@@ -45,16 +54,15 @@ LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn`
 WHERE c.`labcode` = 'CREA' 
 AND c.`result` != '*' 
 ORDER BY b.`autonumber` ASC ";
-
-dump($sql);
-
-$q = mysql_query($sql, $db) or die( mysql_error() );
-
+// dump($sql);
+// $q = mysql_query($sql, $db) or die( mysql_error() );
+$q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
 $sql_data = '';
 
-while ( $item = mysql_fetch_assoc($q) ) {
+// while ( $item = mysql_fetch_assoc($q) ) {
+while ( $item = $q->fetch_assoc() ) {
 
     $autonumber = $item['autonumber'];
     $orderdate = $item['orderdate'];
@@ -71,6 +79,6 @@ while ( $item = mysql_fetch_assoc($q) ) {
 
 }
 
-mysql_close($db);
+// mysql_close($db);
 
 echo "Success";
