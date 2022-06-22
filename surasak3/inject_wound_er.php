@@ -1,5 +1,10 @@
 <?php
 session_start();
+if(empty($_SESSION['sIdname'])){
+	echo 'SESSION หมดอายุ <a href="../nindex.htm">คลิกที่นี่</a> เพื่อ Login อีกครั้ง';
+	exit;
+}
+
 if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "view_inj" )){
 	header("content-type: application/x-javascript; charset=TIS-620");
 }
