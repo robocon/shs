@@ -118,6 +118,7 @@ return $pAge;
 }
 
 include("connect.inc");   
+// mysql_query("SET NAMES UTF-8");
 
 $thidate = date("d-m-").(date("Y")+543);
 $thidatehn = $thidate.$_REQUEST["hn"];
@@ -158,7 +159,7 @@ if($_POST["cigarette"]=="1"){
 
 	$grade = ( empty($_POST['grade']) ) ? NULL : $_POST['grade'] ;
 	$mind = ( empty($_POST['mind']) ) ? NULL : $_POST['mind'] ;
-	$the_pill = ( empty($_POST['the_pill']) ) ? NULL : $_POST['the_pill'] ;
+	$the_pill = ( empty($_POST['the_pill']) ) ? 0 : (int)$_POST['the_pill'] ;
 	
 	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
 	$result = Mysql_Query($sql);
@@ -207,7 +208,7 @@ $sql = "Update `opd` set  `thidate` = '".$thidate_now."',
 `hpi` = '$hpi',
 `grade` = '$grade', 
 `mind` = '$mind', 
-`the_pill` = '$the_pill' 
+`the_pill` = $the_pill 
 
 where  `thdatehn` = '".$thidatehn."' limit 1 ";
 
@@ -321,15 +322,17 @@ $sql = "INSERT INTO `opd` (
 		$plus = "";
 	}
 
-	if((isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "")){
+	$time = "3";
+	if($_POST["print_basic_opd"] = "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){
 		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
-	$time = "6";
-	}else{
+		$time = "6";
+
+	}elseif ($_POST["basic_opd"] = "ตกลง&สติกเกอร์ OPD") {
 		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
-		$time = "3";
+		
 	}
+
+	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
 
 	if($plus == ""){
 		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
