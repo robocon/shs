@@ -323,20 +323,44 @@ $sql = "INSERT INTO `opd` (
 	}
 
 	$time = "3";
+	$path = 'insert_basic_opd.php';
 	if($_POST["print_basic_opd"] = "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){
-		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		$time = "6";
+		$path = 'stk_basic_opd.php';
 
 	}elseif ($_POST["basic_opd"] = "ตกลง&สติกเกอร์ OPD") {
-		echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		
 	}
 
-	echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
+	// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
 
 	if($plus == ""){
-		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
+		// echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
 	}
+
+	?>
+	<br />
+
+	<center>
+		<a href="basic_opd.php" style="font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;"> &lt;&lt;  กลับ</a>
+	</center>
+
+	<script type="text/javascript">
+		window.onload = function(){ 
+			window.open('<?=$path;?>?dthn=<?=urlencode($thidatehn);?>'); 
+			<?=$plus;?>
+			setInterval(function(){ 
+				location.replace("basic_opd.php");
+				
+			},3000);
+		}
+	</script>
+
+	<!-- <META HTTP-EQUIV="Refresh" CONTENT="<?=$time;?>; URL=basic_opd.php"> -->
+	<?php
+
 	exit();
 }
 
@@ -1020,11 +1044,11 @@ mmHg </td>
 				) AS `diag_date_year`
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn'";
-				// $q = mysql_query($sql) or die( mysql_error() );
+				$q = mysql_query($sql) or die( mysql_error() );
 				$ht_year = '';
 				if( mysql_num_rows($q) > 0 ){
 					$ht = mysql_fetch_assoc($q);
-					$ht_year = $ht['diag_date_year'];
+					$ht_year = (int)$ht['diag_date_year'];
 				}
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี

@@ -123,6 +123,7 @@ $sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , h
 `grade`,`mind`,`the_pill`
 From opd 
 where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+
 $result_dt_hn = Mysql_Query($sql);
 list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill) = Mysql_fetch_row($result_dt_hn);
 
@@ -283,239 +284,242 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 	$dthn = $_GET['dthn'];
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
-	$item = mysql_fetch_assoc($q);
 
-	// $pdf->AddPage();
-
-	$getY = $pdf->getY();
-	$pdf->SetXY(2, $getY+5);
-	$pdf->SetFont('THSarabun','B',14);
-	$pdf->Write(5, "EYE Screening");
-
-	$getY = $pdf->getY();
-	$pdf->SetXY(2, $getY+5);
-	$esr_not = empty($item['esr_not']) ? '            ' : ' '.$item['esr_not'].' ' ;
-	$esl_not = empty($item['esl_not']) ? '            ' : ' '.$item['esl_not'].' ' ;
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, "NOT RE ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esr_not);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, " LE ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esl_not);
-	
-	$getY = $pdf->getY();
-	$esr = empty($item['esr']) ? '            ' : ' '.$item['esr'].' ' ;
-	$esr_ph = empty($item['esr_ph']) ? '            ' : ' '.$item['esr_ph'].' ' ;
-	$esr_glass = empty($item['esr_glass']) ? '            ' : ' '.$item['esr_glass'].' ' ;
-	$pdf->SetXY(4, $getY+5);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, "VA RE ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esr);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, " PH ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esr_ph);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, " with glass ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esr_glass);
-
-	$getY = $pdf->getY();
-	$esl = empty($item['esl']) ? '            ' : ' '.$item['esl'].' ' ;
-	$esl_ph = empty($item['esl_ph']) ? '            ' : ' '.$item['esl_ph'].' ' ;
-	$esl_glass = empty($item['esl_glass']) ? '            ' : ' '.$item['esl_glass'].' ' ;
-	$pdf->SetXY(9, $getY+5);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, "LE ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esl);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, " PH ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esl_ph);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, " with glass ");
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $esl_glass);
-	
-	if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
+	if(mysql_num_rows($q) > 0)
 	{
+		$item = mysql_fetch_assoc($q);
+
+		$pdf->AddPage();
+
 		$getY = $pdf->getY();
-		$pdf->SetXY(2, $getY+10);
+		$pdf->SetXY(2, $getY+5);
 		$pdf->SetFont('THSarabun','B',14);
-		$pdf->Write(5, "Nursing DX");
-		
-		if(!empty($item['nurse_dx1'])){ 
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['nurse_dx1']);
-			$pdf->SetFont('THSarabun','U',14);
-			$pdf->Write(5, ' '.$item['nurse_dx1_txt']);
-		}
+		$pdf->Write(5, "EYE Screening");
 
-		if(!empty($item['nurse_dx2'])){ 
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['nurse_dx2']);
-			$pdf->SetFont('THSarabun','U',14);
-			$pdf->Write(5, ' '.$item['nurse_dx2_txt']);
-		}
-
-		if(!empty($item['nurse_dx3'])){ 
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['nurse_dx3']);
-			$pdf->SetFont('THSarabun','U',14);
-			$pdf->Write(5, ' '.$item['nurse_dx3_txt']);
-		}
-
-		if(!empty($item['nurse_dx4'])){ 
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['nurse_dx4']);
-		}
-
-		if(!empty($item['nurse_dx5'])){ 
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['nurse_dx5']);
-		}
-		
-	}
-	
-	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
-	{
 		$getY = $pdf->getY();
-		$pdf->SetXY(2, $getY+10);
-		$pdf->SetFont('THSarabun','B',14);
-		$pdf->Write(5, "Implementation");
+		$pdf->SetXY(2, $getY+5);
+		$esr_not = empty($item['esr_not']) ? '            ' : ' '.$item['esr_not'].' ' ;
+		$esl_not = empty($item['esl_not']) ? '            ' : ' '.$item['esl_not'].' ' ;
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, "NOT RE ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esr_not);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, " LE ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esl_not);
+		
+		$getY = $pdf->getY();
+		$esr = empty($item['esr']) ? '            ' : ' '.$item['esr'].' ' ;
+		$esr_ph = empty($item['esr_ph']) ? '            ' : ' '.$item['esr_ph'].' ' ;
+		$esr_glass = empty($item['esr_glass']) ? '            ' : ' '.$item['esr_glass'].' ' ;
+		$pdf->SetXY(4, $getY+5);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, "VA RE ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esr);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, " PH ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esr_ph);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, " with glass ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esr_glass);
 
-		if(!empty($item['imp1'])){
+		$getY = $pdf->getY();
+		$esl = empty($item['esl']) ? '            ' : ' '.$item['esl'].' ' ;
+		$esl_ph = empty($item['esl_ph']) ? '            ' : ' '.$item['esl_ph'].' ' ;
+		$esl_glass = empty($item['esl_glass']) ? '            ' : ' '.$item['esl_glass'].' ' ;
+		$pdf->SetXY(9, $getY+5);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, "LE ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esl);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, " PH ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esl_ph);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, " with glass ");
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $esl_glass);
+		
+		if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
+		{
 			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['imp1']);
+			$pdf->SetXY(2, $getY+10);
+			$pdf->SetFont('THSarabun','B',14);
+			$pdf->Write(5, "Nursing DX");
+			
+			if(!empty($item['nurse_dx1'])){ 
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['nurse_dx1']);
+				$pdf->SetFont('THSarabun','U',14);
+				$pdf->Write(5, ' '.$item['nurse_dx1_txt']);
+			}
 
-		}
-		if(!empty($item['imp2'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['imp2']);
-			$pdf->SetFont('THSarabun','U',14);
-			$pdf->Write(5, ' '.$item['imp2_txt']);
-		}
-		if(!empty($item['imp3'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['imp3']);
-		}
-		if(!empty($item['imp5'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['imp5']);
-		}
-		if(!empty($item['imp6'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['imp6']);
-			$pdf->SetFont('THSarabun','U',14);
-			$pdf->Write(5, ' '.$item['imp6_txt']);
+			if(!empty($item['nurse_dx2'])){ 
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['nurse_dx2']);
+				$pdf->SetFont('THSarabun','U',14);
+				$pdf->Write(5, ' '.$item['nurse_dx2_txt']);
+			}
+
+			if(!empty($item['nurse_dx3'])){ 
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['nurse_dx3']);
+				$pdf->SetFont('THSarabun','U',14);
+				$pdf->Write(5, ' '.$item['nurse_dx3_txt']);
+			}
+
+			if(!empty($item['nurse_dx4'])){ 
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['nurse_dx4']);
+			}
+
+			if(!empty($item['nurse_dx5'])){ 
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['nurse_dx5']);
+			}
+			
 		}
 		
-	}
+		if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+		{
+			$getY = $pdf->getY();
+			$pdf->SetXY(2, $getY+10);
+			$pdf->SetFont('THSarabun','B',14);
+			$pdf->Write(5, "Implementation");
 
-	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
-	{ 
+			if(!empty($item['imp1'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['imp1']);
+
+			}
+			if(!empty($item['imp2'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['imp2']);
+				$pdf->SetFont('THSarabun','U',14);
+				$pdf->Write(5, ' '.$item['imp2_txt']);
+			}
+			if(!empty($item['imp3'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['imp3']);
+			}
+			if(!empty($item['imp5'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['imp5']);
+			}
+			if(!empty($item['imp6'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['imp6']);
+				$pdf->SetFont('THSarabun','U',14);
+				$pdf->Write(5, ' '.$item['imp6_txt']);
+			}
+			
+		}
+
+		if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+		{ 
+			$getY = $pdf->getY();
+			$pdf->SetXY(2, $getY+10);
+			$pdf->SetFont('THSarabun','B',14);
+			$pdf->Write(5, "Evaluation");
+
+			if(!empty($item['eva1'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva1']);
+			}
+			if(!empty($item['eva2'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva2']);
+			}
+			if(!empty($item['eva3'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva3']);
+			}
+			if(!empty($item['eva4'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva4']);
+			}
+			if(!empty($item['eva5'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva5']);
+			}
+			if(!empty($item['eva6'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva6']);
+			}
+			if(!empty($item['eva7'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva7']);
+			}
+			if(!empty($item['eva8'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva8']);
+			}
+			if(!empty($item['eva9'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva9']);
+			}
+			if(!empty($item['eva10'])){
+				$getY = $pdf->getY();
+				$pdf->SetXY(2, $getY+5);
+				$pdf->SetFont('THSarabun','',14);
+				$pdf->Write(5, '- '.$item['eva10']);
+				$pdf->SetFont('THSarabun','U',14);
+				$pdf->Write(5, ' '.$item['eva10_txt']);
+			}
+		}
+
 		$getY = $pdf->getY();
-		$pdf->SetXY(2, $getY+10);
-		$pdf->SetFont('THSarabun','B',14);
-		$pdf->Write(5, "Evaluation");
-
-		if(!empty($item['eva1'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva1']);
-		}
-		if(!empty($item['eva2'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva2']);
-		}
-		if(!empty($item['eva3'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva3']);
-		}
-		if(!empty($item['eva4'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva4']);
-		}
-		if(!empty($item['eva5'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva5']);
-		}
-		if(!empty($item['eva6'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva6']);
-		}
-		if(!empty($item['eva7'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva7']);
-		}
-		if(!empty($item['eva8'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva8']);
-		}
-		if(!empty($item['eva9'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva9']);
-		}
-		if(!empty($item['eva10'])){
-			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+5);
-			$pdf->SetFont('THSarabun','',14);
-			$pdf->Write(5, '- '.$item['eva10']);
-			$pdf->SetFont('THSarabun','U',14);
-			$pdf->Write(5, ' '.$item['eva10_txt']);
-		}
+		$pdf->SetXY(2, $getY+5);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, 'ผู้ป่วยรับทราบ '.$item['eva10']);
+		$pdf->SetFont('THSarabun','U',14);
+		$pdf->Write(5, $_SESSION['sOfficer']);
+		$pdf->SetFont('THSarabun','',14);
+		$pdf->Write(5, ' /RN,PN ');
 	}
-
-	$getY = $pdf->getY();
-	$pdf->SetXY(2, $getY+5);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, 'ผู้ป่วยรับทราบ '.$item['eva10']);
-	$pdf->SetFont('THSarabun','U',14);
-	$pdf->Write(5, $_SESSION['sOfficer']);
-	$pdf->SetFont('THSarabun','',14);
-	$pdf->Write(5, ' /RN,PN ');
-
 }
 
 $pdf->AutoPrint(true);
