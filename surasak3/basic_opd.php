@@ -1195,7 +1195,7 @@ mmHg </td>
 				<br>
 				<br>
 
-				<select name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
+				<select style="width:600px;" name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+' '+this.value;}" class="txtsarabun">
 					<option value="">--- อาการเดิม ---</option>
 					<?php
 					foreach($his_hpi as $value){
