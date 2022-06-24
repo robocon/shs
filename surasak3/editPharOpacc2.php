@@ -20,15 +20,15 @@ if($_SESSION['sIdname']!=='krit')
 <?php 
 if($_REQUEST['hn']){
     
-    // $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-    $dbi = new mysqli(HOST,USER,PASS,DB);
+    $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+    // $dbi = new mysqli(HOST,USER,PASS,DB);
 
     $date = $_REQUEST['date'];
     $hn = $_REQUEST['hn'];
 
     $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND `depart` = 'PHAR' ";
-    $q = $dbi->query($sql);
-    if($q->num_rows>0)
+    $qOP = $dbi->query($sql);
+    if($qOP->num_rows>0)
     {
         ?>
         <table>
@@ -36,6 +36,7 @@ if($_REQUEST['hn']){
                 <th>row_id</th>
                 <th>date</th>
                 <th>hn</th>
+                <th>credit</th>
                 <th>price</th>
                 <th>essd</th>
                 <th>nessdy</th>
@@ -47,12 +48,13 @@ if($_REQUEST['hn']){
                 <th></th>
             </tr>
         <?php
-        while ($a = $q->fetch_assoc()) {
+        while ($a = $qOP->fetch_assoc()) {
             ?>
             <tr>
                 <td><a href="editPharOpacc3.php?txdate=<?=$a['txdate'];?>&hn=<?=$a['hn'];?>" target="phardep"><?=$a['row_id'];?></a></td>
                 <td><?=$a['date'];?></td>
                 <td><?=$a['hn'];?></td>
+                <td><?=$a['credit'];?></td>
                 <td><?=$a['price'];?></td>
                 <td><?=$a['essd'];?></td>
                 <td><?=$a['nessdy'];?></td>
