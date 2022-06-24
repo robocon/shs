@@ -25,21 +25,21 @@ function dump($str){
 if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 	include("connect.inc");
 	
-	$sql = "SELECT `row_id`,`drugcode`,`tradname`,`genname`,`stock`
+	$sql = "SELECT `row_id`,`drugcode`,`tradname`,`genname`,`stock`,`mainstk`
 	FROM `druglst` 
 	WHERE `drugcode` LIKE '%".$_GET["search1"]."%' ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
 		echo "<Div style=\"position: absolute;text-align: center; width:500px; height:430px; overflow:auto; \">";
-		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\"><tr align=\"center\" bgcolor=\"#333333\"><td ><strong>&nbsp;</strong></td><td ><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td><td ><font style=\"color: #FFFFFF;\"><strong>ชื่อยา(การค้า)</strong></font></td><td ><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td></tr>";
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\" style=\"border-collapse:collapse;\"><tr align=\"center\" bgcolor=\"#333333\"><td ><strong>&nbsp;</strong></td><td ><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td><td ><font style=\"color: #FFFFFF;\"><strong>ชื่อยา(การค้า)</strong></font></td><td ><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td></tr>";
 		$i=1;
 		while($se = Mysql_fetch_assoc($result)){
 			$stockTxt = '';
-			if($se['stock']==0){
-				$stockTxt = ' <span style="color:red; text-decoration:underline;">(แจ้งเตือน! จำนวนยาในคลังเป็นศูนย์)</span>';
+			if($se['mainstk']==0){
+				$stockTxt = ' <span style="color:red; text-decoration:underline;">(ยาหมด)</span>';
 			}
-			echo "<tr><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"check_amount('".$_GET["getto"]."','".jschars($se["drugcode"])."','".jschars($se["tradname"])."','".jschars($se["genname"])."','".$se["row_id"]."','".$se['stock']."');\">",$se["drugcode"],"</A></td><td>".$se['tradname'].$stockTxt."</td><td>&nbsp;</td></tr>";
+			echo "<tr style=\"border-bottom: 1px solid #000000;\"><td valign=\"top\"></td><td><A HREF=\"javascript:void(0);\" Onclick=\"check_amount('".$_GET["getto"]."','".jschars($se["drugcode"])."','".jschars($se["tradname"])."','".jschars($se["genname"])."','".$se["row_id"]."','".$se['mainstk']."');\">",$se["drugcode"],"</A></td><td>".$se['tradname'].$stockTxt."</td><td>&nbsp;</td></tr>";
 		}
 		
 		echo "</TABLE></Div>";
@@ -313,7 +313,7 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 			} 
 			*/
 			?>
-			<input name="import<?=$k?>" type="text" onkeyup="checkStock(<?=$result2['mainstk']?>)" id='import<?=$k?>' size="10" /></td>
+			<input name="import<?=$k?>" type="text" onkeyup="checkStock(<?=$result2['mainstk']?>)" onblur="compair_stock(<?=$result2['mainstk']?>,this.value)" id='import<?=$k?>' size="10" /></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['drug_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['drug_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
 		</tr>
@@ -334,6 +334,11 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 	function checkStock(st){
 		if(st<=0){
 			alert('ยาในคลังเป็นศูนย์กรุณาติดต่อห้องยาเพื่อตรวจสอบจำนวนยา');
+		}
+	}
+	function compair_stock(stock,value){ 
+		if(parseInt(stock)<parseInt(value)){
+			alert('จำนวนเบิก เกินกว่าในคลัง');
 		}
 	}
 </script>
