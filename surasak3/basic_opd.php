@@ -322,14 +322,14 @@ $sql = "INSERT INTO `opd` (
 		$plus = "";
 	}
 
-	$time = "3";
+	$time = "4";
 	$path = 'insert_basic_opd.php';
-	if($_POST["print_basic_opd"] = "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){
+	if($_POST["print_basic_opd"] == "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		$time = "6";
 		$path = 'stk_basic_opd.php';
 
-	}elseif ($_POST["basic_opd"] = "ตกลง&สติกเกอร์ OPD") {
+	}elseif ($_POST["basic_opd"] == "ตกลง&สติกเกอร์ OPD") {
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		
 	}
@@ -344,17 +344,19 @@ $sql = "INSERT INTO `opd` (
 	<br />
 
 	<center>
-		<a href="basic_opd.php" style="font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;"> &lt;&lt;  กลับ</a>
+		<a href="basic_opd.php" style="font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;"> &lt;&lt;  กลับ</a><br>
+		<a href="stk_basic_opd2.php?dthn=<?=urlencode($thidatehn);?>" style="font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;" target="_blank">คลิกที่นี่กรณีพิมพ์ไม่ได้</a><br>
 	</center>
 
 	<script type="text/javascript">
 		window.onload = function(){ 
-			window.open('<?=$path;?>?dthn=<?=urlencode($thidatehn);?>'); 
-			<?=$plus;?>
+			var myWindow = window.open('<?=$path;?>?dthn=<?=urlencode($thidatehn);?>');
+			
 			setInterval(function(){ 
+
 				location.replace("basic_opd.php");
 				
-			},3000);
+			},4000);
 		}
 	</script>
 
