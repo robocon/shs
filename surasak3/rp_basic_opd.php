@@ -86,7 +86,7 @@ body,td,th {
               <option value="08" <? if(date("m")=="08"){ echo" Selected "; }?> >สิงหาคม</option>
               <option value="09" <? if(date("m")=="09"){ echo" Selected "; }?> >กันยายน</option>
               <option value="10" <? if(date("m")=="10"){ echo" Selected "; }?> >ตุลาคม</option>
-              <option value="11" <? if(date("m")=="11"){ echo" Selected "; }?> >พฤษจิกายน</option>
+              <option value="11" <? if(date("m")=="11"){ echo" Selected "; }?> >พฤศจิกายน</option>
               <option value="12" <? if(date("m")=="12"){ echo" Selected "; }?> >ธันวาคม</option>
           </select></td>
           <td align="right">ปี :</td>
@@ -125,6 +125,9 @@ body,td,th {
 		print " <option value='EX02' ".($_POST["case"] =="EX02"?"Selected":"")." >ผู้ป่วยฉุกเฉิน</option>";
 		print " <option value='EX04' ".($_POST["case"] =="EX04"?"Selected":"")." >ผู้ป่วยนัด</option>";
 		print " <option value='EX11' ".($_POST["case"] =="EX11"?"Selected":"")." >รักษาโรคนอกเวลาราชการ</option>";
+		print " <option value='EX50' ".($_POST["case"] =="EX50"?"Selected":"")." >คลินิกโรคทางเดินหายใจ</option>";
+		print " <option value='EX55' ".($_POST["case"] =="EX55"?"Selected":"")." >ผู้ป่วยกรณี OP Self Isolation</option>";
+		print " <option value='EX56' ".($_POST["case"] =="EX56"?"Selected":"")." >ผู้ป่วยกรณี Home Isolation</option>";
 		print " </select>";
 		?>
           </td>
@@ -156,6 +159,14 @@ body,td,th {
 		<td width="220">อาการ</td>
         <td width="169">แพทย์</td>
         <td width="169">จนท.</td>
+		<?
+		if($_POST["case"]=="EX55"){
+		?>
+        <td width="169">วันที่ประเมินอาการ<br>ครบ 48 ชั่วโมง</td>
+        <td width="169">วันที่ประเมินอาการ<br>หลัง 48 ชั่วโมง</td>		
+		<?
+		}
+		?>
         </tr>
 		<?php
 		if(empty($_POST["search"])){
@@ -315,12 +326,35 @@ print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.12765807381873
 				$fullfinall="";
 				}
 				
+		
+		$d=substr($thidate,8,2);
+		$m=substr($thidate,5,2); 
+		$y=substr($thidate,0,4)-543;
+		$yy=substr($thidate,0,4); 
+		$thidate="$d/$m/$yy ".substr($thidate,10);
+		
+		
+		$strStartDate="$y-$m-$d";
+		$strNewDate1 = date ("Y-m-d", strtotime("+2 day", strtotime($strStartDate)));
+		$strNewDate2 = date ("Y-m-d", strtotime("+6 day", strtotime($strStartDate)));
+
+		$d1=substr($strNewDate1,8,2);
+		$m1=substr($strNewDate1,5,2); 
+		$y1=substr($strNewDate1,0,4)+543; 
+		$strNewDate1="$d1/$m1/$y1";
+
+		$d2=substr($strNewDate2,8,2);
+		$m2=substr($strNewDate2,5,2); 
+		$y2=substr($strNewDate2,0,4)+543; 
+		$strNewDate2="$d2/$m2/$y2";
+		
+		
 		?>
       <tr class="data_show<?php echo $j;?>">
         <td align="center"><?php echo $no;?></td>
         <td align="center"><?php echo $thidate;?></td>
         <td align="center"><A HREF="stk_basic_opd.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $hn;?></A></td>
-        <td><A HREF="insert_basic_opd.php?dthn=<?php echo $thdatehn;?>&reprint=yes" target="_blank"><?php echo $ptname;?></A></td>
+        <td><A HREF="stk_basic_opd2.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $ptname;?></A></td>
         <td width="40" align="center"><?php echo $temperature;?></td>
         <td width="40" align="center"><?php echo $pause;?></td>
         <td width="40" align="center"><?php echo $rate;?></td>
@@ -331,6 +365,14 @@ print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.12765807381873
 		<td align="left"><?php echo $organ;?></td>
         <td align="left"><?php echo $doctor;?></td>
         <td align="left"><?php echo $officer;?></td>
+		<?
+		if($_POST["case"]=="EX55"){
+		?>
+        <td align="center"><?php echo $strNewDate1;?></td>
+        <td align="center"><?php echo $strNewDate2;?></td>
+		<?
+		}
+		?>
         </tr>
 		<?php $no++;} ?>
     </table></td>
