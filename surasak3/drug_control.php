@@ -313,7 +313,7 @@ if( empty($rptday1) && empty($_SESSION['yymall']) ){
 			} 
 			*/
 			?>
-			<input name="import<?=$k?>" type="text" onkeyup="checkStock(<?=$result2['mainstk']?>)" onblur="compair_stock(<?=$result2['mainstk']?>,this.value)" id='import<?=$k?>' size="10" /></td>
+			<input name="import<?=$k?>" type="text" onblur="compair_stock(<?=$result2['mainstk']?>,this.value)" id='import<?=$k?>' size="10" /></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="#" onclick="window.open('drug_control_edit.php?rowid=<?=$result2['drug_id']?>',null,'height=300,width=320,scrollbars=0')">แก้ไข</a></td>
 			<td align="center" bgcolor="#FFFFCC" class="font1"><a href="drug_control.php?cancle=<?=$result2['drug_id']?>" onclick="return confirm('ยืนยันการลบออกจากรายการ');">ลบจากรายการ</a></td>
 		</tr>

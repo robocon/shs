@@ -1,19 +1,13 @@
 <?php
-
 include("connect.inc");  
 session_start();
-
-
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
 <title>Untitled Document</title>
 <style type="text/css">
-<!--
-
 .data_show{ 
 	font-family: TH SarabunPSK;
 	font-size:18px; 
@@ -53,7 +47,6 @@ body,td,th {
 	font-size:16px; 
 	font-weight:bold;
 	}
--->
 </style>
 </head>
 
@@ -354,7 +347,7 @@ print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.12765807381873
         <td align="center"><?php echo $no;?></td>
         <td align="center"><?php echo $thidate;?></td>
         <td align="center"><A HREF="stk_basic_opd.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $hn;?></A></td>
-        <td><A HREF="stk_basic_opd2.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $ptname;?></A></td>
+        <td><a href="stk_basic_opd2.php?dthn=<?php echo $thdatehn;?>" target="_blank"><?php echo $ptname;?></a></td>
         <td width="40" align="center"><?php echo $temperature;?></td>
         <td width="40" align="center"><?php echo $pause;?></td>
         <td width="40" align="center"><?php echo $rate;?></td>
@@ -374,8 +367,12 @@ print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.12765807381873
 		}
 		?>
         </tr>
-		<?php $no++;} ?>
-    </table></td>
+		<?php 
+		$no++; 
+	} 
+	?>
+    </table>
+	</td>
   </tr>
 </table>
 <?php 

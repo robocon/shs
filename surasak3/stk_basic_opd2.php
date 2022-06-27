@@ -97,13 +97,6 @@ list($dbirth) = Mysql_fetch_row($result111);
 $cAge = calcage($dbirth);
 
 ?>
-<script type="text/javascript">
-	window.onload = function(){
-		setTimeout(function () { window.print(); }, 500);
-		window.onfocus = function () { setTimeout(function () { window.close(); }, 500); }
-		
-	}
-</script>
 <style>
 body{
 	margin: 0;
@@ -248,3 +241,8 @@ table td{
 	}
 	?>
 </table>
+<script type="text/javascript">
+window.onload = function(){
+	window.print();
+}
+</script>
