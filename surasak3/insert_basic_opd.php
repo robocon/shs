@@ -270,7 +270,7 @@ table td, .display-sticker>div, p{
 <?php 
 
 
-if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
+if($_SESSION['smenucode'] == 'ADMEYE')
 {
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
@@ -408,7 +408,7 @@ if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
 		<?php
 	}
 	?>
-	<p>ผู้ป่วยรับทราบ <span class="underline_notfix"><?=$_SESSION['sOfficer'];?></span><b> /RN,PN</b></p>
+	<p class="display-sticker">ผู้ป่วยรับทราบ <span class="underline_notfix"><?=$_SESSION['sOfficer'];?></span><b> /RN,PN</b></p>
 	<?php
 }
 ?>

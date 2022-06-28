@@ -279,7 +279,7 @@ if ( !empty($hpi) ) {
 $pdf->SetXY(2, 2);
 $pdf->MultiCell(0, 5, $full_text);
 
-if($_SESSION['smenucode'] == 'ADM' OR $_SESSION['smenucode'] == 'ADMEYE')
+if($_SESSION['smenucode'] == 'ADMEYE')
 {
 	$dthn = $_GET['dthn'];
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";

@@ -241,6 +241,166 @@ table td{
 	}
 	?>
 </table>
+<?php 
+
+if($_SESSION['smenucode'] == 'ADMEYE')
+{
+	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
+	$q = mysql_query($sql);
+	$item = mysql_fetch_assoc($q);
+
+	if(empty($item['esr_not']))
+	{
+		$item['esr_not'] = '';
+	}
+
+	?>
+	<!-- <div style="page-break-after: always;"></div> -->
+	<style>
+		.display-sticker{
+			font-family: "Angsana New","TH SarabunPSK","TH Sarabun New";
+			line-height: 18.897637795px;
+			font-size: 14pt;
+		}
+		.underline{
+			width: 50px;
+			display: inline-block;
+			border-bottom: 1px dashed #000;
+		}
+		.underline_notfix{
+			display: inline-block;
+			border-bottom: 1px dashed #000;
+		}
+	</style>
+	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<div class="display-sticker">
+		<div><b>EYE Screening</b></div>
+		<table>
+			<tr>
+				<td>NOT</td>
+				<td>RE <span class="underline"><?=$item['esr_not'];?></span></td>
+				<td>LE <span class="underline"><?=$item['esl_not'];?></span></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>VA</td>
+				<td>RE <span class="underline"><?=$item['esr'];?></span></td>
+				<td>PH <span class="underline"><?=$item['esr_ph'];?></span></td>
+				<td>with glass <span class="underline"><?=$item['esr_glass'];?></span></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>LE <span class="underline"><?=$item['esl'];?></span></td>
+				<td>PH <span class="underline"><?=$item['esl_ph'];?></span></td>
+				<td>with glass <span class="underline"><?=$item['esl_glass'];?></span></td>
+			</tr>
+		</table>
+	</div>
+
+	<?php 
+	if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
+	{
+	?>
+	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<div class="display-sticker">
+		<div><b>Nursing DX</b></div>
+		<?php 
+		if(!empty($item['nurse_dx1'])){
+			?><div>- <?=$item['nurse_dx1'];?> <span class="underline_notfix"><?=$item['nurse_dx1_txt'];?></span></div><?php
+		}
+		if(!empty($item['nurse_dx2'])){
+			?><div>- <?=$item['nurse_dx2'];?> <span class="underline_notfix"><?=$item['nurse_dx2_txt'];?></span></div><?php
+		}
+		if(!empty($item['nurse_dx3'])){
+			?><div>- <?=$item['nurse_dx3'];?> <span class="underline_notfix"><?=$item['nurse_dx3_txt'];?></span></div><?php
+		}
+		if(!empty($item['nurse_dx4'])){
+			?><div>- <?=$item['nurse_dx4'];?></div><?php
+		}
+		if(!empty($item['nurse_dx5'])){
+			?><div>- <?=$item['nurse_dx5'];?></div><?php
+		}
+		?>
+	</div>
+	<?php 
+	}
+
+	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+	{
+	?>
+	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<div class="display-sticker">
+		<div><b>Implementation</b></div>
+		<?php 
+		if(!empty($item['imp1'])){
+			?><div>- <?=$item['imp1'];?></div><?php
+		}
+		if(!empty($item['imp2'])){
+			?><div>- <?=$item['imp2'];?> <span class="underline_notfix"><?=$item['imp2_txt'];?></span></div><?php
+		}
+		if(!empty($item['imp3'])){
+			?><div>- <?=$item['imp3'];?></div><?php
+		}
+		if(!empty($item['imp5'])){
+			?><div>- <?=$item['imp5'];?></div><?php
+		}
+		if(!empty($item['imp6'])){
+			?><div>- <?=$item['imp6'];?> <span class="underline_notfix"><?=$item['imp6_txt'];?></span></div><?php
+		}
+		?>
+	</div>
+	<?php 
+	}
+
+	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+	{
+		?>
+		<!-- <div style="page-break-after: always;"></div> -->
+		<div style="line-height: 18.897637795px;">&nbsp;</div>
+		<div class="display-sticker">
+			<div><b>Evaluation</b></div>
+			<?php 
+			if(!empty($item['eva1'])){
+				?><div>- <?=$item['eva1'];?></div><?php
+			}
+			if(!empty($item['eva2'])){
+				?><div>- <?=$item['eva2'];?></div><?php
+			}
+			if(!empty($item['eva3'])){
+				?><div>- <?=$item['eva3'];?></div><?php
+			}
+			if(!empty($item['eva4'])){
+				?><div>- <?=$item['eva4'];?></div><?php
+			}
+			if(!empty($item['eva5'])){
+				?><div>- <?=$item['eva5'];?></div><?php
+			}
+			if(!empty($item['eva6'])){
+				?><div>- <?=$item['eva6'];?></div><?php
+			}
+			if(!empty($item['eva7'])){
+				?><div>- <?=$item['eva7'];?></div><?php
+			}
+			if(!empty($item['eva8'])){
+				?><div>- <?=$item['eva8'];?></div><?php
+			}
+			if(!empty($item['eva9'])){
+				?><div>- <?=$item['eva9'];?></div><?php
+			}
+			if(!empty($item['eva10'])){
+				?><div>- <?=$item['eva10'];?> <span class="underline_notfix"><?=$item['eva10_txt'];?></span></div><?php
+			}
+			?>
+		</div>
+		<?php
+	}
+	?>
+	<p class="display-sticker">ผู้ป่วยรับทราบ <span class="underline_notfix"><?=$_SESSION['sOfficer'];?></span><b> /RN,PN</b></p>
+	<?php
+}
+?>
 <script type="text/javascript">
 window.onload = function(){
 	window.print();
