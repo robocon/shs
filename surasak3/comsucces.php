@@ -30,18 +30,31 @@ if($_REQUEST['do']=='edit'){
 	if($query){ 
 
 		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
-		$sMessage = iconv('TIS-620','UTF-8',"เรื่อง: $head\nดำเนินการเรียบร้อยโดย $programmer");
+		$sMessage = iconv('TIS-620','UTF-8',"ลำดับแจ้ง: $row\nเรื่อง: $head\nดำเนินการเรียบร้อยโดย $programmer");
 		$chOne = curl_init(); 
-		curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+		curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
 		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
 		curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
 		curl_setopt( $chOne, CURLOPT_POST, 1); 
-		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&stickerPackageId=1&stickerId=114"); 
+		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
 		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
 		curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
 		curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
 		$result = curl_exec( $chOne ); 
 		curl_close($chOne);
+
+		$tokenTwo = "uQvPwVidaVmwL7BQkFuVCQVh1q7zhZbYT8lHCnTeSoG";
+		$chTwo = curl_init(); 
+		curl_setopt( $chTwo, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+		curl_setopt( $chTwo, CURLOPT_SSL_VERIFYHOST, 0); 
+		curl_setopt( $chTwo, CURLOPT_SSL_VERIFYPEER, 0); 
+		curl_setopt( $chTwo, CURLOPT_POST, 1); 
+		curl_setopt( $chTwo, CURLOPT_POSTFIELDS, "message=".$sMessage); 
+		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$tokenTwo.'', );
+		curl_setopt($chTwo, CURLOPT_HTTPHEADER, $headers); 
+		curl_setopt( $chTwo, CURLOPT_RETURNTRANSFER, 1); 
+		$result = curl_exec( $chTwo ); 
+		curl_close($chTwo);
 
 		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
 		header("Location: com_support.php");
