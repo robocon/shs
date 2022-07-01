@@ -138,6 +138,7 @@
   <th bgcolor=CD853F>ราคา</th>
   <th bgcolor=9999CC>เบิกได้</th>
   <th bgcolor=9999CC>เบิกไม่ได้</th>
+  <th bgcolor=9999CC>ประเภท</th>
  </tr>
 <?
 
@@ -430,40 +431,100 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	
 	for($r=0;$r<count($_SESSION['idnumber']);$r++){
 
-			$query = "SELECT a.drugcode,a.tradname,a.amount,a.price,a.part FROM drugrx as a,phardep as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn = '$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id ";
+			$query = "SELECT a.drugcode,a.tradname,a.amount,a.price,a.part,a.dpy,a.dpn FROM drugrx as a,phardep as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn = '$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id order by a.part";
 
 			$result = mysql_query($query) or die("Query failed");
 		
 			$dpyaa=array();
 			session_register("dpyaa");
 			$drugs = 0;
-			while (list ($drugcode,$tradname,$amount, $price,$part) = mysql_fetch_row ($result)) {
+			while (list ($drugcode,$tradname,$amount, $price,$part,$cdpy,$cdpn) = mysql_fetch_row ($result)) {
 	//        array_push($aPrice,$price);
 	//        $x++;
 				$items++;
 				$drugs = 4;
-				$sql="select dpy_code from druglst where drugcode like '%$drugcode%'";
+				$sql="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst where drugcode like '%$drugcode%'";
 				$qresult = mysql_query($sql);
 				$numrow=mysql_num_rows($qresult);
 				
 				
-				list ($dpy_code) = mysql_fetch_row ($qresult);
+				list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_row ($qresult);
 				if($numrow){
 					
 					array_push($dpyaa,$dpy_code);
 	
 				}
+				
+				//echo $freepri;
+				
+				if($part=="DDL" || $part=="DPY"){
+					$dyprice=$price;
+					$dnprice=0;
+					$dyprice=number_format($dyprice,2);
+					$dnprice=number_format($dnprice,2);				
+				}
+
+				if($part=="DDN" || $part=="DPN" || $part=="DSN"){
+					$dyprice=0;
+					$dnprice=$price;
+					$dyprice=number_format($dyprice,2);
+					$dnprice=number_format($dnprice,2);				
+				}
+
+				
+				if($part=="DPY"){
+					$dyprice=$cdpy;
+					$dnprice=$cdpn;
+					$dyprice=number_format($dyprice,2);
+					$dnprice=number_format($dnprice,2);
+				}
+					
+				
+				
+				if($part=="DSY"){
+					if($medical_sup_free==0){  //ถ้าเป็นเวชภัณฑ์ผู้ป่วยนอกเบิกไม่ได้
+						$dyprice=$dpy;
+						$dnprice=$price;
+						$dyprice=number_format($dyprice,2);
+						$dnprice=number_format($dnprice,2);					
+					}else{ //ถ้าเป็นเวชภัณฑ์ผู้ป่วยนอกเบิกได้
+						if($freepri < $salepri){
+							$sumfreepri=$freepri*$amount;
+							$sumdnprice=$price-$sumfreepri;
+							
+							$dyprice=$sumfreepri;
+							$dnprice=$sumdnprice;
+							$dyprice=number_format($dyprice,2);
+							$dnprice=number_format($dnprice,2);
+						}else{
+							$dyprice=$price;
+							$dnprice=0;
+							$dyprice=number_format($dyprice,2);
+							$dnprice=number_format($dnprice,2);							
+						}
+					}
+					
+				}				
+				
+				
+				
+				
 	
 					if($drugcode=="4MET25"){
 						$bgcolor="FF6699";
 					}else{
 						$bgcolor="F5DEB3";
-					}		
+					}
+
+
+					
 				print (" <tr>\n".
 				   "  <td BGCOLOR=$bgcolor><font face='Angsana New'>$items.($drugcode)$tradname  $dpy_code</td>\n".
-				   "  <td BGCOLOR=$bgcolor>$amount</td>\n".
-				   "  <td BGCOLOR=$bgcolor>$price</td>\n".
-				   "  <td BGCOLOR=$bgcolor>$part</td>\n".
+				   "  <td align=center BGCOLOR=$bgcolor>$amount</td>\n".
+				   "  <td align=right BGCOLOR=$bgcolor>$price</td>\n".
+				   "  <td align=right BGCOLOR=$bgcolor>$dyprice</td>\n".
+				   "  <td align=right BGCOLOR=$bgcolor>$dnprice</td>\n".
+				   "  <td align=center BGCOLOR=$bgcolor>$part</td>\n".
 				   " </tr>\n");
 			}
 
@@ -520,7 +581,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false && document.f2.credit[30].checked == false && document.f2.credit[31].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[2].checked == true || document.f2.credit[4].checked == true) && document.f2.detail_1.value == ''){
@@ -736,12 +797,15 @@ print "<form name='f2' method='POST' action='opbill3.php' Onsubmit='return check
 			<TD align='right'>
 				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ธปท' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ธนาคารแห่งประเทศไทย</TD>			
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>			
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>					
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>			
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง อปท. (HD)' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>จ่ายตรง อปท. (HD)</TD>			
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ททท' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>การท่องเที่ยวแห่งประเทศไทย</TD>					
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กทม' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>จ่ายตรง กทม. <span style='color:red;'>(เริ่มใช้ 1 ก.ค. 65)</span></TD>		
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>																 
 		 </TR>		 

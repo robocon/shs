@@ -17,9 +17,9 @@
 ?>
 <form method="POST" action="reportlgosum1.php" target="_blank">
 
-	<TABLE>
+	<TABLE width="80%">
 	<TR>
-		<TD colspan="2"><a href="reportcscddsum.php">ใบสรุปรวมลูกหนี้จ่ายตรง</a> || ใบสรุปรวมลูกหนี้จ่ายตรง อปท.</TD>
+		<TD colspan="2"><a href="reportcscddsum.php">ใบสรุปรวมลูกหนี้จ่ายตรง</a> || ใบสรุปรวมลูกหนี้จ่ายตรง อปท. || <a href="reportbangkoksum.php">ใบสรุปรวมลูกหนี้จ่ายตรง กทม.</a></TD>
 	</TR>
 	<TR>
 		<TD width="161" align="right">ตั้งแต่วันที่: </TD>

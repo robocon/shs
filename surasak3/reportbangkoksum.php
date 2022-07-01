@@ -17,11 +17,11 @@
 ?>
 
 
-<form method="POST" action="reportcscdsum1.php" target="_blank">
+<form method="POST" action="reportbangkoksum1.php" target="_blank">
 
 	<TABLE width="80%">
 <TR>
-		<TD colspan="2">ใบสรุปรวมลูกหนี้จ่ายตรง || <a href="reportlgosum.php">ใบสรุปรวมลูกหนี้จ่ายตรง อปท.</a> || <a href="reportbangkoksum.php">ใบสรุปรวมลูกหนี้จ่ายตรง กทม.</a></TD>
+		<TD colspan="2"><a href="reportlgosum.php">ใบสรุปรวมลูกหนี้จ่ายตรง</a> || <a href="reportlgosum.php">ใบสรุปรวมลูกหนี้จ่ายตรง อปท.</a> || ใบสรุปรวมลูกหนี้จ่ายตรง กทม.</TD>
 	</TR>
 	<TR>
 		<TD width="161" align="right">ตั้งแต่วันที่: </TD>

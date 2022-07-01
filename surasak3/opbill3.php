@@ -231,15 +231,18 @@ if(empty($credit) ){
 	$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม")){
 
 	if($_POST["credit"] == "จ่ายตรง" ){
 		$name_f = "billcscd";
 	}
 	else
-		if($_POST["credit"] == "จ่ายตรง อปท." ){
+		if($_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "จ่ายตรง อปท. (HD)"){
 		$name_f = "billcscd";
 	}
+	else if($_POST["credit"] == "กทม" ){
+		$name_f = "billcscd";
+	}	
 	else if($_POST["credit"] == "ประกันสังคม" ){
 		$name_f = "billcscd";
 	}
@@ -463,7 +466,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			$aSumy = $aSumy+$sEssd+$sNessdy+$sDPY+$sDSY;
 			$aSumn = $aSumn+$sNessdn+$sDPN+$sDSN;
 			
-			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ")){
+			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ"  || $_POST["credit"] == "จ่ายตรง อปท. (HD)")){
 
 	/*	if($_POST["credit"] == "จ่ายตรง" ){
 			$name_f = "billcscd";
@@ -476,20 +479,19 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 		}
 */
 if($_POST["credit"] == "จ่ายตรง" ){
-		$name_f = "billcscd";
-	}
-	else
-		if($_POST["credit"] == "จ่ายตรง อปท." ){
-		$name_f = "billcscd";
-	}
-	else if($_POST["credit"] == "ประกันสังคม" ){
-		$name_f = "billcscd";
-	}
-	else if($_POST["credit"] == "ตรวจสุขภาพ" ){
-		$name_f = "billchkup";		
-	}else{
-		$name_f = "billno";
-	}
+	$name_f = "billcscd";
+	$detail_1 = trim($detail_1);
+}else if($_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "จ่ายตรง อปท. (HD)" ){
+	$name_f = "billcscd";
+}else if($_POST["credit"] == "กทม"){
+	$name_f = "billcscd";
+}else if($_POST["credit"] == "ประกันสังคม" ){
+	$name_f = "billcscd";
+}else if($_POST["credit"] == "ตรวจสุขภาพ" ){
+	$name_f = "billchkup";		
+}else{
+	$name_f = "billno";
+}
 
 		$netfree1=$sEssd+$sNessdy+$sDPY+$sDSY; //เบิกได้
 	 	$netfree1=number_format( $netfree1, 2, '.', '');
@@ -502,6 +504,9 @@ if($_POST["credit"] == "จ่ายตรง" ){
 			$field_plus = ", paidcscd";
 			$values_plus = ",'".$netfree1."'";
 		}
+		
+		
+		
 			
 			$sql = "INSERT INTO opacc (date,txdate,hn,an,depart,detail,price,paid,idname,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,ptright,credit,credit_detail ".$field_plus.") VALUES('$Thidate','".$_SESSION['dDate'][$r]."','$sHn','$sAn','$sDepart','$sDetail','$sNetprice','$sNetprice','$sOfficer','$sEssd','$sNessdy','$sNessdn','$sDPY','$sDPN','$sDSY','$sDSN','$sPtright','$credit','$detail_1' ".$values_plus.");";     
 			$result = mysql_query($sql) or die("Query failed4001");
