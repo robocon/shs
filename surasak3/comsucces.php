@@ -43,7 +43,7 @@ if($_REQUEST['do']=='edit'){
 		$result = curl_exec( $chOne ); 
 		curl_close($chOne);
 
-		$tokenTwo = "uQvPwVidaVmwL7BQkFuVCQVh1q7zhZbYT8lHCnTeSoG";
+		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
 		$chTwo = curl_init(); 
 		curl_setopt( $chTwo, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
 		curl_setopt( $chTwo, CURLOPT_SSL_VERIFYHOST, 0); 
