@@ -33,6 +33,8 @@ surasak3/includes/**
 surasak3/new43file/popuckai.txt
 surasak3/config.php
 backup-*
+surasak3/com_support_img/**
+surasak3/rdu/**
 
 # About testing
 testcrondump/**
