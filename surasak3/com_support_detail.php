@@ -1,5 +1,10 @@
 <?php 
-include 'bootstrap.php';
+include 'bootstrap.php'; 
+
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 if(empty($_SESSION['sOfficer'])){
     echo "Login หลุดจ้า";
     exit;
@@ -21,37 +26,45 @@ if($action==='save'){
     $file_ok = false;
     $target_from = array();
     $target_to = array();
+    $maxsize = 2097152;
     for ($i=0; $i < count($files['name']); $i++) { 
         
         if($files['error'][$i]===0){
         
             $imageFileType = strtolower(pathinfo($files["name"][$i],PATHINFO_EXTENSION));
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ){
-                echo "File Invalid";
-                exit;
+            $size = $files["size"][$i];
+
+            if( $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ){
+                continue;
             }
-    
+            if($size >= $maxsize){
+                continue;
+            }
+
             $target_dir = "com_support_img/";
             $set_new_filename = rand(100000,999999).strtotime('NOW').'.'.$imageFileType;
-            $target_from[$i] = $files["tmp_name"][$i];
-            $target_to[$i] = $target_dir.basename($set_new_filename);
+            $target_from[] = $files["tmp_name"][$i];
+            $target_to[] = $target_dir.basename($set_new_filename);
     
             $file_ok = true;
-    
         }
     }
     
-    $sql = "INSERT INTO `com_support_details` (`id`,`com_id`,`detail`,`editor`,`date`) VALUES( NULL,'$com_id','$detail','$user',NOW() )";
-    $q_detail = $dbi->query($sql);
-    $detail_id = $dbi->insert_id;
-    if($file_ok===true){ 
+    $sql_insert_details = "INSERT INTO `com_support_details` (`id`,`com_id`,`detail`,`editor`,`date`) VALUES( NULL,'$com_id','$detail','$user',NOW() )";
+    if($q_detail = $dbi->query($sql_insert_details)){ 
+        $detail_id = $dbi->insert_id;
+        if( count($target_from) > 0){ 
 
-        for ($i=0; $i < count($target_from); $i++) { 
-            $file_target = $target_to[$i];
-            $sql = "INSERT INTO `com_support_imgs` (`id`,`detail_id`,`path`) VALUES( NULL,'$detail_id','$file_target' )";
-            $q_imgs = $dbi->query($sql);
-            $upload = move_uploaded_file($target_from[$i], $target_to[$i]);
+            for ($ii=0; $ii < count($target_from); $ii++) { 
+                $file_target = $target_to[$ii];
+                $sql_img = "INSERT INTO `com_support_imgs` (`id`,`detail_id`,`path`) VALUES( NULL,'$detail_id','$file_target' )";
+                $q_imgs = $dbi->query($sql_img);
+                $upload = move_uploaded_file($target_from[$ii], $target_to[$ii]);
+            }
         }
+    }else{
+        echo $dbi->error;
+        exit;
     }
 
     $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
@@ -91,6 +104,11 @@ $item = $q->fetch_assoc();
         font-family: "TH SarabunPSK";
         font-size: 22px;
     }
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
 </style>
 <table>
     <tr bgcolor="#FFCC00">
@@ -119,7 +137,11 @@ $item = $q->fetch_assoc();
         <div>
             <div><b>แนบรูป</b></div>
             <input type="file" name="imgs[]" id="imgs" multiple>
-            <span>รองรับ png และ jpg/jpeg</span>
+            <ul>
+                <li>รองรับไฟล์ประเภท png, jpg, jpeg</li>
+                <li>ขนาดแต่ละไฟล์ต้องไม่เกิน 2MB</li>
+                <li>ขนาดรวมทุกไฟล์ไม่เกิน 7MB</li>
+            </ul>
         </div>
         <div>
             <button type="submit"><b>บันทึก</b></button>
@@ -151,13 +173,17 @@ if ($q->num_rows>0) {
                 $sql_img = "SELECT `path` FROM `com_support_imgs` WHERE `detail_id` = '$detail_id' ";
                 $q_img = $dbi->query($sql_img);
                 if($q_img->num_rows > 0 ){
+                    ?>
+                    <div class="clearfix">
+                    <?php
                     while ($b = $q_img->fetch_assoc()) {
                         ?>
-                        <div>
-                            <a href="<?=$b['path'];?>" target="_blank"><img style="max-width:150px; max-height:150px;" src="<?=$b['path'];?>" alt=""></a>
-                        </div>
+                        <a href="<?=$b['path'];?>" target="_blank"><img style="height:150px;" src="<?=$b['path'];?>" alt=""></a>
                         <?php
                     }
+                    ?>
+                    </div>
+                    <?php
                 }
                 
                 ?>
