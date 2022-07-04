@@ -127,6 +127,9 @@ $result = mysql_query($query) or die("Query failed111");
 		print"  <th bgcolor=#FFCC00>ผู้รับผิดชอบ</th>";
 		print"  <th bgcolor=#FFCC00>พิมพ์</th>";
 		//print"  <th bgcolor=#FFCC00>การทำงาน</th>";
+        if($_SESSION['smenucode']=='ADM' OR $_SESSION['smenucode']=='ADMCOM'){
+            print"  <th bgcolor=#FFCC00>เพิ่มรายละเอียด</th>";
+        }
       
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$user) = mysql_fetch_row ($result)) {
@@ -140,9 +143,14 @@ $result = mysql_query($query) or die("Query failed111");
                 "  <td BGCOLOR=#FFFF99><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
                 "  <td BGCOLOR=#FFFF99>$date</td>\n".
 				  "  <td BGCOLOR=#FFFF99>$where</td>\n".
-				  "  <td BGCOLOR=#FFFF99><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
+				  "  <td BGCOLOR=#FFFF99><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n");
 				 // "  <td BGCOLOR=#FFFF99 align='center'>$add</td>\n".
-                " </tr>\n");
+
+            if($_SESSION['smenucode']=='ADM' OR $_SESSION['smenucode']=='ADMCOM'){
+                print"  <td bgcolor=#FFFF99 align=\"center\"><a href=\"com_support_detail.php?id=$row\" target=\"_blank\">เพิ่ม</a></td>";
+            }
+
+            print " </tr>\n";
   						    }
         print"</table>";
 			}
