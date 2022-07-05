@@ -83,6 +83,10 @@ $dbi = new mysqli('192.168.131.250','remoteuser','','smdb');
             </div>
         </div>
     </div>
-
+    <script>
+        setTimeout(function(){ 
+            location.reload();
+        }, 10000);
+    </script>
 </body>
 </html>
