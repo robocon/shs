@@ -1,10 +1,8 @@
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 20px;
 }
--->
 </style><?php
       
  $Thaidate=date("d-m-").(date("Y")+543);
@@ -46,8 +44,57 @@ $num = Y;
 
 	}
 
- 
- 
+
+
+$row = $_GET['row'];
+$sql = "SELECT * FROM `com_support_details` WHERE `com_id` = '$row' ";
+
+$q = mysql_query($sql);
+if(mysql_num_rows($q) > 0){
+
+    ?>
+    <br>
+    <h3>รายละเอียดที่กำลังดำเนินการ</h3>
+
+    <table width="100%">
+        <tr valign="top" bgcolor="#FFCC00">
+            <th width="20%">วันที่อัพเดทข้อมูล</th>
+            <th>รายละเอียด</th>
+        </tr>
+    <?php
+    while ($a = mysql_fetch_assoc($q)) {
+        ?>
+        <tr bgcolor="#FFFF99">
+            <td><?=$a['date'];?></td>
+            <td>
+                <?=nl2br($a['detail']);?>
+                <?php 
+                $detail_id = $a['id'];
+                $sql_img = "SELECT `path` FROM `com_support_imgs` WHERE `detail_id` = '$detail_id' ";
+                $q_img = mysql_query($sql_img);
+                if(mysql_num_rows($q_img) > 0 ){
+                    ?>
+                    <div class="clearfix">
+                    <?php
+                    while ($b = mysql_fetch_assoc($q_img)) {
+                        ?>
+                        <a href="<?=$b['path'];?>" target="_blank"><img style="height:150px;" src="<?=$b['path'];?>" alt=""></a>
+                        <?php
+                    }
+                    ?>
+                    </div>
+                    <?php
+                }
+                
+                ?>
+            </td>
+        </tr>
+        <?php
+    }
+
+
+}
+
  include("unconnect.inc");  
 
 ?>

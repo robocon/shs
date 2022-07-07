@@ -67,7 +67,7 @@ if($action==='save'){
         exit;
     }
 
-    $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
+    $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
     $sMessage = iconv('TIS-620','UTF-8',"ความคืบหน้างานลำดับที่: $com_id \nรายละเอียด: $detail\n");
     $chOne = curl_init(); 
     // notify-api.line.me
@@ -167,7 +167,7 @@ if ($q->num_rows>0) {
         <tr bgcolor="#FFFF99">
             <td><?=$a['date'];?></td>
             <td>
-                <?=$a['detail'];?>
+                <?=nl2br($a['detail']);?>
                 <?php 
                 $detail_id = $a['id'];
                 $sql_img = "SELECT `path` FROM `com_support_imgs` WHERE `detail_id` = '$detail_id' ";
