@@ -190,8 +190,10 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		 $_SESSION["age_now"] = calcage($_SESSION["age_now"]);
 
 		$thidate = date("d-m-").(date("Y")+543);
+		$endate = date("d-m-Y");
 		$thidatehn = $thidate.$_SESSION["hn_now"];
-
+		$endatehn = $endate.$hn_now;
+		
 		$sql = "Select temperature, pause, rate, weight, bp1, bp2, congenital_disease, organ, officer, drugreact, time_format(thidate,'%H:%i'), height, type,bp3,bp4 From opd where thdatehn = '".$thidatehn."' limit 1";
 		$result = Mysql_Query($sql) or die("Error opd");
 		list($_SESSION["temperature"], $_SESSION["pause"], $_SESSION["rate"], $_SESSION["weight"], $bp1, $bp2, $_SESSION["congenital_disease"],$_SESSION["organ"],$_SESSION["staff"],$_SESSION["drugreact"],$_SESSION["time_opd"],$_SESSION["height"], $_SESSION["type"],$bp3,$bp4) = Mysql_fetch_row($result);
@@ -202,6 +204,23 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		$_SESSION["bp"] = $bp1."/".$bp2;
 		$_SESSION['repeat_bp'] = "$bp3 / $bp4";
 		//$_SESSION["dt_diag_detail"]=$_SESSION["organ"];
+
+	$vntoday = $_REQUEST["vn_now"];
+	if($_SESSION['sLevel']=='dr'){ 
+		$sOfficer = $_SESSION['sOfficer'];
+
+		$drcode = substr($_SESSION['sIdname'], 2);
+		$sql_room = "SELECT b.`code` 
+		FROM ( SELECT `name` FROM `doctor` WHERE `doctorcode` = '$drcode' AND `name` LIKE 'MD%' ) AS a 
+		LEFT JOIN `queue_room` AS b ON a.`name` = b.`doctor` ";
+		$q_room = mysql_query($sql_room);
+		$dt_room = mysql_fetch_assoc($q_room);
+		$room = $dt_room['code'];
+
+		$sql_dt_log = "INSERT INTO`dt_logs` (`id`, `thdatehn`, `endatehn`, `hn`, `vn`, `doctor`, `room`, `time`) VALUES 
+		(NULL, '$thidatehn', '$endatehn', '$hn_now', '$vntoday', '$sOfficer', '$room', CURTIME());";
+		mysql_query($sql_dt_log);
+	}
 
 
 if($_SESSION["sIdname"] == "md19921"){
