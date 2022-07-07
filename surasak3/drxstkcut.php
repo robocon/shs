@@ -215,13 +215,13 @@ for ($n=1; $n<=$x; $n++){
 			
 			// เพิ่มการนับจำนวนยาด้วย เพราะบางตัว amount เป็น0 แต่มีการคิดค่าฉีดยาเบิ้ล
 			if( isset($_GET['inject']) && $aAmount[$n] > 0 ){
-				$sqlopday = "select toborow from opday where hn='".$cHn."' and thdatehn = '".$Thdhn."' ";
-				$res= mysql_query($sqlopday) or die("Query failed");
-				list($toborow) = mysql_fetch_row($res);
-				$tob = substr($toborow,0,4);
-				if($tob!="EX10"){ // ถ้าไม่ใช่ไตเทียม
+				// $sqlopday = "select toborow from opday where hn='".$cHn."' and thdatehn = '".$Thdhn."' ";
+				// $res= mysql_query($sqlopday) or die("Query failed");
+				// list($toborow) = mysql_fetch_row($res);
+				// $tob = substr($toborow,0,4);
+				// if($tob!="EX10"){ // ถ้าไม่ใช่ไตเทียม 
 					$injectno++;
-				}
+				// }
 			}
 		}
 		////////////////////////////////จบนับจำนวนสำหรับการคิดเงินค่าฉีดยา
