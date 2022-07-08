@@ -293,6 +293,7 @@ if($num < 1){
 	<td width="11%" align="center" bgcolor="#0099CC"><strong>ที่อยู่</strong></td>
     <td width="15%" align="center" bgcolor="#0099CC"><strong>สิทธิการรักษา</strong></td>
     <td width="11%" align="center" bgcolor="#0099CC"><strong>ประเภทบุคคล</strong></td>
+	<td width="11%" align="center" bgcolor="#0099CC"><strong>สังกัด</strong></td>
 	<td width="11%" align="center" bgcolor="#0099CC"><strong>ประเภท</strong></td>
     <td width="6%" align="center" bgcolor="#0099CC"><strong>กลุ่มอาการ</strong></td>
 	<td width="20%" align="center" bgcolor="#0099CC"><strong>อาการ</strong></td>
@@ -374,6 +375,8 @@ if($rows["opdcolor"]=="green"){
 		$sqlOpd = "SELECT `organ` FROM `opd` WHERE `thdatehn` = '$thdatehn' LIMIT 1";
 		$qOpd=mysql_query($sqlOpd);
 		$aOpd = mysql_fetch_assoc($qOpd);	
+	
+	list($camp_code, $camp_name) = explode(' ', $rows["camp"], 2);
 ?>  
   <tr>
     <td align="center"><?=$i;?></td>
@@ -388,6 +391,7 @@ if($rows["opdcolor"]=="green"){
 	<td><?=$address;?></td>
     <td><?=$rows["ptright"]?></td>
     <td><?=substr($rows["typeservice"],4);?></td>
+	<td align="center"><?=$camp_name;?></td>
 	<td align="center"><?=$type;?></td>
 	<td align="center"><?=$color;?></td>
 	<td align="center"><?=$aOpd["organ"];?></td>
