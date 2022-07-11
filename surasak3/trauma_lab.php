@@ -256,7 +256,10 @@ body,td,th {
 	font-size: 14 px;
 	color:#FFFFFF;
 	font-weight: bold;
+}
 
+label:hover{
+	cursor: pointer;
 }
 </style>
 <SCRIPT LANGUAGE="JavaScript">
@@ -579,6 +582,36 @@ $i++;
 		?>
 	</TD>
 </TR>
+<?php
+if($_SESSION['smenucode']=='ADMNEWCHKUP'){
+	?>
+	<tr>
+		<td colspan="8"><hr></td>
+	</tr>
+	<tr>
+		<?php 
+		$q_lab = mysql_query("SELECT * FROM `labcare` WHERE `code` LIKE '%-sso' AND `labstatus` = 'Y' AND (`version`='sso' OR `version`='create')");
+		if(mysql_num_rows($q_lab) > 0){
+			$ilab = 1;
+			while ($a = mysql_fetch_assoc($q_lab)) { 
+				?>
+				<td><input type="checkbox" name="" id="<?=$a['code'];?>" onclick="addbycheck(this.checked, '<?=$a['code'];?>')"></td>
+				<td>
+					<label for="<?=$a['code'];?>" onclick="addbycheck(this.checked, '<?=$a['code'];?>')"><?=$a['code'];?></label>
+				</td>
+				<?php
+				if($ilab!==0 && $ilab%4===0){
+					?></tr></tr><?php
+				}
+				$ilab ++;
+			}
+		}
+		?>
+		
+	</tr>
+	<?php
+}
+?>
 </TABLE>
 </TD>
 </TR>
@@ -612,11 +645,20 @@ $i++;
 
 
 <FORM  NAME="form_list" METHOD=POST ACTION="trauma_lab_add.php" Onsubmit="return checkFrom();">
-<?php
+<?php 
+	$vn = $_GET["vn"];
 	$sql = "Select ptname, ptright, vn, hn, an From opday where vn='".$_GET["vn"]."' Order by row_id DESC limit 1 ";
 	$result = Mysql_Query($sql) or die(Mysql_error());
 	$arr = Mysql_fetch_assoc($result);
-	echo "<B>ชื่อผู้ป่วย : </B>",$arr["ptname"]," <BR><B>สิทธิ์การรักษา : </B>",$arr["ptright"]
+	echo "<B>ชื่อผู้ป่วย : </B>",$arr["ptname"]," <BR><B>สิทธิ์การรักษา : </B>",$arr["ptright"];
+	echo "<br><b>VN : </b>".$vn;
+
+	$dt_chkup = '';
+	$chk_select = '';
+	if($_SESSION['smenucode']=='ADMNEWCHKUP'){
+		$dt_chkup = 'MD041 วรวิทย์ วงษ์มณี';
+		$chk_select = 'selected="selected"';
+	}
 ?><BR>
 <B>แพทย์ : </B>
 <SELECT NAME="doctor">
@@ -626,8 +668,11 @@ $i++;
 	$sql = "Select name From doctor where status = 'y' AND row_id != '0' Order by name ASC ";
 	$result = Mysql_Query($sql);
 	
-	while(list($name) = Mysql_fetch_row($result)){
-		echo "<option value=\"".$name."\">".$name."</option>";
+	while(list($name) = Mysql_fetch_row($result)){ 
+
+		$selected = ($name===$dt_chkup) ? 'selected="selected"' : '' ;
+
+		echo "<option value=\"".$name."\" ".$selected.">".$name."</option>";
 	}
 ?>
 </SELECT>
@@ -636,7 +681,7 @@ $i++;
 
 <SELECT NAME="type_diag">
 	<Option value="ตรวจวิเคราะห์เพื่อการรักษา">ตรวจวิเคราะห์เพื่อการรักษา</Option>
-	<Option value="ตรวจสุขภาพ">ตรวจสุขภาพ</Option>
+	<Option value="ตรวจสุขภาพ" <?=$chk_select;?>>ตรวจสุขภาพ</Option>
 	<Option value="ประกันสังคมกรณีคลอดบุตร">ประกันสังคมกรณีคลอดบุตร</Option>
 </SELECT>
 
