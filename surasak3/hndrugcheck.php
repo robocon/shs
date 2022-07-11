@@ -449,6 +449,13 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 }
 ?>
 
+<style>
+    p{
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
 <form method="post" action="<?php echo $PHP_SELF ?>">
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตรวจสอบการใช้ยาตาม HN</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -485,6 +492,39 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             <button onclick="return add_other()">เพิ่มยานอก</button>
         </fieldset>
     </div>
+</form>
+
+<?php 
+$b1 = trim($_POST['B1']);
+if(!empty($b1)){
+
+    $q_op = mysql_query("SELECT * FROM `opcard` WHERE `hn` = '$hn' ");
+    if(mysql_num_rows($q_op)>0){ 
+        $user = mysql_fetch_assoc($q_op);
+
+        $q_rea = mysql_query("SELECT * FROM `drugreact` WHERE `hn` = '$hn'");
+        $react_txt = "ไม่แพ้ยา";
+        if(mysql_num_rows($q_rea)){
+            $react_txt = "";
+            while ($b = mysql_fetch_assoc($q_rea)) {
+                $react_txt .= '<b>'.$b['tradname'].'</b>('.$b['drugcode'].') '.$b['advreact']."<br>";
+            }
+
+        }
+
+        ?>
+        <div>
+            <p><b>ชื่อ-สกุล :</b> <?=$user['yot'].$user['name'].$user['surname'];?> <b>เลขบัตรประชาชน : </b><?=$user['idcard'];?> <b>เพศ : </b><?=$user['sex'];?></p>
+            <p><b>HN : </b><?=$user['hn'];?> <b>สิทธิการรักษา : </b><?=$user['ptright'];?></p>
+            <p><b>แพ้ยา : </b><?=$react_txt;?></p>
+        </div>
+        <?php
+    }else{
+        echo "ไม่พบ HN กรุณาตรวจสอบข้อมูลอีกครั้ง";
+        exit;
+    }
+}
+?>
     <script type="template/javascript" id="drug_template">
         <tr bgcolor="F5DEB3">
             <td></td>
@@ -492,8 +532,10 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
             <td><input type="hidden" name="other_name[]" value="{{tradname}}">{{tradname}}</td>
             <td><input type="hidden" name="other_sl[]" value="{{slcode}}">{{slcode}}</td>
+            <td></td>
             <td><input type="hidden" name="other_amount[]" value="{{amount}}">{{amount}}</td>
             <td></td>
             <td></td>
@@ -538,10 +580,12 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                 <th ></th>
                 <th>HN</th>
                 <th>AN</th>
+                <th>VN</th>
                 <th>วันและเวลา</th>
                 <th>drugcode</th>
                 <th>ชื่อยา</th>
                 <th>วิธีใช้</th>
+                <th></th>
                 <th>จำนวน</th>
                 <th>ราคา</th>
                 <th>part</th>
@@ -553,11 +597,11 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             <?php
             if( !empty($hn) ){
                 
-                $query = "SELECT `row_id`,hn,an,date,drugcode,tradname, slcode,amount, price,part 
+                $query = "SELECT `row_id`,hn,an,date,drugcode,tradname, slcode,amount, price,part,idno 
                 FROM drugrx WHERE hn = '$hn'  ORDER BY date DESC " ;
                 $result = mysql_query($query) or die("Query failed");
 
-                while (list ($row_id,$hn,$an,$date,$drugcode,$tradname,$slcode,$amount,$price,$part) = mysql_fetch_row ($result)) {
+                while (list ($row_id,$hn,$an,$date,$drugcode,$tradname,$slcode,$amount,$price,$part,$idno) = mysql_fetch_row ($result)) {
 
                     $sql = "Select doctor,idname From phardep where date = '$date'  ";
                     list($doctor1,$idname1)  = mysql_fetch_row(Mysql_Query($sql));
@@ -571,6 +615,27 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                         $bg="#F5DEB3";
                     }
 
+                    $q_slip = mysql_query("SELECT * FROM `drugslip` WHERE `slcode` = '$slcode' ");
+                    $dsl = mysql_fetch_assoc($q_slip);
+
+                    $full_detail = '';
+                    if(!empty($dsl['detail1'])){
+                        $full_detail .= $dsl['detail1']."<br>";
+                    }
+                    if(!empty($dsl['detail2'])){
+                        $full_detail .= $dsl['detail2']."<br>";
+                    }
+                    if(!empty($dsl['detail3'])){
+                        $full_detail .= $dsl['detail3']."<br>";
+                    }
+
+                    $vn = '';
+                    if(empty($an)){
+                        $q_phar = mysql_query("SELECT `tvn` FROM `phardep` WHERE `row_id` = '$idno' ");
+                        $pha = mysql_fetch_assoc($q_phar);
+                        $vn = $pha['tvn'];
+                    }
+
                     ?>
                     <tr bgcolor="<?=$bg;?>">
                         <td >
@@ -578,10 +643,12 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                         </td>
                         <td><label for="row_<?=$row_id;?>"><?=$hn;?></label></td>
                         <td><?=$an;?></td>
+                        <td><?=$vn;?></td>
                         <td><?=$date;?></a></td>
                         <td><?=$drugcode;?></td>
                         <td><?=$tradname;?></td>
                         <td><?=$slcode;?></td>
+                        <td><?=$full_detail;?></td>
                         <td><?=$amount;?></td>
                         <td><?=$price;?></td>
                         <td><?=$part;?></td>
@@ -596,4 +663,3 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             ?>
         </tbody>
     </table>
-</form>
