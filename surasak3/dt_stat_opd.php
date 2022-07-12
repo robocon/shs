@@ -1,7 +1,8 @@
 <?php 
 include 'bootstrap.php';
 
-$db = new mysqli(HOST,USER,PASS,DB);
+// $db = new mysqli(HOST,USER,PASS,DB);
+$db = new mysqli('192.168.131.250','remoteuser','',DB);
 
 $default_date = ( date('Y') + 543 ).date('-m-d');
 $date = input_post('date', $default_date);
@@ -16,7 +17,29 @@ $show = input_post('show');
 			width: 100%;
 		}
 	}
+	*{
+		font-family: "TH SarabunPSK";
+		font-size: 18px;
+	}
+	table, th, td {
+		border: 1px solid;
+	}
+	table {
+		border-collapse: collapse;
+	}
+	th, td{
+		padding: 3px;
+	}
+	ul{
+		list-style-type: none;
+		padding: 0;
+	}
+	.item-list li{
+		display: flex;
+		justify-content: space-between;
+	}
 </style>
+
 <form action="dt_stat_opd.php" method="post" id="userForm">
 	<div>
 		<label for="date">เลือกวันที่</label>
@@ -38,6 +61,164 @@ if( $show !== false ){
 		echo 'กรุณาใส่วันที่ <a href="dt_stat_opd.php">ย้อนกลับ</a>';
 		exit;
 	}
+
+	$pre_items = array();
+	// query เอาชื่อหมอ
+	$sql = "SELECT `doctor`,`room`,`hn` FROM `dt_logs` WHERE `thdatehn` LIKE '$d-$m-$y%' AND `doctor` NOT LIKE 'HD%' GROUP BY `doctor` ORDER BY `room` ASC";
+	$q = $db->query($sql);
+	while ($a = $q->fetch_assoc()) { 
+
+		$dt_name = $a['doctor'];
+
+		
+
+		$sql_dt = "SELECT a.*, b.`ptname`,b.`goup`, b.`ptright` 
+		FROM ( 
+			SELECT `thdatehn`,`vn`,`hn` FROM `dt_logs` WHERE `doctor` = '$dt_name' 
+		) AS a 
+		LEFT JOIN `opday` AS b ON b.`thdatehn` = a.`thdatehn` ";
+		$qdt = $db->query($sql_dt);
+		while ($b = $qdt->fetch_assoc()) { 
+
+			$find_hn = $b['hn'];
+			// $goup_code = substr($b['goup'],0,3);
+			// dump($goup_code);
+
+			$q_opcard = $db->query("SELECT `yot` FROM `opcard` WHERE `hn` = '$find_hn' LIMIT 1 ");
+			$op = $q_opcard->fetch_assoc();
+			// $yot = trim($op['yot']);
+			$b['yot'] = trim($op['yot']);
+
+			$pre_items[$dt_name][] = $b;
+
+			
+
+
+
+			
+			// $doctor_list[$dt_name][] = $b;
+		}
+		
+	} // จบชื่อหมอ
+
+
+	$count_dt = array();
+	foreach ($pre_items as $dt_name => $items) { 
+		dump(count($items));
+
+		$count_dt[$dt_name]['officer'] = 0; //นายทหารสัญญาบัตร
+		$count_dt[$dt_name]['nco'] = 0; //นายทหารชั้นประทวน
+		$count_dt[$dt_name]['pvt'] = 0; // พลฯ
+		$count_dt[$dt_name]['family'] = 0; // ครอบครัวทหาร
+		$count_dt[$dt_name]['r020304'] = 0;
+		$count_dt[$dt_name]['r07'] = 0;
+		$count_dt[$dt_name]['r0608'] = 0;
+		$count_dt[$dt_name]['30bath'] = 0;
+
+		$user_runno = 0;
+		foreach ($items as $key => $item) {
+			
+
+			$yot = trim($item['yot']);
+			
+			$test_yot = false;
+			if( $yot=='ร.ต.' || $yot=='ร.ท.' || $yot=='ร.อ.' || $yot=='พ.ต.' || $yot=='พ.ท.' || $yot=='พ.อ.' || $yot=='พลตรี' ){ 
+				$count_dt[$dt_name]['officer']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				// continue;
+				$test_yot = true;
+
+			}elseif( $yot=='ส.ต.' || $yot=='ส.ท.' || $yot=='ส.อ.' || $yot=='จ.ส.ต.' || $yot=='จ.ส.ท.' || $yot=='จ.ส.อ.' || $yot=='พลอาสา' || $yot=='พลอาสาสมัคร' ){ 
+				$count_dt[$dt_name]['nco']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				// continue;
+				$test_yot = true;
+
+			}elseif( $yot=='พลฯ' ){ 
+				$count_dt[$dt_name]['pvt']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				// continue;
+				$test_yot = true;
+
+			}
+
+			if($test_yot === true)
+			{
+				$user_runno++;
+				continue;
+			}
+
+			
+			$goup_code = trim(substr($item['goup'],0,3));
+			$test_goup = false;
+			if($goup_code=='G31'){
+				$count_dt[$dt_name]['family']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				$test_goup = true;
+				$user_runno++;
+				continue;
+			}
+
+			$ptright_code = trim(substr($item['ptright'],0,3));
+			$test_ptright = false;
+			if($ptright_code=='R02' || $ptright_code=='R03' || $ptright_code=='R04'){
+				$count_dt[$dt_name]['r020304']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				// continue;
+				$test_ptright = true;
+
+			}elseif ($ptright_code=='R07') {
+				$count_dt[$dt_name]['r07']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				// continue;
+				$test_ptright = true;
+
+			}elseif ($ptright_code=='R06' || $ptright_code=='R08') {
+				$count_dt[$dt_name]['r0608']++;
+				// unset($pre_items[$dt_name][$user_runno]);
+				// continue;
+				$test_ptright = true;
+
+			}
+
+			if($test_ptright===true)
+			{
+				$user_runno++;
+				continue;
+			}
+
+			if($test_yot===false && $test_goup===false && $test_ptright===false){
+				$count_dt[$dt_name]['30bath']++;
+			}
+			
+			// unset($pre_items[$dt_name][$user_runno]);
+
+			
+		}
+		
+		
+		echo "<hr>";
+		# code...
+	}
+
+	dump($count_dt);
+
+	?>
+	<table>
+		<tr>
+			<th></th>
+		</tr>
+	</table>
+	<?php
+
+
+
+
+
+
+
+	exit;
+
 
 	$q = $db->query("SELECT `code`,`name` FROM `ptright` ");
 	$all_ptright = array();
@@ -70,28 +251,7 @@ if( $show !== false ){
 		$doctor_list[$r][$doc][] = $a['row_id'];
 	}
 	?>
-	<style>
-		*{
-			font-family: "TH SarabunPSK";
-		}
-		table, th, td {
-			border: 1px solid;
-		}
-		table {
-			border-collapse: collapse;
-		}
-		th, td{
-			padding: 3px;
-		}
-		ul{
-			list-style-type: none;
-			padding: 0;
-		}
-		.item-list li{
-			display: flex;
-			justify-content: space-between;
-		}
-	</style>
+	
 	<h3>รายงานจำนวนผู้มารับบริการแยกตามห้องตรวจและสิทธิการรักษา</h3>
 	<table>
 		<thead>
