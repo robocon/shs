@@ -73,7 +73,7 @@ body,td,th {
 <BR>
 
 <div style="text-align: center;">
-	Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$_SESSION["hn_now"];?>" target="_blank">ดูฟิล์ม PACS</a>
+	Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$_SESSION["hn_now"];?>" target="_blank">ดูฟิล์ม PACS</a> &lt;&lt;&lt; คลิกตรงนี้เพื่อดูฟิล์ม
 </div>
 <br>
 
@@ -85,7 +85,8 @@ body,td,th {
 	<TD >XRAYNO.<//TD>
 	<TD>DATE</TD>
 	<TD>DOCTOR</TD>
-	<TD>DETAIL_ALL (กดดูฟิลม์)</TD>
+	<!-- DETAIL_ALL (กดดูฟิลม์) -->
+	<TD>DETAIL_ALL ประวัติเดิม</TD>
 	<?php
 	$sIdname = $_SESSION['sIdname'];
 	// วริทธิ์ พสุธาดล (ว.38228)
@@ -109,7 +110,8 @@ print (" <tr>".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$xrayno</td>\n".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$date</td>\n".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$doctor</td>\n".
-"  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'><a target=_BLANK href=\"http://192.168.1.252/hiteon/hosxplink.aspx?xn=$xrayno\">$detail_all</a></td>\n");
+// linkเก่า http://192.168.1.252/hiteon/hosxplink.aspx?xn=$xrayno
+"  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'>$detail_all</td>\n");
 
 // วริทธิ์ พสุธาดล (ว.38228)
 if( $sIdname === 'md38228' ){
