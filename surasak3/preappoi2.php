@@ -962,6 +962,7 @@ function fncSubmit(strPage)
 		<option>ห้องตรวจเฉพาะโรค</option>
 		<option>แผนกตรวจสุขภาพ</option>
 		<option>คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)</option>
+		<option>อาคารแพทย์ทางเลือก</option>
         </select>
       </font><font face="Angsana New" size = '4'><font face="Angsana New"></font></font></font><font face="Angsana New" size = '4'><font face="Angsana New">เวลา<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
 	   
