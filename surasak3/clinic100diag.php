@@ -221,7 +221,9 @@ If (!empty($hn)){
 <option value="MD117 ณัชญ์ระวี บุรีคำ" >MD117 ณัชญ์ระวี บุรีคำ</option> 
 <option value="MD122 นวมน สุนทรวราภาส" >MD122 นวมน สุนทรวราภาส</option> 
 <option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option>
+<option value="MD127 ปัทมพร แสงแก้ว" >MD127 ปัทมพร แสงแก้ว</option>
 <!-- <option value="MD125 จรรยวรรธน์  สร้างสมวงษ์" >MD125 จรรยวรรธน์  สร้างสมวงษ์</option> -->
+<option value="MD134 ปริณดา กิตติดนัยรักษ์" >MD134 ปริณดา กิตติดนัยรักษ์</option>
 <option value="MD136 ปริญญา เรือนวิไล" >MD136 ปริญญา เรือนวิไล</option> 
 <option value="MD137 กฤษฎิ์พงษ์ ศิริสารศักดา" >MD137 กฤษฎิ์พงษ์ ศิริสารศักดา</option> 
 <option value="MD138 มัทนา อัมพะเศวต" >MD138 มัทนา อัมพะเศวต</option> 
@@ -234,6 +236,10 @@ If (!empty($hn)){
 <option value="MD164 ชนะรัตน์ โชคชัยสมุทร" >MD164 ชนะรัตน์ โชคชัยสมุทร</option>
 <option value="MD171 วีรวัฒน์ เลิศฤทธิ์เดชา" >MD171 วีรวัฒน์ เลิศฤทธิ์เดชา</option>
 <option value="MD183 ธนาคาร ศรีพนม" >MD183 ธนาคาร ศรีพนม</option>
+<option value="MD190 วิรดา  อนันตวงศ์" >MD190 วิรดา  อนันตวงศ์</option>
+<option value="MD191 กิตติ์ สัญชยานุกูล" >MD191 กิตติ์ สัญชยานุกูล</option>
+
+
 </select>
 <?
 	print "<br><br>ราคา :";
@@ -265,7 +271,7 @@ function addEventListener(el, eventName, handler) {
 addEventListener(document.getElementById("cDoctor"), "change", doChangeDoctor);
 
 function doChangeDoctor(){
-	if(this.value==='MD117 ณัชญ์ระวี บุรีคำ')
+	if(this.value==='MD117 ณัชญ์ระวี บุรีคำ' || this.value==='MD127 ปัทมพร แสงแก้ว' || this.value==='MD191 กิตติ์ สัญชยานุกูล')
 	{
 		document.getElementById("cPrice").value='300';
 	}

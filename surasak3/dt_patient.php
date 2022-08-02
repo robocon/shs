@@ -28,7 +28,6 @@ function handlerMMY(e){
 
 </SCRIPT>
 
-
 <?php
 
 if( !function_exists('dump') ){
@@ -40,10 +39,16 @@ if( !function_exists('dump') ){
 	
 }
 
-$sql = "Select toborow,diag From opday where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
+$sql = "Select toborow,diag,ptright From opday where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' ";
 
-list($toborow,$diag) = Mysql_fetch_row(Mysql_Query($sql));
+list($toborow,$diag,$ptright) = Mysql_fetch_row(Mysql_Query($sql));
 $toborow = substr($toborow,4);
+
+
+$sql1 = "Select cvriskscore,cvriskscore_lab From opd where thdatehn = '".date("d-m-").(date("Y")+543).$_SESSION["hn_now"]."' ";
+//echo $sql1;
+list($cvriskscore,$cvriskscore_lab) = Mysql_fetch_row(Mysql_Query($sql1));
+
 
 if($style_menu==2){?>
 <TABLE align="center" border="1" bordercolor="#F0F000">
@@ -51,7 +56,7 @@ if($style_menu==2){?>
 	<TD>
 <TABLE width="900">
 <TR>
-	<TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #FF9900;"><?php echo $toborow;?></strong></TD>
+	<TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #F4D03F; text-shadow: black 0.1em 0.1em 0.2em;"><?php echo $toborow;?></strong></TD>
 </TR>
 <TR>
 	<TD align="right" class="tb_detail">VN : </TD>
@@ -61,7 +66,7 @@ if($style_menu==2){?>
 	<TD align="right" class="tb_detail">อายุ : </TD>
 	<TD><?php echo $_SESSION["age_now"];?></TD>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
-	<TD><?php echo $_SESSION["ptright_now"];?></TD>
+	<TD><?php echo $ptright;?></TD>
 </TR>
 </TABLE>
 </TD>
@@ -72,12 +77,12 @@ if($style_menu==2){?>
 <?php
 }else{
 ?>
-<TABLE align="center" border="1" bordercolor="#F0F000">
+<TABLE width="80%" align="center" border="1" bordercolor="#F0F000">
 <TR>
 	<TD>
-<TABLE width="900">
+<TABLE width="100%">
 <TR>
-	<TD colspan="7" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #FF9900;"><?php echo $toborow;?></strong></TD>
+	<TD colspan="7" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #F4D03F; text-shadow: black 0.1em 0.1em 0.2em;"><?php echo $toborow;?></strong></TD>
 </TR>
 <TR>
 	<TD align="right" class="tb_detail">VN : </TD>
@@ -93,7 +98,7 @@ if($style_menu==2){?>
 	<TD align="right" class="tb_detail">เลขบัตรประชาชน : </TD>
 	<TD><?php echo $_SESSION["idcard_now"];?></TD>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
-	<TD><FONT COLOR="#FF0000"><?php echo $_SESSION["ptright_now"];?></FONT></TD>
+	<TD><FONT COLOR="#FF0000"><?php echo $ptright;?></FONT></TD>
 	<td rowspan="6">
 		<IMG SRC="../image_patient/<?php echo $_SESSION["idcard_now"];?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">
 		</td>
@@ -128,6 +133,16 @@ if($style_menu==2){?>
 			 }?></td>
 
            </tr>
+		   <? if(!empty($cvriskscore)){ ?>
+           <tr>
+             <td align="left" colspan="14">CV risk score (ไม่ใช้ผลเลือด) :  <B><?php echo $cvriskscore;?></B></td>
+           </tr>
+		   <? } ?>
+		   <? if(!empty($cvriskscore_lab)){ ?>
+           <tr>
+             <td align="left" colspan="14">CV risk score (ใช้ผลเลือด) :  <B><?php echo $cvriskscore_lab;?></B></td>
+           </tr>
+		   <? } ?>		   
            <tr>
              <td align="left" colspan="14">Repeat BP : <?=$_SESSION['repeat_bp'];?> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
 			&nbsp;&nbsp;&nbsp;&nbsp;, อาการ : <B><?php echo $_SESSION["organ"];?></B>

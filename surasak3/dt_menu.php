@@ -29,6 +29,13 @@ font-weight: bold;
 
 }
 
+
+.styled-table {
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	padding: 15px;
+	width: 80%;
+}
 </style>
 <?php
 	if($_SESSION["dt_dental"] == true){
@@ -38,24 +45,8 @@ font-weight: bold;
 		$first_page = "dt_index.php";
 		$lab_page = "dt_lab.php";
 	}
-
-	$hnNow = $_SESSION['hn_now'];
-	// require_once 'includes/connectPaperLess.php';
-	// ถ้ามีข้อมูลย้อนหลัง 5ครั้งล่าสุด
-	$paperLess = '';
-	// $qPaper = $mysqli->query("SELECT `id` FROM `pdfs` WHERE `hn` = '$hnNow' ORDER BY `id` DESC LIMIT 10");
-	// if ($qPaper->num_rows > 0)
-	// { 
-	// 	$paperLess = 'menu1[1]=\'<a href="javascript:void(0)" onclick="newWindowsPaperless()" >e-OPD Card</a>\';';
-	// }
-
 ?>
 <script type="text/javascript">
-
-function newWindowsPaperless()
-{
-	window.open("dt_paperLess.php?hn=<?=$hnNow;?>", "MsgWindow", "width=1024,height=768,scrollbars=yes,top=1,left=1");
-}
 
 /***********************************************
 * AnyLink Drop Down Menu- ? Dynamic Drive (www.dynamicdrive.com)
@@ -67,12 +58,11 @@ function newWindowsPaperless()
 
 var menu1=new Array();
 menu1[0]='<a href="dt_diag.php" >บันทึกการวินิจฉัยโรค</a>'
-<?=$paperLess;?>
-menu1[2]='<a href="dt_diag_lit.php" >ดูผลการวินิจฉัยย้อนหลัง</a>'
-menu1[3]='<a href="dt_admit_lit.php" >ดูประวัติการ Admit</a>'
-menu1[4]='<a href="dt_colonocopy.php" >Colonoscopy</a>'
-menu1[5]='<a href="dt_esophago.php" >Esophago</a>'
-menu1[6]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
+menu1[1]='<a href="dt_diag_lit.php" >ดูผลการวินิจฉัยย้อนหลัง</a>'
+menu1[2]='<a href="dt_admit_lit.php" >ดูประวัติการ Admit</a>'
+menu1[3]='<a href="dt_colonocopy.php" >Colonoscopy</a>'
+menu1[4]='<a href="dt_esophago.php" >Esophago</a>'
+menu1[5]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
 <?php
 /*if($sIdname == "md19364" || $sIdname == "md28422" || $sIdname == "md31386" ){
 	echo "menu1[3]='<a href=\"dt_colonocopy.php\" >Colonoscopy</a>'\n";
@@ -81,13 +71,16 @@ menu1[6]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
 ?>
 var menu2=new Array();
 menu2[0]='<a href="dt_drug.php" >สั่งจ่ายยา</a>'
-menu2[1]='<a href="dt_drugpay.php" >สั่งจ่ายยาชำระเงินเอง</a>'
-menu2[2]='<a href="dt_drug_lit.php" >ดูการสั่งจ่ายยาย้อนหลัง</a>'
-menu2[3]='<a href="dt_drugsult.php" >สร้างสูตรยา</a>'
+menu2[1]='<a href="dt_drug_lit.php" >ดูการสั่งจ่ายยาย้อนหลัง</a>'
+menu2[2]='<a href="dt_drugsult.php" >สร้างสูตรยา</a>'
+menu2[3]='<a href="dt_drugpay.php">สั่งจ่ายยาชำระเงินเอง</a>'
 <?php
 if($sIdname == "md19921" || $sIdname == "thaywin"  ){
 	echo "menu2[4]='<a href=\"dt_drug_pt.php\" >สั่งอุปกรณ์ PT</a>'\n";
-};
+}
+if($sIdname == "md20278" || $sIdname == "thaywin"  ){
+	echo "menu2[4]='<a href=\"dt_drug_pt.php\" >สั่งอุปกรณ์ ENT</a>'\n";
+}
 ?>
 menu2[5]='<a href="dt_slipadd.php" >เพิ่มวิธีใช้ยา</a>'
 
@@ -113,6 +106,7 @@ var menu6=new Array();
 menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพประจำปีกองทัพบก</a>'
 <!--menu6[1]='<a href="dxdr_ofyear_empsoldier.php">ตรวจสุขภาพลูกจ้าง รพ.</a>'-->
 menu6[2]='<a href="dxdr_ofyearout_dr.php" >ตรวจสุขภาพทั่วไป && ฮักกันยามเฒ่า</a>'
+<!--menu6[3]='<a href="Edxdr_ofyearout_dr.php" >ตรวจสุขภาพ - สำหรับใบรับรองแพทย์อิเล็กทรอนิกส์</a>'-->
 
 var menuwidth='170px' //default menu width
 var menubgcolor='#000097'  //menu bgcolor
@@ -242,32 +236,31 @@ document.onclick=hidemenu
 </script>
 
 
-<TABLE align="center" border="1" bordercolor="#F0F000">
-<TR>
+<TABLE align="center" border="1" bordercolor="#F0F000" class="styled-table">
+  <TR>
 	<TD>
-<TABLE border="0"    height="36" >
-<TR align="center" bgcolor="#FFFFC1">
-	<TD width="100" align="center" ><A HREF="<?php echo $first_page;?>" >ผู้ป่วยใหม่</A></TD>
-	<TD width="100" align="center" ><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu1, '190px')" onMouseout="delayhidemenu()">DIAG</A></TD>
+	<TABLE border="0"  height="40" width="100%">
+	<TR align="center" bgcolor="#FFFFC1">
+		<TD width="100" align="center" ><A HREF="<?php echo $first_page;?>" >ผู้ป่วยใหม่</A></TD>
+		<TD width="100" align="center" ><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu1, '190px')" onMouseout="delayhidemenu()">DIAG</A></TD>
 
-	<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu2, '190px')" onMouseout="delayhidemenu()">จ่ายยา</A></TD>
+		<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu2, '190px')" onMouseout="delayhidemenu()">จ่ายยา</A></TD>
 
-<?php if($_SESSION["smenucode"] !="ADMPHA" && $_SESSION["smenucode"] !="ADMPHARX" && $_SESSION["smenucode"] !="ADMER"){ ?>
-	<TD width="100"align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu3, '190px')" onMouseout="delayhidemenu()">LAB</A></TD>
-	
-	<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu4, '190px')" onMouseout="delayhidemenu()">X-RAY</A></TD>
+	<?php if($_SESSION["smenucode"] !="ADMPHA" && $_SESSION["smenucode"] !="ADMPHARX" && $_SESSION["smenucode"] !="ADMER"){ ?>
+		<TD width="100"align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu3, '190px')" onMouseout="delayhidemenu()">LAB</A></TD>
+		
+		<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu4, '190px')" onMouseout="delayhidemenu()">X-RAY</A></TD>
 
-	<TD width="100" align="center"><A HREF="dt_appoint.php" >ใบนัด</A></TD>
+		<TD width="100" align="center"><A HREF="dt_appoint.php" >ใบนัด</A></TD>
 
-	<!--<TD width="100" align="center"><A HREF="dxdr_ofyear1_dr.php" >CHKUP</A>--><TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu6, '190px')" onMouseout="delayhidemenu()">CHKUP</A></TD></TD>
+		<!--<TD width="100" align="center"><A HREF="dxdr_ofyear1_dr.php" >CHKUP</A>--><TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu6, '190px')" onMouseout="delayhidemenu()">CHKUP</A></TD></TD>
 
-	<TD width="100"align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu5, '190px')" onMouseout="delayhidemenu()">เอกสาร</A></TD>
-<?php } ?>
-	<TD width="100" align="center" ><A HREF="../nindex.htm">เมนู</A></TD>
+		<TD width="100"align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu5, '190px')" onMouseout="delayhidemenu()">เอกสาร</A></TD>
+	<?php } ?>
+		<TD width="100" align="center" ><A HREF="../nindex.htm">เมนู</A></TD>
 
-</TR>
-
-</TABLE>
-</TD>
-</TR>
+	</TR>
+	</TABLE>
+	</TD>
+  </TR>
 </TABLE>

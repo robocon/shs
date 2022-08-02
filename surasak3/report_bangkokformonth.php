@@ -21,11 +21,11 @@ body,td,th {
 </head>
 
 <body>
-<p align="center" style="margin-top: 20px;"><strong>เลือกเดือนที่ต้องการดูข้อมูลการส่งเบิกเงินผู้ป่วยนอกสิทธิเบิกจ่ายตรง (CSCD)</strong>
-<div align="center">เริ่มใช้ระบบใหม่ เมื่อวันที่ 1 เดือนกันยายน พ.ศ. 2561</div>
+<p align="center" style="margin-top: 20px;"><strong>เลือกเดือนที่ต้องการดูข้อมูลการส่งเบิกเงินผู้ป่วยนอกสิทธิข้าราชการ กทม. (Bangkok)</strong>
+<div align="center">เริ่มใช้ระบบใหม่ เมื่อวันที่ 1 เดือนกรกฎาคม พ.ศ. 2565</div>
 </p>
 <div align="center">
-  <form method="post" action="report_cscdformonth.php">
+  <form method="post" action="report_bangkokformonth.php">
     <input type="hidden" name="act" value="show" />
     <strong>เลือกเดือน : </strong>
     <select size="1" name="month1" class="txt">
@@ -67,12 +67,10 @@ body,td,th {
 </div>
 <?
 if($_POST["act"]=="show"){
-		
-	
 $showdate1=$_POST["month1"]."-".$_POST["year1"];
 $chkdate1=$_POST["year1"]."-".$_POST["month1"];
 
-$sql="CREATE TEMPORARY TABLE reportcscd select * from opacc where (txdate like '$chkdate1%' and date LIKE '$chkdate1%') AND credit='จ่ายตรง' and paidcscd > 0";
+$sql="CREATE TEMPORARY TABLE reportcscd select * from opacc where (txdate like '$chkdate1%' and date LIKE '$chkdate1%') AND credit='กทม' and paidcscd > 0";
 //echo $sql;
 $query=mysql_query($sql);
 
@@ -80,7 +78,7 @@ $querytmp="SELECT * FROM reportcscd";
 $resulttmp = mysql_query($querytmp) or die("Query reportcscd failed");
 ?>
 <hr />
-<div align="center" style="margin-top: 20px;"><strong>รายงานแสดงข้อมูลการส่งเบิกเงินผู้ป่วยนอกสิทธิเบิกจ่ายตรง (CSCD)</strong></div>
+<div align="center" style="margin-top: 20px;"><strong>รายงานแสดงข้อมูลการส่งเบิกเงินผู้ป่วยนอกสิทธิข้าราชการ กทม. (Bangkok)</strong></div>
 <div align="center">ประจำเดือน : <?=$showdate1;?></div>
 <table width="97%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#000000">
   <tr>
@@ -133,7 +131,7 @@ $chkdate=$_POST["year1"]."-".$_POST["month1"]."-".$date;
 $showdate=$date."/".$_POST["month1"]."/".$_POST["year1"];
 
 
-$sql01="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and paidcscd > 0 group by hn,credit_detail,billno";
+$sql01="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม' and paidcscd > 0 group by hn,billno";
 //echo $sql01;
 $query01=mysql_query($sql01);
 $numall=mysql_num_rows($query01);
@@ -142,11 +140,8 @@ $sumall=$sumall+$numall;
 
 
 //------------ ข้อมูลที่รอส่ง --------------------//
-if($chkdate >= "2562-04-01"){
-$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' and credit_detail='' and paidcscd > 0 group by hn,credit_detail,billno";
-}else{
-$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and credit_detail='' and paidcscd > 0 group by hn,credit_detail,billno";
-}
+$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม'  and paidcscd > 0 group by hn,billno";
+
 //echo $sql11;
 $query11=mysql_query($sql11);
 $numwait=mysql_num_rows($query11);
@@ -156,11 +151,8 @@ $sumnumwait=$sumnumwait+$numwait;
 
 
 //------------ ข้อมูลที่ส่ง --------------------//
-if($chkdate >= "2562-04-01"){
-$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' and credit_detail !='' and paidcscd > 0 group by hn,credit_detail,billno";
-}else{
-$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and credit_detail !='' and paidcscd > 0 group by hn,credit_detail,billno";
-}
+$sql11="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม'  and paidcscd > 0 group by hn,billno";
+
 //echo $sql11;
 $query11=mysql_query($sql11);
 $num=mysql_num_rows($query11);
@@ -171,12 +163,9 @@ $sumnum=$sumnum+$num;
 
 
 
-if($chkdate >= "2562-04-01"){
-$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and icd10_cscd='y' AND (typecscd='' OR typecscd='A') and credit_detail !='' and paidcscd > 0 group by hn,credit_detail,billno";
-}else{
-$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='' OR typecscd='A') and credit_detail !='' and paidcscd > 0 group by hn,credit_detail,billno";
 
-}
+$sql12="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม' AND (typecscd='' OR typecscd='A')  and paidcscd > 0 group by hn,billno";
+
 //echo $sql12;
 $query12=mysql_query($sql12);
 $num_p=mysql_num_rows($query12);
@@ -188,7 +177,7 @@ if($result["typecscd"]=="A"){$a++;}
 
 
 
-$sql13="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND (typecscd='C') and credit_detail !='' and paidcscd > 0 group by hn,credit_detail,billno";
+$sql13="SELECT * FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม' AND (typecscd='C')  and paidcscd > 0 group by hn,billno";
 //echo $sql13;
 $query13=mysql_query($sql13);
 $num_c=mysql_num_rows($query13);
@@ -209,14 +198,14 @@ if($avg_data >=100 && $a <=0){
 
 
 
-$sql="SELECT sum(paidcscd) as sumprice FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and credit_detail !='' and paidcscd > 0";
+$sql="SELECT sum(paidcscd) as sumprice FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม'  and paidcscd > 0";
 //echo $sql;
 $query=mysql_query($sql);
 list($sumprice)=mysql_fetch_array($query);
 $total=$total+$sumprice;
 
 
-$sql="SELECT sum(paidcscd) as sumprice FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' and credit_detail ='' and paidcscd > 0";
+$sql="SELECT sum(paidcscd) as sumprice FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม'  and paidcscd > 0";
 //echo $sql;
 $query=mysql_query($sql);
 list($sumprice_w)=mysql_fetch_array($query);
@@ -224,7 +213,7 @@ $total_w=$total_w+$sumprice_w;
 
 
 
-$sql1="SELECT sum(paidcscd) as sumprice_p FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND typecscd='' and credit_detail !='' and paidcscd > 0";
+$sql1="SELECT sum(paidcscd) as sumprice_p FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม' AND typecscd=''  and paidcscd > 0";
 //echo $sql1;
 $query1=mysql_query($sql1);
 list($sumprice_p)=mysql_fetch_array($query1);
@@ -235,7 +224,7 @@ $total_p=$total_p+$sumprice_p;
 
 
 
-$sql2="SELECT sum(paidcscd) as sumprice_a FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND typecscd='A' and credit_detail !='' and paidcscd > 0";
+$sql2="SELECT sum(paidcscd) as sumprice_a FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม' AND typecscd='A'  and paidcscd > 0";
 //echo $sql2;
 $query2=mysql_query($sql2);
 list($sumprice_a)=mysql_fetch_array($query2);
@@ -247,7 +236,7 @@ $total_a=$total_a+$sumprice_a;
 
 
 
-$sql3="SELECT sum(paidcscd) as sumprice_c FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='จ่ายตรง' AND typecscd='C' and credit_detail !='' and paidcscd > 0";
+$sql3="SELECT sum(paidcscd) as sumprice_c FROM reportcscd WHERE txdate like '$chkdate%' AND credit ='กทม' AND typecscd='C'  and paidcscd > 0";
 //echo $sql3;
 $query3=mysql_query($sql3);
 list($sumprice_c)=mysql_fetch_array($query3);
@@ -377,15 +366,12 @@ echo "<div style='font-size:24px'><strong>ข้อมูลประจำเดือน $showdate1</strong></
 		echo "<div align='left'>- ส่งข้อมูลผ่าน 100% จำนวน 3 วัน คือ วันที่ 1,28 และ 29</div>";
 		echo "<div align='left'>- ส่งข้อมูลแก้ติด C ผ่าน 100% จำนวน 11 วัน คือ วันที่ 2,6,7,8,12,13,15,20,22,24 และ 27</div>";		
 	}
-	
-
-
 
 
 /////////////////////แจ้งเตือน //////////////////////
 
 $sToken = "9EuptC9Wk6mzmrIPZhyBEGW2FB5QPZKDgxzEQBdU03o"; // Claim CSOP
-$sMessage =iconv('TIS-620','UTF-8',"กองทุนเบิกจ่ายตรง\nเข้าดูข้อมูลส่งเบิกประจำเดือน\nวัน/เดือน/ปี :  $showdate1\nเจ้าหน้าที่ : $sOfficer");
+$sMessage =iconv('TIS-620','UTF-8',"กองทุน กทม.\nเข้าดูข้อมูลส่งเบิกประจำเดือน\nวัน/เดือน/ปี :  $showdate1\nเจ้าหน้าที่ : $sOfficer");
 $chOne = curl_init(); 
 curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
 curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
@@ -400,6 +386,7 @@ curl_close($chOne);
 
 /////////////////////แจ้งเตือน //////////////////////
 
+	
 }
 ?>
 </strong></div>

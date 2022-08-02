@@ -263,8 +263,9 @@ $date="";
   
     // $query = "SELECT date,ptname,hn,an,price,paid,essd,nessdy,nessdn,dsy,dpy,dsn,dpn,row_id,accno,tvn,ptright FROM phardep WHERE (datedr LIKE '$today%' or (datedr LIKE '$today%' and price <=0)) and tvn='$vn' ";
 	//echo $query;
-	$query = "SELECT `date`,`ptname`,`hn`,`an`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dsy`,`dpy`,`dsn`,`dpn`,`row_id`,`accno`,`tvn`,`ptright` FROM `phardep` WHERE `datedr` LIKE '$today%' AND `hn` = '$hn_opday' AND `tvn`='$vn' ";
-    $result = mysql_query($query)
+	$query = "SELECT `date`,`ptname`,`hn`,`an`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dsy`,`dpy`,`dsn`,`dpn`,`row_id`,`accno`,`tvn`,`ptright` FROM `phardep` WHERE `datedr` LIKE '$today%' AND `hn` = '$hn_opday' AND `tvn`='$vn' ORDER BY row_id ASC";
+    //echo $query;
+	$result = mysql_query($query)
         or die("Query failed");
 
     while (list ($date, $ptname,$hn,$an,$price,$paid,$essd,$nessdy,$nessdn,$dsy,$dpy,$dsn,$dpn,$row_id,$accno,$tvn,$ptright) = mysql_fetch_row ($result)) {
