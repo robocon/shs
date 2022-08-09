@@ -99,6 +99,7 @@ $list_lab["GROUPT"] = "groupt";
 $list_lab["RH"] = "rh";
 $list_lab["UPT"] = "upt";
 $list_lab["ANTIHB"] = "antihb";
+$list_lab["STOCC"] = "stocc";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -422,7 +423,7 @@ while($arr = Mysql_fetch_assoc($result)){
 		    <select name='camp' id="camp">
 			<?php 
 			$toborow_key = substr($toborow,0,4);
-			$sql12 = "select * from chkcompany where status='Y' order by row_id asc";
+			$sql12 = "select * from chkcompany where status='Y' AND row_id != 77 AND row_id != 78 order by row_id asc";
 			$rows12 = mysql_query($sql12);
 			while($result12 = mysql_fetch_array($rows12)){ 
 
@@ -804,6 +805,11 @@ C&deg; </td>
 				&nbsp;<input name="<?php echo $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;&nbsp;
 				<input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
 				<input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
+				<?php 
+				if(empty($list_lab[$labname])){
+					echo "<span>*<span>";
+				}
+				?>
 			</td>
 			<?php 
 			// ตัดบรรทัดใหม่

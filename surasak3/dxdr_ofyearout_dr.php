@@ -90,6 +90,7 @@ $list_lab["ALP"] = "alk";
 $list_lab["BUN"] = "bun";
 $list_lab["CREA"] = "cr";
 $list_lab["URIC"] = "uric";
+$list_lab["STOCC"] = "stocc";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -1366,6 +1367,30 @@ if(!empty($result_dx['ldl']))
 		</div>
 	</td>
 </tr>
+
+<?php 
+if(!empty($result_dx['stocc'])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">STOCC :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['stocc']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['stocc']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['stocc'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['stocc'];?></span>
+		</td>
+		<td class="labfont">-</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['stoccflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['stoccflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_stocc' type='radio' value='»¡µÔ' <? if($result_dx['stocc'] == 'Negative' ){ echo "checked";}?>/> »¡µÔ
+			<input name='stat_stocc' type='radio' value='¼Ô´»¡µÔ' <? if( $result_dx['stocc'] == 'Positive' ){ echo "checked";}?>/> ¼Ô´»¡µÔ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php
+}
+?>
 
 <tr>
 	<td align="right" class="profilelab">Malaria :</td>
