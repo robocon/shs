@@ -65,6 +65,7 @@ if($page==='load25page'){
     $q = $dbi->query($sql);
     $items = array();
     while ($item = $q->fetch_assoc()) {
+        $id = $item['row_id'];
 
         $item['depart'] = iconv("TIS-620","UTF-8",$item['depart']);
         $item['head'] = iconv("TIS-620","UTF-8",$item['head']);
@@ -75,7 +76,34 @@ if($page==='load25page'){
         $item['p_edit'] = iconv("TIS-620","UTF-8",$item['p_edit']);
 
         $items[] = $item;
+
     }
+
+    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE '¡ÄÉ³ÐÈÑ¡´Ôì%' ORDER BY `date` DESC LIMIT 50 ";
+    $q_sub = $dbi->query($sql_sub);
+    if($q_sub->num_rows > 0){
+        while ($s = $q_sub->fetch_assoc()) { 
+            $id = $s['com_id'];
+
+            $sql = "SELECT * FROM `com_support` WHERE `row` = '$id' ";
+            $q = $dbi->query($sql);
+            $i = $q->fetch_assoc();
+
+            $is['depart'] = iconv("TIS-620","UTF-8",$i['depart']);
+            $is['head'] = iconv("TIS-620","UTF-8",$i['head']);
+            $is['detail'] = iconv("TIS-620","UTF-8",$s['detail']);
+
+            $is['user'] = iconv("TIS-620","UTF-8",$i['user']);
+            $is['programmer'] = iconv("TIS-620","UTF-8",$i['programmer']);
+            $is['user1'] = iconv("TIS-620","UTF-8",$i['user1']);
+            $is['p_edit'] = '';
+            $is['date'] = $i['date'];
+            $items[] = $is;
+        }
+    }
+
+
+
     echo $json->encode($items);
     exit;
 }
