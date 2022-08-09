@@ -22,13 +22,13 @@ a:active {color:#FF0000; text-decoration:underline;}
 a:hover {color:#FF0000; text-decoration:underline;}
 
 body,td,th {
-	font-family:  MS Sans Serif;
-	font-size: 14 px;
+	font-family: "TH SarabunPSK";
+	font-size: 16 px;
 }
 
 .font_title{
-	font-family:  MS Sans Serif;
-	font-size: 14 px;
+	font-family: "TH SarabunPSK";
+	font-size: 16 px;
 	color:#FFFFFF;
 	font-weight: bold;
 
@@ -60,8 +60,13 @@ body,td,th {
 		$month_now = sprintf("%02d", $_POST["m"]);
 		$year_now = sprintf("%02d", $_POST["yr"]);
 		$select_day = $year_now."-".$month_now."-".$day_now;
+
+		$appdate_en = ($_POST["yr"]-543)."-".$month_now."-".$day_now;
+
 		$select_day2 = $day_now." ".$month[$month_now]." ".$year_now;
-		if($_POST["career"] == "1"){
+		if($_POST["career"] == "1"){ 
+			// career 05 เป็นอาชีพ ทหาร/ตำรวจ
+			// idguard MX01 ทหาร/ครอบครัว
 			$pcareer = "where left(idguard,4) = 'MX01'  AND career like '05%' ";
 		}else{
 			$pcareer = "";
@@ -73,28 +78,44 @@ body,td,th {
 		$month_now = date("m");
 		$year_now = (date("Y")+543);
 
+		$appdate_en = date('Y-m-d');
+
 		$select_day = $year_now."-".$month_now."-".$day_now;
 		$select_day2 = $day_now." ".$month[$month_now]." ".$year_now;
 		$pcareer = "where left(idguard,4) = 'MX01'  AND career like '05%' ";
 
 	}
+
+
+	$where_sso = '';
+	if($_POST['sso_check']=="sso"){ 
+		$pcareer = "where b.`ptright` LIKE 'R07%'";
+	}
 	
 
-
-	$sql = "CREATE TEMPORARY TABLE opd_now SELECT a.hn, time_format(a.thidate,'%H:%i') as time_opd, time_format(a.dc_diag,'%H:%i') as time_dc, a.clinic FROM opd as a  WHERE a.thidate LIKE '".$select_day."%' AND (toborow like 'EX01%' OR toborow like 'EX04%')";
+	// opd_now เป็น temp toborow EX01 รักษาโรคทั่วไป กับ EX04 ผู้ป่วยนัด
+	// ปรับเอา opcardรวมใน opd เลย
+	$sql = "CREATE TEMPORARY TABLE opd_now 
+	SELECT a.hn, time_format(a.thidate,'%H:%i') as time_opd, time_format(a.dc_diag,'%H:%i') as time_dc, a.clinic,b.ptright,a.toborow 
+	FROM ( 
+		SELECT * FROM opd WHERE thidate LIKE '$select_day%' AND (toborow like 'EX01%' OR toborow like 'EX04%')
+	) as a 
+	LEFT JOIN opcard AS b ON b.`hn` = a.`hn`
+	$pcareer ";
 	$result_opd = mysql_query($sql);
 
 	$sql = "CREATE TEMPORARY TABLE dphardep_now SELECT tvn, hn, stkcutdate  FROM `dphardep` WHERE date LIKE '".$select_day."%' ";
 	$result_dphardep = mysql_query($sql);
 
-	$sql = "CREATE TEMPORARY TABLE appoint_now SELECT hn  FROM `appoint` WHERE appdate LIKE '".$select_day2."' AND apptime <> 'ยกเลิกการนัด' ";
+	//
+	// $sql = "CREATE TEMPORARY TABLE appoint_now SELECT hn  FROM `appoint` WHERE appdate LIKE '".$select_day2."' AND apptime <> 'ยกเลิกการนัด' ";
+	$sql = "CREATE TEMPORARY TABLE appoint_now SELECT hn  FROM `appoint` WHERE appdate_en = '$appdate_en' AND apptime <> 'ยกเลิกการนัด' ";
 	$result_dphardep = mysql_query($sql);
 	
-	$sql = "CREATE TEMPORARY TABLE opcard_now  Select hn From opcard ".$pcareer;
-	$result_opcard = mysql_query($sql);
+	// $sql = "CREATE TEMPORARY TABLE opcard_now  Select hn From opcard ".$pcareer;
+	// $result_opcard = mysql_query($sql);
 
 	$sql = "CREATE TEMPORARY TABLE opday_now Select a.vn, a.hn, a.ptname, time_format(a.thidate,'%H:%i') as time1_1, time_format(a.time2,'%H:%i') as time2_1 From opday as a where thidate LIKE '".$select_day."%' AND (toborow like 'EX01%' OR toborow like 'EX04%')";
-	//echo $sql;
 	$result_opday = mysql_query($sql) or die(mysql_error());
 
 ?>
@@ -112,6 +133,14 @@ body,td,th {
 	<TR>
 		<TD>อาชีพ : <SELECT NAME="career"><Option value="1">เฉพาะทหาร</Option><Option value="" <?php if($_POST["career"] != "1") echo " Selected ";?>>ดูทั้งหมด</Option></SELECT></TD>
 	</TR>
+	<tr>
+		<td>
+			<?php 
+			$checked = ($_POST['sso_check']=="sso") ? 'checked="checked"' : '' ;
+			?>
+			<label for="sso_check"><input type="checkbox" name="sso_check" id="sso_check" value="sso" <?=$checked;?>> สิทธิประกันสังคม</label>
+		</td>
+	</tr>
 	<TR>
 		<TD><input type='submit' name="submit" value='     ตกลง     ' > <INPUT TYPE="button" value="print" onclick="print();"></TD>
 	</TR>
@@ -123,15 +152,14 @@ body,td,th {
 <?php
 
 //clinic in ('12 เวชปฏิบัติ','01 อายุรกรรม','02 ศัลยกรรม','05 กุมารเวช','05 กุมารเวช','06 โสต ศอ นาสิก','08 ศัลยกรรมกระดูก','08 ศัลยกรรมทางเดินปัสสาวะ') 
-
-	$sql = "Select hn, time_opd, time_dc From opd_now where hn not in (Select hn From appoint_now) ;";
+	$sql = "Select hn, time_opd, time_dc,ptright,toborow From opd_now where hn not in (Select hn From appoint_now) ;";
 	$result = mysql_query($sql) or die(mysql_error());
 	
 ?>
 
 	<TABLE cellpadding="2" cellspacing="0" border="1" bordercolor="#000000" style='BORDER-COLLAPSE: collapse'>
 	<TR align='center'>
-		<TD colspan="7" align="center">คนไข้ทั่วไป</TD>
+		<TD colspan="8" align="center">คนไข้ทั่วไป</TD>
 	</TR>
 	<TR align='center'>
 		<TD width="20">No.</TD>
@@ -141,47 +169,61 @@ body,td,th {
 		<TD width="50">ซักประวัติ</TD>
 		<TD width="50">แพทย์ตรวจ</TD>
 		<TD width="50">จ่ายยา</TD>
+		<td>รวมเวลา</td>
 	</TR>
-<?php
+	<?php
 	$i=1;
-	while(list($hn,$time_opd,$time_dc) = mysql_fetch_row($result)){
-		
-		$sql = "Select count(hn)  From opcard_now where hn = '".$hn."' limit 1 ";
-		list($rows) = mysql_fetch_row(mysql_query($sql));
+	$all_time = 0;
+	while(list($hn,$time_opd,$time_dc,$ptright,$toborow) = mysql_fetch_row($result)){
 
-		if($rows > 0){
+		$sql = "Select vn, hn , ptname, time1_1, time2_1   From opday_now where hn = '".$hn."' limit 1 ";
+		$result_opday_now = mysql_query($sql);
+		if(mysql_num_rows($result_opday_now)==0){ 
+			continue;
+		}
+		list($vn, $hn2, $ptname,$time_reg,$time_freg) = mysql_fetch_row($result_opday_now);
 
-			$sql = "Select vn, hn , ptname, time1_1, time2_1   From opday_now where hn = '".$hn."' limit 1 ";
-			$result_opday_now = mysql_query($sql);
-			list($vn, $hn, $ptname,$time_reg,$time_freg) = mysql_fetch_row($result_opday_now);
+		$sql = "Select time_format(stkcutdate,'%H:%i') From dphardep_now where tvn = '".$vn."' limit 1 ";
+		list($time_drug) = mysql_fetch_row(mysql_query($sql));
 
-			$sql = "Select time_format(stkcutdate,'%H:%i') From dphardep_now where tvn = '".$vn."' limit 1 ";
-			list($time_drug) = mysql_fetch_row(mysql_query($sql));
+		$timediff = strtotime($time_opd) - strtotime($time_reg);
+		if(!empty($time_dc)){
+			$timediff = strtotime($time_dc) - strtotime($time_reg);
+		}
+		if(!empty($time_drug)){
+			$timediff = strtotime($time_drug) - strtotime($time_reg);
+		}
 
+		$all_time += $timediff;
 
 	echo "
 	<TR>
 		<TD>".$i.".</TD>
-		<TD>".$hn."</TD>
+		<TD>".$hn2."</TD>
 		<TD>".$ptname."</TD>
 		<TD>".$time_reg."</TD>
 		<TD>".$time_opd."</TD>
 		<TD>".$time_dc."</TD>
 		<TD>".$time_drug."</TD>
+		<td>".gmdate('H:i:s', $timediff)."</td>
 	</TR>";
 	$i++;
-		}
-	 } ?>
+	 }
+	 ?>
+	 <tr>
+		<td colspan="7">เวลาเฉลี่ย</td>
+		<td><?=gmdate('H:i:s', $all_time/$i);?></td>
+	 </tr>
 	</TABLE>
 
 <BR><BR>
 <?php
-	$sql = "Select hn, time_opd, time_dc From opd_now where hn in (Select hn From appoint_now) ;";
+	$sql = "Select hn, time_opd, time_dc,ptright,toborow From opd_now where hn in (Select hn From appoint_now) ;";
 	$result = mysql_query($sql) or die(mysql_error());
 ?>
 <TABLE cellpadding="2" cellspacing="0" border="1" bordercolor="#000000" style='BORDER-COLLAPSE: collapse'>
 	<TR align='center'>
-		<TD colspan="7" align="center">คนไข้นัด</TD>
+		<TD colspan="8" align="center">คนไข้นัด</TD>
 	</TR>
 	<TR align='center'>
 		<TD width="20">No.</TD>
@@ -191,25 +233,40 @@ body,td,th {
 		<TD width="50">ซักประวัติ</TD>
 		<TD width="50">แพทย์ตรวจ</TD>
 		<TD width="50">จ่ายยา</TD>
+		<td>รวมเวลา</td>
 	</TR>
 <?php
 	
 	$i=1;
-	while(list($hn,$time_opd,$time_dc) = mysql_fetch_row($result)){
+	$all_time = 0;
+	while(list($hn,$time_opd,$time_dc,$ptright,$toborow) = mysql_fetch_row($result)){
 		
-		$sql = "Select count(hn)  From opcard_now where hn = '".$hn."' limit 1 ";
-		list($rows) = mysql_fetch_row(mysql_query($sql));
+		// $sql = "Select count(hn)  From opcard_now where hn = '".$hn."' limit 1 ";
+		// $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn' ";
+		// list($rows) = mysql_fetch_row(mysql_query($sql));
 
-		if($rows > 0){
+		// if($rows > 0){
 
 			$sql = "Select vn, hn , ptname, time1_1, time2_1   From opday_now where hn = '".$hn."' limit 1 ";
 			$result_opday_now = mysql_query($sql);
+			if(mysql_num_rows($result_opday_now)==0){ 
+				// ถ้ามีใน opd แต่ไม่มีใน opday ให้ข้ามไปเลย
+				continue;
+			}
 			list($vn, $hn, $ptname,$time_reg,$time_freg) = mysql_fetch_row($result_opday_now);
 
 			$sql = "Select time_format(stkcutdate,'%H:%i') From dphardep_now where tvn = '".$vn."' limit 1 ";
 			list($time_drug) = mysql_fetch_row(mysql_query($sql));
 
+			$timediff = strtotime($time_opd) - strtotime($time_reg);
+			if(!empty($time_dc)){
+				$timediff = strtotime($time_dc) - strtotime($time_reg);
+			}
+			if(!empty($time_drug)){
+				$timediff = strtotime($time_drug) - strtotime($time_reg);
+			}
 
+			$all_time += $timediff;
 	echo "
 	<TR>
 		<TD>".$i.".</TD>
@@ -219,10 +276,15 @@ body,td,th {
 		<TD>".$time_opd."</TD>
 		<TD>".$time_dc."</TD>
 		<TD>".$time_drug."</TD>
+		<td>".gmdate('H:i:s', $timediff)."</td>
 	</TR>";
 	$i++;
-		}
+		// }
 	 } ?>
+	 <tr>
+		<td colspan="7">เวลาเฉลี่ย</td>
+		<td><?=gmdate('H:i:s', $all_time/$i);?></td>
+	 </tr>
 	</TABLE>
 
 </BODY>
