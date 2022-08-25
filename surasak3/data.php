@@ -1,10 +1,10 @@
 <?php
 
 	//ตั้งค่าการเชื่อมต่อฐานข้อมูล
-	$database_host 			= 'localhost';
-	$database_username 		= 'root';
-	$database_password 		= '1234';
-	$database_name 			= 'smdb';
+	$database_host 			= '192.168.131.240';
+	$database_username 		= 'sm3db_user';
+	$database_password 		= 'sm3dbPassword';
+	$database_name 			= 'sm3db-utf8';
 
 	$mysqli = new mysqli($database_host, $database_username, $database_password, $database_name);
 	//กำหนด charset ให้เป็น utf8 เพื่อรองรับภาษาไทย

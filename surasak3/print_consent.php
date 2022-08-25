@@ -64,7 +64,11 @@ $pdf->SetFont('AngsanaNew', '', 12);
 if($_GET["pt"] =="ผู้ป่วย"){
 	$pdf->Cell(0,5,$fullname." ,HN ".$_GET["hn"]." ,อายุ ".$age,0,0);
 }else{
-	$pdf->Cell(0,5,"ข้าพเจ้า( ".$_GET["pt_val"]." ) ".$fullname." ,HN ".$_GET["hn"]." ,อายุ ".$age,0,0);
+	$ptval = '';
+	if(!empty($_GET["pt_val"])){
+		$ptval = '( '.iconv("UTF-8", "WINDOWS-874", $_GET["pt_val"]).' )';
+	}
+	$pdf->Cell(0,5,"ข้าพเจ้า$ptval ".iconv("UTF-8", "WINDOWS-874", trim($fullname))." ,HN ".$_GET["hn"]." ,อายุ ".$age,0,0);
 }
 $pdf->Ln();
 if($_GET["permit"] == "ยินยอม"){
@@ -107,14 +111,14 @@ $pdf->Cell(5,5,"",0,0);
 if($_GET["witness_pt"] == "ผู้ป่วยมาคนเดียว" && $_GET["permit"] =="ผู้ป่วยไม่รู้สึกตัวและมีความจำเป็นต้องรักษาในขั้นด่วน"){
 	$pdf->Cell(24,5,"",0,0);
 }else{
-	$pdf->Cell(8,5,$_GET["pt"],0,0);
+	$pdf->Cell(8,5,iconv("UTF-8", "WINDOWS-874", trim($_GET["pt"])),0,0);
 
 	if($_GET["pt"] == "ผู้แทน"){
-	$pdf->Cell(14,5,"",B,0);
-	$pdf->Cell(6,5,"( ".$_GET["pt_val"]." )",0,0);
+	$pdf->Cell(14,5,"",'B',0);
+	$pdf->Cell(6,5,"( ".iconv("UTF-8", "WINDOWS-874", trim($_GET["pt_val"]))." )",0,0);
 	$pdf->Cell(11,5,"" ,0,0);
 	}else{
-	$pdf->Cell(16,5,"",B,0);
+	$pdf->Cell(16,5,"",'B',0);
 	$pdf->Cell(15,5,"                          " ,0,0);
 	}
 
@@ -135,10 +139,10 @@ $pdf->Cell(8,5,"",0,0);
 if($_GET["witness_pt"] != "ผู้ป่วยมาคนเดียว" && $_GET["permit"] =="ผู้ป่วยไม่รู้สึกตัวและมีความจำเป็นต้องรักษาในขั้นด่วน"){
 	$pdf->Cell(15,5,"fes",0,0);
 }else{
-	$pdf->Cell(15,5,"($xxx)",0,0);
+	$pdf->Cell(15,5,"(".iconv("UTF-8", "WINDOWS-874", $xxx).")",0,0);
 }	
 $pdf->Cell(22,5,"                          ",0,0);
-$pdf->Cell(8,5,"(".$_GET["doctor"].")",0,0);
+$pdf->Cell(8,5,"(".iconv("UTF-8", "WINDOWS-874", $_GET["doctor"]).")",0,0);
 
 $pdf->Ln();
 
@@ -154,21 +158,21 @@ if($_GET["witness_pt"] == "ผู้ป่วยมาคนเดียว"){
 	
 }else{
 	$pdf->Cell(14,5,"พยานผู้ป่วย",0,0);
-	$pdf->Cell(15,5,"",B,0);
+	$pdf->Cell(15,5,"",'B',0);
 }
 $pdf->Cell(8,5,"                          ",0,0);
 $pdf->Cell(15,5,"พยานแพทย์",0,0);
-$pdf->Cell(15,5,"                           ",B,0);
+$pdf->Cell(15,5,"                           ",'B',0);
 $pdf->Ln();
 
 $pdf->Cell(11,5,"",0,0);
 if($_GET["witness_pt"] == "ผู้ป่วยมาคนเดียว" || $_GET["pt"] == "ผู้แทน"){
 $pdf->Cell(15,5,"",0,0);
 }else{
-	$pdf->Cell(15,5,"(".$_GET["witness_pt"].")",0,0);
+	$pdf->Cell(15,5,"(".iconv("UTF-8", "WINDOWS-874", $_GET["witness_pt"]).")",0,0);
 }
 $pdf->Cell(22,5,"                          ",0,0);
-$pdf->Cell(8,5,"(".$_GET["witness_dc"].")",0,0);
+$pdf->Cell(8,5,"(".iconv("UTF-8", "WINDOWS-874", $_GET["witness_dc"]).")",0,0);
 
 $pdf->Ln();
 

@@ -1,10 +1,10 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-$build = array("42"=>"ÀÕºŸÈªË«¬À≠‘ß","44"=>"ÀÕºŸÈªË«¬ ICU","43"=>"ÀÕºŸÈªË«¬ Ÿµ‘","45"=>"ÀÕºŸÈªË«¬æ‘‡»…");
+$build = array("42"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏´‡∏ç‡∏¥‡∏á","44"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ ICU","43"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏™‡∏π‡∏ï‡∏¥","45"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏û‡∏¥‡πÄ‡∏®‡∏©");
 
 //session_register("esophago_add");
 //$_SESSION["esophago_add"] = true;
@@ -14,7 +14,7 @@ include("connect.inc");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style>
 	<!--
@@ -42,7 +42,7 @@ body,td,th {
 	<TD><INPUT TYPE="text" NAME="an" size="6"></TD>
 </TR>
 <TR>
-	<TD colspan="2"><INPUT TYPE="submit" value="µ°≈ß">&nbsp;&nbsp;<A HREF="../nindex.htm">&lt;&lt; ‡¡πŸ</A>&nbsp;&nbsp;<A HREF="dt_esophago_list.php" target="_blank">¥Ÿ¢ÈÕ¡Ÿ≈¬ÈÕπÀ≈—ß</A></TD>
+	<TD colspan="2"><INPUT TYPE="submit" value="‡∏ï‡∏Å‡∏•‡∏á">&nbsp;&nbsp;<A HREF="../nindex.htm">&lt;&lt; ‡πÄ‡∏°‡∏ô‡∏π</A>&nbsp;&nbsp;<A HREF="dt_esophago_list.php" target="_blank">‡∏î‡∏π‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏¢‡πâ‡∏≠‡∏ô‡∏´‡∏•‡∏±‡∏á</A></TD>
 </TR>
 </TABLE>
 </FORM>
@@ -54,7 +54,7 @@ if(!empty($_POST["an"]) && trim($_POST["an"]) != ""){
 	$sql = "Select an, ptname, ptright, age, hn, left(bedcode,2) From ipcard where an='".$_POST["an"]."' limit 0,1";
 	$result = mysql_query($sql);
 	if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>‰¡Ëæ∫À¡“¬‡≈¢ AN ∑’Ë∑Ë“π√–∫ÿ</CENTER>";
+		echo "<CENTER>‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏•‡∏Ç AN ‡∏ó‡∏µ‡πà‡∏ó‡πà‡∏≤‡∏ô‡∏£‡∏∞‡∏ö‡∏∏</CENTER>";
 		exit();
 	}
 	list($p_an, $p_ptname, $p_ptright, $p_age, $p_hn, $bedcode) = mysql_fetch_row($result);
@@ -65,16 +65,16 @@ if(!empty($_POST["an"]) && trim($_POST["an"]) != ""){
 	<TD>
 <TABLE width="900">
 <TR>
-	<TD colspan="8" align="center"><font class="table_font2">¢ÈÕ¡Ÿ≈ºŸÈªË«¬</font></TD>
+	<TD colspan="8" align="center"><font class="table_font2">‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</font></TD>
 </TR>
 <TR>
 	<TD align="right" class="colo_fil">AN : </TD>
 	<TD><?php echo $p_an;?></TD>
-	<TD align="right" class="colo_fil">™◊ËÕ- °ÿ≈ : </TD>
+	<TD align="right" class="colo_fil">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• : </TD>
 	<TD><?php echo $p_ptname;?></TD>
-	<TD align="right" class="colo_fil">Õ“¬ÿ : </TD>
+	<TD align="right" class="colo_fil">‡∏≠‡∏≤‡∏¢‡∏∏ : </TD>
 	<TD><?php echo $p_age;?></TD>
-	<TD align="right" class="colo_fil"> ‘∑∏‘Ï°“√√—°…“ : </TD>
+	<TD align="right" class="colo_fil">‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡πå‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤ : </TD>
 	<TD><?php echo $p_ptright;?></TD>
 </TR>
 </TABLE>
@@ -200,12 +200,12 @@ if(!empty($_POST["an"]) && trim($_POST["an"]) != ""){
     </table></td>
   </tr>
   <tr>
-    <td align="center"><input name="submit" type="submit" id="submit" value="µ°≈ß" />&nbsp;&nbsp;
-      <input type="reset" name="Reset" value="≈∫¢ÈÕ¡Ÿ≈" /></td>
+    <td align="center"><input name="submit" type="submit" id="submit" value="‡∏ï‡∏Å‡∏•‡∏á" />&nbsp;&nbsp;
+      <input type="reset" name="Reset" value="‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•" /></td>
   </tr>
 </table>
 <?php
-	$sql = "Select (case when sex='™' then '™“¬' else 'À≠‘ß' end) as sex_d From opcard where hn='".$p_hn."' limit 0,1";
+	$sql = "Select (case when sex='‡∏ä' then '‡∏ä‡∏≤‡∏¢' else '‡∏´‡∏ç‡∏¥‡∏á' end) as sex_d From opcard where hn='".$p_hn."' limit 0,1";
 	$result = mysql_query($sql);
 	list($sex_d) = mysql_fetch_row($result);
 ?>

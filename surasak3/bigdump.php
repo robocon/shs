@@ -39,10 +39,10 @@
 
 // Database configuration
 
-$db_server   = 'localhost';
-$db_name     = 'smdb';
-$db_username = 'root';
-$db_password = '1234';
+$db_server   = '192.168.131.240';
+$db_name     = 'sm3db-utf8';
+$db_username = 'sm3db_user';
+$db_password = 'sm3dbPassword';
 
 // Other settings (optional)
 
@@ -799,7 +799,7 @@ else if ($file && $gzipmode) gzclose($file);
 
 ?>
 
-<p class="centr">© 2003-2009 <a href="mailto:alexey@ozerov.de">Alexey Ozerov</a></p>
+<p class="centr">à¸‰ 2003-2009 <a href="mailto:alexey@ozerov.de">Alexey Ozerov</a></p>
 
 </td></tr></table>
 

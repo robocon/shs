@@ -9,6 +9,7 @@ $action = input_post('action');
 if ( $action == 'print' ) { 
 
     $dbi = new mysqli(HOST,USER,PASS,DB);
+    $dbi->query("SET NAMES UTF8");
 
     $count_cbc = input_post('count_cbc');
     $count_chem = input_post('count_chem');
@@ -39,7 +40,7 @@ if ( $action == 'print' ) {
     $q = $dbi->query($sql);
 
     $pdf = new SHSPdf('L', 'mm', array(50,30));
-    $pdf->SetThaiFont(); // �絿͹��
+    $pdf->SetThaiFont(); // เซ็ตฟอนต์
     $pdf->SetAutoPageBreak(true, 2);
     $pdf->SetMargins(2, 2);
 
@@ -189,7 +190,7 @@ if ( $action == 'print' ) {
                 $pdf->AddPage();
                 $pdf->SetXY(2, 2);
                 $pdf->SetFont('AngsanaNew','B',13);
-                $pdf->Cell(0, 5, '�ç��Һ�Ť�������ѡ��������', 0, 1, 'C');
+                $pdf->Cell(0, 5, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 0, 1, 'C');
 
                 $pdf->SetXY(2, 7);
                 $pdf->SetFont('AngsanaNew','B',13);
@@ -197,7 +198,7 @@ if ( $action == 'print' ) {
 
                 $pdf->SetXY(2, 12);
                 $pdf->SetFont('AngsanaNew','B',13);
-                $pdf->Cell(0, 5, $hn.' (��Ǩ�آ�Ҿ AFP)', 0, 1, 'C');
+                $pdf->Cell(0, 5, $hn.' (ตรวจสุขภาพ AFP)', 0, 1, 'C');
 
                 $pdf->SetXY(2, 17);
                 $pdf->SetFont('AngsanaNew','B',13);

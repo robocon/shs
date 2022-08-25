@@ -4,7 +4,7 @@ include("connect.inc");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 </head>
 
@@ -12,7 +12,7 @@ include("connect.inc");
 <form id="form1" name="form1" method="post" action="chk_head.php">
 <table width="34%" border="0" align="center">
   <tr>
-    <td align="center">�礼š�õ�Ǩ LAB</td>
+    <td align="center">เช็คผลการตรวจ LAB</td>
   </tr>
   <tr>
     <td align="center">
@@ -21,7 +21,7 @@ include("connect.inc");
     </tr>
   <tr>
     <td align="center"><label>
-      <input type="submit" name="button" id="button" value="��ŧ" />
+      <input type="submit" name="button" id="button" value="ตกลง" />
     </label></td>
     </tr>
   <tr>
@@ -40,7 +40,7 @@ if(isset($_POST['hn_lab'])&isset($_POST['button'])){
     <tr>
     <td width="116">HN : <?=$result['hn']?></td>
     <input name="hn1" type="hidden" value="<?=$result['hn']?>" />
-    <td colspan="3">���� :
+    <td colspan="3">ชื่อ :
       <?=$result['patientname']?></td>
     <td width="159">&nbsp;</td>
     </tr>
@@ -61,14 +61,14 @@ if(isset($_POST['hn_lab'])&isset($_POST['button'])){
       <td align="center"><?=$result['labnumber']?></td>
       <td align="center"><?=$result['profilecode']?></td>
       <td><select name="clinic<?=$i?>"><option value="<?=$result['clinicalinfo']?>"><?=$result['clinicalinfo']?></option>
-      <option value="��Ǩ�آ�Ҿ��Шӻ�55">��Ǩ�آ�Ҿ��Шӻ�55</option></select></td>
+      <option value="ตรวจสุขภาพประจำปี55">ตรวจสุขภาพประจำปี55</option></select></td>
     </tr>
 	<?
 	}  
 	?>
     <tr>
       <td colspan="5" align="center">
-        <input type="submit" name="change" id="change" value="��ŧ" /></td>
+        <input type="submit" name="change" id="change" value="ตกลง" /></td>
       </tr>
     </table>
 </form>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
 if(empty($_SESSION["S_listxray"])){
@@ -16,7 +16,7 @@ $style_menu=2;
 
 <html>
 <head>
-<title>¥Ÿø‘≈¡Ï X-RAY</title>
+<title>‡∏î‡∏π‡∏ü‡∏¥‡∏•‡∏°‡πå X-RAY</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -73,7 +73,7 @@ body,td,th {
 <BR>
 
 <div style="text-align: center;">
-	Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$_SESSION["hn_now"];?>" target="_blank">¥Ÿø‘≈Ï¡ PACS</a> &lt;&lt;&lt; §≈‘°µ√ßπ’È‡æ◊ËÕ¥Ÿø‘≈Ï¡
+	Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$_SESSION["hn_now"];?>" target="_blank">‡∏î‡∏π‡∏ü‡∏¥‡∏•‡πå‡∏° PACS</a> &lt;&lt;&lt; ‡∏Ñ‡∏•‡∏¥‡∏Å‡∏ï‡∏£‡∏á‡∏ô‡∏µ‡πâ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏î‡∏π‡∏ü‡∏¥‡∏•‡πå‡∏°
 </div>
 <br>
 
@@ -85,13 +85,13 @@ body,td,th {
 	<TD >XRAYNO.<//TD>
 	<TD>DATE</TD>
 	<TD>DOCTOR</TD>
-	<!-- DETAIL_ALL (°¥¥Ÿø‘≈¡Ï) -->
-	<TD>DETAIL_ALL ª√–«—µ‘‡¥‘¡</TD>
+	<!-- DETAIL_ALL (‡∏Å‡∏î‡∏î‡∏π‡∏ü‡∏¥‡∏•‡∏°‡πå) -->
+	<TD>DETAIL_ALL ‡∏õ‡∏£‡∏∞‡∏ß‡∏±‡∏ï‡∏¥‡πÄ‡∏î‡∏¥‡∏°</TD>
 	<?php
 	$sIdname = $_SESSION['sIdname'];
-	// «√‘∑∏‘Ï æ ÿ∏“¥≈ («.38228)
+	// ‡∏ß‡∏£‡∏¥‡∏ó‡∏ò‡∏¥‡πå ‡∏û‡∏™‡∏∏‡∏ò‡∏≤‡∏î‡∏• (‡∏ß.38228)
 	if( $sIdname === 'md38228' ){
-		?><TD>√–∫∫PACS„À¡Ë(DR)</TD><?php
+		?><TD>‡∏£‡∏∞‡∏ö‡∏öPACS‡πÉ‡∏´‡∏°‡πà(DR)</TD><?php
 	}
 	?>
 </TR>
@@ -110,10 +110,10 @@ print (" <tr>".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$xrayno</td>\n".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$date</td>\n".
 "  <td BGCOLOR=#99FFCC  align='center'><font face='Angsana New'>$doctor</td>\n".
-// link‡°Ë“ http://192.168.1.252/hiteon/hosxplink.aspx?xn=$xrayno
+// link‡πÄ‡∏Å‡πà‡∏≤ http://192.168.1.252/hiteon/hosxplink.aspx?xn=$xrayno
 "  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'>$detail_all</td>\n");
 
-// «√‘∑∏‘Ï æ ÿ∏“¥≈ («.38228)
+// ‡∏ß‡∏£‡∏¥‡∏ó‡∏ò‡∏¥‡πå ‡∏û‡∏™‡∏∏‡∏ò‡∏≤‡∏î‡∏• (‡∏ß.38228)
 if( $sIdname === 'md38228' ){
 	print("  <td BGCOLOR=#99FFCE  align='center'><font face='Angsana New'><a target=_BLANK href=\"http://192.168.1.236:18057/dicomPACS-MobileView/?login=mvuser&password=start&study_patid=$xrayno\">$detail_all</a></td>\n");
 }

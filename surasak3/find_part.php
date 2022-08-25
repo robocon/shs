@@ -1,7 +1,7 @@
 <?php 
-include 'bootstrap.php';
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-
+// include 'bootstrap.php';
+$dbi = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$dbi->set_charset('utf8');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +9,7 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¤é¹ËÒ PART</title>
+    <title>à¸„à¹‰à¸™à¸«à¸² PART</title>
 </head>
 <body>
     <style>
@@ -28,10 +28,10 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
 
     <form action="find_part.php" method="post">
         <div>
-            ÇÑ¹·Õè <input type="text" name="findDate" id="findDate" value="<?=(date('Y')+543).date('-m');?>">
+            à¸§à¸±à¸™à¸—à¸µà¹ˆ <input type="text" name="findDate" id="findDate" value="<?=(date('Y')+543).date('-m');?>">
         </div>
         <div>
-            <button type="submit">¤é¹ËÒ</button>
+            <button type="submit">à¸„à¹‰à¸™à¸«à¸²</button>
             <input type="hidden" name="action" value="findPart">
         </div>
     </form>
@@ -50,7 +50,7 @@ $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
                 OR 
                 (`detail` IS NULL OR `detail` = '') 
             ) 
-            AND `credit` != 'Â¡àÅÔ¡'
+            AND `credit` != 'à¸¢à¸à¹€à¸¥à¸´à¸'
         ) AS a 
         LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` ";
         $q = $dbi->query($sql);

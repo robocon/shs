@@ -8,7 +8,8 @@ if(empty($_REQUEST['code']) OR $_SESSION['smenucode']!=='ADM')
 }
 
 $code = $_REQUEST['code'];
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->set_charset('utf8');
 $q = $dbi->query("SELECT * FROM `labcare` WHERE `code` = '$code' ");
 $item = $q->fetch_assoc();
 ?>

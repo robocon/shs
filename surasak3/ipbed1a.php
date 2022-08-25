@@ -2,16 +2,29 @@
 require("fpdf/fpdf.php");
 require("fpdf/pdf.php");
 
-include("connect.php");
+include 'bootstrap.php';
+$db = Mysql::load();
 
-$cbedname = $_GET['cbedname'];
+$cbedname = iconv('UTF8','TIS620', $_GET['cbedname']);
 if( $cbedname == 'รวม' ){
 	$cbedname = 'อายุรกรรม';
 }
 
 $sql = "SELECT hn,an,ptname,age,ptright,bedcode,doctor,bed,diagnos FROM bed WHERE an = '$cAn' ";
-$result_dt_hn =mysql_query($sql);
-list($chn, $can, $cptname , $cage , $cptright , $cbedcode , $cdoctor , $cBed1 ,$cdiagnos ) = Mysql_fetch_row($result_dt_hn);
+// $result_dt_hn =mysql_query($sql);
+// list($chn, $can, $cptname , $cage , $cptright , $cbedcode , $cdoctor , $cBed1 ,$cdiagnos ) = Mysql_fetch_row($result_dt_hn);
+$db->select($sql);
+$bed = $db->get_item();
+$chn = $bed['hn'];
+$can = $bed['an'];
+$cptname = iconv('UTF8','TIS620', $bed['ptname']);
+$cage = iconv('UTF8','TIS620', $bed['age']);
+$cptright = iconv('UTF8','WINDOWS-874', $bed['ptright']);
+
+$cbedcode = $bed['bedcode'];
+$cdoctor = iconv('UTF8','TIS620', $bed['doctor']);
+$cBed1 = $bed['bed'];
+$cdiagnos = $bed['diagnos'];
 
 $ll = "P";
 

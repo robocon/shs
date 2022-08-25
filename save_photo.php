@@ -18,9 +18,10 @@ if(!empty($idcard) && !empty($rawPhoto))
     $im = imagecreatefromstring($rawPhoto);
     $res_img = imagejpeg($im, $img_path, 85);
     echo "success";
+    var_dump($res_img);
+    exit;
 }
 else
 {
     echo "fail";
 }
-exit;

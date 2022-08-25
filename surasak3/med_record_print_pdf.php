@@ -9,6 +9,8 @@ class MedSHS extends SHSPdf{
 	{
 		parent::__construct($orientation, $unit, $size);
     }
+
+    
     
     function header(){
 
@@ -24,26 +26,26 @@ class MedSHS extends SHSPdf{
 
         $this->SetFont('THSarabun','UB',18);
         $this->SetXY(20, 28);
-        $this->Cell(60, 8, $_POST['type'], 0, 1, 'C');
+        $this->Cell(60, 8, iconv("UTF-8", "WINDOWS-874", $_POST['type']), 0, 1, 'C');
 
         // ข้อมูลผู้ป่วย
         // 110
         $this->SetFont('THSarabun','',14);
         $this->SetXY(80, 12);
-        $this->Cell(110, 6, 'ชื่อ/สกุล ผู้ป่วย: '.$user['ptname'].' อายุ: '.$user['age'], 0, 1);
+        $this->Cell(110, 6, 'ชื่อ/สกุล ผู้ป่วย:: '.iconv("UTF-8", "WINDOWS-874", $user['ptname']).' อายุ: '.iconv("UTF-8", "WINDOWS-874", $user['age']), 0, 1);
 
         $this->SetXY(80, 18);
-        $this->Cell(110, 6, 'HN: '.$user['hn'].' AN: '.$user['an'].' WARD: '.$user['ward_name'], 0, 1);
+        $this->Cell(110, 6, 'HN: '.$user['hn'].' AN: '.$user['an'].' WARD: '.iconv("UTF-8", "WINDOWS-874", $user['ward_name']), 0, 1);
 
         $this->SetXY(80, 24);
         $this->Cell(110, 6, 'ROOM/BED: '.$user['bed'].' Dx: '.$user['diagnos'], 0, 1);
 
         $this->SetXY(80, 30);
-        $this->Cell(110, 6, 'สิทธ์: '.$user['ptright'].' แพทย์: '.$user['doctor'], 0, 1);
+        $this->Cell(110, 6, 'สิทธ์: '.iconv("UTF-8", "WINDOWS-874", $user['ptright']).' แพทย์: '.iconv("UTF-8", "WINDOWS-874", $user['doctor']), 0, 1);
 
         if( $user['drug_reaction'] ){
             $this->SetXY(80, 36);
-            $this->MultiCell(130, 6, 'แพ้ยา : '.$user['drug_reaction']);
+            $this->MultiCell(130, 6, 'แพ้ยา : '.iconv("UTF-8", "WINDOWS-874", $user['drug_reaction']));
         }
         
         
@@ -118,7 +120,7 @@ $i = 1;
 $react_txt = '';
 foreach ($drug_react as $key => $dreact) { 
 
-    $advreact = ( !empty($dreact['advreact']) ) ? ' ( อาการ: '.$dreact['advreact'].' )' : '' ;
+    $advreact = ( !empty($dreact['advreact']) ) ? ' ( อาการ: '.iconv("UTF-8", "WINDOWS-874", $dreact['advreact']).' )' : '' ;
 
     $react_txt .= $i.'.)';
 
@@ -213,8 +215,8 @@ foreach ($drug_lists as $drug_id) {
     $pdf->SetX(10);
     
     // หาความสูงของตัว Multicel ที่เป็นข้อความ
-    $message = $d['tradname'].'('.$dGenname.')'.'('.$slcode.')'."&nbsp;".$detail_txt."$drug_y   $tr_height";
-    $muticell_h = $pdf->GetMultiCellHeight(52, 6, $message);
+    $message = $d['tradname'].'('.$dGenname.')'.'('.$slcode.')'."\n\r".$detail_txt;
+    $muticell_h = $pdf->GetMultiCellHeight(52, 6, iconv("UTF-8", "TIS-620", $message));
 
     // หาร 6 เพราะ1บรรทัดสูง6หน่วย
     $muticell_hCal = $muticell_h / 6; 
@@ -226,7 +228,7 @@ foreach ($drug_lists as $drug_id) {
     // x y w h
     // เป็นกรอบข้อความยา
     $pdf->Rect(10, $drug_y, 52, ($tr_height * 6));
-    $pdf->MultiCell(52, 6, $d['tradname'].'('.$dGenname.')'.'('.$slcode.')'."\n\r".$detail_txt, 0);
+    $pdf->MultiCell(52, 6, iconv("UTF-8", "TIS-620", $message), 0);
 
     ////// 
     // ในยาแต่ละตัวสูงกี่บรรทัด 

@@ -2,7 +2,7 @@
 session_start();
 set_time_limit(30);
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 include("connect.inc");
 
@@ -26,12 +26,12 @@ list($orderdate,$patientname,$labnumber,$sex) = mysql_fetch_row($result);
 
 
 $xx = explode("-",$date_now);
-$date_now2 = "<B>�� LAB �ͧ�ѹ��� :</B> ";
+$date_now2 = "<B>ผล LAB ของวันที่ :</B> ";
 
 ?>
 <html>
 <head>
-<title>������ LAB</title>
+<title>พิมพ์ผล LAB</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -94,14 +94,14 @@ body,td,th {
 				$select_date .= " Selected ";
 		$select_date .= ">".$arr["orderdate1"]."".($arr["orderdate3"]+543)."</option>";
 	}
-	$select_date .= "</Select>&nbsp;<INPUT TYPE=\"submit\" value=\"��ŧ\">
+	$select_date .= "</Select>&nbsp;<INPUT TYPE=\"submit\" value=\"ตกลง\">
 	</FORM>";
 
 	$select_date .= "</CENTER>";
 
 if($noLab == false){
-	echo "<BR><BR><CENTER>����ռ� Lab �ͧ�ѹ���";
-	echo "<BR><FORM METHOD=GET ACTION=\"".$_SERVER["PHP_SELF"]."\">�ټ� Lab ��͹��ѧ : ";
+	echo "<BR><BR><CENTER>ไม่มีผล Lab ของวันนี้";
+	echo "<BR><FORM METHOD=GET ACTION=\"".$_SERVER["PHP_SELF"]."\">ดูผล Lab ย้อนหลัง : ";
 	echo $select_date ;
 	exit();
 }
@@ -125,15 +125,15 @@ $list_lab = implode(", ",$lab_title);
 	<TD>
 <?php 
 //echo $date_now2," ",$select_date;
-echo "<CENTER><FONT SIZE='4' ><font face='Angsana New' style='line-height:20px;;' ><B>���§ҹ�ŷҧ��ͧ��Ժѵԡ�� �ç��Һ�Ť�������ѡ�������� �ӻҧ</FONT></B><FONT SIZE='2'> �� 054-839305<BR></FONT></CENTER>";
-echo "<FONT SIZE='4'><font face='Angsana New' style='line-height:20px;;' >HN:<b>".$_SESSION["hn_now"]." </b>&nbsp;&nbsp;����:&nbsp;<b>",$patientname,"</FONT></b>";
-echo "<FONT SIZE='3'><font face='Angsana New' style='line-height:20px;;' >&nbsp;&nbsp;�ѹ���:<b>",$date_now,"</b>";
-if($sex=='M'){$sex='���';} else {$sex='˭ԧ';};
+echo "<CENTER><FONT SIZE='4' ><font face='Angsana New' style='line-height:20px;;' ><B>ใบรายงานผลทางห้องปฏิบัติการ โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</FONT></B><FONT SIZE='2'> โทร 054-839305<BR></FONT></CENTER>";
+echo "<FONT SIZE='4'><font face='Angsana New' style='line-height:20px;;' >HN:<b>".$_SESSION["hn_now"]." </b>&nbsp;&nbsp;ชื่อ:&nbsp;<b>",$patientname,"</FONT></b>";
+echo "<FONT SIZE='3'><font face='Angsana New' style='line-height:20px;;' >&nbsp;&nbsp;วันที่:<b>",$date_now,"</b>";
+if($sex=='M'){$sex='ชาย';} else {$sex='หญิง';};
  
 
-echo "&nbsp;&nbsp;��:<B>",$sex,"</b>";
+echo "&nbsp;&nbsp;เพศ:<B>",$sex,"</b>";
 echo "&nbsp;&nbsp;LAB number:<B>",$labnumber,"</b></FONT>";
-echo "<FONT SIZE='2'><font face='Angsana New' style='line-height:20px;;' ><BR><B>��¡�� Lab :</B> ",$list_lab;
+echo "<FONT SIZE='2'><font face='Angsana New' style='line-height:20px;;' ><BR><B>รายการ Lab :</B> ",$list_lab;
 echo "</FONT>";
 ?>
 <TABLE width="700" border="0"  cellpadding="0" cellspacing="0" style="border-color: #33FF00" >

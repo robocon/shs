@@ -2,7 +2,7 @@
 //session_start();
 set_time_limit(30);
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
 
@@ -10,7 +10,7 @@ if(isset($_GET["action"])){
 ?>
 <html>
 <head>
-<title>ผล LAB Online</title>
+<title>เธเธฅ LAB Online</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -70,33 +70,35 @@ include("connect.inc");
 
 <TABLE width="900">
   <TR>
-    <TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย</TD>
+    <TD colspan="8" class="tb_head">เธเนเธญเธกเธนเธฅเธเธนเนเธเนเธงเธข</TD>
   </TR>
   <TR>
     <TD align="right" class="tb_detail">AN : </TD>
     <TD><?php echo $rep['an'];?></TD>
-    <TD align="right" class="tb_detail">ชื่อ-สกุล : </TD>
+    <TD align="right" class="tb_detail">เธเธทเนเธญ-เธชเธเธธเธฅ : </TD>
     <TD><?php echo $rep['ptname'];?></TD>
-    <TD align="right" class="tb_detail">อายุ : </TD>
+    <TD align="right" class="tb_detail">เธญเธฒเธขเธธ : </TD>
     <TD><?php echo $rep['age'];?></TD>
-    <TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
+    <TD align="right" class="tb_detail">เธชเธดเธ—เธเธดเธเธฒเธฃเธฃเธฑเธเธฉเธฒ : </TD>
     <TD><?php echo $rep['ptright'];?></TD>
   </TR>
 </TABLE>
 <BR>
-<!--<a target=_blank  href="comparelab_in.php?hn_now=<?=$rep['hn']?>&an=<?=$rep['an']?>" class='tablefont'>เปรียบเทียบผล LAB</a>
+<!--<a target=_blank  href="comparelab_in.php?hn_now=<?=$rep['hn']?>&an=<?=$rep['an']?>" class='tablefont'>เน€เธเธฃเธตเธขเธเน€เธ—เธตเธขเธเธเธฅ LAB</a>
 --><TABLE  border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#0046D7">
 <TR>
 	<TD>
-<TABLE width="800" border="0" align="center" cellpadding="0" cellspacing="2">
+<TABLE width="903" border="0" align="center" cellpadding="0" cellspacing="2">
 <TR align="center" class="tb_head">
-	<TD >วันที่</TD>
-	<TD>รายการ</TD>
-	<TD>ดูข้อมูล</TD>
+	<TD width="180" >เธงเธฑเธเธ—เธตเน</TD>
+	<TD width="368">เธฃเธฒเธขเธเธฒเธฃ</TD>
+	<TD width="148">เธ”เธนเธเนเธญเธกเธนเธฅ</TD>
+    <TD width="94">เนเธเธฃเธฒเธขเธเธฒเธเธเธฅ</TD>
 </TR>
 <?php
 $i=0;
-	$sql = "Select distinct date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d-%m-%Y') as dateresult2 From resulthead where hn = '$hn_now' order by orderdate DESC";
+	$sql = "Select distinct date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d-%m-%Y') as dateresult2,labnumber From resulthead where hn = '$hn_now'  order by orderdate DESC";
+	//echo $sql;
 	$result = mysql_query($sql);
 	while($arr = mysql_fetch_assoc($result)){
 		$list_lab = array();
@@ -113,11 +115,17 @@ $i=0;
 			$bgcolor="#FFFFFF";
 		}
 		$i++;
+		
+$sql = "Select sourcename,clinicianname From resulthead where labnumber = '".$arr['labnumber']."' and hn='".$hn_now."'  limit 1";
+//echo $sql."<BR>";
+$result2 = Mysql_Query($sql);
+list($sourcename,$clinicianname) = Mysql_fetch_row($result2);		
 ?>
 <TR bgcolor="<?php echo $bgcolor;?>">
 	<TD align="center" ><?php echo $arr["dateresult2"];?></TD>
 	<TD><?php echo implode(", ",$list_lab);?></TD>
-	<TD align="center"><A HREF="dt_lab_lst_in1.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>&hn_now=<?php echo $hn_now;?>" target="_blank">ดูข้อมูล</A></TD>
+	<TD align="center"><A HREF="dt_lab_lst_in1.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>&hn_now=<?php echo $hn_now;?>" target="_blank">เธ”เธนเธเนเธญเธกเธนเธฅ</A></TD>
+    <TD align="center"><A HREF="lab_lst_print_opd1new.php?hn=<?php echo $hn_now;?>&lab_date=<?php echo urlencode($arr["dateresult"]);?>&labnumber=<?=$arr['labnumber'];?>&listlab=<?php echo implode(", ",$list_lab);?>&depart=<?php echo $sourcename;?>&doctor=<?php echo $clinicianname;?>" target="_blank" >เธเธดเธกเธเน</A></TD>
 </TR>
 <?php
 	}	

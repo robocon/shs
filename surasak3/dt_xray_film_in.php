@@ -2,7 +2,7 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
 if(empty($_SESSION["S_listxray"])){
@@ -17,7 +17,7 @@ $style_menu=2;
 
 <html>
 <head>
-<title>¥Ÿø‘≈¡Ï X-RAY</title>
+<title>‡∏î‡∏π‡∏ü‡∏¥‡∏•‡∏°‡πå X-RAY</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -80,7 +80,7 @@ body,td,th {
 	<TD >XRAYNO.<//TD>
 	<TD>DATE</TD>
 	<TD>DOCTOR</TD>
-	<TD>DETAIL_ALL (°¥¥Ÿø‘≈¡Ï)</TD>
+	<TD>DETAIL_ALL (‡∏Å‡∏î‡∏î‡∏π‡∏ü‡∏¥‡∏•‡∏°‡πå)</TD>
 </TR>
 <?
  $query="SELECT date,hn,vn,yot,name,sname,doctor,xrayno,detail_all FROM xray_doctor where hn='$hn_now' GROUP BY xrayno  ORDER  BY date DESC  ";

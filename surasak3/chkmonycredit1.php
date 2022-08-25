@@ -212,12 +212,22 @@ session_register("ptname");
 
     $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 //    $chkdate=($chkdate).date(" G:i:s"); 
+if(isset($_POST["doctor1"])){
+	$doctor1=$doctor1;
+}	
+if(isset($_GET["doctor1"])){
+	$doctor1 = iconv("tis-620", "utf-8",$doctor1);
+	//$doctor1=$doctor1;
+}	
 
     $today="$d-$m-$yr";
     $repdate=$today;   
-	 $doctor="$doctor1";   
+	$doctor="$doctor1";
+	//echo "==>".$doctor;
+	
 	 
     include("connect.inc");	 
+	mysql_query("SET CHARACTER SET utf8 ");
 		$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 		$result = mysql_query($query) or die("Query failed");
 		
@@ -232,8 +242,8 @@ session_register("ptname");
 		$nPrefix=$row->prefix;
 		$chkup="CHKUP$nPrefix";
   
-	 print "�ѭ������Ѻ�����¹͡ �ͧ�ѹ��� $repdate ";
-    print "<b>�Ѻ������$doctor</b> ";
+	 print "บัญชีรายรับผู้ป่วยนอก ของวันที่ $repdate ";
+    print "<b>รับชำระโดย$doctor</b> ";
   
 	$today="$yr-$m-$d";
     $chkdate=("$yr-$m-$d").date(" H:i:s"); 
@@ -241,28 +251,28 @@ session_register("ptname");
 <table>
  <tr>
    <th bgcolor=6495ED><font size='2'>#</th>
-  <th bgcolor=6495ED><font size='2'>����</th>
+  <th bgcolor=6495ED><font size='2'>เวลา</th>
   <th bgcolor=6495ED><font size='2'>HN</th>
   <?php
-  if($doctor1=="��Ǩ�آ�Ҿ" || $doctor1==$chkup || $doctor1=="��Ǩ�آ�Ҿ���Ǩ"){
+  if($doctor1=="ตรวจสุขภาพ" || $doctor1==$chkup || $doctor1=="ตรวจสุขภาพตำรวจ"){
 	?>
-	<th bgcolor=6495ED><font size='2'>����-ʡ��</th>
+	<th bgcolor=6495ED><font size='2'>ชื่อ-สกุล</th>
 	<?php
 	}
   ?>
   <th bgcolor=6495ED><font size='2'>AN</th>
   <th bgcolor=6495ED><font size='2'>VN</th>
-  <th bgcolor=6495ED><font size='2'>��¡��</th>
-  <th bgcolor=6495ED><font size='2'>�����Թ</th>
-   <th bgcolor=6495ED><font size='2'>����</th>
+  <th bgcolor=6495ED><font size='2'>รายการ</th>
+  <th bgcolor=6495ED><font size='2'>จ่ายเงิน</th>
+   <th bgcolor=6495ED><font size='2'>ชำระ</th>
  
  
-   <th bgcolor=6495ED><font size='2'>�Ţ���</th>
+   <th bgcolor=6495ED><font size='2'>เลขที่</th>
   <th bgcolor=6495ED><font size='2'>detail</th>
-  <th bgcolor=6495ED><font size='2'>���.</th>
-  <th bgcolor=6495ED><font size='2'>�ԡ��</th>
+  <th bgcolor=6495ED><font size='2'>จนท.</th>
+  <th bgcolor=6495ED><font size='2'>เบิกได้</th>
 
-  <th bgcolor=6495ED><font size='2'>������</th>
+  <th bgcolor=6495ED><font size='2'>ประเภท</th>
   </tr>
 
 <?php
@@ -272,8 +282,10 @@ session_register("ptname");
 
 
 $prow_id     =array("prow_id");
- $query = "SELECT * FROM opacc WHERE   date LIKE '$today%' and credit = '$doctor'  ORDER  BY date  ";
-    $result = mysql_query($query)or die("Query failed");
+ $query = "SELECT * FROM opacc WHERE date LIKE '$today%' and credit = '$doctor'  ORDER  BY date  ";
+ 
+    //echo $query;
+	$result = mysql_query($query)or die("Query failed");
 	
 	//echo  $query;
 
@@ -293,7 +305,11 @@ $prow_id     =array("prow_id");
     array_push($aDepart,$row->depart);
     array_push($aDetail,$row->detail);
     array_push($aPrice,$row->price);
-    array_push($aPaid,$row->paid);
+	if($row->credit=="จ่ายตรง"){
+		array_push($aPaid,$row->paidcscd);
+	}else{
+		array_push($aPaid,$row->paid);
+	}
 	array_push($aCredit,$row->credit);
 	array_push($aCredit_d,$row->credit_detail);
     array_push($aIdname,$row->idname);
@@ -302,7 +318,7 @@ $prow_id     =array("prow_id");
  array_push($aPaidcscd,$row->paidcscd);
   array_push($aVn,$row->vn);
   
-    if( $doctor != "��Ǩ�آ�Ҿ���Ǩ" )
+    if( $doctor != "ตรวจสุขภาพตำรวจ" )
     {
         $qquery = "select concat(yot,' ',name,' ',surname) as ptname from opcard where hn='".$row->hn."' ";
         $abrow = mysql_query($qquery);
@@ -318,7 +334,12 @@ $prow_id     =array("prow_id");
 
 if ($row->depart=="PHAR"){
 	        array_push($aPhar,$row->price);  
-            array_push($aPharpaid,$row->paid);
+			if($row->credit=="จ่ายตรง"){
+				array_push($aPharpaid,$row->paidcscd);
+				//echo $aPharpaid;
+			}else{
+				array_push($aPharpaid,$row->paid);
+			}
             array_push($aEssd,$row->essd);
             array_push($aNessdy,$row->nessdy);
             array_push($aNessdn,$row->nessdn);
@@ -327,68 +348,115 @@ if ($row->depart=="PHAR"){
             array_push($aDSY,$row->dsy);  
             array_push($aDSN,$row->dsn);
 }else if ($row->depart=="PATHO"){
-            array_push($aLabo,$row->price);  
-            array_push($aLabopaid,$row->paid);
+            array_push($aLabo,$row->price); 
+			if($row->credit=="จ่ายตรง"){
+				array_push($aLabopaid,$row->paidcscd);
+			}else{
+				array_push($aLabopaid,$row->paid);
+			}
 }else if($row->depart=="XRAY"){
-            array_push($aXray,$row->price);  
-            array_push($aXraypaid,$row->paid);
+            array_push($aXray,$row->price); 
+			if($row->credit=="จ่ายตรง"){
+				array_push($aXraypaid,$row->paidcscd);
+			}else{
+				array_push($aXraypaid,$row->paid);
+			}
 }else if ($row->depart=="SURG"){
-            array_push($aSurg,$row->price);  
-            array_push($aSurgpaid,$row->paid);
+            array_push($aSurg,$row->price);
+			if($row->credit=="จ่ายตรง"){
+				array_push($aSurgpaid,$row->paidcscd);
+			}else{
+				array_push($aSurgpaid,$row->paid);
+			}
 }else if($row->depart=="EMER"){
-            array_push($aEmer,$row->price);  
-            array_push($aEmerpaid,$row->paid);
+            array_push($aEmer,$row->price);
+			if($row->credit=="จ่ายตรง"){
+				array_push($aEmerpaid,$row->paidcscd);
+			}else{
+				array_push($aEmerpaid,$row->paid);
+			}
 }else if ($row->depart=="DENTA"){
-            array_push($aDent,$row->price);  
-            array_push($aDentpaid,$row->paid);
+            array_push($aDent,$row->price); 
+			if($row->credit=="จ่ายตรง"){			
+				array_push($aDentpaid,$row->paidcscd);
+			}else{
+				array_push($aDentpaid,$row->paid);
+			}
 }else if ($row->depart=="PHYSI"){
-            array_push($aPhysi,$row->price);  
-            array_push($aPhysipd,$row->paid);
+            array_push($aPhysi,$row->price); 
+			if($row->credit=="จ่ายตรง"){
+				array_push($aPhysipd,$row->paidcscd);
+			}else{
+				array_push($aPhysipd,$row->paid);
+			}
 }else if ($row->depart=="HEMO"){
-            array_push($aHemo,$row->price);  
-            array_push($aHemopd,$row->paid);
+            array_push($aHemo,$row->price); 
+			if($row->credit=="จ่ายตรง"){
+				array_push($aHemopd,$row->paidcscd);
+			}else{
+				array_push($aHemopd,$row->paid);
+			}
 }else if ($row->depart=="OTHER" || $row->depart=="NCARE"){
     $paid = (int)$row->paid;
     if( strpos($row->ptright, 'R03') !== false && $paid == 30 ){
         
-        array_push($aOther,$row->price);  
-        array_push($aOtherpd,$row->paid);
+        array_push($aOther,$row->price); 
+		if($row->credit=="จ่ายตรง"){
+			array_push($aOtherpd,$row->paidcscd);
+		}else{
+			array_push($aOtherpd,$row->paid);
+		}
     }else{
-        
-        array_push($medical_service, $row->paid);
+        if($row->credit=="จ่ายตรง"){
+			array_push($medical_service, $row->paidcscd);
+		}else{
+			array_push($medical_service, $row->paid);
+		}
     }
     
 }else if($row->depart=="NID"){
             array_push($aNid,$row->price);  
-            array_push($aNidpd,$row->paid);
+			if($row->credit=="จ่ายตรง"){
+				array_push($aNidpd,$row->paidcscd);
+			}else{
+				array_push($aNidpd,$row->paid);
+			}
 }else if($row->depart=="EYE"){
-            array_push($aEye,$row->price);  
-            array_push($aEyepd,$row->paid);
+            array_push($aEye,$row->price);
+			if($row->credit=="จ่ายตรง"){
+				array_push($aEyepd,$row->paidcscd);
+			}else{
+				array_push($aEyepd,$row->paid);
+			}
 }else if($row->depart=="WARD"){
             array_push($aWard,$row->price);  
-            array_push($aWardpd,$row->paid);
-}else if($row->credit=="�Թʴ"){
+			if($row->credit=="จ่ายตรง"){
+				array_push($aWardpd,$row->paidcscd);
+			}else{
+				array_push($aWardpd,$row->paid);
+			}
+}else if($row->credit=="เงินสด"){
             array_push($aCredit_1,$row->price);  
             array_push($aCredit_1pd,$row->paid);
-}else if($row->credit=="��ا෾"){
+}else if($row->credit=="กรุงเทพ"){
             array_push($aCredit_2,$row->price);  
             array_push($aCredit_2pd,$row->paid);
-}else if($row->credit=="������"){
+}else if($row->credit=="ทหารไทย"){
             array_push($aCredit_3,$row->price);  
             array_push($aCredit_3pd,$row->paid);
-}else if($row->credit=="���µç"){
+}else if($row->credit=="จ่ายตรง"){
             array_push($aCredit_4,$row->price);  
-            array_push($aCredit_4pd,$row->paid);
-}else if($row->credit=="��Сѹ�ѧ��"){
+            array_push($aCredit_4pd,$row->paidcscd);
+}else if($row->credit=="ประกันสังคม"){
             array_push($aCredit_5,$row->price);  
             array_push($aCredit_5pd,$row->paid);
-}else if($row->credit=="30�ҷ"){
+}else if($row->credit=="30บาท"){
             array_push($aCredit_6,$row->price);  
             array_push($aCredit_6pd,$row->paid);
-}else if($row->credit=="�Թ����"){
+}else if($row->credit=="เงินเชื่อ"){
             array_push($aCredit_7,$row->price);  
             array_push($aCredit_7pd,$row->paid);
-}else if($row->credit=="����"){
+}else if($row->credit=="อื่นๆ"){
             array_push($aCredit_8,$row->price);  
             array_push($aCredit_8pd,$row->paid);
 } 
@@ -397,22 +465,28 @@ $x++;
 	   }
  include("unconnect.inc");
 
-print "<font face='Angsana New'><br>�ӹǹ������ $x ��¡�� �ѧ���<br>";
+print "<font face='Angsana New'><br>จำนวนทั้งสิ้น $x รายการ ดังนี้<br>";
 print "<FORM METHOD=POST ACTION=\"chkmonycredit1_edit.php?action=muti\" target=\"_blank\">";
 
 //   $x++;
 $num=1;
 for ($n=$x; $n>=1; $n--){
 	$time=substr($aDate[$n],11,5);
-	$aIdname[$n]=substr($aIdname[$n],0,9);
-	$aDetail[$n]=substr($aDetail[$n],0,20);
+	//$aIdname[$n]=substr($aIdname[$n],0,100);
+	$aIdname[$n]=iconv_substr($aIdname[$n],0,100,'UTF-8');
+	//$aDetail[$n]=substr($aDetail[$n],0,100);
+	$aDetail[$n]=iconv_substr($aDetail[$n],0,100,'UTF-8');
+	if($aDetail[$n]=="ค่าบริการทางการแพทย์ นอกเวลาราชการ (เบิก"){
+		$aDetail[$n]="ค่าบริการทางการแพทย์ นอกเวลาราชการ (เบิกไม่ได้)";
+	}
 	$aPaidcscd[$n]=number_format( $aPaidcscd[$n], 2, '.', '');
 
+	//$aDetail[$n]=iconv('UTF-8','TIS620',$aDetail[$n]);
 	print("<tr>\n".
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n".
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$time</td>\n".
 	"<td bgcolor=F5DEB3><font face='Angsana New'>$aHn[$n]</td>\n");
-  if($doctor1=="��Ǩ�آ�Ҿ"  || $doctor1==$chkup || $doctor1=="��Ǩ�آ�Ҿ���Ǩ"){
+  if($doctor1=="ตรวจสุขภาพ"  || $doctor1==$chkup || $doctor1=="ตรวจสุขภาพตำรวจ"){
 	?>
 	<td bgcolor=F5DEB3><font face='Angsana New'><?=$ptname[$n]?></td>
 	<?php 
@@ -424,7 +498,7 @@ for ($n=$x; $n>=1; $n--){
 	//"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>$aPrice[$n]</td>\n".  
 	"<td bgcolor=F5DEB3 align='right' ><font face='Angsana New'>$aPaid[$n]</td>\n".  
 	"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>$aCredit[$n]</td>\n".  
-	//"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'><A HREF=\"chkmonycredit1_edit.php?fn=billno&row_id=".$prow_id[$n]."&title_name=".urlencode("�����Ţ���")."&\" target=\"_blank\">$aBillno[$n]</A></td>\n". 
+	//"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'><A HREF=\"chkmonycredit1_edit.php?fn=billno&row_id=".$prow_id[$n]."&title_name=".urlencode("หมายเลขบิล")."&\" target=\"_blank\">$aBillno[$n]</A></td>\n". 
 	"<td bgcolor=F5DEB3 align='right'><INPUT TYPE=\"text\" NAME=\"billno[]\" value=\"".$aBillno[$n]."\" size=\"5\"><INPUT TYPE=\"hidden\" name=\"row_id[]\" value=\"".$prow_id[$n]."\"><INPUT TYPE=\"hidden\" name=\"billno2[]\" value=\"".$aBillno[$n]."\"></td>\n".
 	"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>$aCredit_d[$n]</td>\n".  
 	//"<td bgcolor=F5DEB3><font face='Angsana New'>$aPtright[$n]</td>\n".  
@@ -436,27 +510,27 @@ for ($n=$x; $n>=1; $n--){
 
 	$num++;
 }       
-//�ʴ���¡�ä׹�Թ
+//แสดงรายการคืนเงิน
 $_SESSION['medical_service'] = $medical_service;
-print "</table><INPUT TYPE=\"submit\" value=\"��䢢������Ţ�������稷�����\">
+print "</table><INPUT TYPE=\"submit\" value=\"แก้ไขข้อมูลเลขที่ใบเสร็จทั้งหมด\">
 </FORM>";
     print "<table>";
     print " <tr>";
-    print "  <th><font face='Angsana New'><br>�ʴ���¡�ä׹�Թ<br></th>";
+    print "  <th><font face='Angsana New'><br>แสดงรายการคืนเงิน<br></th>";
     print "</table>";
 
    print "<table>";
    print "<tr>";
   print "<th bgcolor=9999CC>#</th>";
-  print "<th bgcolor=9999C>����</th>";
+  print "<th bgcolor=9999C>เวลา</th>";
   print "<th bgcolor=9999C>HN</th>";
  print " <th bgcolor=9999C>AN</th>";
-  print "<th bgcolor=9999C>Ἱ�</th>";
- print " <th bgcolor=9999C>��¡��</th>";
-  print "<th bgcolor=9999C>�Ҥ�</th>";
- print " <th bgcolor=9999C>�����Թ</th>";
- print " <th bgcolor=9999C>�ѵ��ôԵ</th>";
-  print "<th bgcolor=9999C>���.���Թ</th>";
+  print "<th bgcolor=9999C>แผนก</th>";
+ print " <th bgcolor=9999C>รายการ</th>";
+  print "<th bgcolor=9999C>ราคา</th>";
+ print " <th bgcolor=9999C>จ่ายเงิน</th>";
+ print " <th bgcolor=9999C>บัตรเครดิต</th>";
+  print "<th bgcolor=9999C>จนท.เก็บเงิน</th>";
   print "</tr>";
 
    $num=1;
@@ -482,6 +556,7 @@ print "</table><INPUT TYPE=\"submit\" value=\"��䢢������Ţ�������稷�����\">
 ?>
 
 </table>
-      <br><a href="opmchkuser.php" >��Ǩ�ͺ�Թ����Ѻ</a>
+      <br><a href="opmchkuser.php" >ตรวจสอบเงินรายรับ</a><br>
+	  <!--<br><a href="opmchkuser_new.php" >ตรวจสอบเงินรายรับที่ขอเบิกกับกองทุน</a>	-->  
     
 

@@ -15,28 +15,28 @@ if( empty($page) ){
     ?>
     <div style="content: ''; display: table; clear: both; width: 100%;">
         <fieldset style="width: 30%; float: left;">
-            <legend>§ÈπÀ“µ“¡«—π∑’Ë</legend>
+            <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏°‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</legend>
             <form action="chk_sso.php" method="post">
                 <div>
-                    §ÈπÀ“ <input type="text" name="date_search" id="" value="<?=$date;?>">
-                    <div>√Ÿª·∫∫°“√§ÈπÀ“ ª’-‡¥◊Õπ-«—π ‡™Ëπ 2017-01-25</div>
+                    ‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤ <input type="text" name="date_search" id="" value="<?=$date;?>">
+                    <div>‡∏£‡∏π‡∏õ‡πÅ‡∏ö‡∏ö‡∏Å‡∏≤‡∏£‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤ ‡∏õ‡∏µ-‡πÄ‡∏î‡∏∑‡∏≠‡∏ô-‡∏ß‡∏±‡∏ô ‡πÄ‡∏ä‡πà‡∏ô 2017-01-25</div>
                 </div>
 
                 <div>
-                    <button type="submit">∑”°“√§ÈπÀ“</button>
+                    <button type="submit">‡∏ó‡∏≥‡∏Å‡∏≤‡∏£‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="by" value="date">
                 </div>
             </form>
         </fieldset>
         <fieldset style="width: 30%; float: left;">
-            <legend>§ÈπÀ“µ“¡ HN</legend>
+            <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏° HN</legend>
             <form action="chk_sso.php" method="post">
                 <div>
-                    §ÈπÀ“ <input type="text" name="hn_search" id="" value="<?=$hn_search;?>">
+                    ‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤ <input type="text" name="hn_search" id="" value="<?=$hn_search;?>">
                 </div>
                 <div>
-                    <button type="submit">∑”°“√§ÈπÀ“</button>
+                    <button type="submit">‡∏ó‡∏≥‡∏Å‡∏≤‡∏£‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="by" value="hn">
                 </div>
@@ -45,14 +45,14 @@ if( empty($page) ){
     </div>
     <div>
         <fieldset>
-            <legend>§ÈπÀ“µ“¡∫√‘…—∑</legend>
+            <legend>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏°‡∏ö‡∏£‡∏¥‡∏©‡∏±‡∏ó</legend>
             <form action="chk_sso.php" method="post">
                 <?php 
                 $db->select("SELECT `code`,`name` FROM `chk_company_list` ORDER BY `id` DESC");
                 $company_list = $db->get_items();
                 ?>
                 <div>
-                    ‡≈◊Õ°∫√‘…—∑: 
+                    ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ö‡∏£‡∏¥‡∏©‡∏±‡∏ó: 
                     <select name="company_name" id="">
                         <?php 
                         foreach ($company_list as $key => $item) {
@@ -64,7 +64,7 @@ if( empty($page) ){
                     </select>
                 </div>
                 <div>
-                    <button type="submit">§ÈπÀ“</button>
+                    <button type="submit">‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤</button>
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="by" value="company">
                 </div>
@@ -90,6 +90,7 @@ if( empty($page) ){
             FROM `chk_doctor` 
             WHERE $where 
             ORDER BY `id` ASC ";
+			//echo $sql;
             $db->select($sql);
 
 
@@ -117,10 +118,10 @@ if( empty($page) ){
                 <tr>
                     <th>#</th>
                     <th>HN</th>
-                    <th>™◊ËÕ- °ÿ≈</th>
-                    <th>«—π∑’Ëµ√«®</th>
-                    <th>·æ∑¬Ï</th>
-                    <th colspan="2">æ‘¡æÏ</th>
+                    <th>‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</th>
+                    <th>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏ï‡∏£‡∏ß‡∏à</th>
+                    <th>‡πÅ‡∏û‡∏ó‡∏¢‡πå</th>
+                    <th colspan="2">‡∏û‡∏¥‡∏°‡∏û‡πå</th>
                 </tr>
             <?php 
             $i = 1;
@@ -138,7 +139,7 @@ if( empty($page) ){
                     <td><?=$item['date_chk'];?></td>
                     <td><?=$item['doctor'];?></td>
                     <td><a href="chk_doctor_sticker.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">Sticker</a></td>
-                    <td><a href="chk_doctor_print.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">„∫√“¬ß“πº≈</a></td>
+                    <td><a href="chk_doctor_print.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" target="_blank">‡πÉ‡∏ö‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡∏ú‡∏•</a></td>
                 </tr>
                 <?php
                 $i++;
@@ -147,7 +148,7 @@ if( empty($page) ){
             </table>
             <?php
         }else{
-            ?>‰¡Ëæ∫¢ÈÕ¡Ÿ≈∑’Ë§ÈπÀ“<?php
+            ?>‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ó‡∏µ‡πà‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤<?php
         }
     }
     

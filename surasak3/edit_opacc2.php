@@ -9,7 +9,7 @@ include 'bootstrap.php';
 <form action="edit_opacc2.php" method="post">
 
     <div>
-        �ѹ���: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
+        วันที่: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
     </div>
     <div>
         HN: <input type="text" name="hn" id="hn" value="<?=$_REQUEST['hn'];?>">
@@ -27,8 +27,8 @@ if ($_REQUEST['hn']) {
     $date = $_REQUEST['date'];
     $hn = $_REQUEST['hn'];
     $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date%' AND `hn` = '$hn' ";
-    $configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
-    $db = Mysql::load($configs);
+    // $configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
+    $db = Mysql::load();
 
     $db->select($sql);
     $items = $db->get_items();
@@ -52,7 +52,7 @@ if ($_REQUEST['hn']) {
     
     <?php
     foreach ($items as $key => $item) { 
-        // txdate � opacc �еç�Ѻ date � depart
+        // txdate ใน opacc จะตรงกับ date ใน depart
         $txdate = $item['txdate'];
         ?>
         <tr>

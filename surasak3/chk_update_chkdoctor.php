@@ -5,7 +5,7 @@ include 'bootstrap.php';
 $db = Mysql::load();
 
 $sql = "select b.* from ( 
-    select * from opcardchk where part = '�ǧ�ҧ��ǧ1' 
+    select * from opcardchk where part = 'แขวงทางหลวง1' 
 ) as a 
 left join ( 
     select * from chk_doctor where date_chk like '2019-10%' 

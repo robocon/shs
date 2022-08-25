@@ -43,7 +43,7 @@ class MedSHS extends SHSPdf{
         $this->Cell(70, 11, 'วันที่ .............................................................', 0, 1, 'R');
         // y -1 เพื่อให้วันที่มันลอยขึ้นมานิดหนึ่ง
         $this->SetXY(125, 18);
-        $this->Cell(35, 11, $date_serve, 0, 1, 'C');
+        $this->Cell(35, 11, iconv('UTF8', 'TIS620', $date_serve), 0, 1, 'C');
 
         $this->Rect(8, 30, 170, 11); // กรอบ
         $this->SetXY(10, 30);
@@ -195,7 +195,8 @@ for ($i=1; $i <= $full_rows; $i++) {
     if( !empty($item) ){
 
         // รองรับแค่ที่2บรรทัด
-        $tradename = trim($item['tradename']);
+        $tradename = iconv('UTF8', 'TIS620', $item['tradename']);
+        $tradename = trim($tradename);
         $tradename = preg_replace('/[[:space:]]+/',' ',$tradename);
 
         // นับเอาความสูงของ tradename

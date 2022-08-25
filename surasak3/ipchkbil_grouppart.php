@@ -1,4 +1,6 @@
-<? session_start();?>
+<? session_start();
+//$_GET['vPtname'] = iconv("tis-620", "utf-8",$_GET['vPtname']);
+?>
 <body>
 <style>
 .font{
@@ -11,9 +13,9 @@
 <table class="font" border="1" align="center" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000">
   <tr>
     <td>PART</td>
-    <td>�ӹǹ/��¡��</td>
-    <td>�ӹǹ�Թ</td>
-    <td>���͡</td>
+    <td>จำนวน/รายการ</td>
+    <td>จำนวนเงิน</td>
+    <td>เลือก</td>
   </tr>
 <?
 include("connect.inc");
@@ -48,7 +50,7 @@ while($rs=mysql_fetch_array($resultp)){
     <input type="hidden" name="vPtname"  value="<?=$_GET['vPtname'];?>">
     <input type="hidden" name="vDiag"  value="<?=$_GET['vDiag'];?>">
     
-    <input type="submit" name="button" id="button" value="��ŧ ����¡��" class="font"></td>
+    <input type="submit" name="button" id="button" value="ตกลง ทำรายการ" class="font"></td>
     </tr>
 </table>
 </form>

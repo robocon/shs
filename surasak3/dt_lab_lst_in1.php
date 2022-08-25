@@ -2,7 +2,7 @@
 //session_start();
 set_time_limit(30);
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 include("connect.inc");
 
@@ -26,12 +26,12 @@ list($orderdate) = mysql_fetch_row($result);
 
 
 $xx = explode("-",$date_now);
-$date_now2 = "<B>�� LAB �ͧ�ѹ��� :</B> ";
+$date_now2 = "<B>ผล LAB ของวันที่ :</B> ";
 
 ?>
 <html>
 <head>
-<title>��觵�Ǩ LAB Online</title>
+<title>สั่งตรวจ LAB Online</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -98,14 +98,14 @@ body,td,th {
 				$select_date .= " Selected ";
 		$select_date .= ">".$arr["orderdate1"]."".($arr["orderdate3"]+543)."</option>";
 	}
-	$select_date .= "</Select>&nbsp;<INPUT TYPE=\"submit\" value=\"��ŧ\">
+	$select_date .= "</Select>&nbsp;<INPUT TYPE=\"submit\" value=\"ตกลง\">
 	</FORM>";
 
 	$select_date .= "</CENTER>";
 
 if($noLab == false){
-	echo "<BR><BR><CENTER>����ռ� Lab �ͧ�ѹ���";
-	echo "<BR><FORM METHOD=GET ACTION=\"".$_SERVER["PHP_SELF"]."\">�ټ� Lab ��͹��ѧ : ";
+	echo "<BR><BR><CENTER>ไม่มีผล Lab ของวันนี้";
+	echo "<BR><FORM METHOD=GET ACTION=\"".$_SERVER["PHP_SELF"]."\">ดูผล Lab ย้อนหลัง : ";
 	echo $select_date ;
 	exit();
 }
@@ -130,7 +130,7 @@ $list_lab = implode(", ",$lab_title);
 <TR>
 	<TD>
 <?php echo $date_now2," ",$select_date;
-echo "��¡�� Lab ������ : ",$list_lab;
+echo "รายการ Lab ทั้งหมด : ",$list_lab;
 ?>
 <TABLE width="800" border="0"  cellpadding="0" cellspacing="0" style="border-color: #33FF00" >
 <TR>

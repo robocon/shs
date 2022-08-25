@@ -15,11 +15,11 @@ if( $hn != false ){
 
     $txt = '{"state":200}';
     
-    // ¤¹ä¢éÂÑ§ÍÂÙèã¹ ward
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ ward
     if( !empty($item) ){
         $txt = '{"state":400,"msg":"'.$item['my_ward'].'"}';
     }
-    header('Content-Type:text/html; charset=tis-620');
+    header('Content-Type:text/html; charset=UTF-8');
     echo $txt;
     exit;
 }

@@ -24,12 +24,12 @@ $pdf->AddPage();
 $pdf->SetFont('THSarabun','',16); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 // $pdf->Rect(0, 0, 84, 37);
-$pdf->Cell(0, 5, $cbedname.'  '.$item['bed'], 0, 1);
+$pdf->Cell(0, 5, iconv("UTF-8", "WINDOWS-874", $cbedname).'  '.iconv("UTF-8", "WINDOWS-874", $item['bed']), 0, 1);
 $pdf->Cell(0, 5, 'AN: '.$item['an'].' HN: '.$item['hn'], 0, 1);
-$pdf->Cell(0, 5, $item['ptname'].' อายุ '.$item['age'], 0, 1);
-$pdf->Cell(0, 5, 'โรค: '.$item['diagnos'], 0, 1);
-$pdf->Cell(0, 5, 'สิทธิ: '.$item['ptright'], 0, 1);
-$pdf->Cell(0, 5, 'แพทย์: '.$item['doctor'], 0, 1);
+$pdf->Cell(0, 5, iconv("UTF-8", "WINDOWS-874", $item['ptname']).' อายุ '.iconv("UTF-8", "WINDOWS-874", $item['age']), 0, 1);
+$pdf->Cell(0, 5, 'โรค: '.iconv("UTF-8", "WINDOWS-874", $item['diagnos']), 0, 1);
+$pdf->Cell(0, 5, 'สิทธิ: '.iconv("UTF-8", "WINDOWS-874", $item['ptright']), 0, 1);
+$pdf->Cell(0, 5, 'แพทย์: '.iconv("UTF-8", "WINDOWS-874", $item['doctor']), 0, 1);
 
 $pdf->AutoPrint(true);
 $pdf->Output();

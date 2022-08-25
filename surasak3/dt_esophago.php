@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
 //session_register("esophago_add");
@@ -12,7 +12,7 @@ include("connect.inc");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style>
 	<!--
@@ -40,7 +40,7 @@ include("dt_patient.php");
 
 ?>
 <br />
-<A HREF="dt_esophago_list.php" target="_blank">¥Ÿ¢ÈÕ¡Ÿ≈¬ÈÕπÀ≈—ß</A>
+<A HREF="dt_esophago_list.php" target="_blank">‡∏î‡∏π‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏¢‡πâ‡∏≠‡∏ô‡∏´‡∏•‡∏±‡∏á</A>
 <form name="f_colon" action="dt_esophago_print.php" target="_blank" method="post">
 <table border="1" align="center" cellpadding="0" cellspacing="0" style="border-color:#FFFF33; border-style:inherit;">
   <tr>
@@ -159,12 +159,12 @@ include("dt_patient.php");
     </table></td>
   </tr>
   <tr>
-    <td align="center"><input name="submit" type="submit" id="submit" value="µ°≈ß" />&nbsp;&nbsp;
-      <input type="reset" name="Reset" value="≈∫¢ÈÕ¡Ÿ≈" /></td>
+    <td align="center"><input name="submit" type="submit" id="submit" value="‡∏ï‡∏Å‡∏•‡∏á" />&nbsp;&nbsp;
+      <input type="reset" name="Reset" value="‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•" /></td>
   </tr>
 </table>
 <?php
-	$sql = "Select (case when sex='™' then '™“¬' else 'À≠‘ß' end) as sex_d From opcard where hn='".$_SESSION["hn_now"]."' limit 0,1";
+	$sql = "Select (case when sex='‡∏ä' then '‡∏ä‡∏≤‡∏¢' else '‡∏´‡∏ç‡∏¥‡∏á' end) as sex_d From opcard where hn='".$_SESSION["hn_now"]."' limit 0,1";
 	$result = mysql_query($sql);
 	list($sex_d) = mysql_fetch_row($result);
 ?>

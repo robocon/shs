@@ -55,8 +55,8 @@ list($dbirth) = Mysql_fetch_row(Mysql_Query($sql));
 	
 	$stiker = "<TABLE  width=\"300\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 	<TR>
-		<TD><font style=\"font-family:'MS Sans Serif'; font-size:14px\"  ><CENTER><B>„∫ X-Ray&nbsp;&nbsp;No. ".$_SESSION["nRunno"]."</B></CENTER>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thaidate."<br>&nbsp;&nbsp;HN:".$_SESSION["hn_now"].",&nbsp;&nbsp;VN:".$_SESSION["vn_now"].", &nbsp; ª√–‡¿∑ø‘≈Ï¡ : ".$_POST["type"]."<br>&nbsp;".$_SESSION["yot_now"]." ".$_SESSION["name_now"]." ".$_SESSION["surname_now"]."&nbsp;&nbsp;<BR>&nbsp; ‘∑∏‘ : ".$_SESSION["ptright_now"]."<BR>&nbsp;·æ∑¬Ï : ".$_SESSION["dt_doctor"]."</TD>
-	</TR>".$stiker."<TR><TD align='center' ><font style=\"font-family:'MS Sans Serif'; font-size:14px\"  ><B>π”„∫π’È‰ª¬◊Ëπ∑’ËÀÈÕß X-Ray</B><BR</TD></TR>";
+		<TD><font style=\"font-family:'MS Sans Serif'; font-size:14px\"  ><CENTER><B>‡πÉ‡∏ö X-Ray&nbsp;&nbsp;No. ".$_SESSION["nRunno"]."</B></CENTER>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$Thaidate."<br>&nbsp;&nbsp;HN:".$_SESSION["hn_now"].",&nbsp;&nbsp;VN:".$_SESSION["vn_now"].", &nbsp; ‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó‡∏ü‡∏¥‡∏•‡πå‡∏° : ".$_POST["type"]."<br>&nbsp;".$_SESSION["yot_now"]." ".$_SESSION["name_now"]." ".$_SESSION["surname_now"]."&nbsp;&nbsp;<BR>&nbsp;‡∏™‡∏¥‡∏ó‡∏ò‡∏¥ : ".$_SESSION["ptright_now"]."<BR>&nbsp;‡πÅ‡∏û‡∏ó‡∏¢‡πå : ".$_SESSION["dt_doctor"]."</TD>
+	</TR>".$stiker."<TR><TD align='center' ><font style=\"font-family:'MS Sans Serif'; font-size:14px\"  ><B>‡∏ô‡∏≥‡πÉ‡∏ö‡∏ô‡∏µ‡πâ‡πÑ‡∏õ‡∏¢‡∏∑‡πà‡∏ô‡∏ó‡∏µ‡πà‡∏´‡πâ‡∏≠‡∏á X-Ray</B><BR</TD></TR>";
 
 	echo "
 	<html>

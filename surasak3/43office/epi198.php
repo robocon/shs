@@ -12,7 +12,7 @@ $db->select($sql);
 <div style="position: absolute; top: 0; right: -400px; background-color: #bbbbbb;" width="400px;">
 <table class="chk_table" style="width: 100%">
     <tr>
-        <td colspan="3" align="center"><a href="javascript: void(0);" id="btnLaborClose"><b>[ �Դ ]</b></a></td>
+        <td colspan="3" align="center"><a href="javascript: void(0);" id="btnLaborClose"><b>[ ปิด ]</b></a></td>
     </tr>
     <?php 
     if( $db->get_rows() > 0 ){
@@ -36,7 +36,7 @@ $db->select($sql);
         
     }else{
         ?>
-        <tr><td colspan="2" align="center">��辺������</td></tr>
+        <tr><td colspan="2" align="center">ไม่พบข้อมูล</td></tr>
         <?php
     }
     ?>
@@ -52,7 +52,7 @@ if( count($items) > 0 ){
     ?>
     <table class="chk_table" style="width: 100%">
         <tr>
-            <td colspan="3" align="center">�Ѥ�չ�͡</td>
+            <td colspan="3" align="center">วัคซีนนอก</td>
         </tr>
         <tr>
             <th width="22%">Code</th>

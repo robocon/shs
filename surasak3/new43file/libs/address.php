@@ -1,5 +1,5 @@
 <?php
-//-------------------- Create file address ‰ø≈Ï∑’Ë 2 --------------------//
+//-------------------- Create file address ‡πÑ‡∏ü‡∏•‡πå‡∏ó‡∏µ‡πà 2 --------------------//
 $temp2="CREATE TEMPORARY TABLE report_person2 
 SELECT a.regisdate,a.hn,a.yot,a.name,a.surname,a.address,a.tambol,a.ampur,a.changwat,a.idguard,a.hphone,a.phone,a.idcard 
 From opcard as a,
@@ -49,8 +49,8 @@ while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,
 	//echo "==>".$address.",,,,".$posmoo;
 	$posmoo=trim($posmoo);
 	
-	list($textmoo,$numbermoo) = explode("¡.",$posmoo); 
-	list($newmoo,$road)=explode("∂.",$numbermoo);
+	list($textmoo,$numbermoo) = explode("‡∏°.",$posmoo); 
+	list($newmoo,$road)=explode("‡∏ñ.",$numbermoo);
    	
 	if(is_numeric($newmoo)){
 		if($newmoo<=100){	
@@ -64,8 +64,8 @@ while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,
 	}
 	//echo "==>".$village."<br>";
 	
-    $addresstype="1";  //ª√–‡¿∑¢Õß∑’ËÕ¬ŸË
-    $housetype="9";  //≈—°…≥–¢Õß∑’ËÕ¬ŸË
+    $addresstype="1";  //‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó‡∏Ç‡∏≠‡∏á‡∏ó‡∏µ‡πà‡∏≠‡∏¢‡∏π‡πà
+    $housetype="9";  //‡∏•‡∏±‡∏Å‡∏©‡∏ì‡∏∞‡∏Ç‡∏≠‡∏á‡∏ó‡∏µ‡πà‡∏≠‡∏¢‡∏π‡πà
     if(empty($hphone) || $hphone=="-"){
         $telephone="";
     }else{
@@ -97,5 +97,5 @@ $qofPath = $dirPath.'/qof_address.txt';
 file_put_contents($qofPath, $txt);
 $qofLists[] = $qofPath;
 
-echo " √È“ß·øÈ¡ address ‡ √Á®‡√’¬∫√ÈÕ¬<br>";
-//-------------------- Close file address ‰ø≈Ï∑’Ë 2 --------------------//
+echo "‡∏™‡∏£‡πâ‡∏≤‡∏á‡πÅ‡∏ü‡πâ‡∏° address ‡πÄ‡∏™‡∏£‡πá‡∏à‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢<br>";
+//-------------------- Close file address ‡πÑ‡∏ü‡∏•‡πå‡∏ó‡∏µ‡πà 2 --------------------//

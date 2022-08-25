@@ -4,7 +4,7 @@ session_start();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style>
 	<!--
@@ -295,7 +295,7 @@ NULL , '".$dt2."', '".$_SESSION["hn_now"]."', '".$_POST["p_an"]."', '".$dthn."',
     <td>Endoscopist : <?php echo $_POST["signature"]?></td>
   </tr>
   <tr>
-    <td>ห้องตรวจทางเดินอาหารและลำไส้ รพ.ค่ายสุรศักดิ์มนตรี</td>
+    <td>เธซเนเธญเธเธ•เธฃเธงเธเธ—เธฒเธเน€เธ”เธดเธเธญเธฒเธซเธฒเธฃเนเธฅเธฐเธฅเธณเนเธชเน เธฃเธ.เธเนเธฒเธขเธชเธธเธฃเธจเธฑเธเธ”เธดเนเธกเธเธ•เธฃเธต</td>
   </tr>
 </table>
 </body>

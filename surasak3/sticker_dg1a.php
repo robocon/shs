@@ -42,17 +42,17 @@ $pdf->AddPage();
 $pdf->SetFont('AngsanaNew','',12);
 
 
-$pdf->Cell(0,5,"".$bedname." ".$bed."",0,0);
+$pdf->Cell(0,5,"".iconv("UTF-8", "WINDOWS-874",$bedname)." ".iconv("UTF-8", "WINDOWS-874",$bed)."",0,0);
 $pdf->Ln();
-$pdf->Cell(0,4,"ชื่อผู้ป่วย :".$ptname."",0,0);
+$pdf->Cell(0,4,"ชื่อผู้ป่วย :".iconv("UTF-8", "WINDOWS-874",$ptname)."",0,0);
 $pdf->Ln();
 $pdf->Cell(0,4,"AN :".$an."  HN :".$hn."",0,0);
 $pdf->Ln();
-$pdf->Cell(0,4,"".$objarr['tradname']."",0,0);
+$pdf->Cell(0,4,"".iconv("UTF-8", "WINDOWS-874",$objarr['tradname'])."",0,0);
 $pdf->Ln();
-$pdf->Cell(0,4,"".$objarr['detail1']."",0,0);
+$pdf->Cell(0,4,"".iconv("UTF-8", "WINDOWS-874",$objarr['detail1'])."",0,0);
 $pdf->Ln();
-$pdf->Cell(0,4,"".$objarr['detail2']."",0,0);
+$pdf->Cell(0,4,"".iconv("UTF-8", "WINDOWS-874",$objarr['detail2']." ".$objarr['detail3'])."",0,0);
 $pdf->Ln();
 
 }

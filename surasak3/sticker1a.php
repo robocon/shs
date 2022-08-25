@@ -31,7 +31,7 @@ $pdf->AddPage();
 $pdf->SetFont('AngsanaNew','',12);
 
 
-$pdf->Cell(0,5,"".$ptname."",0,0);
+$pdf->Cell(0,5,"".iconv("UTF-8", "WINDOWS-874", $ptname)."",0,0);
 $pdf->Ln();
 $pdf->Cell(0,4,"เตียง :".$bed."",0,0);
 $pdf->Ln();

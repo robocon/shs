@@ -74,7 +74,7 @@ if( $action === 'save' ){
     }
     
 
-    $msg = '�ѹ�֡���������º����';
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
     }
@@ -86,19 +86,19 @@ if( $action === 'save' ){
 include 'head.php';
 ?>
 <div class="clearfix">
-    <h1 style="margin:0;">PRENATAL</h1> <span>�����Ż���ѵԡ�õ�駤���� �ͧ˭ԧ��駤����</span>
+    <h1 style="margin:0;">PRENATAL</h1> <span>ข้อมูลประวัติการตั้งครรภ์ ของหญิงตั้งครรภ์</span>
 </div>
 <fieldset>
-    <legend>��� : PRENATAL</legend>
+    <legend>แฟ้ม : PRENATAL</legend>
     <form action="prenatal.php" method="post">
         <table>
             <tr>
-                <td>���ҵ�� HN : </td>
+                <td>ค้นหาตาม HN : </td>
                 <td><input type="text" name="hn" id=""></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button type="submit">����</button>
+                    <button type="submit">ค้นหา</button>
                     <input type="hidden" name="page" value="search">
                 </td>
             </tr>
@@ -124,11 +124,11 @@ if ( $page === 'search' ) {
     <div>HN : <?=$user['ptname'];?></div>
     <table class="chk_table">
         <tr>
-            <th>�ѹ������Ѻ��ԡ��</th>
+            <th>วันที่มารับบริการ</th>
             <th>Diag</th>
-            <th>ᾷ��</th>
-            <th>������</th>
-            <th>�Ѵ��â�����</th>
+            <th>แพทย์</th>
+            <th>มาเพื่อ</th>
+            <th>จัดการข้อมูล</th>
         </tr>
     <?php
     foreach ($items as $key => $item) { 
@@ -136,7 +136,7 @@ if ( $page === 'search' ) {
         $title = $color = '';
         if ( $item['prenatal_id'] ) { 
             $color = 'style="background-color: #abff90;"';
-            $title = '�ºѹ�֡����������';
+            $title = 'เคยบันทึกข้อมูลแล้ว';
         }
         
         ?>
@@ -145,7 +145,7 @@ if ( $page === 'search' ) {
             <td><?=$item['diag'];?></td>
             <td><?=$item['doctor'];?></td>
             <td><?=$item['toborow'];?></td>
-            <td><a href="prenatal.php?page=form&id=<?=$item['row_id'];?>" title="<?=$title;?>">�ѹ�֡</a></td>
+            <td><a href="prenatal.php?page=form&id=<?=$item['row_id'];?>" title="<?=$title;?>">บันทึก</a></td>
         </tr>
         <?php
     }
@@ -180,7 +180,7 @@ if ( $page === 'search' ) {
             $dr = $db->get_item();
             $doctorcode = $dr['doctorcode'];
 
-        }elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) { // �.xxxx
+        }elseif ( preg_match('/(\d+){4,5}/', $user['doctor'], $matchs) ) { // ท.xxxx
             $doctorcode = $matchs['0'];
         }
         
@@ -191,12 +191,12 @@ if ( $page === 'search' ) {
 
 
 
-    // �ѹ����Ш���͹�����ش���¨ҡ OPD
+    // วันที่ประจำเดือนครั้งสุดท้ายจาก OPD
     $db->select("SELECT `mens`,`mens_date`,`height` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
     $mens = $db->get_item();
     $height = $mens['height'];
     $mensId = $mens['mens'];
-    $mensList = array(1 => '�ѧ����ջ�Ш���͹','�����Ш���͹','�ѧ�ջ�Ш���͹');
+    $mensList = array(1 => 'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
 
     if( $mensList[$mensId] ){
         $lmpNoti = $mensList[$mensId];
@@ -237,36 +237,36 @@ if ( $page === 'search' ) {
     }
     </style>
     <fieldset>
-        <legend>������ѹ�֡ PRENATAL</legend>
+        <legend>ฟอร์มบันทึก PRENATAL</legend>
         <form action="prenatal.php" method="post">
             <table>
                 <tr>
                     <td colspan="2"> 
-                    <b>HN : </b><?=$user['hn'];?> <b>����-ʡ�� : </b><?=$user['ptname'];?> <b>�ѹ������Ѻ��ԡ�� : </b><?=$user['thidate'];?>
+                    <b>HN : </b><?=$user['hn'];?> <b>ชื่อ-สกุล : </b><?=$user['ptname'];?> <b>วันที่มารับบริการ : </b><?=$user['thidate'];?>
                     </td>
                 </tr>
                 <tr>
-                    <td class="txtRight">����ʶҹ��ԡ�� : </td>
+                    <td class="txtRight">รหัสสถานบริการ : </td>
                     <td><input type="text" name="HOSPCODE" value="11512" readonly></td>
                 </tr>
                 <tr>
-                    <td class="txtRight">����¹�ؤ�� : </td>
+                    <td class="txtRight">ทะเบียนบุคคล : </td>
                     <td><input type="text" name="PID" value="<?=$user['hn'];?>" readonly></td>
                 </tr>
                 <tr>
-                    <td class="txtRight">������� : </td>
-                    <td><input type="text" name="GRAVIDA" id="GRAVIDA" value="<?=$GRAVIDA;?>" >(������ 0 ��˹���� 1,2,10)</td>
+                    <td class="txtRight">ครรภ์ที่ : </td>
+                    <td><input type="text" name="GRAVIDA" id="GRAVIDA" value="<?=$GRAVIDA;?>" >(ไม่ใส่ 0 นำหน้าเช่น 1,2,10)</td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�ѹ�á�ͧ����ջ�Ш���͹�����ش���� : </td>
-                    <td><input type="text" name="LMP" id="LMP" value="<?=$LMP;?>" ><?=$lmpNoti;?> �� 2564-01-31</td>
+                    <td class="txtRight">วันแรกของการมีประจำเดือนครั้งสุดท้าย : </td>
+                    <td><input type="text" name="LMP" id="LMP" value="<?=$LMP;?>" ><?=$lmpNoti;?> เช่น 2564-01-31</td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�ѹ����˹���ʹ : </td>
+                    <td class="txtRight">วันที่กำหนดคลอด : </td>
                     <td><input type="text" name="EDC" id="EDC" value="<?=$EDC;?>"></td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�š�õ�Ǩ VDRL_RS : </td>
+                    <td class="txtRight">ผลการตรวจ VDRL_RS : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_174`");
@@ -285,7 +285,7 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�š�õ�Ǩ HB_RS : </td>
+                    <td class="txtRight">ผลการตรวจ HB_RS : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_174`");
@@ -304,7 +304,7 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�š�õ�Ǩ HIV_RS : </td>
+                    <td class="txtRight">ผลการตรวจ HIV_RS : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_176`");
@@ -323,15 +323,15 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�ѹ����Ǩ HCT : </td>
-                    <td><input type="text" name="DATE_HCT" id="DATE_HCT" value="<?=$DATE_HCT;?>">  �� 2564-01-31</td>
+                    <td class="txtRight">วันที่ตรวจ HCT : </td>
+                    <td><input type="text" name="DATE_HCT" id="DATE_HCT" value="<?=$DATE_HCT;?>">  เช่น 2564-01-31</td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�š�õ�Ǩ HCT : </td>
-                    <td><input type="text" name="HCT_RESULT" id="HCT_RESULT" value="<?=$HCT_RESULT;?>" >(�дѺ����ⵤ�Ԥ (%) �к��繵���Ţ����Թ 2 ��ѡ)</td>
+                    <td class="txtRight">ผลการตรวจ HCT : </td>
+                    <td><input type="text" name="HCT_RESULT" id="HCT_RESULT" value="<?=$HCT_RESULT;?>" >(ระดับฮีมาโตคริค (%) ระบุเป็นตัวเลขไม่เกิน 2 หลัก)</td>
                 </tr>
                 <tr>
-                    <td class="txtRight">�š�õ�Ǩ THALASSAEMIA : </td>
+                    <td class="txtRight">ผลการตรวจ THALASSAEMIA : </td>
                     <td>
                         <?php 
                         $db->select("SELECT * FROM `f43_prenatal_176`");
@@ -350,11 +350,11 @@ if ( $page === 'search' ) {
                     </td>
                 </tr>
                 <tr>
-					<td class="txtRight">��ǹ�٧ : </td>
-					<td><input type="text" name="HEIGHT" id="HEIGHT" value="<?=$height;?>">(��.) �к��繵���Ţ����Թ 3 ��ѡ ��зȹ��� 1 ����˹� �� 155.9</td>
+					<td class="txtRight">ส่วนสูง : </td>
+					<td><input type="text" name="HEIGHT" id="HEIGHT" value="<?=$height;?>">(ซม.) ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง เช่น 155.9</td>
 				</tr>
                 <tr>
-                    <td class="txtRight">�Ţ���������ԡ��(ᾷ�����Ǩ) : </td>
+                    <td class="txtRight">เลขที่ผู้ให้บริการ(แพทย์ผู้ตรวจ) : </td>
                     <td>
                         <?php 
                         if( empty($dr) ){ 
@@ -362,7 +362,7 @@ if ( $page === 'search' ) {
                             $providerLists = $db->get_items();
                             ?>
                             <select name="PROVIDER" id="">
-                                <option value="">��س����͡�������ԡ��</option>
+                                <option value="">กรุณาเลือกผู้ให้บริการ</option>
                                 <?php 
                                 foreach ($providerLists as $key => $pv) {
                                     
@@ -390,7 +390,7 @@ if ( $page === 'search' ) {
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;">
-                        <button type="submit">�ѹ�֡������</button>
+                        <button type="submit">บันทึกข้อมูล</button>
                         <input type="hidden" name="CID" value="<?=$user['idcard'];?>">
                         <input type="hidden" name="action" value="save">
                         <input type="hidden" name="D_UPDATE" value="<?=date('YmdHis');?>">

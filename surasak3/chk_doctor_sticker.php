@@ -56,12 +56,12 @@ $pdf->AddPage();
 $pdf->SetFont('AngsanaNew','',13); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 $test_txt = "ผลการตรวจสุขภาพประจำปี ".$user['yearchk']."\n";
-$test_txt .= "ชื่อ : ".$user["prefix"].$user["name"].' '.$user["surname"]." HN : ".$user["hn"]."\n";
-$test_txt .= "วันที่ตรวจ : ".$user['date_chk']."\n";
-$test_txt .= "สรุปผลการตรวจ : ".( $user['conclution'] == 1 ? 'ปกติ' : 'ผิดปกติ' )."\n";
-$test_txt .= "คำแนะนำเพิ่มเติม : ".$conclution_detail."\n";
-$test_txt .= "Diag : ".$user['diag']."\n";
-$test_txt .= "แพทย์ : ".$user['doctor']."\n";
+$test_txt .= "ชื่อ : ".iconv('UTF-8','WINDOWS-874', $user["prefix"].$user["name"].' '.$user["surname"])." HN : ".iconv('UTF-8','WINDOWS-874', $user["hn"])."\n";
+$test_txt .= "วันที่ตรวจ : ".iconv('UTF-8','WINDOWS-874', $user['date_chk'])."\n";
+$test_txt .= "สรุปผลการตรวจ : ".( iconv('UTF-8','WINDOWS-874', $user['conclution']) == 1 ? 'ปกติ' : 'ผิดปกติ' )."\n";
+$test_txt .= "คำแนะนำเพิ่มเติม : ".iconv('UTF-8','WINDOWS-874', $conclution_detail)."\n";
+$test_txt .= "Diag : ".iconv('UTF-8','WINDOWS-874', $user['diag'])."\n";
+$test_txt .= "แพทย์ : ".iconv('UTF-8','WINDOWS-874', $user['doctor'])."\n";
 $pdf->MultiCell(0, 4, $test_txt, 0);
 
 $pdf->AutoPrint(true);

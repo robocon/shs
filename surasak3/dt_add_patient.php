@@ -39,9 +39,9 @@ Function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ª’";
+		$pAge="$ageY ‡∏õ‡∏µ";
 	}else{
-		$pAge="$ageY ª’ $ageM ‡¥◊Õπ";
+		$pAge="$ageY ‡∏õ‡∏µ $ageM ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô";
 	}
 
 return $pAge;
@@ -225,12 +225,12 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 
 if($_SESSION["sIdname"] == "md19921"){
 	
-	$sql = "select count(hn) from opday where doctor ='∏π∫¥‘π∑√Ï º≈»√’π“§ («.19921)' AND hn='".$_SESSION["hn_now"]."' AND diag IS NOT NULL Order by row_id DESC limit 1";
+	$sql = "select count(hn) from opday where doctor ='‡∏ò‡∏ô‡∏ö‡∏î‡∏¥‡∏ô‡∏ó‡∏£‡πå ‡∏ú‡∏•‡∏®‡∏£‡∏µ‡∏ô‡∏≤‡∏Ñ (‡∏ß.19921)' AND hn='".$_SESSION["hn_now"]."' AND diag IS NOT NULL Order by row_id DESC limit 1";
 	$result = mysql_query($sql);
 	list($rows) = mysql_fetch_row($result);
 
 	if($rows > 0){
-		$sql = "Select diag From opday where hn='".$_SESSION["hn_now"]."' AND doctor ='∏π∫¥‘π∑√Ï º≈»√’π“§ («.19921)' AND diag IS NOT NULL Order by row_id DESC limit 1 ";
+		$sql = "Select diag From opday where hn='".$_SESSION["hn_now"]."' AND doctor ='‡∏ò‡∏ô‡∏ö‡∏î‡∏¥‡∏ô‡∏ó‡∏£‡πå ‡∏ú‡∏•‡∏®‡∏£‡∏µ‡∏ô‡∏≤‡∏Ñ (‡∏ß.19921)' AND diag IS NOT NULL Order by row_id DESC limit 1 ";
 		list($_SESSION["dt_diag"]) = mysql_fetch_row(mysql_query($sql));
 	}
 
@@ -273,7 +273,7 @@ if($_SESSION["sIdname"] == "md19921"){
 				$first_page = "dt_index.php";
 		}
 
-		echo "<CENTER><B>‰¡Ë¡’À¡“¬‡≈¢ VN : ".$_REQUEST["vn_now"]."</B> <BR> <A HREF=\"".$first_page."\">&lt;&lt; °≈—∫</A></CENTER>";
+		echo "<CENTER><B>‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏•‡∏Ç VN : ".$_REQUEST["vn_now"]."</B> <BR> <A HREF=\"".$first_page."\">&lt;&lt; ‡∏Å‡∏•‡∏±‡∏ö</A></CENTER>";
 		
 		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"5;URL=dt_index.php\">";
 	}

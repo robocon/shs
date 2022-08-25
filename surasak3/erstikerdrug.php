@@ -2,7 +2,7 @@
 require("fpdf/fpdf.php");
 require("fpdf/pdf.php");
 
-
+include("connect.php");
 
 
 $ll = "P";

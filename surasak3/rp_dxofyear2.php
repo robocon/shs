@@ -1,8 +1,7 @@
 <?php
 set_time_limit(30);
-
-$dbconnect = mysql_connect ( "localhost", "root", "1234") or die(mysql_error());
-mysql_select_db("smdb",$dbconnect);
+$dbconnect = mysql_connect ( "192.168.131.240", "sm3db_user", "sm3dbPassword") or die(mysql_error());
+mysql_select_db("sm3db-utf8",$dbconnect);
 
 echo "<table>";
 $sql = "Select * From dxofyear Order by camp ASC ";

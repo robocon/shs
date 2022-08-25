@@ -8,7 +8,7 @@ $db->select($sql);
 ?>
 <table class="chk_table" style="position: absolute; top: 0; right: 0; background-color: #bbbbbb;">
     <tr>
-        <td colspan="2" align="center"><a href="javascript: void(0);" id="btnLaborClose"><b>[ ª‘¥ ]</b></a></td>
+        <td colspan="2" align="center"><a href="javascript: void(0);" id="btnLaborClose"><b>[ ‡∏õ‡∏¥‡∏î ]</b></a></td>
     </tr>
     <?php 
     if( $db->get_rows() > 0 ){
@@ -30,7 +30,7 @@ $db->select($sql);
 
     }else{
         ?>
-        <tr><td colspan="2" align="center">‰¡Ëæ∫¢ÈÕ¡Ÿ≈</td></tr>
+        <tr><td colspan="2" align="center">‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</td></tr>
         <?php
     }
     ?>

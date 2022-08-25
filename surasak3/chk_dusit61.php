@@ -1,11 +1,11 @@
 <?php
-# Ë¹éÒÊµÔ¡à¡ÍÃì
+
 include 'bootstrap.php';
 
 
 $db = Mysql::load();
 
-$sql = "SELECT * FROM `opcardchk` WHERE `part` = 'ÊÇ¹´ØÊÔµ61' ORDER BY `exam_no` ASC ";
+$sql = "SELECT * FROM `opcardchk` WHERE `part` = 'à¸ªà¸§à¸™à¸”à¸¸à¸ªà¸´à¸•61' ORDER BY `exam_no` ASC ";
 $db->select($sql);
 
 $items = $db->get_items();
@@ -36,7 +36,7 @@ foreach ($items as $key => $item) {
 	</div>
 	<div style="page-break-before: always;"></div>
 
-    <!-- UA 2 ãº -->
+    <!-- UA 2 à¹ƒà¸š -->
 	<font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$name;?></b></center></font>
 	<font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
 	<font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$code_exam;?></b></center></font>
@@ -51,7 +51,7 @@ foreach ($items as $key => $item) {
     if( $item['course'] == '2' ){
         ?>
 
-        <!-- ST 2 ãº -->
+        <!-- ST 2 à¹ƒà¸š -->
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$name;?></b></center></font>
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$code_exam;?></b></center></font>
@@ -61,7 +61,7 @@ foreach ($items as $key => $item) {
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$code_exam;?></b></center></font>
         <div style="page-break-before: always;"></div>
 
-        <!-- CLS 3 ãº -->
+        <!-- CLS 3 à¹ƒà¸š -->
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$name;?></b></center></font>
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$code_exam;?></b></center></font>
@@ -75,7 +75,7 @@ foreach ($items as $key => $item) {
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$code_exam;?></b></center></font>
         <div style="page-break-before: always;"></div>
 
-        <!-- OUTLAB 1 ãº -->
+        <!-- OUTLAB 1 à¹ƒà¸š -->
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$name;?></b></center></font>
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
         <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$code_exam;?></b></center></font>

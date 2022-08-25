@@ -1,8 +1,7 @@
 <?php 
 include 'bootstrap.php';
 
-$configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
-$db = Mysql::load($configs);
+$db = Mysql::load();
 
 $action = $_POST['action'];
 $type = $_REQUEST['type'];
@@ -25,7 +24,7 @@ if($type === 'patdata' && $action === 'save'){
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
-        echo "บันทึกข้อมูลเรียบร้อย";
+        echo "เธเธฑเธเธ—เธถเธเธเนเธญเธกเธนเธฅเน€เธฃเธตเธขเธเธฃเนเธญเธข";
     }else{
         echo $save['error'];
     }
@@ -47,7 +46,7 @@ if($type === 'patdata' && $action === 'save'){
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
-        echo "บันทึกข้อมูลเรียบร้อย";
+        echo "เธเธฑเธเธ—เธถเธเธเนเธญเธกเธนเธฅเน€เธฃเธตเธขเธเธฃเนเธญเธข";
     }else{
         echo $save['error'];
     }
@@ -71,7 +70,7 @@ if($type === 'patdata' && $action === 'save'){
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
-        echo "บันทึกข้อมูลเรียบร้อย";
+        echo "เธเธฑเธเธ—เธถเธเธเนเธญเธกเธนเธฅเน€เธฃเธตเธขเธเธฃเนเธญเธข";
     }else{
         echo $save['error'];
     }

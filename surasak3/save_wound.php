@@ -1,9 +1,9 @@
 <?php
 session_start();
-include("connect.inc");
+include("connect.php");
 // include("connect.inc");
 // if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "view_inj" )){
-	// header("content-type: application/x-javascript; charset=TIS-620");
+	// header("content-type: application/x-javascript; charset=UTF-8");
 // }
 function calcage($birth)
 {
@@ -22,29 +22,30 @@ function calcage($birth)
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ��";
+		$pAge="$ageY ปี";
 	}else{
-		$pAge="$ageY �� $ageM ��͹";
+		$pAge="$ageY ปี $ageM เดือน";
 	}
 
     return $pAge;
 }
 
-$month['01'] = "���Ҥ�";
-$month['02'] = "����Ҿѹ��";
-$month['03'] = "�չҤ�";
-$month['04'] = "����¹";
-$month['05'] = "����Ҥ�";
-$month['06'] = "�Զع�¹";
-$month['07'] = "�á�Ҥ�";
-$month['08'] = "�ԧ�Ҥ�";
-$month['09'] = "�ѹ��¹";
-$month['10'] = "���Ҥ�";
-$month['11'] = "��Ȩԡ�¹";
-$month['12'] = "�ѹ�Ҥ�";
+$month['01'] = "มกราคม";
+$month['02'] = "กุมภาพันธ์";
+$month['03'] = "มีนาคม";
+$month['04'] = "เมษายน";
+$month['05'] = "พฤษภาคม";
+$month['06'] = "มิถุนายน";
+$month['07'] = "กรกฎาคม";
+$month['08'] = "สิงหาคม";
+$month['09'] = "กันยายน";
+$month['10'] = "ตุลาคม";
+$month['11'] = "พฤศจิกายน";
+$month['12'] = "ธันวาคม";
 
 if($_GET["action"] == "view"){
-	$dbi = new mysqli('localhost','root','1234','smdb');
+	$dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
+	$dbi->set_charset('utf8');
 	
 	// var_dump($_REQUEST);
 	$sql = "Select concat(yot,' ',name,' ',surname) as fullname, ptright, idcard, dbirth  From opcard where hn = '".$_GET["hn"]."' limit 1 ";
@@ -52,7 +53,7 @@ if($_GET["action"] == "view"){
 	// list($fullname, $ptright,$idcard,$dbirth) = Mysql_fetch_row($result);
 	$q = $dbi->query($sql);
 	list($fullname, $ptright,$idcard,$dbirth) = $q->fetch_row();
-	echo "<FONT COLOR=\"red\">����-ʡ�� ",$fullname,"&nbsp;&nbsp;�Է�ԡ���ѡ�� ", $ptright,"</FONT>";
+	echo "<FONT COLOR=\"red\">ชื่อ-สกุล ",$fullname,"&nbsp;&nbsp;สิทธิการรักษา ", $ptright,"</FONT>";
 	echo "<INPUT TYPE=\"hidden\" Name=\"fullname\" Value=\"".$fullname."\"><INPUT TYPE=\"hidden\" Name=\"ptright\" value=\"".$ptright."\"><INPUT TYPE=\"hidden\" Name=\"idcard\" value=\"".$idcard."\"><INPUT TYPE=\"hidden\" Name=\"dbirth\" value=\"".$dbirth."\"><INPUT TYPE=\"hidden\" Name=\"age\" value=\"".calcage($dbirth)."\">";
 	exit();
 
@@ -65,7 +66,7 @@ $_GET['y'] = $_GET['y']-543;
 
 	echo "<TABLE width='100%' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
-			<TD>�ѹ���Ѵ����</TD>
+			<TD>วันที่นัดทำแผล</TD>
 		</TR>";
 
 	$num = 0;
@@ -80,7 +81,7 @@ $_GET['y'] = $_GET['y']-543;
 		$date_appo = date('d',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y'])).' '.$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y']))].' '.(date('Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y']))+543);
 			echo "<TR align='center'>";
 			echo "<TD>";
-			echo "�ѹ��� &nbsp;&nbsp;<INPUT TYPE=\"text\" id=\"calendar_date".$i."\" NAME=\"calendar_date".$i."\" value=\"".$date_appo."\" readonly>&nbsp;&nbsp;";
+			echo "วันที่ &nbsp;&nbsp;<INPUT TYPE=\"text\" id=\"calendar_date".$i."\" NAME=\"calendar_date".$i."\" value=\"".$date_appo."\" readonly>&nbsp;&nbsp;";
 			echo "<input type=\"button\" name=\"calendar_button\" value=\".....\" onClick=\"document.f1.calendar_date".$i.".value='';showCalendar('calendar_date".$i."','DD-MM-YYYY')\">";
 			
 			
@@ -104,18 +105,18 @@ $_GET['y'] = $_GET['y']-543;
 
 function date_month($val){
 switch($val){
-case "���Ҥ�": $i = "01"; break;
-case "����Ҿѹ��": $i = "02"; break;
-case "�չҤ�": $i = "03"; break;
-case "����¹": $i = "04"; break;
-case "����Ҥ�": $i = "05"; break;
-case "�Զع�¹": $i = "06"; break;
-case "�á�Ҥ�": $i = "07"; break;
-case "�ԧ�Ҥ�": $i = "08"; break;
-case "�ѹ��¹": $i = "09"; break;
-case "���Ҥ�": $i = "10"; break;
-case "��Ȩԡ�¹": $i = "11"; break;
-case "�ѹ�Ҥ�": $i = "12"; break;
+case "มกราคม": $i = "01"; break;
+case "กุมภาพันธ์": $i = "02"; break;
+case "มีนาคม": $i = "03"; break;
+case "เมษายน": $i = "04"; break;
+case "พฤษภาคม": $i = "05"; break;
+case "มิถุนายน": $i = "06"; break;
+case "กรกฎาคม": $i = "07"; break;
+case "สิงหาคม": $i = "08"; break;
+case "กันยายน": $i = "09"; break;
+case "ตุลาคม": $i = "10"; break;
+case "พฤศจิกายน": $i = "11"; break;
+case "ธันวาคม": $i = "12"; break;
 }
 return $i;
 }
@@ -154,25 +155,25 @@ if(isset($_POST["B1"])){
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
 
-	echo "<A HREF=\"",$_SERVER['PHP_SELF'],"\">�͡㺹Ѵ�����¤�����</A>&nbsp;&nbsp;<A HREF=\"print_save_wound.php?date=$arr[date]&hn=",$arr["hn"],"\" target=\"_blank\">�����㺹Ѵ</A>";
+	echo "<A HREF=\"",$_SERVER['PHP_SELF'],"\">ออกใบนัดผู้ป่วยคนใหม่</A>&nbsp;&nbsp;<A HREF=\"print_save_wound.php?date=$arr[date]&hn=",$arr["hn"],"\" target=\"_blank\">พิมพ์ใบนัด</A>";
 
 	//echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=",$_SERVER['PHP_SELF'],"\">";
 	// include("unconnect.inc");
 	exit();
 }
 
-$month[0] = "���Ҥ�";
-$month[1] = "����Ҿѹ��";
-$month[2] = "�չҤ�";
-$month[3] = "����¹";
-$month[4] = "����Ҥ�";
-$month[5] = "�Զع�¹";
-$month[6] = "�á�Ҥ�";
-$month[7] = "�ԧ�Ҥ�";
-$month[8] = "�ѹ��¹";
-$month[9] = "���Ҥ�";
-$month[10] = "��Ȩԡ�¹";
-$month[11] = "�ѹ�Ҥ�";
+$month[0] = "มกราคม";
+$month[1] = "กุมภาพันธ์";
+$month[2] = "มีนาคม";
+$month[3] = "เมษายน";
+$month[4] = "พฤษภาคม";
+$month[5] = "มิถุนายน";
+$month[6] = "กรกฏาคม";
+$month[7] = "สิงหาคม";
+$month[8] = "กันยายน";
+$month[9] = "ตุลาคม";
+$month[10] = "พฤศจิกายน";
+$month[11] = "ธันวาคม";
 
 include("connect.inc");
 ?>
@@ -201,9 +202,9 @@ function newXmlHttp(){
 function viewdetail(action,hn) {
 
 	var resText = document.getElementById("div_viewdetail");
-	if(hn.trim()==''){
+	if(hn==''){
 		document.getElementById("div_viewdetail").style.color = 'red';
-		resText.innerHTML = '��س���� HN ';
+		resText.innerHTML = 'กรุณาใส่ HN ';
 		return;
 	}
 
@@ -214,7 +215,7 @@ function viewdetail(action,hn) {
 		request.onreadystatechange = function() {
 			if (this.readyState === 4) {
 				if (this.status >= 200 && this.status < 400) {
-					resText.innerHTML = this.responseText.trim();
+					resText.innerHTML = this.responseText;
 				} else {
 
 				}
@@ -248,19 +249,19 @@ function fncSubmit()
 {
 	if(document.f1.hn.value == "")
 	{
-		alert('��س��к� HN ���¤�Ѻ');
+		alert('กรุณาระบุ HN ด้วยครับ');
 		document.f1.hn.focus();
 		return false;
 	}	
 	if(document.f1.amount.value == "")
 	{
-		alert('��س��к� �ӹǹ�ѹ');
+		alert('กรุณาระบุ จำนวนวัน');
 		document.f1.amount.focus();		
 		return false;
 	}	
 	if(document.f1.detail.value == "")
 	{
-		alert('��س��к� �Ҵ�ź���ǳ');
+		alert('กรุณาระบุ บาดแผลบริเวณ');
 		document.f1.detail.focus();		
 		return false;
 	}	
@@ -268,8 +269,8 @@ function fncSubmit()
 }
 
 </script>
-<div><h3>�͡㺹Ѵ����</h3></div>
-<A HREF="..\nindex.htm">&lt;&lt;����</A> | <a href="reprint_wound.php">�����㺹Ѵ������͹��ѧ</a>
+<div><h3>ออกใบนัดทำแผล</h3></div>
+<A HREF="..\nindex.htm">&lt;&lt;เมนู</A> | <a href="reprint_wound.php">พิมพ์ใบนัดทำแผลย้อนหลัง</a>
 
 <FORM METHOD=POST ACTION="" name="f1" onSubmit="JavaScript:return fncSubmit();">
 	<TABLE align="center">
@@ -277,13 +278,13 @@ function fncSubmit()
 	  <TD align="right">HN :</TD>
 	  <TD><INPUT id="hn" TYPE="text" NAME="hn"  onblur="viewdetail('view',this.value);">
 	    &nbsp;&nbsp;
-	    <!--<INPUT TYPE="button" VALUE="��Ǩ�ͺ HN" Onclick="viewdetail('view',document.getElementById('hn').value);">--></TD>
+	    <!--<INPUT TYPE="button" VALUE="ตรวจสอบ HN" Onclick="viewdetail('view',document.getElementById('hn').value);">--></TD>
 	  </TR>
 <TR>
 	<TD colspan="7"  align="center"><span id="div_viewdetail"></span></TD>
 </TR>
 	<TR>
-		<TD align="right">������Ѵ�ѹ��� :</TD>
+		<TD align="right">เริ่มนัดวันที่ :</TD>
 		<TD><Select ID="sdd" name="sdd" >
 		<?php for($i=1;$i<32;$i++){
 			if($i<10) $j = "0";
@@ -311,7 +312,7 @@ function fncSubmit()
 			echo ">",($i+543),"</Option>";	
 		}?>
 		</Select>
-	&nbsp;�ӹǹ�ѹ: <Select ID="amount" name="amount" Onchange="view_inj(0);">
+	&nbsp;จำนวนวัน: <Select ID="amount" name="amount" Onchange="view_inj(0);">
 		<?php 
 		echo "<Option value=\"\" >---</Option>";	
 		for($i=1;$i<8;$i++){
@@ -329,7 +330,7 @@ function fncSubmit()
 	  <td></td>
 	  </tr>
 	<TR>
-		<TD align="right">��Ҵ�� : </TD>
+		<TD align="right">ขนาดแผล : </TD>
 		<TD><SELECT NAME="size_wound">
 			<OPTION VALUE="S" SELECTED>S</Option>
 			<OPTION VALUE="M">M</Option>
@@ -337,16 +338,16 @@ function fncSubmit()
 		</SELECT></TD>
 	</TR>
 	<TR>
-		<TD align="right">�Ҵ�ź���ǳ : </TD>
+		<TD align="right">บาดแผลบริเวณ : </TD>
 		<TD><INPUT TYPE="text" NAME="detail" id="detail"></TD>
 	</TR>
 	<TR>
-		<TD align="right">�����˵� : </TD>
+		<TD align="right">หมายเหตุ : </TD>
 		<TD><SELECT NAME="remark">
 			<OPTION VALUE="" SELECTED></Option>
-			<OPTION VALUE="�Ѵ����ѹ���" >�Ѵ����ѹ���<U>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</U></Option>
-			<OPTION VALUE="Case Study ���">Case Study ���<U>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</U></Option>
-			<OPTION VALUE="Case Study">Case Study + �Ѵ����ѹ���<U>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</U></Option>
+			<OPTION VALUE="ตัดไหมวันที่" >ตัดไหมวันที่<U>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</U></Option>
+			<OPTION VALUE="Case Study ที่">Case Study ที่<U>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</U></Option>
+			<OPTION VALUE="Case Study">Case Study + ตัดไหมวันที่<U>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</U></Option>
 
 
 		</SELECT>
@@ -354,14 +355,14 @@ function fncSubmit()
 		</TD>
 	</TR>
 	<TR>
-	  <TD align="right">��������´</TD>
+	  <TD align="right">รายละเอียด</TD>
 	  <TD><label for="textarea"></label>
       <textarea name="detail2" id="detail2" cols="45" rows="4"></textarea></TD>
 	  </TR>
 	<TR>
 		<TD colspan="2" align="center"> 
        
-        <INPUT TYPE="submit" value="��ŧ" name="B1">&nbsp;&nbsp;<INPUT TYPE="reset" value="¡��ԡ"> </TD>
+        <INPUT TYPE="submit" value="ตกลง" name="B1">&nbsp;&nbsp;<INPUT TYPE="reset" value="ยกเลิก"> </TD>
 	</TR>
 	</TABLE>
 </FORM>

@@ -3,7 +3,7 @@
     if (isset($sIdname)){
 		} else {die;}
 		
-	//header("content-type: application/x-javascript; charset=TIS-620");
+	//header("content-type: application/x-javascript; charset=UTF-8");
 ?>
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
@@ -18,26 +18,26 @@
 	
 	$lbedcode=substr($_GET['code'],0,2);
 	if($lbedcode=='42'){
-$wardname="ÀÕºŸÈªË«¬√«¡";	
-$sortname="√«¡";
+$wardname="‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏£‡∏ß‡∏°";	
+$sortname="‡∏£‡∏ß‡∏°";
 	}elseif($lbedcode=='43'){
-$wardname="ÀÕºŸÈªË«¬ Ÿµ‘";	
-$sortname=" Ÿµ‘";
+$wardname="‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏™‡∏π‡∏ï‡∏¥";	
+$sortname="‡∏™‡∏π‡∏ï‡∏¥";
 	}elseif($lbedcode=='44'){
-$wardname="ÀÕºŸÈªË«¬ICU";	
+$wardname="‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ICU";	
 $sortname="ICU";
 	}elseif($lbedcode=='45'){
-$wardname="ÀÕºŸÈªË«¬æ‘‡»…";	
-$sortname="æ‘‡»…";
+$wardname="‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏û‡∏¥‡πÄ‡∏®‡∏©";	
+$sortname="‡∏û‡∏¥‡πÄ‡∏®‡∏©";
 	}elseif($lbedcode=='46'){
-$wardname="ÀÕºŸÈªË«¬ Cohort Ward";	
+$wardname="‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ Cohort Ward";	
 $sortname="cohortward";
 	}elseif($lbedcode=='47'){
-$wardname="ºŸÈªË«¬ Home Isolation";	
+$wardname="‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ Home Isolation";	
 $sortname="Home Isolation";
 	}elseif($lbedcode=='48'){
-$wardname="ºŸÈªË«¬ √æ. π“¡";	
-$sortname="√æ. π“¡";
+$wardname="‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ ‡∏£‡∏û.‡∏™‡∏ô‡∏≤‡∏°";	
+$sortname="‡∏£‡∏û.‡∏™‡∏ô‡∏≤‡∏°";
 	}
 	
 	//echo "==>$lbedcode";
@@ -45,13 +45,13 @@ $sortname="√æ. π“¡";
 	include("calroom.php");
 	include("alert_booking.php");
 	?>
-<strong style="font-size:24px"><?=$wardname;?></strong> &nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='ipdcost.php'>√«¡‡ß‘π∑ÿ°‡µ’¬ß</a>
+<strong style="font-size:24px"><?=$wardname;?></strong> &nbsp;&nbsp;&nbsp;&nbsp;<a target=_BLANK href='ipdcost.php'>‡∏£‡∏ß‡∏°‡πÄ‡∏á‡∏¥‡∏ô‡∏ó‡∏∏‡∏Å‡πÄ‡∏ï‡∏µ‡∏¢‡∏á</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='ipstikerdrug.php'>STICKER</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='booking_system/booking_confirm.php?code=<?=$lbedcode?>'>√–∫∫®Õß‡µ’¬ß</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='booking_system/booking_confirm.php?code=<?=$lbedcode?>'>‡∏£‡∏∞‡∏ö‡∏ö‡∏à‡∏≠‡∏á‡πÄ‡∏ï‡∏µ‡∏¢‡∏á</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="med_record.php?code=<?=$lbedcode;?>">Med Record</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">√“¬™◊ËÕºŸÈªË«¬„π</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">√“¬ß“π¢ÈÕ¡Ÿ≈ ∂‘µ‘ºŸÈªË«¬‚§«‘¥ (‡√‘Ë¡ 1 ‡¡.¬. 65)</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">‰ª‡¡πŸ</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">‡∏£‡∏≤‡∏¢‡∏ä‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÉ‡∏ô</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏™‡∏ñ‡∏¥‡∏ï‡∏¥‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÇ‡∏Ñ‡∏ß‡∏¥‡∏î (‡πÄ‡∏£‡∏¥‡πà‡∏° 1 ‡πÄ‡∏°.‡∏¢. 65)</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</a>
 <br />
 
 
@@ -69,9 +69,9 @@ $sortname="√æ. π“¡";
 			$status2 = substr($arr['status'],0,3);
 			
 			if($arr['an']=='' and $status2=="B01"){
-			$ff="<font class='tablefont3'>«Ë“ß</font>";
+			$ff="<font class='tablefont3'>‡∏ß‡πà‡∏≤‡∏á</font>";
 			}else{
-			$ff="<font color='#990000' style='font-size:12PX;'>‰¡Ë«Ë“ß</font>";
+			$ff="<font color='#990000' style='font-size:12PX;'>‡πÑ‡∏°‡πà‡∏ß‡πà‡∏≤‡∏á</font>";
 			}
 			
 			echo "<td>"; 
@@ -102,7 +102,7 @@ $i=1;
 
     while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall) = mysql_fetch_row ($result)) {
 
-if($diag1=='' and $an!=''){ $diag1='‰¡Ë¡’'; }			
+if($diag1=='' and $an!=''){ $diag1='‡πÑ‡∏°‡πà‡∏°‡∏µ'; }			
 $status2 = substr($status,0,3);
 
 $time=explode(" ",$date1);
@@ -117,9 +117,9 @@ $time=explode(" ",$date1);
 		if($an=='' and $status2=="B01"){
 			
 			$color="#FFFFFF";
-			//$ff="«Ë“ß";
+			//$ff="‡∏ß‡πà‡∏≤‡∏á";
 		}else{
-			//$ff="‰¡Ë«Ë“ß";
+			//$ff="‡πÑ‡∏°‡πà‡∏ß‡πà‡∏≤‡∏á";
 		}
 		
 		$idcard=$idcard.'.jpg';
@@ -139,9 +139,9 @@ $rows = mysql_query($sql);
 list($hi_type) = Mysql_fetch_row($rows);
 
 	if($hi_type=="in"){
-		$location="ºŸÈªË«¬ HI √—°…“‡√◊Õπ√—∫√Õß";
+		$location="‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ HI ‡∏£‡∏±‡∏Å‡∏©‡∏≤‡πÄ‡∏£‡∏∑‡∏≠‡∏ô‡∏£‡∏±‡∏ö‡∏£‡∏≠‡∏á";
 	}else 	if($hi_type=="out"){
-		$location="ºŸÈªË«¬ HI √—°…“∑’Ë∫È“π";
+		$location="‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ HI ‡∏£‡∏±‡∏Å‡∏©‡∏≤‡∏ó‡∏µ‡πà‡∏ö‡πâ‡∏≤‡∏ô";
 	}else{
 		$location="";
 	}
@@ -164,9 +164,9 @@ $(document).ready(function(){
 });
 </script>
  
-<br />‡µ’¬ß : <?=$bed;?>&nbsp;&nbsp; <?=$status;?>&nbsp;&nbsp; 
-<input type="button" id="btn1<?=$i;?>" value="· ¥ß‡µ’¬ß">
-<input type="button" id="btn2<?=$i;?>" value="´ËÕπ‡µ’¬ß">
+<br />‡πÄ‡∏ï‡∏µ‡∏¢‡∏á : <?=$bed;?>&nbsp;&nbsp; <?=$status;?>&nbsp;&nbsp; 
+<input type="button" id="btn1<?=$i;?>" value="‡πÅ‡∏™‡∏î‡∏á‡πÄ‡∏ï‡∏µ‡∏¢‡∏á">
+<input type="button" id="btn2<?=$i;?>" value="‡∏ã‡πà‡∏≠‡∏ô‡πÄ‡∏ï‡∏µ‡∏¢‡∏á">
 <table width="100%" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse" bordercolor="#000000" bgcolor="<?=$color;?>" >
   <tr>
     <td>
@@ -183,9 +183,9 @@ $(document).ready(function(){
 					?>
 				</font>&nbsp;&nbsp;&nbsp;
 		<? echo "<a target=_blank  href=\"bedstatus.php? cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cstatus=$status\" class='tablefont'>$status</a>"; ?></td>
-        <td > <font class="tablefontt1">AN : </font><font class="tablefont"><a href="show_wardlog.php?sAn=<?=$an;?>" target="_blank"><?=$an;?></a></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1"> HN : </font><font class='tablefont'><?=$hn; ?></font> &nbsp;&nbsp;&nbsp;<font class="tablefontt1">«—π∑’Ë√—∫ªË«¬ : </font>
-         <font class="tablefont"> <?=$date.' '.$time[1];?></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1">«—ππÕπ√«¡ </font>
-         <font class="tablefont"> <?=$daysall;?> «—π</font>
+        <td > <font class="tablefontt1">AN : </font><font class="tablefont"><a href="show_wardlog.php?sAn=<?=$an;?>" target="_blank"><?=$an;?></a></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1"> HN : </font><font class='tablefont'><?=$hn; ?></font> &nbsp;&nbsp;&nbsp;<font class="tablefontt1">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏£‡∏±‡∏ö‡∏õ‡πà‡∏ß‡∏¢ : </font>
+         <font class="tablefont"> <?=$date.' '.$time[1];?></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1">‡∏ß‡∏±‡∏ô‡∏ô‡∏≠‡∏ô‡∏£‡∏ß‡∏° </font>
+         <font class="tablefont"> <?=$daysall;?> ‡∏ß‡∏±‡∏ô</font>
         </td>
         </tr>
       <tr>
@@ -193,36 +193,36 @@ $(document).ready(function(){
         <table  border="0">
           <tr  style="line-height:22PX;">
             <td  rowspan="5"><img src="../image_patient/<?=$img='NoPicture.jpg';;?>" width="81" height="101" /></td>
-            <td class="tablefontt1">™◊ËÕ- °ÿ≈</td>
+            <td class="tablefontt1">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</td>
             
             <td class="tablefontt2"> <? echo "<a target=_blank  href=\"ipdata1.php? cBedcode=$bedcode\">$ptname</a>"; ?>&nbsp;&nbsp;&nbsp;</td>
-            <td class="tablefontt1">Õ“¬ÿ :</td>
+            <td class="tablefontt1">‡∏≠‡∏≤‡∏¢‡∏∏ :</td>
             <td class="tablefont"><?=$age;?>&nbsp;&nbsp;&nbsp;</td>
           
-            <td class="tablefontt1"> ‘∑∏‘°“√√—°…“  :</td>
+            <td class="tablefontt1">‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤  :</td>
             <td class="tablefont"><?=$ptright;?></td>
           </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top" >
-            <font class='tablefontt1'>‚√§ : </font><? echo "<a target=_blank  href=\"ipdiag.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDiag=$diagnos&cbedname=$wardname\" class='tablefont3'>$diagnos</a>";?>&nbsp;&nbsp;&nbsp;
-            <font class='tablefontt1'>·æ∑¬Ï  : </font> <? echo "<a target=_blank  href=\"ipdr.php?cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDoctor=$doctor&cbedname=$wardname\" class='tablefont3' >$doctor</a>"; ?>&nbsp;&nbsp;&nbsp;
+            <font class='tablefontt1'>‡πÇ‡∏£‡∏Ñ : </font><? echo "<a target=_blank  href=\"ipdiag.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDiag=$diagnos&cbedname=$wardname\" class='tablefont3'>$diagnos</a>";?>&nbsp;&nbsp;&nbsp;
+            <font class='tablefontt1'>‡πÅ‡∏û‡∏ó‡∏¢‡πå  : </font> <? echo "<a target=_blank  href=\"ipdr.php?cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDoctor=$doctor&cbedname=$wardname\" class='tablefont3' >$doctor</a>"; ?>&nbsp;&nbsp;&nbsp;
             
-            <font class='tablefontt1'>‚√§ª√–®”µ—«  : </font>
+            <font class='tablefontt1'>‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß  : </font>
            <font class='tablefont'> <? echo "<a target=_blank  href=\"ipdiag1.php?cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDiag=$diag1&cbedname=$wardname\">$diag1</a>";?></font>
             </td>
             </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top">
-            <font class='tablefontt1'>Õ“À“√ : </font><? echo "<a target=_blank  href=\"ipfood.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cFood=$food&cbedname=$wardname\" class='tablefont3'>$food</a>"; ?><strong style="margin-left:20px; color:#FC0944;"><?php echo $location;?></strong></td>
+            <font class='tablefontt1'>‡∏≠‡∏≤‡∏´‡∏≤‡∏£ : </font><? echo "<a target=_blank  href=\"ipfood.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cFood=$food&cbedname=$wardname\" class='tablefont3'>$food</a>"; ?><strong style="margin-left:20px; color:#FC0944;"><?php echo $location;?></strong></td>
           </tr>
           <tr style="line-height:25PX;">
-            <td colspan="10" valign="top" ><font class='tablefontt1'>À—µ∂°“√  :</font>
-			<? echo "<a target=_blank  href=\"ipdata.php? cBedcode=$bedcode\" class='tablefont'>∫—π∑÷°§Ë“„™È®Ë“¬/ §◊π¬“ / ®”ÀπË“¬</a>"; ?> &nbsp;&nbsp; 
+            <td colspan="10" valign="top" ><font class='tablefontt1'>‡∏´‡∏±‡∏ï‡∏ñ‡∏Å‡∏≤‡∏£  :</font>
+			<? echo "<a target=_blank  href=\"ipdata.php? cBedcode=$bedcode\" class='tablefont'>‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ñ‡πà‡∏≤‡πÉ‡∏ä‡πâ‡∏à‡πà‡∏≤‡∏¢/ ‡∏Ñ‡∏∑‡∏ô‡∏¢‡∏≤ / ‡∏à‡∏≥‡∏´‡∏ô‡πà‡∏≤‡∏¢</a>"; ?> &nbsp;&nbsp; 
             
-            <? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'> —Ëß LAB</a>"; ?> &nbsp;&nbsp; 
-            <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>¥Ÿº≈ LAB</a>";
+            <? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>‡∏™‡∏±‡πà‡∏á LAB</a>"; ?> &nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>‡∏î‡∏π‡∏ú‡∏• LAB</a>";
 			?>&nbsp;&nbsp; 
-            <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>¥Ÿø‘≈¡Ï xray</a>";
+            <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>‡∏î‡∏π‡∏ü‡∏¥‡∏•‡∏°‡πå xray</a>";
 			?>&nbsp;&nbsp; 
             <? 
 			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
@@ -230,16 +230,20 @@ $(document).ready(function(){
 			?>&nbsp;&nbsp; 
             <? 
 			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
-			echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>¬“ª—®®ÿ∫—π</a>";
+			echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>‡∏¢‡∏≤‡∏õ‡∏±‡∏à‡∏à‡∏∏‡∏ö‡∏±‡∏ô</a>";
 			?>&nbsp;&nbsp;  
-            <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>„∫SETºË“µ—¥</a>"; ?>
+            <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>‡πÉ‡∏öSET‡∏ú‡πà‡∏≤‡∏ï‡∏±‡∏î</a>"; ?>
             </td>
           </tr>
           <tr style="line-height:25PX;">
-            <td colspan="10" valign="top" ><font class='tablefontt1'>©≈“° : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname&cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname\" class='tablefont3'>¬“(1 ¥«ß)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>¬“(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>‡Õ° “√(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname\" class='tablefont3'>‡Õ° “√(1 ¥«ß)</a>";?></td>
+		  	<?php 
+			$ptname_encode = rawurlencode($ptname);
+			$sortname_encode = rawurlencode($sortname);
+			?>
+            <td colspan="10" valign="top" ><font class='tablefontt1'>‡∏â‡∏•‡∏≤‡∏Å : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname_encode&cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>‡∏¢‡∏≤(1 ‡∏î‡∏ß‡∏á)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>‡∏¢‡∏≤(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>‡πÄ‡∏≠‡∏Å‡∏™‡∏≤‡∏£(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>‡πÄ‡∏≠‡∏Å‡∏™‡∏≤‡∏£(1 ‡∏î‡∏ß‡∏á)</a>";?></td>
 		  </tr>
 		  <tr>
-			<td colspan="10"><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">Õ—æ‚À≈¥‰ø≈Ï Doctor Order</a></td>
+			<td colspan="10"><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">‡∏≠‡∏±‡∏û‡πÇ‡∏´‡∏•‡∏î‡πÑ‡∏ü‡∏•‡πå Doctor Order</a></td>
 		  </tr>
         </table></td>
       </tr>

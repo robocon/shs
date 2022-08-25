@@ -6,21 +6,21 @@ session_start();
 
 include 'includes/config.php';
 
-// ¶éÒäÁèÁÕ¡ÒÃ»ÃÐ¡ÒÈ NEW_SITE ãËéâËÅ´¤Í¹¿Ô¡µÑÇà´ÔÁÁÒãªé§Ò¹
+// à¸–à¹‰à¸²à¹„à¸¡à¹ˆà¸¡à¸µà¸à¸²à¸£à¸›à¸£à¸°à¸à¸²à¸¨ NEW_SITE à¹ƒà¸«à¹‰à¹‚à¸«à¸¥à¸”à¸„à¸­à¸™à¸Ÿà¸´à¸à¸•à¸±à¸§à¹€à¸”à¸´à¸¡à¸¡à¸²à¹ƒà¸Šà¹‰à¸‡à¸²à¸™
 if(!defined('NEW_SITE')){
 	
 	if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-		// header('Content-Type: text/html; charset=tis-620');
+		// header('Content-Type: text/html; charset=UTF-8');
 	}
 	
-	include 'includes/connect.php';
+	// include 'includes/connect.php';
 	
 }else{
 	
 	header('Content-Type: text/html; charset=utf-8');
-	$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
-	mysql_select_db(DB, $Conn) or die( mysql_error() );
-	mysql_query("SET NAMES UTF8", $Conn);
+	// $Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+	// mysql_select_db(DB, $Conn) or die( mysql_error() );
+	// mysql_query("SET NAMES UTF8", $Conn);
 }
 
 /**
@@ -58,9 +58,10 @@ class DB{
 	/**
 	 * !!!! CUTION !!!!
 	 * for windows (mysql version 14.12 Distrib 5.0.51b) using TIS620
-	 * for linux (Ver 14.12 Distrib 5.0.77) using TIS-620
+	 * for linux (Ver 14.12 Distrib 5.0.77) using UTF-8
 	 */
-	private static $set_names = 'TIS620';
+	// private static $set_names = 'TIS620';
+	private static $set_names = 'UTF8';
 	
 	public static $host = null;
 	public static $port = null;
@@ -75,7 +76,7 @@ class DB{
 			$names = self::$set_names;
 			
 			if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-				// $this->db->exec("SET NAMES $names ;");
+				$this->db->exec("SET NAMES $names ;");
 			}
 
 		} catch (PDOException $e) {
@@ -252,7 +253,8 @@ class Mysql
 		$dbname = DB;
 		$user = USER;
 		$pass = PASS;
-		$charset = 'TIS620';
+		// $charset = 'TIS620';
+		$charset = 'UTF8';
 
 		// Override config
 		if( $configs !== false ){
@@ -268,9 +270,9 @@ class Mysql
 			$this->db = new PDO('mysql:host='.$host.';port='.$port.';dbname='.$dbname, $user, $pass);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			
-			// $match = preg_match('/(tis-620)/', $_SERVER['CONTENT_TYPE']);
+			// $match = preg_match('/(UTF-8)/', $_SERVER['CONTENT_TYPE']);
 			// if( empty($match) ){
-			// 	$this->db->exec("SET NAMES $charset ;");
+				$this->db->exec("SET NAMES $charset ;");
 			// }
 
 		} catch (PDOException $e) {
@@ -311,10 +313,6 @@ class Mysql
 			$sth = $this->prepare($sql, $data);
 			$this->items = $sth->fetchAll(PDO::FETCH_ASSOC);
 			$this->rows = count($this->items);
-			if( $sth !== false ){
-				$sth = NULL;
-			}
-
 			return true;
 			
 		} catch(exception $e) {
@@ -355,12 +353,8 @@ class Mysql
 	public function insert($sql, $data = NULL ){
 		try {
 			
-			$sth = $this->prepare($sql, $data);
+			$this->prepare($sql, $data);
 			$this->lastId = $this->db->lastInsertId();
-			if( $sth !== false ){
-				$sth = NULL;
-			}
-
 			return true;
 			
 		} catch(Exception  $e) {
@@ -376,11 +370,7 @@ class Mysql
 	public function update($sql, $data = NULL ){
 		try {
 			
-			$sth = $this->prepare($sql, $data);
-			if( $sth !== false ){
-				$sth = NULL;
-			}
-
+			$this->prepare($sql, $data);
 			return true;
 			
 		} catch(Exception  $e) {
@@ -396,11 +386,7 @@ class Mysql
 	public function delete($sql, $data = NULL ){
 		try {
 			
-			$sth = $this->prepare($sql, $data);
-			if( $sth !== false ){
-				$sth = NULL;
-			}
-
+			$this->prepare($sql, $data);
 			return true;
 			
 		} catch(Exception  $e) {

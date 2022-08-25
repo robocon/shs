@@ -1,7 +1,9 @@
 <?php 
 include 'bootstrap.php';
 
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->set_charset('utf8');
+
 $code = $_REQUEST['code'];
 ?>
 <table>

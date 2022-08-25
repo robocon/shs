@@ -17,9 +17,9 @@ function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ปี";
+		$pAge="$ageY เธเธต";
 	}else{
-		$pAge="$ageY ปี $ageM เดือน";
+		$pAge="$ageY เธเธต $ageM เน€เธ”เธทเธญเธ";
 	}
 
 return $pAge;
@@ -27,7 +27,7 @@ return $pAge;
 ?>
 <html>
 <head>
-<title>ดูฟิลม์ X-RAY</title>
+<title>เธ”เธนเธเธดเธฅเธกเน X-RAY</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -76,13 +76,13 @@ body,td,th {
 <?php 
 $_SESSION["hn_now"]=$_POST["txthn"];
 ?>
-<p align="center"><a href="../nindex.htm">กลับเมนูหลัก</a>  ||  <a href="drxray_hn.php">ระบุ HN ใหม่</a></p>
+<p align="center"><a href="../nindex.htm">เธเธฅเธฑเธเน€เธกเธเธนเธซเธฅเธฑเธ</a>  ||  <a href="drxray_hn.php">เธฃเธฐเธเธธ HN เนเธซเธกเน</a></p>
 <?
 	$select = "select * from opcard where hn = '".$_SESSION["hn_now"]."'";
 	$result = mysql_query($select);
 	$row = mysql_fetch_array($result);
 ?>
-<div align="center">ชื่อผู้ป่วย : <u><?=$row["yot"].$row["name"]."&nbsp;&nbsp;".$row["surname"];?></u>&nbsp;&nbsp;อายุ : <u><?=calcage($row["dbirth"]);?></u>&nbsp;&nbsp;สิทธิ์การรักษา : <u><?=$row["ptright"];?></u></div>
+<div align="center">เธเธทเนเธญเธเธนเนเธเนเธงเธข : <u><?=$row["yot"].$row["name"]."&nbsp;&nbsp;".$row["surname"];?></u>&nbsp;&nbsp;เธญเธฒเธขเธธ : <u><?=calcage($row["dbirth"]);?></u>&nbsp;&nbsp;เธชเธดเธ—เธเธดเนเธเธฒเธฃเธฃเธฑเธเธฉเธฒ : <u><?=$row["ptright"];?></u></div>
 <TABLE  border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#0046D7">
 <TR>
 	<TD>
@@ -91,7 +91,7 @@ $_SESSION["hn_now"]=$_POST["txthn"];
 	<TD >XRAYNO.<//TD>
 	<TD>DATE</TD>
 	<TD>DOCTOR</TD>
-	<TD>DETAIL_ALL (กดดูฟิลม์)</TD>
+	<TD>DETAIL_ALL (เธเธ”เธ”เธนเธเธดเธฅเธกเน)</TD>
 </TR>
 <?
  $query="SELECT date,hn,vn,yot,name,sname,doctor,xrayno,detail_all FROM xray_doctor where hn='".$_SESSION["hn_now"]."' GROUP BY xrayno  ORDER  BY date DESC  ";

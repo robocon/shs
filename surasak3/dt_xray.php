@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
 if(empty($_SESSION["S_listxray"])){
@@ -59,7 +59,7 @@ exit();
 	<FORM METHOD=POST ACTION=\"dt_add_xray.php\">
 	<TABLE width=\"100%\">
 	<TR  class='tb_head'>
-		<TD width=\"30\">ź</TD>
+		<TD width=\"30\">ลบ</TD>
 		<TD width=\"330\">X-Ray</TD>
 	</TR>";
 	$style="style=\"background-color: #FFFFC1;\" ";	
@@ -81,11 +81,11 @@ exit();
 	echo "
 	<TR ".$style.">
 		<TD align=\"center\" colspan=\"2\" >
-		<B>��������õ�Ǩ</B> : 
+		<B>ประเภทการตรวจ</B> : 
 		<SELECT NAME=\"type_diag\">
-			<Option value=\"��Ǩ�����������͡���ѡ��\">��Ǩ�����������͡���ѡ��</Option>
-			<Option value=\"��Ǩ�آ�Ҿ\">��Ǩ�آ�Ҿ</Option>
-			<Option value=\"��Сѹ�ѧ���óդ�ʹ�ص�\">��Сѹ�ѧ���óդ�ʹ�ص�</Option>
+			<Option value=\"ตรวจวิเคราะห์เพื่อการรักษา\">ตรวจวิเคราะห์เพื่อการรักษา</Option>
+			<Option value=\"ตรวจสุขภาพ\">ตรวจสุขภาพ</Option>
+			<Option value=\"ประกันสังคมกรณีคลอดบุตร\">ประกันสังคมกรณีคลอดบุตร</Option>
 		</SELECT>
 		</TD>
 	</TR>
@@ -93,7 +93,7 @@ exit();
 	echo "
 	<TR ".$style.">
 		<TD align=\"center\" colspan=\"2\" >
-		������ : <SELECT NAME=\"type\"  name=\"type\" id=\"type\">
+		ประเภท : <SELECT NAME=\"type\"  name=\"type\" id=\"type\">
 							<option value=\"digital\" >digital</option>
 							<option value=\"plain\">plain</option>
 							<option value=\"port table\">port table</option>
@@ -103,8 +103,8 @@ exit();
 		";
 	echo "
 	<TR >
-		<TD  width=\"30\" align=\"center\"><INPUT TYPE=\"button\" name=\"del\" value=\" ź \" onclick=\"Onclick_del_xray();\"></TD>
-		<TD align=\"center\" ><INPUT TYPE=\"submit\" value=\"    ��ŧ    \"></TD>
+		<TD  width=\"30\" align=\"center\"><INPUT TYPE=\"button\" name=\"del\" value=\" ลบ \" onclick=\"Onclick_del_xray();\"></TD>
+		<TD align=\"center\" ><INPUT TYPE=\"submit\" value=\"    ตกลง    \"></TD>
 	</TR>
 		";
 	}
@@ -271,7 +271,7 @@ function display_page(xx){
 	<!-- <TD width="200"><IMG SRC="body.gif"  BORDER="0" ALT=""></TD> -->
 	<TD width="450">
 
-<!-- **************************** ���͡��¡����� X-RAY ****************************** -->
+<!-- **************************** เลือกรายการสั่ง X-RAY ****************************** -->
 <!-- <FORM name="f1" METHOD=POST ACTION="" onsubmit="return false;">
 <TABLE border="1" bordercolor="#F0F000" >
 <TR>
@@ -289,13 +289,13 @@ function display_page(xx){
 
 	<INPUT TYPE="hidden" value="1" name="amount" id="amount">
 	<INPUT TYPE="hidden" value="-" name="index" id="index">
-	<INPUT id="add_xray" name="add_xray" TYPE="submit" value="��ŧ" Onclick="OnClick_add_xray();">
+	<INPUT id="add_xray" name="add_xray" TYPE="submit" value="ตกลง" Onclick="OnClick_add_xray();">
 
 </TD>
 </TR>
 </TABLE>
 </FORM> -->
-<!-- END **************************** ���͡��¡����� X-RAY ****************************** -->
+<!-- END **************************** เลือกรายการสั่ง X-RAY ****************************** -->
 
 <!-- First Page -->
 <TABLE  cellpadding="2" cellspacing="0">

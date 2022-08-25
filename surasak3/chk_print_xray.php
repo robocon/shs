@@ -1,7 +1,7 @@
 <?php 
 if(empty($_REQUEST['id']))
 {
-    echo "¡ÃØ³ÒàÅ×Í¡ºÃÔÉÑ·";
+    echo "à¸à¸£à¸¸à¸“à¸²à¹€à¸¥à¸·à¸­à¸à¸šà¸£à¸´à¸©à¸±à¸—";
     exit;
 }
 $id = $_REQUEST['id'];

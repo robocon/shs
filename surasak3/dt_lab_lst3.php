@@ -2,7 +2,7 @@
 session_start();
 set_time_limit(30);
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 include("connect.inc");
 
@@ -10,7 +10,7 @@ include("connect.inc");
 ?>
 <html>
 <head>
-<title> —Ëßµ√«® LAB Online</title>
+<title>‡∏™‡∏±‡πà‡∏á‡∏ï‡∏£‡∏ß‡∏à LAB Online</title>
 <style type="text/css">
 <!--
 body,td,th {
@@ -72,9 +72,9 @@ body,td,th {
 	<TD>
 <TABLE width="800" border="0" align="center" cellpadding="0" cellspacing="2">
 <TR align="center" class="tb_head">
-	<TD >«—π∑’Ë</TD>
-	<TD>√“¬°“√</TD>
-	<TD>¥Ÿ¢ÈÕ¡Ÿ≈</TD>
+	<TD >‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</TD>
+	<TD>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</TD>
+	<TD>‡∏î‡∏π‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</TD>
 </TR>
 <?php
 $i=0;
@@ -99,7 +99,7 @@ $i=0;
 <TR bgcolor="<?php echo $bgcolor;?>">
 	<TD align="center" ><?php echo $arr["dateresult2"];?></TD>
 	<TD><?php echo implode(", ",$list_lab);?></TD>
-	<TD align="center"><A HREF="dt_lab_lst.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>">¥Ÿ¢ÈÕ¡Ÿ≈</A></TD>
+	<TD align="center"><A HREF="dt_lab_lst.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>">‡∏î‡∏π‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</A></TD>
 </TR>
 <?php
 	}	

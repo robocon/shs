@@ -1,8 +1,8 @@
 <?php 
 include 'bootstrap.php';
 
-$configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
-$db = Mysql::load($configs);
+// $configs = array('host' => '192.168.131.250', 'port' => '', 'dbname' => 'smdb', 'user' => 'remoteuser', 'pass' => '' );
+$db = Mysql::load();
 
 $date = $_REQUEST['date'];
 $hn = $_REQUEST['hn'];

@@ -36,25 +36,25 @@ $pdf->SetXY(45, 56);
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"วันที่ ");
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Write(8,$full_date_th);
+$pdf->Write(8, iconv('UTF-8', 'Windows-874', $full_date_th));
 
 $pdf->SetXY(2, 72);
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"     ข้าพเจ้า");
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Write(8, " $physi_dt_name ");
+$pdf->Write(8, " ".iconv('UTF-8', 'Windows-874', $physi_dt_name)." ");
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"ตำแหน่ง นักกายภาพบำบัด ใบประกอบวิชาชีพ เลขที่");
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Write(8, " $physi_dt_code ");
+$pdf->Write(8, " ".iconv('UTF-8', 'Windows-874', $physi_dt_code)." ");
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"ได้ทำการรักษาทางกายภาพบำบัด");
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Write(8,"\n$ptname HN.$pt_hn ");
+$pdf->Write(8,"\n".iconv('UTF-8', 'Windows-874', $ptname)." HN.$pt_hn ");
 $pdf->SetFont('THSarabun','',18);
 $pdf->Write(8,"ตามที่แพทย์ได้วินิจฉัยโรค");
 $pdf->SetFont('THSarabun','B',18);
-$pdf->Write(8," $pt_diag ");
+$pdf->Write(8," ".iconv('UTF-8', 'Windows-874', $pt_diag)." ");
 
 $pdf->SetFont('THSarabun','',18);
 $currY = $pdf->getY() + 24;
@@ -63,7 +63,7 @@ $pdf->Cell(0, 8, 'ลงชื่อ', 0, 0, 'L');
 
 $currY += 16;
 $pdf->SetXY(74, $currY);
-$pdf->Cell(0, 8, "( $physi_dt_name )", 0, 0, 'C');
+$pdf->Cell(0, 8, "( ".iconv('UTF-8', 'Windows-874', $physi_dt_name)." )", 0, 0, 'C');
 
 $currY += 8;
 $pdf->SetXY(74, $currY);
