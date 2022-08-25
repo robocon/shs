@@ -78,21 +78,25 @@ body,td,th {
         -->
         <tr>
             <td valign="top" width="50%">
-                <table width="100%" class="echo_table" style="margin-top: 8px;">
+                <table width="100%" class="echo_table">
                     <tr>
-                        <td colspan="8">Echo No. <input type="text" name="" id=""></td>
+                        <td colspan="8">
+                            <div style="margin-top:8px; margin-bottom: 8px;">
+                                Echo No. <input type="text" name="echo_number" id="echo_number">
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="8" class="tb_head" style="text-shadow: black 2px 2px 8px;"><u>MEASUREMENT</u></td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
-                        <td align="right">Ao&nbsp;</td>
+                        <td align="right" width="19%">Ao&nbsp;</td>
                         <td style="width:96px;"><input type="text" name="ao" id="ao" size="8"></td>
                         <td>mm. (20-32)</td>
 
                         <td>&nbsp;</td>
-                        <td align="right">LVEDV&nbsp;</td>
+                        <td align="right" width="19%">LVEDV&nbsp;</td>
                         <td style="width:96px;"><input type="text" name="lvedv" id="lvedv" size="8"></td>
                         <td>ml. (90-140)</td>
                     </tr>
@@ -191,11 +195,11 @@ body,td,th {
                     </tr>
                     <tr style="background-color: #D4EFDF;">
                         <td>1.</td>
-                        <td align="right">MS&nbsp;</td>
+                        <td align="right" width="16%">MS&nbsp;</td>
                         <td style="width:96px;"><input type="text" name="ms" id="ms" size="8"></td>
                         <td>&nbsp;</td>
 
-                        <td align="right">MnGRAD&nbsp;</td>
+                        <td align="right" width="16%">MnGRAD&nbsp;</td>
                         <td style="width:96px;"><input type="text" name="ms_mngrad" id="ms_mngrad" size="8"></td>
                         <td>mmHg</td>
                     </tr>
@@ -278,7 +282,7 @@ body,td,th {
                         <td>&nbsp;</td>
                         
                         <td align="right">PGRAD&nbsp;</td>
-                        <td><input type="text" name="ps_pgrad" id="ps_pgrad" size="8"></td>
+                        <td><input type="text" name="ps_pr_pgrad" id="ps_pr_pgrad" size="8"></td>
                         <td>mmHg</td>
                     </tr>
                     
