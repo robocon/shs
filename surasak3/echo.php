@@ -1,48 +1,40 @@
 <?php 
-
 include 'bootstrap.php';
-
 include 'dt_menu.php';
 include 'dt_patient.php';
 
-
 ?>
 <style>
-    *{
-        /* font-family: "TH SarabunPSK"; */
-        /* font-size: 16px; */
+    @media screen and (max-width: 1127px){
+        #echo_table{
+            width: 100%;
+        }
     }
     h3{
-        /* font-weight: bold; */
-        /* font-size: 20px; */
         margin: 0;
         padding: 0;
     }
-
-body,td,th {
-	font-family: Angsana New;
-	font-size: 22px;
-}
-
-.tb_head {background-color: #2E86C1; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
-.tb_detail2 {background-color: #FFFFC1; color:#0000FF; }
-.tb_detail3 {background-color: #F9E79F;  }
-.tb_menu {background-color: #FFFFC1;  }
-
-.echo_table{
-    border-collapse: collapse;
-}
-.echo_table tr,
-.echo_table td{
-    margin:0;
-    padding:0;
-}
-
+    body,td,th {
+        font-family: Angsana New;
+        font-size: 22px;
+    }
+    .tb_head {background-color: #2E86C1; color: #FFFFCA; font-weight: bold; text-align:center;  }
+    .tb_detail {background-color: #FFFFC1;  }
+    .tb_detail2 {background-color: #FFFFC1; color:#0000FF; }
+    .tb_detail3 {background-color: #F9E79F;  }
+    .tb_menu {background-color: #FFFFC1;  }
+    .echo_table{
+        border-collapse: collapse;
+    }
+    .echo_table tr,
+    .echo_table td{
+        margin:0;
+        padding:0;
+    }
 </style>
 <br>
-<form action="echo.php" method="post">
-    <table class="echo_table" width="100%">
+<form action="echo_save.php" method="post">
+    <table class="echo_table" id="echo_table" width="80%" align="center">
         <tr>
             <td class="tb_head" colspan="2" style="text-shadow: black 0.1em 0.1em 0.2em; background-color: #309f55;">ECHOCARDIOGRAPHY</td>
         </tr>
@@ -82,7 +74,7 @@ body,td,th {
                     <tr>
                         <td colspan="8">
                             <div style="margin-top:8px; margin-bottom: 8px;">
-                                Echo No. <input type="text" name="echo_number" id="echo_number">
+                                Echo No. <input type="text" name="echo_number" id="echo_number" autofocus>
                             </div>
                         </td>
                     </tr>
@@ -91,14 +83,14 @@ body,td,th {
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
-                        <td align="right" width="19%">Ao&nbsp;</td>
-                        <td style="width:96px;"><input type="text" name="ao" id="ao" size="8"></td>
-                        <td>mm. (20-32)</td>
+                        <td align="right" width="10%">Ao&nbsp;</td>
+                        <td ><input type="text" name="ao" id="ao" size="8"></td>
+                        <td width="19%">mm. (20-32)</td>
 
                         <td>&nbsp;</td>
-                        <td align="right" width="19%">LVEDV&nbsp;</td>
-                        <td style="width:96px;"><input type="text" name="lvedv" id="lvedv" size="8"></td>
-                        <td>ml. (90-140)</td>
+                        <td align="right" width="10%">LVEDV&nbsp;</td>
+                        <td ><input type="text" name="lvedv" id="lvedv" size="8"></td>
+                        <td width="19%">ml. (90-140)</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -193,7 +185,7 @@ body,td,th {
                     <tr>
                         <td colspan="7" class="tb_head" style="text-shadow: black 2px 2px 8px;"><u>DOPPLER</u></td>
                     </tr>
-                    <tr style="background-color: #D4EFDF;">
+                    <tr>
                         <td>1.</td>
                         <td align="right" width="16%">MS&nbsp;</td>
                         <td style="width:96px;"><input type="text" name="ms" id="ms" size="8"></td>
@@ -203,7 +195,7 @@ body,td,th {
                         <td style="width:96px;"><input type="text" name="ms_mngrad" id="ms_mngrad" size="8"></td>
                         <td>mmHg</td>
                     </tr>
-                    <tr style="background-color: #D4EFDF;">
+                    <tr>
                         <td>&nbsp;</td>
                         <td align="right">MVA(PHT)&nbsp;</td>
                         <td><input type="text" name="ms_mvapht" id="ms_mvapht" size="8"></td>
@@ -213,7 +205,7 @@ body,td,th {
                         <td><input type="text" name="ms_mva2d" id="ms_mva2d" size="8"></td>
                         <td>cm<sup>2</sup></td>
                     </tr>
-                    <tr style="background-color: #D4EFDF;">
+                    <tr>
                         <td>&nbsp;</td>
                         <td align="right">MR&nbsp;</td>
                         <td><input type="text" name="ms_mr" id="ms_mr" size="8"></td>
@@ -224,7 +216,7 @@ body,td,th {
                         <td>&nbsp;</td>
                     </tr>
 
-                    <tr>
+                    <tr style="background-color: #D4EFDF;">
                         <td>2.</td>
                         <td align="right">AS&nbsp;</td>
                         <td><input type="text" name="as" id="as" size="8"></td>
@@ -234,7 +226,7 @@ body,td,th {
                         <td><input type="text" name="as_pgrad" id="as_pgrad" size="8"></td>
                         <td>mmHg</td>
                     </tr>
-                    <tr>
+                    <tr style="background-color: #D4EFDF;">
                         <td>&nbsp;</td>
                         <td align="right">MnGRAD&nbsp;</td>
                         <td><input type="text" name="as_mngrad" id="as_mngrad" size="8"></td>
@@ -244,7 +236,7 @@ body,td,th {
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                     </tr>
-                    <tr>
+                    <tr style="background-color: #D4EFDF;">
                         <td>&nbsp;</td>
                         <td align="right">AR&nbsp;</td>
                         <td><input type="text" name="as_ar" id="as_ar" size="8"></td>
@@ -255,7 +247,7 @@ body,td,th {
                         <td>ms.</td>
                     </tr>
 
-                    <tr style="background-color: #D4EFDF;">
+                    <tr>
                         <td>3.</td>
                         <td align="right">PS&nbsp;</td>
                         <td><input type="text" name="ps" id="ps" size="8"></td>
@@ -265,7 +257,7 @@ body,td,th {
                         <td><input type="text" name="ps_pgrad" id="ps_pgrad" size="8"></td>
                         <td>mmHg</td>
                     </tr>
-                    <tr style="background-color: #D4EFDF;">
+                    <tr>
                         <td>&nbsp;</td>
                         <td align="right">MnGRAD&nbsp;</td>
                         <td><input type="text" name="ps_mngrad" id="ps_mngrad" size="8"></td>
@@ -275,7 +267,7 @@ body,td,th {
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                     </tr>
-                    <tr style="background-color: #D4EFDF;">
+                    <tr>
                         <td>&nbsp;</td>
                         <td align="right">PR&nbsp;</td>
                         <td><input type="text" name="ps_pr" id="ps_pr" size="8"></td>
@@ -286,7 +278,7 @@ body,td,th {
                         <td>mmHg</td>
                     </tr>
                     
-                    <tr>
+                    <tr style="background-color: #D4EFDF;">
                         <td>4.</td>
                         <td align="right">TS&nbsp;</td>
                         <td><input type="text" name="ts" id="ts" size="8"></td>
@@ -296,7 +288,7 @@ body,td,th {
                         <td><input type="text" name="ts_mngrad" id="ts_mngrad" size="8"></td>
                         <td>mmHg</td>
                     </tr>
-                    <tr>
+                    <tr style="background-color: #D4EFDF;">
                         <td>&nbsp;</td>
                         <td align="right">TVA(PHT)&nbsp;</td>
                         <td><input type="text" name="ts_tvapht" id="ts_tvapht" size="8"></td>
@@ -306,7 +298,7 @@ body,td,th {
                         <td><input type="text" name="ts_tva2d" id="ts_tva2d" size="8"></td>
                         <td>cm<sup>2</sup></td>
                     </tr>
-                    <tr>
+                    <tr style="background-color: #D4EFDF;">
                         <td>&nbsp;</td>
                         <td align="right">TR&nbsp;</td>
                         <td><input type="text" name="ts_tr" id="ts_tr" size="8"></td>
@@ -344,8 +336,14 @@ body,td,th {
         </tr>
         <tr>
             <td align="center" colspan="2">
-                <button type="submit" style="padding: 4px 12px;">บันทึก</button>
+                <br>
+                <button type="submit" style="padding: 4px 12px; font-size:18px;">บันทึก</button>
             </td>
         </tr>
     </table>
 </form>
+<script>
+    // window.onload = function(){
+    //     document.getElementById("echo_number").focus();
+    // }
+</script>

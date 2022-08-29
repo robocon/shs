@@ -24,8 +24,8 @@ function Epoch(name,mode,targetelement,multiselect) {
 		self.displayMonthInitial = self.curDate.getMonth(); //the initial month to display on load (0-11)
 		self.displayYear = self.displayYearInitial;
 		self.displayMonth = self.displayMonthInitial;
-		self.minDate = new Date(2002,0,1);
-		self.maxDate = new Date(2020,11,31);
+		self.minDate = new Date(2017,0,1);
+		self.maxDate = new Date(2029,11,31);
 		self.startDay = 0; // the day the week will 'start' on: 0(Sun) to 6(Sat)
 		self.showWeeks = true; //whether the week numbers will be shown
 		self.selCurMonthOnly = true; //allow user to only select dates in the currently displayed month
@@ -36,8 +36,8 @@ function Epoch(name,mode,targetelement,multiselect) {
 	* Check Date.dateFormat() for the Date object's language settings
 	*/
 	function setLang() {
-		self.daylist = new Array('Õ.','®.','Õ.','æ.','æƒ.','».',' .','Õ.','®.','Õ.','æ.','æƒ.','».',' .');
-		self.months_sh = new Array('¡§.','°æ.','¡’§.','‡¡¬.','æ§.','¡‘¬.','°§.',' §.','°¬.','µ§.','æ¬.','∏§.');
+		self.daylist = new Array('‡∏≠.','‡∏à.','‡∏≠.','‡∏û.','‡∏û‡∏§.','‡∏®.','‡∏™.','‡∏≠.','‡∏à.','‡∏≠.','‡∏û.','‡∏û‡∏§.','‡∏®.','‡∏™.');
+		self.months_sh = new Array('‡∏°‡∏Ñ.','‡∏Å‡∏û.','‡∏°‡∏µ‡∏Ñ.','‡πÄ‡∏°‡∏¢.','‡∏û‡∏Ñ.','‡∏°‡∏¥‡∏¢.','‡∏Å‡∏Ñ.','‡∏™‡∏Ñ.','‡∏Å‡∏¢.','‡∏ï‡∏Ñ.','‡∏û‡∏¢.','‡∏ò‡∏Ñ.');
 		self.monthup_title = 'Go to the next month';
 		self.monthdn_title = 'Go to the previous month';
 		self.clearbtn_caption = 'Clear';

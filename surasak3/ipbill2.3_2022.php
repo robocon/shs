@@ -5,7 +5,7 @@
 }
 body,td,th {
 	font-family: TH SarabunPSK;
-	font-size: 20px;
+	font-size: 18px;
 }
 -->
 </style>
@@ -14,7 +14,7 @@ session_start();
     $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
     $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
     $Thdate=date("d-m-").(date("Y")+543);
-  $Time=date("H:i:s");
+$Time=date("H:i:s");
 //function baht///
 function baht($nArabic){
     $cTarget = Ltrim($nArabic);
@@ -42,7 +42,6 @@ include("connect.inc");
 
           $query = "SELECT * FROM thaibaht WHERE fld1 = '$nUnit' ";
           $result = mysql_query($query) or die("Query 1 failed");
-          mysql_query("SET CHARACTER SET utf8 ");
 
           for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
           if (!mysql_data_seek($result, $i)) {
@@ -63,7 +62,7 @@ include("connect.inc");
 //อ่านเลข
           $query = "SELECT * FROM thaibaht WHERE fld1 = '$cNo' ";
           $result = mysql_query($query) or die("Query 2 failed");
-          mysql_query("SET CHARACTER SET utf8 ");
+
           for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
           if (!mysql_data_seek($result, $i)) {
               echo "Cannot seek to row $i\n";
@@ -103,7 +102,7 @@ $cRead = $cRead."บาท";
 
           $query = "SELECT * FROM thaibaht WHERE fld1 = '$cNo' ";
           $result = mysql_query($query) or die("Query failed");
-          mysql_query("SET CHARACTER SET utf8 ");
+
           for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
           if (!mysql_data_seek($result, $i)) {
               echo "Cannot seek to row $i\n";
@@ -173,38 +172,16 @@ $cRead = $cRead."บาท";
     $DPN     =array_sum($aDPN);   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกไม่ได้  
  
     $Blood     = array_sum($aBlood);
-	$Bloody     = array_sum($aBloody);
-	$Bloodn     = array_sum($aBloodn);
     $Labo         =array_sum($aLabo);
-	$Laboy         =array_sum($aLaboy);
-	$Labon         =array_sum($aLabon);
     $Xray         =array_sum($aXray);
-	$Xrayy         =array_sum($aXrayy);
-	$Xrayn         =array_sum($aXrayn);
     $Sinv        = array_sum($aSinv);
-	$Sinvy        = array_sum($aSinvy);
-	$Sinvn        = array_sum($aSinvn);
     $Tool        = array_sum($aTool);  //ค่าใช้เครื่องมือทางการแพทย์ เช่น respirator
-	$Tooly        = array_sum($aTooly);
-	$Tooln        = array_sum($aTooln);
     $Surg         =array_sum($aSurg);
-	$Surgy         =array_sum($aSurgy);
-	$Surgn         =array_sum($aSurgn);
     $Ncare       = array_sum($aNcare);
-	$Ncarey       = array_sum($aNcarey);
-	$Ncaren       = array_sum($aNcaren);
     $Dent          =array_sum($aDent);
-	$Denty          =array_sum($aDenty);
-	$Dentn          =array_sum($aDentn);
     $Physi        =array_sum($aPhysi);
-	$Physiy       =array_sum($aPhysiy);
-	$Physin        =array_sum($aPhysin);
     $Stx            = array_sum($aStx);
-	$Stxy            = array_sum($aStxy);
-	$Stxn           = array_sum($aStxn);
     $Mc            = array_sum($aMc); //ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา
-	$Mcy            = array_sum($aMcy);
-	$Mcn            = array_sum($aMcn);
 
     $debt=$Netpri-$Netpaid-$paid;
 /*
@@ -221,20 +198,22 @@ Netpaid=รวมที่ทะยอยจ่ายทั้งหมด
 cash =จ่ายครั้งนี้($paid)
 debt= Netpri-Netpaid-$paid
 */
-    include("connect.inc");
+    include("connect.inc");	
        $query = "INSERT INTO ipmonrep(date,admit,dcdate,days,an,hn,ptname,ptright,price,
                 paid,debt,cash,idname,bfy,bfn,dpy,dpn,ddl,ddy,ddn,dsy,dsn,blood,
-	lab,xray,sinv,surg,ncare,denta,pt,stx,mc,billno,credit,credit_detail,tool)VALUES('$Thidate','$cAdmit',
+	lab,xray,sinv,surg,ncare,denta,pt,stx,mc,billno,credit,credit_detail)VALUES('$Thidate','$cAdmit',
 	'$cDcdate','$cDays','$cAn','$cHn','$cPtname','$cPtright','$Netpri','$Netpaid','$debt',
 	'$paid','$sOfficer','$BFY','$BFN','$DPY','$DPN','$Essd',
-	'$Nessdy','$Nessdn','$DSY','$DSN','".($Blood+$Bloody+$Bloodn)."',
-	'".($Labo+$Laboy+$Labon)."','".($Xray+$Xrayy+$Xrayn)."','".($Sinv+$Sinvy+$Sinvn)."','".($Surg+$Surgy+$Surgn)."','".($Ncare+$Ncarey+$Ncaren)."','".($Dent+$Denty+$Dentn)."','".($Physi+$Physiy+$Physin)."','".($Stx+$Stxy+$Stxn)."','".($Mc+$Mcy+$Mcn)."','$billno','$credit','$detail_1','".($Tool+$Tooly+$Tooln)."');";
+	'$Nessdy','$Nessdn','$DSY','$DSN','$Blood',
+	'$Labo','$Xray','$Sinv','$Surg','$Ncare','$Dent','$Physi','$Stx','$Mc','$billno','$credit','$detail_1');";
  
        $result = mysql_query($query) or die("Query failed,insert into ipmonrep");
 //       echo mysql_errno() . ": " . mysql_error(). "\n";
 //       echo "<br>";
-        mysql_query("SET CHARACTER SET utf8 ");
-       $sql = "UPDATE ipcard SET price='$Netpri', paid= $Netpaid+$paid, calc='$Thidate'
+
+       $sql = "UPDATE ipcard SET price='$Netpri',
+			    paid= $Netpaid+$paid,
+	              	                    calc='$Thidate'
 	   WHERE an='$cAn' ";
        $result = mysql_query($sql) or die("Query failed ipcard");
 //       echo mysql_errno() . ": " . mysql_error(). "\n";
@@ -274,38 +253,16 @@ debt= Netpri-Netpaid-$paid
     $DPN     =array_sum($aBDPN);   //รวมเงินค่าซื้ออุปกรณ์ ส่วนที่เบิกไม่ได้  
 
     $Blood     = array_sum($aBBlood);
-	$Bloody     = array_sum($aBBloody);
-	$Bloodn     = array_sum($aBBloodn);
     $Labo         =array_sum($aBLabo);
-	$Laboy         =array_sum($aBLaboy);
-	$Labon       =array_sum($aBLabon);
     $Xray         =array_sum($aBXray);
-	$Xrayy         =array_sum($aBXrayy);
-	$Xrayn         =array_sum($aBXrayn);
     $Sinv        = array_sum($aBSinv);
-	$Sinvy        = array_sum($aBSinvy);
-	$Sinvn        = array_sum($aBSinvn);
     $Tool        = array_sum($aBTool);  //ค่าใช้เครื่องมือทางการแพทย์ เช่น respirator
-	$Tooly        = array_sum($aBTooly); 
-	$Tooln        = array_sum($aBTooln); 
     $Surg         =array_sum($aBSurg);
-	$Surgy         =array_sum($aBSurgy);
-	$Surgn         =array_sum($aBSurgn);
     $Ncare       = array_sum($aBNcare);
-	$Ncarey       = array_sum($aBNcarey);
-	$Ncaren       = array_sum($aBNcaren);
     $Dent          =array_sum($aBDent);
-	$Denty          =array_sum($aBDenty);
-	$Dentn          =array_sum($aBDentn);
     $Physi        =array_sum($aBPhysi);
-	$Physiy        =array_sum($aBPhysiy);
-	$Physin        =array_sum($aBPhysin);
     $Stx            = array_sum($aBStx);
-	$Stxy            = array_sum($aBStxy);
-	$Stxn            = array_sum($aBStxn);
     $Mc            = array_sum($aBMc); //ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา
-	$Mcy            = array_sum($aBMcy);
-	$Mcn            = array_sum($aBMcn);
 
     $debt=$Netpri-$Netpaid-$paid;
 /*
@@ -385,20 +342,19 @@ print "</div>";
 print "</table>";
 */
 //$bedfood=$BFY+$BFN;
-$invlab=$Blood+$Bloody+$Labo+$Laboy+$Xray+$Xrayy+$Sinv+$Sinvy;
+$invlab=$Blood+$Labo+$Xray+$Sinv;
 
 $BEssd=$Essd+$DEssd;
 $BNessdy=$Nessdy+$DNessdy;
 $BNessdn=$Nessdn+$DNessdn;
 
-$equip=$DPY+$Tool+$Tooly;  //TOOL-ค่าใช้เครื่องมือทางการแพทย์, DPY-ค่าซื้อตัวอุปกรณ์ทางการแพทย์
-$medcare=$Surg+$Surgy+$Ncare+$Ncarey+$Dent+$Denty+$Physi+$Physiy+$Stx+$Stxy;
+$equip=$DPY+$Tool;  //TOOL-ค่าใช้เครื่องมือทางการแพทย์, DPY-ค่าซื้อตัวอุปกรณ์ทางการแพทย์
+$medcare=$Surg+ $Ncare+$Dent+$Physi+$Stx;
 
 $Ysubtotal=$BFY+$invlab+$BEssd+$BNessdy+$DSY+$equip+$medcare;
-$Nsubtotal=$BFN+$BNessdn+$DSN+$DPN+$Mc+$Mcy+$Mcn+$Bloodn+$Labon+$Xrayn+$Sinvn+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Tooln;
+$Nsubtotal=$BFN+$Mc;
 
-$billsum=$BFY+$BFN+$invlab+$Essd+$Nessdy+$Nessdn+$DSY+ $DSN+$DEssd+$DNessdy+$DNessdn+$equip+$DPN+$medcare+$Mc+$Mcy+$Mcn+$Bloodn+$Labon+$Xrayn+$Sinvn+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Tooln;
-
+$billsum=$BFY+$BFN+$invlab+$Essd+$Nessdy+$Nessdn+$DSY+ $DSN+$DEssd+$DNessdy+$DNessdn+$equip+$DPN+$medcare+$Mc;
 $debt=$billsum-$paid;
 $cbaht=baht($paid);
 /*
@@ -454,9 +410,9 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='10%'></td>";
-print "      <td width='20%'>ได้รับ&nbsp; เงินสด</td>";
-print "      <td width='45%'>จาก$cPtname";
-print "      <td width='25%'>วันที่$Thdate";
+print "      <td width='20%'>เงินสด</td>";
+print "      <td width='45%'>$cPtname";
+print "      <td width='25%'>$Thdate";
 print "       </td>";
 print "    </tr>";
 
@@ -557,9 +513,9 @@ print "  </table>";
 print "</div>";
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
-print "<tr>";
-print " <td width='32%'></td>";
-print " <td width='68%'><BR><BR><BR><BR></td>";
+print "    <tr>";
+print "      <td width='32%'></td>";
+print "      <td width='68%'><BR><BR><BR><BR></td>";
 print "    </tr>";
 print "  </table>";
 print "</div>";
@@ -580,8 +536,8 @@ print "    <tr>";
 print "      <td width='10%'></td>";
 print "      <td width='23%'>ได้รับ&nbsp;$credit</td>";
 print "      <td width='36%'>จาก&nbsp;<B>$cPtname</B>";
-print "      <td width='18%'>HN:&nbsp;$cHn";
-print "      <td width='20%'>AN:&nbsp;$cAn";
+print "      <td width='18%'>HN&nbsp;$cHn";
+print "      <td width='20%'>AN&nbsp;$cAn";
 
 print "       </td>";
 print "    </tr>";
@@ -598,19 +554,19 @@ $cAdmitM=substr($cAdmit,5,2);
 $cAdmitY=substr($cAdmit,0,4);
 $cAdmitT=substr($cAdmit,11,8);
 $cAdmitALL=$cAdmitD."-".$cAdmitM."-".$cAdmitY."&nbsp;".$cAdmitT;
-print "<td width='35%'>วันที่รับป่วย:&nbsp;$cAdmitALL</td>";
+print "      <td width='35%'>วันที่รับป่วย&nbsp;$cAdmitALL</td>";
 $dcdateD=substr($cDcdate,8,2);
 $dcdateM=substr($cDcdate,5,2);
 $dcdateY=substr($cDcdate,0,4);
 $dcdateT=substr($cDcdate,11,8);
 $dcdateALL=$dcdateD."-".$dcdateM."-".$dcdateY."&nbsp;".$dcdateT;
-print "      <td width='37%'>วันที่จำหน่าย:&nbsp;$dcdateALL";
+print "      <td width='37%'>วันที่จำหน่าย&nbsp;$dcdateALL";
 print "      <td width='33%'>รวม&nbsp;$cDays&nbsp;วัน";
 print "       </td>";
 print "    </tr>";
 print "    <tr>";
 print "      <td width='10%'></td>";
-print "      <td width='30%' colspan='2'>โรค:&nbsp;$cDiag</td>";
+print "      <td width='30%' colspan='2'>โรค&nbsp;$cDiag</td>";
 //print "      <td width='10%'>";
 print "      <td width='10%'>";
 print "      <td width='10%'>";
@@ -627,14 +583,14 @@ print "  </table>";
 print "</div>";
 //print "<br>";
 
-print "<BR><BR><BR><BR>";
+print "   <BR><BR><BR><BR>";
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='5%'></td>";
 //print "      <td width='55%'>สรุปค่ารักษาพยาบาล:<br>";
 //print "รายการ<br>";
-print "<td width='60%' >1. ค่าห้อง/ค่าอาหาร<br>";	
+print "<td width='50%'>1. ค่าห้อง/ค่าอาหาร<br>";	
 print "   .......ค่าห้อง/ค่าอาหาร(ส่วนเกิน)<br>";	
 print "2. อวัยวะเทียม/อุปกรณ์ในการบำบัดรักษา<br>";	
 print "3. ยาและสารอาหารทางเส้นเลือดที่ใช้ในโรงพยาบาล<br>";
@@ -656,56 +612,51 @@ print "16. ค่าบริการอื่นที่ไม่เกี่
 //print "        เบิกไม่ได้<br>";
 print "       <td width='10%' align='right'> ...<br>";
 print "        $BFN<br>";
-print "        $DPN<br>";
-print "        $Nessdn<br>";
-print "        $DNessdn<br>"; //4. ยาที่นำไปใช้ต่อที่บ้าน เบิกไม่ได้
-print "        $DSN<br>";
-print "        $Bloodn<br>";
-print "        $Labon<br>";
-print "        $Xrayn<br>";
-print "        $Sinvn<br>";
-print "        $Tooln<br>";
-print "        $Surgn<br>";
-print "        $Ncaren<br>";
-print "        $Dentn<br>";
-print "        $Physin<br>";
-print "        $Stxn<br>";
-$Mc+=$Mcn;
-print "        $Mc<br><br><br></td>";
-print "        <td width='15%' valign='middle' align='right'><br>";
+print "        ...<br>";
+print "        ...<br>";
+print "       ...<br>"; //4. ยาที่นำไปใช้ต่อที่บ้าน เบิกไม่ได้
+print "        ...<br>";
+print "       ...<br>";
+print "        ....<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        $Mc</td>";
+//print "      <td width='16%' valign='middle'>รายการ<br>";
+//print "        เบิกได้<br>";
+print "       <td width='15%' valign='middle' align='right'><br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
-print "        <br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
+print "       <br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
 print "        <br>";
 print "        <br>";
-print "        <br>";
-print "        <br>";
+print "       <br>";
+print "       <br>";
 print "        <br>"; // 9.ค่าตรวจวินิจฉัยโดยวิธีพิเศษอื่นๆ
 print "        <br>"; //10.ค่าใช้เครื่องมือทางการแพทย์
-print "        <br>";
-print "        <br>";
-print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        </td>";
-print "        <td width='10%' valign='middle' align='right'><br>";
+print "       <td width='10%' valign='middle' align='right'><br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
-print "        <br>";
+print "       <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>"; // 9.ค่าตรวจวินิจฉัยโดยวิธีพิเศษอื่นๆ
-print "        <br>"; //10.ค่าใช้เครื่องมือทางการแพทย์
-print "        <br>";
-print "        <br>";
-print "        <br>";
+print "       <br>"; //10.ค่าใช้เครื่องมือทางการแพทย์
 print "        <br>";
 print "        <br>";
 print "        <br>";
@@ -716,6 +667,7 @@ print "    </tr>";
 print "  </table>";
 print "</div>";
 print "</table>";
+
 //print " <BR>";
 print "<p></p>";
 print "<p></p>";
@@ -723,15 +675,15 @@ print "<p></p>";
 print "<div align='right'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
-print "      <td width='5%'></td>";
-print "      <td width='60%'></td>";
+print "      <td width='10%'></td>";
+print "      <td width='20%'></td>";
 print "      <td width='10%' align='right'>".number_format($Nsubtotal, 2)."</td>";
-print "      <td width='15%' align='right'></td>";
+print "      <td width='18%' align='right'></td>";
 print "      <td width='10%'></td>";
 print "    </tr>";
 print "    <tr>";
 print "      <td width='5%'></td>";
-print "      <td width='60%' align='center'><B>$cbaht</B></td>";
+print "      <td width='50%'><B>$cbaht</B></td>";
 print "      <td width='5%'></td>";
 print "      <td width='10%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>".number_format($paid, 2)."</B></td>";
 print "      <td width='5%'></td>";

@@ -1485,7 +1485,8 @@ exit();
 //************************** แสดงรายการวิธีใช้ยาให้เลือก  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "slip"){
 
-	$sql = "Select detail1, detail2, detail3, detail4, slcode  From drugslip where  (slcode LIKE '%".$_GET["search"]."%') OR (detail1 LIKE '%".$_GET["search"]."%') OR (detail2 LIKE '%".$_GET["search"]."%') OR (detail3 LIKE '%".$_GET["search"]."%')  Order by slcode ASC ";
+	$search_txt = iconv('TIS-620', 'UTF-8', $_GET["search"]);
+	$sql = "Select detail1, detail2, detail3, detail4, slcode  From drugslip where  (slcode LIKE '%".$search_txt."%') OR (detail1 LIKE '%".$search_txt."%') OR (detail2 LIKE '%".$search_txt."%') OR (detail3 LIKE '%".$search_txt."%')  Order by slcode ASC ";
 	$result = Mysql_Query($sql);
 	if(Mysql_num_rows($result) > 0){
 	$i=" id='choice1' ";

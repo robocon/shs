@@ -236,7 +236,7 @@ if ( $views == 'search' ) {
                 <td style="vertical-align: top;">
                     <ol style="margin:0;">
                         <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลรวม</a></li>
-                        <li><a href="chk_print_all_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
+                        <li><a href="chk_print_all_sso.php?part=<?=rawurlencode($item['code']);?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
                         <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย</a></li>
                     </ol>
                 </td>

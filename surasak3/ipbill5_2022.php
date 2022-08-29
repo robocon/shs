@@ -1,17 +1,18 @@
 <style type="text/css">
 <!--
 .txt {	font-family: TH SarabunPSK;
-	font-size: 22px;
+	font-size: 20px;
 }
 body,td,th {
 	font-family: TH SarabunPSK;
-	font-size: 22px;
+	font-size: 20px;
 }
 -->
 </style>
 <?php
 session_start();
-    $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
+
+    $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");	
     $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
     $Thdate=date("d-m-").(date("Y")+543);
 	$time=date("H:i:s");
@@ -331,6 +332,7 @@ list($pricedc,$status) = Mysql_fetch_row($result2);*/
    print "มารับการรักษาใน รพ. วันที่ $cAdmit ถึง $cDcdate รวม $cDays วัน<br>";
 //   print "<font face='Angsana New'>จำนวนทั้งสิ้น $item รายการ ดังนี้<br>";
 
+print "<div align='left'>";session
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
@@ -453,12 +455,14 @@ print "จนท. $sOfficer วันที่ $Thaidate<br>";
 
 
 //if ($paid==$billsum){
+	
+	//print_r($_POST);
 
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='80%'></td>";
-print "      <td width='20%'><BR><BR></td>";
+print "      <td width='20%'></td>";
 print "    </tr>";
 print "   <BR>";
 print "  </table>";
@@ -467,7 +471,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='32%'></td>";
-print "      <td width='68%'><BR><BR><BR><BR</td>";
+print "      <td width='68%'><BR><BR><BR><BR></td>";
 print "    </tr>";
 print "  </table>";
 print "</div>";
@@ -475,9 +479,9 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='10%'></td>";
-print "      <td width='20%'$Thdate</td>";
-print "      <td width='45%'$time";
-print "      <td width='25%'";
+print "      <td width='20%'>$Thdate</td>";
+print "      <td width='45%'>$time";
+print "      <td width='25%'>";
 print "       </td>";
 print "    </tr>";
 print "  </table>";
@@ -486,10 +490,10 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='10%'></td>";
-print "      <td width='23%'$credit</td>";
-print "      <td width='36%'<B>$cPtname</B>";
-print "      <td width='18%'$cHn";
-print "      <td width='20%'$cAn";
+print "      <td width='23%'>$credit</td>";
+print "      <td width='36%'><B>$cPtname</B>";
+print "      <td width='18%'>$cHn";
+print "      <td width='20%'>$cAn";
 
 print "       </td>";
 print "    </tr>";
@@ -506,21 +510,21 @@ $cAdmitM=substr($cAdmit,5,2);
 $cAdmitY=substr($cAdmit,0,4);
 $cAdmitT=substr($cAdmit,11,8);
 $cAdmitALL=$cAdmitD."-".$cAdmitM."-".$cAdmitY."&nbsp;".$cAdmitT;
-print "      <td width='30%'$cAdmitALL</td>";
+print "      <td width='30%'>$cAdmitALL</td>";
 $dcdateD=substr($cDcdate,8,2);
 $dcdateM=substr($cDcdate,5,2);
 $dcdateY=substr($cDcdate,0,4);
 $dcdateT=substr($cDcdate,11,8);
 $dcdateALL=$dcdateD."-".$dcdateM."-".$dcdateY."&nbsp;".$dcdateT;
-print "      <td width='30%'$dcdateALL";
-print "      <td width='40%'$cDays";
+print "      <td width='30%'>$dcdateALL";
+print "      <td width='40%'>$cDays";
 print "       </td>";
 print "    </tr>";
 print "    <tr>";
 print "      <td width='10%'></td>";
 $dstart = $dd."-".$mm."-".$yy;
 $dlast = $dd2."-".$mm2."-".$yy2;
-print "      <td width='100%' colspan=3 $cDiag (ค่ารักษาพยาบาลระหว่างวันที่ $dstart ถึงวันที่ $dlast)</td>";
+print "      <td width='100%' colspan='3'> $cDiag (ค่ารักษาพยาบาลระหว่างวันที่ $dstart ถึงวันที่ $dlast)</td>";
 /*print "      <td width='0%'";
 print "      <td width='0%'";
 print "      <td width='0%'";*/
@@ -537,7 +541,7 @@ print "  </table>";
 print "</div>";
 //print "<br>";
 
-print "   <BR><BR><BR><BR>";
+print "<BR><BR><BR><BR>";
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
@@ -581,7 +585,7 @@ print "        $Dentn<br>";
 print "        $Physin<br>";
 print "        $Stxn<br>";
 $Mc=$Mcy+$Mcn+$Mc;
-print "        $Mc<br><br></td>";
+print "        $Mc<br></td>";
 //print "      <td width='16%' valign='middle'รายการ<br>";
 //print "        เบิกได้<br>";
 print "       <td width='15%' valign='middle' align='right'> $BFY<br>";
@@ -625,6 +629,7 @@ print "        <br>";
 print "        <br>";
 print "        <br>"; // 9.ค่าตรวจวินิจฉัยโดยวิธีพิเศษอื่นๆ
 print "       <br>"; //10.ค่าใช้เครื่องมือทางการแพทย์
+print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";
@@ -697,7 +702,9 @@ print "  </table>";
 print "</div>";
 
 */
-print " <BR>";
+print "<p></p>";
+print "<p></p>";
+print "<p></p>";
 print "<div align='right'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
@@ -711,7 +718,7 @@ print "    <tr>";
 print "      <td width='5%'></td>";
 print "      <td width='50%' align='center'><B>$cbaht</B></td>";
 print "      <td width='5%'></td>";
-print "      <td width='10%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>$paid</B></td>";
+print "      <td width='10%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>".number_format($paid, 2)."</B></td>";
 print "      <td width='5%'></td>";
 print "    </tr>";
 print "  </table>";
@@ -819,5 +826,5 @@ print "</div>";
     session_unregister("aBMc");
 ?>
 <script language="javascript">
-window.opener.location.href ('dcdate.php');
+window.opener.location.href ('dcdate_2022.php');
 </script>

@@ -4,11 +4,11 @@ session_start();
 <style type="text/css">
 <!--
 .txt {	font-family: TH SarabunPSK;
-	font-size: 22px;
+	font-size: 20px;
 }
 body,td,th {
 	font-family: TH SarabunPSK;
-	font-size: 22px;
+	font-size: 20px;
 }
 -->
 </style>
@@ -468,7 +468,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='80%'></td>";
-print "      <td width='20%'><BR><BR></td>";
+print "      <td width='20%'></td>";
 print "    </tr>";
 print "   <BR>";
 print "  </table>";
@@ -545,7 +545,7 @@ print "  </table>";
 print "</div>";
 //print "<br>";
 
-print "   <BR><BR><BR><BR>";
+print "<BR><BR><BR><BR>";
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
@@ -589,7 +589,7 @@ print "        $Dentn<br>";
 print "        $Physin<br>";
 print "        $Stxn<br>";
 $Mc=$Mcy+$Mcn+$Mc;
-print "        $Mc<br><br></td>";
+print "        $Mc<br><br><br></td>";
 //print "      <td width='16%' valign='middle'>รายการ<br>";
 //print "        เบิกได้<br>";
 print "       <td width='15%' valign='middle' align='right'> $BFY<br>";
@@ -622,7 +622,7 @@ print "        $Physi<br>";
 $Stx+=$Stxy;
 print "        $Stx<br>";
 //print "        ...<br>";
-print "        ...<br><br></td>";
+print "        ...<br><br><br></td>";
 print "       <td width='10%' valign='middle' align='right'><br>";
 print "        <br>";
 print "        <br>";
@@ -634,6 +634,7 @@ print "        <br>";
 print "        <br>";
 print "        <br>"; // 9.ค่าตรวจวินิจฉัยโดยวิธีพิเศษอื่นๆ
 print "       <br>"; //10.ค่าใช้เครื่องมือทางการแพทย์
+print "        <br>";
 print "        <br>";
 print "        <br>";
 print "        <br>";

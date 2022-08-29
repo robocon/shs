@@ -1,6 +1,6 @@
 <?php
 
-// include µÑÇËÅÑ¡
+// include ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡
 include 'fpdf_thai.php';
 
 class PDF_JavaScript extends FPDF_Thai {
@@ -66,7 +66,7 @@ class PDF_AutoPrint extends PDF_JavaScript{
 
 
 /**
- * @todo ÂÑ§ÁÕ»Ñ­ËÒàÃ×èÍ§¡ÒÃ extends ËÅÒÂæ class ¨Ò¡¢éÍ¨Ó¡Ñ´´éÒ¹ Version ¢Í§ PHP 
+ * @todo ï¿½Ñ§ï¿½Õ»Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í§ï¿½ï¿½ï¿½ extends ï¿½ï¿½ï¿½ï¿½ï¿½ class ï¿½Ò¡ï¿½ï¿½Í¨Ó¡Ñ´ï¿½ï¿½Ò¹ Version ï¿½Í§ PHP 
  */
 class Pre_SHSPdf extends PDF_AutoPrint
 {

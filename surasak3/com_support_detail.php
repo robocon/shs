@@ -10,6 +10,7 @@ if(empty($_SESSION['sOfficer'])){
     exit;
 }
 $dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 $action = $_POST['action'];
 if($action==='save'){
 
