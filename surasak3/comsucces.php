@@ -10,6 +10,7 @@ if($_REQUEST['do']=='edit'){
 	
 	$thidate = (date("Y")+543).date("-m-d H:i:s"); 
 	$row=$_POST['row'];
+	$user=$_POST['user'];
 	$p_edit=$_POST['p_edit'];
 	$programmer=$_POST['programmer'];
 	
@@ -30,7 +31,7 @@ if($_REQUEST['do']=='edit'){
 	if($query){ 
 
 		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
-		$sMessage = "ลำดับแจ้ง: $row\nเรื่อง: $head\nดำเนินการเรียบร้อยโดย $programmer";
+		$sMessage = "สรุปปิดงาน\nลำดับแจ้ง: $row\nเรื่อง: $head\nผู้แจ้ง: $user\nดำเนินการเรียบร้อยโดย $programmer";
 		$chOne = curl_init(); 
 		curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
 		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 

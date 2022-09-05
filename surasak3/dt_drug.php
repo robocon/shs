@@ -765,7 +765,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 ?>
 <FORM name="form_remed" METHOD=POST ACTION="">
 		<table width="722" border="0" align="center" cellpadding="0" cellspacing="0">
-          <tr>
+          <tr bgcolor="#7FB3D5">
             <td width="45" align="center"><input type="checkbox" name="checkbox2" value="" Onclick="checkall(this.checked)"/></td>
             <td align="center" >รายการยา OPD</td>
 			<td align="center" >วิธีใช้</td>
@@ -800,8 +800,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	";
 	//echo $sql;
 	$result = Mysql_Query($sql) or die(Mysql_Error());
+	$numitem=mysql_num_rows($result);
 	$i=0;
 	$j=0;
+	$n=0;
 	while($arr = Mysql_fetch_assoc($result)){
 	
 			//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
@@ -836,9 +838,20 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		}
 
 		if($i%2==0)
-			$bgcolor="#FFFF99";
+			$bgcolor="#FCF3CF";
 		else
-			$bgcolor="#FFFFFF";
+			$bgcolor="#F8F9F9";
+
+
+		if($arr["lock_dr"]!="Y"){
+			$notify_lock="<div style='font-size:18px;color:red; margin-left:10px;'><img src='images/profile.png' width='24' height='24'>ยารายการนี้จะไม่แสดงข้อมูลในรายการที่สั่งจ่ายยาใหม่วันนี้<br>หากแพทย์ต้องการสั่งจ่ายยาสามารถทำได้ทั้งก่อนและหลัง remed ยาครับ</div>";
+			$bgcolor="#FADBD8";
+			$n++;
+		}else{
+			$notify_lock="";
+		}
+
+
 		
 			if($arr["part"] == "DDY"){
 				$partcolor="#0000FF;";
@@ -914,7 +927,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"];?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].$notify_lock;?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -1005,7 +1018,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			<td>&nbsp;&nbsp;
 				<FONT COLOR="red"><B><A HREF="#" onClick="document.getElementById('head_remed').style.display='none';" style="text-decoration:underline; color:#FF0000;">Close</A></B></FONT>
 			</td>
-		    <td colspan="3" align="center"><label>
+			<td align="center" style="color:green;">จำนวนยา <?=$numitem;?> รายการ / ยาที่ติดเงื่อนไข <?=$n;?> รายการ</td>
+		    <td colspan="2" align="center"><label>
 		      <input type="button" name="Submit" value="ตกลง" onClick="addtolist_muli();document.getElementById('head_remed').style.display='none';"/>
 		    </label></td>
 		    </tr>
@@ -1058,6 +1072,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_sult"){
 			$bgcolor="#FFFFCC";
 		else
 			$bgcolor="#FFFFFF";
+		
+		if($arr["lock_dr"]!="Y"){
+			$notify_lock="<div style='font-size:12px;color:red;'>ยานัวนี้จะไม่แสดงในรายการสั่งจ่ายยาใหม่ หากต้องการสั่งจ่ายยาให้ผู้ป่วยกรุณาสั่งจ่ายยาตัวใหม่</div>";
+		}else{
+			$notify_lock="";
+		}
+		
+		
 ?>
           <tr bgcolor="<?php echo $bgcolor;?>">
             <td width="75" align="center">
@@ -1077,9 +1099,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_sult"){
 				}else{
 					echo $arr["lock_dr"];
 				}
-			} ?>
+			} 
+			
+			
+			
+			
+			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"];?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].$notify_lock;?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
 			<td align="right">&nbsp;<?php echo $arr["amount"];?>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_amount"];?></td>
@@ -1381,10 +1408,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		
 		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
-			<td width=\"20\"><font style=\"color: #FFFFFF\"></font></td>
-			<td width=\"50\"><font style=\"color: #FFFFFF\"></font></td>
-			<td width=\"391\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td>
-			<td width=\"110\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td>
+			<td width=\"30\"><font style=\"color: #FFFFFF\"></font></td>
+			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>รหัส</strong></font></td>
+			<td width=\"381\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td>
+			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td>
 			<td width=\"50\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td>
 			<td width=\"5\" colspan=\"2\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><img src=\"images\icon-close.png\" alt=\"ปิดหน้าต่าง\" width=\"26\" height=\"26\"></A></strong></font></td>
 		</tr>"; 
@@ -1445,9 +1472,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				$arr["tradname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["tradname"]);
 			//แสดงรายการยาที่ค้นหา
 			echo "<tr bgcolor=\"$bgcolor\" ".$style.">
-					<td rowspan=\"3\" align=\"center\">
-					".$obj."</td>
-					<td align=\"left\" bgcolor=\"$bgcolor\">ชื่อยา : </td>
+					<td rowspan=\"3\" align=\"center\">".$obj."</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["drugcode"],"</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"]," $extra_obj</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td align=\"right\" valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>

@@ -56,7 +56,7 @@ if( $action == false ){
             <tr>
                 <th rowspan="2">#</th>
                 <th colspan="3">ข้อมูลที่ตรวจสอบ</th>
-                <th colspan="4">ข้อมูลจากฐานข้อมูล</th>
+                <th colspan="5">ข้อมูลจากฐานข้อมูล</th>
             </tr>
             <tr>
                 <th>เลขบัตรประชาชน</th>
@@ -99,8 +99,8 @@ if( $action == false ){
                 <tr <?=$color;?>>
                     <td><?=$i;?></td>
                     <td><?=$idcard;?></td>
-                    <td><?=$name;?></td>
-                    <td><?=$surname;?></td>
+                    <td><?=iconv('TIS620', 'UTF8', $name);?></td>
+                    <td><?=iconv('TIS620', 'UTF8', $surname);?></td>
                     <td><?=$user['idcard'];?></td>
                     <td><?=$user['yot'];?></td>
                     <td><?=$user['name'];?></td>

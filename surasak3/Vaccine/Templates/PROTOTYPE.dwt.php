@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <!-- TemplateBeginEditable name="doctitle" -->
-<title>หน้าแรก</title>
+<title>หน๏ฟฝ๏ฟฝ๏ฟฝรก</title>
 <!-- TemplateEndEditable -->
 <!--<link rel="stylesheet" href="../reset.css" />-->
 <link rel="stylesheet" href="../style.css" />
@@ -47,10 +47,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <div id="curvetop"></div>
 
 <ul class="left_nav">
-								<li class="nav_head">ส่วนของเมนู								</li>
-								<li class="nav_li"><a href="../index.php" title="หน้าแรกเว็บไซต์">หน้าแรก</a></li>
-                                <li class="nav_li"><a href="../service.php" title="ข้อมูลผู้มารับบริการ">ข้อมูลผู้มารับบริการ</a></li>
-                                <li class="nav_li"><a href="../Report_vac.php" title="รายงานการเข้ารับบริการ">รายงานการเข้ารับบริการวัคซีน</a></li>
+								<li class="nav_head">๏ฟฝ๏ฟฝวน๏ฟฝอง๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ								</li>
+								<li class="nav_li"><a href="../index.php" title="หน๏ฟฝ๏ฟฝ๏ฟฝรก๏ฟฝ๏ฟฝ๏ฟฝไซต๏ฟฝ">หน๏ฟฝ๏ฟฝ๏ฟฝรก</a></li>
+                                <li class="nav_li"><a href="../service.php" title="๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝลผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝลผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ</a></li>
+                                <li class="nav_li"><a href="../Report_vac.php" title="๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ">๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน</a></li>
                                							
                                 
 </ul>

@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <!-- TemplateBeginEditable name="doctitle" -->
-<title>หน้าแรก</title>
+<title>หน๏ฟฝ๏ฟฝ๏ฟฝรก</title>
 <!-- TemplateEndEditable -->
 <!--<link rel="stylesheet" href="../reset.css" />--> 
 
@@ -39,12 +39,12 @@ ul {
 		
 <div id="apDiv1"><!-- TemplateBeginEditable name="detail" -->detail<!-- TemplateEndEditable --></div>
 <ul>
-เมนูการรับบริการวัคซีน
-<li><a href="http://162.168.1.2/sm3/nindex.htm" title="กลับหน้าแรก">หน้าแรก</a></li>
-<li><a href="../service.php" title="การรับบริการวัคซีน">การรับบริการวัคซีน</a></li>
-<li><a href="../Report_vac.php" title="รายงานการรับบริการ">รายงานการรับบริการตามวัคซีน</a></li>
-<li><a href="../Report_m.php" title="รายงานการรับบริการ">รายงานการรับบริการประจำเดือน</a></li>
-<li><a href="../Report_all.php" title="รายงานการรับบริการ">รายงานการรับบริการทั้งหมด</a></li>
+๏ฟฝ๏ฟฝ๏ฟฝูก๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน
+<li><a href="http://162.168.1.2/sm3/nindex.htm" title="๏ฟฝ๏ฟฝับหน๏ฟฝ๏ฟฝ๏ฟฝรก">หน๏ฟฝ๏ฟฝ๏ฟฝรก</a></li>
+<li><a href="../service.php" title="๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน">๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน</a></li>
+<li><a href="../Report_vac.php" title="๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ">๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝรต๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน</a></li>
+<li><a href="../Report_m.php" title="๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ">๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝรป๏ฟฝะจ๏ฟฝ๏ฟฝ๏ฟฝอน</a></li>
+<li><a href="../Report_all.php" title="๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ">๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝรท๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</a></li>
               
 </ul>
 </body>

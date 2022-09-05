@@ -25,7 +25,7 @@ if($_POST["act"]=="add")
 			$row_id = mysql_insert_id();
 
 			$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS";
-			$sMessage = "แจ้งซ่อม: ลำดับ $row_id \nผู้แจ้ง: $user\nแผนก: $depart\nหัวข้อ: $head\nรายละเอียด: $detail\n";
+			$sMessage = "ใบงานใหม่\nลำดับ: $row_id\nผู้แจ้ง: $user\nแผนก: $depart\nติดต่อ: $phone\nหัวข้อ: $head\nรายละเอียด: $detail";
 			$chOne = curl_init(); 
 			// notify-api.line.me
 			// 203.104.138.174

@@ -3,9 +3,9 @@ session_start();
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- TemplateBeginEditable name="doctitle" -->
-    <title>สมุดทะเบียนการรับบริการวัคซีนเด็ก</title>
+    <title>๏ฟฝ๏ฟฝุด๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน๏ฟฝ๏ฟฝ</title>
     <!-- TemplateEndEditable -->
     <link type="text/css" href="../menu.css" rel="stylesheet" />
     <script type="text/javascript" src="../jquery.js"></script>
@@ -87,19 +87,19 @@ div#copyright a:hover { color:#fff; }*/
 <div id="no_print">
 <div id="menu">
   <ul class="menu">
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน้าหลัก</span></a></li>
-        <li><a href="service.php"><span>สมุดทะเบียนวัคซีนเด็ก</span></a></li>
-        <li><a href="clinic_well_baby.php"><span>คลินิก Well baby</span></a></li>
-     	<li><a href="#"><span>รายงานการรับบริการวัคซีนเด็ก</span></a></li>
+        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝัก</span></a></li>
+        <li><a href="service.php"><span>๏ฟฝ๏ฟฝุด๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน๏ฟฝัค๏ฟฝีน๏ฟฝ๏ฟฝ</span></a></li>
+        <li><a href="clinic_well_baby.php"><span>๏ฟฝ๏ฟฝินิก Well baby</span></a></li>
+     	<li><a href="#"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน๏ฟฝ๏ฟฝ</span></a></li>
   	<ul>
-	  	<li><a href="Report_m.php"><span>รายงานการรับบริการประจำเดือน</span></a></li>
-        <li><a href="Report_vac.php"><span>รายงานการรับบริการตามวัคซีน</span></a></li>
-        <li><a href="Report_all.php"><span>รายงานการรับบริการทั้งหมด</span></a></li>
+	  	<li><a href="Report_m.php"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝรป๏ฟฝะจ๏ฟฝ๏ฟฝ๏ฟฝอน</span></a></li>
+        <li><a href="Report_vac.php"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝรต๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน</span></a></li>
+        <li><a href="Report_all.php"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ๏ฟฝ๏ฟฝิก๏ฟฝรท๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
         
     </ul>
-    <li><a href="Report_clinic_wellbaby.php"><span>รายงาน คลินิก Well baby</span></a></li>
-    <li><a href="show_edit.php"><span>แก้ไขข้อมูลวัคซีน</span></a></li>
-     <li><a href="add_vac.php"><span>จัดการข้อมูลวัคซีน</span></a></li>
+    <li><a href="Report_clinic_wellbaby.php"><span>๏ฟฝ๏ฟฝยงาน ๏ฟฝ๏ฟฝินิก Well baby</span></a></li>
+    <li><a href="show_edit.php"><span>๏ฟฝ๏ฟฝไขข๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน</span></a></li>
+     <li><a href="add_vac.php"><span>๏ฟฝัด๏ฟฝ๏ฟฝรข๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝัค๏ฟฝีน</span></a></li>
     </ul>
 </div>
 

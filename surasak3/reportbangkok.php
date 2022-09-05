@@ -1,5 +1,5 @@
-<form method="POST" action="reportcscdd1.php" target="_blank">
-<p>ลูกหนี้จ่ายตรง ประจำเดือน || <a href="reportlgo.php">ลูกหนี้จ่ายตรง อปท. ประจำเดือน</a> || <a href="reportbangkok.php">ลูกหนี้ข้าราชการ กทม. ประจำเดือน</a></p>
+<form method="POST" action="reportbangkok1.php" target="_blank">
+<p><a href="reportcscdd.php">ลูกหนี้จ่ายตรง ประจำเดือน</a> || <a href="reportlgo.php">ลูกหนี้จ่ายตรง อปท. ประจำเดือน</a> || ลูกหนี้ข้าราชการ กทม. ประจำเดือน</p>
 
 
 

@@ -11,13 +11,13 @@ $_POST["end_day"]="$end_day";
 //$date1 ="$thiyr-$rptmo-$date";
 //$date2 ="$date-$rptmo-$thiyr";
 
-$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='���' group by  a.depart   ORDER by a.txdate";  //��Ѻ�ѹ��� 11/09/64
+$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='กทม' group by  a.depart   ORDER by a.txdate";  //ปรับวันที่ 11/09/64
 
-//$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.txdate >= '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND  a.txdate <= '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='���µç' group by  a.depart   ORDER by a.txdate";    //��Ѻ��� date ����� 27/6/65
+//$sql = "Select  a.depart, sum(a.paidcscd) From opacc as a where  ( a.txdate >= '".($start_year)."-".$start_month."-".$start_day." 00:00:00' AND  a.txdate <= '".($end_year)."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by  a.depart   ORDER by a.txdate";    //ปรับไปใช้ date เมื่อ 27/6/65
 //echo $sql;
 
-//txdate �ѹ����Դ��������
-//date �ѹ���մ�١˹��
+//txdate วันที่เกิดค่าใช้จ่าย
+//date วันที่ดีดลูกหนี้
 
 
 $result = mysql_Query($sql) or die(mysql_error());
@@ -89,7 +89,7 @@ include("connect.inc");
   For ($i = 0;$i<=$nNum;$i++){
     $cNo   = Substr($cLtnum,$count,1);
      $count++;
-//��ҹ��ѡ
+//อ่านหลัก
     IF ($cNo <>0 and $cNo != "-"){
       If ($nUnit <> 1){  
 
@@ -106,13 +106,13 @@ include("connect.inc");
                continue;
          }
 
-        $cVarU = $row->fld4;  //��ҹ��ѡ
+        $cVarU = $row->fld4;  //อ่านหลัก
                 }
       Else {
         $cVarU = "";
               }
 
-//��ҹ�Ţ
+//อ่านเลข
           $query = "SELECT * FROM thaibaht WHERE fld1 = '$cNo' limit 1 ";
           $result = mysql_query($query) or die("Query 2 failed");
 
@@ -126,14 +126,14 @@ include("connect.inc");
                continue;
          }
 
-      $cVar1 = $row->fld2; //��ҹ����Ţ
+      $cVar1 = $row->fld2; //อ่านตัวเลข
 ///           
 if ($nUnit =='2' && $cNo =='2'):
-   $cVar1 = "���";
+   $cVar1 = "ยี่";
 elseif ($nUnit == '2' && $cNo=='1'):
     $cVar1 =  "";
 elseif ($nUnit =='1' && $cNo =='1' && $nNum <> 1 ):
-    $cVar1 = "���";
+    $cVar1 = "เอ็ด";
 else:
    echo "";
 endif; 
@@ -143,7 +143,7 @@ endif;
       $nUnit--;
             }
 if($until =="T")
-	$cRead = $cRead."�ҷ";
+	$cRead = $cRead."บาท";
 	}
 ////Stang////  
   IF ($cRtnum <> "00"){
@@ -170,20 +170,20 @@ if($until =="T")
          $cVar1 = $row->fld2 ;
          /////
          If ($nUnit == '2' && $cNo == '2'){
-            $cVar1 = "���";
+            $cVar1 = "ยี่";
             }
          if ($nUnit == '2' && $cNo == '1'){
             $cVar1 = "" ;
              }   
          if ($nUnit == '1' && $cNo =='1'){
-              $cVar1 = "���";
+              $cVar1 = "เอ็ด";
             }            
          If (Substr($cRtnum,0,1) == '0' && $cNo == '1'){
-            $cVar1 = "˹��";
+            $cVar1 = "หนึ่ง";
             }
          ///////
          If ($nUnit != '1'){ 
-           $cRead = $cRead.$cVar1."�Ժ";
+           $cRead = $cRead.$cVar1."สิบ";
                  }
          Else{
            $cRead = $cRead.$cVar1;
@@ -192,11 +192,11 @@ if($until =="T")
          $nUnit--;
              }
 	if($until =="T")
-    $cRead = $cRead."ʵҧ��**"  ;
+    $cRead = $cRead."สตางค์**"  ;
 	}    
     else{
 		if($until =="T")
-           $cRead = $cRead."��ǹ**" ;
+           $cRead = $cRead."ถ้วน**" ;
            }  
     include("connect.inc");
 
@@ -219,9 +219,9 @@ $sum=number_format($sum,2,".","");
 
 if(strlen($sum) > 10){
 	if($sum =="11769969.75"){
-		$cbaht="**�Ժ�����ҹ���ʹˡ������Ҿѹ�������ˡ�Ժ��Һҷ���Ժ���ʵҧ��**";
+		$cbaht="**สิบเอ็ดล้านเจ็ดแสนหกหมื่นเก้าพันเก้าร้อยหกสิบเก้าบาทเจ็ดสิบห้าสตางค์**";
 	}else{
-		$cbaht="**�Ժ".baht(substr($sum,-10),"T");
+		$cbaht="**สิบ".baht(substr($sum,-10),"T");
 	}
 }else{
 	$cbaht="**".baht($sum,"T");
@@ -236,27 +236,27 @@ $sum=number_format($sum,2);
 
 
 /*
-echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>���������</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$NID."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
+echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>รวมทั้งหมด</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$NID."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
 
 echo "</table>";
 
 
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
 			*/
-echo "<font face='Angsana New' size ='5'><br><br><center> <b>��ػ�١˹���ç��è��µç��Ш��ѹ��� ".$start_day."-".$start_month."-".($start_year)." 00:00:00 �֧  ".$end_day."-".$end_month."-".($end_year)." 23:59:59 <br></b> ";
-echo "<font face='Angsana New' size ='5'> �ç��Һ�Ť�������ѡ�������� �ӻҧ <br>";
+echo "<font face='Angsana New' size ='5'><br><br><center> <b>สรุปลูกหนี้ข้าราชการ กทม. ประจำวันที่ ".$start_day."-".$start_month."-".($start_year)." 00:00:00 ถึง  ".$end_day."-".$end_month."-".($end_year)." 23:59:59 <br></b> ";
+echo "<font face='Angsana New' size ='5'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง <br>";
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-echo "<font face='Angsana New' size ='4'> ��§ҹ������ѹ���  $Thaidate </center>";
-//echo "<font face='Angsana New' size ='4'>�ӹǹ &nbsp;$count &nbsp;�� </center>";
+echo "<font face='Angsana New' size ='4'> รายงานเมื่อวันที่  $Thaidate </center>";
+//echo "<font face='Angsana New' size ='4'>จำนวน &nbsp;$count &nbsp;แถว </center>";
 
 echo "<table  border ='1' align='center' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";
-echo "<tr><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�ѹ���&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;��&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��Ҹ�&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�͡����&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�ѹ�����&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;����Ҿ&nbsp;&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�ء�Թ&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��ҵѴ&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�ѧ���/�Ǵ&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�����&nbsp;&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;��Һ�ԡ��<br />
-  �ҧ���ᾷ��&nbsp;&nbsp;</td>
-<td><center><b>&nbsp;&nbsp;��&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;���&nbsp;&nbsp;</td></tr>";
-echo "<tr><td><b><font face='Angsana New' size ='3'>&nbsp;&nbsp;".$start_day."-".$start_month."-".($start_year)." &nbsp; �֧ &nbsp; ".$end_day."-".$end_month."-".($end_year)." &nbsp;&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>���������</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$NID."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$HEMO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
+echo "<tr><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;วันที่&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ทันตกรรม&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;กายภาพ&nbsp;&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ฉุกเฉิน&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ผ่าตัด&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ฝังเข็ม/นวด&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ไตเทียม&nbsp;&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;ค่าบริการ<br />
+  ทางการแพทย์&nbsp;&nbsp;</td>
+<td><center><b>&nbsp;&nbsp;ตา&nbsp;&nbsp;</td>
+<td><center> <b>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td></tr>";
+echo "<tr><td><b><font face='Angsana New' size ='3'>&nbsp;&nbsp;".$start_day."-".$start_month."-".($start_year)." &nbsp; ถึง &nbsp; ".$end_day."-".$end_month."-".($end_year)." &nbsp;&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>รวมทั้งหมด</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$NID."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$HEMO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
 echo "</table>";
 
 print "<div align='left'>";
@@ -289,7 +289,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='50%'></td>";
-print "      <td width='50%'><center><font face='Angsana New'>����Ǩ�ͺ</font></td>";
+print "      <td width='50%'><center><font face='Angsana New'>ผู้ตรวจสอบ</font></td>";
 print "    </tr>";
 print "  </table>";
 print "<div align='left'>";
@@ -318,7 +318,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='50%'></td>";
-print "      <td width='50%'><center><font face='Angsana New'>���ѹ�֡</font></td>";
+print "      <td width='50%'><center><font face='Angsana New'>ผู้บันทึก</font></td>";
 print "    </tr>";
 print "  </table>";
 print "<div align='left'>";
@@ -333,13 +333,13 @@ print "  </table> <div style=\"page-break-before: always;\"></div>";
 $list = array();
 $title_date = $start_day."-".$start_month."-".$start_year;
 
-$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND '".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='���' group by date2, a.depart   ORDER by date";
+$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.date between '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND '".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='กทม' group by date2, a.depart   ORDER by date";
 
-//$sql = "Select date_format( a.txdate, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.txdate >= '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND a.txdate <='".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='���µç' group by date2, a.depart ORDER by txdate";  //��Ѻ��� date ����� 27/6/65
+//$sql = "Select date_format( a.txdate, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd) From opacc as a where  ( a.txdate >= '".$start_year."-".$start_month."-".$start_day." 00:00:00' AND a.txdate <='".$end_year."-".$end_month."-".$end_day." 23:59:59' )  AND a.credit ='จ่ายตรง' group by date2, a.depart ORDER by txdate";  //ปรับไปใช้ date เมื่อ 27/6/65
 
 
-//txdate �ѹ����Դ��������
-//date �ѹ���մ�١˹��
+//txdate วันที่เกิดค่าใช้จ่าย
+//date วันที่ดีดลูกหนี้
 
 //echo $sql;
 $result = Mysql_Query($sql) or die(Mysql_Error());
@@ -362,23 +362,23 @@ while(list($date, $depart, $paidcscd) = Mysql_fetch_row($result)){
 	
 }
 
-echo "<CENTER>��������´�١˹���Ш��ѹ<BR></CENTER>";
+echo "<CENTER>รายละเอียดลูกหนี้ประจำวัน<BR></CENTER>";
 echo "<table width='90%' align='center' border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>
 				<tr align='center'>
-				<td>�ѹ���</td>
+				<td>วันที่</td>
 				<td>&nbsp;</td>
-				<td>��</td>
-				<td>��Ҹ�</td>
-				<td>�͡����</td>
-				<td>�ѹ�����</td>
-				<td>����Ҿ</td>
-				<td>�ء�Թ</td>
-				<td>��ҵѴ</td>
-				<td>�ѧ���/�Ǵ</td>
-				<td>�����</td>
-				<td>��Һ�ԡ��<br>�ҧ���ᾷ��</td>
-				<td>��</td>
-				<td>���</td>
+				<td>ยา</td>
+				<td>พยาธิ</td>
+				<td>เอกเรย์</td>
+				<td>ทันตกรรม</td>
+				<td>กายภาพ</td>
+				<td>ฉุกเฉิน</td>
+				<td>ผ่าตัด</td>
+				<td>ฝังเข็ม/นวด</td>
+				<td>ไตเทียม</td>
+				<td>ค่าบริการ<br>ทางการแพทย์</td>
+				<td>ตา</td>
+				<td>รวม</td>
 				</tr>
 					";
 $sum = 0;
@@ -386,7 +386,7 @@ foreach($list as $key => $value){
 
 	echo "<tr align=\"right\">
 					<td>".$key."</td>
-					<td>�������ѹ</td>
+					<td>รวมต่อวัน</td>
 					<td>".number_format($list[$key]['PHAR'],2)."</td>
 					<td>".number_format($list[$key]['PATHO'],2)."</td>
 					<td>".number_format($list[$key]['XRAY'],2)."</td>
@@ -404,7 +404,7 @@ $sum = $sum + ($list[$key]['PHAR']+$list[$key]['PATHO']+$list[$key]['XRAY']+$lis
 }
 
 echo "<tr align=\"right\">
-					<td colspan=\"13\" align='center'>���</td>
+					<td colspan=\"13\" align='center'>รวม</td>
 					<td>".(number_format($sum,2))."</td>
 				</tr>";
 

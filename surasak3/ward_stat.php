@@ -141,7 +141,7 @@ if( $action === 'add' ){
 	// เพิ่มข้อมูลผู้เสียชีวิต
 	if( $dead_rows > 0 ){
 
-		$sql = "INSERT INTO `smdb`.`ward_dead_stat` (`id` ,`ward_stat_id` ,`name` ,`hn` ,`an`)
+		$sql = "INSERT INTO `ward_dead_stat` (`id` ,`ward_stat_id` ,`name` ,`hn` ,`an`)
 		VALUES (NULL , :ward_stat_id, :name, :hn, :an);";
 
 		foreach($dead_lists as $key => $list ){
@@ -244,7 +244,7 @@ if( $action === 'add' ){
 		$sql = "DELETE FROM `ward_dead_stat` WHERE `ward_stat_id`=:ward_stat_id ;";
 		DB::exec($sql, array(':ward_stat_id' => $id));
 		
-		$sql = "INSERT INTO `smdb`.`ward_dead_stat` (`id` ,`ward_stat_id` ,`name` ,`hn` ,`an`)
+		$sql = "INSERT INTO `ward_dead_stat` (`id` ,`ward_stat_id` ,`name` ,`hn` ,`an`)
 		VALUES (NULL , :ward_stat_id, :name, :hn, :an);";
 		foreach($dead_lists as $key => $list ){
 			$data = array(
@@ -342,7 +342,7 @@ if( $action === 'add' ){
 	$porjai = serialize($pre_porjai);
 	
 	
-	$sql = "INSERT INTO `smdb`.`ward_acu` (
+	$sql = "INSERT INTO `ward_acu` (
 `id` ,
 `date_write` ,
 `patient_num` ,
@@ -399,7 +399,7 @@ NULL , :date_write, :patient_num, :porjai, :auther, :auther_id, NULL , NOW(), NU
 	
 	$id = isset($_POST['id']) ? intval($_POST['id']) : false ;
 	
-	$sql = "UPDATE `smdb`.`ward_acu` SET `date_write` = :date_write,
+	$sql = "UPDATE `ward_acu` SET `date_write` = :date_write,
 `patient_num` = :patient_num,
 `porjai` = :porjai,
 `auther_edit` = :auther_edit,

@@ -188,8 +188,8 @@ cash =จ่ายครั้งนี้($paid)
 debt= Netpri-Netpaid-$paid
 */
     include("connect.inc");
-$cPtname = iconv("tis-620", "utf-8",$cPtname);
-$cPtright = iconv("tis-620", "utf-8",$cPtright);	
+//$cPtname = iconv("tis-620", "utf-8",$cPtname);
+//$cPtright = iconv("tis-620", "utf-8",$cPtright);	
        $query = "INSERT INTO ipmonrep(date,admit,dcdate,days,an,hn,ptname,ptright,price,
                 paid,debt,cash,idname,bfy,bfn,dpy,dpn,ddl,ddy,ddn,dsy,dsn,blood,
 	lab,xray,sinv,surg,ncare,denta,pt,stx,mc,billno,credit,credit_detail)VALUES('$Thidate','$cAdmit',

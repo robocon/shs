@@ -2,10 +2,10 @@
 
 $conn;
 
-$server = "localhost"; // มักเป็น localhost (กรณี Host ที่คุณใช้ไม่ได้กำหนดเป็นค่าอย่างอื่น)
-$user = "root"; // Username ในการติดต่อฐานข้อมูล
-$pass = "1234"; // Password ในการติดต่อฐานข้อมูล
-$dbname = "smdb"; // ชื่อฐานข้อมูลที่ได้สร้างไว้
+$server = "localhost"; // ๏ฟฝัก๏ฟฝ๏ฟฝ localhost (๏ฟฝรณ๏ฟฝ Host ๏ฟฝ๏ฟฝ๏ฟฝุณ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหน๏ฟฝ๏ฟฝ็นค๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาง๏ฟฝ๏ฟฝ๏ฟฝ)
+$user = "root"; // Username ในก๏ฟฝรติด๏ฟฝ๏ฟฝอฐาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ
+$pass = "1234"; // Password ในก๏ฟฝรติด๏ฟฝ๏ฟฝอฐาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ
+$dbname = "smdb"; // ๏ฟฝ๏ฟฝ๏ฟฝอฐาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝลท๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาง๏ฟฝ๏ฟฝ๏ฟฝ
 
 function conndb() {
   global $conn;
@@ -15,12 +15,12 @@ function conndb() {
   global $dbname;
   $conn = mysql_connect($server,$user,$pass);
 mysql_select_db($dbname) ;
-mysql_db_query($dbname,"SET NAMES tis-620");
+mysql_db_query($dbname,"SET NAMES UTF-8");
   if (!$conn)
-    die("ไม่สามารถติดต่อกับ MySQL ได้");
+    die("๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝรถ๏ฟฝิด๏ฟฝ๏ฟฝอกับ MySQL ๏ฟฝ๏ฟฝ");
 
   mysql_select_db($dbname,$conn)
-    or die("ไม่สามารถเลือกใช้งานฐานข้อมูลได้");
+    or die("๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝรถ๏ฟฝ๏ฟฝ๏ฟฝอก๏ฟฝ๏ฟฝาน๏ฟฝาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ");
 }
 
 function closedb() {

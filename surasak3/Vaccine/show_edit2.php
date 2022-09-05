@@ -1,66 +1,11 @@
-<?php 
-include("Connections/connect.inc.php"); 
-include("Connections/all_function.php"); 
-
+<? 
 session_start();
-
-if($_REQUEST['do']=="edit"){
-	
-	$y=date('Y')+543;
-	$m=date('m');
-	$d=date('d');
-	$datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
-	
-	if($_POST['vaccine']=='0' || $_POST['vaccine_detail']=='0'){
-	
-		$strSQL = "UPDATE tb_service  SET ";
-		$strSQL .="date_ser = '".$_POST["date1"]."' ";
-		$strSQL .=",hn = '".$_POST["hn"]."' ";
-		$strSQL .=",unit	 = '".$_POST["unit"]."' ";
-		$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
-		$strSQL .=",lotno = '".$_POST["lotno"]."' ";
-		$strSQL .=",date_end= '".$_POST["date2"]."' ";
-		$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
-		$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
-		$strSQL .=",date_insert = '".$datetime."' ";
-		$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
-	
-	}else{
-		
-		$strSQL = "UPDATE tb_service  SET ";
-		$strSQL .="date_ser = '".$_POST["date1"]."' ";
-		$strSQL .=",hn = '".$_POST["hn"]."' ";
-		$strSQL .=",id_vac = '".$_POST["vaccine"]."' ";
-		$strSQL .=",num = '".$_POST["vaccine_detail"]."' ";
-		$strSQL .=",unit	 = '".$_POST["unit"]."' ";
-		$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
-		$strSQL .=",lotno = '".$_POST["lotno"]."' ";
-		$strSQL .=",date_end= '".$_POST["date2"]."' ";
-		$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
-		$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
-		$strSQL .=",date_insert = '".$datetime."' ";
-		$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
-	}
-	$objQuery = mysql_query($strSQL);
-	if($objQuery){ 
-		echo "<H3 class='forntsarabun'>·°È‰¢¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«</H3>";
-
-	}else{	
-		echo "<H3 class='forntsarabun'>‰¡Ë “¡“√∂·°È‰¢‰¥È</H3>";
-
-	}
-
-	echo "<meta http-equiv=refresh content=1;URL=show_edit.php>";
-	exit;
-}
-
-
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- InstanceBeginEditable name="doctitle" -->
-    <title> ¡ÿ¥∑–‡∫’¬π°“√√—∫∫√‘°“√«—§´’π‡¥Á°</title>
+    <title>‡∏™‡∏°‡∏∏‡∏î‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡πÄ‡∏î‡πá‡∏Å</title>
     <!-- InstanceEndEditable -->
     <link type="text/css" href="menu.css" rel="stylesheet" />
     <script type="text/javascript" src="jquery.js"></script>
@@ -174,13 +119,13 @@ function dochange(src, val) {
      req.onreadystatechange = function () { 
           if (req.readyState==4) {
                if (req.status==200) {
-                    document.getElementById(src).innerHTML=req.responseText; //√—∫§Ë“°≈—∫¡“
+                    document.getElementById(src).innerHTML=req.responseText; //‡∏£‡∏±‡∏ö‡∏Ñ‡πà‡∏≤‡∏Å‡∏•‡∏±‡∏ö‡∏°‡∏≤
                } 
           }
      };
-     req.open("GET", "locale.php?data="+src+"&val="+val); // √È“ß connection
-     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
-     req.send(null); // Ëß§Ë“
+     req.open("GET", "locale.php?data="+src+"&val="+val); //‡∏™‡∏£‡πâ‡∏≤‡∏á connection
+     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"); // set Header
+     req.send(null); //‡∏™‡πà‡∏á‡∏Ñ‡πà‡∏≤
 }
 
 window.onLoad=dochange('vaccine', -1);     
@@ -188,7 +133,8 @@ window.onLoad=dochange('vaccine', -1);
 
 </script>
 <?
-
+@include("Connections/connect.inc.php"); 
+@include("Connections/all_function.php"); 
 
 	$id_s=$_GET['id_s'];
 
@@ -213,22 +159,22 @@ window.onLoad=dochange('vaccine', -1);
   <tr>
     <td ><table  border="0" align="left">
       <tr>
-        <td colspan="4" align="center" bgcolor="#E7E7E7">¢ÈÕ¡Ÿ≈ºŸÈªË«¬</td>
+        <td colspan="4" align="center" bgcolor="#E7E7E7">‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</td>
         </tr>
       <tr>
         <td  align="right" bgcolor="#E7E7E7">HN :</td>
         <td ><?=$fetch1['hn'];?></td>
-        <td bgcolor="#E7E7E7" > ‘∑∏‘</td>
+        <td bgcolor="#E7E7E7" >‡∏™‡∏¥‡∏ó‡∏ò‡∏¥</td>
         <td ><?=$fetch1['ptright'];?></td>
         </tr>
       <tr>
-        <td align="right" bgcolor="#E7E7E7">™◊ËÕ -  °ÿ≈ :</td>
+        <td align="right" bgcolor="#E7E7E7">‡∏ä‡∏∑‡πà‡∏≠ - ‡∏™‡∏Å‡∏∏‡∏• :</td>
         <td><?=$fetch1['yot'].$fetch1['name'].' '.$fetch1['surname'];?></td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         </tr>
       <tr>
-        <td align="right" bgcolor="#E7E7E7">Õ“¬ÿ:</td>
+        <td align="right" bgcolor="#E7E7E7">‡∏≠‡∏≤‡∏¢‡∏∏:</td>
         <td><?=$age;?></td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
@@ -245,18 +191,18 @@ window.onLoad=dochange('vaccine', -1);
     <tr>
       <td width="484" ><table width="100%" border="0" align="left" cellpadding="2" cellspacing="2"  id="mytbl">
         <tr>
-          <td colspan="4" align="center" bgcolor="#E4E3E3">°√ÿ≥“°√Õ°¢ÈÕ¡Ÿ≈</td>
+          <td colspan="4" align="center" bgcolor="#E4E3E3">‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏Å‡∏£‡∏≠‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</td>
           </tr>
         <tr>
-          <td align="right">«—π∑’Ë√—∫∫√‘°“√:</td>
+          <td align="right">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£:</td>
           <td colspan="3"> <input name="date1" type="text" class="forntsarabun" id="datepicker-th-1"  value="<?=$fetch['date_ser'];?>"></td>
           </tr>
         <tr>
-          <td align="right">‡ª≈’Ë¬π Hn</td>
+          <td align="right">‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô Hn</td>
           <td colspan="3"><input name="hn" type="text" class="forntsarabun" id="hn"  value="<?=$fetch['hn'];?>" /></td>
         </tr>
         <tr>
-          <td align="right">«—§´’π∑’Ë©’¥ :</td>
+          <td align="right">‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡∏ó‡∏µ‡πà‡∏â‡∏µ‡∏î :</td>
           <td width="24%"><select name="v1" id="v1" class="forntsarabun" disabled="disabled">
             <?php 
 		$sql = "Select * From vaccine Where id_vac ='$fetch[id_vac]' order by id_vac";
@@ -266,14 +212,14 @@ window.onLoad=dochange('vaccine', -1);
 		
 		?>
           </select></td>
-          <td width="13%">‡ª≈’Ë¬π‡ªÁπ</td>
+          <td width="13%">‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡πÄ‡∏õ‡πá‡∏ô</td>
           <td width="45%"><font id="vaccine"  class="forntsarabun"><select class="forntsarabun" ><option value="0" selected="selected">==========</option></select></font></td>
           </tr>
         <tr>
-          <td align="right">‡¢Á¡∑’Ë :</td>
+          <td align="right">‡πÄ‡∏Ç‡πá‡∏°‡∏ó‡∏µ‡πà :</td>
           <td><select name="v2"" disabled="disabled" class="forntsarabun" id="v2 class="forntsarabun>
             <?php 
-		echo "<option value='' >-- °√ÿ≥“‡≈◊Õ°‡¢Á¡--</option>";
+		echo "<option value='' >-- ‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÄ‡∏Ç‡πá‡∏°--</option>";
 		$sql = "Select  *  From vaccine_detail where id_vac='$fetch[id_vac]' and syringe_no='$fetch[num]' ";
 		$result = mysql_query($sql);
 		while($dbarr2= mysql_fetch_array($result)){
@@ -283,7 +229,7 @@ window.onLoad=dochange('vaccine', -1);
 		}
 		?>
           </select></td>
-          <td>‡ª≈’Ë¬π‡ªÁπ</td>
+          <td>‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡πÄ‡∏õ‡πá‡∏ô</td>
           <td><font id="vaccine_detail"  class="forntsarabun"><select class="forntsarabun" ><option value='0'>==========</option></select></font></td>
           </tr>
         <tr>
@@ -291,7 +237,7 @@ window.onLoad=dochange('vaccine', -1);
           <td colspan="3"><input name="lotno" type="text" id="lotno" size="15" maxlength="10" class="forntsarabun"  value="<?=$fetch['lotno'];?>"/></td>
           </tr>
         <tr>
-          <td align="right">«—πÀ¡¥Õ“¬ÿ</td>
+          <td align="right">‡∏ß‡∏±‡∏ô‡∏´‡∏°‡∏î‡∏≠‡∏≤‡∏¢‡∏∏</td>
           <td colspan="3"> <input type="text" size="15"  name="date2"  class="forntsarabun" value="<?=$fetch['date_end'];?>"/></td>
         </tr>
         <tr>
@@ -300,16 +246,16 @@ window.onLoad=dochange('vaccine', -1);
           * OPV</td>
         </tr>
         <tr>
-          <td align="right" bgcolor="#99FF99">«—πÀ¡¥Õ“¬ÿ</td>
+          <td align="right" bgcolor="#99FF99">‡∏ß‡∏±‡∏ô‡∏´‡∏°‡∏î‡∏≠‡∏≤‡∏¢‡∏∏</td>
           <td colspan="3" bgcolor="#99FF99"><input type="text" size="15"  name="date3"  class="forntsarabun" value="<?=$fetch['date_end2'];?>"/>
             * OPV</td>
         </tr>
         <tr>
-          <td width="18%" align="right">·æ∑¬Ï</td>
+          <td width="18%" align="right">‡πÅ‡∏û‡∏ó‡∏¢‡πå</td>
           <td colspan="3"><select name="doctor" id="doctor" class="forntsarabun">
             <?php 
-		echo "<option value='' >-- °√ÿ≥“‡≈◊Õ°·æ∑¬Ï --</option>";
-		echo "<option value='ÀÈÕßµ√«®‚√§∑—Ë«‰ª' >ÀÈÕßµ√«®‚√§∑—Ë«‰ª</option>";
+		echo "<option value='' >-- ‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÅ‡∏û‡∏ó‡∏¢‡πå --</option>";
+		echo "<option value='‡∏´‡πâ‡∏≠‡∏á‡∏ï‡∏£‡∏ß‡∏à‡πÇ‡∏£‡∏Ñ‡∏ó‡∏±‡πà‡∏ß‡πÑ‡∏õ' >‡∏´‡πâ‡∏≠‡∏á‡∏ï‡∏£‡∏ß‡∏à‡πÇ‡∏£‡∏Ñ‡∏ó‡∏±‡πà‡∏ß‡πÑ‡∏õ</option>";
 		$sql = "Select name From doctor where status = 'y' ";
 		$result = mysql_query($sql);
 		while($dbarr2= mysql_fetch_array($result)){
@@ -328,7 +274,7 @@ window.onLoad=dochange('vaccine', -1);
           <td colspan="4" align="center"><label>
             <input name="unit" type="hidden" id="unit" value="1" />
             <input name="id_s" type="hidden" id="id_s" value="<?=$fetch['id_s'];?>" />
-            <input name="button2" type="submit" class="forntsarabun" id="button2" value="∫—π∑÷°¢ÈÕ¡Ÿ≈" />
+            <input name="button2" type="submit" class="forntsarabun" id="button2" value="‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•" />
             </label></td>
           </tr>
         </table>
@@ -338,6 +284,54 @@ window.onLoad=dochange('vaccine', -1);
   </table>
 </form>
 <? } 
+
+if($_REQUEST['do']=="edit"){
+	
+	$y=date('Y')+543;
+	$m=date('m');
+	$d=date('d');
+	$datetime=$d.'/'.$m.'/'.$y.' '.date('H:i:s');
+	
+	if($_POST['vaccine']=='0' || $_POST['vaccine_detail']=='0'){
+	
+	$strSQL = "UPDATE tb_service  SET ";
+	$strSQL .="date_ser = '".$_POST["date1"]."' ";
+	$strSQL .=",hn = '".$_POST["hn"]."' ";
+	$strSQL .=",unit	 = '".$_POST["unit"]."' ";
+	$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
+	$strSQL .=",lotno = '".$_POST["lotno"]."' ";
+	$strSQL .=",date_end= '".$_POST["date2"]."' ";
+	$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
+	$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
+	$strSQL .=",date_insert = '".$datetime."' ";
+	$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
+	
+	}else{
+		
+	$strSQL = "UPDATE tb_service  SET ";
+	$strSQL .="date_ser = '".$_POST["date1"]."' ";
+	$strSQL .=",hn = '".$_POST["hn"]."' ";
+	$strSQL .=",id_vac = '".$_POST["vaccine"]."' ";
+	$strSQL .=",num = '".$_POST["vaccine_detail"]."' ";
+	$strSQL .=",unit	 = '".$_POST["unit"]."' ";
+	$strSQL .=",name_doc = '".$_POST["doctor"]."' ";
+	$strSQL .=",lotno = '".$_POST["lotno"]."' ";
+	$strSQL .=",date_end= '".$_POST["date2"]."' ";
+	$strSQL .=",lotno2 = '".$_POST["lotno2"]."' ";
+	$strSQL .=",date_end2 = '".$_POST["date3"]."' ";
+	$strSQL .=",date_insert = '".$datetime."' ";
+	$strSQL .="WHERE id_s = '".$_POST["id_s"]."' ";
+	}
+	$objQuery = mysql_query($strSQL);
+	if($objQuery){ 
+	echo "<H3 class='forntsarabun'>‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß</H3>";
+	echo "<meta http-equiv=refresh content=1;URL=show_edit.php>";
+	}else{	
+	echo "<H3 class='forntsarabun'>‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡πÑ‡∏î‡πâ</H3>";
+	echo "<meta http-equiv=refresh content=1;URL=show_edit.php>";
+	}
+
+}
 ?>
 <!-- InstanceEndEditable -->
 

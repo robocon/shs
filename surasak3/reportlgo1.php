@@ -132,6 +132,21 @@ $timeth=$opdate[1];
 $datetime=$day.' '.$timeth;
 
 
+	$sql107 = "Select doctorcode,menucode From doctor where name = '$doctor'";
+	//echo $sql107."<br>";
+	$result107 = Mysql_Query($sql107);
+	list($doctorcode,$menucode) = Mysql_fetch_row($result107);
+		
+	if(!empty($doctorcode)){
+		if($menucode=="ADMPT"){
+			$doctor=iconv_substr($doctor,6)." (พท.ป.".$doctorcode.")";
+		}else{	
+			$doctor=iconv_substr($doctor,6)." (ว.".$doctorcode.")";
+		}
+	}else{
+		$doctor=$doctor;
+	}	
+
 
 
 
@@ -152,7 +167,7 @@ $datetime=$day.' '.$timeth;
 	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd10."&nbsp;</td>
 	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd9cm."&nbsp;</td>
 	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$icd101."&nbsp;</td>
-	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td>
+	<td align='center'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td>
 	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$datetime."&nbsp;</td>
 	</tr>";
 

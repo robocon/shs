@@ -127,9 +127,11 @@ foreach ($drug_react as $key => $dreact) {
     if( !empty($dreact['drugcode']) ){
         $react_txt .= $dreact['drugcode'];
     }
-
-    $react_txt .= $dreact['genname'].' '.$dreact['tradname'].' '.$advreact."\n\r";
+	
+    $react_txt .= iconv("UTF-8", "WINDOWS-874",$dreact['genname'].' '.$dreact['tradname'].' '.$advreact."\n\r");
     $i++;
+	
+	//print $react_txt;
 
 }
 
