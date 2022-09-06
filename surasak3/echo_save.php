@@ -4,13 +4,17 @@ include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$id = $dbi->real_escape_string($_POST['id']);
+$thdatehn = $dbi->real_escape_string($_POST['thdatehn']);
+
 $ptname = $dbi->real_escape_string($_POST['ptname']);
 $hn = $dbi->real_escape_string($_POST['hn']);
 $vn = $dbi->real_escape_string($_POST['vn']);
-$bp1 = $dbi->real_escape_string($_POST['bp1']);
-$bp2 = $dbi->real_escape_string($_POST['bp2']);
+$pause = $dbi->real_escape_string($_POST['pause']);
+$bp = $dbi->real_escape_string($_POST['bp']);
 $age = $dbi->real_escape_string($_POST['age']);
-$echo_no = $dbi->real_escape_string($_POST['echo_no']);
+
+$echo_no = $dbi->real_escape_string($_POST['echo_number']);
 $ao = $dbi->real_escape_string($_POST['ao']);
 $la = $dbi->real_escape_string($_POST['la']);
 $ivsd = $dbi->real_escape_string($_POST['ivsd']);
@@ -52,28 +56,93 @@ $ts_tr = $dbi->real_escape_string($_POST['ts_tr']);
 $ts_rvsp = $dbi->real_escape_string($_POST['ts_rvsp']);
 $cardio_finding = $dbi->real_escape_string($_POST['cardio_finding']);
 $diag = $dbi->real_escape_string($_POST['diag']);
-$doctor = $dbi->real_escape_string($_POST['doctor']);
+$doctor = $dbi->real_escape_string($_SESSION['sOfficer']);
 
+if(empty($id)){
 
+    $sql = "INSERT INTO `echo_cardio` ( 
+        `id`, `date`, `thdatehn`, `ptname`, `hn`, `vn`, 
+        `pause`, `bp`, `age`, `echo_no`, `ao`, `la`, 
+        `ivsd`, `ivss`, `lvdd`, `lvds`, `pwd`, `pws`, 
+        `fs`, `lvedv`, `lvesv`, `sv`, `co`, `ef`, 
+        `peake`, `peaka`, `ea`, `dt`, `ms`, `ms_mngrad`, 
+        `ms_mvapht`, `ms_mva2d`, `ms_mr`, `as`, `as_pgrad`, `as_mngrad`, 
+        `as_ar`, `as_aipht`, `ps`, `ps_pgrad`, `ps_mngrad`, `ps_pr`, 
+        `ps_pr_pgrad`, `ts`, `ts_mngrad`, `ts_tvapht`, `ts_tva2d`, `ts_tr`, 
+        `ts_rvsp`, `cardio_finding`, `diag`, `doctor` 
+    ) VALUES ( 
+        NULL, NOW(), '$thdatehn', '$ptname', '$hn', '$vn', 
+        '$pause', '$bp', '$age', '$echo_no', '$ao', '$la', 
+        '$ivsd', '$ivss', '$lvdd', '$lvds', '$pwd', '$pws', 
+        '$fs', '$lvedv', '$lvesv', '$sv', '$co', '$ef', 
+        '$peake', '$peaka', '$ea', '$dt', '$ms', '$ms_mngrad', 
+        '$ms_mvapht', '$ms_mva2d', '$ms_mr', '$as', '$as_pgrad', '$as_mngrad', 
+        '$as_ar', '$as_aipht', '$ps', '$ps_pgrad', '$ps_mngrad', '$ps_pr', 
+        '$ps_pr_pgrad', '$ts', '$ts_mngrad', '$ts_tvapht', '$ts_tva2d', '$ts_tr', 
+        '$ts_rvsp', '$cardio_finding', '$diag', '$doctor' 
+    );";
+    $save = $dbi->query($sql);
 
-$sql = "INSERT INTO `echo_cardio` ( 
-    `id`, `date`, `ptname`, `hn`, `vn`, 
-    `bp1`, `bp2`, `age`, `echo_no`, `ao`, `la`, 
-    `ivsd`, `ivss`, `lvdd`, `lvds`, `pwd`, `pws`, 
-    `fs`, `lvedv`, `lvesv`, `sv`, `co`, `ef`, 
-    `peake`, `peaka`, `ea`, `dt`, `ms`, `ms_mngrad`, 
-    `ms_mvapht`, `ms_mva2d`, `ms_mr`, `as`, `as_pgrad`, `as_mngrad`, 
-    `as_ar`, `as_aipht`, `ps`, `ps_pgrad`, `ps_mngrad`, `ps_pr`, 
-    `ps_pr_pgrad`, `ts`, `ts_mngrad`, `ts_tvapht`, `ts_tva2d`, `ts_tr`, 
-    `ts_rvsp`, `cardio_finding`, `diag`, `doctor` 
-) VALUES ( 
-    NULL, NOW(), '$ptname', '$hn', '$vn', 
-    '$bp1', '$bp2', '$age', '$echo_no', '$ao', '$la', 
-    '$ivsd', '$ivss', '$lvdd', '$lvds', '$pwd', '$pws', 
-    '$fs', '$lvedv', '$lvesv', '$sv', '$co', '$ef', 
-    '$peake', '$peaka', '$ea', '$dt', '$ms', '$ms_mngrad', 
-    '$ms_mvapht', '$ms_mva2d', '$ms_mr', '$as', '$as_pgrad', '$as_mngrad', 
-    '$as_ar', '$as_aipht', '$ps', '$ps_pgrad', '$ps_mngrad', '$ps_pr', 
-    '$ps_pr_pgrad', '$ts', '$ts_mngrad', '$ts_tvapht', '$ts_tva2d', '$ts_tr', 
-    '$ts_rvsp', '$cardio_finding', '$diag', '$doctor' 
-);";
+}else{
+    // update
+    $sql = "UPDATE `echo_cardio` SET 
+    `thdatehn`='$thdatehn', 
+    `ptname`='$ptname', 
+    `hn`='$hn', 
+    `vn`='$vn', 
+    `pause`='$pause', 
+    `bp`='$bp', 
+    `age`='$age', 
+    `echo_no`='$echo_no', 
+    `ao`='$ao', 
+    `la`='$la', 
+    `ivsd`='$ivsd', 
+    `ivss`='$ivss', 
+    `lvdd`='$lvdd', 
+    `lvds`='$lvds', 
+    `pwd`='$pwd', 
+    `pws`='$pws', 
+    `fs`='$fs', 
+    `lvedv`='$lvedv', 
+    `lvesv`='$lvesv', 
+    `sv`='$sv', 
+    `co`='$co', 
+    `ef`='$ef', 
+    `peake`='$peake', 
+    `peaka`='$peaka', 
+    `ea`='$ea', 
+    `dt`='$dt', 
+    `ms`='$ms', 
+    `ms_mngrad`='$ms_mngrad', 
+    `ms_mvapht`='$ms_mvapht', 
+    `ms_mva2d`='$ms_mva2d', 
+    `ms_mr`='$ms_mr', 
+    `as`='$as', 
+    `as_pgrad`='$as_pgrad', 
+    `as_mngrad`='$as_mngrad', 
+    `as_ar`='$as_ar', 
+    `as_aipht`='$as_aipht', 
+    `ps`='$ps', 
+    `ps_pgrad`='$ps_pgrad', 
+    `ps_mngrad`='$ps_mngrad', 
+    `ps_pr`='$ps_pr', 
+    `ps_pr_pgrad`='$ps_pr_pgrad', 
+    `ts`='$ts', 
+    `ts_mngrad`='$ts_mngrad', 
+    `ts_tvapht`='$ts_tvapht', 
+    `ts_tva2d`='$ts_tva2d', 
+    `ts_tr`='$ts_tr', 
+    `ts_rvsp`='$ts_rvsp', 
+    `cardio_finding`='$cardio_finding', 
+    `diag`='$diag', 
+    `doctor`='$doctor' WHERE ( `id`='$id' );";
+    $save = $dbi->query($sql);
+
+}
+
+if(!empty($dbi->error) && $save == false){
+    echo $dbi->error;
+}elseif ($save==true) {
+    $_SESSION['x_message'] = "บันทึกข้อมูลเรียบร้อย";
+    header('Location: echo.php');
+}
