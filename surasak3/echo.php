@@ -3,6 +3,9 @@ include 'bootstrap.php';
 include 'dt_menu.php';
 include 'dt_patient.php';
 
+$id = '';
+
+
 ?>
 <style>
     @media screen and (max-width: 1127px){
@@ -338,6 +341,15 @@ include 'dt_patient.php';
             <td align="center" colspan="2">
                 <br>
                 <button type="submit" style="padding: 4px 12px; font-size:18px;">บันทึก</button>
+
+                <input type="hidden" name="ptname" value="<?=$ptname;?>">
+                <input type="hidden" name="hn" value="<?=$hn;?>">
+                <input type="hidden" name="vn" value="<?=$vn;?>">
+                <input type="hidden" name="age" value="<?=$age;?>">
+                <input type="hidden" name="bp1" value="<?=$bp1;?>">
+                <input type="hidden" name="bp2" value="<?=$bp2;?>">
+                <input type="hidden" name="id" value="<?=$id;?>">
+                
             </td>
         </tr>
     </table>

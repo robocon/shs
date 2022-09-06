@@ -81,7 +81,7 @@ if($page==='load25page'){
 
     }
 
-    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 50 ";
+    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 50 ";
     $q_sub = $dbi->query($sql_sub);
     if($q_sub->num_rows > 0){
         while ($s = $q_sub->fetch_assoc()) { 
@@ -445,7 +445,7 @@ if(!empty($_SESSION['x-msg'])){
                 for (var index = 0; index < dataObj.length; index++) {
                     var element = dataObj[index];
                     preHtml += '<tr>';
-                    preHtml += '<td>'+element.date+'</td>';
+                    preHtml += '<td>'+element.dateend+'</td>';
                     preHtml += '<td>'+element.head+'</td>';
                     preHtml += '<td>'+element.detail+'</td>';
                     preHtml += '<td>'+element.user+'</td>';
