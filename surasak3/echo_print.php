@@ -9,11 +9,13 @@ $dbi->query("SET NAMES UTF8");
         font-family: "TH SarabunPSK";
         font-size: 16px;
     }
+    table, th, td, h3, p{
+        margin: 0;
+        padding: 0;
+    }
     h3{
         font-weight: bold;
         font-size: 20px;
-        margin: 0;
-        padding: 0;
     }
     .chk_table{
         border-collapse: collapse;
@@ -27,16 +29,18 @@ $dbi->query("SET NAMES UTF8");
     }
     table, th, td {
         border-collapse: collapse;
-        margin: 0;
-        padding: 0;
     }
 </style>
 <?php 
 $id = $dbi->escape_string($_GET['id']);
 $sql = "SELECT *,SUBSTRING(`date`,1,10) AS `short_date` FROM `echo_cardio` WHERE `id` = '$id' ";
 $q = $dbi->query($sql);
-$a = $q->fetch_assoc();
 
+if ($q->num_rows > 0) {
+    
+
+
+$a = $q->fetch_assoc();
 list($mDate, $mTime) = explode(' ', $a['date']);
 list($h,$i,$s) = explode(':', $mTime);
 list($y,$m,$d) = ad_to_bc(explode('-', $mDate));
@@ -62,12 +66,12 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
                         <table width="100%">
                             <tr>
                                 <td>
-                                    <b>ชื่อ</b> <?=$a['ptname'];?> <b>อายุ</b> <?=$a['age'];?> <b>Echo No.</b> <?=$a['echo_no'];?>
+                                    <b>ชื่อ</b> <?=$a['ptname'];?>&nbsp;&nbsp;&nbsp;<b>อายุ</b> <?=$a['age'];?>&nbsp;&nbsp;&nbsp;<b>Echo No.</b> <?=$a['echo_no'];?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <b>HN</b> <?=$a['hn'];?> <b>VN</b> <?=$a['vn'];?> <b>Request Date</b> <?=$th_date;?> <?=$h.':'.$i;?> น.
+                                    <b>HN</b> <?=$a['hn'];?>&nbsp;&nbsp;&nbsp;<b>VN</b> <?=$a['vn'];?>&nbsp;&nbsp;&nbsp;<b>Request Date</b> <?=$th_date;?> <?=$h.':'.$i;?> น.
                                 </td>
                             </tr>
                         </table>
@@ -77,7 +81,7 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
         </td>
     </tr>
     <tr>
-        <td valign="top" width="50%">
+        <td valign="top" width="50%" style="border-right: 1px solid #000000;">
             <table width="100%">
                 <tr>
                     <td colspan="8"><u>MEASUREMENT</u></td>
@@ -323,13 +327,24 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
                     <td>DIAGNOSIS: <b><?=$a['diag'];?></b></td>
                 </tr>
                 <tr>
-                    <td>
-                        <p>Doctor: .........................</p>
-                        <!-- <p>พญ. ณัชญ์ระวี บุรีคำ</p> -->
-                        <p><?=$a['doctor'];?></p>
+                    <td align="right">
+                        <div style="text-align: center; width:240px;">
+                            <p>Doctor: .............................................................</p>
+                            <!-- <p>พญ. ณัชญ์ระวี บุรีคำ</p> -->
+                            <p><?=$a['doctor'];?></p>
+                        </div>
                     </td>
                 </tr>
             </table>
         </td>
     </tr>
 </table>
+<script>
+    window.onload = function(){
+        window.print();
+    }
+</script>
+<?php 
+}else{
+    ?><p>ไม่พบข้อมูล</p><?php
+}
