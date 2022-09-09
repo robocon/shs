@@ -26,7 +26,9 @@ $dbi->query("SET NAMES UTF8");
         padding: 3px;
     }
 </style>
-
+<div>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก ร.พ.ฯ</a>
+</div>
 <fieldset>
     <legend>ค้นหาตามวันที่</legend>
     <form action="echo_form_print.php" method="post">
@@ -77,7 +79,7 @@ if($action === "search"){
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['vn'];?></td>
                     <td><?=$a['doctor'];?></td>
-                    <td><a href="echo_print.php?id=<?=$a['id'];?>&hn=<?=$a['hn'];?>">พิมพ์</a></td>
+                    <td><a href="echo_print.php?id=<?=$a['id'];?>&hn=<?=$a['hn'];?>" target="_blank">พิมพ์</a></td>
                 </tr>
                 <?php
                 $i++;
