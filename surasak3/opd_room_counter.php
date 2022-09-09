@@ -22,7 +22,7 @@ $def_date = input('date_selected', ( date('Y') + 543 ).date('-m-d') );
     }
 </style>
 <div class="no_print">
-    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก รพ.</a> | <a href="dt_stat_opd">ระบบรายงานยอดผู้มารับบริการแยกตามแพทย์และสิทธิ</a>
+    <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก รพ.</a> | <a href="dt_stat_opd.php">ระบบรายงานยอดผู้มารับบริการแยกตามแพทย์และสิทธิ</a>
 </div>
 <h3>แสดงจำนวนผู้ป่วยในแต่ละห้องตรวจ</h3>
 <form action="opd_room_counter.php" method="post" class="no_print">
