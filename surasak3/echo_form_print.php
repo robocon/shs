@@ -30,7 +30,7 @@ $dbi->query("SET NAMES UTF8");
     <a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก ร.พ.ฯ</a>
 </div>
 <fieldset>
-    <legend>ค้นหาตามวันที่</legend>
+    <legend>พิมพ์ผล Echo</legend>
     <form action="echo_form_print.php" method="post">
         <?php 
         $date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
