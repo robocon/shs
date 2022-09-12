@@ -538,6 +538,17 @@ class SHSPdf extends Pre_SHSPdf {
 		}
 	}
 
-	
+	function Footer()
+	{
+		// $this->SetXY(30,290);
+		// $this->Cell(0,0,'By... ไทยครีเอทดอทคอม',0,1,"L");
+
+		$this->SetFont('THSarabun','',12);
+		$this->SetXY(0, 289);
+		$this->Cell(0, 8, 'เอกสารนี้ประกอบการตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกอบประจำการประจำปี ๒๕๖๕',0,1,'C');
+
+
+		// To be implemented in your own inherited class
+	}
 
 } 
