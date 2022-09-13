@@ -26,7 +26,7 @@ if( $action === "save" ){
     $yearchk = get_year_checkup(true);
     $file_name = 'NULL';
     
-    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ',`tambol`,' ',`ampur`) AS `address`, `changwat` AS `province`
+    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ',`tambol`,' ',`ampur`) AS `address`, `changwat` AS `province`,`idcard` 
     FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
     $db->select($sql);
     $pt = $db->get_item();
@@ -34,6 +34,7 @@ if( $action === "save" ){
     $ptname = $pt['ptname'];
     $address = $pt['address'];
     $province = $pt['province'];
+    $idcard = $pt['idcard'];
     $editor = $_SESSION['sOfficer'];
     
     $dr_lists = array();
@@ -116,7 +117,7 @@ if( $action === "save" ){
     $files = $_FILES['pic_patient'];
     $ext = strrchr(strtolower($files['name']), ".");
     if( $files['error'] === 0 && ( $ext == '.png' OR $ext == '.jpg' OR $ext == '.jpeg' ) ){
-        $file_name = 'pic_'.$hn.$ext;
+        $file_name = $hn.'_pic'.$ext;
         move_uploaded_file($files['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name);
 
         $sql = "UPDATE `rg_soldier` SET `pic_patient` = '$file_name' WHERE `id` = '$last_id';";
@@ -127,7 +128,7 @@ if( $action === "save" ){
     $files2 = $_FILES['idcard_img'];
     $ext2 = strrchr(strtolower($files2['name']), ".");
     if( $files2['error'] === 0 && ( $ext2 == '.png' OR $ext2 == '.jpg' OR $ext2 == '.jpeg' ) ){
-        $file_name2 = 'idcard_'.$hn.$ext2;
+        $file_name2 = $hn.'_idcard_'.$ext2;
         move_uploaded_file($files2['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name2);
 
         $sql = "UPDATE `rg_soldier` SET `idcard_img` = '$file_name2' WHERE `id` = '$last_id';";
@@ -136,9 +137,13 @@ if( $action === "save" ){
     }
 
     $amed = $_FILES['amed_stat'];
-    $extPdf = strrchr(strtolower($files2['name']), ".");
-    if( $files2['error'] === 0 && $extPdf == '.pdf' ){ 
-        move_uploaded_file($files2['tmp_name'], $folder.'/'.$yearchk.'/'.$hn.$extPdf);
+    $extPdf = strrchr(strtolower($amed['name']), ".");
+    if( $amed['error'] === 0 && $extPdf == '.pdf' ){ 
+        $pdf_file = $hn.'_amed'.$extPdf;
+        move_uploaded_file($amed['tmp_name'], $folder.'/'.$yearchk.'/'.$pdf_file);
+
+        $sql = "UPDATE `rg_soldier` SET `amed_stat` = '$pdf_file' WHERE `id` = '$last_id';";
+        $save = $db->update($sql);
     }
 
 
@@ -436,16 +441,12 @@ if( empty($page) ){
             <thead>
                 <tr>
                     <th>ลำดับ</th>
-                    <th>เล่มที่</th>
-                    <th>เลขที่</th>
-                    <th>คำนำหน้า</th>
-                    <th>ชื่อ</th>
-                    <th>นามสกุล</th>
+                    <th>เล่มที่<br>เลขที่</th>
+                    <th>คำนำหน้า ชื่อ-สกุล</th>
                     <th width="8%">รหัสบัตรประจำตัวประชาชน</th>
                     <th>โรคที่ตรวจพบ</th>
                     <th width="20%">กฎกระทรวงที่ขัด</th>
                     <th width="12%">ภูมิลำเนาทหาร</th>
-                    <th>จังหวัด</th>
                     <th>วันที่ออกใบรับรอง</th>
                     <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
                     <th width="6%">พิมพ์</th>
@@ -469,16 +470,12 @@ if( empty($page) ){
                     ?>
                     <tr>
                         <td><?=$i;?></td>
-                        <td><?=$item['book_id'];?></td>
-                        <td><?=$item['number_id'];?></td>
-                        <td><?=$item['yot_pt'];?></td>
-                        <td><?=$firstname;?></td>
-                        <td><?=$lastname;?></td>
+                        <td><?=$item['book_id'].'<br>'.$item['number_id'];?></td>
+                        <td><?=$item['yot_pt'].$firstname.' '.$lastname;?></td>
                         <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>"><?=$item['idcard'];?></a></td>
                         <td><?=$item['diag'];?></td>
                         <td><?=$item['regular'];?></td>
-                        <td><?=$item['address'];?></td>
-                        <td><?=$item['changwat'];?></td>
+                        <td><?=$item['address'].' <b>จังหวัด</b> '.$item['changwat'];?></td>
                         <td><?=$lastupdate;?></td>
                         <td><?=$board;?></td>
                         <td>
@@ -512,6 +509,9 @@ if( empty($page) ){
             ?>
             <p><a href="rg_solider_ex30.php?date_th=<?=$date_th;?>" target="_blank">จำนวนผู้มาขอรับใบรับรองแพทย์ <?=$item_row['hn_row'];?> ราย</a></p>
             <p>จำนวนผู้ที่ได้รับใบรับรองแพทย์ <?=( $i -1 );?> ราย</p>
+        </div>
+        <div>
+            <a href="rg_amedstat.php?m=<?=$selected_m;?>&y=<?=$selected_y;?>" target="_blank">ส่งออกข้อมูล PDF</a>
         </div>
         <script type="text/javascript">
             function del_confirm(){
@@ -578,6 +578,7 @@ if( empty($page) ){
         $yearchk = $user['yearchk'];
         $date_cer = $user['date_certificate'];
         $regular_number = $user['regular_number'];
+        $amed_stat = $user['amed_stat'];
         ?>
         <h3>ฟอร์มแก้ไขข้อมูล ตรช.</h3>
         <?php
@@ -720,9 +721,10 @@ if( empty($page) ){
                         <td>
                             <input type="file" name="amed_stat" id="amed_stat" style="font-size: 12px;">
                             <?php
-                            if ( !empty($amed_stat) ) {
+                            if ( !empty($amed_stat) && is_file('certificate/'.$yearchk.'/'.$amed_stat) ) { 
                                 ?>
-                                
+                                <br>
+                                <iframe src="certificate/<?=$yearchk;?>/<?=$amed_stat;?>" frameborder="0" width="100%" height="400"></iframe>
                                 <?php
                             }
                             ?>
