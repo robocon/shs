@@ -18,6 +18,10 @@ if( $user['pic'] != NULL ){
     $img = "certificate/$yearchk/".$user['pic'];
 }
 
+function toUTF($txt){
+    return iconv('UTF-8', 'TIS-620', $txt);
+}
+
 // list($date, $time) = explode(' ',$user['date_certificate']);
 list($y, $m, $d) = explode('-', $user['date_certificate']);
 
@@ -69,7 +73,7 @@ $pdf->Line(65, 70, 85, 70);
 $pdf->SetXY(85, 65);
 $pdf->Cell(10, 5, 'เดือน', 0, 1);
 $pdf->SetXY(95, 65);
-$pdf->Cell(35, 5, iconv('UTF8', 'TIS620', $def_fullm_th[$m]), 0, 1, 'C');
+$pdf->Cell(35, 5, toUTF($def_fullm_th[$m]), 0, 1, 'C');
 $pdf->Line(95, 70, 130, 70);
 
 $pdf->SetXY(130, 65);
@@ -84,15 +88,15 @@ $pdf->Line(140, 70, 165, 70);
 $pdf->SetXY(30, 72);
 $pdf->Cell(15, 5, 'ข้าพเจ้า', 0, 1);
 $pdf->SetXY(55, 72);
-$pdf->Cell(110, 5, iconv('UTF8', 'TIS620', $doctor1), 0, 1);
+$pdf->Cell(110, 5, toUTF($doctor1), 0, 1);
 $pdf->Line(45, 77, 165, 77);
 
 $pdf->SetXY(55, 79);
-$pdf->Cell(110, 5, iconv('UTF8', 'TIS620', $doctor2), 0, 1);
+$pdf->Cell(110, 5, toUTF($doctor2), 0, 1);
 $pdf->Line(45, 84, 165, 84);
 
 $pdf->SetXY(55, 86);
-$pdf->Cell(110, 5, iconv('UTF8', 'TIS620', $doctor3), 0, 1);
+$pdf->Cell(110, 5, toUTF($doctor3), 0, 1);
 $pdf->Line(45, 91, 165, 91);
 
 $pdf->SetXY(30, 93);
@@ -120,7 +124,7 @@ $pdf->Cell(35, 5, 'ได้ทำการตรวจร่างกาย', 0, 1);
 $pdf->SetXY(30, 121);
 $pdf->Cell(10, 5, 'นาม', 0, 1);
 $pdf->SetXY(40, 121);
-$pdf->Cell(50, 5, iconv('UTF8', 'TIS620', $user['yot_pt'].' '.$user['ptname']), 0, 1);
+$pdf->Cell(50, 5, toUTF($user['yot_pt'].' '.$user['ptname']), 0, 1);
 $pdf->Line(40, 126, 110, 126);
 $pdf->SetXY(110, 121);
 $pdf->Cell(10, 5, 'สังกัด', 0, 1);
@@ -133,7 +137,7 @@ $pdf->Cell(15, 5, 'เห็นว่า', 0, 1);
 $pdf->SetXY(45, 127);
 // $long_txt = '(5) (ข) โรคทางปอดที่มีอาการไอ หอบเหนื่อย และมีการสูญเสียการทำงานของระบบทางเดินหายใจ โดยตรวจสมรรถภาพปอดได้ค่า forced Expiratoy Volume in One Second และ,หรือ Forced Vital Capacity ต่ำกว่าร้อยละ 60 ของค่ามาตรฐานตามเกณฑ์';
 // $long_txt = '(1) (ก) ตาข้างใดข้างหนึ่งบิด คือเมื่อรักษาและแก้สายตาด้วยแว่นตาแล้วการมองเห็นยังอยู่ในระดับต่ำกว่า 3/60 หรือลานสายตาโดยเฉลี่ยแคบกว่า 10 องศา';
-$pdf->MultiCell(120, 7, iconv('UTF8', 'TIS620', $user['regular']), 0);
+$pdf->MultiCell(120, 7, toUTF($user['regular']), 0);
 
 $pdf->Line(43, 133, 165, 133);
 $pdf->Line(43, 140, 165, 140);
@@ -172,13 +176,13 @@ $pdf->Line(40, 187, 165, 187);
 $pdf->SetXY(82, 203);
 $pdf->Cell(15, 5, 'ลงนาม', 0, 1);
 $pdf->SetXY(97, 203);
-$pdf->Cell(58, 5, iconv('UTF8', 'TIS620', $doctor1), 0, 1);
+$pdf->Cell(58, 5, toUTF($doctor1), 0, 1);
 $pdf->Line(97, 208, 155, 208);
 $pdf->SetXY(97, 210);
-$pdf->Cell(58, 5, iconv('UTF8', 'TIS620', $doctor2), 0, 1);
+$pdf->Cell(58, 5, toUTF($doctor2), 0, 1);
 $pdf->Line(97, 215, 155, 215);
 $pdf->SetXY(97, 217);
-$pdf->Cell(58, 5, iconv('UTF8', 'TIS620', $doctor3), 0, 1);
+$pdf->Cell(58, 5, toUTF($doctor3), 0, 1);
 $pdf->Line(97, 222, 155, 222);
 
 // $pdf->AutoPrint(true);

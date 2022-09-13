@@ -39,9 +39,13 @@ function thaiNum($number){
 
 
 $yearchk = $user['yearchk'];
-$img = false;
-if( $user['pic'] != NULL ){
-    $img = "certificate/$yearchk/".$user['pic'];
+$img_idcard = "images/idcard_exam.jpg";
+$pic_patient = "images/p2_exam.jpg";
+if( !empty($user['idcard_img']) ){
+    $img_idcard = "certificate/$yearchk/".$user['idcard_img'];
+}
+if( !empty($user['pic_patient']) ){
+	$pic_patient = "certificate/$yearchk/".$user['pic_patient'];
 }
 
 // list($date, $time) = explode(' ',$user['date_certificate']);
@@ -68,53 +72,55 @@ $pdf->SetDash(0.3, 0.6);
 // $pdf->Cell(18, 5, 'ทบ.466-620', 0, 1, 'R');
 
 // ทดสอบความกว้าง
-$pdf->SetFont('THSarabun','',20);
-$pdf->SetXY(0, 0);
-$pdf->Cell(0, 5, $pdf->GetPageWidth().' '.$pdf->GetPageHeight(), 1, 1, 'C');
+// $pdf->SetFont('THSarabun','',20);
+// $pdf->SetXY(0, 0);
+// $pdf->Cell(0, 5, $pdf->GetPageWidth().' '.$pdf->GetPageHeight(), 1, 1, 'C');
+
+$pdf->Image("images/bg-a4.jpg", 10, 0, 210, 297);
 
 // ตราครุฑ
-
 $pdf->Image("images/krut-3-cm.jpg", 97, 15, 27, 30);
 
 $pdf->SetFont('THSarabun','B',20);
 $pdf->SetXY(30, 26);
-$pdf->Cell(160, 8, 'เล่มที่ '.thaiNum($user['book_id']).' เลขที่ '.thaiNum($user['number_id']), 1, 1);
+$pdf->Cell(160, 8, 'เล่มที่ '.thaiNum($user['book_id']).'   เลขที่ '.thaiNum($user['number_id']), 0, 1);
 $pdf->SetX(30);
-$pdf->Cell(160, 8, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 1, 1, 'R');
+$pdf->Cell(160, 8, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี', 0, 1, 'R');
 
 $pdf->SetXY(30, 45);
 $pdf->SetFont('THSarabun','B',25);
-$pdf->Cell(160, 8, 'ใบความเห็นแพทย์', 1, 1, 'C');
+$pdf->Cell(160, 8, 'ใบความเห็นแพทย์', 0, 1, 'C');
+$pdf->Ln(2.11);
 $pdf->SetX(30);
 $pdf->SetFont('THSarabun','',20);
-$pdf->Cell(160, 8, 'ตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกองประจำการประจำปี ๒๕๖๕', 1, 1, 'C');
+$pdf->Cell(160, 8, 'ตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกองประจำการประจำปี ๒๕๖๕', 0, 1, 'C');
 
 $pdf->Ln(2.11); // +6 Before
 $pdf->SetX(110);
-$pdf->Cell(80, 8, thaiNum($d).' '.toUTF($def_fullm_th[$m]).' '.thaiNum($y+543), 1, 1, 'L');
+$pdf->Cell(80, 8, thaiNum($d).' '.toUTF($def_fullm_th[$m]).' '.thaiNum($y+543), 0, 1, 'L');
 $pdf->Ln(2.11); // +6 Before
 $pdf->SetX(42.5);
-$pdf->Cell(18, 8, 'ข้าพเจ้า', 1, 1, 'L');
+$pdf->Cell(18, 8, 'ข้าพเจ้า', 0, 1, 'L');
 
 
-$pdf->SetY(73.22);
+$pdf->SetY(75.33);
 $pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, '(๑) '.toUTF($doctor1), 1, 1, 'L');
+$pdf->Cell(129.5, 8, '(๑) '.toUTF($doctor1), 0, 1, 'L');
 // $pdf->SetXY(60.5, 77);
 $pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code1']), 1, 1, 'L');
+$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code1']), 0, 1, 'L');
 
 $pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, '(๒) '.toUTF($doctor2), 1, 1, 'L');
+$pdf->Cell(129.5, 8, '(๒) '.toUTF($doctor2), 0, 1, 'L');
 
 $pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code2']), 1, 1, 'L');
+$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code2']), 0, 1, 'L');
 
 $pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, '(๓) '.toUTF($doctor3), 1, 1, 'L');
+$pdf->Cell(129.5, 8, '(๓) '.toUTF($doctor3), 0, 1, 'L');
 
 $pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code3']), 1, 1, 'L');
+$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code3']), 0, 1, 'L');
 
 $pdf->Ln(4.23); // +12 Before
 $pdf->SetX(30);
@@ -127,7 +133,14 @@ $pdf->SetFont('THSarabun','',20);
 $pdf->SetX(30);
 $pdf->Write(8, 'เลขที่บัตรประจำตัวประชาชน ');
 $pdf->SetFont('THSarabun','B',20);
-$pdf->Write(8, thaiNum($user['idcard']));
+
+// รูปแบบบัตรประชาชน
+// 5-5-2
+$idcard1 = substr($user['idcard'],0,5);
+$idcard2 = substr($user['idcard'],5,5);
+$idcard3 = substr($user['idcard'],10,3);
+
+$pdf->Write(8, thaiNum($idcard1).' '.thaiNum($idcard2).' '.thaiNum($idcard3));
 $pdf->Ln();
 
 $pdf->SetFont('THSarabun','',20);
@@ -135,6 +148,8 @@ $pdf->SetX(30);
 $pdf->Write(8, 'เมื่อ');
 $pdf->SetFont('THSarabun','B',20);
 $pdf->Write(8, 'วันที่ '.thaiNum($d).' '.toUTF($def_fullm_th[$m]).' '.thaiNum($y+543));
+
+$pdf->Image($img_idcard, 134, 124, 58, 34);
 
 $pdf->Ln();
 $pdf->Ln(4.23); // +12 Before
@@ -146,165 +161,30 @@ $pdf->Write(8, toUTF($user['diag']));
 
 $pdf->SetXY(30, $pdf->getY()+8);
 $regular_number = toUTF($user['regular_number']);
-
-// dump($user['regular']);
-// dump($regular);
-// $tests = preg_match('/\(.{1,2}\)\s/', $user['regular'], $matchs);
-
-// dump($tests);
-// dump($matchs);
-
 $pdf->MultiCell(160, 8, 'ตามกฏกระทรวง ฉบับที่ ๗๔ (พ.ศ.๒๕๔๐) ข้อ '.$regular_number);
+
+$pdf->Image($pic_patient, 30, $pdf->getY()+8, 40, 60);
 
 $pdf->SetFont('THSarabun','',20);
 $pdf->SetXY(115, $pdf->getY()+8);
-$pdf->Cell(75, 8, '(๑) '.toUTF($user['yot1']),1,1);
+$pdf->Cell(75, 8, '(๑) '.toUTF($user['yot1']),0,1);
 $pdf->SetX(115);
-$pdf->Cell(75, 8, '('.toUTF($user['doctor1']).')',1,1,'C');
+$pdf->Cell(75, 8, '('.toUTF($user['doctor1']).')',0,1,'C');
 
 $pdf->Ln(4.23); // +6 Before
 $pdf->SetX(115);
-$pdf->Cell(75, 8, '(๒) '.toUTF($user['yot2']),1,1);
+$pdf->Cell(75, 8, '(๒) '.toUTF($user['yot2']),0,1);
 $pdf->SetX(115);
-$pdf->Cell(75, 8, '('.toUTF($user['doctor2']).')', 1, 1,'C');
+$pdf->Cell(75, 8, '('.toUTF($user['doctor2']).')', 0, 1,'C');
 
 $pdf->Ln(4.23); // +6 Before
 $pdf->SetX(115);
-$pdf->Cell(75, 8, '(๓) '.toUTF($user['yot3']),1,1);
+$pdf->Cell(75, 8, '(๓) '.toUTF($user['yot3']),0,1);
 $pdf->SetX(115);
-$pdf->Cell(75, 8, '('.toUTF($user['doctor3']).')',1,1,'C');
+$pdf->Cell(75, 8, '('.toUTF($user['doctor3']).')',0,1,'C');
 
 $pdf->SetX(115);
-$pdf->Cell(75, 8, 'กรมการแพทย์ผู้ตรวจร่างกาย',1,1,'C');
+$pdf->Cell(75, 8, 'กรมการแพทย์ผู้ตรวจร่างกาย',0,1,'C');
 
-$pdf->SetFont('THSarabun','',14);
-$pdf->SetXY(30,260);
-$pdf->Cell(0, 5, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี',1,1,'L');
-$pdf->SetXY(30,260);
-$pdf->Cell(0, 5, 'โทร. ',1,1,'L');
-
-// $pdf->Footer();
-// $pdf->Cell(0, 8, $pdf->GetStringWidth(), 1, 1, 'L');
-// $pdf->SetXY(65, 65);
-// $pdf->Cell(20, 5, $d, 0, 1, 'C');
-// $pdf->Line(65, 70, 85, 70);
-
-// toUTF($def_fullm_th[$m]);
-
-// $pdf->SetXY(85, 65);
-// $pdf->Cell(10, 5, 'เดือน', 0, 1);
-// $pdf->SetXY(95, 65);
-// $pdf->Cell(35, 5, iconv('UTF8', 'TIS620', $def_fullm_th[$m]), 0, 1, 'C');
-// $pdf->Line(95, 70, 130, 70);
-
-// $pdf->SetXY(130, 65);
-// $pdf->Cell(10, 5, 'พ.ศ.', 0, 1);
-// $pdf->SetXY(140, 65);
-// $pdf->Cell(25, 5, ( $y + 543 ), 0, 1, 'C');
-// $pdf->Line(140, 70, 165, 70);
-
-// Reset Dash line
-// $pdf->SetDash();
-
-// $pdf->SetXY(30, 72);
-// $pdf->Cell(15, 5, 'ข้าพเจ้า', 0, 1);
-// $pdf->SetXY(55, 72);
-// $pdf->Cell(110, 5, iconv('UTF8', 'TIS620', $doctor1), 0, 1);
-// $pdf->Line(45, 77, 165, 77);
-
-// $pdf->SetXY(55, 79);
-// $pdf->Cell(110, 5, iconv('UTF8', 'TIS620', $doctor2), 0, 1);
-// $pdf->Line(45, 84, 165, 84);
-
-// $pdf->SetXY(55, 86);
-// $pdf->Cell(110, 5, iconv('UTF8', 'TIS620', $doctor3), 0, 1);
-// $pdf->Line(45, 91, 165, 91);
-
-// $pdf->SetXY(30, 93);
-// $pdf->Cell(15, 5, 'ตำแหน่ง', 0, 1);
-
-// $pdf->SetXY(50, 93);
-// $pdf->Cell(110, 5, 'คณะกรรมการตรวจโรค ทหารกองเกินประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี', 0, 1);
-// $pdf->Line(45, 98, 165, 98);
-
-// $pdf->SetXY(30, 107);
-// $pdf->Cell(135, 5, 'เป็นผู้จดทะเบียนประกอบโรคศิลปะแผนปัจจุบันชั้น หนึ่ง สาขา', 0, 1);
-
-// $pdf->SetXY(128, 107);
-// $pdf->Cell(20, 5, 'เวชกรรม', 0, 1);
-// $pdf->Line(125, 112, 165, 112);
-
-// $pdf->SetXY(30, 114);
-// $pdf->Cell(30, 5, 'ใบทะเบียนเลขที่', 0, 1);
-// $pdf->SetXY(65, 114);
-// $pdf->Cell(60, 5, 'ว.'.$user['code1'].' ว.'.$user['code2'].' ว.'.$user['code3'].'', 0, 1);
-// $pdf->Line(58, 119, 130, 119);
-// $pdf->SetXY(130, 114);
-// $pdf->Cell(35, 5, 'ได้ทำการตรวจร่างกาย', 0, 1);
-
-// $pdf->SetXY(30, 121);
-// $pdf->Cell(10, 5, 'นาม', 0, 1);
-// $pdf->SetXY(40, 121);
-// $pdf->Cell(50, 5, iconv('UTF8', 'TIS620', $user['yot_pt'].' '.$user['ptname']), 0, 1);
-// $pdf->Line(40, 126, 110, 126);
-// $pdf->SetXY(110, 121);
-// $pdf->Cell(10, 5, 'สังกัด', 0, 1);
-// $pdf->SetXY(120, 121);
-// $pdf->Cell(50, 5, 'พลเรือน HN '.$user['hn'], 0, 1);
-// $pdf->Line(120, 126, 165, 126);
-
-// $pdf->SetXY(30, 128);
-// $pdf->Cell(15, 5, 'เห็นว่า', 0, 1);
-// $pdf->SetXY(45, 127);
-// // $long_txt = '(5) (ข) โรคทางปอดที่มีอาการไอ หอบเหนื่อย และมีการสูญเสียการทำงานของระบบทางเดินหายใจ โดยตรวจสมรรถภาพปอดได้ค่า forced Expiratoy Volume in One Second และ,หรือ Forced Vital Capacity ต่ำกว่าร้อยละ 60 ของค่ามาตรฐานตามเกณฑ์';
-// // $long_txt = '(1) (ก) ตาข้างใดข้างหนึ่งบิด คือเมื่อรักษาและแก้สายตาด้วยแว่นตาแล้วการมองเห็นยังอยู่ในระดับต่ำกว่า 3/60 หรือลานสายตาโดยเฉลี่ยแคบกว่า 10 องศา';
-// $pdf->MultiCell(120, 7, iconv('UTF8', 'TIS620', $user['regular']), 0);
-
-// $pdf->Line(43, 133, 165, 133);
-// $pdf->Line(43, 140, 165, 140);
-// $pdf->Line(43, 147, 165, 147);
-// $pdf->Line(43, 154, 165, 154);
-// $pdf->Line(43, 161, 165, 161);
-
-// $pdf->SetXY(30, 168);
-// $pdf->Cell(25, 5, 'ควรอนุญาตให้', 0, 1);
-// $pdf->SetXY(55, 168);
-// $pdf->Cell(110, 5, '-', 0, 1, 'C');
-// $pdf->Line(55, 173, 165, 173);
-
-// $pdf->SetXY(30, 175);
-// $pdf->Cell(20, 5, 'มีกำหนด', 0, 1);
-// $pdf->SetXY(45, 175);
-// $pdf->Cell(35, 5, '-', 0, 1, 'C');
-// $pdf->Line(45, 180, 80, 180);
-// $pdf->SetXY(80, 175);
-// $pdf->Cell(20, 5, 'วัน  ตั้งแต่', 0, 1);
-// $pdf->SetXY(98, 175);
-// $pdf->Cell(27, 5, '-', 0, 1, 'C');
-// $pdf->Line(98, 180, 125, 180);
-// $pdf->SetXY(125, 175);
-// $pdf->Cell(10, 5, 'ถึง', 0, 1);
-// $pdf->SetXY(130, 175);
-// $pdf->Cell(35, 5, '-', 0, 1, 'C');
-// $pdf->Line(130, 180, 165, 180);
-
-// $pdf->SetXY(30, 182);
-// $pdf->Cell(20, 5, 'กับได้', 0, 1);
-// $pdf->SetXY(40, 182);
-// $pdf->Cell(125, 5, '-', 0, 1, 'C');
-// $pdf->Line(40, 187, 165, 187);
-
-// $pdf->SetXY(82, 203);
-// $pdf->Cell(15, 5, 'ลงนาม', 0, 1);
-// $pdf->SetXY(97, 203);
-// $pdf->Cell(58, 5, iconv('UTF8', 'TIS620', $doctor1), 0, 1);
-// $pdf->Line(97, 208, 155, 208);
-// $pdf->SetXY(97, 210);
-// $pdf->Cell(58, 5, iconv('UTF8', 'TIS620', $doctor2), 0, 1);
-// $pdf->Line(97, 215, 155, 215);
-// $pdf->SetXY(97, 217);
-// $pdf->Cell(58, 5, iconv('UTF8', 'TIS620', $doctor3), 0, 1);
-// $pdf->Line(97, 222, 155, 222);
-
-// $pdf->AutoPrint(true);
+$pdf->AutoPrint(true);
 $pdf->Output();

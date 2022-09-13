@@ -544,8 +544,16 @@ class SHSPdf extends Pre_SHSPdf {
 		// $this->Cell(0,0,'By... ไทยครีเอทดอทคอม',0,1,"L");
 
 		$this->SetFont('THSarabun','',12);
-		$this->SetXY(0, 289);
-		$this->Cell(0, 8, 'เอกสารนี้ประกอบการตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกอบประจำการประจำปี ๒๕๖๕',0,1,'C');
+
+		$this->SetFont('THSarabun','',14);
+		$this->SetXY(30,260);
+		$this->Cell(0, 5, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี',0,1,'L');
+		$this->SetXY(30,265);
+		$this->Cell(0, 5, 'โทร. ๐๕ ๔๘๓ ๐๓๐๕',0,1,'L');
+
+
+		$this->SetXY(0, 277);
+		$this->Cell(0, 5, 'เอกสารนี้ประกอบการตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกอบประจำการประจำปี ๒๕๖๕',0,1,'C');
 
 
 		// To be implemented in your own inherited class

@@ -109,19 +109,39 @@ if( $action === "save" ){
         $last_id = $id;
     }
 
+    $folder = 'certificate';
+    if( !file_exists($folder) ){ mkdir($folder); }
+    if( !file_exists($folder.'/'.$yearchk) ){ mkdir($folder.'/'.$yearchk); }
+    
     $files = $_FILES['pic_patient'];
     $ext = strrchr(strtolower($files['name']), ".");
     if( $files['error'] === 0 && ( $ext == '.png' OR $ext == '.jpg' OR $ext == '.jpeg' ) ){
-        $file_name = md5($files['tmp_name']).$ext;
-        $folder = 'certificate';
-        if( !file_exists($folder) ){ mkdir($folder); }
-        if( !file_exists($folder.'/'.$yearchk) ){ mkdir($folder.'/'.$yearchk); }
+        $file_name = 'pic_'.$hn.$ext;
         move_uploaded_file($files['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name);
 
-        $sql = "UPDATE `rg_soldier` SET `pic` = '$file_name' WHERE `id` = '$last_id';";
+        $sql = "UPDATE `rg_soldier` SET `pic_patient` = '$file_name' WHERE `id` = '$last_id';";
         $save = $db->update($sql);
 
     }
+
+    $files2 = $_FILES['idcard_img'];
+    $ext2 = strrchr(strtolower($files2['name']), ".");
+    if( $files2['error'] === 0 && ( $ext2 == '.png' OR $ext2 == '.jpg' OR $ext2 == '.jpeg' ) ){
+        $file_name2 = 'idcard_'.$hn.$ext2;
+        move_uploaded_file($files2['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name2);
+
+        $sql = "UPDATE `rg_soldier` SET `idcard_img` = '$file_name2' WHERE `id` = '$last_id';";
+        $save = $db->update($sql);
+
+    }
+
+    $amed = $_FILES['amed_stat'];
+    $extPdf = strrchr(strtolower($files2['name']), ".");
+    if( $files2['error'] === 0 && $extPdf == '.pdf' ){ 
+        move_uploaded_file($files2['tmp_name'], $folder.'/'.$yearchk.'/'.$hn.$extPdf);
+    }
+
+
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){
         $msg = errorMsg('save', $save['id']);
@@ -428,7 +448,9 @@ if( empty($page) ){
                     <th>จังหวัด</th>
                     <th>วันที่ออกใบรับรอง</th>
                     <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
-                    <th>พิมพ์</th>
+                    <th>แบบเก่า</th>
+                    <th>แบบใหม่</th>
+                    <th>เพศสภาพ</th>
                     <th>แก้ไข</th>
                     <th>ลบ</th>
                 </tr>
@@ -463,8 +485,11 @@ if( empty($page) ){
                         <td><?=$lastupdate;?></td>
                         <td><?=$board;?></td>
                         <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
+                        <td><a href="rg_soldier_printv2.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
+                        <td><a href="rg_soldier_printv3.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
                         <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
-                        <td><a href="rg_soldier.php?action=delete&id=<?=$item['id'];?>" onclick="return del_confirm();">ลบ</a></td>
+                        <!-- rg_soldier.php?action=delete&id= -->
+                        <td><a href="#" onclick="return del_confirm();">ลบ</a></td>
                     </tr>
                     <?php
                     $i++;
@@ -550,7 +575,8 @@ if( empty($page) ){
         $code1 = $user['code1'];
         $code2 = $user['code2'];
         $code3 = $user['code3'];
-        $pic = $user['pic'];
+        $idcard_img = $user['idcard_img'];
+        $pic_patient = $user['pic_patient'];
         $yearchk = $user['yearchk'];
         $date_cer = $user['date_certificate'];
         $regular_number = $user['regular_number'];
@@ -662,28 +688,43 @@ if( empty($page) ){
                         <td><input type="text" name="diag" value="<?=$diag;?>"></td>
                     </tr>
                     <tr>
-                        <td align="right">รูปบัตรปชช :</td>
+                        <td align="right" valign="top">รูปบัตรปชช :</td>
                         <td>
                             <input type="file" name="idcard_img" id="idcard_img" style="font-size: 12px;">
+                            <div style="color: red;">* อนุญาตให้ใช้ไฟล์ jpg, jpeg, png เท่านั้น</div>
                             <?php
-                            if ( $pic != 'NULL' && $pic != false ) {
+                            if ( !empty($idcard_img) ) {
                                 ?>
+                                <img src="certificate/<?=$yearchk;?>/<?=$idcard_img;?>" style="width: 120px;">
                                 <p><u>(กรณีที่ต้องการเปลี่ยนรูปสามารถอัพโหลดรูปใหม่ทับได้ทันที)</u></p>
-                                <img src="certificate/<?=$yearchk;?>/<?=$pic;?>" style="width: 120px;">
                                 <?php
                             }
                             ?>
                         </td>
                     </tr>
                     <tr>
-                        <td align="right">รูปถ่าย2นิ้ว :</td>
+                        <td align="right" valign="top">รูปถ่าย2นิ้ว :</td>
                         <td>
-                            <input type="file" name="pic_patient" id="pic_patient" style="font-size: 12px;">
+                            <input type="file" name="pic_patient" id="pic_patient" style="font-size: 12px;"> 
+                            <div style="color: red;">* อนุญาตให้ใช้ไฟล์ jpg, jpeg, png เท่านั้น</div>
                             <?php
-                            if ( $pic != 'NULL' && $pic != false ) {
+                            if ( !empty($pic_patient) ) {
                                 ?>
+                                <img src="certificate/<?=$yearchk;?>/<?=$pic_patient;?>" style="width: 120px;">
                                 <p><u>(กรณีที่ต้องการเปลี่ยนรูปสามารถอัพโหลดรูปใหม่ทับได้ทันที)</u></p>
-                                <img src="certificate/<?=$yearchk;?>/<?=$pic;?>" style="width: 120px;">
+                                <?php
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" valign="top">แนบไฟล์สำหรับส่งข้อมูล AMEDstat :</td>
+                        <td>
+                            <input type="file" name="amed_stat" id="amed_stat" style="font-size: 12px;">
+                            <?php
+                            if ( !empty($amed_stat) ) {
+                                ?>
+                                
                                 <?php
                             }
                             ?>
