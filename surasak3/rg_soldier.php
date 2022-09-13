@@ -128,12 +128,11 @@ if( $action === "save" ){
     $files2 = $_FILES['idcard_img'];
     $ext2 = strrchr(strtolower($files2['name']), ".");
     if( $files2['error'] === 0 && ( $ext2 == '.png' OR $ext2 == '.jpg' OR $ext2 == '.jpeg' ) ){
-        $file_name2 = $hn.'_idcard_'.$ext2;
+        $file_name2 = $hn.'_idcard'.$ext2;
         move_uploaded_file($files2['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name2);
 
         $sql = "UPDATE `rg_soldier` SET `idcard_img` = '$file_name2' WHERE `id` = '$last_id';";
         $save = $db->update($sql);
-
     }
 
     $amed = $_FILES['amed_stat'];
