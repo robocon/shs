@@ -41,10 +41,10 @@ function thaiNum($number){
 $yearchk = $user['yearchk'];
 $img_idcard = "images/idcard_exam.jpg";
 $pic_patient = "images/p2_exam.jpg";
-if( !empty($user['idcard_img']) ){
+if( !empty($user['idcard_img']) && is_file("certificate/$yearchk/".$user['idcard_img']) ){
     $img_idcard = "certificate/$yearchk/".$user['idcard_img'];
 }
-if( !empty($user['pic_patient']) ){
+if( !empty($user['pic_patient']) && is_file("certificate/$yearchk/".$user['pic_patient']) ){
 	$pic_patient = "certificate/$yearchk/".$user['pic_patient'];
 }
 
@@ -55,21 +55,33 @@ $doctor1 = $user['yot1'].$user['doctor1'];
 $doctor2 = $user['yot2'].$user['doctor2'];
 $doctor3 = $user['yot3'].$user['doctor3'];
 
-$pdf = new SHSPdf('P', 'mm', 'A4');
+class MySHSPdf extends SHSPdf {
+	function Footer()
+	{
+
+		$this->SetFont('THSarabun','',14);
+		$this->SetXY(30,250);
+		$this->Cell(0, 5, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี',0,1,'L');
+		$this->SetXY(30,255);
+		$this->Cell(0, 5, 'โทร. ๐๕ ๔๘๓ ๐๓๐๕',0,1,'L');
+
+		$this->SetFont('THSarabun','',12);
+		$this->SetXY(0, 277);
+		$this->Cell(0, 5, 'เอกสารนี้ประกอบการตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกอบประจำการประจำปี ๒๕๖๕',0,1,'C');
+
+		// To be implemented in your own inherited class
+	}
+}
+
+$pdf = new MySHSPdf('P', 'mm', 'A4');
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
-// $pdf->SetAutoPageBreak(false, 0);
-// $pdf->SetRightMargin(20);
+$pdf->SetAutoPageBreak(false, 0);
 $pdf->SetMargins(0,0,0); // left, top, right
 $pdf->AddPage();
-// $pdf->SetFont('THSarabun','',16); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 // ตั้งค่าเส้นประ
 $pdf->SetLineWidth(0.1);
 $pdf->SetDash(0.3, 0.6);
-
-// $pdf->SetFont('THSarabun','',12);
-// $pdf->SetXY(150, 9);
-// $pdf->Cell(18, 5, 'ทบ.466-620', 0, 1, 'R');
 
 // ทดสอบความกว้าง
 // $pdf->SetFont('THSarabun','',20);

@@ -41,10 +41,10 @@ function thaiNum($number){
 $yearchk = $user['yearchk'];
 $img_idcard = "images/idcard_exam.jpg";
 $pic_patient = "images/p2_exam.jpg";
-if( !empty($user['idcard_img']) ){
+if( !empty($user['idcard_img']) && is_file("certificate/$yearchk/".$user['idcard_img']) ){
     $img_idcard = "certificate/$yearchk/".$user['idcard_img'];
 }
-if( !empty($user['pic_patient']) ){
+if( !empty($user['pic_patient']) && is_file("certificate/$yearchk/".$user['pic_patient']) ){
 	$pic_patient = "certificate/$yearchk/".$user['pic_patient'];
 }
 
@@ -55,21 +55,37 @@ $doctor1 = $user['yot1'].$user['doctor1'];
 $doctor2 = $user['yot2'].$user['doctor2'];
 $doctor3 = $user['yot3'].$user['doctor3'];
 
-$pdf = new SHSPdf('P', 'mm', 'A4');
+class MySHSPdf extends SHSPdf {
+	function Footer()
+	{
+
+		$this->SetFont('THSarabun','',14);
+		$this->SetXY(30,250);
+		$this->Cell(0, 5, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี',0,1,'L');
+		$this->SetXY(30,255);
+		$this->Cell(0, 5, 'โทร. ๐๕ ๔๘๓ ๐๓๐๕',0,1,'L');
+
+		$this->SetFont('THSarabun','',12);
+		$this->SetXY(0, 272);
+		$this->Cell(0, 5, 'เอกสารนี้ประกอบการตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกอบประจำการประจำปี ๒๕๖๕',0,1,'C');
+		$this->SetXY(0, 277);
+		$this->Cell(0, 5, '(ภาวะเพศสภาพไม่ตรงกับเพศกำเนิด)',0,1,'C');
+
+		// To be implemented in your own inherited class
+	}
+}
+
+
+
+$pdf = new MySHSPdf('P', 'mm', 'A4');
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
-// $pdf->SetAutoPageBreak(false, 0);
-// $pdf->SetRightMargin(20);
+$pdf->SetAutoPageBreak(false, 0);
 $pdf->SetMargins(0,0,0); // left, top, right
 $pdf->AddPage();
-// $pdf->SetFont('THSarabun','',16); // เรียกใช้งานฟอนต์ที่เตรียมไว้
 
 // ตั้งค่าเส้นประ
 $pdf->SetLineWidth(0.1);
 $pdf->SetDash(0.3, 0.6);
-
-// $pdf->SetFont('THSarabun','',12);
-// $pdf->SetXY(150, 9);
-// $pdf->Cell(18, 5, 'ทบ.466-620', 0, 1, 'R');
 
 // ทดสอบความกว้าง
 // $pdf->SetFont('THSarabun','',20);
@@ -94,33 +110,36 @@ $pdf->Ln(2.11);
 $pdf->SetX(30);
 $pdf->SetFont('THSarabun','',20);
 $pdf->Cell(160, 8, 'ตรวจร่างกายทหารกองเกินเข้ารับราชการทหารกองประจำการประจำปี ๒๕๖๕', 0, 1, 'C');
+$pdf->SetX(30);
+$pdf->Cell(160, 8, '(ภาวะเพศสภาพไม่ตรงกับเพศกำเนิด)', 0, 1, 'C');
 
 $pdf->Ln(2.11); // +6 Before
 $pdf->SetX(110);
 $pdf->Cell(80, 8, thaiNum($d).' '.toUTF($def_fullm_th[$m]).' '.thaiNum($y+543), 0, 1, 'L');
 $pdf->Ln(2.11); // +6 Before
 $pdf->SetX(42.5);
-$pdf->Cell(18, 8, 'ข้าพเจ้า', 0, 1, 'L');
+$pdf->Cell(160, 8, 'ข้าพเจ้า '.toUTF($doctor1).' จิตแพทย์ประจำโรงพยาบาลค่ายสุรศักดิ์มนตรี',0,1);
+$pdf->SetX(30);
+$pdf->Cell(160, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code1']),0,1);
+// $pdf->Ln();
+// $pdf->SetY(75.33);
+// $pdf->SetX(60.5);
+// $pdf->Cell(129.5, 8, '(๑) '.toUTF($doctor1), 0, 1, 'L');
+// // $pdf->SetXY(60.5, 77);
+// $pdf->SetX(60.5);
+// $pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code1']), 0, 1, 'L');
 
+// $pdf->SetX(60.5);
+// $pdf->Cell(129.5, 8, '(๒) '.toUTF($doctor2), 0, 1, 'L');
 
-$pdf->SetY(75.33);
-$pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, '(๑) '.toUTF($doctor1), 0, 1, 'L');
-// $pdf->SetXY(60.5, 77);
-$pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code1']), 0, 1, 'L');
+// $pdf->SetX(60.5);
+// $pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code2']), 0, 1, 'L');
 
-$pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, '(๒) '.toUTF($doctor2), 0, 1, 'L');
+// $pdf->SetX(60.5);
+// $pdf->Cell(129.5, 8, '(๓) '.toUTF($doctor3), 0, 1, 'L');
 
-$pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code2']), 0, 1, 'L');
-
-$pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, '(๓) '.toUTF($doctor3), 0, 1, 'L');
-
-$pdf->SetX(60.5);
-$pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code3']), 0, 1, 'L');
+// $pdf->SetX(60.5);
+// $pdf->Cell(129.5, 8, 'ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่ '.thaiNum($user['code3']), 0, 1, 'L');
 
 $pdf->Ln(4.23); // +12 Before
 $pdf->SetX(30);
@@ -149,39 +168,35 @@ $pdf->Write(8, 'เมื่อ');
 $pdf->SetFont('THSarabun','B',20);
 $pdf->Write(8, 'วันที่ '.thaiNum($d).' '.toUTF($def_fullm_th[$m]).' '.thaiNum($y+543));
 
-$pdf->Image($img_idcard, 134, 124, 58, 34);
+$pdf->Image($img_idcard, 134, 98, 58, 34);
 
 $pdf->Ln();
 $pdf->Ln(4.23); // +12 Before
-$pdf->SetX(30);
 $pdf->SetFont('THSarabun','',20);
-$pdf->Write(8, 'สรุปความเห็น ');
-$pdf->SetFont('THSarabun','B',20);
-$pdf->Write(8, toUTF($user['diag']));
-
-$pdf->SetXY(30, $pdf->getY()+8);
-$regular_number = toUTF($user['regular_number']);
-$pdf->MultiCell(160, 8, 'ตามกฏกระทรวง ฉบับที่ ๗๔ (พ.ศ.๒๕๔๐) ข้อ '.$regular_number);
+$pdf->SetX(30);
+$pdf->Cell(160, 8, 'สรุปความเห็น ',0,1);
+$pdf->SetX(30);
+$pdf->MultiCell(160, 8, 'มีภาวะเพศสภาพไม่ตรงกับเพศกำเนิด (Gender Identity Disorder) ตามกฎกระทรวงฉบับที่ ๓๗ (พ.ศ.๒๕๖๑) ฉบับที่ ๔๗ (พ.ศ. ๒๕๑๘) และ ฉบับที่ ๗๕ (พ.ศ.๒๕๕๕) ข้อ ๓ (๑๒)');
 
 $pdf->Image($pic_patient, 30, $pdf->getY()+8, 40, 60);
 
 $pdf->SetFont('THSarabun','',20);
 $pdf->SetXY(115, $pdf->getY()+8);
-$pdf->Cell(75, 8, '(๑) '.toUTF($user['yot1']),0,1);
+$pdf->Cell(75, 8, toUTF($user['yot1']),0,1);
 $pdf->SetX(115);
 $pdf->Cell(75, 8, '('.toUTF($user['doctor1']).')',0,1,'C');
 
-$pdf->Ln(4.23); // +6 Before
-$pdf->SetX(115);
-$pdf->Cell(75, 8, '(๒) '.toUTF($user['yot2']),0,1);
-$pdf->SetX(115);
-$pdf->Cell(75, 8, '('.toUTF($user['doctor2']).')', 0, 1,'C');
+// $pdf->Ln(4.23); // +6 Before
+// $pdf->SetX(115);
+// $pdf->Cell(75, 8, '(๒) '.toUTF($user['yot2']),0,1);
+// $pdf->SetX(115);
+// $pdf->Cell(75, 8, '('.toUTF($user['doctor2']).')', 0, 1,'C');
 
-$pdf->Ln(4.23); // +6 Before
-$pdf->SetX(115);
-$pdf->Cell(75, 8, '(๓) '.toUTF($user['yot3']),0,1);
-$pdf->SetX(115);
-$pdf->Cell(75, 8, '('.toUTF($user['doctor3']).')',0,1,'C');
+// $pdf->Ln(4.23); // +6 Before
+// $pdf->SetX(115);
+// $pdf->Cell(75, 8, '(๓) '.toUTF($user['yot3']),0,1);
+// $pdf->SetX(115);
+// $pdf->Cell(75, 8, '('.toUTF($user['doctor3']).')',0,1,'C');
 
 $pdf->SetX(115);
 $pdf->Cell(75, 8, 'กรมการแพทย์ผู้ตรวจร่างกาย',0,1,'C');

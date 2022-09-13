@@ -443,15 +443,12 @@ if( empty($page) ){
                     <th>นามสกุล</th>
                     <th width="8%">รหัสบัตรประจำตัวประชาชน</th>
                     <th>โรคที่ตรวจพบ</th>
-                    <th width="30%">กฎกระทรวงที่ขัด</th>
+                    <th width="20%">กฎกระทรวงที่ขัด</th>
                     <th width="12%">ภูมิลำเนาทหาร</th>
                     <th>จังหวัด</th>
                     <th>วันที่ออกใบรับรอง</th>
                     <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
-                    <th>แบบเก่า</th>
-                    <th>แบบใหม่</th>
-                    <th>เพศสภาพ</th>
-                    <th>แก้ไข</th>
+                    <th width="6%">พิมพ์</th>
                     <th>ลบ</th>
                 </tr>
             </thead>
@@ -477,17 +474,18 @@ if( empty($page) ){
                         <td><?=$item['yot_pt'];?></td>
                         <td><?=$firstname;?></td>
                         <td><?=$lastname;?></td>
-                        <td><?=$item['idcard'];?></td>
+                        <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>"><?=$item['idcard'];?></a></td>
                         <td><?=$item['diag'];?></td>
                         <td><?=$item['regular'];?></td>
                         <td><?=$item['address'];?></td>
                         <td><?=$item['changwat'];?></td>
                         <td><?=$lastupdate;?></td>
                         <td><?=$board;?></td>
-                        <td><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
-                        <td><a href="rg_soldier_printv2.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
-                        <td><a href="rg_soldier_printv3.php?id=<?=$item['id'];?>" target="_blank">พิมพ์</a></td>
-                        <td><a href="rg_soldier.php?page=form&id=<?=$item['id'];?>">แก้ไข</a></td>
+                        <td>
+                            <a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">แบบเก่า</a><br>
+                            <a href="rg_soldier_printv2.php?id=<?=$item['id'];?>" target="_blank">แบบใหม่ปี65</a><br>
+                            <a href="rg_soldier_printv3.php?id=<?=$item['id'];?>" target="_blank">เพศสภาพ</a>
+                        </td>
                         <!-- rg_soldier.php?action=delete&id= -->
                         <td><a href="#" onclick="return del_confirm();">ลบ</a></td>
                     </tr>
