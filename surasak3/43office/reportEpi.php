@@ -57,18 +57,22 @@ if ( $view === 'search' ) {
                 <td>ปรับปรุง</td>
             </tr>
         <?php 
-        foreach ($items as $key => $item) {
+        foreach ($items as $key => $item) { 
+            $class = '';
+            if(empty($item['PROVIDER'])){
+                $class = 'class="warning"';
+            }
             ?>
-            <tr>
-                <td class="warning"><?=$item['HOSPCODE'];?></td>
-                <td class="warning"><?=$item['PID'];?></td>
-                <td class="warning"><?=$item['SEQ'];?></td>
-                <td class="warning"><?=$item['DATE_SERV'];?></td>
-                <td class="warning"><?=$item['VACCINETYPE'];?></td>
-                <td class="warning"><?=$item['VACCINEPLACE'];?></td>
-                <td class="warning"><?=$item['PROVIDER'];?></td>
-                <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td class="warning"><?=$item['CID'];?></td>
+            <tr <?=$class;?>>
+                <td><?=$item['HOSPCODE'];?></td>
+                <td><?=$item['PID'];?></td>
+                <td><?=$item['SEQ'];?></td>
+                <td><?=$item['DATE_SERV'];?></td>
+                <td><?=$item['VACCINETYPE'];?></td>
+                <td><?=$item['VACCINEPLACE'];?></td>
+                <td><?=$item['PROVIDER'];?></td>
+                <td><?=$item['D_UPDATE'];?></td>
+                <td><?=$item['CID'];?></td>
                 <td><a href="javascript:void(0);">แก้ไข</a></td>
             </tr>
             <?php

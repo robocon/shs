@@ -119,9 +119,14 @@ $db->select("SET NAMES TIS620");
 	</tr>
 </table>
 <?php
-if( $_POST["act"] == "show" ){
+if( $_POST["act"] == "show" ){ 
 	
 	$hn_now = trim($_POST['hn_now']);
+	if(empty($hn_now)){
+		echo "กรุณาใส่ HN";
+		exit;
+	}
+
 	$_SESSION['doctor'] = $_POST['doctor'];
 
 	// ตัวเดิมเป็น dxofyear_emp

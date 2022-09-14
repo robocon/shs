@@ -67,12 +67,11 @@ if( $action === 'save' ){
         ) VALUES ( 
             NULL, '$HOSPCODE', '$PID', '$GRAVIDA', '$LMP', '$EDC', 
             '$VDRL_RESULT', '$HB_RESULT', '$HIV_RESULT', '$DATE_HCT', '$HCT_RESULT', '$THALASSAEMIA', 
-            '$D_UPDATE','$PROVIDER','$CID', '$HEIGHT', '$opday_id', `$date_serv`
+            '$D_UPDATE','$PROVIDER','$CID', '$HEIGHT', '$opday_id', '$date_serv' 
         );";
         $save = $db->insert($sql);
 
     }
-    
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if( $save !== true ){

@@ -64,20 +64,20 @@ if ( $view === 'search' ) {
         foreach ($items as $key => $item) { 
             ?>
             <tr>
-                <td class="warning"><?=$item['HOSPCODE'];?></td>
-                <td class="warning"><?=$item['PID'];?></td>
-                <td class="warning"><?=$item['SEQ'];?></td>
-                <td class="warning"><?=$item['DATE_SERV'];?></td>
-                <td class="warning"><?=$item['NUTRITIONPLACE'];?></td>
-                <td class="warning"><?=$item['WEIGHT'];?></td>
-                <td class="warning"><?=$item['HEIGHT'];?></td>
-                <td class="warning"><?=$item['HEADCIRCUM'];?></td>
-                <td class="warning"><?=$item['CHILDDEVELOP'];?></td>
-                <td class="warning"><?=$item['FOOD'];?></td>
+                <td><?=$item['HOSPCODE'];?></td>
+                <td><?=$item['PID'];?></td>
+                <td><?=$item['SEQ'];?></td>
+                <td><?=$item['DATE_SERV'];?></td>
+                <td><?=$item['NUTRITIONPLACE'];?></td>
+                <td><?=$item['WEIGHT'];?></td>
+                <td><?=$item['HEIGHT'];?></td>
+                <td><?=$item['HEADCIRCUM'];?></td>
+                <td><?=$item['CHILDDEVELOP'];?></td>
+                <td><?=$item['FOOD'];?></td>
                 <td><?=$item['BOTTLE'];?></td>
-                <td class="warning"><?=$item['PROVIDER'];?></td>
-                <td class="warning"><?=$item['D_UPDATE'];?></td>
-                <td class="warning"><?=$item['CID'];?></td>
+                <td><?=$item['PROVIDER'];?></td>
+                <td><?=$item['D_UPDATE'];?></td>
+                <td><?=$item['CID'];?></td>
                 <td><a href="javascript:void(0);">แก้ไข</a></td>
             </tr>
             <?php

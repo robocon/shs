@@ -10,6 +10,7 @@ include_once '../includes/config.php';
 include_once 'head.php';
 
 $dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
 if ($dbi->connect_error) {
     die("Connection failed: " . $dbi->connect_error);
 }

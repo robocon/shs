@@ -9,7 +9,6 @@ if( $action == 'edit' ){
     $list = $db->get_item();
 
     $itemId = $list['opday_id'];
-    dump($itemId);
     
     include 'head.php';
     include '../includes/JSON.php';
@@ -165,7 +164,7 @@ if ( $db->get_rows() > 0 ) {
         $style = '';
 
         if ( $policy_data->PID == false OR preg_match('/\d{8}/',$policy_data->BDATE) < 1 ) {
-            $style = ';
+            $style = '';
         }
         ?>
         <tr <?=$style;?>>
