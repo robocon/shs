@@ -25,7 +25,11 @@ if( $action === "save" ){
     $date_certificate = input_post('date_certificate');
     $yearchk = get_year_checkup(true);
     $file_name = 'NULL';
-    
+
+    $old_idcard_img = input_post('old_idcard_img');
+    $old_pic_patient = input_post('old_pic_patient');
+    $old_pdf = input('old_pdf');
+
     $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ',`tambol`,' ',`ampur`) AS `address`, `changwat` AS `province`,`idcard` 
     FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
     $db->select($sql);
@@ -110,17 +114,23 @@ if( $action === "save" ){
         $last_id = $id;
     }
 
-    $folder = 'certificate';
-    if( !file_exists($folder) ){ mkdir($folder); }
-    if( !file_exists($folder.'/'.$yearchk) ){ mkdir($folder.'/'.$yearchk); }
+    $main_folder = 'certificate';
+    if( !file_exists($main_folder) ){ mkdir($main_folder, 0777); }
+    if( !file_exists($main_folder.'/'.$yearchk) ){ mkdir($main_folder.'/'.$yearchk, 0777); }
+
+    $folder_year = $main_folder.'/'.$yearchk;
     
     $files = $_FILES['pic_patient'];
     $ext = strrchr(strtolower($files['name']), ".");
     if( $files['error'] === 0 && ( $ext == '.png' OR $ext == '.jpg' OR $ext == '.jpeg' ) ){
-        $file_name = $hn.'_pic'.$ext;
-        move_uploaded_file($files['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name);
+        $file_name_pic = $hn.'_pic'.$ext;
+        $file_pic_path = $folder_year.'/'.$file_name_pic;
 
-        $sql = "UPDATE `rg_soldier` SET `pic_patient` = '$file_name' WHERE `id` = '$last_id';";
+        unlink($folder_year.'/'.$old_pic_patient);
+        move_uploaded_file($files['tmp_name'], $file_pic_path);
+        chmod($file_pic_path, 0777);
+
+        $sql = "UPDATE `rg_soldier` SET `pic_patient` = '$file_name_pic' WHERE `id` = '$last_id';";
         $save = $db->update($sql);
 
     }
@@ -128,10 +138,14 @@ if( $action === "save" ){
     $files2 = $_FILES['idcard_img'];
     $ext2 = strrchr(strtolower($files2['name']), ".");
     if( $files2['error'] === 0 && ( $ext2 == '.png' OR $ext2 == '.jpg' OR $ext2 == '.jpeg' ) ){
-        $file_name2 = $hn.'_idcard'.$ext2;
-        move_uploaded_file($files2['tmp_name'], $folder.'/'.$yearchk.'/'.$file_name2);
+        $file_name_idcard = $hn.'_idcard'.$ext2;
+        $file_idcard_path = $folder_year.'/'.$file_name_idcard;
 
-        $sql = "UPDATE `rg_soldier` SET `idcard_img` = '$file_name2' WHERE `id` = '$last_id';";
+        unlink($folder_year.'/'.$old_idcard_img);
+        move_uploaded_file($files2['tmp_name'], $file_idcard_path);
+        chmod($file_idcard_path, 0777);
+        
+        $sql = "UPDATE `rg_soldier` SET `idcard_img` = '$file_name_idcard' WHERE `id` = '$last_id';";
         $save = $db->update($sql);
     }
 
@@ -139,7 +153,11 @@ if( $action === "save" ){
     $extPdf = strrchr(strtolower($amed['name']), ".");
     if( $amed['error'] === 0 && $extPdf == '.pdf' ){ 
         $pdf_file = $hn.'_amed'.$extPdf;
-        move_uploaded_file($amed['tmp_name'], $folder.'/'.$yearchk.'/'.$pdf_file);
+        $file_pdf_path = $folder_year.'/'.$pdf_file;
+
+        unlink($folder_year.'/'.$old_pdf);
+        move_uploaded_file($amed['tmp_name'], $file_pdf_path);
+        chmod($file_pdf_path, 0777);
 
         $sql = "UPDATE `rg_soldier` SET `amed_stat` = '$pdf_file' WHERE `id` = '$last_id';";
         $save = $db->update($sql);
@@ -695,6 +713,7 @@ if( empty($page) ){
                                 ?>
                                 <img src="certificate/<?=$yearchk;?>/<?=$idcard_img;?>" style="width: 120px;">
                                 <p><u>(กรณีที่ต้องการเปลี่ยนรูปสามารถอัพโหลดรูปใหม่ทับได้ทันที)</u></p>
+                                <input type="hidden" name="old_idcard_img" value="<?=$idcard_img;?>">
                                 <?php
                             }
                             ?>
@@ -710,6 +729,7 @@ if( empty($page) ){
                                 ?>
                                 <img src="certificate/<?=$yearchk;?>/<?=$pic_patient;?>" style="width: 120px;">
                                 <p><u>(กรณีที่ต้องการเปลี่ยนรูปสามารถอัพโหลดรูปใหม่ทับได้ทันที)</u></p>
+                                <input type="hidden" name="old_pic_patient" value="<?=$idcard_img;?>">
                                 <?php
                             }
                             ?>
@@ -723,6 +743,7 @@ if( empty($page) ){
                             if ( !empty($amed_stat) && is_file('certificate/'.$yearchk.'/'.$amed_stat) ) { 
                                 ?>
                                 <br>
+                                <input type="hidden" name="old_pdf" value="<?=$amed_stat;?>">
                                 <iframe src="certificate/<?=$yearchk;?>/<?=$amed_stat;?>" frameborder="0" width="100%" height="400"></iframe>
                                 <?php
                             }

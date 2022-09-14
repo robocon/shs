@@ -169,11 +169,11 @@ $pdf->SetX(30);
 $pdf->SetFont('THSarabun','',20);
 $pdf->Write(8, 'สรุปความเห็น ');
 $pdf->SetFont('THSarabun','B',20);
-$pdf->Write(8, toUTF($user['diag']));
+$pdf->Write(8, thaiNum(toUTF($user['diag'])));
 
 $pdf->SetXY(30, $pdf->getY()+8);
 $regular_number = toUTF($user['regular_number']);
-$pdf->MultiCell(160, 8, 'ตามกฏกระทรวง ฉบับที่ ๗๔ (พ.ศ.๒๕๔๐) ข้อ '.$regular_number);
+$pdf->MultiCell(160, 8, 'ตามกฏกระทรวง ฉบับที่ ๗๔ (พ.ศ.๒๕๔๐) ข้อ '.thaiNum($regular_number));
 
 $pdf->Image($pic_patient, 30, $pdf->getY()+8, 40, 60);
 
