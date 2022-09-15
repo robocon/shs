@@ -1,6 +1,6 @@
-        <style>
+<style>
  		body{
-			font-family: TH SarabunPSK;
+			font-family: "TH SarabunPSK";
 			font-size: 18px;
 		}
 		</style>
@@ -12,17 +12,17 @@
         <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
     </form>
 
-<table cellspacing="3" cellpadding="5">
+<table>
     <tr>
-        <th bgcolor=#45B39D>HN</th>
-        <th bgcolor=#45B39D>ชื่อ-สกุล</th>
-        <th bgcolor=#45B39D>แพทย์</th>
-        <th bgcolor=#45B39D>วันนัด</th>
-        <th bgcolor=#45B39D>นัดเพื่อ</th>
-        <th bgcolor=#45B39D>เวลานัด</th>
-        <th bgcolor=#45B39D>แลบ</th>
-        <th bgcolor=#45B39D>เอกซเรย์</th>
-        <th bgcolor=#45B39D>อื่น</th>
+        <th bgcolor=CD853F>HN</th>
+        <th bgcolor=CD853F>ชื่อ-สกุล</th>
+        <th bgcolor=CD853F>แพทย์</th>
+        <th bgcolor=CD853F>วันนัด</th>
+        <th bgcolor=CD853F>นัดเพื่อ</th>
+        <th bgcolor=CD853F>เวลานัด</th>
+        <th bgcolor=CD853F>แลบ</th>
+        <th bgcolor=CD853F>เอกซเรย์</th>
+        <th bgcolor=CD853F>อื่น</th>
     </tr>
 
     <?php
@@ -89,7 +89,7 @@ $select_tomorow = $td." ".$month[$tm]." ".$ty;
         global $hn;
         $query = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`doctor`,a.`appdate`,a.`apptime`,a.`detail`,a.`patho`,a.`xray`,a.`other`,a.`date`,a.`injno`, 
 		CASE WHEN `appdate` = '".$select_day2."'  THEN '#009966' 
-		    WHEN `appdate` = '".$select_tomorow."'  THEN '#FCF3CF' ELSE '#A3E4D7' 
+		    WHEN `appdate` = '".$select_tomorow."'  THEN '#FF6699' ELSE '#F5DEB3' 
 		END AS `color`  
         FROM `appoint` AS a 
 
@@ -129,11 +129,17 @@ $select_tomorow = $td." ".$month[$tm]." ".$ty;
 
         krsort($items); // ให้เรียงตามคีย์ที่ตั้งไว้
         
-        foreach( $items as $key => $item){
+        foreach( $items as $key => $item){ 
+
+            $doctor = $item['doctor'];
+            if(preg_match("/^MD/", $item['doctor'])==true){
+                $doctor = substr($item['doctor'], 6);
+            }
+
             print (" <tr>\n".
             "  <td BGCOLOR='".$item['color']."'><A HREF=\"appinsert2.php?row_id=".$item['row_id']."\" target=\"_blank\">{$item['hn']}</A></td>\n".
             "  <td BGCOLOR='".$item['color']."'><A HREF=\"appdayprint.php?row_id=".$item['row_id']."\" target=\"_blank\">{$item['ptname']}</A></td>\n".
-            "  <td BGCOLOR='".$item['color']."'>".substr($item['doctor'],6)."</td>\n".
+            "  <td BGCOLOR='".$item['color']."'>".$doctor."</td>\n".
             "  <td BGCOLOR='".$item['color']."' title=\"ออกใบนัดเมื่อ {$item['date']}\">{$item['appdate']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['detail']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['apptime']}</td>\n".
