@@ -30,13 +30,21 @@ if( $action === "save" ){
     $old_pic_patient = input_post('old_pic_patient');
     $old_pdf = input('old_pdf');
 
-    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, CONCAT(`address`,' ',`tambol`,' ',`ampur`) AS `address`, `changwat` AS `province`,`idcard` 
+    $sql = "SELECT `yot`,CONCAT(`name`,' ',`surname`) AS `ptname`, `address`, `tambol`, `ampur`, `changwat` AS `province`,`idcard` 
     FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
     $db->select($sql);
     $pt = $db->get_item();
     $yot_pt = $pt['yot'];
     $ptname = $pt['ptname'];
+
     $address = $pt['address'];
+    if(!empty($pt['tambol'])){
+        $address .= ' ต.'.$pt['tambol'];
+    }
+    if(!empty($pt['ampur'])){
+        $address .= ' อ.'.$pt['ampur'];
+    }
+
     $province = $pt['province'];
     $idcard = $pt['idcard'];
     $editor = $_SESSION['sOfficer'];
@@ -92,6 +100,7 @@ if( $action === "save" ){
     }else{
         $sql = "UPDATE `rg_soldier`
         SET 
+        `address` = '$address',
         `regular_number` = '$regular_number',
         `regular` = '$regular',
         `last_update` = NOW(),
@@ -460,13 +469,13 @@ if( empty($page) ){
                     <th>ลำดับ</th>
                     <th>เล่มที่<br>เลขที่</th>
                     <th>คำนำหน้า ชื่อ-สกุล</th>
-                    <th width="8%">รหัสบัตรประจำตัวประชาชน</th>
+                    <th>รหัสบัตรประจำตัวประชาชน</th>
                     <th>โรคที่ตรวจพบ</th>
                     <th width="20%">กฎกระทรวงที่ขัด</th>
-                    <th width="12%">ภูมิลำเนาทหาร</th>
+                    <th>ภูมิลำเนาทหาร</th>
                     <th>วันที่ออกใบรับรอง</th>
                     <th width="12%">คณะกรรมการแพทย์ที่ตรวจ</th>
-                    <th width="6%">พิมพ์</th>
+                    <th width="12%">พิมพ์</th>
                     <th>ลบ</th>
                 </tr>
             </thead>
@@ -496,9 +505,12 @@ if( empty($page) ){
                         <td><?=$lastupdate;?></td>
                         <td><?=$board;?></td>
                         <td>
-                            <a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">แบบเก่า</a><br>
-                            <a href="rg_soldier_printv2.php?id=<?=$item['id'];?>" target="_blank">แบบใหม่ปี65</a><br>
-                            <a href="rg_soldier_printv3.php?id=<?=$item['id'];?>" target="_blank">เพศสภาพ</a>
+                            <ol style="margin:0; padding-left:15px;">
+                                <li><a href="rg_soldier_print.php?id=<?=$item['id'];?>" target="_blank">แบบเก่า</a></li>
+                                <li><a href="rg_soldier_printv2.php?id=<?=$item['id'];?>" target="_blank">จำพวก4</a></li>
+                                <li><a href="rg_soldier_printv3.php?id=<?=$item['id'];?>" target="_blank">จำพวก2 (เพศสภาพ)</a></li>
+                                <li><a href="rg_soldier_printv4.php?id=<?=$item['id'];?>" target="_blank">ใบยินยอม</a></li>
+                            </ol>
                         </td>
                         <!-- rg_soldier.php?action=delete&id= -->
                         <td><a href="#" onclick="return del_confirm();">ลบ</a></td>
@@ -622,6 +634,16 @@ if( empty($page) ){
         }
         </style>
         <div>
+            <?php 
+            if(empty($id)){
+                $yearchk = get_year_checkup(true);
+                $sql = "SELECT `id` FROM `rg_soldier` WHERE `hn` = '$hn' AND `yearchk` = '$yearchk' ";
+                $db->select($sql);
+                if($db->get_rows() > 0){
+                    ?><p style="text-align:center; font-weight: bold; color: red; font-size: 24px;"><u>เคยบันทึกข้อมูล HN <?=$hn;?> นี้ไปแล้วในปีงบนี้ กรุณาตรวจสอบข้อมูลก่อนทำการบันทึก</u></p><?php
+                }
+            }
+            ?>
             <form action="rg_soldier.php" method="post" id="inputForm" enctype="multipart/form-data">
                 <table width="80%" align="center" id="echo_table" style="vertical-align: top;">
                     <tr>
