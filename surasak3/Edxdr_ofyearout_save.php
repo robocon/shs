@@ -2,6 +2,7 @@
 session_start();
 include("connect.inc");
 
+
 $date_now = date("Y-m-d H:i:s");
 
 $yy = explode(" ",$date_now);
@@ -207,10 +208,6 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 	$ldl_range = $dxdr_ofyear['ldl_range'];
 	$stat_ldl = $_POST['stat_ldl'];
 	$reason_ldl = $_POST['reason_ldl'];
-
-	$stocc = $dxdr_ofyear['stocc'];
-	$stoccflag = $dxdr_ofyear['stoccflag'];
-	$stat_stocc = $_POST['stat_stocc'];
 	
 	$sql ="INSERT INTO  `condxofyear_out` ( 
 		`thidate` ,  `thdatehn` ,  `thdatevn` ,  `hn` ,  `vn` , `ptname`  , 
@@ -258,7 +255,7 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		`vdrl_range`,`stat_vdrl`,`parasi`,`parasi_range`,`stat_parasi`,`groupt`,
 		`groupt_range`,`stat_groupt`,`rh`,`rh_range`,`stat_rh`,`upt`,
 		`upt_range`,`stat_upt`, `antihb`, `antihb_range`, `stat_antihb`, 
-		`ldl`,`ldl_range`,`stat_ldl`,`reason_ldl`,`stocc`,`stoccflag`,`stat_stocc`) 
+		`ldl`,`ldl_range`,`stat_ldl`,`reason_ldl`,`doctor_ans`) 
 	
 	VALUES ( 
 
@@ -309,7 +306,7 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		'$vdrl_range','$stat_vdrl','$parasi','$parasi_range','$stat_parasi','$groupt', 
 		'$groupt_range','$stat_groupt','$rh','$rh_range','$stat_rh','$upt', 
 		'$upt_range','$stat_upt', '$antihb', '$antihb_range', '$stat_antihb', 
-		'$ldl','$ldl_range','$stat_ldl','$reason_ldl','$stocc','$stoccflag','$stat_stocc') ";
+		'$ldl','$ldl_range','$stat_ldl','$reason_ldl','".$_POST['doctor_ans']."') ";
 
 	/*$sql = "Update `condxofyear_out` set `thidate` = '".$date_now."' ,`thdatehn` = '".$date_hn."' ,`thdatevn` = '".$date_vn."' ,`dx` = '".$_POST["dx"]."' ,`bmi` = '".$_POST["bmi"]."' , `doctor` ='".$_POST["doctorn"]."', `stat_ua` ='".$_POST["normal"]."' , `stat_hct` ='".$_POST["normal31"]."' , `stat_wbc` ='".$_POST["normal32"]."' , `stat_pltc` ='".$_POST["normal33"]."' , `stat_alk` ='".$_POST["normal1"]."' , `stat_sgpt` ='".$_POST["normal2"]."' , `stat_sgot` ='".$_POST["normal3"]."' , `stat_bun` ='".$_POST["normal4"]."' , `stat_chol` ='".$_POST["normal5"]."' , `stat_cr` ='".$_POST["normal6"]."' , `stat_bs` ='".$_POST["normal7"]."' , `stat_tg` ='".$_POST["normal8"]."' , `stat_uric` ='".$_POST["normal9"]."' , `reason_ua` ='".$_POST["ch"]."' , `reason_hct` ='".$_POST["ch31"]."' , `reason_wbc` ='".$_POST["ch32"]."' , `reason_pltc` ='".$_POST["ch33"]."' , `reason_bs` ='".$_POST["ch7"]."' , `reason_bun` ='".$_POST["ch4"]."' , `reason_cr` ='".$_POST["ch6"]."' , `reason_uric` ='".$_POST["ch9"]."' , `reason_chol` ='".$_POST["ch5"]."' , `reason_tg` ='".$_POST["ch8"]."' , `reason_sgot` ='".$_POST["ch3"]."' , `reason_sgpt` ='".$_POST["ch2"]."' , `reason_alk` ='".$_POST["ch1"]."' , `general` ='".$_POST["normal21"]."' , `cxr` ='".$_POST["normal22"]."' , `pap` ='".$_POST["normal23"]."' , `stat_other1` ='".$_POST["normal24"]."' , `stat_other2` ='".$_POST["normal25"]."' , `reason_general` ='".$_POST["ch21"]."' , `reason_cxr` ='".$_POST["ch22"]."' , `reason_pap` ='".$_POST["ch23"]."' , `reason_other1` ='".$_POST["ch24"]."' , `reason_other2` ='".$_POST["ch25"]."' , `other1` ='".$_POST["other1"]."' , `other2` ='".$_POST["other2"]."' , `summary` ='".$_POST["normal26"]."'  where `row_id` = '".$_POST["row_id"]."' limit 1";
 	//echo $sql;
@@ -347,6 +344,8 @@ if($result && isset($_POST["submit"])){
 	$arrs = Mysql_fetch_assoc($result);
 	?>
 <!--<div style="page-break-after:always">-->
+
+
 <div>
 <table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
 	<tr>
@@ -400,8 +399,8 @@ if($result && isset($_POST["submit"])){
 </table>
 </div>
 <script language="javascript">
-		window.print();
-		window.opener.location.href='dt_index.php';
+		//window.print();
+		//window.opener.location.href='dt_index.php';
 		//setTimeout("window.close();",3000);
 	</script>
 <!--<script>
@@ -411,6 +410,113 @@ window.open("report_dxofyear_out_hukgun.php?hn=<?//=$arrs["hn"];?>", "_blank", "
 		}else{
 		echo "<CENTER><FONT COLOR=\"red\">ไม่สามารถบันทึกข้อมูลได้</FONT></CENTER>";
 	}
+
+ 
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+
+$tmp_hn = $_POST['hn'];
+$tmp_vn = $_POST['vn'];
+$tmp_certtype = $_POST['cert_type'];
+
+
+/* ข้อมูลทดสอบ
+$tmp_hn = "65-2936";
+$tmp_vn = "149";
+$tmp_certtype = "ใบรับรองแพทย์ 5 โรค (E_CERT-001)";
+*/
+
+$select = "select * from condxofyear_out where hn = '".$tmp_hn."' AND (camp like '%E_CERT%') order by thidate desc";
+		$row = mysql_query($select);
+		$num = mysql_num_rows($row);
+		while($result = mysql_fetch_array($row)){
+		
+			$tmp_row_id = $result["row_id"];
+
+		}//end while
+
+
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////// เงื่อนไขแสดงรายงาน + lab ////////////////////////////////////////////////////////
+
+//-----> ข้อมูล LAB เอามาเช็คเงื่อนไขการแสดงผล
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '".$tmp_hn."' AND row_id = '".$tmp_row_id."'  "; 
+//echo $sql;exit();
+$query = mysql_query($sql); 
+$num = mysql_num_rows($query); 
+
+if(empty($num)){
+	echo "<h1 align='center'>ไม่พบสรุปข้อมูล LAB</h1>";echo "<br>".exit();
+}//end if
+$status_show = "";
+while($rows = mysql_fetch_array($query)){
+
+	if(
+		$rows["ua_gluu"] == "" AND 
+		$rows["stat_tg"] == "" AND 
+		$rows["stat_chol"] == "" AND 
+		$rows["stat_alk"] == "" AND 
+		$rows["stat_sgpt"] == "" AND 
+		$rows["stat_sgot"] == "" AND 
+		$rows["stat_bun"] == "" AND 
+		$rows["stat_cr"] == "" AND 
+		$rows["stat_uric"] == "" AND 
+		$rows["stat_hdl"] == "" AND 
+		$rows["stat_ldl"] == "" AND 
+		$rows["stat_malari"] == "" AND 
+		$rows["stat_metamp"] == "" AND 
+		$rows["stat_hbsag"] == "" AND 
+		$rows["stat_hcvab"] == "" AND 
+		$rows["stat_vdrl"] == "" AND 
+		$rows["stat_parasi"] == "" AND 
+		$rows["stat_upt"] == "" AND 
+		$rows["stat_cbc"] == "" AND 
+		$rows["stat_ua"] == "" AND 
+		$rows["stat_hiv"] == "" AND 
+		$rows["stat_ldlc"] == "" AND 
+		$rows["cxr"] == "" AND 
+		$rows["ekg"] == "" AND 
+		$rows["color_blind"] == "" AND 
+		$rows["audiogram"] == "" AND 
+		$rows["dental_exam"] == "" AND 
+		$rows["rh"] == "" AND 
+		$rows["groupt"] == "" AND 
+		$rows["pft"] == "" 
+	){
+		$status_show = false;
+	}else{
+		$status_show = true;
+	}//end if
+
+}//enf while
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////// start ใบรับรองแพทย์ ให้หมอพิมพ์เอกสารเอง /////////////////
+
+	if($tmp_certtype == "ใบรับรองแพทย์ 5 โรค (E_CERT-001)" AND $status_show == false){
+		$link = "Checkup_Medical_Cert.php?hn=".$tmp_hn."&rowid=".$tmp_row_id."&vn=".$tmp_vn."&type=A";
+		//echo $link;exit();
+		header( "location: $link" );
+ 		exit(0);
+		
+	}else if($tmp_certtype == "ใบรับรองแพทย์ สำหรับใบอนุญาตขับรถ (E_CERT-002)"){
+		$link = "Checkup_Medical_Cert_Drive.php?hn=".$tmp_hn."&rowid=".$tmp_row_id."&vn=".$tmp_vn."&type=B";
+		header( "location: $link" );
+ 		exit(0);
+
+	}else{ // ใบรับรองแพทย์ 5 โรค + Lab
+		$link = "Checkup_Medical_Cert_WithLab.php?hn=".$tmp_hn."&rowid=".$tmp_row_id."&vn=".$tmp_vn."&type=C";
+		header( "location: $link" );
+ 		exit(0);
+
+	}//end if
+
+//////////////////// end ใบรับรองแพทย์ ให้หมอพิมพ์เอกสารเอง /////////////////
 
 include("unconnect.inc");
 

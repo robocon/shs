@@ -27,9 +27,9 @@ function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ª’";
+		$pAge="$ageY ‡∏õ‡∏µ";
 	}else{
-		$pAge="$ageY ª’ $ageM ‡¥◊Õπ";
+		$pAge="$ageY ‡∏õ‡∏µ $ageM ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô";
 	}
 
 return $pAge;
@@ -94,8 +94,8 @@ $list_lab["URIC"] = "uric";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>µ√«® ÿ¢¿“æ∑À“√ª√–®”ª’</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏ó‡∏´‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ</title>
 <style>
 	.font_title{font-family:"TH Sarabun New"; font-size:32px;}
 	.tb_font{font-family:"TH Sarabun New"; font-size:24px;}
@@ -176,29 +176,29 @@ body,td,th {
 <script>
 function check(){
 	if(document.dxdrform.normal55.checked == false&document.dxdrform.normal55.checked == false){
-		alert('¬—ß‰¡Ë‰¥È‡≈◊Õ°§Ë“§«“¡¥—π');
+		alert('‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏Ñ‡πà‡∏≤‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô');
 		document.dxdrform.normal55.focus();
 		return false;
 	}else if(document.dxdrform.normal56.checked == false&document.dxdrform.normal56.checked == false){
-		alert('¬—ß‰¡Ë‰¥È‡≈◊Õ°§Ë“ BMI');
+		alert('‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏Ñ‡πà‡∏≤ BMI');
 		document.dxdrform.normal56.focus();
 		return false;		
 	}else if(document.dxdrform.normal98.checked == false&document.dxdrform.normal99.checked == false){
-		alert('¬—ß‰¡Ë‰¥È‡≈◊Õ°º≈°“√µ√«®UA');
+		alert('‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏àUA');
 		document.dxdrform.normal98.focus();
 		return false;
 	}
 	else if(document.dxdrform.normal97.checked == false&document.dxdrform.normal96.checked == false){
-		alert('¬—ß‰¡Ë‰¥È‡≈◊Õ°º≈°“√µ√«®CBC');
+		alert('‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏àCBC');
 		document.dxdrform.normal97.focus();
 		return false;
 	}
 	else if(document.dxdrform.normal58.checked == false&document.dxdrform.normal57.checked == false){
-		alert('¬—ß‰¡Ë‰¥È‡≈◊Õ°º≈°“√µ√«®‡ÕÁ°´Ï‡√¬ÏªÕ¥');
+		alert('‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡πÄ‡∏≠‡πá‡∏Å‡∏ã‡πå‡πÄ‡∏£‡∏¢‡πå‡∏õ‡∏≠‡∏î');
 		document.dxdrform.normal58.focus();
 		return false;
 	}else if(document.dxdrform.normal61.checked == false&document.dxdrform.normal62.checked == false&document.dxdrform.normal63.checked == false&document.dxdrform.normal64.checked == false&document.dxdrform.normal65.checked == false&document.dxdrform.normal66.checked == false){
-		alert('¬—ß‰¡Ë‰¥È‡≈◊Õ° √ÿªº≈°“√µ√«®');
+		alert('‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏™‡∏£‡∏∏‡∏õ‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à');
 		document.dxdrform.normal61.focus();
 		return false;
 	}else{
@@ -232,10 +232,10 @@ function togglediv2(divid){
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0">
 	<TR>
-		<TD align="center" bgcolor="#0000CC" class="tb_font_1">°√Õ°À¡“¬‡≈¢ VN</TD>
+		<TD align="center" bgcolor="#0000CC" class="tb_font_1">‡∏Å‡∏£‡∏≠‡∏Å‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏•‡∏Ç VN</TD>
 	</TR>
 	<TR>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_GET["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="µ°≈ß" /></TD>
+		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_GET["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="‡∏ï‡∏Å‡∏•‡∏á" /></TD>
 	</TR>
 	<TR>
 		<TD></TD>
@@ -248,7 +248,7 @@ function togglediv2(divid){
 </form>-->
 
 <?php if(!empty($_GET["p_hn"] )){
-		////*runno µ√«® ÿ¢¿“æ*/////////
+		////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 		
@@ -263,9 +263,9 @@ function togglediv2(divid){
 		
 		$nPrefix=$row->prefix;
 		$showyear="25".$nPrefix;
-	////*runno µ√«® ÿ¢¿“æ*/////////
+	////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 	
-//§ÈπÀ“ hn ®“° opday ****************************************************************************************
+//‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤ hn ‡∏à‡∏≤‡∏Å opday ****************************************************************************************
 	$date_now = (date("Y")+543).date("-m-d");
 	$sqlvn = "Select * From dxofyear where  hn = '".$_GET["p_hn"]."' and thidate like '$thidate%' limit 0,1";
 	$resultvn= mysql_query($sqlvn);
@@ -275,7 +275,7 @@ function togglediv2(divid){
 	//echo $sql;
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
 	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ºŸÈªË«¬¬—ß‰¡Ë‰¥È∑”°“√≈ß∑–‡∫’¬π</CENTER>";
+		echo "<CENTER>‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡∏ó‡∏≥‡∏Å‡∏≤‡∏£‡∏•‡∏á‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô</CENTER>";
 		exit();
 	}*/
 	$arr_view = mysql_fetch_assoc($result);
@@ -286,7 +286,7 @@ function togglediv2(divid){
 $date_hn = date("Y-m-d").$queryvn['hn'];
 $date_vn = date("Y-m-d").$queryvn['vn'];
 $arr_view["hn"] = $queryvn['hn'];
-$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> '≠“µ‘' Order by row_id DESC limit 1";
+$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> '‡∏ç‡∏≤‡∏ï‡∏¥' Order by row_id DESC limit 1";
 $result = Mysql_Query($sql);
 list($weight, $height) = Mysql_fetch_row($result);
 
@@ -294,28 +294,28 @@ list($weight, $height) = Mysql_fetch_row($result);
 $sqlvn = "Select vn From dxofyear  where  hn = '".$_GET["p_hn"]."' and thidate='".$thidate."' limit 0,1";
 list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 
-//§ÈπÀ“«—π‡°‘¥®“° opcard ****************************************************************************************
+//‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ß‡∏±‡∏ô‡πÄ‡∏Å‡∏¥‡∏î‡∏à‡∏≤‡∏Å opcard ****************************************************************************************
 	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
 	//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
 	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
 	$arr_view["age"] = calcage($arr_view["dbirth"]);
 
-//§ÈπÀ“º≈°“√µ√«®∑“ßæ¬“∏‘ ****************************************************************************************
+//‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ó‡∏≤‡∏á‡∏û‡∏¢‡∏≤‡∏ò‡∏¥ ****************************************************************************************
 
-	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’$nPrefix')  Order by a.autonumber DESC limit 0,1";
+	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = '‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ$nPrefix')  Order by a.autonumber DESC limit 0,1";
 	//echo $sql;
 	list($lab_date) = mysql_fetch_row(mysql_query($sql));
 
-	/*$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'UA' AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’54' ) Order by labcode ASC ";
+	/*$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'UA' AND (clinicalinfo = '‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ54' ) Order by labcode ASC ";
 	
 	$result_ua = mysql_query($sql);
 
-	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’54') Order by labcode ASC";
+	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = '‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ54') Order by labcode ASC";
 	$result_cbc = mysql_query($sql);
 
-	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = 'µ√«® ÿ¢¿“æª√–®”ª’54') Order by a.autonumber ASC ";
+	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = '‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ54') Order by a.autonumber ASC ";
 	$result_lab = mysql_query($sql);*/
-//§ÈπÀ“¢ÈÕ¡Ÿ≈‡¥‘¡
+//‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏î‡∏¥‡∏°
 	
 	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
 	$date_after= date("Y-m-d H:i:s",$times);
@@ -337,16 +337,16 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 		if($arr_dxofyear["cigarette"] == '1'){ $cigarette1 = "Checked";}else if($arr_dxofyear["cigarette"] == '0'){$cigarette0 = "Checked";}else if($arr_dxofyear["cigarette"] == '2'){$cigarette2 = "Checked";}else if($arr_dxofyear["cigarette"] == '3'){$cigarette3 = "Checked";}
 		if($arr_dxofyear["alcohol"] == '1'){ $alcohol1 = "Checked";}else if($arr_dxofyear["alcohol"] == '0'){$alcohol0 = "Checked";}else if($arr_dxofyear["alcohol"] == '2'){$alcohol2 = "Checked";}else if($arr_dxofyear["alcohol"] == '3'){$alcohol3 = "Checked";}
 		if($arr_dxofyear["exercise"] == '1'){ $exercise1 = "Checked";}else if($arr_dxofyear["exercise"] == '0'){$exercise0 = "Checked";}else if($arr_dxofyear["exercise"] == '2'){$exercise2 = "Checked";}
-		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ªÆ‘‡ ∏‚√§ª√–®”µ—«";}
+		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "‡∏õ‡∏é‡∏¥‡πÄ‡∏™‡∏ò‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß";}
 		$rowid = $arr_dxofyear['row_id'];
 		
 	}else{
-		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> '≠“µ‘' Order by row_id DESC limit 1";
+		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> '‡∏ç‡∏≤‡∏ï‡∏¥' Order by row_id DESC limit 1";
 
 		$result = Mysql_Query($sql);
 		list($drugreact,$congenital_disease, $weight, $height, $cigarette1, $alcohol1,$exercise1, $cigarette0, $alcohol0, $exercise0, $cigarette2, $alcohol2,$exercise2, $cigarette3, $alcohol3) = Mysql_fetch_row($result);
 			if($congenital_disease == "")
-				$congenital_disease = "ªÆ‘‡ ∏‚√§ª√–®”µ—«";
+				$congenital_disease = "‡∏õ‡∏é‡∏¥‡πÄ‡∏™‡∏ò‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß";
 
 	}
 	
@@ -356,54 +356,54 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 	
 $choose = array();
 
-array_push($choose,"µ√«®µ“¡π—¥");
-array_push($choose,"¡“°ËÕππ—¥");
-array_push($choose,"¡“À≈—ßπ—¥");
-array_push($choose,"Õ“°“√∑—Ë«‰ªª°µ‘");
-array_push($choose,"√—∫¬“‡¥‘¡");
-array_push($choose,"..........«—π");
-array_push($choose,"‰¢È");
-array_push($choose,"‰Õ");
-array_push($choose,"‡®Á∫§Õ");
-array_push($choose,"¡’‡ ¡À–");
-array_push($choose,"¡’πÈ”¡Ÿ°");
-array_push($choose,"ª«¥»’√…–");
-array_push($choose,"‡«’¬π»’√…–");
-array_push($choose,"∫È“πÀ¡ÿπ");
-array_push($choose,"§≈◊Ëπ‰ È");
-array_push($choose,"Õ“‡®’¬π");
-array_push($choose,"„® —Ëπ");
-array_push($choose,"ÕËÕπ‡æ≈’¬");
-array_push($choose,"‡∫◊ËÕÕ“À“√");
-array_push($choose,"À“¬„®‡Àπ◊ËÕ¬ÀÕ∫");
-array_push($choose,"®ÿ°·πËπ∑ÈÕß");
-array_push($choose,"‡®Á∫ÀπÈ“Õ°");
-array_push($choose,"ÀπÈ“¡◊¥ µ“≈“¬");
-array_push($choose,"ª«¥∑ÈÕß");
-array_push($choose,"Õ◊¥∑ÈÕß");
-array_push($choose,"∂Ë“πÕÿ®®“√–‡À≈«");
-array_push($choose,"∑ÈÕßºŸ°");
-array_push($choose,"ª—  “«–· ∫¢—¥");
-array_push($choose,"ª«¥À≈—ß");
-array_push($choose,"ª«¥‡Õ«");
-array_push($choose,"ª«¥·¢π");
-array_push($choose,"ª«¥¢“");
-array_push($choose,"ª«¥πËÕß");
-array_push($choose,"ª«¥‰À≈Ë");
-array_push($choose,"ª«¥ –‚æ°");
-array_push($choose,"·º≈∑’Ë.......");
-array_push($choose,"°ÈÕπ∑’Ë........");
-array_push($choose,"µ√«® ÿ¢¿“æ");
-array_push($choose,"¢Õ„∫√—∫√Õß·æ∑¬Ï");
-array_push($choose,"ª√÷°…“·æ∑¬Ï");
-array_push($choose,"ª«¥‡¡◊ËÕ¬µ“¡µ—«");
-array_push($choose,"§√—Ëπ‡π◊ÈÕ§√—Ëπµ—«");
-array_push($choose,"º◊Ëπ§—π");
-array_push($choose,"ºŸÈªË«¬‰¡Ë¡“ ≠“µ‘™◊ËÕ..ID..");
-array_push($choose,"¢Õ√—∫«—§´’ππ—¥©’¥‚√§æ‘… ÿπ—¢∫È“ ‡¢Á¡∑’Ë");
-array_push($choose,"¢Õ√—∫«—§´’ππ—¥©’¥∫“¥∑–¬—° ‡¢Á¡∑’Ë");
-array_push($choose,"¢Õ√—∫«—§´’ππ—¥©’¥‰«√— µ—∫Õ—°‡ ∫∫’ ‡¢Á¡∑’Ë");
-array_push($choose,"¢Õ ”‡π“ª√–«—µ‘√—°…“");
+array_push($choose,"‡∏ï‡∏£‡∏ß‡∏à‡∏ï‡∏≤‡∏°‡∏ô‡∏±‡∏î");
+array_push($choose,"‡∏°‡∏≤‡∏Å‡πà‡∏≠‡∏ô‡∏ô‡∏±‡∏î");
+array_push($choose,"‡∏°‡∏≤‡∏´‡∏•‡∏±‡∏á‡∏ô‡∏±‡∏î");
+array_push($choose,"‡∏≠‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏±‡πà‡∏ß‡πÑ‡∏õ‡∏õ‡∏Å‡∏ï‡∏¥");
+array_push($choose,"‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°");
+array_push($choose,"..........‡∏ß‡∏±‡∏ô");
+array_push($choose,"‡πÑ‡∏Ç‡πâ");
+array_push($choose,"‡πÑ‡∏≠");
+array_push($choose,"‡πÄ‡∏à‡πá‡∏ö‡∏Ñ‡∏≠");
+array_push($choose,"‡∏°‡∏µ‡πÄ‡∏™‡∏°‡∏´‡∏∞");
+array_push($choose,"‡∏°‡∏µ‡∏ô‡πâ‡∏≥‡∏°‡∏π‡∏Å");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡∏®‡∏µ‡∏£‡∏©‡∏∞");
+array_push($choose,"‡πÄ‡∏ß‡∏µ‡∏¢‡∏ô‡∏®‡∏µ‡∏£‡∏©‡∏∞");
+array_push($choose,"‡∏ö‡πâ‡∏≤‡∏ô‡∏´‡∏°‡∏∏‡∏ô");
+array_push($choose,"‡∏Ñ‡∏•‡∏∑‡πà‡∏ô‡πÑ‡∏™‡πâ");
+array_push($choose,"‡∏≠‡∏≤‡πÄ‡∏à‡∏µ‡∏¢‡∏ô");
+array_push($choose,"‡πÉ‡∏à‡∏™‡∏±‡πà‡∏ô");
+array_push($choose,"‡∏≠‡πà‡∏≠‡∏ô‡πÄ‡∏û‡∏•‡∏µ‡∏¢");
+array_push($choose,"‡πÄ‡∏ö‡∏∑‡πà‡∏≠‡∏≠‡∏≤‡∏´‡∏≤‡∏£");
+array_push($choose,"‡∏´‡∏≤‡∏¢‡πÉ‡∏à‡πÄ‡∏´‡∏ô‡∏∑‡πà‡∏≠‡∏¢‡∏´‡∏≠‡∏ö");
+array_push($choose,"‡∏à‡∏∏‡∏Å‡πÅ‡∏ô‡πà‡∏ô‡∏ó‡πâ‡∏≠‡∏á");
+array_push($choose,"‡πÄ‡∏à‡πá‡∏ö‡∏´‡∏ô‡πâ‡∏≤‡∏≠‡∏Å");
+array_push($choose,"‡∏´‡∏ô‡πâ‡∏≤‡∏°‡∏∑‡∏î ‡∏ï‡∏≤‡∏•‡∏≤‡∏¢");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡∏ó‡πâ‡∏≠‡∏á");
+array_push($choose,"‡∏≠‡∏∑‡∏î‡∏ó‡πâ‡∏≠‡∏á");
+array_push($choose,"‡∏ñ‡πà‡∏≤‡∏ô‡∏≠‡∏∏‡∏à‡∏à‡∏≤‡∏£‡∏∞‡πÄ‡∏´‡∏•‡∏ß");
+array_push($choose,"‡∏ó‡πâ‡∏≠‡∏á‡∏ú‡∏π‡∏Å");
+array_push($choose,"‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡πÅ‡∏™‡∏ö‡∏Ç‡∏±‡∏î");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡∏´‡∏•‡∏±‡∏á");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡πÄ‡∏≠‡∏ß");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡πÅ‡∏Ç‡∏ô");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡∏Ç‡∏≤");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡∏ô‡πà‡∏≠‡∏á");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡πÑ‡∏´‡∏•‡πà");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡∏™‡∏∞‡πÇ‡∏û‡∏Å");
+array_push($choose,"‡πÅ‡∏ú‡∏•‡∏ó‡∏µ‡πà.......");
+array_push($choose,"‡∏Å‡πâ‡∏≠‡∏ô‡∏ó‡∏µ‡πà........");
+array_push($choose,"‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û");
+array_push($choose,"‡∏Ç‡∏≠‡πÉ‡∏ö‡∏£‡∏±‡∏ö‡∏£‡∏≠‡∏á‡πÅ‡∏û‡∏ó‡∏¢‡πå");
+array_push($choose,"‡∏õ‡∏£‡∏∂‡∏Å‡∏©‡∏≤‡πÅ‡∏û‡∏ó‡∏¢‡πå");
+array_push($choose,"‡∏õ‡∏ß‡∏î‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏¢‡∏ï‡∏≤‡∏°‡∏ï‡∏±‡∏ß");
+array_push($choose,"‡∏Ñ‡∏£‡∏±‡πà‡∏ô‡πÄ‡∏ô‡∏∑‡πâ‡∏≠‡∏Ñ‡∏£‡∏±‡πà‡∏ô‡∏ï‡∏±‡∏ß");
+array_push($choose,"‡∏ú‡∏∑‡πà‡∏ô‡∏Ñ‡∏±‡∏ô");
+array_push($choose,"‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏°‡πà‡∏°‡∏≤ ‡∏ç‡∏≤‡∏ï‡∏¥‡∏ä‡∏∑‡πà‡∏≠..ID..");
+array_push($choose,"‡∏Ç‡∏≠‡∏£‡∏±‡∏ö‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡∏ô‡∏±‡∏î‡∏â‡∏µ‡∏î‡πÇ‡∏£‡∏Ñ‡∏û‡∏¥‡∏©‡∏™‡∏∏‡∏ô‡∏±‡∏Ç‡∏ö‡πâ‡∏≤ ‡πÄ‡∏Ç‡πá‡∏°‡∏ó‡∏µ‡πà");
+array_push($choose,"‡∏Ç‡∏≠‡∏£‡∏±‡∏ö‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡∏ô‡∏±‡∏î‡∏â‡∏µ‡∏î‡∏ö‡∏≤‡∏î‡∏ó‡∏∞‡∏¢‡∏±‡∏Å ‡πÄ‡∏Ç‡πá‡∏°‡∏ó‡∏µ‡πà");
+array_push($choose,"‡∏Ç‡∏≠‡∏£‡∏±‡∏ö‡∏ß‡∏±‡∏Ñ‡∏ã‡∏µ‡∏ô‡∏ô‡∏±‡∏î‡∏â‡∏µ‡∏î‡πÑ‡∏ß‡∏£‡∏±‡∏™‡∏ï‡∏±‡∏ö‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö‡∏ö‡∏µ ‡πÄ‡∏Ç‡πá‡∏°‡∏ó‡∏µ‡πà");
+array_push($choose,"‡∏Ç‡∏≠‡∏™‡∏≥‡πÄ‡∏ô‡∏≤‡∏õ‡∏£‡∏∞‡∏ß‡∏±‡∏ï‡∏¥‡∏£‡∏±‡∏Å‡∏©‡∏≤");
 sort($choose);
 $sql = "Select distinct organ From opd where hn = '".$arr_view["hn"]."' AND organ <> '' Order by row_id DESC limit 10";
 $result = Mysql_Query($sql);
@@ -414,8 +414,8 @@ while($arr = Mysql_fetch_assoc($result)){
 $_SESSION["hn_now"] = $arr_view["hn"];
 
 ?>
-<a href='../nindex.htm'>&lt;&lt;‰ª‡¡πŸ</a>  || <a href='dt_armymanual_index.php'>ºŸÈµ√«® ÿ¢¿“æ√“¬„À¡Ë</a>
-<!-- ¢ÈÕ¡Ÿ≈‡∫◊ÈÕßµÈπ¢ÕßºŸÈªË«¬ -->
+<a href='../nindex.htm'>&lt;&lt;‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</a>  || <a href='dt_armymanual_index.php'>‡∏ú‡∏π‡πâ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏£‡∏≤‡∏¢‡πÉ‡∏´‡∏°‡πà</a>
+<!-- ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏ö‡∏∑‡πâ‡∏≠‡∏á‡∏ï‡πâ‡∏ô‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ -->
 <FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyeararmy_save_manual.php"   onsubmit="return check()">
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_dxofyear["age"];?>" />
@@ -423,25 +423,25 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 <input name="vn" type="hidden" id="vn"  value="<?php echo $queryvn['vn'];?>" />
 <input name="doctor" type="hidden" id="doctor"  value="<?php echo $_SESSION["dt_doctor"];?>" />
 <br />
-<p align="center" class="head_font1"><strong>∫—π∑÷°º≈°“√µ√«® ÿ¢¿“æ</strong>∑À“√ª√–®”ª’ <?=$showyear;?></p>
+<p align="center" class="head_font1"><strong>‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û</strong>‡∏ó‡∏´‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ <?=$showyear;?></p>
 <table  width="100%" border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFFFFF">
 <tr>
   <td><table width="100%" border="0" cellpadding="0" cellspacing="0" >
     <tr>
-      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;¢ÈÕ¡Ÿ≈ºŸÈªË«¬</td>
+      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</td>
     </tr>
     <tr>
       <td width="148" align="left" class="profilehead">VN</td>
       <td width="10" align="left" class="profile"> :</td>
       <td width="197"  class="profileheadvalue">&nbsp;<?php echo $queryvn["vn"];?></td>
-      <td width="91" rowspan="2" align="left" valign="bottom" class="profilehead">™◊ËÕ- °ÿ≈ </td>
+      <td width="91" rowspan="2" align="left" valign="bottom" class="profilehead">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• </td>
       <td width="10" rowspan="2" align="left" valign="bottom" class="profile">:</td>
       <td width="217" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["ptname"];?></td>
-      <td width="145" rowspan="2" align="left" valign="bottom" class="profilehead"> —ß°—¥ </td>
+      <td width="145" rowspan="2" align="left" valign="bottom" class="profilehead">‡∏™‡∏±‡∏á‡∏Å‡∏±‡∏î </td>
       <td width="10" rowspan="2" align="left" valign="bottom" class="profile">:</td>
       <td width="211" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["camp"];?></td>
       <input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/>
-      <td width="89" rowspan="2" align="left" valign="bottom" class="profilehead">Õ“¬ÿ</td>
+      <td width="89" rowspan="2" align="left" valign="bottom" class="profilehead">‡∏≠‡∏≤‡∏¢‡∏∏</td>
       <td width="9" rowspan="2" align="left" valign="bottom" class="profile">:</td>
       <td width="216" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["age"];?></td>
     </tr>
@@ -451,19 +451,19 @@ $_SESSION["hn_now"] = $arr_view["hn"];
       <td class="profileheadvalue">&nbsp;<?php echo $arr_view["hn"];?></td>
     </tr>
     <tr>
-      <td align="left" class="profilehead"> Ë«π Ÿß </td>
+      <td align="left" class="profilehead">‡∏™‡πà‡∏ß‡∏ô‡∏™‡∏π‡∏á </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $height; ?> ´¡.</td>
-      <td align="left" class="profilehead">πÈ”Àπ—°</td>
+      <td class="profilevalue">&nbsp;<?php echo $height; ?> ‡∏ã‡∏°.</td>
+      <td align="left" class="profilehead">‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å</td>
       <td align="left" class="profile">:</td>
-      <td align="left" class="profilevalue">&nbsp;<?php echo $weight; ?> °°. </td>
-      <td align="left" class="profilehead">√Õ∫‡Õ« </td>
+      <td align="left" class="profilevalue">&nbsp;<?php echo $weight; ?> ‡∏Å‡∏Å. </td>
+      <td align="left" class="profilehead">‡∏£‡∏≠‡∏ö‡πÄ‡∏≠‡∏ß </td>
       <td align="left" class="profile">:</td>
       <?
 			$ht = $height/100;
             $bmi = number_format($weight/($ht*$ht),2);
 			?>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["round_"]; ?> ´¡.</td>
+      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["round_"]; ?> ‡∏ã‡∏°.</td>
       <td align="left" class="profilehead">BMI</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue"><span style="color:#F00">&nbsp;<?php echo $bmi; ?></span></td>
@@ -474,41 +474,41 @@ $_SESSION["hn_now"] = $arr_view["hn"];
       <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["temperature"]; ?> C&deg;</td>
       <td align="left" class="profilehead">P </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["pause"]; ?> §√—Èß/π“∑’</td>
+      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["pause"]; ?> ‡∏Ñ‡∏£‡∏±‡πâ‡∏á/‡∏ô‡∏≤‡∏ó‡∏µ</td>
       <td align="left" class="profilehead">R </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["rate"]; ?> §√—Èß/π“∑’</td>
+      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["rate"]; ?> ‡∏Ñ‡∏£‡∏±‡πâ‡∏á/‡∏ô‡∏≤‡∏ó‡∏µ</td>
       <td align="left" class="profilehead">BP </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["bp1"]; ?> / <?php echo $arr_dxofyear["bp2"]; ?> mmHg</td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">∫ÿÀ√’Ë </td>
+      <td align="left" class="profilehead">‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<? if($arr_dxofyear['cigarette']=="0"){ echo "‰¡Ë‡§¬ Ÿ∫∫ÿÀ√’Ë";}else if($arr_dxofyear['cigarette']=="1"){ echo "‡§¬ Ÿ∫ ·µË‡≈‘°·≈È«";}else if($arr_dxofyear['cigarette']=="2"){ echo " Ÿ∫∫ÿÀ√’Ë ‡ªÁπ§√—Èß§√“«";}else if($arr_dxofyear['cigarette']=="3"){ echo " Ÿ∫∫ÿÀ√’Ë ‡ªÁπª√–®”";} ?></td>
-      <td align="left" class="profilehead"> ÿ√“</td>
+      <td class="profilevalue">&nbsp;<? if($arr_dxofyear['cigarette']=="0"){ echo "‡πÑ‡∏°‡πà‡πÄ‡∏Ñ‡∏¢‡∏™‡∏π‡∏ö‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà";}else if($arr_dxofyear['cigarette']=="1"){ echo "‡πÄ‡∏Ñ‡∏¢‡∏™‡∏π‡∏ö ‡πÅ‡∏ï‡πà‡πÄ‡∏•‡∏¥‡∏Å‡πÅ‡∏•‡πâ‡∏ß";}else if($arr_dxofyear['cigarette']=="2"){ echo "‡∏™‡∏π‡∏ö‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà ‡πÄ‡∏õ‡πá‡∏ô‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏Ñ‡∏£‡∏≤‡∏ß";}else if($arr_dxofyear['cigarette']=="3"){ echo "‡∏™‡∏π‡∏ö‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà ‡πÄ‡∏õ‡πá‡∏ô‡∏õ‡∏£‡∏∞‡∏à‡∏≥";} ?></td>
+      <td align="left" class="profilehead">‡∏™‡∏∏‡∏£‡∏≤</td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<? if($arr_dxofyear['alcohol']=="0"){ echo "‰¡Ë‡§¬¥◊Ë¡";}else if($arr_dxofyear['alcohol']=="1"){ echo "‡§¬¥◊Ë¡ ·µË‡≈‘°·≈È«";}else if($arr_dxofyear['alcohol']=="2"){ echo "¥◊Ë¡ ‡ªÁπ§√—Èß§√“«";}else if($arr_dxofyear['alcohol']=="3"){ echo "¥◊Ë¡ ‡ªÁπª√–®”";} ?></td>
-      <td align="left" class="profilehead">ÕÕ°°”≈—ß°“¬</td>
-      <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;
-          <? if($arr_dxofyear['exercise']=="0"){ echo "‰¡Ë‡§¬ÕÕ°°”≈—ß°“¬";} else if($arr_dxofyear['exercise']=="1"){ echo "ÕÕ°°”≈—ß°“¬ µË”°«Ë“‡°≥±Ï";} else{ echo "ÕÕ°°”≈—ß°“¬ µ“¡‡°≥±Ï";} ?></td>
-      <td align="left" class="profilehead">·æÈ¬“</td>
+      <td class="profilevalue">&nbsp;<? if($arr_dxofyear['alcohol']=="0"){ echo "‡πÑ‡∏°‡πà‡πÄ‡∏Ñ‡∏¢‡∏î‡∏∑‡πà‡∏°";}else if($arr_dxofyear['alcohol']=="1"){ echo "‡πÄ‡∏Ñ‡∏¢‡∏î‡∏∑‡πà‡∏° ‡πÅ‡∏ï‡πà‡πÄ‡∏•‡∏¥‡∏Å‡πÅ‡∏•‡πâ‡∏ß";}else if($arr_dxofyear['alcohol']=="2"){ echo "‡∏î‡∏∑‡πà‡∏° ‡πÄ‡∏õ‡πá‡∏ô‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏Ñ‡∏£‡∏≤‡∏ß";}else if($arr_dxofyear['alcohol']=="3"){ echo "‡∏î‡∏∑‡πà‡∏° ‡πÄ‡∏õ‡πá‡∏ô‡∏õ‡∏£‡∏∞‡∏à‡∏≥";} ?></td>
+      <td align="left" class="profilehead">‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;
-          <? if($arr_dxofyear['drugreact']=="0"){ echo "‰¡Ë·æÈ¬“";}else{ echo "<span style='color:#F00'>".$arr_view['drugreact']."</span>";} ?></td>
+          <? if($arr_dxofyear['exercise']=="0"){ echo "‡πÑ‡∏°‡πà‡πÄ‡∏Ñ‡∏¢‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢";} else if($arr_dxofyear['exercise']=="1"){ echo "‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡πÄ‡∏Å‡∏ì‡∏ë‡πå";} else{ echo "‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡∏ï‡∏≤‡∏°‡πÄ‡∏Å‡∏ì‡∏ë‡πå";} ?></td>
+      <td align="left" class="profilehead">‡πÅ‡∏û‡πâ‡∏¢‡∏≤</td>
+      <td align="left" class="profile">:</td>
+      <td class="profilevalue">&nbsp;
+          <? if($arr_dxofyear['drugreact']=="0"){ echo "‡πÑ‡∏°‡πà‡πÅ‡∏û‡πâ‡∏¢‡∏≤";}else{ echo "<span style='color:#F00'>".$arr_view['drugreact']."</span>";} ?></td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">‚√§ª√–®”µ—«</td>
+      <td align="left" class="profilehead">‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<?php echo $congenital_disease;?></td>
-      <td align="left" class="profilehead">Õ“°“√ </td>
+      <td align="left" class="profilehead">‡∏≠‡∏≤‡∏Å‡∏≤‡∏£ </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear['organ'];?></td>
-      <td class="profilehead">°√ÿÍª‡≈◊Õ¥</td>
+      <td class="profilehead">‡∏Å‡∏£‡∏∏‡πä‡∏õ‡πÄ‡∏•‡∏∑‡∏≠‡∏î</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue"><?=$arr_dxofyear['blood']?></td>
-      <td align="left" class="profilehead">·æ∑¬Ï </td>
+      <td align="left" class="profilehead">‡πÅ‡∏û‡∏ó‡∏¢‡πå </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;
         <?php 
@@ -516,49 +516,49 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 		?></td>
     </tr>
     <tr bgcolor="#CCCCFF">
-      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>§Ë“§«“¡¥—π</strong></td>
+      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>‡∏Ñ‡πà‡∏≤‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô</strong></td>
 	    <td bgcolor="#FFCC99"><span class="profile">:</span></td>
-	    <td bgcolor="#FFCC99" class="profilevalue"><input name='normal55' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal55')" <?  if($arr_dxofyear["bp1"] < 129 && $arr_dxofyear["bp2"] < 89){ echo "checked";}?>/>
-ª°µ‘
-<input name='normal55' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
+	    <td bgcolor="#FFCC99" class="profilevalue"><input name='normal55' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal55')" <?  if($arr_dxofyear["bp1"] < 129 && $arr_dxofyear["bp2"] < 89){ echo "checked";}?>/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+<input name='normal55' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
 	      <?  
 		  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){
-		  	echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+		  	echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 		  }else{
-		  	echo "º‘¥ª°µ‘";
+		  	echo "‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥";
 		  }
 		  ?>
         </td>
 	    <td colspan="9" bgcolor="#FFCC99" class="profilevalue">
          <div id="acnormal55" <? if($arr_dxofyear["bp1"] < 129 && $arr_dxofyear["bp2"] < 89){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
 	      <select name="ch55" >
-	        <option value="§«“¡¥—π‚≈À‘µ ‡°◊Õ∫ Ÿß PRE-HT" <? if($arr_dxofyear["bp1"] >= 135 && $arr_dxofyear["bp1"] <= 139){ echo "selected='selected';";}?>>§«“¡¥—π‚≈À‘µ ‡°◊Õ∫ Ÿß PRE-HT</option>
-	        <option value="∑Ë“π¡’§«“¡¥—π‚≈À‘µ Ÿß §«√µÈÕß§«∫§ÿ¡Õ“À“√Õ¬Ë“ß‡§√Ëß§√—¥ ‚¥¬‡©æ“–Õ“À“√∑’Ë¡’√ ‡§Á¡·≈–ÕÕ°°”≈—ß°“¬" <? if(($arr_dxofyear["bp1"] >=140 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >=140 && $arr_dxofyear["bp2"] <= 90) || ($arr_dxofyear["bp1"] <=140 && $arr_dxofyear["bp2"] >= 90)){ echo "selected='selected';";}?>>∑Ë“π¡’§«“¡¥—π‚≈À‘µ Ÿß §«√µÈÕß§«∫§ÿ¡Õ“À“√Õ¬Ë“ß‡§√Ëß§√—¥ ‚¥¬‡©æ“–Õ“À“√∑’Ë¡’√ ‡§Á¡·≈–ÕÕ°°”≈—ß°“¬</option>
+	        <option value="‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï ‡πÄ‡∏Å‡∏∑‡∏≠‡∏ö‡∏™‡∏π‡∏á PRE-HT" <? if($arr_dxofyear["bp1"] >= 135 && $arr_dxofyear["bp1"] <= 139){ echo "selected='selected';";}?>>‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï ‡πÄ‡∏Å‡∏∑‡∏≠‡∏ö‡∏™‡∏π‡∏á PRE-HT</option>
+	        <option value="‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡∏™‡∏π‡∏á ‡∏Ñ‡∏ß‡∏£‡∏ï‡πâ‡∏≠‡∏á‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏≠‡∏¢‡πà‡∏≤‡∏á‡πÄ‡∏Ñ‡∏£‡πà‡∏á‡∏Ñ‡∏£‡∏±‡∏î ‡πÇ‡∏î‡∏¢‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏°‡∏µ‡∏£‡∏™‡πÄ‡∏Ñ‡πá‡∏°‡πÅ‡∏•‡∏∞‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢" <? if(($arr_dxofyear["bp1"] >=140 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >=140 && $arr_dxofyear["bp2"] <= 90) || ($arr_dxofyear["bp1"] <=140 && $arr_dxofyear["bp2"] >= 90)){ echo "selected='selected';";}?>>‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡∏™‡∏π‡∏á ‡∏Ñ‡∏ß‡∏£‡∏ï‡πâ‡∏≠‡∏á‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏≠‡∏¢‡πà‡∏≤‡∏á‡πÄ‡∏Ñ‡∏£‡πà‡∏á‡∏Ñ‡∏£‡∏±‡∏î ‡πÇ‡∏î‡∏¢‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏°‡∏µ‡∏£‡∏™‡πÄ‡∏Ñ‡πá‡∏°‡πÅ‡∏•‡∏∞‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢</option>
 	        </select>
 	      </div></td>
 	    </tr>
     <tr bgcolor="#FFCC99">
-      <td class="profile"  style="color:#000"><strong>§Ë“ BMI</strong></td>
+      <td class="profile"  style="color:#000"><strong>‡∏Ñ‡πà‡∏≤ BMI</strong></td>
       <td><span class="profile">:</span></td>
-      <td class="profilevalue"><input name='normal56' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal56')" id="normal56"  <?  if($bmi >= 18.5 && $bmi <= 22.99){ echo "checked";}?>/>
-        ª°µ‘
-        <input name='normal56' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal56')" id="normal56"  <?  if($bmi < 18.5 || $bmi > 22.99){ echo "checked";}?>/>
+      <td class="profilevalue"><input name='normal56' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal56')" id="normal56"  <?  if($bmi >= 18.5 && $bmi <= 22.99){ echo "checked";}?>/>
+        ‡∏õ‡∏Å‡∏ï‡∏¥
+        <input name='normal56' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal56')" id="normal56"  <?  if($bmi < 18.5 || $bmi > 22.99){ echo "checked";}?>/>
 	      <?  
 		  if($bmi < 18.5 || $bmi > 22.99){
-		  	echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+		  	echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 		  }else{
-		  	echo "º‘¥ª°µ‘";
+		  	echo "‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥";
 		  }
 		  ?>        
       </td>
       <td colspan="9" bgcolor="#FFCC99" class="profilevalue">
       <div id="acnormal56" <? if($bmi >= 18.5 && $bmi <= 22.99){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
 	      <select name="ch56" >
-	        <option value="∑Ë“π¡’πÈ”Àπ—°πÈÕ¬‡°‘π‰ª" <? if($bmi < 18.5){ echo "selected='selected';";}?>>∑Ë“π¡’πÈ”Àπ—°πÈÕ¬‡°‘π‰ª</option>
-	        <option value="∑Ë“π‡√‘Ë¡¡’¿“«–πÈ”Àπ—°‡°‘π" <? if($bmi >= 23 && $bmi <= 24.99){ echo "selected='selected';";}?>>∑Ë“π‡√‘Ë¡¡’¿“«–πÈ”Àπ—°‡°‘π</option>
-	        <option value="∑Ë“π¡’πÈ”Àπ—°‡°‘πÀ√◊Õ¿“«–ÕÈ«π" <? if($bmi >= 25 && $bmi <= 29.99){ echo "selected='selected';";}?>>∑Ë“π¡’πÈ”Àπ—°‡°‘πÀ√◊Õ¿“«–ÕÈ«π</option>
-	        <option value="∑Ë“π¡’¿“«–ÕÈ«π§ËÕπ¢È“ß¡“°" <? if($bmi >= 30 && $bmi <= 34.99){ echo "selected='selected';";}?>>∑Ë“π¡’¿“«–ÕÈ«π§ËÕπ¢È“ß¡“°</option>
-	        <option value="∑Ë“π¡’¿“«–ÕÈ«π√ÿπ·√ß" <? if($bmi >= 35){ echo "selected='selected';";}?>>∑Ë“π¡’¿“«–ÕÈ«π√ÿπ·√ß</option>            
+	        <option value="‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡∏ô‡πâ‡∏≠‡∏¢‡πÄ‡∏Å‡∏¥‡∏ô‡πÑ‡∏õ" <? if($bmi < 18.5){ echo "selected='selected';";}?>>‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡∏ô‡πâ‡∏≠‡∏¢‡πÄ‡∏Å‡∏¥‡∏ô‡πÑ‡∏õ</option>
+	        <option value="‡∏ó‡πà‡∏≤‡∏ô‡πÄ‡∏£‡∏¥‡πà‡∏°‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÄ‡∏Å‡∏¥‡∏ô" <? if($bmi >= 23 && $bmi <= 24.99){ echo "selected='selected';";}?>>‡∏ó‡πà‡∏≤‡∏ô‡πÄ‡∏£‡∏¥‡πà‡∏°‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÄ‡∏Å‡∏¥‡∏ô</option>
+	        <option value="‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÄ‡∏Å‡∏¥‡∏ô‡∏´‡∏£‡∏∑‡∏≠‡∏†‡∏≤‡∏ß‡∏∞‡∏≠‡πâ‡∏ß‡∏ô" <? if($bmi >= 25 && $bmi <= 29.99){ echo "selected='selected';";}?>>‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÄ‡∏Å‡∏¥‡∏ô‡∏´‡∏£‡∏∑‡∏≠‡∏†‡∏≤‡∏ß‡∏∞‡∏≠‡πâ‡∏ß‡∏ô</option>
+	        <option value="‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏≠‡πâ‡∏ß‡∏ô‡∏Ñ‡πà‡∏≠‡∏ô‡∏Ç‡πâ‡∏≤‡∏á‡∏°‡∏≤‡∏Å" <? if($bmi >= 30 && $bmi <= 34.99){ echo "selected='selected';";}?>>‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏≠‡πâ‡∏ß‡∏ô‡∏Ñ‡πà‡∏≠‡∏ô‡∏Ç‡πâ‡∏≤‡∏á‡∏°‡∏≤‡∏Å</option>
+	        <option value="‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏≠‡πâ‡∏ß‡∏ô‡∏£‡∏∏‡∏ô‡πÅ‡∏£‡∏á" <? if($bmi >= 35){ echo "selected='selected';";}?>>‡∏ó‡πà‡∏≤‡∏ô‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏≠‡πâ‡∏ß‡∏ô‡∏£‡∏∏‡∏ô‡πÅ‡∏£‡∏á</option>            
 	        </select>
 	      </div></td>
       </tr>
@@ -569,7 +569,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 <TR>
 	<TD><table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFCCCC">
 	  <tr>
-	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="8">&nbsp;&nbsp;&nbsp;°“√µ√«®√Ë“ß°“¬∑∫.</td>
+	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="8">&nbsp;&nbsp;&nbsp;‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏£‡πà‡∏≤‡∏á‡∏Å‡∏≤‡∏¢‡∏ó‡∏ö.</td>
 	  </tr>
 	  <tr>
 	    <td>&nbsp;</td>
@@ -577,84 +577,84 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	    <td>&nbsp;</td>
 	    </tr>
 	  <tr>
-	    <td width="36%" class="profilehead">°. ≈—°…≥–∑—Ë«‰ª</td>
-	    <td width="18%" class="profilevalue"><input name='normal21' type='radio' onclick="togglediv2('acnormal21')" value='ª°µ‘' checked="checked"/>
-	      ª°µ‘
-	        <input name='normal21' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal21')"/>
-	      º‘¥ª°µ‘ </td>
+	    <td width="36%" class="profilehead">‡∏Å. ‡∏•‡∏±‡∏Å‡∏©‡∏ì‡∏∞‡∏ó‡∏±‡πà‡∏ß‡πÑ‡∏õ</td>
+	    <td width="18%" class="profilevalue"><input name='normal21' type='radio' onclick="togglediv2('acnormal21')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+	      ‡∏õ‡∏Å‡∏ï‡∏¥
+	        <input name='normal21' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal21')"/>
+	      ‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td width="46%">
   <div style="display:none" id="acnormal21"><input name="text21" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">¢. º‘«Àπ—ß</td>
-	    <td class="profilevalue"><input name='normal22' type='radio' onclick="togglediv2('acnormal22')" value='ª°µ‘' checked="checked"/>
-	      ª°µ‘
-	        <input name='normal22' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal22')"/>
-	      º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏Ç. ‡∏ú‡∏¥‡∏ß‡∏´‡∏ô‡∏±‡∏á</td>
+	    <td class="profilevalue"><input name='normal22' type='radio' onclick="togglediv2('acnormal22')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+	      ‡∏õ‡∏Å‡∏ï‡∏¥
+	        <input name='normal22' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal22')"/>
+	      ‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal22"><input name="text22" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">§. ∑“ß‡¥‘π·ÀËßÕ“À“√</td>
-	    <td class="profilevalue"><input name='normal23' type='radio' onclick="togglediv2('acnormal23')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal23' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal23')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏Ñ. ‡∏ó‡∏≤‡∏á‡πÄ‡∏î‡∏¥‡∏ô‡πÅ‡∏´‡πà‡∏á‡∏≠‡∏≤‡∏´‡∏≤‡∏£</td>
+	    <td class="profilevalue"><input name='normal23' type='radio' onclick="togglediv2('acnormal23')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal23' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal23')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal23"><input name="text23" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">ß. ∑“ß‡¥‘π·ÀËß≈¡À“¬„®</td>
-	    <td class="profilevalue"><input name='normal24' type='radio' onclick="togglediv2('acnormal24')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal24' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal24')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏á. ‡∏ó‡∏≤‡∏á‡πÄ‡∏î‡∏¥‡∏ô‡πÅ‡∏´‡πà‡∏á‡∏•‡∏°‡∏´‡∏≤‡∏¢‡πÉ‡∏à</td>
+	    <td class="profilevalue"><input name='normal24' type='radio' onclick="togglediv2('acnormal24')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal24' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal24')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal24"><input name="text24" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">®. ∑“ß‡¥‘π·ÀËß‚≈À‘µ</td>
-	    <td class="profilevalue"><input name='normal25' type='radio' onclick="togglediv2('acnormal25')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal25' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal25')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏à. ‡∏ó‡∏≤‡∏á‡πÄ‡∏î‡∏¥‡∏ô‡πÅ‡∏´‡πà‡∏á‡πÇ‡∏•‡∏´‡∏¥‡∏ï</td>
+	    <td class="profilevalue"><input name='normal25' type='radio' onclick="togglediv2('acnormal25')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal25' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal25')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal25"><input name="text25" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">©. ∑“ß‡¥‘π·ÀËßπÈ”‡À≈◊Õß</td>
-	    <td class="profilevalue"><input name='normal26' type='radio' onclick="togglediv2('acnormal26')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal26' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal26')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏â. ‡∏ó‡∏≤‡∏á‡πÄ‡∏î‡∏¥‡∏ô‡πÅ‡∏´‡πà‡∏á‡∏ô‡πâ‡∏≥‡πÄ‡∏´‡∏•‡∏∑‡∏≠‡∏á</td>
+	    <td class="profilevalue"><input name='normal26' type='radio' onclick="togglediv2('acnormal26')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal26' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal26')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal26"><input name="text26" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">™. ∑“ß‡¥‘π·ÀËßª—  “«–·≈–Õ«—¬«– ◊∫æ—π∏ÿÏ</td>
-	    <td class="profilevalue"><input name='normal27' type='radio' onclick="togglediv2('acnormal27')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal27' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal27')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏ä. ‡∏ó‡∏≤‡∏á‡πÄ‡∏î‡∏¥‡∏ô‡πÅ‡∏´‡πà‡∏á‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡πÅ‡∏•‡∏∞‡∏≠‡∏ß‡∏±‡∏¢‡∏ß‡∏∞‡∏™‡∏∑‡∏ö‡∏û‡∏±‡∏ô‡∏ò‡∏∏‡πå</td>
+	    <td class="profilevalue"><input name='normal27' type='radio' onclick="togglediv2('acnormal27')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal27' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal27')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal27"><input name="text27" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">´.  ¡Õß·≈–ª√– “∑</td>
-	    <td class="profilevalue"><input name='normal28' type='radio' onclick="togglediv2('acnormal28')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal28' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal28')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏ã. ‡∏™‡∏°‡∏≠‡∏á‡πÅ‡∏•‡∏∞‡∏õ‡∏£‡∏∞‡∏™‡∏≤‡∏ó</td>
+	    <td class="profilevalue"><input name='normal28' type='radio' onclick="togglediv2('acnormal28')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal28' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal28')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal28"><input name="text28" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">≠. °√–¥Ÿ°·≈–¢ÈÕ</td>
-	    <td class="profilevalue"><input name='normal29' type='radio' onclick="togglediv2('acnormal29')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal29' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal29')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏ç. ‡∏Å‡∏£‡∏∞‡∏î‡∏π‡∏Å‡πÅ‡∏•‡∏∞‡∏Ç‡πâ‡∏≠</td>
+	    <td class="profilevalue"><input name='normal29' type='radio' onclick="togglediv2('acnormal29')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal29' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal29')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal29"><input name="text29" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
-	    <td class="profilehead">¥. µ“, ÀŸ, §Õ, ®¡Ÿ°</td>
-	    <td class="profilevalue"><input name='normal30' type='radio' onclick="togglediv2('acnormal30')" value='ª°µ‘' checked="checked"/>
-ª°µ‘
-  <input name='normal30' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal30')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="profilehead">‡∏î. ‡∏ï‡∏≤, ‡∏´‡∏π, ‡∏Ñ‡∏≠, ‡∏à‡∏°‡∏π‡∏Å</td>
+	    <td class="profilevalue"><input name='normal30' type='radio' onclick="togglediv2('acnormal30')" value='‡∏õ‡∏Å‡∏ï‡∏¥' checked="checked"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal30' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal30')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td><div style="display:none" id="acnormal30"><input name="text30" type="text" size="30" /></div></td>
 	    </tr>
 	  <tr>
@@ -666,13 +666,13 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 </tr>
 </table>
 <br />
-<!-- º≈°“√µ√«®∑“ßæ¬“∏‘ -->
+<!-- ‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ó‡∏≤‡∏á‡∏û‡∏¢‡∏≤‡∏ò‡∏¥ -->
 <TABLE border="2" cellpadding="2" cellspacing="0" bordercolor="#000000"  width="100%">
 <TR>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0"  width="100%" bgcolor="#FFFFCC">
 	<TR>
-		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;º≈°“√µ√«®∑“ßæ¬“∏‘ ‡¡◊ËÕ«—π∑’Ë <span style="color: #000000;"><?php echo $lab_date;?></span></TD>
+		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ó‡∏≤‡∏á‡∏û‡∏¢‡∏≤‡∏ò‡∏¥ ‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà <span style="color: #000000;"><?php echo $lab_date;?></span></TD>
 	</TR>
 	<TR class="tb_font">
 		<TD >
@@ -792,18 +792,18 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 		<td align="center">&nbsp;</td>
         </tr>
       <tr bgcolor="#CCCCFF">
-        <td colspan="4" align="center" bgcolor="#FFCC99"><strong>º≈°“√µ√«®&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
-          <input name='normal' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal')" id="normal98" />
-          ª°µ‘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input name='normal' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal')" id="normal99" />
-          º‘¥ª°µ‘ </td>
+        <td colspan="4" align="center" bgcolor="#FFCC99"><strong>‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+          <input name='normal' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal')" id="normal98" />
+          ‡∏õ‡∏Å‡∏ï‡∏¥&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input name='normal' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal')" id="normal99" />
+          ‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
         <td colspan="6" bgcolor="#FFCC99">
           <div id="acnormal" style='display: none;'>
             <select name='ch'>
-              <option value='‡¡Á¥‡≈◊Õ¥·¥ß„πª—  “«– Ÿß‡°‘πª°µ‘'>‡¡Á¥‡≈◊Õ¥·¥ß„πª—  “«– Ÿß‡°‘πª°µ‘</option>
-              <option value='‡¡Á¥‡≈◊Õ¥¢“«„πª—  “«– Ÿß‡°‘πª°µ‘'>‡¡Á¥‡≈◊Õ¥¢“«„πª—  “«– Ÿß‡°‘πª°µ‘</option>
-              <option value='¡’‰¢Ë¢“«√—Ë«„πª—  “«–'>¡’‚ª√µ’π√—Ë«„πª—  “«–</option>
-              <option value='§Ë“°√¥ - ¥Ë“ß'>§Ë“°√¥ - ¥Ë“ß</option>
+              <option value='‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡πÅ‡∏î‡∏á‡πÉ‡∏ô‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥'>‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡πÅ‡∏î‡∏á‡πÉ‡∏ô‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥</option>
+              <option value='‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏Ç‡∏≤‡∏ß‡πÉ‡∏ô‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥'>‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏Ç‡∏≤‡∏ß‡πÉ‡∏ô‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥</option>
+              <option value='‡∏°‡∏µ‡πÑ‡∏Ç‡πà‡∏Ç‡∏≤‡∏ß‡∏£‡∏±‡πà‡∏ß‡πÉ‡∏ô‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞'>‡∏°‡∏µ‡πÇ‡∏õ‡∏£‡∏ï‡∏µ‡∏ô‡∏£‡∏±‡πà‡∏ß‡πÉ‡∏ô‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞</option>
+              <option value='‡∏Ñ‡πà‡∏≤‡∏Å‡∏£‡∏î - ‡∏î‡πà‡∏≤‡∏á'>‡∏Ñ‡πà‡∏≤‡∏Å‡∏£‡∏î - ‡∏î‡πà‡∏≤‡∏á</option>
             </select></div></td>
         </tr>
     <?
@@ -906,21 +906,21 @@ $_SESSION["hn_now"] = $arr_view["hn"];
             </td>
             <td class="labfont"  width="101">(<?=$result_dx['hctrange']?>)</td>
             <td width="32" align="center" class="labfont" ><span <? if($result_dx['hctflag']!="N") echo " style='color:#F00'";?>><?=$result_dx['hctflag']?></span></td>
-            <td width="202" class="labfont"><input name='normal31' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal31')" <? if($result_dx['cbc_hct'] >= 37) echo "checked";?> />
-              ª°µ‘ 
-              <input name='normal31' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal31')" <? if($result_dx['cbc_hct'] < 37) echo "checked";?>/>
+            <td width="202" class="labfont"><input name='normal31' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal31')" <? if($result_dx['cbc_hct'] >= 37) echo "checked";?> />
+              ‡∏õ‡∏Å‡∏ï‡∏¥ 
+              <input name='normal31' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal31')" <? if($result_dx['cbc_hct'] < 37) echo "checked";?>/>
               <? 
 			  if($result_dx['cbc_hct'] < 37){
-			  	echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+			  	echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			  }else{
-			  	echo "º‘¥ª°µ‘";
+			  	echo "‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥";
 			  }
 			  ?>
               </td>
               <td width="877">
               <div id="acnormal31" <? if($result_dx['cbc_hct'] >= 37) echo "style='display: none;'"; else "style='display: block;'"; ?>>
       <select name='ch31'>
-          <option value='¡’√–¥—∫‡¡Á¥‡≈◊Õ¥·¥ßµË”°«Ë“ª°µ‘ ∫Ëß∫Õ°∂÷ß¿“«–´’¥§«√µ√«®´È” À√◊Õ æ∫·æ∑¬Ï‡æ◊ËÕÀ“ “‡Àµÿ'>¡’√–¥—∫‡¡Á¥‡≈◊Õ¥·¥ßµË”°«Ë“ª°µ‘ ∫Ëß∫Õ°∂÷ß¿“«–´’¥§«√µ√«®´È” À√◊Õ æ∫·æ∑¬Ï‡æ◊ËÕÀ“ “‡Àµÿ</option>
+          <option value='‡∏°‡∏µ‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡πÅ‡∏î‡∏á‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏ö‡πà‡∏á‡∏ö‡∏≠‡∏Å‡∏ñ‡∏∂‡∏á‡∏†‡∏≤‡∏ß‡∏∞‡∏ã‡∏µ‡∏î‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥ ‡∏´‡∏£‡∏∑‡∏≠ ‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏´‡∏≤‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏'>‡∏°‡∏µ‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡πÅ‡∏î‡∏á‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏ö‡πà‡∏á‡∏ö‡∏≠‡∏Å‡∏ñ‡∏∂‡∏á‡∏†‡∏≤‡∏ß‡∏∞‡∏ã‡∏µ‡∏î‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥ ‡∏´‡∏£‡∏∑‡∏≠ ‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏´‡∏≤‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏</option>
      </select></div></td>
           </tr>
           <tr>
@@ -936,21 +936,21 @@ $_SESSION["hn_now"] = $arr_view["hn"];
           </td>
           <td class="labfont" width="101">(<?=$result_dx['wbcrange']?>)</td>
           <td align="center" class="labfont" width="32" ><span <? if($result_dx['wbcflag']!="N"){ echo " style='color:#F00'";}?>><?=$result_dx['wbcflag'];?></span></td>
-          <td width="202" class="labfont"><input name='normal32' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal32')" <? if($result_dx['cbc_wbc'] >= 3 &&  $result_dx['cbc_wbc'] <= 15){ echo "checked";}?>/>
-          ª°µ‘ 
-            <input name='normal32' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal32')" <? if($result_dx['cbc_wbc'] < 3 || $result_dx['cbc_wbc'] > 15){ echo "checked";}?>/>
+          <td width="202" class="labfont"><input name='normal32' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal32')" <? if($result_dx['cbc_wbc'] >= 3 &&  $result_dx['cbc_wbc'] <= 15){ echo "checked";}?>/>
+          ‡∏õ‡∏Å‡∏ï‡∏¥ 
+            <input name='normal32' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal32')" <? if($result_dx['cbc_wbc'] < 3 || $result_dx['cbc_wbc'] > 15){ echo "checked";}?>/>
               <? 
 			  if($result_dx['cbc_wbc'] < 3 || $result_dx['cbc_wbc'] > 15){
-			  	echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+			  	echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			  }else{
-			  	echo "º‘¥ª°µ‘";
+			  	echo "‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥";
 			  }
 			  ?>
             </td>
             <td><div id="acnormal32" <? if($result_dx['cbc_wbc'] >= 3 &&  $result_dx['cbc_wbc'] <= 15){ echo "style='display: none;'";}else{ echo "style='display: block;'";} ?>>
             <select name='ch32'>
-              <option value='ª√‘¡“≥‡¡Á¥‡≈◊Õ¥¢“«¡’§Ë“µË”°«Ë“ª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï' <? if($result_dx['cbc_wbc'] < 3){ echo "selected='selected';";}?>>ª√‘¡“≥‡¡Á¥‡≈◊Õ¥¢“«¡’§Ë“µË”°«Ë“ª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï</option>
-              <option value='ª√‘¡“≥‡¡Á¥‡≈◊Õ¥¢“«Õ¬ŸË„π√–¥—∫ Ÿß‡°‘πª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï' <? if($result_dx['cbc_wbc'] > 15){ echo "selected='selected';";}?>>ª√‘¡“≥‡¡Á¥‡≈◊Õ¥¢“«Õ¬ŸË„π√–¥—∫ Ÿß‡°‘πª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï</option>              
+              <option value='‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏Ç‡∏≤‡∏ß‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå' <? if($result_dx['cbc_wbc'] < 3){ echo "selected='selected';";}?>>‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏Ç‡∏≤‡∏ß‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå</option>
+              <option value='‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏Ç‡∏≤‡∏ß‡∏≠‡∏¢‡∏π‡πà‡πÉ‡∏ô‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå' <? if($result_dx['cbc_wbc'] > 15){ echo "selected='selected';";}?>>‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏Ç‡∏≤‡∏ß‡∏≠‡∏¢‡∏π‡πà‡πÉ‡∏ô‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå</option>              
             </select>
           </div></td>
           </tr>
@@ -967,31 +967,31 @@ $_SESSION["hn_now"] = $arr_view["hn"];
           </td>
           <td class="labfont" width="101">(<?=$result_dx['pltcrange']?>)</td>
           <td align="center" class="labfont" width="32"><span <? if($result_dx['pltcflag']!="N"){ echo " style='color:#F00'";}?>><?=$result_dx['pltcflag']?></span></td>
-          <td width="202" class="labfont"><input name='normal33' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal33')" <? if($result_dx['cbc_pltc'] >= 120 &&  $result_dx['cbc_pltc'] <= 500){ echo "checked";}?>/>
-          ª°µ‘ 
-            <input name='normal33' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal33')" <? if($result_dx['cbc_pltc'] < 120 || $result_dx['cbc_pltc'] > 500){ echo "checked";}?>/>
+          <td width="202" class="labfont"><input name='normal33' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal33')" <? if($result_dx['cbc_pltc'] >= 120 &&  $result_dx['cbc_pltc'] <= 500){ echo "checked";}?>/>
+          ‡∏õ‡∏Å‡∏ï‡∏¥ 
+            <input name='normal33' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal33')" <? if($result_dx['cbc_pltc'] < 120 || $result_dx['cbc_pltc'] > 500){ echo "checked";}?>/>
               <? 
 			  if($result_dx['cbc_pltc'] < 120 || $result_dx['cbc_pltc'] > 500){
-			  	echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+			  	echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			  }else{
-			  	echo "º‘¥ª°µ‘";
+			  	echo "‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥";
 			  }
 			  ?>            
             </td>
             <td><div id="acnormal33" <? if($result_dx['cbc_pltc'] >= 120 &&  $result_dx['cbc_pltc'] <= 500){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
        <select name='ch33'>
-	  <option value='ª√‘¡“≥‡°√Á¥‡≈◊Õ¥¡’§Ë“µË”°«Ë“ª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï' <? if($result_dx['cbc_pltc'] < 500){ echo "selected='selected';";}?>>ª√‘¡“≥‡°√Á¥‡≈◊Õ¥¡’§Ë“µË”°«Ë“ª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï</option>
-	  <option value='ª√‘¡“≥‡°√Á¥‡≈◊Õ¥¡’§Ë“ Ÿß‡°‘πª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï' <? if($result_dx['cbc_pltc'] > 500){ echo "selected='selected';";}?>>ª√‘¡“≥‡°√Á¥‡≈◊Õ¥¡’§Ë“ Ÿß‡°‘πª°µ‘ §«√µ√«®´È”À√◊Õæ∫·æ∑¬Ï</option>      
+	  <option value='‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏Å‡∏£‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå' <? if($result_dx['cbc_pltc'] < 500){ echo "selected='selected';";}?>>‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏Å‡∏£‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå</option>
+	  <option value='‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏Å‡∏£‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå' <? if($result_dx['cbc_pltc'] > 500){ echo "selected='selected';";}?>>‡∏õ‡∏£‡∏¥‡∏°‡∏≤‡∏ì‡πÄ‡∏Å‡∏£‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡∏´‡∏£‡∏∑‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå</option>      
 	  </select></div></td>
           </tr>
           <tr bgcolor="#CCCCFF">
-            <td colspan="5" align="center" bgcolor="#FFCC99"><strong>º≈°“√µ√«®&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
-              <input name='normal81' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal81')" id="normal97" />
-              ª°µ‘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input name='normal81' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal81')" id="normal96" />
-              º‘¥ª°µ‘ </td><td bgcolor="#FFCC99"><div id="acnormal81" style='display: none;'>
+            <td colspan="5" align="center" bgcolor="#FFCC99"><strong>‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+              <input name='normal81' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal81')" id="normal97" />
+              ‡∏õ‡∏Å‡∏ï‡∏¥&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input name='normal81' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal81')" id="normal96" />
+              ‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td><td bgcolor="#FFCC99"><div id="acnormal81" style='display: none;'>
             <select name='ch81'>
-              <option value='§«√æ∫·æ∑¬Ï‡æ◊ËÕÀ“ “‡Àµÿ'>§«√æ∫·æ∑¬Ï‡æ◊ËÕÀ“ “‡Àµÿ</option>
+              <option value='‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏´‡∏≤‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏'>‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏´‡∏≤‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏</option>
 			</select></div></td>
             </tr>
             </table>
@@ -999,8 +999,8 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 </TD></TR></TABLE>
 <br />
 <?
-////º≈lab ¢Õßª’∑’Ë·≈È«
-////*runno µ√«® ÿ¢¿“æ*/////////
+////‡∏ú‡∏•lab ‡∏Ç‡∏≠‡∏á‡∏õ‡∏µ‡∏ó‡∏µ‡πà‡πÅ‡∏•‡πâ‡∏ß
+////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 	
@@ -1015,7 +1015,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	
 	$nPrefix=$row->prefix;
 	$nPrefix ="25".$nPrefix;
-////*runno µ√«® ÿ¢¿“æ*/////////
+////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 
 $bsquery = "select * from condxofyear_so where hn ='".$_SESSION["hn_now"]."' and status_dr='Y' and yearcheck='".($nPrefix-2)."' ";
 $bsrow = mysql_query($bsquery);
@@ -1057,22 +1057,22 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['bsrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['bsflag']!="N"){ echo "style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['bsflag']?></span></td>
-	    <td class="labfont"><input name='normal47' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal47');" <?  if($result_dx['bs'] < 110){ echo "checked";}?>/>
-ª°µ‘
-  		<input name='normal47' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal47');" <? if($result_dx['bs'] >= 110){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal47' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal47');" <?  if($result_dx['bs'] < 110){ echo "checked";}?>/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  		<input name='normal47' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal47');" <? if($result_dx['bs'] >= 110){ echo "checked";}?>/>
             <? 
 			if($result_dx['bs'] >= 110){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>  
   		</td>
 	    <td colspan="4">            
         <div id="acnormal47" <? if($result_dx['bs'] < 110){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch47'>
-        <option value="√–¥—∫πÈ”µ“≈„π‡≈◊Õ¥ Ÿß‡°‘π§Ë“ª°µ‘ ¡’§«“¡‡ ’Ë¬ß ŸßµËÕ°“√‡°‘¥‡∫“À«“π„πÕπ“§µ §«√‡√‘Ë¡µÈπ§«∫§ÿ¡Õ“À“√ ®”æ«°¢È“«, ·ªÈß, Õ“À“√∑’Ë¡’√ ™“µ‘À«“π ·≈–µ√«®´È”„π 1-2 ª’" <? if($result_dx['bs'] >= 100 && $result_dx['bs'] <= 125){ echo "selected='selected';";}?>>√–¥—∫πÈ”µ“≈„π‡≈◊Õ¥ Ÿß‡°‘π§Ë“ª°µ‘ ¡’§«“¡‡ ’Ë¬ß ŸßµËÕ°“√‡°‘¥‡∫“À«“π„πÕπ“§µ §«√‡√‘Ë¡µÈπ§«∫§ÿ¡Õ“À“√ ·≈–µ√«®´È”„π 1-2 ª’</option>
-        <option value="Õ“®‡ªÁπ‚√§‡∫“À«“π §«√æ∫·æ∑¬Ï‡æ◊ËÕª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['bs'] > 125){ echo "selected='selected';";}?>>Õ“®‡ªÁπ‚√§‡∫“À«“π §«√æ∫·æ∑¬Ï‡æ◊ËÕª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option>                
+        <option value="‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏ô‡πâ‡∏≥‡∏ï‡∏≤‡∏•‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏Ñ‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏°‡∏µ‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡∏™‡∏π‡∏á‡∏ï‡πà‡∏≠‡∏Å‡∏≤‡∏£‡πÄ‡∏Å‡∏¥‡∏î‡πÄ‡∏ö‡∏≤‡∏´‡∏ß‡∏≤‡∏ô‡πÉ‡∏ô‡∏≠‡∏ô‡∏≤‡∏Ñ‡∏ï ‡∏Ñ‡∏ß‡∏£‡πÄ‡∏£‡∏¥‡πà‡∏°‡∏ï‡πâ‡∏ô‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£ ‡∏à‡∏≥‡∏û‡∏ß‡∏Å‡∏Ç‡πâ‡∏≤‡∏ß, ‡πÅ‡∏õ‡πâ‡∏á, ‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏°‡∏µ‡∏£‡∏™‡∏ä‡∏≤‡∏ï‡∏¥‡∏´‡∏ß‡∏≤‡∏ô ‡πÅ‡∏•‡∏∞‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡πÉ‡∏ô 1-2 ‡∏õ‡∏µ" <? if($result_dx['bs'] >= 100 && $result_dx['bs'] <= 125){ echo "selected='selected';";}?>>‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏ô‡πâ‡∏≥‡∏ï‡∏≤‡∏•‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡∏Ñ‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏°‡∏µ‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡∏™‡∏π‡∏á‡∏ï‡πà‡∏≠‡∏Å‡∏≤‡∏£‡πÄ‡∏Å‡∏¥‡∏î‡πÄ‡∏ö‡∏≤‡∏´‡∏ß‡∏≤‡∏ô‡πÉ‡∏ô‡∏≠‡∏ô‡∏≤‡∏Ñ‡∏ï ‡∏Ñ‡∏ß‡∏£‡πÄ‡∏£‡∏¥‡πà‡∏°‡∏ï‡πâ‡∏ô‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£ ‡πÅ‡∏•‡∏∞‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡πÉ‡∏ô 1-2 ‡∏õ‡∏µ</option>
+        <option value="‡∏≠‡∏≤‡∏à‡πÄ‡∏õ‡πá‡∏ô‡πÇ‡∏£‡∏Ñ‡πÄ‡∏ö‡∏≤‡∏´‡∏ß‡∏≤‡∏ô ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['bs'] > 125){ echo "selected='selected';";}?>>‡∏≠‡∏≤‡∏à‡πÄ‡∏õ‡πá‡∏ô‡πÇ‡∏£‡∏Ñ‡πÄ‡∏ö‡∏≤‡∏´‡∏ß‡∏≤‡∏ô ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option>                
         </select></div></td>
 	      </tr>
 	    <tr>
@@ -1094,22 +1094,22 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['cholrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['cholflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['cholflag']?></span></td>
-	    <td class="labfont"><input name='normal46' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal46');" <? if($result_dx['chol'] < 200){ echo "checked";}?> />
-ª°µ‘
-  <input name='normal46' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal46');" <? if($result_dx['chol'] >= 201){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal46' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal46');" <? if($result_dx['chol'] < 200){ echo "checked";}?> />
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal46' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal46');" <? if($result_dx['chol'] >= 201){ echo "checked";}?>/>
             <? 
 			if($result_dx['chol'] >= 201){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>  		
         </td>
 	    <td colspan="4">          
         <div id="acnormal46" <? if($result_dx['chol'] <= 200){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch46'>
-			<option value="√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“º‘¥ª°µ‘‡≈Á°πÈÕ¬ §«√§«∫§ÿ¡Õ“À“√°≈ÿË¡‰¢¡—π ÕÕ°°”≈—ß°“¬ ·≈–µ√«®´È”„π 3-6 ‡¥◊Õπ" <? if($result_dx['chol'] > 200 && $result_dx['chol'] <= 300 ){ echo "selected='selected';";}?>>√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“º‘¥ª°µ‘‡≈Á°πÈÕ¬ §«√§«∫§ÿ¡Õ“À“√°≈ÿË¡‰¢¡—π ÕÕ°°”≈—ß°“¬ ·≈–µ√«®´È”„π 3-6 ‡¥◊Õπ</option>
-			<option value="√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“ Ÿßº‘¥ª°µ‘§ËÕπ¢È“ß¡“° §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['chol'] > 300){ echo "selected='selected';";}?>>√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“ Ÿßº‘¥ª°µ‘§ËÕπ¢È“ß¡“° §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option>                        
+			<option value="‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏•‡πá‡∏Å‡∏ô‡πâ‡∏≠‡∏¢ ‡∏Ñ‡∏ß‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏Å‡∏•‡∏∏‡πà‡∏°‡πÑ‡∏Ç‡∏°‡∏±‡∏ô ‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡πÅ‡∏•‡∏∞‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡πÉ‡∏ô 3-6 ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô" <? if($result_dx['chol'] > 200 && $result_dx['chol'] <= 300 ){ echo "selected='selected';";}?>>‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏•‡πá‡∏Å‡∏ô‡πâ‡∏≠‡∏¢ ‡∏Ñ‡∏ß‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏Å‡∏•‡∏∏‡πà‡∏°‡πÑ‡∏Ç‡∏°‡∏±‡∏ô ‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡πÅ‡∏•‡∏∞‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡πÉ‡∏ô 3-6 ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô</option>
+			<option value="‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏™‡∏π‡∏á‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡∏Ñ‡πà‡∏≠‡∏ô‡∏Ç‡πâ‡∏≤‡∏á‡∏°‡∏≤‡∏Å ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['chol'] > 300){ echo "selected='selected';";}?>>‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏™‡∏π‡∏á‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡∏Ñ‡πà‡∏≠‡∏ô‡∏Ç‡πâ‡∏≤‡∏á‡∏°‡∏≤‡∏Å ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option>                        
 		</select></div>  </td>
 	      </tr>
 	    <tr>
@@ -1131,22 +1131,22 @@ $bsult = mysql_fetch_array($brow);
 		</td>
 	    <td class="labfont">(<?=$result_dx['tgrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['tgflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['tgflag']?></span></td>
-	    <td class="labfont"><input name='normal48' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal48');" <? if($result_dx['tg'] < 150){ echo "checked";}?> />
-ª°µ‘
-  <input name='normal48' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal48');"  <? if($result_dx['tg'] >= 150){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal48' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal48');" <? if($result_dx['tg'] < 150){ echo "checked";}?> />
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal48' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal48');"  <? if($result_dx['tg'] >= 150){ echo "checked";}?>/>
             <? 
 			if($result_dx['tg'] >= 150){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>  		
         </td>
 	    <td colspan="4">
         <div id="acnormal48" <? if($result_dx['tg'] < 150){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch48'>
-			<option value="√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“º‘¥ª°µ‘‡≈Á°πÈÕ¬ §«√§«∫§ÿ¡Õ“À“√°≈ÿË¡‰¢¡—π ÕÕ°°”≈—ß°“¬ ·≈–µ√«®´È”„π 3-6 ‡¥◊Õπ" <? if($result_dx['tg'] >= 150 && $result_dx['tg'] <= 400 ){ echo "selected='selected';";}?>>√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“º‘¥ª°µ‘‡≈Á°πÈÕ¬ §«√§«∫§ÿ¡Õ“À“√°≈ÿË¡‰¢¡—π ÕÕ°°”≈—ß°“¬ ·≈–µ√«®´È”„π 3-6 ‡¥◊Õπ</option>
-			<option value="√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“ Ÿßº‘¥ª°µ‘§ËÕπ¢È“ß¡“° §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['tg'] > 400){ echo "selected='selected';";}?>>√–¥—∫‰¢¡—π„π‡≈◊Õ¥¡’§Ë“ Ÿßº‘¥ª°µ‘§ËÕπ¢È“ß¡“° §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option>           
+			<option value="‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏•‡πá‡∏Å‡∏ô‡πâ‡∏≠‡∏¢ ‡∏Ñ‡∏ß‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏Å‡∏•‡∏∏‡πà‡∏°‡πÑ‡∏Ç‡∏°‡∏±‡∏ô ‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡πÅ‡∏•‡∏∞‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡πÉ‡∏ô 3-6 ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô" <? if($result_dx['tg'] >= 150 && $result_dx['tg'] <= 400 ){ echo "selected='selected';";}?>>‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏•‡πá‡∏Å‡∏ô‡πâ‡∏≠‡∏¢ ‡∏Ñ‡∏ß‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏Å‡∏•‡∏∏‡πà‡∏°‡πÑ‡∏Ç‡∏°‡∏±‡∏ô ‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡πÅ‡∏•‡∏∞‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥‡πÉ‡∏ô 3-6 ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô</option>
+			<option value="‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏™‡∏π‡∏á‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡∏Ñ‡πà‡∏≠‡∏ô‡∏Ç‡πâ‡∏≤‡∏á‡∏°‡∏≤‡∏Å ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['tg'] > 400){ echo "selected='selected';";}?>>‡∏£‡∏∞‡∏î‡∏±‡∏ö‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏™‡∏π‡∏á‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡∏Ñ‡πà‡∏≠‡∏ô‡∏Ç‡πâ‡∏≤‡∏á‡∏°‡∏≤‡∏Å ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option>           
         </select></div>            </td>
 	      </tr>
 	    <tr>
@@ -1168,21 +1168,21 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['bunrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['bunflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['bunflag']?></span></td>
-	    <td class="labfont"><input name='normal44' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal44');" <? if($result_dx['bun'] <= 20){ echo "checked";}?>/>
-ª°µ‘
-  <input name='normal44' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal44');" <? if($result_dx['bun'] > 20){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal44' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal44');" <? if($result_dx['bun'] <= 20){ echo "checked";}?>/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal44' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal44');" <? if($result_dx['bun'] > 20){ echo "checked";}?>/>
             <? 
 			if($result_dx['bun'] > 20){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>          
         </td>
 	    <td colspan="4">
         <div id="acnormal44" <? if($result_dx['bun'] <= 20){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch44'>
-        <option value="§Ë“°“√∑”ß“π¢Õß‰µ Ÿß°«Ë“ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['bun'] > 20){ echo "selected='selected';";}?>>§Ë“°“√∑”ß“π¢Õß‰µ Ÿß°«Ë“ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option>
+        <option value="‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡πÑ‡∏ï‡∏™‡∏π‡∏á‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['bun'] > 20){ echo "selected='selected';";}?>>‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡πÑ‡∏ï‡∏™‡∏π‡∏á‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option>
 </select></div>  </td>
 	      </tr>
 	    <tr>
@@ -1204,21 +1204,21 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['crrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['crflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['crflag']?></span></td>
-	    <td class="labfont"><input name='normal45' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal45');" <? if($result_dx['cr'] <= 1.5){ echo "checked";}?> />
-ª°µ‘
-  <input name='normal45' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal45');" <? if($result_dx['cr'] > 1.5){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal45' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal45');" <? if($result_dx['cr'] <= 1.5){ echo "checked";}?> />
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal45' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal45');" <? if($result_dx['cr'] > 1.5){ echo "checked";}?>/>
             <? 
 			if($result_dx['cr'] > 1.5){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>  
 		</td>
 	    <td colspan="4">
         <div id="acnormal45" <? if($result_dx['cr'] <= 1.5){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
 		<select name='ch45'>
-        <option value="§Ë“°“√∑”ß“π¢Õß‰µ Ÿß°«Ë“ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['cr'] > 1.5){ echo "selected='selected';";}?>>§Ë“°“√∑”ß“π¢Õß‰µ Ÿß°«Ë“ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option>
+        <option value="‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡πÑ‡∏ï‡∏™‡∏π‡∏á‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['cr'] > 1.5){ echo "selected='selected';";}?>>‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡πÑ‡∏ï‡∏™‡∏π‡∏á‡∏Å‡∏ß‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option>
         </select>
        </div></td>
 	      </tr>
@@ -1240,20 +1240,20 @@ $bsult = mysql_fetch_array($brow);
 			?>          	</td>
 			<td width="6%" class="labfont">(<?=$result_dx['alkrange']?>)</td>
             <td width="4%" align="center" class="labfont"><span <? if($result_dx['alkflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['alkflag']?></span></td>
-			<td width="10%" class="labfont"><input name='normal41' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal41');"  <? if($result_dx['alk'] <= 123){ echo "checked";}?>/>
-			ª°µ‘ 
-			  <input name='normal41' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal41');" <? if($result_dx['alk'] > 123){ echo "checked";}?>/>
+			<td width="10%" class="labfont"><input name='normal41' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal41');"  <? if($result_dx['alk'] <= 123){ echo "checked";}?>/>
+			‡∏õ‡∏Å‡∏ï‡∏¥ 
+			  <input name='normal41' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal41');" <? if($result_dx['alk'] > 123){ echo "checked";}?>/>
             <? 
 			if($result_dx['alk'] > 123){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>                  
             </td>
             <td width="70%" colspan="4">
            <div id="acnormal41" <? if($result_dx['alk'] <= 123){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
-           <select name='ch41'><option value="§Ë“°“√∑”ß“π¢Õßµ—∫º‘¥ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['alk'] > 123){ echo "selected='selected';";}?>>§Ë“°“√∑”ß“π¢Õßµ—∫º‘¥ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option></select></div>            </td>
+           <select name='ch41'><option value="‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡∏ï‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['alk'] > 123){ echo "selected='selected';";}?>>‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡∏ï‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option></select></div>            </td>
           </tr>
 	  <tr>
 	    <td align="right" class="profilelab">ALT :</td>
@@ -1274,21 +1274,21 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['sgptrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['sgptflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['sgptflag']?></span></td>
-	    <td class="labfont"><input name='normal42' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal42');" <? if($result_dx['sgpt'] <= 50){ echo "checked";}?>/>
-ª°µ‘
-  <input name='normal42' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal42');" <? if($result_dx['sgpt'] > 50){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal42' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal42');" <? if($result_dx['sgpt'] <= 50){ echo "checked";}?>/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal42' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal42');" <? if($result_dx['sgpt'] > 50){ echo "checked";}?>/>
             <? 
 			if($result_dx['sgpt'] > 50){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>  
    
   		</td>
 	    <td colspan="4">          
         <div id="acnormal42" <? if($result_dx['sgpt'] <= 50){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
-        <select name='ch42'><option value="§Ë“°“√∑”ß“π¢Õßµ—∫º‘¥ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['sgpt'] > 50){ echo "selected='selected';";}?>>§Ë“°“√∑”ß“π¢Õßµ—∫º‘¥ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option></select></div>  </td>
+        <select name='ch42'><option value="‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡∏ï‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['sgpt'] > 50){ echo "selected='selected';";}?>>‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡∏ï‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option></select></div>  </td>
 	    </tr>
 	  <tr>
 	    <td align="right" class="profilelab">AST :</td>
@@ -1309,20 +1309,20 @@ $bsult = mysql_fetch_array($brow);
        </td>
 	    <td class="labfont">(<?=$result_dx['sgotrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['sgotflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['sgotflag']?></span></td>
-	    <td class="labfont"><input name='normal43' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal43');" <? if($result_dx['sgot'] <= 40){ echo "checked";}?>/>
-ª°µ‘
-  <input name='normal43' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal43');" <? if($result_dx['sgot'] > 40){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal43' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal43');" <? if($result_dx['sgot'] <= 40){ echo "checked";}?>/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal43' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal43');" <? if($result_dx['sgot'] > 40){ echo "checked";}?>/>
             <? 
 			if($result_dx['sgot'] > 40){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?>    
 		</td>
 	    <td colspan="4">        
         <div id="acnormal43" <? if($result_dx['sgot'] <= 40){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
-        <select name='ch43'><option value="§Ë“°“√∑”ß“π¢Õßµ—∫º‘¥ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“" <? if($result_dx['sgot'] > 40){ echo "selected='selected';";}?>>§Ë“°“√∑”ß“π¢Õßµ—∫º‘¥ª°µ‘ §«√æ∫·æ∑¬Ï‡æ◊ËÕ√—∫°“√ª√–‡¡‘π·≈–„ÀÈ°“√√—°…“</option></select></div>  </td>
+        <select name='ch43'><option value="‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡∏ï‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤" <? if($result_dx['sgot'] > 40){ echo "selected='selected';";}?>>‡∏Ñ‡πà‡∏≤‡∏Å‡∏≤‡∏£‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏Ç‡∏≠‡∏á‡∏ï‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡πÄ‡∏°‡∏¥‡∏ô‡πÅ‡∏•‡∏∞‡πÉ‡∏´‡πâ‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</option></select></div>  </td>
 	    </tr>
 	  <tr>
 	    <td align="right" class="profilelab">URIC :</td>
@@ -1343,22 +1343,22 @@ $bsult = mysql_fetch_array($brow);
         </td>
 	    <td class="labfont">(<?=$result_dx['uricrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['uricflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['uricflag']?></span></td>
-	    <td class="labfont"><input name='normal49' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal49');" <? if($result_dx['uric'] <= 7){ echo "checked";}?>/>
-ª°µ‘
-  <input name='normal49' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal49');"<? if($result_dx['uric'] > 7){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal49' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal49');" <? if($result_dx['uric'] <= 7){ echo "checked";}?>/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal49' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal49');"<? if($result_dx['uric'] > 7){ echo "checked";}?>/>
             <? 
 			if($result_dx['uric'] > 7){
-				echo "<span style='color:#F00'><strong>º‘¥ª°µ‘</strong></span>";
+				echo "<span style='color:#F00'><strong>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</strong></span>";
 			}else{
-				echo "<span style='color:#000'>º‘¥ª°µ‘</span>";
+				echo "<span style='color:#000'>‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span>";
 			}
 			?> 
 		</td>
 	    <td colspan="4">
         <div id="acnormal49" <? if($result_dx['uric'] <= 7){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
         <select name='ch49'>
-        <option value="ª°µ‘" <? if($result_dx['uric'] <= 7){ echo "selected='selected';";}?>>ª°µ‘</option>
-        <option value="¡’√–¥—∫°√¥¬Ÿ√‘§ Ÿßº‘¥ª°µ‘ §«√§«∫§ÿ¡Õ“À“√®”æ«°‡§√◊ËÕß„π, Õ“À“√∑–‡≈, ‡§√◊ËÕß¥◊Ë¡·Õ≈°ÕŒÕ≈Ï" <? if($result_dx['uric'] > 7){ echo "selected='selected';";}?>>¡’√–¥—∫°√¥¬Ÿ√‘§ Ÿßº‘¥ª°µ‘ §«√§«∫§ÿ¡Õ“À“√®”æ«°‡§√◊ËÕß„π, Õ“À“√∑–‡≈, ‡§√◊ËÕß¥◊Ë¡·Õ≈°ÕŒÕ≈Ï</option>
+        <option value="‡∏õ‡∏Å‡∏ï‡∏¥" <? if($result_dx['uric'] <= 7){ echo "selected='selected';";}?>>‡∏õ‡∏Å‡∏ï‡∏¥</option>
+        <option value="‡∏°‡∏µ‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏Å‡∏£‡∏î‡∏¢‡∏π‡∏£‡∏¥‡∏Ñ‡∏™‡∏π‡∏á‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏à‡∏≥‡∏û‡∏ß‡∏Å‡πÄ‡∏Ñ‡∏£‡∏∑‡πà‡∏≠‡∏á‡πÉ‡∏ô, ‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏∞‡πÄ‡∏•, ‡πÄ‡∏Ñ‡∏£‡∏∑‡πà‡∏≠‡∏á‡∏î‡∏∑‡πà‡∏°‡πÅ‡∏≠‡∏•‡∏Å‡∏≠‡∏Æ‡∏≠‡∏•‡πå" <? if($result_dx['uric'] > 7){ echo "selected='selected';";}?>>‡∏°‡∏µ‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏Å‡∏£‡∏î‡∏¢‡∏π‡∏£‡∏¥‡∏Ñ‡∏™‡∏π‡∏á‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ ‡∏Ñ‡∏ß‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏à‡∏≥‡∏û‡∏ß‡∏Å‡πÄ‡∏Ñ‡∏£‡∏∑‡πà‡∏≠‡∏á‡πÉ‡∏ô, ‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡∏ó‡∏∞‡πÄ‡∏•, ‡πÄ‡∏Ñ‡∏£‡∏∑‡πà‡∏≠‡∏á‡∏î‡∏∑‡πà‡∏°‡πÅ‡∏≠‡∏•‡∏Å‡∏≠‡∏Æ‡∏≠‡∏•‡πå</option>
         </select></div>            </td>
 	    </tr>
 	<?php 
@@ -1377,59 +1377,59 @@ $bsult = mysql_fetch_array($brow);
 <TR>
 	<TD><table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFCCCC">
 	  <tr>
-	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="7">&nbsp;&nbsp;&nbsp;°“√µ√«®Õ◊Ëπ Ê</td>
+	    <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="7">&nbsp;&nbsp;&nbsp;‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏≠‡∏∑‡πà‡∏ô ‡πÜ</td>
 	  </tr>
 	  <tr bgcolor="#CCCCFF">
-	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">µ√«®‡ÕÁ°´Ï‡√¬ÏªÕ¥ : <a href="dxdr_xray_film.php" target="_blank">¥Ÿø‘≈¡Ï</a> </td>
-	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal51')" id="normal58"/>
-	      ª°µ‘
-	        <input name='normal51' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal51')" id="normal57"/>
-	      º‘¥ª°µ‘ </td>
+	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">‡∏ï‡∏£‡∏ß‡∏à‡πÄ‡∏≠‡πá‡∏Å‡∏ã‡πå‡πÄ‡∏£‡∏¢‡πå‡∏õ‡∏≠‡∏î : <a href="dxdr_xray_film.php" target="_blank">‡∏î‡∏π‡∏ü‡∏¥‡∏•‡∏°‡πå</a> </td>
+	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal51')" id="normal58"/>
+	      ‡∏õ‡∏Å‡∏ï‡∏¥
+	        <input name='normal51' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal51')" id="normal57"/>
+	      ‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td colspan="3" bgcolor="#FFCC99" class="labfont"><div id="acnormal51" style='display: none;'>
 	      <select name="ch51" >
-	        <option value="¿“æ‡Õ°´‡√¬Ï∑√«ßÕ°‰¡Ë™—¥‡®π‡π◊ËÕß®“°À“¬„®‡¢È“‰¡Ë‡µÁ¡∑’Ë¢≥–µ√«® §«√µ√«®´È”">¿“æ‡Õ°´‡√¬Ï∑√«ßÕ°‰¡Ë™—¥‡®π‡π◊ËÕß®“°À“¬„®‡¢È“‰¡Ë‡µÁ¡∑’Ë¢≥–µ√«® §«√µ√«®´È”</option>
-	        <option value="ªÕ¥º‘¥ª°µ‘‡¥‘¡ ‰¡Ë‡ª≈’Ë¬π·ª≈ß‡¡◊ËÕ‡∑’¬∫°—∫‡Õ°´‡√¬ÏªÕ¥§√—Èß°ËÕπ">ªÕ¥º‘¥ª°µ‘‡¥‘¡ ‰¡Ë‡ª≈’Ë¬π·ª≈ß‡¡◊ËÕ‡∑’¬∫°—∫‡Õ°´‡√¬ÏªÕ¥§√—Èß°ËÕπ</option>
-	        <option value="ª√÷°…“·æ∑¬Ï∑—π∑’ ‡æ◊ËÕµ√«®√—°…“‡æ‘Ë¡‡µ‘¡">ª√÷°…“·æ∑¬Ï∑—π∑’ ‡æ◊ËÕµ√«®√—°…“‡æ‘Ë¡‡µ‘¡</option>
+	        <option value="‡∏†‡∏≤‡∏û‡πÄ‡∏≠‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå‡∏ó‡∏£‡∏ß‡∏á‡∏≠‡∏Å‡πÑ‡∏°‡πà‡∏ä‡∏±‡∏î‡πÄ‡∏à‡∏ô‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á‡∏à‡∏≤‡∏Å‡∏´‡∏≤‡∏¢‡πÉ‡∏à‡πÄ‡∏Ç‡πâ‡∏≤‡πÑ‡∏°‡πà‡πÄ‡∏ï‡πá‡∏°‡∏ó‡∏µ‡πà‡∏Ç‡∏ì‡∏∞‡∏ï‡∏£‡∏ß‡∏à ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥">‡∏†‡∏≤‡∏û‡πÄ‡∏≠‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå‡∏ó‡∏£‡∏ß‡∏á‡∏≠‡∏Å‡πÑ‡∏°‡πà‡∏ä‡∏±‡∏î‡πÄ‡∏à‡∏ô‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á‡∏à‡∏≤‡∏Å‡∏´‡∏≤‡∏¢‡πÉ‡∏à‡πÄ‡∏Ç‡πâ‡∏≤‡πÑ‡∏°‡πà‡πÄ‡∏ï‡πá‡∏°‡∏ó‡∏µ‡πà‡∏Ç‡∏ì‡∏∞‡∏ï‡∏£‡∏ß‡∏à ‡∏Ñ‡∏ß‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥</option>
+	        <option value="‡∏õ‡∏≠‡∏î‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏î‡∏¥‡∏° ‡πÑ‡∏°‡πà‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡πÅ‡∏õ‡∏•‡∏á‡πÄ‡∏°‡∏∑‡πà‡∏≠‡πÄ‡∏ó‡∏µ‡∏¢‡∏ö‡∏Å‡∏±‡∏ö‡πÄ‡∏≠‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå‡∏õ‡∏≠‡∏î‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏Å‡πà‡∏≠‡∏ô">‡∏õ‡∏≠‡∏î‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏î‡∏¥‡∏° ‡πÑ‡∏°‡πà‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡πÅ‡∏õ‡∏•‡∏á‡πÄ‡∏°‡∏∑‡πà‡∏≠‡πÄ‡∏ó‡∏µ‡∏¢‡∏ö‡∏Å‡∏±‡∏ö‡πÄ‡∏≠‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå‡∏õ‡∏≠‡∏î‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏Å‡πà‡∏≠‡∏ô</option>
+	        <option value="‡∏õ‡∏£‡∏∂‡∏Å‡∏©‡∏≤‡πÅ‡∏û‡∏ó‡∏¢‡πå‡∏ó‡∏±‡∏ô‡∏ó‡∏µ ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏£‡∏±‡∏Å‡∏©‡∏≤‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÄ‡∏ï‡∏¥‡∏°">‡∏õ‡∏£‡∏∂‡∏Å‡∏©‡∏≤‡πÅ‡∏û‡∏ó‡∏¢‡πå‡∏ó‡∏±‡∏ô‡∏ó‡∏µ ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏£‡∏±‡∏Å‡∏©‡∏≤‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÄ‡∏ï‡∏¥‡∏°</option>
 	        </select>
 	      </div></td>
 	    </tr>
 	  <tr>
-	    <td align="right" class="tb_font_2">µ√«®¡–‡√Áßª“°¡¥≈Ÿ° : </td>
-	    <td class="labfont"><input name='normal52' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal52')"/>
-	      ª°µ‘
-	        <input name='normal52' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal52')"/>
-	      º‘¥ª°µ‘ </td>
+	    <td align="right" class="tb_font_2">‡∏ï‡∏£‡∏ß‡∏à‡∏°‡∏∞‡πÄ‡∏£‡πá‡∏á‡∏õ‡∏≤‡∏Å‡∏°‡∏î‡∏•‡∏π‡∏Å : </td>
+	    <td class="labfont"><input name='normal52' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal52')"/>
+	      ‡∏õ‡∏Å‡∏ï‡∏¥
+	        <input name='normal52' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal52')"/>
+	      ‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td colspan="3" class="labfont"><div id="acnormal52" style='display: none;'>
 	      <select name="ch52" >
-	        <option value="™ËÕß§≈Õ¥Õ—°‡ ∫">™ËÕß§≈Õ¥Õ—°‡ ∫</option>
-	        <option value="ºπ—ß™ËÕß§≈Õ¥∫“ß≈ß ®“°¿“«–¢“¥ŒÕ√Ï‚¡π/«—¬∑Õß">ºπ—ß™ËÕß§≈Õ¥∫“ß≈ß ®“°¿“«–¢“¥ŒÕ√Ï‚¡π/«—¬∑Õß</option>
-	        <option value="ª“°¡¥≈Ÿ°Õ—°‡ ∫">ª“°¡¥≈Ÿ°Õ—°‡ ∫</option>
-	        <option value="‡™◊ÈÕ√“„π™ËÕß§≈Õ¥">‡™◊ÈÕ√“„π™ËÕß§≈Õ¥</option>
-	        <option value="‡™◊ÈÕæ¬“∏‘„π™ËÕß§≈Õ¥">‡™◊ÈÕæ¬“∏‘„π™ËÕß§≈Õ¥</option>
-	        <option value="‡´≈≈Ïª“°¡¥≈Ÿ°º‘¥ª°µ‘">‡´≈≈Ïª“°¡¥≈Ÿ°º‘¥ª°µ‘</option>
+	        <option value="‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö">‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö</option>
+	        <option value="‡∏ú‡∏ô‡∏±‡∏á‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î‡∏ö‡∏≤‡∏á‡∏•‡∏á ‡∏à‡∏≤‡∏Å‡∏†‡∏≤‡∏ß‡∏∞‡∏Ç‡∏≤‡∏î‡∏Æ‡∏≠‡∏£‡πå‡πÇ‡∏°‡∏ô/‡∏ß‡∏±‡∏¢‡∏ó‡∏≠‡∏á">‡∏ú‡∏ô‡∏±‡∏á‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î‡∏ö‡∏≤‡∏á‡∏•‡∏á ‡∏à‡∏≤‡∏Å‡∏†‡∏≤‡∏ß‡∏∞‡∏Ç‡∏≤‡∏î‡∏Æ‡∏≠‡∏£‡πå‡πÇ‡∏°‡∏ô/‡∏ß‡∏±‡∏¢‡∏ó‡∏≠‡∏á</option>
+	        <option value="‡∏õ‡∏≤‡∏Å‡∏°‡∏î‡∏•‡∏π‡∏Å‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö">‡∏õ‡∏≤‡∏Å‡∏°‡∏î‡∏•‡∏π‡∏Å‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö</option>
+	        <option value="‡πÄ‡∏ä‡∏∑‡πâ‡∏≠‡∏£‡∏≤‡πÉ‡∏ô‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î">‡πÄ‡∏ä‡∏∑‡πâ‡∏≠‡∏£‡∏≤‡πÉ‡∏ô‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î</option>
+	        <option value="‡πÄ‡∏ä‡∏∑‡πâ‡∏≠‡∏û‡∏¢‡∏≤‡∏ò‡∏¥‡πÉ‡∏ô‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î">‡πÄ‡∏ä‡∏∑‡πâ‡∏≠‡∏û‡∏¢‡∏≤‡∏ò‡∏¥‡πÉ‡∏ô‡∏ä‡πà‡∏≠‡∏á‡∏Ñ‡∏•‡∏≠‡∏î</option>
+	        <option value="‡πÄ‡∏ã‡∏•‡∏•‡πå‡∏õ‡∏≤‡∏Å‡∏°‡∏î‡∏•‡∏π‡∏Å‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥">‡πÄ‡∏ã‡∏•‡∏•‡πå‡∏õ‡∏≤‡∏Å‡∏°‡∏î‡∏•‡∏π‡∏Å‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</option>
 	        </select>
 	      </div></td>
 	    </tr>
 	  <tr>
-	    <td align="right" class="tb_font_2">µ√«®æ‘‡»…Õ◊ËπÊ :</td>
+	    <td align="right" class="tb_font_2">‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏¥‡πÄ‡∏®‡∏©‡∏≠‡∏∑‡πà‡∏ô‡πÜ :</td>
 	    <td class="labfont"><input name="other1" type="text" size="20" /></td>
-	    <td class="labfont"><input name='normal53' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal53')"/>
-ª°µ‘
-  <input name='normal53' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal53')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="labfont"><input name='normal53' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal53')"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal53' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal53')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td colspan="2"><div id="acnormal53" style='display: none;'>
-	      <input name="ch53" type="text" size="50" value="æ∫§«“¡º‘¥ª°µ‘.......§«√æ∫·æ∑¬Ï ‡æ◊ËÕµ√«®À“ “‡Àµÿ" />
+	      <input name="ch53" type="text" size="50" value="‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥.......‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏´‡∏≤‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏" />
 	      </div></td>
 	    </tr>
 	  <tr>
-	    <td align="right" class="tb_font_2">µ√«®æ‘‡»…Õ◊ËπÊ :</td>
+	    <td align="right" class="tb_font_2">‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏¥‡πÄ‡∏®‡∏©‡∏≠‡∏∑‡πà‡∏ô‡πÜ :</td>
 	    <td class="labfont"><input name="other2" type="text" size="20" /></td>
-	    <td class="labfont"><input name='normal54' type='radio' value='ª°µ‘' onclick="togglediv2('acnormal54')"/>
-ª°µ‘
-  <input name='normal54' type='radio' value='º‘¥ª°µ‘' onclick="togglediv1('acnormal54')"/>
-º‘¥ª°µ‘ </td>
+	    <td class="labfont"><input name='normal54' type='radio' value='‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv2('acnormal54')"/>
+‡∏õ‡∏Å‡∏ï‡∏¥
+  <input name='normal54' type='radio' value='‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥' onclick="togglediv1('acnormal54')"/>
+‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </td>
 	    <td colspan="2"><div id="acnormal54" style='display: none;'>
-	      <input name="ch54" type="text" size="50" value="æ∫§«“¡º‘¥ª°µ‘.......§«√æ∫·æ∑¬Ï ‡æ◊ËÕµ√«®À“ “‡Àµÿ" />
+	      <input name="ch54" type="text" size="50" value="‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥.......‡∏Ñ‡∏ß‡∏£‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏´‡∏≤‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏" />
 	      </div></td>
 	    </tr>
 	  </table></td>
@@ -1440,45 +1440,45 @@ $bsult = mysql_fetch_array($brow);
   <tr>
     <td><table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFCCCC">
       <tr>
-        <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="4">&nbsp;&nbsp;&nbsp; √ÿªº≈°“√µ√«®</td>
+        <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="4">&nbsp;&nbsp;&nbsp;‡∏™‡∏£‡∏∏‡∏õ‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à</td>
       </tr>
       <tr>
-        <td width="34%" class="tb_font_2"><span class="labfont"><input name='normal61' type='checkbox' value='ª°µ‘ (‰¡Ëæ∫§«“¡‡ ’Ë¬ß)' id="normal61"/>
-        ª°µ‘ (‰¡Ëæ∫§«“¡‡ ’Ë¬ß)</span></td>
+        <td width="34%" class="tb_font_2"><span class="labfont"><input name='normal61' type='checkbox' value='‡∏õ‡∏Å‡∏ï‡∏¥ (‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á)' id="normal61"/>
+        ‡∏õ‡∏Å‡∏ï‡∏¥ (‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á)</span></td>
         <td width="66%" class="labfont">&nbsp;</td>
         </tr>
       <tr>
-        <td align="left" class="tb_font_2"><span class="labfont"><input name='normal62' type='checkbox' value='æ∫§«“¡‡ ’Ë¬ß‡∫◊ÈÕßµÈπµËÕ‚√§' id="normal62"/> 
-          æ∫§«“¡‡ ’Ë¬ß¡’º≈‡≈◊Õ¥‡°‘π§Ë“ª°µ‘</span></td>
+        <td align="left" class="tb_font_2"><span class="labfont"><input name='normal62' type='checkbox' value='‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡πÄ‡∏ö‡∏∑‡πâ‡∏≠‡∏á‡∏ï‡πâ‡∏ô‡∏ï‡πà‡∏≠‡πÇ‡∏£‡∏Ñ' id="normal62"/> 
+          ‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡∏°‡∏µ‡∏ú‡∏•‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡πÄ‡∏Å‡∏¥‡∏ô‡∏Ñ‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥</span></td>
         <td class="labfont">
-<input name='normal621' type='checkbox' value='πÈ”µ“≈' />
-πÈ”µ“≈
-<input name='normal622' type='checkbox' value='‰¢¡—π' />
-‰¢¡—π
-<input name='normal623' type='checkbox' value='¬Ÿ√‘§' />
-¬Ÿ√‘§
-<input name='normal624' type='checkbox' value='µ—∫' />
-µ—∫
-<input name='normal625' type='checkbox' id="normal625" value='‰µ' /> 
-‰µ
+<input name='normal621' type='checkbox' value='‡∏ô‡πâ‡∏≥‡∏ï‡∏≤‡∏•' />
+‡∏ô‡πâ‡∏≥‡∏ï‡∏≤‡∏•
+<input name='normal622' type='checkbox' value='‡πÑ‡∏Ç‡∏°‡∏±‡∏ô' />
+‡πÑ‡∏Ç‡∏°‡∏±‡∏ô
+<input name='normal623' type='checkbox' value='‡∏¢‡∏π‡∏£‡∏¥‡∏Ñ' />
+‡∏¢‡∏π‡∏£‡∏¥‡∏Ñ
+<input name='normal624' type='checkbox' value='‡∏ï‡∏±‡∏ö' />
+‡∏ï‡∏±‡∏ö
+<input name='normal625' type='checkbox' id="normal625" value='‡πÑ‡∏ï' /> 
+‡πÑ‡∏ï
 </td>
         </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal63' type='checkbox' value='¡’¿“«–πÈ”Àπ—°‡°‘π' id="normal63"/>
-        ¡’¿“«–πÈ”Àπ—°‡°‘π</span></td>
+          <input name='normal63' type='checkbox' value='‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÄ‡∏Å‡∏¥‡∏ô' id="normal63"/>
+        ‡∏°‡∏µ‡∏†‡∏≤‡∏ß‡∏∞‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å‡πÄ‡∏Å‡∏¥‡∏ô</span></td>
         <td>&nbsp;</td>
         </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal64' type='checkbox' value='¡’§Ë“§«“¡¥—π‚≈À‘µ‡°‘π§Ë“ª°µ‘' id="normal64"/>
-        ¡’§Ë“§«“¡¥—π‚≈À‘µ‡°‘π§Ë“ª°µ‘</span></td>
+          <input name='normal64' type='checkbox' value='‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡πÄ‡∏Å‡∏¥‡∏ô‡∏Ñ‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥' id="normal64"/>
+        ‡∏°‡∏µ‡∏Ñ‡πà‡∏≤‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡πÄ‡∏Å‡∏¥‡∏ô‡∏Ñ‡πà‡∏≤‡∏õ‡∏Å‡∏ï‡∏¥</span></td>
         <td>&nbsp;</td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal65' type='checkbox' value='ªË«¬¥È«¬‚√§‡√◊ÈÕ√—ß' id="normal65"/>
-ªË«¬¥È«¬‚√§‡√◊ÈÕ√—ß </span></td>
+          <input name='normal65' type='checkbox' value='‡∏õ‡πà‡∏ß‡∏¢‡∏î‡πâ‡∏ß‡∏¢‡πÇ‡∏£‡∏Ñ‡πÄ‡∏£‡∏∑‡πâ‡∏≠‡∏£‡∏±‡∏á' id="normal65"/>
+‡∏õ‡πà‡∏ß‡∏¢‡∏î‡πâ‡∏ß‡∏¢‡πÇ‡∏£‡∏Ñ‡πÄ‡∏£‡∏∑‡πâ‡∏≠‡∏£‡∏±‡∏á </span></td>
         <td><span class="labfont">
           <input name='normal651' type='checkbox' id="normal651" value='DM' />
           DM
@@ -1490,8 +1490,8 @@ DLP
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal66' type='checkbox' value='º≈‡ÕÁ°´‡√¬Ï' id="normal66"/> 
-          º≈‡ÕÁ°´‡√¬Ï
+          <input name='normal66' type='checkbox' value='‡∏ú‡∏•‡πÄ‡∏≠‡πá‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå' id="normal66"/> 
+          ‡∏ú‡∏•‡πÄ‡∏≠‡πá‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå
 </span></td>
         <td><input name="normal661" type="text" id="normal661"  /></td>
       </tr>
@@ -1505,95 +1505,95 @@ DLP
   <tr>
     <td><table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFCCCC">
       <tr>
-        <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="5">&nbsp;&nbsp;&nbsp;ªË«¬‡ªÁπ‚√§</td>
+        <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="5">&nbsp;&nbsp;&nbsp;‡∏õ‡πà‡∏ß‡∏¢‡πÄ‡∏õ‡πá‡∏ô‡πÇ‡∏£‡∏Ñ</td>
       </tr>
       <tr>
         <td width="30%" class="tb_font_2"><span class="labfont">
           <input name='anemia' type='checkbox' value='Y' id="normal"/>
-          ‚≈À‘µ®“ß (Anemia)</span></td>
+          ‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡∏à‡∏≤‡∏á (Anemia)</span></td>
         <td width="32%" class="tb_font_2"><span class="labfont">
           <input name='cirrhosis' type='checkbox' value='Y' id="cirrhosis"/>
-µ—∫·¢Áß (Cirrhosis) </span></td>
+‡∏ï‡∏±‡∏ö‡πÅ‡∏Ç‡πá‡∏á (Cirrhosis) </span></td>
         <td width="38%" class="tb_font_2"><span class="labfont">
           <input name='hepatitis' type='checkbox' value='Y' id="hepatitis"/>
-‚√§µ—∫Õ—°‡ ∫ (Hepatitis) </span></td>
+‡πÇ‡∏£‡∏Ñ‡∏ï‡∏±‡∏ö‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö (Hepatitis) </span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='cardiomegaly' type='checkbox' value='Y' id="cardiomegaly"/>
-          À—«„®‚µ
+          ‡∏´‡∏±‡∏ß‡πÉ‡∏à‡πÇ‡∏ï
         </span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='allergy' type='checkbox' value='Y' id="allergy"/> 
-          ¿Ÿ¡‘·æÈ
+          ‡∏†‡∏π‡∏°‡∏¥‡πÅ‡∏û‡πâ
 </span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='gout' type='checkbox' value='Y' id="gout"/> 
-          ‚√§‡°Í“∑Ï
+          ‡πÇ‡∏£‡∏Ñ‡πÄ‡∏Å‡πä‡∏≤‡∏ó‡πå
 </span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name="waistline" type='checkbox' id="waistline" value='Y'/>
-√Õ∫‡Õ«‡°‘π (™“¬ &gt; 90 ´.¡. , À≠‘ß &gt; 80 ´.¡.)</span></td>
+‡∏£‡∏≠‡∏ö‡πÄ‡∏≠‡∏ß‡πÄ‡∏Å‡∏¥‡∏ô (‡∏ä‡∏≤‡∏¢ &gt; 90 ‡∏ã.‡∏°. , ‡∏´‡∏ç‡∏¥‡∏á &gt; 80 ‡∏ã.‡∏°.)</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='asthma' type='checkbox' value='Y' id="asthma"/>
-ÀÕ∫À◊¥ (Asthma) </span></td>
+‡∏´‡∏≠‡∏ö‡∏´‡∏∑‡∏î (Asthma) </span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='muscle' type='checkbox' value='Y' id="muscle"/>
-°≈È“¡‡π◊ÈÕÕ—°‡ ∫</span></td>
+‡∏Å‡∏•‡πâ‡∏≤‡∏°‡πÄ‡∏ô‡∏∑‡πâ‡∏≠‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö</span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='ihd' type='checkbox' value='Y' id="ihd"/>
-‚√§À—«„®¢“¥‡≈◊Õ¥‡√◊ÈÕ√—ß (IHD)</span></td>
+‡πÇ‡∏£‡∏Ñ‡∏´‡∏±‡∏ß‡πÉ‡∏à‡∏Ç‡∏≤‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡πÄ‡∏£‡∏∑‡πâ‡∏≠‡∏£‡∏±‡∏á (IHD)</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='thyroid' type='checkbox' value='Y' id="thyroid"/>
-‰∑√Õ¬¥Ï</span></td>
+‡πÑ‡∏ó‡∏£‡∏≠‡∏¢‡∏î‡πå</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='heart' type='checkbox' value='Y' id="heart"/>
-‚√§À—«„® </span></td>
+‡πÇ‡∏£‡∏Ñ‡∏´‡∏±‡∏ß‡πÉ‡∏à </span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='emphysema' type='checkbox' value='Y' id="emphysema"/>
-∂ÿß≈¡‚ªËßæÕß</span></td>
+‡∏ñ‡∏∏‡∏á‡∏•‡∏°‡πÇ‡∏õ‡πà‡∏á‡∏û‡∏≠‡∏á</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='herniated' type='checkbox' value='Y' id="herniated"/>
-À¡Õπ√Õß°√–¥Ÿ°∑—∫‡ Èπª√– “∑</span></td>
+‡∏´‡∏°‡∏≠‡∏ô‡∏£‡∏≠‡∏á‡∏Å‡∏£‡∏∞‡∏î‡∏π‡∏Å‡∏ó‡∏±‡∏ö‡πÄ‡∏™‡πâ‡∏ô‡∏õ‡∏£‡∏∞‡∏™‡∏≤‡∏ó</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='conjunctivitis' type='checkbox' value='Y' id="conjunctivitis"/>
-‡¬◊ËÕ∫ÿµ“Õ—°‡ ∫ (Conjunctivitis)</span></td>
+‡πÄ‡∏¢‡∏∑‡πà‡∏≠‡∏ö‡∏∏‡∏ï‡∏≤‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö (Conjunctivitis)</span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
     <input name='cystitis' type='checkbox' value='Y' id="cystitis"/>
-°√–‡æ“–ª—  “«–Õ—°‡ ∫ (Cystitis) </span></td>
+‡∏Å‡∏£‡∏∞‡πÄ‡∏û‡∏≤‡∏∞‡∏õ‡∏±‡∏™‡∏™‡∏≤‡∏ß‡∏∞‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö (Cystitis) </span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='epilepsy' type='checkbox' value='Y' id="epilepsy"/>
-≈¡™—° (Epilepsy) </span></td>
+‡∏•‡∏°‡∏ä‡∏±‡∏Å (Epilepsy) </span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='fracture' type='checkbox' value='Y' id="fracture"/>
-°√–¥Ÿ°À—°‡≈◊ËÕπ</span></td>
+‡∏Å‡∏£‡∏∞‡∏î‡∏π‡∏Å‡∏´‡∏±‡∏Å‡πÄ‡∏•‡∏∑‡πà‡∏≠‡∏ô</span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='cardiac' type='checkbox' value='Y' id="cardiac"/>
-À—«„®‡µÈπº‘¥®—ßÀ«– (Cardiac arrhythmia)</span></td>
+‡∏´‡∏±‡∏ß‡πÉ‡∏à‡πÄ‡∏ï‡πâ‡∏ô‡∏ú‡∏¥‡∏î‡∏à‡∏±‡∏á‡∏´‡∏ß‡∏∞ (Cardiac arrhythmia)</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='spine' type='checkbox' value='Y' id="spine"/>
-°√–¥Ÿ° —πÀ≈—ß (Õ°) §¥</span></td>
+‡∏Å‡∏£‡∏∞‡∏î‡∏π‡∏Å‡∏™‡∏±‡∏ô‡∏´‡∏•‡∏±‡∏á (‡∏≠‡∏Å) ‡∏Ñ‡∏î</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='dermatitis' type='checkbox' value='Y' id="dermatitis"/>
-º‘«Àπ—ßÕ—°‡ ∫</span></td>
+‡∏ú‡∏¥‡∏ß‡∏´‡∏ô‡∏±‡∏á‡∏≠‡∏±‡∏Å‡πÄ‡∏™‡∏ö</span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='degeneration' type='checkbox' value='Y' id="degeneration"/>
-À—«‡¢Ë“‡ ◊ËÕ¡</span></td>
+‡∏´‡∏±‡∏ß‡πÄ‡∏Ç‡πà‡∏≤‡πÄ‡∏™‡∏∑‡πà‡∏≠‡∏°</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='alcoholic' type='checkbox' value='Y' id="alcoholic"/>
-§«“¡º‘¥ª°µ‘®“°·Õ≈°ÕŒÕ≈Ï</span></td>
+‡∏Ñ‡∏ß‡∏≤‡∏°‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡∏à‡∏≤‡∏Å‡πÅ‡∏≠‡∏•‡∏Å‡∏≠‡∏Æ‡∏≠‡∏•‡πå</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='copd' type='checkbox' value='Y' id="copd"/>
 COPD</span></td>
@@ -1604,29 +1604,29 @@ COPD</span></td>
 BPH</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='kidney' type='checkbox' value='Y' id="kidney"/>
-‰µº‘¥ª°µ‘</span></td>
+‡πÑ‡∏ï‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='pterygium' type='checkbox' value='Y' id="pterygium"/>
-µÈÕ‡π◊ÈÕ</span></td>
+‡∏ï‡πâ‡∏≠‡πÄ‡∏ô‡∏∑‡πâ‡∏≠</span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='tonsil' type='checkbox' value='Y' id="tonsil"/>
-µËÕ¡∑Õπ´‘≈‚µ</span></td>
+‡∏ï‡πà‡∏≠‡∏°‡∏ó‡∏≠‡∏ô‡∏ã‡∏¥‡∏•‡πÇ‡∏ï</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='paralysis' type='checkbox' value='Y' id="paralysis"/>
-Õ—¡æ“µ´’°´È“¬/¢«“ </span></td>
+‡∏≠‡∏±‡∏°‡∏û‡∏≤‡∏ï‡∏ã‡∏µ‡∏Å‡∏ã‡πâ‡∏≤‡∏¢/‡∏Ç‡∏ß‡∏≤ </span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='blood' type='checkbox' value='Y' id="blood"/>
-‡¡Á¥‡≈◊Õ¥º‘¥ª°µ‘ </span></td>
+‡πÄ‡∏°‡πá‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥ </span></td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
           <input name='conanemia' type='checkbox' value='Y' id="conanemia"/>
-¿“«–´’¥</span></td>
+‡∏†‡∏≤‡∏ß‡∏∞‡∏ã‡∏µ‡∏î</span></td>
         <td class="tb_font_2"><span class="labfont">
           <input name='ht' type='checkbox' value='Y' id="ht"/>
-          §«“¡¥—π‚≈À‘µ Ÿß
+          ‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡∏™‡∏π‡∏á
         </span></td>
         <td class="tb_font_2">&nbsp;</td>
       </tr>
@@ -1638,35 +1638,35 @@ BPH</span></td>
   <tr>
     <td><table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFCCCC">
       <tr>
-        <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="3">&nbsp;&nbsp;&nbsp;°“√¥”‡π‘πß“π</td>
+        <td align="left" class="tb_font_1" bgcolor="#0099CC" colspan="3">&nbsp;&nbsp;&nbsp;‡∏Å‡∏≤‡∏£‡∏î‡∏≥‡πÄ‡∏ô‡∏¥‡∏ô‡∏á‡∏≤‡∏ô</td>
       </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-        <input name='normal91' type='checkbox' value='1 ·π–π”‡√◊ËÕßæƒµ‘°√√¡ ÿ¢¿“æ‡æ◊ËÕªÈÕß°—π§«“¡‡ ’Ë¬ß' id="normal91"/>
-        ·π–π”‡√◊ËÕßæƒµ‘°√√¡ ÿ¢¿“æ‡æ◊ËÕªÈÕß°—π§«“¡‡ ’Ë¬ß
+        <input name='normal91' type='checkbox' value='1 ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡πÄ‡∏£‡∏∑‡πà‡∏≠‡∏á‡∏û‡∏§‡∏ï‡∏¥‡∏Å‡∏£‡∏£‡∏°‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏õ‡πâ‡∏≠‡∏á‡∏Å‡∏±‡∏ô‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á' id="normal91"/>
+        ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡πÄ‡∏£‡∏∑‡πà‡∏≠‡∏á‡∏û‡∏§‡∏ï‡∏¥‡∏Å‡∏£‡∏£‡∏°‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏õ‡πâ‡∏≠‡∏á‡∏Å‡∏±‡∏ô‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á
         </span></td>
         </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal92' type='checkbox' value='2 ·π–π”‡√◊ËÕß°“√§«∫§ÿ¡Õ“À“√ ≈¥πÈ”Àπ—°' id="normal92"/>
-          ·π–π”‡√◊ËÕß°“√§«∫§ÿ¡Õ“À“√ ≈¥πÈ”Àπ—°</span></td>
+          <input name='normal92' type='checkbox' value='2 ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡πÄ‡∏£‡∏∑‡πà‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£ ‡∏•‡∏î‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å' id="normal92"/>
+          ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡πÄ‡∏£‡∏∑‡πà‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏Ñ‡∏ß‡∏ö‡∏Ñ‡∏∏‡∏°‡∏≠‡∏≤‡∏´‡∏≤‡∏£ ‡∏•‡∏î‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å</span></td>
       </tr>
       <tr>
         <td align="left" class="tb_font_2"><span class="labfont">
-          <input name='normal93' type='checkbox' value='3 ·π–π”ª√—∫æƒµ‘°√√¡°“√√—∫ª√–∑“πÕ“À“√·≈–ÕÕ°°”≈—ß°“¬∑’Ë‡À¡“– ¡°—∫«—¬ ·≈–°“√¡“æ∫·æ∑¬Ïµ“¡π—¥' id="normal93"/>
-          ·π–π”ª√—∫æƒµ‘°√√¡°“√√—∫ª√–∑“πÕ“À“√·≈–ÕÕ°°”≈—ß°“¬∑’Ë‡À¡“– ¡°—∫«—¬ ·≈–°“√¡“æ∫·æ∑¬Ïµ“¡π—¥
+          <input name='normal93' type='checkbox' value='3 ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡∏õ‡∏£‡∏±‡∏ö‡∏û‡∏§‡∏ï‡∏¥‡∏Å‡∏£‡∏£‡∏°‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏ö‡∏õ‡∏£‡∏∞‡∏ó‡∏≤‡∏ô‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡πÅ‡∏•‡∏∞‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢‡∏ó‡∏µ‡πà‡πÄ‡∏´‡∏°‡∏≤‡∏∞‡∏™‡∏°‡∏Å‡∏±‡∏ö‡∏ß‡∏±‡∏¢ ‡πÅ‡∏•‡∏∞‡∏Å‡∏≤‡∏£‡∏°‡∏≤‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡∏ï‡∏≤‡∏°‡∏ô‡∏±‡∏î' id="normal93"/>
+          ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡∏õ‡∏£‡∏±‡∏ö‡∏û‡∏§‡∏ï‡∏¥‡∏Å‡∏£‡∏£‡∏°‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏ö‡∏õ‡∏£‡∏∞‡∏ó‡∏≤‡∏ô‡∏≠‡∏≤‡∏´‡∏≤‡∏£‡πÅ‡∏•‡∏∞‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢‡∏ó‡∏µ‡πà‡πÄ‡∏´‡∏°‡∏≤‡∏∞‡∏™‡∏°‡∏Å‡∏±‡∏ö‡∏ß‡∏±‡∏¢ ‡πÅ‡∏•‡∏∞‡∏Å‡∏≤‡∏£‡∏°‡∏≤‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡∏ï‡∏≤‡∏°‡∏ô‡∏±‡∏î
         </span></td>
         </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal94' type='checkbox' value='4 æ∫‚√§' id="normal94"/> 
-          æ∫‚√§ 
+          <input name='normal94' type='checkbox' value='4 ‡∏û‡∏ö‡πÇ‡∏£‡∏Ñ' id="normal94"/> 
+          ‡∏û‡∏ö‡πÇ‡∏£‡∏Ñ 
           <input name="normal941" type="text" id="normal941" size="20"  />
- ËßµËÕæ∫·æ∑¬Ï‡©æ“–∑“ß‡æ◊ËÕ√—°…“µËÕ</span></td>
+‡∏™‡πà‡∏á‡∏ï‡πà‡∏≠‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡∏ó‡∏≤‡∏á‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏Å‡∏©‡∏≤‡∏ï‡πà‡∏≠</span></td>
         </tr>
       <tr>
         <td class="tb_font_2"><span class="labfont">
-          <input name='normal95' type='checkbox' value='5 Õ◊ËπÊ' id="normal95"/>
+          <input name='normal95' type='checkbox' value='5 ‡∏≠‡∏∑‡πà‡∏ô‡πÜ' id="normal95"/>
           <input name="normal951" type="text" id="normal951" size="80"  />
         </span></td>
       </tr>
@@ -1676,22 +1676,22 @@ BPH</span></td>
 <BR>
 <table width="100%" height="41" border="0" cellpadding="0" cellspacing="0">
   <tr>
-    <td width="50%" height="35" valign="middle" bgcolor="#FFCCCC"><strong>°“√√—°…“ :</strong> <span class="labfont">
+    <td width="50%" height="35" valign="middle" bgcolor="#FFCCCC"><strong>‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤ :</strong> <span class="labfont">
       <input name="cure_disease" type="text" id="cure_disease" size="80"  />
     </span></td>
-    <td width="50%" valign="middle" bgcolor="#FFCCCC"><strong>π—¥§√—ÈßµËÕ‰ª : </strong><span class="labfont">
+    <td width="50%" valign="middle" bgcolor="#FFCCCC"><strong>‡∏ô‡∏±‡∏î‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏ï‡πà‡∏≠‡πÑ‡∏õ : </strong><span class="labfont">
       <input name="appoint" type="text" id="appoint" size="30"  />
     </span></td>
   </tr>
 </table>
 <br />
-<!-- ∫—π∑÷°°“√«‘π‘©—¬®“°·æ∑¬Ï -->
+<!-- ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Å‡∏≤‡∏£‡∏ß‡∏¥‡∏ô‡∏¥‡∏â‡∏±‡∏¢‡∏à‡∏≤‡∏Å‡πÅ‡∏û‡∏ó‡∏¢‡πå -->
 <TABLE border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFCCCC">
 <TR>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0" >
 	<TR>
-		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;∫—π∑÷°°“√«‘π‘©—¬®“°·æ∑¬Ï</TD>
+		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Å‡∏≤‡∏£‡∏ß‡∏¥‡∏ô‡∏¥‡∏â‡∏±‡∏¢‡∏à‡∏≤‡∏Å‡πÅ‡∏û‡∏ó‡∏¢‡πå</TD>
 	</TR>
 	<TR class="tb_font">
 		<TD>
@@ -1706,10 +1706,10 @@ BPH</span></td>
 	</TD>
 </TR>
 </TABLE>
-<p align="center"><input name="statusdata" type="checkbox" value="1" /> <strong>¬◊π¬—π°“√ÕÕ°º≈µ√«® ÿ¢¿“æ</strong></p>
+<p align="center"><input name="statusdata" type="checkbox" value="1" /> <strong>‡∏¢‡∏∑‡∏ô‡∏¢‡∏±‡∏ô‡∏Å‡∏≤‡∏£‡∏≠‡∏≠‡∏Å‡∏ú‡∏•‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û</strong></p>
 <center>
-<!--<input name="submit" type="submit" value="µ°≈ß"  />&nbsp;&nbsp;-->
-<input name="submit2" type="submit" value="µ°≈ß&amp; µ‘°‡°Õ√Ï OPD" />
+<!--<input name="submit" type="submit" value="‡∏ï‡∏Å‡∏•‡∏á"  />&nbsp;&nbsp;-->
+<input name="submit2" type="submit" value="‡∏ï‡∏Å‡∏•‡∏á&amp;‡∏™‡∏ï‡∏¥‡∏Å‡πÄ‡∏Å‡∏≠‡∏£‡πå OPD" />
 </center>
 <INPUT TYPE="hidden" value="<?php echo $bmi;?>" name="bmi" />
 <INPUT TYPE="hidden" value="<?php echo $rowid;?>" name="row_id" />

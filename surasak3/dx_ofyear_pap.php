@@ -20,9 +20,9 @@ function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ��";
+		$pAge="$ageY ปี";
 	}else{
-		$pAge="$ageY �� $ageM ��͹";
+		$pAge="$ageY ปี $ageM เดือน";
 	}
 
 return $pAge;
@@ -36,7 +36,7 @@ $thaidate = (date("Y")+543).date("-m-d");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style>
 	.font_title{font-family:"Angsana New"; font-size:36px}
@@ -99,9 +99,9 @@ function togglediv2(divid){
 </head>
 
 <body>
-<a href ="../nindex.htm" >&lt;&lt; ����</a>
+<a href ="../nindex.htm" >&lt;&lt; เมนู</a>
 <center>
-  <div class="font_title">�š�õ�Ǩ����移ҡ���١</div></center>
+  <div class="font_title">ผลการตรวจมะเร็งปากมดลูก</div></center>
 
 <form action="dx_ofyear_pap.php" method="post">
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
@@ -109,10 +109,10 @@ function togglediv2(divid){
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0">
 	<TR>
-		<TD align="center" bgcolor="#0000CC" class="tb_font_1">��͡�����Ţ HN</TD>
+		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข HN</TD>
 	</TR>
 	<TR>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/><input type="submit" name="Submit1" value="��ŧ" /></TD>
+		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/><input type="submit" name="Submit1" value="ตกลง" /></TD>
 </TR>
 	<TR>
 		<TD></TD>
@@ -128,7 +128,7 @@ function togglediv2(divid){
 if(isset($_POST['Submit1'])){
 ?>
 
-<!-- ���������ͧ�鹢ͧ������ -->
+<!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM METHOD=POST ACTION="dx_ofyear_save_pap.php">
 
 
@@ -149,10 +149,10 @@ $query1 = mysql_fetch_array($row1);
       <td width="718" class="pdxpro">HN :
         <strong>
         <?=$query1['hn']?>
-        </strong>       ����-ʡ�� : 
+        </strong>       ชื่อ-สกุล : 
       <strong><?=$query1['yot']." ".$query1['name']." ".$query1['surname'];?></strong>
       <? $age1 = calcage($query1['dbirth']);?>
-      ���� <?=$age1?> �Ţ�ѵû�� : <?=$query1['idcard']?></td>
+      อายุ <?=$age1?> เลขบัตรปชช : <?=$query1['idcard']?></td>
       <input name="age" type="hidden" value="<?=$age1?>"/>
       <input name="camp" type="hidden" value="<?=$query1['camp']?>"/>
       </tr>
@@ -161,29 +161,29 @@ $query1 = mysql_fetch_array($row1);
     </table>
 <table width="857">
     <tr>
-      <td class="pdxpro"><strong>�š�õ�Ǩ����移ҡ���١</strong></td>
+      <td class="pdxpro"><strong>ผลการตรวจมะเร็งปากมดลูก</strong></td>
       </tr>
     <tr>
       <td class="pdx"><table width="459">
         <tr>
-          <td width="90" align="center"><input type="radio" name="pap1" value="����" /></td>
-          <td width="118" >����</td>
+          <td width="90" align="center"><input type="radio" name="pap1" value="ปกติ" /></td>
+          <td width="118" >ปกติ</td>
           <td width="235">&nbsp;</td>
           </tr>
         <tr>
-          <td align="center"><input type="radio" name="pap1" value="�Դ����" /></td>
-          <td>�Դ����</td>
+          <td align="center"><input type="radio" name="pap1" value="ผิดปกติ" /></td>
+          <td>ผิดปกติ</td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <td align="center"><input type="radio" name="pap1" value="�ͼ�" /></td>
-          <td>�ͼ�</td>
+          <td align="center"><input type="radio" name="pap1" value="รอผล" /></td>
+          <td>รอผล</td>
           <td align="center">&nbsp;</td>
         </tr>
       </table></td>
     </tr>
     <tr>
-      <td class="pdx"><input name="submit" type="submit" value=" ��ŧ "  /></td>
+      <td class="pdx"><input name="submit" type="submit" value=" ตกลง "  /></td>
       </tr>
     </table>
 </td>
@@ -193,7 +193,7 @@ $query1 = mysql_fetch_array($row1);
 
 
 <center>&nbsp;&nbsp;
-<!--<input name="submit2" type="submit" value="��ŧ&amp;ʵԡ���� OPD" />-->
+<!--<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />-->
 </center>
 <INPUT TYPE="hidden" value="<?php echo $query1['yot']." ".$query1['name']." ".$query1['surname'];?>" name="ptname" />
 <input name="age" type="hidden" id="age"  value="<?php echo $age1;?>" />
@@ -212,9 +212,9 @@ $query1 = mysql_fetch_array($row1);
 	?>
 <br /><br />
 	<table width="80%" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse; font-family: AngsanaUPC; font-size: 18px;">
-    	<tr><td width="51" align="center" bgcolor="#FF9966">#</td><td width="106" align="center" bgcolor="#FF9966">HN</td><td width="216" align="center" bgcolor="#FF9966">����-ʡ��</td>
-    	  <td width="148" align="center" bgcolor="#FF9966">�š�õ�Ǩ</td>
-    	  <td width="51" align="center" bgcolor="#FF9966">ź</td>
+    	<tr><td width="51" align="center" bgcolor="#FF9966">#</td><td width="106" align="center" bgcolor="#FF9966">HN</td><td width="216" align="center" bgcolor="#FF9966">ชื่อ-สกุล</td>
+    	  <td width="148" align="center" bgcolor="#FF9966">ผลการตรวจ</td>
+    	  <td width="51" align="center" bgcolor="#FF9966">ลบ</td>
    	    </tr>
 	<?
 	while($result=mysql_fetch_array($rows2)){
@@ -224,7 +224,7 @@ $query1 = mysql_fetch_array($row1);
         <td><?=$result['hn']?></td>
         <td><?=$result['ptname']?></td>
     	<td><?=$result['stat']?></td>
-    	<td width="51" align="center"><a href="dx_ofyear_pap.php?del=<?=$result['row_id']?>" onclick="return confirm('�׹�ѹ���ź?')">ź</a></td>
+    	<td width="51" align="center"><a href="dx_ofyear_pap.php?del=<?=$result['row_id']?>" onclick="return confirm('ยืนยันการลบ?')">ลบ</a></td>
    	    </tr>
 	<?
 	}

@@ -27,7 +27,7 @@ $_SESSION['other2_1_1'] = isset($_POST['other2_1_1']) ? $_POST['other2_1_1'] : f
 <BODY>
 
 <?php
-////*runno µ√«® ÿ¢¿“æ*/////////
+////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 	
@@ -42,7 +42,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	
 	$nPrefix=$row->prefix;
 	$nPrefix ="25".$nPrefix;
-////*runno µ√«® ÿ¢¿“æ*/////////
+////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 
 $sql1 = "Select * from  `dxofyear_out` where `row_id` ='".$_POST['row_id']."'";
 $dxdr_ofyear = mysql_fetch_array(mysql_query($sql1));
@@ -54,40 +54,40 @@ $sql = "Select count(row_id) From  `dxofyear_out` where `thdatehn` = '{$date_hn}
 list($count) = mysql_fetch_row(mysql_query($sql));
 
 if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
-	if($_POST['normal20']=="ª°µ‘"|$_POST['normal20']=="") $_POST['ch20']="";
-	if($_POST['normal21']=="ª°µ‘"|$_POST['normal21']=="") $_POST['ch21']="";
-	if($_POST['normal22']=="ª°µ‘"|$_POST['normal22']=="") $_POST['ch22']="";
-	if($_POST['normal23']=="ª°µ‘"|$_POST['normal23']=="") $_POST['ch23']="";
-	if($_POST['normal24']=="ª°µ‘"|$_POST['normal24']=="") $_POST['ch24']="";
-	if($_POST['normal25']=="ª°µ‘"|$_POST['normal25']=="") $_POST['ch25']="";
-	if($_POST['normal26']=="ª°µ‘"|$_POST['normal26']=="") $_POST['ch26']="";
-	if($_POST['normal27']=="ª°µ‘"|$_POST['normal27']=="") $_POST['ch27']="";
-	if($_POST['normal28']=="ª°µ‘"|$_POST['normal28']=="") $_POST['ch28']="";
-	if($_POST['normal29']=="ª°µ‘"|$_POST['normal29']=="") $_POST['ch29']="";
-	if($_POST['normal30']=="ª°µ‘"|$_POST['normal30']=="") $_POST['ch30']="";
-	if($_POST['normal']=="ª°µ‘"|$_POST['normal']=="") $_POST['ch']="";
-	if($_POST['normal31']=="ª°µ‘"|$_POST['normal31']=="") $_POST['ch31']="";
-	if($_POST['normal32']=="ª°µ‘"|$_POST['normal32']=="") $_POST['ch32']="";
-	if($_POST['normal33']=="ª°µ‘"|$_POST['normal33']=="") $_POST['ch33']="";
-	if($_POST['normal81']=="ª°µ‘"|$_POST['normal81']=="") $_POST['ch81']="";
-	if($_POST['normal41']=="ª°µ‘"|$_POST['normal41']=="") $_POST['ch41']="";
-	if($_POST['normal42']=="ª°µ‘"|$_POST['normal42']=="") $_POST['ch42']="";
-	if($_POST['normal43']=="ª°µ‘"|$_POST['normal43']=="") $_POST['ch43']="";
-	if($_POST['normal44']=="ª°µ‘"|$_POST['normal44']=="") $_POST['ch44']="";
-	if($_POST['normal45']=="ª°µ‘"|$_POST['normal45']=="") $_POST['ch45']="";
-	if($_POST['normal46']=="ª°µ‘"|$_POST['normal46']=="") $_POST['ch46']="";
-	if($_POST['normal47']=="ª°µ‘"|$_POST['normal47']=="") $_POST['ch47']="";
-	if($_POST['normal48']=="ª°µ‘"|$_POST['normal48']=="") $_POST['ch48']="";
-	if($_POST['normal49']=="ª°µ‘"|$_POST['normal49']=="") $_POST['ch49']="";
-	if($_POST['normal51']=="ª°µ‘"|$_POST['normal51']=="") $_POST['ch51']="";
-	if($_POST['normal52']=="ª°µ‘"|$_POST['normal52']=="") $_POST['ch52']="";
+	if($_POST['normal20']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal20']=="") $_POST['ch20']="";
+	if($_POST['normal21']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal21']=="") $_POST['ch21']="";
+	if($_POST['normal22']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal22']=="") $_POST['ch22']="";
+	if($_POST['normal23']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal23']=="") $_POST['ch23']="";
+	if($_POST['normal24']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal24']=="") $_POST['ch24']="";
+	if($_POST['normal25']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal25']=="") $_POST['ch25']="";
+	if($_POST['normal26']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal26']=="") $_POST['ch26']="";
+	if($_POST['normal27']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal27']=="") $_POST['ch27']="";
+	if($_POST['normal28']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal28']=="") $_POST['ch28']="";
+	if($_POST['normal29']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal29']=="") $_POST['ch29']="";
+	if($_POST['normal30']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal30']=="") $_POST['ch30']="";
+	if($_POST['normal']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal']=="") $_POST['ch']="";
+	if($_POST['normal31']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal31']=="") $_POST['ch31']="";
+	if($_POST['normal32']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal32']=="") $_POST['ch32']="";
+	if($_POST['normal33']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal33']=="") $_POST['ch33']="";
+	if($_POST['normal81']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal81']=="") $_POST['ch81']="";
+	if($_POST['normal41']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal41']=="") $_POST['ch41']="";
+	if($_POST['normal42']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal42']=="") $_POST['ch42']="";
+	if($_POST['normal43']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal43']=="") $_POST['ch43']="";
+	if($_POST['normal44']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal44']=="") $_POST['ch44']="";
+	if($_POST['normal45']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal45']=="") $_POST['ch45']="";
+	if($_POST['normal46']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal46']=="") $_POST['ch46']="";
+	if($_POST['normal47']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal47']=="") $_POST['ch47']="";
+	if($_POST['normal48']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal48']=="") $_POST['ch48']="";
+	if($_POST['normal49']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal49']=="") $_POST['ch49']="";
+	if($_POST['normal51']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal51']=="") $_POST['ch51']="";
+	if($_POST['normal52']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal52']=="") $_POST['ch52']="";
 	
 	if($_POST['other1']==""){ $_POST['normal53']=""; $_POST['ch53']="";};
 	if($_POST['other2']==""){ $_POST['normal54']=""; $_POST['ch54']="";};
-	if($_POST['normal53']=="ª°µ‘"|$_POST['normal53']=="") $_POST['ch53']="";
-	if($_POST['normal54']=="ª°µ‘"|$_POST['normal54']=="") $_POST['ch54']="";
-	if($_POST['normal55']=="ª°µ‘"|$_POST['normal55']=="") $_POST['ch55']="";
-	if($_POST['normal56']=="ª°µ‘"|$_POST['normal56']=="") $_POST['ch56']="";		
+	if($_POST['normal53']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal53']=="") $_POST['ch53']="";
+	if($_POST['normal54']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal54']=="") $_POST['ch54']="";
+	if($_POST['normal55']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal55']=="") $_POST['ch55']="";
+	if($_POST['normal56']=="‡∏õ‡∏Å‡∏ï‡∏¥"|$_POST['normal56']=="") $_POST['ch56']="";		
 	
 	
 	$txtsm="";
@@ -100,47 +100,47 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 			}
 		}
 	}
-	if($_POST['normal71']=="ª°µ‘"){
+	if($_POST['normal71']=="‡∏õ‡∏Å‡∏ï‡∏¥"){
 		$txtsm="";
 		$_POST['text72']="";
-	}elseif($_POST['normal71']=="¡’ª—®®—¬‡ ’Ë¬ß∑’Ë®–‡°‘¥‚√§ (º‘¥ª°µ‘‡≈Á°πÈÕ¬)"){
+	}elseif($_POST['normal71']=="‡∏°‡∏µ‡∏õ‡∏±‡∏à‡∏à‡∏±‡∏¢‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡∏ó‡∏µ‡πà‡∏à‡∏∞‡πÄ‡∏Å‡∏¥‡∏î‡πÇ‡∏£‡∏Ñ (‡∏ú‡∏¥‡∏î‡∏õ‡∏Å‡∏ï‡∏¥‡πÄ‡∏•‡πá‡∏Å‡∏ô‡πâ‡∏≠‡∏¢)"){
 		//$txtsm=$txtsm;
 		$_POST['text72']="";
-	}elseif($_POST['normal71']=="‡ªÁπ‚√§"){
+	}elseif($_POST['normal71']=="‡πÄ‡∏õ‡πá‡∏ô‡πÇ‡∏£‡∏Ñ"){
 		$txtsm=$_POST['text72'];
 	}
-	/////‡°Ë“
-	/*if($_POST['normal61']=="‰¡Ëæ∫§«“¡‡ ’Ë¬ß"){ 
+	/////‡πÄ‡∏Å‡πà‡∏≤
+	/*if($_POST['normal61']=="‡πÑ‡∏°‡πà‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á"){ 
 		$smdm ="" ;
 		$smht="";
 		$smstr="";
 		$smobe="";
-	}elseif($_POST['normal61']=="æ∫§«“¡‡ ’Ë¬ß‡∫◊ÈÕßµÈπµËÕ‚√§"){ 
+	}elseif($_POST['normal61']=="‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡πÄ‡∏ö‡∏∑‡πâ‡∏≠‡∏á‡∏ï‡πâ‡∏ô‡∏ï‡πà‡∏≠‡πÇ‡∏£‡∏Ñ"){ 
 		$smdm=$_POST['normal621'];
 		$smht=$_POST['normal622'];
 		$smstr=$_POST['normal623'];
 		$smobe=$_POST['normal624'];
-	}elseif($_POST['normal61']=="ªË«¬¥È«¬‚√§‡√◊ÈÕ√—ß"){ 
+	}elseif($_POST['normal61']=="‡∏õ‡πà‡∏ß‡∏¢‡∏î‡πâ‡∏ß‡∏¢‡πÇ‡∏£‡∏Ñ‡πÄ‡∏£‡∏∑‡πâ‡∏≠‡∏£‡∏±‡∏á"){ 
 		$smdm=$_POST['normal631'];
 		$smht=$_POST['normal632'];
 		$smstr=$_POST['normal633'];
 		$smobe=$_POST['normal634'];
 	}*/
 	
-	//„À¡Ë
-	if($_POST['normal62']=="æ∫§«“¡‡ ’Ë¬ß‡∫◊ÈÕßµÈπµËÕ‚√§"){ 
+	//‡πÉ‡∏´‡∏°‡πà
+	if($_POST['normal62']=="‡∏û‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏™‡∏µ‡πà‡∏¢‡∏á‡πÄ‡∏ö‡∏∑‡πâ‡∏≠‡∏á‡∏ï‡πâ‡∏ô‡∏ï‡πà‡∏≠‡πÇ‡∏£‡∏Ñ"){ 
 		$rs_sum21 = $_POST['normal621'];
 		$rs_sum22 = $_POST['normal622'];
 		$rs_sum23 = $_POST['normal623'];
 		$rs_sum24 = $_POST['normal624'];
 		$rs_sum25 = $_POST['normal625'];
 	}
-	if($_POST['normal65']=="ªË«¬¥È«¬‚√§‡√◊ÈÕ√—ß"){ 
+	if($_POST['normal65']=="‡∏õ‡πà‡∏ß‡∏¢‡∏î‡πâ‡∏ß‡∏¢‡πÇ‡∏£‡∏Ñ‡πÄ‡∏£‡∏∑‡πâ‡∏≠‡∏£‡∏±‡∏á"){ 
 		$rs_sum51 = $_POST['normal651'];
 		$rs_sum52 = $_POST['normal652'];
 		$rs_sum53 = $_POST['normal653'];
 	}
-	if($_POST['normal66']=="º≈‡ÕÁ°´‡√¬Ï"){ 
+	if($_POST['normal66']=="‡∏ú‡∏•‡πÄ‡∏≠‡πá‡∏Å‡∏ã‡πÄ‡∏£‡∏¢‡πå"){ 
 		$rs_sum61 = $_POST['normal661'];
 	}
 	
@@ -162,11 +162,11 @@ $upopday = "update opday set checkdx='' where thdatehn = '".$date_hn2."'";
 $result3 = mysql_query($upopday) or die(mysql_error());
 
 if($result && isset($_POST["submit"])){
-	echo "<CENTER>∫—π∑÷°¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«</CENTER>";
+	echo "<CENTER>‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß</CENTER>";
 
 }elseif($result && isset($_POST["submit2"])){
 	if($_POST["drugreact"] == 0){
-		$_POST["congenital_disease"] .=" , ºŸÈªË«¬‰¡Ë·æÈ¬“";
+		$_POST["congenital_disease"] .=" , ‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏°‡πà‡πÅ‡∏û‡πâ‡∏¢‡∏≤";
 	}else{
 		$i=0;
 		$list = array();
@@ -176,7 +176,7 @@ if($result && isset($_POST["submit"])){
 			array_push($list ,$arr["tradname"]);
 		}
 		$list_drug = implode(", ",$list);
-		$_POST["congenital_disease"] .= " , ·æÈ¬“ : ".$list_drug;
+		$_POST["congenital_disease"] .= " , ‡πÅ‡∏û‡πâ‡∏¢‡∏≤ : ".$list_drug;
 	}
 	$detail = "select * from condxofyear_out where thdatevn = '".$date_vn."' order by row_id desc ";
 	$result = Mysql_Query($detail);
@@ -190,7 +190,7 @@ if($result && isset($_POST["submit"])){
    <meta http-equiv="refresh" content="3;url=dt_manual_index.php">
 	<?
 		}else{
-		echo "<CENTER><FONT COLOR=\"red\">‰¡Ë “¡“√∂∫—π∑÷°¢ÈÕ¡Ÿ≈‰¥È</FONT></CENTER>";
+		echo "<CENTER><FONT COLOR=\"red\">‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏î‡πâ</FONT></CENTER>";
 	}
 
 include("unconnect.inc");

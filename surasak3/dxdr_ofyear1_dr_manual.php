@@ -1,14 +1,13 @@
 <?php
 session_start();
 include("connect.inc");
-include("dt_menu.php");
 session_unregister("list_bill");
 session_register("list_bill");
 $_SESSION["list_bill"] = "";
-$_POST["p_hn"] = $_SESSION["vn_now"]; //vn
+$_SESSION["hn_now"] = "";
+$_SESSION["vn_now"] = "";
 $_POST["post_vn"] = 1;
 $_SESSION["dt_doctor"] = $_SESSION["sOfficer"];
-
 $date_now = date("Y-m-d H:i:s");
 
 
@@ -98,7 +97,7 @@ $list_lab["LDL"] = "ldl";
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>ตรวจสุขภาพทหาร</title>
+<title>ตรวจสุขภาพประจำปีกองทัพบก</title>
 <style>
 	.font_title{font-family:"TH Sarabun New"; font-size:32px;}
 	.tb_font{font-family:"TH Sarabun New"; font-size:24px;}
@@ -228,29 +227,30 @@ function togglediv2(divid){
 
 <body>
 
-
-<!--<form action="dxdr_ofyear1.php" method="post" name="selecthn">
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939"  >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
+<div align="center" style="margin-top:30px;">
+<form action="dxdr_ofyear1_dr_manual.php" method="post" name="selecthn">
+<input name="act" type="hidden" value="show" />
+	<TABLE width="292" height="86" border="0" align="center" cellpadding="2" cellspacing="0">
 	<TR>
-		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข VN</TD>
+		<TD align="center" bgcolor="#33CC99" class="tb_font_1">กรอกหมายเลข HN</TD>
 	</TR>
 	<TR>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></TD>
+		<TD align="center" bgcolor="#99FFCC" class="tb_font"><input name="c_hn" type="text"  size="30" style="height:30px;"/>
+	    &nbsp;&nbsp;
+	    <input type="submit" name="Submit" value="ตกลง" style="height:30px; width: 50px;" /></TD>
 	</TR>
 	<TR>
 		<TD></TD>
 	</TR>
 	</TABLE>
-	</TD>
-</TR>
-</TABLE>
 <input name="post_vn" type="hidden" value="1" />
-</form>-->
+</form>
+<a href='../nindex.htm'>ไปเมนูหลัก</a> || <a href='dt_index.php'>ผู้ป่วยรายใหม่</a>
+</div>
 
-<?php if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
+
+<? if($_POST["act"]=="show"){ ?>
+<?php if(!empty($_POST["post_vn"]) && $_POST["c_hn"] != ""){
 		////*runno ตรวจสุขภาพ*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$result = mysql_query($query) or die("Query failed");
@@ -270,7 +270,8 @@ function togglediv2(divid){
 	
 //ค้นหา hn จาก opday ****************************************************************************************
 	$date_now = (date("Y")+543).date("-m-d");
-	$sqlvn = "Select * From opday where  vn = '".$_POST["p_hn"]."' and thidate like '$date_now%' limit 0,1";
+	$sqlvn = "Select * From opday where  hn = '".$_POST["c_hn"]."' and toborow like 'EX26%' order by row_id desc limit 0,1";
+	//echo $sqlvn;
 	$resultvn= mysql_query($sqlvn);
 	$queryvn = mysql_fetch_array($resultvn);
 	
@@ -309,16 +310,6 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 	//echo $sql;
 	list($lab_date) = mysql_fetch_row(mysql_query($sql));
 
-	/*$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'UA' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี54' ) Order by labcode ASC ";
-	
-	$result_ua = mysql_query($sql);
-
-	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี54') Order by labcode ASC";
-	$result_cbc = mysql_query($sql);
-
-	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี54') Order by a.autonumber ASC ";
-	$result_lab = mysql_query($sql);*/
-//ค้นหาข้อมูลเดิม
 	
 	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
 	$date_after= date("Y-m-d H:i:s",$times);
@@ -414,7 +405,9 @@ $choose2 = array();
 while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
-$_SESSION["hn_now"] = $arr_view["hn"];
+
+$_SESSION["hn_now"] = $arr_dxofyear["hn"];
+$_SESSION["vn_now"] = $arr_dxofyear["vn"];
 
 if(empty($arr_dxofyear["bp21"]) && empty($arr_dxofyear["bp22"])){
 	$bp1=$arr_dxofyear["bp1"];
@@ -423,20 +416,22 @@ if(empty($arr_dxofyear["bp21"]) && empty($arr_dxofyear["bp22"])){
 	$bp1=$arr_dxofyear["bp21"];
 	$bp2=$arr_dxofyear["bp22"];
 }
+$chkdate=substr($arr_dxofyear["thidate"],0,10);
 ?>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyear_save1.php"   onsubmit="return check()" target="_blank">
+<FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyear_save1_manual.php"   onsubmit="return check()" target="_blank">
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_dxofyear["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<input name="vn" type="hidden" id="vn"  value="<?php echo $queryvn['vn'];?>" />
+<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_dxofyear["hn"];?>" />
+<input name="vn" type="hidden" id="vn"  value="<?php echo $arr_dxofyear['vn'];?>" />
+<input name="chkdate" type="hidden" id="chkdate"  value="<?php echo $chkdate;?>" />
 <br />
 <p align="center" class="head_font1"><strong>บันทึกผลการตรวจสุขภาพทหารประจำปี <?=$showyear;?></strong></p>
 <table  width="100%" border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFFFFF">
 <tr>
   <td><table width="100%" border="0" cellpadding="0" cellspacing="0" >
     <tr>
-      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</td>
+      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;ข้อมูลผู้ป่วย V/S เมื่อ <?=$chkdate;?></td>
     </tr>
     <tr>
       <td width="148" align="left" class="profilehead">VN</td>
@@ -1803,7 +1798,7 @@ BPH</span></td>
 <INPUT TYPE="hidden" value="<?php echo $rowid;?>" name="row_id" />
 </FORM>
 
-<?php }?>
+<?php } }?>
 <?php 
 include("unconnect.inc");
  ?>

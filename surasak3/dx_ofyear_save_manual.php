@@ -37,7 +37,7 @@ $_SESSION["fixPrefix"]=$_POST["fixPrefix"];
 	$result = Mysql_Query($sql);
 	list($rows) = Mysql_fetch_row($result);
 	
-	////*runno µ√«® ÿ¢¿“æ*/////////
+	////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 		
@@ -51,7 +51,7 @@ $_SESSION["fixPrefix"]=$_POST["fixPrefix"];
 		}
 		
 		$nPrefix=$_SESSION["fixPrefix"];
-	////*runno µ√«® ÿ¢¿“æ*/////////
+	////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 	
 	if($rows > 0){
 
@@ -88,14 +88,14 @@ $query ="UPDATE chkup_solider SET opd = '$date_now' WHERE hn='".$_POST["hn"]."'"
 $result = mysql_query($query) or die("Query failed");
 //echo $upopday;
 if($result && isset($_POST["submit"])){
-	echo "<CENTER>∫—π∑÷°¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«</CENTER>";
+	echo "<CENTER>‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß</CENTER>";
 	
 }elseif($result && isset($_POST["submit2"])){
 	
 	
 
 if($_POST["drugreact"] == 0){
-	$_POST["congenital_disease"] .=" , ºŸÈªË«¬‰¡Ë·æÈ¬“";
+	$_POST["congenital_disease"] .=" , ‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏°‡πà‡πÅ‡∏û‡πâ‡∏¢‡∏≤";
 }else{
 	$i=0;
 	$list = array();
@@ -105,7 +105,7 @@ if($_POST["drugreact"] == 0){
 		array_push($list ,$arr["tradname"]);
 	}
 	$list_drug = implode(", ",$list);
-	$_POST["congenital_disease"] .= " , ·æÈ¬“ : ".$list_drug;
+	$_POST["congenital_disease"] .= " , ‡πÅ‡∏û‡πâ‡∏¢‡∏≤ : ".$list_drug;
 }
 
 ?>
@@ -115,16 +115,16 @@ if($_POST["drugreact"] == 0){
     <td>HN :<?php echo $_POST["hn"];?>&nbsp;&nbsp;<?php echo $thidate;?></td>
   </tr>
   <tr>
-    <td>T : <?php echo $_POST["temperature"];?> C, P : <?php echo $_POST["pause"];?> §√—Èß/π“∑’ , R : <?php echo $_POST["rate"];?> §√—Èß/π“∑’ </td>
+    <td>T : <?php echo $_POST["temperature"];?> C, P : <?php echo $_POST["pause"];?> ‡∏Ñ‡∏£‡∏±‡πâ‡∏á/‡∏ô‡∏≤‡∏ó‡∏µ , R : <?php echo $_POST["rate"];?> ‡∏Ñ‡∏£‡∏±‡πâ‡∏á/‡∏ô‡∏≤‡∏ó‡∏µ </td>
   </tr>
   <tr>
-    <td>BP : <?php echo $_POST["bp1"];?> / <?php echo $_POST["bp2"];?> mmHg, ππ : <?php echo $_POST["weight"];?> °°.,    : <?php echo $_POST["height"];?> ´¡. √Õ∫‡Õ«  : <?php echo $_POST["round_"];?> ´¡.</td>
+    <td>BP : <?php echo $_POST["bp1"];?> / <?php echo $_POST["bp2"];?> mmHg, ‡∏ô‡∏ô : <?php echo $_POST["weight"];?> ‡∏Å‡∏Å., ‡∏™‡∏™ : <?php echo $_POST["height"];?> ‡∏ã‡∏°. ‡∏£‡∏≠‡∏ö‡πÄ‡∏≠‡∏ß  : <?php echo $_POST["round_"];?> ‡∏ã‡∏°.</td>
   </tr>
   <tr>
-    <td>∫ÿÀ√’Ë : <?php echo $_POST["cigarette"];?>,  ÿ√“ : <?php echo $_POST["alcohol"];?></td>
+    <td>‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà : <?php echo $_POST["cigarette"];?>, ‡∏™‡∏∏‡∏£‡∏≤ : <?php echo $_POST["alcohol"];?></td>
   </tr>
   <tr>
-    <td>≈—°…≥– : <?php echo $_POST["type"];?>, §≈‘π‘° : <?php echo substr($_POST["clinic"],3);?></td>
+    <td>‡∏•‡∏±‡∏Å‡∏©‡∏ì‡∏∞ : <?php echo $_POST["type"];?>, ‡∏Ñ‡∏•‡∏¥‡∏ô‡∏¥‡∏Å : <?php echo substr($_POST["clinic"],3);?></td>
   </tr>
   <tr>
     <td>B : <?php echo $_POST["congenital_disease"];?></td>
@@ -145,7 +145,7 @@ if($_POST["drugreact"] == 0){
 
 <?php
 	}else{
-	echo "<CENTER><FONT COLOR=\"red\">‰¡Ë “¡“√∂∫—π∑÷°¢ÈÕ¡Ÿ≈‰¥È</FONT></CENTER>";
+	echo "<CENTER><FONT COLOR=\"red\">‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏î‡πâ</FONT></CENTER>";
 }
 
 include("unconnect.inc");
