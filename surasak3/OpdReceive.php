@@ -73,9 +73,19 @@ class OpdReceive
             '$gender', '$dbirth', '', '', '', '', 
             'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
         );";
-        // $this->dbi->query($orderhead_sql);
+        var_dump($orderhead_sql);
+        $orderhead_save = $this->dbi->query($orderhead_sql);
+        var_dump($orderhead_save);
 
 
+        /**
+         * [] สร้าง function หรือ array เพื่อเก็บค่ารายการจาก labcare เอามารวมไว้ใน depart และบันทึกไว้ใน patdata ทีเดียว
+         */
+
+        /**
+         * [] เอารายการแต่ละตัวมา insert เข้าไปใน orderdetail
+         * [] บันทึกเข้าไปใน patdata
+         */
         foreach ($labItems as $key => $item) { 
             $code = $this->dbi->escape_string($item);
             $q = $this->dbi->query("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice` FROM `labcare` WHERE `code` = '$item' ");
@@ -83,13 +93,6 @@ class OpdReceive
             if ($q->num_rows > 0) { 
 
                 
-                
-                
-                
-
-
-                $nLab++;
-                $query ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
                 // $result = mysql_query($query) or die("Query failed");
 
             }
@@ -103,22 +106,24 @@ class OpdReceive
 // diag
             // print_r($q->fetch_assoc());
             
-        }
+        } // End foreach รายการแลป
+
+        $nLab++;
+        $query ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
+
+
     }
 }
 
 $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
-$hn = '48-683'; // $_REQUEST
+$hn = '58-7681'; // $_REQUEST
 $thiDate = (date('Y')+543).date('-m-d');
 $q = $dbi->query("SELECT `vn` FROM `opday` WHERE `thidate` LIKE '$thiDate%' AND `hn` = '$hn' ");
-// print_r("SELECT `vn` FROM `opday` WHERE `thidate` LIKE '$thidate' AND `hn` = '$hn' ");
-// print_r($q);
 if($q->num_rows > 0){
 
     $opday = $q->fetch_assoc();
-    // print_r($opday);
     $a = new OpdReceive();
     $a->hn = $hn;
     $a->vn = $opday['vn']; 
