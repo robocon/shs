@@ -71,6 +71,11 @@ if($q->num_rows > 0){
         }
         ?>
         <tr>
+            <td colspan="2" align="center">
+                <a href="echo_history.php?hn=<?=$current_hn;?>" style="text-shadow: black 0.1em 0.1em 0.2em;" target="_blank">ดูผลย้อนหลัง</a>
+            </td>
+        </tr>
+        <tr>
             <td class="tb_head" colspan="2" style="text-shadow: black 0.1em 0.1em 0.2em; background-color: #309f55;">ECHOCARDIOGRAPHY</td>
         </tr>
         <!--
@@ -388,7 +393,24 @@ if($q->num_rows > 0){
     </table>
 </form>
 <script>
-    // window.onload = function(){
-    //     document.getElementById("echo_number").focus();
-    // }
+function request(url, success, error) {
+  var request = new XMLHttpRequest();
+  request.open('GET', url, true);
+
+  request.onload = function () {
+    if (this.status >= 200 && this.status < 400) {
+      // Success! If you expect this to be JSON, use JSON.parse!
+      success(this.responseText, this.status);
+    } else {
+      // We reached our target server, but it returned an error
+      error();
+    }
+  };
+
+  request.onerror = function () {
+    error();
+  };
+
+  request.send();
+}
 </script>

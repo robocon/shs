@@ -340,9 +340,16 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
     </tr>
 </table>
 <script>
+    <?php 
+    if(empty($_GET['print'])){
+    ?>
     window.onload = function(){
         window.print();
     }
+    <?php
+    }
+    ?>
+    
 </script>
 <?php 
 }else{
