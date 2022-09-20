@@ -123,13 +123,13 @@ class OpdReceive
             
         } // End foreach รายการแลป
 
+        
         if(empty($this->custom_labnumber)){ 
             $nLab++;
             $query ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
             $this->dbi->query($query);
         }
         
-
 
         $q_runno_stk = $this->dbi->query("SELECT `runno`, `startday` FROM `runno` WHERE `title` = 'stktranx'");
         $nStktranx = $q_runno_stk->fetch_assoc();
@@ -206,7 +206,7 @@ if($q->num_rows > 0){
     $a->vn = $opday['vn']; 
     // $a->clinicalinfo = 'ตรวจสุขภาพประจำปี66';
     // $a->custom_labnumber = '6509200301';
-    $a->orderLab(['ua-sso','cbc-sso','hdl']);
+    $a->orderLab(array('ua-sso','cbc-sso','hdl'));
 
 }
 
