@@ -5,7 +5,7 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-// µÑÇËÒÃ B
+// à¸•à¸±à¸§à¸«à¸²à¸£ B
 // OPD + ICD10
 
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6` 

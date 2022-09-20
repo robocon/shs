@@ -84,7 +84,7 @@ if( $table == 'a' ){
 ?>
 
 <style>
-/* µ“√“ß */
+/* ‡∏ï‡∏≤‡∏£‡∏≤‡∏á */
 body, button{
     font-family: TH SarabunPSK, TH Sarabun NEW;
     font-size: 16pt;
@@ -109,13 +109,13 @@ body, button{
         <th>#</th>
         <th>Date</th>
         <th>HN</th>
-        <th>™◊ËÕºŸÈªË«¬</th>
-        <th>Õ“¬ÿ</th>
+        <th>‡∏ä‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</th>
+        <th>‡∏≠‡∏≤‡∏¢‡∏∏</th>
         <th>Diag</th>
         <th>ICD-10</th>
         <th>Drug code</th>
-        <th>®”π«π</th>
-        <th>·æ∑¬Ï</th>
+        <th>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</th>
+        <th>‡πÅ‡∏û‡∏ó‡∏¢‡πå</th>
     </tr>
     <?php 
 $i = 1;
