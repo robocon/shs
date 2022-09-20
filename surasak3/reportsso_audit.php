@@ -1,4 +1,4 @@
-<form method="POST" action="reportsso1.php">
+<form method="POST" action="reportsso1_audit.php">
 <p>ลูกหนี้ประกันสังคม ประจำเดือน</p>
 
 

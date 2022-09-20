@@ -5,12 +5,9 @@
 <body>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a><br>
 <br>
-<!-- <div style="color: red;">
-	ปิดปรับปรุงระบบ งดใช้เป็นการชั่วคราว ขออภัยในความไม่สะดวก
-</div> -->
+
 <font style="font-size:30px; font-family:AngsanaUPC;">1. อัพโหลด TextFile ประกันสังคม </font>
-<!-- filesso2.php -->
-<form name="form1" method="post" action="filesso2.php" enctype="multipart/form-data">
+<form name="form1" method="post" action="filesso22.php" enctype="multipart/form-data">
 	<input type="file" size = '70' name="filUpload">
 	<br>
 	<br>

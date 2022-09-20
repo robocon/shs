@@ -26,9 +26,9 @@ a:active {
 }
 -->
 </style>
-<p align="center" style="margin-top: 20px;"><strong>เลือกวันที่ต้องการอัพเดทข้อมูลติด C สิทธิประกันสังคม</strong></p>
+<p align="center" style="margin-top: 20px;"><strong>เลือกวันที่ต้องการอัพเดทข้อมูลที่ส่งข้อมูลแก้ไขติด C แล้วผ่าน สิทธิประกันสังคม</strong></p>
 <div align="center">
-<form method="POST" action="updatestat_sso.php">
+<form method="POST" action="updatestat_sso_approve.php">
 <input type="hidden" name="act" value="show" />
 	<strong>ระหว่างวันที่ : </strong>
     <input name="date1" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
@@ -132,7 +132,7 @@ $showdate2=$_POST["date2"]."/".$_POST["month2"]."/".$_POST["year2"];
 $chkdate1=$_POST["year1"]."-".$_POST["month1"]."-".$_POST["date1"]." 00:00:00";
 $chkdate2=$_POST["year2"]."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
 
-$sql="select * from opacc where (date >= '$chkdate1 00:00:00' and date <='$chkdate2 23:59:59') and credit='ประกันสังคม'  order by date asc";
+$sql="select * from opacc where (date >= '$chkdate1 00:00:00' and date <='$chkdate2 23:59:59') and credit='ประกันสังคม' and typesso='C'  order by date asc";
 //echo $sql;
 $query=mysql_query($sql);
 $i=0;
@@ -186,10 +186,12 @@ $rows2=mysql_fetch_array($query2);
 $stat_id=$rows2["row_id"];
 
 if($num2 > 0){
-$edit=mysql_query("update opacc set typesso='C' where row_id='$row_id';");
+$edit=mysql_query("update opacc set typesso='A' where row_id='$row_id';");
 //echo $edit."<br>";
 $edit1=mysql_query("update stat_sso set stat='A' where row_id='$stat_id';");
 //echo $edit1."<br>";
+}else{
+$edit1=mysql_query("update stat_sso set stat='C' where row_id='$stat_id';");
 }			
 ?>  
   <tr bgcolor="<?=$bg;?>">

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 </head>
 
@@ -32,9 +32,9 @@ function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ปี";
+		$pAge="$ageY เธเธต";
 	}else{
-		$pAge="$ageY ปี $ageM เดือน";
+		$pAge="$ageY เธเธต $ageM เน€เธ”เธทเธญเธ";
 	}
 
 return $pAge;
@@ -44,16 +44,16 @@ $sql1="SELECT * FROM `ssodata` ";
 $query=mysql_query($sql1);
 
 ?>
-<h1 align="center" class="font1">รายชื่อผู้ป่วย สิทธิประกันสังคม ทั้งหมด</h1>
+<h1 align="center" class="font1">เธฃเธฒเธขเธเธทเนเธญเธเธนเนเธเนเธงเธข เธชเธดเธ—เธเธดเธเธฃเธฐเธเธฑเธเธชเธฑเธเธเธก เธ—เธฑเนเธเธซเธกเธ”</h1>
 <table border="1" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000" class="font1">
   <tr>
 
-    <td align="center" bgcolor="#CCCCCC">ลำดับ</td>
+    <td align="center" bgcolor="#CCCCCC">เธฅเธณเธ”เธฑเธ</td>
     <td align="center" bgcolor="#CCCCCC">IDCARD</td>
     <td align="center" bgcolor="#CCCCCC">HN</td>
-    <td align="center" bgcolor="#CCCCCC">ชื่อ-สกุล</td>
-    <td align="center" bgcolor="#CCCCCC">อายุ</td>
-    <td align="center" bgcolor="#CCCCCC">เพศ</td>
+    <td align="center" bgcolor="#CCCCCC">เธเธทเนเธญ-เธชเธเธธเธฅ</td>
+    <td align="center" bgcolor="#CCCCCC">เธญเธฒเธขเธธ</td>
+    <td align="center" bgcolor="#CCCCCC">เน€เธเธจ</td>
   </tr>
 <?
 $i=1;

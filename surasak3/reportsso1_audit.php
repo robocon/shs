@@ -5,7 +5,11 @@
 session_start();
 include("connect.inc");
 //  $yrmonth="$thiyr-$rptmo-$date";
+if($date=="เลือก"){
+$date1 ="$thiyr-$rptmo";
+}else{
 $date1 ="$thiyr-$rptmo-$date";
+}
 $date2 ="$date-$rptmo-$thiyr";
 
 $sql = "Select a.date,a.txdate, a.hn, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.depart, sum(a.price),b.idcard,b.note,sum(a.paidcscd) From opacc as a, opcard as b  where a.hn=b.hn AND a.date like '".$date1."%'  AND a.credit ='ประกันสังคม' group by a.hn, a.depart   ORDER by a.date";
@@ -16,10 +20,15 @@ $list2 = array();
 
 while(list($date,$txdate, $hn, $full_name, $depart, $price,$idcard,$note,$paidcscd) = Mysql_fetch_row($result)){
 
+
+
 $date=substr($date,0,10);
 $d=substr($date,8,2);
 $m=substr($date,4,4);
 $y=substr($date,0,4);
+
+$datehn="$d$m$y$hn";
+
 
   $note=substr($note,0,25);
 
@@ -89,11 +98,12 @@ if ($OTHER1 > 0 ){$OTHER1=number_format( $OTHER1,2);} else {
 $total=$list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key]["PHYSI"]+$list[$key]["EMER"]+$list[$key]["SURG"] +$list[$key]["NID"]+$list[$key]["OTHER"];
 $total=number_format($total,2);
 
+$chkdate=$xx[0].$key;
+//echo $xx[0]."<br>";
 
-
-
-$sql = "SELECT icd10,icd9cm,icd101,doctor,thidate FROM opday WHERE  hn = '".$key."' and  thdatehn like '".$date2."%' ";
-list($icd10,$icd9cm,$icd101,$doctor,$thidate) = mysql_fetch_row(mysql_query($sql));
+$sql1 = "SELECT icd10,icd9cm,icd101,doctor,thidate FROM opday WHERE  hn = '".$key."' and  thdatehn like '".$chkdate."%' ";
+//echo $sql1."<br>";
+list($icd10,$icd9cm,$icd101,$doctor,$thidate) = mysql_fetch_row(mysql_query($sql1));
 
 $opdate=explode(' ',$thidate);
 $dateth=$opdate[0];
@@ -123,7 +133,7 @@ $datetime=$day.' '.$timeth;
 
 
 
-	if($i == '20'){
+	if($i == '10000'){
 			echo "</table>";
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
 

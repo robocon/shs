@@ -14,11 +14,9 @@ body,td,th {
 }
 -->
 </style>
-<p align="center" style="margin-top: 20px;"><strong>รายงานใบสั่งยาตามห้วงเวลา</strong></p>
+<p align="center" style="margin-top: 20px;"><strong>รายงานอัตราการใช้ยาประกันสังคมตามห้วงเวลา</strong></p>
 <div align="center">
-<form method="POST" action="report_drugbill_sso1.php" target="_blank">
-<p align="center">HN : <input name="hn" type="text" class="txt" id="hn" size="30">
-</p>
+<form method="POST" action="report_druglistsso1.php" target="_blank">
 	<strong>ระหว่างวันที่ : </strong>
     <input name="date1" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
     <strong>เลือกเดือน : </strong><select size="1" name="month1" class="txt">

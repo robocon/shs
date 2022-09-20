@@ -1,5 +1,5 @@
-<form method="POST" action="reportsso1.php">
-<p>ลูกหนี้ประกันสังคม ประจำเดือน</p>
+<form method="POST" action="reportsso44_1.php">
+<p>ลูกหนี้ กท.44 ประจำเดือน</p>
 
 
 
@@ -59,9 +59,8 @@
     <option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
     <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
 
-  </select>
-  <? 
-  $Y=date("Y")+543;
+  </select><? 
+			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
 			  
 				$dates=range(2547,$date);

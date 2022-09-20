@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style type="text/css">
 <!--
@@ -19,17 +19,17 @@ include("connect.inc");
 <body>
 <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
   <tr>
-    <td width="2%" align="center"><strong>�ӴѺ</strong></td>
+    <td width="2%" align="center"><strong>ลำดับ</strong></td>
     <td width="11%" align="center"><strong>HN</strong></td>
-    <td width="11%" align="center"><strong>���� - ʡ��</strong></td>
-    <td width="11%" align="center"><strong>�Ţ�ѵû��</strong></td>
-    <td width="11%" align="center"><strong>�������</strong></td>
-    <td width="4%" align="center"><strong>����</strong></td>
-    <td width="6%" align="center"><strong>�ä��Шӵ��</strong></td>
-    <td width="5%" align="center"><strong>���˹ѡ</strong></td>
-    <td width="5%" align="center"><strong>��ǹ�٧</strong></td>
+    <td width="11%" align="center"><strong>ชื่อ - สกุล</strong></td>
+    <td width="11%" align="center"><strong>เลขบัตรปชช</strong></td>
+    <td width="11%" align="center"><strong>ที่อยู่</strong></td>
+    <td width="4%" align="center"><strong>อายุ</strong></td>
+    <td width="6%" align="center"><strong>โรคประจำตัว</strong></td>
+    <td width="5%" align="center"><strong>น้ำหนัก</strong></td>
+    <td width="5%" align="center"><strong>ส่วนสูง</strong></td>
     <td width="5%" align="center"><strong>BMI</strong></td>
-    <td width="5%" align="center"><strong>����ͺ���</strong></td>
+    <td width="5%" align="center"><strong>เส้นรอบเอว</strong></td>
     <td width="5%" align="center"><strong>BP</strong></td>
     <td width="5%" align="center"><strong>CBC</strong></td>
     <td width="4%" align="center"><strong>UA</strong></td>
@@ -47,10 +47,10 @@ include("connect.inc");
     <td width="4%" align="center"><strong>HBSAG</strong></td>
     <td width="4%" align="center"><strong>HBSAB</strong></td>
     <td width="8%" align="center"><strong>X-RAY</strong></td>
-    <td width="6%" align="center"><strong>�ѧ�Ѵ</strong></td>
+    <td width="6%" align="center"><strong>สังกัด</strong></td>
   </tr>
 <?
-$sql="SELECT  * ,c.`idcard`,c.`address`,c.`tambol`,c.`ampur`,c.`changwat`,c.`phone`,c.`congenital_disease` FROM opcardchk AS a INNER JOIN dxofyear_emp AS b on a.HN=b.hn LEFT JOIN opcard AS c ON c.hn = a.HN WHERE a.part='�١��ҧ60' and a.active='y' group by b.hn order by a.course desc, a.agey desc";
+$sql="SELECT  * ,c.`idcard`,c.`address`,c.`tambol`,c.`ampur`,c.`changwat`,c.`phone`,c.`congenital_disease` FROM opcardchk AS a INNER JOIN dxofyear_emp AS b on a.HN=b.hn LEFT JOIN opcard AS c ON c.hn = a.HN WHERE a.part='ลูกจ้าง60' and a.active='y' group by b.hn order by a.course desc, a.agey desc";
 //echo $sql."<br>";
 $row = mysql_query($sql)or die ("Query Fail");
 $i=0;
@@ -58,10 +58,10 @@ while($result = mysql_fetch_array($row)){
 $i++;
 $ptname=$result["ptname"];
 
-if($result["congenital_disease"]=="����ʸ" || empty($result["congenital_disease"])){
-	$disease="�����";
+if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
+	$disease="ไม่มี";
 }else{
-	$disease="��";
+	$disease="มี";
 }
 ?>  
   <tr>
@@ -69,7 +69,7 @@ if($result["congenital_disease"]=="����ʸ" || empty($result["congenital_disease"
     <td><?=$result["HN"];?></td>
     <td><?=$ptname;?></td>
     <td><?=$result['idcard'];?></td>
-    <td><?=$result['address'].' �.'.$result['tambol'].' �.'.$result['ampur'].' �.'.$result['changwat'].' ��.'.$result['phone'];?></td>
+    <td><?=$result['address'].' ต.'.$result['tambol'].' อ.'.$result['ampur'].' จ.'.$result['changwat'].' โทร.'.$result['phone'];?></td>
     <td><?=$result["agey"];?></td>
     <td><?=$disease;?></td>
     <td><?=$result["weight"];?></td>
@@ -82,16 +82,16 @@ $sqlcbc="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'HCT' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sqlcbc;
 $querycbc=mysql_query($sqlcbc);
 list($cbc,$flag)=mysql_fetch_array($querycbc);
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else{
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }
 ?> </td>
     <td><?
@@ -99,7 +99,7 @@ $sqlua="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'BLOODU' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sqlua;
@@ -110,7 +110,7 @@ $sqlua1="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'PROU' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sqlua1;
@@ -118,11 +118,11 @@ $queryua1=mysql_query($sqlua1);
 list($prou,$flag2)=mysql_fetch_array($queryua1);
 
 if($flag1=="N" && $flag2=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag1!="N"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else if($flag2!="N"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }
 ?></td>
     <td align="center">
@@ -131,16 +131,16 @@ $sql1="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'GLU' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql1;
 $query1=mysql_query($sql1);
 list($glu,$flag)=mysql_fetch_array($query1);
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -150,7 +150,7 @@ $sql2="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'CHOL' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql2;
@@ -158,9 +158,9 @@ $query2=mysql_query($sql2);
 list($chol,$flag)=mysql_fetch_array($query2);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -170,7 +170,7 @@ $sql3="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'TRIG' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql3;
@@ -178,9 +178,9 @@ $query3=mysql_query($sql3);
 list($tg,$flag)=mysql_fetch_array($query3);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -190,7 +190,7 @@ $sql4="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'HDL' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql4;
@@ -198,9 +198,9 @@ $query4=mysql_query($sql4);
 list($hdl,$flag)=mysql_fetch_array($query4);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -210,7 +210,7 @@ $sql5="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE (b.labcode = 'LDL' || b.labcode = 'LDL-C' || b.labcode = '10001')  AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql5;
@@ -218,9 +218,9 @@ $query5=mysql_query($sql5);
 list($ldl,$flag)=mysql_fetch_array($query5);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -230,7 +230,7 @@ $sql6="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'BUN' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql6;
@@ -238,9 +238,9 @@ $query6=mysql_query($sql6);
 list($bun,$flag)=mysql_fetch_array($query6);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -250,7 +250,7 @@ $sql7="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'CREA' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql7;
@@ -258,9 +258,9 @@ $query7=mysql_query($sql7);
 list($crea,$flag)=mysql_fetch_array($query7);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -270,7 +270,7 @@ $sql8="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql8;
@@ -278,9 +278,9 @@ $query8=mysql_query($sql8);
 list($uric,$flag)=mysql_fetch_array($query8);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -290,7 +290,7 @@ $sql9="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'AST' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql9;
@@ -298,9 +298,9 @@ $query9=mysql_query($sql9);
 list($ast,$flag)=mysql_fetch_array($query9);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -310,7 +310,7 @@ $sql10="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ALT' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql10;
@@ -318,9 +318,9 @@ $query10=mysql_query($sql10);
 list($alt,$flag)=mysql_fetch_array($query10);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -330,7 +330,7 @@ $sql11="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ALP' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql11;
@@ -338,9 +338,9 @@ $query11=mysql_query($sql11);
 list($alp,$flag)=mysql_fetch_array($query11);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -350,7 +350,7 @@ $sql12="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'HBSAG' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql12;
@@ -358,9 +358,9 @@ $query12=mysql_query($sql12);
 list($hbsag,$flag)=mysql_fetch_array($query12);
 
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
@@ -370,25 +370,25 @@ $sql13="SELECT b.result, b.flag
 FROM resulthead AS a
 INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'ANTIHB' AND b.result !='DELETE' AND a.hn = '".$result["HN"]."' AND (
-a.clinicalinfo = '��Ǩ�آ�Ҿ��Шӻ�60'
+a.clinicalinfo = 'ตรวจสุขภาพประจำปี60'
 )
 GROUP BY a.`profilecode` ";
 //echo $sql13;
 $query13=mysql_query($sql13);
 list($hbsab,$flag)=mysql_fetch_array($query13);
 if($flag=="N"){
-	echo "����";
+	echo "ปกติ";
 }else if($flag=="H" || $flag=="L"){
-	echo "<strong style='color:#FF0000'>�Դ����</strong>";
+	echo "<strong style='color:#FF0000'>ผิดปกติ</strong>";
 }else{
 	echo "&nbsp;";
 }
 ?></td>
     <td align="center"><? 
 		  if($result["hn"]=="47-6628"){
-		  	  echo "�Դ���Ԥ�þ�ᾷ��...ʧ��¹�������������ʹ���� ��� �ա�д١����ç��ҹ�������«���ѡ���";
+		  	  echo "ผิดปกติควรพบแพทย์...สงสัยน้ำในเยื่อหุ้มปอดซ้าย และ มีกระดูกซี่โครงด้านซ้ายหลายซี่หักเก่า";
 		  }else{
-			  if($result["cxr"]==""){ echo "����"; }else{ echo $result["cxr"]."...".$result["reason_cxr"]; }
+			  if($result["cxr"]==""){ echo "ปกติ"; }else{ echo $result["cxr"]."...".$result["reason_cxr"]; }
 		  }
 		   ?></td>
     <td><?=$result["course"];?></td>
