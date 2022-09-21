@@ -381,3 +381,39 @@ function check_token($token, $name){
 	}
 	return $check_token;
 }
+
+/**
+ * $birth รูปแบบ พ.ศ.
+ * $type ค่าพื้นฐานเป็น f
+ * s คือ แบบสั้นแสดงแค่ปี
+ * f คือแบบฟูลแสดงทั้งข้อความ
+ */
+function findPtAge($birth,$type='f'){
+
+	$today = getdate();   
+	$nY = $today['year']; 
+	$nM = $today['mon'] ;
+	$bY = substr($birth,0,4)-543;
+	$bM = substr($birth,5,2);
+	$ageY = $nY-$bY;
+	$ageM = $nM-$bM;
+
+	if ($ageM < 0) {
+		$ageY = $ageY-1;
+		$ageM = 12 + $ageM;
+	}
+
+	if($type=='s'){
+		$pAge = $ageY;
+
+	}elseif ($type=='f') {
+		if ($ageM==0){
+			$pAge="$ageY ปี";
+		}else{
+			$pAge="$ageY ปี $ageM เดือน";
+		}
+
+	}
+	
+	return $pAge;
+}
