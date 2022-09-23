@@ -24,7 +24,7 @@ if($_GET["day"] != ""){
 }
 $time_zone = explode("-",$_GET["time"]);
 	
-if($_GET["code"] == "กายภาพ"){
+if(iconv("UTF-8","TIS-620", $_GET["code"]) == "กายภาพ"){
 	$where = " AND code not like '58%' and depart = 'PHYSI' ";
 }else{
 	$where = "  AND code not like '58%' and depart = 'PHYSI' ";
@@ -38,7 +38,7 @@ if($_GET["doctor"]!=''){
 }
 
 
-if($_GET["code"] == "กายภาพ"){//ฝังเข็ม
+if(iconv("UTF-8","TIS-620", $_GET["code"]) == "กายภาพ"){//ฝังเข็ม
 		
 	$_GET['day'] = !empty($_GET['day']) ? $_GET['day'] : '' ;
 	$get_day = $_GET['day'];
@@ -180,7 +180,7 @@ $sql = "
 						?>
 						<tr>
 							<td><?=$i;?></td>
-							<td><?=$ptname;?></td>
+							<td><?=iconv("UTF-8", "TIS-620", $ptname);?></td>
 							<td><?=$hn;?></td>
 							<td><?=$diag;?></td>
 							<td><?=$ptright;?></td>
@@ -259,11 +259,11 @@ $sql = "
 			$objquery2  = mysql_query($strsql2);
 			list($appdate) = mysql_fetch_row($objquery2);
 			$pdf->Cell(10,7,$i,1,0,'C');
-			$pdf->Cell(50,7,$ptname,1,0);
+			$pdf->Cell(50,7,iconv("UTF-8", "TIS-620", $ptname),1,0);
 			$pdf->Cell(15,7,$hn,1,0,'L');
 			$pdf->Cell(80,7,$diag,1,0,'L');
-			$pdf->Cell(50,7,$ptright,1,0,'L');
-			$pdf->Cell(40,7,$appdate,1,0,'L');
+			$pdf->Cell(50,7,iconv("UTF-8", "TIS-620", $ptright),1,0,'L');
+			$pdf->Cell(40,7,iconv("UTF-8", "TIS-620", $appdate),1,0,'L');
 			$pdf->Cell(30,7,"",1,0,'C');
 			$pdf->Ln();
 			$i++;
@@ -360,7 +360,7 @@ $sql = "
 
 		$pdf->Cell(10,7,$i,1,0,'C');
 
-		$pdf->Cell(60,7,$ptname,1,0);
+		$pdf->Cell(60,7,iconv("UTF-8", "TIS-620", $ptname),1,0);
 
 		$pdf->Cell(30,7,$hn,1,0,'C');
 
