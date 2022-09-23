@@ -45,7 +45,7 @@ class OpdReceive
         $this->dbi->query("SET NAMES UTF8");
     }
 
-    public function orderLab(array $labItems){ 
+    public function orderLab($labItems=array()){ 
 
         if(empty($this->clinicalinfo)){
             $clinicalinfo = implode(',', $labItems);
@@ -100,6 +100,9 @@ class OpdReceive
         // var_dump($orderhead_sql);
         $orderhead_save = $this->dbi->query($orderhead_sql);
 
+        $sumPrice = 0;
+        $sumYPrice = 0;
+        $sumNPrice = 0;
         foreach ($labItems as $key => $item) { 
 
             $lab_code = $this->dbi->escape_string($item);
@@ -107,6 +110,10 @@ class OpdReceive
             if ($q->num_rows > 0) { 
 
                 $this->labList[] = $labcare = $q->fetch_assoc();
+
+                $sumPrice += $labcare['price'];
+                $sumYPrice += $labcare['yprice'];
+                $sumNPrice += $labcare['nprice'];
 
                 $code = $labcare['code'];
                 $oldcode = $labcare['oldcode'];
@@ -137,14 +144,14 @@ class OpdReceive
         $thai_date = (date('Y')+543).date('-m-d H:i:s');
         $count_item = count($this->labList);
 
-        $itemPrice = array_column($this->labList, 'price');
-        $sumPrice = array_sum($itemPrice);
+        // $itemPrice = array_column($this->labList, 'price');
+        // $sumPrice = array_sum($itemPrice);
 
-        $itemYPrice = array_column($this->labList, 'yprice');
-        $sumYPrice = array_sum($itemYPrice);
+        // $itemYPrice = array_column($this->labList, 'yprice');
+        // $sumYPrice = array_sum($itemYPrice);
 
-        $itemNPrice = array_column($this->labList, 'nprice');
-        $sumNPrice = array_sum($itemNPrice);
+        // $itemNPrice = array_column($this->labList, 'nprice');
+        // $sumNPrice = array_sum($itemNPrice);
 
         $sql_depart = "INSERT INTO `depart` ( 
             `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
@@ -192,23 +199,23 @@ class OpdReceive
 
 
 
-$dbi = new mysqli(HOST, USER, PASS, DB);
-$dbi->query("SET NAMES UTF8");
+// $dbi = new mysqli(HOST, USER, PASS, DB);
+// $dbi->query("SET NAMES UTF8");
 
-$hn = '58-7681'; // $_REQUEST
-$thiDate = (date('Y')+543).date('-m-d');
-$q = $dbi->query("SELECT `vn` FROM `opday` WHERE `thidate` LIKE '$thiDate%' AND `hn` = '$hn' ");
-if($q->num_rows > 0){
+// $hn = '58-7681'; // $_REQUEST
+// $thiDate = (date('Y')+543).date('-m-d');
+// $q = $dbi->query("SELECT `vn` FROM `opday` WHERE `thidate` LIKE '$thiDate%' AND `hn` = '$hn' ");
+// if($q->num_rows > 0){
 
-    $opday = $q->fetch_assoc();
-    $a = new OpdReceive();
-    $a->hn = $hn;
-    $a->vn = $opday['vn']; 
-    // $a->clinicalinfo = 'ตรวจสุขภาพประจำปี66';
-    // $a->custom_labnumber = '6509200301';
-    $a->orderLab(array('ua-sso','cbc-sso','hdl'));
+//     $opday = $q->fetch_assoc();
+//     $a = new OpdReceive();
+//     $a->hn = $hn;
+//     $a->vn = $opday['vn']; 
+//     // $a->clinicalinfo = 'ตรวจสุขภาพประจำปี66';
+//     // $a->custom_labnumber = '6509200301';
+//     $a->orderLab(array('ua-sso','cbc-sso','hdl'));
 
-}
+// }
 
 
 // 
