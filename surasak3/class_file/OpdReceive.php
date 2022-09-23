@@ -187,35 +187,4 @@ class OpdReceive
         }
     }
 
-
-
 }
-
-
-
-
-
-
-
-
-
-// $dbi = new mysqli(HOST, USER, PASS, DB);
-// $dbi->query("SET NAMES UTF8");
-
-// $hn = '58-7681'; // $_REQUEST
-// $thiDate = (date('Y')+543).date('-m-d');
-// $q = $dbi->query("SELECT `vn` FROM `opday` WHERE `thidate` LIKE '$thiDate%' AND `hn` = '$hn' ");
-// if($q->num_rows > 0){
-
-//     $opday = $q->fetch_assoc();
-//     $a = new OpdReceive();
-//     $a->hn = $hn;
-//     $a->vn = $opday['vn']; 
-//     // $a->clinicalinfo = 'ตรวจสุขภาพประจำปี66';
-//     // $a->custom_labnumber = '6509200301';
-//     $a->orderLab(array('ua-sso','cbc-sso','hdl'));
-
-// }
-
-
-// 
