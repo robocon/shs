@@ -23,10 +23,14 @@ if($op===false){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>บันทึกรายการตรวจ</title>
 </head>
 <body>
     <style>
+        *{
+            font-family: "TH Sarabun New","TH SarabunPSK";
+            font-size: 20px;
+        }
         .clearfix::after {
             content: "";
             clear: both;
@@ -35,7 +39,7 @@ if($op===false){
     </style>
     <?php 
     $oc = new Opcard();
-    $pt = $oc->getOpcard($hn);
+    $pt = $oc->getByHn($hn);
     if(!empty($pt)){
         
         $age = findPtAge($pt['dbirth']);

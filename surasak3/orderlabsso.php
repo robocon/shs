@@ -13,6 +13,12 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
     <title>ตรวจสุขภาพสิทธิประกันสังคม</title>
 </head>
 <body>
+    <style>
+        *{
+            font-family: "TH Sarabun New","TH SarabunPSK";
+            font-size: 20px;
+        }
+    </style>
     <div>
         <h3>ตรวจสุขภาพสิทธิประกันสังคม</h3>
     </div>
@@ -31,12 +37,12 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
         </fieldset>
     </div>
     <?php 
-    $action = $dbi->escape_string($_POST['action']);
+    $action = $_POST['action'];
     if ($action == 'search') {
-        $hn = $dbi->escape_string($_POST['hn']);
+        $hn = $_POST['hn'];
 
         $oc = new Opcard();
-        $pt = $oc->getOpcard($hn);
+        $pt = $oc->getByHn($hn);
         if(!empty($pt)){
 
             $opday = new Opday();

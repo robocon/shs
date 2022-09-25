@@ -97,8 +97,10 @@ class OpdReceive
             '$gender', '$dbirth', '', '', '', '', 
             'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
         );";
-        // var_dump($orderhead_sql);
         $orderhead_save = $this->dbi->query($orderhead_sql);
+        if($orderhead_save==false){
+            die($this->dbi->error);
+        }
 
         $sumPrice = 0;
         $sumYPrice = 0;
@@ -160,9 +162,12 @@ class OpdReceive
         ) VALUES ( 
             '$runno_stk', '$thai_date', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'PATHO', 
             '$count_item', 'ค่าตรวจวิเคราะห์โรค', '$sumPrice', '$sumYPrice', '$sumNPrice', '0', 
-            'พัชรี คำฟู', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$this->nLab', 'Y' 
+            'สุวสิริ สุวรรณจักร์', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$this->nLab', 'Y' 
         )";
-        $this->dbi->query($sql_depart);
+        $depart_save = $this->dbi->query($sql_depart);
+        if($depart_save==false){
+            die($this->dbi->error);
+        }
         $depart_id = $this->dbi->insert_id;
         
         foreach ($this->labList as $lab) { 

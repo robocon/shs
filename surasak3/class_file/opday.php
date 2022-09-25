@@ -3,17 +3,22 @@ require_once 'class_file/opcard.php';
 
 class Opday
 {
-    private $dbi = false;
+    private $dbi = null;
     public function __construct()
     {
         $this->dbi = new mysqli(HOST,USER,PASS,DB);
         $this->dbi->query("SET NAMES UTF8");
+        if($this->dbi->connect_error){
+            die("Connection failed: ".$this->dbi->connect_error);
+        }
     }
 
-    public function getThisDay($hn)
+    public function getThisDay($hn=null)
     {
-        $thDateHn = date('d-m-').(date('Y')+543).$hn;
-        $q = $this->dbi->query("SELECT * FROM opday WHERE thdatehn = '$thDateHn' ");
+        $sql = sprintf("SELECT * FROM `opday` WHERE `thdatehn` = '%s' ", 
+            date('d-m-').(date('Y')+543).$this->dbi->escape_string($hn)
+        );
+        $q = $this->dbi->query($sql);
         $opday = false;
         if($q->num_rows > 0){
             $opday = $q->fetch_assoc();
@@ -21,15 +26,16 @@ class Opday
         return $opday;
     }
 
-    public function getAllDay($hn)
-    {
-
-    }
-
-    public function createOpday($hn, $toborow){
+    /**
+     * @param string $hn 
+     * @param string $toborow รายการเพื่อบอกว่าผู้ป่วยมารับบริการอะไรในวันนั้น เช่น EX26 ตรวจสุขภาพประจำปี
+     * 
+     * @return array จาก getThisDay
+     */
+    public function createOpday($hn=null, $toborow=null){
 
         $opcard = new Opcard();
-        $pt = $opcard->getOpcard($hn);
+        $pt = $opcard->getByHn($hn);
         $cPtname = $pt['yot'].$pt['name'].' '.$pt['surname'];
         $cPtright = $pt['ptright'];
         $cGoup = $pt['goup'];
@@ -60,6 +66,9 @@ class Opday
 
     }
 
+    /**
+     * @return $nVn ออกVN
+     */
     private function getVn(){
         $q_runno = $this->dbi->query("SELECT *,SUBSTRING(`startday`,1,10) AS `startday` FROM runno WHERE title = 'VN'");
         $run = $q_runno->fetch_assoc();
