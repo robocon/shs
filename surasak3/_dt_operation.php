@@ -2,6 +2,24 @@
 require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
+
+$action = $_REQUEST['action'];
+if($action==='search'){
+
+    $code = $dbi->escape_string($_GET['code']);
+    $items = array();
+    $q = $dbi->query("SELECT `code`,`detail` FROM `labcare` WHERE `code` LIKE '%$code%' OR `detail` LIKE '$code%' OR `olddetail` LIKE '$code%' ");
+    if($q->num_rows > 0){
+        while ($a = $q->fetch_assoc()) {
+            $items[] = $a;
+        }
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($items);
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,61 +49,50 @@ $dbi->query("SET NAMES UTF8");
 
 <?php 
 $page = $_REQUEST['page'];
+if($page == ''){
 
 ?>
-<!-- 
+
+
 <div class="w3-bar w3-light-grey">
-    <a href="#" class="w3-bar-item w3-button" title="หน้าหลัก"><i class="fa-solid fa-house"></i></a>
-    <a href="#" class="w3-bar-item w3-button">Link 1</i></a>
-    <div class="w3-dropdown-hover">
-        <button class="w3-button">Dropdown <i class="fa-solid fa-caret-down"></i></button>
-        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-        <a href="#" class="w3-bar-item w3-button">Link 1</a>
-        <a href="#" class="w3-bar-item w3-button">Link 2</a>
-        <a href="#" class="w3-bar-item w3-button">Link 3</a>
-        </div>
+        <a href="#" class="w3-bar-item w3-button" title="หน้าหลัก"><i class="fa-solid fa-house"></i></a>
+        <!-- <a href="#" class="w3-bar-item w3-button">Link 1</i></a>
+        <div class="w3-dropdown-hover">
+            <button class="w3-button">Dropdown <i class="fa-solid fa-caret-down"></i></button>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+            <a href="#" class="w3-bar-item w3-button">Link 1</a>
+            <a href="#" class="w3-bar-item w3-button">Link 2</a>
+            <a href="#" class="w3-bar-item w3-button">Link 3</a>
+            </div>
+        </div> -->
     </div>
-</div>
- -->
 <div id="w3-container">
 
     <form action="dt_operation.php" method="post" class="w3-container" width="60%">
-        <!-- <h3>ค้นหาหัตถการแพทย์จากรหัส</h3> -->
-        <h3>ยอดการตรวจคลื่นไฟฟ้าหัวใจ Cardio Clinic รหัส WEKG (Electrocardiography)</h3>
+        <h3>ค้นหาหัตถการแพทย์จากรหัส</h3>
+
         <fieldset>
             <legend><h4>ฟอร์มค้นหา</h4></legend>
 
             <p>
-                <?php 
-                $date = (empty($_POST['date'])) ? (date('Y')+543).date('-m') : $_POST['date'] ;
-                ?>
                 <label>เลือกวันที่: </label>
-                <input class="w3-input" type="text" name="date" value="<?=$date;?>">
+                <input class="w3-input" type="text" name="date" value="<?=(date('Y')+543).date('-m');?>">
             </p>
-
-            <?php 
-            /*
-            ?>
 
             <p>
                 <select class="w3-select w3-border" name="doctor">
                     <option value="">เลือกแพทย์</option>
                     <?php 
                     $q = $dbi->query("SELECT * FROM `doctor` WHERE `status` = 'y' AND `doctorcode` IS NOT NULL");
-                    while ($a = $q->fetch_assoc()) { 
-
-                        // ณัชญ์ระวี บุรีคำ
-                        $selected = ($a['doctorcode'] == '29760') ? 'selected="selected"' : '' ;
-
+                    while ($a = $q->fetch_assoc()) {
                         ?>
-                        <option value="<?=$a['name'];?>" <?=$selected;?> ><?=$a['name'].$a['doctorcode'];?></option>
+                        <option value="<?=$a['name'];?>"><?=$a['name'];?></option>
                         <?php
                     }
                     ?>
                 </select>
             </p>
 
-            
             <p>
                 <label>เลือกหัตถการตามรหัส: </label>
                 <input class="w3-input" type="text" name="code" id="code" value="" onkeyup="findCode(this.value)" placeholder="พิมพ์เพื่อค้นหาข้อมูล">
@@ -94,19 +101,17 @@ $page = $_REQUEST['page'];
                     <div id="resSelected"></div>
                 </div>
             </p>
-            <?php 
-            */
-            ?>
+            
             <p>
                 <button type="submit">ค้นหาข้อมูล</button>
                 <input type="hidden" name="page" value="findDepart">
-                <input type="hidden" name="code" vlaue="WEKG">
             </p>
 
         </fieldset>
         
     </form>
 
+</div>
 <script>
     function findCode(code){
 
@@ -148,56 +153,13 @@ $page = $_REQUEST['page'];
 </script>
 
 <?php
-if ($page === 'findDepart') {
-    
-    $date = $_POST['date'];
-    $doctor = $_POST['doctor'];
-
-    $sql = "SELECT * FROM `patdata` WHERE `date` LIKE '$date%' AND `code` = 'WEKG' AND `status` = 'Y'";
-    $q = $dbi->query($sql);
-
-    if($q->num_rows > 0){ 
-        list($y, $m) = explode('-', $date);
-
-    ?>
-    <div class="w3-container">
-    <h3><?='เดือน'.$def_fullm_th[$m];?> <?=$y;?></h3>
-    <table class="w3-table-all">
-        <tr class="w3-green">
-            <th>#</th>
-            <th>วันที่รับบริการ</th>
-            <th>HN</th>
-            <th>AN</th>
-            <th>ชื่อ-สกุล</th>
-            <th>แพทย์</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <?php 
-        $i = 1;
-        while ($a = $q->fetch_assoc()) {
-        ?>
-        <tr>
-            <td><?=$i;?></td>
-            <td><?=$a['date'];?></td>
-            <td><?=$a['hn'];?></td>
-            <td><?=$a['an'];?></td>
-            <td><?=$a['ptname'];?></td>
-            <td><?=$a['doctor'];?></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <?php 
-            $i++;
-        }
-        ?>
-    </table>
-    </div>
-    <?php
-    }else{
-        ?><div class="w3-container"><p><b>ไม่พบข้อมูล</b></p></div><?php
-    }
+}elseif ($page === 'findDepart') {
+    # code...
+    var_dump($_REQUEST);
+    exit;
 }
 ?>
+
+
 </body>
 </html>
