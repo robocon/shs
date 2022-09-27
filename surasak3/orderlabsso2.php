@@ -16,6 +16,12 @@ if($op===false){
     $opday->updateToborow($hn, $toborow);
 }
 
+เพิ่มการใส่สถานะว่าเป็นการตรวจสุขภาพลูกจ้างประจำปี2565
+
+/**
+ * @important !!! เพิ่มการใส่สถานะว่าเป็นการตรวจสุขภาพลูกจ้างประจำปี2565
+ */
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,6 +94,14 @@ if($op===false){
             
                 <div style="position: relative;" class="clearfix">
                     <div style="width: 50%; float: left;">
+                        <?php 
+                        แสดงรายการที่คิดเงินไปแล้วเป็นสีแดงด้านล่าง
+                        $sql = "SELECT * FROM `orderhead` WHERE `hn` = '$hn' AND `date` LIKE '%' AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี' ";
+
+                        แยก ptright ออกมาเป็น2ตัวให้เห็นว่าคนนี้ จ่ายเป็นเงินสดกี่บาท เบิกเข้าเป็นประกันสังคมกี่บาท
+                        $sql = "SELECT * FROM `depart` WHERE `hn` = '' ";
+                        // 
+                        ?>
                         <p><b>รายการที่เลือก</b></p>
                         <ol id="itemSelected"></ol>
                     </div>
@@ -113,6 +127,9 @@ if($op===false){
                         </style>
 
                         <?php 
+
+                        เอารายการแลปไปยืนยันกับพี่สมยศอีกทีว่ารายการแต่ละตัวถูกต้องตามสิทธิประกันสังคม
+                        
                         $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'CHOL-sso', 'STOCB-sso', 'HBSAG-sso', '41001');
                         ?>
                         <ul style="margin:0; padding:0; list-style-type:none;" class="labItem">
@@ -127,16 +144,27 @@ if($op===false){
                     </div>
                 </div>
                 <div>
-                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย</button>
+                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย(หมดรายการใบแจ้งหนี้)</button>
                     <input type="hidden" name="hn" value="<?=$hn;?>">
                     <input type="hidden" name="vn" value="<?=$op['vn'];?>">
                 </div>
             </form>
+            <div>
+                <div>
+                    <button onclick="print_sticker('n')">พิมพ์สติกเกอร์</button>
+                    <button onclick="print_sticker('cbc')">สติกเกอร์ CBD</button>
+                    <button onclick="print_sticker('ua')">สติกเกอร์ UA</button>
+                </div>
+            </div>
         </fieldset>
         <script>
             function addToOrder(code){ 
                 var htmlTxt = '<li id="'+code+'">'+code+' <a href="javascript:void(0);" onclick="document.getElementById(\''+code+'\').outerHTML=\'\';"> [ลบ]</a><input type="hidden" name="labSelect[]" value="'+code+'"></li>';
                 document.getElementById('itemSelected').innerHTML += htmlTxt;
+            }
+
+            function print_sticker(sticker_type){
+                window.open("orderlabsso_sticker.php?type="+sticker_type, _blank);
             }
         </script>
         <?php
