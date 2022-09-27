@@ -5,8 +5,8 @@ require_once 'class_file/opcard.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 
-$hn = $dbi->escape_string($_POST['hn']);
-$toborow = $dbi->escape_string($_POST['toborow']);
+$hn = $_POST['hn'];
+$toborow = $_POST['toborow'];
 
 $opday = new Opday();
 $op = $opday->getThisDay($hn);
@@ -16,11 +16,8 @@ if($op===false){
     $opday->updateToborow($hn, $toborow);
 }
 
-เพิ่มการใส่สถานะว่าเป็นการตรวจสุขภาพลูกจ้างประจำปี2565
-
-/**
- * @important !!! เพิ่มการใส่สถานะว่าเป็นการตรวจสุขภาพลูกจ้างประจำปี2565
- */
+$oc = new Opcard();
+$update = $oc->update($hn, array('employee' => 'y'));
 
 ?>
 <!DOCTYPE html>
@@ -43,8 +40,11 @@ if($op===false){
             display: table;
         }
     </style>
+    <div>
+        <a href="orderlabsso.php">&lt;&lt;&nbsp;กลับหน้าแรก</a>
+    </div>
     <?php 
-    $oc = new Opcard();
+    
     $pt = $oc->getByHn($hn);
     if(!empty($pt)){
         
@@ -95,11 +95,11 @@ if($op===false){
                 <div style="position: relative;" class="clearfix">
                     <div style="width: 50%; float: left;">
                         <?php 
-                        แสดงรายการที่คิดเงินไปแล้วเป็นสีแดงด้านล่าง
-                        $sql = "SELECT * FROM `orderhead` WHERE `hn` = '$hn' AND `date` LIKE '%' AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี' ";
+                        // แสดงรายการที่คิดเงินไปแล้วเป็นสีแดงด้านล่าง
+                        // $sql = "SELECT * FROM `orderhead` WHERE `hn` = '$hn' AND `date` LIKE '%' AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี' ";
 
-                        แยก ptright ออกมาเป็น2ตัวให้เห็นว่าคนนี้ จ่ายเป็นเงินสดกี่บาท เบิกเข้าเป็นประกันสังคมกี่บาท
-                        $sql = "SELECT * FROM `depart` WHERE `hn` = '' ";
+                        // แยก ptright ออกมาเป็น2ตัวให้เห็นว่าคนนี้ จ่ายเป็นเงินสดกี่บาท เบิกเข้าเป็นประกันสังคมกี่บาท
+                        // $sql = "SELECT * FROM `depart` WHERE `hn` = '' ";
                         // 
                         ?>
                         <p><b>รายการที่เลือก</b></p>
@@ -128,7 +128,7 @@ if($op===false){
 
                         <?php 
 
-                        เอารายการแลปไปยืนยันกับพี่สมยศอีกทีว่ารายการแต่ละตัวถูกต้องตามสิทธิประกันสังคม
+                        // เอารายการแลปไปยืนยันกับพี่สมยศอีกทีว่ารายการแต่ละตัวถูกต้องตามสิทธิประกันสังคม
                         
                         $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'CHOL-sso', 'STOCB-sso', 'HBSAG-sso', '41001');
                         ?>
@@ -151,6 +151,7 @@ if($op===false){
             </form>
             <div>
                 <div>
+                    <br>
                     <button onclick="print_sticker('n')">พิมพ์สติกเกอร์</button>
                     <button onclick="print_sticker('cbc')">สติกเกอร์ CBD</button>
                     <button onclick="print_sticker('ua')">สติกเกอร์ UA</button>

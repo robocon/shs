@@ -70,13 +70,13 @@ class Opday
      * @return $nVn ออกVN
      */
     private function getVn(){
-        $q_runno = $this->dbi->query("SELECT *,SUBSTRING(`startday`,1,10) AS `startday` FROM runno WHERE title = 'VN'");
+        $q_runno = $this->dbi->query("SELECT *,SUBSTRING(`startday`,1,10) AS `startday` FROM `runno` WHERE `title` = 'VN'");
         $run = $q_runno->fetch_assoc();
 
         $nVn = $run['runno'];
         $dVndate = $run['startday'];
         $today = date("Y-m-d"); 
-
+        
         // ถ้าวันที่เท่ากันก็รัน vn ต่อได้เลย
         if($today==$dVndate){
             $nVn++;
@@ -84,14 +84,16 @@ class Opday
             $nVn = 1;
         }
 
-        $this->dbi->query("UPDATE runno SET runno = $nVn WHERE title='VN'");
+        $this->dbi->query("UPDATE `runno` SET `runno` = '$nVn', `startday`='$today' WHERE `title`='VN'");
 
         return $nVn;
     }
 
     public function updateToborow($hn, $toborow){ 
         $thdatehn = date('d-m-').(date('Y')+543).$hn;
-        $this->dbi->query("UPDATE `opday` SET `toborow` = '$toborow' WHERE `thdatehn` = '$thdatehn' ");
+        $query = sprintf("UPDATE `opday` SET `toborow` = '%s' WHERE `thdatehn` = '%s'", $toborow, $thdatehn);
+        $this->dbi->query($query);
+
     }
 }
 ?>

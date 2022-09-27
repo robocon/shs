@@ -31,4 +31,18 @@ class Opcard
         }
         return $item;
     }
+
+    public function update($hn, $items=array()){ 
+
+        $update = array();
+        foreach ($items as $key => $value) {
+            $update[] = sprintf("`$key` = '%s'", $value);
+        }
+        $update_txt = implode(', ', $update);
+
+        $sql = sprintf("UPDATE `opcard` SET ".$update_txt." WHERE `hn` = '%s'", $hn);
+        $this->dbi->query($sql);
+
+        return $hn;
+    }
 }
