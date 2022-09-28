@@ -2,6 +2,12 @@
 require_once 'bootstrap.php';
 require_once 'class_file/opday.php';
 require_once 'class_file/opcard.php';
+
+if(authen()===false){
+    redirect("login_page.php");
+    exit;
+}
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 ?>
 <!DOCTYPE html>
@@ -94,7 +100,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
                     <tr>
                         <td align="right"></td>
                         <td>
-                            <input type="checkbox" name="extra" id="extra" value="1"> เช็กถูกกรณีเป็นเจ้าหน้าที่ นวดแผนไทย กับ ไตเทียม
+                            <input type="checkbox" name="extra" id="extra" value="1"> กรณีเป็นเจ้าหน้าที่ นวดแผนไทย กับ ไตเทียม
                         </td>
                     </tr>
                     <tr>
