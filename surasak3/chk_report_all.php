@@ -251,6 +251,22 @@ INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
 WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
+
+$sql1 = "SELECT b.result, b.flag 
+FROM ( 
+
+SELECT *, MAX(`autonumber`) AS `latest_number`
+FROM `resulthead` 
+WHERE `hn` = '$pt_hn' 
+AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+AND `profilecode` = 'GLU' 
+GROUP BY `profilecode` 
+
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+GROUP BY a.`profilecode`"; 
+
 //echo $sql1;
 $query1=mysql_query($sql1);
 list($glu,$flag)=mysql_fetch_array($query1);
