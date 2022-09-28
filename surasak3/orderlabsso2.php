@@ -8,6 +8,8 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
 
+ตรวจสอบเงื่อนไขด้วยว่ากรณีเป็นนวดแผนไทย กับ ไตเทียม ให้คิดเป็นเงินสด
+
 $opday = new Opday();
 $op = $opday->getThisDay($hn);
 if($op===false){

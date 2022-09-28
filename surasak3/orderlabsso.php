@@ -92,6 +92,12 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
                         </td>
                     </tr>
                     <tr>
+                        <td align="right"></td>
+                        <td>
+                            <input type="checkbox" name="extra" id="extra" value="1"> เช็กถูกกรณีเป็นเจ้าหน้าที่ นวดแผนไทย กับ ไตเทียม
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="2" align="center">&nbsp;</td>
                     </tr>
                     <tr>
