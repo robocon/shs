@@ -7,19 +7,24 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 
 $hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
-
-ตรวจสอบเงื่อนไขด้วยว่ากรณีเป็นนวดแผนไทย กับ ไตเทียม ให้คิดเป็นเงินสด
+$extra = (int)$_POST['extra'];
 
 ต้องลองหาเคสมาสัก 1 คนว่าถ้าเป็น ไตเทียม สิทธิที่ขึ้นจะเป็นยังไง
+ลอง hn พี่ใจห้องไต
 
 $opday = new Opday();
 $op = $opday->getThisDay($hn);
 if($op===false){
+    $op = $opday->createOpday($hn);
 
-    คงจะได้ปรับการออก opday ให้สามารถกำหนดได้ว่าจะใช้สิทธิในการรักษาเป็นตัวไหน เช่น เงินสด? หรือ ประกันสังคม?
-    $op = $opday->createOpday($hn, $toborow);
+}
+
+if ($extra==1) {
+    $opday->update($op['row_id'], array('toborow' => $toborow, 'ptright' => 'R01 เงินสด'));
+
 }else{
-    $opday->updateToborow($hn, $toborow);
+    $opday->update($op['row_id'], array('toborow' => $toborow));
+
 }
 
 $oc = new Opcard();
@@ -109,6 +114,7 @@ $update = $oc->update($hn, array('employee' => 'y'));
                         // 
                         ?>
                         <p><b>รายการที่เลือก</b></p>
+                        แก้ตรงนี้ให้แยกรายการมาเลย
                         <ol id="itemSelected"></ol>
                     </div>
                     <div style="width: 50%; float: left;" class="clearfix">

@@ -32,7 +32,7 @@ class Opday
      * 
      * @return array จาก getThisDay
      */
-    public function createOpday($hn=null, $toborow=null){
+    public function createOpday($hn=null){
 
         $opcard = new Opcard();
         $pt = $opcard->getByHn($hn);
@@ -42,7 +42,8 @@ class Opday
         $cCamp = $pt['camp'];
         $cNote = $pt['note'];
         $cIdcard = $pt['idcard'];
-
+        $toborow = '';
+        
         $vn = $this->getVn();
         
         $thidate = (date('Y')+543).date('-m-d H:i:s');
@@ -94,6 +95,20 @@ class Opday
         $query = sprintf("UPDATE `opday` SET `toborow` = '%s' WHERE `thdatehn` = '%s'", $toborow, $thdatehn);
         $this->dbi->query($query);
 
+    }
+
+    public function update($row_id, $items=array()){ 
+
+        $update = array();
+        foreach ($items as $key => $value) {
+            $update[] = sprintf("`$key` = '%s'", $value);
+        }
+        $update_txt = implode(', ', $update);
+
+        $sql = sprintf("UPDATE `opday` SET ".$update_txt." WHERE `row_id` = '%s'", $row_id);
+        $this->dbi->query($sql);
+
+        return $row_id;
     }
 }
 ?>

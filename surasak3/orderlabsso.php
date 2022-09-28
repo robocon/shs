@@ -100,7 +100,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
                     <tr>
                         <td align="right"></td>
                         <td>
-                            <input type="checkbox" name="extra" id="extra" value="1"> กรณีเป็นเจ้าหน้าที่ นวดแผนไทย กับ ไตเทียม
+                            <input type="checkbox" name="extra" id="extra" value="1"> กรณีเป็นเจ้าหน้าที่ นวดแผนไทย กับ ไตเทียม จะให้สิทธิเป็นเงินสด
                         </td>
                     </tr>
                     <tr>
