@@ -25,14 +25,14 @@ a:active {
 <form id="form1" name="form1" method="post" action="dt_xray_filmhn.php">
   <table width="100%" border="0" cellspacing="0" cellpadding="2">
     <tr>
-      <td align="center">√–∫ÿ HN
+      <td align="center">‡∏£‡∏∞‡∏ö‡∏∏ HN
         <input type="text" name="txthn" id="txthn">
         &nbsp;      
-		 <input type="submit" value="§ÈπÀ“" name="B1"  class="txt" />
+		 <input type="submit" value="‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤" name="B1"  class="txt" />
 </td>
     </tr>
     <tr>
-      <td align="center"><a href="../nindex.htm">&lt;&lt; °≈—∫‡¡πŸÀ≈—° &gt;&gt;</a></td>
+      <td align="center"><a href="../nindex.htm">&lt;&lt; ‡∏Å‡∏•‡∏±‡∏ö‡πÄ‡∏°‡∏ô‡∏π‡∏´‡∏•‡∏±‡∏Å &gt;&gt;</a></td>
     </tr>
   </table>
 </form>

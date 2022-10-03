@@ -18,19 +18,19 @@ include("connect.inc");
     
 	
 	$x=0;
-    $aDgcode = array("����");
-    $aTrade  = array("��¡��");
-    $aPrice  = array("�Ҥ� ");
+    $aDgcode = array("รหัส");
+    $aTrade  = array("รายการ");
+    $aPrice  = array("ราคา ");
     $aPart = array("part");
-    $aAmount = array("        �ӹǹ   ");
-    $aMoney= array("       ����Թ   ");
-	$aFilmsize= array("       ��Ҵ   ");
+    $aAmount = array("        จำนวน   ");
+    $aMoney= array("       รวมเงิน   ");
+	$aFilmsize= array("       ขนาด   ");
     $Netprice="";   
 
-    $aYprice = array("�Ҥ� ");
-    $aNprice = array("�Ҥ� ");
-    $aSumYprice = array("�Ҥ� ");
-    $aSumNprice = array("�Ҥ� ");
+    $aYprice = array("ราคา ");
+    $aNprice = array("ราคา ");
+    $aSumYprice = array("ราคา ");
+    $aSumNprice = array("ราคา ");
 	$cXraydetail="";
     session_register("aYprice");
     session_register("aNprice");
@@ -98,7 +98,7 @@ $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
         or die("Query failed");
 ?><head>
 <title></title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style type="text/css">
 
 
@@ -125,20 +125,20 @@ a:hover {color:#FF0000; text-decoration:underline;}
 	<TD>
 <?php
 
-	print "�����¹͡<br>";
+	print "ผู้ป่วยนอก<br>";
 	print "HN :$cHn<br>";
 	print "VN :$tvn<br>";
 	print "$cPtname<br>";
-	print "�Է�ԡ���ѡ�� :$cPtright<br>";
-	print "�ä :$cDiag<br>";
-	print "ᾷ�� :$cDoctor<br>";
+	print "สิทธิการรักษา :$cPtright<br>";
+	print "โรค :$cDiag<br>";
+	print "แพทย์ :$cDoctor<br>";
 	
 	 if($_SESSION["until_login"] == "xray"){
-	 echo "��Ǩ(���) : <BR>",nl2br($cXraydetail),"<BR>";
+	 echo "ตรวจ(ท่า) : <BR>",nl2br($cXraydetail),"<BR>";
 	// echo "<TEXTAREA NAME=\"cXraydetail\" ROWS=\"3\" COLS=\"24\">",$cXraydetail,"</TEXTAREA><BR>";
 	 }
 ?>
-<a href="labseek.php" id="aLink">����¡�õ���</a>
+<a href="labseek.php" id="aLink">ทำรายการต่อไป</a>
 </TD>
 </TR>
 </TABLE>

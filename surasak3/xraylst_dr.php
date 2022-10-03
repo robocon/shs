@@ -57,7 +57,7 @@ function OnClick_add_xray(xxx){
 		<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('2');">EXTREMITIES</A>
 	</TD>
 	<TD>
-		<? if($_SESSION["sOfficer"]=="ÈØÀÃÑµ¹ì ÁÔè§àª×éÍ"){?>
+		<? if($_SESSION["sOfficer"]=="à¸¨à¸¸à¸ à¸£à¸±à¸•à¸™à¹Œ à¸¡à¸´à¹ˆà¸‡à¹€à¸Šà¸·à¹‰à¸­"){?>
         Other : <INPUT id="idother" TYPE="text" NAME="" size="10" value="BMD"> 
         <? }else{ ?>
         Other : <INPUT id="idother" TYPE="text" NAME="" size="10"> 

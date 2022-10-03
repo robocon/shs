@@ -4,7 +4,7 @@ include("connect.inc");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=tis-620" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style type="text/css">
 .pdxhead {
@@ -45,10 +45,10 @@ color: #FFF;
 <body>
 <table>
 <tr>
-	<td>วันที่</td>
-	<td>08.00-16.00 น.</td>
-	<td>16.00-08.00 น.</td>
-	<td>00.00-08.00 น.</td>
+	<td>เธงเธฑเธเธเธตเน</td>
+	<td>08.00-16.00 เธ.</td>
+	<td>16.00-08.00 เธ.</td>
+	<td>00.00-08.00 เธ.</td>
 </tr>
 <?
 $sql="SELECT substring( date, 1, 10 ) as newdate

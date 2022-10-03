@@ -1,7 +1,7 @@
 <?php
  session_start();
  global $code;
- echo "HN : $cHn,  $cPtname,   ‘∑∏‘°“√√—°…“ : $cPtright <br> ";
+ echo "HN : $cHn,  $cPtname,  ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤ : $cPtright <br> ";
 ?>
   <form method="POST" action="<?php echo $PHP_SELF ?>"> <font face="Angsana New">&#3619;&#3627;&#3633;&#3626;&nbsp;&nbsp;&nbsp;
   <input type="text" name="code" size="10">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -12,9 +12,9 @@
 </form>
 <table>
  <tr>
-  <th bgcolor=6495ED>√À— </th>
-  <th bgcolor=6495ED>√“¬°“√</th>
-  <th bgcolor=6495ED>√“§“</th>
+  <th bgcolor=6495ED>‡∏£‡∏´‡∏±‡∏™</th>
+  <th bgcolor=6495ED>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</th>
+  <th bgcolor=6495ED>‡∏£‡∏≤‡∏Ñ‡∏≤</th>
  </tr>
 
 <?php

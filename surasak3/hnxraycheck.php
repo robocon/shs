@@ -1,18 +1,18 @@
 <form method="post" action="<?php echo $PHP_SELF ?>">
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;µ√«® Õ∫°“√X-RAY</p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡∏Å‡∏≤‡∏£X-RAY</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="text" name="hn" size="12"></p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="      µ°≈ß      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<‰ª‡¡πŸ</a></p>
+  <input type="submit" value="      ‡∏ï‡∏Å‡∏•‡∏á      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</a></p>
 </form>
 
 <table>
  <tr>
   <th bgcolor=CD853F>HN</th>
  <th bgcolor=CD853F>AN</th>
-  <th bgcolor=CD853F>™◊ËÕ- °ÿ≈</th>
-  <th bgcolor=CD853F>√“¬°“√</th>
-  <th bgcolor=CD853F>«—π·≈–‡«≈“</th>
+  <th bgcolor=CD853F>‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</th>
+  <th bgcolor=CD853F>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</th>
+  <th bgcolor=CD853F>‡∏ß‡∏±‡∏ô‡πÅ‡∏•‡∏∞‡πÄ‡∏ß‡∏•‡∏≤</th>
 
  </tr>
 

@@ -2,7 +2,7 @@
 include("connect.inc");
 ?><head>
 <title></title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style type="text/css">
 
 
@@ -34,9 +34,9 @@ body,td,th {
 <TABLE border="3" bordercolor="#FFFFFF" style='BORDER-COLLAPSE: collapse' width="100%" >
 <TR  bgcolor="#3366FF" class="font_title">
 	<TD align="center" >No.</TD>
-	<TD align="center" >����</TD>
-	<TD align="center" >���� - ʡ��</TD>
-	<TD align="center" >ᾷ�������</TD>
+	<TD align="center" >เวลา</TD>
+	<TD align="center" >ชื่อ - สกุล</TD>
+	<TD align="center" >แพทย์ผู้สั่ง</TD>
 </TR>
 <?php
 	$i=1;
@@ -55,7 +55,7 @@ body,td,th {
 			echo "<TD align=\"center\" >",$i,"</TD>";
 			echo "<TD align=\"center\" >",$arr["time2"],"</TD>";
 			echo "<TD align=\"center\" ><A HREF=\"xraydoctordetail.php?xrayno=",$arr["xrayno"],"&xraydetail=",urlencode($arr["detail_all"]),"\">",$arr["name"]," ",$arr["sname"],"</A></TD>";
-			echo "<TD align=\"center\" ><A HREF=\"xraydoctor_print.php?vn=",urlencode($arr["vn"]),"&hn=",urlencode($arr["hn"]),"&name=",urlencode($arr["yot"]." ".$arr["name"]." ".$arr["sname"]),"&detail_all=",urlencode($arr["detail_all"]),"&doctor=",urlencode($arr["doctor"]),"&xrayno=",urlencode($arr["xrayno"]),"\" target=\"_blank\">",$arr["doctor"],"</A>",($arr["orderby"]=="ER"?"<BR><BR>(�ҡ��ͧ�ء�Թ)":""),"</TD>";
+			echo "<TD align=\"center\" ><A HREF=\"xraydoctor_print.php?vn=",urlencode($arr["vn"]),"&hn=",urlencode($arr["hn"]),"&name=",urlencode($arr["yot"]." ".$arr["name"]." ".$arr["sname"]),"&detail_all=",urlencode($arr["detail_all"]),"&doctor=",urlencode($arr["doctor"]),"&xrayno=",urlencode($arr["xrayno"]),"\" target=\"_blank\">",$arr["doctor"],"</A>",($arr["orderby"]=="ER"?"<BR><BR>(จากห้องฉุกเฉิน)":""),"</TD>";
 		echo "</TR>";
 		echo "<TR bgcolor=\"",$bgcolor,"\">";
 			echo "<TD colspan=\"1\" >&nbsp;</TD>";
