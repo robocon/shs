@@ -21,16 +21,14 @@ $export_path = $path.'/export';
 // ถ้ายังไม่มี folder export ให้สร้างขึ้นมาก่อน
 if( !file_exists($export_path) ){ mkdir($export_path,0777); }
 
-$RealZipName = 'MED_CERT_11512.zip';
-$ZipName = $export_path.'/'.$RealZipName;
-$zip = new dZip($ZipName);
-
 $zip_lists = array();
-
 foreach ($items as $key => $a) { 
     $hn = $a['hn'];
     $db->select("SELECT `idcard` FROM `opcard` WHERE `hn` = '$hn' ");
     $user = $db->get_item();
+    
+    // ลบไฟล์เก่าก่อน 
+    @unlink($export_path.'/'.$user['idcard'].'.pdf');
 
     $idcard_img = $a['idcard_img'];
     $pic_patient = $a['pic_patient'];
@@ -49,7 +47,6 @@ foreach ($items as $key => $a) {
     }
     
     $merge = new FPDF_Merge();
-    
     // เพิ่มไฟล์ที่จะส่ง amedstat ก่อน
     if(is_file($path.'/'.$a['amed_stat'])){
         $merge->add($path.'/'.$a['amed_stat']);
@@ -70,6 +67,11 @@ foreach ($items as $key => $a) {
     );
 }
 
+$RealZipName = 'MED_CERT_11512.zip';
+$ZipName = $export_path.'/'.$RealZipName;
+@unlink($ZipName);
+
+$zip = new dZip($ZipName);
 foreach ($zip_lists as $key => $item) {
 
     $zip->addFile($item['path'], $item['name']);

@@ -132,7 +132,7 @@ if( $action === "save" ){
     $files = $_FILES['pic_patient'];
     $ext = strrchr(strtolower($files['name']), ".");
     if( $files['error'] === 0 && ( $ext == '.png' OR $ext == '.jpg' OR $ext == '.jpeg' ) ){
-        $file_name_pic = $hn.'_pic'.$ext;
+        $file_name_pic = $idcard.'_pic'.$ext;
         $file_pic_path = $folder_year.'/'.$file_name_pic;
 
         unlink($folder_year.'/'.$old_pic_patient);
@@ -147,7 +147,7 @@ if( $action === "save" ){
     $files2 = $_FILES['idcard_img'];
     $ext2 = strrchr(strtolower($files2['name']), ".");
     if( $files2['error'] === 0 && ( $ext2 == '.png' OR $ext2 == '.jpg' OR $ext2 == '.jpeg' ) ){
-        $file_name_idcard = $hn.'_idcard'.$ext2;
+        $file_name_idcard = $idcard.'_idcard'.$ext2;
         $file_idcard_path = $folder_year.'/'.$file_name_idcard;
 
         unlink($folder_year.'/'.$old_idcard_img);
@@ -161,7 +161,7 @@ if( $action === "save" ){
     $amed = $_FILES['amed_stat'];
     $extPdf = strrchr(strtolower($amed['name']), ".");
     if( $amed['error'] === 0 && $extPdf == '.pdf' ){ 
-        $pdf_file = $hn.'_amed'.$extPdf;
+        $pdf_file = $idcard.'_amed'.$extPdf;
         $file_pdf_path = $folder_year.'/'.$pdf_file;
 
         unlink($folder_year.'/'.$old_pdf);
