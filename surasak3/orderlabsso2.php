@@ -9,9 +9,6 @@ $hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
 $extra = (int)$_POST['extra'];
 
-ต้องลองหาเคสมาสัก 1 คนว่าถ้าเป็น ไตเทียม สิทธิที่ขึ้นจะเป็นยังไง
-ลอง hn พี่ใจห้องไต
-
 $opday = new Opday();
 $op = $opday->getThisDay($hn);
 if($op===false){
@@ -20,16 +17,17 @@ if($op===false){
 }
 
 if ($extra==1) {
-    $opday->update($op['row_id'], array('toborow' => $toborow, 'ptright' => 'R01 เงินสด'));
+    $item_update = array('toborow' => $toborow, 'ptright' => 'R01 เงินสด', 'employee' => 'y');
 
 }else{
-    $opday->update($op['row_id'], array('toborow' => $toborow));
+    $item_update = array('toborow' => $toborow);
 
-}
+} 
+
+$opday->update($op['row_id'], $item_update);
 
 $oc = new Opcard();
 $update = $oc->update($hn, array('employee' => 'y'));
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +84,7 @@ $update = $oc->update($hn, array('employee' => 'y'));
                 </tr>
                 <tr>
                     <td align="right"><b>ออก OPD CARD:</b></td>
-                    <td><?=$op['toborow'];?></td>
+                    <td><?=$toborow;?></td>
                 </tr>
                 <tr>
                     <td align="right"><b>ประเภทสิทธิ:</b></td>
@@ -112,10 +110,21 @@ $update = $oc->update($hn, array('employee' => 'y'));
                         // แยก ptright ออกมาเป็น2ตัวให้เห็นว่าคนนี้ จ่ายเป็นเงินสดกี่บาท เบิกเข้าเป็นประกันสังคมกี่บาท
                         // $sql = "SELECT * FROM `depart` WHERE `hn` = '' ";
                         // 
+                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'CHOL-sso','HDL-sso', 'STOCB-sso', 'HBSAG-sso');
+                        if($_SESSION['smenucode']=='ADMXR'){
+                            $chkList = array('41001');
+                        }
                         ?>
                         <p><b>รายการที่เลือก</b></p>
-                        แก้ตรงนี้ให้แยกรายการมาเลย
-                        <ol id="itemSelected"></ol>
+                        <ol id="itemSelected">
+                            <?php 
+                            foreach ($chkList as $key => $code) {
+                                ?>
+                                <li id="<?=$code;?>"><?=$code;?> <a href="javascript:void(0);" onclick="document.getElementById('+code+').outerHTML='';">[ลบ]</a><input type="hidden" name="labSelect[]" value="<?=$code;?>"></li>
+                                <?php
+                            }
+                            ?>
+                        </ol>
                     </div>
                     <div style="width: 50%; float: left;" class="clearfix">
                         <p><b>ชุดตรวจ</b></p>

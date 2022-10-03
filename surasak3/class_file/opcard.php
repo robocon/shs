@@ -34,11 +34,18 @@ class Opcard
 
     public function update($hn, $items=array()){ 
 
-        $update = array();
-        foreach ($items as $key => $value) {
-            $update[] = sprintf("`$key` = '%s'", $value);
+        if(count($items) > 1){
+            $update = array();
+            foreach ($items as $key => $value) {
+                $update[] = sprintf("`$key` = '%s'", $value);
+            }
+            $update_txt = implode(', ', $update);
+        }elseif (count($items)===1) { 
+            $key = key($items);
+            $value = $items[$key];
+            $update_txt = sprintf("`$key` = '%s'", $value);
         }
-        $update_txt = implode(', ', $update);
+        
 
         $sql = sprintf("UPDATE `opcard` SET ".$update_txt." WHERE `hn` = '%s'", $hn);
         $this->dbi->query($sql);

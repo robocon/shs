@@ -91,16 +91,24 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
                     <tr>
                         <td align="right"><b>ออก OPD CARD:</b></td>
                         <td>
+                            <?php 
+                            $toborow_list = array('EX46 ตรวจสุขภาพประกันสังคม', 'EX26 ตรวจสุขภาพประจำปี');
+                            ?>
                             <select name="toborow" id="toborow">
-                                <option value="EX46 ตรวจสุขภาพประกันสังคม">EX46 ตรวจสุขภาพประกันสังคม</option>
-                                <option value="EX26 ตรวจสุขภาพประจำปี">EX26 ตรวจสุขภาพประจำปี</option>
+                                <?php 
+                                foreach ($toborow_list as $key => $value) { 
+                                    ?>
+                                    <option value="<?=$value;?>"><?=$value;?></option>
+                                    <?php
+                                }
+                                ?>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td align="right"></td>
                         <td>
-                            <input type="checkbox" name="extra" id="extra" value="1"> กรณีเป็นเจ้าหน้าที่ นวดแผนไทย กับ ไตเทียม จะให้สิทธิเป็นเงินสด
+                            <input type="checkbox" name="extra" id="extra" value="1"> <label for="extra" style="color:orangered;cursor:pointer;"><b><u>กรณีเป็นเจ้าหน้าที่ <span style="font-size:32px;">นวดแผนไทย</span> กับ <span style="font-size:32px;">ไตเทียม</span> ติ๊กเลือกที่นี่</u></b></label>
                         </td>
                     </tr>
                     <tr>

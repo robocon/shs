@@ -99,12 +99,18 @@ class Opday
 
     public function update($row_id, $items=array()){ 
 
-        $update = array();
-        foreach ($items as $key => $value) {
-            $update[] = sprintf("`$key` = '%s'", $value);
+        if(count($items) > 1){ 
+            $update = array();
+            foreach ($items as $key => $value) {
+                $update[] = sprintf("`$key` = '%s'", $value);
+            }
+            $update_txt = implode(', ', $update);
+        }elseif (count($items) === 1) {
+            $key = key($items);
+            $value = $items[$key];
+            $update_txt = sprintf("`$key` = '%s'", $value);
         }
-        $update_txt = implode(', ', $update);
-
+        
         $sql = sprintf("UPDATE `opday` SET ".$update_txt." WHERE `row_id` = '%s'", $row_id);
         $this->dbi->query($sql);
 

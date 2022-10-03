@@ -32,10 +32,12 @@ class OpdReceive
     public $vn = false;
     public $clinicalinfo = false; // กำหนดชื่อ clinicalinfo เอง เช่น ตรวจสุขภาพประจำปี65
     public $custom_labnumber = false; // กำหนด labnumber เอง เช่น 650919301
+    public $sOfficer = false;
 
     private $labList = array();
     private $labnumber = false;
     private $nLab = false;
+
     
     public function __construct($settings=NULL)
     {
@@ -46,13 +48,13 @@ class OpdReceive
     }
 
     public function orderLab($labItems=array()){ 
-
-        if(empty($this->clinicalinfo)){
+        
+        if(empty($this->clinicalinfo)){ 
             $clinicalinfo = implode(',', $labItems);
-        }else{
 
-            // 
+        }else{
             $clinicalinfo = $this->clinicalinfo;
+
         }
         
         $q_opcard = $this->dbi->query("SELECT toEn(`dbirth`) AS `dbirth`,IF(`sex`='ช', 'M', 'F') AS `sex`, CONCAT(`yot`,`name`,' ', `surname`) AS `ptname`,`ptright` FROM `opcard` WHERE `hn` = '$this->hn' ");
@@ -87,7 +89,6 @@ class OpdReceive
 
         }
         
-
         $orderhead_sql = "INSERT INTO `orderhead` ( 
             `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, `patientname`, 
             `sex`, `dob`, `sourcecode`, `sourcename`, `room`, `cliniciancode`, 
@@ -98,7 +99,7 @@ class OpdReceive
             'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
         );";
         $orderhead_save = $this->dbi->query($orderhead_sql);
-        if($orderhead_save==false){
+        if($orderhead_save==false){ 
             die($this->dbi->error);
         }
 
@@ -161,8 +162,8 @@ class OpdReceive
             `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
         ) VALUES ( 
             '$runno_stk', '$thai_date', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'PATHO', 
-            '$count_item', 'ค่าตรวจวิเคราะห์โรค', '$sumPrice', '$sumYPrice', '$sumNPrice', '0', 
-            'สุวสิริ สุวรรณจักร์', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$this->nLab', 'Y' 
+            '$count_item', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', '0', 
+            '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$this->nLab', 'Y' 
         )";
         $depart_save = $this->dbi->query($sql_depart);
         if($depart_save==false){
@@ -184,7 +185,7 @@ class OpdReceive
                 `detail`, `amount`, `price`, `yprice`, `nprice`, `depart`, 
                 `part`, `idno`, `ptright`, `status` 
             ) VALUES ( 
-                '$thai_date', '$this->hn', '$ptname', 'MD022 (ไม่ทราบแพทย์)', '$count_item', '$code', 
+                '$thai_date', '$this->hn', '$ptname', 'MD022 แพทย์เวชปฎิบัติ', '$count_item', '$code', 
                 '$detail', '1', '$price', '$nprice', '$yprice', 'PATHO', 
                 'LAB', '$depart_id', '$ptright', 'Y' 
              )";

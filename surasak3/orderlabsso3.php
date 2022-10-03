@@ -7,15 +7,17 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $hn = $_REQUEST['hn'];
 $vn = $_REQUEST['vn'];
 
-เอา $_REQUEST['labSelect'] มาแยกก่อนว่าเป็นเงินสดกี่บาท 
-และเป็นประกันสังคมกี่บาท ตามรายการที่พี่อึ่งให้มาในไฟล์ excel
+// เอา $_REQUEST['labSelect'] มาแยกก่อนว่าเป็นเงินสดกี่บาท 
+// และเป็นประกันสังคมกี่บาท ตามรายการที่พี่อึ่งให้มาในไฟล์ excel
+dump($_REQUEST['labSelect']);
 
-exit;
+!!! แยกการเพิ่มรายการ เพราะการคีย์ค่าใช้จ่าย ห้องแลป กับ ห้อง Xray ไม่เหมือนกัน
 
 $a = new OpdReceive();
 $a->hn = $hn;
 $a->vn = $vn; 
 $a->clinicalinfo = 'ตรวจสุขภาพประจำปี66';
+$a->sOfficer = $_SESSION['sOfficer'];
 //     // $a->custom_labnumber = '6509200301';
 $a->orderLab($_REQUEST['labSelect']);
 
