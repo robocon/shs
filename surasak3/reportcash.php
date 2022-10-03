@@ -181,7 +181,7 @@ $query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
     $result10 = mysql_query($query10)
         or die("Query failed");
 	while($fetch = mysql_fetch_array($result10)){
-$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and (part = 'DSY' or part = 'DSN')";
+$query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and (part = 'DSY' or part = 'DSN')";
     $result13 = mysql_query($query13)
         or die("Query failed");
 	$nn = @mysql_num_rows($result13);
@@ -198,16 +198,38 @@ $query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fet
     $doctor=substr($sDoctor,5);
     //print "HN: $sHn, สิทธิ์:$ptright<br>";
     //print "โรค: $sDiag, แพทย์ :$doctor<br>";
-    while (list ($tradname,$amount, $price,$part) = mysql_fetch_row ($result13)) {
+    while (list ($drugcode,$tradname,$amount, $price,$part) = mysql_fetch_row ($result13)) {
 //        array_push($aPrice,$price);
 //        $x++;
+
+				$sql1="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst where drugcode = '$drugcode'";
+				//echo $sql."<br>";
+				$qresult = mysql_query($sql1);	
+				list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);
+
+
 	if($part=='DSY') {
-		$price = $price;
-		$price1 = "-";
-		$sum = $price;
-		$unit = number_format($price/$amount,2);
-	}
-	else{
+		if($medical_sup_free==0){  //ถ้าเป็นเวชภัณฑ์ผู้ป่วยนอกเบิกไม่ได้
+			$price1 = $price;
+			$price = "-";
+			$sum = $price1;
+			$unit = number_format($price1/$amount,2);		
+		}else{//ถ้าเป็นเวชภัณฑ์ผู้ป่วยนอกเบิกได้
+			if($freepri < $salepri){  //ถ้าราคาที่ให้เบิกน้อยกว่าราคาขาย
+				$unit = number_format($price/$amount,2);
+				$sum = $price;
+				$sumfreepri = $freepri*$amount;
+				$price1 = $price-$sumfreepri;
+				$price1 = number_format($price1,2);  //เบิกไม่ได้
+				$price = number_format($sumfreepri,2);  //เบิกได้		
+			}else{
+				$price = $price;
+				$price1 = "-";
+				$sum = $price;
+				$unit = number_format($price/$amount,2);				
+			}
+		}	
+	}else{
 		$price1 = $price;
 		$price = "-";
 		$sum = $price1;

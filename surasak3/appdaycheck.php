@@ -23,6 +23,7 @@
         <th bgcolor=CD853F>แลบ</th>
         <th bgcolor=CD853F>เอกซเรย์</th>
         <th bgcolor=CD853F>อื่น</th>
+		<th width='10%' bgcolor=CD853F>ดำเนินการ</th>
     </tr>
 
     <?php
@@ -135,6 +136,13 @@ $select_tomorow = $td." ".$month[$tm]." ".$ty;
             if(preg_match("/^MD/", $item['doctor'])==true){
                 $doctor = substr($item['doctor'], 6);
             }
+			
+			
+		if($item['apptime']=="ยกเลิกการนัด"){
+			$edit="";
+		}else{
+			$edit="แก้ไขใบนัด";
+		}
 
             print (" <tr>\n".
             "  <td BGCOLOR='".$item['color']."'><A HREF=\"appinsert2.php?row_id=".$item['row_id']."\" target=\"_blank\">{$item['hn']}</A></td>\n".
@@ -146,6 +154,7 @@ $select_tomorow = $td." ".$month[$tm]." ".$ty;
             "  <td BGCOLOR='".$item['color']."'>{$item['patho']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['xray']}</td>\n".
             "  <td BGCOLOR='".$item['color']."'>{$item['other']}{$item['injno']}</td>\n".
+			"  <td align='center' BGCOLOR='".$item['color']."'><a target=_blank  href=\"appoint_update.php?row_id=".$item['row_id']."\">$edit</a></td>\n".
             " </tr>\n");
         }
     }

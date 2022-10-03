@@ -278,6 +278,18 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
           <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
           <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
+<?php
+print "    <br>กลุ่มอาการแพ้ยา&nbsp;&nbsp;&nbsp;";
+?>
+<select name="drugreact_group">
+          <option value='' <? if($drugreact_group==''){ echo "selected"; } ?>>------------------------------------------ ไม่ระบุ ------------------------------------------</option>
+		  <option value='1' <? if($drugreact_group=='1'){ echo "selected"; } ?>>1 = กลุ่ม beta-lactam antibiotics ( Penicillins, Cephalosporins, Carbapenems )</option>
+          <option value='2' <? if($drugreact_group=='2'){ echo "selected"; } ?>>2 = กลุ่ม Sulfonamide</option>
+		  <option value='3' <? if($drugreact_group=='3'){ echo "selected"; } ?>>3 = กลุ่ม Fluoroquinolone</option>
+		  <option value='4' <? if($drugreact_group=='4'){ echo "selected"; } ?>>4 = กลุ่ม NSAIDs</option>
+		  <option value='5' <? if($drugreact_group=='5'){ echo "selected"; } ?>>5 = กลุ่ม Antiepileptics (Aromatic)</option>
+		  <option value='6' <? if($drugreact_group=='6'){ echo "selected"; } ?>>6 = กลุ่ม G6PD Deficiency</option>
+</select>
 <?
 
 print "   </tr>";

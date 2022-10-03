@@ -249,6 +249,21 @@ debt= Netpri-Netpaid-$paid
 
        $sql = "UPDATE ipcard SET price='$Netpri', paid= $Netpaid+$paid, calc='$Thidate' ,ipmonrep='Y' WHERE an='$cAn' ";
        $result = mysql_query($sql) or die("Query failed ipcard");
+	   
+	   
+	   
+	    $query1 = "SELECT diag_thai FROM ipcard WHERE an = '$cAn' ";
+		$result1 = mysql_query($query1)or die("Query failed ipcard");
+		list ($diag_thai) = mysql_fetch_row ($result1);
+		
+		if($diag_thai==""){  //ถ้าไม่มีชื่อโรคภาษาไทย
+			$cDiag=$cDiag;
+		}else{
+			$cDiag=$diag_thai;
+		}
+	   
+	   
+	   
 //       echo mysql_errno() . ": " . mysql_error(). "\n";
 //       echo "<br>";
 

@@ -1046,7 +1046,32 @@ function fncSubmit(strPage)
       &nbsp;
       </select>
     </font><font face="Angsana New">
-      <input type="text" name="xray2" size="30" />
+		<select  name="xray2" id="xray2">
+			<option  selected value="">----ไม่ระบุ----</option>
+			<option  value="U/S UPPER ABDOMEN">U/S UPPER ABDOMEN</option>
+			<option  value="U/S WHOLE ABDOMEN">U/S WHOLE ABDOMEN</option>
+			<option  value="U/S KUB">U/S KUB</option>
+			<option  value="U/S BREAST">U/S BREAST</option>
+			<option  value="U/S BOTH LEG">U/S BOTH LEG</option>
+			<option  value=">U/S LT LEG">U/S LT LEG</option>
+			<option  value="U/S RR LEG">U/S RR LEG</option>
+			<option  value="U/S EXTREMITY">U/S EXTREMITY</option>
+			<option  value="U/S THYROID">U/S THYROID</option>
+			<option  value="U/S NECK">U/S NECK</option>
+			<option  value="U/S BACK">U/S BACK</option>
+			<option  value="U/S BUTTOCK">U/S BUTTOCK</option>
+			<option  value="U/S CAROTID ARTERY">U/S CAROTID ARTERY</option>
+			<option  value="U/S RENAL ARTERY">U/S RENAL ARTERY</option>
+			<option  value="U/S SCROTUM">U/S SCROTUM</option>
+			<option  value="U/S LOWER ABDOMEN">U/S LOWER ABDOMEN</option>
+			<option  value="U/S ARM">U/S ARM</option>
+			<option  value="U/S FOREARM">U/S FOREARM</option>
+			<option  value="U/S HAND">U/S HAND</option>
+			<option  value="U/S THIGH">U/S THIGH</option>
+			<option  value="U/S FOOT">U/S FOOT</option>
+			<option  value="U/S HEAD">U/S HEAD</option>
+			<option  value="U/S PAROTID GLAND">U/S PAROTID GLAND</option>
+		</select>
     </font></td>
   </tr>
 <tr>
@@ -1063,13 +1088,13 @@ function fncSubmit(strPage)
       ></select> 
   <? }else{ ?>
     <select size="1" name="advice" id="advice">
-      <option selected value="NA">&lt;&#3650;&#3611;&#3619;&#3604;&#3648;&#3621;&#3639;&#3629;&#3585;&#3619;&#3634;&#3618;&#3585;&#3634;&#3619;&gt;</option>
+      <option selected value="NA">ไม่มี</option>
       <option value="ไม่มี" <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>ไม่มี</option>
       <option>ไม่ต้องงดน้ำหรืออาหาร</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 20:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 24:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
       <option>งดน้ำและอาหารหลังเวลา 20:00 น.</option>
-      <option>งดน้ำและอาหารหลังเวลา 24:00 น.</option>
+	  <option>งดน้ำและอาหารหลังเวลา 20:00 น. ดื่มน้ำเปล่าได้</option>
       <option>งดน้ำและอาหารหลังเวลา .............. น.</option>
       <option>เอกซเรย์ ก่อนพบแพทย์</option>
       <option>งดสวมใส่เครื่องประดับทุกชนิด งดทาโลชั่น แป้งบริเวณต้นคอ แขน และขา</option>
@@ -1078,7 +1103,11 @@ function fncSubmit(strPage)
       <option value="ดื่มน้ำเปล่ามากๆ ก่อนเวลานัดตรวจ ประมาณครึ่งชั่วโมง แล้วกลั้นปัสสาวะไว้จนกว่าจำทำการตรวจเสร็จ">ดื่มน้ำเปล่ามากๆ ก่อนเวลานัดตรวจ ประมาณครึ่งชั่วโมง แล้วกลั้นปัสสาวะไว้จนกว่าจำทำการตรวจเสร็จ</option>
       <option value="วันที่......................มื้อเย็น รับประทานอาหารอ่อน เช่น ข้าวต้ม โจ๊ก เวลา 20.00 น. ทานยาระบาย 3 เม็ด">วันที่......................มื้อเย็น รับประทานอาหารอ่อน เช่น ข้าวต้ม โจ๊ก เวลา 20.00 น. ทานยาระบาย 3 เม็ด</option>
       <option value="หลังเที่ยงคืน งดอาหารและน้ำ จนกว่าจะทำการตรวจเสร็จ">หลังเที่ยงคืน งดอาหารและน้ำ จนกว่าจะทำการตรวจเสร็จ</option>      
-      <option value="เช้าวันที่......................สวนอุจจาระก่อนมาโรงพยาบาล">เช้าวันที่......................สวนอุจจาระก่อนมาโรงพยาบาล</option>      
+      <option value="เช้าวันที่......................สวนอุจจาระก่อนมาโรงพยาบาล">เช้าวันที่......................สวนอุจจาระก่อนมาโรงพยาบาล</option>
+	  <option value="งดน้ำและอาหารหลังเวลา 24:00 น.">งดน้ำและอาหารหลังเวลา 24:00 น.</option>
+	  <option value="งดน้ำและอาหารหลังเวลา 24:00 น. หลังเวลา 08:00 น. เริ่มกลั้นปัสสาวะ">งดน้ำและอาหารหลังเวลา 24:00 น. หลังเวลา 08:00 น. เริ่มกลั้นปัสสาวะ</option>
+	  <option value="ดื่มน้ำมากๆ แล้วกลั้นปัสสาวะจนกว่าจะตรวจเสร็จ">ดื่มน้ำมากๆ แล้วกลั้นปัสสาวะจนกว่าจะตรวจเสร็จ</option>
+	  <option value="นำผลเก่ามาด้วยทุกครั้ง">นำผลเก่ามาด้วยทุกครั้ง</option>
       </select>
       <? } ?>
   </font></td>

@@ -108,16 +108,17 @@ body,td,th {
 	<th bgcolor="#7DCEA0">สรุปค่าใช้จ่าย</th>
 	<th bgcolor="#7DCEA0">ตามหมวด</th>
 	<th bgcolor="#7DCEA0">เวลาจำหน่าย</th>
+	<th bgcolor="#7DCEA0">ชื่อโรคภาษาไทย</th>
   </tr>
 
 <?php
     include("connect.inc");
   
-    $query = "SELECT ptname,hn,an,bedcode,price,paid,accno,date,dcdate,days,ptright,diag,ipmonrep,hi_type FROM ipcard WHERE dcdate LIKE '$today%' ";
+    $query = "SELECT ptname,hn,an,bedcode,price,paid,accno,date,dcdate,days,ptright,diag,ipmonrep,hi_type,diag_thai FROM ipcard WHERE dcdate LIKE '$today%' ";
     $result = mysql_query($query)
         or die("Query failed ipcard");
 
-    while (list ($ptname,$hn,$an,$bedcode,$price,$paid,$accno,$date,$dcdate,$days,$ptright,$diag,$ipmonrep,$hi_type) = mysql_fetch_row ($result)) {
+    while (list ($ptname,$hn,$an,$bedcode,$price,$paid,$accno,$date,$dcdate,$days,$ptright,$diag,$ipmonrep,$hi_type,$diag_thai) = mysql_fetch_row ($result)) {
 		
 
 
@@ -140,6 +141,12 @@ body,td,th {
 		$dcdate1=$dcdate;
 		$dcdate=substr($dcdate,11,8);
 		
+		if($diag_thai==""){
+			$editdiag="แก้ไข";
+		}else{
+			$editdiag=$diag_thai;
+		}
+		
         print (" <tr>\n".
            "  <td BGCOLOR=#ABEBC6><a target=_BLANK  href=\"ipchkbil_2022.php?vAn=$an&vHn=$hn&vAccno=$accno&vDate=$date&vDcdate=$dcdate1&vDays=$days&vPtright=$ptright&vPtname=$ptname&vDiag=$diag\">$ptname</a></td>\n".
            "  <td BGCOLOR=#ABEBC6><a target=_BLANK  href=\"ipchkbillist_2022.php?vAn=$an&vHn=$hn&vAccno=$accno&vDate=$date&vDcdate=$dcdate1&vDays=$days&vPtright=$ptright&vPtname=$ptname&vDiag=$diag\">$hn</a></td>\n".
@@ -157,6 +164,7 @@ body,td,th {
 			 "  <td BGCOLOR=#ABEBC6><a target=_BLANK  href=\"ipaccountdatebetween_2022.php?an=$an&accno=1\">ตามเวลา</td>\n".
 			 "  <td BGCOLOR=#ABEBC6><a target=_BLANK  href=\"ipchkbil_grouppart_2022.php?vAn=$an&vHn=$hn&vAccno=$accno&vDate=$date&vDcdate=$dcdate&vDays=$days&vPtright=$ptright&vPtname=$ptname&vDiag=$diag\">เก็บเงิน</a></td>\n".
 			"  <td BGCOLOR=#ABEBC6><a target=_BLANK  href=\"ipdcdate_2022.php?vAn=$an&vHn=$hn&vDate=$date&vDcdate1=$dcdate1&vDcdate=$dcdate&vDays=$days&vPtright=$ptright&vPtname=$ptname&vDiag=$diag\">$dcdate</a></td>\n". 
+			"  <td BGCOLOR=#ABEBC6><a target=_BLANK  href=\"ipdcdate_2022.php?vAn=$an&vHn=$hn&vDate=$date&vDcdate1=$dcdate1&vDcdate=$dcdate&vDays=$days&vPtright=$ptright&vPtname=$ptname&vDiag=$diag\">$editdiag</a></td>\n".
            " </tr>\n");
        }
     include("unconnect.inc");
