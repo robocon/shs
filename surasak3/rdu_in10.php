@@ -7,7 +7,7 @@ if ( !defined('RDU_TEST') ) {
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
 SELECT `row_id`,`date`,`hn`,`icd10`, `date_hn`
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$whereMonthTH%' 
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'I10' ";
@@ -16,7 +16,7 @@ $db->exec($sql);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%' 
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

@@ -11,7 +11,7 @@ SELECT a.`hn`,a.`organ`,a.`maintenance`,
 a.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor` 
 FROM ( 
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
-    FROM `trauma` 
+    FROM `rdu_trauma` 
     WHERE `date` LIKE '$whereMonthTH%' 
     # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
@@ -21,7 +21,7 @@ FROM (
 ) AS a 
 LEFT JOIN ( 
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor` 
-    FROM `diag` 
+    FROM `rdu_diag` 
     WHERE `svdate` LIKE '$whereMonthTH%' 
     # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
@@ -41,7 +41,7 @@ $db->exec($sql);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`  
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%' 
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

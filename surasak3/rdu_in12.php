@@ -9,14 +9,14 @@ $sql = "CREATE TEMPORARY TABLE `tmp_in12`
 SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr` 
 FROM ( 
 	SELECT * 
-    FROM `opday` 
+    FROM `rdu_opday` 
     WHERE `date` LIKE '$whereMonthTH%' 
     # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
 	SELECT * 
-    FROM `lab` 
+    FROM `rdu_lab` 
     WHERE ( `orderdate` <= '$whereMonth-01' AND `orderdate` >= '$last6Month' ) 
     # `year` = '$year' 
     AND `egfr` > 30 GROUP BY `hn`
@@ -31,7 +31,7 @@ $sql = "SELECT COUNT(a.`row_id`) AS `rows`
 FROM tmp_in12 AS a 
 LEFT JOIN ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-    FROM `drugrx` 
+    FROM `rdu_drugrx` 
     WHERE `date` LIKE '$whereMonthTH%' 
     #`year` = '$year' 
     AND `drugcode` IN ( 
@@ -56,7 +56,7 @@ $sql = "SELECT COUNT(a.`row_id`) AS `rows`
 FROM `tmp_in12` AS a 
 LEFT JOIN ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-    FROM `drugrx` 
+    FROM `rdu_drugrx` 
     WHERE `date` LIKE '$whereMonthTH%' 
     #`year` = '$year' 
     AND `drugcode` IN ( 

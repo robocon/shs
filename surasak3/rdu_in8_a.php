@@ -2,8 +2,8 @@
 
 include 'bootstrap.php';
 
-$db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 // $year = input_get('year');
 // $quarter = input_get('quarter');
@@ -14,7 +14,7 @@ SELECT a.`hn`,a.`organ`,a.`maintenance`,
 b.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor` 
 FROM ( 
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
-    FROM trauma 
+    FROM `rdu_trauma` 
     WHERE `date` LIKE '$date%' 
     #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
@@ -24,7 +24,7 @@ FROM (
 ) AS a 
 LEFT JOIN ( 
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor`,`ptname` 
-    FROM `diag` 
+    FROM `rdu_diag` 
     WHERE `svdate` LIKE '$date%' 
     #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
@@ -44,7 +44,7 @@ $db->exec($sql);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`,`amount` 
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

@@ -2,8 +2,8 @@
 
 include 'bootstrap.php';
 
-$db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 // $year = input_get('year');
 // $quarter = input_get('quarter');
@@ -13,7 +13,7 @@ $date = input_get('date');
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_rdu_in13`");
 $sql = "CREATE TEMPORARY TABLE `tmp_rdu_in13` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,COUNT(`hn`) AS `rows` ,`date_hn` 
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

@@ -2,7 +2,7 @@
 
 $sql18a = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$whereMonthTH%' 
 #`year` = '$year' AND `quarter` = '$quarter'  
 AND `age` <> '' 
@@ -32,7 +32,7 @@ $db->exec($sql18a);
 
 $sql18b = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

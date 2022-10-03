@@ -1,8 +1,8 @@
 <?php 
 include 'bootstrap.php';
 
-$db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 // $year = input_get('year');
 // $quarter = input_get('quarter');
@@ -15,7 +15,7 @@ $maxDate = input_get('maxDate');
 // เตรียมข้อมูล opday
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`ptname`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$date%' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ;";
@@ -24,7 +24,7 @@ $db->exec($sql);
 // เตรียมข้อมูล drugrx
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`amount`,`date_hn` 
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ;";
@@ -58,7 +58,7 @@ if( $table == 'a' ){
     ) AS a 
     LEFT JOIN ( 
         SELECT * 
-        FROM `lab` 
+        FROM `rdu_lab` 
         WHERE ( `orderdate` >= '$minDate 00:00:00' AND `orderdate` <= '$maxDate 23:59:59' )
         AND ( `egfr` < 60 AND `egfr` > 0 ) 
         GROUP BY `hn`

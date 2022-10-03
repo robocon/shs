@@ -12,7 +12,7 @@ $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15`
 SELECT b.*  
 FROM ( 
 	SELECT *  
-	FROM `opday` 
+	FROM `rdu_opday` 
 	WHERE `date` LIKE '$whereMonthTH%' 
 	$where_toborow
 	GROUP BY `hn` 
@@ -20,7 +20,7 @@ FROM (
 LEFT JOIN 
 ( 
 	SELECT * 
-    FROM `diag` 
+    FROM `rdu_diag` 
     WHERE `svdate` LIKE '$whereMonthTH%' 
     AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
@@ -32,7 +32,7 @@ $db->exec($sql);
 // A จำนวนผู้ป่วยนอกดรคหืดที่ได้รับยา inhaled corticosteroid นับตามhn อย่างน้อย1ครั้งใน 12เดือน
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE ( `date` >= '$last1YearTH' AND `date` <= '$whereMonthTH-$lastOfMonth' ) 
 AND `drugcode` IN ( 
     '7PULR', 

@@ -8,7 +8,7 @@ if ( !defined('RDU_TEST') ) {
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
 SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$whereMonthTH%' 
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
@@ -26,7 +26,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%'
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

@@ -256,7 +256,7 @@ if ( $action == 'load' ) {
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
-            exit;
+            
             include 'rdu_in7.php';
             // $url_in7 = "year=$year&quarter=$quarter";
             $url_in7 = "date=$whereMonthTH";
@@ -314,8 +314,9 @@ if ( $action == 'load' ) {
         </tr>
         <tr>
             <td align="center">11</td>
-            <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>
-            หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร</td>
+            <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร<br>
+            ยาในเงื่อนไขข้อนี้คือ <b>Code:</b>1EUGL-C <b>Tradname:</b>Diabenol 5 mg. (Z) <b>Genname:</b>Glibenclamide 5 mg. 
+            </td>
             <?php
             include 'rdu_in11.php';
             $link_11 = "rdu_in11_detail.php?date=$whereMonthTH&minDate=$last6Month&maxDate=$whereMonth-$lastOfMonth";

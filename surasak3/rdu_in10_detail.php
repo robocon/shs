@@ -1,8 +1,8 @@
 <?php 
 include 'bootstrap.php';
 
-$db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 // $year = input_get('year');
 // $quarter = input_get('quarter');
@@ -12,7 +12,7 @@ $date = input_get('date');
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn` 
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'I10' ";
@@ -22,7 +22,7 @@ $db->exec($sql);
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

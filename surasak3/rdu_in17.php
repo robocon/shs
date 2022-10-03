@@ -2,7 +2,7 @@
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in17` 
 SELECT `hn`,`date_hn` 
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$whereMonthTH%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND ( 
@@ -17,7 +17,7 @@ $db->exec($sql);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in17` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,COUNT(`hn`) AS `rows` ,`date_hn` 
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 

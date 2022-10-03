@@ -1,8 +1,8 @@
 <?php 
 include 'bootstrap.php';
 
-$db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 // $year = input_get('year');
 // $quarter = input_get('quarter');
@@ -16,14 +16,14 @@ $sql = "CREATE TEMPORARY TABLE `tmp_in12`
 SELECT a.`row_id`,a.`hn`,a.`date_hn`,a.`icd10`,b.`egfr`,a.`ptname`,a.`age`,a.`diag` 
 FROM ( 
 	SELECT * 
-    FROM `opday` 
+    FROM `rdu_opday` 
     WHERE `date` LIKE '$date%' 
     #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
 	SELECT * 
-    FROM `lab` 
+    FROM `rdu_lab` 
     WHERE ( `orderdate` <= '$maxDate-01' AND `orderdate` >= '$minDate' ) 
     #`year` = '$year' 
     AND `egfr` > 30 GROUP BY `hn`
@@ -37,7 +37,7 @@ if( $table == 'b' ){
     FROM `tmp_in12` AS a 
     LEFT JOIN ( 
         SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-        FROM `drugrx` 
+        FROM `rdu_drugrx` 
         WHERE `date` LIKE '$date%' 
         #`year` = '$year' 
         AND `drugcode` IN ( 
@@ -108,7 +108,7 @@ if( $table == 'b' ){
     FROM tmp_in12 AS a 
     LEFT JOIN ( 
         SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
-        FROM `drugrx` 
+        FROM `rdu_drugrx` 
         WHERE `date` LIKE '$date%' 
         #`year` = '$year' 
         AND `drugcode` IN ( 

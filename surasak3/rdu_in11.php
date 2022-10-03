@@ -11,7 +11,7 @@ if ( !defined('RDU_TEST') ) {
 // เตรียมข้อมูล opday icd10 E11
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
-FROM `opday` 
+FROM `rdu_opday` 
 WHERE `date` LIKE '$whereMonthTH%' 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ;";
@@ -20,7 +20,7 @@ $db->exec($sql);
 // เตรียมข้อมูล drugrx ยาโค้ด 1EUGL-C
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
-FROM `drugrx` 
+FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%' 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ;";
@@ -44,7 +44,7 @@ FROM (
 ) AS a 
 LEFT JOIN ( 
     SELECT * 
-    FROM `lab` 
+    FROM `rdu_lab` 
     WHERE ( `orderdate` >= '$last6Month 00:00:00' AND `orderdate` <= '$whereMonth-$lastOfMonth 23:59:59' )
     AND ( `egfr` < 60 AND `egfr` > 0 ) 
     GROUP BY `hn`

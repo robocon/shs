@@ -1,8 +1,8 @@
 <?php 
 include 'bootstrap.php';
 
-$db = Mysql::load($rdu_configs);
-
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 $table = input_get('table');
 $date = input_get('date');
 
