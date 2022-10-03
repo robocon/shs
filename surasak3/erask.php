@@ -1,13 +1,11 @@
 <?php
 session_start();
-include("connect.php");
+include("connect.inc");
 /*  print "ผู้ป่วยนอก<br>";
 print "HN :$cHn<br>";
 print "VN:$tvn<br>";
 
 print "$cPtname<br>";*/
-
-mysql_query("SET NAMES UTF8", $Conn);
 
 ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
 $strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";

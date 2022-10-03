@@ -6,8 +6,17 @@
 include 'bootstrap.php';
 define('RDU_TEST', '1');
 
+$rdu_configs = array(
+    'host' => '192.168.129.143',
+    'port' => '3306',
+    'dbname' => 'rdu',
+    'user' => 'sqluser',
+    'pass' => '1234'
+);
 
 $db = Mysql::load($rdu_configs);
+$db->exec("SET NAMES UTF8");
+
 $quarter = input_post('quarter');
 if( $quarter == 1 ){
     $month_range['min'] = '10';

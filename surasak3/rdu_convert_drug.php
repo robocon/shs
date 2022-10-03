@@ -8,24 +8,30 @@ function dump($txt){
     echo "</pre>";
 }
 
-// include 'includes/connect_sv13.php';
-
-// mysql_query('SET NAMES TIS620', $db);
-
-define('HOST', '192.168.131.250');
+define('HOST', '192.168.131.240');
 define('PORT', '3306');
-define('DB', 'smdb');
-define('USER', 'remoteuser');
-define('PASS', '');
+define('DB', 'sm3db-utf8');
+define('USER', 'sm3db_user');
+define('PASS', 'sm3dbPassword');
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
+if($dbi->connect_errno){
+    echo $dbi->connect_errno;
+    exit;
+}
+$dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-04-01';
-$date_end = '2565-06-30';
-$quarter = 3;
+$date_start = '2565-07-01';
+$date_end = '2565-09-30';
+
+$quarter = 4;
 $year = '2565';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
+if(!file_exists($filePath)){
+    mkdir($dirPath);
+}
+
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_drug_'.$quarter.'.sql';
 if(file_exists($filePath))
 {
@@ -38,13 +44,11 @@ WHERE `date` >= '$date_start 00:00:00' AND `date` <= '$date_end 23:59:59'
 AND `an` IS NULL 
 AND `reject` != 'Y' 
 AND `amount` > 0 ";
-// $q = mysql_query($sql, $db) or die( mysql_error() );
 $q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
-$sql_data = '';
+$sql_data = array();
 
-// while ( $item = mysql_fetch_assoc($q) ) {
 while ( $item = $q->fetch_assoc() ) {
     $row_id = $item['row_id'];
     $date = $item['date'];
@@ -54,11 +58,11 @@ while ( $item = $q->fetch_assoc() ) {
     $amount = $item['amount'];
     $date_hn = $item['date_hn'];
 
-    $sql_data = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year');\n";
-    file_put_contents($filePath, $sql_data, FILE_APPEND);
+    $sql_data[] = "( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year')";
 
 }
-
-// mysql_close($db);
+$sql_value = implode(',', $sql_data);
+$sql_header.$sql_value;
+file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";

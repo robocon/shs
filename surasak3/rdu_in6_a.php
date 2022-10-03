@@ -6,7 +6,6 @@ include 'bootstrap.php';
 // $quarter = input_get('quarter');
 
 $db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
 
 $date = input_get('date');
 

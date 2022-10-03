@@ -8,32 +8,35 @@ function dump($txt){
     echo "</pre>";
 }
 
-// include 'includes/connect_sv13.php';
-
-// mysql_query('SET NAMES TIS620', $db);
-define('HOST', '192.168.131.250');
+define('HOST', '192.168.131.240');
 define('PORT', '3306');
-define('DB', 'smdb');
-define('USER', 'remoteuser');
-define('PASS', '');
+define('DB', 'sm3db-utf8');
+define('USER', 'sm3db_user');
+define('PASS', 'sm3dbPassword');
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
+if($dbi->connect_errno){
+    echo $dbi->connect_errno;
+    exit;
+}
+$dbi->query("SET NAMES UTF8");
 
-$date_start = '2022-04-01';
-$date_end = '2022-06-30';
-$quarter = 3;
+$date_start = '2022-07-01';
+$date_end = '2022-09-30';
+
+$quarter = 4;
 $year = '2565';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
+if(!file_exists($filePath)){
+    mkdir($dirPath);
+}
+
 $filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_lab_'.$quarter.'.sql';
 if(file_exists($filePath))
 {
     unlink($filePath);
 }
-
-
-// file_put_contents($filePath, "DELETE FROM `lab` WHERE `quarter` = '$quarter' AND `year` = '$year';\n", FILE_APPEND);
-
 
 $sql = "SELECT b.`autonumber`,b.`orderdate`,b.`hn`,b.`sex`,c.`result`,
 TIMESTAMPDIFF(YEAR, thDateToEn(d.`dbirth`), SUBSTRING(b.`orderdate`, 1, 10)) AS `age`, 
@@ -54,16 +57,13 @@ LEFT JOIN `opcard` AS d ON d.`hn` = b.`hn`
 WHERE c.`labcode` = 'CREA' 
 AND c.`result` != '*' 
 ORDER BY b.`autonumber` ASC ";
-// dump($sql);
-// $q = mysql_query($sql, $db) or die( mysql_error() );
 $q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
-$sql_data = '';
+$sql_data_list = array();
 
-// while ( $item = mysql_fetch_assoc($q) ) {
 while ( $item = $q->fetch_assoc() ) {
-
+    dump($item);
     $autonumber = $item['autonumber'];
     $orderdate = $item['orderdate'];
     $hn = $item['hn'];
@@ -73,12 +73,12 @@ while ( $item = $q->fetch_assoc() ) {
     $date_hn = $item['date_hn'];
 
     if( $egfr != '' && $egfr > 0 ){
-        $sql_data = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year');\n";
-        file_put_contents($filePath, $sql_data, FILE_APPEND);
+        $sql_data_list[] = "( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year')";
     }
 
 }
-
-// mysql_close($db);
+$sql_value = implode(',', $sql_data_list);
+$sql_header.$sql_value;
+file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";
