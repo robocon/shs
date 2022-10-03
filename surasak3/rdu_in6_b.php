@@ -5,14 +5,14 @@ include 'bootstrap.php';
 // $year = input_get('year');
 // $quarter = input_get('quarter');
 
-$db = Mysql::load($rdu_configs);
-// $db->exec("SET NAMES TIS620");
+$db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 $date = input_get('date');
 
 
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
 SELECT `diag_id` AS `row_id` ,`svdate` AS `date`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname` 
-FROM `diag` 
+FROM `rdu_diag` 
 WHERE `svdate` LIKE '$date%' 
 #`year` = '$year' AND `quarter` = '$quarter' 
 AND ( 

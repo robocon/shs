@@ -6,15 +6,7 @@
 include 'bootstrap.php';
 define('RDU_TEST', '1');
 
-$rdu_configs = array(
-    'host' => '192.168.129.143',
-    'port' => '3306',
-    'dbname' => 'rdu',
-    'user' => 'sqluser',
-    'pass' => '1234'
-);
-
-$db = Mysql::load($rdu_configs);
+$db = Mysql::load();
 $db->exec("SET NAMES UTF8");
 
 $quarter = input_post('quarter');
@@ -264,6 +256,7 @@ if ( $action == 'load' ) {
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
+            exit;
             include 'rdu_in7.php';
             // $url_in7 = "year=$year&quarter=$quarter";
             $url_in7 = "date=$whereMonthTH";
