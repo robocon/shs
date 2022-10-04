@@ -7,7 +7,7 @@ function CloseWindowsInTime(t){
 t = t*1000;
 setTimeout("window.close()",t);
 }
-CloseWindowsInTime(2/*„ Ë‡«≈“‡ªÁπ«‘π“∑’π–§√—∫µ√ß‡≈¢ 5 */); 
+CloseWindowsInTime(2/*‡πÉ‡∏™‡πà‡πÄ‡∏ß‡∏•‡∏≤‡πÄ‡∏õ‡πá‡∏ô‡∏ß‡∏¥‡∏ô‡∏≤‡∏ó‡∏µ‡∏ô‡∏∞‡∏Ñ‡∏£‡∏±‡∏ö‡∏ï‡∏£‡∏á‡πÄ‡∏•‡∏Ç 5 */); 
 </Script>
 <?php
     session_start();
@@ -102,15 +102,11 @@ print "</STYLE>";
 print "<TITLE>Crystal Report Viewer</TITLE>";
 
 print "</head>";
-
 print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
-
 print "<DIV style='z-index:0'> &nbsp; </div>";
-//print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-3'><b>&nbsp;&nbsp;‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ </b></span></DIV>";
-//print "<DIV style='left:150PX;top:6PX;width:200PX;height:30PX;'><span class='fc1-4'><u>LAB</u></span></DIV>";
 print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
-//print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
 print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname</span></DIV>";
+
 $nLab21=sprintf("%03d",$nLab2);
 
 		 $y=date("Y")+543;
@@ -119,9 +115,10 @@ $nLab21=sprintf("%03d",$nLab2);
 		 //echo $mmdd;
 		 $ymd=$yy.$mmdd;
 		 
+
 $labno=$ymd.$nLab21."02";
-print "<DIV style='left:45PX;top:55PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+6' style='margin-left:5px;'>C</font></span></DIV>";
-//print "<DIV style='left:70PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'>$labno</span></DIV>";
+
+print "<DIV style='left:45PX;top:45PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+5' style='margin-left:5px;'>C</font></span></DIV>";
 
 $i=0;
 $indexx = 0;
@@ -129,6 +126,7 @@ $dglist=array();
 for ($n=0; $n<=$x; $n++){
 	If (!empty($aDgcode[$n])){
 		$sql1 = "select codelab from labcare where code='".$aDgcode[$n]."' ";
+		//echo $sql1."<br>";
 		$rows1 = mysql_query($sql1);
 		list($codelab) = mysql_fetch_array($rows1);
 		if($codelab!=""){
@@ -142,7 +140,7 @@ for ($n=0; $n<=$x; $n++){
 			$indexx=1;
 
 		if($aDgcode[$n]=="E"){$not="*";}
-print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
+		print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
 	}
 
 } ;
@@ -154,11 +152,11 @@ if(isset($dglist[1]) && count($dglist[1])>0)
 else
 	$strdclist2 = "";
 
-print "<DIV style='left:0PX;top:35PX;width:200PX;'><span class='fc1-5'>".$strdclist1."</span></DIV>";
+print "<DIV style='left:0PX;top:35PX;width:200PX;'><span class='fc1-5'>CHEM</span></DIV>";
 
 if(trim($strdclist2) !=""){
 	$strdclist2 = implode(",",$dglist[1]);
-	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>".$strdclist2."</span></DIV>";
+	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>CHEM</span></DIV>";
 }
 
 

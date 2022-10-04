@@ -32,13 +32,16 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 $nLab2--;*/
 
 $query2 = "SELECT * FROM depart WHERE hn = '$cHn' order by row_id desc limit 1";
-//echo $query2;
 $result2 = mysql_query($query2);
 $row2 = mysql_fetch_array($result2);
 $nLab2 = $row2['lab'];
 
 $labhn=$row2['hn'];
 $labptname=$row2['ptname'];
+$labptright=substr($row2['ptright'],0,3);
+if($labptright=="R03"){
+	$ptright="(R03)";
+}
 $labtvn=$row2['tvn'];
 
 
@@ -106,17 +109,16 @@ print "</head>";
 
 print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
 
-//print "<DIV style='z-index:0'>&nbsp;</div>";
+print "<DIV style='z-index:0'> &nbsp; </div>";
+//print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-3'><b>&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี </b></span></DIV>";
+//print "<DIV style='left:150PX;top:6PX;width:200PX;height:30PX;'><span class='fc1-4'><u>LAB</u></span></DIV>";
 print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
-print "<DIV style='left:0PX;top:15PX;width:200PX;height:30PX;'><span class='fc1-0'>$labptname</span></DIV>";
+//print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
+print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname $ptright</span></DIV>";
 $nLab21=sprintf("%03d",$nLab2);
-		 $y=date("Y")+543;
-		 $yy=substr($y,2,2);
-		 $mmdd=date("md");
-		 //echo $mmdd;
-		 $ymd=$yy.$mmdd;
-$labno=$ymd.$nLab21."01";
-print "<DIV style='left:45PX;top:50PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+6' style='margin-left:5px;'>C</font></span></DIV>";
+$labno=substr(date("Y"),2,2).date("md").$nLab21."03";
+print "<DIV style='left:48PX;top:55PX;width:200PX;height:10PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+3' style='margin-left:3px;'>3</font></span></DIV>";
+//print "<DIV style='left:70PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'>$labno</span></DIV>";
 
 $i=0;
 $indexx = 0;
@@ -124,8 +126,7 @@ $dglist=array();
 $x=$x+1;
 for ($n=1; $n<=$x; $n++){
 	If (!empty($aDgcode[$n])){
-		$sql1 = "select codelab from labcare where code='CBC' ";
-		//echo $sql1."<br>";
+		$sql1 = "select codelab from labcare where code='".$aDgcode[$n]."' ";
 		$rows1 = mysql_query($sql1);
 		list($codelab) = mysql_fetch_array($rows1);
 		if($codelab!=""){
@@ -139,7 +140,7 @@ for ($n=1; $n<=$x; $n++){
 			$indexx=1;
 
 		if($aDgcode[$n]=="E"){$not="*";}
-print "<DIV style='left:10PX;top:70PX;width:200PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
+print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
 	}
 
 } ;
@@ -161,8 +162,6 @@ if(trim($strdclist2) !=""){
 
 
 print "</BODY></HTML>";
-
-
 
 ?>
 

@@ -106,17 +106,17 @@ print "</head>";
 
 print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
 
-//print "<DIV style='z-index:0'>&nbsp;</div>";
+print "<DIV style='z-index:0'> &nbsp; </div>";
 print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
-print "<DIV style='left:0PX;top:15PX;width:200PX;height:30PX;'><span class='fc1-0'>$labptname</span></DIV>";
+print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname</span></DIV>";
 $nLab21=sprintf("%03d",$nLab2);
 		 $y=date("Y")+543;
 		 $yy=substr($y,2,2);
 		 $mmdd=date("md");
 		 //echo $mmdd;
 		 $ymd=$yy.$mmdd;
-$labno=$ymd.$nLab21."01";
-print "<DIV style='left:45PX;top:50PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+6' style='margin-left:5px;'>C</font></span></DIV>";
+$labno=$ymd.$nLab21."03";
+print "<DIV style='left:45PX;top:45PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+5' style='margin-left:5px;'>C</font></span></DIV>";
 
 $i=0;
 $indexx = 0;
@@ -124,7 +124,7 @@ $dglist=array();
 $x=$x+1;
 for ($n=1; $n<=$x; $n++){
 	If (!empty($aDgcode[$n])){
-		$sql1 = "select codelab from labcare where code='CBC' ";
+		$sql1 = "select codelab from labcare where code='UA' ";
 		//echo $sql1."<br>";
 		$rows1 = mysql_query($sql1);
 		list($codelab) = mysql_fetch_array($rows1);
@@ -139,7 +139,7 @@ for ($n=1; $n<=$x; $n++){
 			$indexx=1;
 
 		if($aDgcode[$n]=="E"){$not="*";}
-print "<DIV style='left:10PX;top:70PX;width:200PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
+print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
 	}
 
 } ;
@@ -151,11 +151,11 @@ if(isset($dglist[1]) && count($dglist[1])>0)
 else
 	$strdclist2 = "";
 
-print "<DIV style='left:0PX;top:35PX;width:200PX;'><span class='fc1-5'>".$strdclist1."</span></DIV>";
+print "<DIV style='left:0PX;top:35PX;width:200PX;'><span class='fc1-5'>UA</span></DIV>";
 
 if(trim($strdclist2) !=""){
 	$strdclist2 = implode(",",$dglist[1]);
-	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>".$strdclist2."</span></DIV>";
+	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>UA</span></DIV>";
 }
 
 

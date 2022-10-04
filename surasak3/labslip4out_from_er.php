@@ -33,8 +33,9 @@ $row2 = mysql_fetch_array($result2);
 $nLab2 = $row2['lab'];
 
 $labhn = $row2['hn'];
-$labptname = $row2['ptname'];
-$labtvn = $row2['tvn'];
+$cPtname = $row2['ptname'];
+$tvn = $row2['tvn'];
+$cPtright=$row2['ptright'];
 
 ?>
 <html>
@@ -76,14 +77,19 @@ $labtvn = $row2['tvn'];
 		.ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
 		.ad1-1 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
 	</style>
-	<title>Print sticker lab from ER</title>
+	<title>Print sticker outlab from ER</title>
 </head>
 <body BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>
 <div style='z-index:0'> &nbsp; </div>
 <!-- แสดง HN -->
-<div style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b><?=$labhn;?>&nbsp;<b></b>(<?=$labtvn;?>)&nbsp;<?=$row2['date']?></span></div>
-<!-- แสดงชื่อผู้ป่วย -->
-<div style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'><?=$labptname;?></span></div>
+<?
+print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-3'><b>&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี </b></span></DIV>";
+//print "<DIV style='left:150PX;top:6PX;width:200PX;height:30PX;'><span class='fc1-4'><u>LAB</u></span></DIV>";
+print "<DIV style='left:0PX;top:15PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$cHn&nbsp;<b></b>($tvn)&nbsp;$Thaidate</span></DIV>";
+//print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
+print "<DIV style='left:0PX;top:30PX;width:500PX;height:30PX;'><span class='fc1-0'>$cPtname</span></DIV>";
+print "<DIV style='left:0PX;top:47PX;width:500PX;height:30PX;'><span class='fc1-5'>$cPtright</span></DIV>";
+?>
 <?php
 // สร้าง Lab number
 $nLab21 = sprintf("%03d",$nLab2);
@@ -92,12 +98,12 @@ list($date_item, $time_item) = explode(' ', $row2['date']);
 list($sub_year, $sub_month, $sub_day) = explode('-', $date_item);
 $labno = substr(($sub_year-543),2,2).$sub_month.$sub_day.$nLab21."02";
 ?>
-<div style="left:65PX;top:55PX;width:180PX;height:14PX;">
+<!--<div style="left:65PX;top:55PX;width:180PX;height:14PX;">
 	<span class="fc1-0"><img src = "barcode/labstk.php?cLabno=<?=$labno;?>"></span>
-</div>
+</div>-->
 
 <!-- แสดง -->
-<div style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'><?=$nLab2;?></span></div>
+<div style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-2'><?="OUTLAB";?> <?=$labno;?></span></div>
 <?php
 $sql = "SELECT `code` FROM `patdata` WHERE `hn` = '$cHn' AND `date` = '$sDate'";
 $q = mysql_query($sql);
@@ -108,6 +114,6 @@ while ($item = mysql_fetch_assoc($q)) {
 $code_line = implode(',',$code_lists);
 ?>
 <!-- แสดง Labcode -->
-<div style='left:0PX;top:36PX;width:200PX;'><span class='fc1-5'>รหัส <?=$code_line;?></span></div>
+<!--<div style='left:0PX;top:36PX;width:200PX;'><span class='fc1-5'>รหัส <?=$code_line;?></span></div>-->
 </body>
 </html>

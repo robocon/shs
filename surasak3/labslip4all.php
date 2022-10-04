@@ -81,7 +81,7 @@ print "<STYLE>";
 
  print "A IMG {border-style:none; border-width:0;}";
 
- print "DIV {position:absolute; z-index:25;}";
+//print "DIV {position:absolute; z-index:25;}";
 
 print ".fc1-0 { COLOR:000000;FONT-SIZE:17PT;FONT-FAMILY:Cordia New;FONT-WEIGHT:BOLD;}";
 
@@ -109,10 +109,11 @@ print "</head>";
 
 print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
 
+//CBC//
 print "<DIV style='z-index:0'> &nbsp; </div>";
 //print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-3'><b>&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี </b></span></DIV>";
 //print "<DIV style='left:150PX;top:6PX;width:200PX;height:30PX;'><span class='fc1-4'><u>LAB</u></span></DIV>";
-print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
+print "<DIV style='left:0PX;top:0PX;width:500PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
 //print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
 print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname $ptright</span></DIV>";
 $nLab21=sprintf("%03d",$nLab2);
@@ -140,10 +141,63 @@ for ($n=1; $n<=$x; $n++){
 			$indexx=1;
 
 		if($aDgcode[$n]=="E"){$not="*";}
-print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
+//print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
 	}
 
-} ;
+} 
+
+$strdclist1 = implode(",",$dglist[0]);
+
+if(isset($dglist[1]) && count($dglist[1])>0)
+	$strdclist2 = implode(" ",$dglist[1]);
+else
+	$strdclist2 = "";
+
+print "<DIV style='left:0PX;top:35PX;width:200PX;'><span class='fc1-5'>".$strdclist1."</span></DIV>";
+
+if(trim($strdclist2) !=""){
+	$strdclist2 = implode(",",$dglist[1]);
+	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>".$strdclist2."</span></DIV>";
+}
+?>
+<div style="page-break-after: always"></div>
+
+<?
+//CHEM//
+print "<DIV style='z-index:0'> &nbsp; </div>";
+//print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-3'><b>&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี </b></span></DIV>";
+//print "<DIV style='left:150PX;top:6PX;width:200PX;height:30PX;'><span class='fc1-4'><u>LAB</u></span></DIV>";
+print "<DIV style='left:0PX;top:0PX;width:500PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
+//print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
+print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname $ptright</span></DIV>";
+$nLab21=sprintf("%03d",$nLab2);
+$labno=substr(date("Y"),2,2).date("md").$nLab21."02";
+print "<DIV style='left:45PX;top:55PX;width:180PX;height:14PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"></span></DIV>";
+//print "<DIV style='left:70PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'>$labno</span></DIV>";
+
+$i=0;
+$indexx = 0;
+$dglist=array();
+for ($n=0; $n<=$x; $n++){
+	If (!empty($aDgcode[$n])){
+		$sql1 = "select codelab from labcare where code='".$aDgcode[$n]."' ";
+		$rows1 = mysql_query($sql1);
+		list($codelab) = mysql_fetch_array($rows1);
+		if($codelab!=""){
+			$dglist[$indexx][$i] = $codelab;
+		}else{
+			$dglist[$indexx][$i] = $aDgcode[$n];
+		}
+		//$dglist[$indexx][$i] = $aDgcode[$n];
+		$i++;
+		if($i==8)
+			$indexx=1;
+
+		if($aDgcode[$n]=="E"){$not="*";}
+//print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
+	}
+
+} 
 
 $strdclist1 = implode(",",$dglist[0]);
 
@@ -159,7 +213,62 @@ if(trim($strdclist2) !=""){
 	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>".$strdclist2."</span></DIV>";
 }
 
+print "<DIV style='left:0PX;top:80PX;width:200PX;page-break-after: always;'>&nbsp;</DIV>";
+?>
 
+
+
+<?
+//UA//
+print "<DIV style='z-index:0'> &nbsp; </div>";
+//print "<DIV style='left:0PX;top:0PX;width:200PX;height:30PX;'><span class='fc1-3'><b>&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี </b></span></DIV>";
+//print "<DIV style='left:150PX;top:6PX;width:200PX;height:30PX;'><span class='fc1-4'><u>LAB</u></span></DIV>";
+print "<DIV style='left:100PX;top:0PX;width:500PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$labhn&nbsp;<b></b>($labtvn)&nbsp;$Thaidate</span></DIV>";
+//print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
+print "<DIV style='left:0PX;top:15PX;width:500PX;height:30PX;'><span class='fc1-0'>$labptname $ptright</span></DIV>";
+$nLab21=sprintf("%03d",$nLab2);
+$labno=substr(date("Y"),2,2).date("md").$nLab21."03";
+print "<DIV style='left:48PX;top:55PX;width:200PX;height:10PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"><font size='+3' style='margin-left:3px;'>3</font></span></DIV>";
+//print "<DIV style='left:70PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'>$labno</span></DIV>";
+
+$i=0;
+$indexx = 0;
+$dglist=array();
+$x=$x+1;
+for ($n=1; $n<=$x; $n++){
+	If (!empty($aDgcode[$n])){
+		$sql1 = "select codelab from labcare where code='".$aDgcode[$n]."' ";
+		$rows1 = mysql_query($sql1);
+		list($codelab) = mysql_fetch_array($rows1);
+		if($codelab!=""){
+			$dglist[$indexx][$i] = $codelab;
+		}else{
+			$dglist[$indexx][$i] = $aDgcode[$n];
+		}
+		//$dglist[$indexx][$i] = $aDgcode[$n];
+		$i++;
+		if($i==8)
+			$indexx=1;
+
+		if($aDgcode[$n]=="E"){$not="*";}
+//print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2$not</span></DIV>";
+	}
+
+}
+
+$strdclist1 = implode(",",$dglist[0]);
+
+if(isset($dglist[1]) && count($dglist[1])>0)
+	$strdclist2 = implode(" ",$dglist[1]);
+else
+	$strdclist2 = "";
+
+print "<DIV style='left:0PX;top:35PX;width:200PX;'><span class='fc1-5'>".$strdclist1."</span></DIV>";
+
+if(trim($strdclist2) !=""){
+	$strdclist2 = implode(",",$dglist[1]);
+	print "<DIV style='left:0PX;top:50PX;width:200PX;'><span class='fc1-5'>".$strdclist2."</span></DIV>";
+}
 
 print "</BODY></HTML>";
 
