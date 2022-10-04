@@ -17,7 +17,7 @@
  * 2. depart -> patdata
  * 
  */
-require_once 'bootstrap.php';
+require_once '../bootstrap.php';
 /**
  * !!! ตรวจ labnumber !!!  -->  อาจจะต้องมีเงื่อนไขหรือ setting อะไรสักอย่างเพื่อบอกว่า labnubmer เป็นแบบตรวจสุขภาพภายนอก
  * หรือ เป็นแบบ walk-in 
@@ -38,6 +38,7 @@ class OpdReceive
     private $labnumber = false;
     private $nLab = false;
 
+    private $xrayList = array();
     
     public function __construct($settings=NULL)
     {
@@ -47,7 +48,8 @@ class OpdReceive
         $this->dbi->query("SET NAMES UTF8");
     }
 
-    public function orderLab($labItems=array()){ 
+    public function orderLab($labItems=array())
+    { 
         
         if(empty($this->clinicalinfo)){ 
             $clinicalinfo = implode(',', $labItems);
@@ -191,6 +193,60 @@ class OpdReceive
              )";
             $this->dbi->query($sql_patdata);
         }
+    }
+
+    public function orderXray($xrayList=array())
+    {
+        dump($xrayList);
+
+        // if($cDepart == 'XRAY'){
+            //echo "==>$cDiag---->$aDetail";
+        $sql = "Select xn From xrayno where hn = '".$cHn."' Order by row_id DESC limit 0,1 ";
+        list($xn) = mysql_fetch_row(mysql_query($sql));
+    
+        $sql = "Select dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
+        list($dbirth) = mysql_fetch_row(mysql_query($sql));
+        
+        $age = "-";
+            if(!empty($dbirth))
+                $age = calcage($dbirth);
+        $count = array();
+        $stat_digital = 0;
+        $stat_10_12 = 0;
+        $stat_14_17 = 0;
+        $stat_none = 0;
+    
+        foreach ($aFilmsize as $key => $value){
+            
+            //echo $value," ",strlen($value),"<BR>";
+            switch($value){
+                case 'DIGITAL': $stat_digital++; break;
+                case '10*12': $stat_10_12++; break;
+                case '14*17': $stat_14_17++; break;
+                case 'NONE': $stat_none++; break;
+            }
+    
+        }
+        //echo substr($xn,-2)," - ",substr(date("Y")+543,-2);
+        if(substr($xn,-2) == substr(date("Y")+543,-2)){
+            $xn_new = $xn;
+            $xn = "";
+        }
+    
+        $sql = "INSERT INTO `xray_stat` (
+            `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
+            `ptright` ,`patient_from` ,`detail` ,`doctor` ,`digital` ,`10_12` ,
+            `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
+        )VALUES ( 
+            '".$Thidate."', '".$cHn."', '".$xn."', '".$xn_new."', '".$cPtname."', '".$age."', 
+            '".$cPtright."', '".$patient_from."', '".$_SESSION["cXraydetail"]."', '".$cDoctor."', '".$stat_digital."', '".$stat_10_12."', 
+            '".$stat_14_17."', '".$stat_none."', '".$sOfficer."', '".$nRunno."', '".$Netprice."'
+        );";
+        $result = mysql_query($sql);
+        //echo $sql,"<BR>";
+        
+        // }
+
     }
 
 }
