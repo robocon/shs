@@ -48,6 +48,13 @@ $update = $oc->update($hn, array('employee' => 'y'));
             clear: both;
             display: table;
         }
+        .chk_table{
+            border-collapse: collapse;
+        }
+
+        .chk_table th, .chk_table td{
+            border: 1px solid black;
+        }
     </style>
     <div>
         <a href="orderlabsso.php">&lt;&lt;&nbsp;กลับหน้าแรก</a>
@@ -110,59 +117,52 @@ $update = $oc->update($hn, array('employee' => 'y'));
                         // แยก ptright ออกมาเป็น2ตัวให้เห็นว่าคนนี้ จ่ายเป็นเงินสดกี่บาท เบิกเข้าเป็นประกันสังคมกี่บาท
                         // $sql = "SELECT * FROM `depart` WHERE `hn` = '' ";
                         // 
-                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'CHOL-sso','HDL-sso', 'STOCB-sso', 'HBSAG-sso');
+                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HBSAG-sso', 'LIPID');
                         if($_SESSION['smenucode']=='ADMXR'){
                             $chkList = array('41001');
                         }
                         ?>
-                        <p><b>รายการที่เลือก</b></p>
-                        <ol id="itemSelected">
+                        <p><b>รายการตรวจที่เลือก</b></p>
+                        <table width="100%" class="chk_table">
+                            <tr>
+                                <th>code</th>
+                                <th>detail</th>
+                                <th>price</th>
+                                <!-- <th></th> -->
+                            </tr>
                             <?php 
-                            foreach ($chkList as $key => $code) {
+                            $price = 0;
+                            foreach ($chkList as $key => $code) { 
+                                $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
+                                $l = $q->fetch_assoc();
                                 ?>
-                                <li id="<?=$code;?>"><?=$code;?> <a href="javascript:void(0);" onclick="document.getElementById('+code+').outerHTML='';">[ลบ]</a><input type="hidden" name="labSelect[]" value="<?=$code;?>"></li>
+                                <tr id="<?=$code;?>">
+                                    <td><?=$code;?></td>
+                                    <td><?=$l['detail'];?></td>
+                                    <td align="right"><?=$l['price'];?></td>
+                                    <!-- <td>
+                                        <a href="javascript:void(0);" onclick="document.getElementById('<?=$code;?>').outerHTML='';">[ลบ]</a>
+                                        <input type="hidden" name="labSelect[]" value="<?=$code;?>">
+                                    </td> -->
+                                </tr>
                                 <?php
+                                $price += $l['price'];
                             }
                             ?>
-                        </ol>
+                            <tr>
+                                <td colspan="2" align="center">รวม</td>
+                                <td align="right"><span id="labprice"><?=$price;?></span>บาท</td>
+                            </tr>
+                        </table>
+                        <br>
+                        
                     </div>
                     <div style="width: 50%; float: left;" class="clearfix">
-                        <p><b>ชุดตรวจ</b></p>
-                        <style>
-                            .labItem li{
-                                display: inline-block;
-                                border: 1px solid #e3e3e3;
-                                height: auto;
-                                text-align: center;
-                                box-shadow: 2px 2px 4px #787878;
-                                
-                            }
-                            .labItem li a{
-                                padding: 10px 30px;
-                                display: table-cell;
-                                background-color: #ffffff;
-                            }
-                            .labItem li a:hover{
-                                background-color: #e3e3e3;
-                            }
-                        </style>
-
-                        <?php 
                         
-                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HBSAG-sso', 'LIPID', '41001');
-                        ?>
-                        <ul style="margin:0; padding:0; list-style-type:none;" class="labItem">
-                            <?php 
-                            foreach ($chkList as $key => $labChk) {
-                                ?>
-                                <li><a href="javascript:void(0);" onclick="addToOrder('<?=$labChk;?>')"><?=$labChk;?></a></li>
-                                <?php
-                            }
-                            ?>
-                        </ul>
                     </div>
                 </div>
                 <div>
+                    คลิกนี่ก่อนให้มีข้อมูลใน depart
                     <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย(หมดรายการใบแจ้งหนี้)</button>
                     <input type="hidden" name="hn" value="<?=$hn;?>">
                     <input type="hidden" name="vn" value="<?=$op['vn'];?>">
@@ -171,8 +171,12 @@ $update = $oc->update($hn, array('employee' => 'y'));
             <div>
                 <div>
                     <br>
+                    แล้วค่อยคลิกสติกเกอร์
+                    <!-- http://192.168.131.250/sm3/surasak3/labslip4bc_chkup_solider.php -->
                     <button onclick="print_sticker('n')">พิมพ์สติกเกอร์</button>
-                    <button onclick="print_sticker('cbc')">สติกเกอร์ CBD</button>
+                    <!-- http://192.168.131.250/sm3/surasak3/labslip4cbc_chkup_solider.php -->
+                    <button onclick="print_sticker('cbc')">สติกเกอร์ CBC</button>
+                    <!-- http://192.168.131.250/sm3/surasak3/labslip4ua_chkup_solider.php -->
                     <button onclick="print_sticker('ua')">สติกเกอร์ UA</button>
                 </div>
             </div>
