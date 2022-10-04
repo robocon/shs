@@ -148,10 +148,8 @@ $update = $oc->update($hn, array('employee' => 'y'));
                         </style>
 
                         <?php 
-
-                        // เอารายการแลปไปยืนยันกับพี่สมยศอีกทีว่ารายการแต่ละตัวถูกต้องตามสิทธิประกันสังคม
                         
-                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'CHOL-sso', 'STOCB-sso', 'HBSAG-sso', '41001');
+                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HBSAG-sso', 'LIPID', '41001');
                         ?>
                         <ul style="margin:0; padding:0; list-style-type:none;" class="labItem">
                             <?php 
