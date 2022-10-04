@@ -131,7 +131,7 @@ $item = $q->fetch_assoc();
 
 <fieldset>
     <legend>เพิ่มรายละเอียดลำดับที่ <?=$id;?></legend>
-    <form action="com_support_detail.php" method="post" enctype="multipart/form-data">
+    <form action="com_support_detail.php?id=<?=$id;?>" method="post" enctype="multipart/form-data">
         <div>
             <div><b>รายละเอียด</b></div>
             <textarea name="detail" id="detail" cols="60" rows="5"></textarea>
