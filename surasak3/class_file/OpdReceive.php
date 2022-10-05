@@ -18,6 +18,7 @@
  * 
  */
 require_once '../bootstrap.php';
+require_once 'class_file/opday.php';
 /**
  * !!! ตรวจ labnumber !!!  -->  อาจจะต้องมีเงื่อนไขหรือ setting อะไรสักอย่างเพื่อบอกว่า labnubmer เป็นแบบตรวจสุขภาพภายนอก
  * หรือ เป็นแบบ walk-in 
@@ -63,8 +64,12 @@ class OpdReceive
         $user = $q_opcard->fetch_assoc();
         $dbirth = $user['dbirth'];
         $gender = $user['sex'];
-        $ptname = $user['ptname'];
-        $ptright = $user['ptright'];
+        
+        // 
+        $opday = new Opday();
+        $op = $opday->getThisDay($this->hn);
+        $ptright = $op['ptright'];
+        $ptname = $op['ptname'];
 
         if(empty($this->custom_labnumber)){
 
@@ -195,6 +200,62 @@ class OpdReceive
         }
     }
 
+    public function insertOther(){ 
+
+        $opday = new Opday();
+        $op = $opday->getThisDay($this->hn);
+        $ptname = $op['ptname'];
+        $hn = $op['hn'];
+        $vn = $op['vn'];
+        $ptright = $op['ptright'];
+
+        $date = (date('Y')+543).date('-m-d H:i:s');
+
+        //////////////////////////////
+        ////////// RUNNO DEPART
+        //////////////////////////////
+        $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
+        $runno_row = $q_runno->fetch_assoc();
+		$chktranx = $runno_row['runno'];
+		$chktranx++;
+        $this->dbi->query("UPDATE `runno` SET `runno` = $chktranx WHERE `title`='depart'");
+        //////////////////////////////
+        ////////// RUNNO DEPART
+        //////////////////////////////
+
+        $depart_sql = "INSERT INTO `depart` (
+            `row_id`, `chktranx`, `date`, `ptname`, `hn`, `an`, 
+            `doctor`, `depart`, `item`, `detail`, `price`, `sumyprice`, 
+            `sumnprice`, `paid`, `idname`, `diag`, `accno`, `tvn`, 
+            `ptright`, `lab`, `cashok`, `detailbydr`, `status`, `priority`, 
+            `patient_from`, `staf_massage`
+        ) VALUES (
+            NULL, '$chktranx', '$date', '$ptname', '$hn', '', 
+            NULL, 'OTHER', '1', '(55020/55021 ค่าบริการผู้ป่วยนอก)', '50.00', '50.00', 
+            '0.00', '50.00', '$this->sOfficer', NULL, '0', '$vn', 
+            '$ptright', NULL, '', '', 'Y', '', 
+            '', ''
+        );";
+        $this->dbi->query($depart_sql);
+        $depart_id = $this->dbi->insert_id;
+
+        $patdata_sql = "INSERT INTO `patdata` (
+            `row_id`, `date`, `hn`, `an`, `ptname`, `copy`, 
+            `doctor`, `item`, `code`, `detail`, `amount`, `price`, 
+            `yprice`, `nprice`, `paid`, `depart`, `labcode`, `report`, 
+            `part`, `idno`, `picture`, `ptright`, `film_size`, `status`, 
+            `priority`, `tranipacc`
+        ) VALUES (
+            NULL, '$date', '$hn', '', '$ptname', NULL, 
+            NULL, '1', 'SERVICE', '(55020/55021 ค่าบริการผู้ป่วยนอก)', '1', '50.00', 
+            '50.00', '0.00', NULL, 'OTHER', NULL, NULL, 
+            'OTHER', '$depart_id', NULL, '$ptright', NULL, 'Y', 
+            '', ''
+        );";
+        $this->dbi->query($patdata_sql);
+
+    }
+
     public function orderXray($xrayList=array())
     {
         dump($xrayList);
@@ -240,7 +301,7 @@ class OpdReceive
         )VALUES ( 
             '".$Thidate."', '".$cHn."', '".$xn."', '".$xn_new."', '".$cPtname."', '".$age."', 
             '".$cPtright."', '".$patient_from."', '".$_SESSION["cXraydetail"]."', '".$cDoctor."', '".$stat_digital."', '".$stat_10_12."', 
-            '".$stat_14_17."', '".$stat_none."', '".$sOfficer."', '".$nRunno."', '".$Netprice."'
+            '".$stat_14_17."', '".$stat_none."', '".$this->sOfficer."', '".$nRunno."', '".$Netprice."'
         );";
         $result = mysql_query($sql);
         //echo $sql,"<BR>";

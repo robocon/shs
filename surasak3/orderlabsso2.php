@@ -2,32 +2,41 @@
 require_once 'bootstrap.php';
 require_once 'class_file/opday.php';
 require_once 'class_file/opcard.php';
+require_once 'class_file/OpdReceive.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 
 $hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
-$extra = (int)$_POST['extra'];
+$extra = $_POST['extra'];
 
 $opday = new Opday();
 $op = $opday->getThisDay($hn);
 if($op===false){
+
+    $opday->ptright = 'R42 ตรวจสุขภาพลูกจ้างประจำปี';
+    $opday->toborow = $toborow;
+    $opday->sOfficer = $_SESSION['sOfficer'];
     $op = $opday->createOpday($hn);
+
+    $a = new OpdReceive();
+    $a->hn = $hn;
+    $a->vn = $vn; 
+    $a->sOfficer = $_SESSION['sOfficer'];
+    $a->insertOther();
 
 }
 
-if ($extra==1) {
-    $item_update = array('toborow' => $toborow, 'ptright' => 'R01 เงินสด', 'employee' => 'y');
-
-}else{
-    $item_update = array('toborow' => $toborow);
-
-} 
-
-$opday->update($op['row_id'], $item_update);
+$guardian = 'รพ.ค่ายฯ-ลูกจ้าง';
+if($extra=='hemo'){
+    $guardian = 'รพ.ค่ายฯ-ไตเทียม';
+}elseif($extra=='pt'){
+    $guardian = 'รพ.ค่ายฯ-นวดแผนไทย';
+}
 
 $oc = new Opcard();
-$update = $oc->update($hn, array('employee' => 'y'));
+$update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

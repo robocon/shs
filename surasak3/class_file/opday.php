@@ -4,6 +4,11 @@ require_once 'class_file/opcard.php';
 class Opday
 {
     private $dbi = null;
+
+    public $toborow = '';
+    public $ptright = '';
+    public $sOfficer = '';
+
     public function __construct()
     {
         $this->dbi = new mysqli(HOST,USER,PASS,DB);
@@ -43,6 +48,12 @@ class Opday
         $cNote = $pt['note'];
         $cIdcard = $pt['idcard'];
         $toborow = '';
+        if(!empty($this->toborow)){
+            $toborow = $this->toborow;
+        }
+        if(!empty($this->ptright)){
+            $cPtright = $this->ptright;
+        }
         
         $vn = $this->getVn();
         
@@ -53,11 +64,10 @@ class Opday
         $query = "INSERT INTO opday(
         `thidate`,`thdatehn`,`hn`,`vn`,`thdatevn`,`ptname`,
         `ptright`,`goup`,`camp`,`note`,`toborow`,`idcard`,
-        `officer`) VALUES
+        `officer`,`checkdx`) VALUES
         ('$thidate','$thdatehn','$hn','$vn','$thdatevn','$cPtname',
         '$cPtright','$cGoup','$cCamp','$cNote','$toborow',' $cIdcard',
-        '".$_SESSION["sOfficer"]."'
-        );";
+        '$this->sOfficer','sso');";
         $save = $this->dbi->query($query);
         if($save===true){
             return $this->getThisDay($hn);

@@ -92,7 +92,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
                         <td align="right"><b>ออก OPD CARD:</b></td>
                         <td>
                             <?php 
-                            $toborow_list = array('EX46 ตรวจสุขภาพประกันสังคม', 'EX26 ตรวจสุขภาพประจำปี');
+                            $toborow_list = array('EX46 ตรวจสุขภาพประกันสังคม');
                             ?>
                             <select name="toborow" id="toborow">
                                 <?php 
@@ -108,7 +108,9 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
                     <tr>
                         <td align="right"></td>
                         <td>
-                            <input type="checkbox" name="extra" id="extra" value="1"> <label for="extra" style="color:orangered;cursor:pointer;"><b><u>กรณีเป็นเจ้าหน้าที่ <span style="font-size:32px;">นวดแผนไทย</span> กับ <span style="font-size:32px;">ไตเทียม</span> ติ๊กเลือกที่นี่</u></b></label>
+                            <b style="color:orangered;"><u>กรณีเป็นเจ้าหน้าที่ <span style="font-size:32px;">นวดแผนไทย</span> กับ <span style="font-size:32px;">ไตเทียม</span> รบกวนเลือกข้อมูลด้านล่างให้หน่อยครับ</u></b><br>
+                            <input type="radio" name="extra" id="hemo" value="hemo"> <label for="hemo" style="cursor:pointer;">จนท.ไตเทียม</label><br>
+                            <input type="radio" name="extra" id="pt" value="pt"> <label for="pt" style="cursor:pointer;">จนท.นวดแผนไทย</label>
                         </td>
                     </tr>
                     <tr>
