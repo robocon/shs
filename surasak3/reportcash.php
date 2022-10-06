@@ -61,10 +61,10 @@ $vn=$row3['vn'];
 <td width="10%" align="center" class="textcash"><strong>สุทธิ</strong></td>
 </tr>
 <?php
-$query="CREATE TEMPORARY TABLE drugrx01 SELECT * FROM phardep WHERE date like '$date%' ";
+$query="CREATE TEMPORARY TABLE drugrx01 SELECT * FROM phardep WHERE date like '$date%'  and paid >0";
     $result = mysql_query($query) or die("Query failed,warphar");
 	
-$query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$date%' ";
+$query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$date%' and price >0 and status ='Y' ";
     $result = mysql_query($query) or die("Query failed,warphar");
 
   $query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
@@ -313,7 +313,7 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
 	}
 	////////////////////////////////////////////////////////
 
-$query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$date%' ";
+$query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$date%' and paid >0";
     $result = mysql_query($query) or die("Query failed,warphar");
 
 	$query="CREATE TEMPORARY TABLE patdata01 SELECT * FROM patdata WHERE date like '$date%' ";

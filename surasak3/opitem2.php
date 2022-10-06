@@ -157,7 +157,8 @@ $sVn=$_POST['vnnow'];
 	list($sPtname,$icd10) = mysql_fetch_array($rowname);
 	
 	if(!empty($icd10)){
-		$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";
+		$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
+		//echo $query."<br>";
 		$result1 = mysql_query($query1) or die(mysql_error());
 		list($diag_thai) = mysql_fetch_array($result1);
 		
