@@ -297,7 +297,7 @@ class OpdReceive
 
     public function orderXray($xrayList=array())
     {
-        ที่ไปค้นมา มันจะทำงานใน prelab.php ก่อน แล้วค่อยส่งค่าไปที่ labseek.php
+        // ที่ไปค้นมา มันจะทำงานใน prelab.php ก่อน แล้วค่อยส่งค่าไปที่ labseek.php
 
         /// ข้างล่างเอามาจาก labseek.php
         dump($xrayList);
@@ -310,7 +310,7 @@ class OpdReceive
         $sql = "Select dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
         list($dbirth) = mysql_fetch_row(mysql_query($sql));
         
-        INSERT INTO `sm3db-utf8`.`xray_stat` (`row_id`, `date`, `hn`, `xn`, `xn_new`, `ptname`, `age`, `ptright`, `patient_from`, `detail`, `doctor`, `digital`, `10_12`, `14_14`, `NONE`, `filmbk`, `office`, `idno`, `remark`, `cancle`) VALUES ('179901', '2565-10-06 09:50:56', '50-6649', '', '', 'น.ส. ยุพเรศ  บุญกัณฑ์', '50', 'R07 ประกันสังคม', 'OPD', '1.CHEST CHECK UP ', 'MD022 (ไม่ทราบแพทย์)', '1', '0', '0', '0', '', 'เมธินี พลเมฆ', '4737113', '170', '0');
+        // INSERT INTO `sm3db-utf8`.`xray_stat` (`row_id`, `date`, `hn`, `xn`, `xn_new`, `ptname`, `age`, `ptright`, `patient_from`, `detail`, `doctor`, `digital`, `10_12`, `14_14`, `NONE`, `filmbk`, `office`, `idno`, `remark`, `cancle`) VALUES ('179901', '2565-10-06 09:50:56', '50-6649', '', '', 'น.ส. ยุพเรศ  บุญกัณฑ์', '50', 'R07 ประกันสังคม', 'OPD', '1.CHEST CHECK UP ', 'MD022 (ไม่ทราบแพทย์)', '1', '0', '0', '0', '', 'เมธินี พลเมฆ', '4737113', '170', '0');
 
     
         $sql = "INSERT INTO `xray_stat` (
