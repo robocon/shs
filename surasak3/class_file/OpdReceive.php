@@ -17,7 +17,6 @@
  * 2. depart -> patdata
  * 
  */
-require_once '../bootstrap.php';
 require_once 'class_file/opday.php';
 /**
  * !!! ตรวจ labnumber !!!  -->  อาจจะต้องมีเงื่อนไขหรือ setting อะไรสักอย่างเพื่อบอกว่า labnubmer เป็นแบบตรวจสุขภาพภายนอก
@@ -38,17 +37,39 @@ class OpdReceive
     private $labList = array();
     private $labnumber = false;
     private $nLab = false;
-
     private $xrayList = array();
+    private $thaiDate = false;
     
     public function __construct($settings=NULL)
     {
+        $this->thaiDate = (date('Y')+543).date('-m-d');
+
         $labnumberType = $settings['labnumberType'];
 
         $this->dbi = new mysqli(HOST,USER,PASS,DB);
         $this->dbi->query("SET NAMES UTF8");
     }
 
+    public function findOrderLab()
+    {
+        $sql = sprintf("SELECT `row_id` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `tvn` = '%s' AND `depart` = 'PATHO' AND `ptright` = 'R42 ตรวจสุขภาพลูกจ้างประจำปี' ", $this->thaiDate, $this->hn, $this->vn);
+        $q = $this->dbi->query($sql);
+        $res = false;
+        if($q->num_rows > 0)
+        {   
+            $item = $q->fetch_assoc();
+            $res = $item['row_id'];
+        }
+        return $res;
+    }
+
+    /**
+     * บันทึกค่าใช้จ่ายของแลป
+     * orderhead, orderdetail, depart, patdata
+     * 
+     * ต้องการค่า hn, vn, sOfficer, รายการแลป
+     * optional มี clinicalinfo
+     */
     public function orderLab($labItems=array())
     { 
         
@@ -195,12 +216,16 @@ class OpdReceive
                 '$thai_date', '$this->hn', '$ptname', 'MD022 แพทย์เวชปฎิบัติ', '$count_item', '$code', 
                 '$detail', '1', '$price', '$nprice', '$yprice', 'PATHO', 
                 'LAB', '$depart_id', '$ptright', 'Y' 
-             )";
+            )";
             $this->dbi->query($sql_patdata);
         }
     }
 
-    public function insertOther(){ 
+    /**
+     * บันทึก ค่าบริการผู้ป่วยนอก
+     */
+    public function insertOther()
+    { 
 
         $opday = new Opday();
         $op = $opday->getThisDay($this->hn);
@@ -256,43 +281,37 @@ class OpdReceive
 
     }
 
+    public function findOther()
+    {
+        
+        $sql = sprintf("SELECT `row_id` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `depart` = 'OTHER' AND `detail` = '(55020/55021 ค่าบริการผู้ป่วยนอก)' ", $this->thaiDate, $this->hn);
+        $q = $this->dbi->query( $sql );
+        $res = false;
+        if($q->num_rows > 0)
+        {
+            $item = $q->fetch_assoc();
+            $res = $item['row_id'];
+        }
+        return $res;
+    }
+
     public function orderXray($xrayList=array())
     {
+        ที่ไปค้นมา มันจะทำงานใน prelab.php ก่อน แล้วค่อยส่งค่าไปที่ labseek.php
+
+        /// ข้างล่างเอามาจาก labseek.php
         dump($xrayList);
 
         // if($cDepart == 'XRAY'){
             //echo "==>$cDiag---->$aDetail";
-        $sql = "Select xn From xrayno where hn = '".$cHn."' Order by row_id DESC limit 0,1 ";
-        list($xn) = mysql_fetch_row(mysql_query($sql));
+        // $sql = "SELECT `xn` FROM `xrayno` WHERE `hn` = '".$cHn."' ORDER BY `row_id` DESC LIMIT 1 ";
+        // list($xn) = mysql_fetch_row(mysql_query($sql));
     
         $sql = "Select dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
         list($dbirth) = mysql_fetch_row(mysql_query($sql));
         
-        $age = "-";
-            if(!empty($dbirth))
-                $age = calcage($dbirth);
-        $count = array();
-        $stat_digital = 0;
-        $stat_10_12 = 0;
-        $stat_14_17 = 0;
-        $stat_none = 0;
-    
-        foreach ($aFilmsize as $key => $value){
-            
-            //echo $value," ",strlen($value),"<BR>";
-            switch($value){
-                case 'DIGITAL': $stat_digital++; break;
-                case '10*12': $stat_10_12++; break;
-                case '14*17': $stat_14_17++; break;
-                case 'NONE': $stat_none++; break;
-            }
-    
-        }
-        //echo substr($xn,-2)," - ",substr(date("Y")+543,-2);
-        if(substr($xn,-2) == substr(date("Y")+543,-2)){
-            $xn_new = $xn;
-            $xn = "";
-        }
+        INSERT INTO `sm3db-utf8`.`xray_stat` (`row_id`, `date`, `hn`, `xn`, `xn_new`, `ptname`, `age`, `ptright`, `patient_from`, `detail`, `doctor`, `digital`, `10_12`, `14_14`, `NONE`, `filmbk`, `office`, `idno`, `remark`, `cancle`) VALUES ('179901', '2565-10-06 09:50:56', '50-6649', '', '', 'น.ส. ยุพเรศ  บุญกัณฑ์', '50', 'R07 ประกันสังคม', 'OPD', '1.CHEST CHECK UP ', 'MD022 (ไม่ทราบแพทย์)', '1', '0', '0', '0', '', 'เมธินี พลเมฆ', '4737113', '170', '0');
+
     
         $sql = "INSERT INTO `xray_stat` (
             `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
@@ -304,9 +323,61 @@ class OpdReceive
             '".$stat_14_17."', '".$stat_none."', '".$this->sOfficer."', '".$nRunno."', '".$Netprice."'
         );";
         $result = mysql_query($sql);
-        //echo $sql,"<BR>";
-        
-        // }
+
+
+        /// ข้างล่างเอามาจาก prelab.php
+
+        if(substr($_SESSION["cXraydetail"],0,17)=="1. CHEST CHECK UP"){
+			$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+			$result = mysql_query($query) or die("Query failed");
+			
+			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+				if (!mysql_data_seek($result, $i)) {
+					echo "Cannot seek to row $i\n";
+					continue;
+				}
+					if(!($row = mysql_fetch_object($result)))
+					continue;
+			}
+			$nPrefix=$row->prefix;	
+				
+			$query9 ="UPDATE chkup_solider SET xray = '".(date("Y")+543).date("-m-d H:i:s")."' WHERE hn='".$cHn."' and yearchkup='$nPrefix' ";
+			$result9 = mysql_query($query9) or die("Query failed");
+		}
+		 
+		
+		
+		$sql = "Select yot,name, surname, dbirth From opcard where hn ='".$cHn."' limit 0,1";
+		list($yot, $name, $surname, $dbirth) = Mysql_fetch_row(Mysql_Query($sql));
+
+
+		$query = "SELECT runno FROM runno WHERE title = 'xrayno' limit 0,1";
+		$result = mysql_query($query) or die("Query failed");
+		list($xray_no) = mysql_fetch_row($result);
+		$xray_no++;
+		 $query ="UPDATE runno SET runno = $xray_no WHERE title='xrayno' limit 1 ";
+		$result = mysql_query($query) or die("Query failed");
+		
+		$sql = "INSERT INTO `xray_doctor` (`date` ,`hn` ,`vn` ,`yot` ,`name` ,`sname` ,`detail` ,`doctor` ,`status` ,`xrayno` ,`film` ,`type_diag`,`detail_all`,`dbirth`,`orderby`)VALUES ('".(date("Y")+543).date("-m-d H:i:s")."', '".$cHn."', '".$tvn."', '".$yot."', '".$name."', '".$surname."', '".$_SESSION["cXraydetail"]."', '".$_POST["doctor"]."', 'N', '".$xray_no."', 'digital', '".$_POST["diag"]."', '".$_SESSION["cXraydetail"]."', '".$dbirth."', 'XRAY');";
+		
+		mysql_query($sql);
+		
+		
+for($i=0;$i<$count;$i++){
+		$_SESSION["cXraydetail1"]=$_POST["xraydetail"][$i];
+		
+		$sql1 = "INSERT INTO `xray_doctor_detail` (`date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`)VALUES ('".(date("Y")+543).date("-m-d H:i:s")."','".$cHn."','".$xray_no."','".$_SESSION["cXraydetail1"]."','".$_SESSION["cXraydetail"]."');";
+		$q=mysql_query($sql1);
+		
+		//echo $sql1;
+		}
+
+		$_SESSION["nPrintXray"] = "<A HREF=\"xraydoctor_print.php?vn=".urlencode($tvn)."&hn=".urlencode($cHn)."&name=".urlencode($yot." ".$name." ".$surname)."&detail_all=".urlencode($_SESSION["cXraydetail"])."&doctor=".urlencode($_POST["doctor"])."&xrayno=".urlencode($xray_no)."\" target=\"_blank\">พิมพ์ หมายเลข X-Ray</A>";
+
+
+
+
+
 
     }
 

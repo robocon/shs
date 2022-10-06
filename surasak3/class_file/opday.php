@@ -100,13 +100,6 @@ class Opday
         return $nVn;
     }
 
-    public function updateToborow($hn, $toborow){ 
-        $thdatehn = date('d-m-').(date('Y')+543).$hn;
-        $query = sprintf("UPDATE `opday` SET `toborow` = '%s' WHERE `thdatehn` = '%s'", $toborow, $thdatehn);
-        $this->dbi->query($query);
-
-    }
-
     public function update($row_id, $items=array()){ 
 
         if(count($items) > 1){ 

@@ -9,6 +9,7 @@ if(authen()===false){
 }
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 ?>
 <!DOCTYPE html>
 <html lang="en">

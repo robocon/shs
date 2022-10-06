@@ -5,33 +5,41 @@ require_once 'class_file/opcard.php';
 require_once 'class_file/OpdReceive.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 $hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
 $extra = $_POST['extra'];
 
+// หาใน opday ก่อนว่าวันนี้ออก VN แล้วรึยัง
 $opday = new Opday();
 $op = $opday->getThisDay($hn);
-if($op===false){
-
+if($op===false) // ยังไม่มี VN ก็ออก VN ใหม่
+{
     $opday->ptright = 'R42 ตรวจสุขภาพลูกจ้างประจำปี';
     $opday->toborow = $toborow;
     $opday->sOfficer = $_SESSION['sOfficer'];
     $op = $opday->createOpday($hn);
+}
 
-    $a = new OpdReceive();
-    $a->hn = $hn;
+$vn = $op['vn'];
+
+// หาค่าบริการผู้ป่วยนอก 50.-
+$a = new OpdReceive();
+$a->hn = $hn;
+if($a->findOther()===false) // ถ้ายังไม่มีก็เพิ่มเข้าไป
+{
     $a->vn = $vn; 
     $a->sOfficer = $_SESSION['sOfficer'];
     $a->insertOther();
-
 }
 
-$guardian = 'รพ.ค่ายฯ-ลูกจ้าง';
+// ทะเบียนไม่ไม่ยอมติ๊ก ไม่ยอมใส่รายละเอียดก็ตั้งค่าแม่งเองละกัน
+$guardian = 'ลูกจ้าง';
 if($extra=='hemo'){
-    $guardian = 'รพ.ค่ายฯ-ไตเทียม';
+    $guardian = 'ไตเทียม';
 }elseif($extra=='pt'){
-    $guardian = 'รพ.ค่ายฯ-นวดแผนไทย';
+    $guardian = 'นวดแผนไทย';
 }
 
 $oc = new Opcard();
@@ -63,6 +71,10 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 
         .chk_table th, .chk_table td{
             border: 1px solid black;
+        }
+        p{
+            margin: 0;
+            padding: 0;
         }
     </style>
     <div>
@@ -113,31 +125,87 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
             </table>
         </fieldset>
         
+        <?php 
+        if($_SESSION['smenucode']=='ADMXR' OR $_SESSION['smenucode']=='ADM'){ 
+        ?>
         <fieldset>
-            <legend><h3>รายการตรวจ</h3></legend>
-            <form action="orderlabsso3.php" method="post">
-            
-                <div style="position: relative;" class="clearfix">
-                    <div style="width: 50%; float: left;">
-                        <?php 
-                        // แสดงรายการที่คิดเงินไปแล้วเป็นสีแดงด้านล่าง
-                        // $sql = "SELECT * FROM `orderhead` WHERE `hn` = '$hn' AND `date` LIKE '%' AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี' ";
+            <legend><h3>รายการตรวจ X-Ray</h3></legend>
+            <form action="orderlabsso3.php" method="post" target="_blank">
 
-                        // แยก ptright ออกมาเป็น2ตัวให้เห็นว่าคนนี้ จ่ายเป็นเงินสดกี่บาท เบิกเข้าเป็นประกันสังคมกี่บาท
-                        // $sql = "SELECT * FROM `depart` WHERE `hn` = '' ";
-                        // 
+                <div style="width: 50%; margin-bottom: 8px;" class="clearfix">
+                    <?php 
+                    $xrayList = array('41001-CHK');
+                    ?>
+                    <table width="100%" class="chk_table">
+                        <tr>
+                            <th>รหัส</th>
+                            <th>รายละเอียด</th>
+                            <th>ราคา</th>
+                        </tr>
+                        <?php 
+                        $price = 0;
+                        foreach ($xrayList as $key => $code) { 
+                            $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
+                            $l = $q->fetch_assoc();
+                            ?>
+                            <tr id="<?=$code;?>">
+                                <td><?=$code;?></td>
+                                <td><?=$l['detail'];?></td>
+                                <td align="right">
+                                    <?=$l['price'];?>
+                                    <input type="hidden" name="labSelect[]" value="<?=$code;?>">
+                                </td>
+                            </tr>
+                            <?php
+                            $price += $l['price'];
+                        }
+                        ?>
+                        <tr>
+                            <td colspan="2" align="center"><b>รวมเงิน(บาท)</b></td>
+                            <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย X-Ray</button>
+                    <input type="hidden" name="hn" value="<?=$hn;?>">
+                    <input type="hidden" name="vn" value="<?=$op['vn'];?>">
+                    <input type="hidden" name="type" value="xray">
+                </div>
+
+            </form>
+        </fieldset>
+        <?php
+        }
+
+        if($_SESSION['smenucode']=='ADMLAB' OR $_SESSION['smenucode']=='ADM'){ 
+        ?>
+        <fieldset>
+            <legend><h3>รายการตรวจ Lab</h3></legend>
+
+            <form action="orderlabsso3.php" method="post" target="_blank">
+                <div style="position: relative;" class="clearfix">
+                    <div style="width: 50%; ">
+                        <?php 
+                        $b = new OpdReceive();
+                        $b->hn = $hn;
+                        $b->vn = $vn;
+                        if($b->findOrderLab()!==false)
+                        {
+                            ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
+                        }
+
                         $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HBSAG-sso', 'LIPID');
                         if($_SESSION['smenucode']=='ADMXR'){
                             $chkList = array('41001');
                         }
                         ?>
-                        <p><b>รายการตรวจที่เลือก</b></p>
                         <table width="100%" class="chk_table">
                             <tr>
-                                <th>code</th>
-                                <th>detail</th>
-                                <th>price</th>
-                                <!-- <th></th> -->
+                                <th>รหัส</th>
+                                <th>รายละเอียด</th>
+                                <th>ราคา</th>
                             </tr>
                             <?php 
                             $price = 0;
@@ -148,39 +216,37 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                 <tr id="<?=$code;?>">
                                     <td><?=$code;?></td>
                                     <td><?=$l['detail'];?></td>
-                                    <td align="right"><?=$l['price'];?></td>
-                                    <!-- <td>
-                                        <a href="javascript:void(0);" onclick="document.getElementById('<?=$code;?>').outerHTML='';">[ลบ]</a>
+                                    <td align="right">
+                                        <?=$l['price'];?>
                                         <input type="hidden" name="labSelect[]" value="<?=$code;?>">
-                                    </td> -->
+                                    </td>
                                 </tr>
                                 <?php
                                 $price += $l['price'];
                             }
                             ?>
                             <tr>
-                                <td colspan="2" align="center">รวม</td>
-                                <td align="right"><span id="labprice"><?=$price;?></span>บาท</td>
+                                <td colspan="2" align="center"><b>รวมเงิน(บาท)</b></td>
+                                <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
                             </tr>
                         </table>
                         <br>
                         
                     </div>
-                    <div style="width: 50%; float: left;" class="clearfix">
-                        
-                    </div>
+                    <div style="width: 50%;" class="clearfix"></div>
                 </div>
                 <div>
-                    คลิกนี่ก่อนให้มีข้อมูลใน depart
-                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย(หมดรายการใบแจ้งหนี้)</button>
+                    1. บันทึกค่าใช้จ่าย
+                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่ายแลป</button>
                     <input type="hidden" name="hn" value="<?=$hn;?>">
                     <input type="hidden" name="vn" value="<?=$op['vn'];?>">
+                    <input type="hidden" name="type" value="lab">
                 </div>
             </form>
             <div>
                 <div>
                     <br>
-                    แล้วค่อยคลิกสติกเกอร์
+                    2. พิมพ์สติกเกอร์
                     <!-- http://192.168.131.250/sm3/surasak3/labslip4bc_chkup_solider.php -->
                     <button onclick="print_sticker('n')">พิมพ์สติกเกอร์</button>
                     <!-- http://192.168.131.250/sm3/surasak3/labslip4cbc_chkup_solider.php -->
@@ -190,6 +256,18 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                 </div>
             </div>
         </fieldset>
+        <?php
+        }
+        ?>
+
+        <div>
+            <div>
+                <br>
+                <p><a href="orderlabsso.php">&lt;&lt;&nbsp;กลับไปหน้าแรก</a></p>
+            </div>
+        </div>
+
+        
         <script>
             function addToOrder(code){ 
                 var htmlTxt = '<li id="'+code+'">'+code+' <a href="javascript:void(0);" onclick="document.getElementById(\''+code+'\').outerHTML=\'\';"> [ลบ]</a><input type="hidden" name="labSelect[]" value="'+code+'"></li>';
