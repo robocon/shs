@@ -299,8 +299,75 @@ class OpdReceive
     {
         // ที่ไปค้นมา มันจะทำงานใน prelab.php ก่อน แล้วค่อยส่งค่าไปที่ labseek.php
 
+        /// ข้างล่างเอามาจาก prelab.php
+
+        // if(substr($_SESSION["cXraydetail"],0,17)=="1. CHEST CHECK UP"){
+		// 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+		// 	$result = mysql_query($query) or die("Query failed");
+			
+		// 	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+		// 		if (!mysql_data_seek($result, $i)) {
+		// 			echo "Cannot seek to row $i\n";
+		// 			continue;
+		// 		}
+		// 			if(!($row = mysql_fetch_object($result)))
+		// 			continue;
+		// 	}
+		// 	$nPrefix=$row->prefix;	
+				
+		// 	$query9 ="UPDATE chkup_solider SET xray = '".(date("Y")+543).date("-m-d H:i:s")."' WHERE hn='".$cHn."' and yearchkup='$nPrefix' ";
+		// 	$result9 = mysql_query($query9) or die("Query failed");
+		// }
+		 
+		
+		
+		$sql = "Select yot,name, surname, dbirth From opcard where hn ='".$cHn."' limit 0,1";
+		list($yot, $name, $surname, $dbirth) = Mysql_fetch_row(Mysql_Query($sql));
+
+
+		$query = "SELECT runno FROM runno WHERE title = 'xrayno' limit 0,1";
+		$result = mysql_query($query) or die("Query failed");
+		list($xray_no) = mysql_fetch_row($result);
+		$xray_no++;
+		 $query ="UPDATE runno SET runno = $xray_no WHERE title='xrayno' limit 1 ";
+		$result = mysql_query($query) or die("Query failed");
+		
+		$sql = "INSERT INTO `xray_doctor` (
+            `date` ,`hn` ,`vn` ,`yot` ,`name` ,`sname` ,
+            `detail` ,`doctor` ,`status` ,`xrayno` ,`film` ,`type_diag`,
+            `detail_all`,`dbirth`,`orderby`
+        )VALUES (
+            '".(date("Y")+543).date("-m-d H:i:s")."', '".$cHn."', '".$tvn."', '".$yot."', '".$name."', '".$surname."', 
+            '".$_SESSION["cXraydetail"]."', '".$_POST["doctor"]."', 'N', '".$xray_no."', 'digital', '".$_POST["diag"]."', 
+            '".$_SESSION["cXraydetail"]."', '".$dbirth."', 'XRAY'
+        );";
+		mysql_query($sql);
+		
+		
+        for($i=0;$i<$count;$i++){
+            $_SESSION["cXraydetail1"]=$_POST["xraydetail"][$i];
+            
+            $sql1 = "INSERT INTO `xray_doctor_detail` (
+                `date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`
+            )VALUES (
+                '".(date("Y")+543).date("-m-d H:i:s")."','".$cHn."','".$xray_no."','".$_SESSION["cXraydetail1"]."','".$_SESSION["cXraydetail"]."'
+            );";
+            $q=mysql_query($sql1);
+            
+            //echo $sql1;
+		}
+
+		$_SESSION["nPrintXray"] = "<A HREF=\"xraydoctor_print.php?vn=".urlencode($tvn)."&hn=".urlencode($cHn)."&name=".urlencode($yot." ".$name." ".$surname)."&detail_all=".urlencode($_SESSION["cXraydetail"])."&doctor=".urlencode($_POST["doctor"])."&xrayno=".urlencode($xray_no)."\" target=\"_blank\">พิมพ์ หมายเลข X-Ray</A>";
+
+
+
+
+
+
+
+
+
         /// ข้างล่างเอามาจาก labseek.php
-        dump($xrayList);
 
         // if($cDepart == 'XRAY'){
             //echo "==>$cDiag---->$aDetail";
@@ -325,55 +392,7 @@ class OpdReceive
         $result = mysql_query($sql);
 
 
-        /// ข้างล่างเอามาจาก prelab.php
-
-        if(substr($_SESSION["cXraydetail"],0,17)=="1. CHEST CHECK UP"){
-			$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
-			$result = mysql_query($query) or die("Query failed");
-			
-			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-				if (!mysql_data_seek($result, $i)) {
-					echo "Cannot seek to row $i\n";
-					continue;
-				}
-					if(!($row = mysql_fetch_object($result)))
-					continue;
-			}
-			$nPrefix=$row->prefix;	
-				
-			$query9 ="UPDATE chkup_solider SET xray = '".(date("Y")+543).date("-m-d H:i:s")."' WHERE hn='".$cHn."' and yearchkup='$nPrefix' ";
-			$result9 = mysql_query($query9) or die("Query failed");
-		}
-		 
-		
-		
-		$sql = "Select yot,name, surname, dbirth From opcard where hn ='".$cHn."' limit 0,1";
-		list($yot, $name, $surname, $dbirth) = Mysql_fetch_row(Mysql_Query($sql));
-
-
-		$query = "SELECT runno FROM runno WHERE title = 'xrayno' limit 0,1";
-		$result = mysql_query($query) or die("Query failed");
-		list($xray_no) = mysql_fetch_row($result);
-		$xray_no++;
-		 $query ="UPDATE runno SET runno = $xray_no WHERE title='xrayno' limit 1 ";
-		$result = mysql_query($query) or die("Query failed");
-		
-		$sql = "INSERT INTO `xray_doctor` (`date` ,`hn` ,`vn` ,`yot` ,`name` ,`sname` ,`detail` ,`doctor` ,`status` ,`xrayno` ,`film` ,`type_diag`,`detail_all`,`dbirth`,`orderby`)VALUES ('".(date("Y")+543).date("-m-d H:i:s")."', '".$cHn."', '".$tvn."', '".$yot."', '".$name."', '".$surname."', '".$_SESSION["cXraydetail"]."', '".$_POST["doctor"]."', 'N', '".$xray_no."', 'digital', '".$_POST["diag"]."', '".$_SESSION["cXraydetail"]."', '".$dbirth."', 'XRAY');";
-		
-		mysql_query($sql);
-		
-		
-for($i=0;$i<$count;$i++){
-		$_SESSION["cXraydetail1"]=$_POST["xraydetail"][$i];
-		
-		$sql1 = "INSERT INTO `xray_doctor_detail` (`date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`)VALUES ('".(date("Y")+543).date("-m-d H:i:s")."','".$cHn."','".$xray_no."','".$_SESSION["cXraydetail1"]."','".$_SESSION["cXraydetail"]."');";
-		$q=mysql_query($sql1);
-		
-		//echo $sql1;
-		}
-
-		$_SESSION["nPrintXray"] = "<A HREF=\"xraydoctor_print.php?vn=".urlencode($tvn)."&hn=".urlencode($cHn)."&name=".urlencode($yot." ".$name." ".$surname)."&detail_all=".urlencode($_SESSION["cXraydetail"])."&doctor=".urlencode($_POST["doctor"])."&xrayno=".urlencode($xray_no)."\" target=\"_blank\">พิมพ์ หมายเลข X-Ray</A>";
-
+        
 
 
 
