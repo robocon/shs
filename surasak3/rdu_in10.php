@@ -9,7 +9,6 @@ $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10`
 SELECT `row_id`,`date`,`hn`,`icd10`, `date_hn`
 FROM `rdu_opday` 
 WHERE `date` LIKE '$whereMonthTH%' 
-# `year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'I10' ";
 $db->exec($sql);
 
@@ -18,7 +17,6 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10`
 SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
 FROM `rdu_drugrx` 
 WHERE `date` LIKE '$whereMonthTH%' 
-# `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     
 '1RENI20-C',
@@ -44,7 +42,7 @@ AND `drugcode` IN (
 '1CODI160-C',
 '1ENT100' 
 
-); "; 
+) GROUP BY `row_id` ORDER BY `hn`; "; 
 $db->exec($sql); 
 
 $items_in10_a = $in10a = $items_in10_b = $in10b = $in10_result = 0;

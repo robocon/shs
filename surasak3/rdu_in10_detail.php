@@ -14,7 +14,6 @@ $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10`
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn` 
 FROM `rdu_opday` 
 WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND `icd10` regexp 'I10' ";
 $db->exec($sql);
 
@@ -24,7 +23,6 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
 FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 '1RENI20-C',
 '1RENI5-C',
@@ -48,8 +46,8 @@ AND `drugcode` IN (
 '1TANZ50',
 '1CODI160-C',
 '1ENT100' 
-
-); "; 
+) GROUP BY `row_id` ORDER BY `hn` ; "; 
+// dump($sql);
 $db->exec($sql); 
 
 if( $table == 'a' ){
@@ -64,7 +62,9 @@ if( $table == 'a' ){
 
     ) AS a 
     LEFT JOIN `tmp_opday_in10` AS b ON b.`date_hn` = a.`date_hn` 
-    WHERE b.`row_id` IS NOT NULL ;";
+    WHERE b.`row_id` IS NOT NULL 
+    ORDER BY b.`hn`;";
+    // dump($sql);
 
 }elseif( $table == 'b' ){
     $sql = "SELECT b.`date`,b.`hn`,b.`ptname`,b.`age`,b.`diag`,b.`icd10`,b.`doctor`,a.`drugcode`,a.`amount`
