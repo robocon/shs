@@ -168,12 +168,21 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                 </div>
 
                 <div>
+                    1. บันทึกค่าใช้จ่าย
                     <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย X-Ray</button>
                     <input type="hidden" name="hn" value="<?=$hn;?>">
                     <input type="hidden" name="vn" value="<?=$op['vn'];?>">
                     <input type="hidden" name="type" value="xray">
                 </div>
-
+                <div>
+                $xraystklink = '?date='.$thaiDate.'&name='.urlencode($cPtname).'&hn='.urlencode($cHn).'&detail='.urlencode($_SESSION["cXraydetail"]);
+echo '&nbsp;|&nbsp;<a target="_blank" href="xraystk.php'.$xraystklink.'">สติ๊กเกอร์ X-Ray</a>';
+                    <br>
+                    2. พิมพ์สติกเกอร์
+                    <!-- http://192.168.131.250/sm3/surasak3/labslip4bc_chkup_solider.php -->
+                    <button onclick="print_sticker('n')">พิมพ์สติกเกอร์</button>
+                </div>
+                
             </form>
         </fieldset>
         <?php
