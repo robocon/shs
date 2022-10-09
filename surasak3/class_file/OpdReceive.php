@@ -298,16 +298,29 @@ class OpdReceive
         return $res;
     }
 
+    /**
+     * ยังไม่ได้ปรับให้ insert หลายโค้ด
+     */
     public function orderXray($xrayList=array())
     {
-        // ที่ไปค้นมา มันจะทำงานใน prelab.php ก่อน แล้วค่อยส่งค่าไปที่ labseek.php
-
 		$opc = new Opcard();
         $opItem = $opc->getByHn($this->hn,array('yot','name','surname','dbirth'));
         $yot = $opItem['yot'];
         $name = $opItem['name'];
         $surname = $opItem['surname'];
         $dbirth = $opItem['dbirth'];
+        $age = $opc->getAge($dbirth);
+
+        $sql_xray = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $xrayList['0']);
+        $q_xray = $this->dbi->query($sql_xray);
+        if ($q_xray->num_rows > 0) { 
+            $xray = $q_xray->fetch_assoc();
+            $code = $xray['code'];
+            $detail = $xray['detail'];
+            $sumPrice = $xray['price'];
+            $sumYPrice = $xray['yprice'];
+            $sumNPrice = $xray['nprice'];
+        }
 
         $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'xrayno'");
         $runno_row = $q_runno->fetch_assoc();
@@ -325,53 +338,93 @@ class OpdReceive
             '1. CHEST CHECK UP', 'MD022 แพทย์เวชปฎิบัติ', 'N', '$xray_no', 'digital', 'ตรวจสุขภาพ', 
             '1. CHEST CHECK UP', '$dbirth', 'XRAY'
         );";
-        $this->dbi->query($sql_xray_doctor);
+        $xray_doctor_save = $this->dbi->query($sql_xray_doctor);
+        if($xray_doctor_save==false){
+            die($this->dbi->error);
+        }
             
         $sql_xray_detail = "INSERT INTO `xray_doctor_detail` (
             `date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`
         )VALUES (
             '$this->thaiDateFull','$this->hn','$xray_no','1. CHEST CHECK UP','1. CHEST CHECK UP'
         );";
-        $this->dbi->query($sql_xray_detail);
+        $sql_xray_detail_save = $this->dbi->query($sql_xray_detail);
+        if($sql_xray_detail_save==false){
+            die($this->dbi->error);
+        }
 
+        $opday = new Opday();
+        $op = $opday->getThisDay($this->hn);
+        $ptright = $op['ptright'];
+        $ptname = $op['ptname'];
 
+        //////////////////////////////
+        ////////// RUNNO DEPART
+        //////////////////////////////
+        $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
+        $runno_row = $q_runno->fetch_assoc();
+		$chktranx = $runno_row['runno'];
+		$chktranx++;
+        $this->dbi->query("UPDATE `runno` SET `runno` = $chktranx WHERE `title`='depart'");
+        //////////////////////////////
+        ////////// RUNNO DEPART
+        //////////////////////////////
 
-        exit;
+        $sql_depart = "INSERT INTO `depart` ( 
+            `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
+            `item`, `detail`, `price`, `sumyprice`, `sumnprice`, `paid`, 
+            `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
+        ) VALUES ( 
+            '$chktranx', '$this->thaiDateFull', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'XRAY', 
+            '1', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', '0', 
+            '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '', 'Y' 
+        )";
+        $depart_save = $this->dbi->query($sql_depart);
+        if($depart_save==false){
+            die($this->dbi->error);
+        }
+        $depart_id = $this->dbi->insert_id;
 
+        $sql_patdata = "INSERT INTO `patdata` ( 
+            `date`, `hn`, `ptname`, `doctor`, `item`, `code`, 
+            `detail`, `amount`, `price`, `yprice`, `nprice`, `depart`, 
+            `part`, `idno`, `ptright`, `film_size`, `status` 
+        ) VALUES ( 
+            '$this->thaiDateFull', '$this->hn', '$ptname', 'MD022 แพทย์เวชปฎิบัติ', '1', '$code', 
+            '$detail', '1', '$sumPrice', '$sumYPrice', '$sumNPrice', 'XRAY', 
+            'XRAY', '$depart_id', '$ptright', 'DIGITA', 'Y' 
+        )";
+        $patdata_save = $this->dbi->query($sql_patdata);
+        if($patdata_save==false){
+            die($this->dbi->error);
+        }
 
-
-
-        /// ข้างล่างเอามาจาก labseek.php
-
-        // if($cDepart == 'XRAY'){
-            //echo "==>$cDiag---->$aDetail";
-        // $sql = "SELECT `xn` FROM `xrayno` WHERE `hn` = '".$cHn."' ORDER BY `row_id` DESC LIMIT 1 ";
-        // list($xn) = mysql_fetch_row(mysql_query($sql));
-    
-        $sql = "Select dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
-        list($dbirth) = mysql_fetch_row(mysql_query($sql));
-        
-        // INSERT INTO `sm3db-utf8`.`xray_stat` (`row_id`, `date`, `hn`, `xn`, `xn_new`, `ptname`, `age`, `ptright`, `patient_from`, `detail`, `doctor`, `digital`, `10_12`, `14_14`, `NONE`, `filmbk`, `office`, `idno`, `remark`, `cancle`) VALUES ('179901', '2565-10-06 09:50:56', '50-6649', '', '', 'น.ส. ยุพเรศ  บุญกัณฑ์', '50', 'R07 ประกันสังคม', 'OPD', '1.CHEST CHECK UP ', 'MD022 (ไม่ทราบแพทย์)', '1', '0', '0', '0', '', 'เมธินี พลเมฆ', '4737113', '170', '0');
-
-    
-        $sql = "INSERT INTO `xray_stat` (
+        $sql_xray_stat = "INSERT INTO `xray_stat` (
             `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
             `ptright` ,`patient_from` ,`detail` ,`doctor` ,`digital` ,`10_12` ,
             `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
         )VALUES ( 
-            '".$Thidate."', '".$cHn."', '".$xn."', '".$xn_new."', '".$cPtname."', '".$age."', 
-            '".$cPtright."', '".$patient_from."', '".$_SESSION["cXraydetail"]."', '".$cDoctor."', '".$stat_digital."', '".$stat_10_12."', 
-            '".$stat_14_17."', '".$stat_none."', '".$this->sOfficer."', '".$nRunno."', '".$Netprice."'
+            '$this->thaiDateFull', '$this->hn', '', '', '$ptname', '$age', 
+            '$ptright', 'OPD', '1.CHEST CHECK UP', 'MD022 แพทย์เวชปฎิบัติ', '1', '0', 
+            '0', '0', '$this->sOfficer', '$depart_id', '$sumPrice'
         );";
-        $result = mysql_query($sql);
+        $xray_stat_save = $this->dbi->query($sql_xray_stat);
+        if($xray_stat_save==false){
+            die($this->dbi->error);
+        }
 
+    }
 
-        
-
-
-
-
-
+    public function findXray(){
+        $sql = sprintf("SELECT `row_id` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `depart` = 'XRAY' AND `ptright` = 'R42 ตรวจสุขภาพลูกจ้างประจำปี' ", $this->thaiDate, $this->hn);
+        $q = $this->dbi->query( $sql );
+        $res = false;
+        if($q->num_rows > 0)
+        {
+            $item = $q->fetch_assoc();
+            $res = $item['row_id'];
+        }
+        return $res;
     }
 
 }

@@ -24,7 +24,11 @@ if($type == 'lab')
 }
 elseif($type == 'xray')
 {
-	$a->orderXray($_REQUEST['labSelect']);
+	if($a->findXray() === false)
+	{
+		$a->orderXray($_REQUEST['labSelect']);
+	}
+	
 }
 ?>
 <p>บันทึกข้อมูลเรียบร้อย</p>

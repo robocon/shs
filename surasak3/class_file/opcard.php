@@ -52,4 +52,12 @@ class Opcard
 
         return $hn;
     }
+
+    public function getAge($dbirth){
+        list($y, $m, $d) = explode('-', $dbirth);
+        $date2 = date('Y-m-d');
+        $diff = abs(strtotime($date2) - strtotime(($y-543)."-$m-$d"));
+        $years = floor($diff / (365*60*60*24));
+        return $years;
+    }
 }
