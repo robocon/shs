@@ -352,9 +352,12 @@ FROM `dxofyear_out` AS a
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`hn` = '$hn' 
 ORDER BY `row_id` DESC LIMIT 1";
+
 $db->select($sql);
 $opd = $db->get_item();
-$year_checkup = $opd['yearchk'];
+$year_checkup = $opd['yearchk']; // ปีในตาราง dxofyear_out
+
+$chk_year = get_year_checkup(); // ตามปีงบ
 
 $bp1 = $opd['bp1'];
 $bp2 = $opd['bp2'];
@@ -423,7 +426,11 @@ h1,h3,p{
     cursor: pointer;
 }
 </style>
-
+<?php 
+if($year_checkup != $chk_year){
+    ?><p style="text-align: center;font-weight: bold;color: red;padding: 16px 8px;text-shadow: 2px 2px 8px #505050;border: 2px solid orange;margin: 8px;">ข้อมูลซักประวัติไม่ใช่ของปีงบ <?=$chk_year;?> กรุณายืนยันข้อมูลกับพยาบาลอีกครั้งว่าได้บันทึกซักประวัติเรียบร้อยแล้ว</p><?php
+}
+?>
 <form action="chk_doctor.php" method="post" id="formSubmit">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
     <table class="chk_table">

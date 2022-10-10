@@ -9,13 +9,15 @@ $hn = $_REQUEST['hn'];
 $vn = $_REQUEST['vn'];
 $type = $_REQUEST['type'];
 
+$chk_year = get_year_checkup();
+
 $a = new OpdReceive();
 $a->hn = $hn;
 $a->vn = $vn; 
-$a->clinicalinfo = 'ตรวจสุขภาพประจำปี66';
+$a->clinicalinfo = 'ตรวจสุขภาพประจำปี'.$chk_year;
 $a->sOfficer = $_SESSION['sOfficer'];
 if($type == 'lab')
-{
+{	
 	// เอา hn กับ vn ไปหา ว่าวันนี้ใน depart มี PATHO ที่สิทธิ์ออกเป็น R42 ตรวจสุขภาพลูกจ้างประจำปี แล้วรึยัง
 	if($a->findOrderLab()===false)
 	{
@@ -28,7 +30,6 @@ elseif($type == 'xray')
 	{
 		$a->orderXray($_REQUEST['labSelect']);
 	}
-	
 }
 ?>
 <p>บันทึกข้อมูลเรียบร้อย</p>

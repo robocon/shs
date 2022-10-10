@@ -10,6 +10,9 @@ if(authen()===false){
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
+
+$chk_year = get_year_checkup();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +20,7 @@ $dbi->query("SET NAMES UTF8");
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจสุขภาพสิทธิประกันสังคม</title>
+    <title>ตรวจสุขภาพลูกจ้างประจำปี <?=$chk_year;?></title>
 </head>
 <body>
     <style>
@@ -27,7 +30,7 @@ $dbi->query("SET NAMES UTF8");
         }
     </style>
     <div>
-        <h3>ตรวจสุขภาพสิทธิประกันสังคม</h3>
+        <h3>ตรวจสุขภาพลูกจ้างประจำปี <?=$chk_year;?></h3>
     </div>
     <div>
         <fieldset>

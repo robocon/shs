@@ -8,7 +8,7 @@ ini_set('display_errors', 0);
 
 include 'bootstrap.php';
 $db = Mysql::load();
-$db->select("SET NAMES TIS620");
+$db->select("SET NAMES UTF8");
 ?>
 <html>
 <head>
@@ -80,13 +80,13 @@ $db->select("SET NAMES TIS620");
 								) 
 								AND ( b.`name` NOT REGEXP '^HD' AND b.`name` NOT REGEXP '^NID' ) 
 								ORDER BY a.`row_id` ";
-
 								// แสดงรายการ doctor
-								$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
+								$db->select($strSQL);
+								$items = $db->get_items();
 								?>
 								<select name="doctor" id="doctor"> 
 								<?php
-								while($objResult = mysql_fetch_array($objQuery)){
+								foreach($items AS $objResult){
 									$selected = ( $objResult['doctorcode'] == $codedoctor ) ? 'selected="selected"' : '' ;
 									?>
 									<option value="<?=$objResult["doctor_name"]?>" <?=$selected;?> ><?=$objResult["name"]?></option>
@@ -130,7 +130,8 @@ if( $_POST["act"] == "show" ){
 	$_SESSION['doctor'] = $_POST['doctor'];
 
 	// ตัวเดิมเป็น dxofyear_emp
-	$query = mysql_query("SELECT * FROM `dxofyear_out` WHERE `hn`='$hn_now' ORDER BY `row_id` DESC ");
+	$db->select("SELECT * FROM `dxofyear_out` WHERE `hn`='$hn_now' ORDER BY `row_id` DESC ");
+	$dxofyear_out_rows = $db->get_rows();
 
 	?>
 	<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
@@ -143,21 +144,25 @@ if( $_POST["act"] == "show" ){
 			<td align="center" bgcolor="#66CC99">แจ้งเตือน</td>
 		</tr>
 		<?php
-		if(mysql_num_rows($query) < 1){
+		if($dxofyear_out_rows < 1){
 			echo "<tr><td colspan='5' align='center'>---------- ไม่มีข้อมูลซักประวัติ ----------</td></tr>";
 		}
 
 		$i=0;
-		while($rows = mysql_fetch_array($query)){
-
+		
+		$lists = $db->get_items();
+		foreach($lists AS $rows){
 			// แจ้งเตือนแพทย์ในการบันทึกข้อมูล
 			$test_key = $rows['hn'].$rows['yearchk'];
-			$q_chk = mysql_query("SELECT *,SUBSTRING(`date_chk`, 1, 10) AS `date_chk` FROM `chk_doctor` WHERE CONCAT(`hn`,`yearchk`) = '$test_key' ");
+
+			$db->select("SELECT *,SUBSTRING(`date_chk`, 1, 10) AS `date_chk` FROM `chk_doctor` WHERE CONCAT(`hn`,`yearchk`) = '$test_key' ");
+			$chk_rows = $db->get_rows();
+
 			$alert_color = '';
 			$date_chk = '';
-			if ( mysql_num_rows($q_chk) > 0 ) {
+			if ( $chk_rows > 0 ) {
 				$alert_color = 'style="background-color: yellow;"';
-				$item_chk = mysql_fetch_assoc($q_chk);
+				$item_chk = $db->get_item();
 				$date_chk = 'มีการบันทึกข้อมูลเมื่อ '.$item_chk['date_chk'];
 			}
 

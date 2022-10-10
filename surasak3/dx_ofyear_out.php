@@ -422,13 +422,13 @@ while($arr = Mysql_fetch_assoc($result)){
 		  <td colspan="3"><span class="pdxhead">
 		    <select name='camp' id="camp">
 			<?php 
-			$toborow_key = substr($toborow,0,4);
+			$ptright_key = substr($ptright,0,3);
 			$sql12 = "select * from chkcompany where status='Y' AND row_id != 77 AND row_id != 78 order by row_id asc";
 			$rows12 = mysql_query($sql12);
 			while($result12 = mysql_fetch_array($rows12)){ 
 
 				$selected = '';
-				if( $toborow_key == 'EX46' ){
+				if( $ptright_key == 'R42' && $result12['code'] == 'ตรวจสุขภาพประจำปี' ){
 					$selected = 'selected="selected"';
 				}
 

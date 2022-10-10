@@ -137,10 +137,10 @@ class OpdReceive
         $sumPrice = 0;
         $sumYPrice = 0;
         $sumNPrice = 0;
-        foreach ($labItems as $key => $item) { 
+        foreach ($labItems as $key => $lab_code) { 
 
-            $lab_code = $this->dbi->escape_string($item);
-            $q = $this->dbi->query("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '$lab_code' ");
+            $sql_labcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $lab_code);
+            $q = $this->dbi->query($sql_labcare);
             if ($q->num_rows > 0) { 
 
                 $this->labList[] = $labcare = $q->fetch_assoc();
@@ -189,16 +189,16 @@ class OpdReceive
 
         $sql_depart = "INSERT INTO `depart` ( 
             `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
-            `item`, `detail`, `price`, `sumyprice`, `sumnprice`, `paid`, 
+            `item`, `detail`, `price`, `sumyprice`, `sumnprice`,  
             `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
         ) VALUES ( 
             '$runno_stk', '$thai_date', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'PATHO', 
-            '$count_item', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', '0', 
+            '$count_item', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', 
             '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$this->nLab', 'Y' 
         )";
         $depart_save = $this->dbi->query($sql_depart);
         if($depart_save==false){
-            die($this->dbi->error);
+            dump($this->dbi->error);
         }
         $depart_id = $this->dbi->insert_id;
         
@@ -216,7 +216,7 @@ class OpdReceive
                 `detail`, `amount`, `price`, `yprice`, `nprice`, `depart`, 
                 `part`, `idno`, `ptright`, `status` 
             ) VALUES ( 
-                '$thai_date', '$this->hn', '$ptname', 'MD022 แพทย์เวชปฎิบัติ', '$count_item', '$code', 
+                '$thai_date', '$this->hn', '$ptname', 'MD022 (ไม่ทราบแพทย์)', '$count_item', '$code', 
                 '$detail', '1', '$price', '$nprice', '$yprice', 'PATHO', 
                 'LAB', '$depart_id', '$ptright', 'Y' 
             )";
@@ -260,7 +260,7 @@ class OpdReceive
         ) VALUES (
             NULL, '$chktranx', '$date', '$ptname', '$hn', '', 
             NULL, 'OTHER', '1', '(55020/55021 ค่าบริการผู้ป่วยนอก)', '50.00', '50.00', 
-            '0.00', '50.00', '$this->sOfficer', NULL, '0', '$vn', 
+            '0.00', '0.00', '$this->sOfficer', NULL, '0', '$vn', 
             '$ptright', NULL, '', '', 'Y', '', 
             '', ''
         );";
@@ -326,8 +326,8 @@ class OpdReceive
         $runno_row = $q_runno->fetch_assoc();
 		$xray_no = $runno_row['runno'];
 		$xray_no++;
-        $this->dbi->query("UPDATE `runno` SET `runno` = $xray_no WHERE `title`='xrayno'");
-
+        $this->dbi->query("UPDATE `runno` SET `runno` = '$xray_no' WHERE `title`='xrayno'");
+        
 		
 		$sql_xray_doctor = "INSERT INTO `xray_doctor` (
             `date` ,`hn` ,`vn` ,`yot` ,`name` ,`sname` ,
@@ -335,11 +335,11 @@ class OpdReceive
             `detail_all`,`dbirth`,`orderby`
         )VALUES (
             '$this->thaiDateFull', '$this->hn', '$this->vn', '$yot', '$name', '$surname', 
-            '1. CHEST CHECK UP', 'MD022 แพทย์เวชปฎิบัติ', 'N', '$xray_no', 'digital', 'ตรวจสุขภาพ', 
+            '1. CHEST CHECK UP', 'MD022 (ไม่ทราบแพทย์)', 'N', '$xray_no', 'digital', 'ตรวจสุขภาพ', 
             '1. CHEST CHECK UP', '$dbirth', 'XRAY'
         );";
         $xray_doctor_save = $this->dbi->query($sql_xray_doctor);
-        if($xray_doctor_save==false){
+        if($xray_doctor_save==false){ 
             die($this->dbi->error);
         }
             
@@ -372,11 +372,11 @@ class OpdReceive
 
         $sql_depart = "INSERT INTO `depart` ( 
             `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
-            `item`, `detail`, `price`, `sumyprice`, `sumnprice`, `paid`, 
+            `item`, `detail`, `price`, `sumyprice`, `sumnprice`, 
             `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
         ) VALUES ( 
             '$chktranx', '$this->thaiDateFull', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'XRAY', 
-            '1', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', '0', 
+            '1', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', 
             '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '', 'Y' 
         )";
         $depart_save = $this->dbi->query($sql_depart);
@@ -390,7 +390,7 @@ class OpdReceive
             `detail`, `amount`, `price`, `yprice`, `nprice`, `depart`, 
             `part`, `idno`, `ptright`, `film_size`, `status` 
         ) VALUES ( 
-            '$this->thaiDateFull', '$this->hn', '$ptname', 'MD022 แพทย์เวชปฎิบัติ', '1', '$code', 
+            '$this->thaiDateFull', '$this->hn', '$ptname', 'MD022 (ไม่ทราบแพทย์)', '1', '$code', 
             '$detail', '1', '$sumPrice', '$sumYPrice', '$sumNPrice', 'XRAY', 
             'XRAY', '$depart_id', '$ptright', 'DIGITA', 'Y' 
         )";
@@ -405,7 +405,7 @@ class OpdReceive
             `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
         )VALUES ( 
             '$this->thaiDateFull', '$this->hn', '', '', '$ptname', '$age', 
-            '$ptright', 'OPD', '1.CHEST CHECK UP', 'MD022 แพทย์เวชปฎิบัติ', '1', '0', 
+            '$ptright', 'OPD', '1.CHEST CHECK UP', 'MD022 (ไม่ทราบแพทย์)', '1', '0', 
             '0', '0', '$this->sOfficer', '$depart_id', '$sumPrice'
         );";
         $xray_stat_save = $this->dbi->query($sql_xray_stat);
