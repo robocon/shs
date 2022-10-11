@@ -34,6 +34,11 @@
 &nbsp;&nbsp&nbsp;
 <a target=_top  href="../nindex.htm">ไปหน้าจอหลัก</a>
 </font>
+
+<? if($_SESSION["smenucode"]=="ADMXRAY" || $_SESSION["smenucode"]=="ADM"){ ?>
+<br><a href="orderlabsso.php" target="_blank"><b>&gt;&gt;&nbsp;ตรวจสุขภาพลูกจ้างประจำปี66&nbsp;&lt;&lt;&lt;</b></a>
+<? } ?>
+
 <?
 }
 ?>

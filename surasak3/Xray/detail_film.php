@@ -26,12 +26,12 @@ echo $sql;
 ?>
 <table  border="2" cellpadding="0" cellspacing="0" class="forntsarabun" >
 <tr bgcolor=#ffff99 onMouseOver="this.style.backgroundColor='#ADDFFF'" onMouseOut="this.style.backgroundColor=''">
-<td>┼╙┤╤║</td>
-<td>╟╤╣╖╒ш</td>
+<td>р╕ер╕│р╕Фр╕▒р╕Ъ</td>
+<td>р╕зр╕▒р╕Щр╕Чр╕╡р╣И</td>
 <td>HN</td>
-<td>к╫ш═-╩б╪┼</td>
-<td>├╥┬┼╨р═╒┬┤</td>
-<td>┐╘┼ь┴</td>
+<td>р╕Кр╕╖р╣Ир╕н-р╕кр╕Бр╕╕р╕е</td>
+<td>р╕гр╕▓р╕вр╕ер╕░р╣Ар╕нр╕╡р╕вр╕Ф</td>
+<td>р╕Яр╕┤р╕ер╣Мр╕б</td>
 </tr>
 <?
 While($dbarr=mysql_fetch_array($result)) {

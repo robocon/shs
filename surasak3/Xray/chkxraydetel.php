@@ -1,11 +1,11 @@
 <table>
  <tr>
-  <th bgcolor="6495ED">┼╙┤╤║</th>
+  <th bgcolor="6495ED">р╕ер╕│р╕Фр╕▒р╕Ъ</th>
   <th bgcolor="6495ED">code</th>
-  <th bgcolor="6495ED">╟╤╣-р╟┼╥</th>
-  <th bgcolor="6495ED">к╫ш═-╩б╪┼</th>
+  <th bgcolor="6495ED">р╕зр╕▒р╕Щ-р╣Ар╕зр╕ер╕▓</th>
+  <th bgcolor="6495ED">р╕Кр╕╖р╣Ир╕н-р╕кр╕Бр╕╕р╕е</th>
   <th bgcolor="6495ED">HN</th>
-  <th bgcolor="6495ED">├╥┬б╥├</th>
+  <th bgcolor="6495ED">р╕гр╕▓р╕вр╕Бр╕▓р╕г</th>
  </tr>
 
 <?php
