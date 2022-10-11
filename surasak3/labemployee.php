@@ -16,9 +16,9 @@ function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ��";
+		$pAge="$ageY ปี";
 	}else{
-		$pAge="$ageY �� $ageM ��͹";
+		$pAge="$ageY ปี $ageM เดือน";
 	}
 
 return $pAge;
@@ -68,10 +68,10 @@ return $pAge;
 	font-weight: bold;
 }
 </style>
-<a href ="../nindex.htm" >&lt;&lt; �����</a>
+<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>
 <form action="labemployee.php" method="post"><!--labsolider.php-->
 <input name="act" type="hidden" value="show" />
-<div class="font_title">�Դ��Һ�ԡ�õ�Ǩ�آ�Ҿ�١��ҧ��Шӻ�<?=$nPrefix;?></div>
+<div class="font_title">คิดค่าบริการตรวจสุขภาพลูกจ้างประจำปี<?=$nPrefix;?></div>
 <br>
 <br>
 <TABLE width="447" border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#33CC99" >
@@ -79,7 +79,7 @@ return $pAge;
 	<TD width="439" height="168">
 	<TABLE width="441" border="0" cellpadding="0" cellspacing="0">
 	<TR>
-		<TD width="302" align="center" bgcolor="#006666" class="tb_font_1">���� HN / ID</TD>
+		<TD width="302" align="center" bgcolor="#006666" class="tb_font_1">ค้นหา HN / ID</TD>
 	</TR>
 	<TR>
 		<TD class="tb_font">HN :
@@ -90,7 +90,7 @@ return $pAge;
 	    <input type="text" name="p_id"  value="<?php echo $_POST["p_id"]?>"/></TD>
 	  </TR>
 	<TR>
-	  <TD height="31" align="center" class="tb_font"><input type="submit" name="Submit" value="  ����  " /></TD>
+	  <TD height="31" align="center" class="tb_font"><input type="submit" name="Submit" value="  ค้นหา  " /></TD>
 	  </TR>
 	<TR>
 		<TD height="8"></TD>
@@ -118,10 +118,10 @@ if(!empty($_POST["p_hn"]) && $_POST["p_hn"] != ""){
 			<TABLE  width="100%" border="0" cellpadding="4" cellspacing="0">
 <TR  bgcolor="#3366FF" class="font_title1">
                     <TD width="9%" align="center" bgcolor="#006666" >HN</TD>
-                  <TD width="26%" align="center" bgcolor="#006666" >����-ʡ��</TD>
-                  <TD width="29%" align="center" bgcolor="#006666" >�Է��</TD>
-                  <TD width="13%" align="center" bgcolor="#006666" >����</TD>
-                  <TD width="23%" align="center" bgcolor="#006666" >˹���</TD>
+                  <TD width="26%" align="center" bgcolor="#006666" >ชื่อ-สกุล</TD>
+                  <TD width="29%" align="center" bgcolor="#006666" >สิทธิ</TD>
+                  <TD width="13%" align="center" bgcolor="#006666" >อายุ</TD>
+                  <TD width="23%" align="center" bgcolor="#006666" >หน่วย</TD>
 			  </TR>
 			<?php
 			while($result2 = mysql_fetch_array($row2)){

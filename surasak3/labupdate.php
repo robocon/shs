@@ -1,15 +1,14 @@
 <?php
     include("connect.inc");
-        $query ="UPDATE labcare SET code = '$code' ,
-price = '$price', yprice = '$yprice', nprice = '$nprice'				
-                       WHERE code = '$code' ";
+        $query ="UPDATE labcare SET code = '$code' ,price = '$price', yprice = '$yprice', nprice = '$nprice'	WHERE code = '$code' ";
+		echo $query;
         $result = mysql_query($query)
                        or die("Query failed,update labcare");
    If (!$result){
         echo "insert into labcare fail";
                     }
    else {
-        echo "ºÑ¹·Ö¡á¡éä¢¢éÍÁÙÅàÃÕÂºÃéÍÂ";
+        echo "à¸šà¸±à¸™à¸—à¸¶à¸à¹à¸à¹‰à¹„à¸‚à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¹€à¸£à¸µà¸¢à¸šà¸£à¹‰à¸­à¸¢";
           }
 include("unconnect.inc");
 ?>

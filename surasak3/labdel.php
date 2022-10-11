@@ -29,9 +29,9 @@
 
 <table>
  <tr>
-  <th bgcolor=CD853F>��¡��</th>
-  <th bgcolor=CD853F>�ӹǹ</th>
-  <th bgcolor=CD853F>�Ҥ�</th>
+  <th bgcolor=CD853F>รายการ</th>
+  <th bgcolor=CD853F>จำนวน</th>
+  <th bgcolor=CD853F>ราคา</th>
  </tr>
 
 <?php
@@ -42,9 +42,9 @@
     $d=substr($dDate,8,2);
     $m=substr($dDate,5,2);
     $y=substr($dDate,0,4);
-    print "�ѹ��� $d/$m/$y<br>";
+    print "วันที่ $d/$m/$y<br>";
     print "$sPtname, HN: $sHn<br> ";
-    print "�ä: $sDiag<br>";
+    print "โรค: $sDiag<br>";
 
     while (list ($detail,$amount, $price) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
@@ -59,9 +59,9 @@
 </table>
 
 <?php
-    print "����Թ  $sNetprice �ҷ<br>";
-    print "ᾷ�� :$sDoctor<br>";
-	  print "&nbsp;&nbsp;&nbsp;<a target=_BLANK href='labdelall.php'>�׹��¡�÷�����</a>";
+    print "รวมงิน  $sNetprice บาท<br>";
+    print "แพทย์ :$sDoctor<br>";
+	  print "&nbsp;&nbsp;&nbsp;<a target=_BLANK href='labdelall.php'>คืนรายการทั้งหมด</a>";
 
 ?>
 

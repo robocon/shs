@@ -4,7 +4,8 @@ error_reporting(1);
 ini_set('display_errors', 1);
 session_start();
 
-include 'includes/config.php';
+require_once 'includes/config.php';
+require_once "includes/functions.php";
 
 // ถ้าไม่มีการประกาศ NEW_SITE ให้โหลดคอนฟิกตัวเดิมมาใช้งาน
 if(!defined('NEW_SITE')){
@@ -18,9 +19,9 @@ if(!defined('NEW_SITE')){
 }else{
 	
 	header('Content-Type: text/html; charset=utf-8');
-	// $Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
-	// mysql_select_db(DB, $Conn) or die( mysql_error() );
-	// mysql_query("SET NAMES UTF8", $Conn);
+	$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+	mysql_select_db(DB, $Conn) or die( mysql_error() );
+	mysql_query("SET NAMES UTF8", $Conn);
 }
 
 /**
@@ -467,4 +468,4 @@ define('DOMAIN_PATH', DOMAIN.dirname(WEB_REQUEST));
 // E.g. http://localhost/sub_folder/file.php
 define('DOMAIN_REQUEST', DOMAIN.WEB_REQUEST);
 
-require "includes/functions.php";
+

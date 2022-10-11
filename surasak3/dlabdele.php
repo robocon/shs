@@ -12,18 +12,18 @@ if (isset($sIdname)){} else {die;} //for security
 ?>
 <table>
  <tr>
-  <th bgcolor=CD853F><font face='Angsana New'>ź</th>
+  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>
   <th bgcolor=CD853F><font face='Angsana New'>#</th>
-  <th bgcolor=CD853F><font face='Angsana New'>����</th>
-  <th bgcolor=CD853F><font face='Angsana New'>��¡��</th>
-  <th bgcolor=CD853F><font face='Angsana New'>�Ҥ�</th>
-  <th bgcolor=CD853F><font face='Angsana New'>�ӹǹ</th>
-  <th bgcolor=CD853F><font face='Angsana New'>����Թ</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
+  <th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
+  <th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รวมเงิน</th>
  </tr>
 <?php
 	   for ($n=1; $n<=$m; $n++){
 	        print("<tr>\n".
-	                "<td bgcolor=F5DEB3><font face='Angsana New'><a target='top'  href=\"dlabdele.php? Delrow=$n\">ź</td>\n".
+	                "<td bgcolor=F5DEB3><font face='Angsana New'><a target='top'  href=\"dlabdele.php? Delrow=$n\">ลบ</td>\n".
 	                "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
 	                "<td bgcolor=F5DEB3><font face='Angsana New'>$aLabcode[$n]</td>\n".
 	                "<td bgcolor=F5DEB3><font face='Angsana New'>$aDetail[$n]</td>\n".
@@ -35,6 +35,6 @@ if (isset($sIdname)){} else {die;} //for security
 ?>
 </table>
 <?php
-     echo " <font face='Angsana New'>�Ҥ����  $nLabprice �ҷ ";
+     echo " <font face='Angsana New'>ราคารวม  $nLabprice บาท ";
 ?>
-    <br><a target=_BLANK href="dlabtranx.php">�����¡��/�ѹ�֡�觵�Ǩ</a>
+    <br><a target=_BLANK href="dlabtranx.php">หมดรายการ/บันทึกส่งตรวจ</a>

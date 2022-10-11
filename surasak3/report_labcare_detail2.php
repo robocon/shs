@@ -7,13 +7,13 @@ function echo_ka($time){
 		
 
 		if($time >= "07:31:00" && $time < "15:31:00"){
-			$ka = "‡™È“";
+			$ka = "‡πÄ‡∏ä‡πâ‡∏≤";
 		}else if($time >= "15:31:00" && $time < "23:31:00"){
-			$ka = "∫Ë“¬";
+			$ka = "‡∏ö‡πà‡∏≤‡∏¢";
 		}else if($time >= "23:31:00" && $time <= "23:59:59"){
-			$ka = "¥÷°";
+			$ka = "‡∏î‡∏∂‡∏Å";
 		}else if($time >= "00:00:00" && $time < "07:31:00"){
-			$ka = "¥÷°";
+			$ka = "‡∏î‡∏∂‡∏Å";
 		}
 		
 		return $ka;
@@ -50,9 +50,9 @@ body,td,th {
 <TABLE width="300" cellpadding="2" cellspacing="0" border="1" bordercolor="#000000">
 <TR align="center">
 	<TD>HN</TD>
-	<TD>¬»™◊ËÕ- °ÿ≈</TD>
-	<TD>‡«≈“</TD>
-	<TD>®”π«π</TD>
+	<TD>‡∏¢‡∏®‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</TD>
+	<TD>‡πÄ‡∏ß‡∏•‡∏≤</TD>
+	<TD>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</TD>
 </TR>
 
 <?php
@@ -73,7 +73,7 @@ body,td,th {
 	$echoka = echo_ka($time_in);
 
 	if($echoka != $echoka1){
-		echo "<TR bgcolor=\"#FFFFCC\"><TD colspan=\"4\">&nbsp;&nbsp;<B>«—π∑’Ë ".$date_in." ‡«√ ".$echoka."</B></TD></TR>";
+		echo "<TR bgcolor=\"#FFFFCC\"><TD colspan=\"4\">&nbsp;&nbsp;<B>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà ".$date_in." ‡πÄ‡∏ß‡∏£ ".$echoka."</B></TD></TR>";
 		$echoka1 = $echoka;
 	}
 

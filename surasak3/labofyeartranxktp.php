@@ -24,9 +24,9 @@ function calcage($birth){
 	}else{
 		if ($ageM > 5){
 			$ageY=$ageY;
-			$pAge="$ageY ª’";
+			$pAge="$ageY ‡∏õ‡∏µ";
 		}else{
-			$pAge="$ageY ª’";
+			$pAge="$ageY ‡∏õ‡∏µ";
 		}
 	}
 
@@ -39,11 +39,11 @@ return $pAge;
 	$Thidate2 = date("Y").date("-m-d H:i:s"); 
     $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 	$patienttype = "OPD";
-	$sourcecode = "";//√À— ward
-	$build = array("42"=>"ÀÕºŸÈªË«¬À≠‘ß","44"=>"ÀÕºŸÈªË«¬ ICU","43"=>"ÀÕºŸÈªË«¬ Ÿµ‘","45"=>"ÀÕºŸÈªË«¬æ‘‡»…");
+	$sourcecode = "";//‡∏£‡∏´‡∏±‡∏™ward
+	$build = array("42"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏´‡∏ç‡∏¥‡∏á","44"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ ICU","43"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏™‡∏π‡∏ï‡∏¥","45"=>"‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏û‡∏¥‡πÄ‡∏®‡∏©");
 
-	$sourcename = "";//™◊ËÕward
-	$room = ""; //ÀÈÕßºŸÈªË«¬
+	$sourcename = "";//‡∏ä‡∏∑‡πà‡∏≠ward
+	$room = ""; //‡∏´‡πâ‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢
 	$clinicalinfo = "";
 
    //item count
@@ -57,7 +57,7 @@ return $pAge;
 
     include("connect.inc");
 
-//‡≈¢ LAB
+//‡πÄ‡∏•‡∏Ç LAB
 	$query = "SELECT runno, startday FROM runno WHERE title = 'lab'";
 	$result = mysql_query($query) or die("Query failed");
 	
@@ -82,8 +82,8 @@ return $pAge;
 	
 	$today = date("Y-m-d"); 
 
-	$cliniciancode = "";//√À— ·æ∑¬Ï
-	$clinicianname ="MD022 (‰¡Ë∑√“∫·æ∑¬Ï)";//™◊ËÕ·æ∑¬Ï
+	$cliniciancode = "";//‡∏£‡∏´‡∏±‡∏™‡πÅ‡∏û‡∏ó‡∏¢‡πå
+	$clinicianname ="MD022 (‡πÑ‡∏°‡πà‡∏ó‡∏£‡∏≤‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå)";//‡∏ä‡∏∑‡πà‡∏≠‡πÅ‡∏û‡∏ó‡∏¢‡πå
 		
 
 
@@ -101,11 +101,11 @@ return $pAge;
         if(mysql_num_rows($result)){
 	      $cHn=$row->hn;
           $cPtname=$row->ptname;
-	      $cPtright = "R01 ‡ß‘π ¥";
+	      $cPtright = "R01 ‡πÄ‡∏á‡∏¥‡∏ô‡∏™‡∏î";
 		  $tvn=$row->vn;
    		  $cIdcard=$row->idcard;
-		  $cDoctor = "MD022 (‰¡Ë∑√“∫·æ∑¬Ï)";
-		  $cDiag="µ√«® ÿ¢¿“æ";
+		  $cDoctor = "MD022 (‡πÑ‡∏°‡πà‡∏ó‡∏£‡∏≤‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå)";
+		  $cDiag="‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û";
 		}
 		$room = $tvn;
 		$patient_from = "OPD";
@@ -124,22 +124,22 @@ return $pAge;
         }
 
 //insert data into depart
-   $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab)VALUES('".$_SESSION['nRunno']."','$Thidate','$cPtname','$cHn','','$cDoctor','PATHO','$item','µ√«® ÿ¢¿“æ', '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab');";
+   $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab)VALUES('".$_SESSION['nRunno']."','$Thidate','$cPtname','$cHn','','$cDoctor','PATHO','$item','‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û', '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab');";
       $result = mysql_query($query) or 
-                die("**‡µ◊Õπ ! ‡¡◊ËÕæ∫ÀπÈ“µË“ßπ’È· ¥ß«Ë“‰¥È∫—π∑÷°¢ÈÕ¡Ÿ≈‰ª°ËÕπ·≈È« À√◊Õ°“√∫—π∑÷°≈È¡‡À≈«<br>
-	*‚ª√¥µ√«® Õ∫«Ë“¡’√“¬°“√„π‡¡πŸ [¥Ÿ°“√®Ë“¬‡ß‘π] À√◊Õ‰¡Ë<br>
-	*∂È“¡’· ¥ß«Ë“ ‰¥È∫—π∑÷°‰ª°ËÕπ·≈È«<br>
-	*∂È“‰¡Ë¡’· ¥ß«Ë“  °“√∫—π∑÷°≈È¡‡À≈«<br><br>
-                -------- √“¬°“√ ---------<br> 
+                die("**‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô ! ‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏û‡∏ö‡∏´‡∏ô‡πâ‡∏≤‡∏ï‡πà‡∏≤‡∏á‡∏ô‡∏µ‡πâ‡πÅ‡∏™‡∏î‡∏á‡∏ß‡πà‡∏≤‡πÑ‡∏î‡πâ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏õ‡∏Å‡πà‡∏≠‡∏ô‡πÅ‡∏•‡πâ‡∏ß ‡∏´‡∏£‡∏∑‡∏≠‡∏Å‡∏≤‡∏£‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏•‡πâ‡∏°‡πÄ‡∏´‡∏•‡∏ß<br>
+	*‡πÇ‡∏õ‡∏£‡∏î‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡∏ß‡πà‡∏≤‡∏°‡∏µ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÉ‡∏ô‡πÄ‡∏°‡∏ô‡∏π [‡∏î‡∏π‡∏Å‡∏≤‡∏£‡∏à‡πà‡∏≤‡∏¢‡πÄ‡∏á‡∏¥‡∏ô] ‡∏´‡∏£‡∏∑‡∏≠‡πÑ‡∏°‡πà<br>
+	*‡∏ñ‡πâ‡∏≤‡∏°‡∏µ‡πÅ‡∏™‡∏î‡∏á‡∏ß‡πà‡∏≤ ‡πÑ‡∏î‡πâ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡πÑ‡∏õ‡∏Å‡πà‡∏≠‡∏ô‡πÅ‡∏•‡πâ‡∏ß<br>
+	*‡∏ñ‡πâ‡∏≤‡πÑ‡∏°‡πà‡∏°‡∏µ‡πÅ‡∏™‡∏î‡∏á‡∏ß‡πà‡∏≤  ‡∏Å‡∏≤‡∏£‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏•‡πâ‡∏°‡πÄ‡∏´‡∏•‡∏ß<br><br>
+                -------- ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£ ---------<br> 
 	$Thaidate<br>
 	$cPtname HN:$cHn AN:$cAn VN:$tvn<br>
-                 ‘∑∏‘: $cPtright<br>
-                ‚√§:$cDiag<br>
-                ·æ∑¬Ï:$cDoctor<br>
+                ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥: $cPtright<br>
+                ‡πÇ‡∏£‡∏Ñ:$cDiag<br>
+                ‡πÅ‡∏û‡∏ó‡∏¢‡πå:$cDoctor<br>
                 $aDetail<br>
-               ®”π«π $item √“¬°“√<br>
-               √“§“√«¡ $Netprice ∫“∑<br>
-               ®π∑. $sOfficer<br>");
+               ‡∏à‡∏≥‡∏ô‡∏ß‡∏ô $item ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£<br>
+               ‡∏£‡∏≤‡∏Ñ‡∏≤‡∏£‡∏ß‡∏° $Netprice ‡∏ö‡∏≤‡∏ó<br>
+               ‡∏à‡∏ô‡∏ó. $sOfficer<br>");
 
 
 //test 9/4/47 to find the last row
@@ -181,7 +181,7 @@ return $pAge;
 		 $clinicalinfo .=$_SESSION['aDgcode'][$n]." ,";
 	 }
 
-////*runno µ√«® ÿ¢¿“æ*/////////
+////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 	
@@ -195,22 +195,22 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	}
 	
 	$nPrefix=$row->prefix;
-////*runno µ√«® ÿ¢¿“æ*/////////
+////*runno ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û*/////////
    $drsql="select drchkup from chkup_solider where hn='$cHn' and yearchkup='$nPrefix'";
    //echo $drsql;
    $drquery=mysql_query($drsql);
 	list($drchkup)=mysql_fetch_array($drquery);
 
-	  if($cDiag == "µ√«® ÿ¢¿“æ")
-			$clinicalinfo = "µ√«® ÿ¢¿“æª√–®”ª’".$nPrefix;
+	  if($cDiag == "‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û")
+			$clinicalinfo = "‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ".$nPrefix;
 	
 	$sql = "Select sex, dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
 	$result = mysql_query($sql) or die("Query failed,update opday");
 	list($sex, $dbirth) = mysql_fetch_row($result);
 
-	if($sex == "™")
+	if($sex == "‡∏ä")
 		$gender = "M";
-	else if($sex == "≠")
+	else if($sex == "‡∏ç")
 		$gender = "F";
 	else
 		$gender = "0";
@@ -271,49 +271,49 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
    include("unconnect.inc");
    ///stricker
 
-/*	if($camp=="D04  ß. ¥.®«.≈.ª."){
-		$showdate="®. 10 æ.¬. 57";
-	}else if($camp=="D08 °°√.¡∑∫.32" || $camp=="D15 Ω§ß.¡∑∫.32" || $camp=="D09 Ω°ß.¡∑∫.32"){
-		$showdate="æ. 12 æ.¬. 57";
-	}else if($camp=="D10 Ω °.¡∑∫.32" || $camp=="D03 ºª∫.¡∑∫.32" || $camp=="D14 °°æ.¡∑∫.32"){
-		$showdate="æƒ. 13 æ.¬. 57";
-	}else if($camp=="D13 ∫°.¡∑∫.32"){
-		$showdate="». 14 æ.¬. 57";	
-	}else if($camp=="D17 ºæ∏.¡∑∫.32" || $camp=="D12 Ω « .¡∑∫.32" || $camp=="D11 Ω∏π.¡∑∫.32" || $camp=="D16 ΩÕ»®.¡∑∫.32" || $camp=="D18 Ω  .¡∑∫.32"){
-		$showdate="®. 17 æ.¬. 57";	
-	}else if($camp=="D19 ¡«. .¡∑∫.32" || $camp=="D23 Ω À.¡∑∫.32" || $camp=="D25  √√æ°”≈—ß ¡∑∫.32" || $camp=="D21 °Õß √®.¡∑∫.32"){
-		$showdate="Õ. 18 æ.¬. 57";	
-	}else if($camp=="D20 º¬¬.¡∑∫.32" || $camp=="D02 »“≈ ·≈– Õ°.»“≈ ¡∑∫.32"){
-		$showdate="æ. 19 æ.¬. 57";	
-	}else if($camp=="D26 √ÈÕ¬.¡∑∫.32"){
-		$showdate="æƒ. 20 æ.¬. 57";	
-	}else if($camp=="D24  ¢ .¡∑∫.32" || $camp=="D27 º æ.¡∑∫.32"){
-		$showdate="». 21 æ.¬. 57";	
-	}else if($camp=="D28 ¡«.¥¬.¡∑∫.32" || $camp=="D07 °¢«.¡∑∫.32" || $camp=="D06 °¬°.¡∑∫.32"){
-		$showdate="®. 24 æ.¬. 57";	
-	}else if($camp=="D05 °°∫.¡∑∫.32"){
-		$showdate="Õ. 25 æ.¬. 57";	
-	}else if($camp=="D22 √ÈÕ¬. À.¡∑∫.32"){
-		$showdate="Õ. 25 æ.¬. 57 - æ. 26 æ.¬. 57";	
-	}else if($camp=="D29 »Ω.π»∑.¡∑∫.32"){
-		$showdate="æƒ. 27 æ.¬. 57 - ». 28 æ.¬. 57";	
-	}else if($camp=="D32 √ÈÕ¬.Ω√æ.3"){
-		$showdate="®. 8 ∏.§. 57 - Õ. 9 ∏.§. 57";	
-	}else if($camp=="D31 ™.æ—π.4 √ÈÕ¬4"){
-		$showdate="æƒ. 11 ∏.§. 57 - ». 12 ∏.§. 57";	
-	}else if($camp=="D30 √.17 æ—π.2"){
-		$showdate="®. 15 ∏.§. 57 - æ. 16 ∏.§. 57";	
-	}else if($camp=="D01 √æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’"){
-		$showdate="æ. 18 ∏.§. 57 - ®. 22 ∏.§. 57";	
+/*	if($camp=="D04 ‡∏™‡∏á.‡∏™‡∏î.‡∏à‡∏ß.‡∏•.‡∏õ."){
+		$showdate="‡∏à. 10 ‡∏û.‡∏¢. 57";
+	}else if($camp=="D08 ‡∏Å‡∏Å‡∏£.‡∏°‡∏ó‡∏ö.32" || $camp=="D15 ‡∏ù‡∏Ñ‡∏á.‡∏°‡∏ó‡∏ö.32" || $camp=="D09 ‡∏ù‡∏Å‡∏á.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏û. 12 ‡∏û.‡∏¢. 57";
+	}else if($camp=="D10 ‡∏ù‡∏™‡∏Å.‡∏°‡∏ó‡∏ö.32" || $camp=="D03 ‡∏ú‡∏õ‡∏ö.‡∏°‡∏ó‡∏ö.32" || $camp=="D14 ‡∏Å‡∏Å‡∏û.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏û‡∏§. 13 ‡∏û.‡∏¢. 57";
+	}else if($camp=="D13 ‡∏ö‡∏Å.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏®. 14 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D17 ‡∏ú‡∏û‡∏ò.‡∏°‡∏ó‡∏ö.32" || $camp=="D12 ‡∏ù‡∏™‡∏ß‡∏™.‡∏°‡∏ó‡∏ö.32" || $camp=="D11 ‡∏ù‡∏ò‡∏ô.‡∏°‡∏ó‡∏ö.32" || $camp=="D16 ‡∏ù‡∏≠‡∏®‡∏à.‡∏°‡∏ó‡∏ö.32" || $camp=="D18 ‡∏ù‡∏™‡∏™.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏à. 17 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D19 ‡∏°‡∏ß.‡∏™.‡∏°‡∏ó‡∏ö.32" || $camp=="D23 ‡∏ù‡∏™‡∏´.‡∏°‡∏ó‡∏ö.32" || $camp=="D25 ‡∏™‡∏£‡∏£‡∏û‡∏Å‡∏≥‡∏•‡∏±‡∏á ‡∏°‡∏ó‡∏ö.32" || $camp=="D21 ‡∏Å‡∏≠‡∏á ‡∏£‡∏à.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏≠. 18 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D20 ‡∏ú‡∏¢‡∏¢.‡∏°‡∏ó‡∏ö.32" || $camp=="D02 ‡∏®‡∏≤‡∏• ‡πÅ‡∏•‡∏∞ ‡∏≠‡∏Å.‡∏®‡∏≤‡∏• ‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏û. 19 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D26 ‡∏£‡πâ‡∏≠‡∏¢.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏û‡∏§. 20 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D24 ‡∏™‡∏Ç‡∏™.‡∏°‡∏ó‡∏ö.32" || $camp=="D27 ‡∏ú‡∏™‡∏û.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏®. 21 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D28 ‡∏°‡∏ß.‡∏î‡∏¢.‡∏°‡∏ó‡∏ö.32" || $camp=="D07 ‡∏Å‡∏Ç‡∏ß.‡∏°‡∏ó‡∏ö.32" || $camp=="D06 ‡∏Å‡∏¢‡∏Å.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏à. 24 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D05 ‡∏Å‡∏Å‡∏ö.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏≠. 25 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D22 ‡∏£‡πâ‡∏≠‡∏¢.‡∏™‡∏´.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏≠. 25 ‡∏û.‡∏¢. 57 - ‡∏û. 26 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D29 ‡∏®‡∏ù.‡∏ô‡∏®‡∏ó.‡∏°‡∏ó‡∏ö.32"){
+		$showdate="‡∏û‡∏§. 27 ‡∏û.‡∏¢. 57 - ‡∏®. 28 ‡∏û.‡∏¢. 57";	
+	}else if($camp=="D32 ‡∏£‡πâ‡∏≠‡∏¢.‡∏ù‡∏£‡∏û.3"){
+		$showdate="‡∏à. 8 ‡∏ò.‡∏Ñ. 57 - ‡∏≠. 9 ‡∏ò.‡∏Ñ. 57";	
+	}else if($camp=="D31 ‡∏ä.‡∏û‡∏±‡∏ô.4 ‡∏£‡πâ‡∏≠‡∏¢4"){
+		$showdate="‡∏û‡∏§. 11 ‡∏ò.‡∏Ñ. 57 - ‡∏®. 12 ‡∏ò.‡∏Ñ. 57";	
+	}else if($camp=="D30 ‡∏£.17 ‡∏û‡∏±‡∏ô.2"){
+		$showdate="‡∏à. 15 ‡∏ò.‡∏Ñ. 57 - ‡∏û. 16 ‡∏ò.‡∏Ñ. 57";	
+	}else if($camp=="D01 ‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ"){
+		$showdate="‡∏û. 18 ‡∏ò.‡∏Ñ. 57 - ‡∏à. 22 ‡∏ò.‡∏Ñ. 57";	
 	}else{
-		$showdate="Õ. 23 ∏.§. 57";	
+		$showdate="‡∏≠. 23 ‡∏ò.‡∏Ñ. 57";	
 	}*/
 
-   echo "<font style='font-family:AngsanaUPC; font-size:16px;'>µ√«® ÿ¢¿“æ∑À“√ª√–®”ª’$nPrefix&nbsp;Lab:$nRunno1<br>";
+   echo "<font style='font-family:AngsanaUPC; font-size:16px;'>‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏ó‡∏´‡∏≤‡∏£‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ$nPrefix&nbsp;Lab:$nRunno1<br>";
    echo "<b>HN:$cHn</b>&nbsp;($tvn)<br>";
-   echo "<b>™◊ËÕ:$cPtname<br>";
-   //echo "æ∫·æ∑¬Ï °√ÿ≥“¬◊Ëπ∑’ËÀÈÕßª√–™ÿ¡ 1<br>";
-  // echo "°√ÿ≥“¬◊Ëπ∑’ËÀÈÕß∑–‡∫’¬πÀ≈—ß«≈“ 12.45 π.</font>";
+   echo "<b>‡∏ä‡∏∑‡πà‡∏≠:$cPtname<br>";
+   //echo "‡∏û‡∏ö‡πÅ‡∏û‡∏ó‡∏¢‡πå ‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏¢‡∏∑‡πà‡∏ô‡∏ó‡∏µ‡πà‡∏´‡πâ‡∏≠‡∏á‡∏õ‡∏£‡∏∞‡∏ä‡∏∏‡∏° 1<br>";
+  // echo "‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏¢‡∏∑‡πà‡∏ô‡∏ó‡∏µ‡πà‡∏´‡πâ‡∏≠‡∏á‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô‡∏´‡∏•‡∏±‡∏á‡∏ß‡∏•‡∏≤ 12.45 ‡∏ô.</font>";
  //  echo "<br>";
    //stricker
    $ok=0;
@@ -331,5 +331,5 @@ function CloseWindowsInTime(t){
 t = t*1000;
 setTimeout("window.close()",t);
 }
-CloseWindowsInTime(2/*„ Ë‡«≈“‡ªÁπ«‘π“∑’π–§√—∫µ√ß‡≈¢ 5 */); 
+CloseWindowsInTime(2/*‡πÉ‡∏™‡πà‡πÄ‡∏ß‡∏•‡∏≤‡πÄ‡∏õ‡πá‡∏ô‡∏ß‡∏¥‡∏ô‡∏≤‡∏ó‡∏µ‡∏ô‡∏∞‡∏Ñ‡∏£‡∏±‡∏ö‡∏ï‡∏£‡∏á‡πÄ‡∏•‡∏Ç 5 */); 
 </Script>

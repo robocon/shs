@@ -4,7 +4,7 @@ session_start();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title><?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
 <!--
@@ -49,13 +49,13 @@ if(file_exists("vaccine1/Lab_upload/dcorder/$filename")){
 		echo " <tr>
 				 <td BGCOLOR=F5DEB3>$dbarr[date]</td>
 				  <td BGCOLOR=F5DEB3>$dbarr[detail]</td>";
-	    echo   "<td BGCOLOR=F5DEB3><a href=\"vaccine1/Lab_upload/dcorder/$filename\" target='_blank'>¥Ÿ‰ø≈Ï</a></td>";
+	    echo   "<td BGCOLOR=F5DEB3><a href=\"vaccine1/Lab_upload/dcorder/$filename\" target='_blank'>‡∏î‡∏π‡πÑ‡∏ü‡∏•‡πå</a></td>";
 		
 }elseif(file_exists("vaccine1/Lab_upload/dcorder/$filename1")){
 		echo " <tr>
 				 <td BGCOLOR=F5DEB3>$dbarr[date]</td>
 				  <td BGCOLOR=F5DEB3>$dbarr[detail]</td>";
-		  echo   "<td BGCOLOR=F5DEB3><a href=\"vaccine1/Lab_upload/dcorder/$filename1\" target='_blank'>¥Ÿ‰ø≈Ï</a></td>";
+		  echo   "<td BGCOLOR=F5DEB3><a href=\"vaccine1/Lab_upload/dcorder/$filename1\" target='_blank'>‡∏î‡∏π‡πÑ‡∏ü‡∏•‡πå</a></td>";
 }
 echo "</tr>";
 }

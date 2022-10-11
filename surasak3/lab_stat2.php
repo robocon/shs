@@ -2,18 +2,18 @@
 session_start();
 include("connect.inc");  
 
-$month["01"] = "���Ҥ�";
-$month["02"] = "����Ҿѹ��";
-$month["03"] = "�չҤ�";
-$month["04"] = "����¹";
-$month["05"] = "����Ҥ�";
-$month["06"] = "�Զع�¹";
-$month["07"] = "�á�Ҥ�";
-$month["08"] = "�ԧ�Ҥ�";
-$month["09"] = "�ѹ��¹";
-$month["10"] = "���Ҥ�";
-$month["11"] = "��Ȩԡ�¹";
-$month["12"] = "�ѹ�Ҥ�";
+$month["01"] = "มกราคม";
+$month["02"] = "กุมภาพันธ์";
+$month["03"] = "มีนาคม";
+$month["04"] = "เมษายน";
+$month["05"] = "พฤษภาคม";
+$month["06"] = "มิถุนายน";
+$month["07"] = "กรกฏาคม";
+$month["08"] = "สิงหาคม";
+$month["09"] = "กันยายน";
+$month["10"] = "ตุลาคม";
+$month["11"] = "พฤศจิกายน";
+$month["12"] = "ธันวาคม";
 
 ?>
 <html>
@@ -68,11 +68,11 @@ $month["12"] = "�ѹ�Ҥ�";
 	?>
 <TABLE id="f_search" >
 	<TR>
-		<TD align="right">�ѹ��� :</TD>
+		<TD align="right">วันที่ :</TD>
 		<TD>
 		<INPUT TYPE="text" NAME="start_day" value="<?php echo $start_day_def;?>" size="2" maxlength="2"> / 
 		<SELECT NAME="start_month">
-		<OPTION VALUE="" >�ٷ�����</Option>
+		<OPTION VALUE="" >ดูทั้งหมด</Option>
 			<?php
 			foreach($month as $value => $index){
 				echo "<OPTION VALUE=\"",$value,"\" ";
@@ -96,7 +96,7 @@ $month["12"] = "�ѹ�Ҥ�";
 	</TD>
 </TR>
 </TABLE>
-<input type="submit" value="      ��ŧ      " name="B1">&nbsp;&nbsp;<a target=_self  href='../nindex.htm'>&lt;&lt;�����</a>
+<input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>
 </p>
 <INPUT TYPE="hidden" name="select_date" value="1">
 </form>
@@ -106,13 +106,13 @@ if(!empty($_POST["select_date"])){
 
 	if($_POST["start_month"] == ""){
 		$where = " AND date like '".$_POST["start_year"]."%' ";
-		$title = "�� ".$_POST["start_year"];
+		$title = "ปี ".$_POST["start_year"];
 	}else{
 		$where = " AND date like '".$_POST["start_year"]."-".$_POST["start_month"]."-".$_POST["start_day"]."%' ";
 		$title = "".$_POST["start_day"]."  ".$month[$_POST["start_month"]]." ".$_POST["start_year"];
 
 		if(!empty($_POST["start_day"]))
-			$title = " �ѹ ".$title;
+			$title = " วัน ".$title;
 	}
 
 
@@ -131,13 +131,13 @@ if(!empty($_POST["select_date"])){
       <tr>
         <td><TABLE width="700" border="0" cellpadding="2" cellspacing="2">
           <TR align="center" class="tb_head">
-			<TD>���� / ¡��ԡ</TD>
+			<TD>ปกติ / ยกเลิก</TD>
             <TD>0000-0700</TD>
 			<TD>0700-0800</TD>
             <TD>0800-1000</TD>
             <TD>1000-1600</TD>
             <TD>1600-2400</TD>
-			<TD>���</TD>
+			<TD>รวม</TD>
           </TR>
           <?php
 			if($bgcolor =="#FFFFFF")
@@ -148,7 +148,7 @@ if(!empty($_POST["select_date"])){
 			$sum4=0;
 			?>
           <TR bgcolor="<?php echo $bgcolor;?>">
-			<TD align="right">����</TD>
+			<TD align="right">ปกติ</TD>
 			 </TD>
             <TD align="right">
 			<?php 
@@ -212,7 +212,7 @@ if(!empty($_POST["select_date"])){
               &nbsp; </TD>
           </TR>
 		  <TR bgcolor="<?php echo $bgcolor;?>">
-			<TD align="right">¡��ԡ</TD>
+			<TD align="right">ยกเลิก</TD>
 			<TD align="right">
 			<?php 
 			$sql = "Select count(hn) From depart_2 where  timelst between '00:00:00' AND '06:59:59' AND price <= 0 ";

@@ -4,9 +4,9 @@
 ?>
 <table>
  <tr>
-  <th bgcolor=CC9900>├╦╤╩</th>
-  <th bgcolor=CC9900>├╥┬б╥├</th>
-  <th bgcolor=CC9900>├╥д╥</th>
+  <th bgcolor=CC9900>р╕гр╕лр╕▒р╕к</th>
+  <th bgcolor=CC9900>р╕гр╕▓р╕вр╕Бр╕▓р╕г</th>
+  <th bgcolor=CC9900>р╕гр╕▓р╕Др╕▓</th>
  </tr>
 <?php
     include("connect.inc");

@@ -12,7 +12,7 @@
           }
 //echo "$vCode ,$xCode <br>";
 
- echo "HN : $cHn,  $cPtname,   ‘∑∏‘°“√√—°…“ : $cPtright <br> ";
+ echo "HN : $cHn,  $cPtname,  ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤ : $cPtright <br> ";
 
 print "<form method='POST' action='labseek.php'>"; 
 print "<font face='Angsana New'><a target=_BLANK href='codehlp.php'>"; 
@@ -27,9 +27,9 @@ print "</form>";
 
 print "<table>"; 
 print " <tr>"; 
-print "  <th bgcolor=6495ED>√À— </th>"; 
-print "  <th bgcolor=6495ED>√“¬°“√</th>"; 
-print "  <th bgcolor=6495ED>√“§“</th>"; 
+print "  <th bgcolor=6495ED>‡∏£‡∏´‡∏±‡∏™</th>"; 
+print "  <th bgcolor=6495ED>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</th>"; 
+print "  <th bgcolor=6495ED>‡∏£‡∏≤‡∏Ñ‡∏≤</th>"; 
 print " </tr>"; 
 
  If (!empty($code)){

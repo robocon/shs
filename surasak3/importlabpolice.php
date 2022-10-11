@@ -1,7 +1,7 @@
 <?
 include("connect.inc");
 if($_POST["act"]=="add"){
-$cquery=mysql_query("SELECT  * FROM opcardchk WHERE part =' Õ∫µ”√«®57'");
+$cquery=mysql_query("SELECT  * FROM opcardchk WHERE part ='‡∏™‡∏≠‡∏ö‡∏ï‡∏≥‡∏£‡∏ß‡∏à57'");
 $num=mysql_num_rows($cquery);
 
 //----------------------- Runno Lab ----------------------//
@@ -118,7 +118,7 @@ $labname6="(33708)Methamphetamine (urine) (immunoassay)";
 		$query1 ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab';";
 		echo $query1."<br>";
 		$result = mysql_query($query1) or die("Query failed");	
-		echo "[$i]---------------------------∫—π∑÷°¢ÈÕ¡Ÿ≈ HN : $hn ($ptname) ‡√’¬∫√ÈÕ¬·≈È«---------------------------<br>";					
+		echo "[$i]---------------------------‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• HN : $hn ($ptname) ‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß---------------------------<br>";					
 	}
 	
 }
@@ -131,7 +131,7 @@ body,td,th {
 -->
 </style>
 <div align="center">
-<strong> Õ∫µ”√«® π”‡¢È“¢ÈÕ¡Ÿ≈ OrderHead && OrderDetail </strong>
+<strong>‡∏™‡∏≠‡∏ö‡∏ï‡∏≥‡∏£‡∏ß‡∏à ‡∏ô‡∏≥‡πÄ‡∏Ç‡πâ‡∏≤‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• OrderHead && OrderDetail </strong>
 <form action="importlabpolice.php" method="post" name="frm1">
 	<input name="act" type="hidden" value="add" />
     <input name="orderdate" type="hidden" value="<?=date("Y-m-d H:i:s");?>" />
@@ -139,7 +139,7 @@ body,td,th {
     <input name="sex" type="hidden" value="M" />
     <input name="dob" type="hidden" value="1994-01-01 00:00:00" />
     <input name="room" type="hidden" value="000" />
-    <input name="clinicianname" type="hidden" value="°√ÿ≥“‡≈◊Õ°·æ∑¬Ï" />
+    <input name="clinicianname" type="hidden" value="‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÅ‡∏û‡∏ó‡∏¢‡πå" />
     <input name="priority" type="hidden" value="R" />
     <input name="clinicalinfo" type="hidden" value="CBC ,UA ,ST ,HIV ,VDRL ,AMP ," />
     <input name="isquery" type="hidden" value="0" />

@@ -4,9 +4,9 @@
 ?>
 <table>
  <tr>
-  <th bgcolor=CC9900>�ٵ�</th>
-  <th bgcolor=CC9900>��¡��</th>
-  <th bgcolor=CC9900>�Ҥ�</th>
+  <th bgcolor=CC9900>สูตร</th>
+  <th bgcolor=CC9900>รายการ</th>
+  <th bgcolor=CC9900>ราคา</th>
  </tr>
 <?php
     $dr=substr($sOfficer,0,5);
