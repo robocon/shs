@@ -21,10 +21,10 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-07-01';
-$date_end = '2565-09-30';
+$date_start = '2565-01-01';
+$date_end = '2565-03-31';
 
-$quarter = 4;
+$quarter = 2;
 $year = '2565';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
@@ -46,7 +46,7 @@ AND `reject` != 'Y'
 AND `amount` > 0 ";
 $q = $dbi->query($sql);
 
-$sql_header = "INSERT INTO `drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
 $sql_data = array();
 
 while ( $item = $q->fetch_assoc() ) {
@@ -58,11 +58,11 @@ while ( $item = $q->fetch_assoc() ) {
     $amount = $item['amount'];
     $date_hn = $item['date_hn'];
 
-    $sql_data[] = "( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year')";
-
+    $rdu_drugrx = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year');\n";
+    file_put_contents($filePath, $rdu_drugrx, FILE_APPEND);
 }
-$sql_value = implode(',', $sql_data);
-$sql_header.$sql_value;
-file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+// $sql_value = implode(',', $sql_data);
+// $sql_header.$sql_value;
+// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";

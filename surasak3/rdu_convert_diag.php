@@ -34,13 +34,13 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-07-01';
-$date_end = '2565-09-30';
+$date_start = '2565-01-01';
+$date_end = '2565-03-31';
 
-$date_start_en = '2022-07-01';
-$date_end_en = '2022-09-30';
+$date_start_en = '2022-01-01';
+$date_end_en = '2022-03-31';
 
-$quarter = 4;
+$quarter = 2;
 $year = '2565';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
@@ -68,11 +68,12 @@ FROM `diag` AS a
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE ( a.`svdate_en` >= '$date_start_en' AND a.`svdate_en` <= '$date_end_en' ) 
 AND a.`icd10` <> '' 
-AND a.`status` = 'Y' ";
+AND a.`status` = 'Y' 
+GROUP BY `date_opday`, `icd10` ";
 $q_diag = $dbi->query($sql_diag);
 
 
-$sql_header = "INSERT INTO `diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
 $sql_data_list = array();
 
 while ( $item = $q_diag->fetch_assoc() ) {
@@ -110,13 +111,15 @@ while ( $item = $q_diag->fetch_assoc() ) {
 
         $doctor = $item['office'];
 
-        $test = $sql_data_list[] = "( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year')\n";
-        // dump($test);
+        $sql_value = "( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
+        
+        file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+
     // }
     
 }
-$sql_value = implode(',', $sql_data_list);
-$sql_header.$sql_value;
-file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+// $sql_value = implode(',', $sql_data_list);
+// $sql_header.$sql_value;
+
 
 echo "Success";
