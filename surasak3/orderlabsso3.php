@@ -34,4 +34,6 @@ elseif($type == 'xray')
 ?>
 <p>บันทึกข้อมูลเรียบร้อย</p>
 <p>ปิดหน้าจอได้</p>
-
+<script>
+	setTimeout("window.close()",3000);
+</script>

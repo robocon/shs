@@ -140,7 +140,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
         ?>
         <fieldset>
             <legend><h3>รายการตรวจ X-Ray</h3></legend>
-            <form action="orderlabsso3.php" method="post" target="_blank">
+            <form action="orderlabsso3.php" method="post" target="_blank" id="formIDXray">
 
                 <div style="width: 50%; margin-bottom: 8px;" class="clearfix">
                     <?php 
@@ -212,7 +212,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
         <fieldset>
             <legend><h3>รายการตรวจ Lab</h3></legend>
 
-            <form action="orderlabsso3.php" method="post" target="_blank">
+            <form action="orderlabsso3.php" method="post" target="_blank" id="formIDLab">
                 <div style="position: relative;" class="clearfix">
                     <div style="width: 50%; ">
                         <?php 
@@ -305,6 +305,19 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 
         
         <script>
+
+            var myFormXray = document.getElementById('formIDXray');
+            myFormXray.onsubmit = function() {
+                var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300,left = 312,top = 234');
+                this.target = 'Popup_Window';
+            };
+
+            var myFormLab = document.getElementById('formIDLab');
+            myFormLab.onsubmit = function() {
+                var w = window.open('about:blank','Popup_Window','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300,left = 312,top = 234');
+                this.target = 'Popup_Window';
+            };
+
             function addToOrder(code){ 
                 var htmlTxt = '<li id="'+code+'">'+code+' <a href="javascript:void(0);" onclick="document.getElementById(\''+code+'\').outerHTML=\'\';"> [ลบ]</a><input type="hidden" name="labSelect[]" value="'+code+'"></li>';
                 document.getElementById('itemSelected').innerHTML += htmlTxt;
