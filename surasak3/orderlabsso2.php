@@ -224,7 +224,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                             ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
                         }
 
-                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HBSAG-sso', 'LIPID');
+                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
                         if($_SESSION['smenucode']=='ADMXR'){
                             $chkList = array('41001');
                         }
@@ -276,6 +276,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
             </form>
             <div>
                 <div>
+                    <p>กำลังแก้สติกเกอร์เด้อคับ</p>
                     <br>
                     2. พิมพ์สติกเกอร์
                     <!-- http://192.168.131.250/sm3/surasak3/labslip4bc_chkup_solider.php -->
@@ -285,10 +286,11 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 
                     <!-- http://192.168.131.250/sm3/surasak3/labslip4cbc_chkup_solider.php -->
                     <!-- <button onclick="print_sticker('cbc')">สติกเกอร์ CBC</button> -->
-                    <a href="labslip4cbc_chkup.php?cHn=<?=$cHn;?>" target="_blank" class="aButton">สติกเกอร์ CBC</a>
+                    <a href="labslip4cbc_chkup.php?cHn=<?=$cHn;?>" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
 
                     <!-- http://192.168.131.250/sm3/surasak3/labslip4ua_chkup_solider.php -->
                     <!-- <button onclick="print_sticker('ua')">สติกเกอร์ UA</button> -->
+                    <a href="labslip4ua_chkup_employee.php?cHn=<?=$cHn;?>" target="_blank" class="aButton">สติกเกอร์ UA</a>
                 </div>
             </div>
         </fieldset>
