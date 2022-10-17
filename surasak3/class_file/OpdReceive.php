@@ -36,8 +36,8 @@ class OpdReceive
     public $sOfficer = false;
 
     private $labList = array();
-    private $labnumber = false;
-    private $nLab = false;
+    public $labnumber = false;
+    public $nLab = false;
     private $xrayList = array();
     private $thaiDate = false;
     private $thaiDateFull = false;
@@ -55,7 +55,11 @@ class OpdReceive
 
     public function findOrderLab()
     {
-        $sql = sprintf("SELECT `row_id` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `tvn` = '%s' AND `depart` = 'PATHO' AND `ptright` = 'R42 ตรวจสุขภาพลูกจ้างประจำปี' ", $this->thaiDate, $this->hn, $this->vn);
+        $sql = sprintf("SELECT `row_id` FROM `depart` 
+        WHERE `date` LIKE '%s%%' 
+        AND `hn` = '%s' 
+        AND `depart` = 'PATHO' 
+        AND ( `status` != 'N' AND `price` > 0 ) ", $this->thaiDate, $this->hn);
         $q = $this->dbi->query($sql);
         $res = false;
         if($q->num_rows > 0)
@@ -64,6 +68,14 @@ class OpdReceive
             $res = $item['row_id'];
         }
         return $res;
+    }
+
+    public function setLabRunno($number){
+        $this->nLab = $number;
+    }
+
+    public function getLabRunno(){
+        return $this->nLab;
     }
 
     /**
@@ -95,133 +107,123 @@ class OpdReceive
         $ptright = $op['ptright'];
         $ptname = $op['ptname'];
 
-        if(empty($this->custom_labnumber)){
+        
+        // runno ของห้องแลป
+        $q_runno = $this->dbi->query("SELECT `runno`, SUBSTRING(`startday`,1,10) AS `startday` FROM `runno` WHERE `title` = 'lab'");
+        $row = $q_runno->fetch_assoc();
+        $nLab = $row['runno'];
+        $dLabdate = $row['startday'];
 
-            // runno ของห้องแลป
-            $q_runno = $this->dbi->query("SELECT `runno`, SUBSTRING(`startday`,1,10) AS `startday` FROM `runno` WHERE `title` = 'lab'");
-            $row = $q_runno->fetch_assoc();
-            $nLab = $row['runno'];
-            $dLabdate = $row['startday'];
-
-            //ถ้าขึ้นวันใหม่ให้ตีเป็น 1
-            if(substr($dLabdate,0,10) != date("Y-m-d")){
-                $nLab = 1;
-                $dLabdate = date("Y-m-d 00:00:00");
-            }
-
-            $this->nLab = $nLab;
-            // รูปแบบ labnumber 
-            $this->labnumber = $labnumber = date("ymd").sprintf("%03d", $nLab);
-
+        //ถ้าขึ้นวันใหม่ให้ตีเป็น 1
+        if(substr($dLabdate,0,10) != date("Y-m-d")){
+            $nLab = 1;
+            $dLabdate = date("Y-m-d 00:00:00");
         }else{
-
-            // กรณีใช้เลข labnumber แบบกำหนดเอง
-            $this->labnumber = $labnumber = $this->custom_labnumber;
-
-        }
-        
-        $orderhead_sql = "INSERT INTO `orderhead` ( 
-            `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, `patientname`, 
-            `sex`, `dob`, `sourcecode`, `sourcename`, `room`, `cliniciancode`, 
-            `clinicianname`, `priority`, `clinicalinfo` 
-        ) VALUES (
-            NULL, NOW(), '$labnumber', '$this->hn', 'OPD', '$ptname', 
-            '$gender', '$dbirth', '', '', '', '', 
-            'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
-        );";
-        $orderhead_save = $this->dbi->query($orderhead_sql);
-        if($orderhead_save==false){ 
-            die($this->dbi->error);
-        }
-
-        $sumPrice = 0;
-        $sumYPrice = 0;
-        $sumNPrice = 0;
-        foreach ($labItems as $key => $lab_code) { 
-
-            $sql_labcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $lab_code);
-            $q = $this->dbi->query($sql_labcare);
-            if ($q->num_rows > 0) { 
-
-                $this->labList[] = $labcare = $q->fetch_assoc();
-
-                $sumPrice += $labcare['price'];
-                $sumYPrice += $labcare['yprice'];
-                $sumNPrice += $labcare['nprice'];
-
-                $code = $labcare['code'];
-                $oldcode = $labcare['oldcode'];
-                $detail = $labcare['detail'];
-
-                $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                    `labnumber`,`labcode`,`labcode1`,`labname` 
-                ) VALUES (
-                    '$labnumber', '$code', '$oldcode', '".$detail."'
-                );";
-                $this->dbi->query($orderdetail_sql);
-
-            }
-            
-        } // End foreach รายการแลป
-
-        
-        if(empty($this->custom_labnumber)){ 
             $nLab++;
-            $query ="UPDATE runno SET runno = $nLab, startday = '$dLabdate' WHERE title='lab'";
-            $this->dbi->query($query);
         }
+
+        $query ="UPDATE runno SET `runno` = '$nLab', `startday` = '$dLabdate' WHERE `title`='lab'";
+        $this->dbi->query($query);
+
+        // รูปแบบ labnumber 
+        $this->labnumber = $labnumber = date("ymd").sprintf("%03d", $nLab);
         
+        $q_orderhead = $this->dbi->query("SELECT * FROM `orderhead` WHERE `hn`='$this->hn' AND `clinicalinfo = '$clinicalinfo' ");
+        if($q_orderhead->num_rows == 0){
+        
+            $orderhead_sql = "INSERT INTO `orderhead` ( 
+                `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, `patientname`, 
+                `sex`, `dob`, `sourcecode`, `sourcename`, `room`, `cliniciancode`, 
+                `clinicianname`, `priority`, `clinicalinfo` 
+            ) VALUES (
+                NULL, NOW(), '$labnumber', '$this->hn', 'OPD', '$ptname', 
+                '$gender', '$dbirth', '', '', '', '', 
+                'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
+            );";
+            $orderhead_save = $this->dbi->query($orderhead_sql);
+            if($orderhead_save==false){ 
+                die($this->dbi->error);
+            }
 
-        $q_runno_stk = $this->dbi->query("SELECT `runno`, `startday` FROM `runno` WHERE `title` = 'stktranx'");
-        $nStktranx = $q_runno_stk->fetch_assoc();
-		$runno_stk = $nStktranx['runno']+1;
-        $thai_date = (date('Y')+543).date('-m-d H:i:s');
-        $count_item = count($this->labList);
+            $sumPrice = 0;
+            $sumYPrice = 0;
+            $sumNPrice = 0;
+            foreach ($labItems as $key => $lab_code) { 
 
-        // $itemPrice = array_column($this->labList, 'price');
-        // $sumPrice = array_sum($itemPrice);
+                $sql_labcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $lab_code);
+                $q = $this->dbi->query($sql_labcare);
+                if ($q->num_rows > 0) { 
 
-        // $itemYPrice = array_column($this->labList, 'yprice');
-        // $sumYPrice = array_sum($itemYPrice);
+                    $this->labList[] = $labcare = $q->fetch_assoc();
 
-        // $itemNPrice = array_column($this->labList, 'nprice');
-        // $sumNPrice = array_sum($itemNPrice);
+                    $sumPrice += $labcare['price'];
+                    $sumYPrice += $labcare['yprice'];
+                    $sumNPrice += $labcare['nprice'];
 
-        $sql_depart = "INSERT INTO `depart` ( 
-            `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
-            `item`, `detail`, `price`, `sumyprice`, `sumnprice`,  
-            `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
-        ) VALUES ( 
-            '$runno_stk', '$thai_date', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'PATHO', 
-            '$count_item', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', 
-            '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$this->nLab', 'Y' 
-        )";
-        $depart_save = $this->dbi->query($sql_depart);
-        if($depart_save==false){
-            dump($this->dbi->error);
+                    $code = $labcare['code'];
+                    $oldcode = $labcare['oldcode'];
+                    $detail = $labcare['detail'];
+
+                    $orderdetail_sql = "INSERT INTO `orderdetail` ( 
+                        `labnumber`,`labcode`,`labcode1`,`labname` 
+                    ) VALUES (
+                        '$labnumber', '$code', '$oldcode', '".$detail."'
+                    );";
+                    $this->dbi->query($orderdetail_sql);
+
+                }
+                
+            } // End foreach รายการแลป
+
         }
-        $depart_id = $this->dbi->insert_id;
+
+        if($this->findOrderLab()==false){
         
-        foreach ($this->labList as $lab) { 
+            $q_chktranx = $this->dbi->query("SELECT `runno`, `startday` FROM `runno` WHERE `title` = 'depart'");
+            $chktranx = $q_chktranx->fetch_assoc();
+            $runno_chktranx = $chktranx['runno']+1;
+            $thai_date = (date('Y')+543).date('-m-d H:i:s');
+            $count_item = count($this->labList);
+            $this->dbi->query("UPDATE `runno` SET `runno` = '$runno_chktranx' WHERE `title`='depart'");
 
-            $code = $lab['code'];
-            $detail = $lab['detail'];
-
-            $price = $lab['price'];
-            $nprice = $lab['nprice'];
-            $yprice = $lab['yprice'];
-
-            $sql_patdata = "INSERT INTO `patdata` ( 
-                `date`, `hn`, `ptname`, `doctor`, `item`, `code`, 
-                `detail`, `amount`, `price`, `yprice`, `nprice`, `depart`, 
-                `part`, `idno`, `ptright`, `status` 
+            $sql_depart = "INSERT INTO `depart` ( 
+                `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
+                `item`, `detail`, `price`, `sumyprice`, `sumnprice`,  
+                `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
             ) VALUES ( 
-                '$thai_date', '$this->hn', '$ptname', 'MD022 (ไม่ทราบแพทย์)', '$count_item', '$code', 
-                '$detail', '1', '$price', '$nprice', '$yprice', 'PATHO', 
-                'LAB', '$depart_id', '$ptright', 'Y' 
+                '$runno_chktranx', '$thai_date', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'PATHO', 
+                '$count_item', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', 
+                '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$nLab', 'Y' 
             )";
-            $this->dbi->query($sql_patdata);
+            $depart_save = $this->dbi->query($sql_depart);
+            if($depart_save==false){
+                dump($this->dbi->error);
+            }
+            $depart_id = $this->dbi->insert_id;
+            
+            foreach ($this->labList as $lab) { 
+
+                $code = $lab['code'];
+                $detail = $lab['detail'];
+
+                $price = $lab['price'];
+                $nprice = $lab['nprice'];
+                $yprice = $lab['yprice'];
+
+                $sql_patdata = "INSERT INTO `patdata` ( 
+                    `date`, `hn`, `ptname`, `doctor`, `item`, `code`, 
+                    `detail`, `amount`, `price`, `yprice`, `nprice`, `depart`, 
+                    `part`, `idno`, `ptright`, `status` 
+                ) VALUES ( 
+                    '$thai_date', '$this->hn', '$ptname', 'MD022 (ไม่ทราบแพทย์)', '$count_item', '$code', 
+                    '$detail', '1', '$price', '$nprice', '$yprice', 'PATHO', 
+                    'LAB', '$depart_id', '$ptright', 'Y' 
+                )";
+                $this->dbi->query($sql_patdata);
+            }
+
         }
+
     }
 
     /**
@@ -246,7 +248,7 @@ class OpdReceive
         $runno_row = $q_runno->fetch_assoc();
 		$chktranx = $runno_row['runno'];
 		$chktranx++;
-        $this->dbi->query("UPDATE `runno` SET `runno` = $chktranx WHERE `title`='depart'");
+        $this->dbi->query("UPDATE `runno` SET `runno` = '$chktranx' WHERE `title`='depart'");
         //////////////////////////////
         ////////// RUNNO DEPART
         //////////////////////////////
@@ -355,7 +357,8 @@ class OpdReceive
 
         $opday = new Opday();
         $op = $opday->getThisDay($this->hn);
-        $ptright = $op['ptright'];
+        // $ptright = $op['ptright'];
+        $ptright = 'R42 ตรวจสุขภาพลูกจ้างประจำปี';
         $ptname = $op['ptname'];
 
         //////////////////////////////
@@ -416,7 +419,13 @@ class OpdReceive
     }
 
     public function findXray(){
-        $sql = sprintf("SELECT `row_id` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `depart` = 'XRAY' AND `ptright` = 'R42 ตรวจสุขภาพลูกจ้างประจำปี' ", $this->thaiDate, $this->hn);
+        $sql = sprintf("SELECT `row_id` 
+        FROM `depart` 
+        WHERE `date` LIKE '%s%%' 
+        AND `hn` = '%s' 
+        AND `depart` = 'XRAY' 
+        AND `status` != 'N' 
+        AND `price` > 0", $this->thaiDate, $this->hn);
         $q = $this->dbi->query( $sql );
         $res = false;
         if($q->num_rows > 0)
