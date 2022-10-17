@@ -1,18 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 <style type="text/css">
 <!--
 .font3 {
 	font-family: "TH SarabunPSK";
-	font-size: 16px;
+	font-size: 20px;
 }
 -->
 </style>
 </head>
-
 <body class="font3">
 <?
   include("connect.inc");
@@ -21,90 +20,101 @@
   $result = mysql_fetch_array($row);
   ?>
 <br />
-<br />
-<br />
 <center>
-  <strong>„∫¢Õ·°È‰¢/‡æ‘Ë¡‡µ‘¡‚ª√·°√¡„π√–∫∫§Õ¡æ‘«‡µÕ√Ï‡§√◊Õ¢Ë“¬</strong><br />
-°Õß/·ºπ° »Ÿπ¬Ï∫√‘°“√§Õ¡æ‘«‡µÕ√Ï ‡Õ° “√À¡“¬‡≈¢ FR-COM-001/1 ·°È‰¢§√—Èß∑’Ë 04 «—π∑’Ë¡’º≈∫—ß§—∫„™È 15 ‡¡.¬.46<br />
-°Õß/·ºπ°.....<?=$result['depart']?>............
+  <strong>‡πÉ‡∏ö‡∏Ç‡∏≠‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç/‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÄ‡∏ï‡∏¥‡∏°‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏°‡πÉ‡∏ô‡∏£‡∏∞‡∏ö‡∏ö‡∏Ñ‡∏≠‡∏°‡∏û‡∏¥‡∏ß‡πÄ‡∏ï‡∏≠‡∏£‡πå‡πÄ‡∏Ñ‡∏£‡∏∑‡∏≠‡∏Ç‡πà‡∏≤‡∏¢</strong><br />
+‡∏Å‡∏≠‡∏á/‡πÅ‡∏ú‡∏ô‡∏Å ‡∏®‡∏π‡∏ô‡∏¢‡πå‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏Ñ‡∏≠‡∏°‡∏û‡∏¥‡∏ß‡πÄ‡∏ï‡∏≠‡∏£‡πå ‡πÄ‡∏≠‡∏Å‡∏™‡∏≤‡∏£‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏•‡∏Ç FR-COM-001/1 ‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏ó‡∏µ‡πà 04 ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏°‡∏µ‡∏ú‡∏•‡∏ö‡∏±‡∏á‡∏Ñ‡∏±‡∏ö‡πÉ‡∏ä‡πâ 15 ‡πÄ‡∏°.‡∏¢.46<br />
+‡∏Å‡∏≠‡∏á/‡πÅ‡∏ú‡∏ô‡∏Å.....<?=$result['depart']?>............
 </center>
-<table width="100%" border="1" style="border-collapse:collapse" cellpadding="0" cellspacing="0">
+<table width="100%" height="300" border="1" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
   <tr>
-    <td width="10%" align="center"><strong>≈”¥—∫∑’Ë</strong></td>
-    <td width="66%" align="center"><strong>√“¬≈–‡Õ’¬¥¢ÈÕ¡Ÿ≈∑’Ë¢Õ·°È‰¢/‡æ‘Ë¡‡µ‘¡</strong></td>
-    <td width="24%" align="center"><strong>ºŸÈ√ÈÕß¢Õ</strong></td>
+    <td width="8%" height="34" align="center"><strong>‡∏•‡∏≥‡∏î‡∏±‡∏ö‡∏ó‡∏µ‡πà</strong></td>
+    <td width="48%" align="center"><strong>‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ó‡∏µ‡πà‡∏Ç‡∏≠‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç/‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÄ‡∏ï‡∏¥‡∏°</strong></td>
+    <td width="23%" align="center"><strong>‡∏ú‡∏π‡πâ‡∏£‡πâ‡∏≠‡∏á‡∏Ç‡∏≠</strong></td>
+    <td width="21%" align="center"><strong>‡∏ú‡∏π‡πâ‡∏õ‡∏è‡∏¥‡∏ö‡∏±‡∏ï‡∏¥‡∏á‡∏≤‡∏ô</strong></td>
   </tr>
   <tr>
-    <td height="439" align="center" valign="top">1</td>
+    <td height="500" align="center" valign="top"><p>1</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    </td>
     <td valign="top">&nbsp;<u><strong><?=$result['head']?>
     </strong></u><br />&nbsp;<?=nl2br($result['detail'])?></td>
     <td align="center" valign="top">
     <br />
+    <br />
     .....................................<br />
-<?=$result['user1']?><br />
+(<?=$result['user1']?>)<br />
     <?
    $a = explode(" ",$result['date']);
    $b = explode("-",$a[0]);
 	?>
-<?=$b[2]?>/<?=$b[1]?>/<?=$b[0]?></td>
-  </tr>
-</table>
-<br />
-<br />
-<table width="100%" border="0">
-  <tr>
-    <td width="34%" valign="top"><strong>-‡√’¬π ºÕ.√æ.§Ë“¬ œ</strong><br />
-<center>......................................................<br />
-......................................................<br />
-......................................................<br />
-......................................<br />
-(........................................)<br />
-<strong>Àπ.»Ÿπ¬Ï∫√‘°“√§Õ¡æ‘«‡µÕ√Ïœ</strong><br />
-...../..../....</center>
-    <td width="33%" valign="top"><strong>-‡√’¬π ºÕ.√æ.§Ë“¬ œ</strong><br />
-      <center>......................................................<br />
-......................................................<br />
-......................................................<br />
-<strong>æ.Õ.&nbsp;&nbsp;&nbsp;</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
-(......................................)<br /> 
-<strong>º™.ºÕ.√æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ </strong><br />
-...../..../....</center></td>
-    <td width="33%" valign="top"><center>
-      <br />
-      ......................................................<br />
-......................................................<br />
-......................................................<br />
-<strong>æ.Õ.&nbsp;</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
-(......................................)<br /> 
-<strong>ºÕ.√æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√</strong>’ <br />
-...../..../....</center></td>
-  </tr>
-  <tr>
-    <td valign="top"><strong>∫—π∑÷°°“√¥”‡π‘π°“√</strong><br />
-      <? if($result['p_edit']!="") echo $result['p_edit']; 
-      else echo "<center>......................................................<br />......................................................<br />......................................................<br /></center>";?>
-        <br />
+<?=$b[2]?>/<?=$b[1]?>/<?=$b[0]?><br />
+<? echo substr($result['date'],11,8);?>
+</td>
+    <td align="center" valign="top">
+<? /*if($result['p_edit']!="") echo $result['p_edit']; 
+      else echo "<center>......................................................<br />......................................................<br />......................................................<br /></center>";*/?>‡∏î‡∏≥‡πÄ‡∏ô‡∏¥‡∏ô‡∏Å‡∏≤‡∏£‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢<br />
+             <br />
       <center>...............................<br />
       
-      (.<? if($result['programmer']!="√Õ°“√µÕ∫√—∫"){
-				if($result['programmer']=="‡æ≈‘ßæ“¬ÿ") echo "‡æ≈‘ßæ“¬ÿ  Õÿªπ—π∑Ï";
-				elseif($result['programmer']=="‡∑«‘π∑√Ï") echo "‡æ≈‘ßæ“¬ÿ  Õÿªπ—π∑Ï";
-				elseif($result['programmer']=="¿Ÿ¡‘π∑√Ï") echo "¿Ÿ¡‘π∑√Ï  Õÿªπ—π∑Ï";
-				elseif($result['programmer']=="æ—™√’¿√≥Ï") echo "æ—™√’¿√≥Ï  »√’ ÿ¥";
-		} else echo "..........................";?>.)<br />
-      <strong>ºŸÈ¥”‡π‘π°“√</strong><br />
+      (<? echo $result['programmer'];?>)<br />
       <?
 		   $a = explode(" ",$result['dateend']);
 		   $b = explode("-",$a[0]);
 	   ?>
-      <? if($result['dateend']=="0000-00-00 00:00:00") echo "..../..../...."; 
-else echo $b[2]."./.".$b[1]."./.".$b[0].".";?></center></td>
-    <td valign="bottom"><strong>√—∫∑√“∫</strong><br />
+      <? if($result['dateend']=="0000-00-00 00:00:00") echo "............./............../............. "; 
+else echo $b[2]."/".$b[1]."/".$b[0]."";?><br />
+<? echo substr($result['dateend'],11,8);?>
+      </center></td>
+  </tr>
+</table>
+<br />
+<table width="100%" border="0">
+  <tr>
+    <td width="33%" valign="top"><strong>-‡πÄ‡∏£‡∏µ‡∏¢‡∏ô ‡∏ú‡∏≠.‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢ ‡∏Ø</strong><br />
+<center>
+  ..............................................................<br />
+  ..............................................................<br />
+  ..............................................................<br />
+  <br />
+</center>
+<span style="margin-left: 10px;"><strong>‡∏£.‡∏ï.</strong></span>
+<br />
+<center>
+  <strong>(‡∏™‡∏∏‡∏û‡∏• &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‡∏ä‡∏°‡∏†‡∏π‡∏õ‡∏¥‡∏ô)</strong><br />
+<strong>‡∏ô‡∏ä‡∏á.‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏õ‡∏è‡∏¥‡∏ö‡∏±‡∏ï‡∏¥‡∏´‡∏ô‡πâ‡∏≤‡∏ó‡∏µ‡πà<br />
+‡∏à‡∏ô‡∏ó.‡∏®‡∏π‡∏ô‡∏¢‡πå‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏Ñ‡∏≠‡∏°‡∏û‡∏¥‡∏ß‡πÄ‡∏ï‡∏≠‡∏£‡πå</strong><br />
+............./............../.............
+</center>
+    <td width="48%" valign="top"><strong>-‡πÄ‡∏£‡∏µ‡∏¢‡∏ô ‡∏ú‡∏≠.‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢ ‡∏Ø</strong><br />
       <center>
-        ...............................<br />
-(.<?=$result['user1']?>.)<br />
-      <strong>ºŸÈ√ÈÕß¢Õ</strong><br />
-      ..../..../....</center></td>
+        ..............................................................<br />
+        ..............................................................<br />
+        ..............................................................<br />
+        <br />
+      </center>
+<span style="margin-left: 40px;"><strong>‡∏û.‡∏ó.</strong></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+<center>
+<strong>(‡∏™‡∏°‡πÄ‡∏û‡∏ä‡∏£ &nbsp;‡πÅ‡∏™‡∏á‡∏®‡∏£‡∏µ‡∏à‡∏±‡∏ô‡∏ó‡∏£‡πå)</strong><br /> 
+<strong>‡∏´‡∏ô.‡∏™‡πà‡∏á‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏ö‡∏≥‡∏£‡∏∏‡∏á ‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏õ‡∏è‡∏¥‡∏ö‡∏±‡∏ï‡∏¥‡∏´‡∏ô‡πâ‡∏≤‡∏ó‡∏µ‡πà<br />
+</strong><strong>‡∏´‡∏ô.‡∏®‡∏π‡∏ô‡∏¢‡πå‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏Ñ‡∏≠‡∏°‡∏û‡∏¥‡∏ß‡πÄ‡∏ï‡∏≠‡∏£‡πå</strong><br />
+............./............../.............
+</center></td>
+    <td width="15%" valign="top"><center>
+      <br />
+      ..............................................................<br />
+      ..............................................................<br />
+      ..............................................................<br />
+      <br />
+      </center>
+<span style="margin-left: 10px;"><strong>‡∏û.‡∏≠.</strong></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+<center>
+<strong>(‡∏≠‡∏£‡∏£‡∏ì‡∏û &nbsp;&nbsp;‡∏ò‡∏£‡∏£‡∏°‡∏•‡∏±‡∏Å‡∏©‡∏°‡∏µ)</strong><br /> 
+<strong>‡∏ú‡∏≠.‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ</strong><br />
+............./............../.............
+</center></td>
   </tr>
 </table>
 </body>

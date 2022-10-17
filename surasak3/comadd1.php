@@ -29,7 +29,7 @@ if($_POST["act"]=="add")
 			$chOne = curl_init(); 
 			// notify-api.line.me
 			// 203.104.138.174
-			curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+			curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
 			curl_setopt( $chOne, CURLOPT_POST, 1); 
@@ -46,7 +46,7 @@ if($_POST["act"]=="add")
 			// Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ
 			$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
 			$chTwo = curl_init(); 
-			curl_setopt( $chTwo, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+			curl_setopt( $chTwo, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
 			curl_setopt( $chTwo, CURLOPT_SSL_VERIFYHOST, 0); 
 			curl_setopt( $chTwo, CURLOPT_SSL_VERIFYPEER, 0); 
 			curl_setopt( $chTwo, CURLOPT_POST, 1); 

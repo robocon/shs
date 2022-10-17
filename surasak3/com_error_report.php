@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 </head>
 <style>
@@ -16,7 +16,7 @@
 }
 </style>
 <body>
-<a href="com_error.php">∫—π∑÷°</a>
+<a href="com_error.php">‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å</a>
 <?php 
 include("connect.inc");
 
@@ -26,13 +26,13 @@ $result=mysql_query($sql) or die (mysql_error());
 <table  border="1" style="border-collapse:collapse" bordercolor="#000000" cellpadding="0" cellspacing="0" >
   <tr class="f1">
   <td align="center" bgcolor="#CCCCCC">#	</td>
-    <td align="center" bgcolor="#CCCCCC">«—π‡«≈“</td>
-    <td align="center" bgcolor="#CCCCCC">Õ“°“√</td>
-    <td align="center" bgcolor="#CCCCCC"> “‡Àµÿ</td>
-    <td align="center" bgcolor="#CCCCCC">°“√·°È‰¢</td>
-    <td align="center" bgcolor="#CCCCCC">ºŸÈ√—∫º‘¥™Õ∫</td>
-    <td align="center" bgcolor="#CCCCCC">√–¥—∫§«“¡√ÿπ·√ß</td>
-    <td align="center" bgcolor="#CCCCCC">æ‘¡æÏ</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏ß‡∏±‡∏ô‡πÄ‡∏ß‡∏•‡∏≤</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏≠‡∏≤‡∏Å‡∏≤‡∏£</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏Å‡∏≤‡∏£‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏ú‡∏π‡πâ‡∏£‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏ä‡∏≠‡∏ö</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏£‡∏∞‡∏î‡∏±‡∏ö‡∏Ñ‡∏ß‡∏≤‡∏°‡∏£‡∏∏‡∏ô‡πÅ‡∏£‡∏á</td>
+    <td align="center" bgcolor="#CCCCCC">‡∏û‡∏¥‡∏°‡∏û‡πå</td>
   </tr>
   
   <? 
@@ -47,7 +47,7 @@ $result=mysql_query($sql) or die (mysql_error());
     <td><?=$arr['correction'];?></td>
     <td><?=$arr['staff'];?></td>
     <td><?=$arr['level'];?></td>
-    <td><a href="com_form_report.php?row=<?=$arr['row_id'];?>" target="_blank">æ‘¡æÏ</a></td>
+    <td><a href="com_form_report.php?row=<?=$arr['row_id'];?>" target="_blank">‡∏û‡∏¥‡∏°‡∏û‡πå</a></td>
   </tr>
   <? 
   $x++;
