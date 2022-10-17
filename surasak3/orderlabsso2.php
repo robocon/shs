@@ -7,9 +7,6 @@ require_once 'class_file/OpdReceive.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-global $cHn, $aDgcode;
-$_SESSION['aDgcode'] = array();
-
 $cHn = $hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
 $extra = $_POST['extra'];
@@ -238,8 +235,6 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                             <?php 
                             $price = 0;
                             foreach ($chkList as $key => $code) { 
-
-                                $_SESSION['aDgcode'][] = $code;
 
                                 $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
                                 $l = $q->fetch_assoc();

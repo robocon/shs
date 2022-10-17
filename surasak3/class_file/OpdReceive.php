@@ -107,29 +107,27 @@ class OpdReceive
         $ptright = $op['ptright'];
         $ptname = $op['ptname'];
 
-        
-        // runno ของห้องแลป
-        $q_runno = $this->dbi->query("SELECT `runno`, SUBSTRING(`startday`,1,10) AS `startday` FROM `runno` WHERE `title` = 'lab'");
-        $row = $q_runno->fetch_assoc();
-        $nLab = $row['runno'];
-        $dLabdate = $row['startday'];
+        $nLab_orderhead = 0;
 
-        //ถ้าขึ้นวันใหม่ให้ตีเป็น 1
-        if(substr($dLabdate,0,10) != date("Y-m-d")){
-            $nLab = 1;
-            $dLabdate = date("Y-m-d 00:00:00");
-        }else{
-            $nLab++;
-        }
+        $q_orderhead = $this->dbi->query("SELECT `labnumber` FROM `orderhead` WHERE `hn`='$this->hn' AND `clinicalinfo = '$clinicalinfo' ");
+        if($q_orderhead->num_rows == 0){ 
 
-        $query ="UPDATE runno SET `runno` = '$nLab', `startday` = '$dLabdate' WHERE `title`='lab'";
-        $this->dbi->query($query);
+            // runno ของห้องแลป
+            $q_runno = $this->dbi->query("SELECT `runno`, SUBSTRING(`startday`,1,10) AS `startday` FROM `runno` WHERE `title` = 'lab'");
+            $row = $q_runno->fetch_assoc();
+            $nLab = $row['runno'];
+            $dLabdate = $row['startday'];
 
-        // รูปแบบ labnumber 
-        $this->labnumber = $labnumber = date("ymd").sprintf("%03d", $nLab);
-        
-        $q_orderhead = $this->dbi->query("SELECT * FROM `orderhead` WHERE `hn`='$this->hn' AND `clinicalinfo = '$clinicalinfo' ");
-        if($q_orderhead->num_rows == 0){
+            //ถ้าขึ้นวันใหม่ให้ตีเป็น 1
+            if(substr($dLabdate,0,10) != date("Y-m-d")){
+                $nLab = 1;
+                $dLabdate = date("Y-m-d 00:00:00");
+            }
+
+            $nLab_orderhead = $nLab;
+
+            // รูปแบบ labnumber 
+            $labnumber = date("ymd").sprintf("%03d", $nLab);
         
             $orderhead_sql = "INSERT INTO `orderhead` ( 
                 `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, `patientname`, 
@@ -143,7 +141,11 @@ class OpdReceive
             $orderhead_save = $this->dbi->query($orderhead_sql);
             if($orderhead_save==false){ 
                 die($this->dbi->error);
-            }
+            } 
+
+            $nLab++;
+            $query ="UPDATE runno SET `runno` = '$nLab', `startday` = '$dLabdate' WHERE `title`='lab'";
+            $this->dbi->query($query);
 
             $sumPrice = 0;
             $sumYPrice = 0;
@@ -176,6 +178,11 @@ class OpdReceive
             } // End foreach รายการแลป
 
         }
+        else
+        {
+            $odh_item = $q_orderhead->fetch_assoc();
+            $nLab_orderhead = substr($odh_item['labnumber'],6);;
+        }
 
         if($this->findOrderLab()==false){
         
@@ -193,7 +200,7 @@ class OpdReceive
             ) VALUES ( 
                 '$runno_chktranx', '$thai_date', '$ptname', '$this->hn', 'MD022 (ไม่ทราบแพทย์)', 'PATHO', 
                 '$count_item', 'ตรวจสุขภาพประกันสังคม', '$sumPrice', '$sumYPrice', '$sumNPrice', 
-                '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$nLab', 'Y' 
+                '$this->sOfficer', 'ตรวจสุขภาพ', '$this->vn', '$ptright', '$nLab_orderhead', 'Y' 
             )";
             $depart_save = $this->dbi->query($sql_depart);
             if($depart_save==false){
