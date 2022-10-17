@@ -7,7 +7,7 @@ require_once 'class_file/OpdReceive.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$cHn = $hn = $_POST['hn'];
+$hn = $_POST['hn'];
 $toborow = $_POST['toborow'];
 $extra = $_POST['extra'];
 
@@ -273,26 +273,10 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                 <div>
                     <br>
                     2. พิมพ์สติกเกอร์
-                    <a href="orderlabsso_stk.php?cHn=<?=$cHn;?>&type=all" target="_blank" class="aButton">สติกเกอร์ทั้งหมด</a>&nbsp;|&nbsp;
-                    <a href="orderlabsso_stk.php?cHn=<?=$cHn;?>&type=chem" target="_blank" class="aButton">สติกเกอร์ CHEM</a>&nbsp;|&nbsp;
-                    <a href="orderlabsso_stk.php?cHn=<?=$cHn;?>&type=cbc" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
-                    <a href="orderlabsso_stk.php?cHn=<?=$cHn;?>&type=ua" target="_blank" class="aButton">สติกเกอร์ UA</a>
-
-
-
-                    <!-- http://192.168.131.250/sm3/surasak3/labslip4bc_chkup_solider.php -->
-                    
-                    <!-- <button onclick="print_sticker('n')">พิมพ์สติกเกอร์</button> -->
-                    <!-- <a href="labslip4bc_chkup.php?cHn=<?=$cHn;?>" target="_blank" class="aButton">พิมพ์สติกเกอร์</a>&nbsp;|&nbsp; -->
-                    
-
-                    <!-- http://192.168.131.250/sm3/surasak3/labslip4cbc_chkup_solider.php -->
-                    <!-- <button onclick="print_sticker('cbc')">สติกเกอร์ CBC</button> -->
-                    <!-- <a href="labslip4cbc_chkup.php?cHn=<?=$cHn;?>" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp; -->
-
-                    <!-- http://192.168.131.250/sm3/surasak3/labslip4ua_chkup_solider.php -->
-                    <!-- <button onclick="print_sticker('ua')">สติกเกอร์ UA</button> -->
-                    <!-- <a href="labslip4ua_chkup_employee.php?cHn=<?=$cHn;?>" target="_blank" class="aButton">สติกเกอร์ UA</a> -->
+                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=all" target="_blank" class="aButton">สติกเกอร์ทั้งหมด</a>&nbsp;|&nbsp;
+                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=chem" target="_blank" class="aButton">สติกเกอร์ CHEM</a>&nbsp;|&nbsp;
+                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=cbc" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
+                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=ua" target="_blank" class="aButton">สติกเกอร์ UA</a>
                 </div>
             </div>
         </fieldset>

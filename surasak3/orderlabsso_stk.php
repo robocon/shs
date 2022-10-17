@@ -3,12 +3,12 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$cHn = $_REQUEST['cHn'];
+$hn = $_REQUEST['hn'];
 $type = $_REQUEST['type'];
 $thaiDate = (date('Y')+543).date('-m-d');
 $enDate = date('Y-m-d');
 
-$sql = sprintf("SELECT `date`,`hn`,`ptname`,`tvn`,`lab` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `depart` = 'PATHO' ", $thaiDate, $cHn);
+$sql = sprintf("SELECT `date`,`hn`,`ptname`,`tvn`,`lab` FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' AND `depart` = 'PATHO' ", $thaiDate, $hn);
 $q = $dbi->query($sql);
 if($q->num_rows > 0){ 
 
@@ -17,7 +17,7 @@ if($q->num_rows > 0){
     $sql_orderhead = sprintf("SELECT SUBSTRING(`labnumber`,7,3) AS `lab` 
     FROM `orderhead` 
     WHERE `date` LIKE '$enDate%' 
-    AND `hn` = '$cHn' 
+    AND `hn` = '$hn' 
     AND `clinicalinfo` = '$clinical' ");
     $q_orderhead = $dbi->query($sql);
     $odhead = $q_orderhead->fetch_assoc();
