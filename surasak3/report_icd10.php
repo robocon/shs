@@ -200,30 +200,30 @@ if(isset($_POST['okbtn'])){
 
 	?>
     <!--//////////////////////////////////////////////////////////now////////////////////////////////////////////////////////-->
-    <? if($_POST['in']=="1") echo "¢ÈÕ¡Ÿ≈ºŸÈªË«¬„π"; elseif($_POST['in']=="2") echo "¢ÈÕ¡Ÿ≈ºŸÈªË«¬πÕ°";?>
+    <? if($_POST['in']=="1") echo "‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÉ‡∏ô"; elseif($_POST['in']=="2") echo "‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ô‡∏≠‡∏Å";?>
 	<table border="1" cellpadding="0" cellspacing="0" width="100%">
 <tr>
   <td width="50" rowspan="2" align="center" class="texticd"><strong>ICD10</strong></td>
-<td width="31" rowspan="2" align="center" class="texticd"><strong>ª’ 
+<td width="31" rowspan="2" align="center" class="texticd"><strong>‡∏õ‡∏µ 
   <?=(date("Y")+543)?>
 </strong></td>
-  <td colspan="12" align="center" class="texticd"><strong>ª’ 
+  <td colspan="12" align="center" class="texticd"><strong>‡∏õ‡∏µ 
     <?=(date("Y")+543)?>
   </strong></td>
 </tr>
 <tr>
-  <td width="48" align="center" class="texticd"><strong>¡.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.æ.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡’.§.</strong></td>
-  <td width="59" align="center" class="texticd"><strong>‡¡.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡‘.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong> .§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>µ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.¬.</strong></td>
-  <td width="62" align="center" class="texticd"><strong>∏.§.</strong></td>
+  <td width="48" align="center" class="texticd"><strong>‡∏°.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏û.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏µ.‡∏Ñ.</strong></td>
+  <td width="59" align="center" class="texticd"><strong>‡πÄ‡∏°.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏¥.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏™.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏ï.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏¢.</strong></td>
+  <td width="62" align="center" class="texticd"><strong>‡∏ò.‡∏Ñ.</strong></td>
 </tr>
 
 <tr><td class="texticd">
@@ -288,26 +288,26 @@ if(isset($_POST['okbtn'])){
     <!--///////now-1-->
     <table border="1" cellpadding="0" cellspacing="0" width="100%">
 <tr><td width="50" rowspan="2" align="center" class="texticd"><strong>ICD10</strong></td>
-<td width="31" rowspan="2" align="center" class="texticd"><strong>ª’ 
+<td width="31" rowspan="2" align="center" class="texticd"><strong>‡∏õ‡∏µ 
   <?=(date("Y")+543)-1?>
 </strong></td>
-  <td colspan="12" align="center" class="texticd"><strong>ª’ 
+  <td colspan="12" align="center" class="texticd"><strong>‡∏õ‡∏µ 
     <?=(date("Y")+543)-1?>
   </strong></td>
 </tr>
 <tr>
-  <td width="48" align="center" class="texticd"><strong>¡.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.æ.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡’.§.</strong></td>
-  <td width="59" align="center" class="texticd"><strong>‡¡.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡‘.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong> .§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>µ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.¬.</strong></td>
-  <td width="62" align="center" class="texticd"><strong>∏.§.</strong></td>
+  <td width="48" align="center" class="texticd"><strong>‡∏°.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏û.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏µ.‡∏Ñ.</strong></td>
+  <td width="59" align="center" class="texticd"><strong>‡πÄ‡∏°.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏¥.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏™.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏ï.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏¢.</strong></td>
+  <td width="62" align="center" class="texticd"><strong>‡∏ò.‡∏Ñ.</strong></td>
 </tr>
 
 <tr><td class="texticd">
@@ -373,26 +373,26 @@ if(isset($_POST['okbtn'])){
     <table border="1" cellpadding="0" cellspacing="0" width="100%">
 <tr>
   <td width="50" rowspan="2" align="center" class="texticd"><strong>ICD10</strong></td>
-<td width="31" rowspan="2" align="center" class="texticd"><strong>ª’ 
+<td width="31" rowspan="2" align="center" class="texticd"><strong>‡∏õ‡∏µ 
   <?=(date("Y")+543)-2?>
 </strong></td>
-  <td colspan="12" align="center" class="texticd"><strong>ª’ 
+  <td colspan="12" align="center" class="texticd"><strong>‡∏õ‡∏µ 
     <?=(date("Y")+543)-2?>
   </strong></td>
 </tr>
 <tr>
-  <td width="48" align="center" class="texticd"><strong>¡.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.æ.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡’.§.</strong></td>
-  <td width="59" align="center" class="texticd"><strong>‡¡.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡‘.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong> .§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>µ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.¬.</strong></td>
-  <td width="62" align="center" class="texticd"><strong>∏.§.</strong></td>
+  <td width="48" align="center" class="texticd"><strong>‡∏°.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏û.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏µ.‡∏Ñ.</strong></td>
+  <td width="59" align="center" class="texticd"><strong>‡πÄ‡∏°.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏¥.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏™.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏ï.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏¢.</strong></td>
+  <td width="62" align="center" class="texticd"><strong>‡∏ò.‡∏Ñ.</strong></td>
 </tr>
 
 <tr><td class="texticd">
@@ -457,26 +457,26 @@ if(isset($_POST['okbtn'])){
     <!--///////now-3-->
     <table border="1" cellpadding="0" cellspacing="0" width="100%">
 <tr><td width="50" rowspan="2" align="center" class="texticd"><strong>ICD10</strong></td>
-<td width="31" rowspan="2" align="center" class="texticd"><strong>ª’ 
+<td width="31" rowspan="2" align="center" class="texticd"><strong>‡∏õ‡∏µ 
   <?=(date("Y")+543)-3?>
 </strong></td>
-  <td colspan="12" align="center" class="texticd"><strong>ª’ 
+  <td colspan="12" align="center" class="texticd"><strong>‡∏õ‡∏µ 
     <?=(date("Y")+543)-3?>
   </strong></td>
 </tr>
 <tr>
-  <td width="48" align="center" class="texticd"><strong>¡.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.æ.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡’.§.</strong></td>
-  <td width="59" align="center" class="texticd"><strong>‡¡.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡‘.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong> .§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>µ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.¬.</strong></td>
-  <td width="62" align="center" class="texticd"><strong>∏.§.</strong></td>
+  <td width="48" align="center" class="texticd"><strong>‡∏°.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏û.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏µ.‡∏Ñ.</strong></td>
+  <td width="59" align="center" class="texticd"><strong>‡πÄ‡∏°.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏¥.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏™.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏ï.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏¢.</strong></td>
+  <td width="62" align="center" class="texticd"><strong>‡∏ò.‡∏Ñ.</strong></td>
 </tr>
 
 <tr><td class="texticd">
@@ -541,26 +541,26 @@ if(isset($_POST['okbtn'])){
     <!--///////now-4-->
     <table border="1" cellpadding="0" cellspacing="0" width="100%">
 <tr><td width="50" rowspan="2" align="center" class="texticd"><strong>ICD10</strong></td>
-<td width="31" rowspan="2" align="center" class="texticd"><strong>ª’ 
+<td width="31" rowspan="2" align="center" class="texticd"><strong>‡∏õ‡∏µ 
   <?=(date("Y")+543)-4?>
 </strong></td>
-  <td colspan="12" align="center" class="texticd"><strong>ª’ 
+  <td colspan="12" align="center" class="texticd"><strong>‡∏õ‡∏µ 
     <?=(date("Y")+543)-4?>
   </strong></td>
 </tr>
 <tr>
-  <td width="48" align="center" class="texticd"><strong>¡.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.æ.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡’.§.</strong></td>
-  <td width="59" align="center" class="texticd"><strong>‡¡.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>¡‘.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong> .§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>°.¬.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>µ.§.</strong></td>
-  <td width="51" align="center" class="texticd"><strong>æ.¬.</strong></td>
-  <td width="62" align="center" class="texticd"><strong>∏.§.</strong></td>
+  <td width="48" align="center" class="texticd"><strong>‡∏°.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏û.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏µ.‡∏Ñ.</strong></td>
+  <td width="59" align="center" class="texticd"><strong>‡πÄ‡∏°.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏°‡∏¥.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏™.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏Å.‡∏¢.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏ï.‡∏Ñ.</strong></td>
+  <td width="51" align="center" class="texticd"><strong>‡∏û.‡∏¢.</strong></td>
+  <td width="62" align="center" class="texticd"><strong>‡∏ò.‡∏Ñ.</strong></td>
 </tr>
 
 <tr><td class="texticd">
@@ -628,16 +628,16 @@ elseif(!isset($_POST['okbtn'])){
 ?>
 <form action="<? $_SERVER['PHP_SELF']?>" method="post" target="_blank" name="form_icd10">
 <table>
-<tr><td>§ÈπÀ“µ“¡ ICD10 :</td><td><input type="text" name="search" size="10"><input type="submit" value=" §ÈπÀ“ " name="okbtn"></td></tr>
-<tr><td colspan="2"><input name="in" type="radio" value="1" />ºŸÈªË«¬„π<input name="in" type="radio" value="2" />ºŸÈªË«¬πÕ°</td></tr>
+<tr><td>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏° ICD10 :</td><td><input type="text" name="search" size="10"><input type="submit" value=" ‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤ " name="okbtn"></td></tr>
+<tr><td colspan="2"><input name="in" type="radio" value="1" />‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÉ‡∏ô<input name="in" type="radio" value="2" />‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ô‡∏≠‡∏Å</td></tr>
 
-<!--<tr><td>§ÈπÀ“µ“¡ ICD10 :</td><td><input type="text" name="search" size="10"><input type="button" value=" ‡≈◊Õ° " name="add" onClick="OnClick_add_icd10(document.form_icd10.search.value)"></td></tr>
+<!--<tr><td>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏ï‡∏≤‡∏° ICD10 :</td><td><input type="text" name="search" size="10"><input type="button" value=" ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å " name="add" onClick="OnClick_add_icd10(document.form_icd10.search.value)"></td></tr>
 -->
 
 
-<!--<tr><td>µÈÕß°“√§ÈπÀ“ :</td><td><Div id="listicd"></Div><input type="submit" name="okbtn" size="10"></td></tr>-->
+<!--<tr><td>‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤ :</td><td><Div id="listicd"></Div><input type="submit" name="okbtn" size="10"></td></tr>-->
 </table>
-<a href="../nindex.htm"><h3> &lt;&lt;‰ª‡¡πŸ</h3></a>
+<a href="../nindex.htm"><h3> &lt;&lt;‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</h3></a>
 </form>
 <?
 }
