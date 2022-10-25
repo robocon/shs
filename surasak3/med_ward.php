@@ -171,7 +171,7 @@ if ( $action === 'save' ) {
         $chOne = curl_init(); 
         // https://notify-api.line.me/api/notify
         // http://203.104.138.174/api/notify
-        curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_URL, "http://203.104.138.174/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 
