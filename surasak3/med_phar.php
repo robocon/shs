@@ -54,7 +54,7 @@ if ($action === 'active') {
         $chOne = curl_init(); 
         // https://notify-api.line.me/api/notify
         // http://203.104.138.174/api/notify
-        curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+        curl_setopt( $chOne, CURLOPT_URL, "http://203.104.138.174/api/notify"); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
         curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 
@@ -63,10 +63,14 @@ if ($action === 'active') {
         curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
         curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
         $result = curl_exec( $chOne ); 
+
+        if($result==false){
+            $extra_txt = curl_error($chOne);
+        }
+
         curl_close($chOne);
-
-
-        $msg = 'บันทึกข้อมูลเรียบร้อย';
+        
+        $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
     }else{
         $err = set_log(mysql_error());
         $msg = 'ไม่สามารถบันทึกข้อมูลได้'.$err['id'].' ' .$err['msg'];
