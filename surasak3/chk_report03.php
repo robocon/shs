@@ -708,7 +708,6 @@ WHERE b.`result` != 'DELETE'
 #	AND b.`labcode` != 'MUCOUS'  ) 
 GROUP BY x.`profilecode` 
 ORDER BY b.`seq` ASC, a.`latest_id` ASC ";
-// dump($sql1);
 $query1 = mysql_query($sql1) or die( mysql_error() );
 $other_result_row = mysql_num_rows($query1);
 
@@ -782,13 +781,13 @@ $outlab_row = mysql_num_rows($outlab_query);
 
 									if($objResult["labname"]=="Blood Sugar"){
 										$labmean="ระดับน้ำตาลในเลือด";
-									}else if($objResult["labname"]=="BUN"){
+									}else if($objResult["labname"]=="BUN" OR $objResult["labname"]=="BUN*"){
 										$labmean="การทำงานของไต";
 									}else if($objResult["labname"]=="Creatinine"){
 										$labmean="การทำงานของไต";
 									}else if($objResult["labname"]=="Uric acid"){
 										$labmean="ยูริคในเลือด";
-									}else if($objResult["labname"]=="Cholesterol"){
+									}else if($objResult["labname"]=="Cholesterol" OR $objResult["labname"]=="Cholesterol*"){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="HDL"){
 										$labmean="ไขมันความหนาแน่นสูง";			
@@ -798,7 +797,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="ไขมันความหนาแน่นต่ำ";	
 									}else if($objResult["labname"]=="LDLC"){
 										$labmean="ไขมันความหนาแน่นต่ำ";												
-									}else if($objResult["labname"]=="SGOT(AST)"){
+									}else if($objResult["labname"]=="SGOT(AST)" OR $objResult["labname"]=="SGOT(AST)*"){
 										$labmean="การทำงานของตับ";
 									}else if($objResult["labname"]=="SGPT(ALT)"){
 										$labmean="การทำงานของตับ";

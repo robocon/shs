@@ -29,13 +29,16 @@ if($_POST["act"]=="add")
 			$chOne = curl_init(); 
 			// notify-api.line.me
 			// 203.104.138.174
-			curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+			// curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+			curl_setopt( $chOne, CURLOPT_URL, "http://192.168.129.143/send_notify.php"); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+			// curl_setopt ($chOne, CURLOPT_SSLVERSION, 6);
 			curl_setopt( $chOne, CURLOPT_POST, 1); 
-			curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-			$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-			curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+			curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+			// $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+			$headers = array( 'Content-type: application/x-www-form-urlencoded' );
+			curl_setopt( $chOne, CURLOPT_HTTPHEADER, $headers); 
 			curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
 			$result = curl_exec( $chOne ); 
 			curl_close($chOne);
@@ -46,12 +49,14 @@ if($_POST["act"]=="add")
 			// Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ
 			$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
 			$chTwo = curl_init(); 
-			curl_setopt( $chTwo, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+			// curl_setopt( $chTwo, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
+			curl_setopt( $chTwo, CURLOPT_URL, "http://192.168.129.143/send_notify.php"); 
 			curl_setopt( $chTwo, CURLOPT_SSL_VERIFYHOST, 0); 
 			curl_setopt( $chTwo, CURLOPT_SSL_VERIFYPEER, 0); 
 			curl_setopt( $chTwo, CURLOPT_POST, 1); 
-			curl_setopt( $chTwo, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-			$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$tokenTwo.'', );
+			curl_setopt( $chTwo, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$tokenTwo); 
+			// $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$tokenTwo.'', );
+			$headers = array( 'Content-type: application/x-www-form-urlencoded' );
 			curl_setopt($chTwo, CURLOPT_HTTPHEADER, $headers); 
 			curl_setopt( $chTwo, CURLOPT_RETURNTRANSFER, 1); 
 			$result = curl_exec( $chTwo ); 
