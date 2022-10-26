@@ -1,7 +1,7 @@
 <?php 
 
-$message = $_POST['message'];
-$token = $_POST['token'];
+$sMessage = $_POST['message'];
+$sToken = $_POST['token'];
 
 $ch = curl_init(); 
 curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 

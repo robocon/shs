@@ -150,16 +150,6 @@ if ( $action === 'save' ) {
 
     if( $uploadOk === 1 ){
 
-        // ส่งข้อมูลไปเซิฟ.31 ที่เป็น linebot
-        // $buildUrl = http_build_query($ids);
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, "http://192.168.1.31/surasakbot/push_med.php");
-        // curl_setopt($ch, CURLOPT_POST, 1);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $buildUrl);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $output = curl_exec($ch);
-        // curl_close($ch);
-
         $fullWardName = getFullWardName(trim($bedcode));
         $newAn = '';
         if ($firstTime == true) {
@@ -169,15 +159,10 @@ if ( $action === 'save' ) {
         $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
         $sMessage = iconv('UTF-8','UTF-8',"Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn);
         $chOne = curl_init(); 
-        // https://notify-api.line.me/api/notify
-        // http://203.104.138.174/api/notify
-        curl_setopt( $chOne, CURLOPT_URL, "http://203.104.138.174/api/notify"); 
-        curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-        curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+        curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
         curl_setopt( $chOne, CURLOPT_POST, 1); 
-        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-        $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-        curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+        curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' )); 
         curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
         $result = curl_exec( $chOne ); 
         curl_close($chOne);
