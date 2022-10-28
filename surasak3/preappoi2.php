@@ -603,7 +603,7 @@ function listb(number){
 		document.getElementById("room").selectedIndex=4;
 	}
 	else if(document.getElementById("detail").value=='FU19 อัลตร้าซาวด์'){
-		document.getElementById("room").selectedIndex=3;
+		document.getElementById("room").selectedIndex=7;
 	}
 	else if(document.getElementById("detail").value=='FU21 คลินิก COPD'){
 		document.getElementById("room").selectedIndex=3;
@@ -934,6 +934,10 @@ function fncSubmit(strPage)
 			}
 		}
 
+
+		// if($_SESSION["smenucode"]=="ADMXR"){
+
+
 		?>
 
       <select size="1" name="room" id="room">
@@ -944,7 +948,7 @@ function fncSubmit(strPage)
         <option>ห้องฉุกเฉิน</option>
         <option>กองทันตกรรม</option>
         <option>แผนกพยาธิวิทยา</option>
-        <option>แผนกเอกชเรย์</option>
+        <option <?=($_SESSION["smenucode"]=="ADMXR") ? 'selected="selected"' : '';?>>แผนกเอกชเรย์</option>
         <option>กองสูติ-นารี</option>
         <option <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>กายภาพ</option>
         <option>คลีนิกฝังเข็ม</option>
@@ -963,6 +967,7 @@ function fncSubmit(strPage)
 		<option>แผนกตรวจสุขภาพ</option>
 		<option>คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)</option>
 		<option>อาคารแพทย์ทางเลือก</option>
+		<option>หอผู้ป่วยพิเศษ3</option>
         </select>
       </font><font face="Angsana New" size = '4'><font face="Angsana New"></font></font></font><font face="Angsana New" size = '4'><font face="Angsana New">เวลา<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
 	   
@@ -1054,7 +1059,7 @@ function fncSubmit(strPage)
 			<option  value="U/S BREAST">U/S BREAST</option>
 			<option  value="U/S BOTH LEG">U/S BOTH LEG</option>
 			<option  value=">U/S LT LEG">U/S LT LEG</option>
-			<option  value="U/S RR LEG">U/S RR LEG</option>
+			<option  value="U/S PR LEG">U/S PR LEG</option>
 			<option  value="U/S EXTREMITY">U/S EXTREMITY</option>
 			<option  value="U/S THYROID">U/S THYROID</option>
 			<option  value="U/S NECK">U/S NECK</option>
@@ -1082,7 +1087,7 @@ function fncSubmit(strPage)
  <tr>
   <td>ข้อควรปฏิบัติก่อนพบแพทย์</td>
   <td colspan="2"><font face="Angsana New" size = '4'>
-  <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
+  <? if($_SESSION["smenucode"]=="ADMXR"){ ?>
      <select size="1" name="advice" id="advice">
       <option value="ไม่มี" selected="selected">ไม่มี</option
       ></select> 
@@ -1140,7 +1145,7 @@ function fncSubmit(strPage)
         &#3649;&#3612;&#3609;&#3585;&#3652;&#3605;&#3648;&#3607;&#3637;&#3618;&#3617;</option>
       <option>U10&nbsp;
         &#3649;&#3612;&#3609;&#3585;&#3614;&#3618;&#3634;&#3608;&#3636;</option>
-      <option>U11&nbsp;
+      <option <?=($_SESSION["smenucode"]=="ADMXR") ? 'selected="selected"' : '';?>>U11&nbsp;
         &#3649;&#3612;&#3609;&#3585;&#3648;&#3629;&#3585;&#3595;&#3660;&#3648;&#3619;&#3618;&#3660;</option>
       <option>U13&nbsp;
         &#3585;&#3629;&#3591;&#3607;&#3633;&#3609;&#3605;&#3585;&#3619;&#3619;&#3617;</option>

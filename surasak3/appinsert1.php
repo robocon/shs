@@ -328,8 +328,19 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
     print "<p class='size2 center'>FR-NUR-003/2,04, 25 ธ.ค. 54</p>";
     
     print "<p class='size4'><b>ชื่อ:</b> $cPtname <b>HN:</b> $cHn <b>อายุ:</b> $cAge <b>สิทธิ:</b> $cptright</p>";
-    print "<p class='size3'><b>หมายเหตุ: <u>$cidguard</u></b></p>";
-    print "<p class='size5' style=\"line-height: 36px;\"><b><u>นัดมา: วัน$day ที่ $appd<br>เวลา: $capptime</u></b></p>";
+    
+    // ถ้าห้องที่ยื่นไม่ใช่ xray ค่อยแสดง
+    if($room != "แผนกเอกชเรย์"){ 
+        print "<p class='size3'><b>หมายเหตุ: <u>$cidguard</u></b></p>";
+    }
+    
+    $timebr = '<br>';
+    // ถ้ายื่นใบนัดที่แผนก xray ไม่ต้องขึ้นบรรทัดใหม่
+    if($room == "แผนกเอกชเรย์"){ 
+        $timebr = '';
+    }
+
+    print "<p class='size5' style=\"line-height: 36px;\"><b><u>นัดมา: วัน$day ที่ $appd $timebr เวลา: $capptime</u></b></p>";
     print "<p class='size4'><b><u>ยื่นใบนัดที่: $room</u></b>&nbsp;<b>เพื่อ:</b> $detail".( $detail2 != "" ? "($detail2)" : "" )."</p>";
     
     if ($detail != 'NA') { 
@@ -337,8 +348,14 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
         print "<p class='size3'><b>แพทย์ผู้นัด:</b> $cdoctor</p>";
     }
     
+    // ถ้ายื่นที่ xray ให้เพิ่มขนาดตัวหนังสือข้อแนะนำ
+    $adviceSize = '';
+    if($room == "แผนกเอกชเรย์"){ 
+        $adviceSize = 'class="size5"';
+    }
+    
     if ($advice != 'NA') {
-        print "<p><b>ข้อแนะนำ:</b> $advice</p>";
+        print "<p $adviceSize><b>ข้อแนะนำ:</b> $advice</p>";
     }
     
     if (!empty($pathoall)) {
@@ -454,7 +471,7 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
         print "
     1.ผู้ป่วยนัดตรวจให้ยื่นใบนัดที่ห้องเอ็กเรย์ &nbsp;&nbsp;<BR>
     2.กรุณามาตรงตามวันและเวลานัด&nbsp;<BR>
-    3.<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกทะเบียน &nbsp; <br>
+    3.<b>ถ้าผิดนัด </b>ให้ใบนัดยื่นแผนกเอกซ์เรย์ &nbsp; <br>
     <b>กรณีเลื่อนนัด ต้องติดต่อล่วงหน้าอย่างน้อย 1 วันทำการ<br> ในวันเวลาราชการ เวลา 09.00 น. - 15.00 น. โทร 054-839305-6 ต่อ 1140</b>";
     }else if($detail =='FU37 ตรวจ IVP'){ 
         print "
