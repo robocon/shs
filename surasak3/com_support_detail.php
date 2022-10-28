@@ -72,15 +72,10 @@ if($action==='save'){
     $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
     $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nรายละเอียด: $detail\n";
     $chOne = curl_init(); 
-    // notify-api.line.me
-    // 203.104.138.174
-    curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-    curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-    curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+    curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
     curl_setopt( $chOne, CURLOPT_POST, 1); 
-    curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-    $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-    curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+    curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+    curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded')); 
     curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
     $result = curl_exec( $chOne ); 
     curl_close($chOne);
