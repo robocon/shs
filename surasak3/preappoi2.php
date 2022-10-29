@@ -1029,7 +1029,13 @@ function fncSubmit(strPage)
         <?php } ?>
       </font></font></td>
     </tr>
-<tr>
+	<?php 
+	$hideStyle = '';
+	if($_SESSION["smenucode"]=="ADMXR"){
+		$hideStyle = 'style="display:none;"';
+	}
+	?>
+<tr <?=$hideStyle;?> >
   <td colspan="3"><font face="Angsana New"><A HREF="javascript:show_bock();">เจาะเลือด</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; เจาะเลือดเพิ่มเติม <font face="Angsana New">
     <input type="text" name="labm" size="30" />
   </font></td>
@@ -1087,14 +1093,14 @@ function fncSubmit(strPage)
  <tr>
   <td>ข้อควรปฏิบัติก่อนพบแพทย์</td>
   <td colspan="2"><font face="Angsana New" size = '4'>
-  <? if($_SESSION["smenucode"]=="ADMXR"){ ?>
+  <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
      <select size="1" name="advice" id="advice">
       <option value="ไม่มี" selected="selected">ไม่มี</option
       ></select> 
   <? }else{ ?>
     <select size="1" name="advice" id="advice">
       <option selected value="NA">ไม่มี</option>
-      <option value="ไม่มี" <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>ไม่มี</option>
+      <option value="ไม่มี" <? if($_SESSION["smenucode"]=="ADMPT" OR $_SESSION["smenucode"]=="ADMXR"){ echo "selected";}?>>ไม่มี</option>
       <option>ไม่ต้องงดน้ำหรืออาหาร</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 20:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 24:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
