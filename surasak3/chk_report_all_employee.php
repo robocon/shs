@@ -29,26 +29,28 @@ https://css-tricks.com/fixing-tables-long-strings/
 </head>
 <?php
 
-$Conn = mysql_connect("192.168.128.86", "remoteuser", "") or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
-mysql_select_db("smdb", $Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+$Conn = mysql_connect(HOST, USER, PASS) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
+mysql_select_db(DB, $Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+mysql_query("SET NAMES UTF8");
 
 $sql = "SELECT a.*, b.* 
-FROM ( SELECT `hn` AS `opHN`, CONCAT(`yot`,`name`,' ',`surname`) AS `fullname`  FROM `opcard` WHERE `employee` = 'y' ) AS a 
+FROM ( SELECT `hn` AS `opHN`, CONCAT(`yot`,`name`,' ',`surname`) AS `fullname`  FROM `opcard` WHERE ( `guardian` = 'ลูกจ้าง' OR `guardian` = 'ไตเทียม' OR `guardian` = 'นวดแผนไทย' ) ORDER BY `guardian` ASC, `hn` ASC ) AS a 
 LEFT JOIN ( 
 	SELECT y.* 
 	FROM ( 
-		SELECT MAX(`id`) AS `lastId` FROM `chk_doctor` WHERE `yearchk` = '64' AND (`date_chk`>='2020-10-21 00:00:00' AND `date_chk`<='2020-11-02 23:59:59') group by hn 
+		SELECT MAX(`id`) AS `lastId` FROM `chk_doctor` WHERE `yearchk` = '66' GROUP BY `hn` 
 	) AS x 
 	LEFT JOIN `chk_doctor` AS y ON y.`id` = x.`lastId` 
 ) AS b ON b.`hn` = a.`opHN` 
-ORDER BY a.`opHN` ";
-$out_result_sql = mysql_query($sql, $Conn) or die ( mysql_error() );
+ORDER BY a.`opHN`";
+$out_result_sql = mysql_query($sql, $Conn) or die (  mysql_error() );
 $num = mysql_num_rows($out_result_sql);
+
 
 ?>	
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพลูกจ้างชั่วคราว โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
-<div align="center"><strong>ระหว่างวันที่ 21 - 30 ตุลาคม 2563 จำนวน <?=$num;?> ราย</strong></div>
+<div align="center"><strong>ระหว่างวันที่ 17 - 21 ตุลาคม 2565 จำนวน <?=$num;?> ราย</strong></div>
 <table width="100%" class="chk_table">
 <tr>
 	<th width="3%" rowspan="2" align="center">ลำดับ</th>
@@ -103,11 +105,11 @@ $i=0;
 while($result = mysql_fetch_array($out_result_sql)){
 
     // $yaer_chk = $result['year_chk'];
-    $yaer_chk = "64";
+    $yaer_chk = "66";
     $pt_hn = $result['opHN'];
     $age = $result["age"];
     $cs = $result["cs"];
-	$exam_no = $result["exam_no"];
+	// $exam_no = $result["exam_no"];
 	$ptname = $result["fullname"];
 	$congenital_disease = $result["congenital_disease"];
 	
@@ -218,6 +220,35 @@ while($result = mysql_fetch_array($out_result_sql)){
 		// $stat_cbc = $dxStat['stat_cbc'];
 		// $stat_ua = $dxStat['stat_ua'];
 
+		/**
+		 * !!! ปี66 ตรวจแบบ LIPID !!!
+		 * หา LIPID ซึ่งใน LIPID จะมี CHOL(Cholesterol*), TRIG(Triglyceride*), HDL(HDL-C), 10001(LDL-C) อีกทีหนึ่ง
+		 * ถ้ามีตรวจ LIPID ก็เอาไปแทนค่า statement ตัวเดิม
+		 */
+		$sql_lipid="SELECT b.`labcode`, b.`labname`, b.`result`, b.`flag`
+		FROM ( 
+
+			SELECT *, MAX(`autonumber`) AS `latest_number`
+			FROM `resulthead` 
+			WHERE `hn` = '$pt_hn' 
+			AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+			AND `profilecode` = 'LIPID' 
+
+		) AS a
+		INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+		WHERE b.labcode IN ('CHOL','TRIG','HDL','10001') ";
+
+		$q_lipid=mysql_query($sql_lipid);
+		$lipid = array();
+		if(mysql_num_rows($q_lipid) > 0){
+			while ($l = mysql_fetch_assoc($q_lipid)) { 
+				
+				$key = $l['labcode'];
+				$lipid[$key] = $l;
+			}
+		}
+
+
 		$sqlCBC="SELECT b.* 
 		FROM ( 
 
@@ -294,20 +325,29 @@ while($result = mysql_fetch_array($out_result_sql)){
 		?>
 	</td>
 	<td align="center">
-		<?php
-		$sql2="SELECT b.result, b.flag 
-		FROM ( 
-			SELECT *, MAX(`autonumber`) AS `latest_number`
-			FROM `resulthead` 
-			WHERE `hn` = '$pt_hn' 
-			AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-			AND `profilecode` = 'CHOL' 
-			GROUP BY `profilecode` 
-		) AS a
-		INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-		WHERE b.labcode = 'CHOL' AND (b.result !='DELETE' OR b.result !='*') ";
-		$query2=mysql_query($sql2);
-		list($chol,$flag)=mysql_fetch_array($query2);
+		<?php 
+
+		if($lipid['CHOL']){
+			$chol = $lipid['CHOL']['result'];
+			$flag = $lipid['CHOL']['flag'];
+
+		}else{
+
+			$sql2="SELECT b.result, b.flag 
+			FROM ( 
+				SELECT *, MAX(`autonumber`) AS `latest_number`
+				FROM `resulthead` 
+				WHERE `hn` = '$pt_hn' 
+				AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+				AND `profilecode` = 'CHOL' 
+				GROUP BY `profilecode` 
+			) AS a
+			INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+			WHERE b.labcode = 'CHOL' AND (b.result !='DELETE' OR b.result !='*') ";
+			$query2=mysql_query($sql2);
+			list($chol,$flag)=mysql_fetch_array($query2);
+		}
+
 		if($flag=="N"){
 			echo $chol;
 		}else if($flag=="H" || $flag=="L"){
@@ -318,20 +358,27 @@ while($result = mysql_fetch_array($out_result_sql)){
 		?>
 	</td>
 	<td align="center">
-		<?php
-		$sql3="SELECT b.result, b.flag 
-		FROM ( 
-			SELECT *, MAX(`autonumber`) AS `latest_number`
-			FROM `resulthead` 
-			WHERE `hn` = '$pt_hn' 
-			AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-			AND `profilecode` = 'TRIG' 
-			GROUP BY `profilecode` 
-		) AS a
-		INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-		WHERE b.labcode = 'TRIG' AND (b.result !='DELETE' OR b.result !='*') ";
-		$query3=mysql_query($sql3);
-		list($trig,$flag)=mysql_fetch_array($query3);
+		<?php 
+		if($lipid['TRIG']){
+			$trig = $lipid['TRIG']['result'];
+			$flag = $lipid['TRIG']['flag'];
+		
+		}else{
+			$sql3="SELECT b.result, b.flag 
+			FROM ( 
+				SELECT *, MAX(`autonumber`) AS `latest_number`
+				FROM `resulthead` 
+				WHERE `hn` = '$pt_hn' 
+				AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+				AND `profilecode` = 'TRIG' 
+				GROUP BY `profilecode` 
+			) AS a
+			INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+			WHERE b.labcode = 'TRIG' AND (b.result !='DELETE' OR b.result !='*') ";
+			$query3=mysql_query($sql3);
+			list($trig,$flag)=mysql_fetch_array($query3);
+		}
+		
 		if($flag=="N"){
 			echo $trig;
 		}else if($flag=="H" || $flag=="L"){
@@ -342,20 +389,30 @@ while($result = mysql_fetch_array($out_result_sql)){
 		?>
 	</td>
 	<td align="center">
-		<?php
-		$sql4="SELECT b.result, b.flag 
-		FROM ( 
-			SELECT *, MAX(`autonumber`) AS `latest_number`
-			FROM `resulthead` 
-			WHERE `hn` = '$pt_hn' 
-			AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-			AND `profilecode` = 'HDL' 
-			GROUP BY `profilecode` 
-		) AS a
-		INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-		WHERE b.labcode = 'HDL' AND (b.result !='DELETE' OR b.result !='*') ";
-		$query4=mysql_query($sql4);
-		list($hdl,$flag)=mysql_fetch_array($query4);
+		<?php 
+		if($lipid['HDL']){
+			$hdl = $lipid['HDL']['result'];
+			$flag = $lipid['HDL']['flag'];
+		
+		}else{
+
+			$sql4="SELECT b.result, b.flag 
+			FROM ( 
+				SELECT *, MAX(`autonumber`) AS `latest_number`
+				FROM `resulthead` 
+				WHERE `hn` = '$pt_hn' 
+				AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+				AND `profilecode` = 'HDL' 
+				GROUP BY `profilecode` 
+			) AS a
+			INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+			WHERE b.labcode = 'HDL' AND (b.result !='DELETE' OR b.result !='*') ";
+			$query4=mysql_query($sql4);
+			list($hdl,$flag)=mysql_fetch_array($query4);
+			
+		}
+
+		
 
 		if($flag=="N" || $flag=="H"){
 			echo $hdl;
@@ -369,19 +426,26 @@ while($result = mysql_fetch_array($out_result_sql)){
 	<!-- LDL ธรรมดา -->
 	<td align="center">
 		<?php 
-		$sql5="SELECT b.result, b.flag 
-		FROM ( 
-			SELECT *, MAX(`autonumber`) AS `latest_number`
-			FROM `resulthead` 
-			WHERE `hn` = '$pt_hn' 
-			AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-			AND `profilecode` = 'LDL'
-			GROUP BY `profilecode` 
-		) AS a
-		INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-		WHERE `profilecode` = 'LDL' AND (b.result !='DELETE' OR b.result !='*') ";
-		$query5=mysql_query($sql5);
-		list($ldl,$flag)=mysql_fetch_array($query5);
+		if($lipid['10001']){
+			$ldl = $lipid['10001']['result'];
+			$flag = $lipid['10001']['flag'];
+		
+		}else{
+			$sql5="SELECT b.result, b.flag 
+			FROM ( 
+				SELECT *, MAX(`autonumber`) AS `latest_number`
+				FROM `resulthead` 
+				WHERE `hn` = '$pt_hn' 
+				AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+				AND `profilecode` = 'LDL'
+				GROUP BY `profilecode` 
+			) AS a
+			INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+			WHERE `profilecode` = 'LDL' AND (b.result !='DELETE' OR b.result !='*') ";
+			$query5=mysql_query($sql5);
+			list($ldl,$flag)=mysql_fetch_array($query5);
+		}
+		
 		if($flag=="N" || $flag=="L"){
 			echo $ldl;
 		}else if($flag=="H"){
@@ -393,24 +457,24 @@ while($result = mysql_fetch_array($out_result_sql)){
 	</td>
 	<td align="center">
 		<?php
-		$sql6="SELECT b.result, b.flag 
-		FROM ( 
-			SELECT *, MAX(`autonumber`) AS `latest_number`
-			FROM `resulthead` 
-			WHERE `hn` = '$pt_hn' 
-			AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-			AND `profilecode` = 'BUN' 
-			GROUP BY `profilecode` 
-		) AS a
-		INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-		WHERE b.labcode = 'BUN' AND (b.result !='DELETE' OR b.result !='*') ";
-		$query6=mysql_query($sql6);
-		list($bun,$flag)=mysql_fetch_array($query6);
-		if($flag=="N"){
-			echo $bun;
-		}else{
-			echo "<strong style='color:#FF0000'>$bun</strong>";
-		}
+		// $sql6="SELECT b.result, b.flag 
+		// FROM ( 
+		// 	SELECT *, MAX(`autonumber`) AS `latest_number`
+		// 	FROM `resulthead` 
+		// 	WHERE `hn` = '$pt_hn' 
+		// 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+		// 	AND `profilecode` = 'BUN' 
+		// 	GROUP BY `profilecode` 
+		// ) AS a
+		// INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+		// WHERE b.labcode = 'BUN' AND (b.result !='DELETE' OR b.result !='*') ";
+		// $query6=mysql_query($sql6);
+		// list($bun,$flag)=mysql_fetch_array($query6);
+		// if($flag=="N"){
+		// 	echo $bun;
+		// }else{
+		// 	echo "<strong style='color:#FF0000'>$bun</strong>";
+		// }
 		?>
 	</td>
 	<td align="center">
