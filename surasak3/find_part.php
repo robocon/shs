@@ -45,11 +45,8 @@ $dbi->set_charset('utf8');
         FROM ( 
             SELECT `hn`, `row_id`, `date`, `depart`, `detail`, `price` 
             FROM `opacc` 
-            WHERE `date` LIKE '$date%' AND ( 
-                ( `depart` = '' OR `depart` IS NULL ) 
-                OR 
-                (`detail` IS NULL OR `detail` = '') 
-            ) 
+            WHERE `date` LIKE '$date%' 
+            AND ( `depart` = '' OR `depart` IS NULL ) 
             AND `credit` != 'ยกเลิก'
         ) AS a 
         LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` ";

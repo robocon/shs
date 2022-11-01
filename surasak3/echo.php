@@ -54,6 +54,21 @@ if($q->num_rows > 0){
     $id = $ec['id'];
 }
 
+/**
+ * จะทำอะไรกับฟอร์มนี้
+ * 
+ * เน้นตัวโตๆ ก่อนเลยว่าต้องให้ใช้กับ IE ได้ก่อน
+ * 
+ * :::: แนวคิดการปรับ :::: 
+ * คือต้องการให้ใช้ฟอร์มบันทึกแค่ฟอร์มเดียวแต่สามารถกดใช้ได้ทั้ง ผู้ป่วยใน และผู้ป่วยนอก ทั้งแพทย์และพยาบาล
+ * 
+ * [] submit form แล้วส่งค่าเป็น ajax ไปที่หลังบ้านเพื่อทำการบันทึก
+ * [] มีตัว loading แสดงที่หน้าแพทย์
+ * 
+ */
+require_once 'echo_dt_form.php';
+
+/*
 ?>
 <form action="echo_save.php" method="post">
     <table class="echo_table" id="echo_table" width="80%" align="center">
@@ -78,36 +93,6 @@ if($q->num_rows > 0){
         <tr>
             <td class="tb_head" colspan="2" style="text-shadow: black 0.1em 0.1em 0.2em; background-color: #309f55;">ECHOCARDIOGRAPHY</td>
         </tr>
-        <!--
-        <tr>
-            <td colspan="2">
-                <table width="100%">
-                    <tr>
-                        <td align="center" width="30%">
-                            <br>
-                            <h3>โรงพยาบาลค่ายสุรศักดิ์มนตรี</h3>
-                            <h3>ECHOCARDIOGRAPHY REPORT</h3>
-                            <br>
-                        </td>
-                        <td valign="top" width="70%">
-                            <table width="100%" >
-                                <tr>
-                                    <td>
-                                        ชื่อ นาย มุ้งมิ้ง กิงก่องแก้ว อายุ 99ปี 5เดือน 11 วัน Vido No. A297/57/M Echo No. EC5610401
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        HN 99-9999 VN 99 Request Date 26 ต.ค. 2556 09:21 น.
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        -->
         <tr>
             <td valign="top" width="50%">
                 <table width="100%" class="echo_table">
@@ -392,25 +377,72 @@ if($q->num_rows > 0){
         </tr>
     </table>
 </form>
+<?php 
+*/
+?>
 <script>
-function request(url, success, error) {
-  var request = new XMLHttpRequest();
-  request.open('GET', url, true);
 
-  request.onload = function () {
-    if (this.status >= 200 && this.status < 400) {
-      // Success! If you expect this to be JSON, use JSON.parse!
-      success(this.responseText, this.status);
-    } else {
-      // We reached our target server, but it returned an error
-      error();
+document.getElementById("echoForm").onsubmit = function(ev){ 
+    // ev.preventDefault(); //
+    ev.preventDefault ? ev.preventDefault() : (ev.returnValue = false);
+
+    var inputs = document.getElementsByClassName('echoInput');
+    var test_str = [];
+    for (var index = 0; index < inputs.length; index++) { 
+        var el = inputs[index];
+        if(el.value){ 
+            test_str.push(encodeURIComponent(el.getAttribute('name'))+"="+encodeURIComponent(el.value));
+        }
     }
-  };
+    var data = test_str.join("&");
 
-  request.onerror = function () {
-    error();
-  };
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function(){
+        if( request.readyState == 4 && request.status == 200 ){
+            setInput(request.responseText);
+        }
+    };
+    request.open('POST', 'echo_save.php', true);
+    request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+    request.send(data);
 
-  request.send();
+    return false;
+}
+
+function setInput(res){ 
+    var txt = JSON.parse(res);
+    document.getElementById('resHtmlContain').style.display = "";
+    if(txt.data[0].errno){
+        document.getElementById("resHtmlTxt").innerHTML = 'ERROR: '+txt.data[0].errno+' '+txt.data[0].error;
+
+    }else{
+        document.getElementById("echoId").value = txt.data[0].id;
+        document.getElementById("resHtmlTxt").innerHTML = 'บันทึกข้อมูลเรียบร้อย';
+    }
+}
+
+function btnClose(){
+    document.getElementById('resHtmlContain').style.display = 'none';
+}
+
+function request(url, success, error) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+            // Success! If you expect this to be JSON, use JSON.parse!
+            success(this.responseText, this.status);
+        } else {
+            // We reached our target server, but it returned an error
+            error();
+        }
+    };
+
+    request.onerror = function () {
+        error();
+    };
+
+    request.send();
 }
 </script>

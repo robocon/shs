@@ -1,5 +1,8 @@
 <?php 
 include 'bootstrap.php';
+include 'includes/JSON.php';
+
+$json = new Services_JSON();
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -57,11 +60,13 @@ $ts_rvsp = $dbi->real_escape_string($_POST['ts_rvsp']);
 $cardio_finding = $dbi->real_escape_string($_POST['cardio_finding']);
 $diag = $dbi->real_escape_string($_POST['diag']);
 $doctor = $dbi->real_escape_string($_SESSION['sOfficer']);
+$type = $dbi->real_escape_string($_POST['type']);
+$res['data'] = array();
 
 if(empty($id)){
 
     $sql = "INSERT INTO `echo_cardio` ( 
-        `id`, `date`, `thdatehn`, `ptname`, `hn`, `vn`, 
+        `id`, `date`, `thdatehn`, `ptname`, `hn`, `type`, `vn`, 
         `pause`, `bp`, `age`, `echo_no`, `ao`, `la`, 
         `ivsd`, `ivss`, `lvdd`, `lvds`, `pwd`, `pws`, 
         `fs`, `lvedv`, `lvesv`, `sv`, `co`, `ef`, 
@@ -71,7 +76,7 @@ if(empty($id)){
         `ps_pr_pgrad`, `ts`, `ts_mngrad`, `ts_tvapht`, `ts_tva2d`, `ts_tr`, 
         `ts_rvsp`, `cardio_finding`, `diag`, `doctor` 
     ) VALUES ( 
-        NULL, NOW(), '$thdatehn', '$ptname', '$hn', '$vn', 
+        NULL, NOW(), '$thdatehn', '$ptname', '$hn', '$type', '$vn', 
         '$pause', '$bp', '$age', '$echo_no', '$ao', '$la', 
         '$ivsd', '$ivss', '$lvdd', '$lvds', '$pwd', '$pws', 
         '$fs', '$lvedv', '$lvesv', '$sv', '$co', '$ef', 
@@ -82,6 +87,9 @@ if(empty($id)){
         '$ts_rvsp', '$cardio_finding', '$diag', '$doctor' 
     );";
     $save = $dbi->query($sql);
+    $insert_id = $dbi->insert_id;
+
+    $res['data'][] = array('id'=>$insert_id, 'echo_number'=>$echo_no);
 
 }else{
     // update
@@ -89,6 +97,7 @@ if(empty($id)){
     `thdatehn`='$thdatehn', 
     `ptname`='$ptname', 
     `hn`='$hn', 
+    `type`='$type',
     `vn`='$vn', 
     `pause`='$pause', 
     `bp`='$bp', 
@@ -137,12 +146,14 @@ if(empty($id)){
     `diag`='$diag', 
     `doctor`='$doctor' WHERE ( `id`='$id' );";
     $save = $dbi->query($sql);
+    $res['data'][] = array('id'=>$id, 'echo_number'=>$echo_no);
 
 }
 
-if(!empty($dbi->error) && $save == false){
-    echo $dbi->error;
-}elseif ($save==true) {
-    $_SESSION['x_message'] = "บันทึกข้อมูลเรียบร้อย";
-    header('Location: echo.php');
+if($save == false){
+    unset($res['data']);
+    $res['data'][] = array('error' => $dbi->error, 'errno' => $dbi->errno);
 }
+
+// header('Content-Type: application/json; charset=utf-8');
+echo $json->encode($res);
