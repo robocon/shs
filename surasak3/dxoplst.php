@@ -1,23 +1,23 @@
 <?php
     $today="$d-$m-$yr";
-    print "วันที่ $today   ";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
+    print "เธงเธฑเธเธ—เธตเน $today   ";
+    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<เนเธเน€เธกเธเธน</a>";
     $today="$yr-$m-$d";
 ?>
 <table>
  <tr>
   <th bgcolor=6495ED><font face='Angsana New'>VN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เธเธทเนเธญ</th>
   <th bgcolor=6495ED><font face='Angsana New'>HN</th>
   <th bgcolor=6495ED><font face='Angsana New'>AN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ประเภทบุคคล</th>
-  <th bgcolor=6495ED><font face='Angsana New'>วินิจฉัยโรค</th>
-  <th bgcolor=6495ED><font face='Angsana New'>กลุ่มโรค</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เธเธฃเธฐเน€เธ เธ—เธเธธเธเธเธฅ</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เธงเธดเธเธดเธเธเธฑเธขเนเธฃเธ</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เธเธฅเธธเนเธกเนเธฃเธ</th>
   <th bgcolor=6495ED><font face='Angsana New'>ICD10</th>
   <th bgcolor=6495ED><font face='Angsana New'>ICD9CM</th>
-  <th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
-<th bgcolor=6495ED><font face='Angsana New'>คืนOPD</th>
-<th bgcolor=6495ED><font face='Angsana New'>ลงรหัส</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เนเธเธ—เธขเน</th>
+<th bgcolor=6495ED><font face='Angsana New'>เธเธทเธOPD</th>
+<th bgcolor=6495ED><font face='Angsana New'>เธฅเธเธฃเธซเธฑเธช</th>
   </tr>
 
 <?php
