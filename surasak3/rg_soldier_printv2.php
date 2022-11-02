@@ -63,7 +63,7 @@ class MySHSPdf extends SHSPdf {
 		$this->SetXY(30,250);
 		$this->Cell(0, 5, 'โรงพยาบาลค่ายสุรศักดิ์มนตรี',0,1,'L');
 		$this->SetXY(30,255);
-		$this->Cell(0, 5, 'โทร. ๐๕ ๔๘๓ ๐๓๐๕',0,1,'L');
+		$this->Cell(0, 5, 'โทร. ๐๕ ๔๘๓ ๙๓๐๕',0,1,'L');
 
 		$this->SetFont('THSarabun','',12);
 		$this->SetXY(0, 277);
@@ -161,18 +161,22 @@ $pdf->Write(8, 'เมื่อ');
 $pdf->SetFont('THSarabun','B',20);
 $pdf->Write(8, 'วันที่ '.thaiNum($d).' '.toUTF($def_fullm_th[$m]).' '.thaiNum($y+543));
 
-$pdf->Image($img_idcard, 134, 124, 58, 34);
+$pdf->Image($img_idcard, 134, 124, 56, 32);
+
+$regular_number = toUTF($user['regular_number']);
+$regular = str_replace($user['regular_number'], '', $user['regular']);
 
 $pdf->Ln();
 $pdf->Ln(4.23); // +12 Before
 $pdf->SetX(30);
 $pdf->SetFont('THSarabun','',20);
 $pdf->Write(8, 'สรุปความเห็น ');
-$pdf->SetFont('THSarabun','B',20);
-$pdf->Write(8, thaiNum(toUTF($user['diag'])));
 
-$pdf->SetXY(30, $pdf->getY()+8);
-$regular_number = toUTF($user['regular_number']);
+$pdf->SetFont('THSarabun','B',20);
+// $pdf->Write(8, thaiNum(toUTF($regular)));
+$pdf->SetX(30);
+$pdf->MultiCell(160, 8, '                  '.thaiNum(toUTF($regular)));
+$pdf->SetXY(30, $pdf->getY());
 $pdf->MultiCell(160, 8, 'ตามกฏกระทรวง ฉบับที่ ๗๔ (พ.ศ.๒๕๔๐) ข้อ '.thaiNum($regular_number));
 
 $pdf->Image($pic_patient, 30, $pdf->getY()+8, 40, 60);
@@ -196,7 +200,7 @@ $pdf->SetX(115);
 $pdf->Cell(75, 8, '('.toUTF($user['doctor3']).')',0,1,'C');
 
 $pdf->SetX(115);
-$pdf->Cell(75, 8, 'กรมการแพทย์ผู้ตรวจร่างกาย',0,1,'C');
+$pdf->Cell(75, 8, 'กรรมการแพทย์ผู้ตรวจร่างกาย',0,1,'C');
 
 $pdf->AutoPrint(true);
 $pdf->Output();
