@@ -32,8 +32,7 @@ $dbi->query("SET NAMES UTF8");
     }
 </style>
 <?php 
-$id = $dbi->escape_string($_GET['id']);
-$sql = "SELECT *,SUBSTRING(`date`,1,10) AS `short_date` FROM `echo_cardio` WHERE `id` = '$id' ";
+$sql = sprintf("SELECT *,SUBSTRING(`date`,1,10) AS `short_date` FROM `echo_cardio` WHERE `id` = '%s' ", $_GET['id']);
 $q = $dbi->query($sql);
 
 if ($q->num_rows > 0) {
@@ -71,7 +70,13 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
                             </tr>
                             <tr>
                                 <td>
-                                    <b>HN</b> <?=$a['hn'];?>&nbsp;&nbsp;&nbsp;<b>VN</b> <?=$a['vn'];?>&nbsp;&nbsp;&nbsp;<b>Request Date</b> <?=$th_date;?> <?=$h.':'.$i;?> น.
+                                    <?php 
+                                    $type = "<b>VN</b> ".$a['vn']."&nbsp;&nbsp;&nbsp;";
+                                    if($a['type']=='IPD'){
+                                        $type = "<b>AN</b> ".$a['vn']."&nbsp;&nbsp;&nbsp;";
+                                    }
+                                    ?>
+                                    <b>HN</b> <?=$a['hn'];?>&nbsp;&nbsp;&nbsp;<?=$type;?><b>Request Date</b> <?=$th_date;?> <?=$h.':'.$i;?> น.
                                 </td>
                             </tr>
                         </table>

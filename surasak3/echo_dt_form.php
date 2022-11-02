@@ -297,7 +297,7 @@
                 <input type="hidden" id="echoId" name="id" class="echoInput" value="<?=$id;?>">
                 <input type="hidden" name="thdatehn" class="echoInput" value="<?=$thdatehn;?>">
 
-                <input type="hidden" name="type" class="echoInput" value="OPD">
+                <input type="hidden" name="type" class="echoInput" value="<?=$type;?>">
                 
             </td>
         </tr>

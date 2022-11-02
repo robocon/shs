@@ -3,7 +3,7 @@ require_once 'bootstrap.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $hn = $dbi->escape_string($_GET['hn']);
-$q = $dbi->query("SELECT `id`,`date` FROM `echo_cardio` WHERE `hn` = '$hn' ORDER BY `id` DESC ");
+$q = $dbi->query("SELECT `id`,`date`,`type` FROM `echo_cardio` WHERE `hn` = '$hn' ORDER BY `id` DESC ");
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -46,8 +46,13 @@ while ($a=$q->fetch_assoc()) {
 	if($i%2===0){
 		$bg = 'style="background-color: #F0F4BF;"';
 	}
+
+	$type = '';
+	if($a['type']=='IPD'){
+		$type = '(IPD) ';
+	}
     ?>
-    <li <?=$bg;?>><a href="echo_print.php?id=<?=$a['id'];?>&print=noprint" target="right"><?=$a['date'];?></a></li>
+    <li <?=$bg;?>><a href="echo_print.php?id=<?=$a['id'];?>&print=noprint" target="right"><?=$a['date'];?> <?=$type;?></a></li>
     <?php
 	$i++;
 }

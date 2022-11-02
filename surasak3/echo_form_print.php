@@ -50,7 +50,7 @@ if($action === "search"){
     
     list($y,$m,$d) = explode('-', $date);
     $date = bc_to_ad($_POST['date']);
-    $sql = "SELECT `id`, `date`, `hn`, `ptname`, `vn`, `doctor` FROM `echo_cardio` WHERE `date` LIKE '$date%' ";
+    $sql = "SELECT `id`, `date`, `hn`, `ptname`, `vn`, `doctor`,`type` FROM `echo_cardio` WHERE `date` LIKE '$date%' ";
     $q = $dbi->query($sql);
     if($q->num_rows > 0){
         ?>
@@ -62,7 +62,8 @@ if($action === "search"){
                     <th>วันที่</th>
                     <th>HN</th>
                     <th>ชื่อ-สกุล</th>
-                    <th>VN</th>
+                    <th>ประเภท</th>
+                    <th>VN / AN</th>
                     <th>ผู้บันทึก</th>
                     <th></th>
                 </tr>
@@ -77,6 +78,7 @@ if($action === "search"){
                     <td><?=$a['date'];?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['ptname'];?></td>
+                    <td><?=$a['type'];?></td>
                     <td><?=$a['vn'];?></td>
                     <td><?=$a['doctor'];?></td>
                     <td><a href="echo_print.php?id=<?=$a['id'];?>&hn=<?=$a['hn'];?>" target="_blank">พิมพ์</a></td>

@@ -66,6 +66,7 @@ if($q->num_rows > 0){
  * [] มีตัว loading แสดงที่หน้าแพทย์
  * 
  */
+$type = 'OPD';
 require_once 'echo_dt_form.php';
 
 /*
@@ -383,7 +384,7 @@ require_once 'echo_dt_form.php';
 <script>
 
 document.getElementById("echoForm").onsubmit = function(ev){ 
-    // ev.preventDefault(); //
+    
     ev.preventDefault ? ev.preventDefault() : (ev.returnValue = false);
 
     var inputs = document.getElementsByClassName('echoInput');
