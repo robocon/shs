@@ -60,9 +60,9 @@ class MySHSPdf extends SHSPdf {
 	{
 
 		$this->SetFont('THSarabun','',14);
-		$this->SetXY(30,250);
+		$this->SetXY(30, $this->getY());
 		$this->Cell(0, 5, 'âÃ§¾ÂÒºÒÅ¤èÒÂÊØÃÈÑ¡´ÔìÁ¹µÃÕ',0,1,'L');
-		$this->SetXY(30,255);
+		$this->SetXY(30, $this->getY());
 		$this->Cell(0, 5, 'â·Ã. ðõ ôøó ùóðõ',0,1,'L');
 
 		$this->SetFont('THSarabun','',12);
