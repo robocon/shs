@@ -32,7 +32,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <form action="" method="post" name="frmSearch" id="frmSearch">
  <table  border="1" cellpadding="0" cellspacing="0" bordercolor="#666666" style="border-collapse:collapse" class="angsana" >
   <tr class="forntsarabun">
-    <td colspan="2" bgcolor="#99CC99">ผู้ป่วยค้างชำระเงิน </td>
+    <td colspan="2" bgcolor="#99CC99">ผู้ป่วยค้างชำระเงินที่จ่ายแล้ว </td>
     </tr>
   <tr class="forntsarabun">
     <td  align="right"><span class="forntsarabun">วัน/เดือน/ปี</span></td>
@@ -73,7 +73,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
     <td colspan="2" align="center">* ค้นหาจากวันที่รับบริการ
       <input name="submit" type="submit" class="forntsarabun" value="ค้นหา"/>&nbsp;&nbsp;
     <!--<input type="button" name="button" value="พิมพ์รายงาน"  onClick="JavaScript:window.print();" class="forntsarabun">-->
-      <a href="../nindex.htm" class="forntsarabun">กลับเมนูหลัก</a>  ||  <a href="report_accrueddetail.php" target="_blank">รายงานค้างชำระแบบละเอียด</a> || <a href="accrued_status_y.php" target="_blank">สถานะการชำระจากค้างจ่าย ปีงบ64</a>
+      <a href="../nindex.htm" class="forntsarabun">กลับเมนูหลัก</a>  ||  <a href="report_accrued.php">ผู้ป่วยค้างชำระ</a>
       </td>
   </tr>
 </table>
@@ -131,75 +131,70 @@ $objQuery1 = mysql_query($strSQL1) or die ("Error Query1 [".$strSQL1."]");
 
 
 
-$strSQL2 = "SELECT  * FROM accrued as a , opcard as b  WHERE a.hn=b.hn and a.status_pay='".$status_pay2."' order by a.txdate asc";
+$strSQL2 = "SELECT  * FROM accrued as a , opcard as b  WHERE a.hn=b.hn and a.status_pay='".$status_pay2."' order by a.txdate desc";
 $objQuery2 = mysql_query($strSQL2) or die ("Error Query2 [".$strSQL2."]");
 
 
 }
 
-echo "<font size='+2' class='angsana'>แสดงรายการที่ค้างชำระ</font>";
 ?>
-
 <br />
 <br />
-
-
-<table  border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse"  bordercolor="#000000" class="angsana" width="100%">
+<?  
+echo "<font size='+2' class='angsana'>แสดงรายการที่ชำระแล้ว</font>";
+?>
+<br />
+<br />
+<table  border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse"  bordercolor="#000000" width="100%" class="angsana">
   <tr bgcolor="#ADDFFF" onmouseover="this.style.backgroundColor='#ADDFFF'" onmouseout="this.style.backgroundColor=''">
 
     <th align="center">ลำดับ</th>
     <th align="center">วันที่รับบริการ</th>
     <th align="center">วันที่บันทึกข้อมูล</th>
+    <th align="center">เลขที่ใบเสร็จ</th>
     <th align="center">VN</th>
     <th align="center">HN</th>
     <th align="center">ชื่อ-สกุล</th>
     <th align="center">รายการ</th>
     <th align="center">สิทธิ</th>
     <th align="center">จำนวนเงิน</th>
-	<th align="center">ลบ</th>
+	<!--<th align="center">ลบ</th>-->
     <!--<th>ลบ</th>-->
   </tr>
 <?
 $i=1;
-while($objResult1 = mysql_fetch_array($objQuery1))
+while($objResult2 = mysql_fetch_array($objQuery2))
 {
 	
-	$ptname1=$objResult1['yot'].$objResult1['name'].' '.$objResult1['surname'];
+	$ptname=$objResult2['yot'].$objResult2['name'].' '.$objResult2['surname'];
 	
-	if($objResult1["depart"]=='PHAR'){
-	$link="<a href='acc_phardetail.php?pdate=$objResult1[txdate]&phn=$objResult1[hn]' target='_blank'>$objResult1[detail]</a>";	
+	if($objResult2["depart"]=='PHAR'){
+	$link="<a href='acc_phardetail.php?pdate=$objResult2[txdate]&phn=$objResult2[hn]' target='_blank'>$objResult2[detail]</a>";	
 	}else{
-	$link="<a href='acc_hudthakandetail.php?pdate=$objResult1[txdate]&phn=$objResult1[hn]' target='_blank'>$objResult1[detail]</a>";		
+	$link="<a href='acc_hudthakandetail.php?pdate=$objResult2[txdate]&phn=$objResult2[hn]' target='_blank'>$objResult2[detail]</a>";		
 	}
-	
-	$date1=explode(" ",$objResult1["txdate"]);
-	$date=explode("-",$date1[0]);
-	$yr=$date[0];
-	$m=$date[1];
-	$d=$date[2];
 ?>
   <tr  onmouseover="this.style.backgroundColor='#ADDFFF'" onmouseout="this.style.backgroundColor=''">
 
-
     <td align="center"><?=$i;?></td>
-    <td align="left"><?=$objResult1["txdate"];?></td>
-    <td align="left"><?=$objResult1["date"];?></td>
-    <td align="center"><a href="opcashvn.php?vn=<?=$objResult1["vn"];?>&d=<?=$d;?>&m=<?=$m;?>&yr=<?=$yr;?>" target="_blank"><?=$objResult1["vn"];?></a></td>
-    <td align="center"><?=$objResult1["hn"];?></td>
-    <td align="left"><?=$ptname1;?></td>
+    <td><?=$objResult2["txdate"];?></td>
+    <td><?=$objResult2["date"];?></td>
+    <td><?=$objResult2["billno"];?></td>
+    <td align="center"><?=$objResult2["vn"];?></td>
+    <td align="center"><?=$objResult2["hn"];?></td>
+    <td align="left"><?=$ptname;?></td>
     <td align="left"><?=$link;?></td>
-    <td align="left"><?=$objResult1[7];?></td>
-   <td align="right"><?=$objResult1["price"];?></td>
-   <td align="center"><a href="JavaScript:if(confirm('ยืนยันการชำระเงินค้างจ่าย?')==true){ window.location='accrued_delete.php?row_id=<?=$objResult1[0];?>';}">ลบ</a></td>
+    <td align="left"><?=$objResult2["ptright"];?></td>
+   <td align="right"><?=$objResult2["price"];?></td>
+   <!--<td align="center"><a href="JavaScript:if(confirm('ยืนยันการชำระเงินค้างจ่าย?')==true){ window.location='accrued_delete.php?row_id=<?//=$objResult2[0];?>';}">ลบ</a></td>-->
   </tr>
-<?
+ <?
 $i++;
-$sumtotal+=$objResult1["price"];
+$sumtotal2+=$objResult2["price"];
 }
-?> 
+?>
   <tr  onmouseover="this.style.backgroundColor='#ADDFFF'" onmouseout="this.style.backgroundColor=''">
     <td colspan="8" align="center">รวมเงินทั้งหมด</td>
-    <td align="right"><?=number_format($sumtotal,2)?></td>
-    <td align="center">&nbsp;</td>
+    <td align="right"><?=number_format($sumtotal2,2);?></td>
   </tr>
 </table>
