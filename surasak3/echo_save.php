@@ -61,8 +61,15 @@ $cardio_finding = $dbi->real_escape_string($_POST['cardio_finding']);
 $diag = $dbi->real_escape_string($_POST['diag']);
 $doctor = $dbi->real_escape_string($_SESSION['sOfficer']);
 $type = $dbi->real_escape_string($_POST['type']);
-$res['data'] = array();
 
+// กรณีผู้ป่วยใน และพยาบาลเป็นคนคีย์
+if(!empty($_POST['staff'])){
+    $doctor = sprintf("%s", $_POST['doctor']);
+    $staff = sprintf("%s", $_POST['staff']);
+}
+
+
+$res['data'] = array();
 if(empty($id)){
 
     $sql = "INSERT INTO `echo_cardio` ( 
@@ -74,7 +81,7 @@ if(empty($id)){
         `ms_mvapht`, `ms_mva2d`, `ms_mr`, `as`, `as_pgrad`, `as_mngrad`, 
         `as_ar`, `as_aipht`, `ps`, `ps_pgrad`, `ps_mngrad`, `ps_pr`, 
         `ps_pr_pgrad`, `ts`, `ts_mngrad`, `ts_tvapht`, `ts_tva2d`, `ts_tr`, 
-        `ts_rvsp`, `cardio_finding`, `diag`, `doctor` 
+        `ts_rvsp`, `cardio_finding`, `diag`, `doctor`, `staff` 
     ) VALUES ( 
         NULL, NOW(), '$thdatehn', '$ptname', '$hn', '$type', '$vn', 
         '$pause', '$bp', '$age', '$echo_no', '$ao', '$la', 
@@ -84,7 +91,7 @@ if(empty($id)){
         '$ms_mvapht', '$ms_mva2d', '$ms_mr', '$as', '$as_pgrad', '$as_mngrad', 
         '$as_ar', '$as_aipht', '$ps', '$ps_pgrad', '$ps_mngrad', '$ps_pr', 
         '$ps_pr_pgrad', '$ts', '$ts_mngrad', '$ts_tvapht', '$ts_tva2d', '$ts_tr', 
-        '$ts_rvsp', '$cardio_finding', '$diag', '$doctor' 
+        '$ts_rvsp', '$cardio_finding', '$diag', '$doctor', '$staff'
     );";
     $save = $dbi->query($sql);
     $insert_id = $dbi->insert_id;
@@ -144,7 +151,8 @@ if(empty($id)){
     `ts_rvsp`='$ts_rvsp', 
     `cardio_finding`='$cardio_finding', 
     `diag`='$diag', 
-    `doctor`='$doctor' WHERE ( `id`='$id' );";
+    `doctor`='$doctor', 
+    `staff` = '$staff' WHERE ( `id`='$id' );";
     $save = $dbi->query($sql);
     $res['data'][] = array('id'=>$id, 'echo_number'=>$echo_no);
 

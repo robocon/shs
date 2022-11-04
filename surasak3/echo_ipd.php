@@ -25,6 +25,16 @@ $dbi->query("SET NAMES UTF8");
             <div>
                 <label for="an">ค้นหาตาม AN: <input type="text" name="an" id="an"></label>
             </div>
+            <?php 
+            if($_SESSION['smenucode']!='ADMDR' OR $_SESSION['smenucode']!='ADMDR1'){
+            ?>
+            <div>
+                <input type="hidden" name="doctor" id="doctor" class="echoInput" value="วิรดา  อนันตวงศ์ (ว.43724)" readonly>
+                <input type="hidden" name="staff" class="echoInput" value="<?=$_SESSION['sOfficer'];?>">
+            </div>
+            <?php
+            }
+            ?>
             <div>
                 <button type="submit">ค้นหา</button>
                 <input type="hidden" name="page" value="search">
@@ -149,6 +159,10 @@ $dbi->query("SET NAMES UTF8");
             document.getElementById("echoId").value = txt.data[0].id;
             document.getElementById("resHtmlTxt").innerHTML = 'บันทึกข้อมูลเรียบร้อย';
         }
+
+        setTimeout(() => {
+            btnClose();
+        }, 3000);
     }
 
     function btnClose(){
