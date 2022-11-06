@@ -25,11 +25,11 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-07-01';
-$date_end = '2565-09-30';
+$date_start = '2565-10-01';
+$date_end = '2565-10-31';
 
-$quarter = 4;
-$year = '2565';
+$quarter = 1;
+$year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 if(!file_exists($filePath)){
@@ -48,8 +48,8 @@ FROM `trauma`
 WHERE ( `date` >= '$date_start 00:00:00' AND `date` <= '$date_end 23:59:59' ) ";
 $q = $dbi->query($sql);
 
-$sql_header = "INSERT INTO `trauma` (`id`, `trauma_id`, `date`, `hn`, `ptright`, `dx`, `organ`, `maintenance`, `cure`, `doctor`, `trauma`, `type_wounded`, `type_wounded2`, `date_hn`, `quarter`, `year`) VALUES ";
-$sql_data_list = array();
+$sql_header = "INSERT INTO `rdu_trauma` (`id`, `trauma_id`, `date`, `hn`, `ptright`, `dx`, `organ`, `maintenance`, `cure`, `doctor`, `trauma`, `type_wounded`, `type_wounded2`, `date_hn`, `quarter`, `year`) VALUES ";
+// $sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
     // dump($item);
@@ -75,12 +75,14 @@ while ( $item = $q->fetch_assoc() ) {
     $type_wounded2 = $item['type_wounded2'];
     $date_hn = $item['date_hn'];
 
-    $test = $sql_data_list[] = "(NULL, '$trauma_id', '$date', '$hn', '$ptright', '$dx', '$organ', '$maintenance', '$cure', '$doctor', '$trauma', '$type_wounded', '$type_wounded2', '$date_hn', '$quarter', '$year')";
-    dump($test);
+    $sql_insert = $sql_header."(NULL, '$trauma_id', '$date', '$hn', '$ptright', '$dx', '$organ', '$maintenance', '$cure', '$doctor', '$trauma', '$type_wounded', '$type_wounded2', '$date_hn', '$quarter', '$year');\n";
+    // dump($test);
+
+    file_put_contents($filePath, $sql_insert, FILE_APPEND);
 
 }
-$sql_value = implode(',', $sql_data_list);
-$sql_header.$sql_value;
-file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+// $sql_value = implode(',', $sql_data_list);
+// $sql_header.$sql_value;
+// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";

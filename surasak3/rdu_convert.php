@@ -36,11 +36,11 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-07-01';
-$date_end = '2565-09-30';
+$date_start = '2565-10-01';
+$date_end = '2565-10-31';
 
-$quarter = 4;
-$year = '2565';
+$quarter = 1;
+$year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 if(!file_exists($filePath)){
@@ -52,6 +52,8 @@ if(file_exists($filePath))
 {
     unlink($filePath);
 }
+
+// unlink("rdu/rdu_opday.sql");
 
 $sql = "SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,SUBSTRING(TRIM(a.`toborow`),1,4) AS `toborow`, 
 CONCAT(SUBSTRING(a.`thidate`,1,10),a.`hn`) AS `date_hn` 
@@ -66,7 +68,7 @@ if($q == false){
     exit;
 }
 
-$sql_header = "INSERT INTO `opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`toborow`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`toborow`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
 $sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
@@ -87,11 +89,21 @@ while ( $item = $q->fetch_assoc() ) {
         $gender = 'f';
     }
 
-    $sql_data_list[] = "( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$toborow','$date_hn',NOW(),'$quarter','$year')";
+    $sql_insert = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$toborow','$date_hn',NOW(),'$quarter','$year');\n";
+    // $insert = $dbi->query($sql_insert);
+    // dump($sql_insert);
+    // dump($insert);
+
+    file_put_contents($filePath, $sql_insert, FILE_APPEND);
 }
 
-$sql_value = implode(',', $sql_data_list);
-$sql_header.$sql_value;
-file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+// $sql_value = implode(',', $sql_data_list);
+// $sql_header.$sql_value;
+// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+
+// $command = "mysql --user=sm3db_user --password='sm3dbPassword' -h 192.168.131.240 -D sm3db-utf8 < rdu/rdu_opday.sql";
+// $output = shell_exec($command);
+
+
 
 echo "Success";

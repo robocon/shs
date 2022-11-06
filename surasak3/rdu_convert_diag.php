@@ -34,14 +34,14 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-01-01';
-$date_end = '2565-03-31';
+$date_start = '2565-10-01';
+$date_end = '2565-10-31';
 
-$date_start_en = '2022-01-01';
-$date_end_en = '2022-03-31';
+$date_start_en = '2022-10-01';
+$date_end_en = '2022-10-31';
 
-$quarter = 2;
-$year = '2565';
+$quarter = 1;
+$year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 if(!file_exists($filePath)){

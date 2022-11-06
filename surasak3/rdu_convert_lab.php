@@ -21,11 +21,11 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2022-07-01';
-$date_end = '2022-09-30';
+$date_start = '2022-10-01';
+$date_end = '2022-10-31';
 
-$quarter = 4;
-$year = '2565';
+$quarter = 1;
+$year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
 if(!file_exists($filePath)){
@@ -59,11 +59,11 @@ AND c.`result` != '*'
 ORDER BY b.`autonumber` ASC ";
 $q = $dbi->query($sql);
 
-$sql_header = "INSERT INTO `lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
-$sql_data_list = array();
+$sql_header = "INSERT INTO `rdu_lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
+// $sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
-    dump($item);
+    // dump($item);
     $autonumber = $item['autonumber'];
     $orderdate = $item['orderdate'];
     $hn = $item['hn'];
@@ -73,12 +73,13 @@ while ( $item = $q->fetch_assoc() ) {
     $date_hn = $item['date_hn'];
 
     if( $egfr != '' && $egfr > 0 ){
-        $sql_data_list[] = "( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year')";
+        $sql_insert = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year');\n";
+        file_put_contents($filePath, $sql_insert, FILE_APPEND);
     }
 
 }
-$sql_value = implode(',', $sql_data_list);
-$sql_header.$sql_value;
-file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
+// $sql_value = implode(',', $sql_data_list);
+// $sql_header.$sql_value;
+// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";
