@@ -324,6 +324,11 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	}else{
 		$dbirth = date("Y-m-d");
 	}
+
+	if($cDiag == "ตรวจสุขภาพ" OR $cDiag == 'ตรวจสุขภาพประกันสังคม'){
+		$_SESSION['sourcecode'] = '100';
+		$sourcename = 'checkupopd';
+	}
 	
 	$sql = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo`  ) VALUES ('', '".$Thidate2."', '".date("ymd").sprintf("%03d", $nLab)."', '".$cHn."', '".$patienttype."', '".$cPtname."', '".$gender."', '".$dbirth."', '".$_SESSION['sourcecode']."', '".$sourcename."', '".$room."','".$cliniciancode."', '".$clinicianname."', '".$priority."', '".$clinicalinfo."');";
 	$result = mysql_query($sql)or die("Query failed,INSERT orderhead ");

@@ -50,7 +50,7 @@ if ($action == 'insert') {
                 `room`, `cliniciancode`, `clinicianname`, `priority`, `clinicalinfo` 
             ) VALUES ( 
                 '', NOW(), '$labnumber', '$hn', 'OPD', 
-                '$ptname', '$sex', '$dob', '', '', 
+                '$ptname', '$sex', '$dob', '101', 'ตรวจสุขภาพภายนอก', 
                 '','', 'MD022 (ไม่ทราบแพทย์)', 'R', '$clinicalinfo'
             );";
             $insert = $db->insert($orderhead_sql);
