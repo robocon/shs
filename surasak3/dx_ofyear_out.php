@@ -100,6 +100,7 @@ $list_lab["RH"] = "rh";
 $list_lab["UPT"] = "upt";
 $list_lab["ANTIHB"] = "antihb";
 $list_lab["STOCC"] = "stocc";
+$list_lab["1427"] = "uric";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -798,6 +799,10 @@ C&deg; </td>
 			if($labname=='10001')
 			{
 				$extraName = '(LDLC)';
+			}
+
+			if($labname=='1427'){
+				$extraName = '(URIC)';
 			}
 			?>
 			<td align="right" class="tb_font_2"><?php echo $labname.$extraName;?> : </td>
