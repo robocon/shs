@@ -24,7 +24,7 @@ $header=array('','','','','','','');
 
 /*$pdf->Cell(0,8,"".$cbedname."  ".$bad."  AN :".$can." HN :".$chn." ".$cptname." ".$date." ",0,0);
 $pdf->Ln();*/
-$pdf->Cell(1,8,"ËÍ¼Ùé»èÇÂÃÇÁ ".$bad."  HN :".$can." ".$date1." ",0,0);
+$pdf->Cell(1,8,"à¸«à¸­à¸œà¸¹à¹‰à¸›à¹ˆà¸§à¸¢à¸£à¸§à¸¡ ".$bad."  HN :".$can." ".$date1." ",0,0);
 $pdf->Ln();
 $pdf->SetFont('AngsanaNew','',14);
 $pdf->Cell(1,8,"AN :".$can." ".$cptname." ",0,0);

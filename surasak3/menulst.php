@@ -1,15 +1,14 @@
 <?php
-session_start();
-header('Content-Type: text/html; charset=UTF-8');
-
-$sOfficer="";
-$smenucode = "";
-$sRowid="";
-$sLevel="";
-$_SESSION["sOfficer"] = '';
-$_SESSION["smenucode"] = '';
-$_SESSION["sRowid"] = '';
-$_SESSION["sLevel"] = '';
+    session_start();
+    $sOfficer="";
+	$smenucode = "";
+	$sRowid="";
+	$sLevel="";
+    session_register("sOfficer");
+	session_register("smenucode");
+	session_register("sRowid");
+	session_register("sLevel");
+//error_reporting (E_ALL ^ E_NOTICE);
 
 function displaydate($x) {
 	$thai_m=array("มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฏาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
@@ -28,29 +27,27 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-include("connect.php");
+    include("connect.inc");
+//    print "$username<br>";
+//    print "$password<br>";
+    $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+    $result = mysql_query($query) or die( mysql_error($Conn) );
+        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+        if (!mysql_data_seek($result, $i)) {
+            echo "Cannot seek to row $i\n";
+            continue;
+        }
 
-$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
-$result = mysql_query($query) or die( mysql_error($Conn) );
-mysql_query("SET NAMES UTF8");
-for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-	if (!mysql_data_seek($result, $i)) {
-		echo "Cannot seek to row $i\n";
-		continue;
-	}
-
-	if(!($row = mysql_fetch_object($result)))
-		continue;
-}
-
-if(mysql_num_rows($result)){ 
-
-	$sOfficer=$row->name;
-	$menucode=$row->menucode;
-	$_SESSION["smenucode"]=$row->menucode;
-	$sRowid=$row->row_id;
-	$sLevel=$row->level;
-	$where_search= "";
+        if(!($row = mysql_fetch_object($result)))
+            continue;
+         }
+    if(mysql_num_rows($result)){
+         $sOfficer=$row->name;
+         $menucode=$row->menucode;
+		  $_SESSION["smenucode"]=$row->menucode;
+		$sRowid=$row->row_id;
+		 $sLevel=$row->level;
+$where_search= "";
 //if($_SESSION["smenucode"] == "ADM"){
 ///////แบบสอบถาม//////
 /*$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
@@ -186,13 +183,13 @@ if($menucode=="ADM"){
 
 if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
 	print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='main' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='3' >::เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
+                "  <td BGCOLOR='#008400'><a target='_blank' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='3' >::เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
 				" </tr>\n");	
 	print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='main' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='3' >::ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
+                "  <td BGCOLOR='#008400'><a target='_blank' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='3' >::ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
 				" </tr>\n");
 	print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='main' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='3' >::รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
+                "  <td BGCOLOR='#008400'><a target='_blank' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='3' >::รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
 				" </tr>\n");							
 }
 		
@@ -370,11 +367,11 @@ if($rows){///  ถ้ามี rows
         print "...<br>";
         print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
         print "</body>";
-       unset($_SESSION["sIdname"]);
-       unset($_SESSION["sPword"]);
-       unset($_SESSION["sOfficer"]);
-	   unset($_SESSION["sRowid"]);
-	   unset($_SESSION["sLevel"]);
+       session_unregister("sIdname");
+       session_unregister("sPword");
+       session_unregister("sOfficer");
+	   session_unregister("sRowid");
+	   session_unregister("sLevel");
             }
 ?>
 <style type="text/css" media="screen">

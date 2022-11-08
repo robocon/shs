@@ -667,7 +667,7 @@ if(empty($num)){
 $count = 1;
 while($rows = mysql_fetch_array($query)){
 
-    
+   /* 
     $stat_glu = $rows["ua_gluu"]; // ผลสรุป glu
         if($stat_glu == "Negative"){$nomal_glu = "/";$abnomal_glu = "";}else if($stat_glu == "Positive"){$nomal_glu = "";$abnomal_glu = "/";}else{$nomal_glu = "No Result";$abnomal_glu = "No Result";}
         if($stat_glu){ 
@@ -685,7 +685,7 @@ while($rows = mysql_fetch_array($query)){
                 </td>
             </tr>";
         }//end if
-
+*/
 
     $stat_trig = $rows["stat_tg"]; // ผลสรุป trig
         if($stat_trig == "ปกติ"){$nomal_trig = "/";$abnomal_trig = "";}else if($stat_trig == "ผิดปกติ"){$nomal_trig = "";$abnomal_trig = "/";}else{$nomal_trig = "No Result";$abnomal_trig = "No Result";}
@@ -1199,9 +1199,10 @@ while($rows = mysql_fetch_array($query)){
     //----> ตรวจพิเศษแบบพิมพ์เองจากหน้าหมอ 2 ช่อง
     $stat_other1 = $rows["other1"]; // ตรวจพิเศษอื่นๆ 1
     $stat_stat_other1 = $rows["stat_other1"]; // ผลตรวจพิเศษอื่นๆ 1
+    $reason_other1 = $rows["reason_other1"]; // เหตุผล 1
     $stat_other2 = $rows["other2"]; // ตรวจพิเศษอื่นๆ 2
     $stat_stat_other2 = $rows["stat_other2"]; // ผลตรวจพิเศษอื่นๆ 2
-         
+    $reason_other2 = $rows["reason_other2"]; // เหตุผล 2    
     //--------------//
 
 
@@ -1269,11 +1270,11 @@ while($rows = mysql_fetch_array($query)){
     }//end if
 
     if($stat_other1 != "" OR $stat_other1 != null){
-        echo "- ตรวจ".$stat_other1." : <b>".$stat_stat_other1."</b><br>"; //ตรวจพิเศษอื่นๆ 1
+        echo "- ".$stat_other1." <b>".$stat_stat_other1." ".$reason_other1."</b><br>"; //ตรวจพิเศษอื่นๆ 1
     }//end if
 
     if($stat_other2 != "" OR $stat_other2 != null){
-        echo "- ตรวจ".$stat_other2." : <b>".$stat_stat_other2."</b><br>"; //ตรวจพิเศษอื่นๆ 2
+        echo "- ".$stat_other2." <b>".$stat_stat_other2." ".$reason_other2."</b><br>"; //ตรวจพิเศษอื่นๆ 2
     }//end if
 
     if($stat_antihb != "" OR $stat_antihb != null){

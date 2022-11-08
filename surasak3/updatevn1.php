@@ -42,6 +42,18 @@ $thdatevn=$Thaidate1.$vkew12;
 
     $query ="UPDATE opday SET vn = '$vkew12', thdatevn = '$thdatevn' WHERE thdatehn = '$thdatehn' AND vn = '".$_SESSION["nVn"]."' "; 
    $result = mysql_query($query);
+   
+   
+	//อัพเดท  VN ในตารางค่าใช้จ่าย
+	$chkdate=(date("Y")+543).date("-m-d"); 
+	$chksql="SELECT tvn FROM depart where date like '$chkdate%' and hn='$cHn'";
+	$chkquery=mysql_query($chksql);
+	list($tvn)=mysql_fetch_array($chkquery);
+	if($tvn!=$vkew12){  // ถ้า Vn ไม่ตรงกัน
+		$edit="UPDATE depart SET tvn='$vkew12' WHERE date like '$chkdate%' and hn='$cHn'";
+		mysql_query($edit);
+	}   
+   
 
 
 //echo mysql_errno() . ": " . mysql_error(). "\n";

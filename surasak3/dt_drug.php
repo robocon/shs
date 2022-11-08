@@ -807,7 +807,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	while($arr = Mysql_fetch_assoc($result)){
 	
 			//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
-			if($arr["drugcode"]=="4MET25"){
+			if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL"){
 					if($arr["amount"] > 10){
 						$arr["amount"]=10;
 					}else{
@@ -1444,7 +1444,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					// ถ้าไม่ใช่30บาทแต่อยากใช้ 0VERO-C จะแจ้งเตือนว่าเฉพาะ30บาท
 					}elseif( $test_drugcode == '0VERO-C' && $ptright_code30 === false ){
 						$obj = 'เฉพาะผู้ป่วย สปสช.';
-
+					// ถ้าไม่ใช่30บาทแต่อยากใช้ 2ESPO-N จะแจ้งเตือนว่าเฉพาะ30บาท
+					}elseif( $test_drugcode == '2ESPO-N' && $ptright_code30 === false ){
+						$obj = 'เฉพาะผู้ป่วย สปสช.';
 					}else{
 
 						if($test_drugcode == '0SPEE' && $ptright_code30 === true)
@@ -1641,7 +1643,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			*/
 			$limit_row = 30;
 
-			$where_date = " ( `date` LIKE '2564%' ) ";
+			$where_date = " ( `date` LIKE '2564%' || `date` LIKE '2565%' ) ";
 
 			// สร้าง TEMP จาก drugrx
 			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
@@ -2914,6 +2916,9 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
 		document.form1.drug_amount.focus();	
+	}else if(document.form1.drug_code.value == "4ANAL" && eval(document.form1.drug_amount.value) >=11){
+		alert("ผิดพลาด!!! ยา 4ANAL สั่งได้ไม่เกิน 10 หลอด");
+		document.form1.drug_amount.focus();			
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
@@ -3749,7 +3754,7 @@ if($rowdg){
 	$aai=1;
 
 	while($arrdg = mysql_fetch_assoc($resultdrugreact)){ 
-	$txtdrugreact.='( '.$aai.' )'.$arrdg['drugcode'].' '.$arrdg['tradname'];
+	$txtdrugreact.='( '.$aai.' )'.$arrdg['drugcode'].' '.$arrdg['tradname'].' ['.$arrdg['genname'].']';
 	$txtdrugreact.='\n';
 	$aai++;
 	 }

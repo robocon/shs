@@ -648,8 +648,6 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='5%'></td>";
-//print "      <td width='55%'>สรุปค่ารักษาพยาบาล:<br>";
-//print "รายการ<br>";
 print "<td width='60%' >1. ค่าห้อง/ค่าอาหาร<br>";	
 print "   .......ค่าห้อง/ค่าอาหาร(ส่วนเกิน)<br>";	
 print "2. อวัยวะเทียม/อุปกรณ์ในการบำบัดรักษา<br>";	
@@ -670,7 +668,7 @@ print "16. ค่าบริการอื่นที่ไม่เกี่
 
 //print "      <td width='24%'>รายการ<br>";
 //print "        เบิกไม่ได้<br>";
-print "       <td width='10%' align='right'> ...<br>";
+print "       <td width='10%' align='right'>...<br>";
 print "        $BFN<br>";
 print "        $DPN<br>";
 print "        $Nessdn<br>";
@@ -736,7 +734,7 @@ print "</table>";
 print "<p></p>";
 print "<p></p>";
 print "<p></p>";
-print "<div align='right'>";
+print "<div align='right' style='margin-top: 3px;'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='5%'></td>";

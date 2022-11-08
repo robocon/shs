@@ -609,7 +609,7 @@ if($_POST["detail_3"]!=""){
 $current = $_POST["detail_3"]-$_POST['paid'];
 print "รับเงิน ".$_POST["detail_3"]." บาท&nbsp;&nbsp;&nbsp;&nbsp;";
 print "ค่าใช้จ่าย ".$_POST["paid"]." บาท<br>";
-print "<font COLOR='#FF0033'>เงินทอน ".$current." บาท";
+print "<font COLOR='#FF0033' size='8'>เงินทอน ".$current." บาท</font>";
 	if($_POST["detail_3"]!="" && $_POST["credit"]=="ตรวจสุขภาพ"){
 	print "<font COLOR='#FF0033'>&nbsp;&nbsp;&nbsp;&nbsp;(".$_POST['billcurchkup'].")<br>";
 	}else{
@@ -623,7 +623,8 @@ print "<font COLOR='#FF0033'>เงินทอน ".$current." บาท";
 //print recieve
 	print "<div align='left'>";
 	print "<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
-	print "<br><br><br><br>";
+	//print "<br><br><br><br>";  //เดิมใช้ตัวนี้ แต่เปลี่ยนเมื่อ18/10/65  18:00 น.
+	print "<br><br><br>";
 	print "<tr>";
 	//print "<td width='100%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$credit1&nbsp;&nbsp;จาก&nbsp;<b>$sPtname</b>&nbsp;&nbsp;&nbsp;&nbsp;HN:$sHn&nbsp;VN:&nbsp;(".$_SESSION["sVn"].")&nbsp;&nbsp;วันที่&nbsp;<b>$Thdate</b> &nbsp;&nbsp;เวลา&nbsp;$billtime</td>";
 	
@@ -637,8 +638,8 @@ $thidatevn=(date("Y")+543).date("-m-d").$_SESSION["sVn"];
 
 $sql2="select log_diag from log_editdiag where log_hn='$sHn' and log_datevn = '".$thidatevn."' order by row_id limit 1";
 $query2=mysql_query($sql2);
-$num2=mysql_num_rows($query2);
-if($num2 > 0){
+$num22=mysql_num_rows($query2);
+if($num22 > 0){
 list($diag_thai)=mysql_fetch_array($query2);
 	echo $diag_thai;
 }else{
@@ -692,7 +693,8 @@ echo "</td>";
 	print "</tr>";
 	print "</table>";
 	print "</div>";
-	print "<br><br>";
+	print "<br><br>";  //เดิมใช้ตัวนี้ แต่เปลี่ยนเมื่อ18/10/65  23:00 น.
+	//print "<br><br><br>";
 	if($num2>0){//ถ้ามีรายการยา
 		$DsEssd = number_format($DsEssd,2);
 		$DsNessdy = number_format($DsNessdy,2);
@@ -796,7 +798,11 @@ echo "</td>";
 							$detail="(".$code.")".iconv_substr($detail,0,40,'UTF-8');
 						}else{
 							//$detail = substr($detail,0,40);
-							$detail=iconv_substr($detail,0,40,'UTF-8');							
+							if($code=="doctor80"){
+								$detail=iconv_substr($detail,0,47,'UTF-8');	
+							}else{
+								$detail=iconv_substr($detail,0,40,'UTF-8');	
+							}
 						}
 					}
 					print "<div align='left'>";
@@ -902,7 +908,7 @@ if($Items <='3'){
 	}
 }else if($Items <='17'){
 	//$Lineskip=25-$Items;//พิมพ์ได้ n+1 บรรทัด
-	$Lineskip=23-$Items;//พิมพ์ได้ n+1 บรรทัด
+	$Lineskip=25-$Items;//พิมพ์ได้ n+1 บรรทัด
 	for($repeat=1;$repeat<=$Lineskip;$repeat++){
 		print "<font style='line-height:15px; size ='3'><br>";	  
 	}
@@ -980,10 +986,12 @@ if($_POST["credit"] == "ค้างจ่าย"){
 if($Items <='3'){
 	print "<div align='left' style='margin-top: -3px;'>";
 }else if($Items >'3' && $Items <'18'){
-	print "<div align='left' style='margin-top: 2px;'>";		
+	print "<div align='left' style='margin-top: 1px;'>";		
 }else{
 	print "<div align='left' style='margin-top: 5px;'>";	
 }
+
+
 print "<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "<tr>";
 
@@ -1023,8 +1031,8 @@ print "</div>";
 //print "<br>";
 //print "<br>";
 print "<div align='left'>";
-print "<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "<br>";
+print "<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "<tr>";
 print "<td width='20%'></td>";
 print "<td width='20%' align=center><font style='line-height:15px; size='2'>ลงชื่อ.............................................ผู้รับเงิน</td>";
