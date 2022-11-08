@@ -8,7 +8,7 @@
         <div class="col width-fill mobile-width-fill">
             <div class="cell">
                 <ul class="col nav">
-                    <li class="active"><a href="../nindex.htm">ÀπÈ“À≈—°‚ª√·°√¡ SHS</a></li>
+                    <li class="active"><a href="../nindex.htm">‡∏´‡∏ô‡πâ‡∏≤‡∏´‡∏•‡∏±‡∏Å‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏° SHS</a></li>
                 </ul>
             </div>
         </div>
