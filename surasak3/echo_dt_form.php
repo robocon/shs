@@ -82,7 +82,7 @@
                         
                         <td>&nbsp;</td>
                         <td align="right">EF&nbsp;</td>
-                        <td><input type="text" name="ed" id="ed" size="8" class="echoInput" value="<?=$ec['ed'];?>"></td>
+                        <td><input type="text" name="ef" id="ef" size="8" class="echoInput" value="<?=$ec['ef'];?>"></td>
                         <td>% (50-80)</td>
                     </tr>
                     <tr>
