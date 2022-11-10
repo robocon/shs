@@ -255,6 +255,26 @@ if( $id !== false ){
 			</div>
 			<div class="col">
 				<div class="cell">
+					<label>ระดับสุขภาพฟัน: </label>
+					<br>
+					<input name="den_health" id="den_health0" type="radio" class="radio" value="0">
+					<label for="den_health0">ไม่ได้ตรวจ</label>
+					<br>
+					<input name="den_health" id="den_health1" type="radio" class="radio" value="1">
+					<label for="den_health1">สุขภาพช่องปากดีควรตรวจสุขภาพช่องปากทุกปี</label>
+					<br>
+					<input name="den_health" id="den_health2" type="radio" class="radio" value="2">
+					<label for="den_health2">ควรรับการขูดหินน้ำลาย</label>
+					<br>
+					<input name="den_health" id="den_health3" type="radio" class="radio" value="3">
+					<label for="den_health3">ควรรับการรักษาภายใน12เดือน</label>
+					<br>
+					<input name="den_health" id="den_health4" type="radio" class="radio" value="4">
+					<label for="den_health4">ควรได้รับการรักษาเร่งด่วน</label>
+				</div>
+			</div>
+			<div class="col">
+				<div class="cell">
 					<label>ผู้ตรวจ: </label>
 					<select name="officer">
 						<?php foreach ($officers as $key => $officer) { ?>

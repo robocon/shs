@@ -113,6 +113,7 @@ if($action === 'save'){
 		`age` ,
 		`id_card` ,
 		`etc` ,
+		`den_health`, 
 		`officer` ,
 		`mouth_detail` ,
 		`date_add` ,
@@ -122,7 +123,7 @@ if($action === 'save'){
 		`yearcheck`
 	)
 	VALUES (
-		NULL , :hn, :date, :section, :fullname, :age, :id_card, :etc, :officer, :mouth_detail, NOW(), NULL, '1', :max_status, :yearcheck
+		NULL , :hn, :date, :section, :fullname, :age, :id_card, :etc, :den_health, :officer, :mouth_detail, NOW(), NULL, '1', :max_status, :yearcheck
 	);";
 	
 	$data = array(
@@ -133,6 +134,7 @@ if($action === 'save'){
 		':age' => $_POST['age'],
 		':id_card' => $_POST['id_card'],
 		':etc' => $_POST['etc'],
+		':den_health' => $_POST['den_health'],
 		':officer' => $_POST['officer'],
 		':mouth_detail' => $lists,
 		':max_status' => $test_max_value,
@@ -165,6 +167,7 @@ if($action === 'save'){
 	`section`=:section,
 	`mouth_detail`=:mouth_detail,
 	`etc`=:etc, 
+	`den_health`=:den_health, 
 	`officer`=:officer,
 	`date_edit`=:date_edit,
 	`max_status`=:max_status,
@@ -176,6 +179,7 @@ if($action === 'save'){
 		'section' => $_POST['section'],
 		'mouth_detail' => $list,
 		'etc' => $_POST['etc'],
+		'den_health' => $_POST['den_health'],
 		'officer' => $_POST['officer'],
 		'date_edit' => date('Y-m-d H:i:s'),
 		'max_status' => $test_max_value,

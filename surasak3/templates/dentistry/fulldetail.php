@@ -232,6 +232,16 @@
 					
 				</div>
 			</div>
+			<?php 
+			
+			$den_health_list = array(0 => 'ไม่ได้ตรวจ','สุขภาพช่องปากดีควรตรวจสุขภาพช่องปากทุกปี','ควรรับการขูดหินน้ำลาย','ควรรับการรักษาภายใน12เดือน','ควรได้รับการรักษาเร่งด่วน');
+			$res_den_health = $item['den_health'];
+			?>
+			<div class="col">
+				<div class="cell">
+					<label for="">ระดับสุขภาพฟัน: </label>&nbsp;<?php echo $den_health_list[$res_den_health];?>
+				</div>
+			</div>
 			<div class="col">
 				<div class="cell" id="officer-print">
 					<label for=""><b>ผู้ตรวจ:</b></label>&nbsp;<?php echo $item['officer'];?>
