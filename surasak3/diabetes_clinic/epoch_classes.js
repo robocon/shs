@@ -24,11 +24,8 @@ function Epoch(name,mode,targetelement,multiselect) {
 		self.displayMonthInitial = self.curDate.getMonth(); //the initial month to display on load (0-11)
 		self.displayYear = self.displayYearInitial;
 		self.displayMonth = self.displayMonthInitial;
-
-		var nextYear = d.getFullYear() + 10;
-		self.minDate = new Date(2002,0,1);
-		self.maxDate = new Date(nextYear,11,31);
-		
+		self.minDate = new Date(2012,0,1);
+		self.maxDate = new Date(2050,11,31);
 		self.startDay = 0; // the day the week will 'start' on: 0(Sun) to 6(Sat)
 		self.showWeeks = true; //whether the week numbers will be shown
 		self.selCurMonthOnly = true; //allow user to only select dates in the currently displayed month
@@ -39,15 +36,15 @@ function Epoch(name,mode,targetelement,multiselect) {
 	* Check Date.dateFormat() for the Date object's language settings
 	*/
 	function setLang() {
-		self.daylist = new Array('Õ.','®.','Õ.','æ.','æƒ.','».',' .','Õ.','®.','Õ.','æ.','æƒ.','».',' .');
-		self.months_sh = new Array('¡§.','°æ.','¡’§.','‡¡¬.','æ§.','¡‘¬.','°§.',' §.','°¬.','µ§.','æ¬.','∏§.');
-		self.monthup_title = '‰ª‡¥◊Õπ°ËÕπÀπÈ“';
-		self.monthdn_title = '‰ª‡¥◊Õπ∂—¥‰ª';
-		self.clearbtn_caption = '≈È“ß§Ë“';
-		self.clearbtn_title = '≈∫¢ÈÕ¡Ÿ≈„π™ËÕß';
+		self.daylist = new Array('‡∏≠.','‡∏à.','‡∏≠.','‡∏û.','‡∏û‡∏§.','‡∏®.','‡∏™.','‡∏≠.','‡∏à.','‡∏≠.','‡∏û.','‡∏û‡∏§.','‡∏®.','‡∏™.');
+		self.months_sh = new Array('‡∏°‡∏Ñ.','‡∏Å‡∏û.','‡∏°‡∏µ‡∏Ñ.','‡πÄ‡∏°‡∏¢.','‡∏û‡∏Ñ.','‡∏°‡∏¥‡∏¢.','‡∏Å‡∏Ñ.','‡∏™‡∏Ñ.','‡∏Å‡∏¢.','‡∏ï‡∏Ñ.','‡∏û‡∏¢.','‡∏ò‡∏Ñ.');
+		self.monthup_title = 'Go to the next month';
+		self.monthdn_title = 'Go to the previous month';
+		self.clearbtn_caption = 'Clear';
+		self.clearbtn_title = 'Clears any dates selected on the calendar';
 		self.maxrange_caption = 'This is the maximum range';
-		self.closebtn_caption = 'ª‘¥';
-		self.closebtn_title = 'ª‘¥ÀπÈ“µË“ßªØ‘∑‘π';
+		self.closebtn_caption = 'Close';
+		self.closebtn_title = 'Close the calendar';
 	}
 	//-----------------------------------------------------------------------------
 	/**
@@ -56,7 +53,7 @@ function Epoch(name,mode,targetelement,multiselect) {
 	function setDays() {
 		self.daynames = new Array();
 		var j=0;
-		for(var i=self.startDay; i < self.startDay + 7; i++) {
+		for(var i=self.startDay;i<self.startDay + 7;i++) {
 			self.daynames[j++] = self.daylist[i];
 		}
 		self.monthDayCount = new Array(31,((self.curDate.getFullYear() - 2000) % 4 ? 28 : 29),31,30,31,30,31,31,30,31,30,31);

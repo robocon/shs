@@ -3,9 +3,9 @@ session_start();
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- TemplateBeginEditable name="doctitle" -->
-    <title>คลินิก DM & Hipertension</title>
+    <title>๏ฟฝ๏ฟฝินิก DM & Hipertension</title>
     <!-- TemplateEndEditable -->
     <link type="text/css" href="../menu.css" rel="stylesheet" />
     <script type="text/javascript" src="../jquery.js"></script>
@@ -84,36 +84,36 @@ div#copyright a:hover { color:#fff; }*/
 <div id="no_print">
 <div id="menu">
   <ul class="menu">
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>โปรแกรมโรงพยาบาล</span></a></li>
-         <li><a href="#"><span>ลงทะเบียน</span></a></li>
+        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝรง๏ฟฝ๏ฟฝาบ๏ฟฝ๏ฟฝ</span></a></li>
+         <li><a href="#"><span>ลง๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน</span></a></li>
           <ul>
-		 <li class="last"><a href="diabetes.php"><span>ลงทะเบียน DM</span></a></li>
-         <li class="last"><a href="hypertension.php"><span>ลงทะเบียน HT</span></a></li>
+		 <li class="last"><a href="diabetes.php"><span>ลง๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน DM</span></a></li>
+         <li class="last"><a href="hypertension.php"><span>ลง๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน HT</span></a></li>
        	</ul>
-     	  <li><a href="diabetes_edit.php"><span>แก้ไขข้อมูล</span></a></li>
+     	  <li><a href="diabetes_edit.php"><span>๏ฟฝ๏ฟฝไขข๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
            <ul>
-		 <li class="last"><a href="diabetes_edit.php"><span>แก้ไขข้อมูล DM</span></a></li>
-         <li class="last"><a href="hypertension_edit.php"><span>แก้ไขข้อมูล HT</span></a></li>
+		 <li class="last"><a href="diabetes_edit.php"><span>๏ฟฝ๏ฟฝไขข๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ DM</span></a></li>
+         <li class="last"><a href="hypertension_edit.php"><span>๏ฟฝ๏ฟฝไขข๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ HT</span></a></li>
        	</ul>
-         <li><a href="#"><span>รายชื่อผู้ป่วย DM</span></a></li>
+         <li><a href="#"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ DM</span></a></li>
          <ul>
-		 <li class="last"><a href="diabetes_list.php"><span>รายชื่อทั้งหมด</span></a></li>
-         <li class="last"><a href="diabetes_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
+		 <li class="last"><a href="diabetes_list.php"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝอท๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+         <li class="last"><a href="diabetes_list_so.php"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝ๏ฟฝ ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ/๏ฟฝ๏ฟฝอบ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
        	</ul>
-       <li><a href="#"><span>รายชื่อผู้ป่วย HT</span></a></li>
+       <li><a href="#"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ HT</span></a></li>
          <ul>
-		 <li class="last"><a href="hypertension_list.php"><span>รายชื่อทั้งหมด</span></a></li>
-         <li class="last"><a href="hypertension_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
+		 <li class="last"><a href="hypertension_list.php"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝอท๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+         <li class="last"><a href="hypertension_list_so.php"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝ๏ฟฝ ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ/๏ฟฝ๏ฟฝอบ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
        	</ul>
-     <li><a href="report_diabetes.php"><span>สถิติ</span></a></li>
+     <li><a href="report_diabetes.php"><span>สถิต๏ฟฝ</span></a></li>
  		<ul>
-		 <li class="last"><a href="report_diabetes.php"><span>สถิติ DM</span></a></li>
-         <li class="last"><a href="report_hypertension.php"><span>สถิติ HT</span></a></li>
+		 <li class="last"><a href="report_diabetes.php"><span>สถิต๏ฟฝ DM</span></a></li>
+         <li class="last"><a href="report_hypertension.php"><span>สถิต๏ฟฝ HT</span></a></li>
        	</ul>
-     <li><a href="#"><span>รายงาน</span></a></li>
+     <li><a href="#"><span>๏ฟฝ๏ฟฝยงาน</span></a></li>
  		<ul>
-		 <li class="last"><a href="report_diabetesofyear.php"><span>รายงาน DM</span></a></li>
-         <li class="last"><a href="report_hypertensionofyear.php"><span>รายงาน HT</span></a></li>
+		 <li class="last"><a href="report_diabetesofyear.php"><span>๏ฟฝ๏ฟฝยงาน DM</span></a></li>
+         <li class="last"><a href="report_hypertensionofyear.php"><span>๏ฟฝ๏ฟฝยงาน HT</span></a></li>
        	</ul>        
     </ul>
 </div>

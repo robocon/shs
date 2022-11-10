@@ -8,7 +8,7 @@ $date = input('date_selected', date('Y-m-d'));
 ?>
 
 <style>
-/* µ“√“ß */
+/* ‡∏ï‡∏≤‡∏£‡∏≤‡∏á */
 .chk_table{
     border-collapse: collapse;
 }
@@ -25,10 +25,10 @@ $date = input('date_selected', date('Y-m-d'));
 
 <form action="report_retinal_exam.php" method="post">
     <div>
-        ‡≈◊Õ°«—π∑’Ë <input type="text" name="date_selected" id="" value="<?=$date;?>">
+        ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà <input type="text" name="date_selected" id="" value="<?=$date;?>">
     </div>
     <div>
-        <button type="submit">· ¥ß«—π∑’Ë</button>
+        <button type="submit">‡πÅ‡∏™‡∏î‡∏á‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</button>
         <input type="hidden" name="action" value="show">
     </div>
 </form>
@@ -51,10 +51,10 @@ if( $action == 'show' ){
         <tr>
             <th>#</th>
             <th>HN</th>
-            <th>™◊ËÕ- °ÿ≈</th>
-            <th> ‘∑∏‘</th>
+            <th>‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</th>
+            <th>‡∏™‡∏¥‡∏ó‡∏ò‡∏¥</th>
             <th>Retinal Exam</th>
-            <th>«—π∑’Ë Retinal Exam</th>
+            <th>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà Retinal Exam</th>
         </tr>
         <?php 
         $i = 1;
