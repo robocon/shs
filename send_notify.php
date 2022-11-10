@@ -1,7 +1,8 @@
 <?php 
+header('Access-Control-Allow-Origin: *');
 
-$sMessage = $_POST['message'];
-$sToken = $_POST['token'];
+$sMessage = $_REQUEST['message'];
+$sToken = $_REQUEST['token'];
 
 $ch = curl_init(); 
 curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
