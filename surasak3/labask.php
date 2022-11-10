@@ -281,33 +281,28 @@ document.getElementById('aLink').focus();
 
 <!--โชว์ข้อมูล กรณีที่เลือกเป็น ตรวจสุขภาพ-->
 <select name="pt2" id="pt2" style="display:none">
-  <?
-   while($resultpt = mysql_fetch_array($rowpt1)){
+<?php
+while($resultpt = mysql_fetch_array($rowpt1)){
 	$re = $resultpt[0]." ".$resultpt[1];
 	//R01เงินสด
-		if($cPtright==$re){
-			 $c=0;
-  ?>
-
-  <?=$cPtright?>
-  </option>
-  <?
-		}else{
-			$b=0;
-?>
-	<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  
-  <?=$re?>
-  </option>
-  <?
-		}
-	}
-	if(!isset($c)){
+	if($cPtright==$re){
+		$c=0;
 		?>
-  <?=$cPtright?>
-  </option>
-  <?
+		<option value="<?=$cPtright;?>"><?=$cPtright?></option>
+		<?php
+	}else{
+		$b=0;
+		?>
+		<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  <?=$re?></option>
+		<?php
 	}
-   ?>
+}
+if(!isset($c)){
+	?>
+	<option value="<?=$cPtright;?>"><?=$cPtright?></option>
+	<?php
+}
+?>
 </select>
 
 </font>
