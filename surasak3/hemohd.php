@@ -457,7 +457,7 @@ foreach($rows_depart AS $rows){
 	$depart_hn = $rows['hn'];
 
 	// ถ้าไม่ใช่ไต1จะข้ามไปเลย
-	$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today' AND `detail` LIKE 'FU18%' AND `hn` = '$depart_hn' ";
+	$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today' AND `detail` LIKE 'FU18%' AND `hn` = '$depart_hn' ORDER BY `row_id` DESC LIMIT 1";
 	$q1 = mysql_query($sql_hemo_1);
 	if(mysql_num_rows($q1) == 0)
 	{
@@ -517,7 +517,7 @@ foreach($rows_depart AS $rows){
 	foreach($rows_depart AS $rows){
 		$depart_hn = $rows['hn'];
 
-		$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today' AND `detail` LIKE 'FU39%' AND `hn` = '$depart_hn' ";
+		$sql_hemo_1 = "SELECT * FROM `appoint` WHERE `appdate_en` = '$today' AND `detail` LIKE 'FU39%' AND `hn` = '$depart_hn' ORDER BY `row_id` DESC LIMIT 1";
 		$q1 = mysql_query($sql_hemo_1);
 		if(mysql_num_rows($q1) == 0)
 		{
