@@ -2,7 +2,7 @@
 include_once 'bootstrap.php';
 if($_SESSION['sIdname']!=='krit')
 {
-    echo "Invalid";
+    ?><a href="login_page.php">Session หมดอายุ</a><?php
     exit;
 }
 ?>
