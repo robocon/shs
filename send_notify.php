@@ -4,6 +4,12 @@ header('Access-Control-Allow-Origin: *');
 $sMessage = $_REQUEST['message'];
 $sToken = $_REQUEST['token'];
 
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
+
+$sMessage = $data['message'];
+$sToken = $data['token'];
+
 $ch = curl_init(); 
 curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
 curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -19,3 +25,5 @@ if($result===false){
     echo curl_error($ch);
 }
 curl_close($ch);
+
+echo $result;
