@@ -34,7 +34,7 @@ RIGHT JOIN (
 ) AS b ON b.`lastid` = a.`row_id` 
 WHERE a.`apptime` != 'ยกเลิกการนัด' 
 ORDER BY a.`date` ASC ";
-// echo '<div style="display: none;">'.$query.'</div>';
+//echo $query;
 $result = mysql_query($query) or die( mysql_error() );
 
 
@@ -303,6 +303,6 @@ $ptrightall=$ptright2.$ptright3;
 
 </table>
 
-<div ><a href="ptappoiall_chk.php?appd=<?=$appd;?>" target="_blank">พิมพ์ใบตรวจสอบสิทธิ์</a></div>
+<div ><a href="ptappoiall_chk.php?appd=<?=rawurlencode($appd);?>" target="_blank">พิมพ์ใบตรวจสอบสิทธิ์</a></div>
 
 
