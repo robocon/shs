@@ -10,6 +10,9 @@ $data = json_decode($json, true);
 $sMessage = $data['message'];
 $sToken = $data['token'];
 
+ใส่เงื่อนไขเข้าไปเช็กอีกทีว่าอยู่ในเงื่อนไขเฉพาะที่กำหนดรึป่าว
+จะได้จำกัดวงการใช่งาน 
+
 $ch = curl_init(); 
 curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
 curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
