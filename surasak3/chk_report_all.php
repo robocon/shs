@@ -532,12 +532,12 @@ SELECT *, MAX(`autonumber`) AS `latest_number`
 FROM `resulthead` 
 WHERE `hn` = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-AND `profilecode` = 'URIC' 
+AND ( `profilecode` = 'URIC' OR `profilecode` = '1427' ) 
 GROUP BY `profilecode` 
 
 ) AS a
 INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
-WHERE b.labcode = 'URIC' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+WHERE ( b.labcode = 'URIC' OR b.`labcode` = '1427' ) AND b.result !='DELETE' AND a.hn = '$pt_hn' 
 GROUP BY a.`profilecode` ";
 //echo $sql8;
 $query8=mysql_query($sql8);
