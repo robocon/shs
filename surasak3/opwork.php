@@ -1238,7 +1238,8 @@ $structure = '../image_patient';
 <a target=_TOP href="rxform9.php">พิมพ์ใบสั่งยาไม่มีแพ้ยา </a>&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;
 <a target=_TOP href="opdprint2.php?cHn=<?=$cHn;?>">พิมพ์บัตรต่อประวัติผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="opdprint4.php">พิมพ์บัตรต่อประวัติผู้ป่วยใบแรก</a>
+<a target=_TOP href="opdprint4.php">พิมพ์บัตรต่อประวัติผู้ป่วยใบแรก</a>&nbsp;&nbsp;&nbsp;
+<a target=_blank href="opdprint_stkchkup.php">พิมพ์สติ๊กเกอร์ตรวจสุขภาพทหารประจำปี</a>
 <br>
 &nbsp;&nbsp;&nbsp;
 <a target=_TOP href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>

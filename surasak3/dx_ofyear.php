@@ -264,6 +264,21 @@ $(function() {
 });
 })(jQuery);
 </script>
+<script language="JavaScript">
+	function chkNumber(ele)
+	{
+	var vchar = String.fromCharCode(event.keyCode);
+	if ((vchar<'0' || vchar>'9') && (vchar != '.')) return false;
+	ele.onKeyPress=vchar;
+	}
+	
+	function calbmi(a,b){
+		//alert(a);
+		var h=a/100;
+		var bmi=b/(h*h);
+		document.vsform.bmi.value=bmi.toFixed(2);
+	}	
+</script>
 </head>
 
 <body>
@@ -297,7 +312,7 @@ $(function() {
 <?php if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 
 //ค้นหา hn จาก opday ****************************************************************************************
-	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$_POST["p_hn"]."' limit 0,1";
+	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname,idcard,camp From opcard where  hn = '".$_POST["p_hn"]."' limit 0,1";
 	//echo $sql;
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
 	/*if(mysql_num_rows($result) <= 0){
@@ -411,6 +426,9 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$covaccine_1=$arr_dxofyear["covaccine_1"];
 		$covaccine_2=$arr_dxofyear["covaccine_2"];
 		$covaccine_3=$arr_dxofyear["covaccine_3"];
+		$covaccine_4=$arr_dxofyear["covaccine_4"];
+		$covaccine_5=$arr_dxofyear["covaccine_5"];
+		$covaccine_6=$arr_dxofyear["covaccine_6"];
 		
 		
 		
@@ -422,7 +440,56 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		//echo "arr_dxofyear";
 		
 }else{  //// ค้นหาจาก opd
-	
+	echo "<div align='center'>ข้อมูลซักประวัติเมื่อปีที่ผ่านมา</div>";
+	$lastPrefix=$nPrefix-1;
+	$sql = "Select * From  `dxofyear` where  hn='".$arr_view["hn"]."' and yearchk='$lastPrefix' ORDER BY row_id DESC limit 0,1 ";
+	//echo $sql;
+	$result = mysql_query($sql);
+	$count = mysql_num_rows($result);
+	//echo $count;
+	if($count > 0){
+		$arr_dxofyear = mysql_fetch_assoc($result);
+		$height = $arr_dxofyear["height"];
+		$weight = $arr_dxofyear["weight"];
+		$waist = $arr_dxofyear["round_"];
+		$temperature=$arr_dxofyear["temperature"];
+		$pause=$arr_dxofyear["pause"];
+		$rate=$arr_dxofyear["rate"];
+		//$bmi=$arr_dxofyear["bmi"];
+		
+		 $ht = $height/100;
+		 $bmi=number_format($weight /($ht*$ht),2);
+		 
+		 $bp1=$arr_dxofyear["bp1"];
+		 $bp2=$arr_dxofyear["bp2"];
+		 $bp21=$arr_dxofyear["bp21"];
+		 $bp22=$arr_dxofyear["bp22"];
+		 $cigarette=$arr_dxofyear["cigarette"];
+		 $alcohol=$arr_dxofyear["alcohol"];
+		 $exercise=$arr_dxofyear["exercise"];
+		$type=$arr_dxofyear["type"];
+		$doctor=$arr_dxofyear["doctor"];
+		$prawat = $arr_dxofyear["prawat"];
+		$cigok=$arr_dxofyear["cigok"];
+		$smoke_amount=$arr_dxofyear["smoke_amount"];
+		$drink_amount=$arr_dxofyear["drink_amount"];
+		
+		$covaccine_amount=$arr_dxofyear["covaccine_amount"];
+		$covaccine_1=$arr_dxofyear["covaccine_1"];
+		$covaccine_2=$arr_dxofyear["covaccine_2"];
+		$covaccine_3=$arr_dxofyear["covaccine_3"];
+		$covaccine_4=$arr_dxofyear["covaccine_4"];
+		$covaccine_5=$arr_dxofyear["covaccine_5"];
+		$covaccine_6=$arr_dxofyear["covaccine_6"];
+		
+		
+		
+		
+//		$arr_view["vn"]=$arr_dxofyear["vn"];
+		
+		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
+	}else{
+		echo "<div align='center'>ยังไม่มีข้อมูลตรวจสุขภาพประจำปี</div>";
 		$sql = "Select congenital_disease, weight, height,cigarette,alcohol,exercise ,bp1,bp2,doctor  From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
 		
 		//echo "OPD";
@@ -431,8 +498,18 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		list($congenital_disease, $weight, $height, $cigarette, $alcohol, $exercise,$bp1,$bp2,$doctor) = Mysql_fetch_row($result);
 			if($congenital_disease == "")
 				$congenital_disease = "ปฎิเสธโรคประจำตัว";
-
 	}
+
+}
+
+
+
+
+
+
+
+
+
 	$ht = $height/100;
 	$bmi=number_format($weight /($ht*$ht),2);
 	
@@ -497,6 +574,20 @@ $choose2 = array();
 while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
+/*
+    $today = date("d-m-Y");   
+    $d=substr($today,0,2);
+    $m=substr($today,3,2);
+    $yr=substr($today,6,4) +543;
+	$thdate="$d-$m-$yr";
+
+$thdatehn=$thdate.$arr_view["hn"];
+
+$query1 = "SELECT vn,ptright FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC limit 0,1 ";
+echo $query1;
+$result1 = mysql_query($query1) or die("Query failed,opday");
+list($vn,$ptright)=mysql_fetch_array($result1);	
+*/
 ?>
 <div align="center" style="color:#FF0000;">ผล LAB ไม่ขึ้น กรุณาปรับสถานะ เป็น ตรวจสุขภาพประจำปี <?=$nPrefix;?></div>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
@@ -505,7 +596,7 @@ while($arr = Mysql_fetch_assoc($result)){
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
 <input name="vn" type="hidden" id="vn"  value="<?php echo $arr_view["vn"];?>" />
 <input name="camp" type="hidden" id="camp"  value="<?php echo $arr_view["camp"];?>" />
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" width="100%" >
+<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#7DCEA0" width="100%" >
 <TR>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -529,39 +620,46 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td align="left"><?php echo $arr_view["age"];?></td>
 		    <td align="left">&nbsp;</td>
 		</tr>
+		<tr>
+			<td align="right"><span class="tb_font_2">เลขบัตรประชาชน : </span></td>
+			<td><?php echo $arr_view["idcard"];?></td>
+			<td align="right"><span class="tb_font_2">หน่วย/สังกัด :  :</span></td>
+			<td align="left"><?php echo $arr_view["camp"];?></td>
+		    <td align="left">&nbsp;</td>
+		</tr>		
 	</table>
 	<hr />
 	<table width="854" border="0" class="tb_font">
 	  <tr>
 			<td width="130" align="right" class="tb_font_2">ส่วนสูง : </td>
-			<td width="79"><input name="height" type="text" size="1" maxlength="3" value="<?php echo $height; ?>" />
+			<td width="79"><input name="height" type="text" size="1" maxlength="3" value="<?php echo $height; ?>" OnKeyPress="return chkNumber(this)" onblur="calbmi(this.value,document.vsform.weight.value)" />
 ซม.</td>
 			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
-			<td width="129"><input name="weight" type="text" size="3" maxlength="5" value="<?php echo $weight; ?>" />
+			<td width="129"><input name="weight" type="text" size="3" maxlength="5" value="<?php echo $weight; ?>" OnKeyPress="return chkNumber(this)" onblur="calbmi(document.vsform.height.value,this.value)"/>
 กก. </td>
 			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
-			<td width="132"><input name="round_" type="text" size="1" maxlength="3" value="<?php echo $waist; ?>" />
+			<td width="132"><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" OnKeyPress="return chkNumber(this)" />
 			  ซม.</td>
 			<td width="67" align="left"><span class="tb_font_2">BP1 :</span></td>
-			<td width="130" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?=$bp1;?>"/>
+			<td width="130" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?=$bp1;?>" OnKeyPress="return chkNumber(this)" />
 			  /
-			  <input name="bp2" type="text" size="1" maxlength="3" value="<?=$bp2;?>"/>
+			  <input name="bp2" type="text" size="1" maxlength="3" value="<?=$bp2;?>" OnKeyPress="return chkNumber(this)"/>
 			  mmHg</td>
 			</tr>
 		<tr>
 		  <td align="right" class="tb_font_2">T :</td>
-		  <td><input name="temperature" type="text" size="1" maxlength="5" value="<?php echo $temperature; ?>" />
+		  <td><input name="temperature" type="text" size="1" maxlength="5" value="<?php echo $temperature; ?>" OnKeyPress="return chkNumber(this)" />
 C&deg; </td>
 		  <td align="right"><span class="tb_font_2">P :</span></td>
-		  <td align="left"><input name="pause" type="text" size="1" maxlength="3" value="<?php echo $pause; ?>" />
+		  <td align="left"><input name="pause" type="text" size="1" maxlength="3" value="<?php echo $pause; ?>" OnKeyPress="return chkNumber(this)" />
 ครั้ง/นาที</td>
 		  <td align="right"><span class="tb_font_2">R :</span></td>
-		  <td align="left"><input name="rate" type="text" size="1" maxlength="3" value="<?php echo $rate;?>" />
+		  <td align="left"><input name="rate" type="text" size="1" maxlength="3" value="<?php echo $rate;?>" OnKeyPress="return chkNumber(this)" />
 ครั้ง/นาที</td>
 		  <td align="left"><span class="tb_font_2">BP2 :</span></td>
-		  <td align="left"><input name="bp21" type="text" size="1" maxlength="3" value="<?=$bp21;?>" />
+		  <td align="left"><input name="bp21" type="text" size="1" maxlength="3" value="<?=$bp21;?>" OnKeyPress="return chkNumber(this)" />
 /
-  <input name="bp22" type="text" size="1" maxlength="3" value="<?=$bp22;?>" />
+  <input name="bp22" type="text" size="1" maxlength="3" value="<?=$bp22;?>" OnKeyPress="return chkNumber(this)" />
 mmHg</td>
 		  </tr>
 		<tr>
@@ -648,7 +746,13 @@ mmHg</td>
 		    <input type="radio" name="covaccine_amount" id="covaccine_amount2" value="2" <?php if($covaccine_amount==2){ echo "checked"; } ?> />
 		  2 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
 		    <input type="radio" name="covaccine_amount" id="covaccine_amount3" value="3" <?php if($covaccine_amount==3){ echo "checked"; } ?> />
-		  3 เข็ม</label></td>
+		  3 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_amount" id="covaccine_amount4" value="4" <?php if($covaccine_amount==4){ echo "checked"; } ?> />
+		  4 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_amount" id="covaccine_amount5" value="5" <?php if($covaccine_amount==5){ echo "checked"; } ?> />
+		  5 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_amount" id="covaccine_amount6" value="6" <?php if($covaccine_amount==6){ echo "checked"; } ?> />
+		  6 เข็ม</label></td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2">เข็มที่ 1&nbsp;:</td>
@@ -707,6 +811,63 @@ mmHg</td>
 		    <input type="radio" name="covaccine_3" id="covaccine_35" value="moderna" <?php if($covaccine_3=="moderna"){ echo "checked"; } ?> />
 		  moderna</label></td>
 		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">เข็มที่ 4&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_4" id="covaccine_41" value="sinovac" <?php if($covaccine_4=="sinovac"){ echo "checked"; } ?> />
+		    sinovac
+		  </label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_4" id="covaccine_42" value="astrazeneca" <?php if($covaccine_4=="astrazeneca"){ echo "checked"; } ?> />
+		  astrazeneca</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_4" id="covaccine_43" value="sinopharm" <?php if($covaccine_4=="sinopharm"){ echo "checked"; } ?> />
+		  sinopharm</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_4" id="covaccine_44" value="pfizer" <?php if($covaccine_4=="pfizer"){ echo "checked"; } ?> />
+		  pfizer</label>
+          &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_4" id="covaccine_45" value="moderna" <?php if($covaccine_4=="moderna"){ echo "checked"; } ?> />
+		  moderna</label></td>
+		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">เข็มที่ 5&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_5" id="covaccine_51" value="sinovac" <?php if($covaccine_5=="sinovac"){ echo "checked"; } ?> />
+		    sinovac
+		  </label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_5" id="covaccine_52" value="astrazeneca" <?php if($covaccine_5=="astrazeneca"){ echo "checked"; } ?> />
+		  astrazeneca</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_5" id="covaccine_53" value="sinopharm" <?php if($covaccine_5=="sinopharm"){ echo "checked"; } ?> />
+		  sinopharm</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_5" id="covaccine_54" value="pfizer" <?php if($covaccine_5=="pfizer"){ echo "checked"; } ?> />
+		  pfizer</label>
+          &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_5" id="covaccine_55" value="moderna" <?php if($covaccine_5=="moderna"){ echo "checked"; } ?> />
+		  moderna</label></td>
+		  </tr>
+		<tr>
+		  <td align="right" class="tb_font_2">เข็มที่ 6&nbsp;:</td>
+		  <td colspan="7"><label>
+		    <input type="radio" name="covaccine_6" id="covaccine_61" value="sinovac" <?php if($covaccine_6=="sinovac"){ echo "checked"; } ?> />
+		    sinovac
+		  </label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_6" id="covaccine_62" value="astrazeneca" <?php if($covaccine_6=="astrazeneca"){ echo "checked"; } ?> />
+		  astrazeneca</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_6" id="covaccine_63" value="sinopharm" <?php if($covaccine_6=="sinopharm"){ echo "checked"; } ?> />
+		  sinopharm</label>
+		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_6" id="covaccine_64" value="pfizer" <?php if($covaccine_6=="pfizer"){ echo "checked"; } ?> />
+		  pfizer</label>
+          &nbsp;&nbsp;&nbsp;&nbsp;<label>
+		    <input type="radio" name="covaccine_6" id="covaccine_65" value="moderna" <?php if($covaccine_6=="moderna"){ echo "checked"; } ?> />
+		  moderna</label></td>
+		  </tr>		  
 	</table>
 	<TABLE class="tb_font">
 	</TABLE>
@@ -834,7 +995,7 @@ mmHg</td>
 <BR>
 
 <!-- ผลการตรวจทางพยาธิ -->
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
+<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#7DCEA0" >
 <TR>
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0">

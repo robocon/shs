@@ -271,6 +271,18 @@ $sVn=$_POST['vnnow'];
 	list($toborow,$diagnosis) = mysql_fetch_row($res);
 	
 	
+	$subptright=substr($sPtright,0,3);
+	//echo $subptright;
+	if($subptright=="R02" || $subptright=="R03" || $subptright=="R33" || $subptright=="R53"){
+		$strsql = "SELECT count(row_id) as sumbed FROM patdata WHERE date like '$sdate%' and hn='$nhn' and (code = 'SERVICE' or code = 'E-BED')";	
+		//echo $strsql;
+		$strquery=mysql_query($strsql);
+		list($sumbed) = mysql_fetch_array($strquery);	
+		if($sumbed=="2"){
+			echo "<script>alert('!!! โปรดระวัง สถานพยาบาลมีการเบิกค่าบริการ OPD และค่าเตียงสังเกตุอาการพร้อมกัน ซึ่งเบิกไม่ได้ตามประกาศกรมบัญชีกลาง ว435  (9 ก.ย. 62)');</script>";
+		}
+	}
+
 	
 	
 	if(!empty($diagnosis)){
@@ -355,7 +367,8 @@ $sVn=$_POST['vnnow'];
 		
 		//print_r($_SESSION);
 ?>
-<font face='Angsana New' size="5"><A HREF="drxadddiag.php?sDate=<?php echo urlencode($pdate);?>&nRow_id=<?php echo urlencode($sRowid);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >แก้ไขชื่อโรค</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิที่ต้องนำไปเบิกต้นสังกัดเท่านั้น)</font>
+<font face='Angsana New' size="5"><A HREF="drxadddiag.php?sDate=<?php echo urlencode($pdate);?>&nRow_id=<?php echo urlencode($sRowid);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >แก้ไขชื่อโรค</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิที่ต้องนำไปเบิกต้นสังกัดเท่านั้น)</font><br>
+<font face='Angsana New' size="5"><A HREF="company_payment.php?sDate=<?php echo urlencode($pdate);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >เพิ่มชื่อบริษัท</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิประกันสังคม กรณี กท44 เท่านั้น)</font>
 <?		
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
 				$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice FROM patdata as a,depart as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id ";

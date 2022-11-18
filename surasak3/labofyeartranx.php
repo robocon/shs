@@ -49,12 +49,12 @@ return $pAge;
 	$Thidate2 = date("Y").date("-m-d H:i:s"); 
     $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 	$patienttype = "OPD";
-	$sourcecode = "";//รหัสward
+	//$sourcecode = "";//รหัสward
 	$build = array("42"=>"หอผู้ป่วยหญิง","44"=>"หอผู้ป่วย ICU","43"=>"หอผู้ป่วยสูติ","45"=>"หอผู้ป่วยพิเศษ");
 
-	$sourcename = "";//ชื่อward
+	//$sourcename = "";//ชื่อward
 	$room = ""; //ห้องผู้ป่วย
-	$clinicalinfo = "";
+	//$clinicalinfo = "";
 
    //item count
    $item=0;
@@ -240,8 +240,10 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		 $ymd=$yy.$mmdd;
 		 
 		 $labnumber=$ymd.sprintf("%03d", $nLab);
-	
 	$clinicalinfo = "ตรวจสุขภาพประจำปี".$nPrefix;
+	$sourcecode="102";
+	$sourcename="ตรวจสุขภาพ ทบ.";
+	
 	$sql = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo`  ) VALUES ('', '".$Thidate2."', '".$labnumber."', '".$cHn."', '".$patienttype."', '".$cPtname."', '".$gender."', '".$dbirth."', '".$sourcecode."', '".$sourcename."', '".$room."','".$cliniciancode."', '".$clinicianname."', '".$priority."', '".$clinicalinfo."');";
 	$result = mysql_query($sql) or die("Query failed,INSERT orderhead ");
 	

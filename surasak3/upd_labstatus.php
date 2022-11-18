@@ -26,13 +26,31 @@
 if(isset($_POST['hn'])){
 	$sql = "select * from resulthead where hn='".$_POST['hn']."' group by labnumber order by orderdate desc";
   	$rows = mysql_query($sql);
-	echo "<table class='ppo' border='1' width='100%' align='center' cellpadding='0' cellspacing='0' style='border-collapse:collapse'><tr><td align='center'>Labnumber</td><td align='center'>HN</td><td align='center'>ชื่อ - สกุล</td><td align='center'>Orderdate</td><td align='center'>สถานะการตรวจ</td><td align='center'>ปรับสถานะ</td></tr>";
+	echo "<div align='center'>รายการ LAB ที่ส่งตรวจ</div><table class='ppo' border='1' width='100%' align='center' cellpadding='5' cellspacing='0' style='border-collapse:collapse'><tr style='background-color:#45B39D'><td align='center'>Labnumber</td><td align='center'>HN</td><td align='center'>ชื่อ - สกุล</td><td align='center'>Orderdate</td><td align='center'>Order ที่ส่งตรวจ</td><td align='center'>สถานะการตรวจ</td><td align='center'>ปรับสถานะ</td></tr>";
   	while($result = mysql_fetch_array($rows)){ 
-		echo "<tr>";
+	
+	$query1 = "select clinicalinfo from orderhead where labnumber='".$result['labnumber']."' group by labnumber";
+	$result1 = mysql_query($query1) or die("Query failed,opday");
+	list($orderclinicalinfo)=mysql_fetch_array($result1);	
+	
+	if($result['orderdate'] < "2022-02-13"){
+		$orderclinicalinfo=$result['clinicalinfo'];
+	}else{
+		$orderclinicalinfo=$orderclinicalinfo;
+	}	
+	
+	if(empty($result['clinicalinfo'])){
+		$color="#FADBD8";
+	}else{
+		$color="#F2F3F4";
+	}		
+	
+		echo "<tr style='background-color:$color'>";
 		echo "<td align='center'>".$result['labnumber']."</td>";
 		echo "<td align='center'>".$result['hn']."</td>";
 		echo "<td align='center'>".$result['patientname']."</td>";
 		echo "<td align='center'>".$result['orderdate']."</td>";
+		echo "<td>&nbsp;".$orderclinicalinfo."</td>";
 		echo "<td>&nbsp;".$result['clinicalinfo']."</td>";
 		echo "<td align='center'><a href='upd_labstatus.php?ids=".$result['labnumber']."' >แก้ไข</a></td>";
 		echo "</tr>";

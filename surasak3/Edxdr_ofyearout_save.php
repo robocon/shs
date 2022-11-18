@@ -456,10 +456,10 @@ $status_show = "";
 while($rows = mysql_fetch_array($query)){
 
 	if(
-		$rows["ua_gluu"] == "" AND 
+		$rows["stat_bs"] == "" AND 
 		$rows["stat_tg"] == "" AND 
 		$rows["stat_chol"] == "" AND 
-		$rows["stat_alk"] == "" AND 
+		$rows["stat_alk"] == "" AND  
 		$rows["stat_sgpt"] == "" AND 
 		$rows["stat_sgot"] == "" AND 
 		$rows["stat_bun"] == "" AND 
@@ -485,7 +485,10 @@ while($rows = mysql_fetch_array($query)){
 		$rows["dental_exam"] == "" AND 
 		$rows["rh"] == "" AND 
 		$rows["groupt"] == "" AND 
-		$rows["pft"] == "" 
+		$rows["pft"] == "" AND 
+		$rows["antihb"] == "" AND 
+		$rows["other1"] == "" AND 
+		$rows["other2"] == "" 
 	){
 		$status_show = false;
 	}else{
