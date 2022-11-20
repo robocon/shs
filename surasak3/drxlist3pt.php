@@ -8,9 +8,9 @@ header("content-type: application/x-javascript; charset=UTF-8");
 	
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
-    print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งยาจากแพทย์ ";
+    print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งอุปกรณ์ PT จากแพทย์ ";
     print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datept.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
 
 ?>
 <html>
@@ -41,7 +41,7 @@ $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
 function searchSuggest() {
 	
-			url = 'drxlist.php?action=refresh&d=<?php echo $_GET["d"];?>&m=<?php echo $_GET["m"];?>&yr=<?php echo $_GET["yr"];?>';
+			url = 'drxlistpt.php?action=refresh&d=<?php echo $_GET["d"];?>&m=<?php echo $_GET["m"];?>&yr=<?php echo $_GET["yr"];?>';
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
 			xmlhttp.send(null);
@@ -72,7 +72,7 @@ print ("<table>
 	
  </tr>");
 
- $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin FROM dphardep WHERE whokey='DR' and date LIKE '$today%'  AND (dr_cancle is null || dr_cancle='') AND tvn = '".$_GET["vn_drx"]."' AND department ='' ORDER BY stkcutdate, hn  DESC ";
+ $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin FROM dphardep WHERE whokey='DR' and date LIKE '$today%'  AND (dr_cancle is null || dr_cancle='') AND tvn = '".$_GET["vn_drx"]."' AND department ='pt' ORDER BY stkcutdate, hn  DESC ";
 //echo $query;
     $result = mysql_query($query) or die("Query failed");
 
@@ -81,29 +81,19 @@ print ("<table>
     while (list ($tvn,$date,$ptname,$hn,$price,$row_id,$accno,$ptright,$doctor, $stkcutdate,$kew,$kewphar,$pharin) = mysql_fetch_row ($result)) {
         
         $time=substr($date,11);
-		$chkptright=substr($ptright,0,3);
-		//echo "--->".$chkptright;
-		if($chkptright=="R01" || $chkptright=="R04"){
-			$ptcolor="#FF0000";
-		}else{
-			$ptcolor="#66CDAA";
-		}
-		
 		if($stkcutdate == "")
 			$bgcolor="#66CDAA";
 		else
 			$bgcolor="#FFFFFF";
-			
-			
 
         print (" <tr>\n".
            "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$num</td>\n".
 			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$tvn</td>\n".
            "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$time</td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'><a target=_BLANK  href=\"drxdetail.php?sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright&sVn=$tvn\">$ptname</a></td>\n".
+           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'><a target=_BLANK  href=\"drxdetailpt.php?sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright&sVn=$tvn\">$ptname</a></td>\n".
            "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$hn</td>\n".
            "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$price</td>\n".
-		   "  <td BGCOLOR='".$ptcolor."'><font face='Angsana New'>$ptright</td>\n".
+		   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$ptright</td>\n".
    		   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$doctor</td>\n".
 			   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kew</td>\n".
 			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kewphar</td>\n".

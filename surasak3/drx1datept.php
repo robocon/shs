@@ -4,9 +4,9 @@
     $m=substr($today,3,2);
     $yr=substr($today,6,4) +543;  
 
-    print "<form method='GET' action='drxlisthd.php'>";
+    print "<form method='GET' action='drxlistpt.php'>";
     print "<p><font face='Angsana New'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              ต้องการดูรายการใบสั่งยาของห้องไตเทียม ของวันที่ ?&nbsp;&nbsp;</font></p>";
+              ต้องการดูรายการใบสั่งอุปกรณ์ PT ของวันที่ ?&nbsp;&nbsp;</font></p>";
     print "<p><font face='Angsana New'>วันที่&nbsp;&nbsp; ";
     print "<input type='text' name='d' size='4' value=$d>&nbsp;&nbsp;";
     print "เดือน&nbsp; <input type='text' name='m' size='4' value=$m>&nbsp;&nbsp;&nbsp;";

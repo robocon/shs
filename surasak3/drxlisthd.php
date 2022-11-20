@@ -2,34 +2,34 @@
 	
 include("connect.inc");
 $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
-
+$dbi->query("SET NAMES UTF8");
 $today=date("d-m-").(date("Y")+543);
 	
 if(isset($_GET["action"]) && $_GET["action"] =="refresh"){ 
 	
-header("content-type: application/x-javascript; charset=TIS-620");
+header("content-type: application/x-javascript; charset=UTF-8");
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
 $appdate_en = ($_GET['yr']-543).'-'.$_GET['m'].'-'.$_GET['d'];
 
 
-$hd_name_list = array('FU18'=>'‰µ‡∑’¬¡1','FU39'=>'‰µ‡∑’¬¡2');
+$hd_name_list = array('FU18'=>'‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°1','FU39'=>'‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°2');
 
 print ("<table>
  <tr>
-	<th bgcolor=6495ED><font face='Angsana New'>#</th>
-	<th bgcolor=6495ED><font face='Angsana New'>VN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>‡«≈“</th>
-	<th bgcolor=6495ED><font face='Angsana New'>™◊ËÕ</th>
-	<th bgcolor=6495ED><font face='Angsana New'>HN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>§Ë“¬“</th>
-	<th bgcolor=6495ED><font face='Angsana New'> ‘∑∏‘</th>
-		<th bgcolor=6495ED><font face='Angsana New'>·æ∑¬Ï</th>
-			<th bgcolor=6495ED><font face='Angsana New'>§‘«·æ∑¬Ï</th>
-		<th bgcolor=6495ED><font face='Angsana New'>§‘«ÀÈÕß¬“</th>
-			<th bgcolor=6495ED><font face='Angsana New'>‡«≈“√—∫„∫ —Ëß¬“</th>
-	<th bgcolor=6495ED><font face='Angsana New'>‡«≈“∑’Ëµ—¥</th>
-	<th bgcolor=6495ED>ÀÈÕß</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>#</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>VN</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>‡πÄ‡∏ß‡∏•‡∏≤</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>‡∏ä‡∏∑‡πà‡∏≠</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>HN</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>‡∏Ñ‡πà‡∏≤‡∏¢‡∏≤</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>‡∏™‡∏¥‡∏ó‡∏ò‡∏¥</th>
+		<th bgcolor=1ABC9C><font face='Angsana New'>‡πÅ‡∏û‡∏ó‡∏¢‡πå</th>
+			<th bgcolor=1ABC9C><font face='Angsana New'>‡∏Ñ‡∏¥‡∏ß‡πÅ‡∏û‡∏ó‡∏¢‡πå</th>
+		<th bgcolor=1ABC9C><font face='Angsana New'>‡∏Ñ‡∏¥‡∏ß‡∏´‡πâ‡∏≠‡∏á‡∏¢‡∏≤</th>
+			<th bgcolor=1ABC9C><font face='Angsana New'>‡πÄ‡∏ß‡∏•‡∏≤‡∏£‡∏±‡∏ö‡πÉ‡∏ö‡∏™‡∏±‡πà‡∏á‡∏¢‡∏≤</th>
+	<th bgcolor=1ABC9C><font face='Angsana New'>‡πÄ‡∏ß‡∏•‡∏≤‡∏ó‡∏µ‡πà‡∏ï‡∏±‡∏î</th>
+	<th bgcolor=1ABC9C>‡∏´‡πâ‡∏≠‡∏á</th>
 	
  </tr>");
 
@@ -44,10 +44,12 @@ print ("<table>
   ORDER BY stkcutdate, hn  DESC 
   ) AS a 
   LEFT JOIN (
-	SELECT `hn`, SUBSTRING(`detail`,1,4) AS `code` FROM `appoint` WHERE `appdate_en` = '$appdate_en'
+	SELECT `hn`, SUBSTRING(`detail`,1,4) AS `code` FROM `appoint` WHERE `appdate_en` = '$appdate_en' 
+	AND ( SUBSTRING(`detail`,1,4) = 'FU18' OR SUBSTRING(`detail`,1,4) = 'FU39' ) 
+	and apptime NOT LIKE '%‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å%'
   ) AS b ON b.`hn` = a.`hn`
   ORDER BY b.code,a.tvn ASC";
-
+	//echo $query;
     $result = mysql_query($query) or die("Query failed ".mysql_error());
 
 	$num=mysql_num_rows($result);
@@ -56,7 +58,7 @@ print ("<table>
         
         $time=substr($date,11);
 		if($stkcutdate == "")
-			$bgcolor="#33FFFF";
+			$bgcolor="#5DADE2";
 		else
 			$bgcolor="#FFFFFF";
 
@@ -86,15 +88,21 @@ exit();
 
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
-    print "<font face='Angsana New'>«—π∑’Ë $today  √“¬°“√„∫ —Ëß¬“®“°·æ∑¬ÏÀÈÕß‰µ‡∑’¬¡ ";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;‰ª‡¡πŸ</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datehd.php'>&lt;&lt;‡≈◊Õ°«—π∑’Ë„À¡Ë</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlisthd_not.php'>&lt;&lt;§È“ß®Ë“¬</a>";
+    print "<font face='Angsana New'>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà $today  ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÉ‡∏ö‡∏™‡∏±‡πà‡∏á‡∏¢‡∏≤‡∏à‡∏≤‡∏Å‡πÅ‡∏û‡∏ó‡∏¢‡πå‡∏´‡πâ‡∏≠‡∏á‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏° ";
+    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datehd.php'>&lt;&lt;‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡πÉ‡∏´‡∏°‡πà</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlisthd_not.php'>&lt;&lt;‡∏Ñ‡πâ‡∏≤‡∏á‡∏à‡πà‡∏≤‡∏¢</a>";
 
 ?>
 <html>
 <head>
 </head>
+<style type="text/css">
+
+body {
+	background-color: ##F2F4F4;
+}
+</style>
 <body>
 
 <SCRIPT LANGUAGE="JavaScript">

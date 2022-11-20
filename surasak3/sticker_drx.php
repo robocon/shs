@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 </head>
 
@@ -24,9 +24,9 @@ list($hn,$salepri,$tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part,$dr
 echo "<TABLE><TR>
 		<TD colspan=\"3\"><font style=\"font-family:'MS Sans Serif'; font-size:12px\">HN:".$arr['hn']."&nbsp;&nbsp;&nbsp&nbsp;".$arr['yot']." ".$arr['name']." ".$arr['surname']."</TD></TR>";
 echo "<TR style='line-height:12px;'>
-			<TD><font style=\"font-family:'MS Sans Serif'; font-size:12px\">&nbsp;&nbsp;".$tradname."&nbsp;&nbsp;".$slcode."&nbsp;&nbsp;®”π«π&nbsp;".$amount."&nbsp;</TD></TR>";
-echo "<TR><TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">¬“§È“ß®Ë“¬«—π∑’Ë $date_notsk </TD></TR>";
-echo "<TR><TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">®Ë“¬¬“§È“ß®Ë“¬«—π∑’Ë $today</TD></TR>";
+			<TD><font style=\"font-family:'MS Sans Serif'; font-size:12px\">&nbsp;&nbsp;".$tradname."&nbsp;&nbsp;".$slcode."&nbsp;&nbsp;‡∏à‡∏≥‡∏ô‡∏ß‡∏ô&nbsp;".$amount."&nbsp;</TD></TR>";
+echo "<TR><TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">‡∏¢‡∏≤‡∏Ñ‡πâ‡∏≤‡∏á‡∏à‡πà‡∏≤‡∏¢‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà $date_notsk </TD></TR>";
+echo "<TR><TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤‡∏Ñ‡πâ‡∏≤‡∏á‡∏à‡πà‡∏≤‡∏¢‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà $today</TD></TR>";
 ?>
 </body>
 </html>

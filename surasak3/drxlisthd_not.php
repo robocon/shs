@@ -30,8 +30,8 @@ print ("<table>
 
   //  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew FROM dphardep WHERE whokey='DR' and date LIKE '$today%'  AND dr_cancle is null ORDER BY stkcutdate, row_id  DESC ";
 
-  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,idname FROM dphardep WHERE left(doctor,2) != 'HD' AND whokey='DR' and (date LIKE '0000-00-00%' or date ='') and hn='".$_GET['hn']."' AND dr_cancle is null  ORDER BY stkcutdate, hn  DESC ";
-  //echo $query;
+  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,idname FROM dphardep WHERE left(doctor,2) = 'HD' AND whokey='DR' and (date LIKE '0000-00-00%' or date ='') and hn='".$_GET['hn']."' AND dr_cancle is null  ORDER BY stkcutdate, hn  DESC ";
+  //echo "==>".$query;
 
     $result = mysql_query($query) or die("Query failed");
 
@@ -73,7 +73,7 @@ exit();
 
     print "<font face='Angsana New'>รายการใบสั่งยาค้างจ่ายจากแพทย์ ";
     print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1datehd.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
 	
 
 ?>
@@ -108,7 +108,7 @@ exit();
 
 function searchSuggest() {
 	
-			url = 'drxlist_not.php?action=refresh&hn=<?php echo $_GET["hn_drx"];?>';
+			url = 'drxlisthd_not.php?action=refresh&hn=<?php echo $_GET["hn_drx"];?>';
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
 			xmlhttp.send(null);
@@ -119,12 +119,12 @@ setTimeout("searchSuggest();",tt);
 
 </SCRIPT>
 
-<FORM METHOD=GET ACTION="drxlist_not.php">
+<FORM METHOD=GET ACTION="drxlisthd_not.php">
 <TABLE>
 <TR>
 	<TD>HN : </TD>
 	<TD><INPUT TYPE="text" NAME="hn_drx"></TD>
-	<TD><INPUT TYPE="submit" value="ตกลง">&nbsp;</TD>
+	<TD><INPUT TYPE="submit" value="ค้นหา">&nbsp;</TD>
 </TR>
 </TABLE>
 

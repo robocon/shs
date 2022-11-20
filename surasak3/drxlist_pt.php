@@ -1,6 +1,6 @@
 <?php    
 if(isset($_GET["action"]) && $_GET["action"] =="refresh"){
-header("content-type: application/x-javascript; charset=TIS-620");
+header("content-type: application/x-javascript; charset=UTF-8");
 
 }
 	include("connect.inc");
@@ -14,17 +14,17 @@ print ("<table>
  <tr>
 	<th bgcolor=6495ED><font face='Angsana New'>#</th>
 	<th bgcolor=6495ED><font face='Angsana New'>VN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ชื่อ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เน€เธงเธฅเธฒ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เธเธทเนเธญ</th>
 	<th bgcolor=6495ED><font face='Angsana New'>HN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ค่ายา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th>
-	<th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ผู้บันทึก</th>
-	<th bgcolor=6495ED><font face='Angsana New'>คิวแพทย์</th>
-	<th bgcolor=6495ED><font face='Angsana New'>คิวห้องยา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>เวลารับใบสั่งยา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>เวลาที่ตัด</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เธเนเธฒเธขเธฒ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เธชเธดเธ—เธเธด</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เนเธเธ—เธขเน</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เธเธนเนเธเธฑเธเธ—เธถเธ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เธเธดเธงเนเธเธ—เธขเน</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เธเธดเธงเธซเนเธญเธเธขเธฒ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เน€เธงเธฅเธฒเธฃเธฑเธเนเธเธชเธฑเนเธเธขเธฒ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เน€เธงเธฅเธฒเธ—เธตเนเธ•เธฑเธ”</th>
 	
  </tr>");
 
@@ -77,10 +77,10 @@ exit();
 
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
-    print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งยาจากแพทย์ ";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date_pt.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
-//	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlist_not.php'>&lt;&lt;ค้างจ่าย</a>";
+    print "<font face='Angsana New'>เธงเธฑเธเธ—เธตเน $today  เธฃเธฒเธขเธเธฒเธฃเนเธเธชเธฑเนเธเธขเธฒเธเธฒเธเนเธเธ—เธขเน ";
+    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;เนเธเน€เธกเธเธน</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date_pt.php'>&lt;&lt;เน€เธฅเธทเธญเธเธงเธฑเธเธ—เธตเนเนเธซเธกเน</a>";
+//	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlist_not.php'>&lt;&lt;เธเนเธฒเธเธเนเธฒเธข</a>";
 
 ?>
 <html>
@@ -130,7 +130,7 @@ setTimeout("searchSuggest();",tt);
 <TR>
 	<TD>VN : </TD>
 	<TD><INPUT TYPE="text" NAME="vn_drx"></TD>
-	<TD><INPUT TYPE="submit" value="ตกลง">&nbsp;</TD>
+	<TD><INPUT TYPE="submit" value="เธ•เธเธฅเธ">&nbsp;</TD>
 </TR>
 </TABLE>
 

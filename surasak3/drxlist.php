@@ -25,7 +25,7 @@
 function searchSuggest() {
 	
 			url = 'drxlist.php?action=refresh&d=<?php echo $_GET["d"];?>&m=<?php echo $_GET["m"];?>&yr=<?php echo $_GET["yr"];?>';
-			//alert('���ѧ��Ŵ����������...');
+			//alert('กำลังโหลดข้อมูลใหม่...');
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
 			xmlhttp.send(null);
@@ -37,7 +37,7 @@ setTimeout("searchSuggest();",tt);
 </SCRIPT>
 <?php  
 if(isset($_GET["action"]) && $_GET["action"] =="refresh"){
-header("content-type: application/x-javascript; charset=TIS-620");
+header("content-type: application/x-javascript; charset=UTF-8");
 }
 	include("connect.inc");
 
@@ -51,37 +51,55 @@ print ("<table>
  <tr>
 	<th bgcolor=6495ED><font face='Angsana New'>#</th>
 	<th bgcolor=6495ED><font face='Angsana New'>VN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>����</th>
-	<th bgcolor=6495ED><font face='Angsana New'>����</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
+	<th bgcolor=6495ED><font face='Angsana New'>ชื่อ</th>
 	<th bgcolor=6495ED><font face='Angsana New'>HN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>�����</th>
-	<th bgcolor=6495ED><font face='Angsana New'>�Է��</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ᾷ��</th>
-	<th bgcolor=6495ED><font face='Angsana New'>���ѹ�֡</th>
-	<th bgcolor=6495ED><font face='Angsana New'>���ᾷ��</th>
-	<th bgcolor=6495ED><font face='Angsana New'>�����ͧ��</th>
-	<th bgcolor=6495ED><font face='Angsana New'>�����Ѻ������</th>
-	<th bgcolor=6495ED><font face='Angsana New'>���ҷ��Ѵ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>ค่ายา</th>
+	<th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th>
+	<th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
+	<th bgcolor=6495ED><font face='Angsana New'>ผู้บันทึก</th>
+	<th bgcolor=6495ED><font face='Angsana New'>คิวแพทย์</th>
+	<th bgcolor=6495ED><font face='Angsana New'>คิวห้องยา</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เวลารับใบสั่งยา</th>
+	<th bgcolor=6495ED><font face='Angsana New'>เวลาที่ตัด</th>
+	<th bgcolor=6495ED><font face='Angsana New'>แบบบันทึกการรักษาผู้ป่วยโควิด19</th>
 	
  </tr>");
 
   //  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew FROM dphardep WHERE whokey='DR' and date LIKE '$today%'  AND dr_cancle is null ORDER BY stkcutdate, row_id  DESC ";
 
-  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,idname FROM dphardep WHERE  whokey='DR' and date LIKE '$today%' AND dr_cancle is null  ORDER BY stkcutdate, hn  DESC ";
+  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,idname FROM dphardep WHERE  whokey='DR' and date LIKE '$today%' AND dr_cancle is null AND department ='' ORDER BY stkcutdate, hn  DESC ";
 	//echo "==>".$query."<br>";
     $result = mysql_query($query) or die("Query failed");
 
 	$num=mysql_num_rows($result);
-	echo "�ӹǹ $num ��¡��";
+	echo "จำนวน $num รายการ";
     while (list ($tvn,$date,$ptname,$hn,$price,$row_id,$accno,$ptright,$doctor, $stkcutdate,$kew,$kewphar,$pharin,$idname) = mysql_fetch_row ($result)) {
         
 
         $time=substr($date,11);
+		
+		$y=substr($date,0,4);
+		$m=substr($date,5,2);
+		$d=substr($date,8,2);
+		$thdatehn="$d-$m-$y$hn";
+	
+		$sql2="select * from opselfisolation where thdatehn='$thdatehn'";
+		//echo $sql2."<br>";
+		$query2=mysql_query($sql2);
+		$num2=mysql_num_rows($query2);
+		$rows2=mysql_fetch_array($query2);
+		
+		if($num2 < 1){
+			$opsi="";
+		}else{
+			$opsi="<a href='opselfisolation_print.php?hn=$hn&thidatehn=$thdatehn' target='_BLANK'>ดูข้อมูล</a>";
+		}
+
 		if($stkcutdate == "")
-			$bgcolor="#66CDAA";
+			$bgcolor="#66CDAA";		
 		else
 			$bgcolor="#FFFFFF";
-
         print " <tr>\n".
            "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$num</td>\n".
 			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$tvn</td>\n".
@@ -89,7 +107,7 @@ print ("<table>
 		if($tvn==""){
 			print "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$ptname</td>\n";
 		}else{
-       	 	print   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'><a target=_BLANK  href=\"drxdetail.php? sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright\">$ptname</a></td>\n";
+       	 	print   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'><a target=_BLANK  href=\"drxdetail.php? sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright&sVn=$tvn\">$ptname</a></td>\n";
 		}
           print "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$hn</td>\n".
            "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$price</td>\n".
@@ -100,6 +118,7 @@ print ("<table>
 			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kewphar</td>\n".
 			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$pharin</td>\n".
 			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$stkcutdate</td>\n".
+				   	"  <td BGCOLOR='".$bgcolor."' align='center'><font face='Angsana New'>$opsi</td>\n".
 		   " </tr>\n";
 		   $num--;
 		}
@@ -112,10 +131,10 @@ exit();
 
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
-    print "<font face='Angsana New'>�ѹ��� $today  ��¡�������Ҩҡᾷ�� ";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;�����</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;���͡�ѹ�������</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlist_not.php'>&lt;&lt;��ҧ����</a>";
+    print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งยาจากแพทย์ ";
+    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlist_not.php'>&lt;&lt;ค้างจ่าย</a>";
 
 ?>
 <html>
@@ -127,7 +146,7 @@ $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 <TR>
 	<TD>VN : </TD>
 	<TD><INPUT TYPE="text" NAME="vn_drx"></TD>
-	<TD><INPUT TYPE="submit" value="��ŧ">&nbsp;</TD>
+	<TD><INPUT TYPE="submit" value="ตกลง">&nbsp;</TD>
 </TR>
 </TABLE>
 

@@ -23,7 +23,8 @@ function jschars($str){
 $query = "SELECT * FROM `dphardep` 
 WHERE `row_id` = '$sRow_id' 
 AND `date` = '".$_SESSION["session_Date"]."' 
-AND `dr_cancle` IS NULL"; 
+AND `dr_cancle` IS NULL AND department='pt'"; 
+//echo $query;
 $result = mysql_query($query) or die("Query failed");
 
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -117,10 +118,12 @@ $netpay=$Nessdn+ $DSN+$DPN;
 $total=$Essd+$Nessdy+$DSY+$DPY+$Nessdn+$DSN+$DPN;
 
 //insert data into phardep
+$department="pt";
 $query = "INSERT INTO phardep(chktranx,date,ptname,hn,price,doctor,item,
-idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright, phapt,datedr)VALUES('".$_SESSION["sChktranx"]."','$Thidate','$cPtname','$cHn',
+idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright, phapt,datedr,department)VALUES('".$_SESSION["sChktranx"]."','$Thidate','$cPtname','$cHn',
 '$Netprice','$cDoctor','$item','$sOfficer','".jschars($cDiag)."','$Essd','$Nessdy',
-'$Nessdn','$DPY','$DPN','$DSY','$DSN','$tvn','$cPtright','$sOfficer','$dr_date');";
+'$Nessdn','$DPY','$DPN','$DSY','$DSN','$tvn','$cPtright','$sOfficer','$dr_date','$department');";
+//echo $query;
 
 $msg = "**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้ตัด stock ไปก่อนแล้ว หรือการตัด stock ล้มเหลว<br>
 *โปรดตรวจสอบว่ามีรายการยาในเมนู [ใบสั่งยา,การจ่ายเงิน] หรือไม่<br>
@@ -144,33 +147,21 @@ $idno=mysql_insert_id();
 //update data in druglst 
 for ($n=1; $n<=$x; $n++){
 	If (!empty($aDgcode[$n])){
-		$query ="UPDATE druglst SET stock = stock-$aAmount[$n],
+		$query ="UPDATE druglst_pt SET stock = stock-$aAmount[$n],
 		rxaccum = rxaccum + $aAmount[$n],
 		rx1day   = rx1day +$aAmount[$n],
 		totalstk = stock + mainstk
 		WHERE drugcode= '$aDgcode[$n]' ";
-		$result = mysql_query($query)or die("Query failed,update druglst");
+		$result = mysql_query($query)or die("Query failed,update druglst_pt");
 	}
 };
-
-// ข้อมูลแพ้ยาเชิงรุก รุก รุก เฮ้
-$sql = "SELECT `drug_code` 
-FROM `allergic_list`";
-$query = mysql_query($sql);
-$drug_allergics = array();
-
-while ($item = mysql_fetch_assoc($query)) {
-	$drug_allergics[] = $item['drug_code'];
-}
-// ลุกแล้วจ้า
-
 
 $injectno=0;	
 //insert data into drugrx
 for ($n=1; $n<=$x; $n++){
    If (!empty($aDgcode[$n])){
 	   
-		$sql = "Select stock,mainstk From druglst where drugcode = '".$aDgcode[$n]."' limit 0,1 ";
+		$sql = "Select stock,mainstk From druglst_pt where drugcode = '".$aDgcode[$n]."' limit 0,1 ";
 		$result = Mysql_Query($sql);
 		$arr = Mysql_fetch_assoc($result);
 		$stock = $arr["stock"];
@@ -179,9 +170,7 @@ for ($n=1; $n<=$x; $n++){
 		$c1 = substr($aDgcode[$n],0,1);
 		$c2 = substr($aDgcode[$n],0,2);
 			
-		// if($aDgcode[$n]=='1DILA' || $aDgcode[$n]=='1GPO30*'  || $aDgcode[$n]=='20SGPO30'  || $aDgcode[$n]=='20SGPO30' || $aDgcode[$n]=='1COTR4' || $aDgcode[$n]=='1ALLO3'){
-		$drug_code = $aDgcode[$n];
-		if( array_search($drug_code, $drug_allergics) !== false ){
+		if($aDgcode[$n]=='1DILA' || $aDgcode[$n]=='1GPO30*'  || $aDgcode[$n]=='20SGPO30'  || $aDgcode[$n]=='20SGPO30' || $aDgcode[$n]=='1COTR4' || $aDgcode[$n]=='1ALLO3'){
 		   
 			$sql="Select  * from drugrx  where drugcode='".$aDgcode[$n]."' and hn='".$cHn."' ";
 			$query = mysql_query($sql) or die("Query failed, chk drugrx");
@@ -190,22 +179,20 @@ for ($n=1; $n<=$x; $n++){
 			if($row>0){
 
 				$query = "INSERT INTO drugrx(date,hn,drugcode,tradname,
-				amount,price,item,slcode,part,idno,stock,mainstk,reason,drug_inject_amount,drug_inject_unit ,drug_inject_amount2,drug_inject_unit2 ,drug_inject_time , drug_inject_slip,  drug_inject_type,  drug_inject_etc,DPY,DPN,drug_status,datedr )VALUES('$Thidate','$cHn','$aDgcode[$n]','$aTrade[$n]',
-				'$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','old','$dr_date');";
+				amount,price,item,slcode,part,idno,stock,mainstk,reason,drug_inject_amount,drug_inject_unit ,drug_inject_amount2,drug_inject_unit2 ,drug_inject_time , drug_inject_slip,  drug_inject_type,  drug_inject_etc,DPY,DPN,drug_status,datedr )VALUES('$Thidate','$cHn','$aDgcode[$n]','$aTrade[$n]',				'$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','old','$dr_date');";
 				$result = mysql_query($query) or die("Query failed,insert into drugrxr1");
 
 			}else{
 			
 				$query = "INSERT INTO drugrx(date,hn,drugcode,tradname,
-				amount,price,item,slcode,part,idno,stock,mainstk,reason,drug_inject_amount,drug_inject_unit  ,drug_inject_amount2,drug_inject_unit2, drug_inject_time, drug_inject_slip,  drug_inject_type,  drug_inject_etc,DPY,DPN,drug_status,datedr )VALUES('$Thidate','$cHn','$aDgcode[$n]','$aTrade[$n]',
-				'$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','new','$dr_date');";
+				amount,price,item,slcode,part,idno,stock,mainstk,reason,drug_inject_amount,drug_inject_unit  ,drug_inject_amount2,drug_inject_unit2, drug_inject_time, drug_inject_slip,  drug_inject_type,  drug_inject_etc,DPY,DPN,drug_status,datedr )VALUES('$Thidate','$cHn','$aDgcode[$n]','$aTrade[$n]',		'$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','new','$dr_date');";
 				$result = mysql_query($query) or die("Query failed,insert into drugrxr2");
 
 			}
 		}else{
 			$query = "INSERT INTO drugrx(date,hn,drugcode,tradname,
-				 amount,price,item,slcode,part,idno,stock,mainstk,reason,drug_inject_amount , drug_inject_unit,drug_inject_amount2,drug_inject_unit2, drug_inject_time, drug_inject_slip,  drug_inject_type,  drug_inject_etc,DPY,DPN,drug_status,datedr )VALUES('$Thidate','$cHn','$aDgcode[$n]','$aTrade[$n]',
-				 '$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','','$dr_date');";
+				 amount,price,item,slcode,part,idno,stock,mainstk,reason,drug_inject_amount , drug_inject_unit,drug_inject_amount2,drug_inject_unit2, drug_inject_time, drug_inject_slip,  drug_inject_type,  drug_inject_etc,DPY,DPN,drug_status,datedr )VALUES('$Thidate','$cHn','$aDgcode[$n]','$aTrade[$n]',				 '$aAmount[$n]','$aMoney[$n]','$item','$aSlipcode[$n]','$aPart[$n]','$idno','$stock','$mainstk','$aReason[$n]','$aDrug_inject_amount[$n]','$aDrug_inject_unit[$n]','$aDrug_inject_amount2[$n]','$aDrug_inject_unit2[$n]','$aDrug_inject_time[$n]','$aDrug_inject_slip[$n]','$aDrug_inject_type[$n]','$aDrug_inject_etc[$n]','$aDPY[$n]','$aDPN[$n]','','$dr_date');";
+			//echo $query;
 			$result = mysql_query($query) or die("Query failed,insert into drugrx");
 		}
 		
@@ -215,82 +202,19 @@ for ($n=1; $n<=$x; $n++){
 			
 			// เพิ่มการนับจำนวนยาด้วย เพราะบางตัว amount เป็น0 แต่มีการคิดค่าฉีดยาเบิ้ล
 			if( isset($_GET['inject']) && $aAmount[$n] > 0 ){
-				// $sqlopday = "select toborow from opday where hn='".$cHn."' and thdatehn = '".$Thdhn."' ";
-				// $res= mysql_query($sqlopday) or die("Query failed");
-				// list($toborow) = mysql_fetch_row($res);
-				// $tob = substr($toborow,0,4);
-				// if($tob!="EX10"){ // ถ้าไม่ใช่ไตเทียม 
+				$sqlopday = "select toborow from opday where hn='".$cHn."' and thdatehn = '".$Thdhn."' ";
+				$res= mysql_query($sqlopday) or die("Query failed");
+				list($toborow) = mysql_fetch_row($res);
+				$tob = substr($toborow,0,4);
+				if($tob!="EX10"){ // ถ้าไม่ใช่ไตเทียม
 					$injectno++;
-				// }
+				}
 			}
 		}
 		////////////////////////////////จบนับจำนวนสำหรับการคิดเงินค่าฉีดยา
    }
 }
 
-////////////คิดเงิน20บาท
-if($injectno!=0){
-			//runno  for chktranx
-				$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-				$result = mysql_query($query)
-					or die("Query failed");
-			
-				for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-					if (!mysql_data_seek($result, $i)) {
-						echo "Cannot seek to row $i\n";
-						continue;
-					}
-			
-					if(!($row = mysql_fetch_object($result)))
-						continue;
-					 }
-			
-				$nRunno=$row->runno;
-				$nRunno++;
-			
-				$query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-				$result = mysql_query($query) or die("Query failed");
-					/////////////////////////////////////////////////////////////
-				$query = "INSERT INTO depart(chktranx,date,ptname,hn,an,depart,item,detail,price,sumyprice,sumnprice,paid, idname,accno,tvn,ptright)VALUES('".$nRunno."','".$Thidate."','".$cPtname."','".$cHn."','','EMER','".$injectno."','(55823 ค่าฉีดยาผู้ป่วยนอก)', '".(20*$injectno)."','".(20*$injectno)."','0','','".$sOfficer."','0','".$tvn."','".$cPtright."');";
-				$result = mysql_query($query);
-				$idno1=mysql_insert_id();
-			 
-				$query = "INSERT INTO patdata(date,hn,an,ptname,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright) VALUES('".$Thidate."','".$cHn."','','".$cPtname."','".$injectno."','INJ','(55823 ค่าฉีดยาผู้ป่วยนอก)','".$injectno."','".(20*$injectno)."','".(20*$injectno)."','0','EMER','NCARE','".$idno1."','".$cPtright."');";
-				$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-}
-////////////จบคิดเงิน20บาท
-
-// เก็บข้อมูลผู้ป่วยที่ได้รับยาที่แพ้รุนแรง
-// $hn = $_SESSION['hn'];
-$hn = $cHn;
-$dphardep_id = $_SESSION['sRow_id'];
-$date_now = date('Y-m-d H:i:s');
-
-// รายการยาทีแพ้รุนแรงทั้งหมด //
-$sql = "SELECT `drug_code` FROM `allergic_list`";
-$q = mysql_query($sql);
-$allergic_list = array();
-while ($item = mysql_fetch_assoc($q)) {
-	$allergic_list[] = $item['drug_code'];
-}
-
-$sql = "SELECT TRIM(a.`drugcode`) AS `code`, b.`drug_code` AS `check_code`
-FROM `ddrugrx` AS a 
-LEFT JOIN `phar_allergic` AS b ON b.`hn` = a.`hn` AND b.`drug_code` = a.`drugcode`
-WHERE a.`idno` =  '$dphardep_id'";
-$q = mysql_query($sql);
-while( $item = mysql_fetch_assoc($q) ){
-
-	// ถ้ามีอยู่ในลิสที่แพ้รุนแรงให้เพิ่มข้อมูลลงใน phar_allergic
-	if( array_search($item['code'], $allergic_list) !== false && empty($item['check_code']) ){
-		$sql_insert = "INSERT INTO  `phar_allergic` (`id` ,`date_save` ,`hn` ,`drug_code`,`phardep_id`)
-		VALUES (
-			NULL ,  '$date_now',  '$hn',  '".$item['code']."', '$idno'
-		);
-		";
-		mysql_query($sql_insert);
-	}
-}
 
 //update data in opday 
 $query ="UPDATE opday SET diag = '".jschars($cDiag)."', 
@@ -299,7 +223,7 @@ phar= phar+$Netprice
 WHERE thdatehn= '$Thdhn' AND vn = '$tvn' ";
 $result = mysql_query($query) or die("Query failed,update opday");
 
-$query = "UPDATE dphardep set stkcutdate = '".date("H:i:s")."'  WHERE row_id = '$sRow_id' "; 
+$query = "UPDATE dphardep set stkcutdate = '".date("H:i:s")."'  WHERE row_id = '$sRow_id'"; 
 $result = mysql_query($query);
 if($result){
 	?>
@@ -310,7 +234,6 @@ if($result){
 }
 include("unconnect.inc");
 //include("slipprntest1.php");
-// include("slipprntest1_new.php"); //เริ่มใช้ 31/1/2561
-include("slipprntest1_qrcode.php"); // 18-07-2562
+//include("slipprntest1_new.php"); //เริ่มใช้ 31/1/2561
 ?>
 
