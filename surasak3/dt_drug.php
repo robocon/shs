@@ -1239,7 +1239,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		array_push($_SESSION["list_drug_reason2"],$_GET["reason2"]);
 
 		array_push($_SESSION['list_drug_passCode'], $passCode);
-		
+
 		var_dump($_SESSION['list_drug_passCode']);
 		
 		$count = count($_SESSION["list_drugcode"]);
@@ -1454,7 +1454,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
 					$obj = "รหัสผ่าน:<INPUT id=\"choice\" TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."',this.value);}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
-					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">ติดต่อรับรหัสผ่านได้ที่ผู้อำนวยการโรงพยาบาลเท่านั้น</FONT>";
+					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">กรณีผู้ป่วยยินยอมชำระเงินเอง ระบุรหัสผ่าน 999</FONT>";
 				}else{
 					$test_drugcode = trim($arr['drugcode']);
 					

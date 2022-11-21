@@ -153,9 +153,9 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		$_SESSION["list_drug_reason"] = array() ;
 		$_SESSION["list_drug_reason2"] = array() ;
 
+		// เก็บรหัสผ่านที่แพทย์คีย์ผ่าน input:text input:radio
 		$_SESSION['list_drug_passCode'] = array();
 		
-
 		$_SESSION["list_code"] = array() ;
 		$_SESSION["list_detail"] = array() ;
 		$_SESSION["S_listxray"] = array();
