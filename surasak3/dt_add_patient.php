@@ -152,6 +152,8 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		$_SESSION["list_drug_inject_etc"] = array() ;
 		$_SESSION["list_drug_reason"] = array() ;
 		$_SESSION["list_drug_reason2"] = array() ;
+
+		$_SESSION['list_drug_passCode'] = array();
 		
 
 		$_SESSION["list_code"] = array() ;
