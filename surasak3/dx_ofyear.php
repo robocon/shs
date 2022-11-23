@@ -97,7 +97,8 @@ $list_lab["ALT"] = "sgpt";
 $list_lab["ALP"] = "alk";
 $list_lab["BUN"] = "bun";
 $list_lab["CREA"] = "cr";
-$list_lab["URIC"] = "uric";
+//$list_lab["URIC"] = "uric";
+$list_lab["URIC"] = "1427";
 $list_lab["HDL"] = "hdl";
 $list_lab["10001"] = "ldl";
 $list_lab["LDL"] = "ldl";
@@ -1061,6 +1062,10 @@ mmHg</td>
 
 			//if(!empty($arr_dxofyear[$list_lab[$labname]]))
 			//$labresult = $arr_dxofyear[$list_lab[$labname]];
+		if($labname=="1427"){
+				$labname="URIC";
+		}	
+		
 
 	  ?>
           <td align="right" class="tb_font_2"><?php if($labname=="10001" || $labname=="LDLC" || $labname=="LDL"){ echo "LDL";}else{ echo $labname;}?> : </td>
