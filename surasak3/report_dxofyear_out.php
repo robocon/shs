@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 include("connect.inc");
 ?>
@@ -1017,6 +1017,19 @@ C ํ</span></td>
 			<td  valign="top"><span class="text"><b><?=$result['stat_stocc']?></b></span></td>
 		</tr>
 		<?php 
+	}
+
+	if($result['hba1c']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>HBA1C :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['hba1c']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['hba1c_range']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_hba1c']?></strong><? if($result['stat_hba1c']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_hba1c']."...";?></td>
+		</tr>
+		<? 
 	}
 
 	if($result['groupt'])

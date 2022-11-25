@@ -98,11 +98,10 @@ $list_lab["PARASI"] = "parasi";
 $list_lab["GROUPT"] = "groupt";
 $list_lab["RH"] = "rh";
 $list_lab["UPT"] = "upt";
-$list_lab["ANTIHB"] = "antihb";
 $list_lab["STOCC"] = "stocc";
 $list_lab["1427"] = "uric";
-$list_lab["HBsAb"] = "HBsAb";
-$list_lab["HBA1C"] = "HBA1C";
+$list_lab["ANTIHB"] = "ANTIHB";
+$list_lab["HBA1CC"] = "HBA1C";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -800,11 +799,6 @@ C&deg; </td>
 		$i=1;
 		while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab))
 		{ 
-			// สกรีนผลแลปที่ให้แสดงผลได้
-			// if(empty($list_lab[$labname]))
-			// {
-			// 	continue;
-			// }
 
 			$extraName = "";
 			if($labname=='10001')
@@ -815,6 +809,11 @@ C&deg; </td>
 			if($labname=='1427'){
 				$extraName = '(URIC)';
 			}
+
+			if($labname=='ANTIHB'){
+				$extraName = '(HBsAb)';
+			}
+
 			?>
 			<td align="right" class="tb_font_2"><?php echo $labname.$extraName;?> : </td>
 			<td>
@@ -842,7 +841,7 @@ C&deg; </td>
 				echo implode(', ', array_keys($list_lab));
 				?>
 			</p>
-			<p style="margin: 0;">*ผลแลปอื่นๆที่ไม่มีในรายการข้างต้น <b><u>หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน</u></b> กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
+			<p style="margin: 0;">ผลแลปที่มี(*)ตามท้ายคือผลแลปอื่นๆที่ไม่มีในรายการข้างต้น <b><u>หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน</u></b> กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
 			</td>
 		</tr>
 

@@ -1604,7 +1604,7 @@ if(!empty($result_dx["antihb"]))
 {
 ?>
 <tr>
-	<td align="right" class="profilelab">Anti-HBs :</td>
+	<td align="right" class="profilelab">Anti-HBs(HBsAb) :</td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['antihb']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['antihb']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
@@ -1619,6 +1619,38 @@ if(!empty($result_dx["antihb"]))
 		<input name='stat_antihb' type='radio' value='ผิดปกติ' /> ผิดปกติ
 	</td>
 	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if(!empty($result_dx["HBA1CC"]))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">HBA1C :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['HBA1CC']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['HBA1CC']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['HBA1CC'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['HBA1CC'];?></span>
+	</td>
+	<td class="labfont">(<?=$result_dx['HBA1CCrange']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['HBA1CCflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['HBA1CCflag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_hba1c' type='radio' value='ปกติ' onclick="togglediv2('hba1c_action');" <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hba1c' type='radio' value='ผิดปกติ' onclick="togglediv1('hba1c_action');"<? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+
+	<td colspan="4">
+		<div id="hba1c_action" <?=($result_dx['HBA1CC'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
+			<select name='reason_hba1c'>
+				<option value="ปกติ" <?=($result_dx['HBA1CC'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['HBA1CC'] > 100){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+
 </tr>
 <?php 
 }
