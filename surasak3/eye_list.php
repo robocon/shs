@@ -11,19 +11,19 @@ include("connect.inc");
 $sql="SELECT * FROM `opd_eye` ORDER BY `date_eye` DESC ";
 $query=mysql_query($sql);
 ?>
-<a  class="font2" target="_top" href="../nindex.htm">&lt;&lt;ไปเมนู</a> 
-<h1 class="f1" align="center">OPD ตา</h1>
+<a  class="font2" target="_top" href="../nindex.htm">&lt;&lt;เนเธเน€เธกเธเธน</a> 
+<h1 class="f1" align="center">OPD เธ•เธฒ</h1>
 <table border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="f1" align="center">
   <tr>
-    <td bgcolor="#FFCCCC"><div align="center">วัน/เดือน/ปี</div></td>
+    <td bgcolor="#FFCCCC"><div align="center">เธงเธฑเธ/เน€เธ”เธทเธญเธ/เธเธต</div></td>
     <td bgcolor="#FFCCCC">hn</td>
-    <td bgcolor="#FFCCCC"><div align="center">ชื่อ-สกุล</div></td>
+    <td bgcolor="#FFCCCC"><div align="center">เธเธทเนเธญ-เธชเธเธธเธฅ</div></td>
     <td bgcolor="#FFCCCC">FBS</td>
  
     <td bgcolor="#FFCCCC"><div align="center">Hba1c</div></td>
     <td bgcolor="#FFCCCC">DR</td>
-    <td bgcolor="#FFCCCC"><div align="center">หมายเหตุ</div></td>
-    <td bgcolor="#FFCCCC"><div align="center">แก้ไข</div></td>
+    <td bgcolor="#FFCCCC"><div align="center">เธซเธกเธฒเธขเน€เธซเธ•เธธ</div></td>
+    <td bgcolor="#FFCCCC"><div align="center">เนเธเนเนเธ</div></td>
   </tr>
   <? 
   while($arr=mysql_fetch_array($query)){
@@ -37,7 +37,7 @@ $query=mysql_query($sql);
     <td><?=$arr['hba1c'];?></td>
     <td><?=$arr['dr'];?></td>
     <td><?=$arr['comment'];?></td>
-    <td align="center"><a href="javascript:MM_openBrWindow('eye_from_edit.php?id=<?=$arr['row_id'];?>','','toolbar=no,location=no,status=n o,menubar=no,scrollbars=yes,resizable=yes,width=950, height=800')">แก้ไข</a></td>
+    <td align="center"><a href="javascript:MM_openBrWindow('eye_from_edit.php?id=<?=$arr['row_id'];?>','','toolbar=no,location=no,status=n o,menubar=no,scrollbars=yes,resizable=yes,width=950, height=800')">เนเธเนเนเธ</a></td>
   </tr>
   
   <?  } ?>

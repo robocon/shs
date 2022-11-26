@@ -4,8 +4,8 @@ session_start();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>::OPD µ“ ::  ¡ÿ¥∑–‡∫’¬πµ“</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>::OPD ‡∏ï‡∏≤ :: ‡∏™‡∏°‡∏∏‡∏î‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô‡∏ï‡∏≤</title>
 </head>
 <style type="text/css">
 .forntsarabun11 {	font-family: "TH SarabunPSK";
@@ -78,19 +78,19 @@ function fncSubmit()
 	
 		if(document.frmMain.hn.value == "")
 	{
-		alert('°√ÿ≥“√–∫ÿ HN');
+		alert('‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏£‡∏∞‡∏ö‡∏∏ HN');
 		document.frmMain.hn.focus();		
 		return false;
 	}	
 			if(document.frmMain.ptname.value == "")
 	{
-		alert('°√ÿ≥“√–∫ÿ ™◊ËÕ- °ÿ≈ ');
+		alert('‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏£‡∏∞‡∏ö‡∏∏ ‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• ');
 		document.frmMain.ptname.focus();		
 		return false;
 	}	
 		if(document.frmMain.stage.value == "")
 	{
-		alert('°√ÿ≥“‡≈◊Õ° stage');
+		alert('‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÄ‡∏•‡∏∑‡∏≠‡∏Å stage');
 		document.frmMain.stage.focus();		
 		return false;
 	}	
@@ -108,32 +108,32 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <form action="" method="POST" name="frmMain1">
 	<table  border="0" align="center" bordercolor="#393939" bgcolor="#FFFFCE">
 		<tr>
-			<td align="center" bgcolor="#9900CC" class="forntsarabun">°√Õ°À¡“¬‡≈¢ HN</td>
+			<td align="center" bgcolor="#9900CC" class="forntsarabun">‡∏Å‡∏£‡∏≠‡∏Å‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏•‡∏Ç HN</td>
 		</tr>
 		<tr>
 			<td class="forntsarabun"><input  name="pHn"  type="text" class="forntsarabun1"/></td>
 		</tr>
 		<tr>
-			<td align="center"><input name="button2" type="submit" class="forntsarabun1" id="button2" value="µ°≈ß" /></td>
+			<td align="center"><input name="button2" type="submit" class="forntsarabun1" id="button2" value="‡∏ï‡∏Å‡∏•‡∏á" /></td>
 		</tr>
 		<tr>
 			<td align="center">
-				<a  class="forntsarabun1" target="_top" href="../nindex.htm">&lt;&lt;‰ª‡¡πŸÀ≈—°</a>
+				<a  class="forntsarabun1" target="_top" href="../nindex.htm">&lt;&lt;‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π‡∏´‡∏•‡∏±‡∏Å</a>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<a href="eye_list.php" target="_blank" class="forntsarabun1">√“¬™◊ËÕ opdµ“</a>
+				<a href="eye_list.php" target="_blank" class="forntsarabun1">‡∏£‡∏≤‡∏¢‡∏ä‡∏∑‡πà‡∏≠ opd‡∏ï‡∏≤</a>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<a class="forntsarabun1" href="report_opdeye.php">opdµ“  √ÿª¬Õ¥µ“¡ª’</a>
+				<a class="forntsarabun1" href="report_opdeye.php">opd‡∏ï‡∏≤ ‡∏™‡∏£‡∏∏‡∏õ‡∏¢‡∏≠‡∏î‡∏ï‡∏≤‡∏°‡∏õ‡∏µ</a>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<a class="forntsarabun1" href="report_dm_eye.php">√“¬™◊ËÕºŸÈªË«¬ÀÈÕßµ“ ‡ª√’¬∫‡∑’¬∫°—∫§≈‘π‘°‡∫“À«“π</a>
+				<a class="forntsarabun1" href="report_dm_eye.php">‡∏£‡∏≤‡∏¢‡∏ä‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏´‡πâ‡∏≠‡∏á‡∏ï‡∏≤ ‡πÄ‡∏õ‡∏£‡∏µ‡∏¢‡∏ö‡πÄ‡∏ó‡∏µ‡∏¢‡∏ö‡∏Å‡∏±‡∏ö‡∏Ñ‡∏•‡∏¥‡∏ô‡∏¥‡∏Å‡πÄ‡∏ö‡∏≤‡∏´‡∏ß‡∏≤‡∏ô</a>
 			</td>
 		</tr>
 	</table>
@@ -150,11 +150,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	if($rowchk >0){
 		
 		
-		echo "<div align='center' class='forntsarabun1'>HN : ".$_POST['pHn']." &nbsp;¡’·≈È«„π√–∫∫∑–‡∫’¬πºŸÈªË«¬‚√§µ“<br>";
+		echo "<div align='center' class='forntsarabun1'>HN : ".$_POST['pHn']." &nbsp;‡∏°‡∏µ‡πÅ‡∏•‡πâ‡∏ß‡πÉ‡∏ô‡∏£‡∏∞‡∏ö‡∏ö‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÇ‡∏£‡∏Ñ‡∏ï‡∏≤<br>";
 		?>
-<a href="javascript:MM_openBrWindow('eye_from_edit.php?id=<?=$arr['row_id'];?>&frm1=1','','toolbar=no,location=no,status=n o,menubar=no,scrollbars=yes,resizable=yes,width=800, height=600')">µÈÕß°“√·°È‰¢¢ÈÕ¡Ÿ≈</a>
+<a href="javascript:MM_openBrWindow('eye_from_edit.php?id=<?=$arr['row_id'];?>&frm1=1','','toolbar=no,location=no,status=n o,menubar=no,scrollbars=yes,resizable=yes,width=800, height=600')">‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</a>
         <?
-		//echo "µÈÕß°“√·°È‰¢¢ÈÕ¡Ÿ≈  <a href='hd_from_edit.php?cHn=$_POST[pHn]' target='_blank'>§≈‘Í°</a> </div>";
+		//echo "‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•  <a href='hd_from_edit.php?cHn=$_POST[pHn]' target='_blank'>‡∏Ñ‡∏•‡∏¥‡πä‡∏Å</a> </div>";
 		
 	
 	}else{
@@ -183,11 +183,11 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
       <input name="hn" type="text" class="forntsarabun1" id="hn"  value="<?=$objResult['hn'];?>" readonly="readonly"/></td>
   </tr>
   <tr>
-    <td bgcolor="#FFFFCE" class="tb_font_2">™◊ËÕ- °ÿ≈</td>
+    <td bgcolor="#FFFFCE" class="tb_font_2">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</td>
     <td bgcolor="#FFFFCE"><input name="ptname" type="text" class="forntsarabun1" id="ptname" value="<?=$objResult['ptname'];?>" readonly="readonly"/></td>
   </tr>
   <tr>
-    <td bgcolor="#FFFFCE" class="tb_font_2">«—π∑’Ë</td>
+    <td bgcolor="#FFFFCE" class="tb_font_2">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</td>
     <td bgcolor="#FFFFCE"><input name="date_eye" type="text" class="forntsarabun1" id="date_eye"  value="<?=date("Y-m-d");?>"/></td>
   </tr>
   <tr>
@@ -201,10 +201,10 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
       %</td>
   </tr>
   <tr>
-    <td bgcolor="#FFFFCE" class="tb_font_2">º≈DR</td>
+    <td bgcolor="#FFFFCE" class="tb_font_2">‡∏ú‡∏•DR</td>
     <td bgcolor="#FFFFCE">
       <select name="dr" id="dr" class="forntsarabun1">
-       <option value="">--°√ÿ≥“‡≈◊Õ° DR--</option>
+       <option value="">--‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÄ‡∏•‡∏∑‡∏≠‡∏Å DR--</option>
       <option value="NoDR">No DR</option>
       <option value="Mild">Mild NPDR </option>
       <option value="Moderate">Moderate NPDR</option>
@@ -213,17 +213,17 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
       </select></td>
   </tr>
   <tr>
-    <td bgcolor="#FFFFCE" class="tb_font_2"> ‘∑∏‘</td>
+    <td bgcolor="#FFFFCE" class="tb_font_2">‡∏™‡∏¥‡∏ó‡∏ò‡∏¥</td>
     <td bgcolor="#FFFFCE"><input  name="ptright"  type="text" class="forntsarabun11" id="ptright" value="<?=$objResult['ptright'];?>" readonly="readonly"/></td>
   </tr>
   <tr>
-    <td bgcolor="#FFFFCE" class="tb_font_2">À¡“¬‡Àµÿ</td>
+    <td bgcolor="#FFFFCE" class="tb_font_2">‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏´‡∏ï‡∏∏</td>
     <td bgcolor="#FFFFCE">
       <textarea name="comment" cols="45" rows="5" class="forntsarabun1" id="comment"></textarea></td>
   </tr>
   <tr>
     <td bgcolor="#FFFFCE">&nbsp;</td>
-    <td bgcolor="#FFFFCE"><input name="button" type="submit" class="forntsarabun1" id="button" value="∫—π∑÷°¢ÈÕ¡Ÿ≈" />  </td>
+    <td bgcolor="#FFFFCE"><input name="button" type="submit" class="forntsarabun1" id="button" value="‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•" />  </td>
   </tr>
 </table>
 </form>
@@ -245,7 +245,7 @@ if(isset($_POST['button']) && $_POST['button']!=''){
   $query=mysql_query($sql) or die (mysql_error());
 
   if($query){
-    echo "∫—π∑÷°¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«";
+    echo "‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß";
     echo"<meta http-equiv='refresh' content='1;url=eye_from.php'>";
   }
 }

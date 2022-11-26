@@ -26,18 +26,18 @@ include("../Connections/connect.inc.php");
 $icd10=$_REQUEST['icd10'];
 $date1=$_REQUEST['date'];
 
-$sql1="select *  from opday Where icd10='$icd10'  and thidate like '$date1%'  and doctor like '%พิศาล%' ";
+$sql1="select *  from opday Where icd10='$icd10'  and thidate like '$date1%'  and doctor like '%เธเธดเธจเธฒเธฅ%' ";
 $q1=mysql_query($sql1);
 $i=0;
 ?>
 <table  border="1" style="border-collapse:collapse" cellpadding="0" cellspacing="0" bordercolor="#000000" class="forntsarabun">
   <tr align="center">
-    <td bgcolor="#0099FF" >ลำดับ</td>
-    <td bgcolor="#0099FF">วันที่</td>
+    <td bgcolor="#0099FF" >เธฅเธณเธ”เธฑเธ</td>
+    <td bgcolor="#0099FF">เธงเธฑเธเธ—เธตเน</td>
     <td bgcolor="#0099FF">HN</td>
     <td bgcolor="#0099FF">AN</td>
-    <td bgcolor="#0099FF">ชื่อ-สกุล</td>
-    <td bgcolor="#0099FF">สิทธิ</td>
+    <td bgcolor="#0099FF">เธเธทเนเธญ-เธชเธเธธเธฅ</td>
+    <td bgcolor="#0099FF">เธชเธดเธ—เธเธด</td>
     <td bgcolor="#0099FF">Diag</td>
     <td bgcolor="#0099FF">ICD10</td>
   </tr>
@@ -61,4 +61,4 @@ $i=0;
 <?	
 }
 ?>
-<input name="btnButton" type="button" value="กลับหน้าเดิม" onClick="JavaScript:history.back();" class="forntsarabun" />
+<input name="btnButton" type="button" value="เธเธฅเธฑเธเธซเธเนเธฒเน€เธ”เธดเธก" onClick="JavaScript:history.back();" class="forntsarabun" />
