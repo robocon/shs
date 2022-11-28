@@ -787,7 +787,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="การทำงานของไต";
 									}else if($objResult["labname"]=="Uric acid"){
 										$labmean="ยูริคในเลือด";
-									}else if($objResult["labname"]=="Cholesterol" OR $objResult["labname"]=="Cholesterol*"){
+									}else if( $objResult["labname"]=="Cholesterol" ){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="HDL"){
 										$labmean="ไขมันความหนาแน่นสูง";			
@@ -893,7 +893,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 
 
-									if($objResult["labcode"]=='CHOL'){
+									if($objResult["labcode"]=='CHOL'){ 
 										if($objResult["result"]<=200){
 											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
 										}else	if($objResult["result"]>200){
@@ -1242,31 +1242,31 @@ $outlab_row = mysql_num_rows($outlab_query);
  * ST -> STOOL
  * C-S -> 
  */
-$sql = "SELECT a.*, b.* 
-FROM ( 
+// $sql = "SELECT a.*, b.* 
+// FROM ( 
 
-    SELECT *, MAX(`autonumber`) AS `latest_id` 
-	FROM `resulthead` 
-    WHERE `hn` = '$hn' 
-	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
-    AND ( 
-        `profilecode`='HBSAG' 
-        OR `profilecode`='HAVTOT' 
-        OR `profilecode`='WET' 
-		OR `profilecode`='STOOL' 
-		OR `profilecode`='35101' 
-		OR `profilecode`='AHAV' 
-    ) 
-	GROUP BY `profilecode` 
-    ORDER BY `autonumber` ASC  
+//     SELECT *, MAX(`autonumber`) AS `latest_id` 
+// 	FROM `resulthead` 
+//     WHERE `hn` = '$hn' 
+// 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
+//     AND ( 
+//         `profilecode`='HBSAG' 
+//         OR `profilecode`='HAVTOT' 
+//         OR `profilecode`='WET' 
+// 		OR `profilecode`='STOOL' 
+// 		OR `profilecode`='35101' 
+// 		OR `profilecode`='AHAV' 
+//     ) 
+// 	GROUP BY `profilecode` 
+//     ORDER BY `autonumber` ASC  
 
-) AS a 
-LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
-WHERE b.`result` != 'DELETE' 
-GROUP BY a.`profilecode` 
-ORDER BY b.`autonumber` ASC";
-$query = mysql_query($sql) or die( mysql_error() );
-$group2_rows = mysql_num_rows($query);
+// ) AS a 
+// LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
+// WHERE b.`result` != 'DELETE' 
+// GROUP BY a.`profilecode` 
+// ORDER BY b.`autonumber` ASC";
+// $query = mysql_query($sql) or die( mysql_error() );
+// $group2_rows = mysql_num_rows($query);
 
 // ปิดการใช้งานไปก่อน
 $group2_rows = 0;
