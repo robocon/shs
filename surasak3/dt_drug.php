@@ -905,7 +905,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 								}else{
 							
 						?>
-							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
+							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>][][on" />
 			  <?php $i++; $j++;
 			  					}
 			  				}else if($arr["lock_dr"] == 'N'){
@@ -1310,9 +1310,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	// $logs .= "[mysql] : $sql\r\n";
 	
 	$result = mysql_query($sql) or die( mysql_error() );
-	while($arr = mysql_fetch_assoc($result)){
-		
-
+	while($arr = mysql_fetch_assoc($result)){ 
 			
 			array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
 			array_push($_SESSION["list_drugamount"],$arr["amount"]);
@@ -1328,7 +1326,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 			array_push($_SESSION["list_drug_reason"],$arr["reason"]);
 			array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
 			array_push($_SESSION["list_drug_part"],$arr["part"]);
-
 			
 	}  //close while
 
@@ -1364,22 +1361,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 
 	for($i=$_GET["number"];$i<$count-1;$i++){
 		
-			$_SESSION["list_drugcode"][$i] = $_SESSION["list_drugcode"][$i+1];
-			$_SESSION["list_drugamount"][$i] = $_SESSION["list_drugamount"][$i+1];
-			$_SESSION["list_drugslip"][$i] = $_SESSION["list_drugslip"][$i+1];
+		$_SESSION["list_drugcode"][$i] = $_SESSION["list_drugcode"][$i+1];
+		$_SESSION["list_drugamount"][$i] = $_SESSION["list_drugamount"][$i+1];
+		$_SESSION["list_drugslip"][$i] = $_SESSION["list_drugslip"][$i+1];
 
-			$_SESSION["list_drug_inject_amount"][$i] = $_SESSION["list_drug_inject_amount"][$i+1];
-			$_SESSION["list_drug_inject_unit"][$i] = $_SESSION["list_drug_inject_unit"][$i+1];
-			$_SESSION["list_drug_inject_amount2"][$i] = $_SESSION["list_drug_inject_amount2"][$i+1];
-			$_SESSION["list_drug_inject_unit2"][$i] = $_SESSION["list_drug_inject_unit2"][$i+1];
-			$_SESSION["list_drug_inject_time"][$i] = $_SESSION["list_drug_inject_time"][$i+1];
-			$_SESSION["list_drug_inject_slip"][$i] = $_SESSION["list_drug_inject_slip"][$i+1];
-			$_SESSION["list_drug_inject_type"][$i] = $_SESSION["list_drug_inject_type"][$i+1];
-			$_SESSION["list_drug_inject_etc"][$i] = $_SESSION["list_drug_inject_etc"][$i+1];
-			$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
-			
-			$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
-			$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
+		$_SESSION["list_drug_inject_amount"][$i] = $_SESSION["list_drug_inject_amount"][$i+1];
+		$_SESSION["list_drug_inject_unit"][$i] = $_SESSION["list_drug_inject_unit"][$i+1];
+		$_SESSION["list_drug_inject_amount2"][$i] = $_SESSION["list_drug_inject_amount2"][$i+1];
+		$_SESSION["list_drug_inject_unit2"][$i] = $_SESSION["list_drug_inject_unit2"][$i+1];
+		$_SESSION["list_drug_inject_time"][$i] = $_SESSION["list_drug_inject_time"][$i+1];
+		$_SESSION["list_drug_inject_slip"][$i] = $_SESSION["list_drug_inject_slip"][$i+1];
+		$_SESSION["list_drug_inject_type"][$i] = $_SESSION["list_drug_inject_type"][$i+1];
+		$_SESSION["list_drug_inject_etc"][$i] = $_SESSION["list_drug_inject_etc"][$i+1];
+		$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
+		
+		$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
+		$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
+
+		$_SESSION["list_drug_passCode"][$i] = $_SESSION["list_drug_part"][$i+1];
 		
 	}
 
@@ -1397,6 +1396,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	unset($_SESSION["list_drug_reason"][$count-1]);
 	unset($_SESSION["list_drug_reason2"][$count-1]);
 	unset($_SESSION["list_drug_part"][$count-1]);
+	unset($_SESSION["list_drug_passCode"][$count-1]);
 	exit();
 }
 
@@ -2678,7 +2678,7 @@ function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount,
 	
 	//alert(reason2);
 
-	
+	console.log(passCode);
 	
 	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2+'&passCode='+passCode
 	;
@@ -3073,9 +3073,11 @@ function addtolist_muli(){
 					//zz[3] = document.getElementById("chose_reason"+i).value;
 					zz[3]='';
 				//}
-			
+			console.log(zz);
+
+			// zz[14] เป็น passCode
 		
-			addtolist(zz[0],zz[2],zz[1],'E', zz[4], zz[5], zz[6], zz[7], zz[8], zz[9], zz[10], '',zz[3],zz[13]);
+			addtolist(zz[0],zz[2],zz[1],'E', zz[4], zz[5], zz[6], zz[7], zz[8], zz[9], zz[10], '',zz[3],zz[13],zz[14]);
 			
 
 			//ตรวจสอบ glibenclamide
