@@ -501,7 +501,7 @@ echo "<table width='100%' border='0' align='center' class='font2 footer-sign'>
     <td align='center'>$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
   </tr>
   <tr>
-    <td align='center'>( บุญทิวา เนียมทอง )</td>
+    <td align='center'>( พ.ต.หญิงศิริบงกช คัมภีร์พิทักษ์ )</td>
     <td align='center'>($doctor)</td>
   </tr>
   <tr>

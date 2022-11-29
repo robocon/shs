@@ -541,7 +541,7 @@ switch($_POST['m_start']){
 				<td align='center'>$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>
 			<tr>
-				<td align='center'>( บุญทิวา เนียมทอง )</td>
+				<td align='center'>( พ.ต.หญิงศิริบงกช คัมภีร์พิทักษ์ )</td>
 				<td align='center'>($doctor)</td>
 			</tr>
 			<tr>
