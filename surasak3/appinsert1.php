@@ -319,11 +319,31 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
 ///////////////////////
 
     $doctor=substr($doctor,5);
-    $depcode=substr($depcode,4);
+
+    // code เดิม มีปัญหาตัวสี่เหลี่ยม
+    // $depcode=mb_substr($depcode,4);
+    list($codeNumber,$depcode) = explode(" ", $depcode);
+
     print "<div align='right' style='margin-right: 10px;'><img src = \"printbcpha.php?cHn=".$cHn."\"></div>";
-    ?>
-    <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>&margin=1"></div>
-    <?php
+    
+    $detailCode = substr($detail, 0, 4);
+    // ถ้าเป็นนัดผู้ป่วยใน ให้แสดงเป็น ไลน์โรงบาลแทน
+    if($detailCode=="FU03"){
+        
+        ?>
+        <div style="position: absolute;top: 0;left: 0; text-align: center;">
+            <img src="printQrCode.php?hn=https://lin.ee/Ls8i61F&size=3&margin=1">
+            <div class="size2" style="line-height:10px;">ไลน์ รพ.ค่ายสุรศักดิ์มนตรี<br>เพื่อการติดต่อและประสานงาน</div>
+        </div>
+        <?php 
+        
+    }else{
+        ?>
+        <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>&margin=1"></div>
+        <?php 
+    }
+    
+    print "<br>";
     print "<p class='size5 center'><b>ใบนัดผู้ป่วย โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง</b></p>";
     print "<p class='size2 center'>FR-NUR-003/2,04, 25 ธ.ค. 54</p>";
     

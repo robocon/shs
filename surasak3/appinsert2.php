@@ -83,17 +83,25 @@ $Thidate = (date("Y")+543).date("-m-d H:i:s");
  
 
 //พิมพ์ใบนัด
-
-
- 
-  $doctor=substr($doctor,5);
-
-   $depcode=iconv_substr($depcode,4,'UTF-8');
-
-
+$doctor=substr($doctor,5);
+$depcode=iconv_substr($depcode,4,'UTF-8');
 print "<div align='right' style='margin-right: 10px;'><img src = \"printbcpha.php?cHn=".$cHn."\"></div>";
+
+$detailCode = substr($detail, 0, 4);
+// ถ้าเป็นนัดผู้ป่วยใน ให้แสดงเป็น ไลน์โรงบาลแทน
+if($detailCode=="FU03"){
+    ?>
+    <div style="position: absolute;top: 0;left: 0; text-align: center;">
+        <img src="printQrCode.php?hn=https://lin.ee/Ls8i61F&size=3&margin=1">
+        <div style="font-family: 'Angsana New'; font-size: small;">ไลน์ รพ.ค่ายสุรศักดิ์มนตรี<br>เพื่อการติดต่อและประสานงาน</div>
+    </div>
+    <?php 
+}else{
+    ?>
+    <div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>&margin=1"></div>
+    <?php 
+}
 ?>
-<div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>"></div>
 <div style="margin-top: 35px;">
 <?php
 print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";  
