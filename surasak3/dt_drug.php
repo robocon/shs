@@ -14,7 +14,6 @@ if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-
 include("connect.inc");
 //include("checklogin.php");
 
@@ -238,8 +237,6 @@ list($sld) = mysql_fetch_row(mysql_query($sql));
 	if($rows > 0)
 		echo "| <A HREF=\"javascript:showsult();checkall3(true);\">สูตรยา</A>";
 
-	// var_dump($_SESSION);
-
 	//หัวตารางรายการยาที่สั่งจ่ายผู้ป่วย
 	echo "<TABLE width='100%'>";
 	echo "
@@ -307,20 +304,14 @@ for($i=0;$i<$count;$i++){
 		list($d, $a, $s) = mysql_fetch_row($result);
 		array_push($remark,"<FONT style=\"font-size: 20px;\" COLOR=\"red\">เคยจ่ายยาครั้งสุดท้าย วันที่ ".$d." จำนวน ".$a." วิธีใช้ ".$s."</FONT>");
 	}
-			//echo "++>".$_SESSION["list_drugcode"][$i];
-			if(isset($_SESSION["list_drugcode"][$i])){
-				$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
-				//echo "$i==>".$sql."<br>";
-				$result = Mysql_Query($sql);
-				list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);						
-			}
-
-			
-			$passCode = $_SESSION['list_drug_passCode'][$i];
-			if($passCode!="on" && $part=="DDL"){
-				$part = "DDN";
-			}
-
+	
+	//echo "++>".$_SESSION["list_drugcode"][$i];
+	if(isset($_SESSION["list_drugcode"][$i])){
+		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free, `lock` From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+		//echo "$i==>".$sql."<br>";
+		$result = Mysql_Query($sql);
+		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free, $drugLock) = Mysql_fetch_row($result);						
+	}
 			//echo $_SESSION["list_drug_part"][$i]."<br>";
 			
 			/*if(isset($_SESSION["list_drug_part"][$i])){  //ถ้าตัวแปรนี้มีอยู่จริง
@@ -383,17 +374,9 @@ for($i=0;$i<$count;$i++){
 			if(count($remark) > 0){
 				$list_remark = implode("<BR>",$remark);
 			}
-
-			if($part == "DDY"){
-				$style=" style=\"color:#0000FF\" ";
-			}else if($part == "DDN"|| $part == "DSN" || $part == "DPN"){
-				$style = " style=\"color:#FF0000\" ";
-			}else if($part == "DDL"){
-				$style = " style=\"color:#000000\" ";
-			}else{
-				$style="";	
-			}
 			
+			//// CONVERT IF ////
+			//// สลับ if($part == "DDY") ไปด้านล่างเพราะในเงื่อนไขที่เช็ก list_drug_reason เป็น F มีการแทนค่า $part="DDN" ////
 			if($part == "DDY"){
 				if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
 					
@@ -408,6 +391,18 @@ for($i=0;$i<$count;$i++){
 					echo "<INPUT TYPE=\"hidden\" name=\"ddnnew\" value=\"$i\">";
 				}
 			}
+
+			if($part == "DDY"){
+				$style=" style=\"color:#0000FF\" ";
+			}else if($part == "DDN"|| $part == "DSN" || $part == "DPN"){
+				$style = " style=\"color:#FF0000\" ";
+			}else if($part == "DDL"){
+				$style = " style=\"color:#000000\" ";
+			}else{
+				$style="";	
+			}
+			//// END CONVERT IF ////
+
 			//แก้ช่อง textbox จำนวน <TD align='right'><input name='piece$i' value='".$_SESSION["list_drugamount"][$i]."' type='text' size=3> &nbsp;&nbsp;</TD>
 			//แก้ช่องวิธีใช้ <input name='act$i' value='".$_SESSION["list_drugslip"][$i]."' type='text' size=5 onKeyPress=addslip2('slip2',this.value,2,$i); >
 			
@@ -432,53 +427,53 @@ for($i=0;$i<$count;$i++){
 			}else{
 				$showpart=$part;
 			}
+			
 			echo "
 			<TR  class='tb_detail3' ".$style.">
-				<TD align=\"center\"><INPUT TYPE=\"checkbox\" NAME=\"check_list[]\" value=\"".$i."\"></TD>
-				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$showpart." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," ( ",$part," : ",$showpart," ","  ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท )</span><BR>".$list_remark."</TD>
-				<TD align='right'>".$_SESSION["list_drugamount"][$i]."</TD>
-				<TD>",$unit,"</TD>
-				<TD><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".iconv('tis-620','utf-8',$_SESSION["list_drugslip"][$i])."</span></TD>
+			<TD align=\"center\"><INPUT TYPE=\"checkbox\" NAME=\"check_list[]\" value=\"".$i."\"></TD>
+			<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$showpart." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," ( ",$part," : ",$showpart," ","  ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท )</span><BR>".$list_remark."</TD>
+			<TD align='right'>".$_SESSION["list_drugamount"][$i]."</TD>
+			<TD>",$unit,"</TD>
+			<TD><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".iconv('tis-620','utf-8',$_SESSION["list_drugslip"][$i])."</span></TD>
 				
-			
-				
-				<TD align='center'><A HREF=\"#\" Onclick=\"javascript : document.getElementById('drug_code').value='",jschars($_SESSION["list_drugcode"][$i]),"';document.getElementById('drug_amount').value='",jschars($_SESSION["list_drugamount"][$i]),"';document.getElementById('drug_slip').value='",jschars($_SESSION["list_drugslip"][$i]),"';document.getElementById('addoredit').value='".$i."';
-				if(check_inject('",jschars($_SESSION["list_drugcode"][$i]),"') == true){
+			<TD align='center'><A HREF=\"javascript:void(0);\" Onclick=\"javascript : document.getElementById('drug_code').value='",jschars($_SESSION["list_drugcode"][$i]),"';document.getElementById('drug_amount').value='",jschars($_SESSION["list_drugamount"][$i]),"';document.getElementById('drug_slip').value='",jschars($_SESSION["list_drugslip"][$i]),"';document.getElementById('addoredit').value='".$i."';
+			if(check_inject('",jschars($_SESSION["list_drugcode"][$i]),"') == true){
 					
-			document.getElementById('drug_slip').value='b';
-			document.getElementById('slip_detail').style.display = 'none';
-			document.getElementById('drug_inject_amount').style.display = '';
-			document.getElementById('drug_inject_time').style.display = '';
-			document.getElementById('drug_inject_slip').style.display = '';
-			document.getElementById('drug_inject_type').style.display = '';
-			document.getElementById('drug_inject_etc').style.display = '';
-			document.getElementById('drug_inject_amount2').style.display = 'none';
+				document.getElementById('drug_slip').value='b';
+				document.getElementById('slip_detail').style.display = 'none';
+				document.getElementById('drug_inject_amount').style.display = '';
+				document.getElementById('drug_inject_time').style.display = '';
+				document.getElementById('drug_inject_slip').style.display = '';
+				document.getElementById('drug_inject_type').style.display = '';
+				document.getElementById('drug_inject_etc').style.display = '';
+				document.getElementById('drug_inject_amount2').style.display = 'none';
 			
-			document.form1.drug_inject_amount.value = '",jschars($_SESSION["list_drug_inject_amount"][$i]),"';
-			document.form1.drug_inject_unit.value = '",jschars($_SESSION["list_drug_inject_unit"][$i]),"';
-			document.form1.drug_inject_amount2.value = '",jschars($_SESSION["list_drug_inject_amount2"][$i]),"';
-			document.form1.drug_inject_unit2.value = '",jschars($_SESSION["list_drug_inject_unit2"][$i]),"';
-			document.form1.drug_inject_time.value = '",jschars($_SESSION["list_drug_inject_time"][$i]),"';
-			document.form1.drug_inject_slip.value = '",jschars($_SESSION["list_drug_inject_slip"][$i]),"';
-			document.form1.drug_inject_type.value = '",jschars($_SESSION["list_drug_inject_type"][$i]),"';
-			document.form1.drug_inject_etc.value = '",jschars($_SESSION["list_drug_inject_etc"][$i]),"';
+				document.form1.drug_inject_amount.value = '",jschars($_SESSION["list_drug_inject_amount"][$i]),"';
+				document.form1.drug_inject_unit.value = '",jschars($_SESSION["list_drug_inject_unit"][$i]),"';
+				document.form1.drug_inject_amount2.value = '",jschars($_SESSION["list_drug_inject_amount2"][$i]),"';
+				document.form1.drug_inject_unit2.value = '",jschars($_SESSION["list_drug_inject_unit2"][$i]),"';
+				document.form1.drug_inject_time.value = '",jschars($_SESSION["list_drug_inject_time"][$i]),"';
+				document.form1.drug_inject_slip.value = '",jschars($_SESSION["list_drug_inject_slip"][$i]),"';
+				document.form1.drug_inject_type.value = '",jschars($_SESSION["list_drug_inject_type"][$i]),"';
+				document.form1.drug_inject_etc.value = '",jschars($_SESSION["list_drug_inject_etc"][$i]),"';
 
-					if(document.form1.drug_inject_slip.value=='2ins'){
-							document.getElementById('drug_inject_amount2').style.display = '';
-							document.getElementById('drug_inject_time').style.display = 'none';
-							document.getElementById('drug_inject_type').style.display = 'none';
-					}
-				}else{
-			document.getElementById('slip_detail').style.display = '';	
-			document.getElementById('drug_inject_amount').style.display = 'none';
-			document.getElementById('drug_inject_amount2').style.display = 'none';
-			document.getElementById('drug_inject_time').style.display = 'none';
-			document.getElementById('drug_inject_slip').style.display = 'none';
-			document.getElementById('drug_inject_type').style.display = 'none';
-			document.getElementById('drug_inject_etc').style.display = 'none';
-					
-				}";
+				if(document.form1.drug_inject_slip.value=='2ins'){
+					document.getElementById('drug_inject_amount2').style.display = '';
+					document.getElementById('drug_inject_time').style.display = 'none';
+					document.getElementById('drug_inject_type').style.display = 'none';
+				}
+
+			}else{
+				document.getElementById('slip_detail').style.display = '';	
+				document.getElementById('drug_inject_amount').style.display = 'none';
+				document.getElementById('drug_inject_amount2').style.display = 'none';
+				document.getElementById('drug_inject_time').style.display = 'none';
+				document.getElementById('drug_inject_slip').style.display = 'none';
+				document.getElementById('drug_inject_type').style.display = 'none';
+				document.getElementById('drug_inject_etc').style.display = 'none';
 				
+			}";
+			
 			if($part=='DDY'){ 
 				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."')"; 
 				
@@ -500,10 +495,16 @@ for($i=0;$i<$count;$i++){
 				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."')"; 
 				
 			}*/else if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
-				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'DDY','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."')";
+				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'DDY','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."');";
 			}else{
 				echo " document.getElementById('reason').style.display = 'none';clearobt(document.form1.reason);";
 			}
+
+			$ptrightCode = substr($_SESSION["ptright_now"],0,3);
+			if($ptrightCode=="R07" && $drugLock=="N"){
+				echo "document.getElementById('drReason1').setAttribute('disabled', 'disabled');";
+			}
+
 			echo "\">แก้ไข</A></TD>
 			</TR>
 			";
@@ -905,7 +906,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 								}else{
 							
 						?>
-							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>][][on" />
+							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
 			  <?php $i++; $j++;
 			  					}
 			  				}else if($arr["lock_dr"] == 'N'){
@@ -1173,7 +1174,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 	$result = Mysql_Query($sql);
 	list($part) = Mysql_fetch_row($result);
 	
-
+	
 	if($part != "DDY" )
 		$_GET["reason"] = "";
 	//&& $_GET["drugcode"] != "1NEU300-C"&& $_GET["drugcode"] != "1NEUT300*$"&& $_GET["drugcode"] != "1NEUT100*$"&& $_GET["drugcode"] != "1NEU100-C" && $_GET["drugcode"] != "1PLAV*"
@@ -1208,18 +1209,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 				
 				$_SESSION["list_drug_reason2"][$_GET["addoredit"]] = $_GET["reason2"];
 
-				$_SESSION['list_drug_passCode'][$_GET['addoredit']] = $_GET['passCode'];
-
 	}else{
 		$add = true;
 
 	}
 
 	if($add){
-
-
-		$passCode = $_GET['passCode'];
-
 
 		array_push($_SESSION["list_drugcode"],$_GET["drugcode"]);
 		array_push($_SESSION["list_drugamount"],$_GET["drugamount"]);
@@ -1237,10 +1232,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		array_push($_SESSION["list_drug_inject_etc"],$_GET["drug_inject_etc"]);
 		array_push($_SESSION["list_drug_reason"],$_GET["reason"]);
 		array_push($_SESSION["list_drug_reason2"],$_GET["reason2"]);
-
-		array_push($_SESSION['list_drug_passCode'], $passCode);
-
-		var_dump($_SESSION['list_drug_passCode']);
 		
 		$count = count($_SESSION["list_drugcode"]);
 
@@ -1263,8 +1254,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		}
 
 	}
-
-	var_dump($_SESSION);
 	exit();
 }
 
@@ -1310,7 +1299,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	// $logs .= "[mysql] : $sql\r\n";
 	
 	$result = mysql_query($sql) or die( mysql_error() );
-	while($arr = mysql_fetch_assoc($result)){ 
+	while($arr = mysql_fetch_assoc($result)){
+		
+
 			
 			array_push($_SESSION["list_drugcode"],$arr["drugcode"]);
 			array_push($_SESSION["list_drugamount"],$arr["amount"]);
@@ -1326,6 +1317,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 			array_push($_SESSION["list_drug_reason"],$arr["reason"]);
 			array_push($_SESSION["list_drug_reason2"],$arr["reason2"]);
 			array_push($_SESSION["list_drug_part"],$arr["part"]);
+
 			
 	}  //close while
 
@@ -1361,24 +1353,22 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 
 	for($i=$_GET["number"];$i<$count-1;$i++){
 		
-		$_SESSION["list_drugcode"][$i] = $_SESSION["list_drugcode"][$i+1];
-		$_SESSION["list_drugamount"][$i] = $_SESSION["list_drugamount"][$i+1];
-		$_SESSION["list_drugslip"][$i] = $_SESSION["list_drugslip"][$i+1];
+			$_SESSION["list_drugcode"][$i] = $_SESSION["list_drugcode"][$i+1];
+			$_SESSION["list_drugamount"][$i] = $_SESSION["list_drugamount"][$i+1];
+			$_SESSION["list_drugslip"][$i] = $_SESSION["list_drugslip"][$i+1];
 
-		$_SESSION["list_drug_inject_amount"][$i] = $_SESSION["list_drug_inject_amount"][$i+1];
-		$_SESSION["list_drug_inject_unit"][$i] = $_SESSION["list_drug_inject_unit"][$i+1];
-		$_SESSION["list_drug_inject_amount2"][$i] = $_SESSION["list_drug_inject_amount2"][$i+1];
-		$_SESSION["list_drug_inject_unit2"][$i] = $_SESSION["list_drug_inject_unit2"][$i+1];
-		$_SESSION["list_drug_inject_time"][$i] = $_SESSION["list_drug_inject_time"][$i+1];
-		$_SESSION["list_drug_inject_slip"][$i] = $_SESSION["list_drug_inject_slip"][$i+1];
-		$_SESSION["list_drug_inject_type"][$i] = $_SESSION["list_drug_inject_type"][$i+1];
-		$_SESSION["list_drug_inject_etc"][$i] = $_SESSION["list_drug_inject_etc"][$i+1];
-		$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
-		
-		$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
-		$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
-
-		$_SESSION["list_drug_passCode"][$i] = $_SESSION["list_drug_part"][$i+1];
+			$_SESSION["list_drug_inject_amount"][$i] = $_SESSION["list_drug_inject_amount"][$i+1];
+			$_SESSION["list_drug_inject_unit"][$i] = $_SESSION["list_drug_inject_unit"][$i+1];
+			$_SESSION["list_drug_inject_amount2"][$i] = $_SESSION["list_drug_inject_amount2"][$i+1];
+			$_SESSION["list_drug_inject_unit2"][$i] = $_SESSION["list_drug_inject_unit2"][$i+1];
+			$_SESSION["list_drug_inject_time"][$i] = $_SESSION["list_drug_inject_time"][$i+1];
+			$_SESSION["list_drug_inject_slip"][$i] = $_SESSION["list_drug_inject_slip"][$i+1];
+			$_SESSION["list_drug_inject_type"][$i] = $_SESSION["list_drug_inject_type"][$i+1];
+			$_SESSION["list_drug_inject_etc"][$i] = $_SESSION["list_drug_inject_etc"][$i+1];
+			$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
+			
+			$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
+			$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
 		
 	}
 
@@ -1396,7 +1386,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	unset($_SESSION["list_drug_reason"][$count-1]);
 	unset($_SESSION["list_drug_reason2"][$count-1]);
 	unset($_SESSION["list_drug_part"][$count-1]);
-	unset($_SESSION["list_drug_passCode"][$count-1]);
 	exit();
 }
 
@@ -1437,11 +1426,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 			<td width=\"5\" colspan=\"2\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><img src=\"images\icon-close.png\" alt=\"ปิดหน้าต่าง\" width=\"26\" height=\"26\"></A></strong></font></td>
 		</tr>"; 
 
+		$ptrightCode = substr($_SESSION["ptright_now"],0,3);
 
 		$i=1;
 		while($arr = Mysql_fetch_assoc($result)){
 
 			$extra_obj = '';
+
+			$drugLock = $arr['lock'];
+			$drugPart = $arr['part'];
 				
 				if($arr["lock_dr"] != "Y"){
 					if($arr["lock_dr"] =="N"){
@@ -1453,7 +1446,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
 					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
-					$obj = "รหัสผ่าน:<INPUT id=\"choice\" TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."',this.value);}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
+					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">กรณีผู้ป่วยยินยอมชำระเงินเอง ระบุรหัสผ่าน 999</FONT>";
 				}else{
 					$test_drugcode = trim($arr['drugcode']);
@@ -1475,20 +1468,25 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 							$extra_obj = '<br><span style="padding: 0 4px; background-color: yellow; color: red; font-size: 16px;">ผู้ป่วย สปสช แนะนำให้ใช้ VERO RABIES</span>';
 						}
 
-						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."',this.value); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."',this.value); \">";
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock'); \">";
 						$alert="";
 					}
 				}
 
-				
-					$bgcolor="#FF99CC";
-				
+				// พื้นหลัง สีแดงๆชมพูๆ
+				$bgcolor="#FF99CC";
+
 				if($arr["part"] == "DDY"){
-					$style = " style='color:#0000FF;' ";
+					$style = " style='color:#0000FF;' "; // สีน้ำเงิน
 				}elseif($arr["part"] == "DDN" || $arr["part"] == "DSN" || $arr["part"] == "DPN"){
-					$style = " style='color:#FF0000;' ";
+					$style = " style='color:#FF0000;' "; // สีแดง
 				}else{
 					$style = "";
+				}
+
+				// สิทธิประกันสังคมที่คีย์รหัสผ่าน
+				if($arr['part']=='DDL' && $ptrightCode=='R07' && $arr['lock'] == 'N'){
+					$style = " style='color:#FF0000;' ";
 				}
 
 				$arr["genname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["genname"]);
@@ -1524,7 +1522,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 			//<TR height=\"3\" bgcolor=\"#FFFFFF\"><TD colspan=\"2\"></TD></TR>
 			//";
 		$i++;
-		}
+		} // End druglst loop
 		echo "</TABLE></Div>";
 	}
 
@@ -1711,7 +1709,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addslip"){
 exit();
 }
 
-//******************************************** ตรวจสอบรหัสยา *****************************
+//******************************************** ตรวจสอบรหัสยา  การแพ้ยา *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
 	$sql = "SELECT count(drugcode) as amountcode, genname FROM `druglst` where drugcode = '".$_GET["search"]."' ";
@@ -1720,24 +1718,40 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 	$chkgenname1=substr($arr["genname"],0,10);
 
 	
-	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";
+	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' and groupname=''";  //เช็คแพ้ยารายตัว
 	$result1 = Mysql_Query($sql1);
 
 	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
-			echo "3";
-	}else if($arr["amountcode"] > 0){
-		$sql2 = "Select genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND genname like '".$chkgenname1."%' limit 0,1";
+			echo "3";	//lock ยารายตัว		
+	}else if($arr["amountcode"] > 0){  //มียานั้นๆ อยู่ในระบบ
+		$sql2 = "Select drugcode,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."'  and groupname !='' limit 0,1";  //เช็คแพ้ยาตามกลุ่ม
 		$result2 = mysql_query($sql2);
 		$arr2 = Mysql_fetch_assoc($result2);
-		if(!empty($arr2["genname"])){  //ถ้ามียาในกลุ่มที่แพ้	
-			echo "55";
+		if(Mysql_num_rows($result2) > 0){  //ถ้ามีแพ้ยาตามกลุ่ม
+			if(!empty($arr2["drugcode"])){  //ถ้ามียาในกลุ่มที่แพ้	
+				echo "55";
+			}else{
+				$sql3="SELECT drugcode,drugreact_group FROM `drugreact_group_list` where drugcode='".$_GET["search"]."'";  //เช็คก่อนว่ามียาที่คีย์มาในกลุ่มที่แพ้หรือไม่	
+				$query3=mysql_query($sql3);
+				$num3=mysql_num_rows($query3);
+				list($drugcode,$drugreact_group)=mysql_fetch_array($query3);
+				if($num3 > 0){  //ถ้ามีอยู่ในกลุ่มที่แพ้ ให้เช็คต่ออีกว่าได้ระบุการแพ้ยาตามกลุ่มไปหรือยัง
+					if($drugcode==$arr2["drugcode"]){
+						echo "55";  //lock ยาตามกลุ่ม
+					}else{
+						echo "66";  //alert
+					}		
+				}else{			
+						echo "1";
+				}		
+			}
 		}else{
 			echo "1";
-		}	
+		}		
 	}else{
-		echo "0";
+		echo "0";  //ใส่รหัสยาใหม่
 	}
-		
+
 exit();
 }
 
@@ -2359,6 +2373,7 @@ function clearobt(nameojt){
 	for(i=document.form1.reason.options.length;i>=0;i--){
 		document.form1.reason.remove(i);
 	}
+	document.getElementById("drReason1").removeAttribute('disabled');
 }
 <?
 if( $_SESSION['sIdname'] == 'md19921' ){
@@ -2463,12 +2478,9 @@ function addobtreason(nameojt,path,dc,sl){
 
 }
 
-function add_drug(drugcode,fValue){
-	
-	// ถ้าเป็น input จะดึงเอาค่ารหัสผ่านออกมาเป็น 000, 007 ฯลฯ
-	// ถ้าเป็น radio จะได้ค่าเป็น on
-	document.getElementById("passCode").value=fValue;
-	
+
+function add_drug(drugcode,ptrightCode,drugLock){
+
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
 		if( drugcode == '6VISL' || drugcode == '6HIAL' ){
@@ -2487,7 +2499,6 @@ function add_drug(drugcode,fValue){
 	
 	returnstr = xmlhttp.responseText;
 	var vl = returnstr.split(",");
-	
 	document.getElementById("drug_amount").value = vl[0];
 	
 	//url = 'dt_drug.php?action=addslip&search=' + drugcode;
@@ -2510,14 +2521,15 @@ function add_drug(drugcode,fValue){
 		}
 		addobtreason(document.form1.reason,vl[2],drugcode,sl);
 
-		// ถ้าใส่เป็นรหัส
-		if(fValue!="on"){ 
-
+		console.log(ptrightCode);
+		console.log(drugLock);
+		
+		if(ptrightCode=="R07" && drugLock=="N"){
 			var lastItem = document.getElementById("drReason1").length - 1;
 			document.getElementById("drReason1").options[lastItem].selected = 'selected';
 			document.getElementById("drReason1").setAttribute('disabled', 'disabled');
 		}
-		
+
 	}else{
 		document.getElementById('reason').style.display = 'none';
 	}
@@ -2672,15 +2684,15 @@ function viewlist(){
 
 
 
-function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2,passCode){
+function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
 	
 	xmlhttp = newXmlHttp();
 	
 	//alert(reason2);
 
-	console.log(passCode);
 	
-	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2+'&passCode='+passCode
+	
+	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2
 	;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
@@ -2887,6 +2899,8 @@ function checkForm1(){
 	//	document.form1.drug_code.focus();
 	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
 	document.form1.drug_code.focus();
+	}else if(txt == "66" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
+	document.form1.drug_code.focus();	
 	}else if(txt7 != "0" && !confirm(txt7)){
 		return false;
 	}else if(txt3 != "0" && !confirm(txt3)){
@@ -3010,7 +3024,7 @@ function checkForm1(){
 				 var rate_value = document.form1.reason2.value;
 				}*/
 				
-			addtolist(document.form1.drug_code.value,document.form1.drug_amount.value,document.form1.drug_slip.value,document.form1.addoredit.value,document.form1.drug_inject_amount.value,document.form1.drug_inject_unit.value,document.form1.drug_inject_amount2.value,document.form1.drug_inject_unit2.value,document.form1.drug_inject_time.value,document.form1.drug_inject_slip.value,document.form1.drug_inject_type.value,document.form1.drug_inject_etc.value,lockpt,document.form1.reason2.value,form1.passCode.value);
+			addtolist(document.form1.drug_code.value,document.form1.drug_amount.value,document.form1.drug_slip.value,document.form1.addoredit.value,document.form1.drug_inject_amount.value,document.form1.drug_inject_unit.value,document.form1.drug_inject_amount2.value,document.form1.drug_inject_unit2.value,document.form1.drug_inject_time.value,document.form1.drug_inject_slip.value,document.form1.drug_inject_type.value,document.form1.drug_inject_etc.value,lockpt,document.form1.reason2.value);
 			}	
 		document.getElementById('drug_inject_amount').style.display = 'none';
 		document.getElementById('drug_inject_amount2').style.display = 'none';
@@ -3073,11 +3087,9 @@ function addtolist_muli(){
 					//zz[3] = document.getElementById("chose_reason"+i).value;
 					zz[3]='';
 				//}
-			console.log(zz);
-
-			// zz[14] เป็น passCode
+			
 		
-			addtolist(zz[0],zz[2],zz[1],'E', zz[4], zz[5], zz[6], zz[7], zz[8], zz[9], zz[10], '',zz[3],zz[13],zz[14]);
+			addtolist(zz[0],zz[2],zz[1],'E', zz[4], zz[5], zz[6], zz[7], zz[8], zz[9], zz[10], '',zz[3],zz[13]);
 			
 
 			//ตรวจสอบ glibenclamide
@@ -3573,11 +3585,8 @@ function viatch(ing,code){
 <TABLE border="0">
 <TR>
 	<TD align="right" >ยา : </TD>
-	<TD>
-		<INPUT NAME="drug_code" TYPE="text" ID="drug_code" onKeyPress="searchSuggest('drug',this.value,3); " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10">
-	  <!--<INPUT NAME="drug_code2" TYPE="text" ID="drug_code2"  size="20" disabled>-->
-		<input type="hidden" name="passCode" id="passCode" value="">
-	</TD>
+	<TD><INPUT NAME="drug_code" TYPE="text" ID="drug_code" onKeyPress="searchSuggest('drug',this.value,3); " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10">
+	  <!--<INPUT NAME="drug_code2" TYPE="text" ID="drug_code2"  size="20" disabled>--></TD>
 
 </TR>
 <TR >

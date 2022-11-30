@@ -21,7 +21,7 @@ function jschars($str)
 	$Thidate2 = date("d-m-").(date("Y")+543).date(" H:i:s");
 	
 	
-
+	
 	 
 	if(isset($_SESSION["cancle_row_id"]) && $_SESSION["cancle_row_id"] != ""){
 
@@ -146,12 +146,7 @@ $count = count($_SESSION["list_drugcode"]);
 		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 		$result = Mysql_Query($sql);
 		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);
-		
-		$passCode = $_SESSION['list_drug_passCode'][$i];
-		if($passCode!="on" && $part=="DDL"){
-			$part = "DDN";
-		}
-
+				
 		if($_SESSION["list_drugamount"][$i] > 0){
 			if($part == "DPY"){
 				if($freepri > $salepri)
@@ -262,12 +257,6 @@ $k3=$k2+50;
 		$result = Mysql_Query($sql);
 		list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
 		
-
-		$passCode = $_SESSION['list_drug_passCode'][$i];
-		if($passCode!="on" && $part=="DDL"){
-			$part = "DDN";
-		}
-
 		if($part == "DPY"){
 			if($freepri > $salepri)
 					$freepri = $salepri;
