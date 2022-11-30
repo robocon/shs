@@ -941,7 +941,7 @@ C ํ</span></td>
 	
 	if(!empty($result['ldlc']))
 	{
-		$result['ldlc_range'] = '0 - 100';
+		// $result['ldlc_range'] = '0 - 100';
 		?>
 		<tr>
 			<td valign="top" class="text3"><strong>LDLC(ไขมันความหนาแน่นต่ำ) :</strong></td>

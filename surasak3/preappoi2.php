@@ -386,7 +386,9 @@ $_SESSION['lab_lists'] = array();
 
    $codedr = substr($cdoctor,0,5);
    //$arrdr1 = array(MD052,MD006,MD013,MD014);
-   $arrdr2 = array('MD008','MD009','MD007','MD072','MD036','MD041','MD016','MD047','MD088','MD100');
+
+   // ยกเลิก MD036 ศุภสิทธิ์ ที่อาคารเฉลิมพรเกียรติ
+   $arrdr2 = array('MD008','MD009','MD007','MD072','MD041','MD016','MD047','MD088','MD100');
    
 	   if(in_array($codedr,$arrdr2)){
 			$counter='2'; //จุดนัดที่ 2

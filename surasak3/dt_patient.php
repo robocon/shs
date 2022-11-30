@@ -100,7 +100,14 @@ if($style_menu==2){?>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
 	<TD><FONT COLOR="#FF0000"><?php echo $ptright;?></FONT></TD>
 	<td rowspan="6">
-		<IMG SRC="../image_patient/<?php echo $_SESSION["idcard_now"];?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">
+		<?php 
+		$imgPtPath = dirname(__FILE__).'/../image_patient/'.$_SESSION["idcard_now"].'.jpg';
+		if(is_file($imgPtPath)===false){
+			?><img src="images/patient-default.jpg" alt="" width="100" height="150"><?php
+		}else{
+			?><IMG SRC="../image_patient/<?php echo $_SESSION["idcard_now"];?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT=""><?Php
+		}
+		?>
 		</td>
 </TR>
 <TR>
@@ -164,7 +171,7 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ผู้ป่วยไม่แพ้ยา ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname =''";
+$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname =''";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -173,8 +180,8 @@ if($rows > 0){
 		$i=1;
 		$txt2 = array();
 	while($arr = Mysql_fetch_assoc($result)){
-		$txt .= "&nbsp;&nbsp;".$i.". ".$arr["drugcode"]." : ".$arr["tradname"];
-		$txt2[$i-1] = $arr["tradname"];
+		$txt .= "&nbsp;&nbsp;".$i.". ".$arr["drugcode"]." : ".$arr["tradname"]." [".$arr["genname"]."]";
+		$txt2[$i-1] = $arr["tradname"]." ".$arr["genname"];
 		if($i%3==0) $txt .="<BR>"; else $txt.=",";
 		$i++;
 	}
@@ -183,32 +190,33 @@ if($rows > 0){
 	$_SESSION["list_drugreact"] = "";
 }
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>แพ้ยา : ",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
 
 
 
 
 //แพ้ยาตามกลุ่ม
-$sql = "Select distinct(groupname) as groupname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname !=''";
-
-$result = Mysql_Query($sql);
-$rows = Mysql_num_rows($result);
-if($rows > 0){ 
-		$txt = "";
+$sql1 = "Select distinct(groupname) as groupname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname !=''";
+//echo $sql1;
+$result1 = Mysql_Query($sql1);
+$rows1 = Mysql_num_rows($result1);
+if($rows1 > 0){ 
+		$txt1 = "";
 		$i=1;
-		$txt2 = array();
-	while($arr = Mysql_fetch_assoc($result)){
-		$txt .= "&nbsp;&nbsp;".$i.". ".$arr["groupname"];
-		$txt2[$i-1] = $arr["groupname"];
-		if($i%3==0) $txt .="<BR>"; else $txt.=",";
+		$txt21 = array();
+	while($arr1 = Mysql_fetch_assoc($result1)){
+		$txt1 .= "&nbsp;&nbsp;".$i.". ".$arr1["groupname"];
+		$txt21[$i-1] = $arr1["groupname"];
+		if($i%3==0) $txt1 .="<BR>"; else $txt1.=",";
 		$i++;
 	}
-	$_SESSION["list_drugreact"] = implode(", ",$txt2);
+	$_SESSION["list_drugreact"] = implode(", ",$txt21);
 }else{
+	//echo $sql;
 	$_SESSION["list_drugreact"] = "";
 }
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
 
 ?>
 </TABLE>
