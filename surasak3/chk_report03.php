@@ -1100,6 +1100,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 											$objResult["labname"] = 'VDRL';
 										}
 
+										if($objResult["labname"]=="LDL-C"){
+											$objResult["normalrange"] = '0-100';
+										}
+
 									?>
 									<tr height="23">
 										<td valign="top"><strong><?=$labmean;?></strong> (<?=$objResult["labname"];?>)</td>

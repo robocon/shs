@@ -1,4 +1,4 @@
-<?php
+<?
 session_start();
 include("connect.inc");
 ?>
@@ -480,7 +480,7 @@ C ํ</span></td>
 
 
 		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
-		//echo "---->".$strSQL;
+		// echo "---->".$strSQL;
 		$objQuery = mysql_query($strSQL);
 		while($objResult = mysql_fetch_array($objQuery))
 		{
@@ -584,20 +584,22 @@ C ํ</span></td>
       <td align="center"><strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong></td>
     </tr>
     <tr>
-      <td><table width="100%" border="0" cellpadding="0" cellspacing="0" class="text31">
+      <td>
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="text31">
           <tr>
             <td width="44%" align="center" bgcolor="#CCCCCC">labcode </td>
             <td width="15%" align="center" bgcolor="#CCCCCC">result</td>
             <td width="41%" align="center" bgcolor="#CCCCCC">normalrange</td>
           </tr>
-          <? $sql="SELECT * FROM result1 WHERE profilecode='UA' ";
-	$query = mysql_query($sql);
-	$arrresult = mysql_fetch_array($query);
+		<?php
+		$sql="SELECT * FROM result1 WHERE profilecode='UA' ";
+		$query = mysql_query($sql);
+		$arrresult = mysql_fetch_array($query);
 /////
-
-
 		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' ";
 		$objQuery = mysql_query($strSQL);
+		$uaNum = mysql_num_rows($objQuery);
+		
 		while($objResult = mysql_fetch_array($objQuery))
 		{
 			if($objResult["labcode"]=="COLOR"){
@@ -657,10 +659,20 @@ C ํ</span></td>
           </tr>
           <?  } ?>
           <tr>
-            <td height="27" colspan="3">ผลตรวจ : <strong>
-              <?=$result['stat_ua']?>
-              <? if($result['stat_ua']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ua']."...";?>
-            </strong></td>
+            <td height="27" colspan="3">
+				<?php 
+				if ($uaNum>0) {
+					?>
+					ผลตรวจ : <strong>
+					<?=$result['stat_ua']?>
+					<? if($result['stat_ua']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_ua']."...";?>
+					</strong>
+					<?php
+				}else{
+					?><p>ไม่มีการตรวจ</p><?php
+				}
+				?>
+			</td>
           </tr>
       </table></td>
     </tr>
@@ -915,6 +927,7 @@ C ํ</span></td>
 
 	if($result['ldl']!="")
 	{
+		$result['ldl_range'] = '0 - 100';
 		?>
 		<tr>
 			<td valign="top" class="text3"><strong>LDL(ไขมันความหนาแน่นต่ำ) :</strong></td>
@@ -928,6 +941,7 @@ C ํ</span></td>
 	
 	if(!empty($result['ldlc']))
 	{
+		$result['ldlc_range'] = '0 - 100';
 		?>
 		<tr>
 			<td valign="top" class="text3"><strong>LDLC(ไขมันความหนาแน่นต่ำ) :</strong></td>
@@ -1017,19 +1031,6 @@ C ํ</span></td>
 			<td  valign="top"><span class="text"><b><?=$result['stat_stocc']?></b></span></td>
 		</tr>
 		<?php 
-	}
-
-	if($result['hba1c']!="")
-	{
-		?>
-		<tr>
-			<td valign="top" class="text3"><strong>HBA1C :</strong></td>
-			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['hba1c']?></strong></td>
-			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
-			<td valign="top" class="text">(<?=$result['hba1c_range']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_hba1c']?></strong><? if($result['stat_hba1c']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_hba1c']."...";?></td>
-		</tr>
-		<? 
 	}
 
 	if($result['groupt'])
