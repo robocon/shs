@@ -249,8 +249,7 @@ debt= Netpri-Netpaid-$paid
 
        $sql = "UPDATE ipcard SET price='$Netpri', paid= $Netpaid+$paid, calc='$Thidate' ,ipmonrep='Y' WHERE an='$cAn' ";
        $result = mysql_query($sql) or die("Query failed ipcard");
-	   
-	   
+
 	   
 	    $query1 = "SELECT diag_thai FROM ipcard WHERE an = '$cAn' ";
 		$result1 = mysql_query($query1)or die("Query failed ipcard");
@@ -262,6 +261,18 @@ debt= Netpri-Netpaid-$paid
 			$cDiag=$diag_thai;
 		}
 	   
+		$sql55 = "Select company From company_payment where and an='".$cAn."' limit 1";
+		//echo $sql;
+		$result55 = Mysql_Query($sql55);
+		$num55=mysql_num_rows($result55);
+		list($company) = Mysql_fetch_row($result55);
+		if($num55 > 0){
+			$company_payment="ชำระค่ารักษาโดย $company";
+		}else{
+			$company_payment="";
+		}
+
+
 	   
 	   
 //       echo mysql_errno() . ": " . mysql_error(). "\n";
@@ -477,6 +488,7 @@ print "จนท. $sOfficer วันที่ $Thaidate<br>";
        $result = mysql_query($sql) or die("Query failed ipacc1");
 
 
+
 //if ($paid==$billsum){
 
 print "<div align='left'>";
@@ -543,7 +555,7 @@ print "       </td>";
 print "    </tr>";
 print "    <tr>";
 print "      <td width='10%'></td>";
-print "      <td width='30%' colspan='2'>โรค&nbsp;$cDiag</td>";
+print "      <td width='30%' colspan='2'>โรค&nbsp;$cDiag&nbsp;&nbsp;&nbsp;$company_payment</td>";
 //print "      <td width='10%'>";
 print "      <td width='10%'>";
 print "      <td width='10%'>";
