@@ -156,20 +156,20 @@ if ( $action === 'save' ) {
             $newAn = ' (รับใหม่)';
         }
         
-        // Line Notification ในไลน์กลุ่ม
-        $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
-		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
-		$chOne = curl_init(); 
-		curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-		curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-		curl_setopt( $chOne, CURLOPT_POST, 1); 
-		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-		curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
-		curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-		$result = curl_exec( $chOne ); 
-		curl_close($chOne);
+        // // Line Notification ในไลน์กลุ่ม
+        // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
+		// $sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
+		// $chOne = curl_init(); 
+		// curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
+		// curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
+		// curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
+		// curl_setopt( $chOne, CURLOPT_POST, 1); 
+		// curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
+		// $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+		// curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
+		// curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
+		// $result = curl_exec( $chOne ); 
+		// curl_close($chOne);
 
         redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {

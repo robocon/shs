@@ -49,21 +49,21 @@ if ($action === 'active') {
 
         
         // Line Notification ในไลน์กลุ่ม
-        $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
-        $sMessage = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย");
-        $chOne = curl_init(); 
-        curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
-        curl_setopt( $chOne, CURLOPT_POST, 1); 
-        curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-        curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' )); 
-        curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-        $result = curl_exec( $chOne ); 
+        // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
+        // $sMessage = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย");
+        // $chOne = curl_init(); 
+        // curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
+        // curl_setopt( $chOne, CURLOPT_POST, 1); 
+        // curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+        // curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' )); 
+        // curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
+        // $result = curl_exec( $chOne ); 
 
-        if($result==false){
-            $extra_txt = curl_error($chOne);
-        }
+        // if($result==false){
+        //     $extra_txt = curl_error($chOne);
+        // }
 
-        curl_close($chOne);
+        // curl_close($chOne);
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
     }else{
