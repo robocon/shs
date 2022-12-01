@@ -53,27 +53,35 @@ for($i=0;$i<$count;$i++){
 ?>
 <tr><td bgcolor="#FFFFCC"><?=$_SESSION["list_drugcode"][$i]?></td>
 <td bgcolor="#FFFFCC"><?=$drugname?></td>
-<?
-		if(substr($_SESSION["list_drug_reason"][$i],0,3)=="FPT"){
+<?php
+if(substr($_SESSION["list_drug_reason"][$i],0,3)=="FPT"){
 	?>
-	<td><SELECT NAME="reason<?=$countddy?>">
-   				<Option value="">กรุณาเลือกเหตุผล</Option>
-                <Option value="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F") echo "selected='selected'"; ?>>ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)</Option>
-		</SELECT></td>
-	<?	
-		}else{
+	<td>
+		<SELECT NAME="reason<?=$countddy?>">
+			<Option value="">กรุณาเลือกเหตุผล</Option>
+			<Option value="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F") echo "selected='selected'"; ?>>ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)</Option>
+		</SELECT>
+	</td>
+	<?php
+}else{ 
+	$disable = '';
+	if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
+		$disable = 'disabled="disabled"';
+	}
 ?>
-<td><SELECT NAME="reason<?=$countddy?>">
-				<Option value="">กรุณาเลือกเหตุผล</Option>
-                <Option value="A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="A") echo "selected='selected'"; ?>>เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา</Option>
-                <Option value="B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="B") echo "selected='selected'"; ?>>ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย</Option>
-                <Option value="C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="C") echo "selected='selected'"; ?>>ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด</Option>
-                <Option value="D มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="D") echo "selected='selected'"; ?>>มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ</Option>
-                <Option value="E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="E") echo "selected='selected'"; ?>>ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า</Option>
-                <Option value="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F") echo "selected='selected'"; ?>>ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)</Option>
-		</SELECT></td>
-<?
-		}
+<td>
+	<SELECT NAME="reason<?=$countddy?>" <?=$disable;?>>
+		<Option value="">กรุณาเลือกเหตุผล</Option>
+		<Option value="A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="A") echo "selected='selected'"; ?>>เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา</Option>
+		<Option value="B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="B") echo "selected='selected'"; ?>>ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย</Option>
+		<Option value="C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="C") echo "selected='selected'"; ?>>ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด</Option>
+		<Option value="D มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="D") echo "selected='selected'"; ?>>มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ</Option>
+		<Option value="E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="E") echo "selected='selected'"; ?>>ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า</Option>
+		<Option value="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)" <? if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F") echo "selected='selected'"; ?>>ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)</Option>
+	</SELECT>
+</td>
+<?php
+}
 ?>
 <td>
 <SELECT NAME="reason2<?=$countddy?>">
@@ -90,7 +98,7 @@ for($i=0;$i<$count;$i++){
 <tr><td colspan="3" align="center"><input type="submit" value="          ตกลง          "></td></tr>
 </table>
 </FORM>
-<?
+<?php 
 if($countddy==0){
 	echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=dt_drug_add.php\">";
 	

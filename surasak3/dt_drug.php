@@ -204,9 +204,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 ///////////////////////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	$count = count($_SESSION["list_drugcode"]);
-	$sql ="select toborow from opday where hn='".$_SESSION["hn_now"]."' AND thidate like '".((date("Y")+543).date("-m-d"))."%' ";
+	$sql ="select toborow,SUBSTRING(`ptright`,1,3) AS ptrightCode from opday where hn='".$_SESSION["hn_now"]."' AND thidate like '".((date("Y")+543).date("-m-d"))."%' ";
 	$rows = mysql_query($sql);
-	list($tobor) = mysql_fetch_array($rows);
+	list($tobor, $ptrightCode) = mysql_fetch_array($rows);
 	$exopd = substr($tobor,0,4);
 	if($exopd=="EX02"){
 		$code = "ER";
@@ -390,7 +390,12 @@ for($i=0;$i<$count;$i++){
 				}else{
 					echo "<INPUT TYPE=\"hidden\" name=\"ddnnew\" value=\"$i\">";
 				}
+			}elseif ($part=='DDL' && $drugLock=='N' && $ptrightCode=='R07') {
+				$pricetype["DDN"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
+				$pricetype["DDY"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
+				$part="DDN";
 			}
+
 
 			if($part == "DDY"){
 				$style=" style=\"color:#0000FF\" ";
@@ -438,7 +443,6 @@ for($i=0;$i<$count;$i++){
 				
 			<TD align='center'><A HREF=\"javascript:void(0);\" Onclick=\"javascript : document.getElementById('drug_code').value='",jschars($_SESSION["list_drugcode"][$i]),"';document.getElementById('drug_amount').value='",jschars($_SESSION["list_drugamount"][$i]),"';document.getElementById('drug_slip').value='",jschars($_SESSION["list_drugslip"][$i]),"';document.getElementById('addoredit').value='".$i."';
 			if(check_inject('",jschars($_SESSION["list_drugcode"][$i]),"') == true){
-					
 				document.getElementById('drug_slip').value='b';
 				document.getElementById('slip_detail').style.display = 'none';
 				document.getElementById('drug_inject_amount').style.display = '';
@@ -475,7 +479,7 @@ for($i=0;$i<$count;$i++){
 			}";
 			
 			if($part=='DDY'){ 
-				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."')"; 
+				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."');"; 
 				
 				
 
@@ -503,6 +507,10 @@ for($i=0;$i<$count;$i++){
 			$ptrightCode = substr($_SESSION["ptright_now"],0,3);
 			if($ptrightCode=="R07" && $drugLock=="N"){
 				echo "document.getElementById('drReason1').setAttribute('disabled', 'disabled');";
+			}
+
+			if(!empty($_SESSION['list_drug_reason2'][$i])){
+				echo "document.form1.reason2.selectedIndex=".$_SESSION['list_drug_reason2'][$i].";";
 			}
 
 			echo "\">แก้ไข</A></TD>
@@ -1485,7 +1493,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				}
 
 				// สิทธิประกันสังคมที่คีย์รหัสผ่าน
-				if($arr['part']=='DDL' && $ptrightCode=='R07' && $arr['lock'] == 'N'){
+				if( ( $arr['part']=='DDL' OR $arr['part']=='DDY' ) && $ptrightCode=='R07' && $arr['lock'] == 'N'){
 					$style = " style='color:#FF0000;' ";
 				}
 
@@ -2375,7 +2383,8 @@ function clearobt(nameojt){
 	}
 	document.getElementById("drReason1").removeAttribute('disabled');
 }
-<?
+<?php 
+// ถ้าเป็นหมอธนบดินทร์ 
 if( $_SESSION['sIdname'] == 'md19921' ){
 ?>
 function addobtreason(nameojt,path,dc,sl){
@@ -2521,8 +2530,8 @@ function add_drug(drugcode,ptrightCode,drugLock){
 		}
 		addobtreason(document.form1.reason,vl[2],drugcode,sl);
 
-		console.log(ptrightCode);
-		console.log(drugLock);
+		// console.log(ptrightCode);
+		// console.log(drugLock);
 		
 		if(ptrightCode=="R07" && drugLock=="N"){
 			var lastItem = document.getElementById("drReason1").length - 1;
