@@ -809,14 +809,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
 	}
 
-	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
+	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.`lock`,b.lock_dr, b.drug_lockintern,b.drug_active   
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
-	HAVING sum( a.amount ) >0
-	";
-	//echo $sql;
+	HAVING sum( a.amount ) >0";
+	
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	$numitem=mysql_num_rows($result);
 	$i=0;
@@ -824,29 +822,27 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	$n=0;
 	while($arr = Mysql_fetch_assoc($result)){
 	
-			//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
-			if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL"){
-					if($arr["amount"] > 10){
-						$arr["amount"]=10;
-					}else{
-						$arr["amount"]=$arr["amount"];
-					}
-			}	
+		//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
+		if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL"){
+				if($arr["amount"] > 10){
+					$arr["amount"]=10;
+				}else{
+					$arr["amount"]=$arr["amount"];
+				}
+		}	
 
-			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 14 เม็ดให้ Remed ได้แค่ 14 เม็ด  12/03/65
-			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 30 เม็ดให้ Remed ได้แค่ 30 เม็ด  24/05/65
-			if($arr["drugcode"]=="1NEX40"){
-					if($arr["amount"] > 30){
-						$arr["amount"]=30;
-					}else{
-						$arr["amount"]=$arr["amount"];
-					}
-			}
-
-
-	
+		//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 14 เม็ดให้ Remed ได้แค่ 14 เม็ด  12/03/65
+		//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 30 เม็ดให้ Remed ได้แค่ 30 เม็ด  24/05/65
+		if($arr["drugcode"]=="1NEX40"){
+				if($arr["amount"] > 30){
+					$arr["amount"]=30;
+				}else{
+					$arr["amount"]=$arr["amount"];
+				}
+		}
 	
 		$arr["reason"] = "";
+
 		if($arr["part"] == "DDY" && $arr["reason"] == ""){
 				//$arr["reason"] = "ไม่มีสูตรยานี้ในบัญชียา ED";
 		}
@@ -914,7 +910,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 								}else{
 							
 						?>
-							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
+							<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason"];?>]" />
 			  <?php $i++; $j++;
 			  					}
 			  				}else if($arr["lock_dr"] == 'N'){
@@ -931,7 +927,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 								//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";									
 							}else{
 					?>
-						<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason2"];?>]" />
+						<input type="checkbox" id="drug_remed<?php echo $i+1;?>" name="drug_remed<?php echo $i+1;?>" value="<?php echo $arr["drugcode"];?>][<?php echo $arr["slcode"];?>][<?php echo $arr["amount"];?>][<?php echo $arr["reason"];?>][<?php echo $arr["drug_inject_amount"];?>][<?php echo $arr["drug_inject_unit"];?>][<?php echo $arr["drug_inject_amount2"];?>][<?php echo $arr["drug_inject_unit2"];?>][<?php echo $arr["drug_inject_time"];?>][<?php echo $arr["drug_inject_slip"];?>][<?php echo $arr["drug_inject_type"];?>][<?php echo $arr["drug_inject_etc"];?>][<?php echo $arr["reason"];?>]" />
 			  		<?php $i++; $j++;	
 							}
 			  				}else if($arr["lock_dr"] == 'N'){
@@ -2851,14 +2847,14 @@ function checkForm1(){
 
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
-	/*
-	else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 30 ){ 
+	// ใบงาน 3840 แจ้งเตือนให้จ่าย 20
+	if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
 		
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้แอลปาโซแลม  ไม่เกิน 30เม็ดต่อคน");  
+		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้แอลปาโซแลม  ไม่เกิน 20เม็ดต่อคน");  
 		document.form1.drug_amount.focus();
+		return false;
 
 	}
-	 */
 	 
 	 
 
@@ -2919,8 +2915,6 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
 		document.form1.drug_amount.focus();
-/*	}else if((document.form1.drug_code.value == "1XA.5-NN") && eval(document.form1.drug_amount.value) > 10 ){
-		alert("ยา Alprazolam 0.5 mg. เนื่องจากขาดเคมีในการผลิตยา ทำให้ยาขาดชั่วคราว\nควบคุมการจ่ายได้ครั้งละไม่เกิน 10 เม็ด ครับ");  //ได้รับแจ้งห้องยา เมื่อ 20/05/2564*/
 	}else if((document.form1.drug_code.value == "1VIAT500  ") && eval(document.form1.drug_amount.value) > 252 ){
 		alert("ยา VIARTRIL-S 500 MG. ควบคุมการจ่ายได้ครั้งละไม่เกิน 252 capsule ครับ");  //ได้รับแจ้งห้องยา เมื่อ 27/05/2564	
 	}else if((document.form1.drug_code.value == "1VIAT500") && eval(document.form1.drug_amount.value) > 252 ){
@@ -2980,10 +2974,6 @@ function checkForm1(){
 /*	}else if(document.form1.drug_code.value == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
 		document.form1.drug_amount.focus();	*/
-/*	}else if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
-		
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ALPRAZOLAM 0.5 mg. ไม่เกิน 20เม็ดต่อคน");  
-		document.form1.drug_amount.focus();*/
 
 	}else{
 		
@@ -3094,9 +3084,27 @@ function addtolist_muli(){
 
 				//if(document.getElementById("chose_reason"+i).value != "-"){
 					//zz[3] = document.getElementById("chose_reason"+i).value;
-					zz[3]='';
+					// zz[3]='';
 				//}
-			
+
+			/*
+			zz[0] = drugcode		
+			zz[1] = วิธีใช้(drugslip)		
+			zz[2] = จำนวน(drugamount)		
+			zz[3] = reason
+			zz[4] = drug_inject_amount		
+			zz[5] = drug_inject_unit		
+			zz[6] = drug_inject_amount2		
+			zz[7] = drug_inject_unit2
+			zz[8] = drug_inject_time		
+			zz[9] = drug_inject_slip		
+			zz[10] = drug_inject_type		
+			zz[11]
+			zz[12]		
+			zz[13] = reason2		
+
+			addtolist parameter ที่4 ตัว E คือ addoredit
+			*/
 		
 			addtolist(zz[0],zz[2],zz[1],'E', zz[4], zz[5], zz[6], zz[7], zz[8], zz[9], zz[10], '',zz[3],zz[13]);
 			
