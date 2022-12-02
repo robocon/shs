@@ -23,12 +23,16 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 	$part = $_POST['part'];
 	$seq = (int)$_POST['seq'];
 
+	$cimt = sprintf("%s", $_POST['cimt']);
+	$echo = sprintf("%s", $_POST['echo']);
+	$abi = sprintf("%s", $_POST['abi']);
+
 	if( $data1 == "update" ){
 
-		if($_POST['eye']=="����"){
+		if($_POST['eye']=="ปกติ"){
 			$_POST['eye_detail']="";
 		}
-		if($_POST['pt']=="����"){
+		if($_POST['pt']=="ปกติ"){
 			$_POST['pt_detail']="";
 		}
 
@@ -83,14 +87,17 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`outAfp` = '$outAfp',
 		`outAfpResult` = '$outAfpResult',
 		`outPsa` = '$outPsa',
-		`outPsaResult` = '$outPsaResult'
+		`outPsaResult` = '$outPsaResult',
+		`cimt` = '$cimt', 
+		`echo` = '$echo', 
+		`abi` = '$abi' 
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
-		if($_POST['eye']=="����"){
+		if($_POST['eye']=="ปกติ"){
 			$_POST['eye_detail']="";
 		}
-		if($_POST['pt']=="����"){
+		if($_POST['pt']=="ปกติ"){
 			$_POST['pt_detail']="";
 		}		
 		$update = "INSERT INTO `out_result_chkup` SET 
@@ -142,18 +149,21 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`outAfp` = '$outAfp',
 		`outAfpResult` = '$outAfpResult',
 		`outPsa` = '$outPsa',
-		`outPsaResult` = '$outPsaResult'";
+		`outPsaResult` = '$outPsaResult',
+		`cimt` = '$cimt',
+		`echo` = '$echo',
+		`abi` = '$abi' ";
 			
 	}
 	
 	$upquery = mysql_query($update) or die (mysql_error());
-	if($upquery==true){ //�ѹ�֡�����
+	if($upquery==true){ //บันทึกสำเร็จ
 		if($_POST["form_status"]=="insert"){
-			$save="�ѹ�֡���������º��������";
+			$save="บันทึกข้อมูลเรียบร้อยแล้ว";
 		}else{
 			$edit="update opcardchk set `agey` = '".$_POST['age']."' where HN='".$_POST['hn']."' and part='".$_POST['part']."';";
 			$querey=mysql_query($edit);
-			$save="��䢢��������º��������";
+			$save="แก้ไขข้อมูลเรียบร้อยแล้ว";
 		}
 		$hn = $_POST['hn'];
 		?>
@@ -195,23 +205,23 @@ if($_GET["act"]=="print"){
 		<td>HN : <?=$arr1['hn'];?>&nbsp;&nbsp;(<?php echo $thidate;?>)</td>
 	</tr>
 	<tr>
-		<td>����-���ʡ�� : <?=$arr1['ptname'];?></td>
+		<td>ชื่อ-นามสกุล : <?=$arr1['ptname'];?></td>
 	</tr>
 	<tr>
-		<td>��Ǩ�آ�Ҿ��Шӻ� (<?=$arr1['part'];?>)</td>
+		<td>ตรวจสุขภาพประจำปี (<?=$arr1['part'];?>)</td>
 	</tr>  
 	<tr>
-		<td>�ä��Шӵ�� : <?=$arr1["prawat"];?>, ���� : <?=$arr1["allergic"];?>, �� : <?php echo $arr1["weight"];?> ��., �� : <?php echo $arr1["height"];?> ��.</td>
+		<td>โรคประจำตัว : <?=$arr1["prawat"];?>, แพ้ยา : <?=$arr1["allergic"];?>, นน : <?php echo $arr1["weight"];?> กก., สส : <?php echo $arr1["height"];?> ซม.</td>
 	</tr>  
 	<tr>
-		<td>BP : <? echo $arr1["bp1"]."/".$arr1["bp2"];?> mmHg, <? if(!empty($arr1["bp3"]) || !empty($arr1["bp4"])){ ?>RE-BP : <? echo $arr1["bp3"]."/".$arr1["bp4"];?> mmHg, <? } ?> T : <?php echo $arr1["temp"];?> C, P : <?php echo $arr1["p"];?> ����/�ҷ�</td>
+		<td>BP : <? echo $arr1["bp1"]."/".$arr1["bp2"];?> mmHg, <? if(!empty($arr1["bp3"]) || !empty($arr1["bp4"])){ ?>RE-BP : <? echo $arr1["bp3"]."/".$arr1["bp4"];?> mmHg, <? } ?> T : <?php echo $arr1["temp"];?> C, P : <?php echo $arr1["p"];?> ครั้ง/นาที</td>
 	</tr>
 	<tr>
-		<td>R : <?php echo $arr1["rate"];?> ����/�ҷ�, ������ : <?php echo $arr1["cigga"];?>, ���� : <?php echo $arr1["alcohol"];?>, �͡���ѧ��� : <?php echo $arr1["exercise"];?></td>
+		<td>R : <?php echo $arr1["rate"];?> ครั้ง/นาที, บุหรี่ : <?php echo $arr1["cigga"];?>, สุรา : <?php echo $arr1["alcohol"];?>, ออกกำลังกาย : <?php echo $arr1["exercise"];?></td>
 	</tr>
 	<? if(!empty($arr1["comment"])){  ?>
 	<tr>
-		<td>�����˵� : <?php echo $arr1["comment"];?></td>
+		<td>หมายเหตุ : <?php echo $arr1["comment"];?></td>
 	</tr>  
 	<? } ?>  
 	</table>
@@ -223,8 +233,8 @@ if($_GET["act"]=="print"){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>�ѹ�֡�����ūѡ����ѵԹ͡˹���</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>บันทึกข้อมูลซักประวัตินอกหน่วย</title>
 <style type="text/css">
 body,td,th {
 	font-family: TH SarabunPSK;
@@ -264,9 +274,9 @@ color: #FFF;
 </style>
 <script type="text/javascript">
 function showDiv(){
-	 if(document.getElementById('pt').value == "�ʹ�ӡѴ��â��µ��"){
+	 if(document.getElementById('pt').value == "ปอดจำกัดการขยายตัว"){
 		document.getElementById('hidden_div').style.display = "block";
-	}else if(document.getElementById('pt').value == "�ʹ�ش���"){
+	}else if(document.getElementById('pt').value == "ปอดอุดกั้น"){
 		document.getElementById('hidden_div').style.display = "block";
 	}else{
 		document.getElementById('hidden_div').style.display = "none";
@@ -275,7 +285,7 @@ function showDiv(){
 
 
 function showDiveye(){
-	 if(document.getElementById('eye2').value == "�Դ����"){
+	 if(document.getElementById('eye2').value == "ผิดปกติ"){
 		document.getElementById('hidden_div1').style.display = "block";
 	}else{
 		document.getElementById('hidden_div1').style.display = "none";
@@ -283,7 +293,7 @@ function showDiveye(){
 }
 
 function showDiveye1(){
-	 if(document.getElementById('eye1').value == "����"){
+	 if(document.getElementById('eye1').value == "ปกติ"){
 		document.getElementById('hidden_div1').style.display = "none";
 	}else{
 		document.getElementById('hidden_div1').style.display = "none";
@@ -301,13 +311,13 @@ $part = $_REQUEST['part'];
 	<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#339933" class="pdxhead">
 		<tr>
 			<td height="40" align="center" bgcolor="#66CC99">
-				<strong>��͡������ HN </strong>
+				<strong>กรอกข้อมูล HN </strong>
 			</td>
 		</tr>
 		<tr>
 			<td align="left">
 				HN: <input name="hn" type="text" size="20" class="pdxhead"  /> 
-				<input type="submit"  value="   ��ŧ   " name="okhn" class="pdxhead"/>
+				<input type="submit"  value="   ตกลง   " name="okhn" class="pdxhead"/>
 				<input type="hidden" name="action" value="searchHn">
 			</td>
 		</tr>
@@ -320,7 +330,7 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 				
 	
 	
-	////*runno ��Ǩ�آ�Ҿ*/////////
+	////*runno ตรวจสุขภาพ*/////////
 	// $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	// $result = mysql_query($query) or die("Query failed");
 	
@@ -343,7 +353,7 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 	$chk = mysql_fetch_assoc($q);
 	$nPrefix = $chk['checkup_year'];
 
-	////*runno ��Ǩ�آ�Ҿ*/////////
+	////*runno ตรวจสุขภาพ*/////////
 	
 	
 	$sql1="SELECT * ,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` 
@@ -352,7 +362,7 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 	$query=mysql_query($sql1) or die (mysql_error());
 	$Row=mysql_num_rows($query);
 
-	$arr=mysql_fetch_array($query);   // list �����Ũҡ opcardchk
+	$arr=mysql_fetch_array($query);   // list ข้อมูลจาก opcardchk
 	$hn = $arr['HN'];
 	$age= $arr['agey'];
 	$ptname = $arr['yot'].$arr['name'].' '.$arr['surname'];
@@ -363,28 +373,28 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 
 	if($Rowchk>0){
 		
-		$arrchk=mysql_fetch_array($querychk);	// list �����Ũҡ out_result_chkup
+		$arrchk=mysql_fetch_array($querychk);	// list ข้อมูลจาก out_result_chkup
 		if(empty($age)){
 			$age=$arrchk["age"];
 		}
 		$data1 = "update";
-		$button = "<input type='submit'  value='   ��䢢�����   ' name='okhn2' class='pdxhead'/>";
+		$button = "<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
 		$button .= '<input type="hidden" name="form_status" value="update">';
 
 	}else{
 		$data1 = "insert";
-		$button = "<input type='submit'  value='   �ѹ�֡������   ' name='okhn2' class='pdxhead'/>";
+		$button = "<input type='submit'  value='   บันทึกข้อมูล   ' name='okhn2' class='pdxhead'/>";
 		$button .= '<input type="hidden" name="form_status" value="insert">';
 	}
 				
 	if(!$Row){	
 	
 		$sql2="SELECT hn as HN ,concat(yot,name,' ',surname)as ptname FROM `opcard` WHERE hn='".$_POST['hn']."' ";	
-		echo "<div class='pdx'><strong>����͹...</strong>�ؤ�Ź�������ŧ����¹��Ǩ�آ�ҾẺ������ͧ˹��� : <strong>$part</strong><br><span class='style1'>��س�����ª��ͺؤ�����ç�Ѻ˹��§ҹ����ҵ�Ǩ�آ�Ҿ...!!!</span></div>";
+		echo "<div class='pdx'><strong>แจ้งเตือน...</strong>บุคคลนี้ไม่ได้ลงทะเบียนตรวจสุขภาพแบบกลุ่มของหน่วย : <strong>$part</strong><br><span class='style1'>กรุณาเช็ครายชื่อบุคคลให้ตรงกับหน่วยงานที่มาตรวจสุขภาพ...!!!</span></div>";
 		$query=mysql_query($sql2) or die (mysql_error());
 		$Row2=mysql_num_rows($query);	
 		if(empty($Row2)){
-			echo "<div align='center' class='fontsara'>!!! ��辺 HN  $_POST[hn]!! </div>";	
+			echo "<div align='center' class='fontsara'>!!! ไม่พบ HN  $_POST[hn]!! </div>";	
 		}else{
 			$arr=mysql_fetch_array($query);
 			$hn=$arr['HN'];
@@ -398,11 +408,11 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 				
 				$arrchk=mysql_fetch_array($querychk);	
 				$data1="update";
-				$button="<input type='submit'  value='   ��䢢�����   ' name='okhn2' class='pdxhead'/>";
+				$button="<input type='submit'  value='   แก้ไขข้อมูล   ' name='okhn2' class='pdxhead'/>";
 				$button .= '<input type="hidden" name="form_status" value="update">';
 			}else{
 				$data1="insert";
-				$button="<input type='submit'  value='   �ѹ�֡������   ' name='okhn2' class='pdxhead'/>";
+				$button="<input type='submit'  value='   บันทึกข้อมูล   ' name='okhn2' class='pdxhead'/>";
 				$button .= '<input type="hidden" name="form_status" value="insert">';
 			}
 		}
@@ -416,12 +426,12 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
       <td class="pdxpro">HN :
         <strong>
         <?=$hn?>
-        </strong>       ����-ʡ�� : 
-      <strong><input name="newname" type="text" class="pdxhead" value="<?=$ptname?>" /></strong>  &nbsp;&nbsp; ˹���:    <strong><?=$part;?></strong>&nbsp;&nbsp; ����: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
+        </strong>       ชื่อ-สกุล : 
+      <strong><input name="newname" type="text" class="pdxhead" value="<?=$ptname?>" /></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>&nbsp;&nbsp; อายุ: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
       </tr>
     <tr>
-      <td class="pdx">���˹ѡ  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  ��. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;��ǹ�٧ <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> 
-        ��. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP  
+      <td class="pdx">น้ำหนัก  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  กก. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ส่วนสูง <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> 
+        ซม. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP  
         <input name="bp1" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp1']?>"/> / <input name="bp2" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp2']?>"/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Repeat-BP
 <input name="bp3" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp3']?>"/>
@@ -432,70 +442,70 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
       <td class="pdx"> T
         <input name="temp" type="text" size="5" class="pdxhead" id="temp" value="<?=$arrchk['temp']?>" />
         &nbsp;&nbsp;&nbsp;&nbsp;P  
-        <input name="p" type="text" size="5" class="pdxhead" value="<?=$arrchk['p']?>" /> ����/�ҷ�&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R <input name="rate" type="text" size="5" class="pdxhead"   value="<?=$arrchk['rate']?>"  /> 
-        ����/�ҷ�&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;�ä��Шӵ��  
+        <input name="p" type="text" size="5" class="pdxhead" value="<?=$arrchk['p']?>" /> ครั้ง/นาที&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R <input name="rate" type="text" size="5" class="pdxhead"   value="<?=$arrchk['rate']?>"  /> 
+        ครั้ง/นาที&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;โรคประจำตัว  
         <input name="prawat" type="text" size="22" class="pdxhead"  value="<?=$arrchk['prawat']?>"/></td>
       </tr>	  
     <tr>
-      <td class="pdx">�ٺ������  <input name="cigga" type="text" size="5" class="pdxhead" value="<?=$arrchk['cigga']?>" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;�������� <input name="alcohol" type="text" size="5" class="pdxhead"   value="<?=$arrchk['alcohol']?>"  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;�͡���ѧ���  <input name="exercise" type="text" size="5" class="pdxhead"  value="<?=$arrchk['exercise']?>"/>&nbsp;&nbsp;&nbsp;&nbsp;����  <input name="allergic" type="text" size="13" class="pdxhead"  value="<?=$arrchk['allergic']?>"/></td>
+      <td class="pdx">สูบบุหรี่  <input name="cigga" type="text" size="5" class="pdxhead" value="<?=$arrchk['cigga']?>" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ดื่มสุรา <input name="alcohol" type="text" size="5" class="pdxhead"   value="<?=$arrchk['alcohol']?>"  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกกำลังกาย  <input name="exercise" type="text" size="5" class="pdxhead"  value="<?=$arrchk['exercise']?>"/>&nbsp;&nbsp;&nbsp;&nbsp;แพ้ยา  <input name="allergic" type="text" size="13" class="pdxhead"  value="<?=$arrchk['allergic']?>"/></td>
       </tr>	    
 		<tr>
 			<td>
 				<table width="924">
 					<tr>
-					  <td width="188" class="pdx">�����˵�</td>
+					  <td width="188" class="pdx">หมายเหตุ</td>
 					  <td width="464"><input name="comment" type="text" class="pdxhead" size="50" id="comment" value="<?=$arrchk['comment']?>" /></td>
 				      <td width="256">&nbsp;</td>
 				  </tr>
 					<tr>
-                      <td class="pdx">�ŵ�Ǩ ���ö�Ҿ�ʹ</td>
+                      <td class="pdx">ผลตรวจ สมรรถภาพปอด</td>
 					  <td colspan="2"><select name="pt" class="pdxhead" id="pt" onchange="showDiv()">
-                        <option value="" >---------- ���͡ ----------</option>
-                        <option value="����" <? if($arrchk['pt']=="����"){ echo "selected='selected'";} ?>>����</option>
-                        <option value="�ʹ�ӡѴ��â��µ��" <? if($arrchk['pt']=="�ʹ�ӡѴ��â��µ��"){ echo "selected='selected'";} ?> >�ʹ�ӡѴ��â��µ��</option>
-                        <option value="�ʹ�ش���" <? if($arrchk['pt']=="�ʹ�ش���"){ echo "selected='selected'";} ?>>�ʹ�ش���</option>
-						<option value="�ա���ش��鹢ͧ����Է���Ҿ�ʹ �дѺ��硹��� (�ô B)" <? if($arrchk['pt']=="�ա���ش��鹢ͧ����Է���Ҿ�ʹ �дѺ��硹��� (�ô B)"){ echo "selected='selected'";} ?>>�ա���ش��鹢ͧ����Է���Ҿ�ʹ �дѺ��硹��� (�ô B)</option>
+                        <option value="" >---------- เลือก ----------</option>
+                        <option value="ปกติ" <? if($arrchk['pt']=="ปกติ"){ echo "selected='selected'";} ?>>ปกติ</option>
+                        <option value="ปอดจำกัดการขยายตัว" <? if($arrchk['pt']=="ปอดจำกัดการขยายตัว"){ echo "selected='selected'";} ?> >ปอดจำกัดการขยายตัว</option>
+                        <option value="ปอดอุดกั้น" <? if($arrchk['pt']=="ปอดอุดกั้น"){ echo "selected='selected'";} ?>>ปอดอุดกั้น</option>
+						<option value="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)" <? if($arrchk['pt']=="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)"){ echo "selected='selected'";} ?>>มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)</option>
 						
                       </select>
 				      &nbsp;&nbsp;&nbsp;
-					  <? if($arrchk['pt']=="�ʹ�ӡѴ��â��µ��" || $arrchk['pt']=="�ʹ�ش���"){ echo "<span class='pdx'>".$arrchk['pt_detail']."</span>";} ?>
-                      <div id="hidden_div" style="display: none;" class="pdx">�к� : <input type="radio" name="pt_detail"  value="�Դ������硹���" class="pdxhead" <? if($arrchk['pt_detail']=="�Դ������硹���"){ echo "checked='checked'";} ?> /> 
-					    �Դ������硹���&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					    <input type="radio" name="pt_detail" value="�Դ���Իҹ��ҧ" class="pdxhead" <? if($arrchk['pt_detail']=="�Դ���Իҹ��ҧ"){ echo "checked='checked'";} ?> /> 
-					    �Դ���Իҹ��ҧ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					    <input type="radio" name="pt_detail" value="�Դ�����ҡ" class="pdxhead" <? if($arrchk['pt_detail']=="�Դ�����ҡ"){ echo "checked='checked'";} ?> /> �Դ�����ҡ</div></td>
+					  <? if($arrchk['pt']=="ปอดจำกัดการขยายตัว" || $arrchk['pt']=="ปอดอุดกั้น"){ echo "<span class='pdx'>".$arrchk['pt_detail']."</span>";} ?>
+                      <div id="hidden_div" style="display: none;" class="pdx">ระบุ : <input type="radio" name="pt_detail"  value="ผิดปกติเล็กน้อย" class="pdxhead" <? if($arrchk['pt_detail']=="ผิดปกติเล็กน้อย"){ echo "checked='checked'";} ?> /> 
+					    ผิดปกติเล็กน้อย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    <input type="radio" name="pt_detail" value="ผิดปกติปานกลาง" class="pdxhead" <? if($arrchk['pt_detail']=="ผิดปกติปานกลาง"){ echo "checked='checked'";} ?> /> 
+					    ผิดปกติปานกลาง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    <input type="radio" name="pt_detail" value="ผิดปกติมาก" class="pdxhead" <? if($arrchk['pt_detail']=="ผิดปกติมาก"){ echo "checked='checked'";} ?> /> ผิดปกติมาก</div></td>
 				  </tr>
 					<tr>
 						<td class="pdx">
-							�� X-RAY						</td>
+							ผล X-RAY						</td>
 						<td>
 							<input name="cxr" type="text" class="pdxhead" size="50" id="cxr" value="<?=$arrchk['cxr']?>" />						</td>
-					    <td><span class="style1">�ó� ��駤���� ��������� Xray ����͡�����Ū�ͧ���</span></td>
+					    <td><span class="style1">กรณี ตั้งครรภ์ หรือไม่ได้ Xray ให้กรอกข้อมูลช่องนี้</span></td>
 					</tr>
 					<tr>
-                      <td class="pdx"> �ŵ�Ǩ�Һʹ��</td>
+                      <td class="pdx"> ผลตรวจตาบอดสี</td>
 					  <td><label>
 					    <select name="va" class="pdxhead" id="va">
-                          <option value="" >---------- ���͡ ----------</option>
-					      <option value="��辺�Һʹ��" <? if($arrchk['va']=="��辺�Һʹ��"){ echo "selected='selected'";} ?>>��辺�Һʹ��</option>
-					      <option value="���Һʹ��" <? if($arrchk['va']=="���Һʹ��"){ echo "selected='selected'";} ?>>���Һʹ��</option>
+                          <option value="" >---------- เลือก ----------</option>
+					      <option value="ไม่พบตาบอดสี" <? if($arrchk['va']=="ไม่พบตาบอดสี"){ echo "selected='selected'";} ?>>ไม่พบตาบอดสี</option>
+					      <option value="พบตาบอดสี" <? if($arrchk['va']=="พบตาบอดสี"){ echo "selected='selected'";} ?>>พบตาบอดสี</option>
 				        </select>
 					    </label></td>
 				      <td>&nbsp;</td>
 				  </tr>
 					<tr>
-						<td class="pdx">�ŵ�Ǩ �Ѵ��µ�</td>
+						<td class="pdx">ผลตรวจ วัดสายตา</td>
 						<td colspan="2" class="pdx">
-							<input type="radio" name="eye" id="eye1"  value="����" class="pdxhead eyeSelect" <? if($arrchk['eye']=="����"){ echo "checked='checked'";} ?> onclick="showDiveye1()" />
-							����&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="eye" id="eye2" value="�Դ����" class="pdxhead eyeSelect" <? if($arrchk['eye']=="�Դ����"){ echo "checked='checked'";} ?> onclick="showDiveye()" /> 
-							�Դ����&nbsp;&nbsp;&nbsp;<? if($arrchk['eye']=="�Դ����"){ echo "<span class='pdx'>".$arrchk['eye_detail']."</span>";} ?>
+							<input type="radio" name="eye" id="eye1"  value="ปกติ" class="pdxhead eyeSelect" <? if($arrchk['eye']=="ปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye1()" />
+							ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="eye" id="eye2" value="ผิดปกติ" class="pdxhead eyeSelect" <? if($arrchk['eye']=="ผิดปกติ"){ echo "checked='checked'";} ?> onclick="showDiveye()" /> 
+							ผิดปกติ&nbsp;&nbsp;&nbsp;<? if($arrchk['eye']=="ผิดปกติ"){ echo "<span class='pdx'>".$arrchk['eye_detail']."</span>";} ?>
 							<div id="hidden_div1" style="display: none;" class="pdx">
-							�кؤ����Դ���� : 
+							ระบุความผิดปกติ : 
 							<input name="eye_detail" type="text" class="pdxhead" size="50" id="eye_detail" value="<?=$arrchk['eye_detail']?>" />
 							</div>
 							
-							<a href="javascript: void(0);" onclick="return clearEyeSelect()">[¡��ԡ]</a>
+							<a href="javascript: void(0);" onclick="return clearEyeSelect()">[ยกเลิก]</a>
 							<script>
 							// if not getElementsByClassName create it // 
 							if(!document.getElementsByClassName) {
@@ -520,114 +530,129 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 					</tr>
 					<tr>
 						<td class="pdx">
-							�� EKG						</td>
+							ผล EKG						</td>
 						<td>
 							<input name="ekg" type="text" class="pdxhead" size="50" id="ekg" value="<?=$arrchk['ekg']?>" />						</td>
 					    <td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td class="pdx">
-							�ŵ�Ǩ BMD						</td>
+							ผลตรวจ BMD						</td>
 						<td>
 							<input name="42702" type="text" class="pdxhead" size="50" id="42702" value="<?=$arrchk['42702']?>" />						</td>
 					    <td>&nbsp;</td>
 					</tr>
 					<tr>
-					  <td class="pdx">��ŵ��ҫ�Ǵ�</td>
+					  <td class="pdx">อัลตร้าซาวด์</td>
 					  <td><input name="altra" type="text" class="pdxhead" size="50" id="altra" value="<?=$arrchk['altra']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
+				  <tr>
+					  <td class="pdx">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</td>
+					  <td><input name="cimt" type="text" class="pdxhead" size="50" id="cimt" value="<?=$arrchk['cimt']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+				  <tr>
+					  <td class="pdx">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</td>
+					  <td><input name="echo" type="text" class="pdxhead" size="50" id="echo" value="<?=$arrchk['echo']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
+				  <tr>
+					  <td class="pdx">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</td>
+					  <td><input name="abi" type="text" class="pdxhead" size="50" id="abi" value="<?=$arrchk['abi']?>" /></td>
+					  <td>&nbsp;</td>
+				  </tr>
 					<tr>
-					  <td class="pdx">�����١��ҡ</td>
+					  <td class="pdx">ต่อมลูกหมาก</td>
 					  <td><input name="psa" type="text" class="pdxhead" size="50" id="psa" value="<?=$arrchk['psa']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">����移ҡ���١</td>
+					  <td class="pdx">มะเร็งปากมดลูก</td>
 					  <td><input name="hpv" type="text" class="pdxhead" size="50" id="hpv" value="<?=$arrchk['hpv']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">��������</td>
+					  <td class="pdx">แมมโมแกรม</td>
 					  <td><input name="mammogram" type="text" class="pdxhead" size="50" id="mammogram" value="<?=$arrchk['mammogram']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">�ӴѺ</td>
+					  <td class="pdx">ลำดับ</td>
 					  <td><input name="seq" type="text" class="pdxhead" size="10" id="seq" value="<?=$arrchk['seq']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">��ػ�� Stool Culture(C-S)</td>
+					  <td class="pdx">สรุปผล Stool Culture(C-S)</td>
 					  <td><input name="cs" type="text" class="pdxhead" size="50" id="cs" value="<?=$arrchk['cs']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">�ŵ�Ǩ Stool Culture(C-S)</td>
+					  <td class="pdx">ผลตรวจ Stool Culture(C-S)</td>
 					  <td><input name="result_cs" type="text" class="pdxhead" size="50" value="<?=$arrchk['result_cs']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<!-- 
 					<tr>
-					  <td class="pdx">�ŵ�Ǩ �Һʹ��</td>
+					  <td class="pdx">ผลตรวจ ตาบอดสี</td>
 					  <td><input name="blindness" type="text" class="pdxhead" size="50" value="<?=$arrchk['blindness']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					-->
 					<tr>
-					  <td class="pdx">�š�����Թ</td>
+					  <td class="pdx">ผลการได้ยิน</td>
 					  <td><input name="hearing" type="text" class="pdxhead" size="50" value="<?=$arrchk['hearing']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">�š�õ�Ǩ����������˹ѡ</td>
+					  <td class="pdx">ผลการตรวจสารเคมีโลหะหนัก</td>
 					  <td><input name="metal" type="text" class="pdxhead" size="50" value="<?=$arrchk['metal']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">��ػ�š�õ�Ǩ����������˹ѡ</td>
+					  <td class="pdx">สรุปผลการตรวจสารเคมีโลหะหนัก</td>
 					  <td><input name="metal_result" type="text" class="pdxhead" size="50" value="<?=$arrchk['metal_result']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">�š�õ�Ǩ��� Benzene</td>
+					  <td class="pdx">ผลการตรวจสาร Benzene</td>
 					  <td><input name="benzene" type="text" class="pdxhead" size="50" value="<?=$arrchk['benzene']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-					  <td class="pdx">��ػ�š�õ�Ǩ��� Benzene</td>
+					  <td class="pdx">สรุปผลการตรวจสาร Benzene</td>
 					  <td><input name="benzene_result" type="text" class="pdxhead" size="50" value="<?=$arrchk['benzene_result']?>" /></td>
 					  <td>&nbsp;</td>
 				  </tr>
 					<tr>
-						<td class="pdx">�ŵ�Ǩ����˹��蹢ͧ��š�д١</td>
+						<td class="pdx">ผลตรวจความหนาแน่นของมวลกระดูก</td>
 						<td><input name="bone_density" type="text" class="pdxhead" size="50" value="<?=$arrchk['bone_density']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td class="pdx">��µ��Ҫ��͹���� + ��µ����, ���</td>
+						<td class="pdx">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</td>
 						<td><input name="occupa_health" type="text" class="pdxhead" size="50" value="<?=$arrchk['occupa_health']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
 
 					<tr>
-						<td class="pdx">�š�õ�Ǩ AFP</td>
+						<td class="pdx">ผลการตรวจ AFP</td>
 						<td><input name="outAfp" type="text" class="pdxhead" size="50" value="<?=$arrchk['outAfp']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td class="pdx">��ػ�š�õ�Ǩ AFP</td>
+						<td class="pdx">สรุปผลการตรวจ AFP</td>
 						<td><input name="outAfpResult" type="text" class="pdxhead" size="50" value="<?=$arrchk['outAfpResult']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
 
 					<tr>
-						<td class="pdx">�š�õ�Ǩ PSA</td>
+						<td class="pdx">ผลการตรวจ PSA</td>
 						<td><input name="outPsa" type="text" class="pdxhead" size="50" value="<?=$arrchk['outPsa']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td class="pdx">��ػ�š�õ�Ǩ PSA</td>
+						<td class="pdx">สรุปผลการตรวจ PSA</td>
 						<td><input name="outPsaResult" type="text" class="pdxhead" size="50" value="<?=$arrchk['outPsaResult']?>" /></td>
 						<td>&nbsp;</td>
 					</tr>
@@ -635,11 +660,11 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 					<!--
 					<tr>
 						<td class="pdx">
-							�š�õ�Ǩ����移ҡ���١ (Pap Smear)
+							ผลการตรวจมะเร็งปากมดลูก (Pap Smear)
 						</td>
 						<td>
 							<input name="hpv" type="text" class="pdxhead" size="50" id="hpv" value="<?=$arrchk['hpv']?>" />
-							[<span class="help" onclick="help('hpv','����')">����</span> | <span class="help" onclick="help('hpv','�Դ����')">�Դ����</span>]
+							[<span class="help" onclick="help('hpv','ปกติ')">ปกติ</span> | <span class="help" onclick="help('hpv','ผิดปกติ')">ผิดปกติ</span>]
 						</td>
 					</tr>
 					-->
@@ -687,22 +712,22 @@ $q = mysql_query("SELECT `name`,`code` FROM `chk_company_list` WHERE `code` = '$
 $company = mysql_fetch_assoc($q);
 
 ?>
-<h1 class="pdx" align="center" style="font-size:32px;">��ª��ͼ���Ǩ�آ�Ҿ <?=$company['name'].' ('.$company['code'].')';?></h1>
+<h1 class="pdx" align="center" style="font-size:32px;">รายชื่อผู้ตรวจสุขภาพ <?=$company['name'].' ('.$company['code'].')';?></h1>
 
-<div class="pdx" align="center">ŧ����¹��Ǩ�آ�Ҿ������ <?=$numchk1;?> �� ŧ�ѡ����ѵԨӹǹ <?=$num1;?> ��</div>
+<div class="pdx" align="center">ลงทะเบียนตรวจสุขภาพทั้งหมด <?=$numchk1;?> คน ลงซักประวัติจำนวน <?=$num1;?> คน</div>
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0" class="pdxpro">
   <tr>
     <td width="3%" align="center" bgcolor="#FF99CC">#</td>
     <td width="7%" height="31" align="left" bgcolor="#FF99CC"><strong>HN</strong></td>
-    <td width="26%" align="left" bgcolor="#FF99CC"><strong>����-ʡ��</strong></td>
-    <td width="10%" align="left" bgcolor="#FF99CC"><strong>���˹ѡ</strong></td>
-    <td width="9%" align="left" bgcolor="#FF99CC"><strong>��ǹ�٧</strong></td>
+    <td width="26%" align="left" bgcolor="#FF99CC"><strong>ชื่อ-สกุล</strong></td>
+    <td width="10%" align="left" bgcolor="#FF99CC"><strong>น้ำหนัก</strong></td>
+    <td width="9%" align="left" bgcolor="#FF99CC"><strong>ส่วนสูง</strong></td>
     <td width="5%" align="left" bgcolor="#FF99CC"><strong>BP</strong></td>
     <td width="22%" align="left" bgcolor="#FF99CC"><strong>P</strong></td>
 		<td width="3%" align="left" bgcolor="#FF99CC"><strong>Seq</strong></td>
-    <td width="9%" align="center" bgcolor="#FF99CC"><strong>ʵ������</strong></td>
-	<td width="9%" align="center" bgcolor="#FF99CC"><strong>ź������</strong></td>
+    <td width="9%" align="center" bgcolor="#FF99CC"><strong>สติ๊กเกอร์</strong></td>
+	<td width="9%" align="center" bgcolor="#FF99CC"><strong>ลบข้อมูล</strong></td>
   </tr>
   <?
   $i=0;
@@ -718,8 +743,8 @@ $company = mysql_fetch_assoc($q);
     <td align="left"><? if(empty($arr1['bp3']) || empty($arr1['bp4'])){ echo $arr1['bp1'].'/'.$arr1['bp2'];}else{ echo $arr1['bp3'].'/'.$arr1['bp4'];}?></td>
     <td align="left"><?=$arr1['p'];?></td>
 		<td align="left"><?=$arr1['seq'];?></td>
-    <td align="center"><a href="out_result_print.php?hn=<?=$arr1['hn'];?>&part=<?=$showpart;?>&act=print" target="_blank">�����</a></td>
-	<td align="center"><a href="out_result.php?getid=<?=$arr1['row_id'];?>&act=del&part=<?=$showpart;?>" onclick="return confirm('�س��ͧ���ź��������¡�ù�����������');">ź</a></td>
+    <td align="center"><a href="out_result_print.php?hn=<?=$arr1['hn'];?>&part=<?=$showpart;?>&act=print" target="_blank">พิมพ์</a></td>
+	<td align="center"><a href="out_result.php?getid=<?=$arr1['row_id'];?>&act=del&part=<?=$showpart;?>" onclick="return confirm('คุณต้องการลบข้อมูลรายการนี้ใช่หรือไม่');">ลบ</a></td>
   </tr>
   <? } ?>
 </table>
@@ -729,9 +754,9 @@ $company = mysql_fetch_assoc($q);
 if($_GET["act"]=="del"){
 	$del="delete from out_result_chkup where row_id='$_GET[getid]'";
 	if(mysql_query($del)){
-		echo "<script>alert('ź���������º��������');window.location='out_result.php?part=$_GET[part]';</script>";									
+		echo "<script>alert('ลบข้อมูลเรียบร้อยแล้ว');window.location='out_result.php?part=$_GET[part]';</script>";									
 	}else{
-		echo "<script>alert('�Դ��Ҵ �������öź��������');window.location='out_result.php?part=$_GET[part]';</script>";
+		echo "<script>alert('ผิดพลาด ไม่สามารถลบข้อมูลได้');window.location='out_result.php?part=$_GET[part]';</script>";
 	}
 }
 ?>

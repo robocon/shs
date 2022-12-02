@@ -103,6 +103,9 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">สายตา</th>
     <th width="6%" align="center">สมรรถภาพปอด</th>
     <th width="6%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
+    <th width="6%" align="center">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</th>
+    <th width="6%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
+    <th width="6%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
     <th width="7%">ผลการได้ยิน</th>
     <th width="7%">แมมโมแกรม</th>
@@ -906,6 +909,30 @@ if($flag=="N"){
     //อัลตร้าซาวด์ช่องท้อง
     if( !empty($result2['altra']) ){
         echo $result2['altra'];
+    }
+    ?>
+    </td>
+    <td>
+    <?php
+    //อัลตร้าซาวด์ช่องท้อง
+    if( !empty($result2['cimt']) ){
+        echo $result2['cimt'];
+    }
+    ?>
+    </td>
+    <td>
+    <?php
+    //อัลตร้าซาวด์ช่องท้อง
+    if( !empty($result2['echo']) ){
+        echo $result2['echo'];
+    }
+    ?>
+    </td>
+    <td>
+    <?php
+    //อัลตร้าซาวด์ช่องท้อง
+    if( !empty($result2['abi']) ){
+        echo $result2['abi'];
     }
     ?>
     </td>

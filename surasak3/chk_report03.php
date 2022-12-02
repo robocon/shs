@@ -109,6 +109,8 @@ while($result = mysql_fetch_assoc($row2)){
 	$c_s = $result['cs'];
 	$result_cs = $result['result_cs'];
 
+	$cimt = $result['cimt'];
+
 	// ถ้าไม่มีวันที่ใน chk_company_list ให้ดึงมาจาก opcardchk แทน
 	if( empty($show_date) ){
 		$sqlcc = mysql_query("SELECT datechkup, branch FROM `opcardchk`WHERE `HN` = '$hn' ");
@@ -1422,6 +1424,30 @@ if ( $group2_rows > 0 ) {
 								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
 								<td><strong class="text" style="margin-left: 9px;"> :
 									<?=$result['altra'];?>
+								</strong> </td>
+							</tr>
+						<?php } ?>
+						<?php if( !empty($result['cimt']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['cimt'];?>
+								</strong> </td>
+							</tr>
+						<?php } ?>
+						<?php if( !empty($result['echo']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['echo'];?>
+								</strong> </td>
+							</tr>
+						<?php } ?>
+						<?php if( !empty($result['abi']) ){ ?>           
+							<tr>
+								<td><strong class="text" style="font-size:18px"> <u>ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</u> </strong> </td>
+								<td><strong class="text" style="margin-left: 9px;"> :
+									<?=$result['abi'];?>
 								</strong> </td>
 							</tr>
 						<?php } ?>
