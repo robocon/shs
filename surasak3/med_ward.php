@@ -150,8 +150,8 @@ if ( $action === 'save' ) {
 
     if( $uploadOk === 1 ){
 
-        $_SESSION['line_msg'] = '';
-        $_SESSION['line_type'] = '';
+        $_SESSION['line_msg'] = null;
+        $_SESSION['line_type'] = null;
 
         $fullWardName = getFullWardName(trim($bedcode));
         $newAn = '';

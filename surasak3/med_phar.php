@@ -46,7 +46,8 @@ if ($action === 'active') {
     WHERE (`id`='$id');";
     $q = mysql_query($sql);
     if( $q !== false ){ 
-
+        $_SESSION['line_msg'] = null;
+        $_SESSION['line_type'] = null;
         
         // Line Notification ในไลน์กลุ่ม
         // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
@@ -64,30 +65,8 @@ if ($action === 'active') {
         // }
 
         // curl_close($chOne);
-
-        ?>
-        <script>
-            async function sendLineNotify(){ 
-                var line_message = '<?=$sMessage;?>';
-                var line_type = 'ward';
-                var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
-                const response =await fetch(targetTxt, {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded' 
-                    },
-                    body: JSON.stringify({
-                        'message': line_message, 
-                        'depart': line_type
-                    })
-                });
-                var body = await response.text();
-            }
-            sendLineNotify();
-        </script>
-        <?php
-        echo "กำลังบันทึกข้อมูล กรุณารอสักครู่";
-        sleep(2);
+        $_SESSION['line_msg'] = $sMessage;
+        $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
     }else{
@@ -120,6 +99,35 @@ if ($action === 'active') {
     <!-- 190mm is 718.11023622px -->
     <img src="<?=$item['path'];?>" width="700px" id="mainImg">
     <script>
+
+        <?php 
+        if(isset($_SESSION['line_msg'])){ 
+        ?>
+            async function sendLineNotify(){ 
+                var line_message = '<?=$_SESSION['line_msg'];?>';
+                var line_type = '<?=$_SESSION['line_type'];?>';
+                var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
+                const response =await fetch(targetTxt, {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/x-www-form-urlencoded' 
+                    },
+                    body: JSON.stringify({
+                        'message': line_message, 
+                        'depart': line_type
+                    })
+                });
+                var body = await response.text();
+            }
+            sendLineNotify();
+
+            <?php
+            unset($_SESSION['line_msg']);
+            unset($_SESSION['line_type']);
+        }
+        ?>
+        
+        
         function print_img(){
             window.print();
         }
