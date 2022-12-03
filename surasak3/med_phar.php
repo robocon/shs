@@ -50,7 +50,7 @@ if ($action === 'active') {
         
         // Line Notification ในไลน์กลุ่ม
         // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
-        // $sMessage = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย");
+        $sMessage = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย");
         // $chOne = curl_init(); 
         // curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
         // curl_setopt( $chOne, CURLOPT_POST, 1); 
@@ -64,6 +64,30 @@ if ($action === 'active') {
         // }
 
         // curl_close($chOne);
+
+        ?>
+        <script>
+            async function sendLineNotify(){ 
+                var line_message = '<?=$sMessage;?>';
+                var line_type = 'ward';
+                var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
+                const response =await fetch(targetTxt, {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/x-www-form-urlencoded' 
+                    },
+                    body: JSON.stringify({
+                        'message': line_message, 
+                        'depart': line_type
+                    })
+                });
+                var body = await response.text();
+            }
+            sendLineNotify();
+        </script>
+        <?php
+        echo "กำลังบันทึกข้อมูล กรุณารอสักครู่";
+        sleep(2);
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
     }else{

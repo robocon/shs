@@ -150,6 +150,9 @@ if ( $action === 'save' ) {
 
     if( $uploadOk === 1 ){
 
+        $_SESSION['line_msg'] = '';
+        $_SESSION['line_type'] = '';
+
         $fullWardName = getFullWardName(trim($bedcode));
         $newAn = '';
         if ($firstTime == true) {
@@ -158,7 +161,7 @@ if ( $action === 'save' ) {
         
         // // Line Notification ในไลน์กลุ่ม
         // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
-		// $sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
+		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
 		// $chOne = curl_init(); 
 		// curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
 		// curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
@@ -170,6 +173,9 @@ if ( $action === 'save' ) {
 		// curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
 		// $result = curl_exec( $chOne ); 
 		// curl_close($chOne);
+
+        $_SESSION['line_msg'] = $sMessage;
+        $_SESSION['line_type'] = 'ward';
 
         redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
@@ -257,8 +263,38 @@ if ($_SESSION['sLevel'] == "admin") {
     <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?></p>
 </div>
 <?php
-if( isset($_SESSION['x-msg']) ){
-    ?><p style="background-color: #ffffc1; border: 2px solid #afaf00; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
+if( isset($_SESSION['x-msg']) ){ 
+
+    if(isset($_SESSION['line_msg'])){
+        ?>
+        <script>
+            async function sendLineNotify(){ 
+                var line_message = '<?=$_SESSION['line_msg'];?>';
+                var line_type = '<?=$_SESSION['line_type'];?>';
+                var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
+                const response =await fetch(targetTxt, {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/x-www-form-urlencoded' 
+                    },
+                    body: JSON.stringify({
+                        'message': line_message, 
+                        'depart': line_type
+                    })
+                });
+                var body = await response.text();
+            }
+            sendLineNotify();
+        </script>
+        <?php
+        unset($_SESSION['line_msg']);
+        unset($_SESSION['line_type']);
+    }
+    ?>
+    
+
+    <p style="background-color: #ffffc1; border: 2px solid #afaf00; padding: 5px;"><?=$_SESSION['x-msg'];?></p>
+    <?php
     unset($_SESSION['x-msg']);
 }
 
