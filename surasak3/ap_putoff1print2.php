@@ -61,13 +61,13 @@ echo "<tr><td>#</td><td>HN</td><td>ชื่อ - สกุล</td><td>พิม
 		//print "<tr><td><font face='Angsana New' size='4'><b><U>ยื่นใบนัดที่:&nbsp; $room</U></b><font face='Angsana New' size='3'>&nbsp;&nbsp;&nbsp;</td></tr>";
 	//print "<b>ผู้ออกใบนัด:</b>&nbsp; $sOfficer,&nbsp; $depcode</td></tr> "; 
 	//print "&nbsp;&nbsp;<b>วันและเวลาที่ออกใบนัด&nbsp;:</b>$Thaidate</td></tr>"; 
-	echo "<div style='page-break-after:always'></div>";
+	// echo "<div style='page-break-after:always'></div>";
 	
-	echo "<table width='75%'>";
-	echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-	echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-	echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-	echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "<table width='75%' border='0'>";
+	// echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	// echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	// echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	// echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	echo "<tr><td width='60%'>&nbsp;</td><td width='40%'><font face='Angsana New' size='4'> $cPtname</font></td></tr>";

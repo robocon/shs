@@ -1,6 +1,12 @@
 <?php
 	session_start();
 	include("connect.inc");
+
+	function dump($txt){
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,9 +54,13 @@ function CheckAll() {
   <tr>
     <td>วันที่
 		<?php 
-		$dSelect = !empty($_POST['d']) ? $_POST['d'] : '' ;
-		$mSelect = !empty($_POST['m']) ? $_POST['m'] : '' ;
-		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : '' ;
+
+		$month = array(1=>'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+		$currMonth = date('m');
+
+		$dSelect = !empty($_POST['d']) ? $_POST['d'] : sprintf('%02d', date('d')) ;
+		$mSelect = !empty($_POST['m']) ? $_POST['m'] : $month[$currMonth] ;
+		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : (date('Y')+543) ;
 		?>
       <select name="d">
         <option value="0">-</option>
@@ -60,35 +70,30 @@ function CheckAll() {
 			$selected = ($a==$dSelect) ? 'selected="selected"' : '' ;
 			?>
 			<option value="<?=$a?>" <?=$selected;?>><?=$a?></option>
-			<?
+			<?php
 		}
-	?>
+		?>
         </select>
       เดือน
       <select name="m">
-        <?
-		$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-		for($a=1;$a<13;$a++){
-			// $b = sprintf('%02d', $a);
-			$selected = ($month[$a]===$mSelect) ? 'selected="selected"' : '' ;
-			?>
-			<option value="<?=$month[$a]?>" <?=$selected;?>><?=$month[$a]?></option>
-			<?
+        <?php
+		
+		foreach($month AS $k => $m){
+			$selected = ($m==$mSelect) ? 'selected="selected"' : '' ;
+			?><option value="<?=$m?>" <?=$selected;?>><?=$m?></option><?php
 		}
 		?>
         </select>
       พ.ศ.
       <select name="yr">
         <?
-	$year = date("Y")+543;
-	for($a=($year-5);$a<($year+5);$a++){
-	?>
-        <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>>
-          <?=$a?>
-          </option>
-        <?
-	}
-	?>
+		$year = date("Y")+543;
+		for($a=($year-5);$a<($year+5);$a++){
+			?>
+			<option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>><?=$a?></option>
+			<?php
+		}
+		?>
       </select></td>
     </tr>
   <tr>
@@ -118,12 +123,16 @@ function CheckAll() {
 
 $doctor111 =substr($_POST['dr'],0,5);
 
-	if(isset($_POST['okbtn'])){
-		$sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
+	if(isset($_POST['okbtn'])){ 
+
+		$kMonth = array_keys($month, $_POST['m']);
+		$enDate = ($_POST['yr']-543)."-".$kMonth['0']."-".$_POST['d'];
+
+		// $sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
+		$sql = "select * from appoint where appdate_en = '$enDate' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
 		
 		$row = mysql_query($sql);
 		$num1 = mysql_num_rows($row);
-		//echo $sql ;
 		
 		if($num1>0){
 			echo "<form action='ap_putoff1.php' method='post' class='font1' name='form12'>";
@@ -282,9 +291,6 @@ if(isset($_POST['ok2'])){
 		
 		if(isset($_POST['ch'.$a])){
 			$sql1 = "select * from appoint where row_id ='".$_POST['ch'.$a]."' ";
-			// echo "<pre>";
-			// var_dump($sql1);
-			// echo "</pre>";
 			$row1 = mysql_query($sql1);
 			$result1 = mysql_fetch_array($row1);
 
