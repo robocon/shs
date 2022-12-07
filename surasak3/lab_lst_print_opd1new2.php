@@ -155,8 +155,12 @@ function getFooter($arr3){
 	</style>
 </head>
 <body>
-
 	<?php 
+	// resulthead มีปัญหาเรื่องวันเกิดเลยต้องมาใช้ใน opcard ก่อน
+	$sql_opcard = sprintf("SELECT CONCAT((SUBSTRING(`dbirth`,1,4)-543), SUBSTRING(`dbirth`,5,6)) AS `dbirth` FROM `opcard` WHERE `hn` = '%s'", $gethn);
+	$q_opcard = mysql_query($sql_opcard);
+	list($dateB) = mysql_fetch_array($q_opcard);
+
 	$sqlop="select distinct(testgroupname) as newtestgroupname from resulthead where hn ='$gethn' AND labnumber = '$getlabnumber' ";
 	$queryop=mysql_query($sqlop);
 	$headerRows = mysql_num_rows($queryop);
@@ -169,7 +173,7 @@ function getFooter($arr3){
 		$result = mysql_query($sql);
 		$rows = mysql_fetch_array($result);
 		$neworderdate =$rows["neworderdate"];
-		$dateB=$rows["dob"]; // ตัวแปรเก็บวันเกิด
+		// $dateB=$rows["dob"]; // ตัวแปรเก็บวันเกิด
 		$getdoctor = $rows["clinicianname"];
 
 
