@@ -71,7 +71,7 @@ if($page==='load25page'){
 
         $item['depart'] = $item['depart'];
         $item['head'] = $item['head'];
-        $item['detail'] = nl2br($item['detail']);
+        $item['detail'] = $item['detail'];
         $item['user'] = $item['user'];
         $item['programmer'] = $item['programmer'];
         $item['user1'] = $item['user1'];
