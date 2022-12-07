@@ -60,7 +60,7 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 				$show = isset($_POST['show']) ? true : false ;
 				if( $show ){ 
 
-					$db = Mysql::load($shs_configs);
+					$db = Mysql::load();
 
 					$sql = "SELECT `name`,`doctorcode` FROM `doctor` WHERE `row_id` = '$doctor_id';";
 					$db->select($sql);
@@ -89,6 +89,8 @@ $doctor_id = isset($_POST['doctor']) ? trim($_POST['doctor']) : false ;
 					GROUP BY a.`diag`
 					
 					ORDER BY `diag_row` DESC";
+					dump($sql);
+					exit;
 					$db->select($sql);
 					$items = $db->get_items();
 					
