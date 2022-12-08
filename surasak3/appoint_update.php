@@ -8,24 +8,36 @@ $query = mysql_query($sql)or die("Query failed appoint");
 $result = mysql_fetch_array($query);
 
 
+   $queryT="SELECT phone FROM opcard where hn='".$result["hn"]."'";
+   $resultT = mysql_query($queryT);
+   $rowT = mysql_fetch_array($resultT);
+
+
 if($_POST["act"]=="edit"){
 	$row_id=$_POST["row_id"];
+	$hn=$_POST["hn"];
+	$doctor=$_POST["doctor"];
 	$detail=$_POST["detail"];
+	$detail2=$_POST["detail2"];
 	$room=$_POST["room"];
-	$capptime=$_POST["capptime"];
+	$apptime=$_POST["apptime"];
 	$advice=$_POST["advice"];
 	$depcode=$_POST["depcode"];
 	$appdate_en=$_POST["appdate_en"];
+	$phone=$_POST["phone"];
 	
 	$chkdate=date("Y-m-d");
 	if($chkdate >= $appdate_en){  //ถ้าวันที่ปัจจุบันเกินวันที่นัดไปแล้ว
 		echo "<script>alert('ไม่สามารถแก้ไขนัดได้ เนื่องจากเลยวันที่นัดมาแล้ว');window.close();</script>";	
 	}else{	
-		$edit="UPDATE appoint SET detail='$detail',room='$room',capptime='$capptime',advice='$advice',depcode='$depcode',officer='".$_SESSION['sOfficer']."' WHERE row_id='$row_id'";
+		$edit="UPDATE appoint SET doctor='$doctor',detail='$detail',detail2='$detail2',room='$room',apptime='$apptime',advice='$advice',depcode='$depcode',officer='".$_SESSION['sOfficer']."' WHERE row_id='$row_id'";
+		//echo $edit;
 		if(mysql_query($edit)){
-			echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.close();</script>";
+			$edit1="UPDATE opcard SET phone='$phone' WHERE hn='".$hn."'";
+			mysql_query($edit1);			
+			echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.location='appinsert2.php?row_id=$row_id';</script>";			
 		}else{
-			echo "<script>alert('ไม่สามารถแก้ไขข้อมูลได้ กรุณาลองใหม่อีกครั้ง');window.location='appoint_update?row_id=$row_id';</script>";
+			echo "<script>alert('ไม่สามารถแก้ไขข้อมูลได้ กรุณาลองใหม่อีกครั้ง');window.location='appoint_update.php?row_id=$row_id';</script>";
 		}
 	}
 }
@@ -54,6 +66,7 @@ function checkList(){
 <FORM name="f1" METHOD=POST ACTION="appoint_update.php" onsubmit="return checkList()">
 <input name="act" type="hidden" value="edit"/>
 <input name="row_id" type="hidden" value="<?php echo $row_id;?>" />
+<input name="hn" type="hidden" value="<?php echo $result["hn"];?>" />
 <input name="appdate_en" type="hidden" value="<?php echo $result["appdate_en"];?>" />
 <TABLE bgcolor="#ABEBC6" width="80%" align="center" border="0" bordercolor="#1E8449" cellpadding="5" cellspacing="5">
 <TR>
@@ -77,7 +90,30 @@ function checkList(){
 	<TD width="24%" align="right">ชื่อ - นามสกุล : </TD>
 	<TD width="56%"><?php echo $result["ptname"];?>	</TD>
 </TR>
-
+<TR>
+	<TD width="24%" align="right">เปลี่ยนแพทย์ผู้นัด : </TD>
+	<TD width="56%">
+	<?
+	$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
+	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+	?>
+	<select name="doctor" id="doctor" class="forntsarabun"> 
+		<?php
+		while($objResult = mysql_fetch_array($objQuery)) { 
+			if($result["doctor"]==$objResult["name"]){
+		?> 
+			<option value="<?=$objResult["name"];?>" selected><?=$objResult["name"];?></option> 
+		<?
+			}else{
+		?>
+			<option value="<?=$objResult["name"];?>"><?=$objResult["name"];?></option>
+		<?php
+			}
+		} 
+		?> 
+	</select>	
+	</TD>
+</TR>
 <TR>
 	<TD width="24%" align="right">นัดมาเพื่อ : </TD>
 	<TD width="56%">
@@ -98,6 +134,11 @@ function checkList(){
 	}
 	?>
 	</select>
+	</TD>
+</TR>
+<TR>
+	<TD width="24%" align="right">รายละเอียดเพิ่มเติม : </TD>
+	<TD width="56%"><textarea id="detail2" name="detail2" rows="4" cols="50" class="forntsarabun"><? echo $result["detail2"];?></textarea>
 	</TD>
 </TR>
 <TR>
@@ -128,13 +169,14 @@ function checkList(){
 		<option value='แผนกตรวจสุขภาพ' <? if($result["room"]=='แผนกตรวจสุขภาพ'){ echo "selected"; } ?>>แผนกตรวจสุขภาพ</option>
 		<option value='คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)' <? if($result["room"]=='คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)'){ echo "selected"; } ?>>คลินิก ARI (ติดเชื้อระบบทางเดินหายใจ)</option>
 		<option value='อาคารแพทย์ทางเลือก' <? if($result["room"]=='อาคารแพทย์ทางเลือก'){ echo "selected"; } ?>>อาคารแพทย์ทางเลือก</option>
+		<option value='หอผู้ป่วยพิเศษ3' <? if($result["room"]=='หอผู้ป่วยพิเศษ3'){ echo "selected"; } ?>>หอผู้ป่วยพิเศษ3</option>
         </select>
 	</TD>
 </TR>
 <TR>
 	<TD width="24%" align="right">เวลานัด : </TD>
 	<TD width="56%">
-      <select name="capptime" class="forntsarabun">
+      <select name="apptime" class="forntsarabun">
         <option value='' <? if($result["apptime"]==''){ echo "selected"; } ?>>-------- เลือกข้อมูล --------</option>
 		<option value='08:00 น. - 10.00 น.' <? if($result["apptime"]=='08:00 น. - 10.00 น.'){ echo "selected"; } ?>>08:00 น. - 10.00 น.</option>
 		<option value='08:00 น. - 11.00 น.' <? if($result["apptime"]=='08:00 น. - 11.00 น.'){ echo "selected"; } ?>>08:00 น. - 11.00 น.</option>
@@ -229,6 +271,10 @@ function checkList(){
 		<option value='U31 คลินิกโรคทางเดินหายใจ' <? if($result["depcode"]=='U31 คลินิกโรคทางเดินหายใจ'){ echo "selected"; } ?>>U31 คลินิกโรคทางเดินหายใจ</option>
         </select>
 	</TD>
+</TR>
+<TR>
+	<TD width="24%" align="right">เบอร์โทรศัพท์ : </TD>
+	<TD width="56%"><input type="text" name="phone" size="20" class="forntsarabun" value="<?=$rowT['phone']?>" /></TD>
 </TR>
 <TR>
 	<TD colspan="2" align="center"><INPUT TYPE="submit" name="submit"  value="แก้ไขข้อมูล" class="forntsarabun"></TD>
