@@ -69,9 +69,24 @@ $age = calcage($dbirth);
 	$result = Mysql_Query($sql);
 	if($result){
 
-	?>
-    <div style="position: absolute;top: 0;right: 0;"><img src="printQrCode.php?hn=<?=$_POST["list_hn"][$i];?>&margin=1"></div>
-    <?php
+
+		// ถ้าเป็นนัดผู้ป่วยใน ให้แสดงเป็น ไลน์โรงบาลแทน
+		$detailCode = substr($_POST["detail"], 0, 4);
+		if($detailCode=="FU03"){
+        
+			?>
+			<div style="position: absolute;top: 0;left: 0; text-align: center;">
+				<img src="printQrCode.php?hn=https://lin.ee/Ls8i61F&size=3&margin=1">
+				<div class="size2" style="line-height:10px;">ไลน์ รพ.ค่ายสุรศักดิ์มนตรี<br>เพื่อการติดต่อและประสานงาน</div>
+			</div>
+			<?php 
+			
+		}else{
+			?>
+			<div style="position: absolute;top: 0;left: 0;"><img src="printQrCode.php?hn=<?=$_POST["list_hn"][$i];?>&margin=1"></div>
+			<?php 
+		}
+
 /************************ ออก ใบนัด ***************************/
 print "<font face='Angsana New' size='5'><center><b>ใบนัดผู้ป่วย";
 print "&nbsp;&nbsp;&nbsp;&nbsp;โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง </b> </center>";
