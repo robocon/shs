@@ -199,7 +199,8 @@ If ($result){
 
 //print "$cDbirth";
 ?>
-
+<script type="text/javascript" src="js/jql.min.js"></script>
+<script type="text/javascript" src="js/thailand_raw_database.json"></script>
 <SCRIPT LANGUAGE='JavaScript'>
 	function newXmlHttp(){
 	var xmlhttp = false;
@@ -300,9 +301,29 @@ echo "<tr bgcolor=\"$bgcolor\" >
     <table width="100%" border="0">
   <tr>
     <td width="15%" align="center">
+
+<?php 
+$imgPtPath = dirname(__FILE__).'/../image_patient/'.$_SESSION["idcard_now"].'.jpg';
+if(is_file($imgPtPath)===false){
+
+  $path = 'images/patient-default.jpg';
+  
+}else{
+  $path = '../image_patient/'.$_SESSION["idcard_now"].'.jpg';
+}
+?>
+
 <a href='Capture.php?id=<?=$cIdcard;?>&hn=<?=$cHn;?>&yot=<?=$cYot;?>&name1=<?=$cName;?>&name2=<?=$cSurname;?>' target=_blank>
-    <IMG SRC='../image_patient/<?=$cIdcard;?>.jpg' WIDTH='100' HEIGHT='150' BORDER='0' ALT='' style="border: #FFFFFF solid 3px; padding: 2px 2px 2px 2px;"></a></td>
-    <td width="85%" valign="top">
+  <IMG SRC='<?=$path;?>' WIDTH='100' HEIGHT='150' BORDER='0' ALT='' style="border: #FFFFFF solid 3px; padding: 2px 2px 2px 2px;">
+</a>
+
+
+</td>
+    
+
+
+
+<td width="85%" valign="top">
     <table border="0">
       <tr style="vertical-align:top;">
         <td align="right"  class="fonthead">คำนำหน้า:</td>
@@ -535,14 +556,85 @@ echo "<tr bgcolor=\"$bgcolor\" >
     <td align="right" class="fonthead"> บ้านเลขที่:</td>
     <td><input type="text" name="address" size="10" value="<?=$cAddress;?>"></td>
     <td align="right" class="fonthead">ตำบล:</td>
-    <td><input type="text" name="tambol" size="10" value="<?=$cTambol;?>"></td>
+    <td>
+      <style>
+        #pvContain{
+          position: relative;
+        }
+        #pvContent{
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 600px;
+          background-color: #ffffff;
+          padding: 4px;
+        }
+        .selectedPv:hover{
+          cursor: pointer;
+          background-color: #cbcbcb;
+        }
+        .selectedPv{
+          padding-bottom: 4px;
+        }
+      </style>
+      <input type="text" name="tambol" size="10" value="<?=$cTambol;?>" onkeyup="findPv(this.value)">
+      <div id="pvContain" style="display:none;">
+        <div id="pvContent"></div>
+      </div>
+    </td>
     <td align="right" class="fonthead">อำเภอ:</td>
     <td><input type="text" name="ampur" size="10"  value="<?=$cAmpur;?>"></td>
     <td class="fonthead">จังหวัด:</td>
     <td><input type="text" name="changwat" size="10" value="<?=$cChangwat;?>"></td>
   </tr>
   <tr>
-    <td align="right" bgcolor="#66CC99" class="fonthead">ข้อมูลภาษาอังกฤษ</td>
+    <td align="right" bgcolor="#66CC99" class="fonthead">ข้อมูลภาษาอังกฤษ
+
+      
+      <script>
+        // https://github.com/earthchie/jquery.Thailand.js
+        var data = new JQL(data);
+        function findPv(v){ 
+
+          v = v.trim();
+          if(v.length<3){
+            return false;
+          }
+          
+          var res1 = data.select('*').where('district').contains(v).fetch();
+          var res2 = data.select('*').where('amphoe').contains(v).fetch();
+          var res3 = data.select('*').where('province').contains(v).fetch();
+          var res123 = res1.concat(res2,res3);
+
+          if(res123.length === 0){
+            return false;
+          }
+
+          var resTxt = '<div style="width: 100%;text-align: center;color: red;cursor: pointer;background-color: #ffd6d6;" onclick="closePv()">ปิด</div>';
+          resTxt += '<ul>';
+          for (let index = 0; index < res123.length; index++) {
+            const element = res123[index];
+            resTxt += '<li class="selectedPv" onclick="setupData(\''+element.district+'\',\''+element.amphoe+'\',\''+element.province+'\')">ต.'+element.district+'&nbsp;&nbsp;>>&nbsp;&nbsp;อ.'+element.amphoe+'&nbsp;&nbsp;>>&nbsp;&nbsp;จ.'+element.province+' ('+element.zipcode+')</li>';
+          }
+          resTxt += '</ul>';
+
+          document.getElementById("pvContent").innerHTML = resTxt;
+          document.getElementById('pvContain').style.display = '';
+
+        }
+        function setupData(district,amphoe,province){
+          document.f1.tambol.value = district;
+          document.f1.ampur.value = amphoe;
+          document.f1.changwat.value = province;
+
+          document.getElementById('pvContain').style.display = 'none';
+          
+        }
+        function closePv(){
+          document.getElementById('pvContain').style.display = 'none';
+        }
+      </script>
+    </td>
     <td colspan="7" bgcolor="#66CC99"><span class="style1">***</span></td>
     </tr>
   <tr>
