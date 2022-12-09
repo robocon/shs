@@ -219,7 +219,7 @@ $rowpt = mysql_query($sqlpt);
 		<select name="staf_massage" id="staf_massage"> 
 			<option value="">--เลือก--</option> 
 			<?php 
-			$strstaf = "SELECT name FROM staf_massage order by row_id asc "; 
+			$strstaf = "SELECT name FROM staf_massage WHERE `status` = 'y' order by row_id asc "; 
 			$objstaf = mysql_query($strstaf) or die ("Error Query [".$strstaf."]");  
 			while($objarr = mysql_fetch_array($objstaf)) { 
 				?>
