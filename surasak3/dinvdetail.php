@@ -31,9 +31,9 @@
 
     print"<table>";
     print"<tr>";
-    print"<th bgcolor=CD853F>��¡��</th>";
-    print"<th bgcolor=CD853F>�ӹǹ</th>";
-    print"<th bgcolor=CD853F>�Ҥ�</th>";
+    print"<th bgcolor=CD853F>รายการ</th>";
+    print"<th bgcolor=CD853F>จำนวน</th>";
+    print"<th bgcolor=CD853F>ราคา</th>";
     print"</tr>";
 
     $query = "SELECT detail,amount,price FROM dpatdata WHERE date = '$dDate' ";
@@ -43,9 +43,9 @@
     $d=substr($dDate,8,2);
     $m=substr($dDate,5,2);
     $y=substr($dDate,0,4);
-    print "�ѹ��� $d/$m/$y<br>";
+    print "วันที่ $d/$m/$y<br>";
     print "$sPtname, HN: $sHn<br> ";
-    print "�ä: $sDiag<br>";
+    print "โรค: $sDiag<br>";
 
     while (list ($detail,$amount, $price) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
@@ -56,9 +56,9 @@
       }
     include("unconnect.inc");
     print"</table>";
-    print "����Թ  $sNetprice �ҷ<br>";
-    print "ᾷ�� :$sDoctor<br>";
-    print"<br><a  href='dlabok.php'>��Ǩ�١��ͧ & ��ŧ</a>";
+    print "รวมงิน  $sNetprice บาท<br>";
+    print "แพทย์ :$sDoctor<br>";
+    print"<br><a  href='dlabok.php'>ตรวจถูกต้อง & ตกลง</a>";
     ?>
 
 
