@@ -200,7 +200,6 @@ If ($result){
 //print "$cDbirth";
 ?>
 <script type="text/javascript" src="js/jql.min.js"></script>
-<script type="text/javascript" src="js/thailand_raw_database.json"></script>
 <SCRIPT LANGUAGE='JavaScript'>
 	function newXmlHttp(){
 	var xmlhttp = false;
@@ -400,9 +399,10 @@ if(is_file($imgPtPath)===false){
         <td> 
           <select size="1" name="sex" id="sex">
             <option value="">เลือก</option>
-            <option <? if($cSex=='ช' ||$cSex=='1' ){ echo "selected"; }?> value="ช">ชาย</option>
-            <option <? if($cSex=='ญ' ||$cSex=='2' ){ echo "selected"; }?> value="ญ">หญิง</option>
-          </select>        </td>
+            <option <?php if($cSex=='ช' ||$cSex=='1' ){ echo "selected"; }?> value="ช">ชาย</option>
+            <option <?php if($cSex=='ญ' ||$cSex=='2' ){ echo "selected"; }?> value="ญ">หญิง</option>
+          </select>
+        </td>
         <td colspan="3" align="right" class="fonthead">หมายเลขประจำตัวประชาชน:</td>
         <td> 
           <input name="idcard" type="text" id="idcard" value="<?=$cIdcard;?>" size="15" maxlength="13" class="notify43">        </td>
@@ -590,20 +590,24 @@ if(is_file($imgPtPath)===false){
   <tr>
     <td align="right" bgcolor="#66CC99" class="fonthead">ข้อมูลภาษาอังกฤษ
 
-      
-      <script>
-        // https://github.com/earthchie/jquery.Thailand.js
-        var data = new JQL(data);
+      <script type="text/javascript">
+        <?php 
+        // โหลด json ผ่าน file_get_contents ของ php
+        // แล้วค่อยเอาตัวแปรใน php ยัดผ่าน javascript อีกที
+        $json_data = file_get_contents('js/thailand_raw_database.json');
+        ?>
+        var thailand_data = JSON.parse('<?=$json_data;?>');
         function findPv(v){ 
 
           v = v.trim();
           if(v.length<3){
             return false;
           }
-          
-          var res1 = data.select('*').where('district').contains(v).fetch();
-          var res2 = data.select('*').where('amphoe').contains(v).fetch();
-          var res3 = data.select('*').where('province').contains(v).fetch();
+
+          var thai_post_data = new JQL(thailand_data);
+          var res1 = thai_post_data.select('*').where('district').contains(v).fetch();
+          var res2 = thai_post_data.select('*').where('amphoe').contains(v).fetch();
+          var res3 = thai_post_data.select('*').where('province').contains(v).fetch();
           var res123 = res1.concat(res2,res3);
 
           if(res123.length === 0){
@@ -612,8 +616,8 @@ if(is_file($imgPtPath)===false){
 
           var resTxt = '<div style="width: 100%;text-align: center;color: red;cursor: pointer;background-color: #ffd6d6;" onclick="closePv()">ปิด</div>';
           resTxt += '<ul>';
-          for (let index = 0; index < res123.length; index++) {
-            const element = res123[index];
+          for (var index = 0; index < res123.length; index++) {
+            var element = res123[index];
             resTxt += '<li class="selectedPv" onclick="setupData(\''+element.district+'\',\''+element.amphoe+'\',\''+element.province+'\')">ต.'+element.district+'&nbsp;&nbsp;>>&nbsp;&nbsp;อ.'+element.amphoe+'&nbsp;&nbsp;>>&nbsp;&nbsp;จ.'+element.province+' ('+element.zipcode+')</li>';
           }
           resTxt += '</ul>';
@@ -622,6 +626,7 @@ if(is_file($imgPtPath)===false){
           document.getElementById('pvContain').style.display = '';
 
         }
+        
         function setupData(district,amphoe,province){
           document.f1.tambol.value = district;
           document.f1.ampur.value = amphoe;
