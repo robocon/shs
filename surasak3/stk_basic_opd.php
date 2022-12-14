@@ -63,8 +63,9 @@ if($alcohol==0){
 	$alcohol='เคยดื่ม';
 }
 
+$drugreact_text = '';
 if($drugreact == 0){
-	$congenital_disease .=" , ผู้ป่วยไม่แพ้ยา";
+	$drugreact_text = " , ผู้ป่วยไม่แพ้ยา";
 }else{
 	$i=0;
 	$list = array();
@@ -73,8 +74,7 @@ if($drugreact == 0){
 	while($arr = Mysql_fetch_assoc($result)){
 		array_push($list ,$arr["tradname"]);
 	}
-	$list_drug = implode(", ",$list);
-	$congenital_disease .= " , แพ้ยา : ".$list_drug;
+	$drugreact_text = ' , แพ้ยา : '.iconv("UTF-8","WINDOWS-874",implode(", ",$list));
 }
 
 if( empty($weight) ){
@@ -156,10 +156,10 @@ if ( !empty($vaccine) ) {
 }
 
 $full_text .="Triage Gr. : ".$grade." สภาวะจิตใจ : ".iconv("UTF-8","WINDOWS-874",$mind)."\n";
-$type = iconv("UTF-8","WINDOWS874",$type);
-$clinic = iconv("UTF-8","WINDOWS874",$clinic);
+$type = iconv("UTF-8","WINDOWS-874",$type);
+$clinic = iconv("UTF-8","WINDOWS-874",$clinic);
 $full_text .= "ลักษณะ: $type, คลินิก: ".$clinic."\n";
-$full_text .= "โรคประจำตัว: ".iconv("UTF-8","WINDOWS-874",trim($congenital_disease))."\n";
+$full_text .= "โรคประจำตัว: ".iconv("UTF-8","WINDOWS-874",$congenital_disease)."$drugreact_text\n";
 
 if ( !empty($ht_amount) OR !empty($dm_amount) ) {
 
