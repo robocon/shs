@@ -269,25 +269,12 @@ function togglediv2(divid){
 	}else{ 
 		$sqlvn = mysql_query("Select *,SUBSTRING(`thidate`,1,10) AS `shortThDate` From opday where  hn = '".$_POST["c_hn"]."' ORDER BY `row_id` DESC LIMIT 1");
 		$queryvn = mysql_fetch_assoc($sqlvn);
-		$opdExtraTxt = ' ข้อมูลซักประวัติเมื่อวันที่ '.$queryvn['shortThDate'];
+		$opdExtraTxt = ' ข้อมูลการลงทะเบียนเมื่อวันที่ '.$queryvn['shortThDate'];
 	}
-
-	// $sqlvn = "Select * From opday where  vn = '".$_POST["p_hn"]."' and thidate like '$date_now%' limit 0,1";
-	// var_dump($sqlvn);
-	// $resultvn= mysql_query($sqlvn);
-	// $queryvn = mysql_fetch_array($resultvn);
 	
 	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$queryvn['hn']."' limit 0,1";
-	//echo $sql;
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
 	$arr_view = mysql_fetch_assoc($result);
-
-//$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
-//list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
 
 $date_hn = date("Y-m-d").$queryvn['hn'];
 $date_vn = date("Y-m-d").$queryvn['vn'];
@@ -308,7 +295,10 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 
 //ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 
-	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
+	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') 
+	From resulthead as a 
+	where a.hn='".$arr_view["hn"]."' AND clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' 
+	Order by a.autonumber DESC limit 0,1";
 	//echo $sql;
 	list($lab_date) = mysql_fetch_row(mysql_query($sql));
 
@@ -328,11 +318,13 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
 
 	$sql = "Select * From  `dxofyear_out` where yearchk = '$nPrefix' AND hn='".$arr_view["hn"]."' order by row_id desc limit 0,1 ";
-	//echo $sql;
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
 	$result_dx = mysql_fetch_array($result);
-	if($count > 0){
+
+	$dxofyear_out_status = 'ไม่มีข้อมูลซักประวัติ';
+	if($count > 0){ 
+		$dxofyear_out_status = '';
 		$result = mysql_query($sql);
 		$arr_dxofyear = mysql_fetch_assoc($result);
 		
@@ -346,8 +338,12 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
 		$rowid = $arr_dxofyear['row_id'];
 		
-	}else{
-		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+	}else{ 
+
+		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END ) 
+		From opd where hn = '".$arr_view["hn"]."' 
+		AND type <> 'ญาติ' 
+		Order by row_id DESC limit 1";
 
 		$result = Mysql_Query($sql);
 		list($drugreact,$congenital_disease, $weight, $height, $cigarette1, $alcohol1,$exercise1, $cigarette0, $alcohol0, $exercise0, $cigarette2, $alcohol2,$exercise2, $cigarette3, $alcohol3) = Mysql_fetch_row($result);
@@ -619,7 +615,16 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0"  width="100%" bgcolor="#FFFFCC">
 	<TR>
-		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?php echo $lab_date;?></span></TD>
+		<TD align="left" class="tb_font_1" bgcolor="#339999">
+			&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?php echo $lab_date;?></span>
+			<?php 
+			if(!empty($dxofyear_out_status)){
+				?>
+				<span style="color:red;"><?=$dxofyear_out_status;?></span>
+				<?php
+			}
+			?>
+		</TD>
 	</TR>
 	<TR class="tb_font">
 		<TD >
@@ -1686,8 +1691,8 @@ if(!empty($result_dx["antihb"]))
 		<span <?php if($result_dx['antihb_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['antihb_flag']?></span>
 	</td>
 	<td class="labfont">
-		<input name='stat_antihb' type='radio' value='ปกติ' /> ปกติ
-		<input name='stat_antihb' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		<input name='stat_antihb' type='radio' value='ปกติ' <? if($result_dx['antihb'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_antihb' type='radio' value='ผิดปกติ' <? if( $result_dx['antihb'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
 	</td>
 	<td colspan="4"></td>
 </tr>
@@ -1709,11 +1714,15 @@ if(!empty($result_dx["HBA1CC"]))
 		<span <? if($result_dx['HBA1CCflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['HBA1CCflag']?></span>
 	</td>
 	<td class="labfont">
-		<input name='stat_hba1c' type='radio' value='ปกติ' onclick="togglediv2('hba1c_action');" <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
-		<input name='stat_hba1c' type='radio' value='ผิดปกติ' onclick="togglediv1('hba1c_action');"<? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+		<!-- 
+		onclick="togglediv2('hba1c_action');"
+		onclick="togglediv1('hba1c_action');"
+		 -->
+		<input name='stat_hba1c' type='radio' value='ปกติ'  <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hba1c' type='radio' value='ผิดปกติ'  <? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
 	</td>
 
-	<td colspan="4">
+	<td colspan="4" style="display:none;">
 		<div id="hba1c_action" <?=($result_dx['HBA1CC'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
 			<select name='reason_hba1c'>
 				<option value="ปกติ" <?=($result_dx['HBA1CC'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
@@ -1762,7 +1771,14 @@ if(!empty($result_dx["HBA1CC"]))
 	        </select>
 	      </div></td>
 	    </tr>
-	  <tr>
+	<?php 
+	// ถ้าเป็น ผญ ค่อยแสดงการตรวจมะเร็งปากมดลูก
+	$style52 = 'style="display:none;"';
+	if($arr_view['sex']=='ญ'){
+		$style52 = '';
+	}
+	?>
+	  <tr <?=$style52;?>>
 	    <td align="right" class="tb_font_2">ตรวจมะเร็งปากมดลูก : </td>
 	    <td class="labfont"><input name='normal52' type='radio' value='ปกติ' onclick="togglediv2('acnormal52')"/>
 	      ปกติ
