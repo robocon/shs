@@ -134,7 +134,7 @@ print "<DIV style='left:90PX;top:315PX;width:800PX;height:30PX;'><span class='fc
 print "<DIV style='left:80PX;top:335PX;width:500PX;height:30PX;'><span class='fc1-3'>4.สอบถามข้อมูลการจองเตียงล่วงหน้าได้ 1 วัน ก่อนการมานอนโรงพยาบาล</span></DIV>";
 
 //12
-print "<DIV style='left:90PX;top:355PX;width:500PX;height:30PX;'><span class='fc1-3'><b>ที่เบอร์โทร <u>054-839305 ต่อ 1120-1121</u> เวลา 15.00 น.</b></span></DIV>";
+print "<DIV style='left:90PX;top:355PX;width:500PX;height:30PX;'><span class='fc1-3'><b>ที่เบอร์โทร <u>054-839305 ต่อ 1120-1121</u> เวลา 18.00 น. - 20.00 น.</b></span></DIV>";
 
 //13
 print "<DIV style='left:80PX;top:375PX;width:500PX;height:30PX;'><span class='fc1-3'>5.หากท่านไม่มาตามนัด <b>เกินเวลา 14.00 น.</b> ทางโรงพยาบาลขอสงวนสิทธิ์ยกเลิกการจองเตียง/ห้อง</span></DIV>";
