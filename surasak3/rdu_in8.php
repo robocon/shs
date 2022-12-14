@@ -45,34 +45,21 @@ FROM `rdu_drugrx`
 WHERE `date` LIKE '$whereMonthTH%' 
 # `year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
-
 '1DIC250',
-'1ERYT',
 '1RUL150-C',
-'1ZITH*',
 '5ERY',
 '5ZITH*$',
-'5ZMAX',
-'1ZITH-C',
 '1CIPR-C*?',
+'1CLIN300',
 '1DIC500',
-'1AMOX250',
-'1AMOX500',
 '1AMOX500-D',
 '1AMOX625',
 '5AMOX',
-'5AMOX250',
-'1AUGM1',
-'5AUG35',
-'1AUGM1-C',
 '5AUG35-C',
 '1AUGM1-N',
-'1AMOX500-N',
-'1DALA300-N',
 '1DOXY',
 '1COTR4',
 '1METR' 
-
 ) 
 GROUP BY `date_hn`"; 
 $db->exec($sql); 
