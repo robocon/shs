@@ -142,7 +142,7 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		$rs_sum61 = $_POST['normal661'];
 	}
 	
-
+	
 	$dental_exam = $dxdr_ofyear['dental_exam'];
 	$color_blind = $dxdr_ofyear['color_blind'];
 	$audiogram = $dxdr_ofyear['audiogram'];
