@@ -953,6 +953,19 @@ C ํ</span></td>
 		<? 
 	}
 
+	if(!empty($result['hba1c']))
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>HBA1C(ระดับน้ำตาลสะสม) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['hba1c']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['hba1c_range']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_hba1c']?></strong></td>
+		</tr>
+		<? 
+	}
+
 	if($result['malari'])
 	{
 		?>
