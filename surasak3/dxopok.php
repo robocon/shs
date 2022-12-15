@@ -114,7 +114,8 @@ $clinic = $_POST['clinic'];
 		$result = mysql_query($query) or die("Query failed,update druglst");
 		
 
-		$regisdate_en = $svdate_en = date('Y-m-d');
+		$svdate_en = date('Y-m-d');
+		$regisdate_en = (substr($_POST['cTdate'],0,4)-543).substr($_POST['cTdate'],4,6);
 
 //print_r($_POST);
 if($_POST['prin']==""){

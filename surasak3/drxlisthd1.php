@@ -96,6 +96,7 @@ function searchSuggest() {
 			date LIKE '$today%' 
 			AND dr_cancle is null 
 			and doctor LIKE '$HD1%' 
+			AND item >= 0 
 			Order by hn DESC  ";
 			//echo $query."<br>";
 
@@ -173,8 +174,9 @@ function searchSuggest() {
 			date LIKE '$today%' 
 			AND dr_cancle is null 
 			and doctor LIKE '$HD1%' 
+			and item >= 0
 			Order by hn DESC  ";
-			
+			//echo $query;
 			$result = mysql_query($query) or die("Query failed");
 			$num=mysql_num_rows($result);
 			$i = 1;
