@@ -451,13 +451,10 @@ C ํ</span></td>
   </span></td>
 </tr>
 <tr>
-  <td colspan="6" valign="top" class="text3"><strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?>
-    <? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?></td>
-</tr>
-<tr>
-  <td colspan="6" valign="top" class="text3"><strong class="text3">ค่า BMI : </strong>
-    <?=$result['stat_bmi']?>
-    <? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?></td>
+	<td colspan="6" valign="top" class="text3">
+		<strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?><? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?>
+		&nbsp; <strong class="text3">ค่า BMI : </strong><?=$result['stat_bmi']?><? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?>
+	</td>
 </tr>
   </table></td></tr></table></td>
   </tr>
@@ -1143,7 +1140,7 @@ C ํ</span></td>
 	  $summary="";
 	  if($result['sum1']!=""){ 
 	  
-	  echo $summary=$result['sum1'];
+	  	echo $summary=$result['sum1'];
 	  
 	  }else{
 		  for($p=2;$p<6;$p++){
@@ -1163,7 +1160,8 @@ C ํ</span></td>
 		  echo $summary;
 	  }
 	  
-	 ?></u>      </td>
+	 ?></u>
+	 </td>
     </tr>
 </table>
 
