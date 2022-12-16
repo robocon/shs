@@ -588,6 +588,7 @@ if( $num > 0 ){
 										
 							if($objResult["labcode"]=="RBCU"){
 
+								/*
 								$rbculen=strlen($objResult["result"]);
 								if($rbculen >=5){
 									$rbcu1=substr($objResult["result"],0,2);
@@ -612,6 +613,12 @@ if( $num > 0 ){
 										$showresultua="ผิดปกติ";
 									}
 								}	
+								*/
+								
+								$showresultua="ปกติ";
+								if ($objResult['flag']!='N') {
+									$showresultua="ผิดปกติ";
+								}
 								
 							}else{
 								
