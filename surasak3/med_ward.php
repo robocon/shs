@@ -265,7 +265,7 @@ if ($_SESSION['sLevel'] == "admin") {
 }
 ?>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?> | <a href="med_ward_howto.php" target="_blank">การใช้งานผ่านมือถือ/Tablet</a></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){ 
