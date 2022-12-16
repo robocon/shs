@@ -15,33 +15,18 @@ $sql = "CREATE TEMPORARY TABLE `tmp_rdu_in13`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
-    '1CELE200*', 
-    '1INDO', 
-    '1LOXO', 
-    '1NID', 
-    '1VOL-C', 
-    '1VOLSR', 
-    '1PONS', 
-    '1ARCO', 
-    '1BREX', 
-    '1MOBI', 
-    '1ARCO30', 
-    '1CELE_400', 
-    '1MOBI-C', 
-    '1ACEO', 
-    '1NID-C', 
-    '1ARCO_60', 
-    '1LOXO-N', 
-    '1NAPR', 
-    '1MOB7.5', 
-    '1VOL-N', 
-    '1VOL-NN', 
-    '1INDO-N', 
-    '1NAPR-N', 
-    '1ARCO120',
-    '1ARCO120-C'
+    '1CELE200*',
+    '1ARCO',
+    '1MOBI-C',
+    '1ACEO',
+    '1ARCO_60',
+    '1LOXO-N',
+    '1NAPRO',
+    '1VOL-N',
+    '1INDO-N',
+    '1VOLT-C',
+    '1VOL100'
 ) 
 GROUP BY `date_hn`";
 $db->exec($sql);

@@ -11,14 +11,12 @@ FROM (
 	SELECT * 
     FROM `rdu_opday` 
     WHERE `date` LIKE '$whereMonthTH%' 
-    # `year` = '$year' AND `quarter` = '$quarter' 
     AND ( `icd10` regexp 'E11' OR `icd10` regexp 'N18[4|5]' ) GROUP BY `hn`
 ) AS a 
 LEFT JOIN ( 
 	SELECT * 
     FROM `rdu_lab` 
     WHERE ( `orderdate` <= '$whereMonth-01' AND `orderdate` >= '$last6Month' ) 
-    # `year` = '$year' 
     AND `egfr` > 30 GROUP BY `hn`
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`autonumber` IS NOT NULL ";
@@ -33,16 +31,13 @@ LEFT JOIN (
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `rdu_drugrx` 
     WHERE `date` LIKE '$whereMonthTH%' 
-    #`year` = '$year' 
     AND `drugcode` IN ( 
         '1MET500-C', 
         '1METF', 
-        '1MET850-C', 
-        '1GLUXR', 
         '1GLUX1000', 
-        '1MET750', 
         '1METF500-N', 
-        '1VILMET'
+        '1VILMET',
+        '1XIGDU'
     ) 
     GROUP BY `hn` 
 ) AS b  ON b.`hn` = a.`hn` 
@@ -58,7 +53,6 @@ LEFT JOIN (
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `rdu_drugrx` 
     WHERE `date` LIKE '$whereMonthTH%' 
-    #`year` = '$year' 
     AND `drugcode` IN ( 
 
 '1ACTOS*',
@@ -72,14 +66,12 @@ LEFT JOIN (
 '2HUMUN',
 '2HUMUR',
 '2HUMUR1',
-'1MET850-C',
 '1JANU',
 '1UTMO',
 '2LANTP',
 '2GENN',
 '2GENR',
 '2GENM30',
-'1GLUXR',
 '2HN70_30',
 '1GALV',
 '1MINID-C',
@@ -100,7 +92,6 @@ LEFT JOIN (
 '2WIN_N',
 '2WIN_R',
 '1MINID-N',
-'1MET750',
 '2WIN_N_1iu',
 '2WIN_R_1iu',
 '1METF500-N',
@@ -113,9 +104,9 @@ LEFT JOIN (
 '2INSU_R',
 '2INSU_N',
 '1VILMET',
-'2DULA'
-
-    ) 
+'2DULA',
+'1XIGDU'
+) 
     GROUP BY `hn` 
 ) AS b ON b.`hn`=a.`hn`
 WHERE b.`row_id` IS NOT NULL ";

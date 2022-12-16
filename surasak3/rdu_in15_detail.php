@@ -43,14 +43,9 @@ SELECT `id`,`row_id`,`date`,`hn`,`drugcode`,`amount`
 FROM `drugrx` 
 WHERE ( `date` >= '$minDate' AND `date` <= '$maxDate' )
 AND `drugcode` IN ( 
-    '7PULR', 
-    '7PULT', 
     '7SERE50', 
     '7SYMB', 
-    '7BESO', 
     '7BUDE', 
-    '7BUDE-N', 
-    '7BUDE-NN', 
     '7SER_EVO' 
 ) 
 GROUP BY `hn`";

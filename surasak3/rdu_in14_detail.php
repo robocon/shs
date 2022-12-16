@@ -8,14 +8,11 @@ $db->exec("SET NAMES UTF8");
 $date = input_get('date');
 $table = input_get('table');
 
-
-
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in14`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in14` 
 SELECT *  
 FROM `opday` 
 WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND ( `icd10` = 'N183' 
     OR `icd10` = 'N184' 
     OR `icd10` = 'N185' 
@@ -28,39 +25,24 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in14`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,COUNT(`hn`) AS `rows` ,`date_hn` 
 FROM `drugrx` 
 WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
     '1CELE200*', 
-    '1INDO', 
-    '1LOXO', 
-    '1NID', 
-    '1VOL-C', 
-    '1VOLSR', 
     '2CLOF', 
     '2DYNA', 
-    '1PONS', 
     '1ARCO', 
     '4PLAI', 
     '4VOLT-C', 
-    '1BREX', 
-    '1MOBI', 
-    '1ARCO30', 
-    '1CELE_400', 
     '2KETO', 
     '1MOBI-C', 
     '1ACEO', 
-    '1NID-C', 
     '1ARCO_60', 
     '1LOXO-N', 
-    '1NAPR', 
-    '1MOB7.5', 
+    '1NAPRO', 
     '1VOL-N', 
-    '1VOL-NN', 
     '1INDO-N', 
-    '2DICL', 
-    '1NAPR-N', 
-    '1ARCO120',
-    '1ARCO120-C'
+    '2DICL',
+    '1VOLT-C',
+    '1VOL100'
 ) 
 GROUP BY `hn`";
 $db->exec($sql);

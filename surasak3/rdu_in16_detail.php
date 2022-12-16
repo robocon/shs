@@ -26,10 +26,7 @@ LEFT JOIN (
         '1RIV2',
         '1T5-C',
         '1RIV0.5-N',
-        '1RIV0.5-C',
-        '1D5', 
-        '1LIBR-N', 
-        '1LIBR-C' 
+        '1D5'
     )
     GROUP BY `date_hn` 
 ) AS b ON b.`date_hn` = a.`date_hn` 

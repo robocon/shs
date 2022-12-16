@@ -24,28 +24,16 @@ SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`, CONCAT(SUBSTRING(`date`,1,10),`
 FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
 AND `drugcode` IN ( 
-'1RENI20-C',
 '1RENI5-C',
 '1ENAL5',
-'1TRIT5',
 '1COVE5',
-'1TRIT5-C',
 '1ENAL20',
-'1BLOP16*',
-'1OLME40',
 '1TANZ',
 '1LOSAR100',
-'1APRO',
-'1CODI160',
-'1MICA40',
-'1COZA',
-'1APRO-C',
-'1TANZ100',
 '1EDAR',
-'1APRO-N',
-'1TANZ50',
 '1CODI160-C',
-'1ENT100' 
+'1ENT100', 
+'1EXFO-C'
 ) GROUP BY `row_id` ORDER BY `hn` ; "; 
 // dump($sql);
 $db->exec($sql); 

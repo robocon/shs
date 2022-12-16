@@ -43,24 +43,15 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18`
 SELECT * 
 FROM `drugrx` 
 WHERE `date` LIKE '$date%'
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 '1AERI*',
 '1CLAR-C',
-'5ZYR',
-'1XYZA',
-'1CLAR',
-'1ZYRT-C',
-'1TELF180',
 '5AERI',
-'1TELF-C',
-'1ZYRT-N',
 '1RUPA',
 '5ZYR-N',
 '1XYZA-N',
 '1CETI',
-'1BILA',
-'5AERI-C' 
+'1BILA'
 );";
 $db->exec($sql);
 
