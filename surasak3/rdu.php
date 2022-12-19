@@ -7,7 +7,7 @@ include 'bootstrap.php';
 define('RDU_TEST', '1');
 
 $db = Mysql::load();
-$db->exec("SET NAMES UTF8");
+// $db->exec("SET NAMES UTF8");
 
 $quarter = input_post('quarter');
 if( $quarter == 1 ){
@@ -140,6 +140,9 @@ if ( $action == 'load' ) {
     // EN
     $whereMonth = $yearSelected.'-'.$monthSelected;
 
+    $date_start = $whereMonth.'-01';
+    $date_end = $whereMonth.'-'.date("t", strtotime($date_start));
+
     // TH
     $whereMonthTH = ($yearSelectedTH + 543).'-'.$monthSelected;
 
@@ -241,7 +244,7 @@ if ( $action == 'load' ) {
             <?php 
             include 'rdu_in6.php';
             // $url_in6 = "year=$year&quarter=$quarter";
-            $url_in6 = "date=$whereMonthTH";
+            $url_in6 = "date=$whereMonth";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
@@ -351,7 +354,7 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
             <?php
             include 'rdu_in13.php';
-            $link_13 = "rdu_in13_detail.php?date=$whereMonthTH";
+            $link_13 = "rdu_in13_detail.php?date=$whereMonth";
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
@@ -385,7 +388,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in15.php';
 
-            $link_15 = "rdu_in15_detail.php?date=$whereMonthTH&minDate=$last1YearTH&maxDate=$whereMonthTH-$lastOfMonth";
+            $link_15 = "rdu_in15_detail.php?date=$whereMonth&minDate=$last1YearTH&maxDate=$whereMonthTH-$lastOfMonth";
             ?>
             <td>&ge; ร้อยละ 80</td>
             <td align="right">
@@ -402,7 +405,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in16.php';
 
-            $link_16 = "rdu_in16_detail.php?date=$whereMonthTH";
+            $link_16 = "rdu_in16_detail.php?date=$whereMonth";
             ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
@@ -430,7 +433,7 @@ if ( $action == 'load' ) {
             <?php
             include 'rdu_in18.php';
 
-            $link_18 = "rdu_in18_detail.php?date=$whereMonthTH";
+            $link_18 = "rdu_in18_detail.php?date=$whereMonth";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">

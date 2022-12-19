@@ -10,10 +10,9 @@ $db->exec("SET NAMES UTF8");
 $date = input_get('date');
 
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
-SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname`
+SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname`,`age` 
 FROM `rdu_diag` 
-WHERE `svdate` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date_en` LIKE '$date%' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -34,8 +33,7 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6_a` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`,`date_hn` 
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date_en` LIKE '$date%' 
 AND `drugcode` IN ( 
     '1AMOX500-D',
     '1AMOX625',

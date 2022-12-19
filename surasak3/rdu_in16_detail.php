@@ -6,10 +6,13 @@ $db->exec("SET NAMES UTF8");
 $table = input_get('table');
 $date = input_get('date');
 
+$date_start = $date.'-01';
+$date_end = $date.'-'.date("t", strtotime($date_start));
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in16` 
 SELECT *  
-FROM `opday` 
-WHERE `date` LIKE '$date%' 
+FROM `rdu_opday` 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND TRIM(SUBSTRING(`age`,1,2)) > 65 
 GROUP BY `date_hn` ";
 $db->exec($sql);
@@ -19,8 +22,8 @@ SELECT a.*,b.`drugcode`,`amount`,'1' AS `test_hn`
 FROM `tmp_opday_in16` AS a 
 LEFT JOIN ( 
     SELECT `row_id`,`drugcode`,`part`,`amount`,`date_hn` 
-    FROM `drugrx` 
-    WHERE `date` LIKE '$date%' 
+    FROM `rdu_drugrx` 
+    WHERE `( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND `drugcode` IN (
         '1D2',
         '1RIV2',

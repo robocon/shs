@@ -7,13 +7,17 @@ if ( $year <= '2562' ) {
     }
 }
 
+$maxDate15 = $date_end;
+$minDate15 = strtotime($date_start, "-1 year");
+
+
 // B จำนวนผู้ป่วยนอกโรคหืดทั้งหมด นับตามhn
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15` 
 SELECT b.*  
 FROM ( 
 	SELECT *  
 	FROM `rdu_opday` 
-	WHERE `date` LIKE '$whereMonthTH%' 
+	WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 	$where_toborow
 	GROUP BY `hn` 
 ) AS a 
@@ -21,7 +25,7 @@ LEFT JOIN
 ( 
 	SELECT * 
     FROM `rdu_diag` 
-    WHERE `svdate` LIKE '$whereMonthTH%' 
+    WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
@@ -32,7 +36,7 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`  
 FROM `rdu_drugrx` 
-WHERE ( `date` >= '$last1YearTH' AND `date` <= '$whereMonthTH-$lastOfMonth' ) 
+WHERE ( `date_en` >= '$minDate15' AND `date_en` <= '$maxDate15' ) 
 AND `drugcode` IN ( 
     '7SERE50', 
     '7SYMB', 

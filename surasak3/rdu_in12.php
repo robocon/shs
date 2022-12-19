@@ -30,7 +30,7 @@ FROM tmp_in12 AS a
 LEFT JOIN ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `rdu_drugrx` 
-    WHERE `date` LIKE '$whereMonthTH%' 
+    WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND `drugcode` IN ( 
         '1MET500-C', 
         '1METF', 
@@ -52,7 +52,7 @@ FROM `tmp_in12` AS a
 LEFT JOIN ( 
     SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
     FROM `rdu_drugrx` 
-    WHERE `date` LIKE '$whereMonthTH%' 
+    WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND `drugcode` IN ( 
 
 '1ACTOS*',

@@ -1,5 +1,8 @@
 <?php 
+require_once 'bootstrap.php';
 error_reporting(E_ALL);
+set_time_limit(0);
+
 /**
  * READ ME PLEASE อ่านตรงนี้หน่อย
  * 
@@ -14,21 +17,6 @@ error_reporting(E_ALL);
  * พอได้ 4ไฟล์ที่เป็น .sql ค่อย import เข้าไปที่เซิฟ 192.168.1.13 -> rdu
  */
 
-// just for testing
-set_time_limit(0);
-
-function dump($txt){
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
-
-define('HOST', '192.168.131.240');
-define('PORT', '3306');
-define('DB', 'sm3db-utf8');
-define('USER', 'sm3db_user');
-define('PASS', 'sm3dbPassword');
-
 $dbi = new mysqli(HOST,USER,PASS,DB);
 if($dbi->connect_errno){
     echo $dbi->connect_errno;
@@ -36,14 +24,14 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-10-01';
-$date_end = '2565-10-31';
+$date_start = '2565-11-01';
+$date_end = '2565-11-30';
 
 $quarter = 1;
 $year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($filePath)){
+if(!file_exists($dirPath)){
     mkdir($dirPath);
 }
 
@@ -68,7 +56,7 @@ if($q == false){
     exit;
 }
 
-$sql_header = "INSERT INTO `rdu_opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`toborow`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`toborow`,`date_hn`,`date_generate`,`quarter`,`year`,`date_en`) VALUES ";
 $sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
@@ -82,6 +70,7 @@ while ( $item = $q->fetch_assoc() ) {
     $doctor = $item['doctor'];
     $toborow = $item['toborow'];
     $date_hn = $item['date_hn'];
+    $date_en = (substr($item['thidate'],0,4)-543).substr($item['thidate'],4,6);
 
     $match = preg_match('/(นาง|หญิง|น.ส|ด.ญ|ms|mis)/', $ptname, $matchs);
     $gender = 'm';
@@ -89,7 +78,7 @@ while ( $item = $q->fetch_assoc() ) {
         $gender = 'f';
     }
 
-    $sql_insert = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$toborow','$date_hn',NOW(),'$quarter','$year');\n";
+    $sql_insert = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$toborow','$date_hn',NOW(),'$quarter','$year','$date_en');\n";
     // $insert = $dbi->query($sql_insert);
     // dump($sql_insert);
     // dump($insert);

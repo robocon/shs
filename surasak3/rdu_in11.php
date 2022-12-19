@@ -12,7 +12,7 @@ if ( !defined('RDU_TEST') ) {
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
 SELECT `row_id`,`date`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
 FROM `rdu_opday` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `icd10` regexp 'E11' 
 GROUP BY `hn` ;";
 $db->exec($sql); 
@@ -21,7 +21,7 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
 SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `drugcode` LIKE '1EUGL-C%' 
 GROUP BY `hn` ;";
 $test = $db->exec($sql); 

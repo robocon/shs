@@ -1,18 +1,7 @@
 <?php 
-// just for testing
+require_once 'bootstrap.php';
+error_reporting(E_ALL);
 set_time_limit(0);
-
-function dump($txt){
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
-
-define('HOST', '192.168.131.240');
-define('PORT', '3306');
-define('DB', 'sm3db-utf8');
-define('USER', 'sm3db_user');
-define('PASS', 'sm3dbPassword');
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 if($dbi->connect_errno){
@@ -21,14 +10,14 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-10-01';
-$date_end = '2565-10-31';
+$date_start = '2565-11-01';
+$date_end = '2565-11-30';
 
 $quarter = 1;
 $year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($filePath)){
+if(!file_exists($dirPath)){
     mkdir($dirPath);
 }
 
@@ -46,7 +35,7 @@ AND `reject` != 'Y'
 AND `amount` > 0 ";
 $q = $dbi->query($sql);
 
-$sql_header = "INSERT INTO `rdu_drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`,`date_en`) VALUES ";
 $sql_data = array();
 
 while ( $item = $q->fetch_assoc() ) {
@@ -58,7 +47,9 @@ while ( $item = $q->fetch_assoc() ) {
     $amount = $item['amount'];
     $date_hn = $item['date_hn'];
 
-    $rdu_drugrx = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year');\n";
+    $date_en = (substr($item['date'],0,4)-543).substr($item['date'],4,6);
+
+    $rdu_drugrx = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year','$date_en');\n";
     file_put_contents($filePath, $rdu_drugrx, FILE_APPEND);
 }
 // $sql_value = implode(',', $sql_data);

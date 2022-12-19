@@ -3,7 +3,7 @@
 $sql18a = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
 FROM `rdu_opday` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `age` <> '' 
 AND (
 	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 18 )
@@ -32,7 +32,7 @@ $db->exec($sql18a);
 $sql18b = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `drugcode` IN ( 
 '1AERI*',
 '1CLAR-C',

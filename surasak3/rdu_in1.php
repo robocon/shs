@@ -18,13 +18,10 @@ DPN = อุปกรณ์เบิกไม่ได้
 $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$whereMonthTH%' 
-#`year` = '$year' AND `quarter` = '$quarter' ";
+WHERE `date_en` >= '$date_start' AND `date_en` <= '$date_end' ";
 $db->exec($sql);
 
-
 $in1a = $items_a = $in1b = $items_b = $in1_result = 0;
-
 // xxx > '' is handle both between IS NOT EMPTY and = '' 
 // Question id 2327029 in StackOverflow
 $sql = "SELECT COUNT(`row_id`) AS `rows` 
@@ -34,11 +31,9 @@ $db->select($sql);
 $items_a = $db->get_item();
 $in1a = $items_a['rows'];
 
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_in1`";
+$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_in1` WHERE `part` LIKE 'DD%'";
 $db->select($sql);
 $items_b = $db->get_item();
 $in1b = $items_b['rows'];
 
 $in1_result = ( $in1a / $in1b ) * 100 ;
-
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_in1`");

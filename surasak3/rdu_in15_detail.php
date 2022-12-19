@@ -7,8 +7,13 @@ $db->exec("SET NAMES UTF8");
 // $quarter = input_get('quarter');
 $table = input_get('table');
 $date = input_get('date');
-$minDate = input_get('minDate');
-$maxDate = input_get('maxDate');
+// $minDate = input_get('minDate');
+// $maxDate = input_get('maxDate');
+
+$date_start = $date.'-01';
+
+$maxDate = $date_end = $date.'-'.date("t", strtotime($date_start));
+$minDate = strtotime($date_start, "-1 year");
 
 $where_toborow = "AND `toborow` != 'EX02'";
 // if ( $year <= '2562' ) {
@@ -21,16 +26,16 @@ $sql = "CREATE TEMPORARY TABLE `tmp_opday_in15`
 SELECT b.*, a.`doctor` AS `doctor2`, a.`ptname` AS `ptname2` ,a.`age` AS `age2`
 FROM ( 
 	SELECT *  
-	FROM `opday` 
-	WHERE `date` LIKE '$date%' 
+	FROM `rdu_opday` 
+	WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 	$where_toborow 
 	GROUP BY `hn` 
 ) AS a 
 LEFT JOIN 
 ( 
 	SELECT * 
-    FROM `diag` 
-    WHERE `svdate` LIKE '$date%' 
+    FROM `rdu_diag` 
+    WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND icd10 LIKE 'J45%' GROUP BY `hn` 
 ) AS b ON b.`hn` = a.`hn` 
 WHERE b.`id` IS NOT NULL 
@@ -40,8 +45,8 @@ $test = $db->exec($sql);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in15` 
 SELECT `id`,`row_id`,`date`,`hn`,`drugcode`,`amount`
-FROM `drugrx` 
-WHERE ( `date` >= '$minDate' AND `date` <= '$maxDate' )
+FROM `rdu_drugrx` 
+WHERE ( `date_en` >= '$minDate' AND `date_en` <= '$maxDate' )
 AND `drugcode` IN ( 
     '7SERE50', 
     '7SYMB', 

@@ -1,5 +1,6 @@
 <?php 
-
+require_once 'bootstrap.php';
+error_reporting(E_ALL);
 set_time_limit(0);
 
 /**
@@ -15,17 +16,6 @@ set_time_limit(0);
  * ให้รันใน localhost ได้เลย
  * พอได้ 4ไฟล์ที่เป็น .sql ค่อย import เข้าไปที่เซิฟ 192.168.1.13 -> rdu
  */
-function dump($txt){
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
-
-define('HOST', '192.168.131.240');
-define('PORT', '3306');
-define('DB', 'sm3db-utf8');
-define('USER', 'sm3db_user');
-define('PASS', 'sm3dbPassword');
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 if($dbi->connect_errno){
@@ -34,17 +24,17 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-10-01';
-$date_end = '2565-10-31';
+$date_start = '2565-11-01';
+$date_end = '2565-11-30';
 
-$date_start_en = '2022-10-01';
-$date_end_en = '2022-10-31';
+$date_start_en = '2022-11-01';
+$date_end_en = '2022-11-30';
 
 $quarter = 1;
 $year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($filePath)){
+if(!file_exists($dirPath)){
     mkdir($dirPath);
 }
 
@@ -73,7 +63,7 @@ GROUP BY `date_opday`, `icd10` ";
 $q_diag = $dbi->query($sql_diag);
 
 
-$sql_header = "INSERT INTO `rdu_diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`, `date_en`) VALUES ";
 $sql_data_list = array();
 
 while ( $item = $q_diag->fetch_assoc() ) {
@@ -111,7 +101,9 @@ while ( $item = $q_diag->fetch_assoc() ) {
 
         $doctor = $item['office'];
 
-        $sql_value = "( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year');\n";
+        $date_en = (substr($item['svdate'],0,4)-543).substr($item['svdate'],4,6);
+
+        $sql_value = "( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year', '$date_en');\n";
         
         file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 

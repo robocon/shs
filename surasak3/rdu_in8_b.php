@@ -16,7 +16,6 @@ FROM (
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
     FROM `rdu_trauma` 
     WHERE `date` LIKE '$date%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
     )
@@ -26,7 +25,6 @@ LEFT JOIN (
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor`,`ptname` 
     FROM `rdu_diag` 
     WHERE `svdate` LIKE '$date%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
         OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 

@@ -9,11 +9,13 @@ $db->exec("SET NAMES UTF8");
 $table = input_get('table');
 $date = input_get('date');
 
+$date_start = $date.'-01';
+$date_end = $date.'-'.date("t", strtotime($date_start));
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in18` 
 SELECT * 
-FROM `opday` 
-WHERE `date` LIKE '$date%'
-#`year` = '$year' AND `quarter` = '$quarter'  
+FROM `rdu_opday` 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `age` <> '' 
 AND (
 	( TRIM(SUBSTRING(`age`,1,2)) >= 0 AND TRIM(SUBSTRING(`age`,1,2)) < 18 )
@@ -41,8 +43,8 @@ $db->exec($sql);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in18` 
 SELECT * 
-FROM `drugrx` 
-WHERE `date` LIKE '$date%'
+FROM `rdu_drugrx` 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `drugcode` IN ( 
 '1AERI*',
 '1CLAR-C',

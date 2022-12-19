@@ -1,18 +1,7 @@
 <?php 
-// just for testing
+require_once 'bootstrap.php';
+error_reporting(E_ALL);
 set_time_limit(0);
-
-function dump($txt){
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
-
-define('HOST', '192.168.131.240');
-define('PORT', '3306');
-define('DB', 'sm3db-utf8');
-define('USER', 'sm3db_user');
-define('PASS', 'sm3dbPassword');
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 if($dbi->connect_errno){
@@ -21,14 +10,14 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2022-10-01';
-$date_end = '2022-10-31';
+$date_start = '2022-11-01';
+$date_end = '2022-11-30';
 
 $quarter = 1;
 $year = '2566';
 
 $dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($filePath)){
+if(!file_exists($dirPath)){
     mkdir($dirPath);
 }
 
@@ -59,11 +48,11 @@ AND c.`result` != '*'
 ORDER BY b.`autonumber` ASC ";
 $q = $dbi->query($sql);
 
-$sql_header = "INSERT INTO `rdu_lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`) VALUES ";
+$sql_header = "INSERT INTO `rdu_lab` ( `id`,`autonumber`,`orderdate`,`hn`,`gender`,`age`,`egfr`,`date_hn`,`quarter`,`year`,`date_en`) VALUES ";
 // $sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
-    // dump($item);
+    
     $autonumber = $item['autonumber'];
     $orderdate = $item['orderdate'];
     $hn = $item['hn'];
@@ -71,9 +60,10 @@ while ( $item = $q->fetch_assoc() ) {
     $age = $item['age'];
     $egfr = $item['egfr'];
     $date_hn = $item['date_hn'];
+    $date_en = substr($item['orderdate'],0,10);
 
     if( $egfr != '' && $egfr > 0 ){
-        $sql_insert = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year');\n";
+        $sql_insert = $sql_header."( NULL,'$autonumber','$orderdate','$hn','$gender','$age','$egfr','$date_hn','$quarter','$year','$date_en');\n";
         file_put_contents($filePath, $sql_insert, FILE_APPEND);
     }
 
