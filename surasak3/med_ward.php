@@ -1,6 +1,11 @@
 <?php 
-
 include 'bootstrap.php';
+
+if(empty($_SESSION['sOfficer'])){
+    header("Location: login_page.php");
+    exit;
+}
+
 $db = Mysql::load();
 
 mysql_query("SET CHARACTER SET utf8 ");
@@ -260,7 +265,7 @@ if ($_SESSION['sLevel'] == "admin") {
 }
 ?>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?> | <a href="med_ward_howto.php" target="_blank">การใช้งานผ่านมือถือ/Tablet</a></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){ 
@@ -300,10 +305,14 @@ if( isset($_SESSION['x-msg']) ){
 
 $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
 ?>
+<div style="position:absolute; top:0; right:0; line-height:16px; text-align:center;">
+    <img src="printQrCode.php?hn=http://192.168.131.250/sm3/surasak3/med_ward.php&size=3&level=2&margin=1">
+    <div>Scan Order<br>Tablet/Mobile</div>
+</div>
 <div>
 <h3>อัพโหลดไฟล์ Doctor Order</h3>
 </div>
-<fieldset>
+<fieldset style="width:80%;">
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
     <form action="med_ward.php" method="post">
         <div>
@@ -315,7 +324,7 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
         </div>
     </form>
 </fieldset>
-<fieldset>
+<fieldset style="width:80%;">
     <legend>ค้นหาเอกสารด้วย AN</legend>
     <form action="med_ward.php" method="post">
         <div>
