@@ -16,7 +16,6 @@ FROM (
     SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
     FROM `rdu_trauma` 
     WHERE `date` LIKE '$date%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
     )
@@ -26,7 +25,6 @@ LEFT JOIN (
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor`,`ptname` 
     FROM `rdu_diag` 
     WHERE `svdate` LIKE '$date%' 
-    #`year` = '$year' AND `quarter` = '$quarter' 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
         OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
@@ -46,31 +44,19 @@ $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`,`amount` 
 FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
 AND `drugcode` IN ( 
 '1DIC250',
-'1ERYT',
 '1RUL150-C',
-'1ZITH*',
 '5ERY',
 '5ZITH*$',
-'5ZMAX',
-'1ZITH-C',
 '1CIPR-C*?',
+'1CLIN300',
 '1DIC500',
-'1AMOX250',
-'1AMOX500',
 '1AMOX500-D',
 '1AMOX625',
 '5AMOX',
-'5AMOX250',
-'1AUGM1',
-'5AUG35',
-'1AUGM1-C',
 '5AUG35-C',
 '1AUGM1-N',
-'1AMOX500-N',
-'1DALA300-N',
 '1DOXY',
 '1COTR4',
 '1METR' 

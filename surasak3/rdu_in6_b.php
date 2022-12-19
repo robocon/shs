@@ -11,10 +11,9 @@ $date = input_get('date');
 
 
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6_a` 
-SELECT `diag_id` AS `row_id` ,`svdate` AS `date`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname` 
+SELECT `diag_id` AS `row_id` ,`svdate` AS `date`,`hn`,`icd10`,`diag`,`doctor`,`date_hn`,`ptname`,`age` 
 FROM `rdu_diag` 
-WHERE `svdate` LIKE '$date%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
+WHERE `date_en` LIKE '$date%' 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 

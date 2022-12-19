@@ -8,7 +8,7 @@ if ( !defined('RDU_TEST') ) {
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
 SELECT `row_id`,`date`,`hn`,`icd10`, `date_hn`
 FROM `rdu_opday` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `icd10` regexp 'I10' ";
 $db->exec($sql);
 
@@ -16,32 +16,18 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT `row_id`,`date`,`hn`,`drugcode`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$whereMonthTH%' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `drugcode` IN ( 
-    
-'1RENI20-C',
 '1RENI5-C',
 '1ENAL5',
-'1TRIT5',
 '1COVE5',
-'1TRIT5-C',
 '1ENAL20',
-'1BLOP16*',
-'1OLME40',
 '1TANZ',
 '1LOSAR100',
-'1APRO',
-'1CODI160',
-'1MICA40',
-'1COZA',
-'1APRO-C',
-'1TANZ100',
 '1EDAR',
-'1APRO-N',
-'1TANZ50',
 '1CODI160-C',
-'1ENT100' 
-
+'1ENT100', 
+'1EXFO-C'
 ) GROUP BY `row_id` ORDER BY `hn`; "; 
 $db->exec($sql); 
 

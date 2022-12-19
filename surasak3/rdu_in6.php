@@ -11,8 +11,7 @@ if ( !defined('RDU_TEST') ) {
 $sql = "CREATE TEMPORARY TABLE `tmp_diag_in6` 
 SELECT `diag_id` AS `row_id` ,`svdate`,`hn`,`icd10`,`date_hn` 
 FROM `rdu_diag` 
-WHERE `svdate` LIKE '$whereMonthTH%'
-#`year` = '$year' AND `quarter` = '$quarter' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND ( 
     `icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
     OR `icd10` IN ( 'J020', 'J029' ) 
@@ -32,44 +31,27 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in6` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn` 
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$whereMonthTH%' 
-#`year` = '$year' AND `quarter` = '$quarter' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' )
 AND `drugcode` IN ( 
-    '1AMOX250',
-    '1AMOX500',
     '1AMOX500-D',
-    '1AMOX500-N',
     '1AMOX625',
-    '1AUGM1',
-    '1AUGM1-C',
     '1AUGM1-N',
     '1CEFS',
-    '1CEFT200',
     '1CRAV-NN',
-    '1DALA300-N',
-    '1DISMR',
     '1DOXY',
-    '1ERYT',
     '1FARM',
-    '1KLA500-C*',
     '1KLA500-N',
-    '1MEIA',
-    '1OMNI*$',
     '1RUL150-C',
-    '1ZITH*',
-    '1ZITH-C',
+    '1AZI',
     '5AMOX',
-    '5AMOX250',
-    '5AUG35',
+    '5AMO250',
     '5AUG35-C',
     '5CEFA',
     '5CEFS',
     '5CEFU',
-    '5DIST',
     '5ERY',
-    '5MEIA',
-    '5ZITH*$',
-    '5ZMAX' 
+    '1MEIA200',
+    '5ZITH*$'
  ) 
 GROUP BY `date_hn`"; 
 $db->exec($sql);

@@ -9,8 +9,7 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
 SELECT `row_id`,`date`,`hn`,`icd10`,`date_hn` 
 FROM `rdu_opday` 
-WHERE `date` LIKE '$whereMonthTH%' 
-# `year` = '$year' AND `quarter` = '$quarter' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
     OR `icd10` IN ( 'A020' ) 
@@ -27,26 +26,14 @@ $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in7`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`date_hn`
 FROM `rdu_drugrx` 
-WHERE `date` LIKE '$whereMonthTH%'
-# `year` = '$year' AND `quarter` = '$quarter' 
+WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
 AND `drugcode` IN ( 
     '1CIPR-C*?',
-    '1CRAV*',
-    '1TARI-C',
-    '1LEX400-C',
     '1CRAV-NN',
-    '1TAR300',
-    '1CRAV-C',
-    '1CRAV-N',
-    '1TARI-N',
     '1LEX400-N',
     '1GRAC',
-    '1ERYT',
     '5ERY',
     '5ZITH*$',
-    '5ZMAX',
-    '1ZITH-C',
-    '1ZITH*',
     '1DOXY',
     '1COTR4' 
 ); "; 
