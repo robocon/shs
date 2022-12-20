@@ -296,9 +296,9 @@ $sql = "INSERT INTO `opd` (
 		$sql1 = "Select row_id from patient_vaccine_covid19 where hn = '".$_REQUEST["hn"]."' ";
 		$query1 = mysql_query($sql1);
 		$num1 = mysql_num_rows($query1);
-		if($num1 < 1){		
+		$officer_date=date("Y-m-d H:i:s");
+		if($num1 < 1){ 
 			$registerdate=date("Y-m-d");
-			$officer_date=date("Y-m-d H:i:s");
 			$sql = "Select idcard From opcard where hn = '".$_REQUEST["hn"]."' limit 1";
 			$arr = mysql_fetch_assoc(mysql_query($sql));
 			
@@ -1055,6 +1055,14 @@ mmHg </td>
 					</div>
 				</td>
 			</tr>
+			<!-- <tr>
+				<td align="right"  class="data_show">ภาวะตั้งครรภ์ : </td>
+				<td colspan="5">
+					<label for="mens1"><input type="radio" name="preg" id="preg" value="pregnancy" class="" > ตั้งครรภ์</label>&nbsp;&nbsp;
+					<label for="mens2"><input type="radio" name="preg" id="preg2" value="lactation" class="" > ให้นมบุตร</label>&nbsp;&nbsp;
+					<a href="javascript:void(0);">[ล้างค่าตัวเลือก]</a>
+				</td>
+			</tr> -->
 			<?php
 		}
 
@@ -1308,6 +1316,42 @@ mmHg </td>
 				<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine2" value="0" <? if($covid19_vaccine=="0"){ echo "checked='checked'";}?>> ยังไม่ได้รับการฉีด
 				</span>
 				<strong style="margin-left:20px; color: <?=$vaccinecolor;?>;"><?=$txtvaccine;?></strong>
+				<div>
+					<button type="button" onclick="moph_check_vaccine('<?=$cIdcard;?>')">ตรวจสอบการได้รับวัคซีน</button>
+				</div>
+				<script>
+
+					function moph_check_vaccine(idcard){
+
+					}
+
+					// ส่ง ajax เป็น get http://192.168.129.143/moph/?page=ImmunizationHistory&cid=1509900231582S
+					function request(idcard, success, error) {
+						var request = new XMLHttpRequest();
+						request.open('GET', 'http://192.168.129.143/moph/?page=ImmunizationHistory&cid='+idcard, true);
+
+						request.onload = function () {
+							if (this.status >= 200 && this.status < 400) {
+							// Success! If you expect this to be JSON, use JSON.parse!
+							success(this.responseText, this.status);
+							} else {
+							// We reached our target server, but it returned an error
+							error();
+							}
+						};
+
+						request.onerror = function () {
+							error();
+						};
+
+						request.send();
+					}
+
+					function success(res, status){
+						console.log(res);
+						console.log(status);
+					}
+				</script>
 			<div style="display:none; margin-bottom: 8px;" class="vaccine_amount">
 				<table id="member" class="fontthai">
 					<tr>
