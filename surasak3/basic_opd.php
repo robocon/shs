@@ -118,7 +118,7 @@ return $pAge;
 }
 
 include("connect.inc");   
-// mysql_query("SET NAMES UTF-8");
+mysql_query("SET NAMES UTF-8");
 
 $thidate = date("d-m-").(date("Y")+543);
 $thidatehn = $thidate.$_REQUEST["hn"];
@@ -1297,7 +1297,6 @@ mmHg </td>
 		<tr>
 			<?
 				$sql1 = "Select covid19_vaccine,amount1,vaccine_name1,amount2,vaccine_name2,amount3,vaccine_name3,amount4,vaccine_name4,amount5,vaccine_name5,amount6,vaccine_name6,officer,officer_date From patient_vaccine_covid19 where hn = '".$cHn."'";
-				//echo $sql1;
 				$query1=mysql_query($sql1);
 				$numvaccine=mysql_num_rows($query1);
 				list($covid19_vaccine,$amount1,$vaccine_name1,$amount2,$vaccine_name2,$amount3,$vaccine_name3,$amount4,$vaccine_name4,$amount5,$vaccine_name5,$amount6,$vaccine_name6,$officer,$officer_date) = mysql_fetch_array($query1);
@@ -1317,39 +1316,52 @@ mmHg </td>
 				</span>
 				<strong style="margin-left:20px; color: <?=$vaccinecolor;?>;"><?=$txtvaccine;?></strong>
 				<div>
-					<button type="button" onclick="moph_check_vaccine('<?=$cIdcard;?>')">ตรวจสอบการได้รับวัคซีน</button>
+					<button type="button" onclick="moph_check_vaccine('<?=$cIdcard;?>')">ตรวจสอบการได้รับวัคซีนจาก MOPH IC</button>
+					<div id="resVacc"></div>
 				</div>
-				<script>
+				<script type="text/javascript">
 
-					function moph_check_vaccine(idcard){
-
+					function moph_check_vaccine(idcard){ 
+						document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบ...';
+						setTimeout(callRequestMoph(idcard), 1500);
 					}
 
-					// ส่ง ajax เป็น get http://192.168.129.143/moph/?page=ImmunizationHistory&cid=1509900231582S
+					function callRequestMoph(idcard){
+						request(idcard);
+					}
+
 					function request(idcard, success, error) {
 						var request = new XMLHttpRequest();
 						request.open('GET', 'http://192.168.129.143/moph/?page=ImmunizationHistory&cid='+idcard, true);
 
 						request.onload = function () {
 							if (this.status >= 200 && this.status < 400) {
-							// Success! If you expect this to be JSON, use JSON.parse!
-							success(this.responseText, this.status);
+
+								var d = JSON.parse(this.responseText);
+								if(d.MessageCode===200){
+									var vacc = d.result.vaccine_certificate[0].vaccination_list;
+									var vaccTxt = '';
+									for (var index = 0; index < vacc.length; index++) {
+										var el = vacc[index];
+										vaccTxt += '<b>เข็มที่</b>:'+el.vaccine_dose_no+' <b>วันที่</b>:'+el.vaccine_date+' <b>ที่</b>:'+el.vaccine_place+' <b>วัคซีน</b>:'+el.vaccine_manufacturer_name+"<br>";
+									}
+									document.getElementById("resVacc").innerHTML = vaccTxt;
+								}else{
+									document.getElementById("resVacc").innerHTML = d.Message+' (กดตรวจสอบข้อมูลอีกครั้ง)';
+								}
+								
+
 							} else {
 							// We reached our target server, but it returned an error
-							error();
+							// error();
 							}
 						};
 
 						request.onerror = function () {
-							error();
+							// error();
 						};
 
 						request.send();
-					}
-
-					function success(res, status){
-						console.log(res);
-						console.log(status);
 					}
 				</script>
 			<div style="display:none; margin-bottom: 8px;" class="vaccine_amount">
