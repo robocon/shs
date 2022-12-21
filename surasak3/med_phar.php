@@ -103,23 +103,45 @@ if ($action === 'active') {
         <?php 
         if(isset($_SESSION['line_msg'])){ 
         ?>
-            async function sendLineNotify(){ 
+
+            function sendLineNotifyV2(){
+
                 var line_message = '<?=$_SESSION['line_msg'];?>';
                 var line_type = '<?=$_SESSION['line_type'];?>';
-                var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
-                const response =await fetch(targetTxt, {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/x-www-form-urlencoded' 
-                    },
-                    body: JSON.stringify({
-                        'message': line_message, 
-                        'depart': line_type
-                    })
-                });
-                var body = await response.text();
+                var test_str = [];
+                test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
+                test_str.push(encodeURIComponent('depart')+"="+encodeURIComponent(line_type));
+                var data = test_str.join("&");
+
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function(){
+                    if( request.readyState == 4 && request.status == 200 ){
+                        // console.log(request.responseText);
+                    }
+                };
+                request.open('POST', 'http://192.168.129.143/send_notify.php', false);
+                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+                request.send(data); 
+
             }
-            sendLineNotify();
+
+            // async function sendLineNotify(){ 
+            //     var line_message = '<?=$_SESSION['line_msg'];?>';
+            //     var line_type = '<?=$_SESSION['line_type'];?>';
+            //     var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
+            //     const response =await fetch(targetTxt, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-type': 'application/x-www-form-urlencoded' 
+            //         },
+            //         body: JSON.stringify({
+            //             'message': line_message, 
+            //             'depart': line_type
+            //         })
+            //     });
+            //     var body = await response.text();
+            // }
+            sendLineNotifyV2();
 
             <?php
             unset($_SESSION['line_msg']);
