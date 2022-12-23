@@ -40,8 +40,8 @@ function Epoch(name,mode,targetelement,multiselect) {
 	* Check Date.dateFormat() for the Date object's language settings
 	*/
 	function setLang() {
-		self.daylist = new Array('Õ.','®.','Õ.','æ.','æƒ.','».',' .','Õ.','®.','Õ.','æ.','æƒ.','».',' .');
-		self.months_sh = new Array('¡§.','°æ.','¡’§.','‡¡¬.','æ§.','¡‘¬.','°§.',' §.','°¬.','µ§.','æ¬.','∏§.');
+		self.daylist = new Array('‡∏≠.','‡∏à.','‡∏≠.','‡∏û.','‡∏û‡∏§.','‡∏®.','‡∏™.','‡∏≠.','‡∏à.','‡∏≠.','‡∏û.','‡∏û‡∏§.','‡∏®.','‡∏™.');
+		self.months_sh = new Array('‡∏°‡∏Ñ.','‡∏Å‡∏û.','‡∏°‡∏µ‡∏Ñ.','‡πÄ‡∏°‡∏¢.','‡∏û‡∏Ñ.','‡∏°‡∏¥‡∏¢.','‡∏Å‡∏Ñ.','‡∏™‡∏Ñ.','‡∏Å‡∏¢.','‡∏ï‡∏Ñ.','‡∏û‡∏¢.','‡∏ò‡∏Ñ.');
 		self.monthup_title = 'Go to the next month';
 		self.monthdn_title = 'Go to the previous month';
 		self.clearbtn_caption = 'Clear';

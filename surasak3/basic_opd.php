@@ -920,23 +920,26 @@ function clear_textbox(){
 function togglediv(divid){ 
 	if(document.getElementById(divid).style.display == 'none'){ 
 		document.getElementById(divid).style.display = 'block'; 
-	}else{ 
-		//document.getElementById(divid).style.display = 'none'; 
-	} 
+	}
 } 
 function togglediv1(divid){ 
+
+	// เคลียร์ค่าที่สูบ
+	document.getElementById('smoke_ncd1').checked = false;
+	document.getElementById('smoke_ncd2').checked = false;
+	document.getElementById('smoke_ncd3').checked = false;
+	document.getElementById('smoke_amount').value = '';
+	document.getElementById('permiss1').checked = false;
+	document.getElementById('permiss2').checked = false;
+
 	if(document.getElementById(divid).style.display == 'block'){ 
 		document.getElementById(divid).style.display = 'none'; 
-	}else{
-		//sss
 	}
 }
 
 function togglediv2(divid){ 
 	if(document.getElementById(divid).style.display == 'block'){ 
 		document.getElementById(divid).style.display = 'none'; 
-	}else{
-		//sss
 	}
 }
 
@@ -1124,22 +1127,47 @@ mmHg </td>
 		  <tr>
            <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
-			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1">สูบ&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')">ไม่สูบ&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="cigarette" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')">เคยสูบ&nbsp;&nbsp;&nbsp;
+			<label for="cig1">
+				<input type="radio" name="cigarette" id="cig1" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1"> สูบ&nbsp;&nbsp;&nbsp;
+			</label>
+			<label for="cig0">
+				<input type="radio" name="cigarette" id="cig0" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')"> ไม่เคยสูบ ตลอดชีวิตไม่สูบเลย&nbsp;&nbsp;&nbsp;
+			</label>
+			<label for="cig2">
+				<input type="radio" name="cigarette" id="cig2" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')"> เคยสูบแต่เลิกแล้ว&nbsp;&nbsp;&nbsp;
+			</label>
 			<div id="kbk" style="display: none; margin-bottom: 8px;"> 
 				<table id="member" class="fontthai">
 					<tr>
 						<td>
-							<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
-							<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก
+							<label for="smoke_ncd1">
+								<input type="radio" name="smoke_ncd" id="smoke_ncd1" value="สูบนานๆครั้ง"> สูบนานๆครั้ง
+							</label>
+							<label for="smoke_ncd2">
+								<input type="radio" name="smoke_ncd" id="smoke_ncd2" value="สูบเป็นครั้งคราว"> สูบเป็นครั้งคราว
+							</label>
+							<label for="smoke_ncd3">
+								<input type="radio" name="smoke_ncd" id="smoke_ncd3" value="สูบเป็นประจำ"> สูบเป็นประจำ
+							</label>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<label for="smoke_amount">จำนวนที่สูบ<input type="text" name="smoke_amount" id="smoke_amount" size="3">มวน/วัน</label>
+							<label for="smoke_amount">จำนวนที่สูบ <input type="text" name="smoke_amount" id="smoke_amount" size="3"> มวน/วัน</label>
 						</td>
 					</tr>
+					<tr>
+						<td>
+							<b>เลิกบุหรี่ : </b>
+							<label for="permiss1">
+								<input type="radio" name="member2" value="1" id="permiss1" <?php echo $cigok1;?>/> อยากเลิก
+							</label>
+							<label for="permiss2">
+								<input type="radio" name="member2" value="0" id="permiss2" <?php echo $cigok0;?>/> ไม่อยากเลิก
+							</label>
+						</td>
+					</tr>
+					
 				</table>
 			</div> 
 			<script>
