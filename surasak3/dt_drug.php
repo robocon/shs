@@ -159,30 +159,7 @@ function dump($txt){
 
 if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 
-	$nsaids13_list = Array("1CELE200*",
-	"1INDO",
-	"1LOXO",
-	"1NID",
-	"1VOL-C",
-	"1VOLSR",
-	"1PONS",
-	"1ARCO",
-	"1BREX",
-	"1MOBI",
-	"1ARCO30",
-	"1CELE_400",
-	"1MOBI-C",
-	"1ACEO",
-	"1NID-C",
-	"1ARCO_60",
-	"1LOXO-N",
-	"1NAPR",
-	"1MOB7.5",
-	"1VOL-N",
-	"1VOL-NN",
-	"1INDO-N",
-	"1NAPR-N",
-	"1ARCO120");
+	$nsaids13_list = Array('1CELE200*','1ARCO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','1VOLT-C','1VOL100');
 	
 	foreach ($_SESSION["list_drugcode"] as $key_i => $dCode) {
 
@@ -1433,7 +1410,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		$ptrightCode = substr($_SESSION["ptright_now"],0,3);
 
 		$i=1;
-		while($arr = Mysql_fetch_assoc($result)){
+		while($arr = Mysql_fetch_assoc($result)){ 
+
+			$tradname = $arr['tradname'];
+			$genname = $arr['genname'];
 
 			$extra_obj = '';
 
@@ -1450,10 +1430,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
 					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
-					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
+					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">กรณีผู้ป่วยยินยอมชำระเงินเอง ระบุรหัสผ่าน 999</FONT>";
 				}else{
-					$test_drugcode = trim($arr['drugcode']);
+
 					
 					// ถ้าเป็น30บาทแต่อยากใช้ 0VERO จะแจ้งเตือน
 					if ($test_drugcode == '0VERO' && $ptright_code30 === true) {
@@ -1472,7 +1452,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 							$extra_obj = '<br><span style="padding: 0 4px; background-color: yellow; color: red; font-size: 16px;">ผู้ป่วย สปสช แนะนำให้ใช้ VERO RABIES</span>';
 						}
 
-						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock'); \">";
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \">";
 						$alert="";
 					}
 				}
@@ -2081,9 +2061,11 @@ if(!Array.prototype.indexOf){
 	}
 }
 
-var nsaids13_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "1PONS", "1ARCO", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "1NAPR-N", "1ARCO120" ];
-var nsaids14_list = ["1CELE200*", "1INDO", "1LOXO", "1NID", "1VOL-C", "1VOLSR", "2CLOF", "2DYNA", "1PONS", "1ARCO", "4PLAI", "4VOLT-C", "1BREX", "1MOBI", "1ARCO30", "1CELE_400", "2KETO", "1MOBI-C", "1ACEO", "1NID-C", "1ARCO_60", "1LOXO-N", "1NAPR", "1MOB7.5", "1VOL-N", "1VOL-NN", "1INDO-N", "2DICL", "1NAPR-N", "1ARCO120"];
-var rdu18_drug_list = ["1AERI*","1CLAR-C","5ZYR","1XYZA","1ZYRT-C","1TELF180","5AERI","1TELF-C","1ZYRT-N","1RUPA","5ZYR-N","1XYZA-N","1CETI","1BILA","5AERI-C"];
+
+
+var nsaids13_list = ['1CELE200*','1ARCO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','1VOLT-C','1VOL100'];
+var nsaids14_list = ['1CELE200*','2CLOF','2DYNA','1ARCO','4PLAI','4VOLT-C','2KETO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','2DICL','1VOLT-C','1VOL100'];
+var rdu18_drug_list = ['1AERI*','1CLAR-C','5AERI','1RUPA','5ZYR-N','1XYZA-N','1CETI','1BILA'];
 var rdu18_icd10_list = ["J00","J010","J011","J012","J013","J014","J018","J019","J020","J029","J030","J038","J039","J040","J041","J042","J050","J051","J060","J068","J069","J101","J111","J200","J201","J202","J203","J204","J205","J206","J207","J208","J209","J210","J218","J219","H650","H651","H659","H660","H664","H669","H670","H671","H678","H720","H721","H722","H728","H729"]
 
 var drug_cc='';
@@ -2484,7 +2466,37 @@ function addobtreason(nameojt,path,dc,sl){
 }
 
 
-function add_drug(drugcode,ptrightCode,drugLock){
+function pregAlert(tradname,genname){
+	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
+	document.getElementById("pregContent").innerHTML = "PREGNANCY WARNING<br>ยา "+genname+"("+tradname+") <br>มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>";
+	document.getElementById("pregContainer").style.display = "";
+}
+
+function pregBlock(tradname,genname){
+	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
+	document.getElementById("pregContent").innerHTML = "ยา "+genname+"("+tradname+") <br>มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>";
+	document.getElementById('list').innerHTML='';
+	document.getElementById("pregContainer").style.display = "";
+}
+
+function lacAlert(tradname,genname){
+	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
+	document.getElementById("pregContent").innerHTML = "LACTATION WARNING<br>ยา "+genname+"("+tradname+") <br>มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>";
+	document.getElementById("pregContainer").style.display = "";
+}
+
+function lacBlock(tradname,genname){
+	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
+	document.getElementById("pregContent").innerHTML = "ยา "+genname+"("+tradname+") <br>มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>";
+	document.getElementById('list').innerHTML='';
+	document.getElementById("pregContainer").style.display = "";
+}
+
+function closePreg(){
+	document.getElementById("pregContainer").style.display = "none";
+}
+
+function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
@@ -2492,6 +2504,43 @@ function add_drug(drugcode,ptrightCode,drugLock){
 			alert('ยาควบคุมราคา กรุณาให้จักษุแพทย์สั่งยา');
 		}
 	}
+
+	var preg = '<?=trim($_SESSION['pregnancy']);?>';
+	var preg_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
+	var preg_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
+
+	var lac_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
+	var lac_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
+
+	if(preg == 'pregnancy'){
+		for (var index = 0; index < preg_alert.length; index++) {
+			if(preg_alert[index]==drugcode){
+				pregAlert(tradname,genname);
+			}
+		}
+
+		for (var index = 0; index < preg_block.length; index++) {
+			if(preg_block[index]==drugcode){
+				pregBlock(tradname,genname);
+				return false;
+			}
+		}
+		
+	}else if(preg == 'lactation'){
+		for (var index = 0; index < lac_alert.length; index++) {
+			if(lac_alert[index]==drugcode){
+				lacAlert(tradname,genname);
+			}
+		}
+
+		for (var index = 0; index < lac_block.length; index++) {
+			if(lac_block[index]==drugcode){
+				lacBlock(tradname,genname);
+				return false;
+			}
+		}
+	}
+
 
 	var returnstr;
 
@@ -3795,6 +3844,34 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	&nbsp;</TD>
 </TR>
 </TABLE>
+<style>
+	#pregContainer{
+		position:absolute;
+		top:200px;
+		left:220px;
+		background:#ffffff;
+		border:1px solid #000000;
+	}
+	#pregCloseBtn:hover{
+		cursor: pointer;
+	}
+	#pregHeader{
+		text-align: center;
+		font-weight: bold;
+		background-color: #dfdfdf;
+	}
+	#pregContent{
+		padding: 4px;
+	}
+</style>
+<div style="display:none;" id="pregContainer">
+	<div style="width:600px; position:relative;">
+		<div style="position:absolute;top:0;right:0;" id="pregCloseBtn"><img src="images\icon-close.png" alt="ปิดหน้าต่าง" width="26" height="26" onclick="closePreg()"></div>
+		<div style="" id="pregHeader">ทดสอบหัวข้อ</div>
+		<div style="" id="pregContent">ทดสอบรายละเอียด</div>
+	</div>
+</div>
+
 <SCRIPT LANGUAGE="JavaScript">
 
 window.onload = function(){

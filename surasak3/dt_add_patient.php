@@ -161,6 +161,8 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		$_SESSION["alert500"]=0;
 		$_SESSION["list_drugreact"] = "";
 
+		$_SESSION["pregnancy"] = "";
+
 		if(isset($_POST["doctor"])){
 			$_SESSION["dt_doctor"] = $_POST["doctor"];
 			$_SESSION["dt_dental"] = true;
@@ -194,9 +196,9 @@ $todayvn = $thiday.$_REQUEST["vn_now"];
 		$thidatehn = $thidate.$_SESSION["hn_now"];
 		$endatehn = $endate.$hn_now;
 		
-		$sql = "Select temperature, pause, rate, weight, bp1, bp2, congenital_disease, organ, officer, drugreact, time_format(thidate,'%H:%i'), height, type,bp3,bp4 From opd where thdatehn = '".$thidatehn."' limit 1";
+		$sql = "Select temperature, pause, rate, weight, bp1, bp2, congenital_disease, organ, officer, drugreact, time_format(thidate,'%H:%i'), height, type,bp3,bp4,pregnancy From opd where thdatehn = '".$thidatehn."' limit 1";
 		$result = Mysql_Query($sql) or die("Error opd");
-		list($_SESSION["temperature"], $_SESSION["pause"], $_SESSION["rate"], $_SESSION["weight"], $bp1, $bp2, $_SESSION["congenital_disease"],$_SESSION["organ"],$_SESSION["staff"],$_SESSION["drugreact"],$_SESSION["time_opd"],$_SESSION["height"], $_SESSION["type"],$bp3,$bp4) = Mysql_fetch_row($result);
+		list($_SESSION["temperature"], $_SESSION["pause"], $_SESSION["rate"], $_SESSION["weight"], $bp1, $bp2, $_SESSION["congenital_disease"],$_SESSION["organ"],$_SESSION["staff"],$_SESSION["drugreact"],$_SESSION["time_opd"],$_SESSION["height"], $_SESSION["type"],$bp3,$bp4, $_SESSION["pregnancy"]) = Mysql_fetch_row($result);
 
 		$sql = "Update opd set dc_diag = '".date("H:i:s")."'  Where thdatehn = '".$thidatehn."' limit 1 ";
 		$result = Mysql_Query($sql);
