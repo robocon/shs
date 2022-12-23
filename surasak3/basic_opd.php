@@ -1,6 +1,7 @@
 <?php 
-
 session_start();
+include("connect.inc");
+mysql_query("SET NAMES UTF-8");
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -117,9 +118,6 @@ function calcage($birth){
 return $pAge;
 }
 
-include("connect.inc");   
-mysql_query("SET NAMES UTF-8");
-
 $thidate = date("d-m-").(date("Y")+543);
 $thidatehn = $thidate.$_REQUEST["hn"];
 $thidatevn = $thidate.$_POST["vn"];
@@ -160,93 +158,100 @@ if($_POST["cigarette"]=="1"){
 	$grade = ( empty($_POST['grade']) ) ? NULL : $_POST['grade'] ;
 	$mind = ( empty($_POST['mind']) ) ? NULL : $_POST['mind'] ;
 	$the_pill = ( empty($_POST['the_pill']) ) ? 0 : (int)$_POST['the_pill'] ;
+
+	$preg = sprintf('%s', $_POST['preg']);
 	
-	$sql = "Select count(row_id) From opd where thdatehn = '".$thidatehn."' limit 1";
-	$result = Mysql_Query($sql);
-	list($rows) = Mysql_fetch_row($result);
-	
-if($rows > 0){
+	$sql = "Select row_id From opd where thdatehn = '".$thidatehn."' limit 1";
+	$res_row_opd = Mysql_Query($sql);
 
-$sql = "Update `opd` set  `thidate` = '".$thidate_now."', 
-`temperature`  = '".$_POST["temperature"]."', 
-`pause`  = '".$_POST["pause"]."', 
-`rate`  = '".$_POST["rate"]."', 
-`weight`  = '".$_POST["weight"]."', 
-`bp1`  = '".$_POST["bp1"]."', 
-`bp2`  = '".$_POST["bp2"]."', 
-`drugreact`  = '".$_POST["drugreact"]."', 
-`congenital_disease`  = '".$_POST["congenital_disease"]."', 
-`type`  = '".$_POST["type"]."', 
-`organ`  = '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', 
-`doctor` = '".$doctorname."',  
-`officer` = '".$_SESSION["sOfficer"]."' ,  
-`dc_diag` = Null, `vn`= '".$_POST["vn"]."', 
-`toborow` = '".$_POST["toborow"]."', 
-`height` = '".$_POST["height"]."' , 
-`clinic`  = '".$_POST["clinic"]."' , 
-`cigarette`= '".$_POST["cigarette"]."', 
-`alcohol`= '".$_POST["alcohol"]."', 
-`cigok`= '".$_POST["member2"]."', 
-`waist`= '".$_POST["waist"]."',
-`chkup`= '".$_POST["typediag"]."',
-`room`= '".$_POST["room"]."' ,
-`painscore`= '".$_POST["painscore"]."',
-`age`='".$cAge."',
-`bp3`='$bp3',
-`bp4`='$bp4', 
-`mens` = '$mens', 
-`mens_date` = '$mens_date', 
-`vaccine` = '$vaccine', 
-`parent_smoke` = '$parent_smoke', 
-`parent_smoke_amount` = '$parent_smoke_amount', 
-`parent_drink` = '$parent_drink', 
-`parent_drink_amount` = '$parent_drink_amount', 
-`smoke_amount` = '$smoke_amount', 
-`drink_amount` = '$drink_amount', 
-`ht_amount` = '$ht_amount', 
-`dm_amount` = '$dm_amount', 
-`hpi` = '$hpi',
-`grade` = '$grade', 
-`mind` = '$mind', 
-`the_pill` = $the_pill,
-`cvriskscore`= '".$_POST["cvriskscore"]."',
-`cvriskscore_lab`= '".$_POST["cvriskscore_lab"]."' 
+	if(mysql_num_rows($res_row_opd) > 0){
 
-where  `thdatehn` = '".$thidatehn."' limit 1 ";
+		$itemOpd = mysql_fetch_assoc($res_row_opd);
+		$opd_id = $itemOpd['row_id'];
 
-}else{
-		
-$sql = "INSERT INTO `opd` (
-	`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
-	`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
-	`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , 
-	`toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,
-	`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
-	`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
-	`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,
-	`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab`
-)VALUES (
-	NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
-	'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
-	'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
-	'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
-	'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
-	'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
-	'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
-	'$hpi', '$grade','$mind','$the_pill', '".$_POST["cvriskscore"]."' , '".$_POST["cvriskscore_lab"]."' 
-);";
+		$sql = "UPDATE `opd` SET `thidate` = '".$thidate_now."', 
+		`temperature`  = '".$_POST["temperature"]."', 
+		`pause`  = '".$_POST["pause"]."', 
+		`rate`  = '".$_POST["rate"]."', 
+		`weight`  = '".$_POST["weight"]."', 
+		`bp1`  = '".$_POST["bp1"]."', 
+		`bp2`  = '".$_POST["bp2"]."', 
+		`drugreact`  = '".$_POST["drugreact"]."', 
+		`congenital_disease`  = '".$_POST["congenital_disease"]."', 
+		`type`  = '".$_POST["type"]."', 
+		`organ`  = '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', 
+		`doctor` = '".$doctorname."',  
+		`officer` = '".$_SESSION["sOfficer"]."' ,  
+		`dc_diag` = NULL, 
+		`vn`= '".$_POST["vn"]."', 
+		`toborow` = '".$_POST["toborow"]."', 
+		`height` = '".$_POST["height"]."' , 
+		`clinic`  = '".$_POST["clinic"]."' , 
+		`cigarette`= '".$_POST["cigarette"]."', 
+		`alcohol`= '".$_POST["alcohol"]."', 
+		`cigok`= '".$_POST["member2"]."', 
+		`waist`= '".$_POST["waist"]."',
+		`chkup`= '".$_POST["typediag"]."',
+		`room`= '".$_POST["room"]."' ,
+		`painscore`= '".$_POST["painscore"]."',
+		`age`='".$cAge."',
+		`bp3`='$bp3',
+		`bp4`='$bp4', 
+		`mens` = '$mens', 
+		`mens_date` = '$mens_date', 
+		`vaccine` = '$vaccine', 
+		`parent_smoke` = '$parent_smoke', 
+		`parent_smoke_amount` = '$parent_smoke_amount', 
+		`parent_drink` = '$parent_drink', 
+		`parent_drink_amount` = '$parent_drink_amount', 
+		`smoke_amount` = '$smoke_amount', 
+		`drink_amount` = '$drink_amount', 
+		`ht_amount` = '$ht_amount', 
+		`dm_amount` = '$dm_amount', 
+		`hpi` = '$hpi',
+		`grade` = '$grade', 
+		`mind` = '$mind', 
+		`the_pill` = $the_pill,
+		`cvriskscore`= '".$_POST["cvriskscore"]."',
+		`cvriskscore_lab`= '".$_POST["cvriskscore_lab"]."', 
+		`pregnancy` = '$preg' 
 
-}
+		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 
-	$result = Mysql_Query($sql) or die(Mysql_Error());
-	
+	}else{
+			
+		$sql = "INSERT INTO `opd` (
+			`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
+			`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
+			`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , 
+			`toborow`, `height`, `clinic`, `cigarette`, `alcohol`,`cigok`,
+			`waist`,`chkup`,`room`,`painscore`,`age`,`bp3`,
+			`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
+			`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`, 
+			`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab`, 
+			`pregnancy`
+		)VALUES (
+			NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
+			'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
+			'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
+			'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
+			'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
+			'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
+			'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
+			'$hpi', '$grade','$mind','$the_pill', '".$_POST["cvriskscore"]."' , '".$_POST["cvriskscore_lab"]."', 
+			'$preg'
+		);";
+
+	}
+	$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
+
 	$field="";
 	if($_POST["appoint"] > 0){
 		$field = ", toborow = 'EX04 ผู้ป่วยนัด' ";
 	}
 
 	$sql ="UPDATE opday SET clinic = '".$_POST["clinic"]."' ".$field.", typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."',opdtype='".$_POST["opdtype"]."'  WHERE  thdatehn='".$thidatehn."' AND vn = '".$_POST["vn"]."' ";   // แก้ไขข้อมูลตาราง opday ตามวันที่ และ vn
-	$result = Mysql_Query($sql) or die(Mysql_Error());
+	$result = Mysql_Query($sql) or die("UPDATE OPDAY ".Mysql_Error());
 	
 	if($_POST["screen_dm"]=="y"){
 		$sql1 = "Select row_id from screen_dm where hn = '".$_REQUEST["hn"]."' ";
@@ -259,12 +264,12 @@ $sql = "INSERT INTO `opd` (
 			$arr = mysql_fetch_assoc(mysql_query($sql));
 			
 			$add="insert into screen_dm set date_active='$registerdate',
-											hn='".$_REQUEST["hn"]."',
-											ptname='".$_POST["ptname"]."',
-											age='".$arr["age"]."',
-											officer = '".$_SESSION["sOfficer"]."',
-											datetime='$officer_date'";
-			$result = Mysql_Query($add) or die(Mysql_Error());
+			hn='".$_REQUEST["hn"]."',
+			ptname='".$_POST["ptname"]."',
+			age='".$arr["age"]."',
+			officer = '".$_SESSION["sOfficer"]."',
+			datetime='$officer_date'";
+			$result = Mysql_Query($add) or die("UPDATE screen_dm ".Mysql_Error());
 		}
 	}
 
@@ -277,7 +282,7 @@ $sql = "INSERT INTO `opd` (
 			$registerdate=date("Y-m-d");
 			$officer_date=date("Y-m-d H:i:s");
 			$sql = "Select age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
-			$arr = mysql_fetch_assoc(mysql_query($sql));
+			$arr = mysql_fetch_assoc("select opday in screen_ht ".mysql_query($sql));
 			
 			
 			
@@ -287,7 +292,7 @@ $sql = "INSERT INTO `opd` (
 											age='".$arr["age"]."',
 											officer = '".$_SESSION["sOfficer"]."',
 											datetime='$officer_date'";
-			$result = Mysql_Query($add) or die(Mysql_Error());
+			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
 		}
 	}
 
@@ -320,7 +325,7 @@ $sql = "INSERT INTO `opd` (
 											vaccine_name6='".$_POST["vaccine_name6"]."',											
 											officer = '".$_SESSION["sOfficer"]."',
 											officer_date='$officer_date'";
-			$result = Mysql_Query($add) or die(Mysql_Error());
+			$result = Mysql_Query($add) or die('insert patient_vaccine_covid19 '.Mysql_Error());
 		}else{
 			$edit="UPDATE patient_vaccine_covid19 set amount1='".$_POST["amount1"]."',
 											vaccine_name1='".$_POST["vaccine_name1"]."',
@@ -336,7 +341,7 @@ $sql = "INSERT INTO `opd` (
 											vaccine_name6='".$_POST["vaccine_name6"]."',											
 											officer = '".$_SESSION["sOfficer"]."',
 											officer_date='$officer_date' WHERE hn = '".$_REQUEST["hn"]."'";
-			$result = Mysql_Query($edit) or die(Mysql_Error());			
+			$result = Mysql_Query($edit) or die('update patient_vaccine_covid19'.Mysql_Error());			
 		}
 	}
 
@@ -378,17 +383,17 @@ $sql = "INSERT INTO `opd` (
 												  status_day2='n',
 												  officer = '".$_SESSION["sOfficer"]."',
 												  officer_date='$officer_date'";
-			$result = Mysql_Query($add) or die(Mysql_Error());
+			$result = Mysql_Query($add) or die('insert opselfisolation '.Mysql_Error());
 		}
 	}
 	
 	
 	if($_POST["phone"]==""){  //เพิ่มเงื่อนไขเมื่อ 6/4/65 รคส. พี่แอน OPD
 		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
-		$result1 = Mysql_Query($sql1) or die(Mysql_Error());
+		$result1 = Mysql_Query($sql1) or die('update opcard -> phone'.Mysql_Error());
 	}else{
 		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', phone= '".$_POST["phone"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
-		$result1 = Mysql_Query($sql1) or die(Mysql_Error());		
+		$result1 = Mysql_Query($sql1) or die('update opcard -> phone else'.Mysql_Error());		
 	}
 	
 	if($_POST["appoint"] > 0){
@@ -402,7 +407,7 @@ $sql = "INSERT INTO `opd` (
 			$arr = mysql_fetch_assoc(mysql_query($sql));
 
 			$sql = "INSERT INTO opday2(thidate,thdatehn,hn,vn,thdatevn,ptname,age,  ptright,goup,camp,note,idcard,toborow,borow,dxgroup,officer,withdraw)VALUES('".$thidate_now."','".$thidatehn."','".$_REQUEST["hn"]."','".$_POST["vn"]."',  '".$thidatevn."','".$arr["ptname"]."','".$arr["age"]."','".$arr["ptright"]."','".$arr["goup"]."','".$arr["camp"]."','".$arr["note"]."','".$arr["idcard"]."','EX04 ผู้ป่วยนัด','".$arr["borow"]."','".$arr["dxgroup"]."','$sOfficer','');";
-			mysql_query($sql) or die(mysql_error());
+			mysql_query($sql) or die('insert opday2 '.mysql_error());
 
 
 		}
