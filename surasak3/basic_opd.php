@@ -1055,14 +1055,20 @@ mmHg </td>
 					</div>
 				</td>
 			</tr>
-			<!-- <tr>
+			<tr>
 				<td align="right"  class="data_show">ภาวะตั้งครรภ์ : </td>
 				<td colspan="5">
-					<label for="mens1"><input type="radio" name="preg" id="preg" value="pregnancy" class="" > ตั้งครรภ์</label>&nbsp;&nbsp;
-					<label for="mens2"><input type="radio" name="preg" id="preg2" value="lactation" class="" > ให้นมบุตร</label>&nbsp;&nbsp;
-					<a href="javascript:void(0);">[ล้างค่าตัวเลือก]</a>
+					<label for="preg"><input type="radio" name="preg" id="preg" value="pregnancy" class="" > ตั้งครรภ์</label>&nbsp;&nbsp;
+					<label for="preg2"><input type="radio" name="preg" id="preg2" value="lactation" class="" > ให้นมบุตร</label>&nbsp;&nbsp;
+					<a href="javascript:void(0);" onclick="clearPreg()">[ล้างค่าตัวเลือก]</a>
+					<script type="text/javascript">
+						function clearPreg(){
+							document.getElementById("preg").checked = false;
+							document.getElementById("preg2").checked = false;
+						}
+					</script>
 				</td>
-			</tr> -->
+			</tr>
 			<?php
 		}
 
@@ -1327,10 +1333,10 @@ mmHg </td>
 					}
 
 					function callRequestMoph(idcard){
-						request(idcard);
+						callRequest(idcard);
 					}
 
-					function request(idcard, success, error) {
+					function callRequest(idcard) {
 						var request = new XMLHttpRequest();
 						request.open('GET', 'http://192.168.129.143/moph/?page=ImmunizationHistory&cid='+idcard, true);
 
@@ -1352,13 +1358,13 @@ mmHg </td>
 								
 
 							} else {
-							// We reached our target server, but it returned an error
-							// error();
+								// We reached our target server, but it returned an error
+								// error();
 							}
 						};
 
 						request.onerror = function () {
-							// error();
+							document.getElementById("resVacc").innerHTML = 'สัญญาณอินทราเน็ตมีปัญหา กรุณาลองใหม่อีกครั้ง';
 						};
 
 						request.send();
