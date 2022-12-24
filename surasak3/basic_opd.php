@@ -214,7 +214,9 @@ if($_POST["cigarette"]=="1"){
 		`the_pill` = $the_pill,
 		`cvriskscore`= '".$_POST["cvriskscore"]."',
 		`cvriskscore_lab`= '".$_POST["cvriskscore_lab"]."', 
-		`pregnancy` = '$preg' 
+		`pregnancy` = '$preg',
+		`smoke_ncd`='',
+		`drink_ncd`=''
 
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 
