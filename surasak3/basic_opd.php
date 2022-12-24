@@ -1180,12 +1180,47 @@ mmHg </td>
 		<tr>
 			<td align="right" valign="top" class="data_show">สุรา : </td>
 			<td colspan="5">
-				<input type="radio" class="da_alcohol" name="alcohol" value="1" <?php echo $alcohol1;?> >ดื่ม&nbsp;&nbsp;&nbsp;
-				<input type="radio" class="da_alcohol" name="alcohol" value="0" <?php echo $alcohol0;?> >ไม่ดื่ม&nbsp;&nbsp;&nbsp;
-				<input type="radio" class="da_alcohol" name="alcohol" value="2" <?php echo $alcohol2;?> >เคยดื่ม&nbsp;&nbsp;&nbsp;
-				<div style="display:none; margin-bottom: 8px;" class="da_amount">
-					<label for="drink_amount">จำนวนที่ดื่ม<input type="text" name="drink_amount" id="drink_amount" size="3">แก้ว/สัปดาห์</label>
+				<div>
+					<label for="alcohol1">
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol1" value="1" <?php echo $alcohol1;?> onclick="toggle_drink(this.value)">ดื่ม&nbsp;&nbsp;&nbsp;
+					</label>
+					<label for="alcohol2">
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol2" value="0" <?php echo $alcohol0;?> onclick="toggle_drink(this.value)">ไม่ดื่ม / ตลอดชีวิตไม่ดื่มเลย&nbsp;&nbsp;&nbsp;
+					</label>
+					<label for="alcohol3">
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol3" value="2" <?php echo $alcohol2;?> onclick="toggle_drink(this.value)">เคยดื่มแต่หยุดแล้ว 1 ปีขึ้นไป&nbsp;&nbsp;&nbsp;
+					</label>
 				</div>
+				<div style="display: none;" id="drink_extra1">
+					<label for="drink_ncd1">
+						<input type="radio" name="drink_ncd" id="drink_ncd1" value="ดื่มนานๆครั้ง"> ดื่มนานๆครั้ง
+					</label>
+					<label for="drink_ncd2">
+						<input type="radio" name="drink_ncd" id="drink_ncd2" value="ดื่มเป็นครั้งคราว"> ดื่มเป็นครั้งคราว
+					</label>
+					<label for="drink_ncd3">
+						<input type="radio" name="drink_ncd" id="drink_ncd3" value="ดื่มเป็นประจำ"> ดื่มเป็นประจำ
+					</label>
+				</div>
+				<div style="display:none; margin-bottom: 8px;" id="drink_extra2">
+					<label for="drink_amount">จำนวนที่ดื่ม <input type="text" name="drink_amount" id="drink_amount" size="3"> แก้ว/สัปดาห์</label>
+				</div>
+				<script>
+					function toggle_drink(v){
+						if(v==1){
+							document.getElementById("drink_extra1").style.display = '';
+							document.getElementById("drink_extra2").style.display = '';
+						}else{
+							document.getElementById("drink_extra1").style.display = 'none';
+							document.getElementById("drink_extra2").style.display = 'none';
+							document.getElementById("drink_ncd1").checked = false;
+							document.getElementById("drink_ncd2").checked = false;
+							document.getElementById("drink_ncd3").checked = false;
+							document.getElementById("drink_amount").value = '';
+							
+						}
+					}
+				</script>
 			</td>
 		</tr>
          <tr>
@@ -1719,15 +1754,6 @@ $(function() {
 			$('.pd_contain').show();
 		}else{
 			$('.pd_contain').hide();
-		}
-	});
-
-	$(document).on('click', '.da_alcohol', function(){
-		var test_lmp = $(this).val();
-		if( test_lmp == 1 ){
-			$('.da_amount').show();
-		}else{
-			$('.da_amount').hide();
 		}
 	});
 	
