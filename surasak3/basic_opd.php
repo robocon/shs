@@ -698,8 +698,14 @@ if(empty($_POST["unshow"])){
 			}
 }
 	
-$sql = "Select congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END )   
-,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`
+$sql = "Select congenital_disease, weight, height, 
+(CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), 
+(CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), 
+(CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), 
+(CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), 
+(CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), 
+(CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END ),
+`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
 From opd 
 where hn = '".$_REQUEST["hn"]."' 
 AND type <> 'ญาติ' 
@@ -707,7 +713,7 @@ Order by row_id DESC
 limit 1";
 
 $result = Mysql_Query($sql);
-list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$cvriskscore,$cvriskscore_lab) = Mysql_fetch_row($result);
+list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$cvriskscore,$cvriskscore_lab,$smoke_ncd,$drink_ncd) = Mysql_fetch_row($result);
 	if($congenital_disease == "")
 		$congenital_disease = "ปฎิเสธโรคประจำตัว";
 
@@ -1144,20 +1150,23 @@ mmHg </td>
 				<table id="member" class="fontthai">
 					<tr>
 						<td>
-							<label for="smoke_ncd1">
-								<input type="radio" name="smoke_ncd" id="smoke_ncd1" value="สูบนานๆครั้ง"> สูบนานๆครั้ง
-							</label>
-							<label for="smoke_ncd2">
-								<input type="radio" name="smoke_ncd" id="smoke_ncd2" value="สูบเป็นครั้งคราว"> สูบเป็นครั้งคราว
-							</label>
-							<label for="smoke_ncd3">
-								<input type="radio" name="smoke_ncd" id="smoke_ncd3" value="สูบเป็นประจำ"> สูบเป็นประจำ
-							</label>
+							<?php 
+							$smoke_ncd_list = array(1=>'สูบนานๆครั้ง','สูบเป็นครั้งคราว','สูบเป็นประจำ');
+							for ($iSmoke=1; $iSmoke <= count($smoke_ncd_list); $iSmoke++) { 
+								$smVal = $smoke_ncd_list[$iSmoke];
+								$smChecked = ($smoke_ncd == $smVal) ? 'checked="checked"' : '';
+								?>
+								<label for="smoke_ncd<?=$iSmoke;?>">
+									<input type="radio" name="smoke_ncd" id="smoke_ncd<?=$iSmoke;?>" value="<?=$smVal;?>" <?=$smChecked;?> > <?=$smVal;?>
+								</label>
+								<?php
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<label for="smoke_amount">จำนวนที่สูบ <input type="text" name="smoke_amount" id="smoke_amount" size="3"> มวน/วัน</label>
+							<label for="smoke_amount">จำนวนที่สูบ <input type="text" name="smoke_amount" id="smoke_amount" size="3" value="<?=$smoke_amount;?>"> มวน/วัน</label>
 						</td>
 					</tr>
 					<tr>
@@ -1186,42 +1195,50 @@ mmHg </td>
 			<td colspan="5">
 				<div>
 					<label for="alcohol1">
-						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol1" value="1" <?php echo $alcohol1;?> onclick="toggle_drink(this.value)">ดื่ม&nbsp;&nbsp;&nbsp;
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol1" value="1" <?php echo $alcohol1;?> onclick="toggle_drink(this.value)"> ดื่ม&nbsp;&nbsp;&nbsp;
 					</label>
 					<label for="alcohol2">
-						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol2" value="0" <?php echo $alcohol0;?> onclick="toggle_drink(this.value)">ไม่ดื่ม / ตลอดชีวิตไม่ดื่มเลย&nbsp;&nbsp;&nbsp;
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol2" value="0" <?php echo $alcohol0;?> onclick="toggle_drink(this.value)"> ไม่ดื่ม / ตลอดชีวิตไม่ดื่มเลย&nbsp;&nbsp;&nbsp;
 					</label>
 					<label for="alcohol3">
-						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol3" value="2" <?php echo $alcohol2;?> onclick="toggle_drink(this.value)">เคยดื่มแต่หยุดแล้ว 1 ปีขึ้นไป&nbsp;&nbsp;&nbsp;
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol3" value="2" <?php echo $alcohol2;?> onclick="toggle_drink(this.value)"> เคยดื่มแต่หยุดแล้ว 1 ปีขึ้นไป&nbsp;&nbsp;&nbsp;
 					</label>
 				</div>
-				<div style="display: none;" id="drink_extra1">
-					<label for="drink_ncd1">
-						<input type="radio" name="drink_ncd" id="drink_ncd1" value="ดื่มนานๆครั้ง"> ดื่มนานๆครั้ง
-					</label>
-					<label for="drink_ncd2">
-						<input type="radio" name="drink_ncd" id="drink_ncd2" value="ดื่มเป็นครั้งคราว"> ดื่มเป็นครั้งคราว
-					</label>
-					<label for="drink_ncd3">
-						<input type="radio" name="drink_ncd" id="drink_ncd3" value="ดื่มเป็นประจำ"> ดื่มเป็นประจำ
-					</label>
-				</div>
-				<div style="display:none; margin-bottom: 8px;" id="drink_extra2">
-					<label for="drink_amount">จำนวนที่ดื่ม <input type="text" name="drink_amount" id="drink_amount" size="3"> แก้ว/สัปดาห์</label>
+				<?php 
+				$drink_style = 'display: none; ';
+				if($alcohol1=='Checked'){
+					$drink_style = '';
+				}
+				?>
+				<div style="<?=$drink_style;?> margin-bottom: 8px;" id="drink_extra1">
+					<div>
+						<?php 
+						$drink_ncd_list = array(1=>'ดื่มนานๆครั้ง','ดื่มเป็นครั้งคราว','ดื่มเป็นประจำ');
+						for ($iNcd=1; $iNcd <= count($drink_ncd_list); $iNcd++) { 
+							$val = $drink_ncd_list[$iNcd];
+							$dNcdChecked = ($drink_ncd == $val) ? 'checked="checked"' : '';
+							?>
+							<label for="drink_ncd<?=$iNcd;?>">
+								<input type="radio" name="drink_ncd" id="drink_ncd<?=$iNcd;?>" value="<?=$val;?>" <?=$dNcdChecked;?> > <?=$val;?>
+							</label>
+							<?php
+						}
+						?>
+					</div>
+					<div>
+						<label for="drink_amount">จำนวนที่ดื่ม <input type="text" name="drink_amount" id="drink_amount" size="3" value="<?=$drink_amount;?>"> แก้ว/สัปดาห์</label>
+					</div>
 				</div>
 				<script>
 					function toggle_drink(v){
 						if(v==1){
 							document.getElementById("drink_extra1").style.display = '';
-							document.getElementById("drink_extra2").style.display = '';
 						}else{
 							document.getElementById("drink_extra1").style.display = 'none';
-							document.getElementById("drink_extra2").style.display = 'none';
 							document.getElementById("drink_ncd1").checked = false;
 							document.getElementById("drink_ncd2").checked = false;
 							document.getElementById("drink_ncd3").checked = false;
 							document.getElementById("drink_amount").value = '';
-							
 						}
 					}
 				</script>
