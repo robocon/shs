@@ -160,6 +160,8 @@ if($_POST["cigarette"]=="1"){
 	$the_pill = ( empty($_POST['the_pill']) ) ? 0 : (int)$_POST['the_pill'] ;
 
 	$preg = sprintf('%s', $_POST['preg']);
+	$smoke_ncd = sprintf('%s', $_POST['smoke_ncd']);
+	$drink_ncd = sprintf('%s', $_POST['drink_ncd']);
 	
 	$sql = "Select row_id From opd where thdatehn = '".$thidatehn."' limit 1";
 	$res_row_opd = Mysql_Query($sql);
@@ -215,8 +217,8 @@ if($_POST["cigarette"]=="1"){
 		`cvriskscore`= '".$_POST["cvriskscore"]."',
 		`cvriskscore_lab`= '".$_POST["cvriskscore_lab"]."', 
 		`pregnancy` = '$preg',
-		`smoke_ncd`='',
-		`drink_ncd`=''
+		`smoke_ncd`='$smoke_ncd',
+		`drink_ncd`='$drink_ncd'
 
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 
@@ -231,7 +233,7 @@ if($_POST["cigarette"]=="1"){
 			`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
 			`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`, 
 			`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab`, 
-			`pregnancy`
+			`pregnancy`,`smoke_ncd`,`drink_ncd`
 		)VALUES (
 			NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
 			'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
@@ -241,7 +243,7 @@ if($_POST["cigarette"]=="1"){
 			'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 			'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
 			'$hpi', '$grade','$mind','$the_pill', '".$_POST["cvriskscore"]."' , '".$_POST["cvriskscore_lab"]."', 
-			'$preg'
+			'$preg','$smoke_ncd','$drink_ncd'
 		);";
 
 	}
