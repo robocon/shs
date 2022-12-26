@@ -86,7 +86,9 @@ if($drugreact == 0){
 <script language="javascript">
 window.onload = function(){
 	window.print();
-	window.close();
+	setTimeout(function(){ 
+		window.close();
+	},1000);
 }
 </script>
 

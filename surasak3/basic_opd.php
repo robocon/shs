@@ -450,20 +450,17 @@ if($_POST["cigarette"]=="1"){
 	</center>
 
 	<script type="text/javascript">
+		var path = '<?=$path;?>?dthn=<?=urlencode($thidatehn);?>';
 		window.onload = function(){ 
-			var myWindow = window.open('<?=$path;?>?dthn=<?=urlencode($thidatehn);?>');
-			
-			setInterval(function(){ 
-
+			window.open(path);
+			setTimeout(function(){ 
 				location.replace("basic_opd.php");
-				
 			},4000);
 		}
 	</script>
 
 	<!-- <META HTTP-EQUIV="Refresh" CONTENT="<?=$time;?>; URL=basic_opd.php"> -->
 	<?php
-
 	exit();
 }
 
