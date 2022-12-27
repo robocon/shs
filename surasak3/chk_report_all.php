@@ -157,12 +157,14 @@ while($result = mysql_fetch_array($out_result_sql)){
 
     $i++;
     $ptname=$result2["ptname"];
+    $bp="&nbsp;";
+
     if($result2["bp1"] && $result2["bp2"]){
         $bp=$result2["bp1"]."/".$result2["bp2"];
-    }else if($result2["bp3"] && $result2["bp4"]){
+    }
+    
+    if($result2["bp3"] && $result2["bp4"]){
         $bp=$result2["bp3"]."/".$result2["bp4"];
-    }else{
-        $bp="&nbsp;";
     }
     if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
         $disease="ไม่มี";
