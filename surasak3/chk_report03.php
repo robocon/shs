@@ -588,6 +588,7 @@ if( $num > 0 ){
 										
 							if($objResult["labcode"]=="RBCU"){
 
+								/*
 								$rbculen=strlen($objResult["result"]);
 								if($rbculen >=5){
 									$rbcu1=substr($objResult["result"],0,2);
@@ -612,6 +613,12 @@ if( $num > 0 ){
 										$showresultua="ผิดปกติ";
 									}
 								}	
+								*/
+								
+								$showresultua="ปกติ";
+								if ($objResult['flag']!='N') {
+									$showresultua="ผิดปกติ";
+								}
 								
 							}else{
 								
@@ -838,6 +845,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="เชื้อซิฟิลิส";
 									}else if($objResult["labname"]=="Stool Occult"){
 										$labmean="ตรวจเลือดในอุจจาระ";
+									}else if($objResult["labname"]=="HBA1C"){
+										$labmean="ระดับน้ำตาลสะสม";
 									}
 
 									$app = '';
@@ -1065,9 +1074,22 @@ $outlab_row = mysql_num_rows($outlab_query);
 										}
 
 									}
+
+									if( $objResult["labcode"]=='HBA1CC'){
+										if( $objResult['flag'] == 'N' ){
+											$app = 'ปกติ';
+										}elseif ( $objResult['flag'] != 'N' ) {
+											$app = 'ผิดปกติ';
+										}
+									}
+									// labcode=EAG labname=EVERAGE GLUCOSE 3 MONTH
+									// พ่วงมากับ HBA1C
+									if( $objResult["labcode"]=='EAG'){
+										$app = $objResult["normalrange"];
+										$objResult["normalrange"] = '';
+									}
 									
-
-
+									
 									// if($objResult['labcode'] == 'HAVTOT'){
 									// 	if($objResult["flag"]=="N"){
 									// 		$app="ปกติ";	

@@ -62,7 +62,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="35" align="center">รายการตรวจ</th>
+    <th colspan="37" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="2" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -88,10 +88,13 @@ $company = mysql_fetch_assoc($q);
 
     <th width="7%" align="center">Anti HCV</th>
     <th width="7%" align="center">Anti-HIV</th>
+    <th width="6%" align="center">HBA1C</th>
+    <th width="6%" align="center">Anti-HBs</th>
 
     <th width="6%" align="center">FOBT</th>
     <th width="6%" align="center">AFP</th>
     <th width="6%" align="center">Anti-HAV IgG</th>
+    
     <th width="6%" align="center">Stool Exam</th>
     <th width="6%" align="center">Stool Culture</th>
     <th width="6%" align="center">Stool Occult</th>
@@ -703,7 +706,56 @@ if(mysql_num_rows($query12) > 0)
     }
     echo $result;
 }
-?></td>
+?>
+</td>
+
+<td align="center">
+<?php
+// HBA1CC
+$sql12="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'HBA1C' GROUP BY `profilecode` 
+) AS a 
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber 
+WHERE b.labcode = 'HBA1CC' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+GROUP BY a.`profilecode` ";
+$query12=mysql_query($sql12);
+if(mysql_num_rows($query12) > 0)
+{
+    list($hba1c,$flag)=mysql_fetch_array($query12);
+    echo $hba1c;
+}
+?>
+</td>
+
+<td align="center">
+<?php
+// Anti-HBs
+$sql12="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'ANTIHB' GROUP BY `profilecode` 
+) AS a 
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber 
+WHERE b.labcode = 'ANTIHB' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+GROUP BY a.`profilecode` ";
+$query12=mysql_query($sql12);
+if(mysql_num_rows($query12) > 0)
+{
+    list($antihb,$flag)=mysql_fetch_array($query12);
+    $antihb = 'Negative';
+    if( $flag != 'N' ){ 
+        $antihb = 'Positive';
+    }
+    echo $antihb;
+}
+?>
+</td>
 
 <td align="center">
 <?php

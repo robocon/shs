@@ -1637,12 +1637,16 @@ if(!empty($result_dx["HBA1CC"]))
 	<td align="center" class="labfont">
 		<span <? if($result_dx['HBA1CCflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['HBA1CCflag']?></span>
 	</td>
+	<!-- 
+	onclick="togglediv2('hba1c_action');"
+	onclick="togglediv1('hba1c_action');"
+		-->
 	<td class="labfont">
-		<input name='stat_hba1c' type='radio' value='ปกติ' onclick="togglediv2('hba1c_action');" <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
-		<input name='stat_hba1c' type='radio' value='ผิดปกติ' onclick="togglediv1('hba1c_action');"<? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+		<input name='stat_hba1c' type='radio' value='ปกติ'  <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hba1c' type='radio' value='ผิดปกติ'  <? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
 	</td>
 
-	<td colspan="4">
+	<td colspan="4" style="display:none;">
 		<div id="hba1c_action" <?=($result_dx['HBA1CC'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
 			<select name='reason_hba1c'>
 				<option value="ปกติ" <?=($result_dx['HBA1CC'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
