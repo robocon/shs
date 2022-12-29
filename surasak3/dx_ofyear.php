@@ -283,7 +283,7 @@ $(function() {
 </head>
 
 <body>
-<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ Lab</a>
+<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ Lab || <a href="opday_dxofyear_so.php">ดูการมาตรวจตามวัน</a></a>
 <center>
   <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพทหารปี <?=$showyear;?></div>
 </center>
