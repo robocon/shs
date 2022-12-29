@@ -169,10 +169,10 @@ if ($type === 'patdata') {
             date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
         </div>
         <div>
-            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
+            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>"> <a href="javascript:void(0);" onclick="quickAdd('depart','OTHER')">OTHER</a>
         </div>
         <div>
-            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
+            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>"> <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการแพทย์')">ค่าบริการทางการแพทย์</a>
         </div>
         <div>
             price <input type="text" name="price" id="price" value="<?=$item['price'];?>">
@@ -195,6 +195,11 @@ if ($type === 'patdata') {
         <input type="hidden" name="type" value="depart">
         <input type="hidden" name="id" value="<?=$item['row_id'];?>">
         <input type="hidden" name="action" value="save">
+        <script>
+            function quickAdd(id,txt){
+                document.getElementById(id).value = txt;
+            }
+        </script>
     </form>
     <?php 
 
@@ -219,7 +224,7 @@ if ($type === 'patdata') {
             depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
         </div>
         <div>
-            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
+            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>"> <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการแพทย์')">ค่าบริการทางการแพทย์</a>
         </div>
         <div>
             credit <input type="text" name="credit" id="credit" value="<?=$item['credit'];?>">
@@ -242,6 +247,11 @@ if ($type === 'patdata') {
         <input type="hidden" name="type" value="opacc">
         <input type="hidden" name="id" value="<?=$item['row_id'];?>">
         <input type="hidden" name="action" value="save">
+        <script>
+            function quickAdd(id,txt){
+                document.getElementById(id).value = txt;
+            }
+        </script>
     </form>
     <?php
 }

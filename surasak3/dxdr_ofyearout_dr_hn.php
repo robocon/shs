@@ -237,11 +237,11 @@ function togglediv2(divid){
 	</TABLE>
 <input name="post_vn" type="hidden" value="1" />
 </form>
-<a href='../nindex.htm'>ไปเมนูหลัก</a> || <a href='dt_index.php'>ผู้ป่วยรายใหม่</a>
+<a href='dt_index.php'>ไปหน้าจอแพทย์</a> || <a href='../nindex.htm'>ไปหน้าหลัก ร.พ.</a> || <a href='dxdr_ofyearout_dr_hn.php'>ผู้ป่วยรายใหม่</a>
 </div>
 
 
-<? if($_POST["act"]=="show"){ ?>
+<?php if($_POST["act"]=="show"){ ?>
 <?php if(!empty($_POST["post_vn"]) && $_POST["c_hn"] != ""){
 		////*runno ตรวจสุขภาพ*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -261,22 +261,20 @@ function togglediv2(divid){
 	////*runno ตรวจสุขภาพ*/////////
 	
 //ค้นหา hn จาก opday ****************************************************************************************
+	$opdExtraTxt = '';
 	$date_now = (date("Y")+543).date("-m-d");
-	$sqlvn = "Select * From opday where  hn = '".$_POST["c_hn"]."'  AND toborow like 'EX40%' order by row_id desc limit 0,1";
-	$resultvn= mysql_query($sqlvn);
-	$queryvn = mysql_fetch_array($resultvn);
+	$q_test = mysql_query("Select * From opday where  hn = '".$_POST["c_hn"]."' and thidate like '$date_now%' limit 0,1");
+	if(mysql_num_rows($q_test)>0){
+		$queryvn = mysql_fetch_array($q_test);
+	}else{ 
+		$sqlvn = mysql_query("Select *,SUBSTRING(`thidate`,1,10) AS `shortThDate` From opday where  hn = '".$_POST["c_hn"]."' ORDER BY `row_id` DESC LIMIT 1");
+		$queryvn = mysql_fetch_assoc($sqlvn);
+		$opdExtraTxt = ' ข้อมูลการลงทะเบียนเมื่อวันที่ '.$queryvn['shortThDate'];
+	}
 	
 	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$queryvn['hn']."' limit 0,1";
-	//echo $sql;
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
 	$arr_view = mysql_fetch_assoc($result);
-
-//$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
-//list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
 
 $date_hn = date("Y-m-d").$queryvn['hn'];
 $date_vn = date("Y-m-d").$queryvn['vn'];
@@ -297,7 +295,10 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 
 //ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 
-	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
+	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') 
+	From resulthead as a 
+	where a.hn='".$arr_view["hn"]."' AND clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' 
+	Order by a.autonumber DESC limit 0,1";
 	//echo $sql;
 	list($lab_date) = mysql_fetch_row(mysql_query($sql));
 
@@ -317,11 +318,13 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
 
 	$sql = "Select * From  `dxofyear_out` where yearchk = '$nPrefix' AND hn='".$arr_view["hn"]."' order by row_id desc limit 0,1 ";
-	//echo $sql;
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
 	$result_dx = mysql_fetch_array($result);
-	if($count > 0){
+
+	$dxofyear_out_status = 'ไม่มีข้อมูลซักประวัติ';
+	if($count > 0){ 
+		$dxofyear_out_status = '';
 		$result = mysql_query($sql);
 		$arr_dxofyear = mysql_fetch_assoc($result);
 		
@@ -335,8 +338,12 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
 		$rowid = $arr_dxofyear['row_id'];
 		
-	}else{
-		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+	}else{ 
+
+		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END ) 
+		From opd where hn = '".$arr_view["hn"]."' 
+		AND type <> 'ญาติ' 
+		Order by row_id DESC limit 1";
 
 		$result = Mysql_Query($sql);
 		list($drugreact,$congenital_disease, $weight, $height, $cigarette1, $alcohol1,$exercise1, $cigarette0, $alcohol0, $exercise0, $cigarette2, $alcohol2,$exercise2, $cigarette3, $alcohol3) = Mysql_fetch_row($result);
@@ -425,7 +432,13 @@ $_SESSION["hn_now"] = $arr_view["hn"];
     <tr>
       <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย<span class="profileheadvalue"> [
           <?=substr($queryvn["toborow"],4);?>
-          ]</span></td>
+          ]</span>
+		<?php 
+		if ($opdExtraTxt) {
+			echo '<span style="color:red;">'.$opdExtraTxt.'</span>';
+		}
+		?>
+		</td>
     </tr>
     <tr>
       <td width="148" align="left" class="profilehead">VN</td>
@@ -602,7 +615,16 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0"  width="100%" bgcolor="#FFFFCC">
 	<TR>
-		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?php echo $lab_date;?></span></TD>
+		<TD align="left" class="tb_font_1" bgcolor="#339999">
+			&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?php echo $lab_date;?></span>
+			<?php 
+			if(!empty($dxofyear_out_status)){
+				?>
+				<span style="color:red;"><?=$dxofyear_out_status;?></span>
+				<?php
+			}
+			?>
+		</TD>
 	</TR>
 	<TR class="tb_font">
 		<TD >
@@ -1298,9 +1320,422 @@ $bsult = mysql_fetch_array($brow);
         <option value="มีระดับกรดยูริคสูงผิดปกติ ควรควบคุมอาหารจำพวกเครื่องใน, อาหารทะเล, เครื่องดื่มแอลกอฮอล์" <? if($result_dx['uric'] > 7.2){ echo "selected='selected';";}?>>มีระดับกรดยูริคสูงผิดปกติ ควรควบคุมอาหารจำพวกเครื่องใน, อาหารทะเล, เครื่องดื่มแอลกอฮอล์</option>
         </select></div>            </td>
 	    </tr>
+
+		<tr>
+	<td align="right" class="profilelab">HDL :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hdl']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hdl']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<?php
+		if($result_dx['hdl'] <= 40){
+			echo "<span style='color:#F00'><strong>$result_dx[hdl]</strong></span>";
+		}else{
+			echo "<span style='color:#00F'>$result_dx[hdl]</span>";
+		}
+		?>
+	</td>
+	<td class="labfont">(<?=$result_dx['hdl_range']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['hdl_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['hdl_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_hdl' type='radio' value='ปกติ' onclick="togglediv2('hdl_action');" <? if($result_dx['hdl'] > 40 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hdl' type='radio' value='ผิดปกติ' onclick="togglediv1('hdl_action');"<? if(!empty($result_dx['hdl']) && $result_dx['hdl'] <= 40 ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4">
+		<div id="hdl_action" <? if(empty($result_dx['hdl']) || ($result_dx['hdl'] > 40 )){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
+			<select name='reason_hdl'>
+				<option value="ปกติ" <? if($result_dx['hdl'] > 40 ){ echo "selected='selected';";}?>>ปกติ</option>
+				<!-- <option value="การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ" <? if($result_dx['hdl'] > 60){ echo "selected='selected';";}?>>การมีระดับ HDL สูง จะทำให้ลดภาวะเสี่ยงต่อโรคเส้นเลือดหัวใจตีบ</option> -->
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['hdl'] <= 40){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+</tr>
+
+<?php 
+if(!empty($result_dx['ldl']))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">LDL :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['ldl']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['ldl']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['ldl'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['ldl'];?></span>
+	</td>
+	<td class="labfont">(<?=$result_dx['ldl_range']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['ldl_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['ldl_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_ldl' type='radio' value='ปกติ' onclick="togglediv2('ldl_action');" <? if( $result_dx['ldl'] > 0 && $result_dx['ldl'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_ldl' type='radio' value='ผิดปกติ' onclick="togglediv1('ldl_action');"<? if( $result_dx['ldl'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4">
+		<div id="ldl_action" <?=($result_dx['ldl'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
+			<select name='reason_ldl'>
+				<option value="ปกติ" <?=($result_dx['ldl'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['ldl'] > 100){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+</tr>
+<?php 
+}
+
+if(!empty($result_dx['10001'])){
+
+
+?>
+<tr>
+	<td align="right" class="profilelab">LDLC :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['10001']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['10001']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['10001'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['10001'];?></span>
+	</td>
+	<td class="labfont">(<?=$result_dx['10001_range']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['10001_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['10001_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_ldlc' type='radio' value='ปกติ' onclick="togglediv2('ldlc_action');" <? if( $result_dx['10001'] > 0 && $result_dx['10001'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_ldlc' type='radio' value='ผิดปกติ' onclick="togglediv1('ldlc_action');"<? if( $result_dx['10001'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4">
+		<div id="ldlc_action" <?=($result_dx['10001'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
+			<select name='reason_ldlc'>
+				<option value="ปกติ" <?=($result_dx['10001'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['10001'] > 100){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+</tr>
+<?php 
+}
+
+if(!empty($result_dx['stocc'])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">STOCC :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['stocc']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['stocc']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['stocc'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['stocc'];?></span>
+		</td>
+		<td class="labfont">-</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['stoccflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['stoccflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_stocc' type='radio' value='ปกติ' <? if($result_dx['stocc'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+			<input name='stat_stocc' type='radio' value='ผิดปกติ' <? if( $result_dx['stocc'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php
+}
+if (!empty($result_dx['malari'])) {
+	# code...
+
+?>
+<tr>
+	<td align="right" class="profilelab">Malaria :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['malari']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['malari']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['malari'] == 'FOUND') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['malari'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['malari_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['malari_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_malari' type='radio' value='ปกติ' <? if($result_dx['malari'] == 'NOT FOUND' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_malari' type='radio' value='ผิดปกติ' <? if( $result_dx['malari'] == 'FOUND' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if (!empty($result_dx['metamp'])) { 
+?>
+<tr>
+	<td align="right" class="profilelab">Metamphetamine :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['metamp']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['metamp']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['metamp'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['metamp'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['metamp_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['metamp_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_metamp' type='radio' value='ปกติ' <? if($result_dx['metamp'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_metamp' type='radio' value='ผิดปกติ' <? if( $result_dx['metamp'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+if (!empty($result_dx['hbsag'])) { 
+?>
+<tr>
+	<td align="right" class="profilelab">HBsAg :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hbsag']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hbsag']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['hbsag'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hbsag'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['hbsag_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['hbsag_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_hbsag' type='radio' value='ปกติ' <? if($result_dx['hbsag'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hbsag' type='radio' value='ผิดปกติ' <? if( $result_dx['hbsag'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if (!empty($result_dx['hcvab'])) { 
+?>
+<tr>
+	<td align="right" class="profilelab">Anti HCV :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hcvab']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hcvab']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['hcvab'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hcvab'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['hcvab_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['hcvab_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_hcvab' type='radio' value='ปกติ' <? if($result_dx['hcvab'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hcvab' type='radio' value='ผิดปกติ' <? if( $result_dx['hcvab'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if (!empty($result_dx['hiv'])) { 
+?>
+<tr>
+	<td align="right" class="profilelab">Anti HIV :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['hiv']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['hiv']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['hiv'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['hiv'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['hiv_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['hiv_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_hiv' type='radio' value='ปกติ' <? if($result_dx['hiv'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hiv' type='radio' value='ผิดปกติ' <? if( $result_dx['hiv'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if (!empty($result_dx['vdrl'])) { 
+?>
+<tr>
+	<td align="right" class="profilelab">ซิฟิลิส :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['vdrl']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['vdrl']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['vdrl'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['vdrl'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['vdrl_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['vdrl_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_vdrl' type='radio' value='ปกติ' <? if($result_dx['vdrl'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_vdrl' type='radio' value='ผิดปกติ' <? if( $result_dx['vdrl'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if(!empty($result_dx["parasi"]))
+{
+?>
+<tr>
 	<?php 
-	/*$i++;
-			}*/?>
+	$clean_result = strtolower(trim($result_dx["parasi"]));
+	$match_parasite = preg_match('/(not\s+found)/', $clean_result, $matchs_parasite);
+	$dx_parasi = false;
+	if( $match_parasite > 0 ){
+		$dx_parasi = true;
+	}
+	?>
+	<td align="right" class="profilelab">Stool Exam :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['parasi']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['parasi']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=( $dx_parasi == false ) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['parasi'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['parasi_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['parasi_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_parasi' type='radio' value='ปกติ' <? if($dx_parasi == true){ echo "checked";}?>/> ปกติ
+		<input name='stat_parasi' type='radio' value='ผิดปกติ' <? if( $dx_parasi == false ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+if(!empty($result_dx["groupt"]))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">Blood group :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['groupt']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['groupt']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['groupt'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span><?=$result_dx['groupt_flag']?></span>
+	</td>
+	<td class="labfont"></td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+if(!empty($result_dx["rh"]))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">Rh Typing :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['rh']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['rh']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['rh'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span><?=$result_dx['groupt_flag']?></span>
+	</td>
+	<td class="labfont"></td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+
+$age_int = 0;
+if(preg_match("/\d+/", $arr_dxofyear["age"], $matchs))
+{
+	$age_int = $matchs[0];
+}
+
+$sex = 0;
+if(preg_match("/นาย/", $arr_dxofyear['ptname'], $sMatch))
+{
+	$sex = 1;
+}
+
+if($age_int >= 18 && $sex == 0)
+{
+	?>
+	<tr>
+		<td align="right" class="profilelab">Pregnancy test :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['upt']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['upt']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['upt'] == 'Positive') ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['upt'];?></span>
+		</td>
+		<td class="labfont">-</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['upt_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['upt_flag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_upt' type='radio' value='ปกติ' <? if($result_dx['upt'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+			<input name='stat_upt' type='radio' value='ผิดปกติ' <? if( $result_dx['upt'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
+?>
+
+<?php 
+if(!empty($result_dx["antihb"]))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">Anti-HBs(HBsAb) :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['antihb']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['antihb']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['antihb'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <?php if($result_dx['antihb_flag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['antihb_flag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_antihb' type='radio' value='ปกติ' <? if($result_dx['antihb'] == 'Negative' ){ echo "checked";}?>/> ปกติ
+		<input name='stat_antihb' type='radio' value='ผิดปกติ' <? if( $result_dx['antihb'] == 'Positive' ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php 
+}
+
+if(!empty($result_dx["HBA1CC"]))
+{
+?>
+<tr>
+	<td align="right" class="profilelab">HBA1C :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['HBA1CC']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['HBA1CC']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span <?=($result_dx['HBA1CC'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['HBA1CC'];?></span>
+	</td>
+	<td class="labfont">(<?=$result_dx['HBA1CCrange']?>)</td>
+	<td align="center" class="labfont">
+		<span <? if($result_dx['HBA1CCflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['HBA1CCflag']?></span>
+	</td>
+	<td class="labfont">
+		<!-- 
+		onclick="togglediv2('hba1c_action');"
+		onclick="togglediv1('hba1c_action');"
+		 -->
+		<input name='stat_hba1c' type='radio' value='ปกติ'  <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hba1c' type='radio' value='ผิดปกติ'  <? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+	</td>
+
+	<td colspan="4" style="display:none;">
+		<div id="hba1c_action" <?=($result_dx['HBA1CC'] > 100) ? 'style="display: block"' : 'style="display: none"' ;?>>
+			<select name='reason_hba1c'>
+				<option value="ปกติ" <?=($result_dx['HBA1CC'] <= 100) ? 'selected="selected"' : '' ;?>>ปกติ</option>
+				<option value="ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ" <? if($result_dx['HBA1CC'] > 100){ echo "selected='selected';";}?>>ผิดปกติ ควรปรับพฤติกรรมการรับประทานอาหาร และออกกำลังกายอย่างสม่ำเสมอ</option>
+			</select>
+		</div>
+	</td>
+
+</tr>
+<?php 
+}
+?>
+
             </table>
         <hr />   
 </TD>
@@ -1336,7 +1771,14 @@ $bsult = mysql_fetch_array($brow);
 	        </select>
 	      </div></td>
 	    </tr>
-	  <tr>
+	<?php 
+	// ถ้าเป็น ผญ ค่อยแสดงการตรวจมะเร็งปากมดลูก
+	$style52 = 'style="display:none;"';
+	if($arr_view['sex']=='ญ'){
+		$style52 = '';
+	}
+	?>
+	  <tr <?=$style52;?>>
 	    <td align="right" class="tb_font_2">ตรวจมะเร็งปากมดลูก : </td>
 	    <td class="labfont"><input name='normal52' type='radio' value='ปกติ' onclick="togglediv2('acnormal52')"/>
 	      ปกติ

@@ -364,7 +364,7 @@ $query1 = mysql_query($sql1);
   <td colspan="2">
 <table width="100%">
 <tr>
-  <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" width="87" height="83" /></td>
+  <td width="9%" rowspan="3" align="center" valign="top" class="texthead"><img src="logo.jpg" height="83" /></td>
   <td width="77%" align="center" valign="top" class="texthead"><strong>แบบรายงานการตรวจสุขภาพประจำปี <?=$nPrefix?></strong></td>
   <td width="14%" align="center" valign="top" class="texthead">&nbsp;</td>
 </tr>
@@ -451,13 +451,10 @@ C ํ</span></td>
   </span></td>
 </tr>
 <tr>
-  <td colspan="6" valign="top" class="text3"><strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?>
-    <? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?></td>
-</tr>
-<tr>
-  <td colspan="6" valign="top" class="text3"><strong class="text3">ค่า BMI : </strong>
-    <?=$result['stat_bmi']?>
-    <? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?></td>
+	<td colspan="6" valign="top" class="text3">
+		<strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?><? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?>
+		&nbsp; <strong class="text3">ค่า BMI : </strong><?=$result['stat_bmi']?><? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?>
+	</td>
 </tr>
   </table></td></tr></table></td>
   </tr>
@@ -469,18 +466,17 @@ C ํ</span></td>
     <tr>
       <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td width="61%" align="center" bgcolor="#CCCCCC">labcode </td>
-            <td width="19%" align="center" bgcolor="#CCCCCC">result</td>
-            <td width="20%" align="center" bgcolor="#CCCCCC">normalrange</td>
+            <td width="44%" align="center" bgcolor="#CCCCCC">labcode </td>
+            <td width="15%" align="center" bgcolor="#CCCCCC">result</td>
+            <td width="21%" align="center" bgcolor="#CCCCCC">normalrange</td>
           </tr>
-          <? $sql="SELECT * FROM result1 WHERE profilecode='CBC' ";
-	$query = mysql_query($sql);
-	$arrresult = mysql_fetch_array($query);
-/////
+		<?php
+		$sql="SELECT * FROM result1 WHERE profilecode='CBC' ";
+		$query = mysql_query($sql);
+		$arrresult = mysql_fetch_array($query);
 
+		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ORDER BY `seq` ASC";
 
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
-		// echo "---->".$strSQL;
 		$objQuery = mysql_query($strSQL);
 		while($objResult = mysql_fetch_array($objQuery))
 		{
@@ -543,9 +539,8 @@ C ํ</span></td>
             <td align="center">&nbsp;</td>
           </tr>
           <?
- 		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
-		//echo "---->".$strSQL;
-		$objQuery = mysql_query($strSQL);
+ 		// $strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ";
+		// $objQuery = mysql_query($strSQL);
 			
  ?>
           <tr>
@@ -596,7 +591,7 @@ C ํ</span></td>
 		$query = mysql_query($sql);
 		$arrresult = mysql_fetch_array($query);
 /////
-		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' ";
+		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' ORDER BY `seq` ASC";
 		$objQuery = mysql_query($strSQL);
 		$uaNum = mysql_num_rows($objQuery);
 		
@@ -645,17 +640,24 @@ C ํ</span></td>
 			}else if($objResult["labcode"]=="OTHERU"){
 				$labmean="(อื่นๆ)";
 			}
+
+			$ua_result = $objResult["result"];
 						
 			if($objResult['flag']=='L' || $objResult['flag']=='H'){
-				$objResult["result"]="<strong>".$objResult["result"]."</strong>";
-			}else{
-				$objResult["result"]=$objResult["result"];
+				$ua_result = "<b>".$objResult["result"]."</b>";
 			}
+
+			$normalrange = '';
+			if(!empty($objResult["normalrange"])){
+				$normalrange = $objResult["normalrange"];
+			}
+
+
 		?>
           <tr>
             <td><?=$objResult["labcode"]." ".$labmean;?></td>
-            <td ><?=$objResult["result"];?></td>
-            <td align="center"><?=$objResult["normalrange"];?></td>
+            <td ><?=$ua_result;?></td>
+            <td align="center"><?=$normalrange;?></td>
           </tr>
           <?  } ?>
           <tr>
@@ -953,6 +955,19 @@ C ํ</span></td>
 		<? 
 	}
 
+	if(!empty($result['hba1c']))
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>HBA1C(ระดับน้ำตาลสะสม) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['hba1c']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['hba1c_range']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_hba1c']?></strong></td>
+		</tr>
+		<? 
+	}
+
 	if($result['malari'])
 	{
 		?>
@@ -1125,7 +1140,7 @@ C ํ</span></td>
 	  $summary="";
 	  if($result['sum1']!=""){ 
 	  
-	  echo $summary=$result['sum1'];
+	  	echo $summary=$result['sum1'];
 	  
 	  }else{
 		  for($p=2;$p<6;$p++){
@@ -1145,7 +1160,8 @@ C ํ</span></td>
 		  echo $summary;
 	  }
 	  
-	 ?></u>      </td>
+	 ?></u>
+	 </td>
     </tr>
 </table>
 
