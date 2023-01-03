@@ -34,15 +34,15 @@ while(list($date1, $date, $hn, $depart, $paidcscd,$credit_detail, $hd_room) = My
 	$thdatehn = "$opD-$opM-$opY".$hn;
 	
 	// [Queryเก่า] https://github.com/robocon/shs/commit/f38429647bc61f1b19f56cde2b42b67ebb55b538
-	$sql2 = "select vn, ptname from opday where thdatehn='$thdatehn' limit 1";
-	list($vn, $full_name) = mysql_fetch_array(mysql_query($sql2));
+	$sql2 = "select vn, ptname,idcard from opday where thdatehn='$thdatehn' limit 1";
+	list($vn, $full_name, $idcard) = mysql_fetch_array(mysql_query($sql2));
 	
 	$date=substr($date,0,10);
 	$d=substr($date,8,2);
 	$m=substr($date,4,4);
 	$y=substr($date,0,4);
 
-	$list2[$hn] = $d."".$m."".$y."/".$full_name."/".$credit_detail."/".$vn.'/'.$hd_room;
+	$list2[$hn] = $d."".$m."".$y."/".$full_name."/".$credit_detail."/".$vn.'/'.$hd_room.'/'.$idcard;
 	switch($depart){
 		case "PHAR" : $list[$hn]["PHAR"] = $list[$hn]["PHAR"] + $paidcscd; break;
 		case "PATHO" : $list[$hn]["PATHO"] = $list[$hn]["PATHO"] + $paidcscd; break;
@@ -72,6 +72,7 @@ echo "<tr><td>&nbsp;&nbsp;#&nbsp;&nbsp;</td>
 
 <td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;vn&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;บัตรปชช&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='2'><center> ห้อง</td>
 <td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
@@ -128,6 +129,7 @@ foreach ($list2 as $key => $value) {
 	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[2]."&nbsp;</b></td>
 	<td><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$key."&nbsp;</td>
 	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[3]."&nbsp;</b></td>
+	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$xx[5]."&nbsp;</b></td>
 	<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".($xx[4]=='FU18' ? 'ไตเทียม 1' : 'ไตเทียม 2')."&nbsp;</b></td>
 	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PHAR1"]."&nbsp;</td>
 	<td align='right'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$list[$key]["PATHO1"]."&nbsp;</td>
@@ -155,6 +157,7 @@ foreach ($list2 as $key => $value) {
 		echo "<tr><td>&nbsp;&nbsp;#&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;วันที่&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ชื่อ - สกุล&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;สิทธิ์&nbsp;&nbsp;</td>
 		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td>
 		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;vn&nbsp;&nbsp;</td>
+		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;บัตรปชช&nbsp;&nbsp;</td>
 		<td><font face='Angsana New' size ='2'><center> ห้อง</td>
 		<td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td>
 		<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
@@ -204,13 +207,8 @@ $OTHER2=number_format($OTHER2,2);
 
 $sum=number_format($sum,2);
 
-echo "<tr><b><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><b><font face='Angsana New' size ='2'><center>รวมทั้งหมด</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".($xx[4]=='FU18' ? 'ไตเทียม 1' : 'ไตเทียม 2')."&nbsp;</b></td>
+echo "<tr style='font-weight:bold;'>
+<td colspan='8'><b><font face='Angsana New' size ='2'><center>รวมทั้งหมด</td>
 <td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PHAR."&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PATHO."&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$XRAY."&nbsp;</td>
@@ -223,7 +221,7 @@ echo "<tr><b><td>&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$OTHER."&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$OTHER2."&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</td>
-</b></tr></FONT>";
+</tr></FONT>";
 
 echo "</table>";
 
