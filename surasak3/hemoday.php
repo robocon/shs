@@ -12,13 +12,13 @@
 </style>
 <?php
     print "<form method='POST' action='hemolst.php'>";
-    print "<p>`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               ต้องการดูรายการ  ของวันที่ ?&nbsp;&nbsp;</p>";
-    print "<p>`วันที่&nbsp;&nbsp; ";
+    print "<p>วันที่&nbsp;&nbsp; ";
     print "<input type='text' name='d' size='4' value=$d>&nbsp;&nbsp;";
     print "เดือน&nbsp; <input type='text' name='m' size='4' value=$m>&nbsp;&nbsp;&nbsp;";
     print "พ.ศ. <input type='text' name='yr' size='8' value=$yr></p>";
-    print "<p>`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     print "<input type='submit' value='ตกลง' name='B1'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
     print "<input type='reset' value='ลบทิ้ง' name='B2'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;";
     print "<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
