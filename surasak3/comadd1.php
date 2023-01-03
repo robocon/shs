@@ -11,6 +11,18 @@ $phone=$_POST["phone"];
 $user=$_POST["user"];
 $jobtype=$_POST["jobtype"];
 
+function send_line_noti($sMessage, $sToken){
+	$curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_POST, 1); 
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
+}
+
 if($_POST["act"]=="add")
 {
 	$sql="select * from com_support where depart='$depart' and head='$head' and thidate='$thidate'";
@@ -24,43 +36,15 @@ if($_POST["act"]=="add")
 		{ 
 			$row_id = mysql_insert_id();
 
+			// Lineกลุ่มห้องคอมฯ
 			$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS";
 			$sMessage = "ใบงานใหม่\nลำดับ: $row_id\nผู้แจ้ง: $user\nแผนก: $depart\nติดต่อ: $phone\nหัวข้อ: $head\nรายละเอียด: $detail";
-			$chOne = curl_init(); 
-			// notify-api.line.me
-			// 203.104.138.174
-			curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
-			// curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-			curl_setopt( $chOne, CURLOPT_POST, 1); 
-			curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-			// curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-			$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken, ); 
-			// $headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
-			curl_setopt( $chOne, CURLOPT_HTTPHEADER, $headers); 
-			curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-			$result = curl_exec( $chOne ); 
-			curl_close($chOne); 
+			send_line_noti($sMessage, $sToken);
 
-			// Token ห้อง IT Support
-			// uQvPwVidaVmwL7BQkFuVCQVh1q7zhZbYT8lHCnTeSoG
 			// ติดตามงาน IT
 			// Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ
 			$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-			$chTwo = curl_init(); 
-			curl_setopt( $chTwo, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
-			// curl_setopt( $chTwo, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
-			curl_setopt( $chTwo, CURLOPT_SSL_VERIFYHOST, 0); 
-			curl_setopt( $chTwo, CURLOPT_SSL_VERIFYPEER, 0); 
-			curl_setopt( $chTwo, CURLOPT_POST, 1); 
-			curl_setopt( $chTwo, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-			$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$tokenTwo.'', );
-			// $headers = array( 'Content-type: application/x-www-form-urlencoded' );
-			curl_setopt($chTwo, CURLOPT_HTTPHEADER, $headers); 
-			curl_setopt( $chTwo, CURLOPT_RETURNTRANSFER, 1); 
-			$result = curl_exec( $chTwo ); 
-			curl_close($chTwo);
+			send_line_noti($sMessage, $tokenTwo);
 
 			$_SESSION['supportMessage'] = "ทำการเพิ่มข้อมูลเรียบร้อยแล้ว";
 

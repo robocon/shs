@@ -1,31 +1,8 @@
 <?php 
 header('Access-Control-Allow-Origin: *');
 
-$json = file_get_contents('php://input');
-// $data = json_decode($json, true);
-
-// $sMessage = sprintf("%s", $data['message']);
-// $depart = sprintf("%s", $data['depart']);
-$checkDepart = false;
-// var_dump($json);
-// var_dump($_REQUEST);
-
 $sMessage = sprintf("%s", $_REQUEST['message']);
-$depart = sprintf("%s", $_REQUEST['depart']);
-
-
-if($depart === 'ward'){
-    $sToken = 'XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5';
-    $checkDepart = true;
-}elseif ($depart === 'test') {
-    $sToken = 'LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL';
-    $checkDepart = true;
-}
-
-if($checkDepart===false or empty($sMessage)){
-    echo "Invalid Data";
-    exit;
-}
+$sToken = sprintf("%s", $_REQUEST['token']);
 
 $ch = curl_init(); 
 curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
